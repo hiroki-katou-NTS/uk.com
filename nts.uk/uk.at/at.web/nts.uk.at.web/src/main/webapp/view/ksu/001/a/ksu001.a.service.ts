@@ -10,10 +10,19 @@ module nts.uk.at.view.ksu001.a.service {
         getDataWorkEmpCombine: "screen/at/schedule/basicschedule/getWorkEmpCombine",
         getDataSpecDateAndHoliday: "screen/at/schedule/basicschedule/getDataSpecDateAndHoliday",
         findWorkPlaceById: "bs/employee/workplace/info/findDetail",
-        
         getDataComPattern: "at/schedule/shift/management/getListShijtPalletsByCom",
         getDataWkpPattern: "at/schedule/shift/management/shiftpalletorg/getbyWorkplaceId",
+        
+        // lai start
+        getSendingPeriod: "screen/at/schedule/schedule/start/getSendingPeriod"
     }
+    
+    export function getSendingPeriod(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getSendingPeriod, obj);
+    }
+    
+    
+    
 
     export function getDataBasicSchedule(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getDataBasicSchedule, obj);

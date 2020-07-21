@@ -21,6 +21,7 @@ module nts.uk.at.view.ksu001.a {
             userInfor.heightGridSetting = '';
             userInfor.shiftPalletUnit  = 1;
             userInfor.shiftPalletPositionNumber = 0;
+            userInfor.mapListShiftMaster =  new Map();
             
             uk.localStorage.setItemAsJson(key, userInfor);
         } 

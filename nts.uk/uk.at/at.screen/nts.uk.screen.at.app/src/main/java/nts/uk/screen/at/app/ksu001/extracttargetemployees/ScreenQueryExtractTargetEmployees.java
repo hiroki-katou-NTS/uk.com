@@ -1,15 +1,12 @@
 /**
  * 
  */
-package nts.uk.screen.at.app.ksu001;
+package nts.uk.screen.at.app.ksu001.extracttargetemployees;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.RequiredArgsConstructor;
@@ -17,7 +14,9 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
+import nts.uk.ctx.at.schedule.dom.adapter.classification.SyClassificationAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.jobtitle.PositionImport;
+import nts.uk.ctx.at.schedule.dom.adapter.jobtitle.SyJobTitleAdapter;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.EmpClassifiImport;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.EmployeePosition;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortEmpService;
@@ -29,45 +28,44 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankPriority;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeamRepository;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
-import nts.uk.ctx.bs.employee.pub.jobtitle.EmployeeJobHistExport;
-import nts.uk.ctx.bs.employee.pub.jobtitle.JobTitleExport;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.ctx.at.schedule.dom.adapter.jobtitle.SyJobTitleAdapter;
 
 /**
  * @author laitv
- * ScreenQuery : 対象社員を抽出する
- * path: UKDesign.UniversalK.就業.KSU_スケジュール.KSU001_個人スケジュール修正(職場別).A：個人スケジュール修正（職場別）.メニュー別OCD.対象社員を抽出する
+ * <<ScreenQuery>> 対象社員を抽出する
+ *
  */
-@Stateless
-public class ExtractTargetEmployees {
+public class ScreenQueryExtractTargetEmployees {
 	
 	@Inject
 	private EmployeeInformationAdapter empInfoAdapter;
 	
-	
-	/**
-	 * 
-	 * @param baseDate 基準日: 年月日
-	 * @param targetOrgIdenInfor 対象組織: 対象組織識別情報
-	 */
-	public void getListEmployee(GeneralDate baseDate, TargetOrgIdenInfor targetOrgIdenInfor){
+	public List<EmployeeInformationImport> getListEmp(ExtractTargetEmployeesParam param) {
 		
-		//step 1 get domainSv 組織を指定して参照可能な社員を取得する
+		// step 1 get domainSv 組織を指定して参照可能な社員を取得する
 		// wkplId 9d68af4d-437d-4362-a118-65899039c38f
-		List<String> sids =  Arrays.asList("fc4304be-8121-4bad-913f-3e48f4e2a752",
-				"338c26ac-9b80-4bab-aa11-485f3c624186",
-				"89ea1474-d7d8-4694-9e9b-416ea1d6381c");
-		
+		List<String> sids = Arrays.asList(
+				"fc4304be-8121-4bad-913f-3e48f4e2a752",
+				"338c26ac-9b80-4bab-aa11-485f3c624186", 
+				"89ea1474-d7d8-4694-9e9b-416ea1d6381c",
+				"ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570",
+				"8f9edce4-e135-4a1e-8dca-ad96abe405d6",
+				"9787c06b-3c71-4508-8e06-c70ad41f042a",
+				"62785783-4213-4a05-942b-c32a5ffc1d63",
+				"4859993b-8065-4789-90d6-735e3b65626b",
+				"aeaa869d-fe62-4eb2-ac03-2dde53322cb5",
+				"70c48cfa-7e8d-4577-b4f6-7b715c091f24",
+				"c141daf2-70a4-4f4b-a488-847f4686e848");
+
 		// step 2, 3
-		EmployeeInformationQueryDtoImport input =new EmployeeInformationQueryDtoImport(sids, baseDate, 
-				false, false, false, false, false, false);
-		
+		EmployeeInformationQueryDtoImport input = new EmployeeInformationQueryDtoImport(sids, param.baseDate, false, false,
+				false, false, false, false);
+
 		List<EmployeeInformationImport> listEmp = empInfoAdapter.getEmployeeInfo(input);
 		
 		// step 4 gọi domainSv 社員を並び替える.
 		
+		return listEmp;
 		
 	}
 	
@@ -83,6 +81,8 @@ public class ExtractTargetEmployees {
 		private final RankRepository rankRepo;
 		
 		private final SyJobTitleAdapter syJobTitleAdapter;
+		
+		private final SyClassificationAdapter syClassificationAdapter;
 
 
 		@Override
@@ -119,14 +119,8 @@ public class ExtractTargetEmployees {
 
 		@Override
 		public List<EmpClassifiImport> get(GeneralDate ymd, List<String> lstEmpId) {
-			
-			return null;
+			List<EmpClassifiImport> data = syClassificationAdapter.getByListSIDAndBasedate(ymd, lstEmpId);
+			return data;
 		}
-		
-		
-		
-	
-		
 	}
-
 }

@@ -53,7 +53,7 @@ public class SyScheduleJobTitleAdapterImpl implements SyJobTitleAdapter {
 		}
 		return data.stream().map(m -> {
 			
-			return new PositionImport(m.getJobTitleId(), m.getJobTitleCode(), m.getJobTitleName(), m.getSequenceCode());
+			return new PositionImport(m.getJobTitleId(), m.getJobTitleCode(), m.getJobTitleName());
 		}).collect(Collectors.toList());
 	}
 

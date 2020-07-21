@@ -57,4 +57,7 @@ public interface SyClassificationPub {
 	 */
 	List<AffCompanyHistItemExport> getByIDAndBasedate(GeneralDate baseDate , List<String> listempID);
 	
+	// Dùng cho bên ksu001
+	List<EmpClassifiExport> getByListSIDAndBasedate(GeneralDate baseDate , List<String> listempID);
+	
 }

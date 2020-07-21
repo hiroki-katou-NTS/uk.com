@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.screen.at.app.ksu001;
+package nts.uk.screen.at.app.ksu001.getinfoofInitstartup;
 
 import lombok.Value;
 

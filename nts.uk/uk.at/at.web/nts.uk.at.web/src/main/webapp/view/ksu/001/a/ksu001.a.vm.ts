@@ -144,26 +144,30 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     currentScreen.close();
                 }
                 
-                let detailContentDeco: any[] = [];
-
+                let detailContentDeco: any[] = [];  
+                
+                if (self.empItems().length == 0) {
+                    self.stopRequest(true);
+                    return;
+                }
 
                 if (newValue == 'Aa') { // mode 勤務表示 //Hiển thị working       
                     self.saveModeGridToLocalStorege('Aa');
                     self.visibleShiftPalette(true);
                     $("#extable").exTable("viewMode", "symbol");
-
+                    self.reloadScreen();
                     self.stopRequest(true);
                 } else if (newValue == 'Ab') { // mode 略名表示 //Hiển thị detail 
                     self.saveModeGridToLocalStorege('Ab');
                     self.visibleShiftPalette(false);
                     $("#extable").exTable("viewMode", "shortName");
-
+                    self.reloadScreen();
                     self.stopRequest(true);
                 } else if (newValue == 'Ac') {  // mode シフト表示 //Hiển thị shift    
                     self.saveModeGridToLocalStorege('Ac');
                     self.visibleShiftPalette(false);
                     $("#extable").exTable("viewMode", "time");
-
+                    self.reloadScreen();
                     self.stopRequest(true);
                 }
             });
@@ -197,6 +201,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
         // end constructor
         
+        reloadScreen(){
+           let self = this;
+           self.startKSU001(); 
+        }
+        
         saveModeGridToLocalStorege(mode) {
             let self = this;
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
@@ -211,9 +220,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         startKSU001(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
+            // data sample
+            //self.initData();
             // get data for screen O 
             // initScreen: get data workType-workTime for 2 combo-box of screen O
             // and startDate-endDate of screen A
+            
+            
+            
+            
             __viewContext.viewModel.viewO.initScreen().done(() => {
                 
                 self.getDataScheduleDisplayControl(); 
@@ -291,7 +306,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
         }
         
-
+        initData() {
+            let self = this;
+            self.empItems.push(new PersonModel({ wokplaceCode: "SFT0002001", workplaceId: "ccafa85d-f324-422c-a7c7-062c4682f604", workplaceName: "シフト用職場", employeeCode: "000001", employeeId: "ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570", employeeName: "大塚　太郎B" }));
+            self.empItems.push(new PersonModel({ wokplaceCode: "SFT0002001", workplaceId: "ccafa85d-f324-422c-a7c7-062c4682f604", workplaceName: "シフト用職場", employeeCode: "000002", employeeId: "8f9edce4-e135-4a1e-8dca-ad96abe405d6", employeeName: "大塚　次郎BB" }));
+            self.empItems.push(new PersonModel({ wokplaceCode: "HBPA02", workplaceId: "cc83113e-6697-44a3-a22c-447719a33d1c", workplaceName: "日別勤務A2", employeeCode: "000003", employeeId: "9787c06b-3c71-4508-8e06-c70ad41f042a", employeeName: "大塚　花子" }));
+            self.empItems.push(new PersonModel({ wokplaceCode: "TEST", workplaceId: "1ee58ad2-83a6-4064-b7e1-acf78d857de9", workplaceName: "日別確認", employeeCode: "000004", employeeId: "62785783-4213-4a05-942b-c32a5ffc1d63", employeeName: "２会社" }));
+            self.empItems.push(new PersonModel({ wokplaceCode: "CTEAM00000", workplaceId: "ba8e69f9-aa10-4661-9138-25d1b0ccd109", workplaceName: "CTEAM", employeeCode: "000005", employeeId: "4859993b-8065-4789-90d6-735e3b65626b", employeeName: "ア" }));
+            self.empItems.push(new PersonModel({ wokplaceCode: "11", workplaceId: "1b8b003e-8348-44bc-8cca-54aecb1a74ef", workplaceName: "人事課", employeeCode: "000006", employeeId: "aeaa869d-fe62-4eb2-ac03-2dde53322cb5", employeeName: "あ" }));
+            self.empItems.push(new PersonModel({ wokplaceCode: "MK001", workplaceId: "64439417-f88a-4e2c-a1ce-10bac6a5fdb2", workplaceName: "MK職場", employeeCode: "00000d", employeeId: "70c48cfa-7e8d-4577-b4f6-7b715c091f24", employeeName: "MK申請　管理者" }));
+            self.empItems.push(new PersonModel({ wokplaceCode: "MK001", workplaceId: "64439417-f88a-4e2c-a1ce-10bac6a5fdb2", workplaceName: "MK職場", employeeCode: "100000", employeeId: "c141daf2-70a4-4f4b-a488-847f4686e848", employeeName: "MK社員2" }));
+        }
+        
         /**
         * Create exTable
         */
@@ -361,170 +387,50 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             };
             
             // Phần detail
+            let detailHeaderDeco = [];
             let detailHeaderDs = [];
             let detailContentDeco = [];
-            let timeRanges = [];
             let detailContentDs = [];
+            let detailColumns = [];
+            let objDetailHeaderDs = {};
             
-            detailHeaderDs.push(new ksu001.common.modelgrid.ExItem(undefined, true));
-            detailHeaderDs.push({
-                empId: "", __25: "over", __26: "", __27: "", __28: "", __29: "", __30: "", __31: "",
-                _1: "セール", _2: "<div class='header-image'></div>", _3: "", _4: "", _5: "", _6: "", _7: "", _8: "", _9: "特別", _10: "",
-                _11: "", _12: "", _13: "", _14: "", _15: "", _16: "Oouch", _17: "", _18: "", _19: "", _20: "", _21: "", _22: "", _23: "",
-                _24: "", _25: "", _26: "設定", _27: "", _28: "", _29: "", _30: "", _31: "",
-            });
+            let timeRanges = [];
+            
+//            for (let i = 0; i < 30; i++) {
+//                //detailContentDs.push(new ExItem(i.toString()));
+//                //let codeNameOfEmp = nts.uk.text.padRight("社員名" + i, " ", 10) + "EmpAAA";
+//                //leftmostDs.push({ empId: i.toString(), codeNameOfEmp: codeNameOfEmp });
+//                //middleDs.push({ empId: i.toString(), team: 'A', rank: 100 + i + "", qualification: 1 + i + "" });
+//                //updateMiddleDs.push({ empId: i.toString(), time: "100:00", days: "38", can: "", get: "" });
+//                if (i % 2 === 0) middleContentDeco.push(new CellColor("over1", i.toString(), "cell-red"));
+//                else middleContentDeco.push(new CellColor("over2", i.toString(), "cell-green cell-red"));
+//                if (i % 7 === 0) {
+//                    detailContentDeco.push(new CellColor("_2", i.toString(), "xseal", 0));
+//                    detailContentDeco.push(new CellColor("_2", i.toString(), "xcustom", 0));
+//                    detailContentDeco.push(new CellColor("_2", i.toString(), "xseal", 1));
+//                    detailContentDeco.push(new CellColor("_2", i.toString(), "xcustom", 1));
+//                }
+//                // Add both child cells to mark them respectively
+//                detailContentDeco.push(new CellColor("_2", "2", "blue-text", 0));
+//                detailContentDeco.push(new CellColor("_2", "2", "blue-text", 1));
+//                if (i < 1000) timeRanges.push(new ksu001.common.modelgrid.TimeRange("_2", i.toString(), "17:00", "7:00", 1));
+//            }
+            
+            detailColumns.push({ key: "empId", width: "50px", headerText: "ABC", visible: false });
+            while (currentDay <= self.dtAft()) {
+                self.arrDay.push(new Time(currentDay));
+                let time = new Time(currentDay);
+                objDetailHeaderDs['_' + time.yearMonthDay] = '';
+                detailColumns.push({
+                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "label/label/time/time", visible: true
+                });
 
-            let detailHeaderDeco = [new ksu001.common.modelgrid.CellColor("empId", 1, "small-font-size")];
-            for (let i = -6; i < 32; i++) {
-                if (i <= 0) {
-                    let d = 31 + i;
-                    detailHeaderDeco.push(new ksu001.common.modelgrid.CellColor("__" + d, 1, "medium-font-size"))
-                } else {
-                    detailHeaderDeco.push(new ksu001.common.modelgrid.CellColor("_" + i, 1, "medium-font-size"));
-                }
+                currentDay.setDate(currentDay.getDate() + 1);
             }
 
-            for (let i = 0; i < 30; i++) {
-                detailContentDs.push(new ksu001.common.modelgrid.ExItem(i.toString()));
-                let codeNameOfEmp = nts.uk.text.padRight("社員名" + i, " ", 10) + "EmpAAA";
-                leftmostDs.push({ empId: i.toString(), codeNameOfEmp: codeNameOfEmp });
-                middleDs.push({ empId: i.toString(), team: 'A', rank: 100 + i + "", qualification: 1 + i + "" });
-                updateMiddleDs.push({ empId: i.toString(), time: "100:00", days: "38", can: "", get: "" });
-                if (i % 2 === 0) middleContentDeco.push(new ksu001.common.modelgrid.CellColor("over1", i.toString(), "cell-red"));
-                else middleContentDeco.push(new ksu001.common.modelgrid.CellColor("over2", i.toString(), "cell-green cell-red"));
-                if (i % 7 === 0) {
-                    detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_2", i.toString(), "xseal", 0));
-                    detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_2", i.toString(), "xcustom", 0));
-                    detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_2", i.toString(), "xseal", 1));
-                    detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_2", i.toString(), "xcustom", 1));
-                }
-                // Add both child cells to mark them respectively
-                detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_2", "2", "blue-text", 0));
-                detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_2", "2", "blue-text", 1));
-                if (i < 1000) timeRanges.push(new ksu001.common.modelgrid.TimeRange("_2", i.toString(), "17:00", "7:00", 1));
-            }
-
-            let detailColumns = [{
-                key: "empId", width: "50px", headerText: "ABC", visible: false
-            }, {
-                    key: "__25", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "__26", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "__27", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "__28", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "__29", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "__30", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "__31", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_1", width: "150px", handlerType: "Input", dataType: "label/label/duration/duration", required: true, min: "4:00", max: "19:00", primitiveValue: "HolidayAppPrimitiveTime"
-                }, {
-                    key: "_2", width: "150px", handlerType: "Input", dataType: "label/label/duration/duration", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
-                }, {
-                    key: "_3", width: "150px", handlerType: "Input", dataType: "label/label/duration/duration", required: true, min: "-12:00", max: "71:59"
-                }, {
-                    key: "_4", width: "150px", handlerType: "input", dataType: "label/label/duration/duration", primitiveValue: "HolidayAppPrimitiveTime"
-                }, {
-                    key: "_5", width: "150px", handlerType: "input", dataType: "label/label/duration/duration", primitiveValue: "TimeWithDayAttr"
-                }, {
-                    key: "_6", width: "150px", handlerType: "input", dataType: "label/label/time/time", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
-                }, {
-                    key: "_7", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_8", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_9", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_10", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_11", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_12", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_13", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_14", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_15", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_16", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_17", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_18", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_19", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_20", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_21", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_22", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_23", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_24", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_25", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_26", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_27", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_28", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_29", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_30", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }, {
-                    key: "_31", width: "150px", handlerType: "input", dataType: "label/label/time/time"
-                }];
-
-            detailColumns.forEach(col => {
-                if (col.visible === false) return;
-                col.headerControl = "link";
-                col.headerHandler = (ui) => {
-                    alert(ui.columnKey);
-                    return false;
-                };
-            });
-
-            // phần Detail
-            let detailHeader = {
-                columns: detailColumns,
-                dataSource: detailHeaderDs,
-                width: "700px",
-                features: [{
-                    name: "HeaderRowHeight",
-                    rows: { 0: "40px", 1: "20px" }
-                }, {
-                        name: "HeaderCellStyle",
-                        decorator: detailHeaderDeco
-                    }, {
-                        name: "ColumnResizes"
-                    }, {
-                    }, {
-                        name: "Hover",
-                        selector: ".header-image",
-                        enter: function(ui) {
-                            if (ui.rowIdx === 1 && $(ui.target).is(".header-image")) {
-                                ui.tooltip("show", $("<div/>").css({ width: "60px", height: "50px" }).html(`${ui.rowIdx}-${ui.columnKey}`));
-                            }
-                        },
-                        exit: function(ui) {
-                            ui.tooltip("hide");
-                        }
-                    }, {
-                        name: "Click",
-                        handler: function(ui) {
-                            console.log(`${ui.rowIdx}-${ui.columnKey}`);
-                        }
-                    }]
-            };
+            //create dataSource for detailHeader
+            detailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
+            detailHeaderDs.push(objDetailHeaderDs);
 
             let detailContent = {
                 columns: detailColumns,
@@ -563,59 +469,95 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 fields: ["workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "symbol", "startTime", "endTime"],
                 //        banEmptyInput: [ "time" ]
             };
+            
+            // phần Detail
+            $.when(self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco)).done(() => {
+                let detailHeader = {
+                    columns: detailColumns,
+                    dataSource: detailHeaderDs,
+                    width: "700px",
+                    features: [{
+                        name: "HeaderRowHeight",
+                        rows: { 0: "40px", 1: "20px" }
+                    }, {
+                            name: "HeaderCellStyle",
+                            decorator: detailHeaderDeco
+                        }, {
+                            name: "ColumnResizes"
+                        }, {
+                        }, {
+                            name: "Hover",
+                            selector: ".header-image",
+                            enter: function(ui) {
+                                if (ui.rowIdx === 1 && $(ui.target).is(".header-image")) {
+                                    ui.tooltip("show", $("<div/>").css({ width: "60px", height: "50px" }).html(`${ui.rowIdx}-${ui.columnKey}`));
+                                }
+                            },
+                            exit: function(ui) {
+                                ui.tooltip("hide");
+                            }
+                        }, {
+                            name: "Click",
+                            handler: function(ui) {
+                                console.log(`${ui.rowIdx}-${ui.columnKey}`);
+                            }
+                        }]
+                };
 
-            let start = performance.now();
+                let start = performance.now();
 
-            new nts.uk.ui.exTable.ExTable($("#extable"), {
-                headerHeight: "60px",
-                bodyRowHeight: "50px",
-                bodyHeight: "500px",
-                horizontalSumHeaderHeight: "0px",
-                horizontalSumBodyHeight: "0px",
-                horizontalSumBodyRowHeight: "0px",
-                areaResize: true,
-                bodyHeightMode: bodyHeightMode,
-                windowXOccupation: windowXOccupation,
-                windowYOccupation: windowYOccupation,
-                manipulatorId: "6",
-                manipulatorKey: "empId",
-                updateMode: "edit",
-                pasteOverWrite: true,
-                stickOverWrite: true,
-                viewMode: "time",
-                showTooltipIfOverflow: true,
-                errorMessagePopup: true,
-                determination: {
-                    rows: [0],
-                    columns: ["codeNameOfEmp"]
-                },
-                heightSetter: {
-                    showBodyHeightButton: true,
-                    click: function() {
-                        alert("Show dialog");
+                new nts.uk.ui.exTable.ExTable($("#extable"), {
+                    headerHeight: "60px",
+                    bodyRowHeight: "50px",
+                    bodyHeight: "500px",
+                    horizontalSumHeaderHeight: "0px",
+                    horizontalSumBodyHeight: "0px",
+                    horizontalSumBodyRowHeight: "0px",
+                    areaResize: true,
+                    bodyHeightMode: bodyHeightMode,
+                    windowXOccupation: windowXOccupation,
+                    windowYOccupation: windowYOccupation,
+                    manipulatorId: "6",
+                    manipulatorKey: "empId",
+                    updateMode: "edit",
+                    pasteOverWrite: true,
+                    stickOverWrite: true,
+                    viewMode: "time",
+                    showTooltipIfOverflow: true,
+                    errorMessagePopup: true,
+                    determination: {
+                        rows: [0],
+                        columns: ["codeNameOfEmp"]
+                    },
+                    heightSetter: {
+                        showBodyHeightButton: true,
+                        click: function() {
+                            alert("Show dialog");
+                        }
                     }
-                }
-            })
-                .LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent)
-                .MiddleHeader(middleHeader).MiddleContent(middleContent)
-                .DetailHeader(detailHeader).DetailContent(detailContent)
-                .create();
+                })
+                    .LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent)
+                    .MiddleHeader(middleHeader).MiddleContent(middleContent)
+                    .DetailHeader(detailHeader).DetailContent(detailContent)
+                    .create();
 
-            $("#extable").exTable("scrollBack", 0, { h: 1050 });
-            
-            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                let userInfor = JSON.parse(data);
-                if (userInfor.gridHeightSelection == 2) {
-                    $("#extable").exTable("setHeight", userInfor.heightGridSetting);
-                    let heightBodySetting: number = + userInfor.heightGridSetting;
-                    let heightBody = heightBodySetting + 60 - 25; // 60 chieu cao header, 25 chieu cao button
-                    $(".toDown").css({ "margin-top": heightBody + 'px' });
-                } else {
-                    self.setPositionButonDownAndHeightGrid();
-                }
+                $("#extable").exTable("scrollBack", 0, { h: 1050 });
+
+                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                    let userInfor = JSON.parse(data);
+                    if (userInfor.gridHeightSelection == 2) {
+                        $("#extable").exTable("setHeight", userInfor.heightGridSetting);
+                        let heightBodySetting: number = + userInfor.heightGridSetting;
+                        let heightBody = heightBodySetting + 60 - 25; // 60 chieu cao header, 25 chieu cao button
+                        $(".toDown").css({ "margin-top": heightBody + 'px' });
+                    } else {
+                        self.setPositionButonDownAndHeightGrid();
+                    }
+                });
+
+                console.log(performance.now() - start);
+
             });
-            
-            console.log(performance.now() - start);
         }
         
         /**
@@ -640,20 +582,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let ymd = date.yearMonthDay;
                     let dateFormat = moment(date.yearMonthDay).format('YYYY/MM/DD');
                     if (_.includes(self.dataWkpSpecificDate(), dateFormat) || _.includes(self.dataComSpecificDate(), dateFormat)) {
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-schedule-specific-date"));
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 1, "bg-schedule-specific-date"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date"));
                     } else if (_.includes(self.dataPublicHoliday(), dateFormat)) {
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-schedule-sunday color-schedule-sunday"));
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 1, "bg-schedule-sunday color-schedule-sunday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday color-schedule-sunday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday color-schedule-sunday"));
                     } else if (date.weekDay === '土') {
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-schedule-saturday color-schedule-saturday"));
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 1, "bg-schedule-saturday color-schedule-saturday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-saturday color-schedule-saturday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-saturday color-schedule-saturday"));
                     } else if (date.weekDay === '日') {
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-schedule-sunday color-schedule-sunday"));
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 1, "bg-schedule-sunday color-schedule-sunday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday color-schedule-sunday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday color-schedule-sunday"));
                     } else {
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-weekdays color-weekdays"));
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 1, "bg-weekdays color-weekdays"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-weekdays color-weekdays"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-weekdays color-weekdays"));
                     }
                 });
 
@@ -678,7 +620,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this,
                 dfd = $.Deferred(),
                 obj = {
-                    workplaceId: self.empItems()[0] ? self.empItems()[0].affiliationId : null,
+                    workplaceId: 'dea95de1-a462-4028-ad3a-d68b8f180412', //self.empItems()[0] ? self.empItems()[0].affiliationId : null,
                     startDate: self.dtPrev(),
                     endDate: self.dtAft()
                 };
@@ -713,7 +655,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
             });
                         
-            $('#popup-setting-grid').ntsPopup('hide');
+            $('#A16').ntsPopup('hide');
         }
 
         // xử lý cho button A13
@@ -793,11 +735,86 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         /**
          * update new data of header and content of detail and horizSum
          */
-        updateDetailAndHorzSum(): void {
+        updateWhenChangeDatePeriod(): void {
             let self = this;
-        }
+            // save scroll's position
+            $("#extable").exTable("saveScroll");
+            //Get dates in time period
+            let currentDay = new Date(self.dtPrev().toString());
+            self.arrDay = [];
+            let newDetailColumns = [], newObjDetailHeaderDs = [], newDetailHeaderDs = [], newDetailContentDs = [];
+            
+            newDetailColumns.push({ key: "empId", width: "50px", headerText: "empId", visible: false });
+            while (moment(currentDay).format('YYYY-MM-DD') <= moment(self.dtAft()).format('YYYY-MM-DD')) {
+                self.arrDay.push(new Time(currentDay));
+                let time = new Time(currentDay);
+                //define the new detailColumns
+                newDetailColumns.push({
+                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "label/label/time/time", visible: true
+                });
+                //create new detailHeaderDs
+                newObjDetailHeaderDs['_' + time.yearMonthDay] = '';
 
-     
+                currentDay.setDate(currentDay.getDate() + 1);
+            }
+            
+            //create new detailHeaderDs
+            newDetailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
+            newDetailHeaderDs.push(newObjDetailHeaderDs);
+            
+            let detailHeaderDeco = [], detailContentDeco = [];
+            
+             //if haven't data in extable, only update header detail
+            if (self.empItems().length == 0) {
+                $.when(self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco)).done(() => {
+                    let updateDetailHeader = {
+                        columns: newDetailColumns,
+                        dataSource: newDetailHeaderDs,
+                        features: [{
+                            name: "HeaderRowHeight",
+                            rows: { 0: "40px", 1: "20px" }
+                        }, {
+                                name: "HeaderCellStyle",
+                                decorator: detailHeaderDeco
+                            }, {
+                                name: "HeaderPopups",
+                                menu: {
+                                    rows: [0],
+                                    items: [
+                                        { id: "日付別", text: getText("KSU001_325"), selectHandler: function(id) { alert('Open KSU003'); } },
+                                        { id: "シフト別", text: getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
+                                    ]
+                                },
+                            }]
+                    };
+
+                    $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
+
+                    setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
+
+                    //set lock cell
+                    _.forEach(self.dataSource(), (x) => {
+                        if (x.confirmedAtr == 1) {
+                            $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
+                        }
+                    });
+                    // get cell is locked
+                    self.arrLockCellInit($("#extable").exTable("lockCells"));
+                    self.stopRequest(true);
+                });
+            } else if (self.selectedModeDisplayInBody () == 'Ac') {
+                
+
+            } else if (self.selectedModeDisplay() == 'Ab') {
+
+
+            } else if (self.selectedModeDisplay() == 'Aa') {
+
+
+            }
+        }
+        
+
 
         /**
          * Get data of Basic Schedule = listDataShortName + listDataTimeZone + dataWScheState
@@ -857,28 +874,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
 
         /**
-         * Get data WkpSpecificDate, ComSpecificDate, PublicHoliday
-         */
-        getDataSpecDateAndHoliday(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred(),
-                obj = {
-                    workplaceId: self.empItems()[0] ? self.empItems()[0].affiliationId : null,
-                    startDate: self.dtPrev(),
-                    endDate: self.dtAft()
-                };
-            service.getDataSpecDateAndHoliday(obj).done(function(data) {
-                self.dataWkpSpecificDate(data.listWkpSpecificDate);
-                self.dataComSpecificDate(data.listComSpecificDate);
-                self.dataPublicHoliday(data.listPublicHoliday);
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
-            return dfd.promise();
-        }
-
-        /**
          * Get data WorkEmpCombine
          */
         getDataWorkEmpCombine(): JQueryPromise<any> {
@@ -924,8 +919,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         nextMonth(): void {
             let self = this;
             self.stopRequest(false);
-            if (self.selectedTimePeriod() == 1) {
-                // Recalculate the time period
+            if (self.selectedModeDisplay() != 2) {
                 let dtMoment = moment(self.dtAft());
                 dtMoment.add(1, 'days');
                 self.dtPrev(dtMoment.toDate());
@@ -933,10 +927,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 dtMoment.subtract(1, 'days');
                 self.dtAft(dtMoment.toDate());
                 self.dataSource([]);
-                self.updateDetailAndHorzSum();
+                self.updateWhenChangeDatePeriod();
             } else {
-                self.stopRequest(true);
+                // hoi lai da
             }
+            self.stopRequest(true);
         }
 
         /**
@@ -945,8 +940,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         backMonth(): void {
             let self = this;
             self.stopRequest(false);
-            if (self.selectedTimePeriod() == 1) {
-                //Recalculate the time period
+            //Recalculate the time period
+            if (self.selectedModeDisplay() != 2) {
                 let dtMoment = moment(self.dtPrev());
                 dtMoment.subtract(1, 'days');
                 self.dtAft(dtMoment.toDate());
@@ -959,10 +954,34 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 dtMoment.add(1, 'days');
                 self.dtPrev(new Date(dtMoment.format('YYYY/MM/DD')));
                 self.dataSource([]);
-                self.updateDetailAndHorzSum();
-            } else {
-                self.stopRequest(true);
+                self.updateWhenChangeDatePeriod();
+            }else{
+                   // hoi lai da
             }
+            
+            self.stopRequest(true);
+        }
+
+        /**
+         * call <<ScreenQuery>> 表示期間を変更する（シフト）
+         */
+        changeDisplayPeriodShift(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred(),
+                obj = {
+                    startDate: self.dtPrev(),
+                    endDate: self.dtAft(),
+                    days28: self.selectedModeDisplay() == 2 ? true : false,
+                    isNextMonth: isNextMonth
+
+                };
+            service.getSendingPeriod().done((data) => {
+                self.dtAft(data.endDate);
+                self.dtPrev(data.startDate);
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+            return dfd.promise();
         }
 
         /**
@@ -979,13 +998,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this, dfd = $.Deferred();
         }
 
-        /**
-         * Set color for cell header: 日付セル背景色文字色制御
-         * 
-         */
-        setColorForCellHeaderDetailAndHoz(detailHeaderDeco: any): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-        }
 
         /**
          * Set color for cell of leftmost : 個人名セルの背景色の判断処理
@@ -1026,9 +1038,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // set color button
             $(".editMode").css({"background-color" : "#007fff" , "color" : "#ffffff"});
             $(".confirmMode").css({"background-color" : "#ffffff" , "color" : "#000000"});
-            
-            
-            
             nts.uk.ui.block.clear();
         }
 
@@ -1038,12 +1047,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // set color button
             $(".confirmMode").css({"background-color" : "#007fff", "color" : "#ffffff"});
             $(".editMode").css({"background-color" : "#ffffff" , "color" : "#000000"});
-            
-            
             nts.uk.ui.block.clear();
         }
-        
-        
 
         /**
          * paste data on cell
@@ -1159,7 +1164,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             nts.uk.ui.windows.sub.modal("/view/ksu/001/d/index.xhtml").onClosed(() => {
                 if (getShared("dataFromScreenD") && !getShared("dataFromScreenD").clickCloseDialog) {
                     self.dataSource([]);
-                    self.updateDetailAndHorzSum();
+                    self.updateWhenChangeDatePeriod();
 //                    $.when(self.setDatasource()).done(() => {
 //                        self.updateExTable();
 //                    });
@@ -1228,7 +1233,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         compareArrByRowIndexAndColumnKey(a: any, b: any): any {
             return a.rowIndex == b.rowIndex && a.comlumnKey == b.comlumnKey;
         }
-
     }
 
     export enum viewMode {
@@ -1240,6 +1244,128 @@ module nts.uk.at.view.ksu001.a.viewmodel {
     export enum TypeHeightExTable {
         DEFAULT    = 1,
         SETTING   = 2
+    }
+    
+    class ExItem {
+        empId: string;
+        empName: string;
+
+        constructor(empId: string, dsOfSid: BasicSchedule[], listWorkType: ksu001.common.modelgrid.WorkType[], listWorkTime: ksu001.common.modelgrid.WorkTime[], manual: boolean, arrDay: Time[]) {
+            this.empId = empId;
+            this.empName = empId;
+            // create detailHeader (ex: 4/1 | 4/2)
+            if (manual) {
+                for (let i = 0; i < arrDay.length; i++) {
+                    if (+arrDay[i].day == 1) {
+                        this['_' + arrDay[i].yearMonthDay] = arrDay[i].month + '/' + arrDay[i].day + "<br/>" + arrDay[i].weekDay;
+                    } else {
+                        this['_' + arrDay[i].yearMonthDay] = arrDay[i].day + "<br/>" + arrDay[i].weekDay;
+                    }
+                }
+                return;
+            }
+        }
+    }
+    
+    interface IBasicSchedule {
+        date: string,
+        employeeId: string,
+        workTimeCode?: string,
+        workTypeCode?: string,
+        confirmedAtr?: number,
+        isIntendedData?: boolean,
+        scheduleCnt?: number,
+        scheduleStartClock?: number,
+        scheduleEndClock?: number,
+        bounceAtr?: number,
+        symbolName?: string
+    }
+
+    class BasicSchedule {
+        date: string;
+        employeeId: string;
+        workTimeCode: string;
+        workTypeCode: string;
+        confirmedAtr: number;
+        isIntendedData: boolean;
+        scheduleCnt: number;
+        scheduleStartClock: number;
+        scheduleEndClock: number;
+        bounceAtr: number;
+        symbolName: string;
+
+        constructor(params: IBasicSchedule) {
+            this.date = params.date;
+            this.employeeId = params.employeeId;
+            this.workTimeCode = params.workTimeCode;
+            this.workTypeCode = params.workTypeCode;
+            this.confirmedAtr = params.confirmedAtr;
+            this.isIntendedData = params.isIntendedData;
+            this.scheduleCnt = params.scheduleCnt;
+            this.scheduleStartClock = params.scheduleStartClock;
+            this.scheduleEndClock = params.scheduleEndClock;
+            this.bounceAtr = params.bounceAtr;
+            this.symbolName = params.symbolName;
+        }
+    }
+    
+    class Time {
+        year: string;
+        month: string;
+        day: string;
+        weekDay: string;
+        yearMonthDay: string;
+
+        constructor(ymd: Date) {
+            this.year = moment(ymd).format('YYYY');
+            this.month = moment(ymd).format('M');
+            this.day = moment(ymd).format('D');
+            this.weekDay = moment(ymd).format('dd');
+            this.yearMonthDay = this.year + moment(ymd).format('MM') + moment(ymd).format('DD');
+        }
+    }
+
+    class CellColor {
+        columnKey: any;
+        rowId: any;
+        innerIdx: any;
+        clazz: any;
+        constructor(columnKey: any, rowId: any, clazz: any, innerIdx?: any) {
+            this.columnKey = columnKey;
+            this.rowId = rowId;
+            this.innerIdx = innerIdx;
+            this.clazz = clazz;
+        }
+    }
+    
+    interface IPersonModel {
+        employeeId: string,
+        employeeCode: string,
+        employeeName: string,
+        workplaceId: string,
+        wokplaceCode: string,
+        workplaceName: string,
+        baseDate?: number
+    }
+
+    class PersonModel {
+        employeeId: string;
+        employeeCode: string;
+        employeeName: string;
+        wokplaceCode: string;
+        workplaceId: string;
+        workplaceName: string;
+        baseDate: number;
+
+        constructor(param: IPersonModel) {
+            this.employeeId = param.employeeId;
+            this.employeeCode = param.employeeCode;
+            this.employeeName = param.employeeName;
+            this.wokplaceCode = param.wokplaceCode;
+            this.workplaceId = param.workplaceId;
+            this.workplaceName = param.workplaceName;
+            this.baseDate = param.baseDate;
+        }
     }
 
 

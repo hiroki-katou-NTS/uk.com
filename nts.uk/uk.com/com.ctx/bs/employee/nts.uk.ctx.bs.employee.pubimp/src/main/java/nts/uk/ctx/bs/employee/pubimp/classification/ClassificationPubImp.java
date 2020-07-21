@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.task.parallel.ParallelExceptions.Item;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.app.find.affiliatedcompanyhistory.AffCompanyHistItemDto;
 import nts.uk.ctx.bs.employee.app.find.affiliatedcompanyhistory.AffiliatedCompanyHistoryFinder;
 import nts.uk.ctx.bs.employee.dom.classification.Classification;
@@ -25,10 +25,10 @@ import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
 import nts.uk.ctx.bs.employee.pub.classification.AffCompanyHistItemExport;
 import nts.uk.ctx.bs.employee.pub.classification.ClassificationExport;
+import nts.uk.ctx.bs.employee.pub.classification.EmpClassifiExport;
 import nts.uk.ctx.bs.employee.pub.classification.SClsHistExport;
 import nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class ClassificationPubImp.
@@ -183,6 +183,17 @@ public class ClassificationPubImp implements SyClassificationPub {
 		}).collect(Collectors.toList());
 		
 		return result;
+	}
+
+	@Override
+	public List<EmpClassifiExport> getByListSIDAndBasedate(GeneralDate baseDate, List<String> listempID) {
+		List<AffClassHistItem> listAffClassHistItem = affClassHistItemRepository.searchClassification(listempID, baseDate, new ArrayList<>());
+		if (listAffClassHistItem.isEmpty()) {
+			return new ArrayList<>();
+		}
+		return listAffClassHistItem.stream().map(mapper -> {
+			return new EmpClassifiExport(mapper.getEmployeeId(), mapper.getClassificationCode().toString());
+		}).collect(Collectors.toList());
 	}
 
 }
