@@ -273,12 +273,19 @@ module nts.uk.at.view.kdp005.a {
 
 			public clickBtn1(vm, layout) {
 				let button = this;
-
-				vm.doAuthent().done((res: IAuthResult) => {
-					if (res.isSuccess) {
-						vm.registerData(button, layout, res.authType);
-					}
-				});
+                modal('/view/kdp/005/h/index.xhtml').onClosed(function(): any {
+                    let ICCard = getShared('ICCard');
+                    if(ICCard && ICCard != ''){
+                        console.log(ICCard);
+                    }else{
+                        modal('/view/kdp/005/i/index.xhtml');
+                    }
+                });
+//				vm.doAuthent().done((res: IAuthResult) => {
+//					if (res.isSuccess) {
+//						vm.registerData(button, layout, res.authType);
+//					}
+//				});
 			}
 
 			public doAuthent(): JQueryPromise<IAuthResult> {
@@ -392,7 +399,6 @@ module nts.uk.at.view.kdp005.a {
 					self.getStampToSuppress();
 					block.clear();
 				});
-
 
 			}
 

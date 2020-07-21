@@ -9,7 +9,7 @@ html{
 }
 
 #stamp-input {
-  min-width: 96vmin;
+ 	max-width: 77vmin;
 }
 
 #stamp-info {
@@ -65,11 +65,17 @@ html{
 	font-size: 1.2rem !important;
 }
 .explanatoryText {
-	margin: 10px 0;	
+	margin-left: 10px;	
+	min-height: 5.3vmin;
 }
 .explanatoryText pre{
-	font-size: 20px;
+	font-size: 1.5vmin;
 	line-height: 1.5;
 }
-
-
+.ui-tabs .ui-tabs-nav .ui-tabs-anchor {
+  width: 10.4vmin;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  font-size: 1.7vmin;
+}

@@ -21,6 +21,9 @@ module nts.uk.at.view.kdp005.h {
                         self.inforAuthent(getText('KDP005_4'));
                     }
                 });
+                $(document).ready(function() {
+                    $('#iCCard').focus();
+                });
             }
 			public proceed() {
 				let self = this;

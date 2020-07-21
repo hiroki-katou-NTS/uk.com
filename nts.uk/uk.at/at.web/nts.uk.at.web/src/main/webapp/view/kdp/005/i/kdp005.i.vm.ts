@@ -34,6 +34,9 @@ module nts.uk.at.view.kdp005.i {
 //                }).always(function () {
 //                    block.clear();
 //                });
+                $(document).ready(function() {
+                    $('#btnClose').focus();
+                });
                 self.countDown();
                 block.clear();
                 dfd.resolve();
