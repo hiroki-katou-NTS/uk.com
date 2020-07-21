@@ -28,11 +28,11 @@ public class EmpRankInforTest {
 	
 	@Test
 	public void testCreateRank() {
-		EmpRankInfor infor = EmpRankInfor.create("1", new RankCode("1"), new RankSymbol("2"));
+		EmpRankInfor infor = EmpRankInfor.create("1", new RankCode("01"), new RankSymbol("2"));
 		
 		assertEquals(infor.getEmpId(), "1");
-		assertEquals(infor.getRankCode(), "1");
-		assertEquals(infor.getRankSymbol(), "2");
+		assertEquals(infor.getRankCode(), new RankCode("01"));
+		assertEquals(infor.getRankSymbol(), new RankSymbol("2"));
 		
 	}
 }
