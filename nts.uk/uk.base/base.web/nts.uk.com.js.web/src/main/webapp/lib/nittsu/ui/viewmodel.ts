@@ -4,7 +4,7 @@ const prefix = 'nts.uk.storage'
 	, OPENWD = `${prefix}.OPEN_WINDOWS_DATA`
 	, { ui, request, resource } = nts.uk
 	, { windows, block, dialog } = ui
-	, $storeSession = function(name: string, params?: any) {
+	, $storeSession = function (name: string, params?: any) {
 		if (arguments.length === 2) {
 			// setter method
 			const $value = JSON.stringify({ $value: params })
@@ -33,7 +33,7 @@ const prefix = 'nts.uk.storage'
 				});
 		}
 	}
-	, $storage = function($data?: any) {
+	, $storage = function ($data?: any) {
 		if (arguments.length === 1) {
 			return $storeSession(OPENWD, $data);
 		} else if (arguments.length === 0) {
@@ -49,7 +49,7 @@ const prefix = 'nts.uk.storage'
 
 /** Create new ViewModel and automatic binding to __viewContext */
 function bean(): any {
-	return function(ctor: any): any {
+	return function (ctor: any): any {
 		__viewContext.ready(() => {
 			$storage().then(($params: any) => {
 				const $viewModel = new ctor($params)
@@ -78,7 +78,7 @@ function bean(): any {
 }
 
 function component(options: { name: string; template: string; }): any {
-	return function(ctor: any): any {
+	return function (ctor: any): any {
 		return $.Deferred().resolve(options.template.match(/\.html$/))
 			.then((url: boolean) => {
 				return url ? $.get(options.template) : options.template;
@@ -127,7 +127,8 @@ function component(options: { name: string; template: string; }): any {
 }
 
 function handler(params: { virtual?: boolean; bindingName: string; validatable?: boolean; }) {
-	return function(constructor: { new(): KnockoutBindingHandler; }) {
+
+	return function (constructor: { new(): KnockoutBindingHandler; }) {
 		ko.bindingHandlers[params.bindingName] = new constructor();
 		ko.virtualElements.allowedBindings[params.bindingName] = !!params.virtual;
 
@@ -146,7 +147,7 @@ function $i18n(text: string, params?: string[]) {
 }
 
 function $jump() {
-	const args: Array<any> = [].slice.apply(arguments, [])
+	const args: any[] = Array.prototype.slice.apply(arguments)
 		, params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
 			(args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
 
@@ -211,8 +212,9 @@ BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
 	info: {
 		value: function $info() {
 			const dfd = $.Deferred<void>();
+			const args: any[] = Array.prototype.slice.apply(arguments);
 
-			dialog.info.apply(null, [...(arguments as any)]).then(() => dfd.resolve());
+			dialog.info.apply(null, args).then(() => dfd.resolve());
 
 			return dfd.promise();
 		}
@@ -220,8 +222,9 @@ BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
 	alert: {
 		value: function $alert() {
 			const dfd = $.Deferred<void>();
+			const args: any[] = Array.prototype.slice.apply(arguments);
 
-			dialog.alert.apply(null, [...(arguments as any)]).then(() => dfd.resolve());
+			dialog.alert.apply(null, args).then(() => dfd.resolve());
 
 			return dfd.promise();
 		}
@@ -229,8 +232,9 @@ BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
 	error: {
 		value: function $error() {
 			const dfd = $.Deferred<void>();
+			const args: any[] = Array.prototype.slice.apply(arguments);
 
-			dialog.error.apply(null, [...(arguments as any)]).then(() => dfd.resolve());
+			dialog.error.apply(null, args).then(() => dfd.resolve());
 
 			return dfd.promise();
 		}
@@ -238,8 +242,9 @@ BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
 	confirm: {
 		value: function $confirm() {
 			const dfd = $.Deferred<'no' | 'yes' | 'cancel'>();
+			const args: any[] = Array.prototype.slice.apply(arguments);
 
-			const $cf = dialog.confirm.apply(null, [...(arguments as any)]);
+			const $cf = dialog.confirm.apply(null, args);
 
 			$cf.ifYes(() => {
 				dfd.resolve('yes');
@@ -263,12 +268,12 @@ BaseViewModel.prototype.$jump = $jump;
 Object.defineProperties($jump, {
 	self: {
 		value: function $to() {
-			$jump.apply(null, [...[].slice.apply(arguments, [])]);
+			$jump.apply(null, [...Array.prototype.slice.apply(arguments, [])]);
 		}
 	},
 	blank: {
 		value: function $other() {
-			const args: Array<any> = [].slice.apply(arguments, [])
+			const args: Array<any> = Array.prototype.slice.apply(arguments, [])
 				, params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
 					(args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
 
@@ -277,7 +282,8 @@ Object.defineProperties($jump, {
 	}
 });
 
-const $size = function(height: string | number, width: string | number) {
+
+const $size = function (height: string | number, width: string | number) {
 	const wd = nts.uk.ui.windows.getSelf();
 
 	if (wd) {
@@ -287,7 +293,7 @@ const $size = function(height: string | number, width: string | number) {
 
 Object.defineProperties($size, {
 	width: {
-		value: function(width: string | number) {
+		value: function (width: string | number) {
 			const wd = nts.uk.ui.windows.getSelf();
 
 			if (wd) {
@@ -296,7 +302,7 @@ Object.defineProperties($size, {
 		}
 	},
 	height: {
-		value: function(height: string | number) {
+		value: function (height: string | number) {
 			const wd = nts.uk.ui.windows.getSelf();
 
 			if (wd) {
@@ -326,19 +332,34 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
 
 			if (nowapp) {
 				$storage(path).then(() => {
-					windows.sub.modal(webapp).onClosed(() => {
-						$storage().then(($data: any) => {
-							jdf.resolve($data);
+					windows.sub.modal(webapp)
+						.onClosed(() => {
+							const { localShared } = windows.container;
+
+							_.each(localShared, (value: any, key: string) => {
+								windows.setShared(key, value);
+							});
+
+							$storage().then(($data: any) => {
+								jdf.resolve($data);
+							});
 						});
-					});
 				});
 			} else {
 				$storage(params).then(() => {
-					windows.sub.modal(webapp, path).onClosed(() => {
-						$storage().then(($data: any) => {
-							jdf.resolve($data);
+					windows.sub.modal(webapp, path)
+						.onClosed(() => {
+							const { localShared } = windows.container;
+
+							_.each(localShared, (value: any, key: string) => {
+								windows.setShared(key, value);
+							});
+
+
+							$storage().then(($data: any) => {
+								jdf.resolve($data);
+							});
 						});
-					});
 				});
 			}
 
@@ -352,19 +373,33 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
 
 			if (nowapp) {
 				$storage(path).then(() => {
-					windows.sub.modeless(webapp).onClosed(() => {
-						$storage().then(($data: any) => {
-							jdf.resolve($data);
+					windows.sub.modeless(webapp)
+						.onClosed(() => {
+							const { localShared } = windows.container;
+
+							_.each(localShared, (value: any, key: string) => {
+								windows.setShared(key, value);
+							});
+
+							$storage().then(($data: any) => {
+								jdf.resolve($data);
+							});
 						});
-					});
 				});
 			} else {
 				$storage(params).then(() => {
-					windows.sub.modeless(webapp, path).onClosed(() => {
-						$storage().then(($data: any) => {
-							jdf.resolve($data);
+					windows.sub.modeless(webapp, path)
+						.onClosed(() => {
+							const { localShared } = windows.container;
+
+							_.each(localShared, (value: any, key: string) => {
+								windows.setShared(key, value);
+							});
+
+							$storage().then(($data: any) => {
+								jdf.resolve($data);
+							});
 						});
-					});
 				});
 			}
 

@@ -123,7 +123,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 
 	// [5] 打刻カード未登録の打刻データを取得する
 	@Override
-	public List<Stamp> getStempRcNotResgistNumber(String contractCode, DatePeriod period) {
+	public List<Stamp> getStempRcNotResgistNumberStamp(String contractCode, DatePeriod period) {
 		GeneralDateTime start = GeneralDateTime.ymdhms(period.start().year(), period.start().month(),
 				period.start().day(), 0, 0, 0);
 
@@ -142,7 +142,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		return new KrcdtStamp(new KrcdtStampPk(stamp.getCardNumber().v(), stamp.getStampDateTime()), cid,
 				stamp.getRelieve().getAuthcMethod().value, stamp.getRelieve().getStampMeans().value,
 				stamp.getType().getChangeClockArt().value, stamp.getType().getChangeCalArt().value,
-				stamp.getType().getSetPreClockArt().value, stamp.getType().getChangeHalfDay(),
+				stamp.getType().getSetPreClockArt().value, stamp.getType().isChangeHalfDay(),
 				stamp.getType().getGoOutArt().isPresent() ? stamp.getType().getGoOutArt().get().value : null,
 				stamp.isReflectedCategory(),
 				stamp.getRefActualResults().getCardNumberSupport().isPresent()
@@ -302,7 +302,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 	public Optional<Stamp> get(String contractCode, StampNumber stampNumber) {
 		
 		return this.queryProxy().query(GET_STAMP_RECORD_BY_NUMBER, KrcdtStamp.class).setParameter("contractCode", contractCode)
-				.setParameter("cardNumbers", stampNumber).getSingle(x -> toDomain(x));
+				.setParameter("cardNumbers", stampNumber).getList().stream().findFirst().map(x -> toDomain(x));
 	}
 
 }

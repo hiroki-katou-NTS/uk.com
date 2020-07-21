@@ -17,16 +17,16 @@ public interface StampSetCommunalRepository {
 	public void insert(StampSetCommunal domain);
 
 	/**
-	 * 	[2]  update(共有打刻の打刻設定)
+	 * 	[2]  save(共有打刻の打刻設定)
 	 * @param domain
 	 */
-	public void update(StampSetCommunal domain);
+	public void save(StampSetCommunal domain);
 
 	/**
 	 * 	[3]  取得する
 	 * @param comppanyID
 	 * @return
 	 */
-	public Optional<StampSetCommunal> gets(String comppanyID);
+	public Optional<StampSetCommunal> gets(String companyID);
 
 }

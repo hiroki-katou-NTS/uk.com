@@ -1,0 +1,96 @@
+#sidebar-area ~ div {
+	float: left;
+	width: calc(100vw - 140px);
+}
+
+.sidebar-content-header ~ div {
+	padding: 20px;
+	float: left;
+}
+
+.view-kmp .nts-searchbbox-wrapper .form-label {
+	border: 0 !important;
+}
+
+.view-kmp .float-left {
+	float: left;
+}
+
+.view-kmp .viewa {
+	margin-left: 70px;
+}
+
+.view-kmp{
+	float: left;
+}
+
+.view-kmp .model-component {
+	margin-left: 50px;
+}
+
+.view-kmp .model-component table.layout-grid td div {
+	padding-bottom: 15px;
+}
+
+.view-kmp .model-component table td.label-column {
+	width: 100px;
+}
+
+.view-kmp .model-component table td.label-column-a-left {
+	width: 120px;
+}
+
+.view-kmp .model-component table td.label-column-a-right {
+	width: 300px;
+}
+
+.view-kmp .model-component table td.label-column-left {
+	width: 180px;
+}
+
+.view-kmp .model-component table td.label-column-left ~ div {
+	font-size: 16px;
+}
+
+#info-employee  {
+	border: 2px #F2F2F2 solid;
+	padding: 10px;
+	padding-bottom: 60px;
+	width: 430px
+}
+
+.view-kmp .model-component table td.label-column button {
+	font-size: 18px;
+}
+
+.view-kmp .model-component .table_content {
+	margin-top: 37px;
+}
+
+.view-kmp .model-component table td.data div {
+	font-size: 16px;
+	float: left;
+}
+
+.view-kmp .layout-date{
+	margin-bottom: 10px;
+}
+
+#td-bottom {
+	margin-bottom: 15px;
+}
+
+#top_bottom {
+	margin-left: 5px;
+}
+
+.search_label {
+	float: left;
+	width: 100vw;
+	padding-bottom: 0px;
+}
+.search_label .sub_title {
+	margin-right: 10px;
+}
+
+

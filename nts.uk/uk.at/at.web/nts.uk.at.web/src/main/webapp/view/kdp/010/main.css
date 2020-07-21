@@ -63,6 +63,9 @@
 .form-data .inline-display{
 	display: inline-block;
 }
+.display-none{
+	display: none;	
+}
 .form-data td{
 	height: 50px;
 }

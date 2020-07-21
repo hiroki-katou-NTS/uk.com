@@ -25,11 +25,8 @@ public class JpaStampSetCommunalRepository extends JpaRepository implements Stam
 	}
 
 	@Override
-	public void update(StampSetCommunal domain) {
-		Optional<KrcmtStampCommunal> entity = this.queryProxy().find(domain.getCid(), KrcmtStampCommunal.class);
-		if (!entity.isPresent()) {
-			this.commandProxy().update(KrcmtStampCommunal.toEntity(domain));
-		}
+	public void save(StampSetCommunal domain) {
+		this.getEntityManager().merge(KrcmtStampCommunal.toEntity(domain));
 	}
 
 	@Override

@@ -45,17 +45,25 @@ public class StampFunctionAvailableService {
 		if (!cardCreate.isPresent() || !cardCreate.get().canUsedStamping(stampMeans)) {
 			return new MakeUseJudgmentResults(CanEngravingUsed.ENGTAVING_FUNCTION_CANNOT_USED, Optional.empty());
 		}
-
-		// $打刻カードリスト = require.打刻カード番号を取得する(社員ID)
-		List<StampCard> data = require.getListStampCard(employeeId);
-		List<StampMeans> items = Arrays.asList(StampMeans.INDIVITION, StampMeans.PORTAL, StampMeans.SMART_PHONE);
 		
-		if (items.indexOf(stampMeans) == -1 || !data.isEmpty()) {
+		// if not (打刻手段 = 個人打刻 OR 打刻手段 = ポータル打刻 OR 打刻手段 = スマホ打刻)
+		List<StampMeans> items = Arrays.asList(StampMeans.INDIVITION, StampMeans.PORTAL, StampMeans.SMART_PHONE);
+
+		if (items.indexOf(stampMeans) == -1) {
+			// 打刻利用判断結果#利用できる()
 			return MakeUseJudgmentResults.get();
 		}
 
+		// $打刻カードリスト = require.打刻カード番号を取得する(社員ID)
+		List<StampCard> data = require.getListStampCard(employeeId);
+		if (!data.isEmpty()) {
+			// 打刻利用判断結果#利用できる()
+			return MakeUseJudgmentResults.get();
+		}
+		
+
 		// $打刻カード作成結果 = 打刻カード番号を自動作成する#作成する(require, 社員ID, 打刻手段)
-		Optional<StampCardCreateResult> optCardCreate = new AutoCreateStampCardNumberService().create(require,
+		Optional<StampCardCreateResult> optCardCreate = AutoCreateStampCardNumberService.create(require,
 				employeeId, stampMeans);
 		
 		// if not $打刻カード作成結果.isEmpty

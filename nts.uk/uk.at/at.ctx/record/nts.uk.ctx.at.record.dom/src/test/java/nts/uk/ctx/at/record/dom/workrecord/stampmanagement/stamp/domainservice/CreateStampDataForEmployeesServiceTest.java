@@ -36,7 +36,7 @@ public class CreateStampDataForEmployeesServiceTest {
 	private Require require;
 	
 	/**
-	 * require.getListStampCard(employeeId) is empty
+	 * require.getLstStampCardBySidAndContractCd(employeeId) is empty
 	 * Throw Msg_433
 	 */
 	@Test
@@ -52,7 +52,7 @@ public class CreateStampDataForEmployeesServiceTest {
 		
 		new Expectations() {
 			{
-				require.getListStampCard(employeeId);
+				require.getLstStampCardBySidAndContractCd(employeeId);
 			}
 		};
 		
@@ -62,7 +62,7 @@ public class CreateStampDataForEmployeesServiceTest {
 	}
 	
 	/**
-	 * require.getListStampCard(employeeId) not empty
+	 * require.getLstStampCardBySidAndContractCd(employeeId) not empty
 	 * 打刻区分を取得する
 	 * ButtonType buttonType.getStampType().isPensent() == true;
 	 * positionInfo.isPresent() == true
@@ -82,7 +82,7 @@ public class CreateStampDataForEmployeesServiceTest {
 		
 		new Expectations() {
 			{
-				require.getListStampCard(employeeId);
+				require.getLstStampCardBySidAndContractCd(employeeId);
 				result = Arrays.asList(
 						StampHelper.getStampCardByInput("stampCardId1", "stampNumber1", GeneralDate.today()),
 						StampHelper.getStampCardByInput("stampCardId2", "stampNumber2",
@@ -106,7 +106,7 @@ public class CreateStampDataForEmployeesServiceTest {
 	}
 	
 	/**
-	 * require.getListStampCard(employeeId) not empty
+	 * require.getLstStampCardBySidAndContractCd(employeeId) not empty
 	 * 打刻区分を取得する
 	 * ButtonType buttonType.getStampType().isPensent() == true;
 	 * positionInfo.isPresent() == false
@@ -125,7 +125,7 @@ public class CreateStampDataForEmployeesServiceTest {
 		
 		new Expectations() {
 			{
-				require.getListStampCard(employeeId);
+				require.getLstStampCardBySidAndContractCd(employeeId);
 				result = Arrays.asList(
 						StampHelper.getStampCardByInput("stampCardId1", "stampNumber1", GeneralDate.today()),
 						StampHelper.getStampCardByInput("stampCardId2", "stampNumber2",
@@ -150,7 +150,7 @@ public class CreateStampDataForEmployeesServiceTest {
 	}
 	
 	/**
-	 * require.getListStampCard(employeeId) not empty
+	 * require.getLstStampCardBySidAndContractCd(employeeId) not empty
 	 * 打刻区分を取得する
 	 * ButtonType buttonType.getStampType().isPensent() == false;
 	 */
@@ -168,7 +168,7 @@ public class CreateStampDataForEmployeesServiceTest {
 		
 		new Expectations() {
 			{
-				require.getListStampCard(employeeId);
+				require.getLstStampCardBySidAndContractCd(employeeId);
 				result = Arrays.asList(
 						StampHelper.getStampCardByInput("stampCardId1", "stampNumber1", GeneralDate.today()),
 						StampHelper.getStampCardByInput("stampCardId2", "stampNumber2",

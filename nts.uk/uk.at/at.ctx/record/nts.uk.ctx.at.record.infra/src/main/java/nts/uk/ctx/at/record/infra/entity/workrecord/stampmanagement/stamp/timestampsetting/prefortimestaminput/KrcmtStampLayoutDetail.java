@@ -7,10 +7,10 @@ import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.PreUpdate;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
@@ -31,6 +31,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -118,16 +119,21 @@ private static final long serialVersionUID = 1L;
     })
 	public KrcmtStampPageLayout krcmtStampPageLayout;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumns({
-    	@JoinColumn(name = "CID", insertable = false, updatable = false),
-    	@JoinColumn(name = "STAMP_MEANS", insertable = false, updatable = false)
+    	@JoinColumn(name = "CID", insertable = false,  updatable = false),
+    	@JoinColumn(name = "STAMP_MEANS", insertable = false,  updatable = false)
     })
 	public KrcmtSrampPortal krcmtSrampPortal;
 	
 	@Override
 	protected Object getKey() {
 		return this.pk;
+	}
+	
+	@PreUpdate
+    private void setUpdateContractInfo() {
+		this.contractCd = AppContexts.user().contractCode();
 	}
 	
 	public KrcmtStampLayoutDetail(KrcmtStampLayoutDetailPk pk, int useArt, String buttonName, int reservationArt,
@@ -150,7 +156,7 @@ private static final long serialVersionUID = 1L;
 	
 	public ButtonSettings toDomain(){
 		StampType stampType = null;
-		if(!(changeHalfDay == null && goOutArt == null && setPreClockArt == null && changeClockArt == null && changeCalArt == null)) {
+		if(changeHalfDay != null && setPreClockArt != null && changeClockArt != null && changeCalArt != null) {
 			stampType = StampType.getStampType(
 					this.changeHalfDay == null ? null : this.changeHalfDay == 0 ? false : true  , 
 					this.goOutArt == null ? null : EnumAdaptor.valueOf(this.goOutArt, GoingOutReason.class), 
@@ -196,7 +202,7 @@ private static final long serialVersionUID = 1L;
 //								? settings.getButtonType().getStampType().get().getGoOutArt().get().value : null,
 //				settings.getButtonDisSet().getButtonNameSet().getTextColor().v(),
 //=======
-	public static KrcmtStampLayoutDetail toEntity(ButtonSettings settings, String companyId, Integer pageNo) {
+	public static KrcmtStampLayoutDetail toEntity(ButtonSettings settings, String companyId, Integer pageNo, int stampMeans) {
 		Integer changeClockArt = null, changeCalArt = null, setPreClockArt = null, changeHalfDay = null,
 				goOutArt = null;
 
@@ -213,9 +219,7 @@ private static final long serialVersionUID = 1L;
 				setPreClockArt = settings.getButtonType().getStampType().get().getSetPreClockArt().value;
 			}
 
-			if (settings.getButtonType().getStampType().get().getChangeHalfDay() != null) {
-				changeHalfDay = settings.getButtonType().getStampType().get().getChangeHalfDay() ? 1 : 0;
-			}
+			changeHalfDay = settings.getButtonType().getStampType().get().isChangeHalfDay() ? 1 : 0;
 
 			if (settings.getButtonType().getStampType().get().getGoOutArt().isPresent()) {
 				goOutArt = settings.getButtonType().getStampType().get().getGoOutArt().get().value;
@@ -223,7 +227,7 @@ private static final long serialVersionUID = 1L;
 		}
 
 		return new KrcmtStampLayoutDetail(
-				new KrcmtStampLayoutDetailPk(companyId, 1, pageNo, settings.getButtonPositionNo().v()),
+				new KrcmtStampLayoutDetailPk(companyId, stampMeans, pageNo, settings.getButtonPositionNo().v()),
 				settings.getUsrArt().value,
 				settings.getButtonDisSet().getButtonNameSet().getButtonName().isPresent()
 						? settings.getButtonDisSet().getButtonNameSet().getButtonName().get().v()

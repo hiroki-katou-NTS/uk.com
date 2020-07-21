@@ -165,10 +165,11 @@ class KDP001AViewModel extends ko.ViewModel {
 					if (_.has(setting, 'portalStampSettings.displaySettingsStampScreen.serverCorrectionInterval')) {
 						vm.settingCountTime(setting.portalStampSettings.displaySettingsStampScreen.serverCorrectionInterval);
 					}
-
 					if (_.has(setting, 'portalStampSettings.displaySettingsStampScreen.resultDisplayTime')) {
 						vm.resultDisplayTime(setting.portalStampSettings.displaySettingsStampScreen.resultDisplayTime);
 					}
+
+
 
 
 
@@ -214,7 +215,7 @@ class KDP001AViewModel extends ko.ViewModel {
 
 						if (!vm.screenMode()) {
 
-							$("#fixed-table").ntsFixedTable({ height: 89, width: 280 });
+							$("#fixed-table").ntsFixedTable({ height: 85, width: 200 });
 						}
 					}
 				}
@@ -368,23 +369,22 @@ class KDP001AViewModel extends ko.ViewModel {
 			employeeCode: vm.$user.employeeCode,
 			mode: Mode.Personal,
 		});
-		nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(function(): any {
+			nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(function(): any {
 			vm.$blockui("invisible");
-			vm.$ajax(requestUrl.getOmissionContents, { pageNo: 4, buttonDisNo: buttonDisNo }).then((res) => {
+			vm.$ajax(requestUrl.getOmissionContents, { pageNo: 1, buttonDisNo: buttonDisNo }).then((res) => {
 				if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
 
 					vm.$window.storage('KDP010_2T', res);
 
-					vm.$window.modal('/view/kdp/002/t/index.xhtml').then(function(): any {
+					nts.uk.ui.windows.sub.modal('/view/kdp/002/t/index.xhtml').onClosed(function(): any {
 
-						vm.$window.storage('KDP010_T')
-							.then((returnData: any) => {
-								if (!returnData.isClose && returnData.errorDate) {
+						let returnData = nts.uk.ui.windows.getShared('KDP010_T');
+						if (!returnData.isClose && returnData.errorDate) {
 
-									let transfer = returnData.btn.transfer;
-									nts.uk.request.jump(returnData.btn.screen, transfer);
-								}
-							});
+							let transfer = returnData.btn.transfer;
+							vm.$jump(returnData.btn.screen, transfer);
+						}
+
 						vm.reLoadStampDatas();
 						vm.getStampToSuppress();
 					});
@@ -410,23 +410,21 @@ class KDP001AViewModel extends ko.ViewModel {
 			stampDate: dateParam
 		});
 
-		vm.$window.modal('/view/kdp/002/c/index.xhtml').then(function(): any {
+		nts.uk.ui.windows.sub.modal('/view/kdp/002/c/index.xhtml').onClosed(function(): any {
 			vm.$blockui("invisible");
-			vm.$ajax(requestUrl.getOmissionContents, { pageNo: 4, buttonDisNo: buttonDisNo }).then((res) => {
+			vm.$ajax(requestUrl.getOmissionContents, { pageNo: 1, buttonDisNo: buttonDisNo }).then((res) => {
 				if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
 
 					vm.$window.storage('KDP010_2T', res);
 
-					vm.$window.modal('/view/kdp/002/t/index.xhtml').then(function(): any {
+					nts.uk.ui.windows.sub.modal('/view/kdp/002/t/index.xhtml').onClosed(function(): any {
+						let returnData = nts.uk.ui.windows.getShared('KDP010_T');
+						if (!returnData.isClose && returnData.errorDate) {
 
-						vm.$window.storage('KDP010_T')
-							.then((returnData: any) => {
-								if (!returnData.isClose && returnData.errorDate) {
+							let transfer = returnData.btn.transfer;
+							vm.$jump(returnData.btn.screen, transfer);
+						}
 
-									let transfer = returnData.btn.transfer;
-									nts.uk.request.jump(returnData.btn.screen, transfer);
-								}
-							});
 						vm.reLoadStampDatas();
 						vm.getStampToSuppress();
 					});

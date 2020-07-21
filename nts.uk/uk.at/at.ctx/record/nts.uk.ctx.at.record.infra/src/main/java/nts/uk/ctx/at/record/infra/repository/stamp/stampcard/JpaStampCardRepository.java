@@ -34,6 +34,8 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 	private static final String GET_ALL_BY_CONTRACT_CODE = "SELECT a FROM KwkdtStampCard a WHERE a.contractCd = :contractCode ";
 	
 //	private static final String GET_LST_STAMPCARD_BY_LST_SID= "SELECT a FROM KwkdtStampCard a WHERE a.sid IN :sids";
+	
+	private static final String GET_BY_SID_AND_CARD_NO = "SELECT a FROM KwkdtStampCard a WHERE a.sid IN :sids AND a.cardNo = :cardNo";
 
 	private static final String GET_LST_STAMPCARD_BY_LST_SID_CONTRACT_CODE= "SELECT a FROM KwkdtStampCard a WHERE a.sid IN :sids AND a.contractCd = :contractCode ";
 
@@ -50,7 +52,7 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 	
 	private static final String GET_LST_STAMP_BY_SIDS = "SELECT sc.CARD_ID, sc.SID, sc.CARD_NUMBER, sc.REGISTER_DATE, sc.CONTRACT_CODE FROM KWKDT_STAMP_CARD sc WHERE sc.SID IN ('{sids}') ORDER BY sc.SID, sc.REGISTER_DATE ASC, sc.CARD_NUMBER ASC";
 
-	private static final String GET_ALL_BY_SID_CONTRACT_CODE = "SELECT a FROM KwkdtStampCard a WHERE a.sid = :sid and a.contractCd = :contractCd ORDER BY a.INS_DATE DESC, a.registerDate DESC";
+	private static final String GET_ALL_BY_SID_CONTRACT_CODE = "SELECT a FROM KwkdtStampCard a WHERE a.sid = :sid and a.contractCd = :contractCd ORDER BY a.insDate DESC, a.registerDate DESC";
 
 	
 	@Override
@@ -388,6 +390,16 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 		});
 
 		return stampCards;
+	}
+
+	@Override
+	public Optional<StampCard> getStampCardByEmployeeCardNumber(String employeeId, String CardNumber) {
+		Optional<StampCard> domain = this.queryProxy().query(GET_BY_SID_AND_CARD_NO, KwkdtStampCard.class)
+				.setParameter("sid", employeeId).setParameter("cardNo", CardNumber).getSingle(x -> toDomain(x));
+		if (domain.isPresent())
+			return domain;
+		else
+			return Optional.empty();
 	}
 
 }

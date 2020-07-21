@@ -67,7 +67,7 @@ module nts.uk.at.kdp003.f {
 
 						if (data.companyCode) {
 							vm.model.companyCode(data.companyCode);
-
+							vm.model.companyName(data.companyName);
 							_.extend(vm.params, {
 								companyDesignation: true
 							});

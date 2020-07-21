@@ -5,7 +5,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -67,9 +66,9 @@ public class StampDisplayWS extends WebService {
 	}
 	
 	@POST
-	@Path("getStampPage/{pageNo}")
-	public StampPageLayoutDto getStampPage(@PathParam("pageNo") int pageNo) {
-		return this.finder.getStampPage(pageNo);
+	@Path("getStampPage")
+	public StampPageLayoutDto getStampPage(ParamKDP010G param) {
+		return this.finder.getStampPage(param.pageNo, param.mode);
 	}
 	
 	@POST
@@ -95,4 +94,12 @@ public class StampDisplayWS extends WebService {
 	public void updateStampPage(StampPageLayoutCommand command) {
 		this.updateStampPageHandler.handle(command);
 	}
+	
 }
+
+class ParamKDP010G{
+	
+	public Integer mode;
+	
+	public Integer pageNo;
+} 
