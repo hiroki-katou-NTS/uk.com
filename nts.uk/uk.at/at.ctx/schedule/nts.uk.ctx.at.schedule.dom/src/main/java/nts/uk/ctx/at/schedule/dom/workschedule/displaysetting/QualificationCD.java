@@ -8,7 +8,7 @@ import nts.uk.shr.com.primitive.CodePrimitiveValue;
 import nts.uk.shr.com.primitive.ZeroPaddedCode;
 //資格コード
 @StringMaxLength(10)
-@StringCharType(CharType.ALPHA_NUMERIC)
+@StringCharType(CharType.NUMERIC)
 @ZeroPaddedCode
 public class QualificationCD extends CodePrimitiveValue<QualificationCD> {
 

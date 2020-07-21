@@ -26,3 +26,26 @@ html {
 #create-new{
     margin-left: 45px !important;
 }
+
+/* B9_2_1 */
+#help-button{
+	margin-left: -70px !important;
+}
+
+#colorpicker{
+	margin-left: -5px !important;
+}
+
+/* B9_2_2 */
+#test-color{
+	margin-left: 25px;
+}
+
+/* B9_2_3 */
+#label-test-color{
+	margin-left: 25px;
+	border-color: #AAB7B8 !important;
+	min-width: 40px;
+	height: 33px;
+}
+

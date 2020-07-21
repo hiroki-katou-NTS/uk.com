@@ -40,7 +40,7 @@ public class WorkScheDisplaySetting implements DomainAggregate {
 		// return @初期表示期間の終了日.年月日に対応する期間($基準日)
 		return this.endDay.periodOf(baseDate);
 	}
-
+	//	[C-0] 勤務予定の表示設定 (会社ID, 初期表示の月, 一ヶ月間)		
 	public WorkScheDisplaySetting(String companyID, InitDispMonth initDispMonth, OneMonth endDay) {
 		super();
 		this.companyID = companyID;
