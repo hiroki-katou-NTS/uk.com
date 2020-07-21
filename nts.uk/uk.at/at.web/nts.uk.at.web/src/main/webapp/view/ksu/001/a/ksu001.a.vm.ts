@@ -65,10 +65,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         indexBtnToRight: number = 0;
         indexBtnToDown: number  = 0;
         
-        // 
-        
+        //
         arrDay: Time[] = [];
         listSid: KnockoutObservableArray<string> = ko.observableArray([]);
+        
+        isClickChangeDisplayMode: boolean = false;
+        listColorOfHeader: KnockoutObservableArray<ksu001.common.modelgrid.CellColor> = ko.observableArray([]);
         
         affiliationId: any = null;
         affiliationName: KnockoutObservable<string> = ko.observable('');
@@ -81,9 +83,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         dataWorkEmpCombine: KnockoutObservableArray<any> = ko.observableArray([]);
         dataScheduleDisplayControl: KnockoutObservable<any> = ko.observableArray([]);
         isInsuranceStatus: boolean = false;
-        listColorOfHeader: KnockoutObservableArray<ksu001.common.modelgrid.CellColor> = ko.observableArray([]);
+        
         flag: boolean = true;
-        isClickChangeDisplayMode: boolean = false;
+        
         stopRequest: KnockoutObservable<boolean> = ko.observable(true);
         arrLockCellInit: KnockoutObservableArray<Cell> = ko.observableArray([]);
         // 表示形式 ＝ 日付別(固定) = 0
@@ -214,11 +216,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // and startDate-endDate of screen A
             __viewContext.viewModel.viewO.initScreen().done(() => {
                 
-                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                    let userInfor = JSON.parse(data);
-                    
-                });   
-                    
                 self.getDataScheduleDisplayControl(); 
                 self.getDataComPattern();
                 self.getDataWkpPattern();
@@ -246,11 +243,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return dfd.promise();
         }
         
-        
-        
-        
         /**
-         * laays setting ban dau
+         * get setting ban dau
          */
         getSettingDisplayWhenStart() {
             let self = this;
@@ -284,6 +278,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // get setting height grid
                 if (userInfor.gridHeightSelection == 1) {
                     self.selectedTypeHeightExTable(1);
+                    self.isEnableInputHeight(false);
                 } else {
                     self.heightGridSetting(userInfor.heightGridSetting);
                     self.selectedTypeHeightExTable(2);
@@ -300,7 +295,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         /**
         * Create exTable
         */
-        initExTable(heightGridSetting): void {
+        initExTable(): void {
             let self = this,
                 timeRanges = [],
                 //Get dates in time period
@@ -309,19 +304,68 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 windowXOccupation = 65,
                 windowYOccupation = 328;
 
+            // phần leftMost
+            let leftmostDs = [];
+            let leftmostColumns = [];
+            let leftmostHeader = {};
+            let leftmostContent = {};
+            
+            leftmostColumns = [{
+                key: "codeNameOfEmp", headerText: getText("KSU001_56"), width: "160px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
+                css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { }
+            }];
+
+            leftmostHeader = {
+                columns: leftmostColumns,
+                rowHeight: "60px",
+                width: "160px"
+            };
+
+            leftmostContent = {
+                columns: leftmostColumns,
+                dataSource: leftmostDs,
+                primaryKey: "empId"
+            };
+            
+            // Phần middle
+            let middleDs = [];
+            let updateMiddleDs = [];
+            let middleColumns = [];
+            let middleContentDeco = [];
+            let middleHeader = {};
+            let middleContent = {};
+            
+            middleColumns = [
+                { headerText: getText("KSU001_4023"), key: "team", width: "40px", css: { whiteSpace: "none" } },
+                { headerText: getText("KSU001_4024"), key: "rank", width: "40px", css: { whiteSpace: "none" } },
+                { headerText: getText("KSU001_4025"), key: "qualification", width: "40px", css: { whiteSpace: "none" } }
+            ];
+
+            middleHeader = {
+                columns: middleColumns,
+                width: "120px",
+                features: [{
+                    name: "HeaderRowHeight",
+                    rows: { 0: "60px" }
+                }]
+            };
+
+            middleContent = {
+                columns: middleColumns,
+                dataSource: middleDs,
+                primaryKey: "empId",
+                features: [{
+                    name: "BodyCellStyle",
+                    decorator: middleContentDeco
+                }]
+            };
+            
+            // Phần detail
             let detailHeaderDs = [];
             let detailContentDeco = [];
             let timeRanges = [];
-
-            let leftmostDs = [];
-            let middleDs = [];
-            let updateMiddleDs = [];
             let detailContentDs = [];
-            let horzSumContentDs = [];
-            let leftHorzContentDs = [];
-            let vertSumContentDs = [];
-            let newVertSumContentDs = [];
-
+            
             detailHeaderDs.push(new ksu001.common.modelgrid.ExItem(undefined, true));
             detailHeaderDs.push({
                 empId: "", __25: "over", __26: "", __27: "", __28: "", __29: "", __30: "", __31: "",
@@ -330,9 +374,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 _24: "", _25: "", _26: "設定", _27: "", _28: "", _29: "", _30: "", _31: "",
             });
 
-            let middleHeaderDeco = [new ksu001.common.modelgrid.CellColor("over1", undefined, "small-font-size"),
-                new ksu001.common.modelgrid.CellColor("over2", undefined, "small-font-size")];
-            let middleContentDeco = [];
             let detailHeaderDeco = [new ksu001.common.modelgrid.CellColor("empId", 1, "small-font-size")];
             for (let i = -6; i < 32; i++) {
                 if (i <= 0) {
@@ -345,8 +386,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             for (let i = 0; i < 30; i++) {
                 detailContentDs.push(new ksu001.common.modelgrid.ExItem(i.toString()));
-                let eName = nts.uk.text.padRight("社員名" + i, " ", 10) + "EmpAAA";
-                leftmostDs.push({ empId: i.toString(), empName: eName });
+                let codeNameOfEmp = nts.uk.text.padRight("社員名" + i, " ", 10) + "EmpAAA";
+                leftmostDs.push({ empId: i.toString(), codeNameOfEmp: codeNameOfEmp });
                 middleDs.push({ empId: i.toString(), team: 'A', rank: 100 + i + "", qualification: 1 + i + "" });
                 updateMiddleDs.push({ empId: i.toString(), time: "100:00", days: "38", can: "", get: "" });
                 if (i % 2 === 0) middleContentDeco.push(new ksu001.common.modelgrid.CellColor("over1", i.toString(), "cell-red"));
@@ -356,27 +397,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_2", i.toString(), "xcustom", 0));
                     detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_2", i.toString(), "xseal", 1));
                     detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_2", i.toString(), "xcustom", 1));
-//                    detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_3", i.toString(), "xhidden", 0));
-//                    detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_3", i.toString(), "xhidden", 1));
                 }
                 // Add both child cells to mark them respectively
                 detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_2", "2", "blue-text", 0));
                 detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_2", "2", "blue-text", 1));
-//                detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_3", "3", "black-corner-mark", 2));
-//                detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_3", "4", "red-corner-mark", 3));
                 if (i < 1000) timeRanges.push(new ksu001.common.modelgrid.TimeRange("_2", i.toString(), "17:00", "7:00", 1));
-                vertSumContentDs.push({ empId: i.toString(), noCan: 6, noGet: 6 });
-                newVertSumContentDs.push({ empId: i.toString(), time: "0:00", plan: "30:00" });
-            }
-
-            for (let i = 0; i < 10; i++) {
-                horzSumContentDs.push({
-                    itemId: i.toString(), empId: "", __25: "1.0", __26: "1.4", __27: "0.3", __28: "0.9", __29: "1.0", __30: "1.0", __31: "3.3",
-                    _1: "1.0", _2: "1.0", _3: "0.5", _4: "1.0", _5: "1.0", _6: "1.0", _7: "0.5", _8: "0.5", _9: "1.0", _10: "0.5",
-                    _11: "0.5", _12: "1.0", _13: "0.5", _14: "1.0", _15: "1.0", _16: "0.5", _17: "1.0", _18: "1.0", _19: "1.0", _20: "1.0", _21: "1.0", _22: "1.0", _23: "1.0",
-                    _24: "0.5", _25: "0.5", _26: "1.0", _27: "1.0", _28: "1.0", _29: "0.5", _30: "1.0", _31: "1.0"
-                });
-                leftHorzContentDs.push({ itemId: i.toString(), itemName: "8:00 ~ 9:00", sum: "23.5" });
             }
 
             let detailColumns = [{
@@ -467,51 +492,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     return false;
                 };
             });
-
-            // phần leftMost
-            let leftmostColumns = [{
-                key: "empName", headerText: getText("KSU001_56"), width: "160px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
-                css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { }
-            }];
-
-            let leftmostHeader = {
-                columns: leftmostColumns,
-                rowHeight: "60px",
-                width: "160px"
-            };
-
-            let leftmostContent = {
-                columns: leftmostColumns,
-                dataSource: leftmostDs,
-                primaryKey: "empId"
-            };
-
-            // Phần middle
-            let middleColumns = [
-                { headerText: getText("KSU001_4023"), key: "team", width: "40px", css: { whiteSpace: "none" } },
-                { headerText: getText("KSU001_4024"), key: "rank", width: "40px", css: { whiteSpace: "none" } },
-                { headerText: getText("KSU001_4025"), key: "qualification", width: "40px", css: { whiteSpace: "none" } }
-            ];
-
-
-            let middleHeader = {
-                columns: middleColumns,
-                width: "120px",
-                features: [{
-                    name: "HeaderRowHeight",
-                    rows: { 0: "60px" }
-                }]
-            };
-
-            let middleContent = {
-                columns: middleColumns,
-                dataSource: middleDs,
-                primaryKey: "empId",
-                features: [{
-                    name: "BodyCellStyle",
-                    decorator: middleContentDeco
-                }]
-            };
 
             // phần Detail
             let detailHeader = {
@@ -607,7 +587,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 errorMessagePopup: true,
                 determination: {
                     rows: [0],
-                    columns: ["empName"]
+                    columns: ["codeNameOfEmp"]
                 },
                 heightSetter: {
                     showBodyHeightButton: true,
@@ -638,57 +618,82 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             console.log(performance.now() - start);
         }
         
-
         /**
-         * CCG001 return listEmployee
-         * When listEmployee changed, call function updateExtable to refresh data of exTable
+         * Set color for cell header: 日付セル背景色文字色制御
+         * 
          */
-        searchEmployee(dataEmployee: EmployeeSearchDto[]) {
-            let self = this;
-            self.stopRequest(false);
+        setColorForCellHeaderDetailAndHoz(detailHeaderDeco: any): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
 
-            self.empItems.removeAll();
-            _.forEach(dataEmployee, function(item: EmployeeSearchDto) {
-                self.empItems.push(new PersonModel({
-                    empId: item.employeeId,
-                    empCd: item.employeeCode,
-                    empName: item.employeeName,
-                    affiliationId: item.affiliationId,
-                    affiliationCode: item.affiliationCode,
-                    affiliationName: item.affiliationName,
-                }));
-            });
-            self.affiliationId = self.empItems()[0].affiliationId;
-            self.affiliationName(self.empItems()[0].affiliationName);
-            // get data for listSid
-            self.listSid([]);
-            let arrSid: string[] = [];
-            _.each(self.empItems(), (x) => {
-                arrSid.push(x.empId);
-            });
-            self.listSid(arrSid);
-            //getDataOfWorkPlace(): get workPlaceName to display A3-1
-            //getDataWkpPattern() : get data WorkPattern for screen Q
-            $.when(self.getDataWkpPattern()).done(() => {
-                if (__viewContext.viewModel.viewQ.selectedTab() === 'workplace') {
-                    __viewContext.viewModel.viewQ.initScreenQ();
+            if (self.isClickChangeDisplayMode) {
+                self.isClickChangeDisplayMode = false;
+                _.map(self.listColorOfHeader(), (item) => {
+                    detailHeaderDeco.push(item);
+                });
+                dfd.resolve();
+                return;
+            }
+            // getDataSpecDateAndHoliday always query to server
+            // because date is changed when click nextMonth or backMonth
+            $.when(self.getDataSpecDateAndHoliday()).done(() => {
+                _.each(self.arrDay, (date) => {
+                    let ymd = date.yearMonthDay;
+                    let dateFormat = moment(date.yearMonthDay).format('YYYY/MM/DD');
+                    if (_.includes(self.dataWkpSpecificDate(), dateFormat) || _.includes(self.dataComSpecificDate(), dateFormat)) {
+                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-schedule-specific-date"));
+                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 1, "bg-schedule-specific-date"));
+                    } else if (_.includes(self.dataPublicHoliday(), dateFormat)) {
+                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-schedule-sunday color-schedule-sunday"));
+                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 1, "bg-schedule-sunday color-schedule-sunday"));
+                    } else if (date.weekDay === '土') {
+                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-schedule-saturday color-schedule-saturday"));
+                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 1, "bg-schedule-saturday color-schedule-saturday"));
+                    } else if (date.weekDay === '日') {
+                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-schedule-sunday color-schedule-sunday"));
+                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 1, "bg-schedule-sunday color-schedule-sunday"));
+                    } else {
+                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-weekdays color-weekdays"));
+                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 1, "bg-weekdays color-weekdays"));
+                    }
+                });
+
+                // set class bg-schedule-that-day for currentDay
+                if (self.dateTimePrev() <= moment().format('YYYY/MM/DD') && moment().format('YYYY/MM/DD') <= self.dateTimeAfter()) {
+                    let arrCellColorFilter = _.filter(detailHeaderDeco, ['columnKey', "_" + moment().format('YYYYMMDD')]);
+                    _.map(arrCellColorFilter, (cellColor: any) => {
+                        cellColor.clazz = cellColor.clazz.replace(/bg-\w*/g, 'bg-schedule-that-day');
+                    });
                 }
 
-                if (self.selectedModeDisplayObject() == 1) {
-                    // intended data display mode 
-                    self.setDatasource().done(function() {
-                        self.updateExTable();
-                    });
-                } else {
-                    // actual data display mode 
-                    // in phare 2, set actual data = intended data
-                    self.setDatasource().done(function() {
-                        self.updateExTable();
-                    });
-                }
-            }).fail(() => { self.stopRequest(true); });
+                self.listColorOfHeader(detailHeaderDeco);
+                dfd.resolve();
+            });
+            return dfd.promise();
         }
         
+        /**
+         * Get data WkpSpecificDate, ComSpecificDate, PublicHoliday
+         */
+        getDataSpecDateAndHoliday(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred(),
+                obj = {
+                    workplaceId: self.empItems()[0] ? self.empItems()[0].affiliationId : null,
+                    startDate: self.dtPrev(),
+                    endDate: self.dtAft()
+                };
+            service.getDataSpecDateAndHoliday(obj).done(function(data) {
+                self.dataWkpSpecificDate(data.listWkpSpecificDate);
+                self.dataComSpecificDate(data.listComSpecificDate);
+                self.dataPublicHoliday(data.listPublicHoliday);
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+        
+
         // save setting hight cua grid vao localStorage
         saveHeightGridToLocal() {
             let self = this;
@@ -1021,6 +1026,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // set color button
             $(".editMode").css({"background-color" : "#007fff" , "color" : "#ffffff"});
             $(".confirmMode").css({"background-color" : "#ffffff" , "color" : "#000000"});
+            
+            
+            
             nts.uk.ui.block.clear();
         }
 
@@ -1030,8 +1038,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // set color button
             $(".confirmMode").css({"background-color" : "#007fff", "color" : "#ffffff"});
             $(".editMode").css({"background-color" : "#ffffff" , "color" : "#000000"});
+            
+            
             nts.uk.ui.block.clear();
         }
+        
+        
 
         /**
          * paste data on cell

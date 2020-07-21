@@ -17,7 +17,7 @@ module nts.uk.at.view.ksu001.a {
             userInfor.listShiftMaster = [{a : '5', b : '6'},{a : '5', b : '6'}];
             userInfor.disPlayFormat = '';  
             userInfor.backgroundColor = ''; // 背景色
-            userInfor.gridHeightSelection = '';
+            userInfor.gridHeightSelection = 1;
             userInfor.heightGridSetting = '';
             userInfor.shiftPalletUnit  = 1;
             userInfor.shiftPalletPositionNumber = 0;
@@ -46,34 +46,48 @@ module nts.uk.at.view.ksu001.a {
             alert("Item is deleted in multi grid is " + e["detail"]["target"]);
         }));
 
-        //popup 3
-        $('#popup-area4').ntsPopup({
+        //A1_10_1 click btn10
+        $('#A1_10_1').ntsPopup({
             position: {
                 my: 'left top',
                 at: 'left bottom+3',
-                of: $('.revision')
+                of: $('#A1_10')
             }
         });
 
-        $('.revision').click(function() {
-            $('#popup-area4').ntsPopup("toggle");
+        $('#A1_10').click(function() {
+            $('#A1_10_1').ntsPopup("toggle");
+        });
+        
+        //A1_7_1 click btn7
+        $('#A1_7_1').ntsPopup({
+            position: {
+                my: 'left top',
+                at: 'left bottom+3',
+                of: $('#A1_7')
+            }
         });
 
-        //popup 4
-        $('#popup-area5').ntsPopup({
+        $('#A1_7').click(function() {
+            $('#A1_7_1').ntsPopup("toggle");
+        });
+        
+
+        // A1_12_1 click btn12
+        $('#A1_12_1').ntsPopup({
             position: {
                 my: 'right top',
                 at: 'right bottom+3',
-                of: $('.setmenu')
+                of: $('#A1_12')
             }
         });
 
-        $('.setmenu').click(function() {
-            $('#popup-area5').ntsPopup("toggle");
+        $('#A1_12').click(function() {
+            $('#A1_12_1').ntsPopup("toggle");
         });
 
-        //popup A3-20 popup-setting-grid
-        $('#popup-area6').ntsPopup({
+        //click btnA4
+        $('#A4_1').ntsPopup({
             position: {
                 my: 'left top',
                 at: 'left bottom+3',
@@ -81,35 +95,36 @@ module nts.uk.at.view.ksu001.a {
             }
         });
         
-
         $('#A4').click(function() {
-            $('#popup-area6').ntsPopup("toggle");
+            $('#A4_1').ntsPopup("toggle");
         });
         
-        //popup A3-24
-        $('#popup-area9').ntsPopup({
+        
+        //click btnA5
+        $('#A5_1').ntsPopup({
             position: {
                 my: 'left top',
                 at: 'left bottom+3',
-                of: $('.color-button')
+                of: $('#A5')
             }
         });
 
-        $('.color-button').click(function() {
-            $('#popup-area9').ntsPopup("toggle");
+        $('#A5').click(function() {
+            $('#A5_1').ntsPopup("toggle");
         });
 
+        
         //popup setting grid
-        $('#popup-setting-grid').ntsPopup({
+        $('#A16').ntsPopup({
             position: {
                 my: 'left top',
                 at: 'left bottom+3',
-                of: $('.toSettingGrid')
+                of: $('.settingHeightGrid')
             }
         });
 
-        $('.toSettingGrid').click(function() {
-            $('#popup-setting-grid').ntsPopup("toggle");
+        $('.settingHeightGrid').click(function() {
+            $('#A16').ntsPopup("toggle");
         });
     }
 }
