@@ -29,7 +29,7 @@ public class GetEmRankInforServiceTest {
 	Require require;
 	
 	@Test
-	public void testGetEmRank() {
+	public void testGetEmRank_MakeWithoutRank() {
 		
 		
 		List<String> listEmpId = Arrays.asList("003","004"); // dummy
