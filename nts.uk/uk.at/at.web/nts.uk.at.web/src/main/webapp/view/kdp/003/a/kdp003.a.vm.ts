@@ -51,19 +51,15 @@ module nts.uk.at.kdp003.a {
 
 						if (stampSetting) {
 							const { employeeAuthcUseArt } = stampSetting;
-							vm.tabs(stampSetting.pageLayouts);
 							
-							console.log(stampSetting.pageLayouts);
-							debugger;
+							vm.tabs(stampSetting.pageLayouts);
 
 							vm.employeeData.employeeAuthcUseArt(!!employeeAuthcUseArt);
 						}
 					}
 				})
 				.then(() => vm.$ajax('at', API.HIGHTLIGHT))
-				.then((data: HighlightSetting) => {
-					vm.stampToSuppress(data);
-				})
+				.then((data: HighlightSetting) => vm.stampToSuppress(data))
 				.then(() => vm.$window.storage(KDP003_SAVE_DATA))
 				.then((data: StorageData) => {
 					if (!data) {
