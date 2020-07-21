@@ -34,7 +34,7 @@
 							css: {
 								'has-time-sheet': true
 							}">
-					<div class="time-sheet">
+					<div class="time-sheet" data-bind="if: ko.unwrap(employeeData.employeeAuthcUseArt) === true">
 						<div data-bind="component: {
 								name: 'stamp-employee-selection',
 								params: employeeData

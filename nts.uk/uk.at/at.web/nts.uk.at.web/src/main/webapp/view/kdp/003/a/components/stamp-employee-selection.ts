@@ -44,7 +44,8 @@ module nts.uk.at.kdp003.a {
 			if (!vm.options) {
 				vm.options = {
 					employees: ko.observableArray([]),
-					selectedId: ko.observable(null)
+					selectedId: ko.observable(null),
+					employeeAuthcUseArt: ko.observable(true)
 				};
 			} else {
 				if (!_.has(vm.options, 'employees')) {
@@ -253,5 +254,6 @@ module nts.uk.at.kdp003.a {
 	export interface EmployeeListParam {
 		employees: KnockoutObservableArray<Employee>;
 		selectedId: KnockoutObservable<string | null>;
+		employeeAuthcUseArt: KnockoutObservable<boolean>;
 	}
 }

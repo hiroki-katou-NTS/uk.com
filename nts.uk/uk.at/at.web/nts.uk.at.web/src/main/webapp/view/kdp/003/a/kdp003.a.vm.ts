@@ -8,7 +8,8 @@ module nts.uk.at.kdp003.a {
 		SETTING: 'at/record/stamp/management/personal/startPage',
 		HIGHTLIGHT: 'at/record/stamp/management/personal/stamp/getHighlightSetting',
 		LOGIN_ADMIN: 'ctx/sys/gateway/kdp/login/adminmode',
-		LOGIN_EMPLOYEE: 'ctx/sys/gateway/kdp/login/employeemode'
+		LOGIN_EMPLOYEE: 'ctx/sys/gateway/kdp/login/employeemode',
+		FINGER_STAMP_SETTING: 'at/record/stamp/finger/get-finger-stamp-setting'
 	};
 
 	const KDP003_SAVE_DATA = 'KDP003_DATA';
@@ -21,11 +22,17 @@ module nts.uk.at.kdp003.a {
 
 		employeeData: EmployeeListParam = {
 			employees: ko.observableArray([]),
-			selectedId: ko.observable(null)
+			selectedId: ko.observable(null),
+			employeeAuthcUseArt: ko.observable(true)
 		};
 
 		tabs: KnockoutObservableArray<any> = ko.observableArray([]);
-		stampToSuppress: KnockoutObservable<any> = ko.observable({});
+		stampToSuppress: KnockoutObservable<HighlightSetting> = ko.observable({
+			departure: false,
+			goingToWork: false,
+			goOut: false,
+			turnBack: false
+		});
 
 		created() {
 			const vm = this;
@@ -37,17 +44,25 @@ module nts.uk.at.kdp003.a {
 			const vm = this;
 
 			vm.$blockui('show')
-				.then(() => vm.$ajax('at', API.SETTING))
-				.then((data: any) => {
+				.then(() => vm.$ajax('at', API.FINGER_STAMP_SETTING))
+				.then((data: FingerStampSetting) => {
 					if (data) {
-						if (data.stampSetting) {
-							vm.tabs(data.stampSetting.pageLayouts);
-						}
+						const { stampSetting } = data;
 
-						if (data.stampToSuppress) {
-							vm.stampToSuppress(data.stampToSuppress);
+						if (stampSetting) {
+							const { employeeAuthcUseArt } = stampSetting;
+							vm.tabs(stampSetting.pageLayouts);
+							
+							console.log(stampSetting.pageLayouts);
+							debugger;
+
+							vm.employeeData.employeeAuthcUseArt(!!employeeAuthcUseArt);
 						}
 					}
+				})
+				.then(() => vm.$ajax('at', API.HIGHTLIGHT))
+				.then((data: HighlightSetting) => {
+					vm.stampToSuppress(data);
 				})
 				.then(() => vm.$window.storage(KDP003_SAVE_DATA))
 				.then((data: StorageData) => {
@@ -286,5 +301,38 @@ module nts.uk.at.kdp003.a {
 		PWD: string;
 		WKPID: string[];
 		WKLOC_CD: string;
+	}
+
+	interface FingerStampSetting {
+		stampResultDisplay: StampResultDisplay;
+		stampSetting: StampSetting;
+	}
+
+	interface StampResultDisplay {
+		companyId: string;
+		displayItemId: number[];
+		notUseAttr: number;
+	}
+
+	interface StampSetting {
+		authcFailCnt: number;
+		backGroundColor: string;
+		buttonEmphasisArt: boolean;
+		cid: string;
+		correctionInterval: number;
+		employeeAuthcUseArt: boolean;
+		historyDisplayMethod: number;
+		nameSelectArt: boolean;
+		pageLayouts: any[];
+		passwordRequiredArt: boolean;
+		resultDisplayTime: number;
+		textColor: string;
+	}
+
+	interface HighlightSetting {
+		departure: boolean;
+		goOut: boolean;
+		goingToWork: boolean;
+		turnBack: boolean;
 	}
 }
