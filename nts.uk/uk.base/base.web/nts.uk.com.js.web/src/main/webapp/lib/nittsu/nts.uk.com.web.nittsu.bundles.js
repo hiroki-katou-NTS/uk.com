@@ -6456,7 +6456,7 @@ var nts;
                                     var $dialogContentDoc = $(this.lastElementChild.contentDocument);
                                     // catch press tab key in close button of dialog.
                                     $dialogDocument.on("keydown", ":tabbable", function (evt) {
-                                        var code = evt.which || evt.keyCode;
+                                        var code = evt.which || evt.keyCode || -1;
                                         if (code.toString() === "9") {
                                             var focusableElements = _.sortBy($dialogContentDoc.find(":tabbable"), function (o) { return parseInt($(o).attr("tabindex")); });
                                             if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === false) {
@@ -6471,7 +6471,7 @@ var nts;
                                     });
                                     // catch press tab key for component in dialog.
                                     $dialogContentDoc.on("keydown", ":tabbable", function (evt) {
-                                        var code = evt.which || evt.keyCode;
+                                        var code = evt.which || evt.keyCode || -1;
                                         if (code.toString() === "9") {
                                             var focusableElements = _.sortBy($dialogContentDoc.find(":tabbable"), function (o) { return parseInt($(o).attr("tabindex")); });
                                             if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false) {
@@ -47840,7 +47840,7 @@ function $i18n(text, params) {
     return resource.getText(text, params);
 }
 function $jump() {
-    var args = [].slice.apply(arguments, []), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
+    var args = Array.prototype.slice.apply(arguments), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
         (args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
     if (window.top === window.self) {
         $storage(params).then(function () { return request.jump.apply(null, args); });
@@ -47897,28 +47897,32 @@ BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
     info: {
         value: function $info() {
             var dfd = $.Deferred();
-            dialog.info.apply(null, __spreadArrays(arguments)).then(function () { return dfd.resolve(); });
+            var args = Array.prototype.slice.apply(arguments);
+            dialog.info.apply(null, args).then(function () { return dfd.resolve(); });
             return dfd.promise();
         }
     },
     alert: {
         value: function $alert() {
             var dfd = $.Deferred();
-            dialog.alert.apply(null, __spreadArrays(arguments)).then(function () { return dfd.resolve(); });
+            var args = Array.prototype.slice.apply(arguments);
+            dialog.alert.apply(null, args).then(function () { return dfd.resolve(); });
             return dfd.promise();
         }
     },
     error: {
         value: function $error() {
             var dfd = $.Deferred();
-            dialog.error.apply(null, __spreadArrays(arguments)).then(function () { return dfd.resolve(); });
+            var args = Array.prototype.slice.apply(arguments);
+            dialog.error.apply(null, args).then(function () { return dfd.resolve(); });
             return dfd.promise();
         }
     },
     confirm: {
         value: function $confirm() {
             var dfd = $.Deferred();
-            var $cf = dialog.confirm.apply(null, __spreadArrays(arguments));
+            var args = Array.prototype.slice.apply(arguments);
+            var $cf = dialog.confirm.apply(null, args);
             $cf.ifYes(function () {
                 dfd.resolve('yes');
             });
@@ -47936,12 +47940,12 @@ BaseViewModel.prototype.$jump = $jump;
 Object.defineProperties($jump, {
     self: {
         value: function $to() {
-            $jump.apply(null, __spreadArrays([].slice.apply(arguments, [])));
+            $jump.apply(null, __spreadArrays(Array.prototype.slice.apply(arguments, [])));
         }
     },
     blank: {
         value: function $other() {
-            var args = [].slice.apply(arguments, []), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
+            var args = Array.prototype.slice.apply(arguments, []), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
                 (args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
             $storage(params).then(function () { return request.jumpToNewWindow.apply(null, args); });
         }
@@ -47990,7 +47994,12 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
             var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
             if (nowapp) {
                 $storage(path).then(function () {
-                    windows.sub.modal(webapp).onClosed(function () {
+                    windows.sub.modal(webapp)
+                        .onClosed(function () {
+                        var localShared = windows.container.localShared;
+                        _.each(localShared, function (value, key) {
+                            windows.setShared(key, value);
+                        });
                         $storage().then(function ($data) {
                             jdf.resolve($data);
                         });
@@ -47999,7 +48008,12 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
             }
             else {
                 $storage(params).then(function () {
-                    windows.sub.modal(webapp, path).onClosed(function () {
+                    windows.sub.modal(webapp, path)
+                        .onClosed(function () {
+                        var localShared = windows.container.localShared;
+                        _.each(localShared, function (value, key) {
+                            windows.setShared(key, value);
+                        });
                         $storage().then(function ($data) {
                             jdf.resolve($data);
                         });
@@ -48015,7 +48029,12 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
             var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
             if (nowapp) {
                 $storage(path).then(function () {
-                    windows.sub.modeless(webapp).onClosed(function () {
+                    windows.sub.modeless(webapp)
+                        .onClosed(function () {
+                        var localShared = windows.container.localShared;
+                        _.each(localShared, function (value, key) {
+                            windows.setShared(key, value);
+                        });
                         $storage().then(function ($data) {
                             jdf.resolve($data);
                         });
@@ -48024,7 +48043,12 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
             }
             else {
                 $storage(params).then(function () {
-                    windows.sub.modeless(webapp, path).onClosed(function () {
+                    windows.sub.modeless(webapp, path)
+                        .onClosed(function () {
+                        var localShared = windows.container.localShared;
+                        _.each(localShared, function (value, key) {
+                            windows.setShared(key, value);
+                        });
                         $storage().then(function ($data) {
                             jdf.resolve($data);
                         });
@@ -48130,7 +48154,7 @@ BaseViewModel.prototype.$errors = function $errors() {
     ;
 };
 // Hàm validate được wrapper lại để có thể thực hiện promisse
-BaseViewModel.prototype.$validate = function $validate(act) {
+var $validate = function $validate(act) {
     var args = Array.prototype.slice.apply(arguments);
     if (args.length === 0) {
         return $.Deferred().resolve()
@@ -48162,6 +48186,23 @@ BaseViewModel.prototype.$validate = function $validate(act) {
             .then(function () { return !$(selectors_2).ntsError('hasError'); });
     }
 };
+Object.defineProperty($validate, "constraint", {
+    value: function $constraint(name, value) {
+        if (arguments.length === 0) {
+            return $.Deferred().resolve()
+                .then(function () { return __viewContext.primitiveValueConstraints; });
+        }
+        else if (arguments.length === 1) {
+            return $.Deferred().resolve()
+                .then(function () { return _.get(__viewContext.primitiveValueConstraints, name); });
+        }
+        else {
+            return $.Deferred().resolve()
+                .then(function () { return ui.validation.writeConstraint(name, value); });
+        }
+    }
+});
+BaseViewModel.prototype.$validate = $validate;
 Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
 var I18nBindingHandler = /** @class */ (function () {
     function I18nBindingHandler() {
@@ -48174,9 +48215,53 @@ var I18nBindingHandler = /** @class */ (function () {
     I18nBindingHandler = __decorate([
         handler({
             bindingName: 'i18n',
-            validatable: true
+            validatable: true,
+            virtual: false
         })
     ], I18nBindingHandler);
     return I18nBindingHandler;
+}());
+var IconBindingHandler = /** @class */ (function () {
+    function IconBindingHandler() {
+    }
+    IconBindingHandler.prototype.update = function (el, value) {
+        ko.computed(function () {
+            var numb = ko.toJS(value());
+            var url = "/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/" + numb + ".png";
+            $.get(url)
+                .then(function () {
+                $(el).css({
+                    'background-image': "url('" + url + "')",
+                    'background-repeat': 'no-repeat',
+                    'background-position': 'center'
+                });
+            });
+        });
+    };
+    IconBindingHandler = __decorate([
+        handler({
+            bindingName: 'icon',
+            validatable: true,
+            virtual: false
+        })
+    ], IconBindingHandler);
+    return IconBindingHandler;
+}());
+var DateBindingHandler = /** @class */ (function () {
+    function DateBindingHandler() {
+    }
+    DateBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
+        var date = ko.unwrap(valueAccessor());
+        var format = ko.unwrap(allBindingsAccessor.get('format')) || 'YYYY/MM/DD';
+        $(element).text(moment(date).format(format));
+    };
+    DateBindingHandler = __decorate([
+        handler({
+            bindingName: 'date',
+            validatable: true,
+            virtual: false
+        })
+    ], DateBindingHandler);
+    return DateBindingHandler;
 }());
 //# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map

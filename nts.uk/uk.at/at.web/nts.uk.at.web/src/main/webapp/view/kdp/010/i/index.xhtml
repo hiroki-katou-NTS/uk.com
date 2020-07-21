@@ -23,52 +23,86 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button tabindex="1" class="proceed" data-bind="click: registration">#{i18n.getText('KDP010_230')}</button>
-				<button tabindex="2" class="danger" data-bind="click: deleteSetting">#{i18n.getText('KDP010_231')}</button>
+				<button tabindex="1" id="btnSave" class="proceed" data-bind="click: save">#{i18n.getText('KDP010_230')}</button>
+				<button tabindex="2" class="danger" data-bind="click: deleteSetting, enable: isDel">#{i18n.getText('KDP010_231')}</button>
 				<button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KDP010_232')}</button>
 			</div>
-			<div class="contents-area">
+			<div class="contents-area" data-bind="with: stampPageLayout">
 				<div class="row">
 					<div data-bind="ntsFormLabel: { required: false, constraint: 'PageComment'  }">#{i18n.getText('KDP010_233')}</div>
-					<textarea tabindex="4" data-bind="ntsMultilineEditor: { name: '#[KDP010_233]',value: commentDaily, constraint: 'PageComment' }" />
+					<textarea id="pageComment" tabindex="4" data-bind="ntsMultilineEditor: { name: '#[KDP010_233]',value: stampPageComment.pageComment, constraint: 'PageComment' }" />
 				</div>
 				<div class="row">				
 					<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDP010_234')}</div>
-					<div tabindex="5" class="colorpicker" data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_234]' }" />
+					<div tabindex="5" class="colorpicker" data-bind="ntsColorPicker: {value: stampPageComment.commentColor, enable: true, width: 50, name:'#[KDP010_234]' }" />
 				</div>
 				<div class="row">
 					<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDP010_235')}</div>
 					<div class="buton-setting">
 						<table>
 							<tr>
-								<td data-bind="with: btn1">
-									<button tabindex="5" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
+								<td>
+									<button id="btn1" tabindex="5" data-bind="
+										click: setting.bind($data,1), 
+										text: btn1.usrArt() == 1 ?btn1.buttonDisSet.buttonNameSet.buttonName:'', 
+										style:{
+											color: btn1.usrArt() == 1 ? btn1.buttonDisSet.buttonNameSet.textColor: '',
+											'background-color': btn1.usrArt() == 1 ? btn1.buttonDisSet.backGroundColor: '#D9D9D9'
+										}"></button>
 								</td>
-								<td data-bind="with: btn2">
-									<button tabindex="6" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
+								<td>
+									<button tabindex="6" data-bind="
+										click: setting.bind($data,2),
+										text: btn2.usrArt() == 1 ?btn2.buttonDisSet.buttonNameSet.buttonName:'', 
+										style:{
+											color: btn2.usrArt() == 1 ? btn2.buttonDisSet.buttonNameSet.textColor: '',
+											'background-color': btn2.usrArt() == 1 ? btn2.buttonDisSet.backGroundColor: '#D9D9D9'
+										}"></button>
 								</td>
 							</tr>
 							<tr>
-								<td data-bind="with: btn3">
-									<button tabindex="7" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
+								<td>
+									<button tabindex="7" data-bind="
+										click: setting.bind($data,3), 
+										text: btn3.usrArt() == 1 ?btn3.buttonDisSet.buttonNameSet.buttonName:'', 
+										style:{
+											color: btn3.usrArt() == 1 ? btn3.buttonDisSet.buttonNameSet.textColor: '',
+											'background-color': btn3.usrArt() == 1 ? btn3.buttonDisSet.backGroundColor: '#D9D9D9'
+										}"></button>
 								</td>
-								<td data-bind="with: btn4">
-									<button tabindex="8" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
+								<td>
+									<button tabindex="8" data-bind="
+										click: setting.bind($data,4),
+										text: btn4.usrArt() == 1 ?btn4.buttonDisSet.buttonNameSet.buttonName:'', 
+										style:{
+											color: btn4.usrArt() == 1 ? btn4.buttonDisSet.buttonNameSet.textColor: '',
+											'background-color': btn4.usrArt() == 1 ? btn4.buttonDisSet.backGroundColor: '#D9D9D9'
+										}"></button>
 								</td>
 							</tr>
 							<tr>
-								<td data-bind="with: btn5">
-									<button tabindex="9" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
+								<td>
+									<button tabindex="9" data-bind="
+										click: setting.bind($data,5), 
+										text: btn5.usrArt() == 1 ?btn5.buttonDisSet.buttonNameSet.buttonName:'', 
+										style:{
+											color: btn5.usrArt() == 1 ? btn5.buttonDisSet.buttonNameSet.textColor: '',
+											'background-color': btn5.usrArt() == 1 ? btn5.buttonDisSet.backGroundColor: '#D9D9D9'
+										}"></button>
 								</td>
-								<td data-bind="with: btn6">
-									<button tabindex="10" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
+								<td>
+									<button tabindex="10" data-bind="
+										click: setting.bind($data,6),
+										text: btn6.usrArt() == 1 ?btn6.buttonDisSet.buttonNameSet.buttonName:'', 
+										style:{
+											color: btn6.usrArt() == 1 ? btn6.buttonDisSet.buttonNameSet.textColor: '',
+											'background-color': btn6.usrArt() == 1 ? btn6.buttonDisSet.backGroundColor: '#D9D9D9'
+										}"></button>
 								</td>
 							</tr>
 						</table>
 					</div>
 				</div>
-				
-				
 			</div>
 		</ui:define>
 	</ui:composition>

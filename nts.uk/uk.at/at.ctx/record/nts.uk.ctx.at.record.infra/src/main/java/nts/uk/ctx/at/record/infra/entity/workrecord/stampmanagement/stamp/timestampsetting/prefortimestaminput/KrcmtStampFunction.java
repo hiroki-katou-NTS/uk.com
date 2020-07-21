@@ -12,10 +12,10 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInput;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplay;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * 
+ * 	
  * @author chungnt
  *
  */
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 @Table(name = "KRCMT_STAMP_FUNCTION")
-public class KrcmtStampFunction extends UkJpaEntity implements Serializable {
+public class KrcmtStampFunction extends ContractUkJpaEntity implements Serializable {
 
 	/**
 	 * 
@@ -64,6 +64,6 @@ public class KrcmtStampFunction extends UkJpaEntity implements Serializable {
 	public void update(CommonSettingsStampInput domain, Optional<StampResultDisplay> display) {
 		this.recordDisplayArt = display.isPresent() ? display.get().getUsrAtr().value : 0;
 		this.googleMapUseArt = domain.isGooglemap() ? 1 : 0;
-		this.mapAddress = domain.getMapAddres().v();
+		domain.getMapAddres().ifPresent(c-> this.mapAddress = c.v());
 	}
 }

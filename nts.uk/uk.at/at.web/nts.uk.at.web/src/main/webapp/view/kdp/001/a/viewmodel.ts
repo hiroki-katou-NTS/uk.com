@@ -165,10 +165,11 @@ class KDP001AViewModel extends ko.ViewModel {
 					if (_.has(setting, 'portalStampSettings.displaySettingsStampScreen.serverCorrectionInterval')) {
 						vm.settingCountTime(setting.portalStampSettings.displaySettingsStampScreen.serverCorrectionInterval);
 					}
-
 					if (_.has(setting, 'portalStampSettings.displaySettingsStampScreen.resultDisplayTime')) {
 						vm.resultDisplayTime(setting.portalStampSettings.displaySettingsStampScreen.resultDisplayTime);
 					}
+
+
 
 
 

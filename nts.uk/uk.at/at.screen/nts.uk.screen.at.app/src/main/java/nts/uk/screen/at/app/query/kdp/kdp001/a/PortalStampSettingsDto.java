@@ -26,10 +26,10 @@ public class PortalStampSettingsDto {
 	private List<ButtonSettingsDto> buttonSettings;
 
 	// 打刻ボタンを抑制する
-	private Boolean suppressStampBtn;
+	private Integer suppressStampBtn;
 
 	// トップメニューリンク利用する
-	private Boolean useTopMenuLink;
+	private Integer useTopMenuLink;
 
 	public static PortalStampSettingsDto fromDomain(PortalStampSettings portalStampSettings) {
 
@@ -38,6 +38,6 @@ public class PortalStampSettingsDto {
 
 		return new PortalStampSettingsDto(portalStampSettings.getCid(),
 				DisplaySettingsStampScreenDto.fromDomain(portalStampSettings.getDisplaySettingsStampScreen()),
-				buttonSettings, portalStampSettings.isButtonEmphasisArt(), portalStampSettings.isToppageLinkArt());
+				buttonSettings, portalStampSettings.isButtonEmphasisArt() ? 1 : 0, portalStampSettings.isToppageLinkArt() ? 1 : 0);
 	}
 }

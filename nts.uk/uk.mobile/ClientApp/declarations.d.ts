@@ -142,6 +142,7 @@ declare module "vue/types/vue" {
             };
         };
         readonly $dt: {
+            readonly now: Date;
             (value: Date, format?: string): string;
             date(value: Date, format?: string): string;
             fromString(value: string, format?: string): Date;
