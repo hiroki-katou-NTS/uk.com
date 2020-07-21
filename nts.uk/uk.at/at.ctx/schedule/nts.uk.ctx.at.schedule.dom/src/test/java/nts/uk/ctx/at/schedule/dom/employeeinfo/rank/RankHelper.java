@@ -19,4 +19,12 @@ public class RankHelper {
 						new RankCode("02"), 
 						new RankCode("03")));
 	}
+	
+	public static class EmployeeRankInfor {
+		public static EmpRankInfor get() {
+			return new EmpRankInfor("sid", null, null);
+		}
+	}
+
 }
+

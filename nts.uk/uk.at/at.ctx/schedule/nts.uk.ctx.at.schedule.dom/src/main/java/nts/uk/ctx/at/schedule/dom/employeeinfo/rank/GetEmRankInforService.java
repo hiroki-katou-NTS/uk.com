@@ -28,14 +28,14 @@ public class GetEmRankInforService {
 			//if $社員ランク.empty				
 			if (employeeRank == null) {
 				//	return 社員ランク情報.ランクなしで作る($)	
-				return  EmpRankInfor.makeWithoutRank(mapper);
+				return EmpRankInfor.makeWithoutRank(mapper);
 			}
 			//$ランク = $ランクMap.get($社員ランク.ランクコード)												
 			Rank rank = mapRankBycode.get(employeeRank.getEmplRankCode().v());
 			
 			if (rank == null) {
 				//社員ランク情報.ランクなしで作る($)
-				return new EmpRankInfor(mapper);
+				return EmpRankInfor.makeWithoutRank(mapper);
 			}
 			//	return 社員ランク情報.作る($, ＄ランク.ランクコード, $ランク.ランク記号)
 			return EmpRankInfor.create(mapper, new RankCode(rank.getRankCode().v()), new RankSymbol(rank.getRankSymbol().v()));
