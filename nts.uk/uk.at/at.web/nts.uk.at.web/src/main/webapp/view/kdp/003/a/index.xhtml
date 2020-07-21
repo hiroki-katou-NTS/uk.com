@@ -59,9 +59,9 @@
 						<div tabindex="2" data-bind="component: {
 								name: 'kdp-tab-button-panel',
 								params: { 
-									tabs: tabs,
-									stampToSuppress: stampToSuppress,
-									click: function(btn) { stampButtonClick.apply($vm, [btn]); }
+									tabs: $vm.buttonPage.tabs,
+									stampToSuppress: $vm.buttonPage.stampToSuppress,
+									click: function(btn, layout) { $vm.stampButtonClick.apply($vm, [btn, layout]); }
 								}
 							}"></div>
 					</div>
