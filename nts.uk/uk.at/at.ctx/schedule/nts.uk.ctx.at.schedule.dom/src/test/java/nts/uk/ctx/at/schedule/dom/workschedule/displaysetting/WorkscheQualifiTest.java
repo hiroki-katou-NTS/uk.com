@@ -5,17 +5,19 @@ import org.junit.runner.RunWith;
 
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
-/**
- * 
- * @author HieuLt
- *
- */
+
+
 @RunWith(JMockit.class)
-public class PersonalConditionTest {
-	
+public class WorkscheQualifiTest {
 	
 	@Test
 	public void getter(){
-		NtsAssert.invokeGetters(PersonalConditionHelper.getData());
+		WorkscheQualifi target = WorkscheQualifiHelper.Dummy;
+		NtsAssert.invokeGetters(target);
 	}
+	@Test
+	public void getMsg(){
+		//Lam tiep di ban =))
+	}
+
 }
