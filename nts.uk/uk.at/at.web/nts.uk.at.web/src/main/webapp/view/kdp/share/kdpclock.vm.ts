@@ -1,4 +1,4 @@
-/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+/// <reference path="../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kdp.share {
 	const template = `
@@ -50,7 +50,7 @@ module nts.uk.at.view.kdp.share {
 				vm.settings({ textColor, backGroundColor });
 			}
 
-			setInterval(() => vm.time(vm.$date.now()), 1000);
+			setInterval(() => vm.time(vm.$date.now()), 100);
 		}
 
 		mounted() {

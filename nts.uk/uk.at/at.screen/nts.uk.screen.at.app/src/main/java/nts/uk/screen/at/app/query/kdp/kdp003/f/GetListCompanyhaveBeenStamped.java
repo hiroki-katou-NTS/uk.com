@@ -33,18 +33,24 @@ public class GetListCompanyhaveBeenStamped {
 	 * 【output】 ・打刻会社一覧
 	 */
 	public List<GetListCompanyHasStampedDto> getListOfCompaniesHaveBeenStamped(Optional<String> cid) {
-
 		// 1.get
 		String contractCd = AppContexts.user().contractCode();
 		Boolean isAbolition = false;
 		List<GetListCompanyHasStampedDto> resultList = new ArrayList<>();
+		
 		List<CompanyExportForKDP003> listCompany = companyPub.get(contractCd, cid, isAbolition);
+		
 		if (listCompany.isEmpty()) {
 			return new ArrayList<GetListCompanyHasStampedDto>();
 		}
+		
+		// 2020/06/12　EA3789
+		// 未作成のため、利用区分はすべて「利用する」で返してください。
 		resultList = listCompany.stream().map(item -> new GetListCompanyHasStampedDto(item.getCompanyCode(), item.getCompanyName(),
 				item.getCompanyId(), item.getContractCd(), true, true, true)).collect(Collectors.toList());
+		
 		resultList.sort(Comparator.comparing(GetListCompanyHasStampedDto::getCompanyCode));
+		
 		return resultList;
 
 	}

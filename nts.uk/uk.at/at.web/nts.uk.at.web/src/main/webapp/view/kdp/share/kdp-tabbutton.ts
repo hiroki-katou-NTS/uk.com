@@ -9,19 +9,19 @@ module nts.uk.at.view.kdp.share {
 				<li class="ui-tabs-tab ui-corner-top ui-state-default ui-tab"
 						data-bind="
 							css: {
-								'ui-tabs-active ui-state-active': stampPageName === ko.toJS($component.selected)
+								'ui-tabs-active ui-state-active': ko.toJS($component.selected) === pageNo
 							}
 						">
 					<a href="#" tabindex="-1" class="ui-tabs-anchor"
 							data-bind="
 								text: stampPageName,
-								click: function() { $component.selected(stampPageName); }
+								click: function() { $component.selected(pageNo); }
 							"></a>
 				</li>
 			</ul>
 			<div class="ui-tabs-panel ui-corner-bottom ui-widget-content" data-bind="foreach: filteredTabs">
 				<div class="grid-container" data-bind="
-						if: ko.toJS($component.selected) === stampPageName,
+						if: ko.toJS($component.selected) === pageNo,
 						css: 'btn-layout-type-' + buttonLayoutType">
 					<!-- ko foreach: buttonSettings -->
 					<button class="stamp-rec-btn" data-bind="btn-setting: $data, click: function() { $component.params.click($data, ko.toJS($component.currentTab)); }"></button>
@@ -56,7 +56,7 @@ module nts.uk.at.view.kdp.share {
 		template: tabButtonTempate
 	})
 	export class kdpTabButtonComponent extends ko.ViewModel {
-		selected: KnockoutObservable<string> = ko.observable('');
+		selected: KnockoutObservable<number> = ko.observable(0);
 
 		currentTab!: KnockoutComputed<PageLayout>;
 
@@ -92,7 +92,7 @@ module nts.uk.at.view.kdp.share {
 						if (data && data.length) {
 							const first = data[0];
 
-							vm.selected(first.stampPageName);
+							vm.selected(first.pageNo);
 						}
 					}
 				}
@@ -110,7 +110,7 @@ module nts.uk.at.view.kdp.share {
 							.attr('tabindex', $el.data('tabindex'));
 					})
 
-					return _.find(filteredTabs, (d) => d.stampPageName === selected) || {
+					return _.find(filteredTabs, (d) => d.pageNo === selected) || {
 						pageNo: -1,
 						buttonLayoutType: -1,
 						buttonSettings: [],
