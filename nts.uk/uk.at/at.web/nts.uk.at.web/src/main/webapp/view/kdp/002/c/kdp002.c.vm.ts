@@ -63,7 +63,7 @@ module nts.uk.at.view.kdp002.c {
 
 				service.startScreen(data).done((res) => {
 					console.log(res);
-					let itemIds = [28, 29, 31, 34], itemsFiller = [];
+					let itemIds = ["TIME", "AMOUNT", "TIME_WITH_DAY", "DAYS", "COUNT", "CLOCK"], itemsFiller = [];
 					if (res) {
 						if (_.size(res.stampRecords) > 0) {
 
@@ -104,7 +104,7 @@ module nts.uk.at.view.kdp002.c {
 							}
 
 							itemsFiller =
-								_.filter(res.itemValues, function(o) { return itemIds.indexOf(o.itemId) != -1 && o.value != '' });
+								_.filter(res.itemValues, function(o) { return itemIds.indexOf(o.valueType) != -1 && o.value != '' });
 
 							self.items(res.itemValues);
 						}
