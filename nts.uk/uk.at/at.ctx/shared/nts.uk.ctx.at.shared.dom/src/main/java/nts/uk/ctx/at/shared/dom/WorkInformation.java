@@ -11,11 +11,13 @@ import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
@@ -96,19 +98,19 @@ public class WorkInformation {
 				return ErrorStatusWorkInfo.WORKTIME_ARE_REQUIRE_NOT_SET;
 			}
 			break;
-		case OPTIONAL:
+		case OPTIONAL:// 任意
 			// @就業時間帯コード ==null
-			if (this.getWorkTimeCode() == null) {
-				return ErrorStatusWorkInfo.NORMAL;
-			}
+//			if (this.getWorkTimeCode() == null) {
+//				return ErrorStatusWorkInfo.NORMAL;
+//			}
 			break;
-		default:
-			// @就業時間帯コード ==null
-			if (this.getWorkTimeCode() == null) {
-				return ErrorStatusWorkInfo.NORMAL;
-			}
+		default: // 不要
 			// @就業時間帯コード.isPresent
-			return ErrorStatusWorkInfo.WORKTIME_ARE_SET_WHEN_UNNECESSARY;
+			if (this.getWorkTimeCode() != null) {
+				return ErrorStatusWorkInfo.WORKTIME_ARE_SET_WHEN_UNNECESSARY;
+//				return ErrorStatusWorkInfo.NORMAL;
+			}
+//			return ErrorStatusWorkInfo.WORKTIME_ARE_SET_WHEN_UNNECESSARY;
 
 		}
 
@@ -119,6 +121,13 @@ public class WorkInformation {
 		if (!workTimeSetting.isPresent()) {
 			return ErrorStatusWorkInfo.WORKTIME_WAS_DELETE;
 		}
+		
+		if(workType.get().getDeprecate() == DeprecateClassification.Deprecated) {
+			return ErrorStatusWorkInfo.WORKTYPE_WAS_ABOLISHED;
+		}
+		if(workTimeSetting.get().getAbolishAtr() == AbolishAtr.ABOLISH ) {
+			return ErrorStatusWorkInfo.WORKTIME_HAS_BEEN_ABOLISHED;
+		}
 
 		return ErrorStatusWorkInfo.NORMAL;
 	}
@@ -128,12 +137,12 @@ public class WorkInformation {
 	 * 
 	 * @return WorkStyle 出勤休日区分
 	 */
-	public WorkStyle getWorkStyle(Require require) {
+	public Optional<WorkStyle> getWorkStyle(Require require) {
 		WorkStyle workStyle = require.checkWorkDay(this.workTypeCode.v());
 		if (workStyle == null) {
-			throw new BusinessException("Msg_1636");
+			return Optional.empty();
 		}
-		return workStyle;
+		return Optional.of(workStyle);
 	}
 
 	/**
