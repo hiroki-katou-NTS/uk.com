@@ -3,6 +3,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExtBudgetTime;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
 /**
@@ -29,7 +30,7 @@ public class ExtBudgetDaily implements DomainAggregate{
 	/** 外部予算実績値  **/
 	@Getter
 	private ExtBudgetActualValue actualValue;
-	
+
 	
 	
 	

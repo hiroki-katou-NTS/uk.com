@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 
 /**
  * シフトマスタと出勤休日区分の組み合わせを取得する
@@ -23,11 +24,11 @@ public class GetCombinationrAndWorkHolidayAtrService {
 	 * @param lstShiftMasterCd
 	 * @return
 	 */
-	public static Map<ShiftMaster,Optional<WorkStyle>> getCode(Require require , String companyID , List<String> lstShiftMasterCd){
+	public static Map<ShiftMaster,Optional<WorkStyle>> getCode(Require require,WorkInformation.Require requireWorkinfo , String companyID , List<String> lstShiftMasterCd){
 		//	$シフトマスタリスト = require.コードでシフトマスタ取得(会社ID, シフトマスタコードリスト)	
 		List<ShiftMaster> lstShiftMater = require.getByListEmp(companyID, lstShiftMasterCd);
 		// retrurn	[prv-1] 出勤休日区分をセット($シフトマスタリスト)
-		return setWorkHolidayClassification(require, lstShiftMater);		
+		return setWorkHolidayClassification(requireWorkinfo, lstShiftMater);		
 	}
 	/**
 	 * [2] 勤務情報で取得する
@@ -36,9 +37,9 @@ public class GetCombinationrAndWorkHolidayAtrService {
 	 * @param lstWorkInformation
 	 * @return
 	 */
-	public static Map<ShiftMaster,Optional<WorkStyle>> getbyWorkInfo(Require require , String companyId , List<WorkInformation> lstWorkInformation){
+	public static Map<ShiftMaster,Optional<WorkStyle>> getbyWorkInfo(Require require,WorkInformation.Require requireWorkinfo , String companyId , List<WorkInformation> lstWorkInformation){
 		List<ShiftMaster> listShiftMaster = require.getByListWorkInfo(companyId,lstWorkInformation);
-		return setWorkHolidayClassification(require, listShiftMaster);
+		return setWorkHolidayClassification(requireWorkinfo, listShiftMaster);
 	}
 	
 	/**
@@ -47,7 +48,7 @@ public class GetCombinationrAndWorkHolidayAtrService {
 	 * @param listShiftMaster
 	 * @return
 	 */
-	private static Map<ShiftMaster,Optional<WorkStyle>> setWorkHolidayClassification(nts.uk.ctx.at.shared.dom.WorkInformation.Require requireWorkinfo , List<ShiftMaster> listShiftMaster){
+	private static Map<ShiftMaster,Optional<WorkStyle>> setWorkHolidayClassification(WorkInformation.Require requireWorkinfo , List<ShiftMaster> listShiftMaster){
 		Map<ShiftMaster,Optional<WorkStyle>> map = new HashMap<>();
 		for(ShiftMaster sm : listShiftMaster) {
 			map.put(sm, sm.getWorkStyle(requireWorkinfo));
