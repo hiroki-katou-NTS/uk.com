@@ -30,19 +30,19 @@ public enum ApplicationType {
 	BREAK_TIME_APPLICATION(7, "休出時間申請","KAF0010","A",null),
 	
 	/** 打刻申請（外出許可） */
-	STAMP_APPLICATION(8, "打刻申請（外出許可）","KAF002","A","0"),
+	STAMP_APPLICATION(8, "打刻申請（外出許可）","KAF002","A",null),
 	
 	/** 打刻申請（出退勤漏れ） */
-	STAMP_NR_APPLICATION(9, "打刻申請（出退勤漏れ）","KAF002","A","0"),
+	STAMP_NR_APPLICATION(9, "打刻申請（出退勤漏れ）","KAF002","A",null),
 	
 	/** 打刻申請（打刻取消） */
-	REGISTER_TIME_CARD_DELETE(10, "打刻申請（打刻取消）","KAF002","A","0"),
+	REGISTER_TIME_CARD_DELETE(10, "打刻申請（打刻取消）","KAF002","A",null),
 	
 	/** 打刻申請（レコーダイメージ） */
-	REGISTER_TIME_CARD_IMAGE(11, "打刻申請（レコーダイメージ）","KAF002","A","1"),
+	REGISTER_TIME_CARD_IMAGE(11, "打刻申請（レコーダイメージ）","KAF002","B",null),
 	
 	/** 打刻申請（その他） */
-	REGISTER_TIME_CARD_OTHER(12, "打刻申請（その他）","KAF002","A","0"),
+	REGISTER_TIME_CARD_OTHER(12, "打刻申請（その他）","KAF002","A",null),
 	
 	/** 時間年休申請 */
 	ANNUAL_HD_APPLICATION(13, "時間年休申請",null,null,null),
