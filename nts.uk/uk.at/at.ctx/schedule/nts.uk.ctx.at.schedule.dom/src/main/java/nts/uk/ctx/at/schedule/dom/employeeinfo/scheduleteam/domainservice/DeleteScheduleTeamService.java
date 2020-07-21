@@ -5,7 +5,7 @@ import nts.arc.task.tran.AtomTask;
 /**
  * スケジュールチームを削除する
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.社員情報.スケジュールチーム
- * @author kingo
+ * @author HieuLT
  *
  */
 public class DeleteScheduleTeamService {
@@ -17,12 +17,9 @@ public class DeleteScheduleTeamService {
 			return AtomTask.of(() -> {
 				require.deleteScheduleTeam( WKPGRPID, scheduleTeamCd);
 				require.deleteBelongScheduleTeam( WKPGRPID, scheduleTeamCd);
-			});
-			
+			});	
 		} 
-		
-		
-		
+	
 		/**
 		 * [R-1] スケジュールチームを削除する			
 		 * @param companyID

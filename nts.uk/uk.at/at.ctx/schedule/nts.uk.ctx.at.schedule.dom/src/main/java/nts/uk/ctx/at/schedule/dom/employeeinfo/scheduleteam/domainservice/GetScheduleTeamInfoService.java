@@ -14,8 +14,13 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeam;
  */
 public class GetScheduleTeamInfoService {
 	
-	
+	// 取得する
 	public static List<EmpTeamInfor> get(Require require, List<String> lstEmpId){
+		
+		//  $所属スケジュールチームリスト = require.所属スケジュールチームを取得する(社員リスト)	
+		List<BelongScheduleTeam> lstBelongScheduleTeam  = require.get(lstEmpId);
+		
+		//workPlaceID = lstBelongScheduleTeam
 		return 	null;
 	}
 	
@@ -33,7 +38,7 @@ public class GetScheduleTeamInfoService {
 		 * @param empID
 		 * @return
 		 */
-		Optional<BelongScheduleTeam> get(String companyID , List<String> empID);
+		List<BelongScheduleTeam> get(List<String> lstEmpId);
 		
 		/**
 		 * スケジュールチームRepository																								
@@ -42,6 +47,6 @@ public class GetScheduleTeamInfoService {
 		 * @param listWKPGRPID
 		 * @return
 		 */
-		List<ScheduleTeam> getAllSchedule(String companyID , List<String> listWKPGRPID );
+		List<ScheduleTeam> getAllSchedule( List<String> listWKPGRPID );
 	}
 }

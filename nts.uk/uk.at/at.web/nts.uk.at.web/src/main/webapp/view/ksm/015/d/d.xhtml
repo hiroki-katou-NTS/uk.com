@@ -1,0 +1,66 @@
+
+<div>
+	<div class="sidebar-content-header">
+		<span class="title">#{i18n.getText('Com_Workplace')}</span>
+		<!-- Go back Style -->
+		<!-- B5 -->
+		<a class="goback"
+			data-bind="ntsLinkButton: { jump: '/view/ksm/015/a/index.xhtml' }">#{i18n.getText('KSM015_11')}</a>
+		<!-- C1 -->
+		<button tabindex="1" class="proceed" id="register-btn"
+			data-bind="click: register">#{i18n.getText('KSM015_8')}</button>
+		<!-- C2 -->
+		<button class="danger" tabindex="3"
+			data-bind="click: deleteWkpGroup, disable: registerForm().newMode">
+			#{i18n.getText('KSM015_9')}</button>
+		<!-- C3 -->
+		<button tabindex="2" data-bind="click: exportExcel">
+			#{i18n.getText('KSM015_21')}</button>
+	</div>
+	<div class="contents-area">
+		<div id="ksm007">
+			<div class="pull-left" style="width: 480px;">
+				<workplace-group params="options: options"> </workplace-group>
+			</div>
+			<div class="pull-left" style="width: 700px;">
+				<div id="register-form-d">
+					<!-- A4 -->
+					<div id="form-title">
+          <span>#{i18n.getText('Com_Workplace')} :</span>
+          <span data-bind="text: currentNames()"></span>
+        </div>
+
+        <div class="valign-center control-group">
+          <div data-bind="ntsFormLabel: {required: true}">
+            #{i18n.getText('KSM015_23',["#Com_Workplace"])}
+          </div>
+        </div>
+
+					<!-- A7 -->
+					<div class="valign-center control-group">
+						<button class="small" tabindex="8"
+							data-bind="click: openDialogCDL008">
+							#{i18n.getText('KSM007_11')}</button>
+						<button class="small" tabindex="9"
+							data-bind="click: removeWorkplace">
+							#{i18n.getText('KSM007_12')}</button>
+					</div>
+					<!-- A8 -->
+					<div>
+						<table id="workplace-list"
+							data-bind="ntsGridList: {
+								height: 350,
+                				width: 800,
+				                dataSource: registerForm().workplaces,
+				                optionsValue: 'workplaceId',
+				                columns: registerForm().gridColumns,
+				                multiple: true,
+				                value: registerForm().selectedWorkplaces
+				            }"></table>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>

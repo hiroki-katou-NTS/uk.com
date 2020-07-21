@@ -11,10 +11,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.PersonSymbolQu
 
 public class DisplayControlPersonalConditionHelper {
 	
-	
 
-		
-		
 		public static List<QualificationCD> getLst(){
 			String qualificationCD1 = "QualificationCD1";
 			String qualificationCD2 = "QualificationCD2";
