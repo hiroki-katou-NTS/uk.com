@@ -19,8 +19,11 @@ import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDi
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeService;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
@@ -41,12 +44,9 @@ public class AppWorkChangeFinder {
 
 	@Inject
 	private AppWorkChangeService appWorkChangeService;
-
+	
 	@Inject
-	private IFactoryApplication iFactoryApplication;
-
-	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private CommonAlgorithm commonAlgorithm;
 
 	public AppWorkChangeSetDto_Old findByCom() {
 		String companyId = AppContexts.user().companyId();
@@ -65,8 +65,16 @@ public class AppWorkChangeFinder {
 		String companyID = AppContexts.user().companyId();
 		List<GeneralDate> dateLst = param.dateLst.stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd"))
 				.collect(Collectors.toList());
-		AppWorkChangeDispInfo appWorkChangeDispInfo = appWorkChangeService.getStartNew(companyID, param.empLst,
-				dateLst);
+		// 共通申請
+		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(
+				companyID, 
+				ApplicationType.WORK_CHANGE_APPLICATION, 
+				param.empLst, 
+				dateLst, 
+				true,
+				Optional.empty(),
+				Optional.empty());
+		AppWorkChangeDispInfo appWorkChangeDispInfo = appWorkChangeService.getStartNew(companyID, param.empLst, dateLst, appDispInfoStartupOutput);
 		return AppWorkChangeDispInfoDto.fromDomain(appWorkChangeDispInfo);
 	}
 

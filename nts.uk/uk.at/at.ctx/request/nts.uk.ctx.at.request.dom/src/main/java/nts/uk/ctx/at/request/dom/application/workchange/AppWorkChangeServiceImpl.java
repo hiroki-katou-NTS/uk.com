@@ -111,20 +111,14 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	}
 	
 	@Override
-	public AppWorkChangeDispInfo getStartNew(String companyID, List<String> employeeIDLst, List<GeneralDate> dateLst) {
+	public AppWorkChangeDispInfo getStartNew(String companyID, List<String> employeeIDLst, List<GeneralDate> dateLst,
+			AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		AppWorkChangeDispInfo result = new AppWorkChangeDispInfo();
-		// 共通申請
-		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(
-				companyID, 
-				ApplicationType.WORK_CHANGE_APPLICATION, 
-				employeeIDLst, 
-				dateLst, 
-				true,
-				Optional.empty(),
-				Optional.empty());
+		// 勤務変更申請設定を取得する
+		AppWorkChangeSettingOutput appWorkChangeSettingOutput = this.getAppWorkChangeSettingOutput(companyID);
 		// ドメインモデル「勤務変更申請設定」を取得する
 		AppWorkChangeSet appWorkChangeSet = appWorkChangeSetRepoNew.findByCompanyId(companyID).get();
-		AppEmploymentSet employmentSet = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet().get();
+		AppEmploymentSet employmentSet = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet().orElse(null);
 		// 勤務種類を取得
 		List<WorkType> workTypeLst = this.getWorkTypeLst(employmentSet);
 		// 勤務種類・就業時間帯の初期選択項目を取得する
@@ -146,6 +140,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		result.setPredetemineTimeSetting(changeWkTypeTimeOutput.getOpPredetemineTimeSetting());
 		result.setWorkTypeCD(Optional.of(workTypeCD));
 		result.setWorkTimeCD(Optional.of(workTimeCD));
+		result.setReflectWorkChangeApp(appWorkChangeSettingOutput.getAppWorkChangeReflect());
 		return result;
 	}
 

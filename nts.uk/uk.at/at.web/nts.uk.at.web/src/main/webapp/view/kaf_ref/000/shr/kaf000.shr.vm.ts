@@ -1,14 +1,21 @@
 module nts.uk.at.view.kaf000_ref.shr.viewmodel {
     export class Application {
         appID: string;
+        employeeIDLst: KnockoutObservableArray<string>;
         prePostAtr: KnockoutObservable<number>;
         appType: number
         appDate: KnockoutObservable<any>;
-        constructor(appID: string, prePostAtr: number, appType: number, appDate: any) {
+        opAppStandardReasonCD: KnockoutObservable<number>;
+        opAppReason: KnockoutObservable<string>;
+        constructor(appID: string, employeeIDLst: Array<string>, prePostAtr: number, appType: number, appDate: any, 
+            opAppStandardReasonCD: number, opAppReason: string) {
             this.appID = appID;
+            this.employeeIDLst = ko.observableArray(employeeIDLst);
             this.prePostAtr = ko.observable(prePostAtr);
             this.appType = appType;
             this.appDate = ko.observable(appDate);
+            this.opAppStandardReasonCD = ko.observable(opAppStandardReasonCD);
+            this.opAppReason = ko.observable(opAppReason);
         }        
     }       
     

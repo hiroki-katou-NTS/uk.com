@@ -30,7 +30,8 @@ public interface AppWorkChangeService {
 	 * @param dateLst 申請対象日リスト
 	 * @return
 	 */
-	public AppWorkChangeDispInfo getStartNew(String companyID, List<String> employeeIDLst, List<GeneralDate> dateLst);
+	public AppWorkChangeDispInfo getStartNew(String companyID, List<String> employeeIDLst, List<GeneralDate> dateLst, 
+			AppDispInfoStartupOutput appDispInfoStartupOutput);
 	
 	/**
 	 * 勤務種類を取得する
