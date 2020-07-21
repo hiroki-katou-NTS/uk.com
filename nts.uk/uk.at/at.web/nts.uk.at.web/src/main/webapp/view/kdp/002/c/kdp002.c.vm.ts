@@ -107,7 +107,7 @@ module nts.uk.at.view.kdp002.c {
 							self.items(res.itemValues);
 						}
 					}
-					if (res.confirmResult  {
+					if (res.confirmResult){
 						self.permissionCheck(res.confirmResult.permissionCheck == 1 && itemsFiller.length ? true : false);
 					} else {
 						self.displayButton(false);
