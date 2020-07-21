@@ -7,7 +7,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 /**
  * 所属スケジュールチーム	
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.社員情報.スケジュールチーム
- * @author kingo
+ * @author HieuLT
  *
  */
 @AllArgsConstructor

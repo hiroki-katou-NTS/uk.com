@@ -36,15 +36,15 @@ public class DateInformation {
 	/** 祝日であるか **/
 	private final boolean isHoliday;
 	/** 特定日であるか **/
-	private final boolean isSpecificDay = false;
+	private final boolean isSpecificDay;
 	/** 職場行事名称 **/
 	private final Optional<EventName> optWorkplaceEventName;
 	/** 会社行事名称 **/
 	private final Optional<EventName> optCompanyEventName;
 	/** 職場の特定日名称リスト **/
-	private final List<SpecificName> listSpecDayNameWorkplace = new ArrayList<>();
+	private final List<SpecificName> listSpecDayNameWorkplace;
 	/** 会社の特定日名称リスト **/
-	private final List<SpecificName> listSpecDayNameCompany = new ArrayList<>();
+	private final List<SpecificName> listSpecDayNameCompany;
 
 	/**
 	 * [C-1] 作成する
@@ -117,15 +117,11 @@ public class DateInformation {
 
 		}
 		boolean existPublicHoliday = require.getHolidaysByDate(ymd);
-		/*
-		 * return new DateInformation(ymd, ymd.dayOfWeekEnum(),
-		 * existPublicHoliday, isSpecificDay, Optional.ofNullable(new
-		 * EventName(workplaceEventName.v())), Optional.ofNullable(new
-		 * EventName(optCompanyEventName.v())), lstSpecDayNameWorkplace,
-		 * lstSpecDayNameCom);
-		 */
-		// -QAhttp://192.168.50.4:3000/issues/110662#note-3
-		return null;
+		return new DateInformation(ymd, ymd.dayOfWeekEnum(), existPublicHoliday, isSpecificDay,
+				Optional.ofNullable(new EventName(workplaceEventName.v())),
+				Optional.ofNullable(new EventName(optCompanyEventName.v())), lstSpecDayNameWorkplace,
+				lstSpecDayNameCom);
+
 	}
 
 	public static interface Require {
