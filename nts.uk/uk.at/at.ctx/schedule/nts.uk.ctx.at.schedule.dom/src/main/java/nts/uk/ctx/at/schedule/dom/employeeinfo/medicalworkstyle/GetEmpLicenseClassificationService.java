@@ -26,25 +26,25 @@ public class GetEmpLicenseClassificationService {
 		
 		mapNurseClassifiCode = listEmpMedicalWorkFormHisItem.stream().filter(x-> x.getOptMedicalWorkFormInfor().isPresent()).collect(Collectors
 				.toMap(EmpMedicalWorkFormHisItem::getEmpID, item -> item.getOptMedicalWorkFormInfor().get().getNurseClassifiCode()));
-		// $看護区分Map = require.会社の看護区分リストを取得する()		
+		
+		// $看護区分Map = require.会社の看護区分リストを取得する()
 		List<NurseClassification>  listNurseClassification = require.getListCompanyNurseCategory();
-		mapNurseClassifiCode.entrySet().forEach(action->{
-			Optional<NurseClassification> classfica = listNurseClassification.stream().filter(x-> x.getNurseClassifiCode().v() == action.getValue().v()).findFirst();
-			map.put(action.getValue(), classfica.get());
-		});
+		// $看護区分Map
+		map = listNurseClassification.stream().collect(Collectors.toMap(x-> x.getNurseClassifiCode(), x-> x));
 		
 		// $社員の看護区分コード = $社員の看護区分Map.get($)	
 		// listEmpMedicalWorkFormHisItem.
 		Map<String ,NurseClassifiCode> mapNurse = mapNurseClassifiCode;
+		Map<NurseClassifiCode ,NurseClassification> mapNurseClass = map;
 		return listEmp.stream().map(empId-> {
 			// 	$社員の看護区分コード = $社員の看護区分Map.get($)
 			NurseClassifiCode classifiCode = mapNurse.get(empId);
-			if(classifiCode.v() == null){
+			if(classifiCode == null){
 				return new EmpLicenseClassification(empId, Optional.empty());
 			}
 			
 			// $免許区分 = $免許区分Map.get($社員の看護区分コード)											
-			NurseClassification nurseClassification = map.get(classifiCode);
+			NurseClassification nurseClassification = mapNurseClass.get(classifiCode);
 			
 			if(nurseClassification == null){
 				return new EmpLicenseClassification(empId, Optional.empty());
