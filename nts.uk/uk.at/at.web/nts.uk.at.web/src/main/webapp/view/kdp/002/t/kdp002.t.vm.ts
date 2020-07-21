@@ -71,90 +71,90 @@ module nts.uk.at.view.kdp002.t {
 
                     case 0:
                         let app = _.find(self.share.appDispNames, (app) => { return app.appType === 0 });
-                        btn.buttonName = app ? ko.observable(app.dispName + nts.uk.resource.getText('KDP002_101')) : ko.observable('');
+                        btn.buttonName = app ? ko.observable(app.dispName) : ko.observable('');
                         btn.appType = app.appType;
-                        btn.screen = '/view/kaf/005/a/index.xhtml?overworkatr=0';
+                        btn.screen = app.url;
                         break;
                     case 1:
                         let app = _.find(self.share.appDispNames, (app) => { return app.appType === 0 });
-                        btn.buttonName = app ? ko.observable(app.dispName + nts.uk.resource.getText('KDP002_101')) : ko.observable('');
+                        btn.buttonName = app ? ko.observable(app.dispName) : ko.observable('');
                         btn.appType = app.appType;
-                        btn.screen = '/view/kaf/005/a/index.xhtml?overworkatr=1';
+                        btn.screen = app.url;
                         break;
 
                     case 2:
                         let app = _.find(self.share.appDispNames, (app) => { return app.appType === 0 });
-                        btn.buttonName = app ? ko.observable(app.dispName + nts.uk.resource.getText('KDP002_101')) : ko.observable('');
+                        btn.buttonName = app ? ko.observable(app.dispName) : ko.observable('');
                         btn.appType = app.appType;
-                        btn.screen = '/view/kaf/005/a/index.xhtml?overworkatr=2';
+                        btn.screen = app.url;
                         break;
                     case 3:
                         let app = _.find(self.share.appDispNames, (app) => { return app.appType === 1 });
-                        btn.buttonName = app ? ko.observable(app.dispName + nts.uk.resource.getText('KDP002_101')) : ko.observable('');
+                        btn.buttonName = app ? ko.observable(app.dispName) : ko.observable('');
                         btn.appType = app.appType;
-                        btn.screen = '/view/kaf/006/a/index.xhtml';
+                        btn.screen = app.url;
                         break;
                     case 4:
                         let app = _.find(self.share.appDispNames, (app) => { return app.appType === 2 });
-                        btn.buttonName = app ? ko.observable(app.dispName + nts.uk.resource.getText('KDP002_101')) : ko.observable('');
+                        btn.buttonName = app ? ko.observable(app.dispName) : ko.observable('');
                         btn.appType = app.appType;
-                        btn.screen = '/view/kaf/007/a/index.xhtml';
+                        btn.screen = app.url;
                         break;
 
                     case 6:
                         let app = _.find(self.share.appDispNames, (app) => { return app.appType === 4 });
-                        btn.buttonName = app ? ko.observable(app.dispName + nts.uk.resource.getText('KDP002_101')) : ko.observable('');
+                        btn.buttonName = app ? ko.observable(app.dispName) : ko.observable('');
                         btn.appType = app.appType;
-                        btn.screen = '/view/kaf/009/a/index.xhtml';
+                        btn.screen = app.url;
                         break;
 
                     case 7:
                         let app = _.find(self.share.appDispNames, (app) => { return app.appType === 6 });
-                        btn.buttonName = app ? ko.observable(app.dispName + nts.uk.resource.getText('KDP002_101')) : ko.observable('');
+                        btn.buttonName = app ? ko.observable(app.dispName) : ko.observable('');
                         btn.appType = app.appType;
-                        btn.screen = '/view/kaf/010/a/index.xhtml';
+                        btn.screen = app.url;
                         break;
                     case 8:
                         let app = _.find(self.share.appDispNames, (app) => { return app.appType === 7 });
-                        btn.buttonName = app ? ko.observable(app.dispName + nts.uk.resource.getText('KDP002_101')) : ko.observable('');
+                        btn.buttonName = app ? ko.observable(app.dispName) : ko.observable('');
                         btn.appType = app.appType;
-                        btn.screen = '/view/kaf/002/a/index.xhtml';
+                        btn.screen = app.url;
                         //KAF002-打刻申請（外出許可）
                         transfer.stampRequestMode = 0;
                         transfer.screenMode = 1;
                         break;
                     case 9:
                         let app = _.find(self.share.appDispNames, (app) => { return app.appType === 7 });
-                        btn.buttonName = app ? ko.observable(app.dispName + nts.uk.resource.getText('KDP002_101')) : ko.observable('');
+                        btn.buttonName = app ? ko.observable(app.dispName) : ko.observable('');
                         btn.appType = app.appType;
-                        btn.screen = '/view/kaf/002/a/index.xhtml';
+                        btn.screen = app.url;
                         //KAF002-打刻申請（出退勤打刻漏れ）
                         transfer.stampRequestMode = 1;
                         transfer.screenMode = 1;
                         break;
                     case 10:
                         let app = _.find(self.share.appDispNames, (app) => { return app.appType === 7 });
-                        btn.buttonName = app ? ko.observable(app.dispName + nts.uk.resource.getText('KDP002_101')) : ko.observable('');
+                        btn.buttonName = app ? ko.observable(app.dispName) : ko.observable('');
                         btn.appType = app.appType;
-                        btn.screen = '/view/kaf/002/a/index.xhtml';
+                        btn.screen = app.url;
                         //KAF002-打刻申請（打刻取消）
                         transfer.stampRequestMode = 2;
                         transfer.screenMode = 1;
                         break;
                     case 11:
                         let app = _.find(self.share.appDispNames, (app) => { return app.appType === 7 });
-                        btn.buttonName = app ? ko.observable(app.dispName + nts.uk.resource.getText('KDP002_101')) : ko.observable('');
+                        btn.buttonName = app ? ko.observable(app.dispName) : ko.observable('');
                         btn.appType = app.appType;
-                        btn.screen = '/view/kaf/002/a/index.xhtml';
+                        btn.screen = app.url;
                         //KAF002-打刻申請（レコーダイメージ）
                         transfer.stampRequestMode = 3;
                         transfer.screenMode = 1;
                         break;
                     case 12:
                         let app = _.find(self.share.appDispNames, (app) => { return app.appType === 7 });
-                        btn.buttonName = app ? ko.observable(app.dispName + nts.uk.resource.getText('KDP002_101')) : ko.observable('');
+                        btn.buttonName = app ? ko.observable(app.dispName) : ko.observable('');
                         btn.appType = app.appType;
-                        btn.screen = '/view/kaf/002/a/index.xhtml';
+                        btn.screen = app.url;
                         //KAF002-打刻申請（その他）
                         transfer.stampRequestMode = 4;
                         transfer.screenMode = 1;
@@ -162,9 +162,9 @@ module nts.uk.at.view.kdp002.t {
 
                     case 14:
                         let app = _.find(self.share.appDispNames, (app) => { return app.appType === 10 });
-                        btn.buttonName = app ? ko.observable(app.dispName + nts.uk.resource.getText('KDP002_101')) : ko.observable('');
+                        btn.buttonName = app ? ko.observable(app.dispName) : ko.observable('');
                         btn.appType = app.appType;
-                        btn.screen = '/view/kaf/011/a/index.xhtml';
+                        btn.screen = app.url;
                         break;
 
                     default:

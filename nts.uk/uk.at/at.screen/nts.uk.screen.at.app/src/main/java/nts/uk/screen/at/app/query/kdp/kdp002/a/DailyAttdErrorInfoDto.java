@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto;
+package nts.uk.screen.at.app.query.kdp.kdp002.a;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,11 +18,11 @@ public class DailyAttdErrorInfoDto {
 	private List<DailyAttdErrorInfoTemp> dailyAttdErrorInfos = new ArrayList<>();
 	private List<AppDispNameExp> appDispNames;
 	
-	public DailyAttdErrorInfoDto(List<DailyAttdErrorInfo> list, List<AppDispNameExp> appDispNames) {
+	public DailyAttdErrorInfoDto(List<DailyAttdErrorInfo> list,List<AppDispNameExp> appDispNames) {
 		for (DailyAttdErrorInfo e : list) {
 			this.dailyAttdErrorInfos.add(new DailyAttdErrorInfoTemp(e));
 		}
-		this.appDispNames = appDispNames;
+		this.appDispNames= appDispNames;
 	}
 	
 	@Getter
