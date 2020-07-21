@@ -4,6 +4,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.De
 
 /**
  * refactor 4
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.申請承認.設定.会社別.申請承認設定.アルゴリズム.[No.239]申請締切設定を取得する
  * @author Doan Duy Hung
  *
  */
