@@ -68,8 +68,6 @@ module nts.uk.at.kdp003.f {
 			vm.companyText = ko.computed(() => {
 				const companyCode = ko.unwrap(model.companyCode);
 				const companyName = ko.unwrap(model.companyName);
-				
-				debugger;
 
 				if (companyCode && companyName) {
 					return `${companyCode} ${companyName}`;

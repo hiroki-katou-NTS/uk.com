@@ -261,8 +261,8 @@ module nts.uk.at.kdp003.a {
 				.then((data: StorageData) => {
 					return vm.$window.modal('/view/kdp/003/f/index.xhtml', {
 						mode: 'employee',
-						company: { id: data.CID },
-						employee: { id: data.SID, code: data.SCD }
+						companyId: data.CID,
+						employee: { id: data.SID, code: data.SCD, name: 'quake' }
 					});
 				})
 				.then((data: f.TimeStampLoginData) => {
