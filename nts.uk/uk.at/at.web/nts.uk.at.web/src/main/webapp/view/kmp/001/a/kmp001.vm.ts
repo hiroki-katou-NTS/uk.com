@@ -2,8 +2,20 @@
 
 module nts.uk.at.view.kmp001 {
 	export module a {
+		
 		@bean()
 		export class ViewModel extends ko.ViewModel {			
+			tabs: KnockoutObservableArray<string> = ko.observableArray([]);
+
+			mounted() {
+				const vm = this;
+
+				if (!!vm.$user.role.attendance) {
+					vm.tabs(['KMP001_1', 'KMP001_2', 'KMP001_3']);
+				} else {
+					vm.tabs(['KMP001_1']);
+				}
+			}
 		}
 	}
 
@@ -29,15 +41,15 @@ module nts.uk.at.view.kmp001 {
 		stampNumber: string;
 		checked: boolean;
 	}
-	
-	 export class StampCard {
+
+	export class StampCard {
 		stampCardId: KnockoutObservable<string> = ko.observable('');
 		stampNumber: KnockoutObservable<string> = ko.observable('');
 		checked = false;
 
 		constructor(params?: IStampCard) {
 			const model = this;
-			
+
 			model.stampCardId(params.stampCardId);
 			model.update(params);
 		}
@@ -67,7 +79,7 @@ module nts.uk.at.view.kmp001 {
 		stampCard: KnockoutObservableArray<StampCard> = ko.observableArray([]);
 		workplaceId: KnockoutObservable<string> = ko.observable('');
 		workplaceName: KnockoutObservable<string> = ko.observable('');
-		
+
 		selectedStampCardIndex: KnockoutObservable<number> = ko.observable(-1);
 		public create(params?: IModel) {
 			const self = this;
@@ -94,7 +106,7 @@ module nts.uk.at.view.kmp001 {
 				self.workplaceName(params.workplaceName);
 
 				self.stampCard(params.stampCardDto.map(m => new StampCard(m)));
-				
+
 				self.selectedStampCardIndex(0);
 			}
 		}

@@ -9,7 +9,9 @@ module nts.uk.at.view.kmp001.a {
 	<button data-bind="text: $i18n('KMP001_4'), click: addNew, enable: mode() == 'update'"></button>
 	<button class="proceed" data-bind="text: $i18n('KMP001_5')"></button>
 	<button class="danger" data-bind="text: $i18n('KMP001_6'), enable: mode() == 'update'"></button>
+	<!-- ko if: attendance -->
 	<button data-bind="text: $i18n('KMP001_7'), click: showDiaLog"></button>
+	<!-- /ko -->
 </div>
 <div class="view-kmp">
 	<div class="list-component float-left viewa">
@@ -33,6 +35,7 @@ module nts.uk.at.view.kmp001.a {
 		template
 	})
 	class ViewA extends ko.ViewModel {
+		attendance: KnockoutObservable<boolean> = ko.observable(true);
 
 		public employees: KnockoutObservableArray<IModel> = ko.observableArray([]);
 		public model: Model = new Model();
@@ -85,6 +88,12 @@ module nts.uk.at.view.kmp001.a {
 		mounted() {
 			const vm = this;
 			const dataFormate = 'YYYY/MM/DD';
+
+			if (!!vm.$user.role.attendance) {
+				vm.attendance(true);
+			} else {
+				vm.attendance(false);
+			}
 
 			$('#list-employee').ntsListComponent(
 				{
