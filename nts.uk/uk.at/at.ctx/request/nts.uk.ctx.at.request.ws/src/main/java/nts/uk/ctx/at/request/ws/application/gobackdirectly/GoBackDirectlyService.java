@@ -133,8 +133,8 @@ public class GoBackDirectlyService extends WebService {
 		String companyID = AppContexts.user().companyId();
 		return goBackDirectlyRegisterService.inconsistencyCheck(
 				companyID, 
-				command.getAppCommand().getApplicantSID(), 
-				command.getAppCommand().getApplicationDate());
+				command.getAppCommand().getEmployeeIDLst().get(0), 
+				command.getAppCommand().getAppDate());
 	}
 //	Refactor4
 //	start

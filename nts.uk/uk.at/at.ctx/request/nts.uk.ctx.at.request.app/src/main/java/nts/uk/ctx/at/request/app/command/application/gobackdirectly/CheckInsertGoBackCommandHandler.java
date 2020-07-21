@@ -41,10 +41,10 @@ public class CheckInsertGoBackCommandHandler extends CommandHandler<InsertApplic
 		Application_New newApp = Application_New.firstCreate(
 				companyId, 
 				EnumAdaptor.valueOf(command.appCommand.getPrePostAtr(), PrePostAtr_Old.class),  
-				command.appCommand.getApplicationDate(),
-				EnumAdaptor.valueOf(command.appCommand.getApplicationType(), ApplicationType_Old.class), 
-				command.appCommand.getEnteredPersonSID(),
-				new AppReason(command.appCommand.getApplicationReason()));
+				command.appCommand.getAppDate(),
+				EnumAdaptor.valueOf(command.appCommand.getAppType(), ApplicationType_Old.class), 
+				command.appCommand.getEmployeeIDLst().get(0),
+				new AppReason(command.appCommand.getOpAppReason()));
 		// get new GoBack Direct Item
 //		GoBackDirectly newGoBack = new GoBackDirectly(
 //				companyId, 

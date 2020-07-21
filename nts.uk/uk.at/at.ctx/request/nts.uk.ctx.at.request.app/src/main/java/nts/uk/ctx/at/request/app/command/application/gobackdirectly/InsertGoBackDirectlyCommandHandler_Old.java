@@ -44,7 +44,8 @@ public class InsertGoBackDirectlyCommandHandler_Old extends CommandHandlerWithRe
 	
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<InsertApplicationGoBackDirectlyCommand> context) {
-		String companyId = AppContexts.user().companyId();
+		// refactor 4 error 
+		/*String companyId = AppContexts.user().companyId();
 		InsertApplicationGoBackDirectlyCommand command = context.getCommand();
 		
 		//get new Application Item
@@ -106,6 +107,7 @@ public class InsertGoBackDirectlyCommandHandler_Old extends CommandHandlerWithRe
 		//勤務を変更する
 		
 		//直行直帰登録
-		return goBackDirectlyRegisterService.register(newGoBack, appRoot);
+		return goBackDirectlyRegisterService.register(newGoBack, appRoot);*/
+		return null;
 	}
 }

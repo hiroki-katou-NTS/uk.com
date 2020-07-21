@@ -47,7 +47,8 @@ public class UpdateGoBackDirectlyCommandHandler_Old extends CommandHandlerWithRe
 
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<UpdateApplicationGoBackDirectlyCommand> context) {
-		String companyId = AppContexts.user().companyId();
+		// refactor 4 error
+		/*String companyId = AppContexts.user().companyId();
 		UpdateApplicationGoBackDirectlyCommand command = context.getCommand();
 		
 		// get new Application Item
@@ -126,6 +127,7 @@ public class UpdateGoBackDirectlyCommandHandler_Old extends CommandHandlerWithRe
 				command.goBackCommand.workLocationCD2);
 		// update
 		
-		return this.goBackDirectlyUpdateService.updateGoBackDirectly(updateGoBack, updateApp, command.goBackCommand.version);
+		return this.goBackDirectlyUpdateService.updateGoBackDirectly(updateGoBack, updateApp, command.goBackCommand.version);*/
+		return null;
 	}
 }
