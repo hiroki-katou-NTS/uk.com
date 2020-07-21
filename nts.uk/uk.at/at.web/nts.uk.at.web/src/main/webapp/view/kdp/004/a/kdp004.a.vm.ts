@@ -273,7 +273,7 @@ module nts.uk.at.view.kdp004.a {
 									if (redirect === "loginPass") {
 										return self.openDialogF({
 											mode: 'fingerVein',
-											company: { id: vm.$user.companyId},
+											companyId: vm.$user.companyId,
 											employee: { id: vm.$user.employeeId, code: self.loginInfo.employeeCode, name: self.loginInfo.employeeName },
 											passwordRequired: true
 										});
