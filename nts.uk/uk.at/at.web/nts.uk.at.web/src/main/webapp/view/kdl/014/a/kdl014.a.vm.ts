@@ -3,6 +3,8 @@ module nts.uk.at.view.kdl014.a {
     import block = nts.uk.ui.block;
     import info = nts.uk.ui.dialog.info;
     import error = nts.uk.ui.dialog.error;
+    import getShared = nts.uk.ui.windows.getShared;
+    
     export class ScreenModel {
         empInfomationList = ko.observableArray([]);
         columns: any;
@@ -11,18 +13,15 @@ module nts.uk.at.view.kdl014.a {
         listComponentOption: any;
         employeeInputList = ko.observableArray([]);
         
-        //Param start
-        start: string; //YYYY/MM/DD
-        end:string; ////YYYY/MM/DD
-        mode: number; //mode = 0: person, mode = 1: date
-        listEmp = [];//{employeeId: 'ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570', employeeCode: '', employeeName: '', affiliationName: ''}
         dataServer = [];
+        
+        paramFromParent: ParamFromParent;
         
         constructor(){
             let self = this;
-            self.mode = 0;
+            self.paramFromParent = getShared('KDL014-PARAM');
             
-            if (self.mode == 1) {
+              if (self.paramFromParent.mode == 1) {
                 self.columns = ko.observableArray([
                     { headerText: getText("KDL014_11"), key: 'code', hidden: true },
                     { headerText: "<div style='text-align: center;'>"+getText("KDL014_12")+ "</div>" , key: 'name', width: 150},
@@ -32,7 +31,7 @@ module nts.uk.at.view.kdl014.a {
                     { headerText: "<div style='text-align: center;'>"+getText("KDL014_16")+ "</div>" , key: 'workLocationName', width: 200},
                     { headerText: "<div style='text-align: center;'>"+getText("KDL014_17")+ "</div>" , key: 'locationInfo', width: 50}
                 ]);
-            } else {
+            } else if (self.paramFromParent.mode == 0) {
                 self.columns = ko.observableArray([
                     { headerText: getText("KDL014_11"), key: 'code', hidden: true },
                     { headerText: getText("KDL014_12"), key: 'name', hidden: true },
@@ -44,9 +43,52 @@ module nts.uk.at.view.kdl014.a {
                 ]);
             }
                
-            self.employeeInputList.push({ id: 'ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570', code: 'A000000000001', businessName: '日通　純一郎1', workplaceName: '名古屋支店', depName: 'Dep Name' },
-                { id: '8f9edce4-e135-4a1e-8dca-ad96abe405d6', code: 'A000000000002', businessName: '日通　純一郎2', workplaceName: '名古屋支店', depName: 'Dep Name' });
-
+            let tg = [];
+            _.forEach(self.paramFromParent.listEmp, function(item) {
+                tg.push({ id: item.employeeId, code: item.employeeCode, businessName: item.employeeName, workplaceName: item.affiliationName, depName: '' });
+            });
+            self.employeeInputList(tg);
+            
+            self.selectedItem.subscribe((newValue) => {
+                self.filterGrid(newValue)
+            });
+            
+        }
+        
+        startPage(): JQueryPromise<any> {
+            let self = this;
+            
+            let dfd = $.Deferred();
+            block.grayout();
+            
+            if (self.paramFromParent) {
+                let param = {
+                    start: new Date(self.paramFromParent.startDate),
+                    end: new Date(self.paramFromParent.endDate),
+                    mode: self.paramFromParent.mode,
+                    listEmp: self.paramFromParent.listEmp
+                };
+                service.getInfo(param).done(function(data) {
+                    _.orderBy(data, ['name', 'stampDateTime'], ['asc', 'asc']);
+                    console.log(data);
+                    self.dataServer = data.listEmps;
+                    self.selectedItem(self.employeeInputList()[0].id);
+                    self.bindComponent();
+                    dfd.resolve();
+                }).fail(function(res) {
+                    error({ messageId: res.messageId });
+                }).always(function() {
+                    block.clear();
+                });
+            } else {
+                dfd.resolve();
+                block.clear();
+            } 
+            return dfd.promise();
+        }
+        
+        bindComponent(){
+            let self = this;
             $('#emp-component').ntsLoadListComponent({
                 systemReference: SystemType.EMPLOYMENT,
                 isDisplayOrganizationName: false,
@@ -54,41 +96,7 @@ module nts.uk.at.view.kdl014.a {
                 targetBtnText: getText('KCP009_3'),
                 selectedItem: self.selectedItem,
                 tabIndex: 1
-            });
-
-            self.selectedItem.subscribe((newValue) => {
-                self.filterGrid(newValue)
-            });
-        }
-        
-        startPage(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
-            block.grayout();
-            let param = {
-                start: new Date('2019-07-13'),
-                end:new Date('2020-07-14'),
-                mode: self.mode, 
-                listEmp: [
-                    {employeeId: 'ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570', employeeCode: '', employeeName: '', affiliationName: ''},
-                    {employeeId: '8f9edce4-e135-4a1e-8dca-ad96abe405d6', employeeCode: '', employeeName: '', affiliationName: ''}
-                ] 
-            };
-            
-            service.getInfo(param).done(function(data) {
-                _.orderBy(data, ['name','stampDateTime'], ['asc','asc']);
-                console.log(data);
-                self.dataServer = data.listEmps;
-                    self.selectedItem(self.employeeInputList()[0].id);
-                dfd.resolve();
-            }).fail(function (res) {
-                error({ messageId: res.messageId });
-            }).always(function () {
-                block.clear();
-            });
-            
-            dfd.resolve();
-            return dfd.promise();
+            });    
         }
         
         filterGrid(id:string){
@@ -119,6 +127,7 @@ module nts.uk.at.view.kdl014.a {
         time: string;
         date: string;
         color: number;
+        dateShow: string;
         
         constructor(param: any) {
             let self = this;
@@ -183,4 +192,19 @@ module nts.uk.at.view.kdl014.a {
         static ACCOUNTING = 4;
         static OH = 6;
     }
+    
+    interface ParamFromParent {
+        startDate: string; //YYYY/MM/DD
+        endDate: string; ////YYYY/MM/DD
+        mode: number; //mode = 0 => Person, mode = 1 => Date
+        listEmp: EmployeeInfor[];//{employeeId: 'ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570', employeeCode: '', employeeName: '', affiliationName: ''}
+    }
+
+    interface EmployeeInfor {
+        employeeId: string;
+        employeeCode: string;
+        employeeName: string;
+        affiliationName: string;
+    }
+    
 }
