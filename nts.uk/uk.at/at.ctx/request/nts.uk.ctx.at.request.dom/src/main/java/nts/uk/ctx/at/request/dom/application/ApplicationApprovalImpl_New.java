@@ -145,4 +145,11 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService {
 				listApprovalPhaseState);
 	}
 
+	@Override
+	public void updateApp(Application application) {
+		Application dbApplication = applicationRepository.findByID(application.getAppID()).get();
+		application.setVersion(dbApplication.getVersion() + 1);
+		applicationRepository.update(application);
+	}
+
 }

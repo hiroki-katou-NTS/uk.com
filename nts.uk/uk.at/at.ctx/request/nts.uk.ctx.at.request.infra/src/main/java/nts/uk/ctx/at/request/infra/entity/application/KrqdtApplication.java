@@ -10,7 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -18,7 +17,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * refactor 4
@@ -29,15 +28,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRQDT_APPLICATION")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtApplication extends UkJpaEntity {
+public class KrqdtApplication extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	private KrqdpApplication pk;
 	
-	@Column(name="CONTRACT_CD")
-	private String contractCD;
-	
-	@Version
 	@Column(name="EXCLUS_VER")
 	private int version;
 	
@@ -87,11 +82,9 @@ public class KrqdtApplication extends UkJpaEntity {
 	}
 	
 	public static KrqdtApplication fromDomain(Application application) {
-		String contractCD = AppContexts.user().contractCode();
 		String companyID = AppContexts.user().companyId();
 		return new KrqdtApplication(
 				new KrqdpApplication(companyID, application.getAppID()), 
-				contractCD,
 				application.getVersion(), 
 				application.getPrePostAtr().value, 
 				application.getInputDate(), 

@@ -25,4 +25,10 @@ public interface ApplicationApprovalService {
 	 */
 	public void insertApp(Application application, List<ApprovalPhaseStateImport_New> listApprovalPhaseState);
 	
+	/**
+	 * refactor 4
+	 * @param application
+	 */
+	public void updateApp(Application application);
+	
 }
