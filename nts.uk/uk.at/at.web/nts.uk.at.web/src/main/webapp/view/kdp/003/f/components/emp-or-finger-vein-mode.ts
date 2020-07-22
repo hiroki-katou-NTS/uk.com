@@ -6,7 +6,7 @@ module nts.uk.at.kdp003.f {
 <tr>
 	<td data-bind="i18n: 'KDP003_3'"></td>
 	<td>
-		<div data-bind="text: ko.toJS(model.companyCode) + ' ' + ko.toJS(model.companyName)"></div>
+		<div data-bind="text: $component.companyText"></div>
 	</td>
 </tr>
 <tr>
@@ -25,7 +25,7 @@ module nts.uk.at.kdp003.f {
 			}" />
 		<!-- /ko -->
 		<!-- ko if: !!ko.unwrap(model.employeeName) -->
-		<div data-bind="text: ko.toJS(model.employeeCode) + ' ' + ko.toJS(model.employeeName)"></div>
+		<div data-bind="text: $component.employeeText"></div>
 		<!-- /ko -->
 	</td>
 </tr>
@@ -53,8 +53,39 @@ module nts.uk.at.kdp003.f {
 		template: fingerVeinModeTemplate
 	})
 	export class LoginWithFingerVeinModeCoponent extends ko.ViewModel {
+		companyText!: KnockoutComputed<string>;
+		employeeText!: KnockoutComputed<string>;
+
 		constructor(public data: { model: Model; params: EmployeeModeParam | FingerVeinModeParam; }) {
 			super();
+		}
+
+		created() {
+			const vm = this;
+			const { data } = vm;
+			const { model } = data;
+
+			vm.companyText = ko.computed(() => {
+				const companyCode = ko.unwrap(model.companyCode);
+				const companyName = ko.unwrap(model.companyName);
+
+				if (companyCode && companyName) {
+					return `${companyCode} ${companyName}`;
+				}
+
+				return '未登録';
+			});
+			
+			vm.employeeText = ko.computed(() => {
+				const employeeCode = ko.unwrap(model.employeeCode);
+				const employeeName = ko.unwrap(model.employeeName);
+
+				if (employeeCode && employeeName) {
+					return `${employeeCode} ${employeeName}`;
+				}
+
+				return '未登録';				
+			});
 		}
 	}
 }

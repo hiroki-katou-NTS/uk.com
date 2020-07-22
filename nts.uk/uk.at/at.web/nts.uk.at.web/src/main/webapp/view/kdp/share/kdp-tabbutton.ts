@@ -228,6 +228,8 @@ module nts.uk.at.view.kdp.share {
 					.removeAttr(tid)
 					.data(tid, tabindex);
 			}
+			
+			vm.selected.valueHasMutated();
 		}
 	}
 

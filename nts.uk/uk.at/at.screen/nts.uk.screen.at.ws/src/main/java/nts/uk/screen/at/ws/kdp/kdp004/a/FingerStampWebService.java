@@ -9,7 +9,7 @@ import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.kdp.kdp004.a.RegisterFingerStampCommand;
 import nts.uk.ctx.at.record.app.command.kdp.kdp004.a.RegisterFingerStampCommandHandler;
-import nts.uk.screen.at.app.query.kdp.kdp004.a.FingerStampSettingDto;
+import nts.uk.screen.at.app.query.kdp.kdp004.a.GetFingerStampSettingDto;
 import nts.uk.screen.at.app.query.kdp.kdp004.a.GetFingerStampSetting;
 
 @Path("at/record/stamp/finger")
@@ -24,7 +24,7 @@ public class FingerStampWebService extends WebService {
 
 	@POST
 	@Path("get-finger-stamp-setting")
-	public FingerStampSettingDto getFingerStampSetting() {
+	public GetFingerStampSettingDto getFingerStampSetting() {
 		return this.finder.getFingerStampSetting();
 
 	}
