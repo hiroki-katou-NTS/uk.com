@@ -6,6 +6,7 @@ import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsHelper.ShiftPalle
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsHelper.ShiftPalletsComHelper.PalletHelper.PalletCombinationsHelper.CombinationHelper;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -50,7 +51,7 @@ public class ShiftPalletsHelper {
 					
 					public static Combinations DUMMY = new Combinations(
 							1, 
-							new ShiftPalletCode("0000001"));
+							new ShiftMasterCode("0000001"));
 				}
 			}
 	

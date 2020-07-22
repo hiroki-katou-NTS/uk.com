@@ -153,8 +153,11 @@ public interface TempAbsHistRepository {
 	/**[6] 年月日時点の履歴項目を取得する **/
 	List<TempAbsenceHisItem> getHisItemsAsOfDate(String companyId , GeneralDate date);
 	/** [7-1] 社員を指定して年月日時点の履歴項目を取得する ( 会社ID, 年月日, 社員ID ) **/
-	
-	
-	
- 
+	//QA ---- tai lieu thieu
+	/** [8-1] 期間付き履歴項目を取得する **/
+	List<TimeoffLeaveRecordWithPeriod> getHistoryItemWithPeriod (String companyID, List<String> lstEmpId , DatePeriod datePeriod , List<TempAbsenceFrameNo> lstTempAbsenceFrameNo);
+	/** [8-2] 期間付き休職履歴項目を取得する**/
+	List<TimeoffLeaveRecordWithPeriod> getLeaveHistoryItemsWithPeriod (String companyID , List<String> lstEmpId,DatePeriod datePeriod );
+	/** [8-3] 期間付き休業履歴項目を取得する **/
+	List<TimeoffLeaveRecordWithPeriod> getAbsenceHistoryItemPeriod (String companyId , List<String> lstEmpId ,DatePeriod datePeriod);
 }

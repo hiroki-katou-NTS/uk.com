@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +15,8 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.Employee
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmploymentPeriod;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.TempAbsenceFrameNo;
 
 /**
  * 社員の予定管理状態
@@ -130,14 +130,13 @@ public class ScheManaStatuTempo {
 	 * @return
 	 */
 	private static boolean enrolled(Require require, String employeeID, GeneralDate date) {
-		List<String> lst = new ArrayList<>();
-		lst.add(0, employeeID);
+
 		DatePeriod datePeriod = new DatePeriod(date, date);
 
-		// return not require.在籍期間を取得する( list: 社員ID, 期間( 年月日, 年月日 ) ).isEmpty()
-		boolean reusult = require.getAffCompanyHistByEmployee(lst, datePeriod).isEmpty();
+		//return require.在籍期間を取得する( 社員ID, 年月日 ).isPresent()
+		boolean reusult = require.getAffCompanyHistByEmployee(employeeID, datePeriod).isPresent();
 
-		return (!reusult);
+		return reusult;
 	}
 
 	/**
@@ -154,7 +153,7 @@ public class ScheManaStatuTempo {
 		DatePeriod datePeriod = new DatePeriod(date, date);
 		// $雇用履歴項目 = require.雇用履歴を取得する( list: 社員ID, 期間( 年月日, 年月日 ) ): findFirst
 		// ・・
-		Optional<EmploymentPeriod> zEmpHistItem = require.getEmploymentHistory(lst, datePeriod).stream().findFirst();
+		Optional<EmploymentPeriod> zEmpHistItem = require.getEmploymentHistory(lst, datePeriod);
 		if (zEmpHistItem.isPresent()) {
 			return Optional.of(new EmploymentCode(zEmpHistItem.get().getEmploymentCd()));
 		}
@@ -170,14 +169,12 @@ public class ScheManaStatuTempo {
 	 * @return
 	 */
 	private static Optional<ManageAtr> getManageAtr(Require require, String employeeID, GeneralDate date) {
-
-		Optional<WorkingCondition> zWorkingConditionIDtem = require.getBySidAndStandardDate(employeeID, date);
-
-		if (zWorkingConditionIDtem.isPresent()) {
-			// http://192.168.50.4:3000/issues/110588 Chờ QA
+		Optional<WorkingConditionItem> zWorkingConditionIDtem = require.getBySidAndStandardDate(employeeID, date);
+		if (!zWorkingConditionIDtem.isPresent()) {
 			return Optional.empty();
 		}
-		return Optional.empty();
+		   ManageAtr reusult = zWorkingConditionIDtem.map(c -> c.getScheduleManagementAtr()).get();
+		return Optional.ofNullable(reusult);
 	}
 
 	/**
@@ -192,10 +189,10 @@ public class ScheManaStatuTempo {
 		List<String> lst = new ArrayList<>();
 		lst.add(0, employeeID);
 		DatePeriod datePeriod = new DatePeriod(date, date);
-		List<EmployeeLeaveJobPeriodImport> zEmployeeLeaveJobPeriodImport = require.getByDatePeriod(lst, datePeriod);
-		boolean result = zEmployeeLeaveJobPeriodImport.isEmpty();
-		// return not require.休職期間を取得する( list: 社員ID, 期間( 年月日, 年月日 ) ).isEmpty()
-		return (!result);
+		Optional<EmployeeLeaveJobPeriodImport> zEmployeeLeaveJobPeriodImport = require.getByDatePeriod(lst, datePeriod);
+		boolean result = zEmployeeLeaveJobPeriodImport.isPresent();
+		// return require.休職期間を取得する( 社員ID, 年月日 ).isPresent()
+		return result;
 
 	}
 
@@ -212,13 +209,12 @@ public class ScheManaStatuTempo {
 		List<String> lst = new ArrayList<>();
 		lst.add(0, employeeID);
 		DatePeriod datePeriod = new DatePeriod(date, date);
-		Optional<EmpLeaveWorkPeriodImport> zEmpLeaveWorkPeriodImport = require.specAndGetHolidayPeriod(lst, datePeriod)
-				.stream().findFirst();
-		if (zEmpLeaveWorkPeriodImport.isPresent()) {
-			BigDecimal bigDaddy = new BigDecimal(zEmpLeaveWorkPeriodImport.get().getTempAbsenceFrNo());
-			return Optional.ofNullable(new TempAbsenceFrameNo(bigDaddy));
+		Optional<EmpLeaveWorkPeriodImport> zEmpLeaveWorkPeriodImport = require.specAndGetHolidayPeriod(lst, datePeriod);
+		if (!zEmpLeaveWorkPeriodImport.isPresent()) {
+			Optional.empty();
 		}
-		return Optional.empty();
+		TempAbsenceFrameNo result =  zEmpLeaveWorkPeriodImport.get().getTempAbsenceFrNo();
+		return Optional.ofNullable(result);
 	}
 
 	public static interface Require extends EmpEmployeeAdapter {
@@ -230,7 +226,7 @@ public class ScheManaStatuTempo {
 		 * [R-1] 在籍期間を取得する( 社員ID, 年月日 ) : Optional
 		 * 社員の所属会社履歴Adapter.期間を指定して在籍期間を取得する
 		 */
-		List<AffCompanyHistSharedImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod);
+		Optional<AffCompanyHistSharedImport> getAffCompanyHistByEmployee(String sid, DatePeriod datePeriod);
 
 		/**
 		 * [R-2] 労働条件履歴を取得する 労働条件Repository.社員を指定して年月日時点の履歴項目を取得する
@@ -238,14 +234,14 @@ public class ScheManaStatuTempo {
 
 		// Optional<WorkingCondition> repo.getBy getBySidAndStandardDate(String
 		// companyId, String employeeId, GeneralDate baseDate);
-		Optional<WorkingCondition> getBySidAndStandardDate(String employeeId, GeneralDate baseDate);
+		Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate);
 
 		/**
 		 * [R-3] 休職期間を取得する( 社員ID, 年月日 ) : Optional
 		 * 社員の休職履歴Adapter.期間を指定して休職期間を取得する( list: 社員ID, 期間: 年月日 )
 		 * 
 		 */
-		List<EmployeeLeaveJobPeriodImport> getByDatePeriod(List<String> lstEmpID, DatePeriod datePeriod);
+		Optional<EmployeeLeaveJobPeriodImport> getByDatePeriod(List<String> lstEmpID, DatePeriod datePeriod);
 
 		/**
 		 * 
@@ -256,7 +252,7 @@ public class ScheManaStatuTempo {
 		 * @param datePeriod
 		 * @return
 		 */
-		List<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(List<String> lstEmpID, DatePeriod datePeriod);
+		Optional<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(List<String> lstEmpID, DatePeriod datePeriod);
 
 		/**
 		 * [R-5] 雇用履歴を取得する(Get EmploymentHistory)
@@ -266,7 +262,7 @@ public class ScheManaStatuTempo {
 		 * @param datePeriod
 		 * @return
 		 */
-		List<EmploymentPeriod> getEmploymentHistory(List<String> lstEmpID, DatePeriod datePeriod);
+		Optional<EmploymentPeriod> getEmploymentHistory(List<String> lstEmpID, DatePeriod datePeriod);
 
 	}
 

@@ -350,7 +350,7 @@ public class StampTypeTest {
 	 * setPreClockArt == SetPreClockArt.NONE
 	 * 
 	 * changeClockArt != ChangeClockArt.GOING_TO_WORK
-	 * changeClockArt != ChangeClockArt.FIX  
+	 * changeClockArt != ChangeClockArt.START_OF_SUPPORT  
 	 * changeCalArt != ChangeCalArt.NONE
 	 * changeCalArt != ChangeCalArt.EARLY_APPEARANCE
 	 */
@@ -402,7 +402,7 @@ public class StampTypeTest {
 	 * changeHalfDay == false;
 	 * setPreClockArt == SetPreClockArt.NONE
 	 * 
-	 * changeClockArt == ChangeClockArt.FIX 
+	 * changeClockArt == ChangeClockArt.START_OF_SUPPORT 
 	 * changeCalArt == ChangeCalArt.EARLY_APPEARANCE
 	 */
 	@Test
@@ -419,7 +419,7 @@ public class StampTypeTest {
 	 * changeHalfDay == false;
 	 * setPreClockArt == SetPreClockArt.NONE
 	 * 
-	 * changeClockArt == ChangeClockArt.FIX 
+	 * changeClockArt == ChangeClockArt.START_OF_SUPPORT 
 	 * changeCalArt != ChangeCalArt.EARLY_APPEARANCE
 	 */
 	@Test

@@ -243,7 +243,7 @@ public class StampRecordDto {
 				&& this.changeHalfDay == false ) {
 			return ContentsStampType.TEMPORARY_LEAVING.nameId;
 		}
-		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.NONE.value
+		if (this.changeClockArt == ChangeClockArt.START_OF_SUPPORT.value && this.changeCalArt == ChangeCalArt.NONE.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
 				) {
 			return ContentsStampType.START_SUPPORT.nameId;
@@ -258,12 +258,12 @@ public class StampRecordDto {
 				) {
 			return ContentsStampType.WORK_SUPPORT.nameId;
 		}
-		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.EARLY_APPEARANCE.value
+		if (this.changeClockArt == ChangeClockArt.START_OF_SUPPORT.value && this.changeCalArt == ChangeCalArt.EARLY_APPEARANCE.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
 				) {
 			return ContentsStampType.START_SUPPORT_EARLY_APPEARANCE.nameId;
 		}
-		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.BRARK.value
+		if (this.changeClockArt == ChangeClockArt.START_OF_SUPPORT.value && this.changeCalArt == ChangeCalArt.BRARK.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
 				) {
 			return ContentsStampType.START_SUPPORT_BREAK.nameId;

@@ -8,7 +8,9 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.Ti
 //import lombok.NoArgsConstructor;
 //import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.overtimedeclaration.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -27,6 +29,14 @@ public class TimeActualStamp {
 	
 	//打刻反映回数
 	private Integer numberOfReflectionStamp;
+	
+	//時間外の申告
+	@Setter
+	private Optional<OvertimeDeclaration> overtimeDeclaration;
+	
+	//時間休暇時間帯
+	@Setter
+	private Optional<TimeZone> timeVacation;
 	
 	/**
 	 * 打刻時間を指定時間分経過させた勤怠打刻を返す
@@ -156,4 +166,14 @@ public class TimeActualStamp {
 		}
 		return false;
 	}
+	public TimeActualStamp(WorkStamp actualStamp,WorkStamp stamp, Integer numberOfReflectionStamp,
+			OvertimeDeclaration overtimeDeclaration, TimeZone timeVacation) {
+		super();
+		this.actualStamp =  Optional.ofNullable(actualStamp);
+		this.stamp = Optional.ofNullable(stamp);
+		this.numberOfReflectionStamp = numberOfReflectionStamp;
+		this.overtimeDeclaration = Optional.ofNullable(overtimeDeclaration);
+		this.timeVacation = Optional.ofNullable(timeVacation);
+	}
+	
 }

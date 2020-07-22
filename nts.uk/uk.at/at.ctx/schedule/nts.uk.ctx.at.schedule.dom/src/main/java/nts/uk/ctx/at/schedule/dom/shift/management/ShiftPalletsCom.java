@@ -24,6 +24,12 @@ public class ShiftPalletsCom implements DomainAggregate {
 	@Getter
 	private ShiftPallet shiftPallet;
 
+	/**
+	 * [C-1] 作る
+	 * @param companyId
+	 * @param page
+	 * @param shiftPallet
+	 */
 	// 	説明：新しい＜会社別シフトパレット＞を作る。
 	public ShiftPalletsCom(String companyId, int page, ShiftPallet shiftPallet) {
 		// case inv-1: Msg_1615	
@@ -37,12 +43,25 @@ public class ShiftPalletsCom implements DomainAggregate {
 		this.page = page;
 		this.shiftPallet = shiftPallet;
 	}
-	
+	/**
+	 * [1] 修正する
+	 * @param shiftPallet
+	 */
 	public void modifyShiftPallets(ShiftPallet shiftPallet){
 		// シフトパレット.組み合わせ.シフト組み合わせの順番を整頓する()		
 		shiftPallet.getCombinations().sort((p1, p2) -> p1.getPositionNumber() - p2.getPositionNumber());
 		this.shiftPallet = shiftPallet;
 	}
+	/**
+	 * [2] 複製する
+	 * @author tutk
+	 *
+	 */
+	public ShiftPalletsCom duplicate(int destinationPage, ShiftPalletName shiftPalletName){
+		ShiftPallet shiftPallet = this.shiftPallet.duplicate(shiftPalletName);
+		return new ShiftPalletsCom(this.companyId, destinationPage, shiftPallet);
+	}
+	
 	
 	public static interface Require {
 		// 会社別シフトパレットRepository.Update(会社別シフトパレット)

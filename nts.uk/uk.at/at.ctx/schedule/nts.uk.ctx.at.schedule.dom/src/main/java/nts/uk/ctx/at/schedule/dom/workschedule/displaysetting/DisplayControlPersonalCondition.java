@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.schedule.dom.workschedule.displaysetting;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -52,8 +51,8 @@ public class DisplayControlPersonalCondition implements DomainAggregate {
 	public static DisplayControlPersonalCondition get(String companyID,
 			List<PersonInforDisplayControl> listConditionDisplayControl, Optional<WorkscheQualifi> otpWorkscheQualifi) {
 		if ((listConditionDisplayControl.stream()
-				.anyMatch(c -> c.getConditionATR() == ConditionATRWorkSchedule.QUALIFICATION))
-				&& (otpWorkscheQualifi.isPresent())) {
+				.anyMatch(c -> c.getConditionATR().value != ConditionATRWorkSchedule.QUALIFICATION.value))
+				&& (!otpWorkscheQualifi.isPresent())) {
 			throw new BusinessException("Msg_1682");
 		}
 		return new DisplayControlPersonalCondition(companyID, listConditionDisplayControl, otpWorkscheQualifi);
@@ -63,49 +62,49 @@ public class DisplayControlPersonalCondition implements DomainAggregate {
 	// [1] 個人条件の表示制御に対して必要な個人情報を取得する
 	public static List<PersonalCondition> acquireInforDisplayControlPersonalCondition(Require require,
 			GeneralDate referenceDate, List<String> lstEmpId) {
-		List<PersonalCondition> result = new ArrayList<PersonalCondition>();
 		/*
 		 * $社員チームリスト = DS_所属スケジュールチーム情報を取得する.取得する(require, 社員リスト) :map key
 		 * $.社員ID value $
 		 */
-		Map<String, EmpTeamInfor> mapEmpTeamLst = GetScheduleTeamInfoService.get(require, lstEmpId).stream()
+		List<EmpTeamInfor> lstEmpTeam = GetScheduleTeamInfoService.get(require, lstEmpId);
+		Map<String, EmpTeamInfor> mapEmpTeamLst = lstEmpTeam.stream()
 				.collect(Collectors.toMap(EmpTeamInfor::getEmployeeID, x -> x));
 
 		/*
 		 * $社員ランクリスト = DS_社員ランク情報を取得する.取得する(require, 社員リスト) :map key $.社員ID
 		 * value $
 		 */
-		Map<String, EmpRankInfor> mapEmpRankInfor = GetEmRankInforService.get(require, lstEmpId).stream()
+		List<EmpRankInfor> lstRank = GetEmRankInforService.get(require, lstEmpId);
+		Map<String, EmpRankInfor> mapEmpRankInfor = lstRank.stream()
 				.collect(Collectors.toMap(EmpRankInfor::getEmpId, x -> x));
 		/*
 		 * $社員免許区分リスト = DS_社員の免許区分を取得する.取得する(require, 基準日, 社員リスト) :map key
 		 * $.社員ID value $
 		 */
-		Map<String, EmpLicenseClassification> mapEmpLicenseClassification = GetEmpLicenseClassificationService
-				.get(require, referenceDate, lstEmpId).stream()
+		
+		List<EmpLicenseClassification> lstEmpLicense = GetEmpLicenseClassificationService
+				.get(require, referenceDate, lstEmpId);
+		Map<String, EmpLicenseClassification> mapEmpLicenseClassification = lstEmpLicense.stream()
 				.collect(Collectors.toMap(EmpLicenseClassification::getEmpID, x -> x));
-		for (String empId : lstEmpId) {
-
+			
 			/*
 			 * $社員チーム = $社員チームリスト.get($).チーム名称 $社員ランク = $社員ランクリスト.get($).ランク記号
 			 * $社員免許区分 = $社員免許区分リスト.get($).免許区分 return 個人条件( $, $社員チーム, $社員ランク,
 			 * $社員免許区分)
 			 */
+		return lstEmpId.stream().map(empId->{
 			Optional<ScheduleTeamName> teamName = mapEmpTeamLst.get(empId).getOptScheduleTeamName();
 			String empRank = mapEmpRankInfor.get(empId).getRankSymbol().v();
 			Optional<LicenseClassification> mapEmpLicense = mapEmpLicenseClassification.get(empId)
 					.getOptLicenseClassification();
 
-			PersonalCondition data = new PersonalCondition(empId, Optional.ofNullable(teamName.get().v()),
+			return new PersonalCondition(empId, Optional.ofNullable(teamName.get().v()),
 					Optional.ofNullable(empRank), mapEmpLicense);
-			result.add(data);
-		}
-		return result;
+			
+		}).collect(Collectors.toList());
 	}
 
 	public static interface Require extends GetScheduleTeamInfoService.Require, GetEmRankInforService.Require,
 			GetEmpLicenseClassificationService.Require {
-
 	}
-
 }

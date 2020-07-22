@@ -35,7 +35,17 @@ public enum ErrorStatusWorkInfo {
 	/**
 	 * 就業時間帯が削除された
 	 */
-	WORKTIME_WAS_DELETE(5);
+	WORKTIME_WAS_DELETE(5),
+	
+	/**
+	 * 勤務種類が廃止された
+	 */
+	WORKTYPE_WAS_ABOLISHED(6),
+	
+	/**
+	 * 就業時間帯が廃止された
+	 */
+	WORKTIME_HAS_BEEN_ABOLISHED(7);
 
 	/** The value. */
 	public int value;

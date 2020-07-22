@@ -15,8 +15,6 @@ import nts.arc.primitive.constraint.DecimalRange;
 @DecimalMantissaMaxLength(2)
 public class TempAbsenceFrameNo extends DecimalPrimitiveValue<TempAbsenceFrameNo> {
 	
-	
-
 	public TempAbsenceFrameNo(BigDecimal rawValue) {
 		super(rawValue);
 	}
