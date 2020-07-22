@@ -56,7 +56,7 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 //				application.getOpAppReason(),
 //				application.getOpAppStandardReasonCD());
 		Application application = command.getApplicationDto().toDomain();
-		if (command.getAppWorkChangeDto().getAppID() == null ) {
+		if (application.getAppID() == null ) {
 			application = Application.createFromNew(
 					application.getPrePostAtr(),
 					application.getEmployeeID(),
@@ -69,8 +69,6 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 					application.getOpAppEndDate(),
 					application.getOpAppReason(),
 					application.getOpAppStandardReasonCD());
-		}else {
-			application.setAppID(command.getAppWorkChangeDto().getAppID());
 		}
 		
 		application.setEmployeeID(AppContexts.user().employeeId());
