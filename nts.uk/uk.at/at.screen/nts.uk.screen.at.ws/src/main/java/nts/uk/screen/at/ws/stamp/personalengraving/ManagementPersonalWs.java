@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.ws.stamp.management.personalengraving;
+package nts.uk.screen.at.ws.stamp.personalengraving;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,30 +9,28 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.management.personalengraving.RegisterStampDataCommand;
 import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.management.personalengraving.RegisterStampDataCommandHandler;
 import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.management.personalengraving.RegisterStampDataResult;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.EmployeeStampDataRequest;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.EmployeeStampDatasFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.EmployeeTimeCardRequest;
-import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.GetOmissionContentsFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.StampDisplayButtonFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.StampSettingsEmbossFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.TimeCardFinder;
-import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.DailyAttdErrorInfoDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.KDP002AStartPageSettingDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampDataOfEmployeesDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampRecordDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampToSuppressDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.TimeCardDto;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EmployeeStampInfo;
+import nts.uk.screen.at.app.query.kdp.kdp002.a.DailyAttdErrorInfoDto;
+import nts.uk.screen.at.app.query.kdp.kdp002.a.GetOmissionContentsFinder;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/record/stamp/management/personal")
 @Produces("application/json")
-public class StampPersonalEngravingWs extends WebService {
-	
+public class ManagementPersonalWs {
 	@Inject
 	private StampSettingsEmbossFinder stampSettingsEmbossFinder;
 	
@@ -94,5 +92,4 @@ public class StampPersonalEngravingWs extends WebService {
 	public StampToSuppressDto getHighlightSetting() {
 		return new StampToSuppressDto(stampDisplayBtnFinder.getStampDisplayButton(AppContexts.user().employeeId()));
 	}
-	
 }

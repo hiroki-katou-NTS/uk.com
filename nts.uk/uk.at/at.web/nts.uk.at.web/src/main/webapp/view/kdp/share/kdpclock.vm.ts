@@ -1,4 +1,4 @@
-/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+/// <reference path="../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kdp.share {
 	const template = `
@@ -17,11 +17,11 @@ module nts.uk.at.view.kdp.share {
         <span id="stamp-time-text" data-bind="date: time, format: 'HH:mm'"></span>
     </div>
 	<div class="button-group" data-bind="if: !!events">
-		<div data-bind="if: !!events.setting">
-			<button class="btn-setting" data-bind="icon: 5, attr: { title: $component.$i18n('KDP003_3') }, click: events.setting"></button>
+		<div data-bind="if: !!ko.unwrap(events.setting.show)">
+			<button class="btn-setting" data-bind="icon: 5, click: events.setting.click"></button>
 		</div>
-		<div data-bind="if: !!events.company">
-			<button class="btn-company proceed x-large" data-bind="i18n: 'KDP003_3', click: events.company"></button>
+		<div data-bind="if: !!ko.unwrap(events.company.show)">
+			<button class="btn-company proceed small" data-bind="i18n: 'KDP003_2', click: events.company.click"></button>
 		</div>
 	</div>
 `;
@@ -43,14 +43,34 @@ module nts.uk.at.view.kdp.share {
 			const vm = this;
 
 			if (params) {
-				const { setting, events } = ko.toJS(params);
+				const { setting, events } = params;
 				const { textColor, backGroundColor } = setting || { textColor: 'rgb(255, 255, 255)', backGroundColor: 'rgb(0, 51, 204)' };
 				
+				// convert setting event to binding object
+				if (_.isFunction(events.setting)) {
+					const click = events.setting;
+
+					events.setting = {
+						click,
+						show: true
+					} as any;
+				}
+
+				// convert company event to binding object
+				if (_.isFunction(events.company)) {
+					const click = events.company;
+
+					events.company = {
+						click,
+						show: true
+					} as any;
+				}
+
 				vm.events = events;
 				vm.settings({ textColor, backGroundColor });
 			}
 
-			setInterval(() => vm.time(vm.$date.now()), 1000);
+			setInterval(() => vm.time(vm.$date.now()), 100);
 		}
 
 		mounted() {
@@ -66,8 +86,14 @@ module nts.uk.at.view.kdp.share {
 	}
 
 	export interface ClickEvent {
-		setting: () => void;
-		company:  () =>void;
+		setting: () => void | {
+			show: KnockoutObservable<boolean>;
+			click: () => void;
+		};
+		company: () => void | {
+			show: KnockoutObservable<boolean>;
+			click: () => void;
+		};
 	}
 
 	export interface StampColor {

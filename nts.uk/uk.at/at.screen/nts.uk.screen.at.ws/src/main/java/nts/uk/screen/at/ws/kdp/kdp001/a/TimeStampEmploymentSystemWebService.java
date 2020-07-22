@@ -14,8 +14,6 @@ import nts.uk.ctx.at.record.app.command.kdp.kdp001.a.ConfirmUseOfStampInputResul
 import nts.uk.ctx.at.record.app.command.kdp.kdp001.a.RegisterStampInputCommand;
 import nts.uk.ctx.at.record.app.command.kdp.kdp001.a.RegisterStampInputCommandHandler;
 import nts.uk.ctx.at.record.app.command.kdp.kdp001.a.RegisterStampInputResult;
-import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.GetOmissionContentsFinder;
-import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.DailyAttdErrorInfoDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.GetOmissionContentQuery;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampToSuppress;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.DisplayListStampForStampInput;
@@ -23,6 +21,8 @@ import nts.uk.screen.at.app.query.kdp.kdp001.a.DisplaySuppressStampButtonInStamp
 import nts.uk.screen.at.app.query.kdp.kdp001.a.EmployeeStampInfoDto;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.GetSettingStampInput;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.SettingPotalStampInputDto;
+import nts.uk.screen.at.app.query.kdp.kdp002.a.DailyAttdErrorInfoDto;
+import nts.uk.screen.at.app.query.kdp.kdp002.a.GetOmissionContentsFinder;
 
 @Path("at/record/stamp/employment_system")
 @Produces("application/json")

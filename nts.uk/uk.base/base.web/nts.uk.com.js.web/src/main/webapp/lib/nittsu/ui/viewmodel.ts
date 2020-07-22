@@ -147,7 +147,7 @@ function $i18n(text: string, params?: string[]) {
 }
 
 function $jump() {
-	const args: Array<any> = [].slice.apply(arguments, [])
+	const args: any[] = Array.prototype.slice.apply(arguments)
 		, params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
 			(args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
 
@@ -212,8 +212,9 @@ BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
 	info: {
 		value: function $info() {
 			const dfd = $.Deferred<void>();
+			const args: any[] = Array.prototype.slice.apply(arguments);
 
-			dialog.info.apply(null, [...(arguments as any)]).then(() => dfd.resolve());
+			dialog.info.apply(null, args).then(() => dfd.resolve());
 
 			return dfd.promise();
 		}
@@ -221,8 +222,9 @@ BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
 	alert: {
 		value: function $alert() {
 			const dfd = $.Deferred<void>();
+			const args: any[] = Array.prototype.slice.apply(arguments);
 
-			dialog.alert.apply(null, [...(arguments as any)]).then(() => dfd.resolve());
+			dialog.alert.apply(null, args).then(() => dfd.resolve());
 
 			return dfd.promise();
 		}
@@ -230,8 +232,9 @@ BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
 	error: {
 		value: function $error() {
 			const dfd = $.Deferred<void>();
+			const args: any[] = Array.prototype.slice.apply(arguments);
 
-			dialog.error.apply(null, [...(arguments as any)]).then(() => dfd.resolve());
+			dialog.error.apply(null, args).then(() => dfd.resolve());
 
 			return dfd.promise();
 		}
@@ -239,8 +242,9 @@ BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
 	confirm: {
 		value: function $confirm() {
 			const dfd = $.Deferred<'no' | 'yes' | 'cancel'>();
+			const args: any[] = Array.prototype.slice.apply(arguments);
 
-			const $cf = dialog.confirm.apply(null, [...(arguments as any)]);
+			const $cf = dialog.confirm.apply(null, args);
 
 			$cf.ifYes(() => {
 				dfd.resolve('yes');
@@ -264,12 +268,12 @@ BaseViewModel.prototype.$jump = $jump;
 Object.defineProperties($jump, {
 	self: {
 		value: function $to() {
-			$jump.apply(null, [...[].slice.apply(arguments, [])]);
+			$jump.apply(null, [...Array.prototype.slice.apply(arguments, [])]);
 		}
 	},
 	blank: {
 		value: function $other() {
-			const args: Array<any> = [].slice.apply(arguments, [])
+			const args: Array<any> = Array.prototype.slice.apply(arguments, [])
 				, params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
 					(args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
 
@@ -328,19 +332,34 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
 
 			if (nowapp) {
 				$storage(path).then(() => {
-					windows.sub.modal(webapp).onClosed(() => {
-						$storage().then(($data: any) => {
-							jdf.resolve($data);
+					windows.sub.modal(webapp)
+						.onClosed(() => {
+							const { localShared } = windows.container;
+
+							_.each(localShared, (value: any, key: string) => {
+								windows.setShared(key, value);
+							});
+
+							$storage().then(($data: any) => {
+								jdf.resolve($data);
+							});
 						});
-					});
 				});
 			} else {
 				$storage(params).then(() => {
-					windows.sub.modal(webapp, path).onClosed(() => {
-						$storage().then(($data: any) => {
-							jdf.resolve($data);
+					windows.sub.modal(webapp, path)
+						.onClosed(() => {
+							const { localShared } = windows.container;
+
+							_.each(localShared, (value: any, key: string) => {
+								windows.setShared(key, value);
+							});
+
+
+							$storage().then(($data: any) => {
+								jdf.resolve($data);
+							});
 						});
-					});
 				});
 			}
 
@@ -354,19 +373,33 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
 
 			if (nowapp) {
 				$storage(path).then(() => {
-					windows.sub.modeless(webapp).onClosed(() => {
-						$storage().then(($data: any) => {
-							jdf.resolve($data);
+					windows.sub.modeless(webapp)
+						.onClosed(() => {
+							const { localShared } = windows.container;
+
+							_.each(localShared, (value: any, key: string) => {
+								windows.setShared(key, value);
+							});
+
+							$storage().then(($data: any) => {
+								jdf.resolve($data);
+							});
 						});
-					});
 				});
 			} else {
 				$storage(params).then(() => {
-					windows.sub.modeless(webapp, path).onClosed(() => {
-						$storage().then(($data: any) => {
-							jdf.resolve($data);
+					windows.sub.modeless(webapp, path)
+						.onClosed(() => {
+							const { localShared } = windows.container;
+
+							_.each(localShared, (value: any, key: string) => {
+								windows.setShared(key, value);
+							});
+
+							$storage().then(($data: any) => {
+								jdf.resolve($data);
+							});
 						});
-					});
 				});
 			}
 
@@ -474,7 +507,7 @@ BaseViewModel.prototype.$errors = function $errors() {
 };
 
 // Hàm validate được wrapper lại để có thể thực hiện promisse
-BaseViewModel.prototype.$validate = function $validate(act: string[]) {
+const $validate = function $validate(act: string[]) {
 	const args: string[] = Array.prototype.slice.apply(arguments);
 
 	if (args.length === 0) {
@@ -507,6 +540,23 @@ BaseViewModel.prototype.$validate = function $validate(act: string[]) {
 			.then(() => !$(selectors).ntsError('hasError'));
 	}
 };
+
+Object.defineProperty($validate, "constraint", {
+	value: function $constraint(name: string, value: any) {
+		if(arguments.length === 0) {
+			return $.Deferred().resolve()
+			.then(() => __viewContext.primitiveValueConstraints);
+		} else if (arguments.length === 1) {
+			return $.Deferred().resolve()
+				.then(() => _.get(__viewContext.primitiveValueConstraints, name));
+		} else {
+			return $.Deferred().resolve()
+				.then(() => (ui.validation as any).writeConstraint(name, value));
+		}
+	}
+});
+
+BaseViewModel.prototype.$validate = $validate;
 
 Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
 

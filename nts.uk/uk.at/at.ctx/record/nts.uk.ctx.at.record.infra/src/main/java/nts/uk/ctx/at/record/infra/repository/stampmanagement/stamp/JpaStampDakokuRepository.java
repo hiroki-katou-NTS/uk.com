@@ -142,7 +142,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		return new KrcdtStamp(new KrcdtStampPk(stamp.getCardNumber().v(), stamp.getStampDateTime()), cid,
 				stamp.getRelieve().getAuthcMethod().value, stamp.getRelieve().getStampMeans().value,
 				stamp.getType().getChangeClockArt().value, stamp.getType().getChangeCalArt().value,
-				stamp.getType().getSetPreClockArt().value, stamp.getType().getChangeHalfDay(),
+				stamp.getType().getSetPreClockArt().value, stamp.getType().isChangeHalfDay(),
 				stamp.getType().getGoOutArt().isPresent() ? stamp.getType().getGoOutArt().get().value : null,
 				stamp.isReflectedCategory(),
 				stamp.getRefActualResults().getCardNumberSupport().isPresent()

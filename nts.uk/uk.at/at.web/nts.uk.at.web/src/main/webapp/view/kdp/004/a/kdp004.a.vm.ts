@@ -29,6 +29,8 @@ module nts.uk.at.view.kdp004.a {
 			loginInfo: any = null;
 			retry: number = 0;
 			fingerAuthCkb: KnockoutObservable<boolean> = ko.observable(false);
+			selectedMsg: KnockoutObservable<string> = ko.observable('Msg_301');
+			listCompany: KnockoutObservableArray<any> = ko.observableArray([]);
 			constructor() {
 				let self = this;
 
@@ -37,7 +39,6 @@ module nts.uk.at.view.kdp004.a {
 			public startPage(): JQueryPromise<void> {
 				let self = this;
 				let dfd = $.Deferred<void>();
-				//nts.uk.characteristics.remove("loginKDP004");
 				nts.uk.characteristics.restore("loginKDP004").done(function(loginInfo: ILoginInfo) {
 					if (!loginInfo) {
 						self.setLoginInfo().done((loginResult) => {
@@ -57,8 +58,28 @@ module nts.uk.at.view.kdp004.a {
 							dfd.resolve();
 						});
 					}
+				}).always(() => {
+					service.getLogginSetting().done((res) => {
+
+						self.listCompany(res);
+					});
+
 				});
 				return dfd.promise();
+			}
+
+			showButton() {
+				let self = this;
+				if (!self.isUsed()) {
+					if (self.listCompany().length > 0) {
+						return ButtonDisplayMode.ShowHistory;
+					} else {
+						return ButtonDisplayMode.NoShow;
+					}
+
+				}
+
+				return ButtonDisplayMode.ShowAll;
 			}
 
 			getErrorNotUsed(errorType) {
@@ -83,6 +104,12 @@ module nts.uk.at.view.kdp004.a {
 							block.grayout();
 							service.startPage()
 								.done((res: any) => {
+									if (!res.stampSetting || !res.stampResultDisplay) {
+										self.errorMessage(self.getErrorNotUsed(1));
+										self.isUsed(false);
+										dfd.resolve();
+										return;
+									}
 									self.stampSetting(res.stampSetting);
 									self.stampTab().bindData(res.stampSetting.pageLayouts);
 									self.stampResultDisplay(res.stampResultDisplay);
@@ -112,7 +139,7 @@ module nts.uk.at.view.kdp004.a {
 						dfd.resolve();
 					}
 				}).always(() => {
-
+					block.clear();
 				});
 				return dfd.promise();
 			}
@@ -145,6 +172,11 @@ module nts.uk.at.view.kdp004.a {
 					block.grayout();
 					service.startPage()
 						.done((res: any) => {
+							if (!res.stampSetting || !res.stampResultDisplay) {
+								self.errorMessage(self.getErrorNotUsed(1));
+								self.isUsed(false);
+								return;
+							}
 							self.stampSetting(res.stampSetting);
 							self.stampTab().bindData(res.stampSetting.pageLayouts);
 							self.stampResultDisplay(res.stampResultDisplay);
@@ -163,7 +195,7 @@ module nts.uk.at.view.kdp004.a {
 			public fingerAuth(): JQueryPromise<any> {
 				let dfd = $.Deferred<any>();
 
-				service.fingerAuth(this.fingerAuthCkb()).done((res) => {
+				service.fingerAuth({ fingerAuthCkb: this.fingerAuthCkb(), selectedMsg: this.selectedMsg() }).done((res) => {
 					dfd.resolve(res);
 				});
 
@@ -185,7 +217,7 @@ module nts.uk.at.view.kdp004.a {
 			public openDialogK(): JQueryPromise<any> {
 				let vm = new ko.ViewModel();
 				let dfd = $.Deferred<any>();
-				vm.$window.modal('at', '/view/kdp/003/k/index.xhtml').then((selectedWP) => {
+				vm.$window.modal('at', '/view/kdp/003/k/index.xhtml', { multiSelect: true }).then((selectedWP) => {
 					if (selectedWP) {
 						dfd.resolve(selectedWP.selectedId);
 					}
@@ -221,14 +253,13 @@ module nts.uk.at.view.kdp004.a {
 				});
 			}
 
-			public openScreenG(): JQueryPromise<any> {
+			public openScreenG(errorMessage): JQueryPromise<any> {
 				let self = this;
 				const vm = new ko.ViewModel();
-				let retry = 0,
-					errorMessage = 'Msg_301';
+				let retry = 0;
 
 				const process = () => {
-					return vm.$window.storage('ModelGParam', { displayLoginBtn: retry >= self.stampSetting().authcFailCnt, errorMessage })
+					return vm.$window.storage('ModelGParam', { displayLoginBtn: retry >= self.stampSetting().authcFailCnt && self.stampSetting().employeeAuthcUseArt, errorMessage })
 						.then(() => {
 							return vm.$window.modal('at', '/view/kdp/004/g/index.xhtml')
 								.then((result) => {
@@ -242,7 +273,7 @@ module nts.uk.at.view.kdp004.a {
 									if (redirect === "loginPass") {
 										return self.openDialogF({
 											mode: 'fingerVein',
-											company: { id: vm.$user.companyId, code: self.loginInfo.companyCode, name: self.loginInfo.companyCode },
+											companyId: vm.$user.companyId,
 											employee: { id: vm.$user.employeeId, code: self.loginInfo.employeeCode, name: self.loginInfo.employeeName },
 											passwordRequired: true
 										});
@@ -259,10 +290,10 @@ module nts.uk.at.view.kdp004.a {
 										}
 
 										if (res.result) {
-											return { isSuccess: true, authType: res.em ? 2 : 0 };
+											return { isSuccess: true, authType: res.em ? 0 : 2 };
 										}
 									} else {
-										return { isSuccess: false, authType: 0 };
+										return { isSuccess: false, authType: 2 };
 									}
 								});
 						});
@@ -292,13 +323,12 @@ module nts.uk.at.view.kdp004.a {
 							if (!self.isUsed()) {
 								self.errorMessage(getMessage(res.messageId));
 							}
-							dfd.resolve({ isSuccess: self.isUsed(), authType: 0 });
+							dfd.resolve({ isSuccess: self.isUsed(), authType: 2 });
 						});
 
 					} else {
-						self.errorMessage(getMessage("Msg_302"));
 
-						self.openScreenG().done((res) => {
+						self.openScreenG(res.messageId).done((res) => {
 							dfd.resolve(res);
 						});
 					}
@@ -314,18 +344,20 @@ module nts.uk.at.view.kdp004.a {
 					oha: '../../share/voice/0_oha.mp3',
 					otsu: '../../share/voice/1_otsu.mp3'
 				}
-				const audio: HTMLAudioElement = document.createElement('audio');
-				const source: HTMLSourceElement = document.createElement('source');
+
+				let source = '';
 
 				if (audioType === 1) {
-					source.src = url.oha;
+					source = url.oha;
 				}
 
 				if (audioType === 2) {
-					source.src = url.otsu;
+					source = url.otsu;
 				}
-				audio.append(source);
-				audio.play();
+				if (source) {
+					let audio = new Audio(source);
+					audio.play();
+				}
 			}
 
 			checkHis(self: ScreenModel) {
@@ -342,17 +374,22 @@ module nts.uk.at.view.kdp004.a {
 					mode: 'admin'
 				}).done((loginResult) => {
 					if (loginResult) {
-						loginResult.em.selectedWP = self.loginInfo.selectedWP;
+						loginResult.em.selectedWP = self.loginInfo ? self.loginInfo.selectedWP : null;
 						self.loginInfo = loginResult.em;
 						self.openDialogK().done((result) => {
 							if (result) {
 								self.loginInfo.selectedWP = result;
+								nts.uk.characteristics.save("loginKDP004", self.loginInfo).done(() => {
+									location.reload();
+								});
+							} else {
+								location.reload();
 							}
-							nts.uk.characteristics.save("loginKDP004", self.loginInfo);
-							jump("at", "/view/kdp/004/a/index.xhtml");
+
+
+
 						});
 					}
-
 				});
 			}
 
@@ -459,6 +496,11 @@ module nts.uk.at.view.kdp004.a {
 
 		}
 
+	}
+	enum ButtonDisplayMode {
+		NoShow = 1,
+		ShowHistory = 2,
+		ShowAll = 3
 	}
 	enum Mode {
 		Personal = 1, // 個人

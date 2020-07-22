@@ -99,17 +99,17 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 																						, cmd.getStampButton()
 																						, cmd.getRefActualResult().toDomainValue());
 		//2: not empty
-		if(inputResult!=null && inputResult.at.isPresent()) {
-			
+		if (inputResult != null && inputResult.at.isPresent()) {
+
 			transaction.execute(() -> {
 				inputResult.at.get().run();
 			});
 		}
-		
+
 		StampDataReflectResult stampRefResult = inputResult.getStampDataReflectResult();
-	
-		if(stampRefResult!=null && stampRefResult.getAtomTask()!=null) {
-			
+
+		if (stampRefResult != null && stampRefResult.getAtomTask() != null) {
+
 			transaction.execute(() -> {
 				stampRefResult.getAtomTask().run();
 			});
@@ -145,8 +145,8 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 		private CreateDailyResultDomainService createDailyResultDomainSv;
 
 		@Override
-		public List<StampCard> getListStampCard(String sid) {
-			return this.stampCardRepo.getListStampCard(sid);
+		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
+			return this.stampCardRepo.getLstStampCardBySidAndContractCd(AppContexts.user().contractCode(), sid);
 		}
 
 		@Override
@@ -165,8 +165,8 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 		}
 
 		@Override
-		public Optional<Stamp> get(String contractCode, String stampNumber) {
-			return this.stampDakokuRepo.get(contractCode, new StampNumber(stampNumber));
+		public Optional<StampCard> getByCardNoAndContractCode(String stampNumber, String contractCode) {
+			return this.stampCardRepo.getByCardNoAndContractCode(stampNumber, contractCode);
 		}
 
 		@Override
