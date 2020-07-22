@@ -30,11 +30,11 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaStampRecordRepository extends JpaRepository implements StampRecordRepository {
 
 	private static final String GET_STAMP_RECORD = "select s from KrcdtStampRecord s "
-			+ " where s.pk.cardNumber in  :cardNumbers " + " and s.pk.stampDateTime >= :startStampDate "
+			+ " where s.pk.cardNumber in  :cardNumbers " + "and s.pk.contractCd = :contractCd" + " and s.pk.stampDateTime >= :startStampDate "
 			+ " and s.pk.stampDateTime <= :endStampDate " + " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 
 	private static final String GET_NOT_STAMP_NUMBER = "select s from KrcdtStampRecord s left join KwkdtStampCard k on s.pk.cardNumber = k.cardNo"
-			+ " where k.cardNo is NULL " + " and s.pk.stampDateTime >= :startStampDate "
+			+ " where k.cardNo is NULL " + "and s.pk.contractCd = :contractCd " + " and s.pk.stampDateTime >= :startStampDate "
 			+ " and s.pk.stampDateTime <= :endStampDate " + " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 
 	// [1] insert(打刻記録)
@@ -63,7 +63,7 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 
 	// [4] 取得する
 	@Override
-	public List<StampRecord> get(List<StampNumber> stampNumbers, GeneralDate stampDateTime) {
+	public List<StampRecord> get(String contractCode, List<StampNumber> stampNumbers, GeneralDate stampDateTime) {
 		Set<String> lstCard = stampNumbers.stream().map(x -> x.v()).collect(Collectors.toSet());
 		GeneralDateTime start = GeneralDateTime.ymdhms(stampDateTime.year(), stampDateTime.month(), stampDateTime.day(),
 				0, 0, 0);
@@ -71,20 +71,24 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 		GeneralDateTime end = GeneralDateTime.ymdhms(stampDateTime.year(), stampDateTime.month(), stampDateTime.day(),
 				23, 59, 59);
 		return this.queryProxy().query(GET_STAMP_RECORD, KrcdtStampRecord.class).setParameter("cardNumbers", lstCard)
+				.setParameter("contractCd", contractCode)
 				.setParameter("startStampDate", start).setParameter("endStampDate", end).getList(x -> toDomain(x));
 	}
 
 	// [5] 打刻カード未登録の打刻記録データを取得する
 	@Override
-	public List<StampRecord> getStempRcNotResgistNumber(DatePeriod period) {
+	public List<StampRecord> getStempRcNotResgistNumber(String contractCode, DatePeriod period) {
 		GeneralDateTime start = GeneralDateTime.ymdhms(period.start().year(), period.start().month(),
 				period.start().day(), 0, 0, 0);
 
 		GeneralDateTime end = GeneralDateTime.ymdhms(period.end().year(), period.end().month(), period.end().day(), 23,
 				59, 59);
 
-		return this.queryProxy().query(GET_NOT_STAMP_NUMBER, KrcdtStampRecord.class)
+		List<StampRecord> list = this.queryProxy().query(GET_NOT_STAMP_NUMBER, KrcdtStampRecord.class)
+				.setParameter("contractCd", contractCode)
 				.setParameter("startStampDate", start).setParameter("endStampDate", end).getList(x -> toDomain(x));
+		
+		return list;
 	}
 
 	// [6] 取得する
@@ -99,7 +103,6 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 		return new KrcdtStampRecord(
 				new KrcdtStampRecordPk(domain.getContractCode().v(), domain.getStampNumber().v(),
 						domain.getStampDateTime()),
-				AppContexts.user().companyId(),
 				domain.getStampTypeDisplay() != null ? domain.getStampTypeDisplay().v() : null,
 				domain.getEmpInfoTerCode() != null ? String.valueOf(domain.getEmpInfoTerCode().get().v()) : null);
 	}

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.command.kmp.kmp001.a;
+package nts.uk.ctx.at.record.app.command.kmp.kmp001.c;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class RegisterEmployeeCardInformationCommand {
+@NoArgsConstructor
+public class RegisterStampCardViewCCommand {
 
 	private String employeeId;
 	private String cardNumber;

@@ -20,4 +20,9 @@ class ViewModel extends ko.ViewModel {
 
 	mounted() {
 	}
+	
+	closeDialog() {
+		const vm = this;
+		vm.$window.close;
+	}
 }
