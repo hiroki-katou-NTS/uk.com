@@ -32,19 +32,15 @@ module nts.uk.at.view.kdp.share {
 	})
 	export class StampClock extends ko.ViewModel {
 		time: KnockoutObservable<Date> = ko.observable(new Date());
-		settings: KnockoutObservable<StampColor> = ko.observable({
-			textColor: 'rgb(255, 255, 255)',
-			backGroundColor: 'rgb(0, 51, 204)'
-		});
 
 		events!: ClickEvent;
+		settings!: KnockoutComputed<StampColor>;
 
 		created(params?: StampClocParam) {
 			const vm = this;
 
 			if (params) {
 				const { setting, events } = params;
-				const { textColor, backGroundColor } = setting || { textColor: 'rgb(255, 255, 255)', backGroundColor: 'rgb(0, 51, 204)' };
 
 				if (events) {
 					// convert setting event to binding object
@@ -81,7 +77,15 @@ module nts.uk.at.view.kdp.share {
 					};
 				}
 
-				vm.settings({ textColor, backGroundColor });
+				vm.settings = ko.computed(() => {
+					const { textColor, backGroundColor } = ko.toJS(setting || {});
+
+					if (textColor && backGroundColor) {
+						return { textColor, backGroundColor };
+					} else {
+						return { textColor: 'rgb(255, 255, 255)', backGroundColor: 'rgb(0, 51, 204)' };
+					}
+				});
 			}
 
 			setInterval(() => vm.time(vm.$date.now()), 100);
