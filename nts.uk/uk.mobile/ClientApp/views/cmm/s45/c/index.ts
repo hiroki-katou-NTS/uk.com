@@ -278,7 +278,7 @@ export class CmmS45CComponent extends Vue {
         const self = this;
         switch (self.appType) {
             case 2: 
-                console.log(self.appTransferData);
+                self.$goto('kafs07a', self.appTransferData.appDetail); 
                 break;
             default:
                 break;

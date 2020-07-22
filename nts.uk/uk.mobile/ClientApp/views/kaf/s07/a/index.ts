@@ -1,5 +1,5 @@
 import { _, Vue } from '@app/provider';
-import { component, Watch } from '@app/core/component';
+import { component, Prop, Watch } from '@app/core/component';
 import { KDL002Component } from '../../../kdl/002';
 import {
     KafS00AComponent,
@@ -32,6 +32,9 @@ import {
     }
 })
 export class KafS07AComponent extends Vue {
+    @Prop({ default: () => ({}) })
+    public params?: any;
+
     public title: string = 'KafS07A';
 
     public model: Model = new Model();
@@ -105,6 +108,9 @@ export class KafS07AComponent extends Vue {
 
     public created() {
         const self = this;
+        if (self.params) {
+            console.log(self.params);
+        }
         self.fetchStart();
 
     }
