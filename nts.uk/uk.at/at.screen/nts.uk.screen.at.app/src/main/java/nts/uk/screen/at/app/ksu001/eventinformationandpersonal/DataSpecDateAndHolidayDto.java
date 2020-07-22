@@ -16,9 +16,7 @@ import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.DisplayControlPers
  */
 @Value
 public class DataSpecDateAndHolidayDto {
-	
-	List<DateInformation> listDateInfo; //
-	List<PersonalConditionsDto> listPersonalConditions; //
-	Optional<DisplayControlPersonalCondition> optDisplayControlPersonalCond; //
-
+	List<DateInformation> listDateInfo; // ・List<Temporary「年月日情報」>
+	List<PersonalConditionsDto> listPersonalConditions; // ・List<Temporary「個人条件」>
+	Optional<DisplayControlPersonalCondition> optDisplayControlPersonalCond; //・Optional<個人条件の表示制御>
 }

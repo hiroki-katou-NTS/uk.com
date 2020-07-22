@@ -47,7 +47,8 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * @author laitv <<ScreenQuery>> 期間中のイベント情報と個人条件を取得する
+ * @author laitv 
+ * <<ScreenQuery>> 期間中のイベント情報と個人条件を取得する
  * 
  */
 @Stateless

@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ import nts.uk.shr.com.context.AppContexts;
  * <<ScreenQuery>> 対象社員を抽出する
  *
  */
+@Stateless
 public class ScreenQueryExtractTargetEmployees {
 	
 	@Inject
@@ -91,7 +93,7 @@ public class ScreenQueryExtractTargetEmployees {
 		}
 
 		@Override
-		public Optional<BelongScheduleTeam> get(List<String> empIDs) {
+		public List<BelongScheduleTeam> get(List<String> empIDs) {
 			return belongScheduleTeamRepo.get(AppContexts.user().companyId(), empIDs);
 		}
 

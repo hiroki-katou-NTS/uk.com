@@ -65,6 +65,12 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 			+ " JOIN KSCMT_PALETTE_CMP_COMBI_DTL c ON b.CID = c.CID AND b.PAGE = c.PAGE AND b.POSITION = c.POSITION"
 			+ " WHERE a.CID = 'companyId'";
 
+	private static final String FIND_BY_COMPANY_USE = "SELECT a.CID, a.PAGE, a.PAGE_NAME, a.USE_ATR, a.NOTE,"
+			+ " b.POSITION, b.POSITION_NAME," + " c.POSITION_ORDER, c.SHIFT_MASTER_CD"
+			+ " FROM KSCMT_PALETTE_CMP a JOIN KSCMT_PALETTE_CMP_COMBI b ON a.CID = b.CID AND a.PAGE = b.PAGE"
+			+ " JOIN KSCMT_PALETTE_CMP_COMBI_DTL c ON b.CID = c.CID AND b.PAGE = c.PAGE AND b.POSITION = c.POSITION"
+			+ " WHERE a.CID = 'companyId' AND a.USE_ATR = 1 ";
+	
 	@AllArgsConstructor
 	@Getter
 	private class FullShiftPallets {
@@ -280,6 +286,20 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 			throw new RuntimeException(ex);
 		}
 	}
+	
+	@Override
+	public List<ShiftPalletsCom> findShiftPalletUse(String companyId) {
+		String query = FIND_BY_COMPANY_USE;
+		query = query.replaceFirst("companyId", companyId);
+		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+			ResultSet rs = stmt.executeQuery();
+			List<ShiftPalletsCom> palletsComs = toEntity(createShiftPallets(rs)).stream().map(x -> x.toDomain())
+					.collect(Collectors.toList());
+			return palletsComs;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
 
 	@Override
 	public boolean isDuplicateRoleSetCd(String companyId, int page, int position) {
@@ -309,5 +329,4 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 		ps3.executeUpdate();
 
 	}
-
 }

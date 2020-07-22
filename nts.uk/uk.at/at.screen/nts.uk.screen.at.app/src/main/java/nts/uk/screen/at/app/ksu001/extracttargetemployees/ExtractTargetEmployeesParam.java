@@ -1,9 +1,9 @@
 package nts.uk.screen.at.app.ksu001.extracttargetemployees;
 
-import lombok.Data;
+import lombok.Value;
 import nts.arc.time.GeneralDate;
 
-@Data
+@Value
 public class ExtractTargetEmployeesParam {
 
 	public GeneralDate baseDate;
