@@ -133,7 +133,7 @@ module nts.uk.at.kdp003.f {
 			vm.$blockui('show')
 				.then(() => vm.$ajax(API.COMPANIES))
 				.then((data: CompanyItem[]) => {
-					const companyId = ko.toJS(model.companyId);
+					const companyId = ko.toJS(params.companyId);
 					const exist: CompanyItem = _.find(data, (c) => c.companyId === companyId) || _.head(data);
 
 					vm.listCompany(data);
