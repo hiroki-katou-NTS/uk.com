@@ -12,6 +12,7 @@ import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsHelper.ShiftPalle
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsHelper.ShiftPalletsOrgHelper;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
  * 
@@ -41,7 +42,7 @@ public class ShiftPalletsOrgTest {
 											new ShiftCombinationName("shComName1"), //dummy
 											Arrays.asList(new Combinations(
 													1, //dummy
-													new ShiftPalletCode("0000001"))))))); //dummy
+													new ShiftMasterCode("0000001"))))))); //dummy
 		});
 	}
 	
@@ -66,7 +67,7 @@ public class ShiftPalletsOrgTest {
 											new ShiftCombinationName("shComName1"), //dummy
 											Arrays.asList(new Combinations(
 													1, //dummy
-													new ShiftPalletCode("0000001"))))))); //dummy
+													new ShiftMasterCode("0000001"))))))); //dummy
 		});
 	}
 	
@@ -87,19 +88,19 @@ public class ShiftPalletsOrgTest {
 										new ShiftCombinationName("combiNa30"), // dummy
 										Arrays.asList(new Combinations(
 												1, // dummy
-												new ShiftPalletCode("0000010")))), // dummy
+												new ShiftMasterCode("0000010")))), // dummy
 								new ShiftPalletCombinations(
 										5, 
 										new ShiftCombinationName("combiNa05"), // dummy
 										Arrays.asList(new Combinations(
 												1, // dummy
-												new ShiftPalletCode("0000032")))), // dummy
+												new ShiftMasterCode("0000032")))), // dummy
 								new ShiftPalletCombinations(
 										1, 
 										new ShiftCombinationName("combiNa10"), // dummy
 										Arrays.asList(new Combinations(
 												1, // dummy
-												new ShiftPalletCode("0000011"))))))); // dummy
+												new ShiftMasterCode("0000011"))))))); // dummy
 		
 		assertThat(target.getShiftPallet().getCombinations())
 			.extracting(d -> d.getPositionNumber(), d->d.getCombinationName().v())
@@ -126,7 +127,7 @@ public class ShiftPalletsOrgTest {
 										new ShiftCombinationName("combiName"),
 										Arrays.asList(new Combinations(
 												1, 
-												new ShiftPalletCode("0000001")))))));
+												new ShiftMasterCode("0000001")))))));
 		
 		assertThat(target)
 			.extracting(
@@ -175,7 +176,7 @@ public class ShiftPalletsOrgTest {
 										new ShiftCombinationName("combiName"),
 										Arrays.asList(new Combinations(
 												1, 
-												new ShiftPalletCode("0000001")))))));
+												new ShiftMasterCode("0000001")))))));
 		
 		assertThat(target)
 			.extracting(
@@ -224,7 +225,7 @@ public class ShiftPalletsOrgTest {
 											new ShiftCombinationName("combiName"),
 											Arrays.asList(new Combinations(
 													1, 
-													new ShiftPalletCode("0000001")))))));
+													new ShiftMasterCode("0000001")))))));
 
 		ShiftPallet shiftPallet = new ShiftPallet(
 				new ShiftPalletDisplayInfor(
@@ -237,19 +238,19 @@ public class ShiftPalletsOrgTest {
 								new ShiftCombinationName("name71"), 
 								Arrays.asList(new Combinations(
 										1, 
-										new ShiftPalletCode("0000001")))),
+										new ShiftMasterCode("0000001")))),
 						new ShiftPalletCombinations(
 								4, 
 								new ShiftCombinationName("name40"), 
 								Arrays.asList(new Combinations(
 										1, 
-										new ShiftPalletCode("0000001")))),
+										new ShiftMasterCode("0000001")))),
 						new ShiftPalletCombinations(
 								5, 
 								new ShiftCombinationName("name05"), 
 								Arrays.asList(new Combinations(
 										1, 
-										new ShiftPalletCode("0000001"))))));
+										new ShiftMasterCode("0000001"))))));
 
 		shiftPalletsOrg.modifyShiftPallets(shiftPallet);
 

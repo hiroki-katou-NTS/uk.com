@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsHelper.ShiftPalletsComHelper.PalletHelper.PalletCombinationsHelper.CombinationHelper;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 
 /**
  * 
@@ -19,7 +20,7 @@ public class CombinationsTest {
 		NtsAssert.businessException("Msg_1626", () -> {
 			new Combinations(
 					0, 
-					new ShiftPalletCode("0000001")); // dummy
+					new ShiftMasterCode("0000001")); // dummy
 		});
 	}
 	 
@@ -28,7 +29,7 @@ public class CombinationsTest {
 		NtsAssert.businessException("Msg_1626", () -> {
 			new Combinations(
 					32, 
-					new ShiftPalletCode("0000001")); // dummy
+					new ShiftMasterCode("0000001")); // dummy
 		});
 	}
  
@@ -36,7 +37,7 @@ public class CombinationsTest {
 	public void create_combinations_order1_success() {
 		Combinations target = new Combinations(
 				1, 
-				new ShiftPalletCode("0000001"));
+				new ShiftMasterCode("0000001"));
 		
 		assertThat(target)
 			.extracting(d -> d.getOrder(), d-> d.getShiftCode().v())
@@ -47,7 +48,7 @@ public class CombinationsTest {
 	public void create_combinations_order31_success() {
 		Combinations target = new Combinations(
 				31, 
-				new ShiftPalletCode("0000001"));
+				new ShiftMasterCode("0000001"));
 		
 		assertThat(target)
 			.extracting(d -> d.getOrder(), d-> d.getShiftCode().v())

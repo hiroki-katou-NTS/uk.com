@@ -329,13 +329,15 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			// システム固定
 			List<EmployeeDailyPerError> addItems = new ArrayList<>();
 			if (sysfixecategory) {
-				addItems = systemErrorCheck(integrationOfDaily, errorItem, attendanceItemConverter, master);
-			}
-
-			// ユーザ設定
-			else {
-				addItems = erAlCheckService.checkErrorFor(companyID, integrationOfDaily.getEmployeeId(),
-						integrationOfDaily.getYmd(), errorItem, integrationOfDaily);
+				if(errorItem.getFixedAtr()) {
+					addItems = systemErrorCheck(integrationOfDaily, errorItem, attendanceItemConverter, master);
+				}
+			}else {
+				if(!errorItem.getFixedAtr()) {
+					// ユーザ設定
+					addItems = erAlCheckService.checkErrorFor(companyID, integrationOfDaily.getEmployeeId(),
+							integrationOfDaily.getYmd(), errorItem, integrationOfDaily);
+				}
 			}
 			addItemList.addAll(addItems);
 		}

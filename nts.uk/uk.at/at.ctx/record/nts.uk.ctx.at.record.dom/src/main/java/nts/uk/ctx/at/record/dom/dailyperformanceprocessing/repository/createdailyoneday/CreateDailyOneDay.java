@@ -2,23 +2,22 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdai
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.NewReflectStampOutput;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.OutputAcquireReflectEmbossingNew;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectStampDomainService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.createdailyresults.CreateDailyResults;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 
 /**
@@ -28,17 +27,18 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.Err
  */
 @Stateless
 public class CreateDailyOneDay {
-	@Inject
-    private WorkInformationRepository workRepository;
-	
-	@Inject
-	private BasicScheduleService basicScheduleService;
 	
 	@Inject
 	private ReflectStampDomainService reflectStampDomainServiceImpl;
 	
 	@Inject
 	private CreateDailyResults createDailyResults;
+	
+	@Inject
+	private ICorrectionAttendanceRule iCorrectionAttendanceRule;
+	
+	@Inject
+	private PreOvertimeReflectService preOvertimeReflectService;
 	/**
 	 * 
 	 * @param companyId 会社ID
@@ -53,38 +53,40 @@ public class CreateDailyOneDay {
 	 * @param periodInMasterList 期間内マスタ一覧(optional)
 	 * @return
 	 */
-	public List<ErrorMessageInfo> createDailyOneDay(String companyId, String employeeId, GeneralDate ymd,
+	public OutputCreateDailyOneDay createDailyOneDay(String companyId, String employeeId, GeneralDate ymd,
 			boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime,ExecutionTypeDaily executionType,
 			EmbossingExecutionFlag flag,EmployeeGeneralInfoImport employeeGeneralInfoImport,
 			PeriodInMasterList periodInMasterList,String empCalAndSumExecLogID) {
 		List<ErrorMessageInfo> listErrorMessageInfo = new ArrayList<>();
 		//ドメインモデル「日別実績の勤務情報」を取得する (Lấy dữ liệu từ domain)
-        Optional<WorkInfoOfDailyPerformance> optDaily = workRepository.find(employeeId, ymd);
+        // 日別実績の「情報系」のドメインを取得する
+ 		IntegrationOfDaily integrationOfDaily = preOvertimeReflectService.calculateForAppReflect(employeeId, ymd);
         
         //「勤務種類」と「実行タイプ」をチェックする
         //日別実績が既に存在しない場合OR「作成する」の場合	
-        if(optDaily.isPresent() || executionType == ExecutionTypeDaily.CREATE) {
+        if(integrationOfDaily.getWorkInformation() == null || executionType == ExecutionTypeDaily.CREATE) {
         	//日別実績を作成する 
-			List<ErrorMessageInfo> optError = createDailyResults.createDailyResult(companyId, employeeId, ymd,
+        	listErrorMessageInfo.addAll(createDailyResults.createDailyResult(companyId, employeeId, ymd,
 					reCreateWorkType, reCreateWorkPlace, reCreateRestTime, executionType, flag,
-					employeeGeneralInfoImport, periodInMasterList, empCalAndSumExecLogID);
-        	if(optError.isEmpty()) {
-        		return optError;
+					employeeGeneralInfoImport, periodInMasterList, empCalAndSumExecLogID));
+        	if(!listErrorMessageInfo.isEmpty()) {
+        		return new OutputCreateDailyOneDay( listErrorMessageInfo,null,new ArrayList<>());
         	}
         }
-        // TODO:打刻を取得して反映する (TKT)
-        List<ErrorMessageInfo> optError1 = reflectStampDomainServiceImpl.acquireReflectEmbossingNew(companyId, employeeId, ymd,
-				executionType, flag, empCalAndSumExecLogID,optDaily ,
-				Optional.empty(), Optional.empty(), Optional.empty());
-        if(!optError1.isEmpty()) {
+        //打刻を取得して反映する 
+		OutputAcquireReflectEmbossingNew outputAcquireReflectEmbossingNew = reflectStampDomainServiceImpl
+				.acquireReflectEmbossingNew(companyId, employeeId, ymd, executionType, flag, empCalAndSumExecLogID,
+						integrationOfDaily);
+        listErrorMessageInfo.addAll(outputAcquireReflectEmbossingNew.getListErrorMessageInfo());
+        if(!listErrorMessageInfo.isEmpty()) {
         	//エラー返す
-        	listErrorMessageInfo.addAll(optError1);
-        	return listErrorMessageInfo;
+        	return new OutputCreateDailyOneDay( listErrorMessageInfo,null,new ArrayList<>());
         }
-        //勤怠ルールの補正処理(TKT)
-        //TODO:  Do thanh đảm nhiệm, nhưng thuật toán đang bị tạm dừng k làm nữa, chờ bên a Lẩu xác nhận
+        //勤怠ルールの補正処理
+		integrationOfDaily = iCorrectionAttendanceRule.process(integrationOfDaily,
+				new ChangeDailyAttendance(true, true, true, true));
         	
-		return listErrorMessageInfo;
+		return new OutputCreateDailyOneDay( listErrorMessageInfo,integrationOfDaily,outputAcquireReflectEmbossingNew.getListStamp());
 		
 	}
 

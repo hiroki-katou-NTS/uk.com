@@ -16,10 +16,8 @@ import nts.uk.ctx.bs.employee.pub.temporaryabsence.EmployeeLeaveHistoryPublish;
  *
  */
 @Stateless
+
 public class EmploymentHistoryAdapterImpl implements EmploymentHistoryAdapter  {
-	
-//	@Inject
-//	private EmploymentHistoryPublish EmployeeLeaveHistoryPublish;
 	@Override
 	public List<EmploymentPeriodImported> getEmploymentPeriod(List<String> listEmpId, DatePeriod datePeriod) {
 		// TODO Auto-generated method stub
