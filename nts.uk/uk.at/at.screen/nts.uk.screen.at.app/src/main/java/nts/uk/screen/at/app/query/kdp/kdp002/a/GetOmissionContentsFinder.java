@@ -2,7 +2,6 @@ package nts.uk.screen.at.app.query.kdp.kdp002.a;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,7 +16,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.stamp.application.StampPromptAppRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.StampPromptApplication;
 import nts.uk.ctx.at.record.dom.stamp.card.management.personalengraving.AppDispNameExp;
-import nts.uk.ctx.at.record.dom.stamp.card.management.personalengraving.AppDisplayNameAdapter;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplication;
@@ -32,8 +30,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuNameExport;
-import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuNameQuery;
 import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuPub;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApplicationType;
 import nts.uk.shr.com.context.AppContexts;
@@ -72,25 +68,31 @@ public class GetOmissionContentsFinder {
 
 		// アルゴリズム「メニューの表示名を取得する」を実行する
 
-		List<ApplicationType> appTypes = errorInfo.get(0).getListRequired().stream().sorted()
-				.map(x -> EnumAdaptor.valueOf(x, ApplicationType.class)).collect(Collectors.toList());
+		
 
 		List<AppDispNameExp> appDispNames = new ArrayList<AppDispNameExp>();
+		
+		if (errorInfo.size() > 0) {
+			List<ApplicationType> appTypes = errorInfo.get(0).getListRequired().stream().sorted()
+					.map(x -> EnumAdaptor.valueOf(x, ApplicationType.class)).collect(Collectors.toList());
 
-		String companyId = AppContexts.user().companyId();
-		appTypes.forEach(x -> {
+			String companyId = AppContexts.user().companyId();
+			appTypes.forEach(x -> {
 
-			List<AppDispNameExp> appNames = this.menuPub
-					.getMenuDisplayName(companyId, Arrays.asList(x.toStandardMenuNameQuery())).stream().map(item -> {
-						String screen = item.getProgramId().substring(0, 3).toLowerCase();
-						String screenCd = item.getProgramId().substring(3, 6).toLowerCase();
-						String url = "/view/" + screen + "/" + screenCd + "/" + item.getScreenId().toLowerCase()
-								+ "/index.xhtml" + item.getQueryString() != null ? "?" + item.getQueryString() : "";
+				List<AppDispNameExp> appNames = this.menuPub
+						.getMenuDisplayName(companyId, Arrays.asList(x.toStandardMenuNameQuery())).stream()
+						.map(item -> {
+							String screen = item.getProgramId().substring(0, 3).toLowerCase();
+							String screenCd = item.getProgramId().substring(3, 6).toLowerCase();
+							String url = "/view/" + screen + "/" + screenCd + "/" + item.getScreenId().toLowerCase()
+									+ "/index.xhtml"
+									+ (item.getQueryString() != null ? "?" + item.getQueryString() : "");
 
-						return new AppDispNameExp(companyId, x.value, item.getDisplayName(), url);
-					}).collect(Collectors.toList());
-			appDispNames.addAll(appNames);
-		});
+							return new AppDispNameExp(companyId, x.value, item.getDisplayName(), url);
+						}).collect(Collectors.toList());
+				appDispNames.addAll(appNames);
+			});
+		}
 
 		return new DailyAttdErrorInfoDto(errorInfo, appDispNames);
 	}
