@@ -56,13 +56,31 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 //				application.getOpAppReason(),
 //				application.getOpAppStandardReasonCD());
 		Application application = command.getApplicationDto().toDomain();
+		if (command.getAppWorkChangeDto().getAppID() == null ) {
+			application = Application.createFromNew(
+					application.getPrePostAtr(),
+					application.getEmployeeID(),
+					application.getAppType(),
+					application.getAppDate(),
+					application.getEnteredPerson(),
+					application.getOpStampRequestMode(),
+					application.getOpReversionReason(),
+					application.getOpAppStartDate(),
+					application.getOpAppEndDate(),
+					application.getOpAppReason(),
+					application.getOpAppStandardReasonCD());
+		}else {
+			application.setAppID(command.getAppWorkChangeDto().getAppID());
+		}
+		
+		application.setEmployeeID(AppContexts.user().employeeId());
 		
 		return workChangeRegisterService.registerProcess(
 				command.getMode(),
 				command.getCompanyId(),
 				application,
 				command.getAppWorkChangeDto().toDomain(application),
-				command.getHolidayDates().stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd")).collect(Collectors.toList()),
+				command.getHolidayDates() == null ? null : command.getHolidayDates().stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd")).collect(Collectors.toList()),
 				command.getIsMail(),
 				command.getAppDispInfoStartupDto().toDomain());
 		/*

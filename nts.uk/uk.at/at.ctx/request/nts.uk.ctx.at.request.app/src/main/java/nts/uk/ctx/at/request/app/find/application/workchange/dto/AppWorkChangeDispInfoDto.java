@@ -92,39 +92,47 @@ public class AppWorkChangeDispInfoDto {
 	}
 	public AppWorkChangeDispInfo toDomain() {
 		AppWorkChangeDispInfo appWorkChangeDispInfo = new AppWorkChangeDispInfo();
-		PredetermineTimeDto predetermineTimeDto = predetemineTimeSetting.getPredTime();
-		BreakDownTimeDayDto addTime = predetermineTimeDto.addTime;
-		BreakDownTimeDayDto predTime = predetermineTimeDto.predTime;
-		PredetermineTime predetermineTime = new PredetermineTime(new BreakDownTimeDay(addTime.getOneDay(), addTime.morning, addTime.afternoon), new BreakDownTimeDay(predTime.getOneDay(), predTime.morning, predTime.afternoon));
-		
+		PredetemineTimeSetting prescribedTimeSetting = null;
+		if (predetemineTimeSetting != null) {
+			PredetermineTimeDto predetermineTimeDto = predetemineTimeSetting.getPredTime();
+			BreakDownTimeDayDto addTime = predetermineTimeDto.addTime;
+			BreakDownTimeDayDto predTime = predetermineTimeDto.predTime;
+			PredetermineTime predetermineTime = new PredetermineTime(new BreakDownTimeDay(addTime.getOneDay(), addTime.morning, addTime.afternoon), new BreakDownTimeDay(predTime.getOneDay(), predTime.morning, predTime.afternoon));
+			
 //		predetemineTimeSetting.getPredTime().getAddTime();
 //		predetermineTime.saveToMemento();
-		PrescribedTimezoneSetting prescribedTimezoneSetting = new PrescribedTimezoneSetting(
-				new TimeWithDayAttr(predetemineTimeSetting.prescribedTimezoneSetting.morningEndTime),
-				new TimeWithDayAttr(predetemineTimeSetting.prescribedTimezoneSetting.afternoonStartTime),
-				predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone.stream().map(item -> new TimezoneUse(
-						new TimeWithDayAttr(item.start),
-						new TimeWithDayAttr(item.end),
-						EnumAdaptor.valueOf(item.useAtr ? 1 : 0, UseSetting.class),
-						item.workNo)).collect(Collectors.toList())
-				);
-		
-		prescribedTimezoneSetting.saveToMemento(predetemineTimeSetting.prescribedTimezoneSetting);
-		
-		PredetemineTimeSetting prescribedTimeSetting = new PredetemineTimeSetting(
-				predetemineTimeSetting.companyId,
-				new AttendanceTime(predetemineTimeSetting.rangeTimeDay),
-				new WorkTimeCode(predetemineTimeSetting.workTimeCode),
-				predetermineTime,
-				predetemineTimeSetting.nightShift,
-				prescribedTimezoneSetting,
-				new TimeWithDayAttr(predetemineTimeSetting.startDateClock),
-				predetemineTimeSetting.predetermine);
+			PrescribedTimezoneSetting prescribedTimezoneSetting = new PrescribedTimezoneSetting(
+					new TimeWithDayAttr(predetemineTimeSetting.prescribedTimezoneSetting.morningEndTime),
+					new TimeWithDayAttr(predetemineTimeSetting.prescribedTimezoneSetting.afternoonStartTime),
+					predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone.stream().map(item -> new TimezoneUse(
+							new TimeWithDayAttr(item.start),
+							new TimeWithDayAttr(item.end),
+							EnumAdaptor.valueOf(item.useAtr ? 1 : 0, UseSetting.class),
+							item.workNo)).collect(Collectors.toList())
+					);
+			
+			prescribedTimezoneSetting.saveToMemento(predetemineTimeSetting.prescribedTimezoneSetting);
+			
+			prescribedTimeSetting = new PredetemineTimeSetting(
+					predetemineTimeSetting.companyId,
+					new AttendanceTime(predetemineTimeSetting.rangeTimeDay),
+					new WorkTimeCode(predetemineTimeSetting.workTimeCode),
+					predetermineTime,
+					predetemineTimeSetting.nightShift,
+					prescribedTimezoneSetting,
+					new TimeWithDayAttr(predetemineTimeSetting.startDateClock),
+					predetemineTimeSetting.predetermine);
+			
+		}
 		appWorkChangeDispInfo.setAppDispInfoStartupOutput(appDispInfoStartupOutput.toDomain());
 		appWorkChangeDispInfo.setAppWorkChangeSet(appWorkChangeSet.toDomain());
 		appWorkChangeDispInfo.setWorkTypeLst(workTypeLst.stream().map(item -> item.toDomain()).collect(Collectors.toList()));
-		appWorkChangeDispInfo.setSetupType(Optional.of(EnumAdaptor.valueOf(setupType, SetupType.class)));
-		appWorkChangeDispInfo.setPredetemineTimeSetting(Optional.of(prescribedTimeSetting));
+		if (setupType !=null) {
+			appWorkChangeDispInfo.setSetupType(Optional.of(EnumAdaptor.valueOf(setupType, SetupType.class)));			
+		}else {
+			appWorkChangeDispInfo.setSetupType(Optional.empty());
+		}
+		appWorkChangeDispInfo.setPredetemineTimeSetting(Optional.ofNullable(prescribedTimeSetting));
 		appWorkChangeDispInfo.setWorkTypeCD(Optional.ofNullable(workTypeCD));
 		appWorkChangeDispInfo.setWorkTimeCD(Optional.ofNullable(workTimeCD));
 		appWorkChangeDispInfo.setReflectWorkChangeApp(reflectWorkChangeAppDto.toDomain());
