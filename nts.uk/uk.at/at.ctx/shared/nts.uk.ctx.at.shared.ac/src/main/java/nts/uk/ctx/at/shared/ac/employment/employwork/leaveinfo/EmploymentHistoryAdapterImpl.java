@@ -10,14 +10,17 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 import nts.uk.ctx.bs.employee.pub.temporaryabsence.EmployeeLeaveHistoryPublish;
+
 /**
  * 社員の雇用履歴Adapter Impl
- * @author HieuLt
  *
  */
 @Stateless
 
 public class EmploymentHistoryAdapterImpl implements EmploymentHistoryAdapter  {
+	
+	/*@Inject
+	public EmploymentHistoryPublish publish;*/
 	@Override
 	public List<EmploymentPeriodImported> getEmploymentPeriod(List<String> listEmpId, DatePeriod datePeriod) {
 		// TODO Auto-generated method stub

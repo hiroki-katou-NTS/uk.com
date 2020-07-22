@@ -7,7 +7,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 /**
  * 社員の雇用履歴Adapter
  * @author HieuLt
- *
  */
 public interface EmploymentHistoryAdapter {
 	/**
