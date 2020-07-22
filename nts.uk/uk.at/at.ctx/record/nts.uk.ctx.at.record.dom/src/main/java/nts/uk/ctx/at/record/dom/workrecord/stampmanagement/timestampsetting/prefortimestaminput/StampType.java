@@ -99,7 +99,7 @@ public class StampType implements DomainValue {
 			return TextResource.localize("KDP011_37");
 		}
 		
-		if (this.changeCalArt == ChangeCalArt.EARLY_APPEARANCE && this.changeClockArt.equals(ChangeClockArt.FIX)) {
+		if (this.changeCalArt == ChangeCalArt.EARLY_APPEARANCE && this.changeClockArt.equals(ChangeClockArt.START_OF_SUPPORT)) {
 			return TextResource.localize("KDP011_40");
 		}
 		
@@ -107,7 +107,7 @@ public class StampType implements DomainValue {
 			return TextResource.localize("KDP011_38");
 		}
 		
-		if (this.changeCalArt == ChangeCalArt.BRARK && this.changeClockArt.equals(ChangeClockArt.FIX)) {
+		if (this.changeCalArt == ChangeCalArt.BRARK && this.changeClockArt.equals(ChangeClockArt.START_OF_SUPPORT)) {
 			return TextResource.localize("KDP011_41");
 		}
 		
@@ -144,7 +144,7 @@ public class StampType implements DomainValue {
 			if(this.changeCalArt == ChangeCalArt.NONE || this.changeCalArt == ChangeCalArt.EARLY_APPEARANCE ) {
 				return true;
 			}
-		}else if(this.changeClockArt == ChangeClockArt.FIX ) {
+		}else if(this.changeClockArt == ChangeClockArt.START_OF_SUPPORT ) {
 			if(this.changeCalArt == ChangeCalArt.EARLY_APPEARANCE ) {
 				return true;
 			}
