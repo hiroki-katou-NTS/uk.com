@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.WorkInformation;
 
 /**
  * シフトマスタと出勤休日区分の組み合わせを取得する

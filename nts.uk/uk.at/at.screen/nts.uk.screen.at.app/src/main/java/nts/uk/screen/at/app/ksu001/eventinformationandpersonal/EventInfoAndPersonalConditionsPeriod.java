@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpMedicalWorkFormHisItem;
@@ -122,20 +123,21 @@ public class EventInfoAndPersonalConditionsPeriod {
 	}
 	
 
-	@RequiredArgsConstructor
+	@AllArgsConstructor
 	private static class RequireImpl implements DateInformation.Require {
 		
-		private final WorkplaceSpecificDateRepository workplaceSpecificDateRepo;
-		
-		private final CompanySpecificDateRepository companySpecificDateRepo;
-		
-		private final WorkplaceEventRepository workplaceEventRepo;
-		
-		private final CompanyEventRepository companyEventRepo;
-		
-		private final PublicHolidayRepository publicHolidayRepo;
-		
-		private final SpecificDateItemRepository specificDateItemRepo;
+		@Inject
+		private  WorkplaceSpecificDateRepository workplaceSpecificDateRepo;
+		@Inject
+		private  CompanySpecificDateRepository companySpecificDateRepo;
+		@Inject
+		private  WorkplaceEventRepository workplaceEventRepo;
+		@Inject
+		private  CompanyEventRepository companyEventRepo;
+		@Inject
+		private  PublicHolidayRepository publicHolidayRepo;
+		@Inject
+		private  SpecificDateItemRepository specificDateItemRepo;
 		
 		@Override
 		public List<WorkplaceSpecificDateItem> getWorkplaceSpecByDate(String workplaceId, GeneralDate specificDate) {
@@ -179,15 +181,20 @@ public class EventInfoAndPersonalConditionsPeriod {
 		}
 	}
 	
-	@RequiredArgsConstructor
+	@AllArgsConstructor
 	private static class RequireImplDispControlPerCond implements DisplayControlPersonalCondition.Require {
-		
-		private  final BelongScheduleTeamRepository belongScheduleTeamRepo;
-		private  final ScheduleTeamRepository scheduleTeamRepo;
-		private  final EmployeeRankRepository employeeRankRepo;
-		private  final RankRepository rankRepo;
-		private  final EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
-		private  final NurseClassificationRepository nurseClassificationRepo;
+		@Inject
+		private   BelongScheduleTeamRepository belongScheduleTeamRepo;
+		@Inject
+		private   ScheduleTeamRepository scheduleTeamRepo;
+		@Inject
+		private   EmployeeRankRepository employeeRankRepo;
+		@Inject
+		private   RankRepository rankRepo;
+		@Inject
+		private   EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
+		@Inject
+		private   NurseClassificationRepository nurseClassificationRepo;
 		
 		@Override
 		public List<BelongScheduleTeam> get(List<String> lstEmpId) {

@@ -23,5 +23,6 @@ public class GetShiftPaletteResult {
 	List<PageInfo> listPageInfo ; // List<ページ, 名称>
 	Optional<TargetShiftPalette> targetShiftPalette ; // 対象のシフトパレット： Optional<ページ, シフトパレット>
 	List<Shift> listOfShift; // 取得したシフト一覧：List<シフトマスタ, Optional<出勤休日区分>>
+	List<String> lstShiftMasterCode; // truong nay khong co trong output cua thuat toan.
 	
 }

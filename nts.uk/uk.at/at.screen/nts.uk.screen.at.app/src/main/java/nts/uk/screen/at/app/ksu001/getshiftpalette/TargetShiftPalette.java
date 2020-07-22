@@ -17,6 +17,6 @@ public class TargetShiftPalette {
 	
 	public int pageNumber;
 	public ComPatternScreenDto shiftPalletCom;
-	public ShiftPalletsOrgDto  shiftPalletComWorkPlace;
+	public ShiftPalletsOrgDto  shiftPalletWorkPlace;
 
 }

@@ -10,7 +10,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
@@ -71,20 +71,21 @@ public class ScreenQueryExtractTargetEmployees {
 		
 	}
 	
-	@RequiredArgsConstructor
+	@AllArgsConstructor
 	private static class RequireImpl implements SortEmpService.Require {
 		
-		private final SortSettingRepository sortSettingRepo;
-		
-		private final BelongScheduleTeamRepository belongScheduleTeamRepo;
-		
-		private final EmployeeRankRepository employeeRankRepo;
-		
-		private final RankRepository rankRepo;
-		
-		private final SyJobTitleAdapter syJobTitleAdapter;
-		
-		private final SyClassificationAdapter syClassificationAdapter;
+		@Inject
+		private  SortSettingRepository sortSettingRepo;
+		@Inject
+		private  BelongScheduleTeamRepository belongScheduleTeamRepo;
+		@Inject
+		private  EmployeeRankRepository employeeRankRepo;
+		@Inject
+		private  RankRepository rankRepo;
+		@Inject
+		private  SyJobTitleAdapter syJobTitleAdapter;
+		@Inject
+		private  SyClassificationAdapter syClassificationAdapter;
 
 
 		@Override
