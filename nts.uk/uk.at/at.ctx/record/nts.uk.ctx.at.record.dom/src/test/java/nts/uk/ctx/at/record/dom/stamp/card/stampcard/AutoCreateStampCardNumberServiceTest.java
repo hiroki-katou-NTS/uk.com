@@ -145,7 +145,7 @@ public class AutoCreateStampCardNumberServiceTest {
 				require.get("DUMMY");
 				result = AutoCreateStampCardNumberServiceHelper.getStampCardEditing();
 				
-				require.get(anyString, anyString);
+				require.getByCardNoAndContractCode(anyString, anyString);
 				result = AutoCreateStampCardNumberServiceHelper.getStamp();
 
 			}
@@ -172,7 +172,7 @@ public class AutoCreateStampCardNumberServiceTest {
 				require.get("DUMMY");
 				result = AutoCreateStampCardNumberServiceHelper.getStampCardEditing();
 				
-				require.get("DUMMY", "DUMMY");
+				require.getByCardNoAndContractCode("DUMMY", "DUMMY");
 
 			}
 		};

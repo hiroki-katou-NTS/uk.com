@@ -215,7 +215,7 @@ class KDP001AViewModel extends ko.ViewModel {
 
 						if (!vm.screenMode()) {
 
-							$("#fixed-table").ntsFixedTable({ height: 89, width: 280 });
+							$("#fixed-table").ntsFixedTable({ height: 85, width: 200 });
 						}
 					}
 				}

@@ -20,4 +20,6 @@ public class AppDispNameExp {
 	// 表示名
 	private String dispName;
 
+	private String url;
+
 }

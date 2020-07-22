@@ -1,4 +1,4 @@
-/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+/// <reference path="../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kdp.share {
 	const template = `
@@ -21,7 +21,7 @@ module nts.uk.at.view.kdp.share {
 			<button class="btn-setting" data-bind="icon: 5, attr: { title: $component.$i18n('KDP003_3') }, click: events.setting"></button>
 		</div>
 		<div data-bind="if: !!events.company">
-			<button class="btn-company proceed x-large" data-bind="i18n: 'KDP003_2', click: events.company"></button>
+			<button class="btn-company proceed small" data-bind="i18n: 'KDP003_2', click: events.company"></button>
 		</div>
 	</div>
 `;
@@ -50,7 +50,7 @@ module nts.uk.at.view.kdp.share {
 				vm.settings({ textColor, backGroundColor });
 			}
 
-			setInterval(() => vm.time(vm.$date.now()), 1000);
+			setInterval(() => vm.time(vm.$date.now()), 100);
 		}
 
 		mounted() {

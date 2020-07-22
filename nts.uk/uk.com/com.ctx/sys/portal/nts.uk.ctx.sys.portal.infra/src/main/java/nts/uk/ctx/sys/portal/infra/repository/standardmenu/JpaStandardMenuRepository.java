@@ -53,6 +53,17 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 			+ " AND c.ccgmtStandardMenuPK.system = 1"
 			+ " AND c.ccgmtStandardMenuPK.classification = 9"
 			+ " AND c.ccgmtStandardMenuPK.code IN :code";
+	
+	private static final String GET_NAME_HAS_QUERY = "SELECT c FROM CcgstStandardMenu c WHERE"
+			+ " c.ccgmtStandardMenuPK.companyId = :companyId "
+			+ " AND c.programId = :programId"
+			+ " AND c.screenID = :screenID"
+			+ " AND c.queryString = :queryString";
+	
+	private static final String GET_NAME_NO_QUERY = "SELECT c FROM CcgstStandardMenu c WHERE"
+			+ " c.ccgmtStandardMenuPK.companyId = :companyId "
+			+ " AND c.programId = :programId"
+			+ " AND c.screenID = :screenID";
 
 	public CcgstStandardMenu insertToEntity(StandardMenu domain) {
 		 CcgstStandardMenuPK ccgstStandardMenuPK = new CcgstStandardMenuPK(domain.getCompanyId(), domain.getCode().v(), domain.getSystem().value, domain.getClassification().value);
@@ -354,5 +365,23 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 		return this.queryProxy().query(GET_BY_CID_CD, CcgstStandardMenu.class)
 				.setParameter("companyId", companyID)
 				.setParameter("code", codeLst).getList(m -> toDomain(m));
+	}
+
+	@Override
+	public Optional<StandardMenu> getMenuDisplayNameHasQuery(String companyId, String programId, String queryString,
+			String screenId) {
+		return this.queryProxy().query(GET_NAME_HAS_QUERY, CcgstStandardMenu.class)
+				.setParameter("companyId", companyId)
+				.setParameter("programId", programId)
+				.setParameter("queryString", queryString)
+				.setParameter("screenID", screenId).getSingle(x-> toDomain(x));
+	}
+
+	@Override
+	public Optional<StandardMenu> getMenuDisplayNameNoQuery(String companyId, String programId, String screenId) {
+		return this.queryProxy().query(GET_NAME_NO_QUERY, CcgstStandardMenu.class)
+				.setParameter("companyId", companyId)
+				.setParameter("programId", programId)
+				.setParameter("screenID", screenId).getSingle(x-> toDomain(x));
 	}
 }

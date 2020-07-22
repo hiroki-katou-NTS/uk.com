@@ -48,7 +48,6 @@ module nts.uk.at.view.kdp.share {
 				// A14 時刻に従ってボタンの色が変わる処理
 				let btnBackGroundColor = btn ? btn.btnBackGroundColor : '';
 				if (self.useHighlightFunction().isUse && btn) {
-					btnBackGroundColor = DEFAULT_GRAY;
 					if (btn.btnDisplayType == 1) {
 						btnBackGroundColor = !self.useHighlightFunction().goingToWork ? btn.btnBackGroundColor : DEFAULT_GRAY;
 					}

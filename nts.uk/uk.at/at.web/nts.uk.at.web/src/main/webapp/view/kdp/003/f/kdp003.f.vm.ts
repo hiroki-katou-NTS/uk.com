@@ -1,51 +1,52 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 
-module nts.uk.kdp003.f {
-	export interface Kdp003FCodeNameData {
+module nts.uk.at.kdp003.f {
+	export interface CodeNameData {
 		id?: string;
 		code?: string;
 		name?: string;
 	}
 
 	// admin mode param
-	export interface Kdp003FAdminModeParam {
+	export interface AdminModeParam {
 		mode: 'admin';
 		companyDesignation?: boolean;
 	}
 
 	// employee mode param
-	export interface Kdp003FEmployeeModeParam {
+	export interface EmployeeModeParam {
 		mode: 'employee';
-		company: Kdp003FCodeNameData;
-		employee?: Kdp003FCodeNameData;
+		company: CodeNameData;
+		employee?: CodeNameData;
 		passwordRequired?: boolean;
 	}
 
 	// finger mode param
-	export interface Kdp003FFingerVeinModeParam {
+	export interface FingerVeinModeParam {
 		mode: 'fingerVein';
-		company: Kdp003FCodeNameData;
-		employee?: Kdp003FCodeNameData;
+		company: CodeNameData;
+		employee?: CodeNameData;
 	}
 
-	export type KDP003F_MODE = null | 'admin' | 'employee' | 'fingerVein';
+	export type MODE = null | 'admin' | 'employee' | 'fingerVein';
 
-	export const KDP003F_LOGINDATA = 'KDP003F_LOGINDATA';
+	export const LOGINDATA = 'KDP003F_LOGINDATA';
 
-	export const KDP003F_VM_API = {
+	export const API = {
 		LOGIN_ADMIN: 'ctx/sys/gateway/kdp/login/adminmode',
-		LOGIN_EMPLOYEE: 'ctx/sys/gateway/kdp/login/employeemode'
+		LOGIN_EMPLOYEE: 'ctx/sys/gateway/kdp/login/employeemode',
+		COMPANIES: '/ctx/sys/gateway/kdp/login/getLogginSetting'
 	};
 
 	@bean()
 	export class Kdp003FViewModel extends ko.ViewModel {
-		mode: KnockoutObservable<KDP003F_MODE> = ko.observable(null);
+		mode: KnockoutObservable<MODE> = ko.observable(null);
 
-		model: Kdp003FModel = new Kdp003FModel();
+		model: Model = new Model();
 
-		listCompany: KnockoutObservableArray<Kdp003FCompanyItem> = ko.observableArray([]);
+		listCompany: KnockoutObservableArray<CompanyItem> = ko.observableArray([]);
 
-		constructor(private params?: Kdp003FAdminModeParam | Kdp003FEmployeeModeParam | Kdp003FFingerVeinModeParam) {
+		constructor(private params?: AdminModeParam | EmployeeModeParam | FingerVeinModeParam) {
 			super();
 		}
 
@@ -57,8 +58,8 @@ module nts.uk.kdp003.f {
 				vm.params = {} as any;
 			}
 
-			vm.$window.storage(KDP003F_LOGINDATA)
-				.then((data: Kdp003FModelData) => {
+			vm.$window.storage(LOGINDATA)
+				.then((data: ModelData) => {
 					if (data) {
 						if (data.companyId) {
 							vm.model.companyId(data.companyId);
@@ -72,12 +73,20 @@ module nts.uk.kdp003.f {
 							});
 						}
 
+						if (data.companyName) {
+							vm.model.companyName(data.companyName);
+						}
+
 						if (data.employeeId) {
 							vm.model.employeeId(data.employeeId);
 						}
 
 						if (data.employeeCode) {
 							vm.model.employeeCode(data.employeeCode);
+						}
+
+						if (data.employeeName) {
+							vm.model.employeeName(data.employeeName);
 						}
 					}
 				})
@@ -90,18 +99,34 @@ module nts.uk.kdp003.f {
 			const { model, params } = vm;
 
 			if (params) {
-				const { company, employee } = params as Kdp003FEmployeeModeParam;
+				const { company, employee } = params as EmployeeModeParam;
 
 				if (company) {
-					model.companyId(company.id);
-					model.companyCode(company.code);
-					model.companyName(company.name);
+					if (company.id) {
+						model.companyId(company.id);
+					}
+
+					if (company.code) {
+						model.companyCode(company.code);
+					}
+
+					if (company.name) {
+						model.companyName(company.name);
+					}
 				}
 
 				if (employee) {
-					model.employeeId(employee.id);
-					model.employeeCode(employee.code);
-					model.employeeName(employee.name);
+					if (employee.id) {
+						model.employeeId(employee.id);
+					}
+
+					if (employee.code) {
+						model.employeeCode(employee.code);
+					}
+
+					if (employee.name) {
+						model.employeeName(employee.name);
+					}
 				}
 			}
 		}
@@ -109,7 +134,7 @@ module nts.uk.kdp003.f {
 		public submitLogin() {
 			const vm = this;
 			const { params } = vm;
-			const { LOGIN_ADMIN, LOGIN_EMPLOYEE } = KDP003F_VM_API;
+			const { LOGIN_ADMIN, LOGIN_EMPLOYEE } = API;
 
 			switch (params.mode) {
 				default:
@@ -125,50 +150,64 @@ module nts.uk.kdp003.f {
 
 		loginAdmin(api: string) {
 			const vm = this;
-			const { passwordRequired } = vm.params as Kdp003FEmployeeModeParam;
-			const model: Kdp003FModelData = ko.toJS(vm.model);
-			const { password } = model;
+			const { mode } = vm.params as AdminModeParam;
+			const { passwordRequired } = vm.params as EmployeeModeParam;
+			const model: ModelData = ko.toJS(vm.model);
+			const { password, companyCode } = model;
 
 			if (passwordRequired === false) {
 				_.omit(model, ['password']);
 			}
 
-			vm.$blockui('show')
-				.then(() => vm.$ajax(api, model))
-				.then((response: Kdp003FTimeStampLoginData) => {
-					const { successMsg } = response;
+			if (mode === 'admin' && !model.companyId && !model.companyName) {
+				return vm.$dialog.error({ messageId: 'Msg_301' });
+			}
 
-					if (!!successMsg) {
-						return vm.$dialog
-							.info({ messageId: successMsg })
-							.then(() => response);
+			vm.$validate()
+				.then((valid: boolean) => {
+					if (!valid) {
+						return;
 					}
 
-					return response;
-				})
-				.then((response: Kdp003FTimeStampLoginData) => {
-					vm.$window
-						.storage(KDP003F_LOGINDATA, _.chain(model).clone().omit(['password']).value());
+					vm.$blockui('show')
+						.then(() => vm.$ajax(api, model))
+						.then((response: TimeStampLoginData) => {
+							const { successMsg } = response;
 
-					return response;
-				})
-				.then((response: Kdp003FTimeStampLoginData) => {
-					_.extend(response.em, {
-						password
-					});
+							if (!!successMsg) {
+								return vm.$dialog
+									.info({ messageId: successMsg })
+									.then(() => response);
+							}
 
-					vm.$window.close(response);
-				})
-				.fail((response: any) => {
-					const { message, messageId } = response;
+							return response;
+						})
+						.then((response: TimeStampLoginData) => {
+							vm.$window
+								.storage(LOGINDATA, _.chain(model).clone().omit(['password']).value());
 
-					if (!messageId) {
-						vm.$dialog.error(message);
-					} else {
-						vm.$dialog.error({ messageId });
-					}
-				})
-				.always(() => vm.$blockui('clear'));
+							return response;
+						})
+						.then((response: TimeStampLoginData) => {
+							_.extend(response.em, {
+								password,
+								companyCode
+							});
+
+							vm.$window.close(response);
+						})
+						.fail((response: any) => {
+							const { message, messageId } = response;
+
+							if (!messageId) {
+								vm.$dialog.error(message);
+							} else {
+								vm.$dialog.error({ messageId });
+							}
+						})
+						.always(() => vm.$blockui('clear'));
+
+				});
 		}
 
 		cancelLogin() {
@@ -178,7 +217,7 @@ module nts.uk.kdp003.f {
 		}
 	}
 
-	export interface Kdp003FCompanyItem {
+	export interface CompanyItem {
 		companyId: string;
 		companyCode: string;
 		companyName: string;
@@ -188,32 +227,36 @@ module nts.uk.kdp003.f {
 		fingerAuthStamp?: boolean;
 	}
 
-	export interface Kdp003FEmployeeData {
+	export interface EmployeeData {
 		companyId: string;
+		companyCode?: string;
 		personalId: string;
 		employeeId: string;
 		employeeCode: string;
+		password?: string;
 	}
 
-	export interface Kdp003FTimeStampLoginData {
+	export interface TimeStampLoginData {
 		showChangePass: boolean;
 		msgErrorId: string;
 		showContract: boolean;
 		result: boolean;
-		em: Kdp003FEmployeeData;
+		em: EmployeeData;
 		successMsg: string;
 		errorMessage: string;
 	}
 
-	export interface Kdp003FModelData {
+	export interface ModelData {
 		companyId: string;
 		companyCode: string;
+		companyName?: string;
 		employeeId: string;
 		employeeCode: string;
-		password: string;
+		employeeName?: string;
+		password?: string;
 	}
 
-	export class Kdp003FModel {
+	export class Model {
 		companyId: KnockoutObservable<string> = ko.observable('');
 		companyCode: KnockoutObservable<string> = ko.observable('');
 		companyName: KnockoutObservable<string> = ko.observable('');
@@ -224,7 +267,7 @@ module nts.uk.kdp003.f {
 
 		password: KnockoutObservable<string> = ko.observable('');
 
-		constructor(params?: Kdp003FModelData) {
+		constructor(params?: ModelData) {
 			const model = this;
 
 			if (params) {
