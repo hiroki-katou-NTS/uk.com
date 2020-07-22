@@ -109,7 +109,7 @@ public class ApplicationDto {
 				application.getPrePostAtr().value, 
 				application.getEmployeeID(), 
 				application.getAppType().value, 
-				application.getAppDate().toString(), 
+				application.getAppDate().getApplicationDate().toString(), 
 				application.getEnteredPerson(), 
 				application.getInputDate().toString(), 
 				ReflectionStatusDto.fromDomain(application.getReflectionStatus()), 
