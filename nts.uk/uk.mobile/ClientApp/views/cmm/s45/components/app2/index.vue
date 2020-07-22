@@ -44,24 +44,24 @@
 
     <!-- B3_1 -->
 
-    <div v-if="isCondition1 && params.isWorkHours1" class="card card-label">
+    <div v-if="isCondition1 && $app().isWorkHours1" class="card card-label">
       <div class="card-header uk-bg-accordion headerDiv">
         <span class="textPosition">{{'KAFS07_6' | i18n}}</span>
       </div>
     </div>
     <!-- B3_2 -->
-    <div v-if="isCondition1 && params.isWorkHours1" class="paddingSpan">
+    <div v-if="isCondition1 && $app().isWorkHours1" class="paddingSpan">
       <span>{{$app().workHours1 | i18n}}</span>
     </div>
 
     <!-- B4_1 -->
-    <div v-if="isCondition2 && params.isWorkHours2" class="card card-label">
+    <div v-if="isCondition2 && $app().isWorkHours2" class="card card-label">
       <div class="card-header uk-bg-accordion headerDiv">
         <span class="textPosition">{{'KAFS07_7' | i18n}}</span>
       </div>
     </div>
     <!-- B4_2 -->
-    <div v-if="isCondition2 && params.isWorkHours2" class="paddingSpan">
+    <div v-if="isCondition2 && $app().isWorkHours2" class="paddingSpan">
       <span>{{$app().workHours2 | i18n}}</span>
     </div>
   </div>
