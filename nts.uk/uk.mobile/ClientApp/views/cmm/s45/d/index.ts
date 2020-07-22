@@ -1,7 +1,7 @@
 import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { ApprovedComponent } from '@app/components';
-import { IApprovalPhase, IApprovalFrame, IApplication } from 'views/cmm/s45/common/index.d';
+import { IApprovalPhase, AppDetailScreenInfo } from 'views/cmm/s45/common/index.d';
 import { Phase } from 'views/cmm/s45/common/index';
 import { IOvertime } from 'views/cmm/s45/components/app1';
 import { CmmS45EComponent } from 'views/cmm/s45/e';
@@ -128,25 +128,24 @@ export class CmmS45DComponent extends Vue {
         let self = this;
         self.selected = 0;
         self.$http.post('at', API.getDetailMob, self.currentApp)
-        .then((resApp: any) => {
-            let appData: IApplication = resApp.data;
-            self.createPhaseLst(appData.listApprovalPhaseStateDto);
-            self.appState.appStatus = appData.appStatus;
-            self.appState.reflectStatus = appData.reflectStatus;
-            self.appState.version = appData.version;
-            self.appState.authorizableFlags = appData.authorizableFlags;
-            self.appState.approvalATR = appData.approvalATR;
-            self.appState.alternateExpiration = appData.alternateExpiration;
-            self.authorComment = appData.authorComment; 
-            self.reversionReason = appData.reversionReason;
-            self.appOvertime = appData.appOvertime;
+        .then((successData: any) => {
+            let appDetailScreenInfoDto: AppDetailScreenInfo = successData.data.appDetailScreenInfo;
+            self.createPhaseLst(appDetailScreenInfoDto.approvalLst);
+            self.appState.appStatus = appDetailScreenInfoDto.reflectPlanState;
+            self.appState.reflectStatus = appDetailScreenInfoDto.reflectPlanState;
+            self.appState.version = appDetailScreenInfoDto.application.version;
+            self.appState.authorizableFlags = appDetailScreenInfoDto.authorizableFlags;
+            self.appState.approvalATR = appDetailScreenInfoDto.approvalATR;
+            self.appState.alternateExpiration = appDetailScreenInfoDto.alternateExpiration;
+            self.authorComment = appDetailScreenInfoDto.authorComment;
+            self.reversionReason = appDetailScreenInfoDto.application.opReversionReason;
             self.memo = '';
             if (!_.isEmpty(self.authorComment)) {
                 self.commentDis = true;
             } else {
                 self.commentDis = false;
             }
-            self.commentColor = resApp.data.loginApprovalAtr == 2 ? 'uk-bg-dark-salmon' : 'uk-bg-alice-blue';
+            self.setCommentColor(self.phaseLst);
             self.$mask('hide');
         }).catch((res: any) => {
             self.$mask('hide');
@@ -155,6 +154,32 @@ export class CmmS45DComponent extends Vue {
                     self.back();
                 });
         });
+    }
+
+    public setCommentColor(phaseLst: Array<Phase>) {
+        const self = this;
+        self.$auth.user.then((user) => {
+            for (let phase of phaseLst) {
+                let find = false;
+                for (let frame of phase.listApprovalFrame) {
+                    for (let approver of frame.listApprover) {
+                        if (user.employeeId != approver.approverID) {
+                            return;
+                        }
+                        find = true;
+                        if (approver.approvalAtrValue == 2) {
+                            self.commentColor = 'uk-bg-dark-salmon';
+                        }
+                        if (approver.approvalAtrValue == 1) {
+                            self.commentColor = 'uk-bg-alice-blue';
+                        }
+                    }
+                }
+                if (find) {
+                    break;    
+                }
+            }
+        });    
     }
 
     // tạo dữ liệu người phê duyệt

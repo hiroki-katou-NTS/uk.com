@@ -316,8 +316,13 @@ public class AppWorkChangeFinder {
 
 		Boolean mode = command.getMode();
 		String companyId = command.getCompanyId();
+		String sId = AppContexts.user().employeeId();
 		ApplicationDto applicationDto = command.getApplicationDto();
+		applicationDto.setEmployeeID(sId);
 		Application application = applicationDto.toDomain();
+		if (command.getAppWorkChangeDto().getAppID() != null ) {
+			application.setAppID(command.getAppWorkChangeDto().getAppID());
+		}
 		AppWorkChangeDto appWorkChangeDto = command.getAppWorkChangeDto();
 		int isError = command.getIsError();
 		WorkChangeCheckRegOutput workChangeCheckRegOutput = appWorkChangeService.checkBeforeRegister(mode, companyId,

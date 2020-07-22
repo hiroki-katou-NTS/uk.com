@@ -150,19 +150,8 @@ public class ApplicationDto {
 		if(opAppStandardReasonCD != null) {
 			application.setOpAppStandardReasonCD(Optional.of(new AppStandardReasonCode(opAppStandardReasonCD)));
 		}
-		return Application.createFromNew(
-				application.getPrePostAtr(),
-				application.getEmployeeID(),
-				application.getAppType(),
-				application.getAppDate(),
-				application.getEnteredPerson(),
-				application.getOpStampRequestMode(),
-				application.getOpReversionReason(),
-				application.getOpAppStartDate(),
-				application.getOpAppEndDate(),
-				application.getOpAppReason(),
-				application.getOpAppStandardReasonCD());
-//		return application;
+		
+		return application;
 	}
 	
 }

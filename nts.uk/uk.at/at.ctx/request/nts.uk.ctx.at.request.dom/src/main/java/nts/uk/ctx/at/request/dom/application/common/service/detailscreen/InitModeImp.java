@@ -45,7 +45,6 @@ public class InitModeImp implements InitMode {
 				 */
 				if (reflectPerState.equals(ReflectPlanPerState.PASTAPP.value) || 
 						reflectPerState.equals(ReflectPlanPerState.REFLECTED.value) || 
-						reflectPerState.equals(ReflectPlanPerState.WAITCANCEL.value) || 
 						reflectPerState.equals(ReflectPlanPerState.CANCELED.value)) {
 					outputMode = OutputMode.DISPLAYMODE;
 				} else {

@@ -1,5 +1,5 @@
 import { _, Vue } from '@app/provider';
-import { component, Watch } from '@app/core/component';
+import { component, Prop, Watch } from '@app/core/component';
 import { KDL002Component } from '../../../kdl/002';
 import {
     KafS00AComponent,
@@ -32,6 +32,9 @@ import {
     }
 })
 export class KafS07AComponent extends Vue {
+    @Prop({ default: () => ({}) })
+    public params?: any;
+
     public title: string = 'KafS07A';
 
     public model: Model = new Model();
@@ -66,11 +69,11 @@ export class KafS07AComponent extends Vue {
         version: 1,
         // appID: '939a963d-2923-4387-a067-4ca9ee8808zz',
         prePostAtr: 1,
-        employeeID: '292ae91c-508c-4c6e-8fe8-3e72277dec16',
+        // employeeID: '',
         appType: 2,
-        appDate: '2020/01/07',
+        appDate: this.$dt(new Date(), 'YYYY/MM/DD'),
         enteredPerson: '1',
-        inputDate: '2020/01/07 20:11:11',
+        inputDate: this.$dt(new Date(), 'YYYY/MM/DD HH:mm:ss'),
         reflectionStatus: {
             listReflectionStatusOfDay: [{
                 actualReflectStatus: 1,
@@ -93,10 +96,10 @@ export class KafS07AComponent extends Vue {
         },
         opStampRequestMode: 1,
         opReversionReason: '1',
-        opAppStartDate: '2020/08/07',
-        opAppEndDate: '2020/08/08',
-        opAppReason: 'jdjadja',
-        opAppStandardReasonCD: 1
+        // opAppStartDate: '2020/08/07',
+        // opAppEndDate: '2020/08/08',
+        // opAppReason: 'jdjadja',
+        // opAppStandardReasonCD: 1
 
 
     };
@@ -105,40 +108,10 @@ export class KafS07AComponent extends Vue {
 
     public created() {
         const self = this;
-        // self.kaf000_B_Params = {
-        //     input: {
-        //         mode: 0,
-        //         appDisplaySetting: {
-        //             prePostDisplayAtr: 1,
-        //             manualSendMailAtr: 0
-        //         },
-        //         newModeContent: {
-        //             appTypeSetting: {
-        //                 appType: 2,
-        //                 sendMailWhenRegister: false,
-        //                 sendMailWhenApproval: false,
-        //                 displayInitialSegment: 1,
-        //                 canClassificationChange: true
-        //             },
-        //             useMultiDaySwitch: true,
-        //             initSelectMultiDay: true
-        //         }
-        //     },
-        //     output: {
-        //         prePostAtr: 0,
-        //         startDate: new Date(),
-        //         endDate: new Date()
-        //     }
-        // };
-
-        // self.kaf000_A_Params = {
-        //     companyID: '',
-        //     employeeID: '',
-        //     employmentCD: '',
-        //     applicationUseSetting: '',
-        //     receptionRestrictionSetting: '',
-        //     opOvertimeAppAtr: '',
-        // };
+        if (self.params) {
+            console.log(self.params);
+        }
+        self.fetchStart();
 
     }
 
@@ -154,8 +127,8 @@ export class KafS07AComponent extends Vue {
 
     public mounted() {
         let self = this;
-        this.fetchStart();
-        
+
+
 
     }
 
@@ -209,22 +182,33 @@ export class KafS07AComponent extends Vue {
     public createParamB() {
         this.kaf000_B_Params = {
             input: {
-                mode: 0,
-                appDisplaySetting: {
-                    prePostDisplayAtr: 1,
-                    manualSendMailAtr: 0
-                },
+                // mode: 0,
+
+                // appDisplaySetting: {
+                //     prePostDisplayAtr: 1,
+                //     manualSendMailAtr: 0
+                // },
+                // newModeContent: {
+                //     appTypeSetting: {
+                //         appType: 2,
+                //         sendMailWhenRegister: false,
+                //         sendMailWhenApproval: false,
+                //         displayInitialSegment: 1,
+                //         canClassificationChange: true
+                //     },
+                //     useMultiDaySwitch: true,
+                //     initSelectMultiDay: true
+                // }
+                mode: this.mode ? 0 : 1,
+                appDisplaySetting: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting,
                 newModeContent: {
-                    appTypeSetting: {
-                        appType: 2,
-                        sendMailWhenRegister: false,
-                        sendMailWhenApproval: false,
-                        displayInitialSegment: 1,
-                        canClassificationChange: true
-                    },
+                    // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定																	
+                    appTypeSetting: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
                     useMultiDaySwitch: true,
-                    initSelectMultiDay: true
-                }
+                    initSelectMultiDay: false
+                },
+
+
             },
             output: {
                 prePostAtr: 0,
@@ -232,20 +216,14 @@ export class KafS07AComponent extends Vue {
                 endDate: new Date()
             }
         };
-        // let appDispInfoNoDateOutput = this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput;
-        // 新規モード
-        // this.mode
-
-        // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定
-        // appDispInfoNoDateOutput.applicationSetting.appDisplaySetting
-
-        // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請種類別設定
-        // appDispInfoNoDateOutput.applicationSetting.appTypeSetting
-
-        // true
-
-        // false
-
+        // if (!this.mode) {
+        //     this.kaf000_B_Params.input.detailModeContent = {
+        //         prePostAtrName: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr,
+        //         startDate: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStartDate,
+        //         endDate: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppEndDate,
+        //         employeeName: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName
+        //     };
+        // }
 
     }
     public createParamC() {
@@ -267,16 +245,16 @@ export class KafS07AComponent extends Vue {
                 appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
                 // 選択中の定型理由
                 // empty
-                // opAppStandardReasonCD: null,
+                // opAppStandardReasonCD: this.mode ? null : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
                 // 入力中の申請理由
-                //empty
-                // opAppReason: null
+                // empty
+                // opAppReason: this.mode ? null : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
             },
             output: {
                 // 定型理由
-                opAppStandardReasonCD: 1,
+                // opAppStandardReasonCD: 1,
                 // 申請理由
-                opAppReason: 'hdajsdakj'
+                opAppReason: ''
             }
         };
     }
@@ -306,15 +284,21 @@ export class KafS07AComponent extends Vue {
         this.bindWorkTime(params.appWorkChangeDispInfo);
     }
     public bindWorkTime(params: any) {
-        let startTime = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).start;
-        let endTime = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).end;
-        this.model.workTime.time = this.$dt.timedr(startTime) + '~' + this.$dt.timedr(endTime);
+        if (params.predetemineTimeSetting) {
+            let startTime = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).start;
+            let endTime = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).end;
+            this.model.workTime.time = this.$dt.timedr(startTime) + '~' + this.$dt.timedr(endTime);
+        }
     }
     public bindValueWorkHours(params: any) {
         // *4
         // if (!this.isCondition4)
-        let time1 = _.find(params.appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1);
-        let time2 = _.find(params.appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 2);
+        let time1;
+        let time2;
+        if (params.appWorkChangeDispInfo.predetemineTimeSetting) {
+            time1 = _.find(params.appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1);
+            time2 = _.find(params.appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 2);
+        }
         if (!this.mode) {
             let appWorkChange = params.appWorkChange;
             if (appWorkChange) {
@@ -340,8 +324,13 @@ export class KafS07AComponent extends Vue {
                     end: 0
                 };
             }
-            this.valueWorkHours1.start = time1.start;
-            this.valueWorkHours1.end = time1.end;
+            if (!this.mode) {
+                this.valueWorkHours1.start = time1.timeZone.startTime;
+                this.valueWorkHours1.end = time1.timeZone.endTime;
+            } else {
+                this.valueWorkHours1.start = time1.start;
+                this.valueWorkHours1.end = time1.end;
+            }
 
         } else {
             this.$updateValidator('valueWorkHours1', {
@@ -356,8 +345,13 @@ export class KafS07AComponent extends Vue {
                     end: 0
                 };
             }
-            this.valueWorkHours2.start = time2.start;
-            this.valueWorkHours2.end = time2.end;
+            if (!this.mode) {
+                this.valueWorkHours2.start = time2.timeZone.startTime;
+                this.valueWorkHours2.end = time2.timeZone.endTime;
+            } else {
+                this.valueWorkHours2.start = time2.start;
+                this.valueWorkHours2.end = time2.end;
+            }
 
         } else {
             this.$updateValidator('valueWorkHours2', {
@@ -375,7 +369,7 @@ export class KafS07AComponent extends Vue {
     }
     public bindAppWorkChangeRegister() {
         this.appWorkChangeDto.straightGo = this.model.straight == 2 ? 0 : 1;
-        this.appWorkChangeDto.bounce = this.model.bounce == 2 ? 0 : 1;
+        this.appWorkChangeDto.straightBack = this.model.bounce == 2 ? 0 : 1;
         this.appWorkChangeDto.opWorkTypeCD = this.model.workType.code;
         this.appWorkChangeDto.opWorkTimeCD = this.model.workTime.code;
         if (this.isCondition3) {
@@ -404,13 +398,14 @@ export class KafS07AComponent extends Vue {
             }
         }
 
+        this.application.employeeId = this.user.employeeId;
 
         this.application.opAppStartDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
         this.application.prePostAtr = this.kaf000_B_Params.output.prePostAtr;
-        if (this.application.prePostAtr == 0) {
-            this.application.opAppStartDate = this.$dt.date(this.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
-        }
-        // this.application.opAppStandardReasonCD = this.kaf000_C_Params.output.opAppStandardReasonCD;
+
+        this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
+
+        this.application.opAppStandardReasonCD = this.kaf000_C_Params.output.opAppStandardReasonCD;
         this.application.opAppReason = this.kaf000_C_Params.output.opAppReason;
 
 
@@ -432,18 +427,22 @@ export class KafS07AComponent extends Vue {
             });
 
     }
-    public registerData(res: any ) {
+    public registerData(res: any) {
         this.$http.post('at', API.registerAppWorkChange, {
             mode: this.mode,
             companyId: this.user.companyId,
             applicationDto: this.application,
             appWorkChangeDto: this.appWorkChangeDto,
             holidayDates: res.data.holidayDateLst,
-            isMail: true,
+            isMail: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.mailServerSet,
             appDispInfoStartupDto: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput
         }).then((res: any) => {
             this.$mask('hide');
             // KAFS00_D_申請登録後画面に移動する
+            // this.$goto('kafs00d', {
+            //     mode: this.mode,
+            //     appID: res.data.appID
+            // });
         }).catch((res: any) => {
             this.$mask('hide');
             this.$modal.error({ messageId: res.errors[0].messageId });
@@ -454,25 +453,28 @@ export class KafS07AComponent extends Vue {
         if (!_.isEmpty(listMes)) {
             let item = listMes.shift();
             this.$modal.confirm({ messageId: item.messageId }).then((value) => {
-                if (value == 'yes') {   
+                if (value == 'yes') {
                     if (_.isEmpty(listMes)) {
                         this.registerData(res);
                     } else {
                         this.handleConfirmMessage(listMes, res);
                     }
 
-                } 
+                }
             });
         }
     }
     public register() {
         console.log(this.application);
-        this.$mask('show');
+        if (this.$valid) {
+            this.$mask('show');
+        }
+
         // check validation 
         this.$validate();
         if (!this.$valid) {
-            window.scrollTo(500, 0);
             this.$mask('hide');
+            window.scrollTo(500, 0);
 
             return;
         }
@@ -503,35 +505,7 @@ export class KafS07AComponent extends Vue {
                 }
 
 
-
-                // this.$modal.confirm({ messageId: res.messageId }).then((value) => {
-                //     if (value == 'yes') {
-                //         isConfirm = true;
-                //     } else {
-                //         isConfirm = false;
-                //         this.$mask('hide');
-                //     }
-                //     // 勤務変更申請の登録処理
-                //     // register application
-                //     if (isConfirm) {
-                //         this.$http.post('at', API.registerAppWorkChange, {
-                //             mode: this.mode,
-                //             companyId: this.user.companyId,
-                //             applicationDto: this.application,
-                //             appWorkChangeDto: this.appWorkChangeDto,
-                //             holidayDates: res.data.holidayDateLst,
-                //             isMail: true,
-                //             lstApproval: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opListApprovalPhaseState
-                //         }).then((res: any) => {
-                //             // KAFS00_D_申請登録後画面に移動する
-                //         }).catch((res: any) => {
-                //             this.$modal.error({ messageId: res.messageId });
-                //         });
-                //     }
-
-                // });
-
-            } 
+            }
 
 
 
@@ -613,7 +587,7 @@ export class KafS07AComponent extends Vue {
                 }
             }
         }).catch((res: any) => {
-            this.$modal.error({ messageId: res.errors[0].messageId });
+            // this.$modal.error({ messageParams: [] });
         });
     }
 

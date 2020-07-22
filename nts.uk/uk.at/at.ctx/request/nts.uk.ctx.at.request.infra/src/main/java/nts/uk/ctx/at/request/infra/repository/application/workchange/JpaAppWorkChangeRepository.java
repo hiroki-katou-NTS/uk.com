@@ -104,10 +104,10 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements AppWork
 				domain.getOpWorkTimeCD().get().v(),
 				domain.getStraightGo().value,
 				domain.getStraightBack().value,
-				timeZoneWithWorkNo1.getTimeZone().getStartTime().v(),
-				timeZoneWithWorkNo1.getTimeZone().getEndTime().v(),
-				timeZoneWithWorkNo2.getTimeZone().getStartTime().v(),
-				timeZoneWithWorkNo2.getTimeZone().getEndTime().v());
+				timeZoneWithWorkNo1 == null ? null : timeZoneWithWorkNo1.getTimeZone().getStartTime().v(),
+				timeZoneWithWorkNo1 == null ? null : timeZoneWithWorkNo1.getTimeZone().getEndTime().v(),
+				timeZoneWithWorkNo2 == null ? null : timeZoneWithWorkNo2.getTimeZone().getStartTime().v(),
+				timeZoneWithWorkNo2 == null ? null : timeZoneWithWorkNo2.getTimeZone().getEndTime().v());
 	}
 	public AppWorkChange toDomain(NtsResultRecord res) {
 		Application application = new Application();

@@ -6,7 +6,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 
 /**
  * refactor 4
- * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム."14-2.詳細画面起動前モードの判断()"
+ * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.14-2.詳細画面起動前モードの判断()
  * @author Doan Duy Hung
  *
  */

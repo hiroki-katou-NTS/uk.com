@@ -482,7 +482,10 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 			appWorkChangeOutput.setAppWorkChange(Optional.ofNullable(null));
 			
 		}else {
-				appWorkChangeOutput.setAppWorkChange(appWorkChange);
+			if (appWorkChangeDispInfo.isPresent()) {
+				appWorkChangeOutput.setAppWorkChangeDispInfo(appWorkChangeDispInfo.get());
+			}
+			appWorkChangeOutput.setAppWorkChange(appWorkChange);
 
 		}
 		return appWorkChangeOutput;

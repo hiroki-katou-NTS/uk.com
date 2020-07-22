@@ -132,9 +132,9 @@
       </div> 
     </div>
     <div>
-      <app1 v-if="true" v-bind:params="{appOvertime: appOvertime}" />
-      <app2 v-if="false" />
-      <app3 v-if="false" />
+      <app1 v-if="appType==1" v-bind:params="{appOvertime: appDetail}" />
+      <app2 v-if="appType==2" v-bind:params="appTransferData" />
+      <app3 v-if="appType==3" />
     </div>
     
     <div

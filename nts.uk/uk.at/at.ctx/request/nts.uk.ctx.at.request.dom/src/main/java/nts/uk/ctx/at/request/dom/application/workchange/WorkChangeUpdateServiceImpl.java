@@ -60,7 +60,7 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 			}
 		}
 		// 暫定データの登録
-		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, application.getEmployeeID(), listDate);
+//		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, application.getEmployeeID(), listDate);
 
 		// アルゴリズム「4-2.詳細画面登録後の処理」を実行する
 		return detailAfterUpdate.processAfterDetailScreenRegistration(application);

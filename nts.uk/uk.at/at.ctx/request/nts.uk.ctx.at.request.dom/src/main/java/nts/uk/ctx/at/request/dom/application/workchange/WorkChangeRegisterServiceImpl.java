@@ -81,9 +81,14 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 
 		for (GeneralDate loopDate = startDateParam; loopDate
 				.beforeOrEquals(endDateParam); loopDate = loopDate.addDays(1)) {
-			if (!lstDateHd.contains(loopDate)) {
+			if (lstDateHd != null ) {
+				if (!lstDateHd.contains(loopDate)) {
+					listDate.add(loopDate);
+				}
+			} else {
 				listDate.add(loopDate);
 			}
+			
 		}
 
 		// 暫定データの登録

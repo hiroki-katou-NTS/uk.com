@@ -173,6 +173,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 						(String) x.getValue().get(0).get("aENTERED_PERSON_SID"), 
 						(GeneralDateTime) x.getValue().get(0).get("aINPUT_DATE"), 
 						new ReflectionStatus(reflectionStatusOfDayLst));
+				application.setVersion((int) x.getValue().get(0).get("aEXCLUS_VER"));
 				Integer opStampRequestMode = (Integer) x.getValue().get(0).get("aSTAMP_OPTION_ATR");
 				if(opStampRequestMode != null) {
 					application.setOpStampRequestMode(Optional.of(EnumAdaptor.valueOf(opStampRequestMode, StampRequestMode.class)));
