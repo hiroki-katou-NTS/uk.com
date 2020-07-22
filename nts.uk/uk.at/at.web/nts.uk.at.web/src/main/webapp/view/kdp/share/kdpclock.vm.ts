@@ -45,28 +45,42 @@ module nts.uk.at.view.kdp.share {
 			if (params) {
 				const { setting, events } = params;
 				const { textColor, backGroundColor } = setting || { textColor: 'rgb(255, 255, 255)', backGroundColor: 'rgb(0, 51, 204)' };
-				
-				// convert setting event to binding object
-				if (_.isFunction(events.setting)) {
-					const click = events.setting;
 
-					events.setting = {
-						click,
-						show: true
-					} as any;
+				if (events) {
+					// convert setting event to binding object
+					if (_.isFunction(events.setting)) {
+						const click = events.setting;
+
+						events.setting = {
+							click,
+							show: true
+						} as any;
+					}
+
+					// convert company event to binding object
+					if (_.isFunction(events.company)) {
+						const click = events.company;
+
+						events.company = {
+							click,
+							show: true
+						} as any;
+					}
+
+					vm.events = events;
+				} else {
+					vm.events = {
+						company: {
+							show: false,
+							click: () => { }
+						} as any,
+						setting: {
+							show: false,
+							click: () => { }
+						} as any
+					};
 				}
 
-				// convert company event to binding object
-				if (_.isFunction(events.company)) {
-					const click = events.company;
-
-					events.company = {
-						click,
-						show: true
-					} as any;
-				}
-
-				vm.events = events;
 				vm.settings({ textColor, backGroundColor });
 			}
 
