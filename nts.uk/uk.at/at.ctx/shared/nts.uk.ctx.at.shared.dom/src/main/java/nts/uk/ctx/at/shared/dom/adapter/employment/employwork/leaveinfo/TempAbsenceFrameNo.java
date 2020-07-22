@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
+package nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo;
 
 import java.math.BigDecimal;
 
@@ -22,4 +22,3 @@ public class TempAbsenceFrameNo extends DecimalPrimitiveValue<TempAbsenceFrameNo
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 }
-

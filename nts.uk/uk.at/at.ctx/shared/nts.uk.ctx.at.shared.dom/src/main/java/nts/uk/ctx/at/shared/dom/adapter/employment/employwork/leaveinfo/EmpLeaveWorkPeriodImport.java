@@ -16,19 +16,17 @@ public class EmpLeaveWorkPeriodImport {
 	private final	String empID;
 	
 	/** 休職休業枠NO */
-	//http://192.168.50.4:3000/issues/110682
-	private final int tempAbsenceFrNo; 
+	
+	private final TempAbsenceFrameNo tempAbsenceFrNo; 
 	
 	/** 期間 **/ 
 	private  final DatePeriod datePeriod;
-	
 
-	//[C-0] 社員の休業期間Imported( 社員ID, 期間, 休職休業枠NO )																	
-	public EmpLeaveWorkPeriodImport(String empID, int tempAbsenceFrNo, DatePeriod datePeriod) {
+	//[C-0] 社員の休業期間Imported( 社員ID, 期間, 休職休業枠NO )		
+	public EmpLeaveWorkPeriodImport(String empID, TempAbsenceFrameNo tempAbsenceFrNo, DatePeriod datePeriod) {
 		super();
 		this.empID = empID;
 		this.tempAbsenceFrNo = tempAbsenceFrNo;
 		this.datePeriod = datePeriod;
 	}
-	
 }
