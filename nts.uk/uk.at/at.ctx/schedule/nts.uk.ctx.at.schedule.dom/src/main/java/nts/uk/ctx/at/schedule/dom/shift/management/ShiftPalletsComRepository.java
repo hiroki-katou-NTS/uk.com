@@ -22,4 +22,6 @@ public interface ShiftPalletsComRepository {
 	boolean isDuplicateRoleSetCd(String companyId, int page, int position);
 	//Delete 
 	public void deleteByPage(String companyID,int page);
+	//[6]exists(会社ID, ページ)
+	public boolean exists(String companyID,int page);
 }

@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
  *
  */
 @Stateless
-public class EmploymentHistoryAdapterImpl implements EmploymentHistoryAdapter {
+public class EmploymentHistoryAdaptersImpl implements EmploymentHistoryAdapter {
 
 	@Override
 	public List<EmploymentPeriodImported> getEmploymentPeriod(List<String> listEmpId, DatePeriod datePeriod) {

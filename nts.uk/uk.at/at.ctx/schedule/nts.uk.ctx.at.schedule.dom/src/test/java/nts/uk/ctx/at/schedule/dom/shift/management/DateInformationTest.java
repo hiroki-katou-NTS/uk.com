@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.shift.management;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -180,8 +181,11 @@ public class DateInformationTest {
 		assertSame(dateInformation.getOptCompanyEventName().get(),companyEvent.getEventName());
 		assertFalse(dateInformation.getListSpecDayNameCompany().isEmpty());
 		
-		assertSame(dateInformation.getListSpecDayNameCompany().get(0),listSpecificDateItem.get(0).getSpecificName());
-		assertSame(dateInformation.getListSpecDayNameCompany().get(1),listSpecificDateItem.get(1).getSpecificName());
+		assertThat(dateInformation.getListSpecDayNameCompany())
+		.extracting(d->d.v())
+		.containsExactly(
+				listSpecificDateItem.get(0).getSpecificName().v(),
+				listSpecificDateItem.get(1).getSpecificName().v());
 	}
 
 	/**
@@ -306,8 +310,12 @@ public class DateInformationTest {
 		
 		assertTrue(dateInformation.isSpecificDay());
 		assertFalse(dateInformation.getListSpecDayNameWorkplace().isEmpty());
-		assertSame(dateInformation.getListSpecDayNameWorkplace().get(0), listSpecificDateItem.get(0).getSpecificName());
-		assertSame(dateInformation.getListSpecDayNameWorkplace().get(1), listSpecificDateItem.get(1).getSpecificName());
+		
+		assertThat(dateInformation.getListSpecDayNameWorkplace())
+		.extracting(d->d.v())
+		.containsExactly(
+				listSpecificDateItem.get(0).getSpecificName().v(),
+				listSpecificDateItem.get(1).getSpecificName().v());
 	}
 	
 
