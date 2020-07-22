@@ -396,9 +396,9 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 	}
 
 	@Override
-	public Optional<StampCard> getStampCardByEmployeeCardNumber(String employeeId, String CardNumber) {
+	public Optional<StampCard> getStampCardByEmployeeCardNumber(String employeeId, String cardNumber) {
 		Optional<StampCard> domain = this.queryProxy().query(GET_BY_SID_AND_CARD_NO, KwkdtStampCard.class)
-				.setParameter("sid", employeeId).setParameter("cardNo", CardNumber).getSingle(x -> toDomain(x));
+				.setParameter("sid", employeeId).setParameter("cardNo", cardNumber).getSingle(x -> toDomain(x));
 		if (domain.isPresent())
 			return domain;
 		else
@@ -407,9 +407,9 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 
 	@Override
 	public Optional<StampCard> getStampCardByContractCdEmployeeCardNumber(String contractCd, String employeeId,
-			String CardNumber) {
+			String cardNumber) {
 		Optional<StampCard> domain = this.queryProxy().query(GET_BY_CARD_NO_AND_CONTRACT_CODE_AND_EMPLOYEE_ID, KwkdtStampCard.class)
-				.setParameter("cardNo", CardNumber).setParameter("contractCd", contractCd).setParameter("sid", employeeId).getSingle(x -> toDomain(x));
+				.setParameter("cardNo", cardNumber).setParameter("contractCd", contractCd).setParameter("sid", employeeId).getSingle(x -> toDomain(x));
 		if (domain.isPresent())
 			return domain;
 		else
