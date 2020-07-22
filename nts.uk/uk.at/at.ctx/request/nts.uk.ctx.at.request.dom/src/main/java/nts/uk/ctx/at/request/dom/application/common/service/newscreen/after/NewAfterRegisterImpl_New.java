@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.SendMailAtr;
@@ -43,7 +44,10 @@ public class NewAfterRegisterImpl_New implements NewAfterRegister_New {
 		}
 		isAutoSendMail = true;
 		// Imported(就業)「社員」を取得する(lấy thông tin Imported(就業)「社員」) 
-		List<String> destinationList = approvalRootStateAdapter.getNextApprovalPhaseStateMailList(appID, 1);
+		List<String> destinationList = approvalRootStateAdapter.getNextApprovalPhaseStateMailList(appID, 5);
+		if(CollectionUtil.isEmpty(destinationList)) {
+			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID, ""); 
+		}
 		Application application = applicationRepository.findByID(appID).get();
 		// 承認者へ送る（新規登録、更新登録、承認）//Gửi đến người approve(đăng ký mới, đăng ký update, approve)
 		MailResult mailResult = otherCommonAlgorithm.sendMailApproverApprove(destinationList, application);
