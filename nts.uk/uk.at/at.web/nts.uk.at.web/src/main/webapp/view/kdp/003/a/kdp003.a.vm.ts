@@ -3,6 +3,7 @@
 module nts.uk.at.kdp003.a {
 	import f = nts.uk.at.kdp003.f;
 	import k = nts.uk.at.kdp003.k;
+	import share = nts.uk.at.view.kdp.share;
 
 	const API = {
 		SETTING: 'at/record/stamp/management/personal/startPage',
@@ -19,6 +20,14 @@ module nts.uk.at.kdp003.a {
 	@bean()
 	export class ViewModel extends ko.ViewModel {
 		state: KnockoutObservable<STATE> = ko.observable('LOGING_IN');
+		
+		showClockButton: {
+			setting: KnockoutObservable<boolean>;
+			company: KnockoutObservable<boolean>;
+		} = {
+			setting: ko.observable(true),
+			company: ko.observable(true)
+		};
 
 		employeeData: EmployeeListParam = {
 			employees: ko.observableArray([]),
@@ -26,19 +35,18 @@ module nts.uk.at.kdp003.a {
 			employeeAuthcUseArt: ko.observable(true)
 		};
 
-		tabs: KnockoutObservableArray<any> = ko.observableArray([]);
-		stampToSuppress: KnockoutObservable<HighlightSetting> = ko.observable({
-			departure: false,
-			goingToWork: false,
-			goOut: false,
-			turnBack: false
-		});
-
-		created() {
-			const vm = this;
-
-			_.extend(window, { vm });
-		}
+		buttonPage: {
+			tabs: KnockoutObservableArray<share.PageLayout>;
+			stampToSuppress: KnockoutObservable<share.StampToSuppress>;
+		} = {
+				tabs: ko.observableArray([]),
+				stampToSuppress: ko.observable({
+					departure: false,
+					goingToWork: false,
+					goOut: false,
+					turnBack: false
+				})
+			};
 
 		mounted() {
 			const vm = this;
@@ -51,15 +59,14 @@ module nts.uk.at.kdp003.a {
 
 						if (stampSetting) {
 							const { employeeAuthcUseArt } = stampSetting;
-							
-							vm.tabs(stampSetting.pageLayouts);
+							vm.buttonPage.tabs(stampSetting.pageLayouts);
 
 							vm.employeeData.employeeAuthcUseArt(!!employeeAuthcUseArt);
 						}
 					}
 				})
 				.then(() => vm.$ajax('at', API.HIGHTLIGHT))
-				.then((data: HighlightSetting) => vm.stampToSuppress(data))
+				.then((data: share.StampToSuppress) => vm.buttonPage.stampToSuppress(data))
 				.then(() => vm.$window.storage(KDP003_SAVE_DATA))
 				.then((data: StorageData) => {
 					if (!data) {
@@ -75,8 +82,10 @@ module nts.uk.at.kdp003.a {
 					if (!data) {
 						vm.state('LOGIN_SUCCESS');
 						vm.employeeData.selectedId(null);
+						
 						return false;
 					} else if (_.has(data, 'em')) {
+						// login by f dialog
 						const loginData = data as f.TimeStampLoginData;
 
 						if (loginData.msgErrorId || loginData.errorMessage) {
@@ -102,6 +111,7 @@ module nts.uk.at.kdp003.a {
 								.then(() => true);
 						}
 					} else {
+						// get data from storage
 						const {
 							CCD,
 							CID,
@@ -262,8 +272,8 @@ module nts.uk.at.kdp003.a {
 				.then((data: StorageData) => {
 					return vm.$window.modal('/view/kdp/003/f/index.xhtml', {
 						mode: 'employee',
-						company: { id: data.CID },
-						employee: { id: data.SID, code: data.SCD }
+						companyId: data.CID,
+						employee: { id: data.SID, code: data.SCD, name: 'quake' }
 					});
 				})
 				.then((data: f.TimeStampLoginData) => {
@@ -273,17 +283,18 @@ module nts.uk.at.kdp003.a {
 				});
 		}
 
-		stampButtonClick(btn: any, layout: any) {
+		stampButtonClick(btn: share.ButtonSetting, layout: share.PageLayout) {
 			const vm = this;
+			const { buttonPage } = vm;
 
 			vm.$ajax('at', API.HIGHTLIGHT)
 				.then((data: any) => {
-					const oldData = ko.unwrap(vm.stampToSuppress);
+					const oldData = ko.unwrap(buttonPage.stampToSuppress);
 
 					if (!_.isEqual(data, oldData)) {
-						vm.stampToSuppress(data);
+						buttonPage.stampToSuppress(data);
 					} else {
-						vm.stampToSuppress.valueHasMutated();
+						buttonPage.stampToSuppress.valueHasMutated();
 					}
 				});
 		}
@@ -319,16 +330,9 @@ module nts.uk.at.kdp003.a {
 		employeeAuthcUseArt: boolean;
 		historyDisplayMethod: number;
 		nameSelectArt: boolean;
-		pageLayouts: any[];
+		pageLayouts: share.PageLayout[];
 		passwordRequiredArt: boolean;
 		resultDisplayTime: number;
 		textColor: string;
-	}
-
-	interface HighlightSetting {
-		departure: boolean;
-		goOut: boolean;
-		goingToWork: boolean;
-		turnBack: boolean;
 	}
 }

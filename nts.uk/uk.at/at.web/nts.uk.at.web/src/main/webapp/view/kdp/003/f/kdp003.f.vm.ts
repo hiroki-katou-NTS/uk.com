@@ -10,13 +10,14 @@ module nts.uk.at.kdp003.f {
 	// admin mode param
 	export interface AdminModeParam {
 		mode: 'admin';
+		companyId: string;
 		companyDesignation?: boolean;
 	}
 
 	// employee mode param
 	export interface EmployeeModeParam {
 		mode: 'employee';
-		company: CodeNameData;
+		companyId: string;
 		employee?: CodeNameData;
 		passwordRequired?: boolean;
 	}
@@ -24,7 +25,7 @@ module nts.uk.at.kdp003.f {
 	// finger mode param
 	export interface FingerVeinModeParam {
 		mode: 'fingerVein';
-		company: CodeNameData;
+		companyId: string;
 		employee?: CodeNameData;
 	}
 
@@ -52,67 +53,15 @@ module nts.uk.at.kdp003.f {
 
 		public created() {
 			const vm = this;
-			const { params } = vm;
+			const { params, model } = vm;
 
 			if (!params) {
 				vm.params = {} as any;
-			}
+			} else if (params) {
+				const { companyId, employee } = params as EmployeeModeParam;
 
-			vm.$window.storage(LOGINDATA)
-				.then((data: ModelData) => {
-					if (data) {
-						if (data.companyId) {
-							vm.model.companyId(data.companyId);
-						}
-
-						if (data.companyCode) {
-							vm.model.companyCode(data.companyCode);
-							vm.model.companyName(data.companyName);
-							_.extend(vm.params, {
-								companyDesignation: true
-							});
-						}
-
-						if (data.companyName) {
-							vm.model.companyName(data.companyName);
-						}
-
-						if (data.employeeId) {
-							vm.model.employeeId(data.employeeId);
-						}
-
-						if (data.employeeCode) {
-							vm.model.employeeCode(data.employeeCode);
-						}
-
-						if (data.employeeName) {
-							vm.model.employeeName(data.employeeName);
-						}
-					}
-				})
-				// get mode from params or set default
-				.always(() => vm.mode(vm.params.mode || 'admin'));
-		}
-
-		public mounted() {
-			const vm = this;
-			const { model, params } = vm;
-
-			if (params) {
-				const { company, employee } = params as EmployeeModeParam;
-
-				if (company) {
-					if (company.id) {
-						model.companyId(company.id);
-					}
-
-					if (company.code) {
-						model.companyCode(company.code);
-					}
-
-					if (company.name) {
-						model.companyName(company.name);
-					}
+				if (companyId) {
+					model.companyId(companyId);
 				}
 
 				if (employee) {
@@ -129,6 +78,86 @@ module nts.uk.at.kdp003.f {
 					}
 				}
 			}
+
+			model.companyId
+				.subscribe((id: string) => {
+					const dataSources: CompanyItem[] = ko.toJS(vm.listCompany);
+
+					if (dataSources.length) {
+						const exist = _.find(dataSources, (item: CompanyItem) => item.companyId === id);
+						const clear = () => {
+							model.companyCode('');
+							model.companyName('');
+						};
+
+						if (exist) {
+							const update = () => {
+								model.companyCode(exist.companyCode);
+								model.companyName(exist.companyName);
+							};
+
+							// update companyId by subscribe companyCode
+							switch (name) {
+								default:
+								case 'KDP003':
+									if (exist.selectUseOfName === false) {
+										clear();
+									} else {
+										update();
+									}
+									break;
+								case 'KDP004':
+									if (exist.fingerAuthStamp === false) {
+										clear();
+									} else {
+										update();
+									}
+									break;
+								case 'KDP005':
+									if (exist.icCardStamp === false) {
+										clear();
+									} else {
+										update();
+									}
+									break;
+							}
+						}
+					}
+				});
+		}
+
+		public mounted() {
+			const vm = this;
+			const { model, params } = vm;
+
+			vm.$blockui('show')
+				.then(() => vm.$ajax(API.COMPANIES))
+				.then((data: CompanyItem[]) => {
+					const companyId = ko.toJS(params.companyId);
+					const exist: CompanyItem = _.find(data, (c) => c.companyId === companyId) || _.head(data);
+
+					vm.listCompany(data);
+
+					if (exist) {
+						if (ko.unwrap(model.companyId) !== exist.companyId) {
+							model.companyId(exist.companyId);
+						} else {
+							model.companyId.valueHasMutated();
+						}
+					} else {
+						if (params.mode === 'admin') {
+							vm.$dialog
+								.error({ messageId: 'Msg_1527' })
+								.then(() => vm.$window.close({ msgErrorId: 'Msg_1527' }));
+						} else {
+							model.companyId.valueHasMutated();
+						}
+					}
+				})
+				// get mode from params or set default
+				.always(() => {
+					vm.$blockui('clear').then(() => vm.mode(vm.params.mode || 'admin'));
+				});
 		}
 
 		public submitLogin() {
@@ -179,12 +208,6 @@ module nts.uk.at.kdp003.f {
 									.info({ messageId: successMsg })
 									.then(() => response);
 							}
-
-							return response;
-						})
-						.then((response: TimeStampLoginData) => {
-							vm.$window
-								.storage(LOGINDATA, _.chain(model).clone().omit(['password']).value());
 
 							return response;
 						})
