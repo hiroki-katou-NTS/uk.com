@@ -18,7 +18,7 @@ module nts.uk.at.view.kdp.share {
     </div>
 	<div class="button-group" data-bind="if: !!events">
 		<div data-bind="if: !!events.setting">
-			<button class="btn-setting" data-bind="icon: 5, attr: { title: $component.$i18n('KDP003_3') }, click: events.setting"></button>
+			<button class="btn-setting" data-bind="icon: 5, click: events.setting"></button>
 		</div>
 		<div data-bind="if: !!events.company">
 			<button class="btn-company proceed small" data-bind="i18n: 'KDP003_2', click: events.company"></button>
