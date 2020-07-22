@@ -134,7 +134,7 @@ module nts.uk.at.kdp003.f {
 				.then(() => vm.$ajax(API.COMPANIES))
 				.then((data: CompanyItem[]) => {
 					const companyId = ko.toJS(params.companyId);
-					const exist: CompanyItem = _.find(data, (c) => c.companyId === companyId) || _.head(data);
+					const exist: CompanyItem = _.find(data, (c) => c.companyId === companyId) || (companyId ? null : _.head(data));
 
 					vm.listCompany(data);
 
