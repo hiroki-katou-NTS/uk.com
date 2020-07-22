@@ -33,13 +33,6 @@ public class KrcdtStampRecord extends UkJpaEntity implements Serializable {
 	public KrcdtStampRecordPk pk;
 	
 	/**
-	 * CID
-	 */
-	@Basic(optional = false)
-	@Column(name = "CID")
-	public String Cid;
-
-	/**
 	 * 表示する打刻区分
 	 */
 	@Basic(optional = false)
