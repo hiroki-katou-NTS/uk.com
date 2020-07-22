@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.employeeinfo.rank;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,15 +48,15 @@ public class GetEmRankInforServiceTest {
 		};
 		
 		List<EmpRankInfor> result =  GetEmRankInforService.get(require, listEmpId);
-		assertNull(result.get(0).getRankCode());
-		assertNull(result.get(1).getRankCode());
-		assertNull(result.get(0).getRankSymbol());
-		assertNull(result.get(1).getRankSymbol());
-	}
+		assertThat(result).extracting(x-> x.getEmpId(), x-> x.getRankCode(),
+				x-> x.getRankSymbol())
+		.containsExactly(tuple("003",null,null), tuple("004",null,null));
+		}
+
 	
 	@Test
 	public void testEmployeeRankNotNull_RankNotNull() {
-		List<String> listEmpId = Arrays.asList("001","002"); // dummy
+		List<String> listEmpId = Arrays.asList("11","12"); // dummy
 		List<EmployeeRank> listEmpRank = new ArrayList<EmployeeRank>();
 		listEmpRank.addAll(listEmpId.stream().map(mapper-> new EmployeeRank(mapper, new RankCode(mapper)))
 				.collect(Collectors.toList()));
@@ -79,10 +79,9 @@ public class GetEmRankInforServiceTest {
 		};
 
 		List<EmpRankInfor> result  = GetEmRankInforService.get(require, listEmpId);
-		assertThat(result.get(0).getRankCode().v().equals("001")).isTrue();
-		assertThat(result.get(1).getRankCode().v().equals("002")).isTrue();
-		assertThat(result.get(0).getRankSymbol().v().equals("001")).isTrue();
-		assertThat(result.get(1).getRankSymbol().v().equals("002")).isTrue();
+		assertThat(result).extracting(x-> x.getEmpId(), x-> x.getRankCode(),
+				x-> x.getRankSymbol())
+		.containsExactly(tuple("11",new RankCode("11"), new RankSymbol("11")), tuple("12",new RankCode("12"), new RankSymbol("12")));
 	}
 	
 	@Test
@@ -110,9 +109,8 @@ public class GetEmRankInforServiceTest {
 			}
 		};
 		List<EmpRankInfor> result = GetEmRankInforService.get(require, listEmpId);
-		assertNull(result.get(0).getRankCode());
-		assertNull(result.get(1).getRankCode());
-		assertNull(result.get(0).getRankSymbol());
-		assertNull(result.get(1).getRankSymbol());
+		assertThat(result).extracting(x-> x.getEmpId(), x-> x.getRankCode(),
+				x-> x.getRankSymbol())
+		.containsExactly(tuple("001",null,null), tuple("002",null,null));
 	}
 }
