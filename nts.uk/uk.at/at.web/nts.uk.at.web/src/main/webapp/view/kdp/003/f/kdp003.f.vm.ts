@@ -134,7 +134,7 @@ module nts.uk.at.kdp003.f {
 				.then(() => vm.$ajax(API.COMPANIES))
 				.then((data: CompanyItem[]) => {
 					const companyId = ko.toJS(params.companyId);
-					const exist: CompanyItem = _.find(data, (c) => c.companyId === companyId) || (companyId ? null : _.head(data));
+					const exist: CompanyItem = _.find(data, (c) => c.companyId === companyId); // || (companyId ? null : _.head(data));
 
 					vm.listCompany(data);
 
@@ -145,7 +145,7 @@ module nts.uk.at.kdp003.f {
 							model.companyId.valueHasMutated();
 						}
 					} else {
-						if (params.mode === 'admin') {
+						if (params.mode === 'admin' && !data.length) {
 							vm.$dialog
 								.error({ messageId: 'Msg_1527' })
 								.then(() => vm.$window.close({ msgErrorId: 'Msg_1527' }));
