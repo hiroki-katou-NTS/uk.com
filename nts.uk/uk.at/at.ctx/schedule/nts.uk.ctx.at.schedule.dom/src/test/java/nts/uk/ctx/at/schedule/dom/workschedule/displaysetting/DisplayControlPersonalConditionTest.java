@@ -91,13 +91,7 @@ public class DisplayControlPersonalConditionTest {
 				return lstEmpLicense;
 			}
 		};
-		
-		DisplayControlPersonalCondition data = new DisplayControlPersonalCondition(
-				//companyID
-				"00000000000000000000000000000000001",
-				DisplayControlPersonalConditionHelper.getListPersonInfor(),
-			Optional.empty());
-		List<PersonalCondition> list = data.acquireInforDisplayControlPersonalCondition(require, GeneralDate.today(), listEmp);
+		List<PersonalCondition> list = DisplayControlPersonalCondition.acquireInforDisplayControlPersonalCondition(require, GeneralDate.today(), listEmp);
 		assertThat(list).extracting(x-> x.getEmpId(),
 				x-> x.getOptLicenseClassification().get().name(),
 				x-> x.getOptRankSymbol().get(),
