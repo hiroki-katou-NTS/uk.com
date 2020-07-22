@@ -26,6 +26,8 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombi
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombiDtlPk;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombiPk;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgPk;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -348,6 +350,14 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 			throw new RuntimeException(ex);
 		}
 
+	}
+
+	@Override
+	public boolean check(TargetOrgIdenInfor targeOrg, int page) {
+		String targetId = targeOrg.getUnit() == TargetOrganizationUnit.WORKPLACE ? targeOrg.getWorkplaceId().get()
+				: targeOrg.getWorkplaceGroupId().get();
+		Optional<ShiftPalletsOrg> data = findShiftPalletOrg(targeOrg.getUnit().value, targetId, page);
+		return data.isPresent();
 	}
 
 }

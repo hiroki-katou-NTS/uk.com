@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.dom.workschedule.displaysetting;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +30,7 @@ public class DisplayControlPersonalConditionHelper {
 		}
 		public static WorkscheQualifi  optWorkscheQualifi = new WorkscheQualifi(new PersonSymbolQualify("01"), getLst());
 		
-		public static List<PersonInforDisplayControl> getListPersonInforDisplayControl(){
+		public static List<PersonInforDisplayControl> getListPersonInfor(){
 			List<PersonInforDisplayControl> result = Arrays.asList(
 					new PersonInforDisplayControl(
 							EnumAdaptor.valueOf(0, ConditionATRWorkSchedule.class),
@@ -39,23 +40,20 @@ public class DisplayControlPersonalConditionHelper {
 							EnumAdaptor.valueOf(1, NotUseAtr.class)),
 					new PersonInforDisplayControl(
 							EnumAdaptor.valueOf(2, ConditionATRWorkSchedule.class),
-							EnumAdaptor.valueOf(1, NotUseAtr.class)),
-					new PersonInforDisplayControl(
-							EnumAdaptor.valueOf(3, ConditionATRWorkSchedule.class),
 							EnumAdaptor.valueOf(1, NotUseAtr.class)));
 			return result;
 		}
 		
-		public static List<PersonInforDisplayControl> getListPersonInforDisplayControlSucces(){
+		public static List<PersonInforDisplayControl> getListPersonSucces(){
 			List<PersonInforDisplayControl> result = Arrays.asList(
 					new PersonInforDisplayControl(
-							EnumAdaptor.valueOf(0, ConditionATRWorkSchedule.class),
+							EnumAdaptor.valueOf(3, ConditionATRWorkSchedule.class),
 							EnumAdaptor.valueOf(1, NotUseAtr.class)),
 					new PersonInforDisplayControl(
-							EnumAdaptor.valueOf(1, ConditionATRWorkSchedule.class),
+							EnumAdaptor.valueOf(3, ConditionATRWorkSchedule.class),
 							EnumAdaptor.valueOf(1, NotUseAtr.class)),
 					new PersonInforDisplayControl(
-							EnumAdaptor.valueOf(2, ConditionATRWorkSchedule.class),
+							EnumAdaptor.valueOf(3, ConditionATRWorkSchedule.class),
 							EnumAdaptor.valueOf(1, NotUseAtr.class)));
 			return result;
 		}
@@ -63,7 +61,7 @@ public class DisplayControlPersonalConditionHelper {
 			DisplayControlPersonalCondition data = new DisplayControlPersonalCondition(
 					//companyID
 					"00000000000000000000000000000000001",
-					getListPersonInforDisplayControl(),
+					getListPersonInfor(),
 				Optional.of(optWorkscheQualifi));
 			return data;
 			
@@ -72,10 +70,15 @@ public class DisplayControlPersonalConditionHelper {
 			DisplayControlPersonalCondition data = new DisplayControlPersonalCondition(
 					//companyID
 					"00000000000000000000000000000000001",
-					getListPersonInforDisplayControl(),
+					getListPersonInfor(),
 				Optional.empty());
 			return data;
 			
+		}
+		
+		public static Optional<WorkscheQualifi> getWorkscheQualifi() {
+			WorkscheQualifi qualifi = new WorkscheQualifi(new PersonSymbolQualify("1"), Collections.emptyList());
+			return Optional.ofNullable(qualifi);
 		}
 		
 }

@@ -511,4 +511,8 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 		this.workTypeCode = workTypeCode;
 		this.workTypeSetList = workTypeSetList;
 	}
+
+	public void setDeprecate(DeprecateClassification deprecate) {
+		this.deprecate = deprecate;
+	}
 }

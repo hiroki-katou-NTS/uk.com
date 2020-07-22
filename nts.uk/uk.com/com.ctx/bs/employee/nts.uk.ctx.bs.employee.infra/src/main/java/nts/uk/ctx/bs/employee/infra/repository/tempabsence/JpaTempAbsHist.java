@@ -22,7 +22,10 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TimeoffLeaveRecordWithPeriod;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrameNo;
 import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHistory;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -467,5 +470,75 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 			}
 		});
 		return tempAbsenceHistory;
+	}
+
+	@Override
+	public void insert(TempAbsenceHistory tempAbsenceHistory, TempAbsenceHisItem tempAbsenceHisItem) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(TempAbsenceHistory tempAbsenceHistory, TempAbsenceHisItem tempAbsenceHisItem) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(String companyID, String empID, String historyID) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(String companyID, String empID) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Optional<TempAbsenceHistory> specifyEmpIDGetHistory(String companyID, String employeeId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<TempAbsenceHisItem> getHistoryItemBySpecifyingHistoryID(String hisID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<TempAbsenceHisItem> specifyHisAndFrameNotGetHisItem(List<String> lstHisId,
+			List<TempAbsenceFrameNo> tempAbsenceFrNo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<TempAbsenceHisItem> getHisItemsAsOfDate(String companyId, GeneralDate date) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<TimeoffLeaveRecordWithPeriod> getHistoryItemWithPeriod(String companyID, List<String> lstEmpId,
+			DatePeriod datePeriod, List<TempAbsenceFrameNo> lstTempAbsenceFrameNo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<TimeoffLeaveRecordWithPeriod> getLeaveHistoryItemsWithPeriod(String companyID, List<String> lstEmpId,
+			DatePeriod datePeriod) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<TimeoffLeaveRecordWithPeriod> getAbsenceHistoryItemPeriod(String companyId, List<String> lstEmpId,
+			DatePeriod datePeriod) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

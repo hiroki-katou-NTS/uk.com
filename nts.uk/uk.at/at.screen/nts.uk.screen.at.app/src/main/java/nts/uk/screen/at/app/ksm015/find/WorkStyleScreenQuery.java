@@ -34,7 +34,7 @@ public class WorkStyleScreenQuery {
 		ShiftMasterDisInfor shiftMasterDisInfor = new ShiftMasterDisInfor(new ShiftMasterName(dto.getShiftMasterName()), new ColorCodeChar6(dto.getColor()), new Remarks(dto.getRemarks()));
 		ShiftMaster shiftMaster = new ShiftMaster(companyId, new ShiftMasterCode(dto.getShiftMasterCode()), shiftMasterDisInfor, dto.getWorkTypeCode(), dto.getWorkTimeCode());
 		WorkInformation.Require require = new WorkStyleScreenQueryImpl(basicScheduleService);
-		Integer workStyle = shiftMaster.getWorkStyle(require).value;
+		Integer workStyle = shiftMaster.getWorkStyle(require).get().value;
 		return workStyle;
 	}
 	

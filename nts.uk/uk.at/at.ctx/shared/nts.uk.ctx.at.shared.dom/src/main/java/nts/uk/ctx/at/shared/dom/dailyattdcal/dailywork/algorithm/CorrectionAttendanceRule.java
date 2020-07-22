@@ -21,7 +21,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 
-	@Inject
 	private DailyRecordToAttendanceItemConverter attendanceItemConvertFactory;
 
 	@Inject

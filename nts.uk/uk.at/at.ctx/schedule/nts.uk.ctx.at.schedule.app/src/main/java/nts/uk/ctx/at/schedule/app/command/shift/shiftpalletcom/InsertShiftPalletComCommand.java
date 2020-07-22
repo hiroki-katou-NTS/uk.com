@@ -10,7 +10,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.schedule.dom.shift.management.Combinations;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftCombinationName;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPallet;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletCode;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletCombinations;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletDisplayInfor;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletName;
@@ -19,6 +18,7 @@ import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrg;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftRemarks;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -46,7 +46,7 @@ public class InsertShiftPalletComCommand {
 				listInsertPatternItemCommand.stream()
 						.map(c -> new ShiftPalletCombinations(c.patternNo, new ShiftCombinationName(c.patternName),
 								c.listInsertWorkPairSetCommand.stream()
-										.map(d -> new Combinations(d.pairNo, new ShiftPalletCode(d.shiftCode)))
+										.map(d -> new Combinations(d.pairNo, new ShiftMasterCode(d.shiftCode)))
 										.collect(Collectors.toList())))
 						.collect(Collectors.toList())));
 
@@ -61,7 +61,7 @@ public class InsertShiftPalletComCommand {
 						listInsertPatternItemCommand.stream()
 								.map(c -> new ShiftPalletCombinations(c.patternNo, new ShiftCombinationName(c.patternName),
 										c.listInsertWorkPairSetCommand.stream()
-												.map(d -> new Combinations(d.pairNo, new ShiftPalletCode(d.shiftCode)))
+												.map(d -> new Combinations(d.pairNo, new ShiftMasterCode(d.shiftCode)))
 												.collect(Collectors.toList())))
 								.collect(Collectors.toList())));
 	}

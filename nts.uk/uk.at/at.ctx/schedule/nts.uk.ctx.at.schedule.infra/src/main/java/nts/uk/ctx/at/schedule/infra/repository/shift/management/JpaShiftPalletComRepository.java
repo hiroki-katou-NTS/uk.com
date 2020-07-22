@@ -329,4 +329,11 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 		ps3.executeUpdate();
 
 	}
+
+
+	@Override
+	public boolean exists(String companyID, int page) {
+		return findShiftPallet(companyID, page).isPresent();
+	}
+
 }

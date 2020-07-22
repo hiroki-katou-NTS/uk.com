@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectworkinfor.deleteworkinfor;
+package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.deleteworkinfor.sysdomain;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationReposi
  *
  */
 @Stateless
-public class DeleteWorkinfor {
+public class DeleteSystemDomain {
 	@Inject
 	private WorkInformationRepository workInformationRepository;
 	
