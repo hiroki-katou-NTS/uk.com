@@ -16,6 +16,7 @@ module nts.uk.at.view.kdl014.a {
         dataServer = [];
         
         paramFromParent: ParamFromParent;
+        display: boolean;
         
         constructor(){
             let self = this;
@@ -72,6 +73,7 @@ module nts.uk.at.view.kdl014.a {
                     _.orderBy(data, ['name', 'stampDateTime'], ['asc', 'asc']);
                     console.log(data);
                     self.dataServer = data.listEmps;
+                    self.display = data.display;
                     self.selectedItem(self.employeeInputList()[0].id);
                     self.bindComponent();
                     dfd.resolve();
@@ -105,6 +107,9 @@ module nts.uk.at.view.kdl014.a {
             self.empInfomationList([]);
             _.forEach(self.dataServer, function(item) {
                 if(item.employeeId === id){
+                    if(self.display == false){
+                        item.locationInfo = null;    
+                    }
                     tg.push(new EmpInfomation(item));
                 }
             });
@@ -178,10 +183,10 @@ module nts.uk.at.view.kdl014.a {
                 self.dateShow = "<span>"+ nts.uk.time.applyFormat("Short_YMDW", date) + "</span>"            
             }
             
-//            if (param.locationInfo === null) {
-//                self.locationInfo = '<a href="https://www.google.co.jp/maps/place/' + param.locationInfo.latitude + ',' + param.locationInfo.longitude + '"><img src="../img/Mapアイコン画像.png" height="20" width="20"/></a>';
-//            }
-            self.locationInfo = '<div style="text-align: center;"><a href="https://www.google.co.jp/maps/place/35.165556, 136.905333"><img src="../img/Mapアイコン画像.png" height="20" width="20"/></a></div>';
+            if (param.locationInfo !== null) {
+                self.locationInfo = '<a href="https://www.google.co.jp/maps/place/' + param.locationInfo.latitude + ',' + param.locationInfo.longitude + '"><img src="../img/Mapアイコン画像.png" height="20" width="20"/></a>';
+            }
+//            self.locationInfo = '<div style="text-align: center;"><a href="https://www.google.co.jp/maps/place/35.165556, 136.905333"><img src="../img/Mapアイコン画像.png" height="20" width="20"/></a></div>';
         }
     }
     
