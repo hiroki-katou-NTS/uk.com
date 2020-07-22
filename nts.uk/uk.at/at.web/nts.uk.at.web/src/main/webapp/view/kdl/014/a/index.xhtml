@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 655,
+					width : 705,
 					height : 480
 				};
 			</script>
@@ -32,33 +32,21 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
-				<div data-bind="visible :mode == 0">
-					<div id="emp-component"></div>
-					<table id="single-list"
-						data-bind="ntsGridList: {								
-						height: 275,
-						dataSource: empInfomationList,
-						primaryKey: 'code',
-						columns: columns,
-						multiple: false,
-						value: currentCode,
-						enable: true
-					}"></table>
+				<div style="min-height: 23px">
+					<div data-bind="visible :paramFromParent.mode == 0">
+						<div id="emp-component"></div>
+					</div>
 				</div>
-				
-				<div style="height: 23px"></div>
-				<div>
-					<table id="single-list"
-						data-bind="ntsGridList: {								
-						height: 275,
-						dataSource: empInfomationList,
-						primaryKey: 'code',
-						columns: columns,
-						multiple: false,
-						value: currentCode,
-						enable: true
-					}"></table>
-				</div>
+				<table id="single-list"
+					data-bind="ntsGridList: {								
+					height: 275,
+					dataSource: empInfomationList,
+					primaryKey: 'code',
+					columns: columns,
+					multiple: false,
+					value: currentCode,
+					enable: true
+				}"></table>
 			</div>
 				<div id="functions-area-bottom">
 					<button class="large" id="btnClose" data-bind="click :cancel_Dialog">#{i18n.getText('KDL014_18')}</button>
