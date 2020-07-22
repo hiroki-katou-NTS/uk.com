@@ -52,11 +52,11 @@
 								},
 								events: {
 									setting: {
-										show: false,
+										show: $vm.showClockButton.setting,
 										click: function() { $vm.setting.apply($vm, []); }
 									},
 									company: {
-										show: true,
+										show: $vm.showClockButton.company,
 										click: function() { $vm.stampHistory.apply($vm, []); }
 									}
 								}

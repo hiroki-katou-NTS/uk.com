@@ -20,6 +20,14 @@ module nts.uk.at.kdp003.a {
 	@bean()
 	export class ViewModel extends ko.ViewModel {
 		state: KnockoutObservable<STATE> = ko.observable('LOGING_IN');
+		
+		showClockButton: {
+			setting: KnockoutObservable<boolean>;
+			company: KnockoutObservable<boolean>;
+		} = {
+			setting: ko.observable(true),
+			company: ko.observable(true)
+		};
 
 		employeeData: EmployeeListParam = {
 			employees: ko.observableArray([]),
