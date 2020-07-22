@@ -193,3 +193,9 @@
 	width: 68vmin;
 	padding: 4vmin 0vmin 4vmin 0vmin;
 }
+
+.button-group .btn-company {
+	font-size: 1.7vmin;
+    padding: 0.7vmin;
+    height: auto;
+}
