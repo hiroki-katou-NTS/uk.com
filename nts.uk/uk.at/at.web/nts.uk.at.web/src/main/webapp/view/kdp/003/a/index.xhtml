@@ -51,8 +51,14 @@
 									backGroundColor: 'rgb(0, 51, 204)'
 								},
 								events: {
-									setting: function() { $vm.setting.apply($vm, []); },
-									company: function() { $vm.stampHistory.apply($vm, []); }
+									setting: {
+										show: $vm.showClockButton.setting,
+										click: function() { $vm.setting.apply($vm, []); }
+									},
+									company: {
+										show: $vm.showClockButton.company,
+										click: function() { $vm.stampHistory.apply($vm, []); }
+									}
 								}
 							}
 						}"></div>
