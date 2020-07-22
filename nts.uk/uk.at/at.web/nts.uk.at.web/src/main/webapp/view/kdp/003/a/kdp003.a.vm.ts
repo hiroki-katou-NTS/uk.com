@@ -74,8 +74,10 @@ module nts.uk.at.kdp003.a {
 					if (!data) {
 						vm.state('LOGIN_SUCCESS');
 						vm.employeeData.selectedId(null);
+						
 						return false;
 					} else if (_.has(data, 'em')) {
+						// login by f dialog
 						const loginData = data as f.TimeStampLoginData;
 
 						if (loginData.msgErrorId || loginData.errorMessage) {
@@ -101,6 +103,7 @@ module nts.uk.at.kdp003.a {
 								.then(() => true);
 						}
 					} else {
+						// get data from storage
 						const {
 							CCD,
 							CID,
