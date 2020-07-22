@@ -13,6 +13,7 @@ module nts.uk.at.kdp003.f {
 							name: $component.$i18n('KDP003_3'),
 							constraint: 'CompanyCode',
 							value: model.companyCode,
+							required: true,
 							option: {
 								width: '100px',
 								textmode: 'text'
