@@ -16,7 +16,6 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
@@ -55,27 +54,48 @@ public class ReferToTheStampingResultsFinder {
 	@Inject
 	private WorkLocationRepository workLocationRepo;
 	
-
 	public ReferToTheStampingResultsDto get(Kdl014EmpParamDto param) {
 		
 		// 1.取得する(@Require, 社員ID, 年月日) -> 社員の打刻情報 / EmployeeStampInfo
-		GetListStampEmployeeService.Require require = new RequireImpl(stampCardRepository, stampRecordRepository, stampDakokuRepository);
-
-		List<String> employeeIds = param.getListEmp().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		List<EmployeeStampInfo> listEmployeeStampInfo = new ArrayList<>(); // list 社員の打刻情報
 
-		DatePeriod period = new DatePeriod(param.getStart(), param.getEnd());
-		
-		for (String empId : employeeIds) {
-			period.datesBetween().forEach(date -> {
-				Optional<EmployeeStampInfo> optEmStampInfo = GetListStampEmployeeService.get(require, empId, date);
-				if (optEmStampInfo.isPresent()) {
-					listEmployeeStampInfo.add(optEmStampInfo.get());
-				}
-			});
-		}
+		List<String> employeeIds = step1(param, listEmployeeStampInfo);
 		
 		// 2.<call> 社員の情報を取得する -> List<社員情報>
+		List<EmployeeInformation> listEmpInfo = step2(param, employeeIds);
+		
+		// 3.get*(List<社員の打刻情報．勤務場所コード＞) -> List<勤務場所>
+		List<WorkLocation> workLocationList = step3(listEmployeeStampInfo);
+		
+		// 4.get(会社ID) -> GoogleMap利用するか、マップ表示アドレス
+		ReferToTheStampingResultsDto result = step4(listEmployeeStampInfo, listEmpInfo, workLocationList);
+		
+		if(param.getMode() == 0 && param.getListEmp().size() == 1 && result.getListEmps().isEmpty()) throw new BusinessException("Msg_1617");
+		
+		if(param.getMode() == 1 && result.getListEmps().isEmpty()) throw new BusinessException("Msg_1617");
+		
+		return result;
+	}
+
+	private List<String> step1(Kdl014EmpParamDto param, List<EmployeeStampInfo> listEmployeeStampInfo) {
+		List<String> employeeIds = param.getListEmp().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		
+		GetListStampEmployeeService.Require require = new RequireImpl(stampCardRepository, stampRecordRepository, stampDakokuRepository);
+		
+		DatePeriod period = new DatePeriod(param.getStart(), param.getEnd());
+		
+		employeeIds.stream().forEach(empId -> {
+			period.datesBetween().stream().forEach(date -> {
+				Optional<EmployeeStampInfo> optEmStampInfo = GetListStampEmployeeService.get(require, empId, date);
+		
+				if (optEmStampInfo.isPresent()) listEmployeeStampInfo.add(optEmStampInfo.get());
+			});
+		});
+		
+		return employeeIds;
+	}
+
+	private List<EmployeeInformation> step2(Kdl014EmpParamDto param, List<String> employeeIds) {
 		EmployeeInformationQuery infoQuery = EmployeeInformationQuery.builder()
 				.employeeIds(employeeIds)
 				.referenceDate(param.getEnd())
@@ -85,80 +105,81 @@ public class ReferToTheStampingResultsFinder {
 				.toGetEmploymentCls(false)
 				.toGetPosition(false)
 				.toGetWorkplace(false).build();
-		List<EmployeeInformation> listEmpInfo = empInfoRepo.find(infoQuery);
+		
+		return empInfoRepo.find(infoQuery);
+	}
+	
+	private List<WorkLocation> step3(List<EmployeeStampInfo> listEmployeeStampInfo) {
+		
+		List<String> listWorkLocationCode = listEmployeeStampInfo.stream()
+				.flatMap(m -> m.getListStampInfoDisp().stream()).flatMap(m -> m.getStamp().stream())
+				.filter(m -> m.getRefActualResults().getWorkLocationCD().isPresent())
+				.map(m -> m.getRefActualResults().getWorkLocationCD().get()).map(m -> m.v()).distinct()
+				.collect(Collectors.toList());
 
+		return workLocationRepo.findByCodes(AppContexts.user().companyId(), listWorkLocationCode);
+	}
 
-		// 3.get*(List<社員の打刻情報．勤務場所コード＞) -> List<勤務場所>
-//		List<String> listWorkLocationCode = new ArrayList<>();
-//			
-//		for (EmployeeStampInfo r : listEmployeeStampInfo) {
-//			for (StampInfoDisp d : r.getListStampInfoDisp()) {
-//				for (Stamp stamp: d.getStamp()) {
-//					if(stamp.getRefActualResults().getWorkLocationCD().isPresent()) {
-//						listWorkLocationCode.add(stamp.getRefActualResults().getWorkLocationCD().get().v());
-//					}
-//				}
-//			}
-//		}
-//		listWorkLocationCode = listWorkLocationCode.stream().distinct().collect(Collectors.toList());
+	private ReferToTheStampingResultsDto step4(List<EmployeeStampInfo> listEmployeeStampInfo,
+			List<EmployeeInformation> listEmpInfo, List<WorkLocation> workLocationList) {
 		
-		//flatmap
-		List<StampInfoDisp> listStampInfoDisp = listEmployeeStampInfo.stream().flatMap(m->m.getListStampInfoDisp().stream()).collect(Collectors.toList());
-		
-		List<Stamp> listStamp = listStampInfoDisp.stream().flatMap(m -> m.getStamp().stream()).collect(Collectors.toList());
-		
-		List<WorkLocationCD> listWorkLocation = listStamp.stream().filter(m->m.getRefActualResults().getWorkLocationCD().isPresent()).map(m->m.getRefActualResults().getWorkLocationCD().get()).collect(Collectors.toList());
-
-		List<String> listWorkLocationCode = listWorkLocation.stream().map(m->m.v()).distinct().collect(Collectors.toList());
-		
-		List<WorkLocation> workLocationList = workLocationRepo.findByCodes(AppContexts.user().companyId(), listWorkLocationCode);
-		
-		// 4.get(会社ID) -> GoogleMap利用するか、マップ表示アドレス
 		Optional<CommonSettingsStampInput> optSettingStampInput = commonSettingsStampInputRepo.get(AppContexts.user().companyId());
 		
 		ReferToTheStampingResultsDto result = new ReferToTheStampingResultsDto();
 		
 		if(optSettingStampInput.isPresent()) {
 			CommonSettingsStampInput input = optSettingStampInput.get();
+			
 			result.setDisplay(input.isGooglemap());
-			if (input.getMapAddres().isPresent()) {
-				result.setAddress(input.getMapAddres().get().v());
-			}
+
+			if (input.getMapAddres().isPresent()) result.setAddress(input.getMapAddres().get().v());
 		}
 		
 		List<EmpInfomationDto> listEmps = new ArrayList<>();
 		
-		for (EmployeeInformation empInfo : listEmpInfo) {
-			List<EmployeeStampInfo> employeeStampListInfo = listEmployeeStampInfo.stream().filter(c->c.getEmployeeId().equals(empInfo.getEmployeeId())).collect(Collectors.toList());
-			for (EmployeeStampInfo stampInfo : employeeStampListInfo) {
-				for (StampInfoDisp stamp: stampInfo.getListStampInfoDisp()) {
-					for (Stamp st : stamp.getStamp()) {
+		listEmpInfo.stream().forEach(empInfo -> {
+			
+			List<EmployeeStampInfo> employeeStampListInfo = listEmployeeStampInfo.stream()
+					.filter(c -> c.getEmployeeId().equals(empInfo.getEmployeeId())).collect(Collectors.toList());
+			
+			employeeStampListInfo.stream().forEach(stampInfo -> {
+				stampInfo.getListStampInfoDisp().stream().forEach(stamp -> {
+					stamp.getStamp().forEach(st -> {
+						
 						Optional<WorkLocation> wl = Optional.empty();
-						if(st.getRefActualResults().getWorkLocationCD().isPresent()) {
-							wl = workLocationList.stream().filter(c->c.getWorkLocationCD().v().equals(st.getRefActualResults().getWorkLocationCD().get().v())).findFirst();
+						
+						if (st.getRefActualResults().getWorkLocationCD().isPresent()) {
+							wl = workLocationList.stream()
+									.filter(c -> c.getWorkLocationCD().v()
+											.equals(st.getRefActualResults().getWorkLocationCD().get().v()))
+									.findFirst();
 						}
-						EmpInfomationDto em = new EmpInfomationDto(
-								empInfo.getEmployeeId(),
-								empInfo.getEmployeeCode(),
-								empInfo.getBusinessName(),
-								st.getStampDateTime(),
-								st.getRelieve().getStampMeans().value,
-								stamp.getStampAtr(),
-								wl.isPresent()?wl.get().getWorkLocationName().v() : null,
-								st.getLocationInfor().isPresent()?st.getLocationInfor().get().getPositionInfor() : null);
+						
+						EmpInfomationDto em = createEmpInfoDto(empInfo, stamp, st, wl);
+						
 						listEmps.add(em);
-					}
-				}
-			}
-		}
+					});
+				});
+			});
+		});
 		
 		result.setListEmps(listEmps);
 		
-		if(param.getMode() == 0 && param.getListEmp().size() == 1 && result.getListEmps().isEmpty()) throw new BusinessException("Msg_1617");
-		
-		if(param.getMode() == 1 && result.getListEmps().isEmpty()) throw new BusinessException("Msg_1617");
-		
 		return result;
+	}
+
+	private EmpInfomationDto createEmpInfoDto(EmployeeInformation empInfo, StampInfoDisp stamp, Stamp st,
+			Optional<WorkLocation> wl) {
+		
+		return new EmpInfomationDto(
+				empInfo.getEmployeeId(),
+				empInfo.getEmployeeCode(),
+				empInfo.getBusinessName(),
+				st.getStampDateTime(),
+				st.getRelieve().getStampMeans().value,
+				stamp.getStampAtr(),
+				wl.isPresent() ? wl.get().getWorkLocationName().v() : null,
+				st.getLocationInfor().isPresent() ? st.getLocationInfor().get().getPositionInfor() : null);
 	}
 
 	@AllArgsConstructor
@@ -184,6 +205,5 @@ public class ReferToTheStampingResultsFinder {
 		public List<Stamp> getStamp(List<StampNumber> stampNumbers, GeneralDate date) {
 			return stampDakokuRepository.get(AppContexts.user().contractCode(), stampNumbers, date);
 		}
-
 	}
 }

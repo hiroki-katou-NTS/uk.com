@@ -20,14 +20,14 @@ module nts.uk.at.kdp003.a {
 	@bean()
 	export class ViewModel extends ko.ViewModel {
 		state: KnockoutObservable<STATE> = ko.observable('LOGING_IN');
-		
+
 		showClockButton: {
 			setting: KnockoutObservable<boolean>;
 			company: KnockoutObservable<boolean>;
 		} = {
-			setting: ko.observable(true),
-			company: ko.observable(true)
-		};
+				setting: ko.observable(true),
+				company: ko.observable(true)
+			};
 
 		employeeData: EmployeeListParam = {
 			employees: ko.observableArray([]),
@@ -82,7 +82,8 @@ module nts.uk.at.kdp003.a {
 					if (!data) {
 						vm.state('LOGIN_SUCCESS');
 						vm.employeeData.selectedId(null);
-						
+						vm.showClockButton.setting(false);
+
 						return false;
 					} else if (_.has(data, 'em')) {
 						// login by f dialog
@@ -154,8 +155,8 @@ module nts.uk.at.kdp003.a {
 								}
 
 								// if not exist workplaceID
-								return vm.$window.modal('at', '/view/kdp/003/k/index.xhtml');
-							});
+								return vm.$window.modal('at', '/view/kdp/003/k/index.xhtml') as any;
+							}) as any;
 					}
 				})
 				.then((data: null | k.Return) => {

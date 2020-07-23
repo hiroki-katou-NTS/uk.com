@@ -20,6 +20,9 @@ module nts.uk.at.view.kdl014.a {
         
         constructor(){
             let self = this;
+            $(document).ready(function() {
+                    $('#btnClose').focus();
+                });
             self.paramFromParent = getShared('KDL014-PARAM');
             
               if (self.paramFromParent.mode == 1) {
@@ -39,7 +42,7 @@ module nts.uk.at.view.kdl014.a {
                     { headerText: "<div style='text-align: center;'>" + getText("KDL014_13") + "</div>", key: 'dateShow', width: 115 },
                     { headerText: "<div style='text-align: center;'>" + getText("KDL014_14") + "</div>", key: 'time', width: 80 },
                     { headerText: "<div style='text-align: center;'>" + getText("KDL014_15") + "</div>", key: 'stampAtr', width: 90 },
-                    { headerText: "<div style='text-align: center;'>" + getText("KDL014_16") + "</div>", key: 'workLocationName', width: 250 },
+                    { headerText: "<div style='text-align: center;'>" + getText("KDL014_16") + "</div>", key: 'workLocationName', width: 333},
                     { headerText: "<div style='text-align: center;'>" + getText("KDL014_17") + "</div>", key: 'locationInfo', width: 50 }
                 ]);
             }
@@ -74,8 +77,20 @@ module nts.uk.at.view.kdl014.a {
                     console.log(data);
                     self.dataServer = data.listEmps;
                     self.display = data.display;
-                    self.selectedItem(self.employeeInputList()[0].id);
-                    self.bindComponent();
+
+                    if (self.paramFromParent.mode == 0) {
+                        self.selectedItem(self.employeeInputList()[0].id);
+                        self.bindComponent();
+                    } else {
+                        let tg = [];
+                        _.forEach(self.dataServer, function(item) {
+                            if (self.display == false) {
+                                item.locationInfo = null;
+                            }
+                            tg.push(new EmpInfomation(item));
+                        });
+                        self.empInfomationList(tg);
+                    }
                     dfd.resolve();
                 }).fail(function(res) {
                     error({ messageId: res.messageId });
@@ -106,10 +121,8 @@ module nts.uk.at.view.kdl014.a {
             let tg = [];
             self.empInfomationList([]);
             _.forEach(self.dataServer, function(item) {
-                if(item.employeeId === id){
-                    if(self.display == false){
-                        item.locationInfo = null;    
-                    }
+                if(item.employeeId === id && self.display == false) {
+                    item.locationInfo = null;    
                     tg.push(new EmpInfomation(item));
                 }
             });

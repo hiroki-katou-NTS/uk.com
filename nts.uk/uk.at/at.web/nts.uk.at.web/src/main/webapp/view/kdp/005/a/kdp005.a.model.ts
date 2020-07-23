@@ -39,6 +39,11 @@ interface ILoginInfo {
 
 }
 
+interface IAuthResult {
+    isSuccess: boolean;
+    authType: number;
+}
+
 class StampTab {
 	tabs: KnockoutObservableArray<NtsTabPanelModel> = ko.observableArray([]);
 	selectedTab: KnockoutObservable<string> = ko.observable('');

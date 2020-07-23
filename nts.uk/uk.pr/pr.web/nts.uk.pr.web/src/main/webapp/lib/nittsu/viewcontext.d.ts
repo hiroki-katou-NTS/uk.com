@@ -87,6 +87,7 @@ interface KnockoutStatic {
             readonly $ajax: {
                 (url: string): JQueryDeferred<any>;
                 (url: string, data: any): JQueryDeferred<any>;
+                (webapp: 'com' | 'hr' | 'pr' | 'at', url: string, data: any): JQueryDeferred<any>;
             };
             readonly $window: {
 				readonly size: {

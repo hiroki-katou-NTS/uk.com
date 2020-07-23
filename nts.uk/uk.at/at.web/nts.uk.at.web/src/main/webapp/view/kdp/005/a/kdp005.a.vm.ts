@@ -74,7 +74,7 @@ module nts.uk.at.view.kdp005.a {
 				let dfd = $.Deferred<any>(), self = this;
 				let loginInfo = self.loginInfo;
 				block.grayout();
-				service.confirmUseOfStampInput({ employeeId: null, stampMeans: 1 }).done((res) => {
+				service.confirmUseOfStampInput({ employeeId: null, stampMeans: 2 }).done((res) => {
 					self.isUsed(res.used == 0);
 					if (self.isUsed()) {
 						let isAdmin = true;
@@ -275,43 +275,74 @@ module nts.uk.at.view.kdp005.a {
 				let button = this;
                 modal('/view/kdp/005/h/index.xhtml').onClosed(function(): any {
                     let ICCard = getShared('ICCard');
-                    if(ICCard && ICCard != ''){
+                    if (ICCard && ICCard != '') {
                         console.log(ICCard);
-                    }else{
-                        modal('/view/kdp/005/i/index.xhtml');
+                        block.grayout();
+                        vm.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
+                            vm.authentic(employeeId).done(() => {
+                                vm.registerData(button, layout, ICCard);
+                            }).fail((errorMessage: string) => {
+                                setShared("ErrorMessage", errorMessage);
+                                modal('/view/kdp/005/i/index.xhtml');
+                            });
+                        }).fail(() => {
+                            modal('/view/kdp/005/i/index.xhtml');
+                        }).always(() => {
+                            block.clear();    
+                        });
                     }
                 });
-//				vm.doAuthent().done((res: IAuthResult) => {
-//					if (res.isSuccess) {
-//						vm.registerData(button, layout, res.authType);
-//					}
-//				});
 			}
+            
+            public getEmployeeIdByICCard(cardNumber: string): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred<any>();
+                service.getEmployeeIdByICCard({ cardNumber: cardNumber}).done((data) => {
+                    if (data.employeeId) {
+                        dfd.resolve(data.employeeId);
+                    }else{
+                        dfd.reject();    
+                    }
+                });
+                
+                return dfd.promise();
+            }
+            
+            //<<ScreenQuery>> 打刻入力社員の認証のみを行う
+            public authentic(employeeId: string): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred<any>();
+                let param = {
+                    companyId: self.loginInfo.companyId,
+                    employeeCode: null,
+                    employeeId: employeeId,
+                    password: null,
+                    passwordInvalid: true,
+                    isAdminMode: false,
+                    runtimeEnvironmentCreat: false
+                };
+                service.authenticateOnlyStamped(param).done((res) => {
+                    if (res.result) {
+                        dfd.resolve();
+                    }else{
+                        dfd.reject(res.errorMessage);    
+                    }
+                });
+                return dfd.promise();
+            }
 
-			public doAuthent(): JQueryPromise<IAuthResult> {
+			public doAuthent(employeeId: string): JQueryPromise<IAuthResult> {
 				let self = this;
 				let dfd = $.Deferred<any>();
 
-				self.fingerAuth().done((res) => {
-					if (res.result) {
-						service.confirmUseOfStampInput({ employeeId: self.loginInfo.employeeId, stampMeans: 1 }).done((res) => {
-							self.isUsed(res.used == 0);
-							if (!self.isUsed()) {
-								self.errorMessage(getMessage(res.messageId));
-							}
-							dfd.resolve({ isSuccess: self.isUsed(), authType: 2 });
-						});
-
-					} else {
-						self.errorMessage(getMessage("Msg_302"));
-
-						self.openScreenG().done((res) => {
-							dfd.resolve(res);
-						});
+				service.confirmUseOfStampInput({ employeeId: employeeId, stampMeans: 2 /*2:ICカード打刻*/ }).done((res) => {
+					self.isUsed(res.used == 0);
+					if (!self.isUsed()) {
+						self.errorMessage(getMessage(res.messageId));
 					}
-
+					dfd.resolve({ isSuccess: self.isUsed(), authType: 2 });
 				});
-
+                
 				return dfd.promise();
 			}
 
@@ -343,7 +374,7 @@ module nts.uk.at.view.kdp005.a {
 					}
 				});
 			}
-
+            
 			settingUser(self: ScreenModel) {
 				self.openDialogF({
 					mode: 'admin'
@@ -363,14 +394,13 @@ module nts.uk.at.view.kdp005.a {
 				});
 			}
 
-			public registerData(button, layout, authcMethod) {
+			public registerData(button, layout, stampedCardNumber) {
 				let self = this;
 				let vm = new ko.ViewModel();
 				block.invisible();
 				let data = {
-					employeeId: vm.$user.employeeId,
+					stampedCardNumber: stampedCardNumber,
 					datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
-					stampNumber: null,
 					stampButton: {
 						pageNo: layout.pageNo,
 						buttonPositionNo: button.btnPositionNo
@@ -380,11 +410,10 @@ module nts.uk.at.view.kdp005.a {
 						workLocationCD: null,
 						workTimeCode: null,
 						overtimeDeclaration: null
-					},
-					authcMethod: authcMethod
+					}
 				};
 
-				service.stampInput(data).done((res) => {
+				service.addCheckCard(data).done((res) => {
 					//phat nhac
 					self.playAudio(button.audioType);
 

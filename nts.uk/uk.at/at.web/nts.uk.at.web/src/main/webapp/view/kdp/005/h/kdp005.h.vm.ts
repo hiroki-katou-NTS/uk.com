@@ -15,6 +15,10 @@ module nts.uk.at.view.kdp005.h {
                         self.color('#0033cc');    
                         self.notify(getText('KDP005_5'));
                         self.inforAuthent(getText(''));
+                        if(!nts.uk.ui.errors.hasError()){
+                            setShared('ICCard', newValue);
+                            self.closeDialog();    
+                        }
                     }else{
                         self.color('#ff0000');
                         self.notify(getText('KDP005_6'));
@@ -25,11 +29,6 @@ module nts.uk.at.view.kdp005.h {
                     $('#iCCard').focus();
                 });
             }
-			public proceed() {
-				let self = this;
-                setShared('ICCard', self.value());
-                self.closeDialog();
-			}
             
             public closeDialog(): void {
 				nts.uk.ui.windows.close();
