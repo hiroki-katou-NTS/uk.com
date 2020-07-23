@@ -36,12 +36,14 @@ module nts.uk.at.kdp003.f {
 	export const API = {
 		LOGIN_ADMIN: 'ctx/sys/gateway/kdp/login/adminmode',
 		LOGIN_EMPLOYEE: 'ctx/sys/gateway/kdp/login/employeemode',
-		COMPANIES: '/ctx/sys/gateway/kdp/login/getLogginSetting'
+		COMPANIES: '/ctx/sys/gateway/kdp/login/getLogginSetting',
+		SETTING: 'at/record/stamp/employment_system/confirm_use_of_stamp_input'
 	};
 
 	@bean()
 	export class Kdp003FViewModel extends ko.ViewModel {
 		mode: KnockoutObservable<MODE> = ko.observable(null);
+		message: KnockoutObservable<Message | null> = ko.observable(null);
 
 		model: Model = new Model();
 
@@ -83,11 +85,18 @@ module nts.uk.at.kdp003.f {
 				.subscribe((id: string) => {
 					const dataSources: CompanyItem[] = ko.toJS(vm.listCompany);
 
+					vm.message(null);
+
 					if (dataSources.length) {
 						const exist = _.find(dataSources, (item: CompanyItem) => item.companyId === id);
 						const clear = () => {
 							model.companyCode('');
 							model.companyName('');
+
+							vm.message({
+								messageId: 'Msg_301',
+								messageParams: []
+							});
 						};
 
 						if (exist) {
@@ -98,7 +107,12 @@ module nts.uk.at.kdp003.f {
 
 							// update companyId by subscribe companyCode
 							switch (name) {
+								case 'KDP001':
+									break;
 								default:
+								case 'KDP002':
+
+									break;
 								case 'KDP003':
 									if (exist.selectUseOfName === false) {
 										clear();
@@ -120,6 +134,13 @@ module nts.uk.at.kdp003.f {
 										update();
 									}
 									break;
+							}
+
+							if (!ko.unwrap(vm.message)) {
+								vm.$ajax('at', API.SETTING, {
+									employeeId: null,
+									stampMeans: 1
+								})
 							}
 						}
 					}
@@ -184,11 +205,17 @@ module nts.uk.at.kdp003.f {
 			const model: ModelData = ko.toJS(vm.model);
 			const { password, companyCode } = model;
 
+			const message = ko.unwrap(vm.message);
+
+			if (message) {
+				return vm.$dialog.error(message);
+			}
+
 			if (passwordRequired === false) {
 				_.omit(model, ['password']);
 			}
 
-			if (mode === 'admin' && !model.companyId && !model.companyName) {
+			if (mode === 'admin' && !model.companyId) {
 				return vm.$dialog.error({ messageId: 'Msg_301' });
 			}
 
@@ -238,6 +265,11 @@ module nts.uk.at.kdp003.f {
 
 			vm.$window.close();
 		}
+	}
+
+	interface Message {
+		messageId: string;
+		messageParams: string[];
 	}
 
 	export interface CompanyItem {
