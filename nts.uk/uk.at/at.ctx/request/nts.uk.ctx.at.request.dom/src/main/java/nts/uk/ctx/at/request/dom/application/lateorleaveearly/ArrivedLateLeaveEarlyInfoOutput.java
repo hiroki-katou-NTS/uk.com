@@ -24,6 +24,6 @@ public class ArrivedLateLeaveEarlyInfoOutput {
 //	エアー情報
 	private Optional<String> info;
 //	遅刻早退取消申請
-	private Optional<ArrivedLateLeaveEarly_Old> arrivedLateLeaveEarly;
+	private Optional<ArrivedLateLeaveEarly> arrivedLateLeaveEarly;
 	
 }
