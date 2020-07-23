@@ -29,6 +29,8 @@ public interface ShiftPalletsOrgRepository {
 
 	List<ShiftPalletsOrg> findByCID(String cid);
 	//[6] exists (複製元の対象組織,　複製先の ページ)
-	public boolean check(TargetOrgIdenInfor targeOrg,int page);
+	public boolean exists(TargetOrgIdenInfor targeOrg,int page);
+	//[3] Delete(対象組織, ページ)																							
+	public void delete(TargetOrgIdenInfor targeOrg,int page);
 
 }
