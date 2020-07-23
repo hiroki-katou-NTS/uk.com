@@ -25,6 +25,7 @@ public class DailyResultAccordScheduleStatus {
 	 * @param datePeriod
 	 * @return Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> --- Map<社員の予定管理状態, Optional<日別勤怠(Work)>>
 	 */
+	//IntegrationOfDaily
 	public static Map<ScheManaStatuTempo , Optional<IntegrationOfDaily>> get(Require require, String employeeID , DatePeriod datePeriod ){
 		Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> map = new HashMap<>();
 	
@@ -37,13 +38,13 @@ public class DailyResultAccordScheduleStatus {
 	 * @param datePeriod
 	 * @return Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> --- Map<社員の予定管理状態, Optional<日別勤怠(Work)>>
 	 */
-	private Map<ScheManaStatuTempo , Optional<IntegrationOfDaily>> getByEmp(String employeeID , DatePeriod datePeriod){
+	private Map<ScheManaStatuTempo , Optional<IntegrationOfDaily>> getByEmp(Require require, String employeeID , DatePeriod datePeriod){
 		Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> map = new HashMap<>();
 		return map;
 	}
 
 	public static interface Require  {
-		// 社員と日付を指定して日別勤怠(Work)を取得するアルゴリズムを利用する（1次の処理に存在するはず） 
+		// 社員と日付を指定して日別勤怠(Work)を取得するアルゴリズムを利用する（1次の処理に存在するはず） --- http://192.168.50.4:3000/issues/110713
 		// Tài liệu chưa chỉ rõ thuật toán 
 	}
 }
