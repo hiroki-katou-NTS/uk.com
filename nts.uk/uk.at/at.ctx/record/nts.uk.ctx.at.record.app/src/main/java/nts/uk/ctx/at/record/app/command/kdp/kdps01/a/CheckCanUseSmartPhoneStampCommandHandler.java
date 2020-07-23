@@ -165,7 +165,7 @@ public class CheckCanUseSmartPhoneStampCommandHandler extends CommandHandlerWith
 		}
 
 		@Override
-		public ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
+		public ProcessState createDailyResult(@SuppressWarnings("rawtypes") AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
 				DatePeriod periodTime, ExecutionAttr executionAttr, String companyId, String empCalAndSumExecLogID,
 				Optional<ExecutionLog> executionLog) {
 			return this.createDailyResultDomainSv.createDailyResult(asyncContext, emloyeeIds, periodTime, executionAttr,
