@@ -166,7 +166,7 @@ module nts.uk.at.kdp003.f {
 										}
 
 										vm.message({
-											messageId: '',
+											messageId: 'Msg_1645',
 											messageParams
 										});
 									} else {
