@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,31 +17,27 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  */
 
 @AllArgsConstructor
-public class SortSetting implements DomainAggregate{
-	@Getter   
+public class SortSetting implements DomainAggregate {
+	@Getter
 	/** 会社ID **/
 	private final String companyID;
 	@Getter
 	/** 並び替え優先順 **/
 	private List<OrderedList> orderedList;
-	
-	// http://192.168.50.4:3000/issues/110596
-	/*public SortSetting(String companyID, OrderedList orderedList) {
-		super();
-		Set<OrderedList> uniqueElements = new HashSet<OrderedList>(orderedList);
-		//inv-1	@並び替え優先順.種類は重複しないこと
-		if(uniqueElements.size() < orderedList.size()){
+
+	// [C-1] 作る
+	public static SortSetting getSortSet(String companyID, List<OrderedList> orderedList) {
+
+		List<OrderedList> list = orderedList.stream().distinct().collect(Collectors.toList());
+		// inv-1 @並び替え優先順.種類は重複しないこと
+		if (list.size() < orderedList.size()) {
 			throw new BusinessException("Msg_1612");
 		}
-		//inv-2	1 <= @並び替え優先順.Size <= 3			
-		if((orderedList.size() == 0) || (orderedList.size()>4 )){
+		// inv-2 1 <= @並び替え優先順.Size <= 5
+		if ((orderedList.size() == 0) || orderedList.size() >= 6) {
 			throw new BusinessException("Msg_1613");
 		}
-		this.companyID = companyID;
-		this.orderedList = orderedList;
-	}*/
-	
-	
+		return new SortSetting(companyID, orderedList);
+	}
+
 }
-
-

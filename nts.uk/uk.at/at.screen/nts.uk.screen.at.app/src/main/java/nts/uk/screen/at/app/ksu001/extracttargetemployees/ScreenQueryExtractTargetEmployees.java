@@ -125,5 +125,6 @@ public class ScreenQueryExtractTargetEmployees {
 			List<EmpClassifiImport> data = syClassificationAdapter.getByListSIDAndBasedate(ymd, lstEmpId);
 			return data;
 		}
+
 	}
 }

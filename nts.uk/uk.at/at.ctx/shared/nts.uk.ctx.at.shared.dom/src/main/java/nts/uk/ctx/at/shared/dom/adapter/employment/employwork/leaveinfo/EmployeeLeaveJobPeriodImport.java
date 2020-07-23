@@ -5,7 +5,7 @@ import lombok.Getter;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
- * 社員の休職期間
+ * 社員の休職期間 Imported
  * 
  * @author HieuLt
  *

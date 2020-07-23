@@ -217,7 +217,7 @@ public class ScheManaStatuTempo {
 		return Optional.ofNullable(result);
 	}
 
-	public static interface Require extends EmpEmployeeAdapter {
+	public static interface Require  {
 
 		// @Inject
 		// private WorkingConditionRepository repo;

@@ -1,9 +1,9 @@
-package nts.uk.ctx.bs.employee.dom.employment.history.export;
+package nts.uk.ctx.bs.employee.pub.employment.history.export;
 
 import java.util.List;
 
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
+
 
 /**
  * 社員の雇用履歴Publish
@@ -19,16 +19,5 @@ public interface EmploymentHistoryPublish {
 	 * @return
 	 */
 	List<EmploymentPeriodExported> get(List<String> lstEmpID , DatePeriod datePeriod);
-
 	
-	public static interface Require {
-		/**
-		 * EmploymentHistoryRepository
-		 * [R-1] 期間付き履歴項目を取得する
-		 * @param employeeIds
-		 * @param datePeriod
-		 * @return
-		 */
-		List<EmploymentHistory> getByListSid(List<String> employeeIds  ,  DatePeriod datePeriod);
-	}
 }
