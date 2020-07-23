@@ -6,13 +6,14 @@ module nts.uk.at.kdp003.f {
 	<tr>
 		<td data-bind="i18n: 'KDP003_3'"></td>
 		<td>
-			<!-- ko if: ko.unwrap($component.listCompany).length > 1 -->
+			<!-- ko if: ko.unwrap(listCompany).length > 1 -->
 				<!-- ko if: ko.unwrap(params.companyDesignation) === true -->
 					<input tabindex="1" id="company-code"
 						data-bind="ntsTextEditor: {
 							name: $component.$i18n('KDP003_3'),
 							constraint: 'CompanyCode',
 							value: model.companyCode,
+							required: true,
 							option: {
 								width: '100px',
 								textmode: 'text'
@@ -24,7 +25,7 @@ module nts.uk.at.kdp003.f {
 					data-bind="ntsComboBox: {
 						width: '350px',
 						name: $component.$i18n('KDP003_3'),
-						options: $component.listCompany,
+						options: listCompany,
 						visibleItemsCount: 5,
 						value: model.companyId,
 						optionsValue: 'companyId',
@@ -38,7 +39,7 @@ module nts.uk.at.kdp003.f {
 					}"></div>
 				<!-- /ko -->
 			<!-- /ko -->
-			<!-- ko if: ko.unwrap($component.listCompany).length === 1 -->
+			<!-- ko if: ko.unwrap(listCompany).length === 1 -->
 			<div data-bind="text: model.companyCode() + '&nbsp;' + model.companyName()"></div>
 			<!-- /ko -->
 		</td>
@@ -81,121 +82,8 @@ module nts.uk.at.kdp003.f {
 		template: adminModeTemplate
 	})
 	export class LoginWithAdminModeCoponent extends ko.ViewModel {
-		listCompany: KnockoutObservableArray<CompanyItem> = ko.observableArray([]);
-
-		constructor(public data: { model: Model; params: AdminModeParam; }) {
+		constructor(public data: { model: Model; params: AdminModeParam; listCompany: KnockoutObservableArray<CompanyItem>; }) {
 			super();
-		}
-
-		created() {
-			const vm = this;
-			const { data } = vm;
-			const { model, params } = data;
-
-			if (params.companyDesignation) {
-				model.companyCode
-					.subscribe((code: string) => {
-						const SCREEN: RegExpMatchArray = window.top.location.href.match(/kdp\/00\d/);
-
-						if (SCREEN.length) {
-							const name: 'KDP003' | 'KDP004' | 'KDP005' = SCREEN[0].replace(/\//g, '').toUpperCase() as any;
-
-							const dataSources: CompanyItem[] = ko.toJS(vm.listCompany);
-
-							if (dataSources.length) {
-								const exist = _.find(dataSources, (item: CompanyItem) => item.companyCode === code);
-								const clear = () => {
-									model.companyId('');
-									model.companyName('');
-								};
-
-								if (exist) {
-									const update = () => {
-										model.companyId(exist.companyId);
-										model.companyName(exist.companyName);
-									};
-
-									// update companyId by subscribe companyCode
-									switch (name) {
-										default:
-										case 'KDP003':
-											if (exist.selectUseOfName === false) {
-												clear();
-											} else {
-												update();
-											}
-											break;
-										case 'KDP004':
-											if (exist.fingerAuthStamp === false) {
-												clear();
-											} else {
-												update();
-											}
-											break;
-										case 'KDP005':
-											if (exist.icCardStamp === false) {
-												clear();
-											} else {
-												update();
-											}
-											break;
-									}
-								} else {
-									clear();
-								}
-							}
-						}
-					});
-			} else {
-				model.companyId
-					.subscribe((id: string) => {
-						const dataSources: CompanyItem[] = ko.toJS(vm.listCompany);
-
-						if (dataSources.length) {
-							const exist = _.find(dataSources, (item: CompanyItem) => item.companyId === id);
-
-							if (exist) {
-								// update companyCode by subscribe companyId
-								model.companyCode(exist.companyCode);
-								model.companyName(exist.companyName);
-							}
-						}
-					});
-			}
-
-			vm.$ajax(API.COMPANIES)
-				.done((data: CompanyItem[]) => {
-					if (params.companyDesignation) {
-						const companyId = ko.toJS(model.companyId);
-						const exist: CompanyItem = _.find(data, (c) => c.companyId === companyId);
-
-						vm.listCompany(data);
-
-						if (exist) {
-							if (!ko.unwrap(model.companyCode)) {
-								model.companyCode(exist.companyCode);
-							}
-						} else {
-							vm.$dialog
-								.error({ messageId: 'Msg_1527' })
-								.then(() => vm.$window.close());
-						}
-					} else {
-						const exist: CompanyItem = _.first(data);
-
-						if (exist) {
-							vm.listCompany(data);
-
-							if (!ko.unwrap(model.companyId)) {
-								model.companyId(exist.companyId);
-							}
-						} else {
-							vm.$dialog
-								.error({ messageId: 'Msg_1527' })
-								.then(() => vm.$window.close());
-						}
-					}
-				});
 		}
 	}
 }

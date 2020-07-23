@@ -6,6 +6,10 @@ const YM_FORMAT: string = 'YYYY/MM',
 
 const datetime = {
     install(vue: VueConstructor<Vue>) {
+        const $diff = _.get(vue, '$sdt') as number;
+        const $date = vue.observable({ now: new Date() });
+
+        setInterval(() => $date.now = moment().add($diff, 'ms').toDate(), 100);
 
         vue.mixin({
             beforeCreate() {
@@ -16,6 +20,8 @@ const datetime = {
                         return moment(d).format(format || DATE_FORMAT);
                     }
                 });
+
+                Object.defineProperty(self.$dt, 'now', { get: () => $date.now });
 
                 Object.assign(self.$dt, {
                     date(d: Date, format: string) {

@@ -17,9 +17,6 @@
 			<com:scriptfile path="kdp004.a.vm.js" />
 			<com:scriptfile path="kdp004.a.start.js" />
 			<com:scriptfile path="kdp004.a.service.js" />
-			<com:EnumScript>
-        nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.HistoryDisplayMethod
-      </com:EnumScript>
 		</ui:define>
 
 		<ui:define name="content">
@@ -68,13 +65,23 @@
 								data-bind="component: {
 						name: 'stamp-clock',
 						params: {
-							setting: {
+							setting: {show:true,
 								textColor: '#ffffff',
 								backGroundColor:  '#0033cc'
 							},
 							events: {
-								setting: function(data, event) { settingUser($vm)}
+								setting:
+								{
+										show: true,
+										click:  function(data, event) { settingUser($vm)} 
+								
 								}
+								,
+								company:{
+									show: false,
+									click:  function(data, event) { checkHis($vm) }
+								}
+							}
 						}
 					}"></div>
 						</com:ko-if>
@@ -84,13 +91,19 @@
 								data-bind="component: {
 						name: 'stamp-clock',
 						params: {
-							setting: {
+							setting: {show:true,
 								textColor: stampSetting().textColor,
 								backGroundColor:  stampSetting().backGroundColor
 							},
 							events: {
-								setting: function(data, event) { settingUser($vm)},
-								company: function(data, event) { checkHis($vm) }
+								setting:{
+								show: true,
+										click:  function(data, event) { settingUser($vm)}
+								} ,
+								company:{
+								show: true,
+										click:  function(data, event) { checkHis($vm) }
+								} 
 							}
 						}
 					}"></div>

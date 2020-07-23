@@ -13,3 +13,7 @@
 .kdp-003-f table.layout tr>td>div {
 	line-height: 32px;
 }
+
+#func-notifier-errors {
+	top: 150px !important;
+}

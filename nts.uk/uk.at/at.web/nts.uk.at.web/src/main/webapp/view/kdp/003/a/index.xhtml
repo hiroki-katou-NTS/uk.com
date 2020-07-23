@@ -34,11 +34,10 @@
 							css: {
 								'has-time-sheet': true
 							}">
-					<div class="time-sheet">
+					<div class="time-sheet" data-bind="if: ko.unwrap(employeeData.employeeAuthcUseArt) === true">
 						<div data-bind="component: {
 								name: 'stamp-employee-selection',
-								params: {
-								}
+								params: employeeData
 							}">
 						</div>
 					</div>
@@ -52,17 +51,23 @@
 									backGroundColor: 'rgb(0, 51, 204)'
 								},
 								events: {
-									setting: function() { $vm.setting.apply($vm, []); },
-									company: function() { $vm.company.apply($vm, []); }
+									setting: {
+										show: $vm.showClockButton.setting,
+										click: function() { $vm.setting.apply($vm, []); }
+									},
+									company: {
+										show: $vm.showClockButton.company,
+										click: function() { $vm.stampHistory.apply($vm, []); }
+									}
 								}
 							}
 						}"></div>
 						<div tabindex="2" data-bind="component: {
 								name: 'kdp-tab-button-panel',
 								params: { 
-									tabs: tabs,
-									stampToSuppress: stampToSuppress,
-									click: function(btn) { stampButtonClick.apply($vm, [btn]); }
+									tabs: $vm.buttonPage.tabs,
+									stampToSuppress: $vm.buttonPage.stampToSuppress,
+									click: function(btn, layout) { $vm.stampButtonClick.apply($vm, [btn, layout]); }
 								}
 							}"></div>
 					</div>

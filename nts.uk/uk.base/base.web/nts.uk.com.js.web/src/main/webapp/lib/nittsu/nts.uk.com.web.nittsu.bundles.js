@@ -6456,7 +6456,7 @@ var nts;
                                     var $dialogContentDoc = $(this.lastElementChild.contentDocument);
                                     // catch press tab key in close button of dialog.
                                     $dialogDocument.on("keydown", ":tabbable", function (evt) {
-                                        var code = evt.which || evt.keyCode;
+                                        var code = evt.which || evt.keyCode || -1;
                                         if (code.toString() === "9") {
                                             var focusableElements = _.sortBy($dialogContentDoc.find(":tabbable"), function (o) { return parseInt($(o).attr("tabindex")); });
                                             if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === false) {
@@ -6471,7 +6471,7 @@ var nts;
                                     });
                                     // catch press tab key for component in dialog.
                                     $dialogContentDoc.on("keydown", ":tabbable", function (evt) {
-                                        var code = evt.which || evt.keyCode;
+                                        var code = evt.which || evt.keyCode || -1;
                                         if (code.toString() === "9") {
                                             var focusableElements = _.sortBy($dialogContentDoc.find(":tabbable"), function (o) { return parseInt($(o).attr("tabindex")); });
                                             if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false) {
@@ -47994,7 +47994,12 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
             var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
             if (nowapp) {
                 $storage(path).then(function () {
-                    windows.sub.modal(webapp).onClosed(function () {
+                    windows.sub.modal(webapp)
+                        .onClosed(function () {
+                        var localShared = windows.container.localShared;
+                        _.each(localShared, function (value, key) {
+                            windows.setShared(key, value);
+                        });
                         $storage().then(function ($data) {
                             jdf.resolve($data);
                         });
@@ -48003,7 +48008,12 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
             }
             else {
                 $storage(params).then(function () {
-                    windows.sub.modal(webapp, path).onClosed(function () {
+                    windows.sub.modal(webapp, path)
+                        .onClosed(function () {
+                        var localShared = windows.container.localShared;
+                        _.each(localShared, function (value, key) {
+                            windows.setShared(key, value);
+                        });
                         $storage().then(function ($data) {
                             jdf.resolve($data);
                         });
@@ -48019,7 +48029,12 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
             var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
             if (nowapp) {
                 $storage(path).then(function () {
-                    windows.sub.modeless(webapp).onClosed(function () {
+                    windows.sub.modeless(webapp)
+                        .onClosed(function () {
+                        var localShared = windows.container.localShared;
+                        _.each(localShared, function (value, key) {
+                            windows.setShared(key, value);
+                        });
                         $storage().then(function ($data) {
                             jdf.resolve($data);
                         });
@@ -48028,7 +48043,12 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
             }
             else {
                 $storage(params).then(function () {
-                    windows.sub.modeless(webapp, path).onClosed(function () {
+                    windows.sub.modeless(webapp, path)
+                        .onClosed(function () {
+                        var localShared = windows.container.localShared;
+                        _.each(localShared, function (value, key) {
+                            windows.setShared(key, value);
+                        });
                         $storage().then(function ($data) {
                             jdf.resolve($data);
                         });
