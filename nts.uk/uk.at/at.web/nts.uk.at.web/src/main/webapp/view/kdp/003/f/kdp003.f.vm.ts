@@ -181,12 +181,20 @@ module nts.uk.at.kdp003.f {
 										break;
 									default:
 									case 'KDP002':
+										query(StampMeans.INDIVITION)
+											.then(authen);
 										break;
 									case 'KDP003':
+										query(StampMeans.NAME_SELECTION)
+											.then(authen);
 										break;
 									case 'KDP004':
+										query(StampMeans.FINGER_AUTHC)
+											.then(authen);
 										break;
 									case 'KDP005':
+										query(StampMeans.IC_CARD)
+											.then(authen);
 										break;
 								}
 							}
