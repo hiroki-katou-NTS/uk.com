@@ -281,7 +281,8 @@ module nts.uk.at.view.kdp005.a {
                         vm.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
                             vm.authentic(employeeId).done(() => {
                                 vm.registerData(button, layout, ICCard);
-                            }).fail(()=>{
+                            }).fail((errorMessage: string) => {
+                                setShared("ErrorMessage", errorMessage);
                                 modal('/view/kdp/005/i/index.xhtml');
                             });
                         }).fail(() => {
@@ -324,7 +325,7 @@ module nts.uk.at.view.kdp005.a {
                     if (res.result) {
                         dfd.resolve();
                     }else{
-                        dfd.reject();    
+                        dfd.reject(res.errorMessage);    
                     }
                 });
                 return dfd.promise();

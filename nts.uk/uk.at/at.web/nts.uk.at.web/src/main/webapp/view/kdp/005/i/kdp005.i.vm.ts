@@ -9,7 +9,7 @@ module nts.uk.at.view.kdp005.i {
 		export class ScreenModel {
             checks = ko.observable(true);
             timeStamp = ko.observable(1000);
-            inforAuthent = ko.observable('打刻入力を利用することができません。');
+            inforAuthent = getShared('ErrorMessage');
 			constructor() {
 				let self = this;
 			}
@@ -42,8 +42,6 @@ module nts.uk.at.view.kdp005.i {
                 dfd.resolve();
                 return dfd.promise();
             }
-            
-            
             
             countDown(){
                 let self =  this;
