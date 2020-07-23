@@ -59,7 +59,11 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 		// 年月日Listを作成する
 		for (GeneralDate loopDate = startDateParam; loopDate
 				.beforeOrEquals(endDateParam); loopDate = loopDate.addDays(1)) {
-			if (!lstHoliday.contains(loopDate)) {
+			if (lstHoliday != null ) {
+				if (!lstHoliday.contains(loopDate)) {
+					listDate.add(loopDate);
+				}
+			} else {
 				listDate.add(loopDate);
 			}
 		}

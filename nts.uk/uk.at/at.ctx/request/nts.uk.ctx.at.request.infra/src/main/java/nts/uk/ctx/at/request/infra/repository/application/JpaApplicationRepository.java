@@ -55,7 +55,6 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	@Override
 	public void update(Application application) {
 		this.commandProxy().update(KrqdtApplication.fromDomain(application));
-		this.getEntityManager().clear();
 		this.getEntityManager().flush();
 	}
 
