@@ -25,8 +25,7 @@ module nts.uk.at.view.kmp001.c {
 											ntsDateRangePicker: { 
 												require: true,
 												showNextPrevious: true,
-												value: dateRange, 
-												maxRange: 'oneMonth'
+												value: dateRange
 											}"/>		
 								</td>
 								<td>
