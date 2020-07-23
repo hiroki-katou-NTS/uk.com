@@ -6,6 +6,7 @@
 		<div class="cell valign-center">
 			<div id="combo-box" style="width: 390px"
 				data-bind="ntsComboBox: {
+								name: $i18n('KAF000_51'),
 								options: reasonTypeItemLst,
 								optionsValue: 'appStandardReasonCD',
 								optionsText: 'opReasonForFixedForm',
@@ -22,6 +23,7 @@
 		<div class="cell valign-center">
 			<textarea style="height: 80px;" id="inpReasonTextarea"
 				data-bind="ntsMultilineEditor: {
+							name: $i18n('KAF000_52'),
 							value: opAppReason, 
 							option: {
 								resizeable: false,
