@@ -11,6 +11,7 @@ module nts.uk.at.kdp003.a {
 		HIGHTLIGHT: 'at/record/stamp/management/personal/stamp/getHighlightSetting',
 		LOGIN_ADMIN: 'ctx/sys/gateway/kdp/login/adminmode',
 		LOGIN_EMPLOYEE: 'ctx/sys/gateway/kdp/login/employeemode',
+		COMPANIES: '/ctx/sys/gateway/kdp/login/getLogginSetting',
 		FINGER_STAMP_SETTING: 'at/record/stamp/finger/get-finger-stamp-setting'
 	};
 
@@ -63,10 +64,19 @@ module nts.uk.at.kdp003.a {
 		mounted() {
 			const vm = this;
 
-			// get storage save preview login data
-			vm.$window.storage(KDP003_SAVE_DATA)
-				.then((data: StorageData) => {
+			vm.$ajax('at', API.COMPANIES)
+				.then((data: f.CompanyItem[]) => {
+					// UI[F2]  打刻使用可能会社の取得と判断 
+					if (data.every(e => e.fingerAuthStamp === false)) {
+						vm.showClockButton.setting(false);
+					} else {
+						vm.showClockButton.setting(true);
+					}
 
+					return vm.$window.storage(KDP003_SAVE_DATA);
+				})
+				// get storage save preview login data
+				.then((data: StorageData) => {
 					if (!data) {
 						// <<ScreenQuery>> 打刻管理者でログインする
 						const showLoginDialog = () => vm.$window
@@ -137,6 +147,7 @@ module nts.uk.at.kdp003.a {
 								vm.message(state.errorMessage);
 							}
 						}
+
 						return false;
 					} else {
 						return vm.$window.storage(KDP003_SAVE_DATA)
@@ -180,8 +191,6 @@ module nts.uk.at.kdp003.a {
 				// show message from login data (return by f dialog)
 				.fail((message: { messageId: string }) => vm.$dialog.error(message))
 				.always(() => vm.$blockui('clear'));
-
-			_.extend(window, { vm });
 		}
 
 		// <<ScreenQuery>> 打刻入力(氏名選択)の設定を取得する
