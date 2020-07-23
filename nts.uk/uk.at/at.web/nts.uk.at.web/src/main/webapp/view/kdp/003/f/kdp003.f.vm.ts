@@ -36,12 +36,14 @@ module nts.uk.at.kdp003.f {
 	export const API = {
 		LOGIN_ADMIN: 'ctx/sys/gateway/kdp/login/adminmode',
 		LOGIN_EMPLOYEE: 'ctx/sys/gateway/kdp/login/employeemode',
-		COMPANIES: '/ctx/sys/gateway/kdp/login/getLogginSetting'
+		COMPANIES: '/ctx/sys/gateway/kdp/login/getLogginSetting',
+		CONFIRM_STAMP_INPUT: 'at/record/stamp/employment_system/confirm_use_of_stamp_input'
 	};
 
 	@bean()
 	export class Kdp003FViewModel extends ko.ViewModel {
 		mode: KnockoutObservable<MODE> = ko.observable(null);
+		message: KnockoutObservable<Message | null> = ko.observable(null);
 
 		model: Model = new Model();
 
@@ -83,11 +85,15 @@ module nts.uk.at.kdp003.f {
 				.subscribe((id: string) => {
 					const dataSources: CompanyItem[] = ko.toJS(vm.listCompany);
 
+					vm.message(null);
+
 					if (dataSources.length) {
 						const exist = _.find(dataSources, (item: CompanyItem) => item.companyId === id);
 						const clear = () => {
 							model.companyCode('');
 							model.companyName('');
+
+							vm.message({ messageId: 'Msg_301' });
 						};
 
 						if (exist) {
@@ -98,7 +104,11 @@ module nts.uk.at.kdp003.f {
 
 							// update companyId by subscribe companyCode
 							switch (name) {
+								case 'KDP001':
+									break;
 								default:
+								case 'KDP002':
+									break;
 								case 'KDP003':
 									if (exist.selectUseOfName === false) {
 										clear();
@@ -120,6 +130,65 @@ module nts.uk.at.kdp003.f {
 										update();
 									}
 									break;
+							}
+
+							// UI[A6]  打刻利用失敗時のメッセージについて
+							if (!ko.unwrap(vm.message)) {
+								const query = (stampMeans: StampMeans) => vm.$ajax('at', API.CONFIRM_STAMP_INPUT, { stampMeans });
+								const authen = (data: ConfirmStampInput) => {
+									if (data.used === CanEngravingUsed.NOT_PURCHASED_STAMPING_OPTION) {
+										// UI[A6]  打刻オプション未購入 
+										vm.message({ messageId: 'Msg_1644' });
+									} else if (data.used === CanEngravingUsed.UNREGISTERED_STAMP_CARD) {
+										// UI[A6]  打刻カード未登録
+										vm.message({ messageId: 'Msg_1619' });
+									} else if (data.used === CanEngravingUsed.ENGTAVING_FUNCTION_CANNOT_USED) {
+										// UI[A6]  打刻機能利用不可
+										const messageParams = [];
+
+										switch (name) {
+											case 'KDP001':
+												messageParams.push('KDP001_1');
+												break;
+											default:
+											case 'KDP002':
+												messageParams.push('KDP002_1');
+												break;
+											case 'KDP003':
+												messageParams.push('KDP002_2');
+												break;
+											case 'KDP004':
+												messageParams.push('KDP002_3');
+												break;
+											case 'KDP005':
+												messageParams.push('KDP002_4');
+												break;
+										}
+
+										vm.message({
+											messageId: '',
+											messageParams
+										});
+									} else {
+										vm.message(null);
+									}
+								};
+
+								switch (name) {
+									case 'KDP001':
+										query(StampMeans.PORTAL)
+											.then(authen);
+										break;
+									default:
+									case 'KDP002':
+										break;
+									case 'KDP003':
+										break;
+									case 'KDP004':
+										break;
+									case 'KDP005':
+										break;
+								}
 							}
 						}
 					}
@@ -179,17 +248,18 @@ module nts.uk.at.kdp003.f {
 
 		loginAdmin(api: string) {
 			const vm = this;
-			const { mode } = vm.params as AdminModeParam;
 			const { passwordRequired } = vm.params as EmployeeModeParam;
 			const model: ModelData = ko.toJS(vm.model);
 			const { password, companyCode } = model;
 
-			if (passwordRequired === false) {
-				_.omit(model, ['password']);
+			const message = ko.unwrap(vm.message);
+
+			if (message) {
+				return vm.$dialog.error(message);
 			}
 
-			if (mode === 'admin' && !model.companyId && !model.companyName) {
-				return vm.$dialog.error({ messageId: 'Msg_301' });
+			if (passwordRequired === false) {
+				_.omit(model, ['password']);
 			}
 
 			vm.$validate()
@@ -238,6 +308,43 @@ module nts.uk.at.kdp003.f {
 
 			vm.$window.close();
 		}
+	}
+
+	interface Message {
+		messageId: string;
+		messageParams?: string[];
+	}
+
+	interface ConfirmStampInput {
+		systemDate: string;
+		used: CanEngravingUsed;
+	}
+
+	interface CommanStampInput {
+		stampMeans: StampMeans;
+	}
+
+	enum StampMeans {
+		NAME_SELECTION = 0, // 0:氏名選択
+		FINGER_AUTHC = 1,   // 1:指認証打刻
+		IC_CARD = 2,        // 2:ICカード打刻
+		INDIVITION = 3,     //  3:個人打刻
+		PORTAL = 4,         // 4:ポータル打刻
+		SMART_PHONE = 5,    // 5:スマホ打刻
+		TIME_CLOCK = 6,     // 6:タイムレコーダー打刻
+		TEXT = 7,           // 7:テキスト受入
+		RICOH_COPIER = 8    // 8:リコー複写機打刻
+	}
+
+	enum CanEngravingUsed {
+		// 0 利用できる
+		AVAILABLE = 0,
+		// 1 打刻オプション未購入
+		NOT_PURCHASED_STAMPING_OPTION = 1,
+		// 2 打刻機能利用不可
+		ENGTAVING_FUNCTION_CANNOT_USED = 2,
+		// 3 打刻カード未登録
+		UNREGISTERED_STAMP_CARD = 3
 	}
 
 	export interface CompanyItem {
