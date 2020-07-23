@@ -5,22 +5,32 @@ module nts.uk.at.view.kdp005.a {
 	export module service {
 		let url = {
 			startPage: 'at/record/stamp/finger/get-finger-stamp-setting',
-			checkCard: 'at/record/stamp/ICCardStamp/checks',
+			addCheckCard: 'at/record/stamp/ICCardStamp/checks',
 			confirmUseOfStampInput: 'at/record/stamp/employment_system/confirm_use_of_stamp_input',
 			loginAdminMode: 'ctx/sys/gateway/kdp/login/adminmode',
 			loginEmployeeMode: 'ctx/sys/gateway/kdp/login/employeemode',
 			getError: 'at/record/stamp/employment_system/get_omission_contents',
-			getStampToSuppress: 'at/record/stamp/employment_system/get_stamp_to_suppress'
+			getStampToSuppress: 'at/record/stamp/employment_system/get_stamp_to_suppress',
+            getEmployeeIdByICCard: 'at/record/stamp/ICCardStamp/getEmployeeIdByICCard',
+            authenticateOnlyStamped: 'at/record/stamp/ICCardStamp/authenticateOnlyStamped'
 		}
 
 		export function startPage(): JQueryPromise<any> {
 			return ajax("at", url.startPage);
 		}
 
-		export function checkCard(data): JQueryPromise<any> {
-			return ajax("at", url.checkCard, data);
+		export function addCheckCard(data): JQueryPromise<any> {
+			return ajax("at", url.addCheckCard, data);
 		}
+        
+        export function getEmployeeIdByICCard(data): JQueryPromise<any> {
+            return ajax("at", url.getEmployeeIdByICCard, data);
+        }
 
+        export function authenticateOnlyStamped(data): JQueryPromise<any> {
+            return ajax("at", url.authenticateOnlyStamped, data);
+        }
+        
 		export function confirmUseOfStampInput(data): JQueryPromise<any> {
 			return ajax("at", url.confirmUseOfStampInput, data);
 		}
