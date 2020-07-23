@@ -38,7 +38,7 @@ public class ICCardStampWebService extends WebService {
 
 	@POST
 	@Path("checks")
-	public GeneralDate registerFingerStamp(ICCardStampCommand command) {
+	public GeneralDate registerICCardStamp(ICCardStampCommand command) {
 		return this.commandHanler.handle(command);
 	}
 	
