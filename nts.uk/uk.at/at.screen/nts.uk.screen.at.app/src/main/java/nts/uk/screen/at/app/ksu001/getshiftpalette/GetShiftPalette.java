@@ -89,7 +89,7 @@ public class GetShiftPalette {
 		Map<ShiftMaster,Optional<WorkStyle>> sMap = GetCombinationrAndWorkHolidayAtrService.getCode(require, workRequired, AppContexts.user().companyId(), listShiftMasterCode);
 		for (Map.Entry<ShiftMaster, Optional<WorkStyle>> entry : sMap.entrySet()) {
 			System.out.println("Item : " + entry.getKey() + " Count : " + entry.getValue());
-			Shift shift = new Shift(entry.getKey(), entry.getValue());
+			Shift shift = new Shift(new ShiftMasterDto(entry.getKey()), entry.getValue());
 			listOfShift.add(shift);
 		}
 		result.setListOfShift(listOfShift);
@@ -150,10 +150,8 @@ public class GetShiftPalette {
 		}
 		
 		// get List SHiftMasterCode
-		
 		List<ShiftPalletCombinations> combinations = shiftPalletsCom.getShiftPallet().getCombinations();
 		List<String> listShiftMasterCode = getListShiftMasterCode(combinations, param).stream().collect(Collectors.toList()); 
-		
 		
 		return new GetShiftPaletteResult(listPageInfo, targetShiftPalette, new ArrayList<>(), listShiftMasterCode);									
 	}
@@ -193,8 +191,6 @@ public class GetShiftPalette {
 		// get List ShiftMasterCode
 		List<ShiftPalletCombinations> combinations = shiftPalletsOrg.getShiftPallet().getCombinations();
 		List<String> listShiftMasterCode = getListShiftMasterCode(combinations, param).stream().collect(Collectors.toList());
-
-		
 		
 		return new GetShiftPaletteResult(listPageInfo, targetShiftPalette, new ArrayList<>(), listShiftMasterCode);	
 	}
@@ -252,16 +248,12 @@ public class GetShiftPalette {
 		
 		@Inject
 		private BasicScheduleService service;
-		
 		@Inject
 		private WorkTypeRepository workTypeRepo;
-		
 		@Inject
 		private WorkTimeSettingRepository workTimeSettingRepository;
-		
 		@Inject
 		private WorkTimeSettingService workTimeSettingService;
-		
 		@Inject
 		private BasicScheduleService basicScheduleService;
 
@@ -281,8 +273,7 @@ public class GetShiftPalette {
 		}
 
 		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd,
-				String workTypeCd, Integer workNo) {
+		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd, Integer workNo) {
 			return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
 		}
 

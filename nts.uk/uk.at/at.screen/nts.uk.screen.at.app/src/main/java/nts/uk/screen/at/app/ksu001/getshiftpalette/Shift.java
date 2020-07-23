@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import lombok.Value;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 
 /**
  * @author laitv
@@ -15,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
  */
 @Value
 public class Shift {
-	public ShiftMaster shiftMaster;
+	public ShiftMasterDto shiftMaster;
 	public Optional<WorkStyle> workStyle;
 	
 }
