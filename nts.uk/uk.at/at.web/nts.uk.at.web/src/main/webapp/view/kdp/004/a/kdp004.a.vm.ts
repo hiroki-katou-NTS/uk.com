@@ -148,8 +148,7 @@ module nts.uk.at.view.kdp004.a {
 				let dfd = $.Deferred<any>(), self = this;
 
 				self.openDialogF({
-					mode: 'admin',
-					companyId: self.loginInfo.companyId
+					mode: 'admin'
 				}).done((loginResult) => {
 					if (!loginResult.result) {
 						self.errorMessage(getMessage("Msg_1647"));
