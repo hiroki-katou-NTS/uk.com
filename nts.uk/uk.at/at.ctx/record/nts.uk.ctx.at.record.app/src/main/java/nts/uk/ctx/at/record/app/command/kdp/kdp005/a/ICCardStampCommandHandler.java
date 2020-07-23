@@ -69,13 +69,14 @@ public class ICCardStampCommandHandler extends CommandHandlerWithResult<ICCardSt
 
 	@Override
 	protected GeneralDate handle(CommandHandlerContext<ICCardStampCommand> context) {
+		String contractCode = AppContexts.user().contractCode(); 
 		
 		ICCardStampCommand cmd = context.getCommand();
 
 		EnterStampFromICCardServiceRequireImpl require = new EnterStampFromICCardServiceRequireImpl(stampSetCommunalRepository, stampCardRepo, stampCardEditRepo, companyAdapter, sysEmpPub, stampRecordRepo, stampDakokuRepo, createDailyResultDomainSv);
 
 		//作成する(@Require, 契約コード, 日時, 打刻カード番号, 打刻ボタン, 実績への反映内容)
-		StampingResultEmployeeId stampingResultEmployeeId = EnterStampFromICCardService.create(require, new ContractCode(AppContexts.user().contractCode()), cmd.getStampNumber(), cmd.getStampDatetime(), cmd.getStampButton(), cmd.getRefActualResult().toDomainValue());
+		StampingResultEmployeeId stampingResultEmployeeId = EnterStampFromICCardService.create(require, new ContractCode(contractCode), cmd.getStampNumber(), cmd.getStampDatetime(), cmd.getStampButton(), cmd.getRefActualResult().toDomainValue());
 		
 		//2: not empty
 		if (stampingResultEmployeeId.inputResult.at.isPresent()) {
