@@ -183,9 +183,9 @@ module nts.uk.at.kdp003.a {
 						{
 							name: "Selection",
 							mode: "row",
-							rowSelectionChanged: function(evt, ui) {
+							rowSelectionChanged: function(__: any, ui: any) {
 								const { index } = ui.row;
-								const dataSources = ko.unwrap(vm.options.employees);
+								const dataSources = $grid.igGrid('option', 'dataSource');
 
 								if (dataSources[index]) {
 									vm.options.selectedId(dataSources[index].id);
@@ -212,11 +212,11 @@ module nts.uk.at.kdp003.a {
 				.on('resize', () => {
 					const grid = $grid.get(0);
 
-					if (grid) {
+					if (grid && $grid.data('igGrid')) {
 						const top = grid.getBoundingClientRect().top;
 						const minHeight = 65 * 3;
 						const maxHeight = Math.floor((window.innerHeight - top - 20) / 65) * 65;
-
+						
 						$grid.igGrid('option', 'height', `${Math.max(minHeight, maxHeight)}px`);
 					}
 				})
@@ -235,7 +235,7 @@ module nts.uk.at.kdp003.a {
 		}
 
 		destroy() {
-			const vm  = this;
+			const vm = this;
 			console.log('destroy', vm);
 		}
 	}
@@ -249,6 +249,12 @@ module nts.uk.at.kdp003.a {
 		id: string;
 		code: string;
 		name: string;
+	}
+
+	export interface EmployeeListData {
+		employees: Employee[];
+		selectedId: string | null;
+		employeeAuthcUseArt: boolean;
 	}
 
 	export interface EmployeeListParam {

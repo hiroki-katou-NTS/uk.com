@@ -318,7 +318,7 @@ module nts.uk.at.kdp003.f {
 		}
 	}
 
-	interface Message {
+	export interface Message {
 		messageId: string;
 		messageParams?: string[];
 	}
