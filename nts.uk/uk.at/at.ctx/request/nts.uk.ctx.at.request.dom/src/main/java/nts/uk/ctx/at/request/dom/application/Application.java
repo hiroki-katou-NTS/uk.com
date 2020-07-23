@@ -27,7 +27,6 @@ import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardRe
 @Setter
 public class Application implements DomainAggregate {
 	
-	@Setter
 	private int version;
 	
 	/**
@@ -106,10 +105,11 @@ public class Application implements DomainAggregate {
 	@Setter
 	private Optional<AppStandardReasonCode> opAppStandardReasonCD;
 
-	public Application(String appID, PrePostAtr prePostAtr, String employeeID, ApplicationType appType,
+	public Application(int version, String appID, PrePostAtr prePostAtr, String employeeID, ApplicationType appType,
 			ApplicationDate appDate, String enteredPerson, GeneralDateTime inputDate,
 			ReflectionStatus reflectionStatus) {
 		super();
+		this.version = version;
 		this.appID = appID;
 		this.prePostAtr = prePostAtr;
 		this.employeeID = employeeID;
@@ -128,7 +128,8 @@ public class Application implements DomainAggregate {
 	}
 	
 	public Application(Application application) {
-		this(application.getAppID(), 
+		this(application.getVersion(),
+				application.getAppID(), 
 				application.getPrePostAtr(), 
 				application.getEmployeeID(), 
 				application.getAppType(), 
@@ -136,7 +137,6 @@ public class Application implements DomainAggregate {
 				application.getEnteredPerson(), 
 				application.getInputDate(), 
 				application.getReflectionStatus());
-		this.version = application.getVersion();
 		this.opStampRequestMode = application.getOpStampRequestMode();
 		this.opReversionReason = application.getOpReversionReason();
 		this.opAppStartDate = application.getOpAppStartDate();
@@ -162,6 +162,7 @@ public class Application implements DomainAggregate {
 		}
 		
 		Application application = new Application(
+				0,
 				IdentifierUtil.randomUniqueId(), 
 				prePostAtr, 
 				employeeID, 
@@ -170,7 +171,6 @@ public class Application implements DomainAggregate {
 				enteredPerson, 
 				GeneralDateTime.now(), 
 				new ReflectionStatus(listReflectionStatusOfDay));
-		application.setVersion(0);
 		application.setOpStampRequestMode(opStampRequestMode);
 		application.setOpReversionReason(opReversionReason);
 		application.setOpAppStartDate(opAppStartDate);
