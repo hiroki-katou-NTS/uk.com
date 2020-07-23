@@ -721,66 +721,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	}
 	
 	@AllArgsConstructor
-	public static class ScheManaStatuTempoImpl implements ScheManaStatuTempo.Require{@Override
-		public EmployeeImport findByEmpId(String empId) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public List<EmployeeImport> findByEmpId(List<String> empIds) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public List<String> getListEmpByWkpAndEmpt(List<String> wkps, List<String> lstempts, DatePeriod dateperiod) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public List<PersonEmpBasicInfoImport> getPerEmpBasicInfo(List<String> employeeIds) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public List<AffCompanyHistSharedImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public EmployeeRecordImport findByAllInforEmpId(String empId) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public List<SClsHistImport> lstClassByEmployeeId(String companyId, List<String> employeeIds,
-				DatePeriod datePeriod) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public AffCompanyHistSharedImport GetAffComHisBySidAndBaseDate(String sid, GeneralDate baseDate) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public AffCompanyHistSharedImport GetAffComHisBySid(String cid, String sid) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public List<AffCompanyHistSharedImport> getAffComHisBySids(String cid, List<String> sid) {
-			// TODO Auto-generated method stub
-			return null;
-		}
+	public static class ScheManaStatuTempoImpl implements ScheManaStatuTempo.Require{
 
 		@Override
 		public Optional<AffCompanyHistSharedImport> getAffCompanyHistByEmployee(String sid, DatePeriod datePeriod) {

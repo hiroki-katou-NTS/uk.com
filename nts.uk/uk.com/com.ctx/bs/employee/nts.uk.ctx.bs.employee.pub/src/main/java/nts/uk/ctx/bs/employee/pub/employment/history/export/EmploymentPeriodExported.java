@@ -26,5 +26,6 @@ public class EmploymentPeriodExported {
 	private final Optional<Integer>  otpSalarySegment;
 
 	//[C-0] 社員の雇用期間Exported( 社員ID, 期間, 雇用コード, Optional<給与区分> )
+	
 }
 
