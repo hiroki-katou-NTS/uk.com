@@ -54,7 +54,7 @@ public class RegisterStampCardWs extends WebService {
 	
 	/**新規モード時にIDカードNOの登録を行う */
 	@POST
-	@Path("view-a/save/delete")
+	@Path("view-a/delete")
 	public void deleteStampCardViewA(CardInformationCommands command) {
 		commandHandler.deleteCardInfomaiton(command);
 	}

@@ -71,6 +71,7 @@ public interface StampCardRepository {
 	
 	Optional<StampCard> getStampCardByContractCdEmployeeCardNumber(String contractCd,String sid, String cardNumber);
 
+	List<StampCard> getListStampCardByCardNumber(String cardNos);
 	/**
 	 * @author lanlt
 	 * @param domains
