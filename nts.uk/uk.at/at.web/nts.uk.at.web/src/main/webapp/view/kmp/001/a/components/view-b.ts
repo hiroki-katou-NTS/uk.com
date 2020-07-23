@@ -142,19 +142,23 @@ module nts.uk.at.view.kmp001.b {
 			vm.$blockui("invisible");
 			const stampInput: string = ko.toJS(vm.inputStampCard);
 
-			//hiển thị dialog ở đây
-			vm.$ajax(KMP001B_API.GET_STAMPCARD + stampInput)
-				.then((data: IStampCard[]) => {
-					vm.items(data);
-					const record = data[0];
+			if (stampInput == '') {
+				vm.$dialog.info({ messageId: "Msg_1679" });
+			} else {
+				vm.$ajax(KMP001B_API.GET_STAMPCARD + stampInput)
+					.then((data: IStampCard[]) => {
+						vm.items(data);
+						const record = data[0];
 
-					if (record) {
-						vm.model.stampNumber(record.stampNumber);
-						vm.model.update(record);
-					}
-				}).then(() => {
-					vm.$blockui("clear");
-				});
+						if (record) {
+							vm.model.stampNumber(record.stampNumber);
+							vm.model.update(record);
+						}
+					}).always(() => {
+						vm.$blockui("clear");
+					});
+			}
+			vm.$blockui("clear")
 		}
 
 		getAllStampCard() {
@@ -217,9 +221,11 @@ module nts.uk.at.view.kmp001.b {
 
 		addStampCard() {
 			const vm = this,
-				command = { employeeId: ko.toJS(vm.employee.employeeId), cardNumber: ko.toJS(vm.model.stampNumber) },
+				command = { employeeId: ko.toJS(vm.model.employeeId), employeeIdSelect: ko.toJS(vm.employee.employeeId), cardNumber: ko.toJS(vm.model.stampNumber) },
 				oldIndex = _.map(ko.unwrap(vm.items), m => m.stampNumber).indexOf(command.cardNumber),
 				newIndex = oldIndex == ko.unwrap(vm.items).length - 1 ? oldIndex - 1 : oldIndex;
+
+			console.log(command);
 
 			vm.$blockui("invisible");
 			if (ko.toJS(vm.model.employeeId) != '' && ko.toJS(vm.employee.employeeId) != '') {
@@ -239,8 +245,8 @@ module nts.uk.at.view.kmp001.b {
 				command = { employeeId: ko.toJS(vm.model.employeeId), cardNumber: ko.toJS(vm.model.stampNumber) },
 				oldIndex = _.map(ko.unwrap(vm.items), m => m.stampNumber).indexOf(command.cardNumber),
 				newIndex = oldIndex == ko.unwrap(vm.items).length - 1 ? oldIndex - 1 : oldIndex;
-				
-				console.log(command);
+
+			console.log(command);
 
 			vm.$blockui("invisible");
 			if (ko.toJS(vm.model.employeeId) != '' && ko.toJS(vm.employee.employeeId) != '') {

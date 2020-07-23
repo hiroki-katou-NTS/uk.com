@@ -14,5 +14,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RegisterCardViewBCommand {
 	private String employeeId;
+	private String employeeIdSelect;
 	private String cardNumber;
 }
