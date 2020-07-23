@@ -275,43 +275,31 @@ module nts.uk.at.view.kdp005.a {
 				let button = this;
                 modal('/view/kdp/005/h/index.xhtml').onClosed(function(): any {
                     let ICCard = getShared('ICCard');
-                    if(ICCard && ICCard != ''){
+                    if (ICCard && ICCard != '') {
                         console.log(ICCard);
-                    }else{
+                        vm.doAuthent().done((res: IAuthResult) => {
+                            if (res.isSuccess) {
+                                vm.registerData(button, layout, ICCard);
+                            }
+                        });
+                    } else {
                         modal('/view/kdp/005/i/index.xhtml');
                     }
                 });
-//				vm.doAuthent().done((res: IAuthResult) => {
-//					if (res.isSuccess) {
-//						vm.registerData(button, layout, res.authType);
-//					}
-//				});
 			}
 
 			public doAuthent(): JQueryPromise<IAuthResult> {
 				let self = this;
 				let dfd = $.Deferred<any>();
 
-				self.fingerAuth().done((res) => {
-					if (res.result) {
-						service.confirmUseOfStampInput({ employeeId: self.loginInfo.employeeId, stampMeans: 1 }).done((res) => {
-							self.isUsed(res.used == 0);
-							if (!self.isUsed()) {
-								self.errorMessage(getMessage(res.messageId));
-							}
-							dfd.resolve({ isSuccess: self.isUsed(), authType: 2 });
-						});
-
-					} else {
-						self.errorMessage(getMessage("Msg_302"));
-
-						self.openScreenG().done((res) => {
-							dfd.resolve(res);
-						});
+				service.confirmUseOfStampInput({ employeeId: self.loginInfo.employeeId, stampMeans: 2 /*2:ICカード打刻*/ }).done((res) => {
+					self.isUsed(res.used == 0);
+					if (!self.isUsed()) {
+						self.errorMessage(getMessage(res.messageId));
 					}
-
+					dfd.resolve({ isSuccess: self.isUsed(), authType: 2 });
 				});
-
+                
 				return dfd.promise();
 			}
 
@@ -363,14 +351,13 @@ module nts.uk.at.view.kdp005.a {
 				});
 			}
 
-			public registerData(button, layout, authcMethod) {
+			public registerData(button, layout, stampedCardNumber) {
 				let self = this;
 				let vm = new ko.ViewModel();
 				block.invisible();
 				let data = {
-					employeeId: vm.$user.employeeId,
+					stampedCardNumber: stampedCardNumber,
 					datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
-					stampNumber: null,
 					stampButton: {
 						pageNo: layout.pageNo,
 						buttonPositionNo: button.btnPositionNo
@@ -380,11 +367,10 @@ module nts.uk.at.view.kdp005.a {
 						workLocationCD: null,
 						workTimeCode: null,
 						overtimeDeclaration: null
-					},
-					authcMethod: authcMethod
+					}
 				};
 
-				service.stampInput(data).done((res) => {
+				service.checkCard(data).done((res) => {
 					//phat nhac
 					self.playAudio(button.audioType);
 
