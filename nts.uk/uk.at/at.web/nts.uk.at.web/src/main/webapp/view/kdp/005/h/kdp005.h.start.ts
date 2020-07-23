@@ -1,0 +1,7 @@
+module nts.uk.at.view.kdp005.h {
+    let __viewContext: any = window["__viewContext"] || {};
+    __viewContext.ready(function() {
+        let screenModel = new viewmodel.ScreenModel();
+        __viewContext.bind(screenModel);
+    });
+}
