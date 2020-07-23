@@ -84,7 +84,7 @@ module nts.uk.at.view.kdp010.i {
 
         class StampPageLayout {
             pageNo = 1;
-            stampPageName = getText("KDP010_231");
+            stampPageName = getText("KDP010_236");
             stampPageComment = new StampPageComment();
             buttonLayoutType = 0;
             lstButtonSet = [];

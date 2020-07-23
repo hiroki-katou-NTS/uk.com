@@ -102,3 +102,23 @@
 	margin-top: 15px;
 	margin-left: 45px;	
 }
+
+
+#stampcard-list_container .ui-icon.ui-icon-triangle-1-e {
+	display: none;
+}
+
+#stampcard-list_container .ui-iggrid-rowselector-class,
+#stampcard-list_container .ui-iggrid-rowselector-header.ui-iggrid-header.ui-widget-header {
+	text-align: center;
+}
+
+#stampcard-list_container .ui-iggrid-rowselector-class .ui-igcheckbox-normal,
+#stampcard-list_container .ui-iggrid-rowselector-header .ui-igcheckbox-normal {
+	float: none !important;
+}
+
+#stampcard-list_container .ui-iggrid-rowselector-class .ui-igcheckbox-normal>.ui-igcheckbox-normal-on {
+	left: 0;
+	float: none !important;
+}

@@ -1,15 +1,11 @@
 package nts.uk.screen.at.app.query.kdl.kdl014.a;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import lombok.AllArgsConstructor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
@@ -22,7 +18,6 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
@@ -182,7 +177,7 @@ public class ReferToTheStampingResultsFinder {
 
 		@Override
 		public List<StampRecord> getStampRecord(List<StampNumber> stampNumbers, GeneralDate date) {
-			return stampRecordRepository.get(stampNumbers, date);
+			return stampRecordRepository.get(AppContexts.user().contractCode(), stampNumbers, date);
 		}
 
 		@Override

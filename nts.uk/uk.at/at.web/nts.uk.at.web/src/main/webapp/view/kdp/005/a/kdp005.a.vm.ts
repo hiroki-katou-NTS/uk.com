@@ -1,6 +1,6 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-module nts.uk.at.view.kdp004.a {
+module nts.uk.at.view.kdp005.a {
 
 	export module viewmodel {
 
@@ -28,9 +28,6 @@ module nts.uk.at.view.kdp004.a {
 			errorMessage: KnockoutObservable<string> = ko.observable('');
 			loginInfo: any = null;
 			retry: number = 0;
-			fingerAuthCkb: KnockoutObservable<boolean> = ko.observable(false);
-			selectedMsg: KnockoutObservable<string> = ko.observable('Msg_301');
-			listCompany: KnockoutObservableArray<any> = ko.observableArray([]);
 			constructor() {
 				let self = this;
 
@@ -39,6 +36,7 @@ module nts.uk.at.view.kdp004.a {
 			public startPage(): JQueryPromise<void> {
 				let self = this;
 				let dfd = $.Deferred<void>();
+				//nts.uk.characteristics.remove("loginKDP004");
 				nts.uk.characteristics.restore("loginKDP004").done(function(loginInfo: ILoginInfo) {
 					if (!loginInfo) {
 						self.setLoginInfo().done((loginResult) => {
@@ -58,28 +56,8 @@ module nts.uk.at.view.kdp004.a {
 							dfd.resolve();
 						});
 					}
-				}).always(() => {
-					service.getLogginSetting().done((res) => {
-
-						self.listCompany(res);
-					});
-
 				});
 				return dfd.promise();
-			}
-
-			showButton() {
-				let self = this;
-				if (!self.isUsed()) {
-					if (self.listCompany().length > 0) {
-						return ButtonDisplayMode.ShowHistory;
-					} else {
-						return ButtonDisplayMode.NoShow;
-					}
-
-				}
-
-				return ButtonDisplayMode.ShowAll;
 			}
 
 			getErrorNotUsed(errorType) {
@@ -148,10 +126,9 @@ module nts.uk.at.view.kdp004.a {
 				let dfd = $.Deferred<any>(), self = this;
 
 				self.openDialogF({
-					mode: 'admin',
-					companyId: self.loginInfo.companyId
+					mode: 'admin'
 				}).done((loginResult) => {
-					if (!loginResult.result) {
+					if (!loginResult) {
 						self.errorMessage(getMessage("Msg_1647"));
 						dfd.resolve();
 						return;
@@ -193,16 +170,6 @@ module nts.uk.at.view.kdp004.a {
 				return dfd.promise();
 			}
 
-			public fingerAuth(): JQueryPromise<any> {
-				let dfd = $.Deferred<any>();
-
-				service.fingerAuth({ fingerAuthCkb: this.fingerAuthCkb(), selectedMsg: this.selectedMsg() }).done((res) => {
-					dfd.resolve(res);
-				});
-
-				return dfd.promise();
-			}
-
 			public openDialogF(param): JQueryPromise<any> {
 				let vm = new ko.ViewModel();
 				let dfd = $.Deferred<any>();
@@ -218,7 +185,7 @@ module nts.uk.at.view.kdp004.a {
 			public openDialogK(): JQueryPromise<any> {
 				let vm = new ko.ViewModel();
 				let dfd = $.Deferred<any>();
-				vm.$window.modal('at', '/view/kdp/003/k/index.xhtml', { multiSelect: true }).then((selectedWP) => {
+				vm.$window.modal('at', '/view/kdp/003/k/index.xhtml').then((selectedWP) => {
 					if (selectedWP) {
 						dfd.resolve(selectedWP.selectedId);
 					}
@@ -254,13 +221,14 @@ module nts.uk.at.view.kdp004.a {
 				});
 			}
 
-			public openScreenG(errorMessage): JQueryPromise<any> {
+			public openScreenG(): JQueryPromise<any> {
 				let self = this;
 				const vm = new ko.ViewModel();
-				let retry = 0;
+				let retry = 0,
+					errorMessage = 'Msg_301';
 
 				const process = () => {
-					return vm.$window.storage('ModelGParam', { displayLoginBtn: retry >= self.stampSetting().authcFailCnt && self.stampSetting().employeeAuthcUseArt, errorMessage })
+					return vm.$window.storage('ModelGParam', { displayLoginBtn: retry >= self.stampSetting().authcFailCnt, errorMessage })
 						.then(() => {
 							return vm.$window.modal('at', '/view/kdp/004/g/index.xhtml')
 								.then((result) => {
@@ -274,7 +242,7 @@ module nts.uk.at.view.kdp004.a {
 									if (redirect === "loginPass") {
 										return self.openDialogF({
 											mode: 'fingerVein',
-											companyId: vm.$user.companyId,
+											company: { id: vm.$user.companyId, code: self.loginInfo.companyCode, name: self.loginInfo.companyCode },
 											employee: { id: vm.$user.employeeId, code: self.loginInfo.employeeCode, name: self.loginInfo.employeeName },
 											passwordRequired: true
 										});
@@ -291,7 +259,7 @@ module nts.uk.at.view.kdp004.a {
 										}
 
 										if (res.result) {
-											return { isSuccess: true, authType: res.em ? 0 : 2 };
+											return { isSuccess: true, authType: res.em ?  0 : 2 };
 										}
 									} else {
 										return { isSuccess: false, authType: 2 };
@@ -305,12 +273,19 @@ module nts.uk.at.view.kdp004.a {
 
 			public clickBtn1(vm, layout) {
 				let button = this;
-
-				vm.doAuthent().done((res: IAuthResult) => {
-					if (res.isSuccess) {
-						vm.registerData(button, layout, res.authType);
-					}
-				});
+                modal('/view/kdp/005/h/index.xhtml').onClosed(function(): any {
+                    let ICCard = getShared('ICCard');
+                    if(ICCard && ICCard != ''){
+                        console.log(ICCard);
+                    }else{
+                        modal('/view/kdp/005/i/index.xhtml');
+                    }
+                });
+//				vm.doAuthent().done((res: IAuthResult) => {
+//					if (res.isSuccess) {
+//						vm.registerData(button, layout, res.authType);
+//					}
+//				});
 			}
 
 			public doAuthent(): JQueryPromise<IAuthResult> {
@@ -328,8 +303,9 @@ module nts.uk.at.view.kdp004.a {
 						});
 
 					} else {
+						self.errorMessage(getMessage("Msg_302"));
 
-						self.openScreenG(res.messageId).done((res) => {
+						self.openScreenG().done((res) => {
 							dfd.resolve(res);
 						});
 					}
@@ -345,20 +321,18 @@ module nts.uk.at.view.kdp004.a {
 					oha: '../../share/voice/0_oha.mp3',
 					otsu: '../../share/voice/1_otsu.mp3'
 				}
-
-				let source = '';
+				const audio: HTMLAudioElement = document.createElement('audio');
+				const source: HTMLSourceElement = document.createElement('source');
 
 				if (audioType === 1) {
-					source = url.oha;
+					source.src = url.oha;
 				}
 
 				if (audioType === 2) {
-					source = url.otsu;
+					source.src = url.otsu;
 				}
-				if (source) {
-					let audio = new Audio(source);
-					audio.play();
-				}
+				audio.append(source);
+				audio.play();
 			}
 
 			checkHis(self: ScreenModel) {
@@ -372,31 +346,20 @@ module nts.uk.at.view.kdp004.a {
 
 			settingUser(self: ScreenModel) {
 				self.openDialogF({
-					mode: 'admin',
-					companyId: self.loginInfo.companyId
+					mode: 'admin'
 				}).done((loginResult) => {
-					if (loginResult.result) {
-						loginResult.em.selectedWP = self.loginInfo ? self.loginInfo.selectedWP : null;
+					if (loginResult) {
+						loginResult.em.selectedWP = self.loginInfo.selectedWP;
 						self.loginInfo = loginResult.em;
 						self.openDialogK().done((result) => {
 							if (result) {
 								self.loginInfo.selectedWP = result;
-								nts.uk.characteristics.save("loginKDP004", self.loginInfo).done(() => {
-									location.reload();
-								});
-							} else {
-								location.reload();
 							}
-
-
-
+							nts.uk.characteristics.save("loginKDP004", self.loginInfo);
+							jump("at", "/view/kdp/005/a/index.xhtml");
 						});
-					} else {
-						if (loginResult.msgErrorId == "Msg_1527") {
-							self.isUsed(false);
-							self.errorMessage(getMessage("Msg_1527"));
-						}
 					}
+
 				});
 			}
 
@@ -436,7 +399,6 @@ module nts.uk.at.view.kdp004.a {
 					self.getStampToSuppress();
 					block.clear();
 				});
-
 
 			}
 
@@ -493,21 +455,8 @@ module nts.uk.at.view.kdp004.a {
 					}
 				});
 			}
-
-			public reCalGridWidthHeight() {
-				let windowHeight = window.innerHeight - 250;
-				$('#stamp-history-list').igGrid("option", "height", windowHeight);
-				$('#time-card-list').igGrid("option", "height", windowHeight);
-				$('#content-area').css('height', windowHeight + 109);
-			}
-
 		}
 
-	}
-	enum ButtonDisplayMode {
-		NoShow = 1,
-		ShowHistory = 2,
-		ShowAll = 3
 	}
 	enum Mode {
 		Personal = 1, // 個人
