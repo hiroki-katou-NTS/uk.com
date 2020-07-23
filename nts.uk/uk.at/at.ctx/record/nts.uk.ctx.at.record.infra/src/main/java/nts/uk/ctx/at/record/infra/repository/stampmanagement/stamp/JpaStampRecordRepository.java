@@ -101,6 +101,7 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 		return new KrcdtStampRecord(
 				new KrcdtStampRecordPk(domain.getContractCode().v(), domain.getStampNumber().v(),
 						domain.getStampDateTime()),
+				AppContexts.user().companyId(),
 				domain.getStampTypeDisplay() != null ? domain.getStampTypeDisplay().v() : null,
 				domain.getEmpInfoTerCode() != null ? String.valueOf(domain.getEmpInfoTerCode().get().v()) : null);
 	}
