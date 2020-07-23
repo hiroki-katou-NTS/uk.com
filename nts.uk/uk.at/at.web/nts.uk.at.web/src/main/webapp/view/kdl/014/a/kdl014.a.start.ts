@@ -3,7 +3,6 @@ module nts.uk.at.view.kdl014.a {
         var screenModel =  __viewContext.vm = new ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
-            $('#btnClose').focus();
             $( "#single-list td").addClass( "text-limited" );
         });
     });

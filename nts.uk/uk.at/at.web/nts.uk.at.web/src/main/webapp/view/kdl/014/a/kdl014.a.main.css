@@ -4,7 +4,8 @@
 
 
 #single-list_container {
-	margin: 10px auto !important
+	margin: 20px 0px !important;
+	width: 685px !important;
 }
 
 #function-tr td:nth-child(7) div {
