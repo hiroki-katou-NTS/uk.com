@@ -123,6 +123,7 @@ public class ApplicationDto {
 	
 	public Application toDomain() {
 		Application application = new Application(
+				version,
 				appID, 
 				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
 				employeeID, 
@@ -131,7 +132,6 @@ public class ApplicationDto {
 				enteredPerson, 
 				GeneralDateTime.fromString(inputDate, "yyyy/MM/dd HH:mm:ss"), 
 				reflectionStatus.toDomain());
-		application.setVersion(version);
 		if(opStampRequestMode != null) {
 			application.setOpStampRequestMode(Optional.of(EnumAdaptor.valueOf(opStampRequestMode, StampRequestMode.class)));
 		}

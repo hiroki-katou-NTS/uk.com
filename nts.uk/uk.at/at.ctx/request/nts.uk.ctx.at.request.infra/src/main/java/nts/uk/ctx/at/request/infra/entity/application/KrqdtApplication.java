@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.infra.entity.application;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -10,12 +11,24 @@ import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationDate;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
+import nts.uk.ctx.at.request.dom.application.ReflectionStatus;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
+import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -28,11 +41,14 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Table(name = "KRQDT_APPLICATION")
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class KrqdtApplication extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	private KrqdpApplication pk;
 	
+	@Version
 	@Column(name="EXCLUS_VER")
 	private int version;
 	
@@ -100,6 +116,38 @@ public class KrqdtApplication extends ContractUkJpaEntity {
 				application.getOpStampRequestMode().map(x -> x.value).orElse(null), 
 				application.getReflectionStatus().getListReflectionStatusOfDay().stream()
 					.map(x -> KrqdtAppReflectState.fromDomain(x, companyID, application.getAppID())).collect(Collectors.toList()));
+	}
+	
+	public Application toDomain() {
+		Application application = new Application(
+				version,
+				pk.getAppID(), 
+				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
+				employeeID, 
+				EnumAdaptor.valueOf(appType, ApplicationType.class), 
+				new ApplicationDate(appDate), 
+				enteredPerson, 
+				inputDate,
+				new ReflectionStatus(krqdtAppReflectStateLst.stream().map(x -> x.toDomain()).collect(Collectors.toList())));
+		if(opReversionReason != null) {
+			application.setOpReversionReason(Optional.of(new ReasonForReversion(opReversionReason)));
+		}
+		if(opAppStandardReasonCD != null) {
+			application.setOpAppStandardReasonCD(Optional.of(new AppStandardReasonCode(opAppStandardReasonCD)));
+		}
+		if(opAppReason != null) {
+			application.setOpAppReason(Optional.of(new AppReason(opAppReason)));
+		}
+		if(opAppStartDate != null) {
+			application.setOpAppStartDate(Optional.of(new ApplicationDate(opAppStartDate)));
+		}
+		if(opAppEndDate != null) {
+			application.setOpAppEndDate(Optional.of(new ApplicationDate(opAppEndDate)));
+		}
+		if(opStampRequestMode != null) {
+			application.setOpStampRequestMode(Optional.of(EnumAdaptor.valueOf(opStampRequestMode, StampRequestMode.class)));
+		}
+		return application;
 	}
 	
 }

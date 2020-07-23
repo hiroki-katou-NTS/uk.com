@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.infra.entity.application;
 
+import java.util.Optional;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -9,11 +11,17 @@ import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.request.dom.application.DailyAttendanceUpdateStatus;
+import nts.uk.ctx.at.request.dom.application.ReasonNotReflect;
+import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * refactor 4
@@ -24,13 +32,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRQDT_APP_REFLECT_STATE")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtAppReflectState extends UkJpaEntity {
+@Getter
+@Setter
+public class KrqdtAppReflectState extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	private KrqdpAppReflectState pk;
-	
-	@Column(name="CONTRACT_CD")
-	private String contractCD;
 	
 	@Column(name="REFLECT_PLAN_STATE")
 	private int scheReflectStatus;
@@ -75,13 +82,11 @@ public class KrqdtAppReflectState extends UkJpaEntity {
 	}
 	
 	public static KrqdtAppReflectState fromDomain(ReflectionStatusOfDay reflectionStatusOfDay, String companyID, String appID) {
-		String contractCD = AppContexts.user().contractCode();
 		return new KrqdtAppReflectState(
 				new KrqdpAppReflectState(
 						companyID, 
 						appID, 
-						reflectionStatusOfDay.getTargetDate()), 
-				contractCD,
+						reflectionStatusOfDay.getTargetDate()),
 				reflectionStatusOfDay.getScheReflectStatus().value, 
 				reflectionStatusOfDay.getActualReflectStatus().value, 
 				reflectionStatusOfDay.getOpUpdateStatusAppReflect().map(x -> x.getOpReasonScheCantReflect().map(y -> y.value).orElse(null)).orElse(null), 
@@ -93,6 +98,34 @@ public class KrqdtAppReflectState extends UkJpaEntity {
 				reflectionStatusOfDay.getOpUpdateStatusAppCancel().map(x -> x.getOpReasonActualCantReflect().map(y -> y.value).orElse(null)).orElse(null), 
 				reflectionStatusOfDay.getOpUpdateStatusAppCancel().map(x -> x.getOpActualReflectDateTime().orElse(null)).orElse(null),
 				null);
+	}
+	
+	public ReflectionStatusOfDay toDomain() {
+		Optional<DailyAttendanceUpdateStatus> opUpdateStatusAppReflect = Optional.empty();
+		if(opReasonScheCantReflect != null || opScheReflectDateTime != null ||
+				opReasonActualCantReflect != null || opActualReflectDateTime != null) {
+			opUpdateStatusAppReflect = Optional.of(new DailyAttendanceUpdateStatus(
+					opActualReflectDateTime == null ? Optional.empty() : Optional.of(opActualReflectDateTime), 
+					opScheReflectDateTime == null ? Optional.empty() : Optional.of(opScheReflectDateTime), 
+					opReasonActualCantReflect == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(opReasonActualCantReflect, ReasonNotReflectDaily.class)), 
+					opReasonScheCantReflect == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(opReasonScheCantReflect, ReasonNotReflect.class))));
+		}
+		Optional<DailyAttendanceUpdateStatus> opUpdateStatusAppCancel = Optional.empty();
+		if(opReasonScheCantReflectCancel != null || opScheReflectDateTimeCancel != null ||
+				opReasonActualCantReflectCancel != null || opActualReflectDateTimeCancel != null) {
+			opUpdateStatusAppCancel = Optional.of(new DailyAttendanceUpdateStatus(
+					opActualReflectDateTime == null ? Optional.empty() : Optional.of(opActualReflectDateTime), 
+					opScheReflectDateTime == null ? Optional.empty() : Optional.of(opScheReflectDateTime), 
+					opReasonActualCantReflect == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(opReasonActualCantReflect, ReasonNotReflectDaily.class)), 
+					opReasonScheCantReflect == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(opReasonScheCantReflect, ReasonNotReflect.class))));
+		}
+		ReflectionStatusOfDay reflectionStatusOfDay = new ReflectionStatusOfDay(
+				EnumAdaptor.valueOf(actualReflectStatus, ReflectedState.class), 
+				EnumAdaptor.valueOf(scheReflectStatus, ReflectedState.class), 
+				pk.getTargetDate(), 
+				opUpdateStatusAppReflect, 
+				opUpdateStatusAppCancel);
+		return reflectionStatusOfDay;
 	}
 
 }
