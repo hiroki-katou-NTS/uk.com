@@ -27,10 +27,11 @@
 			<div id="functions-area"></div>
 			<div id="contents-area" class="kdp-003-a">
 				<div class="control-panel" data-bind="
+							if: ko.unwrap($vm.message) !== undefined,
 							css: {
 								'has-time-sheet': ko.unwrap($vm.employeeData.employeeAuthcUseArt) === true
 							}">
-					<div class="time-sheet" data-bind="if: ko.toJS($vm.state) === 'LOGIN_SUCCESS' &amp;&amp; ko.unwrap($vm.employeeData.employeeAuthcUseArt) === true">
+					<div class="time-sheet" data-bind="if: ko.toJS($vm.message) === null &amp;&amp; ko.unwrap($vm.employeeData.employeeAuthcUseArt) === true">
 						<div data-bind="component: {
 								name: 'stamp-employee-selection',
 								params: employeeData
@@ -58,7 +59,7 @@
 								}
 							}
 						}"></div>
-						<com:ko-if bind="ko.toJS($vm.state) === 'LOGIN_SUCCESS'">
+						<com:ko-if bind="ko.toJS($vm.message) === null">
 							<div tabindex="2" data-bind="component: {
 									name: 'kdp-tab-button-panel',
 									params: { 
@@ -68,8 +69,13 @@
 									}
 								}"></div>
 						</com:ko-if>
-						<com:ko-if bind="ko.toJS(state) === 'LOGIN_FAIL'">
-							<div class="not_used_label" data-bind="i18n: 'KDP002_2'"></div>
+						<com:ko-if bind="!!ko.unwrap($vm.message)">
+							<com:ko-if bind="_.isString(ko.unwrap($vm.message))">
+								<div class="not_used_label" data-bind="html: ko.unwrap($vm.message)"></div>
+							</com:ko-if>
+							<com:ko-if bind="!_.isString(ko.unwrap($vm.message))">
+								<div class="not_used_label" data-bind="i18n: ko.unwrap($vm.message).messageId, params: ko.unwrap($vm.message).messageParams"></div>
+							</com:ko-if>
 						</com:ko-if>
 					</div>
 					<div class="cf"></div>
