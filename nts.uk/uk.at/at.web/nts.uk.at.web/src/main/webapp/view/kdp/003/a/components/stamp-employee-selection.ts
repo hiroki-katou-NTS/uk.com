@@ -212,11 +212,12 @@ module nts.uk.at.kdp003.a {
 				.on('resize', () => {
 					const grid = $grid.get(0);
 
-					if (grid) {
+					if (grid && $grid.data('igGrid')) {
 						const top = grid.getBoundingClientRect().top;
 						const minHeight = 65 * 3;
 						const maxHeight = Math.floor((window.innerHeight - top - 20) / 65) * 65;
-
+						
+						
 						$grid.igGrid('option', 'height', `${Math.max(minHeight, maxHeight)}px`);
 					}
 				})
