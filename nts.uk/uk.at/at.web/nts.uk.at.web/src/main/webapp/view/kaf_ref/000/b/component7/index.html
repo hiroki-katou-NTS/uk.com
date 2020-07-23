@@ -1,7 +1,7 @@
 <div id="kaf000-b-component7">
 	<div class="table" style="margin-bottom: 5px;">
 		<div class="cell col-1">
-			<div class="cell valign-center" data-bind="ntsFormLabel: {required: true}, text: $i18n('KAF000_51')"></div>
+			<div class="cell valign-center" data-bind="ntsFormLabel: {required: appReasonCDRequired}, text: $i18n('KAF000_51')"></div>
 		</div>
 		<div class="cell valign-center">
 			<div id="combo-box" style="width: 390px"
@@ -11,13 +11,14 @@
 								optionsValue: 'appStandardReasonCD',
 								optionsText: 'opReasonForFixedForm',
 								value: opAppStandardReasonCD,
-								columns: [{ prop: 'opReasonForFixedForm', length: 20 }]}">
+								columns: [{ prop: 'opReasonForFixedForm', length: 20 }],
+								required: appReasonCDRequired }">
 			</div>
 		</div>
 	</div>
 	<div class="table" style="margin-top: 5px;">
 		<div class="cell col-1">
-			<div class="cell valign-center" data-bind="ntsFormLabel: {required: true}, text: $i18n('KAF000_52')"></div>
+			<div class="cell valign-center" data-bind="ntsFormLabel: {required: appReasonRequired}, text: $i18n('KAF000_52')"></div>
 		</div>
 		<div class="cell valign-center">
 			<textarea style="height: 80px;" id="inpReasonTextarea"
@@ -29,6 +30,6 @@
 		                    	width: '450',
 		                    	textalign: 'left'
 		                   	},
-             				required : false }" />
+             				required : appReasonRequired }" />
 		</div>
 <div/>

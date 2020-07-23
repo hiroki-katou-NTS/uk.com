@@ -7,10 +7,8 @@ module nts.uk.at.view.kaf000_ref.a.component6.viewmodel {
     class Kaf000AComponent6ViewModel extends ko.ViewModel {
         approvalRootState: KnockoutObservableArray<any>;
         appDispInfoStartupOutput: any;
-		display: KnockoutObservableArray<boolean>;
         created(params: any) {
             const vm = this;
-			vm.display = ko.observable(false);
 			vm.approvalRootState = ko.observableArray([]);
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.appDispInfoStartupOutput.subscribe(value => {
@@ -23,7 +21,6 @@ module nts.uk.at.view.kaf000_ref.a.component6.viewmodel {
         }
         
         isFirstIndexFrame(loopPhase, loopFrame, loopApprover) {
-            let self = this;
             if(_.size(loopFrame.listApprover()) > 1) {
                 return _.findIndex(loopFrame.listApprover(), o => o == loopApprover) == 0;  
             }
@@ -36,7 +33,6 @@ module nts.uk.at.view.kaf000_ref.a.component6.viewmodel {
         }
         
         getFrameIndex(loopPhase, loopFrame, loopApprover) {
-            let self = this;
             if(_.size(loopFrame.listApprover()) > 1) {
                 return _.findIndex(loopFrame.listApprover(), o => o == loopApprover);     
             }
@@ -44,16 +40,15 @@ module nts.uk.at.view.kaf000_ref.a.component6.viewmodel {
         }
         
         frameCount(listFrame) {
-            let self = this;    
+            const vm = this;    
             let listExist = _.filter(listFrame, x => _.size(x.listApprover()) > 0);
             if(_.size(listExist) > 1) { 
                 return _.size(listExist);
             }
-            return _.chain(listExist).map(o => self.approverCount(o.listApprover())).value()[0];        
+            return _.chain(listExist).map(o => vm.approverCount(o.listApprover())).value()[0];        
         }
         
         approverCount(listApprover) {
-            let self = this;
             return _.chain(listApprover).countBy().values().value()[0];     
         }
         
@@ -90,26 +85,26 @@ module nts.uk.at.view.kaf000_ref.a.component6.viewmodel {
         }
         
         getPhaseLabel(phaseOrder) {
-            let self = this;
+            const vm = this;
             switch(phaseOrder) {
-                case 1: return nts.uk.resource.getText("KAF000_4"); 
-                case 2: return nts.uk.resource.getText("KAF000_5"); 
-                case 3: return nts.uk.resource.getText("KAF000_6"); 
-                case 4: return nts.uk.resource.getText("KAF000_7"); 
-                case 5: return nts.uk.resource.getText("KAF000_8");    
+                case 1: return vm.$i18n("KAF000_4"); 
+                case 2: return vm.$i18n("KAF000_5"); 
+                case 3: return vm.$i18n("KAF000_6"); 
+                case 4: return vm.$i18n("KAF000_7"); 
+                case 5: return vm.$i18n("KAF000_8");    
                 default: return "";
             }                 
         }
         
         getApproverLabel(loopPhase, loopFrame, loopApprover) {
-            let self = this,
-                index = self.getFrameIndex(loopPhase, loopFrame, loopApprover);
+            const vm = this,
+                index = vm.getFrameIndex(loopPhase, loopFrame, loopApprover);
             // case group approver
             if(_.size(loopFrame.listApprover()) > 1) {
                 index++;
             }
             if(index <= 10){
-                return nts.uk.resource.getText("KAF000_9",[index+'']);    
+                return vm.$i18n("KAF000_9",[index+'']);    
             }
             return "";   
         }
