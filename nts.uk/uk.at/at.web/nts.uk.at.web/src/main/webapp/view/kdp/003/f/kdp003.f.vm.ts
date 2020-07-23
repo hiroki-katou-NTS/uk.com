@@ -148,20 +148,20 @@ module nts.uk.at.kdp003.f {
 
 										switch (name) {
 											case 'KDP001':
-												messageParams.push('KDP001_1');
+												messageParams.push(vm.$i18n('KDP001_1'));
 												break;
 											default:
 											case 'KDP002':
-												messageParams.push('KDP002_1');
+												messageParams.push(vm.$i18n('KDP002_1'));
 												break;
 											case 'KDP003':
-												messageParams.push('KDP002_2');
+												messageParams.push(vm.$i18n('KDP002_2'));
 												break;
 											case 'KDP004':
-												messageParams.push('KDP002_3');
+												messageParams.push(vm.$i18n('KDP002_3'));
 												break;
 											case 'KDP005':
-												messageParams.push('KDP002_4');
+												messageParams.push(vm.$i18n('KDP002_4'));
 												break;
 										}
 
