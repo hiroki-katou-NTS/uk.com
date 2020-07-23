@@ -52,21 +52,6 @@ module nts.uk.at.kdp003.a {
 			const vm = this;
 
 			vm.$blockui('show')
-				.then(() => vm.$ajax('at', API.FINGER_STAMP_SETTING))
-				.then((data: FingerStampSetting) => {
-					if (data) {
-						const { stampSetting } = data;
-
-						if (stampSetting) {
-							const { employeeAuthcUseArt } = stampSetting;
-							vm.buttonPage.tabs(stampSetting.pageLayouts);
-
-							vm.employeeData.employeeAuthcUseArt(!!employeeAuthcUseArt);
-						}
-					}
-				})
-				.then(() => vm.$ajax('at', API.HIGHTLIGHT))
-				.then((data: share.StampToSuppress) => vm.buttonPage.stampToSuppress(data))
 				.then(() => vm.$window.storage(KDP003_SAVE_DATA))
 				.then((data: StorageData) => {
 					if (!data) {
@@ -80,7 +65,6 @@ module nts.uk.at.kdp003.a {
 				})
 				.then((data: f.TimeStampLoginData | StorageData) => {
 					if (!data) {
-						vm.state('LOGIN_SUCCESS');
 						vm.employeeData.selectedId(null);
 						vm.showClockButton.setting(false);
 
@@ -90,13 +74,8 @@ module nts.uk.at.kdp003.a {
 						const loginData = data as f.TimeStampLoginData;
 
 						if (loginData.msgErrorId || loginData.errorMessage) {
-							// login faild
-							vm.state('LOGIN_FAIL');
 							return false;
 						} else {
-							// login success
-							vm.state('LOGIN_SUCCESS');
-
 							const storageData: StorageData = {
 								CID: loginData.em.companyId,
 								CCD: loginData.em.companyCode,
@@ -132,12 +111,6 @@ module nts.uk.at.kdp003.a {
 						// auto login
 						return vm.$ajax(API.LOGIN_ADMIN, loginData)
 							.then((data: f.TimeStampLoginData) => {
-								if (!data || data.errorMessage || data.msgErrorId) {
-									vm.state('LOGIN_FAIL');
-								} else {
-									vm.state('LOGIN_SUCCESS');
-								}
-
 								return !!data;
 							})
 							.fail(() => false);
@@ -161,8 +134,6 @@ module nts.uk.at.kdp003.a {
 				})
 				.then((data: null | k.Return) => {
 					if (!data) {
-						vm.state('LOGIN_FAIL');
-
 						return false;
 					} else {
 						return vm.$window.storage(KDP003_SAVE_DATA)
@@ -184,19 +155,43 @@ module nts.uk.at.kdp003.a {
 				.then((data: false | StorageData) => {
 					// if login and storage data success
 					if (data) {
-						vm.loadData(data);
+						return vm.loadData(data);
 					}
 				})
-				.fail((res) => vm.$dialog
-					.error({ messageId: res.messageId })
-					.then(() => vm.state('LOGIN_FAIL')))
+				.fail((res: { messageId: string }) => vm.$dialog.error(res))
 				.always(() => vm.$blockui('clear'));
 		}
 
-		// 打刻入力(氏名選択)で社員の一覧を取得する
+		// <<ScreenQuery>>: 打刻入力(氏名選択)で社員の一覧を取得する
 		loadData(data: StorageData) {
 			const vm = this;
-			console.log(data);
+			const clearState = () => {
+				vm.state('LOGIN_FAIL');
+				vm.buttonPage.tabs([]);
+				vm.employeeData.employeeAuthcUseArt(false);
+			};
+
+			return vm.$ajax('at', API.FINGER_STAMP_SETTING)
+				.then((data: FingerStampSetting) => {
+					if (data) {
+						const { stampSetting } = data;
+
+						if (stampSetting) {
+							const { employeeAuthcUseArt } = stampSetting;
+
+							vm.state('LOGIN_SUCCESS');
+							vm.buttonPage.tabs(stampSetting.pageLayouts);
+
+							vm.employeeData.employeeAuthcUseArt(!!employeeAuthcUseArt);
+						} else {
+							clearState();
+						}
+					} else {
+						clearState();
+					}
+				})
+				.then(() => vm.$ajax('at', API.HIGHTLIGHT))
+				.then((data: share.StampToSuppress) => vm.buttonPage.stampToSuppress(data)) as any;
 		}
 
 		setting() {
@@ -260,7 +255,7 @@ module nts.uk.at.kdp003.a {
 				.then((data: false | StorageData) => {
 					// if login and storage data success
 					if (data) {
-						vm.loadData(data);
+						return vm.loadData(data);
 					}
 				});
 		}
