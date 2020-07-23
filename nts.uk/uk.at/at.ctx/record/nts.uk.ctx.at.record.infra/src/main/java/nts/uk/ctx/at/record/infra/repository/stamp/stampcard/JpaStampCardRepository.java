@@ -57,6 +57,7 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 
 	private static final String GET_ALL_BY_SID_CONTRACT_CODE = "SELECT a FROM KwkdtStampCard a WHERE a.sid = :sid and a.contractCd = :contractCd ORDER BY a.insDate DESC, a.registerDate DESC";
 
+	private static final String GET_BY_STAMPCARD = "SELECT a FROM KwkdtStampCard a WHERE a.cardNo = :cardNo";
 	
 	@Override
 	public List<StampCard> getListStampCard(String sid) {
@@ -414,6 +415,18 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 			return domain;
 		else
 			return Optional.empty();
+	}
+
+	@Override
+	public List<StampCard> getListStampCardByCardNumber(String cardNos) {
+		List<KwkdtStampCard> entities = this.queryProxy().query(GET_BY_STAMPCARD, KwkdtStampCard.class)
+				.setParameter("cardNo", cardNos).getList();
+		if (entities.isEmpty())
+			return Collections.emptyList();
+		
+		return entities.stream()
+				.map(x -> toDomain(x))
+				.collect(Collectors.toList());
 	}
 
 }

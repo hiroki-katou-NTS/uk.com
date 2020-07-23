@@ -147,13 +147,8 @@ module nts.uk.at.view.kmp001.b {
 			} else {
 				vm.$ajax(KMP001B_API.GET_STAMPCARD + stampInput)
 					.then((data: IStampCard[]) => {
+					console.log(data);
 						vm.items(data);
-						const record = data[0];
-
-						if (record) {
-							vm.model.stampNumber(record.stampNumber);
-							vm.model.update(record);
-						}
 					}).always(() => {
 						vm.$blockui("clear");
 					});
