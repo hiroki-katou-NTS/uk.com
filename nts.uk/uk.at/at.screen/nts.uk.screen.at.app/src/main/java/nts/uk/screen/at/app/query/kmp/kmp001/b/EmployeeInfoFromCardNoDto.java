@@ -1,9 +1,10 @@
 package nts.uk.screen.at.app.query.kmp.kmp001.b;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * カードNOから抽出した社員情報を取得する
@@ -18,11 +19,25 @@ import lombok.Setter;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
-public class EmployeeInformationFromCardNoDto {
+public class EmployeeInfoFromCardNoDto {
 	
+	private List<StampCardDto> stampCards;
+	private List<EmployeeInfoDto> employeeInfo;
+}
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+class StampCardDto {
+	private String employeeId;
 	private String stampNumber;
+}
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+class EmployeeInfoDto {
+	private String employeeId;
 	private String employeeCode;
 	private String businessName;
-	private String employeeId;
 }
