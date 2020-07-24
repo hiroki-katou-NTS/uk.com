@@ -37,7 +37,7 @@ module nts.uk.at.view.kdp005.a {
 				let self = this;
 				let dfd = $.Deferred<void>();
 				nts.uk.characteristics.restore("loginKDP005").done(function(loginInfo: ILoginInfo) {
-					if (!loginInfo) {
+					if (!loginInfo && loginInfo.companyId === __viewContext.user.companyId) {
 						self.setLoginInfo().done((loginResult) => {
 							if (!loginResult) {
 								self.isUsed(false);
@@ -50,7 +50,7 @@ module nts.uk.at.view.kdp005.a {
 							});
 						});
 					} else {
-						self.loginInfo = loginInfo;
+						self.loginInfo = undefined;
 						self.doFirstLoad().done(() => {
 							dfd.resolve();
 						});
