@@ -21,13 +21,13 @@
 			<com:scriptfile path="ksu001.a.vm.js" />
 			<com:scriptfile path="ksu001.a.service.js" />
 
-			<com:stylefile path="../o/ksu001.o.main.css" />
-			<com:scriptfile path="../o/ksu001.o.vm.js" />
-			<com:scriptfile path="../o/ksu001.o.service.js" />
+			<com:stylefile path="../ab/ksu001.ab.main.css" />
+			<com:scriptfile path="../ab/ksu001.ab.vm.js" />
+			<com:scriptfile path="../ab/ksu001.ab.service.js" />
 
-			<com:stylefile path="../q/ksu001.q.main.css" />
-			<com:scriptfile path="../q/ksu001.q.vm.js" />
-			<com:scriptfile path="../q/ksu001.q.service.js" />
+			<com:stylefile path="../ac/ksu001.ac.main.css" />
+			<com:scriptfile path="../ac/ksu001.ac.vm.js" />
+			<com:scriptfile path="../ac/ksu001.ac.service.js" />
 
 			<com:scriptfile path="../common/modelgrid.js" />
 
@@ -355,15 +355,15 @@
 								</div>
 								<div data-bind="ifnot: visibleShiftPalette">
 									<div id="oViewModel">
-										<div data-bind="with: $parent.viewO">
-											<ui:include src="../o/index.xhtml" />
+										<div data-bind="with: $parent.viewAB">
+											<ui:include src="../ab/index.xhtml" />
 										</div>
 									</div>
 								</div>
 								<div data-bind="if: visibleShiftPalette">
 									<div id="qViewModel">
-										<div data-bind="with: $parent.viewQ">
-											<ui:include src="../q/index.xhtml" />
+										<div data-bind="with: $parent.viewAC">
+											<ui:include src="../ac/index.xhtml" />
 										</div>
 									</div>
 								</div>

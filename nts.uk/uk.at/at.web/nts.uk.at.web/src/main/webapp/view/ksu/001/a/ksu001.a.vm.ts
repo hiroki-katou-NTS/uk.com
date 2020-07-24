@@ -134,12 +134,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 console.log('mode:  ' +newValue);
                 nts.uk.ui.errors.clearAll();
-                __viewContext.viewModel.viewO.time1('');
-                __viewContext.viewModel.viewO.time2('');
+                __viewContext.viewModel.viewAB.time1('');
+                __viewContext.viewModel.viewAB.time2('');
                 
                 self.stopRequest(false);
                 // close screen O1 when change mode
-                let currentScreen = __viewContext.viewModel.viewO.currentScreen;
+                let currentScreen = __viewContext.viewModel.viewAB.currentScreen;
                 if (currentScreen) {
                     currentScreen.close();
                 }
@@ -229,27 +229,27 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             
             
-            __viewContext.viewModel.viewO.initScreen().done(() => {
+            __viewContext.viewModel.viewAB.initScreen().done(() => {
                 
                 self.getDataScheduleDisplayControl(); 
                 self.getDataComPattern();
                 self.getDataWkpPattern();
-                self.dtPrev(moment.utc(__viewContext.viewModel.viewO.startDateScreenA, 'YYYY/MM/DD'));
-                self.dtAft(moment.utc(__viewContext.viewModel.viewO.endDateScreenA, 'YYYY/MM/DD'));
-                self.employeeIdLogin = __viewContext.viewModel.viewO.employeeIdLogin;
+                self.dtPrev(moment.utc(__viewContext.viewModel.viewAB.startDateScreenA, 'YYYY/MM/DD'));
+                self.dtAft(moment.utc(__viewContext.viewModel.viewAB.endDateScreenA, 'YYYY/MM/DD'));
+                self.employeeIdLogin = __viewContext.viewModel.viewAB.employeeIdLogin;
                 // get state of list workTypeCode
                 // get data for screen A
                 let lstWorkTypeCode = [];
-                _.map(__viewContext.viewModel.viewO.listWorkType(), (workType: nts.uk.at.view.ksu001.common.viewmodel.WorkType) => {
+                _.map(__viewContext.viewModel.viewAB.listWorkType(), (workType: nts.uk.at.view.ksu001.common.viewmodel.WorkType) => {
                     lstWorkTypeCode.push(workType.workTypeCode);
                 });
                 // get data for dialog C
                 // self.initShiftCondition();
                 // init and get data for screen A
                 // checkNeededOfWorkTimeSetting(): get list state of workTypeCode relate to need of workTime
-                self.listStateWorkTypeCode(__viewContext.viewModel.viewO.checkStateWorkTypeCode);
-                self.listCheckNeededOfWorkTime(__viewContext.viewModel.viewO.checkNeededOfWorkTimeSetting);
-                self.dataWorkEmpCombine(__viewContext.viewModel.viewO.workEmpCombines);
+                self.listStateWorkTypeCode(__viewContext.viewModel.viewAB.checkStateWorkTypeCode);
+                self.listCheckNeededOfWorkTime(__viewContext.viewModel.viewAB.checkNeededOfWorkTimeSetting);
+                self.dataWorkEmpCombine(__viewContext.viewModel.viewAB.workEmpCombines);
 
                 self.initExTable();
                 
@@ -301,7 +301,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
                 
                 // get setting shiftPalletUnit selected
-                __viewContext.viewModel.viewQ.selectedpalletUnit(userInfor.shiftPalletUnit);
+                __viewContext.viewModel.viewAC.selectedpalletUnit(userInfor.shiftPalletUnit);
                 
             });
         }
@@ -878,10 +878,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         getDataWorkEmpCombine(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred(), lstWorkTypeCode: any[] = [], lstWorkTimeCode: any[] = [], obj: any = null;
-            _.each(__viewContext.viewModel.viewO.listWorkType(), (item) => {
+            _.each(__viewContext.viewModel.viewAB.listWorkType(), (item) => {
                 lstWorkTypeCode.push(item.workTypeCode);
             });
-            _.each(__viewContext.viewModel.viewO.listWorkTime(), (item) => {
+            _.each(__viewContext.viewModel.viewAB.listWorkTime(), (item) => {
                 lstWorkTimeCode.push(item.workTimeCode);
             });
 
@@ -1108,11 +1108,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         getDataComPattern(selectedLinkButton): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             service.getDataComPattern().done((data) => {
-                __viewContext.viewModel.viewQ.listComPattern(data);
-                __viewContext.viewModel.viewQ.handleInitCom(
+                __viewContext.viewModel.viewAC.listComPattern(data);
+                __viewContext.viewModel.viewAC.handleInitCom(
                         data,
-                        __viewContext.viewModel.viewQ.textButtonArrComPattern, 
-                        __viewContext.viewModel.viewQ.dataSourceCompany, 
+                        __viewContext.viewModel.viewAC.textButtonArrComPattern, 
+                        __viewContext.viewModel.viewAC.dataSourceCompany, 
                         selectedLinkButton == null ||  selectedLinkButton == undefined ? ko.observable(0) : selectedLinkButton );
                 dfd.resolve();
             }).fail(function() {
@@ -1131,11 +1131,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
            // let workplaceId : 'dea95de1-a462-4028-ad3a-d68b8f180412'; 
             service.getDataWkpPattern(obj).done((data) => {
-                __viewContext.viewModel.viewQ.listWkpPattern(data);
-                __viewContext.viewModel.viewQ.handleInitWkp(
+                __viewContext.viewModel.viewAC.listWkpPattern(data);
+                __viewContext.viewModel.viewAC.handleInitWkp(
                         data, 
-                        __viewContext.viewModel.viewQ.textButtonArrComPattern, 
-                        __viewContext.viewModel.viewQ.dataSourceCompany,  
+                        __viewContext.viewModel.viewAC.textButtonArrComPattern, 
+                        __viewContext.viewModel.viewAC.dataSourceCompany,  
                         selectedLinkButton == null ||  selectedLinkButton == undefined ? ko.observable(0) : selectedLinkButton );
                 dfd.resolve();
             }).fail(function() {

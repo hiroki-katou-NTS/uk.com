@@ -1,4 +1,4 @@
-module nts.uk.at.view.ksu001.o.viewmodel {
+module nts.uk.at.view.ksu001.ab.viewmodel {
     import setShare = nts.uk.ui.windows.setShared;
     import getShare = nts.uk.ui.windows.getShared;
     import formatById = nts.uk.time.format.byId;

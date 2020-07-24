@@ -3,8 +3,8 @@ module nts.uk.at.view.ksu001.a {
 
     __viewContext.ready(function() {
         __viewContext.viewModel = {
-            viewO: new ksu001.o.viewmodel.ScreenModel(),
-            viewQ: new ksu001.q.viewmodel.ScreenModel(),
+            viewAB: new ksu001.ab.viewmodel.ScreenModel(),
+            viewAC: new ksu001.q.viewmodel.ScreenModel(),
             viewA: new ksu001.a.viewmodel.ScreenModel()
         };
         let key = "USER_INFOR";
