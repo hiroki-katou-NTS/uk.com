@@ -335,7 +335,7 @@ public class AppWorkChangeFinder {
 
 	// 起動する B KAFS07
 	public AppWorkChangeOutputDto getDetailKAFS07(AppWorkChangeDetailParam appWorkChangeDetailParam) {
-		String companyId = appWorkChangeDetailParam.getCompanyId();
+		String companyId = AppContexts.user().companyId();
 		String appId = appWorkChangeDetailParam.getAppId();
 		AppDispInfoStartupDto appDispInfoStartupDto = appWorkChangeDetailParam.getAppDispInfoStartupDto();
 		AppWorkChangeOutputDto appWorkChangeOutputDto = new AppWorkChangeOutputDto();

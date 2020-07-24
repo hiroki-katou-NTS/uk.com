@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.app.command.application.workchange;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -10,23 +8,12 @@ import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.util.Strings;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
-import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
-import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
-import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo_Old;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -35,9 +22,6 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 	
 	@Inject
 	private IWorkChangeRegisterService workChangeRegisterService;
-	
-	@Inject
-	private IFactoryApplication iFactoryApplication;
 	
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
@@ -56,7 +40,7 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 //				application.getOpAppReason(),
 //				application.getOpAppStandardReasonCD());
 		Application application = command.getApplicationDto().toDomain();
-		if (command.getAppWorkChangeDto().getAppID() == null ) {
+		if (Strings.isBlank(command.getAppWorkChangeDto().getAppID())) {
 			application = Application.createFromNew(
 					application.getPrePostAtr(),
 					application.getEmployeeID(),
