@@ -359,31 +359,32 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		AppEmailSet appEmailSet = appEmailSetRepository.findByDivision(Division.APPLICATION_APPROVAL);
 		// アルゴリズム「承認者へ送る」を実行する(thực hiện thuật toán 「Gửi tới người phê duyệt」)
 		MailResult mailResult = sendMailApprover(employeeIDList, application, appEmailSet.getEmailContentLst().get(0).getOpEmailText().map(x -> x.v()).orElse(""));
-		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList());
+		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
 	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application) {
 		String inputText = I18NText.getText("Msg_1262",Collections.emptyList());
 		// アルゴリズム「承認者へ送る」を実行する (Thực hiện thuật toán "Gửi tới người phê duyệt")
 		MailResult mailResult = sendMailApprover(employeeIDList, application, inputText);
-		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList());
+		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
 	public MailResult sendMailApplicantApprove(Application application) {
 		String inputText = I18NText.getText("Msg_1263",Collections.emptyList());
 		MailResult mailResult = sendMailApplicant(application, inputText);
-		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList());
+		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
 	public MailResult sendMailApplicantDeny(Application application) {
 		String inputText = I18NText.getText("Msg_1264",Collections.emptyList());
 		MailResult mailResult = sendMailApplicant(application, inputText);
-		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList());
+		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
 	public MailResult sendMailApprover(List<String> listDestination, Application application, String text) {
 		List<String> successList = new ArrayList<>();
 		List<String> failList = new ArrayList<>();
+		List<String> failServerList = new ArrayList<>(); 
 		String sIDlogin = AppContexts.user().employeeId();
 		String companyID = AppContexts.user().companyId();
 		List<String> paramIDList = new ArrayList<>();
@@ -455,15 +456,16 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 				mailsender.sendFromAdmin(approverMail, new MailContents(mailTitle, mailBody));
 				successList.add(employeeName);
 			} catch (Exception e) {
-				failList.add(employeeName);
+				failServerList.add(employeeName);
 			}
 		}
-		return new MailResult(successList, failList);
+		return new MailResult(successList, failList, failServerList);
 	}
 	@Override
 	public MailResult sendMailApplicant(Application application, String text) {
 		List<String> successList = new ArrayList<>();
 		List<String> failList = new ArrayList<>();
+		List<String> failServerList = new ArrayList<>();
 		String sIDlogin = AppContexts.user().employeeId();
 		String companyID = AppContexts.user().companyId();
 		String employeeID = application.getEmployeeID();
@@ -494,7 +496,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		if(Strings.isBlank(applicantMail)){
 			// エラーメッセージ Msg_768　対象者氏名　エラーリストにセットする
 			failList.add(employeeName);
-			return new MailResult(successList, failList);
+			return new MailResult(successList, failList, failServerList);
 		}
 		String URL = "";
 		// ドメインモデル「申請メール設定」を取得する
@@ -531,9 +533,9 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			mailsender.sendFromAdmin(applicantMail, new MailContents(mailTitle, mailBody));
 			successList.add(employeeName);
 		} catch (Exception e) {
-			failList.add(employeeName);
+			failServerList.add(employeeName);
 		}
-		return new MailResult(successList, failList);
+		return new MailResult(successList, failList, failServerList);
 	}
 	@Override
 	public List<GeneralDate> lstDateIsHoliday(String cid, String sid, DatePeriod dates) {
