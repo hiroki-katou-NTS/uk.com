@@ -374,11 +374,25 @@ module nts.uk.at.view.kdp005.a {
 
 			checkHis(self: ScreenModel) {
 				let vm = new ko.ViewModel();
-				self.doAuthent().done((res: IAuthResult) => {
-					if (res.isSuccess) {
-						vm.$window.modal('at', '/view/kdp/003/s/index.xhtml');
-					}
-				});
+                modal('/view/kdp/005/h/index.xhtml').onClosed(function(): any {
+                    let ICCard = getShared('ICCard');
+                    if (ICCard && ICCard != '') {
+                        console.log(ICCard);
+                        block.grayout();
+                        vm.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
+                            vm.authentic(employeeId).done(() => {
+                                vm.$window.modal('at', '/view/kdp/003/s/index.xhtml');
+                            }).fail((errorMessage: string) => {
+                                setShared("errorMessage", errorMessage);
+                                vm.openIDialog();
+                            });
+                        }).fail(() => {
+                            vm.openIDialog();
+                        }).always(() => {
+                            block.clear();    
+                        });
+                    }
+                });
 			}
             
 			settingUser(self: ScreenModel) {
