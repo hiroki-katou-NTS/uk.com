@@ -138,7 +138,7 @@
     <div class="text-break" v-show="commentDis">{{ authorComment }}</div>
     <div>
       <app1 v-if="true" v-bind:params="{appOvertime: appOvertime}" />
-      <app2 v-if="false" />
+      <app2 v-if="appType==2" v-bind:params="appTransferData" />
       <app3 v-if="false" />
     </div>
     <div class="row pl-2 pt-1 pb-1 uk-bg-alice-blue border-top border-bottom uk-border-light-gray"

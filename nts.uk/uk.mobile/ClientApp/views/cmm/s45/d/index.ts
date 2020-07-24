@@ -58,7 +58,11 @@ export class CmmS45DComponent extends Vue {
         alternateExpiration: boolean 
     } = { appStatus: 0, reflectStatus: 1, version: 0, authorizableFlags: false, approvalATR: 0, alternateExpiration: false };
     public authorComment: string = '';
-    public appOvertime: IOvertime = null;
+    public appType: number = 99;
+    public appTransferData: any = {
+        appDispInfoStartupOutput: null,
+        appDetail: null
+    };
     // 差し戻し理由
     public reversionReason: string = '';
 
@@ -129,6 +133,7 @@ export class CmmS45DComponent extends Vue {
         self.selected = 0;
         self.$http.post('at', API.getDetailMob, self.currentApp)
         .then((successData: any) => {
+            self.appTransferData.appDispInfoStartupOutput = successData.data;
             let appDetailScreenInfoDto: AppDetailScreenInfo = successData.data.appDetailScreenInfo;
             self.createPhaseLst(appDetailScreenInfoDto.approvalLst);
             self.appState.appStatus = appDetailScreenInfoDto.reflectPlanState;
@@ -139,6 +144,7 @@ export class CmmS45DComponent extends Vue {
             self.appState.alternateExpiration = appDetailScreenInfoDto.alternateExpiration;
             self.authorComment = appDetailScreenInfoDto.authorComment;
             self.reversionReason = appDetailScreenInfoDto.application.opReversionReason;
+            self.appType = appDetailScreenInfoDto.application.appType;
             self.memo = '';
             if (!_.isEmpty(self.authorComment)) {
                 self.commentDis = true;
@@ -316,23 +322,14 @@ export class CmmS45DComponent extends Vue {
 
     // kích hoạt nút chấp nhận
     public approveApp(): void {
-        let self = this;
+        const self = this;
         self.$modal.confirm('Msg_1549')
             .then((v) => {
                 if (v == 'yes') {
                     self.$mask('show');
                     self.$http.post('at', API.approve, {
-                        applicationDto: {
-                            version: self.appState.version,
-                            applicationID: self.currentApp    
-                        },	
-                        memo: self.memo, 
-                        comboBoxReason: '',
-                        textAreaReason: '',
-                        holidayAppType: 0,
-                        user: 1,
-                        reflectPerState: self.appState.reflectStatus,
-                        mobileCall: true
+                        memo: self.memo,
+                        appDispInfoStartupOutput: self.appTransferData.appDispInfoStartupOutput
                     }).then((resApprove: any) => {
                         self.$mask('hide');
                         if (resApprove.data.processDone) {
@@ -362,7 +359,7 @@ export class CmmS45DComponent extends Vue {
 
     // kích hoạt nút từ chối
     public denyApp(): void {
-        let self = this;
+        const self = this;
         self.$modal.confirm('Msg_1550')
             .then((v) => {
                 if (v == 'yes') {
@@ -372,8 +369,8 @@ export class CmmS45DComponent extends Vue {
                         applicationDto: {
                             version: self.appState.version,
                             applicationID: self.currentApp,
-                            prePostAtr: self.appOvertime.prePostAtr,
-                            applicantSID: self.appOvertime.applicant
+                            prePostAtr: self.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr,
+                            applicantSID: self.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.employeeID
                         }   
                     }).then((resDeny: any) => {
                         self.$mask('hide');
@@ -529,7 +526,7 @@ export class CmmS45DComponent extends Vue {
 }
 
 const API = {
-    getDetailMob: 'at/request/application/getDetailMob',
+    getDetailMob: 'at/request/app/smartphone/getDetailMob',
     approve: 'at/request/application/approveapp',
     deny: 'at/request/application/denyapp',
     release: 'at/request/application/releaseapp',

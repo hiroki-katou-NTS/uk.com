@@ -9,6 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.request.app.command.application.common.AppDetailBehaviorCmd;
 import nts.uk.ctx.at.request.app.command.application.common.ReflectAplicationCommmandHandler;
 import nts.uk.ctx.at.request.app.command.application.common.RemandApplicationHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationApproveHandler;
@@ -34,7 +35,6 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ClosureParam;
-import nts.uk.ctx.at.request.app.find.application.common.dto.InputApproveData;
 import nts.uk.ctx.at.request.app.find.application.common.dto.InputCommonData;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
 import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
@@ -96,16 +96,6 @@ public class ApplicationWebservice extends WebService {
 	
 	@Inject
 	private DetailBeforeUpdate detailBeforeUpdate;
-	
-	/**
-	 * approve application
-	 * @return
-	 */
-	@POST
-	@Path("approveapp")
-	public ApproveProcessResult approveApp(InputApproveData command){
-		 return this.approveApp.handle(command);
-	}
 	
 	/**
 	 * deny application
@@ -295,6 +285,12 @@ public class ApplicationWebservice extends WebService {
 	@Path("deleteapp")
 	public ProcessResult deleteApp(AppDispInfoStartupDto command){
 		 return this.deleteApp.handle(command);
+	}
+	
+	@POST
+	@Path("approveapp")
+	public ApproveProcessResult approveApp(AppDetailBehaviorCmd command){
+		 return this.approveApp.handle(command);
 	}
 }
 

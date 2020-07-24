@@ -18,6 +18,9 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
             this.opAppReason = ko.observable(opAppReason);
             this.opAppStandardReasonCD = ko.observable(opAppStandardReasonCD);
             this.opReversionReason = ko.observable(opReversionReason);
+            this.appDate.subscribe((value) => {
+                this.appDate(moment(value).format('YYYY/MM/DD'));    
+            });
         }        
     }       
     
