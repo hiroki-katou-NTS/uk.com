@@ -1,6 +1,5 @@
 module nts.uk.at.view.kaf004_ref.a.viewmodel {
     import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
-    import CommonProcess = nts.uk.at.view.kaf000_ref.shr.viewmodel.CommonProcess;
     import WorkManagement = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.WorkManagement;
     import LateOrEarlyInfo = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.LateOrEarlyInfo;
     import ArrivedLateLeaveEarlyInfo = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.ArrivedLateLeaveEarlyInfo;
@@ -9,12 +8,13 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
     class KAF004AViewModel extends ko.ViewModel {
         application: KnockoutObservable<Application>;
         workManagement: WorkManagement;
-        arrivedLateLeaveEarlyInfo: KnockoutObservable<ArrivedLateLeaveEarlyInfo>;
+        arrivedLateLeaveEarlyInfo: any;
         lateOrEarlyInfos: KnockoutObservableArray<LateOrEarlyInfo>;
         lateOrEarlyInfo1: KnockoutObservable<LateOrEarlyInfo>;
         lateOrEarlyInfo2: KnockoutObservable<LateOrEarlyInfo>;
         lateOrEarlyInfo3: KnockoutObservable<LateOrEarlyInfo>;
         lateOrEarlyInfo4: KnockoutObservable<LateOrEarlyInfo>;
+        managementMultipleWorkCycles: KnockoutObservable<Boolean>;
 
         mode: KnockoutObservable<MODE>;
 
@@ -22,13 +22,16 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         created(params: any) {
             const vm = this;
 
-            vm.application = ko.observable(new Application("", 1, 2, ""));
+            vm.application = ko.observable(new Application("", 1, [], 7, "", "", 0));
             vm.workManagement = new WorkManagement('--:--', '--:--', '--:--', '--:--', 850, 1725, null, null);
             vm.arrivedLateLeaveEarlyInfo = ko.observable(ArrivedLateLeaveEarlyInfo.initArrivedLateLeaveEarlyInfo());
-            // vm.lateOrEarlyInfo = ko.observable(new LateOrEarlyInfo(false, 2, false, false, 0));
 
-
+            vm.lateOrEarlyInfo1 = ko.observable(new LateOrEarlyInfo(true, 1, true, true, 0));
+            vm.lateOrEarlyInfo2 = ko.observable(new LateOrEarlyInfo(true, 1, true, true, 1));
+            vm.lateOrEarlyInfo3 = ko.observable(new LateOrEarlyInfo(false, 2, false, true, 0));
+            vm.lateOrEarlyInfo4 = ko.observable(new LateOrEarlyInfo(false, 2, true, true, 1));
             vm.mode = ko.observable('before');
+            vm.managementMultipleWorkCycles = ko.observable(true);
 
             // Subcribe when mode change -> clear data if mode is 'before'
             vm.mode.subscribe(() => {
@@ -40,19 +43,45 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 
         mounted() {
             const vm = this;
-
+            vm.$blockui('show');
             vm.application().appDate(moment(new Date()).format("YYYY/MM/DD"));
-            vm.lateOrEarlyInfos = vm.arrivedLateLeaveEarlyInfo().earlyInfos;
+            vm.$ajax(API.initPage + "/" + ko.toJS(vm.application().appType), [ko.toJS(vm.application().appDate)])
+                .done((successData: any) => {
+                    vm.arrivedLateLeaveEarlyInfo(successData.arrivedLateLeaveEarlyInfo);
+                    vm.lateOrEarlyInfos(vm.arrivedLateLeaveEarlyInfo().earlyInfos);
+                    vm.lateOrEarlyInfo1(ko.toJS(_.filter(vm.lateOrEarlyInfos, {'workNo': 1, 'category': 0})));
+                    vm.lateOrEarlyInfo2(ko.toJS(_.filter(vm.lateOrEarlyInfos, {'workNo': 1, 'category': 1})));
+                    vm.lateOrEarlyInfo3(ko.toJS(_.filter(vm.lateOrEarlyInfos, {'workNo': 2, 'category': 0})));
+                    vm.lateOrEarlyInfo4(ko.toJS(_.filter(vm.lateOrEarlyInfos, {'workNo': 2, 'category': 1})));
 
-            // vm.lateOrEarlyInfo1 = ko.observable(_.filter(vm.lateOrEarlyInfos, {'workNo': 1, 'category': 0}));
-            // vm.lateOrEarlyInfo2 = ko.observable(_.filter(vm.lateOrEarlyInfos, {'workNo': 1, 'category': 1}));
-            // vm.lateOrEarlyInfo3 = ko.observable(_.filter(vm.lateOrEarlyInfos, {'workNo': 2, 'category': 0}));
-            // vm.lateOrEarlyInfo4 = ko.observable(_.filter(vm.lateOrEarlyInfos, {'workNo': 2, 'category': 1}));
+                    vm.workManagement.scheAttendanceTime(vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheAttendanceTime1);
+                    vm.workManagement.scheAttendanceTime2(vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheAttendanceTime2);
+                    vm.workManagement.scheWorkTime(vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheDepartureTime1);
+                    vm.workManagement.scheWorkTime2(vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheDepartureTime2);
 
-            vm.lateOrEarlyInfo1 = ko.observable(new LateOrEarlyInfo(true, 1, true, true, 0));
-            vm.lateOrEarlyInfo2 = ko.observable(new LateOrEarlyInfo(true, 1, true, true, 1));
-            vm.lateOrEarlyInfo3 = ko.observable(new LateOrEarlyInfo(false, 2, false, true, 0));
-            vm.lateOrEarlyInfo4 = ko.observable(new LateOrEarlyInfo(false, 2, true, true, 1));
+                    if(!vm.workManagement.scheAttendanceTime) {
+                        vm.workManagement.scheAttendanceTime("--:--");
+                    }
+                    if(!vm.workManagement.scheAttendanceTime2) {
+                        vm.workManagement.scheAttendanceTime2("--:--");
+                    }
+                    if(!vm.workManagement.scheWorkTime) {
+                        vm.workManagement.scheWorkTime("--:--");
+                    }
+                    if(!vm.workManagement.scheWorkTime2) {
+                        vm.workManagement.scheWorkTime2("--:--");
+                    }
+
+                    vm.workManagement.workTime = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.workTime;
+                    vm.workManagement.workTime2 = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.workTime1;
+                    vm.workManagement.leaveTime = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.leaveTime;
+                    vm.workManagement.leaveTime2 = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.leaveTime2;
+
+                    vm.$blockui('hide');
+                }).fail((failData: any) => {
+                    vm.$blockui("hide");
+                });
+
         }
 
         register() {
@@ -66,9 +95,12 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         public condition2(): boolean {
             const vm = this;
 
+            if(vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput) {
+                vm.managementMultipleWorkCycles(vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles);
+            }
+
             // 「遅刻早退取消申請起動時の表示情報」.申請表示情報.申請設定（基準日関係なし）.複数回勤務の管理＝true
-            // return vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.
-            return true;
+            return ko.toJS(vm.managementMultipleWorkCycles());
         }
 
         // ※8
@@ -188,8 +220,10 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
     type MODE = 'before' | 'after';
 
     const API = {
-        startNew: "at/request/application/workchange/startNew",
-        initPage: "at/request/application/lateorleaveearly/initPage"
+        initPage: "at/request/application/lateorleaveearly/initPage",
+        changeAppDate: "at/request/application/lateorleaveearly/changeAppDate",
+        getMsgList: "at/request/application/lateorleaveearly/getMsgList",
+        register: "at/request/application/lateorleaveearly/register"
     };
 
     export class IdItem {

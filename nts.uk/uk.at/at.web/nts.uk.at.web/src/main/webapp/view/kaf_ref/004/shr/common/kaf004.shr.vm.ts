@@ -1,3 +1,5 @@
+/// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
+
 module nts.uk.at.view.kaf004_ref.shr.common.viewmodel {
     export class WorkManagement {
         // 予定出勤時刻ラベル
@@ -80,7 +82,13 @@ module nts.uk.at.view.kaf004_ref.shr.common.viewmodel {
             // 遅刻早退取消申請起動時の表示情報
             return {
                 // 取り消す初期情報
-                earlyInfos: [],
+                earlyInfos: [{
+                    ischeck: true,
+                    workNo: 1,
+                    isActive: true,
+                    isIndicate: true,
+                    category: 1
+                }],
 
                 // 申請表示情報
                 appDispInfoStartupOutput: {
@@ -119,10 +127,9 @@ module nts.uk.at.view.kaf004_ref.shr.common.viewmodel {
                 },
 
                 // 遅刻早退取消申請設定
-                arrivedLateLeaveEralySetting: {
-                    isResult: true,
-                    id: '',
-                    cancelCategory: 0
+                arrivedLateLeaveEarlySetting: {
+                    companyId: '',
+                    cancelAtr: 0
                 },
 
                 // エアー情報
@@ -131,9 +138,16 @@ module nts.uk.at.view.kaf004_ref.shr.common.viewmodel {
                 // 遅刻早退取消申請
                 arrivedLateLeaveEarly: {
                     // 取消
-                    lateCancelation: [],
+                    lateCancelation: [{
+                        workNo: 1,
+                        lateOrEarlyClassification: 1
+                    }],
                     // 時刻報告
-                    lateOrLeaveEarlies: []
+                    lateOrLeaveEarlies: [{
+                        workNo: 1,
+                        lateOrEarlyClassification: 1,
+                        timeWithDayAtr: 0
+                    }]
                 }
             }
         }
