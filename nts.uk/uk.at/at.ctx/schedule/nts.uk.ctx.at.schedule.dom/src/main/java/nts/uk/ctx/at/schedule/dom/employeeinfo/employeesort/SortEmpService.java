@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.adapter.jobtitle.PositionImport;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRank;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.Rank;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankPriority;
@@ -53,7 +54,8 @@ public class SortEmpService {
 		 */
 		List<List<String>> listEmpIDs = new ArrayList<List<String>>();
 		listEmpIDs.add(lstEmpId);
-		int sortOrder = sortSetting.getOrderedList().getSortOrder().value;
+		//QA-------------------------int sortOrder = sortSetting.getOrderedList().getSortOrder().value;
+		int sortOrder = 4;
 		switch (sortOrder) {
 		case 0: {
 			/*
@@ -116,13 +118,13 @@ public class SortEmpService {
 	 */
 	private static List<List<String>> sortEmpByRank(Require require, List<String> empIDs,
 			List<List<String>> listEmpIDs) {
-		//$ランクの優先順 = require.ランクの優先順を取得する()	
+		/*//$ランクの優先順 = require.ランクの優先順を取得する()	
 		List<Rank>  listRank = require.getListRank();
-		/*if $ランクの優先順.empty																				
-		return リストのリスト	*/
+		if $ランクの優先順.empty																				
+		return リストのリスト	
 		if(listRank.isEmpty()){
 			return listEmpIDs;
-		}
+		}*/
 		
 		return null;
 	}
@@ -186,7 +188,7 @@ public class SortEmpService {
 		 * @param empIDs
 		 * @return
 		 */
-		Optional<BelongScheduleTeam> get( List<String> empIDs);
+		List<BelongScheduleTeam> get( List<String> empIDs);
 
 		/**
 		 * [R-3] 社員ランクを取得する //Lấy "Employee Rank" 社員ランクRepository.*get

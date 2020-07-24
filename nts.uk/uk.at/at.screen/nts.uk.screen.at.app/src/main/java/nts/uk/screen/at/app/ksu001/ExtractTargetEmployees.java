@@ -90,10 +90,10 @@ public class ExtractTargetEmployees {
 			return sortSettingRepo.get(AppContexts.user().companyId());
 		}
 
-		@Override
+		/*@Override
 		public Optional<BelongScheduleTeam> get(String companyID, List<String> empIDs) {
 			return belongScheduleTeamRepo.get(companyID, empIDs);
-		}
+		}*/
 
 		@Override
 		public List<EmployeeRank> getAll(List<String> lstSID) {
@@ -120,6 +120,12 @@ public class ExtractTargetEmployees {
 		@Override
 		public List<EmpClassifiImport> get(GeneralDate ymd, List<String> lstEmpId) {
 			
+			return null;
+		}
+
+		@Override
+		public Optional<BelongScheduleTeam> get(List<String> empIDs) {
+			// TODO Auto-generated method stub
 			return null;
 		}
 		

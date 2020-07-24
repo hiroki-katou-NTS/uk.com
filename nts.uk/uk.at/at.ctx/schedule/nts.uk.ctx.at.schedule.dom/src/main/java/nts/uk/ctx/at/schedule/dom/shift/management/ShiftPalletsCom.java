@@ -57,11 +57,10 @@ public class ShiftPalletsCom implements DomainAggregate {
 	 * @author tutk
 	 *
 	 */
-//	public ShiftPalletsCom duplicate(int destinationPage, shiftPallet){
-//		// シフトパレット.組み合わせ.シフト組み合わせの順番を整頓する()		
-//		shiftPallet.getCombinations().sort((p1, p2) -> p1.getPositionNumber() - p2.getPositionNumber());
-//		this.shiftPallet = shiftPallet;
-//	}
+	public ShiftPalletsCom duplicate(int destinationPage, ShiftPalletName shiftPalletName){
+		ShiftPallet shiftPallet = this.shiftPallet.duplicate(shiftPalletName);
+		return new ShiftPalletsCom(this.companyId, destinationPage, shiftPallet);
+	}
 	
 	
 	public static interface Require {

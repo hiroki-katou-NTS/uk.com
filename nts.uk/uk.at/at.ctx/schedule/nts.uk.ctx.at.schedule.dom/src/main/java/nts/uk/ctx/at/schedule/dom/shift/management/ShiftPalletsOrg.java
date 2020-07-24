@@ -53,6 +53,16 @@ public class ShiftPalletsOrg implements DomainAggregate {
 
 		this.shiftPallet = shiftPallet;
 	}
+	
+	/**
+	 * [2] 複製する
+	 * @author tutk
+	 *
+	 */
+	public ShiftPalletsOrg duplicate(int destinationPage, ShiftPalletName shiftPalletName){
+		ShiftPallet shiftPallet = this.shiftPallet.duplicate(shiftPalletName);
+		return new ShiftPalletsOrg(this.targeOrg, destinationPage, shiftPallet);
+	}
 
 	public static interface Require {
 		// 会社別シフトパレットRepository.Update(会社別シフトパレット)

@@ -26,6 +26,8 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombi
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombiDtlPk;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombiPk;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgPk;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -43,6 +45,8 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 	private static final String FIND_BY_PAGE;
 
 	private static final String FIND_TO_DELETE;
+	
+	private static final String FIND_TO_DELETE_NEW;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -64,6 +68,11 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 		builderString.append(SELECT);
 		builderString.append(" WHERE a.TARGET_ID = 'workplaceId' AND a.PAGE = page");
 		FIND_TO_DELETE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append(SELECT);
+		builderString.append(" WHERE a.CID = 'cid' AND  a.TARGET_UNIT = targetUnit AND a.TARGET_ID = 'targetid' AND a.PAGE = 'page'");
+		FIND_TO_DELETE_NEW = builderString.toString();
 
 	}
 
@@ -348,6 +357,32 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 			throw new RuntimeException(ex);
 		}
 
+	}
+
+	@Override
+	public boolean exists(TargetOrgIdenInfor targeOrg, int page) {
+		String targetId = targeOrg.getUnit() == TargetOrganizationUnit.WORKPLACE ? targeOrg.getWorkplaceId().get()
+				: targeOrg.getWorkplaceGroupId().get();
+		Optional<ShiftPalletsOrg> data = findShiftPalletOrg(targeOrg.getUnit().value, targetId, page);
+		return data.isPresent();
+	}
+
+	@Override
+	public void delete(TargetOrgIdenInfor targeOrg, int page) {
+		String targetid = targeOrg.getUnit() == TargetOrganizationUnit.WORKPLACE?targeOrg.getWorkplaceId().get():targeOrg.getWorkplaceGroupId().get();
+		String query = FIND_TO_DELETE_NEW;
+		query = query.replaceFirst("cid", AppContexts.user().companyId());
+		query = query.replaceFirst("targetUnit", String.valueOf(targeOrg.getUnit().value));
+		query = query.replaceFirst("targetid", String.valueOf(targetid));
+		query = query.replaceFirst("page", String.valueOf(page));
+		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+			ResultSet rs = stmt.executeQuery();
+			KscmtPaletteOrg kscmtPaletteOrg = toEntity(createShiftPallets(rs)).get(0);
+			commandProxy().remove(KscmtPaletteOrg.class, kscmtPaletteOrg.pk);
+			this.getEntityManager().flush();
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 
 }

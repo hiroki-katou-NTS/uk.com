@@ -31,6 +31,7 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistCustom;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
+import nts.uk.ctx.bs.employee.dom.employee.history.CompanyWithEmployeeID;
 import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClassHistory;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHist;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHistPk;
@@ -819,5 +820,11 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 			}
 		});
 		return result;
+	}
+
+	@Override
+	public List<CompanyWithEmployeeID> getHistoryItemByEmpID(List<String> lstEmpId, DatePeriod datePeriod) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

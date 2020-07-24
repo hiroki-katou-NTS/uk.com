@@ -55,8 +55,9 @@ public class CreateDailyResults {
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
 
-	private ReflectWorkInforDomainServiceImpl reflectWorkInforDomainServiceImpl;
-	
+	@Inject
+	private ReflectWorkInforDomainService reflectWorkInforDomainServiceImpl;
+
 	@Inject
 	private CopyWorkTypeWorkTime copyWorkTypeWorkTime;
 

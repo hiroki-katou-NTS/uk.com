@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.infra.repository.workrule.shiftmaster;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +14,7 @@ import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.arc.layer.infra.data.query.TypedQueryWrapper;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ColorCodeChar6;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
@@ -23,7 +22,6 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.WorkInformation;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 import nts.uk.ctx.at.shared.infra.entity.workrule.shiftmaster.KshmtShiftMater;
 import nts.uk.ctx.at.shared.infra.entity.workrule.shiftmaster.KshmtShiftMaterPK;
@@ -176,8 +174,8 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 	public List<ShiftMaster> get(String companyID, List<WorkInformation> lstWorkInformation) {
 		List<ShiftMaster> listData = new ArrayList<>();
 		for(WorkInformation wi :lstWorkInformation ) {
-			Optional<ShiftMaster> optSm =  getByWorkTypeAndWorkTime(companyID, wi.getWorkTypeCd()!=null?wi.getWorkTypeCd().v():null, 
-					wi.getWorkTimeCd()!=null?wi.getWorkTimeCd().v():null);
+			Optional<ShiftMaster> optSm =  getByWorkTypeAndWorkTime(companyID, wi.getWorkTypeCode()!=null?wi.getWorkTypeCode().v():null, 
+					wi.getWorkTimeCode()!=null?wi.getWorkTimeCode().v():null);
 			if(optSm.isPresent()) {
 				listData.add(optSm.get());
 			}

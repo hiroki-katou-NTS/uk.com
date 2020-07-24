@@ -20,8 +20,8 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.checkproce
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.checkprocessed.StatusOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.CreateDailyOneDay;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.deleteworkinfor.DeleteWorkInfor;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createrebuildflag.CreateRebuildFlag;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectworkinfor.ReflectWorkInfor;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
@@ -113,10 +113,13 @@ public class CreateDailyResultEmployeeDomainServiceNewImpl implements CreateDail
 	private CheckProcessed checkProcessed;
 	
 	@Inject
-	private ReflectWorkInfor reflectWorkInfor;
+	private DeleteWorkInfor deleteWorkInfor;
 	
 	@Inject
 	private CreateDailyOneDay createDailyOneDay;
+	
+	@Inject
+	private RegisterDailyWork registerDailyWork;
 
 	@Override
 	public OutputCreateDailyResult createDailyResultEmployee(AsyncCommandHandlerContext asyncContext, String employeeId,
@@ -186,19 +189,24 @@ public class CreateDailyResultEmployeeDomainServiceNewImpl implements CreateDail
                 //実行タイプが「実績を削除する」の場合
                 if( executionType  == ExecutionTypeDaily.DELETE_ACHIEVEMENTS) {
                 	//日別実績の前データを削除する
-                	reflectWorkInfor.reflectWorkInfor(companyId, employeeId, day);
+                	deleteWorkInfor.deleteWorkInfor(companyId, employeeId, day);
                 	flag = EmbossingExecutionFlag.ALL;
                 }
                 //一日の日別実績の作成処理（New）
-				List<ErrorMessageInfo> optErrors = createDailyOneDay.createDailyOneDay(companyId, employeeId, day,
+                OutputCreateDailyOneDay outputCreateDailyOneDay = createDailyOneDay.createDailyOneDay(companyId, employeeId, day,
 						reCreateWorkType, reCreateWorkPlace, reCreateRestTime, executionType,
 						flag, employeeGeneralInfoImport, periodInMasterList,
 						empCalAndSumExecLogID);
-                if(!optErrors.isEmpty()) {
+                if(!outputCreateDailyOneDay.getListErrorMessageInfo().isEmpty()) {
                 	//エラー一覧にエラー入れる
-    				listErrorMessageInfo.addAll(optErrors);
+    				listErrorMessageInfo.addAll(outputCreateDailyOneDay.getListErrorMessageInfo());
                 }else {
-                	//TODO:登録する (Đăng ký) (TKT)
+                	if(outputCreateDailyOneDay.getIntegrationOfDaily() != null) {
+                		//登録する (Đăng ký) 
+                		registerDailyWork.register(outputCreateDailyOneDay.getIntegrationOfDaily(), outputCreateDailyOneDay.getListStamp());
+                		
+                	}
+                	
                 }
                 //ドメインモデル「就業計算と集計実行ログ」を取得し、実行状況を確認する
 				Optional<EmpCalAndSumExeLog> logOptional = this.empCalAndSumExeLogRepository

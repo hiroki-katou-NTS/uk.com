@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.shift.management;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -22,6 +23,7 @@ import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation.Require;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 
 public class DateInformationTest {
 	
@@ -33,51 +35,6 @@ public class DateInformationTest {
 		DateInformation dateInformation = DateInformationHelper.DUMMY;
 		NtsAssert.invokeGetters(dateInformation);
 	}
-
-	/**
-	 * require.祝日が存在するか(年月日) is true
-	 */
-	@Test
-	public void testCreate() {
-		TargetOrgIdenInfor targetOrgIdenInfor = DateInformationHelper.getTargetOrgIdenInforWorkplace();
-		GeneralDate today = GeneralDate.today();
-		new Expectations() {
-			{
-				require.getHolidaysByDate(today);
-				result = true;
-				
-				
-			}
-		};
-		
-		DateInformation dateInformation = DateInformation.create(require, today, targetOrgIdenInfor);
-		assertTrue(dateInformation.isHoliday());
-		assertSame(today, dateInformation.getYmd());
-		assertSame(today.dayOfWeekEnum(), dateInformation.getYmd().dayOfWeekEnum());
-		
-	}
-	
-	/**
-	 * require.祝日が存在するか(年月日) is false
-	 */
-	@Test
-	public void testCreate_1() {
-		TargetOrgIdenInfor targetOrgIdenInfor = DateInformationHelper.getTargetOrgIdenInforWorkplace();
-		GeneralDate today = GeneralDate.today();
-		new Expectations() {
-			{
-				require.getHolidaysByDate(today);
-				result = false;
-				
-				
-			}
-		};
-		
-		DateInformation dateInformation = DateInformation.create(require, today, targetOrgIdenInfor);
-		assertFalse(dateInformation.isHoliday());
-		assertSame(today, dateInformation.getYmd());
-		assertSame(today.dayOfWeekEnum(), dateInformation.getYmd().dayOfWeekEnum());
-	}
 	
 	/**
 	 *  if 対象組織.単位 != 職場
@@ -86,7 +43,7 @@ public class DateInformationTest {
 	 */
 	@Test
 	public void testCreate_2() {
-		TargetOrgIdenInfor targetOrgIdenInfor = DateInformationHelper.getTargetOrgIdenInforWorkplaceGroup();
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, "workplaceId", "workplaceGroupId");
 		GeneralDate today = GeneralDate.today();
 		new Expectations() {
 			{
@@ -107,6 +64,10 @@ public class DateInformationTest {
 		assertFalse(dateInformation.isSpecificDay());
 		assertFalse(dateInformation.getOptCompanyEventName().isPresent());
 		assertTrue(dateInformation.getListSpecDayNameCompany().isEmpty());
+		
+		assertTrue(dateInformation.isHoliday());
+		assertSame(today, dateInformation.getYmd());
+		assertSame(today.dayOfWeekEnum(), dateInformation.getYmd().dayOfWeekEnum());
 	}
 	
 	/**
@@ -117,7 +78,7 @@ public class DateInformationTest {
 	 */
 	@Test
 	public void testCreate_3() {
-		TargetOrgIdenInfor targetOrgIdenInfor = DateInformationHelper.getTargetOrgIdenInforWorkplaceGroup();
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, "workplaceId", "workplaceGroupId");
 		GeneralDate today = GeneralDate.today();
 		CompanyEvent companyEvent = DateInformationHelper.getCompanyEventDefault();
 		List<CompanySpecificDateItem> listCompanySpecificDateItem = DateInformationHelper.getListDefaultByNumberItem(2);
@@ -142,6 +103,10 @@ public class DateInformationTest {
 		assertTrue(dateInformation.isSpecificDay());
 		assertSame(dateInformation.getOptCompanyEventName().get(),companyEvent.getEventName());
 		assertTrue(dateInformation.getListSpecDayNameCompany().isEmpty());
+		
+		assertTrue(dateInformation.isHoliday());
+		assertSame(today, dateInformation.getYmd());
+		assertSame(today.dayOfWeekEnum(), dateInformation.getYmd().dayOfWeekEnum());
 	}
 	
 	/**
@@ -152,7 +117,7 @@ public class DateInformationTest {
 	 */
 	@Test
 	public void testCreate_4() {
-		TargetOrgIdenInfor targetOrgIdenInfor = DateInformationHelper.getTargetOrgIdenInforWorkplaceGroup();
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, "workplaceId", "workplaceGroupId");
 		GeneralDate today = GeneralDate.today();
 		CompanyEvent companyEvent = DateInformationHelper.getCompanyEventDefault();
 		List<CompanySpecificDateItem> listCompanySpecificDateItem = DateInformationHelper.getListDefaultByNumberItem(2);
@@ -180,8 +145,15 @@ public class DateInformationTest {
 		assertSame(dateInformation.getOptCompanyEventName().get(),companyEvent.getEventName());
 		assertFalse(dateInformation.getListSpecDayNameCompany().isEmpty());
 		
-		assertSame(dateInformation.getListSpecDayNameCompany().get(0),listSpecificDateItem.get(0).getSpecificName());
-		assertSame(dateInformation.getListSpecDayNameCompany().get(1),listSpecificDateItem.get(1).getSpecificName());
+		assertThat(dateInformation.getListSpecDayNameCompany())
+		.extracting(d->d.v())
+		.containsExactly(
+				listSpecificDateItem.get(0).getSpecificName().v(),
+				listSpecificDateItem.get(1).getSpecificName().v());
+		
+		assertTrue(dateInformation.isHoliday());
+		assertSame(today, dateInformation.getYmd());
+		assertSame(today.dayOfWeekEnum(), dateInformation.getYmd().dayOfWeekEnum());
 	}
 
 	/**
@@ -190,7 +162,7 @@ public class DateInformationTest {
 	 */
 	@Test
 	public void testCreate_5() {
-		TargetOrgIdenInfor targetOrgIdenInfor = DateInformationHelper.getTargetOrgIdenInforWorkplaceGroup();
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId", "workplaceGroupId");
 		GeneralDate today = GeneralDate.today();
 		new Expectations() {
 			{
@@ -207,6 +179,10 @@ public class DateInformationTest {
 		assertFalse(dateInformation.isSpecificDay());
 		assertFalse(dateInformation.getOptWorkplaceEventName().isPresent());
 		assertTrue(dateInformation.getListSpecDayNameWorkplace().isEmpty());
+		
+		assertTrue(dateInformation.isHoliday());
+		assertSame(today, dateInformation.getYmd());
+		assertSame(today.dayOfWeekEnum(), dateInformation.getYmd().dayOfWeekEnum());
 	}
 	
 	/**
@@ -216,9 +192,9 @@ public class DateInformationTest {
 	 */
 	@Test
 	public void testCreate_6() {
-		TargetOrgIdenInfor targetOrgIdenInfor = DateInformationHelper.getTargetOrgIdenInforWorkplaceGroup();
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId", "workplaceGroupId");
 		GeneralDate today = GeneralDate.today();
-		WorkplaceEvent workplaceEvent = DateInformationHelper.getWorkplaceEventDefault();
+		WorkplaceEvent workplaceEvent = WorkplaceEvent.createFromJavaType("workplaceId", GeneralDate.today(), "eventName");
 		new Expectations() {
 			{
 				require.getHolidaysByDate(today);
@@ -236,6 +212,10 @@ public class DateInformationTest {
 		assertFalse(dateInformation.isSpecificDay());
 		assertSame(dateInformation.getOptWorkplaceEventName().get(), workplaceEvent.getEventName());
 		assertTrue(dateInformation.getListSpecDayNameWorkplace().isEmpty());
+		
+		assertTrue(dateInformation.isHoliday());
+		assertSame(today, dateInformation.getYmd());
+		assertSame(today.dayOfWeekEnum(), dateInformation.getYmd().dayOfWeekEnum());
 	}
 	
 	/**
@@ -246,9 +226,9 @@ public class DateInformationTest {
 	 */
 	@Test
 	public void testCreate_7() {
-		TargetOrgIdenInfor targetOrgIdenInfor = DateInformationHelper.getTargetOrgIdenInforWorkplaceGroup();
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId", "workplaceGroupId");
 		GeneralDate today = GeneralDate.today();
-		WorkplaceEvent workplaceEvent = DateInformationHelper.getWorkplaceEventDefault();
+		WorkplaceEvent workplaceEvent = WorkplaceEvent.createFromJavaType("workplaceId", GeneralDate.today(), "eventName");
 		List<WorkplaceSpecificDateItem> listWorkplaceSpecificDateItem =  DateInformationHelper.getListWorkplaceSpecificDateItemByNumber(2);
 		List<SpecificDateItemNo> listSpecificDateItemNo = listWorkplaceSpecificDateItem.stream().map(c->c.getSpecificDateItemNo()).collect(Collectors.toList());
 		new Expectations() {
@@ -270,6 +250,10 @@ public class DateInformationTest {
 		
 		assertTrue(dateInformation.isSpecificDay());
 		assertTrue(dateInformation.getListSpecDayNameWorkplace().isEmpty());
+		
+		assertTrue(dateInformation.isHoliday());
+		assertSame(today, dateInformation.getYmd());
+		assertSame(today.dayOfWeekEnum(), dateInformation.getYmd().dayOfWeekEnum());
 	}
 	
 	/**
@@ -280,9 +264,9 @@ public class DateInformationTest {
 	 */
 	@Test
 	public void testCreate_8() {
-		TargetOrgIdenInfor targetOrgIdenInfor = DateInformationHelper.getTargetOrgIdenInforWorkplaceGroup();
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId", "workplaceGroupId");
 		GeneralDate today = GeneralDate.today();
-		WorkplaceEvent workplaceEvent = DateInformationHelper.getWorkplaceEventDefault();
+		WorkplaceEvent workplaceEvent = WorkplaceEvent.createFromJavaType("workplaceId", GeneralDate.today(), "eventName");
 		List<WorkplaceSpecificDateItem> listWorkplaceSpecificDateItem =  DateInformationHelper.getListWorkplaceSpecificDateItemByNumber(2);
 		List<SpecificDateItemNo> listSpecificDateItemNo = listWorkplaceSpecificDateItem.stream().map(c->c.getSpecificDateItemNo()).collect(Collectors.toList());
 		List<SpecificDateItem> listSpecificDateItem = DateInformationHelper.getListSpecificDateItemByNumberItem(2);
@@ -306,8 +290,16 @@ public class DateInformationTest {
 		
 		assertTrue(dateInformation.isSpecificDay());
 		assertFalse(dateInformation.getListSpecDayNameWorkplace().isEmpty());
-		assertSame(dateInformation.getListSpecDayNameWorkplace().get(0), listSpecificDateItem.get(0).getSpecificName());
-		assertSame(dateInformation.getListSpecDayNameWorkplace().get(1), listSpecificDateItem.get(1).getSpecificName());
+		
+		assertThat(dateInformation.getListSpecDayNameWorkplace())
+		.extracting(d->d.v())
+		.containsExactly(
+				listSpecificDateItem.get(0).getSpecificName().v(),
+				listSpecificDateItem.get(1).getSpecificName().v());
+		
+		assertTrue(dateInformation.isHoliday());
+		assertSame(today, dateInformation.getYmd());
+		assertSame(today.dayOfWeekEnum(), dateInformation.getYmd().dayOfWeekEnum());
 	}
 	
 

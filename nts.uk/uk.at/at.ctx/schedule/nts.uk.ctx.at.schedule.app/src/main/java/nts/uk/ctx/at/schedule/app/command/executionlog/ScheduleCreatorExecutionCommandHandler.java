@@ -61,6 +61,9 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmployeeLeaveJobPeriodImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmploymentPeriod;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
@@ -721,72 +724,35 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	public static class ScheManaStatuTempoImpl implements ScheManaStatuTempo.Require{
 
 		@Override
-		public EmployeeImport findByEmpId(String empId) {
+		public Optional<AffCompanyHistSharedImport> getAffCompanyHistByEmployee(String sid, DatePeriod datePeriod) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public List<EmployeeImport> findByEmpId(List<String> empIds) {
+		public Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public List<String> getListEmpByWkpAndEmpt(List<String> wkps, List<String> lstempts, DatePeriod dateperiod) {
+		public Optional<EmployeeLeaveJobPeriodImport> getByDatePeriod(List<String> lstEmpID, DatePeriod datePeriod) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public List<PersonEmpBasicInfoImport> getPerEmpBasicInfo(List<String> employeeIds) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public EmployeeRecordImport findByAllInforEmpId(String empId) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public List<SClsHistImport> lstClassByEmployeeId(String companyId, List<String> employeeIds,
+		public Optional<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(List<String> lstEmpID,
 				DatePeriod datePeriod) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public AffCompanyHistSharedImport GetAffComHisBySidAndBaseDate(String sid, GeneralDate baseDate) {
+		public Optional<EmploymentPeriod> getEmploymentHistory(List<String> lstEmpID, DatePeriod datePeriod) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
-		@Override
-		public AffCompanyHistSharedImport GetAffComHisBySid(String cid, String sid) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public List<AffCompanyHistSharedImport> getAffComHisBySids(String cid, List<String> sid) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public List<AffCompanyHistSharedImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Optional<WorkingCondition> getBySidAndStandardDate(String companyId, String employeeId,
-				GeneralDate baseDate) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
 	}
 }
