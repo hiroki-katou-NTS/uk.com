@@ -185,7 +185,7 @@ module nts.uk.at.view.kdp005.a {
 			public openDialogK(): JQueryPromise<any> {
 				let vm = new ko.ViewModel();
 				let dfd = $.Deferred<any>();
-				vm.$window.modal('at', '/view/kdp/003/k/index.xhtml').then((selectedWP) => {
+				vm.$window.modal('at', '/view/kdp/003/k/index.xhtml', { multiSelect: true }).then((selectedWP) => {
 					if (selectedWP) {
 						dfd.resolve(selectedWP.selectedId);
 					}
