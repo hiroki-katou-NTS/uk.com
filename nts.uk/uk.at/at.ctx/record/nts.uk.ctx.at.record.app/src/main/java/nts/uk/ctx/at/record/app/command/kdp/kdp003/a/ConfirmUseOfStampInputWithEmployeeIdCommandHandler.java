@@ -37,6 +37,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.S
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
+import nts.uk.shr.com.context.AppContexts;
 
 /***
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.App.打刻入力を利用できるかを確認する
@@ -78,10 +79,14 @@ extends CommandHandlerWithResult<ConfirmUseOfStampInputCommandWithEmployeeId, Co
 		StampFunctionAvailableServiceRequireImpl require = new StampFunctionAvailableServiceRequireImpl(stampUsageRepo,
 				stampCardRepo, stampCardEditRepo, companyAdapter, sysEmpPub, stampRecordRepo, stampDakokuRepo,
 				createDailyResultDomainSv,context.getCommand().getCompanyId());
+		//tam thời chưa lấy được employeeId nên phải code thế này
+		
+		String employeeId = this.sysEmpPub
+				.findByScdNotDel(context.getCommand().getEmployeeCode(), context.getCommand().getCompanyId())
+				.map(x -> x.getEmployeeId()).orElse(AppContexts.user().employeeId());
 
 		StampMeans stampMeans = EnumAdaptor.valueOf(context.getCommand().getStampMeans(), StampMeans.class);
-
-		String employeeId = context.getCommand().getEmployeeId();
+		
 		// 1. 判断する(@Require, 社員ID, 打刻手段)
 		MakeUseJudgmentResults jugResult = StampFunctionAvailableService.decide(require, employeeId, stampMeans);
 		// not 打刻カード作成結果 empty
