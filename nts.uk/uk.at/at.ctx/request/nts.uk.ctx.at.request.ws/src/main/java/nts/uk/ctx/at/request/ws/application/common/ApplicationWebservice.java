@@ -249,13 +249,6 @@ public class ApplicationWebservice extends WebService {
 		return finderApp.getDetailMob(appID);
 	}
 	
-	@POST
-	@Path("checkVersion")
-	public void checkVersion(VersionCheckParam param) {
-		String companyID = AppContexts.user().companyId();
-		detailBeforeUpdate.exclusiveCheck(companyID, param.appID, param.version);
-	}
-	
 	// refactor 4
 	
 	@POST
@@ -286,6 +279,13 @@ public class ApplicationWebservice extends WebService {
 	@Path("denyapp")
 	public ProcessResult denyApp(AppDetailBehaviorCmd command){
 		return denyApp.handle(command);
+	}
+	
+	@POST
+	@Path("checkVersion")
+	public void checkVersion(VersionCheckParam param) {
+		String companyID = AppContexts.user().companyId();
+		detailBeforeUpdate.exclusiveCheck(companyID, param.appID, param.version);
 	}
 }
 
