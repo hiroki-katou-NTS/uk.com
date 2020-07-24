@@ -61,41 +61,39 @@ public class DateInformation {
 		List<SpecificName> lstSpecDayNameWorkplace = new ArrayList<>();
 		List<SpecificName> lstSpecDayNameCom = new ArrayList<>();
 		boolean existPublicHoliday = require.getHolidaysByDate(ymd);
-		
+
 		// if 対象組織.単位 == 職場
 		if (targetOrgIdenInfor.getUnit().value == TargetOrganizationUnit.WORKPLACE.value) {
-			if(targetOrgIdenInfor.getWorkplaceId().isPresent()) {
-				Optional<WorkplaceEvent> workplaceEvent = require.findByPK(targetOrgIdenInfor.getWorkplaceId().get(), ymd);
-				if (workplaceEvent.isPresent()) {
+			Optional<WorkplaceEvent> workplaceEvent = require.findByPK(targetOrgIdenInfor.getWorkplaceId().get(), ymd);
+			if (workplaceEvent.isPresent()) {
+				/*
+				 * if $職場行事.isPresent
+				 * 
+				 * @職場行事名称 = $職場行事.行事名称 $職場特定日設定 =
+				 * require.職場の特定日設定を取得する(対象組織.職場ID, 年月日)
+				 */
+
+				workplaceEventName = Optional.of(workplaceEvent.get().getEventName());
+				List<WorkplaceSpecificDateItem> listWorkplaceSpecificDateItem = require
+						.getWorkplaceSpecByDate(targetOrgIdenInfor.getWorkplaceId().get(), ymd);
+
+				if (!listWorkplaceSpecificDateItem.isEmpty()) {
 					/*
-					 * if $職場行事.isPresent
+					 * @特定日であるか = true
 					 * 
-					 * @職場行事名称 = $職場行事.行事名称 $職場特定日設定 =
-					 * require.職場の特定日設定を取得する(対象組織.職場ID, 年月日)
+					 * @職場の特定日名称リスト = require.特定日項目リストを取得する( $職場特定日設定.特定日項目リスト)
+					 * : map $.名称
 					 */
-	
-					workplaceEventName = Optional.of(workplaceEvent.get().getEventName());
-					List<WorkplaceSpecificDateItem> listWorkplaceSpecificDateItem = require
-							.getWorkplaceSpecByDate(targetOrgIdenInfor.getWorkplaceId().get(), ymd);
-	
-					if (!listWorkplaceSpecificDateItem.isEmpty()) {
-						/*
-						 * @特定日であるか = true
-						 * 
-						 * @職場の特定日名称リスト = require.特定日項目リストを取得する( $職場特定日設定.特定日項目リスト)
-						 * : map $.名称
-						 */
-						// @特定日であるか QA http://192.168.50.4:3000/issues/110662 - code
-						isSpecificDay = true;
-						List<SpecificDateItemNo> listSpecificDateItemNo = listWorkplaceSpecificDateItem.stream()
-								.map(c -> c.getSpecificDateItemNo()).collect(Collectors.toList());
-						List<SpecificDateItem> zlistSpecDayNameWorkplace = require
-								.getSpecifiDateByListCode(listSpecificDateItemNo);
-						lstSpecDayNameWorkplace = zlistSpecDayNameWorkplace.stream().map(c -> c.getSpecificName())
-								.collect(Collectors.toList());
-					}
-	
+					// @特定日であるか QA http://192.168.50.4:3000/issues/110662 - code
+					isSpecificDay = true;
+					List<SpecificDateItemNo> listSpecificDateItemNo = listWorkplaceSpecificDateItem.stream()
+							.map(c -> c.getSpecificDateItemNo()).collect(Collectors.toList());
+					List<SpecificDateItem> zlistSpecDayNameWorkplace = require
+							.getSpecifiDateByListCode(listSpecificDateItemNo);
+					lstSpecDayNameWorkplace = zlistSpecDayNameWorkplace.stream().map(c -> c.getSpecificName())
+							.collect(Collectors.toList());
 				}
+
 			}
 		}
 
@@ -118,7 +116,7 @@ public class DateInformation {
 					.collect(Collectors.toList());
 
 		}
-		
+
 		return new DateInformation(ymd, ymd.dayOfWeekEnum(), existPublicHoliday, isSpecificDay, workplaceEventName,
 				optCompanyEventName, lstSpecDayNameWorkplace, lstSpecDayNameCom);
 
