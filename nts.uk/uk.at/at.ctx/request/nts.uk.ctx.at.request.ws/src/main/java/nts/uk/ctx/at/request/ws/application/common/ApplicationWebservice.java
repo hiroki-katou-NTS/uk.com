@@ -148,16 +148,6 @@ public class ApplicationWebservice extends WebService {
 	}
 	
 	/**
-	 * delete application
-	 * @return
-	 */
-	@POST
-	@Path("deleteapp")
-	public ProcessResult deleteApp(UpdateApplicationCommonCmd command){
-		 return this.deleteApp.handle(command);
-	}
-	
-	/**
 	 * lấy message và deadline trên màn hình
 	 * get message and deadline (getDataConfigDetail)
 	 * @return
@@ -293,10 +283,18 @@ public class ApplicationWebservice extends WebService {
 		detailBeforeUpdate.exclusiveCheck(companyID, param.appID, param.version);
 	}
 	
+	// refactor 4
+	
 	@POST
 	@Path("getDetailPC/{appID}")
 	public AppDispInfoStartupDto getDetailPC(@PathParam("appID") String appID) {
 		return finderApp.getDetailPC(appID);
+	}
+	
+	@POST
+	@Path("deleteapp")
+	public ProcessResult deleteApp(AppDispInfoStartupDto command){
+		 return this.deleteApp.handle(command);
 	}
 }
 

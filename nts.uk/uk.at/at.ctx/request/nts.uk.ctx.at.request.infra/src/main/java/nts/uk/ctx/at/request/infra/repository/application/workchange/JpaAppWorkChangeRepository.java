@@ -79,8 +79,8 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements AppWork
 	}
 
 	@Override
-	public void remove(AppWorkChange appWorkChange) {
-		this.commandProxy().remove(KrqdtAppWorkChange.class, new KrqdtAppWorkChangePk(AppContexts.user().companyId(), appWorkChange.getAppID())); 
+	public void remove(String companyID, String appID) {
+		this.commandProxy().remove(KrqdtAppWorkChange.class, new KrqdtAppWorkChangePk(companyID, appID)); 
 
 	}
 

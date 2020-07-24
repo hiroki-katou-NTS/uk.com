@@ -9,6 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.CheckInsertGoBackCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.CheckUpdateGoBackCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertApplicationGoBackDirectlyCommand;
@@ -134,7 +135,7 @@ public class GoBackDirectlyService extends WebService {
 		return goBackDirectlyRegisterService.inconsistencyCheck(
 				companyID, 
 				command.getAppCommand().getEmployeeIDLst().get(0), 
-				command.getAppCommand().getAppDate());
+				GeneralDate.fromString(command.getAppCommand().getAppDate(), "yyyy/MM/dd"));
 	}
 //	Refactor4
 //	start
