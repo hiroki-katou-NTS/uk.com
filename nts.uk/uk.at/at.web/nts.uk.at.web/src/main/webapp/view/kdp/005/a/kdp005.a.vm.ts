@@ -282,17 +282,23 @@ module nts.uk.at.view.kdp005.a {
                             vm.authentic(employeeId).done(() => {
                                 vm.registerData(button, layout, ICCard);
                             }).fail((errorMessage: string) => {
-                                setShared("ErrorMessage", errorMessage);
-                                modal('/view/kdp/005/i/index.xhtml');
+                                setShared("errorMessage", errorMessage);
+                                vm.openIDialog();
                             });
                         }).fail(() => {
-                            modal('/view/kdp/005/i/index.xhtml');
+                            vm.openIDialog();
                         }).always(() => {
                             block.clear();    
                         });
                     }
                 });
 			}
+            
+            public openIDialog(){
+                let self = this;
+                setShared("resultDisplayTime", self.stampSetting().resultDisplayTime);
+                modal('/view/kdp/005/i/index.xhtml');     
+            }
             
             public getEmployeeIdByICCard(cardNumber: string): JQueryPromise<any> {
                 let self = this;
@@ -443,7 +449,6 @@ module nts.uk.at.view.kdp005.a {
 				});
 
 				modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
-
 					self.openKDP002T(button, layout);
 				});
 			}
