@@ -228,11 +228,19 @@ module nts.uk.at.kdp003.f {
 							model.companyId.valueHasMutated();
 						}
 					} else {
-						if (params.mode === 'admin' && !data.length) {
-							vm.$dialog
-								.error({ messageId: 'Msg_1527' })
-								.then(() => vm.$window.close({ msgErrorId: 'Msg_1527' }));
+						if (params.mode === 'admin') {
+							if (data.length === 1) {
+								model.companyId(data[0].companyId);
+							} else if (!data.length) {
+								vm.$dialog
+									.error({ messageId: 'Msg_1527' })
+									.then(() => vm.$window.close({ msgErrorId: 'Msg_1527' }));
+							} else {
+								// raise subscribe for update message
+								model.companyId.valueHasMutated();
+							}
 						} else {
+							// raise subscribe for update message
 							model.companyId.valueHasMutated();
 						}
 					}
