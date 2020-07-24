@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.command.kdp.kdp003.a;
+package nts.uk.ctx.at.record.app.command.kdp.kdps01.a;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,14 +7,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.arc.task.tran.AtomTask;
-import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.app.command.kdp.kdp001.a.ConfirmUseOfStampInputResult;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
@@ -37,15 +33,17 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.S
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
+import nts.uk.shr.com.context.AppContexts;
 
-/***
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.App.打刻入力を利用できるかを確認する
- * @author vuongnv
- *
+/**
+ * 
+ * @author sonnlb
+ *         UKDesign.UniversalK.就業.KDP_打刻.KDPS01_打刻入力(スマホ).A:打刻入力(スマホ).メニュー別OCD.打刻入力(スマホ)の実行可能判定を行う
  */
+
 @Stateless
-public class ConfirmUseOfStampInputWithEmployeeIdCommandHandler 
-extends CommandHandlerWithResult<ConfirmUseOfStampInputCommandWithEmployeeId, ConfirmUseOfStampInputResult> {
+public class CheckCanUseSmartPhoneStampCommandHandler extends CommandHandlerWithResult<CheckCanUseSmartPhoneStampCommand, CheckCanUseSmartPhoneStampResult> {
+
 
 	@Inject
 	private SettingsUsingEmbossingRepository stampUsageRepo;
@@ -72,30 +70,31 @@ extends CommandHandlerWithResult<ConfirmUseOfStampInputCommandWithEmployeeId, Co
 	private CreateDailyResultDomainService createDailyResultDomainSv;
 
 	@Override
-	protected ConfirmUseOfStampInputResult handle(
-			CommandHandlerContext<ConfirmUseOfStampInputCommandWithEmployeeId> context) {
+	protected CheckCanUseSmartPhoneStampResult handle(CommandHandlerContext<CheckCanUseSmartPhoneStampCommand> context) {
 
 		StampFunctionAvailableServiceRequireImpl require = new StampFunctionAvailableServiceRequireImpl(stampUsageRepo,
 				stampCardRepo, stampCardEditRepo, companyAdapter, sysEmpPub, stampRecordRepo, stampDakokuRepo,
-				createDailyResultDomainSv,context.getCommand().getCompanyId());
+				createDailyResultDomainSv);
 
-		StampMeans stampMeans = EnumAdaptor.valueOf(context.getCommand().getStampMeans(), StampMeans.class);
-
-		String employeeId = context.getCommand().getEmployeeId();
-		// 1. 判断する(@Require, 社員ID, 打刻手段)
-		MakeUseJudgmentResults jugResult = StampFunctionAvailableService.decide(require, employeeId, stampMeans);
+		String employeeId = AppContexts.user().employeeId();
+		// 2.1 判断する(@Require, 社員ID, 打刻手段)
+		MakeUseJudgmentResults jugResult = StampFunctionAvailableService.decide(require, employeeId, StampMeans.PORTAL);
 		// not 打刻カード作成結果 empty
 		Optional<StampCardCreateResult> cradResultOpt = jugResult.getCardResult();
-
-		if (cradResultOpt.isPresent()) {
-
-			Optional<AtomTask> atom = cradResultOpt.get().getAtomTask();
-			transaction.execute(() -> {
-				atom.get().run();
+		
+		cradResultOpt.ifPresent(x -> {
+			x.getAtomTask().ifPresent(atom -> {
+				transaction.execute(() -> {
+					atom.run();
+				});
 			});
-			return new ConfirmUseOfStampInputResult(GeneralDateTime.now(), jugResult.getUsed().value);
-		}
-		return new ConfirmUseOfStampInputResult(GeneralDateTime.now(), jugResult.getUsed().value);
+		});
+		
+		Optional<String> cardNumber = cradResultOpt.map(x -> x.getCardNumber());
+		
+		return new CheckCanUseSmartPhoneStampResult(cardNumber.isPresent() ? cardNumber.get() : null,
+				jugResult.getUsed().value);
+
 	}
 
 	@AllArgsConstructor
@@ -124,8 +123,6 @@ extends CommandHandlerWithResult<ConfirmUseOfStampInputCommandWithEmployeeId, Co
 
 		@Inject
 		private CreateDailyResultDomainService createDailyResultDomainSv;
-		
-		private String compnayId;
 
 		@Override
 		public List<EmployeeDataMngInfoImport> findBySidNotDel(List<String> sids) {
@@ -154,7 +151,7 @@ extends CommandHandlerWithResult<ConfirmUseOfStampInputCommandWithEmployeeId, Co
 
 		@Override
 		public Optional<SettingsUsingEmbossing> get() {
-			return this.stampUsageRepo.get(compnayId);
+			return this.stampUsageRepo.get(AppContexts.user().companyId());
 		}
 
 		@Override
@@ -168,8 +165,7 @@ extends CommandHandlerWithResult<ConfirmUseOfStampInputCommandWithEmployeeId, Co
 		}
 
 		@Override
-		@SuppressWarnings("rawtypes")
-		public ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
+		public ProcessState createDailyResult(@SuppressWarnings("rawtypes") AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
 				DatePeriod periodTime, ExecutionAttr executionAttr, String companyId, String empCalAndSumExecLogID,
 				Optional<ExecutionLog> executionLog) {
 			return this.createDailyResultDomainSv.createDailyResult(asyncContext, emloyeeIds, periodTime, executionAttr,
@@ -182,4 +178,5 @@ extends CommandHandlerWithResult<ConfirmUseOfStampInputCommandWithEmployeeId, Co
 		}
 
 	}
+
 }

@@ -150,7 +150,7 @@ module nts.uk.at.view.kdp004.a {
 				self.openDialogF({
 					mode: 'admin'
 				}).done((loginResult) => {
-					if (!loginResult.result) {
+					if (!loginResult || !loginResult.result) {
 						self.errorMessage(getMessage("Msg_1647"));
 						dfd.resolve();
 						return;
@@ -374,7 +374,7 @@ module nts.uk.at.view.kdp004.a {
 					mode: 'admin',
 					companyId: self.loginInfo.companyId
 				}).done((loginResult) => {
-					if (loginResult.result) {
+					if (loginResult && loginResult.result) {
 						loginResult.em.selectedWP = self.loginInfo ? self.loginInfo.selectedWP : null;
 						self.loginInfo = loginResult.em;
 						self.openDialogK().done((result) => {

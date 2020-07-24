@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.command.kdp.kdp004.a;
+package nts.uk.ctx.at.record.app.command.kdp.kdps01.a;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,7 +7,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -20,37 +19,33 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDail
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.EnterStampForSharedStampService;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EnterStampFromSmartPhoneService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * UKDesign.UniversalK.就業.KDP_打刻.KDP004_打刻入力(指静脈).A:打刻入力(指静脈).メニュー別OCD.打刻入力(指静脈)を登録する
  * 
  * @author sonnlb
  *
+ *         UKDesign.UniversalK.就業.KDP_打刻.KDPS01_打刻入力(スマホ).A:打刻入力(スマホ).メニュー別OCD.打刻入力(スマホ)を登録する
  */
 @Stateless
-public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<RegisterFingerStampCommand,GeneralDate> {
-
-	@Inject
-	private StampSetCommunalRepository stampSetCommunalRepository;
-
+public class RegisterSmartPhoneStampCommandHandler
+		extends CommandHandlerWithResult<RegisterSmartPhoneStampCommand, GeneralDate> {
+	
 	@Inject
 	private StampCardRepository stampCardRepo;
 
@@ -71,56 +66,50 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 
 	@Inject
 	private CreateDailyResultDomainService createDailyResultDomainSv;
+	
+	@Inject
+	private SettingsSmartphoneStampRepository getSettingRepo;
 
 	@Override
-	protected GeneralDate handle(CommandHandlerContext<RegisterFingerStampCommand> context) {
-		
-		RegisterFingerStampCommand cmd = context.getCommand();
+	protected GeneralDate handle(CommandHandlerContext<RegisterSmartPhoneStampCommand> context) {
+		RegisterSmartPhoneStampCommand cmd = context.getCommand();
 
-		EnterStampForSharedStampServiceRequireImpl require = new EnterStampForSharedStampServiceRequireImpl(
-																												stampSetCommunalRepository
-																												, stampCardRepo
-																												, stampCardEditRepo
-																												, companyAdapter
-																												, sysEmpPub
-																												, stampRecordRepo
-																												, stampDakokuRepo
-																												, createDailyResultDomainSv);
+		// 1:require, 契約コード, ログイン社員ID, 打刻日時, 打刻ボタン, 地理座標, 実績への反映内容
 
-		//require, 契約コード, 社員ID, なし, 打刻する方法, 打刻日時, 打刻ボタン, 実績への反映内容
-		TimeStampInputResult inputResult = EnterStampForSharedStampService.create(
-																						require
-																						, AppContexts.user().contractCode()
-																						, AppContexts.user().employeeId()
-																						, Optional.ofNullable(null)
-																						, new Relieve(EnumAdaptor.valueOf(cmd.getAuthcMethod(), AuthcMethod.class), StampMeans.FINGER_AUTHC)
-																						, cmd.getStampDatetime()
-																						, cmd.getStampButton()
-																						, cmd.getRefActualResult().toDomainValue());
-		//2: not empty
-		if (inputResult != null && inputResult.at.isPresent()) {
+		EnterStampFromSmartPhoneServiceImpl require = new EnterStampFromSmartPhoneServiceImpl(stampCardRepo,
+				stampCardEditRepo, companyAdapter, sysEmpPub, stampRecordRepo, stampDakokuRepo,
+				createDailyResultDomainSv, getSettingRepo);
 
-			transaction.execute(() -> {
-				inputResult.at.get().run();
+		TimeStampInputResult stampRes = EnterStampFromSmartPhoneService.create(require,
+				new ContractCode(AppContexts.user().contractCode()), AppContexts.user().employeeId(),
+				cmd.getStampDatetime(), cmd.getStampButton().toDomainValue(),
+				Optional.ofNullable(cmd.getGeoCoordinate().toDomainValue()), cmd.getRefActualResult().toDomainValue());
+		// 2.1:not 打刻入力結果 empty
+
+		if (stampRes != null) {
+
+			stampRes.getAt().ifPresent(x -> {
+				transaction.execute(() -> {
+					x.run();
+				});
 			});
+
+			// 2.2:not 打刻データ反映処理結果 empty
+			StampDataReflectResult stampRef = stampRes.getStampDataReflectResult();
+			if (stampRef != null) {
+				transaction.execute(() -> {
+					stampRef.getAtomTask().run();
+				});
+
+				return stampRef.getReflectDate().map(x -> x).orElse(null);
+			}
 		}
 
-		StampDataReflectResult stampRefResult = inputResult.getStampDataReflectResult();
-
-		if (stampRefResult != null && stampRefResult.getAtomTask() != null) {
-
-			transaction.execute(() -> {
-				stampRefResult.getAtomTask().run();
-			});
-		}
-		return stampRefResult.getReflectDate().map(x-> x).orElse(null);
+		return null;
 	}
 
 	@AllArgsConstructor
-	private class EnterStampForSharedStampServiceRequireImpl implements EnterStampForSharedStampService.Require {
-
-		@Inject
-		private StampSetCommunalRepository stampSetCommunalRepository;
+	private class EnterStampFromSmartPhoneServiceImpl implements EnterStampFromSmartPhoneService.Require {
 
 		@Inject
 		private StampCardRepository stampCardRepo;
@@ -142,6 +131,9 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 
 		@Inject
 		private CreateDailyResultDomainService createDailyResultDomainSv;
+		
+		@Inject
+		private SettingsSmartphoneStampRepository getSettingRepo;
 
 		@Override
 		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
@@ -184,9 +176,8 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 			this.stampDakokuRepo.insert(stamp);
 		}
 
-		@SuppressWarnings("rawtypes")
 		@Override
-		public ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
+		public ProcessState createDailyResult(@SuppressWarnings("rawtypes") AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
 				DatePeriod periodTime, ExecutionAttr executionAttr, String companyId, String empCalAndSumExecLogID,
 				Optional<ExecutionLog> executionLog) {
 			return this.createDailyResultDomainSv.createDailyResult(asyncContext, emloyeeIds, periodTime, executionAttr,
@@ -194,9 +185,10 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 		}
 
 		@Override
-		public Optional<StampSetCommunal> gets(String comppanyID) {
-			return this.stampSetCommunalRepository.gets(comppanyID);
+		public Optional<SettingsSmartphoneStamp> getSmartphoneStampSetting() {
+			return this.getSettingRepo.get(AppContexts.user().companyId());
 		}
+
 
 	}
 
