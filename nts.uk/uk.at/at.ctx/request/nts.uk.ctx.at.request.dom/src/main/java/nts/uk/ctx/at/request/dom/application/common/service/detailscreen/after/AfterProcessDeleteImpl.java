@@ -79,10 +79,11 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 				lstDate.add(loopDate);
 			}	
 		}
-		interimRemainDataMngRegisterDateChange.registerDateChange(
+		// refactor 4
+		/*interimRemainDataMngRegisterDateChange.registerDateChange(
 				companyID, 
 				application.getEmployeeID(), 
-				lstDate.isEmpty() ? Arrays.asList(application.getAppDate().getApplicationDate()) : lstDate);
+				lstDate.isEmpty() ? Arrays.asList(application.getAppDate().getApplicationDate()) : lstDate);*/
 		return new ProcessDeleteResult(
 				new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID,""),
 				application.getAppType());

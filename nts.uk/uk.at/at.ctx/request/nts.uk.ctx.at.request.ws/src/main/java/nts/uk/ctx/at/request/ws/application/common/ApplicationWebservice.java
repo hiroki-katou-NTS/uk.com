@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.request.app.command.setting.request.ApplicationDeadlineComm
 import nts.uk.ctx.at.request.app.command.setting.request.UpdateApplicationDeadlineCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.common.AppDataDateFinder;
 import nts.uk.ctx.at.request.app.find.application.common.AppDateDataDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationFinder;
 import nts.uk.ctx.at.request.app.find.application.common.ApprovalRootOfSubjectRequestDto;
 import nts.uk.ctx.at.request.app.find.application.common.DetailMobDto;
@@ -143,16 +145,6 @@ public class ApplicationWebservice extends WebService {
 	@Path("cancelapp")
 	public void cancelApp(UpdateApplicationCommonCmd command){
 		 this.cancelApp.handle(command);
-	}
-	
-	/**
-	 * delete application
-	 * @return
-	 */
-	@POST
-	@Path("deleteapp")
-	public ProcessResult deleteApp(UpdateApplicationCommonCmd command){
-		 return this.deleteApp.handle(command);
 	}
 	
 	/**
@@ -289,6 +281,20 @@ public class ApplicationWebservice extends WebService {
 	public void checkVersion(VersionCheckParam param) {
 		String companyID = AppContexts.user().companyId();
 		detailBeforeUpdate.exclusiveCheck(companyID, param.appID, param.version);
+	}
+	
+	// refactor 4
+	
+	@POST
+	@Path("getDetailPC/{appID}")
+	public AppDispInfoStartupDto getDetailPC(@PathParam("appID") String appID) {
+		return finderApp.getDetailPC(appID);
+	}
+	
+	@POST
+	@Path("deleteapp")
+	public ProcessResult deleteApp(AppDispInfoStartupDto command){
+		 return this.deleteApp.handle(command);
 	}
 }
 

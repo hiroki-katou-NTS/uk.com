@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.InforGoBackCommonDirectDto;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
@@ -41,7 +42,7 @@ public class CheckInsertGoBackCommandHandler extends CommandHandler<InsertApplic
 		Application_New newApp = Application_New.firstCreate(
 				companyId, 
 				EnumAdaptor.valueOf(command.appCommand.getPrePostAtr(), PrePostAtr_Old.class),  
-				command.appCommand.getAppDate(),
+				GeneralDate.fromString(command.appCommand.getAppDate(), "yyyy/MM/dd"),
 				EnumAdaptor.valueOf(command.appCommand.getAppType(), ApplicationType_Old.class), 
 				command.appCommand.getEmployeeIDLst().get(0),
 				new AppReason(command.appCommand.getOpAppReason()));
