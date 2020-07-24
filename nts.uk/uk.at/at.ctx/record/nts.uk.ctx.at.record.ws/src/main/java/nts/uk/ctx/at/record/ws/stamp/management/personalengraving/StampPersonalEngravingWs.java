@@ -72,7 +72,7 @@ public class StampPersonalEngravingWs extends WebService {
 	@POST
 	@Path("stamp/getStampData")
 	public List<StampRecordDto> getStampData(EmployeeStampDataRequest request) {
-		List<EmployeeStampInfo> doms = this.employeeStampDatasFinder.getEmployeeStampData(request.toDatePeriod(), AppContexts.user().employeeId());
+		List<EmployeeStampInfo> doms = this.employeeStampDatasFinder.getEmployeeStampData(request.toDatePeriod(), request.getEmployeeId());
 		List<StampRecordDto> results = new ArrayList<>();
 		
 		for(EmployeeStampInfo stampInfo : doms) {
