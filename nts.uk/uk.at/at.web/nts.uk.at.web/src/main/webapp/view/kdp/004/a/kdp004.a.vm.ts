@@ -148,9 +148,10 @@ module nts.uk.at.view.kdp004.a {
 				let dfd = $.Deferred<any>(), self = this;
 
 				self.openDialogF({
-					mode: 'admin'
+					mode: 'admin',
+					companyId: self.loginInfo.companyId
 				}).done((loginResult) => {
-					if (!loginResult) {
+					if (!loginResult.result) {
 						self.errorMessage(getMessage("Msg_1647"));
 						dfd.resolve();
 						return;
@@ -273,7 +274,7 @@ module nts.uk.at.view.kdp004.a {
 									if (redirect === "loginPass") {
 										return self.openDialogF({
 											mode: 'fingerVein',
-											company: { id: vm.$user.companyId, code: self.loginInfo.companyCode, name: self.loginInfo.companyCode },
+											companyId: vm.$user.companyId,
 											employee: { id: vm.$user.employeeId, code: self.loginInfo.employeeCode, name: self.loginInfo.employeeName },
 											passwordRequired: true
 										});
@@ -371,9 +372,10 @@ module nts.uk.at.view.kdp004.a {
 
 			settingUser(self: ScreenModel) {
 				self.openDialogF({
-					mode: 'admin'
+					mode: 'admin',
+					companyId: self.loginInfo.companyId
 				}).done((loginResult) => {
-					if (loginResult) {
+					if (loginResult.result) {
 						loginResult.em.selectedWP = self.loginInfo ? self.loginInfo.selectedWP : null;
 						self.loginInfo = loginResult.em;
 						self.openDialogK().done((result) => {
@@ -389,6 +391,11 @@ module nts.uk.at.view.kdp004.a {
 
 
 						});
+					} else {
+						if (loginResult.msgErrorId == "Msg_1527") {
+							self.isUsed(false);
+							self.errorMessage(getMessage("Msg_1527"));
+						}
 					}
 				});
 			}

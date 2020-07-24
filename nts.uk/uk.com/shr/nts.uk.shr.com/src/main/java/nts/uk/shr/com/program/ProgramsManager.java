@@ -2425,6 +2425,8 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
 
 	public static final Program KDP004A = new Program(WebAppId.AT, ProgramIdConsts.KDP004A, "KDP002_2",
 			"/view/kdp/004/a/index.xhtml");
+	public static final Program KDP004G = new Program(WebAppId.AT, ProgramIdConsts.KDP004G, "KDP002_10",
+			"/view/kdp/004/g/index.xhtml");
 
     
     
