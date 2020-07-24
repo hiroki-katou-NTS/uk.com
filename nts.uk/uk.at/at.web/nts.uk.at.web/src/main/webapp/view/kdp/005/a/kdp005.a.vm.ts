@@ -333,6 +333,8 @@ module nts.uk.at.view.kdp005.a {
                     }else{
                         dfd.reject(res.errorMessage);    
                     }
+                }).fail((res) => {
+                    dialog.alertError({ messageId: res.messageId });
                 });
                 return dfd.promise();
             }
@@ -379,15 +381,15 @@ module nts.uk.at.view.kdp005.a {
                     if (ICCard && ICCard != '') {
                         console.log(ICCard);
                         block.grayout();
-                        vm.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
-                            vm.authentic(employeeId).done(() => {
-                                vm.$window.modal('at', '/view/kdp/003/s/index.xhtml');
+                        self.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
+                            self.authentic(employeeId).done(() => {
+                                vm.$window.modal('at', '/view/kdp/003/s/index.xhtml', {employeeId: employeeId});
                             }).fail((errorMessage: string) => {
                                 setShared("errorMessage", errorMessage);
-                                vm.openIDialog();
+                                self.openIDialog();
                             });
                         }).fail(() => {
-                            vm.openIDialog();
+                            self.openIDialog();
                         }).always(() => {
                             block.clear();    
                         });
