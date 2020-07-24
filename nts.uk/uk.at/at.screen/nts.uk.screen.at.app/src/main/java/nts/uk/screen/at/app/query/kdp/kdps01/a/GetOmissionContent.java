@@ -1,144 +1,170 @@
 package nts.uk.screen.at.app.query.kdp.kdps01.a;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetStampTypeToSuppressService;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampToSuppress;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStampRepository;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.app.command.kdp.kdp004.a.StampButtonCommand;
+import nts.uk.ctx.at.record.dom.stamp.application.StampPromptAppRepository;
+import nts.uk.ctx.at.record.dom.stamp.application.StampPromptApplication;
+import nts.uk.ctx.at.record.dom.stamp.card.management.personalengraving.AppDispNameExp;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplication;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplicationRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CheckAttdErrorAfterStampService;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.DailyAttdErrorInfo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.request.app.find.setting.company.displayname.AppDispNameDto;
+import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuPub;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ApplicationType;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
  * @author sonnlb
  *
- *         UKDesign.UniversalK.就業.KDP_打刻.KDPS01_打刻入力(スマホ).A:打刻入力(スマホ).メニュー別OCD.打刻入力(スマホ)の打刻ボタンを抑制の表示をする
+ *         UKDesign.UniversalK.就業.KDP_打刻.KDPS01_打刻入力(スマホ).A:打刻入力(スマホ).メニュー別OCD.打刻入力(スマホ)の打刻漏れの内容を取得する
  */
 @Stateless
 public class GetOmissionContent {
+
+	@Inject
+	private StampPromptAppRepository stamPromptAppRepo;
+
+	@Inject
+	private ClosureService closureService;
+
+	@Inject
+	private ErAlApplicationRepository erAlApplicationRepo;
+
+	@Inject
+	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepo;
+
 	@Inject
 	private StampSetPerRepository stampSetPerRepo;
 
 	@Inject
-	private SettingsSmartphoneStampRepository settingsSmartphoneStampRepo;
+	private StandardMenuPub menuPub;
 
 	@Inject
-	private PortalStampSettingsRepository portalStampSettingsrepo;
+	private AppDispNameRepository appDispRepo;
 
-	@Inject
-	private StampRecordRepository stampRecordRepo;
+	public GetOmissionContentDto getOmission(StampButtonCommand query) {
+		
+		GetOmissionContentDto result = new GetOmissionContentDto();
 
-	@Inject
-	private StampDakokuRepository stampRepo;
+		CheckAttdErrorAfterStampRequiredImpl require = new CheckAttdErrorAfterStampRequiredImpl(stamPromptAppRepo,
+				closureService, erAlApplicationRepo, employeeDailyPerErrorRepo, stampSetPerRepo);
 
-	@Inject
-	private StampCardRepository stampCardRepo;
+		// 1.require, 社員ID, 打刻手段, 打刻ボタン
+		List<DailyAttdErrorInfo> errorInfo = CheckAttdErrorAfterStampService.get(require,
+				AppContexts.user().employeeId(), query.toDomainValue());
+		
+		result.setErrorInfo(errorInfo);
 
-	@Inject
-	private PredetemineTimeSettingRepository preRepo;
+		// アルゴリズム「メニューの表示名を取得する」を実行する
 
-	@Inject
-	private WorkingConditionService workingService;
+		List<AppDispNameExp> appDispNames = new ArrayList<AppDispNameExp>();
 
-	public StampToSuppress getOmission() {
+		if (errorInfo.size() > 0) {
+			List<ApplicationType> appTypes = errorInfo.get(0).getListRequired().stream().sorted()
+					.map(x -> EnumAdaptor.valueOf(x, ApplicationType.class)).collect(Collectors.toList());
 
-		GetStampTypeToSuppressServiceImpl require = new GetStampTypeToSuppressServiceImpl(stampSetPerRepo,
-				settingsSmartphoneStampRepo, portalStampSettingsrepo, stampRecordRepo, stampRepo, stampCardRepo,
-				preRepo, workingService);
+			String companyId = AppContexts.user().companyId();
+			appTypes.forEach(x -> {
 
-		// 1.require, ログイン社員ID, スマホ打刻
-		return GetStampTypeToSuppressService.get(require, AppContexts.user().employeeId(), StampMeans.SMART_PHONE);
+				List<AppDispNameExp> appNames = this.menuPub
+						.getMenuDisplayName(companyId, Arrays.asList(x.toStandardMenuNameQuery())).stream()
+						.map(item -> {
+							String screen = item.getProgramId().substring(0, 3).toLowerCase();
+							String screenCd = item.getProgramId().substring(3, 6).toLowerCase();
+							String url = "/view/" + screen + "/" + screenCd + "/" + item.getScreenId().toLowerCase()
+									+ "/index.xhtml"
+									+ (item.getQueryString() != null ? "?" + item.getQueryString() : "");
+
+							return new AppDispNameExp(companyId, x.value, item.getDisplayName(), url);
+						}).collect(Collectors.toList());
+				appDispNames.addAll(appNames);
+			});
+		}
+		
+		result.setAppDispNames(appDispNames);
+
+		// アルゴリズム「申請種類を取得する」を実行する
+
+		List<AppDispNameDto> appNames = this.appDispRepo.getAll().stream().map(x->AppDispNameDto.convertToDto(x)).collect(Collectors.toList());
+		
+		result.setAppNames(appNames);
+		
+		return result;
+
 	}
 
 	@AllArgsConstructor
-	private class GetStampTypeToSuppressServiceImpl implements GetStampTypeToSuppressService.Require {
+	private class CheckAttdErrorAfterStampRequiredImpl implements CheckAttdErrorAfterStampService.Require {
+
+		@Inject
+		private StampPromptAppRepository stamPromptAppRepo;
+
+		@Inject
+		private ClosureService closureService;
+
+		@Inject
+		private ErAlApplicationRepository erAlApplicationRepo;
+
+		@Inject
+		private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepo;
 
 		@Inject
 		private StampSetPerRepository stampSetPerRepo;
 
-		@Inject
-		private SettingsSmartphoneStampRepository settingsSmartphoneStampRepo;
-
-		@Inject
-		private PortalStampSettingsRepository portalStampSettingsrepo;
-
-		@Inject
-		private StampRecordRepository stampRecordRepo;
-
-		@Inject
-		private StampDakokuRepository stampRepo;
-
-		@Inject
-		private StampCardRepository stampCardRepo;
-
-		@Inject
-		private PredetemineTimeSettingRepository preRepo;
-
-		@Inject
-		private WorkingConditionService workingService;
-
 		@Override
-		public List<StampCard> getListStampCard(String sid) {
-			return this.stampCardRepo.getListStampCard(sid);
+		public Optional<StampPromptApplication> getStampSet() {
+			return stamPromptAppRepo.getStampPromptApp(AppContexts.user().companyId());
 		}
 
 		@Override
-		public List<StampRecord> getStampRecord(List<StampNumber> stampNumbers, GeneralDate date) {
-			return this.stampRecordRepo.get(AppContexts.user().contractCode(), stampNumbers, date);
+		public DatePeriod findClosurePeriod(String employeeId, GeneralDate baseDate) {
+			return closureService.findClosurePeriod(employeeId, baseDate);
 		}
 
 		@Override
-		public List<Stamp> getStamp(List<StampNumber> stampNumbers, GeneralDate date) {
-			String contractCode = AppContexts.user().contractCode();
-			return this.stampRepo.get(contractCode, stampNumbers, date);
+		public Optional<ClosurePeriod> getClosurePeriod(String employeeId, GeneralDate baseDate) {
+			Closure closure = closureService.getClosureDataByEmployee(employeeId, baseDate);
+			if (closure == null)
+				return Optional.empty();
+			Optional<ClosurePeriod> closurePeriodOpt = closure.getClosurePeriodByYmd(baseDate);
+			return closurePeriodOpt;
 		}
 
 		@Override
-		public Optional<WorkingConditionItem> findWorkConditionByEmployee(String employeeId, GeneralDate baseDate) {
-			return this.workingService.findWorkConditionByEmployee(employeeId, baseDate);
+		public Optional<ErAlApplication> getAllErAlAppByEralCode(String errorAlarmCode) {
+			return erAlApplicationRepo.getAllErAlAppByEralCode(AppContexts.user().companyId(), errorAlarmCode);
 		}
 
 		@Override
-		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String workTimeCode) {
-			String companyId = AppContexts.user().companyId();
-			return this.preRepo.findByWorkTimeCode(companyId, workTimeCode);
+		public List<EmployeeDailyPerError> findByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
+			return employeeDailyPerErrorRepo.findByPeriodOrderByYmd(employeeId, datePeriod);
 		}
 
 		@Override
-		public Optional<StampSettingPerson> getStampSet(String companyId) {
-			return this.stampSetPerRepo.getStampSet(companyId);
-		}
-
-		@Override
-		public Optional<SettingsSmartphoneStamp> getSettingsSmartphone(String companyId) {
-			return this.settingsSmartphoneStampRepo.get(companyId);
-		}
-
-		@Override
-		public Optional<PortalStampSettings> getPotalSettings(String comppanyID) {
-			return this.portalStampSettingsrepo.get(comppanyID);
+		public Optional<StampSettingPerson> getStampSetPer() {
+			return stampSetPerRepo.getStampSetting(AppContexts.user().companyId());
 		}
 
 	}
