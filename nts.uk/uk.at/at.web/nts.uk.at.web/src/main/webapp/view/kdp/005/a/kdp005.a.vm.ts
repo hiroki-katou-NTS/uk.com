@@ -36,25 +36,25 @@ module nts.uk.at.view.kdp005.a {
 			public startPage(): JQueryPromise<void> {
 				let self = this;
 				let dfd = $.Deferred<void>();
-				nts.uk.characteristics.restore("loginKDP005").done(function(loginInfo: ILoginInfo) {
-					if (!loginInfo && loginInfo.companyId === __viewContext.user.companyId) {
-						self.setLoginInfo().done((loginResult) => {
-							if (!loginResult) {
-								self.isUsed(false);
-								dfd.resolve();
-								return;
-							}
-							self.doFirstLoad().done(() => {
-								dfd.resolve();
-								return;
-							});
-						});
-					} else {
-						self.loginInfo = undefined;
-						self.doFirstLoad().done(() => {
-							dfd.resolve();
-						});
-					}
+                nts.uk.characteristics.restore("loginKDP005").done(function(loginInfo: ILoginInfo) {
+                    if (loginInfo && loginInfo.companyId === __viewContext.user.companyId) {
+                        self.loginInfo = loginInfo;
+                        self.doFirstLoad().done(() => {
+                            dfd.resolve();
+                        });
+                    } else {
+                        self.setLoginInfo().done((loginResult) => {
+                            if (!loginResult) {
+                                self.isUsed(false);
+                                dfd.resolve();
+                                return;
+                            }
+                            self.doFirstLoad().done(() => {
+                                dfd.resolve();
+                                return;
+                            });
+                        });
+                    }
 				});
 				return dfd.promise();
 			}
