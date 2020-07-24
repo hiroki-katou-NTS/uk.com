@@ -123,7 +123,7 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 		}
 		
 		
-		GoBackDirectly goBackDirectly = new GoBackDirectly(application);
+		GoBackDirectly goBackDirectly = new GoBackDirectly();
 		goBackDirectly.setStraightDistinction(new EnumConstant(res.getInt("GO_WORK_ATR"), "", ""));
 		goBackDirectly.setStraightLine(new EnumConstant(res.getInt("BACK_HOME_ATR"), "", ""));
 		if (Optional.ofNullable(res.getInt("WORK_CHANGE_ATR")).isPresent()) {

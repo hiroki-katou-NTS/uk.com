@@ -38,12 +38,12 @@ public class GoBackDirectlyDto extends ApplicationDto {
 
 	public GoBackDirectly toDomain() {
 		Optional<EnumConstant> isChange = Optional.ofNullable(null);
-		if (Optional.of(isChangedWork).isPresent()) {
-			isChange = Optional.of(EnumAdaptor.valueOf(isChangedWork, EnumConstant.class));
+		if (isChangedWork != null) {
+			isChange = Optional.ofNullable(new EnumConstant(isChangedWork, "", ""));
 		}
-		GoBackDirectly result = new GoBackDirectly(null);
-		result.setStraightDistinction(EnumAdaptor.valueOf(straightDistinction, EnumConstant.class));
-		result.setStraightLine(EnumAdaptor.valueOf(straightLine, EnumConstant.class));
+		GoBackDirectly result = new GoBackDirectly();
+		result.setStraightDistinction(new EnumConstant(straightDistinction, "", ""));
+		result.setStraightLine(new EnumConstant(straightLine, "", ""));
 		result.setIsChangedWork(isChange);
 		Optional<DataWork> dataWorkSet = Optional.ofNullable(null);
 		if (Optional.of(dataWork).isPresent()) {

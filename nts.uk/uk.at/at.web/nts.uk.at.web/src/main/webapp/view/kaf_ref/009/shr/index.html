@@ -1,55 +1,66 @@
-<!--A7-->
-		<div class="valign-center control-group">
-			<div class="table">
-				<div class="cell valign-top">
-					<div class="lblTitleKAF009"
-						data-bind="ntsFormLabel: {required:true , text: $i18n('KAF009_45')}"></div>
+<div data-bind="if: dataFetch()">
+	<!--A7-->
+	<div class="valign-center control-group">
+		<div class="table">
+			<div class="cell valign-top">
+				<div class="lblTitleKAF009"
+					data-bind="ntsFormLabel: {required:true , text: $i18n('KAF009_45')}"></div>
+			</div>
+			<div class="cell valign-center">
+				<div style="display: inline-block; width: 250px;">
+					<div
+						data-bind="ntsCheckBox: { checked: model.checkbox1, text: $i18n('KAF009_16'), enable: mode == 'edit'}"></div>
 				</div>
-				<div class="cell valign-center">
-					<div style="display: inline-block; width: 250px;">
-						<div data-bind="ntsCheckBox: { checked: model.checkbox1, text: $i18n('KAF009_16'), enable: mode == 'edit'}"></div>
-					</div>
-					<div style="display: inline-block; width: 250px;">
-						<div data-bind="ntsCheckBox: { checked: model.checkbox2, text: $i18n('KAF009_17'), enable: mode == 'edit'}"></div>
-					</div>
-					
+				<div style="display: inline-block; width: 250px;">
+					<div
+						data-bind="ntsCheckBox: { checked: model.checkbox2, text: $i18n('KAF009_17'), enable: mode == 'edit'}"></div>
 				</div>
+
 			</div>
 		</div>
-		<!--Work Change-->
-		<div data-bind="if: $vm.dataFetch().goBackReflect()" class="valign-center control-group">
-			<div data-bind="if: $vm.dataFetch().goBackReflect().reflectApplication == 3 
+	</div>
+	<!--Work Change-->
+	<div data-bind="if: $vm.dataFetch().goBackReflect()"
+		class="valign-center control-group">
+		<div
+			data-bind="if: $vm.dataFetch().goBackReflect().reflectApplication == 3 
 			|| $vm.dataFetch().goBackReflect().reflectApplication == 2">
-				<div data-bind="ntsCheckBox: { checked: model.checkbox3 , text: $i18n('KAF009_21'), enable: mode == 'edit'}"></div>
-				
-			</div>
-			<div data-bind="if: $vm.dataFetch().goBackReflect().reflectApplication == 1
+			<div
+				data-bind="ntsCheckBox: { checked: model.checkbox3 , text: $i18n('KAF009_21'), enable: mode == 'edit'}"></div>
+
+		</div>
+		<div
+			data-bind="if: $vm.dataFetch().goBackReflect().reflectApplication == 1
 			|| $vm.dataFetch().goBackReflect().reflectApplication == 0">
-				<br/>
-			</div>
-			<div data-bind="if: $vm.dataFetch().goBackReflect().reflectApplication != 0">
-				<HR  class="hrStyle"/>
-			</div>
-			
-			<div class="table clsWorkType" data-bind="if: $vm.dataFetch().goBackReflect().reflectApplication == 3 
+			<br />
+		</div>
+		<div
+			data-bind="if: $vm.dataFetch().goBackReflect().reflectApplication != 0">
+			<HR class="hrStyle" />
+		</div>
+
+		<div class="table clsWorkType"
+			data-bind="if: $vm.dataFetch().goBackReflect().reflectApplication == 3 
 			|| $vm.dataFetch().goBackReflect().reflectApplication == 2 
 			|| $vm.dataFetch().goBackReflect().reflectApplication == 1">
-				<div class="cell valign-center ">
-					<div class="valign-center control-group"
-						data-bind="ntsFormLabel:{ required: true, text: $i18n('KAF009_22') }"></div>
-					<BR />
-					<div class="valign-center control-group"
-						data-bind="ntsFormLabel:{ required: true, text: $i18n('KAF009_23')}"></div>
-				</div>
-				<div class="cell valign-center">
-					<button id="workSelect" data-bind=" click: openDialogKdl003, text: $i18n('KAF009_24'), enable: (mode == 'edit' && model.checkbox3) " ></button>
-				</div>
-				<div class="cell valign-center">
-					<label class="lblWorkTypeCd" data-bind="text: model.workTypeCode"></label>
-					<LABEL data-bind="text: model.workTypeName"></LABEL> 
-					<BR /> 
-					<label class="lblSiftCd" data-bind="text: model.workTimeCode"></label> 
-					<LABEL data-bind="text: model.workTimeName "></LABEL>
-				</div>
+			<div class="cell valign-center ">
+				<div class="valign-center control-group"
+					data-bind="ntsFormLabel:{ required: true, text: $i18n('KAF009_22') }"></div>
+				<BR />
+				<div class="valign-center control-group"
+					data-bind="ntsFormLabel:{ required: true, text: $i18n('KAF009_23')}"></div>
+			</div>
+			<div class="cell valign-center">
+				<button id="workSelect"
+					data-bind=" click: openDialogKdl003, text: $i18n('KAF009_24'), enable: (mode == 'edit' && model.checkbox3) "></button>
+			</div>
+			<div class="cell valign-center">
+				<label class="lblWorkTypeCd" data-bind="text: model.workTypeCode"></label>
+				<LABEL data-bind="text: model.workTypeName"></LABEL> <BR /> <label
+					class="lblSiftCd" data-bind="text: model.workTimeCode"></label> <LABEL
+					data-bind="text: model.workTimeName "></LABEL>
 			</div>
 		</div>
+	</div>
+
+</div>

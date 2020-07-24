@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.gobackdirectly;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -270,7 +271,7 @@ public class GoBackDirectlyFinder {
 		}
 		
 		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(companyId, ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, paramStart.getApplicantList(), 
-				null, true, Optional.empty(), Optional.empty());
+				Collections.emptyList(), true, Optional.empty(), Optional.empty());
 		
 		return InforGoBackCommonDirectDto.fromDomain(goBackDirectService.getDataAlgorithm(companyId, Optional.ofNullable(null), employeeId, appDispInfoStartupOutput));
 	}
@@ -303,8 +304,8 @@ public class GoBackDirectlyFinder {
 	
 	public InforGoBackCommonDirectDto getDetailKAF009(ParamUpdate param) {
 //		14-1.詳細画面起動前申請共通設定を取得する
-		 AppDispInfoStartupOutput appDispInfoStartupOutput = null;
-				// appCommonSetService.getCommonSetBeforeDetail(companyId, appId);
+		 AppDispInfoStartupOutput appDispInfoStartupOutput = 
+				 appCommonSetService.getCommonSetBeforeDetail(param.getCompanyId(), param.getApplicationId());
 //		アルゴリズム「直行直帰画面初期（更新）」を実行する
 		return InforGoBackCommonDirectDto.fromDomain(goBackDirectService.getDataDetailAlgorithm(param.getCompanyId(), param.getApplicationId(), appDispInfoStartupOutput));		
 	}

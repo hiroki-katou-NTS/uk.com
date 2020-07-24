@@ -25,14 +25,48 @@
 				<button class="proceed" data-bind="click: register">Register</button>
 			</div>
 			<div id="contents-area">
-				<div class="kaf007-component" data-bind="component: { name: 'kaf000-a-component1', 
+
+				<div
+					data-bind="component: { name: 'kaf000-a-component1', 
 											params: {
-												application: dataFetch().goBackApplication,
-												appDispInfoStartupOutput: dataFetch().appDispInfoStartup
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
-											
-																																		
-				<div data-bind="component: { name: 'kaf009-share', params: {dataFetch: dataFetch, model:model, mode: mode }}"></div>
+
+
+				<div
+					data-bind="component: { name: 'kaf009-share', params: {dataFetch: dataFetch, model:model, mode: mode }}"></div>
+
+				<div
+					data-bind="component: { name: 'kaf000-a-component2', 
+											params: {
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div
+					data-bind="component: { name: 'kaf000-a-component3', 
+											params: {
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div
+					data-bind="component: { name: 'kaf000-a-component4', 
+											params: {
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div
+					data-bind="component: { name: 'kaf000-a-component5', 
+											params: {
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div
+					data-bind="component: { name: 'kaf000-a-component6', 
+											params: {
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
 			</div>
 		</ui:define>
 	</ui:composition>

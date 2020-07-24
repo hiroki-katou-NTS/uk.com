@@ -1,5 +1,5 @@
 module nts.uk.at.view.kaf009_ref.shr.viewmodel {
-
+    import ModelDto = nts.uk.at.view.kaf009_ref.a.viewmodel.ModelDto;
     @component({
         name: 'kaf009-share',
         template: '/nts.uk.at.web/view/kaf_ref/009/shr/index.html'
@@ -14,39 +14,51 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
 //        workTypeName: KnockoutObservable<String>;
 //        workTimeCode: KnockoutObservable<String>;
 //        workTimeName: KnockoutObservable<String>;
-        dataFetch: any;
+        dataFetch: KnockoutObservable<ModelDto>;
         created(params: any) {
-              this.model = params.model;
-              this.dataFetch = params.dataFetch;
-              this.mode = params.mode;
+              const vm = this;
+              vm.model = params.model;
+              vm.dataFetch = params.dataFetch;
+              vm.mode = params.mode;
 //            this.checkbox1 = params.model().checkbox1;
 //            this.checkbox2 = params.model().checkbox2;
 //            this.workTypeCode = params.model().workTypeCode;
 //            this.workTypeName = params.model().workTypeName;
 //            this.workTimeCode = params.model().workTimeCode;
 //            this.workTimeName = params.model().workTimeName;
-            this.dataFetch.subscribe(value => {
+            vm.dataFetch.subscribe(value => {
                 console.log('Change dataFetch');
-                this.bindData();
+                vm.bindData();
             });
             
         }
-        bindData(){
+        bindData() {
+            const vm = this;
             let goBackApp = this.dataFetch().goBackApplication();
-            if (goBackApp) {
-                this.model.checkbox1(goBackApp.straightDistinction == 1);
-                this.model.checkbox2(goBackApp.straightLine == 1);
+            if ( goBackApp ) {
+                vm.model.checkbox1( goBackApp.straightDistinction == 1 );
+                this.model.checkbox2( goBackApp.straightLine == 1 );
             }
-//           else {
-                this.model.checkbox1(true);
-                this.model.checkbox2(true);
-//           }
-            this.model.checkbox3(true);
-//            this.model.checkbox3(this.dataFetch().goBackReflect().reflectApplication == 3);
-            this.model.workTypeCode(this.dataFetch().workType().workType);
-            this.model.workTypeName(this.dataFetch().workType().nameWorkType);
-            this.model.workTimeCode(this.dataFetch().workTime().workTime);
-            this.model.workTimeName(this.dataFetch().workTime().nameWorkTime);
+            //           else {
+            vm.model.checkbox1( true );
+            vm.model.checkbox2( true );
+            //           }
+            vm.model.checkbox3( true );
+            //            this.model.checkbox3(this.dataFetch().goBackReflect().reflectApplication == 3);
+            if ( ko.toJS( vm.dataFetch().workType ) ) {
+                vm.model.workTypeCode( vm.dataFetch().workType().workType );
+                vm.model.workTypeName( vm.dataFetch().workType().nameWorkType );
+
+            } else {
+                vm.model.workTypeCode( '001' );
+            }
+            if ( ko.toJS( vm.dataFetch().workTime ) ) {
+                vm.model.workTimeCode( vm.dataFetch().workTime().workTime );
+                vm.model.workTimeName( vm.dataFetch().workTime().nameWorkTime );
+
+            } else {
+                vm.model.workTimeCode( '001' );
+            }
         }
         
         // 
@@ -55,30 +67,32 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
             
         }
         
+        
         openDialogKdl003() {
-//            let self = this;
-//            let workTypeCodes = self.model.workTypeCode;
-//            let workTimeCodes = self.model.workTimeCode;
-//            nts.uk.ui.windows.setShared('parentCodes', {
-//                workTypeCodes: workTypeCodes,
-//                selectedWorkTypeCode: self.model.workTypeCode,
-//                workTimeCodes: workTimeCodes,
-//                selectedWorkTimeCode: self.model.workTypeCode
-//            }, true);
-//
-//            nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
-//                //view all code of selected item 
-//                var childData = nts.uk.ui.windows.getShared('childData');
-//                if (childData) {
-//                    self.model.workTypeCode = childData.selectedWorkTypeCode;
-//                    self.model.workTypeName = childData.selectedWorkTypeName;
-//                    self.model.workTimeCode = childData.selectedWorkTimeCode;
-//                    self.model.workTimeName = childData.selectedWorkTimeName;
-//                    //フォーカス制御 => 定型理由
-////                    $("#combo-box").focus();
-//                }
-//            })
-            
+            const vm = this;
+
+            let workTypeCodes = vm.model.workTypeCode;
+            let workTimeCodes = vm.model.workTimeCode;
+            console.log( workTypeCodes );
+            nts.uk.ui.windows.setShared( 'parentCodes', {
+                workTypeCodes: _.map( _.uniqBy( vm.dataFetch().lstWorkType(), e => e.workTypeCode ), item => item.workTypeCode ),
+                selectedWorkTypeCode: vm.model.workTypeCode,
+                workTimeCodes: _.map( vm.dataFetch().appDispInfoStartup().appDispInfoWithDateOutput.opWorkTimeLst, item => item.worktimeCode ),
+                selectedWorkTimeCode: vm.model.workTypeCode
+            }, true );
+
+            nts.uk.ui.windows.sub.modal( '/view/kdl/003/a/index.xhtml' ).onClosed( function(): any {
+                //view all code of selected item 
+                var childData = nts.uk.ui.windows.getShared( 'childData' );
+                if ( childData ) {
+                    vm.model.workTypeCode(childData.selectedWorkTypeCode);
+                    vm.model.workTypeName(childData.selectedWorkTypeName);
+                    vm.model.workTimeCode(childData.selectedWorkTimeCode);
+                    vm.model.workTimeName(childData.selectedWorkTimeName);
+                    //                                フォーカス制御 => 定型理由
+                    //                                                   $("#combo-box").focus();
+                }
+            })
         }
     }
     

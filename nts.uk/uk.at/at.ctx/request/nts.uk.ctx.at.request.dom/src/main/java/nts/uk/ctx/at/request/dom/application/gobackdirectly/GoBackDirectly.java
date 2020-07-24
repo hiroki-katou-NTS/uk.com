@@ -23,8 +23,8 @@ public class GoBackDirectly extends Application {
 	// 勤務情報
 	private Optional<DataWork> dataWork;
 
-	public GoBackDirectly(Application application) {
-		super(application);
+	public GoBackDirectly() {
+		super();
 	}
 
 	// 申請内容

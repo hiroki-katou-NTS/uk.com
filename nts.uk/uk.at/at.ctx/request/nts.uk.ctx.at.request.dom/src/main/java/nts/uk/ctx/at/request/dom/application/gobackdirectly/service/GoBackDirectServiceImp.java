@@ -85,10 +85,11 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		if (appDispInfoStartup.getAppDetailScreenInfo().isPresent()) {
 			if (appDispInfoStartup.getAppDetailScreenInfo().get().getOutputMode() == OutputMode.EDITMODE) {
 				//新規モード：ドメイン「直行直帰申請」がない。
-				output.setGoBackDirectly(Optional.ofNullable(null));
+				// get Object
+				output.setGoBackDirectly(goBackDirectlyRepository.find(companyId, appDispInfoStartup.getAppDetailScreenInfo().get().getApplication().getAppID()));
 			}
 		}
-		
+		output.setAppDispInfoStartup(appDispInfoStartup);
 		return output;
 	}
 
@@ -114,7 +115,10 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		// WorkTimeSetting wTime = workTypeAndWorktimeSelect.getWorkTime();
 		// output.setWorkTime(new InforWorkTime(wTime.getWorktimeCode().v(),
 		// wTime.getWorkTimeDisplayName().getWorkTimeName().v()));
-		
+		InforWorkType inforWorkType = new InforWorkType("001", "abc");
+		InforWorkTime inforWorkTime = new InforWorkTime("001", "def");
+		output.setWorkType(inforWorkType);
+		output.setWorkTime(inforWorkTime);
 		output.setLstWorkType(lstWorkType);
 		return output;
 
@@ -122,10 +126,14 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 
 	@Override
 	public List<WorkType> getWorkTypes(String companyId, AppEmploymentSet appEmploymentSet) {
-		// TODO Auto-generated method stub
+		
 		List<WorkType> result = workTypeRepository.findNotDeprecated(companyId);
 		// sort 
-		result = result.stream().sorted().collect(Collectors.toList());
+//		result = result.stream().sorted().collect(Collectors.toList());
+		
+		if (appEmploymentSet == null) {
+			return result;
+		}
 		// INPUT．雇用別申請承認設定．申請別対象勤務種類をチェックする
 		if (CollectionUtil.isEmpty(appEmploymentSet.getTargetWorkTypeByAppLst())) {
 			return result;
