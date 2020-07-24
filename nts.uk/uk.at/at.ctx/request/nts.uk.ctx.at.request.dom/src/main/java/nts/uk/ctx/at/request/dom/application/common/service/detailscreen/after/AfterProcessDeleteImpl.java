@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -17,7 +16,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlg
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -38,8 +36,8 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
-	@Inject
-	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+	/*@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;*/
 	
 	@Override
 	public ProcessDeleteResult screenAfterDelete(String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput) {
@@ -48,6 +46,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 		boolean isAutoSendMail = false;
 		List<String> autoSuccessMail = new ArrayList<>();
 		List<String> autoFailMail = new ArrayList<>();
+		List<String> autoFailServer = new ArrayList<>();
 		// ノートのIF文を参照
 		boolean condition = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet() && 
 				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSetting().isSendMailWhenRegister();
@@ -61,6 +60,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 				MailResult mailResult = otherCommonAlgorithm.sendMailApproverDelete(converList, application);
 				autoSuccessMail = mailResult.getSuccessList();
 				autoFailMail = mailResult.getFailList();
+				autoFailServer = mailResult.getFailServerList();
 			}
 		}
 		// アルゴリズム「申請を削除する」を実行する (Thực hiện thuật toán"Delete application" )
@@ -79,12 +79,13 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 				lstDate.add(loopDate);
 			}	
 		}
-		interimRemainDataMngRegisterDateChange.registerDateChange(
+		// refactor 4
+		/*interimRemainDataMngRegisterDateChange.registerDateChange(
 				companyID, 
 				application.getEmployeeID(), 
-				lstDate.isEmpty() ? Arrays.asList(application.getAppDate().getApplicationDate()) : lstDate);
+				lstDate.isEmpty() ? Arrays.asList(application.getAppDate().getApplicationDate()) : lstDate);*/
 		return new ProcessDeleteResult(
-				new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID,""),
+				new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, appID,""),
 				application.getAppType());
 	}
 

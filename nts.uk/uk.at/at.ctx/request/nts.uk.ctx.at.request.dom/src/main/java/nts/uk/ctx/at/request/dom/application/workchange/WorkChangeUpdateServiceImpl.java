@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -22,7 +23,10 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 
 	@Inject
 	private ApplicationRepository appRepository;
-
+	
+	@Inject
+	private ApplicationApprovalService app;
+	
 	@Inject
 	private DetailAfterUpdate detailAfterUpdate;
 
@@ -37,9 +41,9 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 	@Override
 	public ProcessResult updateWorkChange(String companyId, Application application, AppWorkChange workChange) {
 		// ドメインモデル「勤務変更申請」の更新をする
-		 appRepository.update(application);
+		appRepository.update(application);
 
-		 workChangeRepository.update(workChange);
+		workChangeRepository.update(workChange);
 
 		// 年月日Listを作成する
 		GeneralDate startDateParam = application.getOpAppStartDate().isPresent()
@@ -55,7 +59,11 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 		// 年月日Listを作成する
 		for (GeneralDate loopDate = startDateParam; loopDate
 				.beforeOrEquals(endDateParam); loopDate = loopDate.addDays(1)) {
-			if (!lstHoliday.contains(loopDate)) {
+			if (lstHoliday != null ) {
+				if (!lstHoliday.contains(loopDate)) {
+					listDate.add(loopDate);
+				}
+			} else {
 				listDate.add(loopDate);
 			}
 		}

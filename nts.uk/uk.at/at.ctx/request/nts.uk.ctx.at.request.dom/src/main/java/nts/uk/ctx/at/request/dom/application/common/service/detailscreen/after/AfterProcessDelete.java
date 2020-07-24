@@ -19,6 +19,6 @@ public interface AfterProcessDelete {
 	 * @param appDispInfoStartupOutput
 	 * @return
 	 */
-	public ProcessDeleteResult screenAfterDelete (String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput);
+	public ProcessDeleteResult screenAfterDelete(String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput);
 
 }

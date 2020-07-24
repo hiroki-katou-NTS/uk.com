@@ -16,6 +16,7 @@ public class ApproveProcessResult {
 	private boolean isAutoSendMail;
 	private List<String> autoSuccessMail;
 	private List<String> autoFailMail;
+	private List<String> autoFailServer;
 	private String appID;
 	private String reflectAppId;
 	private String appReason;

@@ -17,7 +17,7 @@
                 <span class="badge badge-warning" style="height: 30%">必須</span>
             </div>
             <div class="card-body mb-2">
-                <span>{{ $input.detailModeContent.prePostAtrName | i18n }}</span> 
+                <span>{{ prePostAtrName | i18n }}</span> 
             </div>
         </div>
         <div class="card card-label">
@@ -45,7 +45,7 @@
             </div>
             <div class="card-body">
                 <div style="width: 100%">
-                    <nts-switchbox v-for="(option, optionIndex) in datasource" v-bind:key="optionIndex"
+                    <nts-switchbox v-for="(option, optionIndex) in prePostResource" v-bind:key="optionIndex"
                         v-bind:disabled="!enablePrePost"
                         v-model="$output.prePostAtr" 
                         v-bind:value="option.code">
@@ -62,7 +62,7 @@
             </div>
             <div class="card-body">
                 <div style="width: 100%" v-if="displayMultiDaySwitch">
-                    <nts-switchbox v-for="(option, optionIndex) in datasource2" v-bind:key="optionIndex"
+                    <nts-switchbox v-for="(option, optionIndex) in dateSwitchResource" v-bind:key="optionIndex"
                         v-model="$input.newModeContent.initSelectMultiDay" 
                         v-bind:value="option.code">
                             {{option.text | i18n}}

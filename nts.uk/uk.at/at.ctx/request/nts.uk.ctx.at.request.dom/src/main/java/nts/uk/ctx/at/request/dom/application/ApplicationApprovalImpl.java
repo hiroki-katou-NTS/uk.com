@@ -19,7 +19,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepos
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
-import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -50,7 +50,7 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 	private GoBackDirectlyRepository_Old goBackDirectlyRepository;
 
 	@Inject
-	private IAppWorkChangeRepository workChangeRepository;
+	private AppWorkChangeRepository workChangeRepository;
 
 	@Inject
 	private LateOrLeaveEarlyRepository lateOrLeaveEarlyRepository;
@@ -84,7 +84,7 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 			goBackDirectlyRepository.delete(companyID, appID);
 			break;
 		case WORK_CHANGE_APPLICATION:
-			workChangeRepository.delete(companyID, appID);
+			workChangeRepository.remove(companyID, appID);
 			break;
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			lateOrLeaveEarlyRepository.remove(companyID, appID);

@@ -23,11 +23,11 @@ public class UpdateApplicationCancelHandler extends CommandHandler<UpdateApplica
 	protected void handle(CommandHandlerContext<UpdateApplicationCommonCmd> context) {
 		String companyID = AppContexts.user().companyId();
 		UpdateApplicationCommonCmd updateCommand = context.getCommand();
-		
-		//1 : 排他チェック,
+		// refactor 4 error
+		/*//1 : 排他チェック,
 		detailBeforeUpdate.exclusiveCheck(companyID, updateCommand.getAppId(), updateCommand.getVersion());
 		//12 
-		processCancelRepo.detailScreenCancelProcess(companyID,context.getCommand().getAppId(), context.getCommand().getVersion());
+		processCancelRepo.detailScreenCancelProcess(companyID,context.getCommand().getAppId(), context.getCommand().getVersion());*/
 		
 	}
 

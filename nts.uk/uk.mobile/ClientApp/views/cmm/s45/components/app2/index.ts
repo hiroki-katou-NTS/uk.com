@@ -10,49 +10,53 @@ import { component, Prop } from '@app/core/component';
 })
 export class CmmS45ComponentsApp2Component extends Vue {
     public title: string = 'CmmS45ComponentsApp1';
-    @Prop({ default: () => ({ 
-        appDispInfoStartupOutput: null, 
-        appDetail: new AppWorkChange() 
-    }) })
+    @Prop({
+        default: () => ({
+            appDispInfoStartupOutput: null,
+            appDetail: null
+        })
+    })
     public readonly params: {
-        appDispInfoStartupOutput: any, 
-        appDetail: AppWorkChange
+        appDispInfoStartupOutput: any,
+        appDetail: any
     };
     public dataFetch: any;
 
     public isCondition1: boolean = false;
     public isCondition2: boolean = false;
-    public  $app() {
-        return this.params.appDetail;
+
+    public appWorkChange: any = new AppWorkChange();
+    public $app() {
+
+        return this.appWorkChange;
     }
     public created() {
         const self = this;
-        self.params.appDetail = new AppWorkChange();
-
-        // this.params = params;
-        let getParams = self.params;
-        // this.fetchData(getParams);
-        this.bindCodition(self.params);
-
+        self.params.appDetail = {};
+        this.fetchData(self.params);
     }
+
+
     public mounted() {
 
     }
     public fetchData(getParams: any) {
         this.$http.post('at', API.start, {
-            companyId: '',
-            appId: '2',
-            appDispInfoStartupDto: getParams.appDispInfoStartupDto
+            companyId: '000000000000-0117',
+            appId: this.params.appDispInfoStartupOutput.appDetailScreenInfo.application.appID,
+            appDispInfoStartupDto: this.params.appDispInfoStartupOutput
         })
             .then((res: any) => {
                 this.dataFetch = res.data;
                 this.bindStart();
+                this.params.appDetail = this.dataFetch;
+                // this.bindCodition(this.dataFetch.appWorkChangeDispInfo);
             });
     }
     public bindStart() {
         let params = this.dataFetch;
 
-        this.bindCodition(params);
+        this.bindCodition(params.appWorkChangeDispInfo);
 
         let workTypeCode = params.appWorkChange.opWorkTypeCD;
         let workTypeName = _.find(params.appWorkChangeDispInfo.workTypeLst, (item: any) => item.workTypeCode == workTypeCode).abbreviationName || this.$i18n('KAFS07_10');
@@ -63,20 +67,22 @@ export class CmmS45ComponentsApp2Component extends Vue {
         let workTimeName = _.find(params.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == workTimeCode).workTimeDisplayName.workTimeName || this.$i18n('KAFS07_10');
 
         this.$app().workTime = workTimeCode + '  ' + workTimeName;
-        if (_.isEmpty(params.appWorkChange.timeZoneWithWorkNoLst)) {
+        if (!_.isEmpty(params.appWorkChange.timeZoneWithWorkNoLst)) {
             let time1 = _.find(params.appWorkChange.timeZoneWithWorkNoLst, (item: any) => item.workNo == 1);
             let time2 = _.find(params.appWorkChange.timeZoneWithWorkNoLst, (item: any) => item.workNo == 2);
             if (time1) {
-                this.$app().workHours1 = this.$dt.timedr(time1.timeZone.start) + ' ~ ' + this.$dt.timedr(time1.timeZone.end);
+                this.$app().workHours1 = this.$dt.timedr(time1.timeZone.startTime) + ' ~ ' + this.$dt.timedr(time1.timeZone.endTime);
             } else {
                 this.$app().isWorkHours1 = false;
             }
             if (time2) {
-                this.$app().workHours2 = this.$dt.timedr(time2.timeZone.start) + ' ~ ' + this.$dt.timedr(time2.timeZone.end);
+                this.$app().workHours2 = this.$dt.timedr(time2.timeZone.startTime) + ' ~ ' + this.$dt.timedr(time2.timeZone.endTime);
             } else {
                 this.$app().isWorkHours2 = false;
             }
         }
+        this.$app().straight = params.appWorkChange.straightGo == 1 ? true : false;
+        this.$app().bounce = params.appWorkChange.straightBack == 1 ? true : false;
 
 
     }
@@ -88,13 +94,13 @@ export class CmmS45ComponentsApp2Component extends Vue {
     }
     // 「勤務変更申請の表示情報．勤務変更申請の反映.出退勤を反映するか」がする
     public isDisplay1(params: any) {
-        // return params.reflectWorkChangeAppDto.whetherReflectAttendance == 1;
-        return true;
+        return params.reflectWorkChangeAppDto.whetherReflectAttendance == 1;
+        // return true;
     }
     // ※1 = ○　AND　「勤務変更申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」= true
     public isDisplay2(params: any) {
-        // return params.reflectWorkChangeAppDto.whetherReflectAttendance == 1 && params.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles;
-        return true;
+        return params.reflectWorkChangeAppDto.whetherReflectAttendance == 1 && params.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles;
+        // return true;
 
     }
 

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.infra.repository.application.workchange;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +16,7 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationDate;
@@ -79,8 +81,8 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements AppWork
 	}
 
 	@Override
-	public void remove(AppWorkChange appWorkChange) {
-		this.commandProxy().remove(KrqdtAppWorkChange.class, new KrqdtAppWorkChangePk(AppContexts.user().companyId(), appWorkChange.getAppID())); 
+	public void remove(String companyID, String appID) {
+		this.commandProxy().remove(KrqdtAppWorkChange.class, new KrqdtAppWorkChangePk(companyID, appID)); 
 
 	}
 
@@ -169,10 +171,18 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements AppWork
 			appWorkChange.setOpWorkTimeCD(Optional.of(new WorkTimeCode(res.getString("WORK_TIME_CD"))));
 		}
 		List<TimeZoneWithWorkNo> timeZoneWithWorkNoLst = new ArrayList<TimeZoneWithWorkNo>();
-		TimeZoneWithWorkNo timeZoneWithWorkNo1 = new TimeZoneWithWorkNo(1, res.getInt("WORK_TIME_START1"), res.getInt("WORK_TIME_END1"));
-		TimeZoneWithWorkNo timeZoneWithWorkNo2 = new TimeZoneWithWorkNo(2, res.getInt("WORK_TIME_START2"), res.getInt("WORK_TIME_END2"));
-		timeZoneWithWorkNoLst.add(timeZoneWithWorkNo1);
-		timeZoneWithWorkNoLst.add(timeZoneWithWorkNo2);
+		if (res.getInt("WORK_TIME_START1") != null && res.getInt("WORK_TIME_END1") != null) {
+			TimeZoneWithWorkNo timeZoneWithWorkNo1 = new TimeZoneWithWorkNo(1, res.getInt("WORK_TIME_START1"), res.getInt("WORK_TIME_END1"));
+			timeZoneWithWorkNoLst.add(timeZoneWithWorkNo1);
+			
+		}
+		if (res.getInt("WORK_TIME_START2") != null && res.getInt("WORK_TIME_END2") != null) {
+			TimeZoneWithWorkNo timeZoneWithWorkNo2 = new TimeZoneWithWorkNo(2, res.getInt("WORK_TIME_START2"), res.getInt("WORK_TIME_END2"));
+			timeZoneWithWorkNoLst.add(timeZoneWithWorkNo2);			
+		}
+		if (timeZoneWithWorkNoLst.isEmpty()) {
+			timeZoneWithWorkNoLst = Collections.emptyList();
+		}
 		
 		appWorkChange.setTimeZoneWithWorkNoLst(timeZoneWithWorkNoLst);
 		

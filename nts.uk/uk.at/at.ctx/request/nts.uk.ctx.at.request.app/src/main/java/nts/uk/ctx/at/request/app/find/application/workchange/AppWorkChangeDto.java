@@ -86,7 +86,7 @@ public class AppWorkChangeDto extends ApplicationDto{
 		appWorkChange_NewDto.setOpWorkTypeCD(appWorkChange.getOpWorkTypeCD().isPresent() ? appWorkChange.getOpWorkTypeCD().get().v() : null );
 		appWorkChange_NewDto.setOpWorkTimeCD(appWorkChange.getOpWorkTimeCD().isPresent() ? appWorkChange.getOpWorkTimeCD().get().v(): null );
 		
-		appWorkChange_NewDto.setTimeZoneWithWorkNoLst(appWorkChange.getTimeZoneWithWorkNoLst().stream().map(item -> TimeZoneWithWorkNoDto.fromDomain(item)).collect(Collectors.toList()));
+		appWorkChange_NewDto.setTimeZoneWithWorkNoLst(!CollectionUtil.isEmpty(appWorkChange.getTimeZoneWithWorkNoLst()) ? appWorkChange.getTimeZoneWithWorkNoLst().stream().map(item -> TimeZoneWithWorkNoDto.fromDomain(item)).collect(Collectors.toList()) : Collections.emptyList());
 		appWorkChange_NewDto.setAppID(appWorkChange.getAppID());
 		return appWorkChange_NewDto;
 	}

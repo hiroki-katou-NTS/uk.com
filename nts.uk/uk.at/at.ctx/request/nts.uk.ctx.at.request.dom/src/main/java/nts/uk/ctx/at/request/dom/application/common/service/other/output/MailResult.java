@@ -12,6 +12,10 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class MailResult {
+	// list người gửi mail thành công
 	private List<String> successList;
+	// list nguời lỗi mail
 	private List<String> failList;
+	// list người lỗi khi gửi mail(lỗi server)
+	private List<String> failServerList;
 }

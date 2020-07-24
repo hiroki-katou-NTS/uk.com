@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailRes
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -40,14 +41,16 @@ public class DetailAfterDenyImpl implements DetailAfterDeny {
 
 	@Override
 	public ProcessResult doDeny(String companyID, String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+		String loginID = AppContexts.user().employeeId();
 		boolean isProcessDone = false;
 		boolean isAutoSendMail = false;
 		List<String> autoSuccessMail = new ArrayList<>();
 		List<String> autoFailMail = new ArrayList<>();
+		List<String> autoFailServer = new ArrayList<>();
 		// 3.否認する(DenyService)
-		Boolean releaseFlg = approvalRootStateAdapter.doDeny(companyID, appID);
+		Boolean releaseFlg = approvalRootStateAdapter.doDeny(appID, loginID);
 		if(!releaseFlg) {
-			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID,"");
+			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, appID,"");
 		}
 		isProcessDone = true;
 		// 「反映情報」．実績反映状態を「否認」にする(chuyển trạng thái 「反映情報」．実績反映状態 thành 「否認」)
@@ -64,19 +67,20 @@ public class DetailAfterDenyImpl implements DetailAfterDeny {
 		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
 			dateLst.add(loopDate);
 		}
-		interimRemainDataMngRegisterDateChange.registerDateChange(companyID, application.getEmployeeID(), dateLst);
+		// interimRemainDataMngRegisterDateChange.registerDateChange(companyID, application.getEmployeeID(), dateLst);
 		// ノートのIF文を参照
 		boolean condition = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet() &&
 				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSetting().isSendMailWhenApproval();
 		if(!condition) {
-			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID,"");
+			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, appID,"");
 		}
 		isAutoSendMail = true;
 		// 申請者本人にメール送信する(gửi mail cho người viết đơn)
 		MailResult mailResult = otherCommonAlgorithm.sendMailApplicantDeny(application); 
 		autoSuccessMail = mailResult.getSuccessList();
 		autoFailMail = mailResult.getFailList();
-		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID,"");
+		autoFailServer = mailResult.getFailServerList();
+		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, appID,"");
 	}
 
 }

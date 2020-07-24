@@ -234,10 +234,8 @@ export class CmmS45CComponent extends Vue {
             .then((v) => {
                 if (v == 'yes') {
                     self.$mask('show');
-                    self.$http.post('at', API.delete, {
-                        version: self.appState.version,
-                        appId: self.currentApp
-                    }).then((resDelete: any) => {
+                    self.$http.post('at', API.delete, self.appTransferData.appDispInfoStartupOutput
+                    ).then((resDelete: any) => {
                         self.$mask('hide');
                         self.$modal.info('Msg_16').then(() => {
                             self.back();

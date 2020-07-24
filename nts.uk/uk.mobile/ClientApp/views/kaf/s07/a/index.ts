@@ -29,12 +29,13 @@ import {
         'kafs00-b': KafS00BComponent,
         'kafs00-c': KafS00CComponent,
         'worktype': KDL002Component
-    }
+    },
+
 })
 export class KafS07AComponent extends Vue {
-    @Prop({ default: () => ({}) })
+    // to edit
+    @Prop({ default: null })
     public params?: any;
-
     public title: string = 'KafS07A';
 
     public model: Model = new Model();
@@ -110,6 +111,8 @@ export class KafS07AComponent extends Vue {
         const self = this;
         if (self.params) {
             console.log(self.params);
+            self.mode = false;
+            this.data = self.params;
         }
         self.fetchStart();
 
@@ -143,8 +146,8 @@ export class KafS07AComponent extends Vue {
             companyId: this.user.companyId,
             employeeId: this.user.employeeId,
             listDates: [],
-            appWorkChangeOutputDto: this.mode ? null : this.data.appWorkChangeOutputDto,
-            appWorkChangeDto: this.mode ? null : this.data.appWorkChangeDto
+            appWorkChangeOutputDto: this.mode ? null : this.data,
+            appWorkChangeDto: this.mode ? null : this.data.appWorkChange
         })
             .then((res: any) => {
                 if (!res) {
@@ -180,7 +183,9 @@ export class KafS07AComponent extends Vue {
         };
     }
     public createParamB() {
-        this.kaf000_B_Params = {
+        const self = this;
+        this.kaf000_B_Params = null;
+        let paramb = {
             input: {
                 // mode: 0,
 
@@ -207,23 +212,64 @@ export class KafS07AComponent extends Vue {
                     useMultiDaySwitch: true,
                     initSelectMultiDay: false
                 },
+                detailModeContent: null
 
 
             },
             output: {
                 prePostAtr: 0,
-                startDate: new Date(),
-                endDate: new Date()
+                startDate: null,
+                endDate: null
             }
         };
-        // if (!this.mode) {
-        //     this.kaf000_B_Params.input.detailModeContent = {
-        //         prePostAtrName: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr,
-        //         startDate: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStartDate,
-        //         endDate: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppEndDate,
-        //         employeeName: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName
-        //     };
-        // }
+        if (!this.mode) {
+            paramb.input.detailModeContent = {
+                prePostAtr: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr,
+                startDate: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStartDate,
+                endDate: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppEndDate,
+                employeeName: _.isEmpty(this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst) ? 'empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName
+            };
+        }
+        this.kaf000_B_Params = paramb;
+        if (this.mode) {
+            self.$watch('kaf000_B_Params.output.startDate', (newV, oldV) => {
+                console.log('changedate' + oldV + '--' + newV);
+                let startDate = _.clone(self.kaf000_B_Params.output.startDate);
+                let endDate = _.clone(self.kaf000_B_Params.output.endDate);
+                let listDate = [];
+                if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+                    listDate.push(self.$dt(newV, 'YYYY/MM/DD'));
+                }
+                let isCheckDate = startDate.getTime() <= endDate.getTime();
+                if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
+                    while (startDate.getTime() <= endDate.getTime()) {
+                        listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
+                        startDate.setDate(startDate.getDate() + 1);
+                    }
+                }
+                self.changeDate(listDate);
+            });
+
+            self.$watch('kaf000_B_Params.output.endDate', (newV, oldV) => {
+                if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+                    
+                    return;
+                }
+                let startDate = _.clone(self.kaf000_B_Params.output.startDate);
+                let endDate = _.clone(self.kaf000_B_Params.output.endDate);
+                let listDate = [];
+                let isCheckDate = startDate.getTime() <= endDate.getTime();
+                if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
+                    while (startDate.getTime() <= endDate.getTime()) {
+                        listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
+                        startDate.setDate(startDate.getDate() + 1);
+                    }
+                }
+                self.changeDate(listDate);
+            });
+
+        }
+
 
     }
     public createParamC() {
@@ -245,16 +291,16 @@ export class KafS07AComponent extends Vue {
                 appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
                 // 選択中の定型理由
                 // empty
-                // opAppStandardReasonCD: this.mode ? null : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
+                // opAppStandardReasonCD: this.mode ? 1 : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
                 // 入力中の申請理由
                 // empty
-                // opAppReason: this.mode ? null : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
+                // opAppReason: this.mode ? 'Empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
             },
             output: {
                 // 定型理由
-                // opAppStandardReasonCD: 1,
+                opAppStandardReasonCD: this.mode ? 1 : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
                 // 申請理由
-                opAppReason: ''
+                opAppReason: this.mode ? '' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
             }
         };
     }
@@ -324,12 +370,15 @@ export class KafS07AComponent extends Vue {
                     end: 0
                 };
             }
-            if (!this.mode) {
-                this.valueWorkHours1.start = time1.timeZone.startTime;
-                this.valueWorkHours1.end = time1.timeZone.endTime;
-            } else {
-                this.valueWorkHours1.start = time1.start;
-                this.valueWorkHours1.end = time1.end;
+            if (time1) {
+
+                if (!this.mode) {
+                    this.valueWorkHours1.start = time1.timeZone.startTime;
+                    this.valueWorkHours1.end = time1.timeZone.endTime;
+                } else {
+                    this.valueWorkHours1.start = time1.start;
+                    this.valueWorkHours1.end = time1.end;
+                }
             }
 
         } else {
@@ -345,16 +394,28 @@ export class KafS07AComponent extends Vue {
                     end: 0
                 };
             }
-            if (!this.mode) {
-                this.valueWorkHours2.start = time2.timeZone.startTime;
-                this.valueWorkHours2.end = time2.timeZone.endTime;
-            } else {
-                this.valueWorkHours2.start = time2.start;
-                this.valueWorkHours2.end = time2.end;
+            if (time2) {
+                if (!this.mode) {
+                    this.valueWorkHours2.start = time2.timeZone.startTime;
+                    this.valueWorkHours2.end = time2.timeZone.endTime;
+                } else {
+                    this.valueWorkHours2.start = time2.start;
+                    this.valueWorkHours2.end = time2.end;
+                }
             }
 
         } else {
             this.$updateValidator('valueWorkHours2', {
+                timeRange: false,
+                required: false
+            });
+        }
+        if (!this.isCondition3) {
+            this.$updateValidator('valueWorkHours2', {
+                timeRange: false,
+                required: false
+            });
+            this.$updateValidator('valueWorkHours1', {
                 timeRange: false,
                 required: false
             });
@@ -397,8 +458,38 @@ export class KafS07AComponent extends Vue {
                 this.appWorkChangeDto.timeZoneWithWorkNoLst.push(b);
             }
         }
+        if (!this.mode && !this.isCondition3) {
 
-        this.application.employeeId = this.user.employeeId;
+            this.appWorkChangeDto.timeZoneWithWorkNoLst = [];
+            let a = null;
+            let b = null;
+            if (this.isCondition1 && this.valueWorkHours1.start && this.valueWorkHours1.end) {
+                a = {
+                    workNo: 1,
+                    timeZone: {
+                        startTime: this.valueWorkHours1.start,
+                        endTime: this.valueWorkHours1.end
+                    }
+                };
+                this.appWorkChangeDto.timeZoneWithWorkNoLst.push(a);
+            }
+            if (this.isCondition2 && this.valueWorkHours2.start && this.valueWorkHours2.end) {
+                b = {
+                    workNo: 2,
+                    timeZone: {
+                        startTime: this.valueWorkHours2.start,
+                        endTime: this.valueWorkHours2.end
+                    }
+                };
+                this.appWorkChangeDto.timeZoneWithWorkNoLst.push(b);
+            }
+        }
+        if (!this.mode) {
+            this.application = this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application;
+        }
+        if (this.mode) {
+            this.application.employeeID = this.user.employeeId;
+        }
 
         this.application.opAppStartDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
         this.application.prePostAtr = this.kaf000_B_Params.output.prePostAtr;
@@ -411,10 +502,10 @@ export class KafS07AComponent extends Vue {
 
     }
 
-    public changeDate() {
+    public changeDate(dates: any) {
         let params = {
             companyId: this.user.companyId,
-            listDates: ['2020/01/01', '2020/07/07'],
+            listDates: dates,
             appWorkChangeDispInfo: this.data.appWorkChangeDispInfo
         };
         this.$http.post('at', API.updateAppWorkChange, params)

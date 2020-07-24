@@ -43,16 +43,6 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
         }
     }
     
-    export class Kaf007Process {
-        public static register() {  
-        
-        }    
-        
-        public static update() { 
-              
-        }
-    }
-    
     export class AppWorkChange {
         workTypeCD: KnockoutObservable<string>;
         workTimeCD: KnockoutObservable<string>;
