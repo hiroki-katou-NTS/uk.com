@@ -16,6 +16,8 @@ import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
 @Value
 public class StartKSU001Param {
 	
+	
+	
 	public List<String> listSid;             // ・社員IDリスト：List<社員ID>
 	public GeneralDate startDate;            // ・期間
 	public GeneralDate endDate;    	         // ・期間

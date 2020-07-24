@@ -5,23 +5,34 @@ package nts.uk.screen.at.app.ksu001.start;
 
 import java.util.List;
 
-import lombok.Value;
-import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
-import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftResult;
-import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DataSpecDateAndHolidayDto;
-import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforDto;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DateInformationDto;
+import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DisplayControlPersonalCondDto;
+import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.PersonalConditionsDto;
+import nts.uk.screen.at.app.ksu001.extracttargetemployees.EmployeeInformationDto;
 
 /**
  * @author laitv
  *
  */
-@Value
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class StartKSU001Dto {
 	
-	public DataScreenQueryGetInforDto dataStep1;
-	public List<EmployeeInformationImport> dataStep2;
-	public DataSpecDateAndHolidayDto dataStep3;
-	public DisplayInShiftResult displayInShiftResult; 
-	 
+	// data tra ve cua step1
+	public DataBasicDto dataBasicDto;
 	
+	// data tra ve cua step2
+	public List<EmployeeInformationDto> listEmpInfo;
+	
+	// data tra ve cua step3
+	public List<DateInformationDto> listDateInfo;
+	public List<PersonalConditionsDto> listPersonalConditions; 
+	public DisplayControlPersonalCondDto displayControlPersonalCond;
+	 
 }

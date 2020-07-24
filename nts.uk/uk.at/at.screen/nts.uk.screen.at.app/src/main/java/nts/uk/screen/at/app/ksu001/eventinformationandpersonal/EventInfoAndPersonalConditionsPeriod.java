@@ -3,7 +3,6 @@
  */
 package nts.uk.screen.at.app.ksu001.eventinformationandpersonal;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +12,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpMedicalWorkFormHisItem;
@@ -112,16 +110,9 @@ public class EventInfoAndPersonalConditionsPeriod {
 				nurseClassificationRepo);
 		
 		List<PersonalCondition> listPersonalCond = DisplayControlPersonalCondition.acquireInforDisplayControlPersonalCondition(requireImplDispControlPerCond, param.endDate, param.listSid);
-		List<PersonalConditionsDto> listPersonalCondDto = new ArrayList<>();
-		if (!listPersonalCond.isEmpty()) {
-			listPersonalCondDto = listPersonalCond.stream().map(mapper -> {
-				return new PersonalConditionsDto(mapper.getEmpId(), mapper.getTeamName(), mapper.getOptRankSymbol(),
-						Optional.of(mapper.getOptLicenseClassification().get().value));
-			}).collect(Collectors.toList());
-		}
 
 		// step 4
-		return new DataSpecDateAndHolidayDto(listDateInfo, listPersonalCondDto, displayControlPerCond);
+		return new DataSpecDateAndHolidayDto(listDateInfo, listPersonalCond, displayControlPerCond);
 	}
 	
 

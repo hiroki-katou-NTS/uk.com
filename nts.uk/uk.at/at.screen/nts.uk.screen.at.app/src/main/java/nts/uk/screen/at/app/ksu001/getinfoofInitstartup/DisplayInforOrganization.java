@@ -7,7 +7,7 @@ import lombok.Value;
 
 /**
  * @author laitv
- * 
+ * 組織の表示情報
  */
 
 @Value
