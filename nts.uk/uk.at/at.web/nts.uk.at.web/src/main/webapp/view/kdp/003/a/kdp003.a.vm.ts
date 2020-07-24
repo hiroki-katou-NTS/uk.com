@@ -365,7 +365,7 @@ module nts.uk.at.kdp003.a {
 							return vm.$dialog.error(data.errorMessage);
 						}
 
-						return vm.$window.modal(DIALOG.S);
+						return vm.$window.modal('at', DIALOG.S, { employeeId: data.em.employeeId });
 					}
 				});
 		}
