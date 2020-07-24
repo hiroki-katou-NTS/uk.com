@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
-import nts.uk.ctx.at.request.app.find.application.lateleaveearly.LateEarlyCancelAppSetDto;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSet;
 //遅刻早退取消申請起動時の表示情報
@@ -19,7 +18,7 @@ public class ArrivedLateLeaveEarlyInfoDto {
 //	申請表示情報
 	private AppDispInfoStartupDto appDispInfoStartupOutput;
 //	遅刻早退取消申請設定
-	private LateEarlyCancelAppSetDto lateEarlyCancelAppSet;
+	private LateEarlyCancelAppSet lateEarlyCancelAppSet;
 //	エアー情報
 	private String info;
 //	遅刻早退取消申請
@@ -30,7 +29,7 @@ public class ArrivedLateLeaveEarlyInfoDto {
 		return new ArrivedLateLeaveEarlyInfoDto(
 				value.getEarlyInfos().stream().map(item -> LateOrEarlyInfoDto.convertDto(item)).collect(Collectors.toList()),
 				AppDispInfoStartupDto.fromDomain(value.getAppDispInfoStartupOutput()),
-				LateEarlyCancelAppSetDto.fromDomain(value.getLateEarlyCancelAppSet()),
+				value.getLateEarlyCancelAppSet(),
 				value.getInfo().isPresent() ? value.getInfo().get() : null,
 				value.getArrivedLateLeaveEarly().isPresent() ? ArrivedLateLeaveEarlyDto.convertDto(value.getArrivedLateLeaveEarly().get()): null );
 	}

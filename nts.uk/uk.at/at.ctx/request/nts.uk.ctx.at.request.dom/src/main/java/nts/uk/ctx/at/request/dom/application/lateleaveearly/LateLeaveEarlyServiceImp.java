@@ -17,7 +17,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.New
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementEarly;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -97,26 +96,17 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		ArrivedLateLeaveEarlyInfoOutput displayInfo = new ArrivedLateLeaveEarlyInfoOutput();
 
 		Optional<GeneralDate> appDate;
-		Optional<AchievementEarly> achieveEarly = Optional.empty();
+		Optional<AchievementEarly> achieveEarly;
 
 		// ドメインモデル「遅刻早退取消申請設定」を取得する
 		LateEarlyCancelAppSet listAppSet = this.cancelAppSetRepository.getByCId(companyId);
 
-		if (!appDisplayInfo.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().isPresent()) {
+		if (!appDisplayInfo.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().isPresent()
+				|| !displayInfo.getInfo().isPresent()) {
 			achieveEarly = Optional.empty();
 		} else {
-			Optional<List<ActualContentDisplay>> actualContentDisplay = appDisplayInfo.getAppDispInfoWithDateOutput()
-					.getOpActualContentDisplayLst();
-
-			if (actualContentDisplay.isPresent() && !actualContentDisplay.get().isEmpty()
-					&& !actualContentDisplay.get().isEmpty()) {
-
-				Optional<AchievementDetail> achieve = actualContentDisplay.get().get(0).getOpAchievementDetail();
-				if (achieve.isPresent()) {
-					achieveEarly = Optional
-							.of(actualContentDisplay.get().get(0).getOpAchievementDetail().get().getAchievementEarly());
-				}
-			}
+			achieveEarly = Optional.of(appDisplayInfo.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst()
+					.get().get(0).getOpAchievementDetail().get().getAchievementEarly());
 		}
 
 		if (appDates.isEmpty()) {
@@ -128,22 +118,12 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		// 遅刻早退実績のチェック処理
 		Optional<String> info = this.checkLateEarlyResult(achieveEarly, appDate);
 
-		Optional<List<ActualContentDisplay>> actualContentDisplay = appDisplayInfo
-				.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
-
-		List<LateOrEarlyInfo> lateOrEarlyInfos = null;
-		if (actualContentDisplay.isPresent()) {
-			// 取り消す初期情報
-			if (!actualContentDisplay.get().isEmpty()) {
-				lateOrEarlyInfos = this.initialInfo(listAppSet,
-						actualContentDisplay.get().get(0).getOpAchievementDetail(),
-					displayInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
-							.isManagementMultipleWorkCycles());
-			} else {
-				lateOrEarlyInfos = this.initialInfo(listAppSet, Optional.empty(), displayInfo
-						.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles());
-			}
-		}
+		// 取り消す初期情報
+		List<LateOrEarlyInfo> lateOrEarlyInfos = this.initialInfo(listAppSet,
+				displayInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst()
+						.get().get(0).getOpAchievementDetail(),
+				displayInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
+						.isManagementMultipleWorkCycles());
 
 		displayInfo.setLateEarlyCancelAppSet(listAppSet);
 		displayInfo.setInfo(info);

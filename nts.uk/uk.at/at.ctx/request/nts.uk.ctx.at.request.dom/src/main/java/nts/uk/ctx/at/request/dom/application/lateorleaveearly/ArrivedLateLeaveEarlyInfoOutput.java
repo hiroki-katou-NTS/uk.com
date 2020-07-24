@@ -22,8 +22,8 @@ public class ArrivedLateLeaveEarlyInfoOutput {
 //	遅刻早退取消申請設定
 	private LateEarlyCancelAppSet lateEarlyCancelAppSet;
 //	エアー情報
-	private Optional<String> info = Optional.empty();
+	private Optional<String> info;
 //	遅刻早退取消申請
-	private Optional<ArrivedLateLeaveEarly> arrivedLateLeaveEarly = Optional.empty();;
+	private Optional<ArrivedLateLeaveEarly> arrivedLateLeaveEarly;
 	
 }

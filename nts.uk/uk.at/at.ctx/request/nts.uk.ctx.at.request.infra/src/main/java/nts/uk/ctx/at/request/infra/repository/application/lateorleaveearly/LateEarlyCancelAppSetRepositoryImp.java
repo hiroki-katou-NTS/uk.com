@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.infra.repository.application.lateorleaveearly;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
@@ -16,9 +14,8 @@ public class LateEarlyCancelAppSetRepositoryImp extends JpaRepository implements
 
 	@Override
 	public LateEarlyCancelAppSet getByCId(String companyId) {
-		Optional<LateEarlyCancelAppSet> result = new NtsStatement(SELECT_ALL, this.jdbcProxy())
-				.paramString("companyId", companyId).getSingle(e -> KrqstAppLateOrEarly.MAPPER.toEntity(e).toDomain());
-		return result.isPresent() ? result.get() : null;
+		return new NtsStatement(SELECT_ALL, this.jdbcProxy()).paramString("companyId", companyId)
+				.getSingle(e -> KrqstAppLateOrEarly.MAPPER.toEntity(e).toDomain()).get();
 	}
 
 }
