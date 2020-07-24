@@ -66,7 +66,7 @@ module nts.uk.at.view.kdp005.a {
 					{ text: "Msg_1619", value: 3 }
 				]
 				let item = _.find(notUseMessage, ['value', errorType]);
-				return item ? getMessage(item.text, [getText('KDP002_3')]) : '';
+				return item ? getMessage(item.text, [getText('KDP002_4')]) : '';
 			}
 
 			doFirstLoad(): JQueryPromise<any> {
