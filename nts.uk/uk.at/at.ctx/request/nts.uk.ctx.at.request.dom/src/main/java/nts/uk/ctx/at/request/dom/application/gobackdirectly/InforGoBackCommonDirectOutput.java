@@ -28,5 +28,5 @@ public class InforGoBackCommonDirectOutput {
 //	勤務種類リスト
 	private List<WorkType> lstWorkType;
 //	直行直帰申請
-	private Optional<GoBackDirectly> goBackDirectly;
+	private Optional<GoBackDirectly> goBackDirectly = Optional.ofNullable(null);
 }
