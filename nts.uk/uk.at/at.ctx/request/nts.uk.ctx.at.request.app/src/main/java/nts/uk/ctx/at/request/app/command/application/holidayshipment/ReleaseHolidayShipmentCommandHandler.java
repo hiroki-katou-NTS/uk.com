@@ -50,7 +50,9 @@ public class ReleaseHolidayShipmentCommandHandler
 		// アルゴリズム「詳細画面解除前の処理」を実行する
 		this.beforeReleaseProc.detailScreenProcessBeforeReleasing(companyID, appID, version);
 		// アルゴリズム「詳細画面解除後の処理」を実行する
-		return this.afterRelease.detailAfterRelease(companyID, appID, employeeID, "");
+		// refactor 4 error
+		// return this.afterRelease.detailAfterRelease(companyID, appID, employeeID, "");
+		return null;
 	}
 
 }

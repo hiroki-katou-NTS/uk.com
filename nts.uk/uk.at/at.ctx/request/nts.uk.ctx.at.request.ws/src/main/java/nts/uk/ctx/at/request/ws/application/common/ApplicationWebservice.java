@@ -12,12 +12,12 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.common.AppDetailBehaviorCmd;
 import nts.uk.ctx.at.request.app.command.application.common.ReflectAplicationCommmandHandler;
 import nts.uk.ctx.at.request.app.command.application.common.RemandApplicationHandler;
-import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationApproveHandler;
+import nts.uk.ctx.at.request.app.command.application.common.ApproveAppHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCancelHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCommonCmd;
-import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationDelete;
+import nts.uk.ctx.at.request.app.command.application.common.DeleteAppHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationDenyHandler;
-import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationReleaseHandler;
+import nts.uk.ctx.at.request.app.command.application.common.ReleaseAppHandler;
 import nts.uk.ctx.at.request.app.command.setting.request.ApplicationDeadlineCommand;
 import nts.uk.ctx.at.request.app.command.setting.request.UpdateApplicationDeadlineCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.common.AppDataDateFinder;
@@ -53,8 +53,7 @@ import nts.uk.shr.infra.web.util.StartPageLogService;
 @Path("at/request/application")
 @Produces("application/json")
 public class ApplicationWebservice extends WebService {
-	@Inject 
-	private ApplicationFinder finderApp;
+	
 	
 	@Inject 
 	private GetDataApprovalRootOfSubjectRequest getDataApprovalRoot;
@@ -66,24 +65,15 @@ public class ApplicationWebservice extends WebService {
 	private GetDataCheckDetail getDataCheckDetail; 
 	
 	@Inject
-	private UpdateApplicationApproveHandler approveApp;
-	
-	@Inject
 	private UpdateApplicationDenyHandler denyApp;
 	
 	@Inject
 	private RemandApplicationHandler remandApplicationHandler;
 	
 	@Inject
-	private UpdateApplicationReleaseHandler releaseApp;
-	
-	@Inject
 	private UpdateApplicationCancelHandler cancelApp;
 	
 
-	@Inject
-	private UpdateApplicationDelete deleteApp;
-	
 	@Inject
 	private AppDataDateFinder appDataDateFinder;
 	@Inject
@@ -96,6 +86,20 @@ public class ApplicationWebservice extends WebService {
 	
 	@Inject
 	private DetailBeforeUpdate detailBeforeUpdate;
+	
+	// refactor 4
+	
+	@Inject 
+	private ApplicationFinder finderApp;
+	
+	@Inject
+	private DeleteAppHandler deleteApp;
+	
+	@Inject
+	private ApproveAppHandler approveApp;
+	
+	@Inject
+	private ReleaseAppHandler releaseApp;
 	
 	/**
 	 * deny application
@@ -115,16 +119,6 @@ public class ApplicationWebservice extends WebService {
 	@Path("remandapp")
 	public MailSenderResult remandApp(RemandCommand command){
 		return remandApplicationHandler.handle(command);
-	}
-	
-	/**
-	 * release application
-	 * @return
-	 */
-	@POST
-	@Path("releaseapp")
-	public ProcessResult releaseApp(InputCommonData command){
-		return this.releaseApp.handle(command);
 	}
 	
 	/**
@@ -284,13 +278,19 @@ public class ApplicationWebservice extends WebService {
 	@POST
 	@Path("deleteapp")
 	public ProcessResult deleteApp(AppDispInfoStartupDto command){
-		 return this.deleteApp.handle(command);
+		return deleteApp.handle(command);
 	}
 	
 	@POST
 	@Path("approveapp")
 	public ApproveProcessResult approveApp(AppDetailBehaviorCmd command){
-		 return this.approveApp.handle(command);
+		return approveApp.handle(command);
+	}
+	
+	@POST
+	@Path("releaseapp")
+	public ProcessResult releaseApp(AppDispInfoStartupDto command){
+		return releaseApp.handle(command);
 	}
 }
 

@@ -18,7 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<AppDetailBehaviorCmd, ApproveProcessResult> {
+public class ApproveAppHandler extends CommandHandlerWithResult<AppDetailBehaviorCmd, ApproveProcessResult> {
 
 	// 4-1.詳細画面登録前の処理
 	@Inject

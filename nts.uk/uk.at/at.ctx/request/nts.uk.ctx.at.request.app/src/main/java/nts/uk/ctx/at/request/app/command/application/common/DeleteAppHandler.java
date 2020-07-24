@@ -17,7 +17,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayServ
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @Transactional
-public class UpdateApplicationDelete extends CommandHandlerWithResult<AppDispInfoStartupDto, ProcessResult> {
+public class DeleteAppHandler extends CommandHandlerWithResult<AppDispInfoStartupDto, ProcessResult> {
 	
 	@Inject
 	private AfterProcessDelete afterProcessDelete;

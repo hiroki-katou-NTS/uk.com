@@ -285,18 +285,13 @@ export class CmmS45DComponent extends Vue {
 
     // kích hoạt nút giải phóng
     public releaseApp(): void {
-        let self = this;
+        const self = this;
         self.$modal.confirm('Msg_248')
             .then((v) => {
                 if (v == 'yes') {
                     self.$mask('show');
-                    self.$http.post('at', API.release, {
-                        memo: self.memo,
-                        applicationDto: {
-                            version: self.appState.version,
-                            applicationID: self.currentApp
-                        }
-                    }).then((resRelease: any) => {
+                    self.$http.post('at', API.release, self.appTransferData.appDispInfoStartupOutput)
+                    .then((resRelease: any) => {
                         self.$mask('hide');
                         if (resRelease.data.processDone) {
                             self.reflectApp(resRelease.data.reflectAppId);
