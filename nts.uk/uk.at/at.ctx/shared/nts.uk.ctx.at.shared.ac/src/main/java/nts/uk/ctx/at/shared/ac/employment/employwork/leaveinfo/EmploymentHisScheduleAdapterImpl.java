@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHistoryAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.SalarySegment;
 import nts.uk.ctx.bs.employee.pub.employment.history.export.EmploymentHistoryPublish;
@@ -17,10 +17,10 @@ import nts.uk.ctx.bs.employee.pub.employment.history.export.EmploymentPeriodExpo
 
 /**
  * 社員の雇用履歴Adapter Impl
- *
+ * @author HieuLt
  */
 @Stateless
-public class EmploymentHistoryAdapterImpl implements EmploymentHistoryAdapter {
+public class EmploymentHisScheduleAdapterImpl implements EmploymentHisScheduleAdapter {
 
 	@Inject
 	private EmploymentHistoryPublish publish;

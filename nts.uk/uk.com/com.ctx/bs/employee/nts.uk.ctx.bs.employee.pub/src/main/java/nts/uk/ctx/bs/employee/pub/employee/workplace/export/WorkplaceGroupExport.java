@@ -3,9 +3,8 @@ package nts.uk.ctx.bs.employee.pub.employee.workplace.export;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 /**
- * 
+ * 職場グループExported										
  * @author HieuLt
- *
  */
 @Getter
 @AllArgsConstructor
