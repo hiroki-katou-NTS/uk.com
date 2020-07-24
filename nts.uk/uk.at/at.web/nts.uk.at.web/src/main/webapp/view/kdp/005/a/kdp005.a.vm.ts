@@ -185,7 +185,7 @@ module nts.uk.at.view.kdp005.a {
 			public openDialogK(): JQueryPromise<any> {
 				let vm = new ko.ViewModel();
 				let dfd = $.Deferred<any>();
-				vm.$window.modal('at', '/view/kdp/003/k/index.xhtml').then((selectedWP) => {
+				vm.$window.modal('at', '/view/kdp/003/k/index.xhtml', { multiSelect: true }).then((selectedWP) => {
 					if (selectedWP) {
 						dfd.resolve(selectedWP.selectedId);
 					}
@@ -333,6 +333,8 @@ module nts.uk.at.view.kdp005.a {
                     }else{
                         dfd.reject(res.errorMessage);    
                     }
+                }).fail((res) => {
+                    dialog.alertError({ messageId: res.messageId });
                 });
                 return dfd.promise();
             }
@@ -374,11 +376,25 @@ module nts.uk.at.view.kdp005.a {
 
 			checkHis(self: ScreenModel) {
 				let vm = new ko.ViewModel();
-				self.doAuthent().done((res: IAuthResult) => {
-					if (res.isSuccess) {
-						vm.$window.modal('at', '/view/kdp/003/s/index.xhtml');
-					}
-				});
+                modal('/view/kdp/005/h/index.xhtml').onClosed(function(): any {
+                    let ICCard = getShared('ICCard');
+                    if (ICCard && ICCard != '') {
+                        console.log(ICCard);
+                        block.grayout();
+                        self.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
+                            self.authentic(employeeId).done(() => {
+                                vm.$window.modal('at', '/view/kdp/003/s/index.xhtml', {employeeId: employeeId});
+                            }).fail((errorMessage: string) => {
+                                setShared("errorMessage", errorMessage);
+                                self.openIDialog();
+                            });
+                        }).fail(() => {
+                            self.openIDialog();
+                        }).always(() => {
+                            block.clear();    
+                        });
+                    }
+                });
 			}
             
 			settingUser(self: ScreenModel) {
