@@ -2,7 +2,6 @@ package nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -85,7 +84,9 @@ public class GetEmpLicenseClassificationServiceTest {
 		};
 		
 		List<EmpLicenseClassification> classifications = GetEmpLicenseClassificationService.get(require, GeneralDate.today(), listEmp);
-		assertFalse(classifications.get(0).getOptLicenseClassification().isPresent());
+		assertThat(classifications).extracting(x-> x.getEmpID(),
+				x-> x.getOptLicenseClassification())
+		.containsExactly(tuple("003",Optional.empty()),tuple("004",Optional.empty()));
 	}
 	
 	@Test
@@ -120,6 +121,8 @@ public class GetEmpLicenseClassificationServiceTest {
 		};
 		
 		List<EmpLicenseClassification> classifications = GetEmpLicenseClassificationService.get(require, GeneralDate.today(), listEmp);
-		assertFalse(classifications.get(0).getOptLicenseClassification().isPresent());
+		assertThat(classifications).extracting(x-> x.getEmpID(),
+				x-> x.getOptLicenseClassification())
+		.containsExactly(tuple("003",Optional.empty()),tuple("002",Optional.empty()));
 	}
 }
