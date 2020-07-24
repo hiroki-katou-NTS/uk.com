@@ -38,7 +38,7 @@ module nts.uk.at.kdp003.f {
 		LOGIN_ADMIN: 'ctx/sys/gateway/kdp/login/adminmode',
 		LOGIN_EMPLOYEE: 'ctx/sys/gateway/kdp/login/employeemode',
 		COMPANIES: '/ctx/sys/gateway/kdp/login/getLogginSetting',
-		CONFIRM_STAMP_INPUT: 'at/record/stamp/employment_system/confirm_use_of_stamp_input'
+		CONFIRM_STAMP_INPUT: 'at/record/stamp/employment/system/confirm_use_of_stamp_input'
 	};
 
 	@bean()
