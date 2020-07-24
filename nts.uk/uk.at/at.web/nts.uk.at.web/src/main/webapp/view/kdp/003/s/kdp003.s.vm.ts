@@ -22,6 +22,10 @@ module nts.uk.at.kdp003.s {
 
 		constructor(private params: Params) {
 			super();
+
+			if (!params) {
+				this.params = { employeeId: '' };
+			}
 		}
 
 		created() {
