@@ -3,6 +3,7 @@
  */
 package nts.uk.screen.at.app.ksu001.eventinformationandpersonal;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpMedicalWorkFormHisItem;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.NurseClassification;
@@ -90,13 +92,13 @@ public class EventInfoAndPersonalConditionsPeriod {
 		List<DateInformation> listDateInfo = new ArrayList<DateInformation>();
 		RequireImpl require = new RequireImpl(workplaceSpecificDateRepo, companySpecificDateRepo,
 				workplaceEventRepo, companyEventRepo, publicHolidayRepo, specificDateItemRepo);
-		
-		for (GeneralDate date = param.startDate; date.beforeOrEquals(param.endDate); date = date.addDays(1)){
+		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
+		period.datesBetween().stream().forEach(date -> {
 			TargetOrgIdenInfor targetOrgIdenInfor = new  TargetOrgIdenInfor(param.workplaceGroupId == null ? TargetOrganizationUnit.WORKPLACE : TargetOrganizationUnit.WORKPLACE_GROUP, param.workplaceId, param.workplaceGroupId);
 			DateInformation dateInformation = null;
-			dateInformation = DateInformation.create(require, param.startDate, targetOrgIdenInfor);
+			dateInformation = DateInformation.create(require, date, targetOrgIdenInfor);
 			listDateInfo.add(dateInformation);
-		}
+		});
 		
 		// step2
 		Optional<DisplayControlPersonalCondition> displayControlPerCond =  displayControlPerCondRepo.get(AppContexts.user().companyId());

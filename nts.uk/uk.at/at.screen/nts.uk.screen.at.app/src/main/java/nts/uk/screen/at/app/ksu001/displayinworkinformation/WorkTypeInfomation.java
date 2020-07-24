@@ -13,7 +13,20 @@ import lombok.Value;
 public class WorkTypeInfomation {
 	
 	public WorkTypeDto workTypeDto;
-	public int workTimeSetting;
-	public int attHdAtr;
+	
+	/**
+	 * 必須である REQUIRED(0), 
+	 * 任意であるOPTIONAL(1), 
+	 * 不要であるNOT_REQUIRED(2);
+	 */
+	public int workTimeSetting; 
+	
+	/**
+	 * １日出勤系 FULL_TIME(3, "１日出勤系"), 
+	 * 午前出勤系 MORNING(1, "午前出勤系"), 
+	 * 午後出勤系 AFTERNOON(2, "午後出勤系"),
+	 * １日休日系 HOLIDAY(0, "１日休日系");
+	 */
+	public int attHdAtr; 
 
 }
