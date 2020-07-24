@@ -17,7 +17,7 @@
         <span>
             <input data-bind="ntsTimeWithDayEditor: {
                     name: $i18n('KAF004_42'),
-                    value: $vm.workManagement.workTime,
+                    value: ko.toJS($vm.workManagement.workTime),
                     option: {timeWithDay: false, width: '50'}
                 }, enable: $vm.condition13(1)" />
         </span>
