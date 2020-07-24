@@ -8,6 +8,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -31,6 +32,7 @@ import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto
 import nts.uk.ctx.at.request.app.find.application.workchange.RecordWorkInfoDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.UpdateWorkChangeParam;
 import nts.uk.ctx.at.request.app.find.application.workchange.WorkChangeDetailFinder;
+import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDetailDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
@@ -69,7 +71,7 @@ public class WorkchangeService extends WebService {
 	public ProcessResult addWorkChange(AddAppWorkChangeCommandPC command) {
 		String companyID = AppContexts.user().companyId();
 		ApplicationDto applicationDto = new ApplicationDto(
-				0, 
+				1, 
 				"", 
 				command.getApplication().getPrePostAtr(), 
 				command.getApplication().getEmployeeIDLst().get(0), 
@@ -118,9 +120,9 @@ public class WorkchangeService extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("getWorkchangeByAppID_PC")
-	public AppWorkChangeOutputDto getWorkchangeByAppID(AppWorkChangeDetailParam appWorkChangeDetailParam) {
-		return appWorkFinder.startDetailScreen(appWorkChangeDetailParam);
+	@Path("getWorkchangeByAppID/{appId}")
+	public AppWorkChangeDetailDto_Old getWorkchangeByAppID(@PathParam("appId") String appId) {
+		return appWorkFinder.startDetailScreen(appId);
 	}
 
 	/**

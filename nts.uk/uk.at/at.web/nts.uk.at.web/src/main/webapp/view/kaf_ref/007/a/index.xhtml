@@ -15,13 +15,13 @@
 			<com:stylefile path="/view/kaf_ref/000/a/component5/kaf000.a.component5.css" />
 			<com:stylefile path="/view/kaf_ref/000/a/component6/kaf000.a.component6.css" />
 			<com:stylefile path="/view/kaf_ref/007/shr/kaf007.shr.css" />
-			<com:scriptfile path="/view/kaf_ref/000/shr/kaf000.shr.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/000/a/component1/kaf000.a.component1.js" />
 			<com:scriptfile path="/view/kaf_ref/000/a/component2/kaf000.a.component2.js" />
 			<com:scriptfile path="/view/kaf_ref/000/a/component3/kaf000.a.component3.js" />
 			<com:scriptfile path="/view/kaf_ref/000/a/component4/kaf000.a.component4.js" />
 			<com:scriptfile path="/view/kaf_ref/000/a/component5/kaf000.a.component5.js" />
 			<com:scriptfile path="/view/kaf_ref/000/a/component6/kaf000.a.component6.js" />
+			<com:scriptfile path="/view/kaf_ref/000/shr/kaf000.shr.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/007/shr/kaf007.shr.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/007/a/kaf007.a.vm.js" />
 		</ui:define>
@@ -32,6 +32,7 @@
 			<div id="contents-area">
 				<div data-bind="component: { name: 'kaf000-a-component1', 
 											params: {
+												application: application,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
 				<div data-bind="component: { name: 'kaf000-a-component2', 

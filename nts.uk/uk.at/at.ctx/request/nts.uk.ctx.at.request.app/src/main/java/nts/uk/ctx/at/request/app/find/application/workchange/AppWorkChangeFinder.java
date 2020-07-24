@@ -14,11 +14,14 @@ import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChange
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDetailDto;
+import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDetailDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -168,17 +171,14 @@ public class AppWorkChangeFinder {
 		return null;
 	}
 
-	public AppWorkChangeOutputDto startDetailScreen(AppWorkChangeDetailParam appWorkChangeDetailParam) {
-		String companyID = AppContexts.user().companyId();
-		AppWorkChangeOutputDto appWorkChangeOutputDto = new AppWorkChangeOutputDto();
-		AppWorkChangeDetailDto appWorkChangeDetailDto = AppWorkChangeDetailDto
-				.fromDomain(appWorkChangeService.startDetailScreen(
-						companyID, 
-						appWorkChangeDetailParam.getAppDispInfoStartupDto().getAppDetailScreenInfo().getApplication().getAppID(), 
-						appWorkChangeDetailParam.getAppDispInfoStartupDto().toDomain()));
-		appWorkChangeOutputDto.setAppWorkChangeDispInfo(appWorkChangeDetailDto.appWorkChangeDispInfo);
-		appWorkChangeOutputDto.setAppWorkChange(appWorkChangeDetailDto.appWorkChange);
-		return appWorkChangeOutputDto;
+	public AppWorkChangeDetailDto_Old startDetailScreen(String appID) {
+		// error EA refactor 4
+		/*
+		 * String companyID = AppContexts.user().companyId(); AppWorkChangeDetailOutput
+		 * output = appWorkChangeService.startDetailScreen(companyID, appID); return
+		 * AppWorkChangeDetailDto.fromDomain(output);
+		 */
+		return null;
 	}
 
 	public void checkBeforeUpdate(AddAppWorkChangeCommandPC command) {
