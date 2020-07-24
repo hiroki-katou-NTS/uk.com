@@ -82,9 +82,9 @@ module nts.uk.at.kdp003.f {
 				}
 			}
 
-			model.companyId
+			vm.model.companyId
 				.subscribe((id: string) => {
-					const dataSources: CompanyItem[] = ko.toJS(vm.listCompany);
+					const dataSources: CompanyItem[] = ko.unwrap(vm.listCompany);
 
 					vm.message(null);
 
@@ -101,6 +101,7 @@ module nts.uk.at.kdp003.f {
 							const SCREEN: RegExpMatchArray = window.top.location.href.match(/kdp\/00\d/);
 
 							if (SCREEN.length) {
+								const employeeCode: string = ko.unwrap(model.employeeCode);
 								const name: SCREEN_NAME = SCREEN[0].replace(/\//g, '').toUpperCase() as any;
 								const update = () => {
 									model.companyCode(exist.companyCode);
@@ -138,8 +139,14 @@ module nts.uk.at.kdp003.f {
 								}
 
 								// UI[A6]  打刻利用失敗時のメッセージについて
-								if (!ko.unwrap(vm.message)) {
-									const query = (stampMeans: StampMeans) => vm.$ajax('at', API.CONFIRM_STAMP_INPUT, { stampMeans });
+								if (!ko.unwrap(vm.message) && employeeCode) {
+									const params: CommanStampInput = {
+										companyId: exist.companyId,
+										employeeId: '',
+										employeeCode,
+										stampMeans: 1
+									};
+
 									const authen = (data: ConfirmStampInput) => {
 										if (data.used === CanEngravingUsed.NOT_PURCHASED_STAMPING_OPTION) {
 											// UI[A6]  打刻オプション未購入 
@@ -181,32 +188,37 @@ module nts.uk.at.kdp003.f {
 
 									switch (name) {
 										case 'KDP001':
-											query(StampMeans.PORTAL)
-												.then(authen);
+											params.stampMeans = StampMeans.PORTAL;
 											break;
 										case 'KDP002':
-											query(StampMeans.INDIVITION)
-												.then(authen);
+											params.stampMeans = StampMeans.INDIVITION;
 											break;
 										default:
 										case 'KDP003':
-											query(StampMeans.NAME_SELECTION)
-												.then(authen);
+											params.stampMeans = StampMeans.NAME_SELECTION;
 											break;
 										case 'KDP004':
-											query(StampMeans.FINGER_AUTHC)
-												.then(authen);
+											params.stampMeans = StampMeans.FINGER_AUTHC;
 											break;
 										case 'KDP005':
-											query(StampMeans.IC_CARD)
-												.then(authen);
+											params.stampMeans = StampMeans.IC_CARD;
 											break;
 									}
+
+									vm.$ajax('at', API.CONFIRM_STAMP_INPUT, params).then(authen);
 								}
 							}
 						}
 					}
 				});
+
+			vm.listCompany.subscribe(() => {
+				model.companyId.valueHasMutated();
+			});
+
+			model.employeeCode.subscribe(() => {
+				model.companyId.valueHasMutated();
+			});
 		}
 
 		public mounted() {
@@ -343,6 +355,9 @@ module nts.uk.at.kdp003.f {
 	}
 
 	interface CommanStampInput {
+		companyId: string;
+		employeeId: string;
+		employeeCode: string;
 		stampMeans: StampMeans;
 	}
 
