@@ -10,14 +10,14 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.common.AppDetailBehaviorCmd;
-import nts.uk.ctx.at.request.app.command.application.common.ReflectAplicationCommmandHandler;
-import nts.uk.ctx.at.request.app.command.application.common.RemandApplicationHandler;
 import nts.uk.ctx.at.request.app.command.application.common.ApproveAppHandler;
+import nts.uk.ctx.at.request.app.command.application.common.DeleteAppHandler;
+import nts.uk.ctx.at.request.app.command.application.common.DenyAppHandler;
+import nts.uk.ctx.at.request.app.command.application.common.ReflectAplicationCommmandHandler;
+import nts.uk.ctx.at.request.app.command.application.common.ReleaseAppHandler;
+import nts.uk.ctx.at.request.app.command.application.common.RemandApplicationHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCancelHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCommonCmd;
-import nts.uk.ctx.at.request.app.command.application.common.DeleteAppHandler;
-import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationDenyHandler;
-import nts.uk.ctx.at.request.app.command.application.common.ReleaseAppHandler;
 import nts.uk.ctx.at.request.app.command.setting.request.ApplicationDeadlineCommand;
 import nts.uk.ctx.at.request.app.command.setting.request.UpdateApplicationDeadlineCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.common.AppDataDateFinder;
@@ -35,7 +35,6 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ClosureParam;
-import nts.uk.ctx.at.request.app.find.application.common.dto.InputCommonData;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
 import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForRemandOutput;
@@ -63,9 +62,6 @@ public class ApplicationWebservice extends WebService {
 	
 	@Inject
 	private GetDataCheckDetail getDataCheckDetail; 
-	
-	@Inject
-	private UpdateApplicationDenyHandler denyApp;
 	
 	@Inject
 	private RemandApplicationHandler remandApplicationHandler;
@@ -101,15 +97,8 @@ public class ApplicationWebservice extends WebService {
 	@Inject
 	private ReleaseAppHandler releaseApp;
 	
-	/**
-	 * deny application
-	 * @return
-	 */
-	@POST
-	@Path("denyapp")
-	public ProcessResult denyApp(InputCommonData command){
-		return this.denyApp.handle(command);
-	}
+	@Inject
+	private DenyAppHandler denyApp;
 	
 	/**
 	 * remand application
@@ -291,6 +280,12 @@ public class ApplicationWebservice extends WebService {
 	@Path("releaseapp")
 	public ProcessResult releaseApp(AppDispInfoStartupDto command){
 		return releaseApp.handle(command);
+	}
+	
+	@POST
+	@Path("denyapp")
+	public ProcessResult denyApp(AppDetailBehaviorCmd command){
+		return denyApp.handle(command);
 	}
 }
 

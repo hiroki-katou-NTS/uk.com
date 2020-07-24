@@ -361,12 +361,7 @@ export class CmmS45DComponent extends Vue {
                     self.$mask('show');
                     self.$http.post('at', API.deny, {
                         memo: self.memo,
-                        applicationDto: {
-                            version: self.appState.version,
-                            applicationID: self.currentApp,
-                            prePostAtr: self.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr,
-                            applicantSID: self.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.employeeID
-                        }   
+                        appDispInfoStartupOutput: self.appTransferData.appDispInfoStartupOutput     
                     }).then((resDeny: any) => {
                         self.$mask('hide');
                         if (resDeny.data.processDone) {
