@@ -105,8 +105,10 @@ public class RegisterStampCardCommandHandler {
 		 
 		if (!command.getCardNumbers().isEmpty()) {
 			for (int i = 0 ; i < command.getCardNumbers().size(); i++) {
-				StampCard card = new StampCard(contractCd, command.getCardNumbers().get(i), command.getEmployeeId());
-				stampCardRepo.delete(card);
+				Optional<StampCard> card = stampCardRepo.getByStampCardId(command.getCardId().get(i));
+				if(card.isPresent()) {
+					stampCardRepo.delete(card.get());
+				}
 			}
 		}
 	}

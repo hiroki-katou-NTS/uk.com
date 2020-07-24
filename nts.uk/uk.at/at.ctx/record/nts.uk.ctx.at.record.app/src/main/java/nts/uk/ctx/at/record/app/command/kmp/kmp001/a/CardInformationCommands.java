@@ -17,4 +17,5 @@ import lombok.NoArgsConstructor;
 public class CardInformationCommands {
 	private String employeeId;
 	private List<String> cardNumbers;
+	private List<String> cardId;
 }

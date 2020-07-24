@@ -21,7 +21,7 @@ public class InformationEmployeeViewB {
 		PersonInfoExport personInfoExport =  IPersonInfoPub.getPersonInfo(sid);
 		
 		if (personInfoExport == null) {
-			throw new RuntimeException("Not found");
+			return new InformationEmployeeDtoViewB();
 		}
 
 		InformationEmployeeDtoViewB dto = new InformationEmployeeDtoViewB(
