@@ -32,20 +32,20 @@ export class KafS00BComponent extends Vue {
             endDate: Date;
         }
     };
-    public datasource: Array<Object> = [];
-    public datasource2: Array<Object> = [];
+    public prePostResource: Array<Object> = [];
+    public dateSwitchResource: Array<Object> = [];
     public dateRange: any = {};
 
     public created() {
         const self = this;
-        self.datasource = [{
+        self.prePostResource = [{
             code: 0,
             text: 'KAFS00_10'
         }, {
             code: 1,
             text: 'KAFS00_11'
         }];
-        self.datasource2 = [{
+        self.dateSwitchResource = [{
             code: false,
             text: 'KAFS00_12'
         }, {
@@ -95,6 +95,12 @@ export class KafS00BComponent extends Vue {
         return ScreenMode;
     }
 
+    get prePostAtrName() {
+        const self = this;
+        
+        return _.find(self.prePostResource, (o: any) => o.code == self.$input.detailModeContent.prePostAtr).text;
+    }
+
     @Watch('dateRange')
     public dateRangeWatcher() {
         const self = this;
@@ -128,7 +134,7 @@ interface NewModeContent {
 // 詳細モード内容
 interface DetailModeContent {
     // 事前事後区分
-    prePostAtrName: string;
+    prePostAtr: string;
     // 申請者名
     employeeName: string;
     // 申請開始日
