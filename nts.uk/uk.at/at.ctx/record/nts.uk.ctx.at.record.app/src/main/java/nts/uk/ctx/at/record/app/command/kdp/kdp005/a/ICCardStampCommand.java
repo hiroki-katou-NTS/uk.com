@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.app.command.kdp.kdp001.a.RefectActualResultCommand;
-import nts.uk.ctx.at.record.app.command.kdp.kdp004.a.StampButtonComamnd;
+import nts.uk.ctx.at.record.app.command.kdp.kdp004.a.StampButtonCommand;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageNo;
@@ -26,7 +26,7 @@ public class ICCardStampCommand {
 	private String datetime;
 
 	// 打刻ボタン
-	private StampButtonComamnd stampButton;
+	private StampButtonCommand stampButton;
 
 	// 実績への反映内容
 	private RefectActualResultCommand refActualResult;

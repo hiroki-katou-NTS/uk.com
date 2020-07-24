@@ -11,3 +11,12 @@
 #function-tr td:nth-child(7) div {
 	width: 50px;
 }
+
+#single-list_displayContainer {
+	width: 666px !important;
+    max-width: 685px !important;
+}
+
+#single-list_headers_v {
+	width: 683px !important;
+}

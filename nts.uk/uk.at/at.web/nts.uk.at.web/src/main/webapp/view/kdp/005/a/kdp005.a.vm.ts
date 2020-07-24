@@ -449,7 +449,6 @@ module nts.uk.at.view.kdp005.a {
 				});
 
 				modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
-
 					self.openKDP002T(button, layout);
 				});
 			}

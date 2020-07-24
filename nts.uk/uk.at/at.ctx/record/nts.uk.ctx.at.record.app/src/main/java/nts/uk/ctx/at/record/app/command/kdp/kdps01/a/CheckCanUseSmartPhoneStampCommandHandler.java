@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.command.kdp.kdp005.a;
+package nts.uk.ctx.at.record.app.command.kdp.kdps01.a;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,41 +10,43 @@ import lombok.AllArgsConstructor;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
+import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
+import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossingRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardCreateResult;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EnterStampFromICCardService;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampingResultEmployeeId;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.MakeUseJudgmentResults;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampFunctionAvailableService;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * @author thanhpv
- *
+ * 
+ * @author sonnlb
+ *         UKDesign.UniversalK.就業.KDP_打刻.KDPS01_打刻入力(スマホ).A:打刻入力(スマホ).メニュー別OCD.打刻入力(スマホ)の実行可能判定を行う
  */
+
 @Stateless
-public class ICCardStampCommandHandler extends CommandHandlerWithResult<ICCardStampCommand,GeneralDate> {
+public class CheckCanUseSmartPhoneStampCommandHandler extends CommandHandlerWithResult<CheckCanUseSmartPhoneStampCommand, CheckCanUseSmartPhoneStampResult> {
+
 
 	@Inject
-	private StampSetCommunalRepository stampSetCommunalRepository;
+	private SettingsUsingEmbossingRepository stampUsageRepo;
 
 	@Inject
 	private StampCardRepository stampCardRepo;
@@ -68,40 +70,38 @@ public class ICCardStampCommandHandler extends CommandHandlerWithResult<ICCardSt
 	private CreateDailyResultDomainService createDailyResultDomainSv;
 
 	@Override
-	protected GeneralDate handle(CommandHandlerContext<ICCardStampCommand> context) {
-		String contractCode = AppContexts.user().contractCode(); 
+	protected CheckCanUseSmartPhoneStampResult handle(CommandHandlerContext<CheckCanUseSmartPhoneStampCommand> context) {
+
+		StampFunctionAvailableServiceRequireImpl require = new StampFunctionAvailableServiceRequireImpl(stampUsageRepo,
+				stampCardRepo, stampCardEditRepo, companyAdapter, sysEmpPub, stampRecordRepo, stampDakokuRepo,
+				createDailyResultDomainSv);
+
+		String employeeId = AppContexts.user().employeeId();
+		// 2.1 判断する(@Require, 社員ID, 打刻手段)
+		MakeUseJudgmentResults jugResult = StampFunctionAvailableService.decide(require, employeeId, StampMeans.PORTAL);
+		// not 打刻カード作成結果 empty
+		Optional<StampCardCreateResult> cradResultOpt = jugResult.getCardResult();
 		
-		ICCardStampCommand cmd = context.getCommand();
-
-		EnterStampFromICCardServiceRequireImpl require = new EnterStampFromICCardServiceRequireImpl(stampSetCommunalRepository, stampCardRepo, stampCardEditRepo, companyAdapter, sysEmpPub, stampRecordRepo, stampDakokuRepo, createDailyResultDomainSv);
-
-		//作成する(@Require, 契約コード, 日時, 打刻カード番号, 打刻ボタン, 実績への反映内容)
-		StampingResultEmployeeId stampingResultEmployeeId = EnterStampFromICCardService.create(require, new ContractCode(contractCode), cmd.getStampNumber(), cmd.getStampDatetime(), cmd.getStampButton(), cmd.getRefActualResult().toDomainValue());
+		cradResultOpt.ifPresent(x -> {
+			x.getAtomTask().ifPresent(atom -> {
+				transaction.execute(() -> {
+					atom.run();
+				});
+			});
+		});
 		
-		//2: not empty
-		if (stampingResultEmployeeId.inputResult.at.isPresent()) {
+		Optional<String> cardNumber = cradResultOpt.map(x -> x.getCardNumber());
+		
+		return new CheckCanUseSmartPhoneStampResult(cardNumber.isPresent() ? cardNumber.get() : null,
+				jugResult.getUsed().value);
 
-			transaction.execute(() -> {
-				stampingResultEmployeeId.inputResult.at.get().run();
-			});
-		}
-
-		StampDataReflectResult stampRefResult = stampingResultEmployeeId.inputResult.getStampDataReflectResult();
-
-		if (stampRefResult.getAtomTask() != null) {
-
-			transaction.execute(() -> {
-				stampRefResult.getAtomTask().run();
-			});
-		}
-		return stampRefResult.getReflectDate().isPresent() ? stampRefResult.getReflectDate().get() : null;
 	}
 
 	@AllArgsConstructor
-	private class EnterStampFromICCardServiceRequireImpl implements EnterStampFromICCardService.Require {
+	private class StampFunctionAvailableServiceRequireImpl implements StampFunctionAvailableService.Require {
 		
 		@Inject
-		private StampSetCommunalRepository stampSetCommunalRepository;
+		private SettingsUsingEmbossingRepository stampUsageRepo;
 
 		@Inject
 		private StampCardRepository stampCardRepo;
@@ -125,13 +125,8 @@ public class ICCardStampCommandHandler extends CommandHandlerWithResult<ICCardSt
 		private CreateDailyResultDomainService createDailyResultDomainSv;
 
 		@Override
-		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
-			return this.stampCardRepo.getLstStampCardBySidAndContractCd(AppContexts.user().contractCode(), sid);
-		}
-
-		@Override
-		public List<EmployeeDataMngInfoImport> findBySidNotDel(List<String> sid) {
-			return this.sysEmpPub.findBySidNotDel(sid);
+		public List<EmployeeDataMngInfoImport> findBySidNotDel(List<String> sids) {
+			return this.sysEmpPub.findBySidNotDel(sids);
 		}
 
 		@Override
@@ -145,19 +140,23 @@ public class ICCardStampCommandHandler extends CommandHandlerWithResult<ICCardSt
 		}
 
 		@Override
-		public Optional<StampCard> getByCardNoAndContractCode(String stampNumber, String contractCode) {
-			return this.stampCardRepo.getByCardNoAndContractCode(stampNumber, contractCode);
-		}
-
-		@Override
 		public void add(StampCard domain) {
 			this.stampCardRepo.add(domain);
 		}
 
 		@Override
+		public List<StampCard> getListStampCard(String sid) {
+			return this.stampCardRepo.getListStampCard(sid);
+		}
+
+		@Override
+		public Optional<SettingsUsingEmbossing> get() {
+			return this.stampUsageRepo.get(AppContexts.user().companyId());
+		}
+
+		@Override
 		public void insert(StampRecord stampRecord) {
 			this.stampRecordRepo.insert(stampRecord);
-
 		}
 
 		@Override
@@ -166,7 +165,7 @@ public class ICCardStampCommandHandler extends CommandHandlerWithResult<ICCardSt
 		}
 
 		@Override
-		public ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
+		public ProcessState createDailyResult(@SuppressWarnings("rawtypes") AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
 				DatePeriod periodTime, ExecutionAttr executionAttr, String companyId, String empCalAndSumExecLogID,
 				Optional<ExecutionLog> executionLog) {
 			return this.createDailyResultDomainSv.createDailyResult(asyncContext, emloyeeIds, periodTime, executionAttr,
@@ -174,8 +173,8 @@ public class ICCardStampCommandHandler extends CommandHandlerWithResult<ICCardSt
 		}
 
 		@Override
-		public Optional<StampSetCommunal> gets(String comppanyID) {
-			return this.stampSetCommunalRepository.gets(comppanyID);
+		public Optional<StampCard> getByCardNoAndContractCode(String stampNumber, String contractCode) {
+			return this.stampCardRepo.getByCardNoAndContractCode(stampNumber, contractCode);
 		}
 
 	}

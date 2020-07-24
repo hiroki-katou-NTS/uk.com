@@ -37,7 +37,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.S
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
-import nts.uk.shr.com.context.AppContexts;
 
 /***
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.App.打刻入力を利用できるかを確認する
@@ -78,7 +77,7 @@ extends CommandHandlerWithResult<ConfirmUseOfStampInputCommandWithEmployeeId, Co
 
 		StampFunctionAvailableServiceRequireImpl require = new StampFunctionAvailableServiceRequireImpl(stampUsageRepo,
 				stampCardRepo, stampCardEditRepo, companyAdapter, sysEmpPub, stampRecordRepo, stampDakokuRepo,
-				createDailyResultDomainSv);
+				createDailyResultDomainSv,context.getCommand().getCompanyId());
 
 		StampMeans stampMeans = EnumAdaptor.valueOf(context.getCommand().getStampMeans(), StampMeans.class);
 
@@ -125,6 +124,8 @@ extends CommandHandlerWithResult<ConfirmUseOfStampInputCommandWithEmployeeId, Co
 
 		@Inject
 		private CreateDailyResultDomainService createDailyResultDomainSv;
+		
+		private String compnayId;
 
 		@Override
 		public List<EmployeeDataMngInfoImport> findBySidNotDel(List<String> sids) {
@@ -153,7 +154,7 @@ extends CommandHandlerWithResult<ConfirmUseOfStampInputCommandWithEmployeeId, Co
 
 		@Override
 		public Optional<SettingsUsingEmbossing> get() {
-			return this.stampUsageRepo.get(AppContexts.user().companyId());
+			return this.stampUsageRepo.get(compnayId);
 		}
 
 		@Override

@@ -30,7 +30,7 @@ interface Messages { }
 
 declare function bean(): any;
 
-declare function handler(params: { virtual?: boolean; bindingName: string;	validatable?: boolean; }): any;
+declare function handler(params: { virtual?: boolean; bindingName: string; validatable?: boolean; }): any;
 
 declare function component(params: { name: string; template: string; }): any;
 
@@ -118,18 +118,22 @@ interface KnockoutStatic {
             }
             readonly $dialog: {
                 readonly info: {
+                    (message: string): JQueryDeferred<void>;
                     (options: { messageId: string; }): JQueryDeferred<void>;
                     (options: { messageId: string; messageParams: string[]; }): JQueryDeferred<void>;
                 };
                 readonly alert: {
+                    (message: string): JQueryDeferred<void>;
                     (options: { messageId: string; }): JQueryDeferred<void>;
                     (options: { messageId: string; messageParams: string[]; }): JQueryDeferred<void>;
                 };
                 readonly error: {
+                    (message: string): JQueryDeferred<void>;
                     (options: { messageId: string; }): JQueryDeferred<void>;
                     (options: { messageId: string; messageParams: string[]; }): JQueryDeferred<void>;
                 };
                 readonly confirm: {
+                    (message: string): JQueryDeferred<void>;
                     (options: { messageId: string; }): JQueryDeferred<'no' | 'yes' | 'cancel'>;
                     (options: { messageId: string; messageParams: string[]; }): JQueryDeferred<'no' | 'yes' | 'cancel'>;
                 };

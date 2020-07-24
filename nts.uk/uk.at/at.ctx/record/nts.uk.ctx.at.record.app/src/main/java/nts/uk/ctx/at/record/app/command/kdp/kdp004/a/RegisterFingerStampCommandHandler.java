@@ -113,7 +113,7 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 				stampRefResult.getAtomTask().run();
 			});
 		}
-		return stampRefResult.getReflectDate().isPresent() ? stampRefResult.getReflectDate().get() : null;
+		return stampRefResult.getReflectDate().map(x-> x).orElse(null);
 	}
 
 	@AllArgsConstructor
@@ -184,6 +184,7 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 			this.stampDakokuRepo.insert(stamp);
 		}
 
+		@SuppressWarnings("rawtypes")
 		@Override
 		public ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
 				DatePeriod periodTime, ExecutionAttr executionAttr, String companyId, String empCalAndSumExecLogID,
