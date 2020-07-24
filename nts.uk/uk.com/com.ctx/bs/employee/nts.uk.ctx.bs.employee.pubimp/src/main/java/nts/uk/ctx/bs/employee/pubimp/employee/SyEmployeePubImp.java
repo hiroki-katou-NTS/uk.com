@@ -1108,4 +1108,13 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				.build();
 		return result;
 	}
+
+	@Override
+	public Optional<EmployeeDataMngInfoExport> findByScdNotDel(String employeeCd, String companyId) {
+		return this.empDataMngRepo.findByScdNotDel(employeeCd,companyId).map(mngInfo -> EmployeeDataMngInfoExport.builder()
+				.companyId(mngInfo.getCompanyId()).personId(mngInfo.getPersonId()).employeeId(mngInfo.getEmployeeId())
+				.employeeCode(mngInfo.getEmployeeCode().v()).deletedStatus(mngInfo.getDeletedStatus().value)
+				.deleteDateTemporary(mngInfo.getDeleteDateTemporary()).removeReason(mngInfo.getRemoveReason().v())
+				.externalCode(mngInfo.getExternalCode() == null ? null : mngInfo.getExternalCode().v()).build());
+	}
 }

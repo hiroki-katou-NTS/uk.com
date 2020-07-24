@@ -1,16 +1,16 @@
 
-.view-dialog .box {
+.view-dialog .boxSquare {
 	height: 200px;
 	padding: 37px;
 	border: 1px solid black;
 }
 
-.view-dialog .box .label-column {
+.view-dialog .boxSquare .label-column {
 	width: 120px;
 	margin: 20px;
 }
 
-.view-dialog .box .label-column-select {
+.view-dialog .boxSquare .label-column-select {
 	width: 120px;
 	margin: 20px;
 	padding-top: 20px;

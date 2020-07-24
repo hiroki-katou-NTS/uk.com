@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.query.kmp.kmp001.a;
+package nts.uk.ctx.at.record.app.command.kmp.kmp001.c;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,8 +12,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class StampCardDigitDto {
+public class RegisterStampCardViewCCommand {
 
-	private int stampCardDigitNumber;
-	private int stampCardEditMethod;
+	private String employeeId;
+	private String cardNumber;
+	
 }
