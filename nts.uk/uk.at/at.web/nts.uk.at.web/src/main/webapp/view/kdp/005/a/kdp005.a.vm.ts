@@ -36,8 +36,7 @@ module nts.uk.at.view.kdp005.a {
 			public startPage(): JQueryPromise<void> {
 				let self = this;
 				let dfd = $.Deferred<void>();
-				//nts.uk.characteristics.remove("loginKDP004");
-				nts.uk.characteristics.restore("loginKDP004").done(function(loginInfo: ILoginInfo) {
+				nts.uk.characteristics.restore("loginKDP005").done(function(loginInfo: ILoginInfo) {
 					if (!loginInfo) {
 						self.setLoginInfo().done((loginResult) => {
 							if (!loginResult) {
@@ -143,7 +142,7 @@ module nts.uk.at.view.kdp005.a {
 						}
 
 						self.loginInfo.selectedWP = result;
-						nts.uk.characteristics.save("loginKDP004", self.loginInfo);
+						nts.uk.characteristics.save("loginKDP005", self.loginInfo);
 						dfd.resolve(self.loginInfo);
 					});
 				}).always(() => {
@@ -408,7 +407,7 @@ module nts.uk.at.view.kdp005.a {
 							if (result) {
 								self.loginInfo.selectedWP = result;
 							}
-							nts.uk.characteristics.save("loginKDP004", self.loginInfo);
+							nts.uk.characteristics.save("loginKDP005", self.loginInfo);
 							jump("at", "/view/kdp/005/a/index.xhtml");
 						});
 					}
