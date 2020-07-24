@@ -98,8 +98,17 @@ public class GetEmpLicenseClassificationServiceTest {
 				new EmpMedicalWorkFormHisItem(
 				"003", 
 				"historyID1", true,// dummy
-				Optional.ofNullable(null),// dummy
+				Optional.ofNullable(new MedicalWorkFormInfor(MedicalCareWorkStyle.FULLTIME,
+						new NurseClassifiCode("9"), true)),
 				Optional.ofNullable(null)));// dummy
+		
+		listEmpMedicalWorkFormHisItem.add(new EmpMedicalWorkFormHisItem(
+				"002", 
+				"historyID2", true,
+				Optional.ofNullable(new MedicalWorkFormInfor(MedicalCareWorkStyle.FULLTIME,
+						new NurseClassifiCode("7"), true)),
+				Optional.ofNullable(null)));// dummy
+
 		
 		new Expectations() {
 			{
