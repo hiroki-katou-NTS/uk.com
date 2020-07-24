@@ -1,6 +1,10 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.kdp003.s {
+	interface Params {
+		employeeId: string;
+	}
+
 	const API = {
 		GET_STAMP_MANAGEMENT: '/at/record/stamp/management/personal/stamp/getStampData'
 	};
@@ -16,6 +20,14 @@ module nts.uk.at.kdp003.s {
 			all: ko.observableArray([])
 		};
 
+		constructor(private params: Params) {
+			super();
+
+			if (!params) {
+				this.params = { employeeId: '' };
+			}
+		}
+
 		created() {
 			const vm = this;
 			const { randomId } = nts.uk.util;
@@ -25,7 +37,7 @@ module nts.uk.at.kdp003.s {
 
 			vm.dataSources.filtereds = ko.computed({
 				read: () => {
-					const filtereds:StampDisp[] = [];
+					const filtereds: StampDisp[] = [];
 					const allStamps: StampData[] = ko.unwrap(vm.dataSources.all);
 					const engraving: ENGRAVING = ko.unwrap(vm.filter.engraving);
 
@@ -74,11 +86,12 @@ module nts.uk.at.kdp003.s {
 			vm.filter.day
 				.subscribe((value: number) => {
 					const fm = 'YYYY/MM/DD';
+					const { employeeId } = vm.params;
 					const baseDate = moment(`${value}`, 'YYYYMM');
 					const endDate = baseDate.endOf('month').format(fm);
 					const startDate = baseDate.startOf("month").format(fm);
 
-					vm.$ajax(API.GET_STAMP_MANAGEMENT, { endDate, startDate })
+					vm.$ajax(API.GET_STAMP_MANAGEMENT, { employeeId, endDate, startDate })
 						.then((data: StampData[]) => {
 							if (ko.toJS(vm.filter.day) === value) {
 								vm.dataSources.all(data);
