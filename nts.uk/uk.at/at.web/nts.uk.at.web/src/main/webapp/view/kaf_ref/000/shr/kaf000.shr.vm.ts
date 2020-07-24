@@ -18,6 +18,9 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
             this.opAppReason = ko.observable(opAppReason);
             this.opAppStandardReasonCD = ko.observable(opAppStandardReasonCD);
             this.opReversionReason = ko.observable(opReversionReason);
+            this.appDate.subscribe((value) => {
+                this.appDate(moment(value).format('YYYY/MM/DD'));    
+            });
         }        
     }       
     
@@ -31,12 +34,22 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
     }
     
     export module model {
+        // loại người đăng nhập
+        // người đại diện tương đương người approver, người confirm có ưu tiên cao hơn
         export enum UserType { 
-             APPLICANT_APPROVER = 0,
-             APPROVER = 1,
-             APPLICANT = 2,
-             OTHER = 3,        
-        };  
+            APPLICANT_APPROVER = 0, // 申請本人&承認者
+            APPROVER = 1, // 承認者
+            APPLICANT = 2, // 申請本人
+            OTHER = 3, // その他        
+        }; 
+        
+        // trạng thái của phase chứa user
+        export enum ApprovalAtr { 
+            UNAPPROVED = 0, // 未承認   
+            APPROVED = 1, // 承認済
+            DENIAL = 2, // 否認
+            REMAND = 3, // 差し戻し
+        };
         
         export enum Status {
             NOTREFLECTED = 0, // 未反映

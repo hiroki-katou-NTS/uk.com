@@ -105,16 +105,16 @@
 
 					</div>
 					<!-- B1_9 -->
-					<div class="controlButtonCell_kaf000" style="visibility: hidden;">
+					<div class="controlButtonCell_kaf000">
 						<button class="kaf000-function-btn">#{i18n.getText('KAF000_20')}</button>
 					</div>
 					<!-- B1_10 -->
-					<div class="controlButtonCell_kaf000" style="visibility: hidden;">
+					<div class="controlButtonCell_kaf000" style="display: none">
 						<button class="kaf000-function-btn"
 							data-bind="click: btnReferences">#{i18n.getText('KAF000_21')}</button>
 					</div>
 					<!-- B1_11 -->
-					<div class="controlButtonCell_kaf000">
+					<div class="controlButtonCell_kaf000" style="display: none">
 						<button class="kaf000-function-btn"
 							data-bind="click: btnSendEmail">#{i18n.getText('KAF000_22')}</button>
 					</div>
@@ -127,7 +127,7 @@
 							data-bind="click: btnDelete, enable : enableDeleteButton()">#{i18n.getText('KAF000_23')}</button>
 					</div>
 				</div>
-				<div class="kaf000-function-div-cancel" data-bind="if: false">
+				<div class="kaf000-function-div-cancel">
 					<!-- B1_13 -->
 					<div class="controlButtonCell_kaf000"
 						data-bind="if: displayCancelButton">
@@ -148,7 +148,7 @@
 							name: 'kaf007-b',
 							params: { 
 								appDispInfoStartupOutput: $vm.appDispInfoStartupOutput,
-								event: function(cb) { $vm.getChildEvent.apply($vm, [cb]) }
+								eventUpdate: function(a) { $vm.getChildUpdateEvent.apply($vm, [a]) }
 							}
 						}"></div>
 				</div>

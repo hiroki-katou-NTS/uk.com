@@ -41,6 +41,7 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 		boolean isAutoSendMail = false;
 		List<String> autoSuccessMail = new ArrayList<>();
 		List<String> autoFailMail = new ArrayList<>();
+		List<String> autoFailServer = new ArrayList<>();
 		String loginEmployeeID = AppContexts.user().employeeId();
 		// 2.承認する(ApproveService)
 		Integer phaseNumber = approvalRootStateAdapter.doApprove(appID, loginEmployeeID);
@@ -67,7 +68,7 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 			// applicationRepository.update(application);
 			// INPUT．申請表示情報．申請表示情報(基準日関係なし)．メールサーバ設定済区分をチェックする
 			if(!appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet()) {
-				return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID, reflectAppId);
+				return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, appID, reflectAppId);
 			}
 		}
 		isAutoSendMail = true;
@@ -78,6 +79,7 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 				allApprovalFlg);
 		autoSuccessMail.addAll(processResult1.getAutoSuccessMail());
 		autoFailMail.addAll(processResult1.getAutoFailMail());
+		autoFailServer.addAll(processResult1.getAutoFailServer());
 		// アルゴリズム「新規登録時のメール送信判定」を実行する ( Thực hiện thuật toán 「 Xác định gửi mail khi đăng ký mới」
 		ProcessResult processResult2 = newRegisterMailSendCheck.sendMail(
 				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSetting(), 
@@ -85,7 +87,8 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 				phaseNumber);
 		autoSuccessMail.addAll(processResult2.getAutoSuccessMail());
 		autoFailMail.addAll(processResult2.getAutoFailMail());
-		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID, reflectAppId);
+		autoFailServer.addAll(processResult2.getAutoFailServer());
+		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, appID, reflectAppId);
 	}
 
 }

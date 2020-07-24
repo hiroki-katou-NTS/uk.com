@@ -37,22 +37,24 @@ public class NewAfterRegisterImpl_New implements NewAfterRegister_New {
 		boolean isAutoSendMail = false;
 		List<String> autoSuccessMail = new ArrayList<>();
 		List<String> autoFailMail = new ArrayList<>();
+		List<String> autoFailServer = new ArrayList<>();
 		// アルゴリズム「登録処理時のメール自動送信するか判定」を実行するthực hiện thuật toán "kiểm tra xem ở xử lý đăng ký có gửi mail tự đọng"
 		SendMailAtr sendMailAtr = applicationAlgorithm.checkAutoSendMailRegister(appID, appTypeSetting, mailServerSet);
 		if(sendMailAtr == SendMailAtr.NOT_SEND) {
-			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID, ""); 
+			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, appID, ""); 
 		}
 		isAutoSendMail = true;
 		// Imported(就業)「社員」を取得する(lấy thông tin Imported(就業)「社員」) 
 		List<String> destinationList = approvalRootStateAdapter.getNextApprovalPhaseStateMailList(appID, 5);
 		if(CollectionUtil.isEmpty(destinationList)) {
-			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID, ""); 
+			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, appID, ""); 
 		}
 		Application application = applicationRepository.findByID(appID).get();
 		// 承認者へ送る（新規登録、更新登録、承認）//Gửi đến người approve(đăng ký mới, đăng ký update, approve)
 		MailResult mailResult = otherCommonAlgorithm.sendMailApproverApprove(destinationList, application);
 		autoSuccessMail = mailResult.getSuccessList();
 		autoFailMail = mailResult.getFailList();
-		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID, "");
+		autoFailServer = mailResult.getFailServerList();
+		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, appID, "");
 	}
 }

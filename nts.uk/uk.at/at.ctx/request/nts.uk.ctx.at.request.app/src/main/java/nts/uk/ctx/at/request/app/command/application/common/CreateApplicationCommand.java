@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 /**
  * refactor 4
  * @author Doan Duy Hung
@@ -43,7 +42,7 @@ public class CreateApplicationCommand {
 	/**
 	 * 申請日
 	 */
-	private GeneralDate appDate;
+	private String appDate;
 	
 	/**
 	 * 定型理由

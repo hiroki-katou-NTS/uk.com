@@ -15,6 +15,6 @@ public interface AppWorkChangeRepository {
 	
 	public void update(AppWorkChange appWorkChange);
 	
-	public void remove(AppWorkChange appWorkChange);
+	public void remove(String companyID, String appID);
 
 }

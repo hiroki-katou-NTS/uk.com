@@ -108,14 +108,15 @@ public class ApproveHolidayShipmentCommandHandler
 			appReason = applicationRepository.findByID(companyID, processResult.getAppID()).get().getAppReason().v();
 		}
 		
-		return new ApproveProcessResult(
+		/*return new ApproveProcessResult(
 				processResult.isProcessDone(), 
 				processResult.isAutoSendMail(), 
 				processResult.getAutoSuccessMail(), 
 				processResult.getAutoFailMail(), 
 				processResult.getAppID(), 
 				processResult.getReflectAppId(), 
-				appReason);
+				appReason);*/
+		return null;
 	}
 
 	private ProcessResult approvalApplication(HolidayShipmentCommand command, String companyID, String employeeeID,
