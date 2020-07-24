@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+                var dialogSize = {
+                    width : 700,
+                    height : 500
+                };
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="./kmr001.d.style.css" />
+			<com:stylefile path="../kmr001.common.styles.css"/>
+			<com:scriptfile path="./kmr001.d.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area"></div>
+			<div id="contents-area" class="kdp-003-a">
+				<!--D1_1-->
+				<div id="kmr001-d-left-content" data-bind="ntsPanel:{width: '300px', height: '300px', direction: 'right', showIcon: false, visible: true}">
+					<!--D1_2-->
+					<button>#{i18n.getText('KMR002_52')}</button>
+					<!--D1_3-->
+					<button class="proceed">#{i18n.getText('KMR002_53')}</button>
+					<!--D1_4-->
+					<button class="danger">#{i18n.getText('KMR002_54')}</button>
+					<div class="break-line"></div>
+					<!--D1_5-->
+					<div id="list-box" data-bind="ntsListBox: {
+						options: itemList,
+						optionsValue: 'from',
+						optionsText: 'to',
+						multiple: true,
+						value: selectedCodes,
+						enable:true,
+						rows: 2,
+						columns: [
+							{ key: 'from', length: 10 },
+							{ key: 'to', length: 10 }
+						]}"></div>
+				</div>
+				<div id="kmr001-d-right-content">
+					<!--D2-->
+					<span class="label">項目移送</span>
+					<!--D3_1-->
+					<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true}">#{i18n.getText('KMR002_56')}</div>
+					<div class="break-line"></div>
+					<!--D3_2-->
+					<div data-bind="ntsDatePicker: { value: date }"></div>
+					<!--D3_3-->
+					<span class="label"> ~ </span>
+					<!--D3_4-->
+					<span class="label">9999/12</span>
+				</div>
+
+				<div class="break-line"></div>
+                <hr/>
+				<div id="kmr001-d-bottom-content">
+					<!--D5_1-->
+					<button class="proceed">#{i18n.getText('KMR002_59')}</button>
+					<!--D5_2-->
+					<button data-bind="click: cancel">#{i18n.getText('KMR002_60')}</button>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
