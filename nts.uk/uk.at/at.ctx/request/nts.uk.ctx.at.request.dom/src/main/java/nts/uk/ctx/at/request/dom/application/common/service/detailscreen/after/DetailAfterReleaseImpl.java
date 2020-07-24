@@ -32,6 +32,7 @@ public class DetailAfterReleaseImpl implements DetailAfterRelease {
 		boolean isAutoSendMail = false;
 		List<String> autoSuccessMail = new ArrayList<>();
 		List<String> autoFailMail = new ArrayList<>();
+		List<String> autoFailServer = new ArrayList<>();
 		Application_New application = applicationRepository.findByID(companyID, appID).get();
 		Boolean releaseFlg = approvalRootStateAdapter.doRelease(companyID, appID, loginID);
 		if(releaseFlg.equals(Boolean.TRUE)){
@@ -39,6 +40,6 @@ public class DetailAfterReleaseImpl implements DetailAfterRelease {
 			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
 			applicationRepository.updateWithVersion(application);
 		}
-		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID, "");
+		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, appID, "");
 	}
 }

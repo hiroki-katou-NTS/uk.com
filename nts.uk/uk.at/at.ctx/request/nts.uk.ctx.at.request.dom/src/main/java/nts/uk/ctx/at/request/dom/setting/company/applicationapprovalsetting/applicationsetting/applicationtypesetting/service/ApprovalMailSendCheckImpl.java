@@ -28,18 +28,20 @@ public class ApprovalMailSendCheckImpl implements ApprovalMailSendCheck {
 		boolean isAutoSendMail = false;
 		List<String> autoSuccessMail = new ArrayList<>();
 		List<String> autoFailMail = new ArrayList<>();
+		List<String> autoFailServer = new ArrayList<>();
 		// ドメインモデル「申請種類別設定」．承認処理時に自動でメールを送信するをチェックする(check domain 「申請種類別設定」．承認処理時に自動でメールを送信する)
 		if(!appTypeSetting.isSendMailWhenApproval()) {
-			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, "", "");
+			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, "", "");
 		}
 		// アルゴリズム「承認全体が完了したか」の実行結果をチェックする
 		if(!allApprovalFlg) {
-			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, "", "");
+			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, "", "");
 		}
 		// 申請者本人にメール送信する(gửi mail cho người viết đơn)
 		MailResult applicantResult = otherCommonAlgorithm.sendMailApplicantApprove(application);
 		autoSuccessMail.addAll(applicantResult.getSuccessList());
 		autoFailMail.addAll(applicantResult.getFailList());
-		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, "", "");
+		autoFailServer.addAll(applicantResult.getFailServerList());
+		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, "", "");
 	}
 }

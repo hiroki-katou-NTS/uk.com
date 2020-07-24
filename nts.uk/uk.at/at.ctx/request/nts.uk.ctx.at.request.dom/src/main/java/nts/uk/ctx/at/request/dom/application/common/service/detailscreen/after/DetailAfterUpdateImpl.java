@@ -49,6 +49,7 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 		boolean isAutoSendMail = false;
 		List<String> autoSuccessMail = new ArrayList<>();
 		List<String> autoFailMail = new ArrayList<>();
+		List<String> autoFailServer = new ArrayList<>();
 		
 		ApproverApprovedImport_New approverApprovedImport = approvalRootStateAdapter.getApproverApproved(application.getAppID());
 		
@@ -63,14 +64,14 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 		
 		// 承認を行った承認者一覧に項目があるかチェックする
 		if (CollectionUtil.isEmpty(approverApprovedImport.getListApprover())) {
-			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, application.getAppID(),"");
+			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, application.getAppID(),"");
 		}
 		
 		// 承認を行った承認者一覧に項目がある ( There is an item in the approver list that made approval )
 		// ドメインモデル「申請種類別設定」．新規登録時に自動でメールを送信するをチェックする ( Domain model "Application type setting". Check to send mail automatically when newly registered )
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value);
 		if (appTypeDiscreteSettingOp.get().getSendMailWhenRegisterFlg().equals(AppCanAtr.NOTCAN)) {
-			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, application.getAppID(),"");
+			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, application.getAppID(),"");
 		}
 		isAutoSendMail = true;
 		// 「申請種類別設定」．新規登録時に自動でメールを送信するがtrue ( "Setting by application type". Automatically send mail when new registration is true )
@@ -99,7 +100,8 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 			MailResult mailResult = otherCommonAlgorithm.sendMailApproverApprove(destinationList, application);
 			autoSuccessMail = mailResult.getSuccessList();
 			autoFailMail = mailResult.getFailList();
+			autoFailServer = mailResult.getFailServerList();
 		}
-		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, application.getAppID(),"");
+		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, application.getAppID(),"");
 	}
 }

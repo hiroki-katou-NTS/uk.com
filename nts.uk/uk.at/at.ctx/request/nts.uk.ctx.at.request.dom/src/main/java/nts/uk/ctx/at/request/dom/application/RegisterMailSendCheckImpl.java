@@ -40,6 +40,7 @@ public class RegisterMailSendCheckImpl implements RegisterMailSendCheck {
 		boolean isAutoSendMail = false;
 		List<String> autoSuccessMail = new ArrayList<>();
 		List<String> autoFailMail = new ArrayList<>();
+		List<String> autoFailServer = new ArrayList<>(); 
 		List<String> destinationList = new ArrayList<>();
 		// ドメインモデル「申請種類別設定」．新規登録時に自動でメールを送信するをチェックする
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value);
@@ -48,7 +49,7 @@ public class RegisterMailSendCheckImpl implements RegisterMailSendCheck {
 		}
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
 		if(appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.NOTCAN)){
-			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, application.getAppID(),"");
+			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, application.getAppID(),"");
 		}
 		isAutoSendMail = true;
 		// アルゴリズム「送信先リストの取得」を実行する
@@ -61,7 +62,8 @@ public class RegisterMailSendCheckImpl implements RegisterMailSendCheck {
 			MailResult mailResult = otherCommonAlgorithm.sendMailApproverApprove(destinationList, application);
 			autoSuccessMail = mailResult.getSuccessList();
 			autoFailMail = mailResult.getFailList();
+			autoFailServer = mailResult.getFailServerList();
 		}
-		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, application.getAppID(),"");
+		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, application.getAppID(),"");
 	}
 }
