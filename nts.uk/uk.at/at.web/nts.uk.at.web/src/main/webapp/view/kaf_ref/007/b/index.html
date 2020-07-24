@@ -1,10 +1,40 @@
 <div>
-	<div data-bind="component: { name: 'kaf000-b-component1', params: {} }"></div>
-	<div data-bind="component: { name: 'kaf000-b-component2', params: {} }"></div>
-	<div data-bind="component: { name: 'kaf000-b-component3', params: {} }"></div>
-	<div data-bind="component: { name: 'kaf000-b-component4', params: {} }"></div>
-	<div data-bind="component: { name: 'kaf000-b-component5', params: {} }"></div>
-	<div data-bind="component: { name: 'kaf000-b-component6', params: {} }"></div>
+	<div data-bind="component: { name: 'kaf000-b-component1', 
+								params: {
+									appDispInfoStartupOutput: appDispInfoStartupOutput	
+								} }"></div>
+	<div data-bind="component: { name: 'kaf000-b-component2', 
+								params: {
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
+	<div data-bind="component: { name: 'kaf000-b-component3', 
+								params: {
+									application: application,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
+	<div data-bind="component: { name: 'kaf000-b-component4', 
+								params: {
+									application: application,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
+	<div data-bind="component: { name: 'kaf000-b-component5', 
+								params: {
+									application: application,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
+	<div data-bind="component: { name: 'kaf000-b-component6', 
+								params: {
+									application: application,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
 	<div data-bind="component: { name: 'kaf007-share', params: appWorkChange }"></div>
-	<div data-bind="component: { name: 'kaf000-b-component7', params: {} }"></div>
+	<div data-bind="component: { name: 'kaf000-b-component7', 
+								params: {
+									application: application,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
+	<div data-bind="component: { name: 'kaf000-b-component8', 
+								params: {
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
 </div>
