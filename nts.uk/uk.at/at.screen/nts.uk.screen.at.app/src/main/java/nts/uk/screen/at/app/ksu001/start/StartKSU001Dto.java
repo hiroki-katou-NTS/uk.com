@@ -7,6 +7,7 @@ import java.util.List;
 
 import lombok.Value;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
+import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftResult;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DataSpecDateAndHolidayDto;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforDto;
 
@@ -20,5 +21,7 @@ public class StartKSU001Dto {
 	public DataScreenQueryGetInforDto dataStep1;
 	public List<EmployeeInformationImport> dataStep2;
 	public DataSpecDateAndHolidayDto dataStep3;
-
+	public DisplayInShiftResult displayInShiftResult; 
+	 
+	
 }

@@ -131,6 +131,7 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 						.collect(Collectors.toList())))
 				.collect(Collectors.toList());
 		approvalRootStatePub.insertFromCache(companyID, appID, date, employeeID, convertLst);
+//						x.getPhaseOrder(), 
 	}
 
 	@Override

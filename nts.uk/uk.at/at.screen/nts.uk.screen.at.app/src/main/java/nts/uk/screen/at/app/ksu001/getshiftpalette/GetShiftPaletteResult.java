@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.screen.at.app.ksu001.displayinshift.PageShift;
 
 /**
  * 
@@ -22,7 +23,7 @@ public class GetShiftPaletteResult {
 
 	List<PageInfo> listPageInfo ; // List<ページ, 名称>
 	Optional<TargetShiftPalette> targetShiftPalette ; // 対象のシフトパレット： Optional<ページ, シフトパレット>
-	List<Shift> listOfShift; // 取得したシフト一覧：List<シフトマスタ, Optional<出勤休日区分>>
-	List<String> lstShiftMasterCode; // truong nay khong co trong output cua thuat toan.
+	List<PageShift> listOfShift; // 取得したシフト一覧：List<シフトマスタ, Optional<出勤休日区分>> 
+	List<String> listShiftMasterCodeGetNew; // truong nay khong co trong output cua thuat toan.
 	
 }

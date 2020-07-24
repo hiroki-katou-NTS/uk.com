@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.screen.at.app.ksu001.getshiftpalette;
+package nts.uk.screen.at.app.ksu001.start;
 
 import lombok.AllArgsConstructor;
 
@@ -10,10 +10,11 @@ import lombok.AllArgsConstructor;
  *
  */
 @AllArgsConstructor
-public enum ShiftPalletUnit {
+public enum ModeDisPlay {
 	
-	COMPANY(0),
-	WORKPLACE(1);
+	SHIFT(1),
+	DETAIL(2),
+	WORKING(3);
 	public int value;
 	
 }

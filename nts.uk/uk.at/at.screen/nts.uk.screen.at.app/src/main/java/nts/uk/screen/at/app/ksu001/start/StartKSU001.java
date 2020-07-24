@@ -57,7 +57,7 @@ public class StartKSU001 {
 		DataSpecDateAndHolidayDto resultStep3 = eventInfoAndPersonalCondPeriod.get(param3);
 		
 		
-		if (param.dataLocalstorageEmpty) {
+		if (param.modeDisplay == ModeDisPlay.SHIFT.value ) {
 			// step4 || step 5.2
 			
 			

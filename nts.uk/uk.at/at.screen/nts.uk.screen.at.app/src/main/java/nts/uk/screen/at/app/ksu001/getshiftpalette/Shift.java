@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
  */
 @Value
 public class Shift {
-	public ShiftMasterDto shiftMaster;
-	public Optional<WorkStyle> workStyle;
+	public ShiftMasterDto shiftMaster;     // シフトマスタ
+	public Optional<WorkStyle> workStyle;  // 出勤休日区分
 	
 }
