@@ -184,6 +184,7 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 			this.stampDakokuRepo.insert(stamp);
 		}
 
+		@SuppressWarnings("rawtypes")
 		@Override
 		public ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
 				DatePeriod periodTime, ExecutionAttr executionAttr, String companyId, String empCalAndSumExecLogID,
