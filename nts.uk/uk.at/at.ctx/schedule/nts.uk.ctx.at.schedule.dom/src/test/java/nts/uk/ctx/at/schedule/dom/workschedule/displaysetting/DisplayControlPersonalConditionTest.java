@@ -2,9 +2,9 @@ package nts.uk.ctx.at.schedule.dom.workschedule.displaysetting;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.Assert.assertNotNull;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,6 +16,7 @@ import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpLicenseClassification;
@@ -29,7 +30,9 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamCd;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamName;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice.EmpTeamInfor;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice.GetScheduleTeamInfoService;
+import nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.PersonSymbolQualify;
 import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.DisplayControlPersonalCondition.Require;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 
 @RunWith(JMockit.class)
@@ -45,23 +48,45 @@ public class DisplayControlPersonalConditionTest {
 	}
 	@Test
 	public void get_Have_Msg() {
+		List<PersonInforDisplayControl> result = Arrays.asList(
+				new PersonInforDisplayControl(
+						EnumAdaptor.valueOf(0, ConditionATRWorkSchedule.class),
+						EnumAdaptor.valueOf(1, NotUseAtr.class)),
+				new PersonInforDisplayControl(
+						EnumAdaptor.valueOf(1, ConditionATRWorkSchedule.class),
+						EnumAdaptor.valueOf(1, NotUseAtr.class)),
+				new PersonInforDisplayControl(
+						EnumAdaptor.valueOf(2, ConditionATRWorkSchedule.class),
+						EnumAdaptor.valueOf(1, NotUseAtr.class)));
 		NtsAssert.
 		businessException("Msg_1682", 
 				() -> { DisplayControlPersonalCondition.get(
 				"cid", 
-				DisplayControlPersonalConditionHelper.getListPersonInfor(),
+				result,
 				Optional.empty());
 		});}
 
 	@Test
-	public void getSucces(){
+	public void test_getSucces(){
+		WorkscheQualifi qualifi = new WorkscheQualifi(new PersonSymbolQualify("1"), Collections.emptyList());
+		
+		List<PersonInforDisplayControl> result = Arrays.asList(
+				new PersonInforDisplayControl(
+						EnumAdaptor.valueOf(3, ConditionATRWorkSchedule.class),
+						EnumAdaptor.valueOf(1, NotUseAtr.class)));
+		
 		DisplayControlPersonalCondition condition = DisplayControlPersonalCondition.get(
-				"cid", DisplayControlPersonalConditionHelper.getListPersonSucces(), DisplayControlPersonalConditionHelper.getWorkscheQualifi());
-		assertNotNull(condition);
+				"cid", result, Optional.ofNullable(qualifi));
+		assertThat(condition.getCompanyID().equals("cid")).isTrue();
+		assertThat(condition.getOtpWorkscheQualifi().get().getQualificationMark().v().equals("1")).isTrue();
+		assertThat(condition.getOtpWorkscheQualifi().get().getListQualificationCD().isEmpty()).isTrue();
+		assertThat(condition.getListConditionDisplayControl()).extracting(x-> x.getConditionATR().value,
+				x-> x.getDisplayCategory().value)
+		.containsExactly(tuple(3,1));
 	}
 	
 	@Test
-	public void acquireInforDisplayControlPersonalCondition(){
+	public void test_acquireInforDisplayControlPersonalCondition(){
 		List<String> listEmp = Arrays.asList("003","004"); // dummy
 
 		// ------------------------- Mocking ↓
@@ -91,7 +116,9 @@ public class DisplayControlPersonalConditionTest {
 				return lstEmpLicense;
 			}
 		};
-		List<PersonalCondition> list = DisplayControlPersonalCondition.acquireInforDisplayControlPersonalCondition(require, GeneralDate.today(), listEmp);
+		
+		DisplayControlPersonalCondition data = null; // dummy
+		List<PersonalCondition> list = data.acquireInforDisplayControlPersonalCondition(require, GeneralDate.today(), listEmp);
 		assertThat(list).extracting(x-> x.getEmpId(),
 				x-> x.getOptLicenseClassification().get().name(),
 				x-> x.getOptRankSymbol().get(),
