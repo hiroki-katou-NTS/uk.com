@@ -109,6 +109,12 @@ module nts.uk.at.kdp003.a {
 							};
 
 							vm.$window.storage(KDP003_SAVE_DATA, storageData);
+						} else {
+							if (!loginData.msgErrorId) {
+								vm.message(loginData.errorMessage);
+							} else {
+								vm.message({ messageId: loginData.msgErrorId });
+							}
 						}
 
 						return loginData;
@@ -176,10 +182,9 @@ module nts.uk.at.kdp003.a {
 									}
 								}
 
-								vm.$window.storage(KDP003_SAVE_DATA, storage);
-							})
-							// return data from storage
-							.then(() => vm.$window.storage(KDP003_SAVE_DATA));
+								// return data from storage
+								return vm.$window.storage(KDP003_SAVE_DATA, storage);
+							});
 					}
 				})
 				.then((data: false | StorageData) => {
@@ -189,7 +194,10 @@ module nts.uk.at.kdp003.a {
 					}
 				})
 				// show message from login data (return by f dialog)
-				.fail((message: { messageId: string }) => vm.$dialog.error(message))
+				.fail((message: { messageId: string }) => {
+					vm.message(message);
+					vm.$dialog.error(message);
+				})
 				.always(() => vm.$blockui('clear'));
 		}
 
@@ -232,7 +240,6 @@ module nts.uk.at.kdp003.a {
 						clearState();
 					}
 				})
-
 				.then(() => vm.$ajax('at', API.HIGHTLIGHT))
 				.then((data: share.StampToSuppress) => vm.buttonPage.stampToSuppress(data))
 				// <<ScreenQuery>>: 打刻入力(氏名選択)で社員の一覧を取得する
@@ -283,7 +290,8 @@ module nts.uk.at.kdp003.a {
 				})
 				// check storage data
 				.then((state: false | f.TimeStampLoginData) => {
-					if (state === false || state.msgErrorId || state.errorMessage) {
+					if (state === false || !!state.msgErrorId || !!state.errorMessage) {
+						debugger;
 						if (state !== false) {
 							if (state.msgErrorId) {
 								vm.message({
@@ -312,10 +320,9 @@ module nts.uk.at.kdp003.a {
 										storage.WKPID = [data.selectedId];
 									}
 								}
-								vm.$window.storage(KDP003_SAVE_DATA, storage);
-							})
-							// return data from storage
-							.then(() => vm.$window.storage(KDP003_SAVE_DATA));
+								// return data from storage
+								return vm.$window.storage(KDP003_SAVE_DATA, storage);
+							});
 					}
 				})
 				.then((data: false | StorageData) => {
@@ -325,7 +332,10 @@ module nts.uk.at.kdp003.a {
 					}
 				})
 				// show message from login data (return by f dialog)
-				.fail((message: { messageId: string }) => vm.$dialog.error(message));
+				.fail((message: { messageId: string }) => {
+					vm.message(message);
+					vm.$dialog.error(message);
+				});
 		}
 
 		stampHistory() {
@@ -403,6 +413,28 @@ module nts.uk.at.kdp003.a {
 				})
 				// always relead setting (color & type of all button in tab)
 				.always(reloadSetting);
+		}
+	}
+
+	@handler({
+		bindingName: 'kdp-error',
+		validatable: true,
+		virtual: false
+	})
+	export class MessageErrorBindingHandler implements KnockoutBindingHandler {
+		update(element: any, valueAccessor: () => KnockoutObservable<f.Message | string | null | undefined>, __: KnockoutAllBindingsAccessor, vm: ComponentViewModel): void {
+			const $el = $(element);
+			const msg = ko.unwrap(valueAccessor());
+
+			if (!msg) {
+				$el.html('');
+			} else {
+				if (_.isString(msg)) {
+					$el.html(vm.$i18n(msg));
+				} else {
+					$el.html(vm.$i18n.message(msg.messageId, msg.messageParams));
+				}
+			}
 		}
 	}
 

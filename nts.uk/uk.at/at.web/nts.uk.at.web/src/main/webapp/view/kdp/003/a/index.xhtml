@@ -70,12 +70,7 @@
 								}"></div>
 						</com:ko-if>
 						<com:ko-if bind="!!ko.unwrap($vm.message)">
-							<com:ko-if bind="_.isString(ko.unwrap($vm.message))">
-								<div class="not_used_label" data-bind="html: ko.unwrap($vm.message)"></div>
-							</com:ko-if>
-							<com:ko-if bind="!_.isString(ko.unwrap($vm.message))">
-								<div class="not_used_label" data-bind="i18n: ko.unwrap($vm.message).messageId, params: ko.unwrap($vm.message).messageParams"></div>
-							</com:ko-if>
+							<div class="not_used_label" data-bind="kdp-error: $vm.message"></div>
 						</com:ko-if>
 					</div>
 					<div class="cf"></div>
