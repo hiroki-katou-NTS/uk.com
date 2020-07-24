@@ -28,6 +28,7 @@ module nts.uk.at.view.kdp005.a {
 			errorMessage: KnockoutObservable<string> = ko.observable('');
 			loginInfo: any = null;
 			retry: number = 0;
+            listCompany: KnockoutObservableArray<any> = ko.observableArray([]);
 			constructor() {
 				let self = this;
 
@@ -56,8 +57,25 @@ module nts.uk.at.view.kdp005.a {
                         });
                     }
 				});
+                service.getLogginSetting().done((res) => {
+                    self.listCompany(res);
+                });
 				return dfd.promise();
 			}
+            
+            showButton() {
+                let self = this;
+                if (!self.isUsed()) {
+                    if (self.listCompany().length > 0) {
+                        return ButtonDisplayMode.ShowHistory;
+                    } else {
+                        return ButtonDisplayMode.NoShow;
+                    }
+
+                }
+
+                return ButtonDisplayMode.ShowAll;
+            }
 
 			getErrorNotUsed(errorType) {
 				const notUseMessage = [
@@ -507,6 +525,11 @@ module nts.uk.at.view.kdp005.a {
 		}
 
 	}
+    enum ButtonDisplayMode {
+        NoShow = 1,
+        ShowHistory = 2,
+        ShowAll = 3
+    }
 	enum Mode {
 		Personal = 1, // 個人
 		Shared = 2  // 共有 

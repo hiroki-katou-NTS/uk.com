@@ -23,24 +23,65 @@
 			<div id="contents-area" class="cf">
 				<div id="kdp002a" class="cf">
 					<div class="pull-left" id="stamp-input">
-					
-					<!-- clock -->
-					<div data-bind="component: {
-							name: 'stamp-clock',
-							params: {
-								setting: {
-									textColor: stampSetting().textColor,
-									backGroundColor:  stampSetting().backGroundColor
-								},
-								events: {
-									setting: function(data, event) { settingUser($vm)},
-									company: function(data, event) { checkHis($vm) }
+
+						<!-- clock -->
+						<com:ko-if bind="showButton() == 1">
+							<div data-bind="component: {
+								name: 'stamp-clock',
+								params: {
+									setting: {
+										textColor: '#ffffff',
+										backGroundColor:  '#0033cc'
+									}
 								}
-							}
-						}">
-					</div>
-					
-					<!-- stamp -->						
+							}"></div>
+						</com:ko-if>
+
+						<com:ko-if bind="showButton() == 2">
+							<div data-bind="component: {
+								name: 'stamp-clock',
+								params: {
+									setting: {show:true,
+										textColor: '#ffffff',
+										backGroundColor:  '#0033cc'
+									},
+									events: {
+										setting: {
+											show: true,
+											click:  function(data, event) { settingUser($vm)} 
+										},
+										company:{
+											show: false,
+											click:  function(data, event) { checkHis($vm) }
+										}
+									}
+								}
+							}"></div>
+						</com:ko-if>
+
+						<com:ko-if bind="showButton() == 3">
+							<div data-bind="component: {
+								name: 'stamp-clock',
+								params: {
+									setting: {show:true,
+										textColor: stampSetting().textColor,
+										backGroundColor:  stampSetting().backGroundColor
+									},
+									events: {
+										setting:{
+										show: true,
+											click:  function(data, event) { settingUser($vm)}
+										} ,
+										company:{
+											show: true,
+											click:  function(data, event) { checkHis($vm) }
+										} 
+									}
+								}
+							}"></div>
+						</com:ko-if>
+
+						<!-- stamp -->						
 					<div data-bind="if:isUsed" class="panel" style="padding: 0 10px 0px 10px">
 						<div class="explanatoryText" data-bind="style: {'color': stampTab().stampPageCommentColor }">
 							<pre data-bind="text: stampTab().stampPageComment"></pre>
