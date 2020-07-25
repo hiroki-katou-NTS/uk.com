@@ -104,7 +104,7 @@ module nts.uk.at.view.kdp004.a {
 							block.grayout();
 							service.startPage()
 								.done((res: any) => {
-									if (!res.stampSetting || !res.stampResultDisplay) {
+									if (!res.stampSetting || !res.stampResultDisplay || !res.stampSetting.pageLayouts.length) {
 										self.errorMessage(self.getErrorNotUsed(1));
 										self.isUsed(false);
 										dfd.resolve();
@@ -151,7 +151,7 @@ module nts.uk.at.view.kdp004.a {
 					mode: 'admin'
 				}).done((loginResult) => {
 					if (!loginResult || !loginResult.result) {
-						self.errorMessage(getMessage("Msg_1647"));
+						self.errorMessage(getMessage(!loginResult ? "Msg_1647" : loginResult.msgErrorId));
 						dfd.resolve();
 						return;
 					}
