@@ -16,13 +16,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="KRQDT_GO_BACK_DIRECTLY")
+@Table(name="KRQDT_APP_GOBACK_DIRECTLY")
 public class KrqdtGoBackDirectly extends UkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public KrqdtGoBackDirectlyPK krqdtGoBackDirectlyPK;
 	
+	@Column(name="CONTRACT_CD")
+	public String contractCd;
 	
 	@Column(name="WORK_TYPE_CD")
 	public String workTypeCD;

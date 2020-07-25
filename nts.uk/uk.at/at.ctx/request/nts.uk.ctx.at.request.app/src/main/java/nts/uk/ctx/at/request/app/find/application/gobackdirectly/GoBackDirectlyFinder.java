@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
@@ -22,6 +23,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectAppSetService;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectService;
@@ -227,7 +229,7 @@ public class GoBackDirectlyFinder {
 			lstDate.addAll(appDates.stream().map(item -> GeneralDate.fromString(item, "yyyy/MM/dd"))
 					.collect(Collectors.toList()));
 		}
-		return commonAlgorithm.changeAppDateProcess(companyId, lstDate, at, appDispInfoNoDateOutput, appDispInfoWithDateOutput);
+		return commonAlgorithm.changeAppDateProcess(companyId, lstDate, at, appDispInfoNoDateOutput, appDispInfoWithDateOutput, Optional.empty());
 	}
 
 	/**
@@ -286,18 +288,39 @@ public class GoBackDirectlyFinder {
 		return InforGoBackCommonDirectDto.fromDomain(
 				goBackDirectService.getDateChangeAlgorithm(
 						companyId,
-						paramStart.getAppDates().stream().map(item -> GeneralDate.fromString("yyyy/MM/dd", item)).collect(Collectors.toList()),
+						paramStart.getAppDates().stream().map(item -> GeneralDate.fromString(item, "yyyy/MM/dd")).collect(Collectors.toList()),
 						paramStart.getEmployeeIds(),
 						paramStart.getInforGoBackCommonDirectDto().toDomain())
 				);
 	}
 	
 	public List<ConfirmMsgOutput> checkBeforeRegister(ParamBeforeRegister param) {
+		Application application = param.getApplicationDto().toDomain();
+		// register
+		if (param.getInforGoBackCommonDirectDto().getAppDispInfoStartup().getAppDetailScreenInfo() == null) {
+			application = Application.createFromNew(
+					application.getPrePostAtr(),
+					application.getEmployeeID(),
+					application.getAppType(),
+					application.getAppDate(),
+					application.getEnteredPerson(),
+					application.getOpStampRequestMode(),
+					application.getOpReversionReason(),
+					application.getOpAppStartDate(),
+					application.getOpAppEndDate(),
+					application.getOpAppReason(),
+					application.getOpAppStandardReasonCD());
+			
+		} else {
+			application.setAppID(param.getInforGoBackCommonDirectDto().getAppDispInfoStartup().getAppDetailScreenInfo().getApplication().getAppID());
+		}
+		GoBackDirectly goBackDirectly = param.getGoBackDirectlyDto().toDomain();
+		goBackDirectly.setAppID(application.getAppID());
 		return goBackDirectlyRegisterService.checkBeforRegisterNew(
 				param.getCompanyId(),
-				param.isAgentAtr(),
-				param.getApplicationDto().toDomain(),
-				param.getGoBackDirectlyDto().toDomain(),
+				param.isAgentAtr(),	
+				application,
+				goBackDirectly,
 				param.getInforGoBackCommonDirectDto().toDomain(),
 				param.isMode());
 	}

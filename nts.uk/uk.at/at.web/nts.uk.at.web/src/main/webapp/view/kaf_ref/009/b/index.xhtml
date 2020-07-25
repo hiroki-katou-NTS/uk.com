@@ -8,8 +8,13 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="/view/kaf_ref/000/a/component1/kaf000.a.component1.js" />
 			<com:scriptfile path="/view/kaf_ref/000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/component1/kaf000.a.component1.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/component2/kaf000.a.component2.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/component3/kaf000.a.component3.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/component4/kaf000.a.component4.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/component5/kaf000.a.component5.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/component6/kaf000.a.component6.js" />
 			<com:scriptfile path="/view/kaf_ref/009/shr/kaf009.shr.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/009/b/kaf009.b.vm.js" />
 			<com:stylefile path="/view/kaf_ref/009/shr/kaf009.share.style.css" />
@@ -20,14 +25,19 @@
 				<button class="proceed" data-bind="click: register">Register</button>
 			</div>
 			<div id="contents-area">
-				<div class="kaf007-component" data-bind="component: { name: 'kaf000-a-component1', 
+
+				<div
+					data-bind="component: { name: 'kaf000-a-component1', 
 											params: {
-												application: dataFetch().goBackApplication,
-												appDispInfoStartupOutput: dataFetch().appDispInfoStartup
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
-											
-																																		
-				<div data-bind="component: { name: 'kaf009-share', params: {dataFetch: dataFetch, model:model, mode: mode }}"></div>
+
+
+				<div
+					data-bind="component: { name: 'kaf009-share', params: {dataFetch: dataFetch, model:model, mode: mode }}"></div>
+
+				
 			</div>
 		</ui:define>
 	</ui:composition>

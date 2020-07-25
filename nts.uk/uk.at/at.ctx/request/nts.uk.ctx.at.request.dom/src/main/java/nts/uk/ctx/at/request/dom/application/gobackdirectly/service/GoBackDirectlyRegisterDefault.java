@@ -18,6 +18,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
@@ -114,6 +115,12 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	
 	@Inject
 	private DetailAfterUpdate detailAfterUpdate;
+	
+	@Inject
+	ApplicationApprovalService appRepository;
+	
+	@Inject
+	ApplicationRepository appRe;
 	/**
 	 * 
 	 */
@@ -584,6 +591,13 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		// -> x.getWorkNo() == 1)
 		// .findAny();
 		// }
+		// insert application 
+		// EA is exist
+		
+		appRepository.insertApp(
+				application,
+				inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().isPresent() ? inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().get() : null);
+		
 
 		// ドメインモデル「直行直帰申請」の新規登録する
 		goBackDirectlyRepository.add(goBackDirectly);
@@ -592,8 +606,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		List<GeneralDate> listDates = new ArrayList<>();
 		listDates.add(application.getAppDate().getApplicationDate());
 		// 暫定データの登録
-		interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(),
-				application.getEmployeeID(), listDates);
+//		interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(),
+//				application.getEmployeeID(), listDates);
 
 		
 		if (inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet()) {
@@ -628,17 +642,19 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 			// ・直行直帰申請.勤務情報.就業時間帯コード ＝ 実績データ.3就業時間帯コード
 
 		}
+		appRe.update(application);
 		// ドメインモデル「直行直帰申請」の更新する
 		// params is appId or application
 		goBackDirectlyRepository.update(goBackDirectly);
 		List<GeneralDate> listDates = new ArrayList<>();
 		listDates.add(application.getAppDate().getApplicationDate());
 		// 暫定データの登録
-		interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(),
-				application.getEmployeeID(), listDates);
+		// reflect application is not done
+//		interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(),
+//				application.getEmployeeID(), listDates);
 //		アルゴリズム「4-2.詳細画面登録後の処理」を実行する
-		detailAfterUpdate.processAfterDetailScreenRegistration(application);
-		return null;
+		return detailAfterUpdate.processAfterDetailScreenRegistration(application);
+//		return null;
 
 	}
 	

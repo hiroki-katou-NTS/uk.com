@@ -14,7 +14,6 @@ import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingD
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
-import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput_Old;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeDisplayNameDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeDivisionDto;
@@ -77,7 +76,7 @@ public class AppDispInfoWithDateDto_Old {
 	/**
 	 * 表示する事前申請内容
 	 */
-	public List<AppDetailContent> appDetailContentLst;
+	// public List<PreAppContentDisp> appDetailContentLst;
 	
 	/**
 	 * 社員所属雇用履歴を取得
@@ -96,7 +95,7 @@ public class AppDispInfoWithDateDto_Old {
 		appDispInfoWithDateDto.prePostAtr = appDispInfoWithDateOutput.getPrePostAtr().value;
 		appDispInfoWithDateDto.baseDate = appDispInfoWithDateOutput.getBaseDate().toString("yyyy/MM/dd");
 		appDispInfoWithDateDto.achievementOutputLst = appDispInfoWithDateOutput.getAchievementOutputLst().stream().map(x -> AchievementDto.convertFromAchievementOutput(x)).collect(Collectors.toList());
-		appDispInfoWithDateDto.appDetailContentLst = appDispInfoWithDateOutput.getAppDetailContentLst();
+		// appDispInfoWithDateDto.appDetailContentLst = appDispInfoWithDateOutput.getAppDetailContentLst();
 		appDispInfoWithDateDto.empHistImport = SEmpHistImportDto.fromDomain(appDispInfoWithDateOutput.getEmpHistImport());
 		return appDispInfoWithDateDto;
 	}
@@ -132,7 +131,7 @@ public class AppDispInfoWithDateDto_Old {
 		output.setPrePostAtr(EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class));
 		output.setBaseDate(GeneralDate.fromString(baseDate, "yyyy/MM/dd"));
 		output.setAchievementOutputLst(achievementOutputLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
-		output.setAppDetailContentLst(appDetailContentLst);
+		// output.setAppDetailContentLst(appDetailContentLst);
 		output.setEmpHistImport(empHistImport.toDomain());
 		return output;
 	}

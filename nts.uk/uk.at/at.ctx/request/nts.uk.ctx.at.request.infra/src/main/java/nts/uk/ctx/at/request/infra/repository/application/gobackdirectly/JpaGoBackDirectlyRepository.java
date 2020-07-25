@@ -130,15 +130,15 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 			goBackDirectly.setIsChangedWork(
 					Optional.of(new EnumConstant(res.getInt("WORK_CHANGE_ATR"), "", "")));
 		}
-		if (Optional.ofNullable(res.getInt("WORK_TYPE_CD")).isPresent()
-				|| Optional.ofNullable(res.getInt("WORK_TIME_CD")).isPresent()) {
+		if (Optional.ofNullable(res.getString("WORK_TYPE_CD")).isPresent()
+				|| Optional.ofNullable(res.getString("WORK_TIME_CD")).isPresent()) {
 			DataWork dataWork = new DataWork();
 			goBackDirectly.setDataWork(Optional.of(dataWork));
-			if (Optional.ofNullable(res.getInt("WORK_TYPE_CD")).isPresent()) {
-				dataWork.setWorkType(new InforWorkType(String.valueOf(res.getInt("WORK_TYPE_CD")), null));
+			if (Optional.ofNullable(res.getString("WORK_TYPE_CD")).isPresent()) {
+				dataWork.setWorkType(new InforWorkType(String.valueOf(res.getString("WORK_TYPE_CD")), null));
 			}
-			if (Optional.ofNullable(res.getInt("WORK_TYPE_CD")).isPresent()) {
-				dataWork.setWorkTime(Optional.of(new InforWorkTime(String.valueOf(res.getInt("WORK_TIME_CD")), null)));
+			if (Optional.ofNullable(res.getString("WORK_TYPE_CD")).isPresent()) {
+				dataWork.setWorkTime(Optional.of(new InforWorkTime(String.valueOf(res.getString("WORK_TIME_CD")), null)));
 			}
 		}
 
@@ -156,6 +156,12 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 				krqdtGoBackDirectly.workTimeCD = dataWork.getWorkTime().get().getWorkTime();
 			}
 		}
+		if (domain.getIsChangedWork().isPresent()) {
+			krqdtGoBackDirectly.workChangeAtr = domain.getIsChangedWork().get().getValue();			
+		}
+		krqdtGoBackDirectly.goWorkAtr = domain.getStraightDistinction().getValue();
+		krqdtGoBackDirectly.backHomeAtr = domain.getStraightLine().getValue();
+		krqdtGoBackDirectly.contractCd = AppContexts.user().contractCode();
 
 		return krqdtGoBackDirectly;
 	}

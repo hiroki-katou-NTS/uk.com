@@ -11,7 +11,7 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
-import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
+import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
@@ -71,7 +71,7 @@ public class AppDispInfoWithDateOutput_Old {
 	/**
 	 * 表示する事前申請内容
 	 */
-	private List<AppDetailContent> appDetailContentLst;
+	private List<PreAppContentDisplay> appDetailContentLst;
 	
 	/**
 	 * 社員所属雇用履歴を取得

@@ -121,9 +121,9 @@ public class CollectAchievementImpl implements CollectAchievement {
 	}
 
 	@Override
-	public List<AppDetailContent> getPreAppContents(String companyID, String employeeID, List<GeneralDate> dateLst,
+	public List<PreAppContentDisplay> getPreAppContents(String companyID, String employeeID, List<GeneralDate> dateLst,
 			ApplicationType appType) {
-		List<AppDetailContent> result = new ArrayList<>();
+		List<PreAppContentDisplay> result = new ArrayList<>();
 		// INPUT．申請対象日リストをチェックする
 		if(CollectionUtil.isEmpty(dateLst)) {
 			return Collections.emptyList();
