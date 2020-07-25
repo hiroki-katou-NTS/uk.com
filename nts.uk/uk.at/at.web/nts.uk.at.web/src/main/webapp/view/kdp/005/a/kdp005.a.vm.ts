@@ -12,6 +12,7 @@ module nts.uk.at.view.kdp005.a {
 		import jump = nts.uk.request.jump;
 		import getText = nts.uk.resource.getText;
 		import getMessage = nts.uk.resource.getMessage;
+        import characteristics = nts.uk.characteristics;
 
 		export class ScreenModel {
 			stampSetting: KnockoutObservable<StampSetting> = ko.observable({});
@@ -37,7 +38,7 @@ module nts.uk.at.view.kdp005.a {
 			public startPage(): JQueryPromise<void> {
 				let self = this;
 				let dfd = $.Deferred<void>();
-                nts.uk.characteristics.restore("loginKDP005").done(function(loginInfo: ILoginInfo) {
+                characteristics.restore("loginKDP005").done(function(loginInfo: ILoginInfo) {
                     if (loginInfo && loginInfo.companyId === __viewContext.user.companyId) {
                         self.loginInfo = loginInfo;
                         self.doFirstLoad().done(() => {
@@ -71,9 +72,7 @@ module nts.uk.at.view.kdp005.a {
                     } else {
                         return ButtonDisplayMode.NoShow;
                     }
-
                 }
-
                 return ButtonDisplayMode.ShowAll;
             }
 
@@ -141,7 +140,6 @@ module nts.uk.at.view.kdp005.a {
 
 			public setLoginInfo(): JQueryPromise<any> {
 				let dfd = $.Deferred<any>(), self = this;
-
 				self.openDialogF({
 					mode: 'admin',
                     companyId: __viewContext.user.companyId
@@ -152,22 +150,19 @@ module nts.uk.at.view.kdp005.a {
 						return;
 					}
 					self.loginInfo = loginResult.em;
-
 					self.openDialogK().done((result) => {
 						if (!result) {
 							self.errorMessage(getMessage("Msg_1647"));
 							dfd.resolve();
 							return;
 						}
-
 						self.loginInfo.selectedWP = result;
-						nts.uk.characteristics.save("loginKDP005", self.loginInfo);
+						characteristics.save("loginKDP005", self.loginInfo);
 						dfd.resolve(self.loginInfo);
 					});
 				}).always(() => {
 					block.grayout();
-					service.startPage()
-						.done((res: any) => {
+					service.startPage().done((res: any) => {
 							if (!res.stampSetting || !res.stampResultDisplay) {
 								self.errorMessage(self.getErrorNotUsed(1));
 								self.isUsed(false);
@@ -176,7 +171,6 @@ module nts.uk.at.view.kdp005.a {
 							self.stampSetting(res.stampSetting);
 							self.stampTab().bindData(res.stampSetting.pageLayouts);
 							self.stampResultDisplay(res.stampResultDisplay);
-
 						}).fail((res) => {
 							dialog.alertError({ messageId: res.messageId }).then(() => {
 								jump("com", "/view/ccg/008/a/index.xhtml");
@@ -191,12 +185,9 @@ module nts.uk.at.view.kdp005.a {
 			public openDialogF(param): JQueryPromise<any> {
 				let vm = new ko.ViewModel();
 				let dfd = $.Deferred<any>();
-
 				vm.$window.modal('at', '/view/kdp/003/f/index.xhtml', param).then(function(loginResult): any {
-
 					dfd.resolve(loginResult);
 				});
-
 				return dfd.promise();
 			}
 
@@ -215,7 +206,6 @@ module nts.uk.at.view.kdp005.a {
 			public getPageLayout(pageNo: number) {
 				let self = this;
 				let layout = _.find(self.stampTab().layouts(), (ly) => { return ly.pageNo === pageNo });
-
 				if (layout) {
 					let btnSettings = layout.buttonSettings;
 					btnSettings.forEach(btn => {
@@ -223,7 +213,6 @@ module nts.uk.at.view.kdp005.a {
 					});
 					layout.buttonSettings = btnSettings;
 				}
-
 				return layout;
 			}
 
@@ -232,7 +221,6 @@ module nts.uk.at.view.kdp005.a {
 				block.invisible();
 				service.getStampToSuppress().done((data: IStampToSuppress) => {
 					block.clear();
-
 					data.isUse = vm.stampSetting() ? vm.stampSetting().buttonEmphasisArt : false;
 					vm.stampToSuppress(data);
 					vm.stampToSuppress.valueHasMutated();
@@ -357,23 +345,7 @@ module nts.uk.at.view.kdp005.a {
                 return dfd.promise();
             }
 
-			public doAuthent(employeeId: string): JQueryPromise<IAuthResult> {
-				let self = this;
-				let dfd = $.Deferred<any>();
-
-				service.confirmUseOfStampInput({ employeeId: employeeId, stampMeans: 2 /*2:ICカード打刻*/ }).done((res) => {
-					self.isUsed(res.used == 0);
-					if (!self.isUsed()) {
-						self.errorMessage(getMessage(res.messageId));
-					}
-					dfd.resolve({ isSuccess: self.isUsed(), authType: 2 });
-				});
-                
-				return dfd.promise();
-			}
-
 			playAudio(audioType: number) {
-
 				const url = {
 					oha: '../../share/voice/0_oha.mp3',
 					otsu: '../../share/voice/1_otsu.mp3'
@@ -420,18 +392,25 @@ module nts.uk.at.view.kdp005.a {
 					mode: 'admin',
                     companyId: self.loginInfo.companyId
 				}).done((loginResult) => {
-					if (loginResult) {
-						loginResult.em.selectedWP = self.loginInfo.selectedWP;
-						self.loginInfo = loginResult.em;
-						self.openDialogK().done((result) => {
-							if (result) {
-								self.loginInfo.selectedWP = result;
-							}
-							nts.uk.characteristics.save("loginKDP005", self.loginInfo);
-							jump("at", "/view/kdp/005/a/index.xhtml");
-						});
-					}
-
+					if (loginResult && loginResult.result) {
+                        loginResult.em.selectedWP = self.loginInfo ? self.loginInfo.selectedWP : null;
+                        self.loginInfo = loginResult.em;
+                        self.openDialogK().done((result) => {
+                            if (result) {
+                                self.loginInfo.selectedWP = result;
+                                characteristics.save("loginKDP005", self.loginInfo).done(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                location.reload();
+                            }
+                        });
+                    } else {
+                        if (loginResult.msgErrorId == "Msg_1527") {
+                            self.isUsed(false);
+                            self.errorMessage(getMessage("Msg_1527"));
+                        }
+                    }
 				});
 			}
 
@@ -475,14 +454,12 @@ module nts.uk.at.view.kdp005.a {
 			public openScreenB(button, layout) {
 				let self = this;
 				let vm = new ko.ViewModel();
-
 				setShared("resultDisplayTime", self.stampSetting().resultDisplayTime);
 				setShared("infoEmpToScreenB", {
 					employeeId: vm.$user.employeeId,
 					employeeCode: vm.$user.employeeCode,
 					mode: Mode.Personal,
 				});
-
 				modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
 					self.openKDP002T(button, layout);
 				});
