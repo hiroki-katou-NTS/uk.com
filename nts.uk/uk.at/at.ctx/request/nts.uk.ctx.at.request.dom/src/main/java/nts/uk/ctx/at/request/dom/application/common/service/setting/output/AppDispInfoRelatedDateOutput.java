@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
+import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 
@@ -32,6 +32,6 @@ public class AppDispInfoRelatedDateOutput {
 	/**
 	 * 表示する事前申請内容
 	 */
-	private List<AppDetailContent> appDetailContentLst;
+	private List<PreAppContentDisplay> preAppContentDisplayLst;
 	
 }

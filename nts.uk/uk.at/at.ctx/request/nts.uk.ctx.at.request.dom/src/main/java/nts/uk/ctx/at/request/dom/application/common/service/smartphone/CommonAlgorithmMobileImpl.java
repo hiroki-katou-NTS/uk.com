@@ -34,7 +34,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
-import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
+import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
@@ -287,7 +287,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 				opOvertimeAppAtr);
 		// INPUT．「申請種類」をチェックする
 		Optional<List<ActualContentDisplay>> opActualContentDisplayLst = Optional.empty();
-		Optional<List<AppDetailContent>> opAppDetailContentLst = Optional.empty();
+		Optional<List<PreAppContentDisplay>> opPreAppContentDisplayLst = Optional.empty();
 		if(appType == ApplicationType.OVER_TIME_APPLICATION &&
 				appType == ApplicationType.LEAVE_TIME_APPLICATION &&
 				appType == ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION &&
@@ -301,12 +301,12 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 					appType);
 			opAchievementOutputLst = Optional.of(achievementOutputLst);*/
 			// 事前内容の取得
-			List<AppDetailContent> appDetailContentLst = collectAchievement.getPreAppContents(
+			List<PreAppContentDisplay> preAppContentDisplayLst = collectAchievement.getPreAppContents(
 					companyID, 
 					employeeID, 
 					appDateLst, 
 					appType);
-			opAppDetailContentLst = Optional.of(appDetailContentLst);
+			opPreAppContentDisplayLst = Optional.of(preAppContentDisplayLst);
 		}
 		// 取得した内容を返す
 		AppDispInfoWithDateOutput appDispInfoWithDateOutput = new AppDispInfoWithDateOutput(
@@ -319,7 +319,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 		appDispInfoWithDateOutput.setOpListApprovalPhaseState(opListApprovalPhaseState);
 		appDispInfoWithDateOutput.setOpErrorFlag(opErrorFlag);
 		appDispInfoWithDateOutput.setOpActualContentDisplayLst(opActualContentDisplayLst);
-		appDispInfoWithDateOutput.setOpAppDetailContentLst(opAppDetailContentLst);
+		appDispInfoWithDateOutput.setOpPreAppContentDisplayLst(opPreAppContentDisplayLst);
 		appDispInfoWithDateOutput.setOpWorkTimeLst(opWorkTimeSettingLst);
 		return appDispInfoWithDateOutput;
 	}

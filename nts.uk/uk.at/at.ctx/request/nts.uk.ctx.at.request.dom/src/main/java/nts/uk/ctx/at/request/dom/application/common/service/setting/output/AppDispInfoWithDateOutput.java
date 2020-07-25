@@ -9,7 +9,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
-import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
+import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
@@ -34,6 +34,7 @@ public class AppDispInfoWithDateOutput {
 	/**
 	 * 事前事後区分
 	 */
+	@Setter
 	private PrePostInitAtr prePostAtr;
 	
 	/**
@@ -79,7 +80,7 @@ public class AppDispInfoWithDateOutput {
 	 * 表示する事前申請内容
 	 */
 	@Setter
-	private Optional<List<AppDetailContent>> opAppDetailContentLst;
+	private Optional<List<PreAppContentDisplay>> opPreAppContentDisplayLst;
 	
 	/**
 	 * 申請締め切り日
@@ -108,7 +109,7 @@ public class AppDispInfoWithDateOutput {
 		this.opListApprovalPhaseState = Optional.empty();
 		this.opErrorFlag = Optional.empty();
 		this.opActualContentDisplayLst = Optional.empty();
-		this.opAppDetailContentLst = Optional.empty();
+		this.opPreAppContentDisplayLst = Optional.empty();
 		this.opAppDeadline = Optional.empty();
 		this.opWorkTimeLst = Optional.empty();
 	}

@@ -41,6 +41,6 @@ public interface CollectAchievement {
 	 * @param appType 申請種類
 	 * @return
 	 */
-	public List<AppDetailContent> getPreAppContents(String companyID, String employeeID, List<GeneralDate> dateLst, ApplicationType appType);
+	public List<PreAppContentDisplay> getPreAppContents(String companyID, String employeeID, List<GeneralDate> dateLst, ApplicationType appType);
 	
 }

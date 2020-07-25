@@ -15,7 +15,6 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.SEmpHistImportDto;
 import nts.uk.ctx.at.request.app.find.setting.employment.appemploymentsetting.AppEmploymentSetDto;
 import nts.uk.ctx.at.request.app.find.setting.workplace.appuseset.ApprovalFunctionSetDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
-import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeDisplayNameDto;
@@ -93,7 +92,7 @@ public class AppDispInfoWithDateDto {
 	/**
 	 * 表示する事前申請内容
 	 */
-	private List<AppDetailContent> opAppDetailContentLst;
+	private List<PreAppContentDispDto> opPreAppContentDispDtoLst;
 	
 	/**
 	 * 申請締め切り日
@@ -119,7 +118,7 @@ public class AppDispInfoWithDateDto {
 				/*appDispInfoWithDateOutput.getOpAchievementOutputLst()
 					.map(x -> x.stream().map(y -> AchievementDto.convertFromAchievementOutput(y)).collect(Collectors.toList())).orElse(null), */
 				null,
-				appDispInfoWithDateOutput.getOpAppDetailContentLst().orElse(null), 
+				appDispInfoWithDateOutput.getOpPreAppContentDisplayLst().map(x -> x.stream().map(y -> PreAppContentDispDto.fromDomain(y)).collect(Collectors.toList())).orElse(null), 
 				appDispInfoWithDateOutput.getOpAppDeadline().map(x -> x.toString()).orElse(null), 
 				appDispInfoWithDateOutput.getOpWorkTimeLst().map(x -> x.stream()
 					.map(y -> AppDispInfoWithDateDto.fromDomainWorkTime(y)).collect(Collectors.toList())).orElse(null));
@@ -164,8 +163,8 @@ public class AppDispInfoWithDateDto {
 		if(opAchievementOutputLst != null) {
 			// appDispInfoWithDateOutput.setOpAchievementOutputLst(Optional.of(opAchievementOutputLst.stream().map(x -> x.toDomain()).collect(Collectors.toList())));
 		}
-		if(opAppDetailContentLst != null) {
-			appDispInfoWithDateOutput.setOpAppDetailContentLst(Optional.of(opAppDetailContentLst));
+		if(opPreAppContentDispDtoLst != null) {
+			appDispInfoWithDateOutput.setOpPreAppContentDisplayLst(Optional.of(opPreAppContentDispDtoLst.stream().map(x -> x.toDomain()).collect(Collectors.toList())));
 		}
 		if(opAppDeadline != null) {
 			appDispInfoWithDateOutput.setOpAppDeadline(Optional.of(GeneralDate.fromString(opAppDeadline, "yyyy/MM/dd")));
