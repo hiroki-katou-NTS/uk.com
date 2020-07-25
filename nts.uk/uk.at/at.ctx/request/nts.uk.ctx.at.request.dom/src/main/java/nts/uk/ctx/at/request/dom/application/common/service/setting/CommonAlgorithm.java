@@ -104,16 +104,17 @@ public interface CommonAlgorithm {
 			List<GeneralDate> dateLst, boolean mode, Optional<HolidayAppType> opHolidayAppType, Optional<OvertimeAppAtr> opOvertimeAppAtr);
 	
 	/**
-	 * 申請日を変更する処理
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.申請日を変更する処理.申請日を変更する処理
 	 * @param companyID 会社ID
 	 * @param dateLst 申請対象日リスト
 	 * @param appType 申請種類
 	 * @param appDispInfoNoDateOutput 申請表示情報(基準日関係なし)
 	 * @param appDispInfoWithDateOutput 申請表示情報(基準日関係あり)
+	 * @param opOvertimeAppAtr 残業区分<Optional>
 	 * @return
 	 */
-	public AppDispInfoWithDateOutput changeAppDateProcess(String companyID, List<GeneralDate> dateLst,
-			ApplicationType appType, AppDispInfoNoDateOutput appDispInfoNoDateOutput, AppDispInfoWithDateOutput appDispInfoWithDateOutput);
+	public AppDispInfoWithDateOutput changeAppDateProcess(String companyID, List<GeneralDate> dateLst, ApplicationType appType, 
+			AppDispInfoNoDateOutput appDispInfoNoDateOutput, AppDispInfoWithDateOutput appDispInfoWithDateOutput, Optional<OvertimeAppAtr> opOvertimeAppAtr);
 	
 	/**
 	 * 申請済み勤務種類の存在判定と取得

@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -164,7 +163,7 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		// 申請日を変更する
 		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(companyId, dates,
 				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput(),
-				inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput());
+				inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput(), Optional.empty());
 		inforGoBackCommonDirectOutput.getAppDispInfoStartup().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
 		InforWorkGoBackDirectOutput inforWorkGoBackDirectOutput = this.getInfoWorkGoBackDirect(companyId, sids.get(0), dates.get(0),
 				inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getBaseDate(),

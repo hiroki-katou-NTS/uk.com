@@ -227,7 +227,7 @@ public class GoBackDirectlyFinder {
 			lstDate.addAll(appDates.stream().map(item -> GeneralDate.fromString(item, "yyyy/MM/dd"))
 					.collect(Collectors.toList()));
 		}
-		return commonAlgorithm.changeAppDateProcess(companyId, lstDate, at, appDispInfoNoDateOutput, appDispInfoWithDateOutput);
+		return commonAlgorithm.changeAppDateProcess(companyId, lstDate, at, appDispInfoNoDateOutput, appDispInfoWithDateOutput, Optional.empty());
 	}
 
 	/**

@@ -317,27 +317,29 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	}
 
 	@Override
-	public AppDispInfoWithDateOutput changeAppDateProcess(String companyID, List<GeneralDate> dateLst,
-			ApplicationType appType, AppDispInfoNoDateOutput appDispInfoNoDateOutput, AppDispInfoWithDateOutput appDispInfoWithDateOutput) {
-		// error EA refactor 4
-		/*// INPUT．「申請表示情報(基準日関係なし) ．申請承認設定．申請設定」．承認ルートの基準日をチェックする
-		if(appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting().getRecordDate() == RecordDate.SYSTEM_DATE) {
+	public AppDispInfoWithDateOutput changeAppDateProcess(String companyID, List<GeneralDate> dateLst, ApplicationType appType, 
+			AppDispInfoNoDateOutput appDispInfoNoDateOutput, AppDispInfoWithDateOutput appDispInfoWithDateOutput, Optional<OvertimeAppAtr> opOvertimeAppAtr) {
+		// INPUT．「申請表示情報(基準日関係なし) ．申請承認設定．申請設定」．承認ルートの基準日をチェックする
+		if(appDispInfoNoDateOutput.getApplicationSetting().getRecordDate() == RecordDate.SYSTEM_DATE) {
 			// 申請表示情報(申請対象日関係あり)を取得する
-			AppTypeSetting appTypeSetting = appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting()
-					.getListAppTypeSetting().stream().filter(x -> x.getAppType()==appType).findAny().get();
-			AppDispInfoWithDateOutput_Old result = this.getAppDispInfoRelatedDate(
-					companyID, appDispInfoNoDateOutput.getEmployeeInfoLst().stream().findFirst().get().getSid(), dateLst, appType, 
-					appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting().getAppDisplaySetting().getPrePostAtrDisp(), 
-					appTypeSetting.getDisplayInitialSegment());
+			AppTypeSetting appTypeSetting = appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSetting();
+			AppDispInfoRelatedDateOutput result = this.getAppDispInfoRelatedDate(
+					companyID, appDispInfoNoDateOutput.getEmployeeInfoLst().stream().findFirst().get().getSid(), 
+					dateLst, 
+					appType, 
+					appDispInfoNoDateOutput.getApplicationSetting().getAppDisplaySetting().getPrePostDisplayAtr(), 
+					appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSetting().getDisplayInitialSegment(),
+					opOvertimeAppAtr);
 			appDispInfoWithDateOutput.setPrePostAtr(result.getPrePostAtr());
-			appDispInfoWithDateOutput.setAchievementOutputLst(result.getAchievementOutputLst());
-			appDispInfoWithDateOutput.setAppDetailContentLst(result.getAppDetailContentLst());
+			appDispInfoWithDateOutput.setOpActualContentDisplayLst(
+					CollectionUtil.isEmpty(result.getActualContentDisplayLst()) ? Optional.empty() : Optional.of(result.getActualContentDisplayLst()));
+			appDispInfoWithDateOutput.setOpPreAppContentDisplayLst(
+					CollectionUtil.isEmpty(result.getPreAppContentDisplayLst()) ? Optional.empty() : Optional.of(result.getPreAppContentDisplayLst()));
 			return appDispInfoWithDateOutput;
 		} else {
 			// 申請表示情報(基準日関係あり)を取得する
-			return this.getAppDispInfoWithDate(companyID, appType, dateLst, appDispInfoNoDateOutput, true);
-		}*/
-		return null;
+			return this.getAppDispInfoWithDate(companyID, appType, dateLst, appDispInfoNoDateOutput, true, opOvertimeAppAtr);
+		}
 	}
 
 	@Override
