@@ -57,9 +57,26 @@ module nts.uk.at.view.kdp.share {
 				});
 		}
 	}
+	const COMPONENT_NAME = 'kdp-tab-button-panel';
+
+	@handler({
+		bindingName: COMPONENT_NAME,
+		validatable: true,
+		virtual: false
+	})
+	export class ButtonSettingComponentBindingHandler implements KnockoutBindingHandler {
+		init(element: HTMLElement, valueAccessor: () => any, __ab: KnockoutAllBindingsAccessor, ___vm: ComponentViewModel, bindingContext: KnockoutBindingContext) {
+			const name = COMPONENT_NAME;
+			const params = valueAccessor();
+
+			ko.applyBindingsToNode(element, { component: { name, params } }, bindingContext);
+
+			return { controlsDescendantBindings: true };
+		}
+	}
 
 	@component({
-		name: 'kdp-tab-button-panel',
+		name: COMPONENT_NAME,
 		template: tabButtonTempate
 	})
 	export class kdpTabButtonComponent extends ko.ViewModel {
