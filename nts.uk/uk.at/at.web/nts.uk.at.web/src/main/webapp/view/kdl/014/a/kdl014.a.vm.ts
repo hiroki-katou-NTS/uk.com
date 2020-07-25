@@ -48,8 +48,8 @@ module nts.uk.at.view.kdl014.a {
                 let end = new Date(new Date(self.paramFromParent.endDate).setDate(new Date(new Date(self.paramFromParent.endDate)).getDate() + 2));
                 
                 let param = {
-                    start: st,
-                    end: end,
+                  start: self.paramFromParent.startDate === self.paramFromParent.endDate ? st : new Date(self.paramFromParent.startDate),
+                    end: self.paramFromParent.startDate === self.paramFromParent.endDate ? end : new Date(self.paramFromParent.endDate),
                     mode: self.paramFromParent.mode,
                     listEmp: self.paramFromParent.listEmp
                 };
@@ -76,13 +76,14 @@ module nts.uk.at.view.kdl014.a {
                     $(document).ready(function() {
                         $('#btnClose').focus();
                     });
-                    dfd.resolve();
                 }).fail(function(res) {
                     error({ messageId: res.messageId }).then(() => {
                         self.cancel_Dialog();
                     });
                 }).always(function() {
+                    self.bindingGrid();
                     block.clear();
+                    dfd.resolve();
                 });
             } else {
                 dfd.resolve();
@@ -114,7 +115,7 @@ module nts.uk.at.view.kdl014.a {
                     { headerText: "<div style='text-align: center;'>"+getText("KDL014_14")+ "</div>" , key: 'time', width: 80},
                     { headerText: "<div style='text-align: center;'>"+getText("KDL014_15")+ "</div>" , key: 'stampAtr', width: 70},
                     { headerText: "<div style='text-align: center;'>"+getText("KDL014_16")+ "</div>" , key: 'workLocationName', width: 200},
-                    { headerText: "<div style='text-align: center;'>"+getText("KDL014_17")+ "</div>" , key: 'locationInfo', width: 50, hidden: self.display }
+                    { headerText: "<div style='text-align: center;'>"+getText("KDL014_17")+ "</div>" , key: 'locationInfo', width: 50, hidden: !self.display }
                 ]);
             } else if (self.paramFromParent.mode == 0) {
                 self.columns = ko.observableArray([
@@ -135,8 +136,10 @@ module nts.uk.at.view.kdl014.a {
             let tg = [];
             self.empInfomationList([]);
             _.forEach(self.dataServer, function(item) {
-                if(item.employeeId === id && self.display == false) {
-                    item.locationInfo = null;    
+                if (item.employeeId === id) {
+                    if (self.display == false) {
+                        item.locationInfo = null;
+                    }
                     tg.push(new EmpInfomation(item));
                 }
             });
@@ -145,6 +148,10 @@ module nts.uk.at.view.kdl014.a {
         
         cancel_Dialog(): any {
             nts.uk.ui.windows.close();
+        }
+        
+        gotoMap(latitude: string, longitude: string): any {
+            window.open('https://www.google.co.jp/maps/place/' + latitude + ',' + longitude);
         }
     }
     
@@ -155,7 +162,7 @@ module nts.uk.at.view.kdl014.a {
         stampMeans: string;
         stampAtr: string;
         workLocationName: string;
-        locationInfo: string;
+        locationInfo: GeoCoordinateDto;
         time: string;
         date: string;
         color: number;
@@ -169,12 +176,11 @@ module nts.uk.at.view.kdl014.a {
             self.date = param.date;
             self.time = param.time;
             
-            // 0:出勤
-            if (param.stampAtr === '出勤') {
+            if (param.stampAtr === '出勤' || param.stampAtr === '入門' || param.stampAtr === '応援開始'
+                || param.stampAtr === '応援出勤' || param.stampAtr === '臨時出勤' || param.stampAtr === '臨時退勤') {
                 self.stampAtr = `<div style="text-align: left">` + param.stampAtr + '</div>';
 
-                // 1:退勤  
-            } else if (param.stampAtr === '退勤') {
+            } else if (param.stampAtr === '退勤' || param.stampAtr === '退門' || param.stampAtr === '応援終了') {
                 self.stampAtr = `<div style="text-align: right">` + param.stampAtr + '</div>';
 
             } else {
@@ -183,7 +189,7 @@ module nts.uk.at.view.kdl014.a {
              
             self.workLocationName = param.workLocationName;
             
-            if (_.includes([1,2,3,4,7,8], param.stampMeans)) {
+            if (_.includes([0,1,2,3,4,8], param.stampMeans)) {
                 self.time = "<span>" + getText("KDP002_120") + "   " + param.time + "</span>";
             
                 // 5:スマホ打刻
@@ -211,10 +217,10 @@ module nts.uk.at.view.kdl014.a {
             }
             
             if (param.locationInfo !== null) {
-                self.locationInfo = '<a href="https://www.google.co.jp/maps/place/' + param.locationInfo.latitude + ',' + param.locationInfo.longitude + '"><img src="../img/Mapアイコン画像.png" height="20" width="20"/></a>';
+                self.locationInfo = '<a data-bind="click: gotoMap(' + param.locationInfo.latitude + ',' + param.locationInfo.longitude + ')""><img src="../img/Mapアイコン画像.png" height="20" width="20"/></a>';
             }
-//            self.locationInfo = '<div style="text-align: center;"><a href="https://www.google.co.jp/maps/place/35.165556, 136.905333"><img src="../img/Mapアイコン画像.png" height="20" width="20"/></a></div>';
         }
+        
     }
     
     class SystemType {
@@ -239,4 +245,10 @@ module nts.uk.at.view.kdl014.a {
         affiliationName: string;
     }
     
+     interface GeoCoordinateDto {
+        latitude: string;
+        longitude: string
+    }
 }
+
+
