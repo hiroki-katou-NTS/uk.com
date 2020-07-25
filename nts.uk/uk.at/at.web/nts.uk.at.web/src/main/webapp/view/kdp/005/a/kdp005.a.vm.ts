@@ -143,7 +143,8 @@ module nts.uk.at.view.kdp005.a {
 				let dfd = $.Deferred<any>(), self = this;
 
 				self.openDialogF({
-					mode: 'admin'
+					mode: 'admin',
+                    companyId: __viewContext.user.companyId
 				}).done((loginResult) => {
 					if (!loginResult) {
 						self.errorMessage(getMessage("Msg_1647"));
@@ -416,7 +417,8 @@ module nts.uk.at.view.kdp005.a {
             
 			settingUser(self: ScreenModel) {
 				self.openDialogF({
-					mode: 'admin'
+					mode: 'admin',
+                    companyId: self.loginInfo.companyId
 				}).done((loginResult) => {
 					if (loginResult) {
 						loginResult.em.selectedWP = self.loginInfo.selectedWP;
