@@ -29,53 +29,56 @@ module nts.uk.at.view.kdp005.a {
 			errorMessage: KnockoutObservable<string> = ko.observable('');
 			loginInfo: any = null;
 			retry: number = 0;
-            listCompany: KnockoutObservableArray<any> = ko.observableArray([]);
+            listCompany = [];
+            btnHistory: KnockoutObservable<boolean> = ko.observable(false);
+            btnChangeCompany: KnockoutObservable<boolean> = ko.observable(false);
 			constructor() {
 				let self = this;
-
+                self.isUsed.subscribe((value) => {
+                    let cid = __viewContext.user.companyId;
+                    if(value && _.find(self.listCompany, ['companyId', cid])){
+                        self.btnHistory(true);
+                    }else{
+                        self.btnHistory(false);
+                    }    
+                });
 			}
 
 			public startPage(): JQueryPromise<void> {
 				let self = this;
 				let dfd = $.Deferred<void>();
-                characteristics.restore("loginKDP005").done(function(loginInfo: ILoginInfo) {
-                    if (loginInfo && loginInfo.companyId === __viewContext.user.companyId) {
-                        self.loginInfo = loginInfo;
-                        self.doFirstLoad().done(() => {
-                            dfd.resolve();
-                        });
-                    } else {
-                        self.setLoginInfo().done((loginResult) => {
-                            if (!loginResult) {
-                                self.isUsed(false);
-                                dfd.resolve();
-                                return;
-                            }
-                            self.doFirstLoad().done(() => {
-                                dfd.resolve();
-                                return;
-                            });
-                        });
-                    }
-				});
                 service.getLogginSetting().done((res) => {
-                    self.listCompany(res);
+                    self.listCompany = _.filter(res, 'icCardStamp');
+                    if(self.listCompany.length == 0){
+                        self.errorMessage(getMessage("Msg_1527"));
+                        self.isUsed(false);
+                        dfd.resolve();
+                    }else{
+                        self.btnChangeCompany(self.listCompany.length > 0);
+                        characteristics.restore("loginKDP005").done(function(loginInfo: ILoginInfo) {
+                            if (loginInfo && loginInfo.companyId === __viewContext.user.companyId) {
+                                self.loginInfo = loginInfo;
+                                self.doFirstLoad().done(() => {
+                                    dfd.resolve();
+                                });
+                            } else {
+                                self.setLoginInfo().done((loginResult) => {
+                                    if (!loginResult) {
+                                        self.isUsed(false);
+                                        dfd.resolve();
+                                    }else{
+                                        self.doFirstLoad().done(() => {
+                                            dfd.resolve();
+                                        });
+                                    }
+                                });
+                            }
+        				});
+                    }
                 });
 				return dfd.promise();
 			}
             
-            showButton() {
-                let self = this;
-                if (!self.isUsed()) {
-                    if (self.listCompany().length > 0) {
-                        return ButtonDisplayMode.ShowHistory;
-                    } else {
-                        return ButtonDisplayMode.NoShow;
-                    }
-                }
-                return ButtonDisplayMode.ShowAll;
-            }
-
 			getErrorNotUsed(errorType) {
 				const notUseMessage = [
 					{ text: "Msg_1644", value: 1 },
@@ -96,8 +99,7 @@ module nts.uk.at.view.kdp005.a {
 						let isAdmin = true;
 						service.login(isAdmin, loginInfo).done((res) => {
 							block.grayout();
-							service.startPage()
-								.done((res: any) => {
+							service.startPage().done((res: any) => {
 									if (!res.stampSetting || !res.stampResultDisplay) {
 										self.errorMessage(self.getErrorNotUsed(1));
 										self.isUsed(false);
@@ -152,32 +154,19 @@ module nts.uk.at.view.kdp005.a {
 					self.loginInfo = loginResult.em;
 					self.openDialogK().done((result) => {
 						if (!result) {
-							self.errorMessage(getMessage("Msg_1647"));
+							 (getMessage("Msg_1647"));
 							dfd.resolve();
 							return;
 						}
 						self.loginInfo.selectedWP = result;
 						characteristics.save("loginKDP005", self.loginInfo);
-						dfd.resolve(self.loginInfo);
+                        characteristics.save("loginKDP005", self.loginInfo).done(() => {
+                            location.reload();
+                            dfd.resolve(self.loginInfo);
+                        });
 					});
 				}).always(() => {
-					block.grayout();
-					service.startPage().done((res: any) => {
-							if (!res.stampSetting || !res.stampResultDisplay) {
-								self.errorMessage(self.getErrorNotUsed(1));
-								self.isUsed(false);
-								return;
-							}
-							self.stampSetting(res.stampSetting);
-							self.stampTab().bindData(res.stampSetting.pageLayouts);
-							self.stampResultDisplay(res.stampResultDisplay);
-						}).fail((res) => {
-							dialog.alertError({ messageId: res.messageId }).then(() => {
-								jump("com", "/view/ccg/008/a/index.xhtml");
-							});
-						}).always(() => {
-							block.clear();
-						});
+					
 				});
 				return dfd.promise();
 			}
@@ -402,7 +391,9 @@ module nts.uk.at.view.kdp005.a {
                                     location.reload();
                                 });
                             } else {
-                                location.reload();
+                                characteristics.save("loginKDP005", self.loginInfo).done(() => {
+                                    location.reload();
+                                });
                             }
                         });
                     } else {
