@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.dom.application.gobackdirectly;
 import java.util.Optional;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -19,9 +18,9 @@ public class GoBackDirectly extends Application {
 	// 直行区分
 	private EnumConstant straightLine;
 	// 勤務を変更する
-	private Optional<EnumConstant> isChangedWork;
+	private Optional<EnumConstant> isChangedWork = Optional.empty();
 	// 勤務情報
-	private Optional<DataWork> dataWork;
+	private Optional<DataWork> dataWork = Optional.empty();
 
 	public GoBackDirectly() {
 		

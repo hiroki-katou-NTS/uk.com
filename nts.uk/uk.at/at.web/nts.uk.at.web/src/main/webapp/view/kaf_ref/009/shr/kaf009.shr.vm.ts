@@ -8,24 +8,14 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
         mode: string = 'edit';
         subscribers: Array<any>;
         model : Model;
-//        checkbox1: KnockoutObservable<boolean>;
-//        checkbox2: KnockoutObservable<boolean>;
-//        workTypeCode: KnockoutObservable<String>;
-//        workTypeName: KnockoutObservable<String>;
-//        workTimeCode: KnockoutObservable<String>;
-//        workTimeName: KnockoutObservable<String>;
+
         dataFetch: KnockoutObservable<ModelDto>;
         created(params: any) {
               const vm = this;
               vm.model = params.model;
               vm.dataFetch = params.dataFetch;
               vm.mode = params.mode;
-//            this.checkbox1 = params.model().checkbox1;
-//            this.checkbox2 = params.model().checkbox2;
-//            this.workTypeCode = params.model().workTypeCode;
-//            this.workTypeName = params.model().workTypeName;
-//            this.workTimeCode = params.model().workTimeCode;
-//            this.workTimeName = params.model().workTimeName;
+
             vm.dataFetch.subscribe(value => {
                 console.log('Change dataFetch');
                 vm.bindData();
@@ -37,27 +27,51 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
             let goBackApp = this.dataFetch().goBackApplication();
             if ( goBackApp ) {
                 vm.model.checkbox1( goBackApp.straightDistinction == 1 );
-                this.model.checkbox2( goBackApp.straightLine == 1 );
-            }
-            //           else {
-            vm.model.checkbox1( true );
-            vm.model.checkbox2( true );
-            //           }
-            vm.model.checkbox3( true );
-            //            this.model.checkbox3(this.dataFetch().goBackReflect().reflectApplication == 3);
-            if ( ko.toJS( vm.dataFetch().workType ) ) {
-                vm.model.workTypeCode( vm.dataFetch().workType().workType );
-                vm.model.workTypeName( vm.dataFetch().workType().nameWorkType );
-
+                vm.model.checkbox2( goBackApp.straightLine == 1 );
+                if (goBackApp.isChangedWork != null) {
+                    vm.model.checkbox3( goBackApp.isChangedWork == 1 );
+                    
+                } else {
+                    vm.model.checkbox3( null );
+                } 
+                vm.model.workTypeCode = goBackApp.dataWork.workType.workType;
+                vm.model.workTypeName = goBackApp.dataWork.workType.nameWorkType;
+                if (goBackApp.dataWork.workTime.workTime) {
+                    vm.model.workTimeCode = goBackApp.dataWork.workTime.workTime;
+                    vm.model.workTimeName = goBackApp.dataWork.workTime.nameWorkTime;
+                }
+                
+                
             } else {
-                vm.model.workTypeCode( '001' );
-            }
-            if ( ko.toJS( vm.dataFetch().workTime ) ) {
-                vm.model.workTimeCode( vm.dataFetch().workTime().workTime );
-                vm.model.workTimeName( vm.dataFetch().workTime().nameWorkTime );
-
-            } else {
-                vm.model.workTimeCode( '001' );
+                let refApp = vm.dataFetch().goBackReflect().reflectApplication;
+                //           else {
+                vm.model.checkbox1( true );
+                vm.model.checkbox2( true );
+                //           }
+                if ( refApp == 3) {
+                    vm.model.checkbox3( true );
+                } else if ( refApp ==2 ) {
+                    vm.model.checkbox3( false );
+                }else {
+                    vm.model.checkbox3( null );
+                }
+                
+                vm.model.checkbox3( true );
+                //            this.model.checkbox3(this.dataFetch().goBackReflect().reflectApplication == 3);
+                if ( ko.toJS( vm.dataFetch().workType ) ) {
+                    vm.model.workTypeCode( vm.dataFetch().workType().workType );
+                    vm.model.workTypeName( vm.dataFetch().workType().nameWorkType );
+    
+                } else {
+                    vm.model.workTypeCode( '001' );
+                }
+                if ( ko.toJS( vm.dataFetch().workTime ) ) {
+                    vm.model.workTimeCode( vm.dataFetch().workTime().workTime );
+                    vm.model.workTimeName( vm.dataFetch().workTime().nameWorkTime );
+    
+                } else {
+                    vm.model.workTimeCode( '001' );
+                }
             }
         }
         

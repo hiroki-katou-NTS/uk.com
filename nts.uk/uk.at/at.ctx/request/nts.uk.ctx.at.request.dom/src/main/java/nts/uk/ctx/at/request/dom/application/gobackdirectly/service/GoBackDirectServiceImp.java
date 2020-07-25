@@ -165,7 +165,7 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput(),
 				inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput(), Optional.empty());
 		inforGoBackCommonDirectOutput.getAppDispInfoStartup().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
-		InforWorkGoBackDirectOutput inforWorkGoBackDirectOutput = this.getInfoWorkGoBackDirect(companyId, sids.get(0), dates.get(0),
+		InforWorkGoBackDirectOutput inforWorkGoBackDirectOutput = this.getInfoWorkGoBackDirect(companyId,  sids == null ? null : sids.get(0), dates.get(0),
 				inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getBaseDate(),
 				inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpEmploymentSet().isPresent()
 						? inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpEmploymentSet().get()
@@ -217,7 +217,7 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 				}
 			}
 		}
-		
+		output.setAppDispInfoStartup(appDispInfoStartupOutput);
 		return output;
 	}
 

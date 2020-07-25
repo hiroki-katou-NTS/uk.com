@@ -107,7 +107,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                            mode : vm.mode == 'edit'
                    }
                    if (_.isEmpty(res)) {
-                       vm.$ajax(API.register, paramsRegister)
+                       return vm.$ajax(API.register, paramsRegister)
                            .done(resRegister => {
                                console.log(resRegister);
                            })
@@ -144,6 +144,10 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 
 
         }
+        
+        changeDate() {
+            
+        }
 
         fetchData() {
             const vm = this;
@@ -161,7 +165,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                         appDispInfoStartup: ko.observable(res.appDispInfoStartup),
                         goBackReflect: ko.observable(res.goBackReflect),
                         lstWorkType: ko.observable(res.lstWorkType),
-                        goBackApplication: ko.observable(res.gobackdirectly)
+                        goBackApplication: ko.observable(res.goBackApplication)
                     });
                     vm.appDispInfoStartupOutput(res.appDispInfoStartup);
 //                    vm.appDispInfoStartupOutput(CommonProcess.initCommonSetting());

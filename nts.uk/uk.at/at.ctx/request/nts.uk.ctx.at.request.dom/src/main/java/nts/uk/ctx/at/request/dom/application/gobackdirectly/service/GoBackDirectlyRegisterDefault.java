@@ -18,6 +18,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
@@ -117,6 +118,9 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	
 	@Inject
 	ApplicationApprovalService appRepository;
+	
+	@Inject
+	ApplicationRepository appRe;
 	/**
 	 * 
 	 */
@@ -638,6 +642,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 			// ・直行直帰申請.勤務情報.就業時間帯コード ＝ 実績データ.3就業時間帯コード
 
 		}
+		appRe.update(application);
 		// ドメインモデル「直行直帰申請」の更新する
 		// params is appId or application
 		goBackDirectlyRepository.update(goBackDirectly);
@@ -648,8 +653,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 //		interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(),
 //				application.getEmployeeID(), listDates);
 //		アルゴリズム「4-2.詳細画面登録後の処理」を実行する
-		detailAfterUpdate.processAfterDetailScreenRegistration(application);
-		return null;
+		return detailAfterUpdate.processAfterDetailScreenRegistration(application);
+//		return null;
 
 	}
 	
