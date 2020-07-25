@@ -186,26 +186,28 @@ module nts.uk.at.view.kmp001.c {
 			const vm = this;
 			const { startDate, endDate } = ko.toJS(vm.dateRange);
 
-			vm.$blockui("invisible");
+			if (startDate != null && endDate != null) {
+				vm.$blockui("invisible");
 
-			const start = moment.utc(startDate, "YYYY/MM/DD").format("YYYY-MM-DD");
-			const end = moment.utc(endDate, "YYYY/MM/DD").format("YYYY-MM-DD");
+				const start = moment.utc(startDate, "YYYY/MM/DD").format("YYYY-MM-DD");
+				const end = moment.utc(endDate, "YYYY/MM/DD").format("YYYY-MM-DD");
 
-			vm.$ajax(KMP001C_API.GET_STAMP_CARD + start + "/" + end)
-				.then((data: IStampCardC[]) => {
-					vm.items(data);
+				vm.$ajax(KMP001C_API.GET_STAMP_CARD + start + "/" + end)
+					.then((data: IStampCardC[]) => {
+						vm.items(data);
 
-					if (selectedIndex >= 0) {
-						const record = data[selectedIndex || 0];
+						if (selectedIndex >= 0) {
+							const record = data[selectedIndex || 0];
 
-						if (record) {
-							vm.model.stampNumber(record.stampNumber);
+							if (record) {
+								vm.model.stampNumber(record.stampNumber);
+							}
 						}
-					}
-				})
-				.always(() => {
-					vm.$blockui("clear");
-				});
+					})
+					.always(() => {
+						vm.$blockui("clear");
+					});
+			}
 		}
 
 		openDialogCDL009a() {
@@ -217,7 +219,7 @@ module nts.uk.at.view.kmp001.c {
 				.then(() => vm.$window.modal('com', '/view/cdl/009/a/index.xhtml'))
 				.then(() => vm.$window.storage('CDL009Output'))
 				.then((data: string | string[]) => {
-					if (data != ''){
+					if (data != '') {
 						vm.employee.employeeId(ko.toJS(data))
 					}
 				});
@@ -237,7 +239,7 @@ module nts.uk.at.view.kmp001.c {
 				vm.$ajax(KMP001C_API.ADD_STAMP_CARD, command)
 					.then(() => vm.$dialog.info({ messageId: "Msg_15" }))
 					.then(() => vm.reloadData(newIndex))
-					.then(() => vm.employee.clear)
+					.then(() => vm.employee.clear())
 					.then(() => vm.$blockui("clear"));
 			}
 		}
