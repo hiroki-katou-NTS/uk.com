@@ -150,9 +150,6 @@ module nts.uk.at.view.kdl014.a {
             nts.uk.ui.windows.close();
         }
         
-        gotoMap(latitude: string, longitude: string): any {
-            window.open('https://www.google.co.jp/maps/place/' + latitude + ',' + longitude);
-        }
     }
     
     class EmpInfomation {
@@ -207,17 +204,17 @@ module nts.uk.at.view.kdl014.a {
             let date = moment(param.stampDateTime).format("YYYY/MM/DD");
             
             if(new Date(date).getDay() == 6){
-                self.dateShow = "<span class='color-schedule-saturday'> " + nts.uk.time.applyFormat("Short_YMDW", date) + "</span>";
+                self.dateShow = "<span class='color-schedule-saturday'>" + nts.uk.time.applyFormat("Short_YMDW", date) + "</span>";
             
             } else if (new Date(date).getDay() == 0) {
-                self.dateShow = "<span class='color-schedule-sunday'> " + nts.uk.time.applyFormat("Short_YMDW", date) + "</span>";
+                self.dateShow = "<span class='color-schedule-sunday'>" + nts.uk.time.applyFormat("Short_YMDW", date) + "</span>";
             
             } else {
                 self.dateShow = "<span>"+ nts.uk.time.applyFormat("Short_YMDW", date) + "</span>"            
             }
             
             if (param.locationInfo !== null) {
-                self.locationInfo = '<a data-bind="click: gotoMap(' + param.locationInfo.latitude + ',' + param.locationInfo.longitude + ')""><img src="../img/Mapアイコン画像.png" height="20" width="20"/></a>';
+                self.locationInfo = '<a onClick = "gotoMap(' + param.locationInfo.latitude + ',' + param.locationInfo.longitude + ')"><img src="../img/Mapアイコン画像.png" height="20" width="20"/></a>';
             }
         }
         
@@ -251,4 +248,7 @@ module nts.uk.at.view.kdl014.a {
     }
 }
 
+function gotoMap(latitude: string, longitude: string): any {
+    window.open('https://www.google.co.jp/maps/place/' + latitude + ',' + longitude);
+}
 
