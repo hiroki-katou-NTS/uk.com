@@ -6,7 +6,9 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyRegisterService;
 
 @Stateless
@@ -19,9 +21,23 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandlerWithResult
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<InsertGoBackDirectlyCommand> context) {
 		InsertGoBackDirectlyCommand data = context.getCommand();
-
-		return goBackDirectlyRegisterService.register(data.getGoBackDirectlyDto().toDomain(),
-				data.getApplicationDto().toDomain(), data.getInforGoBackCommonDirectDto().toDomain());
+		Application application  = data.getApplicationDto().toDomain();
+		application = Application.createFromNew(
+				application.getPrePostAtr(),
+				application.getEmployeeID(),
+				application.getAppType(),
+				application.getAppDate(),
+				application.getEnteredPerson(),
+				application.getOpStampRequestMode(),
+				application.getOpReversionReason(),
+				application.getOpAppStartDate(),
+				application.getOpAppEndDate(),
+				application.getOpAppReason(),
+				application.getOpAppStandardReasonCD());
+		GoBackDirectly goBackDirectly = data.getGoBackDirectlyDto().toDomain();
+		goBackDirectly.setAppID(application.getAppID());
+		return goBackDirectlyRegisterService.register(goBackDirectly,
+				application, data.getInforGoBackCommonDirectDto().toDomain());
 	}
 
 }

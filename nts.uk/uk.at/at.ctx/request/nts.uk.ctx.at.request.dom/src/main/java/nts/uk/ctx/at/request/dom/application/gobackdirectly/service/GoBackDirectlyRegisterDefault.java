@@ -114,6 +114,9 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	
 	@Inject
 	private DetailAfterUpdate detailAfterUpdate;
+	
+	@Inject
+	ApplicationApprovalService appRepository;
 	/**
 	 * 
 	 */
@@ -584,6 +587,13 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		// -> x.getWorkNo() == 1)
 		// .findAny();
 		// }
+		// insert application 
+		// EA is exist
+		
+		appRepository.insertApp(
+				application,
+				inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().isPresent() ? inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().get() : null);
+		
 
 		// ドメインモデル「直行直帰申請」の新規登録する
 		goBackDirectlyRepository.add(goBackDirectly);
@@ -592,8 +602,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		List<GeneralDate> listDates = new ArrayList<>();
 		listDates.add(application.getAppDate().getApplicationDate());
 		// 暫定データの登録
-		interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(),
-				application.getEmployeeID(), listDates);
+//		interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(),
+//				application.getEmployeeID(), listDates);
 
 		
 		if (inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet()) {
@@ -634,8 +644,9 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		List<GeneralDate> listDates = new ArrayList<>();
 		listDates.add(application.getAppDate().getApplicationDate());
 		// 暫定データの登録
-		interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(),
-				application.getEmployeeID(), listDates);
+		// reflect application is not done
+//		interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(),
+//				application.getEmployeeID(), listDates);
 //		アルゴリズム「4-2.詳細画面登録後の処理」を実行する
 		detailAfterUpdate.processAfterDetailScreenRegistration(application);
 		return null;

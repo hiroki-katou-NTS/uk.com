@@ -11,7 +11,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 version: 1,
                 // appID: '939a963d-2923-4387-a067-4ca9ee8808zz',
                 prePostAtr: 1,
-                // employeeID: '',
+                employeeID: '292ae91c-508c-4c6e-8fe8-3e72277dec16',
                 appType: 2,
                 appDate: moment(new Date()).format('YYYY/MM/DD'),
                 enteredPerson: '1',
@@ -81,7 +81,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             if (model.workTypeCode) {
                let dw = new DataWork(new InforType(model.workTypeCode, model.workTypeName));
                if (model.workTimeCode) {
-                   dw.workTime = new InforType(model.workTimeCode, model.workTimeName);
+                   dw.workTime = new InforWorkTime(model.workTimeCode, model.workTimeName);
                }
                goBackApp.dataWork = dw; 
                 
@@ -93,11 +93,28 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 agentAtr: true,
                 applicationDto: vm.applicationTest,
                 goBackDirectlyDto: goBackApp,
-                inforGoBackCommonDirectDto: vm.dataFetch,  
+                inforGoBackCommonDirectDto: ko.toJS(vm.dataFetch),
+                mode : vm.mode == 'edit'
             };
             vm.$ajax(API.checkRegister,param)
                 .done(res => {
                    console.log(res); 
+                   let paramsRegister = {
+                           companyId: vm.$user.companyId,
+                           applicationDto: vm.applicationTest,
+                           goBackDirectlyDto: goBackApp,
+                           inforGoBackCommonDirectDto: ko.toJS(vm.dataFetch),
+                           mode : vm.mode == 'edit'
+                   }
+                   if (_.isEmpty(res)) {
+                       vm.$ajax(API.register, paramsRegister)
+                           .done(resRegister => {
+                               console.log(resRegister);
+                           })
+                           .fail(errRegister => {
+                               console.log(errRegister);
+                           })
+                   }
                 })
                 .fail(err => {
                     console.log(err);
@@ -169,17 +186,25 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
         }
     }
     export class InforType {
-        code: string;
-        name: string;
+        workType: string;
+        nameWorkType: string;
         constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
+            this.workType = code;
+            this.nameWorkType = name;
+        }
+    }
+    export class InforWorkTime {
+        workTime: string;
+        nameWorkTime: string;
+        constructor(code: string, name: string) {
+            this.workTime = code;
+            this.nameWorkTime = name;
         }
     }
     export class DataWork {
         workType: InforType;
-        workTime?: InforType;
-        constructor(workType: InforType, workTime?: InforType) {
+        workTime?: InforWorkTime;
+        constructor(workType: InforType, workTime?: InforWorkTime) {
             this.workType = workType;
             this.workTime = workTime;
         }
@@ -205,7 +230,8 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 
     const API = {
         startNew: "at/request/application/gobackdirectly/getGoBackCommonSettingNew",
-        checkRegister: "at/request/application/gobackdirectly/checkBeforeRegisterNew"
+        checkRegister: "at/request/application/gobackdirectly/checkBeforeRegisterNew",
+        register: "at/request/application/gobackdirectly/registerNewKAF009"
     }
 
     export class ApplicationStatus {

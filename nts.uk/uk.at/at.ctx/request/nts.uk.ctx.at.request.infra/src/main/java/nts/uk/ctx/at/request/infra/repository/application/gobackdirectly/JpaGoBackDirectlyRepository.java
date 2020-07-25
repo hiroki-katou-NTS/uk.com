@@ -156,6 +156,12 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 				krqdtGoBackDirectly.workTimeCD = dataWork.getWorkTime().get().getWorkTime();
 			}
 		}
+		if (domain.getIsChangedWork().isPresent()) {
+			krqdtGoBackDirectly.workChangeAtr = domain.getIsChangedWork().get().getValue();			
+		}
+		krqdtGoBackDirectly.goWorkAtr = domain.getStraightDistinction().getValue();
+		krqdtGoBackDirectly.backHomeAtr = domain.getStraightLine().getValue();
+		krqdtGoBackDirectly.contractCd = AppContexts.user().contractCode();
 
 		return krqdtGoBackDirectly;
 	}

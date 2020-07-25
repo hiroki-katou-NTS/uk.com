@@ -24,7 +24,7 @@ public class GoBackDirectly extends Application {
 	private Optional<DataWork> dataWork;
 
 	public GoBackDirectly() {
-		super();
+		
 	}
 
 	// 申請内容
