@@ -574,7 +574,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 			this.setDataForMap(cache.getMapDiffTimeWorkSetting(), mapDiffOffdayWorkRestTimezones, mapDiffHalfDayWorkRestTimezones);
 		}
-
+		//取得した情報を返す
 		return cache;
 	}
 	

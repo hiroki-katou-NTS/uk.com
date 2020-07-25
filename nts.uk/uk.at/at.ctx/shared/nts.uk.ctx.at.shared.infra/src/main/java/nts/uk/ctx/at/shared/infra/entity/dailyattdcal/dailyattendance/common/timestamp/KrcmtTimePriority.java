@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.PriorityTimeReflectAtr;
@@ -23,6 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KRCMT_DAY_CLOCK_PRIORITY")
+@NoArgsConstructor
 public class KrcmtTimePriority extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
