@@ -390,7 +390,7 @@ module nts.uk.at.view.kdp005.a {
 			settingUser(self: ScreenModel) {
 				self.openDialogF({
 					mode: 'admin',
-                    companyId: self.loginInfo.companyId
+                    companyId: __viewContext.user.companyId
 				}).done((loginResult) => {
 					if (loginResult && loginResult.result) {
                         loginResult.em.selectedWP = self.loginInfo ? self.loginInfo.selectedWP : null;
