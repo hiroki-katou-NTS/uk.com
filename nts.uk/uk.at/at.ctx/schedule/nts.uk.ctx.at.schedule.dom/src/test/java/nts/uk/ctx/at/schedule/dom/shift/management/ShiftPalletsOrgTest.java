@@ -26,7 +26,7 @@ public class ShiftPalletsOrgTest {
 	public void create_shiftPalletsOrg_0page_fail() {
 
 		NtsAssert.businessException("Msg_1615", () -> {
-			new ShiftPalletsOrg(
+			ShiftPalletsOrg.create(
 					new TargetOrgIdenInfor(
 							TargetOrganizationUnit.WORKPLACE, //dummy
 							"e34d86c4-1e32-463e-b86c-68551e0bbf18", //dummy
@@ -51,7 +51,7 @@ public class ShiftPalletsOrgTest {
 	public void create_shiftPalletsOrg_11pages_fail() {
 
 		NtsAssert.businessException("Msg_1615", () -> {
-			new ShiftPalletsOrg(
+			ShiftPalletsOrg.create(
 					new TargetOrgIdenInfor(
 							TargetOrganizationUnit.WORKPLACE, //dummy
 							"e34d86c4-1e32-463e-b86c-68551e0bbf18", //dummy
@@ -75,7 +75,7 @@ public class ShiftPalletsOrgTest {
 	@Test
 	public void create_shiftPalletsOrg_sort() {
 
-		ShiftPalletsOrg target = new ShiftPalletsOrg(
+		ShiftPalletsOrg target = ShiftPalletsOrg.create(
 					new TargetOrgIdenInfor(
 							TargetOrganizationUnit.WORKPLACE, //dummy
 							"e34d86c4-1e32-463e-b86c-68551e0bbf18", //dummy

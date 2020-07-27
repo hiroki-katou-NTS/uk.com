@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.shift.management;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
@@ -9,7 +10,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  * @author phongtq
  *
  */
-
+@AllArgsConstructor
 public class ShiftPalletsCom implements DomainAggregate {
 
 	/** 会社ID */
@@ -19,7 +20,7 @@ public class ShiftPalletsCom implements DomainAggregate {
 	/** ページ */
 	@Getter
 	private final int page;
-	
+		
 	/** シフトパレット */
 	@Getter
 	private ShiftPallet shiftPallet;
@@ -31,7 +32,7 @@ public class ShiftPalletsCom implements DomainAggregate {
 	 * @param shiftPallet
 	 */
 	// 	説明：新しい＜会社別シフトパレット＞を作る。
-	public ShiftPalletsCom(String companyId, int page, ShiftPallet shiftPallet) {
+	public static ShiftPalletsCom create(String companyId, int page, ShiftPallet shiftPallet) {
 		// case inv-1: Msg_1615	
 		if(!(1 <= page && page <= 10)){
 			throw new BusinessException("Msg_1615");
@@ -39,9 +40,7 @@ public class ShiftPalletsCom implements DomainAggregate {
 		// シフトパレット.組み合わせ.シフト組み合わせの順番を整頓する()
 		shiftPallet.getCombinations().sort((p1, p2) -> p1.getPositionNumber() - p2.getPositionNumber());
 		
-		this.companyId = companyId;
-		this.page = page;
-		this.shiftPallet = shiftPallet;
+		 return new ShiftPalletsCom(companyId, page, shiftPallet);
 	}
 	/**
 	 * [1] 修正する
