@@ -296,7 +296,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		Optional.empty();
 
 		// 申請日を変更する // not finish yet AppDispInfoWithDateOutput
-		AppDispInfoStartupOutput appDispInfoWithDateOutput = this.common.changeAppDateProcess(companyId,
+		AppDispInfoWithDateOutput appDispInfoWithDateOutput = this.common.changeAppDateProcess(companyId,
 		dateLst, applicationType, appDispNoDate, appDispWithDate, Optional.empty());
 
 		if (appDispWithDate.getOpActualContentDisplayLst().isPresent() ||
@@ -309,7 +309,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		.getOpAchievementDetail().get().getAchievementEarly()); }
 
 		// 遅刻早退実績のチェック処理 this.checkLateEarlyResult(lateEarlyActualResults,
-		Optional.of(GeneralDate.fromString(baseDate, DATE_FORMAT)));
+		// Optional.of(GeneralDate.fromString(baseDate, DATE_FORMAT));
 
 
 		return null;
