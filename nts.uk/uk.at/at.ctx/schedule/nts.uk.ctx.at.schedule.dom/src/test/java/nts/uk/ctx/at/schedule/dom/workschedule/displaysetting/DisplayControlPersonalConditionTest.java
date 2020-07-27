@@ -3,6 +3,7 @@ package nts.uk.ctx.at.schedule.dom.workschedule.displaysetting;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -117,7 +118,7 @@ public class DisplayControlPersonalConditionTest {
 			}
 		};
 		
-		DisplayControlPersonalCondition data = null; // dummy
+		DisplayControlPersonalCondition data = new DisplayControlPersonalCondition("",  new ArrayList<>(), Optional.empty()); // dummy
 		List<PersonalCondition> list = data.acquireInforDisplayControlPersonalCondition(require, GeneralDate.today(), listEmp);
 		assertThat(list).extracting(x-> x.getEmpId(),
 				x-> x.getOptLicenseClassification().get().name(),

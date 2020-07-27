@@ -72,67 +72,48 @@ public class ExtractTargetEmployees {
 	}
 	
 	@RequiredArgsConstructor
-	private static class RequireImpl implements SortEmpService.Require {
-		
-		private final SortSettingRepository sortSettingRepo;
-		
-		private final BelongScheduleTeamRepository belongScheduleTeamRepo;
-		
-		private final EmployeeRankRepository employeeRankRepo;
-		
-		private final RankRepository rankRepo;
-		
-		private final SyJobTitleAdapter syJobTitleAdapter;
-
-
-		@Override
+	private static class RequireImpl implements SortEmpService.Require {@Override
 		public Optional<SortSetting> get() {
-			return sortSettingRepo.get(AppContexts.user().companyId());
+			// TODO Auto-generated method stub
+			return null;
 		}
 
-		/*@Override
-		public Optional<BelongScheduleTeam> get(String companyID, List<String> empIDs) {
-			return belongScheduleTeamRepo.get(companyID, empIDs);
-		}*/
+		@Override
+		public List<BelongScheduleTeam> get(List<String> empIDs) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 
 		@Override
 		public List<EmployeeRank> getAll(List<String> lstSID) {
-			return employeeRankRepo.getAll(lstSID);
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 		@Override
 		public Optional<RankPriority> getRankPriority(String companyId) {
-			return rankRepo.getRankPriority(companyId);
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 		@Override
 		public List<EmployeePosition> getPositionEmp(GeneralDate ymd, List<String> lstEmp) {
-			List<EmployeePosition> data = syJobTitleAdapter.findSJobHistByListSIdV2(lstEmp, ymd);
-			return data;
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 		@Override
 		public List<PositionImport> getCompanyPosition(GeneralDate ymd) {
-			List<PositionImport> data = syJobTitleAdapter.findAll(AppContexts.user().companyId(), ymd);
-			return data;
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 		@Override
 		public List<EmpClassifiImport> get(GeneralDate ymd, List<String> lstEmpId) {
-			
-			return null;
-		}
-
-		@Override
-		public Optional<BelongScheduleTeam> get(List<String> empIDs) {
 			// TODO Auto-generated method stub
 			return null;
 		}
-		
-		
-		
-	
-		
+
 	}
 
 }

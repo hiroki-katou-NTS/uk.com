@@ -2,7 +2,6 @@ package nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -85,7 +84,9 @@ public class GetEmpLicenseClassificationServiceTest {
 		};
 		
 		List<EmpLicenseClassification> classifications = GetEmpLicenseClassificationService.get(require, GeneralDate.today(), listEmp);
-		assertFalse(classifications.get(0).getOptLicenseClassification().isPresent());
+		assertThat(classifications).extracting(x-> x.getEmpID(),
+				x-> x.getOptLicenseClassification())
+		.containsExactly(tuple("003",Optional.empty()),tuple("004",Optional.empty()));
 	}
 	
 	@Test
@@ -97,8 +98,17 @@ public class GetEmpLicenseClassificationServiceTest {
 				new EmpMedicalWorkFormHisItem(
 				"003", 
 				"historyID1", true,// dummy
-				Optional.ofNullable(null),// dummy
+				Optional.ofNullable(new MedicalWorkFormInfor(MedicalCareWorkStyle.FULLTIME,
+						new NurseClassifiCode("9"), true)),
 				Optional.ofNullable(null)));// dummy
+		
+		listEmpMedicalWorkFormHisItem.add(new EmpMedicalWorkFormHisItem(
+				"002", 
+				"historyID2", true,
+				Optional.ofNullable(new MedicalWorkFormInfor(MedicalCareWorkStyle.FULLTIME,
+						new NurseClassifiCode("7"), true)),
+				Optional.ofNullable(null)));// dummy
+
 		
 		new Expectations() {
 			{
@@ -120,6 +130,8 @@ public class GetEmpLicenseClassificationServiceTest {
 		};
 		
 		List<EmpLicenseClassification> classifications = GetEmpLicenseClassificationService.get(require, GeneralDate.today(), listEmp);
-		assertFalse(classifications.get(0).getOptLicenseClassification().isPresent());
+		assertThat(classifications).extracting(x-> x.getEmpID(),
+				x-> x.getOptLicenseClassification())
+		.containsExactly(tuple("003",Optional.empty()),tuple("002",Optional.empty()));
 	}
 }
