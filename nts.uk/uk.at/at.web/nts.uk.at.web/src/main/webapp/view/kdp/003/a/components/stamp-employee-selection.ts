@@ -22,9 +22,27 @@ module nts.uk.at.kdp003.a {
 			</div>
 		</div>
 	`;
+	
+	const COMPONENT_NAME = 'stamp-employee-selection';
+
+	@handler({
+		bindingName: COMPONENT_NAME,
+		validatable: true,
+		virtual: false
+	})
+	export class EmployeeComponentBindingHandler implements KnockoutBindingHandler {
+		init(element: HTMLElement, valueAccessor: () => any, __ab: KnockoutAllBindingsAccessor, ___vm: ComponentViewModel, bindingContext: KnockoutBindingContext) {
+			const name = COMPONENT_NAME;
+			const params = valueAccessor();
+
+			ko.applyBindingsToNode(element, { component: { name, params } }, bindingContext);
+
+			return { controlsDescendantBindings: true };
+		}
+	}
 
 	@component({
-		name: 'stamp-employee-selection',
+		name: COMPONENT_NAME,
 		template: stampEmployeeSelectionTemplate
 	})
 	export class StampEmployeeSelectionComponent extends ko.ViewModel {
@@ -66,12 +84,12 @@ module nts.uk.at.kdp003.a {
 			// mock data
 			['ア', 'カ', 'サ', 'タ', 'ナ', 'ハ', 'マ', 'ヤ', 'ラ', 'ワ']
 				.forEach((t, i) => {
-					_.extend(window.names, {
+					_.extend(names, {
 						[`KDP003_10${i}`]: t
 					});
 				});
 
-			_.extend(window.names, {
+			_.extend(names, {
 				'KDP003_111': '全員'
 			});
 
@@ -139,7 +157,7 @@ module nts.uk.at.kdp003.a {
 								filtereds.push(...doFilter(['ワ', 'ヲ', 'ン', 'ヮ']));
 								break;
 						}
-						
+
 						vm.options.selectedId(undefined);
 						$grid.igGridSelection('clearSelection');
 
