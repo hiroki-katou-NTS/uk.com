@@ -62,7 +62,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchieve
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 //import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.setting.UseDivision;
@@ -1000,7 +1000,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		// 打刻申請.打刻申請モード-(Check 打刻申請モード)
 		// get domain 打刻申請
-		AppStamp stamp = repoAppStamp.findByAppID(companyID, application.getAppID());
+		AppStamp_Old stamp = repoAppStamp.findByAppID(companyID, application.getAppID());
 		if (!stamp.getStampRequestMode().equals(StampRequestMode_Old.STAMP_CANCEL)) {
 			return null;
 		}

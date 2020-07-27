@@ -13,7 +13,7 @@ import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.disp
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.AppCommentSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.GoOutTypeDisplayControl;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampDisplayControl;
-import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting_Old;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.SupportFrameDispNumber;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -86,8 +86,8 @@ public class KrqstStampRequestSetting extends UkJpaEntity {
 		return companyID;
 	}
 	
-	public StampRequestSetting toDomain(){
-		return new StampRequestSetting(
+	public StampRequestSetting_Old toDomain(){
+		return new StampRequestSetting_Old(
 				this.companyID, 
 				new AppCommentSetting(
 						new Comment(this.topComment), 

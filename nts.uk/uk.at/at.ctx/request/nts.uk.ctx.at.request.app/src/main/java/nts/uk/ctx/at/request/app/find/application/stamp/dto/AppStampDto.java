@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 /**
  * 
  * @author Doan Duy Hung
@@ -46,7 +46,7 @@ public class AppStampDto {
 	
 	private Boolean reflected;
 	
-	public static AppStampDto convertToDto(AppStamp appStamp, String employeeName, String inputEmpName){
+	public static AppStampDto convertToDto(AppStamp_Old appStamp, String employeeName, String inputEmpName){
 		if(appStamp == null) return null;
 		return new AppStampDto(
 				appStamp.getVersion(),

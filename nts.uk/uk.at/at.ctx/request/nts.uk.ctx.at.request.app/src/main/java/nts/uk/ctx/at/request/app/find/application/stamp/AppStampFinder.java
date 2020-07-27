@@ -23,7 +23,7 @@ import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReaso
 import nts.uk.ctx.at.request.app.find.setting.company.request.stamp.dto.StampRequestSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCommonDomainService;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampNewDomainService;
@@ -104,7 +104,7 @@ public class AppStampFinder {
 	
 	public AppStampDto getAppStampByID(String appID){
 		String companyID = AppContexts.user().companyId();
-		AppStamp appStamp = appStampCommonDomainService.findByID(companyID, appID);
+		AppStamp_Old appStamp = appStampCommonDomainService.findByID(companyID, appID);
 		String employeeName = appStampCommonDomainService.getEmployeeName(appStamp.getApplication_New().getEmployeeID());
 		String inputEmpName = appStampCommonDomainService.getEmployeeName(appStamp.getApplication_New().getEnteredPersonID());
 		return AppStampDto.convertToDto(appStamp, employeeName, inputEmpName);
