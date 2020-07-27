@@ -76,7 +76,7 @@ module nts.uk.at.view.kmp001 {
 		gender: KnockoutObservable<number> = ko.observable(0);
 		pid: KnockoutObservable<string> = ko.observable('');
 		retiredDate: KnockoutObservable<Date | null> = ko.observable(null);
-		stampCard: KnockoutObservableArray<StampCard> = ko.observableArray([]);
+		stampCardDto: KnockoutObservableArray<StampCard> = ko.observableArray([]);
 		workplaceId: KnockoutObservable<string> = ko.observable('');
 		workplaceName: KnockoutObservable<string> = ko.observable('');
 
@@ -105,7 +105,7 @@ module nts.uk.at.view.kmp001 {
 				self.workplaceId(params.workplaceId);
 				self.workplaceName(params.workplaceName);
 
-				self.stampCard(params.stampCardDto.map(m => new StampCard(m)));
+				self.stampCardDto(params.stampCardDto.map(m => new StampCard(m)));
 
 				self.selectedStampCardIndex(0);
 			}

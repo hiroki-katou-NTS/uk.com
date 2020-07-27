@@ -8,5 +8,6 @@ import nts.uk.ctx.at.record.app.command.kdp.kdp001.a.ConfirmUseOfStampInputComma
 @EqualsAndHashCode(callSuper=false)
 public class ConfirmUseOfStampInputCommandWithEmployeeId extends ConfirmUseOfStampInputCommand {
 	private String employeeId;
+	private String employeeCode;
 	private String companyId;
 }

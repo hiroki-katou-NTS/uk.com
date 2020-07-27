@@ -22,7 +22,9 @@ module nts.uk.at.view.kdp005.i {
                 $(document).ready(function() {
                     $('#btnClose').focus();
                 });
-                self.countDown();
+                if(self.time > 0){
+                    self.countDown();
+                }
                 block.clear();
                 dfd.resolve();
                 return dfd.promise();

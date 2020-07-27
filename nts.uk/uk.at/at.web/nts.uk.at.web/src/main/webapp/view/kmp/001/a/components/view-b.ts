@@ -146,9 +146,12 @@ module nts.uk.at.view.kmp001.b {
 				vm.$dialog.info({ messageId: "Msg_1679" });
 			} else {
 				vm.$ajax(KMP001B_API.GET_STAMPCARD + stampInput)
-					.then((data: IStampCard[]) => {
-					console.log(data);
-						vm.items(data);
+					.then((data: IStampCard) => {
+						if(data.businessName != null && data.employeeCode != null && data.employeeId != null && data.stampNumber != null){
+							vm.items([data]);
+							vm.model.stampNumber(data.stampNumber);
+							vm.model.update(data);
+						}
 					}).always(() => {
 						vm.$blockui("clear");
 					});

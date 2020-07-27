@@ -43,7 +43,7 @@ module nts.uk.at.kdp003.a {
 		// data option for list employee A2
 		employeeData: EmployeeListParam = {
 			employees: ko.observableArray([]),
-			selectedId: ko.observable(null),
+			selectedId: ko.observable(undefined),
 			employeeAuthcUseArt: ko.observable(true)
 		};
 
@@ -193,7 +193,8 @@ module nts.uk.at.kdp003.a {
 				.always(() => vm.$blockui('clear'));
 		}
 
-		// <<ScreenQuery>> 打刻入力(氏名選択)の設定を取得する
+		// ※画面起動「※起動1」より再度実行(UI処理[A5])
+		// <<ScreenQuery>> 打刻入力(氏名選択)の設定を取得する 
 		loadData(data: StorageData) {
 			const vm = this;
 			const clearState = () => {
@@ -361,9 +362,9 @@ module nts.uk.at.kdp003.a {
 
 		stampButtonClick(btn: share.ButtonSetting, layout: share.PageLayout) {
 			const vm = this;
-			const { buttonPage } = vm;
-
-			vm.$ajax('at', API.HIGHTLIGHT)
+			const { buttonPage, employeeData } = vm;
+			const { selectedId, employees } = ko.toJS(employeeData) as EmployeeListData;
+			const reloadSetting = () => vm.$ajax('at', API.HIGHTLIGHT)
 				.then((data: any) => {
 					const oldData = ko.unwrap(buttonPage.stampToSuppress);
 
@@ -373,6 +374,35 @@ module nts.uk.at.kdp003.a {
 						buttonPage.stampToSuppress.valueHasMutated();
 					}
 				});
+
+			// case: 社員一覧(A2)を選択していない場合
+			if (selectedId === undefined) {
+				return vm.$dialog.error({ messageId: 'Msg_1646' });
+			}
+
+			// case: 社員一覧(A2)を選択している場合(社員を選択) || 社員一覧(A2)を選択している場合(固有部品：PA4)、又は社員一覧が表示されていない場合
+			return vm.$window.storage(KDP003_SAVE_DATA)
+				.then((data: StorageData) => {
+					const params = {
+						mode: selectedId ? 'employee' : 'fingerVein',
+						companyId: (data || {}).CID || vm.$user.companyId
+					};
+
+					if (selectedId) {
+						const employee = _.find(employees, (e) => e.id === selectedId);
+
+						if (employee) {
+							_.extend(params, { employee });
+						}
+					}
+
+					return vm.$window.modal('at', DIALOG.F, params);
+				})
+				.then((data: f.TimeStampLoginData) => {
+					console.log(data);
+				})
+				// always relead setting (color & type of all button in tab)
+				.always(reloadSetting);
 		}
 	}
 
