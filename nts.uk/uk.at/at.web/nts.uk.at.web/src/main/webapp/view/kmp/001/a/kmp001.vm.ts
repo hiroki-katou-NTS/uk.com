@@ -45,7 +45,7 @@ module nts.uk.at.view.kmp001 {
 	export class StampCard {
 		stampCardId: KnockoutObservable<string> = ko.observable('');
 		stampNumber: KnockoutObservable<string> = ko.observable('');
-		checked = false;
+		checked: KnockoutObservable<boolean> = ko.observable(false);
 
 		constructor(params?: IStampCard) {
 			const model = this;
@@ -58,7 +58,9 @@ module nts.uk.at.view.kmp001 {
 			const model = this;
 
 			if (params) {
+				model.stampCardId(params.stampCardId)
 				model.stampNumber(params.stampNumber);
+				model.checked(params.checked);
 			}
 		}
 	}
@@ -109,6 +111,15 @@ module nts.uk.at.view.kmp001 {
 
 				self.selectedStampCardIndex(0);
 			}
+		}
+		
+		
+		public addNewStampCard() {
+			const model = this;
+			
+			model.stampCardDto.push(new StampCard({ checked: false, stampCardId: "", stampNumber: "" }));
+			
+			model.selectedStampCardIndex(model.stampCardDto.length - 1);
 		}
 	}
 

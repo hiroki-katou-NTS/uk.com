@@ -8,7 +8,7 @@ module nts.uk.at.view.kmp001.a {
 	<span class="title" data-bind="text: $i18n('KMP001_1')"></span>
 	<button data-bind="text: $i18n('KMP001_4'), click: addNew, enable: mode() == 'update'"></button>
 	<button class="proceed" data-bind="text: $i18n('KMP001_5')"></button>
-	<button class="danger" data-bind="text: $i18n('KMP001_6'), enable: mode() == 'update'"></button>
+	<button class="danger" data-bind="text: $i18n('KMP001_6'), click: deleteStampCard, enable: mode() == 'update'"></button>
 	<!-- ko if: attendance -->
 	<button data-bind="text: $i18n('KMP001_7'), click: showDiaLog"></button>
 	<!-- /ko -->
@@ -20,14 +20,17 @@ module nts.uk.at.view.kmp001.a {
 	<div class="float-left model-component" 
 		data-bind="component: { 
 			name: 'editor-area', 
-			params: { model: model } }"></div>
+			params: { model: model }}"></div>
 <div>
 `;
 
 	const KMP001A_API = {
 		GET_STAMPCARDDIGIT: 'screen/pointCardNumber/getStampCardDigit',
 		GET_STATUS_SETTING: 'screen/pointCardNumber/getStatusEmployeeSettingStampCard',
-		GET_INFOMAITON_EMPLOYEE: 'screen/pointCardNumber/getEmployeeInfoCardNumber'
+		GET_INFOMAITON_EMPLOYEE: 'screen/pointCardNumber/getEmployeeInfoCardNumber',
+		ADD: 'at/record/register-stamp-card/view-a/save',
+		UPDATE: 'at/record/register-stamp-card/view-a/update',
+		DELETE: 'at/record/register-stamp-card/view-a/delete'
 	};
 
 	@component({
@@ -38,12 +41,13 @@ module nts.uk.at.view.kmp001.a {
 		attendance: KnockoutObservable<boolean> = ko.observable(true);
 
 		public employees: KnockoutObservableArray<IModel> = ko.observableArray([]);
-		public model: Model = new Model();
+		public model: share.Model = new share.Model();
 		public settings: KnockoutObservableArray<ISetting> = ko.observableArray([]);
 		public employeeIds: KnockoutObservableArray<string> = ko.observableArray([]);
 		public baseDate: KnockoutObservable<string> = ko.observable('');
 		public currentCodes: KnockoutObservableArray<string> = ko.observableArray([]);
 		public mode: KnockoutObservable<MODE> = ko.observable('update');
+		public modelStamp: StampCard = new StampCard();
 
 		created() {
 			const vm = this;
@@ -55,12 +59,16 @@ module nts.uk.at.view.kmp001.a {
 
 					if (current) {
 						vm.$ajax(KMP001A_API.GET_INFOMAITON_EMPLOYEE + "/" + ko.toJS(current.employeeId) + "/" + ko.toJS(current.affiliationId) + "/" + ko.toJS(vm.baseDate))
-							.then((data: IModel[]) => {
+							.then((data: IModel) => {
+								if (data.stampCardDto.length > 0) {
+									data.stampCardDto[0].checked = true;
+									vm.modelStamp.update(data.stampCardDto[0]);
+								}
 								vm.model.update(ko.toJS(data));
+								debugger;
 							});
-					} else {
-						// reset data ve mode them moi
 					}
+					vm.mode("update");
 				});
 
 			vm.employees
@@ -79,6 +87,9 @@ module nts.uk.at.view.kmp001.a {
 									vm.settings.push(ko.toJS(modelSetting));
 								}
 							}
+							if (ko.toJS(vm.model.code) == '') {
+								vm.model.code(employees[0].code);
+							}
 						}).then(() => {
 							vm.$blockui("clear");
 						});
@@ -87,6 +98,7 @@ module nts.uk.at.view.kmp001.a {
 
 		mounted() {
 			const vm = this;
+			vm.$errors('clear');  
 			const dataFormate = 'YYYY/MM/DD';
 
 			if (!!vm.$user.role.attendance) {
@@ -111,7 +123,7 @@ module nts.uk.at.view.kmp001.a {
 					disableSelection: false,
 					maxRows: 20,
 					maxWidth: 450
-				}
+				} as any
 			);
 
 			$('#com-ccg001')
@@ -176,6 +188,12 @@ module nts.uk.at.view.kmp001.a {
 						vm.employees(employees);
 					}
 				});
+
+			vm.$errors('clear');
+
+			vm.$nextTick(() => {
+				vm.$errors('clear');
+			})
 		}
 
 		showDiaLog() {
@@ -192,6 +210,22 @@ module nts.uk.at.view.kmp001.a {
 			const vm = this;
 
 			vm.mode("new");
+			
+			vm.model.addNewStampCard();
+		}
+
+		deleteStampCard() {
+			const vm = this;
+			const model: IModel = ko.toJS(vm.model);
+			const checkeds = model.stampCardDto.filter((f) => f.checked);
+
+			if (checkeds != null) {
+				const command = { employeeId: model.employeeId, cardNumbers: checkeds.map(m => m.stampNumber), cardId: checkeds.map(m => m.stampCardId) };
+
+				vm.$ajax(KMP001A_API.DELETE, command)
+					.then(() => vm.$dialog.info({ messageId: "Msg_16" }));
+				debugger;
+			}
 		}
 	}
 
@@ -237,7 +271,7 @@ module nts.uk.at.view.kmp001.a {
 <div>
 	<div>
 		<div class="list-card" 
-			data-bind="component: { name: 'card-list-component', params: { model: model } }"></div>
+			data-bind="component: { name: 'card-list-component', params: { model: model} }"></div>
 	</div>
 </div>
 `
@@ -249,7 +283,7 @@ module nts.uk.at.view.kmp001.a {
 	class RightPanelComponent extends ko.ViewModel {
 		model!: Model;
 
-		created(params: any) {
+		created(params: any, params1: any) {
 			const vm = this;
 
 			vm.model = params.model;
@@ -267,17 +301,16 @@ module nts.uk.at.view.kmp001.a {
 		}
 	}
 
-
-
-
 	interface IStampCard {
 		stampCardId: string;
 		stampNumber: string;
+		checked: boolean;
 	}
 
 	class StampCard {
 		stampCardId: KnockoutObservable<string> = ko.observable('');
 		stampNumber: KnockoutObservable<string> = ko.observable('');
+		checked: KnockoutObservable<boolean> = ko.observable(false);
 
 		constructor(params?: IStampCard) {
 			const model = this;
@@ -291,53 +324,10 @@ module nts.uk.at.view.kmp001.a {
 			if (params) {
 				model.stampCardId(params.stampCardId);
 				model.stampNumber(params.stampNumber);
+				model.checked(params.checked);
 			}
 		}
-	}
-
-	class Model {
-		code: KnockoutObservable<string> = ko.observable('');
-		affiliationId: KnockoutObservable<string> = ko.observable('');
-		birthDay: KnockoutObservable<Date | null> = ko.observable(null);
-		businessName: KnockoutObservable<string> = ko.observable('');
-		employeeCode: KnockoutObservable<string> = ko.observable('');
-		employeeId: KnockoutObservable<string> = ko.observable('');
-		entryDate: KnockoutObservable<Date | null> = ko.observable(null);
-		gender: KnockoutObservable<number> = ko.observable(0);
-		pid: KnockoutObservable<string> = ko.observable('');
-		retiredDate: KnockoutObservable<Date | null> = ko.observable(null);
-		stampCard: KnockoutObservableArray<StampCard> = ko.observableArray([]);
-		workplaceId: KnockoutObservable<string> = ko.observable('');
-		workplaceName: KnockoutObservable<string> = ko.observable('');
-
-		public create(params?: IModel) {
-			const self = this;
-
-			if (params) {
-				self.employeeId(params.employeeId);
-
-				self.update(params);
-			}
-		}
-
-		public update(params?: IModel) {
-			const self = this;
-
-			if (params) {
-				self.birthDay(params.birthDay);
-				self.businessName(params.businessName);
-				self.employeeCode(params.employeeCode);
-				self.entryDate(params.entryDate);
-				self.gender(params.gender);
-				self.pid(params.pid);
-				self.retiredDate(params.retiredDate);
-				self.workplaceId(params.workplaceId);
-				self.workplaceName(params.workplaceName);
-
-				self.stampCard(params.stampCardDto.map(m => new StampCard(m)));
-			}
-		}
-	}
+	}	
 
 	interface ISetting {
 		code: string;

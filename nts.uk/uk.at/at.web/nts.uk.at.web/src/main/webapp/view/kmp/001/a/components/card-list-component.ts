@@ -18,7 +18,8 @@ module nts.uk.at.view.kmp001.a {
 				enabled: true, 
 				required: true
 			}"/>	
-	</div>
+		</div>
+	</div>	
 	<table id="stampcard-list"></table>
 	`;
 
@@ -93,7 +94,7 @@ module nts.uk.at.view.kmp001.a {
 						},
 						rowSelectionChanged: function(evt, ui) {
 							const selectedRows = ui.selectedRows.map(m => m.index) as number[];
-							const stampCard = ko.unwrap(vm.model.stampCard);
+							const stampCard = ko.unwrap(vm.model.stampCardDto);
 
 							vm.model.selectedStampCardIndex(ui.row.index);
 
@@ -107,7 +108,7 @@ module nts.uk.at.view.kmp001.a {
 								}
 							})
 
-							vm.model.stampCard(stampCard);
+							vm.model.stampCardDto(stampCard);
 						}
 					}, {
 						name: "RowSelectors",
@@ -126,16 +127,11 @@ module nts.uk.at.view.kmp001.a {
 					}
 				});
 
-			/*if ($grid.data('igGrid') && $grid.data('igGridSelection') && $grid.igGrid('option', 'dataSource').length) {
-				$grid.igGridSelection("selectRow", 0);
-			}*/
-
 			ko.computed(() => {
-				const stampCard = ko.unwrap(vm.model.stampCard);
+				const stampCard = ko.unwrap(vm.model.stampCardDto);
 
 				$grid.igGrid('option', 'dataSource', ko.toJS(stampCard));
 			});
-
 
 			const el = document.querySelector('.sidebar-content-header');
 
@@ -152,6 +148,12 @@ module nts.uk.at.view.kmp001.a {
 					});
 				}
 			}
+
+			vm.$errors('clear');
+
+			vm.$nextTick(() => {
+				vm.$errors('clear');
+			})
 		}
 	}
 }
