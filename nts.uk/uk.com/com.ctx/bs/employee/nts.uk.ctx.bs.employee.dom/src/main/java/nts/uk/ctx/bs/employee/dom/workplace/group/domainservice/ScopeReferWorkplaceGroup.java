@@ -2,9 +2,11 @@ package nts.uk.ctx.bs.employee.dom.workplace.group.domainservice;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.bs.employee.dom.employee.service.EmployeeReferenceRangeImport;
 
 /**
- * Enum -職場グループ内の参照範囲 UKDesign.ドメインモデル."NittsuSystem.UniversalK".基幹.社員.職場.職場グループ
+ * 職場グループ内の参照範囲  --- ENUM
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".基幹.社員.職場.職場グループ
  * @author HieuLt
  */
 @RequiredArgsConstructor
@@ -19,5 +21,16 @@ public enum ScopeReferWorkplaceGroup {
 
 	public static ScopeReferWorkplaceGroup of(int value) {
 		return EnumAdaptor.valueOf(value, ScopeReferWorkplaceGroup.class);
+	}
+	
+	public static ScopeReferWorkplaceGroup determineTheReferenceRange(EmployeeReferenceRangeImport employeeReferenceRange){
+		if(employeeReferenceRange== EmployeeReferenceRangeImport.ONLY_MYSELF){
+			return EnumAdaptor.valueOf(1, ScopeReferWorkplaceGroup.class);
+		}
+		else {
+			//Tao QA xasc nhan 
+			return EnumAdaptor.valueOf(0, ScopeReferWorkplaceGroup.class);
+		}
+		
 	}
 }

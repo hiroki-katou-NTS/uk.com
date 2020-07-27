@@ -11,11 +11,14 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.bs.employee.dom.employee.service.EmployeeReferenceRangeImport;
 import nts.uk.ctx.bs.employee.dom.workplace.EmployeeAffiliation;
+import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupRespository;
 import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.EmployeeInfoData;
 import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.GetAllEmpWhoBelongWorkplaceGroupService;
+import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.GetEmpCanReferBySpecifyWorkgroupService;
 import nts.uk.ctx.bs.employee.pub.employee.workplace.export.WorkplaceGroupExport;
 import nts.uk.ctx.bs.employee.pub.workplace.workplacegroup.EmpOrganizationExport;
 import nts.uk.ctx.bs.employee.pub.workplace.workplacegroup.WorkplaceGroupPublish;
@@ -78,8 +81,10 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 
 	@Override
 	public List<String> getReferableEmployees(GeneralDate date, String empID, String workplaceGroupId) {
-		// TODO Auto-generated method stub
-		return null;
+		//	return 職場グループを指定して参照可能な社員を取得する#取得する( require, 基準日, 社員ID, 職場グループID )
+		RequireWorkgroupService require = new RequireWorkgroupService();
+		List<String> data = GetEmpCanReferBySpecifyWorkgroupService.getEmpCanRefer(require, date, empID, workplaceGroupId);
+		return data;
 	}
 	
 	class Require {
@@ -107,11 +112,68 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 
 		@Override
 		public List<EmployeeInfoData> getEmployeesWhoBelongWorkplace(String workplaceId, DatePeriod datePeriod) {
+			// TODO Auto-generated method stub --QA
+			return null;
+		}
+
+	}
+	private static class RequireWorkgroupService implements GetEmpCanReferBySpecifyWorkgroupService.Require{
+
+		@Override
+		public List<WorkplaceGroup> getAll() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<AffWorkplaceGroup> getByListWKPID(List<String> WKPID) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean whetherThePersonInCharge(String empId) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public EmployeeReferenceRangeImport getEmployeeReferRangeOfLoginEmployees(String empId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<String> getAllManagedWorkplaces(String empId, GeneralDate baseDate) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<AffWorkplaceGroup> getWGInfo(List<String> WKPID) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<String> getWorkplaceBelongsWorkplaceGroup(String workplaceGroupId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<EmployeeInfoData> getEmployeesWhoBelongWorkplace(String workplaceId, DatePeriod datePeriod) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 		
-		
 	}
+	
 
 }

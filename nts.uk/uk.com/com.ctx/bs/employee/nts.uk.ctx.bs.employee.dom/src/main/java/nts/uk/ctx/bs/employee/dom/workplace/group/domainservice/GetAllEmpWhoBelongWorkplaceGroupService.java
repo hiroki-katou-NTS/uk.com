@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.dom.workplace.group.domainservice;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,13 +29,20 @@ public class GetAllEmpWhoBelongWorkplaceGroupService {
 		DatePeriod targetDatePeriod = new DatePeriod(baseDate, baseDate);
 		//$職場IDリスト = require.職場グループに所属する職場を取得する( 職場グループID )
 		List<String> lstWorkplaceGroupId = require.getWorkplaceBelongsWorkplaceGroup(workplaceGroupId);
-		
-		
-		//
-		
-		return null;
+		List<EmployeeAffiliation> result = new ArrayList<>();
+		 lstWorkplaceGroupId.stream().map(c -> result.addAll(createListEmpOrganizations(require, targetDatePeriod ,workplaceGroupId,c)))
+		.collect(Collectors.toList());
+		return result;
 	}
-	private List<EmployeeAffiliation> createListEmpOrganizations(Require require, DatePeriod datePeriod ,String workplaceGroupId , String workplaceId){
+	/**
+	 * [prv-1] 社員の所属組織リストを作成する
+	 * @param require
+	 * @param datePeriod
+	 * @param workplaceGroupId
+	 * @param workplaceId
+	 * @return
+	 */
+	private static List<EmployeeAffiliation> createListEmpOrganizations(Require require, DatePeriod datePeriod ,String workplaceGroupId , String workplaceId){
 		//	$社員情報リスト = require.職場の所属社員を取得する( 職場ID, 対象期間 )		
 		List<EmployeeInfoData> data = require.getEmployeesWhoBelongWorkplace(workplaceId, datePeriod);
 		List<EmployeeAffiliation> result = data.stream().map(x -> new EmployeeAffiliation(
@@ -57,9 +65,7 @@ public class GetAllEmpWhoBelongWorkplaceGroupService {
 		
 		/**
 		 * [R-2] 職場の所属社員を取得する	
-		 * アルゴリズム.職場の所属社員を取得する( 職場ID, 期間 )	
-		 * 
-		 * ------------------------------------------Tạo QA xác nhận Output R2-----------------------------------	
+		 * アルゴリズム.職場の所属社員を取得する( 職場ID, 期間 )		
 		 * @param workplaceId
 		 * @param datePeriod
 		 * @return
