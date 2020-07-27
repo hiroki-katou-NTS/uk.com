@@ -216,56 +216,6 @@ module nts.uk.at.view.kdp005.a {
 				});
 			}
 
-			public openScreenG(): JQueryPromise<any> {
-				let self = this;
-				const vm = new ko.ViewModel();
-				let retry = 0,
-					errorMessage = 'Msg_301';
-
-				const process = () => {
-					return vm.$window.storage('ModelGParam', { displayLoginBtn: retry >= self.stampSetting().authcFailCnt, errorMessage })
-						.then(() => {
-							return vm.$window.modal('at', '/view/kdp/004/g/index.xhtml')
-								.then((result) => {
-									let redirect: "retry" | "loginPass" | "cancel" = result.actionName;
-
-									if (redirect === "retry") {
-										retry = retry + 1;
-										return self.fingerAuth();
-									}
-
-									if (redirect === "loginPass") {
-										return self.openDialogF({
-											mode: 'fingerVein',
-											company: { id: vm.$user.companyId, code: self.loginInfo.companyCode, name: self.loginInfo.companyCode },
-											employee: { id: vm.$user.employeeId, code: self.loginInfo.employeeCode, name: self.loginInfo.employeeName },
-											passwordRequired: true
-										});
-									}
-									return 'cancel';
-								})
-								.then((res) => {
-
-									if (res !== 'cancel' && !!res) {
-
-										if (!res.result) {
-											errorMessage = 'Msg_301';
-											return process();
-										}
-
-										if (res.result) {
-											return { isSuccess: true, authType: res.em ?  0 : 2 };
-										}
-									} else {
-										return { isSuccess: false, authType: 2 };
-									}
-								});
-						});
-				};
-
-				return process();
-			}
-
 			public clickBtn1(vm, layout) {
 				let button = this;
                 modal('/view/kdp/005/h/index.xhtml').onClosed(function(): any {
@@ -275,7 +225,7 @@ module nts.uk.at.view.kdp005.a {
                         block.grayout();
                         vm.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
                             vm.authentic(employeeId).done(() => {
-                                vm.registerData(button, layout, ICCard);
+                                vm.registerData(button, layout, ICCard, employeeId);
                             }).fail((errorMessage: string) => {
                                 setShared("errorMessage", errorMessage);
                                 vm.openIDialog();
@@ -329,7 +279,8 @@ module nts.uk.at.view.kdp005.a {
                         dfd.reject(res.errorMessage);    
                     }
                 }).fail((res) => {
-                    dialog.alertError({ messageId: res.messageId });
+                    setShared("errorMessage", getText(res.messageId));
+                    self.openIDialog();
                 });
                 return dfd.promise();
             }
@@ -405,7 +356,7 @@ module nts.uk.at.view.kdp005.a {
 				});
 			}
 
-			public registerData(button, layout, stampedCardNumber) {
+			public registerData(button, layout, stampedCardNumber, employeeIdRegister) {
 				let self = this;
 				let vm = new ko.ViewModel();
 				block.invisible();
@@ -429,9 +380,9 @@ module nts.uk.at.view.kdp005.a {
 					self.playAudio(button.audioType);
 
 					if (self.stampResultDisplay().notUseAttr == 1 && (button.changeClockArt == 1 || button.changeClockArt == 9)) {
-						self.openScreenC(button, layout);
+						self.openScreenC(button, layout, employeeIdRegister);
 					} else {
-						self.openScreenB(button, layout);
+						self.openScreenB(button, layout, employeeIdRegister);
 					}
 				}).fail((res) => {
 					dialog.alertError({ messageId: res.messageId });
@@ -442,12 +393,12 @@ module nts.uk.at.view.kdp005.a {
 
 			}
 
-			public openScreenB(button, layout) {
+			public openScreenB(button, layout, employeeIdRegister) {
 				let self = this;
 				let vm = new ko.ViewModel();
 				setShared("resultDisplayTime", self.stampSetting().resultDisplayTime);
 				setShared("infoEmpToScreenB", {
-					employeeId: vm.$user.employeeId,
+					employeeId: employeeIdRegister,
 					employeeCode: vm.$user.employeeCode,
 					mode: Mode.Personal,
 				});
@@ -456,12 +407,12 @@ module nts.uk.at.view.kdp005.a {
 				});
 			}
 
-			public openScreenC(button, layout) {
+			public openScreenC(button, layout, employeeIdRegister) {
 				let self = this;
 				let vm = new ko.ViewModel();
 				setShared('KDP010_2C', self.stampResultDisplay().displayItemId, true);
 				setShared("infoEmpToScreenC", {
-					employeeId: vm.$user.employeeId,
+					employeeId: employeeIdRegister,
 					employeeCode: vm.$user.employeeCode,
 					mode: Mode.Personal,
 				});
@@ -483,8 +434,6 @@ module nts.uk.at.view.kdp005.a {
 							let returnData = getShared('KDP010_T');
 							if (!returnData.isClose && returnData.errorDate) {
 								console.log(returnData);
-								// T1	打刻結果の取得対象項目の追加
-								// 残業申請（早出）
 								let transfer = returnData.btn.transfer;
 								jump(returnData.btn.screen, transfer);
 							}
@@ -493,13 +442,8 @@ module nts.uk.at.view.kdp005.a {
 				});
 			}
 		}
-
 	}
-    enum ButtonDisplayMode {
-        NoShow = 1,
-        ShowHistory = 2,
-        ShowAll = 3
-    }
+    
 	enum Mode {
 		Personal = 1, // 個人
 		Shared = 2  // 共有 
