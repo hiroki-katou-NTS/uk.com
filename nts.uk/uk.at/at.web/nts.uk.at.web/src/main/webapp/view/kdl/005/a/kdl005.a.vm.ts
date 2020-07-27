@@ -40,7 +40,8 @@ module nts.uk.at.view.kdl005.a {
                 
                 this.legendOptions = {
                     items: [
-                        { labelText: nts.uk.resource.getText("KDL005_20") }
+                        { labelText: nts.uk.resource.getText("KDL005_20") },
+                        { labelText: nts.uk.resource.getText("KDL005_22") }
                     ]
                 };
                 
