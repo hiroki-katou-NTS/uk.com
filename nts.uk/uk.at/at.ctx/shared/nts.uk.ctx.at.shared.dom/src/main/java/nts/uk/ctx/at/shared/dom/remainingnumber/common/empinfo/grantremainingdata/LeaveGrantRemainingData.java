@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedNumber;
@@ -76,7 +77,7 @@ public abstract class LeaveGrantRemainingData extends AggregateRoot {
 	 */
 	public static void digest(
 			List<LeaveGrantRemainingData> targetRemainingDatas,
-			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum,
+			GetAnnLeaRemNumWithinPeriodProc.RequireM3 require,
 			RemNumShiftListWork remNumShiftListWork,
 			LeaveUsedNumber leaveUsedNumber,
 			String employeeId,
@@ -94,7 +95,7 @@ public abstract class LeaveGrantRemainingData extends AggregateRoot {
 			
 			// 休暇使用数を消化できるかチェック
 			if ( !remNumShiftListWork.canDigest(
-					repositoriesRequiredByRemNum, leaveUsedNumber, employeeId, baseDate) ){
+					require, leaveUsedNumber, employeeId, baseDate) ){
 				// 消化できないときはループ
 				continue;
 			}

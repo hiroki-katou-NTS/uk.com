@@ -5,7 +5,6 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.RepositoriesRequiredByRemNum;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdTime;
@@ -84,13 +83,13 @@ public class LeaveRemainingNumber {
 	
 	/**
 	 * 休暇使用数を消化する
-	 * @param repositoriesRequiredByRemNum 残数処理 キャッシュクラス
+	 * @param require 残数処理 Requireクラス
 	 * @param leaveUsedNumber 休暇使用数
 	 * @param employeeId 社員ID
 	 * @param baseDate 基準日
 	 */
 	public LeaveUsedNumber digestLeaveUsedNumber(
-			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum,
+			RequireM3 require,
 			LeaveUsedNumber leaveUsedNumber,
 			String employeeId,
 			GeneralDate baseDate){
@@ -121,7 +120,7 @@ public class LeaveRemainingNumber {
 					
 					// 年休１日に相当する時間年休時間を取得する
 					Optional<LimitedTimeHdTime> contractTimeOpt
-						= getContractTime(repositoriesRequiredByRemNum, employeeId, baseDate);
+						= getContractTime(require, employeeId, baseDate);
 					
 					// 積み崩し処理を行う
 					if (contractTimeOpt.isPresent()){
@@ -232,15 +231,15 @@ public class LeaveRemainingNumber {
 	 * @return
 	 */
 	public Optional<LimitedTimeHdTime> getContractTime(
-		RepositoriesRequiredByRemNum repositoriesRequiredByRemNum,
+		RequireM3 require,
 		String employeeId,
 		GeneralDate baseDate){
 		
 		// 契約時間
 		Optional<LimitedTimeHdTime> contractTime = Optional.empty();
 		
-		WorkingConditionItemRepository workingConditionItemRepository
-			= repositoriesRequiredByRemNum.getWorkingConditionItemRepository();
+//		WorkingConditionItemRepository workingConditionItemRepository
+//			= repositoriesRequiredByRemNum.getWorkingConditionItemRepository();
 		
 		// 契約時間が会社一律で設定されているか 　ooooo
 		
@@ -249,8 +248,7 @@ public class LeaveRemainingNumber {
 		
 		// アルゴリズム「社員の労働条件を取得する」を実行し、契約時間を取得する
 		Optional<WorkingConditionItem> workCond
-			= workingConditionItemRepository
-				.getBySidAndStandardDate(employeeId, baseDate);
+			= require.workingConditionItem(employeeId, baseDate);
 
 		if (workCond.isPresent()) {
 			contractTime = workCond.get().getContractTime().v() == null ? Optional.empty()
@@ -258,6 +256,11 @@ public class LeaveRemainingNumber {
 		}
 		
 		return contractTime;
+	}
+	
+	public static interface RequireM3 {
+		
+		Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate);
 	}
 
 }

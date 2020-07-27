@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
@@ -82,7 +83,7 @@ public class RemNumShiftListWork {
 	 * @param baseDate 基準日
 	 */
 	public boolean canDigest(
-			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum,
+			GetAnnLeaRemNumWithinPeriodProc.RequireM3 require,
 			LeaveUsedNumber leaveUsedNumber,
 			String employeeId,
 			GeneralDate baseDate){
@@ -100,7 +101,7 @@ public class RemNumShiftListWork {
 		// 結果をメンバー変数へセット（メンバ変数.消化できなかった休暇使用数← 消化できなかった休暇使用数）
 		unusedNumber
 			= leaveRemainingNumberOpt.get().digestLeaveUsedNumber(
-					repositoriesRequiredByRemNum, leaveUsedNumber, employeeId, baseDate);
+					require, leaveUsedNumber, employeeId, baseDate);
 		
 		if ( unusedNumber.isZero() ){ // 消化できなかった休暇使用数が０のとき
 			return true;

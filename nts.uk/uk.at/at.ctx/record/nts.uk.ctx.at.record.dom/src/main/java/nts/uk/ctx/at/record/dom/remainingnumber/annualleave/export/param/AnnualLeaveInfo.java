@@ -11,6 +11,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveGrant;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AttendanceRate;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
 import nts.uk.ctx.at.shared.dom.common.days.YearlyDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
@@ -196,7 +197,7 @@ public class AnnualLeaveInfo implements Cloneable {
 	
 	/**
 	 * 年休の消滅・付与・消化
-	 * @param repositoriesRequiredByRemNum 残数処理 キャッシュクラス
+	 * @param require
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param aggregatePeriodWork 処理中の年休集計期間WORK
@@ -208,7 +209,7 @@ public class AnnualLeaveInfo implements Cloneable {
 	 * @return 年休の集計結果
 	 */
 	public AggrResultOfAnnualLeave lapsedGrantDigest(
-			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum,
+			GetAnnLeaRemNumWithinPeriodProc.RequireM3 require,
 			String companyId,
 			String employeeId,
 			AggregatePeriodWork aggregatePeriodWork,
@@ -248,7 +249,7 @@ public class AnnualLeaveInfo implements Cloneable {
 			
 			// 消化処理
 			aggrResult = this.digestProcess(
-					repositoriesRequiredByRemNum, companyId, employeeId,
+					require, companyId, employeeId,
 					aggregatePeriodWork, tempAnnualLeaveMngs, aggrResult);
 			
 			// 年月日を更新　←　終了日
@@ -459,7 +460,7 @@ public class AnnualLeaveInfo implements Cloneable {
 	 * @return 年休の集計結果
 	 */
 	private AggrResultOfAnnualLeave digestProcess(
-			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum,
+			GetAnnLeaRemNumWithinPeriodProc.RequireM3 require,
 			String companyId,
 			String employeeId,
 			AggregatePeriodWork aggregatePeriodWork,
@@ -513,7 +514,7 @@ public class AnnualLeaveInfo implements Cloneable {
 				// 消化する
 				LeaveGrantRemainingData.digest(
 						targetRemainingDatas,
-						repositoriesRequiredByRemNum,
+						require,
 						remNumShiftListWork,
 						leaveUsedNumber,
 						employeeId, 

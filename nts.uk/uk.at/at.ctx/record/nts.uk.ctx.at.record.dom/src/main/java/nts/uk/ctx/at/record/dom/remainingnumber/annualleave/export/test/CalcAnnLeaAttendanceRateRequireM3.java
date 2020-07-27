@@ -12,8 +12,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.serialize.binary.ObjectBinaryFile;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonthRepository;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -23,11 +27,17 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.test.LengthServiceTest;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
@@ -82,6 +92,22 @@ public class CalcAnnLeaAttendanceRateRequireM3 {
 	@Inject
 	private OperationStartSetDailyPerformRepository operationStartSetDailyPerformRepo;
 	
+	/** 暫定残数管理データ */
+	@Inject
+	protected InterimRemainRepository interimRemainRepo;
+	
+	/** 暫定年休管理データ */
+	@Inject
+	private TmpAnnualHolidayMngRepository tmpAnnualHolidayMngRepo;
+	
+	/** 月別実績の勤怠時間 */
+	@Inject
+	private AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepo;
+	
+	/** 雇用に紐づく就業締め */
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepo;
+	
 	/**
 	 * バイナリファイル作成
 	 */
@@ -101,8 +127,19 @@ public class CalcAnnLeaAttendanceRateRequireM3 {
 		ArrayList<String> employeeIds = new ArrayList<String>();
 		employeeIds.add("ca294040-910f-4a42-8d90-2bd02772697c");
 		
+		// 期間
+		DatePeriod datePeriodData = new DatePeriod(
+				GeneralDate.ymd( 2019, 1, 1 ), GeneralDate.ymd( 2020, 12, 31 ));
 		
-			
+		List<YearMonth> yearMonths = new ArrayList<YearMonth>(); // ooooo 要実装追加
+		yearMonths.add(YearMonth.of(2019,1));
+		yearMonths.add(YearMonth.of(2019,2));
+		yearMonths.add(YearMonth.of(2019,3));
+		yearMonths.add(YearMonth.of(2019,4));
+		yearMonths.add(YearMonth.of(2019,5));
+		yearMonths.add(YearMonth.of(2019,6));
+		
+		
 		// 社員
 //		EmpEmployeeAdapter　EmpEmployeeAdapterImpl1 = new EmpEmployeeAdapterImpl();
 		List<EmployeeImport> employeeImportList = empEmployeeAdapter.findByEmpId(employeeIds);
@@ -151,18 +188,11 @@ public class CalcAnnLeaAttendanceRateRequireM3 {
 		toBinaryMap.put(LengthServiceTbl.class.toString(), lengthServiceTblList);
 		
 		// 年休月別残数データ
-		List<YearMonth> yearMonths = new ArrayList<YearMonth>(); // ooooo 要実装追加
-		yearMonths.add(YearMonth.of(2019,1));
-		yearMonths.add(YearMonth.of(2019,2));
-		yearMonths.add(YearMonth.of(2019,3));
-		yearMonths.add(YearMonth.of(2019,4));
-		yearMonths.add(YearMonth.of(2019,5));
-		yearMonths.add(YearMonth.of(2019,6));
-		
 		val annLeaRemNumEachMonthList
 				= annLeaRemNumEachMonthRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
 		toBinaryMap.put(AnnLeaRemNumEachMonth.class.toString(), annLeaRemNumEachMonthList);
 		
+		// 
 		val workInfoOfDailyPerformanceList
 			= new ArrayList<WorkInfoOfDailyPerformance>();
 		
@@ -172,7 +202,6 @@ public class CalcAnnLeaAttendanceRateRequireM3 {
 			workInfoOfDailyPerformanceList.addAll(workInfoOfDailyPerformanceListTmp);
 		}
 		toBinaryMap.put(WorkInfoOfDailyPerformance.class.toString(), workInfoOfDailyPerformanceList);
-		
 		
 		/**  */ // ??
 		val workTypeList = new ArrayList<WorkType>();
@@ -194,6 +223,45 @@ public class CalcAnnLeaAttendanceRateRequireM3 {
 			}
 		}
 		toBinaryMap.put(OperationStartSetDailyPerform.class.toString(), operationStartSetDailyPerformList);
+		
+		// 暫定残数管理データ
+		val interimRemainList
+			= new ArrayList<InterimRemain>();
+	
+		for(String employeeId: employeeIds){
+			List<InterimRemain> interimRemainListTmp
+				= interimRemainRepo.getRemainBySidPriod(employeeId, datePeriodData, RemainType.ANNUAL);
+			interimRemainList.addAll(interimRemainListTmp);
+		}
+		toBinaryMap.put(InterimRemain.class.toString(), interimRemainList);
+	
+		
+		// 年休残数管理データ
+		val tmpAnnualHolidayMngList
+			= new ArrayList<TmpAnnualHolidayMng>();
+	
+		for(String employeeId: employeeIds){
+			List<TmpAnnualHolidayMng> tmpAnnualHolidayMngListTmp
+				= tmpAnnualHolidayMngRepo.getBySidPeriod(employeeId, datePeriodData);
+			tmpAnnualHolidayMngList.addAll(tmpAnnualHolidayMngListTmp);
+		}
+		toBinaryMap.put(TmpAnnualHolidayMng.class.toString(), tmpAnnualHolidayMngList);
+		
+		
+		// 月別実績の勤怠時間
+		val attendanceTimeOfMonthlyList
+				= attendanceTimeOfMonthlyRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
+		toBinaryMap.put(AttendanceTimeOfMonthly.class.toString(), attendanceTimeOfMonthlyList);
+		
+		// 雇用に紐づく就業締め
+		// 保留
+		
+		
+		
+		
+		
+		
+		
 		
 		// ファイルに書き込み
 		ObjectBinaryFile.write(toBinaryMap, destionationFile);

@@ -39,7 +39,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.AttendanceRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.RepositoriesRequiredByRemNum;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
@@ -185,10 +184,10 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			Optional<YearMonth> yearMonthOpt, Optional<MonAggrCompanySettings> companySets,
 			Optional<MonAggrEmployeeSettings> employeeSets, Optional<MonthlyCalculatingDailys> monthlyCalcDailys) {
 		
-		// データベースからデータを取得してキャッシュするオブジェクトを作成
-		/** TODO: remove this */
-		RepositoriesRequiredByRemNum repositoriesRequiredByRemNum 
-			= new RepositoriesRequiredByRemNum();
+//		// データベースからデータを取得してキャッシュするオブジェクトを作成
+//		/** TODO: remove this */
+//		RepositoriesRequiredByRemNum repositoriesRequiredByRemNum 
+//			= new RepositoriesRequiredByRemNum();
 		
 		// 年休の使用区分を取得する
 		boolean isManageAnnualLeave = false;
@@ -348,7 +347,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 			// 年休の消滅・付与・消化
 			aggrResult = annualLeaveInfo.lapsedGrantDigest(
-					repositoriesRequiredByRemNum,
+					require,
 					companyId, employeeId, aggregatePeriodWork,
 					tempAnnualLeaveMngs, isGetNextMonthData, isCalcAttendanceRate, aggrResult, annualLeaveSet);
 		}

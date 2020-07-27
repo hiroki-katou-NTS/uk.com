@@ -52,7 +52,7 @@ public class TestAnnualLeave {
 	@Before
 	public void initialize(){
 
-		// Requireクラス　バイナリファイルからデータを読み込むテストクラス
+		// Requireクラス　バイナリファイルからデータを読み込む
 		ｒequireM3 = new CalcAnnLeaAttendanceRateRequireM3Test();
 		
 		// 上書き用の暫定年休管理データ 

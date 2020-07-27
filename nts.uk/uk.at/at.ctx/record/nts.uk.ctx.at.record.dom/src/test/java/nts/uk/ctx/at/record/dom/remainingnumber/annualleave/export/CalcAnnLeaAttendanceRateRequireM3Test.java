@@ -70,12 +70,7 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 		
 		List<AnnualPaidLeaveSetting> list 
 			= (List<AnnualPaidLeaveSetting>) binaryData.get(AnnualPaidLeaveSetting.class.toString());
-		List<AnnualPaidLeaveSetting> listFilter
-			= list.stream().filter(c -> c.getCompanyId().equals(companyId)).collect(Collectors.toList());
-		if ( listFilter == null || listFilter.size() == 0 ){
-			return null;
-		}
-		return listFilter.get(0);
+		return list.stream().filter(c -> c.getCompanyId().equals(companyId)).findFirst().orElse(null);
 	}
 
 	/** 年休社員基本情報 */
@@ -85,13 +80,10 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 		
 		List<AnnualLeaveEmpBasicInfo> list
 			= (List<AnnualLeaveEmpBasicInfo>) binaryData.get(AnnualLeaveEmpBasicInfo.class.toString());
-		List<AnnualLeaveEmpBasicInfo> listFilter
-			= list.stream().filter(c -> c.getEmployeeId().equals(employeeId)).collect(Collectors.toList());
+		AnnualLeaveEmpBasicInfo annualLeaveEmpBasicInfo
+			= list.stream().filter(c -> c.getEmployeeId().equals(employeeId)).findFirst().orElse(null);
 		
-		if ( listFilter == null || listFilter.size() == 0 ){
-			return Optional.empty();
-		}
-		return Optional.of(listFilter.get(0));
+		return Optional.ofNullable(annualLeaveEmpBasicInfo);
 	}
 
 	/** 年休付与テーブル設定 */
@@ -101,16 +93,13 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 		
 		List<GrantHdTblSet> list
 			= (List<GrantHdTblSet>) binaryData.get(GrantHdTblSet.class.toString());
-		List<GrantHdTblSet> listFilter
+		GrantHdTblSet grantHdTblSet
 			= list.stream()
 				.filter(c -> c.getCompanyId().equals(companyId))
 				.filter(c -> c.getYearHolidayCode().equals(yearHolidayCode))
-				.collect(Collectors.toList());
+				.findFirst().orElse(null);
 		
-		if ( listFilter == null || listFilter.size() == 0 ){
-			return Optional.empty();
-		}
-		return Optional.of(listFilter.get(0));
+		return Optional.ofNullable(grantHdTblSet);
 	}
 
 	/** 勤続年数テーブル */
@@ -175,15 +164,12 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 		// return workTypeRepo.findByPK(companyId, workTypeCd);
 		List<WorkType> list
 			= (List<WorkType>) binaryData.get(WorkType.class.toString());
-		List<WorkType> listFilter
+		WorkType workType
 			= list.stream()
 				.filter(c -> c.getWorkTypeCode().equals(workTypeCd))
-				.collect(Collectors.toList());
+				.findFirst().orElse(null);
 		
-		if ( listFilter == null || listFilter.size() == 0 ){
-			return Optional.empty();
-		}
-		return Optional.of(listFilter.get(0));
+		return Optional.ofNullable(workType);
 	}
 
 	/** 日別実績の運用開始設定　*/
@@ -192,31 +178,44 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 //		return operationStartSetDailyPerformRepo.findByCid(companyId);
 		List<OperationStartSetDailyPerform> list
 			= (List<OperationStartSetDailyPerform>) binaryData.get(OperationStartSetDailyPerform.class.toString());
-		List<OperationStartSetDailyPerform> listFilter
+		OperationStartSetDailyPerform operationStartSetDailyPerform
 			= list.stream()
 				.filter(c -> c.getCompanyId().equals(companyId))
-				.collect(Collectors.toList());
+				.findFirst().orElse(null);
 		
-		if ( listFilter == null || listFilter.size() == 0 ){
-			return Optional.empty();
-		}
-		return Optional.of(listFilter.get(0));
+		return Optional.ofNullable(operationStartSetDailyPerform);
 	}
 
 	@Override
-	public List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType) {
-		// TODO Auto-generated method stub
-		System.out.print("要実装");
-		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
-	    System.out.println(className);
-	    final String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        System.out.println(methodName);
-		return null;
+	public List<InterimRemain> interimRemains(String employeeId, DatePeriod datePeriod, RemainType remainType) {
+//		return interimRemainRepo.getRemainBySidPriod(employeeId, dateData, remainType);
+		List<InterimRemain> list 
+			= (List<InterimRemain>)binaryData.get(InterimRemain.class.toString());
+		List<InterimRemain> listFilter
+			= list.stream()
+				.filter(c -> c.getSID().equals(employeeId))
+				.filter(c -> c.getYmd().afterOrEquals(datePeriod.start()))
+				.filter(c -> c.getYmd().beforeOrEquals(datePeriod.end()))
+				.filter(c -> c.getRemainType().equals(remainType))
+				.collect(Collectors.toList());
+	
+		return listFilter;
 	}
 
 	@Override
 	public Optional<TmpAnnualHolidayMng> tmpAnnualHolidayMng(String mngId) {
-		// TODO Auto-generated method stub
+//		List<TmpAnnualHolidayMng> list 
+//			= (List<TmpAnnualHolidayMng>)binaryData.get(TmpAnnualHolidayMng.class.toString());
+//		List<TmpAnnualHolidayMng> listFilter
+//			= list.stream()
+//				.filter(c -> c.get().equals(employeeId))
+//				.filter(c -> c.getYmd().afterOrEquals(datePeriod.start()))
+//				.filter(c -> c.getYmd().beforeOrEquals(datePeriod.end()))
+//				.filter(c -> c.getRemainType().equals(remainType))
+//				.collect(Collectors.toList());
+//
+//			return listFilter;
+	
 		System.out.print("要実装");
 		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
 	    System.out.println(className);
@@ -225,20 +224,38 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 		return null;
 	}
 
+	/** 月別実績の勤怠時間 */
 	@Override
 	public List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, DatePeriod period) {
-		// TODO Auto-generated method stub
+		// return attendanceTimeOfMonthlyRepo.findByYearMonthOrderByStartYmd(employeeId, yearMonth);
 		System.out.print("要実装");
 		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
 	    System.out.println(className);
 	    final String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
         System.out.println(methodName);
-		return null;
+//        return null;
+        
+//        FIND_BY_PERIOD_INTO_END = "SELECT a FROM KrcdtMonMerge a "
+//    			+ "WHERE a.krcdtMonMergePk.employeeId = :employeeId "
+//    			+ "AND a.endYmd >= :startDate "
+//    			+ "AND a.endYmd <= :endDate "
+//    			+ "ORDER BY a.startYmd ";
+        List<AttendanceTimeOfMonthly> list 
+			= (List<AttendanceTimeOfMonthly>)binaryData.get(AttendanceTimeOfMonthly.class.toString());
+		List<AttendanceTimeOfMonthly> listFilter
+			= list.stream()
+				.filter(c -> c.getEmployeeId().equals(employeeId))
+				.filter(c -> c.getDatePeriod().end().afterOrEquals(period.start()))
+				.filter(c -> c.getDatePeriod().end().beforeOrEquals(period.end()))
+				.collect(Collectors.toList());
+
+		return listFilter;
 	}
 
+	/** 雇用に紐づく就業締め */
 	@Override
 	public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
-		// TODO Auto-generated method stub
+		// return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
 		System.out.print("要実装");
 		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
 	    System.out.println(className);
@@ -247,10 +264,11 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 		return null;
 	}
 
+	/** 社員の雇用履歴 */
 	@Override
 	public List<SharedSidPeriodDateEmploymentImport> employmentHistory(CacheCarrier cacheCarrier, List<String> sids,
 			DatePeriod datePeriod) {
-		// TODO Auto-generated method stub
+		// shareEmploymentAdapter.getEmpHistBySidAndPeriodRequire(cacheCarrier, sids, datePeriod);
 		System.out.print("要実装");
 		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
 	    System.out.println(className);
@@ -259,9 +277,10 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 		return null;
 	}
 
+	/** 締め */
 	@Override
 	public List<Closure> closure(String companyId) {
-		// TODO Auto-generated method stub
+		// return closureRepo.findAll(companyId);
 		System.out.print("要実装");
 		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
 	    System.out.println(className);
@@ -270,9 +289,10 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 		return null;
 	}
 
+	/** 年休付与テーブル */
 	@Override
 	public Optional<GrantHdTbl> grantHdTbl(String companyId, int conditionNo, String yearHolidayCode, int grantNum) {
-		// TODO Auto-generated method stub
+		// return grantYearHolidayRepo.find(companyId, conditionNo, yearHolidayCode, grantNum);
 		System.out.print("要実装");
 		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
 	    System.out.println(className);
@@ -281,9 +301,10 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 		return null;
 	}
 
+	/** 年休付与残数履歴データ */
 	@Override
 	public List<AnnualLeaveRemainingHistory> annualLeaveRemainingHistory(String sid, YearMonth ym) {
-		// TODO Auto-generated method stub
+		// return annualLeaveRemainHistRepo.getInfoBySidAndYM(sid, ym);
 		System.out.print("要実装");
 		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
 	    System.out.println(className);
@@ -292,9 +313,10 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 		return null;
 	}
 
+	/** 締め状態管理 */
 	@Override
 	public Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId) {
-		// TODO Auto-generated method stub
+		// return closureStatusManagementRepo.getLatestByEmpId(employeeId);
 		System.out.print("要実装");
 		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
 	    System.out.println(className);
@@ -303,9 +325,10 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 		return null;
 	}
 
+	/** 年休上限データ */
 	@Override
 	public Optional<AnnualLeaveMaxData> annualLeaveMaxData(String employeeId) {
-		// TODO Auto-generated method stub
+		// return annLeaMaxDataRepo.get(employeeId);
 		System.out.print("要実装");
 		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
 	    System.out.println(className);
@@ -314,9 +337,10 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 		return null;
 	}
 
+	/** 年休付与残数データ */
 	@Override
 	public List<AnnualLeaveGrantRemainingData> annualLeaveGrantRemainingData(String employeeId) {
-		// TODO Auto-generated method stub
+		// return annLeaGrantRemDataRepo.find(employeeId, grantDate);
 		System.out.print("要実装");
 		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
 	    System.out.println(className);
