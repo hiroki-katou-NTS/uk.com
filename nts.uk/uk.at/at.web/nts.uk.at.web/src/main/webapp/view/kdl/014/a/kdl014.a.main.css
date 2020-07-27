@@ -4,11 +4,9 @@
 
 
 #single-list_container {
-	margin: 20px 0px !important;
-	width: 685px !important;
 }
 
-#function-tr td:nth-child(7) div {
+#emp-component td:nth-child(7) div {
 	width: 50px;
 }
 
@@ -19,4 +17,11 @@
 
 #single-list_headers_v {
 	width: 683px !important;
+}
+#single-list td{
+	height: 24px !important;
+}
+
+#single-list tr td:last-child {
+	text-align: center;
 }
