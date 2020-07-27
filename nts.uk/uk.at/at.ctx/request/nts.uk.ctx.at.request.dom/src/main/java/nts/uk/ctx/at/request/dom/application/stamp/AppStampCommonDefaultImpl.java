@@ -21,7 +21,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendan
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampSetOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting_Old;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
@@ -64,19 +64,19 @@ public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 	private DailyAttendanceItemAdapter dailyAttendanceItemAdapter;
 	
 	@Override
-	public void appReasonCheck(String applicationReason, AppStamp appStamp) {
+	public void appReasonCheck(String applicationReason, AppStamp_Old appStamp) {
 		appStamp.getApplication_New().setAppReason(new AppReason(applicationReason));
 	}
 
 	@Override
 	public AppStampSetOutput appStampSet(String companyID) {
-		StampRequestSetting stampRequestSetting = this.stampRequestSettingRepository.findByCompanyID(companyID).get();
+		StampRequestSetting_Old stampRequestSetting = this.stampRequestSettingRepository.findByCompanyID(companyID).get();
 		List<ApplicationReason> applicationReasons = this.applicationReasonRepository.getReasonByAppType(companyID, ApplicationType_Old.STAMP_APPLICATION.value);
 		return new AppStampSetOutput(stampRequestSetting, applicationReasons);
 	}
 
 	@Override
-	public void validateReason(AppStamp appStamp) {
+	public void validateReason(AppStamp_Old appStamp) {
 		/*申請承認設定->申請設定->申請制限設定.申請理由が必須＝trueのとき、申請理由が未入力 (#Msg_115#)
 		 ※詳細はアルゴリズム参照*/
 		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository.getApplicationSettingByComID(appStamp.getApplication_New().getCompanyID());
@@ -91,7 +91,7 @@ public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 						throw new BusinessException("Msg_115");
 			}
 		}
-		StampRequestSetting stampRequestSetting = stampRequestSettingRepository.findByCompanyID(appStamp.getApplication_New().getCompanyID()).get();
+		StampRequestSetting_Old stampRequestSetting = stampRequestSettingRepository.findByCompanyID(appStamp.getApplication_New().getCompanyID()).get();
 		appStamp.customValidate(stampRequestSetting.getStampPlaceDisp());
 	}
 
@@ -101,8 +101,8 @@ public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 	}
 
 	@Override
-	public AppStamp findByID(String companyID, String appID) {
-		AppStamp appStamp = appStampRepository.findByAppID(companyID, appID);
+	public AppStamp_Old findByID(String companyID, String appID) {
+		AppStamp_Old appStamp = appStampRepository.findByAppID(companyID, appID);
 		appStamp.setApplication_New(applicationRepository.findByID(companyID, appID).get());
 		return appStamp;
 	}

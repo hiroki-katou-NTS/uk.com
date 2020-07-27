@@ -19,7 +19,7 @@ import nts.uk.ctx.at.request.app.command.application.stamp.command.AppStampGoOut
 import nts.uk.ctx.at.request.app.command.application.stamp.command.AppStampWorkCmd;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCancel;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
@@ -56,7 +56,7 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<App
 			applicationReason = !appStampCmd.getTitleReason().isEmpty()? appStampCmd.getTitleReason() + System.lineSeparator() + appStampCmd.getDetailReason() : appStampCmd.getDetailReason();
 		}
 		
-		AppStamp appStamp = null;
+		AppStamp_Old appStamp = null;
 		StampRequestMode_Old stampRequestMode = EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode_Old.class);
 		switch(stampRequestMode){
 			case STAMP_GO_OUT_PERMIT: 
@@ -67,7 +67,7 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<App
 				if(CollectionUtil.isEmpty(appStampGoOutPermitCmdsReal)){
 					return null;
 				}
-				appStamp = AppStamp.createGoOutPermitStamp(
+				appStamp = AppStamp_Old.createGoOutPermitStamp(
 						companyID, 
 						GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
 						employeeID, 
@@ -91,7 +91,7 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<App
 				if(CollectionUtil.isEmpty(appStampWorkCmdsReal)){
 					return null;
 				}
-				appStamp = AppStamp.createWorkStamp(
+				appStamp = AppStamp_Old.createWorkStamp(
 						companyID, 
 						GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
 						employeeID, 
@@ -110,7 +110,7 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<App
 							).collect(Collectors.toList()));
 				return applicationStampNewDomainService.appStampRegister(applicationReason, appStamp, appStampCmd.isCheckOver1Year());
 			case STAMP_CANCEL: 
-				appStamp = AppStamp.createCancelStamp(
+				appStamp = AppStamp_Old.createCancelStamp(
 						companyID, 
 						GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
 						employeeID, 
@@ -123,7 +123,7 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<App
 							).collect(Collectors.toList()));
 				return applicationStampNewDomainService.appStampRegister(applicationReason, appStamp, appStampCmd.isCheckOver1Year());
 			case STAMP_ONLINE_RECORD: 
-				appStamp = AppStamp.createOnlineRecordStamp(
+				appStamp = AppStamp_Old.createOnlineRecordStamp(
 						companyID, 
 						GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
 						employeeID, 
@@ -140,7 +140,7 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<App
 				if(CollectionUtil.isEmpty(appStampOtherCmdsReal)){
 					return null;
 				}
-				appStamp = AppStamp.createOtherStamp(
+				appStamp = AppStamp_Old.createOtherStamp(
 						companyID, 
 						GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
 						employeeID, 

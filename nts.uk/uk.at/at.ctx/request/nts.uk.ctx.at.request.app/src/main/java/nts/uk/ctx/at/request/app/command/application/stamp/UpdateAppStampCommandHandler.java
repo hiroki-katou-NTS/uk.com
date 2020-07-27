@@ -19,7 +19,7 @@ import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCancel;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
@@ -131,7 +131,7 @@ public class UpdateAppStampCommandHandler extends CommandHandlerWithResult<AppSt
 		default:
 			break;
 		}
-		AppStamp appStamp = new AppStamp(
+		AppStamp_Old appStamp = new AppStamp_Old(
 				stampRequestMode, 
 				application, 
 				appStampGoOutPermits, 

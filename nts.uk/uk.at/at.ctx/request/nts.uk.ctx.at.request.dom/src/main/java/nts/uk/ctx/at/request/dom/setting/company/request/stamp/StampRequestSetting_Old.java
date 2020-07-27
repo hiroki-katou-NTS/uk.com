@@ -12,7 +12,7 @@ import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.disp
  */
 @Getter
 @AllArgsConstructor
-public class StampRequestSetting {
+public class StampRequestSetting_Old {
 	
 	private String companyID;
 	
@@ -51,12 +51,12 @@ public class StampRequestSetting {
 	 */
 	private GoOutTypeDisplayControl goOutTypeDisplayControl;
 	
-	public static StampRequestSetting createFromJavaType(String companyId, String commentTop, String fontColorTop, Boolean fontWeightTop, 
+	public static StampRequestSetting_Old createFromJavaType(String companyId, String commentTop, String fontColorTop, Boolean fontWeightTop, 
 			String commentBottom, String fontColorBottom, Boolean fontWeightBottom, Integer resultDisp, Integer supFrameDispNO,
 			Integer stampPlaceDisp, Integer stampAtrWorkDisp, Integer stampAtrGoOutDisp, Integer stampAtrCareDisp,
 			Integer stampAtrSupDisp, Integer stampAtrChildCareDisp, Integer stampGoOutAtrPrivateDisp, Integer stampGoOutAtrPublicDisp,
 			Integer stampGoOutAtrCompensationDisp, Integer stampGoOutAtrUnionDisp){
-		return new StampRequestSetting(companyId, new AppCommentSetting(new Comment(commentTop), fontColorTop, fontWeightTop), 
+		return new StampRequestSetting_Old(companyId, new AppCommentSetting(new Comment(commentTop), fontColorTop, fontWeightTop), 
 										new AppCommentSetting(new Comment(commentBottom), fontColorBottom, fontWeightBottom), 
 										EnumAdaptor.valueOf(resultDisp, DisplayAtr.class), 
 										new SupportFrameDispNumber(supFrameDispNO) , 
