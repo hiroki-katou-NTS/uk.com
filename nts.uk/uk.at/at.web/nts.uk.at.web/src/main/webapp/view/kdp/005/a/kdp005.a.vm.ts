@@ -279,7 +279,7 @@ module nts.uk.at.view.kdp005.a {
                         dfd.reject(res.errorMessage);    
                     }
                 }).fail((res) => {
-                    setShared("errorMessage", getText(res.messageId));
+                    setShared("errorMessage", getMessage(res.messageId));
                     self.openIDialog();
                 });
                 return dfd.promise();
