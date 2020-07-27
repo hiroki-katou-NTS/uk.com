@@ -22,7 +22,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.OverTimeFrame;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeDay;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
@@ -272,7 +272,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 	@Override
 	public String getContentStamp(String companyId, String appId, Integer appReasonDisAtr, String appReason, int screenAtr) {
 		String content = "";
-		AppStamp appStamp = appStampRepo.findByAppID(companyId, appId);
+		AppStamp_Old appStamp = appStampRepo.findByAppID(companyId, appId);
 		if (!Objects.isNull(appStamp)) {
 			switch (appStamp.getStampRequestMode()) {
 			case STAMP_GO_OUT_PERMIT: {

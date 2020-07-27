@@ -9,7 +9,7 @@ import javax.ejb.Stateless;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCancel;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
@@ -37,7 +37,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 			+ "AND a.krqdpAppStampPK.appID = :appID";
 	
 	@Override
-	public AppStamp findByAppID(String companyID, String appID) {
+	public AppStamp_Old findByAppID(String companyID, String appID) {
 		return this.queryProxy().query(FIND_BY_APP_ID, KrqdtAppStamp.class)
 				.setParameter("companyID", companyID)
 				.setParameter("appID", appID)
@@ -45,13 +45,13 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 	} 
 	
 	@Override
-	public void addStamp(AppStamp appStamp) {
+	public void addStamp(AppStamp_Old appStamp) {
 		KrqdtAppStamp krqdtAppStamp = convertToAppStampEntity(appStamp);
 		this.commandProxy().insert(krqdtAppStamp);
 	}
 
 	@Override
-	public void updateStamp(AppStamp appStamp) {
+	public void updateStamp(AppStamp_Old appStamp) {
 		Optional<KrqdtAppStamp> optional = this.queryProxy().find(new KrqdpAppStamp(
 				appStamp.getApplication_New().getCompanyID(), 
 				appStamp.getApplication_New().getAppID()), KrqdtAppStamp.class);
@@ -61,7 +61,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 		this.commandProxy().update(krqdtAppStamp);
 	}
 	
-	private AppStamp convertToDomainAppStamp(KrqdtAppStamp krqdtAppStamp){
+	private AppStamp_Old convertToDomainAppStamp(KrqdtAppStamp krqdtAppStamp){
 		List<AppStampGoOutPermit> appStampGoOutPermits = new ArrayList<AppStampGoOutPermit>();
 		List<AppStampWork> appStampWorks = new ArrayList<AppStampWork>();
 		List<AppStampCancel> appStampCancels = new ArrayList<AppStampCancel>();
@@ -103,7 +103,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 				break;
 				
 		}
-		AppStamp appStamp = AppStamp.builder()
+		AppStamp_Old appStamp = AppStamp_Old.builder()
 				.stampRequestMode(EnumAdaptor.valueOf(krqdtAppStamp.stampRequestMode, StampRequestMode_Old.class))
 				.application_New(Application_New.builder().appID(krqdtAppStamp.krqdpAppStampPK.appID).build())
 				.appStampGoOutPermits(appStampGoOutPermits)
@@ -114,7 +114,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 		return appStamp;
 	}
 	
-	private KrqdtAppStamp convertToAppStampEntity(AppStamp appStamp){
+	private KrqdtAppStamp convertToAppStampEntity(AppStamp_Old appStamp){
 		KrqdtAppStamp krqdtAppStamp = KrqdtAppStamp.builder()
 				.krqdpAppStampPK(new KrqdpAppStamp(
 						appStamp.getApplication_New().getCompanyID(), 

@@ -16,7 +16,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.New
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampNewPreOutput;
-import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting_Old;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSettingRepository;
 /**
  * 
@@ -65,15 +65,15 @@ public class AppStampNewDefaultImpl implements AppStampNewDomainService {
 	}
 
 	@Override
-	public ProcessResult appStampRegister(String applicationReason, AppStamp appStamp, boolean checkOver1Year) {
+	public ProcessResult appStampRegister(String applicationReason, AppStamp_Old appStamp, boolean checkOver1Year) {
 		appStampCommonDomainService.appReasonCheck(applicationReason, appStamp);
 		appStampCommonDomainService.validateReason(appStamp);
 		return appStampRegistration(appStamp, checkOver1Year);
 	}
 	
 	// 打刻申請の新規登録
-	private ProcessResult appStampRegistration(AppStamp appStamp, boolean checkOver1Year) {
-		StampRequestSetting stampRequestSetting = stampRequestSettingRepository.findByCompanyID(appStamp.getApplication_New().getCompanyID()).get();
+	private ProcessResult appStampRegistration(AppStamp_Old appStamp, boolean checkOver1Year) {
+		StampRequestSetting_Old stampRequestSetting = stampRequestSettingRepository.findByCompanyID(appStamp.getApplication_New().getCompanyID()).get();
 		newBeforeRegister.processBeforeRegister(appStamp.getApplication_New(), OverTimeAtr.ALL, checkOver1Year, Collections.emptyList());
 		appStamp.customValidate(stampRequestSetting.getStampPlaceDisp());
 		appStampRepository.addStamp(appStamp);

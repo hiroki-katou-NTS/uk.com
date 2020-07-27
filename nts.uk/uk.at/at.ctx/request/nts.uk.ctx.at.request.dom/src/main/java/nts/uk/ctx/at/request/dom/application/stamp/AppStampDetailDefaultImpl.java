@@ -38,7 +38,7 @@ public class AppStampDetailDefaultImpl implements AppStampDetailDomainService {
 	private ApplicationRepository_New applicationRepository;
 	
 	@Override
-	public void appStampPreProcess(AppStamp appStamp) {
+	public void appStampPreProcess(AppStamp_Old appStamp) {
 //		beforePreBootMode.judgmentDetailScreenMode(appStamp, appStamp.getApplicationDate());
 //		// this.preLaunchScreenSetting
 //		appStampCommonDomainService.appStampSet(appStamp.getCompanyID());
@@ -46,13 +46,13 @@ public class AppStampDetailDefaultImpl implements AppStampDetailDomainService {
 	}
 
 	@Override
-	public ProcessResult appStampUpdate(String applicationReason, AppStamp appStamp) {
+	public ProcessResult appStampUpdate(String applicationReason, AppStamp_Old appStamp) {
 		appStampCommonDomainService.appReasonCheck(applicationReason, appStamp);
 		appStampCommonDomainService.validateReason(appStamp);
 		return appStampUpdateProcess(appStamp);
 	}
 	
-	private ProcessResult appStampUpdateProcess(AppStamp appStamp) {
+	private ProcessResult appStampUpdateProcess(AppStamp_Old appStamp) {
 		// error EA refactor 4
 		/*detailBeforeProcessRegister.processBeforeDetailScreenRegistration(appStamp.getApplication_New().getCompanyID(),
 				appStamp.getApplication_New().getEmployeeID(), appStamp.getApplication_New().getAppDate(), 1,
