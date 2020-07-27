@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-						width : 705,
+						width : 715,
 						height : 480
 				};
 			</script>
@@ -32,14 +32,14 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
-				<div style="min-height: 23px">
+				<div style="min-height: 23px; margin-bottom: 20px;">
 					<div data-bind="visible :paramFromParent.mode == 0">
 						<div id="emp-component"></div>
 					</div>
 				</div>
 				<table id="single-list"
 					data-bind="ntsGridList: {								
-					height: 255,
+					height: 285,
 					dataSource: empInfomationList,
 					primaryKey: 'code',
 					columns: columns,
