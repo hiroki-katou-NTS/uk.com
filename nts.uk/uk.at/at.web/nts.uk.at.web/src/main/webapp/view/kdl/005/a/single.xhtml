@@ -33,15 +33,15 @@
 					<div class="date-fixed-table">
 						<table id="date-fixed-table">
 							<colgroup>
-								<col width="220px"/>
-								<col width="220px"/>
-								<col width="150px"/>
+								<col width="380px"/>
+								<col width="250px"/>
+								<!-- <col width="150px"/> -->
 							</colgroup>
 							<thead>
 								<tr>
-									<th class="ui-widget-header">#{i18n.getText('KDL005_9')}</th>
+									<th class="ui-widget-header">#{i18n.getText('KDL005_9')}#{i18n.getText('KDL005_11')}</th>
 									<th class="ui-widget-header">#{i18n.getText('KDL005_10')}</th>
-									<th class="ui-widget-header">#{i18n.getText('KDL005_11')}</th>
+									<!-- <th class="ui-widget-header">#{i18n.getText('KDL005_11')}</th> -->
 								</tr>
 							</thead>
 							<tbody>
@@ -49,19 +49,20 @@
 									<com:ko-if bind="isHalfDay">
 										<tr>
 											<td rowspan="2">
-												<span style="float: left; padding-left: 10px;" data-bind="text: leaveDate"></span> 
+												<span style="float: left; padding-left: 10px;" data-bind="text: leaveDate"></span>
 												<span style="float: right; padding-right: 10px;" data-bind="text: occurrenceDays1"></span>
-											</td> 
+												<span style="float: left; padding-left: 10px;" data-bind="text: duedateHoliday"></span>
+											</td>
 		 									<td>
-		 										<span style="float: left; padding-left: 10px;" data-bind="text: dayOffDateTop"></span> 
+		 										<span style="float: left; padding-left: 10px;" data-bind="text: dayOffDateTop"></span>
 		 										<span style="float: right; padding-right: 10px;" data-bind="text: occurrenceDays2Top"></span>
 	 										</td>
-		 									<td rowspan="2"><span style="float: left; padding-left: 10px;" data-bind="text: duedateHoliday"></span></td>
+		 									<!-- <td rowspan="2"><span style="float: left; padding-left: 10px;" data-bind="text: duedateHoliday"></span></td> -->
 										</tr>
-										
+
 										<tr>
 											<td>
-		 										<span style="float: left; padding-left: 10px;" data-bind="text: dayOffDateBot"></span> 
+		 										<span style="float: left; padding-left: 10px;" data-bind="text: dayOffDateBot"></span>
 		 										<span style="float: right; padding-right: 10px;" data-bind="text: occurrenceDays2Bot"></span>
 	 										</td>
 										</tr>
@@ -70,14 +71,15 @@
 									<com:ko-if bind="!isHalfDay">
 										<tr>
 											<td>
-												<span style="float: left; padding-left: 10px;" data-bind="text: leaveDate"></span> 
+												<span style="float: left; padding-left: 10px;" data-bind="text: leaveDate"></span>
 												<span style="float: right; padding-right: 10px;" data-bind="text: occurrenceDays1"></span>
-											</td> 
+												<span style="float: left; padding-left: 10px;" data-bind="text: duedateHoliday"></span>
+											</td>
 		 									<td>
-		 										<span style="float: left; padding-left: 10px;" data-bind="text: dayOffDateTop"></span> 
+		 										<span style="float: left; padding-left: 10px;" data-bind="text: dayOffDateTop"></span>
 		 										<span style="float: right; padding-right: 10px;" data-bind="text: occurrenceDays2Top"></span>
 	 										</td>
-		 									<td><span style="float: left; padding-left: 10px;" data-bind="text: duedateHoliday"></span></td>
+		 									<!-- <td><span style="float: left; padding-left: 10px;" data-bind="text: duedateHoliday"></span></td> -->
 										</tr>
 									</com:ko-if>
 								</com:ko-foreach>
@@ -94,17 +96,22 @@
 							<td width="100px">#{i18n.getText('KDL005_13')}</td>
 							<td width="100px"><label><span
 									data-bind="text: value01"></span></label></td>
+							<td width="100px"><label><span
+									data-bind="text: value01"></span></label></td>
 						</tr>
 						<tr>
 							<td>#{i18n.getText('KDL005_14')}</td>
+							<td><label><span data-bind="text: value02"></span></label></td>
 							<td><label><span data-bind="text: value02"></span></label></td>
 						</tr>
 						<tr>
 							<td>#{i18n.getText('KDL005_15')}</td>
 							<td><label><span data-bind="text: value03"></span></label></td>
+							<td><label><span data-bind="text: value03"></span></label></td>
 						</tr>
 						<tr>
 							<td>#{i18n.getText('KDL005_16')}</td>
+							<td><label><span data-bind="text: value04"></span></label></td>
 							<td><label><span data-bind="text: value04"></span></label></td>
 						</tr>
 					</table>
