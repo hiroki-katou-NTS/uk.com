@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 public interface CommonAlgorithm {
@@ -159,5 +160,5 @@ public interface CommonAlgorithm {
 	 * @return
 	 */
 	public InitWkTypeWkTimeOutput initWorkTypeWorkTime(String employeeID, GeneralDate date,
-			List<String> workTypeLst, List<String> workTimeLst, AchievementDetail achievementDetail);
+			List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeLst, AchievementDetail achievementDetail);
 }

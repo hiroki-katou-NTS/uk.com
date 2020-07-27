@@ -402,8 +402,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	}
 
 	@Override
-	public InitWkTypeWkTimeOutput initWorkTypeWorkTime(String employeeID, GeneralDate date, List<String> workTypeLst,
-			List<String> workTimeLst, AchievementDetail achievementDetail) {
+	public InitWkTypeWkTimeOutput initWorkTypeWorkTime(String employeeID, GeneralDate date, List<WorkType> workTypeLst,
+			List<WorkTimeSetting> workTimeLst, AchievementDetail achievementDetail) {
 		String companyID = AppContexts.user().companyId();
 		// 申請日付チェック
 		if(date != null) {
@@ -418,13 +418,13 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				String resultWorkType = Strings.EMPTY;
 				if(checkWorkingInfoResult.isWkTypeError()) {
 					// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
-					resultWorkType = workTypeLst.stream().findFirst().orElse(null);
+					resultWorkType = workTypeLst.stream().findFirst().map(x -> x.getWorkTypeCode().v()).orElse(null);
 				}
 				// 就業時間帯エラーFlgをチェック
 				String resultWorkTime = Strings.EMPTY;
 				if(checkWorkingInfoResult.isWkTimeError()) {
 					// 先頭の就業時間帯を選択する(chọn mui giờ làm đầu tiên)
-					resultWorkTime = workTimeLst.stream().findFirst().orElse(null);
+					resultWorkTime = workTimeLst.stream().findFirst().map(x -> x.getWorktimeCode().v()).orElse(null);
 				}
 				return new InitWkTypeWkTimeOutput(resultWorkType, resultWorkTime);
 			}
@@ -437,22 +437,23 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		if(opWorkingConditionItem.isPresent()) {
 			// ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードが【07_勤務種類取得】取得した勤務種類Listにあるかをチェックする
 			Optional<WorkTypeCode> opConditionWktypeCD = opWorkingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTypeCode();
-			if(opConditionWktypeCD.isPresent() && workTypeLst.contains(opConditionWktypeCD.get().v())) {
+			List<String> workTypeCDLst = workTypeLst.stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
+			if(opConditionWktypeCD.isPresent() && workTypeCDLst.contains(opConditionWktypeCD.get().v())) {
 				// ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードを選択する(chọn cai loai di lam)
 				processWorkType = opConditionWktypeCD.get().v();
 			} else {
 				// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
-				processWorkType = workTypeLst.stream().findFirst().orElse(null);
+				processWorkType = workTypeLst.stream().findFirst().map(x -> x.getWorkTypeCode().v()).orElse(null);
 			}
 			// ドメインモデル「個人勤務日区分別勤務」．平日時．就業時間帯コードを選択する(chon cai mui gio lam trong domain trên)
 			processWorkTime = opWorkingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().map(x -> x.v()).orElse(null);
 		} else {
 			// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
-			processWorkType = workTypeLst.stream().findFirst().orElse(null);
+			processWorkType = workTypeLst.stream().findFirst().map(x -> x.getWorkTypeCode().v()).orElse(null);
 			// Input．就業時間帯リストをチェック(Check Input. worktimeList)
 			if(!CollectionUtil.isEmpty(workTimeLst)) {
 				// 先頭の就業時間帯を選択する(chọn mui giờ làm đầu tiên)
-				processWorkTime = workTimeLst.stream().findFirst().orElse(null);
+				processWorkTime = workTimeLst.stream().findFirst().map(x -> x.getWorktimeCode().v()).orElse(null);
 			}
 		}
 		// 12.マスタ勤務種類、就業時間帯データをチェック
@@ -464,13 +465,13 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		String resultWorkType = null;
 		if(checkWorkingInfoResult.isWkTypeError()) {
 			// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
-			resultWorkType = workTypeLst.stream().findFirst().orElse(null);
+			resultWorkType = workTypeLst.stream().findFirst().map(x -> x.getWorkTypeCode().v()).orElse(null);
 		}
 		// 就業時間帯エラーFlgをチェック
 		String resultWorkTime = null;
 		if(checkWorkingInfoResult.isWkTimeError()) {
 			// 先頭の就業時間帯を選択する(chọn mui giờ làm đầu tiên)
-			resultWorkTime = workTimeLst.stream().findFirst().orElse(null);
+			resultWorkTime = workTimeLst.stream().findFirst().map(x -> x.getWorktimeCode().v()).orElse(null);
 		}
 		return new InitWkTypeWkTimeOutput(resultWorkType, resultWorkTime);
 	}
