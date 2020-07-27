@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,11 +29,11 @@ public class SwapEmpOnScheduleTeamService {
 
 	public static AtomTask replace(Require require, ScheduleTeam scheduleTeam, List<String> lstEmpID) {
 		// $登録対象リスト = 社員IDリスト: map 所属スケジュールチーム#作る( $, チーム.職場グループID, チーム.コード )
-		List<BelongScheduleTeam> data = lstEmpID.stream()
-				.map(c -> new BelongScheduleTeam(c, scheduleTeam.getWKPGRPID(), scheduleTeam.getScheduleTeamCd()))
-				.collect(Collectors.toList());
-	//	 ScheduleTeam da = scheduleTeam.
-		
+		List<BelongScheduleTeam> data = new ArrayList<>();
+		for(String item : lstEmpID){
+			BelongScheduleTeam belong = scheduleTeam.addEmployee(item);
+			data.add(belong);
+		}	
 		return AtomTask.of(() -> {
 			// require.チームを指定して所属スケジュールチームを削除する( チーム.職場グループID, チーム.コード )
 			require.getSpecifyTeamAndScheduleTeam(scheduleTeam.getWKPGRPID(), scheduleTeam.getScheduleTeamCd().v());
