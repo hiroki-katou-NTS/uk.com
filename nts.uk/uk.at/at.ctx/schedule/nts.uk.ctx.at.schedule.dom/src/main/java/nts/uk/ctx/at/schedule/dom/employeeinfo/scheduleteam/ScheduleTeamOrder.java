@@ -34,12 +34,13 @@ public class ScheduleTeamOrder implements DomainAggregate{
 	public static  ScheduleTeamOrder create(String WKPGRPID ,List<ScheduleTeamCd> listOrderScheduleTeamCd ){
 		if(!(listOrderScheduleTeamCd.size()> 0)){
 			//inv-1	@並び順リスト.size > 0	
-			throw new BusinessException("Msg_XXXX");
+			//Sys 
+			throw new RuntimeException("Debug message");
 		}
 		List<String> listDistinct = listOrderScheduleTeamCd.stream().map(c ->c.v()).distinct().collect(Collectors.toList());
 		if(listDistinct.size() < listOrderScheduleTeamCd.size() ){
 			//inv-2	@並び順リストのスケジュールチームコードが重複しない
-			throw new BusinessException("Msg_XXXX");
+			throw new RuntimeException("Debug message");
 		}
 		return new ScheduleTeamOrder(WKPGRPID, listOrderScheduleTeamCd);
 	}
@@ -53,7 +54,7 @@ public class ScheduleTeamOrder implements DomainAggregate{
 		List<String> listDistinct = listOrderScheduleTeamCd.stream().map(c ->c.v()).distinct().collect(Collectors.toList());
 		if(listDistinct.size() < listOrderScheduleTeamCd.size() ){
 			//inv-2	@並び順リストのスケジュールチームコードが重複しない
-			throw new BusinessException("Msg_XXXX");
+			throw new RuntimeException("Debug message");
 		}
 		listOrderScheduleTeamCd.add(scheduleTeamCd);
 	}
@@ -65,12 +66,12 @@ public class ScheduleTeamOrder implements DomainAggregate{
 	public void update(List<ScheduleTeamCd> listCode ){
 		if(!(listOrderScheduleTeamCd.size()> 0)){
 			//inv-1	@並び順リスト.size > 0	
-			throw new BusinessException("Msg_XXXX");
+			throw new RuntimeException("Debug message");
 		}
 		List<String> listDistinct = listOrderScheduleTeamCd.stream().map(c ->c.v()).distinct().collect(Collectors.toList());
 		if(listDistinct.size() < listOrderScheduleTeamCd.size() ){
 			//inv-2	@並び順リストのスケジュールチームコードが重複しない
-			throw new BusinessException("Msg_XXXX");
+			throw new RuntimeException("Debug message");
 		}
 		listOrderScheduleTeamCd = listCode;
 	}
@@ -82,11 +83,8 @@ public class ScheduleTeamOrder implements DomainAggregate{
 	public void delete(ScheduleTeamCd scheduleTeamCd){
 		if(listOrderScheduleTeamCd.size()> 0){
 			//inv-1	@並び順リスト.size > 0	
-			throw new BusinessException("Msg_XXXX");
+			throw new BusinessException("RuntimeException");
 		}
-		listOrderScheduleTeamCd.remove(scheduleTeamCd);
-		
+		listOrderScheduleTeamCd.remove(scheduleTeamCd);	
 	}
-	
-
 }
