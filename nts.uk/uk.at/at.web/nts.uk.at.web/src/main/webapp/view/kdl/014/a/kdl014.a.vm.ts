@@ -178,6 +178,7 @@ module nts.uk.at.view.kdl014.a {
             self.stampDateTime = new Date().toString();
             self.date = param.date;
             self.time = param.time;
+            param.stampAtr = param.stampAtr.trim();
             
             if (param.stampAtr === '出勤' || param.stampAtr === '入門' || param.stampAtr === '応援開始'
                 || param.stampAtr === '応援出勤' || param.stampAtr === '臨時出勤') {
