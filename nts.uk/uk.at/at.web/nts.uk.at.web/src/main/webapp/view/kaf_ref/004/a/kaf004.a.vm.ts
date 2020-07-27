@@ -1,5 +1,8 @@
+ /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+
 module nts.uk.at.view.kaf004_ref.a.viewmodel {
     import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
+    import CommonProcess = nts.uk.at.view.kaf000_ref.shr.viewmodel.CommonProcess;
     import WorkManagement = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.WorkManagement;
     import LateOrEarlyInfo = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.LateOrEarlyInfo;
     import ArrivedLateLeaveEarlyInfo = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.ArrivedLateLeaveEarlyInfo;
@@ -9,6 +12,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         application: KnockoutObservable<Application>;
         workManagement: WorkManagement;
         arrivedLateLeaveEarlyInfo: any;
+        appDispInfoStartupOutput: any;
         lateOrEarlyInfos: KnockoutObservableArray<LateOrEarlyInfo>;
         lateOrEarlyInfo1: KnockoutObservable<LateOrEarlyInfo>;
         lateOrEarlyInfo2: KnockoutObservable<LateOrEarlyInfo>;
@@ -23,14 +27,18 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             const vm = this;
 
             vm.application = ko.observable(new Application("", 1, [], 7, "", "", 0));
+            vm.application().appDate(moment(new Date()).format("YYYY/MM/DD"));
+            // vm.application().appDate(moment(new Date()).format("YYYY/MM/DD"));
             vm.workManagement = new WorkManagement('--:--', '--:--', '--:--', '--:--', 850, 1725, null, null);
             vm.arrivedLateLeaveEarlyInfo = ko.observable(ArrivedLateLeaveEarlyInfo.initArrivedLateLeaveEarlyInfo());
+            vm.appDispInfoStartupOutput = ko.observable(CommonProcess.initCommonSetting());
 
             vm.lateOrEarlyInfo1 = ko.observable(new LateOrEarlyInfo(true, 1, true, true, 0));
             vm.lateOrEarlyInfo2 = ko.observable(new LateOrEarlyInfo(true, 1, true, true, 1));
             vm.lateOrEarlyInfo3 = ko.observable(new LateOrEarlyInfo(false, 2, false, true, 0));
             vm.lateOrEarlyInfo4 = ko.observable(new LateOrEarlyInfo(false, 2, true, true, 1));
-            vm.mode = ko.observable('before');
+            vm.lateOrEarlyInfos = ko.observableArray([]);
+            vm.mode = ko.observable('after');
             vm.managementMultipleWorkCycles = ko.observable(true);
 
             // Subcribe when mode change -> clear data if mode is 'before'
@@ -44,20 +52,36 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         mounted() {
             const vm = this;
             vm.$blockui('show');
-            vm.application().appDate(moment(new Date()).format("YYYY/MM/DD"));
             vm.$ajax(API.initPage + "/" + ko.toJS(vm.application().appType), [ko.toJS(vm.application().appDate)])
                 .done((successData: any) => {
-                    vm.arrivedLateLeaveEarlyInfo(successData.arrivedLateLeaveEarlyInfo);
-                    vm.lateOrEarlyInfos(vm.arrivedLateLeaveEarlyInfo().earlyInfos);
+                    vm.arrivedLateLeaveEarlyInfo(successData);
+                    vm.appDispInfoStartupOutput(successData.appDispInfoStartupOutput);
+                    vm.lateOrEarlyInfos(vm.arrivedLateLeaveEarlyInfo.earlyInfos);
                     vm.lateOrEarlyInfo1(ko.toJS(_.filter(vm.lateOrEarlyInfos, {'workNo': 1, 'category': 0})));
                     vm.lateOrEarlyInfo2(ko.toJS(_.filter(vm.lateOrEarlyInfos, {'workNo': 1, 'category': 1})));
                     vm.lateOrEarlyInfo3(ko.toJS(_.filter(vm.lateOrEarlyInfos, {'workNo': 2, 'category': 0})));
                     vm.lateOrEarlyInfo4(ko.toJS(_.filter(vm.lateOrEarlyInfos, {'workNo': 2, 'category': 1})));
 
-                    vm.workManagement.scheAttendanceTime(vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheAttendanceTime1);
-                    vm.workManagement.scheAttendanceTime2(vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheAttendanceTime2);
-                    vm.workManagement.scheWorkTime(vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheDepartureTime1);
-                    vm.workManagement.scheWorkTime2(vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheDepartureTime2);
+                    if(!vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput
+                        || !vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput
+                        || !vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay
+                        || !vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail
+                        || !vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly) {
+                            vm.workManagement.scheAttendanceTime("--:--");
+                            vm.workManagement.scheAttendanceTime2("--:--");
+                            vm.workManagement.scheWorkTime("--:--");
+                            vm.workManagement.scheWorkTime2("--:--");
+                        } else {
+                            vm.workManagement.scheAttendanceTime(vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheAttendanceTime1);
+                            vm.workManagement.scheAttendanceTime2(vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheAttendanceTime2);
+                            vm.workManagement.scheWorkTime(vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheDepartureTime1);
+                            vm.workManagement.scheWorkTime2(vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheDepartureTime2);
+
+                            vm.workManagement.workTime = vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.workTime;
+                            vm.workManagement.workTime2 = vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.workTime1;
+                            vm.workManagement.leaveTime = vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.leaveTime;
+                            vm.workManagement.leaveTime2 = vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.leaveTime2;
+                        }
 
                     if(!vm.workManagement.scheAttendanceTime) {
                         vm.workManagement.scheAttendanceTime("--:--");
@@ -72,10 +96,6 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         vm.workManagement.scheWorkTime2("--:--");
                     }
 
-                    vm.workManagement.workTime = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.workTime;
-                    vm.workManagement.workTime2 = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.workTime1;
-                    vm.workManagement.leaveTime = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.leaveTime;
-                    vm.workManagement.leaveTime2 = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.leaveTime2;
 
                     vm.$blockui('hide');
                 }).fail((failData: any) => {
@@ -208,12 +228,12 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 
         // ※8＆※10
         public condition8_10(idItem: number) {
-            return this.condition8 && this.condition10Display(idItem);
+            return this.condition8() && this.condition10Display(idItem);
         }
 
         // ※2＆※８&※10
         public condition2_8_10(idItem: number) {
-            return this.condition2 && this.condition8 && this.condition10Display(idItem);
+            return this.condition2() && this.condition8() && this.condition10Display(idItem);
         }
     }
 

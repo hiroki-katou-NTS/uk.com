@@ -1,16 +1,11 @@
 package nts.uk.ctx.at.request.infra.repository.application.lateleaveearly;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.LateLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoOutput;
@@ -18,7 +13,6 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateCancelation;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeReport;
 import nts.uk.ctx.at.request.infra.entity.application.lateleaveearly.KrqdtAppLateOrLeavePK_New;
 import nts.uk.ctx.at.request.infra.entity.application.lateleaveearly.KrqdtAppLateOrLeave_New;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author anhnm
@@ -27,50 +21,11 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class LateLeaveEarlyRepositoryImp extends JpaRepository implements LateLeaveEarlyRepository {
 
-	@Inject
-	private RegisterAtApproveReflectionInfoService_New registerService;
-
-	@Inject
-	private ApplicationApprovalService applicationService;
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * nts.uk.ctx.at.request.dom.application.lateleaveearly.LateLeaveEarlyRepository
-	 * #register(int, boolean, boolean,
-	 * nts.uk.ctx.at.request.dom.application.lateorleaveearly.
-	 * ArrivedLateLeaveEarlyInfoOutput,
-	 * nts.uk.ctx.at.request.dom.application.Application)
+	/**
+	 * @param application
+	 * @param infoOutput
 	 */
 	@Override
-	public void register(int appType, ArrivedLateLeaveEarlyInfoOutput infoOutput,
-			Application application) {
-		String employeeId = AppContexts.user().employeeId();
-
-		// 2-2.新規画面登録時承認反映情報の整理
-		this.registerService.newScreenRegisterAtApproveInfoReflect(employeeId, application);
-
-		// ドメインモデル「遅刻早退取消申請」の新規登録する (đăng ký mới domain 「遅刻早退取消申請」)
-		this.registerDomain(application, infoOutput);
-	}
-
-	/**
-	 * ドメインモデル「遅刻早退取消申請」の新規登録する (đăng ký mới domain 「遅刻早退取消申請」)
-	 *
-	 * @param application
-	 * @param infoOutput
-	 */
-	public void registerDomain(Application application, ArrivedLateLeaveEarlyInfoOutput infoOutput) {
-		String cID = AppContexts.user().companyId();
-		this.registerLateLeaveEarly(cID, application, infoOutput);
-		this.registerApplication(application, infoOutput);
-	}
-
-	/**
-	 * @param application
-	 * @param infoOutput
-	 */
 	public void registerLateLeaveEarly(String cID, Application application,
 			ArrivedLateLeaveEarlyInfoOutput infoOutput) {
 		ArrivedLateLeaveEarly arrivedLateLeaveEarly = infoOutput.getArrivedLateLeaveEarly().get();
@@ -150,18 +105,5 @@ public class LateLeaveEarlyRepositoryImp extends JpaRepository implements LateLe
 
 		// insert entity to table
 		this.commandProxy().insert(entity);
-	}
-
-	/**
-	 * @param cID
-	 * @param application
-	 * @param infoOutput
-	 */
-	public void registerApplication(Application application,
-			ArrivedLateLeaveEarlyInfoOutput infoOutput) {
-		Optional<List<ApprovalPhaseStateImport_New>> opListApproval = infoOutput.getAppDispInfoStartupOutput()
-				.getAppDispInfoWithDateOutput().getOpListApprovalPhaseState();
-
-		this.applicationService.insertApp(application, opListApproval.get());
 	}
 }

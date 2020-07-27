@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.request.dom.application.lateleaveearly.LateLeaveEarlyRepository;
+import nts.uk.ctx.at.request.dom.application.lateleaveearly.LateLeaveEarlyService;
 
 /**
  * @author anhnm
@@ -15,13 +15,13 @@ import nts.uk.ctx.at.request.dom.application.lateleaveearly.LateLeaveEarlyReposi
 public class LateLeaveEarlyCommandHandler extends CommandHandler<LateLeaveEarlyCommand> {
 
 	@Inject
-	private LateLeaveEarlyRepository repository;
+	private LateLeaveEarlyService service;
 
 	@Override
 	protected void handle(CommandHandlerContext<LateLeaveEarlyCommand> context) {
 		LateLeaveEarlyCommand command = context.getCommand();
 
-		this.repository.register(command.getAppType(), command.getInfoOutput(), command.getApplication());
+		this.service.register(command.getAppType(), command.getInfoOutput(), command.getApplication());
 	}
 
 }
