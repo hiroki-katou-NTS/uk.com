@@ -1,18 +1,19 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
+import java.util.Optional;
+
 /**
- * 
- * @author Doan Duy Hung
+ * Refactor4
+ * @author hoangnd
  *
  */
 public interface AppStampRepository {
+
+	public Optional<AppStamp> findByAppID(String companyID, String appID);
 	
-	public AppStamp_Old findByAppID(String companyID, String appID);
+	public void addStamp(AppStamp appStamp);
 	
-	public void addStamp(AppStamp_Old appStamp);
-	
-	public void updateStamp(AppStamp_Old appStamp);
+	public void updateStamp(AppStamp appStamp);
 	
 	public void delete(String companyID, String appID);
-	
 }

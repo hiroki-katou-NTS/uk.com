@@ -5,12 +5,11 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.request.app.find.application.lateleaveearly.dto.MessageListDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoDto;
-import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.LateLeaveEarlyService;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoOutput;
 
 
 /**
@@ -21,7 +20,8 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEa
 public class LateLeaveEarlyGetService {
 
 	@Inject
-	private LateLeaveEarlyService repository;
+	private LateLeaveEarlyService service;
+
 
 	/**
 	 * @param appId
@@ -29,7 +29,7 @@ public class LateLeaveEarlyGetService {
 	 * @return ArrivedLateLeaveEarlyInfoDto
 	 */
 	public ArrivedLateLeaveEarlyInfoDto getLateLeaveEarly(int appId, List<String> appDates) {
-		return ArrivedLateLeaveEarlyInfoDto.convertDto(this.repository.getLateLeaveEarlyInfo(appId, appDates));
+		return ArrivedLateLeaveEarlyInfoDto.convertDto(this.service.getLateLeaveEarlyInfo(appId, appDates));
 	}
 
 	/**
@@ -42,9 +42,11 @@ public class LateLeaveEarlyGetService {
 	 * @return LateEarlyDateChangeFinderDto
 	 */
 	public LateEarlyDateChangeFinderDto getChangeAppDate(int appType, List<String> appDates, String appDate,
-			AppDispInfoNoDateOutput appDispNoDate, AppDispInfoWithDateOutput appDispWithDate) {
+			AppDispInfoNoDateOutput appDispNoDate, AppDispInfoWithDateOutput appDispWithDate,
+			LateEarlyCancelAppSetDto setting) {
 		return LateEarlyDateChangeFinderDto.fromDomain(
-				this.repository.getChangeAppDate(appType, appDates, appDate, appDispNoDate, appDispWithDate));
+				this.service.getChangeAppDate(appType, appDates, appDate, appDispNoDate, appDispWithDate,
+						setting.toDomain()));
 	}
 
 	/**
@@ -55,8 +57,16 @@ public class LateLeaveEarlyGetService {
 	 * @param application
 	 * @return
 	 */
-	public List<String> getMessageList(int appType, boolean agentAtr, boolean isNew,
-			ArrivedLateLeaveEarlyInfoOutput infoOutput, Application application) {
-		return this.repository.getMessageList(appType, agentAtr, isNew, infoOutput, application);
+	public List<String> getMessageList(int appType, MessageListDto dto) {
+		return this.service.getMessageList(appType, dto.isAgentAtr(), dto.isNew(), dto.getInfoOutput().toDomain(),
+				dto.getApplication().toDomain());
+	}
+
+	/**
+	 * @param appId
+	 * @return
+	 */
+	public ArrivedLateLeaveEarlyInfoDto getInitB(String appId) {
+		return ArrivedLateLeaveEarlyInfoDto.convertDto(this.service.getInitB(appId));
 	}
 }

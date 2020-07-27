@@ -29,6 +29,14 @@ public class ArrivedLateLeaveEarlyDto extends ApplicationDto {
 		return apArrivedLateLeaveEarlyDto;
 	}
 	
+	public ArrivedLateLeaveEarly convertDomain() {
+		ArrivedLateLeaveEarly dto = new ArrivedLateLeaveEarly(this.toDomain());
+		dto.setLateCancelation(this.lateCancelation.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+		dto.setLateOrLeaveEarlies(this.lateOrLeaveEarlies.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+		
+		return dto;
+	}
+	
 	public static ArrivedLateLeaveEarlyDto convertDto(ArrivedLateLeaveEarly_Old app) {
 		return null;
 	}

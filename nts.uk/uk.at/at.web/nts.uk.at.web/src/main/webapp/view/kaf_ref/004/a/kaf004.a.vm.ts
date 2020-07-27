@@ -1,4 +1,4 @@
- /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kaf004_ref.a.viewmodel {
     import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
@@ -19,6 +19,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         lateOrEarlyInfo3: KnockoutObservable<LateOrEarlyInfo>;
         lateOrEarlyInfo4: KnockoutObservable<LateOrEarlyInfo>;
         managementMultipleWorkCycles: KnockoutObservable<Boolean>;
+        isSendMail: KnockoutObservable<Boolean>;
 
         mode: KnockoutObservable<MODE>;
 
@@ -40,10 +41,11 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             vm.lateOrEarlyInfos = ko.observableArray([]);
             vm.mode = ko.observable('after');
             vm.managementMultipleWorkCycles = ko.observable(true);
+            vm.isSendMail = ko.observable(true);
 
             // Subcribe when mode change -> clear data if mode is 'before'
             vm.mode.subscribe(() => {
-                if(ko.toJS(vm.mode) === 'before') {
+                if (ko.toJS(vm.mode) === 'before') {
                     vm.workManagement.clearData();
                 }
             })
@@ -57,42 +59,42 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     vm.arrivedLateLeaveEarlyInfo(successData);
                     vm.appDispInfoStartupOutput(successData.appDispInfoStartupOutput);
                     vm.lateOrEarlyInfos(vm.arrivedLateLeaveEarlyInfo.earlyInfos);
-                    vm.lateOrEarlyInfo1(ko.toJS(_.filter(vm.lateOrEarlyInfos, {'workNo': 1, 'category': 0})));
-                    vm.lateOrEarlyInfo2(ko.toJS(_.filter(vm.lateOrEarlyInfos, {'workNo': 1, 'category': 1})));
-                    vm.lateOrEarlyInfo3(ko.toJS(_.filter(vm.lateOrEarlyInfos, {'workNo': 2, 'category': 0})));
-                    vm.lateOrEarlyInfo4(ko.toJS(_.filter(vm.lateOrEarlyInfos, {'workNo': 2, 'category': 1})));
+                    vm.lateOrEarlyInfo1(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 0 })));
+                    vm.lateOrEarlyInfo2(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 1 })));
+                    vm.lateOrEarlyInfo3(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 0 })));
+                    vm.lateOrEarlyInfo4(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 1 })));
 
-                    if(!vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput
+                    if (!vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput
                         || !vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput
                         || !vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay
                         || !vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail
                         || !vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly) {
-                            vm.workManagement.scheAttendanceTime("--:--");
-                            vm.workManagement.scheAttendanceTime2("--:--");
-                            vm.workManagement.scheWorkTime("--:--");
-                            vm.workManagement.scheWorkTime2("--:--");
-                        } else {
-                            vm.workManagement.scheAttendanceTime(vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheAttendanceTime1);
-                            vm.workManagement.scheAttendanceTime2(vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheAttendanceTime2);
-                            vm.workManagement.scheWorkTime(vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheDepartureTime1);
-                            vm.workManagement.scheWorkTime2(vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheDepartureTime2);
+                        vm.workManagement.scheAttendanceTime("--:--");
+                        vm.workManagement.scheAttendanceTime2("--:--");
+                        vm.workManagement.scheWorkTime("--:--");
+                        vm.workManagement.scheWorkTime2("--:--");
+                    } else {
+                        vm.workManagement.scheAttendanceTime(vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheAttendanceTime1);
+                        vm.workManagement.scheAttendanceTime2(vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheAttendanceTime2);
+                        vm.workManagement.scheWorkTime(vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheDepartureTime1);
+                        vm.workManagement.scheWorkTime2(vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheDepartureTime2);
 
-                            vm.workManagement.workTime = vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.workTime;
-                            vm.workManagement.workTime2 = vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.workTime1;
-                            vm.workManagement.leaveTime = vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.leaveTime;
-                            vm.workManagement.leaveTime2 = vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.leaveTime2;
-                        }
+                        vm.workManagement.workTime = vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.workTime;
+                        vm.workManagement.workTime2 = vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.workTime1;
+                        vm.workManagement.leaveTime = vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.leaveTime;
+                        vm.workManagement.leaveTime2 = vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.leaveTime2;
+                    }
 
-                    if(!vm.workManagement.scheAttendanceTime) {
+                    if (!vm.workManagement.scheAttendanceTime) {
                         vm.workManagement.scheAttendanceTime("--:--");
                     }
-                    if(!vm.workManagement.scheAttendanceTime2) {
+                    if (!vm.workManagement.scheAttendanceTime2) {
                         vm.workManagement.scheAttendanceTime2("--:--");
                     }
-                    if(!vm.workManagement.scheWorkTime) {
+                    if (!vm.workManagement.scheWorkTime) {
                         vm.workManagement.scheWorkTime("--:--");
                     }
-                    if(!vm.workManagement.scheWorkTime2) {
+                    if (!vm.workManagement.scheWorkTime2) {
                         vm.workManagement.scheWorkTime2("--:--");
                     }
 
@@ -109,13 +111,67 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 
             console.log(ko.toJS(vm.application()));
             console.log(vm.workManagement);
+
+            vm.$blockui("show");
+
+            vm.$ajax(API.getMsgList + "/" + ko.toJS(vm.application().appType),
+                {
+                    agentAtr: true,
+                    isNew: true,
+                    infoOutput:
+                        ko.toJS(vm.arrivedLateLeaveEarlyInfo),
+                    application: ko.toJS(vm.application())
+                }).done((success: any) => {
+                    if (success) {
+                        console.log(success);
+
+                        for (var i = 0; i < success.length; i++) {
+                            vm.$dialog.confirm({ messageId: success[i] }).then((result: 'no' | 'yes' | 'cancel') => {
+                                if (result !== 'yes') {
+                                    return;
+                                }
+                            });
+                        }
+
+                        this.afterRegister();
+                    } else {
+                        this.afterRegister();
+                    }
+                }).fail((fail: any) => {
+                    console.log(fail);
+                });
+        }
+
+        private afterRegister(params?: any) {
+            const vm = this;
+
+            vm.$ajax(API.register,
+                {
+                    appType: ko.toJS(vm.application().appType),
+                    application: ko.toJS(vm.application()),
+                    infoOutput: ko.toJS(vm.arrivedLateLeaveEarlyInfo)
+                }).done((success: any) => {
+                    if(ko.toJS(vm.isSendMail)
+                    && !vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting.sendMailWhenRegister) {
+                        vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                            vm.$window.modal("/view/kdl/030/a/index.xhtml").then((result: any) => {
+                                vm.$window.storage('childData').then(rs => {
+                                    console.log(rs);
+                                });
+                            });
+                        });
+                    }
+                }).fail((fail: any) => {
+                    console.log(fail);
+                    return;
+                });
         }
 
         // ※2
         public condition2(): boolean {
             const vm = this;
 
-            if(vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput) {
+            if (vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput) {
                 vm.managementMultipleWorkCycles(vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles);
             }
 
@@ -161,24 +217,24 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             const vm = this;
 
             // 取り消す初期情報.表示する
-            switch(idItem) {
+            switch (idItem) {
                 case IdItem.A6_7: {
-                    if(!ko.toJS(vm.lateOrEarlyInfo1)) {
+                    if (!ko.toJS(vm.lateOrEarlyInfo1)) {
                         return false;
                     }
                     return ko.toJS(vm.lateOrEarlyInfo1().isIndicate);
                 } case IdItem.A6_13: {
-                    if(!ko.toJS(vm.lateOrEarlyInfo2)) {
+                    if (!ko.toJS(vm.lateOrEarlyInfo2)) {
                         return false;
                     }
                     return ko.toJS(vm.lateOrEarlyInfo2().isIndicate);
                 } case IdItem.A6_19: {
-                    if(!ko.toJS(vm.lateOrEarlyInfo3)) {
+                    if (!ko.toJS(vm.lateOrEarlyInfo3)) {
                         return false;
                     }
                     return ko.toJS(vm.lateOrEarlyInfo3().isIndicate);
                 } case IdItem.A6_25: {
-                    if(!ko.toJS(vm.lateOrEarlyInfo4)) {
+                    if (!ko.toJS(vm.lateOrEarlyInfo4)) {
                         return false;
                     }
                     return ko.toJS(vm.lateOrEarlyInfo4().isIndicate);
@@ -196,24 +252,24 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             const vm = this;
 
             // 取り消す初期情報.活性する
-            switch(idItem) {
+            switch (idItem) {
                 case IdItem.A6_7: {
-                    if(!ko.toJS(vm.lateOrEarlyInfo1)) {
+                    if (!ko.toJS(vm.lateOrEarlyInfo1)) {
                         return false;
                     }
                     return ko.toJS(vm.lateOrEarlyInfo1().isActive);
                 } case IdItem.A6_13: {
-                    if(!ko.toJS(vm.lateOrEarlyInfo2)) {
+                    if (!ko.toJS(vm.lateOrEarlyInfo2)) {
                         return false;
                     }
                     return ko.toJS(vm.lateOrEarlyInfo2().isActive);
                 } case IdItem.A6_19: {
-                    if(!ko.toJS(vm.lateOrEarlyInfo3)) {
+                    if (!ko.toJS(vm.lateOrEarlyInfo3)) {
                         return false;
                     }
                     return ko.toJS(vm.lateOrEarlyInfo3().isActive);
                 } case IdItem.A6_25: {
-                    if(!ko.toJS(vm.lateOrEarlyInfo4)) {
+                    if (!ko.toJS(vm.lateOrEarlyInfo4)) {
                         return false;
                     }
                     return ko.toJS(vm.lateOrEarlyInfo4().isActive);
@@ -247,9 +303,9 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
     };
 
     export class IdItem {
-        public static readonly A6_7 : number = 1;
-        public static readonly A6_13 : number = 2;
-        public static readonly A6_19 : number = 3;
-        public static readonly A6_25 : number = 4
+        public static readonly A6_7: number = 1;
+        public static readonly A6_13: number = 2;
+        public static readonly A6_19: number = 3;
+        public static readonly A6_25: number = 4
     }
 }

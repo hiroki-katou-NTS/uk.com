@@ -11,13 +11,14 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.lateleaveearly.LateLeaveEarlyCommand;
 import nts.uk.ctx.at.request.app.command.application.lateleaveearly.LateLeaveEarlyCommandHandler;
+import nts.uk.ctx.at.request.app.find.application.lateleaveearly.LateEarlyCancelAppSetDto;
 import nts.uk.ctx.at.request.app.find.application.lateleaveearly.LateEarlyDateChangeFinderDto;
 import nts.uk.ctx.at.request.app.find.application.lateleaveearly.LateLeaveEarlyGetService;
+import nts.uk.ctx.at.request.app.find.application.lateleaveearly.dto.MessageListDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoDto;
-import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoOutput;
 
 /**
  * @author anhnm
@@ -33,6 +34,7 @@ public class LateLeaveEarlyWebService extends WebService {
 	@Inject
 	private LateLeaveEarlyCommandHandler commandHandler;
 
+
 	@POST
 	@Path("initPage/{appType}")
 	public ArrivedLateLeaveEarlyInfoDto initPage(@PathParam("appType") int appType, List<String> appDates) {
@@ -42,20 +44,26 @@ public class LateLeaveEarlyWebService extends WebService {
 	@POST
 	@Path("changeAppDate/{appType}")
 	public LateEarlyDateChangeFinderDto changeAppDate(@PathParam("appType") int appType, List<String> appDates,
-			String baseDate, AppDispInfoNoDateOutput appDispNoDate, AppDispInfoWithDateOutput appDispWithDate) {
-		return this.service.getChangeAppDate(appType, appDates, baseDate, appDispNoDate, appDispWithDate);
+			String baseDate, AppDispInfoNoDateOutput appDispNoDate, AppDispInfoWithDateOutput appDispWithDate,
+			LateEarlyCancelAppSetDto setting) {
+		return this.service.getChangeAppDate(appType, appDates, baseDate, appDispNoDate, appDispWithDate, setting);
 	}
 
 	@POST
 	@Path("register")
-	public void register(LateLeaveEarlyCommand command) {
-		this.commandHandler.handle(command);
+	public ProcessResult register(LateLeaveEarlyCommand command) {
+		return this.commandHandler.handle(command);
 	}
 
 	@POST
 	@Path("getMsgList/{appType}")
-	public List<String> getMsgList(@PathParam("appType") int appType, boolean agentAtr, boolean isNew,
-			ArrivedLateLeaveEarlyInfoOutput infoOutput, Application application) {
-		return this.service.getMessageList(appType, agentAtr, isNew, infoOutput, application);
+	public List<String> getMsgList(@PathParam("appType") int appType, MessageListDto dtoInput) {
+		return this.service.getMessageList(appType, dtoInput);
+	}
+
+	@POST
+	@Path("initPageB")
+	public ArrivedLateLeaveEarlyInfoDto initPage_B(String appId) {
+		return this.service.getInitB(appId);
 	}
 }

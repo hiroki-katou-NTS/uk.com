@@ -36,7 +36,7 @@ public class AppStampNewDefaultImpl implements AppStampNewDomainService {
 	private RegisterAtApproveReflectionInfoService_New registerAtApproveReflectionInfoService;
 	
 	@Inject
-	private AppStampRepository appStampRepository;
+	private AppStampRepository_Old appStampRepository;
 	
 	@Inject
 	private NewAfterRegister_New newAfterRegister;

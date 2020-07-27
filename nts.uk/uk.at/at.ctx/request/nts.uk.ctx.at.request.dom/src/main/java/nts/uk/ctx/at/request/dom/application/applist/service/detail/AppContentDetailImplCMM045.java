@@ -25,7 +25,7 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeDay;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -40,7 +40,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 	@Inject
 	private AppDetailInfoRepository appDetailInfoRepo;
 	@Inject
-	private AppStampRepository appStampRepo;
+	private AppStampRepository_Old appStampRepo;
 	@Inject
 	private LateOrLeaveEarlyRepository lateLeaveEarlyRepo;
 	

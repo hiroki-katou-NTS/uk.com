@@ -17,7 +17,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 public class AppStampDetailDefaultImpl implements AppStampDetailDomainService {
 
 	@Inject
-	private AppStampRepository appStampRepository; 
+	private AppStampRepository_Old appStampRepository; 
 	
 //	@Inject
 //	private BeforePreBootMode beforePreBootMode;

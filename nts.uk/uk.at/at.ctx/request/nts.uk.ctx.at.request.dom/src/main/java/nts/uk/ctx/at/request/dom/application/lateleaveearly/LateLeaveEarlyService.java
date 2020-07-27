@@ -3,10 +3,12 @@ package nts.uk.ctx.at.request.dom.application.lateleaveearly;
 import java.util.List;
 
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoOutput;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateEarlyDateChangeOutput;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSet;
 
 /**
  * @author anhnm
@@ -29,7 +31,8 @@ public interface LateLeaveEarlyService {
 	 * @return
 	 */
 	LateEarlyDateChangeOutput getChangeAppDate(int appType, List<String> appDates, String appDate,
-			AppDispInfoNoDateOutput appDispNoDate, AppDispInfoWithDateOutput appDispWithDate);
+			AppDispInfoNoDateOutput appDispNoDate, AppDispInfoWithDateOutput appDispWithDate,
+			LateEarlyCancelAppSet setting);
 
 	/**
 	 * 共通登録前のエラーチェック処理
@@ -51,5 +54,13 @@ public interface LateLeaveEarlyService {
 	 * @param infoOutput
 	 * @param application
 	 */
-	void register(int appType, ArrivedLateLeaveEarlyInfoOutput infoOutput, Application application);
+	ProcessResult register(int appType, ArrivedLateLeaveEarlyInfoOutput infoOutput, Application application);
+
+	/**
+	 * 起動する
+	 *
+	 * @param appId
+	 * @return
+	 */
+	ArrivedLateLeaveEarlyInfoOutput getInitB(String appId);
 }
