@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.jobtitle.PositionImport;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRank;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.Rank;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankPriority;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
 
@@ -168,7 +168,31 @@ public class SortEmpService {
 	 */
 	private static List<List<String>> sortEmpByClassification(Require require, GeneralDate ymd, List<String> empIDs,
 			List<List<String>> listEmpIDs) {
-		return null;
+		
+		List<List<String>> listResult = new ArrayList<>();
+		//$社員分類リスト = require.社員の分類を取得する(年月日, 社員IDリスト)
+		List<EmpClassifiImport> listEmpClassifiImport =  require.get(ymd, empIDs);
+		List<String> listEmpIDClassifi = listEmpClassifiImport.stream().map(c->c.getEmpID()).collect(Collectors.toList());
+		// $社員リスト in リストのリスト: map
+		for(List<String> list :listEmpIDs ) {
+			// $分類がない社員IDリスト = $社員リスト: except $社員分類リスト.contains($)
+			List<String> listEmpUnclassification = list.stream().filter(x->!listEmpIDClassifi.contains(x)).collect(Collectors.toList());
+			// $分類がある社員リスト = $社員分類リスト: filter $社員リスト.contains($)															
+			List<EmpClassifiImport> listEmpclassification = listEmpClassifiImport.stream().filter(x-> list.contains(x.getEmpID())).collect(Collectors.toList());
+			//	sort $.分類コード ASC	
+			List<EmpClassifiImport> listEmpclassificationSorted = listEmpclassification.stream()
+					.sorted((x, y) -> x.getClassificationCode().compareTo(y.getClassificationCode()))
+					.collect(Collectors.toList());
+			//	groupingBy $.分類コード.values: map $.社員ID	
+			List<String> result = listEmpclassificationSorted.stream().collect(Collectors.groupingBy(EmpClassifiImport::getClassificationCode))
+			.entrySet().stream().map(x-> x.getKey()).collect(Collectors.toList());
+			// $並び替えた社員IDリスト.add($分類がない社員IDリスト)												
+			result.addAll(listEmpUnclassification);
+			// return $並び替えた社員リスト
+			listResult.add(result);
+		}
+		
+		return listResult;
 	}
 
 	public static interface Require {
