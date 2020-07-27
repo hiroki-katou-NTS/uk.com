@@ -279,7 +279,7 @@ module nts.uk.at.view.kdp005.a {
                         dfd.reject(res.errorMessage);    
                     }
                 }).fail((res) => {
-                    setShared("errorMessage", getText(res.messageId));
+                    setShared("errorMessage", getMessage(res.messageId));
                     self.openIDialog();
                 });
                 return dfd.promise();
@@ -399,7 +399,6 @@ module nts.uk.at.view.kdp005.a {
 				setShared("resultDisplayTime", self.stampSetting().resultDisplayTime);
 				setShared("infoEmpToScreenB", {
 					employeeId: employeeIdRegister,
-					employeeCode: vm.$user.employeeCode,
 					mode: Mode.Personal,
 				});
 				modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
@@ -413,7 +412,6 @@ module nts.uk.at.view.kdp005.a {
 				setShared('KDP010_2C', self.stampResultDisplay().displayItemId, true);
 				setShared("infoEmpToScreenC", {
 					employeeId: employeeIdRegister,
-					employeeCode: vm.$user.employeeCode,
 					mode: Mode.Personal,
 				});
 
