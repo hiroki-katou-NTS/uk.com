@@ -46,7 +46,6 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 
             };
         model: Model;
-//        commonSetting: any;
         appDispInfoStartupOutput: any;
         dataFetch: KnockoutObservable<ModelDto> = ko.observable(null);
         mode: string = 'edit';
@@ -54,7 +53,6 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
         created(params: any) {
             const vm = this;
             vm.application = ko.observable(new Application("", 1, [], 2, "", "", 0));
-//            vm.commonSetting = ko.observable(CommonProcess.initCommonSetting());
             vm.model = new Model(true, true, true, '001', 'WorkType', '001', 'WorkTime');
             vm.appDispInfoStartupOutput = ko.observable(CommonProcess.initCommonSetting());
             vm.application().appDate(moment(new Date()).format("YYYY/MM/DD"));
@@ -119,28 +117,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 .fail(err => {
                     console.log(err);
                 });
-            //            // assign A8
-            //            if (this.dataFetch().goBackReflect()) {
-            //                if (this.dataFetch().goBackReflect().reflectApplication == ApplicationStatus.DO_REFLECT_1 
-            //                        || this.dataFetch().goBackReflect().reflectApplication == ApplicationStatus.DO_NOT_REFLECT_1) {
-            //                    
-            //                    this.dataFetch().goBackApplication().isChangedWork = this.model.checkbox3();
-            //                }else if (this.dataFetch().goBackReflect().reflectApplication == ApplicationStatus.DO_REFLECT){
-            //                    this.dataFetch().goBackApplication().isChangedWork = true;
-            //                }
-            //            }
-            //            
-            //            if (this.dataFetch().goBackApplication().isChangedWork) {
-            //                
-            ////                A8_2
-            //                this.dataFetch().goBackApplication().dataWork.workType.workType = this.model.workTypeCode();
-            //                this.dataFetch().goBackApplication().dataWork.workType.nameWorkType = this.model.workTypeName();
-            //                
-            ////                A8_4                
-            //                this.dataFetch().goBackApplication().dataWork.workTime.workTime = this.model.workTimeCode();
-            //                this.dataFetch().goBackApplication().dataWork.workTime.nameWorkTime = this.model.workTimeName();
-
-            //}
+           
 
 
         }
@@ -168,7 +145,6 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                         goBackApplication: ko.observable(res.goBackApplication)
                     });
                     vm.appDispInfoStartupOutput(res.appDispInfoStartup);
-//                    vm.appDispInfoStartupOutput(CommonProcess.initCommonSetting());
                     vm.$blockui("hide");
                 }).fail(err => {
                     vm.$blockui("hide");
