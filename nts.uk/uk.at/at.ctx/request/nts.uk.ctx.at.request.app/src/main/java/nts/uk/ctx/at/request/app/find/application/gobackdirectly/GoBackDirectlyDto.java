@@ -38,6 +38,7 @@ public class GoBackDirectlyDto extends ApplicationDto {
 
 	public GoBackDirectly toDomain() {
 		Optional<EnumConstant> isChange = Optional.ofNullable(null);
+		
 		if (isChangedWork != null) {
 			isChange = Optional.ofNullable(new EnumConstant(isChangedWork, "", ""));
 		}
@@ -48,6 +49,10 @@ public class GoBackDirectlyDto extends ApplicationDto {
 		Optional<DataWork> dataWorkSet = Optional.ofNullable(null);
 		if (Optional.of(dataWork).isPresent()) {
 			dataWorkSet = Optional.of(dataWork.toDomain());
+		}
+		if (this.getAppID() != null) {
+			result.setAppID(this.getAppID());
+			
 		}
 		result.setDataWork(dataWorkSet);
 		return result;
