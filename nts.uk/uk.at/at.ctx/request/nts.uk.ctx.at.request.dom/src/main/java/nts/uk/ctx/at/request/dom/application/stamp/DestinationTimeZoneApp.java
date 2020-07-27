@@ -8,7 +8,7 @@ import lombok.Getter;
 //時間帯申請の反映先情報
 public class DestinationTimeZoneApp {
 //	分類
-	private DestinationTimeZoneApp destinationTimeZoneApp;
+	private TimeZoneStampClassification timeZoneStampClassification;
 //	打刻枠No
 	private Integer engraveFrameNo;
 }

@@ -82,7 +82,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlg
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.setting.UseDivision;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
@@ -133,7 +133,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	private AppDispNameRepository repoAppDispName;
 
 	@Inject
-	private AppStampRepository repoAppStamp;
+	private AppStampRepository_Old repoAppStamp;
 
 	@Inject
 	private CollectAchievement collectAchievement;

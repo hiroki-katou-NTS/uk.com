@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.stamp;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.request.dom.application.Application;
 /**
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
  *
  */
 //打刻申請
+@AllArgsConstructor
 @Getter
 public class AppStamp extends Application {
 //	時刻

@@ -52,7 +52,7 @@ public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 	private EmployeeRequestAdapter employeeAdapter;
 	
 	@Inject
-	private AppStampRepository appStampRepository;
+	private AppStampRepository_Old appStampRepository;
 	
 	@Inject
 	private ApplicationRepository_New applicationRepository;
