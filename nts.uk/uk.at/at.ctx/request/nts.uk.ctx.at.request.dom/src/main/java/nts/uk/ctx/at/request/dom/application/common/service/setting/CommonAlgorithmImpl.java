@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
@@ -32,6 +34,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.Colle
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
@@ -39,17 +42,18 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.InitWkTypeWkTimeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.AppReasonOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.DeadlineLimitCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentService;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.UseDivision;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.checkpreappaccept.PreAppAcceptLimit;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.service.AppDeadlineSettingGet;
@@ -58,11 +62,14 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmpl
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbyworkplace.RequestByWorkplaceRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -117,6 +124,9 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	
 	@Inject
 	private AppDeadlineSettingGet appDeadlineSettingGet;
+	
+	@Inject
+	private WorkingConditionService workingConditionService;
 
 	@Override
 	public AppDispInfoNoDateOutput getAppDispInfo(String companyID, List<String> applicantLst, ApplicationType appType, 
@@ -192,9 +202,9 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		String employeeID = appDispInfoNoDateOutput.getEmployeeInfoLst().stream().findFirst().get().getSid();
 		ApprovalFunctionSet approvalFunctionSet = this.getApprovalFunctionSet(companyID, employeeID, baseDate, appType);
 		// 取得したドメインモデル「申請承認機能設定．申請利用設定．利用区分」をチェックする
-		if (approvalFunctionSet.getAppUseSetLst().get(0).getUseDivision() == UseDivision.NOT_USE) {
+		if (mode && approvalFunctionSet.getAppUseSetLst().get(0).getUseDivision() == UseDivision.NOT_USE) {
 			// エラーメッセージ(Msg_323)を返す
-			throw new BusinessException("Msg_323");
+			throw new BusinessException("Msg_323", String.valueOf(appDispInfoNoDateOutput.getApplicationSetting().getRecordDate().value));
 		}
 		// 使用可能な就業時間帯を取得する
 		List<WorkTimeSetting> workTimeLst = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID, baseDate);
@@ -322,7 +332,6 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		// INPUT．「申請表示情報(基準日関係なし) ．申請承認設定．申請設定」．承認ルートの基準日をチェックする
 		if(appDispInfoNoDateOutput.getApplicationSetting().getRecordDate() == RecordDate.SYSTEM_DATE) {
 			// 申請表示情報(申請対象日関係あり)を取得する
-			AppTypeSetting appTypeSetting = appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSetting();
 			AppDispInfoRelatedDateOutput result = this.getAppDispInfoRelatedDate(
 					companyID, appDispInfoNoDateOutput.getEmployeeInfoLst().stream().findFirst().get().getSid(), 
 					dateLst, 
@@ -390,6 +399,80 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			
 		}
 		
+	}
+
+	@Override
+	public InitWkTypeWkTimeOutput initWorkTypeWorkTime(String employeeID, GeneralDate date, List<String> workTypeLst,
+			List<String> workTimeLst, AchievementDetail achievementDetail) {
+		String companyID = AppContexts.user().companyId();
+		// 申請日付チェック
+		if(date != null) {
+			// INPUT．「実績詳細」をチェックする
+			if(Strings.isNotBlank(achievementDetail.getWorkTypeCD()) && Strings.isNotBlank(achievementDetail.getWorkTimeCD())) {
+				// 12.マスタ勤務種類、就業時間帯データをチェック
+				CheckWorkingInfoResult checkWorkingInfoResult = otherCommonAlgorithm.checkWorkingInfo(
+						companyID, 
+						achievementDetail.getWorkTypeCD(), 
+						achievementDetail.getWorkTimeCD());
+				// 勤務種類エラーFlgをチェック
+				String resultWorkType = Strings.EMPTY;
+				if(checkWorkingInfoResult.isWkTypeError()) {
+					// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
+					resultWorkType = workTypeLst.stream().findFirst().orElse(null);
+				}
+				// 就業時間帯エラーFlgをチェック
+				String resultWorkTime = Strings.EMPTY;
+				if(checkWorkingInfoResult.isWkTimeError()) {
+					// 先頭の就業時間帯を選択する(chọn mui giờ làm đầu tiên)
+					resultWorkTime = workTimeLst.stream().findFirst().orElse(null);
+				}
+				return new InitWkTypeWkTimeOutput(resultWorkType, resultWorkTime);
+			}
+		}
+		// 社員の労働条件を取得する(get điiều kiện lao đọng của employee)
+		GeneralDate paramDate = date == null ? GeneralDate.today() : date;
+		Optional<WorkingConditionItem> opWorkingConditionItem = workingConditionService.findWorkConditionByEmployee(employeeID, paramDate);
+		String processWorkType = null;
+		String processWorkTime = null; 
+		if(opWorkingConditionItem.isPresent()) {
+			// ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードが【07_勤務種類取得】取得した勤務種類Listにあるかをチェックする
+			Optional<WorkTypeCode> opConditionWktypeCD = opWorkingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTypeCode();
+			if(opConditionWktypeCD.isPresent() && workTypeLst.contains(opConditionWktypeCD.get().v())) {
+				// ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードを選択する(chọn cai loai di lam)
+				processWorkType = opConditionWktypeCD.get().v();
+			} else {
+				// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
+				processWorkType = workTypeLst.stream().findFirst().orElse(null);
+			}
+			// ドメインモデル「個人勤務日区分別勤務」．平日時．就業時間帯コードを選択する(chon cai mui gio lam trong domain trên)
+			processWorkTime = opWorkingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().map(x -> x.v()).orElse(null);
+		} else {
+			// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
+			processWorkType = workTypeLst.stream().findFirst().orElse(null);
+			// Input．就業時間帯リストをチェック(Check Input. worktimeList)
+			if(!CollectionUtil.isEmpty(workTimeLst)) {
+				// 先頭の就業時間帯を選択する(chọn mui giờ làm đầu tiên)
+				processWorkTime = workTimeLst.stream().findFirst().orElse(null);
+			}
+		}
+		// 12.マスタ勤務種類、就業時間帯データをチェック
+		CheckWorkingInfoResult checkWorkingInfoResult = otherCommonAlgorithm.checkWorkingInfo(
+				companyID, 
+				processWorkType, 
+				processWorkTime);
+		// 勤務種類エラーFlgをチェック
+		String resultWorkType = null;
+		if(checkWorkingInfoResult.isWkTypeError()) {
+			// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
+			resultWorkType = workTypeLst.stream().findFirst().orElse(null);
+		}
+		// 就業時間帯エラーFlgをチェック
+		String resultWorkTime = null;
+		if(checkWorkingInfoResult.isWkTimeError()) {
+			// 先頭の就業時間帯を選択する(chọn mui giờ làm đầu tiên)
+			resultWorkTime = workTimeLst.stream().findFirst().orElse(null);
+		}
+		return new InitWkTypeWkTimeOutput(resultWorkType, resultWorkTime);
 	}
 
 }
