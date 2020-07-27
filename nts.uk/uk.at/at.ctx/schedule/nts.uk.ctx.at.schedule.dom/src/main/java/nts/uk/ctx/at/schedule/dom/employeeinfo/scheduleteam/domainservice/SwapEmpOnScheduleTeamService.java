@@ -31,7 +31,8 @@ public class SwapEmpOnScheduleTeamService {
 		List<BelongScheduleTeam> data = lstEmpID.stream()
 				.map(c -> new BelongScheduleTeam(c, scheduleTeam.getWKPGRPID(), scheduleTeam.getScheduleTeamCd()))
 				.collect(Collectors.toList());
-
+	//	 ScheduleTeam da = scheduleTeam.
+		
 		return AtomTask.of(() -> {
 			// require.チームを指定して所属スケジュールチームを削除する( チーム.職場グループID, チーム.コード )
 			require.getSpecifyTeamAndScheduleTeam(scheduleTeam.getWKPGRPID(), scheduleTeam.getScheduleTeamCd().v());
