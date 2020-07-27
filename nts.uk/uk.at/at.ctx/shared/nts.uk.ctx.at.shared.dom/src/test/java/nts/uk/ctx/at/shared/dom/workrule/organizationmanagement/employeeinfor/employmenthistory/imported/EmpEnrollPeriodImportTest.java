@@ -12,7 +12,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 public class EmpEnrollPeriodImportTest {
 	@Test
 	public void getter() {
-		EmpEnrollPeriodImport target = new EmpEnrollPeriodImport("2", new DatePeriod(GeneralDate.today(), GeneralDate.today()), 1);
+		EmpEnrollPeriodImport target = new EmpEnrollPeriodImport("2",
+				new DatePeriod(GeneralDate.today(), GeneralDate.today()), SecondSituation.NONE);
 		NtsAssert.invokeGetters(target);
 	}
 }

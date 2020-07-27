@@ -19,10 +19,10 @@ public class EmpEnrollPeriodImport {
 	private final DatePeriod datePeriod;
 
 	/** 出向状況 (Enum) **/
-	private final int secondedSituation;
+	private final SecondSituation secondedSituation;
 
 	// [C-0] 社員の在籍期間Imported( 社員ID, 期間, 出向状況 )
-	public EmpEnrollPeriodImport(String empID, DatePeriod datePeriod, int secondedSituation) {
+	public EmpEnrollPeriodImport(String empID, DatePeriod datePeriod, SecondSituation secondedSituation) {
 		super();
 		this.empID = empID;
 		this.datePeriod = datePeriod;

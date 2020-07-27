@@ -3,15 +3,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExtBudgetTime;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
 /**
  * 日次の外部予算実績
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.勤務予定.予算管理.外部予算実績
  * @author HieuLt
- *
- *
  */
 
 @AllArgsConstructor
@@ -27,11 +24,8 @@ public class ExtBudgetDaily implements DomainAggregate{
 	@Getter
 	private final GeneralDate ymd;
 	
-	/** 外部予算実績値  **/
+	/**	値- 外部予算実績値  **/
 	@Getter
-	private ExtBudgetActualValue actualValue;
-
-	
-	
+    private ExtBudgetActualValue actualValue;
 	
 }

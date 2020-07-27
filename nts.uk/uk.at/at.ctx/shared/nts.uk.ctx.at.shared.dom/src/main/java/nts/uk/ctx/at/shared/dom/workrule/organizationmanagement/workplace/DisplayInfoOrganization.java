@@ -30,11 +30,23 @@ public class DisplayInfoOrganization {
 	 * [C-1] 職場グループの表示情報を作成する
 	 * @return
 	 */
-	public DisplayInfoOrganization createDisplayInforWorkplaceGroup(WorkplaceGroupImport workplaceGroupImport){
+	public static DisplayInfoOrganization createDisplayInforWorkplaceGroup(WorkplaceGroupImport workplaceGroupImport){
 		return new DisplayInfoOrganization(I18NText.getText("#Com_Workplace"),
 				workplaceGroupImport.getWorkplaceGroupCode(),
 				workplaceGroupImport.getWorkplaceGroupName(),
 				workplaceGroupImport.getWorkplaceGroupName(),
 				workplaceGroupImport.getWorkplaceGroupName());
 	} 
+	/**
+	 *[C-2] 職場の表示情報を作成する		
+	 */
+	public static DisplayInfoOrganization createWorkplaceDisplayInformation(WorkplaceInfo workplaceInfo ){
+		
+		return new DisplayInfoOrganization(
+				I18NText.getText("#Com_WorkplaceGroup"),
+				workplaceInfo.getWorkplaceCd().get(),
+				workplaceInfo.getWorkplaceName().get(),
+				workplaceInfo.getWkpDisplayName().get(),
+				workplaceInfo.getWkpGenericName().get());
+	}
 }

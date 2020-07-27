@@ -29,5 +29,10 @@ public class ScheduleTeam  implements DomainAggregate{
 	@Getter
 	private Optional<ScheduleTeamRemarks> remarks;
 	
+	//[1] 所属する社員を追加する								
+	public BelongScheduleTeam addEmployee(String empId){
+		//return 所属スケジュールチーム( 社員ID, @職場グループID, @コード )																			
+		return new BelongScheduleTeam(empId, this.WKPGRPID, this.scheduleTeamCd);
+	} 
 
 }

@@ -35,7 +35,7 @@ public class DateInformationHelper {
 	}
 
 	public static TargetOrgIdenInfor getTargetOrgIdenInforWorkplaceGroup() {
-		return new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId", "workplaceGroupId");
+		return new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, "workplaceId", "workplaceGroupId");
 
 	}
 
