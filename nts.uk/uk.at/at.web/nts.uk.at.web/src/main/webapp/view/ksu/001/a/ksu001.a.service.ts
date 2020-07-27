@@ -14,7 +14,13 @@ module nts.uk.at.view.ksu001.a.service {
         getDataWkpPattern: "at/schedule/shift/management/shiftpalletorg/getbyWorkplaceId",
         
         // lai start
-        getSendingPeriod: "screen/at/schedule/schedule/start/getSendingPeriod"
+        getSendingPeriod: "screen/at/schedule/schedule/start/getSendingPeriod",
+        
+        getDataStartScreen: "screen/at/schedule/start"
+    }
+    
+    export function getDataStartScreen(param): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataStartScreen, param);
     }
     
     export function getSendingPeriod(obj): JQueryPromise<any> {

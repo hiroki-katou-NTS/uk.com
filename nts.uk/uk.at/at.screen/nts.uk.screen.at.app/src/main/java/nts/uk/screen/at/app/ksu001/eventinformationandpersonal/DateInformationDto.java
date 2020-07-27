@@ -5,6 +5,9 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
+import nts.arc.i18n.I18NResources;
+import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
 
@@ -22,6 +25,8 @@ public class DateInformationDto {
 	public  boolean isHoliday;
 	/** 特定日であるか **/
 	public  boolean isSpecificDay;
+	
+	public boolean isToday;
 	/** 職場行事名称 **/
 	public  String optWorkplaceEventName;
 	/** 会社行事名称 **/
@@ -30,6 +35,9 @@ public class DateInformationDto {
 	public  List<String> listSpecDayNameWorkplace;
 	/** 会社の特定日名称リスト **/
 	public  List<String> listSpecDayNameCompany;
+	
+	public String htmlTooltip;
+	
 	public DateInformationDto(DateInformation domain) {
 		super();
 		this.ymd = domain.getYmd();
@@ -50,6 +58,106 @@ public class DateInformationDto {
 			}
 			return null;
 		}).collect(Collectors.toList());
+		
+		this.isToday = domain.getYmd().equals(GeneralDate.today());
+		
+		if(this.isHoliday || this.isSpecificDay){
+			val htmlTooltip = new StringBuilder();
+			htmlTooltip.append("<table>");
+				htmlTooltip.append("<tr>");
+					htmlTooltip.append("<td>");
+					htmlTooltip.append(I18NText.getText("KSU001_4014"));
+					htmlTooltip.append("</td>");
+		
+					htmlTooltip.append("<td>");
+					htmlTooltip.append(I18NText.getText("KSU001_4018") + " " + this.optCompanyEventName);
+					htmlTooltip.append("</td>");
+				htmlTooltip.append("</tr>");
+				
+				htmlTooltip.append("<tr>");
+					htmlTooltip.append("<td>");
+					htmlTooltip.append(I18NText.getText("KSU001_4015"));
+					htmlTooltip.append("</td>");
+		
+					htmlTooltip.append("<td>");
+					htmlTooltip.append(I18NText.getText("KSU001_4018") + " " + this.optWorkplaceEventName);
+					htmlTooltip.append("</td>");
+				htmlTooltip.append("</tr>");
+				
+			if (this.listSpecDayNameCompany.isEmpty()) {
+				htmlTooltip.append("<tr>");
+					htmlTooltip.append("<td>");
+					htmlTooltip.append(I18NText.getText("KSU001_4016"));
+					htmlTooltip.append("</td>");
+
+					htmlTooltip.append("<td>");
+					htmlTooltip.append(I18NText.getText("KSU001_4018") + " ");
+					htmlTooltip.append("</td>");
+				htmlTooltip.append("</tr>");
+			} else {
+				for (int i = 0; i < this.listSpecDayNameCompany.size(); i++) {
+					if (i == 0) {
+						htmlTooltip.append("<tr>");
+							htmlTooltip.append("<td>");
+							htmlTooltip.append(I18NText.getText("KSU001_4016"));
+							htmlTooltip.append("</td>");
+	
+							htmlTooltip.append("<td>");
+							htmlTooltip.append(I18NText.getText("KSU001_4018") + " " + this.listSpecDayNameCompany.get(0));
+							htmlTooltip.append("</td>");
+						htmlTooltip.append("</tr>");
+					} else {
+						htmlTooltip.append("<tr>");
+							htmlTooltip.append("<td>");
+							htmlTooltip.append("");
+							htmlTooltip.append("</td>");
+	
+							htmlTooltip.append("<td>");
+							htmlTooltip.append(I18NText.getText("KSU001_4018") + " " + this.listSpecDayNameCompany.get(i));
+							htmlTooltip.append("</td>");
+						htmlTooltip.append("</tr>");
+					}
+				}
+			}
+			
+			if (this.listSpecDayNameWorkplace.isEmpty()) {
+				htmlTooltip.append("<tr>");
+					htmlTooltip.append("<td>");
+					htmlTooltip.append(I18NText.getText("KSU001_4017"));
+					htmlTooltip.append("</td>");
+
+					htmlTooltip.append("<td>");
+					htmlTooltip.append(I18NText.getText("KSU001_4018") + " ");
+					htmlTooltip.append("</td>");
+				htmlTooltip.append("</tr>");
+			} else {
+				for (int i = 0; i < this.listSpecDayNameWorkplace.size(); i++) {
+					if (i == 0) {
+						htmlTooltip.append("<tr>");
+							htmlTooltip.append("<td>");
+							htmlTooltip.append(I18NText.getText("KSU001_4017"));
+							htmlTooltip.append("</td>");
+	
+							htmlTooltip.append("<td>");
+							htmlTooltip.append(I18NText.getText("KSU001_4018") + " " + this.listSpecDayNameWorkplace.get(0));
+							htmlTooltip.append("</td>");
+						htmlTooltip.append("</tr>");
+					} else {
+						htmlTooltip.append("<tr>");
+							htmlTooltip.append("<td>");
+							htmlTooltip.append("");
+							htmlTooltip.append("</td>");
+	
+							htmlTooltip.append("<td>");
+							htmlTooltip.append(I18NText.getText("KSU001_4018") + " " + this.listSpecDayNameWorkplace.get(i));
+							htmlTooltip.append("</td>");
+						htmlTooltip.append("</tr>");
+					}
+				}
+			}
+			htmlTooltip.append("</table>");
+			this.htmlTooltip = htmlTooltip.toString();
+		}
 	}	
 	
 	

@@ -4,7 +4,7 @@ module nts.uk.at.view.ksu001.a {
     __viewContext.ready(function() {
         __viewContext.viewModel = {
             viewAB: new ksu001.ab.viewmodel.ScreenModel(),
-            viewAC: new ksu001.q.viewmodel.ScreenModel(),
+            viewAC: new ksu001.ac.viewmodel.ScreenModel(),
             viewA: new ksu001.a.viewmodel.ScreenModel()
         };
         let key = "USER_INFOR";
@@ -27,10 +27,11 @@ module nts.uk.at.view.ksu001.a {
         } 
         
         nts.uk.ui.block.grayout();
-        __viewContext.viewModel.viewA.startKSU001().done(() => {
+        let viewMode = 'time';
+        __viewContext.viewModel.viewA.startPage(viewMode).done(() => {
             __viewContext.bind(__viewContext.viewModel);
             __viewContext.viewModel.viewA.getSettingDisplayWhenStart();
-            
+
             $(window).resize(function() {
                 __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
             });

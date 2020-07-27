@@ -42,11 +42,10 @@ public class ScreenQueryGetInforOfInitStartup {
 
 		// step 4
 		DisplayInforOrganization displayInforOrganization = new DisplayInforOrganization("designation", "code", "name",
-				"showName", "genericTerm");
+				"targetOrganizationName", "genericTerm");
 		
 		return new DataScreenQueryGetInforDto(datePeriod.start(), datePeriod.end(), targetOrgIdenInfor,
 				displayInforOrganization);
-
 	}
 
 }

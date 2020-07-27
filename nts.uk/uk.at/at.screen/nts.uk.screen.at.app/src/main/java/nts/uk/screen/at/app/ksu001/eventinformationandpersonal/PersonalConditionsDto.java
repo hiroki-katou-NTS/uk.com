@@ -4,6 +4,7 @@
 package nts.uk.screen.at.app.ksu001.eventinformationandpersonal;
 
 import lombok.Value;
+import nts.arc.i18n.I18NText;
 import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.PersonalCondition;
 
 /**
@@ -17,7 +18,7 @@ public class PersonalConditionsDto {
 	public String sid; // 社員ID
 	String teamName; // チーム名
 	String rankName; // ランク名
-	Integer licenseClassification; //免許区分 ---> class LicenseClassification
+	String licenseClassification; //免許区分 ---> class LicenseClassification
 	/*
 	 * NURSE(0, "看護師"),
 	 * Associate nurse NURSE_ASSOCIATE(1, "准看護師"),
@@ -27,7 +28,24 @@ public class PersonalConditionsDto {
 		this.sid = domain.getEmpId();
 		this.teamName = domain.getTeamName().isPresent() ? domain.getTeamName().get() : null;
 		this.rankName = domain.getOptRankSymbol().isPresent() ? domain.getOptRankSymbol().get() : null;
-		this.licenseClassification = domain.getOptLicenseClassification().isPresent() ? domain.getOptLicenseClassification().get().value : null;
+		if (domain.getOptLicenseClassification().isPresent()) {
+			switch (domain.getOptLicenseClassification().get().value) {
+			case 0:
+				this.licenseClassification = I18NText.getText("KSU001_4020");
+				break;
+			case 1:
+				this.licenseClassification = I18NText.getText("KSU001_4021");
+				break;
+			case 2:
+				this.licenseClassification = I18NText.getText("KSU001_4022");
+				break;
+			default:
+				this.licenseClassification = "";
+				break;
+			}
+		}else{
+			this.licenseClassification = "";
+		}
 	}
 	
 	

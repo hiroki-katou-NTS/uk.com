@@ -1,3 +1,28 @@
+.header-image-no-event {
+    background-image: url(../image/121.png);
+    background-size: contain;
+    width: 16px;
+    margin: auto;
+    background-repeat: no-repeat;
+}
+
+.header-image-event:hover {
+    background-image: url(../image/120.png);
+    cursor: pointer;
+}
+
+.header-image-event {
+    background-image: url(../image/120.png);
+    background-size: contain;
+    width: 16px;
+    margin: auto;
+    background-repeat: no-repeat;
+}
+
+.x-link {
+    text-align: left;
+}
+
 #tab-1, #tab-2 {
 	height: 525px;
 }
@@ -26,7 +51,7 @@
 }
 
 table th, table td {
-	padding: 5px 5px;
+	padding: 2px 5px;
 }
 
 #functions-area>button {
@@ -356,7 +381,7 @@ table th, table td {
 	height: 20px;
 	width: 20px;
 	left: 2px !important;
-	margin-top: -2px !important
+	margin-top: -4px !important
 }
 
 .mb-5 {
@@ -369,8 +394,16 @@ table th, table td {
 
 tbody a.x-link {
 	color: black !important;
-	text-decoration: none !important;
-	cursor: unset !important;
+}
+
+tbody a.x-link:hover {
+  color: #0D86D1 !important;
+  text-decoration: underline !important;
+  cursor: pointer !important;
+}
+
+.xcell {
+	text-align: center;
 }
 
 #oViewModel>div:FIRST-CHILD {

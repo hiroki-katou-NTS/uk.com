@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.task.parallel.ParallelExceptions.Item;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DataSpecDateAndHolidayDto;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DateInformationDto;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DisplayControlPersonalCondDto;
@@ -22,7 +22,9 @@ import nts.uk.screen.at.app.ksu001.extracttargetemployees.EmployeeInformationDto
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.ExtractTargetEmployeesParam;
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.ScreenQueryExtractTargetEmployees;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforDto;
+import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DisplayInforOrganization;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScreenQueryGetInforOfInitStartup;
+import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.TargetOrgIdenInforDto;
 
 /**
  * @author laitv 初期起動 path:
@@ -40,7 +42,8 @@ public class StartKSU001 {
 	private EventInfoAndPersonalConditionsPeriod eventInfoAndPersonalCondPeriod;
 
 	public StartKSU001Dto getDataStartScreen(StartKSU001Param param) {
-
+		
+		/*
 		// step 1 call ScreenQuery
 		DataScreenQueryGetInforDto resultStep1 = getInforOfInitStartup.getDataInit();
 
@@ -50,7 +53,20 @@ public class StartKSU001 {
 		String workplaceGroupId = resultStep1.targetOrgIdenInfor.workplaceGroupId == null ? null
 				: resultStep1.targetOrgIdenInfor.workplaceGroupId;
 		GeneralDate startDate = resultStep1.startDate;
-		GeneralDate endDate = resultStep1.endDate;
+		GeneralDate endDate = resultStep1.endDate; */
+		String workplaceId = "dea95de1-a462-4028-ad3a-d68b8f180412";
+		String workplaceGroupId = null;
+		GeneralDate startDate = GeneralDate.ymd(2020, 7, 1);
+		GeneralDate endDate =  GeneralDate.ymd(2020, 7, 31);
+		
+		TargetOrgIdenInforDto targetOrgIdenInfor = new TargetOrgIdenInforDto(TargetOrganizationUnit.WORKPLACE.value,
+				"dea95de1-a462-4028-ad3a-d68b8f180412", null);
+
+		DisplayInforOrganization displayInforOrganization = new DisplayInforOrganization("designation", "code", "name",
+				"showName", "genericTerm");
+
+		DataScreenQueryGetInforDto resultStep1 = new DataScreenQueryGetInforDto(startDate, endDate, targetOrgIdenInfor,
+				displayInforOrganization);
 
 		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(endDate, workplaceId, workplaceGroupId);
 		List<EmployeeInformationImport> resultStep2 = extractTargetEmployees.getListEmp(param2);
@@ -61,6 +77,7 @@ public class StartKSU001 {
 				workplaceGroupId, listSid);
 		DataSpecDateAndHolidayDto resultStep3 = eventInfoAndPersonalCondPeriod.get(param3);
 
+		
 		if (param.modeDisplay == ModeDisPlay.SHIFT.value) {
 			// step5.1
 

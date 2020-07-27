@@ -12,7 +12,28 @@
 				nts.uk.shr.com.time.TimeWithDayAttr
 				nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ItemGridHeight
 			</com:ValidatorScript>
-
+			<style>
+				.header-image-no-event {
+					background-image: url(../image/120.png);
+					background-size: contain;
+					width: 16px;
+					height: 16px;
+					background-repeat: no-repeat;
+				}
+				
+				.header-image-event:hover {
+					background-image: url(../image/121.png);
+					cursor: pointer;
+				}
+				
+				.header-image-event {
+					background-image: url(../image/121.png);
+					background-size: contain;
+					width: 16px;
+					height: 16px;
+					background-repeat: no-repeat;
+				}
+			</style>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
@@ -300,7 +321,7 @@
 						</div>
 					</div>
 				</div>
-
+				
 				<div id="ccgcomponent_contents">
 					<div class="left-content">
 						<div id="ccgcomponent"></div>
