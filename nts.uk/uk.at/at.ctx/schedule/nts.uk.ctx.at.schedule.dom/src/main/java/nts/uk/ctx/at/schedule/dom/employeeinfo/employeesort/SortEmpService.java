@@ -188,7 +188,7 @@ public class SortEmpService {
 		 * @param empIDs
 		 * @return
 		 */
-		Optional<BelongScheduleTeam> get( List<String> empIDs);
+		List<BelongScheduleTeam> get( List<String> empIDs);
 
 		/**
 		 * [R-3] 社員ランクを取得する //Lấy "Employee Rank" 社員ランクRepository.*get

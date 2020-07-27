@@ -25,6 +25,4 @@ public class EmploymentPeriodImported {
 	/**給与区分 **/
 	private final Optional<SalarySegment> otpSalarySegment; 
 	
-	
-	
 }

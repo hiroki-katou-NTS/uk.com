@@ -1,6 +1,8 @@
 package nts.uk.ctx.bs.employee.pubimp.employment.history;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -25,8 +27,13 @@ public class EmploymentHistoryPublishImpl implements EmploymentHistoryPublish{
 		Require require = new Require();
 		String companyId = AppContexts.user().companyId();
 		List<EmploymentHistoryTerm> data = require.getEmploymentHistoryTerm(companyId, lstEmpID, datePeriod);
-		//--- Đéo map đc QA ---http://192.168.50.4:3000/issues/110700#note-2
-		return null;
+		List<EmploymentPeriodExported> result  = data.stream().map(c -> new EmploymentPeriodExported(
+				c.getEmploymentHistoryItem().getEmployeeId(),
+				c.getDatePeriod(),
+				c.getEmploymentHistoryItem().getEmploymentCode().v(),
+			Optional.ofNullable(new Integer	(c.getEmploymentHistoryItem().getSalarySegment().value)))).collect(Collectors.toList());
+		
+		return result;
 	}
 	
 	class Require {

@@ -24,7 +24,7 @@ public class ShiftPalletsComTest {
 	public void create_shiftPalletsCom_0page_fail() {
 
 		NtsAssert.businessException("Msg_1615", () -> {
-			new ShiftPalletsCom(
+			ShiftPalletsCom.create(
 					"000000000000-0001", // dummy
 					0, 
 					new ShiftPallet(
@@ -46,7 +46,7 @@ public class ShiftPalletsComTest {
 	public void create_shiftPalletsCom_11pages_fail() {
 
 		NtsAssert.businessException("Msg_1615", () -> {
-			new ShiftPalletsCom(
+			ShiftPalletsCom.create(
 					"000000000000-0001", // dummy
 					11, 
 					new ShiftPallet(
@@ -67,7 +67,7 @@ public class ShiftPalletsComTest {
 	@Test
 	public void create_shiftPalletsCom_sort() {
 
-		ShiftPalletsCom target = new ShiftPalletsCom(
+		ShiftPalletsCom target = ShiftPalletsCom.create(
 					"000000000000-0001", // dummy
 					1, // dummy
 					new ShiftPallet(

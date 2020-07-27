@@ -71,6 +71,7 @@ public class ScreenQueryExtractTargetEmployees {
 		
 	}
 	
+<<<<<<< HEAD:nts.uk/uk.at/at.screen/nts.uk.screen.at.app/src/main/java/nts/uk/screen/at/app/ksu001/extracttargetemployees/ScreenQueryExtractTargetEmployees.java
 	@AllArgsConstructor
 	private static class RequireImpl implements SortEmpService.Require {
 		
@@ -89,33 +90,46 @@ public class ScreenQueryExtractTargetEmployees {
 
 
 		@Override
+=======
+	@RequiredArgsConstructor
+	private static class RequireImpl implements SortEmpService.Require {@Override
+>>>>>>> pj/at/dev/team_C/Schedule_Ver1_1:nts.uk/uk.at/at.screen/nts.uk.screen.at.app/src/main/java/nts/uk/screen/at/app/ksu001/ExtractTargetEmployees.java
 		public Optional<SortSetting> get() {
-			return sortSettingRepo.get(AppContexts.user().companyId());
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 		@Override
 		public List<BelongScheduleTeam> get(List<String> empIDs) {
+<<<<<<< HEAD:nts.uk/uk.at/at.screen/nts.uk.screen.at.app/src/main/java/nts/uk/screen/at/app/ksu001/extracttargetemployees/ScreenQueryExtractTargetEmployees.java
 			return belongScheduleTeamRepo.get(AppContexts.user().companyId(), empIDs);
+=======
+			// TODO Auto-generated method stub
+			return null;
+>>>>>>> pj/at/dev/team_C/Schedule_Ver1_1:nts.uk/uk.at/at.screen/nts.uk.screen.at.app/src/main/java/nts/uk/screen/at/app/ksu001/ExtractTargetEmployees.java
 		}
 
 		@Override
 		public List<EmployeeRank> getAll(List<String> lstSID) {
-			return employeeRankRepo.getAll(lstSID);
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 		@Override
 		public Optional<RankPriority> getRankPriority(String companyId) {
-			return rankRepo.getRankPriority(companyId);
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 		@Override
 		public List<EmployeePosition> getPositionEmp(GeneralDate ymd, List<String> lstEmp) {
-			List<EmployeePosition> data = syJobTitleAdapter.findSJobHistByListSIdV2(lstEmp, ymd);
-			return data;
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 		@Override
 		public List<PositionImport> getCompanyPosition(GeneralDate ymd) {
+<<<<<<< HEAD:nts.uk/uk.at/at.screen/nts.uk.screen.at.app/src/main/java/nts/uk/screen/at/app/ksu001/extracttargetemployees/ScreenQueryExtractTargetEmployees.java
 			List<PositionImport> data = syJobTitleAdapter.findAll(AppContexts.user().companyId(), ymd);
 			return data;
 		}
@@ -126,5 +140,17 @@ public class ScreenQueryExtractTargetEmployees {
 			return data;
 		}
 
+=======
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<EmpClassifiImport> get(GeneralDate ymd, List<String> lstEmpId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+>>>>>>> pj/at/dev/team_C/Schedule_Ver1_1:nts.uk/uk.at/at.screen/nts.uk.screen.at.app/src/main/java/nts/uk/screen/at/app/ksu001/ExtractTargetEmployees.java
 	}
 }
