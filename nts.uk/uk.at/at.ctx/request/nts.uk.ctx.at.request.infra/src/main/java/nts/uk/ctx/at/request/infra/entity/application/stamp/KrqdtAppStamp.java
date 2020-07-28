@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.infra.entity.application.stamp;
 
 
+
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -16,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Table(name="KRQDT_APP_STAMP")
 public class KrqdtAppStamp extends ContractUkJpaEntity{
 	@EmbeddedId
-	KrqdtAppStampPK krqdtAppStampPK;
+	public KrqdtAppStampPK krqdtAppStampPK;
 	
 	@Column(name="START_TIME")
 	public Integer startTime;
