@@ -23,7 +23,8 @@ public class CreateScheduleMasterCache {
 	//社員の在職状態一覧
 	// Tạm thời không sử dụng cái này, chuyển sang dùng 社員の予定管理状態一覧
 	private final Map<String, List<EmploymentInfoImported>> mapEmploymentStatus;
-	//労働条件情報 : 労働条件
+	//労働条件情報 : 労働条件 
+	//労働条件一覧
 	private final List<WorkCondItemDto> listWorkingConItem;
 	//社員の短時間勤務履歴一覧 
 	//社員の短時間勤務一覧 theo EA mới

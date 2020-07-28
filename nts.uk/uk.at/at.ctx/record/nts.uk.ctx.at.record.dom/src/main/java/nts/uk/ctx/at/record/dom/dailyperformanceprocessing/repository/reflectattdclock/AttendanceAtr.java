@@ -16,6 +16,14 @@ public enum AttendanceAtr {
 	/**
 	 * 退勤
 	 */
-	LEAVING_WORK;
+	LEAVING_WORK,
+	/**
+	 * 外出
+	 */
+	GO_OUT,
+	/**
+	 * 臨時
+	 */
+	TEMPORARY;
 	
 }
