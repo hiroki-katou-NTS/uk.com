@@ -28,9 +28,11 @@ public class GetEmpCanReferBySpecOrganizationService {
 		List<String> result = new ArrayList<>();
 		switch (targetOrgIdenInfor.getUnit()){
 		case WORKPLACE_GROUP :
-			//this.
-		}
-		
+			result =  getByWorkPlaceGroup(require, referenceDate, epmloyeeId, targetOrgIdenInfor.getWorkplaceGroupId().get());
+			break;
+		default ://WORKPLACE			
+			result =  getByWorkPlace(require, referenceDate, epmloyeeId, targetOrgIdenInfor.getWorkplaceId().get());
+		}	
 		return result;
 	}
 	/**
@@ -41,7 +43,7 @@ public class GetEmpCanReferBySpecOrganizationService {
 	 * @param workplaceGroupId
 	 * @return List<社員ID>
 	 */
-	private List<String> getByWorkPlaceGroup(Require require,GeneralDate referenceDate , String epmloyeeId ,String workplaceGroupId ){
+	private static List<String> getByWorkPlaceGroup(Require require,GeneralDate referenceDate , String epmloyeeId ,String workplaceGroupId ){
 		List<String> result = new ArrayList<>();
 		//[R-1] 職場グループで参照可能な所属社員を取得する		
 		//QA Adapter tên hai hàm đang không giống nhau
@@ -49,8 +51,7 @@ public class GetEmpCanReferBySpecOrganizationService {
 		List<String> lstEmpId = require.getReferableEmp(referenceDate, epmloyeeId, Arrays.asList(workplaceGroupId));
 		if(lstEmpId.isEmpty()){
 			//	$社員IDリスト = require.社員を並び替える( 社員IDリスト, システム区分.就業, null, 基準日, null )				
-			// List<String> sortEmployee(List<String> lstmployeeId, int sysAtr ,Integer sortOrderNo, GeneralDate referenceDate , int nameType);
-			List<String> result1 = require.sortEmployee(lstEmpId, 0, null, referenceDate, null);
+			 result = require.sortEmployee(lstEmpId, 0, null, referenceDate, null);
 		}
 		return result;
 	}
@@ -61,8 +62,48 @@ public class GetEmpCanReferBySpecOrganizationService {
 	 * @param workplaceGroupId
 	 * @return List<社員ID>
 	 */
-	private List<String> getByWorkPlace(Require require,GeneralDate referenceDate , String epmloyeeId ,String workplaceGroupId ){
+	private static List<String> getByWorkPlace(Require require,GeneralDate referenceDate , String epmloyeeId ,String workplaceId ){
 		List<String> result = new ArrayList<>();
+		//-------------------------Tao QA param đang đòi truyền List workPlaceId;
+		
+		/*$検索条件 = 社員検索の規定条件( 基準日: 基準日, システム区分: 就業													
+				, 検索参照範囲: 参照可能範囲すべて													
+				, 職場で絞り込む: true, 職場ID一覧: list:職場ID )*/
+		RegulationInfoEmpQuery query = new RegulationInfoEmpQuery(
+				referenceDate,
+				0,
+				null,
+				null,
+				null,
+				null,
+				true,
+				Arrays.asList(workplaceId),
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				0,
+				null,
+				null,
+				null);
+			//$ロールID = require.ロールIDを取得する( 年月日, 社員ID )
+			String roleId = require.getRoleID(referenceDate, epmloyeeId);
+			//return require.社員を検索する( $検索条件, $ロールID )	
+			result = require.searchEmployee(query, roleId);	
 		return result;
 	}
 	
@@ -93,7 +134,7 @@ public class GetEmpCanReferBySpecOrganizationService {
 		 * [R-3] ロールIDを取得する		 
 		 * @return
 		 */
-		String getRoleID();
+		String getRoleID(GeneralDate date , String employId);
 		
 		/**
 		 * [R-4] 社員を検索する	
@@ -101,7 +142,7 @@ public class GetEmpCanReferBySpecOrganizationService {
 		 * @param roleId --- ・いまのロール：ロールID
 		 * @return ・並べ替えた社員リスト：List＜社員ID＞
 		 */
-		List<String> searEmployee(WorkingConditionsEmpSearch workingConditionsEmpSearch , String roleId );
+		List<String> searchEmployee(RegulationInfoEmpQuery regulationInfoEmpQuery , String roleId );
 	}
 	
 	
