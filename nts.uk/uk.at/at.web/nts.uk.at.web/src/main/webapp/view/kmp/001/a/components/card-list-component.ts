@@ -4,22 +4,38 @@ module nts.uk.at.view.kmp001.a {
 	import share = nts.uk.at.view.kmp001;
 
 	const templateCardList = `
-	<div>
-		<div
-			data-bind="ntsFormLabel: {
-				constraint: $component.constraint, 
-				required: true, 
-				text: $i18n('KMP001_22') }">
+	<!-- ko if: ko.unwrap(model.stampCardDto).length === 0 -->
+			<div
+				data-bind="ntsFormLabel: {
+					constraint: $component.constraint, 
+					required: true, 
+					text: $i18n('KMP001_22') }">
+			</div>
+			<input 
+				data-bind="ntsTextEditor: {
+					value: ko.observable(''),
+					constraint: $component.constraint,
+					enabled: true
+			}"/>		
+		<!-- /ko -->
+		<!-- ko if: ko.unwrap(model.stampCardDto).length !== 0 -->
+		<div data-bind="foreach: model.stampCardDto">
+			<!-- ko if: $index() === 0 -->
+				<div
+					data-bind="ntsFormLabel: {
+						constraint: $component.constraint, 
+						required: true, 
+						text: $i18n('KMP001_22') }">
+				</div>
+				<input 
+					data-bind="ntsTextEditor: {
+						value: stampNumber,
+						constraint: $component.constraint,
+						enabled: true
+				}"/>
+			<!-- /ko -->
 		</div>
-		<input 
-			data-bind="ntsTextEditor: {
-				value: ko.observable(''),
-				constraint: $component.constraint,
-				enabled: true, 
-				required: true
-			}"/>	
-		</div>
-	</div>	
+		<!-- /ko -->
 	<table id="stampcard-list"></table>
 	`;
 

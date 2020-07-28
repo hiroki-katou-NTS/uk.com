@@ -58,14 +58,12 @@ module nts.uk.at.view.kmp001 {
 			const model = this;
 
 			if (params) {
-				model.stampCardId(params.stampCardId)
+				//model.stampCardId(params.stampCardId);
 				model.stampNumber(params.stampNumber);
 				model.checked(params.checked);
 			}
 		}
 	}
-
-
 
 	export class Model {
 		code: KnockoutObservable<string> = ko.observable('');
@@ -79,6 +77,7 @@ module nts.uk.at.view.kmp001 {
 		pid: KnockoutObservable<string> = ko.observable('');
 		retiredDate: KnockoutObservable<Date | null> = ko.observable(null);
 		stampCardDto: KnockoutObservableArray<StampCard> = ko.observableArray([]);
+		
 		workplaceId: KnockoutObservable<string> = ko.observable('');
 		workplaceName: KnockoutObservable<string> = ko.observable('');
 
@@ -114,10 +113,10 @@ module nts.uk.at.view.kmp001 {
 		}
 		
 		
-		public addNewStampCard() {
+		public addNewStampCard() {	
 			const model = this;
 			
-			model.stampCardDto.push(new StampCard({ checked: false, stampCardId: "", stampNumber: "" }));
+			model.stampCardDto.unshift(new StampCard({ checked: false, stampCardId: "", stampNumber: "" }));
 			
 			model.selectedStampCardIndex(model.stampCardDto.length - 1);
 		}

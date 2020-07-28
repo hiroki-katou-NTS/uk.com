@@ -209,9 +209,10 @@ module nts.uk.at.view.kmp001.a {
 		addNew() {
 			const vm = this;
 
-			vm.mode("new");
-			
-			vm.model.addNewStampCard();
+			if (ko.unwrap(vm.model.code) != '' ) {
+				vm.mode("new");
+				vm.model.addNewStampCard();
+			}
 		}
 
 		deleteStampCard() {
