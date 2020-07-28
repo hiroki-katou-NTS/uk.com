@@ -23,12 +23,13 @@
 			<com:scriptfile path="/view/kaf_ref/000/a/component5/kaf000.a.component5.js" />
 			<com:scriptfile path="/view/kaf_ref/000/a/component6/kaf000.a.component6.js" />
 			<com:scriptfile path="/view/kaf_ref/000/a/component7/kaf000.a.component7.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/kaf000.a.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/007/shr/kaf007.shr.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/007/a/kaf007.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" data-bind="click: register">#{i18n.getText('KAF007_54')}</button>
+				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KAF007_54')}</button>
 				<div data-bind="component: { name: 'kaf000-a-component7', 
 											params: {
 												appDispInfoStartupOutput: appDispInfoStartupOutput

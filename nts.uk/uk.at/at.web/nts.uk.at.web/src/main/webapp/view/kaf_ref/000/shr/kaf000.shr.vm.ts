@@ -3,24 +3,24 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
         appID: string;
         prePostAtr: KnockoutObservable<number>;
         employeeIDLst: KnockoutObservableArray<string>;
-        appType: number
-        appDate: KnockoutObservable<any>;
+        appType: number;
+        appDate: KnockoutObservable<string>;
         opAppReason: KnockoutObservable<string>;
         opAppStandardReasonCD: KnockoutObservable<number>;
         opReversionReason: KnockoutObservable<string>;
-        constructor(appID: string, prePostAtr: number, employeeIDLst: Array<string>, appType: number, appDate: any, 
-            opAppReason: string, opAppStandardReasonCD: number, opReversionReason?: string) {
-            this.appID = appID;
-            this.prePostAtr = ko.observable(prePostAtr);
-            this.employeeIDLst = ko.observableArray(employeeIDLst);
+        opAppStartDate: KnockoutObservable<string>;
+        opAppEndDate: KnockoutObservable<string>;
+        constructor(appType: number) {
+            this.appID = null;
+            this.prePostAtr = ko.observable(null);
+            this.employeeIDLst = ko.observableArray([]);
             this.appType = appType;
-            this.appDate = ko.observable(appDate);
-            this.opAppReason = ko.observable(opAppReason);
-            this.opAppStandardReasonCD = ko.observable(opAppStandardReasonCD);
-            this.opReversionReason = ko.observable(opReversionReason);
-            this.appDate.subscribe((value) => {
-                this.appDate(moment(value).format('YYYY/MM/DD'));    
-            });
+            this.appDate = ko.observable(null);
+            this.opAppReason = ko.observable(null);
+            this.opAppStandardReasonCD = ko.observable(null);
+            this.opReversionReason = ko.observable(null);
+            this.opAppStartDate = ko.observable(null);
+            this.opAppEndDate = ko.observable(null);
         }        
     }       
     
@@ -60,6 +60,20 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
             DENIAL = 5, //否認
             PASTAPP = 99, //過去申請 
         };
+        
+        export enum AppType {
+            OVER_TIME_APPLICATION = 0, // 残業申請
+            ABSENCE_APPLICATION = 1, // 休暇申請
+            WORK_CHANGE_APPLICATION = 2, // 勤務変更申請
+            BUSINESS_TRIP_APPLICATION = 3, // 出張申請
+            GO_RETURN_DIRECTLY_APPLICATION = 4, // 直行直帰申請
+            LEAVE_TIME_APPLICATION = 6, // 休出時間申請
+            STAMP_APPLICATION = 7, // 打刻申請
+            ANNUAL_HOLIDAY_APPLICATION = 8, // 時間休暇申請
+            EARLY_LEAVE_CANCEL_APPLICATION = 9, // 遅刻早退取消申請
+            COMPLEMENT_LEAVE_APPLICATION = 10, // 振休振出申請
+            OPTIONAL_ITEM_APPLICATION = 15, // 任意項目申請    
+        }
     }
     
     export class CommonProcess {
@@ -131,6 +145,68 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
             // {3}締め切り期限日
             let deadlinePart = vm.$i18n('KAF000_40', [value.appDispInfoWithDateOutput.opAppDeadline]);
             vm.deadline(prePart + postPart + deadlinePart);    
+        }
+        
+        public static checkUsage(
+            mode: boolean, // true: new, false: detail 
+            element: string, // element select to set error
+            vm: any
+        ) {
+            vm.$errors("clear", [element]);
+            let appDispInfoStartupOutput = vm.appDispInfoStartupOutput(),
+                useDivision = appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
+                recordDate = appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.recordDate,
+                empHistImport = appDispInfoStartupOutput.appDispInfoWithDateOutput.empHistImport,
+                opErrorFlag = appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
+                msgID = "";
+            if(mode && useDivision == 0) {
+                vm.$errors(element, "Msg_323");
+                vm.$dialog.error({ messageId: "Msg_323" }).then(() => {
+                    if(recordDate == 0) {
+                        vm.$jump("com", "view/ccg/008/a/index.xhtml");    
+                    }
+                });   
+                return false;
+            }
+            
+            if(empHistImport==null) {
+                vm.$errors(element, "Msg_426");
+                vm.$dialog.error({ messageId: "Msg_426" }).then(() => {
+                    if(mode) {
+                        vm.$jump("com", "view/ccg/008/a/index.xhtml");    
+                    } else {
+                        vm.$jump("com", "view/cmm/045/a/index.xhtml");    
+                    }
+                });
+                return false; 
+            }
+            
+            
+            if(_.isNull(opErrorFlag)) {
+                return true;    
+            }
+            switch(opErrorFlag){
+                case 1:
+                    msgID = "Msg_324";
+                    break;
+                case 2: 
+                    msgID = "Msg_238";
+                    break;
+                case 3:
+                    msgID = "Msg_237";
+                    break;
+                default: 
+                    break;
+            }  
+            if(_.isEmpty(msgID)) { 
+                return true;
+            }
+            vm.$errors(element, msgID);
+            vm.$dialog.error({ messageId: msgID }).then(() => {
+                if(recordDate == 0) {
+                    vm.$jump("com", "view/ccg/008/a/index.xhtml");    
+                }    
+            });
         }
     }
 }

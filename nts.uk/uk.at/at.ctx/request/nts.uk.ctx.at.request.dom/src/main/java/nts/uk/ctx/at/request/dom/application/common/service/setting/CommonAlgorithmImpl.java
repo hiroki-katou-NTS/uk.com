@@ -14,7 +14,6 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -50,7 +49,6 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentServ
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
-import nts.uk.ctx.at.request.dom.setting.UseDivision;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
@@ -202,20 +200,26 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		String employeeID = appDispInfoNoDateOutput.getEmployeeInfoLst().stream().findFirst().get().getSid();
 		ApprovalFunctionSet approvalFunctionSet = this.getApprovalFunctionSet(companyID, employeeID, baseDate, appType);
 		// 取得したドメインモデル「申請承認機能設定．申請利用設定．利用区分」をチェックする
-		if (mode && approvalFunctionSet.getAppUseSetLst().get(0).getUseDivision() == UseDivision.NOT_USE) {
+		// xử lý trên UI
+		/*if (mode && approvalFunctionSet.getAppUseSetLst().get(0).getUseDivision() == UseDivision.NOT_USE) {
 			// エラーメッセージ(Msg_323)を返す
 			throw new BusinessException("Msg_323", String.valueOf(appDispInfoNoDateOutput.getApplicationSetting().getRecordDate().value));
-		}
+		}*/
 		// 使用可能な就業時間帯を取得する
 		List<WorkTimeSetting> workTimeLst = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID, baseDate);
 		// 社員所属雇用履歴を取得する
 		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID, employeeID, baseDate);
-		if(empHistImport==null || empHistImport.getEmploymentCode()==null){
+		// xử lý trên UI
+		/*if(empHistImport==null || empHistImport.getEmploymentCode()==null){
 			// エラーメッセージ(Msg_426)を返す
 			throw new BusinessException("Msg_426");
-		}
+		}*/
 		// 雇用別申請承認設定を取得する
-		Optional<AppEmploymentSet> opAppEmploymentSet = appEmploymentSetRepository.findByCompanyIDAndEmploymentCD(companyID, empHistImport.getEmploymentCode());
+		String employmentCD = null;
+		if(empHistImport!=null && empHistImport.getEmploymentCode()!=null){
+			employmentCD = empHistImport.getEmploymentCode();
+		}
+		Optional<AppEmploymentSet> opAppEmploymentSet = appEmploymentSetRepository.findByCompanyIDAndEmploymentCD(companyID, employmentCD);
 	
 		// INPUT．「新規詳細モード」を確認する
 		Optional<List<ApprovalPhaseStateImport_New>> opListApprovalPhaseState = Optional.empty();
