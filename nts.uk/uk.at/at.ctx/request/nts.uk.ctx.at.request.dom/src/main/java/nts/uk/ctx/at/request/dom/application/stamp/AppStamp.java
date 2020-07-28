@@ -4,6 +4,8 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.Application;
 /**
  * Refactor4
@@ -13,6 +15,8 @@ import nts.uk.ctx.at.request.dom.application.Application;
  */
 //打刻申請
 @AllArgsConstructor
+@NoArgsConstructor
+@Setter
 @Getter
 public class AppStamp extends Application {
 //	時刻
@@ -27,6 +31,22 @@ public class AppStamp extends Application {
 //	申請内容
 	public String getAppContent() {
 		return null;
+	}
+//	public AppStamp(
+//			List<TimeStampApp> listTimeStampApp,
+//			List<DestinationTimeApp> listDestinationTimeApp,
+//			List<TimeStampAppOther> listTimeStampAppOther,
+//			List<DestinationTimeZoneApp> listDestinationTimeZoneApp
+//			) {
+//		
+//		this.listTimeStampApp = listTimeStampApp;
+//		this.listDestinationTimeApp = listDestinationTimeApp;
+//		this.listTimeStampAppOther = listTimeStampAppOther;
+//		this.listTimeStampAppOther = listTimeStampAppOther;
+//		
+//	}
+	public AppStamp(Application application) {
+		super(application);
 	}
 	
 }

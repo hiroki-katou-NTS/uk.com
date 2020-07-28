@@ -16,4 +16,7 @@ public interface AppStampRepository {
 	public void updateStamp(AppStamp appStamp);
 	
 	public void delete(String companyID, String appID);
+	
+	
+	
 }
