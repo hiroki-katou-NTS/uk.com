@@ -46,7 +46,7 @@ module nts.uk.at.view.kdl005.a {
                 };
 
                 service.getEmployeeList(self.kdl005Data).done(function(data: any) {
-                    // if(data.employeeBasicInfo.length > 1) {
+                    if(data.employeeBasicInfo.length > 1) {
                         self.selectedCode.subscribe(function(value) {
                             let itemData: any = _.find(data.employeeBasicInfo, ['employeeCode', value]);
                             self.onSelectEmployee(
@@ -98,21 +98,21 @@ module nts.uk.at.view.kdl005.a {
                         });
 
                         $("#date-fixed-table").ntsFixedTable({ height: 155 });
-                    // } else if(data.employeeBasicInfo.length == 1) {
-                    //     self.employeeInfo(nts.uk.resource.getText("KDL009_25", [data.employeeBasicInfo[0].employeeCode, data.employeeBasicInfo[0].businessName]));
+                    } else if(data.employeeBasicInfo.length == 1) {
+                        self.employeeInfo(nts.uk.resource.getText("KDL009_25", [data.employeeBasicInfo[0].employeeCode, data.employeeBasicInfo[0].businessName]));
 
-                    //     //data.employeeBasicInfo[0].employeeId
-                    //     self.onSelectEmployee(
-                    //         data.employeeBasicInfo[0].employeeId,
-                    //         self.kdl005Data.baseDate,
-                    //         data.employeeBasicInfo[0].employeeCode,
-                    //         data.employeeBasicInfo[0].businessName,
-                    //     );
-                    //     $("#date-fixed-table").ntsFixedTable({ height: 155 });
-                    // } else {
-                    //     self.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
-                    //     $("#date-fixed-table").ntsFixedTable({ height: 155 });
-                    // }
+                        //data.employeeBasicInfo[0].employeeId
+                        self.onSelectEmployee(
+                            data.employeeBasicInfo[0].employeeId,
+                            self.kdl005Data.baseDate,
+                            data.employeeBasicInfo[0].employeeCode,
+                            data.employeeBasicInfo[0].businessName,
+                        );
+                        $("#date-fixed-table").ntsFixedTable({ height: 155 });
+                    } else {
+                        self.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
+                        $("#date-fixed-table").ntsFixedTable({ height: 155 });
+                    }
                 });
             }
 
