@@ -463,7 +463,7 @@ module nts.uk.at.view.kdp004.a {
 				setShared("infoEmpToScreenC", {
 					employeeId: loginInfo ? loginInfo.employeeId : vm.$user.employeeId,
 					employeeCode: loginInfo ? loginInfo.employeeCode : vm.$user.employeeCode,
-					employeeName: loginInfo.employeeName,
+					employeeName: loginInfo ? loginInfo.employeeName : self.loginInfo.employeeName,
 					mode: Mode.Personal,
 				});
 
