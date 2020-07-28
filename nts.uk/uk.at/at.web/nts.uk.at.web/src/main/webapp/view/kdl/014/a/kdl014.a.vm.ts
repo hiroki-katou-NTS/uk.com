@@ -55,7 +55,7 @@ module nts.uk.at.view.kdl014.a {
                     listEmp: self.paramFromParent.listEmp
                 };
                 service.getInfo(param).done(function(data) {
-                    _.orderBy(data, ['name', 'stampDateTime'], ['asc', 'asc'];
+                    _.orderBy(data, ['name', 'stampDateTime'], ['asc', 'asc']);
                     console.log(data);
                     self.dataServer = data.listEmps;
                     self.display = data.display;
