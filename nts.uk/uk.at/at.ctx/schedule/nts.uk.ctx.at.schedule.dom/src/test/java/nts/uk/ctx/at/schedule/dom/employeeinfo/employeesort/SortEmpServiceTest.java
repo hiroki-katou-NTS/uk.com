@@ -441,7 +441,7 @@ public class SortEmpServiceTest {
 	public void testSortBySpecSortingOrder() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.SORT_ASC, SortOrder.CLASSIFY));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.SORT_ASC, SortOrder.RANK));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 		new Expectations() {
 			{
