@@ -148,23 +148,25 @@ module nts.uk.at.view.kdl009.a {
                         let occurrenceDays1 = "";
                         let occurrenceDays2Top = "";
                         let occurrenceDays2Bot = "";
-                        if(item.recHisData != null) {
-                            if(!item.recHisData.recDate.unknownDate) {
-                                if(item.recHisData.dataAtr == 3) {
-                                    issueDate = nts.uk.resource.getText("KDL009_13", [nts.uk.time.applyFormat("Short_YMDW", [item.recHisData.recDate.dayoffDate])]);
+                        if (item.recHisData != null) {
+                            if (!item.recHisData.recDate.unknownDate) {
+                                if (item.recHisData.dataAtr == 3) {
+                                    issueDate = nts.uk.resource.getText("KDL009_13", [
+                                        (nts.uk.time as any).applyFormat("Short_YMDW", [item.recHisData.recDate.dayoffDate])
+                                    ]);
                                 } else {
-                                    issueDate = nts.uk.time.applyFormat("Short_YMDW", [item.recHisData.recDate.dayoffDate]);
+                                    issueDate = (nts.uk.time as any).applyFormat("Short_YMDW", [item.recHisData.recDate.dayoffDate]);
                                 }
                             } else {
                                 issueDate = "";
                             }
 
-                            if(item.recHisData.occurrenceDays == 0.5) {
+                            if (item.recHisData.occurrenceDays == 0.5) {
                                 occurrenceDays1 = nts.uk.resource.getText("KDL009_14", [item.recHisData.occurrenceDays]);
                             }
 
-                            if(item.recHisData.expirationDate != null) {
-                                expirationDate = nts.uk.time.applyFormat("Short_YMDW", [item.recHisData.expirationDate]);
+                            if (item.recHisData.expirationDate != null) {
+                                expirationDate = (nts.uk.time as any).applyFormat("Short_YMDW", [item.recHisData.expirationDate]);
                             } else {
                                 expirationDate = "";
                             }
@@ -174,10 +176,12 @@ module nts.uk.at.view.kdl009.a {
                             if(item.absHisData.absDate.unknownDate) {
                                 holidayDateTop = nts.uk.resource.getText("KDL009_11");
                             } else {
-                                if(item.absHisData.createAtr == 3) {
-                                    holidayDateTop = nts.uk.resource.getText("KDL009_13", [nts.uk.time.applyFormat("Short_YMDW", [item.absHisData.absDate.dayoffDate])]);
+                                if (item.absHisData.createAtr == 3) {
+                                    holidayDateTop = nts.uk.resource.getText("KDL009_13", [
+                                        (nts.uk.time as any).applyFormat("Short_YMDW", [item.absHisData.absDate.dayoffDate])
+                                    ]);
                                 } else {
-                                    holidayDateTop = nts.uk.time.applyFormat("Short_YMDW", [item.absHisData.absDate.dayoffDate]);
+                                    holidayDateTop = (nts.uk.time as any).applyFormat("Short_YMDW", [item.absHisData.absDate.dayoffDate]);
                                 }
                             }
 
@@ -209,6 +213,7 @@ module nts.uk.at.view.kdl009.a {
                         self.dataItems.push(temp);
                     });
                 }
+                console.log(self.dataItems());
             }
 
             bindSummaryData(data: any) {
