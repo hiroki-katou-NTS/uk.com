@@ -8,14 +8,15 @@ module nts.uk.at.view.kmp001.a {
 			<div
 				data-bind="ntsFormLabel: {
 					constraint: $component.constraint, 
-					required: true, 
+					required: true,
 					text: $i18n('KMP001_22') }">
 			</div>
-			<input 
+			<input class="ip-stamp-card"
 				data-bind="ntsTextEditor: {
 					value: ko.observable(''),
 					constraint: $component.constraint,
-					enabled: true
+					enabled: true,
+					width: 200
 			}"/>		
 		<!-- /ko -->
 		<!-- ko if: ko.unwrap(model.stampCardDto).length !== 0 -->
@@ -27,11 +28,12 @@ module nts.uk.at.view.kmp001.a {
 						required: true, 
 						text: $i18n('KMP001_22') }">
 				</div>
-				<input 
+				<input class="ip-stamp-card"
 					data-bind="ntsTextEditor: {
 						value: stampNumber,
 						constraint: $component.constraint,
-						enabled: true
+						enabled: true,
+						width: 200
 				}"/>
 			<!-- /ko -->
 		</div>

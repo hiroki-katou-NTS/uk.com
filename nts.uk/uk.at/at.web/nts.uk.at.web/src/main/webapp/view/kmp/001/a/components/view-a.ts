@@ -60,6 +60,7 @@ module nts.uk.at.view.kmp001.a {
 						vm.$ajax(KMP001A_API.GET_INFOMAITON_EMPLOYEE + "/" + ko.toJS(current.employeeId) + "/" + ko.toJS(current.affiliationId) + "/" + ko.toJS(vm.baseDate))
 							.then((data: IModel) => {
 								vm.model.update(ko.toJS(data));
+								vm.model.employeeId(current.employeeId);
 							});
 					}
 					vm.mode("update");
@@ -184,7 +185,7 @@ module nts.uk.at.view.kmp001.a {
 		addNew() {
 			const vm = this;
 
-			if (ko.unwrap(vm.model.code) != '' ) {
+			if (ko.unwrap(vm.model.code) != '') {
 				vm.mode("new");
 				vm.model.addNewStampCard();
 			}
@@ -195,6 +196,7 @@ module nts.uk.at.view.kmp001.a {
 				model: IModel = ko.toJS(vm.model),
 				checkeds = model.stampCardDto.filter((f) => f.checked),
 				index = _.map(ko.unwrap(vm.employees), m => m.code).indexOf(model.code);
+				debugger;
 
 			if (checkeds != null) {
 				const command = { employeeId: model.employeeId, cardNumbers: checkeds.map(m => m.stampNumber), cardId: checkeds.map(m => m.stampCardId) };
@@ -202,29 +204,45 @@ module nts.uk.at.view.kmp001.a {
 				vm.$ajax(KMP001A_API.DELETE, command)
 					.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 					.then(() => vm.reloadData(index))
-					.then(() => vm.model.code.valueHasMutated());
+					.then(() => vm.model.code.valueHasMutated())
+					.always(() => vm.$blockui("clear"));
 			}
 		}
-		
+
 		addStampCard() {
-			const vm = this;
-			
-			if(ko.unwrap(vm.model.code) != ''){
-				const models = ko.toJS(vm.model);
-				const stamps: share.StampCard = models.stampCardDto[0];
-				const command = { employeeId: ko.toJS(vm.model.employeeId), cardNumber: stamps };
-				debugger;
-				if (ko.toJS(vm.mode) == 'add'){
-					vm.$blockui("invisible");
-					
-					/*vm.$ajax(KMP001A_API.ADD, ))*/
+			const vm = this,
+			model: IModel = ko.toJS(vm.model),
+			index = _.map(ko.unwrap(vm.employees), m => m.code).indexOf(model.code);;
+
+			if (ko.unwrap(vm.model.code) != '') {
+				const stamps: share.IStampCard = model.stampCardDto[0];
+				const command = { employeeId: ko.toJS(model.employeeId), cardNumber: ko.toJS(stamps.stampNumber) };
+
+				if (command.cardNumber == '') {
+					vm.$dialog.info({ messageId: "Msg_1679" });
+				} else {
+					if (ko.toJS(vm.mode) == 'update') {
+						vm.$blockui("invisible");
+
+						vm.$ajax(KMP001A_API.UPDATE, command)
+							.then(() => vm.$dialog.info({ messageId: 'Msg_15'}))
+							.always(() => vm.$blockui("clear"));
+					}else {
+						vm.$blockui("invisible");
+						
+						vm.$ajax(KMP001A_API.ADD, command)
+						.then(() => vm.$dialog.info({ messageId: 'Msg_15'}))
+						.then(() => vm.reloadData(index))
+						.then(() => vm.model.code.valueHasMutated())
+						.always(() => vm.$blockui("clear"));
+					}
 				}
 			}
 		}
 
 		reloadData(selectedIndex: number = 0) {
 			const vm = this;
-
+			
 			vm.$blockui("invisible")
 			vm.$ajax(KMP001A_API.GET_STATUS_SETTING, ko.toJS(vm.employeeIds))
 				.then((data: IEmployeeId[]) => {
