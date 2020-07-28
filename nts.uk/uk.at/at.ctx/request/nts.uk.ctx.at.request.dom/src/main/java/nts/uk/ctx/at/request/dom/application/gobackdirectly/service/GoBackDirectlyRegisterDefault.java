@@ -224,8 +224,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 				application.getAppID(),
 				application.getPrePostAtr(),
 				application.getVersion(),
-				goBackDirectly.getDataWork().get().getWorkType().getWorkType(),
-				goBackDirectly.getDataWork().get().getWorkTime().get().getWorkTime());
+				goBackDirectly.getDataWork().isPresent() ? goBackDirectly.getDataWork().get().getWorkTypeCode().v() : null,
+				goBackDirectly.getDataWork().isPresent() ? (goBackDirectly.getDataWork().get().getWorkTimeCode() != null ? goBackDirectly.getDataWork().get().getWorkTimeCode().v() : null) : null);
 	}
 	/**
 	 * 共通登録前のエラーチェック処理
@@ -255,7 +255,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		GoBackDirectAtr check = goBackDirectCheckNew(goBackDirectly);
 		if (check == GoBackDirectAtr.NOT) {
 //			確認メッセージリストに（Msg_338）を追加する
-			lstConfirm.add(new ConfirmMsgOutput("MSG_338", Collections.emptyList()));
+			lstConfirm.add(new ConfirmMsgOutput("Msg_338", Collections.emptyList()));
 		}
 		return lstConfirm;
 	}

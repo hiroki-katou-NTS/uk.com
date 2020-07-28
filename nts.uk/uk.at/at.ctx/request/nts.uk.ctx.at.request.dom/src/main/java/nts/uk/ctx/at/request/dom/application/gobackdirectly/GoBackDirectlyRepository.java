@@ -7,8 +7,12 @@ import java.util.Optional;
  *
  */
 public interface GoBackDirectlyRepository {
+	
 	Optional<GoBackDirectly> find(String companyId, String appId);
+	
 	void add (GoBackDirectly domain);
+	
 	void update(GoBackDirectly domain);
+	
 	void remove(GoBackDirectly domain);
 }

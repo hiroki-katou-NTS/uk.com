@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 
 
 @Getter
@@ -20,7 +21,7 @@ public class GoBackDirectly extends Application {
 	// 勤務を変更する
 	private Optional<EnumConstant> isChangedWork = Optional.empty();
 	// 勤務情報
-	private Optional<DataWork> dataWork = Optional.empty();
+	private Optional<WorkInformation> dataWork = Optional.empty();
 
 	public GoBackDirectly() {
 		

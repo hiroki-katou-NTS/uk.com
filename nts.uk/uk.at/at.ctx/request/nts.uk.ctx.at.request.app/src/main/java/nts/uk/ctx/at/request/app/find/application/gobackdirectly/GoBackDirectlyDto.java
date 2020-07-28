@@ -4,11 +4,10 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.DataWork;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 
 //直行直帰申請
 @AllArgsConstructor
@@ -21,7 +20,7 @@ public class GoBackDirectlyDto extends ApplicationDto {
 	// 勤務を変更する
 	public Integer isChangedWork;
 	// 勤務情報
-	public DataWorkDto dataWork;
+	public WorkInformationDto dataWork;
 
 	public static GoBackDirectlyDto convertDto(GoBackDirectly goBackAplication) {
 		GoBackDirectlyDto result = new GoBackDirectlyDto();
@@ -31,7 +30,7 @@ public class GoBackDirectlyDto extends ApplicationDto {
 			result.isChangedWork = goBackAplication.getIsChangedWork().get().getValue();
 		}
 		if (goBackAplication.getDataWork().isPresent()) {
-			result.dataWork = DataWorkDto.fromDomain(goBackAplication.getDataWork().get());
+			result.dataWork = WorkInformationDto.fromDomain(goBackAplication.getDataWork().get());
 		}
 		return result;
 	}
@@ -46,8 +45,8 @@ public class GoBackDirectlyDto extends ApplicationDto {
 		result.setStraightDistinction(new EnumConstant(straightDistinction, "", ""));
 		result.setStraightLine(new EnumConstant(straightLine, "", ""));
 		result.setIsChangedWork(isChange);
-		Optional<DataWork> dataWorkSet = Optional.ofNullable(null);
-		if (Optional.of(dataWork).isPresent()) {
+		Optional<WorkInformation> dataWorkSet = Optional.ofNullable(null);
+		if (dataWork != null) {
 			dataWorkSet = Optional.of(dataWork.toDomain());
 		}
 		if (this.getAppID() != null) {

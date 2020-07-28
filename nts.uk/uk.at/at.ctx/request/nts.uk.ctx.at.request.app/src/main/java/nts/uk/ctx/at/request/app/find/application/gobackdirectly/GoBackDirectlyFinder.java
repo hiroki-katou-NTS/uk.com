@@ -272,8 +272,7 @@ public class GoBackDirectlyFinder {
 			employeeId = Optional.of(paramStart.getApplicantEmployeeID());
 		}
 		
-		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(companyId, ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, paramStart.getApplicantList(), 
-				Collections.emptyList(), true, Optional.empty(), Optional.empty());
+		AppDispInfoStartupOutput appDispInfoStartupOutput = paramStart.getAppDispInfoStartupOutput().toDomain();
 		
 		return InforGoBackCommonDirectDto.fromDomain(goBackDirectService.getDataAlgorithm(companyId, Optional.ofNullable(null), employeeId, appDispInfoStartupOutput));
 	}

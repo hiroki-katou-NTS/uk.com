@@ -19,16 +19,16 @@ import nts.uk.ctx.at.request.dom.application.ApplicationDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.DataWork;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkType;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.infra.entity.application.gobackdirectly.KrqdtGoBackDirectly;
 import nts.uk.ctx.at.request.infra.entity.application.gobackdirectly.KrqdtGoBackDirectlyPK;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkTime;
 
 /**
  * 
@@ -132,13 +132,13 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 		}
 		if (Optional.ofNullable(res.getString("WORK_TYPE_CD")).isPresent()
 				|| Optional.ofNullable(res.getString("WORK_TIME_CD")).isPresent()) {
-			DataWork dataWork = new DataWork();
+			WorkInformation dataWork = new WorkInformation(null, "");
 			goBackDirectly.setDataWork(Optional.of(dataWork));
 			if (Optional.ofNullable(res.getString("WORK_TYPE_CD")).isPresent()) {
-				dataWork.setWorkType(new InforWorkType(String.valueOf(res.getString("WORK_TYPE_CD")), null));
+				dataWork.setWorkTypeCode(new WorkTypeCode(res.getString("WORK_TYPE_CD")));
 			}
-			if (Optional.ofNullable(res.getString("WORK_TYPE_CD")).isPresent()) {
-				dataWork.setWorkTime(Optional.of(new InforWorkTime(String.valueOf(res.getString("WORK_TIME_CD")), null)));
+			if (Optional.ofNullable(res.getString("WORK_TIME_CD")).isPresent()) {
+				dataWork.setWorkTimeCode(new WorkTimeCode(res.getString("WORK_TIME_CD")));
 			}
 		}
 
@@ -150,10 +150,10 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 		krqdtGoBackDirectly.krqdtGoBackDirectlyPK = new KrqdtGoBackDirectlyPK(AppContexts.user().companyId(),
 				domain.getAppID());
 		if (domain.getDataWork().isPresent()) {
-			DataWork dataWork = domain.getDataWork().get();
-			krqdtGoBackDirectly.workTypeCD = dataWork.getWorkType().getWorkType();
-			if (dataWork.getWorkTime().isPresent()) {
-				krqdtGoBackDirectly.workTimeCD = dataWork.getWorkTime().get().getWorkTime();
+			WorkInformation dataWork = domain.getDataWork().get();
+			krqdtGoBackDirectly.workTypeCD = dataWork.getWorkTypeCode().v();
+			if (dataWork.getWorkTimeCode() != null) {
+				krqdtGoBackDirectly.workTimeCD = dataWork.getWorkTimeCode().v();
 			}
 		}
 		if (domain.getIsChangedWork().isPresent()) {

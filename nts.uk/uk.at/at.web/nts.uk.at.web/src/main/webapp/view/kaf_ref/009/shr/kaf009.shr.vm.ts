@@ -34,12 +34,14 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
                 } else {
                     vm.model.checkbox3( null );
                 } 
-                vm.model.workTypeCode = goBackApp.dataWork.workType.workType;
-                vm.model.workTypeName = goBackApp.dataWork.workType.nameWorkType;
-                if (goBackApp.dataWork.workTime.workTime) {
-                    vm.model.workTimeCode = goBackApp.dataWork.workTime.workTime;
-                    vm.model.workTimeName = goBackApp.dataWork.workTime.nameWorkTime;
+                vm.model.workTypeCode(goBackApp.dataWork.workType);
+                vm.model.workTypeName("Chua xu ly");
+                if (!_.isEmpty(ko.toJS(vm.dataFetch().workTime))) {
+                    vm.model.workTimeCode(goBackApp.dataWork.workTime);
+                    vm.model.workTimeName("Chua xu ly");
+                    
                 }
+                
                 
                 
             } else {
@@ -58,19 +60,15 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
                 
                 vm.model.checkbox3( true );
                 //            this.model.checkbox3(this.dataFetch().goBackReflect().reflectApplication == 3);
-                if ( ko.toJS( vm.dataFetch().workType ) ) {
-                    vm.model.workTypeCode( vm.dataFetch().workType().workType );
-                    vm.model.workTypeName( vm.dataFetch().workType().nameWorkType );
+                if (!_.isEmpty(ko.toJS(vm.dataFetch().workType))) {
+                    vm.model.workTypeCode( vm.dataFetch().workType());
+                    vm.model.workTypeName( "Chua xu ly");
     
-                } else {
-                    vm.model.workTypeCode( '001' );
                 }
-                if ( ko.toJS( vm.dataFetch().workTime ) ) {
-                    vm.model.workTimeCode( vm.dataFetch().workTime().workTime );
-                    vm.model.workTimeName( vm.dataFetch().workTime().nameWorkTime );
+                if (!_.isEmpty(ko.toJS(vm.dataFetch().workTime))) {
+                    vm.model.workTimeCode( vm.dataFetch().workTime());
+                    vm.model.workTimeName( "Chua xu ly" );
     
-                } else {
-                    vm.model.workTimeCode( '001' );
                 }
             }
         }
