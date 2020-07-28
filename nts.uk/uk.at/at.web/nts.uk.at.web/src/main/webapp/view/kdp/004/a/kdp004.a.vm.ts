@@ -447,6 +447,7 @@ module nts.uk.at.view.kdp004.a {
 				setShared("infoEmpToScreenB", {
 					employeeId: vm.$user.employeeId,
 					employeeCode: vm.$user.employeeCode,
+					employeeName:self.loginInfo.employeeName,
 					mode: Mode.Personal,
 				});
 
@@ -463,6 +464,7 @@ module nts.uk.at.view.kdp004.a {
 				setShared("infoEmpToScreenC", {
 					employeeId: vm.$user.employeeId,
 					employeeCode: vm.$user.employeeCode,
+					employeeName:self.loginInfo.employeeName,
 					mode: Mode.Personal,
 				});
 

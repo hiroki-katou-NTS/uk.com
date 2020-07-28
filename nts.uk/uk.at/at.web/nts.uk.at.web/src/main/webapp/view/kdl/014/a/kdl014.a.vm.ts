@@ -17,6 +17,7 @@ module nts.uk.at.view.kdl014.a {
         
         paramFromParent: ParamFromParent;
         display: boolean;
+        height: number;
         
         constructor(){
             let self = this;
@@ -60,6 +61,9 @@ module nts.uk.at.view.kdl014.a {
                     self.display = data.display;
             
                     if (self.paramFromParent.mode == 0) {
+                        if (_.every(self.dataServer, ['locationInfo', null])) {
+                            self.display = false;
+                        }
                         self.selectedItem(self.employeeInputList()[0].id);
                         self.bindComponent();
                     } else {
@@ -70,6 +74,9 @@ module nts.uk.at.view.kdl014.a {
                             }
                             tg.push(new EmpInfomation(item));
                         });
+                        if (_.every(self.dataServer, ['locationInfo', null])) {
+                            self.display = false;
+                        }
                         self.empInfomationList(tg);
                     }
                     self.bindingGrid();
@@ -106,15 +113,14 @@ module nts.uk.at.view.kdl014.a {
         
         bindingGrid(){
             let self = this;
-            
             if (self.paramFromParent.mode == 1) {
                 self.columns = ko.observableArray([
                     { headerText: getText("KDL014_11"), key: 'code', hidden: true },
                     { headerText: "<div style='text-align: center;'>"+getText("KDL014_12")+ "</div>" , key: 'name', width: 150},
                     { headerText: "<div style='text-align: center;'>"+getText("KDL014_13")+ "</div>" , key: 'dateShow', width: 115},
                     { headerText: "<div style='text-align: center;'>"+getText("KDL014_14")+ "</div>" , key: 'time', width: 80},
-                    { headerText: "<div style='text-align: center;'>"+getText("KDL014_15")+ "</div>" , key: 'stampAtr', width: 70},
-                    { headerText: "<div style='text-align: center;'>"+getText("KDL014_16")+ "</div>" , key: 'workLocationName', width: 200},
+                    { headerText: "<div style='text-align: center;'>"+getText("KDL014_15")+ "</div>" , key: 'stampAtr', width: 90},
+                    { headerText: "<div style='text-align: center;'>"+getText("KDL014_16")+ "</div>" , key: 'workLocationName', width: 180 },
                     { headerText: "<div style='text-align: center;'>"+getText("KDL014_17")+ "</div>" , key: 'locationInfo', width: 50, hidden: !self.display }
                 ]);
             } else if (self.paramFromParent.mode == 0) {
@@ -124,7 +130,7 @@ module nts.uk.at.view.kdl014.a {
                     { headerText: "<div style='text-align: center;'>" + getText("KDL014_13") + "</div>", key: 'dateShow', width: 115 },
                     { headerText: "<div style='text-align: center;'>" + getText("KDL014_14") + "</div>", key: 'time', width: 80 },
                     { headerText: "<div style='text-align: center;'>" + getText("KDL014_15") + "</div>", key: 'stampAtr', width: 90 },
-                    { headerText: "<div style='text-align: center;'>" + getText("KDL014_16") + "</div>", key: 'workLocationName', width: 333},
+                    { headerText: "<div style='text-align: center;'>" + getText("KDL014_16") + "</div>", key: 'workLocationName', width: 283},
                     { headerText: "<div style='text-align: center;'>" + getText("KDL014_17") + "</div>", key: 'locationInfo', width: 50, hidden: !self.display }
                 ]);
             }
@@ -172,12 +178,13 @@ module nts.uk.at.view.kdl014.a {
             self.stampDateTime = new Date().toString();
             self.date = param.date;
             self.time = param.time;
+            param.stampAtr = param.stampAtr.trim();
             
             if (param.stampAtr === '出勤' || param.stampAtr === '入門' || param.stampAtr === '応援開始'
-                || param.stampAtr === '応援出勤' || param.stampAtr === '臨時出勤' || param.stampAtr === '臨時退勤') {
+                || param.stampAtr === '応援出勤' || param.stampAtr === '臨時出勤') {
                 self.stampAtr = `<div style="text-align: left">` + param.stampAtr + '</div>';
 
-            } else if (param.stampAtr === '退勤' || param.stampAtr === '退門' || param.stampAtr === '応援終了') {
+            } else if (param.stampAtr === '退勤' || param.stampAtr === '退門' || param.stampAtr === '応援終了' || param.stampAtr === '臨時退勤') {
                 self.stampAtr = `<div style="text-align: right">` + param.stampAtr + '</div>';
 
             } else {

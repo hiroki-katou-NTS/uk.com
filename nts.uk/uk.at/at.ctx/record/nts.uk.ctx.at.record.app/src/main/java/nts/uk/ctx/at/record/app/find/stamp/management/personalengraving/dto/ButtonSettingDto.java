@@ -159,78 +159,78 @@ public class ButtonSettingDto {
 //			return 2;
 //		}
 		
-		// 10
-		if (this.changeClockArt == ChangeClockArt.OVER_TIME.value && this.changeCalArt == ChangeCalArt.NONE.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.btnReservationArt == ReservationArt.NONE.value) {
-			return 1;
-		}
-		
-		// 11
-		if (this.changeClockArt == ChangeClockArt.BRARK.value && this.changeCalArt == ChangeCalArt.NONE.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.btnReservationArt == ReservationArt.NONE.value) {
-			return 2;
-		}
-		
-		// 12
-		if (this.changeClockArt == ChangeClockArt.TEMPORARY_WORK.value && this.changeCalArt == ChangeCalArt.NONE.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.btnReservationArt == ReservationArt.NONE.value) {
-			return 1;
-		}
-		
-		// 13
-		if (this.changeClockArt == ChangeClockArt.TEMPORARY_LEAVING.value
-				&& this.changeCalArt == ChangeCalArt.NONE.value && this.setPreClockArt == SetPreClockArt.NONE.value
-				&& this.changeHalfDay == false && this.btnReservationArt == ReservationArt.NONE.value) {
-			return 2;
-		}
-		
-		// 14
-		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.NONE.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.btnReservationArt == ReservationArt.NONE.value) {
-			return 1;
-		}
-		
-		// 15
-		if (this.changeClockArt == ChangeClockArt.END_OF_SUPPORT.value && this.changeCalArt == ChangeCalArt.NONE.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.btnReservationArt == ReservationArt.NONE.value) {
-			return 2;
-		}
-		
-		// 16
-		if (this.changeClockArt == ChangeClockArt.SUPPORT.value && this.changeCalArt == ChangeCalArt.NONE.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.btnReservationArt == ReservationArt.NONE.value) {
-			return 1;
-		}
-		
-		// 17
-		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.EARLY_APPEARANCE.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.btnReservationArt == ReservationArt.NONE.value) {
-			return 1;
-		}
-		
-		// 18
-		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.BRARK.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.btnReservationArt == ReservationArt.NONE.value) {
-			return 1;
-		}
-		
-		// 19
-		if (this.btnReservationArt == ReservationArt.RESERVATION.value) {
-			return 0;
-		}
-		
-		// 20
-		if (this.btnReservationArt == ReservationArt.CANCEL_RESERVATION.value) {
-			return 0;
-		}
+//		// 10
+//		if (this.changeClockArt == ChangeClockArt.OVER_TIME.value && this.changeCalArt == ChangeCalArt.NONE.value
+//				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
+//				&& this.btnReservationArt == ReservationArt.NONE.value) {
+//			return 1;
+//		}
+//		
+//		// 11
+//		if (this.changeClockArt == ChangeClockArt.BRARK.value && this.changeCalArt == ChangeCalArt.NONE.value
+//				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
+//				&& this.btnReservationArt == ReservationArt.NONE.value) {
+//			return 2;
+//		}
+//		
+//		// 12
+//		if (this.changeClockArt == ChangeClockArt.TEMPORARY_WORK.value && this.changeCalArt == ChangeCalArt.NONE.value
+//				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
+//				&& this.btnReservationArt == ReservationArt.NONE.value) {
+//			return 1;
+//		}
+//		
+//		// 13
+//		if (this.changeClockArt == ChangeClockArt.TEMPORARY_LEAVING.value
+//				&& this.changeCalArt == ChangeCalArt.NONE.value && this.setPreClockArt == SetPreClockArt.NONE.value
+//				&& this.changeHalfDay == false && this.btnReservationArt == ReservationArt.NONE.value) {
+//			return 2;
+//		}
+//		
+//		// 14
+//		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.NONE.value
+//				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
+//				&& this.btnReservationArt == ReservationArt.NONE.value) {
+//			return 1;
+//		}
+//		
+//		// 15
+//		if (this.changeClockArt == ChangeClockArt.END_OF_SUPPORT.value && this.changeCalArt == ChangeCalArt.NONE.value
+//				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
+//				&& this.btnReservationArt == ReservationArt.NONE.value) {
+//			return 2;
+//		}
+//		
+//		// 16
+//		if (this.changeClockArt == ChangeClockArt.SUPPORT.value && this.changeCalArt == ChangeCalArt.NONE.value
+//				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
+//				&& this.btnReservationArt == ReservationArt.NONE.value) {
+//			return 1;
+//		}
+//		
+//		// 17
+//		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.EARLY_APPEARANCE.value
+//				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
+//				&& this.btnReservationArt == ReservationArt.NONE.value) {
+//			return 1;
+//		}
+//		
+//		// 18
+//		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.BRARK.value
+//				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
+//				&& this.btnReservationArt == ReservationArt.NONE.value) {
+//			return 1;
+//		}
+//		
+//		// 19
+//		if (this.btnReservationArt == ReservationArt.RESERVATION.value) {
+//			return 0;
+//		}
+//		
+//		// 20
+//		if (this.btnReservationArt == ReservationArt.CANCEL_RESERVATION.value) {
+//			return 0;
+//		}
 
 		return null;
 	}
