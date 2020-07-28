@@ -141,7 +141,7 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 
 		@Override
 		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
-			return this.stampCardRepository.getLstStampCardBySidAndContractCd(AppContexts.user().companyCode(), sid);
+			return this.stampCardRepository.getLstStampCardBySidAndContractCd(AppContexts.user().contractCode(), sid);
 		}
 
 		@Override
@@ -166,8 +166,8 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 		}
 		
 		@Override
-		public Optional<Stamp> get(String contractCode, String stampNumber) {
-			return this.stampDakokuRepo.get(contractCode, new StampNumber(stampNumber));
+		public Optional<StampCard> getByCardNoAndContractCode(String stampNumber, String contractCode) {
+			return this.stampCardRepository.getByCardNoAndContractCode(stampNumber, contractCode);
 		}
 
 	}

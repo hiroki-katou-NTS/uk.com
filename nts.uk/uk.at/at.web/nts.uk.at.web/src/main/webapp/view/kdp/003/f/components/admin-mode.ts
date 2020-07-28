@@ -1,18 +1,19 @@
 /// <reference path='../../../../../lib/nittsu/viewcontext.d.ts' />
 
-module nts.uk.kdp003.f {
+module nts.uk.at.kdp003.f {
 	const adminModeTemplate = `
 	<!-- ko with: data -->
 	<tr>
 		<td data-bind="i18n: 'KDP003_3'"></td>
 		<td>
-			<!-- ko if: ko.unwrap($component.listCompany).length > 1 -->
+			<!-- ko if: ko.unwrap(listCompany).length > 1 -->
 				<!-- ko if: ko.unwrap(params.companyDesignation) === true -->
 					<input tabindex="1" id="company-code"
 						data-bind="ntsTextEditor: {
 							name: $component.$i18n('KDP003_3'),
 							constraint: 'CompanyCode',
 							value: model.companyCode,
+							required: true,
 							option: {
 								width: '100px',
 								textmode: 'text'
@@ -22,9 +23,9 @@ module nts.uk.kdp003.f {
 				<!-- ko if: ko.unwrap(params.companyDesignation) !== true -->
 				<div tabindex="1" id="company-code-select"
 					data-bind="ntsComboBox: {
-						width: '350px',
+						width: '370px',
 						name: $component.$i18n('KDP003_3'),
-						options: $component.listCompany,
+						options: listCompany,
 						visibleItemsCount: 5,
 						value: model.companyId,
 						optionsValue: 'companyId',
@@ -38,7 +39,7 @@ module nts.uk.kdp003.f {
 					}"></div>
 				<!-- /ko -->
 			<!-- /ko -->
-			<!-- ko if: ko.unwrap($component.listCompany).length === 1 -->
+			<!-- ko if: ko.unwrap(listCompany).length === 1 -->
 			<div data-bind="text: model.companyCode() + '&nbsp;' + model.companyName()"></div>
 			<!-- /ko -->
 		</td>
@@ -53,7 +54,7 @@ module nts.uk.kdp003.f {
 					constraint: 'EmployeeCode',
 					value: model.employeeCode,
 					option: {
-						width: '200px',
+						width: '220px',
 						textmode: 'text'
 					}
 				}" />
@@ -68,7 +69,7 @@ module nts.uk.kdp003.f {
 					required: true,
 					value: model.password,
 					option: {										
-						width: '330px',
+						width: '350px',
 						textmode: 'password'
 					}
 				}" />
@@ -76,95 +77,13 @@ module nts.uk.kdp003.f {
 	</tr>
 	<!-- /ko -->`;
 
-	const KDP003F_AMIN_MODE_API = {
-		COMPANIES: '/ctx/sys/gateway/kdp/login/getLogginSetting'
-	};
-
 	@component({
 		name: 'kdp-003-f-admin-mode',
 		template: adminModeTemplate
 	})
-	export class Kdp003FLoginWithAdminModeCoponent extends ko.ViewModel {
-		listCompany: KnockoutObservableArray<Kdp003FCompanyItem> = ko.observableArray([]);
-
-		constructor(public data: { model: Kdp003FModel; params: Kdp003FAdminModeParam; }) {
+	export class LoginWithAdminModeCoponent extends ko.ViewModel {
+		constructor(public data: { model: Model; params: AdminModeParam; listCompany: KnockoutObservableArray<CompanyItem>; }) {
 			super();
-		}
-
-		created() {
-			const vm = this;
-			const { data } = vm;
-			const { model, params } = data;
-
-			if (params.companyDesignation) {
-				model.companyCode
-					.subscribe((code: string) => {
-						const dataSources: Kdp003FCompanyItem[] = ko.toJS(vm.listCompany);
-
-						if (dataSources.length) {
-							const exist = _.find(dataSources, (item: Kdp003FCompanyItem) => item.companyCode === code);
-
-							if (exist) {
-								// update companyId by subscribe companyCode
-								model.companyId(exist.companyId);
-								model.companyName(exist.companyName);
-							} else {
-								model.companyId('');
-								model.companyName('');
-							}
-						}
-
-					});
-			} else {
-				model.companyId
-					.subscribe((id: string) => {
-						const dataSources: Kdp003FCompanyItem[] = ko.toJS(vm.listCompany);
-
-						if (dataSources.length) {
-							const exist = _.find(dataSources, (item: Kdp003FCompanyItem) => item.companyId === id);
-
-							if (exist) {
-								// update companyCode by subscribe companyId
-								model.companyCode(exist.companyCode);
-								model.companyName(exist.companyName);
-							}
-						}
-					});
-			}
-
-			vm.$ajax(KDP003F_AMIN_MODE_API.COMPANIES)
-				.done((data: Kdp003FCompanyItem[]) => {
-					if (params.companyDesignation) {
-						const companyId = ko.toJS(model.companyId);
-						const exist: Kdp003FCompanyItem = _.find(data, (c) => c.companyId === companyId);
-
-						vm.listCompany(data);
-
-						if (exist) {
-							if (!ko.unwrap(model.companyCode)) {
-								model.companyCode(exist.companyCode);
-							}
-						} else {
-							vm.$dialog
-								.error({ messageId: 'Msg_1527' })
-								.then(() => vm.$window.close());
-						}
-					} else {
-						const exist: Kdp003FCompanyItem = _.first(data);
-
-						if (exist) {
-							vm.listCompany(data);
-
-							if (!ko.unwrap(model.companyId)) {
-								model.companyId(exist.companyId);
-							}
-						} else {
-							vm.$dialog
-								.error({ messageId: 'Msg_1527' })
-								.then(() => vm.$window.close());
-						}
-					}
-				});
 		}
 	}
 }

@@ -1,5 +1,5 @@
 import { $, obj, auth } from '@app/utils';
-import { Vue, VueConstructor } from '@app/provider';
+import { moment, Vue, VueConstructor } from '@app/provider';
 
 import { $dialog } from '@app/plugins/dialog';
 
@@ -195,6 +195,13 @@ const WEB_APP_NAME = {
                 xhr.send(opt.data);
             });
         };
+
+        fetch({ pg: 'com', url: '/server/time/now', method: 'post' })
+            .then((time: string) => {
+                Object.defineProperty(vue, '$sdt', {
+                    value: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
+                });
+            });
 
         vue.mixin({
             beforeCreate() {

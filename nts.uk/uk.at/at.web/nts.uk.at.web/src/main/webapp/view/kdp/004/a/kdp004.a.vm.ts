@@ -30,7 +30,7 @@ module nts.uk.at.view.kdp004.a {
 			retry: number = 0;
 			fingerAuthCkb: KnockoutObservable<boolean> = ko.observable(false);
 			selectedMsg: KnockoutObservable<string> = ko.observable('Msg_301');
-			listCompany = [];
+			listCompany: KnockoutObservableArray<any> = ko.observableArray([]);
 			constructor() {
 				let self = this;
 
@@ -61,7 +61,7 @@ module nts.uk.at.view.kdp004.a {
 				}).always(() => {
 					service.getLogginSetting().done((res) => {
 
-						self.listCompany = res;
+						self.listCompany(res);
 					});
 
 				});
@@ -71,7 +71,7 @@ module nts.uk.at.view.kdp004.a {
 			showButton() {
 				let self = this;
 				if (!self.isUsed()) {
-					if (self.listCompany.length > 0) {
+					if (self.listCompany().length > 0) {
 						return ButtonDisplayMode.ShowHistory;
 					} else {
 						return ButtonDisplayMode.NoShow;
@@ -104,7 +104,7 @@ module nts.uk.at.view.kdp004.a {
 							block.grayout();
 							service.startPage()
 								.done((res: any) => {
-									if (!res.stampSetting || !res.stampResultDisplay) {
+									if (!res.stampSetting || !res.stampResultDisplay || !res.stampSetting.pageLayouts.length) {
 										self.errorMessage(self.getErrorNotUsed(1));
 										self.isUsed(false);
 										dfd.resolve();
@@ -150,8 +150,8 @@ module nts.uk.at.view.kdp004.a {
 				self.openDialogF({
 					mode: 'admin'
 				}).done((loginResult) => {
-					if (!loginResult) {
-						self.errorMessage(getMessage("Msg_1647"));
+					if (!loginResult || !loginResult.result) {
+						self.errorMessage(getMessage(!loginResult ? "Msg_1647" : loginResult.msgErrorId));
 						dfd.resolve();
 						return;
 					}
@@ -217,7 +217,7 @@ module nts.uk.at.view.kdp004.a {
 			public openDialogK(): JQueryPromise<any> {
 				let vm = new ko.ViewModel();
 				let dfd = $.Deferred<any>();
-				vm.$window.modal('at', '/view/kdp/003/k/index.xhtml').then((selectedWP) => {
+				vm.$window.modal('at', '/view/kdp/003/k/index.xhtml', { multiSelect: true }).then((selectedWP) => {
 					if (selectedWP) {
 						dfd.resolve(selectedWP.selectedId);
 					}
@@ -273,7 +273,7 @@ module nts.uk.at.view.kdp004.a {
 									if (redirect === "loginPass") {
 										return self.openDialogF({
 											mode: 'fingerVein',
-											company: { id: vm.$user.companyId, code: self.loginInfo.companyCode, name: self.loginInfo.companyCode },
+											companyId: vm.$user.companyId,
 											employee: { id: vm.$user.employeeId, code: self.loginInfo.employeeCode, name: self.loginInfo.employeeName },
 											passwordRequired: true
 										});
@@ -344,18 +344,20 @@ module nts.uk.at.view.kdp004.a {
 					oha: '../../share/voice/0_oha.mp3',
 					otsu: '../../share/voice/1_otsu.mp3'
 				}
-				const audio: HTMLAudioElement = document.createElement('audio');
-				const source: HTMLSourceElement = document.createElement('source');
+
+				let source = '';
 
 				if (audioType === 1) {
-					source.src = url.oha;
+					source = url.oha;
 				}
 
 				if (audioType === 2) {
-					source.src = url.otsu;
+					source = url.otsu;
 				}
-				audio.append(source);
-				audio.play();
+				if (source) {
+					let audio = new Audio(source);
+					audio.play();
+				}
 			}
 
 			checkHis(self: ScreenModel) {
@@ -369,9 +371,10 @@ module nts.uk.at.view.kdp004.a {
 
 			settingUser(self: ScreenModel) {
 				self.openDialogF({
-					mode: 'admin'
+					mode: 'admin',
+					companyId: self.loginInfo.companyId
 				}).done((loginResult) => {
-					if (loginResult) {
+					if (loginResult && loginResult.result) {
 						loginResult.em.selectedWP = self.loginInfo ? self.loginInfo.selectedWP : null;
 						self.loginInfo = loginResult.em;
 						self.openDialogK().done((result) => {
@@ -382,11 +385,16 @@ module nts.uk.at.view.kdp004.a {
 								});
 							} else {
 								location.reload();
-								}
-							
+							}
+
 
 
 						});
+					} else {
+						if (loginResult.msgErrorId == "Msg_1527") {
+							self.isUsed(false);
+							self.errorMessage(getMessage("Msg_1527"));
+						}
 					}
 				});
 			}
@@ -439,6 +447,7 @@ module nts.uk.at.view.kdp004.a {
 				setShared("infoEmpToScreenB", {
 					employeeId: vm.$user.employeeId,
 					employeeCode: vm.$user.employeeCode,
+					employeeName:self.loginInfo.employeeName,
 					mode: Mode.Personal,
 				});
 
@@ -455,6 +464,7 @@ module nts.uk.at.view.kdp004.a {
 				setShared("infoEmpToScreenC", {
 					employeeId: vm.$user.employeeId,
 					employeeCode: vm.$user.employeeCode,
+					employeeName:self.loginInfo.employeeName,
 					mode: Mode.Personal,
 				});
 

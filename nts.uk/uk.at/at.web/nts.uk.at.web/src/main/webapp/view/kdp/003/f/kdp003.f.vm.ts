@@ -1,123 +1,272 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 
-module nts.uk.kdp003.f {
-	export interface Kdp003FCodeNameData {
+module nts.uk.at.kdp003.f {
+	export interface CodeNameData {
 		id?: string;
 		code?: string;
 		name?: string;
 	}
 
 	// admin mode param
-	export interface Kdp003FAdminModeParam {
+	export interface AdminModeParam {
 		mode: 'admin';
+		companyId: string;
 		companyDesignation?: boolean;
 	}
 
 	// employee mode param
-	export interface Kdp003FEmployeeModeParam {
+	export interface EmployeeModeParam {
 		mode: 'employee';
-		company: Kdp003FCodeNameData;
-		employee?: Kdp003FCodeNameData;
+		companyId: string;
+		employee?: CodeNameData;
 		passwordRequired?: boolean;
 	}
 
 	// finger mode param
-	export interface Kdp003FFingerVeinModeParam {
+	export interface FingerVeinModeParam {
 		mode: 'fingerVein';
-		company: Kdp003FCodeNameData;
-		employee?: Kdp003FCodeNameData;
+		companyId: string;
+		employee?: CodeNameData;
 	}
 
-	export type KDP003F_MODE = null | 'admin' | 'employee' | 'fingerVein';
+	export type MODE = null | 'admin' | 'employee' | 'fingerVein';
+	export type SCREEN_NAME = 'KDP001' | 'KDP002' | 'KDP003' | 'KDP004' | 'KDP005';
 
-	export const KDP003F_LOGINDATA = 'KDP003F_LOGINDATA';
+	export const LOGINDATA = 'KDP003F_LOGINDATA';
 
-	export const KDP003F_VM_API = {
-		LOGIN_ADMIN: 'ctx/sys/gateway/kdp/login/adminmode',
-		LOGIN_EMPLOYEE: 'ctx/sys/gateway/kdp/login/employeemode'
+	export const API = {
+		LOGIN_ADMIN: '/ctx/sys/gateway/kdp/login/adminmode',
+		LOGIN_EMPLOYEE: '/ctx/sys/gateway/kdp/login/employeemode',
+		COMPANIES: '/ctx/sys/gateway/kdp/login/getLogginSetting',
+		CONFIRM_STAMP_INPUT: '/at/record/stamp/employment/system/confirm-use-of-stamp-input'
 	};
 
 	@bean()
 	export class Kdp003FViewModel extends ko.ViewModel {
-		mode: KnockoutObservable<KDP003F_MODE> = ko.observable(null);
+		mode: KnockoutObservable<MODE> = ko.observable(null);
+		message: KnockoutObservable<Message | null> = ko.observable(null);
 
-		model: Kdp003FModel = new Kdp003FModel();
+		model: Model = new Model();
 
-		listCompany: KnockoutObservableArray<Kdp003FCompanyItem> = ko.observableArray([]);
+		listCompany: KnockoutObservableArray<CompanyItem> = ko.observableArray([]);
 
-		constructor(private params?: Kdp003FAdminModeParam | Kdp003FEmployeeModeParam | Kdp003FFingerVeinModeParam) {
+		constructor(private params?: AdminModeParam | EmployeeModeParam | FingerVeinModeParam) {
 			super();
 		}
 
 		public created() {
 			const vm = this;
-			const { params } = vm;
+			const { params, model } = vm;
 
 			if (!params) {
 				vm.params = {} as any;
+			} else if (params) {
+				const { companyId, employee } = params as EmployeeModeParam;
+
+				if (companyId) {
+					model.companyId(companyId);
+				}
+
+				if (employee) {
+					if (!_.isNil(employee.id)) {
+						model.employeeId(employee.id);
+					}
+
+					if (!_.isNil(employee.code)) {
+						model.employeeCode(employee.code);
+					}
+
+					if (!_.isNil(employee.name)) {
+						model.employeeName(employee.name);
+					}
+				}
 			}
 
-			vm.$window.storage(KDP003F_LOGINDATA)
-				.then((data: Kdp003FModelData) => {
-					if (data) {
-						if (data.companyId) {
-							vm.model.companyId(data.companyId);
-						}
+			vm.model.companyId
+				.subscribe((id: string) => {
+					const dataSources: CompanyItem[] = ko.unwrap(vm.listCompany);
 
-						if (data.companyCode) {
-							vm.model.companyCode(data.companyCode);
-							vm.model.companyName(data.companyName);
-							_.extend(vm.params, {
-								companyDesignation: true
-							});
-						}
+					vm.message(null);
 
-						if (data.companyName) {
-							vm.model.companyName(data.companyName);
-						}
+					if (dataSources.length) {
+						const exist = _.find(dataSources, (item: CompanyItem) => item.companyId === id);
+						const clear = () => {
+							model.companyCode('');
+							model.companyName('');
 
-						if (data.employeeId) {
-							vm.model.employeeId(data.employeeId);
-						}
+							vm.message({ messageId: 'Msg_301' });
+						};
 
-						if (data.employeeCode) {
-							vm.model.employeeCode(data.employeeCode);
-						}
+						if (exist) {
+							const SCREEN: RegExpMatchArray = window.top.location.href.match(/kdp\/00\d/);
 
-						if (data.employeeName) {
-							vm.model.employeeName(data.employeeName);
+							if (SCREEN.length) {
+								const employeeCode: string = ko.unwrap(model.employeeCode);
+								const name: SCREEN_NAME = SCREEN[0].replace(/\//g, '').toUpperCase() as any;
+								const update = () => {
+									model.companyCode(exist.companyCode);
+									model.companyName(exist.companyName);
+								};
+
+								// update companyId by subscribe companyCode
+								switch (name) {
+									case 'KDP001':
+										break;
+									case 'KDP002':
+										break;
+									default:
+									case 'KDP003':
+										if (exist.selectUseOfName === false) {
+											clear();
+										} else {
+											update();
+										}
+										break;
+									case 'KDP004':
+										if (exist.fingerAuthStamp === false) {
+											clear();
+										} else {
+											update();
+										}
+										break;
+									case 'KDP005':
+										if (exist.icCardStamp === false) {
+											clear();
+										} else {
+											update();
+										}
+										break;
+								}
+
+								// UI[A6]  打刻利用失敗時のメッセージについて
+								if (!ko.unwrap(vm.message) && employeeCode) {
+									const params: CommanStampInput = {
+										companyId: exist.companyId,
+										employeeId: '',
+										employeeCode,
+										stampMeans: 1
+									};
+
+									const authen = (data: ConfirmStampInput) => {
+										if (data.used === CanEngravingUsed.NOT_PURCHASED_STAMPING_OPTION) {
+											// UI[A6]  打刻オプション未購入 
+											vm.message({ messageId: 'Msg_1644' });
+										} else if (data.used === CanEngravingUsed.UNREGISTERED_STAMP_CARD) {
+											// UI[A6]  打刻カード未登録
+											vm.message({ messageId: 'Msg_1619' });
+										} else if (data.used === CanEngravingUsed.ENGTAVING_FUNCTION_CANNOT_USED) {
+											// UI[A6]  打刻機能利用不可
+											const messageParams = [];
+
+											switch (name) {
+												case 'KDP001':
+													messageParams.push(vm.$i18n('KDP001_1'));
+													break;
+												case 'KDP002':
+													messageParams.push(vm.$i18n('KDP002_1'));
+													break;
+												default:
+												case 'KDP003':
+													messageParams.push(vm.$i18n('KDP002_2'));
+													break;
+												case 'KDP004':
+													messageParams.push(vm.$i18n('KDP002_3'));
+													break;
+												case 'KDP005':
+													messageParams.push(vm.$i18n('KDP002_4'));
+													break;
+											}
+
+											vm.message({
+												messageId: 'Msg_1645',
+												messageParams
+											});
+										} else {
+											vm.message(null);
+										}
+									};
+
+									switch (name) {
+										case 'KDP001':
+											params.stampMeans = StampMeans.PORTAL;
+											break;
+										case 'KDP002':
+											params.stampMeans = StampMeans.INDIVITION;
+											break;
+										default:
+										case 'KDP003':
+											params.stampMeans = StampMeans.NAME_SELECTION;
+											break;
+										case 'KDP004':
+											params.stampMeans = StampMeans.FINGER_AUTHC;
+											break;
+										case 'KDP005':
+											params.stampMeans = StampMeans.IC_CARD;
+											break;
+									}
+
+									vm.$ajax('at', API.CONFIRM_STAMP_INPUT, params).then(authen);
+								}
+							}
 						}
 					}
-				})
-				// get mode from params or set default
-				.always(() => vm.mode(vm.params.mode || 'admin'));
+				});
+
+			vm.listCompany.subscribe(() => {
+				model.companyId.valueHasMutated();
+			});
+
+			model.employeeCode.subscribe(() => {
+				model.companyId.valueHasMutated();
+			});
 		}
 
 		public mounted() {
 			const vm = this;
 			const { model, params } = vm;
 
-			if (params) {
-				const { company, employee } = params as Kdp003FEmployeeModeParam;
+			vm.$blockui('show')
+				.then(() => vm.$ajax(API.COMPANIES))
+				.then((data: CompanyItem[]) => {
+					const companyId = ko.toJS(params.companyId);
+					const exist: CompanyItem = _.find(data, (c) => c.companyId === companyId);
 
-				if (company) {
-					model.companyId(company.id);
-					model.companyCode(company.code);
-					model.companyName(company.name);
-				}
+					vm.listCompany(data);
 
-				if (employee) {
-					model.employeeId(employee.id);
-					model.employeeCode(employee.code);
-					model.employeeName(employee.name);
-				}
-			}
+					if (exist) {
+						if (ko.unwrap(model.companyId) !== exist.companyId) {
+							model.companyId(exist.companyId);
+						} else {
+							model.companyId.valueHasMutated();
+						}
+					} else {
+						if (params.mode === 'admin') {
+							if (data.length === 1) {
+								model.companyId(data[0].companyId);
+							} else if (!data.length) {
+								vm.$dialog
+									.error({ messageId: 'Msg_1527' })
+									.then(() => vm.$window.close({ msgErrorId: 'Msg_1527' }));
+							} else {
+								// raise subscribe for update message
+								model.companyId.valueHasMutated();
+							}
+						} else {
+							// raise subscribe for update message
+							model.companyId.valueHasMutated();
+						}
+					}
+				})
+				// get mode from params or set default
+				.always(() => {
+					vm.$blockui('clear').then(() => vm.mode(vm.params.mode || 'admin'));
+				});
 		}
 
 		public submitLogin() {
 			const vm = this;
 			const { params } = vm;
-			const { LOGIN_ADMIN, LOGIN_EMPLOYEE } = KDP003F_VM_API;
+			const { LOGIN_ADMIN, LOGIN_EMPLOYEE } = API;
 
 			switch (params.mode) {
 				default:
@@ -133,17 +282,18 @@ module nts.uk.kdp003.f {
 
 		loginAdmin(api: string) {
 			const vm = this;
-			const { mode } = vm.params as Kdp003FAdminModeParam;
-			const { passwordRequired } = vm.params as Kdp003FEmployeeModeParam;
-			const model: Kdp003FModelData = ko.toJS(vm.model);
-			const { password } = model;
+			const { passwordRequired } = vm.params as EmployeeModeParam;
+			const model: ModelData = ko.toJS(vm.model);
+			const { password, companyCode } = model;
+
+			const message = ko.unwrap(vm.message);
+
+			if (message) {
+				return vm.$dialog.error(message);
+			}
 
 			if (passwordRequired === false) {
 				_.omit(model, ['password']);
-			}
-
-			if (mode === 'admin' && !model.companyId && !model.companyName) {
-				return vm.$dialog.error({ messageId: 'Msg_301' });
 			}
 
 			vm.$validate()
@@ -154,7 +304,7 @@ module nts.uk.kdp003.f {
 
 					vm.$blockui('show')
 						.then(() => vm.$ajax(api, model))
-						.then((response: Kdp003FTimeStampLoginData) => {
+						.then((response: TimeStampLoginData) => {
 							const { successMsg } = response;
 
 							if (!!successMsg) {
@@ -165,15 +315,10 @@ module nts.uk.kdp003.f {
 
 							return response;
 						})
-						.then((response: Kdp003FTimeStampLoginData) => {
-							vm.$window
-								.storage(KDP003F_LOGINDATA, _.chain(model).clone().omit(['password']).value());
-
-							return response;
-						})
-						.then((response: Kdp003FTimeStampLoginData) => {
+						.then((response: TimeStampLoginData) => {
 							_.extend(response.em, {
-								password
+								password,
+								companyCode
 							});
 
 							vm.$window.close(response);
@@ -199,7 +344,47 @@ module nts.uk.kdp003.f {
 		}
 	}
 
-	export interface Kdp003FCompanyItem {
+	export interface Message {
+		messageId: string;
+		messageParams?: string[];
+	}
+
+	interface ConfirmStampInput {
+		systemDate: string;
+		used: CanEngravingUsed;
+	}
+
+	interface CommanStampInput {
+		companyId: string;
+		employeeId: string;
+		employeeCode: string;
+		stampMeans: StampMeans;
+	}
+
+	enum StampMeans {
+		NAME_SELECTION = 0, // 0:氏名選択
+		FINGER_AUTHC = 1,   // 1:指認証打刻
+		IC_CARD = 2,        // 2:ICカード打刻
+		INDIVITION = 3,     //  3:個人打刻
+		PORTAL = 4,         // 4:ポータル打刻
+		SMART_PHONE = 5,    // 5:スマホ打刻
+		TIME_CLOCK = 6,     // 6:タイムレコーダー打刻
+		TEXT = 7,           // 7:テキスト受入
+		RICOH_COPIER = 8    // 8:リコー複写機打刻
+	}
+
+	enum CanEngravingUsed {
+		// 0 利用できる
+		AVAILABLE = 0,
+		// 1 打刻オプション未購入
+		NOT_PURCHASED_STAMPING_OPTION = 1,
+		// 2 打刻機能利用不可
+		ENGTAVING_FUNCTION_CANNOT_USED = 2,
+		// 3 打刻カード未登録
+		UNREGISTERED_STAMP_CARD = 3
+	}
+
+	export interface CompanyItem {
 		companyId: string;
 		companyCode: string;
 		companyName: string;
@@ -209,34 +394,37 @@ module nts.uk.kdp003.f {
 		fingerAuthStamp?: boolean;
 	}
 
-	export interface Kdp003FEmployeeData {
+	export interface EmployeeData {
 		companyId: string;
+		companyCode?: string;
 		personalId: string;
 		employeeId: string;
 		employeeCode: string;
+		employeeName: string;
+		password?: string;
 	}
 
-	export interface Kdp003FTimeStampLoginData {
+	export interface TimeStampLoginData {
 		showChangePass: boolean;
 		msgErrorId: string;
 		showContract: boolean;
 		result: boolean;
-		em: Kdp003FEmployeeData;
+		em: EmployeeData;
 		successMsg: string;
 		errorMessage: string;
 	}
 
-	export interface Kdp003FModelData {
+	export interface ModelData {
 		companyId: string;
 		companyCode: string;
 		companyName?: string;
 		employeeId: string;
 		employeeCode: string;
 		employeeName?: string;
-		password: string;
+		password?: string;
 	}
 
-	export class Kdp003FModel {
+	export class Model {
 		companyId: KnockoutObservable<string> = ko.observable('');
 		companyCode: KnockoutObservable<string> = ko.observable('');
 		companyName: KnockoutObservable<string> = ko.observable('');
@@ -247,7 +435,7 @@ module nts.uk.kdp003.f {
 
 		password: KnockoutObservable<string> = ko.observable('');
 
-		constructor(params?: Kdp003FModelData) {
+		constructor(params?: ModelData) {
 			const model = this;
 
 			if (params) {

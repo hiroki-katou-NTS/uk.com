@@ -25,8 +25,8 @@ public class GetFingerStampSetting {
 	@Inject
 	private StampResultDisplayRepository stampResulRepo;
 
-	public FingerStampSettingDto getFingerStampSetting() {
-		FingerStampSettingDto result = new FingerStampSettingDto();
+	public GetFingerStampSettingDto getFingerStampSetting() {
+		GetFingerStampSettingDto result = new GetFingerStampSettingDto();
 		String comppanyID = AppContexts.user().companyId();
 		// 1:get 会社ID
 		this.stampSetCommunalRepo.gets(comppanyID).ifPresent(setComu -> {

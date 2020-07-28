@@ -28,7 +28,7 @@
 						data-bind="css: { 'stamp-date-big': isWidget() ,'stamp-date-small':!isWidget()  } ,text:getSystemDate()"></span>
 				</div>
 				<div
-					data-bind="style:{'float':'left', 'margin-left': isScreenCD() ? '10px' : '150px' }">
+					data-bind="style:{'float':'left', 'margin-left': isScreenCD() ? '10px' : '100px' }">
 					<span class="label "
 						data-bind="css: { 'stamp-time-big': isWidget() ,'stamp-time-small':!isWidget()  },text:getSystemTime()"></span>
 				</div>
@@ -63,9 +63,9 @@
 					id="right-area">
 					<table data-bind="visible:showTable" id="fixed-table">
 						<colgroup>
-							<col width="80px" />
-							<col width="80px" />
-							<col width="120px" />
+							<col width="60px" />
+							<col width="55px" />
+							<col width="75px" />
 						</colgroup>
 
 						<thead>
@@ -74,11 +74,11 @@
 							<com:ko-foreach bind="stampDatas()">
 								<tr>
 									<td
-										data-bind="style:{'font-size': $vm.isWidget() ?'14px':'8px' ,'color': $vm.getDateColor($data)},text:$vm.convertToShortMDW($data)"></td>
+										data-bind="style:{'font-size': '10px','line-height' : '20px','color': $vm.getDateColor($data)},text:$vm.convertToShortMDW($data)"></td>
 									<td
-										data-bind="style:{'font-size': $vm.isWidget() ?'14px':'8px' },text:$vm.getStampTime($data)"></td>
+										data-bind="style:{'font-size': '10px','line-height' : '20px' },text:$vm.getStampTime($data)"></td>
 									<td
-										data-bind="style:{'font-size': $vm.isWidget() ?'14px':'8px','text-align':$vm.getTextAlign($data) },text:stampAtr"></td>
+										data-bind="style:{'font-size': '10px','line-height' : '20px' ,'text-align':$vm.getTextAlign($data) },text:stampAtr"></td>
 								</tr>
 							</com:ko-foreach>
 						</tbody>
@@ -101,11 +101,11 @@
 							<com:ko-foreach bind="stampDatas">
 								<tr>
 									<td
-										data-bind="style:{'font-size': $vm.isWidget() ?'14px':'8px' ,'color': $vm.getDateColor($data)},text:$vm.convertToShortMDW($data)"></td>
+										data-bind="style:{'font-size':'8px' ,'color': $vm.getDateColor($data)},text:$vm.convertToShortMDW($data)"></td>
 									<td
-										data-bind="style:{'font-size': $vm.isWidget() ?'14px':'8px' },text:$vm.getStampTime($data)"></td>
+										data-bind="style:{'font-size':'8px' },text:$vm.getStampTime($data)"></td>
 									<td
-										data-bind="style:{'font-size': $vm.isWidget() ?'14px':'8px','text-align':$vm.getTextAlign($data) },text:stampAtr"></td>
+										data-bind="style:{'font-size': '8px','text-align':$vm.getTextAlign($data) },text:stampAtr"></td>
 								</tr>
 							</com:ko-foreach>
 						</tbody>
