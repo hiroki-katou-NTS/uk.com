@@ -268,7 +268,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	
 	private void checkTimeThanCalTimeReally(CaculationTime breakTime,
 			RecordWorkInfoImport recordWorkInfoImport,String employeeName,String appDate,String companyID){
-		for(OvertimeInputCaculation holidayCal : recordWorkInfoImport.getOvertimeHolidayCaculation()){
+		/*for(OvertimeInputCaculation holidayCal : recordWorkInfoImport.getOvertimeHolidayCaculation()){
 			 if(holidayCal.getFrameNo() == breakTime.getFrameNo()){
 				 //画面上の申請時間＞Imported(申請承認)「実績内容」.休出時間
 				 if(breakTime.getApplicationTime() != null &&  breakTime.getApplicationTime() > holidayCal.getResultCaculation()){
@@ -278,7 +278,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 					 breakTime.setCaculationTime(holidayCal.getResultCaculation() != null ? Integer.toString(holidayCal.getResultCaculation()) : null);
 				 }
 			 }
-		 }
+		 }*/
 	}
 	@Override
 	public CaculationTime checkCaculationActualExcessForApprover(int prePostAtr, int appType, String employeeID,

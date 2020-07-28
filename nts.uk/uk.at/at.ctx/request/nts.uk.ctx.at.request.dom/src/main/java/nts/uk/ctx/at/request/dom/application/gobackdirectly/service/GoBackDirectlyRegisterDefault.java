@@ -137,7 +137,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 			workTimeCD = goBackDirectly.getSiftCD().map(x -> x.v()).orElse("");
 		} else {
 			// 実績の取得
-			AchievementOutput achievementOutput = collectAchievement.getAchievement(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
+			/*AchievementOutput achievementOutput = collectAchievement.getAchievement(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());*/
+			AchievementOutput achievementOutput = null;
 			workTimeCD = achievementOutput.getWorkTime().getWorkTimeCD();
 			workTypeCD = achievementOutput.getWorkType().getWorkTypeCode();
 		}
@@ -223,8 +224,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 				application.getAppID(),
 				application.getPrePostAtr(),
 				application.getVersion(),
-				goBackDirectly.getDataWork().get().getWorkType().getWorkType(),
-				goBackDirectly.getDataWork().get().getWorkTime().get().getWorkTime());
+				goBackDirectly.getDataWork().isPresent() ? goBackDirectly.getDataWork().get().getWorkTypeCode().v() : null,
+				goBackDirectly.getDataWork().isPresent() ? (goBackDirectly.getDataWork().get().getWorkTimeCode() != null ? goBackDirectly.getDataWork().get().getWorkTimeCode().v() : null) : null);
 	}
 	/**
 	 * 共通登録前のエラーチェック処理
@@ -254,7 +255,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		GoBackDirectAtr check = goBackDirectCheckNew(goBackDirectly);
 		if (check == GoBackDirectAtr.NOT) {
 //			確認メッセージリストに（Msg_338）を追加する
-			lstConfirm.add(new ConfirmMsgOutput("MSG_338", Collections.emptyList()));
+			lstConfirm.add(new ConfirmMsgOutput("Msg_338", Collections.emptyList()));
 		}
 		return lstConfirm;
 	}
@@ -405,8 +406,10 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 			GoBackDirectlyCommonSetting goBackCommonSet, int line, ScBasicScheduleImport scBasicScheduleImport) {
 		WorkTypeCode bsWorkTypeCD = scBasicScheduleImport == null ? new WorkTypeCode("") : new WorkTypeCode(scBasicScheduleImport.getWorkTypeCode());
 		WorkTimeCode bsSiftCd = scBasicScheduleImport == null ? new WorkTimeCode("") : new WorkTimeCode(scBasicScheduleImport.getWorkTimeCode());
-		WorkTimeGoBack bsWorkTimeStart1 = scBasicScheduleImport == null ? null : new WorkTimeGoBack(scBasicScheduleImport.getScheduleStartClock1());
-		WorkTimeGoBack bsWorkTimeEnd1 = scBasicScheduleImport == null ? null : new WorkTimeGoBack(scBasicScheduleImport.getScheduleEndClock1());
+		/*WorkTimeGoBack bsWorkTimeStart1 = scBasicScheduleImport == null ? null : new WorkTimeGoBack(scBasicScheduleImport.getScheduleStartClock1());
+		WorkTimeGoBack bsWorkTimeEnd1 = scBasicScheduleImport == null ? null : new WorkTimeGoBack(scBasicScheduleImport.getScheduleEndClock1());*/
+		WorkTimeGoBack bsWorkTimeStart1 = null;
+		WorkTimeGoBack bsWorkTimeEnd1 = null;
 		CheckValidOutput result = new CheckValidOutput();
 		result.isCheckValid = false;
 		// 直行直帰申請共通設定.勤務の変更 (Thay đổi 直行直帰申請共通設定.勤務)
@@ -653,7 +656,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 //		interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(),
 //				application.getEmployeeID(), listDates);
 //		アルゴリズム「4-2.詳細画面登録後の処理」を実行する
-		return detailAfterUpdate.processAfterDetailScreenRegistration(application);
+		return detailAfterUpdate.processAfterDetailScreenRegistration(companyId, application.getAppID());
 //		return null;
 
 	}

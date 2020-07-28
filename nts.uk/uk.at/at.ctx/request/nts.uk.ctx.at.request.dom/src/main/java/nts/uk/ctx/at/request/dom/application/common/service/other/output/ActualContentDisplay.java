@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.other.output;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
@@ -11,6 +12,7 @@ import nts.arc.time.GeneralDate;
  * @author Doan Duy Hung
  *
  */
+@AllArgsConstructor
 @Getter
 public class ActualContentDisplay {
 	

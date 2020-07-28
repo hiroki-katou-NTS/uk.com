@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkLocationCD;
+import nts.uk.ctx.at.request.dom.application.stamp.StampFrameNo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakout.GoOutReasonAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -29,7 +30,7 @@ public class TimePlaceOutput {
 	/**
 	 * 打刻枠No
 	 */
-	private Integer frameNo;
+	private StampFrameNo frameNo;
 	
 	/**
 	 * 時刻終了

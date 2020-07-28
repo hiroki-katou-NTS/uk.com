@@ -18,10 +18,7 @@ import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDi
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeService;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
@@ -42,9 +39,6 @@ public class AppWorkChangeFinder {
 
 	@Inject
 	private AppWorkChangeService appWorkChangeService;
-	
-	@Inject
-	private CommonAlgorithm commonAlgorithm;
 
 	public AppWorkChangeSetDto_Old findByCom() {
 		String companyId = AppContexts.user().companyId();
@@ -59,24 +53,19 @@ public class AppWorkChangeFinder {
 		return workChangeRegisterService.isTimeRequired(workTypeCD);
 	}
 
-	public AppWorkChangeDispInfoDto getStartNew(AppWorkChangeParam_Old param) {
+	public AppWorkChangeDispInfoDto getStartNew(AppWorkChangeParamPC param) {
 		String companyID = AppContexts.user().companyId();
-		List<GeneralDate> dateLst = param.dateLst.stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd"))
+		List<GeneralDate> dateLst = param.getDateLst().stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd"))
 				.collect(Collectors.toList());
-		// 共通申請
-		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(
+		AppWorkChangeDispInfo appWorkChangeDispInfo = appWorkChangeService.getStartNew(
 				companyID, 
-				ApplicationType.WORK_CHANGE_APPLICATION, 
-				param.empLst, 
+				param.getEmpLst(), 
 				dateLst, 
-				true,
-				Optional.empty(),
-				Optional.empty());
-		AppWorkChangeDispInfo appWorkChangeDispInfo = appWorkChangeService.getStartNew(companyID, param.empLst, dateLst, appDispInfoStartupOutput);
+				param.getAppDispInfoStartupOutput().toDomain());
 		return AppWorkChangeDispInfoDto.fromDomain(appWorkChangeDispInfo);
 	}
 
-	public AppWorkChangeDispInfoDto_Old changeAppDate(AppWorkChangeParam_Old param) {
+	public AppWorkChangeDispInfoDto_Old changeAppDate(AppWorkChangeParamPC param) {
 //		String companyID = AppContexts.user().companyId();
 //		List<GeneralDate> dateLst = param.dateLst.stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd"))
 //				.collect(Collectors.toList());
@@ -86,7 +75,7 @@ public class AppWorkChangeFinder {
 		return null;
 	}
 
-	public AppWorkChangeDispInfoDto_Old changeWorkSelection(AppWorkChangeParam_Old param) {
+	public AppWorkChangeDispInfoDto_Old changeWorkSelection(AppWorkChangeParamPC param) {
 		// error EA refactor 4
 		/*
 		 * AppWorkChangeDispInfoCmd cmd = param.appWorkChangeDispInfoCmd;

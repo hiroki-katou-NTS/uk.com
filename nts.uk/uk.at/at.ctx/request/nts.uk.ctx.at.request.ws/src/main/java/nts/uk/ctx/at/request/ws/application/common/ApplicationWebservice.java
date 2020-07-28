@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.ws.application.common;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -8,7 +10,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import org.apache.logging.log4j.util.Strings;
+
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.common.AppDetailBehaviorCmd;
 import nts.uk.ctx.at.request.app.command.application.common.ApproveAppHandler;
 import nts.uk.ctx.at.request.app.command.application.common.DeleteAppHandler;
@@ -23,6 +29,7 @@ import nts.uk.ctx.at.request.app.command.setting.request.UpdateApplicationDeadli
 import nts.uk.ctx.at.request.app.find.application.common.AppDataDateFinder;
 import nts.uk.ctx.at.request.app.find.application.common.AppDateDataDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoWithDateDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationFinder;
 import nts.uk.ctx.at.request.app.find.application.common.ApprovalRootOfSubjectRequestDto;
 import nts.uk.ctx.at.request.app.find.application.common.DetailMobDto;
@@ -37,6 +44,8 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ClosureParam;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
 import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForRemandOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InputGetDetailCheck;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.RemandCommand;
@@ -45,6 +54,10 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.ScreenIdentifier;
 import nts.uk.shr.infra.web.util.StartPageLogService;
@@ -99,6 +112,9 @@ public class ApplicationWebservice extends WebService {
 	
 	@Inject
 	private DenyAppHandler denyApp;
+	
+	@Inject
+	private CommonAlgorithm commonAlgorithm;
 	
 	/**
 	 * remand application
@@ -252,9 +268,52 @@ public class ApplicationWebservice extends WebService {
 	// refactor 4
 	
 	@POST
+	@Path("getStartPC")
+	public AppDispInfoStartupDto getStartPC(StartupParam param) {
+		String companyID = AppContexts.user().companyId();
+		List<GeneralDate> dateLst = param.getDateLst().stream().map(x -> {
+										if(Strings.isBlank(x)) {
+											return null;
+										} else {
+											return GeneralDate.fromString(x, "yyyy/MM/dd");
+										}
+									}).collect(Collectors.toList());
+		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(
+				companyID, 
+				ApplicationType.WORK_CHANGE_APPLICATION, 
+				param.empLst, 
+				dateLst, 
+				true,
+				param.getOpHolidayAppType() == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(param.getOpHolidayAppType(), HolidayAppType.class)),
+				param.getOpOvertimeAppAtr() == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(param.getOpOvertimeAppAtr(), OvertimeAppAtr.class)));
+		return AppDispInfoStartupDto.fromDomain(appDispInfoStartupOutput);
+	}
+	
+	@POST
 	@Path("getDetailPC/{appID}")
 	public AppDispInfoStartupDto getDetailPC(@PathParam("appID") String appID) {
 		return finderApp.getDetailPC(appID);
+	}
+	
+	@POST
+	@Path("changeAppDate")
+	public AppDispInfoWithDateDto changeAppDate(ChangeDateParam param) {
+		String companyID = AppContexts.user().companyId();
+		List<GeneralDate> dateLst = param.getDateLst().stream().map(x -> {
+			if(Strings.isBlank(x)) {
+				return null;
+			} else {
+				return GeneralDate.fromString(x, "yyyy/MM/dd");
+			}
+		}).collect(Collectors.toList());
+		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
+				companyID, 
+				dateLst, 
+				param.getAppDispInfoStartupOutput().toDomain().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSetting().getAppType(), 
+				param.getAppDispInfoStartupOutput().toDomain().getAppDispInfoNoDateOutput(), 
+				param.getAppDispInfoStartupOutput().toDomain().getAppDispInfoWithDateOutput(),
+				param.getOpOvertimeAppAtr() == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(param.getOpOvertimeAppAtr(), OvertimeAppAtr.class)));
+		return AppDispInfoWithDateDto.fromDomain(appDispInfoWithDateOutput);
 	}
 	
 	@POST
@@ -287,5 +346,6 @@ public class ApplicationWebservice extends WebService {
 		String companyID = AppContexts.user().companyId();
 		detailBeforeUpdate.exclusiveCheck(companyID, param.appID, param.version);
 	}
+	
 }
 

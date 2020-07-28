@@ -295,10 +295,11 @@ public class OvertimeServiceImpl implements OvertimeService {
 	private WorkTypeAndSiftType getDataDateExists(String companyID, String employeeID, GeneralDate baseDate) {
 		WorkTypeAndSiftType workTypeAndSiftType = new WorkTypeAndSiftType();
 		//実績の取得
-		AchievementOutput achievementOutput = collectAchievement.getAchievement(companyID, employeeID, baseDate);
+		/*AchievementOutput achievementOutput = collectAchievement.getAchievement(companyID, employeeID, baseDate);
 			workTypeAndSiftType.setWorkType(new WorkTypeOvertime(achievementOutput.getWorkType().getWorkTypeCode(), achievementOutput.getWorkType().getName()));
 			workTypeAndSiftType.setSiftType(new SiftType(achievementOutput.getWorkTime().getWorkTimeCD(), achievementOutput.getWorkTime().getWorkTimeName()));
-			return workTypeAndSiftType;
+			return workTypeAndSiftType;*/
+		return null;
 	}
 
 	@Override

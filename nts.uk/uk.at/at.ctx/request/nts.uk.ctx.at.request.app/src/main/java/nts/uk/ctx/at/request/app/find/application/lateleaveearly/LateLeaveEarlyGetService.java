@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.app.find.application.lateleaveearly.dto.MessageListDto;
+import nts.uk.ctx.at.request.app.find.application.lateleaveearly.dto.PageInitDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoDto;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
@@ -66,7 +67,8 @@ public class LateLeaveEarlyGetService {
 	 * @param appId
 	 * @return
 	 */
-	public ArrivedLateLeaveEarlyInfoDto getInitB(String appId) {
-		return ArrivedLateLeaveEarlyInfoDto.convertDto(this.service.getInitB(appId));
+	public ArrivedLateLeaveEarlyInfoDto getInitB(PageInitDto input) {
+		return ArrivedLateLeaveEarlyInfoDto
+				.convertDto(this.service.getInitB(input.getAppId(), input.getInfoStartup().toDomain()));
 	}
 }

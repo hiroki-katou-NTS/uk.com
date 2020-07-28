@@ -101,10 +101,10 @@ public class GoBackApplicationDomainService {
 		// set output
 		output.setLstWorkType(lstWorkType);
 		WorkType wType = workTypeAndWorktimeSelect.getWorkType();
-		output.setWorkType(new InforWorkType(wType.getWorkTypeCode().v(), wType.getName().v()));
+//		output.setWorkType(new InforWorkType(wType.getWorkTypeCode().v(), wType.getName().v()));
 		WorkTimeSetting wTime = workTypeAndWorktimeSelect.getWorkTime();
-		output.setWorkTime(
-				new InforWorkTime(wTime.getWorktimeCode().v(), wTime.getWorkTimeDisplayName().getWorkTimeName().v()));
+//		output.setWorkTime(
+//				new InforWorkTime(wTime.getWorktimeCode().v(), wTime.getWorkTimeDisplayName().getWorkTimeName().v()));
 		return output;
 	}
 }

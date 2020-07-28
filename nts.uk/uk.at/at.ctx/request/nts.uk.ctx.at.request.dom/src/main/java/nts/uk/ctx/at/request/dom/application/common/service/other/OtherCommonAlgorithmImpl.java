@@ -543,7 +543,8 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		for(int i = 0; dates.start().daysTo(dates.end()) - i >= 0; i++){
 			GeneralDate loopDate = dates.start().addDays(i);
 			//実績の取得
-			AchievementOutput achInfor = collectAch.getAchievement(cid, sid, loopDate);
+			/*AchievementOutput achInfor = collectAch.getAchievement(cid, sid, loopDate);*/
+			AchievementOutput achInfor = null;
 			if(achInfor != null 
 					&& achInfor.getWorkType() != null
 					&& workTypeRepo.checkHoliday(achInfor.getWorkType().getWorkTypeCode()) //1日休日の判定

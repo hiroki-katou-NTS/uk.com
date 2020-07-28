@@ -12,20 +12,22 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.InitWkTypeWkTimeOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.DataWork;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkGoBackDirectOutput;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkTime;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.TargetWorkTypeByApp;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflect;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflectRepository;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -71,7 +73,7 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		if (appDispInfoStartup.getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent()) {
 			lstWts = appDispInfoStartup.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get();
 		}
-		InforWorkGoBackDirectOutput inforWorkGoBackDirectOutput = this.getInfoWorkGoBackDirect(companyId, sid, date, baseDate, appEmployment, lstWts);
+		InforWorkGoBackDirectOutput inforWorkGoBackDirectOutput = this.getInfoWorkGoBackDirect(companyId, sid, date, baseDate, appEmployment, lstWts, appDispInfoStartup);
 		
 //		ドメインモデル「直行直帰申請の反映」より取得する 
 		Optional<GoBackReflect> goBackReflectOp = goBackDirectServiceImp.findByCompany(companyId);
@@ -94,30 +96,31 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 
 	@Override
 	public InforWorkGoBackDirectOutput getInfoWorkGoBackDirect(String companyId, String employeeId, GeneralDate appDate,
-			GeneralDate baseDate, AppEmploymentSet appEmployment, List<WorkTimeSetting> lstWts) {
+			GeneralDate baseDate, AppEmploymentSet appEmployment, List<WorkTimeSetting> lstWts, AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		InforWorkGoBackDirectOutput output = new InforWorkGoBackDirectOutput();
 		// 起動時勤務種類リストを取得する
 		List<WorkType> lstWorkType = this.getWorkTypes(companyId, appEmployment);
+		Optional<AchievementDetail> archievementDetail = Optional.empty();
+		if (appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().isPresent()){
+			if (!CollectionUtil.isEmpty(appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get())) {
+				ActualContentDisplay actualContentDisplay = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get().get(0);
+				archievementDetail = actualContentDisplay.getOpAchievementDetail();
+			}
+		}
+//		 09_勤務種類就業時間帯の初期選択をセットする
+//		InitWkTypeWkTimeOutput initWkTypeWkTimeOutput = commonAlgorithm.initWorkTypeWorkTime(
+//				employeeId,
+//				baseDate,
+//				lstWorkType,
+//				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent() ? appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get() : null,
+//				archievementDetail.isPresent() ? archievementDetail.get() : null);
 
-		// 09_勤務種類就業時間帯の初期選択をセットする
-//		 WorkTypeAndSiftType workTypeAndWorktimeSelect =
-//		 overtimeService.getWorkTypeAndSiftTypeByPersonCon(
-//		 companyId,
-//		 employeeId,
-//		 appDate,
-//		 lstWorkType,
-//		 null);
-			// siftTypes is differed with lstWts		
-		// WorkType wType = workTypeAndWorktimeSelect.getWorkType();
-		// output.setWorkType(new InforWorkType(wType.getWorkTypeCode().v(),
-		// wType.getName().v()));
-		// WorkTimeSetting wTime = workTypeAndWorktimeSelect.getWorkTime();
-		// output.setWorkTime(new InforWorkTime(wTime.getWorktimeCode().v(),
-		// wTime.getWorkTimeDisplayName().getWorkTimeName().v()));
-		InforWorkType inforWorkType = new InforWorkType("001", "abc");
-		InforWorkTime inforWorkTime = new InforWorkTime("001", "def");
-		output.setWorkType(inforWorkType);
-		output.setWorkTime(inforWorkTime);
+
+//		output.setWorkType(initWkTypeWkTimeOutput.getWorkTypeCD());
+//		output.setWorkTime(initWkTypeWkTimeOutput.getWorkTimeCD());
+		
+		output.setWorkType("001");
+		output.setWorkTime("001");
 		output.setLstWorkType(lstWorkType);
 		return output;
 
@@ -172,7 +175,9 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 						: null,
 						inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent()
 						? inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpWorkTimeLst().get()
-						: null);
+						: null,
+						inforGoBackCommonDirectOutput.getAppDispInfoStartup()		
+				);
 		
 		inforGoBackCommonDirectOutput.setWorkType(inforWorkGoBackDirectOutput.getWorkType());
 		inforGoBackCommonDirectOutput.setWorkTime(inforWorkGoBackDirectOutput.getWorkTime());
@@ -206,14 +211,13 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		output.setLstWorkType(lstWorkType);
 		
 		if (goBackDirectly.isPresent()) {
-			Optional<DataWork> dataWork = goBackDirectly.get().getDataWork();
+			Optional<WorkInformation> dataWork = goBackDirectly.get().getDataWork();
 			if (dataWork.isPresent()) {
 //				直行直帰申請起動時の表示情報．勤務種類初期選択=取得したドメインモデル「直行直帰申請」．勤務情報．勤務種類 
-				output.setWorkType(new InforWorkType(dataWork.get().getWorkType().getWorkType(), dataWork.get().getWorkType().getNameWorkType()));
+				output.setWorkType(dataWork.get().getWorkTypeCode().v());
 //				直行直帰申請起動時の表示情報．就業時間帯初期選択=取得したドメインモデル「直行直帰申請」．勤務情報．就業時間帯
-				if (dataWork.get().getWorkTime().isPresent()) {
-					InforWorkTime inforWorkTime = dataWork.get().getWorkTime().get();
-					output.setWorkTime(new InforWorkTime(inforWorkTime.getWorkTime(), inforWorkTime.getNameWorkTime()));
+				if (dataWork.get().getWorkTimeCode() != null) {
+					output.setWorkTime(dataWork.get().getWorkTimeCode().v());
 				}
 			}
 		}

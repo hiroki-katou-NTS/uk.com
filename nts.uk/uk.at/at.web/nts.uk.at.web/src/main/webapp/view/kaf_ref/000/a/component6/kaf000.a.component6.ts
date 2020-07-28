@@ -12,7 +12,11 @@ module nts.uk.at.view.kaf000_ref.a.component6.viewmodel {
 			vm.approvalRootState = ko.observableArray([]);
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.appDispInfoStartupOutput.subscribe(value => {
-                vm.approvalRootState(ko.mapping.fromJS(value.appDispInfoWithDateOutput.opListApprovalPhaseState)());
+                if(!_.isEmpty(value.appDispInfoWithDateOutput.opListApprovalPhaseState)) {
+                    vm.approvalRootState(ko.mapping.fromJS(value.appDispInfoWithDateOutput.opListApprovalPhaseState)());            
+                } else {
+                    vm.approvalRootState([]);    
+                }
             });
         }
     

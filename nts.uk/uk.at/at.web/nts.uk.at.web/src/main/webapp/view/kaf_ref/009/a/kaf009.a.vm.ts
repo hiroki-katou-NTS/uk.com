@@ -2,9 +2,11 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
     import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
     import CommonProcess = nts.uk.at.view.kaf000_ref.shr.viewmodel.CommonProcess;
     import Model = nts.uk.at.view.kaf009_ref.shr.viewmodel.Model;
+    import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
+    import Kaf000AViewModel = nts.uk.at.view.kaf000_ref.a.viewmodel.Kaf000AViewModel;
 
     @bean()
-    class Kaf009AViewModel extends ko.ViewModel {
+    class Kaf009AViewModel extends Kaf000AViewModel {
         
         application: KnockoutObservable<Application>;
         applicationTest: any = {
@@ -46,78 +48,155 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 
             };
         model: Model;
-        appDispInfoStartupOutput: any;
+//        appDispInfoStartupOutput: any;
         dataFetch: KnockoutObservable<ModelDto> = ko.observable(null);
         mode: string = 'edit';
 
         created(params: any) {
             const vm = this;
-            vm.application = ko.observable(new Application("", 1, [], 2, "", "", 0));
+            vm.application = ko.observable(new Application(AppType.GO_RETURN_DIRECTLY_APPLICATION));
             vm.model = new Model(true, true, true, '001', 'WorkType', '001', 'WorkTime');
-            vm.appDispInfoStartupOutput = ko.observable(CommonProcess.initCommonSetting());
-            vm.application().appDate(moment(new Date()).format("YYYY/MM/DD"));
+//            vm.appDispInfoStartupOutput = ko.observable(CommonProcess.initCommonSetting());
+//            vm.application().appDate(moment(new Date()).format("YYYY/MM/DD"));
+            
+            vm.$blockui("show");
+            vm.loadData([], [])
+            .then((loadDataFlag: any) => {
+                if(loadDataFlag) {
+                    let ApplicantEmployeeID: null,
+                        ApplicantList: null,
+                        appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
+                        command = { ApplicantEmployeeID, ApplicantList, appDispInfoStartupOutput };
+                    return vm.$ajax(API.startNew, command);
+                }
+            }).then((res: any) => {
+                if(res) {
+                    vm.dataFetch({
+                        workType: ko.observable(res.workType),
+                        workTime: ko.observable(res.workTime),
+                        appDispInfoStartup: ko.observable(res.appDispInfoStartup),
+                        goBackReflect: ko.observable(res.goBackReflect),
+                        lstWorkType: ko.observable(res.lstWorkType),
+                        goBackApplication: ko.observable(res.goBackApplication)
+                    });     
+                }
+            }).fail((failData: any) => {
+                vm.$dialog.error({
+                    messageId: failData.msgId
+                });       
+            }).always(() => vm.$blockui("hide"));
+            
             
 
         }
 
         mounted() {
             const vm = this;
-            vm.fetchData();
+//            vm.fetchData();
+        }
+        
+       
+        
+        public handleConfirmMessage(listMes: any, res: any) {
+            let vm = this;
+            if (!_.isEmpty(listMes)) {
+                let item = listMes.shift();
+                vm.$dialog.confirm({ messageId: item.msgID }).then((value) => {
+                    if (value == 'yes') {
+                        if (_.isEmpty(listMes)) {
+                            vm.registerData(res);
+                        } else {
+                            vm.handleConfirmMessage(listMes, res);
+                        }
+
+                    }
+                });
+            }
+        }
+        
+        registerData(goBackApp) {
+            let vm = this;
+            let paramsRegister = {
+                    companyId: vm.$user.companyId,
+                    applicationDto: vm.applicationTest,
+                    goBackDirectlyDto: goBackApp,
+                    inforGoBackCommonDirectDto: ko.toJS(vm.dataFetch),
+                    mode : vm.mode == 'edit'
+            }
+            
+            return vm.$ajax( API.register, paramsRegister )
+                .done( resRegister => {
+                    console.log( resRegister );
+                    this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                        // bussiness logic after error show
+                    } );
+                })
+//            .fail(errRegister => {
+//                console.log(errRegister);
+//                
+//            });
         }
 
         register() {
             const vm = this;
-            console.log(vm.applicationTest);
-            console.log(ko.toJS(vm.model));
-            let model = ko.toJS(vm.model);
-            let goBackApp = new GoBackApplication(
-                    model.checkbox1 ? 1 : 0,
-                    model.checkbox2 ? 1 : 0,                          
-            ); 
-            // is change can be null
-            goBackApp.isChangedWork = model.checkbox3 ? 1 : 0 ;
-            if (model.workTypeCode) {
-               let dw = new DataWork(new InforType(model.workTypeCode, model.workTypeName));
-               if (model.workTimeCode) {
-                   dw.workTime = new InforWorkTime(model.workTimeCode, model.workTimeName);
-               }
-               goBackApp.dataWork = dw; 
-                
-            }
-            console.log(goBackApp);
-            
-            let param = {
-                companyId: this.$user.companyId,
-                agentAtr: true,
-                applicationDto: vm.applicationTest,
-                goBackDirectlyDto: goBackApp,
-                inforGoBackCommonDirectDto: ko.toJS(vm.dataFetch),
-                mode : vm.mode == 'edit'
-            };
-            vm.$ajax(API.checkRegister,param)
-                .done(res => {
-                   console.log(res); 
-                   let paramsRegister = {
-                           companyId: vm.$user.companyId,
-                           applicationDto: vm.applicationTest,
-                           goBackDirectlyDto: goBackApp,
-                           inforGoBackCommonDirectDto: ko.toJS(vm.dataFetch),
-                           mode : vm.mode == 'edit'
-                   }
-                   if (_.isEmpty(res)) {
-                       return vm.$ajax(API.register, paramsRegister)
-                           .done(resRegister => {
-                               console.log(resRegister);
-                           })
-                           .fail(errRegister => {
-                               console.log(errRegister);
-                           })
-                   }
-                })
-                .fail(err => {
-                    console.log(err);
-                });
-           
+            console.log( vm.applicationTest );
+            console.log( ko.toJS( vm.model ) );
+            vm.$blockui( "show" );
+            vm.$validate()
+                .then( isValid => {
+                    if ( isValid ) {
+                        return true;
+                    }
+                } )
+                .then( result => {
+                    if ( result ) {
+                        let model = ko.toJS( vm.model );
+                        let goBackApp = new GoBackApplication(
+                            model.checkbox1 ? 1 : 0,
+                            model.checkbox2 ? 1 : 0,
+                        );
+                        // is change can be null
+                        goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;
+                        let dw = new DataWork( model.workTypeCode );
+                        if ( model.workTimeCode ) {
+                            dw.workTime = model.workTimeCode
+                        }
+                        goBackApp.dataWork = dw;
+                        console.log( goBackApp );
+
+                        let param = {
+                            companyId: this.$user.companyId,
+                            agentAtr: true,
+                            applicationDto: vm.applicationTest,
+                            goBackDirectlyDto: goBackApp,
+                            inforGoBackCommonDirectDto: ko.toJS( vm.dataFetch ),
+                            mode: vm.mode == 'edit'
+                        };
+                        vm.$ajax( API.checkRegister, param )
+                            .done( res => {
+                                console.log( res );
+
+                                if ( _.isEmpty( res ) ) {
+                                    return vm.registerData( goBackApp );
+                                } else {
+                                    let listTemp = _.clone( res );
+                                    vm.handleConfirmMessage( listTemp, goBackApp );
+                                    //                                   this.$dialog.error({ messageId: res[0].msgID, messageParams: res[0].paramLst}).then(() => {
+                                    //                                       // bussiness logic after error show
+                                    //                                   });
+                                }
+                            } )
+                            .fail( err => {
+                                vm.$dialog.error( {
+                                    messageId: err.msgId
+                                } );
+                            } )
+                            .always(() => vm.$blockui( "hide" ) );
+                    }
+                } );
+
+
+
 
 
         }
@@ -126,31 +205,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             
         }
 
-        fetchData() {
-            const vm = this;
-            vm.$blockui("show");
-            let params = {
-                ApplicantEmployeeID: null,
-                ApplicantList: null
-            }
-            vm.$ajax(API.startNew, params)
-                .done(res => {
-                    console.log(res);
-                    vm.dataFetch({
-                        workType: ko.observable(res.workType),
-                        workTime: ko.observable(res.workTime),
-                        appDispInfoStartup: ko.observable(res.appDispInfoStartup),
-                        goBackReflect: ko.observable(res.goBackReflect),
-                        lstWorkType: ko.observable(res.lstWorkType),
-                        goBackApplication: ko.observable(res.goBackApplication)
-                    });
-                    vm.appDispInfoStartupOutput(res.appDispInfoStartup);
-                    vm.$blockui("hide");
-                }).fail(err => {
-                    vm.$blockui("hide");
-                });
-            
-        }
+        
 
     }
     export class GoBackApplication {
@@ -165,26 +220,12 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             this.dataWork = dataWork;
         }
     }
-    export class InforType {
-        workType: string;
-        nameWorkType: string;
-        constructor(code: string, name: string) {
-            this.workType = code;
-            this.nameWorkType = name;
-        }
-    }
-    export class InforWorkTime {
-        workTime: string;
-        nameWorkTime: string;
-        constructor(code: string, name: string) {
-            this.workTime = code;
-            this.nameWorkTime = name;
-        }
-    }
+   
+   
     export class DataWork {
-        workType: InforType;
-        workTime?: InforWorkTime;
-        constructor(workType: InforType, workTime?: InforWorkTime) {
+        workType: string;
+        workTime?: string;
+        constructor(workType: string, workTime?: string) {
             this.workType = workType;
             this.workTime = workTime;
         }

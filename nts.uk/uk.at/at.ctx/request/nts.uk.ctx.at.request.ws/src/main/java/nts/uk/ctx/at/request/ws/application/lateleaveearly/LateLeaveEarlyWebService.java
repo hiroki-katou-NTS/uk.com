@@ -9,12 +9,15 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.request.app.command.application.lateleaveearly.LateEarlyUpdateCommand;
+import nts.uk.ctx.at.request.app.command.application.lateleaveearly.LateEarlyUpdateCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.lateleaveearly.LateLeaveEarlyCommand;
 import nts.uk.ctx.at.request.app.command.application.lateleaveearly.LateLeaveEarlyCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.lateleaveearly.LateEarlyCancelAppSetDto;
 import nts.uk.ctx.at.request.app.find.application.lateleaveearly.LateEarlyDateChangeFinderDto;
 import nts.uk.ctx.at.request.app.find.application.lateleaveearly.LateLeaveEarlyGetService;
 import nts.uk.ctx.at.request.app.find.application.lateleaveearly.dto.MessageListDto;
+import nts.uk.ctx.at.request.app.find.application.lateleaveearly.dto.PageInitDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
@@ -34,6 +37,8 @@ public class LateLeaveEarlyWebService extends WebService {
 	@Inject
 	private LateLeaveEarlyCommandHandler commandHandler;
 
+	@Inject
+	private LateEarlyUpdateCommandHandler updateCommandHandler;
 
 	@POST
 	@Path("initPage/{appType}")
@@ -63,7 +68,19 @@ public class LateLeaveEarlyWebService extends WebService {
 
 	@POST
 	@Path("initPageB")
-	public ArrivedLateLeaveEarlyInfoDto initPage_B(String appId) {
-		return this.service.getInitB(appId);
+	public ArrivedLateLeaveEarlyInfoDto initPage_B(PageInitDto input) {
+		return this.service.getInitB(input);
+	}
+
+	@POST
+	@Path("updateInfoApp")
+	public ProcessResult updateInfoApp(LateEarlyUpdateCommand command) {
+		return this.updateCommandHandler.handle(command);
+	}
+
+	@POST
+	@Path("print")
+	public void print() {
+
 	}
 }

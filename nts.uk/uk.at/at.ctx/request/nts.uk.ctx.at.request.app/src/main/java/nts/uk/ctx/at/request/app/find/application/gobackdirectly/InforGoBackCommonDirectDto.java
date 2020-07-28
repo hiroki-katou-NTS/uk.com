@@ -9,8 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkTime;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkType;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 @Data
 @AllArgsConstructor
@@ -18,9 +16,9 @@ import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 //直行直帰申請起動時の表示情報
 public class InforGoBackCommonDirectDto {
 //	勤務種類初期選択
-	private InforWorkType workType;
+	private String workType;
 //	就業時間帯初期選択
-	private InforWorkTime workTime;
+	private String workTime;
 //	申請表示情報
 	private AppDispInfoStartupDto appDispInfoStartup;
 //	直行直帰申請の反映
@@ -42,8 +40,8 @@ public class InforGoBackCommonDirectDto {
 	
 	public InforGoBackCommonDirectOutput toDomain() {
 		InforGoBackCommonDirectOutput info = new InforGoBackCommonDirectOutput();
-		info.setWorkType(new InforWorkType(workType.getWorkType(), workType.getNameWorkType()));
-		info.setWorkTime(new InforWorkTime(workTime.getWorkTime(), workTime.getNameWorkTime()));
+		info.setWorkType(workType);
+		info.setWorkTime(workTime);
 		info.setAppDispInfoStartup(appDispInfoStartup.toDomain());
 		info.setGoBackReflect(goBackReflect.toDomain());
 		info.setLstWorkType(lstWorkType.stream().map(item -> item.toDomain()).collect(Collectors.toList()));

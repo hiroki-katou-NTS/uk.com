@@ -25,7 +25,7 @@ import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeFinder;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeOutputDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeParam;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeParam_Old;
+import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeParamPC;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeRecordWorkInfoFinder;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.RecordWorkInfoDto;
@@ -152,19 +152,19 @@ public class WorkchangeService extends WebService {
 
 	@POST
 	@Path("startNew")
-	public AppWorkChangeDispInfoDto getStartNew(AppWorkChangeParam_Old param) {
+	public AppWorkChangeDispInfoDto getStartNew(AppWorkChangeParamPC param) {
 		return appWorkFinder.getStartNew(param);
 	}
 
 	@POST
 	@Path("changeAppDate")
-	public AppWorkChangeDispInfoDto_Old changeAppDate(AppWorkChangeParam_Old param) {
+	public AppWorkChangeDispInfoDto_Old changeAppDate(AppWorkChangeParamPC param) {
 		return appWorkFinder.changeAppDate(param);
 	}
 
 	@POST
 	@Path("changeWorkSelection")
-	public AppWorkChangeDispInfoDto_Old changeWorkSelection(AppWorkChangeParam_Old param) {
+	public AppWorkChangeDispInfoDto_Old changeWorkSelection(AppWorkChangeParamPC param) {
 		return appWorkFinder.changeWorkSelection(param);
 	}
 

@@ -8,9 +8,9 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 @Data
 public class InforWorkGoBackDirectOutput {
 //	勤務種類初期選択
-	private InforWorkType workType;
+	private String workType;
 //	就業時間帯初期選択
-	private InforWorkTime workTime;
+	private String workTime;
 //	勤務種類リスト
 	private List<WorkType> lstWorkType;
 	 

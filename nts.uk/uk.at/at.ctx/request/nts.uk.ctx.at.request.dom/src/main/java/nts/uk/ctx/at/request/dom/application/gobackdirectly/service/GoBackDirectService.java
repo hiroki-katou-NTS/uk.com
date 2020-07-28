@@ -33,7 +33,7 @@ public interface GoBackDirectService {
 	 * @return //直行直帰申請起動時の表示情報
 	 */
 	public InforWorkGoBackDirectOutput getInfoWorkGoBackDirect(String companyId, String employeeId, GeneralDate appDate, GeneralDate baseDate,
-			AppEmploymentSet appEmployment, List<WorkTimeSetting> lstWts);
+			AppEmploymentSet appEmployment, List<WorkTimeSetting> lstWts, AppDispInfoStartupOutput appDispInfoStartupOutput);
 	/**
 	 * 起動時勤務種類リストを取得する Refactor4
 	 * @param companyId
