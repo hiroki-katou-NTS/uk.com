@@ -7,7 +7,7 @@ module nts.uk.at.view.kmp001.a {
 <div class="sidebar-content-header">
 	<span class="title" data-bind="text: $i18n('KMP001_1')"></span>
 	<button data-bind="text: $i18n('KMP001_4'), click: addNew, enable: mode() == 'update'"></button>
-	<button class="proceed" data-bind="text: $i18n('KMP001_5')"></button>
+	<button class="proceed" data-bind="text: $i18n('KMP001_5'), click: addStampCard"></button>
 	<button class="danger" data-bind="text: $i18n('KMP001_6'), click: deleteStampCard, enable: mode() == 'update'"></button>
 	<!-- ko if: attendance -->
 	<button data-bind="text: $i18n('KMP001_7'), click: showDiaLog"></button>
@@ -205,7 +205,20 @@ module nts.uk.at.view.kmp001.a {
 					.then(() => vm.model.code.valueHasMutated());
 			}
 		}
+		
+		addStampCard() {
+			const vm = this;
+			
+			if(ko.unwrap(vm.model.code) != ''){
+				const models = ko.toJS(vm.model);
+				const stamps: share.StampCard = models.stampCardDto[0];
+				const command = { employeeId: ko.toJS(vm.model.employeeId), cardNumber: stamps };
 				debugger;
+				if (ko.toJS(vm.mode) == 'add'){
+					vm.$blockui("invisible");
+					
+					/*vm.$ajax(KMP001A_API.ADD, ))*/
+				}
 			}
 		}
 
@@ -306,34 +319,6 @@ module nts.uk.at.view.kmp001.a {
 			_.extend(window, { vm });
 		}
 	}
-
-	interface IStampCard {
-		stampCardId: string;
-		stampNumber: string;
-		checked: boolean;
-	}
-
-	class StampCard {
-		stampCardId: KnockoutObservable<string> = ko.observable('');
-		stampNumber: KnockoutObservable<string> = ko.observable('');
-		checked: KnockoutObservable<boolean> = ko.observable(false);
-
-		constructor(params?: IStampCard) {
-			const model = this;
-
-			model.update(params);
-		}
-
-		public update(params?: IStampCard) {
-			const model = this;
-
-			if (params) {
-				model.stampCardId(params.stampCardId);
-				model.stampNumber(params.stampNumber);
-				model.checked(params.checked);
-			}
-		}
-	}	
 
 	interface ISetting {
 		code: string;
