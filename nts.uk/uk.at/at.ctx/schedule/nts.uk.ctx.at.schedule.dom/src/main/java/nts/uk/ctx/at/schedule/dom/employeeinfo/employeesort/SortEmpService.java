@@ -143,6 +143,7 @@ public class SortEmpService {
 	 */
 	private static List<List<String>> sortEmpByRank(Require require, List<String> empIDs,
 			List<List<String>> listEmpIDs) {
+		List<List<String>> result = new ArrayList<>();
 		//$ランクの優先順 = require.ランクの優先順を取得する()														
 		/*if $ランクの優先順.empty																				
 		return リストのリスト*/
@@ -156,11 +157,18 @@ public class SortEmpService {
 		for(List<String> list : listEmpIDs){
 			//$未付与社員IDリスト = $社員リスト: except $社員ランクリスト.contains($)
 			List<String> listEmpUnassigned = list.stream().filter(x-> !lstEmpRank.contains(x)).collect(Collectors.toList());
+			//$付与済社員リスト = $社員ランクリスト: filter $社員リスト.contains($)															
 			List<EmployeeRank> listEmployeeRank = lstEmpRank.stream().filter(x -> list.contains(x.getSID())).collect(Collectors.toList()); 
-			//http://192.168.50.4:3000/issues/110747 --- CHờ QA
+			List<String>  listEmpRankId =  listEmployeeRank.stream().map(x -> x.getEmplRankCode().v()).collect(Collectors.toList());
+			List<String> listRankCode = rankPriority.get().getListRankCd().stream().map(x -> x.v()).collect(Collectors.toList());
+			//		$並び替えた社員IDリスト = $ランクの優先順.優先順リスト: map $																								
+			//$付与済社員リスト: filter $.ランクコード == $		
+			List<String> lstSortEmpID =  listRankCode.stream().filter(x ->listEmpRankId.contains(x)).collect(Collectors.toList());
+			//		$並び替えた社員IDリスト.add($未付与社員IDリスト)											
+			lstSortEmpID.addAll(listEmpUnassigned);	
+			result.add(lstSortEmpID);
 		}
-		
-		return null;
+		return result;
 	}
 
 	/**

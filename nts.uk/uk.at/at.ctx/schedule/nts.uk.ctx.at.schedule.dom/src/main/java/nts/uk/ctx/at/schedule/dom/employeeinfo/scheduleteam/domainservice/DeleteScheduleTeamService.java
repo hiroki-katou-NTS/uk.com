@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice;
 
 import nts.arc.task.tran.AtomTask;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamCd;
 
 /**
  * スケジュールチームを削除する
@@ -16,7 +17,7 @@ public class DeleteScheduleTeamService {
 	 * @param scheduleTeamCd
 	 * @return
 	 */
-	public static AtomTask delete(Require require,String WKPGRPID,String scheduleTeamCd){
+	public static AtomTask delete(Require require,String WKPGRPID,ScheduleTeamCd scheduleTeamCd){
 		return AtomTask.of(() -> {
 			require.deleteScheduleTeam( WKPGRPID, scheduleTeamCd);
 			require.deleteBelongScheduleTeam( WKPGRPID, scheduleTeamCd);
@@ -32,7 +33,7 @@ public class DeleteScheduleTeamService {
 		 * @param WKPGRPID
 		 * @param scheduleTeamCd
 		 */
-		public void deleteScheduleTeam(String WKPGRPID ,String scheduleTeamCd);
+		public void deleteScheduleTeam(String WKPGRPID ,ScheduleTeamCd scheduleTeamCd);
 		 
 		/**
 		 * [R-2] 所属スケジュールチームを削除する			
@@ -40,7 +41,7 @@ public class DeleteScheduleTeamService {
 		 * @param WKPGRPID
 		 * @param scheduleTeamCd
 		 */
-		public void deleteBelongScheduleTeam(String WKPGRPID , String scheduleTeamCd);
+		public void deleteBelongScheduleTeam(String WKPGRPID , ScheduleTeamCd scheduleTeamCd);
 		 
 	}
 
