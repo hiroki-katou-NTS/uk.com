@@ -403,7 +403,7 @@ module nts.uk.at.view.kdp004.a {
 				let vm = new ko.ViewModel();
 				block.invisible();
 				let data = {
-					employeeId: loginInfo ? loginInfo.em.employeeId : vm.$user.employeeId,
+					employeeId: loginInfo && loginInfo.em ? loginInfo.em.employeeId : vm.$user.employeeId,
 					datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
 					stampNumber: null,
 					stampButton: {
