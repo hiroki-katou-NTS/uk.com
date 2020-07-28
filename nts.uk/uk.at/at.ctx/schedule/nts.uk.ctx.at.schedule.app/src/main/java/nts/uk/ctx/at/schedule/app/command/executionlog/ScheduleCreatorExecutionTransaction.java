@@ -135,6 +135,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
+ * 勤務予定処理
  * ScheduleCreatorExecutionCommandHandlerから並列で実行されるトランザクション処理を担当するサービス
  */
 @Stateless
@@ -237,6 +238,7 @@ public class ScheduleCreatorExecutionTransaction {
 		}
 		try {
 			//実行区分をチェックする
+			//編集状態削除区分をチェックする
 			if(command.getContent().getImplementAtr() == ImplementAtr.DELETE_WORK_SCHEDULE) {
 				//勤務予定削除する
 				this.deleteSchedule(scheduleCreator.getEmployeeId(),period);
@@ -579,7 +581,8 @@ public class ScheduleCreatorExecutionTransaction {
 			// ドメインモデル「スケジュール作成エラーログ」を登録する
 			ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, null, dateInPeriod,
 					creator.getEmployeeId());
-			// return 社員の当日在職状態＝Null, 社員の当日労働条件＝Null, エラー＝エラー内容, 勤務予定＝Null, 処理状態＝次の日へ
+
+			// return 社員の当日在職状態＝Null, 社員の当日労働条件＝Null, エラー＝エラー内容, 勤務予定＝Null, 処理状態＝次の日へ
 			DataProcessingStatusResult result = new DataProcessingStatusResult(CID, scheduleErrorLog,
 					ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY.value), null, null, null);
 			return result;
@@ -846,7 +849,7 @@ public class ScheduleCreatorExecutionTransaction {
 					output.getExecutionLog().isPresent() ? output.getExecutionLog() : Optional.empty(),
 					output.getWorkType().isPresent() ? output.getWorkType() : Optional.empty());
 
-			// Outputを確認する - đang fake (TKT-TQP)
+			// Outputを確認する 
 			if (prepareWorkOutput.getExecutionLog().isPresent()) {
 				// 「勤務予定」、「エラー」を返す」、「処理状態
 				createScheduleOneDate = new OutputCreateScheduleOneDate(null, prepareWorkOutput.getExecutionLog().get(),
@@ -1004,7 +1007,7 @@ public class ScheduleCreatorExecutionTransaction {
 					.filter(employmentInfo -> employmentInfo.getDate().equals(dateInPeriod)).findFirst();
 		}
 		// データなし
-		// 社員の在職状態を確認する chưa làm xong
+		// 社員の在職状態を確認する 
 		// if 休職中、休業中
 		// if 休職中
 		if (!results.isEmpty() && (optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.ON_LEAVE)) {
@@ -1405,13 +1408,14 @@ public class ScheduleCreatorExecutionTransaction {
 				.getWorkScheduleBusCal().get().getReferenceBusinessDayCalendar();
 		ScheduleErrorLogGeterCommand geterCommand = new ScheduleErrorLogGeterCommand(command.getExecutionId(),
 				command.getCompanyId(), dateInPeriod);
-		// 会社の場合 - Đang để tạm ntn vì enum 営業日カレンダーの参照先 chưa được update
+		// 会社の場合 - Đang để tạm ntn vì enum 営業日カレンダーの参照先 chưa được update (update ver 2 nhưng đợt 1 đã làm luôn r)
 		if(workplaceHistItem.value != WorkScheduleMasterReferenceAtr.WORK_PLACE.value && workplaceHistItem.value != WorkScheduleMasterReferenceAtr.CLASSIFICATION.value) {
 			// ドメインモデル「会社営業日カレンダー日次」を取得する(lấy dữ liệu domain 「会社営業日カレンダー日次」)
 			Optional<CalendarCompany> optionalCalendarCompany = this.calendarCompanyRepository
 					.findCalendarCompanyByDate(command.getCompanyId(), dateInPeriod);
 			
 			// // ドメインモデル「全社基本勤務設定」を取得する
+			
 			BasicWorkSettingByClassificationGetterCommand settingByClassification = new BasicWorkSettingByClassificationGetterCommand(
 					command.getEmployeeId(), geterCommand, null,
 					optionalCalendarCompany.get().getWorkingDayAtr().value);
@@ -1459,6 +1463,7 @@ public class ScheduleCreatorExecutionTransaction {
 					return basicWorkSetting;
 				}
 			}
+			//ドメインモデル「スケジュール作成エラーログ」を登録する
 			// add log error employee => 602
 			// 取得できない
 			this.scheCreExeErrorLogHandler.addError(geterCommand, command.getEmployeeId(), "Msg_602", "#Com_Workplace");

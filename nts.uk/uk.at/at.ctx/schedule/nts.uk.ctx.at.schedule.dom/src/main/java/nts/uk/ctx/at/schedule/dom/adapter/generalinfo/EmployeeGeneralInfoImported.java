@@ -9,8 +9,8 @@ import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.employment.ExEmploymentHis
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.jobtitle.ExJobTitleHistoryImported;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkPlaceHistoryImported;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class EmployeeGeneralInfoImported {
 
 	private List<ExEmploymentHistoryImported> employmentDto;
@@ -20,5 +20,4 @@ public class EmployeeGeneralInfoImported {
 	private List<ExJobTitleHistoryImported> jobTitleDto;
 
 	private List<ExWorkPlaceHistoryImported> workplaceDto;
-
 }

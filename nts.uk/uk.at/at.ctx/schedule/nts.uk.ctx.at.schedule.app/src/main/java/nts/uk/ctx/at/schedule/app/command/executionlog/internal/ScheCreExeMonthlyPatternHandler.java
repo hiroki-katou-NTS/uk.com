@@ -79,6 +79,7 @@ public class ScheCreExeMonthlyPatternHandler {
 				workingConditionItem.getMonthlyPattern().get().v(), dateInPeriod);
 
 		// パラメータ．月間パターンをチェックする, 対象日の「月間勤務就業設定」があるかチェックする
+		
 		if (!checkMonthlyPattern(command, dateInPeriod, workingConditionItem, workMonthlySetOpt)) {
 			return;
 		}
