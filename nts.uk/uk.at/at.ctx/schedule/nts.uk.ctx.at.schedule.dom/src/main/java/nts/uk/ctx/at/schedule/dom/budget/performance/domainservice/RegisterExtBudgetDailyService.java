@@ -30,7 +30,7 @@ public class RegisterExtBudgetDailyService {
 	public static AtomTask signUp(Require require, TargetOrgIdenInfor targetOrg, ExtBudgetActItemCode itemCode,
 			GeneralDate ymd, Optional<ExtBudgetActualValue> extBudgetActualValue) {
 
-		if (extBudgetActualValue.isPresent()) {
+		if (!extBudgetActualValue.isPresent()) {
 			return AtomTask.of(() -> {
 				require.delete(targetOrg, itemCode, ymd);
 			});
