@@ -12,7 +12,8 @@ module nts.uk.at.view.kdp005.a {
 			getError: 'at/record/stamp/employment_system/get_omission_contents',
 			getStampToSuppress: 'at/record/stamp/employment_system/get_stamp_to_suppress',
             getEmployeeIdByICCard: 'at/record/stamp/ICCardStamp/getEmployeeIdByICCard',
-            authenticateOnlyStamped: 'at/record/stamp/ICCardStamp/authenticateOnlyStamped'
+            authenticateOnlyStamped: 'at/record/stamp/ICCardStamp/authenticateOnlyStamped',
+            getLogginSetting: 'ctx/sys/gateway/kdp/login/getLogginSetting'
 		}
 
 		export function startPage(): JQueryPromise<any> {
@@ -46,6 +47,9 @@ module nts.uk.at.view.kdp005.a {
 		export function getStampToSuppress(): JQueryPromise<any> {
 			return ajax("at", url.getStampToSuppress);
 		}
+        export function getLogginSetting(): JQueryPromise<any> {
+            return ajax("at", url.getLogginSetting);
+        }
 	}
 
 }

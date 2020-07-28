@@ -7,9 +7,10 @@ module nts.uk.at.view.kdp005.i {
     
 	export module viewmodel {
 		export class ScreenModel {
-            checks = ko.observable(true);
-            timeStamp = ko.observable(1000);
-            inforAuthent = getShared('ErrorMessage');
+            time = getShared('resultDisplayTime')
+            checks = ko.observable(this.time > 0);
+            timeStamp = ko.observable(this.time);
+            inforAuthent = getShared('errorMessage');
 			constructor() {
 				let self = this;
 			}
@@ -18,26 +19,12 @@ module nts.uk.at.view.kdp005.i {
                 let self = this;
                 let dfd = $.Deferred();
                 block.grayout();
-//                let param = {pageNo:1};
-//                service.getData(param).done(function(data) {
-//                    console.log(data);
-//                    if (data) {
-//                        self.stampPageLayout().update(data);
-//                        self.isDel(true);
-//                    }
-//                    $(document).ready(function() {
-//                        $('#btnClose').focus();
-//                    });
-//                    dfd.resolve();
-//                }).fail(function (res) {
-//                    error({ messageId: res.messageId });
-//                }).always(function () {
-//                    block.clear();
-//                });
                 $(document).ready(function() {
                     $('#btnClose').focus();
                 });
-                self.countDown();
+                if(self.time > 0){
+                    self.countDown();
+                }
                 block.clear();
                 dfd.resolve();
                 return dfd.promise();

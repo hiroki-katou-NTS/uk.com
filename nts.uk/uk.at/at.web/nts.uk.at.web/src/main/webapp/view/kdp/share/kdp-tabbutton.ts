@@ -24,7 +24,14 @@ module nts.uk.at.view.kdp.share {
 						if: ko.toJS($component.selected) === pageNo,
 						css: 'btn-layout-type-' + buttonLayoutType">
 					<!-- ko foreach: buttonSettings -->
-					<button class="stamp-rec-btn" data-bind="btn-setting: $data, click: function() { $component.params.click($data, ko.toJS($component.currentTab)); }"></button>
+					<button class="stamp-rec-btn"
+						data-bind="
+							btn-setting: $data,
+							click: function() { 
+								$component.params.click($data, ko.toJS($component.currentTab));
+							},
+							timeClick: -1
+						"></button>
 					<!-- /ko -->
 				</div>
 			</div>
@@ -50,9 +57,26 @@ module nts.uk.at.view.kdp.share {
 				});
 		}
 	}
+	const COMPONENT_NAME = 'kdp-tab-button-panel';
+
+	@handler({
+		bindingName: COMPONENT_NAME,
+		validatable: true,
+		virtual: false
+	})
+	export class ButtonSettingComponentBindingHandler implements KnockoutBindingHandler {
+		init(element: HTMLElement, valueAccessor: () => any, __ab: KnockoutAllBindingsAccessor, ___vm: ComponentViewModel, bindingContext: KnockoutBindingContext) {
+			const name = COMPONENT_NAME;
+			const params = valueAccessor();
+
+			ko.applyBindingsToNode(element, { component: { name, params } }, bindingContext);
+
+			return { controlsDescendantBindings: true };
+		}
+	}
 
 	@component({
-		name: 'kdp-tab-button-panel',
+		name: COMPONENT_NAME,
 		template: tabButtonTempate
 	})
 	export class kdpTabButtonComponent extends ko.ViewModel {

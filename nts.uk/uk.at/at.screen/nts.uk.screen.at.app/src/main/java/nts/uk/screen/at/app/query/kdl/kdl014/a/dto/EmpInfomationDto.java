@@ -23,7 +23,7 @@ public class EmpInfomationDto {
 	
 	private String workLocationName;
 	
-	private GeoCoordinate locationInfo;
+	private GeoCoordinateDto locationInfo;
 
 	public EmpInfomationDto(String employeeId, String code, String name, GeneralDateTime stampDateTime, Integer stampMeans,
 			String stampAtr, String workLocationName, GeoCoordinate locationInfo) {
@@ -36,7 +36,7 @@ public class EmpInfomationDto {
 		this.stampMeans = stampMeans;
 		this.stampAtr = stampAtr;
 		this.workLocationName = workLocationName;
-		this.locationInfo = locationInfo;
+		this.locationInfo = locationInfo == null? null: new GeoCoordinateDto(locationInfo.getLatitude(),locationInfo.getLongitude());
 	}
 
 	

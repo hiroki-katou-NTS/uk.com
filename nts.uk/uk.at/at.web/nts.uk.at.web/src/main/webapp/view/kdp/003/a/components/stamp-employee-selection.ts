@@ -15,16 +15,34 @@ module nts.uk.at.kdp003.a {
 					i18n: '一覧にない社員で打刻する',
 					click: loginEmployeeNotInList,
 					css: { 
-						'active': ko.unwrap(options.selectedId) === null
+						'active': ko.toJS(options.selectedId) === null
 					}"></button>
 			<div class="list-employee">
 				<table id="grid-employee"></table>
 			</div>
 		</div>
 	`;
+	
+	const COMPONENT_NAME = 'stamp-employee-selection';
+
+	@handler({
+		bindingName: COMPONENT_NAME,
+		validatable: true,
+		virtual: false
+	})
+	export class EmployeeComponentBindingHandler implements KnockoutBindingHandler {
+		init(element: HTMLElement, valueAccessor: () => any, __ab: KnockoutAllBindingsAccessor, ___vm: ComponentViewModel, bindingContext: KnockoutBindingContext) {
+			const name = COMPONENT_NAME;
+			const params = valueAccessor();
+
+			ko.applyBindingsToNode(element, { component: { name, params } }, bindingContext);
+
+			return { controlsDescendantBindings: true };
+		}
+	}
 
 	@component({
-		name: 'stamp-employee-selection',
+		name: COMPONENT_NAME,
 		template: stampEmployeeSelectionTemplate
 	})
 	export class StampEmployeeSelectionComponent extends ko.ViewModel {
@@ -44,7 +62,7 @@ module nts.uk.at.kdp003.a {
 			if (!vm.options) {
 				vm.options = {
 					employees: ko.observableArray([]),
-					selectedId: ko.observable(null),
+					selectedId: ko.observable(undefined),
 					employeeAuthcUseArt: ko.observable(true)
 				};
 			} else {
@@ -53,7 +71,7 @@ module nts.uk.at.kdp003.a {
 				}
 
 				if (!_.has(vm.options, 'selectedId')) {
-					vm.options.selectedId = ko.observable(null);
+					vm.options.selectedId = ko.observable(undefined);
 				}
 			}
 		}
@@ -66,12 +84,12 @@ module nts.uk.at.kdp003.a {
 			// mock data
 			['ア', 'カ', 'サ', 'タ', 'ナ', 'ハ', 'マ', 'ヤ', 'ラ', 'ワ']
 				.forEach((t, i) => {
-					_.extend(window.names, {
+					_.extend(names, {
 						[`KDP003_10${i}`]: t
 					});
 				});
 
-			_.extend(window.names, {
+			_.extend(names, {
 				'KDP003_111': '全員'
 			});
 
@@ -140,6 +158,7 @@ module nts.uk.at.kdp003.a {
 								break;
 						}
 
+						vm.options.selectedId(undefined);
 						$grid.igGridSelection('clearSelection');
 
 						$grid.igGrid('option', 'dataSource', _.orderBy(filtereds, ['name', 'code'], ['asc', 'asc']));
@@ -183,14 +202,14 @@ module nts.uk.at.kdp003.a {
 						{
 							name: "Selection",
 							mode: "row",
-							rowSelectionChanged: function(evt, ui) {
+							rowSelectionChanged: function(__: any, ui: any) {
 								const { index } = ui.row;
-								const dataSources = ko.unwrap(vm.options.employees);
+								const dataSources = $grid.igGrid('option', 'dataSource');
 
 								if (dataSources[index]) {
 									vm.options.selectedId(dataSources[index].id);
 								} else {
-									vm.options.selectedId(null);
+									vm.options.selectedId(undefined);
 
 									if ($grid && $grid.data('igGrid')) {
 										$grid.igGridSelection('clearSelection');
@@ -212,7 +231,7 @@ module nts.uk.at.kdp003.a {
 				.on('resize', () => {
 					const grid = $grid.get(0);
 
-					if (grid) {
+					if (grid && $grid.data('igGrid')) {
 						const top = grid.getBoundingClientRect().top;
 						const minHeight = 65 * 3;
 						const maxHeight = Math.floor((window.innerHeight - top - 20) / 65) * 65;
@@ -235,7 +254,7 @@ module nts.uk.at.kdp003.a {
 		}
 
 		destroy() {
-			const vm  = this;
+			const vm = this;
 			console.log('destroy', vm);
 		}
 	}
@@ -251,9 +270,21 @@ module nts.uk.at.kdp003.a {
 		name: string;
 	}
 
+	export interface EmployeeListData {
+		employees: Employee[];
+		/**
+		* employeeId
+		* string: selected
+		* null: select to 一覧にない社員で打刻する
+		* undefined: not select
+		*/
+		selectedId: string | null | undefined;
+		employeeAuthcUseArt: boolean;
+	}
+
 	export interface EmployeeListParam {
 		employees: KnockoutObservableArray<Employee>;
-		selectedId: KnockoutObservable<string | null>;
+		selectedId: KnockoutObservable<string | null | undefined>;
 		employeeAuthcUseArt: KnockoutObservable<boolean>;
 	}
 }

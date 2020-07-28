@@ -23,31 +23,38 @@
 			<div id="contents-area" class="cf">
 				<div id="kdp002a" class="cf">
 					<div class="pull-left" id="stamp-input">
-					
-					<!-- clock -->
-					<div data-bind="component: {
+
+						<!-- clock -->
+						<div data-bind="component: {
 							name: 'stamp-clock',
 							params: {
 								setting: {
-									textColor: stampSetting().textColor,
-									backGroundColor:  stampSetting().backGroundColor
+									show:true,
+									textColor: stampSetting().textColor || '#ffffff',
+									backGroundColor:  stampSetting().backGroundColor || '#0033cc'
 								},
 								events: {
-									setting: function(data, event) { settingUser($vm)},
-									company: function(data, event) { checkHis($vm) }
+									setting:{
+										show: btnChangeCompany,
+										click:  function(data, event) { settingUser($vm)}
+									} ,
+									company:{
+										show: btnHistory,
+										click:  function(data, event) { checkHis($vm) }
+									} 
 								}
 							}
 						}">
-					</div>
-					
-					<!-- stamp -->						
-					<div data-bind="if:isUsed, visible: isUsed" class="panel" style="padding: 0 10px 0px 10px">
+						</div>
+
+						<!-- stamp -->						
+					<div data-bind="if:isUsed" class="panel" style="padding: 0 10px 0px 10px">
 						<div class="explanatoryText" data-bind="style: {'color': stampTab().stampPageCommentColor }">
 							<pre data-bind="text: stampTab().stampPageComment"></pre>
 						</div>
 						<ui:include src="stamp-tab.xhtml" />
 					</div>
-					<div style="padding: 0 10px 10px 80px" data-bind="ifnot:isUsed, visible: !isUsed">
+					<div style="padding: 0 10px 10px 80px" data-bind="ifnot:isUsed">
 						<span class=" not_used_label label " data-bind="text:errorMessage"></span>
 					</div>
 					</div>

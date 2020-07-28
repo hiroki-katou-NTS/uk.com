@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
+import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
@@ -111,13 +112,17 @@ public class ReferToTheStampingResultsFinder {
 	
 	private List<WorkLocation> step3(List<EmployeeStampInfo> listEmployeeStampInfo) {
 		
-		List<String> listWorkLocationCode = listEmployeeStampInfo.stream()
-				.flatMap(m -> m.getListStampInfoDisp().stream()).flatMap(m -> m.getStamp().stream())
-				.filter(m -> m.getRefActualResults().getWorkLocationCD().isPresent())
-				.map(m -> m.getRefActualResults().getWorkLocationCD().get()).map(m -> m.v()).distinct()
-				.collect(Collectors.toList());
+		List<StampInfoDisp> listStampInfoDisp = listEmployeeStampInfo.stream().flatMap(m->m.getListStampInfoDisp().stream()).collect(Collectors.toList());
+		
+		List<Stamp> listStamp = listStampInfoDisp.stream().flatMap(m -> m.getStamp().stream()).collect(Collectors.toList());
+		
+		List<WorkLocationCD> listWorkLocation = listStamp.stream().filter(m->m.getRefActualResults().getWorkLocationCD().isPresent()).map(m->m.getRefActualResults().getWorkLocationCD().get()).collect(Collectors.toList());
 
-		return workLocationRepo.findByCodes(AppContexts.user().companyId(), listWorkLocationCode);
+		List<String> listWorkLocationCode = listWorkLocation.stream().map(m->m.v()).distinct().collect(Collectors.toList());
+		
+		List<WorkLocation> workLocationList = workLocationRepo.findByCodes(AppContexts.user().companyId(), listWorkLocationCode);
+		
+		return workLocationList;
 	}
 
 	private ReferToTheStampingResultsDto step4(List<EmployeeStampInfo> listEmployeeStampInfo,

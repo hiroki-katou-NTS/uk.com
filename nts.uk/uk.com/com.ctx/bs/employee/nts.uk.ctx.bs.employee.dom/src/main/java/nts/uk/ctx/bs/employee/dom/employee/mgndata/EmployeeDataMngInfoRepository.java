@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.GeneralPeriod;
 import nts.uk.ctx.bs.employee.dom.employee.service.dto.EmployeeIdPersonalIdDto;
 
 public interface EmployeeDataMngInfoRepository {
@@ -183,5 +185,7 @@ public interface EmployeeDataMngInfoRepository {
 	List<EmployeeDataMngInfo> findBySidDel(List<String> sid);
 	
 	Map<String, String> getAllSidAndScdBySids(List<String> sids);
+
+	Optional<EmployeeDataMngInfo> findByScdNotDel(String employeeCd, String companyId);
 	
 }

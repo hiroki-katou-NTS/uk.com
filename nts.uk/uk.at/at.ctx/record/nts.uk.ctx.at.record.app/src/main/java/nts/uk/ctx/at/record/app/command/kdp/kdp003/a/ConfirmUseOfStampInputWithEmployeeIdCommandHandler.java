@@ -78,11 +78,15 @@ extends CommandHandlerWithResult<ConfirmUseOfStampInputCommandWithEmployeeId, Co
 
 		StampFunctionAvailableServiceRequireImpl require = new StampFunctionAvailableServiceRequireImpl(stampUsageRepo,
 				stampCardRepo, stampCardEditRepo, companyAdapter, sysEmpPub, stampRecordRepo, stampDakokuRepo,
-				createDailyResultDomainSv);
+				createDailyResultDomainSv,context.getCommand().getCompanyId());
+		//tam thời chưa lấy được employeeId nên phải code thế này
+		
+		String employeeId = this.sysEmpPub
+				.findByScdNotDel(context.getCommand().getEmployeeCode(), context.getCommand().getCompanyId())
+				.map(x -> x.getEmployeeId()).orElse(AppContexts.user().employeeId());
 
 		StampMeans stampMeans = EnumAdaptor.valueOf(context.getCommand().getStampMeans(), StampMeans.class);
-
-		String employeeId = context.getCommand().getEmployeeId();
+		
 		// 1. 判断する(@Require, 社員ID, 打刻手段)
 		MakeUseJudgmentResults jugResult = StampFunctionAvailableService.decide(require, employeeId, stampMeans);
 		// not 打刻カード作成結果 empty
@@ -125,6 +129,8 @@ extends CommandHandlerWithResult<ConfirmUseOfStampInputCommandWithEmployeeId, Co
 
 		@Inject
 		private CreateDailyResultDomainService createDailyResultDomainSv;
+		
+		private String compnayId;
 
 		@Override
 		public List<EmployeeDataMngInfoImport> findBySidNotDel(List<String> sids) {
@@ -153,7 +159,7 @@ extends CommandHandlerWithResult<ConfirmUseOfStampInputCommandWithEmployeeId, Co
 
 		@Override
 		public Optional<SettingsUsingEmbossing> get() {
-			return this.stampUsageRepo.get(AppContexts.user().companyId());
+			return this.stampUsageRepo.get(compnayId);
 		}
 
 		@Override
