@@ -47,13 +47,19 @@ module nts.uk.at.kdp003.s {
 							const d = moment(item.stampDate, 'YYYY/MM/DD');
 							const day = d.clone().locale('en').format('dddd');
 
+							// bad algorithm :/
+							const LEFT_ALIGNS = ['出勤', '出勤＋直行', '出勤＋早出', '出勤＋休出', '臨時出勤', '応援開始', '応援開始＋休出', '応援開始＋早出', '臨時退勤', '入門'];
+							const RIGHT_ALIGNS = ['退勤', '退勤＋直帰', '退勤＋産業', '応援終了', '臨時退勤', '退門'];
+
 							const pushable = {
 								id: randomId(),
 								time: `${item.stampHow} ${item.stampTime}`,
 								date: `<div class="color-schedule-${day.toLowerCase()}">${d.format('YYYY/MM/DD(dd)')}</div>`,
-								name: `<div style="text-align: ${item.changeClockArt === 0 ? 'left' : item.changeClockArt === 1 ? 'right' : 'center'};">${item.stampArt}</div>`
+								name: `<div style="text-align: ${LEFT_ALIGNS.indexOf(item.changeClockArtName) > -1 ? 'left' :
+									RIGHT_ALIGNS.indexOf(item.changeClockArtName) > -1 ? 'right' : 'center'};">${item.stampArt}</div>`
 							};
 
+							// S1 bussiness logic
 							switch (engraving) {
 								default:
 								case '1':
@@ -69,7 +75,6 @@ module nts.uk.at.kdp003.s {
 										filtereds.push(pushable);
 									}
 								case '4':
-									// S1 bussiness logic
 									if ([FIX, END_OF_SUPPORT, SUPPORT, TEMPORARY_SUPPORT_WORK].indexOf(item.changeClockArt) > -1) {
 										filtereds.push(pushable);
 									}
@@ -112,47 +117,88 @@ module nts.uk.at.kdp003.s {
 	export type ENGRAVING = '1' | '2' | '3' | '4';
 
 	export enum ChangeClockArt {
-		GOING_TO_WORK = 0, // 出勤
+		/** 0. 出勤 */
+		GOING_TO_WORK = 0,
 
-		/** 退勤 */
+		/** 1. 退勤 */
 		WORKING_OUT = 1,
 
-		/** 入門 */
+		/** 2. 入門 */
 		OVER_TIME = 2,
 
-		/** 退門 */
+		/** 3. 退門 */
 		BRARK = 3,
 
-		/** 外出 */
+		/** 4. 外出 */
 		GO_OUT = 4,
 
-		/** 戻り */
+		/** 5. 戻り */
 		RETURN = 5,
 
-		/** 応援開始 */
+		/** 6. 応援開始 */
 		FIX = 6,
 
-		/** 臨時出勤 */
+		/** 7. 臨時出勤 */
 		TEMPORARY_WORK = 7,
 
-		/** 応援終了 */
+		/** 8. 応援終了 */
 		END_OF_SUPPORT = 8,
 
-		/** 臨時退勤 */
+		/** 9. 臨時退勤 */
 		TEMPORARY_LEAVING = 9,
 
-		/** PCログオン */
+		/** 10. PCログオン */
 		PC_LOG_ON = 10,
 
-		/** PCログオフ */
+		/** 11. PCログオフ */
 		PC_LOG_OFF = 11,
 
-		/** 応援出勤 */
+		/** 12. 応援出勤 */
 		SUPPORT = 12,
 
-		/** 臨時+応援出勤 */
+		/** 13. 臨時+応援出勤 */
 		TEMPORARY_SUPPORT_WORK = 13
 	}
+
+	enum ChangeCalArt {
+		/** N: なし */
+		NONE = 0,
+
+		/** N: 早出 */
+		EARLY_APPEARANCE = 1,
+
+		/** N: 残業 */
+		OVER_TIME = 2,
+
+		/** N: 休出 */
+		BRARK = 3,
+
+		/** N: ﾌﾚｯｸｽ */
+		FIX = 4
+	}
+
+	const WORKTYPE = {
+		'出勤': 1,
+		'出勤＋直行': 2,
+		'出勤＋早出': 3,
+		'出勤＋休出': 4,
+		'退勤': 5,
+		'退勤＋直帰': 6,
+		'退勤＋産業': 7,
+		'外出': 8,
+		'戻り': 9,
+		'入門': 10,
+		'退門': 11,
+		'臨時出勤': 12,
+		'臨時退勤': 13,
+		'応援開始': 14,
+		'応援終了': 15,
+		'出勤＋応援': 16,
+		'応援開始＋早出': 17,
+		'応援開始＋休出': 18,
+		'予約': 19,
+		'予約取消': 20,
+	};
 
 	export interface Filter {
 		day: KnockoutObservable<number>;
@@ -168,8 +214,8 @@ module nts.uk.at.kdp003.s {
 		attendanceTime: string;
 		authcMethod: number;
 		cardNumberSupport: string;
-		changeCalArt: number;
-		changeClockArt: number;
+		changeCalArt: ChangeCalArt;
+		changeClockArt: ChangeClockArt;
 		changeClockArtName: string;
 		changeHalfDay: boolean;
 		corectTtimeStampType: string;

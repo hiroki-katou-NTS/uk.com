@@ -18,7 +18,10 @@ module nts.uk.at.kdp003.a {
 	const DIALOG = {
 		F: '/view/kdp/003/f/index.xhtml',
 		K: '/view/kdp/003/k/index.xhtml',
-		S: '/view/kdp/003/s/index.xhtml'
+		S: '/view/kdp/003/s/index.xhtml',
+		KDP002_B: '/view/kdp/002/b/index.xhtml',
+		KDP002_C: '/view/kdp/002/c/index.xhtml',
+		KDP002_T: '/view/kdp/002/t/index.xhtml'
 	};
 
 	const KDP003_SAVE_DATA = 'KDP003_DATA';
@@ -60,6 +63,8 @@ module nts.uk.at.kdp003.a {
 					turnBack: false
 				})
 			};
+
+		fingerStampSetting: KnockoutObservable<FingerStampSetting | null> = ko.observable(null);
 
 		mounted() {
 			const vm = this;
@@ -221,6 +226,8 @@ module nts.uk.at.kdp003.a {
 				.then((data: FingerStampSetting) => {
 					if (data) {
 						const { stampSetting } = data;
+
+						vm.fingerStampSetting(data);
 
 						if (stampSetting) {
 							const { employeeAuthcUseArt } = stampSetting;
@@ -409,7 +416,39 @@ module nts.uk.at.kdp003.a {
 					return vm.$window.modal('at', DIALOG.F, params);
 				})
 				.then((data: f.TimeStampLoginData) => {
-					console.log(data);
+					if (data && !data.msgErrorId && !data.errorMessage) {
+
+						if (data.em) {
+							const mode: number = 1;
+							const { employeeId, employeeCode } = data.em;
+							const fingerStampSetting = ko.unwrap(vm.fingerStampSetting);
+							const employeeInfo = { mode, employeeId, employeeCode };
+							// shorten name
+							const { modal, storage } = vm.$window;
+
+							if (fingerStampSetting) {
+								const { stampResultDisplay } = fingerStampSetting;
+								const { displayItemId } = stampResultDisplay;
+								const { USE } = share.NotUseAtr;
+								const { WORKING_OUT, TEMPORARY_LEAVING } = share.ChangeClockArt;
+
+								if (stampResultDisplay.notUseAttr === USE && [WORKING_OUT, TEMPORARY_LEAVING].indexOf(btn.changeClockArt) > -1) {
+									return storage('KDP010_2C', displayItemId)
+										.then(() => storage('infoEmpToScreenC', employeeInfo))
+										.then(() => modal('at', DIALOG.KDP002_C)) as JQueryDeferred<any>;
+								} else {
+									const { stampSetting } = fingerStampSetting;
+									const { resultDisplayTime } = stampSetting;
+
+									return storage('resultDisplayTime', resultDisplayTime)
+										.then(() => storage('infoEmpToScreenB', { employeeId }))
+										.then(() => modal('at', DIALOG.KDP002_B)) as JQueryDeferred<any>;
+								}
+							}
+						}
+					}
+
+					return null;
 				})
 				// always relead setting (color & type of all button in tab)
 				.always(reloadSetting);
