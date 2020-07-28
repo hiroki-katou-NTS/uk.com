@@ -116,7 +116,8 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 			workTimeCD = goBackDirectly.getSiftCD().map(x -> x.v()).orElse("");
 		} else {
 			// 実績の取得
-			AchievementOutput achievementOutput = collectAchievement.getAchievement(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
+			/*AchievementOutput achievementOutput = collectAchievement.getAchievement(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());*/
+			AchievementOutput achievementOutput = null;
 			workTimeCD = achievementOutput.getWorkTime().getWorkTimeCD();
 			workTypeCD = achievementOutput.getWorkType().getWorkTypeCode();
 		}

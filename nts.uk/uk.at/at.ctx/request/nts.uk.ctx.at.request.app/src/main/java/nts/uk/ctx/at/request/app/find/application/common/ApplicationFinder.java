@@ -88,9 +88,10 @@ public class ApplicationFinder {
 	}
 	
 	public AchievementOutput getDetailRealData(String appID){
-		String companyID = AppContexts.user().companyId();
+		/*String companyID = AppContexts.user().companyId();
 		Application_New app = applicationRepository.findByID(companyID, appID).get();
-		return collectAchievement.getAchievement(companyID, app.getEmployeeID(), app.getAppDate());
+		return collectAchievement.getAchievement(companyID, app.getEmployeeID(), app.getAppDate());*/
+		return null;
 	}
 	
 	public DetailMobDto getDetailMob(String appID){

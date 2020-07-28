@@ -1130,8 +1130,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			return null;
 		}
 		// アルゴリズム「実績の取得」を実行する
-		AchievementOutput achievement = collectAchievement.getAchievement(cId, application.getAppID(),
-				application.getAppDate());
+		/*AchievementOutput achievement = collectAchievement.getAchievement(cId, application.getAppID(),
+				application.getAppDate());*/
+		AchievementOutput achievement = null;
 		// アルゴリズム「勤務実績の取得」を実行する
 		List<AttendanceResultImport> listAttendanceResult = this.getAttendanceResult(application);
 		return new ApprovalSttDetailRecord(listAttendanceResult, achievement);

@@ -464,7 +464,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		// 申請日付チェック
 		if(date != null) {
 			// INPUT．「実績詳細」をチェックする
-			if(Strings.isNotBlank(achievementDetail.getWorkTypeCD()) && Strings.isNotBlank(achievementDetail.getWorkTimeCD())) {
+			if(Strings.isNotBlank(achievementDetail.getWorkTypeCD()) 
+					&& Strings.isNotBlank(achievementDetail.getWorkTimeCD())) {
 				// 12.マスタ勤務種類、就業時間帯データをチェック
 				CheckWorkingInfoResult checkWorkingInfoResult = otherCommonAlgorithm.checkWorkingInfo(
 						companyID, 

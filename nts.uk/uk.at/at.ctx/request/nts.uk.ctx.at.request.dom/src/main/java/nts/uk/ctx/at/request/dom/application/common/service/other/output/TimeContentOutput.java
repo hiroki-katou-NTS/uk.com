@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.other.output;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
@@ -9,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  * @author Doan Duy Hung
  *
  */
+@AllArgsConstructor
 @Getter
 public class TimeContentOutput {
 	

@@ -179,12 +179,12 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 				overtimeHours = printColor(overtimeHours,overtimeCal);
 			}else{
 				// Imported(申請承認)「実績内容」.就業時間帯コード = 画面上の就業時間帯
-				overtimeCal = recordWorkInfoImport.getOvertimeCaculation();
+				/*overtimeCal = recordWorkInfoImport.getOvertimeCaculation();
 				OvertimeInputCaculation overtimeInputCaculationShiftNight = new OvertimeInputCaculation(1, 11, recordWorkInfoImport.getShiftNightCaculation());
 				OvertimeInputCaculation overtimeInputCaculationFlex = new OvertimeInputCaculation(1, 12, recordWorkInfoImport.getFlexCaculation());
 				overtimeCal.add(overtimeInputCaculationShiftNight);
 				overtimeCal.add(overtimeInputCaculationFlex);
-				overtimeHours = printColor(overtimeHours,overtimeCal);
+				overtimeHours = printColor(overtimeHours,overtimeCal);*/
 			}
 		}else{
 			// 出勤または退勤打刻なし
@@ -209,12 +209,12 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 			if(siftCD != null && !siftCD.equals(recordWorkInfoImport.getWorkTimeCode())){
 				overtimeHours = printColor(overtimeHours, overtimeInputCaculations);
 			}else{
-				List<OvertimeInputCaculation> cals = recordWorkInfoImport.getOvertimeCaculation();
+				/*List<OvertimeInputCaculation> cals = recordWorkInfoImport.getOvertimeCaculation();
 				OvertimeInputCaculation overtimeInputCaculationShiftNight = new OvertimeInputCaculation(1, 11, recordWorkInfoImport.getShiftNightCaculation());
 				OvertimeInputCaculation overtimeInputCaculationFlex = new OvertimeInputCaculation(1, 12, recordWorkInfoImport.getFlexCaculation());
 				cals.add(overtimeInputCaculationShiftNight);
 				cals.add(overtimeInputCaculationFlex);
-				overtimeHours = printColor(overtimeHours, cals);
+				overtimeHours = printColor(overtimeHours, cals);*/
 			}
 			
 		}

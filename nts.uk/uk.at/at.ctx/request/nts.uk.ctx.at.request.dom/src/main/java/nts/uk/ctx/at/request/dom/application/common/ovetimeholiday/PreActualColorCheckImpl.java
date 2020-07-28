@@ -192,7 +192,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 						.stream().map(x -> OvertimeColorCheck.createActual(3, x.getKey(), x.getValue())).collect(Collectors.toList()));
 			}
 		} else {
-			if(appType==ApplicationType_Old.OVER_TIME_APPLICATION) {
+			/*if(appType==ApplicationType_Old.OVER_TIME_APPLICATION) {
 				actualLst.addAll(recordWorkInfoImport.getOvertimeCaculation().stream()
 						.map(x -> OvertimeColorCheck.createActual(x.getAttendanceID(), x.getFrameNo(), x.getResultCaculation())).collect(Collectors.toList()));
 				actualLst.add(OvertimeColorCheck.createActual(1, 11, recordWorkInfoImport.getShiftNightCaculation()));
@@ -200,7 +200,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			} else {
 				actualLst.addAll(recordWorkInfoImport.getOvertimeHolidayCaculation().stream()
 						.map(x -> OvertimeColorCheck.createActual(x.getAttendanceID(), x.getFrameNo(), x.getResultCaculation())).collect(Collectors.toList()));
-			}
+			}*/
 		}
 		return new ActualStatusCheckResult(
 				actualStatus, 
