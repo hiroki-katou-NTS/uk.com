@@ -47,7 +47,6 @@ module nts.uk.at.view.kmp001.a {
 		public baseDate: KnockoutObservable<string> = ko.observable('');
 		public currentCodes: KnockoutObservableArray<string> = ko.observableArray([]);
 		public mode: KnockoutObservable<MODE> = ko.observable('update');
-		public modelStamp: StampCard = new StampCard();
 
 		created() {
 			const vm = this;
@@ -60,12 +59,7 @@ module nts.uk.at.view.kmp001.a {
 					if (current) {
 						vm.$ajax(KMP001A_API.GET_INFOMAITON_EMPLOYEE + "/" + ko.toJS(current.employeeId) + "/" + ko.toJS(current.affiliationId) + "/" + ko.toJS(vm.baseDate))
 							.then((data: IModel) => {
-								if (data.stampCardDto.length > 0) {
-									data.stampCardDto[0].checked = true;
-									vm.modelStamp.update(data.stampCardDto[0]);
-								}
 								vm.model.update(ko.toJS(data));
-								debugger;
 							});
 					}
 					vm.mode("update");
@@ -73,32 +67,13 @@ module nts.uk.at.view.kmp001.a {
 
 			vm.employees
 				.subscribe(() => {
-					vm.$blockui("invisible")
-					vm.$ajax(KMP001A_API.GET_STATUS_SETTING, ko.toJS(vm.employeeIds))
-						.then((data: IEmployeeId[]) => {
-							const employees: IModel[] = ko.toJS(vm.employees);
-							const modelSetting = new Setting();
-							for (var i = 0; i < data.length; i++) {
-								const setting = _.find(employees, e => e.employeeId === data[i].employee);
-
-								if (setting) {
-									modelSetting.code(setting.code);
-									modelSetting.isAlreadySetting(true);
-									vm.settings.push(ko.toJS(modelSetting));
-								}
-							}
-							if (ko.toJS(vm.model.code) == '') {
-								vm.model.code(employees[0].code);
-							}
-						}).then(() => {
-							vm.$blockui("clear");
-						});
+					vm.reloadData(0);
 				})
 		}
 
 		mounted() {
 			const vm = this;
-			vm.$errors('clear');  
+			vm.$errors('clear');
 			const dataFormate = 'YYYY/MM/DD';
 
 			if (!!vm.$user.role.attendance) {
@@ -216,17 +191,47 @@ module nts.uk.at.view.kmp001.a {
 		}
 
 		deleteStampCard() {
-			const vm = this;
-			const model: IModel = ko.toJS(vm.model);
-			const checkeds = model.stampCardDto.filter((f) => f.checked);
+			const vm = this,
+				model: IModel = ko.toJS(vm.model),
+				checkeds = model.stampCardDto.filter((f) => f.checked),
+				index = _.map(ko.unwrap(vm.employees), m => m.code).indexOf(model.code);
 
 			if (checkeds != null) {
 				const command = { employeeId: model.employeeId, cardNumbers: checkeds.map(m => m.stampNumber), cardId: checkeds.map(m => m.stampCardId) };
 
 				vm.$ajax(KMP001A_API.DELETE, command)
-					.then(() => vm.$dialog.info({ messageId: "Msg_16" }));
+					.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
+					.then(() => vm.reloadData(index))
+					.then(() => vm.model.code.valueHasMutated());
+			}
+		}
 				debugger;
 			}
+		}
+
+		reloadData(selectedIndex: number = 0) {
+			const vm = this;
+
+			vm.$blockui("invisible")
+			vm.$ajax(KMP001A_API.GET_STATUS_SETTING, ko.toJS(vm.employeeIds))
+				.then((data: IEmployeeId[]) => {
+					const employees: IModel[] = ko.toJS(vm.employees);
+					const modelSetting = new Setting();
+					for (var i = 0; i < data.length; i++) {
+						const setting = _.find(employees, e => e.employeeId === data[i].employee);
+
+						if (setting) {
+							modelSetting.code(setting.code);
+							modelSetting.isAlreadySetting(true);
+							vm.settings.push(ko.toJS(modelSetting));
+						}
+					}
+					if (ko.toJS(vm.model.code) == '') {
+						vm.model.code(employees[selectedIndex].code);
+					}
+				}).then(() => {
+					vm.$blockui("clear");
+				});
 		}
 	}
 
