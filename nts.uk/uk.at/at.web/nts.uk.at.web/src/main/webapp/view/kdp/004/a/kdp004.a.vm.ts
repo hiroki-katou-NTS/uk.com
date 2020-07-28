@@ -365,7 +365,7 @@ module nts.uk.at.view.kdp004.a {
 				let vm = new ko.ViewModel();
 				self.doAuthent().done((res: IAuthResult) => {
 					if (res.isSuccess) {
-						vm.$window.modal('at', '/view/kdp/003/s/index.xhtml');
+						vm.$window.modal('at', '/view/kdp/003/s/index.xhtml', res.em);
 					}
 				});
 			}
@@ -446,7 +446,7 @@ module nts.uk.at.view.kdp004.a {
 				setShared("infoEmpToScreenB", {
 					employeeId: loginInfo ? loginInfo.employeeId : vm.$user.employeeId,
 					employeeCode: loginInfo ? loginInfo.employeeCode : vm.$user.employeeCode,
-					employeeName: loginInfo.employeeName,
+					employeeName: loginInfo ? loginInfo.employeeName : self.loginInfo.employeeName,
 					mode: Mode.Personal,
 				});
 
