@@ -20,7 +20,6 @@ public class GetListWorkInforUsedDailyAttendanceRecord {
 	 * @return
 	 */
 	public static  List<WorkInformation>  getListWorkInfo(List<WorkInfoOfDailyAttendance> listWorkInfoOfDailyPerformance){
-		
 		List<WorkInformation> result = new ArrayList<>();
 		List<WorkInformation> data = listWorkInfoOfDailyPerformance.stream().map(c ->c.getRecordInfo()).collect(Collectors.toList());
 		//Distin Work Time Work Hour
