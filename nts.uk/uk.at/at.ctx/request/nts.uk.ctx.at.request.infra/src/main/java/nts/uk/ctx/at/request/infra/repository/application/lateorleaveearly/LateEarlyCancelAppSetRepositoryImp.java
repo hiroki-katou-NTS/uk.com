@@ -6,7 +6,6 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSetRepository;
 import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.applicationlatearrival.KrqstAppLateOrEarly;
@@ -25,11 +24,4 @@ public class LateEarlyCancelAppSetRepositoryImp extends JpaRepository implements
 				.paramString("companyId", companyId).getSingle(e -> KrqstAppLateOrEarly.MAPPER.toEntity(e).toDomain());
 		return result.isPresent() ? result.get() : null;
 	}
-
-	@Override
-	public ArrivedLateLeaveEarly getLateEarlyApp(String companyId, String appid) {
-
-		return null;
-	}
-
 }

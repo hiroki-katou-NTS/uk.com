@@ -9,16 +9,20 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 @Getter
 @AllArgsConstructor
 public class LateEarlyCancelAppSetDto {
-	
+
 	private String companyId;
-	
+
 	private int cancelAtr;
-	
+
+	private int lateAlClearAtr;
+
 	public static LateEarlyCancelAppSetDto fromDomain(LateEarlyCancelAppSet lateEarlyCancelAppSet) {
-		return new LateEarlyCancelAppSetDto(lateEarlyCancelAppSet.getCompanyID(), lateEarlyCancelAppSet.getCancelAtr().value);
+		return new LateEarlyCancelAppSetDto(lateEarlyCancelAppSet.getCompanyID(),
+				lateEarlyCancelAppSet.getCancelAtr().value, lateEarlyCancelAppSet.getLateAlClearAtr());
 	}
-	
+
 	public LateEarlyCancelAppSet toDomain() {
-		return new LateEarlyCancelAppSet(this.companyId, EnumAdaptor.valueOf(this.getCancelAtr(), CancelAtr.class));
+		return new LateEarlyCancelAppSet(this.companyId, EnumAdaptor.valueOf(this.getCancelAtr(), CancelAtr.class),
+				this.lateAlClearAtr);
 	}
 }

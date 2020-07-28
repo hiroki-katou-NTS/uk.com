@@ -5,7 +5,9 @@ import java.util.List;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoOutput;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateEarlyDateChangeOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSet;
@@ -62,5 +64,15 @@ public interface LateLeaveEarlyService {
 	 * @param appId
 	 * @return
 	 */
-	ArrivedLateLeaveEarlyInfoOutput getInitB(String appId);
+	ArrivedLateLeaveEarlyInfoOutput getInitB(String appId, AppDispInfoStartupOutput infoStartupOutput);
+
+	/**
+	 * 遅刻早退報告申請の登録更新
+	 *
+	 * @param companyId
+	 * @param application
+	 * @param arrivedLateLeaveEarly
+	 * @return
+	 */
+	ProcessResult update(String companyId, Application application, ArrivedLateLeaveEarly arrivedLateLeaveEarly);
 }

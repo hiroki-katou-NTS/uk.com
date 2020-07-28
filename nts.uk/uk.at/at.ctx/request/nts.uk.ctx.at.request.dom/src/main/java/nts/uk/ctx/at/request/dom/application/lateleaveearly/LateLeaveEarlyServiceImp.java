@@ -15,7 +15,8 @@ import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
@@ -68,7 +69,10 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 	private NewAfterRegister_New newAfterRegister;
 
 	@Inject
-	private DetailAppCommonSetService detailAppCommonSetService;
+	private DetailBeforeUpdate updateService;
+
+	@Inject
+	private DetailAfterUpdate afterUpdateService;
 
 	/*
 	 * (non-Javadoc)
@@ -390,10 +394,10 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 	 */
 	private List<ConfirmMsgOutput> checkError(String companyID, int appType, boolean agentAtr, boolean isNew,
 			ArrivedLateLeaveEarlyInfoOutput infoOutput, Application application) {
-		List<ConfirmMsgOutput> listMsg;
+		List<ConfirmMsgOutput> listMsg = new ArrayList<>();
 
 		// 事前制約をチェックする (Kiểm tra các ràng buộc trước)
-		if (isNew) {
+		if (application.getPrePostAtr().value == 0) {
 			// 事前モード：
 			// 「出勤時刻・退勤時刻・出勤時刻２・退勤時刻２」か１つは入力必須
 			if (infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst()
@@ -446,7 +450,9 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 					null);
 		} else {
 			// 4-1.詳細画面登録前の処理
-			listMsg = null;
+			this.updateService.processBeforeDetailScreenRegistration(companyID, application.getEmployeeID(),
+					application.getAppDate().getApplicationDate(), EmploymentRootAtr.APPLICATION.value,
+					application.getAppID(), application.getPrePostAtr(), application.getVersion(), null, null);
 		}
 
 		return listMsg;
@@ -517,16 +523,17 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 	 * getInitB(java.lang.String)
 	 */
 	@Override
-	public ArrivedLateLeaveEarlyInfoOutput getInitB(String appId) {
+	public ArrivedLateLeaveEarlyInfoOutput getInitB(String appId, AppDispInfoStartupOutput infoStartupOutput) {
 
 		String companyId = AppContexts.user().companyId();
 
-		// 14-1.詳細画面起動前申請共通設定を取得する
-		AppDispInfoStartupOutput appDispInfoStartupOutput = this.detailAppCommonSetService
-				.getCommonSetBeforeDetail(companyId, appId);
+		// // 14-1.詳細画面起動前申請共通設定を取得する
+		// AppDispInfoStartupOutput appDispInfoStartupOutput =
+		// this.detailAppCommonSetService
+		// .getCommonSetBeforeDetail(companyId, appId);
 
 		// 遅刻早退取消初期（詳細）
-		ArrivedLateLeaveEarlyInfoOutput info = this.initLateEarlyDetail(companyId, appId, appDispInfoStartupOutput);
+		ArrivedLateLeaveEarlyInfoOutput info = this.initLateEarlyDetail(companyId, appId, infoStartupOutput);
 		return info;
 	}
 
@@ -540,10 +547,64 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 	 */
 	private ArrivedLateLeaveEarlyInfoOutput initLateEarlyDetail(String companyId, String appid,
 			AppDispInfoStartupOutput infoStartupOutput) {
+		ArrivedLateLeaveEarlyInfoOutput output = new ArrivedLateLeaveEarlyInfoOutput();
+		Application application = infoStartupOutput.getAppDetailScreenInfo().get().getApplication();
+
 		// ドメインモデル「遅刻早退取消申請」を取得する
 		// (Lấy domain 「遅刻早退取消申請」)
-		ArrivedLateLeaveEarly arrivedLateLeaveEarly = this.cancelAppSetRepository.getLateEarlyApp(companyId, appid);
+		ArrivedLateLeaveEarly arrivedLateLeaveEarly = this.lateEarlyRepository.getLateEarlyApp(companyId, appid,
+				application);
 
+		// ドメインモデル「遅刻早退取消申請設定」を取得する
+		// (Lấy domain 「遅刻早退取消申請設定」)
+		LateEarlyCancelAppSet lateEarlyCancelAppSet = this.cancelAppSetRepository.getByCId(companyId);
+
+		Optional<AchievementDetail> opAchieve = Optional.empty();
+
+		if (infoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().isPresent()
+				&& infoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get().size() > 0) {
+			opAchieve = infoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get().get(0)
+					.getOpAchievementDetail();
+		}
+
+		// 取り消す初期情報
+		List<LateOrEarlyInfo> listInfo = this.initialInfo(lateEarlyCancelAppSet, opAchieve,
+				infoStartupOutput.getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles());
+
+		output.setEarlyInfos(listInfo);
+		output.setArrivedLateLeaveEarly(Optional.of(arrivedLateLeaveEarly));
+		output.setLateEarlyCancelAppSet(lateEarlyCancelAppSet);
+		output.setAppDispInfoStartupOutput(infoStartupOutput);
+
+		return output;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * nts.uk.ctx.at.request.dom.application.lateleaveearly.LateLeaveEarlyService#
+	 * update(java.lang.String, nts.uk.ctx.at.request.dom.application.Application,
+	 * nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarly)
+	 */
+	@Override
+	public ProcessResult update(String companyId, Application application,
+			ArrivedLateLeaveEarly arrivedLateLeaveEarly) {
+		this.updateDomain(application, arrivedLateLeaveEarly);
+
+//		ProcessResult result = this.afterUpdateService.processAfterDetailScreenRegistration(application);
 		return null;
+	}
+
+	/**
+	 * ドメインモデル「遅刻早退取消申請」の更新する (Update domain 「遅刻早退取消申請」)
+	 *
+	 * @param application
+	 * @param arrivedLateLeaveEarly
+	 */
+	private void updateDomain(Application application, ArrivedLateLeaveEarly arrivedLateLeaveEarly) {
+		String companyId = AppContexts.user().companyId();
+
+		this.lateEarlyRepository.updateLateLeaveEarly(companyId, application, arrivedLateLeaveEarly);
 	}
 }

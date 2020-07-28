@@ -20,6 +20,9 @@ public class KrqstAppLateOrEarly extends UkJpaEntity {
 	@Column(name = "CANCLE_ATR")
 	private int cancleAtr;
 
+	@Column(name = "LATE_AL_CLEAR_ATR")
+	private int lateAlClearAtr;
+
 	@Override
 	protected String getKey() {
 		return this.companyid;
@@ -28,7 +31,8 @@ public class KrqstAppLateOrEarly extends UkJpaEntity {
 	public static final JpaEntityMapper<KrqstAppLateOrEarly> MAPPER = new JpaEntityMapper<>(KrqstAppLateOrEarly.class);
 
 	public LateEarlyCancelAppSet toDomain() {
-		return new LateEarlyCancelAppSet(this.companyid, EnumAdaptor.valueOf(cancleAtr, CancelAtr.class));
+		return new LateEarlyCancelAppSet(this.companyid, EnumAdaptor.valueOf(cancleAtr, CancelAtr.class),
+				this.lateAlClearAtr);
 	}
 
 }
