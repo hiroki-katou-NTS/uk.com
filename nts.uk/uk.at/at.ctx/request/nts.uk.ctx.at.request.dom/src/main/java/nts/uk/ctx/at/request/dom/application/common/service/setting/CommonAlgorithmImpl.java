@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -34,7 +35,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchieve
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoRelatedDateOutput;
@@ -67,8 +67,12 @@ import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRep
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
+import nts.uk.ctx.at.shared.dom.worktype.service.HolidayAtrOutput;
+import nts.uk.ctx.at.shared.dom.worktype.service.JudgmentOneDayHoliday;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -125,6 +129,12 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	
 	@Inject
 	private WorkingConditionService workingConditionService;
+	
+	@Inject
+	private WorkTypeRepository workTypeRepository;
+	
+	@Inject
+	private JudgmentOneDayHoliday judgmentOneDayHoliday;
 
 	@Override
 	public AppDispInfoNoDateOutput getAppDispInfo(String companyID, List<String> applicantLst, ApplicationType appType, 
@@ -398,9 +408,51 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 
 	@Override
 	public void appConflictCheck(String companyID, EmployeeInfoImport employeeInfo, List<GeneralDate> dateLst,
-			List<String> workTypeLst, List<AchievementOutput> achievementOutputLst) {
+			List<String> workTypeLst, List<ActualContentDisplay> actualContentDisplayLst) {
+		// INPUT．対象日リストをループする
 		for(GeneralDate loopDate : dateLst) {
-			
+			// INPUT．表示する実績内容からルールする日の実績詳細を取得する
+			Optional<ActualContentDisplay> opActualContentDisplay = actualContentDisplayLst.stream().filter(x -> x.getDate().equals(loopDate)).findAny();
+			if(!opActualContentDisplay.isPresent()) {
+				// エラーメッセージ(Msg_1715)を表示
+				throw new BusinessException("Msg_1715", employeeInfo.getBussinessName(), loopDate.toString());
+			}
+			// 勤務種類を取得する
+			Optional<WorkType> opWorkTypeFirst = workTypeRepository.findByPK(companyID, workTypeLst.stream().findFirst().orElse(null));
+			// 勤務種類を取得する
+			String actualWorkTypeCD = opActualContentDisplay.get().getOpAchievementDetail().map(x -> x.getWorkTypeCD()).orElse(null);
+			Optional<WorkType> opWorkTypeActual = workTypeRepository.findByPK(companyID, actualWorkTypeCD);
+			// 申請する「勤務種類」、変更元の「勤務種類」をチェックする
+			if(!opWorkTypeFirst.isPresent() || !opWorkTypeActual.isPresent()) {
+				continue;
+			}
+		}
+		// INPUT．申請する勤務種類リストをチェックする
+		if(workTypeLst.size() <= 1) {
+			return;
+		}
+		// 法定区分のチェック
+		HolidayAtrOutput holidayAtrOutput = judgmentOneDayHoliday.checkHolidayAtr(
+				companyID, 
+				actualContentDisplayLst.stream().findFirst().map(x -> x.getOpAchievementDetail().map(y -> y.getWorkTypeCD()).orElse(null)).orElse(null), 
+				workTypeLst.get(1));
+		if(!holidayAtrOutput.isCheckResult()) {
+			String msgParam = Strings.EMPTY;
+			switch (holidayAtrOutput.getOpActualHolidayAtr().get()) {
+			case STATUTORY_HOLIDAYS:
+				msgParam = "法定内";
+				break;
+			case NON_STATUTORY_HOLIDAYS:
+				msgParam = "法定外";
+				break;
+			case PUBLIC_HOLIDAY:
+				msgParam = "法定外(祝日)";
+				break;
+			default:
+				break;
+			}
+			// エラーメッセージ(#Msg_702#)を表示する
+			throw new BusinessException("Msg_702", employeeInfo.getBussinessName(), dateLst.get(0).toString(), msgParam, dateLst.get(1).toString());
 		}
 		
 	}
@@ -478,6 +530,167 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			resultWorkTime = workTimeLst.stream().findFirst().map(x -> x.getWorktimeCode().v()).orElse(null);
 		}
 		return new InitWkTypeWkTimeOutput(resultWorkType, resultWorkTime);
+	}
+
+	@Override
+	public void inconsistencyCheckApplication(String companyID, EmployeeInfoImport employeeInfo, GeneralDate date,
+			WorkType workTypeApp, WorkType workTypeActual) {
+		// INPUT．申請する「勤務種類」、変更元の「勤務種類」の勤務区分をチェックする
+		if(workTypeApp.getDailyWork().getWorkTypeUnit().isOneDay() && workTypeActual.getDailyWork().getWorkTypeUnit().isOneDay()) {
+			// 勤務種類の分類の矛盾ルール
+			boolean conflictCheck = this.conflictRuleOfWorkTypeAtr(workTypeApp.getDailyWork().getOneDay(), workTypeActual.getDailyWork().getOneDay());
+			if(conflictCheck) {
+				// エラーメッセージ(Msg_1519)を表示
+				throw new BusinessException("Msg_1519", date.toString(), workTypeActual.getName().v());
+			}
+		}
+		
+		if(workTypeApp.getDailyWork().getWorkTypeUnit().isOneDay() && workTypeActual.getDailyWork().getWorkTypeUnit().isMonringAndAfternoon()) {
+			// 勤務種類の分類の矛盾ルール
+			boolean conflictCheck = this.conflictRuleOfWorkTypeAtr(workTypeApp.getDailyWork().getOneDay(), workTypeActual.getDailyWork().getMorning());
+			if(conflictCheck) {
+				// エラーメッセージ(Msg_1519)を表示
+				throw new BusinessException("Msg_1519", date.toString(), workTypeActual.getName().v());
+			}
+		}
+		
+		if(workTypeApp.getDailyWork().getWorkTypeUnit().isMonringAndAfternoon() && workTypeActual.getDailyWork().getWorkTypeUnit().isOneDay()) {
+			// 勤務種類の分類の矛盾ルール
+			boolean conflictCheck = this.conflictRuleOfWorkTypeAtr(workTypeApp.getDailyWork().getMorning(), workTypeActual.getDailyWork().getOneDay());
+			if(conflictCheck) {
+				// エラーメッセージ(Msg_1519)を表示
+				throw new BusinessException("Msg_1519", date.toString(), workTypeActual.getName().v());
+			}
+		}
+		
+		if(workTypeApp.getDailyWork().getWorkTypeUnit().isMonringAndAfternoon() && workTypeActual.getDailyWork().getWorkTypeUnit().isMonringAndAfternoon()) {
+			// 勤務種類の分類の矛盾ルール
+			boolean conflictCheck = this.conflictRuleOfWorkTypeAtr(workTypeApp.getDailyWork().getMorning(), workTypeActual.getDailyWork().getMorning());
+			if(conflictCheck) {
+				// エラーメッセージ(Msg_1519)を表示
+				throw new BusinessException("Msg_1519", date.toString(), workTypeActual.getName().v());
+			}
+		}
+		
+		if(workTypeApp.getDailyWork().getWorkTypeUnit().isOneDay() && workTypeActual.getDailyWork().getWorkTypeUnit().isMonringAndAfternoon()) {
+			// 勤務種類の分類の矛盾ルール
+			boolean conflictCheck = this.conflictRuleOfWorkTypeAtr(workTypeApp.getDailyWork().getOneDay(), workTypeActual.getDailyWork().getAfternoon());
+			if(conflictCheck) {
+				// エラーメッセージ(Msg_1519)を表示
+				throw new BusinessException("Msg_1519", date.toString(), workTypeActual.getName().v());
+			}
+		}
+		
+		if(workTypeApp.getDailyWork().getWorkTypeUnit().isMonringAndAfternoon() && workTypeActual.getDailyWork().getWorkTypeUnit().isOneDay()) {
+			// 勤務種類の分類の矛盾ルール
+			boolean conflictCheck = this.conflictRuleOfWorkTypeAtr(workTypeApp.getDailyWork().getAfternoon(), workTypeActual.getDailyWork().getOneDay());
+			if(conflictCheck) {
+				// エラーメッセージ(Msg_1519)を表示
+				throw new BusinessException("Msg_1519", date.toString(), workTypeActual.getName().v());
+			}
+		}
+		
+		if(workTypeApp.getDailyWork().getWorkTypeUnit().isMonringAndAfternoon() && workTypeActual.getDailyWork().getWorkTypeUnit().isMonringAndAfternoon()) {
+			// 勤務種類の分類の矛盾ルール
+			boolean conflictCheck = this.conflictRuleOfWorkTypeAtr(workTypeApp.getDailyWork().getAfternoon(), workTypeActual.getDailyWork().getAfternoon());
+			if(conflictCheck) {
+				// エラーメッセージ(Msg_1519)を表示
+				throw new BusinessException("Msg_1519", date.toString(), workTypeActual.getName().v());
+			}
+		}
+	}
+
+	@Override
+	public boolean conflictRuleOfWorkTypeAtr(WorkTypeClassification workTypeAppAtr,
+			WorkTypeClassification workTypeActualAtr) {
+		// INPUT．申請する勤務種類の分類をチェックする
+		if(workTypeAppAtr == WorkTypeClassification.Attendance) {
+			// INPUT．変更元の勤務種類の分類をチェックする
+			if(workTypeActualAtr == WorkTypeClassification.Attendance || 
+					workTypeActualAtr.isShooting() || 
+					workTypeActualAtr.isContinuousWork()) {
+				return false;
+			}
+			// OUTPUT．チェック結果＝矛盾
+			return true;
+		}
+		
+		if(workTypeAppAtr.isAnnualLeave() ||
+				workTypeAppAtr.isYearlyReserved() ||
+				workTypeAppAtr.isSpecialHoliday() ||
+				workTypeAppAtr == WorkTypeClassification.Absence ||
+				workTypeAppAtr.isSubstituteHoliday() ||
+				workTypeAppAtr.isPause() ||
+				workTypeAppAtr == WorkTypeClassification.TimeDigestVacation) {
+			// INPUT．変更元の勤務種類の分類をチェックする
+			if(workTypeActualAtr == WorkTypeClassification.Attendance ||
+					workTypeActualAtr.isAnnualLeave() ||
+					workTypeActualAtr.isYearlyReserved() ||
+					workTypeActualAtr.isSpecialHoliday() ||
+					workTypeActualAtr == WorkTypeClassification.Absence ||
+					workTypeActualAtr.isSubstituteHoliday() ||
+					workTypeActualAtr.isShooting() ||
+					workTypeActualAtr.isPause() ||
+					workTypeActualAtr == WorkTypeClassification.TimeDigestVacation) {
+				return false;
+			}
+			// OUTPUT．チェック結果＝矛盾
+			return true;
+		}
+		
+		if(workTypeAppAtr.isHolidayWork()) {
+			if(workTypeActualAtr.isHoliday() ||
+					workTypeActualAtr.isHolidayWork() ||
+					workTypeActualAtr.isPause()) {
+				return false;
+			}
+			// OUTPUT．チェック結果＝矛盾
+			return true;
+		}
+		
+		if(workTypeAppAtr.isShooting()) {
+			if(workTypeActualAtr.isHoliday() ||
+					workTypeActualAtr.isHolidayWork() ||
+					workTypeActualAtr.isShooting()) {
+				return false;
+			}
+			// OUTPUT．チェック結果＝矛盾
+			return true;
+		}
+		
+		return false;
+	}
+
+	@Override
+	public void inconsistencyCheckHoliday(String companyID, EmployeeInfoImport employeeInfo, GeneralDate date,
+			WorkType workTypeApp, WorkType workTypeActual) {
+		// ノートのif文をチェックする
+		boolean condition = workTypeApp.getDailyWork().getOneDay().isHolidayWork() && workTypeActual.getDailyWork().getWorkTypeUnit().isOneDay();			
+		if(!condition) {
+			return;
+		}
+		// 法定区分をチェックする
+		WorkTypeSet appWorkTypeSet = workTypeApp.getWorkTypeSet();
+		WorkTypeSet actualWorkTypeSet = workTypeActual.getWorkTypeSet();
+		if(appWorkTypeSet.getHolidayAtr() == actualWorkTypeSet.getHolidayAtr()) {
+			return;
+		}
+		String msgParam = Strings.EMPTY;
+		switch (actualWorkTypeSet.getHolidayAtr()) {
+		case STATUTORY_HOLIDAYS:
+			msgParam = "法定内";
+			break;
+		case NON_STATUTORY_HOLIDAYS:
+			msgParam = "法定外";
+			break;
+		case PUBLIC_HOLIDAY:
+			msgParam = "法定外(祝日)";
+			break;
+		default:
+			break;
+		}
+		// メッセージを表示する(Msg_1648)を表示する
+		throw new BusinessException("Msg_1648", date.toString(), msgParam);
 	}
 
 }

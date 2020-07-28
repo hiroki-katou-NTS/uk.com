@@ -10,7 +10,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoRelatedDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -23,6 +23,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 
 public interface CommonAlgorithm {
 	
@@ -144,10 +145,10 @@ public interface CommonAlgorithm {
 	 * @param employeeInfo 対象者の社員情報
 	 * @param dateLst 対象日リスト
 	 * @param workTypeLst 申請する勤務種類リスト
-	 * @param achievementOutputLst 表示する実績内容
+	 * @param actualContentDisplayLst 表示する実績内容
 	 */
 	public void appConflictCheck(String companyID, EmployeeInfoImport employeeInfo, List<GeneralDate> dateLst,
-			List<String> workTypeLst, List<AchievementOutput> achievementOutputLst);
+			List<String> workTypeLst, List<ActualContentDisplay> actualContentDisplayLst);
 	
 	/**
 	 * refactor 4
@@ -161,4 +162,37 @@ public interface CommonAlgorithm {
 	 */
 	public InitWkTypeWkTimeOutput initWorkTypeWorkTime(String employeeID, GeneralDate date,
 			List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeLst, AchievementDetail achievementDetail);
+	
+	/**
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.申請の矛盾チェック.日ごとに申請の矛盾チェック.日ごとに申請の矛盾チェック
+	 * @param companyID 会社ID
+	 * @param employeeInfo 対象者の社員情報：社員情報
+	 * @param date 対象日
+	 * @param workTypeApp 申請する「勤務種類」
+	 * @param workTypeActual 変更元の「勤務種類」
+	 */
+	public void inconsistencyCheckApplication(String companyID, EmployeeInfoImport employeeInfo, GeneralDate date,
+			WorkType workTypeApp, WorkType workTypeActual);
+	
+	/**
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.申請の矛盾チェック.勤務種類の分類の矛盾ルール.勤務種類の分類の矛盾ルール
+	 * @param workTypeAppAtr 申請する勤務種類の分類
+	 * @param workTypeActualAtr 変更元の勤務種類の分類
+	 * @return チェック結果（矛盾、矛盾ではない） true: 矛盾, false: 矛盾ではない
+	 */
+	public boolean conflictRuleOfWorkTypeAtr(WorkTypeClassification workTypeAppAtr, WorkTypeClassification workTypeActualAtr);
+	
+	/**
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.申請の矛盾チェック.日ごとに休日区分の矛盾チェック.日ごとに休日区分の矛盾チェック
+	 * @param companyID 会社ID
+	 * @param employeeInfo 対象者の社員情報：社員情報
+	 * @param date 対象日
+	 * @param workTypeApp 申請する「勤務種類」
+	 * @param workTypeActual 変更元の「勤務種類」
+	 */
+	public void inconsistencyCheckHoliday(String companyID, EmployeeInfoImport employeeInfo, GeneralDate date,
+			WorkType workTypeApp, WorkType workTypeActual);
 }
