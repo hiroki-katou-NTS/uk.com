@@ -243,17 +243,6 @@ module nts.uk.at.view.kmp001.c {
 					.then(() => vm.$blockui("clear"));
 			}
 		}
-
-		public validate(action: 'clear' | undefined = undefined) {
-			if (action === 'clear') {
-				return $.Deferred().resolve()
-					.then(() => $('.nts-input').ntsError('clear'));
-			} else {
-				return $.Deferred().resolve()
-					.then(() => $('.nts-input').trigger("validate"))
-					.then(() => !$('.nts-input').ntsError('hasError'));
-			}
-		}
 	}
 
 	export interface IStampCardC {

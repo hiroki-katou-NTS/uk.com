@@ -80,6 +80,10 @@
 	margin-bottom: 15px;
 }
 
+#ip-stamp-card {
+	width: 200px !important;
+}
+
 #top_bottom {
 	margin-left: 5px;
 }
