@@ -96,6 +96,11 @@ class ViewModel extends ko.ViewModel {
 		const vm = this;
 		vm.$window.close();
 	}
+	
+	addSetting(){
+		const vm = this;
+		vm.$window.close();
+	}
 
 	determined(code: number) {
 		const vm = this;
