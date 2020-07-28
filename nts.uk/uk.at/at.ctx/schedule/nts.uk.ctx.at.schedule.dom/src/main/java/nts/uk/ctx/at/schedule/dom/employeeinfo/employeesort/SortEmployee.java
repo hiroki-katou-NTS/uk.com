@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.LicenseClassification;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankCode;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamCd;
@@ -14,7 +14,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamCd;
  *
  */
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class SortEmployee {
 	
 	/** 社員ID **/ 

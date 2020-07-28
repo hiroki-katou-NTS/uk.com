@@ -26,7 +26,7 @@ public class SortEmpService {
 		// $並び替え設定 = require.並び替え設定を取得する()
 		Optional<SortSetting> sortSetting = require.get();
 		// if $並び替え設定.empty---return 社員IDリスト
-		if (sortSetting.isPresent()) {
+		if (!sortSetting.isPresent()) {
 			return lstEmpId;
 		}
 		// return [prv-1] 並び替える(require, 基準日, 社員IDリスト, 並び替え設定)
