@@ -18,8 +18,8 @@
 #single-list_headers_v {
 	width: 683px !important;
 }
-#single-list td{
-	height: 24px !important;
+#single-list td img{
+	vertical-align: bottom;
 }
 
 #single-list tr td:last-child {
