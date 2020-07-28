@@ -25,7 +25,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class DetailAfterUpdateImpl implements DetailAfterUpdate {
@@ -42,27 +41,32 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 
-	public ProcessResult processAfterDetailScreenRegistration(Application application) {
-		String companyID = AppContexts.user().companyId();
+	public ProcessResult processAfterDetailScreenRegistration(String companyID, String appID) {
 		List<String> destinationList = new ArrayList<>();
 		boolean isProcessDone = true;
 		boolean isAutoSendMail = false;
 		List<String> autoSuccessMail = new ArrayList<>();
 		List<String> autoFailMail = new ArrayList<>();
 		List<String> autoFailServer = new ArrayList<>();
-		
+		// アルゴリズム「申請IDを使用して申請一覧を取得する」を実行する(Thực hiện thuật toán [sử dụng ApplicationID để get ApplicationList])
+		Optional<Application> opApplication = applicationRepository.findByID(appID);
+		if(!opApplication.isPresent()) {
+			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, appID,""); 
+		}
+		Application application = opApplication.get();
+		// アルゴリズム「承認を行った承認者を取得する」を実行する(Thực hiện 「lấy người approval đã thực hiện approval」)
 		ApproverApprovedImport_New approverApprovedImport = approvalRootStateAdapter.getApproverApproved(application.getAppID());
-		
+		// アルゴリズム「一括解除する」を実行する(THực hiện [delete đồng loạt])
 		approvalRootStateAdapter.doReleaseAllAtOnce(companyID, application.getAppID());
-		
-		// ドメインモデル「申請」と紐付き「承認フェーズ」「承認枠」「反映情報」をUpdateする
+		// 「申請」.差し戻し理由をクリア(Clear 「申請」.lí do trả về)
 		application.setOpReversionReason(Optional.of(new ReasonForReversion("")));
+		// 「反映情報」.実績反映状態を未反映にする(Set [thong tin phản ánh]. ''trạng thái phản ánh thực tế'' thành chưa phản ánh)
 		for(ReflectionStatusOfDay reflectionStatusOfDay : application.getReflectionStatus().getListReflectionStatusOfDay()) {
 			reflectionStatusOfDay.setActualReflectStatus(ReflectedState.NOTREFLECTED);
 		}
+		// アルゴリズム「「申請」に紐づく「反映状態」の更新」を実行する(Thực hiện thuật toán「「申請」に紐づく「反映状態」の更新」 )
 		applicationRepository.update(application);
-		
-		// 承認を行った承認者一覧に項目があるかチェックする
+		// 承認を行った承認者一覧に項目があるかチェックする (Kiểm tra xem có item trên "list người phê duyệt đã thực hiện phê duyệt" hay chưa)
 		if (CollectionUtil.isEmpty(approverApprovedImport.getListApprover())) {
 			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, application.getAppID(),"");
 		}

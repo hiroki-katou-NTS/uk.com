@@ -11,8 +11,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -71,7 +69,7 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 //		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, application.getEmployeeID(), listDate);
 
 		// アルゴリズム「4-2.詳細画面登録後の処理」を実行する
-		return detailAfterUpdate.processAfterDetailScreenRegistration(application);
+		return detailAfterUpdate.processAfterDetailScreenRegistration(companyId, application.getAppID());
 	}
 
 }

@@ -656,7 +656,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 //		interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(),
 //				application.getEmployeeID(), listDates);
 //		アルゴリズム「4-2.詳細画面登録後の処理」を実行する
-		return detailAfterUpdate.processAfterDetailScreenRegistration(application);
+		return detailAfterUpdate.processAfterDetailScreenRegistration(companyId, application.getAppID());
 //		return null;
 
 	}
