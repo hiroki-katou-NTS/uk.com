@@ -9,17 +9,23 @@ import nts.arc.task.tran.AtomTask;
  *
  */
 public class DeleteScheduleTeamService {
-	
+	/**
+	 * [1] 削除する
+	 * @param require
+	 * @param WKPGRPID
+	 * @param scheduleTeamCd
+	 * @return
+	 */
+	public static AtomTask delete(Require require,String WKPGRPID,String scheduleTeamCd){
+		return AtomTask.of(() -> {
+			require.deleteScheduleTeam( WKPGRPID, scheduleTeamCd);
+			require.deleteBelongScheduleTeam( WKPGRPID, scheduleTeamCd);
+		});	
+	} 
 	
 	public static interface Require{
 		
-		public static AtomTask delete(Require require,String WKPGRPID,String scheduleTeamCd){
-			return AtomTask.of(() -> {
-				require.deleteScheduleTeam( WKPGRPID, scheduleTeamCd);
-				require.deleteBelongScheduleTeam( WKPGRPID, scheduleTeamCd);
-			});	
-		} 
-	
+		
 		/**
 		 * [R-1] スケジュールチームを削除する			
 		 * @param companyID
