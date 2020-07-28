@@ -104,7 +104,7 @@ module nts.uk.at.view.kdp004.a {
 							block.grayout();
 							service.startPage()
 								.done((res: any) => {
-									if (!res.stampSetting || !res.stampResultDisplay) {
+									if (!res.stampSetting || !res.stampResultDisplay || !res.stampSetting.pageLayouts.length) {
 										self.errorMessage(self.getErrorNotUsed(1));
 										self.isUsed(false);
 										dfd.resolve();
@@ -148,11 +148,10 @@ module nts.uk.at.view.kdp004.a {
 				let dfd = $.Deferred<any>(), self = this;
 
 				self.openDialogF({
-					mode: 'admin',
-					companyId: self.loginInfo.companyId
+					mode: 'admin'
 				}).done((loginResult) => {
-					if (!loginResult.result) {
-						self.errorMessage(getMessage("Msg_1647"));
+					if (!loginResult || !loginResult.result) {
+						self.errorMessage(getMessage(!loginResult ? "Msg_1647" : loginResult.msgErrorId));
 						dfd.resolve();
 						return;
 					}
@@ -375,7 +374,7 @@ module nts.uk.at.view.kdp004.a {
 					mode: 'admin',
 					companyId: self.loginInfo.companyId
 				}).done((loginResult) => {
-					if (loginResult.result) {
+					if (loginResult && loginResult.result) {
 						loginResult.em.selectedWP = self.loginInfo ? self.loginInfo.selectedWP : null;
 						self.loginInfo = loginResult.em;
 						self.openDialogK().done((result) => {
@@ -448,6 +447,7 @@ module nts.uk.at.view.kdp004.a {
 				setShared("infoEmpToScreenB", {
 					employeeId: vm.$user.employeeId,
 					employeeCode: vm.$user.employeeCode,
+					employeeName:self.loginInfo.employeeName,
 					mode: Mode.Personal,
 				});
 
@@ -464,6 +464,7 @@ module nts.uk.at.view.kdp004.a {
 				setShared("infoEmpToScreenC", {
 					employeeId: vm.$user.employeeId,
 					employeeCode: vm.$user.employeeCode,
+					employeeName:self.loginInfo.employeeName,
 					mode: Mode.Personal,
 				});
 
