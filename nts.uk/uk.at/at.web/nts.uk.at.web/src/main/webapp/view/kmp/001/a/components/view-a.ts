@@ -135,7 +135,7 @@ module nts.uk.at.view.kmp001.a {
 
 					/** Advanced search properties */
 					showEmployment: true, //雇用条件
-					showDepartment: true,
+					showDepartment: false,
 					showWorkplace: true, //職場条件
 					showClassification: true, //分類条件
 					showJobTitle: true, //職位条件
