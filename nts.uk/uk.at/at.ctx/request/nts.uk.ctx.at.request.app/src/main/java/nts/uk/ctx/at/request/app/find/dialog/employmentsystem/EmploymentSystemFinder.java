@@ -51,11 +51,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveC
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -80,10 +75,10 @@ public class EmploymentSystemFinder {
 	ShareEmploymentAdapter employeeAdaptor;
 	@Inject
 	private WorkplaceAdapter wpAdapter;
-	@Inject
-	private EmpSubstVacationRepository empSubrepo;
-	@Inject
-	private ComSubstVacationRepository comSubrepo;
+//	@Inject
+//	private EmpSubstVacationRepository empSubrepo;
+//	@Inject
+//	private ComSubstVacationRepository comSubrepo;
 	@Inject
 	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
 	@Inject
@@ -384,6 +379,7 @@ public class EmploymentSystemFinder {
 			} 
 			// field 管理データ状態区分　＝　取得した逐次発生の休暇明細．状態
 			itemDto.setManagementDataStatus(item.getDataAtr().value);
+			listRemainNumberDetail.add(itemDto);
 		}
 		result.setListRemainNumberDetail(listRemainNumberDetail);
 		
@@ -472,31 +468,30 @@ public class EmploymentSystemFinder {
 		return result;
 	}
 
-	private SubstVacationSetting getLeaveManagementSetting(String companyId, String employeeId,
-			Optional<EmploymentHistoryImported> empImpOpt) {
-		SubstVacationSetting setting = null;
-		
-		if (empImpOpt.isPresent()) {
-			EmploymentHistoryImported empImp = empImpOpt.get();
-			String emptCD = empImp.getEmploymentCode();
-
-			Optional<EmpSubstVacation> empSubOpt = empSubrepo.findById(companyId, emptCD);
-			if (empSubOpt.isPresent()) {
-				setting = empSubOpt.get().getSetting();
-			} else {
-				Optional<ComSubstVacation> comSubOpt = comSubrepo.findById(companyId);
-				if (comSubOpt.isPresent()) {
-					setting = comSubOpt.get().getSetting();
-				}
-			}
-			if (setting == null) {
-				throw new BusinessException("振休管理設定 == null");
-			}
-
-		}
-		return setting;
-
-	}
+//	private SubstVacationSetting getLeaveManagementSetting(String companyId, String employeeId,
+//			Optional<EmploymentHistoryImported> empImpOpt) {
+//		SubstVacationSetting setting = null;
+//		
+//		if (empImpOpt.isPresent()) {
+//			EmploymentHistoryImported empImp = empImpOpt.get();
+//			String emptCD = empImp.getEmploymentCode();
+//
+//			Optional<EmpSubstVacation> empSubOpt = empSubrepo.findById(companyId, emptCD);
+//			if (empSubOpt.isPresent()) {
+//				setting = empSubOpt.get().getSetting();
+//			} else {
+//				Optional<ComSubstVacation> comSubOpt = comSubrepo.findById(companyId);
+//				if (comSubOpt.isPresent()) {
+//					setting = comSubOpt.get().getSetting();
+//				}
+//			}
+//			if (setting == null) {
+//				throw new BusinessException("振休管理設定 == null");
+//			}
+//
+//		}
+//		return setting;
+//	}
 
 	@Data
 	@AllArgsConstructor
