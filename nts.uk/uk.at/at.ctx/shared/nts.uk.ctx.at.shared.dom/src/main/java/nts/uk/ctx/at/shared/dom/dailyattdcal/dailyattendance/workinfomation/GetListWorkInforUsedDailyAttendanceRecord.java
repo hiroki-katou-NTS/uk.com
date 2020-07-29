@@ -25,7 +25,7 @@ public class GetListWorkInforUsedDailyAttendanceRecord {
 		//Distin Work Time Work Hour
 		for(WorkInformation wi :data){
 			Optional<WorkInformation> optWi = result.stream().filter(x-> x.getWorkTypeCode().v().equals(wi.getWorkTypeCode().v())
-					&& x.getWorkTimeCode().equals(wi.getWorkTypeCode())).findFirst();
+					&& x.getWorkTimeCodeNotNull().equals(wi.getWorkTimeCodeNotNull())).findFirst();
 			if(!optWi.isPresent()){
 				result.add(wi);
 			}
