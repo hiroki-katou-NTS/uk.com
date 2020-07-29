@@ -11,11 +11,13 @@ import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
@@ -28,21 +30,21 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 public class WorkInformation {
 
 	private WorkTypeCode workTypeCode;
-	private WorkTimeCode workTimeCode;
+	private Optional<WorkTimeCode> workTimeCode;
 
 	public WorkInformation(String workTimeCode, String workTypeCode) {
 
-		this.workTimeCode = StringUtils.isEmpty(workTimeCode) ? null : new WorkTimeCode(workTimeCode);
+		this.workTimeCode = StringUtils.isEmpty(workTimeCode) ? null : Optional.of(new WorkTimeCode(workTimeCode));
 		this.workTypeCode = workTypeCode == null ? null : new WorkTypeCode(workTypeCode);
 	}
 
 	public WorkInformation(WorkTimeCode workTimeCode, WorkTypeCode workTypeCode) {
-		this.workTimeCode = workTimeCode;
+		this.workTimeCode = Optional.ofNullable(workTimeCode);
 		this.workTypeCode = workTypeCode;
 	}
 
 	public WorkTimeCode getWorkTimeCode() {
-		return this.workTimeCode;
+		return this.workTimeCode.isPresent()?this.workTimeCode.get():null;
 	}
 
 	public WorkTypeCode getWorkTypeCode() {
@@ -54,7 +56,7 @@ public class WorkInformation {
 	}
 
 	public void setWorkTimeCode(WorkTimeCode workTimeCode) {
-		this.workTimeCode = workTimeCode;
+		this.workTimeCode = workTimeCode==null?null:Optional.of(workTimeCode);
 	}
 
 	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
@@ -96,28 +98,35 @@ public class WorkInformation {
 				return ErrorStatusWorkInfo.WORKTIME_ARE_REQUIRE_NOT_SET;
 			}
 			break;
-		case OPTIONAL:
+		case OPTIONAL:// 任意
 			// @就業時間帯コード ==null
-			if (this.getWorkTimeCode() == null) {
-				return ErrorStatusWorkInfo.NORMAL;
-			}
+//			if (this.getWorkTimeCode() == null) {
+//				return ErrorStatusWorkInfo.NORMAL;
+//			}
 			break;
-		default:
-			// @就業時間帯コード ==null
-			if (this.getWorkTimeCode() == null) {
-				return ErrorStatusWorkInfo.NORMAL;
-			}
+		default: // 不要
 			// @就業時間帯コード.isPresent
-			return ErrorStatusWorkInfo.WORKTIME_ARE_SET_WHEN_UNNECESSARY;
+			if (this.getWorkTimeCode() != null) {
+				return ErrorStatusWorkInfo.WORKTIME_ARE_SET_WHEN_UNNECESSARY;
+//				return ErrorStatusWorkInfo.NORMAL;
+			}
+//			return ErrorStatusWorkInfo.WORKTIME_ARE_SET_WHEN_UNNECESSARY;
 
 		}
 
 		// require.就業時間帯を取得する(ログイン会社ID, @就業時間帯コード) - CID sẽ dc truyền trên app
 		Optional<WorkTimeSetting> workTimeSetting = require
-				.findByCode(this.workTimeCode == null ? null : this.workTimeCode.v());
+				.findByCode(this.workTimeCode == null ? null : this.workTimeCode.get().v());
 		// if $就業時間帯.isEmpty
 		if (!workTimeSetting.isPresent()) {
 			return ErrorStatusWorkInfo.WORKTIME_WAS_DELETE;
+		}
+		
+		if(workType.get().getDeprecate() == DeprecateClassification.Deprecated) {
+			return ErrorStatusWorkInfo.WORKTYPE_WAS_ABOLISHED;
+		}
+		if(workTimeSetting.get().getAbolishAtr() == AbolishAtr.ABOLISH ) {
+			return ErrorStatusWorkInfo.WORKTIME_HAS_BEEN_ABOLISHED;
 		}
 
 		return ErrorStatusWorkInfo.NORMAL;
@@ -128,12 +137,12 @@ public class WorkInformation {
 	 * 
 	 * @return WorkStyle 出勤休日区分
 	 */
-	public WorkStyle getWorkStyle(Require require) {
+	public Optional<WorkStyle> getWorkStyle(Require require) {
 		WorkStyle workStyle = require.checkWorkDay(this.workTypeCode.v());
 		if (workStyle == null) {
-			throw new BusinessException("Msg_1636");
+			return Optional.empty();
 		}
-		return workStyle;
+		return Optional.of(workStyle);
 	}
 
 	/**
@@ -153,14 +162,14 @@ public class WorkInformation {
 			return Optional.of(new WorkInfoAndTimeZone(workType.get()));
 		}
 		// $就業時間帯の設定 = require.就業時間帯を取得する(@就業時間帯コード )
-		Optional<WorkTimeSetting> workTimeSetting = require.findByCode(this.workTimeCode.v());
+		Optional<WorkTimeSetting> workTimeSetting = require.findByCode(this.workTimeCode.get().v());
 		if (!workTimeSetting.isPresent()) {
 			return Optional.empty();
 		}
 
 		List<TimezoneUse> listTimezoneUse = new ArrayList<>();
 		// $就業時間帯の設定.所定時間帯を取得する( $就業時間帯の設定.会社ID, @勤務種類コード, Optional.empty )
-		listTimezoneUse = require.getPredeterminedTimezone(this.workTimeCode.v(), this.workTypeCode.v(), null)
+		listTimezoneUse = require.getPredeterminedTimezone(this.workTimeCode.get().v(), this.workTypeCode.v(), null)
 				.getTimezones();
 		// filter $.使用区分 == するしない区分．使用する
 		// sort $.勤務NO ASC

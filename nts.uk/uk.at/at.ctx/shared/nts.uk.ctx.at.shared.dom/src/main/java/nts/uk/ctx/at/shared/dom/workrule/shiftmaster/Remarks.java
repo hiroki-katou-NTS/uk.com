@@ -9,7 +9,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * 
  * @author tutk
- *
+ * シフトマスタ備考
  */
 @StringMaxLength(40)
 public class Remarks extends StringPrimitiveValue<Remarks>{

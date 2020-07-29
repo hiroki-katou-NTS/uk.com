@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.workrule.shiftmaster;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 
 public interface ShiftMasterRepository {
@@ -26,6 +27,7 @@ public interface ShiftMasterRepository {
 	public List<ShiftMasterDto> getByListShiftMaterCd(String companyId, List<String> listShiftMaterCode);
 
 	List<ShiftMasterDto> getAllDtoByCid(String companyId);
-
+	/** [9] *get(会社ID, List<勤務情報>) **/
+	List<ShiftMaster> get(String companyID , List<WorkInformation> lstWorkInformation);
 
 }

@@ -310,4 +310,9 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 
 	}
 
+	@Override
+	public boolean exists(String companyID, int page) {
+		return findShiftPallet(companyID, page).isPresent();
+	}
+
 }

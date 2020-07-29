@@ -36,31 +36,31 @@ public class WorkSchedule implements DomainAggregate {
 	@Getter
 	private ConfirmedATR confirmedATR;
 	
-	/** 日別勤怠の勤務情報 **/
+	/** 勤務情報 **/
 	@Getter
 	private WorkInfoOfDailyAttendance workInfo;
 	
-	/** 日別勤怠の所属情報 **/
+	/** 所属情報 **/
 	@Getter
 	private AffiliationInforOfDailyAttd affInfo;
 	
-	/** 日別勤怠の休憩時間帯 **/
+	/** 休憩時間帯**/
 	@Getter
 	private List<BreakTimeOfDailyAttd> lstBreakTime;
 	
-	/** 日別勤怠の編集状態 **/
+	/** 編集状態 **/
 	@Getter
 	private List<EditStateOfDailyAttd> lstEditState;
 	
-		/** 日別勤怠の出退勤**/
+		/** 出退勤**/
 	@Getter
 	private Optional<TimeLeavingOfDailyAttd> optTimeLeaving;
 	
-	/** 日別勤怠の勤怠時間 **/
+	/** 勤怠時間 **/
 	@Getter
 	private Optional<AttendanceTimeOfDailyAttendance> optAttendanceTime;
 	
-	/** 日別勤怠の短時間勤務時間帯**/
+	/** 短時間勤務**/
 	@Getter
 	private Optional<ShortTimeOfDailyAttd> optSortTimeWork;
 	

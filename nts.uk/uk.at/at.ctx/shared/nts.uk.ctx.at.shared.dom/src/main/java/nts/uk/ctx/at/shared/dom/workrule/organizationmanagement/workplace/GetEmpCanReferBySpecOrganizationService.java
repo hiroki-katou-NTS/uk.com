@@ -5,11 +5,12 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.GetShiftMasterByWorkplaceService;
 
 /**
  * 組織を指定して参照可能な社員を取得する		
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.shared.就業規則.組織管理.職場
- * @author kingo WorkplaceGroupAdapter
+ * @author Hieult 
  *
  */
 public class GetEmpCanReferBySpecOrganizationService {
@@ -23,8 +24,12 @@ public class GetEmpCanReferBySpecOrganizationService {
 	 * @return TargetOrgIdenInfor
 	 */
 	
-	public static List<String> get(Require require,GeneralDate referenceDate , String epmloyeeId , TargetOrgIdenInfor targetOrgIdenInfor  ){
+	public static List<String> getListEmpID(Require require,GeneralDate referenceDate , String epmloyeeId , TargetOrgIdenInfor targetOrgIdenInfor  ){
 		List<String> result = new ArrayList<>();
+		switch (targetOrgIdenInfor.getUnit()){
+		case WORKPLACE_GROUP :
+			//this.
+		}
 		
 		return result;
 	}
@@ -53,7 +58,7 @@ public class GetEmpCanReferBySpecOrganizationService {
 		return result;
 	}
 	
-	public static interface Require extends WorkplaceGroupAdapter{
+	public static interface Require {
 		/**
 		 * [R-2] 社員を並び替える			
 		 * @param lstmployeeId --- 社員一覧：List＜社員ID＞
