@@ -129,15 +129,25 @@ public class JpaShiftMaterOrgImpl extends JpaRepository implements ShiftMasterOr
 	}
 
 	@Override
-	public List<String> getAlreadySettingWorkplace(String companyId) {
+	public List<ShiftMasterOrganization> getAlreadySettingWorkplace(String companyId, int unit) {
 		List<KshmtShiftMaterOrg> datas = this.queryProxy()
 				.query(SELECT_ALREADY_SETTING_WORKPLACE, KshmtShiftMaterOrg.class)
 				.setParameter("companyId", companyId)
 				.setParameter("targetUnit", TargetOrganizationUnit.WORKPLACE.value)
 				.getList();
-		return datas.stream().map(d -> d.kshmtShiftMaterOrgPK.targetId).distinct().collect(Collectors.toList());
+		return datas.stream().map(mapper-> mapper.toDomain()).collect(Collectors.toList());
 	}
-
+	
+	@Override
+	public List<ShiftMasterOrganization> getAlreadySettingWorkplaceGrp(String companyId, int unit) {
+		List<KshmtShiftMaterOrg> datas = this.queryProxy()
+				.query(SELECT_ALREADY_SETTING_WORKPLACE, KshmtShiftMaterOrg.class)
+				.setParameter("companyId", companyId)
+				.setParameter("targetUnit", TargetOrganizationUnit.WORKPLACE_GROUP.value)
+				.getList();
+		return datas.stream().map(mapper-> mapper.toDomain()).collect(Collectors.toList());
+	}
+	
 	@Override
 	public void deleteByShiftMasterCd(String shiftMasterCd) {
 		this.getEntityManager().createQuery(DELETE_BY_SHIFTMASTER_CD)
