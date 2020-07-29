@@ -47,5 +47,7 @@ html {
 	border-color: #AAB7B8 !important;
 	min-width: 40px;
 	height: 33px;
+	text-align: center;
+	line-height: 26px !important;
 }
 
