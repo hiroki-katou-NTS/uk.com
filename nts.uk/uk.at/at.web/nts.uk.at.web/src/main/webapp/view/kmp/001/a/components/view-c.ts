@@ -187,7 +187,8 @@ module nts.uk.at.view.kmp001.c {
 		reloadData(selectedIndex: number = 0) {
 			const vm = this;
 			const { startDate, endDate } = ko.toJS(vm.dateRange);
-
+			
+			vm.model.clear();
 			if (startDate != null && endDate != null) {
 				vm.$blockui("invisible");
 
