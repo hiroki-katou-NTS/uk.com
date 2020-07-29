@@ -52,7 +52,7 @@ public class ScheManaStatuTempo {
 	 */
 	public static ScheManaStatuTempo create(Require require, String employeeID, GeneralDate date) {
 		// ScheManaStatuTempo result = new ArrayList<>();
-		ScheManaStatuTempo manaStatuTempo = null;
+		
 		boolean enrolled = enrolled(require, employeeID, date);
 		/*
 		 * if not [S-1] 在籍中か( require, 社員ID, 年月日 )
@@ -60,9 +60,8 @@ public class ScheManaStatuTempo {
 		 * @予定管理状態 = 予定管理状態．在籍していない return this
 		 */
 		if (!enrolled) {
-			manaStatuTempo = new ScheManaStatuTempo(employeeID, date, ScheManaStatus.SCHEDULE_MANAGEMENT,
-					Optional.empty(), Optional.empty());
-			return manaStatuTempo;
+			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.NOT_ENROLLED,
+					Optional.empty(), Optional.empty());		
 		}
 		/*
 		 * @雇用コード = [S-2] 雇用コードを取得する( require, 社員ID, 年月日 ) if @雇用コード.isEmpty()
@@ -71,9 +70,8 @@ public class ScheManaStatuTempo {
 		 */
 		Optional<EmploymentCode> zEmpployeeCd = ScheManaStatuTempo.getEmplomentCd(require, employeeID, date);
 		if (!zEmpployeeCd.isPresent()) {
-			manaStatuTempo = new ScheManaStatuTempo(employeeID, date, ScheManaStatus.INVALID_DATA, Optional.empty(),
+			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.INVALID_DATA, Optional.empty(),
 					Optional.empty());
-			return manaStatuTempo;
 		}
 		Optional<ManageAtr> zScheduleManaCategory = getManageAtr(require, employeeID, date);
 
@@ -86,13 +84,12 @@ public class ScheManaStatuTempo {
 		 * @予定管理状態 = 予定管理状態．予定管理しない return this
 		 */
 		if (!zScheduleManaCategory.isPresent()) {
-			manaStatuTempo = new ScheManaStatuTempo(employeeID, date, ScheManaStatus.INVALID_DATA, Optional.empty(),
+			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.INVALID_DATA, Optional.empty(),
 					Optional.empty());
-			return manaStatuTempo;
+		
 		} else if (zScheduleManaCategory.get().value == ManageAtr.NOTUSE.value) {
-			manaStatuTempo = new ScheManaStatuTempo(employeeID, date, ScheManaStatus.DO_NOT_MANAGE_SCHEDULE,
+			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.DO_NOT_MANAGE_SCHEDULE,
 					Optional.empty(), Optional.empty());
-			return manaStatuTempo;
 		}
 		/*
 		 * if [S-4] 休職中か( require, 社員ID, 年月日 )
@@ -100,9 +97,8 @@ public class ScheManaStatuTempo {
 		 * @予定管理状態 = 予定管理状態．休職中 return this
 		 */
 		if (onLeave(require, employeeID, date)) {
-			manaStatuTempo = new ScheManaStatuTempo(employeeID, date, ScheManaStatus.ON_LEAVE, Optional.empty(),
+			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.ON_LEAVE, Optional.empty(),
 					Optional.empty());
-			return manaStatuTempo;
 		}
 		/*
 		 * @休業枠NO = [S-5] 休業枠NOを取得する( require, 社員ID, 年月日 ) if
@@ -112,12 +108,11 @@ public class ScheManaStatuTempo {
 		 */
 		Optional<TempAbsenceFrameNo> optTempAbsenceFrameNo = getTempAbsenceFrameNo(require, employeeID, date);
 		if (optTempAbsenceFrameNo.isPresent()) {
-			manaStatuTempo = new ScheManaStatuTempo(employeeID, date, ScheManaStatus.CLOSED, Optional.empty(),
+			return  new ScheManaStatuTempo(employeeID, date, ScheManaStatus.CLOSED, Optional.empty(),
 					Optional.empty());
-			return manaStatuTempo;
+		
 		}
-
-		return manaStatuTempo;
+		return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.SCHEDULE_MANAGEMENT, Optional.empty(), Optional.empty());
 	}
 
 	/**
@@ -206,7 +201,7 @@ public class ScheManaStatuTempo {
 		DatePeriod datePeriod = new DatePeriod(date, date);
 		List<EmpLeaveWorkPeriodImport> lstEmpLeaveWorkPeriodImport = require.specAndGetHolidayPeriod(Arrays.asList(employeeID), datePeriod);
 		if(lstEmpLeaveWorkPeriodImport.isEmpty()){
-			return Optional.empty();
+			Optional.empty();
 		}
 		EmpLeaveWorkPeriodImport data = lstEmpLeaveWorkPeriodImport.get(0);
 		return Optional.ofNullable(data.getTempAbsenceFrNo());
