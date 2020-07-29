@@ -17,6 +17,8 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.TempAbse
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 
 /**
  * 社員の予定管理状態
@@ -151,10 +153,10 @@ public class ScheManaStatuTempo {
 		DatePeriod datePeriod = new DatePeriod(date, date);
 		// $雇用履歴項目 = require.雇用履歴を取得する( list: 社員ID, 期間( 年月日, 年月日 ) ): findFirst
 		// ・・
-		List<EmploymentPeriod> lstEmpHistItem = require.getEmploymentHistory(Arrays.asList(employeeID), datePeriod);
+		List<EmploymentPeriodImported> lstEmpHistItem = require.getEmploymentHistory(Arrays.asList(employeeID), datePeriod);
 		if(!lstEmpHistItem.isEmpty())
 		{
-			EmploymentPeriod employmentPeriod  = lstEmpHistItem.get(0);
+			EmploymentPeriodImported employmentPeriod  = lstEmpHistItem.get(0);
 			return 	Optional.ofNullable(new EmploymentCode(employmentPeriod.getEmploymentCd()));
 		}
 		return Optional.empty();
@@ -222,7 +224,7 @@ public class ScheManaStatuTempo {
 		 * [R-1] 在籍期間を取得する( 社員ID, 年月日 ) : Optional
 		 * 社員の所属会社履歴Adapter.期間を指定して在籍期間を取得する
 		 */
-		List<AffCompanyHistSharedImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod);
+		List<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod);
 
 		/**
 		 * [R-2] 労働条件履歴を取得する 労働条件Repository.社員を指定して年月日時点の履歴項目を取得する
@@ -256,9 +258,9 @@ public class ScheManaStatuTempo {
 		 * 
 		 * @param lstEmpID
 		 * @param datePeriod
-		 * @return
+		 * @return List EmploymentPeriod
 		 */
-		List<EmploymentPeriod> getEmploymentHistory(List<String> lstEmpID, DatePeriod datePeriod);
+		List<EmploymentPeriodImported> getEmploymentHistory(List<String> lstEmpID, DatePeriod datePeriod);
 
 	}
 
