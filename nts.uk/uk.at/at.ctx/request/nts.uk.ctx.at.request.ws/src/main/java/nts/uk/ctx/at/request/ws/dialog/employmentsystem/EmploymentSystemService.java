@@ -12,10 +12,10 @@ import javax.ws.rs.Produces;
 
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.AcquisitionNumberRestDayDto;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.DetailConfirmDto;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.EmployeeBasicInfoDto;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.EmploymentSystemFinder;
-import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.NumberRestDaysDto;
 
 @Path("at/request/dialog/employmentsystem")
 @Produces("application/json")
@@ -38,7 +38,7 @@ public class EmploymentSystemService extends WebService {
 		List<EmployeeBasicInfoDto> employeeBasicInfo = employeeFinder.getEmployeeData(param.getEmployeeIds(), baseDate);
 				
 		DataParam result = new DataParam(employeeBasicInfo, baseDate);
-		
+		 
 		return result;
 	}
 	
@@ -73,8 +73,7 @@ public class EmploymentSystemService extends WebService {
 	 */
 	@POST
 	@Path("getAcquisitionNumberRestDays/{employeeId}/{baseDate}")
-	public NumberRestDaysDto getAcquisitionNumberRestDays(@PathParam("employeeId") String employeeId, @PathParam("baseDate") String baseDate)
-	{		
+	public AcquisitionNumberRestDayDto getAcquisitionNumberRestDays(@PathParam("employeeId") String employeeId, @PathParam("baseDate") String baseDate) {		
 		// 振休残数情報の取得
 		return employeeFinder.getAcquisitionNumberRestDays(employeeId, baseDate);
 	}

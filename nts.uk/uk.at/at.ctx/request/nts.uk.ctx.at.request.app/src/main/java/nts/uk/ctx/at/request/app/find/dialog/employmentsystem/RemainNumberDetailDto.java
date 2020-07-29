@@ -11,10 +11,10 @@ public class RemainNumberDetailDto {
 	private boolean isExpiredInCurrentMonth;
 	
 	// field 期限日
-	private GeneralDate deadline;
+	private GeneralDate expirationDate;
 	
 	// field 消化数
-	private int digestionNumber;
+	private double digestionNumber;
 	
 	// field 消化日
 	private GeneralDate digestionDate;
@@ -23,7 +23,7 @@ public class RemainNumberDetailDto {
 	private int digestionHour;
 	
 	// field 発生数
-	private int occurrenceNumber;
+	private double occurrenceNumber;
 	
 	// field 発生日
 	private GeneralDate occurrenceDate;
