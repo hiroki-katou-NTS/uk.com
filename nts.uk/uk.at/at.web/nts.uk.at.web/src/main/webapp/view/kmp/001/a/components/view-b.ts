@@ -165,6 +165,7 @@ module nts.uk.at.view.kmp001.b {
 		getAllStampCard() {
 			const vm = this;
 			vm.mode("all");
+			vm.inputStampCard('');
 			vm.reloadAllStampCard(0);
 		}
 
