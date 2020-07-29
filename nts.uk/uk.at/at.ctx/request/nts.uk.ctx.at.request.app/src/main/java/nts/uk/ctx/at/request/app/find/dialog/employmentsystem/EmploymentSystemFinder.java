@@ -33,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.UnOffsetOfAbs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.UnUseOfRec;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffHistory;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffManagementQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
@@ -41,6 +42,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.Brea
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakHistoryData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.DayOffHistoryData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.UnOffSetOfDayOff;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.UnUserOfBreak;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
@@ -121,7 +124,9 @@ public class EmploymentSystemFinder {
 	 * @param baseDate
 	 * @return
 	 */
-	public DetailConfirmDto getDetailsConfirm(String employeeId, String baseDate) {
+	public CofirmDetailsResidualInformationDto getDetailsConfirm(String employeeId, String baseDate) {
+		
+		CofirmDetailsResidualInformationDto detailsdDto = new CofirmDetailsResidualInformationDto();
 		String companyId = AppContexts.user().companyId();
 		
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -137,7 +142,7 @@ public class EmploymentSystemFinder {
 		// アルゴリズム「社員に対応する締め期間を取得する」を実行する		
 		DatePeriod closingPeriod = closureService.findClosurePeriod(employeeId, inputDate);
 		
-		// アルゴリズム「休出代休発生消化履歴の取得」を実行する
+//		// アルゴリズム「休出代休発生消化履歴の取得」を実行する
 		Optional<BreakDayOffOutputHisData> data = breakDayOffManagementQuery.getBreakDayOffData(companyId, employeeId, inputDate);
 		
 		List<BreakDayOffHistoryDto> lstHistory = new ArrayList<>();
@@ -211,8 +216,44 @@ public class EmploymentSystemFinder {
 		
 		result.setBreakDay(breakDay);
 		
+		// #110215 	残数詳細を作成
+		List<RemainNumberDetailDto> remainNumberDetailMapDto = new ArrayList<>(); 
+		for (BreakDayOffDetail item : breakDay.getLstDetailData()) { 
+			RemainNumberDetailDto mappingDto = new RemainNumberDetailDto();
+			mappingDto.setExpiredInCurrentMonth(false);
+			if (item.getOccurrentClass().equals(OccurrenceDigClass.OCCURRENCE)) {
+				// ・逐次発生の休暇明細．発生消化区分　＝＝　発生　－＞発生日　＝　逐次発生の休暇明細．年月日
+				if (item.getYmdData().getDayoffDate().isPresent()) {
+					GeneralDate occurrenceDate = item.getYmdData().getDayoffDate().get();
+					mappingDto.setOccurrenceDate(occurrenceDate);
+					// condition 取得した期間．開始日＜＝発生日＜＝取得した期間．終了日　－＞・当月で期限切れ　＝　True　ELSE　－＞・当月で期限切れ　＝　False
+					mappingDto.setExpiredInCurrentMonth(closingPeriod.contains(occurrenceDate));
+				}
+			} else if (item.getOccurrentClass().equals(OccurrenceDigClass.DIGESTION)) {
+				// ・逐次発生の休暇明細．発生消化区分　＝＝　消化　－＞消化日　＝　逐次発生の休暇明細．年月日
+				mappingDto.setDigestionDate(item.getYmdData().getDayoffDate().orElse(null));
+			}
+			if (item.getUnUserOfBreak().isPresent()) {
+				UnUserOfBreak unUseOfRec = item.getUnUserOfBreak().get();
+				// field ・発生数　＝　取得した逐次発生の休暇明細．発生数．日数
+				mappingDto.setOccurrenceNumber(unUseOfRec.getOccurrenceDays());
+				// field ・期限日　＝　取得した逐次発生の休暇明細．休暇発生明細．期限日
+				mappingDto.setExpirationDate(unUseOfRec.getExpirationDate());
+			}
+			if (item.getUnOffsetOfDayoff().isPresent()) {
+				UnOffSetOfDayOff unOffsetOfAbs = item.getUnOffsetOfDayoff().get();
+				// field ・消化数　＝　取得した逐次発生の休暇明細．未相殺数．日数
+				mappingDto.setDigestionNumber(unOffsetOfAbs.getUnOffsetDay());
+			} 
+			// field 管理データ状態区分　＝　取得した逐次発生の休暇明細．状態
+			mappingDto.setManagementDataStatus(item.getDataAtr().value);
+		}
 		
-		return result;
+		// #110215 	紐付け情報を生成する ()
+		
+		// #110215	取得内容を画面に反映させる
+		
+		return detailsdDto;
 	}
 	
 	private DatePeriod getDatePeroid(GeneralDate startDate) {

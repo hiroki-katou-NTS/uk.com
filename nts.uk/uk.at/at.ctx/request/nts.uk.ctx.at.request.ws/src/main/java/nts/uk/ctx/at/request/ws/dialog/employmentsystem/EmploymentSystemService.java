@@ -13,6 +13,7 @@ import javax.ws.rs.Produces;
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.AcquisitionNumberRestDayDto;
+import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.CofirmDetailsResidualInformationDto;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.DetailConfirmDto;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.EmployeeBasicInfoDto;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.EmploymentSystemFinder;
@@ -44,7 +45,7 @@ public class EmploymentSystemService extends WebService {
 	
 	@POST
 	@Path("getDetailsConfirm/{employeeId}/{baseDate}")
-	public DetailConfirmDto getDetailsConfirm(@PathParam("employeeId") String employeeId, @PathParam("baseDate") String baseDate)
+	public CofirmDetailsResidualInformationDto getDetailsConfirm(@PathParam("employeeId") String employeeId, @PathParam("baseDate") String baseDate)
 	{		
 		// アルゴリズム「代休確認ダイア詳細取得」を実行する
 		return employeeFinder.getDetailsConfirm(employeeId, baseDate);
