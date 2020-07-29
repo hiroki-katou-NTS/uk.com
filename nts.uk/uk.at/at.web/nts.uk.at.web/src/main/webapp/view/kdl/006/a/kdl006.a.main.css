@@ -2,14 +2,14 @@
 	padding-left: 30px;
 }
 .top-btn button{
-	margin-left: 70px;
+	margin-right: 40px;
 	width: 110px;
 }
 .comboBox {
 	margin: 15px 0;
 }
 .comboBox .label {
-	margin: 7px 3px 0 0;
+	margin: 7px 20px 0 0 !important;
 	vertical-align: top;
 }
 .descriptive {
