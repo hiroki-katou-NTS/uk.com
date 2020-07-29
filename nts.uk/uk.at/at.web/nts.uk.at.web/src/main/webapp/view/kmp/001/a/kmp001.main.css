@@ -30,6 +30,7 @@
 
 .view-kmp .model-component table.layout-grid td div {
 	padding-bottom: 15px;
+	float: left;
 }
 
 .view-kmp .model-component table td.label-column {
@@ -42,6 +43,11 @@
 
 .view-kmp .model-component table td.label-column-a-right {
 	width: 300px;
+	float: left;
+}
+
+#right_name {
+	margin-left: 15px;
 }
 
 .view-kmp .model-component table td.label-column-left {

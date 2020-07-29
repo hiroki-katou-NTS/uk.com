@@ -281,7 +281,8 @@ module nts.uk.at.view.kmp001.a {
 					<div id="td-bottom" data-bind="text: $component.$i18n('KMP001_9')"></div>
 				</td>
 				<td class="label-column-a-right">
-					<div id="td-bottom" data-bind="text: model.businessName"></div>
+					<div data-bind="text: model.code"></div>
+					<div id="right_name" data-bind="text: model.businessName"></div>
 				</td>
 			</tr>
 			<tr>
