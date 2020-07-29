@@ -198,8 +198,10 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		String employeeID = AppContexts.user().employeeId();
 		this.inconsistencyCheck(companyId, employeeID, GeneralDate.today());
 		List<ConfirmMsgOutput> listResult = processBeforeRegister.processBeforeRegister_New(companyId,
-				EmploymentRootAtr.APPLICATION, agenAtr, application, null, inforGoBackCommonDirectOutput
-						.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().get(),
+				EmploymentRootAtr.APPLICATION, agenAtr, application, null, 
+				inforGoBackCommonDirectOutput
+				.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().isPresent() ? inforGoBackCommonDirectOutput
+						.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().get() : null,
 				Collections.emptyList());
 		return listResult;
 	}
