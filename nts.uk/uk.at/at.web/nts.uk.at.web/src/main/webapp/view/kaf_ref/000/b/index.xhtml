@@ -17,6 +17,7 @@
 			<com:stylefile path="/view/kaf_ref/000/b/component7/kaf000.b.component7.css" />
 			<com:stylefile path="/view/kaf_ref/000/b/component8/kaf000.b.component8.css" />
 			<com:stylefile path="/view/kaf_ref/007/shr/kaf007.shr.css" />
+			<com:stylefile path="/view/kaf_ref/009/shr/kaf009.share.style.css" />
 			<com:stylefile path="/view/kaf_ref/000/b/kaf000.b.css" />
 			<com:scriptfile path="/view/kaf_ref/000/shr/kaf000.shr.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/000/b/component1/kaf000.b.component1.js" />
@@ -28,7 +29,9 @@
 			<com:scriptfile path="/view/kaf_ref/000/b/component7/kaf000.b.component7.js" />
 			<com:scriptfile path="/view/kaf_ref/000/b/component8/kaf000.b.component8.js" />
 			<com:scriptfile path="/view/kaf_ref/007/shr/kaf007.shr.vm.js" />
+			<com:scriptfile path="/view/kaf_ref/009/shr/kaf009.shr.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/007/b/kaf007.b.vm.js" />
+			<com:scriptfile path="/view/kaf_ref/009/b/kaf009.b.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/000/b/kaf000.b.vm.js" />
 		</ui:define>
 		<ui:define name="content">
@@ -146,6 +149,15 @@
 				<div data-bind="if: ko.unwrap(appType) === 2">
 					<div data-bind="component: {
 							name: 'kaf007-b',
+							params: { 
+								appDispInfoStartupOutput: $vm.appDispInfoStartupOutput,
+								eventUpdate: function(a) { $vm.getChildUpdateEvent.apply($vm, [a]) }
+							}
+						}"></div>
+				</div>
+				<div data-bind="if: ko.unwrap(appType) === 4">
+					<div data-bind="component: {
+							name: 'kaf009-b',
 							params: { 
 								appDispInfoStartupOutput: $vm.appDispInfoStartupOutput,
 								eventUpdate: function(a) { $vm.getChildUpdateEvent.apply($vm, [a]) }

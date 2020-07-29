@@ -28,11 +28,12 @@ module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
             
             vm.appDate.subscribe(value => {
                 vm.$blockui("show");
-                let element = '#kaf000-a-component4-singleDate';
+                let element = '#kaf000-a-component4-singleDate',
+					appDate = moment(value).format("YYYY/MM/DD");
                 vm.$validate(element)
                 .then((valid: boolean) => {
                     if(valid) {
-                        let dateLst = [value],
+                        let dateLst = [appDate],
                             appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
                             command = { dateLst, appDispInfoStartupOutput };
                         return vm.$ajax(API.changeAppDate, command);         
