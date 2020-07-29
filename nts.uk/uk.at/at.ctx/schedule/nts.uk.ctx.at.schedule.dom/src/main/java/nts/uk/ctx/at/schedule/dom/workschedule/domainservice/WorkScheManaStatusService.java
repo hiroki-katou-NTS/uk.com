@@ -36,7 +36,6 @@ public class WorkScheManaStatusService {
 		for(String sid : lstEmployeeID){
 			map.putAll(WorkScheManaStatusService.getByEmployee(require,sid, period));
 		};
-		
 		return  map;
 	}
 
