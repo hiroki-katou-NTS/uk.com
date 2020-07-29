@@ -38,5 +38,8 @@ public class WorkScheduleShiftDto {
 	public ShiftEditStateDto shiftEditState;
 	// 出勤休日区分
 	public Integer workHolidayCls;
+	
+	//để check điều kiện ※Aa1
+	public boolean isActive;
 
 }

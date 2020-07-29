@@ -7,39 +7,17 @@ module nts.uk.at.view.ksu001.a {
             viewAC: new ksu001.ac.viewmodel.ScreenModel(),
             viewA: new ksu001.a.viewmodel.ScreenModel()
         };
-        let key = "USER_INFOR";
-        let item = uk.localStorage.getItem(key);
-        if (!item.isPresent()){
-            let userInfor: any = {};
-            userInfor.startDate = '';
-            userInfor.endDate = '';
-            userInfor.standardOrganization = 'standardOrganization';
-            userInfor.listShiftMaster = [{a : '5', b : '6'},{a : '5', b : '6'}];
-            userInfor.disPlayFormat = '';  
-            userInfor.backgroundColor = ''; // 背景色
-            userInfor.gridHeightSelection = 1;
-            userInfor.heightGridSetting = '';
-            userInfor.shiftPalletUnit  = 1;
-            userInfor.shiftPalletPositionNumber = 0;
-            userInfor.mapListShiftMaster =  new Map();
-            
-            uk.localStorage.setItemAsJson(key, userInfor);
-        } 
         
         nts.uk.ui.block.grayout();
-        let viewMode = '';
-        uk.localStorage.getItem(key).ifPresent((data) => {
-            let userInfor = JSON.parse(data);
-            __viewContext.viewModel.viewA.startPage(userInfor.disPlayFormat == '' ? 'time' : userInfor.disPlayFormat).done(() => {
-                __viewContext.bind(__viewContext.viewModel);
-                __viewContext.viewModel.viewA.getSettingDisplayWhenStart();
+        __viewContext.viewModel.viewA.startPage().done(() => {
+            __viewContext.bind(__viewContext.viewModel);
+            __viewContext.viewModel.viewA.getSettingDisplayWhenStart();
 
-                $(window).resize(function() {
-                    __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
-                });
-
-                nts.uk.ui.block.clear();
+            $(window).resize(function() {
+                __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
             });
+
+            nts.uk.ui.block.clear();
         });
 
         initEvent();

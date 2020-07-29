@@ -27,7 +27,7 @@ public class StartKSU001Param {
 	public ShiftPaletteWantGet shiftPaletteWantGet; // ・取得したいシフトパレット：Optional<単位, ページ>  単位
 	public boolean getActualData;            // ・実績も取得するか：boolean : có lấy data thực tế không
 	public boolean dataLocalstorageEmpty;    // lần đầu thì sẽ = false.
-	public int modeDisplay;                  // 1 : shift, 2 : detail, 3 : working 
+	public String viewMode;                  // 1 : shift, 2 : detail, 3 : working 
 
 	
 }

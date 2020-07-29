@@ -76,7 +76,7 @@ public class StartKSU001 {
 				"dea95de1-a462-4028-ad3a-d68b8f180412", null);
 
 		DisplayInforOrganization displayInforOrganization = new DisplayInforOrganization("designation", "code", "name",
-				"showName", "genericTerm");
+				"WorkPlaceName", "genericTerm");
 
 		DataScreenQueryGetInforDto resultStep1 = new DataScreenQueryGetInforDto(startDate, endDate, targetOrgIdenInfor,
 				displayInforOrganization);
