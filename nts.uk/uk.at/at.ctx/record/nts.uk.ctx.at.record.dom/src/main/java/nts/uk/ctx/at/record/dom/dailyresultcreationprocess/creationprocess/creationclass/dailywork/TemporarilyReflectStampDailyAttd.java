@@ -3,8 +3,11 @@ package nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.crea
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.breakouting.reflectgoingoutandreturn.ReflectGoingOutAndReturn;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.entranceandexit.EntranceAndExit;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectattdclock.ReflectStampOuput;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectleavingwork.ReflectLeavingWork;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflecttemporarystartend.ReflectTemporaryStartEnd;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectwork.ReflectWork;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
@@ -30,6 +33,15 @@ public class TemporarilyReflectStampDailyAttd {
 	
 	@Inject
 	private ReflectLeavingWork reflectLeavingWork;
+	
+	@Inject
+	private ReflectGoingOutAndReturn reflectGoingOutAndReturn;
+	
+	@Inject
+	private ReflectTemporaryStartEnd reflectTemporaryStartEnd;
+	
+	@Inject
+	private EntranceAndExit entranceAndExit;
 	/**
 	 * 打刻を反映する
 	 */
@@ -69,12 +81,33 @@ public class TemporarilyReflectStampDailyAttd {
 		case GO_OUT://外出 or 戻り
 		case RETURN:
 			//外出・戻りを反映する (Phản ánh 外出・戻り)
+			ReflectStampOuput reflectGoingOutReturn = reflectGoingOutAndReturn.reflect(stamp, stampReflectRangeOutput, integrationOfDaily);
+			if (reflectGoingOutReturn == ReflectStampOuput.NOT_REFLECT) {
+				return;
+			}
+			// 勤務情報を反映する
+			reflectWorkInformation.reflect(false, false, companyId, integrationOfDaily.getEmployeeId(),
+					integrationOfDaily.getYmd(), stamp, integrationOfDaily);
 			break;
 		case TEMPORARY_WORK://臨時開始 or 臨時終了
 		case TEMPORARY_LEAVING:
+			ReflectStampOuput reflectTemporary = reflectTemporaryStartEnd.reflect(stamp, stampReflectRangeOutput, integrationOfDaily);
+			if (reflectTemporary == ReflectStampOuput.NOT_REFLECT) {
+				return;
+			}
+			// 勤務情報を反映する
+			reflectWorkInformation.reflect(false, false, companyId, integrationOfDaily.getEmployeeId(),
+					integrationOfDaily.getYmd(), stamp, integrationOfDaily);
 			break;
 		case BRARK: //退門Or入門
 		case OVER_TIME:
+			ReflectStampOuput reflectentranceAndExit = entranceAndExit.entranceAndExit(stamp, stampReflectRangeOutput, integrationOfDaily);
+			if (reflectentranceAndExit == ReflectStampOuput.NOT_REFLECT) {
+				return;
+			}
+			// 勤務情報を反映する
+			reflectWorkInformation.reflect(false, false, companyId, integrationOfDaily.getEmployeeId(),
+					integrationOfDaily.getYmd(), stamp, integrationOfDaily);
 			break;
 		case PC_LOG_ON: //PCログオフOrPcログオン
 		case PC_LOG_OFF:

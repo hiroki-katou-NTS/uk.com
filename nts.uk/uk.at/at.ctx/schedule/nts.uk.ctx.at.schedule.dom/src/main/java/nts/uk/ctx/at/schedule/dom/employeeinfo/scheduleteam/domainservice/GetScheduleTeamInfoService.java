@@ -46,6 +46,7 @@ public class GetScheduleTeamInfoService {
 				// return 社員所属チーム情報($)
 				EmpTeamInfor empTeamInfo = EmpTeamInfor.get(c);
 				result.add(empTeamInfo);
+				return;
 			}
 			/*
 			 * $チーム名称 = $スケジュールチームTable .get($所属スケジュールチーム.職場グループID,
@@ -53,7 +54,7 @@ public class GetScheduleTeamInfoService {
 			 * $チーム名称)
 			 */
 			ScheduleTeamName teamName = mapSchedule
-					.get(Pair.of(belongScheduleTeam.getWKPGRPID(), belongScheduleTeam.getScheduleTeamCd()));
+					.get(Pair.of(belongScheduleTeam.getWKPGRPID(), belongScheduleTeam.getScheduleTeamCd().v()));
 			EmpTeamInfor eTeamInfor = new EmpTeamInfor(c, Optional.ofNullable(belongScheduleTeam.getScheduleTeamCd()),
 					Optional.ofNullable(teamName));
 			result.add(eTeamInfor);

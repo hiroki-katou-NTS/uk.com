@@ -2351,7 +2351,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							jobTitleHistItemImport.get().getJobTitleId(),
 							workplaceHistItemImport.get().getWorkplaceId(),
 							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()), 
-							new BonusPaySettingCode(dailyAttd.getBonusPaySettingCode().v()))));
+							new BonusPaySettingCode(dailyAttd.getBonusPaySettingCode().v()))),errMesInfos);
 		} else {
 			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する

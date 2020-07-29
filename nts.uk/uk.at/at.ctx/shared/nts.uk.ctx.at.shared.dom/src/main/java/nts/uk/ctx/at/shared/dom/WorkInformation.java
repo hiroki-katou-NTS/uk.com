@@ -34,7 +34,7 @@ public class WorkInformation {
 
 	public WorkInformation(String workTimeCode, String workTypeCode) {
 
-		this.workTimeCode = StringUtils.isEmpty(workTimeCode) ? null : Optional.of(new WorkTimeCode(workTimeCode));
+		this.workTimeCode = StringUtils.isEmpty(workTimeCode) ? Optional.empty() : Optional.of(new WorkTimeCode(workTimeCode));
 		this.workTypeCode = workTypeCode == null ? null : new WorkTypeCode(workTypeCode);
 	}
 
@@ -45,6 +45,10 @@ public class WorkInformation {
 
 	public WorkTimeCode getWorkTimeCode() {
 		return this.workTimeCode.isPresent()?this.workTimeCode.get():null;
+	}
+	
+	public Optional<WorkTimeCode> getWorkTimeCodeNotNull() {
+		return this.workTimeCode;
 	}
 
 	public WorkTypeCode getWorkTypeCode() {

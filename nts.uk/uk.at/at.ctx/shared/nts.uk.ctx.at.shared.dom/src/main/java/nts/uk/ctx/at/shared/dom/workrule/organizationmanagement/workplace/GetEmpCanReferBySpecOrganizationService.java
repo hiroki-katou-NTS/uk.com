@@ -1,11 +1,11 @@
 package nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupAdapter;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.GetShiftMasterByWorkplaceService;
 
 /**
  * 組織を指定して参照可能な社員を取得する		
@@ -28,9 +28,11 @@ public class GetEmpCanReferBySpecOrganizationService {
 		List<String> result = new ArrayList<>();
 		switch (targetOrgIdenInfor.getUnit()){
 		case WORKPLACE_GROUP :
-			//this.
-		}
-		
+			result =  getByWorkPlaceGroup(require, referenceDate, epmloyeeId, targetOrgIdenInfor.getWorkplaceGroupId().get());
+			break;
+		default ://WORKPLACE			
+			result =  getByWorkPlace(require, referenceDate, epmloyeeId, targetOrgIdenInfor.getWorkplaceId().get());
+		}	
 		return result;
 	}
 	/**
@@ -41,9 +43,16 @@ public class GetEmpCanReferBySpecOrganizationService {
 	 * @param workplaceGroupId
 	 * @return List<社員ID>
 	 */
-	private List<String> getByWorkPlaceGroup(Require require,GeneralDate referenceDate , String epmloyeeId ,String workplaceGroupId ){
+	private static List<String> getByWorkPlaceGroup(Require require,GeneralDate referenceDate , String epmloyeeId ,String workplaceGroupId ){
 		List<String> result = new ArrayList<>();
-		//[R-1] 職場グループで参照可能な所属社員を取得する					
+		//[R-1] 職場グループで参照可能な所属社員を取得する		
+		//QA Adapter tên hai hàm đang không giống nhau
+		//	$社員IDリスト = require.職場グループで参照可能な所属社員を取得する( 基準日, 社員ID, 職場グループ )	
+		List<String> lstEmpId = require.getReferableEmp(referenceDate, epmloyeeId, Arrays.asList(workplaceGroupId));
+		if(lstEmpId.isEmpty()){
+			//	$社員IDリスト = require.社員を並び替える( 社員IDリスト, システム区分.就業, null, 基準日, null )				
+			 result = require.sortEmployee(lstEmpId, 0, null, referenceDate, null);
+		}
 		return result;
 	}
 	/**
@@ -53,12 +62,63 @@ public class GetEmpCanReferBySpecOrganizationService {
 	 * @param workplaceGroupId
 	 * @return List<社員ID>
 	 */
-	private List<String> getByWorkPlace(Require require,GeneralDate referenceDate , String epmloyeeId ,String workplaceGroupId ){
+	private static List<String> getByWorkPlace(Require require,GeneralDate referenceDate , String epmloyeeId ,String workplaceId ){
 		List<String> result = new ArrayList<>();
+		//-------------------------Tao QA param đang đòi truyền List workPlaceId;
+		
+		/*$検索条件 = 社員検索の規定条件( 基準日: 基準日, システム区分: 就業													
+				, 検索参照範囲: 参照可能範囲すべて													
+				, 職場で絞り込む: true, 職場ID一覧: list:職場ID )*/
+		RegulationInfoEmpQuery query = new RegulationInfoEmpQuery(
+				referenceDate,
+				0,
+				null,
+				null,
+				null,
+				null,
+				true,
+				Arrays.asList(workplaceId),
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				0,
+				null,
+				null,
+				null);
+			//$ロールID = require.ロールIDを取得する( 年月日, 社員ID )
+			String roleId = require.getRoleID(referenceDate, epmloyeeId);
+			//return require.社員を検索する( $検索条件, $ロールID )	
+			result = require.searchEmployee(query, roleId);	
 		return result;
 	}
 	
 	public static interface Require {
+		/**
+		 * [R-1] 職場グループで参照可能な所属社員を取得する
+		 * 職場グループAdapter.参照可能な所属社員を取得する( 年月日, 社員ID, 職場グループID )
+		 * @param date
+		 * @param empId
+		 * @param lstWorkplaceGroupID
+		 * @return
+		 */
+		List<String> getReferableEmp(GeneralDate date,String empId, List<String> lstWorkplaceGroupID);
+		
+		
 		/**
 		 * [R-2] 社員を並び替える			
 		 * @param lstmployeeId --- 社員一覧：List＜社員ID＞
@@ -68,13 +128,13 @@ public class GetEmpCanReferBySpecOrganizationService {
 		 * @param nameType --- 氏名の種類：Enum＜氏名の種類＞
 		 * @return List<String> 
 		 */
-		List<String> sortEmployee(List<String> lstmployeeId, int sysAtr ,Integer sortOrderNo, GeneralDate referenceDate , int nameType);
+		List<String> sortEmployee(List<String> lstmployeeId, Integer sysAtr ,Integer sortOrderNo, GeneralDate referenceDate , Integer nameType);
 		
 		/**
 		 * [R-3] ロールIDを取得する		 
 		 * @return
 		 */
-		String getRoleID();
+		String getRoleID(GeneralDate date , String employId);
 		
 		/**
 		 * [R-4] 社員を検索する	
@@ -82,7 +142,7 @@ public class GetEmpCanReferBySpecOrganizationService {
 		 * @param roleId --- ・いまのロール：ロールID
 		 * @return ・並べ替えた社員リスト：List＜社員ID＞
 		 */
-		List<String> searEmployee(WorkingConditionsEmpSearch workingConditionsEmpSearch , String roleId );
+		List<String> searchEmployee(RegulationInfoEmpQuery regulationInfoEmpQuery , String roleId );
 	}
 	
 	

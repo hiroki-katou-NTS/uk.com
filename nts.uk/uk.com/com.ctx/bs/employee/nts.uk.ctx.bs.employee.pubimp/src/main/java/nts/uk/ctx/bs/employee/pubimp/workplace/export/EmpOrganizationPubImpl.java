@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -11,7 +12,9 @@ import nts.uk.ctx.bs.employee.dom.workplace.EmployeeAffiliation;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroupRespository;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupGettingService;
+import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport;
 import nts.uk.ctx.bs.employee.pub.workplace.export.EmpOrganizationPub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.workplacegroup.EmpOrganizationExport;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -20,6 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author HieuLt
  *
  */
+@Stateless
 public class EmpOrganizationPubImpl implements EmpOrganizationPub {
 
 	@Override
@@ -35,15 +39,19 @@ public class EmpOrganizationPubImpl implements EmpOrganizationPub {
 				 c.getWorkplaceGroupID())).collect(Collectors.toList());
 		return result;
 	}
-	//WorkplaceGroupGettingService
+
 	
 	private static class RequireWorkplaceGroupGettingService implements WorkplaceGroupGettingService.Require{
 		@Inject
 		private AffWorkplaceGroupRespository repo;
+		
+		@Inject
+		private WorkplacePub wkplacePub;
 		@Override
 		public String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date) {
-			// TODO Auto-generated method stub
-			return null;
+			//[No.650]社員が所属している職場を取得する
+			AffWorkplaceHistoryItemExport data= wkplacePub.getAffWkpHistItemByEmpDate(employeeID, date);
+			return data.getWorkplaceId();
 		}
 
 		@Override

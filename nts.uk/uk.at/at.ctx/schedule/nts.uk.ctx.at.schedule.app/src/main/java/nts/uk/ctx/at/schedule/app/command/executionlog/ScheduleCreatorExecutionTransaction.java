@@ -252,11 +252,12 @@ public class ScheduleCreatorExecutionTransaction {
 		scheduleCreator.updateToCreated();
 		this.scheduleCreatorRepository.update(scheduleCreator);
 
+		// Đang không cần thiết vì trong mỗi xử lý đã thực hiện việc này
 		// 暫定データを作成する (Tạo data tạm)
-		registrationListDateSchedule.getRegistrationListDateSchedule().forEach(x -> {
-			// アルゴリズム「暫定データの登録」を実行する(Thực hiện thuật toán [đăng ký data tạm]) 
-			this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, x.getEmployeeId(), x.getListDate());
-		});
+//		registrationListDateSchedule.getRegistrationListDateSchedule().forEach(x -> {
+//			// アルゴリズム「暫定データの登録」を実行する(Thực hiện thuật toán [đăng ký data tạm]) 
+//			this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, x.getEmployeeId(), x.getListDate());
+//		});
 		
 	}
 
@@ -292,7 +293,7 @@ public class ScheduleCreatorExecutionTransaction {
 		this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
 				result.getListWorkSchedule(), ws -> {
 
-					// ToDo : đang đợi Hiếu tạo (TKT-TQP)
+					// ToDo : đang đợi Hiếu tạo (TKT-TQP) - mới chỉ có interface chứ chưa có impl
 					// 勤務予定を登録する
 					this.workScheduleRepository.insert(ws);
 					
@@ -324,7 +325,7 @@ public class ScheduleCreatorExecutionTransaction {
 	private void deleteSchedule(String employeeId,DatePeriod period) {
 		String companyId = AppContexts.user().companyId();
 		//勤務予定ドメインを削除する (TKT-TQP)
-		//TODO: cho tin doi ung response -> tao domain moi -> xoa domain
+		//TODO: đang đợi Hiểu làm đề gọi vào
 		//暫定データの登録
 		this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, period.datesBetween());
 		
@@ -809,15 +810,14 @@ public class ScheduleCreatorExecutionTransaction {
 				return createScheduleOneDate;
 			}
 
-			// 勤務情報・勤務時間を用意する
-			// 勤務情報を取得する
+			// 勤務情報・勤務時間を用意する ↓
+			// 勤務情報を取得する ↓
 			Map<GeneralDate, WorkInformation> results = new HashMap<>();
 			PrepareWorkOutput output = this.getWorkInfo(command, creator, domain, context, targetPeriod, dateInPeriod,
 					masterCache, listBasicSchedule, dateRegistedEmpSche, results, carrier);
 
 			// Outputを確認する
 			List<TimezoneUse> lstTimeZone = new ArrayList<>();
-			TimezoneUse timezoneUse = new TimezoneUse();
 			if (output.getExecutionLog().isPresent()) {
 				// エラーあり
 				throw new BusinessException(output.getExecutionLog().get().getErrorContent());
@@ -826,7 +826,7 @@ public class ScheduleCreatorExecutionTransaction {
 				// 勤務予定時間帯を取得する
 				if (output.getInformation().getWorkTimeCode() == null) {
 					// 勤務予定時間帯を返す
-					lstTimeZone.add(timezoneUse);
+					lstTimeZone = new ArrayList<>();
 				} else {
 					// Nullではない場合
 					// 所定時間帯を取得する
@@ -838,7 +838,8 @@ public class ScheduleCreatorExecutionTransaction {
 					lstTimeZone = getTimezone.getTimezones().stream().filter(x -> x.getUseAtr() == UseSetting.USE)
 							.collect(Collectors.toList());
 				}
-			}
+			} 
+			// -----------↑
 			// 「パラメータ（Temporary）。社員の短時間勤務一覧」から該当の短時間勤務を取得する
 			// 勤務情報、勤務予定時間帯、社員の短時間勤務を返す
 			PrepareWorkOutput prepareWorkOutput = new PrepareWorkOutput(output.getInformation(), lstTimeZone,
@@ -846,7 +847,7 @@ public class ScheduleCreatorExecutionTransaction {
 					output.getExecutionLog().isPresent() ? output.getExecutionLog() : Optional.empty(),
 					output.getWorkType().isPresent() ? output.getWorkType() : Optional.empty());
 
-			// Outputを確認する - đang fake (TKT-TQP)
+			// Outputを確認する
 			if (prepareWorkOutput.getExecutionLog().isPresent()) {
 				// 「勤務予定」、「エラー」を返す」、「処理状態
 				createScheduleOneDate = new OutputCreateScheduleOneDate(null, prepareWorkOutput.getExecutionLog().get(),
@@ -1406,12 +1407,21 @@ public class ScheduleCreatorExecutionTransaction {
 		ScheduleErrorLogGeterCommand geterCommand = new ScheduleErrorLogGeterCommand(command.getExecutionId(),
 				command.getCompanyId(), dateInPeriod);
 		// 会社の場合 - Đang để tạm ntn vì enum 営業日カレンダーの参照先 chưa được update
-		if(workplaceHistItem.value != WorkScheduleMasterReferenceAtr.WORK_PLACE.value && workplaceHistItem.value != WorkScheduleMasterReferenceAtr.CLASSIFICATION.value) {
+		if(workplaceHistItem.value != WorkScheduleMasterReferenceAtr.WORK_PLACE.value && 
+				workplaceHistItem.value != WorkScheduleMasterReferenceAtr.CLASSIFICATION.value) {
 			// ドメインモデル「会社営業日カレンダー日次」を取得する(lấy dữ liệu domain 「会社営業日カレンダー日次」)
 			Optional<CalendarCompany> optionalCalendarCompany = this.calendarCompanyRepository
 					.findCalendarCompanyByDate(command.getCompanyId(), dateInPeriod);
 			
-			// // ドメインモデル「全社基本勤務設定」を取得する
+			// ドメインモデル「全社基本勤務設定」を取得する
+			Optional<CompanyBasicWork> optionalCompanyBasicWork = this.companyBasicWorkRepository
+					.findById(command.getCompanyId(), optionalCalendarCompany.get().getWorkingDayAtr().value);
+			
+			// if 取得できない
+			if(!optionalCompanyBasicWork.isPresent()) {
+				this.scheCreExeErrorLogHandler.addError(geterCommand, command.getEmployeeId(), "Msg_589");
+				return Optional.empty();
+			}
 			BasicWorkSettingByClassificationGetterCommand settingByClassification = new BasicWorkSettingByClassificationGetterCommand(
 					command.getEmployeeId(), geterCommand, null,
 					optionalCalendarCompany.get().getWorkingDayAtr().value);
@@ -1449,6 +1459,7 @@ public class ScheduleCreatorExecutionTransaction {
 					// return basic work setting
 					Optional<Integer> workdayDivision = basicWorkSettingHandler
 							.getWorkdayDivisionByWkp(workdayDivisions);
+					
 					// 職場の基本勤務設定を取得する
 					BasicWorkSettingByWorkplaceGetterCommand commandGetter = new BasicWorkSettingByWorkplaceGetterCommand(
 							command.getEmployeeId(), geterCommand, workplaceIds, workdayDivision.get());

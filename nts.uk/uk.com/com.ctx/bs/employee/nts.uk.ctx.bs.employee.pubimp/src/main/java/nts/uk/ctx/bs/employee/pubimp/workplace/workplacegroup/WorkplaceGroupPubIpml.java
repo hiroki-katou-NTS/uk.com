@@ -1,6 +1,5 @@
 package nts.uk.ctx.bs.employee.pubimp.workplace.workplacegroup;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -20,10 +19,13 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.EmployeeInfoData
 import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.GetAllEmpWhoBelongWorkplaceGroupService;
 import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.GetEmpCanReferBySpecifyWorkgroupService;
 import nts.uk.ctx.bs.employee.pub.employee.workplace.export.WorkplaceGroupExport;
+import nts.uk.ctx.bs.employee.pub.workplace.ResultRequest597Export;
+import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.workplacegroup.EmpOrganizationExport;
 import nts.uk.ctx.bs.employee.pub.workplace.workplacegroup.WorkplaceGroupPublish;
 import nts.uk.shr.com.context.AppContexts;
 import repository.workplacegroup.JpaAffWorkplaceGroupRespository;
+import repository.workplacegroup.JpaWorkplaceGroupRespository;
 
 /**
  * 職場グループPublish
@@ -103,6 +105,10 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 	private static class RequireAllEmpWhoBelongWklGroupSv implements GetAllEmpWhoBelongWorkplaceGroupService.Require{
 		@Inject
 		private JpaAffWorkplaceGroupRespository repo;
+		
+		@Inject 
+		private SyWorkplacePub pub;
+		
 		@Override
 		public List<String> getWorkplaceBelongsWorkplaceGroup(String workplaceGroupId) {
 			// JpaAffWorkplaceGroupRespository List<String> getWKPID(String CID, String WKPGRPID);
@@ -112,40 +118,60 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 
 		@Override
 		public List<EmployeeInfoData> getEmployeesWhoBelongWorkplace(String workplaceId, DatePeriod datePeriod) {
-			// TODO Auto-generated method stub --QA
-			return null;
+			//[No.597]職場の所属社員を取得する
+			List<ResultRequest597Export> data =  pub.getLstEmpByWorkplaceIdsAndPeriod(Arrays.asList(workplaceId), datePeriod);
+			List<EmployeeInfoData> result = data.stream().map(c -> new EmployeeInfoData(c.getSid(), c.getEmployeeCode(), c.getEmployeeName())).collect(Collectors.toList());
+			return result;
 		}
 
 	}
 	private static class RequireWorkgroupService implements GetEmpCanReferBySpecifyWorkgroupService.Require{
-
+		
+		@Inject
+		private JpaWorkplaceGroupRespository repoWorkplaceGroup;
+		
+		//職場グループ所属情報Repository
+		@Inject 
+		private JpaAffWorkplaceGroupRespository repoAffWorkplaceGroup;
+		
+		@Inject
+		private SyWorkplacePub syWorkplacePub;
+		
+		
 		@Override
 		public List<WorkplaceGroup> getAll() {
-			// TODO Auto-generated method stub
-			return null;
+			String companyId = AppContexts.user().companyId();
+			List<WorkplaceGroup> data =  repoWorkplaceGroup.getAll(companyId);	 
+			return data;
 		}
 
 		@Override
 		public List<AffWorkplaceGroup> getByListWKPID(List<String> WKPID) {
-			// TODO Auto-generated method stub
-			return null;
+			String companyId = AppContexts.user().companyId();
+			List<AffWorkplaceGroup> data = repoAffWorkplaceGroup.getByListWKPID(companyId, WKPID); 
+			return data;
 		}
 
 		@Override
 		public boolean whetherThePersonInCharge(String empId) {
-			// TODO Auto-generated method stub
+			// KHong có thuat toan trong EAP
+			// Check ngui phu trách the nao -- tư đoán
+			//String role = AppContexts.user().roles().forAttendance()
 			return false;
 		}
 
 		@Override
 		public EmployeeReferenceRangeImport getEmployeeReferRangeOfLoginEmployees(String empId) {
 			// TODO Auto-generated method stub
+			//
 			return null;
 		}
 
 		@Override
 		public List<String> getAllManagedWorkplaces(String empId, GeneralDate baseDate) {
 			// TODO Auto-generated method stub
+			///
+			
 			return null;
 		}
 
@@ -157,20 +183,24 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 
 		@Override
 		public List<AffWorkplaceGroup> getWGInfo(List<String> WKPID) {
-			// TODO Auto-generated method stub
-			return null;
+			String companyId = AppContexts.user().companyId();
+			List<AffWorkplaceGroup> data = repoAffWorkplaceGroup.getByListWKPID(companyId, WKPID);
+			return data;
 		}
 
 		@Override
 		public List<String> getWorkplaceBelongsWorkplaceGroup(String workplaceGroupId) {
-			// TODO Auto-generated method stub
-			return null;
+			String companyId = AppContexts.user().companyId();
+			List<String> data = repoAffWorkplaceGroup.getWKPID(companyId, workplaceGroupId);
+			return data;
 		}
 
 		@Override
 		public List<EmployeeInfoData> getEmployeesWhoBelongWorkplace(String workplaceId, DatePeriod datePeriod) {
-			// TODO Auto-generated method stub
-			return null;
+			// Request 597 職場の所属社員を取得する
+			List<ResultRequest597Export> data = syWorkplacePub.getLstEmpByWorkplaceIdsAndPeriod(Arrays.asList(workplaceId), datePeriod);
+			List<EmployeeInfoData> result = data.stream().map(c -> new EmployeeInfoData(c.getSid(), c.getEmployeeCode(), c.getEmployeeName())).collect(Collectors.toList());
+			return result;
 		}
 		
 	}

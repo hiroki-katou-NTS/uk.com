@@ -3,13 +3,13 @@ package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainObject;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 
 /**
@@ -63,6 +63,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	
 	/**
 	 * 指定された勤務回数の予定時間帯を取得する
+	 * 
 	 * @param workNo
 	 * @return　予定時間帯
 	 */
@@ -85,6 +86,19 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 
 	public void setDayOfWeek(DayOfWeek dayOfWeek) {
 		this.dayOfWeek = dayOfWeek;
+	}
+	
+	/**
+	 * [2] 出勤・休日系の判定																							
+	 * @param require
+	 * @return
+	 */
+	public Optional<WorkStyle> getWorkStyle(Require require){
+		return this.recordInfo.getWorkStyle(require);
+	}
+	
+	public static interface Require extends WorkInformation.Require {
+		
 	}
 	
 }

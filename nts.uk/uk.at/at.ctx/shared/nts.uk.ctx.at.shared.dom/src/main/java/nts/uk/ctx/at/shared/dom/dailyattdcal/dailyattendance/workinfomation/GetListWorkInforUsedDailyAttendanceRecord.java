@@ -20,13 +20,12 @@ public class GetListWorkInforUsedDailyAttendanceRecord {
 	 * @return
 	 */
 	public static  List<WorkInformation>  getListWorkInfo(List<WorkInfoOfDailyAttendance> listWorkInfoOfDailyPerformance){
-		
 		List<WorkInformation> result = new ArrayList<>();
 		List<WorkInformation> data = listWorkInfoOfDailyPerformance.stream().map(c ->c.getRecordInfo()).collect(Collectors.toList());
 		//Distin Work Time Work Hour
 		for(WorkInformation wi :data){
 			Optional<WorkInformation> optWi = result.stream().filter(x-> x.getWorkTypeCode().v().equals(wi.getWorkTypeCode().v())
-					&& x.getWorkTimeCode().equals(wi.getWorkTypeCode())).findFirst();
+					&& x.getWorkTimeCodeNotNull().equals(wi.getWorkTimeCodeNotNull())).findFirst();
 			if(!optWi.isPresent()){
 				result.add(wi);
 			}

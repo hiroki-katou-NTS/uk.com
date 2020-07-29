@@ -41,7 +41,7 @@ public class CorrectWorkSchedule {
 	 */
 	public WorkSchedule correctWorkSchedule(WorkSchedule workSchedule,String employeeId,GeneralDate targetDate) {
 		//勤務予定から日別勤怠（Work）に変換する
-		//TODO : Chưa remove từ record sang shared nên chưa sử dụng được (tạo 1 biến class IntegrationOfDaily , biến nào k có thì để empty) (TKT-TQP)
+		//(tạo 1 biến class IntegrationOfDaily , biến nào k có thì để empty) (TKT-TQP)
 		IntegrationOfDaily integrationOfDaily = new IntegrationOfDaily(workSchedule.getWorkInfo(), null, workSchedule.getAffInfo(), 
 				Optional.empty(), new ArrayList<>(), Optional.empty(), workSchedule.getLstBreakTime(), workSchedule.getOptAttendanceTime(), 
 				workSchedule.getOptTimeLeaving(), workSchedule.getOptSortTimeWork(), Optional.empty(), Optional.empty(), 
@@ -50,9 +50,7 @@ public class CorrectWorkSchedule {
 		
 		ChangeDailyAttendance changeAtt = new ChangeDailyAttendance(true, false, false, false);
 		integrationOfDaily = rule.process(integrationOfDaily, changeAtt);
-		//TODO Thuật toán này hiện chưa ai làm + cũng chưa phải làm. nên tạm thời bỏ qua (TKT-TQP)
 		//勤務予定情報を計算する
-		//TODO: đang để record -> có thể sẽ chuyển về shared (mr Hoshina dang ban vs a Lau)
 		integrationOfDaily = this.calcWorkScheduleInfo(integrationOfDaily, employeeId, targetDate).get(0);
 		
 		WorkSchedule workSchedules = new WorkSchedule(integrationOfDaily.getEmployeeId(),
