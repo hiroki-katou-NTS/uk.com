@@ -26,14 +26,14 @@
 									</td>
 									<td class="label-column">
 										<div id="combo-box" data-bind="ntsComboBox: {
-											options: itemList,
-											optionsValue: 'code',
+											options: cardLengths,
+											optionsValue: 'value',
 											visibleItemsCount: 6,
 											width: 60,
-											value: selectedCode,
-											optionsText: 'name',
+											value: selectedLength,
+											optionsText: 'text',
 											columns: [
-												{ prop: 'code', length: 2 }
+												{ prop: 'text', length: 2 }
 											]}"></div>
 									</td>
 								</tr>
@@ -43,31 +43,11 @@
 										<hr></hr>
 									</td>
 								</tr>
-								<tr>
-									<td class="label-column-select">
-										<label class="ntsRadioBox">
-											<input type="radio" name="textRadio" />
-											<span class="box"></span><span class="label" data-bind="text: selectedName"></span>
-										</label>
-									</td>
-									<td class="label-column-select">
-										<label class="ntsRadioBox">
-											<input type="radio" name="textRadio" data-bind="checkedValue: true, checked: ischeck1"/>
-											<span class="box"></span><span class="label" data-bind="text: $i18n('KMP001_44')"></span>
-										</label>
-									</td>
-								</tr>
-								<tr>
-									<td class="label-column-select">
-										<label class="ntsRadioBox">
-											<input type="radio" name="textRadio" data-bind="checkedValue: true, checked: ischeck2"/>
-											<span class="box"></span><span class="label" data-bind="text: $i18n('KMP001_43')"></span>
-										</label>
-									</td>
-									<td class="label-column-select">
-										<label class="ntsRadioBox">
-											<input type="radio" name="textRadio" data-bind="checkedValue: true, checked: ischeck3"/>
-											<span class="box"></span><span class="label" data-bind="text: $i18n('KMP001_45')"></span>
+								<tr data-bind="foreach: _.chunk(paddingTypes, 2)">
+									<td class="label-column-select" data-bind="foreach: $data">
+										<label class="ntsRadioBox" id="viewd-radio-box">
+											<input type="radio" data-bind="checkedValue: value, checked: $vm.paddingType"  />
+											<span class="box"></span><span class="label" data-bind="text: $vm.$i18n(label)"></span>
 										</label>
 									</td>
 								</tr>
@@ -78,7 +58,7 @@
 				<hr></hr>
 				<div class="view-button">
 					<div>
-						<button id="button_decide" class="proceed" data-bind="text: $i18n('KMP001_46')"></button>
+						<button id="button_decide" class="proceed" data-bind="text: $i18n('KMP001_46'), click: addSetting"></button>
 						<button data-bind="text: $i18n('KMP001_47'), click: closeDialog"></button>
 					</div>
 				</div>

@@ -126,7 +126,6 @@ module nts.uk.at.view.kdp005.a {
 							self.errorMessage(getMessage(res.messageId));
 							dfd.resolve();
 						}).always(() => {
-
 							block.clear();
 						});
 					} else {
@@ -149,21 +148,19 @@ module nts.uk.at.view.kdp005.a {
 					if (!loginResult) {
 						self.errorMessage(getMessage("Msg_1647"));
 						dfd.resolve();
-						return;
 					}
 					self.loginInfo = loginResult.em;
 					self.openDialogK().done((result) => {
 						if (!result) {
-							 (getMessage("Msg_1647"));
+                            self.errorMessage(getMessage("Msg_1647"));
 							dfd.resolve();
-							return;
-						}
-						self.loginInfo.selectedWP = result;
-						characteristics.save("loginKDP005", self.loginInfo);
-                        characteristics.save("loginKDP005", self.loginInfo).done(() => {
-                            location.reload();
-                            dfd.resolve(self.loginInfo);
-                        });
+						}else {
+    						self.loginInfo.selectedWP = result;
+                            characteristics.save("loginKDP005", self.loginInfo).done(() => {
+                                location.reload();
+                                dfd.resolve(self.loginInfo);
+                            });
+                        }
 					});
 				}).always(() => {
 					
@@ -342,9 +339,8 @@ module nts.uk.at.view.kdp005.a {
                                     location.reload();
                                 });
                             } else {
-                                characteristics.save("loginKDP005", self.loginInfo).done(() => {
-                                    location.reload();
-                                });
+                                self.isUsed(false);
+                                self.errorMessage(getMessage("Msg_1647"));
                             }
                         });
                     } else {
