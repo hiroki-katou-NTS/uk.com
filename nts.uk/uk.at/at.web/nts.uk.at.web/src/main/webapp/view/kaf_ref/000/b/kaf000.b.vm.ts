@@ -38,7 +38,7 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
         
         errorEmpty: KnockoutObservable<boolean> = ko.observable(true);
         
-        // childUpdateEvent!: () => void;
+        childUpdateEvent!: () => void;
 
         created(params: any) {
             const vm = this;
