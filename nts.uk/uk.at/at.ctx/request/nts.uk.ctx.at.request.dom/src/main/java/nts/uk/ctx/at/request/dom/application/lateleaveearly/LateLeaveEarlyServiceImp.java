@@ -396,51 +396,60 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			ArrivedLateLeaveEarlyInfoOutput infoOutput, Application application) {
 		List<ConfirmMsgOutput> listMsg = new ArrayList<>();
 
-		// 事前制約をチェックする (Kiểm tra các ràng buộc trước)
-		if (application.getPrePostAtr().value == 0) {
-			// 事前モード：
-			// 「出勤時刻・退勤時刻・出勤時刻２・退勤時刻２」か１つは入力必須
-			if (infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst()
-					.get().get(0).getOpAchievementDetail().get().getAchievementEarly().getScheAttendanceTime1() == null
-					&& infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
-							.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
-							.getAchievementEarly().getScheAttendanceTime2() == null
-					&& infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
-							.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
-							.getAchievementEarly().getScheDepartureTime1() == null
-					&& infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
-							.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
-							.getAchievementEarly().getScheDepartureTime2() == null) {
-				throw new BusinessException("Msg_1681");
+		if (infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst()
+				.isPresent()
+				&& infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
+						.getOpActualContentDisplayLst().get().size() > 0
+				&& infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
+						.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().isPresent()) {
+			// 事前制約をチェックする (Kiểm tra các ràng buộc trước)
+			if (application.getPrePostAtr().value == 0) {
+				// 事前モード：
+				// 「出勤時刻・退勤時刻・出勤時刻２・退勤時刻２」か１つは入力必須
+				if (infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
+						.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
+						.getAchievementEarly().getScheAttendanceTime1() == null
+						&& infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
+								.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
+								.getAchievementEarly().getScheAttendanceTime2() == null
+						&& infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
+								.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
+								.getAchievementEarly().getScheDepartureTime1() == null
+						&& infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
+								.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
+								.getAchievementEarly().getScheDepartureTime2() == null) {
+					throw new BusinessException("Msg_1681");
+				}
+			} else {
+				// 事後モード：
+				// 「4つ時刻・4つ取り消す」のいずれか１つは設定必須
+
 			}
-		} else {
-			// 事後モード：
-			// 「4つ時刻・4つ取り消す」のいずれか１つは設定必須
 
+			// 出勤時刻 ＜ 退勤時刻
+			// 出勤時刻2 ＜ 退勤時刻2
+			// 退勤時刻 ＜ 出勤時刻2
+			if (infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst()
+					.get().get(0).getOpAchievementDetail().get().getAchievementEarly().getScheAttendanceTime1()
+					.rawHour() < infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
+							.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
+							.getAchievementEarly().getScheDepartureTime1().rawHour()
+					|| infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
+							.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
+							.getAchievementEarly().getScheAttendanceTime2().rawHour() < infoOutput
+									.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
+									.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
+									.getAchievementEarly().getScheDepartureTime2().rawHour()
+					|| infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
+							.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
+							.getAchievementEarly().getScheDepartureTime1().rawHour() < infoOutput
+									.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
+									.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
+									.getAchievementEarly().getScheAttendanceTime2().rawHour()) {
+				throw new BusinessException("Msg_1677");
+			}
 		}
 
-		// 出勤時刻 ＜ 退勤時刻
-		// 出勤時刻2 ＜ 退勤時刻2
-		// 退勤時刻 ＜ 出勤時刻2
-		if (infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get()
-				.get(0).getOpAchievementDetail().get().getAchievementEarly().getScheAttendanceTime1()
-				.rawHour() < infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
-						.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
-						.getAchievementEarly().getScheDepartureTime1().rawHour()
-				|| infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
-						.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
-						.getAchievementEarly().getScheAttendanceTime2().rawHour() < infoOutput
-								.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
-								.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
-								.getAchievementEarly().getScheDepartureTime2().rawHour()
-				|| infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
-						.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
-						.getAchievementEarly().getScheDepartureTime1().rawHour() < infoOutput
-								.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
-								.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
-								.getAchievementEarly().getScheAttendanceTime2().rawHour()) {
-			throw new BusinessException("Msg_1677");
-		}
 
 		if (isNew) {
 			// 2-1.新規画面登録前の処理
@@ -592,8 +601,10 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			ArrivedLateLeaveEarly arrivedLateLeaveEarly) {
 		this.updateDomain(application, arrivedLateLeaveEarly);
 
-//		ProcessResult result = this.afterUpdateService.processAfterDetailScreenRegistration(application);
-		return null;
+		// 4-2.詳細画面登録後の処理
+		ProcessResult result = this.afterUpdateService.processAfterDetailScreenRegistration(companyId,
+				application.getAppID());
+		return result;
 	}
 
 	/**

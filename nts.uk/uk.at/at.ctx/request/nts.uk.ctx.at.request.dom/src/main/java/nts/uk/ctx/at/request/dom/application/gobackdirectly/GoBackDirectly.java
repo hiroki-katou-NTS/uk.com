@@ -4,9 +4,9 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 
 @Getter
@@ -15,11 +15,11 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 public class GoBackDirectly extends Application {
 
 	// 直帰区分
-	private EnumConstant straightDistinction;
+	private NotUseAtr straightDistinction;
 	// 直行区分
-	private EnumConstant straightLine;
+	private NotUseAtr straightLine;
 	// 勤務を変更する
-	private Optional<EnumConstant> isChangedWork = Optional.empty();
+	private Optional<NotUseAtr> isChangedWork = Optional.empty();
 	// 勤務情報
 	private Optional<WorkInformation> dataWork = Optional.empty();
 
