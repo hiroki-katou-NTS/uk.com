@@ -133,7 +133,7 @@ public class TimeStampLoginCommandHandler extends LoginBaseTimeStampCommandHandl
 		this.checkLimitTime(user, companyId, employeeCode, em.getEmployeeId(), remarkMessage);
 		
 		// note: 実行時環境作成
-		if(command.isRuntimeEnvironmentCreat()){
+		if(command.isRuntimeEnvironmentCreate()){
 			// note: set info to session
 			command.getRequest().changeSessionId();
 			

@@ -23,7 +23,8 @@ public class LoginAsEmbossingAdministrator {
 	@Inject
 	private TimeStampLoginCommandHandler timeStampLoginCommandHandler;
 
-	public TimeStampInputLoginDto loginAsEmbossingAdmin(String cid, String scd, String passWord,String companyCode, boolean isPasswordInvalid,  boolean isAdminMode, boolean runtimeEnvironmentCreat,
+	public TimeStampInputLoginDto loginAsEmbossingAdmin(String cid, String scd, String passWord, String companyCode,
+			boolean isPasswordInvalid, boolean isAdminMode, boolean runtimeEnvironmentCreate,
 			@Context HttpServletRequest request) {
 		// runtimeEnvironmentCreat = true;
 
@@ -36,7 +37,7 @@ public class LoginAsEmbossingAdministrator {
 		command.setPassword(passWord);
 		command.setPasswordInvalid(isPasswordInvalid);
 		command.setAdminMode(isAdminMode);
-		command.setRuntimeEnvironmentCreat(runtimeEnvironmentCreat);
+		command.setRuntimeEnvironmentCreate(runtimeEnvironmentCreate);
 		command.setRequest(request);
 		
 		return this.timeStampLoginCommandHandler.handle(command);

@@ -75,31 +75,34 @@ extends CommandHandlerWithResult<ConfirmUseOfStampInputCommandWithEmployeeId, Co
 	@Override
 	protected ConfirmUseOfStampInputResult handle(
 			CommandHandlerContext<ConfirmUseOfStampInputCommandWithEmployeeId> context) {
+		ConfirmUseOfStampInputCommandWithEmployeeId command = context.getCommand();
 
 		StampFunctionAvailableServiceRequireImpl require = new StampFunctionAvailableServiceRequireImpl(stampUsageRepo,
 				stampCardRepo, stampCardEditRepo, companyAdapter, sysEmpPub, stampRecordRepo, stampDakokuRepo,
 				createDailyResultDomainSv,context.getCommand().getCompanyId());
-		//tam thời chưa lấy được employeeId nên phải code thế này
 		
+		//tam thời chưa lấy được employeeId nên phải code thế này
 		String employeeId = this.sysEmpPub
-				.findByScdNotDel(context.getCommand().getEmployeeCode(), context.getCommand().getCompanyId())
-				.map(x -> x.getEmployeeId()).orElse(AppContexts.user().employeeId());
+				.findByScdNotDel(command.getEmployeeCode(), command.getCompanyId())
+				.map(x -> x.getEmployeeId())
+				.orElse(Optional.ofNullable(command.getEmployeeId()).map(m -> m).orElse(AppContexts.user().employeeId()));
 
-		StampMeans stampMeans = EnumAdaptor.valueOf(context.getCommand().getStampMeans(), StampMeans.class);
+		StampMeans stampMeans = EnumAdaptor.valueOf(command.getStampMeans(), StampMeans.class);
 		
 		// 1. 判断する(@Require, 社員ID, 打刻手段)
 		MakeUseJudgmentResults jugResult = StampFunctionAvailableService.decide(require, employeeId, stampMeans);
+		
 		// not 打刻カード作成結果 empty
 		Optional<StampCardCreateResult> cradResultOpt = jugResult.getCardResult();
 
 		if (cradResultOpt.isPresent()) {
-
 			Optional<AtomTask> atom = cradResultOpt.get().getAtomTask();
-			transaction.execute(() -> {
-				atom.get().run();
-			});
+			
+			transaction.execute(() -> atom.get().run());
+			
 			return new ConfirmUseOfStampInputResult(GeneralDateTime.now(), jugResult.getUsed().value);
 		}
+		
 		return new ConfirmUseOfStampInputResult(GeneralDateTime.now(), jugResult.getUsed().value);
 	}
 

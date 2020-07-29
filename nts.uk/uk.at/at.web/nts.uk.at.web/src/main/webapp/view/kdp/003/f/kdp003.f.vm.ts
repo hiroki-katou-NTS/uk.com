@@ -274,7 +274,7 @@ module nts.uk.at.kdp003.f {
 					// note: メニュー別OCD内の記述を移送表に追加する
 					vm.model.passwordInvalid = false;
 					vm.model.isAdminMode = true;
-					vm.model.runtimeEnvironmentCreat = true;
+					vm.model.runtimeEnvironmentCreate = true;
 
 					vm.loginAdmin(LOGIN_ADMIN);
 					break;
@@ -282,7 +282,7 @@ module nts.uk.at.kdp003.f {
 				case 'fingerVein':
 					// note: メニュー別OCD内の記述を移送表に追加する
 					vm.model.isAdminMode = false;
-					vm.model.runtimeEnvironmentCreat = false;
+					vm.model.runtimeEnvironmentCreate = false;
 
 					vm.loginAdmin(LOGIN_EMPLOYEE);
 					break;
@@ -436,7 +436,7 @@ module nts.uk.at.kdp003.f {
 		readonly password?: string;
 		passwordInvalid: boolean;
 		isAdminMode: boolean;
-		runtimeEnvironmentCreat: string;
+		runtimeEnvironmentCreate: boolean;
 	}
 
 	export class Model {
@@ -444,7 +444,7 @@ module nts.uk.at.kdp003.f {
 		contractCode: string = '000000000000';
 		passwordInvalid: boolean = false;
 		isAdminMode: boolean = false;
-		runtimeEnvironmentCreat: boolean = true;
+		runtimeEnvironmentCreate: boolean = true;
 
 		companyId: KnockoutObservable<string> = ko.observable('');
 		companyCode: KnockoutObservable<string> = ko.observable('');
