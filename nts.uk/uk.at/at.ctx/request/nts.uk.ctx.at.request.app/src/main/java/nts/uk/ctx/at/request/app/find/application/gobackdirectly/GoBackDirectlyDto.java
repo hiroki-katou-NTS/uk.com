@@ -6,9 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.EnumConstant;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 //直行直帰申請
 @AllArgsConstructor
@@ -37,14 +37,14 @@ public class GoBackDirectlyDto extends ApplicationDto {
 	}
 
 	public GoBackDirectly toDomain() {
-		Optional<EnumConstant> isChange = Optional.ofNullable(null);
+		Optional<NotUseAtr> isChange = Optional.ofNullable(null);
 		
 		if (isChangedWork != null) {
-			isChange = Optional.ofNullable(EnumAdaptor.valueOf(isChangedWork, EnumConstant.class));
+			isChange = Optional.ofNullable(EnumAdaptor.valueOf(isChangedWork, NotUseAtr.class));
 		}
 		GoBackDirectly result = new GoBackDirectly();
-		result.setStraightDistinction(EnumAdaptor.valueOf(straightDistinction, EnumConstant.class));
-		result.setStraightLine(EnumAdaptor.valueOf(straightLine, EnumConstant.class));
+		result.setStraightDistinction(EnumAdaptor.valueOf(straightDistinction, NotUseAtr.class));
+		result.setStraightLine(EnumAdaptor.valueOf(straightLine, NotUseAtr.class));
 		result.setIsChangedWork(isChange);
 		Optional<WorkInformation> dataWorkSet = Optional.ofNullable(null);
 		if (dataWork != null) {

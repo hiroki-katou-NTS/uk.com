@@ -28,7 +28,7 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.EnumConstant;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 
@@ -124,11 +124,11 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 		
 		
 		GoBackDirectly goBackDirectly = new GoBackDirectly();
-		goBackDirectly.setStraightDistinction(EnumAdaptor.valueOf(res.getInt("GO_WORK_ATR"), EnumConstant.class));
-		goBackDirectly.setStraightLine(EnumAdaptor.valueOf(res.getInt("BACK_HOME_ATR"), EnumConstant.class));
+		goBackDirectly.setStraightDistinction(EnumAdaptor.valueOf(res.getInt("GO_WORK_ATR"), NotUseAtr.class));
+		goBackDirectly.setStraightLine(EnumAdaptor.valueOf(res.getInt("BACK_HOME_ATR"), NotUseAtr.class));
 		if (Optional.ofNullable(res.getInt("WORK_CHANGE_ATR")).isPresent()) {
 			goBackDirectly.setIsChangedWork(
-					Optional.of(EnumAdaptor.valueOf(res.getInt("WORK_CHANGE_ATR"), EnumConstant.class)));
+					Optional.of(EnumAdaptor.valueOf(res.getInt("WORK_CHANGE_ATR"), NotUseAtr.class)));
 		}
 		if (Optional.ofNullable(res.getString("WORK_TYPE_CD")).isPresent()
 				|| Optional.ofNullable(res.getString("WORK_TIME_CD")).isPresent()) {
