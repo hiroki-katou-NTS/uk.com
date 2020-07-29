@@ -17,7 +17,7 @@ public class LateEarlyCancelAppSetDto {
 	private int lateAlClearAtr;
 
 	public static LateEarlyCancelAppSetDto fromDomain(LateEarlyCancelAppSet lateEarlyCancelAppSet) {
-		return new LateEarlyCancelAppSetDto(lateEarlyCancelAppSet.getCompanyID(),
+		return (lateEarlyCancelAppSet == null) ? null : new LateEarlyCancelAppSetDto(lateEarlyCancelAppSet.getCompanyID(),
 				lateEarlyCancelAppSet.getCancelAtr().value, lateEarlyCancelAppSet.getLateAlClearAtr());
 	}
 

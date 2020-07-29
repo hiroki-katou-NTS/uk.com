@@ -6,6 +6,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
     import WorkManagement = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.WorkManagement;
     import LateOrEarlyInfo = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.LateOrEarlyInfo;
     import ArrivedLateLeaveEarlyInfo = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.ArrivedLateLeaveEarlyInfo;
+    import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
 
     @bean()
     class KAF004AViewModel extends ko.ViewModel {
@@ -21,16 +22,12 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         managementMultipleWorkCycles: KnockoutObservable<Boolean>;
         isSendMail: KnockoutObservable<Boolean>;
 
-        mode: KnockoutObservable<MODE>;
-
-
         created(params: any) {
             const vm = this;
 
-            vm.application = ko.observable(new Application("", 1, [], 7, "", "", 0));
-            vm.application().appDate(moment(new Date()).format("YYYY/MM/DD"));
+            vm.application = ko.observable(new Application(AppType.EARLY_LEAVE_CANCEL_APPLICATION));
             // vm.application().appDate(moment(new Date()).format("YYYY/MM/DD"));
-            vm.workManagement = new WorkManagement('--:--', '--:--', '--:--', '--:--', 850, 1725, null, null);
+            vm.workManagement = new WorkManagement('--:--', '--:--', '--:--', '--:--', null, null, null, null);
             vm.arrivedLateLeaveEarlyInfo = ko.observable(ArrivedLateLeaveEarlyInfo.initArrivedLateLeaveEarlyInfo());
             vm.appDispInfoStartupOutput = ko.observable(CommonProcess.initCommonSetting());
 
@@ -39,22 +36,23 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             vm.lateOrEarlyInfo3 = ko.observable(new LateOrEarlyInfo(false, 2, false, true, 0));
             vm.lateOrEarlyInfo4 = ko.observable(new LateOrEarlyInfo(false, 2, true, true, 1));
             vm.lateOrEarlyInfos = ko.observableArray([]);
-            vm.mode = ko.observable('after');
             vm.managementMultipleWorkCycles = ko.observable(true);
             vm.isSendMail = ko.observable(true);
 
-            // Subcribe when mode change -> clear data if mode is 'before'
-            vm.mode.subscribe(() => {
-                if (ko.toJS(vm.mode) === 'before') {
+            vm.application().prePostAtr.subscribe(() => {
+                if(ko.toJS(vm.application().prePostAtr) === 0) {
                     vm.workManagement.clearData();
                 }
-            })
-        }
+            });
 
-        mounted() {
-            const vm = this;
             vm.$blockui('show');
-            vm.$ajax(API.initPage + "/" + ko.toJS(vm.application().appType), [ko.toJS(vm.application().appDate)])
+            let appDates: string[] = [];
+            if(ko.toJS(vm.application().appDate)) {
+                appDates.push(ko.toJS(vm.application().appDate));
+            }
+
+
+            vm.$ajax(API.initPage + "/" + ko.toJS(vm.application().appType), appDates)
                 .done((successData: any) => {
                     vm.arrivedLateLeaveEarlyInfo(successData);
                     vm.appDispInfoStartupOutput(successData.appDispInfoStartupOutput);
@@ -103,6 +101,10 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                 }).fail((failData: any) => {
                     vm.$blockui("hide");
                 });
+        }
+
+        mounted() {
+            const vm = this;
 
         }
 
@@ -111,17 +113,19 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 
             console.log(ko.toJS(vm.application()));
             console.log(vm.workManagement);
+            vm.application.prototype.inputDate = ko.observable(moment(new Date()).format("yyyy/MM/dd HH:mm:ss"));
+
+            let command = {
+                agentAtr: true,
+                isNew: true,
+                application: ko.toJS(vm.application()),
+                infoOutput: ko.toJS(vm.arrivedLateLeaveEarlyInfo)
+            };
 
             vm.$blockui("show");
 
-            vm.$ajax(API.getMsgList + "/" + ko.toJS(vm.application().appType),
-                {
-                    agentAtr: true,
-                    isNew: true,
-                    infoOutput:
-                        ko.toJS(vm.arrivedLateLeaveEarlyInfo),
-                    application: ko.toJS(vm.application())
-                }).done((success: any) => {
+            vm.$ajax(API.getMsgList + "/" + ko.toJS(vm.application().appType), command
+                ).done((success: any) => {
                     if (success) {
                         console.log(success);
 
@@ -182,14 +186,14 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         // ※8
         public condition8() {
             // 事前事後区分に「事後」に選択している場合　（事後モード）
-            return ko.toJS(this.mode) === 'after';
+            return ko.toJS(this.application().prePostAtr) === 1;
         }
 
         // ※13
         public condition13(idItem: number) {
 
             // 事前事後区分に「事後」を選択している場合　（事後モード）  (T/h select "xin sau"「事後」 trên 事前事後区分/Phân loại xin trước xin sau (Mode after/xin sau)
-            if (ko.toJS(this.mode) === 'after') {
+            if (ko.toJS(this.application().prePostAtr) === 1) {
 
                 // 起動したら、実績データがある場合 (Sau khi khởi động t/h có data thực tế)
                 switch (idItem) {
