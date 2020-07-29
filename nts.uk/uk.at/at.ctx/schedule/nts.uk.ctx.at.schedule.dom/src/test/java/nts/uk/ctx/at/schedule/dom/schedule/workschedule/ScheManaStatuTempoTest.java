@@ -54,7 +54,7 @@ public class ScheManaStatuTempoTest {
 		ScheManaStatuTempo scheManaStatuTempo = ScheManaStatuTempo.create(require, employeeID, date);
 		assertThat(scheManaStatuTempo.getEmployeeID()).isEqualTo(employeeID);
 		assertThat(scheManaStatuTempo.getDate()).isEqualTo(date);
-		assertThat(scheManaStatuTempo.getScheManaStatus()).isEqualTo(ScheManaStatus.SCHEDULE_MANAGEMENT);
+		assertThat(scheManaStatuTempo.getScheManaStatus()).isEqualTo(ScheManaStatus.NOT_ENROLLED);
 		assertThat(scheManaStatuTempo.getOptTempAbsenceFrameNo().isPresent()).isFalse();
 		assertThat(scheManaStatuTempo.getOptEmploymentCd().isPresent()).isFalse();
 	}
@@ -258,7 +258,7 @@ public class ScheManaStatuTempoTest {
 		ScheManaStatuTempo scheManaStatuTempo = ScheManaStatuTempo.create(require, employeeID, date);
 		assertThat(scheManaStatuTempo.getEmployeeID()).isEqualTo(employeeID);
 		assertThat(scheManaStatuTempo.getDate()).isEqualTo(date);
-		assertThat(scheManaStatuTempo.getScheManaStatus()).isEqualTo(ScheManaStatus.CLOSED);
+		assertThat(scheManaStatuTempo.getScheManaStatus()).isEqualTo(ScheManaStatus.SCHEDULE_MANAGEMENT);
 		assertThat(scheManaStatuTempo.getOptTempAbsenceFrameNo().isPresent()).isFalse();
 		assertThat(scheManaStatuTempo.getOptEmploymentCd().isPresent()).isFalse();
 	}

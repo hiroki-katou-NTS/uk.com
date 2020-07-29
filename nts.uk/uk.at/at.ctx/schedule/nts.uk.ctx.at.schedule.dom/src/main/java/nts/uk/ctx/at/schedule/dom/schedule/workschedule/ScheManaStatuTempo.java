@@ -201,7 +201,7 @@ public class ScheManaStatuTempo {
 		DatePeriod datePeriod = new DatePeriod(date, date);
 		List<EmpLeaveWorkPeriodImport> lstEmpLeaveWorkPeriodImport = require.specAndGetHolidayPeriod(Arrays.asList(employeeID), datePeriod);
 		if(lstEmpLeaveWorkPeriodImport.isEmpty()){
-			Optional.empty();
+			return Optional.empty();
 		}
 		EmpLeaveWorkPeriodImport data = lstEmpLeaveWorkPeriodImport.get(0);
 		return Optional.ofNullable(data.getTempAbsenceFrNo());
