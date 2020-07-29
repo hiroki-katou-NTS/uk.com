@@ -160,11 +160,11 @@ public class TimeStampLoginCommandHandler extends LoginBaseTimeStampCommandHandl
 		}
 		
 		TimeStampInputLoginDto result = new TimeStampInputLoginDto();
-		
-		result.successMsg = systemSuspendOutput.getMsgID();
-		result.result = true;
-		result.em = em;
-		result.errorMessage = null;
+
+		result.setEm(em);
+		result.setResult(true);
+		result.setErrorMessage(null);
+		result.setSuccessMsg(systemSuspendOutput.getMsgID());
 		
 		return result;
 	}
