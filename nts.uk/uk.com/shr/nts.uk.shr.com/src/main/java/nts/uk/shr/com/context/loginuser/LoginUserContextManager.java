@@ -112,5 +112,9 @@ public interface LoginUserContextManager {
 		RoleIdSetter forSystemAdmin(String roleId);
 		RoleIdSetter forCompanyAdmin(String roleId);
 		RoleIdSetter forGroupCompaniesAdmin(String roleId);
+		//RoleIdSetter isInChargeAttendance(boolean isInCharge);
+		//RoleIdSetter isInChargePayroll(boolean isInCharge);
+		//RoleIdSetter isInChargePersonnel(boolean isInCharge);
+		//RoleIdSetter isInChargePersonalInfo(boolean isInCharge);
 	}
 }

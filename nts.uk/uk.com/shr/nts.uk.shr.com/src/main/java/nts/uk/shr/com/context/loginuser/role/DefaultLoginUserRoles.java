@@ -15,6 +15,10 @@ public class DefaultLoginUserRoles implements LoginUserRoles, Serializable {
 	private String forSystemAdmin = null;
 	private String forCompanyAdmin = null;
 	private String forGroupCompaniesAdmin = null;
+	private boolean isInChargeAttendance = false;
+	private boolean isInChargePayroll = false;
+	private boolean isInChargePersonnel = false;
+	private boolean isInChargePersonalInfo = false;
 	
 	@Override
 	public String forAttendance() {
