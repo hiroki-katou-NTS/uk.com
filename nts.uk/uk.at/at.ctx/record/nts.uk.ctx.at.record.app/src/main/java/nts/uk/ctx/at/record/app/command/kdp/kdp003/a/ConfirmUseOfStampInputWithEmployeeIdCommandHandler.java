@@ -82,7 +82,8 @@ extends CommandHandlerWithResult<ConfirmUseOfStampInputCommandWithEmployeeId, Co
 				createDailyResultDomainSv,context.getCommand().getCompanyId());
 		
 		String emIdFromCode = this.sysEmpPub
-				.findByScdNotDel(command.getEmployeeCode(), command.getCompanyId()).map(x -> x.getEmployeeId())
+				.findByScdNotDel(command.getEmployeeCode(), command.getCompanyId())
+				.map(x -> x.getEmployeeId())
 				.orElse(AppContexts.user().employeeId());
 		
 		//tam thời chưa lấy được employeeId nên phải code thế này
