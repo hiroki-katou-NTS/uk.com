@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-						width : 715,
-						height : 480
+					width : 715,
+					height : 610
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -23,8 +23,8 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div class="top-btn">
-					<button class="x-large proceed" id="btnSave" tabindex="3" data-bind="click: save">#{i18n.getText('KDL006_11')}</button>
-					<button class="x-large" tabindex="4" data-bind="click: close">#{i18n.getText('KDL006_12')}</button>
+					<button class="large proceed" id="btnSave" tabindex="3" data-bind="click: save">#{i18n.getText('KDL006_11')}</button>
+					<button class="large" tabindex="4" data-bind="click: close">#{i18n.getText('KDL006_12')}</button>
 				</div>
 				<div class="comboBox">
 					<span class="label" style="margin-left: 15px;">#{i18n.getText('KDL006_13')}</span>
@@ -40,12 +40,12 @@
 							{ prop: 'periodDate', length: 25 },
 						]}"></div>
 				</div>
-				<div>#{i18n.getText('KDL006_15')}</div>
+				<div class="descriptive" data-bind="text: descriptive"></div>
 				<div class="ui-iggrid">
 					<table class="ui-iggrid-headertable ui-helper-reset">
 						<colgroup>
 							<col width="250px" />
-							<col width="34px" />
+							<col width="50px" />
 							<col width="150px" />
 							<col width="180px" />
 						</colgroup>
@@ -67,16 +67,16 @@
 					<table class="ui-iggrid-headertable ui-helper-reset">
 						<colgroup>
 							<col width="250px" />
-							<col width="34px" />
+							<col width="50px" />
 							<col width="150px" />
 							<col width="180px" />
 						</colgroup>
 						<tbody data-bind="foreach: workplaceList">
 							<tr>
-								<td data-bind="text: workPlace"></td>
-								<td><div tabindex="2" data-bind="ntsCheckBox: {checked: confirm}"></div></td>
-								<td data-bind="text: person"></td>
-								<td data-bind="text: confirmedDateTime"></td>
+								<td data-bind="text: data? workPlace: ''"></td>
+								<td data-bind="if: data" style="text-align: center;"><div tabindex="2" data-bind="ntsCheckBox: {checked: confirm}"></div></td>
+								<td data-bind="text: (data &amp;&amp; confirm())? person: ''"></td>
+								<td data-bind="text: (data &amp;&amp; confirm())? confirmedDateTime: ''" style="text-align: right;"></td>
 							</tr>
 						</tbody>
 					</table>

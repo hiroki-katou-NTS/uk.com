@@ -1,7 +1,30 @@
+#master-wrapper div#contents-area {
+	padding-left: 30px;
+}
+.top-btn button{
+	margin-left: 70px;
+	width: 110px;
+}
+.comboBox {
+	margin: 15px 0;
+}
+.comboBox .label {
+	margin: 7px 3px 0 0;
+	vertical-align: top;
+}
+.descriptive {
+	margin-bottom: 20px;
+}
 .scroll {
-	height: 290px;
-	overflow-y: scroll; 
+	height: 348px;
+}
+.scroll td {
+	height: 27px;
 }
 .ui-iggrid{
-	width: 614px;
+	width: 630px;
+}
+.ui-iggrid table tr th.ui-widget-header {
+	height: 43px;
+	text-align: center;
 }

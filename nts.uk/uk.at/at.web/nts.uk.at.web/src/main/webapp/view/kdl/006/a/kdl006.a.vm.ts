@@ -11,16 +11,17 @@ module nts.uk.at.view.kdl006.a {
         selectedCode = ko.observable('');
         workplaceList = ko.observableArray([]);
         width = ko.observable('614');
+        descriptive = ko.observable('');
         constructor(){
             let self = this;
             self.selectedCode.subscribe((newValue) => {
-                
+                self.descriptive(getText('KDL006_15',[newValue]));
             });
             self.tighteningList.subscribe((newValue) => {
                 if(self.tighteningList().length > 12){
-                    $('.scroll').css({"width": "631"});
+                    $('.scroll').css({"width": "647", "overflow-y": "scroll"});
                 }else{
-                    $('.scroll').css({"width": "614"});
+                    $('.scroll').css({"width": "630", "overflow-y": "hidden"});
                 }
             });
             $(document).ready(function() {
@@ -34,7 +35,7 @@ module nts.uk.at.view.kdl006.a {
             block.grayout();
             for(let i = 0; i < 12; i ++){
                 self.tighteningList.push(new Tightening({id: i, code: i+'日締め', periodDate:'2020/02/16 ~ 2020/03/15'}));
-                self.workplaceList.push(new WorkPlace({id: i, workPlace: '人事'+i+'課', confirm: false, person:'日通　太郎', confirmedDateTime:'2020/10/05 10:15'}));
+                self.workplaceList.push(new WorkPlace({id: i, workPlace: '人事'+i+'課', confirm: false, person:'日通　太郎', confirmedDateTime:'2020/10/05 10:15'}, i<7));
             }
             dfd.resolve();
             block.clear();
@@ -55,14 +56,18 @@ module nts.uk.at.view.kdl006.a {
         workPlace: string;
         confirm = ko.observable(false);
         person: string;
-        confirmedDateTime: string;        
-        constructor(param: any) {
+        confirmedDateTime: string;       
+        data: boolean; 
+        constructor(param: any, data: boolean) {
             let self = this;
-            self.id = param.id;
-            self.workPlace = param.workPlace;
-            self.confirm(param.confirm);
-            self.person = param.person;
-            self.confirmedDateTime = param.confirmedDateTime;
+            self.data = data;
+            if(data){
+                self.id = param.id;
+                self.workPlace = param.workPlace;
+                self.confirm(param.confirm);
+                self.person = param.person;
+                self.confirmedDateTime = param.confirmedDateTime;
+            }
         }
     }
     
