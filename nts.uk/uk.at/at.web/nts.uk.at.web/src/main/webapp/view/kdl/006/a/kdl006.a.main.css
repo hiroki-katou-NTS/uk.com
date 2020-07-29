@@ -1,0 +1,7 @@
+.scroll {
+	height: 290px;
+	overflow-y: scroll; 
+}
+.ui-iggrid{
+	width: 614px;
+}
