@@ -81,11 +81,12 @@ extends CommandHandlerWithResult<ConfirmUseOfStampInputCommandWithEmployeeId, Co
 				stampCardRepo, stampCardEditRepo, companyAdapter, sysEmpPub, stampRecordRepo, stampDakokuRepo,
 				createDailyResultDomainSv,context.getCommand().getCompanyId());
 		
+		String emIdFromCode = this.sysEmpPub
+				.findByScdNotDel(command.getEmployeeCode(), command.getCompanyId()).map(x -> x.getEmployeeId())
+				.orElse(AppContexts.user().employeeId());
+		
 		//tam thời chưa lấy được employeeId nên phải code thế này
-		String employeeId = this.sysEmpPub
-				.findByScdNotDel(command.getEmployeeCode(), command.getCompanyId())
-				.map(x -> x.getEmployeeId())
-				.orElse(Optional.ofNullable(command.getEmployeeId()).map(m -> m).orElse(AppContexts.user().employeeId()));
+		String employeeId = Optional.ofNullable(command.getEmployeeId()).map(m -> m).orElse(emIdFromCode);
 
 		StampMeans stampMeans = EnumAdaptor.valueOf(command.getStampMeans(), StampMeans.class);
 		
