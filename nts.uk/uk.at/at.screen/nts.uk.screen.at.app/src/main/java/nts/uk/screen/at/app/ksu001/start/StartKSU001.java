@@ -107,11 +107,11 @@ public class StartKSU001 {
 		WorkScheduleShiftResult resultStep51 = getWorkScheduleShift.getData(new GetWorkScheduleShiftParam());
 		List<WorkScheduleShiftDto> listWorkScheduleShift = resultStep51.listWorkScheduleShift; 
 		
-		if (param.modeDisplay == ModeDisPlay.SHIFT.value) {
+		if (param.viewMode == "shift") {
 			// step5.1
 			
 			
-		} else if (param.modeDisplay == ModeDisPlay.DETAIL.value || param.modeDisplay == ModeDisPlay.WORKING.value) {
+		} else if (param.viewMode == "time" || param.viewMode == "shortName") {
 			// step4 || step 5.2
 			
 		}
