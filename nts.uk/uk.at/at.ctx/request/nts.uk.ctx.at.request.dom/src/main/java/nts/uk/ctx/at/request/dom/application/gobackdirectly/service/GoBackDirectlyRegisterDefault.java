@@ -557,7 +557,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	}
 	@Override
 	public GoBackDirectAtr goBackDirectCheckNew(GoBackDirectly goBackDirectly) {
-		if (goBackDirectly.getStraightDistinction().getValue() == GoBackDirectAtr.IS.value && goBackDirectly.getStraightLine().getValue() == GoBackDirectAtr.IS.value) {
+		if (goBackDirectly.getStraightDistinction().value == GoBackDirectAtr.IS.value && goBackDirectly.getStraightLine().value == GoBackDirectAtr.IS.value) {
 			return GoBackDirectAtr.IS;
 		}
 		return GoBackDirectAtr.NOT;

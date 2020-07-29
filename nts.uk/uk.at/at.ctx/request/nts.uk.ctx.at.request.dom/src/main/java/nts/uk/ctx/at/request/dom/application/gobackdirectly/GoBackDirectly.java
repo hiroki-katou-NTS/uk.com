@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 

@@ -4,8 +4,9 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumConstant;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.EnumConstant;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 
@@ -24,10 +25,10 @@ public class GoBackDirectlyDto extends ApplicationDto {
 
 	public static GoBackDirectlyDto convertDto(GoBackDirectly goBackAplication) {
 		GoBackDirectlyDto result = new GoBackDirectlyDto();
-		result.straightDistinction = goBackAplication.getStraightDistinction().getValue();
-		result.straightLine = goBackAplication.getStraightLine().getValue();
+		result.straightDistinction = goBackAplication.getStraightDistinction().value;
+		result.straightLine = goBackAplication.getStraightLine().value;
 		if (goBackAplication.getIsChangedWork().isPresent()) {
-			result.isChangedWork = goBackAplication.getIsChangedWork().get().getValue();
+			result.isChangedWork = goBackAplication.getIsChangedWork().get().value;
 		}
 		if (goBackAplication.getDataWork().isPresent()) {
 			result.dataWork = WorkInformationDto.fromDomain(goBackAplication.getDataWork().get());
@@ -39,11 +40,11 @@ public class GoBackDirectlyDto extends ApplicationDto {
 		Optional<EnumConstant> isChange = Optional.ofNullable(null);
 		
 		if (isChangedWork != null) {
-			isChange = Optional.ofNullable(new EnumConstant(isChangedWork, "", ""));
+			isChange = Optional.ofNullable(EnumAdaptor.valueOf(isChangedWork, EnumConstant.class));
 		}
 		GoBackDirectly result = new GoBackDirectly();
-		result.setStraightDistinction(new EnumConstant(straightDistinction, "", ""));
-		result.setStraightLine(new EnumConstant(straightLine, "", ""));
+		result.setStraightDistinction(EnumAdaptor.valueOf(straightDistinction, EnumConstant.class));
+		result.setStraightLine(EnumAdaptor.valueOf(straightLine, EnumConstant.class));
 		result.setIsChangedWork(isChange);
 		Optional<WorkInformation> dataWorkSet = Optional.ofNullable(null);
 		if (dataWork != null) {
