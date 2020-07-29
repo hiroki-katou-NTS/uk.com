@@ -34,7 +34,7 @@ public class WorkScheManaStatusService {
 		Map<ScheManaStatuTempo, Optional<WorkSchedule>> map = new HashMap<>();
 		
 		for(String sid : lstEmployeeID){
-			map = WorkScheManaStatusService.getByEmployee(require,sid, period);
+			map.putAll(WorkScheManaStatusService.getByEmployee(require,sid, period));
 		};
 		
 		return  map;
@@ -55,6 +55,7 @@ public class WorkScheManaStatusService {
 			ScheManaStatuTempo zScheManaStatuTempo =  ScheManaStatuTempo.create(require, employeeID, x);
 			if(!zScheManaStatuTempo.getScheManaStatus().needCreateWorkSchedule()){
 				 map.put(zScheManaStatuTempo, Optional.empty());
+				 return;
 			}
 			//$勤務予定 = require.勤務予定を取得する( 社員ID, $ )														
 			Optional<WorkSchedule> zWorkSchedule  = require.get(employeeID, x);
