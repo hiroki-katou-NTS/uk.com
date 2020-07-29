@@ -26,7 +26,7 @@ public class GetListWorkTypeWorkTimeUseDailyAttendanceRecordTest {
 						DayOfWeek.FRIDAY, new ArrayList<>()),
 				new WorkInfoOfDailyAttendance(recordInfo3, null, null, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
 						DayOfWeek.FRIDAY, new ArrayList<>()));
-		WorkTypeWorkTimeUseDailyAttendanceRecord data = GetListWorkTypeWorkTimeUseDailyAttendanceRecord
+		WorkTypeWorkTimeUseDailyAttendanceRecord data = GetListWtypeWtimeUseDailyAttendRecordService
 				.getdata(lstWorkInfoOfDailyAttendance);
 		assertThat(data.getLstWorkTimeCode().stream().sorted((x, y) -> x.v().compareTo(y.v()))
 				.collect(Collectors.toList())).extracting(d -> d.v()).containsExactly("ti1", "ti2");
