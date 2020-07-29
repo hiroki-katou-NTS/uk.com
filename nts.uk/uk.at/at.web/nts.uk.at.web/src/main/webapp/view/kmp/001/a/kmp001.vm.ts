@@ -2,9 +2,8 @@
 
 module nts.uk.at.view.kmp001 {
 	export module a {
-		
 		@bean()
-		export class ViewModel extends ko.ViewModel {			
+		export class ViewModel extends ko.ViewModel {
 			tabs: KnockoutObservableArray<string> = ko.observableArray([]);
 
 			mounted() {
@@ -77,7 +76,7 @@ module nts.uk.at.view.kmp001 {
 		pid: KnockoutObservable<string> = ko.observable('');
 		retiredDate: KnockoutObservable<Date | null> = ko.observable(null);
 		stampCardDto: KnockoutObservableArray<StampCard> = ko.observableArray([]);
-		
+
 		workplaceId: KnockoutObservable<string> = ko.observable('');
 		workplaceName: KnockoutObservable<string> = ko.observable('');
 
@@ -111,13 +110,13 @@ module nts.uk.at.view.kmp001 {
 				self.selectedStampCardIndex(0);
 			}
 		}
-		
-		
-		public addNewStampCard() {	
+
+
+		public addNewStampCard() {
 			const model = this;
-			
+
 			model.stampCardDto.unshift(new StampCard({ checked: false, stampCardId: "", stampNumber: "" }));
-			
+
 			model.selectedStampCardIndex(model.stampCardDto.length - 1);
 		}
 	}

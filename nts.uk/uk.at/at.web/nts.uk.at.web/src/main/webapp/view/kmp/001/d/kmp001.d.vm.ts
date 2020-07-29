@@ -1,212 +1,130 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-const KMP001D_API = {
-	GET_START: 'screen/pointCardNumber/getStampCardDigit/'
-};
+module nts.uk.at.view.kmp001.d {
+	const KMP001D_API = {
+		GET_START: 'screen/pointCardNumber/getStampCardDigit/',
+		UPDATE_EDITTING: 'at/record/register-stamp-card/view-d/editting'
+	};
 
-@bean()
-class ViewModel extends ko.ViewModel {
-
-	itemList: KnockoutObservableArray<any> = ko.observableArray([]);
-	selectedCode: KnockoutObservable<number> = ko.observable(-1);
-	selectedName: KnockoutObservable<string> = ko.observable('');
-	ischeck1: KnockoutObservable<boolean> = ko.observable(false);
-	ischeck2: KnockoutObservable<boolean> = ko.observable(false);
-	ischeck3: KnockoutObservable<boolean> = ko.observable(false);
-
-	created(params: any) {
-
-		var vm = this;
-		vm.itemList([{
-			code: 1
-		}, {
-			code: 2
-		}, {
-			code: 3
-		}, {
-			code: 4
-		}, {
-			code: 5
-		}, {
-			code: 6
-		}, {
-			code: 7
-		}, {
-			code: 8
-		}, {
-			code: 9
-		}, {
-			code: 10
-		}, {
-			code: 11
-		}, {
-			code: 12
-		}, {
-			code: 13
-		}, {
-			code: 14
-		}, {
-			code: 15
-		}, {
-			code: 16
-		}, {
-			code: 17
-		}, {
-			code: 18
-		}, {
-			code: 19
-		}, {
-			code: 20
-		}]);
-
-		vm.selectedCode = ko.observable(1);
-
-		vm.selectedCode
-			.subscribe((c: number) => {
-				
-				vm.determined(ko.unwrap(vm.selectedCode));
-				
-			});
+	export interface ReturnData {
+		length: number;
+		paddingType: StampCardEditMethod;
 	}
 
-	mounted() {
-		const vm = this;
+	@bean()
+	export class ViewModel extends ko.ViewModel {
 
-		vm.$ajax(KMP001D_API.GET_START)
-			.then((data: any) => {
-				vm.selectedCode(data.stampCardDigitNumber);
-				vm.determined(data.stampCardDigitNumber);
+		paddingType: KnockoutObservable<StampCardEditMethod | null> = ko.observable(null);
+		selectedLength: KnockoutObservable<string> = ko.observable('');
 
-				switch (data.stampCardEditMethod) {
-					case 1:
-						vm.ischeck1(true);
-						break;
-					case 2:
-						vm.ischeck2(true);
-						break;
-					case 3:
-						vm.ischeck3(true);
-						break;
-				}
+		paddingTypes!: PaddingType[];
+		cardLengths!: StampCardLength[];
 
-			});
-	}
+		created() {
+			var vm = this;
 
-	closeDialog() {
-		const vm = this;
-		vm.$window.close();
-	}
-	
-	addSetting(){
-		const vm = this;
-		vm.$window.close();
-	}
+			vm.paddingTypes = [
+				{
+					value: StampCardEditMethod.PreviousZero,
+					label: 'KMP001_42'
+				}, {
+					value: StampCardEditMethod.PreviousSpace,
+					label: 'KMP001_44'
+				}, {
+					value: StampCardEditMethod.AfterZero,
+					label: 'KMP001_43'
+				}, {
+					value: StampCardEditMethod.AfterSpace,
+					label: 'KMP001_45'
+				}];
 
-	determined(code: number) {
-		const vm = this;
-		
-		switch (code) {
-			case 1: {
-				vm.selectedName(vm.$i18n('KMP001_50'));
-				break;
-			}
-			case 2: {
-				vm.selectedName(vm.$i18n('KMP001_51'));
-				break;
-			}
-			case 3: {
-				vm.selectedName(vm.$i18n('KMP001_52'));
-				break;
-			}
-			case 4: {
-				vm.selectedName(vm.$i18n('KMP001_53'));
-				break;
-			}
-			case 5: {
-				vm.selectedName(vm.$i18n('KMP001_54'));
-				break;
-			}
-			case 6: {
-				vm.selectedName(vm.$i18n('KMP001_55'));
-				break;
-			}
-			case 7: {
-				vm.selectedName(vm.$i18n('KMP001_56'));
-				break;
-			}
-			case 8: {
-				vm.selectedName(vm.$i18n('KMP001_57'));
-				break;
-			}
-			case 9: {
-				vm.selectedName(vm.$i18n('KMP001_58'));
-				break;
-			}
-			case 10: {
-				vm.selectedName(vm.$i18n('KMP001_59'));
-				break;
-			}
-			case 11: {
-				vm.selectedName(vm.$i18n('KMP001_60'));
-				break;
-			}
-			case 12: {
-				vm.selectedName(vm.$i18n('KMP001_61'));
-				break;
-			}
-			case 13: {
-				vm.selectedName(vm.$i18n('KMP001_62'));
-				break;
-			}
-			case 14: {
-				vm.selectedName(vm.$i18n('KMP001_63'));
-				break;
-			}
-			case 15: {
-				vm.selectedName(vm.$i18n('KMP001_64'));
-				break;
-			}
-			case 16: {
-				vm.selectedName(vm.$i18n('KMP001_65'));
-				break;
-			}
-			case 17: {
-				vm.selectedName(vm.$i18n('KMP001_66'));
-				break;
-			}
-			case 18: {
-				vm.selectedName(vm.$i18n('KMP001_67'));
-				break;
-			}
-			case 19: {
-				vm.selectedName(vm.$i18n('KMP001_68'));
-				break;
-			}
-			case 20: {
-				vm.selectedName(vm.$i18n('KMP001_69'));
-				break;
-			}
+			vm.cardLengths = [
+				new StampCardLength('KMP001_50'),
+				new StampCardLength('KMP001_51'),
+				new StampCardLength('KMP001_52'),
+				new StampCardLength('KMP001_53'),
+				new StampCardLength('KMP001_54'),
+				new StampCardLength('KMP001_55'),
+				new StampCardLength('KMP001_56'),
+				new StampCardLength('KMP001_57'),
+				new StampCardLength('KMP001_58'),
+				new StampCardLength('KMP001_59'),
+				new StampCardLength('KMP001_60'),
+				new StampCardLength('KMP001_61'),
+				new StampCardLength('KMP001_62'),
+				new StampCardLength('KMP001_63'),
+				new StampCardLength('KMP001_64'),
+				new StampCardLength('KMP001_65'),
+				new StampCardLength('KMP001_66'),
+				new StampCardLength('KMP001_67'),
+				new StampCardLength('KMP001_68'),
+				new StampCardLength('KMP001_69')
+			];
+		}
 
+		mounted() {
+			const vm = this;
+
+			vm.$ajax(KMP001D_API.GET_START)
+				.then((data: any) => {
+					vm.selectedLength(data.stampCardDigitNumber);
+
+					vm.paddingType(data.stampCardEditMethod);
+				});
+		}
+
+		closeDialog() {
+			const vm = this;
+
+			vm.$window.close();
+		}
+
+		addSetting() {
+			const vm = this;
+			const length = ko.unwrap(vm.selectedLength);
+			const paddingType = ko.unwrap(vm.paddingType);
+			const command = { digitsNumber: length, stampMethod: paddingType};
+			
+			vm.$ajax(KMP001D_API.UPDATE_EDITTING, command);
+
+			vm.$window.close({ length, paddingType });
 		}
 	}
 
-}
+	export enum StampCardEditMethod {
 
-/*interface IStampSetting {
-	stampCardDigitNumber: number;
-	stampCardEditMethod: number;
-}
+		// 前ゼロ
+		PreviousZero = 1,
 
-class StampSetting {
-	stampCardDigitNumber: KnockoutObservable<number> = ko.observable(1);
-	stampCardEditMethod: KnockoutObservable<number> = ko.observable(1);
+		// 後ゼロ
+		AfterZero = 2,
 
-	constructor(params?: IStampSetting) {
-		const seft = this;
+		// 前スペース
+		PreviousSpace = 3,
 
-		if (params) {
-			seft.stampCardDigitNumber(params.stampCardDigitNumber);
-			seft.stampCardEditMethod(params.stampCardEditMethod);
+		// 後スペース
+		AfterSpace = 4
+	}
+
+	interface PaddingType {
+		value: StampCardEditMethod;
+		label: 'KMP001_42' | 'KMP001_44' | 'KMP001_43' | 'KMP001_45';
+	}
+
+	class StampCardLength {
+		value: number = -1;
+		text: string = '';
+
+		constructor(resource: string) {
+			const mock = new ko.ViewModel();
+
+			if (resource) {
+				this.text = mock.$i18n(resource);
+			}
+
+			if (this.text.match(/^\d+$/)) {
+				this.value = parseInt(this.text);
+			}
 		}
 	}
-}*/
+}

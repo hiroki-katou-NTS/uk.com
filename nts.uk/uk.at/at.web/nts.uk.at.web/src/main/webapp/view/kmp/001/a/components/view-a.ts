@@ -3,25 +3,25 @@ module nts.uk.at.view.kmp001.a {
 	import share = nts.uk.at.view.kmp001;
 
 	const template = `
-<div id="com-ccg001"></div>
-<div class="sidebar-content-header">
-	<span class="title" data-bind="text: $i18n('KMP001_1')"></span>
-	<button data-bind="text: $i18n('KMP001_4'), click: addNew, enable: mode() == 'update'"></button>
-	<button class="proceed" data-bind="text: $i18n('KMP001_5'), click: addStampCard"></button>
-	<button class="danger" data-bind="text: $i18n('KMP001_6'), click: deleteStampCard, enable: mode() == 'update'"></button>
-	<!-- ko if: attendance -->
-	<button data-bind="text: $i18n('KMP001_7'), click: showDiaLog"></button>
-	<!-- /ko -->
-</div>
-<div class="view-kmp">
-	<div class="list-component float-left viewa">
-		<div id="list-employee"></div>
-	</div>
-	<div class="float-left model-component" 
-		data-bind="component: { 
-			name: 'editor-area', 
-			params: { model: model }}"></div>
-<div>
+		<div id="com-ccg001"></div>
+		<div class="sidebar-content-header">
+			<span class="title" data-bind="text: $i18n('KMP001_1')"></span>
+			<button data-bind="text: $i18n('KMP001_4'), click: addNew, enable: mode() == 'update'"></button>
+			<button class="proceed" data-bind="text: $i18n('KMP001_5'), click: addStampCard"></button>
+			<button class="danger" data-bind="text: $i18n('KMP001_6'), click: deleteStampCard, enable: mode() == 'update'"></button>
+			<!-- ko if: attendance -->
+			<button data-bind="text: $i18n('KMP001_7'), click: showDiaLog"></button>
+			<!-- /ko -->
+		</div>
+		<div class="view-kmp">
+			<div class="list-component float-left viewa">
+				<div id="list-employee"></div>
+			</div>
+			<div class="float-left model-component" 
+				data-bind="component: { 
+					name: 'editor-area', 
+					params: { model: model }}"></div>
+		<div>
 `;
 
 	const KMP001A_API = {
@@ -177,8 +177,7 @@ module nts.uk.at.view.kmp001.a {
 
 			vm.$window
 				.modal('/view/kmp/001/d/index.xhtml')
-				.then(() => {
-
+				.then((data: any) => {
 				});
 		}
 
@@ -196,7 +195,6 @@ module nts.uk.at.view.kmp001.a {
 				model: IModel = ko.toJS(vm.model),
 				checkeds = model.stampCardDto.filter((f) => f.checked),
 				index = _.map(ko.unwrap(vm.employees), m => m.code).indexOf(model.code);
-				debugger;
 
 			if (checkeds != null) {
 				const command = { employeeId: model.employeeId, cardNumbers: checkeds.map(m => m.stampNumber), cardId: checkeds.map(m => m.stampCardId) };
