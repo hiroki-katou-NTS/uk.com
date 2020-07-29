@@ -12,6 +12,11 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
+import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoParam;
+import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoResult;
+import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInformation;
+import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkScheduleWorkInforDto;
+import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkTypeInfomation;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DataSpecDateAndHolidayDto;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DateInformationDto;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DisplayControlPersonalCondDto;
@@ -25,6 +30,10 @@ import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforD
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DisplayInforOrganization;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScreenQueryGetInforOfInitStartup;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.TargetOrgIdenInforDto;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.GetWorkScheduleShift;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.GetWorkScheduleShiftParam;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.WorkScheduleShiftDto;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.WorkScheduleShiftResult;
 
 /**
  * @author laitv 初期起動 path:
@@ -40,6 +49,10 @@ public class StartKSU001 {
 	private ScreenQueryExtractTargetEmployees extractTargetEmployees;
 	@Inject
 	private EventInfoAndPersonalConditionsPeriod eventInfoAndPersonalCondPeriod;
+	@Inject
+	private DisplayInWorkInformation displayInWorkInfo;
+	@Inject
+	private GetWorkScheduleShift getWorkScheduleShift;
 
 	public StartKSU001Dto getDataStartScreen(StartKSU001Param param) {
 		
@@ -54,8 +67,8 @@ public class StartKSU001 {
 				: resultStep1.targetOrgIdenInfor.workplaceGroupId;
 		GeneralDate startDate = resultStep1.startDate;
 		GeneralDate endDate = resultStep1.endDate; */
-		String workplaceId = "dea95de1-a462-4028-ad3a-d68b8f180412";
-		String workplaceGroupId = null;
+		
+		// step 1 start
 		GeneralDate startDate = GeneralDate.ymd(2020, 7, 1);
 		GeneralDate endDate =  GeneralDate.ymd(2020, 7, 31);
 		
@@ -67,31 +80,49 @@ public class StartKSU001 {
 
 		DataScreenQueryGetInforDto resultStep1 = new DataScreenQueryGetInforDto(startDate, endDate, targetOrgIdenInfor,
 				displayInforOrganization);
-
+		// step 1 end
+		
+		// step 2 start
+		String workplaceId = "dea95de1-a462-4028-ad3a-d68b8f180412";
+		String workplaceGroupId = null;
 		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(endDate, workplaceId, workplaceGroupId);
 		List<EmployeeInformationImport> resultStep2 = extractTargetEmployees.getListEmp(param2);
-
-		// step 3
+		// step 2 end
+		
+		// step 3 start
 		List<String> listSid = resultStep2.stream().map(mapper -> mapper.getEmployeeId()).collect(Collectors.toList());
 		EventInfoAndPerCondPeriodParam param3 = new EventInfoAndPerCondPeriodParam(startDate, endDate, workplaceId,
 				workplaceGroupId, listSid);
 		DataSpecDateAndHolidayDto resultStep3 = eventInfoAndPersonalCondPeriod.get(param3);
-
+		// step 3 end
+		
+		//step 4  || step 5.2 start
+		DisplayInWorkInfoParam param4 = new DisplayInWorkInfoParam(listSid, startDate, endDate, false);
+		DisplayInWorkInfoResult  resultStep4 = new DisplayInWorkInfoResult();
+		resultStep4 = displayInWorkInfo.getData(param4);
+		List<WorkTypeInfomation> listWorkTypeInfo = resultStep4.listWorkTypeInfo;
+		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = resultStep4.listWorkScheduleWorkInfor;
+		
+		// step5.1
+		WorkScheduleShiftResult resultStep51 = getWorkScheduleShift.getData(new GetWorkScheduleShiftParam());
+		List<WorkScheduleShiftDto> listWorkScheduleShift = resultStep51.listWorkScheduleShift; 
 		
 		if (param.modeDisplay == ModeDisPlay.SHIFT.value) {
 			// step5.1
-
+			
+			
 		} else if (param.modeDisplay == ModeDisPlay.DETAIL.value || param.modeDisplay == ModeDisPlay.WORKING.value) {
 			// step4 || step 5.2
-
+			
 		}
 		
-		StartKSU001Dto result = convertData(resultStep1, resultStep2, resultStep3);
+		StartKSU001Dto result = convertData(resultStep1, resultStep2, resultStep3, listWorkTypeInfo, listWorkScheduleWorkInfor, listWorkScheduleShift);
 		return result;
 	}
 
-	private StartKSU001Dto convertData(DataScreenQueryGetInforDto resultStep1,
-			List<EmployeeInformationImport> resultStep2, DataSpecDateAndHolidayDto resultStep3) {
+	private StartKSU001Dto convertData(DataScreenQueryGetInforDto resultStep1,List<EmployeeInformationImport> resultStep2, 
+			DataSpecDateAndHolidayDto resultStep3, List<WorkTypeInfomation> listWorkTypeInfo, 
+			List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor, List<WorkScheduleShiftDto> listWorkScheduleShift) {
 		StartKSU001Dto result = new StartKSU001Dto();
 		
 		//	data tra ve cua step1	
@@ -118,7 +149,12 @@ public class StartKSU001 {
 		DisplayControlPersonalCondDto displayControlPersonalCond = resultStep3.optDisplayControlPersonalCond.isPresent()
 				? new DisplayControlPersonalCondDto(resultStep3.optDisplayControlPersonalCond.get()) : null;
 		result.setDisplayControlPersonalCond(displayControlPersonalCond);
-				
+		
+		//  data tra ve cua step4
+		result.setListWorkTypeInfo(listWorkTypeInfo);
+		result.setListWorkScheduleWorkInfor(listWorkScheduleWorkInfor);
+		// 5.1
+		result.setListWorkScheduleShift(listWorkScheduleShift);
 		return result;
 		
 	}

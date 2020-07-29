@@ -3,11 +3,11 @@
 		<div id="label" class="Abc1" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_64')}</div>
 		<div tabindex="30" id="combo-box1" class="Abc2"
 			data-bind="ntsComboBox: {
-								options: listWorkType,
+								options: listWorkType ,
 								optionsValue: 'workTypeCode',
 								visibleItemsCount: 10,
 								value: selectedWorkTypeCode,
-								optionsText: 'labelDisplay',
+								optionsText: 'name',
 								editable:  false,
 								enable: true,
 								width: 300,
@@ -15,26 +15,6 @@
 									{ prop: 'workTypeCode', length: 3 },
 									{ prop: 'name', length: 6 },
 									{ prop: 'memo', length: 20 }]}">
-		</div>
-	</div>
-	<div id="set-work-time">
-		<div id="Abc3" data-bind="ntsFormLabel: {enable: isEnableButton}">#{i18n.getText('KSU001_65')}</div>
-		<div tabindex="35" id="combo-box2" class="Abc4"
-			data-bind="ntsComboBox: {
-										options: listWorkTimeComboBox ,
-										optionsValue: 'codeName',
-										visibleItemsCount: 10,
-										value: selectedWorkTimeCode,
-										optionsText: 'labelDisplay', 
-										editable:  false,
-										enable: isEnableButton,
-										columns: [
-											{ prop: 'workTimeCode', length: 3 },
-											{ prop: 'symbolName', length: 1 },
-											{ prop: 'name', length: 5 },
-											{ prop: 'timeZone1', length: 5 },
-											{ prop: 'timeZone2', length: 5 },
-											{ prop: 'note', length: 20 }]}">
 		</div>
 	</div>
 </div>

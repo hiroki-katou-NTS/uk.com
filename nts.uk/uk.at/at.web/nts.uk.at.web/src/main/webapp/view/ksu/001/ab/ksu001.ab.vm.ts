@@ -7,139 +7,15 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
 
     export class ScreenModel {
                 
-        listWorkType: KnockoutObservableArray<ksu001.common.modelgrid.WorkType> = ko.observableArray([]);
-        listWorkTime: KnockoutObservableArray<ksu001.common.modelgrid.WorkTime> = ko.observableArray([]);
-        itemName: KnockoutObservable<string>;
-        currentCode: KnockoutObservable<number>
+        listWorkType: KnockoutObservableArray<ksu001.a.viewmodel.IWorkTypeDto> = ko.observableArray([]);
         selectedWorkTypeCode: KnockoutObservable<string>;
-        selectedWorkTimeCode: KnockoutObservable<string>;
-        time1: KnockoutObservable<string>;
-        time2: KnockoutObservable<string>;
-        roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: any;
-        nameWorkTimeType: KnockoutComputed<ksu001.common.modelgrid.ExCell>;
-        currentScreen: any = null;
-        listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.modelgrid.WorkTime> = ko.observableArray([]);
-        listTimeZoneForSearch: any[] = [];
-        startDateScreenA: any = null;
-        endDateScreenA: any = null;
-        isEnableClearSearchButton: KnockoutObservable<boolean> = ko.observable(false);
-        checkStateWorkTypeCode: any = null;
-        checkNeededOfWorkTimeSetting: any = null;
-        workEmpCombines: any = null;
-        employeeIdLogin: string = null;
-        isEnableButton: KnockoutObservable<boolean> = ko.observable(false);
-        listCheckNeededOfWorkTime : any[] = [];
-        nashi: string = getText("KSU001_98");
-
+        
         constructor() {
             let self = this;
-            self.roundingRules = ko.observableArray([
-                { code: '1', name: getText("KSU001_71") },
-                { code: '2', name: getText("KSU001_72") }
-            ]);
-            self.selectedRuleCode = ko.observable(1);
-            self.itemName = ko.observable('');
-            self.currentCode = ko.observable(3);
+            
             self.selectedWorkTypeCode = ko.observable('');
-            self.selectedWorkTimeCode = ko.observable('');
-            self.time1 = ko.observable('');
-            self.time2 = ko.observable('');
-            
             self.selectedWorkTypeCode.subscribe((newValue) => {
-                let stateWorkTypeCode = _.find(self.checkNeededOfWorkTimeSetting, ['workTypeCode', newValue]);
-                // if workTypeCode is not required(= 2) worktime is needless, something relate to workTime will be disable
-                if (stateWorkTypeCode && stateWorkTypeCode.state == 2) {
-                    self.isEnableButton(false);
-                    self.isEnableClearSearchButton(false);
-                    self.selectedWorkTimeCode(self.nashi);
-                } else {
-                    self.isEnableButton(true);
-                }
-            });
-
-            //get name of workType and workTime
-            self.nameWorkTimeType = ko.pureComputed(() => {
-                let workTypeName, workTypeCode, workTimeName, workTimeCode: string;
-                let startTime, endTime: any;
-                if (self.listWorkType().length > 0 || self.listWorkTime().length > 0) {
-                    let d = _.find(self.listWorkType(), ['workTypeCode', self.selectedWorkTypeCode()]);
-                    if (d) {
-                        workTypeName = d.abbreviationName;
-                        workTypeCode = d.workTypeCode;
-                    } else {
-                        workTypeName = null;
-                        workTypeCode = null;
-                    }
-
-                    let workTimeCd: string = null;
-                    if (self.selectedWorkTimeCode()) {
-                        workTimeCd = self.selectedWorkTimeCode().slice(0, 3);
-                    } else {
-                        workTimeCd = self.selectedWorkTimeCode()
-                    }
-
-                    let c = _.find(self.listWorkTime(), ['workTimeCode', workTimeCd]);
-                    if (c) {
-                        workTimeName = c.abName;
-                        workTimeCode = _.isEmpty(c.workTimeCode) ? null : c.workTimeCode;
-                        //                        startTime = nts.uk.time.parseTime(c.startTime, true).format();
-                        //                        endTime = nts.uk.time.parseTime(c.endTime, true).format();
-                        startTime = c.startTime ? formatById("Clock_Short_HM", c.startTime) : '';
-                        endTime = c.endTime ? formatById("Clock_Short_HM", c.endTime) : '';
-                    } else {
-                        workTimeName = null;
-                        workTimeCode = null;
-                        startTime = '';
-                        endTime = '';
-                    }
-                }
-                return new ksu001.common.modelgrid.ExCell(
-                     workTypeCode,
-                     workTypeName,
-                     workTimeCode,
-                     workTimeName,
-                     startTime,
-                     endTime,
-                     'symbolName',
-                );
-            });
-
-            self.nameWorkTimeType.subscribe(function(value) {
-                //Paste data into cell (set-sticker-single)
-                $("#extable").exTable("stickData", value);
-            });
-        }
-
-        openDialogO1(): void {
-            let self = this;
-            
-            self.time1('');
-            self.time2('');
-            nts.uk.ui.errors.clearAll();
-            $('#contain-view').hide();
-            $("#extable").exTable("viewMode", "shortName", { y: 150 });
-            setShare('listWorkType', self.listWorkType());
-            setShare('selectedWorkTypeCode', self.selectedWorkTypeCode);
-            setShare('listWorkTime', self.listWorkTime());
-            setShare('selectedWorkTimeCode', self.selectedWorkTimeCode);
-            setShare('listTimeZoneForSearch', self.listTimeZoneForSearch);
-            setShare('listCheckNeededOfWorkTime', self.listCheckNeededOfWorkTime);
-            setShare('isEnableButton', self.isEnableButton);
-            
-            self.currentScreen = nts.uk.ui.windows.sub.modeless("/view/ksu/001/o1/index.xhtml");
-            self.currentScreen.onClosed(() => {
-                self.currentScreen = null;
-                if (__viewContext.viewModel.viewA.selectedModeDisplay() == 1) {
-                    $("#extable").exTable("viewMode", "shortName", { y: 210 });
-                    $('#contain-view').show();
-                    // when close dialog, copy-paste value of nameWorkTimeType of screen O(not O1) for cell
-                    $("#extable").exTable("stickData", self.nameWorkTimeType());
-                    $("#combo-box1").focus();
-                    
-                    self.selectedWorkTypeCode(getShare("selectedWorkTypeCode")());
-                    self.selectedWorkTimeCode(getShare("selectedWorkTimeCode")());
-                }
+                console.log(newValue);
             });
         }
 

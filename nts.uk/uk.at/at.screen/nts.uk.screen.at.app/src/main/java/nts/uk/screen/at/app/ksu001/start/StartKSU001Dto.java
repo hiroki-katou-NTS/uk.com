@@ -9,10 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkScheduleWorkInforDto;
+import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkTypeInfomation;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DateInformationDto;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DisplayControlPersonalCondDto;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.PersonalConditionsDto;
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.EmployeeInformationDto;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.WorkScheduleShiftDto;
 
 /**
  * @author laitv
@@ -34,5 +37,12 @@ public class StartKSU001Dto {
 	public List<DateInformationDto> listDateInfo;
 	public List<PersonalConditionsDto> listPersonalConditions; 
 	public DisplayControlPersonalCondDto displayControlPersonalCond;
-	 
+	
+	// data trả về của step 4 || 5.2
+	public List<WorkTypeInfomation> listWorkTypeInfo;
+	public List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor; 
+	
+	// data trả về của step 5.1
+	public List<WorkScheduleShiftDto> listWorkScheduleShift;
+	
 }

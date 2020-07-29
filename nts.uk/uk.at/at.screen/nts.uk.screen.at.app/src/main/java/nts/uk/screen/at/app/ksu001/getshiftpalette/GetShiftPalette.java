@@ -84,11 +84,10 @@ public class GetShiftPalette {
 		List<String> listShiftMasterCodeGetNew = result.listShiftMasterCodeGetNew;
 		List<PageShift> listOfShift = new ArrayList<>();
 		
-		GetCombinationrAndWorkHolidayAtrService.Require require = new RequireImpl(shiftMasterRepo);
-		WorkInformation.Require workRequired = new WorkInfoRequireImpl(basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
+		GetCombinationrAndWorkHolidayAtrService.Require require = new RequireImpl(shiftMasterRepo, basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
 		
 		// listShiftMasterCode này chỉ bao gồm những Code chưa được lưu ở localStorage.
-		Map<ShiftMaster,Optional<WorkStyle>> sMap = GetCombinationrAndWorkHolidayAtrService.getCode(require, workRequired, AppContexts.user().companyId(), listShiftMasterCodeGetNew);
+		Map<ShiftMaster,Optional<WorkStyle>> sMap = GetCombinationrAndWorkHolidayAtrService.getCode(require,AppContexts.user().companyId(), listShiftMasterCodeGetNew);
 		for (Map.Entry<ShiftMaster, Optional<WorkStyle>> entry : sMap.entrySet()) {
 			System.out.println("ShiftMaster : " + entry.getKey() + " WorkStyle : " + entry.getValue());
 			PageShift shift = new PageShift(new ShiftMasterDto(entry.getKey()), entry.getValue().isPresent() ? entry.getValue().get().value : null);
@@ -202,6 +201,16 @@ public class GetShiftPalette {
 		
 		@Inject
 		private ShiftMasterRepository shiftMasterRepo;
+		@Inject
+		private BasicScheduleService service;
+		@Inject
+		private WorkTypeRepository workTypeRepo;
+		@Inject
+		private WorkTimeSettingRepository workTimeSettingRepository;
+		@Inject
+		private WorkTimeSettingService workTimeSettingService;
+		@Inject
+		private BasicScheduleService basicScheduleService;
 		
 		@Override
 		public List<ShiftMaster> getByListEmp(String companyID, List<String> lstShiftMasterCd) {
@@ -214,23 +223,6 @@ public class GetShiftPalette {
 			List<ShiftMaster> data = shiftMasterRepo.get(companyId, lstWorkInformation);
 			return data;
 		}
-	}
-	
-	@AllArgsConstructor
-	private static class WorkInfoRequireImpl implements WorkInformation.Require {
-		
-		private final String companyId = AppContexts.user().companyId();
-		
-		@Inject
-		private BasicScheduleService service;
-		@Inject
-		private WorkTypeRepository workTypeRepo;
-		@Inject
-		private WorkTimeSettingRepository workTimeSettingRepository;
-		@Inject
-		private WorkTimeSettingService workTimeSettingService;
-		@Inject
-		private BasicScheduleService basicScheduleService;
 
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {

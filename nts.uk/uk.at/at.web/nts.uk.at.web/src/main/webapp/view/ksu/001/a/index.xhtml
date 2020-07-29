@@ -159,9 +159,9 @@
 							</div>
 							<div id="A4_4" class="cf area6-right"
 								data-bind="ntsSwitchButton: {
- 									options: [{id: 'Ac', name: '#{i18n.getText('KSU001_43')}'}, 
-		 									 {id: 'Ab', name: '#{i18n.getText('KSU001_44')}'}, 
-		 									 {id: 'Aa', name: '#{i18n.getText('KSU001_45')}'}] , 
+ 									options: [{id: 'time', name: '#{i18n.getText('KSU001_43')}'}, 
+		 									 {id: 'shortName', name: '#{i18n.getText('KSU001_44')}'}, 
+		 									 {id: 'shift', name: '#{i18n.getText('KSU001_45')}'}] , 
 									optionsValue: 'id', 
  									optionsText: 'name', 
  									value: selectedModeDisplayInBody , 
@@ -182,8 +182,8 @@
 						</div>
 					</div>
 					<div id="A4_8">#{i18n.getText('KSU001_125')}</div>
-					<hr id="A4_9"></hr>
-					<div style="margin-left: 0px">
+					<hr id="A4_9" data-bind="visible: selectedModeDisplayInBody() == 'shift'"></hr>
+					<div style="margin-left: 0px" data-bind="visible: selectedModeDisplayInBody() == 'shift'">
 						<div>
 							<div class="area6-left" >
 								<span id="A4_10">#{i18n.getText('KSU001_134')}</span>
@@ -359,20 +359,19 @@
 						<div style="clear: left"></div>
 						<div style="white-space: nowrap;">
 							<div id="contain-view-left">
-								<button id="A6_1" class="editMode" style="height: 38px;" data-bind="click: editMode">#{i18n.getText('KSU001_140')}</button>
+								<button id="A6_1" class="editMode" style="height: 38px;" data-bind="click: editMode ">#{i18n.getText('KSU001_140')}</button>
 								<br />
-								<button id="A6_2" class="confirmMode" style="height: 38px; margin-top: 3px;" data-bind="click: confirmMode">#{i18n.getText('KSU001_141')}</button>
+								<button id="A6_2" class="confirmMode" style="height: 38px; margin-top: 3px;" data-bind="click: confirmMode ">#{i18n.getText('KSU001_141')}</button>
 							</div>
 							<div id="contain-view-right" class="inline">
 								<div id="group-bt">
-									<button id="paste" class="" data-bind="click: pasteData">貼り付け</button>
-									<button id="copy" class="" data-bind="click: copyData">コピペ</button>
-									<button id="input" class="" data-bind="click: inputData">時刻修正</button>
+									<button id="paste" class="A7_1" data-bind="click: pasteData, enable: enableBtnPaste" >貼り付け</button>
+									<button id="copy"  class="A7_2" data-bind="click: copyData, enable: enableBtnCoppy" >コピペ</button>
+									<button id="input" class="A7_3" data-bind="click: inputData, enable: enableBtnInput, visible : visibleBtnInput">時刻修正</button>
 									<br />
-									<button id="undo" class="size-image-button2"
-										data-bind="click: undoData, timeClick: -1"></button>
-									<button id="redo" class="size-image-button2"
-										data-bind="click: redoData, timeClick: -1"></button>
+									<button id="undo" class="size-image-button2 A7_4" data-bind="click: undoData, enable: enableBtnUndo , visible : visibleBtnUndo , timeClick: -1"></button>
+									<button id="redo" class="size-image-button2 A7_5" data-bind="click: redoData, enable: enableBtnRedo , visible : visibleBtnRedo , timeClick: -1"></button>
+									<button data-bind="ntsHelpButton: {textId: '', textParams:[], position: 'right center' ,enable: enableHelpBtn}" style="margin-top: 10px;">？</button>
 								</div>
 								<div data-bind="ifnot: visibleShiftPalette">
 									<div id="oViewModel">

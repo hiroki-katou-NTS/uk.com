@@ -27,16 +27,19 @@ module nts.uk.at.view.ksu001.a {
         } 
         
         nts.uk.ui.block.grayout();
-        let viewMode = 'time';
-        __viewContext.viewModel.viewA.startPage(viewMode).done(() => {
-            __viewContext.bind(__viewContext.viewModel);
-            __viewContext.viewModel.viewA.getSettingDisplayWhenStart();
+        let viewMode = '';
+        uk.localStorage.getItem(key).ifPresent((data) => {
+            let userInfor = JSON.parse(data);
+            __viewContext.viewModel.viewA.startPage(userInfor.disPlayFormat == '' ? 'time' : userInfor.disPlayFormat).done(() => {
+                __viewContext.bind(__viewContext.viewModel);
+                __viewContext.viewModel.viewA.getSettingDisplayWhenStart();
 
-            $(window).resize(function() {
-                __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
+                $(window).resize(function() {
+                    __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
+                });
+
+                nts.uk.ui.block.clear();
             });
-
-            nts.uk.ui.block.clear();
         });
 
         initEvent();

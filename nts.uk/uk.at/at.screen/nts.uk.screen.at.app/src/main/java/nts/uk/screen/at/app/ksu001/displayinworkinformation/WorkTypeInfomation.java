@@ -27,6 +27,6 @@ public class WorkTypeInfomation {
 	 * 午後出勤系 AFTERNOON(2, "午後出勤系"),
 	 * １日休日系 HOLIDAY(0, "１日休日系");
 	 */
-	public int attHdAtr; 
-
+	public int attHdAtr;
+	
 }

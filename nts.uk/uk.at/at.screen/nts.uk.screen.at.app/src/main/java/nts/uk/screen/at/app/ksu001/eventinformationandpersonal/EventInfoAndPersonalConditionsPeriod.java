@@ -156,7 +156,8 @@ public class EventInfoAndPersonalConditionsPeriod {
 		DateInformation dateInformation9 = new DateInformation(GeneralDate.ymd(2020, 7, 9), DayOfWeek.THURSDAY, false, true, 
 				Optional.of(new EventName("WorkplaceEventName")), Optional.of(new EventName("CompanyEventName")), 
 				Arrays.asList(new SpecificName("specDayNameWorkplace1"),new SpecificName("specDayNameWorkplace2")), 
-				Arrays.asList(new SpecificName("specDayNameCompany1"), new SpecificName("specDayNameCompany2")));
+				Arrays.asList(new SpecificName("specDayNameCompany1"), new SpecificName("specDayNameCompany2"), 
+							  new SpecificName("specDayNameCompany3"), new SpecificName("specDayNameCompany4")));
 		
 		DateInformation dateInformation10 = new DateInformation(GeneralDate.ymd(2020, 7, 10), DayOfWeek.FRIDAY, false, false, 
 				Optional.empty(), Optional.empty(), 

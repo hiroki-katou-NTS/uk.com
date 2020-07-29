@@ -19,6 +19,9 @@
     background-repeat: no-repeat;
 }
 
+.btnControlSelected{background-color : #007fff ; color : #ffffff}
+.btnControlUnSelected{background-color : #ffffff ; color : #000000 }
+
 .x-link {
     text-align: left;
 }
@@ -56,6 +59,10 @@ table th, table td {
 
 #functions-area>button {
 	margin-left: 5px;
+}
+
+#A2_2 {
+	padding-left: 25px;
 }
 
 #A1_11 {

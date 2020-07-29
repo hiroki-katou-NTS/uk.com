@@ -5,12 +5,16 @@ package nts.uk.screen.at.app.ksu001.displayinworkinformation;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
 /**
  * @author laitv
  *
  */
+@NoArgsConstructor
+@AllArgsConstructor
 public class DisplayInWorkInfoParam {
 	
 	public List<String> listSid;             // ・社員IDリスト：List<社員ID>
