@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
@@ -34,6 +35,12 @@ public class BentoReservation extends AggregateRoot{
 	 */
 	@Getter
 	private boolean ordered;
+
+	/**
+	 * 勤務場所コード
+	 */
+	@Getter
+	private Optional<WorkLocationCode> workLocationCode;
 	
 	/**
 	 * 弁当予約明細リスト
@@ -41,7 +48,7 @@ public class BentoReservation extends AggregateRoot{
 	@Getter
 	private final List<BentoReservationDetail> bentoReservationDetails;
 	
-	public BentoReservation(ReservationRegisterInfo registerInfor, ReservationDate reservationDate, boolean ordered, 
+	public BentoReservation(ReservationRegisterInfo registerInfor, ReservationDate reservationDate, boolean ordered,
 			List<BentoReservationDetail> bentoReservationDetails) {
 		// [inv-1] @明細リスト.size > 0
 		if(bentoReservationDetails.size() <= 0) {
@@ -51,8 +58,8 @@ public class BentoReservation extends AggregateRoot{
 		this.reservationDate = reservationDate;
 		this.ordered = ordered;
 		this.bentoReservationDetails = bentoReservationDetails;
-	} 
-	
+
+    }
 	/**
 	 * 予約する
 	 * @param registerInfor
@@ -87,4 +94,33 @@ public class BentoReservation extends AggregateRoot{
 			throw new BusinessException("Msg_1586");
 		}
 	}
+
+//	/**
+//	 * 強制弁当予約する
+//	 */
+//	public BentoReservation bookLunch(ReservationRegisterInfo registerInfor, ReservationDate reservationDate,
+//											 List<BentoReservationDetail> bentoReservationDetails, Optional<WorkLocationCode> workLocationCode)
+//	{
+//		return new BentoReservation(registerInfor, reservationDate, false, bentoReservationDetails, workLocationCode);
+//	}
+//
+//	/**
+//	 * 強制弁当予約修正する
+//	 */
+//	public BentoReservation modifyLunch(boolean ordered, BentoReservationDetail bentoReservationDetail)
+//	{
+//	    this.ordered = ordered;
+//	    this.bentoReservationDetails.add(bentoReservationDetail);
+//        return this;
+//	}
+
+//	/**
+//	 * 注文済みにする
+//	 */
+//	public BentoReservation makeOrder(ReservationRegisterInfo registerInfor,boolean ordered)
+//	{
+//	    this.registerInfor = registerInfor;
+//        this.ordered = ordered;
+//        return this;
+//	}
 }
