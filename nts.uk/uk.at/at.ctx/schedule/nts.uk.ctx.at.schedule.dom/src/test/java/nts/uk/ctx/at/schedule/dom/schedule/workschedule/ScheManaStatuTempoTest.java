@@ -3,7 +3,6 @@ package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -18,13 +17,14 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo.Require;
-import nts.uk.ctx.at.shared.dom.adapter.employee.AffCompanyHistSharedImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmployeeLeaveJobPeriodImport;
-import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmploymentPeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.TempAbsenceFrameNo;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.SecondSituation;
 
 @RunWith(JMockit.class)
 public class ScheManaStatuTempoTest {
@@ -61,13 +61,13 @@ public class ScheManaStatuTempoTest {
 	
 	/**
 	 * require.在籍期間を取得する( 社員ID, 年月日 ) is not empty
-	 * require.雇用履歴を取得する( list: 社員ID, 期間( 年月日, 年月日 ) ) is empty
+	 * require.雇用履歴を取得する( 社員ID, 年月日 ) is empty
 	 */
 	@Test
 	public void testCreate_1() {
 		String employeeID = "employeeID";
 		GeneralDate date = GeneralDate.today();
-		List<AffCompanyHistSharedImport> listAffCompanyHistSharedImport = Arrays.asList(new AffCompanyHistSharedImport(employeeID, new ArrayList<>()));
+		List<EmpEnrollPeriodImport> listAffCompanyHistSharedImport = Arrays.asList(new EmpEnrollPeriodImport(employeeID, new DatePeriod(date, date), SecondSituation.NONE));
 		new Expectations() {
 			{
 				require.getAffCompanyHistByEmployee(Arrays.asList(employeeID), (DatePeriod) any);
@@ -93,15 +93,15 @@ public class ScheManaStatuTempoTest {
 	public void testCreate_2() {
 		String employeeID = "employeeID";
 		GeneralDate date = GeneralDate.today();
-		List<AffCompanyHistSharedImport> listAffCompanyHistSharedImport = Arrays.asList(new AffCompanyHistSharedImport(employeeID, new ArrayList<>()));
-		List<EmploymentPeriod> listEmploymentPeriod = Arrays.asList(new EmploymentPeriod(employeeID, "employmentCd", new DatePeriod(date, date), Optional.empty()));
+		List<EmpEnrollPeriodImport> listAffCompanyHistSharedImport = Arrays.asList(new EmpEnrollPeriodImport(employeeID, new DatePeriod(date, date), SecondSituation.NONE));
+		List<EmploymentPeriodImported> listEmploymentPeriodImported = Arrays.asList(new EmploymentPeriodImported(employeeID, new DatePeriod(date, date), "empCode", Optional.empty()));
 		new Expectations() {
 			{
 				require.getAffCompanyHistByEmployee(Arrays.asList(employeeID), (DatePeriod) any);
 				result = listAffCompanyHistSharedImport;
 				
 				require.getEmploymentHistory(Arrays.asList(employeeID), (DatePeriod) any);
-				result = listEmploymentPeriod;
+				result = listEmploymentPeriodImported;
 				
 				require.getBySidAndStandardDate(employeeID, date);
 			}
@@ -124,8 +124,8 @@ public class ScheManaStatuTempoTest {
 	public void testCreate_3() {
 		String employeeID = "employeeID";
 		GeneralDate date = GeneralDate.today();
-		List<AffCompanyHistSharedImport> listAffCompanyHistSharedImport = Arrays.asList(new AffCompanyHistSharedImport(employeeID, new ArrayList<>()));
-		List<EmploymentPeriod> listEmploymentPeriod = Arrays.asList(new EmploymentPeriod(employeeID, "employmentCd", new DatePeriod(date, date), Optional.empty()));
+		List<EmpEnrollPeriodImport> listAffCompanyHistSharedImport = Arrays.asList(new EmpEnrollPeriodImport(employeeID, new DatePeriod(date, date), SecondSituation.NONE));
+		List<EmploymentPeriodImported> listEmploymentPeriodImported = Arrays.asList(new EmploymentPeriodImported(employeeID, new DatePeriod(date, date), "empCode", Optional.empty()));
 		WorkingConditionItem workingConditionItem = new WorkingConditionItem(null, ManageAtr.NOTUSE, null, null, null, null, employeeID, null, null, null, null, null, null, null, null);
 		new Expectations() {
 			{
@@ -133,7 +133,7 @@ public class ScheManaStatuTempoTest {
 				result = listAffCompanyHistSharedImport;
 				
 				require.getEmploymentHistory(Arrays.asList(employeeID), (DatePeriod) any);
-				result = listEmploymentPeriod;
+				result = listEmploymentPeriodImported;
 				
 				require.getBySidAndStandardDate(employeeID, date);
 				result = Optional.of(workingConditionItem);
@@ -157,8 +157,8 @@ public class ScheManaStatuTempoTest {
 	public void testCreate_4() {
 		String employeeID = "employeeID";
 		GeneralDate date = GeneralDate.today();
-		List<AffCompanyHistSharedImport> listAffCompanyHistSharedImport = Arrays.asList(new AffCompanyHistSharedImport(employeeID, new ArrayList<>()));
-		List<EmploymentPeriod> listEmploymentPeriod = Arrays.asList(new EmploymentPeriod(employeeID, "employmentCd", new DatePeriod(date, date), Optional.empty()));
+		List<EmpEnrollPeriodImport> listAffCompanyHistSharedImport = Arrays.asList(new EmpEnrollPeriodImport(employeeID, new DatePeriod(date, date), SecondSituation.NONE));
+		List<EmploymentPeriodImported> listEmploymentPeriodImported = Arrays.asList(new EmploymentPeriodImported(employeeID, new DatePeriod(date, date), "empCode", Optional.empty()));
 		WorkingConditionItem workingConditionItem = new WorkingConditionItem(null, ManageAtr.USE, null, null, null, null, employeeID, null, null, null, null, null, null, null, null);
 		List<EmployeeLeaveJobPeriodImport> listEmployeeLeaveJobPeriodImport = Arrays.asList(new EmployeeLeaveJobPeriodImport(employeeID, new DatePeriod(date, date)));
 		new Expectations() {
@@ -167,7 +167,7 @@ public class ScheManaStatuTempoTest {
 				result = listAffCompanyHistSharedImport;
 				
 				require.getEmploymentHistory(Arrays.asList(employeeID), (DatePeriod) any);
-				result = listEmploymentPeriod;
+				result = listEmploymentPeriodImported;
 				
 				require.getBySidAndStandardDate(employeeID, date);
 				result = Optional.of(workingConditionItem);
@@ -195,8 +195,8 @@ public class ScheManaStatuTempoTest {
 	public void testCreate_5() {
 		String employeeID = "employeeID";
 		GeneralDate date = GeneralDate.today();
-		List<AffCompanyHistSharedImport> listAffCompanyHistSharedImport = Arrays.asList(new AffCompanyHistSharedImport(employeeID, new ArrayList<>()));
-		List<EmploymentPeriod> listEmploymentPeriod = Arrays.asList(new EmploymentPeriod(employeeID, "employmentCd", new DatePeriod(date, date), Optional.empty()));
+		List<EmpEnrollPeriodImport> listAffCompanyHistSharedImport = Arrays.asList(new EmpEnrollPeriodImport(employeeID, new DatePeriod(date, date), SecondSituation.NONE));
+		List<EmploymentPeriodImported> listEmploymentPeriodImported = Arrays.asList(new EmploymentPeriodImported(employeeID, new DatePeriod(date, date), "empCode", Optional.empty()));
 		WorkingConditionItem workingConditionItem = new WorkingConditionItem(null, ManageAtr.USE, null, null, null, null, employeeID, null, null, null, null, null, null, null, null);
 		TempAbsenceFrameNo tempAbsenceFrNo = new TempAbsenceFrameNo(BigDecimal.valueOf(1));
 		List<EmpLeaveWorkPeriodImport> listEmpLeaveWorkPeriodImport = Arrays.asList(new EmpLeaveWorkPeriodImport(employeeID, tempAbsenceFrNo, new DatePeriod(date, date)));
@@ -206,7 +206,7 @@ public class ScheManaStatuTempoTest {
 				result = listAffCompanyHistSharedImport;
 				
 				require.getEmploymentHistory(Arrays.asList(employeeID), (DatePeriod) any);
-				result = listEmploymentPeriod;
+				result = listEmploymentPeriodImported;
 				
 				require.getBySidAndStandardDate(employeeID, date);
 				result = Optional.of(workingConditionItem);
@@ -236,8 +236,8 @@ public class ScheManaStatuTempoTest {
 	public void testCreate_6() {
 		String employeeID = "employeeID";
 		GeneralDate date = GeneralDate.today();
-		List<AffCompanyHistSharedImport> listAffCompanyHistSharedImport = Arrays.asList(new AffCompanyHistSharedImport(employeeID, new ArrayList<>()));
-		List<EmploymentPeriod> listEmploymentPeriod = Arrays.asList(new EmploymentPeriod(employeeID, "employmentCd", new DatePeriod(date, date), Optional.empty()));
+		List<EmpEnrollPeriodImport> listAffCompanyHistSharedImport = Arrays.asList(new EmpEnrollPeriodImport(employeeID, new DatePeriod(date, date), SecondSituation.NONE));
+		List<EmploymentPeriodImported> listEmploymentPeriodImported = Arrays.asList(new EmploymentPeriodImported(employeeID, new DatePeriod(date, date), "empCode", Optional.empty()));
 		WorkingConditionItem workingConditionItem = new WorkingConditionItem(null, ManageAtr.USE, null, null, null, null, employeeID, null, null, null, null, null, null, null, null);
 		new Expectations() {
 			{
@@ -245,7 +245,7 @@ public class ScheManaStatuTempoTest {
 				result = listAffCompanyHistSharedImport;
 				
 				require.getEmploymentHistory(Arrays.asList(employeeID), (DatePeriod) any);
-				result = listEmploymentPeriod;
+				result = listEmploymentPeriodImported;
 				
 				require.getBySidAndStandardDate(employeeID, date);
 				result = Optional.of(workingConditionItem);
