@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.dom.employee.service.EmployeeReferenceRangeImport;
 import nts.uk.ctx.bs.employee.dom.workplace.EmployeeAffiliation;
+import nts.uk.ctx.bs.employee.dom.workplace.adapter.GetStringWorkplaceManagerAdapter;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupRespository;
@@ -19,8 +20,10 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.EmployeeInfoData
 import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.GetAllEmpWhoBelongWorkplaceGroupService;
 import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.GetEmpCanReferBySpecifyWorkgroupService;
 import nts.uk.ctx.bs.employee.pub.employee.workplace.export.WorkplaceGroupExport;
+import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport;
 import nts.uk.ctx.bs.employee.pub.workplace.ResultRequest597Export;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.workplacegroup.EmpOrganizationExport;
 import nts.uk.ctx.bs.employee.pub.workplace.workplacegroup.WorkplaceGroupPublish;
 import nts.uk.shr.com.context.AppContexts;
@@ -137,6 +140,14 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 		@Inject
 		private SyWorkplacePub syWorkplacePub;
 		
+		@Inject 
+		private GetStringWorkplaceManagerAdapter adapter;
+		
+		@Inject
+		private WorkplacePub wkplacePub;
+
+		
+		
 		
 		@Override
 		public List<WorkplaceGroup> getAll() {
@@ -157,28 +168,29 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 			// KHong có thuat toan trong EAP
 			// Check ngui phu trách the nao -- tư đoán
 			//String role = AppContexts.user().roles().forAttendance()
+			//http://192.168.50.4:3000/issues/110774
 			return false;
 		}
 
 		@Override
 		public EmployeeReferenceRangeImport getEmployeeReferRangeOfLoginEmployees(String empId) {
-			// TODO Auto-generated method stub
-			//
+			
+			//AppContexts.user().roles().
+			//http://192.168.50.4:3000/issues/110774
 			return null;
 		}
 
 		@Override
 		public List<String> getAllManagedWorkplaces(String empId, GeneralDate baseDate) {
-			// TODO Auto-generated method stub
-			///
-			
-			return null;
+			List<String> result = adapter.getAllWorkplaceID(empId, baseDate);		
+			return result;
 		}
 
 		@Override
 		public String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date) {
-			// TODO Auto-generated method stub
-			return null;
+			//[No.650]社員が所属している職場を取得する
+			AffWorkplaceHistoryItemExport data = wkplacePub.getAffWkpHistItemByEmpDate(employeeID, date);
+			return data.getWorkplaceId();
 		}
 
 		@Override
