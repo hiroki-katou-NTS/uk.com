@@ -48,7 +48,7 @@ public class LoginWs extends WebService {
 	@Path("adminmode")
 	public TimeStampInputLoginDto loginAdminMode(@Context HttpServletRequest request, TimeStampLoginCommand command) {		
 		return loginWithAdmin.loginAsEmbossingAdmin(command.getCompanyId(),
-				command.getEmployeeCode(), command.getPassword(),command.getCompanyCode(), true, true, request);
+				command.getEmployeeCode(), command.getPassword(),command.getCompanyCode(), command.isPasswordInvalid(), command.isAdminMode(), command.isRuntimeEnvironmentCreat(), request);
 	}
 	
 	@POST

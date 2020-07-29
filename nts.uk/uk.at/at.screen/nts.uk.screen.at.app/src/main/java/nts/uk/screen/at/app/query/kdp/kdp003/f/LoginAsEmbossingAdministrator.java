@@ -23,18 +23,18 @@ public class LoginAsEmbossingAdministrator {
 	@Inject
 	private TimeStampLoginCommandHandler timeStampLoginCommandHandler;
 
-	public TimeStampInputLoginDto loginAsEmbossingAdmin(String cid, String scd, String passWord,String companyCode, Boolean isAdminMode, boolean runtimeEnvironmentCreat,
+	public TimeStampInputLoginDto loginAsEmbossingAdmin(String cid, String scd, String passWord,String companyCode, boolean isPasswordInvalid,  boolean isAdminMode, boolean runtimeEnvironmentCreat,
 			@Context HttpServletRequest request) {
-		runtimeEnvironmentCreat = true;
+		// runtimeEnvironmentCreat = true;
 
-		// アルゴリズム「打刻入力ログイン」を実行する
+		// note: アルゴリズム「打刻入力ログイン」を実行する
 		TimeStampLoginCommand command = new TimeStampLoginCommand();
 		command.setContractCode(AppContexts.user().contractCode());
 		command.setCompanyId(cid);
 		command.setCompanyCode(companyCode);
 		command.setEmployeeCode(scd);
 		command.setPassword(passWord);
-		command.setPasswordInvalid(false);
+		command.setPasswordInvalid(isPasswordInvalid);
 		command.setAdminMode(isAdminMode);
 		command.setRuntimeEnvironmentCreat(runtimeEnvironmentCreat);
 		command.setRequest(request);
