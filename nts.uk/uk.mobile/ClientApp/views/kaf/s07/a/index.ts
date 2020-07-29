@@ -1,6 +1,7 @@
 import { _, Vue } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
 import { KDL002Component } from '../../../kdl/002';
+import {KafS00DComponent} from '../../../kaf/s00/d';
 import {
     KafS00AComponent,
     KafS00BComponent,
@@ -28,7 +29,8 @@ import {
         'kafs00-a': KafS00AComponent,
         'kafs00-b': KafS00BComponent,
         'kafs00-c': KafS00CComponent,
-        'worktype': KDL002Component
+        'worktype': KDL002Component,
+        'kafs00d': KafS00DComponent
     },
 
 })
@@ -519,6 +521,7 @@ export class KafS07AComponent extends Vue {
 
     }
     public registerData(res: any) {
+        this.$mask('hide');
         this.$http.post('at', API.registerAppWorkChange, {
             mode: this.mode,
             companyId: this.user.companyId,
@@ -530,10 +533,7 @@ export class KafS07AComponent extends Vue {
         }).then((res: any) => {
             this.$mask('hide');
             // KAFS00_D_申請登録後画面に移動する
-            // this.$goto('kafs00d', {
-            //     mode: this.mode,
-            //     appID: res.data.appID
-            // });
+            this.$modal('kafs00d',{mode: this.mode ? 1 : 0, appID: res.appID});
         }).catch((res: any) => {
             this.$mask('hide');
             this.$modal.error({ messageId: res.errors[0].messageId });
@@ -582,6 +582,7 @@ export class KafS07AComponent extends Vue {
             // 申請表示情報．申請表示情報(基準日関係あり)．承認ルートエラー情報
             isError: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag
         }).then((res: any) => {
+            this.$mask('hide');
             // confirmMsgLst
             // holidayDateLst
             let isConfirm = true;
