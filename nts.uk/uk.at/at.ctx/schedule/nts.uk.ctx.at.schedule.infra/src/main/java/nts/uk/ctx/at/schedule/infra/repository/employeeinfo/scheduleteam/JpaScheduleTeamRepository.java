@@ -3,6 +3,8 @@ package nts.uk.ctx.at.schedule.infra.repository.employeeinfo.scheduleteam;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeam;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamOrder;
@@ -13,6 +15,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamReposito
  * @author HieuLt
  * 
  */
+@Stateless
 public class JpaScheduleTeamRepository extends JpaRepository implements ScheduleTeamRepository{
 
 	@Override

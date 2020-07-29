@@ -25,9 +25,6 @@ public class GetCombinationrAndWorkHolidayAtrServiceTest {
 	@Injectable
 	private Require require;
 
-	@Injectable
-	private nts.uk.ctx.at.shared.dom.WorkInformation.Require requireWorkinfo;
-	
 	/**
 	 * require.コードでシフトマスタ取得(会社ID, シフトマスタコードリスト) is empty
 	 */
@@ -41,7 +38,7 @@ public class GetCombinationrAndWorkHolidayAtrServiceTest {
 			}
 		};
 		assertTrue(GetCombinationrAndWorkHolidayAtrService
-				.getCode(require, requireWorkinfo, companyID, lstShiftMasterCd).isEmpty());
+				.getCode(require, companyID, lstShiftMasterCd).isEmpty());
 		
 	}
 	
@@ -66,18 +63,11 @@ public class GetCombinationrAndWorkHolidayAtrServiceTest {
 			}
 		};
 		Map<ShiftMaster,Optional<WorkStyle>> data = GetCombinationrAndWorkHolidayAtrService
-				.getCode(require, requireWorkinfo, companyID, lstShiftMasterCd);
+				.getCode(require, companyID, lstShiftMasterCd);
 		assertFalse(data.isEmpty());
 		
-		assertThat(data.keySet())
-		.extracting(d->d.getShiftMasterCode().v())
-		.containsExactly(
-				"001",
-				"002");
-		assertThat(data.values())
-		.extracting(d->d.get().value)
-		.containsExactly(
-				0,0);
+		assertThat(data.keySet().stream().sorted((x,y) -> x.getShiftMasterCode().v().compareTo(y.getShiftMasterCode().v()))).extracting(d -> d.getShiftMasterCode().v()).containsExactly("001", "002");
+		assertThat(data.values()).extracting(d -> d.get().value).containsExactly(0, 0);
 	}
 	
 	/**
@@ -93,7 +83,7 @@ public class GetCombinationrAndWorkHolidayAtrServiceTest {
 			}
 		};
 		assertTrue(GetCombinationrAndWorkHolidayAtrService
-				.getbyWorkInfo(require, requireWorkinfo, companyID, lstWorkInformation).isEmpty());
+				.getbyWorkInfo(require, companyID, lstWorkInformation).isEmpty());
 		
 	}
 	
@@ -118,19 +108,12 @@ public class GetCombinationrAndWorkHolidayAtrServiceTest {
 			}
 		};
 		Map<ShiftMaster,Optional<WorkStyle>> data = GetCombinationrAndWorkHolidayAtrService
-				.getbyWorkInfo(require, requireWorkinfo, companyID, lstWorkInformation);
+				.getbyWorkInfo(require, companyID, lstWorkInformation);
 		assertFalse(data.isEmpty());
 		
-		assertThat(data.keySet())
-		.extracting(d->d.getShiftMasterCode().v())
-		.containsExactly(
-				"001",
-				"002");
-		assertThat(data.values())
-		.extracting(d->d.get().value)
-		.containsExactly(
-				0,0);
-		
+		assertThat(data.keySet().stream().sorted((x,y) -> x.getShiftMasterCode().v().compareTo(y.getShiftMasterCode().v()))).extracting(d -> d.getShiftMasterCode().v()).containsExactly("001", "002");
+		assertThat(data.values()).extracting(d -> d.get().value).containsExactly(0, 0);
+
 	}
 
 }

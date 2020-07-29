@@ -475,13 +475,14 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// 職場、職位、雇用、分類を取得する
 		// EA修正履歴：No1675
 		EmployeeGeneralInfoImported empGeneralInfo = this.scEmpGeneralInfoAdapter.getPerEmpInfo(employeeIds, period);
+		
 		// 勤務種別情報を取得する
 		// ドメインモデル「社員の勤務種別の履歴」を取得する
 		// ドメインモデル「社員の勤務種別」を取得する
 		// <<Public>> 社員ID(List)、期間で期間分の勤務種別情報を取得する
 		List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis = this.businessTypeOfEmpHisAdaptor
 				.findByCidSidBaseDate(companyId, employeeIds, period);
-
+		empGeneralInfo.setListBusTypeOfEmpHis(listBusTypeOfEmpHis);
 		// Imported(就業)「社員の在職状態」を取得する
 		Map<String, List<EmploymentInfoImported>> mapEmploymentStatus = this.employmentStatusAdapter
 				.findListOfEmployee(employeeIds, period).stream().collect(Collectors
@@ -577,7 +578,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 			this.setDataForMap(cache.getMapDiffTimeWorkSetting(), mapDiffOffdayWorkRestTimezones, mapDiffHalfDayWorkRestTimezones);
 		}
-
+		//取得した情報を返す
 		return cache;
 	}
 	

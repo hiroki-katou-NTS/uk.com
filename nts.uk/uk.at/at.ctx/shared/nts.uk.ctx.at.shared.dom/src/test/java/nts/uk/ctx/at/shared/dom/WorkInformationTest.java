@@ -37,7 +37,6 @@ public class WorkInformationTest {
 	@Test
 	public void getters() {
 		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
-		workInformation.removeWorkTimeInHolydayWorkType();
 		NtsAssert.invokeGetters(workInformation);
 	}
 

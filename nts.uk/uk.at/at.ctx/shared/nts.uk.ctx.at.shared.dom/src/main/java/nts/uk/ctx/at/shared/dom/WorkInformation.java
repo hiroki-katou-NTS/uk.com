@@ -30,20 +30,24 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 public class WorkInformation {
 
 	private WorkTypeCode workTypeCode;
-	private WorkTimeCode workTimeCode;
+	private Optional<WorkTimeCode> workTimeCode;
 
 	public WorkInformation(String workTimeCode, String workTypeCode) {
 
-		this.workTimeCode = StringUtils.isEmpty(workTimeCode) ? null : new WorkTimeCode(workTimeCode);
+		this.workTimeCode = StringUtils.isEmpty(workTimeCode) ? Optional.empty() : Optional.of(new WorkTimeCode(workTimeCode));
 		this.workTypeCode = workTypeCode == null ? null : new WorkTypeCode(workTypeCode);
 	}
 
 	public WorkInformation(WorkTimeCode workTimeCode, WorkTypeCode workTypeCode) {
-		this.workTimeCode = workTimeCode;
+		this.workTimeCode = Optional.ofNullable(workTimeCode);
 		this.workTypeCode = workTypeCode;
 	}
 
 	public WorkTimeCode getWorkTimeCode() {
+		return this.workTimeCode.isPresent()?this.workTimeCode.get():null;
+	}
+	
+	public Optional<WorkTimeCode> getWorkTimeCodeNotNull() {
 		return this.workTimeCode;
 	}
 
@@ -56,7 +60,7 @@ public class WorkInformation {
 	}
 
 	public void setWorkTimeCode(WorkTimeCode workTimeCode) {
-		this.workTimeCode = workTimeCode;
+		this.workTimeCode = workTimeCode==null?null:Optional.of(workTimeCode);
 	}
 
 	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
@@ -116,7 +120,7 @@ public class WorkInformation {
 
 		// require.就業時間帯を取得する(ログイン会社ID, @就業時間帯コード) - CID sẽ dc truyền trên app
 		Optional<WorkTimeSetting> workTimeSetting = require
-				.findByCode(this.workTimeCode == null ? null : this.workTimeCode.v());
+				.findByCode(this.workTimeCode == null ? null : this.workTimeCode.get().v());
 		// if $就業時間帯.isEmpty
 		if (!workTimeSetting.isPresent()) {
 			return ErrorStatusWorkInfo.WORKTIME_WAS_DELETE;
@@ -162,14 +166,14 @@ public class WorkInformation {
 			return Optional.of(new WorkInfoAndTimeZone(workType.get()));
 		}
 		// $就業時間帯の設定 = require.就業時間帯を取得する(@就業時間帯コード )
-		Optional<WorkTimeSetting> workTimeSetting = require.findByCode(this.workTimeCode.v());
+		Optional<WorkTimeSetting> workTimeSetting = require.findByCode(this.workTimeCode.get().v());
 		if (!workTimeSetting.isPresent()) {
 			return Optional.empty();
 		}
 
 		List<TimezoneUse> listTimezoneUse = new ArrayList<>();
 		// $就業時間帯の設定.所定時間帯を取得する( $就業時間帯の設定.会社ID, @勤務種類コード, Optional.empty )
-		listTimezoneUse = require.getPredeterminedTimezone(this.workTimeCode.v(), this.workTypeCode.v(), null)
+		listTimezoneUse = require.getPredeterminedTimezone(this.workTimeCode.get().v(), this.workTypeCode.v(), null)
 				.getTimezones();
 		// filter $.使用区分 == するしない区分．使用する
 		// sort $.勤務NO ASC

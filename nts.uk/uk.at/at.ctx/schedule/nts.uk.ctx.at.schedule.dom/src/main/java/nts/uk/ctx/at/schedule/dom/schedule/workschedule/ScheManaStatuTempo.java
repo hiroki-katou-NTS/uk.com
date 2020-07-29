@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,8 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.TempAbse
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 
 /**
  * 社員の予定管理状態
@@ -133,9 +136,8 @@ public class ScheManaStatuTempo {
 		DatePeriod datePeriod = new DatePeriod(date, date);
 
 		//return require.在籍期間を取得する( 社員ID, 年月日 ).isPresent()
-		boolean reusult = require.getAffCompanyHistByEmployee(employeeID, datePeriod).isPresent();
-
-		return reusult;
+		boolean reusult = require.getAffCompanyHistByEmployee(Arrays.asList(employeeID), datePeriod).isEmpty();
+		return !reusult;
 	}
 
 	/**
@@ -147,14 +149,15 @@ public class ScheManaStatuTempo {
 	 * @return
 	 */
 	private static Optional<EmploymentCode> getEmplomentCd(Require require, String employeeID, GeneralDate date) {
-		List<String> lst = new ArrayList<>();
-		lst.add(0, employeeID);
+;
 		DatePeriod datePeriod = new DatePeriod(date, date);
 		// $雇用履歴項目 = require.雇用履歴を取得する( list: 社員ID, 期間( 年月日, 年月日 ) ): findFirst
 		// ・・
-		Optional<EmploymentPeriod> zEmpHistItem = require.getEmploymentHistory(lst, datePeriod);
-		if (zEmpHistItem.isPresent()) {
-			return Optional.of(new EmploymentCode(zEmpHistItem.get().getEmploymentCd()));
+		List<EmploymentPeriodImported> lstEmpHistItem = require.getEmploymentHistory(Arrays.asList(employeeID), datePeriod);
+		if(!lstEmpHistItem.isEmpty())
+		{
+			EmploymentPeriodImported employmentPeriod  = lstEmpHistItem.get(0);
+			return 	Optional.ofNullable(new EmploymentCode(employmentPeriod.getEmploymentCd()));
 		}
 		return Optional.empty();
 	}
@@ -185,13 +188,10 @@ public class ScheManaStatuTempo {
 	 * @return
 	 */
 	private static boolean onLeave(Require require, String employeeID, GeneralDate date) {
-		List<String> lst = new ArrayList<>();
-		lst.add(0, employeeID);
 		DatePeriod datePeriod = new DatePeriod(date, date);
-		Optional<EmployeeLeaveJobPeriodImport> zEmployeeLeaveJobPeriodImport = require.getByDatePeriod(lst, datePeriod);
-		boolean result = zEmployeeLeaveJobPeriodImport.isPresent();
-		// return require.休職期間を取得する( 社員ID, 年月日 ).isPresent()
-		return result;
+		List<EmployeeLeaveJobPeriodImport> lstEmployeeLeaveJobPeriodImport = require.getByDatePeriod(Arrays.asList(employeeID), datePeriod);
+		boolean result = lstEmployeeLeaveJobPeriodImport.isEmpty();		
+		return (!result);
 
 	}
 
@@ -205,15 +205,14 @@ public class ScheManaStatuTempo {
 	 */
 	private static Optional<TempAbsenceFrameNo> getTempAbsenceFrameNo(Require require, String employeeID,
 			GeneralDate date) {
-		List<String> lst = new ArrayList<>();
-		lst.add(0, employeeID);
+
 		DatePeriod datePeriod = new DatePeriod(date, date);
-		Optional<EmpLeaveWorkPeriodImport> zEmpLeaveWorkPeriodImport = require.specAndGetHolidayPeriod(lst, datePeriod);
-		if (!zEmpLeaveWorkPeriodImport.isPresent()) {
-			Optional.empty();
+		List<EmpLeaveWorkPeriodImport> lstEmpLeaveWorkPeriodImport = require.specAndGetHolidayPeriod(Arrays.asList(employeeID), datePeriod);
+		if(lstEmpLeaveWorkPeriodImport.isEmpty()){
+			return Optional.empty();
 		}
-		TempAbsenceFrameNo result =  zEmpLeaveWorkPeriodImport.get().getTempAbsenceFrNo();
-		return Optional.ofNullable(result);
+		EmpLeaveWorkPeriodImport data = lstEmpLeaveWorkPeriodImport.get(0);
+		return Optional.ofNullable(data.getTempAbsenceFrNo());
 	}
 
 	public static interface Require  {
@@ -225,7 +224,7 @@ public class ScheManaStatuTempo {
 		 * [R-1] 在籍期間を取得する( 社員ID, 年月日 ) : Optional
 		 * 社員の所属会社履歴Adapter.期間を指定して在籍期間を取得する
 		 */
-		Optional<AffCompanyHistSharedImport> getAffCompanyHistByEmployee(String sid, DatePeriod datePeriod);
+		List<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod);
 
 		/**
 		 * [R-2] 労働条件履歴を取得する 労働条件Repository.社員を指定して年月日時点の履歴項目を取得する
@@ -240,7 +239,7 @@ public class ScheManaStatuTempo {
 		 * 社員の休職履歴Adapter.期間を指定して休職期間を取得する( list: 社員ID, 期間: 年月日 )
 		 * 
 		 */
-		Optional<EmployeeLeaveJobPeriodImport> getByDatePeriod(List<String> lstEmpID, DatePeriod datePeriod);
+		List<EmployeeLeaveJobPeriodImport> getByDatePeriod(List<String> lstEmpID, DatePeriod datePeriod);
 
 		/**
 		 * 
@@ -251,7 +250,7 @@ public class ScheManaStatuTempo {
 		 * @param datePeriod
 		 * @return
 		 */
-		Optional<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(List<String> lstEmpID, DatePeriod datePeriod);
+		List<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(List<String> lstEmpID, DatePeriod datePeriod);
 
 		/**
 		 * [R-5] 雇用履歴を取得する(Get EmploymentHistory)
@@ -259,9 +258,9 @@ public class ScheManaStatuTempo {
 		 * 
 		 * @param lstEmpID
 		 * @param datePeriod
-		 * @return
+		 * @return List EmploymentPeriod
 		 */
-		Optional<EmploymentPeriod> getEmploymentHistory(List<String> lstEmpID, DatePeriod datePeriod);
+		List<EmploymentPeriodImported> getEmploymentHistory(List<String> lstEmpID, DatePeriod datePeriod);
 
 	}
 
