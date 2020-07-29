@@ -81,7 +81,7 @@ module nts.uk.at.view.kmp001.a {
 
 		mounted() {
 			const vm = this;
-			const row = 4;
+			const row = 5;
 
 			const $grid = $(vm.$el)
 				.find('#stampcard-list')
