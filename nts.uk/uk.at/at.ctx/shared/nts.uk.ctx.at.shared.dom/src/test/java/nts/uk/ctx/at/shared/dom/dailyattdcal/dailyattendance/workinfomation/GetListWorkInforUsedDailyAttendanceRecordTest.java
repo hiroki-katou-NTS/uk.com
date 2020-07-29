@@ -20,7 +20,7 @@ public class GetListWorkInforUsedDailyAttendanceRecordTest {
 		WorkInformation recordInfo1 = new WorkInformation("ti1", "ty1");
 		WorkInformation recordInfo2 = new WorkInformation("ti2", "ty2");
 		WorkInformation recordInfo3 = new WorkInformation(null, "ty3");
-		WorkInformation recordInfo4 = new WorkInformation(null, "ty3");
+		WorkInformation recordInfo4 = new WorkInformation("ti3", "ty2");
 		WorkInformation recordInfo5 = new WorkInformation("ti2", "ty2");
 		List<WorkInfoOfDailyAttendance> lstWorkInfoOfDailyAttendance = Arrays.asList(
 				new WorkInfoOfDailyAttendance(recordInfo1, null, null, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
@@ -39,13 +39,13 @@ public class GetListWorkInforUsedDailyAttendanceRecordTest {
 				listWorkInformation.stream().sorted(
 						(x, y) -> x.getWorkTypeCode().v().compareTo(y.getWorkTypeCode().v())).collect(Collectors.toList()))
 				.extracting(d->d.getWorkTypeCode().v())
-				.containsExactly("ty1", "ty2","ty3");
+				.containsExactly("ty1", "ty2","ty2","ty3");
 
 		assertThat(
 				listWorkInformation.stream().sorted(
 						(x, y) -> x.getWorkTypeCode().v().compareTo(y.getWorkTypeCode().v())).collect(Collectors.toList()))
 				.extracting(d->d.getWorkTimeCode())
-				.containsExactly(new WorkTimeCode("ti1") ,new WorkTimeCode("ti2"),null);
+				.containsExactly(new WorkTimeCode("ti1") ,new WorkTimeCode("ti2"),new WorkTimeCode("ti3"),null);
 	}
-
+	
 }

@@ -33,7 +33,7 @@ public enum ScheManaStatus {
 
 	public final String name;
 
-	/* The Constant values. /
+	/* The Constant values. */
 	private final static ScheManaStatus[] values = ScheManaStatus.values();
 
 	public static ScheManaStatus valueOf(Integer value) {
@@ -72,10 +72,6 @@ public enum ScheManaStatus {
 		if(this.value == ScheManaStatus.CLOSED.value){
 			return true;
 		}
-		if(this.value == ScheManaStatus.SCHEDULE_MANAGEMENT.value){
-			return true;
-		}
-	
-		return false;	
+		return true; //SCHEDULE_MANAGEMENT
 	}
 }

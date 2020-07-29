@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -15,7 +14,6 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance.Require;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 
 @RunWith(JMockit.class)
@@ -25,8 +23,7 @@ public class WorkInfoOfDailyAttendanceTest {
 
 	@Test
 	public void getters() {
-		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = new WorkInfoOfDailyAttendance(null, null, null, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
-				DayOfWeek.FRIDAY, new ArrayList<>());
+		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.getWorkInfoOfDailyAttendanceDefault();
 		NtsAssert.invokeGetters(workInfoOfDailyAttendance);
 	}
 	
@@ -35,9 +32,7 @@ public class WorkInfoOfDailyAttendanceTest {
 	 */
 	@Test
 	public void testGetWorkStyle() {
-		WorkInformation recordInfo1 = new WorkInformation("ti1", "ty1");
-		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = new WorkInfoOfDailyAttendance(recordInfo1, null, null, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
-				DayOfWeek.FRIDAY, new ArrayList<>());
+		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.getWorkInfoOfDailyAttendanceDefault();
 		new MockUp<WorkInformation>() {
 			@Mock
 			public Optional<WorkStyle> getWorkStyle(WorkInformation.Require require) {
@@ -53,9 +48,7 @@ public class WorkInfoOfDailyAttendanceTest {
 	 */
 	@Test
 	public void testGetWorkStyle_1() {
-		WorkInformation recordInfo1 = new WorkInformation("ti1", "ty1");
-		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = new WorkInfoOfDailyAttendance(recordInfo1, null, null, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
-				DayOfWeek.FRIDAY, new ArrayList<>());
+		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.getWorkInfoOfDailyAttendanceDefault();
 		new MockUp<WorkInformation>() {
 			@Mock
 			public Optional<WorkStyle> getWorkStyle(WorkInformation.Require require) {
@@ -71,9 +64,7 @@ public class WorkInfoOfDailyAttendanceTest {
 	 */
 	@Test
 	public void testGetWorkStyle_2() {
-		WorkInformation recordInfo1 = new WorkInformation("ti1", "ty1");
-		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = new WorkInfoOfDailyAttendance(recordInfo1, null, null, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
-				DayOfWeek.FRIDAY, new ArrayList<>());
+		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.getWorkInfoOfDailyAttendanceDefault();
 		new MockUp<WorkInformation>() {
 			@Mock
 			public Optional<WorkStyle> getWorkStyle(WorkInformation.Require require) {
@@ -89,9 +80,7 @@ public class WorkInfoOfDailyAttendanceTest {
 	 */
 	@Test
 	public void testGetWorkStyle_3() {
-		WorkInformation recordInfo1 = new WorkInformation("ti1", "ty1");
-		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = new WorkInfoOfDailyAttendance(recordInfo1, null, null, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
-				DayOfWeek.FRIDAY, new ArrayList<>());
+		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.getWorkInfoOfDailyAttendanceDefault();
 		new MockUp<WorkInformation>() {
 			@Mock
 			public Optional<WorkStyle> getWorkStyle(WorkInformation.Require require) {
@@ -107,9 +96,7 @@ public class WorkInfoOfDailyAttendanceTest {
 	 */
 	@Test
 	public void testGetWorkStyle_4() {
-		WorkInformation recordInfo1 = new WorkInformation("ti1", "ty1");
-		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = new WorkInfoOfDailyAttendance(recordInfo1, null, null, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
-				DayOfWeek.FRIDAY, new ArrayList<>());
+		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.getWorkInfoOfDailyAttendanceDefault();
 		new MockUp<WorkInformation>() {
 			@Mock
 			public Optional<WorkStyle> getWorkStyle(WorkInformation.Require require) {
