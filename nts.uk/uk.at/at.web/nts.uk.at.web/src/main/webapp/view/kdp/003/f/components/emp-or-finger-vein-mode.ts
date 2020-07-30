@@ -20,7 +20,7 @@ module nts.uk.at.kdp003.f {
 				required: true,
 				value: model.employeeCode,
 				option: {
-					width: '200px',
+					width: '220px',
 					textmode: 'text'
 				}
 			}" />
@@ -40,7 +40,7 @@ module nts.uk.at.kdp003.f {
 				value: model.password,
 				required: true,
 				option: {										
-					width: '330px',
+					width: '350px',
 					textmode: 'password'
 				}
 			}" />

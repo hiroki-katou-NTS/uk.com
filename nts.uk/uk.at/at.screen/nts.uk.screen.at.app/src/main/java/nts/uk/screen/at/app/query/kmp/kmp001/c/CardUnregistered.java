@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.query.kmp.kmp001.c;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetNewestStampNotRegisteredService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampInfoDisp;
+import nts.uk.screen.at.app.query.kdp.kdp003.f.dto.GetListCompanyHasStampedDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -33,10 +35,11 @@ public class CardUnregistered {
 	public List<CardUnregisteredDto> getAll(DatePeriod period) {
 		RetrieveNoStampCardRegisteredServiceRequireImpl require = new RetrieveNoStampCardRegisteredServiceRequireImpl(recordRepo, dakokuRepo);
 		
+		//1: 取得する(@Require, 期間): List<表示する打刻情報>
 		List<StampInfoDisp> stampInfoDisps = GetNewestStampNotRegisteredService.get(require, period);
 		
 		if (stampInfoDisps.isEmpty()) {
-			throw new RuntimeException("Not found");
+			return new ArrayList<CardUnregisteredDto>();
 		}
 		
 		return stampInfoDisps.stream().map(m -> {
@@ -60,7 +63,7 @@ public class CardUnregistered {
 		
 		@Override
 		public List<StampRecord> getStempRcNotResgistNumber(DatePeriod period) {
-			return recordRepo.getStempRcNotResgistNumber(period);
+			return recordRepo.getStempRcNotResgistNumber(AppContexts.user().contractCode(), period);
 		}
 
 		@Override

@@ -25,9 +25,26 @@ module nts.uk.at.view.kdp.share {
 		</div>
 	</div>
 `;
+	const COMPONENT_NAME = 'stamp-clock';
+
+	@handler({
+		bindingName: COMPONENT_NAME,
+		validatable: true,
+		virtual: false
+	})
+	export class EmployeeComponentBindingHandler implements KnockoutBindingHandler {
+		init(element: HTMLElement, valueAccessor: () => any, __ab: KnockoutAllBindingsAccessor, ___vm: ComponentViewModel, bindingContext: KnockoutBindingContext) {
+			const name = COMPONENT_NAME;
+			const params = valueAccessor();
+
+			ko.applyBindingsToNode(element, { component: { name, params } }, bindingContext);
+
+			return { controlsDescendantBindings: true };
+		}
+	}
 
 	@component({
-		name: 'stamp-clock',
+		name: COMPONENT_NAME,
 		template
 	})
 	export class StampClock extends ko.ViewModel {
