@@ -1,9 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.val;
+import lombok.*;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 
@@ -13,6 +10,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 /**
  * 	反映イメージ
  */

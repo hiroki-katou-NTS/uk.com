@@ -51,7 +51,7 @@ public class WorkCycle extends AggregateRoot {
         this.cid = cid;
         this.code = new WorkCycleCode(code);
         this.name = new WorkCycleName(name);
-        if (this.infos.size() < 1 || this.infos.size() > 99) {
+        if (infos.size() < 1 || infos.size() > 99) {
             throw new BusinessException("Msg_1688");
         } else {
             this.infos = infos;

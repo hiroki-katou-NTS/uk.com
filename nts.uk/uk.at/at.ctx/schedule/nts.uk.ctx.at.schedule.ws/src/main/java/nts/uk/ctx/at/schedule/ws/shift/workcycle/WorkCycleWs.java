@@ -6,9 +6,6 @@ import nts.uk.ctx.at.schedule.app.command.shift.workcycle.DeleteWorkCycleCommand
 import nts.uk.ctx.at.schedule.app.command.shift.workcycle.UpdateWorkCycleCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.shift.workcycle.command.AddWorkCycleCommand;
 import nts.uk.ctx.at.schedule.app.command.shift.workcycle.command.DeleteWorkCycleCommand;
-import nts.uk.ctx.at.schedule.app.find.shift.workcycle.WorkingCycleDtlDto;
-import nts.uk.ctx.at.schedule.app.find.shift.workcycle.WorkingCycleDto;
-import nts.uk.ctx.at.schedule.app.find.shift.workcycle.WorkingCycleFinder;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -22,9 +19,6 @@ import java.util.List;
 public class WorkCycleWs extends WebService {
 
     @Inject
-    WorkingCycleFinder workingCycleFinder;
-
-    @Inject
     AddWorkCycleCommandHandler addWorkCycleCommandHandler;
 
     @Inject
@@ -32,17 +26,6 @@ public class WorkCycleWs extends WebService {
 
     @Inject
     UpdateWorkCycleCommandHandler updateWorkCycleCommandHandler;
-
-
-    @POST
-    @Path("findAll")
-    public List<WorkingCycleDto> findWorkCycle(){
-        return workingCycleFinder.getStartScreen();
-    }
-
-    @POST
-    @Path("getWorkCycleInfo")
-    public WorkingCycleDtlDto getWorkCycleInfo(String code) { return workingCycleFinder.getWorkCycleInfo(code); }
 
     @POST
     @Path("register")
