@@ -8,6 +8,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.RegisterStampCardCommandHandler;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.a.CardInformationCommands;
+import nts.uk.ctx.at.record.app.command.kmp.kmp001.a.CardNumberNewCommand;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.a.EmployeeCardInformationViewACommand;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.b.DeleteCardViewBCommand;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.b.DeleteCardViewBCommandHandler;
@@ -46,7 +47,7 @@ public class RegisterStampCardWs extends WebService {
 	/**新規モード時にIDカードNOの登録を行う */
 	@POST
 	@Path("view-a/save")
-	public void saveStampCardViewA(EmployeeCardInformationViewACommand command) {
+	public void saveStampCardViewA(CardNumberNewCommand command) {
 		commandHandler.saveStampCardViewA(command);
 	}
 	
