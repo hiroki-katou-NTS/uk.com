@@ -40,10 +40,15 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
                 application = ko.toJS(vm.application),
                 appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
                 command = { workChange, application, appDispInfoStartupOutput };
-
-        	vm.$blockui("show")
-        	.then(() => vm.$ajax(API.register, command))
-        	.done(() => vm.$dialog.info({ messageId: "Msg_15" }))
+			vm.validateCommon().then((valid: boolean) => {
+				if(valid) {
+					return vm.$blockui("show").then(() => vm.$ajax(API.register, command));
+				}
+			}).done((data: any) => {
+				if(data) {
+					vm.$dialog.info({ messageId: "Msg_15" });	
+				}
+			})
         	.always(() => vm.$blockui("hide"));
 		}
 	}

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 
 /**
@@ -9,6 +10,7 @@ import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
  * @author Doan Duy Hung
  *
  */
+@Setter
 @Getter
 public class GoOutTypeDispControl {
 	

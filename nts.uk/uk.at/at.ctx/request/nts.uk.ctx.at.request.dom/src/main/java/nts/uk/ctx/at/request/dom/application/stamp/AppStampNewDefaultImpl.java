@@ -74,7 +74,7 @@ public class AppStampNewDefaultImpl implements AppStampNewDomainService {
 	// 打刻申請の新規登録
 	private ProcessResult appStampRegistration(AppStamp_Old appStamp, boolean checkOver1Year) {
 		StampRequestSetting_Old stampRequestSetting = stampRequestSettingRepository.findByCompanyID(appStamp.getApplication_New().getCompanyID()).get();
-		newBeforeRegister.processBeforeRegister(appStamp.getApplication_New(), OverTimeAtr.ALL, checkOver1Year, Collections.emptyList());
+		// newBeforeRegister.processBeforeRegister(appStamp.getApplication_New(), OverTimeAtr.ALL, checkOver1Year, Collections.emptyList());
 		appStamp.customValidate(stampRequestSetting.getStampPlaceDisp());
 		appStampRepository.addStamp(appStamp);
 		// error EA refactor 4

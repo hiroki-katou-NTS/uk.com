@@ -5,12 +5,10 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 
 /**
@@ -19,18 +17,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
  *
  */
 public interface NewBeforeRegister_New {
-	/**
-	 * 2-1.新規画面登録前の処理
-	 * @param companyID
-	 * @param employeeID
-	 * @param startDate
-	 * @param endDate
-	 * @param postAtr
-	 * @param routeAtr
-	 * @param targetApp
-	 * @param overTimeAtr, If APP_TYPE = 0 thì mới có overTime Atr, còn các loại đơn khác thì truyền 0 vào
-	 */
-    public void processBeforeRegister(Application_New application, OverTimeAtr overTimeAtr, boolean checkOver1Year, List<GeneralDate> lstDateHd);
+    /*public void processBeforeRegister(Application_New application, OverTimeAtr overTimeAtr, boolean checkOver1Year, List<GeneralDate> lstDateHd);*/
 	/**
 	 * 1.入社前退職チェック
 	 * @param companyID 会社ID

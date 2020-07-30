@@ -6,8 +6,12 @@
 <body>
     <ui:composition template="../../../../master/base.xhtml">
         <ui:define name="htmlHead">
+            <com:ValidatorScript>
+				nts.uk.ctx.at.request.dom.application.AppReason
+			</com:ValidatorScript>
             <com:scriptfile set="IGNITE" />
             <com:scriptfile path="/view/kaf_ref/000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/kaf000.a.vm.js" />
             <com:scriptfile path="/view/kaf_ref/000/a/component1/kaf000.a.component1.js" />
             <com:scriptfile path="/view/kaf_ref/000/a/component2/kaf000.a.component2.js" />
             <com:scriptfile path="/view/kaf_ref/000/a/component3/kaf000.a.component3.js" />

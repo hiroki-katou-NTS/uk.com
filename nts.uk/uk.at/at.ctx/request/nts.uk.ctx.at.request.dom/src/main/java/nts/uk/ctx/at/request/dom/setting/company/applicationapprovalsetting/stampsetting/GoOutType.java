@@ -22,9 +22,9 @@ public enum GoOutType {
 	OFFICE(1, "公用"),
 	
 	/**
-	 * 公用
+	 * 有償
 	 */
-	COMPENSATION(2, "公用"),
+	COMPENSATION(2, "有償"),
 	
 	/**
 	 * 組合

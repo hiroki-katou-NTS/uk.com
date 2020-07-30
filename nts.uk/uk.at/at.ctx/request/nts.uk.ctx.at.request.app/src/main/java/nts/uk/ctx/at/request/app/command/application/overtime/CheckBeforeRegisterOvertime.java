@@ -120,7 +120,7 @@ public class CheckBeforeRegisterOvertime {
 		String employeeId = app.getEmployeeID();
 		// 2-1.新規画面登録前の処理を実行する
 		if (null == appID) {
-			newBeforeRegister.processBeforeRegister(app, overtime.getOverTimeAtr(), checkOver1Year, Collections.emptyList());
+			// newBeforeRegister.processBeforeRegister(app, overtime.getOverTimeAtr(), checkOver1Year, Collections.emptyList());
 		}
 		// 登録前エラーチェック
 		// 計算ボタン未クリックチェック

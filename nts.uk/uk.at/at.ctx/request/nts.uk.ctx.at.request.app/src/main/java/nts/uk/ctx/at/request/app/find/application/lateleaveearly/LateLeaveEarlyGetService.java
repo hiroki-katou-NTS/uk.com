@@ -24,6 +24,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.LateLeaveEarlyService;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
+import nts.uk.shr.com.context.AppContexts;
 
 
 /**
@@ -81,7 +82,7 @@ public class LateLeaveEarlyGetService {
 						dto.getApplication().getEmployeeID(),
 						EnumAdaptor.valueOf(appType, ApplicationType.class),
 						new ApplicationDate(GeneralDate.fromString(dto.getApplication().getAppDate(), "yyyy/MM/dd")),
-						dto.getApplication().getEnteredPerson(),
+						AppContexts.user().userId(),
 						dto.getApplication().getOpStampRequestMode() == null ? null
 								: Optional.of(EnumAdaptor.valueOf(dto.getApplication().getOpStampRequestMode(),
 								StampRequestMode.class)),
