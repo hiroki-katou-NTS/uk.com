@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 650, height: 570 };</script>
+			<script>var dialogSize = { width: 650, height: 600 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksm004.d.main.css" />
 			<com:scriptfile path="ksm004.d.start.js" />
@@ -44,27 +44,23 @@
 								<div tabindex="2" style="margin-top: 3px"
 									data-bind="ntsCheckBox:{
 									checked: checkHoliday,
-									text: '#{i18n.getText('KSM004_53')}'
+									text: '#{i18n.getText('KSM004_105')}'
 									}">
 								</div>
 							</td>
 						</tr>
-						<tr>
-							<td>
-								<!-- D1_2 -->
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_37')}</div>
-							</td>
-							<td></td>
-						</tr>
 					</table>
 				</div>
-				<hr />
 				<table id="table-bottom">
+					<tr>
+						<th>#{i18n.getText('KSM004_38')}</th>
+						<th>#{i18n.getText('KSM004_37')}</th>
+					</tr>
 					<!-- Thu 2 -->
 					<tr>
 						<td class="tbDay">
 							<!-- D2_1 -->
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_38')}</div>
+							<label>#{i18n.getText('KSM004_38')}</label>
 						</td>
 						<td class="tbDay">
 							<div tabindex="3"
@@ -86,7 +82,7 @@
 					<tr data-bind="">
 						<td class="tbDay">
 							<!-- D2_1 -->
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_39')}</div>
+							<label>#{i18n.getText('KSM004_39')}</label>
 						</td>
 						<td class="tbDay">
 							<div tabindex="4"
@@ -108,7 +104,7 @@
 					<tr>
 						<td class="tbDay">
 							<!-- D2_1 -->
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_40')}</div>
+							<label>#{i18n.getText('KSM004_40')}</label>
 						</td>
 						<td class="tbDay">
 							<div tabindex="5"
@@ -130,7 +126,7 @@
 					<tr>
 						<td class="tbDay">
 							<!-- D2_1 -->
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_41')}</div>
+							<label>#{i18n.getText('KSM004_41')}</label>
 						</td>
 						<td class="tbDay">
 							<div tabindex="6"
@@ -152,7 +148,7 @@
 					<tr>
 						<td class="tbDay">
 							<!-- D2_1 -->
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_42')}</div>
+							<label>#{i18n.getText('KSM004_42')}</label>
 						</td>
 						<td class="tbDay">
 							<div tabindex="7"
@@ -174,7 +170,7 @@
 					<tr>
 						<td class="tbDay">
 							<!-- D2_1 -->
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_43')}</div>
+							<label>#{i18n.getText('KSM004_43')}</label>
 						</td>
 						<td class="tbDay">
 							<div tabindex="8"
@@ -196,7 +192,7 @@
 					<tr>
 						<td class="tbDay">
 							<!-- D2_1 -->
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_44')}</div>
+							<label>#{i18n.getText('KSM004_44')}</label>
 						</td>
 						<td class="tbDay">
 							<div tabindex="9"

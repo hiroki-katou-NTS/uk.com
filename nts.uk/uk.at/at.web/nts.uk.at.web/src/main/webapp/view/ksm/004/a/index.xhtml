@@ -38,7 +38,7 @@
 					<button data-bind="click: function(){openDialogD(0)}, enable: $root.errors.isEmpty">#{i18n.getText('KSM004_2')}</button>
 					<button data-bind="click: openDialogC, enable: $root.errors.isEmpty">#{i18n.getText('KSM004_3')}</button>
 					<button class="danger" data-bind="click: function(){removeCalendar(0)}, enable: Boolean(isUpdate()&#38;$root.errors.isEmpty()),visible : removeFlg">#{i18n.getText('KSM004_4')}</button>
-					<button id="print-button_1" data-bind="click: opencdl028Dialog">#{i18n.getText('KSM004_100')}</button>
+					<button id="print-button_1" data-bind="click: openDialogF">#{i18n.getText('KSM004_100')}</button>
 				</div>
 				<div class="contents-area">
 					<div class="rightExtend">
@@ -49,10 +49,10 @@
 							<hr/>
 							<div class="infoTable panel panel-frame">
 								<div><span>#{i18n.getText('KSM004_9')}</span></div>
-								<div>
-									<div class="labelSqr labelSqr1 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(1)}"><span>稼働日</span></div>
-									<div class="labelSqr labelSqr2 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(2)}"><span>非稼働日（法内）</span></div>
-									<div class="labelSqr labelSqr3 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(3)}"><span>非稼働日（法外）</span></div>
+								<div class="frame-btn">
+									<button class="button-sqr1 panel-frame-btn " data-bind="click: function(){changeWorkingDayAtr(1)}">稼働日</button>
+									<button class="button-sqr2 panel-frame-btn " data-bind="click: function(){changeWorkingDayAtr(2)}">非稼働日<br/>（法内）</button>
+									<button class="button-sqr3 panel-frame-btn " data-bind="click: function(){changeWorkingDayAtr(3)}">非稼働日<br/>（法外）</button>
 								</div>
 							</div>
 						</div>
@@ -107,10 +107,10 @@
 							<hr/>
 							<div class="infoTable panel panel-frame">
 								<div><span>#{i18n.getText('KSM004_9')}</span></div>
-								<div>
-									<div class="labelSqr labelSqr1 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(1)}"><span>稼働日</span></div>
-									<div class="labelSqr labelSqr2 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(2)}"><span>非稼働日（法内）</span></div>
-									<div class="labelSqr labelSqr3 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(3)}"><span>非稼働日（法外）</span></div>
+								<div class="frame-btn">
+									<button class="button-sqr1 panel-frame-btn " data-bind="click: function(){changeWorkingDayAtr(1)}">稼働日</button>
+									<button class="button-sqr2 panel-frame-btn " data-bind="click: function(){changeWorkingDayAtr(2)}">非稼働日<br/>（法内）</button>
+									<button class="button-sqr3 panel-frame-btn " data-bind="click: function(){changeWorkingDayAtr(3)}">非稼働日<br/>（法外）</button>
 								</div>
 							</div>
 						</div>
@@ -165,10 +165,10 @@
 							<hr/>
 							<div class="infoTable panel panel-frame">
 								<div><span>#{i18n.getText('KSM004_9')}</span></div>
-								<div>
-									<div class="labelSqr labelSqr1 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(1)}"><span>稼働日</span></div>
-									<div class="labelSqr labelSqr2 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(2)}"><span>非稼働日（法内）</span></div>
-									<div class="labelSqr labelSqr3 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(3)}"><span>非稼働日（法外）</span></div>
+								<div class="frame-btn">
+									<button class="button-sqr1 panel-frame-btn " data-bind="click: function(){changeWorkingDayAtr(1)}">稼働日</button>
+									<button class="button-sqr2 panel-frame-btn " data-bind="click: function(){changeWorkingDayAtr(2)}">非稼働日<br/>（法内）</button>
+									<button class="button-sqr3 panel-frame-btn " data-bind="click: function(){changeWorkingDayAtr(3)}">非稼働日<br/>（法外）</button>
 								</div>
 							</div>
 						</div>

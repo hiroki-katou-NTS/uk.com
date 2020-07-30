@@ -886,11 +886,15 @@ module nts.uk.at.view.ksm004.a {
                 change Style when change selected Working Day
             */
             changeWorkingDayAtr(value){
-                var self = this;
-                $('.labelSqr').css("border","2px solid #B1B1B1");
+                $('.panel-frame-btn').css("background-color","unset");
+                const self = this;
                 if(value!=null) {
+                    if (value == 1) {
+                        $('.button-sqr1').css("background-color","rgb(72 147 224 / 40%)");
+                    } else {
+                        $('.button-sqr'+value).css("background","lightgoldenrodyellow");
+                    }
                     self.currentWorkingDayAtr = value-1;
-                    $('.labelSqr'+value).css("border","2px dashed #008000");
                 } else {
                     self.currentWorkingDayAtr = value;   
                 }
@@ -992,6 +996,28 @@ module nts.uk.at.view.ksm004.a {
                     }); 
                 }
             }
+
+            public openDialogF() {
+                nts.uk.ui.block.invisible();
+                const self = this;
+                nts.uk.ui.windows.setShared('KSM004_F_PARAM',
+                    {
+                        yearMonth: self.yearMonthPicked(),
+                        dataTest: 'hello'
+                    });
+                nts.uk.ui.windows.sub.modal("/view/ksm/004/f/index.xhtml", { title: "hello", dialogClass: "no-close" }).onClosed(function() {
+                    self.isShowDatepicker = false;
+                    // $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
+                    //     .done(()=>{
+                    //         self.isShowDatepicker = true;
+                    //         nts.uk.ui.block.clear();
+                    //     })
+                    //     .fail((res) => {
+                    //         nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
+                    //     });
+                });
+                nts.uk.ui.block.clear();
+            }
             
             //Init blank calendar option date
             getBlankOptionDate(): any{
@@ -1025,9 +1051,7 @@ module nts.uk.at.view.ksm004.a {
                     date: moment(new Date()).toDate(),
                     mode: 2 //YEAR_PERIOD_FINANCE
                 };
-    
                 nts.uk.ui.windows.setShared("CDL028_INPUT", params);
-    
                 nts.uk.ui.windows.sub.modal("com", "/view/cdl/028/a/index.xhtml").onClosed(function() {
                     var params = nts.uk.ui.windows.getShared("CDL028_A_PARAMS");
                     if (params.status) {

@@ -8,8 +8,20 @@ body {
 }
 
 #table-bottom {
-	margin-left: 170px;
+	margin-left: 160px;
 	margin-top: 5px;
+	border-top: 1px solid;
+	border-left: 1px solid;
+}
+
+#table-bottom>tbody>tr>td{
+	border-bottom: 1px solid;
+	border-right: 1px solid;
+}
+#table-bottom>tbody>tr>th{
+	border-bottom: 1px solid;
+	border-right: 1px solid;
+	background-color: #C7F391;
 }
 
 .tbDay {
