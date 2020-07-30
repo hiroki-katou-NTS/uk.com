@@ -25,7 +25,7 @@ public class WorkplaceGroupGettingService {
 	public static List<EmployeeAffiliation> get(Require require, GeneralDate date, List<String> employeeIDs) {
 		Map<String, String> empAffiliations = employeeIDs.stream()
 				.collect(Collectors.toMap(x -> x, x -> require.getAffWkpHistItemByEmpDate(x, date)));
-		List<String> wkpIDs = empAffiliations.values().stream().filter(i -> i != null).distinct()
+		List<String> wkpIDs = empAffiliations.values().stream().distinct()
 				.collect(Collectors.toList());
 		List<AffWorkplaceGroup> affWorkplaceGroups = require.getWGInfo(wkpIDs);
 		return employeeIDs.stream().map(i -> {

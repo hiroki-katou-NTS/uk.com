@@ -49,7 +49,7 @@ public class GetEmpCanReferBySpecOrganizationService {
 		//QA Adapter tên hai hàm đang không giống nhau
 		//	$社員IDリスト = require.職場グループで参照可能な所属社員を取得する( 基準日, 社員ID, 職場グループ )	
 		List<String> lstEmpId = require.getReferableEmp(referenceDate, epmloyeeId, Arrays.asList(workplaceGroupId));
-		if(lstEmpId.isEmpty()){
+		if(!lstEmpId.isEmpty()){
 			//	$社員IDリスト = require.社員を並び替える( 社員IDリスト, システム区分.就業, null, 基準日, null )				
 			 result = require.sortEmployee(lstEmpId, 0, null, referenceDate, null);
 		}
