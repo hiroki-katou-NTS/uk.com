@@ -29,10 +29,10 @@ module nts.uk.at.view.kmp001.d {
 					label: 'KMP001_42'
 				}, {
 					value: StampCardEditMethod.PreviousSpace,
-					label: 'KMP001_44'
+					label: 'KMP001_43'
 				}, {
 					value: StampCardEditMethod.AfterZero,
-					label: 'KMP001_43'
+					label: 'KMP001_44'
 				}, {
 					value: StampCardEditMethod.AfterSpace,
 					label: 'KMP001_45'
@@ -108,7 +108,7 @@ module nts.uk.at.view.kmp001.d {
 
 	interface PaddingType {
 		value: StampCardEditMethod;
-		label: 'KMP001_42' | 'KMP001_44' | 'KMP001_43' | 'KMP001_45';
+		label: 'KMP001_42' | 'KMP001_43' | 'KMP001_44' | 'KMP001_45';
 	}
 
 	class StampCardLength {
