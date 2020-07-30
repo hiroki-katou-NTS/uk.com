@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.other.output;
 
+import java.util.List;
+
 import lombok.Getter;
 
 /**
@@ -14,32 +16,32 @@ public class StampRecordOutput {
 	/**
 	 * 介護時間帯
 	 */
-	private TimePlaceOutput nursingTime;
+	private List<TimePlaceOutput> nursingTime;
 	
 	/**
 	 * 休憩時間帯
 	 */
-	private TimePlaceOutput breakTime;
+	private List<TimePlaceOutput> breakTime;
 	
 	/**
 	 * 勤務時間帯
 	 */
-	private TimePlaceOutput workingTime;
+	private List<TimePlaceOutput> workingTime;
 	
 	/**
 	 * 外出時間帯
 	 */
-	private TimePlaceOutput outingTime;
+	private List<TimePlaceOutput> outingTime;
 	
 	/**
 	 * 応援時間帯
 	 */
-	private TimePlaceOutput supportTime;
+	private List<TimePlaceOutput> supportTime;
 	
 	/**
 	 * 育児時間帯
 	 */
-	private TimePlaceOutput parentingTime;
+	private List<TimePlaceOutput> parentingTime;
 	
 	/**
 	 * 臨時時間帯
