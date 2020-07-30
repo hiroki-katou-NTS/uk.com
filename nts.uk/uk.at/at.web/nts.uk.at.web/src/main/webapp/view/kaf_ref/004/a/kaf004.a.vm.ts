@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
     import CommonProcess = nts.uk.at.view.kaf000_ref.shr.viewmodel.CommonProcess;
     import Kaf000AViewModel = nts.uk.at.view.kaf000_ref.a.viewmodel.Kaf000AViewModel;
     import WorkManagement = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.WorkManagement;
+    import ApplicationDto = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.ApplicationDto;
     import LateOrEarlyInfo = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.LateOrEarlyInfo;
     import ArrivedLateLeaveEarlyInfo = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.ArrivedLateLeaveEarlyInfo;
     import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
@@ -150,25 +151,25 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                 })
             }
             if (ko.toJS(vm.application().prePostAtr) === 1) {
-                if(ko.toJS(vm.lateOrEarlyInfo1().isCheck)) {
+                if (ko.toJS(vm.lateOrEarlyInfo1().isCheck)) {
                     lateCancelation.push({
                         workNo: 1,
                         lateOrEarlyClassification: 0
                     })
                 }
-                if(ko.toJS(vm.lateOrEarlyInfo2().isCheck)) {
+                if (ko.toJS(vm.lateOrEarlyInfo2().isCheck)) {
                     lateCancelation.push({
                         workNo: 1,
                         lateOrEarlyClassification: 1
                     })
                 }
-                if(ko.toJS(vm.lateOrEarlyInfo3().isCheck)) {
+                if (ko.toJS(vm.lateOrEarlyInfo3().isCheck)) {
                     lateCancelation.push({
                         workNo: 2,
                         lateOrEarlyClassification: 0
                     })
                 }
-                if(ko.toJS(vm.lateOrEarlyInfo4().isCheck)) {
+                if (ko.toJS(vm.lateOrEarlyInfo4().isCheck)) {
                     lateCancelation.push({
                         workNo: 2,
                         lateOrEarlyClassification: 1
@@ -182,10 +183,12 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 
             vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly = arrivedLateLeaveEarly;
 
+            let application: ApplicationDto = new ApplicationDto(null, null, ko.toJS(vm.application().prePostAtr), vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].sid,
+                ko.toJS(vm.application().appType), ko.toJS(vm.application().appDate), null, null, null, null, ko.toJS(vm.application().opReversionReason), ko.toJS(vm.application().appDate), ko.toJS(vm.application().appDate), ko.toJS(vm.application().opAppReason), ko.toJS(vm.application().opAppStandardReasonCD));
             let command = {
                 agentAtr: true,
                 isNew: true,
-                application: ko.toJS(vm.application()),
+                application: application,
                 infoOutput: ko.toJS(vm.arrivedLateLeaveEarlyInfo)
             };
 
@@ -204,9 +207,9 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         });
                     }
 
-                    this.afterRegister();
+                    this.afterRegister(application);
                 } else {
-                    this.afterRegister();
+                    this.afterRegister(application);
                 }
             }).fail((fail: any) => {
                 console.log(fail);
@@ -219,7 +222,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             vm.$ajax(API.register,
                 {
                     appType: ko.toJS(vm.application().appType),
-                    application: ko.toJS(vm.application()),
+                    application: params,
                     infoOutput: ko.toJS(vm.arrivedLateLeaveEarlyInfo)
                 }).done((success: any) => {
                     if (ko.toJS(vm.isSendMail)
