@@ -13,7 +13,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "KRCMT_MON_OUEN_FRAME_SET")
+@Table(name = "KRCMT_MON_SUP_FRAME_UNT")
 @AllArgsConstructor
 public class KrcmtMonOuenFrameSet extends UkJpaEntity implements Serializable {
 
