@@ -294,6 +294,7 @@ module nts.uk.at.kdp003.f {
 			const { passwordRequired } = vm.params as EmployeeModeParam;
 			const model: ModelData = ko.toJS(vm.model);
 			const { password, companyCode } = model;
+			const companies: CompanyItem[] = ko.unwrap(vm.listCompany);
 
 			const message = ko.unwrap(vm.message);
 
@@ -327,6 +328,10 @@ module nts.uk.at.kdp003.f {
 							return response;
 						})
 						.then((response: TimeStampLoginData) => {
+							_.extend(response, {
+								companies
+							});
+
 							_.extend(response.em, {
 								password,
 								companyCode
@@ -350,8 +355,9 @@ module nts.uk.at.kdp003.f {
 
 		cancelLogin() {
 			const vm = this;
+			const companies: CompanyItem[] = ko.unwrap(vm.listCompany);
 
-			vm.$window.close();
+			vm.$window.close(companies);
 		}
 	}
 
@@ -423,6 +429,8 @@ module nts.uk.at.kdp003.f {
 		readonly em: EmployeeData;
 		readonly successMsg: string;
 		readonly errorMessage: string;
+
+		readonly companies: CompanyItem[];
 	}
 
 	export interface ModelData {
