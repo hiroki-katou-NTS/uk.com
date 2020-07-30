@@ -136,11 +136,11 @@ module nts.uk.at.view.kdl009.a {
                 $('#component-items-list').ntsListComponent(self.listComponentOption);
             }
 
-            bindTimeData(data: AcquisitionNumberRestDayDto) {
+            private bindTimeData(data: AcquisitionNumberRestDayDto) {
                 const self = this;
                 self.dataItems.removeAll();
                 if (data.listRemainNumberDetail.length > 0) {
-                    data.listRemainNumberDetail.forEach(item => {
+                    const listDetail: RemainNumberDetailModel[] = data.listRemainNumberDetail.map(item => {
                         let digestionDate: string = item.digestionDate ? (nts.uk.time as any).applyFormat("Short_YMDW", [item.digestionDate]) : '';
                         let occurrenceDate: string = item.occurrenceDate ? (nts.uk.time as any).applyFormat("Short_YMDW", [item.occurrenceDate]) : '';
                         // 代休残数.休出代休残数詳細.管理データ状態区分をチェック
@@ -163,7 +163,7 @@ module nts.uk.at.view.kdl009.a {
                         if (item.occurrenceNumber === 0.5) {
                             occurrenceNumber = nts.uk.resource.getText("KDL005_27", [item.occurrenceNumber]);
                         }
-                        const dataItem: DataItems = new DataItems({
+                        return new RemainNumberDetailModel({
                             expirationDate: expirationDate,
                             digestionNumber: digestionNumber,
                             digestionDate: digestionDate,
@@ -172,9 +172,15 @@ module nts.uk.at.view.kdl009.a {
                             occurrenceDate: occurrenceDate,
                             occurrenceHour: item.occurrenceHour ? item.occurrenceHour.toString() : '',
                         });
-                        self.dataItems.push(dataItem);
                     });
+                    // Convert to list item
+                    ko.utils.arrayPushAll(self.dataItems, self.convertDetailToItem(listDetail));
                 }
+            }
+
+            private convertDetailToItem(listDetail: RemainNumberDetailModel[]): DataItems[] {
+
+                return [];
             }
 
             bindSummaryData(data: AcquisitionNumberRestDayDto) {
@@ -220,7 +226,7 @@ module nts.uk.at.view.kdl009.a {
             isAlreadySetting: boolean;
         }
 
-        class DataItems {
+        class RemainNumberDetailModel {
             expirationDate: string;
             digestionNumber: string;
             digestionDate: string;
@@ -229,10 +235,22 @@ module nts.uk.at.view.kdl009.a {
             occurrenceDate: string;
             occurrenceHour: string;
 
+            constructor(init?: Partial<RemainNumberDetailModel>) {
+                (<any>Object).assign(this, init);
+            }
+        }
+
+        class DataItems {
+            occurrence: RemainNumberDetailModel;
+            listOccurrence: RemainNumberDetailModel[];
+            digestion: RemainNumberDetailModel;
+            listDigestion: RemainNumberDetailModel[];
+
             constructor(init?: Partial<DataItems>) {
                 (<any>Object).assign(this, init);
             }
         }
+
         export enum ExpirationDate {
             "当月",//0
             "無期限",//1
