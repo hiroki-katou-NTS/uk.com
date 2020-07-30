@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class AsbRemainTotalInfor {
-	/**繰越日数	 */
+	/**	繰越日数	 */
 	private double carryForwardDays;
 	/**	実績使用日数 */
 	private double recordUseDays;

@@ -43,7 +43,7 @@ public class CofirmDetailsResidualInformationDto {
 	private int usageHour;
 
 	// field 使用期限
-	private ClosureDate expiredDay;
+	private int expiredDay;
 
 	// field 残数
 	private double remainingDay;

@@ -47,6 +47,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.UnUs
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
@@ -119,13 +120,26 @@ public class EmploymentSystemFinder {
 	 * @param baseDate
 	 * @return
 	 */
-	public CofirmDetailsResidualInformationDto getDetailsConfirm(String employeeId, String baseDate) {
-		
-		CofirmDetailsResidualInformationDto detailsdDto = new CofirmDetailsResidualInformationDto();
+	public AcquisitionNumberRestDayDto getDetailsConfirm(String employeeId, String baseDate) {
 		String companyId = AppContexts.user().companyId();
 		
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
 		LocalDate localDate = LocalDate.now();
+		
+		AcquisitionNumberRestDayDto detailsdDto = new AcquisitionNumberRestDayDto();
+		
+		// #110215 10-2.代休の設定を取得する
+		SubstitutionHolidayOutput subHd = absenceTenProcess.getSettingForSubstituteHoliday(companyId, employeeId,
+				GeneralDate.today());
+		detailsdDto.setIsManagementSection(subHd.isSubstitutionFlg());
+		
+		if(!subHd.isSubstitutionFlg() || !subHd.isTimeOfPeriodFlg() ) {
+			// #110215  取得した管理区分を渡す
+			detailsdDto.setIsManagementSection(false);
+			detailsdDto.setListPegManagement(new ArrayList<>());
+			detailsdDto.setListRemainNumberDetail(new ArrayList<>());
+			return detailsdDto;
+		}
 		
 		// 基準日（指定がない場合はシステム日付）
 		if(baseDate.isEmpty()) {
@@ -134,12 +148,12 @@ public class EmploymentSystemFinder {
 			baseDate = GeneralDate.fromString(baseDate, "yyyyMMdd").toString();
 		}
 		GeneralDate inputDate = GeneralDate.fromString(baseDate, "yyyy/MM/dd");
-		// アルゴリズム「社員に対応する締め期間を取得する」を実行する		
-		DatePeriod closingPeriod = closureService.findClosurePeriod(employeeId, inputDate);
 		
-//		// アルゴリズム「休出代休発生消化履歴の取得」を実行する
+		// 	アルゴリズム「休出代休発生消化履歴の取得」を実行する
 		Optional<BreakDayOffOutputHisData> data = breakDayOffManagementQuery.getBreakDayOffData(companyId, employeeId, inputDate);
 		
+		//	 #110215 アルゴリズム「社員に対応する締め期間を取得する」を実行する		
+		DatePeriod closingPeriod = closureService.findClosurePeriod(employeeId, inputDate);
 		List<BreakDayOffHistoryDto> lstHistory = new ArrayList<>();
 		
 		if(data.isPresent() && data.get().getLstHistory().size() > 0) {
@@ -209,7 +223,7 @@ public class EmploymentSystemFinder {
 				false, inputDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
 		BreakDayOffRemainMngOfInPeriod breakDay = this.breakDayOffMngInPeriod.getBreakDayOffMngInPeriod(inputParam);
 		
-		result.setBreakDay(breakDay);
+//		result.setBreakDay(breakDay);
 		
 		// #110215 	残数詳細を作成
 		List<RemainNumberDetailDto> remainNumberDetailMapDto = new ArrayList<>(); 
@@ -242,12 +256,51 @@ public class EmploymentSystemFinder {
 			} 
 			// field 管理データ状態区分　＝　取得した逐次発生の休暇明細．状態
 			mappingDto.setManagementDataStatus(item.getDataAtr().value);
+			remainNumberDetailMapDto.add(mappingDto);
 		}
+		
+		detailsdDto.setListRemainNumberDetail(remainNumberDetailMapDto);
 		
 		// #110215 	紐付け情報を生成する ()
 		
-		// #110215	取得内容を画面に反映させる
 		
+		// #110215	取得内容を画面に反映させる
+		if(data.isPresent()) {
+			//A8_1_2  	繰越日数 
+			detailsdDto.setCarryForwardDay(data.get().getTotalInfor().getCarryForwardDays());
+			//A8_2_2 	 実績発生日数
+			detailsdDto.setOccurrenceDay(data.get().getTotalInfor().getRecordOccurrenceDays());
+			//A8_2_3 	予定発生日数
+			detailsdDto.setScheduleOccurrencedDay(data.get().getTotalInfor().getScheOccurrenceDays());
+			//A8_3_2	使用日数
+			detailsdDto.setUsageDay(data.get().getTotalInfor().getRecordUseDays());
+			//A8_3_3	予定使用日数
+			detailsdDto.setScheduledUsageDay(data.get().getTotalInfor().getScheUseDays());
+			//A8_4_2	残数	
+			detailsdDto.setRemainingDay(detailsdDto.getOccurrenceDay() - detailsdDto.getUsageDay());
+			//A8_4_3	予定残数
+			detailsdDto.setScheduledRemainingDay(detailsdDto.getScheduleOccurrencedDay() - detailsdDto.getScheduledUsageDay());
+			// 	残数詳細
+			detailsdDto.setListRemainNumberDetail(remainNumberDetailMapDto);
+			//	使用期限
+			detailsdDto.setExpiredDay(subHd.getExpirationOfsubstiHoliday());
+			//	使用区分
+			if (subHd.isSubstitutionFlg() || subHd.isTimeOfPeriodFlg()) {
+				detailsdDto.setIsManagementSection(true);
+			} else {
+				detailsdDto.setIsManagementSection(false);
+			}
+			//	繰越時間数
+			//	発生時間数
+			//	予定発生時間数
+			//	使用時間数
+			//	予定使用時間数
+			//	残数時間
+			//	予定残数時間
+			
+		}
+		
+
 		return detailsdDto;
 	}
 	

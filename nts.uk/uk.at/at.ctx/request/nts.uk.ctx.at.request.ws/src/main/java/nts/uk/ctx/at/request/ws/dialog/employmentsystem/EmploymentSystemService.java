@@ -45,7 +45,7 @@ public class EmploymentSystemService extends WebService {
 	
 	@POST
 	@Path("getDetailsConfirm/{employeeId}/{baseDate}")
-	public CofirmDetailsResidualInformationDto getDetailsConfirm(@PathParam("employeeId") String employeeId, @PathParam("baseDate") String baseDate)
+	public AcquisitionNumberRestDayDto getDetailsConfirm(@PathParam("employeeId") String employeeId, @PathParam("baseDate") String baseDate)
 	{		
 		// アルゴリズム「代休確認ダイア詳細取得」を実行する
 		return employeeFinder.getDetailsConfirm(employeeId, baseDate);
