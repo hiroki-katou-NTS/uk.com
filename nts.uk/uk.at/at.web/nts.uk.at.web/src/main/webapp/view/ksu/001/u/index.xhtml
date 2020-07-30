@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+        <ui:define name="htmlHead">
+            <script>var dialogSize = { width: 700, height: 910 };</script>
+
+            <com:scriptfile set="IGNITE" />            
+            <com:stylefile path="/view/kcp/006/a/fullcalendar-lib/nts-calendar.css" of="/nts.uk.at.web" />
+            <com:stylefile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.css" of="/nts.uk.at.web" />
+            <com:scriptfile path="/view/kcp/006/a/kcp006.a.service.js" of="/nts.uk.at.web" />
+            <com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.js" of="/nts.uk.at.web" />
+            <com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/calendar-ko-ext.js" of="/nts.uk.at.web" />
+            <com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/locale-all.js" of="/nts.uk.at.web" />            
+            <com:scriptfile path="ksu001.u.vm.js" />
+            <com:stylefile path="ksu001.u.style.css" />
+        </ui:define>
+
+        <ui:define name="content">
+            <div id="functions-area">
+                <button tabindex="1" class="proceed">#{i18n.getText('KSU001_4001')}</button>
+                <button tabindex="2" style="margin-right: 5%; float:right"
+                    data-bind="click: closeDialog">#{i18n.getText('KSU001_4002')}</button>
+            </div>
+            <div id="content-area">
+                <div style="margin-left: 6%; margin-top: 20px;" data-bind="text: workplaceName"></div>
+                <hr style="margin: 10px 5%;" />
+                <div class="container-custom">
+                    <button tabindex="4" class=" auto-height">
+                        <div class="flex valign-center" > <i class="img-icon icon-prev"></i> #{i18n.getText('KSU001_4008')}</div>
+                    </button>                   
+                    <div data-bind="ntsPanel:{width: '129px', height: '15px', direction: 'bottom', showIcon: false, visible: true}" style="margin: 0px 10px;">
+                        <div style="margin-top: -6px; margin-left: 7px;"
+                                data-bind="ntsSwitchButton:{
+                                            name:'#[KSU001_4009]',
+                                            options: $vm.lstLicense,
+											optionsValue: 'licenseCode',
+											optionsText: 'licenseName',
+											value:  $vm.btnSelected,
+											required: true,
+                                            enable: true  }">
+                        </div>
+                    </div>               
+                    <button tabindex="7" class="auto-height">
+                        <div class="flex valign-center" >#{i18n.getText('KSU001_4012')}<i class="img-icon icon-next"></i></div>
+                    </button>
+
+                </div>
+                <div class="container-custom">
+                    <div class="nts-calendar-container ">
+                        <com:ko-if bind="showCalendarHeader">
+                            <div class="nts-calendar-header">
+                                <div data-bind="ntsDatePicker: {
+                                value: yearMonthPicked, 
+                                required: true,
+                                dateFormat: 'yearmonth', 
+                                valueFormat: 'YYYYMM', 
+                                cssRanger: cssRangerYM,
+                                defaultClass: 'round-orange',
+                                showJumpButtons: true}"></div>
+                            </div>
+                        </com:ko-if>
+                        <div id="calendar" data-bind="ntsCalendar: {
+                            optionDates: optionDates, 
+                            yearMonth: yearMonthPicked, 
+                            firstDay: firstDay, 
+                            startDate: startDate, 
+                            endDate: endDate,
+                            workplaceId: workplaceId,
+                            workplaceName: workplaceName,
+                            eventDisplay: eventDisplay,
+                            eventUpdatable: eventUpdatable,
+                            holidayDisplay: holidayDisplay,
+                            cellButtonDisplay: cellButtonDisplay}"></div>
+                    </div>
+
+                </div>
+              
+
+            </div>
+            <button style="float: right; margin-right: 7%;" tabindex="8" class ="large" >#{i18n.getText('KSU001_4013')}</button>
+
+        </ui:define>
+    </ui:composition>
+</body>
+
+</html>

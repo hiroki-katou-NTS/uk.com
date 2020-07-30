@@ -1,0 +1,10 @@
+ 
+.container-custom {
+    display: flex; 
+    justify-content: center;   
+    margin-top: 20px;
+    margin-bottom: 22px;   
+}
+.btn-custom {
+    padding: 10px 0px;
+}

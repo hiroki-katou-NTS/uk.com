@@ -8,8 +8,13 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeam;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamRepository;
+<<<<<<< HEAD
 import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.scheduleteam.KscmtScheduleTeam;
 import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.scheduleteam.KscmtScheduleTeamPk;
+=======
+import nts.uk.ctx.at.schedule.infra.entity.scheduleteam.KscmtScheduleTeam;
+import nts.uk.ctx.at.schedule.infra.entity.scheduleteam.KscmtScheduleTeamPK;
+>>>>>>> d5ab697b149... code UI man KSU001LA KSU001U
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -47,7 +52,6 @@ public class JpaScheduleTeamRepository extends JpaRepository implements Schedule
 			newEntity.fromEntity(scheduleTeam);
 			this.commandProxy().update(newEntity);
 		}
-
 	}
 
 	@Override
@@ -84,5 +88,4 @@ public class JpaScheduleTeamRepository extends JpaRepository implements Schedule
 			return true;
 		return false;
 	}
-
 }

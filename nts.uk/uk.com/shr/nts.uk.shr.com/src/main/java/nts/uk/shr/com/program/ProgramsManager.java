@@ -730,6 +730,12 @@ public class ProgramsManager {
      */
     public static final Program KSU001L = new Program(WebAppId.AT, ProgramIdConsts.KSU001L, "KSU001_1140",
             "/view/ksu/001/l/index.xhtml");
+    
+    /**
+     * KSU001LA
+     */
+    public static final Program KSU001LA = new Program(WebAppId.AT, ProgramIdConsts.KSU001LA, "KSU001_3201",
+            "/view/ksu/001/la/index.xhtml");
     /**
      * KSU001LX
      */
@@ -740,6 +746,12 @@ public class ProgramsManager {
      */
     public static final Program KSU001N = new Program(WebAppId.AT, ProgramIdConsts.KSU001N, "KSU001_1327",
             "/view/ksu/001/n/index.xhtml");
+    /**
+     * KSU001U
+     */
+    public static final Program KSU001U = new Program(WebAppId.AT, ProgramIdConsts.KSU001U, "KSU001_4000",
+            "/view/ksu/001/u/index.xhtml");
+    
     /**
      * KSU001R
      */
