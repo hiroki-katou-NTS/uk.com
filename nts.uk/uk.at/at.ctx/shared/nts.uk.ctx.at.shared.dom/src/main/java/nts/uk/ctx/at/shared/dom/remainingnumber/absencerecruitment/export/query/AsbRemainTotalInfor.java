@@ -27,7 +27,7 @@ public class AsbRemainTotalInfor {
 	/**	予定発生時間数  */
 	private Double scheHours;
 	/**	予定使用時間数  */
-	private Double scheHoursOfUse;
+	private Double scheUseHours;
 	/**	実績発生時間数  */
 	private Double numberOccurrenceHours;
 	/**	実績使用時間数  */
