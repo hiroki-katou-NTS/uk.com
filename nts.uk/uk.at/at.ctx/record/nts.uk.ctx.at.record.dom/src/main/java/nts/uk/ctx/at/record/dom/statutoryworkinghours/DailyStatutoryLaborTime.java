@@ -7,16 +7,16 @@ import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WorkingTimeSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeCom;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeEmp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeSha;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeCom;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeEmp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeSha;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeWkp;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 /**
@@ -117,11 +117,11 @@ public class DailyStatutoryLaborTime {
 
 		if (workingSystem.isRegularWork()) {
 			// 通常勤務 の場合
-			return require.regularLaborTimeByCompany(companyId).map(t -> t.getWorkingTimeSet());
+			return require.regularLaborTimeByCompany(companyId).map(t -> t);
 
 		} else if (workingSystem.isVariableWorkingTimeWork()) {
 			// 変形労働勤務 の場合
-			return require.transLaborTimeByCompany(companyId).map(t -> t.getWorkingTimeSet());
+			return require.deforLaborTimeByCompany(companyId).map(t -> t);
 		}
 
 		return Optional.empty();
@@ -135,7 +135,7 @@ public class DailyStatutoryLaborTime {
 		// 通常勤務 の場合
 		if (workingSystem.isRegularWork()) {
 			for (String workPlaceId : workPlaceIdList) {
-				val result = require.regularLaborTimeByWorkplace(companyId, workPlaceId).map(t -> t.getWorkingTimeSet());
+				Optional<WorkingTimeSetting> result = require.regularLaborTimeByWorkplace(companyId, workPlaceId).map(t -> t);
 				if (result.isPresent()) {
 					return result;
 				}
@@ -144,7 +144,7 @@ public class DailyStatutoryLaborTime {
 		// 変形労働勤務 の場合
 		else if (workingSystem.isVariableWorkingTimeWork()) {
 			for (String workPlaceId : workPlaceIdList) {
-				val result = require.transLaborTimeByWorkplace(employeeId, workPlaceId).map(t -> t.getWorkingTimeSet());
+				Optional<WorkingTimeSetting> result = require.deforLaborTimeByWorkplace(employeeId, workPlaceId).map(t -> t);
 				if (result.isPresent()) {
 					return result;
 				}
@@ -158,10 +158,10 @@ public class DailyStatutoryLaborTime {
 			String employmentCode, WorkingSystem workingSystem) {
 		if (workingSystem.isRegularWork()) {
 			// 通常勤務 の場合
-			return require.regularLaborTimeByEmployment(companyId, employmentCode).map(r -> r.getWorkingTimeSet());
+			return require.regularLaborTimeByEmployment(companyId, employmentCode).map(r -> r);
 		} else if (workingSystem.isVariableWorkingTimeWork()) {
 			// 変形労働勤務 の場合
-			return require.transLaborTimeByEmployment(companyId, employmentCode).map(r -> r.getWorkingTimeSet());
+			return require.deforLaborTimeByEmployment(companyId, employmentCode).map(r -> r);
 		}
 
 		return Optional.empty();
@@ -172,10 +172,10 @@ public class DailyStatutoryLaborTime {
 		
 		if (workingSystem.isRegularWork()) {
 			// 通常勤務 の場合
-			return require.regularLaborTimeByEmployee(companyId, employeeId).map(t -> t.getWorkingTimeSet());
+			return require.regularLaborTimeByEmployee(companyId, employeeId).map(t -> t);
 		} else if (workingSystem.isVariableWorkingTimeWork()) {
 			// 変形労働勤務 の場合
-			return require.transLaborTimeByEmployee(companyId, employeeId).map(t -> t.getWorkingTimeSet());
+			return require.deforLaborTimeByEmployee(companyId, employeeId).map(t -> t);
 		}
 		return Optional.empty();
 	}
@@ -187,16 +187,16 @@ public class DailyStatutoryLaborTime {
 	
 	public static interface RequireM2 {
 
-		Optional<ComRegularLaborTime> regularLaborTimeByCompany(String companyId);
+		Optional<RegularLaborTimeCom> regularLaborTimeByCompany(String companyId);
 
-		Optional<ComTransLaborTime> transLaborTimeByCompany(String companyId);
+		Optional<DeforLaborTimeCom> deforLaborTimeByCompany(String companyId);
 	}
 	
 	public static interface RequireM3 {
 
-		Optional<WkpRegularLaborTime> regularLaborTimeByWorkplace(String cid, String wkpId);
+		Optional<RegularLaborTimeWkp> regularLaborTimeByWorkplace(String cid, String wkpId);
 
-		Optional<WkpTransLaborTime> transLaborTimeByWorkplace(String cid, String wkpId);
+		Optional<DeforLaborTimeWkp> deforLaborTimeByWorkplace(String cid, String wkpId);
 		
 		List<String> getCanUseWorkplaceForEmp(CacheCarrier cacheCarrier, String companyId,
 				String employeeId, GeneralDate baseDate);
@@ -204,16 +204,16 @@ public class DailyStatutoryLaborTime {
 	
 	public static interface RequireM4 {
 
-		Optional<EmpRegularLaborTime> regularLaborTimeByEmployment(String cid, String employmentCode);
+		Optional<RegularLaborTimeEmp> regularLaborTimeByEmployment(String cid, String employmentCode);
 
-		Optional<EmpTransLaborTime> transLaborTimeByEmployment(String cid, String emplId);
+		Optional<DeforLaborTimeEmp> deforLaborTimeByEmployment(String cid, String employmentCode);
 	}
 	
 	public static interface RequireM5 {
 
-		Optional<ShainRegularLaborTime> regularLaborTimeByEmployee(String Cid, String EmpId);
+		Optional<RegularLaborTimeSha> regularLaborTimeByEmployee(String Cid, String EmpId);
 
-		Optional<ShainTransLaborTime> transLaborTimeByEmployee(String cid, String empId);
+		Optional<DeforLaborTimeSha> deforLaborTimeByEmployee(String cid, String empId);
 	}
 
 	public static interface RequireM6 extends RequireM2, RequireM3, RequireM4, RequireM5{

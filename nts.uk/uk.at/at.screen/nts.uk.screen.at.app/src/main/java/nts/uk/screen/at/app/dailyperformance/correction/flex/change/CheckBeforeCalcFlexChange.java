@@ -34,14 +34,12 @@ import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyStatutoryWo
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpFlexSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpFlexSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetEmp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetSha;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetWkp;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -94,17 +92,11 @@ public class CheckBeforeCalcFlexChange implements CheckBeforeCalcFlexChangeServi
 	@Inject
 	private UsageUnitSettingRepository usageUnitSettingRepository;
 	@Inject
-	private EmpFlexSettingRepository empFlexSettingRepository;
-	@Inject
-	private ComFlexSettingRepository comFlexSettingRepository;
-	@Inject
-	private ShainFlexSettingRepository shainFlexSettingRepository;
+	private MonthlyWorkTimeSetRepo monthlyWorkTimeSet;
 
 	/** 所属職場履歴 */
 	@Inject
 	private AffWorkplaceAdapter affWorkplaceAdapter;
-	@Inject
-	private WkpFlexSettingRepository wkpFlexSetting;
 	/*require用*/
 
 	private static final String TIME_DEFAULT = "0:00";
@@ -363,22 +355,6 @@ public class CheckBeforeCalcFlexChange implements CheckBeforeCalcFlexChangeServi
 			return usageUnitSettingRepository.findByCompany(companyId);
 		}
 		@Override
-		public Optional<ShainFlexSetting> flexSettingByEmployee(String cid, String empId, int year) {
-			return shainFlexSettingRepository.find(cid, empId, year);
-		}
-		@Override
-		public Optional<EmpFlexSetting> flexSettingByEmployment(String cid, String emplCode, int year) {
-			return empFlexSettingRepository.find(cid, emplCode, year);
-		}
-		@Override
-		public Optional<ComFlexSetting> flexSettingByCompany(String cid, int year) {
-			return comFlexSettingRepository.find(cid, year);
-		}
-		@Override
-		public Optional<WkpFlexSetting> flexSettingByWorkplace(String cid, String wkpId, int year) {
-			return wkpFlexSetting.find(cid, wkpId, year);
-		}
-		@Override
 		public List<String> getCanUseWorkplaceForEmp(CacheCarrier cacheCarrier, String companyId, String employeeId,
 				GeneralDate baseDate) {
 
@@ -400,6 +376,27 @@ public class CheckBeforeCalcFlexChange implements CheckBeforeCalcFlexChangeServi
 		@Override
 		public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
 			return workingConditionItemRepository.getBySidAndStandardDate(employeeId, baseDate);
+		}
+		
+		@Override
+		public Optional<MonthlyWorkTimeSetSha> monthlyWorkTimeSetSha(String cid, String sid,
+				LaborWorkTypeAttr laborAttr, YearMonth ym) {
+			return monthlyWorkTimeSet.findEmployee(cid, sid, laborAttr, ym);
+		}
+		@Override
+		public Optional<MonthlyWorkTimeSetEmp> monthlyWorkTimeSetEmp(String cid, String empCode,
+				LaborWorkTypeAttr laborAttr, YearMonth ym) {
+			return monthlyWorkTimeSet.findEmployment(cid, empCode, laborAttr, ym);
+		}
+		@Override
+		public Optional<MonthlyWorkTimeSetCom> monthlyWorkTimeSetCom(String cid, LaborWorkTypeAttr laborAttr,
+				YearMonth ym) {
+			return monthlyWorkTimeSet.findCompany(cid, laborAttr, ym);
+		}
+		@Override
+		public Optional<MonthlyWorkTimeSetWkp> monthlyWorkTimeSetWkp(String cid, String workplaceId,
+				LaborWorkTypeAttr laborAttr, YearMonth ym) {
+			return monthlyWorkTimeSet.findWorkplace(cid, workplaceId, laborAttr, ym);
 		}
 	}
 }

@@ -30,9 +30,6 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrder;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.FlexShortageLimit;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMnt;
@@ -43,13 +40,14 @@ import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.flex.GetFlexPredWorkTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WorkingTimeSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeCom;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeEmp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeCom;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeEmp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeWkp;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
@@ -58,10 +56,12 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearly
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.com.ComFlexMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.com.ComDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.com.ComRegulaMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureClassification;
-import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.GetFlexPredWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -425,11 +425,11 @@ public class MonAggrCompanySettings {
 		
 		// 会社別通常勤務労働時間
 		val comRegLaborTime = require.regularLaborTimeByCompany(companyId);
-		if (comRegLaborTime.isPresent()) this.comRegLaborTime = comRegLaborTime.get().getWorkingTimeSet();
+		if (comRegLaborTime.isPresent()) this.comRegLaborTime = comRegLaborTime.get();
 		
 		// 会社別変形労働労働時間
-		val comIrgLaborTime = require.transLaborTimeByCompany(companyId);
-		if (comIrgLaborTime.isPresent()) this.comIrgLaborTime = comIrgLaborTime.get().getWorkingTimeSet();
+		val comIrgLaborTime = require.deforLaborTimeByCompany(companyId);
+		if (comIrgLaborTime.isPresent()) this.comIrgLaborTime = comIrgLaborTime.get();
 		
 		// 通常勤務会社別月別実績集計設定
 		this.comRegSetOpt = require.monthRegulaCalSetByCompany(companyId);
@@ -653,7 +653,7 @@ public class MonAggrCompanySettings {
 					else {
 						val wkpLaborTimeOpt = require.regularLaborTimeByWorkplace(this.companyId, workplaceId);
 						if (wkpLaborTimeOpt.isPresent()){
-							this.wkpRegLaborTimeMap.put(workplaceId, wkpLaborTimeOpt.get().getWorkingTimeSet());
+							this.wkpRegLaborTimeMap.put(workplaceId, wkpLaborTimeOpt.get());
 							return Optional.of((WorkingTimeSetting)this.wkpRegLaborTimeMap.get(workplaceId));
 						}
 						else {
@@ -671,7 +671,7 @@ public class MonAggrCompanySettings {
 				else {
 					val empLaborTimeOpt = require.regularLaborTimeByEmployment(this.companyId, employmentCd);
 					if (empLaborTimeOpt.isPresent()){
-						this.empRegLaborTimeMap.put(employmentCd, empLaborTimeOpt.get().getWorkingTimeSet());
+						this.empRegLaborTimeMap.put(employmentCd, empLaborTimeOpt.get());
 						return Optional.of((WorkingTimeSetting)this.empRegLaborTimeMap.get(employmentCd));
 					}
 					else {
@@ -697,9 +697,9 @@ public class MonAggrCompanySettings {
 						}
 					}
 					else {
-						val wkpLaborTimeOpt = require.transLaborTimeByWorkplace(this.companyId, workplaceId);
+						val wkpLaborTimeOpt = require.deforLaborTimeByWorkplace(this.companyId, workplaceId);
 						if (wkpLaborTimeOpt.isPresent()){
-							this.wkpIrgLaborTimeMap.put(workplaceId, wkpLaborTimeOpt.get().getWorkingTimeSet());
+							this.wkpIrgLaborTimeMap.put(workplaceId, wkpLaborTimeOpt.get());
 							return Optional.of((WorkingTimeSetting)this.wkpIrgLaborTimeMap.get(workplaceId));
 						}
 						else {
@@ -715,9 +715,9 @@ public class MonAggrCompanySettings {
 					}
 				}
 				else {
-					val empLaborTimeOpt = require.transLaborTimeByEmployment(this.companyId, employmentCd);
+					val empLaborTimeOpt = require.deforLaborTimeByEmployment(this.companyId, employmentCd);
 					if (empLaborTimeOpt.isPresent()){
-						this.empIrgLaborTimeMap.put(employmentCd, empLaborTimeOpt.get().getWorkingTimeSet());
+						this.empIrgLaborTimeMap.put(employmentCd, empLaborTimeOpt.get());
 						return Optional.of((WorkingTimeSetting)this.empIrgLaborTimeMap.get(employmentCd));
 					}
 					else {
@@ -733,13 +733,13 @@ public class MonAggrCompanySettings {
 	
 	public static interface RequireM1 {
 		
-		Optional<WkpRegularLaborTime> regularLaborTimeByWorkplace(String cid, String wkpId);
+		Optional<RegularLaborTimeWkp> regularLaborTimeByWorkplace(String cid, String wkpId);
 
-		Optional<EmpRegularLaborTime> regularLaborTimeByEmployment(String cid, String employmentCode);
+		Optional<RegularLaborTimeEmp> regularLaborTimeByEmployment(String cid, String employmentCode);
 
-		Optional<WkpTransLaborTime> transLaborTimeByWorkplace(String cid, String wkpId);
+		Optional<DeforLaborTimeWkp> deforLaborTimeByWorkplace(String cid, String wkpId);
 
-		Optional<EmpTransLaborTime> transLaborTimeByEmployment(String cid, String emplId);
+		Optional<DeforLaborTimeEmp> deforLaborTimeByEmployment(String cid, String employmentCode);
 	}
 	
 	public static interface RequireM2 {
@@ -766,9 +766,9 @@ public class MonAggrCompanySettings {
 		
 		Optional<UsageUnitSetting> usageUnitSetting(String companyId);
 		
-		Optional<ComRegularLaborTime> regularLaborTimeByCompany(String companyId);
+		Optional<RegularLaborTimeCom> regularLaborTimeByCompany(String companyId);
 		
-		Optional<ComTransLaborTime> transLaborTimeByCompany(String companyId);
+		Optional<DeforLaborTimeCom> deforLaborTimeByCompany(String companyId);
 		
 		Optional<ComRegulaMonthActCalSet> monthRegulaCalSetByCompany(String companyId);
 		

@@ -21,10 +21,6 @@ import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.FlexAggregateMethod;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.SettlePeriod;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.SettlePeriodOfFlex;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.ShortageFlexSetting;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
@@ -37,8 +33,6 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacati
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.PremiumAtr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.FlexTimeOfTimeSeries;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyStatutoryWorkingHours;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.export.GetSettlementPeriodOfDefor;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.Year;
@@ -50,6 +44,12 @@ import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.FlexAggregateMethod;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.FlexMonthWorkTimeAggrSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.SettlePeriod;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.SettlePeriodOfFlex;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.ShortageFlexSetting;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.export.GetSettlementPeriodOfDefor;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -403,10 +403,10 @@ public class ExcessOutsideWorkMng {
 		// 「週割増・月割増を求める」を取得する
 		boolean isAskPremium = false;
 		if (this.workingSystem == WorkingSystem.REGULAR_WORK){
-			isAskPremium = this.settingsByReg.getRegularAggrSet().getExcessOutsideTimeSet().getSurchargeWeekMonth();
+			isAskPremium = this.settingsByReg.getRegularAggrSet().getExcessOutsideTimeSet().isSurchargeWeekMonth();
 		}
 		if (this.workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
-			isAskPremium = this.settingsByDefo.getDeforAggrSet().getExcessOutsideTimeSet().getSurchargeWeekMonth();
+			isAskPremium = this.settingsByDefo.getDeforAggrSet().getExcessOutsideTimeSet().isSurchargeWeekMonth();
 		}
 		if (!isAskPremium) return;
 		
@@ -828,10 +828,10 @@ public class ExcessOutsideWorkMng {
 		// 「週割増・月割増を求める」を取得する
 		boolean isAskPremium = false;
 		if (this.workingSystem == WorkingSystem.REGULAR_WORK){
-			isAskPremium = this.settingsByReg.getRegularAggrSet().getExcessOutsideTimeSet().getSurchargeWeekMonth();
+			isAskPremium = this.settingsByReg.getRegularAggrSet().getExcessOutsideTimeSet().isSurchargeWeekMonth();
 		}
 		if (this.workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
-			isAskPremium = this.settingsByDefo.getDeforAggrSet().getExcessOutsideTimeSet().getSurchargeWeekMonth();
+			isAskPremium = this.settingsByDefo.getDeforAggrSet().getExcessOutsideTimeSet().isSurchargeWeekMonth();
 		}
 		if (!isAskPremium) return;
 		

@@ -23,12 +23,12 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalOverTi
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByFlex;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.ExcessOutsideTimeSetReg;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.ExcessOutsideTimeSetReg;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetOverTimeAndTransferOrder;
@@ -305,7 +305,7 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 			val timeSeriesWork = targetAggregateOverTime.getAndPutTimeSeriesWork(ymd);
 			
 			// 「法定内残業を含める」を確認
-			if (excessOutsideTimeSet.getLegalOverTimeWork() == false){
+			if (excessOutsideTimeSet.isLegalOverTimeWork() == false){
 				
 				// 取得した残業枠時間を集計残業時間に入れる
 				switch (overTimeAndTransferAtr){
@@ -461,7 +461,7 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 			val timeSeriesWork = targetAggregateOverTime.getAndPutTimeSeriesWork(ymd);
 			
 			// 「設定．残業を含める」を確認する
-			if (!ootsukaMode &&  flexAggrSet.getIncludeOverTime() == true){
+			if (!ootsukaMode &&  flexAggrSet.getFlexTimeHandle().isIncludeOverTime()){
 				
 				// 取得した残業枠時間を「集計残業時間」に入れる　（法定内残業時間）
 				timeSeriesWork.addOverTimeInLegalOverTime(overTimeFrameSrc.getOverTimeWork());

@@ -19,13 +19,13 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalHolida
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByFlex;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.ExcessOutsideTimeSetReg;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.ExcessOutsideTimeSetReg;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetHolidayWorkAndTransferOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.HolidayWorkAndTransferAtr;
@@ -333,12 +333,12 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 			if (isStatutory){		// 法定内
 				if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){		// 時間外超過
 					// 勤務種類が法内休出の日を除く」を確認　→　true（除く）なら入れない
-					if (excessOutsideTimeSet.getExceptLegalHdwk() == true) isAddHdwk = false;
+					if (excessOutsideTimeSet.isExceptLegalHdwk()) isAddHdwk = false;
 				}
 			}
 			else{					// 法定外
 				// 「法定外休出を含める」を確認　→　false（含めない）なら法定内処理にする
-				if (excessOutsideTimeSet.getLegalHoliday() == false) isStatutory = true;
+				if (excessOutsideTimeSet.isLegalHoliday() == false) isStatutory = true;
 			}
 			
 			// 休出時間を入れる
@@ -486,7 +486,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 			// 入れる条件の確認
 			if (isStatutory == false){		// 法定外
 				// 「フレックス時間の扱い．法定外休出時間をフレックス時間に含める」を取得する　→　false（含めない）なら法定内処理にする
-				if (flexAggrSet.getIncludeIllegalHdwk() == false) isStatutory = true;
+				if (flexAggrSet.getFlexTimeHandle().isIncludeIllegalHdwk()) isStatutory = true;
 			}
 			
 			// 休出時間を入れる
