@@ -156,6 +156,7 @@ module nts.uk.at.view.kmp001.a {
 						const employees = data.listEmployee
 							.map(m => ({
 								affiliationId: m.affiliationId,
+								affiliationName: m.affiliationName,
 								code: m.employeeCode,
 								name: m.employeeName,
 								employeeId: m.employeeId
@@ -199,18 +200,23 @@ module nts.uk.at.view.kmp001.a {
 			if (checkeds != null) {
 				const command = { employeeId: model.employeeId, cardNumbers: checkeds.map(m => m.stampNumber), cardId: checkeds.map(m => m.stampCardId) };
 
-				vm.$ajax(KMP001A_API.DELETE, command)
-					.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
-					.then(() => vm.reloadData(index))
-					.then(() => vm.model.code.valueHasMutated())
-					.always(() => vm.$blockui("clear"));
+				nts.uk.ui.dialog
+					.confirm({ messageId: "Msg_18" })
+					.ifYes(() => {
+						vm.$ajax(KMP001A_API.DELETE, command)
+							.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
+							.then(() => vm.reloadData(index))
+							.then(() => vm.model.code.valueHasMutated())
+							.always(() => vm.$blockui("clear"));
+					})
+
 			}
 		}
 
 		addStampCard() {
 			const vm = this,
-			model: IModel = ko.toJS(vm.model),
-			index = _.map(ko.unwrap(vm.employees), m => m.code).indexOf(model.code);;
+				model: IModel = ko.toJS(vm.model),
+				index = _.map(ko.unwrap(vm.employees), m => m.code).indexOf(model.code);;
 
 			if (ko.unwrap(vm.model.code) != '') {
 				const stamps: share.IStampCard = model.stampCardDto[0];
@@ -223,16 +229,16 @@ module nts.uk.at.view.kmp001.a {
 						vm.$blockui("invisible");
 
 						vm.$ajax(KMP001A_API.UPDATE, command)
-							.then(() => vm.$dialog.info({ messageId: 'Msg_15'}))
+							.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
 							.always(() => vm.$blockui("clear"));
-					}else {
+					} else {
 						vm.$blockui("invisible");
-						
+
 						vm.$ajax(KMP001A_API.ADD, command)
-						.then(() => vm.$dialog.info({ messageId: 'Msg_15'}))
-						.then(() => vm.reloadData(index))
-						.then(() => vm.model.code.valueHasMutated())
-						.always(() => vm.$blockui("clear"));
+							.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+							.then(() => vm.reloadData(index))
+							.then(() => vm.model.code.valueHasMutated())
+							.always(() => vm.$blockui("clear"));
 					}
 				}
 			}
@@ -240,7 +246,7 @@ module nts.uk.at.view.kmp001.a {
 
 		reloadData(selectedIndex: number = 0) {
 			const vm = this;
-			
+
 			vm.$blockui("invisible")
 			vm.$ajax(KMP001A_API.GET_STATUS_SETTING, ko.toJS(vm.employeeIds))
 				.then((data: IEmployeeId[]) => {
@@ -261,103 +267,6 @@ module nts.uk.at.view.kmp001.a {
 				}).then(() => {
 					vm.$blockui("clear");
 				});
-		}
-	}
-
-	const editorTemplate = `
-<div>
-	<table class="layout-grid">
-		<tbody>
-			<tr>
-				<td class="label-column-a-left">
-					<div id="td-bottom" data-bind="text: $i18n('KMP001_16')"></div>
-				</td>
-				<td class="label-column-a-right">
-					<div id="td-bottom" data-bind="text: model.workplaceName"></div>
-				</td>
-			</tr>
-			<tr>
-				<td class="label-column-a-left">
-					<div id="td-bottom" data-bind="text: $component.$i18n('KMP001_9')"></div>
-				</td>
-				<td class="label-column-a-right">
-					<div id="td-bottom" data-bind="text: model.businessName"></div>
-				</td>
-			</tr>
-			<tr>
-				<td class="label-column-a-left">
-					<div id="td-bottom" data-bind="text: $component.$i18n('KMP001_20')"></div>
-				</td>
-				<td class="label-column-a-right">
-					<div id="td-bottom" data-bind="text: model.entryDate"></div>
-				</td>
-			</tr>
-			<tr>
-				<td class="label-column-a-left">
-					<div id="td-bottom" data-bind="text: $component.$i18n('KMP001_21')"></div>
-				</td>
-				<td class="label-column-a-right">
-					<div id="td-bottom" data-bind="text: model.retiredDate"></div>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-</div>
-<div>
-	<div>
-		<div class="list-card" 
-			data-bind="component: { name: 'card-list-component', params: { model: model} }"></div>
-	</div>
-</div>
-`
-
-	@component({
-		name: 'editor-area',
-		template: editorTemplate
-	})
-	class RightPanelComponent extends ko.ViewModel {
-		model!: Model;
-
-		created(params: any, params1: any) {
-			const vm = this;
-
-			vm.model = params.model;
-
-			vm.$ajax(KMP001A_API.GET_STAMPCARDDIGIT)
-				.then((data: string) => {
-					// Đây là maxleght 
-				});
-		}
-
-		mounted() {
-			const vm = this;
-
-			_.extend(window, { vm });
-		}
-	}
-
-	interface ISetting {
-		code: string;
-		isAlreadySetting: boolean;
-	}
-
-	class Setting {
-		code: KnockoutObservable<string> = ko.observable('');
-		isAlreadySetting: KnockoutObservable<boolean> = ko.observable(true);
-
-		constructor(params?: ISetting) {
-			const seft = this;
-
-			if (params) {
-				seft.code(params.code);
-				seft.update(params);
-			}
-		}
-
-		update(params: ISetting) {
-			const seft = this;
-
-			seft.isAlreadySetting(params.isAlreadySetting);
 		}
 	}
 
