@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
@@ -15,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
  */
 @Getter
 @AllArgsConstructor
-public class PublicManagementShiftTable {
+public class PublicManagementShiftTable implements DomainAggregate {
 	
 	/** 対象組織 **/
 	private final TargetOrgIdenInfor targetOrgIdenInfor;
@@ -26,7 +27,7 @@ public class PublicManagementShiftTable {
 	
 	//[C-1] 作る
 	public static PublicManagementShiftTable createPublicManagementShiftTable(TargetOrgIdenInfor targetOrgIdenInfor , GeneralDate endDatePublicationPeriod ,Optional<GeneralDate> optEditStartDate ){
-		//Nen hoi QA tai sao ko check isPresent // 
+
 		if(!optEditStartDate.isPresent())
 			throw new RuntimeException("System Error");	
 		if((optEditStartDate.get()).after(endDatePublicationPeriod) ){

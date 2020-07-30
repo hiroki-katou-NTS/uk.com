@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
  * @author HieuLt
  *
  */
-public class GetListWorkInforUsedDailyAttendanceRecord {
+public class GetWorkInforUsedDailyAttenRecordService {
 	/**
 	 * [1] 取得する	
 	 * @param listWorkInfoOfDailyPerformance

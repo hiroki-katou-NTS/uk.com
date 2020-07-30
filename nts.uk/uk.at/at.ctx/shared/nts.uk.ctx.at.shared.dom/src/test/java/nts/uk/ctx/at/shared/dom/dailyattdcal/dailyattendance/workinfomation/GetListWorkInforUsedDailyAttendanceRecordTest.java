@@ -34,7 +34,7 @@ public class GetListWorkInforUsedDailyAttendanceRecordTest {
 				new WorkInfoOfDailyAttendance(recordInfo5, null, null, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
 						DayOfWeek.FRIDAY, new ArrayList<>()));
 		
-		List<WorkInformation> listWorkInformation= GetListWorkInforUsedDailyAttendanceRecord.getListWorkInfo(lstWorkInfoOfDailyAttendance);
+		List<WorkInformation> listWorkInformation= GetWorkInforUsedDailyAttenRecordService.getListWorkInfo(lstWorkInfoOfDailyAttendance);
 		assertThat(
 				listWorkInformation.stream().sorted(
 						(x, y) -> x.getWorkTypeCode().v().compareTo(y.getWorkTypeCode().v())).collect(Collectors.toList()))
