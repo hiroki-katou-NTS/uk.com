@@ -1,4 +1,4 @@
-import { IOvertime } from "views/cmm/s45/components/app1";
+import { IOvertime } from "views/cmm/s45/shr/components/app1";
 
 export interface IApprovalPhase {
     approvalAtrName: string;

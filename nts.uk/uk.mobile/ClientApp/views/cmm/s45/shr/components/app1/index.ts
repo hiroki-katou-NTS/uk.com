@@ -1,6 +1,6 @@
 import { Vue, _ } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
-import { IApprovalPhase, IApprovalFrame, IApprover } from 'views/cmm/s45/common/index.d';
+import { IApprovalPhase, IApprovalFrame, IApprover } from 'views/cmm/s45/shr/index.d';
 
 @component({
     name: 'cmms45componentsapp1',

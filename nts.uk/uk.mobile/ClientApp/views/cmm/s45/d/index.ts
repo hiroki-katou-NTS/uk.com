@@ -1,9 +1,9 @@
 import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { ApprovedComponent } from '@app/components';
-import { IApprovalPhase, AppDetailScreenInfo } from 'views/cmm/s45/common/index.d';
-import { Phase } from 'views/cmm/s45/common/index';
-import { IOvertime } from 'views/cmm/s45/components/app1';
+import { IApprovalPhase, AppDetailScreenInfo } from 'views/cmm/s45/shr/index.d';
+import { Phase } from 'views/cmm/s45/shr/index';
+import { IOvertime } from 'views/cmm/s45/shr/components/app1';
 import { CmmS45EComponent } from 'views/cmm/s45/e';
 import { CmmS45FComponent } from 'views/cmm/s45/f';
 
@@ -13,7 +13,7 @@ import {
     CmmS45ComponentsApp3Component,
     CmmS45ComponentsApp4Component,
     CmmS45ComponentsApp5Component
-} from 'views/cmm/s45/components';
+} from 'views/cmm/s45/shr/components';
 
 @component({
     name: 'cmms45d',
