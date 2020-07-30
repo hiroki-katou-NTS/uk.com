@@ -27,6 +27,10 @@
 	margin-left: 50px;
 }
 
+.ntsSearchBox_Component {
+	margin-top: 4px;	
+}
+
 .view-kmp .model-component table.layout-grid td div {
 	padding-bottom: 15px;
 	float: left;
