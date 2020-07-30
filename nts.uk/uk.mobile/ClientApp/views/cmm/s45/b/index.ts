@@ -1,8 +1,8 @@
 import { Vue, _ } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
 
-import { AppInfo } from '../common';
-import { AppListExtractConditionDto } from '../common/index.d';
+import { AppInfo } from '../shr';
+import { AppListExtractConditionDto } from '../shr/index.d';
 
 import { TotopComponent } from '@app/components/totop';
 import { storage } from '@app/utils';

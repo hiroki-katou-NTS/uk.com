@@ -4,8 +4,8 @@ import { TotopComponent } from '@app/components/totop';
 import { storage } from '@app/utils';
 import { CmmS45CComponent } from '../c/index';
 
-import { AppInfo} from '../common';
-import { AppListExtractConditionDto } from '../common/index.d';
+import { AppInfo} from '../shr';
+import { AppListExtractConditionDto } from '../shr/index.d';
 
 @component({
     name: 'cmms45a',

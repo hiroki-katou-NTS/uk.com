@@ -1,8 +1,8 @@
 import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { ApprovedComponent } from '@app/components';
-import { IApprovalPhase, AppDetailScreenInfo } from 'views/cmm/s45/common/index.d';
-import { Phase } from 'views/cmm/s45/common/index';
+import { IApprovalPhase, AppDetailScreenInfo } from 'views/cmm/s45/shr/index.d';
+import { Phase } from 'views/cmm/s45/shr/index';
 import { IOvertime } from 'views/cmm/s45/components/app1';
 import { CmmS45EComponent } from 'views/cmm/s45/e';
 import { CmmS45FComponent } from 'views/cmm/s45/f';
