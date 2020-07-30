@@ -23,14 +23,14 @@ public interface WorkplaceGroupAdapter {
 	 * @param lstWorkplaceGroupID
 	 * @return
 	 */
-	List<WorkplaceGroupImport> getAllWorkplaces(GeneralDate date, List<String> lstWorkplaceGroupID);
+	List<WorkplaceGroupImport> getAllWorkplaces(GeneralDate date, String workplaceGroupID);
 	/**
 	 * [3] 所属する社員をすべて取得する
 	 * @param date
 	 * @param lstWorkplaceGroupID
 	 * @return
 	 */
-	List<EmpOrganizationImport> getGetAllEmployees(GeneralDate date, List<String> lstWorkplaceGroupID);
+	List<EmpOrganizationImport> getGetAllEmployees(GeneralDate date, String workplaceGroupID);
 	/**
 	 * [4] 参照可能な社員を取得する
 	 * @param date
@@ -38,6 +38,6 @@ public interface WorkplaceGroupAdapter {
 	 * @param lstWorkplaceGroupID
 	 * @return
 	 */
-	List<String> getReferableEmp(GeneralDate date,String empId, List<String> lstWorkplaceGroupID);
+	List<String> getReferableEmp(GeneralDate date,String empId, String workplaceGroupID);
 
 }

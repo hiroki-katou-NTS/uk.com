@@ -65,7 +65,7 @@ public class TargetOrgIdenInfor implements DomainValue {
 	 * @return
 	 */
 	public static TargetOrgIdenInfor creatIdentifiWorkplace(String workplaceId) {
-		return new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, workplaceId, null);
+		return new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, workplaceId, null);
 	}
 
 	// [1] 組織の表示情報を取得する
@@ -107,10 +107,11 @@ public class TargetOrgIdenInfor implements DomainValue {
 		// return list: @職場ID
 		if (this.unit.value == TargetOrganizationUnit.WORKPLACE.value) {
 			result.add(this.workplaceId.get());
+			return result;
 		}
 		// return require.職場グループに属する職場を取得する( @会社ID, @職場グループID )
 		result.addAll(require.getWKPID(this.workplaceGroupId.get()));
-		return null;
+		return result;
 	}
 
 	public static interface Require {

@@ -75,6 +75,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -722,10 +724,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	}
 	
 	@AllArgsConstructor
-	public static class ScheManaStatuTempoImpl implements ScheManaStatuTempo.Require{
-
-		@Override
-		public Optional<AffCompanyHistSharedImport> getAffCompanyHistByEmployee(String sid, DatePeriod datePeriod) {
+	public static class ScheManaStatuTempoImpl implements ScheManaStatuTempo.Require{@Override
+		public List<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod) {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -737,20 +737,19 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		}
 
 		@Override
-		public Optional<EmployeeLeaveJobPeriodImport> getByDatePeriod(List<String> lstEmpID, DatePeriod datePeriod) {
+		public List<EmployeeLeaveJobPeriodImport> getByDatePeriod(List<String> lstEmpID, DatePeriod datePeriod) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public Optional<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(List<String> lstEmpID,
-				DatePeriod datePeriod) {
+		public List<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(List<String> lstEmpID, DatePeriod datePeriod) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public Optional<EmploymentPeriod> getEmploymentHistory(List<String> lstEmpID, DatePeriod datePeriod) {
+		public List<EmploymentPeriodImported> getEmploymentHistory(List<String> lstEmpID, DatePeriod datePeriod) {
 			// TODO Auto-generated method stub
 			return null;
 		}

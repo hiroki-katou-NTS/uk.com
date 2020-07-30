@@ -23,6 +23,8 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.EmployeePosition;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortEmpService;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSetting;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSettingRepository;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpMedicalWorkFormHisItem;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.NurseClassification;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRank;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRankRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankPriority;
@@ -71,6 +73,7 @@ public class ScreenQueryExtractTargetEmployees {
 		
 	}
 	
+<<<<<<< HEAD:nts.uk/uk.at/at.screen/nts.uk.screen.at.app/src/main/java/nts/uk/screen/at/app/ksu001/extracttargetemployees/ScreenQueryExtractTargetEmployees.java
 	@AllArgsConstructor
 	private static class RequireImpl implements SortEmpService.Require {
 		
@@ -87,6 +90,20 @@ public class ScreenQueryExtractTargetEmployees {
 		@Inject
 		private  SyClassificationAdapter syClassificationAdapter;
 
+=======
+	@RequiredArgsConstructor
+	private static class RequireImpl implements SortEmpService.Require {@Override
+		public List<EmpMedicalWorkFormHisItem> get(List<String> listEmp, GeneralDate referenceDate) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<NurseClassification> getListCompanyNurseCategory() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+>>>>>>> pj/at/dev/team_C/Schedule_Ver1_1:nts.uk/uk.at/at.screen/nts.uk.screen.at.app/src/main/java/nts/uk/screen/at/app/ksu001/ExtractTargetEmployees.java
 
 		@Override
 		public Optional<SortSetting> get() {
@@ -104,8 +121,14 @@ public class ScreenQueryExtractTargetEmployees {
 		}
 
 		@Override
+<<<<<<< HEAD:nts.uk/uk.at/at.screen/nts.uk.screen.at.app/src/main/java/nts/uk/screen/at/app/ksu001/extracttargetemployees/ScreenQueryExtractTargetEmployees.java
 		public Optional<RankPriority> getRankPriority(String companyId) {
 			return rankRepo.getRankPriority(companyId);
+=======
+		public Optional<RankPriority> getRankPriority() {
+			// TODO Auto-generated method stub
+			return null;
+>>>>>>> pj/at/dev/team_C/Schedule_Ver1_1:nts.uk/uk.at/at.screen/nts.uk.screen.at.app/src/main/java/nts/uk/screen/at/app/ksu001/ExtractTargetEmployees.java
 		}
 
 		@Override
@@ -125,6 +148,7 @@ public class ScreenQueryExtractTargetEmployees {
 			List<EmpClassifiImport> data = syClassificationAdapter.getByListSIDAndBasedate(ymd, lstEmpId);
 			return data;
 		}
+	
 
 	}
 }
