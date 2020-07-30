@@ -30,18 +30,21 @@ module nts.uk.at.kdp003.f {
 	}
 
 	export type MODE = null | 'admin' | 'employee' | 'fingerVein';
+	export type SCREEN_NAME = 'KDP001' | 'KDP002' | 'KDP003' | 'KDP004' | 'KDP005';
 
 	export const LOGINDATA = 'KDP003F_LOGINDATA';
 
 	export const API = {
-		LOGIN_ADMIN: 'ctx/sys/gateway/kdp/login/adminmode',
-		LOGIN_EMPLOYEE: 'ctx/sys/gateway/kdp/login/employeemode',
-		COMPANIES: '/ctx/sys/gateway/kdp/login/getLogginSetting'
+		LOGIN_ADMIN: '/ctx/sys/gateway/kdp/login/adminmode',
+		LOGIN_EMPLOYEE: '/ctx/sys/gateway/kdp/login/employeemode',
+		COMPANIES: '/ctx/sys/gateway/kdp/login/getLogginSetting',
+		CONFIRM_STAMP_INPUT: '/at/record/stamp/employment/system/confirm-use-of-stamp-input'
 	};
 
 	@bean()
 	export class Kdp003FViewModel extends ko.ViewModel {
 		mode: KnockoutObservable<MODE> = ko.observable(null);
+		message: KnockoutObservable<Message | null> = ko.observable(null);
 
 		model: Model = new Model();
 
@@ -65,65 +68,157 @@ module nts.uk.at.kdp003.f {
 				}
 
 				if (employee) {
-					if (employee.id) {
+					if (!_.isNil(employee.id)) {
 						model.employeeId(employee.id);
 					}
 
-					if (employee.code) {
+					if (!_.isNil(employee.code)) {
 						model.employeeCode(employee.code);
 					}
 
-					if (employee.name) {
+					if (!_.isNil(employee.name)) {
 						model.employeeName(employee.name);
 					}
 				}
 			}
 
-			model.companyId
+			vm.model.companyId
 				.subscribe((id: string) => {
-					const dataSources: CompanyItem[] = ko.toJS(vm.listCompany);
+					const dataSources: CompanyItem[] = ko.unwrap(vm.listCompany);
+
+					vm.message(null);
 
 					if (dataSources.length) {
 						const exist = _.find(dataSources, (item: CompanyItem) => item.companyId === id);
 						const clear = () => {
 							model.companyCode('');
 							model.companyName('');
+
+							vm.message({ messageId: 'Msg_301' });
 						};
 
 						if (exist) {
-							const update = () => {
-								model.companyCode(exist.companyCode);
-								model.companyName(exist.companyName);
-							};
+							const SCREEN: RegExpMatchArray = window.top.location.href.match(/kdp\/00\d/);
 
-							// update companyId by subscribe companyCode
-							switch (name) {
-								default:
-								case 'KDP003':
-									if (exist.selectUseOfName === false) {
-										clear();
-									} else {
-										update();
+							if (SCREEN.length) {
+								const employeeCode: string = ko.unwrap(model.employeeCode);
+								const name: SCREEN_NAME = SCREEN[0].replace(/\//g, '').toUpperCase() as any;
+								const update = () => {
+									model.companyCode(exist.companyCode);
+									model.companyName(exist.companyName);
+								};
+
+								// update companyId by subscribe companyCode
+								switch (name) {
+									case 'KDP001':
+										break;
+									case 'KDP002':
+										break;
+									default:
+									case 'KDP003':
+										if (exist.selectUseOfName === false) {
+											clear();
+										} else {
+											update();
+										}
+										break;
+									case 'KDP004':
+										if (exist.fingerAuthStamp === false) {
+											clear();
+										} else {
+											update();
+										}
+										break;
+									case 'KDP005':
+										if (exist.icCardStamp === false) {
+											clear();
+										} else {
+											update();
+										}
+										break;
+								}
+
+								// UI[A6]  打刻利用失敗時のメッセージについて
+								if (!ko.unwrap(vm.message) && employeeCode) {
+									const params: CommanStampInput = {
+										companyId: exist.companyId,
+										employeeId: '',
+										employeeCode,
+										stampMeans: 1
+									};
+
+									const authen = (data: ConfirmStampInput) => {
+										if (data.used === CanEngravingUsed.NOT_PURCHASED_STAMPING_OPTION) {
+											// UI[A6]  打刻オプション未購入 
+											vm.message({ messageId: 'Msg_1644' });
+										} else if (data.used === CanEngravingUsed.UNREGISTERED_STAMP_CARD) {
+											// UI[A6]  打刻カード未登録
+											vm.message({ messageId: 'Msg_1619' });
+										} else if (data.used === CanEngravingUsed.ENGTAVING_FUNCTION_CANNOT_USED) {
+											// UI[A6]  打刻機能利用不可
+											const messageParams = [];
+
+											switch (name) {
+												case 'KDP001':
+													messageParams.push(vm.$i18n('KDP001_1'));
+													break;
+												case 'KDP002':
+													messageParams.push(vm.$i18n('KDP002_1'));
+													break;
+												default:
+												case 'KDP003':
+													messageParams.push(vm.$i18n('KDP002_2'));
+													break;
+												case 'KDP004':
+													messageParams.push(vm.$i18n('KDP002_3'));
+													break;
+												case 'KDP005':
+													messageParams.push(vm.$i18n('KDP002_4'));
+													break;
+											}
+
+											vm.message({
+												messageId: 'Msg_1645',
+												messageParams
+											});
+										} else {
+											vm.message(null);
+										}
+									};
+
+									switch (name) {
+										case 'KDP001':
+											params.stampMeans = StampMeans.PORTAL;
+											break;
+										case 'KDP002':
+											params.stampMeans = StampMeans.INDIVITION;
+											break;
+										default:
+										case 'KDP003':
+											params.stampMeans = StampMeans.NAME_SELECTION;
+											break;
+										case 'KDP004':
+											params.stampMeans = StampMeans.FINGER_AUTHC;
+											break;
+										case 'KDP005':
+											params.stampMeans = StampMeans.IC_CARD;
+											break;
 									}
-									break;
-								case 'KDP004':
-									if (exist.fingerAuthStamp === false) {
-										clear();
-									} else {
-										update();
-									}
-									break;
-								case 'KDP005':
-									if (exist.icCardStamp === false) {
-										clear();
-									} else {
-										update();
-									}
-									break;
+
+									vm.$ajax('at', API.CONFIRM_STAMP_INPUT, params).then(authen);
+								}
 							}
 						}
 					}
 				});
+
+			vm.listCompany.subscribe(() => {
+				model.companyId.valueHasMutated();
+			});
+
+			model.employeeCode.subscribe(() => {
+				model.companyId.valueHasMutated();
+			});
 		}
 
 		public mounted() {
@@ -134,7 +229,7 @@ module nts.uk.at.kdp003.f {
 				.then(() => vm.$ajax(API.COMPANIES))
 				.then((data: CompanyItem[]) => {
 					const companyId = ko.toJS(params.companyId);
-					const exist: CompanyItem = _.find(data, (c) => c.companyId === companyId) || _.head(data);
+					const exist: CompanyItem = _.find(data, (c) => c.companyId === companyId);
 
 					vm.listCompany(data);
 
@@ -146,10 +241,18 @@ module nts.uk.at.kdp003.f {
 						}
 					} else {
 						if (params.mode === 'admin') {
-							vm.$dialog
-								.error({ messageId: 'Msg_1527' })
-								.then(() => vm.$window.close({ msgErrorId: 'Msg_1527' }));
+							if (data.length === 1) {
+								model.companyId(data[0].companyId);
+							} else if (!data.length) {
+								vm.$dialog
+									.error({ messageId: 'Msg_1527' })
+									.then(() => vm.$window.close({ msgErrorId: 'Msg_1527' }));
+							} else {
+								// raise subscribe for update message
+								model.companyId.valueHasMutated();
+							}
 						} else {
+							// raise subscribe for update message
 							model.companyId.valueHasMutated();
 						}
 					}
@@ -179,17 +282,18 @@ module nts.uk.at.kdp003.f {
 
 		loginAdmin(api: string) {
 			const vm = this;
-			const { mode } = vm.params as AdminModeParam;
 			const { passwordRequired } = vm.params as EmployeeModeParam;
 			const model: ModelData = ko.toJS(vm.model);
 			const { password, companyCode } = model;
 
-			if (passwordRequired === false) {
-				_.omit(model, ['password']);
+			const message = ko.unwrap(vm.message);
+
+			if (message) {
+				return vm.$dialog.error(message);
 			}
 
-			if (mode === 'admin' && !model.companyId && !model.companyName) {
-				return vm.$dialog.error({ messageId: 'Msg_301' });
+			if (passwordRequired === false) {
+				_.omit(model, ['password']);
 			}
 
 			vm.$validate()
@@ -240,6 +344,46 @@ module nts.uk.at.kdp003.f {
 		}
 	}
 
+	export interface Message {
+		messageId: string;
+		messageParams?: string[];
+	}
+
+	interface ConfirmStampInput {
+		systemDate: string;
+		used: CanEngravingUsed;
+	}
+
+	interface CommanStampInput {
+		companyId: string;
+		employeeId: string;
+		employeeCode: string;
+		stampMeans: StampMeans;
+	}
+
+	enum StampMeans {
+		NAME_SELECTION = 0, // 0:氏名選択
+		FINGER_AUTHC = 1,   // 1:指認証打刻
+		IC_CARD = 2,        // 2:ICカード打刻
+		INDIVITION = 3,     //  3:個人打刻
+		PORTAL = 4,         // 4:ポータル打刻
+		SMART_PHONE = 5,    // 5:スマホ打刻
+		TIME_CLOCK = 6,     // 6:タイムレコーダー打刻
+		TEXT = 7,           // 7:テキスト受入
+		RICOH_COPIER = 8    // 8:リコー複写機打刻
+	}
+
+	enum CanEngravingUsed {
+		// 0 利用できる
+		AVAILABLE = 0,
+		// 1 打刻オプション未購入
+		NOT_PURCHASED_STAMPING_OPTION = 1,
+		// 2 打刻機能利用不可
+		ENGTAVING_FUNCTION_CANNOT_USED = 2,
+		// 3 打刻カード未登録
+		UNREGISTERED_STAMP_CARD = 3
+	}
+
 	export interface CompanyItem {
 		companyId: string;
 		companyCode: string;
@@ -256,6 +400,7 @@ module nts.uk.at.kdp003.f {
 		personalId: string;
 		employeeId: string;
 		employeeCode: string;
+		employeeName: string;
 		password?: string;
 	}
 

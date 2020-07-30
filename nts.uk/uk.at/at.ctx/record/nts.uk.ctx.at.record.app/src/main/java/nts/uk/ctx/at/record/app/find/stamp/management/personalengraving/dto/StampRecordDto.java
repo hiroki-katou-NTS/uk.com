@@ -171,116 +171,116 @@ public class StampRecordDto {
 			
 		}
 	}
-
-	public String getCorectTtimeStampType() {
-		if(this.changeClockArt == null) {
-			return null;
+	
+	public int getCorrectTimeStampValue() {
+		if (this.changeClockArt == null) {
+			return -1;
 		}
 
 		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeCalArt == ChangeCalArt.NONE.value
-				&& this.changeHalfDay == false ) {
-			return ContentsStampType.WORK.nameId;
+				&& this.changeHalfDay == false) {
+			return ContentsStampType.WORK.value;
 		}
+
 		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value
 				&& this.setPreClockArt == SetPreClockArt.DIRECT.value && this.changeCalArt == ChangeCalArt.NONE.value
-				&& this.changeHalfDay == false ) {
-			return ContentsStampType.WORK_STRAIGHT.nameId;
+				&& this.changeHalfDay == false) {
+			return ContentsStampType.WORK_STRAIGHT.value;
 		}
+
 		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value
-				&& this.changeCalArt == ChangeCalArt.EARLY_APPEARANCE.value && this.changeHalfDay == false
-				) {
-			return ContentsStampType.WORK_EARLY.nameId;
+				&& this.changeCalArt == ChangeCalArt.EARLY_APPEARANCE.value && this.changeHalfDay == false) {
+			return ContentsStampType.WORK_EARLY.value;
 		}
+
 		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value
 				&& this.setPreClockArt == SetPreClockArt.DIRECT.value && this.changeCalArt == ChangeCalArt.BRARK.value
-				&& this.changeHalfDay == false ) {
-			return ContentsStampType.WORK_BREAK.nameId;
+				&& this.changeHalfDay == false) {
+			return ContentsStampType.WORK_BREAK.value;
 		}
+
 		if (this.changeClockArt == ChangeClockArt.WORKING_OUT.value && this.changeCalArt == ChangeCalArt.OVER_TIME.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				) {
-			return ContentsStampType.DEPARTURE.nameId;
+				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
+			return ContentsStampType.DEPARTURE.value;
 		}
+
 		if (this.changeClockArt == ChangeClockArt.WORKING_OUT.value && this.changeCalArt == ChangeCalArt.OVER_TIME.value
-				&& this.setPreClockArt == SetPreClockArt.BOUNCE.value && this.changeHalfDay == false
-				) {
-			return ContentsStampType.DEPARTURE_BOUNCE.nameId;
+				&& this.setPreClockArt == SetPreClockArt.BOUNCE.value && this.changeHalfDay == false) {
+			return ContentsStampType.DEPARTURE_BOUNCE.value;
 		}
+
 		if (this.changeClockArt == ChangeClockArt.WORKING_OUT.value && this.changeCalArt == ChangeCalArt.OVER_TIME.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				) {
-			return ContentsStampType.DEPARTURE_OVERTIME.nameId;
+				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
+			return ContentsStampType.DEPARTURE_OVERTIME.value;
 		}
+
 		if (this.changeClockArt == ChangeClockArt.GO_OUT.value && this.changeCalArt == ChangeCalArt.NONE.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				) {
-			return ContentsStampType.OUT.nameId;
+				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
+			return ContentsStampType.OUT.value;
 		}
+
 		if (this.changeClockArt == ChangeClockArt.RETURN.value && this.changeCalArt == ChangeCalArt.NONE.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				) {
-			return ContentsStampType.RETURN.nameId;
+				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
+			return ContentsStampType.RETURN.value;
 		}
+
 		if (this.changeClockArt == ChangeClockArt.WORKING_OUT.value && this.changeCalArt == ChangeCalArt.NONE.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				) {
-			return ContentsStampType.GETTING_STARTED.nameId;
+				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
+			return ContentsStampType.GETTING_STARTED.value;
 		}
+
 		if (this.changeClockArt == ChangeClockArt.OVER_TIME.value && this.changeCalArt == ChangeCalArt.NONE.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				) {
-			return ContentsStampType.DEPAR.nameId;
+				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
+			return ContentsStampType.DEPAR.value;
 		}
+
 		if (this.changeClockArt == ChangeClockArt.TEMPORARY_WORK.value && this.changeCalArt == ChangeCalArt.NONE.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				) {
-			return ContentsStampType.TEMPORARY_WORK.nameId;
+				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
+			return ContentsStampType.TEMPORARY_WORK.value;
 		}
+
 		if (this.changeClockArt == ChangeClockArt.TEMPORARY_LEAVING.value
 				&& this.changeCalArt == ChangeCalArt.NONE.value && this.setPreClockArt == SetPreClockArt.NONE.value
-				&& this.changeHalfDay == false ) {
-			return ContentsStampType.TEMPORARY_LEAVING.nameId;
+				&& this.changeHalfDay == false) {
+			return ContentsStampType.TEMPORARY_LEAVING.value;
 		}
-		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.NONE.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				) {
-			return ContentsStampType.START_SUPPORT.nameId;
-		}
-		if (this.changeClockArt == ChangeClockArt.END_OF_SUPPORT.value && this.changeCalArt == ChangeCalArt.NONE.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				) {
-			return ContentsStampType.END_SUPPORT.nameId;
-		}
-		if (this.changeClockArt == ChangeClockArt.SUPPORT.value && this.changeCalArt == ChangeCalArt.NONE.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				) {
-			return ContentsStampType.WORK_SUPPORT.nameId;
-		}
-		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.EARLY_APPEARANCE.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				) {
-			return ContentsStampType.START_SUPPORT_EARLY_APPEARANCE.nameId;
-		}
-		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.BRARK.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				) {
-			return ContentsStampType.START_SUPPORT_BREAK.nameId;
-		}
-		
-//		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value && this.changeCalArt == ChangeCalArt.BRARK.value
-//				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-//				&& ReservationArt.RESERVATION.value == this.revervationAtr) {
-//			return ContentsStampType.RESERVATION.nameId;
-//		}
-//		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value && this.changeCalArt == ChangeCalArt.BRARK.value
-//				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-//				&& ReservationArt.CANCEL_RESERVATION.value == this.revervationAtr) {
-//			return ContentsStampType.CANCEL_RESERVATION.nameId;
-//		}
 
-		return null;
+		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.NONE.value
+				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
+			return ContentsStampType.START_SUPPORT.value;
+		}
+
+		if (this.changeClockArt == ChangeClockArt.END_OF_SUPPORT.value && this.changeCalArt == ChangeCalArt.NONE.value
+				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
+			return ContentsStampType.END_SUPPORT.value;
+		}
+
+		if (this.changeClockArt == ChangeClockArt.SUPPORT.value && this.changeCalArt == ChangeCalArt.NONE.value
+				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
+			return ContentsStampType.WORK_SUPPORT.value;
+		}
+
+		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.EARLY_APPEARANCE.value
+				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
+			return ContentsStampType.START_SUPPORT_EARLY_APPEARANCE.value;
+		}
+
+		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.BRARK.value
+				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
+			return ContentsStampType.START_SUPPORT_BREAK.value;
+		}
+
+		return -1;
+	}
+
+	public String getCorectTtimeStampType() {
+		if (getCorrectTimeStampValue() == -1) {
+			return null;
+		}
+
+		return ContentsStampType.valueOf(getCorrectTimeStampValue()).nameId;
 	}
 
 	public String getCorrectTimeString(StampMeans mean) {
