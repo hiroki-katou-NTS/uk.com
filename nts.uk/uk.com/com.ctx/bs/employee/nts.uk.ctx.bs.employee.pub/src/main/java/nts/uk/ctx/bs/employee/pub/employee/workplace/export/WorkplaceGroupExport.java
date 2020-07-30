@@ -10,7 +10,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class WorkplaceGroupExport {
 	/** 職場グループID **/
-	private String workplaceId;
+	private String workplaceGroupId;
 	/** 職場グループコード **/ 
 	private String workplaceGroupCode;
 	/** 職場グループ名称 **/
