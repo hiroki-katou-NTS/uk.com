@@ -18,13 +18,17 @@
 	</div>
 	<div class="table" style="margin-top: 5px;">
 		<div class="cell col-1">
-			<div class="cell valign-center" data-bind="ntsFormLabel: {required: appReasonRequired}, text: $i18n('KAF000_52')"></div>
+			<div class="cell valign-center" data-bind="ntsFormLabel: {
+									required: appReasonRequired,
+									constraint: 'AppReason'
+								}, text: $i18n('KAF000_52')"></div>
 		</div>
 		<div class="cell valign-center">
 			<textarea style="height: 80px;" id="inpReasonTextarea"
 				data-bind="ntsMultilineEditor: {
 							name: $i18n('KAF000_52'),
-							value: opAppReason, 
+							value: opAppReason,
+							constraint: 'AppReason',
 							option: {
 								resizeable: false,
 		                    	width: '450',
