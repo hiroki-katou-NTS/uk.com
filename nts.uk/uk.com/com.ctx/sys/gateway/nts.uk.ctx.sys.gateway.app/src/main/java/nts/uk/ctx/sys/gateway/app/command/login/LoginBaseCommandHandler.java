@@ -556,29 +556,33 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	
 	public LoginUserRoles checkRole(String userId, String comId) {
         DefaultLoginUserRoles roles = new DefaultLoginUserRoles();
-        String employmentRoleId = this.getRoleId(userId, RoleType.EMPLOYMENT, comId);
-        String salaryRoleId = this.getRoleId(userId, RoleType.SALARY, comId);
-        String humanResourceRoleId = this.getRoleId(userId, RoleType.HUMAN_RESOURCE, comId);
-        String personalInfoRoleId = this.getRoleId(userId, RoleType.PERSONAL_INFO, comId);
+        Optional<RoleInfoImport> employmentRole = this.getRoleInfo(userId, RoleType.EMPLOYMENT);
+        Optional<RoleInfoImport> salaryRole = this.getRoleInfo(userId, RoleType.SALARY);
+        Optional<RoleInfoImport> humanResourceRole = this.getRoleInfo(userId, RoleType.HUMAN_RESOURCE);
+        Optional<RoleInfoImport> personalInfoRole = this.getRoleInfo(userId, RoleType.PERSONAL_INFO);
         String officeHelperRoleId = this.getRoleId(userId, RoleType.OFFICE_HELPER, comId);
         String groupCompanyManagerRoleId = this.getRoleId(userId, RoleType.GROUP_COMAPNY_MANAGER, comId);
         String companyManagerRoleId = this.getRoleId(userId, RoleType.COMPANY_MANAGER, comId);
         String systemManagerRoleId = this.getRoleId(userId, RoleType.SYSTEM_MANAGER, comId);
 		// 就業
-		if (employmentRoleId != null) {
-			roles.setRoleIdForAttendance(employmentRoleId);
+		if (employmentRole.isPresent()) {
+			roles.setRoleIdForAttendance(employmentRole.get().getRoleId());
+			roles.setIsInChargeAttendance(employmentRole.get().isInCharge());
 		}
 		// 給与
-		if (salaryRoleId != null) {
-			roles.setRoleIdForPayroll(salaryRoleId);
+		if (salaryRole.isPresent()) {
+			roles.setRoleIdForPayroll(salaryRole.get().getRoleId());
+			roles.setIsInChargePayroll(salaryRole.get().isInCharge());
 		}
 		// 人事
-		if (humanResourceRoleId != null) {
-			roles.setRoleIdForPersonnel(humanResourceRoleId);
+		if (humanResourceRole.isPresent()) {
+			roles.setRoleIdForPersonnel(humanResourceRole.get().getRoleId());
+			roles.setIsInChargePersonnel(humanResourceRole.get().isInCharge());
 		}
 		// 個人情報
-		if (personalInfoRoleId != null) {
-			roles.setRoleIdforPersonalInfo(personalInfoRoleId);
+		if (personalInfoRole.isPresent()) {
+			roles.setRoleIdforPersonalInfo(personalInfoRole.get().getRoleId());
+			roles.setIsInChargePersonalInfo(personalInfoRole.get().isInCharge());
 		}
 		// オフィスヘルパー
 		if (officeHelperRoleId != null) {

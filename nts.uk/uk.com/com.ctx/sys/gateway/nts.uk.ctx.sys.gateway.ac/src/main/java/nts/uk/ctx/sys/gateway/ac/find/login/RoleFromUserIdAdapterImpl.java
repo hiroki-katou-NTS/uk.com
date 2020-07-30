@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.pub.grant.RoleFromUserIdPub;
-import nts.uk.ctx.sys.auth.pub.grant.RoleFromUserIdPub.RoleInfoExport;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleFromUserIdAdapter;
 
 /**
@@ -39,11 +38,8 @@ public class RoleFromUserIdAdapterImpl implements RoleFromUserIdAdapter {
 
     @Override
     public Optional<RoleInfoImport> getRoleInfoFromUser(String userId, int roleType, GeneralDate baseDate, String comId) {
-        Optional<RoleInfoExport> roleInfo = roleFromUserIdPub.getRoleInfoFromUserId(userId, roleType, baseDate, comId);
-        if (!roleInfo.isPresent()) {
-            return Optional.of(new RoleInfoImport(roleInfo.get().isInCharge(), roleInfo.get().getRoleId()));
-        }
-        return Optional.empty();
+        return roleFromUserIdPub.getRoleInfoFromUserId(userId, roleType, baseDate, comId)
+        		.map(roleInfo -> new RoleInfoImport(roleInfo.isInCharge(), roleInfo.getRoleId()));
     }
 
 }

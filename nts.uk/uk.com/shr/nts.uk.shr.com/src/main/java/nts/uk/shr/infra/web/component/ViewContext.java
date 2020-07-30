@@ -11,14 +11,13 @@ import javax.faces.context.ResponseWriter;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
 
-import nts.uk.shr.com.i18n.TextResource;
 import nts.arc.system.ServerSystemProperties;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.context.loginuser.SelectedLanguage;
 import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.operation.SystemOperationSetting;
 import nts.uk.shr.com.operation.SystemOperationSettingAdapter;
 import nts.uk.shr.com.program.ProgramsManager;

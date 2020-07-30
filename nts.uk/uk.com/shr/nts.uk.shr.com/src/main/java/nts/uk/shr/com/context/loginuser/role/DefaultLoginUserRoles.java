@@ -139,6 +139,10 @@ public class DefaultLoginUserRoles implements LoginUserRoles, Serializable {
 		this.forSystemAdmin = source.forSystemAdmin();
 		this.forCompanyAdmin = source.forCompanyAdmin();
 		this.forGroupCompaniesAdmin = source.forGroupCompaniesAdmin();
+		this.isInChargeAttendance = source.isInChargeAttendance();
+		this.isInChargePayroll = source.isInChargePayroll();
+		this.isInChargePersonnel = source.isInChargePersonnel();
+		this.isInChargePersonalInfo = source.isInChargePersonalInfo();
 	}
 	
 	public static DefaultLoginUserRoles cloneFrom(LoginUserRoles source){
