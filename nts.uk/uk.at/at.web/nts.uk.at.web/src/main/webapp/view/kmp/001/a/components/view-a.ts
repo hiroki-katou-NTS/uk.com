@@ -57,6 +57,7 @@ module nts.uk.at.view.kmp001.a {
 				.subscribe((c: string) => {
 					const employees: IModel[] = ko.toJS(vm.employees);
 					const current = _.find(employees, e => e.code === c);
+					vm.model.stampCardDto([]);
 
 					if (current) {
 						vm.$ajax(KMP001A_API.GET_INFOMAITON_EMPLOYEE + "/" + ko.toJS(current.employeeId) + "/" + ko.toJS(current.affiliationId) + "/" + ko.toJS(vm.baseDate))
@@ -72,6 +73,7 @@ module nts.uk.at.view.kmp001.a {
 			vm.employees
 				.subscribe(() => {
 					vm.reloadData(0);
+					vm.model.code.valueHasMutated();
 				})
 		}
 
