@@ -303,7 +303,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 
 		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
 		//アルゴリズム「2-1.新規画面登録前の処理」を実行する
-		processBeforeRegister.processBeforeRegister(application, OverTimeAtr.ALL, checkOver1Year, Collections.emptyList());
+		// processBeforeRegister.processBeforeRegister(application, OverTimeAtr.ALL, checkOver1Year, Collections.emptyList());
 		// アルゴリズム「直行直帰するチェック」を実行する - client da duoc check
 		
 		// アルゴリズム「直行直帰遅刻早退のチェック」を実行する
