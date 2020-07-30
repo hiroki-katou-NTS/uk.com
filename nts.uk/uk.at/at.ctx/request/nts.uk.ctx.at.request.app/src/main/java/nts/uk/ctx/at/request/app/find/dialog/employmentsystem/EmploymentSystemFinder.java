@@ -23,7 +23,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.Employment
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecDetailPara;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecGenerationDigestionHis;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
@@ -308,102 +307,40 @@ public class EmploymentSystemFinder {
 		// Step 紐付け情報を生成する ()
 
 		// Step 「残数詳細」を作成
-		List<RemainNumberDetailDto> listRemainNumberDetail = new ArrayList<>();
-		for (AbsRecDetailPara item : absRecMng.getLstAbsRecMng()) { 
-			RemainNumberDetailDto itemDto = new RemainNumberDetailDto();
-			itemDto.setExpiredInCurrentMonth(false);
-			if (item.getOccurrentClass().equals(OccurrenceDigClass.OCCURRENCE)) {
-				// ・逐次発生の休暇明細．発生消化区分　＝＝　発生　－＞発生日　＝　逐次発生の休暇明細．年月日
-				if (item.getYmdData().getDayoffDate().isPresent()) {
-					GeneralDate occurrenceDate = item.getYmdData().getDayoffDate().get();
-					itemDto.setOccurrenceDate(occurrenceDate);
-					// condition 取得した期間．開始日＜＝発生日＜＝取得した期間．終了日　－＞・当月で期限切れ　＝　True　ELSE　－＞・当月で期限切れ　＝　False
-					itemDto.setExpiredInCurrentMonth(closingPeriod.contains(occurrenceDate));
-				}
-			} else if (item.getOccurrentClass().equals(OccurrenceDigClass.DIGESTION)) {
-				// ・逐次発生の休暇明細．発生消化区分　＝＝　消化　－＞消化日　＝　逐次発生の休暇明細．年月日
-				itemDto.setDigestionDate(item.getYmdData().getDayoffDate().orElse(null));
-			}
-			if (item.getUnUseOfRec().isPresent()) {
-				UnUseOfRec unUseOfRec = item.getUnUseOfRec().get();
-				// field ・発生数　＝　取得した逐次発生の休暇明細．発生数．日数
-				itemDto.setOccurrenceNumber(unUseOfRec.getOccurrenceDays());
-				// field ・期限日　＝　取得した逐次発生の休暇明細．休暇発生明細．期限日
-				itemDto.setExpirationDate(unUseOfRec.getExpirationDate());
-			}
-			if (item.getUnOffsetOfAb().isPresent()) {
-				UnOffsetOfAbs unOffsetOfAbs = item.getUnOffsetOfAb().get();
-				// field ・消化数　＝　取得した逐次発生の休暇明細．未相殺数．日数
-				itemDto.setDigestionNumber(unOffsetOfAbs.getUnOffSetDays());
-			} 
-			// field 管理データ状態区分　＝　取得した逐次発生の休暇明細．状態
-			itemDto.setManagementDataStatus(item.getDataAtr().value);
-			listRemainNumberDetail.add(itemDto);
-		}
+		List<RemainNumberDetailDto> listRemainNumberDetail = absRecMng.getLstAbsRecMng().stream()
+				.map(item -> {
+					RemainNumberDetailDto itemDto = new RemainNumberDetailDto();
+					itemDto.setExpiredInCurrentMonth(false);
+					if (item.getOccurrentClass().equals(OccurrenceDigClass.OCCURRENCE)) {
+						// ・逐次発生の休暇明細．発生消化区分　＝＝　発生　－＞発生日　＝　逐次発生の休暇明細．年月日
+						if (item.getYmdData().getDayoffDate().isPresent()) {
+							GeneralDate occurrenceDate = item.getYmdData().getDayoffDate().get();
+							itemDto.setOccurrenceDate(occurrenceDate);
+							// condition 取得した期間．開始日＜＝発生日＜＝取得した期間．終了日　－＞・当月で期限切れ　＝　True　ELSE　－＞・当月で期限切れ　＝　False
+							itemDto.setExpiredInCurrentMonth(closingPeriod.contains(occurrenceDate));
+						}
+					} else if (item.getOccurrentClass().equals(OccurrenceDigClass.DIGESTION)) {
+						// ・逐次発生の休暇明細．発生消化区分　＝＝　消化　－＞消化日　＝　逐次発生の休暇明細．年月日
+						itemDto.setDigestionDate(item.getYmdData().getDayoffDate().orElse(null));
+					}
+					if (item.getUnUseOfRec().isPresent()) {
+						UnUseOfRec unUseOfRec = item.getUnUseOfRec().get();
+						// field ・発生数　＝　取得した逐次発生の休暇明細．発生数．日数
+						itemDto.setOccurrenceNumber(unUseOfRec.getOccurrenceDays());
+						// field ・期限日　＝　取得した逐次発生の休暇明細．休暇発生明細．期限日
+						itemDto.setExpirationDate(unUseOfRec.getExpirationDate());
+					}
+					if (item.getUnOffsetOfAb().isPresent()) {
+						UnOffsetOfAbs unOffsetOfAbs = item.getUnOffsetOfAb().get();
+						// field ・消化数　＝　取得した逐次発生の休暇明細．未相殺数．日数
+						itemDto.setDigestionNumber(unOffsetOfAbs.getUnOffSetDays());
+					} 
+					// field 管理データ状態区分　＝　取得した逐次発生の休暇明細．状態
+					itemDto.setManagementDataStatus(item.getDataAtr().value);
+					return itemDto;
+				})
+				.collect(Collectors.toList());
 		result.setListRemainNumberDetail(listRemainNumberDetail);
-		
-		
-//		List<RecAbsHistoryOutputDto> recAbsHistoryOutput = new ArrayList<>();
-//		if(data.isPresent() && data.get().getGreneraGigesHis().size() > 0) {
-//			for (RecAbsHistoryOutputPara item : data.get().getGreneraGigesHis()) {
-//				if(item == null) {
-//					continue;
-//				}
-//				
-//				CompensatoryDayoffDateDto ymdData = new CompensatoryDayoffDateDto(item.getYmdData().isUnknownDate(), 
-//						item.getYmdData().getDayoffDate().isPresent() ? item.getYmdData().getDayoffDate().get() : null);
-//				
-//				Double useDays = item.getUseDays() != null ? item.getUseDays().get() : 0.0;
-//				
-//				AbsenceHistoryOutputPara absHisDatas = item.getAbsHisData() != null ? item.getAbsHisData().get() : null;
-//				
-//				CompensatoryDayoffDateDto absDate = new CompensatoryDayoffDateDto(absHisDatas != null ? absHisDatas.getAbsDate().isUnknownDate() : true, 
-//						absHisDatas != null ? (absHisDatas.getAbsDate().getDayoffDate().isPresent() ? absHisDatas.getAbsDate().getDayoffDate().get() : null) : null);
-//				
-//				AbsenceHistoryOutputParaDto absHisData = new AbsenceHistoryOutputParaDto(absHisDatas != null ? absHisDatas.getCreateAtr().value : 0, 
-//						absHisDatas != null ? absHisDatas.getAbsId() : null,
-//						absDate, absHisDatas != null ? absHisDatas.getRequeiredDays() : 0.0, 
-//						absHisDatas != null ? absHisDatas.getUnOffsetDays() : 0.0);
-//				
-//				RecruitmentHistoryOutPara recHisDatas = item.getRecHisData() != null ? item.getRecHisData().get() : null;
-//				
-//				CompensatoryDayoffDateDto recDate = new CompensatoryDayoffDateDto(
-//						recHisDatas != null ? recHisDatas.getRecDate().isUnknownDate() : true, 
-//						recHisDatas != null 
-//								? (recHisDatas.getRecDate().getDayoffDate().isPresent() ? recHisDatas.getRecDate().getDayoffDate().get() : null) 
-//								: null);
-//				
-//				RecruitmentHistoryOutParaDto recHisData = new RecruitmentHistoryOutParaDto(recHisDatas != null ? recHisDatas.getExpirationDate() : null, 
-//						recHisDatas != null ? recHisDatas.isChkDisappeared() : true,
-//						recHisDatas != null ? recHisDatas.getDataAtr().value : 0, 
-//						recHisDatas != null ? recHisDatas.getRecId() : null, recDate, 
-//						recHisDatas != null ? recHisDatas.getOccurrenceDays() : 0.0,
-//						recHisDatas != null ? recHisDatas.getHolidayAtr() : 0, 
-//						recHisDatas != null ? recHisDatas.getUnUseDays() : 0.0);
-//				
-//				RecAbsHistoryOutputDto outputDto = new RecAbsHistoryOutputDto(ymdData, useDays, absHisData, recHisData);
-//				recAbsHistoryOutput.add(outputDto);
-//			}
-//		}
-//		result.setRecAbsHistoryOutput(recAbsHistoryOutput);
-//		result.setAbsRemainInfor(data.isPresent() ? data.get().getAbsRemainInfor() : null);
-//		//imported（就業）「所属雇用履歴」を取得する RequestList31
-//		Optional<EmploymentHistoryImported> empImpOpt =  this.wpAdapter.getEmpHistBySid(companyId, employeeId, inputDate);
-//		// アルゴリズム「振休管理設定の取得」を実行する
-//		SubstVacationSetting setting = getLeaveManagementSetting(companyId, employeeId, empImpOpt);
-		
-		//アルゴリズム「期間内の振出振休残数を取得する」を実行する
-//		AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyId,
-//																			employeeId,
-//																			getDatePeroid(closingPeriod.start()),
-//																			GeneralDate.today(),
-//																			false,
-//																			false, 
-//																			Collections.emptyList(),
-//																			Collections.emptyList(),
-//																			Collections.emptyList(),
-//																			Optional.empty(),Optional.empty(),Optional.empty());
-//		AbsRecRemainMngOfInPeriod absRecMng = absRertMngInPeriod.getAbsRecMngInPeriod(param);
 		
 		// Step 振出振休発生消化履歴の取得
 		Optional<AbsRecGenerationDigestionHis> data = this.absenceReruitmentManaQuery.generationDigestionHis(companyId, employeeId, inputDate);
@@ -426,31 +363,6 @@ public class EmploymentSystemFinder {
 		}
 		return result;
 	}
-
-//	private SubstVacationSetting getLeaveManagementSetting(String companyId, String employeeId,
-//			Optional<EmploymentHistoryImported> empImpOpt) {
-//		SubstVacationSetting setting = null;
-//		
-//		if (empImpOpt.isPresent()) {
-//			EmploymentHistoryImported empImp = empImpOpt.get();
-//			String emptCD = empImp.getEmploymentCode();
-//
-//			Optional<EmpSubstVacation> empSubOpt = empSubrepo.findById(companyId, emptCD);
-//			if (empSubOpt.isPresent()) {
-//				setting = empSubOpt.get().getSetting();
-//			} else {
-//				Optional<ComSubstVacation> comSubOpt = comSubrepo.findById(companyId);
-//				if (comSubOpt.isPresent()) {
-//					setting = comSubOpt.get().getSetting();
-//				}
-//			}
-//			if (setting == null) {
-//				throw new BusinessException("振休管理設定 == null");
-//			}
-//
-//		}
-//		return setting;
-//	}
 
 	@Data
 	@AllArgsConstructor

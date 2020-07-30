@@ -38,7 +38,8 @@ module nts.uk.at.view.kdl009.a {
                 self.dataItems = ko.observableArray([]);
                 self.legendOptions = {
                     items: [
-                        { labelText: nts.uk.resource.getText("KDL009_18") + " : " + nts.uk.resource.getText("KDL009_19") }
+                        { labelText: nts.uk.resource.getText("KDL009_29") },
+                        { labelText: nts.uk.resource.getText("KDL009_30") }
                     ]
                 };
 
@@ -173,79 +174,6 @@ module nts.uk.at.view.kdl009.a {
                         });
                         self.dataItems.push(dataItem);
                     });
-
-                    // _.each(, function (item) {
-                    //     let isHalfDay = false;
-                    //     let issueDate = "";
-                    //     let holidayDateTop = "";
-                    //     let holidayDateBot = "";
-                    //     let expirationDate = "";
-                    //     let occurrenceDays1 = "";
-                    //     let occurrenceDays2Top = "";
-                    //     let occurrenceDays2Bot = "";
-                    //     if (item.recHisData != null) {
-                    //         if (!item.recHisData.recDate.unknownDate) {
-                    //             if (item.recHisData.dataAtr == 3) {
-                    //                 issueDate = nts.uk.resource.getText("KDL009_13", [
-                    //                     (nts.uk.time as any).applyFormat("Short_YMDW", [item.recHisData.recDate.dayoffDate])
-                    //                 ]);
-                    //             } else {
-                    //                 issueDate = (nts.uk.time as any).applyFormat("Short_YMDW", [item.recHisData.recDate.dayoffDate]);
-                    //             }
-                    //         } else {
-                    //             issueDate = "";
-                    //         }
-
-                    //         if (item.recHisData.occurrenceDays == 0.5) {
-                    //             occurrenceDays1 = nts.uk.resource.getText("KDL009_14", [item.recHisData.occurrenceDays]);
-                    //         }
-
-                    //         if (item.recHisData.expirationDate != null) {
-                    //             expirationDate = (nts.uk.time as any).applyFormat("Short_YMDW", [item.recHisData.expirationDate]);
-                    //         } else {
-                    //             expirationDate = "";
-                    //         }
-                    //     }
-
-                    //     if (item.absHisData != null) {
-                    //         if (item.absHisData.absDate.unknownDate) {
-                    //             holidayDateTop = nts.uk.resource.getText("KDL009_11");
-                    //         } else {
-                    //             if (item.absHisData.createAtr == 3) {
-                    //                 holidayDateTop = nts.uk.resource.getText("KDL009_13", [
-                    //                     (nts.uk.time as any).applyFormat("Short_YMDW", [item.absHisData.absDate.dayoffDate])
-                    //                 ]);
-                    //             } else {
-                    //                 holidayDateTop = (nts.uk.time as any).applyFormat("Short_YMDW", [item.absHisData.absDate.dayoffDate]);
-                    //             }
-                    //         }
-
-                    //         if (item.absHisData.requeiredDays == 0.5) {
-                    //             occurrenceDays2Top = nts.uk.resource.getText("KDL009_14", [item.absHisData.requeiredDays]);
-                    //         }
-
-                    //         if (holidayDateTop === nts.uk.resource.getText("KDL009_11")) {
-                    //             holidayDateTop = "";
-                    //             occurrenceDays2Top = "";
-
-                    //         }
-                    //     }
-
-                    //     if (item.recHisData.dataAtr == 1) {
-                    //         if (holidayDateTop === "" && occurrenceDays2Top === "") {
-                    //             isHalfDay = false;
-                    //         } else {
-                    //             isHalfDay = true;
-                    //         }
-                    //     }
-
-                    //     if (issueDate == "" && holidayDateTop == "" && expirationDate != "") {
-                    //         issueDate = nts.uk.resource.getText("KDL009_11");
-                    //     }
-
-                    //     let temp = new DataItems(issueDate, holidayDateTop, holidayDateBot, expirationDate, occurrenceDays1, occurrenceDays2Top, occurrenceDays2Bot, isHalfDay);
-
-                    // });
                 }
             }
 
