@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppCommentSet;
 
 /**
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppC
  *
  */
 @Getter
+@Setter
 public class SettingForEachType {
 	
 	/**

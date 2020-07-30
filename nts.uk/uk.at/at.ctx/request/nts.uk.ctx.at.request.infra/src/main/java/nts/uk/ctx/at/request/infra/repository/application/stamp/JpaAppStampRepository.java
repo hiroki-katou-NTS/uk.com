@@ -1,10 +1,8 @@
 package nts.uk.ctx.at.request.infra.repository.application.stamp;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
