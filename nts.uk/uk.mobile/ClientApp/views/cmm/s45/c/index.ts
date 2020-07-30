@@ -10,7 +10,7 @@ import {
     CmmS45ComponentsApp3Component,
     CmmS45ComponentsApp4Component,
     CmmS45ComponentsApp5Component
-} from 'views/cmm/s45/components';
+} from 'views/cmm/s45/shr/components';
 
 @component({
     name: 'cmms45c',
