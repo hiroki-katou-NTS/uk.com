@@ -14,7 +14,7 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEa
 @NoArgsConstructor
 @Data
 // 遅刻早退取消申請
-public class ArrivedLateLeaveEarlyDto extends ApplicationDto {
+public class ArrivedLateLeaveEarlyDto {
 	// 取消
 	private List<LateCancelationDto> lateCancelation;
 	// 時刻報告
@@ -30,7 +30,7 @@ public class ArrivedLateLeaveEarlyDto extends ApplicationDto {
 	}
 	
 	public ArrivedLateLeaveEarly convertDomain() {
-		ArrivedLateLeaveEarly dto = new ArrivedLateLeaveEarly(this.toDomain());
+		ArrivedLateLeaveEarly dto = new ArrivedLateLeaveEarly();
 		dto.setLateCancelation(this.lateCancelation.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 		dto.setLateOrLeaveEarlies(this.lateOrLeaveEarlies.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 		

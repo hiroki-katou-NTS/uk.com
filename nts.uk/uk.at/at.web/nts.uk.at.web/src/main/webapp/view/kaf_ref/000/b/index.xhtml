@@ -18,6 +18,8 @@
 			<com:stylefile path="/view/kaf_ref/000/b/component8/kaf000.b.component8.css" />
 			<com:stylefile path="/view/kaf_ref/007/shr/kaf007.shr.css" />
 			<com:stylefile path="/view/kaf_ref/009/shr/kaf009.share.style.css" />
+			<com:scriptfile path="/view/kaf_ref/004/shr/common/kaf004.shr.vm.js" />
+            <com:scriptfile path="/view/kaf_ref/004/shr/b/kaf004.shr.vm.js" />
 			<com:stylefile path="/view/kaf_ref/000/b/kaf000.b.css" />
 			<com:scriptfile path="/view/kaf_ref/000/shr/kaf000.shr.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/000/b/component1/kaf000.b.component1.js" />
@@ -32,6 +34,7 @@
 			<com:scriptfile path="/view/kaf_ref/009/shr/kaf009.shr.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/007/b/kaf007.b.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/009/b/kaf009.b.vm.js" />
+			<com:scriptfile path="/view/kaf_ref/004/b/kaf004.b.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/000/b/kaf000.b.vm.js" />
 		</ui:define>
 		<ui:define name="content">
@@ -56,7 +59,7 @@
 					<div class="controlButtonCell_kaf000"
 						data-bind="if: displayApprovalButton">
 						<button class="proceed kaf000-function-btn"
-							data-bind="click: btnApprove, 
+							data-bind="click: btnApprove,
 													enable: enableApprovalButton() &amp;&amp; errorEmpty()
 													">#{i18n.getText('KAF000_15')}</button>
 					</div>
@@ -71,7 +74,7 @@
 					<div class="controlButtonCell_kaf000"
 						data-bind="if: displayDenyButton">
 						<button class="kaf000-function-btn"
-							data-bind="click: btnDeny, 
+							data-bind="click: btnDeny,
 									enable: enableDenyButton() &amp;&amp; errorEmpty()
 									">#{i18n.getText('KAF000_16')}</button>
 					</div>
@@ -86,7 +89,7 @@
 					<div class="controlButtonCell_kaf000"
 						data-bind="if: displayReleaseButton">
 						<button class="kaf000-function-btn"
-							data-bind="click: btnRelease, 
+							data-bind="click: btnRelease,
 									enable: enableReleaseButton()
 									">#{i18n.getText('KAF000_18')}</button>
 					</div>
@@ -94,7 +97,7 @@
 					<div class="controlButtonCell_kaf000"
 						data-bind="if: displayRemandButton">
 						<button class="kaf000-function-btn"
-							data-bind="click: btnRemand, 
+							data-bind="click: btnRemand,
 									enable: enableRemandButton()
 									   ">#{i18n.getText('KAF000_17')}</button>
 					</div>
@@ -141,7 +144,7 @@
 			</div>
 			<div id="contents-area">
 				<div data-bind="if: ko.unwrap(appType) === 0">
-					APP TYPE = 0	
+					APP TYPE = 0
 				</div>
 				<div data-bind="if: ko.unwrap(appType) === 1">
 					APP TYPE = 1
@@ -149,7 +152,7 @@
 				<div data-bind="if: ko.unwrap(appType) === 2">
 					<div data-bind="component: {
 							name: 'kaf007-b',
-							params: { 
+							params: {
 								appDispInfoStartupOutput: $vm.appDispInfoStartupOutput,
 								eventUpdate: function(a) { $vm.getChildUpdateEvent.apply($vm, [a]) }
 							}
@@ -158,7 +161,16 @@
 				<div data-bind="if: ko.unwrap(appType) === 4">
 					<div data-bind="component: {
 							name: 'kaf009-b',
-							params: { 
+							params: {
+								appDispInfoStartupOutput: $vm.appDispInfoStartupOutput,
+								eventUpdate: function(a) { $vm.getChildUpdateEvent.apply($vm, [a]) }
+							}
+						}"></div>
+				</div>
+				<div data-bind="if: ko.unwrap(appType) === 9">
+					<div data-bind="component: {
+							name: 'kaf004-b',
+							params: {
 								appDispInfoStartupOutput: $vm.appDispInfoStartupOutput,
 								eventUpdate: function(a) { $vm.getChildUpdateEvent.apply($vm, [a]) }
 							}

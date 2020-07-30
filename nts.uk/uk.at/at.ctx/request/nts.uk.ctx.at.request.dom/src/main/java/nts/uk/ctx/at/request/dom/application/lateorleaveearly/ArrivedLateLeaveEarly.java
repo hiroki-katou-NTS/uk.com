@@ -3,10 +3,12 @@ package nts.uk.ctx.at.request.dom.application.lateorleaveearly;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.Application;
 @Setter
 @Getter
+@NoArgsConstructor
 //遅刻早退取消申請
 public class ArrivedLateLeaveEarly extends Application{
 //	取消
