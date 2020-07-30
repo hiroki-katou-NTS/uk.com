@@ -47,6 +47,7 @@ module nts.uk.at.view.kmp001.a {
 		public baseDate: KnockoutObservable<string> = ko.observable('');
 		public currentCodes: KnockoutObservableArray<string> = ko.observableArray([]);
 		public mode: KnockoutObservable<MODE> = ko.observable('update');
+		public olderCardNumber: string = '';
 
 		created() {
 			const vm = this;
@@ -61,6 +62,7 @@ module nts.uk.at.view.kmp001.a {
 							.then((data: IModel) => {
 								vm.model.update(ko.toJS(data));
 								vm.model.employeeId(current.employeeId);
+								vm.olderCardNumber = data.stampCardDto[0].stampNumber;
 							});
 					}
 					vm.mode("update");
@@ -220,21 +222,22 @@ module nts.uk.at.view.kmp001.a {
 
 			if (ko.unwrap(vm.model.code) != '') {
 				const stamps: share.IStampCard = model.stampCardDto[0];
-				const command = { employeeId: ko.toJS(model.employeeId), cardNumber: ko.toJS(stamps.stampNumber) };
 
-				if (command.cardNumber == '') {
+				if (stamps.stampNumber == '') {
 					vm.$dialog.info({ messageId: "Msg_1679" });
 				} else {
 					if (ko.toJS(vm.mode) == 'update') {
 						vm.$blockui("invisible");
 
-						vm.$ajax(KMP001A_API.UPDATE, command)
+						const commandUpdate = { employeeId: ko.toJS(model.employeeId), olderCardNumber: ko.toJS(vm.olderCardNumber), newCardNumber: ko.toJS(stamps.stampNumber) };
+						vm.$ajax(KMP001A_API.UPDATE, commandUpdate)
 							.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
 							.always(() => vm.$blockui("clear"));
 					} else {
 						vm.$blockui("invisible");
 
-						vm.$ajax(KMP001A_API.ADD, command)
+						const commandNew = { employeeId: ko.toJS(model.employeeId), cardNumber: ko.toJS(stamps.stampNumber) };
+						vm.$ajax(KMP001A_API.ADD, commandNew)
 							.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
 							.then(() => vm.reloadData(index))
 							.then(() => vm.model.code.valueHasMutated())
