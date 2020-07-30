@@ -5,7 +5,6 @@
 
 .sidebar-content-header ~ div {
 	padding: 20px;
-	float: left;
 }
 
 .view-kmp .nts-searchbbox-wrapper .form-label {
@@ -92,12 +91,6 @@
 
 #top_bottom {
 	margin-left: 5px;
-}
-
-.search_label {
-	float: left;
-	width: 100vw;
-	padding-bottom: 0px;
 }
 
 .search_label .sub_title {
