@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "KRCMT_MON_OUEN_FRAME_WLC")
+@Table(name = "KRCMT_MON_SUP_FRAME_WLC")
 @AllArgsConstructor
 public class KrcmtMonOuenFrameWlc extends UkJpaEntity implements Serializable {
 
