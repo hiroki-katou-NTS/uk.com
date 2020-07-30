@@ -34,4 +34,15 @@ public class DayOffHistoryData {
 	 * 未相殺日数
 	 */
 	private Double unOffsetDays;
+	/**
+	 * #110215 update KDL005
+	 * 必要時間数
+	 */
+	private Double requiredHours;
+	/**
+	 * #110215 update KDL005
+	 * 未相殺時間数
+	 */
+	private Double unOffsetHours;
+	
 }
