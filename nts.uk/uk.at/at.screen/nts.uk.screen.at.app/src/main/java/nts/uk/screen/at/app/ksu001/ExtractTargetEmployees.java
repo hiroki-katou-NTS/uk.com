@@ -23,6 +23,8 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.EmployeePosition;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortEmpService;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSetting;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSettingRepository;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpMedicalWorkFormHisItem;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.NurseClassification;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRank;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRankRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankPriority;
@@ -73,6 +75,18 @@ public class ExtractTargetEmployees {
 	
 	@RequiredArgsConstructor
 	private static class RequireImpl implements SortEmpService.Require {@Override
+		public List<EmpMedicalWorkFormHisItem> get(List<String> listEmp, GeneralDate referenceDate) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<NurseClassification> getListCompanyNurseCategory() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
 		public Optional<SortSetting> get() {
 			// TODO Auto-generated method stub
 			return null;
@@ -91,7 +105,7 @@ public class ExtractTargetEmployees {
 		}
 
 		@Override
-		public Optional<RankPriority> getRankPriority(String companyId) {
+		public Optional<RankPriority> getRankPriority() {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -113,6 +127,7 @@ public class ExtractTargetEmployees {
 			// TODO Auto-generated method stub
 			return null;
 		}
+	
 
 	}
 

@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  * @author HieuLt
  *
  */
-public class GetListWorkTypeWorkTimeUseDailyAttendanceRecord {
+public class GetListWtypeWtimeUseDailyAttendRecordService {
 
 	public static WorkTypeWorkTimeUseDailyAttendanceRecord getdata(List<WorkInfoOfDailyAttendance> lstWorkInfoOfDailyAttendance){ 
 		/*$勤務種類リスト = 日別勤怠の勤務情報リスト:																						

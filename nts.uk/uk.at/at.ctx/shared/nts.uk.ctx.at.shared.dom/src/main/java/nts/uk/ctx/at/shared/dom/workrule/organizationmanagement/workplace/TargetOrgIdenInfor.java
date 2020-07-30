@@ -40,11 +40,20 @@ public class TargetOrgIdenInfor implements DomainValue {
 	@Getter
 	private final Optional<String> workplaceGroupId;
 
+	
 	public TargetOrgIdenInfor(TargetOrganizationUnit unit, String workplaceId, String workplaceGroupId) {
 		super();
 		this.unit = unit;
 		this.workplaceId = Optional.ofNullable(workplaceId);
 		this.workplaceGroupId = Optional.ofNullable(workplaceGroupId);
+	}
+	
+	public TargetOrgIdenInfor(TargetOrganizationUnit unit, Optional<String> workplaceId,
+			Optional<String> workplaceGroupId) {
+		super();
+		this.unit = unit;
+		this.workplaceId = workplaceId;
+		this.workplaceGroupId = workplaceGroupId;
 	}
 
 	/**
@@ -54,7 +63,7 @@ public class TargetOrgIdenInfor implements DomainValue {
 	 * @return
 	 */
 	public static TargetOrgIdenInfor creatIdentifiWorkplaceGroup(String workplaceGroupId) {
-		return new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, null, workplaceGroupId);
+		return new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, Optional.empty(), Optional.ofNullable(workplaceGroupId));
 
 	}
 
@@ -65,7 +74,7 @@ public class TargetOrgIdenInfor implements DomainValue {
 	 * @return
 	 */
 	public static TargetOrgIdenInfor creatIdentifiWorkplace(String workplaceId) {
-		return new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, workplaceId, null);
+		return new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,Optional.ofNullable( workplaceId), Optional.empty());
 	}
 
 	// [1] 組織の表示情報を取得する
@@ -107,11 +116,14 @@ public class TargetOrgIdenInfor implements DomainValue {
 		// return list: @職場ID
 		if (this.unit.value == TargetOrganizationUnit.WORKPLACE.value) {
 			result.add(this.workplaceId.get());
+			return result;
 		}
 		// return require.職場グループに属する職場を取得する( @会社ID, @職場グループID )
 		result.addAll(require.getWKPID(this.workplaceGroupId.get()));
-		return null;
+		return result;
 	}
+
+	
 
 	public static interface Require {
 		/**
