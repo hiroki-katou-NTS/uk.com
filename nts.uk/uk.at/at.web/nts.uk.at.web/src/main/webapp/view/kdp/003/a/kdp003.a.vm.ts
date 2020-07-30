@@ -134,11 +134,15 @@ module nts.uk.at.kdp003.a {
 						} = data as StorageData;
 
 						const loginData: f.ModelData = {
+							contractCode: '000000000000',
 							companyCode: CCD,
 							companyId: CID,
 							employeeCode: SCD,
 							employeeId: SID,
-							password: PWD
+							password: PWD,
+							passwordInvalid: false,
+							isAdminMode: true,
+							runtimeEnvironmentCreate: true
 						};
 
 						// auto login by storage data of preview login
