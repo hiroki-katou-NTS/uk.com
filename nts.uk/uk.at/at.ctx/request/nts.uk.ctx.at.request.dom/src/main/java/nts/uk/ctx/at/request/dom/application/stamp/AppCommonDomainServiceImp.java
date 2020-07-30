@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,9 @@ import org.apache.commons.lang3.BooleanUtils;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.StampRecordOutput;
@@ -114,7 +118,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	@Override
 	public List<ErrorStampInfo> getErrorStampList(StampRecordOutput stampRecordOutput) {
 //		「打刻エラー情報」＝Empty
-		List<ErrorStampInfo> errorStampInfos = Collections.emptyList();
+		List<ErrorStampInfo> errorStampInfos = new ArrayList<ErrorStampInfo>();
 		/**
 		 * 介護時間帯
 		 */
@@ -158,8 +162,6 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		this.addErros(errorStampInfos, StampAtrOther.CHEERING, supportTime);
 		this.addErros(errorStampInfos, StampAtrOther.ATTEENDENCE_OR_RETIREMENT, extraordinaryTime);
 		
-		
-		
 		return errorStampInfos;
 	}
 	
@@ -187,6 +189,20 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 			});
 			
 		}
+	}
+
+	@Override
+	public List<ConfirmMsgOutput> checkBeforeRegister(String companyId, ApplicationType appType,
+			Application application) {
+//		レコーダーイメージ申請の場合：要らない
+		
+//		育児 または 介護または休憩の時、「 開始時刻　OR　 終了時刻」は入力しない　→　(#Msg_308#)
+		
+//		①開始時刻と終了時刻がともに設定されているとき、開始時刻　≦　終了時刻 (#Msg_307#)
+//		②終了時刻　<　次の開始時刻 (#Msg_307#)
+		
+		
+		return null;
 	}
 
 }

@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.StampRecordOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
@@ -37,5 +40,9 @@ public interface AppCommonDomainService {
 	 * @return 打刻エラー情報
 	 */
 	public List<ErrorStampInfo> getErrorStampList(StampRecordOutput stampRecordOutput);
+	
+//	打刻申請登録前のエラーチェック処理（新規）
+	
+	public List<ConfirmMsgOutput> checkBeforeRegister(String companyId, ApplicationType appType, Application application);
 	
 }
