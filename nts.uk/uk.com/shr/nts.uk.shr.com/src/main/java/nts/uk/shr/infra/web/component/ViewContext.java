@@ -160,6 +160,14 @@ public class ViewContext extends UIComponentBase {
 			builder.append(", personalInfo: " + formatValue(role.forPersonalInfo()));
 			builder.append(", personnel: " + formatValue(role.forPersonnel()));
 			builder.append(", systemAdmin: " + formatValue(role.forSystemAdmin()));
+			builder.append(", isInCharge: { ");
+			
+			builder.append("attendance: " +  role.isInChargeAttendance());
+			builder.append(", payroll: " + role.isInChargePayroll());
+			builder.append(", personnel: " + role.isInChargePersonnel());
+			builder.append(", personalInfo: " + role.isInChargePersonalInfo());
+			
+			builder.append(" }");
 		}
 		builder.append(" }");
 	}

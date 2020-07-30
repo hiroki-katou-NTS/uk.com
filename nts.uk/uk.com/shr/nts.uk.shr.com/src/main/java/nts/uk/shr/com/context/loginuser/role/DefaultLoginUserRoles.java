@@ -54,11 +54,33 @@ public class DefaultLoginUserRoles implements LoginUserRoles, Serializable {
 	public String forCompanyAdmin() {
 		return this.forCompanyAdmin;
 	}
-
+	
 	@Override
 	public String forGroupCompaniesAdmin() {
 		return this.forGroupCompaniesAdmin;
 	}
+
+	@Override
+	public boolean isInChargeAttendance() {
+		return this.isInChargeAttendance;
+	}
+	
+	@Override
+	public boolean isInChargePayroll() {
+		return this.isInChargePayroll;
+	}
+	
+	@Override
+	public boolean isInChargePersonnel() {
+		return this.isInChargePersonnel;
+	}
+	
+	@Override
+	public boolean isInChargePersonalInfo() {
+		return this.isInChargePersonalInfo;
+	}
+
+
 
 	public void setRoleIdForAttendance(String roleId) {
 		this.forAttendance = roleId;
@@ -92,6 +114,22 @@ public class DefaultLoginUserRoles implements LoginUserRoles, Serializable {
 		this.forGroupCompaniesAdmin = roleId;
 	}
 	
+	public void setIsInChargeAttendance(boolean isInCharge) {
+		this.isInChargeAttendance = isInCharge;
+	}
+
+	public void setIsInChargePayroll(boolean isInCharge) {
+		this.isInChargePayroll = isInCharge;
+	}
+
+	public void setIsInChargePersonnel(boolean isInCharge) {
+		this.isInChargePersonnel = isInCharge;
+	}
+
+	public void setIsInChargePersonalInfo(boolean isInCharge) {
+		this.isInChargePersonalInfo = isInCharge;
+	}
+
 	public void restore(LoginUserRoles source) {
 		this.forAttendance = source.forAttendance();
 		this.forPayroll = source.forPayroll();
