@@ -21,8 +21,8 @@ export class KdpS01CComponent extends Vue {
     public params!: any;
     public screenData: IScreenData = {
         employeeCode: '000001', employeeName: '日通　太郎', date: '2018/03/10（火）',
-        time: '17：58', stampTypeText: '出勤', workName: '勤務種類の名称', localtion: '000　本社',
-         workTime: '就業時間帯の名称'
+        time: '17：58', stampTypeText: '出勤', localtion: '000　本社',
+         workTypeName: '勤務種類の名称', workTimeName: '就業時間帯の名称'
     };
 
 
@@ -48,7 +48,7 @@ interface IScreenData {
     time: string;
     stampTypeText: string;
     localtion: string;
-    workName: string;
-    workTime: string;
+    workTypeName: string;
+    workTimeName: string;
 }
 
