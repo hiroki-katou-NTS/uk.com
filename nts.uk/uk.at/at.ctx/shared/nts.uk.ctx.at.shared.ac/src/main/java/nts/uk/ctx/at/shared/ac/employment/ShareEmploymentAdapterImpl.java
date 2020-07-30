@@ -16,15 +16,18 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employment.AffPeriodEmpCodeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmpCdNameImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.bs.employee.pub.employment.EmpCdNameExport;
+import nts.uk.ctx.bs.employee.pub.employment.EmploymentHisOfEmployee;
+import nts.uk.ctx.bs.employee.pub.employment.IEmploymentHistoryPub;
 import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class ShareEmploymentAdapterImpl.
@@ -35,6 +38,9 @@ public class ShareEmploymentAdapterImpl implements ShareEmploymentAdapter{
 	/** The employment. */
 	@Inject
 	public SyEmploymentPub employment;
+	
+	@Inject
+	private IEmploymentHistoryPub employmentHistoryPub;
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter#findAll(java.lang.String)
@@ -94,5 +100,14 @@ public class ShareEmploymentAdapterImpl implements ShareEmploymentAdapter{
 		}		
 		return mapResult;
 	}
-	
+
+	@Override
+	public List<EmploymentHistShareImport> findByEmployeeIdOrderByStartDate(String employeeId) {
+		List<EmploymentHisOfEmployee> empHists = this.employmentHistoryPub.getEmploymentHisBySid(employeeId);
+
+		return empHists.stream().map(
+				c -> new EmploymentHistShareImport(c.getSId(), c.getEmploymentCD(), c.getStartDate(), c.getEndDate()))
+				.collect(Collectors.toList());
+	}
+
 }
