@@ -18,6 +18,6 @@ private WorkplaceGroupPublish groupPublish;
 @Override
 public List<String> getWKPID(String CID, String WKPGRPID) {
 	// TODO Auto-generated method stub
-	return groupPublish.getByWorkplaceGroupID(Arrays.asList(WKPGRPID)).stream().map(x->x.getWorkplaceId()).collect(Collectors.toList());
+	return groupPublish.getByWorkplaceGroupID(Arrays.asList(WKPGRPID)).stream().map(x->x.getWorkplaceGroupId()).collect(Collectors.toList());
 }
 }

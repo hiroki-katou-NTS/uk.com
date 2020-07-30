@@ -86,7 +86,7 @@ public class ShiftMasterWs {
 		AlreadySettingWorkplaceDto configWorkplace = this.orgFinder.getAlreadySettingWplGr(unit);
 		return Ksm015StartPageDto.builder()
 				.forAttendent(AppContexts.user().roles().forAttendance())
-				.alreadyConfigWorkplaces(unit == 0 ? configWorkplace.getWorkplaceIds() : configWorkplace.getWorkplaceGrpIds())
+				.alreadyConfigWorkplaces(unit == 0 ? configWorkplace.getWorkplaceIds() : configWorkplace.getWorkplaceIds())
 				.build() ;
 	}
 	
