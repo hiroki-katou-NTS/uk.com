@@ -197,7 +197,7 @@ module nts.uk.at.view.kdp002.a {
         }
 
     }
-    enum Mode {
+    export enum Mode {
         Personal = 1, // 個人
         Shared = 2  // 共有 
     }

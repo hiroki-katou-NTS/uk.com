@@ -902,4 +902,18 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		});
 		return resultList;
 	}
+	
+	private static final String FIND_EMPLOYEE_BY_CODE = "SELECT e FROM BsymtEmployeeDataMngInfo e "
+			+ "WHERE e.companyId = :companyId "
+			+ "AND e.employeeCode = :employeeCode "
+			+ "AND e.delStatus != 0";
+
+	@Override
+	public Optional<EmployeeDataMngInfo> findByScdNotDel(String employeeCd, String companyId) {
+		
+		return queryProxy().query(FIND_EMPLOYEE_BY_CODE, BsymtEmployeeDataMngInfo.class)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeCode", employeeCd)
+				.getSingle(m -> toDomain(m));
+	}
 }

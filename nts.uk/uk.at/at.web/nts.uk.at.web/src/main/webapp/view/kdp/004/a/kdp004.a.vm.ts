@@ -14,15 +14,16 @@ module nts.uk.at.view.kdp004.a {
 		import getMessage = nts.uk.resource.getMessage;
 
 		export class ScreenModel {
-			stampSetting: KnockoutObservable<StampSetting> = ko.observable({});
+			stampSetting: KnockoutObservable<StampSetting> = ko.observable({} as StampSetting);
 			stampTab: KnockoutObservable<StampTab> = ko.observable(new StampTab());
 			stampToSuppress: KnockoutObservable<StampToSuppress> = ko.observable({
 				departure: false,
 				goOut: false,
 				goingToWork: false,
-				turnBack: false
+				turnBack: false,
+				isUse: false
 			});
-			stampResultDisplay: KnockoutObservable<IStampResultDisplay> = ko.observable({});
+			stampResultDisplay: KnockoutObservable<IStampResultDisplay> = ko.observable({} as IStampResultDisplay);
 			serverTime: KnockoutObservable<any> = ko.observable('');
 			isUsed: KnockoutObservable<boolean> = ko.observable(false);
 			errorMessage: KnockoutObservable<string> = ko.observable('');
@@ -104,7 +105,7 @@ module nts.uk.at.view.kdp004.a {
 							block.grayout();
 							service.startPage()
 								.done((res: any) => {
-									if (!res.stampSetting || !res.stampResultDisplay) {
+									if (!res.stampSetting || !res.stampResultDisplay || !res.stampSetting.pageLayouts.length) {
 										self.errorMessage(self.getErrorNotUsed(1));
 										self.isUsed(false);
 										dfd.resolve();
@@ -147,18 +148,17 @@ module nts.uk.at.view.kdp004.a {
 			public setLoginInfo(): JQueryPromise<any> {
 				let dfd = $.Deferred<any>(), self = this;
 
-				self.openDialogF({
-					mode: 'admin',
-					companyId: self.loginInfo.companyId
+				self.openScreenF({
+					mode: 'admin'
 				}).done((loginResult) => {
-					if (!loginResult.result) {
-						self.errorMessage(getMessage("Msg_1647"));
+					if (!loginResult || !loginResult.result) {
+						self.errorMessage(getMessage(!loginResult ? "Msg_1647" : loginResult.msgErrorId));
 						dfd.resolve();
 						return;
 					}
 					self.loginInfo = loginResult.em;
 
-					self.openDialogK().done((result) => {
+					self.openScreenK().done((result) => {
 						if (!result) {
 							self.errorMessage(getMessage("Msg_1647"));
 							dfd.resolve();
@@ -203,7 +203,7 @@ module nts.uk.at.view.kdp004.a {
 				return dfd.promise();
 			}
 
-			public openDialogF(param): JQueryPromise<any> {
+			public openScreenF(param): JQueryPromise<any> {
 				let vm = new ko.ViewModel();
 				let dfd = $.Deferred<any>();
 
@@ -215,7 +215,7 @@ module nts.uk.at.view.kdp004.a {
 				return dfd.promise();
 			}
 
-			public openDialogK(): JQueryPromise<any> {
+			public openScreenK(): JQueryPromise<any> {
 				let vm = new ko.ViewModel();
 				let dfd = $.Deferred<any>();
 				vm.$window.modal('at', '/view/kdp/003/k/index.xhtml', { multiSelect: true }).then((selectedWP) => {
@@ -272,10 +272,10 @@ module nts.uk.at.view.kdp004.a {
 									}
 
 									if (redirect === "loginPass") {
-										return self.openDialogF({
+										return self.openScreenF({
 											mode: 'fingerVein',
 											companyId: vm.$user.companyId,
-											employee: { id: vm.$user.employeeId, code: self.loginInfo.employeeCode, name: self.loginInfo.employeeName },
+											employee: { id: vm.$user.employeeId, code: self.loginInfo.employeeCode },
 											passwordRequired: true
 										});
 									}
@@ -291,10 +291,10 @@ module nts.uk.at.view.kdp004.a {
 										}
 
 										if (res.result) {
-											return { isSuccess: true, authType: res.em ? 0 : 2 };
+											return { em: res.em, isSuccess: true, authType: res.em ? 0 : 2 };
 										}
 									} else {
-										return { isSuccess: false, authType: 2 };
+										return { em: res.em, isSuccess: false, authType: 2 };
 									}
 								});
 						});
@@ -308,7 +308,7 @@ module nts.uk.at.view.kdp004.a {
 
 				vm.doAuthent().done((res: IAuthResult) => {
 					if (res.isSuccess) {
-						vm.registerData(button, layout, res.authType);
+						vm.registerData(button, layout, res);
 					}
 				});
 			}
@@ -365,20 +365,20 @@ module nts.uk.at.view.kdp004.a {
 				let vm = new ko.ViewModel();
 				self.doAuthent().done((res: IAuthResult) => {
 					if (res.isSuccess) {
-						vm.$window.modal('at', '/view/kdp/003/s/index.xhtml');
+						vm.$window.modal('at', '/view/kdp/003/s/index.xhtml', res.em);
 					}
 				});
 			}
 
 			settingUser(self: ScreenModel) {
-				self.openDialogF({
+				self.openScreenF({
 					mode: 'admin',
 					companyId: self.loginInfo.companyId
 				}).done((loginResult) => {
-					if (loginResult.result) {
+					if (loginResult && loginResult.result) {
 						loginResult.em.selectedWP = self.loginInfo ? self.loginInfo.selectedWP : null;
 						self.loginInfo = loginResult.em;
-						self.openDialogK().done((result) => {
+						self.openScreenK().done((result) => {
 							if (result) {
 								self.loginInfo.selectedWP = result;
 								nts.uk.characteristics.save("loginKDP004", self.loginInfo).done(() => {
@@ -387,8 +387,6 @@ module nts.uk.at.view.kdp004.a {
 							} else {
 								location.reload();
 							}
-
-
 
 						});
 					} else {
@@ -400,12 +398,12 @@ module nts.uk.at.view.kdp004.a {
 				});
 			}
 
-			public registerData(button, layout, authcMethod) {
+			public registerData(button, layout, loginInfo) {
 				let self = this;
 				let vm = new ko.ViewModel();
 				block.invisible();
 				let data = {
-					employeeId: vm.$user.employeeId,
+					employeeId: loginInfo && loginInfo.em ? loginInfo.em.employeeId : vm.$user.employeeId,
 					datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
 					stampNumber: null,
 					stampButton: {
@@ -418,7 +416,7 @@ module nts.uk.at.view.kdp004.a {
 						workTimeCode: null,
 						overtimeDeclaration: null
 					},
-					authcMethod: authcMethod
+					authcMethod: loginInfo.authType
 				};
 
 				service.stampInput(data).done((res) => {
@@ -426,9 +424,9 @@ module nts.uk.at.view.kdp004.a {
 					self.playAudio(button.audioType);
 
 					if (self.stampResultDisplay().notUseAttr == 1 && (button.changeClockArt == 1 || button.changeClockArt == 9)) {
-						self.openScreenC(button, layout);
+						self.openScreenC(button, layout, loginInfo.em);
 					} else {
-						self.openScreenB(button, layout);
+						self.openScreenB(button, layout, loginInfo.em);
 					}
 				}).fail((res) => {
 					dialog.alertError({ messageId: res.messageId });
@@ -440,14 +438,15 @@ module nts.uk.at.view.kdp004.a {
 
 			}
 
-			public openScreenB(button, layout) {
+			public openScreenB(button, layout, loginInfo) {
 				let self = this;
 				let vm = new ko.ViewModel();
 
 				setShared("resultDisplayTime", self.stampSetting().resultDisplayTime);
 				setShared("infoEmpToScreenB", {
-					employeeId: vm.$user.employeeId,
-					employeeCode: vm.$user.employeeCode,
+					employeeId: loginInfo ? loginInfo.employeeId : vm.$user.employeeId,
+					employeeCode: loginInfo ? loginInfo.employeeCode : vm.$user.employeeCode,
+					employeeName: loginInfo ? loginInfo.employeeName : self.loginInfo.employeeName,
 					mode: Mode.Personal,
 				});
 
@@ -457,13 +456,14 @@ module nts.uk.at.view.kdp004.a {
 				});
 			}
 
-			public openScreenC(button, layout) {
+			public openScreenC(button, layout, loginInfo) {
 				let self = this;
 				let vm = new ko.ViewModel();
 				setShared('KDP010_2C', self.stampResultDisplay().displayItemId, true);
 				setShared("infoEmpToScreenC", {
-					employeeId: vm.$user.employeeId,
-					employeeCode: vm.$user.employeeCode,
+					employeeId: loginInfo ? loginInfo.employeeId : vm.$user.employeeId,
+					employeeCode: loginInfo ? loginInfo.employeeCode : vm.$user.employeeCode,
+					employeeName: loginInfo ? loginInfo.employeeName : self.loginInfo.employeeName,
 					mode: Mode.Personal,
 				});
 
