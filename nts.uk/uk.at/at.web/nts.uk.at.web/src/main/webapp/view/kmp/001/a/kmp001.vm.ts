@@ -116,7 +116,6 @@ module nts.uk.at.view.kmp001 {
 			const model = this;
 
 			model.stampCardDto.unshift(new StampCard({ checked: false, stampCardId: "", stampNumber: "" }));
-
 			model.selectedStampCardIndex(model.stampCardDto.length - 1);
 		}
 	}

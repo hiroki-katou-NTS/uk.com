@@ -156,6 +156,7 @@ module nts.uk.at.view.kmp001.a {
 						const employees = data.listEmployee
 							.map(m => ({
 								affiliationId: m.affiliationId,
+								affiliationName: m.affiliationName,
 								code: m.employeeCode,
 								name: m.employeeName,
 								employeeId: m.employeeId
@@ -209,8 +210,8 @@ module nts.uk.at.view.kmp001.a {
 
 		addStampCard() {
 			const vm = this,
-			model: IModel = ko.toJS(vm.model),
-			index = _.map(ko.unwrap(vm.employees), m => m.code).indexOf(model.code);;
+				model: IModel = ko.toJS(vm.model),
+				index = _.map(ko.unwrap(vm.employees), m => m.code).indexOf(model.code);;
 
 			if (ko.unwrap(vm.model.code) != '') {
 				const stamps: share.IStampCard = model.stampCardDto[0];
@@ -223,16 +224,16 @@ module nts.uk.at.view.kmp001.a {
 						vm.$blockui("invisible");
 
 						vm.$ajax(KMP001A_API.UPDATE, command)
-							.then(() => vm.$dialog.info({ messageId: 'Msg_15'}))
+							.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
 							.always(() => vm.$blockui("clear"));
-					}else {
+					} else {
 						vm.$blockui("invisible");
-						
+
 						vm.$ajax(KMP001A_API.ADD, command)
-						.then(() => vm.$dialog.info({ messageId: 'Msg_15'}))
-						.then(() => vm.reloadData(index))
-						.then(() => vm.model.code.valueHasMutated())
-						.always(() => vm.$blockui("clear"));
+							.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+							.then(() => vm.reloadData(index))
+							.then(() => vm.model.code.valueHasMutated())
+							.always(() => vm.$blockui("clear"));
 					}
 				}
 			}
@@ -240,7 +241,7 @@ module nts.uk.at.view.kmp001.a {
 
 		reloadData(selectedIndex: number = 0) {
 			const vm = this;
-			
+
 			vm.$blockui("invisible")
 			vm.$ajax(KMP001A_API.GET_STATUS_SETTING, ko.toJS(vm.employeeIds))
 				.then((data: IEmployeeId[]) => {
@@ -263,7 +264,7 @@ module nts.uk.at.view.kmp001.a {
 				});
 		}
 	}
-
+	
 	interface IEmployeeId {
 		employee: string;
 	}
