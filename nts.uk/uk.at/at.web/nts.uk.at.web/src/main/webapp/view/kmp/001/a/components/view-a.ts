@@ -200,11 +200,16 @@ module nts.uk.at.view.kmp001.a {
 			if (checkeds != null) {
 				const command = { employeeId: model.employeeId, cardNumbers: checkeds.map(m => m.stampNumber), cardId: checkeds.map(m => m.stampCardId) };
 
-				vm.$ajax(KMP001A_API.DELETE, command)
-					.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
-					.then(() => vm.reloadData(index))
-					.then(() => vm.model.code.valueHasMutated())
-					.always(() => vm.$blockui("clear"));
+				nts.uk.ui.dialog
+					.confirm({ messageId: "Msg_18" })
+					.ifYes(() => {
+						vm.$ajax(KMP001A_API.DELETE, command)
+							.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
+							.then(() => vm.reloadData(index))
+							.then(() => vm.model.code.valueHasMutated())
+							.always(() => vm.$blockui("clear"));
+					})
+
 			}
 		}
 
@@ -264,7 +269,7 @@ module nts.uk.at.view.kmp001.a {
 				});
 		}
 	}
-	
+
 	interface IEmployeeId {
 		employee: string;
 	}
