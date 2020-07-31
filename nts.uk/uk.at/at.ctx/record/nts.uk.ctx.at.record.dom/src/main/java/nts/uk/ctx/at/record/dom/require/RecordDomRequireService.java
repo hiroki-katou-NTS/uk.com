@@ -1305,20 +1305,20 @@ public class RecordDomRequireService {
 			return closureStatusManagementRepo.getLatestByEmpId(employeeId);
 		}
 
-		@Override
-		public void deleteTmpAnnualHolidayMng(String mngId) {
-			tmpAnnualHolidayMngRepo.deleteById(mngId);
-		}
+//		@Override
+//		public void deleteTmpAnnualHolidayMng(String mngId) {
+//			tmpAnnualHolidayMngRepo.deleteById(mngId);
+//		}
 		
 		@Override
 		public Optional<TmpAnnualHolidayMng> tmpAnnualHolidayMng(String mngId) {
 			return tmpAnnualHolidayMngRepo.getById(mngId);
 		}
 
-		@Override
-		public void deleteTmpResereLeaveMng(String mngId) {
-			tmpResereLeaveMngRepo.deleteById(mngId);
-		}
+//		@Override
+//		public void deleteTmpResereLeaveMng(String mngId) {
+//			tmpResereLeaveMngRepo.deleteById(mngId);
+//		}
 		
 		@Override
 		public Optional<TmpResereLeaveMng> tmpResereLeaveMng(String resereMngId) {
@@ -1599,10 +1599,10 @@ public class RecordDomRequireService {
 			return interimRemainRepo.getRemainBySidPriod(employeeId, dateData, remainType);
 		}
 
-		@Override
-		public List<InterimRemain> interimRemain(String sId) {
-			return interimRemainRepo.findByEmployeeID(sId);
-		}
+//		@Override
+//		public List<InterimRemain> interimRemain(String sId) {
+//			return interimRemainRepo.findByEmployeeID(sId);
+//		}
 
 		@Override
 		public void persistAndUpdateInterimRemain(InterimRemain domain) {
