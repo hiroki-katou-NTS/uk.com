@@ -41,7 +41,13 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.Brea
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakHistoryData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.DayOffHistoryData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.UnOffSetOfDayOff;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeProcess;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.UnUserOfBreak;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcessCommon;
@@ -90,6 +96,8 @@ public class EmploymentSystemFinder {
 	@Inject
 	private NumberCompensatoryLeavePeriodProcess numberCompensatoryLeavePeriodProcess;
 
+	@Inject
+	private NumberRemainVacationLeaveRangeProcess numberRemainVacationLeaveRangeProcess;
 	
 	/** 
 	 * KDL005
@@ -130,7 +138,7 @@ public class EmploymentSystemFinder {
 		AcquisitionNumberRestDayDto detailsdDto = new AcquisitionNumberRestDayDto();
 		
 		// #110215 10-2.代休の設定を取得する
-		SubstitutionHolidayOutput subHd = absenceTenProcess.getSettingForSubstituteHoliday(companyId, employeeId,
+		SubstitutionHolidayOutput subHd = this.absenceTenProcessCommon.getSettingForSubstituteHoliday(companyId, employeeId,
 				GeneralDate.today());
 		detailsdDto.setIsManagementSection(subHd.isSubstitutionFlg());
 		
@@ -157,113 +165,139 @@ public class EmploymentSystemFinder {
 		DatePeriod closingPeriod = closureService.findClosurePeriod(employeeId, inputDate);
 		List<BreakDayOffHistoryDto> lstHistory = new ArrayList<>();
 		
-		if(data.isPresent() && data.get().getLstHistory().size() > 0) {
-			for (BreakDayOffHistory item : data.get().getLstHistory()) {
-				if(item == null) {
-					continue;
-				}
-				
-				ComDayoffDateDto hisDate = new ComDayoffDateDto(item.getHisDate().isUnknownDate(), 
-						item.getHisDate().getDayoffDate().isPresent() ? item.getHisDate().getDayoffDate().get() : null);
-				
-				BreakHistoryData breakHist =null;
-				if (item.getBreakHis() == null) {
-					breakHist = null;
-				} else {
-					breakHist = item.getBreakHis().isPresent() ? item.getBreakHis().get() : null;
-				}
-				ComDayoffDateDto breakDate = new ComDayoffDateDto(breakHist != null ? breakHist.getBreakDate().isUnknownDate() : true, 
-						breakHist != null ? (breakHist.getBreakDate().getDayoffDate().isPresent() ? breakHist.getBreakDate().getDayoffDate().get() : null) : null);
-				
-				BreakHistoryDataDto breakHis = new BreakHistoryDataDto(breakHist != null ? breakHist.getBreakMngId() : null, breakDate,
-						breakHist != null ? breakHist.getExpirationDate() : null,
-						breakHist != null ? breakHist.isChkDisappeared() : true,
-						breakHist != null ? breakHist.getMngAtr().value : 0,
-						breakHist != null ? breakHist.getOccurrenceDays() : 0.0,
-						breakHist != null ? breakHist.getUnUseDays() : 0.0);
-				
-				DayOffHistoryData dayOffHist = item.getDayOffHis() != null ? item.getDayOffHis().get() : null;
-				
-				ComDayoffDateDto dayOffDate = new ComDayoffDateDto(dayOffHist != null ? dayOffHist.getDayOffDate().isUnknownDate() : true, 
-						dayOffHist != null ? (dayOffHist.getDayOffDate().getDayoffDate().isPresent() ? dayOffHist.getDayOffDate().getDayoffDate().get(): null) : null);
-				
-				DayOffHistoryDataDto dayOffHis = new DayOffHistoryDataDto(dayOffHist != null ? dayOffHist.getCreateAtr().value : 0,
-						dayOffHist != null ? dayOffHist.getDayOffId() : null, dayOffDate,
-						dayOffHist != null ? dayOffHist.getRequeiredDays() : 0.0,
-						dayOffHist != null ? dayOffHist.getUnOffsetDays() : 0.0);
-				
-				Double useDays  = item.getUseDays() != null ? item.getUseDays() : 0.0;
-				
-				Optional<BsEmploymentHistoryImport> empHistImport = employeeAdaptor.findEmploymentHistory(companyId, employeeId, inputDate);
-				if(!empHistImport.isPresent() || empHistImport.get().getEmploymentCode()==null){
-					throw new BusinessException("khong co employeeCode");
-				}
-				
-				CompensatoryLeaveEmSetting compensatoryLeaveEmSet = this.compensLeaveEmSetRepository.find(companyId, empHistImport.get().getEmploymentCode());
-				int isManaged = compensatoryLeaveEmSet != null ? compensatoryLeaveEmSet.getIsManaged().value : ManageDistinct.YES.value;
-				
-				BreakDayOffHistoryDto outputDto = new BreakDayOffHistoryDto(hisDate, breakHis, dayOffHis, useDays, isManaged);
-				lstHistory.add(outputDto);
-			}
-		}
-		
-		DetailConfirmDto result = new DetailConfirmDto();
-		result.setClosingPeriod(closingPeriod);
-		result.setLstHistory(lstHistory);
-		result.setTotalInfor(data.isPresent() ? data.get().getTotalInfor() : null);
-		// imported（就業）「所属雇用履歴」を取得する RequestList31
-		Optional<EmploymentHistoryImported> empImpOpt = this.wpAdapter.getEmpHistBySid(companyId, employeeId,
-				inputDate);
-		
-		//アルゴリズム「代休確認ダイア使用期限詳細」を実行する
-		DeadlineDetails deadLine = getDeadlineDetails(companyId, empImpOpt);
-		
-		result.setDeadLineDetails(deadLine);
-		//アルゴリズム「期間内の休出代休残数を取得する」を実行する
-		BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(companyId, employeeId, getDatePeroid(closingPeriod.start()), 
-				false, inputDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
-		BreakDayOffRemainMngOfInPeriod breakDay = this.breakDayOffMngInPeriod.getBreakDayOffMngInPeriod(inputParam);
-		
-//		result.setBreakDay(breakDay);
-		
+//		if(data.isPresent() && data.get().getLstHistory().size() > 0) {
+//			for (BreakDayOffHistory item : data.get().getLstHistory()) {
+//				if(item == null) {
+//					continue;
+//				}
+//				
+//				ComDayoffDateDto hisDate = new ComDayoffDateDto(item.getHisDate().isUnknownDate(), 
+//						item.getHisDate().getDayoffDate().isPresent() ? item.getHisDate().getDayoffDate().get() : null);
+//				
+//				BreakHistoryData breakHist =null;
+//				if (item.getBreakHis() == null) {
+//					breakHist = null;
+//				} else {
+//					breakHist = item.getBreakHis().isPresent() ? item.getBreakHis().get() : null;
+//				}
+//				ComDayoffDateDto breakDate = new ComDayoffDateDto(breakHist != null ? breakHist.getBreakDate().isUnknownDate() : true, 
+//						breakHist != null ? (breakHist.getBreakDate().getDayoffDate().isPresent() ? breakHist.getBreakDate().getDayoffDate().get() : null) : null);
+//				
+//				BreakHistoryDataDto breakHis = new BreakHistoryDataDto(breakHist != null ? breakHist.getBreakMngId() : null, breakDate,
+//						breakHist != null ? breakHist.getExpirationDate() : null,
+//						breakHist != null ? breakHist.isChkDisappeared() : true,
+//						breakHist != null ? breakHist.getMngAtr().value : 0,
+//						breakHist != null ? breakHist.getOccurrenceDays() : 0.0,
+//						breakHist != null ? breakHist.getUnUseDays() : 0.0);
+//				
+//				DayOffHistoryData dayOffHist = item.getDayOffHis() != null ? item.getDayOffHis().get() : null;
+//				
+//				ComDayoffDateDto dayOffDate = new ComDayoffDateDto(dayOffHist != null ? dayOffHist.getDayOffDate().isUnknownDate() : true, 
+//						dayOffHist != null ? (dayOffHist.getDayOffDate().getDayoffDate().isPresent() ? dayOffHist.getDayOffDate().getDayoffDate().get(): null) : null);
+//				
+//				DayOffHistoryDataDto dayOffHis = new DayOffHistoryDataDto(dayOffHist != null ? dayOffHist.getCreateAtr().value : 0,
+//						dayOffHist != null ? dayOffHist.getDayOffId() : null, dayOffDate,
+//						dayOffHist != null ? dayOffHist.getRequeiredDays() : 0.0,
+//						dayOffHist != null ? dayOffHist.getUnOffsetDays() : 0.0);
+//				
+//				Double useDays  = item.getUseDays() != null ? item.getUseDays() : 0.0;
+//				
+//				Optional<BsEmploymentHistoryImport> empHistImport = employeeAdaptor.findEmploymentHistory(companyId, employeeId, inputDate);
+//				if(!empHistImport.isPresent() || empHistImport.get().getEmploymentCode()==null){
+//					throw new BusinessException("khong co employeeCode");
+//				}
+//				
+//				CompensatoryLeaveEmSetting compensatoryLeaveEmSet = this.compensLeaveEmSetRepository.find(companyId, empHistImport.get().getEmploymentCode());
+//				int isManaged = compensatoryLeaveEmSet != null ? compensatoryLeaveEmSet.getIsManaged().value : ManageDistinct.YES.value;
+//				
+//				BreakDayOffHistoryDto outputDto = new BreakDayOffHistoryDto(hisDate, breakHis, dayOffHis, useDays, isManaged);
+//				lstHistory.add(outputDto);
+//			}
+//		}
+//		
+//		DetailConfirmDto result = new DetailConfirmDto();
+//		result.setClosingPeriod(closingPeriod);
+//		result.setLstHistory(lstHistory);
+//		result.setTotalInfor(data.isPresent() ? data.get().getTotalInfor() : null);
+//		// imported（就業）「所属雇用履歴」を取得する RequestList31
+//		Optional<EmploymentHistoryImported> empImpOpt = this.wpAdapter.getEmpHistBySid(companyId, employeeId,
+//				inputDate);
+//		
+//		//	アルゴリズム「代休確認ダイア使用期限詳細」を実行する
+//		DeadlineDetails deadLine = getDeadlineDetails(companyId, empImpOpt);
+//		
+//		result.setDeadLineDetails(deadLine);
+
+		//#110215  期間内の休出代休残数を取得する
+		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(
+				companyId,
+				employeeId,
+				getDatePeroid(closingPeriod.start()),
+				false,
+				GeneralDate.today(),
+				false,
+				Collections.emptyList(),
+				Optional.empty(),
+				Optional.empty(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Optional.empty());
+		SubstituteHolidayAggrResult substituteHolidayAggrResult = this.numberRemainVacationLeaveRangeProcess.getBreakDayOffMngInPeriod(inputParam);
 		// #110215 	残数詳細を作成
-		List<RemainNumberDetailDto> remainNumberDetailMapDto = new ArrayList<>(); 
-		for (BreakDayOffDetail item : breakDay.getLstDetailData()) { 
-			RemainNumberDetailDto mappingDto = new RemainNumberDetailDto();
-			mappingDto.setExpiredInCurrentMonth(false);
-			if (item.getOccurrentClass().equals(OccurrenceDigClass.OCCURRENCE)) {
-				// ・逐次発生の休暇明細．発生消化区分　＝＝　発生　－＞発生日　＝　逐次発生の休暇明細．年月日
-				if (item.getYmdData().getDayoffDate().isPresent()) {
-					GeneralDate occurrenceDate = item.getYmdData().getDayoffDate().get();
-					mappingDto.setOccurrenceDate(occurrenceDate);
-					// condition 取得した期間．開始日＜＝発生日＜＝取得した期間．終了日　－＞・当月で期限切れ　＝　True　ELSE　－＞・当月で期限切れ　＝　False
-					mappingDto.setExpiredInCurrentMonth(closingPeriod.contains(occurrenceDate));
-				}
-			} else if (item.getOccurrentClass().equals(OccurrenceDigClass.DIGESTION)) {
-				// ・逐次発生の休暇明細．発生消化区分　＝＝　消化　－＞消化日　＝　逐次発生の休暇明細．年月日
-				mappingDto.setDigestionDate(item.getYmdData().getDayoffDate().orElse(null));
-			}
-			if (item.getUnUserOfBreak().isPresent()) {
-				UnUserOfBreak unUseOfRec = item.getUnUserOfBreak().get();
-				// field ・発生数　＝　取得した逐次発生の休暇明細．発生数．日数
-				mappingDto.setOccurrenceNumber(unUseOfRec.getOccurrenceDays());
-				// field ・期限日　＝　取得した逐次発生の休暇明細．休暇発生明細．期限日
-				mappingDto.setExpirationDate(unUseOfRec.getExpirationDate());
-			}
-			if (item.getUnOffsetOfDayoff().isPresent()) {
-				UnOffSetOfDayOff unOffsetOfAbs = item.getUnOffsetOfDayoff().get();
-				// field ・消化数　＝　取得した逐次発生の休暇明細．未相殺数．日数
-				mappingDto.setDigestionNumber(unOffsetOfAbs.getUnOffsetDay());
-			} 
-			// field 管理データ状態区分　＝　取得した逐次発生の休暇明細．状態
-			mappingDto.setManagementDataStatus(item.getDataAtr().value);
-			remainNumberDetailMapDto.add(mappingDto);
-		}
-		
-		detailsdDto.setListRemainNumberDetail(remainNumberDetailMapDto);
+		List<RemainNumberDetailDto> listRemainNumberDetail = substituteHolidayAggrResult.getVacationDetails().getLstAcctAbsenDetail().stream()
+				.map(item -> {
+					RemainNumberDetailDto itemDto = new RemainNumberDetailDto();
+					itemDto.setExpiredInCurrentMonth(false);
+					if (item.getOccurrentClass().equals(OccurrenceDigClass.OCCURRENCE)) {
+						// ・逐次発生の休暇明細．発生消化区分 ＝＝ 発生 －＞発生日 ＝ 逐次発生の休暇明細．年月日
+						if (item.getDateOccur().getDayoffDate().isPresent()) {
+							GeneralDate occurrenceDate = item.getDateOccur().getDayoffDate().get();
+							itemDto.setOccurrenceDate(occurrenceDate);
+							// condition 取得した期間．開始日＜＝発生日＜＝取得した期間．終了日 －＞・当月で期限切れ ＝ True ELSE －＞・当月で期限切れ ＝
+							// False
+							itemDto.setExpiredInCurrentMonth(closingPeriod.contains(occurrenceDate));
+						}
+					} else if (item.getOccurrentClass().equals(OccurrenceDigClass.DIGESTION)) {
+						// ・逐次発生の休暇明細．発生消化区分 ＝＝ 消化 －＞消化日 ＝ 逐次発生の休暇明細．年月日
+						itemDto.setDigestionDate(item.getDateOccur().getDayoffDate().orElse(null));
+					}
+					// field ・発生数 ＝ 取得した逐次発生の休暇明細．発生数．日数
+					itemDto.setOccurrenceNumber(item.getNumberOccurren().getDay().v());
+					// field ・消化数 ＝ 取得した逐次発生の休暇明細．未相殺数．日数
+					itemDto.setDigestionNumber(item.getUnbalanceNumber().getDay().v());
+					// field ・期限日 ＝ 取得した逐次発生の休暇明細．休暇発生明細．期限日
+					Optional<UnbalanceVacation> oUnbalanceVacation = item.getUnbalanceVacation();
+					if (oUnbalanceVacation.isPresent()) {
+						itemDto.setExpirationDate(oUnbalanceVacation.get().getDeadline());
+					}
+					// field 管理データ状態区分 ＝ 取得した逐次発生の休暇明細．状態
+					itemDto.setManagementDataStatus(item.getDataAtr().value);
+					// field ・発生時間 ＝ 取得した逐次発生の休暇明細．発生数．時間
+					Optional<AttendanceTime> oOccurrenceHour = item.getNumberOccurren().getTime();
+					if (oOccurrenceHour.isPresent()) {
+						itemDto.setOccurrenceHour(oOccurrenceHour.get().v());
+					}
+					// field ・消化時間 ＝ 取得した逐次発生の休暇明細．未相殺数．時間
+					Optional<AttendanceTime> oDigestionHour = item.getUnbalanceNumber().getTime();
+					if (oDigestionHour.isPresent()) {
+						itemDto.setDigestionHour(oDigestionHour.get().v());
+					}
+					return itemDto;
+				}).collect(Collectors.toList());
+		detailsdDto.setListRemainNumberDetail(listRemainNumberDetail);
 		
 		// #110215 	紐付け情報を生成する ()
-		
+		List<PegManagementDto> listPegManagement = substituteHolidayAggrResult.getLstSeqVacation().stream()
+				.map(item -> {
+					PegManagementDto itemDto = new PegManagementDto();
+					itemDto.setUsageDate(item.getDateOfUse());
+					itemDto.setUsageDay(item.getDayNumberUsed().v());
+					itemDto.setUsageHour(0);
+					itemDto.setDevelopmentDate(item.getOutbreakDay());
+					return itemDto;
+				})
+				.collect(Collectors.toList());
+		detailsdDto.setListPegManagement(listPegManagement);
 		
 		// #110215	取得内容を画面に反映させる
 		if(data.isPresent()) {
@@ -282,7 +316,7 @@ public class EmploymentSystemFinder {
 			//A8_4_3	予定残数
 			detailsdDto.setScheduledRemainingDay(detailsdDto.getScheduleOccurrencedDay() - detailsdDto.getScheduledUsageDay());
 			// 	残数詳細
-			detailsdDto.setListRemainNumberDetail(remainNumberDetailMapDto);
+			detailsdDto.setListRemainNumberDetail(listRemainNumberDetail);
 			//	使用期限
 			detailsdDto.setExpiredDay(subHd.getExpirationOfsubstiHoliday());
 			//	使用区分
@@ -307,7 +341,6 @@ public class EmploymentSystemFinder {
 			detailsdDto.setScheduledRemainingHour(detailsdDto.getScheduleOccurrencedHour() - detailsdDto.getScheduledUsageHour());
 		}
 		
-
 		return detailsdDto;
 	}
 	
@@ -428,7 +461,7 @@ public class EmploymentSystemFinder {
 					RemainNumberDetailDto itemDto = new RemainNumberDetailDto();
 					itemDto.setExpiredInCurrentMonth(false);
 					if (item.getOccurrentClass().equals(OccurrenceDigClass.OCCURRENCE)) {
-						// ・逐次発生の休暇明細．発生消化区分　＝＝　発生　－＞発生日　＝　逐次発生の休暇明細．年月日
+						// 	・逐次発生の休暇明細．発生消化区分　＝＝　発生　－＞発生日　＝　逐次発生の休暇明細．年月日
 						if (item.getDateOccur().getDayoffDate().isPresent()) {
 							GeneralDate occurrenceDate = item.getDateOccur().getDayoffDate().get();
 							itemDto.setOccurrenceDate(occurrenceDate);
@@ -436,7 +469,7 @@ public class EmploymentSystemFinder {
 							itemDto.setExpiredInCurrentMonth(closingPeriod.contains(occurrenceDate));
 						}
 					} else if (item.getOccurrentClass().equals(OccurrenceDigClass.DIGESTION)) {
-						// ・逐次発生の休暇明細．発生消化区分　＝＝　消化　－＞消化日　＝　逐次発生の休暇明細．年月日
+						// 	・逐次発生の休暇明細．発生消化区分　＝＝　消化　－＞消化日　＝　逐次発生の休暇明細．年月日
 						itemDto.setDigestionDate(item.getDateOccur().getDayoffDate().orElse(null));
 					}
 					// field ・発生数　＝　取得した逐次発生の休暇明細．発生数．日数

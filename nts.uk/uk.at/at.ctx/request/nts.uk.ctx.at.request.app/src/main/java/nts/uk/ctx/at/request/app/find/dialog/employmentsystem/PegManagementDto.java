@@ -14,7 +14,7 @@ public class PegManagementDto {
 	private double usageDay;
 	
 	// field 使用時間数
-	private int usageHour;
+	private double usageHour;
 	
 	// field 開発日
 	private GeneralDate developmentDate;
