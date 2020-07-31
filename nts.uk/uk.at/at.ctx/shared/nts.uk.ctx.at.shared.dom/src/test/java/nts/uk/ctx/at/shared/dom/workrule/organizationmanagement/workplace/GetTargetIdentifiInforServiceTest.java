@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace;
 
-import static org.junit.Assert.*;
-
 import java.util.Arrays;
 
 import org.junit.Test;
@@ -28,7 +26,7 @@ public class GetTargetIdentifiInforServiceTest {
 		String empId ="employeeId";
 		new Expectations() {
 			{
-				require.get(referenceDate, Arrays.asList(empId));
+				require.getEmpOrganization(referenceDate, Arrays.asList(empId));
 				
 			}
 		};
