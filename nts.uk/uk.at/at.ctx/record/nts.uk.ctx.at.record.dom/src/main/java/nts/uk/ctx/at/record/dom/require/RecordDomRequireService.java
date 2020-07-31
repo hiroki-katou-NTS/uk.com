@@ -136,30 +136,6 @@ import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaDeforLaborMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaFlexMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaFlexMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaRegulaMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaRegulaMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpDeforLaborMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpFlexMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpFlexMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpRegulaMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpRegulaMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpDeforLaborMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpFlexMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpFlexMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpRegulaMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpRegulaMonthActCalSetRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
@@ -237,46 +213,30 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComNormalSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComNormalSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTimeRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpDeforLaborSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpDeforLaborSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpFlexSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpFlexSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpNormalSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpNormalSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTimeRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.flex.GetFlexPredWorkTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.flex.GetFlexPredWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetEmp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetSha;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetWkp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeCom;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeComRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeEmp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeEmpRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeSha;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeShaRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeWkpRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeCom;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeComRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeEmp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeEmpRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeSha;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeShaRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeWkpRepo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
@@ -284,6 +244,30 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemCustom;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.com.ComFlexMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.com.ComFlexMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.emp.EmpFlexMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.emp.EmpFlexMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.sha.ShaFlexMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.sha.ShaFlexMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.wkp.WkpFlexMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.wkp.WkpFlexMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.com.ComDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.com.ComDeforLaborMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.com.ComRegulaMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.com.ComRegulaMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.emp.EmpDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.emp.EmpDeforLaborMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.emp.EmpRegulaMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.emp.EmpRegulaMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaDeforLaborMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaRegulaMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaRegulaMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.wkp.WkpDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.wkp.WkpDeforLaborMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.wkp.WkpRegulaMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.wkp.WkpRegulaMonthActCalSetRepo;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -292,8 +276,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
-import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.GetFlexPredWorkTime;
-import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.GetFlexPredWorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
@@ -374,23 +356,7 @@ public class RecordDomRequireService {
 		@Inject
 		private UsageUnitSettingRepository usageUnitSettingRepo;
 		@Inject
-		private ComRegularLaborTimeRepository comRegularLaborTimeRepo; 
-		@Inject
-		private ComTransLaborTimeRepository comTransLaborTimeRepo;
-		@Inject
-		private WkpRegularLaborTimeRepository wkpRegularLaborTimeRepo;
-		@Inject
-		private WkpTransLaborTimeRepository wkpTransLaborTimeRepo;
-		@Inject
 		private AffWorkplaceAdapter affWorkplaceAdapter;
-		@Inject
-		private EmpRegularWorkTimeRepository empRegularWorkTimeRepo;
-		@Inject
-		private EmpTransWorkTimeRepository empTransWorkTimeRepo;
-		@Inject
-		private ShainRegularWorkTimeRepository shainRegularWorkTimeRepo;
-		@Inject
-		private ShainTransLaborTimeRepository shainTransLaborTimeRepo; 
 		@Inject
 		private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepo;
 		@Inject
@@ -425,12 +391,6 @@ public class RecordDomRequireService {
 		private RoleOvertimeWorkRepository roleOvertimeWorkRepo;
 		@Inject
 		private HolidayAddtionRepository holidayAddtionRepo;
-		@Inject 
-		private ComRegulaMonthActCalSetRepository comRegulaMonthActCalSetRepo;
-		@Inject
-		private ComDeforLaborMonthActCalSetRepository comDeforLaborMonthActCalSetRepo;
-		@Inject
-		private ComFlexMonthActCalSetRepository comFlexMonthActCalSetRepo;
 		@Inject
 		private MonthlyAggrSetOfFlexRepository monthlyAggrSetOfFlexRepo;
 		@Inject
@@ -446,53 +406,11 @@ public class RecordDomRequireService {
 		@Inject
 		private AgreementOperationSettingRepository agreementOperationSettingRepo;
 		@Inject
-		private ShaFlexMonthActCalSetRepository shaFlexMonthActCalSetRepo;
-		@Inject
-		private ShaDeforLaborMonthActCalSetRepository shaDeforLaborMonthActCalSetRepo;
-		@Inject
-		private ShaRegulaMonthActCalSetRepository shaRegulaMonthActCalSetRepo;
-		@Inject
 		private PredetemineTimeSettingRepository predetemineTimeSettingRepo;
 		@Inject
 		private ManagedParallelWithContext parallel;
 		@Inject
 		private CheckBeforeCalcFlexChangeService checkBeforeCalcFlexChangeService;
-		@Inject
-		private WkpRegulaMonthActCalSetRepository wkpRegulaMonthActCalSetRepo;
-		@Inject
-		private EmpRegulaMonthActCalSetRepository empRegulaMonthActCalSetRepo;
-		@Inject
-		private WkpDeforLaborMonthActCalSetRepository wkpDeforLaborMonthActCalSetRepo;
-		@Inject
-		private EmpDeforLaborMonthActCalSetRepository empDeforLaborMonthActCalSetRepo;
-		@Inject
-		private EmpFlexMonthActCalSetRepository empFlexMonthActCalSetRepo;
-		@Inject
-		private WkpFlexMonthActCalSetRepository wkpFlexMonthActCalSetRepo;
-		@Inject
-		private WkpDeforLaborSettingRepository wkpDeforLaborSettingRepo;
-		@Inject
-		private WkpNormalSettingRepository wkpNormalSettingRepo;
-		@Inject
-		private ShainDeforLaborSettingRepository shainDeforLaborSettingRepo;
-		@Inject
-		private ShainNormalSettingRepository shainNormalSettingRepo;
-		@Inject
-		private EmpNormalSettingRepository empNormalSettingRepo;
-		@Inject
-		private EmpDeforLaborSettingRepository empDeforLaborSettingRepo;
-		@Inject 
-		private ComNormalSettingRepository comNormalSettingRepo;
-		@Inject
-		private ComDeforLaborSettingRepository comDeforLaborSettingRepo;
-		@Inject
-		private ShainFlexSettingRepository shainFlexSettingRepo;
-		@Inject
-		private EmpFlexSettingRepository empFlexSettingRepo;
-		@Inject
-		private ComFlexSettingRepository comFlexSettingRepo;
-		@Inject
-		private WkpFlexSettingRepository wkpFlexSettingRepo;
 		@Inject 
 		private CompanyAdapter companyAdapter;
 		@Inject 
@@ -638,48 +556,8 @@ public class RecordDomRequireService {
 		}
 
 		@Override
-		public Optional<ComRegularLaborTime> regularLaborTimeByCompany(String companyId) {
-			return comRegularLaborTimeRepo.find(companyId);
-		}
-
-		@Override
 		public Optional<UsageUnitSetting> usageUnitSetting(String companyId) {
 			return usageUnitSettingRepo.findByCompany(companyId);
-		}
-
-		@Override
-		public Optional<ComTransLaborTime> transLaborTimeByCompany(String companyId) {
-			return comTransLaborTimeRepo.find(companyId);
-		}
-
-		@Override
-		public Optional<WkpRegularLaborTime> regularLaborTimeByWorkplace(String cid, String wkpId) {
-			return wkpRegularLaborTimeRepo.find(cid, wkpId);
-		}
-
-		@Override
-		public Optional<WkpTransLaborTime> transLaborTimeByWorkplace(String cid, String wkpId) {
-			return wkpTransLaborTimeRepo.find(cid, wkpId);
-		}
-
-		@Override
-		public Optional<EmpRegularLaborTime> regularLaborTimeByEmployment(String cid, String employmentCode) {
-			return empRegularWorkTimeRepo.findById(cid, employmentCode);
-		}
-
-		@Override
-		public Optional<EmpTransLaborTime> transLaborTimeByEmployment(String cid, String emplId) {
-			return empTransWorkTimeRepo.find(cid, emplId);
-		}
-
-		@Override
-		public Optional<ShainRegularLaborTime> regularLaborTimeByEmployee(String Cid, String EmpId) {
-			return shainRegularWorkTimeRepo.find(Cid, EmpId);
-		}
-
-		@Override
-		public Optional<ShainTransLaborTime> transLaborTimeByEmployee(String cid, String empId) {
-			return shainTransLaborTimeRepo.find(cid, empId);
 		}
 
 		@Override
@@ -783,21 +661,6 @@ public class RecordDomRequireService {
 		}
 
 		@Override
-		public Optional<ComRegulaMonthActCalSet> monthRegulaCalSetByCompany(String companyId) {
-			return comRegulaMonthActCalSetRepo.find(companyId);
-		}
-
-		@Override
-		public Optional<ComDeforLaborMonthActCalSet> monthDeforLaborCalSetByCompany(String companyId) {
-			return comDeforLaborMonthActCalSetRepo.find(companyId);
-		}
-
-		@Override
-		public Optional<ComFlexMonthActCalSet> monthFlexCalSetByCompany(String companyId) {
-			return comFlexMonthActCalSetRepo.find(companyId);
-		}
-
-		@Override
 		public Optional<MonthlyAggrSetOfFlex> monthFlexAggrSet(String companyId) {
 			return monthlyAggrSetOfFlexRepo.find(companyId);
 		}
@@ -831,22 +694,7 @@ public class RecordDomRequireService {
 		public Optional<AgreementOperationSetting> agreementOperationSetting(String companyId) {
 			return agreementOperationSettingRepo.find(companyId);
 		}
-
-		@Override
-		public Optional<ShaFlexMonthActCalSet> monthFlexCalcSetbyEmployee(String cid, String sId) {
-			return shaFlexMonthActCalSetRepo.find(cid, sId);
-		}
-
-		@Override
-		public Optional<ShaDeforLaborMonthActCalSet> monthDeforLaborCalcSetByEmployee(String cId, String sId) {
-			return shaDeforLaborMonthActCalSetRepo.find(cId, sId);
-		}
-
-		@Override
-		public Optional<ShaRegulaMonthActCalSet> monthRegulaCalcSetByEmployee(String cid, String sId) {
-			return shaRegulaMonthActCalSetRepo.find(cid, sId);
-		}
-
+		
 		@Override
 		public Optional<AffWorkPlaceSidImport> affWorkPlace(String employeeId, GeneralDate baseDate) {
 			return affWorkplaceAdapter.findBySidAndDate(employeeId, baseDate);
@@ -893,98 +741,6 @@ public class RecordDomRequireService {
 		public ConditionCalcResult flexConditionCalcResult(CacheCarrier cacheCarrier, String companyId,
 				CalcFlexChangeDto calc) {
 			return checkBeforeCalcFlexChangeService.getConditionCalcFlexRequire(cacheCarrier, companyId, calc);
-		}
-
-		@Override
-		public Optional<WkpRegulaMonthActCalSet> monthRegularCalcSetByWorkplace(String cid, String wkpId) {
-			return wkpRegulaMonthActCalSetRepo.find(cid, wkpId);
-		}
-
-		@Override
-		public Optional<EmpRegulaMonthActCalSet> monthRegularCalcSetByEmployment(String cid, String empCode) {
-			return empRegulaMonthActCalSetRepo.find(cid, empCode);
-		}
-
-		@Override
-		public Optional<WkpDeforLaborMonthActCalSet> monthDeforCalcSetByWorkplace(String cid, String wkpId) {
-			return wkpDeforLaborMonthActCalSetRepo.find(cid, wkpId);
-		}
-
-		@Override
-		public Optional<EmpDeforLaborMonthActCalSet> monthDeforCalcSetByEmployment(String cid, String empCode) {
-			return empDeforLaborMonthActCalSetRepo.find(cid, empCode);
-		}
-
-		@Override
-		public Optional<WkpFlexMonthActCalSet> monthFlexCalcSetByWorkplace(String cid, String wkpId) {
-			return wkpFlexMonthActCalSetRepo.find(cid, wkpId);
-		}
-
-		@Override
-		public Optional<EmpFlexMonthActCalSet> monthFlexCalcSetByEmployment(String cid, String empCode) {
-			return empFlexMonthActCalSetRepo.find(cid, empCode);
-		}
-
-		@Override
-		public Optional<WkpNormalSetting> statutoryWorkTimeSetByWorkplace(String cid, String wkpId, int year) {
-			return wkpNormalSettingRepo.find(cid, wkpId, year);
-		}
-
-		@Override
-		public Optional<WkpDeforLaborSetting> statutoryDeforWorkTimeSetByWorkplace(String cid, String wkpId, int year) {
-			return wkpDeforLaborSettingRepo.find(cid, wkpId, year);
-		}
-
-		@Override
-		public Optional<ShainNormalSetting> statutoryWorkTimeSetByEmployee(String cid, String empId, int year) {
-			return shainNormalSettingRepo.find(cid, empId, year);
-		}
-
-		@Override
-		public Optional<ShainDeforLaborSetting> statutoryDeforWorkTimeSetByEmployee(String cid, String empId,
-				int year) {
-			return shainDeforLaborSettingRepo.find(cid, empId, year);
-		}
-
-		@Override
-		public Optional<EmpNormalSetting> statutoryWorkTimeSetByEmployment(String cid, String emplCode, int year) {
-			return empNormalSettingRepo.find(cid, emplCode, year);
-		}
-
-		@Override
-		public Optional<EmpDeforLaborSetting> statutoryDeforWorkTimeSetByEmployment(String cid, String emplCode,
-				int year) {
-			return empDeforLaborSettingRepo.find(cid, emplCode, year);
-		}
-
-		@Override
-		public Optional<ComNormalSetting> statutoryWorkTimeSetByCompany(String companyId, int year) {
-			return comNormalSettingRepo.find(companyId, year);
-		}
-
-		@Override
-		public Optional<ComDeforLaborSetting> statutoryDeforWorkTimeSetByCompany(String companyId, int year) {
-			return comDeforLaborSettingRepo.find(companyId, year);
-		}
-
-		@Override
-		public Optional<ShainFlexSetting> flexSettingByEmployee(String cid, String empId, int year) {
-			return shainFlexSettingRepo.find(cid, empId, year);
-		}
-
-		@Override
-		public Optional<EmpFlexSetting> flexSettingByEmployment(String cid, String emplCode, int year) {
-			return empFlexSettingRepo.find(cid, emplCode, year);
-		}
-
-		@Override
-		public Optional<ComFlexSetting> flexSettingByCompany(String cid, int year) {
-			return comFlexSettingRepo.find(cid, year);
-		}
-
-		@Override
-		public Optional<WkpFlexSetting> flexSettingByWorkplace(String cid, String wkpId, int year) {
-			return wkpFlexSettingRepo.find(cid, wkpId, year);
 		}
 
 		@Override
@@ -1700,11 +1456,187 @@ public class RecordDomRequireService {
 		
 		@Inject
 		private OuenWorkTimeSheetOfDailyRepo ouenWorkTimeSheetOfDailyRepo;
-		
 		@Inject
 		private OuenWorkTimeOfDailyRepo ouenWorkTimeOfDailyRepo;
-		
 		@Inject
 		private OuenAggregateFrameSetOfMonthlyRepo ouenAggregateFrameSetOfMonthlyRepo;
+		@Inject 
+		private RegularLaborTimeComRepo regularLaborTimeComRepo;
+		@Inject
+		private DeforLaborTimeComRepo deforLaborTimeComRepo;
+		@Inject 
+		private RegularLaborTimeWkpRepo regularLaborTimeWkpRepo;
+		@Inject
+		private DeforLaborTimeWkpRepo deforLaborTimeWkpRepo;
+		@Inject 
+		private RegularLaborTimeEmpRepo regularLaborTimeEmpRepo;
+		@Inject
+		private DeforLaborTimeEmpRepo deforLaborTimeEmpRepo;
+		@Inject 
+		private RegularLaborTimeShaRepo regularLaborTimeShaRepo;
+		@Inject
+		private DeforLaborTimeShaRepo deforLaborTimeShaRepo;
+		@Inject
+		private ShaFlexMonthActCalSetRepo shaFlexMonthActCalSetRepo;
+		@Inject
+		private ComFlexMonthActCalSetRepo comFlexMonthActCalSetRepo;
+		@Inject
+		private EmpFlexMonthActCalSetRepo empFlexMonthActCalSetRepo;
+		@Inject
+		private WkpFlexMonthActCalSetRepo wkpFlexMonthActCalSetRepo;
+		@Inject
+		private EmpDeforLaborMonthActCalSetRepo empDeforLaborMonthActCalSetRepo;
+		@Inject
+		private EmpRegulaMonthActCalSetRepo empRegulaMonthActCalSetRepo;
+		@Inject
+		private ComDeforLaborMonthActCalSetRepo comDeforLaborMonthActCalSetRepo;
+		@Inject
+		private ComRegulaMonthActCalSetRepo comRegulaMonthActCalSetRepo;
+		@Inject
+		private ShaDeforLaborMonthActCalSetRepo shaDeforLaborMonthActCalSetRepo;
+		@Inject
+		private ShaRegulaMonthActCalSetRepo shaRegulaMonthActCalSetRepo;
+		@Inject
+		private WkpDeforLaborMonthActCalSetRepo wkpDeforLaborMonthActCalSetRepo;
+		@Inject
+		private WkpRegulaMonthActCalSetRepo wkpRegulaMonthActCalSetRepo;
+		@Inject
+		private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
+
+		@Override
+		public Optional<RegularLaborTimeCom> regularLaborTimeByCompany(String companyId) {
+			return regularLaborTimeComRepo.find(companyId);
+		}
+
+		@Override
+		public Optional<DeforLaborTimeCom> deforLaborTimeByCompany(String companyId) {
+			return deforLaborTimeComRepo.find(companyId);
+		}
+
+		@Override
+		public Optional<RegularLaborTimeWkp> regularLaborTimeByWorkplace(String cid, String wkpId) {
+			return regularLaborTimeWkpRepo.find(cid, wkpId);
+		}
+
+		@Override
+		public Optional<DeforLaborTimeWkp> deforLaborTimeByWorkplace(String cid, String wkpId) {
+			return deforLaborTimeWkpRepo.find(cid, wkpId);
+		}
+
+		@Override
+		public Optional<RegularLaborTimeEmp> regularLaborTimeByEmployment(String cid, String employmentCode) {
+			return regularLaborTimeEmpRepo.findById(cid, employmentCode);
+		}
+
+		@Override
+		public Optional<DeforLaborTimeEmp> deforLaborTimeByEmployment(String cid, String employmentCode) {
+			return deforLaborTimeEmpRepo.find(cid, employmentCode);
+		}
+
+		@Override
+		public Optional<RegularLaborTimeSha> regularLaborTimeByEmployee(String Cid, String EmpId) {
+			return regularLaborTimeShaRepo.find(Cid, EmpId);
+		}
+
+		@Override
+		public Optional<DeforLaborTimeSha> deforLaborTimeByEmployee(String cid, String empId) {
+			return deforLaborTimeShaRepo.find(cid, empId);
+		}
+
+		@Override
+		public Optional<ShaFlexMonthActCalSet> monthFlexCalcSetbyEmployee(
+				String cid, String sId) {
+			return shaFlexMonthActCalSetRepo.find(cid, sId);
+		}
+
+		@Override
+		public Optional<ShaDeforLaborMonthActCalSet> monthDeforLaborCalcSetByEmployee(
+				String cId, String sId) {
+			return shaDeforLaborMonthActCalSetRepo.find(cId, sId);
+		}
+
+		@Override
+		public Optional<ShaRegulaMonthActCalSet> monthRegulaCalcSetByEmployee(
+				String cid, String sId) {
+			return shaRegulaMonthActCalSetRepo.find(cid, sId);
+		}
+
+		@Override
+		public Optional<ComRegulaMonthActCalSet> monthRegulaCalSetByCompany(
+				String companyId) {
+			return comRegulaMonthActCalSetRepo.find(companyId);
+		}
+
+		@Override
+		public Optional<ComDeforLaborMonthActCalSet> monthDeforLaborCalSetByCompany(
+				String companyId) {
+			return comDeforLaborMonthActCalSetRepo.find(companyId);
+		}
+
+		@Override
+		public Optional<ComFlexMonthActCalSet> monthFlexCalSetByCompany(
+				String companyId) {
+			return comFlexMonthActCalSetRepo.find(companyId);
+		}
+
+		@Override
+		public Optional<WkpRegulaMonthActCalSet> monthRegularCalcSetByWorkplace(
+				String cid, String wkpId) {
+			return wkpRegulaMonthActCalSetRepo.find(cid, wkpId);
+		}
+
+		@Override
+		public Optional<EmpRegulaMonthActCalSet> monthRegularCalcSetByEmployment(
+				String cid, String empCode) {
+			return empRegulaMonthActCalSetRepo.find(cid, empCode);
+		}
+
+		@Override
+		public Optional<WkpDeforLaborMonthActCalSet> monthDeforCalcSetByWorkplace(
+				String cid, String wkpId) {
+			return wkpDeforLaborMonthActCalSetRepo.find(cid, wkpId);
+		}
+
+		@Override
+		public Optional<EmpDeforLaborMonthActCalSet> monthDeforCalcSetByEmployment(
+				String cid, String empCode) {
+			return empDeforLaborMonthActCalSetRepo.find(cid, empCode);
+		}
+
+		@Override
+		public Optional<WkpFlexMonthActCalSet> monthFlexCalcSetByWorkplace(
+				String cid, String wkpId) {
+			return wkpFlexMonthActCalSetRepo.find(cid, wkpId);
+		}
+
+		@Override
+		public Optional<EmpFlexMonthActCalSet> monthFlexCalcSetByEmployment(
+				String cid, String empCode) {
+			return empFlexMonthActCalSetRepo.find(cid, empCode);
+		}
+
+		@Override
+		public Optional<MonthlyWorkTimeSetWkp> monthlyWorkTimeSetWkp(String cid, String workplaceId,
+				LaborWorkTypeAttr laborAttr, YearMonth ym) {
+			return monthlyWorkTimeSetRepo.findWorkplace(cid, workplaceId, laborAttr, ym);
+		}
+
+		@Override
+		public Optional<MonthlyWorkTimeSetSha> monthlyWorkTimeSetSha(String cid, String sid,
+				LaborWorkTypeAttr laborAttr, YearMonth ym) {
+			return monthlyWorkTimeSetRepo.findEmployee(cid, sid, laborAttr, ym);
+		}
+
+		@Override
+		public Optional<MonthlyWorkTimeSetEmp> monthlyWorkTimeSetEmp(String cid, String empCode,
+				LaborWorkTypeAttr laborAttr, YearMonth ym) {
+			return monthlyWorkTimeSetRepo.findEmployment(cid, empCode, laborAttr, ym);
+		}
+
+		@Override
+		public Optional<MonthlyWorkTimeSetCom> monthlyWorkTimeSetCom(String cid, LaborWorkTypeAttr laborAttr,
+				YearMonth ym) {
+			return monthlyWorkTimeSetRepo.findCompany(cid, laborAttr, ym);
+		}
 	}
 }

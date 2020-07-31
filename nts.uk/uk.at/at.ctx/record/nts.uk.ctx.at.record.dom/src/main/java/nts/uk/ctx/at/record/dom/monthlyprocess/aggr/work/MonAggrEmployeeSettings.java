@@ -16,18 +16,18 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkPlaceSidImport;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaFlexMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaRegulaMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WorkingTimeSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeSha;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeSha;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.sha.ShaFlexMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaRegulaMonthActCalSet;
 import nts.uk.shr.com.i18n.TextResource;
 
 /**
@@ -155,11 +155,11 @@ public class MonAggrEmployeeSettings {
 		
 		// 社員別通常勤務労働時間
 		val regWorkTime = require.regularLaborTimeByEmployee(companyId, employeeId);
-		if (regWorkTime.isPresent()) domain.regLaborTime = Optional.of(regWorkTime.get().getWorkingTimeSet());
+		if (regWorkTime.isPresent()) domain.regLaborTime = Optional.of(regWorkTime.get());
 		
 		// 社員別変形労働労働時間
-		val irgWorkTime = require.transLaborTimeByEmployee(companyId, employeeId);
-		if (irgWorkTime.isPresent()) domain.irgLaborTime = Optional.of(irgWorkTime.get().getWorkingTimeSet());
+		val irgWorkTime = require.deforLaborTimeByEmployee(companyId, employeeId);
+		if (irgWorkTime.isPresent()) domain.irgLaborTime = Optional.of(irgWorkTime.get());
 		
 		// 通常勤務社員別月別実績集計設定
 		domain.shaRegSetOpt = require.monthRegulaCalcSetByEmployee(companyId, employeeId);
@@ -310,9 +310,9 @@ public class MonAggrEmployeeSettings {
 		
 		Optional<ShaRegulaMonthActCalSet> monthRegulaCalcSetByEmployee(String cid, String sId);
 		
-		Optional<ShainTransLaborTime> transLaborTimeByEmployee(String cid, String empId);
+		Optional<DeforLaborTimeSha> deforLaborTimeByEmployee(String cid, String empId);
 		
-		Optional<ShainRegularLaborTime> regularLaborTimeByEmployee(String Cid, String EmpId);
+		Optional<RegularLaborTimeSha> regularLaborTimeByEmployee(String Cid, String EmpId);
 		
 		List<String> getCanUseWorkplaceForEmp(CacheCarrier cacheCarrier, String companyId,
 				String employeeId, GeneralDate baseDate);
