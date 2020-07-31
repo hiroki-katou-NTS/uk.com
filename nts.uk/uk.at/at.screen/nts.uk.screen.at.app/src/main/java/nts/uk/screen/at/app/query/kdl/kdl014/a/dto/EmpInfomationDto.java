@@ -29,7 +29,7 @@ public class EmpInfomationDto {
 			String stampAtr, String workLocationName, GeoCoordinate locationInfo) {
 		super();
 		this.employeeId = employeeId;
-		this.code = code + stampDateTime.toString("HH:mm:ss");
+		this.code = code + stampDateTime.toString("yyyy/MM/dd") + stampDateTime.toString("HH:mm:ss");
 		this.name = name;
 		this.stampDateTime = stampDateTime.toString("yyyy/MM/dd");
 		this.time = stampDateTime.toString("HH:mm");
