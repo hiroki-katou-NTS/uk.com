@@ -5,9 +5,12 @@
 .date-fixed-table {
 	padding-top: 10px;
 }
+.date-fixed-table .nts-fixed-body-container {
+	overflow-x: hidden;
+}
 
 table#date-fixed-table {
-  empty-cells: show;
+	empty-cells: show;
 }
 
 table.fixed-table th {
@@ -19,7 +22,12 @@ table#date-fixed-table tr {
 }
 
 table#date-fixed-table td {
-  padding: 6px 3px;
+	padding: 6px 3px;
+	border-top: none;
+}
+table#date-fixed-table td.border-dotted {
+	padding: 6px 3px;
+	border-bottom: 1px dotted #CCC !important;
 }
 
 table.summary-table {

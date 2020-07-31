@@ -35,7 +35,7 @@
 					<div class="date-fixed-table">
 						<table id="date-fixed-table">
 							<colgroup>
-								<col width="358px" />
+								<col width="346px" />
 								<col width="250px" />
 							</colgroup>
 							<thead>
@@ -51,17 +51,61 @@
 							</thead>
 							<tbody>
 								<com:ko-foreach bind="dataItems">
-									<tr>
-										<td>
-											<span data-bind="text: occurrenceDate"></span>
-											<span data-bind="text: expirationDate"></span>
-											<span data-bind="text: occurrenceNumber"></span>
-										</td>
-										<td>
-											<span data-bind="text: digestionDate"></span>
-											<span data-bind="text: digestionNumber"></span>
-										</td>
-									</tr>
+									<!-- Case 1 -->
+									<com:ko-if bind="isMultiDigestion">
+										<tr>
+											<td rowspan="2">
+												<span data-bind="text: listOccurrence[0].occurrenceDateText"></span>
+												<span data-bind="text: listOccurrence[0].expirationDateText"></span>
+												<span data-bind="text: listOccurrence[0].occurrenceNumberText" class="margin-left-20"></span>
+											</td>
+											<td class="border-dotted">
+												<span data-bind="text: listDigestion[0].digestionDateText"></span>
+												<span data-bind="text: listDigestion[0].digestionNumberText" class="margin-left-20"></span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span data-bind="text: listDigestion[1].digestionDateText"></span>
+												<span data-bind="text: listDigestion[1].digestionNumberText" class="margin-left-20"></span>
+											</td>
+										</tr>
+									</com:ko-if>
+									<!-- Case 2 -->
+									<com:ko-if bind="isMultiOccurrence">
+										<tr>
+											<td class="border-dotted">
+												<span data-bind="text: listOccurrence[0].occurrenceDateText"></span>
+												<span data-bind="text: listOccurrence[0].expirationDateText"></span>
+												<span data-bind="text: listOccurrence[0].occurrenceNumberText" class="margin-left-20"></span>
+											</td>
+											<td rowspan="2">
+												<span data-bind="text: listDigestion[0].digestionDateText"></span>
+												<span data-bind="text: listDigestion[0].digestionNumberText" class="margin-left-20"></span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span data-bind="text: listOccurrence[1].occurrenceDateText"></span>
+												<span data-bind="text: listOccurrence[1].expirationDateText"></span>
+												<span data-bind="text: listOccurrence[1].occurrenceNumberText" class="margin-left-20"></span>
+											</td>
+										</tr>
+									</com:ko-if>
+									<!-- Case 3 -->
+									<com:ko-if bind="isSingleRow()">
+										<tr>
+											<td>
+												<span data-bind="text: singleRowDetail.occurrenceDateText"></span>
+												<span data-bind="text: singleRowDetail.expirationDateText"></span>
+												<span data-bind="text: singleRowDetail.occurrenceNumberText" class="margin-left-20"></span>
+											</td>
+											<td>
+												<span data-bind="text: singleRowDetail.digestionDateText"></span>
+												<span data-bind="text: singleRowDetail.digestionNumberText" class="margin-left-20"></span>
+											</td>
+										</tr>
+									</com:ko-if>
 								</com:ko-foreach>
 							</tbody>
 						</table>
