@@ -64,7 +64,7 @@ module nts.uk.at.view.kdp005.a {
                                     if (!loginResult) {
                                         self.isUsed(false);
                                         dfd.resolve();
-                                    }else{
+                                    }else {
                                         self.doFirstLoad().done(() => {
                                             dfd.resolve();
                                         });
@@ -94,38 +94,28 @@ module nts.uk.at.view.kdp005.a {
 				service.confirmUseOfStampInput({ employeeId: null, stampMeans: 2 }).done((res) => {
 					self.isUsed(res.used == 0);
 					if (self.isUsed()) {
-						let isAdmin = true;
-						service.login(isAdmin, loginInfo).done((res) => {
-							block.grayout();
-							service.startPage().done((res: any) => {
-									if (!res.stampSetting || !res.stampResultDisplay) {
-										self.errorMessage(self.getErrorNotUsed(1));
-										self.isUsed(false);
-										dfd.resolve();
-										return;
-									}
-									self.stampSetting(res.stampSetting);
-									self.stampTab().bindData(res.stampSetting.pageLayouts);
-									self.stampResultDisplay(res.stampResultDisplay);
+						block.grayout();
+						service.startPage().done((res: any) => {
+								if (!res.stampSetting || !res.stampResultDisplay) {
+									self.errorMessage(self.getErrorNotUsed(1));
+									self.isUsed(false);
 									dfd.resolve();
-								}).fail((res) => {
-									dialog.alertError({ messageId: res.messageId }).then(() => {
-										jump("com", "/view/ccg/008/a/index.xhtml");
-									});
-								}).always(() => {
-									dfd.resolve();
-									block.clear();
+									return;
+								}
+								self.stampSetting(res.stampSetting);
+								self.stampTab().bindData(res.stampSetting.pageLayouts);
+								self.stampResultDisplay(res.stampResultDisplay);
+								dfd.resolve();
+							}).fail((res) => {
+								dialog.alertError({ messageId: res.messageId }).then(() => {
+									jump("com", "/view/ccg/008/a/index.xhtml");
 								});
+							}).always(() => {
+								dfd.resolve();
+								block.clear();
+							});
 
-							self.getStampToSuppress();
-
-						}).fail((res) => {
-							self.isUsed(false);
-							self.errorMessage(getMessage(res.messageId));
-							dfd.resolve();
-						}).always(() => {
-							block.clear();
-						});
+						self.getStampToSuppress();
 					} else {
 						self.isUsed(false);
 						self.errorMessage(self.getErrorNotUsed(res.used));
@@ -143,31 +133,41 @@ module nts.uk.at.view.kdp005.a {
 					mode: 'admin',
                     companyId: __viewContext.user.companyId
 				}).done((loginResult) => {
-					if (!loginResult) {
+					if (!loginResult) { 
 						self.errorMessage(getMessage("Msg_1647"));
 						dfd.resolve();
-					}
-					self.loginInfo = loginResult.em;
-					self.openDialogK().done((result) => {
-						if (!result) {
-                            characteristics.remove("loginKDP005").done(() => {
-                                self.stampSetting({});
-                                self.errorMessage(getMessage("Msg_1647"));
-        						dfd.resolve();
-                            });
-						}else {
-    						self.loginInfo.selectedWP = result;
-                            characteristics.save("loginKDP005", self.loginInfo).done(() => {
-                                location.reload();
-                                dfd.resolve(self.loginInfo);
-                            });
-                        }
-					});
+					}else {
+    					self.openDialogK().done((result) => {
+    						if (!result) {
+                                if(__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode){
+                                    location.reload();
+                                    dfd.resolve();
+                                }else {
+                                    self.stampSetting({});
+                                    self.errorMessage(getMessage("Msg_1647"));
+                                    dfd.resolve();
+                                }    
+    						}else {
+                                self.loginInfo = loginResult.em;
+        						self.loginInfo.selectedWP = result;
+                                characteristics.save("loginKDP005", self.loginInfo).done(() => {
+                                    if(__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode){
+                                        location.reload();
+                                        dfd.resolve();
+                                    }else {
+                                        dfd.resolve(self.loginInfo);
+                                    }
+                                });
+                            }
+    					});
+                    }
 				}).always(() => {
 					
 				});
 				return dfd.promise();
 			}
+            
+            
 
 			public openDialogF(param): JQueryPromise<any> {
 				let vm = new ko.ViewModel();
@@ -334,20 +334,27 @@ module nts.uk.at.view.kdp005.a {
                     companyId: __viewContext.user.companyId
 				}).done((loginResult) => {
 					if (loginResult && loginResult.result) {
-                        loginResult.em.selectedWP = self.loginInfo ? self.loginInfo.selectedWP : null;
-                        self.loginInfo = loginResult.em;
                         self.openDialogK().done((result) => {
                             if (result) {
+                                self.loginInfo = loginResult.em;
                                 self.loginInfo.selectedWP = result;
                                 characteristics.save("loginKDP005", self.loginInfo).done(() => {
-                                    location.reload();
+                                    if(__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode){
+                                        location.reload();        
+                                    }
                                 });
                             } else {
-                                characteristics.remove("loginKDP005").done(() => {
-                                    self.stampSetting({});
-                                    self.isUsed(false);
-                                    self.errorMessage(getMessage("Msg_1647"));
-                                });
+                                if(self.loginInfo){
+                                        self.login(self.loginInfo).done(() => {
+                                            if(__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode){
+                                                location.reload();        
+                                            }
+                                        });
+                                }else {
+                                    if(__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode){
+                                        location.reload();
+                                    }
+                                }
                             }
                         });
                     } else {
@@ -358,6 +365,26 @@ module nts.uk.at.view.kdp005.a {
                     }
 				});
 			}
+            
+            public login(loginInfo: any): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred<any>();
+                let isAdmin = true;
+                block.grayout();
+                loginInfo.isAdminMode = true;
+                loginInfo.passwordInvalid = false;
+                loginInfo.runtimeEnvironmentCreate = true;
+                service.login(isAdmin, loginInfo).done((res) => {
+                    dfd.resolve();
+                }).fail((res) => {
+                    self.stampSetting({});
+                    self.isUsed(false);
+                    self.errorMessage(getMessage(res.messageId));
+                    dfd.reject();
+                }).always(() => {
+                    block.clear();
+                });;    
+            }
 
 			public registerData(button, layout, stampedCardNumber, employeeIdRegister) {
 				let self = this;
