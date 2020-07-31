@@ -136,43 +136,45 @@ export class KafS07AComponent extends Vue {
     }
 
     public async fetchStart() {
+        const self = this;
         await this.$auth.user.then((usr: any) => {
-            this.user = usr;
+            self.user = usr;
         });
 
 
-        this.$http.post('at', API.startS07, {
-            mode: this.mode,
-            companyId: this.user.companyId,
-            employeeId: this.user.employeeId,
+        self.$http.post('at', API.startS07, {
+            mode: self.mode,
+            companyId: self.user.companyId,
+            employeeId: self.user.employeeId,
             listDates: [],
-            appWorkChangeOutputDto: this.mode ? null : this.data,
-            appWorkChangeDto: this.mode ? null : this.data.appWorkChange
+            appWorkChangeOutputDto: self.mode ? null : self.data,
+            appWorkChangeDto: self.mode ? null : self.data.appWorkChange
         })
             .then((res: any) => {
                 if (!res) {
                     return;
                 }
-                this.data = res.data;
-                this.createParamA();
-                this.createParamB();
-                this.createParamC();
+                self.data = res.data;
+                self.createParamA();
+                self.createParamB();
+                self.createParamC();
                 // let appWorkChange = res.data.appWorkChange;
-                this.bindStart();
-                this.$mask('hide');
+                self.bindStart();
+                self.$mask('hide');
             }).catch((err: any) => {
-                this.$mask('hide');
+                self.$mask('hide');
             });
     }
 
 
     // bind params to components
     public createParamA() {
-        let appDispInfoWithDateOutput = this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput;
-        let appDispInfoNoDateOutput = this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput;
-        this.kaf000_A_Params = {
-            companyID: this.user.companyId,
-            employeeID: this.user.employeeId,
+        const self = this;
+        let appDispInfoWithDateOutput = self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput;
+        let appDispInfoNoDateOutput = self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput;
+        self.kaf000_A_Params = {
+            companyID: self.user.companyId,
+            employeeID: self.user.employeeId,
             // 申請表示情報．申請表示情報(基準日関係あり)．社員所属雇用履歴を取得．雇用コード
             employmentCD: appDispInfoWithDateOutput.empHistImport.employmentCode,
             // 申請表示情報．申請表示情報(基準日関係あり)．申請承認機能設定．申請利用設定
@@ -184,7 +186,7 @@ export class KafS07AComponent extends Vue {
     }
     public createParamB() {
         const self = this;
-        this.kaf000_B_Params = null;
+        self.kaf000_B_Params = null;
         let paramb = {
             input: {
                 // mode: 0,
@@ -204,11 +206,11 @@ export class KafS07AComponent extends Vue {
                 //     useMultiDaySwitch: true,
                 //     initSelectMultiDay: true
                 // }
-                mode: this.mode ? 0 : 1,
-                appDisplaySetting: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting,
+                mode: self.mode ? 0 : 1,
+                appDisplaySetting: self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting,
                 newModeContent: {
                     // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定																	
-                    appTypeSetting: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
+                    appTypeSetting: self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
                     useMultiDaySwitch: true,
                     initSelectMultiDay: false
                 },
@@ -222,16 +224,16 @@ export class KafS07AComponent extends Vue {
                 endDate: null
             }
         };
-        if (!this.mode) {
+        if (!self.mode) {
             paramb.input.detailModeContent = {
-                prePostAtr: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr,
-                startDate: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStartDate,
-                endDate: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppEndDate,
-                employeeName: _.isEmpty(this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst) ? 'empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName
+                prePostAtr: self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr,
+                startDate: self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStartDate,
+                endDate: self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppEndDate,
+                employeeName: _.isEmpty(self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst) ? 'empty' : self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName
             };
         }
-        this.kaf000_B_Params = paramb;
-        if (this.mode) {
+        self.kaf000_B_Params = paramb;
+        if (self.mode) {
             self.$watch('kaf000_B_Params.output.startDate', (newV, oldV) => {
                 console.log('changedate' + oldV + '--' + newV);
                 let startDate = _.clone(self.kaf000_B_Params.output.startDate);
@@ -276,9 +278,10 @@ export class KafS07AComponent extends Vue {
 
     }
     public createParamC() {
+        const self = this;
         // KAFS00_C_起動情報
-        let appDispInfoNoDateOutput = this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput;
-        this.kaf000_C_Params = {
+        let appDispInfoNoDateOutput = self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput;
+        self.kaf000_C_Params = {
             input: {
                 // 定型理由の表示
                 // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
@@ -301,42 +304,46 @@ export class KafS07AComponent extends Vue {
             },
             output: {
                 // 定型理由
-                opAppStandardReasonCD: this.mode ? 1 : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+                opAppStandardReasonCD: self.mode ? 1 : self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
                 // 申請理由
-                opAppReason: this.mode ? '' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
+                opAppReason: self.mode ? '' : self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
             }
         };
     }
 
 
     public bindStart() {
-        let appWorkChangeDispInfo = this.data.appWorkChangeDispInfo;
-        this.bindVisibleView(appWorkChangeDispInfo);
-        this.bindCommon(appWorkChangeDispInfo);
-        this.bindValueWorkHours(this.data);
-        this.bindWork(this.data);
-        this.bindDirectBounce(this.data);
+        const self = this;
+        let appWorkChangeDispInfo = self.data.appWorkChangeDispInfo;
+        self.bindVisibleView(appWorkChangeDispInfo);
+        self.bindCommon(appWorkChangeDispInfo);
+        self.bindValueWorkHours(self.data);
+        self.bindWork(self.data);
+        self.bindDirectBounce(self.data);
     }
 
     public bindDirectBounce(params: any) {
-        if (!this.mode) {
-            this.model.straight = params.appWorkChange.straightGo == 1 ? 1 : 2;
-            this.model.bounce = params.appWorkChange.straightBack == 1 ? 1 : 2;
+        const self = this;
+        if (!self.mode) {
+            self.model.straight = params.appWorkChange.straightGo == 1 ? 1 : 2;
+            self.model.bounce = params.appWorkChange.straightBack == 1 ? 1 : 2;
         }
     }
     public bindWork(params: any) {
-        this.model.workType.code = this.mode ? params.appWorkChangeDispInfo.workTypeCD : (params.appWorkChange ? (params.appWorkChange.opWorkTypeCD ? params.appWorkChange.opWorkTypeCD : '') : '');
-        this.model.workType.name = _.find(params.appWorkChangeDispInfo.workTypeLst, (item: any) => item.workTypeCode == this.model.workType.code).abbreviationName || this.$i18n('KAFS07_10');
+        const self = this;
+        self.model.workType.code = self.mode ? params.appWorkChangeDispInfo.workTypeCD : (params.appWorkChange ? (params.appWorkChange.opWorkTypeCD ? params.appWorkChange.opWorkTypeCD : '') : '');
+        self.model.workType.name = _.find(params.appWorkChangeDispInfo.workTypeLst, (item: any) => item.workTypeCode == self.model.workType.code).abbreviationName || self.$i18n('KAFS07_10');
 
-        this.model.workTime.code = this.mode ? params.appWorkChangeDispInfo.workTimeCD : (params.appWorkChange ? (params.appWorkChange.opWorkTimeCD ? params.appWorkChange.opWorkTimeCD : '') : '');
-        this.model.workTime.name = _.find(params.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == this.model.workTime.code).workTimeDisplayName.workTimeName || this.$i18n('KAFS07_10');
-        this.bindWorkTime(params.appWorkChangeDispInfo);
+        self.model.workTime.code = self.mode ? params.appWorkChangeDispInfo.workTimeCD : (params.appWorkChange ? (params.appWorkChange.opWorkTimeCD ? params.appWorkChange.opWorkTimeCD : '') : '');
+        self.model.workTime.name = _.find(params.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == self.model.workTime.code).workTimeDisplayName.workTimeName || self.$i18n('KAFS07_10');
+        self.bindWorkTime(params.appWorkChangeDispInfo);
     }
     public bindWorkTime(params: any) {
+        const self = this;
         if (params.predetemineTimeSetting) {
             let startTime = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).start;
             let endTime = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).end;
-            this.model.workTime.time = this.$dt.timedr(startTime) + '~' + this.$dt.timedr(endTime);
+            self.model.workTime.time = self.$dt.timedr(startTime) + '~' + self.$dt.timedr(endTime);
         }
     }
     public bindValueWorkHours(params: any) {
@@ -501,7 +508,7 @@ export class KafS07AComponent extends Vue {
             if (this.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
                 this.application.opAppEndDate =  this.$dt.date(this.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
             } else {
-                this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');;
+                this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
             }
         }
         
