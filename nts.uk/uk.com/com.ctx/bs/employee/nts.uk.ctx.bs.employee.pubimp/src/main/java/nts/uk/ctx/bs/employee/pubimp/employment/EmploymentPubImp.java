@@ -50,7 +50,6 @@ import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.ShEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
@@ -288,16 +287,14 @@ public class EmploymentPubImp implements SyEmploymentPub {
 
 		@Override
 		public Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String sid, GeneralDate date) {
-//			EmploymentInfoCache cache = cacheCarrier.get(EmploymentInfoCache.DOMAIN_NAME);
-//			return cache.get(sid,date);
-			return empHistItemRepo.getDetailEmploymentHistoryItem(AppContexts.user().companyId(), sid, date);
+			EmploymentInfoCache cache = cacheCarrier.get(EmploymentInfoCache.DOMAIN_NAME);
+			return cache.get(sid,date);
 		}
 
 		@Override
 		public Optional<DateHistoryItem> getByEmployeeIdAndStandardDate(String employeeId, GeneralDate standardDate) {
-//			DateHistoryItemCache cache = cacheCarrier.get(DateHistoryItemCache.DOMAIN_NAME);
-//			return cache.get(employeeId, standardDate);
-			return empHistRepo.getByEmployeeIdAndStandardDate(employeeId, standardDate);
+			DateHistoryItemCache cache = cacheCarrier.get(DateHistoryItemCache.DOMAIN_NAME);
+			return cache.get(employeeId, standardDate);
 		}
 		
 	}
