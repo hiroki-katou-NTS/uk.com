@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -34,9 +35,9 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
-import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
@@ -262,6 +263,10 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 		}
 		// 社員所属雇用履歴を取得する
 		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID, employeeID, baseDate);
+		if(empHistImport==null || empHistImport.getEmploymentCode()==null){
+			// エラーメッセージ(Msg_426)を返す
+			throw new BusinessException("Msg_426");
+		}
 		// 雇用別申請承認設定を取得する
 		Optional<AppEmploymentSet> opAppEmploymentSet = appEmploymentSetRepository.findByCompanyIDAndEmploymentCD(companyID, empHistImport.getEmploymentCode());
 		// INPUT．「起動モード」を確認する
@@ -294,12 +299,12 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 				appType == ApplicationType.STAMP_APPLICATION &&
 				appType == ApplicationType.ANNUAL_HOLIDAY_APPLICATION) {
 			// 実績内容の取得
-			/*List<AchievementOutput> achievementOutputLst = collectAchievement.getAchievementContents(
+			List<ActualContentDisplay> actualContentDisplayLst = collectAchievement.getAchievementContents(
 					companyID, 
 					employeeID, 
 					appDateLst, 
 					appType);
-			opAchievementOutputLst = Optional.of(achievementOutputLst);*/
+			opActualContentDisplayLst = Optional.of(actualContentDisplayLst);
 			// 事前内容の取得
 			List<PreAppContentDisplay> preAppContentDisplayLst = collectAchievement.getPreAppContents(
 					companyID, 
