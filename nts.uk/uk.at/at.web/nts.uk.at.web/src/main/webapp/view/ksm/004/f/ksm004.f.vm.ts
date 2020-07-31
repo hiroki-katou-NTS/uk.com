@@ -1,4 +1,11 @@
 module nts.uk.at.view.ksm004.f.viewmodel {
+    import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
+
+    const paths: any = {
+        getSixMonthsCalendar: "screen/at/ksm004/ksm004/f/sixmonthscalendar/{0}/{1}/{2}",
+    };
+
     @bean()
     class ViewModel extends ko.ViewModel {
 
@@ -42,6 +49,18 @@ module nts.uk.at.view.ksm004.f.viewmodel {
 
         closeDialog() {
             nts.uk.ui.windows.close();
+        }
+
+        getSixMonthsCalendar() {
+            const vm = this;
+            const companyId = 0;
+            const startDate = moment(new Date()).startOf('month').format('YYYY/MM/DD');
+            const endDate = moment(new Date()).endOf('month').format('YYYY/MM/DD');
+            vm.$ajax(paths.getSixMonthsCalendar, {companyId, startDate, endDate}).done((result: any) => {
+                console.log(result)
+            });
+            // let _path = nts.uk.text.format(paths.getSixMonthsCalendar, companyId, startDate, endDate);
+            // return nts.uk.request.ajax("at", _path);
         }
 
         generateYearMonth(yearMonth) {

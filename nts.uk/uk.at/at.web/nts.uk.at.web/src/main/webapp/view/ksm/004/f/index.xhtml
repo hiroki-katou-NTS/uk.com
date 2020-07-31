@@ -37,13 +37,14 @@
 				</table>
 			</div>
 			<div class="ksm004-f" id="contents-area">
+				<button data-bind="click: getSixMonthsCalendar" >Click Hire</button>
 				<div data-bind="foreach: _.chunk(ko.unwrap(months), 3)">
 					<div data-bind="foreach: $data">
 						<!--<div data-bind="calendar: baseDate, holidays: holidays"></div>-->
 						<div data-bind="component: { name: 'calendar', params: $data }"></div>
 					</div>
 				</div>
-				<!--<div id="yearMonthList-ksm004-f" data-bind="foreach: yearMonthList">-->
+				<!--<div id="yearMonthList-ksm004-SixMonthsCalendar" data-bind="foreach: yearMonthList">-->
 					<!--<div class="nts-calendar-container">-->
 						<!--<div class="nts-calendar-header">-->
 							<!--<div data-bind="ntsDatePicker: {-->
@@ -56,7 +57,7 @@
 								<!--enable: false}">-->
 							<!--</div>-->
 						<!--</div>-->
-						<!--<div id="calendar-ksm004-f" data-bind="ntsCalendar: {-->
+						<!--<div id="calendar-ksm004-SixMonthsCalendar" data-bind="ntsCalendar: {-->
 							<!--optionDates: $vm.calendarPanel.optionDates,-->
 							<!--yearMonth: $rawData,-->
 							<!--firstDay: $vm.calendarPanel.firstDay,-->
