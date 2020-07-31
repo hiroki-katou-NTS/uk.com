@@ -188,6 +188,7 @@ module nts.uk.at.view.kmp001.b {
 			const vm = this;
 
 			if (ko.unwrap(vm.mode) == "all") {
+				vm.model.clear();
 				vm.$blockui("invisible")
 					.then(() => vm.$ajax(KMP001B_API.GET_ALL_STAMPCARD))
 					.then((data: IDataResponse) => {
@@ -277,6 +278,7 @@ module nts.uk.at.view.kmp001.b {
 					.ifYes(() => {
 						vm.$ajax(KMP001B_API.DELETE_STAMP, command)
 							.done(() => vm.$dialog.info({ messageId: "Msg_16" }))
+							.then(() => vm.model.clear())
 							.then(() => vm.reloadAllStampCard(newIndex));
 					})
 			}
