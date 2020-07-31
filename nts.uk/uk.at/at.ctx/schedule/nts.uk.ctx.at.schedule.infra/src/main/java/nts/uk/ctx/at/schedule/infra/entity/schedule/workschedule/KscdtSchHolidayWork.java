@@ -10,6 +10,9 @@ import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkFrameTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 勤務予定の休出時間
@@ -56,9 +59,36 @@ public class KscdtSchHolidayWork extends ContractUkJpaEntity{
 			@PrimaryKeyJoinColumn(name = "YMD", referencedColumnName = "YMD") })
 	public KscdtSchTime kscdtSchTime;
 	
+	public static KscdtSchHolidayWork toEntity(HolidayWorkFrameTimeSheet timeSheet,HolidayWorkFrameTime time, String sID, GeneralDate yMD, String cID){
+		KscdtSchHolidayWorkPK pk = new KscdtSchHolidayWorkPK(sID, yMD, timeSheet.getHolidayWorkTimeSheetNo().v());
+		return new KscdtSchHolidayWork(pk, cID, 
+				timeSheet.getTimeSheet().getStart().v(),
+				timeSheet.getTimeSheet().getEnd().v(),
+				time.getHolidayWorkTime().get().getTime().v(), 
+				time.getTransferTime().get().getTime().v(),
+				time.getBeforeApplicationTime().get().v());
+	}
+	
+/*	public HolidayWorkTimeOfDaily toDomain(){
+		return HolidayWorkTimeOfDaily();
+	}*/
+	
 	@Override
 	protected Object getKey() {
 		return this.pk;
+	}
+
+
+	public KscdtSchHolidayWork(KscdtSchHolidayWorkPK pk, String cid, int holidayWorkTsStart, int holidayWorkTsEnd,
+			int holidayWorkTime, int holidayWorkTimeTrans, int holidayWorkTimePreApp) {
+		super();
+		this.pk = pk;
+		this.cid = cid;
+		this.holidayWorkTsStart = holidayWorkTsStart;
+		this.holidayWorkTsEnd = holidayWorkTsEnd;
+		this.holidayWorkTime = holidayWorkTime;
+		this.holidayWorkTimeTrans = holidayWorkTimeTrans;
+		this.holidayWorkTimePreApp = holidayWorkTimePreApp;
 	}
 
 }

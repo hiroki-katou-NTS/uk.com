@@ -10,13 +10,14 @@ import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmp;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.OverTimeFrameTime;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 勤務予定の残業時間
  * UKDesign.データベース.ER図.就業.勤務予定.勤務予定.勤務予定
- * @author kingo
+ * @author HieuLt
  *
  */
 @Entity
@@ -39,14 +40,35 @@ public class KscdtSchOvertimeWork extends ContractUkJpaEntity {
 	@Column(name = "OVERTIME_WORK_TIME_PREAPP")
 	public int overtimeWorkTimePreApp;
 	
+	@Override
+	protected Object getKey() {
+		return this.pk;
+	}
 	@ManyToOne(fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "YMD", referencedColumnName = "YMD") })
 	public KscdtSchTime kscdtSchTime;
 	
-	@Override
-	protected Object getKey() {
-		return this.pk;
+	public static KscdtSchOvertimeWork toEntity (OverTimeFrameTime overTimeFrameTime, String cid , String sid , GeneralDate ymd ){
+		KscdtSchOvertimeWorkPK pk = new KscdtSchOvertimeWorkPK(sid, ymd, overTimeFrameTime.getOverWorkFrameNo().v());		
+		return new  KscdtSchOvertimeWork(pk,
+				cid,
+				overTimeFrameTime.getOverTimeWork().getTime().v(),
+				overTimeFrameTime.getTransferTime().getTime().v(),
+				overTimeFrameTime.getBeforeApplicationTime().v()
+				);
 	}
+
+	public KscdtSchOvertimeWork(KscdtSchOvertimeWorkPK pk, String cid, int overtimeWorkTime, int overtimeWorkTimeTrans,
+			int overtimeWorkTimePreApp) {
+		super();
+		this.pk = pk;
+		this.cid = cid;
+		this.overtimeWorkTime = overtimeWorkTime;
+		this.overtimeWorkTimeTrans = overtimeWorkTimeTrans;
+		this.overtimeWorkTimePreApp = overtimeWorkTimePreApp;
+	}
+	
+
 
 }
