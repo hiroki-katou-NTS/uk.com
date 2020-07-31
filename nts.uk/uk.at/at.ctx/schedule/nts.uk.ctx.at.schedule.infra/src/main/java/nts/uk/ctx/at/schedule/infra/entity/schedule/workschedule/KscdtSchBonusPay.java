@@ -3,6 +3,10 @@ package nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
@@ -36,6 +40,11 @@ public class KscdtSchBonusPay extends ContractUkJpaEntity{
 	/** 所定外加給時間 **/
 	@Column(name = "PREMIUM_TIME_WITHOUT")
 	public int premiumTimeWithOut;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+			@PrimaryKeyJoinColumn(name = "YMD", referencedColumnName = "YMD") })
+	public KscdtSchTime kscdtSchTime;
 	
 	@Override
 	protected Object getKey() {
