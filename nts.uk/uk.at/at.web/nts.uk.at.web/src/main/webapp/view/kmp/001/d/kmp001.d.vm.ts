@@ -7,7 +7,7 @@ module nts.uk.at.view.kmp001.d {
 	};
 
 	export interface ReturnData {
-		length: number;
+		maxLength: number;
 		paddingType: StampCardEditMethod;
 	}
 
