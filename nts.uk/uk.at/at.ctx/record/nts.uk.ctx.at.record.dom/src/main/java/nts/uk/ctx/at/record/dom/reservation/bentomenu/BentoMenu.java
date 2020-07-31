@@ -2,17 +2,14 @@ package nts.uk.ctx.at.record.dom.reservation.bentomenu;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
+import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoItemByClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
@@ -135,4 +132,18 @@ public class BentoMenu extends AggregateRoot {
 					throw new RuntimeException("System Error");
 				});
 	}
+
+    /**
+     * 場所より締め時刻別のメニュー
+     * @return
+     */
+    public BentoMenuByClosingTime getByClosingTimeFromPlace(Optional<WorkLocationCode> workLocationCode) {
+        List<BentoItemByClosingTime> menu1 = menu.stream().filter(x -> x.isReservationTime1Atr() && x.getWorkLocationCode() == workLocationCode)
+                .map(x -> x.itemByClosingTime())
+                .collect(Collectors.toList());
+        List<BentoItemByClosingTime> menu2 = menu.stream().filter(x -> x.isReservationTime2Atr() && x.getWorkLocationCode() == workLocationCode)
+                .map(x -> x.itemByClosingTime())
+                .collect(Collectors.toList());
+        return BentoMenuByClosingTime.createForCurrent(closingTime, menu1, menu2);
+    }
 }

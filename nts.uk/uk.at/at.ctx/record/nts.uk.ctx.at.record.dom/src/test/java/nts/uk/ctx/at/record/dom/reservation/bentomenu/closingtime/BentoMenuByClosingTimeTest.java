@@ -6,6 +6,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Collections;
 import java.util.Optional;
 
+import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
@@ -89,5 +92,12 @@ public class BentoMenuByClosingTimeTest {
 	public void getters() {
 		BentoMenuByClosingTime target = Helper.Menu.DUMMY.getByClosingTime();
 		NtsAssert.invokeGetters(target);
+	}
+
+	@Test
+	public void getter() {
+
+		BentoMenuByClosingTime target = Helper.Menu.DUMMY.getByClosingTimeFromPlace(Optional.of(new WorkLocationCode("123")));
+		assertThat(target.getMenu1().size() == 0).isTrue();
 	}
 }

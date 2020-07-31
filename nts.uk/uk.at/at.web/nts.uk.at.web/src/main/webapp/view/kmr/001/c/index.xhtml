@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="./kmr001.c.style.css" />
+			<com:stylefile path="../kmr001.common.styles.css" />
+			<com:scriptfile path="./kmr001.c.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<!--C1_1-->
+				<a class="hyperlink" href="../a/index.xhtml">#{i18n.getText('KMR002_2')}</a>
+				<!--C1_2-->
+				<button class="proceed sidebar-button">#{i18n.getText('KMR002_4')}</button>
+				<!--C1_3-->
+				<button class="danger">#{i18n.getText('KMR002_7')}</button>
+				<hr/>
+
+				<div class="kmr001-c-left-content">
+					<div data-bind="ntsPanel:{width: '400px', height: '35px', direction: 'bottom', showIcon: false, visible: true}">
+						<!--C3_2-->
+						<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true}">#{i18n.getText('KMR002_38')}</div>
+						<!--C3_3-->
+						<span>項目移送</span>
+						<!--C3_4-->
+						<div style="display: inline-block">
+							<button id ="C3_4" data-bind="click: openConfigHisDialog,
+							disable: false">#{i18n.getText('KMR002_39')}</button>
+						</div>
+					</div>
+
+					<!--C4_1-->
+					<div data-bind="ntsPanel:{width: '400px', height: '400px', direction: 'right', showIcon: true, visible: true}">
+						<!--C4_2-->
+						<table id="approver-job-list" data-bind="ntsGridList: {
+							height: 350,
+							dataSource: items,
+							primaryKey: 'id',
+							columns: ko.observableArray([
+								{ headerText: '#{i18n.getText('KMR002_41')}', key: 'id', width: 50 },
+								{ headerText: '#{i18n.getText('KMR002_42')}', key: 'name', width: 250 }
+							]),
+							value: currentCode
+						}"></table>
+					</div>
+
+				</div>
+
+				<div class="kmr001-c-right-content panel panel-frame">
+					<!--C5_2-->
+					<span class="label">#{i18n.getText('KMR002_43')}</span>
+
+					<div class="break-line"></div>
+
+					<!--C6_1-->
+					<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true}">#{i18n.getText('KMR002_5')}</div>
+
+					<!--C6_2-->
+					<input data-bind="ntsTextEditor: {value: lunchBoxTextbox}" />
+
+					<div class="break-line"></div>
+
+					<!--C11_1-->
+					<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true}">#{i18n.getText('KMR002_46')}</div>
+
+					<!--C11_2-->
+					<div data-bind="ntsCheckBox: { checked: false, enable: false, text: '項目移送' }"></div>
+
+					<!--C11_3-->
+					<span class="label">6:00 ~ 10:00</span>
+
+					<!--C11_6-->
+					<button>#{i18n.getText('KMR002_47')}</button>
+
+					<br/>
+					<!--C11_4-->
+					<div data-bind="ntsCheckBox: { checked: false, enable: false, text: '項目移送' }"></div>
+
+					<!--C11_5-->
+					<span class="label">12:00 ~ 15:00</span>
+
+					<div class="break-line"></div>
+
+					<!--C9_1-->
+					<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true}">#{i18n.getText('KMR002_45')}</div>
+
+					<!--C9_2-->
+					<input id="kmr001-c-9-2" data-bind="ntsTextEditor: {value: unitTextbox}" />
+					<div class="break-line"></div>
+
+					<!--C7_1-->
+					<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true}">#{i18n.getText('KMR002_43')}</div>
+
+					<!--C7_2-->
+					<input id="kmr001-c-7-2" data-bind="ntsNumberEditor: { value: amount1Textbox, enable: true,
+						required: true,option: {decimallength: 4 }}" />
+					<div class="break-line"></div>
+
+					<!--C8_1-->
+					<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true}">#{i18n.getText('KMR002_44')}</div>
+
+					<!--C8_2-->
+					<input id="kmr001-c-8-2" data-bind="ntsNumberEditor: { value: amount2Textbox, enable: true,
+						required: true,option: {decimallength: 4 }}" />
+					<div class="break-line"></div>
+
+					<!--C10_1-->
+					<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true}">#{i18n.getText('KMR002_24')}</div>
+
+					<!--C10_2-->
+					<input id="kmr001-c-10-2" data-bind="ntsNumberEditor: { value: maxNumberOfReservationsTxtbox, enable: true,
+					 	required: true,option: {decimallength: 2 }}"/>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
