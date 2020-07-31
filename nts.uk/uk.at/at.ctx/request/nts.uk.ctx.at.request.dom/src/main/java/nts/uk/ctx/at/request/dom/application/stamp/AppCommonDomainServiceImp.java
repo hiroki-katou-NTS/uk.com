@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +14,8 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
@@ -24,7 +25,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.ErrorStampInfo;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.AppStampSetting;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.StampAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.AppStampReflect;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepository;
@@ -40,6 +40,10 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	
 	@Inject
 	private AppStampReflectRepository appStampReflectRepo;
+	
+	@Inject
+	private NewBeforeRegister_New registerBefore;
+	
 
 	@Override
 	public AppStampOutput getDataCommon(String companyId, Optional<GeneralDate> dates,
@@ -192,8 +196,9 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	}
 
 	@Override
-	public List<ConfirmMsgOutput> checkBeforeRegister(String companyId, ApplicationType appType,
-			Application application) {
+	public List<ConfirmMsgOutput> checkBeforeRegister(String companyId, Boolean agentAtr,
+			Application application, AppStampOutput appStampOutput) {
+		List<ConfirmMsgOutput> listConfirmMs = new ArrayList<ConfirmMsgOutput>();
 //		レコーダーイメージ申請の場合：要らない
 		
 //		育児 または 介護または休憩の時、「 開始時刻　OR　 終了時刻」は入力しない　→　(#Msg_308#)
@@ -202,7 +207,18 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 //		②終了時刻　<　次の開始時刻 (#Msg_307#)
 		
 		
-		return null;
+//		2-1.新規画面登録前の処理
+		registerBefore.processBeforeRegister_New(
+				companyId,
+				EmploymentRootAtr.APPLICATION,
+				agentAtr,
+				application,
+				null,
+				appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().isPresent() ? appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().get() : null,
+				null);
+		
+		
+		return listConfirmMs;
 	}
 
 }

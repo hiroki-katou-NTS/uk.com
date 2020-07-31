@@ -40,7 +40,10 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
                 application = ko.toJS(vm.application),
                 appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
                 command = { workChange, application, appDispInfoStartupOutput };
-			vm.validateCommon().then((valid: boolean) => {
+			vm.$validate([
+				'.ntsControl',
+				'.nts-input'
+			]).then((valid: boolean) => {
 				if(valid) {
 					return vm.$blockui("show").then(() => vm.$ajax(API.register, command));
 				}

@@ -18,7 +18,6 @@ module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
             const vm = this;
             vm.appDate = params.application().appDate;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
-            params.component4ValidateEvent(vm.validate.bind(vm));
 
             vm.appDispInfoStartupOutput.subscribe(value => {
                 /*let appType = value.appDispInfoNoDateOutput.applicationSetting.appTypeSetting.appType;
@@ -55,11 +54,6 @@ module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
                  
             });
         }
-
-		validate() {
-			const vm = this;
-			return vm.$validate("#kaf000-a-component4-singleDate")	
-		}
     }
     
     const API = {
