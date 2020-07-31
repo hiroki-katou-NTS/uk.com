@@ -1,7 +1,7 @@
 import { _, Vue } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
 import { KDL002Component } from '../../../kdl/002';
-import {KafS00DComponent} from '../../../kaf/s00/d';
+import { KafS00DComponent } from '../../../kaf/s00/d';
 import {
     KafS00AComponent,
     KafS00BComponent,
@@ -133,8 +133,6 @@ export class KafS07AComponent extends Vue {
     public mounted() {
         let self = this;
 
-
-
     }
 
     public async fetchStart() {
@@ -254,7 +252,7 @@ export class KafS07AComponent extends Vue {
 
             self.$watch('kaf000_B_Params.output.endDate', (newV, oldV) => {
                 if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-                    
+
                     return;
                 }
                 let startDate = _.clone(self.kaf000_B_Params.output.startDate);
@@ -268,6 +266,9 @@ export class KafS07AComponent extends Vue {
                     }
                 }
                 self.changeDate(listDate);
+            });
+            self.$watch('kaf000_B_Params.input.newModeContent.initSelectMultiDay', (newV, oldV) => {
+                console.log(newV + ':' + oldV);
             });
 
         }
@@ -493,10 +494,17 @@ export class KafS07AComponent extends Vue {
             this.application.employeeID = this.user.employeeId;
         }
 
-        this.application.opAppStartDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-        this.application.prePostAtr = this.kaf000_B_Params.output.prePostAtr;
-
-        this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
+        if (this.kaf000_B_Params) {
+            this.application.appDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+            this.application.opAppStartDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+            this.application.prePostAtr = this.kaf000_B_Params.output.prePostAtr;
+            if (this.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+                this.application.opAppEndDate =  this.$dt.date(this.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
+            } else {
+                this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');;
+            }
+        }
+        
 
         this.application.opAppStandardReasonCD = this.kaf000_C_Params.output.opAppStandardReasonCD;
         this.application.opAppReason = this.kaf000_C_Params.output.opAppReason;
@@ -505,23 +513,28 @@ export class KafS07AComponent extends Vue {
     }
 
     public changeDate(dates: any) {
+        const self = this;
+        self.$mask('show');
         let params = {
-            companyId: this.user.companyId,
+            companyId: self.user.companyId,
             listDates: dates,
-            appWorkChangeDispInfo: this.data.appWorkChangeDispInfo
+            appWorkChangeDispInfo: self.data.appWorkChangeDispInfo
         };
-        this.$http.post('at', API.updateAppWorkChange, params)
+        self.$http.post('at', API.updateAppWorkChange, params)
             .then((res: any) => {
-                this.data.appWorkChangeDispInfo = res.data;
-                this.bindStart();
+                self.data.appWorkChangeDispInfo = res.data;
+                self.bindStart();
+                self.$mask('hide');
             })
             .catch((res: any) => {
-                this.$modal.error({ messageId: res.messageId });
+                self.$mask('hide');
+                self.$modal.error({ messageId: res.messageId });
+                
             });
 
     }
     public registerData(res: any) {
-        this.$mask('hide');
+        this.$mask('show');
         this.$http.post('at', API.registerAppWorkChange, {
             mode: this.mode,
             companyId: this.user.companyId,
@@ -533,7 +546,7 @@ export class KafS07AComponent extends Vue {
         }).then((res: any) => {
             this.$mask('hide');
             // KAFS00_D_申請登録後画面に移動する
-            this.$modal('kafs00d',{mode: this.mode ? 1 : 0, appID: res.appID});
+            this.$modal('kafs00d', { mode: this.mode ? 1 : 0, appID: res.appID });
         }).catch((res: any) => {
             this.$mask('hide');
             this.$modal.error({ messageId: res.errors[0].messageId });
