@@ -8,7 +8,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.AllArgsConstructor;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
@@ -24,11 +24,14 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ch
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.IGetDailyLock;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.StatusActualDay;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.ConfirmStatusOfDayService;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -59,18 +62,6 @@ public class StampResultConfirmationQuery {
 	@Inject
 	private DailyRecordWorkFinder fullFinder;
 	
-	@Inject
-	private ClosureService closereSv;
-	
-	@Inject
-	private SyWorkplaceAdapter syWorkplaceAdapter;
-	
-	@Inject
-	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
-	
-	@Inject
-	private IGetDailyLock iGetDailyLock;
-	
 	public StampResultConfirmDto getStampResultConfirm(StampResultConfirmRequest param) {
 		String cid = AppContexts.user().companyId();
 		String authorityId = AppContexts.user().roles().forAttendance();
@@ -85,7 +76,7 @@ public class StampResultConfirmationQuery {
 		List<DisplayScreenStampingResultDto> screenDisplays = displayScreenStamping.getDisplay(param.toStampDatePeriod());
 		
 		// 2
-		ConfirmStatusOfDayRequiredImpl required = new ConfirmStatusOfDayRequiredImpl(closereSv, syWorkplaceAdapter, confirmStatusActualDayChange, iGetDailyLock);
+		ConfirmStatusOfDayRequiredImpl required = new ConfirmStatusOfDayRequiredImpl();
 		ConfirmStatusActualResult confirmStatusAcResults = ConfirmStatusOfDayService.get(required, cid, sid, GeneralDateTime.now().toDate());
 		
 		List<AttItemName> dailyItems = companyDailyItemService.getDailyItems(cid, Optional.ofNullable(authorityId) , param.getAttendanceItems(), Collections.emptyList());
@@ -119,11 +110,7 @@ public class StampResultConfirmationQuery {
 		return new StampResultConfirmDto(screenDisplays, dailyItems, itemValues, workTypes, workTimes, confirmStatusAcResults, attendance, leave);
 	}
 	
-	@AllArgsConstructor
 	private class ConfirmStatusOfDayRequiredImpl implements ConfirmStatusOfDayService.Require {
-		
-		@Inject
-		private ClosureService closereSv;
 		
 		@Inject
 		private SyWorkplaceAdapter syWorkplaceAdapter;
@@ -133,10 +120,18 @@ public class StampResultConfirmationQuery {
 		
 		@Inject
 		private IGetDailyLock iGetDailyLock;
+		@Inject
+		private ClosureRepository closureRepo;
+		@Inject
+		private ClosureEmploymentRepository closureEmploymentRepo;
+		@Inject
+		private ShareEmploymentAdapter shareEmploymentAdapter;
 		
 		@Override
 		public Closure getClosureDataByEmployee(String employeeId, GeneralDate baseDate) {
-			return closereSv.getClosureDataByEmployee(employeeId, baseDate);
+			return ClosureService.getClosureDataByEmployee(
+					ClosureService.createRequireM3(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),
+					new CacheCarrier(), employeeId, baseDate);
 		}
 
 		@Override
