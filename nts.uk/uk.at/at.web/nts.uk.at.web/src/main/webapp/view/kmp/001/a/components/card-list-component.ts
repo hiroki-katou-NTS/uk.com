@@ -82,7 +82,7 @@ module nts.uk.at.view.kmp001.a {
 						{ headerText: vm.$i18n('KMP001_31'), key: "stampCardId", dataType: "string", width: 1, hidden: true },
 						{ headerText: vm.$i18n('KMP001_22'), key: "stampNumber", dataType: "string", width: 200, hidden: false }
 					],
-					height: `${26 + (23 * row)}px`,
+					height: `${30 + (23 * row)}px`,
 					dataSource: [],
 					features: [{
 						name: "Selection",
@@ -139,9 +139,9 @@ module nts.uk.at.view.kmp001.a {
 
 				$grid.igGrid('option', 'dataSource', ko.toJS(stampCard));
 
-				if ($grid.data('igGrid') && $grid.data('igGridSelection') && $grid.igGrid('option', 'dataSource').length) {
+				/*if ($grid.data('igGrid') && $grid.data('igGridSelection') && $grid.igGrid('option', 'dataSource').length) {
 					$grid.igGridSelection("selectRow", 0);
-				}
+				}*/
 			});
 
 			const el = document.querySelector('.sidebar-content-header');
