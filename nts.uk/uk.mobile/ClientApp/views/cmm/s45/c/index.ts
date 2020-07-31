@@ -127,10 +127,15 @@ export class CmmS45CComponent extends Vue {
             self.$mask('hide');
         }).catch((res: any) => {
             self.$mask('hide');
-            self.$modal.error(res.messageId)
-                .then(() => {
+            if (res.messageId == 'Msg_426') {
+                self.$modal.error('Msg_426').then(() => {
                     self.back();
-                });
+                });    
+            } else {
+                self.$modal.error(res.message).then(() => {
+                    self.back();
+                }); 
+            }
         });
     }
 

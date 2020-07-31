@@ -7,6 +7,7 @@ import {
     KafS00BComponent,
     KafS00CComponent
 } from 'views/kaf/s00';
+import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
 // import { AppWorkChange } from '../../../cmm/s45/components/app2/index';
 @component({
     name: 'kafs07a',
@@ -34,7 +35,7 @@ import {
     },
 
 })
-export class KafS07AComponent extends Vue {
+export class KafS07AComponent extends KafS00ShrComponent {
     // to edit
     @Prop({ default: null })
     public params?: any;
@@ -135,22 +136,25 @@ export class KafS07AComponent extends Vue {
 
     }
 
-    public async fetchStart() {
+    public fetchStart() {
         const self = this;
-        await this.$auth.user.then((usr: any) => {
+        self.$mask('show');
+        self.$auth.user.then((usr: any) => {
             self.user = usr;
-        });
-
-
-        self.$http.post('at', API.startS07, {
-            mode: self.mode,
-            companyId: self.user.companyId,
-            employeeId: self.user.employeeId,
-            listDates: [],
-            appWorkChangeOutputDto: self.mode ? null : self.data,
-            appWorkChangeDto: self.mode ? null : self.data.appWorkChange
-        })
-            .then((res: any) => {
+        }).then(() => {
+            return self.loadCommonSetting(AppType.WORK_CHANGE_APPLICATION);    
+        }).then((loadData: any) => {
+            if (loadData) {
+                return self.$http.post('at', API.startS07, {
+                    mode: self.mode,
+                    companyId: self.user.companyId,
+                    employeeId: self.user.employeeId,
+                    listDates: [],
+                    appWorkChangeOutputDto: self.mode ? null : self.data,
+                    appWorkChangeDto: self.mode ? null : self.data.appWorkChange
+                });
+            }
+        }).then((res: any) => {
                 if (!res) {
                     return;
                 }
