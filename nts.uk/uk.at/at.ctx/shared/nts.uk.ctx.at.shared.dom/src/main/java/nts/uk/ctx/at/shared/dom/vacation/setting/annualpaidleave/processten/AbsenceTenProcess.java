@@ -5,6 +5,7 @@ import java.util.Optional;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxDayReference;
@@ -109,6 +110,8 @@ public class AbsenceTenProcess {
 					result.setSubstitutionFlg(true);
 					result.setExpirationOfsubstiHoliday(
 							compensatoryLeaveEmSet.getCompensatoryAcquisitionUse().getExpirationTime().value);
+					// add refactor RequestList203
+					result.setAdvancePayment(compensatoryLeaveEmSet.getCompensatoryAcquisitionUse().getPreemptionPermit().value);
 					isManageByTime = compensatoryLeaveEmSet.getCompensatoryDigestiveTimeUnit()
 							.getIsManageByTime().value;
 					digestiveUnit = compensatoryLeaveEmSet.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value;
@@ -127,6 +130,8 @@ public class AbsenceTenProcess {
 					result.setSubstitutionFlg(true);
 					result.setExpirationOfsubstiHoliday(
 							compensatoryLeaveComSet.getCompensatoryAcquisitionUse().getExpirationTime().value);
+					// add refactor RequestList203
+					result.setAdvancePayment(compensatoryLeaveComSet.getCompensatoryAcquisitionUse().getPreemptionPermit().value);
 					isManageByTime = compensatoryLeaveComSet.getCompensatoryDigestiveTimeUnit()
 							.getIsManageByTime().value;
 					digestiveUnit = compensatoryLeaveComSet.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value;
@@ -162,6 +167,7 @@ public class AbsenceTenProcess {
 			String companyID, String employeeID, GeneralDate baseDate) {
 		boolean subManageFlag = false;
 		int expirationOfLeave = 0;
+		ApplyPermission applyPermission = null;
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する
 		Optional<BsEmploymentHistoryImport> empHistImport = require.employmentHistory(cacheCarrier, companyID, employeeID, baseDate);
 		if(empHistImport.isPresent()){
@@ -174,6 +180,8 @@ public class AbsenceTenProcess {
 					subManageFlag = true;
 					//振休使用期限=ドメインモデル「振休管理設定」．「振休取得・使用方法」．休暇使用期限
 					expirationOfLeave = empSubData.getSetting().getExpirationDate().value;
+					//refactor RQ204
+					applyPermission = empSubData.getSetting().getAllowPrepaidLeave();
 				}
 			}else{//０件(0 data)
 				//ドメインモデル「振休管理設定」を取得する(lấy dữ liệu domain 「振休管理設定」)
@@ -184,11 +192,13 @@ public class AbsenceTenProcess {
 						subManageFlag = true;
 						//振休使用期限=ドメインモデル「振休管理設定」．「振休取得・使用方法」．休暇使用期限
 						expirationOfLeave = comSubSet.getSetting().getExpirationDate().value;
+						//refactor RQ204
+						applyPermission = comSubSet.getSetting().getAllowPrepaidLeave();
 					}
 				}
 			}
 		}
-		return new LeaveSetOutput(subManageFlag, expirationOfLeave);
+		return new LeaveSetOutput(subManageFlag, expirationOfLeave, applyPermission);
 	}
 	
 	/**
