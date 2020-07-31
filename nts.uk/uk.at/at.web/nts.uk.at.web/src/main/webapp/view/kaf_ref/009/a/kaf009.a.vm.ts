@@ -161,7 +161,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             console.log( vm.applicationTest );
             console.log( ko.toJS( vm.model ) );
             vm.$blockui( "show" );
-            vm.$validate()
+            vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
                 .then( isValid => {
                     if ( isValid ) {
                         return true;
