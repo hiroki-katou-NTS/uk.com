@@ -6,7 +6,12 @@ import { component, Prop, Watch } from '@app/core/component';
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
-    validations: {},
+    validations: {
+        dateRange: {
+            required: true,
+            dateRange: true
+        }
+    },
     constraints: []
 })
 export class KafS00BComponent extends Vue {
