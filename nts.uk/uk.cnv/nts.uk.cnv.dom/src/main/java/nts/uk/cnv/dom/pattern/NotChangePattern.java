@@ -5,6 +5,10 @@ import nts.uk.cnv.dom.conversionsql.Join;
 import nts.uk.cnv.dom.conversionsql.SelectSentence;
 import nts.uk.cnv.dom.service.ConversionInfo;
 
+/**
+ * そのまま移送するパターン
+ * @author ai_muto
+ */
 public class NotChangePattern extends ConversionPattern {
 
 	private Join join;

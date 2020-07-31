@@ -18,22 +18,12 @@ import nts.uk.cnv.dom.conversionsql.WhereSentence;
 @AllArgsConstructor
 public class ConversionTable {
 
-//	private String category;
-//	private int sequenceNo;
-	
 	private TableName targetTableName;
-	
-//	/** 変換元のテーブルの内、結合の基準になるテーブル **/
-//	private TableName sourceTableName;
 	
 	private List<WhereSentence> whereList;
 	private List<OneColumnConversion> conversionMap;
 	
 	public ConversionSQL createConversionSql() {
-//		List<ColumnExpression> columns = conversionMap.stream()
-//				.map(col-> new ColumnExpression(Optional.empty(), col.getTargetColumn()))
-//				.collect(Collectors.toList());
-		
 		ConversionSQL result = new ConversionSQL(
 					new InsertSentence(targetTableName, new ArrayList<>()),
 					new ArrayList<>(),

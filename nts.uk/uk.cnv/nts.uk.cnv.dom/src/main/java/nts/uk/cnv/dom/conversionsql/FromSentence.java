@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class FromSentence {
-	/** 主テーブル **/
+	/** 基準テーブル **/
 	private Optional<TableName> baseTable;
 	/** 結合テーブル **/
 	private List<Join> joinTables;
