@@ -19,7 +19,6 @@ module nts.uk.at.view.kaf000_ref.a.component5.viewmodel {
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.opAppStandardReasonCD = params.application().opAppStandardReasonCD;
             vm.opAppReason = params.application().opAppReason;
-			params.component5ValidateEvent(vm.validate.bind(vm));
             
             vm.appDispInfoStartupOutput.subscribe(value => {
                 vm.appReasonCDRequired(value.appDispInfoNoDateOutput.applicationSetting.appLimitSetting.standardReasonRequired);
@@ -35,15 +34,5 @@ module nts.uk.at.view.kaf000_ref.a.component5.viewmodel {
                 }
             });
         }
-    
-        validate() {
-			const vm = this;
-			return vm.$validate('#kaf000-a-component5-comboReason')
-			.then((valid: boolean) => {
-				if(valid) {
-					return vm.$validate('#kaf000-a-component5-textReason');
-				}
-			});
-		}
     }
 }

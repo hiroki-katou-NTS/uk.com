@@ -14,7 +14,6 @@ module nts.uk.at.view.kaf000_ref.a.component3.viewmodel {
             const vm = this;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.prePostAtr = params.application().prePostAtr;
-			params.component3ValidateEvent(vm.validate.bind(vm));
             
             vm.appDispInfoStartupOutput.subscribe(value => {
                 vm.prePostAtr(value.appDispInfoWithDateOutput.prePostAtr);
@@ -22,10 +21,5 @@ module nts.uk.at.view.kaf000_ref.a.component3.viewmodel {
                 vm.prePostAtrEnable(value.appDispInfoNoDateOutput.applicationSetting.appTypeSetting.canClassificationChange);
             });
         }
-		
-		validate() {
-			const vm = this;
-			return vm.$validate("#kaf000-a-component3-prePost");
-		}
     }
 }
