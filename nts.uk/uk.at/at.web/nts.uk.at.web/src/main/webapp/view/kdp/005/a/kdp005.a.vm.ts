@@ -96,7 +96,7 @@ module nts.uk.at.view.kdp005.a {
 					if (self.isUsed()) {
 						block.grayout();
 						service.startPage().done((res: any) => {
-								if (!res.stampSetting || !res.stampResultDisplay) {
+								if (!res.stampSetting || !res.stampResultDisplay || res.stampSetting.pageLayouts.length == 0) {
 									self.errorMessage(self.getErrorNotUsed(1));
 									self.isUsed(false);
 									dfd.resolve();
