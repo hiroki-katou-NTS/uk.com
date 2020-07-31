@@ -1,4 +1,5 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+/// <reference path="../../../kdp/003/f/kdp003.f.vm.ts" />
 
 module nts.uk.at.view.kdp004.a {
 
@@ -12,6 +13,7 @@ module nts.uk.at.view.kdp004.a {
 		import jump = nts.uk.request.jump;
 		import getText = nts.uk.resource.getText;
 		import getMessage = nts.uk.resource.getMessage;
+		import f = nts.uk.at.kdp003.f;
 
 		export class ScreenModel {
 			stampSetting: KnockoutObservable<StampSetting> = ko.observable({} as StampSetting);
@@ -203,11 +205,11 @@ module nts.uk.at.view.kdp004.a {
 				return dfd.promise();
 			}
 
-			public openScreenF(param): JQueryPromise<any> {
+			public openScreenF(param): JQueryPromise<f.TimeStampLoginData> {
 				let vm = new ko.ViewModel();
-				let dfd = $.Deferred<any>();
+				let dfd = $.Deferred<f.TimeStampLoginData>();
 
-				vm.$window.modal('at', '/view/kdp/003/f/index.xhtml', param).then(function(loginResult): any {
+				vm.$window.modal('at', '/view/kdp/003/f/index.xhtml', param).then(function(loginResult: f.TimeStampLoginData): any {
 
 					dfd.resolve(loginResult);
 				});
@@ -376,7 +378,8 @@ module nts.uk.at.view.kdp004.a {
 					companyId: self.loginInfo.companyId
 				}).done((loginResult) => {
 					if (loginResult && loginResult.result) {
-						loginResult.em.selectedWP = self.loginInfo ? self.loginInfo.selectedWP : null;
+						let result: any = loginResult.em;
+						result.selectedWP = self.loginInfo ? self.loginInfo.selectedWP : null;
 						self.loginInfo = loginResult.em;
 						self.openScreenK().done((result) => {
 							if (result) {

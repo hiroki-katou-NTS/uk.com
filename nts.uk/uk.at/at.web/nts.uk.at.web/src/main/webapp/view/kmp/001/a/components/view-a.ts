@@ -20,7 +20,7 @@ module nts.uk.at.view.kmp001.a {
 			<div class="float-left model-component" 
 				data-bind="component: { 
 					name: 'editor-area', 
-					params: { model: model }}"></div>
+					params: { model: model, maxLength: maxLength }}"></div>
 		<div>
 `;
 
@@ -48,6 +48,7 @@ module nts.uk.at.view.kmp001.a {
 		public currentCodes: KnockoutObservableArray<string> = ko.observableArray([]);
 		public mode: KnockoutObservable<MODE> = ko.observable('update');
 		public olderCardNumber: string = '';
+		public maxLength: KnockoutObservable<string> = ko.observable('');
 
 		created() {
 			const vm = this;
@@ -56,6 +57,7 @@ module nts.uk.at.view.kmp001.a {
 				.subscribe((c: string) => {
 					const employees: IModel[] = ko.toJS(vm.employees);
 					const current = _.find(employees, e => e.code === c);
+					vm.model.stampCardDto([]);
 
 					if (current) {
 						vm.$ajax(KMP001A_API.GET_INFOMAITON_EMPLOYEE + "/" + ko.toJS(current.employeeId) + "/" + ko.toJS(current.affiliationId) + "/" + ko.toJS(vm.baseDate))
@@ -71,6 +73,7 @@ module nts.uk.at.view.kmp001.a {
 			vm.employees
 				.subscribe(() => {
 					vm.reloadData(0);
+					vm.model.code.valueHasMutated();
 				})
 		}
 
@@ -181,6 +184,7 @@ module nts.uk.at.view.kmp001.a {
 			vm.$window
 				.modal('/view/kmp/001/d/index.xhtml')
 				.then((data: any) => {
+					vm.maxLength(data.length);
 				});
 		}
 

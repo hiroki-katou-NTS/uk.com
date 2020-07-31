@@ -144,7 +144,7 @@ module nts.uk.at.kdp003.f {
 										companyId: exist.companyId,
 										employeeId: '',
 										employeeCode,
-										stampMeans: 1
+										stampMeans: StampMeans.NAME_SELECTION
 									};
 
 									const authen = (data: ConfirmStampInput) => {
@@ -228,33 +228,59 @@ module nts.uk.at.kdp003.f {
 			vm.$blockui('show')
 				.then(() => vm.$ajax(API.COMPANIES))
 				.then((data: CompanyItem[]) => {
-					const companyId = ko.toJS(params.companyId);
-					const exist: CompanyItem = _.find(data, (c) => c.companyId === companyId);
+					const valueHasMutated = () => {
+						const companyId = ko.toJS(params.companyId);
+						const exist: CompanyItem = _.find(data, (c) => c.companyId === companyId);
 
-					vm.listCompany(data);
+						vm.listCompany(data);
 
-					if (exist) {
-						if (ko.unwrap(model.companyId) !== exist.companyId) {
-							model.companyId(exist.companyId);
-						} else {
-							model.companyId.valueHasMutated();
+						if (exist) {
+							if (ko.unwrap(model.companyId) !== exist.companyId) {
+								model.companyId(exist.companyId);
+							} else {
+								model.companyId.valueHasMutated();
+							}
 						}
-					} else {
-						if (params.mode === 'admin') {
-							if (data.length === 1) {
-								model.companyId(data[0].companyId);
-							} else if (!data.length) {
+					};
+
+					if (params.mode === 'admin') {
+						if (data.length === 1) {
+							model.companyId(data[0].companyId);
+						} else {
+							let showMsg1527 = false;
+							const SCREEN: RegExpMatchArray = window.top.location.href.match(/kdp\/00\d/);
+
+							if (SCREEN.length) {
+								const name: SCREEN_NAME = SCREEN[0].replace(/\//g, '').toUpperCase() as any;
+
+								switch (name) {
+									case 'KDP001':
+										break;
+									case 'KDP002':
+										break;
+									default:
+									case 'KDP003':
+										showMsg1527 = _.every(data, d => d.selectUseOfName === false);
+										break;
+									case 'KDP004':
+										showMsg1527 = _.every(data, d => d.fingerAuthStamp === false);
+										break;
+									case 'KDP005':
+										showMsg1527 = _.every(data, d => d.icCardStamp === false);
+										break;
+								}
+							}
+
+							if (showMsg1527 === true) {
 								vm.$dialog
 									.error({ messageId: 'Msg_1527' })
 									.then(() => vm.$window.close({ msgErrorId: 'Msg_1527' }));
 							} else {
-								// raise subscribe for update message
-								model.companyId.valueHasMutated();
+								valueHasMutated();
 							}
-						} else {
-							// raise subscribe for update message
-							model.companyId.valueHasMutated();
 						}
+					} else {
+						valueHasMutated();
 					}
 				})
 				// get mode from params or set default
@@ -355,9 +381,8 @@ module nts.uk.at.kdp003.f {
 
 		cancelLogin() {
 			const vm = this;
-			const companies: CompanyItem[] = ko.unwrap(vm.listCompany);
 
-			vm.$window.close(companies);
+			vm.$window.close();
 		}
 	}
 
@@ -366,12 +391,12 @@ module nts.uk.at.kdp003.f {
 		messageParams?: string[];
 	}
 
-	interface ConfirmStampInput {
+	export interface ConfirmStampInput {
 		systemDate: string;
 		used: CanEngravingUsed;
 	}
 
-	interface CommanStampInput {
+	export interface CommanStampInput {
 		companyId: string;
 		employeeId: string;
 		employeeCode: string;
@@ -429,8 +454,6 @@ module nts.uk.at.kdp003.f {
 		readonly em: EmployeeData;
 		readonly successMsg: string;
 		readonly errorMessage: string;
-
-		readonly companies: CompanyItem[];
 	}
 
 	export interface ModelData {

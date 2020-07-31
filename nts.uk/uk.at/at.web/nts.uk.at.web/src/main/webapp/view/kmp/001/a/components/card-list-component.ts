@@ -51,6 +51,7 @@ module nts.uk.at.view.kmp001.a {
 	})
 	export class CardListComponent extends ko.ViewModel {
 		model!: share.Model;
+		maxLength: KnockoutObservable<string>;
 
 		public constraint: KnockoutObservable<string> = ko.observable('StampNumber');
 
@@ -58,23 +59,14 @@ module nts.uk.at.view.kmp001.a {
 			const vm = this;
 
 			vm.model = params.model;
+			vm.maxLength = params.maxLength;
 
-			vm.$ajax(KMP001A_CARD_LIST.GET_STAMPCARDDIGIT)
-				.then((data: any) => {
-					const ck = ko.toJS(vm.constraint);
+			vm.reloadSetting();
 
-					vm.$validate.constraint(ck)
-						.then((constraint) => {
-							if (constraint) {
-								_.extend(constraint, {
-									maxLength: data.stampCardDigitNumber
-								});
-
-								vm.$validate.constraint(ck, constraint);
-								vm.constraint.valueHasMutated();
-							}
-						});
-				});
+			vm.maxLength
+				.subscribe(() => {
+					vm.reloadSetting();
+				})
 
 			vm.$errors('.nts-editor', { messageId: 'Msg_09' });
 		}
@@ -134,9 +126,6 @@ module nts.uk.at.view.kmp001.a {
 						enableRowNumbering: false,
 						enableSelectAllForPaging: false // this option is true by default
 					}],
-					cellClick: function(evt, ui) {
-						// vm.selectedCardNo(ui.rowIndex);
-					},
 					rendered: function() {
 						$(vm.$el).find('.ui-iggrid-rowselector-header').html('').append($('<span>', { class: 'ui-iggrid-headertext', text: vm.$i18n('KMP001_31') }));
 					},
@@ -149,10 +138,10 @@ module nts.uk.at.view.kmp001.a {
 				const stampCard = ko.unwrap(vm.model.stampCardDto);
 
 				$grid.igGrid('option', 'dataSource', ko.toJS(stampCard));
-				
+
 				if ($grid.data('igGrid') && $grid.data('igGridSelection') && $grid.igGrid('option', 'dataSource').length) {
-				$grid.igGridSelection("selectRow", 0);
-			}
+					$grid.igGridSelection("selectRow", 0);
+				}
 			});
 
 			const el = document.querySelector('.sidebar-content-header');
@@ -176,6 +165,28 @@ module nts.uk.at.view.kmp001.a {
 			vm.$nextTick(() => {
 				vm.$errors('clear');
 			})
+		}
+
+		reloadSetting() {
+			const vm = this;
+
+			vm.$ajax(KMP001A_CARD_LIST.GET_STAMPCARDDIGIT)
+				.then((data: any) => {
+					const ck = ko.toJS(vm.constraint);
+
+					vm.$validate.constraint(ck)
+						.then((constraint) => {
+							if (constraint) {
+								_.extend(constraint, {
+									maxLength: data.stampCardDigitNumber
+								});
+
+								vm.$validate.constraint(ck, constraint);
+								vm.constraint.valueHasMutated();
+							}
+						});
+				});
+
 		}
 	}
 }
