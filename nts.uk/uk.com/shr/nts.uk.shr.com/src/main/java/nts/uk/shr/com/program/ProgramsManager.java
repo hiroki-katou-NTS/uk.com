@@ -2403,6 +2403,14 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "/view/cas/004/b/index.xhtml");
     
     /**
+     * KMP001
+     */
+    public static final Program KMP001A = new Program(WebAppId.AT, ProgramIdConsts.KMP001A, "KMP001_17",
+            "/view/kmp/001/a/index.xhtml");
+    public static final Program KMP001D = new Program(WebAppId.AT, ProgramIdConsts.KMP001D, "KMP001_7",
+            "/view/kmp/001/d/index.xhtml");
+    
+    /**
      * KDP001
      */
     public static final Program KDP001A = new Program(WebAppId.AT, ProgramIdConsts.KDP001A, "KDP001_1",

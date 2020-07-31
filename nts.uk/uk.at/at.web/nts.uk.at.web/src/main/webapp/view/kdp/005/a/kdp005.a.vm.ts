@@ -1,5 +1,3 @@
-/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
-
 module nts.uk.at.view.kdp005.a {
 
 	export module viewmodel {
@@ -152,8 +150,11 @@ module nts.uk.at.view.kdp005.a {
 					self.loginInfo = loginResult.em;
 					self.openDialogK().done((result) => {
 						if (!result) {
-                            self.errorMessage(getMessage("Msg_1647"));
-							dfd.resolve();
+                            characteristics.remove("loginKDP005").done(() => {
+                                self.stampSetting({});
+                                self.errorMessage(getMessage("Msg_1647"));
+        						dfd.resolve();
+                            });
 						}else {
     						self.loginInfo.selectedWP = result;
                             characteristics.save("loginKDP005", self.loginInfo).done(() => {
@@ -172,7 +173,11 @@ module nts.uk.at.view.kdp005.a {
 				let vm = new ko.ViewModel();
 				let dfd = $.Deferred<any>();
 				vm.$window.modal('at', '/view/kdp/003/f/index.xhtml', param).then(function(loginResult): any {
-					dfd.resolve(loginResult);
+					if(loginResult && loginResult.em){
+                        dfd.resolve(loginResult);
+                    }else{
+                        dfd.resolve();
+                    }
 				});
 				return dfd.promise();
 			}
@@ -338,8 +343,11 @@ module nts.uk.at.view.kdp005.a {
                                     location.reload();
                                 });
                             } else {
-                                self.isUsed(false);
-                                self.errorMessage(getMessage("Msg_1647"));
+                                characteristics.remove("loginKDP005").done(() => {
+                                    self.stampSetting({});
+                                    self.isUsed(false);
+                                    self.errorMessage(getMessage("Msg_1647"));
+                                });
                             }
                         });
                     } else {
