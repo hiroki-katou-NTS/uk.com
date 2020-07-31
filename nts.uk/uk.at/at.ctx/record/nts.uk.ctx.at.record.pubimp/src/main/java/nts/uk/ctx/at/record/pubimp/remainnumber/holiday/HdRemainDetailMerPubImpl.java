@@ -9,10 +9,15 @@ import java.util.concurrent.ConcurrentMap;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AggrResultOfAnnualLeaveEachMonth;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveOfThisMonth;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveRemainNumberPub;
@@ -38,13 +43,8 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.time.calendar.period.YearMonthPeriod;
 @Stateless
 public class HdRemainDetailMerPubImpl implements HdRemainDetailMerPub{
-
-	@Inject
-	private GetClosureStartForEmployee closure;
 	@Inject
 	private AnnLeaveRemainNumberPub rq265;
 	@Inject
@@ -64,6 +64,8 @@ public class HdRemainDetailMerPubImpl implements HdRemainDetailMerPub{
 	private YearHolidayRepository yearHolidayRepo;
 	@Inject
 	private AnnualPaidLeaveSettingRepository annualPaidLeaveSet;
+	@Inject 
+	private RecordDomRequireService requireService;
 	
 	/**
 	 * Mer RQ265,268,269,363,364,369
@@ -79,7 +81,10 @@ public class HdRemainDetailMerPubImpl implements HdRemainDetailMerPub{
 		
 		Optional<GeneralDate> closureDate = Optional.empty();
 		if(checkCall.isCall268() || checkCall.isCall369()){
-			closureDate = closure.algorithm(employeeId);
+			val require = requireService.createRequire();
+			val cacheCarrier = new CacheCarrier();
+			
+			closureDate = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
 		}
 		String companyId = AppContexts.user().companyId();
 		MonAggrCompanySettings companySets = null;

@@ -20,9 +20,15 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import cache.person.info.PersonCache;
+import lombok.RequiredArgsConstructor;
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.app.cache.employee.history.AffCompanyHistCache;
+import nts.uk.ctx.bs.employee.app.cache.employee.mgndata.EmployeeDataMngInfoCache;
 import nts.uk.ctx.bs.employee.dom.access.person.SyPersonAdapter;
 import nts.uk.ctx.bs.employee.dom.access.person.dto.PersonImport;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryRepository;
@@ -246,9 +252,19 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public EmployeeBasicInfoExport findBySId(String sId) {
 
+		val cacheCarrier = new CacheCarrier();
+		return findBySIdRequire(cacheCarrier, sId);
+	}
+	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public EmployeeBasicInfoExport findBySIdRequire(CacheCarrier cacheCarrier, String sId) {
+
+
+		val require = new RequireImpl(cacheCarrier);
+		
 		EmployeeBasicInfoExport result = new EmployeeBasicInfoExport();
 		// Get Employee
-		Optional<EmployeeDataMngInfo> empOpt = this.empDataMngRepo.findByEmpId(sId);
+		Optional<EmployeeDataMngInfo> empOpt = require.findByEmpId(sId);
 		if (!empOpt.isPresent()) {
 			return null;
 		}
@@ -256,7 +272,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		EmployeeDataMngInfo emp = empOpt.get();
 
 		// Lay thông tin lịch sử vào ra công ty của nhân viên
-		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(emp.getEmployeeId());
+		AffCompanyHist affComHist = require.getAffCompanyHistoryOfEmployee(emp.getEmployeeId());
 
 		AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(emp.getEmployeeId());
 
@@ -276,7 +292,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		});
 
 		// Lay thông tin Person
-		Optional<Person> personOpt = this.personRepository.getByPersonId(emp.getPersonId());
+		Optional<Person> personOpt = require.getByPersonId(emp.getPersonId());
 		if (!personOpt.isPresent()) {
 			return null;
 		}
@@ -1108,7 +1124,6 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				.build();
 		return result;
 	}
-
 	@Override
 	public Optional<EmployeeDataMngInfoExport> findByScdNotDel(String employeeCd, String companyId) {
 		return this.empDataMngRepo.findByScdNotDel(employeeCd,companyId).map(mngInfo -> EmployeeDataMngInfoExport.builder()
@@ -1116,5 +1131,40 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				.employeeCode(mngInfo.getEmployeeCode().v()).deletedStatus(mngInfo.getDeletedStatus().value)
 				.deleteDateTemporary(mngInfo.getDeleteDateTemporary()).removeReason(mngInfo.getRemoveReason().v())
 				.externalCode(mngInfo.getExternalCode() == null ? null : mngInfo.getExternalCode().v()).build());
+	}
+	
+	public static interface Require{
+//		this.empDataMngRepo.findByEmpId(sId);
+		Optional<EmployeeDataMngInfo> findByEmpId(String sId);
+//		affComHistRepo.getAffCompanyHistoryOfEmployee(emp.getEmployeeId());
+		AffCompanyHist getAffCompanyHistoryOfEmployee(String employeeId);
+//		this.personRepository.getByPersonId(emp.getPersonId());
+		Optional<Person> getByPersonId(String personId);
+	}
+
+	@RequiredArgsConstructor
+	class RequireImpl implements SyEmployeePubImp.Require{
+
+		private final CacheCarrier cacheCarrier;
+
+		@Override
+		public Optional<EmployeeDataMngInfo> findByEmpId(String sId) {
+			EmployeeDataMngInfoCache cache = cacheCarrier.get(EmployeeDataMngInfoCache.DOMAIN_NAME); 
+			return cache.get(sId);
+		}
+
+		@Override
+		//他と被ってる　しかし、取り方違うから要見直し
+		public AffCompanyHist getAffCompanyHistoryOfEmployee(String employeeId) {
+			AffCompanyHistCache cache = cacheCarrier.get(AffCompanyHistCache.DOMAIN_NAME);
+			return cache.get(employeeId);
+		}
+
+		@Override
+		public Optional<Person> getByPersonId(String personId) {
+			PersonCache cache = cacheCarrier.get(PersonCache.DOMAIN_NAME);
+			return cache.get(personId);
+		}
+
 	}
 }

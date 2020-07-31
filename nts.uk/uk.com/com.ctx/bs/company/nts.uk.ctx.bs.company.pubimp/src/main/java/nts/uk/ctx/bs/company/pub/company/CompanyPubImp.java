@@ -9,6 +9,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.RequiredArgsConstructor;
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.company.app.cache.CompanyCache;
 import nts.uk.ctx.bs.company.dom.company.AbolitionAtr;
 import nts.uk.ctx.bs.company.dom.company.AddInfor;
 import nts.uk.ctx.bs.company.dom.company.Company;
@@ -40,7 +45,12 @@ public class CompanyPubImp implements ICompanyPub {
 
 	@Override
 	public BeginOfMonthExport getBeginOfMonth(String cid) {
-
+		val cacheCarrier = new CacheCarrier();
+		return getBeginOfMonthRequire(cacheCarrier, cid);
+	}
+	
+	@Override
+	public BeginOfMonthExport getBeginOfMonthRequire(CacheCarrier cacheCarrier,String cid) {
 		BeginOfMonthExport result = new BeginOfMonthExport();
 		Optional<Company> comOpt = repo.getComanyInfoByCid(cid);
 		if (comOpt.isPresent()) {
@@ -51,6 +61,22 @@ public class CompanyPubImp implements ICompanyPub {
 		return result;
 	}
 
+	@RequiredArgsConstructor
+	class RequireImpl implements CompanyPubImp.Require{
+		
+		private final CacheCarrier cacheCarrier;
+		
+		@Override
+		public Optional<Company> getComanyInfoByCid(String companyId){
+			CompanyCache cache = cacheCarrier.get(CompanyCache.DOMAIN_NAME);
+			return cache.get(companyId);
+		}
+	}
+	
+	public static interface Require{
+//		repo.getComanyInfoByCid(cid);
+		Optional<Company> getComanyInfoByCid(String cid);
+	}
 	/**
 	 * for request list No.125
 	 * @return Company Info

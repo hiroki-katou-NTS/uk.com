@@ -7,8 +7,10 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateMonthlyValue;
@@ -19,15 +21,10 @@ import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.FlexAggregateMethod;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.SettlePeriod;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.SettlePeriodOfFlex;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.ShortageFlexSetting;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByDefo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByFlex;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByReg;
@@ -35,8 +32,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacati
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetAddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.PremiumAtr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.FlexTimeOfTimeSeries;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.export.GetSettlementPeriodOfDefor;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyStatutoryWorkingHours;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.Year;
@@ -48,10 +44,15 @@ import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.FlexAggregateMethod;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.FlexMonthWorkTimeAggrSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.SettlePeriod;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.SettlePeriodOfFlex;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.ShortageFlexSetting;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.export.GetSettlementPeriodOfDefor;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 時間外超過管理
@@ -175,15 +176,13 @@ public class ExcessOutsideWorkMng {
 	
 	/**
 	 * 集計
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void aggregate(RepositoriesRequiredByMonthlyAggr repositories){
-
+	public void aggregate(RequireM5 require, CacheCarrier cacheCarrier){
 		// 労働制を確認する
 		if (this.workingSystem == WorkingSystem.REGULAR_WORK || this.workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
 			
 			// 通常・変形労働時間勤務の時間外超過を集計する
-			this.aggregateExcessOutsideWork(null, repositories);
+			this.aggregateExcessOutsideWork(require, cacheCarrier, null);
 		}
 		if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK){
 			
@@ -192,12 +191,12 @@ public class ExcessOutsideWorkMng {
 			if (flexAggregateMethod == FlexAggregateMethod.PRINCIPLE){
 				
 				// 原則集計で時間外超過を集計する
-				this.aggregateExcessOutsideWork(FlexAggregateMethod.PRINCIPLE, repositories);
+				this.aggregateExcessOutsideWork(require, cacheCarrier, FlexAggregateMethod.PRINCIPLE);
 			}
 			if (flexAggregateMethod == FlexAggregateMethod.FOR_CONVENIENCE){
 				
 				// 便宜上集計で時間外超過を集計する
-				this.aggregateExcessOutsideWork(FlexAggregateMethod.FOR_CONVENIENCE, repositories);
+				this.aggregateExcessOutsideWork(require, cacheCarrier, FlexAggregateMethod.FOR_CONVENIENCE);
 
 				// 原則集計で時間外超過を集計する
 				//this.aggregateExcessOutsideWork(FlexAggregateMethod.PRINCIPLE, repositories);
@@ -213,34 +212,29 @@ public class ExcessOutsideWorkMng {
 	/**
 	 * 時間外超過を集計する
 	 * @param flexAggregateMethod フレックス集計方法
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	private void aggregateExcessOutsideWork(
-			FlexAggregateMethod flexAggregateMethod,
-			RepositoriesRequiredByMonthlyAggr repositories){
+	private void aggregateExcessOutsideWork(RequireM5 require, CacheCarrier cacheCarrier,
+			FlexAggregateMethod flexAggregateMethod){
 		
 		// 時間外超過設定を確認する
 		OutsideOTCalMed calcMethod = this.companySets.getOutsideOverTimeSet().getCalculationMethod();
 		if (calcMethod == OutsideOTCalMed.DECISION_AFTER){
 			
 			// 集計後に求める
-			this.askAfterAggregate(flexAggregateMethod, repositories);
+			this.askAfterAggregate(require, cacheCarrier, flexAggregateMethod);
 		}
 		if (calcMethod == OutsideOTCalMed.TIME_SERIES){
 			
 			// 時系列で求める
-			this.askbyTimeSeries(flexAggregateMethod, repositories);
+			this.askbyTimeSeries(require, cacheCarrier, flexAggregateMethod);
 		}
 	}
 	
 	/**
 	 * 集計後に求める
 	 * @param flexAggregateMethod フレックス集計方法
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	private void askAfterAggregate(
-			FlexAggregateMethod flexAggregateMethod,
-			RepositoriesRequiredByMonthlyAggr repositories){
+	private void askAfterAggregate(RequireM5 require, CacheCarrier cacheCarrier, FlexAggregateMethod flexAggregateMethod){
 		
 		// 集計結果　初期化
 		val regAndIrgTime = new RegularAndIrregularTimeOfMonthly();
@@ -253,37 +247,37 @@ public class ExcessOutsideWorkMng {
 		if (workingSystem == WorkingSystem.REGULAR_WORK || workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
 			
 			// 通常・変形労働時間勤務の月別実績を集計する
-			aggrValue = regAndIrgTime.aggregateMonthly(
+			aggrValue = regAndIrgTime.aggregateMonthly(require,
 					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
 					this.procPeriod, this.workingSystem, this.closureOpt,
 					MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.employmentCd, this.settingsByReg, this.settingsByDefo,
 					aggregateTotalWorkingTime, this, this.startWeekNo,
-					this.companySets, this.employeeSets, this.monthlyCalculatingDailys, repositories);
+					this.companySets, this.employeeSets, this.monthlyCalculatingDailys);
 			
 			// 通常・変形労働時間勤務の月単位の時間を集計する
-			regAndIrgTime.aggregateMonthlyHours(
+			regAndIrgTime.aggregateMonthlyHours(require,
 					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
 					this.procPeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.isRetireMonth, this.workplaceId, this.employmentCd,
 					this.settingsByReg, this.settingsByDefo,
-					aggrValue.getAggregateTotalWorkingTime(), repositories);
+					aggrValue.getAggregateTotalWorkingTime());
 		}
 		if (workingSystem == WorkingSystem.FLEX_TIME_WORK){
 			
 			// フレックス勤務の月別実績を集計する
-			aggrValue = flexTime.aggregateMonthly(
+			aggrValue = flexTime.aggregateMonthly(require, cacheCarrier, 
 					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
 					this.procPeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.closureOpt, flexAggregateMethod, this.settingsByFlex,
 					aggregateTotalWorkingTime, this, this.startWeekNo,
-					this.companySets, this.employeeSets, this.monthlyCalculatingDailys, repositories);
+					this.companySets, this.employeeSets, this.monthlyCalculatingDailys);
 			
 			// フレックス勤務の月単位の時間を集計する
-			flexTime.aggregateMonthlyHours(this.companyId, this.employeeId, this.yearMonth, this.closureId,
+			flexTime.aggregateMonthlyHours(require, cacheCarrier, this.companyId, this.employeeId, this.yearMonth, this.closureId,
 					this.procPeriod, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, flexAggregateMethod,
 					this.workingConditionItem, this.workplaceId, this.employmentCd, this.companySets,
-					this.employeeSets, this.settingsByFlex, aggrValue.getAggregateTotalWorkingTime(), repositories);
+					this.employeeSets, this.settingsByFlex, aggrValue.getAggregateTotalWorkingTime());
 			
 			// 時間外超過のフレックス時間を反映する
 			this.monthlyCalculation.getFlexTime().setFlexTimeOfExcessOutsideTime(
@@ -314,11 +308,8 @@ public class ExcessOutsideWorkMng {
 	/**
 	 * 時系列で求める
 	 * @param flexAggregateMethod フレックス集計方法
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	private void askbyTimeSeries(
-			FlexAggregateMethod flexAggregateMethod,
-			RepositoriesRequiredByMonthlyAggr repositories){
+	private void askbyTimeSeries(RequireM5 require, CacheCarrier cacheCarrier, FlexAggregateMethod flexAggregateMethod){
 		
 		// 集計結果　初期化
 		val regAndIrgTime = new RegularAndIrregularTimeOfMonthly();
@@ -332,44 +323,44 @@ public class ExcessOutsideWorkMng {
 			this.workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
 			
 			// 通常・変形労働時間勤務の月別実績を集計する
-			aggrValue = regAndIrgTime.aggregateMonthly(
+			aggrValue = regAndIrgTime.aggregateMonthly(require,
 					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
 					this.procPeriod, this.workingSystem, this.closureOpt,
 					MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.employmentCd, this.settingsByReg, this.settingsByDefo,
 					aggregateTotalWorkingTime, this, this.startWeekNo,
-					this.companySets, this.employeeSets, this.monthlyCalculatingDailys, repositories);
+					this.companySets, this.employeeSets, this.monthlyCalculatingDailys);
 			
 			// 通常・変形労働時間勤務の月単位の時間を集計する
-			regAndIrgTime.aggregateMonthlyHours(
+			regAndIrgTime.aggregateMonthlyHours(require, 
 					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
 					this.procPeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.isRetireMonth, this.workplaceId, this.employmentCd,
 					this.settingsByReg, this.settingsByDefo,
-					aggrValue.getAggregateTotalWorkingTime(), repositories);
+					aggrValue.getAggregateTotalWorkingTime());
 			
 			// 月次明細に計算結果をコピーする
 			this.monthlyDetail.setFromAggregateTotalWorkingTime(aggrValue.getAggregateTotalWorkingTime());
 			
 			// 通常・変形労働勤務の逆時系列割り当て
-			this.assignReverseTimeSeriesOfRegAndIrg(
-					regAndIrgTime, aggrValue.getAggregateTotalWorkingTime(), repositories);
+			this.assignReverseTimeSeriesOfRegAndIrg(require, cacheCarrier,
+					regAndIrgTime, aggrValue.getAggregateTotalWorkingTime());
 		}
 		if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK){
 			
 			// フレックス勤務の月別実績を集計する
-			aggrValue = flexTime.aggregateMonthly(
+			aggrValue = flexTime.aggregateMonthly(require, cacheCarrier,
 					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
 					this.procPeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.closureOpt, flexAggregateMethod, this.settingsByFlex,
 					aggregateTotalWorkingTime, this, this.startWeekNo,
-					this.companySets, this.employeeSets, this.monthlyCalculatingDailys, repositories);
+					this.companySets, this.employeeSets, this.monthlyCalculatingDailys);
 			
 			// フレックス勤務の月単位の時間を集計する
-			flexTime.aggregateMonthlyHours(this.companyId, this.employeeId, this.yearMonth, this.closureId,
+			flexTime.aggregateMonthlyHours(require, cacheCarrier, this.companyId, this.employeeId, this.yearMonth, this.closureId,
 					this.procPeriod, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, flexAggregateMethod,
 					this.workingConditionItem, this.workplaceId, this.employmentCd, this.companySets,
-					this.employeeSets, this.settingsByFlex, aggrValue.getAggregateTotalWorkingTime(), repositories);
+					this.employeeSets, this.settingsByFlex, aggrValue.getAggregateTotalWorkingTime());
 			
 			// 時間外超過のフレックス時間を反映する
 			this.monthlyCalculation.getFlexTime().setFlexTimeOfExcessOutsideTime(
@@ -404,21 +395,18 @@ public class ExcessOutsideWorkMng {
 	 * @param weekPermiumProcPeriod 週割増処理期間
 	 * @param weekPremiumTime 週単位の週割増時間
 	 * @param aggregateTotalWorkingTime 集計総労働時間
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void assignWeeklyPremiumTimeByReverseTimeSeries(
-			DatePeriod weekPermiumProcPeriod,
-			AttendanceTimeMonth weekPremiumTime,
-			AggregateTotalWorkingTime aggregateTotalWorkingTime,
-			RepositoriesRequiredByMonthlyAggr repositories){
+	public void assignWeeklyPremiumTimeByReverseTimeSeries(RequireM4 require,
+			DatePeriod weekPermiumProcPeriod, AttendanceTimeMonth weekPremiumTime,
+			AggregateTotalWorkingTime aggregateTotalWorkingTime){
 
 		// 「週割増・月割増を求める」を取得する
 		boolean isAskPremium = false;
 		if (this.workingSystem == WorkingSystem.REGULAR_WORK){
-			isAskPremium = this.settingsByReg.getRegularAggrSet().getExcessOutsideTimeSet().getSurchargeWeekMonth();
+			isAskPremium = this.settingsByReg.getRegularAggrSet().getExcessOutsideTimeSet().isSurchargeWeekMonth();
 		}
 		if (this.workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
-			isAskPremium = this.settingsByDefo.getDeforAggrSet().getExcessOutsideTimeSet().getSurchargeWeekMonth();
+			isAskPremium = this.settingsByDefo.getDeforAggrSet().getExcessOutsideTimeSet().isSurchargeWeekMonth();
 		}
 		if (!isAskPremium) return;
 		
@@ -436,8 +424,8 @@ public class ExcessOutsideWorkMng {
 		while (procDate.afterOrEquals(weekPermiumProcPeriod.start())){
 			
 			// 週割増時間を日単位で割り当てる
-			weeklyPTForAssign = this.monthlyDetail.assignWeeklyPremiumTimeByDayUnit(procDate, weeklyPTForAssign,
-					aggregateTotalWorkingTime, this.workInfoOfRecordMap, this, repositories);
+			weeklyPTForAssign = this.monthlyDetail.assignWeeklyPremiumTimeByDayUnit(require, procDate, weeklyPTForAssign,
+					aggregateTotalWorkingTime, this.workInfoOfRecordMap, this);
 			
 			// 時間外超過明細の更新
 			this.excessOutsideWorkDetail = this.monthlyDetail.getExcessOutsideWorkMng().getExcessOutsideWorkDetail();
@@ -461,7 +449,6 @@ public class ExcessOutsideWorkMng {
 	 * @param statutoryWorkingTimeMonth 月間法定労働時間
 	 * @param addSet 加算設定
 	 * @param standFlexTime 基準フレックス時間
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void assignFlexExcessTime(
 			DatePeriod datePeriod,
@@ -473,8 +460,7 @@ public class ExcessOutsideWorkMng {
 			AttendanceTimeMonth prescribedWorkingTimeMonth,
 			AttendanceTimeMonth statutoryWorkingTimeMonth,
 			AddSet addSet,
-			StandardFlexTime standFlexTime,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			StandardFlexTime standFlexTime){
 		
 		// 「不足設定．清算期間」を確認する
 		if (flexAggrSet.getInsufficSet().getSettlePeriod() == SettlePeriod.MULTI_MONTHS){
@@ -482,7 +468,17 @@ public class ExcessOutsideWorkMng {
 			// フレックス超過時間を割り当てる（複数月）
 			this.assignFlexExcessTimeForMulti(datePeriod, flexAggregateMethod, procDate, flexAggrSet,
 					aggregateTotalWorkingTime, flexTime, prescribedWorkingTimeMonth, statutoryWorkingTimeMonth,
-					addSet, standFlexTime, repositories);
+					addSet, standFlexTime);
+			return;
+		}
+		
+		// 「不足設定．清算期間」を確認する
+		if (flexAggrSet.getInsufficSet().getSettlePeriod() == SettlePeriod.MULTI_MONTHS){
+		
+			// フレックス超過時間を割り当てる（複数月）
+			this.assignFlexExcessTimeForMulti(datePeriod, flexAggregateMethod, procDate, flexAggrSet,
+					aggregateTotalWorkingTime, flexTime, prescribedWorkingTimeMonth, statutoryWorkingTimeMonth,
+					addSet, standFlexTime);
 			return;
 		}
 		
@@ -527,7 +523,6 @@ public class ExcessOutsideWorkMng {
 		}
 	}
 
-	
 	/**
 	 * フレックス超過時間を割り当てる（複数月）
 	 * @param datePeriod 期間
@@ -540,7 +535,6 @@ public class ExcessOutsideWorkMng {
 	 * @param statutoryWorkingTimeMonth 月間法定労働時間
 	 * @param addSet 加算設定
 	 * @param standFlexTime 基準フレックス時間
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void assignFlexExcessTimeForMulti(
 			DatePeriod datePeriod,
@@ -552,8 +546,7 @@ public class ExcessOutsideWorkMng {
 			AttendanceTimeMonth prescribedWorkingTimeMonth,
 			AttendanceTimeMonth statutoryWorkingTimeMonth,
 			AddSet addSet,
-			StandardFlexTime standFlexTime,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			StandardFlexTime standFlexTime){
 		
 		// 前日までのフレックス超過対象時間を求める　→　前日累計対象時間
 		AttendanceTimeMonthWithMinus prevSumTargetTime = this.askTargetFlexExcessTime(
@@ -801,9 +794,9 @@ public class ExcessOutsideWorkMng {
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	private void assignReverseTimeSeriesOfRegAndIrg(
+			RequireM3 require, CacheCarrier cacheCarrier,
 			RegularAndIrregularTimeOfMonthly regAndIrgTime,
-			AggregateTotalWorkingTime aggregateTotalWorkingTime,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			AggregateTotalWorkingTime aggregateTotalWorkingTime){
 		
 		// 内訳項目一覧に週割増合計時間が設定されているか確認する
 		val outsideOTSet = this.companySets.getOutsideOverTimeSet();
@@ -822,14 +815,14 @@ public class ExcessOutsideWorkMng {
 		if (this.workingSystem == WorkingSystem.REGULAR_WORK){
 			
 			// 通常勤務の月割増時間を逆時系列で割り当てる
-			this.assignMonthlyPremiumTimeByReverseTimeSeriesOfReg(
-					regAndIrgTime, aggregateTotalWorkingTime, repositories);
+			this.assignMonthlyPremiumTimeByReverseTimeSeriesOfReg(require, 
+					regAndIrgTime, aggregateTotalWorkingTime);
 		}
 		if (this.workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
 			
 			// 変形労働勤務の月割増時間を逆時系列で割り当てる
 			this.assignMonthlyPremiumTimeByReverseTimeSeriesOfIrg(
-					regAndIrgTime, aggregateTotalWorkingTime, repositories);
+					require, cacheCarrier, regAndIrgTime, aggregateTotalWorkingTime);
 		}
 	}
 	
@@ -837,20 +830,18 @@ public class ExcessOutsideWorkMng {
 	 * 通常勤務の月割増時間を逆時系列で割り当てる
 	 * @param regAndIrgTime 月別実績の通常変形時間
 	 * @param aggregateTotalWorkingTime 総労働時間
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	private void assignMonthlyPremiumTimeByReverseTimeSeriesOfReg(
+	private void assignMonthlyPremiumTimeByReverseTimeSeriesOfReg(RequireM2 require,
 			RegularAndIrregularTimeOfMonthly regAndIrgTime,
-			AggregateTotalWorkingTime aggregateTotalWorkingTime,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			AggregateTotalWorkingTime aggregateTotalWorkingTime){
 		
 		// 「週割増・月割増を求める」を取得する
 		boolean isAskPremium = false;
 		if (this.workingSystem == WorkingSystem.REGULAR_WORK){
-			isAskPremium = this.settingsByReg.getRegularAggrSet().getExcessOutsideTimeSet().getSurchargeWeekMonth();
+			isAskPremium = this.settingsByReg.getRegularAggrSet().getExcessOutsideTimeSet().isSurchargeWeekMonth();
 		}
 		if (this.workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
-			isAskPremium = this.settingsByDefo.getDeforAggrSet().getExcessOutsideTimeSet().getSurchargeWeekMonth();
+			isAskPremium = this.settingsByDefo.getDeforAggrSet().getExcessOutsideTimeSet().isSurchargeWeekMonth();
 		}
 		if (!isAskPremium) return;
 		
@@ -878,8 +869,8 @@ public class ExcessOutsideWorkMng {
 		while (procDate.afterOrEquals(this.procPeriod.start())){
 			
 			// 月割増時間を日単位で割り当てる
-			monthlyPTForAssign = this.monthlyDetail.assignMonthlyPremiumTimeByDayUnit(procDate, monthlyPTForAssign,
-					addSet, aggregateTotalWorkingTime, this.workInfoOfRecordMap, this, repositories);
+			monthlyPTForAssign = this.monthlyDetail.assignMonthlyPremiumTimeByDayUnit(require, procDate, monthlyPTForAssign,
+					addSet, aggregateTotalWorkingTime, this.workInfoOfRecordMap, this);
 			
 			// 時間外超過明細の更新
 			this.excessOutsideWorkDetail = this.monthlyDetail.getExcessOutsideWorkMng().getExcessOutsideWorkDetail();
@@ -895,12 +886,10 @@ public class ExcessOutsideWorkMng {
 	 * 変形労働勤務の月割増時間を逆時系列で割り当てる
 	 * @param regAndIrgTime 月別実績の通常変形時間
 	 * @param aggregateTotalWorkingTime 総労働時間
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	private void assignMonthlyPremiumTimeByReverseTimeSeriesOfIrg(
+	private void assignMonthlyPremiumTimeByReverseTimeSeriesOfIrg(RequireM3 require, CacheCarrier cacheCarrier,
 			RegularAndIrregularTimeOfMonthly regAndIrgTime,
-			AggregateTotalWorkingTime aggregateTotalWorkingTime,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			AggregateTotalWorkingTime aggregateTotalWorkingTime){
 		
 		// 処理月が含まれる精算期間が単月か複数月か確認する
 		val settlementPeriod = GetSettlementPeriodOfDefor.createFromDeforAggrSet(this.settingsByDefo.getDeforAggrSet());
@@ -910,8 +899,8 @@ public class ExcessOutsideWorkMng {
 			this.excessOutsideWork.setDeformationCarryforwardTime(new AttendanceTimeMonthWithMinus(0));
 			
 			// 精算月の月割増時間を逆時系列で割り当てる　（単月）　※　通常勤務の方式と同じ
-			this.assignMonthlyPremiumTimeByReverseTimeSeriesOfReg(
-					regAndIrgTime, aggregateTotalWorkingTime, repositories);
+			this.assignMonthlyPremiumTimeByReverseTimeSeriesOfReg(require, 
+					regAndIrgTime, aggregateTotalWorkingTime);
 		}
 		else {
 			
@@ -924,7 +913,8 @@ public class ExcessOutsideWorkMng {
 				
 				// 精算月の時、精算月の月割増時間を逆時系列で割り当てる　（複数月）
 				this.assignMonthlyPremiumTimeByReverseTimeSeriesForMultiMonth(
-						regAndIrgTime, aggregateTotalWorkingTime, repositories);
+						require,cacheCarrier,
+						regAndIrgTime, aggregateTotalWorkingTime);
 			}
 			else {
 				
@@ -938,12 +928,10 @@ public class ExcessOutsideWorkMng {
 	 * 精算月の月割増時間を逆時系列で割り当てる　（複数月）
 	 * @param regAndIrgTime 月別実績の通常変形時間
 	 * @param aggregateTotalWorkingTime 総労働時間
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	private void assignMonthlyPremiumTimeByReverseTimeSeriesForMultiMonth(
+	private void assignMonthlyPremiumTimeByReverseTimeSeriesForMultiMonth(RequireM3 require, CacheCarrier cacheCarrier,
 			RegularAndIrregularTimeOfMonthly regAndIrgTime,
-			AggregateTotalWorkingTime aggregateTotalWorkingTime,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			AggregateTotalWorkingTime aggregateTotalWorkingTime){
 		
 		// 精算期間を取得する　（当月除く過去分の期間内年月リスト）
 		val settlementPeriod = GetSettlementPeriodOfDefor.createFromDeforAggrSet(this.settingsByDefo.getDeforAggrSet());
@@ -953,16 +941,15 @@ public class ExcessOutsideWorkMng {
 		for (val settlementMonth : settlementMonths){
 			
 			// 法定労働時間を取得する
-			val monAndWeekStatTimeOpt = repositories.getMonthlyStatutoryWorkingHours().getMonAndWeekStatutoryTime(
-					this.companyId, this.employmentCd, this.employeeId, this.procPeriod.end(),
+			val monAndWeekStatTimeOpt = MonthlyStatutoryWorkingHours.monAndWeekStatutoryTime(
+					require, cacheCarrier, this.companyId, this.employmentCd, this.employeeId, this.procPeriod.end(),
 					settlementMonth, WorkingSystem.VARIABLE_WORKING_TIME_WORK);
 			if (!monAndWeekStatTimeOpt.isPresent()) continue;
 			int statutoryWorkingTimeMonth = monAndWeekStatTimeOpt.get().getMonthlyEstimateTime().v();
 			
 			// 確認中年月の月別実績を確認する
 			List<AttendanceTimeOfMonthly> attendanceTimes = new ArrayList<>();
-			attendanceTimes = repositories.getAttendanceTimeOfMonthly().findByYearMonthOrderByStartYmd(
-					this.employeeId, settlementMonth);
+			attendanceTimes = require.attendanceTimeOfMonthly(this.employeeId, settlementMonth);
 			
 			// 取得した法令労働時間を法定労働時間累計に加算する
 			totalStatutoryWorkingMinutes += statutoryWorkingTimeMonth;
@@ -1003,20 +990,18 @@ public class ExcessOutsideWorkMng {
 		
 		// 月割増時間を逆時系列で割り当てる　※　通常勤務と同じ方式
 		AttendanceTimeMonthWithMinus monthlyPTForAssign = new AttendanceTimeMonthWithMinus(monthlyTotalPremiumMinutes);
-		this.assignMonthlyPremiumTimeByReverseTimeSeriesOfIrg(
-				monthlyPTForAssign, aggregateTotalWorkingTime, repositories);
+		this.assignMonthlyPremiumTimeByReverseTimeSeriesOfIrg(require,
+				monthlyPTForAssign, aggregateTotalWorkingTime);
 	}
 	
 	/**
 	 * 変形労働勤務の月割増時間を逆時系列で割り当てる
 	 * @param monthlyPTForAssign 逆時系列割り当て用の月割増時間
 	 * @param aggregateTotalWorkingTime 総労働時間
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	private void assignMonthlyPremiumTimeByReverseTimeSeriesOfIrg(
+	private void assignMonthlyPremiumTimeByReverseTimeSeriesOfIrg(RequireM2 require,
 			AttendanceTimeMonthWithMinus monthlyPTForAssign,
-			AggregateTotalWorkingTime aggregateTotalWorkingTime,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			AggregateTotalWorkingTime aggregateTotalWorkingTime){
 		
 		// 加算設定を取得する　（割増）
 		val addSet = GetAddSet.get(this.workingSystem, PremiumAtr.PREMIUM, this.settingsByDefo.getHolidayAdditionMap());
@@ -1029,8 +1014,8 @@ public class ExcessOutsideWorkMng {
 		while (procDate.afterOrEquals(this.procPeriod.start())){
 			
 			// 月割増時間を日単位で割り当てる
-			monthlyPTForAssign = this.monthlyDetail.assignMonthlyPremiumTimeByDayUnit(procDate, monthlyPTForAssign,
-					addSet, aggregateTotalWorkingTime, this.workInfoOfRecordMap, this, repositories);
+			monthlyPTForAssign = this.monthlyDetail.assignMonthlyPremiumTimeByDayUnit(require, procDate, monthlyPTForAssign,
+					addSet, aggregateTotalWorkingTime, this.workInfoOfRecordMap, this);
 			
 			// 時間外超過明細の更新
 			this.excessOutsideWorkDetail = this.monthlyDetail.getExcessOutsideWorkMng().getExcessOutsideWorkDetail();
@@ -1046,8 +1031,7 @@ public class ExcessOutsideWorkMng {
 	 * 便宜上集計の逆時系列割り当て　（フレックス）
 	 * @param flexTimeOfMonthly 月別実績のフレックス時間
 	 */
-	private void assignReverseTimeSeriesForConvenience(
-			FlexTimeOfMonthly flexTimeOfMonthly){
+	private void assignReverseTimeSeriesForConvenience(FlexTimeOfMonthly flexTimeOfMonthly){
 
 		// 法定内フレックス時間を含めるか判断する
 		AttendanceTimeMonthWithMinus flexExcessTargetTime = new AttendanceTimeMonthWithMinus(0);
@@ -1256,14 +1240,11 @@ public class ExcessOutsideWorkMng {
 	 * @param yearMonth 年月（度）
 	 * @param period 期間
 	 * @param flexAggrSet フレックス時間勤務の月の集計設定
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 * @return 基準フレックス時間
 	 */
-	public StandardFlexTime aggrStandardTime(
-			YearMonth yearMonth,
-			DatePeriod period,
-			FlexMonthWorkTimeAggrSet flexAggrSet,
-			RepositoriesRequiredByMonthlyAggr repositories){
+	public StandardFlexTime aggrStandardTime(RequireM1 require, 
+			CacheCarrier cacheCarrier, YearMonth yearMonth,
+			DatePeriod period, FlexMonthWorkTimeAggrSet flexAggrSet){
 		
 		StandardFlexTime result = new StandardFlexTime();
 		
@@ -1280,10 +1261,11 @@ public class ExcessOutsideWorkMng {
 		for (; indexYm.lessThanOrEqualTo(settlePeriod.getSettleYm()); indexYm = indexYm.addMonths(1)){
 			
 			// 暦上の年月を渡して、年度に沿った年月を取得する
-			YearMonth statYm = repositories.getCompany().getYearMonthFromCalenderYM(this.companyId, indexYm);
+
+			YearMonth statYm = require.yearMonthFromCalender(cacheCarrier, this.companyId, indexYm);
 			
 			// 週、月の法定労働時間を取得（フレックス用）
-			val monStatTime = repositories.getMonthlyStatutoryWorkingHours().getFlexMonAndWeekStatutoryTime(
+			val monStatTime = MonthlyStatutoryWorkingHours.flexMonAndWeekStatutoryTime(require, cacheCarrier,
 					this.companyId, this.employmentCd, this.employeeId, period.end(), statYm);
 			
 			// 「清算法定時間」に「法定労働時間」を加算する
@@ -1312,8 +1294,7 @@ public class ExcessOutsideWorkMng {
 			else{		// 前月より前
 				
 				// ループ中の年月の「月別実績の勤怠時間」を取得する
-				val attendanceTimeList = repositories.getAttendanceTimeOfMonthly().findByYearMonthOrderByStartYmd(
-						this.employeeId, indexYm);
+				val attendanceTimeList = require.attendanceTimeOfMonthly(this.employeeId, indexYm);
 				for (val attendanceTime : attendanceTimeList){
 					
 					// 「基準フレックス時間」に「時間外超過のフレックス時間」を加算する
@@ -1328,5 +1309,26 @@ public class ExcessOutsideWorkMng {
 		
 		// 「基準フレックス時間」を返す
 		return result;
+	}
+	
+	public static interface RequireM0 {
+
+		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, YearMonth yearMonth);
+	}
+
+	public static interface RequireM5 extends FlexTimeOfMonthly.RequireM6, 
+												FlexTimeOfMonthly.RequireM5, RequireM3, 
+												RegularAndIrregularTimeOfMonthly.RequireM1, 
+												RegularAndIrregularTimeOfMonthly.RequireM3{}
+	
+	public static interface RequireM4 extends MonthlyDetail.RequireM5 {}
+	
+	public static interface RequireM3 extends RequireM0, MonthlyStatutoryWorkingHours.RequireM4, RequireM2 {}
+	
+	public static interface RequireM2 extends MonthlyDetail.RequireM3 {}
+	
+	public static interface RequireM1 extends RequireM0, MonthlyStatutoryWorkingHours.RequireM1 {
+		
+		YearMonth yearMonthFromCalender(CacheCarrier cacheCarrier, String companyId, YearMonth yearMonth);
 	}
 }

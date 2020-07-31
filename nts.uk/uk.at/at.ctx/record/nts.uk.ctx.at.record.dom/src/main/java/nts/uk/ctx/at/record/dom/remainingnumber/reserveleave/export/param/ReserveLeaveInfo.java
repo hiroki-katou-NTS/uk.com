@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
@@ -153,15 +154,10 @@ public class ReserveLeaveInfo implements Cloneable {
 	 * @param emptYearlyRetentionSetMap 雇用積立年休設定マップ
 	 * @return 積立年休の集計結果
 	 */
-	public AggrResultOfReserveLeave lapsedGrantDigest(
-			String companyId,
-			String employeeId,
-			RsvLeaAggrPeriodWork aggrPeriodWork,
-			List<TmpReserveLeaveMngWork> tmpReserveLeaveMngs,
-			boolean isGetNextMonthData,
+	public AggrResultOfReserveLeave lapsedGrantDigest(RequireM1 require, CacheCarrier cacheCarrier,
+			String companyId, String employeeId, RsvLeaAggrPeriodWork aggrPeriodWork,
+			List<TmpReserveLeaveMngWork> tmpReserveLeaveMngs, boolean isGetNextMonthData,
 			AggrResultOfReserveLeave aggrResult,
-			GetUpperLimitSetting getUpperLimitSetting,
-			CalcDeadlineForGrantDate calcDeadlineForGrantDate,
 			AnnualPaidLeaveSetting annualPaidLeaveSet,
 			Optional<RetentionYearlySetting> retentionYearlySet,
 			Optional<Map<String, EmptYearlyRetentionSetting>> emptYearlyRetentionSetMap) {
@@ -183,8 +179,8 @@ public class ReserveLeaveInfo implements Cloneable {
 		aggrResult = this.lapsedProcess(aggrPeriodWork, aggrResult);
 		
 		// 付与処理
-		aggrResult = this.grantProcess(companyId, employeeId, aggrPeriodWork, aggrResult,
-				getUpperLimitSetting, calcDeadlineForGrantDate, retentionYearlySet, emptYearlyRetentionSetMap);
+		aggrResult = this.grantProcess(require, cacheCarrier,companyId, employeeId, aggrPeriodWork, aggrResult,
+					retentionYearlySet, emptYearlyRetentionSetMap);
 		
 		// 上限を超過した積立年休を消滅させる
 		this.lapsedExcessReserveLeave(aggrPeriodWork);
@@ -296,14 +292,9 @@ public class ReserveLeaveInfo implements Cloneable {
 	 * @param emptYearlyRetentionSetMap 雇用積立年休設定マップ
 	 * @return 積立年休の集計結果
 	 */
-	private AggrResultOfReserveLeave grantProcess(
-			String companyId,
-			String employeeId,
-			RsvLeaAggrPeriodWork aggrPeriodWork,
-			AggrResultOfReserveLeave aggrResult,
-			GetUpperLimitSetting getUpperLimitSetting,
-			CalcDeadlineForGrantDate calcDeadlineForGrantDate,
-			Optional<RetentionYearlySetting> retentionYearlySet,
+	private AggrResultOfReserveLeave grantProcess(RequireM1 require, CacheCarrier cacheCarrier,
+			String companyId, String employeeId, RsvLeaAggrPeriodWork aggrPeriodWork,
+			AggrResultOfReserveLeave aggrResult, Optional<RetentionYearlySetting> retentionYearlySet,
 			Optional<Map<String, EmptYearlyRetentionSetting>> emptYearlyRetentionSetMap) {
 		
 		// 「付与フラグ」をチェック
@@ -313,9 +304,9 @@ public class ReserveLeaveInfo implements Cloneable {
 		if (!aggrPeriodWork.getReserveLeaveGrant().isPresent()) return aggrResult;
 		val reserveLeaveGrant = aggrPeriodWork.getReserveLeaveGrant().get();
 		val grantDate = reserveLeaveGrant.getGrantYmd();
-		val upperLimitSet = getUpperLimitSetting.algorithm(
+		val upperLimitSet = GetUpperLimitSetting.algorithm(require, cacheCarrier,
 				companyId, employeeId, grantDate, retentionYearlySet, emptYearlyRetentionSetMap);
-		val deadline = calcDeadlineForGrantDate.algorithm(grantDate, upperLimitSet);
+		val deadline = CalcDeadlineForGrantDate.algorithm(grantDate, upperLimitSet);
 		
 		// 付与日数を取得
 		double grantDays = reserveLeaveGrant.getGrantDays().v();
@@ -364,8 +355,7 @@ public class ReserveLeaveInfo implements Cloneable {
 	 * 上限を超過した積立年休を消滅させる
 	 * @param aggrPeriodWork 処理中の積立年休集計期間WORK
 	 */
-	private void lapsedExcessReserveLeave(
-			RsvLeaAggrPeriodWork aggrPeriodWork){
+	private void lapsedExcessReserveLeave(RsvLeaAggrPeriodWork aggrPeriodWork){
 		
 		// 上限日数と積立年休残日数を比較
 		Integer maxDays = aggrPeriodWork.getMaxDays().v();
@@ -424,9 +414,7 @@ public class ReserveLeaveInfo implements Cloneable {
 	 * @param annualPaidLeaveSet 年休設定
 	 * @return 積立年休の集計結果
 	 */
-	private AggrResultOfReserveLeave digestProcess(
-			String companyId,
-			String employeeId,
+	private AggrResultOfReserveLeave digestProcess(String companyId, String employeeId,
 			RsvLeaAggrPeriodWork aggrPeriodWork,
 			List<TmpReserveLeaveMngWork> tmpReserveLeaveMngs,
 			AggrResultOfReserveLeave aggrResult,
@@ -581,5 +569,9 @@ public class ReserveLeaveInfo implements Cloneable {
 			val grantRemaining = itrGrantRemaining.next();
 			if (grantRemaining.isDummyAtr()) itrGrantRemaining.remove();
 		}
+	}
+	
+	public static interface RequireM1 extends GetUpperLimitSetting.RequireM1 {
+
 	}
 }

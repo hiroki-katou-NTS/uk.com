@@ -38,10 +38,6 @@ public class SettingOfManagerFinder {
 	@Inject
 	private ClosureRepository closureRepo;
 
-	/** The Closure service. */
-	@Inject
-	private ClosureService closureService;
-
 	@Inject
 	private PersonApprovalRootRepository personAppRootRepo;
 
@@ -207,7 +203,7 @@ public class SettingOfManagerFinder {
 		// Get Processing Ym 処理年月
 		YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
 
-		DatePeriod closurePeriod = closureService.getClosurePeriod(closureId, processingYm);
+		DatePeriod closurePeriod = ClosureService.getClosurePeriod(closureId, processingYm, optClosure);
 		
 		return Optional.of(closurePeriod.start());
 	}

@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.byperiod.FlexTimeByPeriod;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
@@ -16,16 +17,14 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWork
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByDefo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByReg;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.monthly.AttendanceItemOfMonthly;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeekStart;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 週別の計算
@@ -135,8 +134,7 @@ public class WeeklyCalculation implements Cloneable {
 			WeekStart weekStart,
 			AttendanceTimeMonth premiumTimeOfPrevMonLast,
 			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
-			MonAggrCompanySettings companySets,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			MonAggrCompanySettings companySets){
 		
 		if (workingSystem == WorkingSystem.EXCLUDED_WORKING_CALCULATE) return;
 		

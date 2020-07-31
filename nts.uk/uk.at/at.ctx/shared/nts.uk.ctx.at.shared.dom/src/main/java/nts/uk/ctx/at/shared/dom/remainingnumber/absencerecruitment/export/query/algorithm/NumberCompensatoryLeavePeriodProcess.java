@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.Getter;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -34,6 +35,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepositor
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 
 @Stateless
@@ -61,7 +65,13 @@ public class NumberCompensatoryLeavePeriodProcess {
 	private ComSubstVacationRepository comSubstVacationRepository;
 
 	@Inject
-	private ClosureService closureService;
+	private ClosureRepository closureRepo;
+
+	@Inject
+	private ClosureEmploymentRepository closureEmpRepo;
+	
+	@Inject
+	private ShareEmploymentAdapter shrEmpAdapter;
 
 	@Inject
 	private CompanyAdapter companyAdapter;
@@ -70,7 +80,8 @@ public class NumberCompensatoryLeavePeriodProcess {
 		RequireImpl impl = new RequireImplBuilder(substitutionOfHDManaDataRepository, payoutManagementDataRepository,
 				interimRemainRepository, interimRecAbasMngRepository, shareEmploymentAdapter)
 						.empSubstVacationRepository(empSubstVacationRepository)
-						.comSubstVacationRepository(comSubstVacationRepository).closureService(closureService)
+						.comSubstVacationRepository(comSubstVacationRepository)
+						.comSubstVacationRepository(comSubstVacationRepository)
 						.companyAdapter(companyAdapter).build();
 
 		return NumberCompensatoryLeavePeriodQuery.process(impl, inputParam);
@@ -93,8 +104,6 @@ public class NumberCompensatoryLeavePeriodProcess {
 
 		private final ComSubstVacationRepository comSubstVacationRepository;
 
-		private final ClosureService closureService;
-
 		private final CompanyAdapter companyAdapter;
 
 		public RequireImpl(RequireImplBuilder builder) {
@@ -105,7 +114,6 @@ public class NumberCompensatoryLeavePeriodProcess {
 			this.shareEmploymentAdapter = builder.getShareEmploymentAdapter();
 			this.empSubstVacationRepository = builder.getEmpSubstVacationRepository();
 			this.comSubstVacationRepository = builder.getComSubstVacationRepository();
-			this.closureService = builder.getClosureService();
 			this.companyAdapter = builder.getCompanyAdapter();
 
 		}
@@ -161,7 +169,7 @@ public class NumberCompensatoryLeavePeriodProcess {
 
 		@Override
 		public Closure getClosureDataByEmployee(String employeeId, GeneralDate baseDate) {
-			return closureService.getClosureDataByEmployee(employeeId, baseDate);
+			return ClosureService.getClosureDataByEmployee(createImp(), new CacheCarrier(), employeeId, baseDate);
 		}
 
 		@Override
@@ -174,6 +182,28 @@ public class NumberCompensatoryLeavePeriodProcess {
 			return shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(employeeId);
 		}
 
+	}
+	
+	private ClosureService.RequireM3 createImp() {
+		
+		return new ClosureService.RequireM3() {
+			
+			@Override
+			public Optional<Closure> closure(String companyId, int closureId) {
+				return closureRepo.findById(companyId, closureId);
+			}
+			
+			@Override
+			public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
+				return closureEmpRepo.findByEmploymentCD(companyID, employmentCD);
+			}
+			
+			@Override
+			public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
+					String employeeId, GeneralDate baseDate) {
+				return shrEmpAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
+			}
+		};
 	}
 
 	@Getter

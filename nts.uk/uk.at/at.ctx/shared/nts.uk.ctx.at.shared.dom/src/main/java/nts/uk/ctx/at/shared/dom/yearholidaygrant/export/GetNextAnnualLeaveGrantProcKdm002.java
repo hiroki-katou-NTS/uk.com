@@ -8,40 +8,34 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantNum;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantReferenceDate;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantSimultaneity;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.UseSimultaneousGrant;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * Improve Performance for KDM002
  * 
  * @author HungTT
  */
-@Stateless
 public class GetNextAnnualLeaveGrantProcKdm002 {
 
 	/** 年休付与テーブル設定 */
-	@Inject
-	private YearHolidayRepository yearHolidayRepo;
-	/** 勤続年数テーブル */
-	@Inject
-	private LengthServiceRepository lengthServiceRepo;
-	/** 年休付与テーブル */
-	@Inject
-	private GrantYearHolidayRepository grantYearHolidayRepo;
+//	@Inject
+//	private YearHolidayRepository yearHolidayRepo;
+//	/** 勤続年数テーブル */
+//	@Inject
+//	private LengthServiceRepository lengthServiceRepo;
+//	/** 年休付与テーブル */
+//	@Inject
+//	private GrantYearHolidayRepository grantYearHolidayRepo;
 
 	/**
 	 * 次回年休付与を取得する
@@ -53,15 +47,16 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 	 * @param isSingleDay 単一日フラグ
 	 * @return 次回年休付与マップ
 	 */
-	public Map<String, List<NextAnnualLeaveGrant>> algorithm(String companyId, List<String> employeeIds,
-			Map<String, AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfoMap, Map<String, GeneralDate> entryDateMap,
-			DatePeriod period, boolean isSingleDay) {
+	public static Map<String, List<NextAnnualLeaveGrant>> algorithm(RequireM1 require, String companyId, 
+			List<String> employeeIds, Map<String, AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfoMap,
+			Map<String, GeneralDate> entryDateMap, DatePeriod period, boolean isSingleDay) {
+		
 		Map<String, List<NextAnnualLeaveGrant>> result = new HashMap<>();
 		Set<String> grantTableCodeSet = annualLeaveEmpBasicInfoMap.values().stream()
 				.map(i -> i.getGrantRule().getGrantTableCode().v()).collect(Collectors.toSet());
-		Map<String, List<LengthServiceTbl>> lengthServiceTblMap = lengthServiceRepo.findByCode(companyId,
+		Map<String, List<LengthServiceTbl>> lengthServiceTblMap = require.lengthServiceTbl(companyId,
 				new ArrayList<>(grantTableCodeSet));
-		Map<String, GrantHdTblSet> grantHdTblSetMap = yearHolidayRepo.findAll(companyId).stream()
+		Map<String, GrantHdTblSet> grantHdTblSetMap = require.grantHdTblSets(companyId).stream()
 				.filter(i -> grantTableCodeSet.contains(i.getYearHolidayCode().v()))
 				.collect(Collectors.toMap(a -> a.getYearHolidayCode().v(), a -> a));
 		for (String empId : employeeIds) {
@@ -92,12 +87,12 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 				continue;
 			}
 			// 年休付与年月日を計算
-			this.calcAnnualLeaveGrantDate(entryDate, criteriaDate, simultaneousGrantMDOpt, lengthServiceTbls, period,
+			calcAnnualLeaveGrantDate(entryDate, criteriaDate, simultaneousGrantMDOpt, lengthServiceTbls, period,
 					isSingleDay, nextAnnualLeaveGrantList);
 			for (val nextAnnualLeaveGrant : nextAnnualLeaveGrantList) {
 				// 付与回数をもとに年休付与テーブルを取得
 				val grantTimes = nextAnnualLeaveGrant.getTimes().v();
-				val grantHdTblOpt = this.grantYearHolidayRepo.find(companyId, 1, grantTableCode, grantTimes);
+				val grantHdTblOpt = require.grantHdTbl(companyId, 1, grantTableCode, grantTimes);
 
 				// 次回年休付与に付与日数・半日年休上限回数・時間年休上限日数をセット
 				if (!grantHdTblOpt.isPresent())
@@ -123,7 +118,7 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 	 * @param isSingleDay 単一日フラグ
 	 * @param nextAnnualLeaveGrantList 次回年休付与リスト
 	 */
-	public void calcAnnualLeaveGrantDate(GeneralDate entryDate, GeneralDate criteriaDate,
+	public static void calcAnnualLeaveGrantDate(GeneralDate entryDate, GeneralDate criteriaDate,
 			Optional<Integer> simultaneousGrantMDOpt, List<LengthServiceTbl> lengthServiceTbls, DatePeriod period,
 			boolean isSingleDay, List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList) {
 
@@ -131,7 +126,7 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 		for (val lengthServiceTbl : lengthServiceTbls) {
 
 			// 付与日を計算
-			val nextAnnualLeaveGrant = this.calcGrantDate(lengthServiceTbl, Optional.empty(),
+			val nextAnnualLeaveGrant = calcGrantDate(lengthServiceTbl, Optional.empty(),
 					entryDate, criteriaDate, simultaneousGrantMDOpt, previousDate);
 
 			// 次回付与日が前回付与日を超えているかどうかチェック
@@ -175,7 +170,7 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 		while (calcYears < 100) {
 
 			// 付与日を計算
-			val nextAnnualLeaveGrant = this.calcGrantDate(lastLengthServiceTbl, Optional.of(calcYears),
+			val nextAnnualLeaveGrant = calcGrantDate(lastLengthServiceTbl, Optional.of(calcYears),
 					entryDate, criteriaDate, simultaneousGrantMDOpt, previousDate);
 
 			// 次回付与日が前回付与日を超えているかどうかチェック
@@ -227,14 +222,14 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 	 * @param previousDate 前回付与日
 	 * @return 次回年休付与
 	 */
-	private NextAnnualLeaveGrant calcGrantDate(LengthServiceTbl lengthServiceTbl,
+	private static NextAnnualLeaveGrant calcGrantDate(LengthServiceTbl lengthServiceTbl,
 			Optional<Integer> calcYears, GeneralDate entryDate, GeneralDate criteriaDate,
 			Optional<Integer> simultaneousGrantMDOpt, GeneralDate previousDate) {
 
 		NextAnnualLeaveGrant nextAnnualLeaveGrant = new NextAnnualLeaveGrant();
 
 		// 勤続年数から付与日を計算
-		NextAnnualLeaveGrant calcResult = this.calcGrantDateFromLengthService(
+		NextAnnualLeaveGrant calcResult = calcGrantDateFromLengthService(
 				entryDate, lengthServiceTbl.getStandGrantDay(), criteriaDate, lengthServiceTbl, calcYears);
 		GeneralDate grantDate = calcResult.getGrantDate();
 		GrantNum grantNum = new GrantNum(calcResult.getTimes().v());
@@ -243,7 +238,7 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 		if (lengthServiceTbl.getAllowStatus() == GrantSimultaneity.USE && simultaneousGrantMDOpt.isPresent()) {
 
 			// 一斉付与の計算
-			NextAnnualLeaveGrant simulResult = this.calcSimultaneousGrant(
+			NextAnnualLeaveGrant simulResult = calcSimultaneousGrant(
 					previousDate, entryDate, grantDate, lengthServiceTbl, simultaneousGrantMDOpt);
 			grantDate = simulResult.getGrantDate();
 			grantNum = new GrantNum(simulResult.getTimes().v());
@@ -264,12 +259,9 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 	 * @param calcYears 計算年数
 	 * @return 次回年休付与
 	 */
-	private NextAnnualLeaveGrant calcGrantDateFromLengthService(
-			GeneralDate entryDate,
-			GrantReferenceDate grantReferenceDate,
-			GeneralDate criteriaDate,
-			LengthServiceTbl lengthServiceTbl,
-			Optional<Integer> calcYears){
+	private static NextAnnualLeaveGrant calcGrantDateFromLengthService(GeneralDate entryDate, 
+			GrantReferenceDate grantReferenceDate, GeneralDate criteriaDate,
+			LengthServiceTbl lengthServiceTbl, Optional<Integer> calcYears){
 		
 		NextAnnualLeaveGrant result = new NextAnnualLeaveGrant();
 		
@@ -298,12 +290,8 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 	 * @param simultaneousGrantMDOpt 一斉付与年月
 	 * @return 次回年休付与
 	 */
-	private NextAnnualLeaveGrant calcSimultaneousGrant(
-			GeneralDate previousDate,
-			GeneralDate entryDate,
-			GeneralDate lengthGrantDate,
-			LengthServiceTbl lengthServiceTbl,
-			Optional<Integer> simultaneousGrantMDOpt){
+	private static NextAnnualLeaveGrant calcSimultaneousGrant(GeneralDate previousDate, GeneralDate entryDate,
+			GeneralDate lengthGrantDate, LengthServiceTbl lengthServiceTbl, Optional<Integer> simultaneousGrantMDOpt){
 		
 		NextAnnualLeaveGrant result = new NextAnnualLeaveGrant();
 		
@@ -339,5 +327,14 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 		result.setTimes(lengthServiceTbl.getGrantNum());
 		
 		return result;
+	}
+	
+	public static interface RequireM1 {
+		
+		Map<String, List<LengthServiceTbl>> lengthServiceTbl(String companyId, List<String> yearHolidayCode);
+		
+		List<GrantHdTblSet> grantHdTblSets(String companyId);
+		
+		Optional<GrantHdTbl> grantHdTbl(String companyId, int conditionNo, String yearHolidayCode, int grantNum);
 	}
 }

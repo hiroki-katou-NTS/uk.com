@@ -16,7 +16,8 @@ public enum ValueType {
 	DAYS(12, "DAYS", "日数"),
 	AMOUNT(13, "AMOUNT", "金額"),
 	NUMBER(14, "NUMBER", "数"),
-	TIME_WITH_DAY(15, "TIME_WITH_DAY", "時刻（日区分付き）");
+	TIME_WITH_DAY(15, "TIME_WITH_DAY", "時刻（日区分付き）"),
+	AMOUNT_NUM(16, "AMOUNT", "金額");
 
 	public final int value;
 	public final String name;
@@ -34,7 +35,8 @@ public enum ValueType {
 	 */
 	public boolean isInteger() {
 		return TIME.equals(this) || CLOCK.equals(this) || ATTR.equals(this)
-				|| NUMBER.equals(this) || COUNT.equals(this) || TIME_WITH_DAY.equals(this);
+				|| NUMBER.equals(this) || COUNT.equals(this) || TIME_WITH_DAY.equals(this)
+				|| AMOUNT_NUM.equals(this);
 	}
 	
 	/**
