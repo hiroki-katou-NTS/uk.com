@@ -2,7 +2,7 @@
 
 module nts.uk.at.kdp003.a {
 	const stampEmployeeSelectionTemplate = `
-		<div data-bind="ntsDatePicker: { value: baseDate }"></div>
+		<div data-bind="ntsDatePicker: { value: $component.options.baseDate }"></div>
 		<div class="button-group-filter" data-bind="foreach: buttons">
 			<button class="small filter" data-bind="
 					i18n: text, 
@@ -22,7 +22,7 @@ module nts.uk.at.kdp003.a {
 			</div>
 		</div>
 	`;
-	
+
 	const COMPONENT_NAME = 'stamp-employee-selection';
 
 	@handler({
@@ -48,8 +48,6 @@ module nts.uk.at.kdp003.a {
 	export class StampEmployeeSelectionComponent extends ko.ViewModel {
 		$grid!: JQuery;
 
-		baseDate: KnockoutObservable<Date> = ko.observable(new Date());
-
 		button: KnockoutObservable<string> = ko.observable('KDP003_111');
 
 		buttons: KnockoutObservableArray<Button> = ko.observableArray([]);
@@ -63,7 +61,8 @@ module nts.uk.at.kdp003.a {
 				vm.options = {
 					employees: ko.observableArray([]),
 					selectedId: ko.observable(undefined),
-					employeeAuthcUseArt: ko.observable(true)
+					employeeAuthcUseArt: ko.observable(true),
+					baseDate: ko.observable(new Date())
 				};
 			} else {
 				if (!_.has(vm.options, 'employees')) {
@@ -82,7 +81,7 @@ module nts.uk.at.kdp003.a {
 			const employees: Employee[] = [];
 
 			// mock data
-			['ア', 'カ', 'サ', 'タ', 'ナ', 'ハ', 'マ', 'ヤ', 'ラ', 'ワ']
+			/*['ア', 'カ', 'サ', 'タ', 'ナ', 'ハ', 'マ', 'ヤ', 'ラ', 'ワ']
 				.forEach((t, i) => {
 					_.extend(names, {
 						[`KDP003_10${i}`]: t
@@ -106,7 +105,7 @@ module nts.uk.at.kdp003.a {
 					})
 				});
 
-			vm.options.employees(employees);
+			vm.options.employees(employees);*/
 			// end mock data
 
 			ko.computed({
@@ -117,7 +116,7 @@ module nts.uk.at.kdp003.a {
 
 					const filtereds = [];
 					const doFilter = (codes: string[]) => {
-						return _.filter(dataSource, (record: Employee) => codes.indexOf(record.name[0]) > -1);
+						return _.filter(dataSource, (record: Employee) => codes.indexOf(record.employeeName[0]) > -1);
 					};
 
 					if ($grid && $grid.data('igGrid')) {
@@ -195,8 +194,9 @@ module nts.uk.at.kdp003.a {
 				.igGrid({
 					showHeader: false,
 					columns: [
-						{ headerText: "", key: "code", width: '80px', dataType: "string" },
-						{ headerText: "", key: "name", dataType: "string" }
+						{ headerText: "", key: "employeeId", dataType: "string", hidden: true },
+						{ headerText: "", key: "employeeCode", width: '80px', dataType: "string" },
+						{ headerText: "", key: "employeeName", dataType: "string" }
 					],
 					features: [
 						{
@@ -204,10 +204,10 @@ module nts.uk.at.kdp003.a {
 							mode: "row",
 							rowSelectionChanged: function(__: any, ui: any) {
 								const { index } = ui.row;
-								const dataSources = $grid.igGrid('option', 'dataSource');
+								const dataSources: Employee[] = $grid.igGrid('option', 'dataSource');
 
 								if (dataSources[index]) {
-									vm.options.selectedId(dataSources[index].id);
+									vm.options.selectedId(dataSources[index].employeeId);
 								} else {
 									vm.options.selectedId(undefined);
 
@@ -265,9 +265,9 @@ module nts.uk.at.kdp003.a {
 	}
 
 	export interface Employee {
-		id: string;
-		code: string;
-		name: string;
+		employeeId: string;
+		employeeCode: string;
+		employeeName: string;
 	}
 
 	export interface EmployeeListData {
@@ -280,11 +280,13 @@ module nts.uk.at.kdp003.a {
 		*/
 		selectedId: string | null | undefined;
 		employeeAuthcUseArt: boolean;
+		baseDate: Date;
 	}
 
 	export interface EmployeeListParam {
 		employees: KnockoutObservableArray<Employee>;
 		selectedId: KnockoutObservable<string | null | undefined>;
 		employeeAuthcUseArt: KnockoutObservable<boolean>;
+		baseDate: KnockoutObservable<Date>;
 	}
 }
