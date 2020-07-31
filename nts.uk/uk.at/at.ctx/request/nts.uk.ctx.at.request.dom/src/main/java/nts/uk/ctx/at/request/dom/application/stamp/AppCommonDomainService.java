@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.StampRecordOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -43,6 +42,6 @@ public interface AppCommonDomainService {
 	
 //	打刻申請登録前のエラーチェック処理（新規）
 	
-	public List<ConfirmMsgOutput> checkBeforeRegister(String companyId, ApplicationType appType, Application application);
+	public List<ConfirmMsgOutput> checkBeforeRegister(String companyId, Boolean agentAtr, Application application, AppStampOutput appStampOutput);
 	
 }

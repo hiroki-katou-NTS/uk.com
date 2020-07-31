@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 /**
  * Refactor4
@@ -14,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 @AllArgsConstructor
 @Getter
 //レコーダイメージ申請
-public class AppRecordImage {
+public class AppRecordImage extends Application{
 //	打刻区分
 	private AppStampCombinationAtr appStampCombinationAtr;
 	
