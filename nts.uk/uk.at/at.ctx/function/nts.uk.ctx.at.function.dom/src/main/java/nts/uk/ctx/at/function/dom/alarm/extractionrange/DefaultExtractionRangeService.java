@@ -16,8 +16,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingImport;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
@@ -39,10 +41,11 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.Pu
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayPeriod;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySettingRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class DefaultExtractionRangeService implements ExtractionRangeService {
@@ -50,7 +53,9 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 	@Inject
 	private AlarmPatternSettingRepository alarmRepo;
 	@Inject
-	private ClosureService closureService;
+	private ClosureRepository closureRepo;
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepo;
 	@Inject
 	private PublicHolidaySettingRepository publicHolidaySettingRepo;
 	@Inject
@@ -230,7 +235,13 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				formatter.format(endDate), null, null);
 	}
 	
-	//月次単位の期間を算出する
+	/**
+	 * 月次単位の期間を算出する
+	 * @param c
+	 * @param closureId
+	 * @param yearMonth
+	 * @return
+	 */
 	public CheckConditionTimeDto getMonthlyTime(CheckCondition c, int closureId, YearMonth yearMonth) {
 		//DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 		YearMonth startMonthly = yearMonth;
@@ -248,14 +259,21 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				null, startMonthly.toString(), endMonthly.toString());
 	}
 	
-	
+	/**
+	 * 日次単位の期間の算出する
+	 * @param extraction
+	 * @param closureId
+	 * @param yearMonth
+	 * @return
+	 */
 	private CheckConditionPeriod getPeriodDaily(ExtractionPeriodDaily extraction, int closureId, YearMonth yearMonth ) {
-		
+		val require = ClosureService.createRequireM1(closureRepo, closureEmploymentRepo);
 		Date startDate =null;
 		Date endDate =null;
 		YearMonth startMonthly = yearMonth;
 		YearMonth endMonthly = yearMonth;
 		// Calculate start date
+		//ドメインモデル「チェック条件」．抽出期間から開始日の指定方法をチェックする
 		if (extraction.getStartDate().getStartSpecify() == StartSpecify.DAYS) {
 			Calendar calendar = Calendar.getInstance();
 			if (extraction.getStartDate().getStrDays().get().getDayPrevious() == PreviousClassification.BEFORE)
@@ -265,11 +283,12 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				startDate = calendar.getTime();
 
 		} else {
-			DatePeriod datePeriod = closureService.getClosurePeriod(closureId, startMonthly.addMonths((-1)*extraction.getStartDate().getStrMonth().get().getMonth()));
+			DatePeriod datePeriod = ClosureService.getClosurePeriod(require, closureId, startMonthly.addMonths((-1)*extraction.getStartDate().getStrMonth().get().getMonth()));
 			startDate = datePeriod.start().date();
 		}
 
 		// Calculate endDate
+		//メインモデル「チェック条件」．抽出期間から終了日の指定方法をチェックする
 		if (extraction.getEndDate().getEndSpecify() == EndSpecify.DAYS) {
 			Calendar calendar = Calendar.getInstance();
 			if (extraction.getEndDate().getEndDays().get().getDayPrevious() == PreviousClassification.BEFORE)
@@ -279,7 +298,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 
 			endDate = calendar.getTime();
 		} else {
-			DatePeriod datePeriod = closureService.getClosurePeriod(closureId, endMonthly.addMonths((-1)*extraction.getEndDate().getEndMonth().get().getMonth()));
+			DatePeriod datePeriod = ClosureService.getClosurePeriod(require, closureId, endMonthly.addMonths((-1)*extraction.getEndDate().getEndMonth().get().getMonth()));
 			endDate = datePeriod.end().date();
 		}
 		
@@ -313,7 +332,9 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				eDate = eDate.minusDays(1);
 				
 			}else {
-				DatePeriod datePeriod = closureService.getClosurePeriod(closureId, yearMonth);
+				DatePeriod datePeriod = ClosureService.getClosurePeriod(
+															ClosureService.createRequireM1(closureRepo, closureEmploymentRepo),
+															closureId, yearMonth);
 				sDate = datePeriod.start().localDate();
 				eDate = datePeriod.end().localDate();								
 			}

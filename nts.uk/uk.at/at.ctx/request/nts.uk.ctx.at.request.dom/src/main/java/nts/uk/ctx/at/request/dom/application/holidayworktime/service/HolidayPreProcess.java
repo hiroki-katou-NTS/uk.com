@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHolidayWorkPreAndReferDto;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
@@ -15,12 +16,12 @@ import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 public interface HolidayPreProcess {
 	/**
 	 * 01-01_休出通知情報を取得
-	 * @param appCommonSettingOutput
-	 * @param appDate
-	 * @param employeeID
+	 * @param instructionUseDivision 休出指示の利用区分
+	 * @param date 申請日
+	 * @param employeeID 申請者
 	 * @return
 	 */
-	public HolidayWorkInstruction getHolidayInstructionInformation(AppCommonSettingOutput appCommonSettingOutput,String appDate,String employeeID);
+	public HolidayWorkInstruction getHolidayInstructionInformation(UseAtr instructionUseDivision, GeneralDate date, String employeeID);
 	/**
 	 * 01-09_事前申請を取得
 	 * @param companyID

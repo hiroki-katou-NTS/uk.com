@@ -53,11 +53,11 @@ public class DailyAttendanceItemWebService extends WebService {
 	@POST
     @Path("getlistattendcomparison")
     public List<AttdItemDto> getDailyAttendance() {
-		List<DailyAttendanceAtr> dailyAttendanceAtrs = new ArrayList<>();
-		dailyAttendanceAtrs.add(DailyAttendanceAtr.ReferToMaster);
-		dailyAttendanceAtrs.add(DailyAttendanceAtr.NumberOfTime);
-		dailyAttendanceAtrs.add(DailyAttendanceAtr.Time);
-		dailyAttendanceAtrs.add(DailyAttendanceAtr.TimeOfDay);
+		List<Integer> dailyAttendanceAtrs = new ArrayList<>();
+		dailyAttendanceAtrs.add(DailyAttendanceAtr.NumberOfTime.value);
+		dailyAttendanceAtrs.add(DailyAttendanceAtr.AmountOfMoney.value);
+		dailyAttendanceAtrs.add(DailyAttendanceAtr.Time.value);
+		dailyAttendanceAtrs.add(DailyAttendanceAtr.TimeOfDay.value);
 		
         return this.finder.findDailyAttendance(dailyAttendanceAtrs);
     }

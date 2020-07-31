@@ -18,19 +18,17 @@ import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkClock;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -44,16 +42,14 @@ public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<Up
 	@Inject
 	private DetailAfterUpdate detailAfterUpdate;
 	@Inject
-	private DetailBeforeUpdate detailBeforeUpdate;
-	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	
 	@Inject
 	ApplicationSettingRepository applicationSettingRepository;
 	
-	@Inject
-	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
-	
+	/**
+	 * 8.休出申請（詳細）登録処理
+	 */
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<UpdateHolidayWorkCommand> context) {
 		String companyID = AppContexts.user().companyId();
@@ -63,16 +59,18 @@ public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<Up
 			throw new RuntimeException("khong tim dc doi tuong");
 		}
 		
-		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
-				companyID, 
-				ApplicationType.BREAK_TIME_APPLICATION.value).get();
+		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = updateHolidayWorkCommand.getAppHdWorkDispInfoCmd().toDomain();
+		
+		AppTypeSetting appTypeSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
+				.getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
+				.filter(x -> x.getAppType() == ApplicationType.BREAK_TIME_APPLICATION).findFirst().get();
 		String appReason = Strings.EMPTY;	
 		String typicalReason = Strings.EMPTY;
 		String displayReason = Strings.EMPTY;
-		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)){
+		if(appTypeSetting.getDisplayFixedReason() == DisplayAtr.DISPLAY){
 			typicalReason += updateHolidayWorkCommand.getAppReasonID();
 		}
-		if(appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
+		if(appTypeSetting.getDisplayAppReason() == DisplayAtr.DISPLAY){
 			if(Strings.isNotBlank(typicalReason)){
 				displayReason += System.lineSeparator();
 			}
@@ -82,12 +80,11 @@ public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<Up
 				displayReason = applicationRepository.findByID(companyID, updateHolidayWorkCommand.getAppID()).get().getAppReason().v();
 			}
 		} 
-		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
-				.getApplicationSettingByComID(companyID);
-		ApplicationSetting applicationSetting = applicationSettingOp.get();
-		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)
-			||appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
-			if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
+		ApplicationSetting applicationSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
+				.getRequestSetting().getApplicationSetting();
+		if(appTypeSetting.getDisplayFixedReason() == DisplayAtr.DISPLAY
+			||appTypeSetting.getDisplayAppReason() == DisplayAtr.DISPLAY){
+			if (applicationSetting.getAppLimitSetting().getRequiredAppReason()
 					&& Strings.isBlank(typicalReason+displayReason)) {
 				throw new BusinessException("Msg_115");
 			}
@@ -115,15 +112,6 @@ public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<Up
 		appHolidayWork.getApplication().setAppReason(new AppReason(applicationReason));
 		appHolidayWork.setVersion(appHolidayWork.getVersion());
 		appHolidayWork.getApplication().setVersion(updateHolidayWorkCommand.getVersion());
-		detailBeforeUpdate.processBeforeDetailScreenRegistration(
-				companyID, 
-				appHolidayWork.getApplication().getEmployeeID(), 
-				appHolidayWork.getApplication().getAppDate(), 
-				1, 
-				appHolidayWork.getAppID(), 
-				appHolidayWork.getApplication().getPrePostAtr(), updateHolidayWorkCommand.getVersion(),
-				appHolidayWork.getWorkTypeCode() == null ? null : appHolidayWork.getWorkTypeCode().v(),
-				appHolidayWork.getWorkTimeCode() == null ? null : appHolidayWork.getWorkTimeCode().v());
 		appHolidayWorkRepository.update(appHolidayWork);
 		applicationRepository.updateWithVersion(appHolidayWork.getApplication());
 		
@@ -133,6 +121,7 @@ public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<Up
 				updateHolidayWorkCommand.getApplicantSID(), 
 				Arrays.asList(updateHolidayWorkCommand.getApplicationDate()));
 		
+		// 4-2.詳細画面登録後の処理
 		return detailAfterUpdate.processAfterDetailScreenRegistration(appHolidayWork.getApplication());
 	}
 

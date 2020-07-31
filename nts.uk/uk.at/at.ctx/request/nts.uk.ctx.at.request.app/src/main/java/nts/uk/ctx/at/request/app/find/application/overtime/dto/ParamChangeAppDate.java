@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Value;
+import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHdWorkDispInfoCmd;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
@@ -41,6 +42,8 @@ public class ParamChangeAppDate {
 	private boolean beforeAppStatus; 
 	private int actualStatus; 
 	private List<OvertimeColorCheck> actualLst; 
+	
+	private AppHdWorkDispInfoCmd appHdWorkDispInfoCmd;
 	
 	public List<Integer> getStartTimeRests() {
 

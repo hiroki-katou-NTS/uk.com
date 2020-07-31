@@ -31,12 +31,14 @@ public class DailyAttdErrorInfoDto {
 		private String messageContent;
 		private String messageColor;
 		private String lastDateError;
+		private List<Integer> listRequired;
 		
 		public DailyAttdErrorInfoTemp(DailyAttdErrorInfo dom) {
 			this.checkErrorType = dom.getCheckErrorType().value;
 			this.messageContent = dom.getPromptingMessage().getMessageContent().v();
 			this.messageColor = dom.getPromptingMessage().getMessageColor().v();
 			this.lastDateError = dom.getLastDateError().toString();
+			this.listRequired  = dom.getListRequired();
 		}
 	}
 	

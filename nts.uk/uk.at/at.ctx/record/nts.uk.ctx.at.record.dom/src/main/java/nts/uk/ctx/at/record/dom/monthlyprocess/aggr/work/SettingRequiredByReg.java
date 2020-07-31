@@ -9,14 +9,14 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.RegularWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.RegularWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriod;
 
 /**
  * 通常勤務が必要とする設定
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class SettingRequiredByReg {
@@ -30,11 +30,11 @@ public class SettingRequiredByReg {
 	/** 残業枠の役割 */
 	private Map<Integer, RoleOvertimeWork> roleOverTimeFrameMap;
 	/** 休出枠の役割 */
-	private Map<Integer, RoleOfOpenPeriod> roleHolidayWorkFrameMap;
+	private Map<Integer, WorkdayoffFrameRole> roleHolidayWorkFrameMap;
 	/** 自動的に除く残業枠 */
 	private List<RoleOvertimeWork> autoExceptOverTimeFrames;
 	/** 自動的に除く休出枠 */
-	private List<RoleOfOpenPeriod> autoExceptHolidayWorkFrames;
+	private List<Integer> autoExceptHolidayWorkFrames;
 	/** 休暇加算時間設定 */
 	private Map<String, AggregateRoot> holidayAdditionMap;
 	/** 週間法定労働時間 */

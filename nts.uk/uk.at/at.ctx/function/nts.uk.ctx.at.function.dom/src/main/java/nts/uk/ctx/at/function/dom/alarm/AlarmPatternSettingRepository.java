@@ -37,7 +37,12 @@ public interface AlarmPatternSettingRepository {
 	public void update(AlarmPatternSetting domain);
 	
 	public void delete(String companyId, String alarmPatternCode);
-	
+	/**
+	 * 会社ID、アラームリストパターンコードからドメインモデル「チェック条件」を取得する
+	 * @param companyId
+	 * @param alarmPatternCode
+	 * @return
+	 */
 	public List<CheckCondition> getCheckCondition(String companyId, String alarmPatternCode);
 
 

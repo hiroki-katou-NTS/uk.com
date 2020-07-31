@@ -1,6 +1,4 @@
-/// <reference path="../generic/lodash/lodash.d.ts" />
-/// <reference path="../generic/knockoutjs/knockout.d.ts" />
-/// <reference path="./nts.uk.com.web.nittsu.bundles.d.ts" />
+/// <reference path="./viewcontext.d.ts" />
 
 const prefix = 'nts.uk.storage'
     , OPENWD = `${prefix}.OPEN_WINDOWS_DATA`
@@ -79,7 +77,7 @@ function bean(): any {
 
 function component(options: { name: string; template: string; }): any {
     return function (ctor: any): any {
-        return $.Deferred().resolve(options.template.endsWith('.html'))
+        return $.Deferred().resolve(options.template.match(/\.html$/))
             .then((url: boolean) => {
                 return url ? $.get(options.template) : options.template;
             })
@@ -173,7 +171,7 @@ BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
         value: function $info() {
             const dfd = $.Deferred<void>();
 
-            dialog.info.apply(null, [...arguments]).then(() => dfd.resolve());
+            dialog.info.apply(null, [...(arguments as any)]).then(() => dfd.resolve());
 
             return dfd.promise();
         }
@@ -182,7 +180,7 @@ BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
         value: function $alert() {
             const dfd = $.Deferred<void>();
 
-            dialog.alert.apply(null, [...arguments]).then(() => dfd.resolve());
+            dialog.alert.apply(null, [...(arguments as any)]).then(() => dfd.resolve());
 
             return dfd.promise();
         }
@@ -191,7 +189,7 @@ BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
         value: function $error() {
             const dfd = $.Deferred<void>();
 
-            dialog.error.apply(null, [...arguments]).then(() => dfd.resolve());
+            dialog.error.apply(null, [...(arguments as any)]).then(() => dfd.resolve());
 
             return dfd.promise();
         }
@@ -200,7 +198,7 @@ BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
         value: function $confirm() {
             const dfd = $.Deferred<'no' | 'yes' | 'cancel'>();
 
-            const $cf = dialog.confirm.apply(null, [...arguments]);
+            const $cf = dialog.confirm.apply(null, [...(arguments as any)]);
 
             $cf.ifYes(() => {
                 dfd.resolve('yes');

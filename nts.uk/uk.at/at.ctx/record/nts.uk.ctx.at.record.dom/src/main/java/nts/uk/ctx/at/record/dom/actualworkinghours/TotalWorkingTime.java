@@ -99,7 +99,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 //import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 //import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 //import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
 //import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;

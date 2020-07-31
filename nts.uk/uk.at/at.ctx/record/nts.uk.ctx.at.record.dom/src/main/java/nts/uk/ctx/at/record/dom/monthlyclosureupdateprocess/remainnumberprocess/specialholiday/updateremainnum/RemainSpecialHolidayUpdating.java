@@ -1,34 +1,27 @@
 package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.specialholiday.updateremainnum;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
+import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.LimitTimeAndDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveGrantDetails;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveNumberInfoService;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 特別休暇残数更新
  * @author shuichi_ishida
  */
-@Stateless
 public class RemainSpecialHolidayUpdating {
-
-	/** 特別休暇付与残数データ */
-	@Inject
-	private SpecialLeaveGrantRepository specialLeaveGrantRepo;
 	
 	/**
 	 * 特別休暇残数更新
@@ -38,22 +31,19 @@ public class RemainSpecialHolidayUpdating {
 	 * @param specialLeaveCode 特別休暇コード
 	 * @param autoGrant 自動付与区分
 	 */
-	public void updateRemainSpecialHoliday(
-			InPeriodOfSpecialLeave output,
-			String empId,
-			DatePeriod period,
-			int specialLeaveCode,
-			int autoGrant){
-
+	public static AtomTask updateRemainSpecialHoliday(RequireM1 require, InPeriodOfSpecialLeave output, 
+			String empId, DatePeriod period, int specialLeaveCode, int autoGrant) {
+		
+		List<AtomTask> atomTask = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
 	
 		Map<GeneralDate, String> existDataMap = new HashMap<>();
 		
 		// 当月以降の特別休暇付与残数データを削除
-		List<SpecialLeaveGrantRemainingData> datas = this.specialLeaveGrantRepo.getAll(empId, specialLeaveCode);
+		List<SpecialLeaveGrantRemainingData> datas = require.specialLeaveGrantRemainingData(empId, specialLeaveCode);
 		for (SpecialLeaveGrantRemainingData data : datas){
 			if (data.getGrantDate().after(period.start()) && autoGrant == 1) {
-				this.specialLeaveGrantRepo.delete(data.getSpecialId());
+				atomTask.add(AtomTask.of(() -> require.deleteSpecialLeaveGrantRemainingData(data.getSpecialId())));
 			}
 			else {
 				existDataMap.putIfAbsent(data.getGrantDate(), data.getSpecialId());
@@ -61,6 +51,7 @@ public class RemainSpecialHolidayUpdating {
 		}
 		
 		// 特別休暇付与残数データの更新
+		// 特別休暇付与残数データ更新処理
 		List<SpecialLeaveGrantDetails> details = output.getLstSpeLeaveGrantDetails();
 		for (SpecialLeaveGrantDetails detail : details){
 			
@@ -77,7 +68,7 @@ public class RemainSpecialHolidayUpdating {
 				numberOverdays = limitDays.getDays();
 				timeOver = (limitDays.getTimes().isPresent() ? limitDays.getTimes().get() : null);
 			}
-			
+			//残数がマイナスの場合の補正処理
 			SpecialLeaveGrantRemainingData updateData = SpecialLeaveGrantRemainingData.createFromJavaType(
 					specialId,
 					companyId,
@@ -89,24 +80,37 @@ public class RemainSpecialHolidayUpdating {
 					GrantRemainRegisterType.MONTH_CLOSE.value,
 					info.getGrantDays(),
 					(info.getGrantTimes().isPresent() ? info.getGrantTimes().get() : null),
-					info.getUseDays(),
+					info.getRemainDays() < 0? info.getGrantDays() :info.getUseDays(),
 					(info.getUseTimes().isPresent() ? info.getUseTimes().get() : null),
 					null,				// 積み崩し日数
 					numberOverdays,
 					timeOver,
-					info.getRemainDays(),
+					info.getRemainDays() < 0?0:info.getRemainDays(),
 					(info.getRemainTimes().isPresent() ? info.getRemainTimes().get() : null));
 			
 			if (existDataMap.containsKey(detail.getGrantDate())){
 				
 				// 「特別休暇付与残数データ」を更新する
-				this.specialLeaveGrantRepo.update(updateData);
+				atomTask.add(AtomTask.of(() -> require.updateSpecialLeaveGrantRemainingData(updateData)));
 			}
 			else {
 				
 				// 「特別休暇付与残数データ」を追加する
-				this.specialLeaveGrantRepo.add(updateData);
+				atomTask.add(AtomTask.of(() -> require.addSpecialLeaveGrantRemainingData(updateData)));
 			}
 		}
+		
+		return AtomTask.bundle(atomTask);
+	}
+	
+	public static interface RequireM1 {
+		
+		List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String employeeId, int specialCode);
+		
+		void deleteSpecialLeaveGrantRemainingData(String specialid);
+		
+		void updateSpecialLeaveGrantRemainingData(SpecialLeaveGrantRemainingData data);
+		
+		void addSpecialLeaveGrantRemainingData(SpecialLeaveGrantRemainingData data);
 	}
 }

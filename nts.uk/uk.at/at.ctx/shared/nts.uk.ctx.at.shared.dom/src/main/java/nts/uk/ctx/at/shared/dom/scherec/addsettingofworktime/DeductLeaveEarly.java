@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
@@ -14,7 +16,10 @@ import nts.arc.layer.dom.DomainObject;
 // 遅刻早退を控除する
 @NoArgsConstructor
 @Getter
-public class DeductLeaveEarly extends DomainObject{
+public class DeductLeaveEarly extends DomainObject implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 	
 	/** The deduct. */
 	// 控除する

@@ -69,4 +69,8 @@ public class WithdrawalAppSetDto {
 				domain.getAppSimul(), domain.getBounSeg().value, domain.getDirectDivi().value, domain.getRestTime().value,
 				domain.getOverrideSet().value, domain.getCalStampMiss().value);
 	}
+	
+	public WithdrawalAppSet toDomain() {
+		return WithdrawalAppSet.createFromJavaType(companyId, prePerflex, breakTime, workTime, checkHdTime, typePaidLeave, workChange, timeInit, checkOut, prefixLeave, unitTime, appSimul, bounSeg, directDivi, restTime, overrideSet, calStampMiss);
+	}
 }

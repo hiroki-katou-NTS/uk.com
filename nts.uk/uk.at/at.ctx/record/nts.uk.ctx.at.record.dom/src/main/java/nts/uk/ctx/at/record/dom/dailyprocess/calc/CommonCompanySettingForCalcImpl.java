@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -23,9 +22,7 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.FlexSetRepository;
 import nts.uk.ctx.at.shared.dom.calculation.setting.DeformLaborOTRepository;
 import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTimeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employee.EmployeeWtSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -116,13 +113,4 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 									flexSetRepository.findByCId(companyId).get(),
 									deformLaborOTRepository.findByCId(companyId).get());
 	}
-	
-	private Optional<EmployeeWtSetting> getEmployeeWTSetting(Optional<UsageUnitSetting> usageSetting, String compID){
-		/** Comment by: employeeWtSettingRepository is disable */
-//		if(usageSetting.isPresent() && usageSetting.get().isEmployee()){
-//			return Optional.ofNullable(employeeWtSettingRepository.find(compID));
-//		}
-		return Optional.empty();
-	}
-
 }

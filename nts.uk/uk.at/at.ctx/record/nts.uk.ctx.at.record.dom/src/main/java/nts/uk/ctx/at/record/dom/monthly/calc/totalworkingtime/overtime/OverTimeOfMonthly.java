@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
@@ -20,26 +22,27 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWork
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalOverTimeTransferOrderOfAggrMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByFlex;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.ExcessOutsideTimeSetReg;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.ExcessOutsideTimeSetReg;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetOverTimeAndTransferOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.OverTimeAndTransferAtr;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の残業時間
  * @author shuichi_ishida
  */
 @Getter
-public class OverTimeOfMonthly implements Cloneable {
+public class OverTimeOfMonthly implements Cloneable, Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 残業合計時間 */
 	@Setter
@@ -133,9 +136,8 @@ public class OverTimeOfMonthly implements Cloneable {
 	 * @param autoExceptOverTimeFrames 自動的に除く残業枠
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @param employeeSets 月別集計で必要な社員別設定
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void aggregateForRegAndIrreg(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
+	public void aggregateForRegAndIrreg(RequireM1 require, AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			String companyId, String workplaceId, String employmentCd, WorkingSystem workingSystem,
 			WorkInformation workInfo,
 			LegalOverTimeTransferOrderOfAggrMonthly legalOverTimeTransferOrder,
@@ -143,15 +145,14 @@ public class OverTimeOfMonthly implements Cloneable {
 			Map<Integer, RoleOvertimeWork> roleOverTimeFrameMap,
 			List<RoleOvertimeWork> autoExceptOverTimeFrames,
 			MonAggrCompanySettings companySets,
-			MonAggrEmployeeSettings employeeSets,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			MonAggrEmployeeSettings employeeSets){
 
 		if (roleOverTimeFrameMap.values().size() > 0) {
 			
 			// 自動計算して残業時間を集計する
-			this.aggregateByAutoCalc(attendanceTimeOfDaily, companyId, workplaceId, employmentCd, workingSystem,
+			this.aggregateByAutoCalc(require, attendanceTimeOfDaily, companyId, workplaceId, employmentCd, workingSystem,
 					workInfo, legalOverTimeTransferOrder, excessOutsideTimeSet, roleOverTimeFrameMap,
-					companySets, employeeSets, repositories);
+					companySets, employeeSets);
 			
 		}
 		
@@ -176,21 +177,20 @@ public class OverTimeOfMonthly implements Cloneable {
 	 * @param roleOverTimeFrameMap 残業枠の役割
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @param employeeSets 月別集計で必要な社員別設定
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	private void aggregateByAutoCalc(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
+	private void aggregateByAutoCalc(RequireM1 require,
+			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			String companyId, String workplaceId, String employmentCd, WorkingSystem workingSystem,
 			WorkInformation workInfo,
 			LegalOverTimeTransferOrderOfAggrMonthly legalOverTimeTransferOrder,
 			ExcessOutsideTimeSetReg excessOutsideTimeSet,
 			Map<Integer, RoleOvertimeWork> roleOverTimeFrameMap,
 			MonAggrCompanySettings companySets,
-			MonAggrEmployeeSettings employeeSets,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			MonAggrEmployeeSettings employeeSets){
 
 		// 法定内残業にできる時間を計算する
-		AttendanceTime canLegalOverTime = this.calcLegalOverTime(attendanceTimeOfDaily,
-				companyId, workplaceId, employmentCd, workingSystem, companySets, employeeSets, repositories);
+		AttendanceTime canLegalOverTime = this.calcLegalOverTime(require, attendanceTimeOfDaily,
+				companyId, workplaceId, employmentCd, workingSystem, companySets, employeeSets);
 		
 		// 「残業枠時間」を取得する
 		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
@@ -210,8 +210,9 @@ public class OverTimeOfMonthly implements Cloneable {
 		// 残業・振替の処理順序を取得する
 		if (workInfo.getWorkTimeCode() == null) return;
 		val workTimeCode = workInfo.getWorkTimeCode().v();
-		val overTimeAndTransferAtrs = repositories.getOverTimeAndTransferOrder().get(
-				companyId, companySets.getWorkTimeCommonSetMap(workTimeCode, repositories), false);
+		val overTimeAndTransferAtrs = GetOverTimeAndTransferOrder.get(companyId, 
+																companySets.getWorkTimeCommonSetMap(require, workTimeCode), 
+																false);
 		
 		// 残業・振替のループ
 		for (val overTimeAndTransferAtr : overTimeAndTransferAtrs){
@@ -232,19 +233,18 @@ public class OverTimeOfMonthly implements Cloneable {
 	 * @param workingSystem 労働制
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @param employeeSets 月別集計で必要な社員別設定
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	private AttendanceTime calcLegalOverTime(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
+	private AttendanceTime calcLegalOverTime(RequireM2 require,
+			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			String companyId, String workplaceId, String employmentCd, WorkingSystem workingSystem,
 			MonAggrCompanySettings companySets,
-			MonAggrEmployeeSettings employeeSets,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			MonAggrEmployeeSettings employeeSets){
 	
 		// 日の法定労働時間を取得する
 		DailyUnit dailyUnit = DailyUnit.zero();
-		val workTimeSetOpt = companySets.getWorkingTimeSetting(employmentCd,
+		val workTimeSetOpt = companySets.getWorkingTimeSetting(require, employmentCd,
 				employeeSets.getWorkplacesToRoot(attendanceTimeOfDaily.getYmd()),
-				workingSystem, employeeSets, repositories);
+				workingSystem, employeeSets);
 		if (workTimeSetOpt.isPresent()){
 			if (workTimeSetOpt.get().getDailyTime() != null){
 				dailyUnit = workTimeSetOpt.get().getDailyTime();
@@ -282,8 +282,7 @@ public class OverTimeOfMonthly implements Cloneable {
 	 * @param ymd 年月日
 	 * @return 法定内残業に出来る時間　（計算後）
 	 */
-	private AttendanceTime overTimeFrameTimeProcess(
-			OverTimeAndTransferAtr overTimeAndTransferAtr,
+	private AttendanceTime overTimeFrameTimeProcess(OverTimeAndTransferAtr overTimeAndTransferAtr,
 			LegalOverTimeTransferOrderOfAggrMonthly legalOverTimeTransferOrderOfAggrMonthly,
 			ExcessOutsideTimeSetReg excessOutsideTimeSet,
 			AttendanceTime canLegalOverTime,
@@ -306,7 +305,7 @@ public class OverTimeOfMonthly implements Cloneable {
 			val timeSeriesWork = targetAggregateOverTime.getAndPutTimeSeriesWork(ymd);
 			
 			// 「法定内残業を含める」を確認
-			if (excessOutsideTimeSet.getLegalOverTimeWork() == false){
+			if (excessOutsideTimeSet.isLegalOverTimeWork() == false){
 				
 				// 取得した残業枠時間を集計残業時間に入れる
 				switch (overTimeAndTransferAtr){
@@ -350,7 +349,6 @@ public class OverTimeOfMonthly implements Cloneable {
 							legalOverTimeWork, new AttendanceTime(0)));
 					timeSeriesWork.addOverTimeInOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
 							overTimeWork, overTimeFrameTime.getOverTimeWork().getCalcTime()));
-					timeSeriesWork.addBeforeAppTimeInOverTime(overTimeFrameTime.getBeforeApplicationTime());
 					break;
 						
 				case TRANSFER:
@@ -382,7 +380,6 @@ public class OverTimeOfMonthly implements Cloneable {
 				switch (overTimeAndTransferAtr){
 				case OVER_TIME:
 					timeSeriesWork.addOverTimeInLegalOverTime(overTimeFrameTime.getOverTimeWork());
-					timeSeriesWork.addBeforeAppTimeInOverTime(overTimeFrameTime.getBeforeApplicationTime());
 					if (timeAfterCalc.lessThanOrEqualTo(overTimeFrameTime.getOverTimeWork().getTime())){
 						timeAfterCalc = new AttendanceTime(0);
 					}
@@ -410,13 +407,17 @@ public class OverTimeOfMonthly implements Cloneable {
 				switch (overTimeAndTransferAtr){
 				case OVER_TIME:
 					timeSeriesWork.addOverTimeInOverTime(overTimeFrameTime.getOverTimeWork());
-					timeSeriesWork.addBeforeAppTimeInOverTime(overTimeFrameTime.getBeforeApplicationTime());
 					break;
 				case TRANSFER:
 					timeSeriesWork.addTransferTimeInOverTime(overTimeFrameTime.getTransferTime());
 					break;
 				}
 				break;
+			}
+			
+			// 取得した残業枠時間の「事前申請時間」を入れる
+			if (overTimeAndTransferAtr == OverTimeAndTransferAtr.OVER_TIME){
+				timeSeriesWork.addBeforeAppTimeInOverTime(overTimeFrameTime.getBeforeApplicationTime());
 			}
 		}
 	
@@ -431,9 +432,13 @@ public class OverTimeOfMonthly implements Cloneable {
 	 * @param flexTime フレックス時間
 	 * @param settingsByFlex フレックス勤務が必要とする設定
 	 */
+	@SuppressWarnings("unused")
 	public FlexTime aggregateForFlex(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			String companyId, MonthlyAggregateAtr aggregateAtr, FlexTime flexTime,
 			SettingRequiredByFlex settingsByFlex){
+		
+		//大塚カスタマイズ(試験日対応) 大塚モードの場合は常に「残業をフレックス時間に含める=false」とする。
+		val ootsukaMode = true;
 		
 		val flexAggrSet = settingsByFlex.getFlexAggrSet();
 		
@@ -451,21 +456,29 @@ public class OverTimeOfMonthly implements Cloneable {
 		for (val overTimeFrameSrc : overTimeFrameTimeSrcs){
 			val overTimeFrameNo = overTimeFrameSrc.getOverWorkFrameNo(); 
 			
+			// 対象の時系列ワークを確認する
+			val targetAggregateOverTime = this.getTargetAggregateOverTime(overTimeFrameNo);
+			val timeSeriesWork = targetAggregateOverTime.getAndPutTimeSeriesWork(ymd);
+			
 			// 「設定．残業を含める」を確認する
-			if (flexAggrSet.getIncludeOverTime() == NotUseAtr.USE){
+			if (!ootsukaMode &&  flexAggrSet.getFlexTimeHandle().isIncludeOverTime()){
+				
+				// 取得した残業枠時間を「集計残業時間」に入れる　（法定内残業時間）
+				timeSeriesWork.addOverTimeInLegalOverTime(overTimeFrameSrc.getOverTimeWork());
+				timeSeriesWork.addTransferTimeInLegalOverTime(overTimeFrameSrc.getTransferTime());
 
 				// 取得した残業枠時間を「フレックス時間」に入れる
 				flexTime.addOverTimeFrameTime(ymd, overTimeFrameSrc);
-				
-				// 取得した残業枠時間を「集計残業時間」に入れる　（法定内残業時間）　（Redmine#106235）
-				val targetAggregateOverTime = this.getTargetAggregateOverTime(overTimeFrameNo);
-				targetAggregateOverTime.addLegalOverAndTransInTimeSeriesWork(ymd, overTimeFrameSrc);
-				continue;
 			}
+			else{
 				
-			// 取得した残業枠時間を「集計残業時間」に入れる
-			val targetAggregateOverTime = this.getTargetAggregateOverTime(overTimeFrameNo);
-			targetAggregateOverTime.addOverTimeInTimeSeriesWork(ymd, overTimeFrameSrc);
+				// 取得した残業枠時間を「集計残業時間」に入れる
+				timeSeriesWork.addOverTimeInOverTime(overTimeFrameSrc.getOverTimeWork());
+				timeSeriesWork.addTransferTimeInOverTime(overTimeFrameSrc.getTransferTime());
+			}
+			
+			// 取得した残業枠時間の「事前申請時間」を入れる
+			timeSeriesWork.addBeforeAppTimeInOverTime(overTimeFrameSrc.getBeforeApplicationTime());
 		}
 		
 		return flexTime;
@@ -660,5 +673,10 @@ public class OverTimeOfMonthly implements Cloneable {
 			val frameNo = targetAggrOverTime.getOverTimeFrameNo();
 			this.aggregateOverTimeMap.putIfAbsent(frameNo, targetAggrOverTime);
 		}
+	}
+	public static interface RequireM1 extends RequireM2, MonAggrCompanySettings.RequireM3 {
+	}
+	
+	public static interface RequireM2 extends MonAggrCompanySettings.RequireM1 {
 	}
 }

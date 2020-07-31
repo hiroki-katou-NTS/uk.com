@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktype;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +22,10 @@ import nts.arc.layer.dom.AggregateRoot;
 // 勤務種類
 @Getter
 @NoArgsConstructor
-public class WorkType extends AggregateRoot implements Cloneable{
+public class WorkType extends AggregateRoot implements Cloneable, Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** The company id. */
 	/* 会社ID */

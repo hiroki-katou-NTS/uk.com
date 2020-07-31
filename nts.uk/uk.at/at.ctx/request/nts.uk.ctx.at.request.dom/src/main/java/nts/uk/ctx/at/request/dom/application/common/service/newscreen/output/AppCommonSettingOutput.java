@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.newscreen.output;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
@@ -30,7 +31,7 @@ public class AppCommonSettingOutput {
 	/**
 	 * 雇用別申請承認設定
 	 */
-	public List<AppEmploymentSetting> appEmploymentWorkType;
+	public Optional<AppEmploymentSetting> appEmploymentWorkType;
 
 	public AppCommonSettingOutput() {
 		super();

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.ExcessFlexAtr;
+import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeCurrentMonth;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfExcessOutsideTime;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -37,7 +38,8 @@ public class FlexTimeOfExcessOutsideTimeDto implements ItemConst {
 									excessFlexAtr == ExcessFlexAtr.FOR_CONVENIENCE.value 
 													? ExcessFlexAtr.FOR_CONVENIENCE : ExcessFlexAtr.PRINCIPLE,
 									new AttendanceTimeMonth(principleTime),
-									new AttendanceTimeMonth(forConvenienceTime));
+									new AttendanceTimeMonth(forConvenienceTime),
+									new FlexTimeCurrentMonth());
 	}
 	
 	public static FlexTimeOfExcessOutsideTimeDto from(FlexTimeOfExcessOutsideTime domain) {

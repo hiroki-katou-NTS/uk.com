@@ -36,6 +36,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdwo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -129,7 +130,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 
 	@Override
 	public ActualStatusCheckResult actualStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType,
-			String workType, String workTime, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss) {
+			String workType, String workTime, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss, List<DeductionTime> deductionTimeLst) {
 		List<OvertimeColorCheck> actualLst = new ArrayList<>();
 		// Imported(申請承認)「勤務実績」を取得する
 		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
@@ -144,7 +145,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		boolean isToday = judgmentToday(appDate, judgmentWorkTimeResult.getCalcWorkTime());
 		// アルゴリズム「打刻漏れと退勤打刻補正の判定」を実行する
 		JudgmentStampResult judgmentStampResult = judgmentStamp(isToday, overrideSet, calStampMiss, 
-				recordWorkInfoImport.getAttendanceStampTimeFirst(), recordWorkInfoImport.getLeaveStampTimeFirst());
+				recordWorkInfoImport.getAttendanceStampTimeFirst(), recordWorkInfoImport.getLeaveStampTimeFirst(), appDate);
 		// アルゴリズム「実績状態の判定」を実行する
 		ActualStatus actualStatus = judgmentActualStatus(judgmentStampResult.isMissStamp(), judgmentStampResult.isStampLeaveChange());
 		// アルゴリズム「仮計算実行の判定」を実行する
@@ -153,6 +154,17 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 				judgmentStampResult.isStampLeaveChange(), 
 				judgmentWorkTimeResult.isWorkTimeChange());
 		if(calcExecution){
+			List<Integer> breakStartTime = new ArrayList<>();
+			List<Integer> breakEndTime = new ArrayList<>();
+			if(CollectionUtil.isEmpty(deductionTimeLst)) {
+				List<DeductionTime> deductionTimes = commonOvertimeHoliday.getBreakTimes(companyID, workType, workTime, Optional.empty(), Optional.empty());
+				breakStartTime = deductionTimes.stream().map(x -> x.getStart().v()).collect(Collectors.toList());
+				breakEndTime = deductionTimes.stream().map(x -> x.getEnd().v()).collect(Collectors.toList());
+			} else {
+				breakStartTime = deductionTimeLst.stream().map(x -> x.getStart().v()).collect(Collectors.toList());
+				breakEndTime = deductionTimeLst.stream().map(x -> x.getEnd().v()).collect(Collectors.toList());
+			}
+			
 			// アルゴリズム「1日分の勤怠時間を仮計算」を実行する
 			DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = 
 					dailyAttendanceTimeCaculation.getCalculation(
@@ -162,8 +174,8 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 							judgmentWorkTimeResult.getCalcWorkTime(), 
 							recordWorkInfoImport.getAttendanceStampTimeFirst(), 
 							judgmentStampResult.getCalcLeaveStamp(), 
-							Collections.emptyList(), 
-							Collections.emptyList());
+							breakStartTime, 
+							breakEndTime);
 			if(appType==ApplicationType.OVER_TIME_APPLICATION) {
 				actualLst.addAll(dailyAttendanceTimeCaculationImport.getOverTime().entrySet()
 						.stream().map(x -> OvertimeColorCheck.createActual(1, x.getKey(), x.getValue().getCalTime())).collect(Collectors.toList()));
@@ -287,7 +299,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 
 	@Override
 	public JudgmentStampResult judgmentStamp(boolean isToday, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss,
-			Integer startTime, Integer endTime) {
+			Integer startTime, Integer endTime, GeneralDate appDate) {
 		// 打刻漏れフラグ 
 		boolean missStamp = false;
 		// 退勤打刻補正 
@@ -313,7 +325,12 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		// 退勤打刻補正をチェックする
 		if(stampLeaveChange){
 			// 計算退勤時刻：システム時刻
-			calcLeaveStamp = GeneralDateTime.now().minutes();
+			int systemTime = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
+			int compareDate = GeneralDate.today().compareTo(appDate);
+			if(compareDate > 0) {
+				systemTime = 24 * 60 + systemTime;
+			}
+			calcLeaveStamp = systemTime;
 		} else {
 			// 計算退勤時刻：INPUT.退勤時刻
 			calcLeaveStamp = endTime;

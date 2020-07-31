@@ -347,14 +347,14 @@
 				<div class="lblTitle-kaf006 cm-column-kaf006"
 					data-bind="ntsFormLabel:{ required: requiredReason }">#{i18n.getText('KAF006_24')}</div>
 				<!--A7_2 申請定型理由-->
-				<div class="combo-box-kaf006"
+				<div class="combo-box-kaf006" style="width: 390px"
 					data-bind="ntsComboBox: {name: '#[KAF006_24]', 
 								options: reasonCombo ,
 								optionsValue: 'reasonId',
 								optionsText: 'reasonName',
 								value: selectedReason,
 								enable: enbReasonCombo,
-								columns: [{ prop: 'reasonName',length: 10 }]}">
+								columns: [{ prop: 'reasonName',length: 20 }]}">
 				</div>
 			</div>
 			<!-- 申請理由（ラベル) -->

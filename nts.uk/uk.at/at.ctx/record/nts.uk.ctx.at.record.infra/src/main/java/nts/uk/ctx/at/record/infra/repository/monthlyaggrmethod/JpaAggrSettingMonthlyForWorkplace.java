@@ -16,15 +16,10 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.AggrSettingMonthlyForWorkplace
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.AggrSettingMonthlyForWorkplaceRepository;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrMethodOfFlex36AgreementTime;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateSetting;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateTimeSetting;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.CarryforwardSetInShortageFlex;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.ExcessOutsideTimeSetting;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.ExcessOutsideTimeTargetSetting;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.FlexAggregateMethod;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.LegalAggrSetOfFlx;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.SettingOfFlex36AgreementTime;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.ShortageFlexSetting;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.AggregateTimeSet;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.CalcSettingOfIrregular;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.ExcessOutsideTimeSet;
@@ -34,14 +29,6 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.Settlement
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.SettlementPeriodOfIrg;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.TreatHolidayWorkTimeOfLessThanCriteriaPerWeek;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.TreatOverTimeOfLessThanCriteriaPerDay;
-import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpFlxAggr;
-import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpIrgAggr;
-import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpIrgExot;
-import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpIrgSetl;
-import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpIrgSetlPK;
-import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpRegExot;
-import nts.uk.ctx.at.shared.dom.common.Month;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.KrcstMonsetRegAggr;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.KrcstMonsetWkpRegAggr;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.KrcstMonsetWkpRegAggrPK;
@@ -50,6 +37,21 @@ import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.regularandirregular.K
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.regularandirregular.KrcstMonsetIrgExot;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.regularandirregular.KrcstMonsetIrgSetl;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.regularandirregular.KrcstMonsetRegExot;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpFlxAggr;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpIrgAggr;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpIrgExot;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpIrgSetl;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpIrgSetlPK;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpRegExot;
+import nts.uk.ctx.at.shared.dom.common.Month;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.AggregateSetting;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.AggregateTimeSetting;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.CarryforwardSetInShortageFlex;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.FlexAggregateMethod;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.SettlePeriod;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.SettlePeriodMonths;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.ShortageFlexSetting;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 
 /**
  * リポジトリ実装：職場月別実績集計設定
@@ -334,7 +336,10 @@ public class JpaAggrSettingMonthlyForWorkplace extends JpaRepository implements 
 				EnumAdaptor.valueOf(entity.setValue.aggregateMethod, FlexAggregateMethod.class),
 				(entity.setValue.includeOverTime != 0),
 				ShortageFlexSetting.of(
-						EnumAdaptor.valueOf(entity.setValue.carryforwardSet, CarryforwardSetInShortageFlex.class)),
+						EnumAdaptor.valueOf(entity.setValue.carryforwardSet, CarryforwardSetInShortageFlex.class),
+						EnumAdaptor.valueOf(entity.setValue.settlePeriod, SettlePeriod.class),
+						new Month(entity.setValue.startMonth),
+						EnumAdaptor.valueOf(entity.setValue.settlePeriodMon, SettlePeriodMonths.class)),
 				LegalAggrSetOfFlx.of(
 						AggregateTimeSetting.of(
 								EnumAdaptor.valueOf(entity.setValue.aggregateSet, AggregateSetting.class)),
@@ -777,6 +782,9 @@ public class JpaAggrSettingMonthlyForWorkplace extends JpaRepository implements 
 		entityFlxAggr.setValue.aggregateMethod = flexWork.getAggregateMethod().value;
 		entityFlxAggr.setValue.includeOverTime = (flexWork.isIncludeOverTime() ? 1 : 0);
 		entityFlxAggr.setValue.carryforwardSet = flxShortageSet.getCarryforwardSet().value;
+		entityFlxAggr.setValue.settlePeriod = flxShortageSet.getSettlePeriod().value;
+		entityFlxAggr.setValue.startMonth = flxShortageSet.getStartMonth().v();
+		entityFlxAggr.setValue.settlePeriodMon = flxShortageSet.getPeriod().value;
 		entityFlxAggr.setValue.aggregateSet = flxAggrTimeSet.getAggregateSet().value;
 		entityFlxAggr.setValue.excessOutsideTimeTargetSet = flxExcessOutsideTimeSet.getExcessOutsideTimeTargetSet().value;
 		entityFlxAggr.setValue.aggregateMethodOf36AgreementTime = flxAggrMethod36Agreement.getAggregateMethod().value;

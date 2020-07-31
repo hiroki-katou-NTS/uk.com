@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -16,7 +18,11 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @NoArgsConstructor
 @Getter
 // 変形労働勤務の加算設定
-public class WorkDeformedLaborAdditionSet extends AggregateRoot implements AddSetting{
+public class WorkDeformedLaborAdditionSet extends AggregateRoot implements Serializable, AddSetting{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
+	
 	/** 会社ID */
 	private String companyId;
 	

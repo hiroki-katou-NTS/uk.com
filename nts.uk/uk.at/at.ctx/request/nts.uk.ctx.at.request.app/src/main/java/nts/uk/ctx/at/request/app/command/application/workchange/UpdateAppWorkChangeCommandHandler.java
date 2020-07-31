@@ -24,19 +24,14 @@ import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeUpdateService;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
+import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -47,39 +42,31 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 	private IWorkChangeUpdateService updateService;
 	
 	@Inject
-	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
-	
-	@Inject
-	private ApplicationSettingRepository applicationSettingRepository;
-	
-	@Inject
-	private InitMode initMode;
-	
-	@Inject
 	private ApplicationRepository_New applicationRepository;
 
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
-		AddAppWorkChangeCommand updateCommand = context.getCommand();
+		AddAppWorkChangeCommand command = context.getCommand();
 		// Command data
-		CreateApplicationCommand appCommand = updateCommand.getApplication();
-		AppWorkChangeCommand workChangeCommand = updateCommand.getWorkChange();
+		CreateApplicationCommand appCommand = command.getApplication();
+		AppWorkChangeCommand workChangeCommand = command.getWorkChange();
+		AppWorkChangeDispInfo appWorkChangeDispInfo = command.getAppWorkChangeDispInfoCmd().toDomain();
 		
 		// 会社ID
 		String companyId = AppContexts.user().companyId();
 		// 申請ID
 		String appID = appCommand.getApplicationID();
 		
-		DetailScreenInitModeOutput output = initMode.getDetailScreenInitMode(EnumAdaptor.valueOf(context.getCommand().getUser(), User.class), context.getCommand().getReflectPerState());
+		OutputMode outputMode = appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getOutputMode();
 		String appReason = applicationRepository.findByID(companyId, appID).get().getAppReason().v();
-		if(output.getOutputMode()==OutputMode.EDITMODE){
-			AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
-					companyId, 
-					ApplicationType.WORK_CHANGE_APPLICATION.value).get();
+		AppTypeSetting appTypeSetting = appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
+				.getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
+				.filter(x -> x.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION).findFirst().get();
+		if(outputMode==OutputMode.EDITMODE){
 			String typicalReason = Strings.EMPTY;
 			String displayReason = Strings.EMPTY;
-			boolean isFixedDisplay = appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY);
-			boolean isTextDisplay = appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY);
+			boolean isFixedDisplay = appTypeSetting.getDisplayFixedReason() == DisplayAtr.DISPLAY;
+			boolean isTextDisplay = appTypeSetting.getDisplayAppReason() == DisplayAtr.DISPLAY;
 			if(isFixedDisplay){
 				typicalReason += appCommand.getAppReasonID();
 			}
@@ -91,15 +78,13 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 				displayReason += appCommand.getApplicationReason();
 			}else{
 				if(Strings.isBlank(typicalReason)){
-					displayReason = applicationRepository.findByID(companyId, appID).get().getAppReason().v();
+					displayReason = appReason;
 				}
 			}
-			Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
-					.getApplicationSettingByComID(companyId);
-			ApplicationSetting applicationSetting = applicationSettingOp.get();
-			if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)
-				||appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
-				if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
+			ApplicationSetting applicationSetting = appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
+					.getRequestSetting().getApplicationSetting();
+			if(isFixedDisplay || isTextDisplay){
+				if (applicationSetting.getAppLimitSetting().getRequiredAppReason()
 						&& Strings.isBlank(typicalReason+displayReason)) {
 					throw new BusinessException("Msg_115");
 				}
@@ -151,10 +136,9 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 				workChangeCommand.getGoWorkAtr2(), workChangeCommand.getBackHomeAtr2());
 		//OptimisticLock
 		workChangeDomain.setVersion(appCommand.getVersion());
-		//updateApp.setVersion(workChangeCommand.getVersion());
 		
 		// アルゴリズム「勤務変更申請登録（更新）」を実行する
-		return updateService.UpdateWorkChange(updateApp, workChangeDomain);
+		return updateService.updateWorkChange(updateApp, workChangeDomain);
 	}
 
 }

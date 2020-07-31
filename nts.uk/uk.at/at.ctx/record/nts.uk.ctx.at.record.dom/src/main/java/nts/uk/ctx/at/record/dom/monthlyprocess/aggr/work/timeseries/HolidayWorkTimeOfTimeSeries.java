@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
@@ -14,7 +16,10 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWork
  * @author shuichi_ishida
  */
 @Getter
-public class HolidayWorkTimeOfTimeSeries {
+public class HolidayWorkTimeOfTimeSeries implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 年月日 */
 	private final GeneralDate ymd;

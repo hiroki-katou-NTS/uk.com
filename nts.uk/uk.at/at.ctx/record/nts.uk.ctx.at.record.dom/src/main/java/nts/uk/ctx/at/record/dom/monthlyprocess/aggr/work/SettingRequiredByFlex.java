@@ -8,12 +8,12 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlex;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.FlexShortageLimit;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMnt;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriod;
-import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.GetFlexPredWorkTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.flex.GetFlexPredWorkTime;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.FlexMonthWorkTimeAggrSet;
 
 /**
  * フレックス勤務が必要とする設定
@@ -45,11 +45,14 @@ public class SettingRequiredByFlex {
 	/** 月間所定労働時間 */
 	@Setter
 	private AttendanceTimeMonth prescribedWorkingTimeMonth;
+	/** 週平均時間 */
+	@Setter
+	private AttendanceTimeMonth weekAverageTime;
 	/** 翌月繰越可能時間 */
 	@Setter
 	private AttendanceTimeMonth canNextCarryforwardTimeMonth;
 	/** 休出枠の役割 */
-	private Map<Integer, RoleOfOpenPeriod> roleHolidayWorkFrameMap;
+	private Map<Integer, WorkdayoffFrameRole> roleHolidayWorkFrameMap;
 
 	/**
 	 * コンストラクタ
@@ -64,6 +67,7 @@ public class SettingRequiredByFlex {
 		this.holidayAdditionMap = new HashMap<>();
 		this.statutoryWorkingTimeMonth = new AttendanceTimeMonth(0);
 		this.prescribedWorkingTimeMonth = new AttendanceTimeMonth(0);
+		this.weekAverageTime = new AttendanceTimeMonth(0);
 		this.canNextCarryforwardTimeMonth = new AttendanceTimeMonth(0);
 		this.roleHolidayWorkFrameMap = new HashMap<>();
 	}

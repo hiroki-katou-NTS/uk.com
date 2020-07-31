@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -17,7 +19,10 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Getter
 @NoArgsConstructor
 /*時給者の加算設定*/
-public class HourlyPaymentAdditionSet extends AggregateRoot implements AddSetting{
+public class HourlyPaymentAdditionSet extends AggregateRoot implements Serializable, AddSetting{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 	
 	/**  会社ID. */
 	private String companyId;

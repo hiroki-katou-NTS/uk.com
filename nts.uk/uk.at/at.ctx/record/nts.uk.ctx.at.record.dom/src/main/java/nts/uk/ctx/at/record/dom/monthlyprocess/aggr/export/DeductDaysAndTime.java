@@ -1,27 +1,32 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 控除の日数と時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class DeductDaysAndTime {
+public class DeductDaysAndTime implements SerializableWithOptional{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 年休控除日数 */
 	private AttendanceDaysMonth annualLeaveDeductDays;
@@ -34,6 +39,14 @@ public class DeductDaysAndTime {
 	private Optional<PredetemineTimeSetting> predetermineTimeSetOfWeekDay;
 	/** エラー情報リスト */
 	private List<MonthlyAggregationErrorInfo> errorInfos;
+
+	private void writeObject(ObjectOutputStream stream){
+		writeObjectWithOptional(stream);
+	}
+	
+	private void readObject(ObjectInputStream stream){
+		readObjectWithOptional(stream);
+	}
 	
 	/**
 	 * コンストラクタ
@@ -56,14 +69,9 @@ public class DeductDaysAndTime {
 	 * @param employeeId 社員ID
 	 * @param period 期間
 	 * @param workingConditionItem 労働条件項目
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void timeConversionOfDeductAnnualLeaveDays(
-			String companyId,
-			String employeeId,
-			DatePeriod period,
-			WorkingConditionItem workingConditionItem,
-			RepositoriesRequiredByMonthlyAggr repositories){
+	public void timeConversionOfDeductAnnualLeaveDays(RequireM1 require, String companyId, String employeeId,
+			DatePeriod period, WorkingConditionItem workingConditionItem){
 		
 		AttendanceTimeMonth convertTime = new AttendanceTimeMonth(0);
 		
@@ -83,8 +91,7 @@ public class DeductDaysAndTime {
 		val workTimeCd = workTimeCdOpt.get().v();
 		
 		// 「所定時間設定．就業加算時間」を取得する
-		this.predetermineTimeSetOfWeekDay =
-				repositories.getPredetermineTimeSet().findByWorkTimeCode(companyId, workTimeCd);
+		this.predetermineTimeSetOfWeekDay = require.predetemineTimeSetByWorkTimeCode(companyId, workTimeCd);
 		if (!this.predetermineTimeSetOfWeekDay.isPresent()){
 			
 			// エラー処理
@@ -128,4 +135,10 @@ public class DeductDaysAndTime {
 		if (applyMinutes > this.absenceDeductTime.v()) applyMinutes = this.absenceDeductTime.v();
 		this.absenceDeductTime = this.absenceDeductTime.minusMinutes(applyMinutes);
 	}
+	
+	public static interface RequireM1 { 
+		
+		Optional<PredetemineTimeSetting> predetemineTimeSetByWorkTimeCode(String companyId, String workTimeCode);
+	}
+
 }

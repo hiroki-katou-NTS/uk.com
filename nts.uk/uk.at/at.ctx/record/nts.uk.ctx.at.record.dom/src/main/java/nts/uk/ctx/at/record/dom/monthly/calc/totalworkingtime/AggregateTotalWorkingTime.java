@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.byperiod.FlexTimeByPeriod;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
@@ -20,26 +22,27 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.Va
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByDefo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByFlex;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByReg;
 import nts.uk.ctx.at.record.dom.weekly.RegAndIrgTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.ExcessOutsideTimeSetReg;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.ExcessOutsideTimeSetReg;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriod;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 集計総労働時間
  * @author shuichi_ishida
  */
 @Getter
-public class AggregateTotalWorkingTime implements Cloneable {
+public class AggregateTotalWorkingTime implements Cloneable, Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 就業時間 */
 	private WorkTimeOfMonthly workTime;
@@ -113,24 +116,22 @@ public class AggregateTotalWorkingTime implements Cloneable {
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 * @param workInfoOfDailyMap 日別実績の勤務情報リスト
 	 * @param companySets 月別集計で必要な会社別設定
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void aggregateSharedItem(
-			DatePeriod datePeriod,
+			RequireM3 require, DatePeriod datePeriod,
 			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
 			Map<GeneralDate, WorkInfoOfDailyPerformance> workInfoOfDailyMap,
-			MonAggrCompanySettings companySets,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			MonAggrCompanySettings companySets){
 	
 		// 休暇使用時間を集計する
-		this.vacationUseTime.confirm(datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap,
-				companySets, repositories);
+		this.vacationUseTime.confirm(require, datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap,
+				companySets);
 		
 		// 所定労働時間を集計する
 		this.prescribedWorkingTime.confirm(datePeriod, attendanceTimeOfDailyMap);
 
 		// 就業時間を集計する
-		this.workTime.confirm(datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap, companySets, repositories);
+		this.workTime.confirm(require, datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap, companySets);
 	}
 	
 	/**
@@ -157,9 +158,9 @@ public class AggregateTotalWorkingTime implements Cloneable {
 	 * @param settingsByDefo 変形労働勤務が必要とする設定
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @param employeeSets 月別集計で必要な社員別設定
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void aggregateDailyForRegAndIrreg(
+			RequireM2 require,
 			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			String companyId, String workplaceId, String employmentCd,
 			WorkingSystem workingSystem, MonthlyAggregateAtr aggregateAtr,
@@ -167,16 +168,15 @@ public class AggregateTotalWorkingTime implements Cloneable {
 			SettingRequiredByReg settingsByReg,
 			SettingRequiredByDefo settingsByDefo,
 			MonAggrCompanySettings companySets,
-			MonAggrEmployeeSettings employeeSets,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			MonAggrEmployeeSettings employeeSets){
 
 		// 労働制を元に、該当する設定を取得する
 		LegalTransferOrderSetOfAggrMonthly legalTransferOrderSet = new LegalTransferOrderSetOfAggrMonthly(companyId);
 		Map<Integer, RoleOvertimeWork> roleOverTimeFrameMap = new HashMap<>();
-		Map<Integer, RoleOfOpenPeriod> roleHolidayWorkFrameMap = new HashMap<>();
+		Map<Integer, WorkdayoffFrameRole> roleHolidayWorkFrameMap = new HashMap<>();
 		List<RoleOvertimeWork> autoExceptOverTimeFrames = new ArrayList<>();
-		List<RoleOfOpenPeriod> autoExceptHolidayWorkFrames = new ArrayList<>();
-		ExcessOutsideTimeSetReg excessOutsideTimeSet = new ExcessOutsideTimeSetReg(false, false, false);
+		List<Integer> autoExceptHolidayWorkFrames = new ArrayList<>();
+		ExcessOutsideTimeSetReg excessOutsideTimeSet = new ExcessOutsideTimeSetReg(false, false, false, false);
 		if (workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK) {
 			// 変形労働の時
 			legalTransferOrderSet = settingsByDefo.getLegalTransferOrderSet();
@@ -211,16 +211,16 @@ public class AggregateTotalWorkingTime implements Cloneable {
 		}
 		
 		// 残業時間を集計する　（通常・変形労働時間勤務用）
-		this.overTime.aggregateForRegAndIrreg(attendanceTimeOfDaily, companyId, workplaceId, employmentCd,
+		this.overTime.aggregateForRegAndIrreg(require, attendanceTimeOfDaily, companyId, workplaceId, employmentCd,
 				workingSystem, workInfo, legalTransferOrderSet.getLegalOverTimeTransferOrder(),
 				excessOutsideTimeSet, roleOverTimeFrameMap, autoExceptOverTimeFrames,
-				companySets, employeeSets, repositories);
+				companySets, employeeSets);
 		
 		// 休出時間を集計する　（通常・変形労働時間勤務用）
-		this.holidayWorkTime.aggregateForRegAndIrreg(attendanceTimeOfDaily, companyId, workplaceId, employmentCd,
+		this.holidayWorkTime.aggregateForRegAndIrreg(require, attendanceTimeOfDaily, companyId, workplaceId, employmentCd,
 				workingSystem, aggregateAtr, workInfo, legalTransferOrderSet.getLegalHolidayWorkTransferOrder(),
 				excessOutsideTimeSet, roleHolidayWorkFrameMap, autoExceptHolidayWorkFrames,
-				companySets, employeeSets, repositories);
+				companySets, employeeSets);
 	}
 	
 	/**
@@ -231,14 +231,18 @@ public class AggregateTotalWorkingTime implements Cloneable {
 	 * @param employmentCd 雇用コード
 	 * @param workingSystem 労働制
 	 * @param aggregateAtr 集計区分
+	 * @param workInfo 勤務情報
 	 * @param settingsByFlex フレックス勤務が必要とする設定
+	 * @param companySets 月別集計で必要な会社別設定
 	 * @return フレックス時間　（当日分のみ）
 	 */
-	public FlexTime aggregateDailyForFlex(
+	public FlexTime aggregateDailyForFlex(RequireM1 require, 
 			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			String companyId, String workplaceId, String employmentCd,
 			WorkingSystem workingSystem, MonthlyAggregateAtr aggregateAtr,
-			SettingRequiredByFlex settingsByFlex){
+			WorkInformation workInfo,
+			SettingRequiredByFlex settingsByFlex,
+			MonAggrCompanySettings companySets){
 		
 		FlexTime flexTime = new FlexTime();
 		
@@ -247,8 +251,8 @@ public class AggregateTotalWorkingTime implements Cloneable {
 				flexTime, settingsByFlex);
 		
 		// 休出時間を集計する　（フレックス時間勤務用）
-		flexTime = this.holidayWorkTime.aggregateForFlex(attendanceTimeOfDaily, companyId, aggregateAtr,
-				flexTime, settingsByFlex);
+		flexTime = this.holidayWorkTime.aggregateForFlex(require, attendanceTimeOfDaily, companyId, aggregateAtr,
+				flexTime, settingsByFlex, workInfo, companySets);
 		
 		return flexTime;
 	}
@@ -260,8 +264,7 @@ public class AggregateTotalWorkingTime implements Cloneable {
 	 * @param actualWorkingTime 実働時間
 	 * @param flexTime フレックス時間
 	 */
-	public void aggregateActualWorkingTime(
-			DatePeriod datePeriod,
+	public void aggregateActualWorkingTime(DatePeriod datePeriod,
 			WorkingSystem workingSystem,
 			RegularAndIrregularTimeOfMonthly actualWorkingTime,
 			FlexTimeOfMonthly flexTime){
@@ -290,8 +293,7 @@ public class AggregateTotalWorkingTime implements Cloneable {
 	 * @param actualWorkingTime 実働時間
 	 * @param flexTime フレックス時間
 	 */
-	public void aggregateActualWorkingTimeForWeek(
-			DatePeriod datePeriod,
+	public void aggregateActualWorkingTimeForWeek(DatePeriod datePeriod,
 			WorkingSystem workingSystem,
 			RegAndIrgTimeOfWeekly actualWorkingTime,
 			FlexTimeByPeriod flexTime){
@@ -335,5 +337,17 @@ public class AggregateTotalWorkingTime implements Cloneable {
 		this.holidayWorkTime.sum(target.holidayWorkTime);
 		this.vacationUseTime.sum(target.vacationUseTime);
 		this.prescribedWorkingTime.sum(target.prescribedWorkingTime);
+	}
+	
+	public static interface RequireM1 extends HolidayWorkTimeOfMonthly.RequireM1 {
+
+	}
+	
+	public static interface RequireM2 extends HolidayWorkTimeOfMonthly.RequireM3, OverTimeOfMonthly.RequireM1 {
+
+	}
+	
+	public static interface RequireM3 extends VacationUseTimeOfMonthly.RequireM1, WorkTimeOfMonthly.RequireM1 {
+
 	}
 }

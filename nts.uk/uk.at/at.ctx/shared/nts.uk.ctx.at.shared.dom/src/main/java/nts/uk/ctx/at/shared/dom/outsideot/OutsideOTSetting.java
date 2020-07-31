@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.outsideot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,10 @@ import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNote;
  */
 //時間外超過設定
 @Getter
-public class OutsideOTSetting extends AggregateRoot{
+public class OutsideOTSetting extends AggregateRoot implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 	
 	/** The company id. */
 	// 会社ID

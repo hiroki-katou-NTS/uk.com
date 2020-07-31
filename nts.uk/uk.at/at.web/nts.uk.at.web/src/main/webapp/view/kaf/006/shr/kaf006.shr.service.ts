@@ -17,8 +17,11 @@ module nts.uk.at.view.kaf006.shr.service {
         findByAppID: "at/request/application/appforleave/getByAppID",
         getChangeAllDayHalfDayForDetail: "at/request/application/appforleave/getChangeAllDayHalfDayForDetail",
         getRecordWork: "at/request/application/overtime/getRecordWork",
-        changeRelaCD: "at/request/application/appforleave/changeRela",
+        changeRelaCD: "at/request/application/appforleave/changeRela",  
     }
+    
+    
+  
     /** Get TitleMenu */
     export function getAppForLeaveStart(param: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getAppForLeaveStart, param);

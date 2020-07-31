@@ -17,7 +17,9 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingAdapter;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemService;
@@ -33,7 +35,8 @@ import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
-import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
@@ -49,13 +52,16 @@ import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-import nts.arc.time.calendar.period.DatePeriod;
+
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -64,10 +70,6 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	//リポジトリ：労働条件
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
-
-	//リポジトリ；法定労働
-	@Inject
-	private DailyStatutoryWorkingHours dailyStatutoryWorkingHours;
 	
 	//計算処理
 	@Inject
@@ -114,6 +116,9 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	//計算式
 	@Inject
 	private FormulaRepository formulaRepository;
+	//計算式
+	@Inject
+	private RecordDomRequireService requireService;
 	
 	/** リポジトリ：就業計算と集計実行ログ */
 	@Inject
@@ -508,6 +513,30 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			}
 		}
 		return returnList;
+	}
+
+	private WorkingConditionItem correctWorkCondition(IntegrationOfDaily record,
+			Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowWorkingItem) {
+		
+		if (record.getWorkInformation().getRecordInfo().isExamWorkTime()) {
+			return new WorkingConditionItem(nowWorkingItem.get().getValue().getHistoryId(), 
+													nowWorkingItem.get().getValue().getScheduleManagementAtr(),
+													nowWorkingItem.get().getValue().getWorkDayOfWeek(), 
+													nowWorkingItem.get().getValue().getWorkCategory(),
+													nowWorkingItem.get().getValue().getAutoStampSetAtr(),
+													nowWorkingItem.get().getValue().getAutoIntervalSetAtr(),
+													nowWorkingItem.get().getValue().getEmployeeId(),
+													nowWorkingItem.get().getValue().getVacationAddedTimeAtr(),
+													nowWorkingItem.get().getValue().getContractTime(),
+													WorkingSystem.REGULAR_WORK, 
+													nowWorkingItem.get().getValue().getHolidayAddTimeSet().orElse(null),
+													nowWorkingItem.get().getValue().getScheduleMethod().orElse(null), 
+													nowWorkingItem.get().getValue().getHourlyPaymentAtr().value,
+													nowWorkingItem.get().getValue().getTimeApply().orElse(null),
+													nowWorkingItem.get().getValue().getMonthlyPattern().orElse(null));
+		} else {
+			return nowWorkingItem.get().getValue();
+		}
 	}
 	
 	

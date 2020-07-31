@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Data;
-import nts.uk.ctx.at.record.dom.stamp.management.ColorSetting;
-import nts.uk.ctx.at.record.dom.stamp.management.StampPageLayout;
-import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPerson;
-import nts.uk.ctx.at.record.dom.stamp.management.StampingScreenSet;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ColorSetting;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampingScreenSet;
 
 /**
  * @author anhdt
@@ -43,7 +43,5 @@ public class StampSettingDto {
 				this.pageLayouts.add(new StampPageLayoutDto(layout));
 			}
 		}
-		
-		
 	}
 }

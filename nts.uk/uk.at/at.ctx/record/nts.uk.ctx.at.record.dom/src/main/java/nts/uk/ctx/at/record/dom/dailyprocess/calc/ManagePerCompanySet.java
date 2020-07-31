@@ -27,7 +27,6 @@ import nts.uk.ctx.at.shared.dom.calculation.setting.DeformLaborOT;
 import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employee.EmployeeWtSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 
 /**

@@ -59,11 +59,23 @@ public enum StampMeans {
 		// Not found.
 		return null;
 	}
+
 	/**
 	 * [1] 打刻ボタンを抑制する必要か
+	 * 
 	 * @return
 	 */
 	public boolean checkIndivition() {
-		return this == StampMeans.INDIVITION;
+		return this == StampMeans.INDIVITION || this == StampMeans.PORTAL || this == StampMeans.SMART_PHONE;
+	}
+	
+	/**
+	 * [2] 打刻カードを自動作成するか
+	 * 
+	 * @return
+	 */
+	public boolean checkAutoCreateStamp() {
+		return this == StampMeans.NAME_SELECTION || this == StampMeans.FINGER_AUTHC || this == StampMeans.INDIVITION
+				|| this == StampMeans.PORTAL || this == StampMeans.SMART_PHONE;
 	}
 }

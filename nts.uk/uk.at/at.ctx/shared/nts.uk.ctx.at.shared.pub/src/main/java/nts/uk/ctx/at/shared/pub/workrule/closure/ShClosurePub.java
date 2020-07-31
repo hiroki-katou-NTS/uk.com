@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -28,6 +29,7 @@ public interface ShClosurePub {
 	Optional<PresentClosingPeriodExport> find(String cId, int closureId);
 	
 	Optional<PresentClosingPeriodExport> find(String cId, int closureId, GeneralDate date);
+	Optional<PresentClosingPeriodExport> findRequire(CacheCarrier cacheCarrier, String cId, int closureId, GeneralDate date);
 	
 	Map<Integer, DatePeriod> findAllPeriod(String cId, List<Integer> closureId, GeneralDate date);
 	

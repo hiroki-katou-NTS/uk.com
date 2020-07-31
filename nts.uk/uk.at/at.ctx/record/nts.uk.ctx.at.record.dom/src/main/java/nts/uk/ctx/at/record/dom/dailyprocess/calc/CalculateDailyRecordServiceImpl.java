@@ -22,7 +22,6 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.midnight.MidnightTimeSheetRepo;
 import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingAdapter;
 import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingImport;
-import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcess;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
@@ -101,8 +100,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
-import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
-import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetOfStatutoryWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
@@ -156,9 +153,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	/* 就業時間帯設定 */
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
-	/* 法定労働時間取得クラス */
-	@Inject
-	private GetOfStatutoryWorkTime getOfStatutoryWorkTime;
 	/* 固定勤務設定 */
 	@Inject
 	private FixedWorkSettingRepository fixedWorkSettingRepository;
@@ -445,7 +439,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		if (!workType.isPresent() || shouldTimeALLZero(integrationOfDaily, workType.get())) {
 			return Optional.of(CalculationRangeOfOneDay.createEmpty(integrationOfDaily));
 		}
-
+		WorkingSystem workingSystem = personCommonSetting.getPersonInfo().map(c -> c.getLaborSystem()).orElse(null);
 		Optional<WorkTimeCode> workTimeCode = decisionWorkTimeCode(integrationOfDaily.getWorkInformation(), personCommonSetting, workType);
 
 		/* 就業時間帯勤務区分 */
@@ -875,31 +869,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		if(!returnResult.isPresent()) return Optional.empty();
 		
 		return Optional.of(new SchedulePerformance(returnResult.get(), workType, integrationOfWorkTime));
-	}
-
-	/**
-	 * 労働制を取得する
-	 * 
-	 * @return 日別計算用の個人情報
-	 */
-	private DailyCalculationPersonalInformation getPersonInfomation(AffiliationInforOfDailyPerfor affiliation,
-			ManagePerCompanySet companyCommonSetting, ManagePerPersonDailySet personCommonSetting) {
-		String companyId = AppContexts.user().companyId();
-		String placeId = affiliation.getWplID();
-		String employmentCd = affiliation.getEmploymentCode().toString();
-		String employeeId = affiliation.getEmployeeId();
-		GeneralDate targetDate = affiliation.getYmd();
-
-		// ドメインモデル「個人労働条件」を取得する
-		WorkingConditionItem personalLablorCodition = personCommonSetting.getPersonInfo();
-
-		if (personalLablorCodition == null) {
-			return null;
-		}
-		// 労働制
-		return getOfStatutoryWorkTime.getDailyTimeFromStaturoyWorkTime(personalLablorCodition.getLaborSystem(),
-				companyId, placeId, employmentCd, employeeId, targetDate, companyCommonSetting.getUsageSetting(),
-				Optional.empty());
 	}
 
 	/**

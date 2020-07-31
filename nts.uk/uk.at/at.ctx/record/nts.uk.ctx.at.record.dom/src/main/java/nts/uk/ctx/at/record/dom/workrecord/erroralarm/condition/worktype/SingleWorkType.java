@@ -15,9 +15,8 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * @author hungnm
- *
+ * 勤務種類（単一）
  */
-// 勤務種類（単一）
 @Getter
 public class SingleWorkType extends WorkTypeCondition {
 

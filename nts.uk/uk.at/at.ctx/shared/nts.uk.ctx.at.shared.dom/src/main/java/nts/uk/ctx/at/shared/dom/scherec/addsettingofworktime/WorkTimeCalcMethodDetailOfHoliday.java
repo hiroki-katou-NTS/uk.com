@@ -4,11 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
+import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
@@ -22,7 +25,10 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 // 休暇の就業時間計算方法詳細
 @Getter
 @NoArgsConstructor
-public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject{
+public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject implements SerializableWithOptional{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 	
 	/** The include vacation set. */
 	// 休暇分を含める設定
@@ -43,6 +49,14 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject{
 	/** The minus absence time. */
 	// 欠勤時間をマイナスする
 	private Optional<NotUseAtr> minusAbsenceTime;
+
+	private void writeObject(ObjectOutputStream stream){
+		writeObjectWithOptional(stream);
+	}
+	
+	private void readObject(ObjectInputStream stream){
+		readObjectWithOptional(stream);
+	}
 
 	/**
 	 * Instantiates a new work time calc method detail of holiday.

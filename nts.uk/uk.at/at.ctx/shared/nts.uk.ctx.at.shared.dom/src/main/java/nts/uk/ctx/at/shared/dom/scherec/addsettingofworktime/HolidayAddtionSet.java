@@ -5,18 +5,24 @@
 
 package nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
  * The Class HolidayAddtionSet.
  */
 @Getter
 // 休暇加算時間設定
-public class HolidayAddtionSet extends AggregateRoot {
+public class HolidayAddtionSet extends AggregateRoot implements SerializableWithOptional{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** The company id. */
 	// 会社ID
@@ -42,6 +48,13 @@ public class HolidayAddtionSet extends AggregateRoot {
 	// 加算休暇設定
 	private LeaveSetAdded additionVacationSet;
 	
+	private void writeObject(ObjectOutputStream stream){
+		writeObjectWithOptional(stream);
+	}
+	
+	private void readObject(ObjectInputStream stream){
+		readObjectWithOptional(stream);
+	}
 	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.dom.DomainObject#validate()

@@ -35,12 +35,13 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimePrintDesti
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeZoneOutput;
 import nts.uk.ctx.at.record.dom.goout.OutingManagement;
 import nts.uk.ctx.at.record.dom.goout.repository.OutingManagementRepository;
-import nts.uk.ctx.at.record.dom.stamp.management.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.temporarywork.ManageWorkTemporary;
 import nts.uk.ctx.at.record.dom.workrecord.temporarywork.ManageWorkTemporaryRepository;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
@@ -80,6 +81,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	private StampReflectionManagementRepository stampRepo;
 	@Inject
 	private WorkInformationRepository workInforRepo;
+	@Inject 
+	private RecordDomRequireService requireService;
 //	@Inject
 //	private WorkTypeRepository WorkRepo;
 	@Inject
@@ -94,8 +97,6 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	private AttendanceLeavingGateOfDailyRepo attendanceLeavingGateOfDailyRepo;
 	@Inject
 	private PCLogOnInfoOfDailyRepo PCLogOnInfoOfDailyRepo;
-	@Inject
-	private GetCommonSet getCommonSet;
 	@Inject
 	private OutingManagementRepository outingManagementRepo;
 //	@Inject
@@ -2523,7 +2524,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			stampOrActualStamp = new WorkStamp();
 		}
 		// 組み合わせ区分 != 直行 or != 直帰
-		if (x.getType().getChangeCalArt().value != 0 && x.getType().isChangeHalfDay()
+		if (x.getType().getChangeCalArt().value != 0 && x.getType().getChangeHalfDay()
 				&& x.getType().getSetPreClockArt().value != 1 && x.getType().getSetPreClockArt().value != 2) {
 
 			// 1* // Phán đoán điều kiện phản ảnh 出退勤 của 通常打刻
@@ -3034,7 +3035,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 	// làm tròn thời gian
 	private RoundingSet getRoudingTime(String companyId, String workTimeCode, Superiority superiority) {
-		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = this.getCommonSet.get(companyId, workTimeCode);
+		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = GetCommonSet.workTimezoneCommonSet(requireService.createRequire(), companyId, workTimeCode);
 		if (workTimezoneCommonSet.isPresent()) {
 			WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
 			return stampSet.getRoundingSets().stream().filter(item -> item.getSection() == superiority).findFirst().isPresent() ?
@@ -3044,7 +3045,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	}
 
 	private PrioritySetting getPrioritySetting(String companyId, String workTimeCode, StampPiorityAtr stampPiorityAtr) {
-		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = this.getCommonSet.get(companyId, workTimeCode);
+		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = GetCommonSet.workTimezoneCommonSet(requireService.createRequire(), companyId, workTimeCode);
 		if (workTimezoneCommonSet.isPresent()) {
 			WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
 			if (stampSet.getPrioritySets().stream().filter(item -> item.getStampAtr() == stampPiorityAtr)

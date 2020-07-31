@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfFinder;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationSettingFinder;
 import nts.uk.ctx.at.request.app.find.application.triprequestsetting.TripRequestSetFinder;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetFinder;
+import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeFinder;
 import nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.appovertime.AppOvertimeSettingFinder;
 import nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.hdapplicationsetting.TimeHdAppSetFinder;
 import nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetFinder;
@@ -71,7 +71,7 @@ public class FinderDtoKaf022 {
 	private HdAppSetFinder hdAppFinder;
 	
 	@Inject
-	AppWorkChangeSetFinder appWorkFinder;
+	AppWorkChangeFinder appWorkFinder;
 	
 	@Inject
 	private TripRequestSetFinder tripFinder;
