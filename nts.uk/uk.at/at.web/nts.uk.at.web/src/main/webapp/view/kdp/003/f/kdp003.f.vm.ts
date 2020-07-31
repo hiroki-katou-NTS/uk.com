@@ -271,10 +271,19 @@ module nts.uk.at.kdp003.f {
 			switch (params.mode) {
 				default:
 				case 'admin':
+					// note: メニュー別OCD内の記述を移送表に追加する
+					vm.model.passwordInvalid = false;
+					vm.model.isAdminMode = true;
+					vm.model.runtimeEnvironmentCreate = true;
+
 					vm.loginAdmin(LOGIN_ADMIN);
 					break;
 				case 'employee':
 				case 'fingerVein':
+					// note: メニュー別OCD内の記述を移送表に追加する
+					vm.model.isAdminMode = false;
+					vm.model.runtimeEnvironmentCreate = false;
+
 					vm.loginAdmin(LOGIN_EMPLOYEE);
 					break;
 			}
@@ -285,6 +294,7 @@ module nts.uk.at.kdp003.f {
 			const { passwordRequired } = vm.params as EmployeeModeParam;
 			const model: ModelData = ko.toJS(vm.model);
 			const { password, companyCode } = model;
+			const companies: CompanyItem[] = ko.unwrap(vm.listCompany);
 
 			const message = ko.unwrap(vm.message);
 
@@ -294,6 +304,8 @@ module nts.uk.at.kdp003.f {
 
 			if (passwordRequired === false) {
 				_.omit(model, ['password']);
+				// note: メニュー別OCD内の記述を移送表に追加する
+				model.passwordInvalid = true;
 			}
 
 			vm.$validate()
@@ -316,6 +328,10 @@ module nts.uk.at.kdp003.f {
 							return response;
 						})
 						.then((response: TimeStampLoginData) => {
+							_.extend(response, {
+								companies
+							});
+
 							_.extend(response.em, {
 								password,
 								companyCode
@@ -339,8 +355,9 @@ module nts.uk.at.kdp003.f {
 
 		cancelLogin() {
 			const vm = this;
+			const companies: CompanyItem[] = ko.unwrap(vm.listCompany);
 
-			vm.$window.close();
+			vm.$window.close(companies);
 		}
 	}
 
@@ -395,36 +412,48 @@ module nts.uk.at.kdp003.f {
 	}
 
 	export interface EmployeeData {
-		companyId: string;
-		companyCode?: string;
-		personalId: string;
-		employeeId: string;
-		employeeCode: string;
-		employeeName: string;
+		readonly companyId: string;
+		readonly companyCode?: string;
+		readonly personalId: string;
+		readonly employeeId: string;
+		readonly employeeCode: string;
+		readonly employeeName: string;
 		password?: string;
 	}
 
 	export interface TimeStampLoginData {
-		showChangePass: boolean;
-		msgErrorId: string;
-		showContract: boolean;
-		result: boolean;
-		em: EmployeeData;
-		successMsg: string;
-		errorMessage: string;
+		readonly showChangePass: boolean;
+		readonly msgErrorId: string;
+		readonly showContract: boolean;
+		readonly result: boolean;
+		readonly em: EmployeeData;
+		readonly successMsg: string;
+		readonly errorMessage: string;
+
+		readonly companies: CompanyItem[];
 	}
 
 	export interface ModelData {
-		companyId: string;
-		companyCode: string;
-		companyName?: string;
-		employeeId: string;
-		employeeCode: string;
-		employeeName?: string;
-		password?: string;
+		readonly contractCode: string;
+		readonly companyId: string;
+		readonly companyCode: string;
+		readonly companyName?: string;
+		readonly employeeId: string;
+		readonly employeeCode: string;
+		readonly employeeName?: string;
+		readonly password?: string;
+		passwordInvalid: boolean;
+		isAdminMode: boolean;
+		runtimeEnvironmentCreate: boolean;
 	}
 
 	export class Model {
+		// default data;
+		contractCode: string = '000000000000';
+		passwordInvalid: boolean = false;
+		isAdminMode: boolean = false;
+		runtimeEnvironmentCreate: boolean = true;
+
 		companyId: KnockoutObservable<string> = ko.observable('');
 		companyCode: KnockoutObservable<string> = ko.observable('');
 		companyName: KnockoutObservable<string> = ko.observable('');

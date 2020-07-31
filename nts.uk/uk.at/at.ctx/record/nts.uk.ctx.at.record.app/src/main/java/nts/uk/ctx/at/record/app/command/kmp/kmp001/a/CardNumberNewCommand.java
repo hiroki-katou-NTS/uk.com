@@ -10,12 +10,11 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class EmployeeCardInformationViewACommand {
+@NoArgsConstructor
+public class CardNumberNewCommand {
 
 	private String employeeId;
-	private String olderCardNumber;
-	private String newCardNumber;
+	private String cardNumber;
 	
 }

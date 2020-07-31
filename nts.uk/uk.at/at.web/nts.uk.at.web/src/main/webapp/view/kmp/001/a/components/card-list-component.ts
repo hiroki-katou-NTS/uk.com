@@ -81,7 +81,7 @@ module nts.uk.at.view.kmp001.a {
 
 		mounted() {
 			const vm = this;
-			const row = 4;
+			const row = 5;
 
 			const $grid = $(vm.$el)
 				.find('#stampcard-list')
@@ -149,6 +149,10 @@ module nts.uk.at.view.kmp001.a {
 				const stampCard = ko.unwrap(vm.model.stampCardDto);
 
 				$grid.igGrid('option', 'dataSource', ko.toJS(stampCard));
+				
+				if ($grid.data('igGrid') && $grid.data('igGridSelection') && $grid.igGrid('option', 'dataSource').length) {
+				$grid.igGridSelection("selectRow", 0);
+			}
 			});
 
 			const el = document.querySelector('.sidebar-content-header');

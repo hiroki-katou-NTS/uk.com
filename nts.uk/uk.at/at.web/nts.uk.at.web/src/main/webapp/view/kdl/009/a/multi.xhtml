@@ -6,7 +6,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1020, height: 570 };</script>
+			<script>var dialogSize = { width: 1020, height: 580 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="kdl009.a.start.js" />
 			<com:scriptfile path="kdl009.a.vm.js" />
@@ -57,17 +57,57 @@
 								</thead>
 								<tbody>
 									<com:ko-foreach bind="dataItems">
-										<tr>
-											<td>
-												<span data-bind="text: occurrenceDate"></span>
-												<span data-bind="text: expirationDate"></span>
-												<span data-bind="text: occurrenceNumber"></span>
-											</td>
-											<td>
-												<span data-bind="text: digestionDate"></span>
-												<span data-bind="text: digestionNumber"></span>
-											</td>
-										</tr>
+										<!-- Case 1 -->
+										<com:ko-if bind="occurrence && listDigestion">
+											<tr>
+												<td rowspan="2">
+													<span data-bind="text: occurrence.digestionDate"></span>
+													<span data-bind="text: occurrence.digestionNumber"></span>
+												</td>
+												<td style="border-bottom: 1px #CCC dotted;">
+													<span data-bind="text: listDigestion[0].digestionDate"></span>
+													<span data-bind="text: listDigestion[0].digestionNumber"></span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span data-bind="text: listDigestion[1].digestionDate"></span>
+													<span data-bind="text: listDigestion[1].digestionNumber"></span>
+												</td>
+											</tr>
+										</com:ko-if>
+										<!-- Case 2 -->
+										<com:ko-if bind="listOccurrence && digestion">
+											<tr>
+												<td style="border-bottom: 1px #CCC dotted;">
+													<span data-bind="text: listOccurrence[0].digestionDate"></span>
+													<span data-bind="text: listOccurrence[0].digestionNumber"></span>
+												</td>
+												<td rowspan="2">
+													<span data-bind="text: digestion.digestionDate"></span>
+													<span data-bind="text: digestion.digestionNumber"></span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span data-bind="text: listOccurrence[1].digestionDate"></span>
+													<span data-bind="text: listOccurrence[1].digestionNumber"></span>
+												</td>
+											</tr>
+										</com:ko-if>
+										<!-- Case 3 -->
+										<com:ko-if bind="(!listOccurrence || !listOccurrence.length) && (!listDigestion || !listDigestion.length)">
+											<tr>
+												<td>
+													<span data-bind="text: occurrence.digestionDate"></span>
+													<span data-bind="text: occurrence.digestionNumber"></span>
+												</td>
+												<td>
+													<span data-bind="text: digestion.digestionDate"></span>
+													<span data-bind="text: digestion.digestionNumber"></span>
+												</td>
+											</tr>
+										</com:ko-if>
 									</com:ko-foreach>
 								</tbody>
 							</table>

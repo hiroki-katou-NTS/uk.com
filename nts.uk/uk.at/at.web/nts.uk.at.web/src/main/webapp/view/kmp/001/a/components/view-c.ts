@@ -1,6 +1,5 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
-
 module nts.uk.at.view.kmp001.c {
 	const template = `
 		<div class="sidebar-content-header">
@@ -153,16 +152,19 @@ module nts.uk.at.view.kmp001.c {
 		public model: StampCardC = new StampCardC();
 		public employee: EmployeeVIewC = new EmployeeVIewC();
 
-		dateRange: KnockoutObservable<DateRange> = ko.observable({});
+		public dateRange: KnockoutObservable<DateRange> = ko.observable({});
 
 		created(params: Params) {
 			const vm = this;
-
 			vm.params = params;
+			const format = 'YYYY/MM/DD';
 
-			vm.dateRange
-				.subscribe((dr: DateRange) => {
-				});
+			const endDate = moment().format(format);
+			const startDate = moment().subtract(3, 'month').format(format);
+
+			vm.dateRange({ startDate, endDate });
+			
+			vm.reloadData(0);
 
 			vm.employee.employeeId
 				.subscribe((c: string) => {
@@ -185,7 +187,8 @@ module nts.uk.at.view.kmp001.c {
 		reloadData(selectedIndex: number = 0) {
 			const vm = this;
 			const { startDate, endDate } = ko.toJS(vm.dateRange);
-
+			
+			vm.model.clear();
 			if (startDate != null && endDate != null) {
 				vm.$blockui("invisible");
 
