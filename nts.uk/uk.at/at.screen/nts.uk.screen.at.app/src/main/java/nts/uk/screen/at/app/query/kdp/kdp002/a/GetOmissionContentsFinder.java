@@ -51,9 +51,6 @@ public class GetOmissionContentsFinder {
 	private StampPromptAppRepository stamPromptAppRepo;
 
 	@Inject
-	private ClosureService closureService;
-
-	@Inject
 	private ErAlApplicationRepository erAlApplicationRepo;
 
 	@Inject

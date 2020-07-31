@@ -223,8 +223,6 @@ public class NumberCompensatoryLeavePeriodProcess {
 
 		private ComSubstVacationRepository comSubstVacationRepository;
 
-		private ClosureService closureService;
-
 		private CompanyAdapter companyAdapter;
 
 		public RequireImplBuilder(SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepository,
@@ -246,11 +244,6 @@ public class NumberCompensatoryLeavePeriodProcess {
 
 		public RequireImplBuilder comSubstVacationRepository(ComSubstVacationRepository comSubstVacationRepository) {
 			this.comSubstVacationRepository = comSubstVacationRepository;
-			return this;
-		}
-
-		public RequireImplBuilder closureService(ClosureService closureService) {
-			this.closureService = closureService;
 			return this;
 		}
 
