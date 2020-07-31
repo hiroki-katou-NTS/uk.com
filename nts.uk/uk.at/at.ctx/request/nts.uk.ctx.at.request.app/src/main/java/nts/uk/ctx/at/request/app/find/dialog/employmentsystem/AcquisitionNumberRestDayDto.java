@@ -21,25 +21,25 @@ public class AcquisitionNumberRestDayDto {
 	private double scheduledUsageDay;
 	
 	// field 予定使用時間
-	private int scheduledUsageHour;
+	private double scheduledUsageHour;
 	
 	// field 予定残数
 	private double scheduledRemainingDay;
 	
 	// field 予定残数時間
-	private int scheduledRemainingHour;
+	private double scheduledRemainingHour;
 	
 	// field 予定発生日数
 	private double scheduleOccurrencedDay;
 	
 	// field 予定発生時間
-	private int scheduleOccurrencedHour;
+	private double scheduleOccurrencedHour;
 	
 	// field 使用日数
 	private double usageDay;
 	
 	// field 使用時間
-	private int usageHour;
+	private double usageHour;
 	
 	// field 使用期限
 	private double expiredDay;
@@ -48,17 +48,17 @@ public class AcquisitionNumberRestDayDto {
 	private double remainingDay;
 	
 	// field 残数時間
-	private int remainingHour;
+	private double remainingHour;
 	
 	// field 発生日数
 	private double occurrenceDay;
 	
 	// field 発生時間
-	private int occurrenceHour;
+	private double occurrenceHour;
 	
 	// field 繰越日数
 	private double carryForwardDay;
 	
 	// field 繰越時間
-	private int carryForwardHour;
+	private double carryForwardHour;
 }

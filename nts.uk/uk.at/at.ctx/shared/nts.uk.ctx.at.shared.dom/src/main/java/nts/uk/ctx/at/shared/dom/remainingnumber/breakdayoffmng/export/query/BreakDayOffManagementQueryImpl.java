@@ -457,7 +457,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 			carryHourOff += dayOffHistoryData.getUnOffsetHours();
 		}
 		outputData.setCarryForwardDays(carryDays - carryDayOff);
-		outputData.setNumberOfHoursCarriedOver(carryHours - carryHourOff);
+		outputData.setCarryForwardHours(carryHours - carryHourOff);
 		return outputData;
 	}
 	@Override

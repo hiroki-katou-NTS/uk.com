@@ -290,14 +290,20 @@ public class EmploymentSystemFinder {
 			} else {
 				detailsdDto.setIsManagementSection(false);
 			}
-			//	繰越時間数
-			//	発生時間数
-			//	予定発生時間数
-			//	使用時間数
-			//	予定使用時間数
+			//	繰越時間
+			detailsdDto.setCarryForwardHour(data.get().getTotalInfor().getCarryForwardHours());
+			//	発生時間
+			detailsdDto.setOccurrenceHour(data.get().getTotalInfor().getRecordOccurrenceHours());
+			//	予定発生時間
+			detailsdDto.setScheduleOccurrencedHour(data.get().getTotalInfor().getScheHours());
+			//	使用時間
+			detailsdDto.setUsageHour(data.get().getTotalInfor().getActualNumberOfHourUsed());
+			//	予定使用時間
+			detailsdDto.setScheduledUsageHour(data.get().getTotalInfor().getScheUseHours());
 			//	残数時間
+			detailsdDto.setRemainingHour(detailsdDto.getOccurrenceHour() - detailsdDto.getUsageHour());
 			//	予定残数時間
-			
+			detailsdDto.setScheduledRemainingHour(detailsdDto.getScheduleOccurrencedHour() - detailsdDto.getScheduledUsageHour());
 		}
 		
 
