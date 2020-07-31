@@ -7,11 +7,13 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.a.CardInformationCommands;
+import nts.uk.ctx.at.record.app.command.kmp.kmp001.a.CardNumberNewCommand;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.a.EmployeeCardInformationViewACommand;
 //import nts.uk.ctx.at.record.app.command.kmp.kmp001.b.RegisterEmployeeCardCommand;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.c.RegisterStampCardViewCCommand;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -29,7 +31,7 @@ public class RegisterStampCardCommandHandler {
 	 * UKDesign.UniversalK.就業.KDP_打刻.KMP001_IDカードの登録.A：個人指定によるIDカード登録.メニュー別OCD.新規モード時にIDカードNOの登録を行う
 	 * @param command
 	 */
-	public void saveStampCardViewA(EmployeeCardInformationViewACommand command) {
+	public void saveStampCardViewA(CardNumberNewCommand command) {
 		String contractCode = AppContexts.user().contractCode();
 		
 		Optional<StampCard> stampCard = stampCardRepo.getStampCardByEmployeeCardNumber(command.getEmployeeId(), command.getCardNumber());
@@ -47,13 +49,17 @@ public class RegisterStampCardCommandHandler {
 	 * @param command
 	 */
 	public void updateStampCardViewA(EmployeeCardInformationViewACommand command) {
-		String contractCode = AppContexts.user().contractCode();
+		Optional<StampCard> stampCard = stampCardRepo.getStampCardByEmployeeCardNumber(command.getEmployeeId(), command.getOlderCardNumber());
 		
-		Optional<StampCard> stampCard = stampCardRepo.getStampCardByEmployeeCardNumber(command.getEmployeeId(), command.getCardNumber());
-		
-		if (!stampCard.isPresent()) {
-			StampCard card = new StampCard(contractCode, command.getCardNumber(), command.getEmployeeId());
-			stampCardRepo.update(card);
+		if (stampCard.isPresent()) {
+			StampCard card = stampCard.get();
+			StampCard cardUpdate = new StampCard(
+					card.getContractCd(),
+					new StampNumber(command.getNewCardNumber()), 
+					card.getEmployeeId(), card.getRegisterDate(),
+					card.getStampCardId());
+			
+			stampCardRepo.update(cardUpdate);
 		}
 	}
 	

@@ -5,7 +5,6 @@
 
 .sidebar-content-header ~ div {
 	padding: 20px;
-	float: left;
 }
 
 .view-kmp .nts-searchbbox-wrapper .form-label {
@@ -28,8 +27,13 @@
 	margin-left: 50px;
 }
 
+.ntsSearchBox_Component {
+	margin-top: 4px;	
+}
+
 .view-kmp .model-component table.layout-grid td div {
 	padding-bottom: 15px;
+	float: left;
 }
 
 .view-kmp .model-component table td.label-column {
@@ -42,6 +46,11 @@
 
 .view-kmp .model-component table td.label-column-a-right {
 	width: 300px;
+	float: left;
+}
+
+#right_name {
+	margin-left: 15px;
 }
 
 .view-kmp .model-component table td.label-column-left {
@@ -86,12 +95,6 @@
 
 #top_bottom {
 	margin-left: 5px;
-}
-
-.search_label {
-	float: left;
-	width: 100vw;
-	padding-bottom: 0px;
 }
 
 .search_label .sub_title {
