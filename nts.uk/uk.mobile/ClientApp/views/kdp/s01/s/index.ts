@@ -1,5 +1,5 @@
 import { component, Prop } from '@app/core/component';
-import { _, Vue } from '@app/provider';
+import { _, Vue, moment } from '@app/provider';
 
 const servicePath = {
     getAllWkType: 'at/share/worktype/get_not_remove_work_type',
@@ -20,16 +20,48 @@ export class KdpS01SComponent extends Vue {
     @Prop({ default: () => ({}) })
     public params!: any;
 
-    public current: ITime = { date: '2018年 4月 9日（月）', time: '17：58' };
-    public comment: string = '打刻入力を忘れず、行って下さい';
-    public setting: ISetting = {
-        buttons: [
-            { type: 1, displayText: '出勤',color:'#0000ff',bgColor:'#E4C9FF' },
-            { type: 2, displayText: '退勤' ,color:'#0000ff',bgColor:'#E4C9FF' },
-            { type: 3, displayText: '外出' ,color:'#0000ff',bgColor:'#88D8FF' },
-            { type: 4, displayText: '戻り' ,color:'#0000ff',bgColor:'#88D8FF' },
-            { type: 5, displayText: '応援出勤' ,color:'#0000ff',bgColor:'#FED3C6' },
-            { type: 6, displayText: '応援退勤' ,color:'#0000ff',bgColor:'#FED3C6' },
+    public setting: any = {
+        items: [
+            {
+                id: 1,
+                date: '15(金)',
+                symbol: 'w',
+                time: '9:25',
+                stampType: '出勤',
+                textAlign:'left'
+            },
+            {
+                id: 2 ,
+                date: '14(木)',
+                symbol: 'w',
+                time: '12:25',
+                stampType: '退勤',
+                textAlign:'right'
+            },
+            {
+                id: 3,
+                date: '13(木)',
+                symbol: 'w',
+                time: '15:25',
+                stampType: '退門',
+                textAlign:'center'
+            },
+            {
+                id: 4,
+                date: '12(木)',
+                symbol: 'w',
+                time: '16:25',
+                stampType: '外出(私用)',
+                textAlign:'center'
+            },
+            {
+                id: 5,
+                date: '11(木)',
+                symbol: 'w',
+                time: '17:25',
+                stampType: '出勤',
+                textAlign:'center'
+            }
         ]
     };
 
@@ -47,19 +79,10 @@ export class KdpS01SComponent extends Vue {
     public mounted() {
     }
 }
-
-interface ITime {
+interface Iitem {
+    id: number;
     date: string;
+    symbol: string;
     time: string;
-}
-
-interface ISetting {
-    buttons: Array<IButton>;
-}
-
-interface IButton {
-    type: number;
-    displayText: string;
-    color: string;
-    bgColor: string;
+    stampType: string;
 }

@@ -11,15 +11,19 @@
       <label>{{ "KDPS01_27" | i18n }}</label>
     </div>
     <div class="col-12 value">
-      <label>{{ screenData.date }}</label>
-      <label class="stamp-time font-weight-bold ml-4">{{ screenData.time }}</label>
+      <label class="col-6 px-1">{{ screenData.date }}</label>
+      <label class="col-6 stamp-time font-weight-bold">{{
+        screenData.time
+      }}</label>
     </div>
 
     <div class="row ml-1 title uk-text-over-time">
       <label>{{ "KDPS01_28" | i18n }}</label>
     </div>
     <div class="col-12 value text-center uk-text-blue">
-      <label class="stamp-text font-weight-bold">{{ screenData.stampTypeText }}</label>
+      <label class="stamp-text font-weight-bold">{{
+        screenData.stampTypeText
+      }}</label>
     </div>
 
     <div class="row ml-1 title uk-text-over-time">
@@ -37,9 +41,15 @@
     </div>
 
     <div class="col-12 value">
-      <label class="cd-time font-weight-bold mr-2">{{ screenData.cdTime }}</label>
+      <label class="cd-time font-weight-bold mr-2">{{
+        screenData.cdTime
+      }}</label>
       <label> {{ screenData.comment }}</label>
     </div>
-    <button type="button" class="col-12 btn btn-outline-secondary">{{ "KDPS01_37" | i18n }}</button>
+    <div>
+      <button type="button" class="col-12 mt-3 btn btn-secondary">
+        {{ "KDPS01_37" | i18n }}
+      </button>
+    </div>
   </div>
 </template>

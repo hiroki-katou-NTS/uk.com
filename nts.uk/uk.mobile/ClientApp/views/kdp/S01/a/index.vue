@@ -19,9 +19,9 @@
     </pre
       >
     </div>
-    <div>
+    <div class="d-flex flex-wrap">
       <div
-        class="col-6 mb-2 float-left px-2"
+        class="col-6 mb-2 px-2"
         v-for="button in setting.buttons"
         v-bind:key="button.type"
       >

@@ -20,16 +20,14 @@ export class KdpS01TComponent extends Vue {
     @Prop({ default: () => ({}) })
     public params!: any;
 
-    public current: ITime = { date: '2018年 4月 9日（月）', time: '17：58' };
-    public comment: string = '打刻入力を忘れず、行って下さい';
     public setting: ISetting = {
         buttons: [
-            { type: 1, displayText: '出勤',color:'#0000ff',bgColor:'#E4C9FF' },
-            { type: 2, displayText: '退勤' ,color:'#0000ff',bgColor:'#E4C9FF' },
-            { type: 3, displayText: '外出' ,color:'#0000ff',bgColor:'#88D8FF' },
-            { type: 4, displayText: '戻り' ,color:'#0000ff',bgColor:'#88D8FF' },
-            { type: 5, displayText: '応援出勤' ,color:'#0000ff',bgColor:'#FED3C6' },
-            { type: 6, displayText: '応援退勤' ,color:'#0000ff',bgColor:'#FED3C6' },
+            { type: 1, displayText: '打刻申請' },
+            { type: 2, displayText: '残業申請' },
+            { type: 3, displayText: '休暇申請' },
+            { type: 4, displayText: '休日出勤時間申請'},
+            { type: 5, displayText: '遅刻・早退取消申請' },
+            { type: 6, displayText: '時間年休申請' },
         ]
     };
 
@@ -48,11 +46,6 @@ export class KdpS01TComponent extends Vue {
     }
 }
 
-interface ITime {
-    date: string;
-    time: string;
-}
-
 interface ISetting {
     buttons: Array<IButton>;
 }
@@ -60,6 +53,4 @@ interface ISetting {
 interface IButton {
     type: number;
     displayText: string;
-    color: string;
-    bgColor: string;
 }

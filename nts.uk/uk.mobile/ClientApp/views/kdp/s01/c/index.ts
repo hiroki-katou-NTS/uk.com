@@ -22,8 +22,9 @@ export class KdpS01CComponent extends Vue {
     public screenData: IScreenData = {
         employeeCode: '000001', employeeName: '日通　太郎', date: '2018/03/10（火）',
         time: '17：58', stampTypeText: '出勤', localtion: '000　本社',
-         workTypeName: '勤務種類の名称', workTimeName: '就業時間帯の名称'
+        workTypeName: '勤務種類の名称', workTimeName: '就業時間帯の名称'
     };
+    public disabled: Boolean = true;
 
 
     public created() {
