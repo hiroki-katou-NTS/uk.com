@@ -71,8 +71,8 @@ public class StampRecordDto {
 		this.stampTimeWithSec = stampDate.toString();
 		this.stampHow = getCorrectTimeString(stamp != null ? stamp.getRelieve().getStampMeans() : null);
 		this.stampArt = "";
-		
-		//this.revervationAtr = stampRecord.getRevervationAtr().value;
+
+		// this.revervationAtr = stampRecord.getRevervationAtr().value;
 		this.empInfoTerCode = stampRecord.getEmpInfoTerCode().isPresent() ? stampRecord.getEmpInfoTerCode().get().v()
 				: null;
 
@@ -80,7 +80,6 @@ public class StampRecordDto {
 		if (stamp != null) {
 			this.authcMethod = stamp.getRelieve().getAuthcMethod().value;
 			this.stampMeans = stamp.getRelieve().getStampMeans().value;
-			
 
 			StampType type = stamp.getType();
 			this.stampArtName = type.createStampTypeDisplay();
@@ -106,9 +105,9 @@ public class StampRecordDto {
 			if (stamp.getLocationInfor().isPresent()) {
 				StampLocationInfor stampLocate = stamp.getLocationInfor().get();
 				this.outsideAreaAtr = stampLocate.isOutsideAreaAtr();
-				if(stampLocate.getPositionInfor() != null) {
+				if (stampLocate.getPositionInfor() != null) {
 					this.latitude = stampLocate.getPositionInfor().getLatitude();
-					this.longitude = stampLocate.getPositionInfor().getLongitude();					
+					this.longitude = stampLocate.getPositionInfor().getLongitude();
 				}
 			}
 			this.attendanceTime = stamp.getAttendanceTime().isPresent()
@@ -119,7 +118,7 @@ public class StampRecordDto {
 	}
 
 	public StampRecordDto(StampInfoDisp info) {
-		
+
 		this.stampNumber = info.getStampNumber().v();
 		GeneralDateTime stampDate = info.getStampDatetime();
 		this.stampDate = info.getStampDatetime().toString("yyyy/MM/dd");
@@ -135,7 +134,6 @@ public class StampRecordDto {
 		if (stamp != null) {
 			this.authcMethod = stamp.getRelieve().getAuthcMethod().value;
 			this.stampMeans = stamp.getRelieve().getStampMeans().value;
-			
 
 			StampType type = stamp.getType();
 			this.changeHalfDay = type.isChangeHalfDay();
@@ -160,117 +158,136 @@ public class StampRecordDto {
 			if (stamp.getLocationInfor().isPresent()) {
 				StampLocationInfor stampLocate = stamp.getLocationInfor().get();
 				this.outsideAreaAtr = stampLocate.isOutsideAreaAtr();
-				if(stampLocate.getPositionInfor() != null) {
+				if (stampLocate.getPositionInfor() != null) {
 					this.latitude = stampLocate.getPositionInfor().getLatitude();
-					this.longitude = stampLocate.getPositionInfor().getLongitude();					
+					this.longitude = stampLocate.getPositionInfor().getLongitude();
 				}
 			}
 			this.attendanceTime = stamp.getAttendanceTime().isPresent()
 					? getTimeString(stamp.getAttendanceTime().get().v())
 					: null;
-			
+
 		}
 	}
-	
+
 	public int getCorrectTimeStampValue() {
 		if (this.changeClockArt == null) {
 			return -1;
 		}
 
+		// 1 出勤 None None False => 出勤系
 		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeCalArt == ChangeCalArt.NONE.value
 				&& this.changeHalfDay == false) {
 			return ContentsStampType.WORK.value;
 		}
-
-		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value
-				&& this.setPreClockArt == SetPreClockArt.DIRECT.value && this.changeCalArt == ChangeCalArt.NONE.value
-				&& this.changeHalfDay == false) {
+		// 2 出勤 直行 None False => 出勤系
+		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value && this.changeCalArt == ChangeCalArt.NONE.value
+				&& this.setPreClockArt == SetPreClockArt.DIRECT.value && this.changeHalfDay == false) {
 			return ContentsStampType.WORK_STRAIGHT.value;
 		}
-
+		// 3 出勤 直行 None False => 出勤系
 		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value
-				&& this.changeCalArt == ChangeCalArt.EARLY_APPEARANCE.value && this.changeHalfDay == false) {
+				&& this.changeCalArt == ChangeCalArt.EARLY_APPEARANCE.value
+				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
 			return ContentsStampType.WORK_EARLY.value;
 		}
-
+		// 4  出勤 休出 None False => 出勤系
 		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value
-				&& this.setPreClockArt == SetPreClockArt.DIRECT.value && this.changeCalArt == ChangeCalArt.BRARK.value
+				&& this.changeCalArt == ChangeCalArt.BRARK.value
+				&& this.setPreClockArt == SetPreClockArt.NONE.value 
 				&& this.changeHalfDay == false) {
 			return ContentsStampType.WORK_BREAK.value;
 		}
-
-		if (this.changeClockArt == ChangeClockArt.WORKING_OUT.value && this.changeCalArt == ChangeCalArt.OVER_TIME.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
+		// 5 退勤 None None False => 退勤系
+		if (this.changeClockArt == ChangeClockArt.WORKING_OUT.value 
+				&& this.changeCalArt == ChangeCalArt.NONE.value
+				&& this.setPreClockArt == SetPreClockArt.NONE.value 
+				&& this.changeHalfDay == false) {
 			return ContentsStampType.DEPARTURE.value;
 		}
-
-		if (this.changeClockArt == ChangeClockArt.WORKING_OUT.value && this.changeCalArt == ChangeCalArt.OVER_TIME.value
-				&& this.setPreClockArt == SetPreClockArt.BOUNCE.value && this.changeHalfDay == false) {
+		// 6 退勤 None 直帰 False => 退勤系
+		if (this.changeClockArt == ChangeClockArt.WORKING_OUT.value
+				&& this.changeCalArt == ChangeCalArt.NONE.value
+				&& this.setPreClockArt == SetPreClockArt.BOUNCE.value
+				&& this.changeHalfDay == false) {
 			return ContentsStampType.DEPARTURE_BOUNCE.value;
 		}
-
-		if (this.changeClockArt == ChangeClockArt.WORKING_OUT.value && this.changeCalArt == ChangeCalArt.OVER_TIME.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
+		// 7 退勤 None 直帰 False => 退勤系
+		if (this.changeClockArt == ChangeClockArt.WORKING_OUT.value 
+				&& this.changeCalArt == ChangeCalArt.OVER_TIME.value
+				&& this.setPreClockArt == SetPreClockArt.NONE.value 
+				&& this.changeHalfDay == false) {
 			return ContentsStampType.DEPARTURE_OVERTIME.value;
 		}
-
-		if (this.changeClockArt == ChangeClockArt.GO_OUT.value && this.changeCalArt == ChangeCalArt.NONE.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
+		// 8 退勤 None None False => 外出系
+		if (this.changeClockArt == ChangeClockArt.GO_OUT.value 
+				&& this.changeCalArt == ChangeCalArt.NONE.value
+				&& this.setPreClockArt == SetPreClockArt.NONE.value 
+				&& this.changeHalfDay == false) {
 			return ContentsStampType.OUT.value;
 		}
-
-		if (this.changeClockArt == ChangeClockArt.RETURN.value && this.changeCalArt == ChangeCalArt.NONE.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
+		// 9 戻り None None False => 戻り系
+		if (this.changeClockArt == ChangeClockArt.RETURN.value 
+				&& this.changeCalArt == ChangeCalArt.NONE.value
+				&& this.setPreClockArt == SetPreClockArt.NONE.value 
+				&& this.changeHalfDay == false) {
 			return ContentsStampType.RETURN.value;
 		}
-
-		if (this.changeClockArt == ChangeClockArt.WORKING_OUT.value && this.changeCalArt == ChangeCalArt.NONE.value
+		// 10 入門 None None False => 出勤系
+		if (this.changeClockArt == ChangeClockArt.OVER_TIME.value && this.changeCalArt == ChangeCalArt.NONE.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
 			return ContentsStampType.GETTING_STARTED.value;
 		}
-
-		if (this.changeClockArt == ChangeClockArt.OVER_TIME.value && this.changeCalArt == ChangeCalArt.NONE.value
+		// 11 退門 None None False => 退勤系
+		if (this.changeClockArt == ChangeClockArt.BRARK.value && this.changeCalArt == ChangeCalArt.NONE.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
 			return ContentsStampType.DEPAR.value;
 		}
-
-		if (this.changeClockArt == ChangeClockArt.TEMPORARY_WORK.value && this.changeCalArt == ChangeCalArt.NONE.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
+		// 12 臨時出勤 None None False => 出勤系
+		if (this.changeClockArt == ChangeClockArt.TEMPORARY_WORK.value 
+				&& this.changeCalArt == ChangeCalArt.NONE.value
+				&& this.setPreClockArt == SetPreClockArt.NONE.value 
+				&& this.changeHalfDay == false) {
 			return ContentsStampType.TEMPORARY_WORK.value;
 		}
-
+		// 13 臨時出勤 None None False => 退勤系
 		if (this.changeClockArt == ChangeClockArt.TEMPORARY_LEAVING.value
-				&& this.changeCalArt == ChangeCalArt.NONE.value && this.setPreClockArt == SetPreClockArt.NONE.value
+				&& this.changeCalArt == ChangeCalArt.NONE.value 
+				&& this.setPreClockArt == SetPreClockArt.NONE.value
 				&& this.changeHalfDay == false) {
 			return ContentsStampType.TEMPORARY_LEAVING.value;
 		}
-
+		// 14 応援開始 None None False => 出勤系
 		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.NONE.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
 			return ContentsStampType.START_SUPPORT.value;
 		}
-
+		// 15 応援開始 None None False => 退勤系
 		if (this.changeClockArt == ChangeClockArt.END_OF_SUPPORT.value && this.changeCalArt == ChangeCalArt.NONE.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
 			return ContentsStampType.END_SUPPORT.value;
 		}
-
+		// 16 出勤+応援 None None False => 退勤系
 		if (this.changeClockArt == ChangeClockArt.SUPPORT.value && this.changeCalArt == ChangeCalArt.NONE.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
 			return ContentsStampType.WORK_SUPPORT.value;
 		}
-
+		// 17 応援開始 早出 NONE False => 出勤系
 		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.EARLY_APPEARANCE.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
 			return ContentsStampType.START_SUPPORT_EARLY_APPEARANCE.value;
 		}
-
+		// 18 応援開始 休出 NONE False => 出勤系
 		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.BRARK.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false) {
 			return ContentsStampType.START_SUPPORT_BREAK.value;
 		}
+		
+		//19 va 20 tam thoi khong co
+		// 19 予約 NONE NONE False => 予約系
+		// 20 予約取消  NONE NONE False => なし
+		
 
 		return -1;
 	}
