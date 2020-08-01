@@ -9,7 +9,7 @@ module nts.uk.at.view.kmp001.b {
 		</div>
 		<div class="search_label" style="padding-bottom: 0px">
 			<span class="sub_title" data-bind= "text: $i18n('KMP001_22')"></span>
-			<input data-bind="ntsTextEditor: {value: inputStampCard}" style="width: 225px"/>
+			<input id="input-stamp-card" data-bind="ntsTextEditor: {value: inputStampCard}" style="width: 225px"/>
 			<button id="top_bottom" data-bind= "text: $i18n('KMP001_23'),
 												click: getStampCard">
 			</button>
@@ -147,6 +147,11 @@ module nts.uk.at.view.kmp001.b {
 				})
 		}
 
+		mounted() {
+			$(document).ready(function() {
+				$('#input-stamp-card').focus();
+			});
+		}
 		getStampCard() {
 			const vm = this;
 			vm.$blockui("invisible");
