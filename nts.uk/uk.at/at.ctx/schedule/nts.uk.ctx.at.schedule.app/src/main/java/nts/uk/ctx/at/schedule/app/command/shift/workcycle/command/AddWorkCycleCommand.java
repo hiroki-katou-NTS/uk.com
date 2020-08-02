@@ -4,6 +4,7 @@ import lombok.Value;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,16 @@ public class AddWorkCycleCommand {
                 command.getWorkCycleName(),
                 infos
         );
+    }
+
+    public static WorkCycle createTemp(String cid) {
+        WorkInformation info = new WorkInformation("code","timeCd", 1, 2);
+        List<WorkInformation> infos = new ArrayList<>();
+        infos.add(info);
+        AddWorkCycleCommand workCycle = new AddWorkCycleCommand(
+                "code", "name", infos
+        );
+        return AddWorkCycleCommand.createFromCommand(workCycle, cid);
     }
 
 }

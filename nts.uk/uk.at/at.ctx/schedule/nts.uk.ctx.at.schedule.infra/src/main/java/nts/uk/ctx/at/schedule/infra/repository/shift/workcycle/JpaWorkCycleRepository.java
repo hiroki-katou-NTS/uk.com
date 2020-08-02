@@ -24,13 +24,22 @@ public class JpaWorkCycleRepository extends JpaRepository implements WorkCycleRe
 
     private static final String GET_INFO_BY_CID_AND_CODE = "SELECT f FROM KscmtWorkingCycleDtl f WHERE f.kscmtWorkingCycleDtlPK.cid = :cid and f.kscmtWorkingCycleDtlPK.workingCycleCode = :code";
 
+    private static final String DELETE_ALL_INFO_BY_CODE = "DELETE FROM KscmtWorkingCycleDtl f WHERE f.kscmtWorkingCycleDtlPK.cid = :cid and f.kscmtWorkingCycleDtlPK.workingCycleCode = :code";
+
+
     /**
      * [1] insert（勤務サイクル）
      * @param item
      */
     @Override
     public void add(WorkCycle item) {
+        // Add work cycle
         this.commandProxy().insert(KscmtWorkingCycle.toEntity(item));
+        // Add work cycle detail
+        List<KscmtWorkingCycleDtl> infos = KscmtWorkingCycleDtl.toEntity(item);
+        infos.stream().forEach(i -> {
+            this.commandProxy().insert(i);
+        });
     }
 
     /**
@@ -40,6 +49,15 @@ public class JpaWorkCycleRepository extends JpaRepository implements WorkCycleRe
     @Override
     public void update(WorkCycle item) {
         this.commandProxy().update(item);
+        // Delete detail
+        this.queryProxy().query(DELETE_ALL_INFO_BY_CODE, KscmtWorkingCycleDtl.class)
+                .setParameter("cid", item.getCid())
+                .setParameter("code", item.getCode());
+        // Update detail
+        List<KscmtWorkingCycleDtl> infos = KscmtWorkingCycleDtl.toEntity(item);
+        infos.stream().forEach(i -> {
+            this.commandProxy().insert(i);
+        });
     }
 
     /**
@@ -104,6 +122,7 @@ public class JpaWorkCycleRepository extends JpaRepository implements WorkCycleRe
     public void delete(String cid, String code) {
         KscmtWorkingCyclePK key = new KscmtWorkingCyclePK(cid, code);
         this.commandProxy().remove(KscmtWorkingCycle.class, key);
+        this.queryProxy().query(DELETE_ALL_INFO_BY_CODE, KscmtWorkingCycleDtl.class).setParameter("cid", cid).setParameter("code", code);
     }
 
 

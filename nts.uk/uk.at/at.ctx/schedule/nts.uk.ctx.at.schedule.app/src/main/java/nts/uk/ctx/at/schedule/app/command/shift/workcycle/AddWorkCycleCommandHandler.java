@@ -6,7 +6,6 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.schedule.app.command.shift.workcycle.command.AddWorkCycleCommand;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleDtlRepository;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleRepository;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.RegisterWorkCycleService;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.WorkCycleCreateResult;
@@ -36,9 +35,6 @@ public class AddWorkCycleCommandHandler extends CommandHandlerWithResult<AddWork
     WorkCycleRepository workCycleRepository;
 
     @Inject
-    WorkCycleDtlRepository workCycleDtlRepository;
-
-    @Inject
     private BasicScheduleService basicScheduleService;
 
     @Inject
@@ -52,11 +48,17 @@ public class AddWorkCycleCommandHandler extends CommandHandlerWithResult<AddWork
 
     @Override
     protected WorkCycleCreateResult handle(CommandHandlerContext<AddWorkCycleCommand> context) {
+
+        //Dummy
+        WorkCycle temp = AddWorkCycleCommand.createTemp(AppContexts.user().companyId());
+        //Dummy
+
         AddWorkCycleCommand command = context.getCommand();
         String cid = AppContexts.user().companyId();
-        RegisterWorkCycleServiceImlp require = new RegisterWorkCycleServiceImlp(workCycleRepository, workCycleDtlRepository);
+        RegisterWorkCycleServiceImlp require = new RegisterWorkCycleServiceImlp(workCycleRepository);
         WorkInformation.Require workRequired = new WorkInfoRequireImpl(basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
-        WorkCycleCreateResult result = RegisterWorkCycleService.register(workRequired, require, AddWorkCycleCommand.createFromCommand(command, cid), true);
+//        WorkCycleCreateResult result = RegisterWorkCycleService.register(workRequired, require, AddWorkCycleCommand.createFromCommand(command, cid), true);
+        WorkCycleCreateResult result = RegisterWorkCycleService.register(workRequired, require, temp, true);
         if (result.getErrorStatusList().isEmpty()) {
             AtomTask atomTask = result.getAtomTask().get();
             transaction.execute(() ->{
@@ -72,9 +74,6 @@ public class AddWorkCycleCommandHandler extends CommandHandlerWithResult<AddWork
         @Inject
         WorkCycleRepository workCycleRepository;
 
-        @Inject
-        WorkCycleDtlRepository workCycleDtlRepository;
-
         @Override
         public boolean exists(String cid, String code) {
             return workCycleRepository.exists(cid, code);
@@ -82,13 +81,12 @@ public class AddWorkCycleCommandHandler extends CommandHandlerWithResult<AddWork
 
         @Override
         public void insert(WorkCycle item) {
-            this.workCycleDtlRepository.add(item);
-            this.workCycleDtlRepository.add(item);
+            this.workCycleRepository.add(item);
         }
 
         @Override
         public void update(WorkCycle item) {
-
+            this.workCycleRepository.update(item);
         }
     }
 
