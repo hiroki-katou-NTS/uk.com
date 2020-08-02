@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
@@ -34,6 +35,7 @@ public class BentoReservation extends AggregateRoot{
 	 * 注文済み
 	 */
 	@Getter
+	@Setter
 	private boolean ordered;
 
 	/**
