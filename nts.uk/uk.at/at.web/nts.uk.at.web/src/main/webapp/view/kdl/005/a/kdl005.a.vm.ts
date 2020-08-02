@@ -214,12 +214,12 @@ module nts.uk.at.view.kdl005.a {
                             isHalfDay = true;
                         }
 
-                        let temp = new DataItems(leaveDate, dayOffDateTop, dayOffDateBot, duedateHoliday, occurrenceDays1, occurrenceDays2Top, occurrenceDays2Bot, isHalfDay);
+                        // let temp = new DataItems(leaveDate, dayOffDateTop, dayOffDateBot, duedateHoliday, occurrenceDays1, occurrenceDays2Top, occurrenceDays2Bot, isHalfDay);
 
-                        if(temp.leaveDate !== "" || temp.dayOffDateTop !== "" || temp.dayOffDateBot !== "" || temp.duedateHoliday !== ""
-                                || temp.occurrenceDays1 !== "" || temp.occurrenceDays2Top !== "" || temp.occurrenceDays2Bot !== "") {
-                            self.dataItems.push(temp);
-                        }
+                        // if(temp.leaveDate !== "" || temp.dayOffDateTop !== "" || temp.dayOffDateBot !== "" || temp.duedateHoliday !== ""
+                        //         || temp.occurrenceDays1 !== "" || temp.occurrenceDays2Top !== "" || temp.occurrenceDays2Bot !== "") {
+                        //     self.dataItems.push(temp);
+                        // }
                     });
                 }
             }
@@ -247,6 +247,159 @@ module nts.uk.at.view.kdl005.a {
             cancel() {
                 nts.uk.ui.windows.close();
             }
+
+            private convertDetailToItem(listDetail: RemainNumberDetailDto[], listPeg: PegManagementDto[]): DataItems[] {
+                const self = this;
+                const listItem: DataItems[] = [];
+                const mapOccurenceDate: Map<String, any[]> = {};
+                const mapUsageDate: Map<String, any[]> = {};
+                for (const itemPeg of listPeg) {
+                    let listOccurenceDate = mapOccurenceDate[itemPeg.occurrenceDate];
+                    if (listOccurenceDate) {
+                        listOccurenceDate.push(itemPeg);
+                    } else {
+                        listOccurenceDate = [itemPeg];
+                    }
+                    mapOccurenceDate[itemPeg.occurrenceDate] = listOccurenceDate;
+                    let listUsageDate = mapUsageDate[itemPeg.usageDate];
+                    if (listUsageDate) {
+                        listUsageDate.push(itemPeg);
+                    } else {
+                        listUsageDate = [itemPeg];
+                    }
+                    mapUsageDate[itemPeg.usageDate] = listUsageDate;
+                }
+
+                // Mapping from list detail + list peg to list combined item
+                let item: DataItems = undefined;
+                for (const itemDetail of listDetail) {
+                    if (itemDetail.occurrenceDate) {
+                        let listOccurenceDate: any[] = mapOccurenceDate[itemDetail.occurrenceDate];
+                        if (listOccurenceDate) {
+                            // Combined records
+                            if (item) {
+                                item.listOccurrence.push(self.convertDetailDtoToModel(itemDetail));
+                            } else {
+                                item = new DataItems({
+                                    isMultiOccurrence: false,
+                                    isMultiDigestion: false,
+                                    listOccurrence: [self.convertDetailDtoToModel(itemDetail)],
+                                    listDigestion: [],
+                                    singleRowDetail: self.convertDetailDtoToModel(itemDetail),
+                                });
+                            }
+                        } else {
+                            // Single record
+                            listItem.push(new DataItems({
+                                isMultiOccurrence: false,
+                                isMultiDigestion: false,
+                                singleRowDetail: self.convertDetailDtoToModel(itemDetail),
+                            }));
+                        }
+                    } else if (itemDetail.digestionDate) {
+                        let listDigestionDate: any[] = mapUsageDate[itemDetail.digestionDate];
+                        if (listDigestionDate) {
+                            // Combined records
+                            if (item) {
+                                item.listDigestion.push(self.convertDetailDtoToModel(itemDetail));
+                            } else {
+                                item = new DataItems({
+                                    isMultiOccurrence: false,
+                                    isMultiDigestion: false,
+                                    listOccurrence: [],
+                                    listDigestion: [self.convertDetailDtoToModel(itemDetail)],
+                                    singleRowDetail: self.convertDetailDtoToModel(itemDetail),
+                                });
+                            }
+                        } else {
+                            // Single record
+                            listItem.push(new DataItems({
+                                isMultiOccurrence: false,
+                                isMultiDigestion: false,
+                                singleRowDetail: self.convertDetailDtoToModel(itemDetail),
+                            }));
+                        }
+                    }
+                    // Check if item is complete
+                    if (item) {
+                        if ((item.listOccurrence.length === 1 && item.listDigestion.length === 2)
+                            || (item.listOccurrence.length === 2 && item.listDigestion.length === 1)) {
+                            item.isMultiDigestion = (item.listDigestion.length === 2);
+                            item.isMultiOccurrence = (item.listOccurrence.length === 2);
+                            listItem.push(item);
+                            item = undefined;
+                        } else if (item.listDigestion.length === 1 && item.listOccurrence.length === 1) {
+                            const occurrenceDate = item.listOccurrence[0];
+                            const digestionDate = item.listDigestion[0];
+                            let listOccurenceDate: any[] = mapOccurenceDate[occurrenceDate.occurrenceDate];
+                            let listDigestionDate: any[] = mapUsageDate[digestionDate.digestionDate];
+                            if (listOccurenceDate && listOccurenceDate.length === 1 && listDigestionDate && listDigestionDate.length === 1) {
+                                (<any>Object).assign(item.singleRowDetail, {
+                                    expirationDate: occurrenceDate.expirationDate,
+                                    expirationDateText: occurrenceDate.expirationDateText,
+                                    occurrenceNumber: occurrenceDate.occurrenceNumber,
+                                    occurrenceDate: occurrenceDate.occurrenceDate,
+                                    occurrenceHour: occurrenceDate.occurrenceHour,
+                                    occurrenceDateText: occurrenceDate.occurrenceDateText,
+                                    occurrenceHourText: occurrenceDate.occurrenceHourText,
+                                    occurrenceNumberText: occurrenceDate.occurrenceNumberText,
+                                    digestionNumber: digestionDate.digestionNumber,
+                                    digestionDate: digestionDate.digestionDate,
+                                    digestionHour: digestionDate.digestionHour,
+                                    digestionDateText: digestionDate.digestionDateText,
+                                    digestionHourText: digestionDate.digestionHourText,
+                                    digestionNumberText: digestionDate.digestionNumberText,
+                                });
+                                listItem.push(item);
+                                item = undefined;
+                            }
+                        }
+                    }
+                }
+                return listItem;
+            }
+
+            private convertDetailDtoToModel(item: RemainNumberDetailDto): RemainNumberDetailModel {
+                let digestionDateText: string = item.digestionDate ? (nts.uk.time as any).applyFormat("Short_YMDW", [item.digestionDate]) : '';
+                let occurrenceDateText: string = item.occurrenceDate ? (nts.uk.time as any).applyFormat("Short_YMDW", [item.occurrenceDate]) : '';
+                // 代休残数.休出代休残数詳細.管理データ状態区分をチェック
+                if ([2, 3].indexOf(item.managementDataStatus) !== -1) {
+                    occurrenceDateText = occurrenceDateText ? nts.uk.resource.getText("KDL005_36", [occurrenceDateText]) : '';
+                }
+                let expirationDateText: string = item.expirationDate ? (nts.uk.time as any).applyFormat("Short_YMDW", [item.expirationDate]) : '';
+                // 代休残数.休出代休残数詳細.当月で期限切れをチェック
+                if (item.expiredInCurrentMonth) {
+                    expirationDateText = expirationDateText ? nts.uk.resource.getText("KDL005_38", [expirationDateText]) : '';
+                } else {
+                    expirationDateText = expirationDateText ? nts.uk.resource.getText("KDL005_37", [expirationDateText]) : '';
+                }
+                // 「日数」の場合
+                let digestionNumberText = '';
+                if (item.digestionNumber === 0.5) {
+                    digestionNumberText = nts.uk.resource.getText("KDL005_27", [item.digestionNumber]);
+                }
+                let occurrenceNumberText = '';
+                if (item.occurrenceNumber === 0.5) {
+                    occurrenceNumberText = nts.uk.resource.getText("KDL005_27", [item.occurrenceNumber]);
+                }
+                return new RemainNumberDetailModel({
+                    expirationDate: item.expirationDate,
+                    expirationDateText: expirationDateText,
+                    digestionNumber: item.digestionNumber,
+                    digestionDate: item.digestionDate,
+                    digestionHour: item.digestionHour ? item.digestionHour.toString() : '',
+                    digestionNumberText: digestionNumberText,
+                    digestionDateText: digestionDateText,
+                    digestionHourText: item.digestionHour ? item.digestionHour.toString() : '',
+                    occurrenceNumber: item.occurrenceNumber,
+                    occurrenceDate: item.occurrenceDate,
+                    occurrenceHour: item.occurrenceHour ? item.occurrenceHour.toString() : '',
+                    occurrenceNumberText: occurrenceNumberText,
+                    occurrenceDateText: occurrenceDateText,
+                    occurrenceHourText: item.occurrenceHour ? item.occurrenceHour.toString() : '',
+                });
+            }
+
         }
 
         export enum ExpirationDate {
@@ -293,26 +446,63 @@ module nts.uk.at.view.kdl005.a {
             isAlreadySetting: boolean;
         }
 
-        class DataItems {
-            leaveDate: string;
-            dayOffDateTop: string;
-            dayOffDateBot: string;
-            duedateHoliday: string;
-            occurrenceDays1: string;
-            occurrenceDays2Top: string;
-            occurrenceDays2Bot: string;
-            isHalfDay: boolean;
+        // class DataItems {
+        //     leaveDate: string;
+        //     dayOffDateTop: string;
+        //     dayOffDateBot: string;
+        //     duedateHoliday: string;
+        //     occurrenceDays1: string;
+        //     occurrenceDays2Top: string;
+        //     occurrenceDays2Bot: string;
+        //     isHalfDay: boolean;
 
-            constructor(leaveDate: string, dayOffDateTop: string, dayOffDateBot: string, duedateHoliday: string, occurrenceDays1: string,
-                    occurrenceDays2Top: string, occurrenceDays2Bot: string, isHalfDay: boolean) {
-                this.leaveDate = leaveDate;
-                this.dayOffDateTop = dayOffDateTop;
-                this.dayOffDateBot = dayOffDateBot;
-                this.duedateHoliday = duedateHoliday;
-                this.occurrenceDays1 = occurrenceDays1;
-                this.occurrenceDays2Top = occurrenceDays2Top;
-                this.occurrenceDays2Bot = occurrenceDays2Bot;
-                this.isHalfDay = isHalfDay;
+        //     constructor(leaveDate: string, dayOffDateTop: string, dayOffDateBot: string, duedateHoliday: string, occurrenceDays1: string,
+        //             occurrenceDays2Top: string, occurrenceDays2Bot: string, isHalfDay: boolean) {
+        //         this.leaveDate = leaveDate;
+        //         this.dayOffDateTop = dayOffDateTop;
+        //         this.dayOffDateBot = dayOffDateBot;
+        //         this.duedateHoliday = duedateHoliday;
+        //         this.occurrenceDays1 = occurrenceDays1;
+        //         this.occurrenceDays2Top = occurrenceDays2Top;
+        //         this.occurrenceDays2Bot = occurrenceDays2Bot;
+        //         this.isHalfDay = isHalfDay;
+        //     }
+        // }
+
+        class RemainNumberDetailModel {
+            expirationDate: string;
+            expirationDateText: string;
+            digestionNumber: number;
+            digestionDate: string;
+            digestionHour: string;
+            digestionNumberText: string;
+            digestionDateText: string;
+            digestionHourText: string;
+            occurrenceNumber: number;
+            occurrenceDate: string;
+            occurrenceHour: string;
+            occurrenceNumberText: string;
+            occurrenceDateText: string;
+            occurrenceHourText: string;
+
+            constructor(init?: Partial<RemainNumberDetailModel>) {
+                (<any>Object).assign(this, init);
+            }
+        }
+
+        class DataItems {
+            isMultiOccurrence: boolean;
+            isMultiDigestion: boolean;
+            listOccurrence: RemainNumberDetailModel[];
+            listDigestion: RemainNumberDetailModel[];
+            singleRowDetail: RemainNumberDetailModel;
+
+            constructor(init?: Partial<DataItems>) {
+                (<any>Object).assign(this, init);
+            }
+
+            public isSingleRow() {
+                return !this.isMultiOccurrence && !this.isMultiDigestion;
             }
         }
     }
