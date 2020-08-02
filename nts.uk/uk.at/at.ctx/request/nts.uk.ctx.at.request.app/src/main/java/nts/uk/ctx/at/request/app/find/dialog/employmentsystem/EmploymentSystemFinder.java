@@ -32,6 +32,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffHistory;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffManagementQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
@@ -46,7 +47,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.UnUserOfBreak;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -449,7 +449,7 @@ public class EmploymentSystemFinder {
 					itemDto.setUsageDate(item.getDateOfUse());
 					itemDto.setUsageDay(item.getDayNumberUsed().v());
 					itemDto.setUsageHour(0);
-					itemDto.setDevelopmentDate(item.getOutbreakDay());
+					itemDto.setOccurrenceDate(item.getOutbreakDay());
 					return itemDto;
 				})
 				.collect(Collectors.toList());
@@ -477,9 +477,9 @@ public class EmploymentSystemFinder {
 					// field ・消化数　＝　取得した逐次発生の休暇明細．未相殺数．日数
 					itemDto.setDigestionNumber(item.getUnbalanceNumber().getDay().v());
 					// field ・期限日　＝　取得した逐次発生の休暇明細．休暇発生明細．期限日
-					Optional<UnbalanceVacation> oUnbalanceVacation = item.getUnbalanceVacation();
-					if (oUnbalanceVacation.isPresent()) {
-						itemDto.setExpirationDate(oUnbalanceVacation.get().getDeadline());
+					Optional<UnbalanceCompensation> oUnbalanceCompensation = item.getUnbalanceCompensation();
+					if (oUnbalanceCompensation.isPresent()) {
+						itemDto.setExpirationDate(oUnbalanceCompensation.get().getDeadline());
 					}
 					// field 管理データ状態区分　＝　取得した逐次発生の休暇明細．状態
 					itemDto.setManagementDataStatus(item.getDataAtr().value);

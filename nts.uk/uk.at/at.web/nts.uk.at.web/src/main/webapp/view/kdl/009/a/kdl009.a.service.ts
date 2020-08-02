@@ -72,7 +72,7 @@ module nts.uk.at.view.kdl009.a {
 
     export interface RemainNumberDetailDto {
         // field 当月で期限切れ
-        isExpiredInCurrentMonth: boolean;
+        expiredInCurrentMonth: boolean;
         // field 期限日
         expirationDate: string; // yyyy/mm/dd
         // field 消化数
@@ -99,7 +99,7 @@ module nts.uk.at.view.kdl009.a {
         // field 使用時間数
         usageHour: number;
         // field 開発日
-        developmentDate: any;
+        occurrenceDate: any;
     }
 
 }
