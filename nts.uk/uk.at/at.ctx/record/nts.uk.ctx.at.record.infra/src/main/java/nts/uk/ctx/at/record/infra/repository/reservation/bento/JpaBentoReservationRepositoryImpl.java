@@ -224,4 +224,9 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 			throw new RuntimeException(ex);
 		}
 	}
+
+	@Override
+	public void update(BentoReservation bentoReservation) {
+		commandProxy().update(KrcdtReservation.fromDomain(bentoReservation));
+	}
 }
