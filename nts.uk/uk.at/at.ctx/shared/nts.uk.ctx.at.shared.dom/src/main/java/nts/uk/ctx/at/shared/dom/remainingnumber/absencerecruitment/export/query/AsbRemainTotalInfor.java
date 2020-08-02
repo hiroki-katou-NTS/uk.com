@@ -25,15 +25,15 @@ public class AsbRemainTotalInfor {
 	/**	予定発生日数 */
 	private double scheOccurrenceDays;
 	/**	予定発生時間数  */
-	private Double scheHours;
+	private double scheHours;
 	/**	予定使用時間数  */
-	private Double scheUseHours;
+	private double scheUseHours;
 	/**	実績発生時間数  */
-	private Double recordOccurrenceHours;
+	private double recordOccurrenceHours;
 	/**	実績使用時間数  */
-	private Double actualNumberOfHourUsed;
+	private double actualNumberOfHourUsed;
 	/**	繰越時間数  */
-	private Double carryForwardHours;
+	private double carryForwardHours;
 	
 	/**
 	 * 繰越・実績内残日数を取得する

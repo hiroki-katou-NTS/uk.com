@@ -402,7 +402,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	}
 	@Override
 	public AsbRemainTotalInfor totalInfor(List<BreakHistoryData> lstBreakHis, List<DayOffHistoryData> lstDayOffHis) {
-		AsbRemainTotalInfor outputData = new AsbRemainTotalInfor(0, 0, 0, 0, 0, 0D, 0D, 0D, 0D, 0D);
+		AsbRemainTotalInfor outputData = new AsbRemainTotalInfor(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 		//	実績使用日数を算出する
 		List<DayOffHistoryData> dayOffHisRecord = lstDayOffHis.stream()
 				.filter(x -> x.getCreateAtr() == MngHistDataAtr.RECORD)

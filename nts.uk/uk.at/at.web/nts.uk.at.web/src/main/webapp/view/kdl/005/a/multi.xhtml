@@ -15,13 +15,13 @@
 				<com:stylefile path="kdl005.a.main.css" />
 				<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
 			</ui:define>
-			
+
 			<ui:define name="content">
 				<div id="contents-area" class="fixed-flex-layout">
 					<div class="fixed-flex-layout-left">
 						<div tabindex="1" id="component-items-list"></div>
 					</div>
-					
+
 					<div class="fixed-flex-layout-right">
 						<table>
 							<tr>
@@ -31,16 +31,16 @@
 								</td>
 							</tr>
 						</table>
-						
+
 						<hr />
-						
+
 						<button tabindex="2" class="inline" data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KDL005_18')}</button>
-						
+
 						<div class="date-fixed-table">
 							<table id="date-fixed-table">
 								<colgroup>
-									<col width="380px"/>
-									<col width="250px"/>
+									<col width="350px"/>
+									<col width="200px"/>
 									<!-- <col width="150px"/> -->
 								</colgroup>
 								<thead>
@@ -65,15 +65,15 @@
 		 										</td>
 			 									<!-- <td rowspan="2"><span style="float: left;" data-bind="text: duedateHoliday"></span></td> -->
 											</tr>
-											
+
 											<tr>
 												<td>
-			 										<span style="float: left; padding-left: 5px;" data-bind="text: dayOffDateBot"></span> 
+			 										<span style="float: left; padding-left: 5px;" data-bind="text: dayOffDateBot"></span>
 			 										<span style="float: right; padding-right: 5px;" data-bind="text: occurrenceDays2Bot"></span>
 		 										</td>
 											</tr>
 										</com:ko-if>
-										
+
 										<com:ko-if bind="!isHalfDay">
 											<tr>
 												<td>
@@ -122,7 +122,7 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<div id="functions-area-bottom">
 					<button tabindex="4" id="cancel-btn" data-bind="click: cancel" class="large">#{i18n.getText('KDL005_17')}</button>
 				</div>

@@ -14,7 +14,7 @@
 				<com:scriptfile path="kdl005.a.service.js" />
 				<com:stylefile path="kdl005.a.main.css" />
 			</ui:define>
-			
+
 			<ui:define name="content">
 				<div id="contents-area">
 					<table>
@@ -25,11 +25,12 @@
 							</td>
 						</tr>
 					</table>
-					
+
 					<hr />
-					
+
 					<button tabindex="2" class="inline" data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KDL005_18')}</button>
-					
+
+
 					<div class="date-fixed-table">
 						<table id="date-fixed-table">
 							<colgroup>
@@ -67,7 +68,7 @@
 	 										</td>
 										</tr>
 									</com:ko-if>
-									
+
 									<com:ko-if bind="!isHalfDay">
 										<tr>
 											<td>
@@ -117,7 +118,7 @@
 					</table>
 				</div>
 				</div>
-				
+
 				<div id="functions-area-bottom">
 					<button tabindex="4" id="cancel-btn" data-bind="click: cancel" class="large">#{i18n.getText('KDL005_17')}</button>
 				</div>

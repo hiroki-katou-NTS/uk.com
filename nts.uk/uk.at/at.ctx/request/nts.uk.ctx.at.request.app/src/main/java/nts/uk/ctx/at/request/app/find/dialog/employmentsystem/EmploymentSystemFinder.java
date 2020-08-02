@@ -140,17 +140,16 @@ public class EmploymentSystemFinder {
 		// #110215 10-2.代休の設定を取得する
 		SubstitutionHolidayOutput subHd = this.absenceTenProcessCommon.getSettingForSubstituteHoliday(companyId, employeeId,
 				GeneralDate.today());
-		detailsdDto.setIsManagementSection(subHd.isSubstitutionFlg());
 		
-		if(!subHd.isSubstitutionFlg() || !subHd.isTimeOfPeriodFlg() ) {
-			// #110215  取得した管理区分を渡す
-			detailsdDto.setIsManagementSection(false);
-			detailsdDto.setListPegManagement(new ArrayList<>());
-			detailsdDto.setListRemainNumberDetail(new ArrayList<>());
-			return detailsdDto;
-		}
+//		if(!subHd.isSubstitutionFlg() || !subHd.isTimeOfPeriodFlg() ) {
+//			// #110215  取得した管理区分を渡す
+//			detailsdDto.setIsManagementSection(false);
+//			detailsdDto.setListPegManagement(new ArrayList<>());
+//			detailsdDto.setListRemainNumberDetail(new ArrayList<>());
+//			return detailsdDto;
+//		}
 		
-		// 基準日（指定がない場合はシステム日付）
+		//	 基準日（指定がない場合はシステム日付）
 		if(baseDate.isEmpty()) {
 			baseDate = dtf.format(localDate);
 		} else {
@@ -161,74 +160,11 @@ public class EmploymentSystemFinder {
 		// 	アルゴリズム「休出代休発生消化履歴の取得」を実行する
 		Optional<BreakDayOffOutputHisData> data = breakDayOffManagementQuery.getBreakDayOffData(companyId, employeeId, inputDate);
 		
-		//	 #110215 アルゴリズム「社員に対応する締め期間を取得する」を実行する		
+		//	#110215 アルゴリズム「社員に対応する締め期間を取得する」を実行する		
 		DatePeriod closingPeriod = closureService.findClosurePeriod(employeeId, inputDate);
-		List<BreakDayOffHistoryDto> lstHistory = new ArrayList<>();
-		
-//		if(data.isPresent() && data.get().getLstHistory().size() > 0) {
-//			for (BreakDayOffHistory item : data.get().getLstHistory()) {
-//				if(item == null) {
-//					continue;
-//				}
-//				
-//				ComDayoffDateDto hisDate = new ComDayoffDateDto(item.getHisDate().isUnknownDate(), 
-//						item.getHisDate().getDayoffDate().isPresent() ? item.getHisDate().getDayoffDate().get() : null);
-//				
-//				BreakHistoryData breakHist =null;
-//				if (item.getBreakHis() == null) {
-//					breakHist = null;
-//				} else {
-//					breakHist = item.getBreakHis().isPresent() ? item.getBreakHis().get() : null;
-//				}
-//				ComDayoffDateDto breakDate = new ComDayoffDateDto(breakHist != null ? breakHist.getBreakDate().isUnknownDate() : true, 
-//						breakHist != null ? (breakHist.getBreakDate().getDayoffDate().isPresent() ? breakHist.getBreakDate().getDayoffDate().get() : null) : null);
-//				
-//				BreakHistoryDataDto breakHis = new BreakHistoryDataDto(breakHist != null ? breakHist.getBreakMngId() : null, breakDate,
-//						breakHist != null ? breakHist.getExpirationDate() : null,
-//						breakHist != null ? breakHist.isChkDisappeared() : true,
-//						breakHist != null ? breakHist.getMngAtr().value : 0,
-//						breakHist != null ? breakHist.getOccurrenceDays() : 0.0,
-//						breakHist != null ? breakHist.getUnUseDays() : 0.0);
-//				
-//				DayOffHistoryData dayOffHist = item.getDayOffHis() != null ? item.getDayOffHis().get() : null;
-//				
-//				ComDayoffDateDto dayOffDate = new ComDayoffDateDto(dayOffHist != null ? dayOffHist.getDayOffDate().isUnknownDate() : true, 
-//						dayOffHist != null ? (dayOffHist.getDayOffDate().getDayoffDate().isPresent() ? dayOffHist.getDayOffDate().getDayoffDate().get(): null) : null);
-//				
-//				DayOffHistoryDataDto dayOffHis = new DayOffHistoryDataDto(dayOffHist != null ? dayOffHist.getCreateAtr().value : 0,
-//						dayOffHist != null ? dayOffHist.getDayOffId() : null, dayOffDate,
-//						dayOffHist != null ? dayOffHist.getRequeiredDays() : 0.0,
-//						dayOffHist != null ? dayOffHist.getUnOffsetDays() : 0.0);
-//				
-//				Double useDays  = item.getUseDays() != null ? item.getUseDays() : 0.0;
-//				
-//				Optional<BsEmploymentHistoryImport> empHistImport = employeeAdaptor.findEmploymentHistory(companyId, employeeId, inputDate);
-//				if(!empHistImport.isPresent() || empHistImport.get().getEmploymentCode()==null){
-//					throw new BusinessException("khong co employeeCode");
-//				}
-//				
-//				CompensatoryLeaveEmSetting compensatoryLeaveEmSet = this.compensLeaveEmSetRepository.find(companyId, empHistImport.get().getEmploymentCode());
-//				int isManaged = compensatoryLeaveEmSet != null ? compensatoryLeaveEmSet.getIsManaged().value : ManageDistinct.YES.value;
-//				
-//				BreakDayOffHistoryDto outputDto = new BreakDayOffHistoryDto(hisDate, breakHis, dayOffHis, useDays, isManaged);
-//				lstHistory.add(outputDto);
-//			}
-//		}
-//		
-//		DetailConfirmDto result = new DetailConfirmDto();
-//		result.setClosingPeriod(closingPeriod);
-//		result.setLstHistory(lstHistory);
-//		result.setTotalInfor(data.isPresent() ? data.get().getTotalInfor() : null);
-//		// imported（就業）「所属雇用履歴」を取得する RequestList31
-//		Optional<EmploymentHistoryImported> empImpOpt = this.wpAdapter.getEmpHistBySid(companyId, employeeId,
-//				inputDate);
-//		
-//		//	アルゴリズム「代休確認ダイア使用期限詳細」を実行する
-//		DeadlineDetails deadLine = getDeadlineDetails(companyId, empImpOpt);
-//		
-//		result.setDeadLineDetails(deadLine);
 
-		//#110215  期間内の休出代休残数を取得する
+
+		//	#110215  期間内の休出代休残数を取得する
 		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(
 				companyId,
 				employeeId,
@@ -243,7 +179,7 @@ public class EmploymentSystemFinder {
 				Collections.emptyList(),
 				Optional.empty());
 		SubstituteHolidayAggrResult substituteHolidayAggrResult = this.numberRemainVacationLeaveRangeProcess.getBreakDayOffMngInPeriod(inputParam);
-		// #110215 	残数詳細を作成
+		// 	#110215 残数詳細を作成
 		List<RemainNumberDetailDto> listRemainNumberDetail = substituteHolidayAggrResult.getVacationDetails().getLstAcctAbsenDetail().stream()
 				.map(item -> {
 					RemainNumberDetailDto itemDto = new RemainNumberDetailDto();
@@ -266,9 +202,9 @@ public class EmploymentSystemFinder {
 					// field ・消化数 ＝ 取得した逐次発生の休暇明細．未相殺数．日数
 					itemDto.setDigestionNumber(item.getUnbalanceNumber().getDay().v());
 					// field ・期限日 ＝ 取得した逐次発生の休暇明細．休暇発生明細．期限日
-					Optional<UnbalanceVacation> oUnbalanceVacation = item.getUnbalanceVacation();
-					if (oUnbalanceVacation.isPresent()) {
-						itemDto.setExpirationDate(oUnbalanceVacation.get().getDeadline());
+					Optional<UnbalanceCompensation> oUnbalanceCompensation = item.getUnbalanceCompensation();
+					if (oUnbalanceCompensation.isPresent()) {
+						itemDto.setExpirationDate(oUnbalanceCompensation.get().getDeadline());
 					}
 					// field 管理データ状態区分 ＝ 取得した逐次発生の休暇明細．状態
 					itemDto.setManagementDataStatus(item.getDataAtr().value);
@@ -293,7 +229,7 @@ public class EmploymentSystemFinder {
 					itemDto.setUsageDate(item.getDateOfUse());
 					itemDto.setUsageDay(item.getDayNumberUsed().v());
 					itemDto.setUsageHour(0);
-					itemDto.setDevelopmentDate(item.getOutbreakDay());
+					itemDto.setOccurrenceDate(item.getOutbreakDay());
 					return itemDto;
 				})
 				.collect(Collectors.toList());
