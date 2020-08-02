@@ -89,19 +89,6 @@ module nts.uk.at.view.kmp001.a {
 						mode: "row",
 						multipleSelection: true,
 						activation: true,
-						rowSelectionChanging: function(evt, ui) {
-							const el = document.querySelector('.sidebar-content-header');
-
-							if (el) {
-								const $vm = ko.dataFor(el);
-
-								if ($vm) {
-									if (ko.unwrap($vm.mode) === 'new') {
-										return false;
-									}
-								}
-							}
-						},
 						rowSelectionChanged: function(evt, ui) {
 							const selectedRows = ui.selectedRows.map(m => m.index) as number[];
 							const stampCard = ko.unwrap(vm.model.stampCardDto);
@@ -131,6 +118,9 @@ module nts.uk.at.view.kmp001.a {
 					},
 					dataRendered: function() {
 						$(vm.$el).find('.ui-icon.ui-icon-triangle-1-e').remove();
+						$(document).ready(function() {
+							$('.ip-stamp-card').focus();
+						});
 					}
 				});
 
@@ -139,9 +129,6 @@ module nts.uk.at.view.kmp001.a {
 
 				$grid.igGrid('option', 'dataSource', ko.toJS(stampCard));
 
-				/*if ($grid.data('igGrid') && $grid.data('igGridSelection') && $grid.igGrid('option', 'dataSource').length) {
-					$grid.igGridSelection("selectRow", 0);
-				}*/
 			});
 
 			const el = document.querySelector('.sidebar-content-header');
@@ -154,7 +141,9 @@ module nts.uk.at.view.kmp001.a {
 						const mode = ko.unwrap($vm.mode);
 
 						if (mode === 'new') {
-							$grid.igGridSelection('clearSelection');
+							if ($grid.data('igGrid') && $grid.data('igGridSelection') && $grid.igGrid('option', 'dataSource').length) {
+								$grid.igGridSelection("selectRow", 0);
+							}
 						}
 					});
 				}
@@ -183,10 +172,13 @@ module nts.uk.at.view.kmp001.a {
 
 								vm.$validate.constraint(ck, constraint);
 								vm.constraint.valueHasMutated();
+
+								$(document).ready(function() {
+									$('#ip-stamp-card').focus();
+								});
 							}
 						});
 				});
-
 		}
 	}
 }

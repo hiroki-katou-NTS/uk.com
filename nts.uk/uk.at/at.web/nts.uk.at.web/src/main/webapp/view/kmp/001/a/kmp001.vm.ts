@@ -111,6 +111,20 @@ module nts.uk.at.view.kmp001 {
 			}
 		}
 
+		public clear() {
+			const self = this;
+			
+			self.affiliationId('');
+			self.birthDay(null);
+			self.businessName('');
+			self.employeeCode('');
+			self.employeeId('');
+			self.entryDate(null);
+			self.gender(-1);
+			self.pid('');
+			self.retiredDate(null);
+			self.stampCardDto([]);
+		}
 
 		public addNewStampCard() {
 			const model = this;
@@ -148,4 +162,6 @@ module nts.uk.at.view.kmp001 {
 	export interface IEmployeeId {
 		employee: string;
 	}
+	
+	export type SELECT = 'select';
 }
