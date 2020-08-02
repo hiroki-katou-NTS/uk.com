@@ -57,7 +57,7 @@ public class WeeklyWorkDayPattern extends AggregateRoot {
      * @return ($曜日勤務設定リスト: find $.曜日 == $対象日の曜日).稼働日区分
      */
     public WorkdayDivision getWorkingDayCtgOfTagertDay(GeneralDate targetDate) {
-        int targetDayOfWeek = targetDate.dayOfWeek();
+        int targetDayOfWeek = targetDate.dayOfWeek() + 1;
         val result = this.getListWorkdayPatternItem().stream().filter(i -> i.getDayOfWeek().value == targetDayOfWeek).findFirst();
         if (result.isPresent()) {
             return result.get().getWorkdayDivision();

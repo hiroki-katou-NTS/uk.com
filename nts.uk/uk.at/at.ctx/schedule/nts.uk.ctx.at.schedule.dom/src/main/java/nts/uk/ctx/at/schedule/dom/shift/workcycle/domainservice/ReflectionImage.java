@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 /**
  * 	反映イメージ
@@ -19,6 +18,9 @@ public class ReflectionImage {
     private HashMap<GeneralDate, RefImageEachDay> day;
 
     // [C-1] 作る
+    public ReflectionImage() {
+        this.day = new HashMap<GeneralDate, RefImageEachDay>();
+    }
 
     /**
      * [1] 週間勤務で追加する

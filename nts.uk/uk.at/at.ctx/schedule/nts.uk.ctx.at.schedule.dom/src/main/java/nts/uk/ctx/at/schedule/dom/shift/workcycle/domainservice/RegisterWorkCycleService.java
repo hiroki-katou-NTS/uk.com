@@ -26,7 +26,7 @@ public class RegisterWorkCycleService {
      * @return
      */
     public static WorkCycleCreateResult register(WorkInformation.Require workRequire, Require require, WorkCycle workCycle, boolean isNewMode) {
-        if (isNewMode && require.exists(AppContexts.user().companyId(), workCycle.getCode().v())) {
+        if (isNewMode && require.exists(workCycle.getCid(), workCycle.getCode().v())) {
             throw new BusinessException("Msg_3");
         }
         val listErrorStatus =  workCycle.checkError(workRequire);
