@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace;
 import java.util.List;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -11,6 +12,7 @@ import nts.arc.time.GeneralDate;
  *
  */
 @Data
+@NoArgsConstructor
 public class RegulationInfoEmpQuery {
 
 	/** The base date. */

@@ -61,6 +61,8 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveHistoryAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmployeeLeaveJobPeriodImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmploymentPeriod;
@@ -75,7 +77,9 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpComHisAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
@@ -180,6 +184,21 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	
 	@Inject
 	private EmpEmployeeAdapter empEmployeeAdapter;
+	
+	@Inject
+	private EmpComHisAdapter comHisAdapter;
+	
+	@Inject
+	private WorkingConditionRepository conditionRespo;
+	
+	@Inject
+	private EmpLeaveHistoryAdapter empHisAdapter;
+	
+	@Inject
+	private EmpLeaveWorkHistoryAdapter leaHisAdapter;
+	
+	@Inject
+	private EmploymentHisScheduleAdapter scheAdapter;
 
 	/** The Constant DEFAULT_CODE. */
 	public static final String DEFAULT_CODE = "000";
@@ -509,8 +528,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			// 期間のループ
 			for (val date : period.datesBetween()) {
 				// 「社員の予定管理状態」を取得する
-				// 「Output」・社員の予定管理状態一覧- doi hieu viet repo
-				ScheManaStatuTempo.Require require = new ScheManaStatuTempoImpl();
+				// 「Output」・社員の予定管理状態一覧
+				ScheManaStatuTempo.Require require = new ScheManaStatuTempoImpl(companyId,comHisAdapter, conditionRespo, empHisAdapter, leaHisAdapter, scheAdapter);
 				ScheManaStatuTempo manaStatuTempo = ScheManaStatuTempo.create(require, id, date);
 				lstStatuTempos.add(manaStatuTempo);
 			}
@@ -724,35 +743,46 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	}
 	
 	@AllArgsConstructor
-	public static class ScheManaStatuTempoImpl implements ScheManaStatuTempo.Require{@Override
+	public static class ScheManaStatuTempoImpl implements ScheManaStatuTempo.Require{
+		String companyId = AppContexts.user().companyId();
+		@Inject
+		private EmpComHisAdapter comHisAdapter;
+		
+		@Inject
+		private WorkingConditionRepository conditionRespo;
+		
+		@Inject
+		private EmpLeaveHistoryAdapter empHisAdapter;
+		
+		@Inject
+		private EmpLeaveWorkHistoryAdapter leaHisAdapter;
+		
+		@Inject
+		private EmploymentHisScheduleAdapter scheAdapter;
+		
+		@Override
 		public List<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod) {
-			// TODO Auto-generated method stub
-			return null;
+			return comHisAdapter.getEnrollmentPeriod(sids, datePeriod);
 		}
 
 		@Override
 		public Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate) {
-			// TODO Auto-generated method stub
-			return null;
+			return conditionRespo.getWorkingConditionItemByEmpIDAndDate(companyId, baseDate, employeeId);
 		}
 
 		@Override
 		public List<EmployeeLeaveJobPeriodImport> getByDatePeriod(List<String> lstEmpID, DatePeriod datePeriod) {
-			// TODO Auto-generated method stub
-			return null;
+			return empHisAdapter.getLeaveBySpecifyingPeriod(lstEmpID, datePeriod);
 		}
 
 		@Override
 		public List<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(List<String> lstEmpID, DatePeriod datePeriod) {
-			// TODO Auto-generated method stub
-			return null;
+			return leaHisAdapter.getHolidayPeriod(lstEmpID, datePeriod);
 		}
 
 		@Override
 		public List<EmploymentPeriodImported> getEmploymentHistory(List<String> lstEmpID, DatePeriod datePeriod) {
-			// TODO Auto-generated method stub
-			return null;
+			return scheAdapter.getEmploymentPeriod(lstEmpID, datePeriod);
 		}
-
 	}
 }

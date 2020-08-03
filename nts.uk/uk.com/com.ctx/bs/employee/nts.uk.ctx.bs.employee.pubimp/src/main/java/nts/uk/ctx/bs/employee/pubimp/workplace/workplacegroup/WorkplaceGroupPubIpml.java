@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.bs.employee.dom.access.role.SyRoleAdapter;
 import nts.uk.ctx.bs.employee.dom.employee.service.EmployeeReferenceRangeImport;
 import nts.uk.ctx.bs.employee.dom.workplace.EmployeeAffiliation;
 import nts.uk.ctx.bs.employee.dom.workplace.adapter.GetStringWorkplaceManagerAdapter;
@@ -26,6 +27,7 @@ import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.workplacegroup.EmpOrganizationExport;
 import nts.uk.ctx.bs.employee.pub.workplace.workplacegroup.WorkplaceGroupPublish;
+
 import nts.uk.shr.com.context.AppContexts;
 import repository.workplacegroup.JpaAffWorkplaceGroupRespository;
 import repository.workplacegroup.JpaWorkplaceGroupRespository;
@@ -110,7 +112,7 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 		private JpaAffWorkplaceGroupRespository repo;
 		
 		@Inject 
-		private SyWorkplacePub pub;
+		private WorkplacePub pub;
 		
 		@Override
 		public List<String> getWorkplaceBelongsWorkplaceGroup(String workplaceGroupId) {
@@ -145,7 +147,9 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 		
 		@Inject
 		private WorkplacePub wkplacePub;
-
+		
+		@Inject
+		private SyRoleAdapter syRoleAdapter;
 		
 		
 		
@@ -165,19 +169,36 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 
 		@Override
 		public boolean whetherThePersonInCharge(String empId) {
-			// KHong có thuat toan trong EAP
-			// Check ngui phu trách the nao -- tư đoán
-			//String role = AppContexts.user().roles().forAttendance()
-			//http://192.168.50.4:3000/issues/110774
-			return false;
+			//ログイン社員が*就業*担当者かどうか
+
+			String roleId = AppContexts.user().roles().forAttendance();
+			if(roleId == null)
+				return false;
+			return true;
 		}
 
 		@Override
 		public EmployeeReferenceRangeImport getEmployeeReferRangeOfLoginEmployees(String empId) {
-			
-			//AppContexts.user().roles().
-			//http://192.168.50.4:3000/issues/110774
-			return null;
+		   //※ログイン社員の社員参照範囲		
+			String roleID = null;
+			if(AppContexts.user().roles().forAttendance() != null)
+				roleID = AppContexts.user().roles().forAttendance();
+			else if (AppContexts.user().roles().forCompanyAdmin() != null)
+				roleID = AppContexts.user().roles().forAttendance();
+			else if (AppContexts.user().roles().forGroupCompaniesAdmin() != null)
+				roleID = AppContexts.user().roles().forGroupCompaniesAdmin();
+			else if (AppContexts.user().roles().forOfficeHelper() != null)
+				roleID = AppContexts.user().roles().forOfficeHelper();
+			else if (AppContexts.user().roles().forPayroll()!= null)
+				roleID = AppContexts.user().roles().forPayroll();
+			else if (AppContexts.user().roles().forPersonalInfo()!= null)
+				roleID = AppContexts.user().roles().forPersonalInfo();
+			else if (AppContexts.user().roles().forPersonnel()!= null)
+				roleID = AppContexts.user().roles().forPersonnel();
+			else if (AppContexts.user().roles().forSystemAdmin()!= null)
+				roleID = AppContexts.user().roles().forSystemAdmin();
+			EmployeeReferenceRangeImport result = syRoleAdapter.getRangeByRoleID(roleID);
+			return result;
 		}
 
 		@Override

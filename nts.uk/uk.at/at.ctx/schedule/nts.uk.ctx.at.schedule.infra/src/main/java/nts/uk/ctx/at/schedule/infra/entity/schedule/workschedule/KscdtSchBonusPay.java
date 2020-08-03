@@ -3,9 +3,14 @@ package nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -37,9 +42,33 @@ public class KscdtSchBonusPay extends ContractUkJpaEntity{
 	@Column(name = "PREMIUM_TIME_WITHOUT")
 	public int premiumTimeWithOut;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+			@PrimaryKeyJoinColumn(name = "YMD", referencedColumnName = "YMD") })
+	public KscdtSchTime kscdtSchTime;
+	
+	
 	@Override
 	protected Object getKey() {
 		return this.pK;
 	}
+	public static KscdtSchBonusPay toEntity(String sid , GeneralDate ymd){
+		//KscdtSchBonusPayPK entity = new KscdtSchBonusPayPK(sid, ymd, bonuspayType, frameNo)
+		// -------------------QA http://192.168.50.4:3000/issues/110810
+		return null;
+		
+	}
+
+
+	public KscdtSchBonusPay(KscdtSchBonusPayPK pK, String cid, int premiumTime, int premiumTimeWithIn,
+			int premiumTimeWithOut) {
+		super();
+		this.pK = pK;
+		this.cid = cid;
+		this.premiumTime = premiumTime;
+		this.premiumTimeWithIn = premiumTimeWithIn;
+		this.premiumTimeWithOut = premiumTimeWithOut;
+	}
+	
 
 }

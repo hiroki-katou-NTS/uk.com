@@ -39,13 +39,10 @@ public class GetEmpCanReferBySpecifyWorkgroupService {
 		switch (data.get(workplaceGroupId)) {
 		case ONLY_ME:
 			return Arrays.asList(empId);
-		case ALL_EMPLOYEE:
+		default:// ALL_EMPLOYEE
 			List<EmployeeAffiliation> lstEmpAffiliation = GetAllEmpWhoBelongWorkplaceGroupService.getAllEmp(require,
 					date, workplaceGroupId);
 			return lstEmpAffiliation.stream().map(c -> c.getEmployeeID()).collect(Collectors.toList());
-		default:
-			return Collections.emptyList();
-			
 		}
 
 	}
