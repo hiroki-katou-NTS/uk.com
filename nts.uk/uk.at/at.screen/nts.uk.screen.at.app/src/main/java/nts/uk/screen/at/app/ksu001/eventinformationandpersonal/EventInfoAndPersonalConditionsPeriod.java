@@ -303,6 +303,379 @@ public class EventInfoAndPersonalConditionsPeriod {
 		
 	}
 	
+public DataSpecDateAndHolidayDto getForNextMonth(EventInfoAndPerCondPeriodParam param) {
+		
+
+		List<DateInformation> listDateInfo = new ArrayList<DateInformation>();
+		
+		DateInformation dateInformation4 = new DateInformation(GeneralDate.ymd(2020, 8, 1), DayOfWeek.SATURDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation5 = new DateInformation(GeneralDate.ymd(2020, 8, 2), DayOfWeek.SUNDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation6 = new DateInformation(GeneralDate.ymd(2020, 8, 3), DayOfWeek.MONDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation7 = new DateInformation(GeneralDate.ymd(2020, 8, 4), DayOfWeek.TUESDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation8 = new DateInformation(GeneralDate.ymd(2020, 8, 5), DayOfWeek.WEDNESDAY, false, true, 
+				Optional.of(new EventName("WorkplaceEventName")), Optional.of(new EventName("CompanyEventName")), 
+				Arrays.asList(new SpecificName("specDayNameWorkplace1"),new SpecificName("specDayNameWorkplace2")), 
+				Arrays.asList(new SpecificName("specDayNameCompany1"), new SpecificName("specDayNameCompany2")));
+		
+		DateInformation dateInformation9 = new DateInformation(GeneralDate.ymd(2020, 8, 6), DayOfWeek.THURSDAY, false, true, 
+				Optional.of(new EventName("WorkplaceEventName")), Optional.of(new EventName("CompanyEventName")), 
+				Arrays.asList(new SpecificName("specDayNameWorkplace1"),new SpecificName("specDayNameWorkplace2")), 
+				Arrays.asList(new SpecificName("specDayNameCompany1"), new SpecificName("specDayNameCompany2"), 
+							  new SpecificName("specDayNameCompany3"), new SpecificName("specDayNameCompany4")));
+		
+		DateInformation dateInformation10 = new DateInformation(GeneralDate.ymd(2020, 8, 7), DayOfWeek.FRIDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation11 = new DateInformation(GeneralDate.ymd(2020, 8, 8), DayOfWeek.SATURDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation12 = new DateInformation(GeneralDate.ymd(2020, 8, 9), DayOfWeek.SUNDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation13 = new DateInformation(GeneralDate.ymd(2020, 8, 10), DayOfWeek.MONDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation14 = new DateInformation(GeneralDate.ymd(2020, 8, 11), DayOfWeek.TUESDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation15 = new DateInformation(GeneralDate.ymd(2020, 8, 12), DayOfWeek.WEDNESDAY, false, true, 
+				Optional.of(new EventName("WorkplaceEventName")), Optional.of(new EventName("CompanyEventName")), 
+				Arrays.asList(new SpecificName("specDayNameWorkplace1"),new SpecificName("specDayNameWorkplace2")), 
+				Arrays.asList(new SpecificName("specDayNameCompany1"), new SpecificName("specDayNameCompany2")));
+		
+		DateInformation dateInformation16 = new DateInformation(GeneralDate.ymd(2020, 8, 13), DayOfWeek.THURSDAY, false, true, 
+				Optional.of(new EventName("WorkplaceEventName")), Optional.of(new EventName("CompanyEventName")), 
+				Arrays.asList(new SpecificName("specDayNameWorkplace1"),new SpecificName("specDayNameWorkplace2")), 
+				Arrays.asList(new SpecificName("specDayNameCompany1"), new SpecificName("specDayNameCompany2")));
+		
+		DateInformation dateInformation17 = new DateInformation(GeneralDate.ymd(2020, 8, 14), DayOfWeek.FRIDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation18 = new DateInformation(GeneralDate.ymd(2020, 8, 15), DayOfWeek.SATURDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation19 = new DateInformation(GeneralDate.ymd(2020, 8, 16), DayOfWeek.SUNDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation20 = new DateInformation(GeneralDate.ymd(2020, 8, 17), DayOfWeek.MONDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation21 = new DateInformation(GeneralDate.ymd(2020, 8, 18), DayOfWeek.TUESDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation22 = new DateInformation(GeneralDate.ymd(2020, 8, 19), DayOfWeek.WEDNESDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation23 = new DateInformation(GeneralDate.ymd(2020, 8, 20), DayOfWeek.THURSDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation24 = new DateInformation(GeneralDate.ymd(2020, 8, 21), DayOfWeek.FRIDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation25 = new DateInformation(GeneralDate.ymd(2020, 8, 22), DayOfWeek.SATURDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation26 = new DateInformation(GeneralDate.ymd(2020, 8, 23), DayOfWeek.SUNDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation27 = new DateInformation(GeneralDate.ymd(2020, 8, 24), DayOfWeek.MONDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation28 = new DateInformation(GeneralDate.ymd(2020, 8, 25), DayOfWeek.TUESDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation29 = new DateInformation(GeneralDate.ymd(2020, 8, 26), DayOfWeek.WEDNESDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation30 = new DateInformation(GeneralDate.ymd(2020, 8, 27), DayOfWeek.THURSDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation31 = new DateInformation(GeneralDate.ymd(2020, 8, 28), DayOfWeek.FRIDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation1 = new DateInformation(GeneralDate.ymd(2020, 8, 29), DayOfWeek.SATURDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation2 = new DateInformation(GeneralDate.ymd(2020, 8, 30), DayOfWeek.SUNDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		DateInformation dateInformation3 = new DateInformation(GeneralDate.ymd(2020, 8, 31), DayOfWeek.MONDAY, false, false, 
+				Optional.empty(), Optional.empty(), 
+				new ArrayList<>(), new ArrayList<>());
+		
+		listDateInfo.add(dateInformation4);
+		listDateInfo.add(dateInformation5);
+		listDateInfo.add(dateInformation6);
+		listDateInfo.add(dateInformation7);
+		listDateInfo.add(dateInformation8);
+		listDateInfo.add(dateInformation9);
+		listDateInfo.add(dateInformation10);
+		listDateInfo.add(dateInformation11);
+		listDateInfo.add(dateInformation12);
+		listDateInfo.add(dateInformation13);
+		listDateInfo.add(dateInformation14);
+		listDateInfo.add(dateInformation15);
+		listDateInfo.add(dateInformation16);
+		listDateInfo.add(dateInformation17);
+		listDateInfo.add(dateInformation18);
+		listDateInfo.add(dateInformation19);
+		listDateInfo.add(dateInformation20);
+		listDateInfo.add(dateInformation21);
+		listDateInfo.add(dateInformation22);
+		listDateInfo.add(dateInformation23);
+		listDateInfo.add(dateInformation24);
+		listDateInfo.add(dateInformation25);
+		listDateInfo.add(dateInformation26);
+		listDateInfo.add(dateInformation27);
+		listDateInfo.add(dateInformation28);
+		listDateInfo.add(dateInformation29);
+		listDateInfo.add(dateInformation30);
+		listDateInfo.add(dateInformation31);
+		listDateInfo.add(dateInformation1);
+		listDateInfo.add(dateInformation2);
+		listDateInfo.add(dateInformation3);
+		
+		Optional<DisplayControlPersonalCondition> displayControlPerCond = Optional
+				.of(new DisplayControlPersonalCondition(AppContexts.user().companyId(),
+						Arrays.asList(new PersonInforDisplayControl(ConditionATRWorkSchedule.TEAM, NotUseAtr.USE)),
+						Optional.of(new WorkscheQualifi(new PersonSymbolQualify("PersonSymbolQualify"),
+								Arrays.asList(new QualificationCD("QualificationCD"))))));
+		List<PersonalCondition> listPersonalCond = Arrays.asList(
+				new PersonalCondition("fc4304be-8121-4bad-913f-3e48f4e2a752", Optional.of("A"), Optional.of("A"), Optional.of(LicenseClassification.NURSE)),
+				new PersonalCondition("338c26ac-9b80-4bab-aa11-485f3c624186", Optional.of("B"), Optional.of("S"), Optional.of(LicenseClassification.NURSE_ASSIST)),
+				new PersonalCondition("89ea1474-d7d8-4694-9e9b-416ea1d6381c", Optional.of("C"), Optional.of("D"), Optional.of(LicenseClassification.NURSE_ASSOCIATE)),
+				new PersonalCondition("ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570", Optional.of("D"), Optional.of("F"), Optional.of(LicenseClassification.NURSE)),
+				new PersonalCondition("8f9edce4-e135-4a1e-8dca-ad96abe405d6", Optional.of("A"), Optional.of("G"), Optional.of(LicenseClassification.NURSE_ASSIST)),
+				new PersonalCondition("9787c06b-3c71-4508-8e06-c70ad41f042a", Optional.of("B"), Optional.of("Y"), Optional.of(LicenseClassification.NURSE_ASSOCIATE)),
+				new PersonalCondition("62785783-4213-4a05-942b-c32a5ffc1d63", Optional.of("C"), Optional.of("U"), Optional.of(LicenseClassification.NURSE)),
+				new PersonalCondition("4859993b-8065-4789-90d6-735e3b65626b", Optional.of("D"), Optional.of("I"), Optional.of(LicenseClassification.NURSE_ASSIST)),
+				new PersonalCondition("aeaa869d-fe62-4eb2-ac03-2dde53322cb5", Optional.of("A"), Optional.of("J"), Optional.of(LicenseClassification.NURSE_ASSOCIATE)),
+				new PersonalCondition("70c48cfa-7e8d-4577-b4f6-7b715c091f24", Optional.of("B"), Optional.of("H"), Optional.of(LicenseClassification.NURSE)),
+				new PersonalCondition("c141daf2-70a4-4f4b-a488-847f4686e848", Optional.of("C"), Optional.of("G"), Optional.of(LicenseClassification.NURSE_ASSIST)));
+		// step 4
+		return new DataSpecDateAndHolidayDto(listDateInfo, listPersonalCond, displayControlPerCond);
+		
+	}
+
+
+public DataSpecDateAndHolidayDto getForPreMonth(EventInfoAndPerCondPeriodParam param) {
+	
+
+	List<DateInformation> listDateInfo = new ArrayList<DateInformation>();
+	
+	
+	DateInformation dateInformation6 = new DateInformation(GeneralDate.ymd(2020, 6, 1), DayOfWeek.MONDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation7 = new DateInformation(GeneralDate.ymd(2020, 6, 2), DayOfWeek.TUESDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation8 = new DateInformation(GeneralDate.ymd(2020, 6, 3), DayOfWeek.WEDNESDAY, false, true, 
+			Optional.of(new EventName("WorkplaceEventName")), Optional.of(new EventName("CompanyEventName")), 
+			Arrays.asList(new SpecificName("specDayNameWorkplace1"),new SpecificName("specDayNameWorkplace2")), 
+			Arrays.asList(new SpecificName("specDayNameCompany1"), new SpecificName("specDayNameCompany2")));
+	
+	DateInformation dateInformation9 = new DateInformation(GeneralDate.ymd(2020, 6, 4), DayOfWeek.THURSDAY, false, true, 
+			Optional.of(new EventName("WorkplaceEventName")), Optional.of(new EventName("CompanyEventName")), 
+			Arrays.asList(new SpecificName("specDayNameWorkplace1"),new SpecificName("specDayNameWorkplace2")), 
+			Arrays.asList(new SpecificName("specDayNameCompany1"), new SpecificName("specDayNameCompany2"), 
+						  new SpecificName("specDayNameCompany3"), new SpecificName("specDayNameCompany4")));
+	
+	DateInformation dateInformation10 = new DateInformation(GeneralDate.ymd(2020, 6, 5), DayOfWeek.FRIDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation11 = new DateInformation(GeneralDate.ymd(2020, 6, 6), DayOfWeek.SATURDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation12 = new DateInformation(GeneralDate.ymd(2020, 6, 7), DayOfWeek.SUNDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation13 = new DateInformation(GeneralDate.ymd(2020, 6, 8), DayOfWeek.MONDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation14 = new DateInformation(GeneralDate.ymd(2020, 6, 9), DayOfWeek.TUESDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation15 = new DateInformation(GeneralDate.ymd(2020, 6, 10), DayOfWeek.WEDNESDAY, false, true, 
+			Optional.of(new EventName("WorkplaceEventName")), Optional.of(new EventName("CompanyEventName")), 
+			Arrays.asList(new SpecificName("specDayNameWorkplace1"),new SpecificName("specDayNameWorkplace2")), 
+			Arrays.asList(new SpecificName("specDayNameCompany1"), new SpecificName("specDayNameCompany2")));
+	
+	DateInformation dateInformation16 = new DateInformation(GeneralDate.ymd(2020, 6, 11), DayOfWeek.THURSDAY, false, true, 
+			Optional.of(new EventName("WorkplaceEventName")), Optional.of(new EventName("CompanyEventName")), 
+			Arrays.asList(new SpecificName("specDayNameWorkplace1"),new SpecificName("specDayNameWorkplace2")), 
+			Arrays.asList(new SpecificName("specDayNameCompany1"), new SpecificName("specDayNameCompany2")));
+	
+	DateInformation dateInformation17 = new DateInformation(GeneralDate.ymd(2020, 6, 12), DayOfWeek.FRIDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation18 = new DateInformation(GeneralDate.ymd(2020, 6, 13), DayOfWeek.SATURDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation19 = new DateInformation(GeneralDate.ymd(2020, 6, 14), DayOfWeek.SUNDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation20 = new DateInformation(GeneralDate.ymd(2020, 6, 15), DayOfWeek.MONDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation21 = new DateInformation(GeneralDate.ymd(2020, 6, 16), DayOfWeek.TUESDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation22 = new DateInformation(GeneralDate.ymd(2020, 6, 17), DayOfWeek.WEDNESDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation23 = new DateInformation(GeneralDate.ymd(2020, 6, 18), DayOfWeek.THURSDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation24 = new DateInformation(GeneralDate.ymd(2020, 6, 19), DayOfWeek.FRIDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation25 = new DateInformation(GeneralDate.ymd(2020, 6, 20), DayOfWeek.SATURDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation26 = new DateInformation(GeneralDate.ymd(2020, 6, 21), DayOfWeek.SUNDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation27 = new DateInformation(GeneralDate.ymd(2020, 6, 22), DayOfWeek.MONDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation28 = new DateInformation(GeneralDate.ymd(2020, 6, 23), DayOfWeek.TUESDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation29 = new DateInformation(GeneralDate.ymd(2020, 6, 24), DayOfWeek.WEDNESDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation30 = new DateInformation(GeneralDate.ymd(2020, 6, 25), DayOfWeek.THURSDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation31 = new DateInformation(GeneralDate.ymd(2020, 6, 26), DayOfWeek.FRIDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation1 = new DateInformation(GeneralDate.ymd(2020, 6, 27), DayOfWeek.SATURDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation2 = new DateInformation(GeneralDate.ymd(2020, 6, 28), DayOfWeek.SUNDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation4 = new DateInformation(GeneralDate.ymd(2020, 6, 29), DayOfWeek.MONDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	DateInformation dateInformation5 = new DateInformation(GeneralDate.ymd(2020, 6, 30), DayOfWeek.TUESDAY, false, false, 
+			Optional.empty(), Optional.empty(), 
+			new ArrayList<>(), new ArrayList<>());
+	
+	listDateInfo.add(dateInformation6);
+	listDateInfo.add(dateInformation7);
+	listDateInfo.add(dateInformation8);
+	listDateInfo.add(dateInformation9);
+	listDateInfo.add(dateInformation10);
+	listDateInfo.add(dateInformation11);
+	listDateInfo.add(dateInformation12);
+	listDateInfo.add(dateInformation13);
+	listDateInfo.add(dateInformation14);
+	listDateInfo.add(dateInformation15);
+	listDateInfo.add(dateInformation16);
+	listDateInfo.add(dateInformation17);
+	listDateInfo.add(dateInformation18);
+	listDateInfo.add(dateInformation19);
+	listDateInfo.add(dateInformation20);
+	listDateInfo.add(dateInformation21);
+	listDateInfo.add(dateInformation22);
+	listDateInfo.add(dateInformation23);
+	listDateInfo.add(dateInformation24);
+	listDateInfo.add(dateInformation25);
+	listDateInfo.add(dateInformation26);
+	listDateInfo.add(dateInformation27);
+	listDateInfo.add(dateInformation28);
+	listDateInfo.add(dateInformation29);
+	listDateInfo.add(dateInformation30);
+	listDateInfo.add(dateInformation31);
+	listDateInfo.add(dateInformation1);
+	listDateInfo.add(dateInformation2);
+	listDateInfo.add(dateInformation4);
+	listDateInfo.add(dateInformation5);
+	
+	Optional<DisplayControlPersonalCondition> displayControlPerCond = Optional
+			.of(new DisplayControlPersonalCondition(AppContexts.user().companyId(),
+					Arrays.asList(new PersonInforDisplayControl(ConditionATRWorkSchedule.TEAM, NotUseAtr.USE)),
+					Optional.of(new WorkscheQualifi(new PersonSymbolQualify("PersonSymbolQualify"),
+							Arrays.asList(new QualificationCD("QualificationCD"))))));
+	List<PersonalCondition> listPersonalCond = Arrays.asList(
+			new PersonalCondition("fc4304be-8121-4bad-913f-3e48f4e2a752", Optional.of("A"), Optional.of("A"), Optional.of(LicenseClassification.NURSE)),
+			new PersonalCondition("338c26ac-9b80-4bab-aa11-485f3c624186", Optional.of("B"), Optional.of("S"), Optional.of(LicenseClassification.NURSE_ASSIST)),
+			new PersonalCondition("89ea1474-d7d8-4694-9e9b-416ea1d6381c", Optional.of("C"), Optional.of("D"), Optional.of(LicenseClassification.NURSE_ASSOCIATE)),
+			new PersonalCondition("ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570", Optional.of("D"), Optional.of("F"), Optional.of(LicenseClassification.NURSE)),
+			new PersonalCondition("8f9edce4-e135-4a1e-8dca-ad96abe405d6", Optional.of("A"), Optional.of("G"), Optional.of(LicenseClassification.NURSE_ASSIST)),
+			new PersonalCondition("9787c06b-3c71-4508-8e06-c70ad41f042a", Optional.of("B"), Optional.of("Y"), Optional.of(LicenseClassification.NURSE_ASSOCIATE)),
+			new PersonalCondition("62785783-4213-4a05-942b-c32a5ffc1d63", Optional.of("C"), Optional.of("U"), Optional.of(LicenseClassification.NURSE)),
+			new PersonalCondition("4859993b-8065-4789-90d6-735e3b65626b", Optional.of("D"), Optional.of("I"), Optional.of(LicenseClassification.NURSE_ASSIST)),
+			new PersonalCondition("aeaa869d-fe62-4eb2-ac03-2dde53322cb5", Optional.of("A"), Optional.of("J"), Optional.of(LicenseClassification.NURSE_ASSOCIATE)),
+			new PersonalCondition("70c48cfa-7e8d-4577-b4f6-7b715c091f24", Optional.of("B"), Optional.of("H"), Optional.of(LicenseClassification.NURSE)),
+			new PersonalCondition("c141daf2-70a4-4f4b-a488-847f4686e848", Optional.of("C"), Optional.of("G"), Optional.of(LicenseClassification.NURSE_ASSIST)));
+	// step 4
+	return new DataSpecDateAndHolidayDto(listDateInfo, listPersonalCond, displayControlPerCond);
+	
+}
+	
 
 	@AllArgsConstructor
 	private static class RequireImpl implements DateInformation.Require {

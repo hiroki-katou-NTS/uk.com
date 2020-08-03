@@ -24,7 +24,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         dataSource: KnockoutObservableArray<BasicSchedule> = ko.observableArray([]);
         visibleShiftPalette: KnockoutObservable<boolean> = ko.observable(true);
 
-        mode: KnockoutObservable<string> = ko.observable(''); // edit || confirm 
+        mode: KnockoutObservable<string> = ko.observable('edit'); // edit || confirm 
         showA9: boolean;
 
         // A4 popup-area6 
@@ -142,20 +142,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     return;
                 console.log('mode:  ' + viewMode);
                 nts.uk.ui.errors.clearAll();
-
+                self.removeClass();
                 self.stopRequest(false);
                 // close screen O1 when change mode
-
-                if (viewMode == 'shift') { // mode シフト表示         
-                    self.startShiftMode().done(() => {
+                if (viewMode == 'shift') { // mode シフト表示  
+                    self.shiftModeStart().done(() => {
                         self.stopRequest(true);
                     });
                 } else if (viewMode == 'shortName') { // mode 略名表示
-                    self.startShortNameMode().done(() => {
+                    self.shortNameModeStart().done(() => {
                         self.stopRequest(true);
                     });
                 } else if (viewMode == 'time') {  // mode 勤務表示 
-                    self.startTimeMode().done(() => {
+                    self.timeModeStart().done(() => {
                         self.stopRequest(true);
                     });
                 }
@@ -181,6 +180,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $(".close-popup").click(function() {
                 $('#popup-area8').css('display', 'none');
             });
+            
         }
         // end constructor
 
@@ -210,6 +210,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 // 
                 self.creatDataLocalStorege(data);
+                $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -238,39 +239,75 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
         }
 
-        startShiftMode(): JQueryPromise<any> {
+        shiftModeStart(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred(),
                 param = {
+                     viewMode : 'shift'
                 };
             self.saveModeGridToLocalStorege('shift');
             self.visibleShiftPalette(true);
             self.visibleBtnInput(false);
-
-            dfd.resolve();
+            service.getDataOfShiftMode(param).done((data: IDataStartScreen) => {
+                // set hiển thị ban đầu theo data đã lưu trong localStorege
+                self.getSettingDisplayWhenStart();
+                // set data Header
+                self.bindingToHeader(data);
+                // set data Grid
+                let dataBindGrid = self.convertDataToGrid(data, 'shift');
+                
+                self.updateExTable(dataBindGrid, 'shift', true, true, true);
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
             return dfd.promise();
         }
 
-        startShortNameMode(): JQueryPromise<any> {
+        shortNameModeStart(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred(),
                 param = {
+                    viewMode : 'shortName'
                 };
             self.saveModeGridToLocalStorege('shortName');
             self.visibleShiftPalette(false);
             self.visibleBtnInput(false);
+            service.getDataOfShortNameMode(param).done((data: IDataStartScreen) => {
+                // set hiển thị ban đầu theo data đã lưu trong localStorege
+                self.getSettingDisplayWhenStart();
+                // set data Header
+                self.bindingToHeader(data);
+                // set data Grid
+                let dataBindGrid = self.convertDataToGrid(data, 'shortName');
 
-            dfd.resolve();
+                self.updateExTable(dataBindGrid , 'shortName', true, true, true);
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
             return dfd.promise();
         }
 
-        startTimeMode(): JQueryPromise<any> {
+        timeModeStart(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred(),
                 param = {
+                     viewMode : 'time'
                 };
             self.saveModeGridToLocalStorege('time');
             self.visibleShiftPalette(false);
             self.visibleBtnInput(true);
+            service.getDataOfTimeMode(param).done((data: IDataStartScreen) => {
+                // set hiển thị ban đầu theo data đã lưu trong localStorege
+                self.getSettingDisplayWhenStart();
+                // set data Header
+                self.bindingToHeader(data);
+                // set data Grid
+                let dataBindGrid = self.convertDataToGrid(data, 'time');
 
-            dfd.resolve();
+                self.updateExTable(dataBindGrid, 'time', true, true, true);
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
             return dfd.promise();
         }
 
@@ -304,9 +341,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let detailContentDs = [];
             let detailContentDeco = [];
             let htmlToolTip = [];
-            let objDetailContentDs = {};
-
-            _.each(data.listEmpInfo, (emp: IEmpInfo, i) => {
+            for (let i = 0; i < data.listEmpInfo.length; i++) {
+                let emp: IEmpInfo = data.listEmpInfo[i];
+                let objDetailContentDs = new Object();
+                console.log('key  ' + i);
                 // set data to detailLeftmost
                 let businessName = emp.businessName == null || emp.businessName == undefined ? '' : emp.businessName.trim();
                 leftmostDs.push({ sid: emp.employeeId, codeNameOfEmp: emp.employeeCode + ' ' + businessName });
@@ -315,9 +353,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let listWorkScheduleShiftByEmp: Array<IWorkScheduleShiftforDto> = _.filter(data.listWorkScheduleShift, function(workSchedul: IWorkScheduleShiftforDto) { return workSchedul.employeeId === emp.employeeId });
 
                 // set data to detailContent : datasource va deco
-                objDetailContentDs['sid'] = i;
+                
                 if (viewMode == 'shift') {
-
+                    objDetailContentDs['sid'] = i;
                     _.each(listWorkScheduleShiftByEmp, (cell: IWorkScheduleShiftforDto) => {
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
@@ -326,10 +364,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         if (cell.needToWork == false)
                             shiftName = '';
                         objDetailContentDs['_' + ymd] = new ExCell('', '', '', '', '', '', shiftName);
-                        detailContentDs.push(objDetailContentDs);
 
                         // điều kiện ※Aa1
-                        if (cell.isActive) {
+                        if (!cell.isActive) {
                             detailContentDeco.push(new CellColor('_' + ymd, i, "xseal", 0));
                         }
 
@@ -364,15 +401,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             }
                         }
                     });
+                    detailContentDs.push(objDetailContentDs);
+                    
                 } else if (viewMode == 'shortName') {
-
+                    objDetailContentDs['sid'] = i;
                     _.each(listWorkScheduleInforByEmp, (dateOfWorkSchedule: IWorkScheduleWorkInforDto) => {
                         let time = new Time(new Date(dateOfWorkSchedule.date));
                         let ymd = time.yearMonthDay;
                         let workTypeName = (dateOfWorkSchedule.workTypeCode != null && dateOfWorkSchedule.workTypeName == null) ? dateOfWorkSchedule.workTypeCode + getText("KSU001_22") : dateOfWorkSchedule.workTypeName;
                         let workTimeName = (dateOfWorkSchedule.workTimeCode != null && dateOfWorkSchedule.workTimeName == null) ? dateOfWorkSchedule.workTimeCode + getText("KSU001_22") : dateOfWorkSchedule.workTimeName;
                         objDetailContentDs['_' + ymd] = new ExCell(dateOfWorkSchedule.workTypeCode, workTypeName, dateOfWorkSchedule.workTimeCode, workTimeName);
-                        detailContentDs.push(objDetailContentDs);
 
                         // set Deco background
                         if (dateOfWorkSchedule.achievements == true || dateOfWorkSchedule.needToWork == false) {
@@ -411,10 +449,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 //detailContentDeco.push(new CellColor('_' + ymd, i, "color-holiday", 1));
                             }
                         }
-
                     });
+                    detailContentDs.push(objDetailContentDs);
 
                 } else if (viewMode == 'time') {
+                    
+                    objDetailContentDs['sid'] = i;
                     _.each(listWorkScheduleInforByEmp, (dateOfWorkSchedule: IWorkScheduleWorkInforDto) => {
                         // set dataSource
                         let time = new Time(new Date(dateOfWorkSchedule.date));
@@ -426,7 +466,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let workTypeCode = dateOfWorkSchedule.workTypeCode;
                         let workTimeCode = dateOfWorkSchedule.workTimeCode;
                         objDetailContentDs['_' + ymd] = new ExCell(workTypeCode, workTypeName, workTimeCode, workTimeName, startTime, endTime);
-                        detailContentDs.push(objDetailContentDs);
 
                         // set Deco background
                         if (dateOfWorkSchedule.achievements == true || dateOfWorkSchedule.needToWork == false) {
@@ -478,8 +517,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             }
                         }
                     });
+                    detailContentDs.push(objDetailContentDs);
                 }
-            });
+            }
 
             if (data.displayControlPersonalCond == null) {
                 // ẩn A9    
@@ -487,7 +527,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.showA9 = false;
 
             } else {
-                $("#extable").exTable("showMiddle");
+//                $("#extable").exTable("showMiddle");
                 self.showA9 = true;
                 _.each(data.listPersonalConditions, (personalCond: IPersonalConditions) => {
                     middleDs.push({ sid: personalCond.sid, team: personalCond.teamName, rank: personalCond.rankName, qualification: personalCond.licenseClassification });
@@ -628,6 +668,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 bodyHeightMode = "dynamic",
                 windowXOccupation = 65,
                 windowYOccupation = 328;
+            let updateMode = viewMode === 'time' ? 'edit' :  'stick'
 
             // phần leftMost
 
@@ -695,13 +736,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let detailColumns = dataBindGrid.detailColumns;
             let objDetailHeaderDs = dataBindGrid.objDetailHeaderDs;
             let htmlToolTip = dataBindGrid.htmlToolTip;
-
             let timeRanges = [];
 
             //create dataSource for detailHeader
             detailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
             detailHeaderDs.push(objDetailHeaderDs);
-
 
             let detailHeader = {
                 columns: detailColumns,
@@ -781,7 +820,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 windowYOccupation: windowYOccupation,
                 manipulatorId: "6",
                 manipulatorKey: "sid",
-                updateMode: "edit",
+                updateMode: updateMode,
                 pasteOverWrite: true,
                 stickOverWrite: true,
                 viewMode: viewMode,
@@ -803,32 +842,146 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 .DetailHeader(detailHeader).DetailContent(detailContent)
                 .create();
 
-            $("#extable").exTable("scrollBack", 0, { h: 1050 });
+            $("#extable").exTable("scrollBack", 0, { h: 0 });
+            $("#extable").exTable("saveScroll");
 
             // set height grid theo localStorage đã lưu
-            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                let userInfor = JSON.parse(data);
-                if (userInfor.gridHeightSelection == 2) {
-                    $("#extable").exTable("setHeight", userInfor.heightGridSetting);
-                    let heightBodySetting: number = + userInfor.heightGridSetting;
-                    let heightBody = heightBodySetting + 60 - 25; // 60 chieu cao header, 25 chieu cao button
-                    $(".toDown").css({ "margin-top": heightBody + 'px' });
-                } else {
-                    self.setPositionButonDownAndHeightGrid();
-                }
-            });
+            self.setPositionButonDownAndHeightGrid();
 
             console.log(performance.now() - start);
         }
 
-        updateExTable(dataBindGrid: any, viewMode: string): void {
+        updateExTable(dataBindGrid: any, viewMode : string , updateLeftMost : boolean, updateMiddle : boolean, updateDetail : boolean): void {
             let self = this;
             // save scroll's position
             $("#extable").exTable("saveScroll");
             self.stopRequest(false);
+            
+            // update phan leftMost
+            let leftmostDs = dataBindGrid.leftmostDs;
+            let leftmostColumns = [{
+                key: "codeNameOfEmp", headerText: getText("KSU001_56"), width: "160px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
+                css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { console.log(rowIdx); },
+                headerControl: "link", headerHandler: function() { alert("Link!"); }
+            }];
 
-            let newLeftMostDs = [], newMiddleDs = [], newDetailContentDs = [],
-                newDetailHeaderDs = [], newObjDetailHeaderDs = [], newVertSumContentDs = [], newLeftHorzContentDs = [];
+            let leftmostContentUpdate = {
+                columns: leftmostColumns,
+                dataSource: leftmostDs,
+                primaryKey: "sid"
+            };
+            
+            // update Phần Middle
+            let middleDs = dataBindGrid.middleDs;
+            let middleColumns = [];
+            let middleContentDeco = [];
+            let middleHeader = {};
+            let middleContentUpdate = {};
+
+            middleColumns = [
+                { headerText: getText("KSU001_4023"), key: "team", width: "40px", css: { whiteSpace: "none" } },
+                { headerText: getText("KSU001_4024"), key: "rank", width: "40px", css: { whiteSpace: "none" } },
+                { headerText: getText("KSU001_4025"), key: "qualification", width: "40px", css: { whiteSpace: "none" } }
+            ];       
+
+            middleContentUpdate = {
+                columns: middleColumns,
+                dataSource: middleDs,
+                primaryKey: "sid",
+                features: [{
+                    name: "BodyCellStyle",
+                    decorator: middleContentDeco
+                }]
+            };
+             
+            // update Phần Detail
+            let detailHeaderDeco = dataBindGrid.detailHeaderDeco;
+            let detailHeaderDs = [];
+            let detailContentDeco = dataBindGrid.detailContentDeco;
+            let detailContentDs = dataBindGrid.detailContentDs;
+            let detailColumns = dataBindGrid.detailColumns;
+            let objDetailHeaderDs = dataBindGrid.objDetailHeaderDs;
+            let htmlToolTip = dataBindGrid.htmlToolTip;
+            let timeRanges = [];
+
+            //create dataSource for detailHeader
+            detailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
+            detailHeaderDs.push(objDetailHeaderDs);
+            let detailHeaderUpdate = {
+                columns: detailColumns,
+                dataSource: detailHeaderDs,
+                features: [{
+                    name: "HeaderRowHeight",
+                    rows: { 0: "40px", 1: "20px" }
+                }, {
+                        name: "HeaderCellStyle",
+                        decorator: detailHeaderDeco
+                    }, {
+                        name: "ColumnResizes"
+                    }, {
+                    }, {
+                        name: "Hover",
+                        selector: ".header-image-event",
+                        enter: function(ui) {
+                            if (ui.rowIdx === 1 && $(ui.target).is(".header-image-event")) {
+                                let objTooltip = _.filter(htmlToolTip, function(o) { return o.key == ui.columnKey; });
+                                if (objTooltip.length > 0) {
+                                    let heightToolTip = objTooltip[0].heightToolTip;
+                                    ui.tooltip("show", $("<div/>").css({ width: "315px", height: heightToolTip + "px" }).html(objTooltip[0].value));
+                                } else {
+                                    ui.tooltip("show", $("<div/>").css({ width: "60px", height: 60 + "px" }).html(''));
+                                }
+                            }
+                        },
+                        exit: function(ui) {
+                            ui.tooltip("hide");
+                        }
+                    }, {
+                        name: "Click",
+                        handler: function(ui) {
+                            console.log(`${ui.rowIdx}-${ui.columnKey}`);
+                        }
+                    }]
+            };
+            
+            let detailContentUpdate = {
+                columns: detailColumns,
+                dataSource: detailContentDs,
+                primaryKey: "sid",
+                //        highlight: false,
+                features: [{
+                    name: "BodyCellStyle",
+                    decorator: detailContentDeco
+                }, {
+                        name: "TimeRange",
+                        ranges: timeRanges
+                    }],
+                view: function(mode) {
+                    switch (mode) {
+                        case "shift":
+                            return ["shiftName"];
+                        case "shortName":
+                            return ["workTypeName", "workTimeName"];
+                        case "time":
+                            return ["workTypeName", "workTimeName", "startTime", "endTime"];
+                    }
+                },
+                fields: ["workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "shiftName", "startTime", "endTime"],
+            };
+            
+            $("#extable").exTable("viewMode", viewMode); 
+            $("#extable").exTable("updateMode", 'edit'); 
+            if (updateLeftMost) {
+                $("#extable").exTable("updateTable", "leftmost", {}, leftmostContentUpdate);
+            }
+            if (updateMiddle) {
+                $("#extable").exTable("updateTable", "middle", {} , middleContentUpdate);
+            }
+            if (updateDetail) {
+                $("#extable").exTable("updateTable", "detail", detailHeaderUpdate, detailContentUpdate);
+            }
+            $("#extable").exTable("scrollBack", 0, { h: 1050 });
+            
         }
 
         // save setting hight cua grid vao localStorage
@@ -898,9 +1051,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         setPositionButonDownAndHeightGrid() {
             let self = this;
-
-            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                let userInfor = JSON.parse(data);
+            if (uk.localStorage.getItem(self.KEY).isPresent()) {
+                let userInfor = JSON.parse(uk.localStorage.getItem(self.KEY).get());
                 if (userInfor.gridHeightSelection == 2) {
                     $("#extable").exTable("setHeight", userInfor.heightGridSetting);
                     let heightBodySetting: number = + userInfor.heightGridSetting;
@@ -911,7 +1063,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let margintop = heightExtable - 52;
                     $(".toDown").css({ "margin-top": margintop + 'px' });
                 }
-            });
+            } else {
+                let heightExtable = $("#extable").height();
+                let margintop = heightExtable - 52;
+                $(".toDown").css({ "margin-top": margintop + 'px' });
+            }
         }
 
         setWidth(): any {
@@ -1106,20 +1262,40 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         */
         nextMonth(): void {
             let self = this;
+            if (self.selectedModeDisplay() == 1 || self.selectedModeDisplay() == 2)
+                return;
+
+            let dtMoment = moment(self.dtAft());
+            dtMoment.add(1, 'days');
+            self.dtPrev(dtMoment.toDate());
+            dtMoment = dtMoment.add(1, 'months');
+            dtMoment.subtract(1, 'days');
+            self.dtAft(dtMoment.toDate());
             self.stopRequest(false);
-            if (self.selectedModeDisplay() != 2) {
-                let dtMoment = moment(self.dtAft());
-                dtMoment.add(1, 'days');
-                self.dtPrev(dtMoment.toDate());
-                dtMoment = dtMoment.add(1, 'months');
-                dtMoment.subtract(1, 'days');
-                self.dtAft(dtMoment.toDate());
-                self.dataSource([]);
-                self.updateWhenChangeDatePeriod();
-            } else {
-                // hoi lai da
-            }
-            self.stopRequest(true);
+            
+            let self = this,
+                dfd = $.Deferred(),
+                viewMode = self.selectedModeDisplayInBody();
+
+            let param = {
+                viewMode: viewMode
+            };
+            service.getDataNextMonth(param).done((data: IDataStartScreen) => {
+                // set hiển thị ban đầu theo data đã lưu trong localStorege
+                self.getSettingDisplayWhenStart();
+                // set data Header
+                self.bindingToHeader(data);
+                // set data Grid
+                let dataBindGrid = self.convertDataToGrid(data, viewMode);
+
+                self.updateExTable(dataBindGrid, viewMode, false, true, true);
+                dfd.resolve();
+                self.stopRequest(true);
+            }).fail(function() {
+                dfd.reject();
+                self.stopRequest(true);
+            });
+            return dfd.promise();
         }
 
         /**
@@ -1127,27 +1303,45 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         */
         backMonth(): void {
             let self = this;
-            self.stopRequest(false);
-            //Recalculate the time period
-            if (self.selectedModeDisplay() != 2) {
-                let dtMoment = moment(self.dtPrev());
-                dtMoment.subtract(1, 'days');
-                self.dtAft(dtMoment.toDate());
-                if (dtMoment.date() === dtMoment.daysInMonth()) {
-                    dtMoment = dtMoment.subtract(1, 'months');
-                    dtMoment.endOf('months');
-                } else {
-                    dtMoment = dtMoment.subtract(1, 'months');
-                }
-                dtMoment.add(1, 'days');
-                self.dtPrev(new Date(dtMoment.format('YYYY/MM/DD')));
-                self.dataSource([]);
-                self.updateWhenChangeDatePeriod();
+            if (self.selectedModeDisplay() == 1 || self.selectedModeDisplay() == 2)
+                return;
+            
+            let dtMoment = moment(self.dtPrev());
+            dtMoment.subtract(1, 'days');
+            self.dtAft(dtMoment.toDate());
+            if (dtMoment.date() === dtMoment.daysInMonth()) {
+                dtMoment = dtMoment.subtract(1, 'months');
+                dtMoment.endOf('months');
             } else {
-                // hoi lai da
+                dtMoment = dtMoment.subtract(1, 'months');
             }
+            dtMoment.add(1, 'days');
+            self.dtPrev(new Date(dtMoment.format('YYYY/MM/DD'))); 
+                    
+            self.stopRequest(false);
+            let self = this,
+                dfd = $.Deferred(),
+                viewMode = self.selectedModeDisplayInBody();
 
-            self.stopRequest(true);
+            let param = {
+                viewMode: viewMode
+            };
+            service.getDataPreMonth(param).done((data: IDataStartScreen) => {
+                // set hiển thị ban đầu theo data đã lưu trong localStorege
+                self.getSettingDisplayWhenStart();
+                // set data Header
+                self.bindingToHeader(data);
+                // set data Grid
+                let dataBindGrid = self.convertDataToGrid(data, viewMode);
+
+                self.updateExTable(dataBindGrid, viewMode, false, true, true);
+                dfd.resolve();
+                self.stopRequest(true);
+            }).fail(function() {
+                dfd.reject();
+                self.stopRequest(true);
+            });
+            return dfd.promise();
         }
 
         /**
@@ -1284,32 +1478,77 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         removeClass() {
             let self = this;
             $("#paste").removeClass("btnControlUnSelected").removeClass("btnControlSelected");
-            $("#copy").removeClass("btnControlUnSelected").removeClass("btnControlSelected");
+            $("#coppy").removeClass("btnControlUnSelected").removeClass("btnControlSelected");
             $("#input").removeClass("btnControlUnSelected").removeClass("btnControlSelected");
         }
 
         /**
          * paste data on cell
+         * stick
          */
         pasteData(): void {
             let self = this;
-            // set color button
+            if (self.mode() == 'confirm')
+                return;
             nts.uk.ui.block.grayout();
             $("#paste").addClass("btnControlSelected").removeClass("btnControlUnSelected");
-            $("#copy").addClass("btnControlUnSelected").removeClass("btnControlSelected");
+            $("#coppy").addClass("btnControlUnSelected").removeClass("btnControlSelected");
             $("#input").addClass("btnControlUnSelected").removeClass("btnControlSelected");
+            $("#extable").exTable("updateMode", "stick");
+            if (self.selectedModeDisplayInBody() == 'time') {
+                $("#extable").exTable("stickData", [new ExCell("111", "出勤1", "112", "通常８ｈ0", "9:00", "20:00")]);
+            } else if (self.selectedModeDisplayInBody() == 'shortName') {
+                $("#extable").exTable("stickData", [new ExCell("888", "出勤8", "999", "通常８ｈ9")]);
+            } else if (self.selectedModeDisplayInBody() == 'shift') {
+                $("#extable").exTable("stickData", [
+                new ExCell('', '', '', '', '', '', '1'),
+                new ExCell('', '', '', '', '', '', '2'),
+                new ExCell('', '', '', '', '', '', '3'),
+                new ExCell('', '', '', '', '', '', '4'),
+                new ExCell('', '', '', '', '', '', '5'),
+                new ExCell('', '', '', '', '', '', '6'),
+                new ExCell('', '', '', '', '', '', '7'),
+                new ExCell('', '', '', '', '', '', '8'),
+                new ExCell('', '', '', '', '', '', '9'),
+                new ExCell('', '', '', '', '', '', '10'),
+                new ExCell('', '', '', '', '', '', '11'),
+                new ExCell('', '', '', '', '', '', '12'),
+                new ExCell('', '', '', '', '', '', '13'),
+                new ExCell('', '', '', '', '', '', '14'),
+                new ExCell('', '', '', '', '', '', '15'),
+                new ExCell('', '', '', '', '', '', '16'),
+                new ExCell('', '', '', '', '', '', '17'),
+                new ExCell('', '', '', '', '', '', '18'),
+                new ExCell('', '', '', '', '', '', '19'),
+                new ExCell('', '', '', '', '', '', '20'),
+                new ExCell('', '', '', '', '', '', '21'),
+                new ExCell('', '', '', '', '', '', '22'),
+                new ExCell('', '', '', '', '', '', '23'),
+                new ExCell('', '', '', '', '', '', '24'),
+                new ExCell('', '', '', '', '', '', '25'),
+                new ExCell('', '', '', '', '', '', '26'),
+                new ExCell('', '', '', '', '', '', '27'),
+                new ExCell('', '', '', '', '', '', '28'),
+                new ExCell('', '', '', '', '', '', '29'),
+                new ExCell('', '', '', '', '', '', '30'),
+                new ExCell('', '', '', '', '', '', '31')]);
+            }
+            
             nts.uk.ui.block.clear();
         }
 
         /**
          * copy data on cell
          */
-        copyData(): void {
-            // set color button
+        coppyData(): void {
+            let self = this;
+            if (self.mode() == 'confirm')
+                return;
             nts.uk.ui.block.grayout();
             $("#paste").addClass("btnControlUnSelected").removeClass("btnControlSelected");
-            $("#copy").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+            $("#coppy").addClass("btnControlSelected").removeClass("btnControlUnSelected");
             $("#input").addClass("btnControlUnSelected").removeClass("btnControlSelected");
+            $("#extable").exTable("updateMode", "copyPaste");
             nts.uk.ui.block.clear();
         }
 
@@ -1317,14 +1556,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          * copy data on cell
          */
         inputData(): void {
-            // set color button
+            let self = this;
+            if (self.mode() == 'confirm')
+                return;
             nts.uk.ui.block.grayout();
             $("#paste").addClass("btnControlUnSelected").removeClass("btnControlSelected");
-            $("#copy").addClass("btnControlUnSelected").removeClass("btnControlSelected");
+            $("#coppy").addClass("btnControlUnSelected").removeClass("btnControlSelected");
             $("#input").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+
+            $("#extable").exTable("updateMode", "edit");
             nts.uk.ui.block.clear();
         }
-
+        
         /**
          * undo data on cell
          */
@@ -1619,8 +1862,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             this.workTimeCode = workTimeCode;
             this.workTimeName = workTimeName;
             this.shiftName = shiftName !== null ? shiftName : '';
-            this.startTime = startTime !== undefined ? startTime : "8:30";
-            this.endTime = endTime !== undefined ? endTime : "17:30";
+            this.startTime = ( startTime == undefined || startTime == null ) ? '' : startTime;
+            this.endTime = ( endTime == undefined || endTime == null ) ? '' : endTime;
         }
     }
 

@@ -1,8 +1,10 @@
 <div id="contents-area cf" style="margin-top: 10px;">
-	<div id="set-work-type">
-		<div id="label" class="Abc1" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_64')}</div>
-		<div tabindex="30" id="combo-box1" class="Abc2"
-			data-bind="ntsComboBox: {
+	<table>
+		<tr>
+			<td><div id="label" class="Abc1" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_64')}</div></td>
+			<td>
+				<div tabindex="30" id="combo-box1" class="Abc2"
+					data-bind="ntsComboBox: {
 								options: listWorkType ,
 								optionsValue: 'workTypeCode',
 								visibleItemsCount: 10,
@@ -15,6 +17,12 @@
 									{ prop: 'workTypeCode', length: 3 },
 									{ prop: 'name', length: 6 },
 									{ prop: 'memo', length: 20 }]}">
-		</div>
-	</div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td><div id="label" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_65')}</div></td>
+			<td style="padding-top: 8px;"><test-component params="input: input"></test-component></td>
+		</tr>
+	</table>
 </div>

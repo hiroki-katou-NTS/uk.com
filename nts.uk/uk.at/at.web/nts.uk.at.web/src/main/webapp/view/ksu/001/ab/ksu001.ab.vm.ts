@@ -9,6 +9,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                 
         listWorkType: KnockoutObservableArray<ksu001.a.viewmodel.IWorkTypeDto> = ko.observableArray([]);
         selectedWorkTypeCode: KnockoutObservable<string>;
+        input : any;
         
         constructor() {
             let self = this;
@@ -17,6 +18,16 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             self.selectedWorkTypeCode.subscribe((newValue) => {
                 console.log(newValue);
             });
+
+            self.input = {
+                fillter: false,
+                workPlaceId: 'abc',
+                initiallySelected: ['002'],
+                displayFormat: '',
+                showNone: false,
+                showDeferred: false,
+                selectMultiple: true
+            }
         }
 
         /**

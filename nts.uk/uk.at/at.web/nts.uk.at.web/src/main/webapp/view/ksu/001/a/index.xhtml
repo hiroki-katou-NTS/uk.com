@@ -52,6 +52,9 @@
 
 			<com:scriptfile path="../common/modelgrid.js" />
 
+			<com:stylefile  path="../../../kcp/013/component/kcp013.a.style.css" />
+			<com:scriptfile path="../../../kcp/013/component/kcp013.cpn.vm.js" />
+
 		</ui:define>
 		<ui:define name="content">
 			<div data-bind="with: viewA">
@@ -366,7 +369,7 @@
 							<div id="contain-view-right" class="inline">
 								<div id="group-bt">
 									<button id="paste" class="A7_1" data-bind="click: pasteData, enable: enableBtnPaste" >貼り付け</button>
-									<button id="copy"  class="A7_2" data-bind="click: copyData, enable: enableBtnCoppy" >コピペ</button>
+									<button id="coppy"  class="A7_2" data-bind="click: coppyData , enable: enableBtnCoppy" >コピペ</button>
 									<button id="input" class="A7_3" data-bind="click: inputData, enable: enableBtnInput, visible : visibleBtnInput">時刻修正</button>
 									<br />
 									<button id="undo" class="size-image-button2 A7_4" data-bind="click: undoData, enable: enableBtnUndo , visible : visibleBtnUndo , timeClick: -1"></button>
