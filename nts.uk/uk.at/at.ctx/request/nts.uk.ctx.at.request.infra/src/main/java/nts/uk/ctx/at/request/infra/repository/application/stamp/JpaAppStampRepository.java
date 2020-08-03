@@ -1,10 +1,8 @@
 package nts.uk.ctx.at.request.infra.repository.application.stamp;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -108,7 +106,6 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 
 		List<TimeStampApp> listTimeStampApp = new ArrayList<TimeStampApp>();
 		List<DestinationTimeApp> listDestinationTimeApp = new ArrayList<DestinationTimeApp>();
-		listDestinationTimeApp.add(new DestinationTimeApp(TimeStampAppEnum.ATTEENDENCE_OR_RETIREMENT, 1, StartEndClassification.START, null));
 		List<TimeStampAppOther> listTimeStampAppOther = new ArrayList<TimeStampAppOther>();
 		List<DestinationTimeZoneApp> listDestinationTimeZoneApp = new ArrayList<DestinationTimeZoneApp>();
 

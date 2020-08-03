@@ -40,7 +40,7 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 //				application.getOpAppReason(),
 //				application.getOpAppStandardReasonCD());
 		Application application = command.getApplicationDto().toDomain();
-		if (Strings.isBlank(command.getAppWorkChangeDto().getAppID())) {
+		if (Strings.isBlank(command.getApplicationDto().getAppID())) {
 			application = Application.createFromNew(
 					application.getPrePostAtr(),
 					application.getEmployeeID(),

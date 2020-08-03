@@ -198,8 +198,10 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		String employeeID = AppContexts.user().employeeId();
 		this.inconsistencyCheck(companyId, employeeID, GeneralDate.today());
 		List<ConfirmMsgOutput> listResult = processBeforeRegister.processBeforeRegister_New(companyId,
-				EmploymentRootAtr.APPLICATION, agenAtr, application, null, inforGoBackCommonDirectOutput
-						.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().get(),
+				EmploymentRootAtr.APPLICATION, agenAtr, application, null, 
+				inforGoBackCommonDirectOutput
+				.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().isPresent() ? inforGoBackCommonDirectOutput
+						.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().get() : null,
 				Collections.emptyList());
 		return listResult;
 	}
@@ -301,7 +303,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 
 		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
 		//アルゴリズム「2-1.新規画面登録前の処理」を実行する
-		processBeforeRegister.processBeforeRegister(application, OverTimeAtr.ALL, checkOver1Year, Collections.emptyList());
+		// processBeforeRegister.processBeforeRegister(application, OverTimeAtr.ALL, checkOver1Year, Collections.emptyList());
 		// アルゴリズム「直行直帰するチェック」を実行する - client da duoc check
 		
 		// アルゴリズム「直行直帰遅刻早退のチェック」を実行する
@@ -555,7 +557,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	}
 	@Override
 	public GoBackDirectAtr goBackDirectCheckNew(GoBackDirectly goBackDirectly) {
-		if (goBackDirectly.getStraightDistinction().getValue() == GoBackDirectAtr.IS.value && goBackDirectly.getStraightLine().getValue() == GoBackDirectAtr.IS.value) {
+		if (goBackDirectly.getStraightDistinction().value == GoBackDirectAtr.IS.value && goBackDirectly.getStraightLine().value == GoBackDirectAtr.IS.value) {
 			return GoBackDirectAtr.IS;
 		}
 		return GoBackDirectAtr.NOT;

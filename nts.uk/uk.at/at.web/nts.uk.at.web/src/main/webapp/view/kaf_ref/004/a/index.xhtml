@@ -6,8 +6,12 @@
 <body>
     <ui:composition template="../../../../master/base.xhtml">
         <ui:define name="htmlHead">
+            <com:ValidatorScript>
+				nts.uk.ctx.at.request.dom.application.AppReason
+			</com:ValidatorScript>
             <com:scriptfile set="IGNITE" />
             <com:scriptfile path="/view/kaf_ref/000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/kaf000.a.vm.js" />
             <com:scriptfile path="/view/kaf_ref/000/a/component1/kaf000.a.component1.js" />
             <com:scriptfile path="/view/kaf_ref/000/a/component2/kaf000.a.component2.js" />
             <com:scriptfile path="/view/kaf_ref/000/a/component3/kaf000.a.component3.js" />
@@ -31,17 +35,17 @@
                         <div class="fixed-flex-layout" data-bind="component: { name: 'kaf000-a-component2',
 											params: {
 												application: $vm.application,
-												appDispInfoStartupOutput: appDispInfoStartupOutput
+												appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
                                             } }"></div>
                         <div class="fixed-flex-layout" data-bind="component: { name: 'kaf000-a-component3',
 											params: {
 												application: $vm.application,
-												appDispInfoStartupOutput: appDispInfoStartupOutput
+												appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
 											} }"></div>
                         <div class="fixed-flex-layout" data-bind="component: { name: 'kaf000-a-component4',
 											params: {
 												application: $vm.application,
-												appDispInfoStartupOutput: appDispInfoStartupOutput
+												appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
 											} }"></div>
 
                         <div class="fixed-flex-layout" data-bind="component: {name: 'kaf004_share'}"></div>
@@ -50,12 +54,12 @@
                         <div class="fixed-flex-layout" data-bind="component: { name: 'kaf000-a-component5',
 											params: {
 												application: application,
-												appDispInfoStartupOutput: appDispInfoStartupOutput
+												appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
 											} }"></div>
                         <div class="fixed-flex-layout" data-bind="component: { name: 'kaf000-a-component6',
 											params: {
 												application: application,
-												appDispInfoStartupOutput: appDispInfoStartupOutput
+												appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
 											} }"></div>
                     </div>
 

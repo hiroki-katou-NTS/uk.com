@@ -7,6 +7,9 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.request.dom.application.AppReason
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="/view/kaf_ref/000/a/component1/kaf000.a.component1.css" />
 			<com:stylefile path="/view/kaf_ref/000/a/component2/kaf000.a.component2.css" />
@@ -32,7 +35,7 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">Register</button>
+				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty, text:this.$i18n('KAF009_3')"></button>
 				
 				<div data-bind="component: { name: 'kaf000-a-component7', 
 											params: {

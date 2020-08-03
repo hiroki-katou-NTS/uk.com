@@ -46,6 +46,6 @@ public class StampRecordOutput {
 	/**
 	 * 臨時時間帯
 	 */
-	private TimePlaceOutput extraordinaryTime;
+	private List<TimePlaceOutput> extraordinaryTime;
 	
 }

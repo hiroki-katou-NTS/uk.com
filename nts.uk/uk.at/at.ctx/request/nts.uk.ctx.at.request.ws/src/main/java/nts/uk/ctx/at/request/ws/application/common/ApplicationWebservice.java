@@ -280,7 +280,7 @@ public class ApplicationWebservice extends WebService {
 									}).collect(Collectors.toList());
 		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(
 				companyID, 
-				ApplicationType.WORK_CHANGE_APPLICATION, 
+				EnumAdaptor.valueOf(param.appType, ApplicationType.class), 
 				param.empLst, 
 				dateLst, 
 				true,

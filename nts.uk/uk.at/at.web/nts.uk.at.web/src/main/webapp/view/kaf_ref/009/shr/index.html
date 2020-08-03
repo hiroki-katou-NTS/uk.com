@@ -20,30 +20,30 @@
 		</div>
 	</div>
 	<!--Work Change-->
-	<div data-bind="if: $vm.dataFetch().goBackReflect()"
+	<div data-bind="if: dataFetch().goBackReflect()"
 		class="valign-center control-group">
 		<div
-			data-bind="if: $vm.dataFetch().goBackReflect().reflectApplication == 3 
-			|| $vm.dataFetch().goBackReflect().reflectApplication == 2">
+			data-bind="if: dataFetch().goBackReflect().reflectApplication == 3 
+			|| dataFetch().goBackReflect().reflectApplication == 2">
 			<div data-bind="if : model.checkbox3 != null">
 				<div data-bind="ntsCheckBox: { checked: model.checkbox3 , text: $i18n('KAF009_21'), enable: mode == 'edit'}">
 				</div>
 			</div>
 		</div>
 		<div
-			data-bind="if: $vm.dataFetch().goBackReflect().reflectApplication == 1
-			|| $vm.dataFetch().goBackReflect().reflectApplication == 0">
+			data-bind="if: dataFetch().goBackReflect().reflectApplication == 1
+			|| dataFetch().goBackReflect().reflectApplication == 0">
 			<br />
 		</div>
 		<div
-			data-bind="if: $vm.dataFetch().goBackReflect().reflectApplication != 0">
+			data-bind="if: dataFetch().goBackReflect().reflectApplication != 0">
 			<HR class="hrStyle" />
 		</div>
 
 		<div class="table clsWorkType"
-			data-bind="if: $vm.dataFetch().goBackReflect().reflectApplication == 3 
-			|| $vm.dataFetch().goBackReflect().reflectApplication == 2 
-			|| $vm.dataFetch().goBackReflect().reflectApplication == 1">
+			data-bind="if: dataFetch().goBackReflect().reflectApplication == 3 
+			|| dataFetch().goBackReflect().reflectApplication == 2 
+			|| dataFetch().goBackReflect().reflectApplication == 1">
 			<div class="cell valign-center ">
 				<div class="valign-center control-group"
 					data-bind="ntsFormLabel:{ required: true, text: $i18n('KAF009_22') }"></div>

@@ -4,10 +4,11 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumConstant;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 //直行直帰申請
 @AllArgsConstructor
@@ -24,10 +25,10 @@ public class GoBackDirectlyDto extends ApplicationDto {
 
 	public static GoBackDirectlyDto convertDto(GoBackDirectly goBackAplication) {
 		GoBackDirectlyDto result = new GoBackDirectlyDto();
-		result.straightDistinction = goBackAplication.getStraightDistinction().getValue();
-		result.straightLine = goBackAplication.getStraightLine().getValue();
+		result.straightDistinction = goBackAplication.getStraightDistinction().value;
+		result.straightLine = goBackAplication.getStraightLine().value;
 		if (goBackAplication.getIsChangedWork().isPresent()) {
-			result.isChangedWork = goBackAplication.getIsChangedWork().get().getValue();
+			result.isChangedWork = goBackAplication.getIsChangedWork().get().value;
 		}
 		if (goBackAplication.getDataWork().isPresent()) {
 			result.dataWork = WorkInformationDto.fromDomain(goBackAplication.getDataWork().get());
@@ -36,14 +37,14 @@ public class GoBackDirectlyDto extends ApplicationDto {
 	}
 
 	public GoBackDirectly toDomain() {
-		Optional<EnumConstant> isChange = Optional.ofNullable(null);
+		Optional<NotUseAtr> isChange = Optional.ofNullable(null);
 		
 		if (isChangedWork != null) {
-			isChange = Optional.ofNullable(new EnumConstant(isChangedWork, "", ""));
+			isChange = Optional.ofNullable(EnumAdaptor.valueOf(isChangedWork, NotUseAtr.class));
 		}
 		GoBackDirectly result = new GoBackDirectly();
-		result.setStraightDistinction(new EnumConstant(straightDistinction, "", ""));
-		result.setStraightLine(new EnumConstant(straightLine, "", ""));
+		result.setStraightDistinction(EnumAdaptor.valueOf(straightDistinction, NotUseAtr.class));
+		result.setStraightLine(EnumAdaptor.valueOf(straightLine, NotUseAtr.class));
 		result.setIsChangedWork(isChange);
 		Optional<WorkInformation> dataWorkSet = Optional.ofNullable(null);
 		if (dataWork != null) {

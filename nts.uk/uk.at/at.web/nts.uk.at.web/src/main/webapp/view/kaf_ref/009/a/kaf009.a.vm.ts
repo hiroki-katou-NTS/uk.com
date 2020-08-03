@@ -13,7 +13,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 version: 1,
                 // appID: '939a963d-2923-4387-a067-4ca9ee8808zz',
                 prePostAtr: 1,
-                employeeID: '292ae91c-508c-4c6e-8fe8-3e72277dec16',
+                employeeID: this.$user.employeeId,
                 appType: 2,
                 appDate: moment(new Date()).format('YYYY/MM/DD'),
                 enteredPerson: '1',
@@ -60,7 +60,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 //            vm.application().appDate(moment(new Date()).format("YYYY/MM/DD"));
             
             vm.$blockui("show");
-            vm.loadData([], [])
+            vm.loadData([], [], AppType.GO_RETURN_DIRECTLY_APPLICATION)
             .then((loadDataFlag: any) => {
                 if(loadDataFlag) {
                     let ApplicantEmployeeID: null,
@@ -83,9 +83,16 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             }).fail((failData: any) => {
                 vm.$dialog.error({
                     messageId: failData.msgId
-                });       
+                }); 
+                
             }).always(() => vm.$blockui("hide"));
             
+            vm.application().appDate.subscribe(value => {
+                console.log(value);
+                if (value) {
+                    vm.changeDate();
+                }
+            });
             
 
         }
@@ -129,6 +136,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                     console.log( resRegister );
                     this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
                         // bussiness logic after error show
+                        location.reload();
                     } );
                 })
 //            .fail(errRegister => {
@@ -139,10 +147,22 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 
         register() {
             const vm = this;
+            let application = ko.toJS(vm.application);
+            vm.applicationTest.appID = application.appID;
+            vm.applicationTest.appDate = application.appDate;
+            vm.applicationTest.appType = application.appType;
+            vm.applicationTest.prePostAtr = application.prePostAtr;
+//            vm.applicationTest.opAppStartDate = application.opAppStartDate;
+//            vm.applicationTest.opAppEndDate = application.opAppEndDate;
+            vm.applicationTest.opAppReason = application.opAppReason;
+            vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;    
+            vm.applicationTest.opReversionReason = application.opReversionReason;
+            
+            
             console.log( vm.applicationTest );
             console.log( ko.toJS( vm.model ) );
             vm.$blockui( "show" );
-            vm.$validate()
+            vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
                 .then( isValid => {
                     if ( isValid ) {
                         return true;
@@ -170,7 +190,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                             applicationDto: vm.applicationTest,
                             goBackDirectlyDto: goBackApp,
                             inforGoBackCommonDirectDto: ko.toJS( vm.dataFetch ),
-                            mode: vm.mode == 'edit'
+                            mode: true
                         };
                         vm.$ajax( API.checkRegister, param )
                             .done( res => {
@@ -181,9 +201,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                                 } else {
                                     let listTemp = _.clone( res );
                                     vm.handleConfirmMessage( listTemp, goBackApp );
-                                    //                                   this.$dialog.error({ messageId: res[0].msgID, messageParams: res[0].paramLst}).then(() => {
-                                    //                                       // bussiness logic after error show
-                                    //                                   });
+
                                 }
                             } )
                             .fail( err => {
@@ -193,15 +211,44 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                             } )
                             .always(() => vm.$blockui( "hide" ) );
                     }
-                } );
+                } ).always(() => vm.$blockui( "hide" ) );
 
-
+            
 
 
 
         }
         
         changeDate() {
+            console.log("change date");
+            let vm = this;
+            let param = {
+                    companyId: vm.$user.companyId,
+                    appDates: [vm.application().appDate()],
+                    employeeIds: vm.application().employeeIDLst(),
+                    inforGoBackCommonDirectDto: ko.toJS(vm.dataFetch())
+            }
+            vm.$ajax(API.changeDate, param)
+                .done(res => {
+                    if (res) {
+                        vm.dataFetch({
+                            workType: ko.observable(res.workType),
+                            workTime: ko.observable(res.workTime),
+                            appDispInfoStartup: ko.observable(res.appDispInfoStartup),
+                            goBackReflect: ko.observable(res.goBackReflect),
+                            lstWorkType: ko.observable(res.lstWorkType),
+                            goBackApplication: ko.observable(res.goBackApplication)
+                        });
+                    }
+                })
+                .fail(res => {
+                    
+                    console.log(res);
+                    vm.$dialog.error( {
+                        messageId: res.msgId
+                    } );
+                })
+                .always(() => true);
             
         }
 
@@ -252,7 +299,8 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
     const API = {
         startNew: "at/request/application/gobackdirectly/getGoBackCommonSettingNew",
         checkRegister: "at/request/application/gobackdirectly/checkBeforeRegisterNew",
-        register: "at/request/application/gobackdirectly/registerNewKAF009"
+        register: "at/request/application/gobackdirectly/registerNewKAF009",
+        changeDate: "at/request/application/gobackdirectly/getAppDataByDate"
     }
 
     export class ApplicationStatus {

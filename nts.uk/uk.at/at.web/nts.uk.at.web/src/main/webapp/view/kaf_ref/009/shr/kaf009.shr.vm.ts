@@ -18,13 +18,15 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
 
             vm.dataFetch.subscribe(value => {
                 console.log('Change dataFetch');
-                vm.bindData();
+                if (value) {
+                    vm.bindData();                    
+                }
             });
             
         }
         bindData() {
             const vm = this;
-            let goBackApp = this.dataFetch().goBackApplication();
+            let goBackApp = vm.dataFetch().goBackApplication();
             if ( goBackApp ) {
                 vm.model.checkbox1( goBackApp.straightDistinction == 1 );
                 vm.model.checkbox2( goBackApp.straightLine == 1 );
@@ -33,14 +35,22 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
                     
                 } else {
                     vm.model.checkbox3( null );
-                } 
-                vm.model.workTypeCode(goBackApp.dataWork.workType);
-                vm.model.workTypeName("Chua xu ly");
-                if (!_.isEmpty(ko.toJS(vm.dataFetch().workTime))) {
-                    vm.model.workTimeCode(goBackApp.dataWork.workTime);
-                    vm.model.workTimeName("Chua xu ly");
-                    
                 }
+                
+                if (!_.isEmpty(goBackApp.dataWork)) {
+                    let codeWorkType = goBackApp.dataWork.workType;
+                    let nameWorkType = _.find(ko.toJS(vm.dataFetch().lstWorkType), item => item.workTypeCode == codeWorkType).abbreviationName;
+                    vm.model.workTypeCode(codeWorkType);
+                    vm.model.workTypeName(nameWorkType);
+                    if (!_.isEmpty(ko.toJS(vm.dataFetch().workTime))) {
+                        let codeWorkTime = goBackApp.dataWork.workTime;
+                        vm.model.workTimeCode(codeWorkTime);
+                        let nameWorkTime = _.find(ko.toJS(vm.dataFetch().appDispInfoStartup).appDispInfoWithDateOutput.opWorkTimeLst, item => item.worktimeCode == codeWorkTime).workTimeDisplayName.workTimeName;
+                        vm.model.workTimeName(nameWorkTime);
+                        
+                    }
+                }
+                
                 
                 
                 
@@ -61,13 +71,17 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
                 vm.model.checkbox3( true );
                 //            this.model.checkbox3(this.dataFetch().goBackReflect().reflectApplication == 3);
                 if (!_.isEmpty(ko.toJS(vm.dataFetch().workType))) {
-                    vm.model.workTypeCode( vm.dataFetch().workType());
-                    vm.model.workTypeName( "Chua xu ly");
+                    let codeWorkType = vm.dataFetch().workType();
+                    vm.model.workTypeCode(codeWorkType);
+                    let nameWorkType = _.find(ko.toJS(vm.dataFetch().lstWorkType), item => item.workTypeCode == codeWorkType).abbreviationName;
+                    vm.model.workTypeName(nameWorkType);
     
                 }
                 if (!_.isEmpty(ko.toJS(vm.dataFetch().workTime))) {
-                    vm.model.workTimeCode( vm.dataFetch().workTime());
-                    vm.model.workTimeName( "Chua xu ly" );
+                    let codeWorkTime = vm.dataFetch().workTime(); 
+                    vm.model.workTimeCode(codeWorkTime);
+                    let nameWorkTime = _.find(ko.toJS(vm.dataFetch().appDispInfoStartup).appDispInfoWithDateOutput.opWorkTimeLst, item => item.worktimeCode == codeWorkTime).workTimeDisplayName.workTimeName;
+                    vm.model.workTimeName(nameWorkTime);
     
                 }
             }

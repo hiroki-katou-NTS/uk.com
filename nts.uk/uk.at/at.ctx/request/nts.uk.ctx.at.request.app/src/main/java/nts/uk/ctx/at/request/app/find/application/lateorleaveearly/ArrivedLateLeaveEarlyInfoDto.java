@@ -39,8 +39,8 @@ public class ArrivedLateLeaveEarlyInfoDto {
 		return new ArrivedLateLeaveEarlyInfoOutput(
 				this.earlyInfos.stream().map(x -> x.toDomain()).collect(Collectors.toList()),
 				this.appDispInfoStartupOutput.toDomain(),
-				this.lateEarlyCancelAppSet.toDomain(),
-				Optional.of(this.info),
-				Optional.of(this.arrivedLateLeaveEarly.convertDomain()));
+				this.lateEarlyCancelAppSet == null ? null : this.lateEarlyCancelAppSet.toDomain(),
+				this.info == null ? Optional.empty() : Optional.of(this.info),
+				this.arrivedLateLeaveEarly == null ? Optional.empty() : Optional.of(this.arrivedLateLeaveEarly.convertDomain()));
 	}
 }

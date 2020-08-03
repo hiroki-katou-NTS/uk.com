@@ -16,13 +16,13 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 		created(params: any) {
 			const vm = this;
             vm.$blockui("show");
-            vm.loadData([], [])
+            vm.loadData([], [], AppType.WORK_CHANGE_APPLICATION)
             .then((loadDataFlag: any) => {
                 if(loadDataFlag) {
                     let empLst = [],
                         dateLst = [],
                         appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
-                        command = { empLst, dateLst, appDispInfoStartupOutput };
+                        command = { empLst, dateLst, appType, appDispInfoStartupOutput };
                     return vm.$ajax(API.startNew, command);
                 }
             }).then((successData: any) => {
@@ -40,10 +40,18 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
                 application = ko.toJS(vm.application),
                 appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
                 command = { workChange, application, appDispInfoStartupOutput };
-
-        	vm.$blockui("show")
-        	.then(() => vm.$ajax(API.register, command))
-        	.done(() => vm.$dialog.info({ messageId: "Msg_15" }))
+			vm.$validate([
+				'.ntsControl',
+				'.nts-input'
+			]).then((valid: boolean) => {
+				if(valid) {
+					return vm.$blockui("show").then(() => vm.$ajax(API.register, command));
+				}
+			}).done((data: any) => {
+				if(data) {
+					vm.$dialog.info({ messageId: "Msg_15" });	
+				}
+			})
         	.always(() => vm.$blockui("hide"));
 		}
 	}

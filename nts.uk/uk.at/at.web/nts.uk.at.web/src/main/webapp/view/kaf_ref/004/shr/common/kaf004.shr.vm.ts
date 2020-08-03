@@ -152,4 +152,42 @@ module nts.uk.at.view.kaf004_ref.shr.common.viewmodel {
             }
         }
     }
+
+    export class ApplicationDto {
+        version: number;
+        appId: string;
+        prePostAtr: number;
+        employeeID: string;
+        appType: number;
+        appDate: string;
+        enteredPerson: string;
+        inputDate: string;
+        reflectionStatus;
+        opStampRequestMode: number;
+        opReversionReason: string;
+        opAppStartDate: string;
+        opAppEndDate: string;
+        opAppReason: string;
+        opAppStandardReasonCD: number;
+
+        constructor(version, appId, prePostAtr, employeeID, appType, appDate, enteredPerson,
+            inputDate, reflectionStatus, opStampRequestMode, opReversionReason, opAppStartDate,
+            opAppEndDate, opAppReason, opAppStandardReasonCD) {
+                this.version = version;
+                this.appId = appId;
+                this.prePostAtr = prePostAtr;
+                this.employeeID = employeeID;
+                this.appType = appType;
+                this.appDate = appDate;
+                this.enteredPerson = enteredPerson;
+                this.inputDate = inputDate;
+                this.reflectionStatus = reflectionStatus;
+                this.opStampRequestMode = opStampRequestMode;
+                this.opReversionReason = opReversionReason;
+                this.opAppStartDate = opAppStartDate;
+                this.opAppEndDate = opAppEndDate;
+                this.opAppReason = opAppReason;
+                this.opAppStandardReasonCD = opAppStandardReasonCD
+        }
+    }
 }

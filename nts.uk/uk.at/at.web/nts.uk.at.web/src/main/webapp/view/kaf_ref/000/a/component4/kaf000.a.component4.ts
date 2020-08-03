@@ -1,3 +1,5 @@
+/// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
+
 module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
     import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
     import CommonProcess = nts.uk.at.view.kaf000_ref.shr.viewmodel.CommonProcess;
@@ -9,30 +11,28 @@ module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
     class Kaf000AComponent4ViewModel extends ko.ViewModel {
         appDate: KnockoutObservable<string>;
         appDispInfoStartupOutput: any;
-        dispSingleDate: KnockoutObservable<boolean>;
-        checkBoxValue: KnockoutObservable<boolean>;
-        checkBoxText: KnockoutObservable<string>;
+        dispSingleDate: KnockoutObservable<boolean> = ko.observable(true);
+        checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
+
         created(params: any) {
             const vm = this;
             vm.appDate = params.application().appDate;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
-            vm.dispSingleDate = ko.observable(true);
-            vm.checkBoxValue = ko.observable(false);
-            vm.checkBoxText = ko.observable(vm.$i18n('KAF000_43'));
-            
+
             vm.appDispInfoStartupOutput.subscribe(value => {
-                let appType = value.appDispInfoNoDateOutput.applicationSetting.appTypeSetting.appType;
+                /*let appType = value.appDispInfoNoDateOutput.applicationSetting.appTypeSetting.appType;
                 let conditionA8 = (appType == AppType.ABSENCE_APPLICATION || appType == AppType.WORK_CHANGE_APPLICATION || appType == AppType.BUSINESS_TRIP_APPLICATION);
-                let conditionA9 = !conditionA8; 
+                let conditionA9 = !conditionA8;*/ 
             });
             
             vm.appDate.subscribe(value => {
                 vm.$blockui("show");
-                let element = '#kaf000-a-component4-singleDate';
+                let element = '#kaf000-a-component4-singleDate',
+					appDate = moment(value).format("YYYY/MM/DD");
                 vm.$validate(element)
                 .then((valid: boolean) => {
                     if(valid) {
-                        let dateLst = [value],
+                        let dateLst = [appDate],
                             appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
                             command = { dateLst, appDispInfoStartupOutput };
                         return vm.$ajax(API.changeAppDate, command);         
