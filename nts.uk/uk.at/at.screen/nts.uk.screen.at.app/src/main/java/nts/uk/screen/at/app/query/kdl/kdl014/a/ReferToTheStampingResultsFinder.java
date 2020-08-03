@@ -35,7 +35,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**UKDesign.UniversalK.就業.KDL_ダイアログ.KDL014_打刻参照ダイアログ.メニュー別OCD.打刻実績を参照する.打刻実績の取得処理*/
 @Stateless
-public class ReferToTheStampingResultsFinder {
+public class ReferToTheStampingResultsFinder implements GetListStampEmployeeService.Require {
 
 	@Inject
 	private StampCardRepository stampCardRepository;
@@ -81,13 +81,11 @@ public class ReferToTheStampingResultsFinder {
 	private List<String> step1(Kdl014EmpParamDto param, List<EmployeeStampInfo> listEmployeeStampInfo) {
 		List<String> employeeIds = param.getListEmp().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		
-		GetListStampEmployeeService.Require require = new RequireImpl(stampCardRepository, stampRecordRepository, stampDakokuRepository);
-		
 		DatePeriod period = new DatePeriod(param.getStart(), param.getEnd());
 		
 		employeeIds.stream().forEach(empId -> {
 			period.datesBetween().stream().forEach(date -> {
-				Optional<EmployeeStampInfo> optEmStampInfo = GetListStampEmployeeService.get(require, empId, date);
+				Optional<EmployeeStampInfo> optEmStampInfo = GetListStampEmployeeService.get(this, empId, date);
 		
 				if (optEmStampInfo.isPresent()) listEmployeeStampInfo.add(optEmStampInfo.get());
 			});
@@ -187,28 +185,18 @@ public class ReferToTheStampingResultsFinder {
 				st.getLocationInfor().isPresent() ? st.getLocationInfor().get().getPositionInfor() : null);
 	}
 
-	@AllArgsConstructor
-	private static class RequireImpl implements GetListStampEmployeeService.Require {
-		@Inject
-		private StampCardRepository stampCardRepository;
-		@Inject
-		private StampRecordRepository stampRecordRepository;
-		@Inject
-		private StampDakokuRepository stampDakokuRepository;
+	@Override
+	public List<StampCard> getListStampCard(String sid) {
+		return stampCardRepository.getListStampCard(sid);
+	}
 
-		@Override
-		public List<StampCard> getListStampCard(String sid) {
-			return stampCardRepository.getListStampCard(sid);
-		}
+	@Override
+	public List<StampRecord> getStampRecord(List<StampNumber> stampNumbers, GeneralDate date) {
+		return stampRecordRepository.get(AppContexts.user().contractCode(), stampNumbers, date);
+	}
 
-		@Override
-		public List<StampRecord> getStampRecord(List<StampNumber> stampNumbers, GeneralDate date) {
-			return stampRecordRepository.get(AppContexts.user().contractCode(), stampNumbers, date);
-		}
-
-		@Override
-		public List<Stamp> getStamp(List<StampNumber> stampNumbers, GeneralDate date) {
-			return stampDakokuRepository.get(AppContexts.user().contractCode(), stampNumbers, date);
-		}
+	@Override
+	public List<Stamp> getStamp(List<StampNumber> stampNumbers, GeneralDate date) {
+		return stampDakokuRepository.get(AppContexts.user().contractCode(), stampNumbers, date);
 	}
 }
