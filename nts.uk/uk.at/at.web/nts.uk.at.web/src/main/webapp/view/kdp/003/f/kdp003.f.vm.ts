@@ -50,6 +50,8 @@ module nts.uk.at.kdp003.f {
 
 		listCompany: KnockoutObservableArray<CompanyItem> = ko.observableArray([]);
 
+		parentName: KnockoutObservable<SCREEN_NAME> = ko.observable('KDP003'); 
+
 		constructor(private params?: AdminModeParam | EmployeeModeParam | FingerVeinModeParam) {
 			super();
 		}
@@ -92,84 +94,80 @@ module nts.uk.at.kdp003.f {
 						const exist = _.find(dataSources, (item: CompanyItem) => item.companyId === id);
 
 						if (exist) {
-							const SCREEN: RegExpMatchArray = window.top.location.href.match(/kdp\/00\d/);
+							const parentName = ko.unwrap(vm.parentName);
+							const employeeCode: string = ko.unwrap(model.employeeCode);
 
-							if (SCREEN.length) {
-								const employeeCode: string = ko.unwrap(model.employeeCode);
-								const name: SCREEN_NAME = SCREEN[0].replace(/\//g, '').toUpperCase() as any;
+							model.companyCode(exist.companyCode);
+							model.companyName(exist.companyName);
 
-								model.companyCode(exist.companyCode);
-								model.companyName(exist.companyName);
+							// UI[A6]  打刻利用失敗時のメッセージについて
+							if (!ko.unwrap(vm.message) && employeeCode) {
+								const params: CommanStampInput = {
+									companyId: exist.companyId,
+									employeeId: '',
+									employeeCode,
+									stampMeans: StampMeans.NAME_SELECTION
+								};
 
-								// UI[A6]  打刻利用失敗時のメッセージについて
-								if (!ko.unwrap(vm.message) && employeeCode) {
-									const params: CommanStampInput = {
-										companyId: exist.companyId,
-										employeeId: '',
-										employeeCode,
-										stampMeans: StampMeans.NAME_SELECTION
-									};
+								const authen = (data: ConfirmStampInput) => {
+									if (data.used === CanEngravingUsed.NOT_PURCHASED_STAMPING_OPTION) {
+										// UI[A6]  打刻オプション未購入 
+										vm.message({ messageId: 'Msg_1644' });
+									} else if (data.used === CanEngravingUsed.UNREGISTERED_STAMP_CARD) {
+										// UI[A6]  打刻カード未登録
+										vm.message({ messageId: 'Msg_1619' });
+									} else if (data.used === CanEngravingUsed.ENGTAVING_FUNCTION_CANNOT_USED) {
+										// UI[A6]  打刻機能利用不可
+										const messageParams = [];
 
-									const authen = (data: ConfirmStampInput) => {
-										if (data.used === CanEngravingUsed.NOT_PURCHASED_STAMPING_OPTION) {
-											// UI[A6]  打刻オプション未購入 
-											vm.message({ messageId: 'Msg_1644' });
-										} else if (data.used === CanEngravingUsed.UNREGISTERED_STAMP_CARD) {
-											// UI[A6]  打刻カード未登録
-											vm.message({ messageId: 'Msg_1619' });
-										} else if (data.used === CanEngravingUsed.ENGTAVING_FUNCTION_CANNOT_USED) {
-											// UI[A6]  打刻機能利用不可
-											const messageParams = [];
-
-											switch (name) {
-												case 'KDP001':
-													messageParams.push(vm.$i18n('KDP001_1'));
-													break;
-												case 'KDP002':
-													messageParams.push(vm.$i18n('KDP002_1'));
-													break;
-												default:
-												case 'KDP003':
-													messageParams.push(vm.$i18n('KDP002_2'));
-													break;
-												case 'KDP004':
-													messageParams.push(vm.$i18n('KDP002_3'));
-													break;
-												case 'KDP005':
-													messageParams.push(vm.$i18n('KDP002_4'));
-													break;
-											}
-
-											vm.message({
-												messageId: 'Msg_1645',
-												messageParams
-											});
-										} else {
-											vm.message(null);
+										switch (parentName) {
+											case 'KDP001':
+												messageParams.push(vm.$i18n('KDP001_1'));
+												break;
+											case 'KDP002':
+												messageParams.push(vm.$i18n('KDP002_1'));
+												break;
+											default:
+											case 'KDP003':
+												messageParams.push(vm.$i18n('KDP002_2'));
+												break;
+											case 'KDP004':
+												messageParams.push(vm.$i18n('KDP002_3'));
+												break;
+											case 'KDP005':
+												messageParams.push(vm.$i18n('KDP002_4'));
+												break;
 										}
-									};
 
-									switch (name) {
-										case 'KDP001':
-											params.stampMeans = StampMeans.PORTAL;
-											break;
-										case 'KDP002':
-											params.stampMeans = StampMeans.INDIVITION;
-											break;
-										default:
-										case 'KDP003':
-											params.stampMeans = StampMeans.NAME_SELECTION;
-											break;
-										case 'KDP004':
-											params.stampMeans = StampMeans.FINGER_AUTHC;
-											break;
-										case 'KDP005':
-											params.stampMeans = StampMeans.IC_CARD;
-											break;
+										vm.message({
+											messageId: 'Msg_1645',
+											messageParams
+										});
+									} else {
+										vm.message(null);
 									}
+								};
 
-									vm.$ajax('at', API.CONFIRM_STAMP_INPUT, params).then(authen);
+								switch (parentName) {
+									case 'KDP001':
+										params.stampMeans = StampMeans.PORTAL;
+										break;
+									case 'KDP002':
+										params.stampMeans = StampMeans.INDIVITION;
+										break;
+									default:
+									case 'KDP003':
+										params.stampMeans = StampMeans.NAME_SELECTION;
+										break;
+									case 'KDP004':
+										params.stampMeans = StampMeans.FINGER_AUTHC;
+										break;
+									case 'KDP005':
+										params.stampMeans = StampMeans.IC_CARD;
+										break;
 								}
+
+								vm.$ajax('at', API.CONFIRM_STAMP_INPUT, params).then(authen);
 							}
 						}
 					}
@@ -187,6 +185,15 @@ module nts.uk.at.kdp003.f {
 		public mounted() {
 			const vm = this;
 			const { model, params } = vm;
+			const SCREEN: RegExpMatchArray = window.top.location.href.match(/kdp\/00\d/);
+
+			if (SCREEN.length) {
+				const name: SCREEN_NAME = SCREEN[0].replace(/\//g, '').toUpperCase() as any;
+
+				if (name) {
+					vm.parentName(name);
+				}
+			}
 
 			vm.$blockui('show')
 				.then(() => vm.$ajax(API.COMPANIES))
@@ -210,27 +217,23 @@ module nts.uk.at.kdp003.f {
 
 					if (params.mode === 'admin') {
 						let showMsg1527 = false;
-						const SCREEN: RegExpMatchArray = window.top.location.href.match(/kdp\/00\d/);
+						const parentName = ko.unwrap(vm.parentName);
 
-						if (SCREEN.length) {
-							const name: SCREEN_NAME = SCREEN[0].replace(/\//g, '').toUpperCase() as any;
-
-							switch (name) {
-								case 'KDP001':
-									break;
-								case 'KDP002':
-									break;
-								default:
-								case 'KDP003':
-									showMsg1527 = _.every(data, d => d.selectUseOfName === false) || !data.length;
-									break;
-								case 'KDP004':
-									showMsg1527 = _.every(data, d => d.fingerAuthStamp === false) || !data.length;
-									break;
-								case 'KDP005':
-									showMsg1527 = _.every(data, d => d.icCardStamp === false) || !data.length;
-									break;
-							}
+						switch (parentName) {
+							case 'KDP001':
+								break;
+							case 'KDP002':
+								break;
+							default:
+							case 'KDP003':
+								showMsg1527 = _.every(data, d => d.selectUseOfName === false) || !data.length;
+								break;
+							case 'KDP004':
+								showMsg1527 = _.every(data, d => d.fingerAuthStamp === false) || !data.length;
+								break;
+							case 'KDP005':
+								showMsg1527 = _.every(data, d => d.icCardStamp === false) || !data.length;
+								break;
 						}
 
 						if (showMsg1527 === true) {
