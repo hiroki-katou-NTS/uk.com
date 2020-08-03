@@ -13,7 +13,8 @@ module nts.uk.at.kdp003.a {
 		LOGIN_EMPLOYEE: 'ctx/sys/gateway/kdp/login/employeemode',
 		COMPANIES: '/ctx/sys/gateway/kdp/login/getLogginSetting',
 		FINGER_STAMP_SETTING: 'at/record/stamp/finger/get-finger-stamp-setting',
-		CONFIRM_STAMP_INPUT: '/at/record/stamp/employment/system/confirm-use-of-stamp-input'
+		CONFIRM_STAMP_INPUT: '/at/record/stamp/employment/system/confirm-use-of-stamp-input',
+		EMPLOYEE_LIST: '/at/record/stamp/employment/in-workplace'
 	};
 
 	const DIALOG = {
@@ -26,8 +27,6 @@ module nts.uk.at.kdp003.a {
 	};
 
 	const KDP003_SAVE_DATA = 'KDP003_DATA';
-
-	type COMPANIES = f.CompanyItem[];
 
 	@bean()
 	export class ViewModel extends ko.ViewModel {
@@ -50,7 +49,8 @@ module nts.uk.at.kdp003.a {
 		employeeData: EmployeeListParam = {
 			employees: ko.observableArray([]),
 			selectedId: ko.observable(undefined),
-			employeeAuthcUseArt: ko.observable(false)
+			employeeAuthcUseArt: ko.observable(false),
+			baseDate: ko.observable(new Date())
 		};
 
 		// data option for tabs button A5
@@ -68,6 +68,21 @@ module nts.uk.at.kdp003.a {
 			};
 
 		fingerStampSetting: KnockoutObservable<FingerStampSetting | null> = ko.observable(null);
+
+
+		created() {
+			const vm = this;
+
+			// reload employee list after change baseDate
+			vm.employeeData.baseDate.subscribe(() => {
+				vm.$window.storage(KDP003_SAVE_DATA)
+					.then((data: undefined | StorageData) => {
+						if (data) {
+							vm.loadEmployees(data);
+						}
+					});
+			});
+		}
 
 		mounted() {
 			const vm = this;
@@ -140,8 +155,8 @@ module nts.uk.at.kdp003.a {
 										PWD: em.password,
 										SCD: em.employeeCode,
 										SID: em.employeeId,
-										WKLOC_CD: storage.WKLOC_CD,
-										WKPID: storage.WKPID
+										WKLOC_CD: (storage || {}).WKLOC_CD || '',
+										WKPID: (storage || {}).WKPID || []
 									};
 
 									return vm.$window.storage(KDP003_SAVE_DATA, storageData);
@@ -210,8 +225,8 @@ module nts.uk.at.kdp003.a {
 						};
 
 						return vm.$ajax('at', API.CONFIRM_STAMP_INPUT, params)
-							.then((data: f.ConfirmStampInput) => {
-								if (data.used === CanEngravingUsed.ENGTAVING_FUNCTION_CANNOT_USED) {
+							.then((stamp: f.ConfirmStampInput) => {
+								if (stamp.used === CanEngravingUsed.ENGTAVING_FUNCTION_CANNOT_USED) {
 									vm.message({
 										messageId: 'Msg_1645',
 										messageParams: [vm.$i18n('KDP002_2')]
@@ -235,7 +250,7 @@ module nts.uk.at.kdp003.a {
 					if (ko.unwrap(vm.message) === undefined) {
 						vm.message(null);
 					}
-					
+
 					// login success and datas are valid
 					return vm.loadData(data);
 				})
@@ -248,7 +263,7 @@ module nts.uk.at.kdp003.a {
 
 		// ※画面起動「※起動1」より再度実行(UI処理[A5])
 		// <<ScreenQuery>> 打刻入力(氏名選択)の設定を取得する
-		loadData(data: StorageData) {
+		private loadData(storage: StorageData) {
 			const vm = this;
 			const clearState = () => {
 				if (!ko.unwrap(vm.message)) {
@@ -261,11 +276,22 @@ module nts.uk.at.kdp003.a {
 				vm.employeeData.employeeAuthcUseArt(false);
 			};
 
+			if (!_.isObject(storage)) {
+				return;
+			}
+
 			// <<Command>> 打刻入力を利用できるかを確認する
 			return vm.$ajax('at', API.FINGER_STAMP_SETTING)
 				.then((data: FingerStampSetting) => {
 					if (data) {
-						const { stampSetting } = data;
+						const { stampSetting, stampResultDisplay } = data;
+
+						if (!stampResultDisplay) {
+							// UI[A6] 打刻利用失敗時のメッセージについて 
+							// note: 打刻オプション未購入
+							vm.message({ messageId: 'Msg_1644' });
+							return;
+						}
 
 						vm.fingerStampSetting(data);
 
@@ -290,7 +316,23 @@ module nts.uk.at.kdp003.a {
 				.then(() => vm.$ajax('at', API.HIGHTLIGHT))
 				.then((data: share.StampToSuppress) => vm.buttonPage.stampToSuppress(data))
 				// <<ScreenQuery>>: 打刻入力(氏名選択)で社員の一覧を取得する
-				.then(() => { }) as JQueryDeferred<any>;
+				.then(() => vm.loadEmployees(storage)) as JQueryDeferred<any>;
+		}
+
+		private loadEmployees(storage: StorageData) {
+			const vm = this;
+			const { baseDate } = ko.toJS(vm.employeeData) as EmployeeListData;
+			const params = {
+				baseDate: moment(baseDate).toISOString(),
+				companyId: (storage || {}).CID || '',
+				workplaceId: (storage.WKPID || [])[0] || ''
+			};
+
+			return vm.$ajax('at', API.EMPLOYEE_LIST, params)
+				.then((data: Employee[]) => {
+
+					vm.employeeData.employees(data);
+				}) as JQueryDeferred<any>;
 		}
 
 		setting() {
@@ -396,7 +438,7 @@ module nts.uk.at.kdp003.a {
 			const vm = this;
 			const data: EmployeeListData = ko.toJS(vm.employeeData);
 			const { selectedId, employees } = data;
-			const employee = _.find(employees, (e) => e.id === selectedId);
+			const employee = _.find(employees, (e) => e.employeeId === selectedId);
 
 			vm.$window
 				.storage(KDP003_SAVE_DATA)
@@ -427,7 +469,7 @@ module nts.uk.at.kdp003.a {
 		stampButtonClick(btn: share.ButtonSetting, layout: share.PageLayout) {
 			const vm = this;
 			const { buttonPage, employeeData } = vm;
-			const { selectedId, employees } = ko.toJS(employeeData) as EmployeeListData;
+			const { selectedId, employees, employeeAuthcUseArt } = ko.toJS(employeeData) as EmployeeListData;
 			const reloadSetting = () => vm.$ajax('at', API.HIGHTLIGHT)
 				.then((data: any) => {
 					const oldData = ko.unwrap(buttonPage.stampToSuppress);
@@ -440,23 +482,31 @@ module nts.uk.at.kdp003.a {
 				});
 
 			// case: 社員一覧(A2)を選択していない場合
-			if (selectedId === undefined) {
+			if (selectedId === undefined && employeeAuthcUseArt === true) {
 				return vm.$dialog.error({ messageId: 'Msg_1646' });
 			}
 
 			// case: 社員一覧(A2)を選択している場合(社員を選択) || 社員一覧(A2)を選択している場合(固有部品：PA4)、又は社員一覧が表示されていない場合
 			return vm.$window.storage(KDP003_SAVE_DATA)
 				.then((data: StorageData) => {
-					const params = {
-						mode: selectedId ? 'employee' : 'fingerVein',
+					const params: f.EmployeeModeParam | f.FingerVeinModeParam = {
+						mode: selectedId || employeeAuthcUseArt === true ? 'employee' : 'fingerVein',
 						companyId: (data || {}).CID || vm.$user.companyId
 					};
 
 					if (selectedId) {
-						const employee = _.find(employees, (e) => e.id === selectedId);
+						const employee = _.find(employees, (e) => e.employeeId === selectedId);
 
 						if (employee) {
-							_.extend(params, { employee });
+							const { employeeId, employeeCode, employeeName } = employee;
+
+							_.extend(params, {
+								employee: {
+									id: employeeId,
+									code: employeeCode,
+									name: employeeName
+								}
+							});
 						}
 					}
 
@@ -475,11 +525,11 @@ module nts.uk.at.kdp003.a {
 
 							if (fingerStampSetting) {
 								const { stampResultDisplay } = fingerStampSetting;
-								const { displayItemId } = stampResultDisplay;
-								const { USE } = share.NotUseAtr;
+								const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 };
+								const { USE } = NotUseAtr;
 								const { WORKING_OUT, TEMPORARY_LEAVING } = share.ChangeClockArt;
 
-								if (stampResultDisplay.notUseAttr === USE && [WORKING_OUT, TEMPORARY_LEAVING].indexOf(btn.changeClockArt) > -1) {
+								if (notUseAttr === USE && [WORKING_OUT, TEMPORARY_LEAVING].indexOf(btn.changeClockArt) > -1) {
 									return storage('KDP010_2C', displayItemId)
 										.then(() => storage('infoEmpToScreenC', employeeInfo))
 										.then(() => modal('at', DIALOG.KDP002_C)) as JQueryDeferred<any>;
@@ -544,7 +594,7 @@ module nts.uk.at.kdp003.a {
 	interface StampResultDisplay {
 		companyId: string;
 		displayItemId: number[];
-		notUseAttr: number;
+		notUseAttr: NotUseAtr;
 	}
 
 	interface StampSetting {
@@ -562,7 +612,13 @@ module nts.uk.at.kdp003.a {
 		textColor: string;
 	}
 
+	enum NotUseAtr {
+		/** The use. */
+		USE = 1,
 
+		/** The not use. */
+		NOT_USE = 0
+	}
 
 	enum StampMeans {
 		NAME_SELECTION = 0, // 0:氏名選択

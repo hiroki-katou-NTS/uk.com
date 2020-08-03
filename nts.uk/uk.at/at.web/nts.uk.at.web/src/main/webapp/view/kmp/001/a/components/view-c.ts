@@ -164,10 +164,9 @@ module nts.uk.at.view.kmp001.c {
 		created(params: Params) {
 			const vm = this;
 			vm.params = params;
-			const format = DATE_FORMAT;
-
-			const endDate = moment().format(format);
-			const startDate = moment().subtract(3, 'month').format(format);
+			const format = DATE_FORMAT,
+			endDate = moment().format(format),
+			startDate = moment().subtract(3, 'month').format(format);
 
 			vm.dateRange({ startDate, endDate });
 
@@ -184,7 +183,7 @@ module nts.uk.at.view.kmp001.c {
 					}
 				})
 		}
-
+		
 		getAllData() {
 			const vm = this;
 
@@ -253,7 +252,7 @@ module nts.uk.at.view.kmp001.c {
 
 				vm.$ajax(KMP001C_API.ADD_STAMP_CARD, command)
 					.then(() => vm.$dialog.info({ messageId: "Msg_15" }))
-					.then(() => vm.reloadData(newIndex))
+					.then(() => vm.reloadData(0))
 					.then(() => vm.employee.clear())
 					.then(() => vm.$blockui("clear"));
 			}

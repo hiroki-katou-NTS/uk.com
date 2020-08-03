@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.command.kdp.kdp001.a;
+package nts.uk.screen.at.app.command.kdp.kdp001.a;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +15,7 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.function.dom.adapter.employeemanage.EmployeeManageAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
@@ -85,6 +86,9 @@ public class RegisterStampInputCommandHandler
 	
 	@Inject
 	private TopPageAlarmStampingRepository topPageRepo;
+	
+	@Inject
+	private EmployeeManageAdapter empManaAdapter;
 
 	@Override
 	protected RegisterStampInputResult handle(CommandHandlerContext<RegisterStampInputCommand> context) {
@@ -136,7 +140,8 @@ public class RegisterStampInputCommandHandler
 		Optional<GeneralDate> refDateOpt = inputResult.getStampDataReflectResult().getReflectDate();
 		
 		//打刻入力から日別実績を作成する (Tạo thực tế hàng ngày từ input check tay)
-		CreateDailyResultsStampsRequireImpl resultStampRequire = new CreateDailyResultsStampsRequireImpl(topPageRepo);
+		CreateDailyResultsStampsRequireImpl resultStampRequire = new CreateDailyResultsStampsRequireImpl(topPageRepo,
+				empManaAdapter);
 
 		CreateDailyResultsStamps.create(resultStampRequire, AppContexts.user().companyId(), employeeID,
 				Optional.ofNullable(refDateOpt.isPresent() ? refDateOpt.get() : null));
@@ -152,6 +157,9 @@ public class RegisterStampInputCommandHandler
 		
 		@Inject
 		private TopPageAlarmStampingRepository topPageRepo;
+		
+		@Inject
+		private EmployeeManageAdapter empManaAdapter;
 
 		@Override
 		public List<ErrorMessageInfo> getListError(String companyID, String employeeId, DatePeriod period,
@@ -167,7 +175,7 @@ public class RegisterStampInputCommandHandler
 
 		@Override
 		public List<String> getListEmpID(String companyID, GeneralDate referenceDate) {
-			return Arrays.asList(AppContexts.user().employeeId());
+			return this.empManaAdapter.getListEmpID(companyID, referenceDate);
 		}
 
 	}
