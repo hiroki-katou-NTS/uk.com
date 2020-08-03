@@ -147,10 +147,13 @@ module nts.uk.at.view.kmp001.b {
 		}
 
 		mounted() {
+			const vm = this;
+			
 			$(document).ready(function() {
 				$('#input-stamp-card').focus();
 			});
 		}
+		
 		getStampCard() {
 			const vm = this;
 			vm.$blockui("invisible");

@@ -184,8 +184,6 @@ module nts.uk.at.view.kmp001.a {
 					}
 				});
 
-			vm.$errors('clear');
-
 			vm.$nextTick(() => {
 				vm.$errors('clear');
 
