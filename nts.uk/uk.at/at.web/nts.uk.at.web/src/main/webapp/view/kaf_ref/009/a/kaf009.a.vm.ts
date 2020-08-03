@@ -13,7 +13,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 version: 1,
                 // appID: '939a963d-2923-4387-a067-4ca9ee8808zz',
                 prePostAtr: 1,
-                employeeID: '292ae91c-508c-4c6e-8fe8-3e72277dec16',
+                employeeID: this.$user.employeeId,
                 appType: 2,
                 appDate: moment(new Date()).format('YYYY/MM/DD'),
                 enteredPerson: '1',
@@ -83,7 +83,8 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             }).fail((failData: any) => {
                 vm.$dialog.error({
                     messageId: failData.msgId
-                });       
+                }); 
+                
             }).always(() => vm.$blockui("hide"));
             
             vm.application().appDate.subscribe(value => {
@@ -243,6 +244,9 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 .fail(res => {
                     
                     console.log(res);
+                    vm.$dialog.error( {
+                        messageId: res.msgId
+                    } );
                 })
                 .always(() => true);
             

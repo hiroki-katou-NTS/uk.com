@@ -21,7 +21,7 @@ public interface AppCommonDomainService {
 	 * @param dates
 	 * @param appDispInfoStartupOutput
 	 * @param recoderFlag
-	 * @return 打刻申請起動時の表示情報
+	 * @return 打刻申請起動時の表示情報打刻申請（新規）起動前処理 
 	 */
 	public AppStampOutput getDataCommon(String companyId, Optional<GeneralDate> dates, AppDispInfoStartupOutput appDispInfoStartupOutput, Boolean recoderFlag);
 	
@@ -43,5 +43,19 @@ public interface AppCommonDomainService {
 //	打刻申請登録前のエラーチェック処理（新規）
 	
 	public List<ConfirmMsgOutput> checkBeforeRegister(String companyId, Boolean agentAtr, Application application, AppStampOutput appStampOutput);
+	
+//	打刻申請登録前のエラーチェック処理（詳細）
+	
+	public List<ConfirmMsgOutput> checkBeforeUpdate(String companyId, Boolean agentAtr, Application application, AppStampOutput appStampOutput);
+	
+	
+	/**
+	 * 打刻申請（詳細）起動前処理
+	 * @param companyId
+	 * @param appId
+	 * @param appDispInfoStartupOutput
+	 * @return 打刻申請起動時の表示情報打刻申請（新規）起動前処理 
+	 */
+	public AppStampOutput getDataDetailCommon(String companyId, String appId, AppDispInfoStartupOutput appDispInfoStartupOutput, Boolean recoderFlag);
 	
 }

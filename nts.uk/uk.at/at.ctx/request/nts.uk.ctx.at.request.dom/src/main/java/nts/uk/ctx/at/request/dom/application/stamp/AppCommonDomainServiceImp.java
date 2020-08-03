@@ -8,13 +8,16 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
@@ -26,8 +29,14 @@ import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.ErrorStampInfo;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.AppStampSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.AppStampReflect;
+import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting_Old;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AppCommonDomainServiceImp implements AppCommonDomainService{
@@ -44,6 +53,14 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	@Inject
 	private NewBeforeRegister_New registerBefore;
 	
+	@Inject
+	private AppStampRepository appStampRepo;
+	
+	@Inject
+	private AppRecordImageRepository appRecordImageRepo;
+	
+	@Inject
+	private DetailBeforeUpdate detailBeforeUpdate;
 
 	@Override
 	public AppStampOutput getDataCommon(String companyId, Optional<GeneralDate> dates,
@@ -62,6 +79,8 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 			return appStampOutput;
 		}
 		
+		
+//		ドメインモデル「臨時勤務利用管理」を取得する
 		Optional<TemporaryWorkUseManage> temporaryWorkUseManageOptional = temporaryWorkUseManageRepo.findByCid(companyId);
 		// in note 
 		if (temporaryWorkUseManageOptional.isPresent()) {
@@ -136,7 +155,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		/**
 		 * 勤務時間帯
 		 */
-//		List<TimePlaceOutput> workingTime = stampRecordOutput.getWorkingTime();
+		List<TimePlaceOutput> workingTime = stampRecordOutput.getWorkingTime();
 		
 		
 		/**
@@ -165,6 +184,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		this.addErros(errorStampInfos, StampAtrOther.GOOUT_RETURNING, outingTime);
 		this.addErros(errorStampInfos, StampAtrOther.CHEERING, supportTime);
 		this.addErros(errorStampInfos, StampAtrOther.ATTEENDENCE_OR_RETIREMENT, extraordinaryTime);
+		this.addErros(errorStampInfos, StampAtrOther.EXTRAORDINARY, workingTime);
 		
 		return errorStampInfos;
 	}
@@ -199,13 +219,8 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	public List<ConfirmMsgOutput> checkBeforeRegister(String companyId, Boolean agentAtr,
 			Application application, AppStampOutput appStampOutput) {
 		List<ConfirmMsgOutput> listConfirmMs = new ArrayList<ConfirmMsgOutput>();
-//		レコーダーイメージ申請の場合：要らない
-		
-//		育児 または 介護または休憩の時、「 開始時刻　OR　 終了時刻」は入力しない　→　(#Msg_308#)
-		
-//		①開始時刻と終了時刻がともに設定されているとき、開始時刻　≦　終了時刻 (#Msg_307#)
-//		②終了時刻　<　次の開始時刻 (#Msg_307#)
-		
+
+//		this.checkRegisterAndUpdate();
 		
 //		2-1.新規画面登録前の処理
 		registerBefore.processBeforeRegister_New(
@@ -220,5 +235,134 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		
 		return listConfirmMs;
 	}
+	
+	@Override
+	public List<ConfirmMsgOutput> checkBeforeUpdate(String companyId, Boolean agentAtr, Application application,
+			AppStampOutput appStampOutput) {
+		List<ConfirmMsgOutput> listConfirmMs = new ArrayList<ConfirmMsgOutput>();
+		// check 
+//		this.checkRegisterAndUpdate();
+		
+		
+//		4-1.詳細画面登録前の処理
+		detailBeforeUpdate.processBeforeDetailScreenRegistration(
+				companyId,
+				application.getEmployeeID(),
+				application.getAppDate().getApplicationDate(),
+				EmploymentRootAtr.APPLICATION.value,
+				application.getAppID(),
+				application.getPrePostAtr(),
+				application.getVersion(),
+				null,
+				null);
+		
+		
+		
+		
+		
+		
+		return listConfirmMs;
+	}
+	
+	
+	public void checkRegisterAndUpdate(AppStamp appStamp) {
+		if (appStamp == null) return;
+//		事後モード：「時間帯：Empty　AND　時間帯の取消：Empty　AND　時刻：Empty　AND　時刻の取消：Empty、」の場合：Msg_308を表示する
+		if (appStamp.getPrePostAtr() == PrePostAtr.POSTERIOR) {
+			if (CollectionUtil.isEmpty(appStamp.getListTimeStampApp())  
+					&& CollectionUtil.isEmpty(appStamp.getListDestinationTimeApp())
+					&& CollectionUtil.isEmpty(appStamp.getListTimeStampAppOther())
+					&& CollectionUtil.isEmpty(appStamp.getListDestinationTimeZoneApp()))
+					{
+				throw new BusinessException("Msg_308");
+				
+				
+			}
+		}
+
+		if (!CollectionUtil.isEmpty(appStamp.getListTimeStampAppOther())) {
+			List<TimeStampAppOther> listTimeStampAppOther = appStamp.getListTimeStampAppOther();
+			listTimeStampAppOther.stream().forEach(x -> {
+				if (x.getTimeZone().getStartTime() == null || x.getTimeZone().getEndTime() == null ) {
+//					育児 または 介護または休憩の時、「 開始時刻　OR　 終了時刻」は入力しない　→　(#Msg_308#)
+					throw new BusinessException("Msg_308");
+				} else if (x.getTimeZone().getStartTime().getDayTime() >= x.getTimeZone().getEndTime().getDayTime()){
+//					①開始時刻と終了時刻がともに設定されているとき、開始時刻　≦　終了時刻 (#Msg_307#)
+//					②終了時刻　<　次の開始時刻 (#Msg_307#)
+					throw new BusinessException("Msg_307");
+					
+				}
+			});
+			
+		}
+		
+		
+		
+		
+		
+		
+	}
+
+	@Override
+	public AppStampOutput getDataDetailCommon(String companyId, String appId,
+			AppDispInfoStartupOutput appDispInfoStartupOutput, Boolean recoderFlag) {
+		
+		AppStampOutput appStampOutput = new AppStampOutput();
+		
+		if (recoderFlag) {			
+//			ドメインモデル「レコーダイメージ申請」を取得する
+			Optional<AppRecordImage> appRecordImageOptional = appRecordImageRepo.findByAppID(companyId, appId);
+			appStampOutput.setAppRecordImage(appRecordImageOptional);
+			
+			
+		} else {			
+//			ドメインモデル「打刻申請」を取得する
+			Optional<AppStamp> appStampOptional = appStampRepo.findByAppID(companyId, appId);
+			appStampOutput.setAppStampOptional(appStampOptional);
+			
+			
+//			実績の打刻のチェック
+			StampRecordOutput stampRecordOutput = null;
+			Optional<List<ActualContentDisplay>> listActualContentDisplay = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
+			if (listActualContentDisplay.isPresent()) {
+				if (!CollectionUtil.isEmpty(listActualContentDisplay.get())) {
+					ActualContentDisplay actualContentDisplay = listActualContentDisplay.get().get(0);
+					Optional<AchievementDetail> opAchievementDetail = actualContentDisplay.getOpAchievementDetail();
+					if (opAchievementDetail.isPresent()) {
+						stampRecordOutput = opAchievementDetail.get().getStampRecordOutput();
+					}
+				}
+			}
+			List<ErrorStampInfo> errorStampInfos = this.getErrorStampList(stampRecordOutput);
+			if (!CollectionUtil.isEmpty(errorStampInfos)) {
+				appStampOutput.setErrorListOptional(Optional.of(errorStampInfos));
+				
+			}
+			
+			
+//			ドメインモデル「臨時勤務利用管理」を取得する
+			Optional<TemporaryWorkUseManage> temporaryWorkUseManageOptional = temporaryWorkUseManageRepo.findByCid(companyId);
+			
+			// in note as A screen
+			if (temporaryWorkUseManageOptional.isPresent()) {
+				Boolean getValue = BooleanUtils.toBoolean(temporaryWorkUseManageOptional.get().getUseClassification().value);		
+				appStampOutput.setUseTemporary(Optional.of(getValue));
+			} else {
+				appStampOutput.setUseTemporary(Optional.of(false));
+			}			
+			
+		}
+		
+//		ドメインモデル「打刻申請設定」を取得する	
+		Optional<AppStampSetting> appStampSettingOptional = appStampSetttingRepo.findByAppID(companyId);
+		if (appStampSettingOptional.isPresent()) {
+			appStampOutput.setAppStampSetting(appStampSettingOptional.get());
+		}
+		
+		return appStampOutput;
+	}
+	
+	
+	
 
 }
