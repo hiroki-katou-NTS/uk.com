@@ -16,12 +16,11 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 		created(params: any) {
 			const vm = this;
             vm.$blockui("show");
-            vm.loadData([], [])
+            vm.loadData([], [], AppType.WORK_CHANGE_APPLICATION)
             .then((loadDataFlag: any) => {
                 if(loadDataFlag) {
                     let empLst = [],
                         dateLst = [],
-						appType = AppType.WORK_CHANGE_APPLICATION,
                         appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
                         command = { empLst, dateLst, appType, appDispInfoStartupOutput };
                     return vm.$ajax(API.startNew, command);
