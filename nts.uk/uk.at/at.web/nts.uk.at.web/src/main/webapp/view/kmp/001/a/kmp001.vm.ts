@@ -34,7 +34,7 @@ module nts.uk.at.view.kmp001 {
 		workplaceName: string;
 		stampCardDto: IStampCard[];
 	}
-	
+
 	export class Model {
 		code: KnockoutObservable<string> = ko.observable('');
 		affiliationId: KnockoutObservable<string> = ko.observable('');
@@ -78,13 +78,28 @@ module nts.uk.at.view.kmp001 {
 
 				self.stampCardDto(params.stampCardDto.map(m => new StampCard(m)));
 
-				self.selectedStampCardIndex(0);
+				if (ko.unwrap(self.selectedStampCardIndex) === 0) {
+					self.selectedStampCardIndex.valueHasMutated();
+				} else {
+					self.selectedStampCardIndex(0);
+				}
+
+				const vm = new ko.ViewModel();
+
+				vm.$nextTick(() => {
+					const $grid = $('#stampcard-list');
+
+					if ($grid.length && $grid.data('igGrid')) {
+						$grid.igGridSelection('clearSelection');
+						$grid.igGridSelection('selectRow', 0);
+					}
+				});
 			}
 		}
 
 		public clear() {
 			const self = this;
-			
+
 			self.code('');
 			self.affiliationId('');
 			self.birthDay(null);
@@ -105,7 +120,7 @@ module nts.uk.at.view.kmp001 {
 			model.selectedStampCardIndex(model.stampCardDto.length - 1);
 		}
 	}
-	
+
 	export interface IStampCard {
 		stampCardId: string;
 		defaultValue?: string;
@@ -166,6 +181,6 @@ module nts.uk.at.view.kmp001 {
 	export interface IEmployeeId {
 		employee: string;
 	}
-	
+
 	export type SELECT = 'select';
 }
