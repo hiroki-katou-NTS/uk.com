@@ -86,8 +86,9 @@ module nts.uk.at.kdp003.a {
 
 		mounted() {
 			const vm = this;
+			const { storage } = vm.$window;
 
-			vm.$window.storage(KDP003_SAVE_DATA)
+			storage(KDP003_SAVE_DATA)
 				.then((data: undefined | StorageData) => {
 					if (data === undefined) {
 						return vm.$window.modal('at', DIALOG.F, { mode: 'admin' }) as JQueryDeferred<f.TimeStampLoginData>;
@@ -145,9 +146,8 @@ module nts.uk.at.kdp003.a {
 						if (!data.msgErrorId && !data.errorMessage) {
 							const { em } = data;
 
-							return vm.$window
-								.storage(KDP003_SAVE_DATA)
-								.then((storage: undefined | StorageData) => {
+							return storage(KDP003_SAVE_DATA)
+								.then((storeData: undefined | StorageData) => {
 									// storage successful login data
 									const storageData: StorageData = {
 										CID: em.companyId,
@@ -155,11 +155,11 @@ module nts.uk.at.kdp003.a {
 										PWD: em.password,
 										SCD: em.employeeCode,
 										SID: em.employeeId,
-										WKLOC_CD: (storage || {}).WKLOC_CD || '',
-										WKPID: (storage || {}).WKPID || []
+										WKLOC_CD: (storeData || {}).WKLOC_CD || '',
+										WKPID: (storeData || {}).WKPID || []
 									};
 
-									return vm.$window.storage(KDP003_SAVE_DATA, storageData);
+									return storage(KDP003_SAVE_DATA, storageData);
 								})
 								.then(() => true);
 						} else {
@@ -179,8 +179,7 @@ module nts.uk.at.kdp003.a {
 						return null;
 					}
 
-					return vm.$window
-						.storage(KDP003_SAVE_DATA)
+					return storage(KDP003_SAVE_DATA)
 						.then((data: StorageData) => {
 							if (data.WKPID.length) {
 								return { selectedId: data.WKPID };
@@ -199,20 +198,19 @@ module nts.uk.at.kdp003.a {
 						return false;
 					}
 
-					return vm.$window
-						.storage(KDP003_SAVE_DATA)
+					return storage(KDP003_SAVE_DATA)
 						// update workplaceId to storage
-						.then((storage: StorageData) => {
+						.then((storageData: StorageData) => {
 							if (storage) {
 								if (_.isArray(data.selectedId)) {
-									storage.WKPID = data.selectedId;
+									storageData.WKPID = data.selectedId;
 								} else {
-									storage.WKPID = [data.selectedId];
+									storageData.WKPID = [data.selectedId];
 								}
 							}
 
 							// return data from storage
-							return vm.$window.storage(KDP003_SAVE_DATA, storage);
+							return storage(KDP003_SAVE_DATA, storageData);
 						});
 				})
 				.then((data: false | StorageData) => {
@@ -330,15 +328,15 @@ module nts.uk.at.kdp003.a {
 
 			return vm.$ajax('at', API.EMPLOYEE_LIST, params)
 				.then((data: Employee[]) => {
-
 					vm.employeeData.employees(data);
 				}) as JQueryDeferred<any>;
 		}
 
 		setting() {
 			const vm = this;
+			const { storage } = vm.$window;
 
-			vm.$window.storage(KDP003_SAVE_DATA)
+			storage(KDP003_SAVE_DATA)
 				.then((data: StorageData) => {
 					const mode = 'admin';
 					const companyId = (data || {}).CID;
@@ -351,16 +349,16 @@ module nts.uk.at.kdp003.a {
 
 						if (em) {
 							// update or save login data to storage
-							vm.$window.storage(KDP003_SAVE_DATA)
-								.then((storage: StorageData) => {
-									if (storage) {
-										storage.CCD = em.companyCode;
-										storage.CID = em.companyId;
-										storage.PWD = em.password;
-										storage.SCD = em.employeeCode;
-										storage.SID = em.employeeId;
+							storage(KDP003_SAVE_DATA)
+								.then((storageData: StorageData) => {
+									if (storageData) {
+										storageData.CCD = em.companyCode;
+										storageData.CID = em.companyId;
+										storageData.PWD = em.password;
+										storageData.SCD = em.employeeCode;
+										storageData.SID = em.employeeId;
 									} else {
-										storage = {
+										storageData = {
 											CCD: em.companyCode,
 											CID: em.companyId,
 											PWD: em.password,
@@ -371,7 +369,7 @@ module nts.uk.at.kdp003.a {
 										};
 									}
 
-									vm.$window.storage(KDP003_SAVE_DATA, storage);
+									storage(KDP003_SAVE_DATA, storageData);
 								});
 						}
 
@@ -406,18 +404,18 @@ module nts.uk.at.kdp003.a {
 					if (!data) {
 						return false;
 					} else {
-						return vm.$window.storage(KDP003_SAVE_DATA)
+						return storage(KDP003_SAVE_DATA)
 							// update workplaceId to storage
-							.then((storage: StorageData) => {
-								if (storage) {
+							.then((storageData: StorageData) => {
+								if (storageData) {
 									if (_.isArray(data.selectedId)) {
-										storage.WKPID = data.selectedId;
+										storageData.WKPID = data.selectedId;
 									} else {
-										storage.WKPID = [data.selectedId];
+										storageData.WKPID = [data.selectedId];
 									}
 								}
 								// return data from storage
-								return vm.$window.storage(KDP003_SAVE_DATA, storage);
+								return storage(KDP003_SAVE_DATA, storageData);
 							});
 					}
 				})
