@@ -66,7 +66,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                     let ApplicantEmployeeID: null,
                         ApplicantList: null,
                         appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
-                        command = { ApplicantEmployeeID, ApplicantList, appType, appDispInfoStartupOutput };
+                        command = { ApplicantEmployeeID, ApplicantList, appDispInfoStartupOutput };
                     return vm.$ajax(API.startNew, command);
                 }
             }).then((res: any) => {
