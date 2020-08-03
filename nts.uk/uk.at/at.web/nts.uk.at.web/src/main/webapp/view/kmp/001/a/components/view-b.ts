@@ -9,7 +9,7 @@ module nts.uk.at.view.kmp001.b {
 		</div>
 		<div class="search_label" style="padding-bottom: 0px">
 			<span class="sub_title" data-bind= "text: $i18n('KMP001_22')"></span>
-			<input data-bind="ntsTextEditor: {value: inputStampCard}" style="width: 225px"/>
+			<input id="input-stamp-card" data-bind="ntsTextEditor: {value: inputStampCard}" style="width: 225px"/>
 			<button id="top_bottom" data-bind= "text: $i18n('KMP001_23'),
 												click: getStampCard">
 			</button>
@@ -122,7 +122,6 @@ module nts.uk.at.view.kmp001.b {
 					const stampCards: IStampCard[] = ko.toJS(vm.items);
 					const current = _.find(stampCards, e => e.stampNumber === c);
 
-					vm.model.clear();
 					vm.employee.clear();
 					if (current) {
 						vm.employee.employeeId(current.employeeId);
@@ -147,6 +146,11 @@ module nts.uk.at.view.kmp001.b {
 				})
 		}
 
+		mounted() {
+			$(document).ready(function() {
+				$('#input-stamp-card').focus();
+			});
+		}
 		getStampCard() {
 			const vm = this;
 			vm.$blockui("invisible");
@@ -188,7 +192,6 @@ module nts.uk.at.view.kmp001.b {
 			const vm = this;
 
 			if (ko.unwrap(vm.mode) == "all") {
-				vm.model.clear();
 				vm.$blockui("invisible")
 					.then(() => vm.$ajax(KMP001B_API.GET_ALL_STAMPCARD))
 					.then((data: IDataResponse) => {
@@ -279,7 +282,7 @@ module nts.uk.at.view.kmp001.b {
 						vm.$ajax(KMP001B_API.DELETE_STAMP, command)
 							.done(() => vm.$dialog.info({ messageId: "Msg_16" }))
 							.then(() => vm.model.clear())
-							.then(() => vm.reloadAllStampCard(newIndex));
+							.then(() => vm.reloadAllStampCard(0));
 					})
 			}
 			vm.$blockui("clear");
@@ -334,15 +337,17 @@ module nts.uk.at.view.kmp001.b {
 
 		update(params: IStampCard) {
 			const seft = this;
-			seft.employeeCode(params.stampNumber);
 			seft.employeeCode(params.employeeCode);
 			seft.businessName(params.businessName);
 			seft.employeeId(params.employeeId);
 		}
 
 		clear() {
-			const self = this;
-			self.update({ stampNumber: '', employeeCode: '', businessName: '', employeeId: '' });
+			const seft = this;
+			seft.stampNumber('');
+			seft.employeeCode('');
+			seft.businessName('');
+			seft.employeeId('');
 		}
 	}
 

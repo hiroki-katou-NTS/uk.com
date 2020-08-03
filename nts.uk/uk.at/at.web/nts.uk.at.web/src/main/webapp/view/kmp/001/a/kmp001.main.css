@@ -57,6 +57,16 @@
 	width: 180px;
 }
 
+#func-notifier-errors.show {
+    display: inline-block;
+    top: 143px;
+    left: 120px;
+    position: fixed;
+    width: 100px;
+    height: 24px;
+    z-index: 999999;
+}
+
 .view-kmp .model-component table td.label-column-left ~ div {
 	font-size: 16px;
 }
