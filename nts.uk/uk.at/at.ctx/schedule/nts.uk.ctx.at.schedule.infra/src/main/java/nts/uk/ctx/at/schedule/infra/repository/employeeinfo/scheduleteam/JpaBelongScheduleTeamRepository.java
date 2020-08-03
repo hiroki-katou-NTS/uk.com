@@ -26,7 +26,7 @@ public class JpaBelongScheduleTeamRepository extends JpaRepository implements Be
 	
 	private static final String GET_ALL = GET_BY_CID +" AND c.WKPGRPID = : WKPGRPID AND c.scheduleTeamCd = :scheduleTeamCd "; 
 	
-	private static final String GET_BY_LIST_EMPID = GET_BY_CID + " AND c.pk.employeeID IN : empIDs " ;
+	private static final String GET_BY_LIST_EMPID = GET_BY_CID + " AND c.pk.employeeID IN :empIDs" ;
 	
 	//private static final String GET_
 	
