@@ -7,7 +7,7 @@ module nts.uk.at.kdp003.a {
 
 	const API = {
 		NAME: '/sys/portal/webmenu/username',
-		SETTING: 'at/record/stamp/management/personal/startPage',
+		SETTING: '/at/record/stamp/management/personal/startPage',
 		HIGHTLIGHT: 'at/record/stamp/management/personal/stamp/getHighlightSetting',
 		LOGIN_ADMIN: 'ctx/sys/gateway/kdp/login/adminmode',
 		LOGIN_EMPLOYEE: 'ctx/sys/gateway/kdp/login/employeemode',

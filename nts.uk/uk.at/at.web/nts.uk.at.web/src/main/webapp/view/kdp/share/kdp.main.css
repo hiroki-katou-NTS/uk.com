@@ -153,6 +153,7 @@
 }
 
 #tab-button-group .ui-tabs-panel>.grid-container {
+	text-align: center;
 	box-sizing: border-box;
 }
 
@@ -161,26 +162,28 @@
 	min-width: 72px;
 }
 
-#tab-button-group .ui-tabs-panel>.grid-container>button {
+#tab-button-group .ui-tabs-panel>.grid-container>div:not(:last-child) {
+	padding-bottom: 10px;
+}
+
+#tab-button-group .ui-tabs-panel>.grid-container>div>button {
 	box-sizing: border-box;
-	margin-bottom: 10px;
 	font-size: 3vmin;
 	vertical-align: top;
 }
 
-#tab-button-group .ui-tabs-panel>.grid-container.btn-layout-type-0>button {
+#tab-button-group .ui-tabs-panel>.grid-container.btn-layout-type-0>div>button {
 	width: calc(50% - 3px);
-	height: 10vmin;
+	height: 85px;
 }
 
-#tab-button-group .ui-tabs-panel>.grid-container.btn-layout-type-0>button:first-child,
-#tab-button-group .ui-tabs-panel>.grid-container.btn-layout-type-0>button:first-child+button {
-	height: 20vmin;
+#tab-button-group .ui-tabs-panel>.grid-container.btn-layout-type-0>div:first-child>button {
+	height: 170px;
 }
 
-#tab-button-group .ui-tabs-panel>.grid-container.btn-layout-type-1>button {
+#tab-button-group .ui-tabs-panel>.grid-container.btn-layout-type-1>div>button {
 	width: calc(25% - 4px);
-	height: 10vmin;
+	height: 170px;
 }
 
 .stamp-square-btn-container {
