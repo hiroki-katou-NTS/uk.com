@@ -60,12 +60,11 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 //            vm.application().appDate(moment(new Date()).format("YYYY/MM/DD"));
             
             vm.$blockui("show");
-            vm.loadData([], [])
+            vm.loadData([], [], AppType.GO_RETURN_DIRECTLY_APPLICATION)
             .then((loadDataFlag: any) => {
                 if(loadDataFlag) {
                     let ApplicantEmployeeID: null,
                         ApplicantList: null,
-						appType = AppType.GO_RETURN_DIRECTLY_APPLICATION,
                         appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
                         command = { ApplicantEmployeeID, ApplicantList, appType, appDispInfoStartupOutput };
                     return vm.$ajax(API.startNew, command);
