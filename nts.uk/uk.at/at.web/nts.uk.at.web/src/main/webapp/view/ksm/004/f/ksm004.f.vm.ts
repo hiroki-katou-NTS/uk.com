@@ -3,7 +3,7 @@ module nts.uk.at.view.ksm004.f.viewmodel {
     import format = nts.uk.text.format;
 
     const paths: any = {
-        getSixMonthsCalendar: "screen/at/ksm004/ksm004/f/sixmonthscalendar/{0}/{1}/{2}",
+        getSixMonthsCalendar: "screen/at/ksm004/ksm004/f/sixmonthscalendar/",
     };
 
     @bean()
@@ -19,7 +19,7 @@ module nts.uk.at.view.ksm004.f.viewmodel {
             this.generateYearMonth(vm.yearMonth).forEach(item => {
                 let year = item().toString().substring(0, 4);
                 let month = item().toString().substring(4, 6);
-                let fulltime = `${year}/${month}/01`
+                let fulltime = `${year}/${month}/01`;
                 vm.months.push(
                     {
                         baseDate: ko.observable(new Date(fulltime)),
@@ -54,9 +54,9 @@ module nts.uk.at.view.ksm004.f.viewmodel {
         getSixMonthsCalendar() {
             const vm = this;
             const companyId = 0;
-            const startDate = moment(new Date()).startOf('month').format('YYYY/MM/DD');
-            const endDate = moment(new Date()).endOf('month').format('YYYY/MM/DD');
-            vm.$ajax(paths.getSixMonthsCalendar, {companyId, startDate, endDate}).done((result: any) => {
+            const startDate = moment(new Date("2016/01/20")).startOf('month').format('YYYY-MM-DD');
+            const endDate = moment(new Date("2019/01/20")).endOf('month').format('YYYY-MM-DD');
+            vm.$ajax(paths.getSixMonthsCalendar + startDate+ "/" + endDate).done((result: any) => {
                 console.log(result)
             });
             // let _path = nts.uk.text.format(paths.getSixMonthsCalendar, companyId, startDate, endDate);

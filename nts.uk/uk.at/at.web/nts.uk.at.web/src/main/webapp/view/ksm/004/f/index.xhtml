@@ -40,38 +40,9 @@
 				<button data-bind="click: getSixMonthsCalendar" >Click Hire</button>
 				<div data-bind="foreach: _.chunk(ko.unwrap(months), 3)">
 					<div data-bind="foreach: $data">
-						<!--<div data-bind="calendar: baseDate, holidays: holidays"></div>-->
 						<div data-bind="component: { name: 'calendar', params: $data }"></div>
 					</div>
 				</div>
-				<!--<div id="yearMonthList-ksm004-SixMonthsCalendar" data-bind="foreach: yearMonthList">-->
-					<!--<div class="nts-calendar-container">-->
-						<!--<div class="nts-calendar-header">-->
-							<!--<div data-bind="ntsDatePicker: {-->
-								<!--value: $rawData,-->
-								<!--dateFormat: 'yearmonth',-->
-								<!--valueFormat: 'YYYY/MM',-->
-								<!--defaultClass: 'round-green',-->
-								<!--showJumpButtons: false,-->
-								<!--required: true,-->
-								<!--enable: false}">-->
-							<!--</div>-->
-						<!--</div>-->
-						<!--<div id="calendar-ksm004-SixMonthsCalendar" data-bind="ntsCalendar: {-->
-							<!--optionDates: $vm.calendarPanel.optionDates,-->
-							<!--yearMonth: $rawData,-->
-							<!--firstDay: $vm.calendarPanel.firstDay,-->
-							<!--startDate: $vm.calendarPanel.startDate,-->
-							<!--endDate: $vm.calendarPanel.endDate,-->
-							<!--workplaceId: $vm.calendarPanel.workplaceId,-->
-							<!--workplaceName: $vm.calendarPanel.workplaceName,-->
-							<!--eventDisplay: $vm.calendarPanel.eventDisplay,-->
-							<!--eventUpdatable: $vm.calendarPanel.eventUpdatable,-->
-							<!--holidayDisplay: $vm.calendarPanel.holidayDisplay,-->
-							<!--cellButtonDisplay: $vm.calendarPanel.cellButtonDisplay}">-->
-						<!--</div>-->
-					<!--</div>-->
-				<!--</div>-->
 			</div>
 			<div id="functions-area-bottom">
 				<button tabindex="12" data-bind="click:closeDialog">#{i18n.getText('KSM004_59')}</button>

@@ -1,8 +1,9 @@
 package nts.uk.screen.at.ws.ksm.ksm004.f;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.screen.at.app.shift.sixmonthscalendar.SixMonthsCalendarScreenProcessor;
-import nts.uk.screen.at.app.shift.sixmonthscalendar.dto.SixMonthsCalendarScreenDto;
+import nts.uk.screen.at.app.shift.sixmonthscalendar.dto.SixMonthsCalendarCompanyScreenDto;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -19,10 +20,10 @@ public class SixMonthsCalendar {
     private SixMonthsCalendarScreenProcessor processor;
 
     @POST
-    @Path("sixmonthscalendar/{companyid}/{startDate}/{endDate}")
-    public List<SixMonthsCalendarScreenDto> getSixMonthsCompany(@PathParam("companyid") String empId, @PathParam("startDate") String startDate, @PathParam("endDate") String endDate) {
+       @Path("sixmonthscalendar/{startDate}/{endDate}")
+    public List<SixMonthsCalendarCompanyScreenDto> getSixMonthsCompany(@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) {
         GeneralDate startDateFormat = GeneralDate.fromString(startDate, "yyyy-MM-dd");
         GeneralDate endDateFormat = GeneralDate.fromString(endDate, "yyyy-MM-dd");
-        return this.processor.getSixMonthsCalendar(empId, startDateFormat, endDateFormat);
+        return this.processor.getSixMonthsCalendarCompany(new DatePeriod(startDateFormat, endDateFormat));
     }
 }
