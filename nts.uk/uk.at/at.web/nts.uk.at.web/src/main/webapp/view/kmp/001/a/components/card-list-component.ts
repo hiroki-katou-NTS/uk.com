@@ -125,18 +125,18 @@ module nts.uk.at.view.kmp001.a {
 				const stampCard = ko.unwrap(vm.model.stampCardDto);
 
 				$grid.igGrid('option', 'dataSource', ko.toJS(stampCard));
+				$('.ip-stamp-card').focus();
 
 			});
 
 			ko.computed(() => {
 				const index = ko.unwrap(vm.model.selectedStampCardIndex);
 
-
-				$('.ip-stamp-card').focus();
-
 				vm.$nextTick(() => {
 					if ($grid.data('igGrid') && $grid.data('igGridSelection') && $grid.igGrid('option', 'dataSource').length) {
 						$grid.igGridSelection("selectRow", index);
+						
+						$('.ip-stamp-card').focus();
 					}
 				});
 			});

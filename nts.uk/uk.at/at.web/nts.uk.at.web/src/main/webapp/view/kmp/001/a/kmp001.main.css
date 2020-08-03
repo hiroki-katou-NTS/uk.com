@@ -57,8 +57,7 @@
 	width: 180px;
 }
 
-#func-notifier-errors.show {
-    display: inline-block;
+#func-notifier-errors {
     top: 143px;
     left: 120px;
     position: fixed;

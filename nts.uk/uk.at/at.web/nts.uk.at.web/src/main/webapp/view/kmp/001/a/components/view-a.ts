@@ -55,7 +55,7 @@ module nts.uk.at.view.kmp001.a {
 			const vm = this;
 
 			$(document).ready(function() {
-				$('#ip-stamp-card').focus();
+				$('#com-ccg001').focus();
 			});
 
 			vm.model.code
@@ -89,8 +89,6 @@ module nts.uk.at.view.kmp001.a {
 
 		mounted() {
 			const vm = this;
-
-			vm.$errors('clear');
 			const dataFormate = 'YYYY/MM/DD';
 
 			if (!!vm.$user.role.attendance) {
@@ -164,6 +162,8 @@ module nts.uk.at.view.kmp001.a {
 					*/
 					returnDataFromCcg001: function(data: any) {
 						vm.baseDate(moment.utc(data.baseDate, DATE_FORMAT).format("YYYY-MM-DD"));
+						
+						vm.employees([]);
 
 						for (var i = 0; i < data.listEmployee.length; i++) {
 							vm.employeeIds.push(data.listEmployee[i].employeeId);
@@ -179,6 +179,7 @@ module nts.uk.at.view.kmp001.a {
 							}));
 
 						vm.employees(employees);
+						vm.model.clear();
 						vm.reloadData();
 					}
 				});
@@ -265,7 +266,7 @@ module nts.uk.at.view.kmp001.a {
 							.then(() => vm.reloadData(index))
 							.then(() => vm.model.code.valueHasMutated())
 							.fail((err: any) => {
-								/*nts.uk.ui.dialog.error({ messageId: err.messageId });*/
+								nts.uk.ui.dialog.error({ messageId: err.messageId });
 								/*vm.$errors("#add", err.messageId);*/
 							})
 							.always(() => vm.$blockui("clear"));
