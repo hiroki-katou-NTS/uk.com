@@ -6,158 +6,114 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
     import getText = nts.uk.resource.getText;
 
     export class ScreenModel {
-                
+
         listWorkType: KnockoutObservableArray<ksu001.a.viewmodel.IWorkTypeDto> = ko.observableArray([]);
         selectedWorkTypeCode: KnockoutObservable<string>;
-        input : any;
+        objWorkTime: any;
+        input: any
+        dataCell: any; // data để paste vào grid
+        isDisableWorkTime : boolean;
+        enableWorkTime : KnockoutObservable<boolean> = ko.observable(true);
         
+        
+
         constructor() {
             let self = this;
-            
-            self.selectedWorkTypeCode = ko.observable('');
-            self.selectedWorkTypeCode.subscribe((newValue) => {
-                console.log(newValue);
-            });
+            let workTypeCodeSave = uk.localStorage.getItem('workTypeCodeSelected');
+            let workTimeCodeSave = uk.localStorage.getItem('workTimeCodeSelected');
+            let isDisableWorkTime = false;
 
+            self.listWorkType = ko.observableArray([]);
+            self.selectedWorkTypeCode = ko.observable(workTypeCodeSave.isPresent() ? workTypeCodeSave.get() : '');
             self.input = {
                 fillter: false,
                 workPlaceId: 'abc',
-                initiallySelected: ['002'],
+                initiallySelected: [workTimeCodeSave.isPresent() ? workTimeCodeSave.get() : ''],
                 displayFormat: '',
-                showNone: false,
+                showNone: true,
                 showDeferred: false,
-                selectMultiple: true
-            }
-        }
+                selectMultiple: true,
+                isEnable: true
+            };
 
-        /**
-         * search workTime
-         */
-        search(): void {
-            let self = this;
-            let listWorkTimeSearch: any[] = [];
-            let arrTmp: any[] = [];
-            self.isEnableClearSearchButton(true);
-            if (self.time1() === '' && self.time2() === '') {
-                alertError({ messageId: "Msg_53" });
-                self.isEnableClearSearchButton(false);
-                self.clear();
-                return;
-            }
-            if (!((self.time1() == '' && self.time2() !== '') || (self.time1() !== '' && self.time2() == '')) && self.time1() > self.time2()) {
-                alertError({ messageId: "Msg_54" });
-                self.clear();
-                return;
-            }
-            if (nts.uk.ui.errors.hasError()) {
-                return;
-            }
-            self.listWorkTimeComboBox([]);
-            
-            if(self.time2() === ''){
-               listWorkTimeSearch = _.filter(self.listTimeZoneForSearch, {'startTime' : self.time1(), 'useAtr' : 1});
-            } else if(self.time1() === ''){
-                listWorkTimeSearch = _.filter(self.listTimeZoneForSearch, {'endTime' : self.time2(), 'useAtr' : 1});
-            } else {
-                listWorkTimeSearch = _.filter(self.listTimeZoneForSearch, { 'startTime': self.time1(), 'endTime': self.time2(), 'useAtr': 1});
-            }
-            
-            if (listWorkTimeSearch.length <= 0) {
-                return;
-            }
-            
-            _.each(listWorkTimeSearch, (x) => {
-                arrTmp.push(_.find(self.listWorkTime(), { 'workTimeCode': x.workTimeCode }));
-            });
-            
-            self.listWorkTimeComboBox(arrTmp);
-            
-            $('#combo-box2').focus();
-        }
+            self.dataCell = {};
 
-        /**
-         * clear search time
-         */
-        clear(): void {
-            let self = this;
-            self.isEnableClearSearchButton(false);
-            self.listWorkTimeComboBox([]);
-            self.listWorkTimeComboBox(self.listWorkTime());
-            self.time1('');
-            self.time2('');
-            nts.uk.ui.errors.clearAll();
-        }
+            self.selectedWorkTypeCode.subscribe((newValue) => {
+                if (newValue == null || newValue == undefined)
+                    return;
 
-        /**
-         * get data workType-workTime for 2 combo-box and startDate-endDate
-         * get startDate, endDate give to A1_1(CCG001) 
-         * get startDate, endDate for screen A
-         * checkNeededOfWorkTimeSetting(): get list state of workTypeCode relate to need of workTime
-         */
-        initScreen(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            service.initScreen().done(function(data) {
-                self.employeeIdLogin = data.employeeIdLogin;
-                //set date for startDate and endDate
-                self.startDateScreenA = data.startDate;
-                self.endDateScreenA = data.endDate;
-                //set data for listWorkType
-                self.listWorkType(data.listWorkType);
-                self.checkStateWorkTypeCode = data.checkStateWorkTypeCode;
-                self.checkNeededOfWorkTimeSetting = data.checkNeededOfWorkTimeSetting;
-                self.workEmpCombines = data.workEmpCombines;
-                self.selectedWorkTypeCode(self.listWorkType()[0].workTypeCode);
-                self.listTimeZoneForSearch = data.listWorkTime;
-            
-                self.listWorkTime.push(new ksu001.common.modelgrid.WorkTime({
-                    workTimeCode: '',
-                    name: self.nashi,
-                    abName: '',
-                    symbolName: '',
-                    dailyWorkAtr: undefined,
-                    worktimeSetMethod: undefined,
-                    abolitionAtr: undefined,
-                    color: null,
-                    note: null,
-                    startTime: undefined,
-                    endTime: undefined,
-                    workNo: undefined,
-                    useAtr: undefined
-                }));
-    
-                _.each(data.listWorkTime, function(wT) {
-                    let workTimeObj: ksu001.common.modelgrid.viewmodel.WorkTime = _.find(self.listWorkTime(), ['workTimeCode', wT.workTimeCode]);
-                    if (workTimeObj && wT.workNo == 1) {
-                        workTimeObj.timeZone1 = formatById("Clock_Short_HM", wT.startTime) + getText("KSU001_66")
-                            + formatById("Clock_Short_HM", wT.endTime);
-                    } else if (workTimeObj && wT.workNo == 2) {
-                        workTimeObj.timeZone2 = wT.useAtr == 1 ? (formatById("Clock_Short_HM", wT.startTime)
-                            + getText("KSU001_66") + formatById("Clock_Short_HM", wT.endTime)) : '';
+                uk.localStorage.setItem("workTypeCodeSelected", newValue);
+
+                let workType = _.filter(self.listWorkType(), function(o) { return o.workTypeCode == newValue; });
+                if (workType.length > 0) {
+                    console.log(workType[0]);
+
+                    // check workTimeSetting 
+                    if (workType[0].workTimeSetting == 2) {
+                        self.isDisableWorkTime = true;
+                        $("#listWorkType").addClass("disabledWorkTime");
                     } else {
-                        self.listWorkTime.push(new ksu001.common.modelgrid.WorkTime({
-                            workTimeCode: wT.workTimeCode,
-                            name: wT.name,
-                            abName: wT.abName,
-                            symbolName: wT.symbol,
-                            dailyWorkAtr: wT.dailyWorkAtr,
-                            worktimeSetMethod: wT.worktimeSetMethod,
-                            abolitionAtr: wT.abolitionAtr,
-                            color: wT.color,
-                            note: wT.note,
-                            startTime: wT.startTime,
-                            endTime: wT.endTime,
-                            workNo: wT.workNo,
-                            useAtr: wT.useAtr
-                        }));
+                        self.isDisableWorkTime = false;
+                        $("#listWorkType").removeClass("disabledWorkTime");
                     }
-                });
-                dfd.resolve();
-                self.listWorkTimeComboBox(self.listWorkTime());
-                self.selectedWorkTimeCode(self.listWorkTimeComboBox()[0].codeName);
-            }).fail(function() {
-                dfd.reject();
+                }
+
+                self.updateDataCell(self.objWorkTime);
             });
-            return dfd.promise();
+        }
+
+        getDataWorkTime(data) {
+            let self = this;
+            self.objWorkTime = data;
+            self.updateDataCell(data);
+            uk.localStorage.setItem("workTimeCodeSelected", data[0].code);
+        }
+        
+        updateDataCell(objWorkTime : any) {
+            let self = this;
+            
+            if (objWorkTime == undefined)
+                return;
+            
+            let objWorkType = _.filter(self.listWorkType(), function(o) { return o.workTypeCode == self.selectedWorkTypeCode(); });
+
+            self.dataCell = {
+                workTypeCode: objWorkType[0].workTypeCode,
+                workTypeName: objWorkType[0].name,
+                workTimeCode: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0) ? (objWorkTime[0].code) : '',
+                workTimeName: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].name) : '',
+                startTime: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].tzStart1) : '',
+                endTime: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].tzEnd1) : '',
+            };
+            __viewContext.viewModel.viewA.dataCell = self.dataCell;
+            
+            // 貼り付けのパターン2
+            if( self.isDisableWorkTime = true){
+                if (objWorkTime[0].code == '') {
+                    self.isDisableWorkTime = true;
+                } else {
+                    self.isDisableWorkTime = false;
+                }
+            }
+
+            // set style text 貼り付けのパターン1
+            if (self.isDisableWorkTime) {
+                $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
+                    return { textColor: "red" };
+                });
+            }else{
+                $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
+                    return { textColor: "blue" };
+                });    
+            }
+
+            if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'time') {
+                let dataWorkType = __viewContext.viewModel.viewA.dataCell;
+                $("#extable").exTable("stickData", [{ workTypeCode: dataWorkType.workTypeCode, workTypeName: dataWorkType.workTypeName, workTimeCode: dataWorkType.workTimeCode, workTimeName: dataWorkType.workTimeName, startTime: dataWorkType.startTime, endTime: dataWorkType.endTime }]);
+            } else if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'shortName') {
+                let dataWorkType = __viewContext.viewModel.viewA.dataCell;
+                $("#extable").exTable("stickData", [{ workTypeCode: dataWorkType.workTypeCode, workTypeName: dataWorkType.workTypeName, workTimeCode: dataWorkType.workTimeCode, workTimeName: dataWorkType.workTimeName }]);
+            }
         }
     }
 }
