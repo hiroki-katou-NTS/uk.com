@@ -118,9 +118,6 @@ module nts.uk.at.view.kmp001.a {
 					},
 					dataRendered: function() {
 						$(vm.$el).find('.ui-icon.ui-icon-triangle-1-e').remove();
-						$(document).ready(function() {
-							$('.ip-stamp-card').focus();
-						});
 					}
 				});
 
@@ -128,7 +125,20 @@ module nts.uk.at.view.kmp001.a {
 				const stampCard = ko.unwrap(vm.model.stampCardDto);
 
 				$grid.igGrid('option', 'dataSource', ko.toJS(stampCard));
+				$('.ip-stamp-card').focus();
 
+			});
+
+			ko.computed(() => {
+				const index = ko.unwrap(vm.model.selectedStampCardIndex);
+
+				vm.$nextTick(() => {
+					if ($grid.data('igGrid') && $grid.data('igGridSelection') && $grid.igGrid('option', 'dataSource').length) {
+						$grid.igGridSelection("selectRow", index);
+						
+						$('.ip-stamp-card').focus();
+					}
+				});
 			});
 
 			const el = document.querySelector('.sidebar-content-header');
@@ -140,11 +150,11 @@ module nts.uk.at.view.kmp001.a {
 					ko.computed(() => {
 						const mode = ko.unwrap($vm.mode);
 
-						if (mode === 'new') {
+						/*if (mode === 'new') {
 							if ($grid.data('igGrid') && $grid.data('igGridSelection') && $grid.igGrid('option', 'dataSource').length) {
 								$grid.igGridSelection("selectRow", 0);
 							}
-						}
+						}*/
 					});
 				}
 			}

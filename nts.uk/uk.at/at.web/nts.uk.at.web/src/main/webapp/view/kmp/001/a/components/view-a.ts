@@ -49,14 +49,13 @@ module nts.uk.at.view.kmp001.a {
 		public baseDate: KnockoutObservable<string> = ko.observable('');
 		public currentCodes: KnockoutObservableArray<string> = ko.observableArray([]);
 		public mode: KnockoutObservable<MODE> = ko.observable('update');
-		public olderCardNumber: string = '';
 		public maxLength: KnockoutObservable<string> = ko.observable('');
 
 		created() {
 			const vm = this;
 
 			$(document).ready(function() {
-				$('#ip-stamp-card').focus();
+				$('#com-ccg001').focus();
 			});
 
 			vm.model.code
@@ -69,7 +68,6 @@ module nts.uk.at.view.kmp001.a {
 							.then((data: IModel) => {
 								vm.model.update(ko.toJS(data));
 								vm.model.employeeId(current.employeeId);
-								vm.olderCardNumber = data.stampCardDto[0].stampNumber;
 							});
 					}
 					vm.mode("update");
@@ -91,8 +89,6 @@ module nts.uk.at.view.kmp001.a {
 
 		mounted() {
 			const vm = this;
-
-			vm.$errors('clear');
 			const dataFormate = 'YYYY/MM/DD';
 
 			if (!!vm.$user.role.attendance) {
@@ -166,6 +162,8 @@ module nts.uk.at.view.kmp001.a {
 					*/
 					returnDataFromCcg001: function(data: any) {
 						vm.baseDate(moment.utc(data.baseDate, DATE_FORMAT).format("YYYY-MM-DD"));
+						
+						vm.employees([]);
 
 						for (var i = 0; i < data.listEmployee.length; i++) {
 							vm.employeeIds.push(data.listEmployee[i].employeeId);
@@ -181,6 +179,7 @@ module nts.uk.at.view.kmp001.a {
 							}));
 
 						vm.employees(employees);
+						vm.model.clear();
 						vm.reloadData();
 					}
 				});
@@ -244,22 +243,24 @@ module nts.uk.at.view.kmp001.a {
 				index = _.map(ko.unwrap(vm.employees), m => m.code).indexOf(model.code);;
 
 			if (ko.unwrap(vm.model.code) != '') {
-				const stamps: share.IStampCard = model.stampCardDto[0];
+				const stamp: share.IStampCard = ko.toJS(model.stampCardDto[0]);
 
-				if (stamps.stampNumber == '') {
+				if (stamp.stampNumber == '') {
 					vm.$dialog.info({ messageId: "Msg_1679" });
 				} else {
 					if (ko.toJS(vm.mode) == 'update') {
 						vm.$blockui("invisible");
 
-						const commandUpdate = { employeeId: ko.toJS(model.employeeId), olderCardNumber: ko.toJS(vm.olderCardNumber), newCardNumber: ko.toJS(stamps.stampNumber) };
+						const commandUpdate = { employeeId: ko.toJS(model.employeeId), olderCardNumber: stamp.defaultValue, newCardNumber: stamp.stampNumber };
+											
 						vm.$ajax(KMP001A_API.UPDATE, commandUpdate)
 							.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
 							.always(() => vm.$blockui("clear"));
 					} else {
 						vm.$blockui("invisible");
 
-						const commandNew = { employeeId: ko.toJS(model.employeeId), cardNumber: ko.toJS(stamps.stampNumber) };
+						const commandNew = { employeeId: ko.toJS(model.employeeId), cardNumber: stamp.stampNumber };
+						
 						vm.$ajax(KMP001A_API.ADD, commandNew)
 							.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
 							.then(() => vm.reloadData(index))
@@ -282,10 +283,10 @@ module nts.uk.at.view.kmp001.a {
 			vm.$blockui("invisible")
 			vm.$ajax(KMP001A_API.GET_STATUS_SETTING, ko.toJS(vm.employeeIds))
 				.then((data: IEmployeeId[]) => {
-					debugger;
 					vm.settings([]);
 					const employees: IModel[] = ko.toJS(vm.employees);
 					const modelSetting = new Setting();
+					
 					for (var i = 0; i < data.length; i++) {
 						const setting = _.find(employees, e => e.employeeId === data[i].employee);
 
@@ -295,10 +296,9 @@ module nts.uk.at.view.kmp001.a {
 							vm.settings.push(ko.toJS(modelSetting));
 						}
 					}
+					
 					if (ko.toJS(vm.model.code) == '') {
 						vm.model.code(employees[selectedIndex].code);
-						console.log(selectedIndex);
-						console.log(vm.model.code(employees[selectedIndex].code));
 					}
 				}).then(() => {
 					vm.$blockui("clear");
