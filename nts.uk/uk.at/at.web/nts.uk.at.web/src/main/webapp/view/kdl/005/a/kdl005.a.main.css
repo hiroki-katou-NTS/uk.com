@@ -1,4 +1,4 @@
-	
+
 .date-fixed-table {
 	padding-top: 10px;
 }
@@ -21,7 +21,7 @@ table#date-fixed-table td {
 }
 
 table.summary-table {
-	margin-top: 10px;	
+	margin-top: 10px;
 }
 
 table.summary-table tr:first-child {
@@ -41,15 +41,15 @@ table.summary-table td {
 	border-bottom: 1px #CCC dotted;
 }
 
-table.summary-table td:first-child { 
+table.summary-table td:first-child {
     background-color: #CFF1A5;
 }
 
-table.summary-table td:nth-child(2), table.summary-table td:last-child { 
+table.summary-table td:nth-child(2), table.summary-table td:last-child {
     text-align: center;
 }
 
-table.summary-table td:last-child { 
+table.summary-table td:last-child {
     border-left: none;
 }
 
@@ -66,4 +66,24 @@ table.header-content td {
 }
 #description{
 	margin-top: 5px;
+}
+
+.margin-top-20 {
+	margin-top: 20px;
+}
+.margin-left-20 {
+	margin-left: 20px;
+}
+
+.big-text {
+	font-size: 2rem;
+}
+
+.date-fixed-table .nts-fixed-body-container {
+	overflow-x: hidden;
+}
+
+table#date-fixed-table td.border-dotted {
+	padding: 6px 3px;
+	border-bottom: 1px dotted #CCC !important;
 }

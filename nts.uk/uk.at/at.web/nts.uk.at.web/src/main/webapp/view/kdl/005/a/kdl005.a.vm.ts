@@ -18,6 +18,7 @@ module nts.uk.at.view.kdl005.a {
             kdl005Data: any;
             employeeInfo: KnockoutObservable<string>;
 
+            isManagementSection: KnockoutObservable<boolean> = ko.observable(true);
             dataItems: KnockoutObservableArray<any>;
 
             value01: KnockoutObservable<string> = ko.observable("");
@@ -128,6 +129,7 @@ module nts.uk.at.view.kdl005.a {
                         }
                         self.bindTimeData(data);
                         self.bindSummaryData(data);
+                        self.isManagementSection(data.isManagementSection);
                     });
             }
 
@@ -140,108 +142,41 @@ module nts.uk.at.view.kdl005.a {
                 return dfd.promise();
             }
 
-            bindTimeData(data: any) {
+            private bindTimeData(data: AcquisitionNumberRestDayDto) {
                 let self = this;
-
 
                 self.dataItems.removeAll();
 
-                if(data.lstHistory != null && data.lstHistory.length >= 1) {
-                    _.each(data.lstHistory, function (item) {
-
-                        let leaveDate = "";
-                        let dayOffDateTop = "";
-                        let dayOffDateBot = "";
-                        let duedateHoliday = "";
-                        let occurrenceDays1 = "";
-                        let occurrenceDays2Top = "";
-                        let occurrenceDays2Bot = "";
-                        let isHalfDay = false;
-
-                        if(item.breakHis != null) {
-                            if(!item.breakHis.chkDisappeared) {
-                                let dayoffDateStr = item.breakHis.breakDate.dayoffDate != null ? item.breakHis.breakDate.dayoffDate : "";
-
-                                if(dayoffDateStr !== "") {
-                                    if(item.breakHis.mngAtr == 2 || item.breakHis.mngAtr == 3) {
-                                        leaveDate = nts.uk.resource.getText("KDL005_19", [nts.uk.time.applyFormat("Short_YMDW", [dayoffDateStr])]);
-                                    } else {
-                                        leaveDate = nts.uk.time.applyFormat("Short_YMDW", [dayoffDateStr]);
-                                    }
-                                } else {
-                                    leaveDate = "";
-                                }
-                            } else {
-                                leaveDate = "";
-                            }
-
-                            if(Number(item.breakHis.occurrenceDays) == 0 || Number(item.breakHis.occurrenceDays) == 1) {
-                                occurrenceDays1 = "";
-                            } else {
-                                occurrenceDays1 = item.breakHis.occurrenceDays + nts.uk.resource.getText("KDL005_27");
-                            }
-
-                            if(item.breakHis.expirationDate != null && item.isManaged == 1) {
-                                duedateHoliday = nts.uk.time.applyFormat("Short_YMDW", [item.breakHis.expirationDate]);
-                            } else {
-                                duedateHoliday = "";
-                            }
-                        }
-
-                        if(item.dayOffHis != null) {
-                            if(item.dayOffHis.createAtr == 2 || item.dayOffHis.createAtr == 3) {
-                                if(item.dayOffHis.dayOffDate.dayoffDate != null) {
-                                    dayOffDateTop = nts.uk.resource.getText("KDL005_19", [item.dayOffHis.dayOffDate.dayoffDate]);
-                                } else {
-                                    dayOffDateTop = "";
-                                }
-                            } else {
-                                if(item.dayOffHis.dayOffDate.dayoffDate != null) {
-                                    dayOffDateTop = nts.uk.time.applyFormat("Short_YMDW", [item.dayOffHis.dayOffDate.dayoffDate]);
-                                } else {
-                                    dayOffDateTop = "";
-                                }
-                            }
-
-                            if(Number(item.dayOffHis.requeiredDays) == 0 || Number(item.dayOffHis.requeiredDays) == 1) {
-                                occurrenceDays2Top = "";
-                            } else {
-                                occurrenceDays2Top = item.dayOffHis.requeiredDays + nts.uk.resource.getText("KDL005_27");
-                            }
-                        }
-
-                        if(item.breakHis.mngAtr == 0 && Number(item.dayOffHis.requeiredDays) % 1 !== 0) {
-                            isHalfDay = true;
-                        }
-
-                        // let temp = new DataItems(leaveDate, dayOffDateTop, dayOffDateBot, duedateHoliday, occurrenceDays1, occurrenceDays2Top, occurrenceDays2Bot, isHalfDay);
-
-                        // if(temp.leaveDate !== "" || temp.dayOffDateTop !== "" || temp.dayOffDateBot !== "" || temp.duedateHoliday !== ""
-                        //         || temp.occurrenceDays1 !== "" || temp.occurrenceDays2Top !== "" || temp.occurrenceDays2Bot !== "") {
-                        //     self.dataItems.push(temp);
-                        // }
-                    });
-                }
+                // Convert to list item
+                ko.utils.arrayPushAll(self.dataItems, self.convertDetailToItem(data.listRemainNumberDetail, data.listPegManagement));
             }
 
             bindSummaryData(data: any) {
-                var self = this;
-                if (data.totalInfor != null) {
-                    self.value01(data.totalInfor.carryForwardDays + nts.uk.resource.getText("KDL005_27"));
-                } else {
-                    self.value01(nts.uk.resource.getText("KDL005_27", ["0"]));
-                }
-                if (data.breakDay != null) {
+                const self = this;
+                const numberFormat = new nts.uk.ui.option.NumberEditorOption({ decimallength: 1 });
 
-                    self.value02(data.breakDay.occurrenceDays + nts.uk.resource.getText("KDL005_27"));
-                    self.value03(data.breakDay.useDays + nts.uk.resource.getText("KDL005_27"));
-                    self.value04(data.breakDay.remainDays + nts.uk.resource.getText("KDL005_27"));
-                } else {
+                self.value01(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.carryForwardDay, numberFormat)]));
+                self.value02(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.occurrenceDay, numberFormat)]));
+                self.hint02(nts.uk.resource.getText("KDL005_33", [nts.uk.ntsNumber.formatNumber(data.scheduleOccurrencedDay, numberFormat)]));
+                self.value03(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.usageDay, numberFormat)]));
+                self.hint03(nts.uk.resource.getText("KDL005_34", [nts.uk.ntsNumber.formatNumber(data.scheduledUsageDay, numberFormat)]));
+                self.value04(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.remainingDay, numberFormat)]));
+                self.hint04(nts.uk.resource.getText("KDL005_35", [nts.uk.ntsNumber.formatNumber(data.scheduledRemainingDay, numberFormat)]));
+                // if (data.totalInfor != null) {
+                //     self.value01(data.totalInfor.carryForwardDays + nts.uk.resource.getText("KDL005_27"));
+                // } else {
+                //     self.value01(nts.uk.resource.getText("KDL005_27", ["0"]));
+                // }
+                // if (data.breakDay != null) {
 
-                    self.value02(nts.uk.resource.getText("KDL005_27", ["0"]));
-                    self.value03(nts.uk.resource.getText("KDL005_27", ["0"]));
-                    self.value04(nts.uk.resource.getText("KDL005_27", ["0"]));
-                }
+                //     self.value02(data.breakDay.occurrenceDays + nts.uk.resource.getText("KDL005_27"));
+                //     self.value03(data.breakDay.useDays + nts.uk.resource.getText("KDL005_27"));
+                //     self.value04(data.breakDay.remainDays + nts.uk.resource.getText("KDL005_27"));
+                // } else {
+                //     self.value02(nts.uk.resource.getText("KDL005_27", ["0"]));
+                //     self.value03(nts.uk.resource.getText("KDL005_27", ["0"]));
+                //     self.value04(nts.uk.resource.getText("KDL005_27", ["0"]));
+                // }
             }
 
             cancel() {
@@ -445,29 +380,6 @@ module nts.uk.at.view.kdl005.a {
             code: string;
             isAlreadySetting: boolean;
         }
-
-        // class DataItems {
-        //     leaveDate: string;
-        //     dayOffDateTop: string;
-        //     dayOffDateBot: string;
-        //     duedateHoliday: string;
-        //     occurrenceDays1: string;
-        //     occurrenceDays2Top: string;
-        //     occurrenceDays2Bot: string;
-        //     isHalfDay: boolean;
-
-        //     constructor(leaveDate: string, dayOffDateTop: string, dayOffDateBot: string, duedateHoliday: string, occurrenceDays1: string,
-        //             occurrenceDays2Top: string, occurrenceDays2Bot: string, isHalfDay: boolean) {
-        //         this.leaveDate = leaveDate;
-        //         this.dayOffDateTop = dayOffDateTop;
-        //         this.dayOffDateBot = dayOffDateBot;
-        //         this.duedateHoliday = duedateHoliday;
-        //         this.occurrenceDays1 = occurrenceDays1;
-        //         this.occurrenceDays2Top = occurrenceDays2Top;
-        //         this.occurrenceDays2Bot = occurrenceDays2Bot;
-        //         this.isHalfDay = isHalfDay;
-        //     }
-        // }
 
         class RemainNumberDetailModel {
             expirationDate: string;

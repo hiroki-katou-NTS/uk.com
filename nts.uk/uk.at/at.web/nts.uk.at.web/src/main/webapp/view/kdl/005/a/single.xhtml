@@ -31,92 +31,124 @@
 					<button tabindex="2" class="inline" data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KDL005_18')}</button>
 
 
-					<div class="date-fixed-table">
-						<table id="date-fixed-table">
-							<colgroup>
-								<col width="380px"/>
-								<col width="250px"/>
-								<!-- <col width="150px"/> -->
-							</colgroup>
-							<thead>
+					<com:ko-if bind="isManagementSection">
+						<div class="date-fixed-table">
+							<table id="date-fixed-table">
+								<colgroup>
+									<col width="346px" />
+									<col width="250px" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th class="ui-widget-header">
+											<span>#{i18n.getText('KDL009_4')}</span>
+											<span>#{i18n.getText('KDL009_28')}</span>
+										</th>
+										<th class="ui-widget-header">
+											<span>#{i18n.getText('KDL009_5')}</span>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<com:ko-foreach bind="dataItems">
+										<!-- Case 1 -->
+										<com:ko-if bind="isMultiDigestion">
+											<tr>
+												<td rowspan="2">
+													<span data-bind="text: listOccurrence[0].occurrenceDateText"></span>
+													<span data-bind="text: listOccurrence[0].expirationDateText"></span>
+													<span data-bind="text: listOccurrence[0].occurrenceNumberText" class="margin-left-20"></span>
+												</td>
+												<td class="border-dotted">
+													<span data-bind="text: listDigestion[0].digestionDateText"></span>
+													<span data-bind="text: listDigestion[0].digestionNumberText" class="margin-left-20"></span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span data-bind="text: listDigestion[1].digestionDateText"></span>
+													<span data-bind="text: listDigestion[1].digestionNumberText" class="margin-left-20"></span>
+												</td>
+											</tr>
+										</com:ko-if>
+										<!-- Case 2 -->
+										<com:ko-if bind="isMultiOccurrence">
+											<tr>
+												<td class="border-dotted">
+													<span data-bind="text: listOccurrence[0].occurrenceDateText"></span>
+													<span data-bind="text: listOccurrence[0].expirationDateText"></span>
+													<span data-bind="text: listOccurrence[0].occurrenceNumberText" class="margin-left-20"></span>
+												</td>
+												<td rowspan="2">
+													<span data-bind="text: listDigestion[0].digestionDateText"></span>
+													<span data-bind="text: listDigestion[0].digestionNumberText" class="margin-left-20"></span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span data-bind="text: listOccurrence[1].occurrenceDateText"></span>
+													<span data-bind="text: listOccurrence[1].expirationDateText"></span>
+													<span data-bind="text: listOccurrence[1].occurrenceNumberText" class="margin-left-20"></span>
+												</td>
+											</tr>
+										</com:ko-if>
+										<!-- Case 3 -->
+										<com:ko-if bind="isSingleRow()">
+											<tr>
+												<td>
+													<span data-bind="text: singleRowDetail.occurrenceDateText"></span>
+													<span data-bind="text: singleRowDetail.expirationDateText"></span>
+													<span data-bind="text: singleRowDetail.occurrenceNumberText" class="margin-left-20"></span>
+												</td>
+												<td>
+													<span data-bind="text: singleRowDetail.digestionDateText"></span>
+													<span data-bind="text: singleRowDetail.digestionNumberText" class="margin-left-20"></span>
+												</td>
+											</tr>
+										</com:ko-if>
+									</com:ko-foreach>
+								</tbody>
+							</table>
+							<div id="expDate">
+								<div style="display: inline-block; margin-top: 10px">#{i18n.getText('KDL009_26')}</div>
+								<div data-bind="text: expirationDateText" style="display: inline-block;"></div>
+							</div>
+							<div id="description">#{i18n.getText('KDL009_27')}</div>
+							<table class="summary-table">
 								<tr>
-									<th class="ui-widget-header">#{i18n.getText('KDL005_9')}#{i18n.getText('KDL005_11')}</th>
-									<th class="ui-widget-header">#{i18n.getText('KDL005_10')}</th>
-									<!-- <th class="ui-widget-header">#{i18n.getText('KDL005_11')}</th> -->
+									<td width="150px">#{i18n.getText('KDL009_7')}</td>
+									<td width="200px">
+										<span data-bind="text: value01"></span>
+									</td>
 								</tr>
-							</thead>
-							<tbody>
-								<com:ko-foreach bind="dataItems">
-									<com:ko-if bind="isHalfDay">
-										<tr>
-											<td rowspan="2">
-												<span style="float: left; padding-left: 10px;" data-bind="text: leaveDate"></span>
-												<span style="float: right; padding-right: 10px;" data-bind="text: occurrenceDays1"></span>
-												<span style="float: left; padding-left: 10px;" data-bind="text: duedateHoliday"></span>
-											</td>
-		 									<td>
-		 										<span style="float: left; padding-left: 10px;" data-bind="text: dayOffDateTop"></span>
-		 										<span style="float: right; padding-right: 10px;" data-bind="text: occurrenceDays2Top"></span>
-	 										</td>
-		 									<!-- <td rowspan="2"><span style="float: left; padding-left: 10px;" data-bind="text: duedateHoliday"></span></td> -->
-										</tr>
+								<tr>
+									<td>#{i18n.getText('KDL009_8')}</td>
+									<td>
+										<span data-bind="text: value02"></span>
+										<span data-bind="text: hint02" class="margin-left-20"></span>
+									</td>
+								</tr>
+								<tr>
+									<td>#{i18n.getText('KDL009_9')}</td>
+									<td>
+										<span data-bind="text: value03"></span>
+										<span data-bind="text: hint03" class="margin-left-20"></span>
+									</td>
+								</tr>
+								<tr>
+									<td>#{i18n.getText('KDL009_10')}</td>
+									<td>
+										<span data-bind="text: value04"></span>
+										<span data-bind="text: hint04" class="margin-left-20"></span>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</com:ko-if>
 
-										<tr>
-											<td>
-		 										<span style="float: left; padding-left: 10px;" data-bind="text: dayOffDateBot"></span>
-		 										<span style="float: right; padding-right: 10px;" data-bind="text: occurrenceDays2Bot"></span>
-	 										</td>
-										</tr>
-									</com:ko-if>
-
-									<com:ko-if bind="!isHalfDay">
-										<tr>
-											<td>
-												<span style="float: left; padding-left: 10px;" data-bind="text: leaveDate"></span>
-												<span style="float: right; padding-right: 10px;" data-bind="text: occurrenceDays1"></span>
-												<span style="float: left; padding-left: 10px;" data-bind="text: duedateHoliday"></span>
-											</td>
-		 									<td>
-		 										<span style="float: left; padding-left: 10px;" data-bind="text: dayOffDateTop"></span>
-		 										<span style="float: right; padding-right: 10px;" data-bind="text: occurrenceDays2Top"></span>
-	 										</td>
-		 									<!-- <td><span style="float: left; padding-left: 10px;" data-bind="text: duedateHoliday"></span></td> -->
-										</tr>
-									</com:ko-if>
-								</com:ko-foreach>
-							</tbody>
-						</table>
-					<div>
-						<div style="display: inline-block; margin-top: 5px">#{i18n.getText('KDL005_31')}</div>
-						<div data-bind="text:expirationDateText"
-							style="display: inline-block;"></div>
-					</div>
-					<div id="description">#{i18n.getText('KDL005_32')}</div>
-					<table class="summary-table">
-						<tr>
-							<td width="100px">#{i18n.getText('KDL005_13')}</td>
-							<td width="100px"><label><span
-									data-bind="text: value01"></span></label></td>
-							<td width="100px"><label><span
-									data-bind="text: value01"></span></label></td>
-						</tr>
-						<tr>
-							<td>#{i18n.getText('KDL005_14')}</td>
-							<td><label><span data-bind="text: value02"></span></label></td>
-							<td><label><span data-bind="text: value02"></span></label></td>
-						</tr>
-						<tr>
-							<td>#{i18n.getText('KDL005_15')}</td>
-							<td><label><span data-bind="text: value03"></span></label></td>
-							<td><label><span data-bind="text: value03"></span></label></td>
-						</tr>
-						<tr>
-							<td>#{i18n.getText('KDL005_16')}</td>
-							<td><label><span data-bind="text: value04"></span></label></td>
-							<td><label><span data-bind="text: value04"></span></label></td>
-						</tr>
-					</table>
-				</div>
+					<com:ko-if bind="!isManagementSection">
+						<p class="margin-top-20 big-text">#{i18n.getText('KDL009_31')}</p>
+					</com:ko-if>
 				</div>
 
 				<div id="functions-area-bottom">
