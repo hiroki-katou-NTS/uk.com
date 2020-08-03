@@ -65,8 +65,9 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 if(loadDataFlag) {
                     let ApplicantEmployeeID: null,
                         ApplicantList: null,
+						appType = AppType.GO_RETURN_DIRECTLY_APPLICATION,
                         appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
-                        command = { ApplicantEmployeeID, ApplicantList, appDispInfoStartupOutput };
+                        command = { ApplicantEmployeeID, ApplicantList, appType, appDispInfoStartupOutput };
                     return vm.$ajax(API.startNew, command);
                 }
             }).then((res: any) => {

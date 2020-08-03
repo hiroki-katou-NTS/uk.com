@@ -21,8 +21,9 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
                 if(loadDataFlag) {
                     let empLst = [],
                         dateLst = [],
+						appType = AppType.WORK_CHANGE_APPLICATION,
                         appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
-                        command = { empLst, dateLst, appDispInfoStartupOutput };
+                        command = { empLst, dateLst, appType, appDispInfoStartupOutput };
                     return vm.$ajax(API.startNew, command);
                 }
             }).then((successData: any) => {
