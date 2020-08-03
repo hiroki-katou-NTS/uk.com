@@ -41,6 +41,6 @@ public class KscdtSchShortTimePK implements Serializable{
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "CHILD_CARE_ATR")
-	public GeneralDate childCareAtr;
+	public int childCareAtr;
 	
 }

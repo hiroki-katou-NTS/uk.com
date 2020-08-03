@@ -10,6 +10,10 @@ import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DeductionTotalTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ShortWorkTimeOfDaily;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -54,4 +58,23 @@ public class KscdtSchShortTime extends ContractUkJpaEntity{
 		return this.pk;
 	}
 
+	public KscdtSchShortTime(KscdtSchShortTimePK pk, String cid, int count, int totalTime, int totalTimeWithIn,
+			int totalTimeWithOut) {
+		super();
+		this.pk = pk;
+		this.cid = cid;
+		this.count = count;
+		this.totalTime = totalTime;
+		this.totalTimeWithIn = totalTimeWithIn;
+		this.totalTimeWithOut = totalTimeWithOut;
+	}
+	
+	public static KscdtSchShortTime toEntity(ShortWorkTimeOfDaily deductionTotalTime,String sid , GeneralDate ymd){
+		return new KscdtSchShortTime(new KscdtSchShortTimePK(sid, ymd, deductionTotalTime.getChildCareAttribute().value),
+				AppContexts.user().companyId(), 
+				deductionTotalTime.getWorkTimes().v(), 
+				deductionTotalTime.getTotalTime().getTotalTime().getTime().v(), 
+				deductionTotalTime.getTotalTime().getWithinStatutoryTotalTime().getTime().v(), 
+				deductionTotalTime.getTotalTime().getExcessOfStatutoryTotalTime().getTime().v());
+	}
 }
