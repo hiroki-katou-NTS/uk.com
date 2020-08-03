@@ -141,13 +141,13 @@ public class EmploymentSystemFinder {
 		SubstitutionHolidayOutput subHd = this.absenceTenProcessCommon.getSettingForSubstituteHoliday(companyId, employeeId,
 				GeneralDate.today());
 		
-//		if(!subHd.isSubstitutionFlg() || !subHd.isTimeOfPeriodFlg() ) {
-//			// #110215  取得した管理区分を渡す
-//			detailsdDto.setIsManagementSection(false);
-//			detailsdDto.setListPegManagement(new ArrayList<>());
-//			detailsdDto.setListRemainNumberDetail(new ArrayList<>());
-//			return detailsdDto;
-//		}
+		if(!subHd.isSubstitutionFlg() || !subHd.isTimeOfPeriodFlg() ) {
+			// #110215  取得した管理区分を渡す
+			detailsdDto.setIsManagementSection(false);
+			detailsdDto.setListPegManagement(new ArrayList<>());
+			detailsdDto.setListRemainNumberDetail(new ArrayList<>());
+			return detailsdDto;
+		}
 		
 		//	 基準日（指定がない場合はシステム日付）
 		if(baseDate.isEmpty()) {

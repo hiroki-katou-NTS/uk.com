@@ -402,7 +402,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	}
 	@Override
 	public AsbRemainTotalInfor totalInfor(List<BreakHistoryData> lstBreakHis, List<DayOffHistoryData> lstDayOffHis) {
-		AsbRemainTotalInfor outputData = new AsbRemainTotalInfor(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+		AsbRemainTotalInfor outputData = new AsbRemainTotalInfor(0, 0, 0, 0, 0, 0D, 0D, 0D, 0D, 0D);
 		//	実績使用日数を算出する
 		List<DayOffHistoryData> dayOffHisRecord = lstDayOffHis.stream()
 				.filter(x -> x.getCreateAtr() == MngHistDataAtr.RECORD)
@@ -416,7 +416,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 				.collect(Collectors.toList());
 		breakHisRecord.stream().forEach(y -> {
 			outputData.setRecordOccurrenceDays(outputData.getRecordOccurrenceDays() + y.getOccurrenceDays());
-//			outputData.setScheHours(outputData.getScheHours() + y.getNumberOfHours());
+			outputData.setScheHours(outputData.getScheHours() + y.getNumberOfHours());
 		});
 		//	予定使用日数を算出する
 		List<DayOffHistoryData> dayOffHisSche = lstDayOffHis.stream()
@@ -426,7 +426,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 				.collect(Collectors.toList());
 		dayOffHisSche.stream().forEach(y -> {
 			outputData.setScheUseDays(outputData.getScheUseDays() + y.getRequeiredDays());
-//			outputData.setScheUseHours(outputData.getScheUseHours() + y.getRequiredHours());
+			outputData.setScheUseHours(outputData.getScheUseHours() + y.getRequiredHours());
 		});
 		//	予定発生日数を算出する
 		List<BreakHistoryData> breakHisSche = lstBreakHis.stream()
@@ -445,7 +445,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		double carryHours = 0;
 		for (BreakHistoryData breakHistoryData : breakHisCarry) {
 			carryDays += breakHistoryData.getUnUseDays();
-//			carryHours += breakHistoryData.getNumberOfHoursUsed();
+			carryHours += breakHistoryData.getNumberOfHoursUsed();
 		}
 		List<DayOffHistoryData> dayOffHisCarry = lstDayOffHis.stream()
 				.filter(x -> x.getCreateAtr() == MngHistDataAtr.CONFIRMED)
@@ -454,7 +454,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		double carryHourOff = 0;
 		for (DayOffHistoryData dayOffHistoryData : dayOffHisCarry) {
 			carryDayOff += dayOffHistoryData.getUnOffsetDays();
-//			carryHourOff += dayOffHistoryData.getUnOffsetHours();
+			carryHourOff += dayOffHistoryData.getUnOffsetHours();
 		}
 		outputData.setCarryForwardDays(carryDays - carryDayOff);
 		outputData.setCarryForwardHours(carryHours - carryHourOff);
