@@ -14,7 +14,8 @@ module nts.uk.at.kdp003.a {
 		COMPANIES: '/ctx/sys/gateway/kdp/login/getLogginSetting',
 		FINGER_STAMP_SETTING: 'at/record/stamp/finger/get-finger-stamp-setting',
 		CONFIRM_STAMP_INPUT: '/at/record/stamp/employment/system/confirm-use-of-stamp-input',
-		EMPLOYEE_LIST: '/at/record/stamp/employment/in-workplace'
+		EMPLOYEE_LIST: '/at/record/stamp/employment/in-workplace',
+		REGISTER: '/at/record/stamp/employment/system/register-stamp-input'
 	};
 
 	const DIALOG = {
@@ -522,23 +523,43 @@ module nts.uk.at.kdp003.a {
 							const { modal, storage } = vm.$window;
 
 							if (fingerStampSetting) {
-								const { stampResultDisplay } = fingerStampSetting;
-								const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 };
-								const { USE } = NotUseAtr;
-								const { WORKING_OUT, TEMPORARY_LEAVING } = share.ChangeClockArt;
+								vm.$ajax(API.REGISTER, {
+									employeeId,
+									dateTime: moment(vm.$date.now()).format(),
+									stampButton: {
+										pageNo: layout.pageNo,
+										buttonPositionNo: btn.btnPositionNo
+									},
+									refActualResult: {
+										cardNumberSupport: '',
+										workLocationCD: '',
+										workTimeCode: '',
+										overtimeDeclaration: {
+											overTime: 0,
+											overLateNightTime: 0
+										}
+									}
+								}).then(() => {
+									const { stampResultDisplay } = fingerStampSetting;
+									const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 };
+									const { USE } = NotUseAtr;
+									const { WORKING_OUT, TEMPORARY_LEAVING } = share.ChangeClockArt;
 
-								if (notUseAttr === USE && [WORKING_OUT, TEMPORARY_LEAVING].indexOf(btn.changeClockArt) > -1) {
-									return storage('KDP010_2C', displayItemId)
-										.then(() => storage('infoEmpToScreenC', employeeInfo))
-										.then(() => modal('at', DIALOG.KDP002_C)) as JQueryDeferred<any>;
-								} else {
-									const { stampSetting } = fingerStampSetting;
-									const { resultDisplayTime } = stampSetting;
+									vm.playAudio(btn.audioType);
 
-									return storage('resultDisplayTime', resultDisplayTime)
-										.then(() => storage('infoEmpToScreenB', employeeInfo))
-										.then(() => modal('at', DIALOG.KDP002_B)) as JQueryDeferred<any>;
-								}
+									if (notUseAttr === USE && [WORKING_OUT, TEMPORARY_LEAVING].indexOf(btn.changeClockArt) > -1) {
+										return storage('KDP010_2C', displayItemId)
+											.then(() => storage('infoEmpToScreenC', employeeInfo))
+											.then(() => modal('at', DIALOG.KDP002_C)) as JQueryDeferred<any>;
+									} else {
+										const { stampSetting } = fingerStampSetting;
+										const { resultDisplayTime } = stampSetting;
+
+										return storage('resultDisplayTime', resultDisplayTime)
+											.then(() => storage('infoEmpToScreenB', employeeInfo))
+											.then(() => modal('at', DIALOG.KDP002_B)) as JQueryDeferred<any>;
+									}
+								});
 							}
 						}
 
@@ -549,6 +570,15 @@ module nts.uk.at.kdp003.a {
 				})
 				// always relead setting (color & type of all button in tab)
 				.always(reloadSetting);
+		}
+
+		playAudio(type: 0 | 1 | 2) {
+			const oha = '../../share/voice/0_oha.mp3';
+			const otsu = '../../share/voice/1_otsu.mp3';
+
+			if (type !== 0) {
+				new Audio(type === 1 ? oha : otsu).play();
+			}
 		}
 	}
 
@@ -616,6 +646,21 @@ module nts.uk.at.kdp003.a {
 
 		/** The not use. */
 		NOT_USE = 0
+	}
+
+	enum AuthcMethod {
+
+		// 0:ID認証
+		ID_AUTHC = 0,
+
+		// 1:ICカード認証
+		IC_CARD_AUTHC = 1,
+
+		// 2:静脈認証
+		VEIN_AUTHC = 2,
+
+		// 3:外部認証
+		EXTERNAL_AUTHC = 3
 	}
 
 	enum StampMeans {

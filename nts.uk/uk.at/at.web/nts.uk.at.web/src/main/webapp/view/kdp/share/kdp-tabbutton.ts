@@ -287,7 +287,7 @@ module nts.uk.at.view.kdp.share {
 	}
 
 	export interface ButtonSetting {
-		audioType: number;
+		audioType: 0 | 1 | 2;
 		btnBackGroundColor: string;
 		btnDisplayType: number;
 		btnName: string;
