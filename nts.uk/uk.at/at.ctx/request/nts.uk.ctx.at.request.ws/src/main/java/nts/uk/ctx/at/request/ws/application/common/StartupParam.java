@@ -18,6 +18,8 @@ public class StartupParam {
 	
 	public List<String> dateLst;
 	
+	public int appType;
+	
 	public Integer opHolidayAppType;
 	
 	public Integer opOvertimeAppAtr;
