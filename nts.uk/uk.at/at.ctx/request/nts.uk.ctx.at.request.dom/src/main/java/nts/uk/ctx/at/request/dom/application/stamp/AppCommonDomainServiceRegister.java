@@ -6,7 +6,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 
 public interface AppCommonDomainServiceRegister {
-//	打刻申請の新規登録
 	/**
 	 * Refactor4
 	 * 打刻申請の新規登録
@@ -19,5 +18,9 @@ public interface AppCommonDomainServiceRegister {
 	 * @return
 	 */
 	public ProcessResult registerAppStamp(Application application, AppStamp appStamp, AppRecordImage appRecordImage, AppStampOutput appStampOutput, Boolean recoderFlag);
+	
+	
+	
+	
 	
 }
