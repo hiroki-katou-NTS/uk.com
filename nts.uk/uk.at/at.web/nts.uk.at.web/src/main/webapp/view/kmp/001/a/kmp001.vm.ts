@@ -34,36 +34,7 @@ module nts.uk.at.view.kmp001 {
 		workplaceName: string;
 		stampCardDto: IStampCard[];
 	}
-
-	export interface IStampCard {
-		stampCardId: string;
-		stampNumber: string;
-		checked: boolean;
-	}
-
-	export class StampCard {
-		stampCardId: KnockoutObservable<string> = ko.observable('');
-		stampNumber: KnockoutObservable<string> = ko.observable('');
-		checked: KnockoutObservable<boolean> = ko.observable(false);
-
-		constructor(params?: IStampCard) {
-			const model = this;
-
-			model.stampCardId(params.stampCardId);
-			model.update(params);
-		}
-
-		public update(params?: IStampCard) {
-			const model = this;
-
-			if (params) {
-				//model.stampCardId(params.stampCardId);
-				model.stampNumber(params.stampNumber);
-				model.checked(params.checked);
-			}
-		}
-	}
-
+	
 	export class Model {
 		code: KnockoutObservable<string> = ko.observable('');
 		affiliationId: KnockoutObservable<string> = ko.observable('');
@@ -114,6 +85,7 @@ module nts.uk.at.view.kmp001 {
 		public clear() {
 			const self = this;
 			
+			self.code('');
 			self.affiliationId('');
 			self.birthDay(null);
 			self.businessName('');
@@ -131,6 +103,38 @@ module nts.uk.at.view.kmp001 {
 
 			model.stampCardDto.unshift(new StampCard({ checked: false, stampCardId: "", stampNumber: "" }));
 			model.selectedStampCardIndex(model.stampCardDto.length - 1);
+		}
+	}
+	
+	export interface IStampCard {
+		stampCardId: string;
+		defaultValue?: string;
+		stampNumber: string;
+		checked: boolean;
+	}
+
+	export class StampCard {
+		stampCardId: KnockoutObservable<string> = ko.observable('');
+		defaultValue: string = '';
+		stampNumber: KnockoutObservable<string> = ko.observable('');
+		checked: KnockoutObservable<boolean> = ko.observable(false);
+
+		constructor(params?: IStampCard) {
+			const model = this;
+
+			model.stampCardId(params.stampCardId);
+			model.defaultValue = params.stampNumber;
+			model.update(params);
+		}
+
+		public update(params?: IStampCard) {
+			const model = this;
+
+			if (params) {
+				//model.stampCardId(params.stampCardId);
+				model.stampNumber(params.stampNumber);
+				model.checked(params.checked);
+			}
 		}
 	}
 
