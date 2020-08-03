@@ -24,7 +24,7 @@ export class KdpS01CComponent extends Vue {
         time: '17：58', stampTypeText: '出勤', localtion: '000　本社',
         workTypeName: '勤務種類の名称', workTimeName: '就業時間帯の名称'
     };
-    public disabled: Boolean = true;
+    public disabled: Boolean = false;
 
 
     public created() {

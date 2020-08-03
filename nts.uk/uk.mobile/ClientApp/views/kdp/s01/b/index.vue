@@ -12,7 +12,7 @@
     </div>
     <div class="col-12 value">
       <label class="col-6 px-1">{{ screenData.date }}</label>
-      <label class="col-6 stamp-time font-weight-bold">{{
+      <label class="col-6 stamp-time font-weight-bold " style="line-height: 1rem;">{{
         screenData.time
       }}</label>
     </div>
@@ -20,10 +20,13 @@
     <div class="row ml-1 title uk-text-over-time">
       <label>{{ "KDPS01_28" | i18n }}</label>
     </div>
-    <div class="col-12 value text-center uk-text-blue">
-      <label class="stamp-text font-weight-bold">{{
-        screenData.stampTypeText
-      }}</label>
+    <div class="col-12 value uk-text-blue">
+      <div class="col-6 d-inline-block"></div>
+      <label
+        class=" col-6 stamp-text font-weight-bold"
+        style="line-height: 1rem;"
+        >{{ screenData.stampTypeText }}</label
+      >
     </div>
 
     <div class="row ml-1 title uk-text-over-time">

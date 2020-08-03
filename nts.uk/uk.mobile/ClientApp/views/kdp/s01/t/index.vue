@@ -15,7 +15,7 @@
       </button>
     </div>
 
-    <button type="button" class="col-12 btn btn-secondary btn-block">
+    <button type="button" class="col-12 btn btn-secondary btn-block mt-2">
       {{ "KDPS01_65" | i18n }}
     </button>
   </div>
