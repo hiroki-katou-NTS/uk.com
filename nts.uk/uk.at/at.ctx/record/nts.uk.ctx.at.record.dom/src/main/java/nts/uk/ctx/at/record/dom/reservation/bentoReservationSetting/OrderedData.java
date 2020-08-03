@@ -19,4 +19,23 @@ public enum OrderedData {
 
     public final int value;
     public final String name;
+
+    private final static OrderedData[] values = OrderedData.values();
+
+    public static OrderedData valueOf(Integer value) {
+        // Invalid object.
+        if (value == null) {
+            return null;
+        }
+
+        // Find value.
+        for (OrderedData val : OrderedData.values) {
+            if (val.value == value) {
+                return val;
+            }
+        }
+
+        // Not found.
+        return null;
+    }
 }

@@ -46,10 +46,10 @@ public class BentoReservation extends AggregateRoot{
 	 * 弁当予約明細リスト
 	 */
 	@Getter
-	private final List<BentoReservationDetail> bentoReservationDetails;
+	private List<BentoReservationDetail> bentoReservationDetails;
 	
 	public BentoReservation(ReservationRegisterInfo registerInfor, ReservationDate reservationDate, boolean ordered,
-			List<BentoReservationDetail> bentoReservationDetails) {
+							Optional<WorkLocationCode> workLocationCode,List<BentoReservationDetail> bentoReservationDetails) {
 		// [inv-1] @明細リスト.size > 0
 		if(bentoReservationDetails.size() <= 0) {
 			throw new RuntimeException("System error");
@@ -57,9 +57,9 @@ public class BentoReservation extends AggregateRoot{
 		this.registerInfor = registerInfor;
 		this.reservationDate = reservationDate;
 		this.ordered = ordered;
+		this.workLocationCode = workLocationCode;
 		this.bentoReservationDetails = bentoReservationDetails;
-
-    }
+	}
 	/**
 	 * 予約する
 	 * @param registerInfor
@@ -67,8 +67,9 @@ public class BentoReservation extends AggregateRoot{
 	 * @param bentoReservationDetails
 	 * @return
 	 */
-	public static BentoReservation reserve(ReservationRegisterInfo registerInfor, ReservationDate reservationDate, List<BentoReservationDetail> bentoReservationDetails) {
-		return new BentoReservation(registerInfor, reservationDate, false, bentoReservationDetails);
+	public static BentoReservation reserve(ReservationRegisterInfo registerInfor, ReservationDate reservationDate,
+										   Optional<WorkLocationCode> workLocationCode,List<BentoReservationDetail> bentoReservationDetails) {
+		return new BentoReservation(registerInfor, reservationDate, false,workLocationCode, bentoReservationDetails);
 	}
 	
 	/**
@@ -82,7 +83,7 @@ public class BentoReservation extends AggregateRoot{
 		if(CollectionUtil.isEmpty(afterDetails)) {
 			return Optional.empty();
 		} else {
-			return Optional.of(reserve(registerInfor, reservationDate, afterDetails));
+			return Optional.of(reserve(registerInfor, reservationDate,workLocationCode, afterDetails));
 		}
 	}
 	
@@ -95,32 +96,23 @@ public class BentoReservation extends AggregateRoot{
 		}
 	}
 
-//	/**
-//	 * 強制弁当予約する
-//	 */
-//	public BentoReservation bookLunch(ReservationRegisterInfo registerInfor, ReservationDate reservationDate,
-//											 List<BentoReservationDetail> bentoReservationDetails, Optional<WorkLocationCode> workLocationCode)
-//	{
-//		return new BentoReservation(registerInfor, reservationDate, false, bentoReservationDetails, workLocationCode);
-//	}
-//
-//	/**
-//	 * 強制弁当予約修正する
-//	 */
-//	public BentoReservation modifyLunch(boolean ordered, BentoReservationDetail bentoReservationDetail)
-//	{
-//	    this.ordered = ordered;
-//	    this.bentoReservationDetails.add(bentoReservationDetail);
-//        return this;
-//	}
+	/**
+	 * 強制弁当予約する
+	 */
+	public BentoReservation bookLunch(ReservationRegisterInfo registerInfor, ReservationDate reservationDate,
+			Optional<WorkLocationCode> workLocationCode,List<BentoReservationDetail> bentoReservationDetails)
+	{
+		return new BentoReservation(registerInfor, reservationDate, false,workLocationCode, bentoReservationDetails);
+	}
 
-//	/**
-//	 * 注文済みにする
-//	 */
-//	public BentoReservation makeOrder(ReservationRegisterInfo registerInfor,boolean ordered)
-//	{
-//	    this.registerInfor = registerInfor;
-//        this.ordered = ordered;
-//        return this;
-//	}
+	/**
+	 * 強制弁当予約修正する
+	 */
+	public BentoReservation modifyLunch(boolean ordered, BentoReservationDetail bentoReservationDetail)
+	{
+	    this.ordered = ordered;
+	    this.bentoReservationDetails.add(bentoReservationDetail);
+        return this;
+	}
+
 }

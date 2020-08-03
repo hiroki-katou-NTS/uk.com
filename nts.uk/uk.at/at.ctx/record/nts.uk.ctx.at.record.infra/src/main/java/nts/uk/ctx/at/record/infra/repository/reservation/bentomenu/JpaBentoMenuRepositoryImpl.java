@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import org.apache.logging.log4j.util.Strings;
 
 import lombok.AllArgsConstructor;
@@ -46,21 +47,21 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 	
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("SELECT a.CID, a.HIST_ID, a.CONTRACT_CD, a.RESERVATION_FRAME1_NAME, a.RESERVATION_FRAME1_START_TIME, a.RESERVATION_FRAME1_END_TIME,");
-		builderString.append("a.RESERVATION_FRAME2_NAME, a.RESERVATION_FRAME2_START_TIME, a.RESERVATION_FRAME2_END_TIME, b.START_YMD, b.END_YMD,");
-		builderString.append("c.MENU_FRAME, c.BENTO_NAME, c.UNIT_NAME, c.PRICE1, c.PRICE2, c.RESERVATION1_ATR, c.RESERVATION2_ATR ");
-		builderString.append("FROM KRCMT_BENTO_MENU a JOIN KRCMT_BENTO_MENU_HIST b ON a.HIST_ID = b.HIST_ID AND a.CID = b.CID ");
-		builderString.append("LEFT JOIN KRCMT_BENTO c ON a.HIST_ID = c.HIST_ID AND a.CID = c.CID ");
+		builderString.append(" SELECT a.CID, a.HIST_ID, a.CONTRACT_CD, a.RESERVATION_FRAME1_NAME, a.RESERVATION_FRAME1_START_TIME, a.RESERVATION_FRAME1_END_TIME, ");
+		builderString.append(" a.RESERVATION_FRAME2_NAME, a.RESERVATION_FRAME2_START_TIME, a.RESERVATION_FRAME2_END_TIME, b.START_YMD, b.END_YMD, ");
+		builderString.append(" c.MENU_FRAME, c.BENTO_NAME, c.UNIT_NAME, c.PRICE1, c.PRICE2, c.RESERVATION1_ATR, c.RESERVATION2_ATR ");
+		builderString.append(" FROM KRCMT_BENTO_MENU a JOIN KRCMT_BENTO_MENU_HIST b ON a.HIST_ID = b.HIST_ID AND a.CID = b.CID ");
+		builderString.append(" LEFT JOIN KRCMT_BENTO c ON a.HIST_ID = c.HIST_ID AND a.CID = c.CID ");
 		SELECT = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append(SELECT);
-		builderString.append("WHERE a.CID = 'companyID' AND b.START_YMD <= 'date' AND b.END_YMD >= 'date'");
+		builderString.append(" WHERE a.CID = 'companyID' AND b.START_YMD <= 'date' AND b.END_YMD >= 'date' ");
 		FIND_BENTO_MENU_DATE = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append(SELECT);
-		builderString.append("WHERE a.CID = 'companyID' AND b.START_YMD <= 'startDate' AND b.END_YMD >= 'endDate'");
+		builderString.append(" WHERE a.CID = 'companyID' AND b.START_YMD <= 'startDate' AND b.END_YMD >= 'endDate' ");
 		FIND_BENTO_MENU_PERIOD = builderString.toString();
 	}
 	
@@ -85,6 +86,8 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		public int price2;
 		public boolean reservationAtr1;
 		public boolean reservationAtr2;
+		public String workLocationCode;
+
 	}
 	
 	@SneakyThrows
@@ -109,7 +112,8 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 					Integer.valueOf(rs.getString("PRICE1")), 
 					Integer.valueOf(rs.getString("PRICE2")), 
 					"0".equals(rs.getString("RESERVATION1_ATR")) ? false : true,
-				    "0".equals(rs.getString("RESERVATION2_ATR")) ? false : true));
+				    "0".equals(rs.getString("RESERVATION2_ATR")) ? false : true,
+					rs.getString("WORK_LOCATION_CD")));
 		}
 		return listFullData;
 	}
@@ -129,7 +133,8 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 								BentoReservationUnitName unit = new BentoReservationUnitName(y.getValue().get(0).getUnitName());
 								boolean reservationTime1Atr = y.getValue().get(0).isReservationAtr1();
 								boolean reservationTime2Atr = y.getValue().get(0).isReservationAtr2();
-								return new Bento(frameNo, name, amount1, amount2, unit, reservationTime1Atr, reservationTime2Atr);
+								Optional<WorkLocationCode> workLocationCode = Optional.of(new WorkLocationCode(y.getValue().get(0).getWorkLocationCode()));
+								return new Bento(frameNo, name, amount1, amount2, unit, reservationTime1Atr, reservationTime2Atr, workLocationCode);
 							}).collect(Collectors.toList());
 					String reservationFrameName1 = first.getReservationFrameName1();
 					Integer reservationStartTime1 = first.getReservationStartTime1();
@@ -158,10 +163,17 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 	
 	@Override
 	@SneakyThrows
-	public BentoMenu getBentoMenu(String companyID, GeneralDate date) {
+	public BentoMenu getBentoMenu(String companyID, GeneralDate date, Optional<WorkLocationCode> workLocationCode) {
 		String query = FIND_BENTO_MENU_DATE;
+
+		if (workLocationCode.isPresent()){
+			query += " AND c.WORK_LOCATION_CD = 'workLocationCode' ";
+			query = query.replaceFirst("workLocationCode", String.valueOf(workLocationCode));
+		}
+
 		query = query.replaceFirst("companyID", companyID);
 		query = query.replaceAll("date", date.toString());
+
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
 			ResultSet rs = stmt.executeQuery();
 			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));

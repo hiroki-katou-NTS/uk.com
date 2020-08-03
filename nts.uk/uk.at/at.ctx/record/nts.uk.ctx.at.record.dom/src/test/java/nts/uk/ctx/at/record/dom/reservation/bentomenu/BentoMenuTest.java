@@ -6,23 +6,15 @@ import static nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.Reserva
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.ClockHourMinute;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.reservation.Helper;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
 
 public class BentoMenuTest {
@@ -58,12 +50,13 @@ public class BentoMenuTest {
 
 		BentoMenu target = Helper.Menu.DUMMY;
 		ReservationDate pastDay = Helper.Reservation.Date.of(today().addDays(-1));
-		
+		Optional<WorkLocationCode> workLocationCode = Helper.Reservation.WorkLocationCodeReg.DUMMY;
 		NtsAssert.businessException("Msg_1584", () -> {
 			target.reserve(
 					Helper.Reservation.RegInfo.DUMMY,
 					pastDay,
 					now(), // dummy
+					workLocationCode,
 					DUMMY_DETAILS);
 		});
 	}
@@ -85,6 +78,7 @@ public class BentoMenuTest {
 					Helper.Reservation.RegInfo.DUMMY,
 					Helper.Reservation.Date.of(today()),
 					now(), // dummy
+					Helper.Reservation.WorkLocationCodeReg.DUMMY,
 					details);
 		});
 	}
@@ -111,6 +105,7 @@ public class BentoMenuTest {
 				registerInfor,
 				reservationDate,
 				now,
+				Helper.Reservation.WorkLocationCodeReg.DUMMY,
 				details);
 		
 		assertThat(result.getRegisterInfor()).isEqualTo(registerInfor);

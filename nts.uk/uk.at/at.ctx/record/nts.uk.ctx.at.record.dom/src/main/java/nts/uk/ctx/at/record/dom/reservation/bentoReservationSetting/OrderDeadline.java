@@ -19,4 +19,24 @@ public enum  OrderDeadline {
 
     public final int value;
     public final String name;
+
+
+    private final static OrderDeadline[] values = OrderDeadline.values();
+
+    public static OrderDeadline valueOf(Integer value) {
+        // Invalid object.
+        if (value == null) {
+            return null;
+        }
+
+        // Find value.
+        for (OrderDeadline val : OrderDeadline.values) {
+            if (val.value == value) {
+                return val;
+            }
+        }
+
+        // Not found.
+        return null;
+    }
 }

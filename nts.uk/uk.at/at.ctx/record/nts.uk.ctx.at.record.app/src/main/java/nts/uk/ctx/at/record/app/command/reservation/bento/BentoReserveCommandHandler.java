@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.command.reservation.bento;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -13,11 +14,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReserveService;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
+import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
@@ -60,7 +57,8 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 						reservationRegisterInfo, 
 						new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME1), 
 						datetime,
-						command.getFrame1Bentos());
+						command.getFrame1Bentos(),
+						Optional.of(new WorkLocationCode(command.getWorkLocationCode())));
 				persist1.run();
 			}
 			
@@ -70,7 +68,8 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 						reservationRegisterInfo, 
 						new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME2), 
 						datetime,
-						command.getFrame2Bentos());
+						command.getFrame2Bentos(),
+						Optional.of(new WorkLocationCode(command.getWorkLocationCode())));
 				persist2.run();
 			}
 		});
@@ -85,9 +84,9 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 		private final BentoReservationRepository bentoReservationRepository;
 		
 		@Override
-		public BentoMenu getBentoMenu(ReservationDate reservationDate) {
+		public BentoMenu getBentoMenu(ReservationDate reservationDate,Optional<WorkLocationCode> workLocationCode) {
 			String companyID = AppContexts.user().companyId();
-			return bentoMenuRepository.getBentoMenu(companyID, reservationDate.getDate());
+			return bentoMenuRepository.getBentoMenu(companyID, reservationDate.getDate(),workLocationCode);
 		}
 
 		@Override

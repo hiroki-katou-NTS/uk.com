@@ -7,12 +7,7 @@ import java.util.Optional;
 import nts.arc.time.ClockHourMinute;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationTime;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
+import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bento.rules.BentoReservationTimeName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoAmount;
@@ -31,6 +26,11 @@ public class Helper {
 		public static class RegInfo {
 			public static ReservationRegisterInfo DUMMY = new ReservationRegisterInfo("cardNo");
 		}
+
+		public static class WorkLocationCodeReg {
+			public static Optional<WorkLocationCode> DUMMY = Optional.of(new WorkLocationCode(""));
+
+		}
 		
 		public static class Date {
 			public static ReservationDate DUMMY = new ReservationDate(
@@ -46,9 +46,10 @@ public class Helper {
 					RegInfo.DUMMY,
 					reservationDate,
 					false,
+					WorkLocationCodeReg.DUMMY,
 					Arrays.asList(detail));
 		}
-		
+
 		public static class Detail {
 			
 			public static BentoReservationDetail DUMMY = new BentoReservationDetail(
@@ -61,6 +62,14 @@ public class Helper {
 			}
 			
 		}
+
+
+		public static final BentoReservation DUMMY = new BentoReservation(
+				RegInfo.DUMMY,
+				null,
+				false,
+				WorkLocationCodeReg.DUMMY,
+                Detail.DUMMY_LIST);
 	}
 	
 	public static BentoReservationCount count(int value) {
@@ -100,8 +109,12 @@ public class Helper {
 		
 		public static class Item {
 			public static final Bento DUMMY = bentoReserveFrame(1, true, true);
-			
+
+			public static class WorkLocationCodeReg {
+				public static Optional<WorkLocationCode> DUMMY = Optional.of(new WorkLocationCode(""));
+			}
 			public static Bento bentoAmount(int frameNo, Integer amount1, Integer amount2) {
+
 				return new Bento(
 						frameNo,
 						name("name" + frameNo),
@@ -109,7 +122,8 @@ public class Helper {
 						amount(amount2 != null ? amount2 : 0),
 						unit("unit"),
 						true,
-						true);
+						true,
+						WorkLocationCodeReg.DUMMY);
 			}
 			
 			public static Bento bentoReserveFrame(int frameNo, boolean reserveFrame1, boolean reserveFrame2) {
@@ -120,7 +134,8 @@ public class Helper {
 						amount(0),
 						unit("unit"),
 						reserveFrame1,
-						reserveFrame2);
+						reserveFrame2,
+						WorkLocationCodeReg.DUMMY);
 			}
 			
 			public static BentoAmount amount(int value) {

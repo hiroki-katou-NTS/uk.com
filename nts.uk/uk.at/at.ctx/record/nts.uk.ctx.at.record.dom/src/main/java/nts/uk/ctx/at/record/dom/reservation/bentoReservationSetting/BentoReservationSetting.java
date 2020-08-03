@@ -21,7 +21,7 @@ public class BentoReservationSetting extends AggregateRoot {
      * 会社ID
      */
     // The company id.
-    private CompanyId companyId;
+    private String companyId;
 
     /**
      * 予約の運用区別
@@ -42,7 +42,7 @@ public class BentoReservationSetting extends AggregateRoot {
     private Achievements achievements;
 
     public BentoReservationSetting(
-            CompanyId companyId, OperationDistinction operationDistinction,
+            String companyId, OperationDistinction operationDistinction,
             CorrectionContent correctionContent, Achievements achievements)
     {
         this.companyId = companyId;

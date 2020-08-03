@@ -19,4 +19,24 @@ public enum OperationDistinction {
     public final int value;
     public final String name;
 
+
+    private final static OperationDistinction[] values = OperationDistinction.values();
+
+    public static OperationDistinction valueOf(Integer value) {
+        // Invalid object.
+        if (value == null) {
+            return null;
+        }
+
+        // Find value.
+        for (OperationDistinction val : OperationDistinction.values) {
+            if (val.value == value) {
+                return val;
+            }
+        }
+
+        // Not found.
+        return null;
+    }
+
 }
