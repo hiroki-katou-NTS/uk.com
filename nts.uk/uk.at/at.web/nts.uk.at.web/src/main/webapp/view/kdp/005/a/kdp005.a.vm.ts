@@ -61,7 +61,7 @@ module nts.uk.at.view.kdp005.a {
                                         location.reload();
                                     }).fail(()=>{
                                         dfd.resolve();
-                                    });      
+                                    });
                                 }else{
                                     self.doFirstLoad().done(() => {
                                         dfd.resolve();
@@ -393,6 +393,7 @@ module nts.uk.at.view.kdp005.a {
                 }).always(() => {
                     block.clear();
                 });;    
+                return dfd.promise();
             }
 
 			public registerData(button, layout, stampedCardNumber, employeeIdRegister) {
