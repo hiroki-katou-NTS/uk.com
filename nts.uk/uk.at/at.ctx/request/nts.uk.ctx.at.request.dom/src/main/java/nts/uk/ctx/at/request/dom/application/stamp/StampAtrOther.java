@@ -14,15 +14,15 @@ public enum StampAtrOther {
 	ATTEENDENCE_OR_RETIREMENT(0,"出勤／退勤"),
 	
 	EXTRAORDINARY(1,"臨時"),
-	
+
 	GOOUT_RETURNING (2,"外出／戻り"),
-	
+
 	CHEERING(3,"応援"),
-	
+
 	PARENT(4,"育児"),
-	
+
 	NURSE(5,"介護"),
-	
+
 	BREAK(6,"休憩");
 	
 	public int value;
