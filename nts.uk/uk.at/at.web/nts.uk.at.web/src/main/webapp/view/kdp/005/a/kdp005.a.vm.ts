@@ -54,11 +54,19 @@ module nts.uk.at.view.kdp005.a {
                     }else{
                         self.btnChangeCompany(self.listCompany.length > 0);
                         characteristics.restore("loginKDP005").done(function(loginInfo: ILoginInfo) {
-                            if (loginInfo && loginInfo.companyId === __viewContext.user.companyId) {
+                            if (loginInfo) {
                                 self.loginInfo = loginInfo;
-                                self.doFirstLoad().done(() => {
-                                    dfd.resolve();
-                                });
+                                if(__viewContext.user.companyId != loginInfo.companyId || __viewContext.user.employeeCode != loginInfo.employeeCode){
+                                    self.login(self.loginInfo).done(()=>{
+                                        location.reload();
+                                    }).fail(()=>{
+                                        dfd.resolve();
+                                    });      
+                                }else{
+                                    self.doFirstLoad().done(() => {
+                                        dfd.resolve();
+                                    });
+                                }   
                             } else {
                                 self.setLoginInfo().done((loginResult) => {
                                     if (!loginResult) {
@@ -338,6 +346,7 @@ module nts.uk.at.view.kdp005.a {
                             if (result) {
                                 self.loginInfo = loginResult.em;
                                 self.loginInfo.selectedWP = result;
+                                
                                 characteristics.save("loginKDP005", self.loginInfo).done(() => {
                                     if(__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode){
                                         location.reload();        
