@@ -1,20 +1,21 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
@@ -29,14 +30,8 @@ import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.ErrorStampInfo;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.AppStampSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.AppStampReflect;
-import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting_Old;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AppCommonDomainServiceImp implements AppCommonDomainService{
@@ -241,7 +236,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 			AppStampOutput appStampOutput) {
 		List<ConfirmMsgOutput> listConfirmMs = new ArrayList<ConfirmMsgOutput>();
 		// check 
-//		this.checkRegisterAndUpdate();
+		this.checkRegisterAndUpdate((AppStamp)application);
 		
 		
 //		4-1.詳細画面登録前の処理
@@ -256,15 +251,70 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 				null,
 				null);
 		
-		
-		
-		
-		
-		
 		return listConfirmMs;
 	}
-	
-	
+	// msg307
+	public void checkTime(List<AppStampStandard> listAppStampStandar) {
+		if (CollectionUtil.isEmpty(listAppStampStandar)) return;
+		Collections.sort(listAppStampStandar, new Comparator<AppStampStandard>() {
+
+			@Override
+			public int compare(AppStampStandard arg0, AppStampStandard arg1) {
+				return arg0.getFramNo() > arg1.getFramNo() ? 1 : -1;
+			}
+			
+		});
+		AppStampStandard temp = new AppStampStandard();
+		listAppStampStandar.stream().forEach(item -> {
+			if (temp.getFramNo() != null) {
+				if (item.getStartTime() != null && item.getEndTime() != null) {
+					if (item.getStartTime() >= item.getEndTime()) {
+						// throw msg
+						
+						throw new BusinessException("Msg_307");
+					}
+				}else {
+					if (item.getStartTime() != null && temp.getEndTime() != null) {
+						if (item.getStartTime() < temp.getEndTime() ) {
+							// throw msg
+							
+							throw new BusinessException("Msg_307");
+						}
+					} 
+					
+				}
+				
+				
+				
+				if (item.getStartTime() != null) {
+					temp.setStartTime(item.getStartTime());
+					
+				}
+				if (item.getEndTime() != null) {
+					temp.setEndTime(item.getEndTime());
+					
+				}
+				
+				
+				
+			} else {
+				temp.setStartTime(item.getStartTime());
+				temp.setEndTime(item.getEndTime());
+				temp.setFramNo(item.getFramNo());
+				temp.setStampAtrOther(item.getStampAtrOther());
+				
+				if (item.getStartTime() != null && item.getEndTime() != null) {
+					if (item.getStartTime() >= item.getEndTime()) {
+						// throw msg
+						
+						throw new BusinessException("Msg_307");
+					}
+				}
+			}
+		});
+		
+		
+	}
 	public void checkRegisterAndUpdate(AppStamp appStamp) {
 		if (appStamp == null) return;
 //		事後モード：「時間帯：Empty　AND　時間帯の取消：Empty　AND　時刻：Empty　AND　時刻の取消：Empty、」の場合：Msg_308を表示する
@@ -286,20 +336,41 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 				if (x.getTimeZone().getStartTime() == null || x.getTimeZone().getEndTime() == null ) {
 //					育児 または 介護または休憩の時、「 開始時刻　OR　 終了時刻」は入力しない　→　(#Msg_308#)
 					throw new BusinessException("Msg_308");
-				} else if (x.getTimeZone().getStartTime().getDayTime() >= x.getTimeZone().getEndTime().getDayTime()){
-//					①開始時刻と終了時刻がともに設定されているとき、開始時刻　≦　終了時刻 (#Msg_307#)
-//					②終了時刻　<　次の開始時刻 (#Msg_307#)
-					throw new BusinessException("Msg_307");
-					
-				}
+				} 
 			});
 			
 		}
 		
 		
-		
-		
-		
+		// msg 307
+		List<AppStampStandard> listAppStampStandar = AppStampStandard.toListStandard(appStamp);
+		if (!CollectionUtil.isEmpty(listAppStampStandar)) {
+//			出勤／退勤
+			List<AppStampStandard> listAttendence = listAppStampStandar.stream().filter(x -> x.getStampAtrOther() == StampAtrOther.ATTEENDENCE_OR_RETIREMENT).collect(Collectors.toList());
+//			臨時
+			List<AppStampStandard> listExtraordinary = listAppStampStandar.stream().filter(x -> x.getStampAtrOther() == StampAtrOther.EXTRAORDINARY).collect(Collectors.toList());
+//			外出／戻り
+			List<AppStampStandard> listGoOut = listAppStampStandar.stream().filter(x -> x.getStampAtrOther() == StampAtrOther.GOOUT_RETURNING).collect(Collectors.toList());
+//			応援
+			List<AppStampStandard> listCheer = listAppStampStandar.stream().filter(x -> x.getStampAtrOther() == StampAtrOther.CHEERING).collect(Collectors.toList());
+//			育児
+			List<AppStampStandard> listParent = listAppStampStandar.stream().filter(x -> x.getStampAtrOther() == StampAtrOther.PARENT).collect(Collectors.toList());
+//			介護
+			List<AppStampStandard> listNurse = listAppStampStandar.stream().filter(x -> x.getStampAtrOther() == StampAtrOther.NURSE).collect(Collectors.toList());
+//			休憩
+			List<AppStampStandard> listBreak = listAppStampStandar.stream().filter(x -> x.getStampAtrOther() == StampAtrOther.BREAK).collect(Collectors.toList());
+			
+			this.checkTime(listAttendence);
+			this.checkTime(listExtraordinary);
+			this.checkTime(listGoOut);
+			this.checkTime(listCheer);
+			this.checkTime(listParent);
+			this.checkTime(listNurse);
+			this.checkTime(listBreak);
+	
+
+		}
+
 		
 	}
 

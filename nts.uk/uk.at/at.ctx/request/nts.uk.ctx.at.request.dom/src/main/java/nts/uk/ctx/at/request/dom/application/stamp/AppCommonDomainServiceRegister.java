@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
@@ -19,7 +21,16 @@ public interface AppCommonDomainServiceRegister {
 	 */
 	public ProcessResult registerAppStamp(Application application, AppStamp appStamp, AppRecordImage appRecordImage, AppStampOutput appStampOutput, Boolean recoderFlag);
 	
+	/**
+	 * Refactor4
+	 * 打刻申請の更新登録
+	 * @param application
+	 * @param appStamp
+	 * @param recoderFlag
+	 * @return
+	 */
 	
+	public ProcessResult updateAppStamp(Application application, Optional<AppStamp> appStampOptional, Optional<AppRecordImage> appRecoderImageOptional, Boolean recoderFlag);
 	
 	
 	

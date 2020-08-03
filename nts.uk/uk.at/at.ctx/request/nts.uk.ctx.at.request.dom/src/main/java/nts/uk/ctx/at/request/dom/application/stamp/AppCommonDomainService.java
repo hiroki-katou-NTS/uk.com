@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.dom.setting.company.request.stamp.AppStampReflect;
 public interface AppCommonDomainService {
 	
 	/**
+	 * Refactor4
 	 * 打刻申請（新規）起動前処理
 	 *UKDesign.UniversalK.就業.KAF_申請.KAF002_打刻申請.B：打刻申請（新規）→A・B画面.打刻申請（新規）共通アルゴリズム.打刻申請（新規）起動前処理
 	 * @param companyId
@@ -40,16 +41,30 @@ public interface AppCommonDomainService {
 	 */
 	public List<ErrorStampInfo> getErrorStampList(StampRecordOutput stampRecordOutput);
 	
-//	打刻申請登録前のエラーチェック処理（新規）
-	
+	/**
+	 * Refactor4
+	 * 打刻申請登録前のエラーチェック処理（新規）
+	 * @param companyId
+	 * @param agentAtr
+	 * @param application
+	 * @param appStampOutput
+	 * @return
+	 */
 	public List<ConfirmMsgOutput> checkBeforeRegister(String companyId, Boolean agentAtr, Application application, AppStampOutput appStampOutput);
 	
-//	打刻申請登録前のエラーチェック処理（詳細）
-	
+	/**
+	 * Refactor4
+	 * 打刻申請登録前のエラーチェック処理（詳細）
+	 * @param companyId
+	 * @param agentAtr
+	 * @param application
+	 * @param appStampOutput
+	 * @return
+	 */
 	public List<ConfirmMsgOutput> checkBeforeUpdate(String companyId, Boolean agentAtr, Application application, AppStampOutput appStampOutput);
 	
 	
-	/**
+	/**Refactor4
 	 * 打刻申請（詳細）起動前処理
 	 * @param companyId
 	 * @param appId
