@@ -24,7 +24,7 @@ module nts.uk.at.kdp003.a {
 	`;
 
 	const COMPONENT_NAME = 'stamp-employee-selection';
-	
+
 	enum CHARACTER {
 		ALL = '全員',
 		A = 'ア',
@@ -98,6 +98,10 @@ module nts.uk.at.kdp003.a {
 
 				if (!_.has(vm.options, 'selectedId')) {
 					vm.options.selectedId = ko.observable(undefined);
+				}
+				
+				if (!_.has(vm.options, 'baseDate')) {
+					vm.options.baseDate = ko.observable(new Date());
 				}
 			}
 		}
