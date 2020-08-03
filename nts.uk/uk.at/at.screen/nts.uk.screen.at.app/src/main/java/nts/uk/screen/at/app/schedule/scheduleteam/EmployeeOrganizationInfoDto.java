@@ -2,11 +2,13 @@ package nts.uk.screen.at.app.schedule.scheduleteam;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class EmployeeOrganizationInfoDto {
 	
 	/** 社員ID **/
@@ -17,7 +19,6 @@ public class EmployeeOrganizationInfoDto {
 	
 	/** ビジネスネーム **/
 	private String businessName;
-	
 	/** チーム **/
 	private String teamCd;
 	

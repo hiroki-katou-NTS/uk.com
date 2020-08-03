@@ -6,13 +6,13 @@ module nts.uk.at.view.ksu001.la {
             register:"ctx/at/schedule/scheduleteam/register",
             update:"ctx/at/schedule/scheduleteam/update",
             remove:"ctx/at/schedule/scheduleteam/delete",
-            findWorkplaceGroup:"bs/schedule/employeeinfo/workplacegroup/workplacegroup-employee",
-            findEmpOrgInfo: "screen/at/schedule/scheduleteam/empOrgInfo"
+            findWorkplaceGroup:"bs/schedule/employeeinfo/workplacegroup/workplacegroupemployee",
+            findEmpOrgInfo: "screen/at/schedule/scheduleteam/empOrgInfo",            
         }
 
         /** Get an employee's workplace group  */
-        export function findWorkplaceGroup():JQueryPromise<any>{
-            return nts.uk.request.ajax("com", paths.findWorkplaceGroup);
+        export function findWorkplaceGroup(date: any):JQueryPromise<any>{
+            return nts.uk.request.ajax("com", paths.findWorkplaceGroup, date);
         }
 
         export function findAll(WKPGRPID: string): JQueryPromise<any>{
@@ -35,8 +35,8 @@ module nts.uk.at.view.ksu001.la {
             return nts.uk.request.ajax("at", paths.remove, param);
         }
 
-        export function findEmpOrgInfo(): JQueryPromise<any>{
-            return nts.uk.request.ajax("at", paths.findEmpOrgInfo);
-        }
+        export function findEmpOrgInfo(param: any): JQueryPromise<any>{
+            return nts.uk.request.ajax("at", paths.findEmpOrgInfo, param);
+        }     
     }  
 }

@@ -25,7 +25,7 @@ public class Ksu001LaWS {
 	
 	@POST
 	@Path("/empOrgInfo")
-	public List<EmployeeOrganizationInfoDto> getEmpOrgInfo(){
-		return ksu001LaScreenQuery.getEmployeesOrganizationInfo();
+	public List<EmployeeOrganizationInfoDto> getEmpOrgInfo(Ksu001LaRequest request){
+		return ksu001LaScreenQuery.getEmployeesOrganizationInfo(request.toDate(), request.getWKPGRID());
 	}
 }

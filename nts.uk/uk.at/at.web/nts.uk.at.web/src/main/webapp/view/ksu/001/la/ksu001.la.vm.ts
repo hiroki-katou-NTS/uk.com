@@ -44,10 +44,12 @@ module nts.uk.at.view.ksu001.la {
                         dfd.resolve();
                     } else {
                         service.findDetail(self.workplaceGroupId(), code).done((dataDetail: any) => {
-                            self.scheduleTeamModel().updateData(dataDetail);
-                            self.scheduleTeamModel().isEnableCode(false);
-                            self.scheduleTeamModel().workplaceGroupId(self.workplaceGroupId());
-                            self.isEditing(true);
+                            if(!_.isNull(dataDetail) && !_.isEmpty(dataDetail)){
+                                self.scheduleTeamModel().updateData(dataDetail);
+                                self.scheduleTeamModel().isEnableCode(false);
+                                self.scheduleTeamModel().workplaceGroupId(self.workplaceGroupId());
+                                self.isEditing(true);
+                            }                           
                             $('#scheduleTeamName').focus();
                             dfd.resolve();
                         })
@@ -65,16 +67,18 @@ module nts.uk.at.view.ksu001.la {
                 };
             }
 
-            public startPage(): JQuerryPromise<void> {
+            public startPage(): JQueryPromise<any> {
                 let self = this;
                 var dfd = $.Deferred();
                 blockUI.invisible();
-                service.findWorkplaceGroup().done((x: WorkplaceGroup) => {
+                var dateRequest = {baseDate: "2020/07/31"};
+                console.log(JSON.stringify(dateRequest));
+                service.findWorkplaceGroup(JSON.stringify(dateRequest)).done((x: WorkplaceGroup) => {
                     let workplaceGroup = ko.toJS(x);
+                    self.workplaceGroupName(workplaceGroup.workplaceGroupName);
+                    self.workplaceGroupId(workplaceGroup.workplaceGroupId);
                     service.findAll(workplaceGroup.workplaceGroupId).done((listScheduleTeam: Array<ScheduleTeam>) => {
-                        if (!_.isEmpty(listScheduleTeam)) {
-                            self.workplaceGroupName(workplaceGroup.workplaceGroupName);
-                            self.workplaceGroupId(workplaceGroup.workplaceGroupId);
+                        if (!_.isEmpty(listScheduleTeam) && !_.isNull(listScheduleTeam)) {                           
                             self.listScheduleTeam(listScheduleTeam);
                             self.selectedCode(listScheduleTeam[0].code);
                         } else {
@@ -82,9 +86,14 @@ module nts.uk.at.view.ksu001.la {
                         }
                     });
 
-                    service.findEmpOrgInfo().done((dataAll: Array<ItemModel>)=>{
+                    var request = {
+                        WKPGRID: self.workplaceGroupId(),
+                        baseDate: "2020/07/31"
+                    };
+                    service.findEmpOrgInfo(JSON.stringify(request)).done((dataAll: Array<ItemModel>)=>{
                         self.itemsLeft(dataAll);
                     });
+
 
                     // $('#emp-component').ntsListComponent(self.listComponentOption).done(function () {
                        

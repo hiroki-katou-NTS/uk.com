@@ -24,7 +24,6 @@ public class ScheduleTeamQuery {
 	/** スケジュールチームを並び順に取得する */
 	public List<ScheduleTeamDto> getListScheduleTeam(String WKPGRPID){
 		String companyId = AppContexts.user().companyId();
-//		String WKPGRPID = "3d9b24dc-c2c4-400e-8737-edcef04db18b";
 		return scheduleTeamRepository.getAllScheduleTeamWorkgroup(companyId, WKPGRPID).stream()
 			.map(x -> new ScheduleTeamDto(x.getScheduleTeamCd().v(), x.getScheduleTeamName().v()))
 			.collect(Collectors.toList());		
