@@ -90,12 +90,6 @@ module nts.uk.at.kdp003.f {
 
 					if (dataSources.length) {
 						const exist = _.find(dataSources, (item: CompanyItem) => item.companyId === id);
-						const clear = () => {
-							model.companyCode('');
-							model.companyName('');
-
-							vm.message({ messageId: 'Msg_301' });
-						};
 
 						if (exist) {
 							const SCREEN: RegExpMatchArray = window.top.location.href.match(/kdp\/00\d/);
@@ -103,40 +97,9 @@ module nts.uk.at.kdp003.f {
 							if (SCREEN.length) {
 								const employeeCode: string = ko.unwrap(model.employeeCode);
 								const name: SCREEN_NAME = SCREEN[0].replace(/\//g, '').toUpperCase() as any;
-								const update = () => {
-									model.companyCode(exist.companyCode);
-									model.companyName(exist.companyName);
-								};
 
-								// update companyId by subscribe companyCode
-								switch (name) {
-									case 'KDP001':
-										break;
-									case 'KDP002':
-										break;
-									default:
-									case 'KDP003':
-										if (exist.selectUseOfName === false) {
-											clear();
-										} else {
-											update();
-										}
-										break;
-									case 'KDP004':
-										if (exist.fingerAuthStamp === false) {
-											clear();
-										} else {
-											update();
-										}
-										break;
-									case 'KDP005':
-										if (exist.icCardStamp === false) {
-											clear();
-										} else {
-											update();
-										}
-										break;
-								}
+								model.companyCode(exist.companyCode);
+								model.companyName(exist.companyName);
 
 								// UI[A6]  打刻利用失敗時のメッセージについて
 								if (!ko.unwrap(vm.message) && employeeCode) {
@@ -240,44 +203,42 @@ module nts.uk.at.kdp003.f {
 							} else {
 								model.companyId.valueHasMutated();
 							}
+						} else if (data.length === 1) {
+							model.companyId(data[0].companyId);
 						}
 					};
 
 					if (params.mode === 'admin') {
-						if (data.length === 1) {
-							model.companyId(data[0].companyId);
+						let showMsg1527 = false;
+						const SCREEN: RegExpMatchArray = window.top.location.href.match(/kdp\/00\d/);
+
+						if (SCREEN.length) {
+							const name: SCREEN_NAME = SCREEN[0].replace(/\//g, '').toUpperCase() as any;
+
+							switch (name) {
+								case 'KDP001':
+									break;
+								case 'KDP002':
+									break;
+								default:
+								case 'KDP003':
+									showMsg1527 = _.every(data, d => d.selectUseOfName === false) || !data.length;
+									break;
+								case 'KDP004':
+									showMsg1527 = _.every(data, d => d.fingerAuthStamp === false) || !data.length;
+									break;
+								case 'KDP005':
+									showMsg1527 = _.every(data, d => d.icCardStamp === false) || !data.length;
+									break;
+							}
+						}
+
+						if (showMsg1527 === true) {
+							vm.$dialog
+								.error({ messageId: 'Msg_1527' })
+								.then(() => vm.$window.close({ msgErrorId: 'Msg_1527' }));
 						} else {
-							let showMsg1527 = false;
-							const SCREEN: RegExpMatchArray = window.top.location.href.match(/kdp\/00\d/);
-
-							if (SCREEN.length) {
-								const name: SCREEN_NAME = SCREEN[0].replace(/\//g, '').toUpperCase() as any;
-
-								switch (name) {
-									case 'KDP001':
-										break;
-									case 'KDP002':
-										break;
-									default:
-									case 'KDP003':
-										showMsg1527 = _.every(data, d => d.selectUseOfName === false);
-										break;
-									case 'KDP004':
-										showMsg1527 = _.every(data, d => d.fingerAuthStamp === false);
-										break;
-									case 'KDP005':
-										showMsg1527 = _.every(data, d => d.icCardStamp === false);
-										break;
-								}
-							}
-
-							if (showMsg1527 === true) {
-								vm.$dialog
-									.error({ messageId: 'Msg_1527' })
-									.then(() => vm.$window.close({ msgErrorId: 'Msg_1527' }));
-							} else {
-								valueHasMutated();
-							}
+							valueHasMutated();
 						}
 					} else {
 						valueHasMutated();
