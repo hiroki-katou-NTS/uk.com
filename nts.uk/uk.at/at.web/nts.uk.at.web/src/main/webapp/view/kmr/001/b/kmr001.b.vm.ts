@@ -2,12 +2,10 @@
 
 module nts.uk.at.kmr001.b {
 
-    import getText = nts.uk.resource.getText;
-
-	const API = {
-		SETTING: 'at/record/stamp/management/personal/startPage',
-		HIGHTLIGHT: 'at/record/stamp/management/personal/stamp/getHighlightSetting'
-	};
+	// const API = {
+	// 	SETTING: 'at/record/stamp/management/personal/startPage',
+	// 	HIGHTLIGHT: 'at/record/stamp/management/personal/stamp/getHighlightSetting'
+	// };
 
 	const PATH = {
 	    REDIRECT: '/view/ccg/008/a/index.xhtml'
@@ -40,8 +38,8 @@ module nts.uk.at.kmr001.b {
             var vm = this;
             //radio button B3_2
             vm.itemList = ko.observableArray([
-                new BoxModel(1, "KMR001_6"),
-                new BoxModel(2, "KMR001_7")
+                new BoxModel(1, vm.$i18n("KMR001_6")),
+                new BoxModel(2, vm.$i18n("KMR001_7"))
             ]);
 
             vm.itemList2 = ko.observableArray([
@@ -70,26 +68,26 @@ module nts.uk.at.kmr001.b {
 
             //radio button B21_2
             vm.orderedDataList = ko.observableArray([
-                new BoxModel(1, "KMR001_78"),
-                new BoxModel(2, "KMR001_79")
+                new BoxModel(1, vm.$i18n("KMR001_78")),
+                new BoxModel(2, vm.$i18n("KMR001_79"))
             ]);
 
             //radio button B14_2
             vm.orderDeadline = ko.observableArray([
-                new BoxModel(1, "KMR001_28"),
-                new BoxModel(2, "KMR001_29")
+                new BoxModel(1, vm.$i18n("KMR001_28")),
+                new BoxModel(2, vm.$i18n("KMR001_29"))
             ]);
 
             //radio button B17_2
             vm.monthlyPerformanceCalList = ko.observableArray([
-                new BoxModel(1, "KMR001_33"),
-                new BoxModel(2, "KMR001_34"),
+                new BoxModel(1, vm.$i18n("KMR001_33")),
+                new BoxModel(2, vm.$i18n("KMR001_34")),
             ]);
 
             //radio button B18_2
             vm.dailyActualCalList = ko.observableArray([
-                new BoxModel(1, "KMR001_33"),
-                new BoxModel(2, "KMR001_34"),
+                new BoxModel(1, vm.$i18n("KMR001_33")),
+                new BoxModel(2, vm.$i18n("KMR001_34")),
             ]);
 
             vm.selectedId = ko.observable(1);
@@ -98,13 +96,6 @@ module nts.uk.at.kmr001.b {
 
 		created() {
 			const vm = this;
-			vm.$blockui('show')
-				.then(() => vm.$ajax('at', API.SETTING))
-				.fail((res) => {
-					vm.$dialog.error({ messageId: res.messageId })
-						.then(() => vm.$jump("com", PATH.REDIRECT));
-				})
-				.always(() => vm.$blockui('clear'));
 
 			_.extend(window, { vm });
 		}

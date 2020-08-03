@@ -2,13 +2,6 @@
 
 module nts.uk.at.kmr001.c {
 
-    import getText = nts.uk.resource.getText;
-    import modal = nts.uk.ui.windows.sub.modal;
-    import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
-    import block = nts.uk.ui.block;
-
-
     const API = {
         SETTING: 'at/record/stamp/management/personal/startPage',
         HIGHTLIGHT: 'at/record/stamp/management/personal/stamp/getHighlightSetting',
@@ -57,14 +50,6 @@ module nts.uk.at.kmr001.c {
 
         created() {
             const vm = this;
-            vm.$blockui('show')
-                .then(() => vm.$ajax('at', API.SETTING))
-                .fail((res) => {
-                    vm.$dialog.error({ messageId: res.messageId })
-                        .then(() => vm.$jump("com", PATH.REDIRECT));
-                })
-                .always(() => vm.$blockui('clear'));
-
             _.extend(window, { vm });
         }
 
@@ -82,10 +67,10 @@ module nts.uk.at.kmr001.c {
 
         openConfigHisDialog() {
             let vm = this;
-            //block.invisible();
             vm.$blockui('invisible');
             vm.$window.modal('at', PATH.KMR001_D, {});
             vm.$blockui('clear');
+            //block.invisible();
             //block.invisible();
             //setShared('KMR001_C_PARAMS', { });
             // modal(PATH.KMR001_D).onClosed(function() {
