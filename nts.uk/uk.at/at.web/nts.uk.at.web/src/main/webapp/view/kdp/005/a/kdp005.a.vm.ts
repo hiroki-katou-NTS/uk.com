@@ -346,17 +346,14 @@ module nts.uk.at.view.kdp005.a {
                             if (result) {
                                 self.loginInfo = loginResult.em;
                                 self.loginInfo.selectedWP = result;
-                                
                                 characteristics.save("loginKDP005", self.loginInfo).done(() => {
-                                    if(__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode){
-                                        location.reload();        
-                                    }
+                                    location.reload();        
                                 });
                             } else {
                                 if(self.loginInfo){
-                                        self.login(self.loginInfo).done(() => {
-                                            if(__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode){
-                                                location.reload();        
+                                        self.login(self.loginInfo).done(() => { 
+                                            if(__viewContext.user.companyId != self.loginInfo.companyId || __viewContext.user.employeeCode != self.loginInfo.employeeCode){
+                                                location.reload();
                                             }
                                         });
                                 }else {
