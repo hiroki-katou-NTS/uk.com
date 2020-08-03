@@ -101,6 +101,10 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 			Element.YEAR, Element.MONTH, Element.DAY, Element.HOUR, Element.MINITE, Element.SECOND, Element.WEEK,
 			Element.BCC);
 
+	public static final List<String> TR_REMOTE = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.PADDING,
+			Element.PAYLOAD, Element.BCC);
+	
 	/**
 	 * From map.
 	 * 
@@ -167,6 +171,10 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 		case TIMESET_INFO:
 			orders = request ? PERSONAL_INFO_REQ_ORDER : TIMESET_INFO_RES_ORDER;
 			break;
+			
+		case TR_REMOTE:
+			orders = TR_REMOTE;
+			
 		default:
 			return Optional.empty();
 		}

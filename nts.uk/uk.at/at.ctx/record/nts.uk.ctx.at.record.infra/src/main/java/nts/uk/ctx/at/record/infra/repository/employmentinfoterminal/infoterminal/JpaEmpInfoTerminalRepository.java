@@ -30,6 +30,10 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpInfoTerminalRepository {
 
+	private final static String UPDATE_SERIALNO = "update KRCMT_TIMERECORDER set SERIAL_NO = @serialNo where CD = @cd and CONTRACT_CD = @contractCode ";
+
+	private final static String FIND_WITH_MAC = "select t  from KrcmtTimeRecorder t where t.macAddress = :mac and t.pk.contractCode = :contractCode ";
+
 	@Override
 	public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode) {
 
@@ -37,6 +41,19 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 				.find(new KrcmtTimeRecorderPK(contractCode.v(), empInfoTerCode.v()), KrcmtTimeRecorder.class).map(x -> {
 					return toDomain(x);
 				});
+	}
+
+	@Override
+	public Optional<EmpInfoTerminal> getEmpInfoTerWithMac(MacAddress macAdd, ContractCode contractCode) {
+		return this.queryProxy().query(FIND_WITH_MAC, KrcmtTimeRecorder.class).setParameter("mac", macAdd.v())
+				.setParameter("contractCode", contractCode.v()).getList().stream().findFirst().map(x -> toDomain(x));
+	}
+	
+	@Override
+	public void updateSerialNo(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode,
+			EmpInfoTerSerialNo terSerialNo) {
+		jdbcProxy().query(UPDATE_SERIALNO).paramString("serialNo", terSerialNo.v()).paramInt("cd", empInfoTerCode.v())
+				.paramString("contractCode", contractCode.v()).execute();
 	}
 
 	private EmpInfoTerminal toDomain(KrcmtTimeRecorder entity) {

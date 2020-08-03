@@ -5,7 +5,7 @@ import java.util.Optional;
 
 /**
  * Command.
- * 
+ *  コマンドの種類
  * @author manhnd
  */
 public enum Command {
@@ -26,7 +26,9 @@ public enum Command {
 	OVERTIME_INFO("OverTimeInfo", "1E", "0A"),
 	RESERVATION_INFO("ReservationInfo", "1F", "0B"),
 	APPLICATION_INFO("ApplicationInfo", "20", "0C"),
-	TIMESET_INFO("TimeSetInfo", "16", "05");
+	TIMESET_INFO("TimeSetInfo", "16", "05"),
+	
+	TR_REMOTE("TimeRecordRemote", "21", "0D");
 
 	/**
 	 * Name

@@ -2,8 +2,10 @@ package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo;
 
 import java.util.Optional;
 
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerSerialNo;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MacAddress;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 
 /**
@@ -20,5 +22,10 @@ public interface EmpInfoTerminalRepository {
 	 * @return
 	 */
 	public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode);
+	
+	public Optional<EmpInfoTerminal> getEmpInfoTerWithMac(MacAddress macAdd, ContractCode contractCode);
+
+	public void updateSerialNo(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode,
+			EmpInfoTerSerialNo terSerialNo);
 
 }

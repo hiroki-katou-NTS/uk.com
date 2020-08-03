@@ -42,7 +42,7 @@ public class NRLWebService extends RequestDispatcher {
 	@POST
 	@Path("masterCollect.aspx")
 	@RequestData({ Command.PERSONAL_INFO, Command.OVERTIME_INFO, Command.RESERVATION_INFO, Command.TIMESET_INFO,
-			Command.WORKTIME_INFO, Command.WORKTYPE_INFO })
+			Command.WORKTIME_INFO, Command.WORKTYPE_INFO, Command.TR_REMOTE })
 	public Frame requestMasterDatas(InputStream is) {
 		NRLResponse response = ignite(is);
 		return response.getEntity(Frame.class);
