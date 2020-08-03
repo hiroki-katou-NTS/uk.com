@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+  <ui:composition template="../../../../master/dialog.xhtml">
+
+    <!-- head -->
+    <ui:define name="htmlHead">
+      <script>
+        var dialogSize = {
+          width : 810,
+          height : 620
+        };
+      </script>
+      <!-- kcp005 -->
+      <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+      <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+
+      <!-- kdl017 -->
+      <com:stylefile path="kdl017.a.style.css" />
+      <com:scriptfile set="IGNITE" />
+      <com:scriptfile path="kdl017.a.service.js" />
+      <com:scriptfile path="kdl017.a.vm.js" />
+
+    </ui:define>
+
+    <!-- content -->
+    <ui:define name="content">
+      <div id="contents-area" class="fixed-flex-layout kdl017-content">
+        <!-- left content - kcp005 - visible if there are multiple employees -->
+        <div class="fixed-flex-layout-left">
+          <!-- KCP005 -->
+          <!-- A1_1 社員リスト（KCP005) -->
+          <div id="kcp005-component"></div>
+        </div>
+
+        <!-- right content -->
+        <div class="fixed-flex-layout-right">
+          <table>
+            <tr>
+              <td>
+                <!-- A2_0 -->
+                <div data-bind="ntsFormLabel: {}">#{i18n.getText('Com_Person')}</div>
+              </td>
+              <td>
+                <!-- Employee infomation A2_1 -対象社員コード  + A2_2 - 対象社員名-->
+                <label class="ml-1"><span data-bind="text: employeeInfo"></span></label>
+              </td>
+            </tr>
+          </table>
+
+          <hr/>
+
+          <div class="mt-1">
+            <div class="inline">
+              <!-- A3_1 - 凡例 -->
+              <span>#{i18n.getText('KDL017_21')}</span>
+              <span class="ml-2">#{i18n.getText('KDL017_22')}</span>
+            </div>
+
+            <!-- A4_1 -  繰越数 -->
+            <div class="mt-3 table-fixed">
+              <div id="date-fixed-table">
+                <table>
+                  <colgroup>
+                    <col width="30px" />
+                    <col width="200px" />
+                    <col width="150px" />
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th class="ui-widget-header"></th>
+                      <th class="ui-widget-header">
+                        <!-- A3_2 -->
+                        <span>#{i18n.getText('KDL017_7')}</span>
+                        <!-- A3_6 -->
+                        <span>#{i18n.getText('KDL017_24')}</span>
+                      </th>
+                      <th class="ui-widget-header">
+                        <!-- A3_3 -->
+                        <span>#{i18n.getText('KDL017_11')}</span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <com:ko-foreach bind="dataItems">
+                      <tr>
+                        <td>
+                          <span class="ui-widget-header" data-bind="text: $index"></span>
+                        </td>
+                        <td>
+                          <span data-bind="text: occurrenceDate"></span>
+                          <span data-bind="text: expirationDate"></span>
+                          <span data-bind="text: occurrenceNumber"></span>
+                        </td>
+                        <td>
+                          <span data-bind="text: digestionDate"></span>
+                          <span data-bind="text: digestionNumber"></span>
+                        </td>
+                      </tr>
+                    </com:ko-foreach>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <table class="summary-table">
+              <tr>
+                <!-- A4_1_1 -->
+                <td width="120px">#{i18n.getText('KDL017_14')}</td>
+                <td width="120px">
+                  <span data-bind="text: value01"></span>
+                </td>
+              </tr>
+              <tr>
+                <!-- A4_3_1 -->
+                <td>#{i18n.getText('KDL017_18')}</td>
+                <td>
+                  <span data-bind="text: value02"></span>
+                  <span data-bind="text: hint02" class="margin-left-20"></span>
+                </td>
+              </tr>
+              <tr>
+                <!-- A4_4_1 -->
+                <td>#{i18n.getText('KDL017_19')}</td>
+                <td>
+                  <span data-bind="text: value03"></span>
+                  <span data-bind="text: hint03" class="margin-left-20"></span>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="functions-area-bottom">
+        <!-- btn close dialog -->
+        <button class="large" data-bind="click: closeDialog">#{i18n.getText('KDL017_20')}</button>
+      </div>
+    </ui:define>
+  </ui:composition>
+</body>
+</html>
