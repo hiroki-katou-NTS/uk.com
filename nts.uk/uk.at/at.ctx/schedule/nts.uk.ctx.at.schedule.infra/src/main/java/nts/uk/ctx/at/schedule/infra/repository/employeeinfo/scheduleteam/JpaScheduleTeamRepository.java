@@ -23,7 +23,7 @@ public class JpaScheduleTeamRepository extends JpaRepository implements Schedule
 
 	private static final String SELECT = "SELECT c FROM KscmtScheduleTeam c ";
 
-	private static final String SELECT_BY_KEY = SELECT + " WHERE c.pk.CID = :CID " + " WHERE c.pk.WKPGRPID = :WKPGRPID "
+	private static final String SELECT_BY_KEY = SELECT + " WHERE c.pk.CID = :CID " + " AND c.pk.WKPGRPID = :WKPGRPID "
 			+ " AND c.pk.scheduleTeamCd = : scheduleTeamCd ";
 
 	private static final String SELECT_BY_CID_WKPGRPID = SELECT + " WHERE c.pk.CID = :CID "

@@ -112,7 +112,7 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 		private JpaAffWorkplaceGroupRespository repo;
 		
 		@Inject 
-		private SyWorkplacePub pub;
+		private WorkplacePub pub;
 		
 		@Override
 		public List<String> getWorkplaceBelongsWorkplaceGroup(String workplaceGroupId) {
