@@ -3,6 +3,10 @@ package nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
@@ -33,6 +37,12 @@ public class KscdtSchAtdLvwTime extends ContractUkJpaEntity {
 	/** 退勤時刻**/
 	@Column(name = "LWK_CLOCK")
 	public int lwkClock;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+			@PrimaryKeyJoinColumn(name = "YMD", referencedColumnName = "YMD") })
+	public KscdtSchBasicInfo kscdtSchBasicInfo;
+	
 	@Override
 	protected Object getKey() {
 

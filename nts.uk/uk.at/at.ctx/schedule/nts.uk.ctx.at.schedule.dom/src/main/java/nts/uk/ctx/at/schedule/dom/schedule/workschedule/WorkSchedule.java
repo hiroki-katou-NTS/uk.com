@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
@@ -32,7 +33,7 @@ public class WorkSchedule implements DomainAggregate {
 	@Getter
 	private final GeneralDate ymd;
 	
-	/** 予定確定区分 **/
+	/** 確定区分 **/
 	@Getter
 	private ConfirmedATR confirmedATR;
 	
@@ -61,6 +62,7 @@ public class WorkSchedule implements DomainAggregate {
 	private Optional<AttendanceTimeOfDailyAttendance> optAttendanceTime;
 	
 	/** 短時間勤務**/
+	@Setter
 	@Getter
 	private Optional<ShortTimeOfDailyAttd> optSortTimeWork;
 	

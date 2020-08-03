@@ -1,11 +1,19 @@
 package nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmpCombi;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -165,9 +173,33 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 	@Column(name = "STAGGERED_WH_TIME")
 	public int staggeredWhTime;
 	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscdtSchTime", orphanRemoval = true)
+	public KscdtSchBasicInfo basicInfo;
+	
+	@OneToMany(targetEntity = KscdtSchOvertimeWork.class, mappedBy = "kscdtSchTime", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "KSCDT_SCH_OVERTIME_WORK")
+	public List<KscdtSchOvertimeWork> overtimeWorks;
+	
+	@OneToMany(targetEntity = KscdtSchHolidayWork.class, mappedBy = "kscdtSchTime", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "KSCDT_SCH_HOLIDAY_WORK")
+	public List<KscdtSchHolidayWork> holidayWorks;
+	
+	@OneToMany(targetEntity = KscdtSchBonusPay.class, mappedBy = "kscdtSchTime", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "KSCDT_SCH_BONUSPAY")
+	public List<KscdtSchBonusPay> bonusPays;
+	
+	@OneToMany(targetEntity = KscdtSchPremium.class, mappedBy = "kscdtSchTime", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "KSCDT_SCH_PREMIUM")
+	public List<KscdtSchPremium> premiums;
+	
+	@OneToMany(targetEntity = KscdtSchShortTime.class, mappedBy = "kscdtSchTime", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "KSCDT_SCH_SHORTTIME")
+	public List<KscdtSchShortTime> shortTimes;
+	
 	@Override
 	protected Object getKey() {
 		return this.pk;
 	}
 
+	
 }

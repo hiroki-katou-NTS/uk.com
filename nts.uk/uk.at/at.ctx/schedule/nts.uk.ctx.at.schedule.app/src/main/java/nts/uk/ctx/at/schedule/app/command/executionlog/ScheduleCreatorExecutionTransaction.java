@@ -678,7 +678,7 @@ public class ScheduleCreatorExecutionTransaction {
 				listError.add(createScheduleOneDate.getScheduleErrorLog());
 				break;
 			default:// 処理正常
-				// 勤務予定を補正する - call 勤務予定を補正する - chưa xong đang đợi Tú chuyển sang - TQP
+				// 勤務予定を補正する - call 勤務予定を補正する
 				WorkSchedule workSchedule = correctWorkSchedule.correctWorkSchedule(
 						createScheduleOneDate.getWorkSchedule(), creator.getEmployeeId(), dateInPeriod);
 

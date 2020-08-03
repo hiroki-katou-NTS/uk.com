@@ -11,21 +11,15 @@ public interface ScheduleTeamRepository {
 	 * @param scheduleTeam
 	 * @param scheduleTeamOrder
 	 */
-	public void insert(ScheduleTeam scheduleTeam,ScheduleTeamOrder scheduleTeamOrder);
+	public void insert(ScheduleTeam scheduleTeam);
 	
 	/**
 	 * [1-1] update ( スケジュールチーム )			
 	 * @param scheduleTeam
 	 */
 	
-	public void update(ScheduleTeam scheduleTeam);
-	
-	/**
-	 * [1-2] update ( スケジュールチームの並び順 )
-	 * @param scheduleTeamOrder
-	 */
-	
-	public void update(ScheduleTeamOrder scheduleTeamOrder);
+	public void update(ScheduleTeam scheduleTeam );
+
 	
 	/**
 	 * [2] delete ( 会社ID, 職場グループID, スケジュールチームコード )
@@ -84,7 +78,7 @@ public interface ScheduleTeamRepository {
 	 * @param WKPGRPID
 	 * @return
 	 */
-	public Optional<ScheduleTeamOrder> getOrderScheduleTeam(String companyID ,String WKPGRPID);
+	
 	
 	//public boolean checkExistScheduleTeamOrder ()
 }

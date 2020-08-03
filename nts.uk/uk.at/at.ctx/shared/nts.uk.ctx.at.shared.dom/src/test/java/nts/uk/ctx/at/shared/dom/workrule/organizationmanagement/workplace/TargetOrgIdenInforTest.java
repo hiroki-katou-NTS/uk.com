@@ -82,7 +82,7 @@ public class TargetOrgIdenInforTest {
 	public void testGetDisplayInfor() {
 		TargetOrganizationUnit unit = TargetOrganizationUnit.WORKPLACE_GROUP;
 		String workplaceGroupId = "workplaceGroupId";
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, null, workplaceGroupId);
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, Optional.empty(), Optional.of(workplaceGroupId));
 		GeneralDate referenceDate = GeneralDate.today();
 		
 		new Expectations() {
@@ -104,7 +104,7 @@ public class TargetOrgIdenInforTest {
 	public void testGetDisplayInfor_1() {
 		TargetOrganizationUnit unit = TargetOrganizationUnit.WORKPLACE_GROUP;
 		String workplaceGroupId = "workplaceGroupId";
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, null, workplaceGroupId);
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, Optional.empty(),Optional.of( workplaceGroupId));
 		GeneralDate referenceDate = GeneralDate.today();
 		WorkplaceGroupImport workplaceGroupImport = new WorkplaceGroupImport(workplaceGroupId, "workplaceGroupCode", "workplaceGroupName", 1);
 		
@@ -138,7 +138,7 @@ public class TargetOrgIdenInforTest {
 	public void testGetDisplayInfor_2() {
 		TargetOrganizationUnit unit = TargetOrganizationUnit.WORKPLACE;
 		String workplaceId = "workplaceId";
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, workplaceId, null);
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, Optional.of(workplaceId), Optional.empty());
 		GeneralDate referenceDate = GeneralDate.today();
 		
 		new Expectations() {
@@ -159,7 +159,7 @@ public class TargetOrgIdenInforTest {
 	public void testGetDisplayInfor_3() {
 		TargetOrganizationUnit unit = TargetOrganizationUnit.WORKPLACE;
 		String workplaceId = "workplaceId";
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, workplaceId, null);
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, Optional.of(workplaceId), Optional.empty());
 		GeneralDate referenceDate = GeneralDate.today();
 		WorkplaceInfo workplaceInfo = new WorkplaceInfo(workplaceId, Optional.of("workplaceCd"),
 				Optional.of("workplaceName"), Optional.of("outsideWkpCd"), Optional.of("wkpGenericName"),
@@ -194,7 +194,7 @@ public class TargetOrgIdenInforTest {
 	public void testGetWorkplaceBelongsOrganization() {
 		TargetOrganizationUnit unit = TargetOrganizationUnit.WORKPLACE;
 		String workplaceId = "workplaceId";
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, workplaceId, null);
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit,Optional.of(workplaceId), Optional.empty());
 		
 		List<String> listData = targetOrgIdenInfor.getWorkplaceBelongsOrganization(require);
 		assertThat(listData)
@@ -209,7 +209,7 @@ public class TargetOrgIdenInforTest {
 	public void testGetWorkplaceBelongsOrganization_1() {
 		TargetOrganizationUnit unit = TargetOrganizationUnit.WORKPLACE_GROUP;
 		String workplaceGroupId = "workplaceGroupId";
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, null, workplaceGroupId);
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, Optional.empty(), Optional.of(workplaceGroupId));
 		
 		new Expectations() {
 			{
@@ -229,7 +229,7 @@ public class TargetOrgIdenInforTest {
 	public void testGetWorkplaceBelongsOrganization_2() {
 		TargetOrganizationUnit unit = TargetOrganizationUnit.WORKPLACE_GROUP;
 		String workplaceGroupId = "workplaceGroupId";
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, null, workplaceGroupId);
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, Optional.empty(), Optional.of(workplaceGroupId));
 		List<String> listResult = Arrays.asList("wpk1","wpk2");
 		new Expectations() {
 			{

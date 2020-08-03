@@ -49,7 +49,7 @@ public class GetEmpCanReferBySpecOrganizationService {
 		//QA Adapter tên hai hàm đang không giống nhau
 		//	$社員IDリスト = require.職場グループで参照可能な所属社員を取得する( 基準日, 社員ID, 職場グループ )	
 		List<String> lstEmpId = require.getReferableEmp(referenceDate, epmloyeeId, Arrays.asList(workplaceGroupId));
-		if(lstEmpId.isEmpty()){
+		if(!lstEmpId.isEmpty()){
 			//	$社員IDリスト = require.社員を並び替える( 社員IDリスト, システム区分.就業, null, 基準日, null )				
 			 result = require.sortEmployee(lstEmpId, 0, null, referenceDate, null);
 		}
@@ -64,46 +64,23 @@ public class GetEmpCanReferBySpecOrganizationService {
 	 */
 	private static List<String> getByWorkPlace(Require require,GeneralDate referenceDate , String epmloyeeId ,String workplaceId ){
 		List<String> result = new ArrayList<>();
-		//-------------------------Tao QA param đang đòi truyền List workPlaceId;
-		
-		/*$検索条件 = 社員検索の規定条件( 基準日: 基準日, システム区分: 就業													
-				, 検索参照範囲: 参照可能範囲すべて													
-				, 職場で絞り込む: true, 職場ID一覧: list:職場ID )*/
-		RegulationInfoEmpQuery query = new RegulationInfoEmpQuery(
-				referenceDate,
-				0,
-				null,
-				null,
-				null,
-				null,
-				true,
-				Arrays.asList(workplaceId),
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				0,
-				null,
-				null,
-				null);
-			//$ロールID = require.ロールIDを取得する( 年月日, 社員ID )
-			String roleId = require.getRoleID(referenceDate, epmloyeeId);
-			//return require.社員を検索する( $検索条件, $ロールID )	
-			result = require.searchEmployee(query, roleId);	
+		// -------------------------Tao QA param đang đòi truyền List
+		// workPlaceId;
+
+		/*
+		 * $検索条件 = 社員検索の規定条件( 基準日: 基準日, システム区分: 就業 , 検索参照範囲: 参照可能範囲すべて ,
+		 * 職場で絞り込む: true, 職場ID一覧: list:職場ID )
+		 */
+		RegulationInfoEmpQuery query = new RegulationInfoEmpQuery();
+		query.setBaseDate(referenceDate);
+		query.setReferenceRange(0);
+		query.setFilterByWorkplace(true);
+		query.setWorkplaceIds(Arrays.asList(workplaceId));
+		query.setSystemType(0);
+		// $ロールID = require.ロールIDを取得する( 年月日, 社員ID )
+		String roleId = require.getRoleID(referenceDate, epmloyeeId);
+		// return require.社員を検索する( $検索条件, $ロールID )
+		result = require.searchEmployee(query, roleId);
 		return result;
 	}
 	

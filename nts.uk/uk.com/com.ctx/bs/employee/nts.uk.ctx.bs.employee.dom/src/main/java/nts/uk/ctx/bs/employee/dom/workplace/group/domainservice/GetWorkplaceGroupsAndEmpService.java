@@ -47,7 +47,7 @@ public class GetWorkplaceGroupsAndEmpService {
 		EmployeeAffiliation employeeAffiliation = WorkplaceGroupGettingService
 				.get(require, baseDate, Arrays.asList(empId)).get(0);
 		if ((!employeeAffiliation.getWorkplaceGroupID().isPresent())
-				|| (data.containsKey(employeeAffiliation.getWorkplaceGroupID()))) {
+				|| (data.containsKey(employeeAffiliation.getWorkplaceGroupID().get()))) {
 			/*
 			 * if $所属組織.職場グループID.isEmpty() || $参照可能職場グループ.containsKey(
 			 * $所属組織.職場グループID ) return $参照可能職場グループ
@@ -60,8 +60,9 @@ public class GetWorkplaceGroupsAndEmpService {
 		 * $参照可能職場グループ .put Key $所属組織.職場グループID Value 職場グループ内の参照範囲#参照範囲を判定する(
 		 * $社員参照範囲 )
 		 */
+		ScopeReferWorkplaceGroup scopeReferWorkplaceGroup = ScopeReferWorkplaceGroup.of(0);
 		data.put(employeeAffiliation.getWorkplaceGroupID().get(),
-				ScopeReferWorkplaceGroup.determineTheReferenceRange(empRefeRange));
+				scopeReferWorkplaceGroup.determineTheReferenceRange(empRefeRange));
 		return data;
 
 	}

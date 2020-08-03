@@ -38,7 +38,7 @@ public class KscdtSchPremiumPK implements Serializable {
 	@Column(name = "YMD")
 	public GeneralDate ymd;
 	
-	/** 事前申請時間 **/
+	/** 割増時間NO **/
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "FRAME_NO")

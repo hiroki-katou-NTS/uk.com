@@ -19,16 +19,14 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			self.registrationForm = ko.observable(new RegistrationForm());
 			self.workStyle = ko.observable(new WorkStyle());
 			self.selectedShiftMaster.subscribe((value) => {
-			self.workStyle().color('');
-			self.workStyle().backGroundColor('');
-			self.workStyle().workTimeSetDisplay('');
-			self.workStyle().borderColor('');
 				if (!value) {
 					self.createNew();
 				} else {
 					nts.uk.ui.errors.clearAll();
 					self.bindShiftMasterInfoToForm(value);
 				}
+				self.clearPreviewColor();
+				self.getWorkStyle();
 			});
 		}
 
@@ -41,8 +39,9 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 				self.shiftMasters(sorted);
 				if (data.shiftMasters && data.shiftMasters.length > 0) {
 					self.selectedShiftMaster(sorted[0].shiftMasterCode);
-					
+					self.getWorkStyle();
 				} else {
+					self.clearPreviewColor();
 					self.createNew();
 				}
 
@@ -59,17 +58,20 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			let self = this;
 			let dfd = $.Deferred();
 			nts.uk.ui.block.grayout();
-			if(self.selectedShiftMaster() == ""){
+			if(self.registrationForm().shiftMasterName() == "" || self.registrationForm().workTypeCd() == "" 
+			|| self.registrationForm().workTimeSetDisplay().includes(self.registrationForm().workTimeSetCd() +" "+"マスタ未登録")
+			|| self.registrationForm().workTypeDisplay().includes(self.registrationForm().workTypeCd() +" "+"マスタ未登録")){
+				nts.uk.ui.block.clear();
 				return;
 			}
 			let dataByCode = _.filter(self.shiftMasters(), (val) => { return val.shiftMasterCode == self.selectedShiftMaster() }),
 			dto = {
-				shiftMasterCode : dataByCode[0].shiftMasterCode,
-				shiftMasterName : dataByCode[0].shiftMasterName,
-				workTypeCode : dataByCode[0].workTypeCd,
-				workTimeCode : dataByCode[0].workTimeCd,
-				color : dataByCode[0].color,
-				remarks : dataByCode[0].remark
+				shiftMasterCode : dataByCode.length > 0 ? dataByCode[0].shiftMasterCode : self.registrationForm().selectedCode(),
+				shiftMasterName : dataByCode.length > 0 ? dataByCode[0].shiftMasterName : self.registrationForm().shiftMasterName(),
+				workTypeCode : dataByCode.length > 0 ? dataByCode[0].workTypeCd : self.registrationForm().workTypeCd(),
+				workTimeCode : dataByCode.length > 0 ? dataByCode[0].workTimeCd : self.registrationForm().workTimeSetCd(),
+				color : dataByCode.length > 0 ? dataByCode[0].color : self.registrationForm().color(),
+				remarks : dataByCode.length > 0 ? dataByCode[0].remark : self.registrationForm().note()
 			};
 			
 			service.getWorkStyle(dto).done((workStyle) => {
@@ -87,7 +89,7 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			self.workStyle().color('#ff0000');
 			self.workStyle().borderColor('solid');
 			self.workStyle().backGroundColor(self.registrationForm().color());
-			self.workStyle().workTimeSetDisplay(dataByCode[0].shiftMasterName);
+			self.workStyle().workTimeSetDisplay(dataByCode.length > 0 ? dataByCode[0].shiftMasterName : self.registrationForm().workTimeSetDisplay());
 			
 			}).fail(function (error) {
 				nts.uk.ui.dialog.alertError({ messageId: error.messageId });
@@ -102,6 +104,15 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			self.selectedShiftMaster("");
 			self.registrationForm().clearData();
 			$('#requiredCode').focus();
+			self.clearPreviewColor();
+		}
+		
+		public clearPreviewColor(){
+			let self = this;
+			self.workStyle().color('#ff0000');
+			self.workStyle().borderColor('none');
+			self.workStyle().backGroundColor(self.registrationForm().color());
+			self.workStyle().workTimeSetDisplay("");
 		}
 
 		public bindShiftMasterInfoToForm(code: String) {
@@ -138,6 +149,7 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 							nts.uk.ui.dialog.info({ messageId: "Msg_15" });
 							self.shiftMasters(_.sortBy(data, 'shiftMasterCode'));
 							self.selectedShiftMaster(param.shiftMasterCode);
+							self.getWorkStyle();
 						});
 				}).fail(function (error) {
 					nts.uk.ui.dialog.alertError({ messageId: error.messageId });
@@ -177,6 +189,8 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 									nts.uk.ui.dialog.info({ messageId: "Msg_16" });
 									nts.uk.ui.block.clear();
 								}
+								self.clearPreviewColor();
+								self.getWorkStyle();
 							});
 					}).fail((res) => {
 						nts.uk.ui.dialog.alertError({ messageId: res.messageId });
