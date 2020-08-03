@@ -17,9 +17,9 @@
 
 		<div id="contents-area">
 			<!--B1_1-->
-			<a class="hyperlink" href="../a/index.xhtml">#{i18n.getText('KMR002_1')}</a>
+			<a class="hyperlink" href="../a/index.xhtml">#{i18n.getText('KMR001_3')}</a>
 			<!--B1_2-->
-			<button class="proceed sidebar-button">#{i18n.getText('KMR002_2')}</button>
+			<button class="proceed sidebar-button">#{i18n.getText('KMR001_4')}</button>
 			<hr/>
 			<div class="break-line"></div>
 
@@ -28,17 +28,17 @@
 			<hr/>
 			<!--B2_2-->
 			<!--B3_1-->
-			<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true}">#{i18n.getText('KMR002_5')}</div>
+			<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true}">#{i18n.getText('KMR001_5')}</div>
 			<!--B3_2 -> 4-->
 			<div data-bind="ntsRadioBoxGroup: {
 					options: itemList,
 					optionsValue: 'id',
-					optionsText: 'name',
+					optionsText: #{i18n.getText('name')},
 					value: selectedId,
 					enable: enable}"></div>
 			<div class="break-line"></div>
 			<!--B5_1-->
-			<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true}">#{i18n.getText('KMR002_9')}</div>
+			<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true}">#{i18n.getText('KMR001_9')}</div>
 
 			<!--B5_2-->
 			<span >
@@ -49,18 +49,18 @@
 			</span>
 
 			<!--B5_3-->
-			<span class="label">#{i18n.getText('KMR002_10')}</span>
+			<span class="label">#{i18n.getText('KMR001_10')}</span>
 			<div class="break-line"></div>
 			<!--B19_1-->
-			<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true}">#{i18n.getText('KMR002_35')}</div>
+			<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true}">#{i18n.getText('KMR001_35')}</div>
 
 			<!--B19_2-->
-			<span class="label">#{i18n.getText('KMR002_69')}</span>
+			<span class="label">#{i18n.getText('KMR001_69')}</span>
 			<!--B19_3-->
 			<input data-bind="ntsTextEditor: {value: name1Textbox}" />
 
 			<!--B19_4-->
-			<span class="label">#{i18n.getText('KMR002_70')}</span>
+			<span class="label">#{i18n.getText('KMR001_70')}</span>
 
 			<!--B19_5-->
 			<span>
@@ -71,7 +71,7 @@
 			</span>
 
 			<!--B19_6-->
-			<span class="label">#{i18n.getText('KMR002_58')}</span>
+			<span class="label">#{i18n.getText('KMR001_58')}</span>
 
 			<!--B19_7-->
 			<span >
@@ -86,13 +86,13 @@
 			<div data-bind="ntsFormLabel: {}">締め時刻１</div>
 
 			<!--B20_2-->
-			<span class="label">#{i18n.getText('KMR002_73')}</span>
+			<span class="label">#{i18n.getText('KMR001_73')}</span>
 
 			<!--B20_3-->
 			<!--<input data-bind="ntsTextEditor: {value: true}" />-->
 
 			<!--B20_4-->
-			<span class="label">#{i18n.getText('KMR002_74')}</span>
+			<span class="label">#{i18n.getText('KMR001_74')}</span>
 
 			<!--B20_5-->
 			<span>
@@ -103,7 +103,7 @@
 			</span>
 
 			<!--B20_6-->
-			<span class="label">#{i18n.getText('KMR002_58')}</span>
+			<span class="label">#{i18n.getText('KMR001_58')}</span>
 
 			<!--B20_7-->
 			<span>
@@ -115,16 +115,16 @@
 
 			<div class="break-line"></div>
 			<!--B12-->
-			<span class="label">#{i18n.getText('KMR002_25')}</span>
+			<span class="label">#{i18n.getText('KMR001_25')}</span>
 			<!--B13-->
 			<hr/>
 
 			<!--B10_1-->
-			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMR002_21')}</div>
+			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMR001_21')}</div>
 			<!--B10_2-->
 			<div id="combo-box" tabindex="1" data-bind="ntsComboBox: {
 							width: '150px',
-							name:'#[KMR002_22]',
+							name:'#[KMR001_22]',
 							options: itemsReservationChange,
 							optionsValue: 'appId',
 							visibleItemsCount: 5,
@@ -140,6 +140,7 @@
 			<!--B10_3-->
 			<div style = "display: inline-block;"
 				 tabindex="7"  data-bind="ntsComboBox: {
+				 	name:'#[KMR001_23]',
 					options: itemsTimePeriod,
 					optionsValue: 'appId',
 					optionsText: 'appValue',
@@ -153,12 +154,12 @@
 			<div class="break-line"></div>
 
 			<!--B21_1-->
-			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMR002_77')}</div>
+			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMR001_77')}</div>
 			<!--B21_2-->
 			<div data-bind="ntsRadioBoxGroup: {
 					options: orderedDataList,
 					optionsValue: 'id',
-					optionsText: 'name',
+					optionsText: #{i18n.getText('name')},
 					value: selectedId,
 					enable: enable}"></div>
 			<div class="break-line"></div>
@@ -167,12 +168,12 @@
 
 
 			<!--B14_1-->
-			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMR002_26')}</div>
+			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMR001_26')}</div>
 			<!--B14_2-->
 			<div data-bind="ntsRadioBoxGroup: {
 					options: orderDeadline,
 					optionsValue: 'id',
-					optionsText: 'name',
+					optionsText: #{i18n.getText('name')},
 					value: selectedId,
 					enable: enable}"></div>
 			<div class="break-line"></div>
@@ -181,17 +182,17 @@
 
 			<div class="break-line"></div>
 			<!--B15-->
-			<span>#{i18n.getText('KMR002_30')}</span>
+			<span>#{i18n.getText('KMR001_30')}</span>
 			<hr/>
 			<div class="break-line"></div>
 
 			<!--B17_1-->
-			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMR002_35')}</div>
+			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMR001_31')}</div>
 			<!--B17_2-->
 			<div data-bind="ntsRadioBoxGroup: {
 					options: monthlyPerformanceCalList,
 					optionsValue: 'id',
-					optionsText: 'name',
+					optionsText: #{i18n.getText('name')},
 					value: selectedId,
 					enable: enable}"></div>
 			<!--B17_3-->
@@ -199,12 +200,12 @@
 			<div class="break-line"></div>
 
 			<!--B18_1-->
-			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMR002_31')}</div>
+			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMR001_35')}</div>
 			<!--B18_2-->
 			<div data-bind="ntsRadioBoxGroup: {
 					options: dailyActualCalList,
 					optionsValue: 'id',
-					optionsText: 'name',
+					optionsText: #{i18n.getText('name')},
 					value: selectedId,
 					enable: enable}"></div>
 			<div class="break-line"></div>
