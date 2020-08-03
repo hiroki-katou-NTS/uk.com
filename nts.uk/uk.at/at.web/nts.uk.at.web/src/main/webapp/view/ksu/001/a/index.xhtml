@@ -13,6 +13,39 @@
 				nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ItemGridHeight
 			</com:ValidatorScript>
 			<style>
+				.medium-font-size {
+					font-size: 0.6rem;
+				}
+				
+				.small-font-size {
+					font-size: 0.5rem;
+				}
+				
+				.cell-red {
+					background-color: red;
+				}
+				
+				.cell-green {
+					background-color: green;
+				}
+				
+				.extable div.cell-light-green, td.cell-light-green {
+					background-color: #B8FF33;
+				}
+				
+				.extable div.cell-light-green.selected, td.cell-light-green.selected {
+					background-color: #3498DB;
+					color: #FFF;
+				}
+				
+				.blue-text {
+					color: blue;
+				}
+				
+				.red-text{
+					color: red;
+				}
+				
 				.header-image-no-event {
 					background-image: url(../image/120.png);
 					background-size: contain;
@@ -38,6 +71,7 @@
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 			<com:stylefile path="ksu001.a.main.css" />
+			<com:stylefile path="ksu001.a.catalog.css" />
 			<com:scriptfile path="ksu001.a.start.js" />
 			<com:scriptfile path="ksu001.a.vm.js" />
 			<com:scriptfile path="ksu001.a.service.js" />
@@ -78,13 +112,13 @@
 				<!-- event when click btn KSU001_10 -->
 				<div id="A1_10_1" class="popup-area popup-panel btn10">
 					<div id="button-top">
-						<button  id="A1_10_2" class="compensation">#{i18n.getText('Com_CompensationHoliday')}</button>
-						<button  id="A1_10_4" class="paid">#{i18n.getText('Com_PaidHoliday')}</button>
+						<button  id="A1_10_2" class="compensation" data-bind="click: openKDL005 ">#{i18n.getText('Com_CompensationHoliday')}</button>
+						<button  id="A1_10_4" class="paid" data-bind="click: openKDL020 ">#{i18n.getText('Com_PaidHoliday')}</button>
 						<button  id="A1_10_6" class="exsess">#{i18n.getText('Com_ExsessHoliday')}</button>
 					</div>
 					<div id="button-bot">
-						<button  id="A1_10_3" class="substitute">#{i18n.getText('Com_SubstituteHoliday')}</button>
-						<button  id="A1_10_5" class="fundedPaid">#{i18n.getText('Com_FundedPaidHoliday')}</button>
+						<button  id="A1_10_3" class="substitute" data-bind="click: openKDL009 ">#{i18n.getText('Com_SubstituteHoliday')}</button>
+						<button  id="A1_10_5" class="fundedPaid" data-bind="click: openKDL029 ">#{i18n.getText('Com_FundedPaidHoliday')}</button>
 						<button  id="A1_10_7" class="supportsetting">#{i18n.getText('KSU001_29')}</button>
 					</div>
 				</div>
@@ -119,7 +153,7 @@
 						</div>
 
 						<div>
-							<button id="A1_12_8">#{i18n.getText('KSU001_131')}</button>
+							<button id="A1_12_8" data-bind="click: openQDialog" >#{i18n.getText('KSU001_131')}</button>
 							<span id="A1_12_9">#{i18n.getText('KSU001_132')}</span>
 						</div>
 
@@ -142,7 +176,7 @@
 							<span id="A1_12_17">#{i18n.getText('KSU001_32')}</span>
 						</div>
 						<div>
-							<button id="A1_12_18">#{i18n.getText('KSU001_36')}</button>
+							<button id="A1_12_18" data-bind="click: openLDialog" >#{i18n.getText('KSU001_36')}</button>
 							<span id="A1_12_19">#{i18n.getText('KSU001_33')}</span>
 						</div>
 						<div>
