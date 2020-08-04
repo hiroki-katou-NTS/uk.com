@@ -30,7 +30,7 @@ public class RegisterAtApproveReflectionInfoDefault_New implements RegisterAtApp
 	@Override
 	public void newScreenRegisterAtApproveInfoReflect(String empID, Application application) {
 		// 2.承認する(ApproveService)
-		approvalRootStateAdapter.doApprove(application.getAppID(), application.getEnteredPerson());
+		approvalRootStateAdapter.doApprove(application.getAppID(), application.getEnteredPerson(), "");
 		// アルゴリズム「承認全体が完了したか」を実行する(thực hiện thuật toán 「」)
 		Boolean approvalCompletionFlag = approvalRootStateAdapter.isApproveAllComplete(application.getAppID());
 		if(!approvalCompletionFlag) {

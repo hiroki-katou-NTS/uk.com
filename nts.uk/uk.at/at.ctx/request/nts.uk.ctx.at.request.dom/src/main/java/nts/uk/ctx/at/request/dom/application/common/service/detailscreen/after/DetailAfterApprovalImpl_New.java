@@ -36,7 +36,7 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 	private NewRegisterMailSendCheck newRegisterMailSendCheck;
 	
 	@Override
-	public ProcessResult doApproval(String companyID, String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+	public ProcessResult doApproval(String companyID, String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput, String memo) {
 		boolean isProcessDone = true;
 		boolean isAutoSendMail = false;
 		List<String> autoSuccessMail = new ArrayList<>();
@@ -44,7 +44,7 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 		List<String> autoFailServer = new ArrayList<>();
 		String loginEmployeeID = AppContexts.user().employeeId();
 		// 2.承認する(ApproveService)
-		Integer phaseNumber = approvalRootStateAdapter.doApprove(appID, loginEmployeeID);
+		Integer phaseNumber = approvalRootStateAdapter.doApprove(appID, loginEmployeeID, memo);
 		// アルゴリズム「承認全体が完了したか」を実行する ( Thực hiện thuật toán ''Đã hoàn thành toàn bộ approve hay chưa"
 		Boolean allApprovalFlg = approvalRootStateAdapter.isApproveAllComplete(appID);
 		String reflectAppId = "";

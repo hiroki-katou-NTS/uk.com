@@ -124,9 +124,10 @@ public interface ApprovalRootStatePub {
 	 * 承認する
 	 * @param rootStateID インスタンスID
 	 * @param employeeID 社員ID
+	 * @param memo 承認コメン
 	 * @return 承認フェーズ枠番
 	 */
-	public Integer doApprove(String rootStateID, String employeeID);
+	public Integer doApprove(String rootStateID, String employeeID, String memo);
 	
 	/**
 	 * 2.承認全体が完了したか

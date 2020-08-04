@@ -73,7 +73,7 @@ public interface ApprovalRootStateAdapter {
 	
 	public List<String> getNextApprovalPhaseStateMailList(String rootStateID, Integer approvalPhaseStateNumber);
 	
-	public Integer doApprove(String rootStateID, String employeeID);
+	public Integer doApprove(String rootStateID, String employeeID, String memo);
 	
 	public Boolean isApproveAllComplete(String rootStateID);
 	

@@ -141,9 +141,9 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	}
 
 	@Override
-	public Integer doApprove(String rootStateID, String employeeID) {
+	public Integer doApprove(String rootStateID, String employeeID, String memo) {
 
-		return approvalRootStatePub.doApprove(rootStateID, employeeID);
+		return approvalRootStatePub.doApprove(rootStateID, employeeID, memo);
 
 	}
 
