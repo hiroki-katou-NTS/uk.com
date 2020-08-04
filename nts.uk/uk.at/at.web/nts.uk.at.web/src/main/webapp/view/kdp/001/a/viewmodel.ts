@@ -437,9 +437,9 @@ class KDP001AViewModel extends ko.ViewModel {
 			vm.$blockui("clear");
 			let items = _(data).flatMap('stampRecords').value() as any[];
 
-				items = _.orderBy(items, ['stampTimeWithSec'], ['desc']);
+			items = _.orderBy(items, ['stampTimeWithSec'], ['desc']);
 
-				vm.stampDatas(items || []);
+			vm.stampDatas(items || []);
 
 		}).always(() => {
 			vm.$blockui("clear");
@@ -501,7 +501,9 @@ class KDP001AViewModel extends ko.ViewModel {
 			START_SUPPORT,
 			WORK_SUPPORT,
 			START_SUPPORT_EARLY_APPEARANCE,
-			START_SUPPORT_BREAK
+			START_SUPPORT_BREAK, 
+			RESERVATION,
+			CANCEL_RESERVATION
 		];
 
 		const RIGHT_ALIGNS = [
@@ -683,8 +685,8 @@ interface IStampInfoDisp {
 	stamp: IStamp;
 
 	correctTimeStampValue: number;
-	
-	stampHow:number;
+
+	stampHow: number;
 }
 
 interface IStamp {

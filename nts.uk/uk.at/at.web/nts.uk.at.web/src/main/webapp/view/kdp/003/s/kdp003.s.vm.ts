@@ -80,16 +80,18 @@ module nts.uk.at.kdp003.s {
 								START_SUPPORT,
 								WORK_SUPPORT,
 								START_SUPPORT_EARLY_APPEARANCE,
-								START_SUPPORT_BREAK
+								START_SUPPORT_BREAK, 
+								RESERVATION,
+								CANCEL_RESERVATION
 							];
 							const RIGHT_ALIGNS = [
-								DEPARTURE, 
+								DEPARTURE,
 								DEPARTURE_BOUNCE,
 								DEPARTURE_OVERTIME,
 								DEPAR,
 								TEMPORARY_LEAVING,
 								END_SUPPORT
-								];
+							];
 
 							const pushable = {
 								id: randomId(),
