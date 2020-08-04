@@ -1,11 +1,16 @@
 package nts.uk.ctx.at.schedule.infra.repository.employeeinfo.scheduleteam;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import com.aspose.pdf.Collection;
+
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeamRepository;
 import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.scheduleteam.KscmtAffScheduleTeam;
@@ -26,7 +31,7 @@ public class JpaBelongScheduleTeamRepository extends JpaRepository implements Be
 	
 	private static final String GET_ALL = GET_BY_CID +" AND c.WKPGRPID = : WKPGRPID AND c.scheduleTeamCd = :scheduleTeamCd "; 
 	
-	private static final String GET_BY_LIST_EMPID = GET_BY_CID + " AND c.pk.employeeID IN :empIDs" ;
+	private static final String GET_BY_LIST_EMPID = GET_BY_CID + "AND c.pk.employeeID IN :empIDs" ;
 	
 	//private static final String GET_
 	
@@ -87,6 +92,9 @@ public class JpaBelongScheduleTeamRepository extends JpaRepository implements Be
 
 	@Override
 	public List<BelongScheduleTeam> get(String companyID, List<String> empIDs) {
+		if(CollectionUtil.isEmpty(empIDs)){
+			return new ArrayList<>();
+		}
 		return this.queryProxy().query(GET_BY_LIST_EMPID, KscmtAffScheduleTeam.class)
 				.setParameter("CID", companyID)
 				.setParameter("empIDs", empIDs)
