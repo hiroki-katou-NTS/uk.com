@@ -69,8 +69,11 @@ module nts.uk.at.view.kmp001.a {
 								if (data.stampCardDto.length > 0) {
 									data.stampCardDto[0].checked = true;
 								}
-								vm.model.update(ko.toJS(data));
-								vm.model.employeeId(current.employeeId);
+
+								vm.$errors('clear').then(() => {
+									vm.model.update(ko.toJS(data));
+									vm.model.employeeId(current.employeeId);
+								})
 							});
 					}
 					vm.mode("update");
