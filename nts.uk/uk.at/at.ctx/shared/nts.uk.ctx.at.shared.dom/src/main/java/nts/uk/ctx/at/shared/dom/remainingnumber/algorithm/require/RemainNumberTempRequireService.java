@@ -110,6 +110,9 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 @Stateless
 public class RemainNumberTempRequireService {
 
+	@Inject
+	private Require require;
+	
 	public static interface Require
 			extends InterimRemainOffPeriodCreateData.RequireM4, BreakDayOffMngInPeriodQuery.RequireM10,
 			AbsenceReruitmentMngInPeriodQuery.RequireM10, SpecialLeaveManagementService.RequireM5,
@@ -122,10 +125,11 @@ public class RemainNumberTempRequireService {
 	}
 
 	public Require createRequire() {
-		return new RequireImp();
+		return require;
 	}
 	
-	public static class RequireImp implements Require {
+	@Stateless
+	public class RequireImp implements Require {
 
 		public RequireImp() {}
 		
