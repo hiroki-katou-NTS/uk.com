@@ -30,6 +30,12 @@ public class AnnualleaveTestCase {
 	/** 社員 */
 	private String employee;
 	
+	/** 年休付与残数 */
+	private String annLeaRem;
+	
+	/** 積休付与残数 */
+	private String rsvLeaRem;
+	
 	/** 集計期間  */
 	private String aggrPeriod;
 	
@@ -101,6 +107,8 @@ public class AnnualleaveTestCase {
 		//a.setCaseNo(record.asStr("No"));
 		a.setCaseNo(record.asStr("テストケース"));
 		a.setEmployee(record.asStr("社員"));
+		a.setAnnLeaRem(record.asStr("年休付与残数"));
+		a.setRsvLeaRem(record.asStr("積休付与残数"));
 		a.setAggrPeriod(record.asStr("集計期間"));
 		a.setMode(record.asStr("モード"));
 		a.setCriteriaDate(record.asStr("基準日"));

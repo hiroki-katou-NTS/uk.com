@@ -262,7 +262,7 @@ public class TestDataForOverWriteList {
 			/** 残数管理データID */
 			String manageId = "1";
 			/** 対象日 */
-			GeneralDate ymd = GeneralDate.ymd(2020, 9, 18);
+			GeneralDate ymd = tmpDate;
 			/** 勤務種類コード */
 			String workTypeCode = RemainType.ANNUAL.toString(); // 年休
 			/** 使用日数 */

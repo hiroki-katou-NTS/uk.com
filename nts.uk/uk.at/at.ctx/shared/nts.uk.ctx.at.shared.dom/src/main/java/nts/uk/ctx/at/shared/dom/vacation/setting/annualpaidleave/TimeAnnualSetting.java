@@ -13,7 +13,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 
 /**
- * The Class TimeVacationSetting.
+ * 　時間年休管理設定
+ * The Class TimeAnnualSetting.
  */
 @Getter
 public class TimeAnnualSetting extends DomainObject implements Serializable {

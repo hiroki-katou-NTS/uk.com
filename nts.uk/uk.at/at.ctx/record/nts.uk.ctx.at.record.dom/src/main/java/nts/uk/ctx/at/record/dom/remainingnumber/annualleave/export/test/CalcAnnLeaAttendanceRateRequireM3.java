@@ -176,12 +176,12 @@ public class CalcAnnLeaAttendanceRateRequireM3 {
 		toBinaryMap.put(GrantHdTblSet.class.toString(), grantHdTblSetList);
 		
 		// 勤続年数テーブル
-		val yearHolidayCodes = new ArrayList<String>(); // ooooo　要実装追加
+		val yearHolidayCodes = new ArrayList<String>();
 		
 		List<LengthServiceTbl> lengthServiceTblList = new ArrayList<LengthServiceTbl>();
 		for(String companyId: companyIds){
 			List<LengthServiceTbl> lengthServiceTblListTmp
-				= lengthServiceRepository.findByCompanyId(companyId); // ooooo　要実装追加
+				= lengthServiceRepository.findByCompanyId(companyId);
 			
 			lengthServiceTblList.addAll(lengthServiceTblListTmp);
 		}

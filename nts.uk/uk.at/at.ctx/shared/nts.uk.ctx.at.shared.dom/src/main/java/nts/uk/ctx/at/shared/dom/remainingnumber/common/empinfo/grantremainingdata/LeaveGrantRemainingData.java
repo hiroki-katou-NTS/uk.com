@@ -9,15 +9,9 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.RemNumShiftListWork;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.RepositoriesRequiredByRemNum;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.*;
 
 /**
@@ -77,16 +71,14 @@ public abstract class LeaveGrantRemainingData extends AggregateRoot {
 	 */
 	public static void digest(
 			List<LeaveGrantRemainingData> targetRemainingDatas,
-			GetAnnLeaRemNumWithinPeriodProc.RequireM3 require,
+			LeaveRemainingNumber.RequireM3 require,
 			RemNumShiftListWork remNumShiftListWork,
 			LeaveUsedNumber leaveUsedNumber,
 			String employeeId,
 			GeneralDate baseDate,
 			boolean isForcibly){
 		
-//		// 「休暇残数シフトリストWORK」一時変数を作成 　依存関係によりダミーデータが作成できないため、前の処理で定義
-//		RemNumShiftListWork remNumShiftListWork = new RemNumShiftListWork();
-		
+	
 		// 取得した「付与残数」でループ
 		for (val targetRemainingData : targetRemainingDatas){
 			
@@ -103,7 +95,7 @@ public abstract class LeaveGrantRemainingData extends AggregateRoot {
 		
 		// 休暇使用数を消化する
 		remNumShiftListWork.digest(
-				repositoriesRequiredByRemNum, leaveUsedNumber, employeeId, baseDate);
+				require, leaveUsedNumber, employeeId, baseDate);
 		
 //		// 残数不足で一部消化できなかったとき
 //		if ( !remNumShiftListWork.getUnusedNumber().isZero() ){

@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.arc.layer.app.cache.CacheCarrier;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.serialize.binary.ObjectBinaryFile;
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -346,6 +348,18 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 	    System.out.println(className);
 	    final String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
         System.out.println(methodName);
+		return null;
+	}
+
+	@Override
+	public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
+		// TODO Auto-generated method stub
+		
+		
+		
+		
+		
+		
 		return null;
 	}
 

@@ -260,6 +260,7 @@ public class LeaveRemainingNumber {
 	
 	public static interface RequireM3 {
 		
+		// 労働条件取得
 		Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate);
 	}
 

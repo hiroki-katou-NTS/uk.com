@@ -39,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.AttendanceRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
@@ -156,6 +157,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	
 	/**
 	 * 期間中の年休残数を取得
+	 * @param require Require
+	 * @param cacheCarrier CacheCarrier
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param aggrPeriod 集計期間
@@ -848,7 +851,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	public static interface RequireM3 extends RequireM2,
 												GetClosureStartForEmployee.RequireM1,
 												CalcNextAnnualLeaveGrantDate.RequireM2,
-												CalcAnnLeaAttendanceRate.RequireM1 {
+												CalcAnnLeaAttendanceRate.RequireM1,
+												LeaveRemainingNumber.RequireM3{
 		
 		List<AnnualLeaveRemainingHistory> annualLeaveRemainingHistory(String sid, YearMonth ym);
 

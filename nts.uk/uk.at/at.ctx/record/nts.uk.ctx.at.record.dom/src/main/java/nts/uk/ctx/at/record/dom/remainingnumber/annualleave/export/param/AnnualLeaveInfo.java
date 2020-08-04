@@ -24,8 +24,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.RemNumShiftListWork;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.RepositoriesRequiredByRemNum;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
@@ -209,7 +209,7 @@ public class AnnualLeaveInfo implements Cloneable {
 	 * @return 年休の集計結果
 	 */
 	public AggrResultOfAnnualLeave lapsedGrantDigest(
-			GetAnnLeaRemNumWithinPeriodProc.RequireM3 require,
+			LeaveRemainingNumber.RequireM3 require,
 			String companyId,
 			String employeeId,
 			AggregatePeriodWork aggregatePeriodWork,
@@ -460,7 +460,7 @@ public class AnnualLeaveInfo implements Cloneable {
 	 * @return 年休の集計結果
 	 */
 	private AggrResultOfAnnualLeave digestProcess(
-			GetAnnLeaRemNumWithinPeriodProc.RequireM3 require,
+			LeaveRemainingNumber.RequireM3 require,
 			String companyId,
 			String employeeId,
 			AggregatePeriodWork aggregatePeriodWork,
