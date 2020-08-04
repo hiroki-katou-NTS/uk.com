@@ -95,12 +95,9 @@ module nts.uk.at.view.kdp002.b {
 						self.laceName(data[0].workPlaceName);
 						self.listStampRecord(_.orderBy(self.listStampRecord(), ['stampTimeWithSec'], ['desc']));
 						_.forEach(self.listStampRecord(), (sr) => {
-							let changeClockArtDisplay = "<div class='full-width' style='text-align: center'> " + sr.stampArtName + " </div>";
-							if (sr.changeClockArt == 0) {
-								changeClockArtDisplay = "<div class='full-width' style='text-align: left'> " + sr.stampArtName + " </div>";
-							} else if (sr.changeClockArt == 1) {
-								changeClockArtDisplay = "<div class='full-width' style='text-align: right'> " + sr.stampArtName + " </div>";
-							}
+
+							let changeClockArtDisplay = self.getTextAlign(sr);
+
 							let dateDisplay = nts.uk.time.applyFormat("Short_YMDW", sr.stampDate);
 							if (moment(sr.stampDate).day() == 6) {
 								dateDisplay = "<span class='color-schedule-saturday' >" + dateDisplay + "</span>";
@@ -128,6 +125,68 @@ module nts.uk.at.view.kdp002.b {
 				});
 				return dfd.promise();
 			}
+
+			getTextAlign(sr: any): string {
+				
+				const {
+					WORK,
+					WORK_STRAIGHT,
+					WORK_EARLY,
+					WORK_BREAK,
+					DEPARTURE,
+					DEPARTURE_BOUNCE,
+					DEPARTURE_OVERTIME,
+					OUT,
+					RETURN,
+					GETTING_STARTED,
+					DEPAR,
+					TEMPORARY_WORK,
+					TEMPORARY_LEAVING,
+					START_SUPPORT,
+					END_SUPPORT,
+					WORK_SUPPORT,
+					START_SUPPORT_EARLY_APPEARANCE,
+					START_SUPPORT_BREAK,
+					RESERVATION,
+					CANCEL_RESERVATION
+				} = ContentsStampType;
+
+				const LEFT_ALIGNS = [
+					WORK,
+					WORK_STRAIGHT,
+					WORK_EARLY,
+					WORK_BREAK,
+					GETTING_STARTED,
+					TEMPORARY_WORK,
+					START_SUPPORT,
+					WORK_SUPPORT,
+					START_SUPPORT_EARLY_APPEARANCE,
+					START_SUPPORT_BREAK
+				];
+
+				const RIGHT_ALIGNS = [
+					DEPARTURE,
+					DEPARTURE_BOUNCE,
+					DEPARTURE_OVERTIME,
+					DEPAR,
+					TEMPORARY_LEAVING,
+					END_SUPPORT
+				];
+
+				if (LEFT_ALIGNS.indexOf(sr.correctTimeStampValue) > -1) {
+					return "<div class='full-width' style='text-align: left'> " + sr.stampArtName + " </div>";
+					
+				}
+				if (RIGHT_ALIGNS.indexOf(sr.correctTimeStampValue) > -1) {
+					return "<div class='full-width' style='text-align: right'> " + sr.stampArtName + " </div>";
+					
+				} else {
+					return  "<div class='full-width' style='text-align: center'> " + sr.stampArtName + " </div>";
+					
+				}
+
+			}
+
 			getEmpInfo(): JQueryPromise<any> {
 				let self = this;
 				let dfd = $.Deferred();
@@ -147,6 +206,69 @@ module nts.uk.at.view.kdp002.b {
 			}
 		}
 	}
+
+	enum ContentsStampType {
+		/** 1: 出勤 */
+		WORK = 1,
+
+		/** 2: 出勤＋直行 */
+		WORK_STRAIGHT = 2,
+
+		/** 3: 出勤＋早出 */
+		WORK_EARLY = 3,
+
+		/** 4: 出勤＋休出 */
+		WORK_BREAK = 4,
+
+		/** 5: 退勤 */
+		DEPARTURE = 5,
+
+		/** 6: 退勤＋直帰 */
+		DEPARTURE_BOUNCE = 6,
+
+		/** 7: 退勤＋残業 */
+		DEPARTURE_OVERTIME = 7,
+
+		/** 8: 外出 */
+		OUT = 8,
+
+		/** 9: 戻り */
+		RETURN = 9,
+
+		/** 10: 入門 */
+		GETTING_STARTED = 10,
+
+		/** 11: 退門 */
+		DEPAR = 11,
+
+		/** 12: 臨時出勤 */
+		TEMPORARY_WORK = 12,
+
+		/** 13: 臨時退勤 */
+		TEMPORARY_LEAVING = 13,
+
+		/** 14: 応援開始 */
+		START_SUPPORT = 14,
+
+		/** 15: 応援終了 */
+		END_SUPPORT = 15,
+
+		/** 16: 出勤＋応援 */
+		WORK_SUPPORT = 16,
+
+		/** 17: 応援開始＋早出 */
+		START_SUPPORT_EARLY_APPEARANCE = 17,
+
+		/** 18: 応援開始＋休出 */
+		START_SUPPORT_BREAK = 18,
+
+		/** 19: 予約 */
+		RESERVATION = 19,
+
+		/** 20: 予約取消  */
+		CANCEL_RESERVATION = 20
+	}
+
 	export module model {
 
 		export class ItemModels {
