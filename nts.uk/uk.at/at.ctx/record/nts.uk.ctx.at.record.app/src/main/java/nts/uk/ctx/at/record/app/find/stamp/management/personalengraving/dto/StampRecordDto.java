@@ -170,8 +170,11 @@ public class StampRecordDto {
 	}
 
 	public int getCorrectTimeStampValue() {
+		// 19 予約 NONE NONE False => 予約系
+		// 20 予約取消  NONE NONE False => なし
+		// do 19 và 20 cùng điều kiện như nhau và hiển thị như nhâu nên chỉ trả về 1 giá trị 19 thôi 
 		if (this.changeClockArt == null) {
-			return -1;
+			return 19;
 		}
 
 		// 1 出勤 None None False => 出勤系
