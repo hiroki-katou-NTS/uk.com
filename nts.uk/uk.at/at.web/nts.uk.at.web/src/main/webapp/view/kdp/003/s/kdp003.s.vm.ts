@@ -73,9 +73,7 @@ module nts.uk.at.kdp003.s {
 								START_SUPPORT,
 								WORK_SUPPORT,
 								START_SUPPORT_EARLY_APPEARANCE,
-								START_SUPPORT_BREAK, 
-								RESERVATION,
-								CANCEL_RESERVATION
+								START_SUPPORT_BREAK
 							];
 							const RIGHT_ALIGNS = [
 								DEPARTURE,
