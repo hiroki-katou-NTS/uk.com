@@ -38,7 +38,7 @@ public class TimeStampLoginCommand {
 	private String password;
 	private boolean passwordInvalid;
 	private boolean isAdminMode;
-	private boolean runtimeEnvironmentCreate;
+	private boolean runtimeEnvironmentCreat;
 	
 	private String screenId;
 	private String programId;

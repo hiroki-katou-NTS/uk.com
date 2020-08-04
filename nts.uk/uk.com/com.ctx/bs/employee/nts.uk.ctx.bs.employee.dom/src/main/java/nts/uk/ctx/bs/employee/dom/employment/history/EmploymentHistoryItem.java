@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentCode;
 
 
@@ -40,19 +39,4 @@ public class EmploymentHistoryItem extends AggregateRoot{
 		return new EmploymentHistoryItem(histId,sid,  salary != null ? EnumAdaptor.valueOf(salary, SalarySegment.class): null,new EmploymentCode(employmentCD));
 	}
 	
-	public WithPeriod with(DatePeriod period) {
-		return new WithPeriod(this, period);
-	}
-	
-	public static class WithPeriod extends EmploymentHistoryItem {
-		@Getter
-		private final DatePeriod period;
-
-		public WithPeriod(
-				EmploymentHistoryItem item, DatePeriod period) {
-			super(item.historyId, item.employeeId, item.salarySegment, item.employmentCode);
-			this.period = period;
-		}
-		
-	}
 }

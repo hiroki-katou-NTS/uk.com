@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.AddSubHdManagementService;
@@ -21,9 +20,13 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class PayoutManagementDataService {
+	
+	@Inject
+	private ClosureService closureService;
 	
 	@Inject
 	private ClosureRepository closureRepo;
@@ -157,7 +160,7 @@ public class PayoutManagementDataService {
 		// Get Processing Ym 処理年月
 		YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
 
-		DatePeriod closurePeriod = ClosureService.getClosurePeriod(closureId, processingYm, optClosure);
+		DatePeriod closurePeriod = closureService.getClosurePeriod(closureId, processingYm);
 		if (Objects.isNull(closurePeriod)) {
 			return Optional.empty();
 		}

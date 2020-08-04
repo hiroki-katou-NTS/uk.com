@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 
 import java.util.Map;
 
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -14,6 +13,6 @@ public interface InterimRemainOffMonthProcess {
 	 * @param dateData 期間
 	 * @return
 	 */
-	public Map<GeneralDate, DailyInterimRemainMngData> monthInterimRemainData(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod dateData);
+	public Map<GeneralDate, DailyInterimRemainMngData> monthInterimRemainData(String cid, String sid, DatePeriod dateData);
 	
 }

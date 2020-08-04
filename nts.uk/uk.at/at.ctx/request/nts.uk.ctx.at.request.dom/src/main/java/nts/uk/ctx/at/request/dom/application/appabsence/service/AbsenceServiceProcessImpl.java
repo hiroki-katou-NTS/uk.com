@@ -12,10 +12,8 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -65,7 +63,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EarchInterimRemainCheck;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInputParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
@@ -103,9 +100,17 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Inject
 	private PlanVacationRuleExport planVacationRuleExport;
 	@Inject
+	private AbsenceTenProcess absenceTenProcess;
+	@Inject
 	private AppForSpecLeaveRepository repoSpecLeave;
 	@Inject
 	private AcquisitionRuleRepository repoAcquisitionRule;
+	@Inject
+	private GetClosureStartForEmployee getClosureStartForEmp;
+	@Inject
+	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
+	@Inject
+	private BreakDayOffMngInPeriodQuery breakDayOffMngInPeriod;
 	@Inject
 	private AnnLeaveRemainNumberAdapter annLeaRemNumberAdapter;
 	@Inject
@@ -152,9 +157,6 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	
 	@Inject 
 	private WorkTimeSettingService weorkTimeSettingService;
-	
-	@Inject
-	private RemainNumberTempRequireService requireService;
 	
 	@Override
 	public SpecialLeaveInfor getSpecialLeaveInfor(String workTypeCode) {
@@ -204,7 +206,6 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			
 		}
 	}
-	
 	/**
 	 * @author hoatt
 	 * 14.休暇種類表示チェック
@@ -215,8 +216,6 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	 */
 	@Override
 	public CheckDispHolidayType checkDisplayAppHdType(String companyID, String sID, GeneralDate baseDate) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
 		//A4_3 - 年休設定
 		boolean isYearManage = false;
 		//A4_4 - 代休管理設定
@@ -226,18 +225,15 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		//A4_8 - 積立年休設定
 		boolean isRetentionManage = false;
 		//10-1.年休の設定を取得する
-		AnnualHolidaySetOutput annualHd = AbsenceTenProcess.getSettingForAnnualHoliday(require, companyID);
+		AnnualHolidaySetOutput annualHd = absenceTenProcess.getSettingForAnnualHoliday(companyID);
 		isYearManage = annualHd.isYearHolidayManagerFlg();
 		//10-4.積立年休の設定を取得する
-		isRetentionManage = AbsenceTenProcess.getSetForYearlyReserved(require, cacheCarrier, 
-				companyID, sID, baseDate);
+		isRetentionManage = absenceTenProcess.getSetForYearlyReserved(companyID, sID, baseDate);
 		//10-2.代休の設定を取得する
-		SubstitutionHolidayOutput subHd = AbsenceTenProcess.getSettingForSubstituteHoliday(require, cacheCarrier,
-				companyID, sID, baseDate);
+		SubstitutionHolidayOutput subHd = absenceTenProcess.getSettingForSubstituteHoliday(companyID, sID, baseDate);
 		isSubHdManage = subHd.isSubstitutionFlg();
 		//10-3.振休の設定を取得する
-		LeaveSetOutput leaveSet = AbsenceTenProcess.getSetForLeave(require, cacheCarrier,
-				companyID, sID, baseDate);
+		LeaveSetOutput leaveSet = absenceTenProcess.getSetForLeave(companyID, sID, baseDate);
 		isSubVacaManage = leaveSet.isSubManageFlag();
 		return new CheckDispHolidayType(isYearManage, isSubHdManage, isSubVacaManage, isRetentionManage);
 	}
@@ -350,12 +346,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Override
 	public NumberOfRemainOutput getNumberOfRemaining(String companyID, String employeeID, GeneralDate baseDate,
 			boolean yearManage, boolean subHdManage, boolean subVacaManage, boolean retentionManage) {
-		
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
-		
 		//アルゴリズム「社員に対応する締め開始日を取得する」を実行する
-		Optional<GeneralDate> closure = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeID);
+		Optional<GeneralDate> closure = getClosureStartForEmp.algorithm(employeeID);
 		if(!closure.isPresent()){
 			return new NumberOfRemainOutput(null, null, null, null);
 		}
@@ -381,7 +373,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 //			・上書きフラグ＝false
 			AbsRecMngInPeriodParamInput paramInput = new AbsRecMngInPeriodParamInput(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
 					baseDate, false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
-			AbsRecRemainMngOfInPeriod subVaca = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(require, cacheCarrier, paramInput);
+			AbsRecRemainMngOfInPeriod subVaca = absRertMngInPeriod.getAbsRecMngInPeriod(paramInput);
 			//振休残数 ← 残日数　（アルゴリズム「期間内の振出振休残数を取得する」のoutput）
 			subVacaRemain = subVaca.getRemainDays();//残日数
 		}
@@ -398,7 +390,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 //			・上書きフラグ＝false
 			BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
 					false, baseDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
-			BreakDayOffRemainMngOfInPeriod subHd = BreakDayOffMngInPeriodQuery.getBreakDayOffMngInPeriod(require, cacheCarrier, inputParam);
+			BreakDayOffRemainMngOfInPeriod subHd = breakDayOffMngInPeriod.getBreakDayOffMngInPeriod(inputParam);
 			//代休残数 ← 残日数　（アルゴリズム「期間内の代休残数を取得する」のoutput）
 			subHdRemain = subHd.getRemainDays();
 		}

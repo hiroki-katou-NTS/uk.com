@@ -13,11 +13,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import lombok.RequiredArgsConstructor;
-import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
@@ -25,6 +21,7 @@ import nts.uk.ctx.bs.employee.pub.company.AffComHistItem;
 import nts.uk.ctx.bs.employee.pub.company.AffCompanyHistExport;
 import nts.uk.ctx.bs.employee.pub.company.StatusOfEmployee;
 import nts.uk.ctx.bs.employee.pub.company.SyCompanyPub;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class ComPubImp implements SyCompanyPub {
@@ -35,21 +32,11 @@ public class ComPubImp implements SyCompanyPub {
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<AffCompanyHistExport> GetAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod) {
-    	
-    	val cacheCarrier = new CacheCarrier();
-		return GetAffCompanyHistByEmployeeRequire(cacheCarrier, sids, datePeriod);
-	}
-
-	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public List<AffCompanyHistExport> GetAffCompanyHistByEmployeeRequire(CacheCarrier cacheCarrier, List<String> sids, DatePeriod datePeriod) {
-
-		val require = new RequireImpl(cacheCarrier);
 
 		if (sids.isEmpty() || datePeriod.start() == null || datePeriod.end() == null)
 			return Collections.emptyList();
 
-		List<AffCompanyHist> his = require.getAffComHisEmpByLstSidAndPeriod(sids, datePeriod);
+		List<AffCompanyHist> his = affComHistRepo.getAffComHisEmpByLstSidAndPeriod(sids, datePeriod);
 		return sids.stream().map(sid -> {
 			AffCompanyHistExport affComHostEx = new AffCompanyHistExport();
 			affComHostEx.setEmployeeId(sid);
@@ -202,26 +189,6 @@ public class ComPubImp implements SyCompanyPub {
 				result.add(affComHostEx);
 		});
 		return result;
-	}
-    
-    @RequiredArgsConstructor
-	class RequireImpl implements ComPubImp.Require{
-
-		private final CacheCarrier cacheCarrier;
-
-
-		//他と被ってる　しかし、取り方違うから要見直し　こっちのがキー指定するキー多い
-		@Override
-		public List<AffCompanyHist> getAffComHisEmpByLstSidAndPeriod(List<String> employeeIds, DatePeriod datePeriod) {
-//			AffCompanyHistCache cache = cacheCarrier.get(AffCompanyHistCache.DOMAIN_NAME);
-//			return cache.get(employeeIds, datePeriod);
-			return affComHistRepo.getAffComHisEmpByLstSidAndPeriod(employeeIds, datePeriod);
-		}
-	}
-
-	public static interface Require{
-//		affComHistRepo.getAffComHisEmpByLstSidAndPeriod(sids, datePeriod);
-		List<AffCompanyHist> getAffComHisEmpByLstSidAndPeriod(List<String> employeeIds, DatePeriod datePeriod);
 	}
 
 }

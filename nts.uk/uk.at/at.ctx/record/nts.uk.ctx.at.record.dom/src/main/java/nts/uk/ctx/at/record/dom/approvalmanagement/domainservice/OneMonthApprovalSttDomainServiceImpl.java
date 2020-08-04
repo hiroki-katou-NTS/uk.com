@@ -21,10 +21,8 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
 import nts.uk.ctx.at.record.dom.adapter.company.SyCompanyRecordAdapter;
@@ -61,7 +59,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ch
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.EmployeeGeneralInfoService;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.JobTitleInfoAdapter;
@@ -80,6 +77,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * @author hungnm
@@ -93,6 +91,9 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 
 	@Inject
 	private ClosureRepository closureRepository;
+
+	@Inject
+	private ClosureService closureService;
 
 	@Inject
 	private ApprovalStatusAdapter approvalStatusAdapter;
@@ -111,9 +112,6 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 
 	@Inject
 	private EmploymentHistAdapter employmentHistAdapter;
-	
-	@Inject 
-	private RecordDomRequireService requireService;
 
 	@Inject
 	private EmployeeGeneralInfoService employeeGeneralInfoService;
@@ -196,8 +194,7 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 	public OneMonthApprovalStatusDto getDatePeriod(int closureId) {
 		OneMonthApprovalStatusDto result = new OneMonthApprovalStatusDto();
 		YearMonth currentYearMonth = GeneralDate.today().yearMonth();
-		DatePeriod datePeriod = ClosureService.getClosurePeriod(requireService.createRequire(), 
-				closureId, currentYearMonth);
+		DatePeriod datePeriod = closureService.getClosurePeriod(closureId, currentYearMonth);
 		result.setStartDate(datePeriod.start());
 		result.setEndDate(datePeriod.end());
 		return result;
@@ -261,8 +258,7 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 		// INPUT．「締めID」をチェックする
 		if (closureIdParam == null) {
 			// 社員に対応する処理締めを取得する
-			Closure closure = ClosureService.getClosureDataByEmployee(requireService.createRequire(),
-					new CacheCarrier(), employeeId, GeneralDate.today());
+			Closure closure = closureService.getClosureDataByEmployee(employeeId, GeneralDate.today());
 			currentClosure = closure.getClosureId().value;
 		} else {
 			// パラメータ「対象締め」をセットする

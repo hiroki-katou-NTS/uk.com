@@ -4,7 +4,6 @@ module nts.uk.at.view.kdp.share {
 		SMALL_8: 1
 	}
 	const DEFAULT_GRAY = '#E8E9EB';
-	const NULL_COLOR = '#FFFFFF';
 	const GET_HIGHLIGHT_SETTING_URL = 'at/record/stamp/management/personal/stamp/getHighlightSetting';
 	export class StampButtonLayOut {
 		oldLayout: KnockoutObservable<any> = ko.observable({});
@@ -60,10 +59,6 @@ module nts.uk.at.view.kdp.share {
 					}
 					if (btn.btnDisplayType == 4) {
 						btnBackGroundColor = !self.useHighlightFunction().turnBack ? btn.btnBackGroundColor : DEFAULT_GRAY;
-					}
-					
-					if (_.isNil(btn.btnDisplayType)){
-						btnBackGroundColor = btn.btnBackGroundColor.indexOf("#FFFFFF") == -1 ? btn.btnBackGroundColor : NULL_COLOR;
 					}
 					btn.btnBackGroundColor = btnBackGroundColor;
 				}

@@ -23,7 +23,7 @@ module nts.uk.at.kdp003.f {
 				<!-- ko if: ko.unwrap(params.companyDesignation) !== true -->
 				<div tabindex="1" id="company-code-select"
 					data-bind="ntsComboBox: {
-						width: '370px',
+						width: '350px',
 						name: $component.$i18n('KDP003_3'),
 						options: listCompany,
 						visibleItemsCount: 5,
@@ -54,7 +54,7 @@ module nts.uk.at.kdp003.f {
 					constraint: 'EmployeeCode',
 					value: model.employeeCode,
 					option: {
-						width: '220px',
+						width: '200px',
 						textmode: 'text'
 					}
 				}" />
@@ -69,7 +69,7 @@ module nts.uk.at.kdp003.f {
 					required: true,
 					value: model.password,
 					option: {										
-						width: '350px',
+						width: '330px',
 						textmode: 'password'
 					}
 				}" />

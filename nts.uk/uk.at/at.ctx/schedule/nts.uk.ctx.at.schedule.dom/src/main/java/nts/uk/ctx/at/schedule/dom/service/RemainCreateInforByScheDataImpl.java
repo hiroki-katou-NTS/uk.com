@@ -7,28 +7,27 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ScheRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TreatmentOfVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByScheData;
+import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class RemainCreateInforByScheDataImpl implements RemainCreateInforByScheData{
 	@Inject
 	private BasicScheduleRepository scheRepos;
 	@Override
-	public List<ScheRemainCreateInfor> createRemainInfor(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod dateData) {
+	public List<ScheRemainCreateInfor> createRemainInfor(String cid, String sid, DatePeriod dateData) {
 		//ドメインモデル「勤務予定基本情報」を取得する
 		List<BasicSchedule> lstScheData = scheRepos.getBasicScheduleBySidPeriodDate(sid, dateData);
 		
 		return this.lstResult(lstScheData, sid);
 	}
 	@Override
-	public List<ScheRemainCreateInfor> createRemainInfor(CacheCarrier cacheCarrier, String cid, String sid, List<GeneralDate> dates) {
+	public List<ScheRemainCreateInfor> createRemainInfor(String cid, String sid, List<GeneralDate> dates) {
 
 		//ドメインモデル「勤務予定基本情報」を取得する
 		List<BasicSchedule> lstScheData = scheRepos.getBasicScheduleBySidPeriodDate(sid, dates);

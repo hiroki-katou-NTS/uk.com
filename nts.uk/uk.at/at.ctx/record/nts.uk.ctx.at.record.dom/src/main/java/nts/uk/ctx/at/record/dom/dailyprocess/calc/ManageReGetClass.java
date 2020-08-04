@@ -19,8 +19,9 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.DeductLea
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
@@ -58,6 +59,9 @@ public class ManageReGetClass {
 	
 	//就業時間帯別代休時間設定
 	private List<WorkTimezoneOtherSubHolTimeSet> subHolTransferSetList;
+	
+	//労働制
+	private DailyCalculationPersonalInformation personalInfo;
 	
 	//法定労働時間(日単位)
 	private DailyUnit dailyUnit;
@@ -111,7 +115,7 @@ public class ManageReGetClass {
 	public ManageReGetClass(CalculationRangeOfOneDay calculationRangeOfOneDay, IntegrationOfDaily integrationOfDaily,
 			Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType,
 			List<WorkTimezoneOtherSubHolTimeSet> subHolTransferSetList,
-			DailyUnit dailyUnit,
+			DailyCalculationPersonalInformation personalInfo, DailyUnit dailyUnit,
 			Optional<FixRestTimezoneSet> fixRestTimeSetting, 
 			List<EmTimeZoneSet> fixWoSetting,
 			Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet,
@@ -135,6 +139,7 @@ public class ManageReGetClass {
 		this.workTimeSetting = workTimeSetting;
 		this.workType = workType;
 		this.subHolTransferSetList = subHolTransferSetList;
+		this.personalInfo = personalInfo;
 		this.dailyUnit = dailyUnit;
 		this.fixRestTimeSetting = fixRestTimeSetting;
 		this.fixWoSetting = fixWoSetting;
@@ -158,7 +163,7 @@ public class ManageReGetClass {
 	 * 計算処理に入ることができないと判断できた時Factory Method
 	 * @param personalInfo2 
 	 */
-	public static ManageReGetClass cantCalc(Optional<WorkType> workType,IntegrationOfDaily integration) {
+	public static ManageReGetClass cantCalc(Optional<WorkType> workType,IntegrationOfDaily integration, DailyCalculationPersonalInformation personalInfo) {
 		return new ManageReGetClass(new CalculationRangeOfOneDay(Finally.of(new FlexWithinWorkTimeSheet(Arrays.asList(new WithinWorkTimeFrame(new EmTimeFrameNo(5), 
 																																			  new TimeZoneRounding(new TimeWithDayAttr(0), new TimeWithDayAttr(0), null), 
 																																			  new TimeSpanForCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)), 
@@ -182,6 +187,7 @@ public class ManageReGetClass {
 									Optional.empty(),
 									workType, 
 									Collections.emptyList(), 
+									personalInfo,
 									null,
 									Optional.empty(),
 									Collections.emptyList(), 
@@ -209,6 +215,7 @@ public class ManageReGetClass {
 	 */
 	public static ManageReGetClass cantCalc2(Optional<WorkType> workType,
 											 IntegrationOfDaily integration,
+											 DailyCalculationPersonalInformation personalInfo,
 											 HolidayCalcMethodSet holidayCalcMethodSet, 
 											 WorkRegularAdditionSet workRegularAdditionSet,
 											 WorkFlexAdditionSet workFlexAdditionSet, 
@@ -240,6 +247,7 @@ public class ManageReGetClass {
 									Optional.empty(),
 									workType, 
 									Collections.emptyList(), 
+									personalInfo,
 									null,
 									Optional.empty(),
 									Collections.emptyList(), 
@@ -268,7 +276,7 @@ public class ManageReGetClass {
 	public static ManageReGetClass canCalc(CalculationRangeOfOneDay calculationRangeOfOneDay, IntegrationOfDaily integrationOfDaily,
 											Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType,
 											List<WorkTimezoneOtherSubHolTimeSet> subHolTransferSetList,
-											DailyUnit dailyUnit,
+											DailyCalculationPersonalInformation personalInfo, DailyUnit dailyUnit,
 											Optional<FixRestTimezoneSet> fixRestTimeSetting, 
 											List<EmTimeZoneSet> fixWoSetting,
 											Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet,
@@ -291,6 +299,7 @@ public class ManageReGetClass {
 									workTimeSetting,
 									workType,
 									subHolTransferSetList,
+									personalInfo,
 									dailyUnit,
 									fixRestTimeSetting,
 									fixWoSetting,

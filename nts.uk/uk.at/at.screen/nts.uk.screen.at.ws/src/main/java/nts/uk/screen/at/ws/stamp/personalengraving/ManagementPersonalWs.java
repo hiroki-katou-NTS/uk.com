@@ -70,11 +70,7 @@ public class ManagementPersonalWs {
 	@POST
 	@Path("stamp/getStampData")
 	public List<StampRecordDto> getStampData(EmployeeStampDataRequest request) {
-		String employeeId = request.getEmployeeId();
-		
-		employeeId = employeeId == null || employeeId.equals("") ?  AppContexts.user().employeeId() : request.getEmployeeId();
-		
-		List<EmployeeStampInfo> doms = this.employeeStampDatasFinder.getEmployeeStampData(request.toDatePeriod(), employeeId);
+		List<EmployeeStampInfo> doms = this.employeeStampDatasFinder.getEmployeeStampData(request.toDatePeriod(), AppContexts.user().employeeId());
 		List<StampRecordDto> results = new ArrayList<>();
 		
 		for(EmployeeStampInfo stampInfo : doms) {

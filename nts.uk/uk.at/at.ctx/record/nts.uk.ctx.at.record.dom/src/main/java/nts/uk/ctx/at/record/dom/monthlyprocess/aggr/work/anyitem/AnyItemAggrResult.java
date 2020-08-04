@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.monthly.anyitem.AggregateAnyItem;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrder;
@@ -133,7 +134,9 @@ public class AnyItemAggrResult {
 	 * @param anyItemTotals 日別実績縦計結果
 	 * @return 任意項目集計結果
 	 */
-	public static AnyItemAggrResult calcFromDailys(Integer optionalItemNo, OptionalItem optionalItem,
+	public static AnyItemAggrResult calcFromDailys(
+			Integer optionalItemNo,
+			OptionalItem optionalItem,
 			Map<Integer, AggregateAnyItem> anyItemTotals){
 		
 		AnyItemAggrResult domain = AnyItemAggrResult.of(optionalItemNo, optionalItem);
@@ -163,10 +166,16 @@ public class AnyItemAggrResult {
 	 * @param attendanceTime 月別実績の勤怠時間
 	 * @param anyItems 月別実績の任意項目リスト
 	 * @param companySets 月別集計で必要な会社別設定
+	 * @param repositories 月別集計が必要とするリポジトリ
 	 * @return 任意項目集計結果
 	 */
-	public static AnyItemAggrResult calcFromMonthly(RequireM1 require, Integer optionalItemNo, OptionalItem optionalItem,
-			AttendanceTimeOfMonthly attendanceTime, List<AnyItemOfMonthly> anyItems, MonAggrCompanySettings companySets){
+	public static AnyItemAggrResult calcFromMonthly(
+			Integer optionalItemNo,
+			OptionalItem optionalItem,
+			AttendanceTimeOfMonthly attendanceTime,
+			List<AnyItemOfMonthly> anyItems,
+			MonAggrCompanySettings companySets,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		AnyItemAggrResult domain = AnyItemAggrResult.of(optionalItemNo, optionalItem);
 		
@@ -177,7 +186,7 @@ public class AnyItemAggrResult {
 		List<FormulaDispOrder> targetFormulaOrders = companySets.getFormulaOrderList().stream()
 				.filter(c -> c.getOptionalItemNo().equals(optionalItem.getOptionalItemNo()))
 				.collect(Collectors.toList());
-		val monthlyConverter = require.createMonthlyConverter();
+		val monthlyConverter = repositories.getAttendanceItemConverter().createMonthlyConverter();
 		MonthlyRecordToAttendanceItemConverter monthlyRecordDto = monthlyConverter.withAttendanceTime(attendanceTime);
 		monthlyRecordDto = monthlyRecordDto.withAnyItem(anyItems);
 		val calcResult = optionalItem.caluculationFormula(
@@ -197,10 +206,5 @@ public class AnyItemAggrResult {
 		
 		// 任意項目集計結果を返す
 		return domain;
-	}
-	
-	public static interface RequireM1 {
-		
-		MonthlyRecordToAttendanceItemConverter createMonthlyConverter();
 	}
 }

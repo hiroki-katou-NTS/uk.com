@@ -21,10 +21,8 @@ import javax.transaction.Transactional;
 import org.eclipse.persistence.exceptions.OptimisticLockException;
 
 import lombok.extern.slf4j.Slf4j;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.error.ThrowableAnalyzer;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
@@ -66,8 +64,8 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymont
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ApplyTimeRequestAtr;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.WorkScheduleReflectService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @Slf4j
@@ -104,10 +102,9 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlg;
 	@Inject
-    private ExecutionLogRequestImport executionLogRequestImport;
-	@Inject	
-	private RemainNumberTempRequireService requireSerive;
-	
+	private GetClosureStartForEmployee getClosureStartForEmp;
+	@Inject
+    private ExecutionLogRequestImport executionLogRequestImport;	
 	@PostConstruct
 	public void postContruct() {
 		this.self = scContext.getBusinessObject(AppReflectManager.class);
@@ -240,8 +237,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		boolean isRecord = true;
 		List<GeneralDate> lstDate = new ArrayList<>();
 		//社員に対応する締め開始日を取得する
-		Optional<GeneralDate> closure = GetClosureStartForEmployee.algorithm(requireSerive.createRequire(), 
-				new CacheCarrier(), appInfor.getEmployeeID());
+		Optional<GeneralDate> closure = getClosureStartForEmp.algorithm(appInfor.getEmployeeID());
 		if(!closure.isPresent()) {
 			return;
 		}
@@ -501,4 +497,5 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		return overTimeTmp;
 		
 	}
+
 }

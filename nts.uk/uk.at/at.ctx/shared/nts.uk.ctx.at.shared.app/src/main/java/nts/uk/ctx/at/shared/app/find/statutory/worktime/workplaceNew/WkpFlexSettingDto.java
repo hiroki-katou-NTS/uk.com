@@ -4,13 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.statutory.worktime.workplaceNew;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.MonthlyUnitDto;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpFlexSetting;
+import nts.uk.shr.com.context.AppContexts;
 
 
 /**
@@ -18,7 +20,6 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet;
  */
 
 @Data
-@AllArgsConstructor
 public class WkpFlexSettingDto{
 	
 	/** The wkp id. */
@@ -40,21 +41,27 @@ public class WkpFlexSettingDto{
 	/** 所定時間. */
 	private List<MonthlyUnitDto> specifiedSetting;
 
-	/** 週平均時間. */
-	private List<MonthlyUnitDto> weekAvgSetting;
-	
-	public static <T extends MonthlyWorkTimeSet> WkpFlexSettingDto with (String cid, String wkpid,
-			int year, List<T> workTime) {
+	/**
+	 * From domain.
+	 *
+	 * @param domain the domain
+	 * @return the wkp flex setting dto
+	 */
+	public static WkpFlexSettingDto fromDomain(WkpFlexSetting domain) {
+		WkpFlexSettingDto dto = new WkpFlexSettingDto();
+		dto.setYear(domain.getYear().v());
+		dto.setCompanyId(AppContexts.user().companyId());
+		dto.setWkpId(domain.getWorkplaceId().v());
 		
-		WkpFlexSettingDto dto = new WkpFlexSettingDto(wkpid, year, cid, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+		Function<MonthlyUnit, MonthlyUnitDto> funMap = monthly -> {
+			return new MonthlyUnitDto(monthly.getMonth().v(), monthly.getMonthlyTime().v());
+		};
 		
-		workTime.stream().forEach(wt -> {
-			
-			dto.getStatutorySetting().add(new MonthlyUnitDto(wt.getYm().v(), wt.getLaborTime().getLegalLaborTime().v()));
-			dto.getSpecifiedSetting().add(new MonthlyUnitDto(wt.getYm().v(), wt.getLaborTime().getWithinLaborTime().get().v()));
-			dto.getWeekAvgSetting().add(new MonthlyUnitDto(wt.getYm().v(), wt.getLaborTime().getWeekAvgTime().get().v()));
-		});
+		List<MonthlyUnitDto> statutoryMonthlys = domain.getStatutorySetting().stream().map(funMap).collect(Collectors.toList());
+		dto.setStatutorySetting(statutoryMonthlys);
 		
+		List<MonthlyUnitDto> specMonthlys = domain.getSpecifiedSetting().stream().map(funMap).collect(Collectors.toList());
+		dto.setSpecifiedSetting(specMonthlys);
 		return dto;
 	}
 }

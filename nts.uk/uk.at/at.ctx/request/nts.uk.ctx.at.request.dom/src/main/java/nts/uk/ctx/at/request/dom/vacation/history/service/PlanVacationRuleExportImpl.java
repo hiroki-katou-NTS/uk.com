@@ -33,6 +33,8 @@ public class PlanVacationRuleExportImpl implements PlanVacationRuleExport{
 	private ClosureEmploymentRepository closureEmploymentService;
 	@Inject
 	private ClosureRepository closureRepository;
+	@Inject
+	private ClosureService closureService;
 	@Override
 	public List<PlanVacationRuleError> checkMaximumOfPlan(String cid, String employeeId, String workTypeCode, DatePeriod dateData,
 			List<GeneralDate> lstDateIsHoliday) {
@@ -173,8 +175,7 @@ public class PlanVacationRuleExportImpl implements PlanVacationRuleExport{
 		}
 		Closure closureInfor = optClosureInfor.get();
 		//当月の期間を算出する
-		DatePeriod currentDate = ClosureService.getClosurePeriod(closureInfor.getClosureId().value, 
-				closureInfor.getClosureMonth().getProcessingYm(), optClosureInfor);
+		DatePeriod currentDate = closureService.getClosurePeriod(closureInfor.getClosureId().value, closureInfor.getClosureMonth().getProcessingYm());
 		if(currentDate == null) {
 			return null;
 		}

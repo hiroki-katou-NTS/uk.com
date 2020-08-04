@@ -7,16 +7,14 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 
 @Stateless
 public class GetDataClosureStart implements IGetDataClosureStart {
 
 	@Inject
-	private RecordDomRequireService requireService;
+	private GetClosureStartForEmployee getClosureStartForEmployee;
 
 	private static Map<String, Optional<GeneralDate>> MAP_SID_DATE_CLOSURE_START = new HashMap<>();
 
@@ -27,8 +25,7 @@ public class GetDataClosureStart implements IGetDataClosureStart {
 		if (MAP_SID_DATE_CLOSURE_START.containsKey(employeeId)) {
 			return MAP_SID_DATE_CLOSURE_START.get(employeeId);
 		} else {
-			Optional<GeneralDate> result = GetClosureStartForEmployee.algorithm(
-					requireService.createRequire(), new CacheCarrier(), employeeId);
+			Optional<GeneralDate> result = getClosureStartForEmployee.algorithm(employeeId);
 			MAP_SID_DATE_CLOSURE_START.put(employeeId, result);
 			return result;
 		}

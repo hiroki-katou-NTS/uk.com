@@ -14,7 +14,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -46,6 +45,10 @@ public class ClosureEmploymentService {
 	@Inject
 	private ClosureRepository closureRepository;
 	
+	/** The closure service. */
+	@Inject
+	private ClosureService closureService;
+	
 	/**
 	 * Find closure period.
 	 *
@@ -63,8 +66,8 @@ public class ClosureEmploymentService {
 		CurrentMonth currentMonth = closure.get().getClosureMonth();
 		
 		// 当月の期間を算出する.
-		return ClosureService.getClosurePeriod(
-				closure.get().getClosureId().value, currentMonth.getProcessingYm(), closure);
+		return this.closureService.getClosurePeriod(
+				closure.get().getClosureId().value, currentMonth.getProcessingYm());
 	}
 	
 	/**
@@ -100,9 +103,7 @@ public class ClosureEmploymentService {
 	
 	public YearMonth getCurentMonth() {
 		String employee = AppContexts.user().employeeId();
-		CacheCarrier cacheCarrier = new CacheCarrier();
-		Closure Closure = ClosureService.getClosureDataByEmployee(createRequireM3(),
-				cacheCarrier, employee, GeneralDate.today());
+		Closure Closure = closureService.getClosureDataByEmployee(employee, GeneralDate.today());
 		if(Closure == null) {
 			throw new BusinessException("Msg_1134");
 		}
@@ -158,34 +159,5 @@ public class ClosureEmploymentService {
 		}
 
 		return results;
-	}
-
-
-	@Inject
-	private ClosureEmploymentRepository closureEmpRepo;
-	
-	@Inject
-	private ShareEmploymentAdapter shrEmpAdapter;
-	
-	private ClosureService.RequireM3 createRequireM3() {
-		return new ClosureService.RequireM3() {
-			
-			@Override
-			public Optional<Closure> closure(String companyId, int closureId) {
-				return closureRepository.findById(companyId, closureId);
-			}
-			
-			@Override
-			public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
-				// TODO Auto-generated method stub
-				return closureEmpRepo.findByEmploymentCD(companyID, employmentCD);
-			}
-
-			@Override
-			public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
-					String employeeId, GeneralDate baseDate) {
-				return shrEmpAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
-			}
-		};
 	}
 }

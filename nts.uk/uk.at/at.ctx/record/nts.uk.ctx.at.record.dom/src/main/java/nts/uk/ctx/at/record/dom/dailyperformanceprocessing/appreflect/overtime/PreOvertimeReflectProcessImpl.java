@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
@@ -21,11 +20,11 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 	@Inject
 	private WorkInformationRepository workRepository;
 	@Inject
+	private WorkTimeIsFluidWork workTimeService;
+	@Inject
 	private WorkUpdateService workUpdate;
 	@Inject
 	private ScheStartEndTimeReflect scheStartEndTimeReflect;
-	@Inject 
-	private RecordDomRequireService requireService;
 	
 	@Override
 	public void workTimeWorkTimeUpdate(OvertimeParameter para, IntegrationOfDaily dailyInfo) {
@@ -112,8 +111,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 			return true;
 		}
 		//流動勤務かどうかの判断処理
-		return WorkTimeIsFluidWork.checkWorkTimeIsFluidWork(requireService.createRequire(), 
-				para.getOvertimePara().getWorkTimeCode());
+		return workTimeService.checkWorkTimeIsFluidWork(para.getOvertimePara().getWorkTimeCode());
 		
 	}
 

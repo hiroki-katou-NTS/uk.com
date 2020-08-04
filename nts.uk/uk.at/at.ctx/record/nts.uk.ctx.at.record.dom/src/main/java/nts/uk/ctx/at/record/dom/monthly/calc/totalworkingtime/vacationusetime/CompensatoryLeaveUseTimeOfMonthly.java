@@ -8,13 +8,14 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.CompensatoryLeaveUseTimeOfTimeSeries;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の代休使用時間
@@ -73,11 +74,13 @@ public class CompensatoryLeaveUseTimeOfMonthly implements Cloneable, Serializabl
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 * @param workInfoOfDailyMap 日別実績の勤務情報リスト
 	 * @param companySets 月別集計で必要な会社別設定
+	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void confirm(RequireM1 require, DatePeriod datePeriod,
+	public void confirm(DatePeriod datePeriod,
 			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
 			Map<GeneralDate, WorkInfoOfDailyPerformance> workInfoOfDailyMap,
-			MonAggrCompanySettings companySets){
+			MonAggrCompanySettings companySets,
+			RepositoriesRequiredByMonthlyAggr repositories){
 
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.values()) {
 			val ymd = attendanceTimeOfDaily.getYmd();
@@ -107,7 +110,7 @@ public class CompensatoryLeaveUseTimeOfMonthly implements Cloneable, Serializabl
 			// 取得した使用時間を「月別実績の代休使用時間」に入れる
 			HolidayAtr holidayAtr = HolidayAtr.STATUTORY_HOLIDAYS;
 			if (workTypeCode != null) {
-				val workType = companySets.getWorkTypeMap(require, workTypeCode);
+				val workType = companySets.getWorkTypeMap(workTypeCode, repositories);
 				if (workType != null) {
 					Optional<HolidayAtr> holidayAtrOpt = workType.getHolidayAtr();
 					if (holidayAtrOpt.isPresent()) holidayAtr = holidayAtrOpt.get();
@@ -173,9 +176,5 @@ public class CompensatoryLeaveUseTimeOfMonthly implements Cloneable, Serializabl
 	 */
 	public void addMinuteToUseTime(int minutes){
 		this.useTime = this.useTime.addMinutes(minutes);
-	}
-	
-	public static interface RequireM1 extends MonAggrCompanySettings.RequireM4 { 
-
 	}
 }

@@ -416,8 +416,7 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
 						$storeSession(name, params);
 						// for old page
 						windows.setShared(name, params);
-					})
-					.then(() => $storeSession(name));
+					});
 			}
 		}
 	}

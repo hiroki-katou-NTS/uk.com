@@ -10,7 +10,6 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
@@ -32,9 +31,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.E
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetListStampEmployeeService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.RetrieveNoStampCardRegisteredService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampInfoDisp;
-import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -54,6 +50,9 @@ public class OutputScreenListOfStampFinder {
 
 	@Inject
 	private CompanyAdapter company;
+
+	@Inject
+	private ClosureService closureService;
 
 	@Inject
 	private StampCardRepository stampCardRepository;
@@ -78,16 +77,7 @@ public class OutputScreenListOfStampFinder {
 
 	@Inject
 	private RoleExportRepoAdapter roleExportRepoAdapter;
-	
-	@Inject
-	private ClosureRepository closureRepo;
-	
-	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepo;
-	
-	@Inject
-	private ShareEmploymentAdapter shareEmploymentAdapter;
-	
+
 	private static final Integer FUNCTION_NO = 5;
 
 	// 起動する(khởi động)
@@ -108,9 +98,7 @@ public class OutputScreenListOfStampFinder {
 			throw new RuntimeException("System Error: Company Info");
 		});
 		// 社員に対応する締め期間を取得する(Lấy closurePeriod ứng với employee)
-		DatePeriod period = ClosureService.findClosurePeriod(
-				ClosureService.createRequireM3(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),
-				new CacheCarrier(), employeeID, ymd);
+		DatePeriod period = closureService.findClosurePeriod(employeeID, ymd);
 		result.setCompanyCode(companyInfo.getCompanyCode());
 		result.setCompanyName(companyInfo.getCompanyName());
 		result.setStartDate(period.start());
@@ -441,7 +429,7 @@ public class OutputScreenListOfStampFinder {
 
 		@Override
 		public List<StampRecord> getStampRecord(List<StampNumber> stampNumbers, GeneralDate stampDate) {
-			return stampRecordRepository.get(AppContexts.user().contractCode(), stampNumbers, stampDate);
+			return stampRecordRepository.get(stampNumbers, stampDate);
 		}
 
 		@Override
@@ -462,7 +450,7 @@ public class OutputScreenListOfStampFinder {
 		@Override
 		public List<StampRecord> getStempRcNotResgistNumber(DatePeriod period) {
 
-			return stampRecordRepo.getStempRcNotResgistNumber(AppContexts.user().contractCode(), period);
+			return stampRecordRepo.getStempRcNotResgistNumber(period);
 
 		}
 

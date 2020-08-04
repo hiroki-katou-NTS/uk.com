@@ -13,12 +13,10 @@ import javax.transaction.Transactional.TxType;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.GetVacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VacationAddSet;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
@@ -37,6 +35,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDa
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 実装：暫定振休・振出管理データ
@@ -52,25 +51,28 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 	/** 暫定振休・振出管理データ */
 	@Inject
 	private InterimRecAbasMngRepository interimRecAbsMngRepo;
+	/** 日別実績の勤務情報 */
+	@Inject
+	private WorkInformationRepository workInfoOfDailyRepo;
 	/** 勤務情報の取得 */
 	@Inject
 	private WorkTypeRepository workTypeRepo;
-	
+	/** 休暇加算設定の取得 */
 	@Inject
-	private RecordDomRequireService requireService;
+	private GetVacationAddSet getVacationAddSet;
 	
 	/** 作成 */
 	@Override
 	public void create(String companyId, String employeeId, DatePeriod period,
 			Optional<List<WorkInfoOfDailyPerformance>> workInfoOfDailyList) {
-		val require = requireService.createRequire();
+		
 		// 日別実績の勤務情報を取得
 		List<WorkInfoOfDailyPerformance> targetWorkInfos = new ArrayList<>();
 		if (workInfoOfDailyList.isPresent()){
 			targetWorkInfos = workInfoOfDailyList.get();
 		}
 		else {
-			targetWorkInfos = require.dailyWorkInfos(employeeId, period);
+			targetWorkInfos = this.workInfoOfDailyRepo.findByPeriodOrderByYmd(employeeId, period);
 		}
 		if (targetWorkInfos.size() == 0) return;
 		
@@ -83,7 +85,7 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 		}
 
 		// 休暇加算設定　取得
-		VacationAddSet vacationAddSet = GetVacationAddSet.get(require, companyId);
+		VacationAddSet vacationAddSet = this.getVacationAddSet.get(companyId);
 		
 		for (val targetWorkInfo : targetWorkInfos){
 
@@ -113,7 +115,7 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 						new OccurrenceDay(recruitDays),
 						StatutoryAtr.NONSTATURORY,
 						new UnUsedDay(recruitDays));
-				require.persistAndUpdateInterimRemain(remain);
+				this.interimRemainRepo.persistAndUpdateInterimRemain(remain);
 				this.interimRecAbsMngRepo.persistAndUpdateInterimRecMng(recMng);
 			}
 			
@@ -133,7 +135,7 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 						absenceGuid,
 						new RequiredDay(absenceDays),
 						new UnOffsetDay(absenceDays));
-				require.persistAndUpdateInterimRemain(remain);
+				this.interimRemainRepo.persistAndUpdateInterimRemain(remain);
 				this.interimRecAbsMngRepo.persistAndUpdateInterimAbsMng(absMng);
 			}
 		}

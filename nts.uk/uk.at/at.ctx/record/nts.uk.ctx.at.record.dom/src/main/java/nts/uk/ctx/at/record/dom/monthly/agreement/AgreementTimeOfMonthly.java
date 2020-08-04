@@ -10,9 +10,8 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.serialize.binary.SerializableWithOptional;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -106,12 +105,12 @@ public class AgreementTimeOfMonthly implements SerializableWithOptional{
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void getErrorAlarmValue(
-			RequireM2 require,
 			String companyId,
 			String employeeId,
 			GeneralDate criteriaDate,
 			YearMonth yearMonth,
-			WorkingSystem workingSystem){
+			WorkingSystem workingSystem,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 初期設定
 		this.limitErrorTime = new LimitOneMonth(0);
@@ -120,25 +119,18 @@ public class AgreementTimeOfMonthly implements SerializableWithOptional{
 		this.exceptionLimitAlarmTime = Optional.empty();
 		
 		// 「36協定基本設定」を取得する
-		val basicAgreementSet = AgreementDomainService.getBasicSet(require, 
-				companyId, employeeId, criteriaDate, workingSystem)
-				.getBasicAgreementSetting();
-		
+		val basicAgreementSet = repositories.getAgreementDomainService().getBasicSet(
+				companyId, employeeId, criteriaDate, workingSystem).getBasicAgreementSetting();
 		this.limitErrorTime = new LimitOneMonth(basicAgreementSet.getErrorOneMonth().v());
 		this.limitAlarmTime = new LimitOneMonth(basicAgreementSet.getAlarmOneMonth().v());
 		
 		// 「36協定年月設定」を取得
-		val agreementMonthSetOpt = require.agreementMonthSetting(employeeId, yearMonth);
+		val agreementMonthSetOpt = repositories.getAgreementMonthSet().findByKey(employeeId, yearMonth);
 		if (agreementMonthSetOpt.isPresent()){
 			val agreementMonthSet = agreementMonthSetOpt.get();
 			this.exceptionLimitErrorTime = Optional.of(new LimitOneMonth(agreementMonthSet.getErrorOneMonth().v()));
 			this.exceptionLimitAlarmTime = Optional.of(new LimitOneMonth(agreementMonthSet.getAlarmOneMonth().v()));
 		}
-	}
-	
-	public static interface RequireM2 extends RequireM1 {
-
-		Optional<AgreementMonthSetting> agreementMonthSetting(String employeeId, YearMonth yearMonth);
 	}
 	
 	
@@ -150,8 +142,12 @@ public class AgreementTimeOfMonthly implements SerializableWithOptional{
 	 * @param workingSystem 労働制
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void getErrorAlarmValueForWeek(RequireM1 require, String companyId, String employeeId,
-			GeneralDate criteriaDate, WorkingSystem workingSystem){
+	public void getErrorAlarmValueForWeek(
+			String companyId,
+			String employeeId,
+			GeneralDate criteriaDate,
+			WorkingSystem workingSystem,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 初期設定
 		this.limitErrorTime = new LimitOneMonth(0);
@@ -160,14 +156,10 @@ public class AgreementTimeOfMonthly implements SerializableWithOptional{
 		this.exceptionLimitAlarmTime = Optional.empty();
 		
 		// 「36協定基本設定」を取得する
-		val basicAgreementSet = AgreementDomainService.getBasicSet(require, 
-				companyId, employeeId, criteriaDate, workingSystem)
-				.getBasicAgreementSetting();
+		val basicAgreementSet = repositories.getAgreementDomainService().getBasicSet(
+				companyId, employeeId, criteriaDate, workingSystem).getBasicAgreementSetting();
 		this.limitErrorTime = new LimitOneMonth(basicAgreementSet.getErrorWeek().v());
 		this.limitAlarmTime = new LimitOneMonth(basicAgreementSet.getAlarmWeek().v());
-	}
-	
-	public static interface RequireM1 extends AgreementDomainService.RequireM3 {
 	}
 	
 	/**

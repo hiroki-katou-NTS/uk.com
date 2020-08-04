@@ -8,7 +8,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.auth.dom.adapter.role.RoleAdaptor;
 import nts.uk.ctx.at.auth.dom.adapter.role.RoleInformationImport;
@@ -45,7 +44,7 @@ public class GetRoleIDQuery {
 	public String getRoleId(String cid, String sid) {
 		
 		// 1 Imported(就業)「社員」を取得する
-		EmployeeRecordImport empInfor = sysCompanyAdapter.findByAllInforEmpId(new CacheCarrier(), sid);
+		EmployeeRecordImport empInfor = sysCompanyAdapter.findByAllInforEmpId(sid);
 		if (empInfor == null) {
 			return null;
 		}

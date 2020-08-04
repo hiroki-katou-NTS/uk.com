@@ -11,14 +11,14 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.kdp.kdp001.a.ConfirmUseOfStampInputCommand;
 import nts.uk.ctx.at.record.app.command.kdp.kdp001.a.ConfirmUseOfStampInputCommandHandler;
 import nts.uk.ctx.at.record.app.command.kdp.kdp001.a.ConfirmUseOfStampInputResult;
+import nts.uk.ctx.at.record.app.command.kdp.kdp001.a.RegisterStampInputCommand;
+import nts.uk.ctx.at.record.app.command.kdp.kdp001.a.RegisterStampInputCommandHandler;
+import nts.uk.ctx.at.record.app.command.kdp.kdp001.a.RegisterStampInputResult;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.GetOmissionContentQuery;
-import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampDataOfEmployeesDto;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampToSuppress;
-import nts.uk.screen.at.app.command.kdp.kdp001.a.RegisterStampInputCommand;
-import nts.uk.screen.at.app.command.kdp.kdp001.a.RegisterStampInputCommandHandler;
-import nts.uk.screen.at.app.command.kdp.kdp001.a.RegisterStampInputResult;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.DisplayListStampForStampInput;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.DisplaySuppressStampButtonInStampInput;
+import nts.uk.screen.at.app.query.kdp.kdp001.a.EmployeeStampInfoDto;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.GetSettingStampInput;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.SettingPotalStampInputDto;
 import nts.uk.screen.at.app.query.kdp.kdp002.a.DailyAttdErrorInfoDto;
@@ -51,7 +51,7 @@ public class TimeStampEmploymentSystemWebService extends WebService {
 	 */
 	@POST
 	@Path("get_employee_stamp_data")
-	public List<StampDataOfEmployeesDto> getEmployeeStampData() {
+	public List<EmployeeStampInfoDto> getEmployeeStampData() {
 		return this.displayListStamp.getEmployeeStampData();
 	}
 

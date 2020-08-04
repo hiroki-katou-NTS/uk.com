@@ -9,17 +9,23 @@ import lombok.Setter;
 import nts.uk.ctx.at.record.app.command.workrecord.monthcal.common.DeforWorkTimeAggrSetDto;
 import nts.uk.ctx.at.record.app.command.workrecord.monthcal.common.FlexMonthWorkTimeAggrSetDto;
 import nts.uk.ctx.at.record.app.command.workrecord.monthcal.common.RegularWorkTimeAggrSetDto;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.sha.ShaFlexMonthActCalSet;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.DeforLaborCalSetting;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaRegulaMonthActCalSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforWorkTimeAggrSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.RegularWorkTimeAggrSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaDeforLaborMonthActCalSetGetMemento;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaFlexMonthActCalSetGetMemento;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaRegulaMonthActCalSetGetMemento;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class SaveShaMonthCalSetCommand.
  */
 @Getter
 @Setter
-public class SaveShaMonthCalSetCommand {
+public class SaveShaMonthCalSetCommand implements ShaRegulaMonthActCalSetGetMemento, ShaFlexMonthActCalSetGetMemento,
+		ShaDeforLaborMonthActCalSetGetMemento {
 
 	/** The sid. */
 	private String employeeId;
@@ -33,25 +39,68 @@ public class SaveShaMonthCalSetCommand {
 	/** The defor aggr setting. */
 	private DeforWorkTimeAggrSetDto deforAggrSetting;
 
-	public ShaDeforLaborMonthActCalSet defor(String cid) {
-		return ShaDeforLaborMonthActCalSet.of(cid, employeeId,
-				deforAggrSetting.getAggregateTimeSet().domain(), 
-				deforAggrSetting.getExcessOutsideTimeSet().domain(), 
-				new DeforLaborCalSetting(deforAggrSetting.isOtTransCriteria()), 
-				deforAggrSetting.getSettlementPeriod().domain());
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.
+	 * ShaRegulaMonthActCalSetGetMemento#getCompanyId()
+	 */
+	@Override
+	public CompanyId getCompanyId() {
+		return new CompanyId(AppContexts.user().companyId());
 	}
-	public ShaRegulaMonthActCalSet regular(String cid) {
-		return ShaRegulaMonthActCalSet.of(cid, employeeId, 
-				regAggrSetting.getAggregateTimeSet().domain(), 
-				regAggrSetting.getExcessOutsideTimeSet().domain());
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.
+	 * ShaRegulaMonthActCalSetGetMemento#getEmployeeId()
+	 */
+	@Override
+	public EmployeeId getEmployeeId() {
+		return new EmployeeId(this.employeeId);
 	}
-	public ShaFlexMonthActCalSet flex(String cid) {
-		
-		return ShaFlexMonthActCalSet.of(cid, 
-				flexAggrSetting.aggrMethod(), 
-				flexAggrSetting.insufficSet(), 
-				flexAggrSetting.legalAggrSet(), 
-				flexAggrSetting.flexTimeHandle(),
-				employeeId);
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.
+	 * ShaDeforLaborMonthActCalSetGetMemento#getDeforAggrSetting()
+	 */
+	@Override
+	public DeforWorkTimeAggrSet getDeforAggrSetting() {
+		return this.deforAggrSetting.toDomain();
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.
+	 * ShaFlexMonthActCalSetGetMemento#getFlexAggrSetting()
+	 */
+	@Override
+	public FlexMonthWorkTimeAggrSet getFlexAggrSetting() {
+		return this.flexAggrSetting.toDomain();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.
+	 * ShaRegulaMonthActCalSetGetMemento#getRegularAggrSetting()
+	 */
+	@Override
+	public RegularWorkTimeAggrSet getRegularAggrSetting() {
+		return this.regAggrSetting.toDomain();
+	}
+	
+	/**
+	 * Gets the emp id.
+	 *
+	 * @return the emp id
+	 */
+	public String getEmpId() {
+		return this.employeeId;
+	}
+
 }

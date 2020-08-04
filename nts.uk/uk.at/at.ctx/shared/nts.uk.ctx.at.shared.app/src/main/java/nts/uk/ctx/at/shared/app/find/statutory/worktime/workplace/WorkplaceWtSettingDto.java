@@ -9,6 +9,7 @@ import lombok.Data;
 import nts.uk.ctx.at.shared.app.find.statutory.worktime.shared.DeformationLaborSettingDto;
 import nts.uk.ctx.at.shared.app.find.statutory.worktime.shared.FlexSettingDto;
 import nts.uk.ctx.at.shared.app.find.statutory.worktime.shared.NormalSettingDto;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplace.WorkPlaceWtSetting;
 
 /**
  * The Class WorkplaceWtSettingDto.
@@ -37,4 +38,20 @@ public class WorkplaceWtSettingDto {
 
 	/** The workplace name. */
 	private String workplaceName;
+
+	/**
+	 * From domain.
+	 *
+	 * @param domain the domain
+	 * @return the workplace wt setting dto
+	 */
+	public static WorkplaceWtSettingDto fromDomain(WorkPlaceWtSetting domain) {
+		FlexSettingDto flexSetting = FlexSettingDto.fromDomain(domain.getFlexSetting());
+		DeformationLaborSettingDto deformationLaborSetting = DeformationLaborSettingDto
+				.fromDomain(domain.getDeformationLaborSetting());
+		NormalSettingDto normalSetting = NormalSettingDto.fromDomain(domain.getNormalSetting());
+
+		return WorkplaceWtSettingDto.builder().flexSetting(flexSetting).deformationLaborSetting(deformationLaborSetting)
+				.normalSetting(normalSetting).year(domain.getYear().v()).workplaceId(domain.getWorkPlaceId()).build();
+	}
 }

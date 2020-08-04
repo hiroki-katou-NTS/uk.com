@@ -10,10 +10,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
@@ -43,7 +41,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.P
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.recruitment.RecruitmentRelectRecordService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.workchange.PreWorkchangeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.workchange.WorkChangeCommonReflectPara;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.DetermineActualResultLock;
@@ -99,6 +96,8 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	@Inject
 	private DetermineActualResultLock resultLock;
 	@Inject
+	private ClosureService closureService;
+	@Inject
 	private RemainCreateInforByScheData scheData;
 	@Inject
 	private IdentificationRepository identificationRepository;
@@ -106,17 +105,12 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	private IdentityProcessUseSetRepository indentityProcessRespo;
 	@Inject
 	private ApprovalProcessingUseSettingRepository approvalProcessRespo;
-	@Inject 
-	private RecordDomRequireService requireService;
 	
 	@Override
 	public ScheAndRecordIsReflectPub appReflectProcess(AppCommonPara para, ExecutionType executionType,Boolean isCalWhenLock) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
-		
 		ScheAndRecordIsReflectPub output = new ScheAndRecordIsReflectPub(true, true);
 		ScheRemainCreateInfor scheInfor = null;
-		Closure closureData = ClosureService.getClosureDataByEmployee(require, cacheCarrier, para.getSid(), para.getYmd());
+		Closure closureData = closureService.getClosureDataByEmployee(para.getSid(), para.getYmd());
 		//ドメインモデル「日別実績の勤務情報」を取得する
 		Optional<WorkInfoOfDailyPerformance> optDaily = workRepository.find(para.getSid(), para.getYmd());
 		if(!optDaily.isPresent()) {
@@ -125,7 +119,7 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 		}
 	
 		//ドメインモデル「勤務予定基本情報」を取得する(get domain model)
-		List<ScheRemainCreateInfor> lstSche = scheData.createRemainInfor(cacheCarrier, para.getCid(), para.getSid(), Arrays.asList(para.getYmd()));
+		List<ScheRemainCreateInfor> lstSche = scheData.createRemainInfor(para.getCid(), para.getSid(), Arrays.asList(para.getYmd()));
 		if(lstSche.isEmpty()) {
 			output.setScheReflect(false);
 			log.info("反映処理：　社員ID　＝　" + para.getSid()  + " 申請日：　" + para.getYmd() + " 反映前チェックのエラー：　勤務予定基本なし");
@@ -186,6 +180,7 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 			return output;
 		}*/
 		//アルゴリズム「実績ロックされているか判定する」を実行する
+	
 		if(closureData == null) {
 			log.info("反映処理：　社員ID　＝　" + para.getSid()  + " 申請日：　" + para.getYmd() + " 反映前チェックのエラー：　社員に対応する処理締めがない");
 			return new ScheAndRecordIsReflectPub(false, false);

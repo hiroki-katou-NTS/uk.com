@@ -34,7 +34,6 @@ import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
@@ -48,10 +47,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualH
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.ReferenceAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.PresentClosingPeriodImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.RqClosureAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
@@ -103,6 +99,8 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	@Inject
 	private RqClosureAdapter closureAdapter;
 	@Inject
+	private ClosureService closureService;
+	@Inject
 	private GetAnnualHolidayGrantInfor getGrantInfo;
 	@Inject
 	private AnnualHolidayGrantDetailInfor getGrantDetailInfo;
@@ -114,12 +112,6 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private WorkplaceConfigurationRepository wpConfigRepo;
 	@Inject
 	private WorkplaceInformationRepository wpConfigInfoRepo;
-	@Inject
-	private ClosureRepository closureRepo;
-	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepo;
-	@Inject
-	private ShareEmploymentAdapter shareEmploymentAdapter;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, OutputYearHolidayManagementQuery query) {
@@ -274,9 +266,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 					.equals(PeriodToOutput.CURRENT);
 			if (isSelectCurrent) {
 				// 社員に対応する処理締めを取得する
-				Closure closure = ClosureService.getClosureDataByEmployee(
-						ClosureService.createRequireM3(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),
-						new CacheCarrier(), empId, baseDate);
+				Closure closure = closureService.getClosureDataByEmployee(empId, baseDate);
 				// アルゴリズム「年休付与情報を取得」を実行する
 				if (closure != null && closure.getClosureMonth() != null) {
 					YearMonth yearMonthInput = closure.getClosureMonth().getProcessingYm();

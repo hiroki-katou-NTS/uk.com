@@ -1,19 +1,5 @@
-/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
-
 module nts.uk.at.view.kdp002.c {
 	export module viewmodel {
-		import a = nts.uk.at.view.kdp002.a;
-		
-		// display items type (require from other screen)
-		type DISPLAY_ITEM_IDS = number[];
-
-		// employeedata (require from other screen)
-		interface EmployeeParam {
-			employeeId: string;
-			employeeCode: string;
-			mode: a.Mode;
-		}
-
 		export class ScreenModel {
 
 			// B2_2
@@ -43,9 +29,10 @@ module nts.uk.at.view.kdp002.c {
 			currentCode: KnockoutObservable<any> = ko.observable();
 			currentCodeList: KnockoutObservableArray<any>;
 			permissionCheck: KnockoutObservable<boolean> = ko.observable(false);
-			displayButton: KnockoutObservable<boolean> = ko.observable(true);
+			displayButton: KnockoutObservable<boolean> = ko.observable(false);
 
-			infoEmpFromScreenA!: EmployeeParam;
+			displayButton: KnockoutObservable<boolean> = ko.observable(true);
+			infoEmpFromScreenA: {};
 
 
 			constructor() {
@@ -63,7 +50,7 @@ module nts.uk.at.view.kdp002.c {
 			public startPage(): JQueryPromise<any> {
 				let self = this,
 					dfd = $.Deferred();
-				let itemIds: DISPLAY_ITEM_IDS = nts.uk.ui.windows.getShared("KDP010_2C");
+				let itemIds = nts.uk.ui.windows.getShared("KDP010_2C");
 				self.infoEmpFromScreenA = nts.uk.ui.windows.getShared("infoEmpToScreenC");
 
 				let data = {

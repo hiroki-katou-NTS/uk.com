@@ -72,6 +72,9 @@ public class ScheBatchCorrectExecutionCommandHandler
 	@Inject
 	private ScEmploymentAdapter employmentAdapter;
 	
+	@Inject
+	private ClosureService closureService;
+	
 //	@Inject
 //	private WorkTypeRepository workTypeRepository;
 	
@@ -296,8 +299,7 @@ public class ScheBatchCorrectExecutionCommandHandler
 		/** 
 		 * 当月の期間を算出する
 		 */
-		DatePeriod closurePeriod = ClosureService.getClosurePeriod(optionalClosure.get().getClosureId().value, 
-				optionalClosure.get().getClosureMonth().getProcessingYm(), optionalClosure);
+		DatePeriod closurePeriod = closureService.getClosurePeriod(optionalClosure.get().getClosureId().value, optionalClosure.get().getClosureMonth().getProcessingYm());
 			
 		/**
 		 *  Check processing date (処理中年月日)

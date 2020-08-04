@@ -8,10 +8,7 @@ import javax.inject.Inject;
 import dailyattdcal.dailywork.workinfo.algorithm.CorrectWorkTimeByWorkType;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 
 /**
@@ -23,9 +20,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService
 public class CorrectionAfterTimeChange {
 
 	@Inject
-	private WorkingConditionItemRepository workingConditionItemRepo;
-	@Inject
-	private WorkingConditionRepository workingConditionRepo;
+	private WorkingConditionService workingConditionService;
 
 	@Inject
 	private CorrectWorkTimeByWorkType correctWorkTimeByWorkType;
@@ -49,9 +44,8 @@ public class CorrectionAfterTimeChange {
 		GeneralDate date = domainDaily.getWorkInformation().getYmd();
 
 		// 社員の労働条件を取得する
-		Optional<WorkingConditionItem> workCondOpt = WorkingConditionService.findWorkConditionByEmployee(
-				createImp(), employeeId, date);
-		
+		Optional<WorkingConditionItem> workCondOpt = workingConditionService.findWorkConditionByEmployee(employeeId,
+				date);
 		if (!workCondOpt.isPresent())
 			return domainDaily;
 
@@ -73,22 +67,6 @@ public class CorrectionAfterTimeChange {
 		clearConflictTime.process(domainDaily);
 
 		return domainDaily;
-	}
-	
-	private WorkingConditionService.RequireM1 createImp() {
-		
-		return new WorkingConditionService.RequireM1() {
-			
-			@Override
-			public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
-				return workingConditionItemRepo.getByHistoryId(historyId);
-			}
-			
-			@Override
-			public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
-				return workingConditionRepo.getBySidAndStandardDate(companyId, employeeId, baseDate);
-			}
-		};
 	}
 
 }

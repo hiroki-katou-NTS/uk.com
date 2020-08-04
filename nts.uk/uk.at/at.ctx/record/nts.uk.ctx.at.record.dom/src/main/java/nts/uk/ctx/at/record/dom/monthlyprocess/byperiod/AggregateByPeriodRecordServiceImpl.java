@@ -6,7 +6,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.byperiod.AgreementTimeByPeriod;
 import nts.uk.ctx.at.record.dom.byperiod.AnyItemByPeriod;
 import nts.uk.ctx.at.record.dom.byperiod.AttendanceTimeOfAnyPeriod;
@@ -18,13 +17,14 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 任意期間集計Mgr　（アルゴリズム）
@@ -33,15 +33,15 @@ import nts.uk.shr.com.i18n.TextResource;
 @Stateless
 public class AggregateByPeriodRecordServiceImpl implements AggregateByPeriodRecordService {
 
-	@Inject 
-	private RecordDomRequireService requireService;
+	/** 月別集計が必要とするリポジトリ */
+	@Inject
+	private RepositoriesRequiredByMonthlyAggr repositories;
 	
 	/** アルゴリズム */
 	@Override
 	public AggregateByPeriodRecordValue algorithm(String companyId, String employeeId, DatePeriod period,
 			OptionalAggrPeriod optionalPeriod,
 			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets) {
-		val require = requireService.createRequire();
 		
 		AggregateByPeriodRecordValue result = new AggregateByPeriodRecordValue();
 		
@@ -57,11 +57,12 @@ public class AggregateByPeriodRecordServiceImpl implements AggregateByPeriodReco
 		}
 
 		// 計算に必要なデータを準備する
-		MonthlyCalculatingDailys calcDailys = MonthlyCalculatingDailys.loadData(require,
-				employeeId, aggrPeriod, employeeSets);
+		MonthlyCalculatingDailys calcDailys = MonthlyCalculatingDailys.loadData(
+				employeeId, aggrPeriod, this.repositories);
 
 		// 労働制を取得
-		Optional<WorkingConditionItem> workingConditionItemOpt = require.workingConditionItem(employeeId, aggrPeriod.end());
+		Optional<WorkingConditionItem> workingConditionItemOpt =
+				this.repositories.getWorkingConditionItem().getBySidAndStandardDate(employeeId, aggrPeriod.end());
 		if (!workingConditionItemOpt.isPresent()){
 			result.addErrorInfos("001", new ErrMessageContent(TextResource.localize("Msg_430")));
 			return result;
@@ -70,12 +71,12 @@ public class AggregateByPeriodRecordServiceImpl implements AggregateByPeriodReco
 		
 		// 月の計算
 		MonthlyCalculationByPeriod monthlyAggregation = new MonthlyCalculationByPeriod();
-		monthlyAggregation.calculation(require, aggrPeriod, workingSystem, calcDailys, companySets);
+		monthlyAggregation.calculation(aggrPeriod, workingSystem, calcDailys, companySets, this.repositories);
 		
 		// 縦計
 		VerticalTotalOfMonthly verticalTotal = new VerticalTotalOfMonthly();
-		verticalTotal.verticalTotal(require, companyId, employeeId, aggrPeriod, workingSystem,
-				companySets, employeeSets, calcDailys);
+		verticalTotal.verticalTotal(companyId, employeeId, aggrPeriod, workingSystem,
+				companySets, employeeSets, calcDailys, this.repositories);
 		
 		// 時間外超過
 		ExcessOutsideByPeriod excessOutside = new ExcessOutsideByPeriod();
@@ -87,7 +88,7 @@ public class AggregateByPeriodRecordServiceImpl implements AggregateByPeriodReco
 		
 		// 回数集計
 		TotalCountByPeriod totalCount = new TotalCountByPeriod();
-		totalCount.totalize(require, companyId, employeeId, aggrPeriod, companySets, calcDailys);
+		totalCount.totalize(companyId, employeeId, aggrPeriod, companySets, calcDailys, this.repositories);
 		
 		// 任意項目を集計する
 		AnyItemByPeriod anyItem = new AnyItemByPeriod();

@@ -11,11 +11,12 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetEmp;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeEmpRepo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeEmpRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpDeforLaborSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -24,16 +25,25 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class DeleteEmpStatWorkTimeSetCommandHandler extends CommandHandler<DeleteEmpStatWorkTimeSetCommand> {
 
-	/** The trans labor time repository. */
+	/** The emp normal setting repository. */
 	@Inject
-	private DeforLaborTimeEmpRepo transLaborTimeRepository;
+	private EmpNormalSettingRepository empNormalSettingRepository;
 
-	/** The regular labor time repository. */
+	/** The emp flex setting repository. */
 	@Inject
-	private RegularLaborTimeEmpRepo regularLaborTimeRepository;
+	private EmpFlexSettingRepository empFlexSettingRepository;
 
+	/** The emp defor labor setting repository. */
 	@Inject
-	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
+	private EmpDeforLaborSettingRepository empDeforLaborSettingRepository;
+
+	/** The emp regular work time repository. */
+	@Inject
+	private EmpRegularWorkTimeRepository empRegularWorkTimeRepository;
+
+	/** The emp spe defor labor time repository. */
+	@Inject
+	private EmpTransWorkTimeRepository empTransWorkTimeRepository;
 
 	/*
 	 * @see
@@ -50,17 +60,22 @@ public class DeleteEmpStatWorkTimeSetCommandHandler extends CommandHandler<Delet
 		String emplCode = command.getEmploymentCode();
 
 		// remove domains belong to year
-		monthlyWorkTimeSetRepo.removeEmployment(companyId, emplCode, year);
+		this.empNormalSettingRepository.find(companyId, emplCode, year)
+				.ifPresent((setting -> this.empNormalSettingRepository.delete(companyId, emplCode, year)));
+		this.empFlexSettingRepository.find(companyId, emplCode, year)
+				.ifPresent((setting -> this.empFlexSettingRepository.delete(companyId, emplCode, year)));
+		this.empDeforLaborSettingRepository.find(companyId, emplCode, year)
+				.ifPresent((setting -> this.empDeforLaborSettingRepository.delete(companyId, emplCode, year)));
 
 		// set isOverOneYear == true
 		command.setOverOneYear(true);
 		
 		// if isOverOneYearRegister == false, remove remain domains
 		if (!this.isOverOneYearRegister(companyId, emplCode)) {
-			regularLaborTimeRepository.findById(companyId, emplCode)
-					.ifPresent((setting -> regularLaborTimeRepository.delete(companyId, emplCode)));
-			transLaborTimeRepository.find(companyId, emplCode)
-					.ifPresent((setting -> transLaborTimeRepository.delete(companyId, emplCode)));
+			this.empRegularWorkTimeRepository.findById(companyId, emplCode)
+					.ifPresent((setting -> this.empRegularWorkTimeRepository.delete(companyId, emplCode)));
+			this.empTransWorkTimeRepository.find(companyId, emplCode)
+					.ifPresent((setting -> this.empTransWorkTimeRepository.delete(companyId, emplCode)));
 
 			// set isOverOneYear == false
 			command.setOverOneYear(false);
@@ -80,7 +95,7 @@ public class DeleteEmpStatWorkTimeSetCommandHandler extends CommandHandler<Delet
 	public boolean isOverOneYearRegister(String cid, String emplCode) {
 
 		// find list emp normal setting register
-		List<MonthlyWorkTimeSetEmp> listEmpNormalSetting = monthlyWorkTimeSetRepo.findEmployment(cid, emplCode, LaborWorkTypeAttr.REGULAR_LABOR);
+		List<EmpNormalSetting> listEmpNormalSetting = this.empNormalSettingRepository.findList(cid, emplCode);
 
 		// check list emp normal setting > 0
 		if (!listEmpNormalSetting.isEmpty() && listEmpNormalSetting.size() > 0) {

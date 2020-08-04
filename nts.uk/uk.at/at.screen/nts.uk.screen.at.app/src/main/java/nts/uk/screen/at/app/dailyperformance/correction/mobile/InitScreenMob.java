@@ -21,9 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.DaiPerformanceFunDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.DaiPerformanceFunFinder;
@@ -31,7 +29,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.Ap
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.approval.ApprovalStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmStatusActualDayChange;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppGroupExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationExportDto;
@@ -85,6 +82,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.FormatDailyDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class InitScreenMob {
@@ -111,6 +109,9 @@ public class InitScreenMob {
 	private ApplicationListForScreen applicationListFinder;
 
 	@Inject
+	private AbsenceTenProcess absenceTenProcess;
+
+	@Inject
 	private DataDialogWithTypeProcessor dataDialogWithTypeProcessor;
 
 	@Inject
@@ -124,9 +125,6 @@ public class InitScreenMob {
 
 	@Inject
 	private DaiPerformanceFunFinder daiPerformanceFunFinder;
-	
-	@Inject
-	private RecordDomRequireService requireService;
 
 	private static final Integer[] DEVIATION_REASON = { 436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456,
 			458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822 };
@@ -456,18 +454,14 @@ public class InitScreenMob {
 		String sId = AppContexts.user().employeeId();
 		// 休暇管理状況をチェックする
 		// 10-1.年休の設定を取得する
-		AnnualHolidaySetOutput annualHd = AbsenceTenProcess.getSettingForAnnualHoliday(
-				requireService.createRequire(), companyId);
+		AnnualHolidaySetOutput annualHd = absenceTenProcess.getSettingForAnnualHoliday(companyId);
 		// 10-2.代休の設定を取得する
-		SubstitutionHolidayOutput subHd = AbsenceTenProcess.getSettingForSubstituteHoliday(
-				requireService.createRequire(), new CacheCarrier(), companyId, sId,
+		SubstitutionHolidayOutput subHd = absenceTenProcess.getSettingForSubstituteHoliday(companyId, sId,
 				GeneralDate.today());
 		// 10-3.振休の設定を取得する
-		LeaveSetOutput leaveSet = AbsenceTenProcess.getSetForLeave(
-				requireService.createRequire(), new CacheCarrier(), companyId, sId, GeneralDate.today());
+		LeaveSetOutput leaveSet = absenceTenProcess.getSetForLeave(companyId, sId, GeneralDate.today());
 		// 10-4.積立年休の設定を取得する
-		boolean isRetentionManage = AbsenceTenProcess.getSetForYearlyReserved(
-				requireService.createRequire(), new CacheCarrier(), companyId, sId, GeneralDate.today());
+		boolean isRetentionManage = absenceTenProcess.getSetForYearlyReserved(companyId, sId, GeneralDate.today());
 
 		if ((annualHd.isYearHolidayManagerFlg() || subHd.isSubstitutionFlg() || leaveSet.isSubManageFlag()
 				|| isRetentionManage) && displayFormat == 0) {

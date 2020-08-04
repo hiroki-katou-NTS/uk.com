@@ -70,8 +70,6 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
@@ -171,11 +169,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	/** The data processor. */
 	@Inject
 	private DataDialogWithTypeProcessor dataProcessor;
-	@Inject
-	private ClosureRepository closureRepo;
 	
 	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepo;
+	private ClosureService closureService;
 
 	/** The Constant TEMPLATE_DATE. */
 //	private static final String TEMPLATE_DATE= "report/KWR006_Date.xlsx";
@@ -658,9 +654,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		// 帳票用の基準日取得
 		int closureId = query.getClosureId() == 0 ? 1 : query.getClosureId();
 		//マスタの取得（月次）
-		DatePeriod DatePeriod = ClosureService.getClosurePeriod(
-				ClosureService.createRequireM1(closureRepo, closureEmploymentRepo),
-				closureId, query.getEndYearMonth());
+		DatePeriod DatePeriod = closureService.getClosurePeriod(closureId, query.getEndYearMonth());
 		//締め期間．終了年月日
 		GeneralDate finalDate = DatePeriod.end();
 		

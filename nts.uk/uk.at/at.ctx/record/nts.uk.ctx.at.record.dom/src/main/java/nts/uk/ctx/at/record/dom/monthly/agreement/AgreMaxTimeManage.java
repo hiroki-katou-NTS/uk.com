@@ -4,6 +4,7 @@ import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 
 /**
  * 36協定上限時間管理
@@ -47,29 +48,27 @@ public class AgreMaxTimeManage {
 	 * @param criteriaDate 基準日
 	 * @param aggregateAtr 集計区分
 	 * @param monthlyCalculation 月の計算
+	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void aggregate(RequireM1 require,
+	public void aggregate(
 			GeneralDate criteriaDate,
 			MonthlyAggregateAtr aggregateAtr,
-			MonthlyCalculation monthlyCalculation){
+			MonthlyCalculation monthlyCalculation,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 36協定上限時間の対象時間を取得
-		this.breakdown.getTargetItemOfAgreMax(require, aggregateAtr, monthlyCalculation);
+		this.breakdown.getTargetItemOfAgreMax(aggregateAtr, monthlyCalculation, repositories);
 		
 		// 合計時間を取得
 		this.agreementTime.setAgreementTime(this.breakdown.getTotalTime());
 		
 		// 上限時間の取得
-		this.agreementTime.setMaxTime(require,
+		this.agreementTime.setMaxTime(
 				monthlyCalculation.getCompanyId(), monthlyCalculation.getEmployeeId(), criteriaDate,
-				monthlyCalculation.getWorkingSystem());
+				monthlyCalculation.getWorkingSystem(), repositories);
 		
 		// エラーチェック
 		this.agreementTime.errorCheck();
-	}
-	
-	public static interface RequireM1 extends AgreMaxTimeBreakdown.RequireM1, AgreMaxTimeOfMonthly.RequireM1 {
-		
 	}
 	
 	/**

@@ -11,12 +11,12 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.com.ComFlexMonthActCalSet;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.com.ComFlexMonthActCalSetRepo;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.com.ComDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.com.ComDeforLaborMonthActCalSetRepo;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.com.ComRegulaMonthActCalSet;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.com.ComRegulaMonthActCalSetRepo;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -27,15 +27,15 @@ public class SaveComMonthCalSetCommandHandler extends CommandHandler<SaveComMont
 
 	/** The com defor labor month act cal set repo. */
 	@Inject
-	private ComDeforLaborMonthActCalSetRepo comDeforLaborMonthActCalSetRepo;
+	private ComDeforLaborMonthActCalSetRepository comDeforLaborMonthActCalSetRepo;
 
 	/** The com flex month act cal set repo. */
 	@Inject
-	private ComFlexMonthActCalSetRepo comFlexMonthActCalSetRepo;
+	private ComFlexMonthActCalSetRepository comFlexMonthActCalSetRepo;
 
 	/** The com regula month act cal set repo. */
 	@Inject
-	private ComRegulaMonthActCalSetRepo comRegulaMonthActCalSetRepo;
+	private ComRegulaMonthActCalSetRepository comRegulaMonthActCalSetRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -48,9 +48,9 @@ public class SaveComMonthCalSetCommandHandler extends CommandHandler<SaveComMont
 	protected void handle(CommandHandlerContext<SaveComMonthCalSetCommand> context) {
 		String cid = AppContexts.user().companyId();
 
-		ComDeforLaborMonthActCalSet comDeforLaborMonthActCalSet = context.getCommand().defor(cid);
-		ComFlexMonthActCalSet comFlexMonthActCalSet = context.getCommand().flex(cid);
-		ComRegulaMonthActCalSet comRegulaMonthActCalSet = context.getCommand().regular(cid);
+		ComDeforLaborMonthActCalSet comDeforLaborMonthActCalSet = new ComDeforLaborMonthActCalSet(context.getCommand());
+		ComFlexMonthActCalSet comFlexMonthActCalSet = new ComFlexMonthActCalSet(context.getCommand());
+		ComRegulaMonthActCalSet comRegulaMonthActCalSet = new ComRegulaMonthActCalSet(context.getCommand());
 
 		Optional<ComDeforLaborMonthActCalSet> optComDeforLaborMonthActCalSet = comDeforLaborMonthActCalSetRepo.find(cid);
 		if (optComDeforLaborMonthActCalSet.isPresent()) {

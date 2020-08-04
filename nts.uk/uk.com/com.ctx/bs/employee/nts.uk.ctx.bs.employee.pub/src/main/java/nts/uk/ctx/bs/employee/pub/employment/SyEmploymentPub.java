@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -26,7 +25,6 @@ public interface SyEmploymentPub {
 	 */
 	// RequestList31
 	Optional<SEmpHistExport> findSEmpHistBySid(String companyId, String employeeId, GeneralDate baseDate);
-	Optional<SEmpHistExport> findSEmpHistBySidRequire(CacheCarrier cacheCarrier, String companyId, String employeeId,GeneralDate baseDate);
 
     /**
      * Find S job hist by sid.
@@ -74,7 +72,6 @@ public interface SyEmploymentPub {
 	// RequestList31-3
 	// 社員ID（List）と指定期間から社員の雇用履歴を取得
 	List<AffPeriodEmpCdHistExport> getEmpHistBySidAndPeriod(List<String> sids , DatePeriod datePeriod);
-	List<AffPeriodEmpCdHistExport> getEmpHistBySidAndPeriodRequire(CacheCarrier cacheCarrier, List<String> sids , DatePeriod datePeriod);
 	
 	/**
 	 * Gets the employment map.

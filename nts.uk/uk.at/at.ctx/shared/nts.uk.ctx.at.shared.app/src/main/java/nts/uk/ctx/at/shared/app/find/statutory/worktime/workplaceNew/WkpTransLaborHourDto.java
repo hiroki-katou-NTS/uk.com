@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.app.find.statutory.worktime.workplaceNew;
 
 import lombok.Data;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSettingDto;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTime;
 
 /**
  * The Class WkpTransLaborHourDto.
@@ -28,14 +28,14 @@ public class WkpTransLaborHourDto {
 	 * From domain.
 	 *
 	 * @param domain the domain
-	 * @return the shain regular work hour dto
+	 * @return the wkp trans labor hour dto
 	 */
-	public static WkpTransLaborHourDto fromDomain(DeforLaborTimeWkp domain) {
+	public static WkpTransLaborHourDto fromDomain(WkpTransLaborTime domain) {
 		WkpTransLaborHourDto dto = new WkpTransLaborHourDto();
-		WorkingTimeSettingDto workingTimeSetting = WorkingTimeSettingDto.fromDomain(domain);
+		WorkingTimeSettingDto workingTimeSetting = WorkingTimeSettingDto.fromDomain(domain.getWorkingTimeSet());
 		dto.setWorkingTimeSetting(workingTimeSetting);
-		dto.setWkpId(domain.getWorkplaceId());
-		dto.setCompanyId(domain.getComId());
+		dto.setCompanyId(domain.getCompanyId().v());
+		dto.setWkpId(domain.getWorkplaceId().v());
 		return dto;
 	}
 }

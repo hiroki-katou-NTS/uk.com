@@ -14,7 +14,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ReleasedAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.DailyLock;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.StatusActualDay;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.ConfirmStatusOfDayService.Require;
@@ -22,36 +21,11 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.D
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @RunWith(JMockit.class)
 public class ConfirmStatusOfDayServiceTest {
 
 	@Injectable
 	private Require require;
-	
-	/**
-	 * require.getClosureDataByEmployee(anyString, (GeneralDate) any); is empty
-	 */
-	@Test
-	public void testConfirmStatusOfDayService_0() {
-		String companyId = "companyId";
-		String employeeId = "employeeId";
-		GeneralDate baseDate = GeneralDate.today();
-		new Expectations() {
-			{
-				require.getClosureDataByEmployee(anyString, (GeneralDate) any);
-				result = null;
-
-			}
-		};
-		ConfirmStatusActualResult data= ConfirmStatusOfDayService.get(require, companyId, employeeId, baseDate);
-		assertThat(data.getEmployeeId()).isEqualTo(employeeId);
-		assertThat(data.getDate()).isEqualTo(baseDate);
-		assertThat(data.isStatus()).isFalse();
-		assertThat(data.getPermissionCheck()).isEqualTo(ReleasedAtr.CAN_NOT_IMPLEMENT);
-		assertThat(data.getPermissionRelease()).isEqualTo(ReleasedAtr.CAN_NOT_IMPLEMENT);
-	}
 
 	/**
 	 * require.findBySid( employeeId, baseDate) is empty

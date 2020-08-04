@@ -52,6 +52,7 @@ public class StampCardEditingRepoImpl extends JpaRepository implements StampCard
 	
 	
 	public KrcmtEditingCards toEntity(StampCardEditing domain, KrcmtEditingCards  entity) {
+		entity.cid = domain.getCompanyId();
 		entity.editingMethod = domain.getStampMethod() == null ? 0 : domain.getStampMethod().value;
 		entity.numberOfDigits = domain.getDigitsNumber() == null ? 0 : domain.getDigitsNumber().v();
 		return entity;

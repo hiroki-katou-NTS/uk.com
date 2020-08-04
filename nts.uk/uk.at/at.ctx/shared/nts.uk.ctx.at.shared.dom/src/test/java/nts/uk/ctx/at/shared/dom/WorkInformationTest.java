@@ -16,6 +16,7 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.WorkInformation.Require;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -83,7 +84,7 @@ public class WorkInformationTest {
 				result = SetupType.REQUIRED;
 
 				require.findByCode(workInformation.getWorkTimeCode().v());
-				result = Optional.empty();
+				result = Optional.of(new WorkingTimeSetting());
 			}
 		};
 		assertThat(workInformation.checkNormalCondition(require)).isTrue();
@@ -205,7 +206,7 @@ public class WorkInformationTest {
 				result = SetupType.REQUIRED;
 
 				require.findByCode(workInformation.getWorkTimeCode().v());
-				result = Optional.empty();
+				result = Optional.of(new WorkingTimeSetting());
 
 			}
 		};

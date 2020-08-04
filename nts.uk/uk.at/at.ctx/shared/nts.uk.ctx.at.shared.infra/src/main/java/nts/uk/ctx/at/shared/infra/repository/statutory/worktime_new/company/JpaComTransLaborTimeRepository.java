@@ -8,15 +8,9 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
-import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeekStart;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeeklyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeCom;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeComRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComTransLabTime;
 
 /**
@@ -24,7 +18,7 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstCom
  */
 @Stateless
 public class JpaComTransLaborTimeRepository extends JpaRepository
-		implements DeforLaborTimeComRepo {
+		implements ComTransLaborTimeRepository {
 
 	/*
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.
@@ -32,14 +26,9 @@ public class JpaComTransLaborTimeRepository extends JpaRepository
 	 * worktime.companyNew.ComTransLaborTime)
 	 */
 	@Override
-	public void create(DeforLaborTimeCom setting) {
+	public void create(ComTransLaborTime setting) {
 		KshstComTransLabTime entity = new KshstComTransLabTime();
-		
-		entity.setDailyTime(setting.getDailyTime().getDailyTime().v());
-		entity.setWeeklyTime(setting.getWeeklyTime().getTime().v());
-		entity.setWeekStr(setting.getWeeklyTime().getStart().value);
-		entity.setCid(setting.getComId());
-		
+		setting.saveToMemento(new JpaComTransLaborTimeSetMemento(entity));
 		this.commandProxy().insert(entity);
 	}
 
@@ -49,13 +38,9 @@ public class JpaComTransLaborTimeRepository extends JpaRepository
 	 * worktime.companyNew.ComTransLaborTime)
 	 */
 	@Override
-	public void update(DeforLaborTimeCom setting) {
-		KshstComTransLabTime entity = this.queryProxy().find(setting.getComId(), KshstComTransLabTime.class).get();
-
-		entity.setDailyTime(setting.getDailyTime().getDailyTime().v());
-		entity.setWeeklyTime(setting.getWeeklyTime().getTime().v());
-		entity.setWeekStr(setting.getWeeklyTime().getStart().value);
-		
+	public void update(ComTransLaborTime setting) {
+		KshstComTransLabTime entity = this.queryProxy().find(setting.getCompanyId().v(), KshstComTransLabTime.class).get();
+		setting.saveToMemento(new JpaComTransLaborTimeSetMemento(entity));
 		this.commandProxy().update(entity);
 	}
 
@@ -73,7 +58,7 @@ public class JpaComTransLaborTimeRepository extends JpaRepository
 	 * ComTransLaborTimeRepository#find(java.lang.String)
 	 */
 	@Override
-	public Optional<DeforLaborTimeCom> find(String companyId) {
+	public Optional<ComTransLaborTime> find(String companyId) {
 
 		Optional<KshstComTransLabTime> optEntity = this.queryProxy().find(companyId,
 				KshstComTransLabTime.class);
@@ -93,10 +78,7 @@ public class JpaComTransLaborTimeRepository extends JpaRepository
 	 *            the entities
 	 * @return the com trans labor time
 	 */
-	private DeforLaborTimeCom toDomain(KshstComTransLabTime entity) {
-		return DeforLaborTimeCom.of(entity.getCid(),
-				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime()), 
-								EnumAdaptor.valueOf(entity.getWeekStr(), WeekStart.class)), 
-				new DailyUnit(new TimeOfDay(entity.getDailyTime())));
+	private ComTransLaborTime toDomain(KshstComTransLabTime entity) {
+		return new ComTransLaborTime(new JpaComTransLaborTimeGetMemento(entity));
 	}
 }

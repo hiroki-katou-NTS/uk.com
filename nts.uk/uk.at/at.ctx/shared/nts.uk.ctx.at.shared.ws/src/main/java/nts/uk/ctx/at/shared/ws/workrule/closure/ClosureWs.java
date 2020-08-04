@@ -14,10 +14,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureSaveCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.ClosureFinder;
@@ -34,11 +32,8 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthChangeInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthOutDto;
-import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
-import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMonthDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.DayMonthChange;
@@ -46,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class ClosureWs.
@@ -53,6 +49,10 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 @Path("ctx/at/shared/workrule/closure")
 @Produces("application/json")
 public class ClosureWs {
+
+	/** The closure service. */
+	@Inject
+	private ClosureService closureService;
 	
 	/** The finder. */
 	@Inject
@@ -69,12 +69,6 @@ public class ClosureWs {
 	/** The closure repository. */
 	@Inject
 	private ClosureRepository closureRepository;
-
-	@Inject
-	private ClosureEmploymentRepository closureEmpRepo;
-	
-	@Inject
-	private ShareEmploymentAdapter shrEmpAdapter;
 
 	/** The Constant CLOSURE_ID_BEGIN. */
 	public static final int CLOSURE_ID_BEGIN = 1;
@@ -352,7 +346,7 @@ public class ClosureWs {
 	@POST
 	@Path("calculateperiod/{closureid}/{yearmonth}")
 	public DatePeriodDto calculatePeriod(@PathParam("closureid") int closureId, @PathParam("yearmonth") int yearMonth) {
-		DatePeriod period = ClosureService.getClosurePeriod(createRequireM3(), closureId, YearMonth.of(yearMonth));
+		DatePeriod period = this.closureService.getClosurePeriod(closureId, YearMonth.of(yearMonth));
 		return DatePeriodDto.builder()
 				.endDate(period.end().toString("yyyy-MM-dd"))
 				.startDate(period.start().toString("yyyy-MM-dd")).build();
@@ -371,8 +365,8 @@ public class ClosureWs {
 		LoginUserContext loginUserContext = AppContexts.user();
 		String companyId = loginUserContext.companyId();
 		Optional<Closure> closure = this.closureRepository.findById(companyId, closureId);
-		DatePeriod period = ClosureService.getClosurePeriod(createRequireM3(), closureId,
-															closure.get().getClosureMonth().getProcessingYm());
+		DatePeriod period = this.closureService.getClosurePeriod(closureId,
+				closure.get().getClosureMonth().getProcessingYm());
 		return DatePeriodDto.builder().endDate(period.end().toString("yyyy-MM-dd"))
 				.startDate(period.start().toString("yyyy-MM-dd")).build();
 	}
@@ -398,10 +392,7 @@ public class ClosureWs {
 	@POST
 	@Path("getclosurebycurrentemployee/{basedate}")
 	public Integer getClosureByCurrentEmployee(@PathParam("basedate") String basedate) {
-		CacheCarrier cacheCarrier = new CacheCarrier();
-		
-		Closure closure = ClosureService.getClosureDataByEmployee(createRequireM3(), cacheCarrier, 
-				AppContexts.user().employeeId(),
+		Closure closure = this.closureService.getClosureDataByEmployee(AppContexts.user().employeeId(),
 				GeneralDate.fromString(basedate, "yyyy-MM-dd"));
 		if (closure == null) {
 			return null;
@@ -409,25 +400,5 @@ public class ClosureWs {
 		return closure.getClosureId().value;
 	}
 	
-	private ClosureService.RequireM3 createRequireM3 () {
-		return new ClosureService.RequireM3() {
-			
-			@Override
-			public Optional<Closure> closure(String companyId, int closureId) {
-				return closureRepository.findById(companyId, closureId);
-			}
-			
-			@Override
-			public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
-				// TODO Auto-generated method stub
-				return closureEmpRepo.findByEmploymentCD(companyID, employmentCD);
-			}
-
-			@Override
-			public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
-					String employeeId, GeneralDate baseDate) {
-				return shrEmpAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
-			}
-		};
-	}
+	
 }

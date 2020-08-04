@@ -18,6 +18,9 @@ import nts.arc.time.calendar.period.DatePeriod;
 public class MonthlyPerformanceCheck {
 	
 	@Inject
+	private ClosureService closureService;
+	
+	@Inject
 	private ClosureRepository closureRepo;
 	
 	/**
@@ -28,8 +31,7 @@ public class MonthlyPerformanceCheck {
 		Optional<Closure> optClosure = closureRepo.findById(companyId, closureId);
 		if (!optClosure.isPresent()) throw new BusinessException("Cannot find closure with ID=" + closureId);
 		//当月の期間を算出する  tính toán thời gian tháng này		
-		DatePeriod actualDate = ClosureService.getClosurePeriod(closureId,
-				optClosure.get().getClosureMonth().getProcessingYm(), optClosure);
+		DatePeriod actualDate = closureService.getClosurePeriod(closureId, optClosure.get().getClosureMonth().getProcessingYm());
 		//取得した期間を、実績期間と比較する so sánh thời gian đã lấy với thời gian thực tế
 		//実績期間　＜　開始年月日(thời gian thực tế < start date
 		if(actualTime.getEndDate().before(actualDate.start())){

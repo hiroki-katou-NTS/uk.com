@@ -4,12 +4,10 @@ html{
 #content-area {
   overflow-y: scroll;
 }
-#kdp002a {
-	width: 76vmin;
-	margin-left: auto;
-	margin-right: auto;
+#kdp002a{
+  width: 1200px;
+  min-width: 150vmin;
 }
-
 #genText {
   margin-left: 20px;
 }

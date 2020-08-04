@@ -14,13 +14,13 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * @author nam.lh
@@ -28,6 +28,9 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class AddSubHdManagementService {
+
+	@Inject
+	private ClosureService closureService;
 	
 	@Inject
 	private ClosureRepository closureRepo;
@@ -336,7 +339,7 @@ public class AddSubHdManagementService {
 		// Get Processing Ym 処理年月
 		YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
 
-		DatePeriod closurePeriod = ClosureService.getClosurePeriod(closureId, processingYm, optClosure);
+		DatePeriod closurePeriod = closureService.getClosurePeriod(closureId, processingYm);
 		if (Objects.isNull(closurePeriod)) {
 			return Optional.empty();
 		}

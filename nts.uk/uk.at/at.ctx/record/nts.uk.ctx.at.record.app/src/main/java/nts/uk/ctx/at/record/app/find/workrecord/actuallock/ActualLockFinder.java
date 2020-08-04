@@ -44,6 +44,9 @@ public class ActualLockFinder {
 	@Inject
 	private ClosureRepository closureRepo;
 
+	@Inject
+	private ClosureService closureService;
+
 	/** The actual lock hist repo. */
 	@Inject
 	private ActualLockHistoryRepository actualLockHistRepo;
@@ -92,8 +95,8 @@ public class ActualLockFinder {
 				Optional<ActualLock> actualLockOpt = this.actualLockRepo.findById(companyId, c.getClosureId().value);
 
 				// Get ClosurePeriod to get StartDate, EndDate
-				DatePeriod datePeriod = ClosureService.getClosurePeriod(c.getClosureId().value,
-						c.getClosureMonth().getProcessingYm(), Optional.of(c));
+				DatePeriod datePeriod = closureService.getClosurePeriod(c.getClosureId().value,
+						c.getClosureMonth().getProcessingYm());
 				
 				// Set ActualLockFinderDto
 				dto.setClosureId(c.getClosureId());

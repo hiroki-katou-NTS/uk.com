@@ -28,7 +28,6 @@ module nts.uk.at.view.kdp004.a {
 		}
 
 		export function login(isAdmin, data) {
-			data.runtimeEnvironmentCreate = true;
 			return ajax("at", isAdmin ? url.loginAdminMode : url.loginEmployeeMode, data);
 		}
 

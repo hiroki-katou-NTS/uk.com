@@ -28,7 +28,6 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByE
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
@@ -58,14 +57,15 @@ public class DPLock {
 
 	@Inject
 	private ShClosurePub shClosurePub;
+
+	@Inject
+	private ClosureService closureService;
 //	
 //	@Inject
 //	private FindClosureDateService findClosureDateService;
 
 	@Inject
 	private ClosureRepository closureRepository;
-	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepository;
 
 	public Map<String, DatePeriod> extractEmpAndRange(DateRange dateRange, String companyId,
 			List<String> listEmployeeId, List<ClosureDto> closureDtos) {
@@ -76,9 +76,7 @@ public class DPLock {
 		// dateRange.getEndDate());
 		if (!closureDtos.isEmpty()) {
 			closureDtos.forEach(x -> {
-				DatePeriod datePeriod = ClosureService.getClosurePeriod(
-						ClosureService.createRequireM1(closureRepository, closureEmploymentRepository),
-						x.getClosureId(),
+				DatePeriod datePeriod = closureService.getClosurePeriod(x.getClosureId(),
 						new YearMonth(x.getClosureMonth()));
 				DatePeriod dateResult = periodLock(x.getDatePeriod(), datePeriod);
 				Optional<ActualLockDto> actualLockDto = repo.findAutualLockById(companyId, x.getClosureId());

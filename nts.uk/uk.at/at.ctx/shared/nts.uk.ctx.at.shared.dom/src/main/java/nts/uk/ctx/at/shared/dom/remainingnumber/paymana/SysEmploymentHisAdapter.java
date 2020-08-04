@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.paymana;
 
 import java.util.Optional;
 
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 
 public interface SysEmploymentHisAdapter {
@@ -20,6 +19,7 @@ public interface SysEmploymentHisAdapter {
 	 */
 	// RequestList31
 	Optional<SEmpHistoryImport> findSEmpHistBySid(String companyId, String employeeId, GeneralDate baseDate);
-	Optional<SEmpHistoryImport> findSEmpHistBySidRequire(CacheCarrier cacheCarrier, String companyId, String employeeId, GeneralDate baseDate);
+
+	
 	
 }

@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
@@ -24,7 +26,16 @@ import nts.uk.shr.com.context.AppContexts;
  * @author HungTT - <<Work>> 年休残数計算
  *
  */
+
+@Stateless
 public class RemainAnnualLeaveCalculation {
+
+	@Inject
+	private GetAnnAndRsvRemNumWithinPeriod getRemainNum;
+	
+	/** 暫定年休管理データを作成する */
+	@Inject
+	private CreateInterimAnnualMngData createInterimAnnual;
 
 	/**
 	 * 年休残数計算
@@ -34,8 +45,7 @@ public class RemainAnnualLeaveCalculation {
 	 * @param attTimeMonthly 月別実績の勤怠時間
 	 * @return 年休積立年休の集計結果
 	 */
-	public static AggrResultOfAnnAndRsvLeave calculateRemainAnnualHoliday(RequireM1 require, CacheCarrier cacheCarrier,
-			AggrPeriodEachActualClosure period, String empId,
+	public AggrResultOfAnnAndRsvLeave calculateRemainAnnualHoliday(AggrPeriodEachActualClosure period, String empId,
 			Map<GeneralDate, DailyInterimRemainMngData> interimRemainMngMap, AttendanceTimeOfMonthly attTimeMonthly) {
 		
 		String companyId = AppContexts.user().companyId();
@@ -68,7 +78,7 @@ public class RemainAnnualLeaveCalculation {
 		if (attTimeMonthly != null){
 			
 			// 年休控除日数分の年休暫定残数データを作成する
-			val compensFlexWorkOpt = CreateInterimAnnualMngData.ofCompensFlexToWork(
+			val compensFlexWorkOpt = this.createInterimAnnual.ofCompensFlexToWork(
 					attTimeMonthly, period.getPeriod().end());
 			if (compensFlexWorkOpt.isPresent()){
 				tmpAnnualLeaveMngs.add(compensFlexWorkOpt.get());
@@ -77,15 +87,10 @@ public class RemainAnnualLeaveCalculation {
 		}
 		
 		// 「期間中の年休積休残数を取得」を実行する　→　「年休積立年休の集計結果」を返す
-		return GetAnnAndRsvRemNumWithinPeriod.algorithm(require, cacheCarrier, companyId, 
-				empId, period.getPeriod(), InterimRemainMngMode.MONTHLY,
+		return getRemainNum.algorithm(companyId, empId, period.getPeriod(), InterimRemainMngMode.MONTHLY,
 				period.getPeriod().end(), true, true,
 				Optional.of(isOverWriteAnnual || isOverWriteReserve),
 				Optional.of(tmpAnnualLeaveMngs), Optional.of(tmpReserveLeaveMngs),
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
-	}
-	
-	public static interface RequireM1 extends GetAnnAndRsvRemNumWithinPeriod.RequireM2 {
-		
 	}
 }

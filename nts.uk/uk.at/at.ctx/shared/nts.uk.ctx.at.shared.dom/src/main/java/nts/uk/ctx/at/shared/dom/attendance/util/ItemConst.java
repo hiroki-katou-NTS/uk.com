@@ -292,8 +292,4 @@ public interface ItemConst extends Cloneable {
 	public final String CLOSURE_STATE = "締め処理状態";
 	public final String OCCURRENCE = "発生";
 	public final String BREAK_DOWN = "内訳";
-	public final String OUEN = "応援";
-	public final String DETAIL = "明細";
-	public final String OTHER = "その他";
-	public final String FRAME = "枠";
 }

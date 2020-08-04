@@ -16,7 +16,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
 import nts.uk.ctx.at.record.app.command.monthlyclosureupdate.MonthlyClosureResponse;
 import nts.uk.ctx.at.record.app.command.monthlyclosureupdate.OutputParam;
@@ -34,13 +33,13 @@ import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateLog;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateLogRepository;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdatePersonLog;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdatePersonLogRepository;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureInfor;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -56,6 +55,9 @@ public class MonthlyClosureUpdateFinder {
 
 	@Inject
 	private MonthlyClosureUpdatePersonLogRepository closureUpdatePersonLogRepo;
+
+	@Inject
+	private ClosureService closureService;
 
 	@Inject
 	private MonthlyClosureUpdateErrorInforRepository errorInforRepo;
@@ -74,9 +76,6 @@ public class MonthlyClosureUpdateFinder {
 	
 	@Inject
 	private RegulationInfoEmployeeQueryAdapter employeeSearch;
-	
-	@Inject
-	private RecordDomRequireService requireService;
 
 	
 	public MonthlyClosureUpdateLogDto findById(String id) {
@@ -158,7 +157,7 @@ public class MonthlyClosureUpdateFinder {
 	
 	private Kmw006aResultDto getInfor(String companyId, boolean executable){
 		List<ClosureInforDto> listInforDto = new ArrayList<>();
-		List<ClosureInfor> listClosureInfor = ClosureService.getClosureInfo(requireService.createRequire());
+		List<ClosureInfor> listClosureInfor = closureService.getClosureInfo();
 		ClosureInfor tmp = listClosureInfor.get(0);
 		for (ClosureInfor infor : listClosureInfor) {
 			List<MonthlyClosureUpdateLog> listMonthlyLog = monthlyClosureUpdateRepo
@@ -307,8 +306,7 @@ public class MonthlyClosureUpdateFinder {
 	}
 	
 	public Integer getAllPersonNo(DataToGetPersonNo param){
-		DatePeriod closureDP = ClosureService.getClosurePeriodNws(requireService.createRequire(), 
-				param.getClosureId(), new YearMonth(param.getYearMonth()));
+		DatePeriod closureDP = this.closureService.getClosurePeriodNws(param.getClosureId(), new YearMonth(param.getYearMonth()));
 		if(closureDP != null){
 			List<String> listEmpId = employeeSearch.search(createQueryToFilterEmployees(closureDP, param.getClosureId())).stream()
 					.map(item -> item.getEmployeeId()).collect(Collectors.toList());

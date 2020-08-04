@@ -6,7 +6,6 @@ import java.util.List;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
@@ -18,8 +17,9 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacati
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetAddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeekStart;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 週別の通常変形時間
@@ -112,10 +112,10 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 			// 「週割増・月割増を求める」を取得する
 			boolean isAskPremium = false;
 			if (aggregateAtr == MonthlyAggregateAtr.MONTHLY){
-				isAskPremium = settingsByReg.getRegularAggrSet().getAggregateTimeSet().isSurchargeWeekMonth();
+				isAskPremium = settingsByReg.getRegularAggrSet().getAggregateTimeSet().getSurchargeWeekMonth();
 			}
 			if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
-				isAskPremium = settingsByReg.getRegularAggrSet().getExcessOutsideTimeSet().isSurchargeWeekMonth();
+				isAskPremium = settingsByReg.getRegularAggrSet().getExcessOutsideTimeSet().getSurchargeWeekMonth();
 			}
 			if (isAskPremium){
 				

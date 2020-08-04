@@ -8,15 +8,16 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.serialize.binary.SerializableWithOptional;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.serialize.binary.SerializableWithOptional;
 
 /**
  * 控除の日数と時間
@@ -69,9 +70,14 @@ public class DeductDaysAndTime implements SerializableWithOptional{
 	 * @param employeeId 社員ID
 	 * @param period 期間
 	 * @param workingConditionItem 労働条件項目
+	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void timeConversionOfDeductAnnualLeaveDays(RequireM1 require, String companyId, String employeeId,
-			DatePeriod period, WorkingConditionItem workingConditionItem){
+	public void timeConversionOfDeductAnnualLeaveDays(
+			String companyId,
+			String employeeId,
+			DatePeriod period,
+			WorkingConditionItem workingConditionItem,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		AttendanceTimeMonth convertTime = new AttendanceTimeMonth(0);
 		
@@ -91,7 +97,8 @@ public class DeductDaysAndTime implements SerializableWithOptional{
 		val workTimeCd = workTimeCdOpt.get().v();
 		
 		// 「所定時間設定．就業加算時間」を取得する
-		this.predetermineTimeSetOfWeekDay = require.predetemineTimeSetByWorkTimeCode(companyId, workTimeCd);
+		this.predetermineTimeSetOfWeekDay =
+				repositories.getPredetermineTimeSet().findByWorkTimeCode(companyId, workTimeCd);
 		if (!this.predetermineTimeSetOfWeekDay.isPresent()){
 			
 			// エラー処理
@@ -135,10 +142,4 @@ public class DeductDaysAndTime implements SerializableWithOptional{
 		if (applyMinutes > this.absenceDeductTime.v()) applyMinutes = this.absenceDeductTime.v();
 		this.absenceDeductTime = this.absenceDeductTime.minusMinutes(applyMinutes);
 	}
-	
-	public static interface RequireM1 { 
-		
-		Optional<PredetemineTimeSetting> predetemineTimeSetByWorkTimeCode(String companyId, String workTimeCode);
-	}
-
 }

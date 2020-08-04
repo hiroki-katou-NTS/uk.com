@@ -23,7 +23,7 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button tabindex="1" id="btnSave" class="proceed" data-bind="click: save, enable: $root.errors.isEmpty">#{i18n.getText('KDP010_230')}</button>
+				<button tabindex="1" id="btnSave" class="proceed" data-bind="click: save">#{i18n.getText('KDP010_230')}</button>
 				<button tabindex="2" class="danger" data-bind="click: deleteSetting, enable: isDel">#{i18n.getText('KDP010_231')}</button>
 				<button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KDP010_232')}</button>
 			</div>

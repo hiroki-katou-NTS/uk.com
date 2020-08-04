@@ -10,11 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.export.dto.AffiliationStatus;
 import nts.uk.ctx.at.record.dom.workrecord.export.dto.EmpAffInfoExport;
 import nts.uk.ctx.at.record.dom.workrecord.export.dto.PeriodInformation;
@@ -30,25 +27,24 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class WorkRecordExportImp implements WorkRecordExport{
+
+	@Inject
+	private ClosureService closureService;
 	
 	@Inject
 	private ClosureRepository closureRepository;
 	
 	@Inject
 	private ApplicationTypeAdapter applicationTypeAdapter;
-	@Inject 
-	private RecordDomRequireService requireService;
 	
 	@Override
 	public EmpAffInfoExport getAffiliationPeriod(List<String> listSid, YearMonthPeriod YMPeriod, GeneralDate baseDate) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
-	
+
 		String companyId = AppContexts.user().companyId();
 		// 社員(list)に対応する処理締めを取得する (Lấy closure xử lý ứng với employee(list))
 		Map<String, ClosureId> emplClosureId = new HashMap<>();
 		for (String employeeId : listSid) {
-			Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, baseDate);
+			Closure closure = closureService.getClosureDataByEmployee(employeeId, baseDate);
 			emplClosureId.put(employeeId, closure!=null?closure.getClosureId():null);
 		}
 		List<Closure> listClosures = closureRepository.findAll(companyId).stream().filter(c->c.getClosureId()!=null).collect(Collectors.toList());

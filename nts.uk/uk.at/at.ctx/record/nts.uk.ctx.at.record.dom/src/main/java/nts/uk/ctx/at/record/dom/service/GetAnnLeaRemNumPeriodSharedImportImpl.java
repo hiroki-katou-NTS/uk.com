@@ -9,19 +9,15 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveError;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 //import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 //import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
@@ -29,22 +25,19 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveL
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.AnnualLeaveErrorSharedImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.GetAnnLeaRemNumWithinPeriodSharedImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.ReserveLeaveErrorImport;
+import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class GetAnnLeaRemNumPeriodSharedImportImpl implements GetAnnLeaRemNumWithinPeriodSharedImport{
-	
-	@Inject 
-	private RecordDomRequireService requireService;
-	
+	@Inject
+	private GetAnnLeaRemNumWithinPeriod annleaRemNumService;
+	@Inject
+	private GetAnnAndRsvRemNumWithinPeriod fundingAnnualService;
 	@Override
 	public List<AnnualLeaveErrorSharedImport> annualLeaveErrors(String companyId, String employeeId,
 			DatePeriod aggrPeriod, boolean mode, GeneralDate criteriaDate, boolean isGetNextMonthData,
 			boolean isCalcAttendanceRate, Optional<Boolean> isOverWrite,
 			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteList, Optional<Boolean> noCheckStartDate) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
-	
-		Optional<AggrResultOfAnnualLeave> outResult = GetAnnLeaRemNumWithinPeriodProc.algorithm(
-				require, cacheCarrier, companyId,
+		Optional<AggrResultOfAnnualLeave> outResult = annleaRemNumService.algorithm(companyId,
 				employeeId, 
 				aggrPeriod, 
 				mode ? InterimRemainMngMode.MONTHLY : InterimRemainMngMode.OTHER,
@@ -72,11 +65,7 @@ public class GetAnnLeaRemNumPeriodSharedImportImpl implements GetAnnLeaRemNumWit
 			Optional<Boolean> isOverWrite, Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
 			Optional<List<TmpReserveLeaveMngWork>> tempRsvDataforOverWriteList, Optional<Boolean> isOutputForShortage,
 			Optional<Boolean> noCheckStartDate) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
-	
-		AggrResultOfAnnAndRsvLeave algorithm = GetAnnAndRsvRemNumWithinPeriod.algorithm(
-				require, cacheCarrier, companyId, 
+		AggrResultOfAnnAndRsvLeave algorithm = fundingAnnualService.algorithm(companyId, 
 				employeeId,
 				aggrPeriod, 
 				mode ? InterimRemainMngMode.MONTHLY : InterimRemainMngMode.OTHER, 

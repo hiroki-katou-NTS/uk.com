@@ -28,6 +28,8 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 	private SpecialHolidayRepository speHolidayRepos;
 	@Inject
 	private GrantDateTblRepository grantTblRepos;
+	@Inject
+	private InforSpecialLeaveOfEmployeeSevice inforSpeEmpService;
 	@Override
 	public InforSpecialLeaveOfEmployee getNotDepentInfoSpecialLeave(NotDepentSpecialLeaveOfEmployeeInput param) {
 		InforSpecialLeaveOfEmployee outputData = new InforSpecialLeaveOfEmployee(InforStatus.NOTUSE, Optional.empty(), new ArrayList<>(), false);
@@ -234,7 +236,7 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 			}
 		}
 		return null;*/
-		return InforSpecialLeaveOfEmployeeSevice.getDeadlineInfo(param, speHoliday);
+		return inforSpeEmpService.getDeadlineInfo(param, speHoliday);
 	}
 	@Override
 	public Map<String, InforSpecialLeaveOfEmployee> getNotDepentInfoSpecialLeave(
@@ -471,7 +473,7 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 	}
 	@Override
 	public Map<String, List<SpecialHolidayInfor>> getPeriodGrantDate(List<GrantDaysInforByDatesInfo> param, SpecialHoliday speHoliday) {
-		return InforSpecialLeaveOfEmployeeSevice.getDeadlineInfo(param, speHoliday);
+		return inforSpeEmpService.getDeadlineInfo(param, speHoliday);
 	}
 
 }

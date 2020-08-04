@@ -6,14 +6,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.GetReserveLeaveNumbers;
@@ -36,16 +34,23 @@ public class GetReserveLeaveNumbersImpl implements GetReserveLeaveNumbers {
 	/** 積立年休付与残数データ */
 	@Inject
 	private RervLeaGrantRemDataRepository rsvLeaGrantRemDataRepo;
+	/** 社員に対応する締め開始日を取得する */
+	@Inject
+	private GetClosureStartForEmployee getClosureStartForEmployee;
+	/** 当月の期間を算出する */
+	@Inject
+	private ClosureService closureService;
+	/** 期間中の年休積休残数を取得 */
+	@Inject
+	private GetAnnAndRsvRemNumWithinPeriod getAnnAndRsvRemNumWithinPeriod;
 	@Inject
 	private ClosureStatusManagementRepository clsSttMngRepo;
-	@Inject 
-	private RecordDomRequireService requireService;
+	@Inject
+	private GetClosureStartForEmployee clsStrForEmp;
 	
 	/** 社員の積立年休の月初残・使用・残数・未消化を取得する */
 	@Override
 	public ReserveLeaveNowExport algorithm(String employeeId) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
 	
 		ReserveLeaveNowExport result = new ReserveLeaveNowExport();
 		
@@ -60,22 +65,22 @@ public class GetReserveLeaveNumbersImpl implements GetReserveLeaveNumbers {
 		ReserveLeaveRemainingDayNumber startMonthRemain = new ReserveLeaveRemainingDayNumber(totalDays);
 		
 		//　社員に対応する締め開始日を取得する
-		val closureStartOpt = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
+		val closureStartOpt = this.getClosureStartForEmployee.algorithm(employeeId);
 		if (!closureStartOpt.isPresent()) return result;
 		val closureStart = closureStartOpt.get();
 
 		// 社員に対応する処理締めを取得する
-		val closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, closureStart);
+		val closure = this.closureService.getClosureDataByEmployee(employeeId, closureStart);
 		if (closure == null) return result;
 
 		// 当月の年月を取得する
 		val currentMonth = closure.getClosureMonth().getProcessingYm();
 		
 		// 当月の期間を算出する　→　締め期間
-		val closurePeriod = ClosureService.getClosurePeriod(require, closure.getClosureId().value, currentMonth);
+		val closurePeriod = this.closureService.getClosurePeriod(closure.getClosureId().value, currentMonth);
 		
 		// 期間中の年休積休残数を取得
-		val aggrResult = GetAnnAndRsvRemNumWithinPeriod.algorithm(require, cacheCarrier,
+		val aggrResult = this.getAnnAndRsvRemNumWithinPeriod.algorithm(
 				closure.getCompanyId().v(),
 				employeeId,
 				closurePeriod,
@@ -116,11 +121,7 @@ public class GetReserveLeaveNumbersImpl implements GetReserveLeaveNumbers {
 	 * @return 積立年休現在状況
 	 */
 	@Override
-	public ReserveLeaveNowExport getRsvRemainVer2(String employeeId, Optional<GeneralDate> closureDate, 
-			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
-		
+	public ReserveLeaveNowExport getRsvRemainVer2(String employeeId, Optional<GeneralDate> closureDate, MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets) {
 		//　社員に対応する締め開始日を取得する
 		if (!closureDate.isPresent()){
 			return null;
@@ -135,7 +136,7 @@ public class GetReserveLeaveNumbersImpl implements GetReserveLeaveNumbers {
 			totalDays += grantRemData.getDetails().getRemainingNumber().v();
 		}
 		ReserveLeaveRemainingDayNumber startMonthRemain = new ReserveLeaveRemainingDayNumber(totalDays);
-		Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, closureDate.get());
+		Closure closure = closureService.getClosureDataByEmployee(employeeId, closureDate.get());
 		if(closure == null){
 			return null;
 		}
@@ -143,12 +144,11 @@ public class GetReserveLeaveNumbersImpl implements GetReserveLeaveNumbers {
 		val currentMonth = closure.getClosureMonth().getProcessingYm();
 		
 		// 当月の期間を算出する　→　締め期間
-		val closurePeriod = ClosureService.getClosurePeriod(require, closure.getClosureId().value, currentMonth);
+		val closurePeriod = closureService.getClosurePeriod(closure.getClosureId().value, currentMonth);
 		Optional<ClosureStatusManagement> sttMng = clsSttMngRepo.getLatestByEmpId(employeeId);
-		Optional<GeneralDate> closureStartOpt = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
+		Optional<GeneralDate> closureStartOpt = clsStrForEmp.algorithm(employeeId);
 		// 期間中の年休積休残数を取得
-		AggrResultOfAnnAndRsvLeave aggrResult = GetAnnAndRsvRemNumWithinPeriod.getRemainAnnRscByPeriod(
-				require, cacheCarrier,
+		AggrResultOfAnnAndRsvLeave aggrResult = getAnnAndRsvRemNumWithinPeriod.getRemainAnnRscByPeriod(
 				closure.getCompanyId().v(), employeeId, closurePeriod, InterimRemainMngMode.OTHER,
 				closurePeriod.end(), false, false, Optional.empty(), Optional.empty(), Optional.empty(),
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),

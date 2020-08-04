@@ -10,14 +10,10 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AttendanceRate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.CalcAnnLeaAttendanceRate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.CalYearOffWorkAttendRate;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.AnnualHolidayManagementPub;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.AttendRateAtNextHolidayExport;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.NextAnnualLeaveGrantExport;
@@ -29,23 +25,38 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.An
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.GetNextAnnualLeaveGrant;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPub {
 	@Inject
-	private AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepository;
+	AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepository;
 	
 	@Inject
-	private YearHolidayRepository yearHolidayRepository;
+	YearHolidayRepository yearHolidayRepository;
 	
 	@Inject
-	private EmpEmployeeAdapter empEmployeeAdapter;
+	GetNextAnnualLeaveGrant nextAnnualLeaveGrant;
 	
 	@Inject
-	private RecordDomRequireService requireService;
+	LengthServiceRepository lengthServiceRepository;
+	
+	@Inject
+	EmpEmployeeAdapter empEmployeeAdapter;
+	
+	@Inject
+	private GetClosureStartForEmployee getClosureStartForEmployee;
+	
+	/** 次回年休付与日を計算 */
+	@Inject
+	private CalcNextAnnualLeaveGrantDate calcNextAnnualLeaveGrantDate;
+	/** 年休出勤率を計算する */
+	@Inject
+	private CalcAnnLeaAttendanceRate calcAnnLeaAttendanceRate;
 	
 	/**
 	 * RequestList210
@@ -58,9 +69,6 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<NextAnnualLeaveGrantExport> acquireNextHolidayGrantDate(String companyId, String employeeId, Optional<GeneralDate> referenceDate) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
-		
 		// ドメインモデル「年休社員基本情報」を取得
 		Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = annLeaEmpBasicInfoRepository.get(employeeId);
 		
@@ -72,8 +80,7 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 		Optional<DatePeriod> period = createCalRangeNextYearHdGrant(referenceDate);
 		
 		// 次回年休付与を計算
-		List<NextAnnualLeaveGrantExport> result = calculateNextHolidayGrant(require, cacheCarrier, companyId, 
-				employeeId, period, annualLeaveEmpBasicInfo);
+		List<NextAnnualLeaveGrantExport> result = calculateNextHolidayGrant(companyId, employeeId, period, annualLeaveEmpBasicInfo);
 		
 		// 次回年休付与を返す
 		return result;
@@ -106,8 +113,7 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 	 * @param annualLeaveEmpBasicInfo
 	 * @return
 	 */
-	private List<NextAnnualLeaveGrantExport> calculateNextHolidayGrant(RecordDomRequireService.Require require, 
-			CacheCarrier cacheCarrier, String companyId, String employeeId, 
+	private List<NextAnnualLeaveGrantExport> calculateNextHolidayGrant(String companyId, String employeeId, 
 			Optional<DatePeriod> period, Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo) {
 		boolean isSingleDay = false;
 		Optional<DatePeriod> periodDate = period;
@@ -120,7 +126,7 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 			isSingleDay = true;
 			
 			// 社員に対応する締め開始日を取得する
-			Optional<GeneralDate> closureStartDate = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
+			Optional<GeneralDate> closureStartDate = getClosureStartForEmployee.algorithm(employeeId);
 			
 			periodDate = Optional.ofNullable(new DatePeriod(GeneralDate.ymd(closureStartDate.get().year(), 
 					closureStartDate.get().month(), closureStartDate.get().day()), GeneralDate.ymd(9999, 12, 31)));
@@ -134,9 +140,8 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 		}
 		
 		// 次回年休付与を取得する
-		List<NextAnnualLeaveGrantExport> nextAnnualLeaveGrantData = GetNextAnnualLeaveGrant.algorithm(require, cacheCarrier, 
-				companyId, grantHdTblSet.get().getYearHolidayCode().v(), employee.getEntryDate(), 
-				annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate(), periodDate.get(), isSingleDay)
+		List<NextAnnualLeaveGrantExport> nextAnnualLeaveGrantData = nextAnnualLeaveGrant.algorithm(companyId, grantHdTblSet.get().getYearHolidayCode().v(), 
+				employee.getEntryDate(), annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate(), periodDate.get(), isSingleDay)
 				.stream().map(x -> new NextAnnualLeaveGrantExport(
 						x.getGrantDate(), 
 						x.getGrantDays(),
@@ -161,8 +166,6 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 
 	@Override
 	public Optional<AttendRateAtNextHolidayExport> getDaysPerYear(String companyId, String employeeId) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
 		
 		AttendRateAtNextHolidayExport result = null;
 		
@@ -172,7 +175,7 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 		AnnualLeaveEmpBasicInfo basicInfo = basicInfoOpt.get();
 		
 		// 次回年休付与を計算
-		List<NextAnnualLeaveGrant> nextAnnLeaGrantList = CalcNextAnnualLeaveGrantDate.algorithm(require, cacheCarrier,
+		List<NextAnnualLeaveGrant> nextAnnLeaGrantList = this.calcNextAnnualLeaveGrantDate.algorithm(
 				companyId, employeeId, Optional.empty(),
 				Optional.empty(), basicInfoOpt, Optional.empty(), Optional.empty());
 		
@@ -181,7 +184,7 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 		NextAnnualLeaveGrant nextAnnualLeaveGrant = nextAnnLeaGrantList.get(0);
 
 		// 年休出勤率を計算する
-		Optional<CalYearOffWorkAttendRate> attendanceRateOpt = CalcAnnLeaAttendanceRate.algorithm(require, cacheCarrier,
+		Optional<CalYearOffWorkAttendRate> attendanceRateOpt = this.calcAnnLeaAttendanceRate.algorithm(
 				companyId, employeeId, nextAnnualLeaveGrant.getGrantDate(), Optional.empty());
 		Double attendanceRate = 0.0;
 		Double attendanceDays = 0.0;

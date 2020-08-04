@@ -10,7 +10,6 @@ import nts.arc.time.calendar.period.DatePeriod;
  */
 @Data
 public class EmployeeStampDataRequest {
-	private String employeeId;
 	private String startDate;
 	private String endDate;
 	

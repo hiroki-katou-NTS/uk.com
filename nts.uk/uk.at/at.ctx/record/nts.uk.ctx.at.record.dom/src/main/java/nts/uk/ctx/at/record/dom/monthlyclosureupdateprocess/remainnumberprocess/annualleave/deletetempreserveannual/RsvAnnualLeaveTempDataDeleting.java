@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.annualleave.deletetempreserveannual;
 
-import nts.arc.task.tran.AtomTask;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -8,7 +11,12 @@ import nts.arc.time.calendar.period.DatePeriod;
  * @author HungTT - <<Work>> 積立年休暫定データ削除
  *
  */
+
+@Stateless
 public class RsvAnnualLeaveTempDataDeleting {
+
+	@Inject
+	private InterimRemainRepository tmpRsvLeaveMngRepo;
 
 	/**
 	 * 積立年休暫定データ削除
@@ -16,14 +24,8 @@ public class RsvAnnualLeaveTempDataDeleting {
 	 * @param employeeId
 	 * @param period
 	 */
-	public static AtomTask deleteTempRsvAnnualLeaveData(RequireM1 require, String employeeId, DatePeriod period) {
-		
-		return AtomTask.of(() -> require.removeInterimRemain(employeeId, period));
-	}
-	
-	public static interface RequireM1 {
-		
-		void removeInterimRemain(String sId, DatePeriod period);
+	public void deleteTempRsvAnnualLeaveData(String employeeId, DatePeriod period) {
+		tmpRsvLeaveMngRepo.removeByPeriod(employeeId, period);
 	}
 
 }

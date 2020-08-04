@@ -18,21 +18,19 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.function.app.find.holidaysremaining.HdRemainManageFinder;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
+import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AbsenceReruitmentManaAdapter;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaGrantNumberImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveOfThisMonthImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveRemainingAdapter;
@@ -62,25 +60,14 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingDataS
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingInfor;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingEmployee;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingReportGenerator;
-import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
@@ -90,6 +77,8 @@ import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
@@ -107,6 +96,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	private HdRemainManageFinder hdRemainManageFinder;
 	@Inject
 	private ClosureRepository closureRepository;
+	@Inject
+	private ClosureService closureService;
 	// @Inject
 	// private GetNextAnnLeaGrantDateAdapter getNextAnnLeaGrantDateAdapter;
 	@Inject
@@ -115,6 +106,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	// private GetReserveLeaveNumbersAdpter reserveLeaveAdpter;
 	// @Inject
 	// private MonthlyDayoffRemainAdapter monthlyDayoffAdapter;
+	@Inject
+	private AbsenceReruitmentManaAdapter absenceReruitmentAdapter;
 	@Inject
 	private ComplileInPeriodOfSpecialLeaveAdapter specialLeaveAdapter;
 	@Inject
@@ -129,36 +122,14 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	private ManagedParallelWithContext parallel;
 	@Inject
 	private HolidayRemainMergeAdapter hdRemainAdapter;
-	
 	@Inject
-	private InterimRemainRepository interimRemainRepo;
+	private AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepository;
 	@Inject
-	private InterimBreakDayOffMngRepository interimBreakDayOffMngRepo;
+	private AbsenceReruitmentMngInPeriodQuery absenceReruitmentMngInPeriodQuery;
 	@Inject
-	private ComDayOffManaDataRepository comDayOffManaDataRepo;
+	private BreakDayOffMngInPeriodQuery breakDayOffMngInPeriodQuery;
 	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepo;
-	@Inject
-	private CompensLeaveComSetRepository compensLeaveComSetRepo;
-	@Inject
-	private CompensLeaveEmSetRepository compensLeaveEmSetRepo;
-	@Inject
-	private ShareEmploymentAdapter shareEmploymentAdapter;
-	@Inject
-	private LeaveManaDataRepository leaveManaDataRepo;
-	@Inject
-	private nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter companyAdapter;
-	
-	@Inject
-	private InterimRecAbasMngRepository interimRecAbasMngRepo;
-	@Inject
-	private EmpSubstVacationRepository empSubstVacationRepo;
-	@Inject
-	private ComSubstVacationRepository comSubstVacationRepo; 
-	@Inject
-	private SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepo;
-	@Inject
-	private PayoutManagementDataRepository payoutManagementDataRepo;
+	private ClosureEmploymentRepository closureEmploymentRepository;
 
 	@Override
 	protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
@@ -415,15 +386,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 				listRsvLeaUsedCurrentMon = remainDel.getResult364();
 			}
 		}
-		val cacheCarrier = new CacheCarrier();
 
 		if (variousVacationControl.isSubstituteHolidaySetting()) {
-			
-			val breakDayOffMngInPeriodQueryRequire = BreakDayOffMngInPeriodQuery.createRequireM10(
-					closureRepository, interimRemainRepo, interimBreakDayOffMngRepo, 
-					comDayOffManaDataRepo, closureEmploymentRepo, companyAdapter, 
-					shareEmploymentAdapter, compensLeaveEmSetRepo, compensLeaveComSetRepo, leaveManaDataRepo);
-			
 			// Call RequestList269
 			// listCurrentHoliday = remainDel.getResult269();
 			for (YearMonth s = currentMonth; s.lessThanOrEqualTo(endDate.yearMonth()); s = s.addMonths(1)) {
@@ -433,8 +397,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 				BreakDayOffRemainMngParam param = new BreakDayOffRemainMngParam(cId, employeeId, periodDate, false,
 						closureInforOpt.get().getPeriod().end(), false, new ArrayList<>(), new ArrayList<>(),
 						new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
-				BreakDayOffRemainMngOfInPeriod currentHoliday = BreakDayOffMngInPeriodQuery
-						.getBreakDayOffMngInPeriod(breakDayOffMngInPeriodQueryRequire, cacheCarrier, param);
+				BreakDayOffRemainMngOfInPeriod currentHoliday = breakDayOffMngInPeriodQuery .getBreakDayOffMngInPeriod(param);
 				listCurrentHoliday.add(new CurrentHolidayImported(s, currentHoliday.getCarryForwardDays(), currentHoliday.getOccurrenceDays(), currentHoliday.getUseDays(), currentHoliday.getUnDigestedDays(), currentHoliday.getRemainDays()));
 			}
 			// Call RequestList259 ver2 - hoatt
@@ -444,18 +407,12 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 			DatePeriod periodDate = new DatePeriod(GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1), GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1).addMonths(1).addDays(-1));
 			BreakDayOffRemainMngParam param = new BreakDayOffRemainMngParam(cId, employeeId, periodDate, false,
 					closureInforOpt.get().getPeriod().end(), false, new ArrayList<>(), new ArrayList<>(),new ArrayList<>(), Optional.empty(), Optional.empty(),Optional.empty());
-			BreakDayOffRemainMngOfInPeriod currentHoliday = BreakDayOffMngInPeriodQuery
-					.getBreakDayOffMngInPeriod(breakDayOffMngInPeriodQueryRequire, cacheCarrier, param);
+			BreakDayOffRemainMngOfInPeriod currentHoliday = breakDayOffMngInPeriodQuery .getBreakDayOffMngInPeriod(param);
 			currentHolidayLeft = new CurrentHolidayImported(currentMonth, currentHoliday.getCarryForwardDays(), currentHoliday.getOccurrenceDays(), currentHoliday.getUseDays(), currentHoliday.getUnDigestedDays(), currentHoliday.getRemainDays());
 			
 		}
 
 		if (variousVacationControl.isPauseItemHolidaySetting()) {
-			val absenceReruitmentMngInPeriodQueryRequire = AbsenceReruitmentMngInPeriodQuery.createRequireM10(
-					interimRemainRepo, interimRecAbasMngRepo, closureRepository, closureEmploymentRepo,
-					companyAdapter, shareEmploymentAdapter, empSubstVacationRepo, comSubstVacationRepo,
-					substitutionOfHDManaDataRepo, payoutManagementDataRepo);
-			
 			// Call RequestList270
 			/*
 			 * listCurrentHolidayRemain =
@@ -470,8 +427,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 						closureInforOpt.get().getPeriod().end(), false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty()
 						, Optional.empty()
 						, Optional.empty());
-				AbsRecRemainMngOfInPeriod remainMng = AbsenceReruitmentMngInPeriodQuery
-						.getAbsRecMngInPeriod(absenceReruitmentMngInPeriodQueryRequire, cacheCarrier, param);
+				AbsRecRemainMngOfInPeriod remainMng = absenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(param);
 				listCurrentHolidayRemain.add(new CurrentHolidayRemainImported(s, remainMng.getCarryForwardDays(),
 						remainMng.getOccurrenceDays(), remainMng.getUseDays(), remainMng.getUnDigestedDays(),
 						remainMng.getRemainDays()));
@@ -486,8 +442,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 					false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty()
 					, Optional.empty()
 					, Optional.empty());
-			AbsRecRemainMngOfInPeriod remainMng = AbsenceReruitmentMngInPeriodQuery
-					.getAbsRecMngInPeriod(absenceReruitmentMngInPeriodQueryRequire, cacheCarrier, param);
+			AbsRecRemainMngOfInPeriod remainMng = absenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(param);
 			currentHolidayRemainLeft = new CurrentHolidayRemainImported(currentMonth, remainMng.getCarryForwardDays(),remainMng.getOccurrenceDays(),remainMng.getUseDays(),remainMng.getUnDigestedDays(),remainMng.getRemainDays());
 		}
 		// hoatt
@@ -555,7 +510,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	}
 
 	private Optional<ClosureInfo> getClosureInfor(int closureId) {
-		val listClosureInfo = ClosureService.getAllClosureInfo(ClosureService.createRequireM2(closureRepository));
+		val listClosureInfo = closureService.getAllClosureInfo();
 		return listClosureInfo.stream().filter(i -> i.getClosureId().value == closureId).findFirst();
 	}
 

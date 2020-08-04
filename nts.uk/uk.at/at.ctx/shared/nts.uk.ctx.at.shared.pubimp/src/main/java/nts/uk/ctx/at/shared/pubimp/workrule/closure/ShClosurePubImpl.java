@@ -16,12 +16,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import lombok.RequiredArgsConstructor;
-import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -30,7 +26,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ClosureDateExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
-import nts.uk.shr.com.context.AppContexts;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class ShortWorkTimePubImpl.
@@ -41,6 +37,10 @@ public class ShClosurePubImpl implements ShClosurePub {
 	/** The work time hist repo. */
 	@Inject
 	private ClosureRepository closureRepo;
+
+	/** The Closure service. */
+	@Inject
+	private ClosureService closureService;
 
 	/*
 	 * (non-Javadoc)
@@ -65,27 +65,18 @@ public class ShClosurePubImpl implements ShClosurePub {
 		// Get Processing Ym 処理年月
 		YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
 
-		DatePeriod closurePeriod = ClosureService.getClosurePeriod(closureId, processingYm, optClosure);
+		DatePeriod closurePeriod = closureService.getClosurePeriod(closureId, processingYm);
 
 		// Return
 		return Optional.of(PresentClosingPeriodExport.builder().processingYm(processingYm)
 				.closureStartDate(closurePeriod.start()).closureEndDate(closurePeriod.end())
 				.build());
 	}
-	
+
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<PresentClosingPeriodExport> find(String cId, int closureId, GeneralDate date) {
-		val cacheCarrier = new CacheCarrier();
-		return findRequire(cacheCarrier, cId, closureId, date);
-	}
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	@Override
-	public Optional<PresentClosingPeriodExport> findRequire(CacheCarrier cacheCarrier, String cId, int closureId, GeneralDate date) {
-		
-		val require = new RequireImpl(cacheCarrier);
-		
-		Optional<Closure> optClosure = require.findById(closureId);
+		Optional<Closure> optClosure = closureRepo.findById(cId, closureId);
 
 		// Check exist and active
 		if (!optClosure.isPresent() || optClosure.get().getUseClassification()
@@ -104,6 +95,7 @@ public class ShClosurePubImpl implements ShClosurePub {
 			return Optional.empty();
 		}
 	}
+
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Map<Integer, DatePeriod> findAllPeriod(String cId, List<Integer> closureId, GeneralDate date) {
@@ -120,29 +112,11 @@ public class ShClosurePubImpl implements ShClosurePub {
 		optClosures.forEach(closure -> {
 			// Get Processing Ym 処理年月
 			YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
-			DatePeriod closurePeriod = ClosureService.getClosurePeriod(closure, processingYm);
+			DatePeriod closurePeriod = closureService.getClosurePeriod(closure, processingYm);
 			resultExport.put(closure.getClosureId().value, closurePeriod);
 		});
 
 		return resultExport;
 
 	}
-	
-	@RequiredArgsConstructor
-	class RequireImpl implements ShClosurePubImpl.Require{
-		private final CacheCarrier cacheCarrier;
-		@Override
-		public Optional<Closure> findById(int closureId) {
-//			ClosureCache cache = cacheCarrier.get(ClosureCache.DOMAIN_NAME);
-//			return cache.get(closureId);
-			return closureRepo.findById(AppContexts.user().companyId(), closureId);
-			
-		}
-		
-	}
-	public static interface Require{
-//		closureRepo.findById(cId, closureId);
-		Optional<Closure> findById(int closureId);
-	}
-	
 }

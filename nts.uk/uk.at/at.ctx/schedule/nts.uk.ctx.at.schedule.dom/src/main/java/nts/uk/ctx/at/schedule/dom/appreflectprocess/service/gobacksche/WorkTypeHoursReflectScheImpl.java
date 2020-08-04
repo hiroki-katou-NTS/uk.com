@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche;
 
 import java.util.List;
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -10,8 +8,6 @@ import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.UpdateScheCommonAppR
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 
 @Stateless
@@ -19,7 +15,7 @@ public class WorkTypeHoursReflectScheImpl implements WorkTypeHoursReflectSche{
 	@Inject
 	private BasicScheduleRepository basicSche;
 	@Inject
-	private WorkTypeRepository workTypeRepo;
+	private WorkTypeIsClosedService workTypeService;
 	@Inject
 	private UpdateScheCommonAppRelect commonReflect;
 	@Override
@@ -50,8 +46,7 @@ public class WorkTypeHoursReflectScheImpl implements WorkTypeHoursReflectSche{
 				isFlag = true;
 			}else {				
 				//勤務種類が休出振出かの判断
-				if(WorkTypeIsClosedService.checkWorkTypeIsClosed(createRequireM1(), 
-						basicScheOpt.getWorkTypeCode())) {
+				if(workTypeService.checkWorkTypeIsClosed(basicScheOpt.getWorkTypeCode())) {
 					isFlag = false;
 				} else {
 					isFlag = true;
@@ -59,16 +54,6 @@ public class WorkTypeHoursReflectScheImpl implements WorkTypeHoursReflectSche{
 			}
 		}
 		return isFlag;
-	}
-	
-	private WorkTypeIsClosedService.RequireM1 createRequireM1() {
-		return new WorkTypeIsClosedService.RequireM1() {
-			
-			@Override
-			public Optional<WorkType> workType(String companyId, String workTypeCd) {
-				return workTypeRepo.findByPK(companyId, workTypeCd);
-			}
-		};
 	}
 	
 }

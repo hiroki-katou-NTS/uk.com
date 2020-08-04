@@ -9,9 +9,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ReferenceAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.SpecDateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
@@ -28,14 +26,15 @@ import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class GetAnnLeaUsedDaysImpl implements GetAnnLeaUsedDays {
 
+	/** ドメインサービス：締め */
+	@Inject
+	private ClosureService closureService;
 	/** 指定した年月日を基準に、前回付与日から次回付与日までの期間を取得 */
 	@Inject
 	private GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate;
 	/** 期間内の年休使用明細を取得する */
 	@Inject
 	private GetAnnualHolidayGrantInfor getAnnualHolidayGrantInfor;
-	@Inject 
-	private RecordDomRequireService requireService;
 
 	/** 社員の前回付与日から次回付与日までの年休使用日数を取得 */
 	@Override
@@ -96,9 +95,7 @@ public class GetAnnLeaUsedDaysImpl implements GetAnnLeaUsedDays {
 	 */
 	private List<TmpAnnualLeaveMngExport> ofGrantPeriodProc(String employeeId, GeneralDate criteria,
 			ReferenceAtr referenceAtr, boolean fixedOneYear, SpecDateAtr specDateAtr) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
-	
+		
 		List<TmpAnnualLeaveMngExport> results = new ArrayList<>();
 		
 		// 指定日　←　基準日
@@ -108,7 +105,7 @@ public class GetAnnLeaUsedDaysImpl implements GetAnnLeaUsedDays {
 		if (specDateAtr == SpecDateAtr.CURRENT_CLOSURE_END) {	// 当月の締め終了日時点
 			
 			// 社員に対応する締め期間を取得する
-			DatePeriod closurePeriod = ClosureService.findClosurePeriod(require, cacheCarrier, employeeId, criteria);
+			DatePeriod closurePeriod = this.closureService.findClosurePeriod(employeeId, criteria);
 			if (closurePeriod == null) return results;
 			
 			// 指定日　←　取得した締め期間．終了日

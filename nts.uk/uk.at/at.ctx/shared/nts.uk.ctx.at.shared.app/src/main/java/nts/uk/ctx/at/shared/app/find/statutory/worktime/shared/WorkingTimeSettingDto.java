@@ -5,10 +5,14 @@
 package nts.uk.ctx.at.shared.app.find.statutory.worktime.shared;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.common.DailyTime;
+import nts.uk.ctx.at.shared.dom.common.MonthlyTime;
+import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.Monthly;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WorkingTimeSetting;
 
 /**
  * The Class WorkingTimeSettingDto.
@@ -18,8 +22,6 @@ import lombok.NoArgsConstructor;
  * Instantiates a new working time setting dto.
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class WorkingTimeSettingDto {
 
 	/** The daily. */
@@ -30,4 +32,35 @@ public class WorkingTimeSettingDto {
 
 	/** The weekly. */
 	private int weekly;
+
+	/**
+	 * From domain.
+	 *
+	 * @param domain the domain
+	 * @return the working time setting dto
+	 */
+	public static WorkingTimeSettingDto fromDomain(WorkingTimeSetting domain) {
+		WorkingTimeSettingDto dto = new WorkingTimeSettingDto();
+		dto.setDaily(domain.getDaily().valueAsMinutes());
+		dto.setWeekly(domain.getWeekly().valueAsMinutes());
+		dto.setMonthly(MonthlyDto.fromDomain(domain.getMonthly()));
+		return dto;
+	}
+
+	/**
+	 * To domain.
+	 *
+	 * @param dto the dto
+	 * @return the working time setting
+	 */
+	public static WorkingTimeSetting toDomain(WorkingTimeSettingDto dto) {
+		List<Monthly> monthly = dto.getMonthly().stream().map(item -> {
+			return new Monthly(new MonthlyTime(item.getTime()), java.time.Month.of(item.getMonth()));
+		}).collect(Collectors.toList());
+		WorkingTimeSetting domain = new WorkingTimeSetting();
+		domain.setDaily(new DailyTime(dto.getDaily()));
+		domain.setWeekly(new WeeklyTime(dto.getWeekly()));
+		domain.setMonthly(monthly);
+		return domain;
+	}
 }

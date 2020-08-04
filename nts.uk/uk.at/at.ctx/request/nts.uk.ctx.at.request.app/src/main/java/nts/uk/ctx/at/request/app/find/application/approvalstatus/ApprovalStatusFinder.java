@@ -73,12 +73,15 @@ import nts.uk.shr.com.context.AppContexts;
  */
 public class ApprovalStatusFinder {
 
+	@Inject
+	private ClosureService closureService;
+
 	/** The repository. */
 	@Inject
 	private ClosureRepository repository;
 
 	@Inject
-	private ClosureEmploymentRepository closureEmpRepo;
+	ClosureEmploymentRepository closureEmpRepo;
 
 	@Inject
 	private ApprovalStatusService appSttService;
@@ -174,7 +177,7 @@ public class ApprovalStatusFinder {
 				processingYm = yearMonth.v();
 				// アルゴリズム「承認状況指定締め期間設定」を実行する
 				// アルゴリズム「当月の期間を算出する」を実行する
-				DatePeriod closurePeriod = ClosureService.getClosurePeriod(closureId, yearMonth, closureOpt);
+				DatePeriod closurePeriod = this.closureService.getClosurePeriod(closureId, yearMonth);
 				startDate = closurePeriod.start();
 				endDate = closurePeriod.end();
 				// ドメインモデル「雇用に紐づく就業締め」より、雇用コードと締めIDを取得する
@@ -215,7 +218,7 @@ public class ApprovalStatusFinder {
 		// 当月の期間を算出する
 		YearMonth processingYm = new YearMonth(processingYmNew);
 		// アルゴリズム「当月の期間を算出する」を実行する
-		DatePeriod closurePeriod = ClosureService.getClosurePeriod(closureId, processingYm, closure);
+		DatePeriod closurePeriod = this.closureService.getClosurePeriod(closureId, processingYm);
 		startDate = closurePeriod.start();
 		endDate = closurePeriod.end();
 		// ドメインモデル「雇用に紐づく就業締め」より、雇用コードと締めIDを取得する

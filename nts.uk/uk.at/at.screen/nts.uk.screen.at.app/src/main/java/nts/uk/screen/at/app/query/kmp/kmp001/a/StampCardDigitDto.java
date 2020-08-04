@@ -15,5 +15,5 @@ import lombok.NoArgsConstructor;
 public class StampCardDigitDto {
 
 	private int stampCardDigitNumber;
-	private int stampCardEditMethod;
+	
 }

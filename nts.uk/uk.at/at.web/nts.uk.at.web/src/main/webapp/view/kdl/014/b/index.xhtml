@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+</head>
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kdl014.b.main.css" />
+			<com:scriptfile path="kdl014.b.start.js" />
+			<com:scriptfile path="kdl014.b.service.js" />
+			<com:scriptfile path="kdl014.b.vm.js" />
+			<script>var dialogSize = { width: 1055 , height: 600};</script>
+		</ui:define>
+		<ui:define name="content">
+			<div id="content-area" class="cf">
+				<table id="TblHeader">
+					<tr>
+						<td class="formLabel"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL014_3')}</div></td>
+						<td data-bind="text: startEndDate"></td>
+<!-- 						<td data-bind="text: startDate"></td> -->
+<!-- 						<td data-bind="text: endDate"></td> -->
+					</tr>
+				</table>
+				<div class="Content">
+					<table id="igGridStamp"></table>
+				</div>
+				<div id="functions-area-bottom">
+					<button id="btnCancel" class="large" data-bind="click: close"
+						tabindex="4">#{i18n.getText('KDL014_10')}</button>
+				</div>
+			</div>
+		</ui:define>
+
+	</ui:composition>
+</body>
+</html>

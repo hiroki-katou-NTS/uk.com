@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.employment;
 
+//import java.util.ArrayList;
+//import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -13,32 +15,27 @@ import javax.ejb.Stateless;
 //import javax.persistence.criteria.Predicate;
 //import javax.persistence.criteria.Root;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
-import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeekStart;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeeklyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeEmp;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeEmpRepo;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository;
 //import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpRegLaborTime;
 //import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpRegLaborTimePK;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTime;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTimePK;
+//import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTimePK_;
+//import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTime_;
 
 /**
  * The Class JpaEmpTransLaborTimeRepository.
  */
 @Stateless
-public class JpaEmpTransLaborTimeRepository extends JpaRepository implements DeforLaborTimeEmpRepo {
+public class JpaEmpTransLaborTimeRepository extends JpaRepository implements EmpTransWorkTimeRepository {
 
 	/* 
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository#add(nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTime)
 	 */
 	@Override
-	public void add(DeforLaborTimeEmp emplDeforLaborWorkingHour) {
+	public void add(EmpTransLaborTime emplDeforLaborWorkingHour) {
 		commandProxy().insert(this.toEntity(emplDeforLaborWorkingHour));
 	}
 
@@ -46,7 +43,7 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Def
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository#update(nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTime)
 	 */
 	@Override
-	public void update(DeforLaborTimeEmp emplDeforLaborWorkingHour) {
+	public void update(EmpTransLaborTime emplDeforLaborWorkingHour) {
 		commandProxy().update(this.toEntity(emplDeforLaborWorkingHour));
 	}
 
@@ -54,16 +51,16 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Def
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository#delete(nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTime)
 	 */
 	@Override
-	public void delete(String cid, String employmentCode) {
-		commandProxy().remove(KshstEmpTransLabTime.class, new KshstEmpTransLabTimePK(cid, employmentCode));
+	public void delete(String cid, String emplId) {
+		commandProxy().remove(KshstEmpTransLabTime.class, new KshstEmpTransLabTimePK(cid, emplId));
 	}
 
 	/* 
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository#findByCidAndEmplId(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Optional<DeforLaborTimeEmp> find(String cid, String employmentCode) {
-		Optional<KshstEmpTransLabTime> optEntity = this.queryProxy().find(new KshstEmpTransLabTimePK(cid, employmentCode), KshstEmpTransLabTime.class);
+	public Optional<EmpTransLaborTime> find(String cid, String emplId) {
+		Optional<KshstEmpTransLabTime> optEntity = this.queryProxy().find(new KshstEmpTransLabTimePK(cid, emplId), KshstEmpTransLabTime.class);
 
 		// Check exist
 		if (!optEntity.isPresent()) {
@@ -78,15 +75,9 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Def
 	 * @param domain the domain
 	 * @return the kshst emp trans lab time
 	 */
-	private KshstEmpTransLabTime toEntity(DeforLaborTimeEmp domain) {
+	private KshstEmpTransLabTime toEntity(EmpTransLaborTime domain) {
 		KshstEmpTransLabTime entity = new KshstEmpTransLabTime();
-
-		entity.setDailyTime(domain.getDailyTime().getDailyTime().v());
-		entity.setWeeklyTime(domain.getWeeklyTime().getTime().v());
-		entity.setWeekStr(domain.getWeeklyTime().getStart().value);
-		entity.setKshstEmpTransLabTimePK(new KshstEmpTransLabTimePK(domain.getComId(), 
-													domain.getEmploymentCode().v()));
-		
+		domain.saveToMemento(new JpaEmpTransLaborTimeSetMemento(entity));
 		return entity;
 	}
 	
@@ -96,12 +87,8 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Def
 	 * @param entity the entity
 	 * @return the emp trans work time
 	 */
-	private DeforLaborTimeEmp toDomain(KshstEmpTransLabTime entity) {
-		return DeforLaborTimeEmp.of(entity.getKshstEmpTransLabTimePK().getCid(),
-				new EmploymentCode(entity.getKshstEmpTransLabTimePK().getEmpCd()),
-				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime()), 
-								EnumAdaptor.valueOf(entity.getWeekStr(), WeekStart.class)), 
-				new DailyUnit(new TimeOfDay(entity.getDailyTime())));
+	private EmpTransLaborTime toDomain(KshstEmpTransLabTime entity) {
+		return new EmpTransLaborTime(new JpaEmpTransLaborTimeGetMemento(entity));
 	}
 
 }

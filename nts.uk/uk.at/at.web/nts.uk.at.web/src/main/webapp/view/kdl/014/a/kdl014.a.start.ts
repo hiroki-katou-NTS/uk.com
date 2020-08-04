@@ -1,9 +1,6 @@
-module nts.uk.at.view.kdl014.a {
-    __viewContext.ready(function() {
-        var screenModel =  __viewContext.vm = new ScreenModel();
-        screenModel.startPage().done(function() {
-            __viewContext.bind(screenModel);
-            $( "#single-list td").addClass( "text-limited" );
-        });
+__viewContext.ready(function() {
+    var viewModel = new kdl014.a.viewmodel.ScreenModel();
+    viewModel.start().done(() => {
+        __viewContext.bind(viewModel);
     });
-}
+})

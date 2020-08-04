@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.EnterStampForSharedStampService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
@@ -91,7 +92,7 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 		TimeStampInputResult inputResult = EnterStampForSharedStampService.create(
 																						require
 																						, AppContexts.user().contractCode()
-																						, cmd.getEmployeeId()
+																						, AppContexts.user().employeeId()
 																						, Optional.ofNullable(null)
 																						, new Relieve(EnumAdaptor.valueOf(cmd.getAuthcMethod(), AuthcMethod.class), StampMeans.FINGER_AUTHC)
 																						, cmd.getStampDatetime()
@@ -113,7 +114,7 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 				stampRefResult.getAtomTask().run();
 			});
 		}
-		return stampRefResult.getReflectDate().map(x-> x).orElse(null);
+		return stampRefResult.getReflectDate().isPresent() ? stampRefResult.getReflectDate().get() : null;
 	}
 
 	@AllArgsConstructor
@@ -184,7 +185,6 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 			this.stampDakokuRepo.insert(stamp);
 		}
 
-		@SuppressWarnings("rawtypes")
 		@Override
 		public ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
 				DatePeriod periodTime, ExecutionAttr executionAttr, String companyId, String empCalAndSumExecLogID,

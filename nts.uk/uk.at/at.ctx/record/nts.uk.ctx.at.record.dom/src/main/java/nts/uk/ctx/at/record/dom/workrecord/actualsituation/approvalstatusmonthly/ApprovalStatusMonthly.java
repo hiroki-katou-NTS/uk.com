@@ -12,7 +12,6 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.adapter.company.StatusOfEmployeeExport;
@@ -31,7 +30,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ch
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmInfoResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.InformationMonth;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.AvailabilityAtr;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.MonthlyModifyResultDto;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.ReleasedAtr;
@@ -63,8 +61,8 @@ public class ApprovalStatusMonthly {
 	@Inject
 	private CheckIndentityDayConfirm checkIndentityDayConfirm;
 
-	@Inject 
-	private RecordDomRequireService requireService;
+	@Inject
+	private ClosureService closureService;
 
 	@Inject
 	private SyCompanyRecordAdapter syCompanyRecordAdapter;
@@ -299,11 +297,9 @@ public class ApprovalStatusMonthly {
 		if (!optApprovalUse.get().getUseMonthApproverConfirm()) {
 			return Optional.empty();
 		}
-		val require = requireService.createRequire();
-		
 
 		// 指定した年月の期間を算出する
-		DatePeriod datePeriod = ClosureService.getClosurePeriod(require, closureId, yearMonth);
+		DatePeriod datePeriod = closureService.getClosurePeriod(closureId, yearMonth);
 		// 社員の指定期間中の所属期間を取得する RQ588
 		List<StatusOfEmployeeExport> listStatusOfEmployeeExport = syCompanyRecordAdapter
 				.getListAffComHistByListSidAndPeriod(Arrays.asList(employeeId), workPeriod);

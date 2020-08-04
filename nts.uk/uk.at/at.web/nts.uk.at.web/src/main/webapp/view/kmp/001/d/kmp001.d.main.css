@@ -1,19 +1,19 @@
 
-.view-dialog .boxSquare {
+.view-dialog .box {
 	height: 200px;
 	padding: 37px;
 	border: 1px solid black;
 }
 
-.view-dialog .boxSquare .label-column {
+.view-dialog .box .label-column {
 	width: 120px;
 	margin: 20px;
 }
 
-.view-dialog .boxSquare .label-column-select {
+.view-dialog .box .label-column-select {
 	width: 120px;
 	margin: 20px;
-	padding-top: 20px !important;
+	padding-top: 20px;
 }
 
 .view-dialog .view-button {
@@ -26,8 +26,4 @@
 	font-size: 25px;
 	padding-left: 10px;
 	padding-right: 10px;
-}
-
-#viewd-radio-box {
-	padding-top: 20px !important;
 }

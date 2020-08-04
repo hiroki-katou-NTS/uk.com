@@ -15,7 +15,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.Ch
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.checktrackrecord.CheckTargetItemDto;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.checktrackrecord.CheckTrackRecord;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.screen.at.app.ktgwidget.find.KTG001Dto;
 import nts.uk.screen.at.app.ktgwidget.find.TargetDto;
@@ -28,7 +27,7 @@ public class KTG030QueryProcessor {
 	private CheckTrackRecord  checkTrackRecord;
 
 	@Inject
-	private ClosureRepository closureRepo;
+	private ClosureService closureService;
 	
 	@Inject
 	private InitDisplayPeriodSwitchSetFinder displayPeriodfinder;
@@ -85,7 +84,7 @@ public class KTG030QueryProcessor {
 	public List<CheckTarget> dataMonthlyResult(String employeeID ,int yearmonth){
 		//全締めの当月と期間を取得する
 		//Get thời gian và all closure tháng đó
-		List<ClosureInfo> listClosure = ClosureService.getAllClosureInfo(ClosureService.createRequireM2(closureRepo));
+		List<ClosureInfo> listClosure = closureService.getAllClosureInfo();
 		List<CheckTarget> listCheckTargetItem = new ArrayList<>();
 		for (ClosureInfo closure : listClosure) {
 			if(yearmonth == 0){

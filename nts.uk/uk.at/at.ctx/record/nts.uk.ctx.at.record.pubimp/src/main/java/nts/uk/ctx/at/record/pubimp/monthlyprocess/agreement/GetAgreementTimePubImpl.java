@@ -8,11 +8,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTime;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.AgreementTimeExport;
@@ -33,19 +31,18 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 @Stateless
 public class GetAgreementTimePubImpl implements GetAgreementTimePub {
 
-	@Inject 
-	private RecordDomRequireService requireService;
+	/** 36協定時間の取得 */
+	@Inject
+	private GetAgreementTime getAgreementTime;
 	
 	/** 36協定時間の取得 */
 	@Override
 	public List<AgreementTimeExport> get(String companyId, List<String> employeeIds, YearMonth yearMonth,
 			ClosureId closureId) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
 		
 		List<AgreementTimeExport> result = new ArrayList<>();
 		
-		val agreementTimeList = GetAgreementTime.get(require, cacheCarrier, companyId, employeeIds, yearMonth, closureId);
+		val agreementTimeList = this.getAgreementTime.get(companyId, employeeIds, yearMonth, closureId);
 
 		for (val agreementTime : agreementTimeList){
 			val srcConfirmedOpt = agreementTime.getConfirmed();
@@ -128,37 +125,27 @@ public class GetAgreementTimePubImpl implements GetAgreementTimePub {
 	@Override
 	public Optional<AgreementTimeYear> getYear(String companyId, String employeeId, YearMonthPeriod period,
 			GeneralDate criteria) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
-		
-		return GetAgreementTime.getYear(require, cacheCarrier, companyId, employeeId, period, criteria);
+		return this.getAgreementTime.getYear(companyId, employeeId, period, criteria);
 	}
 	
 	/** 36協定上限複数月平均時間の取得 */
 	@Override
 	public Optional<AgreMaxAverageTimeMulti> getMaxAverageMulti(String companyId, String employeeId,
 			YearMonth yearMonth, GeneralDate criteria) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
-		
-		return GetAgreementTime.getMaxAverageMulti(require, cacheCarrier, companyId, employeeId, yearMonth, criteria);
+		return this.getAgreementTime.getMaxAverageMulti(companyId, employeeId, yearMonth, criteria);
 	}
 	
 	/** 36協定上限複数月平均時間と年間時間の取得（日指定） */
 	@Override
 	public AgreementTimeOutput getAverageAndYear(String companyId, String employeeId, YearMonth averageMonth,
 			GeneralDate criteria, ScheRecAtr scheRecAtr) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
-		return GetAgreementTime.getAverageAndYear(require, cacheCarrier, companyId, employeeId, averageMonth, criteria, scheRecAtr);
+		return this.getAgreementTime.getAverageAndYear(companyId, employeeId, averageMonth, criteria, scheRecAtr);
 	}
 	
 	/** 36協定上限複数月平均時間と年間時間の取得（年度指定） */
 	@Override
 	public AgreementTimeOutput getAverageAndYear(String companyId, String employeeId, GeneralDate criteria,
 			Year year, YearMonth averageMonth, ScheRecAtr scheRecAtr) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
-		return GetAgreementTime.getAverageAndYear(require, cacheCarrier, companyId, employeeId, criteria, year, averageMonth, scheRecAtr);
+		return this.getAgreementTime.getAverageAndYear(companyId, employeeId, criteria, year, averageMonth, scheRecAtr);
 	}
 }

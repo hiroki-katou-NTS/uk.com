@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.ActualWorkingTimeOfDaily;
@@ -40,7 +39,6 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
@@ -83,8 +81,8 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 	private CompensLeaveComSetRepository comSetRepo;
 	@Inject
 	private WorkTypeRepository worktypeRepo;
-	@Inject 
-	private RecordDomRequireService requireService;
+	@Inject
+	private GetCommonSet workTimeCommonSet;
 	@Override
 	public void updateWorkTimeType(ReflectParameter para, boolean scheUpdate, IntegrationOfDaily dailyInfo) {
 		WorkInformation workInfor = new WorkInformation(para.getWorkTimeCode(), para.getWorkTypeCode());
@@ -496,9 +494,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		return dailyData;
 	}
 	private List<WorkTimezoneOtherSubHolTimeSet> subhol(String companyId, String workTimeCode){
-		val require = requireService.createRequire();
-		
-		Optional<WorkTimezoneCommonSet> optWorktimezone = GetCommonSet.workTimezoneCommonSet(require, companyId, workTimeCode);
+		Optional<WorkTimezoneCommonSet> optWorktimezone = workTimeCommonSet.get(companyId, workTimeCode);
 		if(!optWorktimezone.isPresent()) {
 			return new ArrayList<>();
 		}

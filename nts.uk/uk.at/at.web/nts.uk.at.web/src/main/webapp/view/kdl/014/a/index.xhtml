@@ -4,54 +4,46 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+</head>
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script type='text/javascript'>
-				var dialogSize = {
-						width : 715,
-						height : 480
-				};
-			</script>
-
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web" />
-			<com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web" />
-
 			<com:stylefile path="kdl014.a.main.css" />
+			<com:scriptfile path="kdl014.a.start.js" />
 			<com:scriptfile path="kdl014.a.service.js" />
 			<com:scriptfile path="kdl014.a.vm.js" />
-			<com:scriptfile path="kdl014.a.start.js" />
-			
-			<com:EnumScript>
-				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans
-				nts.uk.ctx.at.record.dom.stamp.StampAtr
-			</com:EnumScript>
-
+			<script>var dialogSize = { width: 860 , height: 700};</script>
 		</ui:define>
 		<ui:define name="content">
-			<div id="contents-area">
-				<div style="min-height: 23px; margin-bottom: 20px;">
-					<div data-bind="visible :paramFromParent.mode == 0">
-						<div id="emp-component"></div>
-					</div>
+			<div id="content-area" class="cf">
+				<table id="TblHeader">
+					<tr>
+						<td class="FormLabel"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL014_2')}</div></td>
+						<td>
+							<span data-bind="text: employeeCode"></span>
+							<span id="employeeName" data-bind="text: employeeName"></span>
+						</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class="formLabel"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL014_3')}</div></td>
+						<td data-bind="text: startEndDate"></td>
+<!-- 						<td data-bind="text: startDate"></td> -->
+<!-- 						<td data-bind="text: endDate"></td> -->
+					</tr>
+				</table>
+				<div class="Content">
+					<table id="igGridStamp"></table>
 				</div>
-				<table id="single-list"
-					data-bind="ntsGridList: {								
-					height: 255,
-					dataSource: empInfomationList,
-					primaryKey: 'code',
-					columns: columns,
-					multiple: false,
-					value: currentCode,
-					enable: true
-				}"></table>
-			</div>
 				<div id="functions-area-bottom">
-					<button class="large" id="btnClose" data-bind="click :cancel_Dialog">#{i18n.getText('KDL014_18')}</button>
+					<button id="btnCancel" class="large" data-bind="click: close"
+						tabindex="4">#{i18n.getText('KDL014_10')}</button>
 				</div>
+			</div>
 		</ui:define>
+
 	</ui:composition>
 </body>
 </html>

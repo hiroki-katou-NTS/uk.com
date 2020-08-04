@@ -10,7 +10,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonRefl
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.workchange.WorkChangeCommonReflectPara;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonCalculateOfAppReflectParam;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
@@ -38,9 +37,9 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	@Inject
 	private JudgmentWorkTypeService judgmentService;
 	@Inject
+	private WorkTypeIsClosedService workTypeRepo;
+	@Inject
 	private PreOvertimeReflectService preOTService;
-	@Inject 
-	private RecordDomRequireService requireService;
 	@Override
 	public void absenceReflect(WorkChangeCommonReflectPara param, boolean isPre) {
 		CommonReflectParameter absencePara = param.getCommon();
@@ -49,8 +48,7 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 			WorkInfoOfDailyPerformance workInfor = dailyInfor.getWorkInformation();
 			//1日休日の判断
 			if(workInfor.getRecordInfo().getWorkTypeCode() != null
-					&& WorkTypeIsClosedService.checkHoliday(requireService.createRequire(),
-							workInfor.getRecordInfo().getWorkTypeCode().v())) {
+					&& workTypeRepo.checkHoliday(workInfor.getRecordInfo().getWorkTypeCode().v())) {
 				return;
 			}
 			boolean isRecordWorkType = false;

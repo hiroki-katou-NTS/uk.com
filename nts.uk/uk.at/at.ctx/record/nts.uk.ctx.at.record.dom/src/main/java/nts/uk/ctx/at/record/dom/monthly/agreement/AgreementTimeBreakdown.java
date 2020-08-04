@@ -6,6 +6,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.weekly.WeeklyCalculation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.monthly.AttendanceItemOfMonthly;
@@ -94,10 +95,12 @@ public class AgreementTimeBreakdown {
 	 * 36協定時間の対象項目を取得
 	 * @param aggregateAtr 集計区分
 	 * @param monthlyCalculation 月別実績の月の計算
+	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void getTargetItemOfAgreement(
 			MonthlyAggregateAtr aggregateAtr,
-			MonthlyCalculation monthlyCalculation){
+			MonthlyCalculation monthlyCalculation,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 集計結果　初期化
 		this.overTime = new AttendanceTimeMonth(0);

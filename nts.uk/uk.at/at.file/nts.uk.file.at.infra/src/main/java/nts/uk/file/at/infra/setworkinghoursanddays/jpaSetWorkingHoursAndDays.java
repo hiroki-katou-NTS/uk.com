@@ -17,7 +17,7 @@ import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeekStart;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
 import nts.uk.file.at.app.export.setworkinghoursanddays.CompanyColumn;
 import nts.uk.file.at.app.export.setworkinghoursanddays.EmployeeColumn;
 import nts.uk.file.at.app.export.setworkinghoursanddays.EmploymentColumn;

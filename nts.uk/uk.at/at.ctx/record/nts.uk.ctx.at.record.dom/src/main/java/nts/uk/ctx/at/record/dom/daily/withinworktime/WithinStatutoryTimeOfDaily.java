@@ -36,7 +36,7 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.ENUM.Calc
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -126,7 +126,7 @@ public class WithinStatutoryTimeOfDaily {
 			workTime = calcWithinStatutoryTime(recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get(),vacationClass,workType,
 					  									  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),
 					  									  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
-					  									  conditionItem.getLaborSystem(),
+														  recordReget.getPersonalInfo().getWorkingSystem(),
 														  recordReget.getWorkDeformedLaborAdditionSet(),
 														  recordReget.getWorkFlexAdditionSet(),recordReget.getWorkRegularAdditionSet(),
 														  recordReget.getHolidayAddtionSet().get(),
@@ -152,7 +152,7 @@ public class WithinStatutoryTimeOfDaily {
 //						  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
 					  true,
 					  true,
-					  conditionItem.getLaborSystem(),
+					  recordReget.getPersonalInfo().getWorkingSystem(),
 					  recordReget.getWorkDeformedLaborAdditionSet(),
 					  recordReget.getWorkFlexAdditionSet(),
 //						  new WorkFlexAdditionSet(recordReget.getWorkFlexAdditionSet().getCompanyId(),

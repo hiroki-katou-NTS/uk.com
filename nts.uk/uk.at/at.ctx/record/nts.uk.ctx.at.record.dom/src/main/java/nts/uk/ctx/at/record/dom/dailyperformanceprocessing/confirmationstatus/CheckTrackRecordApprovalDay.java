@@ -19,7 +19,6 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessing
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.approval.ApprovalStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -41,14 +40,15 @@ public class CheckTrackRecordApprovalDay {
 
 	@Inject
 	private ClosureRepository closureRepo;
-	
+
+	@Inject
+	private GetClosurePeriod getClosurePeriod;
+
 	@Inject
 	private ApprovalStatusActualDay approvalStatusActualDay;
 	
 	@Inject
 	private ApprovalStatusActualDayChange approvalStatusActualDayChange;
-	@Inject 
-	private RecordDomRequireService requireService;
 	
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public boolean checkTrackRecordApprovalDay(String companyId, String employeeId, List<CheckTarget> lstCheckTarget) {
@@ -84,9 +84,8 @@ public class CheckTrackRecordApprovalDay {
 			for (String approvalRoot : listEmp) {
 
 				// 集計期間
-				List<ClosurePeriod> lstClosurePeriod = GetClosurePeriod
-						.get(requireService.createRequire(), 
-								companyId, approvalRoot, checkPeriod.end(), Optional.of(target.getYearMonth()),
+				List<ClosurePeriod> lstClosurePeriod = getClosurePeriod
+						.get(companyId, approvalRoot, checkPeriod.end(), Optional.of(target.getYearMonth()),
 								Optional.of(ClosureId.valueOf(target.getClosureId())), Optional.empty())
 						.stream().filter(c -> c.getClosureId().value == target.getClosureId() && c.getYearMonth().equals(target.getYearMonth()))
 						.collect(Collectors.toList());
@@ -149,9 +148,8 @@ public class CheckTrackRecordApprovalDay {
 			for (String approvalRoot : listEmp) {
 
 				// 集計期間
-				List<ClosurePeriod> lstClosurePeriod = GetClosurePeriod
-						.get(requireService.createRequire(), 
-								companyId, approvalRoot, checkPeriod.end(), Optional.of(target.getYearMonth()),
+				List<ClosurePeriod> lstClosurePeriod = getClosurePeriod
+						.get(companyId, approvalRoot, checkPeriod.end(), Optional.of(target.getYearMonth()),
 								Optional.of(ClosureId.valueOf(target.getClosureId())), Optional.empty())
 						.stream().filter(c -> c.getClosureId().value == target.getClosureId() && c.getYearMonth().equals(target.getYearMonth()))
 						.collect(Collectors.toList());

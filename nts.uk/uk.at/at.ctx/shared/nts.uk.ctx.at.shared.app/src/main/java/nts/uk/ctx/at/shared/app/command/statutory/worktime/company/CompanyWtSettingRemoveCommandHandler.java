@@ -10,7 +10,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.company.CompanyWtSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -20,8 +20,9 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class CompanyWtSettingRemoveCommandHandler extends CommandHandler<CompanyWtSettingRemoveCommand> {
 
+	/** The repository. */
 	@Inject
-	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
+	private CompanyWtSettingRepository repository;
 
 	/*
 	 * (non-Javadoc)
@@ -36,8 +37,7 @@ public class CompanyWtSettingRemoveCommandHandler extends CommandHandler<Company
 		String companyId = AppContexts.user().companyId();
 		// Get Command
 		CompanyWtSettingRemoveCommand command = context.getCommand();
-		
-		monthlyWorkTimeSetRepo.removeCompany(companyId, command.getYear());
+		this.repository.remove(companyId, command.getYear());
 	}
 
 }

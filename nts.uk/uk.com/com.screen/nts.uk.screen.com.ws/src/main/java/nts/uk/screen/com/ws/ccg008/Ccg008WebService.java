@@ -7,16 +7,12 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.auth.app.find.employmentrole.InitDisplayPeriodSwitchSetFinder;
 import nts.uk.ctx.at.auth.app.find.employmentrole.dto.InitDisplayPeriodSwitchSetDto;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
-import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -25,11 +21,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Produces("application/json")
 public class Ccg008WebService {
 	@Inject
-	private ClosureRepository closureRepo;
-	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepo;
-	@Inject
-	private ShareEmploymentAdapter shareEmploymentAdapter;
+	private ClosureService closureService;
 	
 	@Inject
 	private InitDisplayPeriodSwitchSetFinder displayPeriodfinder;
@@ -42,9 +34,7 @@ public class Ccg008WebService {
 	public Ccg008Dto cache() {
 		String employeeID = AppContexts.user().employeeId();
 		GeneralDate systemDate = GeneralDate.today();
-		Closure closure = ClosureService.getClosureDataByEmployee(
-				ClosureService.createRequireM3(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),
-				new CacheCarrier(), employeeID, systemDate);
+		Closure closure = this.closureService.getClosureDataByEmployee(employeeID, systemDate);
 		InitDisplayPeriodSwitchSetDto rq609 = displayPeriodfinder.targetDateFromLogin();
 		Ccg008Dto result = new Ccg008Dto(closure.getClosureId().value, rq609.getCurrentOrNextMonth());
 		return result;

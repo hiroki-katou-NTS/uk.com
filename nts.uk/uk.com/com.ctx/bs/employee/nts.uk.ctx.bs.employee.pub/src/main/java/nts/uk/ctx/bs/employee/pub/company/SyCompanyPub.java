@@ -2,7 +2,6 @@ package nts.uk.ctx.bs.employee.pub.company;
 
 import java.util.List;
 
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -15,7 +14,6 @@ public interface SyCompanyPub {
 	 * @return
 	 */
 	List<AffCompanyHistExport> GetAffCompanyHistByEmployee(List<String> sid, DatePeriod datePeriod);
-	List<AffCompanyHistExport> GetAffCompanyHistByEmployeeRequire(CacheCarrier cacheCarrier, List<String> sids, DatePeriod datePeriod);
 	
 	/**
 	 * Get Company history by sid and base date

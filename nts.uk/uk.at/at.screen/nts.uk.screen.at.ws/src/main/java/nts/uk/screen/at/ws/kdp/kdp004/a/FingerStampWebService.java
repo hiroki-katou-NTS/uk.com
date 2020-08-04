@@ -26,6 +26,7 @@ public class FingerStampWebService extends WebService {
 	@Path("get-finger-stamp-setting")
 	public GetFingerStampSettingDto getFingerStampSetting() {
 		return this.finder.getFingerStampSetting();
+
 	}
 
 	@POST
@@ -33,4 +34,5 @@ public class FingerStampWebService extends WebService {
 	public GeneralDate registerFingerStamp(RegisterFingerStampCommand command) {
 		return this.commandHanler.handle(command);
 	}
+
 }

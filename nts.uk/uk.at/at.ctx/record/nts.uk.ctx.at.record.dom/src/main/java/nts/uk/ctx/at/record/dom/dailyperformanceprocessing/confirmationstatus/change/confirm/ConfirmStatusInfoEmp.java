@@ -9,10 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.application.ApplicationRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.application.ApplicationRecordImport;
 import nts.uk.ctx.at.record.dom.adapter.company.StatusOfEmployeeExport;
@@ -24,11 +22,11 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCR
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.ConfirmationMonthRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * @author thanhnx
@@ -54,8 +52,9 @@ public class ConfirmStatusInfoEmp {
 
 	@Inject
 	private RealityStatusService realityStatusService;
-	@Inject 
-	private RecordDomRequireService requireService;
+	
+	@Inject
+	private GetClosurePeriod getClosurePeriod;
 
 	/**
 	 * 社員1件の確認状況情報を取得する
@@ -67,11 +66,11 @@ public class ConfirmStatusInfoEmp {
 		List<ClosurePeriod> lstClosure = new ArrayList<>();
 		if (periodOpt.isPresent()) {
 			// 期間を指定して集計期間を求める
-			lstClosure = GetClosurePeriod.fromPeriod(requireService.createRequire(), new CacheCarrier(),  employeeId, periodOpt.get().end(), periodOpt.get());
+			lstClosure = getClosurePeriod.fromPeriod(employeeId, periodOpt.get().end(), periodOpt.get());
 		} else {
 			// TODO: 年月を指定して集計期間を求める
 			GeneralDate dateRefer = GeneralDate.ymd(yearMonthOpt.get().year(), yearMonthOpt.get().month(), yearMonthOpt.get().lastDateInMonth());
-			lstClosure = GetClosurePeriod.fromYearMonth(requireService.createRequire(), new CacheCarrier(), employeeId, dateRefer, yearMonthOpt.get());
+			lstClosure = getClosurePeriod.fromYearMonth(employeeId, dateRefer, yearMonthOpt.get());
 		}
 
 		// Output「締め処理期間．集計期間．期間」のMAX期間を求める
@@ -140,11 +139,11 @@ public class ConfirmStatusInfoEmp {
 			List<ClosurePeriod> lstClosure = new ArrayList<>();
 			if (periodOpt.isPresent()) {
 				// 期間を指定して集計期間を求める
-				lstClosure = GetClosurePeriod.fromPeriod(requireService.createRequire(), new CacheCarrier(),  employeeId, periodOpt.get().end(), periodOpt.get());
+				lstClosure = getClosurePeriod.fromPeriod(employeeId, periodOpt.get().end(), periodOpt.get());
 			} else {
 				// TODO: 年月を指定して集計期間を求める
 				GeneralDate dateRefer = GeneralDate.ymd(yearMonthOpt.get().year(), yearMonthOpt.get().month(), yearMonthOpt.get().lastDateInMonth());
-				lstClosure = GetClosurePeriod.fromYearMonth(requireService.createRequire(), new CacheCarrier(),  employeeId, dateRefer, yearMonthOpt.get());
+				lstClosure = getClosurePeriod.fromYearMonth(employeeId, dateRefer, yearMonthOpt.get());
 			}
 
 			// Output「締め処理期間．集計期間．期間」のMAX期間を求める

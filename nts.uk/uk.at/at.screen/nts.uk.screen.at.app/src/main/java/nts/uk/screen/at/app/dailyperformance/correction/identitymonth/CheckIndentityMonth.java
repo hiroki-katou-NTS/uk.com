@@ -14,16 +14,13 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
 import nts.uk.ctx.at.record.dom.adapter.company.SyCompanyRecordAdapter;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.AvailabilityAtr;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.ConfirmStatusMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.ConfirmStatusResult;
@@ -37,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayFormat;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 import nts.uk.shr.com.context.AppContexts;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * @author thanhnx
@@ -46,6 +44,9 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class CheckIndentityMonth {
+
+	@Inject
+	private GetClosurePeriod getClosurePeriod;
 
 	@Inject
 	private ConfirmationMonthRepository confirmationMonthRepository;
@@ -61,17 +62,12 @@ public class CheckIndentityMonth {
 	
 	@Inject
 	private ConfirmStatusMonthly confirmStatusMonthly;
-	
-	@Inject
-	private RecordDomRequireService requireService;
 
 	// 月の本人確認をチェックする
 	public IndentityMonthResult checkIndenityMonth(IndentityMonthParam param) {
 
 		// 集計期間
-		List<ClosurePeriod> closurePeriods = GetClosurePeriod.get(
-				requireService.createRequire(),
-				param.companyId, param.employeeId, param.dateRefer,
+		List<ClosurePeriod> closurePeriods = getClosurePeriod.get(param.companyId, param.employeeId, param.dateRefer,
 				Optional.empty(), Optional.empty(), Optional.empty());
 		//closurePeriods  = closurePeriods
 		if (closurePeriods.isEmpty())

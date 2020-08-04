@@ -11,24 +11,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkPlaceSidImport;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaFlexMonthActCalSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaRegulaMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WorkingTimeSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeSha;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeSha;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.sha.ShaFlexMonthActCalSet;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaRegulaMonthActCalSet;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 月別集計で必要な社員別設定
@@ -65,7 +61,7 @@ public class MonAggrEmployeeSettings {
 	private List<ClosureStatusManagement> closureStatusMngs;
 	/** 労働条件項目 */
 	private List<WorkingConditionItem> workingConditionItems;
-	/** 労働条件: 履歴ID-期間 */
+	/** 労働条件 */
 	private Map<String, DatePeriod> workingConditions;
 	
 	/** 集計開始日を締め開始日とする */
@@ -99,16 +95,20 @@ public class MonAggrEmployeeSettings {
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param period 期間
+	 * @param repositories 月別集計が必要とするリポジトリ
 	 * @return 月別集計で必要な社員別設定
 	 */
-	public static MonAggrEmployeeSettings loadSettings(RequireM2 require, CacheCarrier cacheCarrier, 
-			String companyId, String employeeId, DatePeriod period){
+	public static MonAggrEmployeeSettings loadSettings(
+			String companyId,
+			String employeeId,
+			DatePeriod period,
+			RepositoriesRequiredByMonthlyAggr repositories){
 	
 		MonAggrEmployeeSettings domain = new MonAggrEmployeeSettings(employeeId);
 		List<String> employeeIds = new ArrayList<>(Arrays.asList(employeeId));
 		
 		// 社員
-		domain.employee = require.employee(cacheCarrier, employeeId);
+		domain.employee = repositories.getEmpEmployee().findByEmpId(employeeId);
 		if (domain.employee == null){
 			domain.errorInfos.put("002", new ErrMessageContent(TextResource.localize("Msg_1156")));
 			return domain;
@@ -124,7 +124,7 @@ public class MonAggrEmployeeSettings {
 		// 所属雇用履歴
 		GeneralDate empCriteria = findPeriod.start();
 		while (empCriteria.beforeOrEquals(findPeriod.end())){
-			val employmentOpt = require.employmentHistory(cacheCarrier, companyId, employeeId, empCriteria);
+			val employmentOpt = repositories.getEmployment().findEmploymentHistory(companyId, employeeId, empCriteria);
 			if (employmentOpt.isPresent()){
 				domain.employments.add(employmentOpt.get());
 				empCriteria = employmentOpt.get().getPeriod().end();
@@ -137,13 +137,14 @@ public class MonAggrEmployeeSettings {
 		// 所属職場履歴
 		GeneralDate wkpCriteria = findPeriod.start();
 		while (wkpCriteria.beforeOrEquals(findPeriod.end())){
-			val workplaceOpt = require.affWorkPlace(employeeId, wkpCriteria);
+			val workplaceOpt = repositories.getAffWorkplace().findBySidAndDate(employeeId, wkpCriteria);
 			if (workplaceOpt.isPresent()){
 				domain.workplaces.add(workplaceOpt.get());
 				wkpCriteria = workplaceOpt.get().getDateRange().end();
 				
 				// 終了日時点の上位職場履歴
-				val workplacesToRoot = require.getCanUseWorkplaceForEmp(cacheCarrier, companyId, employeeId, wkpCriteria);
+				val workplacesToRoot = repositories.getAffWorkplace().findAffiliatedWorkPlaceIdsToRoot(
+						companyId, employeeId, wkpCriteria);
 				domain.workPlacesToRoot.put(workplaceOpt.get().getWorkplaceId(), workplacesToRoot);
 				
 				// 次の履歴へ
@@ -154,33 +155,34 @@ public class MonAggrEmployeeSettings {
 		}
 		
 		// 社員別通常勤務労働時間
-		val regWorkTime = require.regularLaborTimeByEmployee(companyId, employeeId);
-		if (regWorkTime.isPresent()) domain.regLaborTime = Optional.of(regWorkTime.get());
+		val regWorkTime = repositories.getShainRegularWorkTime().find(companyId, employeeId);
+		if (regWorkTime.isPresent()) domain.regLaborTime = Optional.of(regWorkTime.get().getWorkingTimeSet());
 		
 		// 社員別変形労働労働時間
-		val irgWorkTime = require.deforLaborTimeByEmployee(companyId, employeeId);
-		if (irgWorkTime.isPresent()) domain.irgLaborTime = Optional.of(irgWorkTime.get());
+		val irgWorkTime = repositories.getShainTransLaborTime().find(companyId, employeeId);
+		if (irgWorkTime.isPresent()) domain.irgLaborTime = Optional.of(irgWorkTime.get().getWorkingTimeSet());
 		
 		// 通常勤務社員別月別実績集計設定
-		domain.shaRegSetOpt = require.monthRegulaCalcSetByEmployee(companyId, employeeId);
+		domain.shaRegSetOpt = repositories.getShaRegSetRepo().find(companyId, employeeId);
 		
 		// 変形労働社員別月別実績集計設定
-		domain.shaIrgSetOpt = require.monthDeforLaborCalcSetByEmployee(companyId, employeeId);
+		domain.shaIrgSetOpt = repositories.getShaIrgSetRepo().find(companyId, employeeId);
 		
 		// フレックス社員別月別実績集計設定
-		domain.shaFlexSetOpt = require.monthFlexCalcSetbyEmployee(companyId, employeeId);
+		domain.shaFlexSetOpt = repositories.getShaFlexSetRepo().find(companyId, employeeId);
 		
 		// 年休社員基本情報
-		domain.annualLeaveEmpBasicInfoOpt = require.employeeAnnualLeaveBasicInfo(employeeId);
+		domain.annualLeaveEmpBasicInfoOpt = repositories.getAnnLeaEmpBasicInfo().get(employeeId);
 		
 		// 締め処理状態
-		domain.closureStatusMngs = require.employeeClosureStatusManagements(employeeIds, period);
+		domain.closureStatusMngs = repositories.getClosureStatusMng().getByIdListAndDatePeriod(employeeIds, period);
 		
 		// 「労働条件項目」を取得
-		List<WorkingConditionItem> workingConditionItems = require.workingConditionItem(employeeId, period);
+		List<WorkingConditionItem> workingConditionItems = repositories.getWorkingConditionItem()
+				.getBySidAndPeriodOrderByStrD(employeeId, period);
 		if (!workingConditionItems.isEmpty()){
 			// 同じ労働制の履歴を統合　と　「労働条件」の確認
-			domain.IntegrateHistoryOfSameWorkSys(require, workingConditionItems);
+			domain.IntegrateHistoryOfSameWorkSys(workingConditionItems, repositories);
 		}
 		
 		return domain;
@@ -191,7 +193,9 @@ public class MonAggrEmployeeSettings {
 	 * @param target 労働条件項目リスト　（統合前）
 	 * @param repositories 月別集計が必要とするリポジトリ
 	 */
-	private void IntegrateHistoryOfSameWorkSys(RequireM1 require, List<WorkingConditionItem> target){
+	private void IntegrateHistoryOfSameWorkSys(
+			List<WorkingConditionItem> target,
+			RepositoriesRequiredByMonthlyAggr repositories){
 
 		this.workingConditionItems = new ArrayList<>();
 		this.workingConditions = new HashMap<>();
@@ -202,7 +206,7 @@ public class MonAggrEmployeeSettings {
 			// 要素[n]を取得
 			WorkingConditionItem startItem = itrTarget.next();
 			val startHistoryId = startItem.getHistoryId();
-			val startConditionOpt = require.workingCondition(startHistoryId);
+			val startConditionOpt = repositories.getWorkingCondition().getByHistoryId(startHistoryId);
 			if (!startConditionOpt.isPresent()) continue;
 			val startCondition = startConditionOpt.get();
 			if (startCondition.getDateHistoryItem().isEmpty()) continue;
@@ -230,7 +234,7 @@ public class MonAggrEmployeeSettings {
 				continue;
 			}
 			val endHistoryId = endItem.getHistoryId();
-			val endConditionOpt = require.workingCondition(endHistoryId);
+			val endConditionOpt = repositories.getWorkingCondition().getByHistoryId(endHistoryId);
 			if (!endConditionOpt.isPresent()) continue;;
 			val endCondition = endConditionOpt.get();
 			if (endCondition.getDateHistoryItem().isEmpty()) continue;
@@ -296,38 +300,5 @@ public class MonAggrEmployeeSettings {
 			if (this.workingConditions.get(historyId).contains(ymd)) return Optional.of(workingConditionItem);
 		}
 		return Optional.empty();
-	}
-	
-	public static interface RequireM2 extends RequireM1 {
-		
-		List<ClosureStatusManagement> employeeClosureStatusManagements(List<String> employeeIds, DatePeriod span);
-		
-		Optional<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String employeeId);
-		
-		Optional<ShaFlexMonthActCalSet> monthFlexCalcSetbyEmployee(String cid, String sId);
-		
-		Optional<ShaDeforLaborMonthActCalSet> monthDeforLaborCalcSetByEmployee(String cId, String sId);
-		
-		Optional<ShaRegulaMonthActCalSet> monthRegulaCalcSetByEmployee(String cid, String sId);
-		
-		Optional<DeforLaborTimeSha> deforLaborTimeByEmployee(String cid, String empId);
-		
-		Optional<RegularLaborTimeSha> regularLaborTimeByEmployee(String Cid, String EmpId);
-		
-		List<String> getCanUseWorkplaceForEmp(CacheCarrier cacheCarrier, String companyId,
-				String employeeId, GeneralDate baseDate);
-		
-		Optional<AffWorkPlaceSidImport> affWorkPlace(String employeeId, GeneralDate baseDate);
-		
-		Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId, String employeeId, GeneralDate baseDate);
-		
-		EmployeeImport employee(CacheCarrier cacheCarrier, String empId);
-		
-		List<WorkingConditionItem> workingConditionItem(String sId, DatePeriod datePeriod);
-	}
-	
-	public static interface RequireM1 {
-		
-		Optional<WorkingCondition> workingCondition(String historyId);
 	}
 }

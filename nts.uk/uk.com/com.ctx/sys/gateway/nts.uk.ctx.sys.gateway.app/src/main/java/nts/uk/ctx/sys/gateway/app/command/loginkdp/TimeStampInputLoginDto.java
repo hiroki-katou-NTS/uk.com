@@ -5,7 +5,6 @@ package nts.uk.ctx.sys.gateway.app.command.loginkdp;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
@@ -17,11 +16,11 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-public class TimeStampInputLoginDto extends CheckChangePassDto {
-	private boolean result; // note: ・Result (True/False)
+public class TimeStampInputLoginDto extends CheckChangePassDto{
 
-	private EmployeeImport em; // note: ・Employees
-
-	private String errorMessage; // note: ·Error message
+	public boolean result; //・Result (True/False)
+	
+	public EmployeeImport em; //・Employees
+	
+	public String errorMessage; //·Error message
 }

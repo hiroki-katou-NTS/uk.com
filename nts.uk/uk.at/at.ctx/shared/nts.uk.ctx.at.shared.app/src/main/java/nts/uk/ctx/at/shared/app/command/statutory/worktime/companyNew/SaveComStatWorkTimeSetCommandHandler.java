@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.statutory.worktime.companyNew;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -13,13 +12,16 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeCom;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeComRepo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeCom;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeComRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComNormalSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComNormalSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -29,16 +31,25 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class SaveComStatWorkTimeSetCommandHandler extends CommandHandler<SaveComStatWorkTimeSetCommand> {
 
-	/** The trans labor time repository. */
+	/** The com normal setting repository. */
 	@Inject
-	private DeforLaborTimeComRepo transLaborTimeRepository;
+	private ComNormalSettingRepository comNormalSettingRepository;
 
-	/** The regular labor time repository. */
+	/** The com flex setting repository. */
 	@Inject
-	private RegularLaborTimeComRepo regularLaborTimeRepository;
+	private ComFlexSettingRepository comFlexSettingRepository;
 
+	/** The com defor labor setting repository. */
 	@Inject
-	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
+	private ComDeforLaborSettingRepository comDeforLaborSettingRepository;
+
+	/** The com regular labor time repository. */
+	@Inject
+	private ComRegularLaborTimeRepository comRegularLaborTimeRepository;
+
+	/** The com trans labor time repository. */
+	@Inject
+	private ComTransLaborTimeRepository comTransLaborTimeRepository;
 
 	/*
 	 * @see
@@ -52,50 +63,52 @@ public class SaveComStatWorkTimeSetCommandHandler extends CommandHandler<SaveCom
 		int year = command.getYear();
 		String companyId = AppContexts.user().companyId();
 
-		List<MonthlyWorkTimeSetCom> comNormalSetting = command.regular(companyId);
-		List<MonthlyWorkTimeSetCom> comFlexSetting = command.flex(companyId);
-		List<MonthlyWorkTimeSetCom> comDeforLaborSetting = command.defor(companyId);
-		RegularLaborTimeCom comRegularLaborTime = command.regurlarLabor(companyId);
-		DeforLaborTimeCom comTransLaborTime = command.deforLabor(companyId);
+		ComNormalSetting comNormalSetting = command.getNormalSetting().toDomain(year);
+		ComFlexSetting comFlexSetting = command.getFlexSetting().toDomain(year);
+		ComDeforLaborSetting comDeforLaborSetting = command.getDeforLaborSetting().toDomain(year);
+		ComRegularLaborTime comRegularLaborTime = command.getRegularLaborTime().toComRegularLaborTimeDomain();
+		ComTransLaborTime comTransLaborTime = command.getTransLaborTime().toComTransLaborTimeDomain();
 
-		List<MonthlyWorkTimeSetCom> regulars = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.REGULAR_LABOR, year);
+		Optional<ComNormalSetting> optComNormalSet = this.comNormalSettingRepository.find(companyId, year);
 		// Check info ComNormalSetting if exist -> update into db / not exist -> insert into DB
-		addOrUpdate(comNormalSetting, regulars);
+		if (optComNormalSet.isPresent()) {
+			this.comNormalSettingRepository.update(comNormalSetting);
+		} else {
+			this.comNormalSettingRepository.create(comNormalSetting);
+		}
 
-		List<MonthlyWorkTimeSetCom> flex = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.FLEX, year);
-		// Check info ComNormalSetting if exist -> update into db / not exist -> insert into DB
-		addOrUpdate(comFlexSetting, flex);
+		Optional<ComFlexSetting> optComFlexSet = this.comFlexSettingRepository.find(companyId, year);
+		// Check info ComFlexSetting if exist -> update into db / not exist -> insert into DB
+		if (optComFlexSet.isPresent()) {
+			this.comFlexSettingRepository.update(comFlexSetting);
+		} else {
+			this.comFlexSettingRepository.create(comFlexSetting);
+		}
 
-		List<MonthlyWorkTimeSetCom> defor = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.DEFOR_LABOR, year);
-		// Check info ComNormalSetting if exist -> update into db / not exist -> insert into DB
-		addOrUpdate(comDeforLaborSetting, defor);
+		Optional<ComDeforLaborSetting> optComDeforSet = this.comDeforLaborSettingRepository.find(companyId, year);
+		//	Check info ComDeforLaborSetting if exist -> update into db / not exist -> insert into DB
+		if (optComDeforSet.isPresent()) {
+			this.comDeforLaborSettingRepository.update(comDeforLaborSetting);
+		} else {
+			this.comDeforLaborSettingRepository.insert(comDeforLaborSetting);
+		}
 
-		Optional<RegularLaborTimeCom> optComRegularSet = regularLaborTimeRepository.find(companyId);
+		Optional<ComRegularLaborTime> optComRegularSet = this.comRegularLaborTimeRepository.find(companyId);
 		// Check info ComRegularLaborTime if exist -> update into db / not exist -> insert into DB
 		if (optComRegularSet.isPresent()) {
-			regularLaborTimeRepository.update(comRegularLaborTime);
+			this.comRegularLaborTimeRepository.update(comRegularLaborTime);
 		} else {
-			regularLaborTimeRepository.create(comRegularLaborTime);
+			this.comRegularLaborTimeRepository.create(comRegularLaborTime);
 		}
 
-		Optional<DeforLaborTimeCom> optComTransSet = transLaborTimeRepository.find(companyId);
+		Optional<ComTransLaborTime> optComTransSet = this.comTransLaborTimeRepository.find(companyId);
 		// Check info ComTransLaborTime if exist -> update into db / not exist -> insert into DB
 		if (optComTransSet.isPresent()) {
-			transLaborTimeRepository.update(comTransLaborTime);
+			this.comTransLaborTimeRepository.update(comTransLaborTime);
 		} else {
-			transLaborTimeRepository.create(comTransLaborTime);
+			this.comTransLaborTimeRepository.create(comTransLaborTime);
 		}
 
 	}
-	
-	private void addOrUpdate (List<MonthlyWorkTimeSetCom> n, List<MonthlyWorkTimeSetCom> o) {
-		
-		n.stream().forEach(mwtn -> {
-			if (o.stream().filter(mwto -> mwto.getYm().equals(mwtn.getYm())).findFirst().isPresent()) {
-				monthlyWorkTimeSetRepo.update(mwtn);
-			} else {
-				monthlyWorkTimeSetRepo.add(mwtn);
-			}
-		});
-	}
+
 }

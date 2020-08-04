@@ -60,31 +60,38 @@ public class MonthlyOldDatas {
 	 * @return 集計前の月別実績データ
 	 */
 	public static MonthlyOldDatas loadData(
-			RequireM1 require, String employeeId, YearMonth yearMonth, 
-			ClosureId closureId, ClosureDate closureDate){
+			String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate,
+			RepositoriesRequiredByMonthlyAggr repositories){
 
 		MonthlyOldDatas result = new MonthlyOldDatas();
 		
 		// 月別実績の勤怠時間
-		result.attendanceTime = require.attendanceTimeOfMonthly(employeeId, yearMonth, closureId, closureDate);
+		result.attendanceTime = repositories.getAttendanceTimeOfMonthly().find(
+				employeeId, yearMonth, closureId, closureDate);
 		
 		// 月別実績の任意項目
-		result.anyItemList = require.anyItemOfMonthly(employeeId, yearMonth, closureId, closureDate);
+		result.anyItemList = repositories.getAnyItemOfMonthly().findByMonthlyAndClosure(
+				employeeId, yearMonth, closureId, closureDate);
 		
 		// 年休月別残数データ
-		result.annualLeaveRemain = require.annLeaRemNumEachMonth(employeeId, yearMonth, closureId, closureDate);
+		result.annualLeaveRemain = repositories.getAnnLeaRemNumEachMonth().find(
+				employeeId, yearMonth, closureId, closureDate);
 		
 		// 積立年休月別残数データ
-		result.reserveLeaveRemain = require.rsvLeaRemNumEachMonth(employeeId, yearMonth, closureId, closureDate);
+		result.reserveLeaveRemain = repositories.getRsvLeaRemNumEachMonth().find(
+				employeeId, yearMonth, closureId, closureDate);
 		
 		// 振休月別残数データ
-		result.absenceLeaveRemain = require.absenceLeaveRemainData(employeeId, yearMonth, closureId, closureDate);
+		result.absenceLeaveRemain = repositories.getAbsenceLeaveRemainData().find(
+				employeeId, yearMonth, closureId, closureDate);
 		
 		// 代休月別残数データ
-		result.monthlyDayoffRemain = require.monthlyDayoffRemainData(employeeId, yearMonth, closureId, closureDate);
+		result.monthlyDayoffRemain = repositories.getMonthlyDayoffRemainData().find(
+				employeeId, yearMonth, closureId, closureDate);
 		
 		// 特別休暇月別残数データ
-		result.specialLeaveRemainList = require.specialHolidayRemainData(employeeId, yearMonth, closureId, closureDate);
+		result.specialLeaveRemainList = repositories.getSpecialHolidayRemainData().find(
+				employeeId, yearMonth, closureId, closureDate);
 		
 		return result;
 	}
@@ -99,12 +106,14 @@ public class MonthlyOldDatas {
 	 * @param repositories 月別集計が必要とするリポジトリ
 	 * @return 集計前の月別実績データ
 	 */
-	public static MonthlyOldDatas loadData(RequireM1 require, String employeeId, YearMonth yearMonth, 
-			ClosureId closureId, ClosureDate closureDate, Optional<IntegrationOfMonthly> monthlyWorkOpt){
+	public static MonthlyOldDatas loadData(
+			String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate,
+			Optional<IntegrationOfMonthly> monthlyWorkOpt,
+			RepositoriesRequiredByMonthlyAggr repositories){
 
 		// 月別実績(WORK)指定がない時、データ読み込み
 		if (!monthlyWorkOpt.isPresent()){
-			return MonthlyOldDatas.loadData(require, employeeId, yearMonth, closureId, closureDate);
+			return MonthlyOldDatas.loadData(employeeId, yearMonth, closureId, closureDate, repositories);
 		}
 		
 		MonthlyOldDatas result = new MonthlyOldDatas();
@@ -132,22 +141,5 @@ public class MonthlyOldDatas {
 		result.specialLeaveRemainList = monthlyWork.getSpecialLeaveRemainList();
 		
 		return result;
-	}
-	
-	public static interface RequireM1 {
-		
-		Optional<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
-
-		List<AnyItemOfMonthly> anyItemOfMonthly(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
-		
-		Optional<AnnLeaRemNumEachMonth> annLeaRemNumEachMonth(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
-		
-		Optional<RsvLeaRemNumEachMonth> rsvLeaRemNumEachMonth(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
-		
-		Optional<AbsenceLeaveRemainData> absenceLeaveRemainData(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
-		
-		Optional<MonthlyDayoffRemainData> monthlyDayoffRemainData(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
-		
-		List<SpecialHolidayRemainData> specialHolidayRemainData(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
 	}
 }

@@ -21,10 +21,4 @@ public class SubstitutionHolidayOutput {
 	 * 代休使用期限
 	 */
 	private int expirationOfsubstiHoliday;
-	
-	/**
-	 * add refactor RequestList203
-	 * 代休先取り許可
-	 */
-	private int advancePayment;
 }

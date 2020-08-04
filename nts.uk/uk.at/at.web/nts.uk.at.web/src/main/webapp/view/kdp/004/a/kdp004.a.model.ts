@@ -43,7 +43,6 @@ interface ILoginInfo {
 interface IAuthResult {
 	isSuccess: boolean;
 	authType: number;
-	em:any;
 }
 
 class StampTab {

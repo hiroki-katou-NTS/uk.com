@@ -56,7 +56,7 @@ class KDP001AViewModel extends ko.ViewModel {
 		departure: true,
 		goOut: true,
 		turnBack: true
-	} as IStampToSuppress);
+	});
 
 	stampResultDisplay: KnockoutObservable<IStampResultDisplay> = ko.observable({
 		companyId: "000000000000-000",
@@ -200,9 +200,9 @@ class KDP001AViewModel extends ko.ViewModel {
 			this.$blockui("invisible");
 			vm.$ajax(requestUrl.getEmployeeStampData).then((data: Array<Array<IStampInfoDisp>>) => {
 				this.$blockui("clear");
-				let items = _(data).flatMap('stampRecords').value() as any[];
+				let items = _.flatMap(data, 'listStampInfoDisp') as any[];
 
-				items = _.orderBy(items, ['stampTimeWithSec'], ['desc']);
+				items = _.orderBy(items, ['stampDatetime'], ['desc']);
 
 				vm.stampDatas(items || []);
 
@@ -231,7 +231,7 @@ class KDP001AViewModel extends ko.ViewModel {
 
 	public getDateColor(data: IStampInfoDisp) {
 
-		let day = moment.utc(data.stampTimeWithSec).day(),
+		let day = moment.utc(data.stampDatetime).day(),
 
 			dayColor = _.find(daysColor, ['day', day]);
 
@@ -261,13 +261,21 @@ class KDP001AViewModel extends ko.ViewModel {
 	}
 
 	public getStampTime(data: IStampInfoDisp) {
+		let vm = this,
+			character = '';
 
-		return data.stampHow + ' ' + moment.utc(data.stampTimeWithSec).format("HH:mm");
+		if (_.has(data, 'stamp.relieve.stampMeans')) {
+
+			let item = _.find(stampTypes, ['name', data.stamp.relieve.stampMeans]);
+			character = item ? vm.$i18n.text(item.text) : '';
+		}
+
+		return character + ' ' + moment.utc(data.stampDatetime).format("HH:mm");
 	}
 
 	public convertToShortMDW(data: IStampInfoDisp) {
 
-		return _.has(data, 'stampTimeWithSec') ? moment.utc(data.stampTimeWithSec).format("MM/DD(ddd)") : '';
+		return _.has(data, 'stampDatetime') ? moment.utc(data.stampDatetime).format("MM/DD(ddd)") : '';
 	}
 
 	public getSystemDate() {
@@ -361,7 +369,7 @@ class KDP001AViewModel extends ko.ViewModel {
 			employeeCode: vm.$user.employeeCode,
 			mode: Mode.Personal,
 		});
-		nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(function(): any {
+			nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(function(): any {
 			vm.$blockui("invisible");
 			vm.$ajax(requestUrl.getOmissionContents, { pageNo: 1, buttonDisNo: buttonDisNo }).then((res) => {
 				if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
@@ -435,9 +443,9 @@ class KDP001AViewModel extends ko.ViewModel {
 		vm.$blockui("invisible");
 		vm.$ajax(requestUrl.getEmployeeStampData).then((data: Array<Array<IStampInfoDisp>>) => {
 			vm.$blockui("clear");
-			let items = _(data).flatMap('stampRecords').value() as any[];
+			let items = _.flatMap(data, 'listStampInfoDisp') as any[];
 
-			items = _.orderBy(items, ['stampTimeWithSec'], ['desc']);
+			items = _.orderBy(items, ['stampDatetime'], ['desc']);
 
 			vm.stampDatas(items || []);
 
@@ -467,130 +475,17 @@ class KDP001AViewModel extends ko.ViewModel {
 	}
 
 	public getTextAlign(data: IStampInfoDisp) {
-
-		const {
-			WORK,
-			WORK_STRAIGHT,
-			WORK_EARLY,
-			WORK_BREAK,
-			DEPARTURE,
-			DEPARTURE_BOUNCE,
-			DEPARTURE_OVERTIME,
-			OUT,
-			RETURN,
-			GETTING_STARTED,
-			DEPAR,
-			TEMPORARY_WORK,
-			TEMPORARY_LEAVING,
-			START_SUPPORT,
-			END_SUPPORT,
-			WORK_SUPPORT,
-			START_SUPPORT_EARLY_APPEARANCE,
-			START_SUPPORT_BREAK,
-			RESERVATION,
-			CANCEL_RESERVATION
-		} = ContentsStampType;
-
-		const LEFT_ALIGNS = [
-			WORK,
-			WORK_STRAIGHT,
-			WORK_EARLY,
-			WORK_BREAK,
-			GETTING_STARTED,
-			TEMPORARY_WORK,
-			START_SUPPORT,
-			WORK_SUPPORT,
-			START_SUPPORT_EARLY_APPEARANCE,
-			START_SUPPORT_BREAK, 
-			RESERVATION,
-			CANCEL_RESERVATION
-		];
-
-		const RIGHT_ALIGNS = [
-			DEPARTURE,
-			DEPARTURE_BOUNCE,
-			DEPARTURE_OVERTIME,
-			DEPAR,
-			TEMPORARY_LEAVING,
-			END_SUPPORT
-		];
-
-
-
-
-		if (LEFT_ALIGNS.indexOf(data.correctTimeStampValue) > -1) {
+		if (data.stampAtr === '出勤') {
 			return 'left';
 		}
 
-		if (RIGHT_ALIGNS.indexOf(data.correctTimeStampValue) > -1) {
+		if (data.stampAtr === '退勤') {
 			return 'right';
 		}
 
 		return 'center';
 	}
 
-}
-
-enum ContentsStampType {
-	/** 1: 出勤 */
-	WORK = 1,
-
-	/** 2: 出勤＋直行 */
-	WORK_STRAIGHT = 2,
-
-	/** 3: 出勤＋早出 */
-	WORK_EARLY = 3,
-
-	/** 4: 出勤＋休出 */
-	WORK_BREAK = 4,
-
-	/** 5: 退勤 */
-	DEPARTURE = 5,
-
-	/** 6: 退勤＋直帰 */
-	DEPARTURE_BOUNCE = 6,
-
-	/** 7: 退勤＋残業 */
-	DEPARTURE_OVERTIME = 7,
-
-	/** 8: 外出 */
-	OUT = 8,
-
-	/** 9: 戻り */
-	RETURN = 9,
-
-	/** 10: 入門 */
-	GETTING_STARTED = 10,
-
-	/** 11: 退門 */
-	DEPAR = 11,
-
-	/** 12: 臨時出勤 */
-	TEMPORARY_WORK = 12,
-
-	/** 13: 臨時退勤 */
-	TEMPORARY_LEAVING = 13,
-
-	/** 14: 応援開始 */
-	START_SUPPORT = 14,
-
-	/** 15: 応援終了 */
-	END_SUPPORT = 15,
-
-	/** 16: 出勤＋応援 */
-	WORK_SUPPORT = 16,
-
-	/** 17: 応援開始＋早出 */
-	START_SUPPORT_EARLY_APPEARANCE = 17,
-
-	/** 18: 応援開始＋休出 */
-	START_SUPPORT_BREAK = 18,
-
-	/** 19: 予約 */
-	RESERVATION = 19,
-
-	/** 20: 予約取消  */
-	CANCEL_RESERVATION = 20
 }
 
 interface IStampToSuppress {
@@ -674,7 +569,7 @@ interface IStampInfoDisp {
 	/**
 	 * 打刻日時
 	 */
-	stampTimeWithSec: Date;
+	stampDatetime: Date;
 	/**
 	 * 打刻区分
 	 */
@@ -683,10 +578,6 @@ interface IStampInfoDisp {
 	 * 打刻
 	 */
 	stamp: IStamp;
-
-	correctTimeStampValue: number;
-
-	stampHow: number;
 }
 
 interface IStamp {

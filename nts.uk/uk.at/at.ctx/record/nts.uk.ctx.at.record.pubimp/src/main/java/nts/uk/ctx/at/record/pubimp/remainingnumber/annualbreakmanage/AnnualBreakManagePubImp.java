@@ -13,16 +13,13 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.pub.remainingnumber.annualbreakmanage.AnnualBreakManageExport;
 import nts.uk.ctx.at.record.pub.remainingnumber.annualbreakmanage.AnnualBreakManagePub;
 import nts.uk.ctx.at.record.pub.remainingnumber.annualbreakmanage.YearlyHolidaysTimeRemainingExport;
@@ -39,6 +36,7 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.GetNextAnnualLeaveGrantP
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -47,10 +45,22 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 	AnnualLeaveTimeRemainHistRepository annualLeaveTimeRemainHistRepository;
 	
 	@Inject
+	private GetClosureStartForEmployee getClosureStartForEmployee;
+	
+	@Inject
+	private GetAnnLeaRemNumWithinPeriod getAnnLeaRemNumWithinPeriod;
+	
+	@Inject
 	private AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepository;
 	
 	@Inject
 	private EmployeeRecordAdapter pmployeeRecordAdapter;
+	
+	@Inject
+	private GetNextAnnualLeaveGrant getNextAnnualLeaveGrant;
+	
+	@Inject
+	private GetNextAnnualLeaveGrantProcKdm002 getNextAnnualLeaveGrantKdm002;
 	
 	/** 年休付与テーブル設定 */
 	@Inject
@@ -61,8 +71,6 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 
 	@Inject
 	private AnnLeaGrantRemDataRepository grantDataRep;
-	@Inject 
-	private RecordDomRequireService requireService;
 	
 	@Override
 	public List<AnnualBreakManageExport> getEmployeeId(List<String> employeeId, GeneralDate startDate,
@@ -98,12 +106,9 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 	@Override
 	public List<YearlyHolidaysTimeRemainingExport> getYearHolidayTimeAnnualRemaining(String employeeId,
 			GeneralDate confirmDay, GeneralDate holidayGrantStart, GeneralDate holidayGrantEnd) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
-		
 		List<YearlyHolidaysTimeRemainingExport> yearlyHolidaysTimeRemainingExport = new ArrayList<>();
 		// 全締めの当月と期間を取得する 
-		Optional<GeneralDate> startDate = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
+		Optional<GeneralDate> startDate = getClosureStartForEmployee.algorithm(employeeId);
 		if (!startDate.isPresent()) {
 			return yearlyHolidaysTimeRemainingExport;
 		}
@@ -123,8 +128,8 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 	
 		// 期間中の年休残数を取得
 		Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualLeave = 		
-				GetAnnLeaRemNumWithinPeriodProc.
-				algorithm(require, cacheCarrier, companyId, 
+				getAnnLeaRemNumWithinPeriod.
+				algorithm(companyId, 
 						employeeId, 
 						new DatePeriod(startDate.get(), confirmDay), 
 						InterimRemainMngMode.OTHER, 
@@ -166,16 +171,13 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 
 	@Override
 	public List<NextAnnualLeaveGrant> calculateNextHolidayGrant(String employeeId, DatePeriod time) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
-		
 		List<NextAnnualLeaveGrant> nextAnnualLeaveGrant = new ArrayList<>();
 		// ○Imported(就業)「社員」を取得する
 		EmployeeRecordImport employeeRecordImport = pmployeeRecordAdapter.getPersonInfor(employeeId);
 		// ○パラメータ「期間」をチェック
 			Optional<GeneralDate> start_date = Optional.empty();
 			if (time == null) {
-				start_date = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
+				start_date = getClosureStartForEmployee.algorithm(employeeId);
 			}
 			
 			// ドメインモデル「年休付与テーブル設定」を取得する (Lấy domain 「年休付与テーブル設定」)
@@ -199,8 +201,8 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 			System.out.println("employeeRecordImport3: " + date);
 			
 			//○次回年休付与を取得する
-			nextAnnualLeaveGrant = GetNextAnnualLeaveGrant
-					.algorithm(require, cacheCarrier, companyId, 
+			nextAnnualLeaveGrant = getNextAnnualLeaveGrant
+					.algorithm(companyId, 
 							annualLeaveEmpBasicInfo.get().getGrantRule().getGrantTableCode().toString(), 
 							employeeRecordImport.getEntryDate(), 
 							annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate(), 
@@ -212,17 +214,14 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private Map<String, List<NextAnnualLeaveGrant>> calculateNextHolidayGrantImpr(List<String> employeeIds,
 			DatePeriod time) {
-		val require = requireService.createRequire();
-		
 		String companyId = AppContexts.user().companyId();
 		Map<String, GeneralDate> employeeRecordImportMap = pmployeeRecordAdapter.getPersonInfor(employeeIds).stream()
 				.collect(Collectors.toMap(EmployeeRecordImport::getEmployeeId, EmployeeRecordImport::getEntryDate));
 		Map<String, AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfoMap = annLeaEmpBasicInfoRepository
 				.getList(employeeIds).stream()
 				.collect(Collectors.toMap(AnnualLeaveEmpBasicInfo::getEmployeeId, Function.identity()));
-		Map<String, List<NextAnnualLeaveGrant>> nextAnnualLeaveGrantMap = GetNextAnnualLeaveGrantProcKdm002
-				.algorithm(require, companyId, employeeIds, 
-							annualLeaveEmpBasicInfoMap, employeeRecordImportMap, time, false);
+		Map<String, List<NextAnnualLeaveGrant>> nextAnnualLeaveGrantMap = getNextAnnualLeaveGrantKdm002.algorithm(
+				companyId, employeeIds, annualLeaveEmpBasicInfoMap, employeeRecordImportMap, time, false);
 		return nextAnnualLeaveGrantMap;
 	}
 

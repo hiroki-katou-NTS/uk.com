@@ -6,15 +6,31 @@ package nts.uk.ctx.at.shared.dom.workingcondition.service;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class WorkingConditionService.
  */
+@Stateless
 public class WorkingConditionService {
+	
+	/** The wc repo. */
+	@Inject
+	private WorkingConditionRepository wcRepo;
+	
+	/** The wc item repo. */
+	@Inject
+	private WorkingConditionItemRepository wcItemRepo;
+	
+
 	
 	/**
 	 * Find work condition by employee.
@@ -23,22 +39,13 @@ public class WorkingConditionService {
 	 * @param baseDate the base date
 	 * @return the optional
 	 */
-	public static Optional<WorkingConditionItem> findWorkConditionByEmployee(RequireM1 require, 
-			String employeeId, GeneralDate baseDate) {
+	public Optional<WorkingConditionItem> findWorkConditionByEmployee(String employeeId, GeneralDate baseDate) {
 		String companyId = AppContexts.user().companyId();
-		Optional<WorkingCondition> workConditionOpt = require.workingCondition(companyId, employeeId, baseDate);
+		Optional<WorkingCondition> workConditionOpt = this.wcRepo.getBySidAndStandardDate(companyId, employeeId, baseDate);
 		if (!workConditionOpt.isPresent()) {
 			return Optional.empty();
 		}
-		return require.workingConditionItem(workConditionOpt.get().items().get(0).identifier());
-	}
-	
-	public static interface RequireM1 {
-		
-		Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate);
-		
-		Optional<WorkingConditionItem> workingConditionItem(String historyId);
-		
+		return this.wcItemRepo.getByHistoryId(workConditionOpt.get().items().get(0).identifier());
 	}
 	
 }

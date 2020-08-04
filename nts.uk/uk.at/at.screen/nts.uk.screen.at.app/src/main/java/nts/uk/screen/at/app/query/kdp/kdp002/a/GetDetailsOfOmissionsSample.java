@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import nts.arc.layer.app.cache.CacheCarrier;
+import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.stamp.application.StampPromptAppRepository;
@@ -21,11 +21,8 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
-import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -35,6 +32,21 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 public class GetDetailsOfOmissionsSample {
+
+	@Inject
+	private StampPromptAppRepository stamPromptAppRepo;
+
+	@Inject
+	private ClosureService closureService;
+
+	@Inject
+	private ErAlApplicationRepository erAlApplicationRepo;
+
+	@Inject
+	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepo;
+
+	@Inject
+	private StampSetPerRepository stampSetPerRepo;
 	
 	@Inject
 	private AppDisplayNameAdapter appDisplayAdapter;
@@ -47,16 +59,21 @@ public class GetDetailsOfOmissionsSample {
 		//2: <call>
 		//Viết code cho xử lý 2
 		String employeeId = AppContexts.user().employeeId();
-		CheckAttdErrorAfterStampRequiredImpl required = new CheckAttdErrorAfterStampRequiredImpl();
+		CheckAttdErrorAfterStampRequiredImpl required = new CheckAttdErrorAfterStampRequiredImpl(stamPromptAppRepo,
+				closureService, erAlApplicationRepo, employeeDailyPerErrorRepo, stampSetPerRepo );
 		StampButton stampButton = new StampButton(new PageNo(pageNo), new ButtonPositionNo(buttonDisNo));
-
 		return new GetDetailsOfOmissionsSampleDto(CheckAttdErrorAfterStampService.get(required, employeeId, stampButton), appDisplayAdapter.getAppDisplay());
 	}
 	
+	
+	@AllArgsConstructor
 	private class CheckAttdErrorAfterStampRequiredImpl implements CheckAttdErrorAfterStampService.Require {
 
 		@Inject
 		private StampPromptAppRepository stamPromptAppRepo;
+
+		@Inject
+		private ClosureService closureService;
 
 		@Inject
 		private ErAlApplicationRepository erAlApplicationRepo;
@@ -66,13 +83,6 @@ public class GetDetailsOfOmissionsSample {
 
 		@Inject
 		private StampSetPerRepository stampSetPerRepo;
-		
-		@Inject
-		private ClosureRepository closureRepo;
-		@Inject
-		private ClosureEmploymentRepository closureEmploymentRepo;
-		@Inject
-		private ShareEmploymentAdapter shareEmploymentAdapter;
 
 		@Override
 		public Optional<StampPromptApplication> getStampSet() {
@@ -81,16 +91,12 @@ public class GetDetailsOfOmissionsSample {
 
 		@Override
 		public DatePeriod findClosurePeriod(String employeeId, GeneralDate baseDate) {
-			return ClosureService.findClosurePeriod(
-					ClosureService.createRequireM3(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),
-					new CacheCarrier(), employeeId, baseDate);
+			return closureService.findClosurePeriod(employeeId, baseDate);
 		}
 
 		@Override
 		public Optional<ClosurePeriod> getClosurePeriod(String employeeId, GeneralDate baseDate) {
-			Closure closure = ClosureService.getClosureDataByEmployee(
-					ClosureService.createRequireM3(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),
-					new CacheCarrier(), employeeId, baseDate);
+			Closure closure = closureService.getClosureDataByEmployee(employeeId, baseDate);
 			if (closure == null)
 				return Optional.empty();
 			Optional<ClosurePeriod> closurePeriodOpt = closure.getClosurePeriodByYmd(baseDate);

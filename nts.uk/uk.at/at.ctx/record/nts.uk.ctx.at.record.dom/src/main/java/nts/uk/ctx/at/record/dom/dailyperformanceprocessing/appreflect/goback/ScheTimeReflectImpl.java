@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
@@ -42,6 +41,8 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 	@Inject
 	private WorkUpdateService scheUpdateService;
 	@Inject
+	private WorkTimeIsFluidWork workTimeisFluidWork;
+	@Inject
 	private WorkTimeSettingRepository workTimeSetting;
 	/*フレックス勤務設定*/
 	@Inject
@@ -55,8 +56,6 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 	/*時差勤務設定*/
 	@Inject
 	private DiffTimeWorkSettingRepository diffTimeWorkSettingRepository;
-	@Inject 
-	private RecordDomRequireService requireService;
 	@Override
 	public void reflectScheTime(GobackReflectParameter para, boolean timeTypeScheReflect,
 			IntegrationOfDaily dailyInfor, boolean isPre) {
@@ -302,7 +301,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 		//INPUT．予定と実績を同じに変更する区分が「流動勤務のみ自動変更する」
 		if(scheAndRecordSameChangeFlg == ScheAndRecordSameChangeFlg.AUTO_CHANGE_ONLY_WORK) {
 			//流動勤務かどうかの判断処理
-			return WorkTimeIsFluidWork.checkWorkTimeIsFluidWork(requireService.createRequire(), worktimeCode);
+			return workTimeisFluidWork.checkWorkTimeIsFluidWork(worktimeCode);
 		}
 		
 		return false;

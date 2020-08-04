@@ -5,18 +5,13 @@
 package nts.uk.ctx.at.shared.app.find.statutory.worktime.employment;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
-import nts.uk.ctx.at.shared.app.find.statutory.worktime.shared.DeformationLaborSettingDto;
-import nts.uk.ctx.at.shared.app.find.statutory.worktime.shared.FlexSettingDto;
-import nts.uk.ctx.at.shared.app.find.statutory.worktime.shared.NormalSettingDto;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeEmpRepo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeEmpRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employment.EmploymentWtSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employment.EmploymentWtSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -27,13 +22,7 @@ public class EmploymentWtSettingFinder {
 
 	/** The repository. */
 	@Inject
-	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
-	
-	@Inject 
-	private DeforLaborTimeEmpRepo deforLaborTimeEmpRepo;
-	
-	@Inject
-	private RegularLaborTimeEmpRepo regularLaborTimeEmpRepo;
+	private EmploymentWtSettingRepository repository;
 
 	/**
 	 * Find.
@@ -42,29 +31,14 @@ public class EmploymentWtSettingFinder {
 	 * @return the employment wt setting dto
 	 */
 	public EmploymentWtSettingDto find(int year, String employmentCode) {
-		/** The company id. */
-		String companyId = AppContexts.user().companyId();
-		
-		EmploymentWtSettingDto dto = null;
-		
-		val defor = deforLaborTimeEmpRepo.find(companyId, employmentCode);
-		val regular = regularLaborTimeEmpRepo.findById(companyId, employmentCode);
-		val flexWorkTime = monthlyWorkTimeSetRepo.findEmployment(companyId, employmentCode, LaborWorkTypeAttr.FLEX, year);
-		val deforWorkTime = monthlyWorkTimeSetRepo.findEmployment(companyId, employmentCode, LaborWorkTypeAttr.DEFOR_LABOR, year);
-		val regularWorkTime = monthlyWorkTimeSetRepo.findEmployment(companyId, employmentCode, LaborWorkTypeAttr.REGULAR_LABOR, year);
-		
+		Optional<EmploymentWtSetting> optEmploymentSetting = this.repository.find(AppContexts.user().companyId(), year,
+				employmentCode);
 		// Update mode.
-		if(defor.isPresent() && regular.isPresent()) {
-			dto = EmploymentWtSettingDto.builder()
-					.flexSetting(FlexSettingDto.with(flexWorkTime))
-					.deformationLaborSetting(DeformationLaborSettingDto.with(defor.get(), deforWorkTime))
-					.normalSetting(NormalSettingDto.with(regular.get(), regularWorkTime))
-					.employmentCode(employmentCode)
-					.year(year)
-					.build();
+		if (optEmploymentSetting.isPresent()) {
+			return EmploymentWtSettingDto.fromDomain(optEmploymentSetting.get());
 		}
 		// New mode.
-		return dto;
+		return null;
 	}
 
 	/**
@@ -74,6 +48,6 @@ public class EmploymentWtSettingFinder {
 	 * @return the list
 	 */
 	public List<String> findall(int year) {
-		return this.monthlyWorkTimeSetRepo.findEmploymentCD(AppContexts.user().companyId(), year);
+		return this.repository.findAll(AppContexts.user().companyId(), year);
 	}
 }

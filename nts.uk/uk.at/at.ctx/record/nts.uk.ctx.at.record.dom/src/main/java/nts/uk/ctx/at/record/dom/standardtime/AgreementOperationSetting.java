@@ -242,31 +242,11 @@ public class AgreementOperationSetting extends AggregateRoot {
 	 * @return 年月期間
 	 */
 	// 2019.2.15 ADD shuichi_ishida
-	public YearMonthPeriod getYearMonthPeriod(RequireM1 require, Year year, Closure closure){
+	public YearMonthPeriod getYearMonthPeriod(Year year, Closure closure,
+			GetAgreementPeriodFromYear getAgreementPeriodFromYear){
 		
 		// 年度から集計期間を取得
-		Optional<DatePeriod> yearPeriodOpt = GetAgreementPeriodFromYear.algorithm(require, year, closure);
-		
-		return internalGetYearMonthPeriod(year, yearPeriodOpt);
-	}
-	
-	/**
-	 * 年度から36協定の年月期間を取得する
-	 * @param year 年度
-	 * @param closure 締め
-	 * @param agreementOperationSetOpt ３６協定運用設定
-	 * @return 年月期間
-	 */
-	// 2019.2.15 ADD shuichi_ishida
-	public YearMonthPeriod getYearMonthPeriod(Year year, Closure closure){
-			
-			// 年度から集計期間を取得
-			Optional<DatePeriod> yearPeriodOpt = GetAgreementPeriodFromYear.algorithm(year, closure, Optional.of(this));
-			
-			return internalGetYearMonthPeriod(year, yearPeriodOpt);
-		}
-
-	private YearMonthPeriod internalGetYearMonthPeriod(Year year, Optional<DatePeriod> yearPeriodOpt) {
+		Optional<DatePeriod> yearPeriodOpt = getAgreementPeriodFromYear.algorithm(year, closure);
 		if (!yearPeriodOpt.isPresent()) {
 			return new YearMonthPeriod(
 					YearMonth.of(year.v(), this.startingMonth.value + 1),
@@ -316,17 +296,19 @@ public class AgreementOperationSetting extends AggregateRoot {
 	 * 指定日を含む年期間を取得
 	 * @param criteria 指定年月日
 	 * @param closure 締め
+	 * @param getAgreementPeriodFromYear 年度から集計期間を取得
 	 * @return 年月期間
 	 */
 	// 2019.2.28 ADD shuichi_ishida
-	public YearMonthPeriod getPeriodYear(RequireM1 require, GeneralDate criteria, Closure closure){
+	public YearMonthPeriod getPeriodYear(GeneralDate criteria, Closure closure,
+			GetAgreementPeriodFromYear getAgreementPeriodFromYear){
 		
 		// 計算当年度を確認　（締め日未考慮の単純な年月計算）
 		int year = criteria.year();
 		if (criteria.month() < this.startingMonth.value + 1) year--;
 		
 		// 計算当年度について、年度から36協定の年月期間を取得する　→　年月期間から36協定期間を取得する
-		YearMonthPeriod currentYmPeriod = this.getYearMonthPeriod(require, new Year(year), closure);
+		YearMonthPeriod currentYmPeriod = this.getYearMonthPeriod(new Year(year), closure, getAgreementPeriodFromYear);
 		Optional<DatePeriod> currentPeriodOpt = this.getAgreementPeriodByYMPeriod(currentYmPeriod, closure);
 		
 		// 計算当年度期間が確認できないか、計算当年度期間に指定年月日が含まれていれば、計算当年度期間を返す
@@ -336,43 +318,11 @@ public class AgreementOperationSetting extends AggregateRoot {
 		
 		// 指定年月日が計算当年度期間より前なら、前年度期間を返す
 		if (criteria.before(currentPeriod.start())) {
-			return this.getYearMonthPeriod(require, new Year(year - 1), closure);
+			return this.getYearMonthPeriod(new Year(year - 1), closure, getAgreementPeriodFromYear);
 		}
 		
 		// 指定年月日が計算当年度より後なら、次年度期間を返す
-		return this.getYearMonthPeriod(require, new Year(year + 1), closure);
-	}
-	
-	/**
-	 * 指定日を含む年期間を取得
-	 * @param criteria 指定年月日
-	 * @param closure 締め
-	 * @param agreementOperationSetOpt ３６協定運用設定
-	 * @return 年月期間
-	 */
-	// 2019.2.28 ADD shuichi_ishida
-	public YearMonthPeriod getPeriodYear(GeneralDate criteria, Closure closure){
-		
-		// 計算当年度を確認　（締め日未考慮の単純な年月計算）
-		int year = criteria.year();
-		if (criteria.month() < this.startingMonth.value + 1) year--;
-		
-		// 計算当年度について、年度から36協定の年月期間を取得する　→　年月期間から36協定期間を取得する
-		YearMonthPeriod currentYmPeriod = this.getYearMonthPeriod(new Year(year), closure);
-		Optional<DatePeriod> currentPeriodOpt = this.getAgreementPeriodByYMPeriod(currentYmPeriod, closure);
-		
-		// 計算当年度期間が確認できないか、計算当年度期間に指定年月日が含まれていれば、計算当年度期間を返す
-		if (!currentPeriodOpt.isPresent()) return currentYmPeriod;
-		DatePeriod currentPeriod = currentPeriodOpt.get();
-		if (currentPeriod.contains(criteria)) return currentYmPeriod;
-		
-		// 指定年月日が計算当年度期間より前なら、前年度期間を返す
-		if (criteria.before(currentPeriod.start())) {
-			return this.getYearMonthPeriod(new Year(year - 1), closure);
-		}
-		
-		// 指定年月日が計算当年度より後なら、次年度期間を返す
-		return this.getYearMonthPeriod(new Year(year + 1), closure);
+		return this.getYearMonthPeriod(new Year(year + 1), closure, getAgreementPeriodFromYear);
 	}
 	
 	 /*
@@ -394,9 +344,5 @@ public class AgreementOperationSetting extends AggregateRoot {
 				return afterOneMonth.yearMonth();
 			}
 		}
-	}
-	
-	public static interface RequireM1 extends GetAgreementPeriodFromYear.RequireM1 {
-		
 	}
 }

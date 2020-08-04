@@ -4,20 +4,24 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.statutory.worktime.workplacenew;
 
-import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetWkp;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeWkpRepo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeWkpRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpFlexSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpFlexSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpNormalSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpNormalSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -27,16 +31,25 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class SaveWkpStatWorkTimeSetCommandHandler extends CommandHandler<SaveWkpStatWorkTimeSetCommand> {
 
-	/** The trans labor time repository. */
+	/** The wkp normal setting repository. */
 	@Inject
-	private DeforLaborTimeWkpRepo transLaborTimeRepository;
-
-	/** The regular labor time repository. */
+	private WkpNormalSettingRepository wkpNormalSettingRepository;
+	
+	/** The wkp flex setting repository. */
 	@Inject
-	private RegularLaborTimeWkpRepo regularLaborTimeRepository;
-
+	private WkpFlexSettingRepository wkpFlexSettingRepository;
+	
+	/** The wkp defor labor setting repository. */
 	@Inject
-	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
+	private WkpDeforLaborSettingRepository wkpDeforLaborSettingRepository;
+	
+	/** The wkp regular work time repository. */
+	@Inject
+	private WkpRegularLaborTimeRepository wkpRegularWorkTimeRepository;
+	
+	/** The wkp spe defor labor time repository. */
+	@Inject
+	private WkpTransLaborTimeRepository wkpSpeDeforLaborTimeRepository;
 
 	/* 
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -49,45 +62,52 @@ public class SaveWkpStatWorkTimeSetCommandHandler extends CommandHandler<SaveWkp
 		String wkpId = command.getWorkplaceId();
 		String companyId = AppContexts.user().companyId();
 
-		val normalSetting = command.regular(companyId);
-		val flexSetting = command.flex(companyId);
-		val deforLaborSetting = command.defor(companyId);
-		val regularLaborTime = command.regurlarLabor(companyId);
-		val deforLaborTime = command.deforLabor(companyId);
+		WkpNormalSetting wkpNormalSetting = command.getNormalSetting().toWkpDomain(year, wkpId);
+		WkpFlexSetting wkpFlexSetting = command.getFlexSetting().toWkpDomain(year, wkpId);
+		WkpDeforLaborSetting wkpDeforLaborSetting = command.getDeforLaborSetting().toWkpDomain(year, wkpId);
+		WkpRegularLaborTime wkpRegularLaborTime = command.getRegularLaborTime().toWkpRegularLaborTimeDomain(wkpId);
+		WkpTransLaborTime wkpTransLaborTime = command.getTransLaborTime().toWkpTransTimeDomain(wkpId);
 		
-		val regulars = monthlyWorkTimeSetRepo.findWorkplace(companyId, wkpId, LaborWorkTypeAttr.REGULAR_LABOR, year);
-		addOrUpdate(normalSetting, regulars);
-
-		val flex = monthlyWorkTimeSetRepo.findWorkplace(companyId, wkpId, LaborWorkTypeAttr.FLEX, year);
-		addOrUpdate(flexSetting, flex);
-
-		val defor = monthlyWorkTimeSetRepo.findWorkplace(companyId, wkpId, LaborWorkTypeAttr.DEFOR_LABOR, year);
-		addOrUpdate(deforLaborSetting, defor);
-
-		val optRegularTime = regularLaborTimeRepository.find(companyId, wkpId);
-		if (optRegularTime.isPresent()) {
-			regularLaborTimeRepository.update(regularLaborTime);
+		Optional<WkpNormalSetting> optWkpNormalSet = this.wkpNormalSettingRepository.find(companyId, wkpId, year);
+		// Check info WkpNormalSetting if exist -> update into db / not exist -> insert into DB
+		if(optWkpNormalSet.isPresent()){
+			this.wkpNormalSettingRepository.update(wkpNormalSetting);
 		} else {
-			regularLaborTimeRepository.add(regularLaborTime);
+			this.wkpNormalSettingRepository.add(wkpNormalSetting);
+		}
+		
+		Optional<WkpFlexSetting> optWkpFlexSet = this.wkpFlexSettingRepository.find(companyId, wkpId, year);
+		// Check info WkpFlexSetting if exist -> update into db / not exist -> insert into DB
+		if(optWkpFlexSet.isPresent()) {
+			this.wkpFlexSettingRepository.update(wkpFlexSetting);
+		} else {
+			this.wkpFlexSettingRepository.add(wkpFlexSetting);
+		}
+		
+		Optional<WkpDeforLaborSetting> optWkpDeforSet = this.wkpDeforLaborSettingRepository.find(companyId, wkpId, year);
+		// Check info WkpDeforLaborSetting if exist -> update into db / not exist -> insert into DB
+		if(optWkpDeforSet.isPresent()) {
+			this.wkpDeforLaborSettingRepository.update(wkpDeforLaborSetting);
+		} else {
+			this.wkpDeforLaborSettingRepository.add(wkpDeforLaborSetting);
+		}
+		
+		Optional<WkpRegularLaborTime> optWkpRegularSet = this.wkpRegularWorkTimeRepository.find(companyId, wkpId);
+		// Check info WkpRegularLaborTime if exist -> update into db / not exist -> insert into DB
+		if(optWkpRegularSet.isPresent()){
+			this.wkpRegularWorkTimeRepository.update(wkpRegularLaborTime);
+		} else {
+			this.wkpRegularWorkTimeRepository.add(wkpRegularLaborTime);
+		}
+		
+		Optional<WkpTransLaborTime> optWkpTransSet = this.wkpSpeDeforLaborTimeRepository.find(companyId, wkpId);
+		// Check info WkpTransLaborTime if exist -> update into db / not exist -> insert into DB
+		if(optWkpTransSet.isPresent()) {
+			this.wkpSpeDeforLaborTimeRepository.update(wkpTransLaborTime);
+		} else {
+			this.wkpSpeDeforLaborTimeRepository.add(wkpTransLaborTime);
 		}
 
-		val optDeforTime = transLaborTimeRepository.find(companyId, wkpId);
-		if (optDeforTime.isPresent()) {
-			transLaborTimeRepository.update(deforLaborTime);
-		} else {
-			transLaborTimeRepository.add(deforLaborTime);
-		}
-	}
-	
-	private void addOrUpdate (List<MonthlyWorkTimeSetWkp> n, List<MonthlyWorkTimeSetWkp> o) {
-		
-		n.stream().forEach(mwtn -> {
-			if (o.stream().filter(mwto -> mwto.getYm().equals(mwtn.getYm())).findFirst().isPresent()) {
-				monthlyWorkTimeSetRepo.update(mwtn);
-			} else {
-				monthlyWorkTimeSetRepo.add(mwtn);
-			}
-		});
 	}
 
 }

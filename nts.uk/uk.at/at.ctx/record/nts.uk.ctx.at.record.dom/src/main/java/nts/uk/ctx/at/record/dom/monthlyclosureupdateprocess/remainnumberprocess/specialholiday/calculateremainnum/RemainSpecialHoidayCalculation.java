@@ -3,12 +3,15 @@ package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess
 import java.util.List;
 import java.util.Optional;
 
-import nts.arc.layer.app.cache.CacheCarrier;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 import nts.uk.shr.com.context.AppContexts;
 //
@@ -16,7 +19,12 @@ import nts.uk.shr.com.context.AppContexts;
  * 特別休暇残数計算
  * @author shuichi_ishida
  */
+@Stateless
 public class RemainSpecialHoidayCalculation {
+
+	/** 期間内の特別休暇残を集計する */
+	@Inject
+	private SpecialLeaveManagementService specialLeaveMng;
 	
 	/**
 	 * 特別休暇残数計算
@@ -27,8 +35,8 @@ public class RemainSpecialHoidayCalculation {
 	 * @param interimSpecialData 特別休暇暫定データリスト
 	 * @return 特別休暇の集計結果
 	 */
-	public static InPeriodOfSpecialLeave calculateRemainSpecial(RequireM1 require, CacheCarrier cacheCarrier, 
-			AggrPeriodEachActualClosure period, String empId, int specialLeaveCode,
+	public InPeriodOfSpecialLeave calculateRemainSpecial(AggrPeriodEachActualClosure period,
+			String empId, int specialLeaveCode,
 			List<InterimRemain> interimMng, List<InterimSpecialHolidayMng> interimSpecialData) {
 		
 		String companyId = AppContexts.user().companyId();
@@ -39,11 +47,6 @@ public class RemainSpecialHoidayCalculation {
 				true, period.getPeriod().end(), specialLeaveCode, true,
 				true, interimMng, interimSpecialData,
 				Optional.empty()); //ソースがエラーを発生しないようにとりあえずEmptyを追加した、修正依頼があったら修正してください
-		return SpecialLeaveManagementService.complileInPeriodOfSpecialLeave(require, cacheCarrier, param)
-					.getAggSpecialLeaveResult();
-	}
-	
-	public static interface RequireM1 extends SpecialLeaveManagementService.RequireM5 {
-		
+		return this.specialLeaveMng.complileInPeriodOfSpecialLeave(param).getAggSpecialLeaveResult();
 	}
 }

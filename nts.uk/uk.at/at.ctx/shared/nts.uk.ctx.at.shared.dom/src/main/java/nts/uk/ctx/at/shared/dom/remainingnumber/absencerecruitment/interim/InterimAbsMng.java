@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimMngCommon;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetDay;
 /**
@@ -17,15 +16,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffset
 @Getter
 @Setter
 @AllArgsConstructor
-public class InterimAbsMng extends AggregateRoot implements InterimMngCommon{
+public class InterimAbsMng extends AggregateRoot{
 	/**	暫定振休管理データID */
 	private String absenceMngId;
 	/**	必要日数 */
 	private RequiredDay requeiredDays;
 	/**	未相殺日数 */
 	private UnOffsetDay unOffsetDays;
-	@Override
-	public String getId() {
-		return absenceMngId;
-	}
 }

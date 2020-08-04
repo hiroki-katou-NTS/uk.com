@@ -6,7 +6,6 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.PrescribedWorkingTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.WorkTimeOfMonthly;
@@ -14,10 +13,12 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.H
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.OverTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 期間別の総労働時間
@@ -98,18 +99,20 @@ public class TotalWorkingTimeByPeriod implements Cloneable {
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 * @param workInfoOfDailyMap 日別実績の勤務情報リスト
 	 * @param companySets 月別集計で必要な会社別設定
+	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void aggregate(RequireM1 require,
+	public void aggregate(
 			DatePeriod datePeriod,
 			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
 			Map<GeneralDate, WorkInfoOfDailyPerformance> workInfoOfDailyMap,
-			MonAggrCompanySettings companySets){
+			MonAggrCompanySettings companySets,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 就業時間の集計
 		{
 			// 日別実績の集計処理
-			this.workTime.aggregateForByPeriod(require, 
-					datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap, companySets);
+			this.workTime.aggregateForByPeriod(
+					datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap, companySets, repositories);
 			
 			// 就業時間の合計処理
 			this.workTime.totalizeWorkTime(datePeriod);
@@ -132,8 +135,8 @@ public class TotalWorkingTimeByPeriod implements Cloneable {
 		this.holidayWorkTime.aggregateForByPeriod(datePeriod, attendanceTimeOfDailyMap, roleHolidayWorkFrameMap);
 		
 		// 休暇使用時間を集計する
-		this.vacationUseTime.confirm(require, datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap,
-				companySets);
+		this.vacationUseTime.confirm(datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap,
+				companySets, repositories);
 		this.vacationUseTime.aggregate(datePeriod);
 		
 		// 所定労働時間を集計する
@@ -150,9 +153,5 @@ public class TotalWorkingTimeByPeriod implements Cloneable {
 		return new AttendanceTimeMonth(this.workTime.getTotalWorkingTargetTime().v() +
 				this.overTime.getTotalWorkingTargetTime().v() +
 				this.holidayWorkTime.getTotalWorkingTargetTime().v());
-	}
-	
-	public static interface RequireM1 extends WorkTimeOfMonthly.RequireM1, VacationUseTimeOfMonthly.RequireM1 {
-		
 	}
 }

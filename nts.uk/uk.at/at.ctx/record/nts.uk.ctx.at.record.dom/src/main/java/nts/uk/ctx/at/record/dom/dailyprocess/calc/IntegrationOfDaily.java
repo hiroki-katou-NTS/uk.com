@@ -28,8 +28,6 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 
 /**
  * 日別実績(Work)
@@ -85,11 +83,6 @@ public class IntegrationOfDaily {
 	private List<EditStateOfDailyPerformance> editState;
 	//日別実績の臨時出退勤
 	private Optional<TemporaryTimeOfDailyPerformance> tempTime;
-	
-	/**日別勤怠の応援作業時間 */
-	private List<OuenWorkTimeOfDailyAttendance> ouenTime;
-	/**日別勤怠の応援作業時間帯 */
-	private List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet;
 	
 	//日別実績の備考
 	@Setter

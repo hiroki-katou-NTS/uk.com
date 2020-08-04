@@ -103,6 +103,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 //import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 //import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 //import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
 //import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
@@ -403,7 +404,7 @@ public class TotalWorkingTime {
 																							 recordWorkTimeCode,
 																							 recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 																							 recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-																							 conditionItem.getLaborSystem(),
+																							 recordClass.getPersonalInfo().getWorkingSystem(),
 																							 recordClass.getWorkDeformedLaborAdditionSet(),
 																							 recordClass.getWorkFlexAdditionSet(),
 																							 recordClass.getWorkRegularAdditionSet(),
@@ -431,7 +432,7 @@ public class TotalWorkingTime {
 					 																				  recordWorkTimeCode,
 					 																				  recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 					 																				  recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-					 																				  conditionItem.getLaborSystem(),
+					 																				  recordClass.getPersonalInfo().getWorkingSystem(),
 					 																				  recordClass.getWorkDeformedLaborAdditionSet(),
 					 																				  recordClass.getWorkFlexAdditionSet(),
 					 																				  recordClass.getWorkRegularAdditionSet(),
@@ -1059,7 +1060,7 @@ public class TotalWorkingTime {
 																	  workTimeCode,
 																	  recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),
 																	  recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
-																	  conditionItem.getLaborSystem(),
+																	  recordClass.getPersonalInfo().getWorkingSystem(),
 																	  recordClass.getWorkDeformedLaborAdditionSet(),
 																	  recordClass.getWorkFlexAdditionSet(),
 																	  recordClass.getWorkRegularAdditionSet(),
@@ -1085,7 +1086,7 @@ public class TotalWorkingTime {
 																														 workTimeCode,
 																														 recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),
 																														 recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
-																														 conditionItem.getLaborSystem(),
+																														 recordClass.getPersonalInfo().getWorkingSystem(),
 																														 recordClass.getWorkDeformedLaborAdditionSet(),
 																														 recordClass.getWorkFlexAdditionSet(),
 																														 recordClass.getWorkRegularAdditionSet(),
@@ -1127,7 +1128,7 @@ public class TotalWorkingTime {
 
 
 	public TotalWorkingTime SpecialHolidayCalculationForOotsuka(ManageReGetClass recordClass, VacationClass vacationClass, WorkType workType, Optional<WorkTimeDailyAtr> workTimeDailyAtr, Optional<SettingOfFlexWork> flexCalcMethod, BonusPayAutoCalcSet bonusPayAutoCalcSet, List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, WorkingConditionItem conditionItem, Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo, DeductLeaveEarly leaveLateSet) {
-		switch(conditionItem.getLaborSystem()) {
+		switch(recordClass.getPersonalInfo().getWorkingSystem()) {
 			case FLEX_TIME_WORK:
 				AttendanceTimeOfExistMinus flexTime = this.excessOfStatutoryTimeOfDaily.getOverTimeWork().get().getFlexTime().getFlexTime().getTime();
 				if(flexTime.lessThan(0))

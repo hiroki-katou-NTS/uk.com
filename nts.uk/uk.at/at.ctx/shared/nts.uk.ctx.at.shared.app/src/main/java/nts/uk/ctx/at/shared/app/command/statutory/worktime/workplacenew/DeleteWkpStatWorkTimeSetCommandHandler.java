@@ -11,11 +11,12 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetWkp;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeWkpRepo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeWkpRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpFlexSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpNormalSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpNormalSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -24,16 +25,25 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class DeleteWkpStatWorkTimeSetCommandHandler extends CommandHandler<DeleteWkpStatWorkTimeSetCommand> {
 
-	/** The trans labor time repository. */
+	/** The wkp normal setting repository. */
 	@Inject
-	private DeforLaborTimeWkpRepo transLaborTimeRepository;
+	private WkpNormalSettingRepository wkpNormalSettingRepository;
 
-	/** The regular labor time repository. */
+	/** The wkp flex setting repository. */
 	@Inject
-	private RegularLaborTimeWkpRepo regularLaborTimeRepository;
+	private WkpFlexSettingRepository wkpFlexSettingRepository;
 
+	/** The wkp defor labor setting repository. */
 	@Inject
-	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
+	private WkpDeforLaborSettingRepository wkpDeforLaborSettingRepository;
+
+	/** The wkp regular work time repository. */
+	@Inject
+	private WkpRegularLaborTimeRepository wkpRegularWorkTimeRepository;
+
+	/** The wkp spe defor labor time repository. */
+	@Inject
+	private WkpTransLaborTimeRepository wkpTransLaborTimeRepository;
 
 	/*
 	 * @see
@@ -49,17 +59,22 @@ public class DeleteWkpStatWorkTimeSetCommandHandler extends CommandHandler<Delet
 		String wkpId = command.getWorkplaceId();
 
 		// remove domains belong to year
-		monthlyWorkTimeSetRepo.removeWorkplace(companyId, wkpId, year);
+		this.wkpNormalSettingRepository.find(companyId, wkpId, year)
+				.ifPresent((setting) -> this.wkpNormalSettingRepository.remove(companyId, wkpId, year));
+		this.wkpFlexSettingRepository.find(companyId, wkpId, year)
+				.ifPresent((setting) -> this.wkpFlexSettingRepository.remove(companyId, wkpId, year));
+		this.wkpDeforLaborSettingRepository.find(companyId, wkpId, year)
+				.ifPresent((setting) -> this.wkpDeforLaborSettingRepository.remove(companyId, wkpId, year));
 
 		// set isOverOneYear == true
 		command.setOverOneYear(true);
 		
 		// if isOverOneYearRegister == false, remove remain domains
 		if (!this.isOverOneYearRegister(companyId, wkpId)) {
-			transLaborTimeRepository.find(companyId, wkpId)
-					.ifPresent((setting) -> transLaborTimeRepository.remove(companyId, wkpId));
-			regularLaborTimeRepository.find(companyId, wkpId)
-					.ifPresent((setting) -> regularLaborTimeRepository.remove(companyId, wkpId));
+			this.wkpRegularWorkTimeRepository.find(companyId, wkpId)
+					.ifPresent((setting) -> this.wkpRegularWorkTimeRepository.remove(companyId, wkpId));
+			this.wkpTransLaborTimeRepository.find(companyId, wkpId)
+					.ifPresent((setting) -> this.wkpTransLaborTimeRepository.remove(companyId, wkpId));
 
 			// set isOverOneYear == false
 			command.setOverOneYear(false);
@@ -76,7 +91,7 @@ public class DeleteWkpStatWorkTimeSetCommandHandler extends CommandHandler<Delet
 	public boolean isOverOneYearRegister(String cid, String wkpId) {
 
 		// find list wkp normal setting register
-		List<MonthlyWorkTimeSetWkp> listWkpNormalSetting = monthlyWorkTimeSetRepo.findWorkplace(cid, wkpId, LaborWorkTypeAttr.REGULAR_LABOR);
+		List<WkpNormalSetting> listWkpNormalSetting = this.wkpNormalSettingRepository.findList(cid, wkpId);
 
 		// check list wkp normal setting > 0
 		if (!listWkpNormalSetting.isEmpty() && listWkpNormalSetting.size() > 0) {

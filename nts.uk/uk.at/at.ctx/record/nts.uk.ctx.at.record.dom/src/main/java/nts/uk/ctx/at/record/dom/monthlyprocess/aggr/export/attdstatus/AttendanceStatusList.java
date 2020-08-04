@@ -7,13 +7,15 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
+import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.attdstatus.AttendanceStatus;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 出勤状態リスト
@@ -33,19 +35,18 @@ public class AttendanceStatusList {
 	 * コンストラクタ
 	 * @param employeeId 社員ID
 	 * @param period 期間
+	 * @param attendanceTimeOfDailyRepo 日別実績の勤怠時間リポジトリ
+	 * @param timeLeavingOfDailyRepo 日別実績の出退勤リポジトリ
 	 */
-	public AttendanceStatusList(RequireM1 require, String employeeId, DatePeriod period){
+	public AttendanceStatusList(
+			String employeeId,
+			DatePeriod period,
+			AttendanceTimeRepository attendanceTimeOfDailyRepo,
+			TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyRepo){
 
-		this.attendanceTimeOfDailys = require.dailyAttendanceTime(employeeId, period);
-		this.timeLeavingOfDailys = require.dailyTimeLeaving(employeeId, period);
+		this.attendanceTimeOfDailys = attendanceTimeOfDailyRepo.findByPeriodOrderByYmd(employeeId, period);
+		this.timeLeavingOfDailys = timeLeavingOfDailyRepo.findbyPeriodOrderByYmd(employeeId, period);
 		this.setData();
-	}
-	
-	public static interface RequireM1 {
-		
-		List<AttendanceTimeOfDailyPerformance> dailyAttendanceTime(String employeeId, DatePeriod datePeriod);
-		
-		List<TimeLeavingOfDailyPerformance> dailyTimeLeaving(String employeeId, DatePeriod datePeriod);
 	}
 	
 	/**

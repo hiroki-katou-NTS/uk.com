@@ -47,12 +47,6 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	private static final String QUERY_ABS_BY_ID = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.absenceMngID = :remainID"
 			+ " AND c.recruitmentMngAtr = :mngAtr";
-	private static final String QUERY_REC_BY_IDS = "SELECT c FROM KrcmtInterimRecAbs c"
-			+ " WHERE c.recAbsPk.recruitmentMngId IN :remainID"
-			+ " AND c.recruitmentMngAtr = :mngAtr";
-	private static final String QUERY_ABS_BY_IDS = "SELECT c FROM KrcmtInterimRecAbs c"
-			+ " WHERE c.recAbsPk.absenceMngID IN :remainID"
-			+ " AND c.recruitmentMngAtr = :mngAtr";
 	private static final String QUERY_REC_BY_DATEPERIOD = "SELECT c FROM KrcmtInterimRecMng c"
 			+ " WHERE c.recruitmentMngId in :mngIds"
 			+ " AND c.unUsedDays > :unUsedDays"
@@ -120,15 +114,6 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	public List<InterimRecAbsMng> getRecOrAbsMng(String interimId, boolean isRec, DataManagementAtr mngAtr) {
 		return this.queryProxy().query(isRec ? QUERY_REC_BY_ID : QUERY_ABS_BY_ID, KrcmtInterimRecAbs.class)
 				.setParameter("remainID", interimId)
-				.setParameter("mngAtr", mngAtr.value)
-				.getList(x -> toDomainRecAbs(x));
-	}
-	
-	@Override
-	public List<InterimRecAbsMng> getRecOrAbsMngs(List<String> interimIds, boolean isRec, DataManagementAtr mngAtr) {
-		if(interimIds.isEmpty()) return new ArrayList<>();
-		return this.queryProxy().query(isRec ? QUERY_REC_BY_IDS : QUERY_ABS_BY_IDS, KrcmtInterimRecAbs.class)
-				.setParameter("remainID", interimIds)
 				.setParameter("mngAtr", mngAtr.value)
 				.getList(x -> toDomainRecAbs(x));
 	}

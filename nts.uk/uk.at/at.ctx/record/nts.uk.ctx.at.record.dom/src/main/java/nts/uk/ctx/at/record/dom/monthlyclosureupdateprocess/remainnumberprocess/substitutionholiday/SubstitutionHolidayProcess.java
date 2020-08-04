@@ -2,8 +2,9 @@ package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess
 
 import java.util.Map;
 
-import nts.arc.layer.app.cache.CacheCarrier;
-import nts.arc.task.tran.AtomTask;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.substitutionholiday.calculateremainnum.RemainSubstitutionHolidayCalculation;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.substitutionholiday.deletetempdata.SubstitutionTempDataDeleting;
@@ -17,7 +18,18 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngD
  * @author HungTT - <<Work>> 振休処理
  *
  */
+
+@Stateless
 public class SubstitutionHolidayProcess {
+
+	@Inject
+	private RemainSubstitutionHolidayCalculation remainHolidayCalculation;
+	
+	@Inject
+	private RemainSubstitutionHolidayUpdating remainHolidayUpdate;
+	
+	@Inject
+	private SubstitutionTempDataDeleting tempDataDelete;
 	 
 	/**
 	 * 振休処理
@@ -25,21 +37,17 @@ public class SubstitutionHolidayProcess {
 	 * @param empId 社員ID
 	 * @param interimRemainMngMap 暫定管理データリスト
 	 */
-	public static AtomTask substitutionHolidayProcess(RequireM1 require, CacheCarrier cacheCarrier, 
-			AggrPeriodEachActualClosure period, String empId,
+	public void substitutionHolidayProcess(AggrPeriodEachActualClosure period, String empId,
 			Map<GeneralDate, DailyInterimRemainMngData> interimRemainMngMap) {
 		
 		// 振休残数計算
-		AbsRecRemainMngOfInPeriod output = RemainSubstitutionHolidayCalculation.calculateRemainHoliday(
-				require, cacheCarrier, period, empId, interimRemainMngMap);
+		AbsRecRemainMngOfInPeriod output = remainHolidayCalculation.calculateRemainHoliday(
+				period, empId, interimRemainMngMap);
 		
-		return AtomTask.of(() -> {})
-				.then(RemainSubstitutionHolidayUpdating.updateRemainSubstitutionHoliday(require, output.getLstAbsRecMng(),period, empId))// 振休残数更新
-				.then(SubstitutionTempDataDeleting.deleteTempSubstitutionData(require, period, empId));		// 振休暫定データ削除
-	}
-	
-	public static interface RequireM1 extends RemainSubstitutionHolidayCalculation.RequireM1,
-		SubstitutionTempDataDeleting.RequireM3, RemainSubstitutionHolidayUpdating.RequireM5 {
+		// 振休残数更新
+		remainHolidayUpdate.updateRemainSubstitutionHoliday(output.getLstAbsRecMng(),period, empId);
 		
+		// 振休暫定データ削除
+		tempDataDelete.deleteTempSubstitutionData(period, empId);
 	}
 }

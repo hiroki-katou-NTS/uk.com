@@ -117,12 +117,8 @@ import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
-import nts.uk.ctx.at.shared.dom.monthly.AttendanceAmountMonth;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.OuenTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.OuenWorkAggregateDetail;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.OuenWorkAggregateFrameDetail;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
@@ -133,8 +129,6 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.reflection.FieldReflection;
-import nts.gul.reflection.ReflectionUtil;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -2443,8 +2437,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	/** 36協定上限時間 */
 	@Column(name = "AGREEMENT_REG_TIME")
 	public int agreementRegTime;
-
-	
 	
 	@Override
 	protected Object getKey() {
@@ -3434,8 +3426,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/* KRCDT_MON_ATTENDANCE_TIME */
-	public void toEntityAttendanceTimeOfMonthly(AttendanceTimeOfMonthly domain,
-			KrcdtMonTimeSup ouenEntity) {
+	public void toEntityAttendanceTimeOfMonthly(AttendanceTimeOfMonthly domain) {
 		
 		this.startYmd = domain.getDatePeriod().start();
 		this.endYmd = domain.getDatePeriod().end();
@@ -3456,8 +3447,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		/** 回数集計 */
 		val totalCount = domain.getTotalCount();
 		toEntityTotalCount(totalCount.getTotalCountList());
-		
-		ouenEntity.setOuen(domain.getOuenTime());
 		
 		this.version = domain.getVersion();
 	}
@@ -5714,7 +5703,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * ドメインに変換
 	 * @return 月別実績の勤怠時間
 	 */
-	public AttendanceTimeOfMonthly toDomainAttendanceTimeOfMonthly(KrcdtMonTimeSup ouen) {
+	public AttendanceTimeOfMonthly toDomainAttendanceTimeOfMonthly() {
 		
 		// 月別実績の月の計算
 		MonthlyCalculation monthlyCalculation = toDomainMonthlyCalculation();
@@ -5739,8 +5728,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				excessOutsideWork,
 				verticalTotal,
 				totalCount,
-				new AttendanceDaysMonth(this.aggregateDays),
-				ouen.convertToOuen());
+				new AttendanceDaysMonth(this.aggregateDays));
 		
 		domain.setVersion(this.version);
 		

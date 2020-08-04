@@ -8,11 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
@@ -24,35 +21,29 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPreviousToNextGrantDate{
-
+	@Inject
+	private ClosureService closureService;
 	@Inject
 	private AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepository;
 	@Inject
+	private CalcNextAnnualLeaveGrantDate calcNextAnnGrantDate;
+	@Inject
 	private EmpEmployeeAdapter empEmployee;
-	@Inject 
-	private RecordDomRequireService requireService;
-	
 	@Override
 	public Optional<DatePeriod> getPeriodGrantDate(String cid, String sid, YearMonth ym, GeneralDate ymd) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
-	
 		// 社員に対応する処理締めを取得する
-		Closure closureInfor = ClosureService.getClosureDataByEmployee(require, cacheCarrier, sid, ymd);
+		Closure closureInfor = closureService.getClosureDataByEmployee(sid, ymd);
 		if(closureInfor == null) {
 			return Optional.empty();
 		}
 		//指定した年月の期間を算出する
-		DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(require, closureInfor.getClosureId().value, ym);
+		DatePeriod datePeriodClosure = closureService.getClosurePeriod(closureInfor.getClosureId().value, ym);
 		//指定した年月日を基準に、前回付与日から次回付与日までの期間を取得
 		 Optional<DatePeriod> periodGrant = this.getPeriodYMDGrant(cid, sid, datePeriodClosure.start().addDays(1));
 		return periodGrant;
 	}
 	@Override
 	public Optional<DatePeriod> getPeriodYMDGrant(String cid, String sid, GeneralDate ymd) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
-	
 		//ドメインモデル「年休社員基本情報」を取得する
 		Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfoOpt = annLeaEmpBasicInfoRepository.get(sid);
 		if(!annualLeaveEmpBasicInfoOpt.isPresent()) {
@@ -60,13 +51,12 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 		}
 		EmployeeImport employeeInfor = empEmployee.findByEmpId(sid);
 		//次回年休付与を計算
-		List<NextAnnualLeaveGrant> lstAnnGrantNotDate = CalcNextAnnualLeaveGrantDate.algorithm(require, cacheCarrier,
-				cid, sid, Optional.empty());
+		List<NextAnnualLeaveGrant> lstAnnGrantNotDate = calcNextAnnGrantDate.algorithm(cid, sid, Optional.empty());
 		List<NextAnnualLeaveGrant> lstAnnGrantDate = new ArrayList<>();
 		if(!lstAnnGrantNotDate.isEmpty()) {
 			DatePeriod period = new DatePeriod(employeeInfor.getEntryDate(), lstAnnGrantNotDate.get(0).getGrantDate().addYears(1));
 			//入社年月日～次回年休付与日までの年休付与日を全て取得
-			lstAnnGrantDate = CalcNextAnnualLeaveGrantDate.algorithm(require, cacheCarrier, cid, 
+			lstAnnGrantDate = calcNextAnnGrantDate.algorithm(cid, 
 					sid, 
 					Optional.of(period));
 		}

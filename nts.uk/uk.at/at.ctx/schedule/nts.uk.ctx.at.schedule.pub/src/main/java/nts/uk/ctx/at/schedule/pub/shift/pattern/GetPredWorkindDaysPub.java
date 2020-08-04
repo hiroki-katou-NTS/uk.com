@@ -2,7 +2,6 @@ package nts.uk.ctx.at.schedule.pub.shift.pattern;
 
 import java.util.Map;
 
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -25,5 +24,5 @@ public interface GetPredWorkindDaysPub {
 	 * @param workTypeMap 勤務種類マップ　（Object型=WorkType）
 	 * @return 所定労働日数
 	 */
-	public double byPeriod(CacheCarrier cacheCarrier, DatePeriod period, Map<String, Object> workTypeMap);
+	public double byPeriod(DatePeriod period, Map<String, Object> workTypeMap);
 }

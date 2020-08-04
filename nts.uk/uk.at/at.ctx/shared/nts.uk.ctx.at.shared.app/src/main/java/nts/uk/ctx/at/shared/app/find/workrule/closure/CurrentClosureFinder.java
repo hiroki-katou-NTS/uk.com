@@ -32,6 +32,8 @@ public class CurrentClosureFinder {
 	private ClosureRepository closureRepository;
 
 	/** The closure service. */
+	@Inject 
+	private ClosureService closureService;
 	
 	/**
 	 * Find closure name and period.
@@ -53,8 +55,8 @@ public class CurrentClosureFinder {
 			Optional<ClosureHistory> opClosureHistory = this.closureRepository.findByClosureIdAndCurrentMonth(companyId,
 					closure.getClosureId().value, closure.getClosureMonth().getProcessingYm().v());
 
-			DatePeriod currentPeriod = ClosureService.getClosurePeriod(closure.getClosureId().value,
-					closure.getClosureMonth().getProcessingYm(), Optional.of(closure));
+			DatePeriod currentPeriod = this.closureService.getClosurePeriod(closure.getClosureId().value,
+					closure.getClosureMonth().getProcessingYm());
 
 			if (opClosureHistory.isPresent()) {
 				CurrentClosureDto currentClosureDto = CurrentClosureDto.builder()

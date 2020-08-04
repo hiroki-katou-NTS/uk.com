@@ -2,7 +2,7 @@
 
 module nts.uk.at.kdp003.a {
 	const stampEmployeeSelectionTemplate = `
-		<div data-bind="ntsDatePicker: { value: $component.options.baseDate }"></div>
+		<div data-bind="ntsDatePicker: { value: baseDate }"></div>
 		<div class="button-group-filter" data-bind="foreach: buttons">
 			<button class="small filter" data-bind="
 					i18n: text, 
@@ -15,7 +15,7 @@ module nts.uk.at.kdp003.a {
 					i18n: '一覧にない社員で打刻する',
 					click: loginEmployeeNotInList,
 					css: { 
-						'active': ko.toJS(options.selectedId) === null
+						'active': ko.unwrap(options.selectedId) === null
 					}"></button>
 			<div class="list-employee">
 				<table id="grid-employee"></table>
@@ -23,57 +23,14 @@ module nts.uk.at.kdp003.a {
 		</div>
 	`;
 
-	const COMPONENT_NAME = 'stamp-employee-selection';
-
-	enum CHARACTER {
-		ALL = '全員',
-		A = 'ア',
-		KA = 'カ',
-		SA = 'サ',
-		TA = 'タ',
-		NA = 'ナ',
-		HA = 'ハ',
-		MA = 'マ',
-		YA = 'ヤ',
-		RA = 'ラ',
-		WA = 'ワ'
-	};
-
-	const CHARACTERS = {
-		A: ['ア', 'イ', 'ウ', 'エ', 'オ', 'ァ', 'ィ', 'ゥ', 'ェ', 'ォ', 'ヴ'],
-		KA: ['カ', 'キ', 'ク', 'ケ', 'コ', 'ガ', 'ギ', 'グ', 'ゲ', 'ゴ', 'ヵ', 'ヶ'],
-		SA: ['サ', 'シ', 'ス', 'セ', 'ソ', 'ザ', 'ジ', 'ズ', 'ゼ', 'ゾ'],
-		TA: ['タ', 'チ', 'ツ', 'テ', 'ト', 'ダ', 'ヂ', 'ヅ', 'デ', 'ド', '	ッ'],
-		NA: ['ナ', 'ニ', 'ヌ', 'ネ', 'ノ'],
-		HA: ['ハ', 'ヒ', 'フ', 'ヘ', 'ホ', 'バ', 'ビ', 'ブ', 'ベ', 'ボ', 'パ', 'ピ', 'プ', 'ペ', 'ポ'],
-		MA: ['マ', 'ミ', 'ム', 'メ', 'モ'],
-		YA: ['ヤ', 'ユ', 'ヨ', 'ャ', 'ュ', 'ョ'],
-		RA: ['ラ', 'リ', 'ル', 'レ', 'ロ'],
-		WA: ['ワ', 'ヲ', 'ン', 'ヮ']
-	};
-
-	@handler({
-		bindingName: COMPONENT_NAME,
-		validatable: true,
-		virtual: false
-	})
-	export class EmployeeComponentBindingHandler implements KnockoutBindingHandler {
-		init(element: HTMLElement, valueAccessor: () => any, __ab: KnockoutAllBindingsAccessor, ___vm: ComponentViewModel, bindingContext: KnockoutBindingContext) {
-			const name = COMPONENT_NAME;
-			const params = valueAccessor();
-
-			ko.applyBindingsToNode(element, { component: { name, params } }, bindingContext);
-
-			return { controlsDescendantBindings: true };
-		}
-	}
-
 	@component({
-		name: COMPONENT_NAME,
+		name: 'stamp-employee-selection',
 		template: stampEmployeeSelectionTemplate
 	})
 	export class StampEmployeeSelectionComponent extends ko.ViewModel {
 		$grid!: JQuery;
+
+		baseDate: KnockoutObservable<Date> = ko.observable(new Date());
 
 		button: KnockoutObservable<string> = ko.observable('KDP003_111');
 
@@ -87,9 +44,8 @@ module nts.uk.at.kdp003.a {
 			if (!vm.options) {
 				vm.options = {
 					employees: ko.observableArray([]),
-					selectedId: ko.observable(undefined),
-					employeeAuthcUseArt: ko.observable(true),
-					baseDate: ko.observable(new Date())
+					selectedId: ko.observable(null),
+					employeeAuthcUseArt: ko.observable(true)
 				};
 			} else {
 				if (!_.has(vm.options, 'employees')) {
@@ -97,91 +53,117 @@ module nts.uk.at.kdp003.a {
 				}
 
 				if (!_.has(vm.options, 'selectedId')) {
-					vm.options.selectedId = ko.observable(undefined);
-				}
-				
-				if (!_.has(vm.options, 'baseDate')) {
-					vm.options.baseDate = ko.observable(new Date());
+					vm.options.selectedId = ko.observable(null);
 				}
 			}
 		}
 
-
-		/**
-		 * order list employee by name and code
-		 */
-		private orderedData(data: Employee[]) {
-			return _.orderBy(data, ['employeeName', 'employeeCode'], ['asc', 'asc'])
-		}
-
 		created() {
 			const vm = this;
+			const buttons: Button[] = [];
+			const employees: Employee[] = [];
 
-			// initial list button filter
-			const buttons: Button[] = _.range(1, 12, 1)
-				.map(m => ({
-					width: m === 11 ? 2 : 1,
-					text: `KDP003_1${_.padStart(`${m}`, 2, '0')}`
-				}));
+			// mock data
+			['ア', 'カ', 'サ', 'タ', 'ナ', 'ハ', 'マ', 'ヤ', 'ラ', 'ワ']
+				.forEach((t, i) => {
+					_.extend(window.names, {
+						[`KDP003_10${i}`]: t
+					});
+				});
 
-			vm.buttons(buttons);
+			_.extend(window.names, {
+				'KDP003_111': '全員'
+			});
+
+			[
+				'ア大塚', 'イ大塚', 'ウ大塚', 'エ大塚', 'オ大塚', 'ァ大塚', 'ァ大塚', 'ィ大塚', 'ゥ大塚', 'ェ大塚', 'ォ大塚', 'ヴ大塚',
+				'カ大塚', 'キ大塚', 'ク大塚', 'ケ大塚', 'コ大塚', 'ガ大塚', 'ギ大塚', 'グ大塚', 'ゲ大塚', 'ゴ大塚', 'ヵ大塚', 'ヶ大塚',
+				'サ大塚', 'シ大塚', 'ス大塚', 'セ大塚', 'ソ大塚', 'ザ大塚', 'ジ大塚', 'ズ大塚', 'ゼ大塚', 'ゾ大塚'
+			]
+				.forEach((t, i) => {
+					employees.push({
+						id: _.padStart(`${i + 1}`, 12, '0'),
+						code: _.padStart(`${i + 1}`, 6, '0'),
+						name: t
+					})
+				});
+
+			vm.options.employees(employees);
+			// end mock data
 
 			ko.computed({
 				read: () => {
 					const $grid = vm.$grid;
 					const type = ko.unwrap(vm.button);
-					const dataSource: Employee[] = ko.unwrap(vm.options.employees);
+					const dataSource = ko.unwrap(vm.options.employees);
 
-					const filtereds: Employee[] = [];
+					const filtereds = [];
 					const doFilter = (codes: string[]) => {
-						return _.filter(dataSource, (record: Employee) => codes.indexOf(record.employeeName[0]) > -1);
+						return _.filter(dataSource, (record: Employee) => codes.indexOf(record.name[0]) > -1);
 					};
 
 					if ($grid && $grid.data('igGrid')) {
 						switch (vm.$i18n(type)) {
 							default:
-							case CHARACTER.ALL:
+							case '全員':
 								filtereds.push(...dataSource);
 								break;
-							case CHARACTER.A:
-								filtereds.push(...doFilter(CHARACTERS.A));
+							case 'ア':
+								filtereds.push(...doFilter(['ア', 'イ', 'ウ', 'エ', 'オ', 'ァ', 'ィ', 'ゥ', 'ェ', 'ォ', 'ヴ']));
 								break;
-							case CHARACTER.KA:
-								filtereds.push(...doFilter(CHARACTERS.KA));
+							case 'カ':
+								filtereds.push(...doFilter(['カ', 'キ', 'ク', 'ケ', 'コ', 'ガ', 'ギ', 'グ', 'ゲ', 'ゴ', 'ヵ', 'ヶ']));
 								break;
-							case CHARACTER.SA:
-								filtereds.push(...doFilter(CHARACTERS.SA));
+							case 'サ':
+								filtereds.push(...doFilter(['サ', 'シ', 'ス', 'セ', 'ソ', 'ザ', 'ジ', 'ズ', 'ゼ', 'ゾ']));
 								break;
-							case CHARACTER.TA:
-								filtereds.push(...doFilter(CHARACTERS.TA));
+							case 'タ':
+								filtereds.push(...doFilter(['タ', 'チ', 'ツ', 'テ', 'ト', 'ダ', 'ヂ', 'ヅ', 'デ', 'ド', '	ッ']));
 								break;
-							case CHARACTER.NA:
-								filtereds.push(...doFilter(CHARACTERS.NA));
+							case 'ナ':
+								filtereds.push(...doFilter(['ナ', 'ニ', 'ヌ', 'ネ', 'ノ']));
 								break;
-							case CHARACTER.HA:
-								filtereds.push(...doFilter(CHARACTERS.HA));
+							case 'ハ':
+								filtereds.push(...doFilter(['ハ', 'ヒ', 'フ', 'ヘ', 'ホ', 'バ', 'ビ', 'ブ', 'ベ', 'ボ', 'パ', 'ピ', 'プ', 'ペ', 'ポ']));
 								break;
-							case CHARACTER.MA:
-								filtereds.push(...doFilter(CHARACTERS.MA));
+							case 'マ':
+								filtereds.push(...doFilter(['マ', 'ミ', 'ム', 'メ', 'モ']));
 								break;
-							case CHARACTER.YA:
-								filtereds.push(...doFilter(CHARACTERS.YA));
+							case 'ヤ':
+								filtereds.push(...doFilter(['ヤ', 'ユ', 'ヨ', 'ャ', 'ュ', 'ョ']));
 								break;
-							case CHARACTER.RA:
-								filtereds.push(...doFilter(CHARACTERS.RA));
+							case 'ラ':
+								filtereds.push(...doFilter(['ラ', 'リ', 'ル', 'レ', 'ロ']));
 								break;
-							case CHARACTER.WA:
-								filtereds.push(...doFilter(CHARACTERS.WA));
+							case 'ワ':
+								filtereds.push(...doFilter(['ワ', 'ヲ', 'ン', 'ヮ']));
 								break;
 						}
 
-						vm.options.selectedId(undefined);
 						$grid.igGridSelection('clearSelection');
 
-						$grid.igGrid('option', 'dataSource', vm.orderedData(filtereds));
+						$grid.igGrid('option', 'dataSource', _.orderBy(filtereds, ['name', 'code'], ['asc', 'asc']));
 					}
 				}
 			});
+
+			// initial list button filter 
+			_.each([
+				'KDP003_100',
+				'KDP003_101',
+				'KDP003_102',
+				'KDP003_103',
+				'KDP003_104',
+				'KDP003_105',
+				'KDP003_106',
+				'KDP003_107',
+				'KDP003_108',
+				'KDP003_109'
+			], (text) => buttons.push({ text, width: 1 }));
+
+			buttons.push({ text: 'KDP003_111', width: 2 });
+
+			vm.buttons(buttons);
 		}
 
 		mounted() {
@@ -194,22 +176,21 @@ module nts.uk.at.kdp003.a {
 				.igGrid({
 					showHeader: false,
 					columns: [
-						{ headerText: "", key: "employeeId", dataType: "string", hidden: true },
-						{ headerText: "", key: "employeeCode", width: '80px', dataType: "string" },
-						{ headerText: "", key: "employeeName", dataType: "string" }
+						{ headerText: "", key: "code", width: '80px', dataType: "string" },
+						{ headerText: "", key: "name", dataType: "string" }
 					],
 					features: [
 						{
 							name: "Selection",
 							mode: "row",
-							rowSelectionChanged: function(__: any, ui: any) {
+							rowSelectionChanged: function(evt, ui) {
 								const { index } = ui.row;
-								const dataSources: Employee[] = $grid.igGrid('option', 'dataSource');
+								const dataSources = ko.unwrap(vm.options.employees);
 
 								if (dataSources[index]) {
-									vm.options.selectedId(dataSources[index].employeeId);
+									vm.options.selectedId(dataSources[index].id);
 								} else {
-									vm.options.selectedId(undefined);
+									vm.options.selectedId(null);
 
 									if ($grid && $grid.data('igGrid')) {
 										$grid.igGridSelection('clearSelection');
@@ -220,17 +201,18 @@ module nts.uk.at.kdp003.a {
 					],
 					width: "240px",
 					height: `${65 * 7}px`,
-					dataSource: vm.orderedData(ko.toJS(vm.options.employees))
+					dataSource: _.orderBy(ko.toJS(vm.options.employees), ['name', 'code'], ['asc', 'asc'])
 				});
 
-			/**
-			 * trigger resize and show row on grid by window height
-			 */
+			_.extend(window, { vmm: vm, $grid });
+
+			$(vm.$el).find('[data-bind]').removeAttr('data-bind');
+
 			$(window)
 				.on('resize', () => {
 					const grid = $grid.get(0);
 
-					if (grid && $grid.data('igGrid')) {
+					if (grid) {
 						const top = grid.getBoundingClientRect().top;
 						const minHeight = 65 * 3;
 						const maxHeight = Math.floor((window.innerHeight - top - 20) / 65) * 65;
@@ -251,6 +233,11 @@ module nts.uk.at.kdp003.a {
 				$grid.igGridSelection('clearSelection');
 			}
 		}
+
+		destroy() {
+			const vm  = this;
+			console.log('destroy', vm);
+		}
 	}
 
 	interface Button {
@@ -259,28 +246,14 @@ module nts.uk.at.kdp003.a {
 	}
 
 	export interface Employee {
-		employeeId: string;
-		employeeCode: string;
-		employeeName: string;
-	}
-
-	export interface EmployeeListData {
-		employees: Employee[];
-		/**
-		* employeeId
-		* string: selected
-		* null: select to 一覧にない社員で打刻する
-		* undefined: not select
-		*/
-		selectedId: string | null | undefined;
-		employeeAuthcUseArt: boolean;
-		baseDate: Date;
+		id: string;
+		code: string;
+		name: string;
 	}
 
 	export interface EmployeeListParam {
 		employees: KnockoutObservableArray<Employee>;
-		selectedId: KnockoutObservable<string | null | undefined>;
+		selectedId: KnockoutObservable<string | null>;
 		employeeAuthcUseArt: KnockoutObservable<boolean>;
-		baseDate: KnockoutObservable<Date>;
 	}
 }

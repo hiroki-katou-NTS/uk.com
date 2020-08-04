@@ -4,17 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.statutory.worktime.company;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
-import nts.uk.ctx.at.shared.app.find.statutory.worktime.shared.DeformationLaborSettingDto;
-import nts.uk.ctx.at.shared.app.find.statutory.worktime.shared.FlexSettingDto;
-import nts.uk.ctx.at.shared.app.find.statutory.worktime.shared.NormalSettingDto;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeComRepo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeComRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.company.CompanyWtSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.company.CompanyWtSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -25,13 +21,7 @@ public class CompanyWtSettingFinder {
 
 	/** The repository. */
 	@Inject
-	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
-	
-	@Inject 
-	private DeforLaborTimeComRepo deforLaborTimeComRepo;
-	
-	@Inject
-	private RegularLaborTimeComRepo regularLaborTimeComRepo;
+	private CompanyWtSettingRepository repository;
 
 	/**
 	 * Find.
@@ -42,23 +32,12 @@ public class CompanyWtSettingFinder {
 		/** The company id. */
 		String companyId = AppContexts.user().companyId();
 		
-		CompanyWtSettingDto dto = null;
-		
-		val defor = deforLaborTimeComRepo.find(companyId);
-		val regular = regularLaborTimeComRepo.find(companyId);
-		val flexWorkTime = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.FLEX, year);
-		val deforWorkTime = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.DEFOR_LABOR, year);
-		val regularWorkTime = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.REGULAR_LABOR, year);
-		
+		Optional<CompanyWtSetting> optCompanySetting = this.repository.find(companyId, year);
 		// Update mode.
-		if(defor.isPresent() && regular.isPresent()) {
-			dto = new CompanyWtSettingDto(
-					FlexSettingDto.with(flexWorkTime), 
-					DeformationLaborSettingDto.with(defor.get(), deforWorkTime),
-					year, 
-					NormalSettingDto.with(regular.get(), regularWorkTime));
+		if(optCompanySetting.isPresent()) {
+			return CompanyWtSettingDto.fromDomain(optCompanySetting.get());
 		}
 		// New mode.
-		return dto;
+		return null;
 	}
 }

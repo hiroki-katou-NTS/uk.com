@@ -8,12 +8,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
@@ -30,6 +28,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 @Stateless
 public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngRegister{
 	@Inject
+	private InterimRemainOffPeriodCreateData periodCreateData;
+	@Inject
 	private InterimRemainRepository interimRemainRepos;
 	@Inject
 	private TmpAnnualHolidayMngRepository annualHolidayMngRepos;
@@ -41,16 +41,10 @@ public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngReg
 	private InterimBreakDayOffMngRepository breakDayOffRepos;
 	@Inject
 	private InterimSpecialHolidayMngRepository specialHoliday;
-	/** REQUIRE対応 */
-	@Inject
-	private RemainNumberTempRequireService requireService;
-	
 	@Override
 	public void registryInterimDataMng(InterimRemainCreateDataInputPara inputData, CompanyHolidayMngSetting comHolidaySetting) {
 		//指定期間の暫定残数管理データを作成する
-		Map<GeneralDate, DailyInterimRemainMngData> interimDataMng = InterimRemainOffPeriodCreateData
-				.createInterimRemainDataMng(requireService.createRequire(), new CacheCarrier(),
-											inputData, comHolidaySetting);
+		Map<GeneralDate, DailyInterimRemainMngData> interimDataMng = periodCreateData.createInterimRemainDataMng(inputData, comHolidaySetting);
 		List<GeneralDate> lstInterimDate = new ArrayList<>();
 		interimDataMng.forEach((x, y) -> {
 			lstInterimDate.add(x);

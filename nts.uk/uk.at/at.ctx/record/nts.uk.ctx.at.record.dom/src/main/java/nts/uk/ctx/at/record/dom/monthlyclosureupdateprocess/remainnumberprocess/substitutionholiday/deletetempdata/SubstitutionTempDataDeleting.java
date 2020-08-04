@@ -3,68 +3,55 @@ package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nts.arc.task.tran.AtomTask;
-import nts.arc.time.calendar.period.DatePeriod;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 
  * @author HungTT -<<Work>> 振休暫定データ削除
  *
  */
+
+@Stateless
 public class SubstitutionTempDataDeleting {
 
+	@Inject
+	private InterimRecAbasMngRepository tempDataRepo;
+
+	@Inject
+	private InterimRemainRepository tempRemainRepo;
+
 	// 暫定データ削除
-	public static AtomTask deleteTempSubstitutionData(RequireM3 require, 
-			AggrPeriodEachActualClosure period, String empId) {
-		
-		return deleteTempPayoutMngData(require, period.getPeriod(), empId)
-				.then(deleteTempSubstitutionData(require, period.getPeriod(), empId));
+	public void deleteTempSubstitutionData(AggrPeriodEachActualClosure period, String empId) {
+		deleteTempPayoutMngData(period.getPeriod(), empId);
+		deleteTempSubstitutionData(period.getPeriod(), empId);
 	}
 
 	// 振出暫定データの削除
-	private static AtomTask deleteTempPayoutMngData(RequireM2 require, DatePeriod period, String employeeId) {
-		List<InterimRemain> listTempRemain = require.interimRemain(employeeId, period, RemainType.PICKINGUP);
-		
+	private void deleteTempPayoutMngData(DatePeriod period, String employeeId) {
+		List<InterimRemain> listTempRemain = tempRemainRepo.getRemainBySidPriod(employeeId, period,
+				RemainType.PICKINGUP);
 		if (CollectionUtil.isEmpty(listTempRemain))
-			return AtomTask.of(() -> {});
-		
+			return;
 		List<String> listRecId = listTempRemain.stream().map(r -> r.getRemainManaID()).collect(Collectors.toList());
-		
-		return AtomTask.of(() -> require.deleteInterimRecMng(listRecId));
+		tempDataRepo.deleteInterimRecMng(listRecId);
 	}
 
 	// 振休暫定データの削除
-	private static AtomTask deleteTempSubstitutionData(RequireM1 require, DatePeriod period, String employeeId) {
-		List<InterimRemain> listTempRemain = require.interimRemain(employeeId, period, RemainType.PAUSE);
-		
+	private void deleteTempSubstitutionData(DatePeriod period, String employeeId) {
+		List<InterimRemain> listTempRemain = tempRemainRepo.getRemainBySidPriod(employeeId, period, RemainType.PAUSE);
 		if (CollectionUtil.isEmpty(listTempRemain))
-			return AtomTask.of(() -> {});
-		
+			return;
 		List<String> listAbsId = listTempRemain.stream().map(r -> r.getRemainManaID()).collect(Collectors.toList());
-		
-		return AtomTask.of(() -> require.deleteInterimAbsMng(listAbsId));
+		tempDataRepo.deleteInterimAbsMng(listAbsId);
 	}
 
-	public static interface RequireM3 extends RequireM1, RequireM2 {
-		
-	}
-
-	private static interface RequireM2 extends RequireM0 {
-		
-		void deleteInterimRecMng(List<String> listRecId);
-	}
-
-	private static interface RequireM1 extends RequireM0 {  
-		
-		void deleteInterimAbsMng(List<String> listAbsMngId);
-	}
-
-	private static interface RequireM0 {
-		
-		List<InterimRemain> interimRemain(String employeeId, DatePeriod dateData, RemainType remainType);
-	}
 }

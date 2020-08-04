@@ -2,10 +2,9 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.work.service;
 
 import java.util.List;
 
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ScheRemainCreateInfor;
+import nts.arc.time.calendar.period.DatePeriod;
 
 public interface RemainCreateInforByScheData {
 	/**
@@ -15,7 +14,7 @@ public interface RemainCreateInforByScheData {
 	 * @param dateData 期間
 	 * @return
 	 */
-	List<ScheRemainCreateInfor> createRemainInfor(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod dateData);
+	List<ScheRemainCreateInfor> createRemainInfor(String cid, String sid, DatePeriod dateData);
 	/**
 	 * 
 	 * @param cid
@@ -23,5 +22,5 @@ public interface RemainCreateInforByScheData {
 	 * @param dates　リスト
 	 * @return
 	 */
-	List<ScheRemainCreateInfor> createRemainInfor(CacheCarrier cacheCarrier, String cid, String sid, List<GeneralDate> dates);
+	List<ScheRemainCreateInfor> createRemainInfor(String cid, String sid, List<GeneralDate> dates);
 }

@@ -80,6 +80,9 @@
 //	private DailyPerformanceScreenRepo repo;
 //	
 //	@Inject
+//	private ClosureService closureService;
+//	
+//	@Inject
 //	private DailyModifyQueryProcessor dailyModifyQueryProcessor;
 //	
 //	@Inject

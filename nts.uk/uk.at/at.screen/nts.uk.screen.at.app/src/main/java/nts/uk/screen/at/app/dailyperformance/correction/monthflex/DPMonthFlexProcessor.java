@@ -13,12 +13,10 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatMonthlyRepository;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatMonthlyRepository;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthFinder;
@@ -74,7 +72,7 @@ public class DPMonthFlexProcessor {
     private MonthlyItemControlByAuthFinder monthlyItemControlByAuthFinder;
     
     @Inject
-    private RecordDomRequireService requireService;
+    private ClosureService closureService;
     
 
 	private static final List<Integer> DAFAULT_ITEM = Arrays.asList(18, 19, 21, 189, 190, 191, 202, 204);
@@ -86,9 +84,7 @@ public class DPMonthFlexProcessor {
 		List<MonthlyModifyResult> itemMonthFlexResults = new ArrayList<>();
 		//nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService.getClosureDataByEmployee
 		// 社員に対応する処理締めを取得する
-		Closure closure = ClosureService.getClosureDataByEmployee(
-				requireService.createRequire(), new CacheCarrier(),
-				param.getEmployeeId(), param.getDate());
+		Closure closure = closureService.getClosureDataByEmployee(param.getEmployeeId(), param.getDate());
 		if(closure == null) return null;
 		Optional<ClosurePeriod> closurePeriodOpt = closure.getClosurePeriodByYmd(param.getDate());
 		

@@ -6,7 +6,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
@@ -21,12 +20,7 @@ public class SysEmploymentHisAdapterImpl implements SysEmploymentHisAdapter{
 	
 	@Override
 	public Optional<SEmpHistoryImport> findSEmpHistBySid(String companyId, String employeeId, GeneralDate baseDate) {
-		val cacheCarrier = new CacheCarrier();
-		return findSEmpHistBySidRequire(cacheCarrier, companyId, employeeId, baseDate);
-	}
-	@Override
-	public Optional<SEmpHistoryImport> findSEmpHistBySidRequire(CacheCarrier cacheCarrier, String companyId, String employeeId, GeneralDate baseDate) {
-		val sEmp = syEmploymentPub.findSEmpHistBySidRequire(cacheCarrier, companyId, employeeId, baseDate);
+		val sEmp = syEmploymentPub.findSEmpHistBySid(companyId, employeeId, baseDate);
 		return convertToSEmpHistExport(sEmp);
 	}
 	

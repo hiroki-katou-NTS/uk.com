@@ -12,15 +12,18 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.statutory.worktime.employeeNew.ShainStatWorkTimeSetDto.ShainStatWorkTimeSetDtoBuilder;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeSha;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeShaRepo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeSha;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeShaRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -29,16 +32,25 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class ShainStatWorkTimeSetFinder {
 
+	/** The normal setting repository. */
+	@Inject
+	private ShainNormalSettingRepository normalSettingRepository;
+
+	/** The flex setting repository. */
+	@Inject
+	private ShainFlexSettingRepository flexSettingRepository;
+
+	/** The defor labor setting repository. */
+	@Inject
+	private ShainDeforLaborSettingRepository deforLaborSettingRepository;
+
 	/** The trans labor time repository. */
 	@Inject
-	private DeforLaborTimeShaRepo transLaborTimeRepository;
+	private ShainTransLaborTimeRepository speDeforLaborTimeRepository; 
 
 	/** The regular labor time repository. */
 	@Inject
-	private RegularLaborTimeShaRepo regularLaborTimeRepository;
-
-	@Inject
-	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
+	private ShainRegularWorkTimeRepository regularWorkTimeRepository;
 
 	/**
 	 * Gets the details.
@@ -55,29 +67,29 @@ public class ShainStatWorkTimeSetFinder {
 		dtoBuilder.year(year);
 		dtoBuilder.employeeId(empId);
 
-		Optional<DeforLaborTimeSha> optTransLaborTime = this.transLaborTimeRepository.find(companyId, empId);
-		if (optTransLaborTime.isPresent()) {
-			dtoBuilder.transLaborTime(WorkingTimeSettingDto.fromDomain(optTransLaborTime.get()));
+		Optional<ShainNormalSetting> optComNormalSet = this.normalSettingRepository.find(companyId, empId, year);
+		if (optComNormalSet.isPresent()) {
+			dtoBuilder.normalSetting(ShainNormalSettingDto.fromDomain(optComNormalSet.get()));
 		}
 
-		Optional<RegularLaborTimeSha> optComRegular = this.regularLaborTimeRepository.find(companyId, empId);
-		if (optComRegular.isPresent()) {
-			dtoBuilder.regularLaborTime(WorkingTimeSettingDto.fromDomain(optComRegular.get()));
+		Optional<ShainFlexSetting> optComFlexSet = this.flexSettingRepository.find(companyId,empId, year);
+		if (optComFlexSet.isPresent()) {
+			dtoBuilder.flexSetting(ShainFlexSettingDto.fromDomain(optComFlexSet.get()));
 		}
 
-		val regularSet = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.REGULAR_LABOR, year);
-		if (!regularSet.isEmpty()) {
-			dtoBuilder.normalSetting(ShainNormalSettingDto.with(companyId, empId, year, regularSet));
+		Optional<ShainDeforLaborSetting> optComDeforLaborSet = this.deforLaborSettingRepository.find(companyId,empId, year);
+		if (optComDeforLaborSet.isPresent()) {
+			dtoBuilder.deforLaborSetting(ShainDeforLaborSettingDto.fromDomain(optComDeforLaborSet.get()));
 		}
 		
-		val flexSet = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.FLEX, year);
-		if (!flexSet.isEmpty()) {
-			dtoBuilder.flexSetting(ShainFlexSettingDto.with(companyId, empId, year, flexSet));
+		Optional<ShainTransLaborTime> optTransLaborTime = this.speDeforLaborTimeRepository.find(companyId, empId);
+		if (optTransLaborTime.isPresent()) {
+			dtoBuilder.transLaborTime(WorkingTimeSettingDto.fromDomain(optTransLaborTime.get().getWorkingTimeSet()));
 		}
 
-		val deforSet = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.DEFOR_LABOR, year);
-		if (!deforSet.isEmpty()) {
-			dtoBuilder.deforLaborSetting(ShainDeforLaborSettingDto.with(year, companyId, empId, deforSet));
+		Optional<ShainRegularLaborTime> optComRegular = this.regularWorkTimeRepository.find(companyId, empId);
+		if (optComRegular.isPresent()) {
+			dtoBuilder.regularLaborTime(WorkingTimeSettingDto.fromDomain(optComRegular.get().getWorkingTimeSet()));
 		}
 
 		return dtoBuilder.build();
@@ -96,13 +108,11 @@ public class ShainStatWorkTimeSetFinder {
 		List<ShainRegularWorkHourDto> listShainRegWorkHourDto = new ArrayList<>();
 		
 		// get list employee regular labor time
-		List<RegularLaborTimeSha> listShainRegLaborTime = this.regularLaborTimeRepository.findAll(companyId);
+		List<ShainRegularLaborTime> listShainRegLaborTime = this.regularWorkTimeRepository.findAll(companyId);
 		
 		// check list is not empty
 		if(!listShainRegLaborTime.isEmpty()){			
-			listShainRegWorkHourDto = listShainRegLaborTime.stream().map(domain -> 
-				ShainRegularWorkHourDto.fromDomain(domain))
-			.collect(Collectors.toList());
+			listShainRegWorkHourDto = listShainRegLaborTime.stream().map(domain -> ShainRegularWorkHourDto.fromDomain(domain)).collect(Collectors.toList());
 		}
 		
 		return listShainRegWorkHourDto;

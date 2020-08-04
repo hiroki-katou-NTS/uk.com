@@ -12,12 +12,10 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.byperiod.AttendanceTimeOfAnyPeriodRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcution;
@@ -31,9 +29,10 @@ import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.peri
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriod;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodRepository;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 実装：任意期間集計Mgr
@@ -51,6 +50,9 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 	/** 任意期間集計対象者 */
 	@Inject
 	private AggrPeriodTargetRepository targetRepo;
+	/** 月別集計が必要とするリポジトリ */
+	@Inject
+	private RepositoriesRequiredByMonthlyAggr repositories;
 	/** 任意期間集計Mgr　（アルゴリズム） */
 	@Inject
 	private AggregateByPeriodRecordService aggregateByPeriod;
@@ -60,15 +62,12 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 	/** エラーメッセージ情報 */
 	@Inject
 	private AggrPeriodInforRepository inforRepo;
-	@Inject 
-	private RecordDomRequireService requireService;
 	
 	/** 任意期間集計Mgrクラス */
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public <C> void manager(String companyId, String executeId, AsyncCommandHandlerContext<C> async) {
-		val require = requireService.createRequire();
-	
+
 		// 実行状態　初期設定
 		val dataSetter = async.getDataSetter();
 		dataSetter.setData("aggCreateCount", 0);
@@ -100,7 +99,7 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 		}
 		
 		// 月別集計で必要な会社別設定を取得する
-		MonAggrCompanySettings companySets = MonAggrCompanySettings.loadSettings(require, companyId);
+		MonAggrCompanySettings companySets = MonAggrCompanySettings.loadSettings(companyId, this.repositories);
 		if (companySets.getErrorInfos().size() > 0){
 			
 			// エラー処理
@@ -160,9 +159,7 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 	public ProcessState aggregate(
 			AsyncCommandHandlerContext async, String companyId, String employeeId, DatePeriod period,
 			String executeId, OptionalAggrPeriod optionalPeriod, MonAggrCompanySettings companySets) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
-	
+		
 		val dataSetter = async.getDataSetter();
 		
 		// 中断依頼が出されているかチェックする
@@ -172,7 +169,7 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 		}
 		
 		// 月別集計で必要な社員別設定を取得
-		val employeeSets = MonAggrEmployeeSettings.loadSettings(require, cacheCarrier, companyId, employeeId, period);
+		val employeeSets = MonAggrEmployeeSettings.loadSettings(companyId, employeeId, period, this.repositories);
 		if (employeeSets.getErrorInfos().size() > 0){
 			
 			// エラー処理

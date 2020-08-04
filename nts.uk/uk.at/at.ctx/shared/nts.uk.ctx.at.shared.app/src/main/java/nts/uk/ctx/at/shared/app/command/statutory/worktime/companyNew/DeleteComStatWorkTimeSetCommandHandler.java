@@ -9,9 +9,11 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeComRepo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeComRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComNormalSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -21,16 +23,20 @@ import nts.uk.shr.com.context.AppContexts;
 public class DeleteComStatWorkTimeSetCommandHandler
 		extends CommandHandler<DeleteComStatWorkTimeSetCommand> {
 
-	/** The trans labor time repository. */
 	@Inject
-	private DeforLaborTimeComRepo transLaborTimeRepository;
-
-	/** The regular labor time repository. */
+	private ComNormalSettingRepository comNormalSettingRepository;
+	
 	@Inject
-	private RegularLaborTimeComRepo regularLaborTimeRepository;
-
+	private ComFlexSettingRepository comFlexSettingRepository;
+	
 	@Inject
-	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
+	private ComDeforLaborSettingRepository comDeforLaborSettingRepository;
+	
+	@Inject
+	private ComRegularLaborTimeRepository comRegularLaborTimeRepository;
+	
+	@Inject
+	private ComTransLaborTimeRepository comTransLaborTimeRepository;
 	
 	@Override
 	protected void handle(CommandHandlerContext<DeleteComStatWorkTimeSetCommand> context) {
@@ -39,9 +45,11 @@ public class DeleteComStatWorkTimeSetCommandHandler
 		int year = command.getYear();
 		
 		// remove ComNormalSetting, ComFlexSetting, ComDeforLaborSetting, ComRegularLaborTime, ComTransLaborTime with companyID & year if present
-		monthlyWorkTimeSetRepo.removeCompany(companyId, year);
-		regularLaborTimeRepository.find(companyId).ifPresent((setting) -> regularLaborTimeRepository.remove(companyId));
-		transLaborTimeRepository.find(companyId).ifPresent((setting) -> transLaborTimeRepository.remove(companyId));
+		this.comNormalSettingRepository.find(companyId, year).ifPresent((setting) -> this.comNormalSettingRepository.remove(companyId, year));
+		this.comFlexSettingRepository.find(companyId, year).ifPresent((setting) -> this.comFlexSettingRepository.remove(companyId, year));
+		this.comDeforLaborSettingRepository.find(companyId, year).ifPresent((setting) -> this.comDeforLaborSettingRepository.remove(companyId, year));
+		this.comRegularLaborTimeRepository.find(companyId).ifPresent((setting) -> this.comRegularLaborTimeRepository.remove(companyId));
+		this.comTransLaborTimeRepository.find(companyId).ifPresent((setting) -> this.comTransLaborTimeRepository.remove(companyId));
 	}
 
 }

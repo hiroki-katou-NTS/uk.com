@@ -15,7 +15,6 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 //import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementUnitSetting;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementYearSetting;
@@ -24,14 +23,25 @@ import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneYear;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneYear;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementUnitSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.BasicAgreementSettingRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
 public class Checking36AgreementConditionImpl implements Checking36AgreementCondition{
+
+	@Inject
+	private AgreementUnitSettingRepository agreementUnitSettingRepo;
+	
+	@Inject
+	private AgreementDomainService agreementDomainService;
+	
+	@Inject
+	private WorkingConditionItemRepository workingConditionItem;
 	
 	@Inject
 	private AgreementYearSettingRepository agreementYearSettingRepo;
@@ -54,8 +64,6 @@ public class Checking36AgreementConditionImpl implements Checking36AgreementCond
 	
 	@Inject
 	private AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepo;
-	@Inject
-	private RecordDomRequireService requireService;
 
 	
 	@Override
@@ -185,18 +193,17 @@ public class Checking36AgreementConditionImpl implements Checking36AgreementCond
 	}
 	//関数アルゴリズム「1名の36上限時間を取得」を実行する
 	public BasicAgreementSetting onePersonGet36MaxTime(String companyId,String employeeId,GeneralDate date,YearMonth yearMonth, Year year){
-		val require = requireService.createRequire();
-		
 		//ドメインモデル「３６協定単位設定」を取得する
-		Optional<AgreementUnitSetting> optAgreementUnitSetting = require.agreementUnitSetting(companyId);
+		Optional<AgreementUnitSetting> optAgreementUnitSetting = this.agreementUnitSettingRepo.find(companyId);
 		if(optAgreementUnitSetting.isPresent()){
 //			AgreementUnitSetting agreementUnitSetting = optAgreementUnitSetting.get();
 			//ドメインモデル「労働契約履歴」を取得する fixed -> 労働条件項目
-			val workingConditionItemOpt = require.workingConditionItem(employeeId, date);
+			val workingConditionItemOpt =
+					this.workingConditionItem.getBySidAndStandardDate(employeeId, date);
 			if (workingConditionItemOpt.isPresent()){
 				val workingSystem = workingConditionItemOpt.get().getLaborSystem();
 				//36協定基本設定を取得する
-				BasicAgreementSetting basicSet = AgreementDomainService.getBasicSet(require,
+				BasicAgreementSetting basicSet = this.agreementDomainService.getBasicSet(
 						companyId, employeeId, date, workingSystem).getBasicAgreementSetting();
 				
 				this.acquire36AgreementExceptionSetting(companyId, employeeId, date, yearMonth, year, basicSet);

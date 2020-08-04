@@ -10,37 +10,27 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import lombok.SneakyThrows;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
-import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeekStart;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeeklyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeCom;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeComRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComRegLaborTime;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComTransLabTime;
 
 /**
  * The Class JpaComRegularLaborTimeRepository.
  */
 @Stateless
 public class JpaComRegularLaborTimeRepository extends JpaRepository
-		implements RegularLaborTimeComRepo {
+		implements ComRegularLaborTimeRepository {
 
 	/* 
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeRepository#create(nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTime)
 	 */
 	@Override
-	public void create(RegularLaborTimeCom setting) {
+	public void create(ComRegularLaborTime setting) {
 		KshstComRegLaborTime entity = new KshstComRegLaborTime();
-
-		entity.setDailyTime(setting.getDailyTime().getDailyTime().v());
-		entity.setWeeklyTime(setting.getWeeklyTime().getTime().v());
-		entity.setWeekStr(setting.getWeeklyTime().getStart().value);
-		entity.setCid(setting.getComId());
-		
+		setting.saveToMemento(new JpaComRegularLaborTimeSetMemento(entity));
 		commandProxy().insert(entity);
 	}
 
@@ -48,13 +38,9 @@ public class JpaComRegularLaborTimeRepository extends JpaRepository
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeRepository#update(nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTime)
 	 */
 	@Override
-	public void update(RegularLaborTimeCom setting) {
-		KshstComRegLaborTime entity = this.queryProxy().find(setting.getComId(), KshstComRegLaborTime.class).get();
-
-		entity.setDailyTime(setting.getDailyTime().getDailyTime().v());
-		entity.setWeeklyTime(setting.getWeeklyTime().getTime().v());
-		entity.setWeekStr(setting.getWeeklyTime().getStart().value);
-		
+	public void update(ComRegularLaborTime setting) {
+		KshstComRegLaborTime entity = this.queryProxy().find(setting.getCompanyId().v(), KshstComRegLaborTime.class).get();
+		setting.saveToMemento(new JpaComRegularLaborTimeSetMemento(entity));
 		commandProxy().update(entity);
 	}
 
@@ -63,7 +49,7 @@ public class JpaComRegularLaborTimeRepository extends JpaRepository
 	 */
 	@Override
 	public void remove(String companyId) {
-		commandProxy().remove(KshstComRegLaborTime.class, companyId);
+		commandProxy().remove(KshstComTransLabTime.class, companyId);
 	}
 
 	/* 
@@ -71,21 +57,30 @@ public class JpaComRegularLaborTimeRepository extends JpaRepository
 	 */
 	@SneakyThrows
 	@Override
-	public Optional<RegularLaborTimeCom> find(String companyId) {
+	public Optional<ComRegularLaborTime> find(String companyId) {
 		String sqlJdbc = "SELECT * FROM KSHST_COM_REG_LABOR_TIME WHERE CID = ?";
 
 		try (PreparedStatement stmt = this.connection().prepareStatement(sqlJdbc)) {
 
 			stmt.setString(1, companyId);
 
-			return new NtsResultSet(stmt.executeQuery())
+			Optional<KshstComRegLaborTime> result = new NtsResultSet(stmt.executeQuery())
 					.getSingle(rec -> {
-						
-						return RegularLaborTimeCom.of(rec.getString("CID"),
-								new WeeklyUnit(new WeeklyTime(rec.getInt("WEEKLY_TIME")), 
-												EnumAdaptor.valueOf(rec.getInt("WEEK_STR"), WeekStart.class)), 
-								new DailyUnit(new TimeOfDay(rec.getInt("DAILY_TIME"))));
+						KshstComRegLaborTime entity = new KshstComRegLaborTime();
+						entity.setCid(rec.getString("CID"));
+						entity.setWeeklyTime(rec.getInt("WEEKLY_TIME"));
+						entity.setWeekStr(rec.getInt("WEEK_STR"));
+						entity.setDailyTime(rec.getInt("DAILY_TIME"));
+						return entity;
 					});
+
+			if (!result.isPresent()) {
+				return Optional.empty();
+			}
+
+			return Optional.of(
+					new ComRegularLaborTime(new JpaComRegularLaborTimeGetMemento(result.get())));
 		}
 	}
+	
 }

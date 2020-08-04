@@ -10,7 +10,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.auth.dom.adapter.workplace.AuthWorkPlaceAdapter;
@@ -18,7 +17,6 @@ import nts.uk.ctx.at.auth.dom.adapter.workplace.WorkplaceInfoImport;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AgreementTimeDetail;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTime;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -62,7 +60,7 @@ public class KTG027QueryProcessor {
 	private EmpEmployeeAdapter empEmployeeAdapter;
 
 	@Inject
-	private RecordDomRequireService requireService;
+	private GetAgreementTime getAgreementTime;
 
 	@Inject
 	private OvertimeHoursRepository overtimeHoursRepo;
@@ -156,9 +154,7 @@ public class KTG027QueryProcessor {
 		}
 		
 		// (Lấy worktime ngoài period) lấy RequestList 333
-		List<AgreementTimeDetail> listAgreementTimeDetail = GetAgreementTime.get(
-				requireService.createRequire(), new CacheCarrier(),
-				companyID, listEmpID, YearMonth.of(targetMonth), ClosureId.valueOf(closureID));
+		List<AgreementTimeDetail> listAgreementTimeDetail = getAgreementTime.get(companyID, listEmpID, YearMonth.of(targetMonth), ClosureId.valueOf(closureID));
 		
 		if (listAgreementTimeDetail.isEmpty()) {
 			throw new BusinessException("Msg_1138");

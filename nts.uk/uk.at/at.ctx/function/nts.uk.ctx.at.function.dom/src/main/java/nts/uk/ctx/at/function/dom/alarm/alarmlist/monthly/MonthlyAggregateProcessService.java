@@ -19,12 +19,9 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.ResponseImprovementAdapter;
 import nts.uk.ctx.at.function.dom.adapter.checkresultmonthly.Check36AgreementValueImport;
@@ -63,26 +60,19 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraRes
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
-import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 /**
  * 月次の集計処理
  * @author tutk
@@ -110,6 +100,9 @@ public class MonthlyAggregateProcessService {
 	private CheckResultMonthlyAdapter checkResultMonthlyAdapter;
 	
 	@Inject
+	private ClosureService closureService;
+	
+	@Inject
 	private CompensLeaveComSetRepository compensLeaveComSetRepository;
 	
 	@Inject
@@ -126,32 +119,15 @@ public class MonthlyAggregateProcessService {
 		
 	@Inject
 	private CheckResultRemainMonthlyAdapter checkResultRemainMonthlyAdapter;
+	
+	@Inject 
+	private BreakDayOffMngInPeriodQuery breakDayOffMngInPeriodQuery;
 
 	@Inject
 	private ErAlWorkRecordCheckAdapter erAlWorkRecordCheckAdapter;
 	
 	@Inject
 	private ManagedParallelWithContext parallelManager;
-	@Inject
-	private ClosureRepository closureRepo;
-	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepo;
-	@Inject
-	private ShareEmploymentAdapter shareEmploymentAdapter;
-	@Inject
-	private InterimRemainRepository interimRemainRepo;
-	@Inject
-	private InterimBreakDayOffMngRepository interimBreakDayOffMngRepo;
-	@Inject
-	private ComDayOffManaDataRepository comDayOffManaDataRepo;
-	@Inject
-	private CompanyAdapter companyAdapter;
-	@Inject
-	private CompensLeaveEmSetRepository compensLeaveEmSetRepo;
-	@Inject
-	private CompensLeaveComSetRepository compensLeaveComSetRepo;
-	@Inject
-	private LeaveManaDataRepository leaveManaDataRepo;
 	
 	public List<ValueExtractAlarm> monthlyAggregateProcess(String companyID , String  checkConditionCode,DatePeriod period,List<EmployeeSearchDto> employees, ApprovalProcessImport approvalProcessImport, IdentityConfirmProcessImport identityConfirmProcessImport){
 		
@@ -304,11 +280,7 @@ public class MonthlyAggregateProcessService {
 	 */
 	private List<ValueExtractAlarm> extractErrorAlarmForHoliday(List<FixedExtraMonFunImport> fixedExtraMonFunImport, List<EmployeeSearchDto> employee, String companyID, List<String> empIDs) {
 		List<ValueExtractAlarm> listValueExtractAlarm = Collections.synchronizedList(new ArrayList<>());
-		val cacheCarrier = new CacheCarrier();
-		val breakDayOffMngInPeriodQueryRequire = BreakDayOffMngInPeriodQuery.createRequireM10(closureRepo, interimRemainRepo, 
-				interimBreakDayOffMngRepo, comDayOffManaDataRepo, closureEmploymentRepo, companyAdapter,
-				shareEmploymentAdapter, compensLeaveEmSetRepo, compensLeaveComSetRepo, leaveManaDataRepo);
-		
+
 		String KAL010_278 = TextResource.localize("KAL010_278");
 		String KAL010_100 = TextResource.localize("KAL010_100");
 
@@ -318,9 +290,7 @@ public class MonthlyAggregateProcessService {
 		
 		int deadlCheckMonth = compensatoryLeaveComSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value + 1;
 		//社員の締め情報を取得
-		Map<String, Closure> closureMap = ClosureService.getClosureByEmployees(
-				ClosureService.createRequireM7(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),
-				cacheCarrier, empIDs, today);
+		Map<String, Closure> closureMap = closureService.getClosureByEmployees(empIDs, today);
 
 		if (closureMap.isEmpty()) {
 			return listValueExtractAlarm;
@@ -332,11 +302,11 @@ public class MonthlyAggregateProcessService {
 			}
 			val closureOpt = Optional.ofNullable(closure);
 			//締めのアルゴリズム「当月の期間を算出する」を実行する
-			DatePeriod periodCurrentMonth = ClosureService.getClosurePeriod(closure.getClosureId().value,
+			DatePeriod periodCurrentMonth = closureService.getClosurePeriod(closure.getClosureId().value,
 					closure.getClosureMonth().getProcessingYm(), closureOpt);
 			
 			//代休期限アラーム基準日を決定する
-			DatePeriod periodCheckDealMonth = ClosureService.getClosurePeriod(closure.getClosureId().value,
+			DatePeriod periodCheckDealMonth = closureService.getClosurePeriod(closure.getClosureId().value,
 					getDeadlCheckMonth(periodCurrentMonth, deadlCheckMonth), closureOpt);
 
 			//RequestList No.203 期間内の休出代休残数を取得する
@@ -347,8 +317,8 @@ public class MonthlyAggregateProcessService {
 			BreakDayOffRemainMngParam param = new BreakDayOffRemainMngParam(companyID, emp.getId(),
 					newPeriod, false, periodCurrentMonth.end(), false, Collections.emptyList(),
 					Collections.emptyList(), Collections.emptyList(), Optional.empty(), Optional.empty(), Optional.empty());
-			BreakDayOffRemainMngOfInPeriod breakDayOffRemainMngOfInPeriod = BreakDayOffMngInPeriodQuery
-					.getBreakDayOffMngInPeriod(breakDayOffMngInPeriodQueryRequire, cacheCarrier, param);
+			BreakDayOffRemainMngOfInPeriod breakDayOffRemainMngOfInPeriod = breakDayOffMngInPeriodQuery
+					.getBreakDayOffMngInPeriod(param);
 			List<BreakDayOffDetail> lstDetailData = breakDayOffRemainMngOfInPeriod.getLstDetailData();
 
 			List<BreakDayOffDetail> lstExtractData = new ArrayList<>();

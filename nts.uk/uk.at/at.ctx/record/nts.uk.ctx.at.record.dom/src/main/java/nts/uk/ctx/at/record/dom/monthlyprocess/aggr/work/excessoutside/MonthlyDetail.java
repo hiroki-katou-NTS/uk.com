@@ -23,6 +23,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.Aggregate
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.AddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetAddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.PremiumAtr;
@@ -39,8 +40,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetHolidayWorkAndTransferOrder;
-import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetOverTimeAndTransferOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.HolidayWorkAndTransferAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.OverTimeAndTransferAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -116,11 +115,13 @@ public class MonthlyDetail {
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 * @return 逆時系列割り当て用の週割増時間　（割り当て後）
 	 */
-	public AttendanceTimeMonthWithMinus assignWeeklyPremiumTimeByDayUnit(RequireM5 require, GeneralDate procDate,
+	public AttendanceTimeMonthWithMinus assignWeeklyPremiumTimeByDayUnit(
+			GeneralDate procDate,
 			AttendanceTimeMonthWithMinus weeklyPTForAssign,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			Map<GeneralDate, WorkInformation> workInformationOfDailyMap,
-			ExcessOutsideWorkMng excessOutsideWorkMng){
+			ExcessOutsideWorkMng excessOutsideWorkMng,
+			RepositoriesRequiredByMonthlyAggr repositories){
 
 		AttendanceTimeMonthWithMinus weeklyPTAfterAssign = new AttendanceTimeMonthWithMinus(weeklyPTForAssign.v());
 		
@@ -130,20 +131,20 @@ public class MonthlyDetail {
 		this.excessOutsideWorkMng = excessOutsideWorkMng;
 		
 		// 休出時間を限度として割り当てる（週割）
-		weeklyPTAfterAssign = this.assignWithHolidayWorkTimeAsLimitForWeek(require, 
-					procDate, weeklyPTAfterAssign, workInformationOfDailyMap);
+		weeklyPTAfterAssign = this.assignWithHolidayWorkTimeAsLimitForWeek(
+				procDate, weeklyPTAfterAssign, workInformationOfDailyMap, repositories);
 		
 		// 残業時間を限度として割り当てる（週割）
 		if (weeklyPTAfterAssign.greaterThan(0)){
-			weeklyPTAfterAssign = this.assignWithOverTimeAsLimitForWeek(require, 
-					procDate, weeklyPTAfterAssign, workInformationOfDailyMap);
+			weeklyPTAfterAssign = this.assignWithOverTimeAsLimitForWeek(
+					procDate, weeklyPTAfterAssign, workInformationOfDailyMap, repositories);
 		}
 		
 		// 就業時間を限度として割り当てる（週割）
 		if (weeklyPTAfterAssign.greaterThan(0)){
-			weeklyPTAfterAssign = this.assignWithWorkTimeAsLimitForWeek(require, 
+			weeklyPTAfterAssign = this.assignWithWorkTimeAsLimitForWeek(
 					procDate, weeklyPTAfterAssign, workInformationOfDailyMap,
-					excessOutsideWorkMng.getCompanySets());
+					excessOutsideWorkMng.getCompanySets(), repositories);
 		}
 		
 		// 休暇使用時間を限度として割り当てる（週割）
@@ -162,9 +163,11 @@ public class MonthlyDetail {
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 * @return 逆時系列割り当て用の週割増時間　（割り当て後）
 	 */
-	private AttendanceTimeMonthWithMinus assignWithHolidayWorkTimeAsLimitForWeek(RequireM1 require, GeneralDate procDate,
+	private AttendanceTimeMonthWithMinus assignWithHolidayWorkTimeAsLimitForWeek(
+			GeneralDate procDate,
 			AttendanceTimeMonthWithMinus weeklyPTForAssign,
-			Map<GeneralDate, WorkInformation> workInformationOfDailyMap){
+			Map<GeneralDate, WorkInformation> workInformationOfDailyMap,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		AttendanceTimeMonthWithMinus weeklyPTAfterAssign = new AttendanceTimeMonthWithMinus(weeklyPTForAssign.v());
 		
@@ -176,9 +179,8 @@ public class MonthlyDetail {
 
 		// 休出・振替の処理順序を取得する（逆時系列用）
 		val companySets = this.excessOutsideWorkMng.getCompanySets();
-		val holidayWorkAndTransferAtrs = GetHolidayWorkAndTransferOrder.get(companySets.getCompanyId(), 
-																		companySets.getWorkTimeCommonSetMap(require, workTimeCode),
-																		true);
+		val holidayWorkAndTransferAtrs = repositories.getHolidayWorkAndTransferOrder().get(
+				companySets.getCompanyId(), companySets.getWorkTimeCommonSetMap(workTimeCode, repositories), true);
 		
 		// 休出・振替のループ
 		for (val holidayWorkAndTransferAtr : holidayWorkAndTransferAtrs){
@@ -199,7 +201,8 @@ public class MonthlyDetail {
 	 * @param weeklyPTForAssign 逆時系列割り当て用の週割増時間
 	 * @return 逆時系列割り当て用の週割増時間　（割り当て後）
 	 */
-	private AttendanceTimeMonthWithMinus holidayWorkFrameTimeProcessForWeek(GeneralDate procDate,
+	private AttendanceTimeMonthWithMinus holidayWorkFrameTimeProcessForWeek(
+			GeneralDate procDate,
 			HolidayWorkAndTransferAtr holidayWorkAndTransferAtr,
 			AttendanceTimeMonthWithMinus weeklyPTForAssign){
 		
@@ -284,9 +287,11 @@ public class MonthlyDetail {
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 * @return 逆時系列割り当て用の週割増時間　（割り当て後）
 	 */
-	private AttendanceTimeMonthWithMinus assignWithOverTimeAsLimitForWeek(RequireM2 require, GeneralDate procDate,
+	private AttendanceTimeMonthWithMinus assignWithOverTimeAsLimitForWeek(
+			GeneralDate procDate,
 			AttendanceTimeMonthWithMinus weeklyPTForAssign,
-			Map<GeneralDate, WorkInformation> workInformationOfDailyMap){
+			Map<GeneralDate, WorkInformation> workInformationOfDailyMap,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		AttendanceTimeMonthWithMinus weeklyPTAfterAssign = new AttendanceTimeMonthWithMinus(weeklyPTForAssign.v());
 		
@@ -298,9 +303,8 @@ public class MonthlyDetail {
 
 		// 残業・振替の処理順序を取得する（逆時系列用）
 		val companySets = this.excessOutsideWorkMng.getCompanySets();
-		val overTimeAndTransferAtrs = GetOverTimeAndTransferOrder.get(companySets.getCompanyId(), 
-																companySets.getWorkTimeCommonSetMap(require, workTimeCode), 
-																true);
+		val overTimeAndTransferAtrs = repositories.getOverTimeAndTransferOrder().get(
+				companySets.getCompanyId(), companySets.getWorkTimeCommonSetMap(workTimeCode, repositories), true);
 		
 		// 残業・振替のループ
 		for (val overTimeAndTransferAtr : overTimeAndTransferAtrs){
@@ -321,7 +325,8 @@ public class MonthlyDetail {
 	 * @param weeklyPTForAssign 逆時系列割り当て用の週割増時間
 	 * @return 逆時系列割り当て用の週割増時間　（割り当て後）
 	 */
-	private AttendanceTimeMonthWithMinus overTimeFrameTimeProcessForWeek(GeneralDate procDate,
+	private AttendanceTimeMonthWithMinus overTimeFrameTimeProcessForWeek(
+			GeneralDate procDate,
 			OverTimeAndTransferAtr overTimeAndTransferAtr,
 			AttendanceTimeMonthWithMinus weeklyPTForAssign){
 		
@@ -407,9 +412,12 @@ public class MonthlyDetail {
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 * @return 逆時系列割り当て用の週割増時間　（割り当て後）
 	 */
-	private AttendanceTimeMonthWithMinus assignWithWorkTimeAsLimitForWeek(RequireM4 require, 
-			GeneralDate procDate, AttendanceTimeMonthWithMinus weeklyPTForAssign,
-			Map<GeneralDate, WorkInformation> workInformationOfDailyMap, MonAggrCompanySettings companySets){
+	private AttendanceTimeMonthWithMinus assignWithWorkTimeAsLimitForWeek(
+			GeneralDate procDate,
+			AttendanceTimeMonthWithMinus weeklyPTForAssign,
+			Map<GeneralDate, WorkInformation> workInformationOfDailyMap,
+			MonAggrCompanySettings companySets,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		AttendanceTimeMonthWithMinus weeklyPTAfterAssign = new AttendanceTimeMonthWithMinus(weeklyPTForAssign.v());
 		val weeklyPremiumTime = this.excessOutsideWorkMng.getExcessOutsideWorkDetail().getWeeklyPremiumTime();
@@ -425,7 +433,7 @@ public class MonthlyDetail {
 		if (workInformationOfDailyMap.containsKey(procDate)) {
 			if (workInformationOfDailyMap.get(procDate).getWorkTypeCode() != null) {
 				String workTypeCode = workInformationOfDailyMap.get(procDate).getWorkTypeCode().v();
-				workType = companySets.getWorkTypeMap(require, workTypeCode);
+				workType = companySets.getWorkTypeMap(workTypeCode, repositories);
 			}
 		}
 		
@@ -460,7 +468,8 @@ public class MonthlyDetail {
 	 * @param weeklyPTForAssign 逆時系列割り当て用の週割増時間
 	 * @return 逆時系列割り当て用の週割増時間　（割り当て後）
 	 */
-	private AttendanceTimeMonthWithMinus assignWithVacationUseTimeAsLimitForWeek(GeneralDate procDate, 
+	private AttendanceTimeMonthWithMinus assignWithVacationUseTimeAsLimitForWeek(
+			GeneralDate procDate,
 			AttendanceTimeMonthWithMinus weeklyPTForAssign){
 		
 		AttendanceTimeMonthWithMinus weeklyPTAfterAssign = new AttendanceTimeMonthWithMinus(weeklyPTForAssign.v());
@@ -564,9 +573,14 @@ public class MonthlyDetail {
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 * @return 逆時系列割り当て用の週割増時間　（割り当て後）
 	 */
-	public AttendanceTimeMonthWithMinus assignMonthlyPremiumTimeByDayUnit(RequireM3 require, GeneralDate procDate, 
-			AttendanceTimeMonthWithMinus weeklyPTForAssign, AddSet addSet, AggregateTotalWorkingTime aggregateTotalWorkingTime,
-			Map<GeneralDate, WorkInformation> workInformationOfDailyMap, ExcessOutsideWorkMng excessOutsideWorkMng){
+	public AttendanceTimeMonthWithMinus assignMonthlyPremiumTimeByDayUnit(
+			GeneralDate procDate,
+			AttendanceTimeMonthWithMinus weeklyPTForAssign,
+			AddSet addSet,
+			AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			Map<GeneralDate, WorkInformation> workInformationOfDailyMap,
+			ExcessOutsideWorkMng excessOutsideWorkMng,
+			RepositoriesRequiredByMonthlyAggr repositories){
 
 		AttendanceTimeMonthWithMinus monthlyPTAfterAssign = new AttendanceTimeMonthWithMinus(weeklyPTForAssign.v());
 		
@@ -576,13 +590,13 @@ public class MonthlyDetail {
 		this.excessOutsideWorkMng = excessOutsideWorkMng;
 		
 		// 休出時間を限度として割り当てる（月割）
-		monthlyPTAfterAssign = this.assignWithHolidayWorkTimeAsLimitForMonth(require, procDate, monthlyPTAfterAssign,
-				workInformationOfDailyMap);
+		monthlyPTAfterAssign = this.assignWithHolidayWorkTimeAsLimitForMonth(procDate, monthlyPTAfterAssign,
+				workInformationOfDailyMap, repositories);
 		
 		// 残業時間を限度として割り当てる（月割）
 		if (monthlyPTAfterAssign.greaterThan(0)){
-			monthlyPTAfterAssign = this.assignWithOverTimeAsLimitForMonth(require, procDate, monthlyPTAfterAssign,
-					workInformationOfDailyMap);
+			monthlyPTAfterAssign = this.assignWithOverTimeAsLimitForMonth(procDate, monthlyPTAfterAssign,
+					workInformationOfDailyMap, repositories);
 		}
 		
 		// 就業時間を限度として割り当てる（月割）
@@ -619,9 +633,11 @@ public class MonthlyDetail {
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 * @return 逆時系列割り当て用の月割増時間　（割り当て後）
 	 */
-	private AttendanceTimeMonthWithMinus assignWithHolidayWorkTimeAsLimitForMonth(RequireM1 require, GeneralDate procDate,
+	private AttendanceTimeMonthWithMinus assignWithHolidayWorkTimeAsLimitForMonth(
+			GeneralDate procDate,
 			AttendanceTimeMonthWithMinus monthlyPTForAssign,
-			Map<GeneralDate, WorkInformation> workInformationOfDailyMap){
+			Map<GeneralDate, WorkInformation> workInformationOfDailyMap,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		AttendanceTimeMonthWithMinus monthlyPTAfterAssign = new AttendanceTimeMonthWithMinus(monthlyPTForAssign.v());
 		
@@ -633,8 +649,8 @@ public class MonthlyDetail {
 
 		// 休出・振替の処理順序を取得する（逆時系列用）
 		val companySets = this.excessOutsideWorkMng.getCompanySets();
-		val holidayWorkAndTransferAtrs = GetHolidayWorkAndTransferOrder.get(
-				companySets.getCompanyId(), companySets.getWorkTimeCommonSetMap(require, workTimeCode), true);
+		val holidayWorkAndTransferAtrs = repositories.getHolidayWorkAndTransferOrder().get(
+				companySets.getCompanyId(), companySets.getWorkTimeCommonSetMap(workTimeCode, repositories), true);
 		
 		// 休出・振替のループ
 		for (val holidayWorkAndTransferAtr : holidayWorkAndTransferAtrs){
@@ -655,7 +671,8 @@ public class MonthlyDetail {
 	 * @param monthlyPTForAssign 逆時系列割り当て用の月割増時間
 	 * @return 逆時系列割り当て用の月割増時間　（割り当て後）
 	 */
-	private AttendanceTimeMonthWithMinus holidayWorkFrameTimeProcessForMonth(GeneralDate procDate,
+	private AttendanceTimeMonthWithMinus holidayWorkFrameTimeProcessForMonth(
+			GeneralDate procDate,
 			HolidayWorkAndTransferAtr holidayWorkAndTransferAtr,
 			AttendanceTimeMonthWithMinus monthlyPTForAssign){
 		
@@ -739,11 +756,14 @@ public class MonthlyDetail {
 	 * @param procDate 処理日
 	 * @param monthlyPTForAssign 逆時系列割り当て用の月割増時間
 	 * @param workInformationOfDailyMap 日別実績の勤務情報リスト
+	 * @param repositories 月次集計が必要とするリポジトリ
 	 * @return 逆時系列割り当て用の月割増時間　（割り当て後）
 	 */
-	private AttendanceTimeMonthWithMinus assignWithOverTimeAsLimitForMonth(RequireM2 require, GeneralDate procDate,
+	private AttendanceTimeMonthWithMinus assignWithOverTimeAsLimitForMonth(
+			GeneralDate procDate,
 			AttendanceTimeMonthWithMinus monthlyPTForAssign,
-			Map<GeneralDate, WorkInformation> workInformationOfDailyMap){
+			Map<GeneralDate, WorkInformation> workInformationOfDailyMap,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		AttendanceTimeMonthWithMinus monthlyPTAfterAssign = new AttendanceTimeMonthWithMinus(monthlyPTForAssign.v());
 		
@@ -755,9 +775,8 @@ public class MonthlyDetail {
 
 		// 残業・振替の処理順序を取得する（逆時系列用）
 		val companySets = this.excessOutsideWorkMng.getCompanySets();
-		val overTimeAndTransferAtrs = GetOverTimeAndTransferOrder.get(companySets.getCompanyId(), 
-																	companySets.getWorkTimeCommonSetMap(require, workTimeCode),
-																	true);
+		val overTimeAndTransferAtrs = repositories.getOverTimeAndTransferOrder().get(
+				companySets.getCompanyId(), companySets.getWorkTimeCommonSetMap(workTimeCode, repositories), true);
 		
 		// 残業・振替のループ
 		for (val overTimeAndTransferAtr : overTimeAndTransferAtrs){
@@ -1028,20 +1047,4 @@ public class MonthlyDetail {
 
 		return monthlyPTAfterAssign;
 	}
-	
-	public static interface RequireM1 extends MonAggrCompanySettings.RequireM3 {
-	}
-	
-	public static interface RequireM2 extends MonAggrCompanySettings.RequireM3 {
-	}
-	
-	public static interface RequireM3 extends RequireM1, RequireM2 {
-	}
-	
-	public static interface RequireM4 extends MonAggrCompanySettings.RequireM4 {
-	}
-	
-	public static interface RequireM5 extends RequireM3, RequireM4 {
-	}
-	
 }

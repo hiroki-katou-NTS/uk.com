@@ -10,7 +10,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.cache.CacheCarrier;
 //import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
@@ -60,11 +59,10 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 
 	@Override
 	public void registerDateChange(String cid, String sid, List<GeneralDate> lstDate) {
-		CacheCarrier cacheCarrier = new CacheCarrier();
 		//「残数作成元情報(実績)」を取得する
-		List<RecordRemainCreateInfor> lstRecordData = remainRecordData.lstRecordRemainData(cacheCarrier, cid, sid, lstDate);
+		List<RecordRemainCreateInfor> lstRecordData = remainRecordData.lstRecordRemainData(cid, sid, lstDate);
 		//「残数作成元の勤務予定を取得する」
-		List<ScheRemainCreateInfor> lstScheData = remainScheData.createRemainInfor(cacheCarrier, cid, sid, lstDate);
+		List<ScheRemainCreateInfor> lstScheData = remainScheData.createRemainInfor(cid, sid, lstDate);
 		//雇用履歴と休暇管理設定を取得する
 		Optional<ComSubstVacation> comSetting = subRepos.findById(cid);
 		CompensatoryLeaveComSetting leaveComSetting = leaveSetRepos.find(cid);
@@ -72,7 +70,7 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 		for(GeneralDate loopDate : lstDate){
 			DatePeriod datePeriod = new DatePeriod(loopDate, loopDate);
 			//「残数作成元の申請を取得する」
-			List<AppRemainCreateInfor> lstAppData = remainAppData.lstRemainDataFromApp(cacheCarrier, cid, sid, datePeriod);
+			List<AppRemainCreateInfor> lstAppData = remainAppData.lstRemainDataFromApp(cid, sid, datePeriod);
 			clearInterimWhenRecordScheAppNotData(sid, lstDate, lstRecordData, lstScheData, lstAppData);
 			//指定期間の暫定残数管理データを作成する
 			InterimRemainCreateDataInputPara inputData = new InterimRemainCreateDataInputPara(cid, 

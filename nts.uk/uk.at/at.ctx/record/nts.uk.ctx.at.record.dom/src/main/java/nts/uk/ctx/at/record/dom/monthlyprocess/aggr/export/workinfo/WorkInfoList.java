@@ -7,9 +7,10 @@ import java.util.Optional;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 勤務情報リスト
@@ -26,16 +27,15 @@ public class WorkInfoList {
 	 * コンストラクタ
 	 * @param employeeId 社員ID
 	 * @param period 期間
+	 * @param workInformationOfDaily 日別実績の勤務情報リポジトリ
 	 */
-	public WorkInfoList(RequireM1 require, String employeeId, DatePeriod period){
+	public WorkInfoList(
+			String employeeId,
+			DatePeriod period,
+			WorkInformationRepository workInformationOfDaily){
 		
-		this.workInfoOfDailys = require.dailyWorkInfo(employeeId, period);
+		this.workInfoOfDailys = workInformationOfDaily.findByPeriodOrderByYmd(employeeId, period);
 		this.setData();
-	}
-	
-	public static interface RequireM1 {
-		
-		List<WorkInfoOfDailyPerformance> dailyWorkInfo(String employeeId, DatePeriod datePeriod);
 	}
 
 	/**

@@ -26,7 +26,7 @@ public class RegisterFingerStampCommand {
 	private String datetime;
 
 	// 打刻ボタン
-	private StampButtonCommand stampButton;
+	private StampButtonComamnd stampButton;
 
 	// 実績への反映内容
 	private RefectActualResultCommand refActualResult;

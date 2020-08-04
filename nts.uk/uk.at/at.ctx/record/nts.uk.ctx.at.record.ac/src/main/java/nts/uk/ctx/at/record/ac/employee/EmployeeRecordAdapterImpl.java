@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.ac.employee;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -53,12 +52,6 @@ public class EmployeeRecordAdapterImpl implements EmployeeRecordAdapter {
 		return new EmployeeDataMngInfoImport(export.getCompanyId(), export.getPersonId(), export.getEmployeeId(),
 				export.getEmployeeCode(), export.getDeletedStatus(), export.getDeleteDateTemporary(),
 				export.getRemoveReason(), export.getExternalCode());
-	}
-
-	@Override
-	public Optional<EmployeeDataMngInfoImport> findByScdNotDel(String employeeCd,String companyId) {
-		
-		return this.employeePub.findByScdNotDel(employeeCd, companyId).map(x-> toInfoImport(x));
 	}
 
 }

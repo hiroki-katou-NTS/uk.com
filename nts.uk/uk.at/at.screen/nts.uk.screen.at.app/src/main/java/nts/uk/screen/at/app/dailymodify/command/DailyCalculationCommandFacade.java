@@ -18,7 +18,6 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.RCDailyCorrectionResult;
@@ -32,13 +31,6 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AggregateSpecifiedDailys;
-
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-
 //import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 //import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
@@ -60,9 +52,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.ResultReturnDCUpdate
 import nts.uk.screen.at.app.dailyperformance.correction.dto.TypeError;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthValue;
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPLoadRowProcessor;
-
-//import nts.uk.screen.at.app.kdw.kdw003.update.Kdw003Update;
-
 import nts.uk.screen.at.app.monthlyperformance.correction.command.MonthModifyCommandFacade;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
 import nts.uk.shr.com.context.AppContexts;
@@ -91,9 +80,9 @@ public class DailyCalculationCommandFacade {
 
 	@Inject
 	private CheckCalcMonthService calCheckMonthService;
-	
+
 	@Inject
-	private RecordDomRequireService requireService;
+	private AggregateSpecifiedDailys aggregateSpecifiedDailys;
 
 	@Inject
 	private MonthModifyCommandFacade monthModifyCommandFacade;
@@ -314,8 +303,7 @@ public class DailyCalculationCommandFacade {
 		if (needCalc.getLeft()) {
 			needCalc.getRight().forEach(data -> {
 				// 月の実績を集計する
-				Optional<IntegrationOfMonthly> monthDomainOpt = AggregateSpecifiedDailys.algorithm(
-						requireService.createRequire(), new CacheCarrier(), companyId,
+				Optional<IntegrationOfMonthly> monthDomainOpt = aggregateSpecifiedDailys.algorithm(companyId,
 						employeeId, data.getYearMonth(), data.getClosureId(), data.getClosureDate(), data.getPeriod(),
 						Optional.empty(), domainDailyNew, domainMonthOpt);
 				if (monthDomainOpt.isPresent()) {

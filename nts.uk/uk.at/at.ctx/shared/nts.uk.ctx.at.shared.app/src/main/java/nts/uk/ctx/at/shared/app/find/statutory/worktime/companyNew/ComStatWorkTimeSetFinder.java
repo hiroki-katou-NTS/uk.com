@@ -9,15 +9,18 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.statutory.worktime.companyNew.ComStatWorkTimeSetDto.ComStatWorkTimeSetDtoBuilder;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeCom;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeComRepo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeCom;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeComRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComNormalSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComNormalSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -28,14 +31,23 @@ public class ComStatWorkTimeSetFinder {
 
 	/** The trans labor time repository. */
 	@Inject
-	private DeforLaborTimeComRepo transLaborTimeRepository;
+	private ComTransLaborTimeRepository transLaborTimeRepository;
 
 	/** The regular labor time repository. */
 	@Inject
-	private RegularLaborTimeComRepo regularLaborTimeRepository;
+	private ComRegularLaborTimeRepository regularLaborTimeRepository;
 
+	/** The normal setting repository. */
 	@Inject
-	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
+	private ComNormalSettingRepository normalSettingRepository;
+
+	/** The flex setting repository. */
+	@Inject
+	private ComFlexSettingRepository flexSettingRepository;
+
+	/** The defor labor setting repository. */
+	@Inject
+	private ComDeforLaborSettingRepository deforLaborSettingRepository;
 
 	/**
 	 * Gets the details.
@@ -51,29 +63,29 @@ public class ComStatWorkTimeSetFinder {
 		
 		dtoBuilder.year(year);
 
-		Optional<DeforLaborTimeCom> optTransLaborTime = this.transLaborTimeRepository.find(companyId);
+		Optional<ComTransLaborTime> optTransLaborTime = this.transLaborTimeRepository.find(companyId);
 		if (optTransLaborTime.isPresent()) {
-			dtoBuilder.transLaborTime(WorkingTimeSettingDto.fromDomain(optTransLaborTime.get()));
+			dtoBuilder.transLaborTime(WorkingTimeSettingDto.fromDomain(optTransLaborTime.get().getWorkingTimeSet()));
 		}
 
-		Optional<RegularLaborTimeCom> optComRegular = this.regularLaborTimeRepository.find(companyId);
+		Optional<ComRegularLaborTime> optComRegular = this.regularLaborTimeRepository.find(companyId);
 		if (optComRegular.isPresent()) {
-			dtoBuilder.regularLaborTime(WorkingTimeSettingDto.fromDomain(optComRegular.get()));
+			dtoBuilder.regularLaborTime(WorkingTimeSettingDto.fromDomain(optComRegular.get().getWorkingTimeSet()));
 		}
 
-		val regularSet = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.REGULAR_LABOR, year);
-		if (!regularSet.isEmpty()) {
-			dtoBuilder.normalSetting(ComNormalSettingDto.with(year, regularSet));
-		}
-		
-		val flexSet = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.FLEX, year);
-		if (!flexSet.isEmpty()) {
-			dtoBuilder.flexSetting(ComFlexSettingDto.with(year, flexSet));
+		Optional<ComNormalSetting> optComNormalSet = this.normalSettingRepository.find(companyId, year);
+		if (optComNormalSet.isPresent()) {
+			dtoBuilder.normalSetting(ComNormalSettingDto.fromDomain(optComNormalSet.get()));
 		}
 
-		val deforSet = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.DEFOR_LABOR, year);
-		if (!deforSet.isEmpty()) {
-			dtoBuilder.deforLaborSetting(ComDeforLaborSettingDto.with(year, companyId, deforSet));
+		Optional<ComFlexSetting> optComFlexSet = this.flexSettingRepository.find(companyId, year);
+		if (optComFlexSet.isPresent()) {
+			dtoBuilder.flexSetting(ComFlexSettingDto.fromDomain(optComFlexSet.get()));
+		}
+
+		Optional<ComDeforLaborSetting> optComDeforLaborSet = this.deforLaborSettingRepository.find(companyId, year);
+		if (optComDeforLaborSet.isPresent()) {
+			dtoBuilder.deforLaborSetting(ComDeforLaborSettingDto.fromDomain(optComDeforLaborSet.get()));
 		}
 
 		return dtoBuilder.build();

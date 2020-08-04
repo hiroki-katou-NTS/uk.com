@@ -10,32 +10,24 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.auth.app.find.employmentrole.dto.DateProcessed;
 import nts.uk.ctx.at.auth.app.find.employmentrole.dto.InitDisplayPeriodSwitchSetDto;
 import nts.uk.ctx.at.auth.dom.initswitchsetting.InitDisplayPeriodSwitchSet;
 import nts.uk.ctx.at.auth.dom.initswitchsetting.InitDisplayPeriodSwitchSetRepo;
-import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class InitDisplayPeriodSwitchSetFinder {
 	@Inject
 	private InitDisplayPeriodSwitchSetRepo repo;
+
 	@Inject
-	private ClosureRepository closureRepo;
-	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepo;
-	@Inject
-	private ShareEmploymentAdapter shareEmploymentAdapter;
+	private ClosureService closureService;
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public InitDisplayPeriodSwitchSetDto targetDateFromLogin() {
@@ -48,8 +40,7 @@ public class InitDisplayPeriodSwitchSetFinder {
 		// 全締めの当月と期間を取得する
 		// InitDisplayPeriodSwitchSetDto data = new
 		// InitDisplayPeriodSwitchSetDto();
-		List<ClosureInfo> listClosureInfo = ClosureService.getAllClosureInfo(
-				ClosureService.createRequireM2(closureRepo));
+		List<ClosureInfo> listClosureInfo = closureService.getAllClosureInfo();
 		List<DateProcessed> listDate = new ArrayList<>();
 		List<DateProcessed> listDateProcessed = listClosureInfo.stream().map(i -> {
 			return new DateProcessed(i.getClosureId().value, i.getCurrentMonth(), i.getPeriod());
@@ -70,17 +61,15 @@ public class InitDisplayPeriodSwitchSetFinder {
 			data = new InitDisplayPeriodSwitchSetDto(1, listDateProcessed);
 			return data;
 		} else {
-			val require = ClosureService.createRequireM3(closureRepo, closureEmploymentRepo, shareEmploymentAdapter);
 			// 社員に対応する処理締めを取得する
-			Closure closure = ClosureService.getClosureDataByEmployee(
-					require, new CacheCarrier(), employeeID, systemDate);
+			Closure closure = this.closureService.getClosureDataByEmployee(employeeID, systemDate);
 			// 当月・翌月を判断する
 			GeneralDate endDate = listClosureInfo.stream().filter(x -> x.getClosureId().value == closure.getClosureId().value)
 					.findFirst().get().getPeriod().end();
 			int switchDate = optDisSwitchSet.get().getDay();
 			if (endDate.addDays(switchDate).beforeOrEquals(systemDate)) {
 				for (ClosureInfo item : listClosureInfo) {
-					DatePeriod datePeriod = ClosureService.getClosurePeriod(require, item.getClosureId().value,
+					DatePeriod datePeriod = closureService.getClosurePeriod(item.getClosureId().value,
 							item.getCurrentMonth().addMonths(1));
 					DateProcessed endDateNextMonth = new DateProcessed(item.getClosureId().value,
 							item.getCurrentMonth().addMonths(1), datePeriod);

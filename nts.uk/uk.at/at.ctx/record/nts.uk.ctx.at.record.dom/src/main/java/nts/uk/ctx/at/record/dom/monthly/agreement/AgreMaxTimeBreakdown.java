@@ -8,9 +8,9 @@ import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.monthly.AttendanceItemOfMonthly;
-import nts.uk.ctx.at.shared.dom.outsideot.service.OutsideOTSettingService;
 
 /**
  * 36協定上限時間内訳
@@ -80,24 +80,26 @@ public class AgreMaxTimeBreakdown extends AgreementTimeBreakdown {
 	 * 36協定上限時間の対象項目を取得
 	 * @param aggregateAtr 集計区分
 	 * @param monthlyCalculation 月別実績の月の計算
+	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void getTargetItemOfAgreMax(RequireM1 require,
+	public void getTargetItemOfAgreMax(
 			MonthlyAggregateAtr aggregateAtr,
-			MonthlyCalculation monthlyCalculation){
+			MonthlyCalculation monthlyCalculation,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 集計結果　初期化　（自クラス分）
 		this.legalHolidayWorkTime = new AttendanceTimeMonth(0);
 		this.legalTransferTime = new AttendanceTimeMonth(0);
 
 		// 36協定時間の対象時間を取得
-		this.getTargetItemOfAgreement(aggregateAtr, monthlyCalculation);
+		this.getTargetItemOfAgreement(aggregateAtr, monthlyCalculation, repositories);
 		
 		// 丸め設定取得
 		RoundingSetOfMonthly roundingSet = monthlyCalculation.getCompanySets().getRoundingSet();
 		
 		// 法定内休出の勤怠項目IDを全て取得
 		val companySets = monthlyCalculation.getCompanySets();
-		List<Integer> attendanceItemIds = OutsideOTSettingService.getAllAttendanceItemIdsForLegalBreak(require,
+		List<Integer> attendanceItemIds = repositories.getOutsideOTSetService().getAllAttendanceItemIdsForLegalBreak(
 				monthlyCalculation.getCompanyId(),
 				Optional.of(companySets.getOutsideOverTimeSet()),
 				Optional.of(companySets.getWorkDayoffFrameList()));
@@ -109,10 +111,6 @@ public class AgreMaxTimeBreakdown extends AgreementTimeBreakdown {
 			// 勤怠項目IDに対応する時間を加算する　（法定内時間用）
 			this.addTimeByAttendanceItemIdForLegal(attendanceItemId, targetItemTime);
 		}
-	}
-	
-	public static interface RequireM1 extends OutsideOTSettingService.RequireM1 {
-		
 	}
 	
 	/**

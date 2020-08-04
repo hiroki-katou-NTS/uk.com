@@ -13,14 +13,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ConfirmDeleteParamImport;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.ConfirmationMonthRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
@@ -56,8 +53,8 @@ public class ClearConfirmApprovalService {
 	@Inject
 	private ApprovalStatusAdapter approvalStatusAdapter;
 	
-	@Inject 
-	private RecordDomRequireService requireService;
+	@Inject
+	private ClosureService closureService;
 
 	/**
 	 * 確認、承認のクリア
@@ -77,10 +74,7 @@ public class ClearConfirmApprovalService {
 	 * 確認、承認のクリア
 	 */
 	@SuppressWarnings("unchecked")
-	public void clearConfirmApproval(String employeeId, List<GeneralDate> lstDate, Optional<ApprovalProcessingUseSetting> approvalSetOpt,
-			Optional<IdentityProcessUseSet> iPUS) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
+	public void clearConfirmApproval(String employeeId, List<GeneralDate> lstDate, Optional<ApprovalProcessingUseSetting> approvalSetOpt, Optional<IdentityProcessUseSet> iPUS) {
 		String companyId = AppContexts.user().companyId();
 		// ドメインモデル「本人確認処理の利用設定」を取得する
 		Optional<IdentityProcessUseSet> indenUseSetOpt = iPUS.isPresent() ? iPUS : identityProcessUseSetRepository.findByKey(companyId);
@@ -101,7 +95,7 @@ public class ClearConfirmApprovalService {
 		List<ClosurePeriod> lstClosureAll = new ArrayList<>();
 		for (GeneralDate dateRefer : lstDate) {
 			// 集計期間 slow response 
-			Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, dateRefer);
+			Closure closure = closureService.getClosureDataByEmployee(employeeId, dateRefer);
 			//指定した年月日時点の締め期間を取得する
 			// Check exist and active
 			if (closure == null || closure.getUseClassification()

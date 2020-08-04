@@ -50,7 +50,7 @@ import nts.uk.shr.com.i18n.TextResource;
 /**
  * @author laitv 
  * algorithm: 打刻入力ログイン 
- * path: UKDesign.UniversalK.共通.CCG_メニュートップページ.CCG007_ログイン
+ * path:UKDesign.UniversalK.共通.CCG_メニュートップページ.CCG007_ログイン
  *         (Login).打刻入力ログイン.アルゴリズム.打刻入力ログイン
  */
 @Stateless 
@@ -94,29 +94,29 @@ public class TimeStampLoginCommandHandler extends LoginBaseTimeStampCommandHandl
 		UserImportNew user = new UserImportNew();
 
 		if (command.isAdminMode()) {
-			// note: 「備考メッセージ」は#Msg_1661をセット
+			// 「備考メッセージ」は#Msg_1661をセット
 			remarkMessage = TextResource.localize("Msg_1661");
 		} else {
-			// note: 「備考メッセージ」は#Msg_1660をセット
+			// 「備考メッセージ」は#Msg_1660をセット
 			remarkMessage = TextResource.localize("Msg_1660");
 		}
 
-		// note: Edit employee code
+		// Edit employee code
 		String employeeCode = this.employeeCodeSetting.employeeCodeEdit(command.getEmployeeCode(), companyId);
 		
-		// note: Imported（GateWay）「社員」を取得する
+		// Imported（GateWay）「社員」を取得する
 		em = this.getEmployee(companyId, employeeCode, remarkMessage);
 		
-		// note: アルゴリズム「社員が削除されたかを取得」を実行する
+		// アルゴリズム「社員が削除されたかを取得」を実行する
 		this.checkEmployeeDelStatus(em.getEmployeeId(), command.getEmployeeCode(), companyId, remarkMessage);
 		
-		// note: imported（ゲートウェイ）「ユーザ」を取得する
+		// imported（ゲートウェイ）「ユーザ」を取得する
 		user = this.getUser(em.getPersonalId(), companyId, employeeCode, em.getEmployeeId(), remarkMessage);
 		
-		// note: アルゴリズム「アカウントロックチェック」を実行する (Execute the algorithm "account lock check")
+		// アルゴリズム「アカウントロックチェック」を実行する (Execute the algorithm "account lock check")
 		this.checkAccoutLock(user.getLoginId(), contractCode, user.getUserId(), companyId );
 		
-		// note: パラメータ：パスワード無効
+		// パラメータ：パスワード無効
 		if (!command.isPasswordInvalid() && command.getPassword() != null) {
 			String msgErrorId = this.compareHashPassword(user, command.getPassword());
 			if (msgErrorId != null){
@@ -129,43 +129,43 @@ public class TimeStampLoginCommandHandler extends LoginBaseTimeStampCommandHandl
 			} 
 		}
 		
-		// note: ユーザーの有効期限チェック (Kiểm tra thời hạn hiệu lực của User)
+		// ユーザーの有効期限チェック (Kiểm tra thời hạn hiệu lực của User)
 		this.checkLimitTime(user, companyId, employeeCode, em.getEmployeeId(), remarkMessage);
 		
-		// note: 実行時環境作成
-		if(command.isRuntimeEnvironmentCreate()){
-			// note: set info to session
+		// 実行時環境作成
+		if(command.isRuntimeEnvironmentCreat()){
+			//set info to session
 			command.getRequest().changeSessionId();
 			
-			// note: ログインセッション作成 (Create login session)
+			//ログインセッション作成 (Create login session)
 	        this.initSessionC(user, em, command.getCompanyCode());
 		}
 		
-		// note: アルゴリズム「システム利用停止の確認」を実行する
+		// アルゴリズム「システム利用停止の確認」を実行する
         SystemSuspendOutput systemSuspendOutput = this.checkSystemStop(command);
 		if(systemSuspendOutput.isError()){
 			throw new BusinessException(new RawErrorMessage(systemSuspendOutput.getMsgContent()));
 		}
 		
-		// note: アルゴリズム「ログイン記録」を実行する１
+		// アルゴリズム「ログイン記録」を実行する１
 		ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Success.value, remarkMessage, em.getEmployeeId());
 		this.service.callLoginRecord(param);
 		
-		// note: アルゴリズム「ログインログを削除」を実行する
+		//アルゴリズム「ログインログを削除」を実行する
 		this.deleteLoginLog(user.getUserId());
 		
-		// note: アルゴリズム「ログイン後チェック」を実行する
+		//アルゴリズム「ログイン後チェック」を実行する
 		if (command.getPassword() != null) {
 			CheckChangePassDto checkChangePass = this.checkAfterLogin(user, command.getPassword(), false);
 		}
 		
 		TimeStampInputLoginDto result = new TimeStampInputLoginDto();
-
-		result.setEm(em);
-		result.setResult(true);
-		result.setErrorMessage(null);
-		result.setSuccessMsg(systemSuspendOutput.getMsgID());
-		
+		result.successMsg = systemSuspendOutput.getMsgID();
+		result.result = true;
+		result.em = em;
+		result.errorMessage = null;
+		System.out.println(AppContexts.user().employeeId());
+		System.out.println(AppContexts.user().employeeCode());
 		return result;
 	}
 	

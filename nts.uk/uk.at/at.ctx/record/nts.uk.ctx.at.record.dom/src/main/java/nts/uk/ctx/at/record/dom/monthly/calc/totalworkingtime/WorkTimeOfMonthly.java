@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.byperiod.FlexTimeByPeriod;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
@@ -19,6 +18,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.HolidayWorkTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.OverTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.AddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.WorkTimeOfTimeSeries;
 import nts.uk.ctx.at.record.dom.weekly.RegAndIrgTimeOfWeekly;
@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の就業時間
@@ -103,11 +104,13 @@ public class WorkTimeOfMonthly implements Cloneable, Serializable {
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 * @param workInformationOfDailyMap 日別実績の勤務情報リスト
 	 * @param companySets 月別集計で必要な会社別設定
+	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void confirm(RequireM1 require, DatePeriod datePeriod,
+	public void confirm(DatePeriod datePeriod,
 			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
 			Map<GeneralDate, WorkInfoOfDailyPerformance> workInformationOfDailyMap,
-			MonAggrCompanySettings companySets){
+			MonAggrCompanySettings companySets,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.values()) {
 			val ymd = attendanceTimeOfDaily.getYmd();
@@ -151,7 +154,7 @@ public class WorkTimeOfMonthly implements Cloneable, Serializable {
 					val record = workInformationOfDailyMap.get(ymd).getRecordInfo();
 					if (record.getWorkTypeCode() != null) {
 						String workTypeCode = record.getWorkTypeCode().v();
-						workType = companySets.getWorkTypeMap(require, workTypeCode);
+						workType = companySets.getWorkTypeMap(workTypeCode, repositories);
 					}
 				}
 			}
@@ -291,11 +294,14 @@ public class WorkTimeOfMonthly implements Cloneable, Serializable {
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 * @param workInfoOfDailyMap 日別実績の勤務情報リスト
 	 * @param companySets 月別集計で必要な会社別設定
+	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void aggregateForByPeriod(RequireM1 require, DatePeriod datePeriod,
+	public void aggregateForByPeriod(
+			DatePeriod datePeriod,
 			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
 			Map<GeneralDate, WorkInfoOfDailyPerformance> workInfoOfDailyMap,
-			MonAggrCompanySettings companySets){
+			MonAggrCompanySettings companySets,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.values()) {
 			val ymd = attendanceTimeOfDaily.getYmd();
@@ -323,7 +329,7 @@ public class WorkTimeOfMonthly implements Cloneable, Serializable {
 					val record = workInfoOfDailyMap.get(ymd).getRecordInfo();
 					if (record.getWorkTypeCode() != null) {
 						String workTypeCode = record.getWorkTypeCode().v();
-						workType = companySets.getWorkTypeMap(require, workTypeCode);
+						workType = companySets.getWorkTypeMap(workTypeCode, repositories);
 					}
 				}
 			}
@@ -381,9 +387,5 @@ public class WorkTimeOfMonthly implements Cloneable, Serializable {
 		this.withinPrescribedPremiumTime = this.withinPrescribedPremiumTime.addMinutes(
 				target.withinPrescribedPremiumTime.v());
 		this.actualWorkTime = this.actualWorkTime.addMinutes(target.actualWorkTime.v());
-	}
-	
-	public static interface RequireM1 extends MonAggrCompanySettings.RequireM4 {
-
 	}
 }

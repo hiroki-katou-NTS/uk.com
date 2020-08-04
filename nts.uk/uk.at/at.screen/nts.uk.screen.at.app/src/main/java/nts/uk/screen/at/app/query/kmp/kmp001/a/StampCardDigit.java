@@ -23,8 +23,9 @@ public class StampCardDigit {
 		
 		StampCardEditing cardEditing = stampCardEditingRepo.get(companyId);
 		
-		StampCardDigitDto cardDigitNumberDto = new StampCardDigitDto(cardEditing.getDigitsNumber().v(), cardEditing.getStampMethod().value);
+		StampCardDigitDto cardDigitNumberDto = new StampCardDigitDto(cardEditing.getDigitsNumber().v());
 		
 		return cardDigitNumberDto;
 	}
+	
 }

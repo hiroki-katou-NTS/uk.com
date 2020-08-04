@@ -12,9 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.WorkPlaceConfig;
 import nts.uk.ctx.at.record.dom.adapter.workplace.WorkplaceConfigHistory;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
@@ -24,7 +22,9 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceDto;
 //import nts.uk.ctx.bs.employee.pub.workplace.AffAtWorkplaceExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.config.WorkPlaceConfigPub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplaceInforExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class AffWorkplaceAdapterImpl.
@@ -75,12 +75,6 @@ public class AffWorkplaceAdapterImpl implements AffWorkplaceAdapter {
 		}
 		
 		return Optional.of(affWorkPlaceSidImport);
-	}
-	
-	@Override
-	public List<String> findAffiliatedWorkPlaceIdsToRootRequire(CacheCarrier cacheCarrier, String companyId,String employeeId, GeneralDate baseDate) {
-		//Require対応まち
-		return this.workplacePub.findWpkIdsBySid(companyId ,employeeId, baseDate);
 	}
 	
 	@Override

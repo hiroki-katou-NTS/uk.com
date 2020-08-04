@@ -4,12 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
+import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
 
+@Stateless
 public class OutsideOTSettingService {
+
+	@Inject
+	private OutsideOTSettingRepository outsideOTSettingRepository;
+	@Inject
+	private	WorkdayoffFrameRepository workdayoffFrameRepository;
 
 	/**
 	 * 36協定対象項目一覧を取得
@@ -17,7 +28,7 @@ public class OutsideOTSettingService {
 	 * @param companyId
 	 * @return 36協定時間対象項目
 	 */
-	public static Time36AgreementTargetItem getTime36AgreementTargetItem(RequireM2 require, String companyId) {
+	public Time36AgreementTargetItem getTime36AgreementTargetItem(String companyId) {
 		List<Integer> overtimeFrNo = new ArrayList<>();
 		List<Integer> breakFrNo = new ArrayList<>();
 		List<MonthlyItems> overTimeItems = MonthlyItems.findOverTime();
@@ -25,7 +36,7 @@ public class OutsideOTSettingService {
 		boolean targetFlex = false;
 
 		// ドメインモデル「時間外超過設定」を取得する
-		Optional<OutsideOTSetting> outsideOTSettingOtp = require.outsideOTSetting(companyId);
+		Optional<OutsideOTSetting> outsideOTSettingOtp = outsideOTSettingRepository.findById(companyId);
 		if (!outsideOTSettingOtp.isPresent()) {
 			return new Time36AgreementTargetItem(overtimeFrNo, breakFrNo, targetFlex);
 		}
@@ -71,8 +82,8 @@ public class OutsideOTSettingService {
 	 * @return 勤怠項目IDリスト
 	 */
 	// 2019.2.13 ADD shuichi_ishida
-	public static List<Integer> getAllAttendanceItemIdsForLegalBreak(RequireM1 require, String companyId) {
-		return getAllAttendanceItemIdsForLegalBreak(require, companyId, Optional.empty(), Optional.empty());
+	public List<Integer> getAllAttendanceItemIdsForLegalBreak(String companyId) {
+		return this.getAllAttendanceItemIdsForLegalBreak(companyId, Optional.empty(), Optional.empty());
 	}
 	
 	/**
@@ -83,7 +94,8 @@ public class OutsideOTSettingService {
 	 * @return 勤怠項目IDリスト
 	 */
 	// 2019.2.13 ADD shuichi_ishida
-	public static List<Integer> getAllAttendanceItemIdsForLegalBreak(RequireM1 require, String companyId,
+	public List<Integer> getAllAttendanceItemIdsForLegalBreak(
+			String companyId,
 			Optional<OutsideOTSetting> outsideOtSettingOpt,
 			Optional<List<WorkdayoffFrame>> workdayoffFramesOpt){
 
@@ -95,7 +107,7 @@ public class OutsideOTSettingService {
 			outsideOTSetting = outsideOtSettingOpt.get();
 		}
 		else {
-			val outsideOTSettingData = require.outsideOTSetting(companyId);
+			val outsideOTSettingData = outsideOTSettingRepository.findById(companyId);
 			if (outsideOTSettingData.isPresent()) {
 				outsideOTSetting = outsideOTSettingData.get();
 			}
@@ -108,7 +120,7 @@ public class OutsideOTSettingService {
 			workdayoffFrames.addAll(workdayoffFramesOpt.get());
 		}
 		else {
-			workdayoffFrames.addAll(require.workdayoffFrames(companyId));
+			workdayoffFrames.addAll(this.workdayoffFrameRepository.getAllWorkdayoffFrame(companyId));
 		}
 		
 		// 内訳項目一覧に設定されている勤怠項目IDを確認する
@@ -128,17 +140,5 @@ public class OutsideOTSettingService {
 		
 		// 取得した勤怠項目IDリストを返す
 		return result;
-	}
-	
-	public static interface RequireM2 {
-		
-		Optional<OutsideOTSetting> outsideOTSetting(String companyId);
-		
-	}
-	
-	public static interface RequireM1 extends RequireM2 {
-		
-		List<WorkdayoffFrame> workdayoffFrames(String companyId);
-		
 	}
 }

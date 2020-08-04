@@ -42,7 +42,7 @@ public class EmployeeInfoCardNumber {
 		List<WorkPlaceInforExport> placeInforExports = workplaceAdapter.getWorkplaceInforByWkpIds(conpanyId, workplaceIds, basedate);
 		
 		if (placeInforExports.isEmpty()) {
-			return new EmployeeInfoCardNumberDto();
+			throw new RuntimeException("Not found");
 		}
 		
 		WorkPlaceInforExport placeInforExport = placeInforExports.get(0);
@@ -50,7 +50,7 @@ public class EmployeeInfoCardNumber {
 		PersonInfoExport personInfoExport = IPersonInfoPub.getPersonInfo(employeeId);
 		
 		if (personInfoExport == null) {
-			return new EmployeeInfoCardNumberDto();
+			throw new RuntimeException("Not found");
 		}
 		
 		List<StampCard> stampCards = stampCardRepo.getListStampCard(employeeId);

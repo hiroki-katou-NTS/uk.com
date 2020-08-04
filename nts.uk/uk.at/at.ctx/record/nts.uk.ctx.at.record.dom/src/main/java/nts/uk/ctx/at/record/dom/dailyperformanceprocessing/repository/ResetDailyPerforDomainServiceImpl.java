@@ -35,10 +35,10 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttenda
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
@@ -49,6 +49,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
@@ -69,11 +70,11 @@ import nts.uk.shr.com.i18n.TextResource;
 @Stateless
 public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomainService {
 
-	@Inject 
-	private RecordDomRequireService requireService;
-	
 	@Inject
 	private ReflectWorkInforDomainService reflectWorkInforDomainService;
+
+	@Inject
+	private WorkInformationRepository workInformationRepository;
 
 	@Inject
 	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
@@ -134,6 +135,9 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 	
 	@Inject
 	private ReflectWorkInforDomainService inforService;
+	
+	@Inject
+	private WorkingConditionService workingConditionService;
 	
 	@Inject
 	private ReflectStampDomainService reflectStampDomainServiceImpl;
@@ -454,7 +458,7 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 							stampOutput.getReflectStampOutput().setAttendanceLeavingGateOfDaily(converter2.attendanceLeavingGate().orElse(null));
 							stampOutput.getReflectStampOutput().setPcLogOnInfoOfDaily(converter2.pcLogInfo().orElse(null));
 							// 社員の労働条件を取得する
-							Optional<WorkingConditionItem> workingConditionItem = WorkingConditionService.findWorkConditionByEmployee(requireService.createRequire(), employeeID, processingDate);
+							Optional<WorkingConditionItem> workingConditionItem = this.workingConditionService.findWorkConditionByEmployee(employeeID, processingDate);
 							if(workingConditionItem.isPresent()){
 								// 自動打刻セットする
 								TimeLeavingOfDailyPerformance timeLeavingOptional = stampBeforeReflection.getTimeLeavingOfDailyPerformance();

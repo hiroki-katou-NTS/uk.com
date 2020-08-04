@@ -25,84 +25,49 @@ module nts.uk.at.view.kdp.share {
 		</div>
 	</div>
 `;
-	const COMPONENT_NAME = 'stamp-clock';
-
-	@handler({
-		bindingName: COMPONENT_NAME,
-		validatable: true,
-		virtual: false
-	})
-	export class EmployeeComponentBindingHandler implements KnockoutBindingHandler {
-		init(element: HTMLElement, valueAccessor: () => any, __ab: KnockoutAllBindingsAccessor, ___vm: ComponentViewModel, bindingContext: KnockoutBindingContext) {
-			const name = COMPONENT_NAME;
-			const params = valueAccessor();
-
-			ko.applyBindingsToNode(element, { component: { name, params } }, bindingContext);
-
-			return { controlsDescendantBindings: true };
-		}
-	}
 
 	@component({
-		name: COMPONENT_NAME,
+		name: 'stamp-clock',
 		template
 	})
 	export class StampClock extends ko.ViewModel {
 		time: KnockoutObservable<Date> = ko.observable(new Date());
+		settings: KnockoutObservable<StampColor> = ko.observable({
+			textColor: 'rgb(255, 255, 255)',
+			backGroundColor: 'rgb(0, 51, 204)'
+		});
 
 		events!: ClickEvent;
-		settings!: KnockoutComputed<StampColor>;
 
 		created(params?: StampClocParam) {
 			const vm = this;
 
 			if (params) {
 				const { setting, events } = params;
+				const { textColor, backGroundColor } = setting || { textColor: 'rgb(255, 255, 255)', backGroundColor: 'rgb(0, 51, 204)' };
+				
+				// convert setting event to binding object
+				if (_.isFunction(events.setting)) {
+					const click = events.setting;
 
-				if (events) {
-					// convert setting event to binding object
-					if (_.isFunction(events.setting)) {
-						const click = events.setting;
-
-						events.setting = {
-							click,
-							show: true
-						} as any;
-					}
-
-					// convert company event to binding object
-					if (_.isFunction(events.company)) {
-						const click = events.company;
-
-						events.company = {
-							click,
-							show: true
-						} as any;
-					}
-
-					vm.events = events;
-				} else {
-					vm.events = {
-						company: {
-							show: false,
-							click: () => { }
-						} as any,
-						setting: {
-							show: false,
-							click: () => { }
-						} as any
-					};
+					events.setting = {
+						click,
+						show: true
+					} as any;
 				}
 
-				vm.settings = ko.computed(() => {
-					const { textColor, backGroundColor } = ko.toJS(setting || {});
+				// convert company event to binding object
+				if (_.isFunction(events.company)) {
+					const click = events.company;
 
-					if (textColor && backGroundColor) {
-						return { textColor, backGroundColor };
-					} else {
-						return { textColor: 'rgb(255, 255, 255)', backGroundColor: 'rgb(0, 51, 204)' };
-					}
-				});
+					events.company = {
+						click,
+						show: true
+					} as any;
+				}
+
+				vm.events = events;
+				vm.settings({ textColor, backGroundColor });
 			}
 
 			setInterval(() => vm.time(vm.$date.now()), 100);

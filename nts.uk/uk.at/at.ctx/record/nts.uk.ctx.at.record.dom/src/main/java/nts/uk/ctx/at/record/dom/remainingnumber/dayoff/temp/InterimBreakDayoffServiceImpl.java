@@ -13,14 +13,12 @@ import javax.transaction.Transactional.TxType;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.GetVacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VacationAddSet;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -45,6 +43,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetDesignatedT
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 実装：暫定代休・休出管理データ
@@ -69,17 +68,19 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 	/** 勤務情報の取得 */
 	@Inject
 	private WorkTypeRepository workTypeRepo;
-	
-	@Inject 
-	private RecordDomRequireService requireService;
+	/** 休暇加算設定の取得 */
+	@Inject
+	private GetVacationAddSet getVacationAddSet;
+	/** （代休振替設定）指定時間の取得 */
+	@Inject
+	private GetDesignatedTime getDesignatedTime;
 	
 	/** 作成 */
 	@Override
 	public void create(String companyId, String employeeId, DatePeriod period,
 			Optional<List<WorkInfoOfDailyPerformance>> workInfoOfDailyList,
 			Optional<List<AttendanceTimeOfDailyPerformance>> attendanceTimeOfDailyList) {
-		val require = requireService.createRequire();
-	
+		
 		// 日別実績の勤務情報を取得
 		List<WorkInfoOfDailyPerformance> targetWorkInfos = new ArrayList<>();
 		if (workInfoOfDailyList.isPresent()){
@@ -112,7 +113,7 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 		}
 
 		// 休暇加算設定　取得
-		VacationAddSet vacationAddSet = GetVacationAddSet.get(require, companyId);
+		VacationAddSet vacationAddSet = this.getVacationAddSet.get(companyId);
 		
 		for (val targetWorkInfo : targetWorkInfos){
 
@@ -182,7 +183,7 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 				// （代休振替設定）指定時間を取得
 				DesignatedTime designatedTime = null;
 				if (isTarget){
-					val designatedTimeOpt = GetDesignatedTime.get(require, companyId, workTimeCd);
+					val designatedTimeOpt = this.getDesignatedTime.get(companyId, workTimeCd);
 					if (designatedTimeOpt.isPresent()) designatedTime = designatedTimeOpt.get().getDesignatedTime();
 				}
 				if (designatedTime == null) isTarget = false;

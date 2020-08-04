@@ -34,6 +34,9 @@ public class TransfereePerson {
 	private ClosureRepository closureRepo;
 	
 	@Inject
+	private ClosureService closureService;
+	
+	@Inject
 	private WorkplaceWorkRecordAdapter workplaceWorkRecordAdapter;
 	
 	@Inject
@@ -73,7 +76,7 @@ public class TransfereePerson {
 		if (closureOpt.isPresent()) {
 			Closure closure = closureOpt.get();
 			YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
-			DatePeriod closurePeriod = ClosureService.getClosurePeriod(closureId, processingYm, closureOpt);
+			DatePeriod closurePeriod = this.closureService.getClosurePeriod(closureId, processingYm);
 			return new DatePeriod(closurePeriod.start(), period.end());
 		}
 		return period;

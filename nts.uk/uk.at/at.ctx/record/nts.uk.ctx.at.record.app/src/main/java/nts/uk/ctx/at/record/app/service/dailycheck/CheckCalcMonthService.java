@@ -16,7 +16,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 //import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -27,13 +26,13 @@ import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 public class CheckCalcMonthService {
 
 	@Inject
-	private RecordDomRequireService requireService;
+	private GetClosurePeriod getClosurePeriod;
 
 	public Pair<Boolean, List<AggrPeriodEachActualClosure>> isNeedCalcMonth(String companyId, String employeeId,
 			List<GeneralDate> lstDayChange) {
 		// 集計期間
-		List<ClosurePeriod> closurePeriods = GetClosurePeriod.get(requireService.createRequire(), companyId, 
-				employeeId, GeneralDate.today(), Optional.empty(), Optional.empty(), Optional.empty());
+		List<ClosurePeriod> closurePeriods = getClosurePeriod.get(companyId, employeeId, GeneralDate.today(),
+				Optional.empty(), Optional.empty(), Optional.empty());
 		List<AggrPeriodEachActualClosure> datePeriod = new ArrayList<>();
 		for (ClosurePeriod value : closurePeriods) {
 			val valueCheck = isInPeriod(value.getAggrPeriods(), lstDayChange);

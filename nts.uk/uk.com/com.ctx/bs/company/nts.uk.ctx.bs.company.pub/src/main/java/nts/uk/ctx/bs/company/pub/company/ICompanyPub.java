@@ -3,8 +3,6 @@ package nts.uk.ctx.bs.company.pub.company;
 import java.util.List;
 import java.util.Optional;
 
-import nts.arc.layer.app.cache.CacheCarrier;
-
 public interface ICompanyPub {
 
 	/**
@@ -30,8 +28,6 @@ public interface ICompanyPub {
 	 */
 
 	BeginOfMonthExport getBeginOfMonth(String cid);
-	BeginOfMonthExport getBeginOfMonthRequire(CacheCarrier cacheCarrier,String cid);
-
 
 	/**
 	 * for request list No.125

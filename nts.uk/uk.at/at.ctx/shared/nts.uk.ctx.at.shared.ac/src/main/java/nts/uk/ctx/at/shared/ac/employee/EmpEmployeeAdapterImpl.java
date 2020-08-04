@@ -13,8 +13,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employee.AffComHistItemShareImport;
@@ -61,15 +59,8 @@ public class EmpEmployeeAdapterImpl implements EmpEmployeeAdapter {
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public EmployeeImport findByEmpId(String empId) {
-		val cacheCarrier = new CacheCarrier();
-		return findByEmpIdRequire(cacheCarrier, empId);
-	}
-	
-	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public EmployeeImport findByEmpIdRequire(CacheCarrier cacheCarrier, String empId) {
 		// Get Employee Basic Info
-		EmployeeBasicInfoExport empExport = employeePub.findBySIdRequire(cacheCarrier, empId);
+		EmployeeBasicInfoExport empExport = employeePub.findBySId(empId);
 		// Check Null
 		if (empExport != null) {
 			// Map to EmployeeImport
@@ -131,8 +122,8 @@ public class EmpEmployeeAdapterImpl implements EmpEmployeeAdapter {
 	}
 
 	@Override
-	public List<AffCompanyHistSharedImport> getAffCompanyHistByEmployee(CacheCarrier cacheCarrier, List<String> sids, DatePeriod datePeriod) {
-		List<AffCompanyHistSharedImport> importList = this.syCompanyPub.GetAffCompanyHistByEmployeeRequire(cacheCarrier, sids, datePeriod).stream()
+	public List<AffCompanyHistSharedImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod) {
+		List<AffCompanyHistSharedImport> importList = this.syCompanyPub.GetAffCompanyHistByEmployee(sids, datePeriod).stream()
 				.map(x -> convert(x)).collect(Collectors.toList());
 		return importList;
 	}
@@ -144,9 +135,9 @@ public class EmpEmployeeAdapterImpl implements EmpEmployeeAdapter {
 	}
 
 	@Override
-	public EmployeeRecordImport findByAllInforEmpId(CacheCarrier cacheCarrier, String empId) {
+	public EmployeeRecordImport findByAllInforEmpId(String empId) {
 		// Get Employee Basic Info
-		EmployeeBasicInfoExport empExport = employeePub.findBySIdRequire(cacheCarrier, empId);
+		EmployeeBasicInfoExport empExport = employeePub.findBySId(empId);
 		// Check Null
 		if (empExport != null) {
 			// Map to EmployeeImport
@@ -166,9 +157,9 @@ public class EmpEmployeeAdapterImpl implements EmpEmployeeAdapter {
 	}
 
 	@Override
-	public List<SClsHistImport> lstClassByEmployeeId(CacheCarrier cacheCarrier,String companyId, List<String> employeeIds,
+	public List<SClsHistImport> lstClassByEmployeeId(String companyId, List<String> employeeIds,
 			DatePeriod datePeriod) {
-		List<SClsHistExport> lstExport = classPub.findSClsHistBySidRequire(cacheCarrier, companyId, employeeIds, datePeriod);
+		List<SClsHistExport> lstExport = classPub.findSClsHistBySid(companyId, employeeIds, datePeriod);
 		return lstExport.stream().map(x -> new SClsHistImport(x.getPeriod(), x.getEmployeeId(), x.getClassificationCode(), x.getClassificationName()))
 				.collect(Collectors.toList());
 	}

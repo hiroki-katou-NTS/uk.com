@@ -15,21 +15,16 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employment.AffPeriodEmpCodeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmpCdNameImport;
-import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.bs.employee.pub.employment.EmpCdNameExport;
-import nts.uk.ctx.bs.employee.pub.employment.EmploymentHisOfEmployee;
-import nts.uk.ctx.bs.employee.pub.employment.IEmploymentHistoryPub;
 import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class ShareEmploymentAdapterImpl.
@@ -40,9 +35,6 @@ public class ShareEmploymentAdapterImpl implements ShareEmploymentAdapter{
 	/** The employment. */
 	@Inject
 	public SyEmploymentPub employment;
-	
-	@Inject
-	private IEmploymentHistoryPub employmentHistoryPub;
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter#findAll(java.lang.String)
@@ -62,14 +54,7 @@ public class ShareEmploymentAdapterImpl implements ShareEmploymentAdapter{
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<BsEmploymentHistoryImport> findEmploymentHistory(String companyId, String employeeId, GeneralDate baseDate) {
-		val cacheCarrier = new CacheCarrier();
-		return findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
-	}
-	
-	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public Optional<BsEmploymentHistoryImport> findEmploymentHistoryRequire(CacheCarrier cacheCarrier, String companyId, String employeeId, GeneralDate baseDate) {
-		return employment.findSEmpHistBySidRequire(cacheCarrier, companyId, employeeId, baseDate).map(empHist ->
+		return employment.findSEmpHistBySid(companyId, employeeId, baseDate).map(empHist -> 
 												new BsEmploymentHistoryImport(empHist.getEmployeeId(), empHist.getEmploymentCode(),
 													empHist.getEmploymentName(), empHist.getPeriod()));
 		
@@ -78,14 +63,7 @@ public class ShareEmploymentAdapterImpl implements ShareEmploymentAdapter{
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<SharedSidPeriodDateEmploymentImport> getEmpHistBySidAndPeriod(List<String> sids, DatePeriod datePeriod) {
-		val cacheCarrier = new CacheCarrier();
-		return getEmpHistBySidAndPeriodRequire(cacheCarrier, sids, datePeriod);
-	}
-
-	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public List<SharedSidPeriodDateEmploymentImport> getEmpHistBySidAndPeriodRequire(CacheCarrier cacheCarrier, List<String> sids, DatePeriod datePeriod) {
-		List<SharedSidPeriodDateEmploymentImport> lstEmpHist = employment.getEmpHistBySidAndPeriodRequire(cacheCarrier, sids, datePeriod)
+		List<SharedSidPeriodDateEmploymentImport> lstEmpHist = employment.getEmpHistBySidAndPeriod(sids, datePeriod)
 				.stream()
 				.map(x -> {
 					List<AffPeriodEmpCodeImport> lstEmpCode = x.getAffPeriodEmpCodeExports().stream()
@@ -116,14 +94,5 @@ public class ShareEmploymentAdapterImpl implements ShareEmploymentAdapter{
 		}		
 		return mapResult;
 	}
-
-	@Override
-	public List<EmploymentHistShareImport> findByEmployeeIdOrderByStartDate(String employeeId) {
-		List<EmploymentHisOfEmployee> empHists = this.employmentHistoryPub.getEmploymentHisBySid(employeeId);
-
-		return empHists.stream().map(
-				c -> new EmploymentHistShareImport(c.getSId(), c.getEmploymentCD(), c.getStartDate(), c.getEndDate()))
-				.collect(Collectors.toList());
-	}
-
+	
 }

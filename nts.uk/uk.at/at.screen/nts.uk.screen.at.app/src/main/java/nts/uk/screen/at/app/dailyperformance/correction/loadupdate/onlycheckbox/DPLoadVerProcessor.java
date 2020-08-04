@@ -12,14 +12,12 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ApprovalStatusActualResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.approval.ApprovalStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmStatusActualDayChange;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
@@ -43,6 +41,9 @@ public class DPLoadVerProcessor {
 
 	@Inject
 	private CheckIndentityMonth checkIndentityMonth;
+
+	@Inject
+	private ClosureService closureService;
 	
 	@Inject
 	private ApprovalStatusActualDayChange approvalStatusActualDayChange;
@@ -52,9 +53,6 @@ public class DPLoadVerProcessor {
 	
 	@Inject
 	private DailyPerformanceScreenRepo repo;
-	
-	@Inject
-	private RecordDomRequireService requireService;
 
 	public LoadVerDataResult loadVerAfterCheckbox(LoadVerData loadVerData) {
 		LoadVerDataResult result = new LoadVerDataResult();
@@ -80,9 +78,7 @@ public class DPLoadVerProcessor {
 		List<String> emp = lstDataChange.stream().map(x -> x.getEmployeeId()).distinct().collect(Collectors.toList());
 		if (!emp.isEmpty() && emp.get(0).equals(sId) && loadVerData.getDisplayFormat() == 0) {
 			// 社員に対応する締め期間を取得する
-			DatePeriod period = ClosureService.findClosurePeriod(
-					requireService.createRequire(), new CacheCarrier(),
-					sId, loadVerData.getDateRange().getEndDate());
+			DatePeriod period = closureService.findClosurePeriod(sId, loadVerData.getDateRange().getEndDate());
 
 			// パラメータ「日別実績の修正の状態．対象期間．終了日」がパラメータ「締め期間」に含まれているかチェックする
 			if (!period.contains(loadVerData.getDateRange().getEndDate())) {

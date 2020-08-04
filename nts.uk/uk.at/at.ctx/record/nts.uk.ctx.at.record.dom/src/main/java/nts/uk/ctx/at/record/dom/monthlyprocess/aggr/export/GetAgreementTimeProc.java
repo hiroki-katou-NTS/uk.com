@@ -5,23 +5,21 @@ import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
-import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyOldDatas;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 処理：36協定時間の取得
@@ -31,6 +29,8 @@ public class GetAgreementTimeProc {
 
 	/** 月別集計で必要な会社別設定 */
 	private MonAggrCompanySettings companySets;
+	/** 月別集計が必要とするリポジトリ */
+	private RepositoriesRequiredByMonthlyAggr repositories;
 	
 	/** 会社ID */
 	private String companyId;
@@ -41,7 +41,10 @@ public class GetAgreementTimeProc {
 	/** 締め日 */
 	private ClosureDate closureDate;
 	
-	public GetAgreementTimeProc() {
+	public GetAgreementTimeProc(
+			RepositoriesRequiredByMonthlyAggr repositories) {
+		
+		this.repositories = repositories;
 	}
 	
 	/**
@@ -52,8 +55,8 @@ public class GetAgreementTimeProc {
 	 * @param closureId 締めID
 	 * @return 36協定時間一覧
 	 */
-	public List<AgreementTimeDetail> get(RequireM2 require, CacheCarrier cacheCarrier,
-			String companyId, List<String> employeeIds, YearMonth yearMonth, ClosureId closureId) {
+	public List<AgreementTimeDetail> get(String companyId, List<String> employeeIds, YearMonth yearMonth,
+			ClosureId closureId) {
 
 		CopyOnWriteArrayList<AgreementTimeDetail> results = new CopyOnWriteArrayList<>();
 		this.companyId = companyId;
@@ -63,7 +66,7 @@ public class GetAgreementTimeProc {
 		if (employeeIds.size() == 0) return results;
 		
 		// 月別集計で必要な会社別設定を取得　（36協定時間用）
-		this.companySets = MonAggrCompanySettings.loadSettingsForAgreement(require, companyId);
+		this.companySets = MonAggrCompanySettings.loadSettingsForAgreement(companyId, this.repositories);
 		if (this.companySets.getErrorInfos().size() > 0){
 			
 			// 会社単位エラーメッセージ　（先頭の社員IDに紐づけて返却）
@@ -78,12 +81,12 @@ public class GetAgreementTimeProc {
 		if (aggrPeriod == null) return results;
 		
 		CopyOnWriteArrayList<String> errorMessages = new CopyOnWriteArrayList<>();
-		require.parallelContext().forEach(employeeIds, employeeId -> {
+		this.repositories.getParallel().forEach(employeeIds, employeeId -> {
 			if (errorMessages.size() > 0) return;
 			
 			// 月別集計で必要な社員別設定を取得
-			MonAggrEmployeeSettings employeeSets = MonAggrEmployeeSettings.loadSettings(require,
-					cacheCarrier, companyId, employeeId, aggrPeriod);
+			MonAggrEmployeeSettings employeeSets = MonAggrEmployeeSettings.loadSettings(
+					companyId, employeeId, aggrPeriod, this.repositories);
 			if (employeeSets.getErrorInfos().size() > 0){
 				errorMessages.add(employeeSets.getErrorInfos().values().stream().findFirst().get().v());
 				return;
@@ -100,10 +103,11 @@ public class GetAgreementTimeProc {
 			//val workConditionItem = workConditionItemOpt.get();
 			
 			// 「日別実績の勤怠時間」を取得
-			val confirmedAttdTimeList = require.dailyAttendanceTimes(employeeId, aggrPeriod);
+			val confirmedAttdTimeList =
+					this.repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, aggrPeriod);
 
 			// 確定情報の取得
-			val confirmedInfo = this.getConfirmedInfo(require, cacheCarrier, employeeId, aggrPeriod, employeeSets, Optional.of(confirmedAttdTimeList));
+			val confirmedInfo = this.getConfirmedInfo(employeeId, aggrPeriod, employeeSets, Optional.of(confirmedAttdTimeList));
 			val confirmed = confirmedInfo.getAgreementTime().getAgreementTime();
 			val confirmedMax = confirmedInfo.getAgreementMaxTime().getAgreementTime();
 			
@@ -175,7 +179,6 @@ public class GetAgreementTimeProc {
 	 * @return 管理期間の36協定時間
 	 */
 	private AgreementTimeOfManagePeriod getConfirmedInfo(
-			RequireM1 require, CacheCarrier cacheCarrier,
 			String employeeId,
 			DatePeriod aggrPeriod,
 			MonAggrEmployeeSettings employeeSets,
@@ -184,7 +187,8 @@ public class GetAgreementTimeProc {
 		// 「月別実績の勤怠時間」を取得
 		DatePeriod monthPeriod = null;
 		AttendanceTimeOfMonthly attendanceTimeOfMonthly = null;
-		val attendanceTimeOfMonthlys = require.attendanceTimeOfMonthly(employeeId, this.yearMonth, this.closureId);
+		val attendanceTimeOfMonthlys = this.repositories.getAttendanceTimeOfMonthly()
+				.findByYMAndClosureIdOrderByStartYmd(employeeId, this.yearMonth, this.closureId);
 		if (attendanceTimeOfMonthlys.size() == 0) {
 			
 			// 「締め」を取得する
@@ -210,24 +214,24 @@ public class GetAgreementTimeProc {
 		// 集計に必要な日別実績データを取得する
 		MonthlyCalculatingDailys monthlyCalcDailys = null;
 		if (attendanceTimeOfDailysOpt.isPresent()){
-			monthlyCalcDailys = MonthlyCalculatingDailys.loadDataForAgreement(require, employeeId, monthPeriod,
-					attendanceTimeOfDailysOpt.get(), employeeSets);
+			monthlyCalcDailys = MonthlyCalculatingDailys.loadDataForAgreement(employeeId, monthPeriod,
+					attendanceTimeOfDailysOpt.get(), this.repositories);
 		}
 		else {
-			monthlyCalcDailys = MonthlyCalculatingDailys.loadDataForAgreement(require, employeeId, monthPeriod,
-					employeeSets);
+			monthlyCalcDailys = MonthlyCalculatingDailys.loadDataForAgreement(employeeId, monthPeriod,
+					this.repositories);
 		}
 		
 		// 集計前の月別実績データを確認する
-		MonthlyOldDatas monthlyOldDatas = MonthlyOldDatas.loadData(require, 
-				employeeId, this.yearMonth, this.closureId, this.closureDate);
+		MonthlyOldDatas monthlyOldDatas = MonthlyOldDatas.loadData(
+				employeeId, this.yearMonth, this.closureId, this.closureDate, this.repositories);
 		
 		// 36協定時間の集計
 		val monthlyCalculation = attendanceTimeOfMonthly.getMonthlyCalculation();
-		val agreementTimeOpt = monthlyCalculation.aggregateAgreementTime(require, cacheCarrier,
+		val agreementTimeOpt = monthlyCalculation.aggregateAgreementTime(
 				this.companyId, employeeId, this.yearMonth, this.closureId, this.closureDate, aggrPeriod,
 				Optional.empty(), Optional.empty(), Optional.empty(), this.companySets, employeeSets,
-				monthlyCalcDailys, monthlyOldDatas, Optional.empty());
+				monthlyCalcDailys, monthlyOldDatas, Optional.empty(), this.repositories);
 		if (agreementTimeOpt.isPresent()){
 			val agreementTime = agreementTimeOpt.get();
 			
@@ -242,19 +246,5 @@ public class GetAgreementTimeProc {
 		}
 		
 		return null;
-	}
-	
-	public static interface RequireM2 extends MonAggrCompanySettings.RequireM5,
-		MonAggrEmployeeSettings.RequireM2, RequireM1{
-		
-		ManagedParallelWithContext parallelContext();
-		
-		List<AttendanceTimeOfDailyPerformance> dailyAttendanceTimes(String employeeId, DatePeriod datePeriod);
-	}
-	
-	public static interface RequireM1 extends MonthlyCalculatingDailys.RequireM3, 
-		MonthlyCalculation.RequireM2, MonthlyOldDatas.RequireM1 {
-		
-		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, YearMonth yearMonth, ClosureId closureId);
 	}
 }

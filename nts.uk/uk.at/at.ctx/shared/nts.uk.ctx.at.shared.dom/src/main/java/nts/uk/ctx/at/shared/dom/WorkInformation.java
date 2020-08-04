@@ -219,12 +219,5 @@ public class WorkInformation {
 		 */
 		WorkStyle checkWorkDay(String workTypeCode);
 	}
-	
-	public boolean isExamWorkTime() {
-		if (workTimeCode == null) {
-			return false;
-		}
-		
-		return workTimeCode.equals("102") || workTimeCode.equals("103");
-	}
+
 }

@@ -7,9 +7,9 @@ package nts.uk.ctx.at.record.app.find.workrecord.monthcal.workplace;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.wkp.WkpFlexMonthActCalSetRepo;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.wkp.WkpDeforLaborMonthActCalSetRepo;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.wkp.WkpRegulaMonthActCalSetRepo;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpDeforLaborMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpFlexMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpRegulaMonthActCalSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -20,15 +20,15 @@ public class WkpMonthCalSetFinder {
 
 	/** The emp defor labor month act cal set repo. */
 	@Inject
-	private WkpDeforLaborMonthActCalSetRepo empDeforLaborMonthActCalSetRepo;
+	private WkpDeforLaborMonthActCalSetRepository empDeforLaborMonthActCalSetRepo;
 
 	/** The emp flex month act cal set repo. */
 	@Inject
-	private WkpFlexMonthActCalSetRepo empFlexMonthActCalSetRepo;
+	private WkpFlexMonthActCalSetRepository empFlexMonthActCalSetRepo;
 
 	/** The emp regula month act cal set repo. */
 	@Inject
-	private WkpRegulaMonthActCalSetRepo empRegulaMonthActCalSetRepo;
+	private WkpRegulaMonthActCalSetRepository empRegulaMonthActCalSetRepo;
 
 	/**
 	 * Gets the details.
@@ -41,9 +41,9 @@ public class WkpMonthCalSetFinder {
 
 		WkpMonthCalSetDto dto = WkpMonthCalSetDto.builder().build();
 
-		empDeforLaborMonthActCalSetRepo.find(cid, wkpId).ifPresent(domain -> dto.transfer(domain));
-		empFlexMonthActCalSetRepo.find(cid, wkpId).ifPresent(domain -> dto.transfer(domain));
-		empRegulaMonthActCalSetRepo.find(cid, wkpId).ifPresent(domain -> dto.transfer(domain));
+		empDeforLaborMonthActCalSetRepo.find(cid, wkpId).ifPresent(domain -> domain.saveToMemento(dto));
+		empFlexMonthActCalSetRepo.find(cid, wkpId).ifPresent(domain -> domain.saveToMemento(dto));
+		empRegulaMonthActCalSetRepo.find(cid, wkpId).ifPresent(domain -> domain.saveToMemento(dto));
 
 		return dto;
 	}

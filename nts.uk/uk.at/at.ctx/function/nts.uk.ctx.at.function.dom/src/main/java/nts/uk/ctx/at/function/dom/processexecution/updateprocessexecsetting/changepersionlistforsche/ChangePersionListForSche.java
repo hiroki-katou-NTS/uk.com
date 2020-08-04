@@ -47,6 +47,9 @@ public class ChangePersionListForSche {
 	private BusinessTypeEmpOfHistAdapter businessTypeEmpOfHistAdapter;
 	
 	@Inject
+	private ClosureService closureService;
+	
+	@Inject
 	private EmployeeHistWorkRecordAdapter employeeHistWorkRecordAdapter;
 	
 	public DatePeriod filterEmployeeList(ProcessExecution procExec, List<String> employeeIdList,
@@ -144,8 +147,8 @@ public class ChangePersionListForSche {
 		GeneralDate startYearMonth = null;
 		GeneralDate endYearMonth = null;
 		for (Closure closure : closureList) {
-			DatePeriod datePeriod = ClosureService.getClosurePeriod(closure.getClosureId().value,
-					closure.getClosureMonth().getProcessingYm(), Optional.of(closure));
+			DatePeriod datePeriod = this.closureService.getClosurePeriod(closure.getClosureId().value,
+					closure.getClosureMonth().getProcessingYm());
 
 			if (startYearMonth == null || datePeriod.start().before(startYearMonth)) {
 				startYearMonth = datePeriod.start();
