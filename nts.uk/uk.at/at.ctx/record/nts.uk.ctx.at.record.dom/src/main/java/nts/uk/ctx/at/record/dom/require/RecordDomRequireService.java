@@ -169,6 +169,8 @@ import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.aggframe.OuenAggregateFrameS
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.aggframe.OuenAggregateFrameSetOfMonthlyRepo;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.outsideot.service.OutsideOTSettingService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
@@ -224,6 +226,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.S
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
@@ -268,6 +271,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeave
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
@@ -348,16 +352,21 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.GetNextAnnualLeaveGrantP
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
-public class RecordDomRequireService implements 
-		GetAnnAndRsvRemNumWithinPeriod.RequireM2, CalcAnnLeaAttendanceRate.RequireM3, GetClosurePeriod.RequireM1,
-		GetClosureStartForEmployee.RequireM1, CalcNextAnnLeaGrantInfo.RequireM1,
+public class RecordDomRequireService
+		implements InterimRemainOffPeriodCreateData.RequireM4, BreakDayOffMngInPeriodQuery.RequireM10,
+		AbsenceReruitmentMngInPeriodQuery.RequireM10, SpecialLeaveManagementService.RequireM5,
+		GetClosureStartForEmployee.RequireM1, ClosureService.RequireM3, OutsideOTSettingService.RequireM2,
+		OutsideOTSettingService.RequireM1, AbsenceTenProcess.RequireM1, AbsenceTenProcess.RequireM2,
+		AbsenceTenProcess.RequireM4, AbsenceTenProcess.RequireM3, AbsenceReruitmentMngInPeriodQuery.RequireM2,
+		WorkingConditionService.RequireM1, GetAnnAndRsvRemNumWithinPeriod.RequireM2, CalcAnnLeaAttendanceRate.RequireM3,
+		GetClosurePeriod.RequireM1, CalcNextAnnLeaGrantInfo.RequireM1,
 		GetNextAnnualLeaveGrantProcKdm002.RequireM1, InterimRemainOffPeriodCreateData.RequireM2,
 		DailyStatutoryLaborTime.RequireM1, AggregateMonthlyRecordService.RequireM1, MonAggrCompanySettings.RequireM6,
 		WorkTimeIsFluidWork.RequireM2, MonAggrEmployeeSettings.RequireM2, MonthlyCalculationByPeriod.RequireM1,
 		GetClosurePeriod.RequireM2, VerticalTotalOfMonthly.RequireM1, TotalCountByPeriod.RequireM1,
 		GetAgreementTime.RequireM5, GetAgreementTime.RequireM3, GetAgreementTime.RequireM4,
 		GetAgreementPeriod.RequireM2, GetAgreTimeByPeriod.RequireM8, GetAgreTimeByPeriod.RequireM7,
-		GetAgreTimeByPeriod.RequireM5, GetAgreTimeByPeriod.RequireM3, WorkingConditionService.RequireM1,
+		GetAgreTimeByPeriod.RequireM5, GetAgreTimeByPeriod.RequireM3,
 		MonthlyAggregationService.RequireM1, AgeementTimeCommonSettingService.RequireM1,
 		CreateTempAnnLeaMngProc.RequireM3, AggregateSpecifiedDailys.RequireM1, ClosureService.RequireM6,
 		ClosureService.RequireM5, MonthlyUpdateMgr.RequireM4, MonthlyClosureUpdateLogProcess.RequireM3,
