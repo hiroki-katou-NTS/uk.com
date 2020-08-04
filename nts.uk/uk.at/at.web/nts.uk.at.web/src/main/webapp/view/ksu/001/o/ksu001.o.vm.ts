@@ -125,7 +125,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
             setShare('listCheckNeededOfWorkTime', self.listCheckNeededOfWorkTime);
             setShare('isEnableButton', self.isEnableButton);
             
-            self.currentScreen = nts.uk.ui.windows.sub.modeless("/view/ksu/001/o1/index.xhtml");
+            self.currentScreen = nts.uk.ui.windows.sub.modeless("/view/ksu/001/la/index.xhtml");
             self.currentScreen.onClosed(() => {
                 self.currentScreen = null;
                 if (__viewContext.viewModel.viewA.selectedModeDisplay() == 1) {

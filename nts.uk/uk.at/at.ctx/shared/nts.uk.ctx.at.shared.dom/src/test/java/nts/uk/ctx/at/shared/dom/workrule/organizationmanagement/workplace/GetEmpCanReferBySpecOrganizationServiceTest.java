@@ -33,7 +33,7 @@ public class GetEmpCanReferBySpecOrganizationServiceTest {
 		TargetOrgIdenInfor targetOrgIdenInfor =new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, null, "workplaceGroupId");
 		new Expectations() {
 			{
-				require.getReferableEmp(referenceDate, epmloyeeId, Arrays.asList(targetOrgIdenInfor.getWorkplaceGroupId().get()));
+				require.getReferableEmp(referenceDate, epmloyeeId, targetOrgIdenInfor.getWorkplaceGroupId().get());
 				
 			}
 		};
@@ -54,7 +54,7 @@ public class GetEmpCanReferBySpecOrganizationServiceTest {
 		List<String> listEmpId = Arrays.asList("emp1","emp2");
 		new Expectations() {
 			{
-				require.getReferableEmp(referenceDate, epmloyeeId, Arrays.asList(targetOrgIdenInfor.getWorkplaceGroupId().get()));
+				require.getReferableEmp(referenceDate, epmloyeeId, targetOrgIdenInfor.getWorkplaceGroupId().get());
 				result = listEmpId;
 				
 				require.sortEmployee(listEmpId, 0, null, referenceDate, null);

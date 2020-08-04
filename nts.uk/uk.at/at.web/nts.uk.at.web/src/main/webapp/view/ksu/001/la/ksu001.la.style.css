@@ -1,0 +1,55 @@
+/* #contents-area{
+	width:1200px;
+} */
+#left-content {
+	padding: 27px 0px 0px 7px;
+	float: left;
+	width: 250px;
+    height: 410px;
+    
+	border-radius: 7px;
+    box-sizing: border-box;
+}
+#right-content {
+	margin-left: 55px;
+	float: left;
+	margin-top: 30px;
+}
+
+.custom {
+	position: relative;
+	width: 40px;
+	top: 17px;
+	left: 16px;
+}
+.arrow-button{	
+	padding: 80px 30px;	
+	margin: 2px;
+}
+
+.btn-custom{
+	width: 50px !important;
+	height: 40px !important;
+	margin: 10px 0px;
+}
+.icon-btn-custom {
+	width: 32px !important;
+}
+.container-custom {	
+	display: flex;
+	margin-top: 15px;
+	width: 800px;
+}
+.container-table {
+	display: flex;
+}
+.input {	
+	margin-right: 20px;
+	margin-left: 10px;		
+}
+.label {
+	margin-top: 10px;		
+}
+.lblForm{
+	margin-right: 338px;
+}
