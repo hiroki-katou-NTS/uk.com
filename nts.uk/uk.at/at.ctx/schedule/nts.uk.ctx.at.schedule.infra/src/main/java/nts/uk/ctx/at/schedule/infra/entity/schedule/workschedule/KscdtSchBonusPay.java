@@ -61,18 +61,19 @@ public class KscdtSchBonusPay extends ContractUkJpaEntity{
 	protected Object getKey() {
 		return this.pK;
 	}
+	//
 	public static KscdtSchBonusPay toEntity(String sid , GeneralDate ymd ,BonusPayTime bonusPayTime){
 		//Truyen 0 vào tao QA 加給種類 // -------------------QA http://192.168.50.4:3000/issues/110810
 		KscdtSchBonusPayPK pk = new KscdtSchBonusPayPK(sid, ymd, 0, bonusPayTime.getBonusPayTimeItemNo());
 		
 		return new KscdtSchBonusPay(pk,
 				AppContexts.user().companyId(),
-				bonusPayTime.getBonusPayTime().v(),
-				bonusPayTime.getWithinBonusPay(), 
-				bonusPayTime.getExcessBonusPayTime());
+				bonusPayTime.getBonusPayTime().v().intValue(),
+				bonusPayTime.getWithinBonusPay().getTime().v(), 
+				bonusPayTime.getExcessBonusPayTime().getTime().v());
 		
 	}
-	//BonusPayTime
+	//勤務予定．勤怠時間．勤務時間．総労働時間．加給時間
 	public  List<BonusPayTime> toDomain(){
 		List<KscdtSchBonusPay> lstBonusPayTime = kscdtSchTime.getBonusPays();
 		List<BonusPayTime> result = new ArrayList<>();

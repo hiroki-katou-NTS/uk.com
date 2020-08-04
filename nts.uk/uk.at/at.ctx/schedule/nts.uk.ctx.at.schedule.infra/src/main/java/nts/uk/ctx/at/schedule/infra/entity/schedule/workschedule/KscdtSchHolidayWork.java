@@ -78,7 +78,7 @@ public class KscdtSchHolidayWork extends ContractUkJpaEntity {
 				time.getBeforeApplicationTime().get().v());
 		return kscdtSchHolidayWork;
 	}
-
+	//勤務予定．勤怠時間．勤務時間．総労働時間．所定外時間．休出時間
 	public HolidayWorkTimeOfDaily toDomain() {
 		List<KscdtSchHolidayWork> holidayWorks = kscdtSchTime.getHolidayWorks();
 		HolidayWorkTimeOfDaily timeOfDaily = null;

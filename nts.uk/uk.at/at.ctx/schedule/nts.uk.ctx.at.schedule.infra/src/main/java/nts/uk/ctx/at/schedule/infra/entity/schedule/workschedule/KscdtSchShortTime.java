@@ -89,7 +89,7 @@ public class KscdtSchShortTime extends ContractUkJpaEntity {
 				deductionTotalTime.getTotalTime().getExcessOfStatutoryTotalTime().getTime().v());
 	}
 
-	// ShortWorkTimeOfDaily
+	// 勤務予定．勤怠時間．勤務時間．総労働時間．短時間勤務時間
 	public List<ShortWorkTimeOfDaily> toDomain() {
 		List<KscdtSchShortTime> schShortTimes = kscdtSchTime.getShortTimes();
 		List<ShortWorkTimeOfDaily> result = new ArrayList<>();

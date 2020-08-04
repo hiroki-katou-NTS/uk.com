@@ -80,7 +80,8 @@ public class KscdtSchOvertimeWork extends ContractUkJpaEntity {
 		this.overtimeWorkTimeTrans = overtimeWorkTimeTrans;
 		this.overtimeWorkTimePreApp = overtimeWorkTimePreApp;
 	}
-	
+
+	//勤務予定．勤怠時間．勤務時間．総労働時間．所定外時間．残業時間
 	public OverTimeOfDaily toDomain(){
 		List<KscdtSchOvertimeWork> overtimeWorks = kscdtSchTime.getOvertimeWorks();
 		OverTimeOfDaily overTimeOfDaily = null;
