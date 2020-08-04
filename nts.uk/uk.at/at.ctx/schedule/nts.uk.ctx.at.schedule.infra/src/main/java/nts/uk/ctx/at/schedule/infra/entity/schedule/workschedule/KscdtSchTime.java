@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmpCombi;
@@ -36,6 +37,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @NoArgsConstructor
 @Table(name="KSCDT_SCH_TIME")
+@Getter
 public class KscdtSchTime extends ContractUkJpaEntity {
 
 	@EmbeddedId
