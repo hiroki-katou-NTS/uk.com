@@ -18,7 +18,7 @@
   </div>
   <div class="row mt-2 mb-2">
     <div class="col-12">
-      <button type="button" class="btn btn-secondary w-100" v-on:click="goToAppLst">{{ 'KAFS00_21　' | i18n }}</button>
+      <button type="button" class="btn btn-secondary w-100" v-on:click="goToAppLst">{{ 'KAFS00_21' | i18n }}</button>
     </div>
   </div>   
 </div>
