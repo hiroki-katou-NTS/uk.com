@@ -86,7 +86,7 @@ module nts.uk.at.view.kdl044.a {
 							if (data.isMultiSelect == true) {
 								differentFromCurrents = _.differenceWith(result, data.shiftCodeExpel, (a, b) => { return a.shiftMasterCode === b });
 							} else {
-								differentFromCurrents = _.filter(result, (val) => { return val.shiftMasterCode != data.shiftCodeExpe });
+								differentFromCurrents = _.filter(result, (val) => { return val.shiftMasterCode != data.shiftCodeExpel });
 							}
 							self.listShifuto(_.sortBy(differentFromCurrents, 'shiftMasterCode'));
 							if (data.shifutoCodes != null) {
