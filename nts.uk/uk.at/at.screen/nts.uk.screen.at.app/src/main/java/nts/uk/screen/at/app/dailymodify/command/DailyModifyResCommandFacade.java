@@ -22,9 +22,11 @@ import javax.transaction.Transactional;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
@@ -49,6 +51,7 @@ import nts.uk.ctx.at.record.dom.monthly.erroralarm.ErrorType;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.service.TimeOffRemainErrorInfor;
 import nts.uk.ctx.at.record.dom.service.TimeOffRemainErrorInputParam;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -100,7 +103,6 @@ import nts.uk.screen.at.app.monthlyperformance.correction.command.MonthModifyCom
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @Transactional
@@ -147,9 +149,6 @@ public class DailyModifyResCommandFacade {
 	private DailyPerformanceScreenRepo repo;
 
 	@Inject
-	private GetClosureStartForEmployee getClosureStartForEmployee;
-
-	@Inject
 	private TimeOffRemainErrorInfor timeOffRemainErrorInfor;
 
 	@Inject
@@ -176,6 +175,9 @@ public class DailyModifyResCommandFacade {
 	
 	@Inject
 	private ProcessMonthlyCalc processMonthlyCalc;
+	
+	@Inject
+	private RecordDomRequireService requireService;
 
 	private void processDto(List<DailyRecordDto> dailyOlds, List<DailyRecordDto> dailyEdits, DPItemParent dataParent,
 			List<DailyModifyQuery> querys, Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate,
@@ -851,6 +853,8 @@ public class DailyModifyResCommandFacade {
 		List<EmployeeMonthlyPerError> monthPer = new ArrayList<>();
 		Set<Pair<String, GeneralDate>> detailEmployeeError = new HashSet<>();
 		boolean onlyErrorOld = true;
+		val cacheCarrier = new CacheCarrier();
+		val require = requireService.createRequire();
 		for (String emp : employeeIds) {
 			// employeeIds.stream().forEach(emp -> {
 			List<IntegrationOfDaily> domainDailyEditAll = dailyDtoEditAll.stream()
@@ -869,7 +873,8 @@ public class DailyModifyResCommandFacade {
 					.collect(Collectors.toList()).stream().sorted((x, y) -> x.getYmd().compareTo(y.getYmd()))
 					.collect(Collectors.toList());
 
-			Optional<GeneralDate> date = getClosureStartForEmployee.algorithm(emp);
+			Optional<GeneralDate> date = GetClosureStartForEmployee.algorithm(
+					require, cacheCarrier, emp);
 			List<EmployeeMonthlyPerError> lstEmpMonthError = new ArrayList<>();
 			if (domainMonthNew != null && !domainMonthNew.isEmpty()) {
 				for (IntegrationOfMonthly month : domainMonthNew) {

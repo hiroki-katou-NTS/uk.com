@@ -9,9 +9,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
@@ -28,17 +31,19 @@ public class SpecifiedWorkTypeServiceImpl implements SpecifiedWorkTypeService {
 	private WorkInformationRepository workInformationRepository;
 
 	@Inject
-	private GetClosureStartForEmployee getClosureStartForEmployee;
-
-	@Inject
 	private EmployeeRecordAdapter employeeRecordAdapter;
 	
 	@Inject
 	private TmpAnnualHolidayMngRepository tmpAnnualHolidayMngRepository;
+	@Inject 
+	private RecordDomRequireService requireService;
 
 	@Override
 	public DailyWorkTypeList getNumberOfSpecifiedWorkType(String employeeId, List<WorkTypeCode> workTypeList,
 			GeneralDate startDate, GeneralDate endDate) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+		
 		DatePeriod period = new DatePeriod(startDate, endDate);
 		DailyWorkTypeList dailyWorkTypeList = new DailyWorkTypeList();
 
@@ -46,7 +51,7 @@ public class SpecifiedWorkTypeServiceImpl implements SpecifiedWorkTypeService {
 		List<NumberOfWorkTypeUsed> newNumberOfWorkTypeUsedList = new ArrayList<>();
 
 		// アルゴリズム「社員に対応する締め開始日を取得する」を実行する
-		Optional<GeneralDate> optionalTime = this.getClosureStartForEmployee.algorithm(employeeId);
+		Optional<GeneralDate> optionalTime = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
 
 		if (optionalTime.isPresent()) {
 			// 入社前、退職後を期間から除く

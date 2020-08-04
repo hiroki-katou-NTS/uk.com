@@ -23,8 +23,17 @@ module nts.uk.at.view.kdp.share {
 				<div class="grid-container" data-bind="
 						if: ko.toJS($component.selected) === pageNo,
 						css: 'btn-layout-type-' + buttonLayoutType">
-					<!-- ko foreach: buttonSettings -->
-					<button class="stamp-rec-btn" data-bind="btn-setting: $data, click: function() { $component.params.click($data, ko.toJS($component.currentTab)); }"></button>
+					<!-- ko foreach: _.chunk(ko.unwrap(buttonSettings), buttonLayoutType === 0 ? 2 : 4) -->
+					<div data-bind="foreach: $data">
+						<button class="stamp-rec-btn"
+							data-bind="
+								btn-setting: $data,
+								click: function() { 
+									$component.params.click($data, ko.toJS($component.currentTab));
+								},
+								timeClick: -1
+							"></button>
+					</div>
 					<!-- /ko -->
 				</div>
 			</div>
@@ -50,9 +59,26 @@ module nts.uk.at.view.kdp.share {
 				});
 		}
 	}
+	const COMPONENT_NAME = 'kdp-tab-button-panel';
+
+	@handler({
+		bindingName: COMPONENT_NAME,
+		validatable: true,
+		virtual: false
+	})
+	export class ButtonSettingComponentBindingHandler implements KnockoutBindingHandler {
+		init(element: HTMLElement, valueAccessor: () => any, __ab: KnockoutAllBindingsAccessor, ___vm: ComponentViewModel, bindingContext: KnockoutBindingContext) {
+			const name = COMPONENT_NAME;
+			const params = valueAccessor();
+
+			ko.applyBindingsToNode(element, { component: { name, params } }, bindingContext);
+
+			return { controlsDescendantBindings: true };
+		}
+	}
 
 	@component({
-		name: 'kdp-tab-button-panel',
+		name: COMPONENT_NAME,
 		template: tabButtonTempate
 	})
 	export class kdpTabButtonComponent extends ko.ViewModel {
@@ -228,7 +254,7 @@ module nts.uk.at.view.kdp.share {
 					.removeAttr(tid)
 					.data(tid, tabindex);
 			}
-			
+
 			vm.selected.valueHasMutated();
 		}
 	}
@@ -261,7 +287,7 @@ module nts.uk.at.view.kdp.share {
 	}
 
 	export interface ButtonSetting {
-		audioType: number;
+		audioType: 0 | 1 | 2;
 		btnBackGroundColor: string;
 		btnDisplayType: number;
 		btnName: string;
@@ -269,10 +295,62 @@ module nts.uk.at.view.kdp.share {
 		btnReservationArt: number;
 		btnTextColor: string;
 		changeCalArt: number;
-		changeClockArt: number;
+		changeClockArt: ChangeClockArt;
 		changeHalfDay: number;
 		goOutArt: number;
 		setPreClockArt: number;
-		usrArt: number;
+		usrArt: NotUseAtr;
+	}
+
+	export enum NotUseAtr {
+		/** The use. */
+		USE = 1,
+
+		/** The not use. */
+		NOT_USE = 0
+	}
+
+	export enum ChangeClockArt {
+		/** 0. 出勤 */
+		GOING_TO_WORK = 0,
+
+		/** 1. 退勤 */
+		WORKING_OUT = 1,
+
+		/** 2. 入門 */
+		OVER_TIME = 2,
+
+		/** 3. 退門 */
+		BRARK = 3,
+
+		/** 4. 外出 */
+		GO_OUT = 4,
+
+		/** 5. 戻り */
+		RETURN = 5,
+
+		/** 6. 応援開始 */
+		FIX = 6,
+
+		/** 7. 臨時出勤 */
+		TEMPORARY_WORK = 7,
+
+		/** 8. 応援終了 */
+		END_OF_SUPPORT = 8,
+
+		/** 9. 臨時退勤 */
+		TEMPORARY_LEAVING = 9,
+
+		/** 10. PCログオン */
+		PC_LOG_ON = 10,
+
+		/** 11. PCログオフ */
+		PC_LOG_OFF = 11,
+
+		/** 12. 応援出勤 */
+		SUPPORT = 12,
+
+		/** 13. 臨時+応援出勤 */
+		TEMPORARY_SUPPORT_WORK = 13
 	}
 }

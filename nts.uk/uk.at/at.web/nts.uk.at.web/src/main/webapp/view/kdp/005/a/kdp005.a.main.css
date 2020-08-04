@@ -1,0 +1,103 @@
+html {
+	overflow: hidden;
+}
+
+#kdp002a{
+	width: 76vmin;
+	margin: 0 auto;
+}
+
+#content-area {
+	overflow-y: scroll;
+}
+
+#genText {
+	margin-left: 20px;
+}
+
+#stamp-input {
+	max-width: 90vmin;
+}
+
+#stamp-info {
+	min-width: 37vmin;
+}
+
+#stamp-date {
+	text-align: center;
+}
+
+#stamp-time {
+	text-align: center;
+	margin-top: 10px;
+}
+.button-group div:nth-child(2){
+	height: 3.8vmin;
+}
+
+#stamp-header .panel {
+	padding: 0px;
+}
+
+.full-width {
+	width: 100%;
+}
+
+#stamp-history-tbl #tbl-header, #tbl-header-time {
+	border: 1px solid #CCC;
+	background-color: #CFF1A5;
+	padding: 5px 0 5px 5px;
+	text-align: center;
+}
+
+#tbl-header {
+	font-weight: bold;
+}
+
+.inline-bl {
+	display: inline-block;
+	width: 30px;
+}
+
+.ui-widget.ui-tabs>.ui-tabs-nav>li {
+	max-width: 22vmin;
+}
+
+#stamp-history-tbl th {
+	text-align: center;
+}
+
+#time-card-list td {
+	text-align: center;
+}
+
+#tab-1, #tab-2, #tab-3, #tab-4, #tab-5 {
+	min-width: 63vmin;
+}
+
+.not_used_label {
+	color: red;
+	font-size: 1.2rem !important;
+}
+
+.explanatoryText {
+	margin-left: 10px;
+	min-height: 5.3vmin;
+}
+
+.explanatoryText pre {
+	font-size: 1.5vmin;
+	line-height: 1.5;
+}
+
+.ui-tabs .ui-tabs-nav .ui-tabs-anchor {
+	width: 10.4vmin;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	text-align: center;
+	font-size: 1.7vmin;
+}
+
+#kdp002a #stamp-header .button-group{
+	bottom: 15px;
+}

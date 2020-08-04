@@ -1,33 +1,27 @@
-#employeeName{
-    margin-left: 27px;
+#emp-component table#employ_view {
+	margin: 0 auto !important;
 }
 
-.FormLabel {
-	width: 80px;
+
+#single-list_container {
 }
 
-table td {
-	padding: 5px;
+#emp-component td:nth-child(7) div {
+	width: 50px;
 }
 
-#TblHeader {
-	margin-left: 40px;
-	margin-top: 15px;
-	margin-bottom: 15px;
+#single-list_displayContainer {
+	width: 666px !important;
+    max-width: 685px !important;
 }
 
-.Content {
-	margin-left: 25px;
+#single-list_headers_v {
+	width: 683px !important;
+}
+#single-list td img{
+	vertical-align: bottom;
 }
 
-td #link{
-	width: 10px;
-}
-
-.ui-widget-header {
-	font-weight: normal !important;
-}
-
-.ui-iggrid .ui-iggrid-tablebody td{
-	height: 44px !important;
+#single-list tr td:last-child {
+	text-align: center;
 }

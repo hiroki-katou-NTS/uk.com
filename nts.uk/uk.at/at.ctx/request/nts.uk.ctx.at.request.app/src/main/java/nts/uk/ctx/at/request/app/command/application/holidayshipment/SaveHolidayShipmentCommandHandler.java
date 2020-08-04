@@ -73,6 +73,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInpu
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.vacation.service.UseDateDeadlineFromDatePeriod;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
@@ -130,8 +131,6 @@ public class SaveHolidayShipmentCommandHandler
 	@Inject
 	private HolidayShipmentScreenAFinder afinder;
 	@Inject
-	private UseDateDeadlineFromDatePeriod dateDeadline;
-	@Inject
 	private InterimRemainDataMngRegisterDateChange registerDateChange;
 	@Inject
 	private OtherCommonAlgorithm ortherAl;
@@ -145,6 +144,8 @@ public class SaveHolidayShipmentCommandHandler
 	private DetailBeforeUpdate detailBeforeUpdate;
 	@Inject
 	private RequestSettingRepository requestSettingRepository;
+	@Inject
+	private RemainNumberTempRequireService requireService;
 
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<SaveHolidayShipmentCommand> context) {
@@ -873,7 +874,8 @@ public class SaveHolidayShipmentCommandHandler
 
 		default:
 			// 期限指定のある使用期限日を作成する
-			resultDate = this.dateDeadline.useDateDeadline(employmentCd, expTime, recDate);
+			resultDate = UseDateDeadlineFromDatePeriod.useDateDeadline(requireService.createRequire(), 
+					employmentCd, expTime, recDate);
 			break;
 
 		}
