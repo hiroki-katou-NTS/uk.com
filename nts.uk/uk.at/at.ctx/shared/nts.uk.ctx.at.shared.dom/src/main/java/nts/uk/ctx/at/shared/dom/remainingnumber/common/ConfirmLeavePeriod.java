@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.annualleave;
+package nts.uk.ctx.at.shared.dom.remainingnumber.common;
 
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.arc.time.calendar.period.DatePeriod;

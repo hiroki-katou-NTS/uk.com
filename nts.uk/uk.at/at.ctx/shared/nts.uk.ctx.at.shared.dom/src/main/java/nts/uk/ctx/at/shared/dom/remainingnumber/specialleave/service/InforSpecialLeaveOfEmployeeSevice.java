@@ -14,6 +14,7 @@ import nts.arc.time.YearMonthDayHolder.Difference;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employee.AffComHistItemShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.AffCompanyHistSharedImport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -522,6 +523,8 @@ public class InforSpecialLeaveOfEmployeeSevice {
 	public static interface RequireM2 {
 		
 		EmployeeRecordImport employeeFullInfo(CacheCarrier cacheCarrier, String empId);
+		
+		EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId);
 		
 		Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId, 
 				String employeeId, GeneralDate baseDate);
