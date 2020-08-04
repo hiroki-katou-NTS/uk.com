@@ -9,7 +9,10 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -20,6 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @NoArgsConstructor
 @Table(name="KSCDT_SCH_EDIT_STATE")
+@Getter
 public class KscdtSchEditState extends ContractUkJpaEntity {
 	
 	@EmbeddedId
@@ -36,11 +40,21 @@ public class KscdtSchEditState extends ContractUkJpaEntity {
 			@PrimaryKeyJoinColumn(name = "YMD", referencedColumnName = "YMD") })
 	public KscdtSchBasicInfo kscdtSchBasicInfo;
 	
-	@Override
-	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return this.pk;
+	// 勤務予定.編集状態
+	public static KscdtSchEditState toEntity(EditStateOfDailyAttd dailyAttd, String sID, GeneralDate yMD, String cID) {
+		KscdtSchEditStatePK pk = new KscdtSchEditStatePK(sID, yMD, dailyAttd.getAttendanceItemId());
+		return new KscdtSchEditState(pk, cID, dailyAttd.getEditStateSetting().value);
 	}
 	
+	@Override
+	protected Object getKey() {
+		return this.pk;
+	}
 
+	public KscdtSchEditState(KscdtSchEditStatePK pk, String cid, int sditState) {
+		super();
+		this.pk = pk;
+		this.cid = cid;
+		this.sditState = sditState;
+	}
 }

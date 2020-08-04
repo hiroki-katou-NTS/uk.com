@@ -14,10 +14,10 @@ module nts.uk.at.view.ksm015.c {
 			
 			});
         });
-		$(window).resize(function () {
+	/*	$(window).resize(function () {
 			viewModel.viewmodelC.reCalGridWidth();
 			viewModel.viewmodelD.reCalGridWidth();
-		});
+		});*/
 		
 	});
 }

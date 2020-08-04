@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,7 +15,17 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmpCombi;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ExcessOfStatutoryMidNightTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ExcessOfStatutoryTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.WithinStatutoryTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.overtimework.OverTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.HolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -198,13 +209,155 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 	@JoinTable(name = "KSCDT_SCH_SHORTTIME")
 	public List<KscdtSchShortTime> shortTimes;
 	
+	/**
+	 * 
+	 * @param workingTime 勤務予定．勤怠時間．勤務時間．総労働時間
+	 * @param sID
+	 * @param yMD
+	 * @param cID
+	 * @return
+	 */
+	public static KscdtSchTime toEntity(ActualWorkingTimeOfDaily timeOfDailys, String sID, GeneralDate yMD, String cID) {
+		KscdtSchTimePK pk = new KscdtSchTimePK(sID, yMD);
+		
+		WithinStatutoryTimeOfDaily timeOfDaily = timeOfDailys.getTotalWorkingTime().getWithinStatutoryTimeOfDaily();
 	
-	
+		// 勤務予定．勤怠時間．勤務時間．総労働時間．所定内時間
+		TotalWorkingTime workingTime = timeOfDailys.getTotalWorkingTime();
+		
+		// 勤務予定．勤怠時間．勤務時間．総労働時間．所定外時間
+		ExcessOfStatutoryTimeOfDaily statutoryTimeOfDaily = timeOfDailys.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily();
+		
+		// 勤務予定．勤怠時間．勤務時間．総労働時間．所定外時間．残業時間
+		Optional<OverTimeOfDaily> overTimeOfDaily = statutoryTimeOfDaily.getOverTimeWork();
+		
+		// 勤務予定．勤怠時間．勤務時間．総労働時間．所定外時間．所定外深夜時間
+		ExcessOfStatutoryMidNightTime excessOfStatutoryMidNightTime = statutoryTimeOfDaily.getExcessOfStatutoryMidNightTime();
+		
+		// 勤務予定．勤怠時間．勤務時間．総労働時間.休暇時間
+		HolidayOfDaily holidayOfDaily = timeOfDailys.getTotalWorkingTime().getHolidayOfDaily();
+		
+		
+		// null đợi QA PRS_WORK_TIME_ACT 110806
+		// null EXT_FLEX_TIME 110810							
+		// null EXT_FLEX_TIME_PREAPP 110810		
+		Integer timeLghd = null;
+		Integer timeIlghd = null;
+		Integer timePubhd = null;
+		if(statutoryTimeOfDaily.getWorkHolidayTime().isPresent()) {
+			if(statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().isPresent()) {
+				String check = statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().get().getHolidayWorkMidNightTime().get(0).getStatutoryAtr().name();
+				
+				if(check.equals(StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork.name())) {
+					timeLghd = statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().get().getHolidayWorkMidNightTime().get(0).getTime().getTime().v();
+				}
+				
+				if(check.equals(StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork.name())) {
+					timeIlghd = statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().get().getHolidayWorkMidNightTime().get(0).getTime().getTime().v();
+				}
+				
+				if(check.equals(StaturoryAtrOfHolidayWork.PublicHolidayWork.name())) {
+					timePubhd = statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().get().getHolidayWorkMidNightTime().get(0).getTime().getTime().v();
+				}
+			}
+		}
+
+		KscdtSchTime kscdtSchTime = new KscdtSchTime(
+				pk, cID, 
+				workingTime.getWorkTimes().v(), workingTime.getTotalTime().v(), workingTime.getActualTime().v(), 
+				timeOfDaily.getWorkTime().v(), timeOfDaily.getActualWorkTime().v(), timeOfDaily.getWithinPrescribedPremiumTime().v(), 
+				timeOfDaily.getWithinStatutoryMidNightTime().getTime().getTime().v(), 
+				overTimeOfDaily.get().getOverTimeWorkSpentAtWork().v(),
+				statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayTimeSpentAtWork().v(), 
+				overTimeOfDaily.get().getIrregularWithinPrescribedOverTimeWork().v(), 
+			    overTimeOfDaily.get().getFlexTime().getFlexTime().getTime().v(), 
+			    overTimeOfDaily.get().getFlexTime().getBeforeApplicationTime().v(), 
+			    excessOfStatutoryMidNightTime.getTime().getTime().v(), // EXT_MIDNITE_OTW_TIME - QA 110821
+				timeLghd, timeIlghd, timePubhd, //EXT_MIDNITE_HDW_TIME_PUBHD
+				excessOfStatutoryMidNightTime.getTime().getTime().v(), //EXT_MIDNITE_TOTAL
+				excessOfStatutoryMidNightTime.getBeforeApplicationTime().v(), // EXT_MIDNITE_TOTAL_PREAPP - 31
+				3, // đang QA 110822
+				4, // đang QA 110822
+				workingTime.getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime().v(), // 34
+				holidayOfDaily.getAnnual().getUseTime().v(), // 35 HDPAID_TIME
+				holidayOfDaily.getAnnual().getDigestionUseTime().v(), // 36 HDPAID_HOURLY_TIME
+				holidayOfDaily.getSubstitute().getUseTime().v(), 
+				holidayOfDaily.getSubstitute().getDigestionUseTime().v(), // 38 HDCOM_HOURLY_TIME
+				holidayOfDaily.getOverSalary().getUseTime().v(), 
+				holidayOfDaily.getOverSalary().getDigestionUseTime().v(), // 40 HD60H_HOURLY_TIME
+				holidayOfDaily.getSpecialHoliday().getUseTime().v(), 
+				holidayOfDaily.getSpecialHoliday().getDigestionUseTime().v(), // 42 HDSP_HOURLY_TIME
+				holidayOfDaily.getYearlyReserved().getUseTime().v(), 
+				holidayOfDaily.getTimeDigest().getUseTime().v(), 
+				holidayOfDaily.getTimeDigest().getLeakageTime().v(), 
+				holidayOfDaily.getAbsence().getUseTime().v(), 
+				workingTime.getVacationAddTime().v(), 
+				timeOfDailys.getTimeDifferenceWorkingHours().v(), 
+				null, null, null, null, null, null
+				);
+		return kscdtSchTime;
+		
+	}
 	
 	@Override
 	protected Object getKey() {
 		return this.pk;
 	}
 
-	
+	public KscdtSchTime(KscdtSchTimePK pk, String cid, int count, int totalTime, int totalTimeAct, int prsWorkTime,
+			int prsWorkTimeAct, int prsPrimeTime, int prsMidniteTime, int extBindTimeOtw, int extBindTimeHw,
+			int extVarwkOtwTimeLegal, int extFlexTime, int extFlexTimePreApp, int extMidNiteOtwTime,
+			int extMidNiteHdwTimeLghd, int extMidNiteHdwTimeIlghd, int extMidNiteHdwTimePubhd, int extMidNiteTotal,
+			int extMidNiteTotalPreApp, int intervalAtdClock, int intervalTime, int brkTotalTime, int hdPaidTime,
+			int hdPaidHourlyTime, int hdComTime, int hdComHourlyTime, int hd60hTime, int hd60hHourlyTime, int hdspTime,
+			int hdspHourlyTime, int hdstkTime, int hdHourlyTime, int hdHourlyShortageTime, int absenceTime,
+			int vacationAddTime, int staggeredWhTime, KscdtSchBasicInfo basicInfo,
+			List<KscdtSchOvertimeWork> overtimeWorks, List<KscdtSchHolidayWork> holidayWorks,
+			List<KscdtSchBonusPay> bonusPays, List<KscdtSchPremium> premiums, List<KscdtSchShortTime> shortTimes) {
+		super();
+		this.pk = pk;
+		this.cid = cid;
+		this.count = count;
+		this.totalTime = totalTime;
+		this.totalTimeAct = totalTimeAct;
+		this.prsWorkTime = prsWorkTime;
+		this.prsWorkTimeAct = prsWorkTimeAct;
+		this.prsPrimeTime = prsPrimeTime;
+		this.prsMidniteTime = prsMidniteTime;
+		this.extBindTimeOtw = extBindTimeOtw;
+		this.extBindTimeHw = extBindTimeHw;
+		this.extVarwkOtwTimeLegal = extVarwkOtwTimeLegal;
+		this.extFlexTime = extFlexTime;
+		this.extFlexTimePreApp = extFlexTimePreApp;
+		this.extMidNiteOtwTime = extMidNiteOtwTime;
+		this.extMidNiteHdwTimeLghd = extMidNiteHdwTimeLghd;
+		this.extMidNiteHdwTimeIlghd = extMidNiteHdwTimeIlghd;
+		this.extMidNiteHdwTimePubhd = extMidNiteHdwTimePubhd;
+		this.extMidNiteTotal = extMidNiteTotal;
+		this.extMidNiteTotalPreApp = extMidNiteTotalPreApp;
+		this.intervalAtdClock = intervalAtdClock;
+		this.intervalTime = intervalTime;
+		this.brkTotalTime = brkTotalTime;
+		this.hdPaidTime = hdPaidTime;
+		this.hdPaidHourlyTime = hdPaidHourlyTime;
+		this.hdComTime = hdComTime;
+		this.hdComHourlyTime = hdComHourlyTime;
+		this.hd60hTime = hd60hTime;
+		this.hd60hHourlyTime = hd60hHourlyTime;
+		this.hdspTime = hdspTime;
+		this.hdspHourlyTime = hdspHourlyTime;
+		this.hdstkTime = hdstkTime;
+		this.hdHourlyTime = hdHourlyTime;
+		this.hdHourlyShortageTime = hdHourlyShortageTime;
+		this.absenceTime = absenceTime;
+		this.vacationAddTime = vacationAddTime;
+		this.staggeredWhTime = staggeredWhTime;
+		this.basicInfo = basicInfo;
+		this.overtimeWorks = overtimeWorks;
+		this.holidayWorks = holidayWorks;
+		this.bonusPays = bonusPays;
+		this.premiums = premiums;
+		this.shortTimes = shortTimes;
+	}
+
 }

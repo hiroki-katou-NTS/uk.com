@@ -82,7 +82,9 @@ module nts.uk.at.view.kdl044.a {
                                 }   
                             }
                             self.listShifuto();
-                            self.listShifuto(_.sortBy(result, 'shiftMasterCode'));
+                            
+							let differentFromCurrents = _.differenceWith(result, data.shiftCodeExpel, (a, b) => { return a.shiftMasterCode === b });
+							self.listShifuto(_.sortBy(differentFromCurrents, 'shiftMasterCode'));
                             if (data.shifutoCodes != null) {
                                 self.selectedCodes(data.shifutoCodes);
                             }
@@ -103,9 +105,9 @@ module nts.uk.at.view.kdl044.a {
                     self.columns = ko.observableArray([
                         { headerText: getText('KDL044_2'), key: "shiftMasterCode", dataType: "string", width: 50 },
                         { headerText: getText('KDL044_3'), key: "shiftMasterName", dataType: "string", width: 70 },
-                        { headerText: getText('KDL044_4'), key: "workTypeName", dataType: "string", width: 100 },
-                        { headerText: getText('KDL044_5'), key: "workTimeName", dataType: "string", width: 100 },
-                        { headerText: getText('KDL044_6'), key: "workTime1", dataType: "string", width: 200 },
+/*                        { headerText: getText('KDL044_4'), key: "workTypeName", dataType: "string", width: 100 },
+                        { headerText: getText('KDL044_5'), key: "workTimeName", dataType: "string", width: 100 },*/
+                        { headerText: getText('KDL044_6'), key: "workTime1", dataType: "string", width: 300 },
                         { headerText: getText('KDL044_8'), key: "remark", dataType: "string", width: 300 }
                     ]);
                     self.gridFields = ["shiftMasterCode", "shiftMasterName", "workTypeName", "workTimeName", "workTime1", "remark"];
@@ -113,10 +115,10 @@ module nts.uk.at.view.kdl044.a {
                     self.columns = ko.observableArray([
                         { headerText: getText('KDL044_2'), key: "shiftMasterCode", dataType: "string", width: 50 },
                         { headerText: getText('KDL044_3'), key: "shiftMasterName", dataType: "string", width: 70 },
-                        { headerText: getText('KDL044_4'), key: "workTypeName", dataType: "string", width: 100 },
-                        { headerText: getText('KDL044_5'), key: "workTimeName", dataType: "string", width: 100 },
-                        { headerText: getText('KDL044_6'), key: "workTime1", dataType: "string", width: 150 },
-                        { headerText: getText('KDL044_7'), key: "workTime2", dataType: "string", width: 150 },
+/*                        { headerText: getText('KDL044_4'), key: "workTypeName", dataType: "string", width: 100 },
+                        { headerText: getText('KDL044_5'), key: "workTimeName", dataType: "string", width: 100 },*/
+                        { headerText: getText('KDL044_6'), key: "workTime1", dataType: "string", width: 200 },
+                        { headerText: getText('KDL044_7'), key: "workTime2", dataType: "string", width: 200 },
                         { headerText: getText('KDL044_8'), key: "remark", dataType: "string", width: 200 }
                     ]);
                     self.gridFields = ["shiftMasterCode", "shiftMasterName", "workTypeName", "workTimeName", "workTime1", "workTime2", "remark"];
@@ -210,6 +212,8 @@ module nts.uk.at.view.kdl044.a {
              * 画面起動時に選択状態とするシフトマスタ      
              */
             shifutoCodes?: Array<string>
+
+			shiftCodeExpel?: Array<string>
         }
     }
 }

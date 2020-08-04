@@ -8,12 +8,6 @@ class RegisterForm {
     selectedWkpType: KnockoutObservable<number> = ko.observable(1);
     newMode: KnockoutObservable<any> = ko.observable(true);
     workplaces: KnockoutObservableArray<any> = ko.observableArray([]);
-    gridColumns: Array<any> = ko.observableArray([
-        { headerText: nts.uk.resource.getText('KSM007_13'), key: 'workplaceId', width: 100, hidden: true },
-        { headerText: nts.uk.resource.getText('KSM007_13'), key: 'workplaceCode', width: 100,}, 
-        { headerText: nts.uk.resource.getText('KSM007_14'), key: 'workplaceName', width: 170 },
-        { headerText: nts.uk.resource.getText('KSM007_15'), key: 'genericName', width: 890 }
-    ]);
     selectedWorkplaces: KnockoutObservableArray<any> = ko.observableArray([]);
     constructor() {
         let self = this;

@@ -23,7 +23,7 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 		//勤務予定時間 - 日別実績の勤務予定時間
 		private WorkScheduleTimeOfDaily workScheduleTimeOfDaily;
 		
-		//実働時間/実績時間  - 日別実績の勤務実績時間 - 勤務時間 /日別勤怠の勤務時間 (new)
+		//実働時間/実績時間  - 日別実績の勤務実績時間 - 勤務時間
 		private ActualWorkingTimeOfDaily actualWorkingTimeOfDaily;
 		
 		//滞在時間 - 日別実績の滞在時間 change tyle

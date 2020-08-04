@@ -120,7 +120,7 @@ public class WorkInformation {
 
 		// require.就業時間帯を取得する(ログイン会社ID, @就業時間帯コード) - CID sẽ dc truyền trên app
 		Optional<WorkTimeSetting> workTimeSetting = require
-				.findByCode(this.workTimeCode == null ? null : this.workTimeCode.get().v());
+				.findByCode(this.workTimeCode.isPresent() ? this.workTimeCode.get().v() : null);
 		// if $就業時間帯.isEmpty
 		if (!workTimeSetting.isPresent()) {
 			return ErrorStatusWorkInfo.WORKTIME_WAS_DELETE;
