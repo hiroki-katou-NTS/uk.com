@@ -16,14 +16,15 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
         
         created(
             params: { 
-            	
+            	application: any,
+            	approvalReason: any,
                 appDispInfoStartupOutput: any, 
                 eventUpdate: (evt: () => void ) => void
             }
         ) {
             const vm = this;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
-            vm.application = ko.observable(new Application(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.appID, 1, [], 2, "", "", 0));
+            vm.application = params.application,
             vm.appWorkChange = ko.observable(new AppWorkChange("001", "001", 100, 200));
             vm.approvalReason = params.approvalReason;
             

@@ -15,6 +15,7 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
         appDispInfoStartupOutput: KnockoutObservable<any> = ko.observable(null);
         application: KnockoutObservable<Application> = ko.observable(new Application(0));
         approvalReason: KnockoutObservable<string> = ko.observable("");
+        childParam: any = {};
         
         displayApprovalButton: KnockoutObservable<boolean> = ko.observable(true);
         enableApprovalButton: KnockoutObservable<boolean> = ko.observable(true);
@@ -48,6 +49,12 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
             vm.listApp = params.listApp;
             vm.currentApp = params.currentApp;
             vm.appType = ko.observable(99);
+            vm.childParam = {
+            	application: vm.application,
+                approvalReason: vm.approvalReason,
+                appDispInfoStartupOutput: vm.appDispInfoStartupOutput,
+                eventUpdate: function(a) { vm.getChildUpdateEvent.apply(vm, [a]) } 
+            }
             vm.loadData();
         }
 
