@@ -118,7 +118,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * 
  * @author nampt
  * 総労働時間
- *
+ * 日別勤怠の総労働時間
  */
 @Getter
 public class TotalWorkingTime {
@@ -132,10 +132,10 @@ public class TotalWorkingTime {
 	//実働時間
 	private AttendanceTime actualTime;
 	
-	//日別実績の所定内時間
+	//日別実績の所定内時間 - 所定内時間 (new)
 	private WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily;
-	
-	//日別実績の所定外時間
+	 
+	//日別実績の所定外時間 - 所定外時間 (new)
 	private ExcessOfStatutoryTimeOfDaily excessOfStatutoryTimeOfDaily;
 	
 	//日別実績の遅刻時間
