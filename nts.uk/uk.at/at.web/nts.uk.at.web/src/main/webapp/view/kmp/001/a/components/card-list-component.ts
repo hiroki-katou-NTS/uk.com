@@ -120,7 +120,7 @@ module nts.uk.at.view.kmp001.a {
 							vm.$nextTick(() => {
 								$('.ip-stamp-card').focus();
 							})
-						},50);
+						}, 50);
 					}
 				});
 
@@ -171,9 +171,11 @@ module nts.uk.at.view.kmp001.a {
 								vm.$validate.constraint(ck, constraint);
 								vm.constraint.valueHasMutated();
 
-								$(document).ready(function() {
-									$('#ip-stamp-card').focus();
-								});
+								setTimeout(() => {
+									vm.$nextTick(() => {
+										$('.ip-stamp-card').focus();
+									})
+								}, 50);
 							}
 						});
 				});
