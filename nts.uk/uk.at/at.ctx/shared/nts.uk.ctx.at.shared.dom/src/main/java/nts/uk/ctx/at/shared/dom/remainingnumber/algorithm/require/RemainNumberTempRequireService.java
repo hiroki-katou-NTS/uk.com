@@ -108,374 +108,354 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 
 @Stateless
-public class RemainNumberTempRequireService {
+public class RemainNumberTempRequireService implements InterimRemainOffPeriodCreateData.RequireM4,
+		BreakDayOffMngInPeriodQuery.RequireM10, AbsenceReruitmentMngInPeriodQuery.RequireM10,
+		SpecialLeaveManagementService.RequireM5, GetClosureStartForEmployee.RequireM1, ClosureService.RequireM3,
+		OutsideOTSettingService.RequireM2, OutsideOTSettingService.RequireM1, AbsenceTenProcess.RequireM1,
+		AbsenceTenProcess.RequireM2, AbsenceTenProcess.RequireM4, AbsenceTenProcess.RequireM3,
+		AbsenceReruitmentMngInPeriodQuery.RequireM2, WorkingConditionService.RequireM1 {
+
+	public RemainNumberTempRequireService createRequire() {
+		return this;
+	}
 
 	@Inject
-	private Require require;
-	
-	public static interface Require
-			extends InterimRemainOffPeriodCreateData.RequireM4, BreakDayOffMngInPeriodQuery.RequireM10,
-			AbsenceReruitmentMngInPeriodQuery.RequireM10, SpecialLeaveManagementService.RequireM5,
-			GetClosureStartForEmployee.RequireM1, ClosureService.RequireM3,
-			OutsideOTSettingService.RequireM2, OutsideOTSettingService.RequireM1, 
-			AbsenceTenProcess.RequireM1, AbsenceTenProcess.RequireM2, AbsenceTenProcess.RequireM4,
-			AbsenceTenProcess.RequireM3, AbsenceReruitmentMngInPeriodQuery.RequireM2,
-			WorkingConditionService.RequireM1 {
+	protected ComSubstVacationRepository comSubstVacationRepo;
+	@Inject
+	protected CompensLeaveComSetRepository compensLeaveComSetRepo;
+	@Inject
+	protected SpecialLeaveGrantRepository specialLeaveGrantRepo;
+	@Inject
+	protected EmpEmployeeAdapter empEmployeeAdapter;
+	@Inject
+	protected GrantDateTblRepository grantDateTblRepo;
+	@Inject
+	protected AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
+	@Inject
+	protected SpecialHolidayRepository specialHolidayRepo;
+	@Inject
+	protected InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo;
+	@Inject
+	protected SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo;
+	@Inject
+	protected InterimRecAbasMngRepository interimRecAbasMngRepo;
+	@Inject
+	protected EmpSubstVacationRepository empSubstVacationRepo;
+	@Inject
+	protected InterimRemainRepository interimRemainRepo;
+	@Inject
+	protected SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepo;
+	@Inject
+	protected PayoutManagementDataRepository payoutManagementDataRepo;
+	@Inject
+	protected InterimBreakDayOffMngRepository interimBreakDayOffMngRepo;
+	@Inject
+	protected ComDayOffManaDataRepository comDayOffManaDataRepo;
+	@Inject
+	protected CompanyAdapter companyAdapter;
+	@Inject
+	protected ShareEmploymentAdapter shareEmploymentAdapter;
+	@Inject
+	protected LeaveManaDataRepository leaveManaDataRepo;
+	@Inject
+	protected WorkingConditionItemRepository workingConditionItemRepo;
+	@Inject
+	protected WorkingConditionRepository workingConditionRepo;
+	@Inject
+	protected WorkTimeSettingRepository workTimeSettingRepo;
+	@Inject
+	protected FixedWorkSettingRepository fixedWorkSettingRepo;
+	@Inject
+	protected FlowWorkSettingRepository flowWorkSettingRepo;
+	@Inject
+	protected DiffTimeWorkSettingRepository diffTimeWorkSettingRepo;
+	@Inject
+	protected FlexWorkSettingRepository flexWorkSettingRepo;
+	@Inject
+	protected PredetemineTimeSettingRepository predetemineTimeSettingRepo;
+	@Inject
+	protected ClosureRepository closureRepo;
+	@Inject
+	protected ClosureEmploymentRepository closureEmploymentRepo;
+	@Inject
+	protected WorkTypeRepository workTypeRepo;
+	@Inject
+	protected RemainCreateInforByApplicationData remainCreateInforByApplicationData;
+	@Inject
+	protected CompensLeaveEmSetRepository compensLeaveEmSetRepo;
+	@Inject
+	protected EmploymentSettingRepository employmentSettingRepo;
+	@Inject
+	protected RetentionYearlySettingRepository retentionYearlySettingRepo;
+	@Inject
+	protected AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepo;
+	@Inject
+	protected OutsideOTSettingRepository outsideOTSettingRepo;
+	@Inject
+	protected WorkdayoffFrameRepository workdayoffFrameRepo;
+	@Inject
+	protected YearHolidayRepository yearHolidayRepo;
 
+	@Override
+	public Optional<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode) {
+		return grantDateTblRepo.findByCodeAndIsSpecified(companyId, specialHolidayCode);
 	}
 
-	public Require createRequire() {
-		return require;
-	}
-	
-	@Stateless
-	public class RequireImp implements Require {
-
-		public RequireImp() {}
-		
-		@Inject
-		protected ComSubstVacationRepository comSubstVacationRepo;
-		@Inject
-		protected CompensLeaveComSetRepository compensLeaveComSetRepo;
-		@Inject
-		protected SpecialLeaveGrantRepository specialLeaveGrantRepo;
-		@Inject
-		protected EmpEmployeeAdapter empEmployeeAdapter;
-		@Inject
-		protected GrantDateTblRepository grantDateTblRepo;
-		@Inject
-		protected AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
-		@Inject
-		protected SpecialHolidayRepository specialHolidayRepo;
-		@Inject
-		protected InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo;
-		@Inject
-		protected SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo;
-		@Inject
-		protected InterimRecAbasMngRepository interimRecAbasMngRepo;
-		@Inject
-		protected EmpSubstVacationRepository empSubstVacationRepo;
-		@Inject 
-		protected InterimRemainRepository interimRemainRepo;
-		@Inject
-		protected SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepo;
-		@Inject
-		protected PayoutManagementDataRepository payoutManagementDataRepo;
-		@Inject
-		protected InterimBreakDayOffMngRepository interimBreakDayOffMngRepo;
-		@Inject
-		protected ComDayOffManaDataRepository comDayOffManaDataRepo;
-		@Inject
-		protected CompanyAdapter companyAdapter;
-		@Inject
-		protected ShareEmploymentAdapter shareEmploymentAdapter;
-		@Inject
-		protected LeaveManaDataRepository leaveManaDataRepo;
-		@Inject
-		protected WorkingConditionItemRepository workingConditionItemRepo;
-		@Inject
-		protected WorkingConditionRepository workingConditionRepo;
-		@Inject
-		protected WorkTimeSettingRepository workTimeSettingRepo;
-		@Inject
-		protected FixedWorkSettingRepository fixedWorkSettingRepo;
-		@Inject
-		protected FlowWorkSettingRepository flowWorkSettingRepo;
-		@Inject
-		protected DiffTimeWorkSettingRepository diffTimeWorkSettingRepo;
-		@Inject
-		protected FlexWorkSettingRepository flexWorkSettingRepo;
-		@Inject
-		protected PredetemineTimeSettingRepository predetemineTimeSettingRepo;
-		@Inject
-		protected ClosureRepository closureRepo;
-		@Inject
-		protected ClosureEmploymentRepository closureEmploymentRepo;
-		@Inject
-		protected WorkTypeRepository workTypeRepo;
-		@Inject
-		protected RemainCreateInforByApplicationData remainCreateInforByApplicationData;
-		@Inject
-		protected CompensLeaveEmSetRepository compensLeaveEmSetRepo;
-		@Inject
-		protected EmploymentSettingRepository employmentSettingRepo;
-		@Inject
-		protected RetentionYearlySettingRepository retentionYearlySettingRepo;
-		@Inject
-		protected AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepo;
-		@Inject
-		protected OutsideOTSettingRepository outsideOTSettingRepo;
-		@Inject
-		protected WorkdayoffFrameRepository workdayoffFrameRepo;
-		@Inject
-		protected YearHolidayRepository yearHolidayRepo;
-
-		@Override
-		public Optional<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode) {
-			return grantDateTblRepo.findByCodeAndIsSpecified(companyId, specialHolidayCode);
-		}
-
-		@Override
-		public List<ElapseYear> elapseYear(String companyId, int specialHolidayCode, String grantDateCode) {
-			return grantDateTblRepo.findElapseByGrantDateCd(companyId, specialHolidayCode, grantDateCode);
-		}
-
-		@Override
-		public Optional<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String employeeId) {
-			return annLeaEmpBasicInfoRepo.get(employeeId);
-		}
-		
-		@Override
-		public Optional<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String specialId) {
-			return specialLeaveGrantRepo.getBySpecialId(specialId);
-		}
-
-		@Override
-		public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode,
-				DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus) {
-
-			return specialLeaveGrantRepo.getByNextDate(sid, speCode, datePriod, startDate, expirationStatus);
-		}
-
-		@Override
-		public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int specialLeaveCode,
-				LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
-
-			return specialLeaveGrantRepo.getByPeriodStatus(sid, specialLeaveCode, expirationStatus, grantDate,
-					deadlineDate);
-		}
-
-		@Override
-		public List<InterimSpecialHolidayMng> interimSpecialHolidayMng(String mngId) {
-			return interimSpecialHolidayMngRepo.findById(mngId);
-		}
-
-		@Override
-		public Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UseAtr use) {
-			return specialLeaveBasicInfoRepo.getBySidLeaveCdUser(sid, spLeaveCD, use);
-		}
-
-		@Override
-		public Optional<ComSubstVacation> comSubstVacation(String companyId) {
-			return comSubstVacationRepo.findById(companyId);
-		}
-
-		@Override
-		public Optional<InterimAbsMng> interimAbsMng(String absId) {
-			return interimRecAbasMngRepo.getAbsById(absId);
-		}
-
-		@Override
-		public List<InterimRecAbsMng> interimRecAbsMng(String interimId, boolean isRec, DataManagementAtr mngAtr) {
-			return interimRecAbasMngRepo.getRecOrAbsMng(interimId, isRec, mngAtr);
-		}
-
-		@Override
-		public Optional<InterimRecMng> interimRecMng(String recId) {
-			return interimRecAbasMngRepo.getReruitmentById(recId);
-		}
-
-		@Override
-		public List<SubstitutionOfHDManagementData> substitutionOfHDManagementData(String cid, String sid,
-				GeneralDate ymd, double unOffseDays) {
-			return substitutionOfHDManaDataRepo.getByYmdUnOffset(cid, sid, ymd, unOffseDays);
-		}
-
-		@Override
-		public List<PayoutManagementData> payoutManagementData(String cid, String sid, GeneralDate ymd,
-				double unUse, DigestionAtr state) {
-			return payoutManagementDataRepo.getByUnUseState(cid, sid, ymd, unUse, state);
-		}
-
-		@Override
-		public List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType) {
-			return interimRemainRepo.getRemainBySidPriod(employeeId, dateData, remainType);
-		}
-
-		@Override
-		public Optional<InterimDayOffMng> interimDayOffMng(String dayOffManaId) {
-			return interimBreakDayOffMngRepo.getDayoffById(dayOffManaId);
-		}
-
-		@Override
-		public Optional<InterimBreakMng> interimBreakMng(String breakManaId) {
-			return interimBreakDayOffMngRepo.getBreakManaBybreakMngId(breakManaId);
-		}
-
-		@Override
-		public List<CompensatoryDayOffManaData> compensatoryDayOffManaData(String cid, String sid,
-				GeneralDate ymd) {
-			return comDayOffManaDataRepo.getBySidDate(cid, sid, ymd);
-		}
-
-		@Override
-		public List<InterimBreakDayOffMng> interimBreakDayOffMng(String mngId, boolean breakDay,
-				DataManagementAtr mngAtr) {
-			return interimBreakDayOffMngRepo.getBreakDayOffMng(mngId, breakDay, mngAtr);
-		}
-
-		@Override
-		public CompanyDto firstMonth(CacheCarrier cacheCarrier, String companyId) {
-			return companyAdapter.getFirstMonthRequire(cacheCarrier, companyId);
-		}
-
-		@Override
-		public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
-				String employeeId, GeneralDate baseDate) {
-			return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
-		}
-
-		@Override
-		public List<SharedSidPeriodDateEmploymentImport> employmentHistory(CacheCarrier cacheCarrier,
-				List<String> sids, DatePeriod datePeriod) {
-			return shareEmploymentAdapter.getEmpHistBySidAndPeriodRequire(cacheCarrier, sids, datePeriod);
-		}
-
-		@Override
-		public List<LeaveManagementData> leaveManagementData(String cid, String sid, GeneralDate ymd,
-				DigestionAtr state) {
-			return leaveManaDataRepo.getBySidYmd(cid, sid, ymd, state);
-		}
-
-		@Override
-		public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
-			return workingConditionItemRepo.getByHistoryId(historyId);
-		}
-
-		@Override
-		public Optional<WorkingCondition> workingCondition(String companyId, String employeeId,
-				GeneralDate baseDate) {
-			return workingConditionRepo.getBySidAndStandardDate(companyId, employeeId, baseDate);
-		}
-
-		@Override
-		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, String workTimeCode) {
-			return flowWorkSettingRepo.find(companyId, workTimeCode);
-		}
-
-		@Override
-		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, String workTimeCode) {
-			return flexWorkSettingRepo.find(companyId, workTimeCode);
-		}
-
-		@Override
-		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, String workTimeCode) {
-			return fixedWorkSettingRepo.findByKey(companyId, workTimeCode);
-		}
-
-		@Override
-		public Optional<DiffTimeWorkSetting> diffTimeWorkSetting(String companyId, String workTimeCode) {
-			return diffTimeWorkSettingRepo.find(companyId, workTimeCode);
-		}
-
-		@Override
-		public Optional<WorkTimeSetting> workTimeSetting(String companyId, String workTimeCode) {
-			return workTimeSettingRepo.findByCode(companyId, workTimeCode);
-		}
-
-		@Override
-		public CompensatoryLeaveComSetting compensatoryLeaveComSetting(String companyId) {
-			return compensLeaveComSetRepo.find(companyId);
-		}
-
-		@Override
-		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, String workTimeCode) {
-			return predetemineTimeSettingRepo.findByWorkTimeCode(companyId, workTimeCode);
-		}
-
-		@Override
-		public Optional<SpecialHoliday> specialHoliday(String companyID, int specialHolidayCD) {
-			return specialHolidayRepo.findByCode(companyID, specialHolidayCD);
-		}
-
-		@Override
-		public List<Integer> getSpecialHolidayNumber(String cid, int sphdSpecLeaveNo) {
-			return specialHolidayRepo.findBySphdSpecLeave(cid, sphdSpecLeaveNo);
-		}
-
-		@Override
-		public Optional<Closure> closure(String companyId, int closureId) {
-			return closureRepo.findById(companyId, closureId);
-		}
-
-		@Override
-		public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
-			return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
-		}
-
-		@Override
-		public Optional<WorkType> workType(String companyId, String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
-		}
-
-		@Override
-		public Integer excludeHolidayAtr(CacheCarrier cacheCarrier, String cid, String appID) {
-
-			return remainCreateInforByApplicationData.excludeHolidayAtr(cacheCarrier, cid, appID);
-		}
-		@Override
-		public Optional<EmpSubstVacation> empSubstVacation(String companyId, String contractTypeCode) {
-			return empSubstVacationRepo.findById(companyId, contractTypeCode);
-		}
-
-		@Override
-		public CompensatoryLeaveEmSetting compensatoryLeaveEmSetting(String companyId,
-				String employmentCode) {
-			return compensLeaveEmSetRepo.find(companyId, employmentCode);
-		}
-
-		@Override
-		public List<Closure> closure(String companyId) {
-			return closureRepo.findAll(companyId);
-		}
-
-		@Override
-		public EmployeeImport employee(CacheCarrier cacheCarrier, String empId) {
-			return empEmployeeAdapter.findByEmpIdRequire(cacheCarrier, empId);
-		}
-		
-		@Override
-		public EmployeeRecordImport employeeFullInfo(CacheCarrier cacheCarrier, String empId) {
-			return empEmployeeAdapter.findByAllInforEmpId(cacheCarrier, empId);
-		}
-
-		@Override
-		public List<SClsHistImport> employeeClassificationHistoires(CacheCarrier cacheCarrier, String companyId,
-				List<String> employeeIds, DatePeriod datePeriod) {
-			return empEmployeeAdapter.lstClassByEmployeeId(cacheCarrier, companyId, employeeIds, datePeriod);
-		}
-
-		@Override
-		public List<AffCompanyHistSharedImport> employeeAffiliatedCompanyHistories(CacheCarrier cacheCarrier,
-				List<String> sids, DatePeriod datePeriod) {
-			return empEmployeeAdapter.getAffCompanyHistByEmployee(cacheCarrier, sids, datePeriod);
-		}
-
-		@Override
-		public Optional<OutsideOTSetting> outsideOTSetting(String companyId) {
-			return outsideOTSettingRepo.findById(companyId);
-		}
-
-		@Override
-		public List<WorkdayoffFrame> workdayoffFrames(String companyId) {
-			return workdayoffFrameRepo.getAllWorkdayoffFrame(companyId);
-		}
-
-		@Override
-		public AnnualPaidLeaveSetting annualPaidLeaveSetting(String companyId) {
-			return annualPaidLeaveSettingRepo.findByCompanyId(companyId);
-		}
-
-		@Override
-		public Optional<EmptYearlyRetentionSetting> employmentYearlyRetentionSetting(String companyId,
-				String employmentCode) {
-			return employmentSettingRepo.find(companyId, employmentCode);
-		}
-
-		@Override
-		public Optional<RetentionYearlySetting> retentionYearlySetting(String companyId) {
-			return retentionYearlySettingRepo.findByCompanyId(companyId);
-		}
+	@Override
+	public List<ElapseYear> elapseYear(String companyId, int specialHolidayCode, String grantDateCode) {
+		return grantDateTblRepo.findElapseByGrantDateCd(companyId, specialHolidayCode, grantDateCode);
 	}
 
+	@Override
+	public Optional<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String employeeId) {
+		return annLeaEmpBasicInfoRepo.get(employeeId);
+	}
+
+	@Override
+	public Optional<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String specialId) {
+		return specialLeaveGrantRepo.getBySpecialId(specialId);
+	}
+
+	@Override
+	public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode,
+			DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus) {
+
+		return specialLeaveGrantRepo.getByNextDate(sid, speCode, datePriod, startDate, expirationStatus);
+	}
+
+	@Override
+	public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int specialLeaveCode,
+			LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
+
+		return specialLeaveGrantRepo.getByPeriodStatus(sid, specialLeaveCode, expirationStatus, grantDate,
+				deadlineDate);
+	}
+
+	@Override
+	public List<InterimSpecialHolidayMng> interimSpecialHolidayMng(String mngId) {
+		return interimSpecialHolidayMngRepo.findById(mngId);
+	}
+
+	@Override
+	public Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UseAtr use) {
+		return specialLeaveBasicInfoRepo.getBySidLeaveCdUser(sid, spLeaveCD, use);
+	}
+
+	@Override
+	public Optional<ComSubstVacation> comSubstVacation(String companyId) {
+		return comSubstVacationRepo.findById(companyId);
+	}
+
+	@Override
+	public Optional<InterimAbsMng> interimAbsMng(String absId) {
+		return interimRecAbasMngRepo.getAbsById(absId);
+	}
+
+	@Override
+	public List<InterimRecAbsMng> interimRecAbsMng(String interimId, boolean isRec, DataManagementAtr mngAtr) {
+		return interimRecAbasMngRepo.getRecOrAbsMng(interimId, isRec, mngAtr);
+	}
+
+	@Override
+	public Optional<InterimRecMng> interimRecMng(String recId) {
+		return interimRecAbasMngRepo.getReruitmentById(recId);
+	}
+
+	@Override
+	public List<SubstitutionOfHDManagementData> substitutionOfHDManagementData(String cid, String sid, GeneralDate ymd,
+			double unOffseDays) {
+		return substitutionOfHDManaDataRepo.getByYmdUnOffset(cid, sid, ymd, unOffseDays);
+	}
+
+	@Override
+	public List<PayoutManagementData> payoutManagementData(String cid, String sid, GeneralDate ymd, double unUse,
+			DigestionAtr state) {
+		return payoutManagementDataRepo.getByUnUseState(cid, sid, ymd, unUse, state);
+	}
+
+	@Override
+	public List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType) {
+		return interimRemainRepo.getRemainBySidPriod(employeeId, dateData, remainType);
+	}
+
+	@Override
+	public Optional<InterimDayOffMng> interimDayOffMng(String dayOffManaId) {
+		return interimBreakDayOffMngRepo.getDayoffById(dayOffManaId);
+	}
+
+	@Override
+	public Optional<InterimBreakMng> interimBreakMng(String breakManaId) {
+		return interimBreakDayOffMngRepo.getBreakManaBybreakMngId(breakManaId);
+	}
+
+	@Override
+	public List<CompensatoryDayOffManaData> compensatoryDayOffManaData(String cid, String sid, GeneralDate ymd) {
+		return comDayOffManaDataRepo.getBySidDate(cid, sid, ymd);
+	}
+
+	@Override
+	public List<InterimBreakDayOffMng> interimBreakDayOffMng(String mngId, boolean breakDay, DataManagementAtr mngAtr) {
+		return interimBreakDayOffMngRepo.getBreakDayOffMng(mngId, breakDay, mngAtr);
+	}
+
+	@Override
+	public CompanyDto firstMonth(CacheCarrier cacheCarrier, String companyId) {
+		return companyAdapter.getFirstMonthRequire(cacheCarrier, companyId);
+	}
+
+	@Override
+	public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
+			String employeeId, GeneralDate baseDate) {
+		return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
+	}
+
+	@Override
+	public List<SharedSidPeriodDateEmploymentImport> employmentHistory(CacheCarrier cacheCarrier, List<String> sids,
+			DatePeriod datePeriod) {
+		return shareEmploymentAdapter.getEmpHistBySidAndPeriodRequire(cacheCarrier, sids, datePeriod);
+	}
+
+	@Override
+	public List<LeaveManagementData> leaveManagementData(String cid, String sid, GeneralDate ymd, DigestionAtr state) {
+		return leaveManaDataRepo.getBySidYmd(cid, sid, ymd, state);
+	}
+
+	@Override
+	public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
+		return workingConditionItemRepo.getByHistoryId(historyId);
+	}
+
+	@Override
+	public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
+		return workingConditionRepo.getBySidAndStandardDate(companyId, employeeId, baseDate);
+	}
+
+	@Override
+	public Optional<FlowWorkSetting> flowWorkSetting(String companyId, String workTimeCode) {
+		return flowWorkSettingRepo.find(companyId, workTimeCode);
+	}
+
+	@Override
+	public Optional<FlexWorkSetting> flexWorkSetting(String companyId, String workTimeCode) {
+		return flexWorkSettingRepo.find(companyId, workTimeCode);
+	}
+
+	@Override
+	public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, String workTimeCode) {
+		return fixedWorkSettingRepo.findByKey(companyId, workTimeCode);
+	}
+
+	@Override
+	public Optional<DiffTimeWorkSetting> diffTimeWorkSetting(String companyId, String workTimeCode) {
+		return diffTimeWorkSettingRepo.find(companyId, workTimeCode);
+	}
+
+	@Override
+	public Optional<WorkTimeSetting> workTimeSetting(String companyId, String workTimeCode) {
+		return workTimeSettingRepo.findByCode(companyId, workTimeCode);
+	}
+
+	@Override
+	public CompensatoryLeaveComSetting compensatoryLeaveComSetting(String companyId) {
+		return compensLeaveComSetRepo.find(companyId);
+	}
+
+	@Override
+	public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, String workTimeCode) {
+		return predetemineTimeSettingRepo.findByWorkTimeCode(companyId, workTimeCode);
+	}
+
+	@Override
+	public Optional<SpecialHoliday> specialHoliday(String companyID, int specialHolidayCD) {
+		return specialHolidayRepo.findByCode(companyID, specialHolidayCD);
+	}
+
+	@Override
+	public List<Integer> getSpecialHolidayNumber(String cid, int sphdSpecLeaveNo) {
+		return specialHolidayRepo.findBySphdSpecLeave(cid, sphdSpecLeaveNo);
+	}
+
+	@Override
+	public Optional<Closure> closure(String companyId, int closureId) {
+		return closureRepo.findById(companyId, closureId);
+	}
+
+	@Override
+	public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
+		return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
+	}
+
+	@Override
+	public Optional<WorkType> workType(String companyId, String workTypeCd) {
+		return workTypeRepo.findByPK(companyId, workTypeCd);
+	}
+
+	@Override
+	public Integer excludeHolidayAtr(CacheCarrier cacheCarrier, String cid, String appID) {
+
+		return remainCreateInforByApplicationData.excludeHolidayAtr(cacheCarrier, cid, appID);
+	}
+
+	@Override
+	public Optional<EmpSubstVacation> empSubstVacation(String companyId, String contractTypeCode) {
+		return empSubstVacationRepo.findById(companyId, contractTypeCode);
+	}
+
+	@Override
+	public CompensatoryLeaveEmSetting compensatoryLeaveEmSetting(String companyId, String employmentCode) {
+		return compensLeaveEmSetRepo.find(companyId, employmentCode);
+	}
+
+	@Override
+	public List<Closure> closure(String companyId) {
+		return closureRepo.findAll(companyId);
+	}
+
+	@Override
+	public EmployeeImport employee(CacheCarrier cacheCarrier, String empId) {
+		return empEmployeeAdapter.findByEmpIdRequire(cacheCarrier, empId);
+	}
+
+	@Override
+	public EmployeeRecordImport employeeFullInfo(CacheCarrier cacheCarrier, String empId) {
+		return empEmployeeAdapter.findByAllInforEmpId(cacheCarrier, empId);
+	}
+
+	@Override
+	public List<SClsHistImport> employeeClassificationHistoires(CacheCarrier cacheCarrier, String companyId,
+			List<String> employeeIds, DatePeriod datePeriod) {
+		return empEmployeeAdapter.lstClassByEmployeeId(cacheCarrier, companyId, employeeIds, datePeriod);
+	}
+
+	@Override
+	public List<AffCompanyHistSharedImport> employeeAffiliatedCompanyHistories(CacheCarrier cacheCarrier,
+			List<String> sids, DatePeriod datePeriod) {
+		return empEmployeeAdapter.getAffCompanyHistByEmployee(cacheCarrier, sids, datePeriod);
+	}
+
+	@Override
+	public Optional<OutsideOTSetting> outsideOTSetting(String companyId) {
+		return outsideOTSettingRepo.findById(companyId);
+	}
+
+	@Override
+	public List<WorkdayoffFrame> workdayoffFrames(String companyId) {
+		return workdayoffFrameRepo.getAllWorkdayoffFrame(companyId);
+	}
+
+	@Override
+	public AnnualPaidLeaveSetting annualPaidLeaveSetting(String companyId) {
+		return annualPaidLeaveSettingRepo.findByCompanyId(companyId);
+	}
+
+	@Override
+	public Optional<EmptYearlyRetentionSetting> employmentYearlyRetentionSetting(String companyId,
+			String employmentCode) {
+		return employmentSettingRepo.find(companyId, employmentCode);
+	}
+
+	@Override
+	public Optional<RetentionYearlySetting> retentionYearlySetting(String companyId) {
+		return retentionYearlySettingRepo.findByCompanyId(companyId);
+	}
 }

@@ -106,7 +106,7 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 	 * @param annualLeaveEmpBasicInfo
 	 * @return
 	 */
-	private List<NextAnnualLeaveGrantExport> calculateNextHolidayGrant(RecordDomRequireService.Require require, 
+	private List<NextAnnualLeaveGrantExport> calculateNextHolidayGrant(RecordDomRequireService require, 
 			CacheCarrier cacheCarrier, String companyId, String employeeId, 
 			Optional<DatePeriod> period, Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo) {
 		boolean isSingleDay = false;

@@ -284,7 +284,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	}
 		
 	private List<DailyInterimRemainMngDataAndFlg> getAnnualHolidayRemainData(
-			RecordDomRequireService.Require require, CacheCarrier cacheCarrier,
+			RecordDomRequireService require, CacheCarrier cacheCarrier,
 			String cid, String sid, DatePeriod datePeriod) {
 		
 		List<DailyInterimRemainMngDataAndFlg> lstOutputData = new ArrayList<>();
