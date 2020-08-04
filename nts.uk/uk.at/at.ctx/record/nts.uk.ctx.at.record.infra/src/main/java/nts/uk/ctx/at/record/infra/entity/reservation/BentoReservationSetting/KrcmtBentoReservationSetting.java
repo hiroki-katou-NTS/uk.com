@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.infra.entity.reservation.BentoReservationSetting;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.reservation.bentoReservationSetting.*;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.*;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
