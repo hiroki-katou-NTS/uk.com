@@ -212,8 +212,8 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	}
 
 	@Override
-	public Boolean doDeny(String rootStateID, String employeeID) {
-		return approvalRootStatePub.doDeny(rootStateID, employeeID);
+	public Boolean doDeny(String rootStateID, String employeeID, String memo) {
+		return approvalRootStatePub.doDeny(rootStateID, employeeID, memo);
 	}
 
 	@Override

@@ -379,8 +379,8 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	}
 
 	@Override
-	public Boolean doDeny(String rootStateID, String employeeID) {
-		return denyService.doDeny(rootStateID, employeeID);
+	public Boolean doDeny(String rootStateID, String employeeID, String memo) {
+		return denyService.doDeny(rootStateID, employeeID, memo);
 	}
 
 	@Override

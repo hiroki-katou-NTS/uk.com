@@ -95,7 +95,7 @@ public interface ApprovalRootStateAdapter {
 	
 	public Boolean doRelease(String companyID, String rootStateID, String employeeID);
 	
-	public Boolean doDeny(String rootStateID, String employeeID);
+	public Boolean doDeny(String rootStateID, String employeeID, String memo);
 	
 	public Boolean judgmentTargetPersonIsApprover(String companyID, String rootStateID, String employeeID);
 	
