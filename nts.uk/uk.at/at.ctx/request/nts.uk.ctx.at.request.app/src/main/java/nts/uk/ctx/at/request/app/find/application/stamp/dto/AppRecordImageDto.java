@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampGoOutAtr;
@@ -13,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 @AllArgsConstructor
 @NoArgsConstructor
 //レコーダイメージ申請
-public class AppRecordImageDto {
+public class AppRecordImageDto extends ApplicationDto{
 //	打刻区分
 	public Integer appStampCombinationAtr;	
 //	申請時刻

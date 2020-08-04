@@ -19,7 +19,7 @@ public interface AppCommonDomainServiceRegister {
 	 * @param recoderFlag
 	 * @return
 	 */
-	public ProcessResult registerAppStamp(Application application, AppStamp appStamp, AppRecordImage appRecordImage, AppStampOutput appStampOutput, Boolean recoderFlag);
+	public ProcessResult registerAppStamp(Application application, Optional<AppStamp> appStamp, Optional<AppRecordImage> appRecordImage, AppStampOutput appStampOutput, Boolean recoderFlag);
 	
 	/**
 	 * Refactor4

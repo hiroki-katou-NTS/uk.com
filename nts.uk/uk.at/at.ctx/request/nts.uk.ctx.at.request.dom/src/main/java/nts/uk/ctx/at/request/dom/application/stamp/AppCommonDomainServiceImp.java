@@ -214,8 +214,8 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	public List<ConfirmMsgOutput> checkBeforeRegister(String companyId, Boolean agentAtr,
 			Application application, AppStampOutput appStampOutput) {
 		List<ConfirmMsgOutput> listConfirmMs = new ArrayList<ConfirmMsgOutput>();
-
-//		this.checkRegisterAndUpdate();
+//		check
+		this.checkRegisterAndUpdate((AppStamp)application);
 		
 //		2-1.新規画面登録前の処理
 		registerBefore.processBeforeRegister_New(

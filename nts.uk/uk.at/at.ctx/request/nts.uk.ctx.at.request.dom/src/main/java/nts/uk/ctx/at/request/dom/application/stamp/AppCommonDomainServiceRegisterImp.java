@@ -39,22 +39,31 @@ public class AppCommonDomainServiceRegisterImp implements AppCommonDomainService
 	private DetailAfterUpdate detailAfterUpdate;
 	
 	@Override
-	public ProcessResult registerAppStamp(Application application, AppStamp appStamp, AppRecordImage appRecordImage,
+	public ProcessResult registerAppStamp(Application application, Optional<AppStamp> appStamp, Optional<AppRecordImage> appRecordImage,
 			AppStampOutput appStampOutput, Boolean recoderFlag) {
 //		2-2.新規画面登録時承認反映情報の整理
 		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
-		
-		appAprrovalRepository.insertApp(application, 
-				appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().isPresent() ? appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().get() : null
-				);
+
 		
 		if (recoderFlag) {
 //			ドメインモデル「打刻申請」を登録する
-			appRecordImageRepo.addStamp(appRecordImage);
+			if (appRecordImage.isPresent()) {
+				appAprrovalRepository.insertApp(application, 
+						appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().isPresent() ? appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().get() : null
+						);
+				appRecordImageRepo.addStamp(appRecordImage.get());
+				
+			}
 			
 		} else {
 //			ドメインモデル「打刻申請」を登録する
-			appStampRepo.addStamp(appStamp);
+			if (appStamp.isPresent()) {
+				appAprrovalRepository.insertApp(application, 
+						appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().isPresent() ? appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().get() : null
+						);
+				appStampRepo.addStamp(appStamp.get());
+				
+			}
 			
 		}
 //		2-3.新規画面登録後の処理
@@ -70,9 +79,15 @@ public class AppCommonDomainServiceRegisterImp implements AppCommonDomainService
 		
 		appRepository.update(application);
 		if (recoderFlag) {
-			appRecordImageRepo.updateStamp(appRecoderImageOptional.isPresent() ? appRecoderImageOptional.get() : null);
+			if (appRecoderImageOptional.isPresent()) {
+				appRecordImageRepo.updateStamp(appRecoderImageOptional.get());
+				
+			}
 		} else {
-			appStampRepo.updateStamp(appStampOptional.isPresent() ? appStampOptional.get() : null);
+			if (appStampOptional.isPresent()) {
+				appStampRepo.updateStamp(appStampOptional.get());
+				
+			}
 					
 		}
 //		4-2.詳細画面登録後の処理 

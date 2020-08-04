@@ -2,12 +2,15 @@ package nts.uk.ctx.at.request.app.find.application.stamp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
@@ -17,18 +20,30 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampDto_Old;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampNewPreDto;
+import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampOutputDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampSetDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.StampCombinationDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.stamp.dto.StampRequestSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingDto;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.StampRecordOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
+import nts.uk.ctx.at.request.dom.application.stamp.AppCommonDomainService;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCommonDomainService;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampNewDomainService;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampNewPreOutput;
+import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
+import nts.uk.ctx.at.request.dom.application.stamp.output.ErrorStampInfo;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * 
@@ -43,6 +58,18 @@ public class AppStampFinder {
 	
 	@Inject 
 	private AppStampCommonDomainService appStampCommonDomainService;
+	
+	//refactor4
+	public static final String PATTERN_DATE = "yyyy/MM/DD";
+	
+	@Inject
+	private AppCommonDomainService appCommonStampDomainService;
+	
+	@Inject
+	private DetailAppCommonSetService appCommonSetService;
+	
+	@Inject
+	private CommonAlgorithm commonAlgorithm;
 	
 	public AppStampNewPreDto newAppStampPreProcess(String employeeID, String date) {
 		String companyID = AppContexts.user().companyId();
@@ -122,4 +149,84 @@ public class AppStampFinder {
 				GeneralDate.fromString(date, "yyyy/MM/dd"), 
 				EnumAdaptor.valueOf(stampRequestMode, StampRequestMode_Old.class));
 	}
+	
+//	Refactor4	
+	public AppStampOutputDto getDataCommon(StartAppStampParam startParam) {
+		AppStampOutput appStampOutput = appCommonStampDomainService.getDataCommon(startParam.getCompanyId(),
+				!StringUtils.isBlank(startParam.getDate())
+						? Optional.of(GeneralDate.fromString(startParam.getDate(), PATTERN_DATE))
+						: Optional.empty(),
+				startParam.getAppDispInfoStartupDto().toDomain(), startParam.getRecoderFlag());
+		return AppStampOutputDto.fromDomain(appStampOutput);
+		
+	}
+	
+	public void checkBeforeRegister(BeforeRegisterOrUpdateParam beforeRegisterParam) {
+		appCommonStampDomainService.checkBeforeRegister(
+				beforeRegisterParam.getCompanyId(),
+				beforeRegisterParam.getAgentAtr(),
+				beforeRegisterParam.getApplicationDto().toDomain(),
+				beforeRegisterParam.getAppStampOutputDto().toDomain());
+	}
+	
+	public void checkBeforeUpdate(BeforeRegisterOrUpdateParam beforeRegisterParam) {
+		appCommonStampDomainService.checkBeforeUpdate(
+				beforeRegisterParam.getCompanyId(),
+				beforeRegisterParam.getAgentAtr(),
+				beforeRegisterParam.getApplicationDto().toDomain(),
+				beforeRegisterParam.getAppStampOutputDto().toDomain());
+	}
+	
+	public AppStampOutputDto getDataDetailCommon(DetailAppStampParam detailAppStampParam) {
+		
+//		14-1.詳細画面起動前申請共通設定を取得する
+		//lay tu man 000
+		 AppDispInfoStartupOutput appDispInfoStartupOutput = 
+				 appCommonSetService.getCommonSetBeforeDetail(detailAppStampParam.getCompanyId(), detailAppStampParam.getAppId());
+		 
+		AppStampOutput appStampOutput = appCommonStampDomainService.getDataDetailCommon(
+				detailAppStampParam.getCompanyId(),
+				detailAppStampParam.getAppId(),
+				appDispInfoStartupOutput,
+//				detailAppStampParam.getAppDispInfoStartupDto().toDomain(),
+				detailAppStampParam.getRecoderFlag());
+		
+		return AppStampOutputDto.fromDomain(appStampOutput);
+	}
+	public AppStampOutputDto changeDateAppStamp(ChangeDateParam changeDateParam) {
+		AppStampOutput  appStampOutput = changeDateParam.getAppStampOutputDto().toDomain();
+		List<GeneralDate> dates = Collections.emptyList();
+		if (!CollectionUtil.isEmpty(changeDateParam.getDate())) {
+			changeDateParam.getDate().stream().map(x -> GeneralDate.fromString(x, PATTERN_DATE)).collect(Collectors.toList());
+		}
+		// 申請日を変更する
+		// lay o man 000
+		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
+				changeDateParam.getCompanyId(), dates, ApplicationType.STAMP_APPLICATION,
+				appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput(),
+				appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput(), Optional.empty());
+		appStampOutput.getAppDispInfoStartupOutput().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
+		
+//		実績の打刻のチェック
+		StampRecordOutput stampRecordOutput = null;
+		Optional<List<ActualContentDisplay>> listActualContentDisplay = appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
+		if (listActualContentDisplay.isPresent()) {
+			if (!CollectionUtil.isEmpty(listActualContentDisplay.get())) {
+				ActualContentDisplay actualContentDisplay = listActualContentDisplay.get().get(0);
+				Optional<AchievementDetail> opAchievementDetail = actualContentDisplay.getOpAchievementDetail();
+				if (opAchievementDetail.isPresent()) {
+					stampRecordOutput = opAchievementDetail.get().getStampRecordOutput();
+				}
+			}
+		}
+		List<ErrorStampInfo> listErrorStampInfo = appCommonStampDomainService.getErrorStampList(stampRecordOutput);
+		appStampOutput.setErrorListOptional(Optional.ofNullable(listErrorStampInfo));
+		
+		return AppStampOutputDto.fromDomain(appStampOutput);
+	}
+	
+	
+	
+	
+	
 }
