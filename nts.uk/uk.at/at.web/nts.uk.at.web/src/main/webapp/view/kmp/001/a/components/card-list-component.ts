@@ -11,7 +11,7 @@ module nts.uk.at.view.kmp001.a {
 					required: true,
 					text: $i18n('KMP001_22') }">
 			</div>
-			<input class="ip-stamp-card"
+			<input id="card-input" class="ip-stamp-card"
 				data-bind="ntsTextEditor: {
 					value: ko.observable(''),
 					constraint: $component.constraint,
@@ -28,7 +28,7 @@ module nts.uk.at.view.kmp001.a {
 						required: true, 
 						text: $i18n('KMP001_22') }">
 				</div>
-				<input class="ip-stamp-card"
+				<input id="card-input" class="ip-stamp-card"
 					data-bind="ntsTextEditor: {
 						value: stampNumber,
 						constraint: $component.constraint,
