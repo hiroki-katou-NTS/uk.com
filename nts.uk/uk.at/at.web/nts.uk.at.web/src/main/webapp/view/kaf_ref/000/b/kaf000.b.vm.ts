@@ -5,6 +5,7 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
     import UserType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.UserType;
     import Status = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.Status;
     import ApprovalAtr = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.ApprovalAtr;
+    import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
 
     @bean()
     class Kaf000BViewModel extends ko.ViewModel {
@@ -12,6 +13,8 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
         currentApp: string;
         appType: KnockoutObservable<number>;
         appDispInfoStartupOutput: KnockoutObservable<any> = ko.observable(null);
+        application: KnockoutObservable<Application> = ko.observable(new Application(0));
+        approvalReason: KnockoutObservable<string> = ko.observable("");
         
         displayApprovalButton: KnockoutObservable<boolean> = ko.observable(true);
         enableApprovalButton: KnockoutObservable<boolean> = ko.observable(true);
@@ -45,12 +48,24 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
             vm.listApp = params.listApp;
             vm.currentApp = params.currentApp;
             vm.appType = ko.observable(99);
+            vm.loadData();
+        }
+
+        loadData() {
+            const vm = this;
             vm.$blockui("show");
             vm.$ajax(`${API.getDetailPC}/${vm.currentApp}`).done((successData: any) => {
+            	vm.approvalReason("");
                 vm.appType(successData.appDetailScreenInfo.application.appType);
+                vm.application().appID = successData.appDetailScreenInfo.application.appID;
+		        vm.application().appType = vm.appType();
+		        vm.application().opAppReason(successData.appDetailScreenInfo.application.opAppReason);
+		        vm.application().opAppStandardReasonCD(successData.appDetailScreenInfo.application.opAppStandardReasonCD);
+		        vm.application().opReversionReason(successData.appDetailScreenInfo.application.opReversionReason);
                 vm.appDispInfoStartupOutput(successData);
-                let loginID = __viewContext.user.employeeId;
-                let loginFlg = successData.appDetailScreenInfo.application.enteredPerson == loginID || successData.appDetailScreenInfo.application.employeeID == loginID;
+                let viewContext: any = __viewContext,
+                    loginID = viewContext.user.employeeId,
+                    loginFlg = successData.appDetailScreenInfo.application.enteredPerson == loginID || successData.appDetailScreenInfo.application.employeeID == loginID;
                 vm.setControlButton(
                     successData.appDetailScreenInfo.user,
                     successData.appDetailScreenInfo.approvalATR,
@@ -58,10 +73,9 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
                     successData.appDetailScreenInfo.authorizableFlags,
                     successData.appDetailScreenInfo.alternateExpiration,
                     loginFlg);
-                vm.$blockui("hide");
-            }).fail((failData: any) => {
-                vm.$blockui("hide");
-            });
+            }).fail((res: any) => {
+                vm.handlerExecuteErrorMsg(res);
+            }).always(() => vm.$blockui("hide"));
         }
     
         setControlButton(
@@ -139,15 +153,57 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
         }
 
         btnApprove() {
-
+			const vm = this;
+            vm.$blockui("show");
+            let memo = vm.approvalReason(),
+            	appDispInfoStartupOutput = vm.appDispInfoStartupOutput(),
+            	command = { memo, appDispInfoStartupOutput };
+            	
+            vm.$ajax(API.approve, command)
+            .done((successData: any) => {
+                vm.$dialog.info({ messageId: "Msg_220" }).then(() => {
+                    vm.loadData();
+                });
+            }).fail((res: any) => {
+                vm.handlerExecuteErrorMsg(res);  
+            }).always(() => vm.$blockui("hide"));
         }
 
         btnDeny() {
-
+			const vm = this;
+            vm.$blockui("show");
+            let memo = vm.approvalReason(),
+            	appDispInfoStartupOutput = vm.appDispInfoStartupOutput(),
+            	command = { memo, appDispInfoStartupOutput };
+            	
+            vm.$ajax(API.deny, command)
+            .done((successData: any) => {
+                if(successData.processDone) {
+                    vm.$dialog.info({ messageId: "Msg_222" }).then(() => {
+                        vm.loadData();
+                    });
+                }
+            }).fail((res: any) => {
+                vm.handlerExecuteErrorMsg(res);
+            }).always(() => vm.$blockui("hide"));
         }
 
         btnRelease() {
-
+			const vm = this;
+            vm.$blockui("show");
+            vm.$dialog.confirm({ messageId: "Msg_248" }).then((result: 'no' | 'yes' | 'cancel') => {
+                if (result === 'yes') {
+                    return vm.$ajax(API.release, ko.toJS(vm.appDispInfoStartupOutput()));
+                }
+            }).done((successData: any) => {
+                if(successData.processDone) {
+                    vm.$dialog.info({ messageId: "Msg_221" }).then(() => {
+                        vm.loadData();
+                    });
+                }
+            }).fail((res: any) => {
+                vm.handlerExecuteErrorMsg(res);
+            }).always(() => vm.$blockui("hide"));
         }
 
         btnRemand() {
@@ -182,23 +238,56 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
         btnDelete() {
             const vm = this;
             vm.$blockui("show");
-            vm.$ajax(API.deleteapp, ko.toJS(vm.appDispInfoStartupOutput())
-            ).done((successData: any) => {
-                vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-                    vm.$blockui("hide");
+            vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
+                if (result === 'yes') {
+                    return vm.$ajax(API.deleteapp, ko.toJS(vm.appDispInfoStartupOutput()));
+                }
+            }).done((successData: any) => {
+                vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
+                    vm.$jump("at", "/view/cmm/045/a/index.xhtml");    
                 });
-            }).fail((failData: any) => {
-                vm.$blockui("hide");    
-            });
+            }).fail((res: any) => {
+                vm.handlerExecuteErrorMsg(res);
+            }).always(() => vm.$blockui("hide"));
+            
         }
 
         btnCancel() {
 
         }
+
+        handlerExecuteErrorMsg(res: any) {
+            const vm =this;
+            switch(res.messageId) {
+            case "Msg_426": 
+                vm.$dialog.error({ messageId: "Msg_426" }).then(() => {
+                    vm.$jump("at", "/view/cmm/045/a/index.xhtml");
+                });      
+                break;
+            case "Msg_197":
+                vm.$dialog.error({ messageId: "Msg_197" }).then(() => {
+                    vm.loadData();
+                });      
+                break;
+            case "Msg_198":
+                vm.$dialog.error({ messageId: "Msg_198" }).then(() => {
+                    vm.$jump("at", "/view/cmm/045/a/index.xhtml");
+                });      
+                break;
+            default: 
+                vm.$dialog.error(res.message).then(() => {
+                    vm.$jump("com", "/view/ccg/008/a/index.xhtml"); 
+                }); 
+                break;
+            }
+        }
     }
 
     const API = {
         getDetailPC: "at/request/application/getDetailPC",
-        deleteapp: "at/request/application/deleteapp"
+        deleteapp: "at/request/application/deleteapp",
+        approve: "at/request/application/approveapp",
+    	deny: "at/request/application/denyapp",
+    	release: "at/request/application/releaseapp"
     }
 }

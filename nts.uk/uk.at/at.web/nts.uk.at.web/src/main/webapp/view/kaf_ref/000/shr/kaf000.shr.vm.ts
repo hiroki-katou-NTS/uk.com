@@ -163,24 +163,11 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
                 vm.$errors(element, "Msg_323");
                 vm.$dialog.error({ messageId: "Msg_323" }).then(() => {
                     if(recordDate == 0) {
-                        vm.$jump("com", "view/ccg/008/a/index.xhtml");    
+                        vm.$jump("com", "/view/ccg/008/a/index.xhtml");    
                     }
                 });   
                 return false;
             }
-            
-            if(empHistImport==null) {
-                vm.$errors(element, "Msg_426");
-                vm.$dialog.error({ messageId: "Msg_426" }).then(() => {
-                    if(mode) {
-                        vm.$jump("com", "view/ccg/008/a/index.xhtml");    
-                    } else {
-                        vm.$jump("com", "view/cmm/045/a/index.xhtml");    
-                    }
-                });
-                return false; 
-            }
-            
             
             if(_.isNull(opErrorFlag)) {
                 return true;    
@@ -204,7 +191,7 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
             vm.$errors(element, msgID);
             vm.$dialog.error({ messageId: msgID }).then(() => {
                 if(recordDate == 0) {
-                    vm.$jump("com", "view/ccg/008/a/index.xhtml");    
+                    vm.$jump("com", "/view/ccg/008/a/index.xhtml");    
                 }    
             });
         }

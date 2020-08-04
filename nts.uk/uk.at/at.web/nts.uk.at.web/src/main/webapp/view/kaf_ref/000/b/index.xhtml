@@ -157,6 +157,7 @@
 					<div data-bind="component: {
 							name: 'kaf007-b',
 							params: {
+								approvalReason: approvalReason,
 								appDispInfoStartupOutput: $vm.appDispInfoStartupOutput,
 								eventUpdate: function(a) { $vm.getChildUpdateEvent.apply($vm, [a]) }
 							}

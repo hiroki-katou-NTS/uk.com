@@ -14,6 +14,10 @@ module nts.uk.at.view.kaf000_ref.b.component8.viewmodel {
             
             vm.approvalRootState(ko.mapping.fromJS(vm.appDispInfoStartupOutput().appDetailScreenInfo.approvalLst)());
             
+            vm.appDispInfoStartupOutput.subscribe(value => {
+            	vm.approvalRootState(ko.mapping.fromJS(value.appDetailScreenInfo.approvalLst)());
+            });
+            
         }
     
         mounted() {

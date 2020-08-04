@@ -12,9 +12,11 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
         appDispInfoStartupOutput: any;
         application: KnockoutObservable<Application>;
         appWorkChange: KnockoutObservable<AppWorkChange>;
+        approvalReason: KnockoutObservable<string>;
         
         created(
             params: { 
+            	
                 appDispInfoStartupOutput: any, 
                 eventUpdate: (evt: () => void ) => void
             }
@@ -23,6 +25,7 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.application = ko.observable(new Application(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.appID, 1, [], 2, "", "", 0));
             vm.appWorkChange = ko.observable(new AppWorkChange("001", "001", 100, 200));
+            vm.approvalReason = params.approvalReason;
             
             // gui event con ra viewmodel cha
             // nhớ dùng bind(vm) để ngữ cảnh lúc thực thi
