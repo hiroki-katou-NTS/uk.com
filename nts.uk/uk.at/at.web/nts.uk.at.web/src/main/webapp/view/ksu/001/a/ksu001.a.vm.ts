@@ -579,10 +579,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             // イベント情報と個人条件のmapping (mapping "thông tin event" và "person condition")
             if (data.displayControlPersonalCond == null) {
-                // ẩn A9    
-                $("#extable").exTable("hideMiddle");
                 self.showA9 = false;
-
             } else {
                 self.showA9 = true;
             }
@@ -761,24 +758,26 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 { headerText: getText("KSU001_4025"), key: "qualification", width: "40px", css: { whiteSpace: "none" } }
             ];
 
-            middleHeader = {
-                columns: middleColumns,
-                width: "120px",
-                features: [{
-                    name: "HeaderRowHeight",
-                    rows: { 0: "60px" }
-                }]
-            };
+            if (self.showA9) {
+                middleHeader = {
+                    columns: middleColumns,
+                    width: "120px",
+                    features: [{
+                        name: "HeaderRowHeight",
+                        rows: { 0: "60px" }
+                    }]
+                };
 
-            middleContent = {
-                columns: middleColumns,
-                dataSource: middleDs,
-                primaryKey: "sid",
-                features: [{
-                    name: "BodyCellStyle",
-                    decorator: middleContentDeco
-                }]
-            };
+                middleContent = {
+                    columns: middleColumns,
+                    dataSource: middleDs,
+                    primaryKey: "sid",
+                    features: [{
+                        name: "BodyCellStyle",
+                        decorator: middleContentDeco
+                    }]
+                };
+            }
 
             // Phần detail
             let detailHeaderDeco = dataBindGrid.detailHeaderDeco;

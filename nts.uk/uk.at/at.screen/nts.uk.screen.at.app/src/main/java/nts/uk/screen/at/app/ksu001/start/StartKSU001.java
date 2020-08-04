@@ -3,6 +3,7 @@
  */
 package nts.uk.screen.at.app.ksu001.start;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -126,7 +127,7 @@ public class StartKSU001 {
 		String workplaceId = "dea95de1-a462-4028-ad3a-d68b8f180412";
 		String workplaceGroupId = null;
 		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(endDate, new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,workplaceId, workplaceGroupId));
-		List<EmployeeInformationImport> resultStep2 = extractTargetEmployees.getListEmp(param2);
+		List<EmployeeInformationImport> resultStep2 = extractTargetEmployees.getListEmp2(param2);
 		// step 2 end
 		
 		// step 3 start
@@ -136,26 +137,31 @@ public class StartKSU001 {
 		DataSpecDateAndHolidayDto resultStep3 = eventInfoAndPersonalCondPeriod.get(param3);
 		// step 3 end
 		
-		//step 4  || step 5.2 start
-		DisplayInWorkInfoParam param4 = new DisplayInWorkInfoParam(listSid, startDate, endDate, false);
-		DisplayInWorkInfoResult  resultStep4 = new DisplayInWorkInfoResult();
-		resultStep4 = displayInWorkInfo.getData(param4);
-		List<WorkTypeInfomation> listWorkTypeInfo = resultStep4.listWorkTypeInfo;
-		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = resultStep4.listWorkScheduleWorkInfor;
+		// data result step 4  || step 5.2
+		List<WorkTypeInfomation> listWorkTypeInfo = new ArrayList<>();
+		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = new ArrayList<>();
 		
+		//
+		WorkScheduleShiftResult resultStep51 = new WorkScheduleShiftResult();
+		List<WorkScheduleShiftDto> listWorkScheduleShift = new ArrayList<>();
+
 		// step5.1
-		WorkScheduleShiftResult resultStep51 = getWorkScheduleShift.getData(new GetWorkScheduleShiftParam());
-		List<WorkScheduleShiftDto> listWorkScheduleShift = resultStep51.listWorkScheduleShift; 
-		
+		resultStep51 = getWorkScheduleShift.getData(new GetWorkScheduleShiftParam());
+		listWorkScheduleShift = resultStep51.listWorkScheduleShift;
+
+		// step 4 || step 5.2 start
+		DisplayInWorkInfoParam param4 = new DisplayInWorkInfoParam(listSid, startDate, endDate, false);
+		DisplayInWorkInfoResult resultStep4 = new DisplayInWorkInfoResult();
+		resultStep4 = displayInWorkInfo.getData(param4);
+		listWorkTypeInfo = resultStep4.listWorkTypeInfo;
+		listWorkScheduleWorkInfor = resultStep4.listWorkScheduleWorkInfor;
+
 		if (param.viewMode == "shift") {
-			// step5.1
-			
-			
+
 		} else if (param.viewMode == "time" || param.viewMode == "shortName") {
-			// step4 || step 5.2
-			
+
 		}
-		
+
 		StartKSU001Dto result = convertData(resultStep1, resultStep2, resultStep3, listWorkTypeInfo, listWorkScheduleWorkInfor, listWorkScheduleShift);
 		return result;
 	}

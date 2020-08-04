@@ -40,7 +40,7 @@ public class KSU001WebService extends WebService{
 	@POST
 	@Path("start")
 	public StartKSU001Dto getDataStartScreen(StartKSU001Param param){
-		StartKSU001Dto data = startKSU001.getDataStartScreen(param);
+		StartKSU001Dto data = startKSU001.getDataStartScreen2(param);
 		return data;
 	}
 	

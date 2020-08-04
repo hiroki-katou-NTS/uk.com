@@ -53,7 +53,7 @@ public class GetWorkScheduleShift {
 				boolean isActive = true;
 				WorkScheduleShiftDto w1 = new WorkScheduleShiftDto(sid, GeneralDate.ymd(2020, 7, i), 
 						true, true, true, true , 1, 
-						i%2==0? "001" : "002", i%2==0? "A" : "B", new ShiftEditStateDto(sid,GeneralDate.ymd(2020, 7, i), 0), 1, isActive);
+						i%2==0? "001" : "002", i%2==0? "出勤勤" : "テスト", new ShiftEditStateDto(sid,GeneralDate.ymd(2020, 7, i), 0), 1, isActive);
 				listWorkScheduleShift.add(w1);
 			}
 		}

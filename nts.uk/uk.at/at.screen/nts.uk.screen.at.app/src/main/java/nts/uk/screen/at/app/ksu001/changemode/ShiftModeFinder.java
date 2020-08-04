@@ -11,6 +11,8 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoParam;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoResult;
@@ -27,7 +29,6 @@ import nts.uk.screen.at.app.ksu001.extracttargetemployees.EmployeeInformationDto
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.ExtractTargetEmployeesParam;
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.ScreenQueryExtractTargetEmployees;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforDto;
-import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DisplayInforOrganizationDto;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScreenQueryGetInforOfInitStartup;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.TargetOrgIdenInforDto;
 import nts.uk.screen.at.app.ksu001.getworkscheduleshift.GetWorkScheduleShift;
@@ -59,17 +60,7 @@ public class ShiftModeFinder {
 
 	public StartKSU001Dto getDataStartScreen(StartKSU001Param param) {
 		
-		/*
-		// step 1 call ScreenQuery
-		DataScreenQueryGetInforDto resultStep1 = getInforOfInitStartup.getDataInit();
 
-		// step 2
-		String workplaceId = resultStep1.targetOrgIdenInfor.workplaceId == null ? null
-				: resultStep1.targetOrgIdenInfor.workplaceId;
-		String workplaceGroupId = resultStep1.targetOrgIdenInfor.workplaceGroupId == null ? null
-				: resultStep1.targetOrgIdenInfor.workplaceGroupId;
-		GeneralDate startDate = resultStep1.startDate;
-		GeneralDate endDate = resultStep1.endDate; */
 		
 		// step 1 start
 		GeneralDate startDate = GeneralDate.ymd(2020, 7, 1);
@@ -78,7 +69,7 @@ public class ShiftModeFinder {
 		TargetOrgIdenInforDto targetOrgIdenInfor = new TargetOrgIdenInforDto(TargetOrganizationUnit.WORKPLACE.value,
 				"dea95de1-a462-4028-ad3a-d68b8f180412", null);
 
-		DisplayInforOrganizationDto displayInforOrganization = new DisplayInforOrganizationDto("designation", "code", "name",
+		DisplayInfoOrganization displayInforOrganization = new DisplayInfoOrganization("designation", "code", "name",
 				"WorkPlaceName", "genericTerm");
 
 		DataScreenQueryGetInforDto resultStep1 = new DataScreenQueryGetInforDto(startDate, endDate, targetOrgIdenInfor,
@@ -88,8 +79,8 @@ public class ShiftModeFinder {
 		// step 2 start
 		String workplaceId = "dea95de1-a462-4028-ad3a-d68b8f180412";
 		String workplaceGroupId = null;
-		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(endDate, workplaceId, workplaceGroupId);
-		List<EmployeeInformationImport> resultStep2 = extractTargetEmployees.getListEmp(param2);
+		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(endDate, new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,workplaceId, workplaceGroupId));
+		List<EmployeeInformationImport> resultStep2 = extractTargetEmployees.getListEmp2(param2);
 		// step 2 end
 		
 		// step 3 start
