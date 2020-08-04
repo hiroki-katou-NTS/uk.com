@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,19 +21,41 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.setting.functioncontrol.UseAtr;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
-import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscmtTotalEvalOrderItem;
-import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscstHoriCalDaysSetItem;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateSetting;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
-
 
 /**
  * 勤務予定の基本情報
+ * 
  * @author HieuLt
  *
  */
@@ -43,8 +68,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 	@EmbeddedId
 	public KscdtSchBasicInfoPK pk;
-	
-	/** "予定確定区分 ---true:確定済み---false:未確定" **/								
+
+	/** "予定確定区分 ---true:確定済み---false:未確定" **/
 	@Column(name = "DECISION_STATUS")
 	public boolean confirmedATR;
 	/** 雇用コード **/
@@ -56,7 +81,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 	/** 職場ID **/
 	@Column(name = "WKP_ID")
 	public String wkpId;
-	/** 分類コード**/ 
+	/** 分類コード **/
 	@Column(name = "CLS_CD ")
 	public String clsCd;
 	/** 勤務種別コード **/
@@ -68,20 +93,19 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 	/** 勤務種類コード **/
 	@Column(name = "WKTP_CD")
 	public String wktpCd;
-	/**就業時間帯コード**/
+	/** 就業時間帯コード **/
 	@Column(name = "WKTM_CD")
 	public String wktmCd;
-	/** "直行区分---true:直行する---false:直行しない"**/
+	/** "直行区分---true:直行する---false:直行しない" **/
 	@Column(name = "GO_STRAIGHT_ATR")
 	public boolean goStraightAtr;
-	/** "直帰区分---true:直帰する---false:直帰しない"**/
+	/** "直帰区分---true:直帰する---false:直帰しない" **/
 	@Column(name = "BACK_STRAIGHT_ATR")
-	public int backStraightAtr;
-	
+	public boolean backStraightAtr;
+
 	@OneToOne
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-		@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false)
-	})
+			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KscdtSchTime kscdtSchTime;
 
 	@OneToMany(targetEntity = KscdtSchEditState.class, mappedBy = "kscdtSchBasicInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -91,59 +115,131 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 	@OneToMany(targetEntity = KscdtSchAtdLvwTime.class, mappedBy = "kscdtSchBasicInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "KSCDT_SCH_ATD_LVW_TIME")
 	public List<KscdtSchAtdLvwTime> atdLvwTimes;
-	
+
 	@OneToMany(targetEntity = KscdtSchShortTimeTs.class, mappedBy = "kscdtSchBasicInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "KSCDT_SCH_SHORTTIME_TS")
 	public List<KscdtSchShortTimeTs> schShortTimeTs;
-	
+
 	@OneToMany(targetEntity = KscdtSchBreakTs.class, mappedBy = "kscdtSchBasicInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "KSCDT_SCH_BREAK_TS")
 	public List<KscdtSchBreakTs> breakTs;
-	
-	
-	
-	public static KscdtSchBasicInfo toEntity(WorkSchedule workSchedule) {
-		// 勤務予定.勤務情報 
+
+	public static KscdtSchBasicInfo toEntity(WorkSchedule workSchedule, String cID) {
+
+		String sID = workSchedule.getEmployeeID();
+
+		GeneralDate yMD = workSchedule.getYmd();
+
+		// 勤務予定.勤務情報
 		AffiliationInforOfDailyAttd workInfo = workSchedule.getAffInfo();
-		
+
 		// 勤務予定.勤務情報
 		WorkInfoOfDailyAttendance workInfoOfDaily = workSchedule.getWorkInfo();
-		
+
 		// 勤務予定.勤務情報.勤務実績の勤務情報
 		WorkInformation workInformation = workInfoOfDaily.getRecordInfo();
-		
-		
+
+		KscdtSchTime kscdtSchTimes = KscdtSchTime.toEntity(workSchedule.getOptAttendanceTime().get().getActualWorkingTimeOfDaily(), sID, yMD, cID);
+
+		// 勤務予定.休憩時間帯
+		List<KscdtSchEditState> kscdtEditStates = workSchedule.getLstEditState().stream()
+				.map(dailyAttd -> KscdtSchEditState.toEntity(dailyAttd, sID, yMD, cID)).collect(Collectors.toList());
+
+		// 勤務予定．出退勤．出退勤
+		List<KscdtSchAtdLvwTime> kscdtSchAtdLvwTimes = new ArrayList<>();
+		if (workSchedule.getOptTimeLeaving().isPresent()) {
+			kscdtSchAtdLvwTimes = workSchedule.getOptTimeLeaving().get().getTimeLeavingWorks().stream()
+					.map(timeLeavingWork -> KscdtSchAtdLvwTime.toEntity(timeLeavingWork, sID, yMD, cID))
+					.collect(Collectors.toList());
+		}
+
+		// 勤務予定．短時間勤務．時間帯
+		List<KscdtSchShortTimeTs> kscdtSchShortTimeTs = new ArrayList<>();
+		if (workSchedule.getOptSortTimeWork().isPresent()) {
+			kscdtSchShortTimeTs = workSchedule.getOptSortTimeWork().get().getShortWorkingTimeSheets().stream()
+					.map(timeSheet -> KscdtSchShortTimeTs.toEntity(timeSheet, sID, yMD, cID))
+					.collect(Collectors.toList());
+		}
+		// 勤務予定．休憩時間帯
+		List<KscdtSchBreakTs> kscdtSchBreakTs = new ArrayList<>();
+		workSchedule.getLstBreakTime().stream().forEach(x -> {
+			List<KscdtSchBreakTs> kscdtSchBreakT = x.getBreakTimeSheets().stream()
+					.map(mapper -> KscdtSchBreakTs.toEntity(mapper, sID, yMD, cID)).collect(Collectors.toList());
+			kscdtSchBreakTs.addAll(kscdtSchBreakT);
+		});
+
 		KscdtSchBasicInfoPK basicInfoPK = new KscdtSchBasicInfoPK(workSchedule.getEmployeeID(), workSchedule.getYmd());
-		
-		// null đang đợi QA
-		KscdtSchBasicInfo basicInfo = new KscdtSchBasicInfo(basicInfoPK, workSchedule.getConfirmedATR().value == 1 ? true : false, workInfo.getEmploymentCode().v(), workInfo.getJobTitleID(), workInfo.getWplID()
-				, workInfo.getClsCode().v(),workInfo.getBonusPaySettingCode().v(), null, workInformation.getWorkTypeCode().v(), workInformation.getWorkTimeCode().v(), workInfoOfDaily.getGoStraightAtr().value == 1 ? true : false, 
-				workInfoOfDaily.getBackStraightAtr().value);
+		// null - QA 110800
+		KscdtSchBasicInfo basicInfo = new KscdtSchBasicInfo(basicInfoPK,
+				workSchedule.getConfirmedATR().value == 1 ? true : false, workInfo.getEmploymentCode().v(),
+				workInfo.getJobTitleID(), workInfo.getWplID(), workInfo.getClsCode().v(),
+				workInfo.getBonusPaySettingCode().v(), null, workInformation.getWorkTypeCode().v(),
+				workInformation.getWorkTimeCode().v(), workInfoOfDaily.getGoStraightAtr().value == 1 ? true : false,
+				workInfoOfDaily.getBackStraightAtr().value == 1 ? true : false, kscdtSchTimes, kscdtEditStates, kscdtSchAtdLvwTimes,
+				kscdtSchShortTimeTs, kscdtSchBreakTs);
 		return basicInfo;
 	}
 	
-	@Override
-	protected Object getKey() {
+	public WorkSchedule toDomain(String sID, GeneralDate yMD) {
 		
-		return this.pk;
+		// create WorkInfoOfDailyAttendance
+		WorkInformation recordInfo = new WorkInformation(new WorkTimeCode(wktmCd),new WorkTypeCode(wktpCd));
+		WorkInfoOfDailyAttendance workInfo = new WorkInfoOfDailyAttendance(recordInfo, null, null, EnumAdaptor.valueOf(goStraightAtr ? 1 : 0, NotUseAttribute.class), EnumAdaptor.valueOf(backStraightAtr ? 1 : 0, NotUseAttribute.class), null, null);
+		
+		// create AffiliationInforOfDailyAttd
+		AffiliationInforOfDailyAttd affInfo = new AffiliationInforOfDailyAttd(new EmploymentCode(empCd), jobId, wkpId, new ClassificationCode(clsCd), new BonusPaySettingCode(busTypeCd));
+		
+		// create List<BreakTimeOfDailyAttd> 
+		List<BreakTimeOfDailyAttd> lstBreakTime = new ArrayList<>();
+		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
+		breakTs.stream().forEach(x->{
+			BreakTimeSheet timeSheet = new BreakTimeSheet(new BreakFrameNo(x.getPk().getFrameNo()), new TimeWithDayAttr(x.getBreakTsStart()), new TimeWithDayAttr(x.getBreakTsEnd()));
+			breakTimeSheets.add(timeSheet);
+			
+			BreakTimeOfDailyAttd dailyAttd = new BreakTimeOfDailyAttd(null, breakTimeSheets);
+			lstBreakTime.add(dailyAttd);
+		});
+		
+		// create List<EditStateOfDailyAttd>
+		List<EditStateOfDailyAttd> lstEditState = editStates.stream().map(mapper-> new EditStateOfDailyAttd(mapper.getPk().getAtdItemId(),EnumAdaptor.valueOf(mapper.getSditState(), EditStateSetting.class))).collect(Collectors.toList());
+		
+		// create Optional<TimeLeavingOfDailyAttd>
+		TimeLeavingOfDailyAttd optTimeLeaving = null;
+		List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
+		atdLvwTimes.stream().forEach(mapper-> {
+			WorkStamp workStamp = new WorkStamp(EnumAdaptor.valueOf(mapper.getAtdClock(), TimeWithDayAttr.class), null, null);
+			WorkStamp workStamp2 = new WorkStamp(EnumAdaptor.valueOf(mapper.getLwkClock(), TimeWithDayAttr.class), null, null);
+			TimeActualStamp timeActualStamp = new TimeActualStamp(null, workStamp, null);
+			TimeActualStamp timeActualStamp2 = new TimeActualStamp(null, workStamp2, null);
+			TimeLeavingWork timeLeavingWork = new TimeLeavingWork(new WorkNo(mapper.getPk().getWorkNo()), timeActualStamp, timeActualStamp2);
+			timeLeavingWorks.add(timeLeavingWork);
+		});
+		optTimeLeaving = new TimeLeavingOfDailyAttd(timeLeavingWorks, null);
+		
+		// create Optional<ShortTimeOfDailyAttd> optSortTimeWork
+		ShortTimeOfDailyAttd optSortTimeWork = null;
+		List<ShortWorkingTimeSheet> shortWorkingTimeSheets = new ArrayList<>();
+		schShortTimeTs.stream().forEach(x->{
+			ShortWorkingTimeSheet shortWorkingTimeSheet = new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(x.getPk().getFrameNo()), EnumAdaptor.valueOf(x.getPk().getChildCareAtr(), ChildCareAttribute.class), 
+					EnumAdaptor.valueOf(x.getShortTimeTsStart(), TimeWithDayAttr.class), EnumAdaptor.valueOf(x.getShortTimeTsEnd(), TimeWithDayAttr.class));
+			shortWorkingTimeSheets.add(shortWorkingTimeSheet);
+		});
+		
+		optSortTimeWork = new ShortTimeOfDailyAttd(shortWorkingTimeSheets);
+		return new WorkSchedule(sID, yMD, EnumAdaptor.valueOf(confirmedATR ? 1 : 0, ConfirmedATR.class), 
+				workInfo, affInfo, lstBreakTime, lstEditState, Optional.ofNullable(optTimeLeaving), Optional.empty(), Optional.ofNullable(optSortTimeWork));
+	}
+	
+	public void fromEntity(WorkSchedule workSchedule) {
+		KscdtSchBasicInfoPK pk = new KscdtSchBasicInfoPK(workSchedule.getEmployeeID(), workSchedule.getYmd());
+		this.confirmedATR = workSchedule.getConfirmedATR().value == 1 ? true : false;
+		//this.empCd = workSchedule.get
 	}
 
-	public KscdtSchBasicInfo(KscdtSchBasicInfoPK pk, boolean confirmedATR, String empCd, String jobId, String wkpId,
-			String clsCd, String busTypeCd, String nurseLicense, String wktpCd, String wktmCd, boolean goStraightAtr,
-			int backStraightAtr) {
-		super();
-		this.pk = pk;
-		this.confirmedATR = confirmedATR;
-		this.empCd = empCd;
-		this.jobId = jobId;
-		this.wkpId = wkpId;
-		this.clsCd = clsCd;
-		this.busTypeCd = busTypeCd;
-		this.nurseLicense = nurseLicense;
-		this.wktpCd = wktpCd;
-		this.wktmCd = wktmCd;
-		this.goStraightAtr = goStraightAtr;
-		this.backStraightAtr = backStraightAtr;
+	@Override
+	protected Object getKey() {
+
+		return this.pk;
 	}
 
 }
