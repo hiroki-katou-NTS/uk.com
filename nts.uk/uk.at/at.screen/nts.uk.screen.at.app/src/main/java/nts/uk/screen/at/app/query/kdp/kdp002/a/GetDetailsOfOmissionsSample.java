@@ -38,6 +38,24 @@ public class GetDetailsOfOmissionsSample {
 	
 	@Inject
 	private AppDisplayNameAdapter appDisplayAdapter;
+	@Inject
+	private StampPromptAppRepository stamPromptAppRepo;
+
+	@Inject
+	private ErAlApplicationRepository erAlApplicationRepo;
+
+	@Inject
+	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepo;
+
+	@Inject
+	private StampSetPerRepository stampSetPerRepo;
+	
+	@Inject
+	private ClosureRepository closureRepo;
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepo;
+	@Inject
+	private ShareEmploymentAdapter shareEmploymentAdapter;
 	
 	public GetDetailsOfOmissionsSampleDto get(int pageNo, int buttonDisNo) {
 		
@@ -54,25 +72,6 @@ public class GetDetailsOfOmissionsSample {
 	}
 	
 	private class CheckAttdErrorAfterStampRequiredImpl implements CheckAttdErrorAfterStampService.Require {
-
-		@Inject
-		private StampPromptAppRepository stamPromptAppRepo;
-
-		@Inject
-		private ErAlApplicationRepository erAlApplicationRepo;
-
-		@Inject
-		private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepo;
-
-		@Inject
-		private StampSetPerRepository stampSetPerRepo;
-		
-		@Inject
-		private ClosureRepository closureRepo;
-		@Inject
-		private ClosureEmploymentRepository closureEmploymentRepo;
-		@Inject
-		private ShareEmploymentAdapter shareEmploymentAdapter;
 
 		@Override
 		public Optional<StampPromptApplication> getStampSet() {
