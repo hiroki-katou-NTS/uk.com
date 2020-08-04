@@ -59,7 +59,9 @@ module nts.uk.at.kdp003.s {
 								END_SUPPORT,
 								WORK_SUPPORT,
 								START_SUPPORT_EARLY_APPEARANCE,
-								START_SUPPORT_BREAK
+								START_SUPPORT_BREAK,
+								RESERVATION,
+								CANCEL_RESERVATION
 							} = ContentsStampType;
 
 							// bad algorithm :/
@@ -73,7 +75,9 @@ module nts.uk.at.kdp003.s {
 								START_SUPPORT,
 								WORK_SUPPORT,
 								START_SUPPORT_EARLY_APPEARANCE,
-								START_SUPPORT_BREAK
+								START_SUPPORT_BREAK,
+								RESERVATION,
+								CANCEL_RESERVATION
 							];
 							const RIGHT_ALIGNS = [
 								DEPARTURE,
