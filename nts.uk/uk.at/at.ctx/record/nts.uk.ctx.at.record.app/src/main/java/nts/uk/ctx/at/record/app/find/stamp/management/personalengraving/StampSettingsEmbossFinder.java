@@ -83,7 +83,7 @@ public class StampSettingsEmbossFinder {
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		
-		StampFunctionAvailableRequiredImpl checkFuncRq = new StampFunctionAvailableRequiredImpl(stampCardRepo);
+		StampFunctionAvailableRequiredImpl checkFuncRq = new StampFunctionAvailableRequiredImpl();
 		
 		boolean isAvailable = StampFunctionAvailableService.decide(checkFuncRq, employeeId);
 		
@@ -142,15 +142,12 @@ public class StampSettingsEmbossFinder {
 	} 
 	
 	public TimeCard getTimeCard(String employeeId, GeneralDate date) {
-		TimeCardRequiredImpl required = new TimeCardRequiredImpl(timeLeavingOfDailyPerformanceRepository);
+		TimeCardRequiredImpl required = new TimeCardRequiredImpl();
 		return GetTimeCardService.getTimeCard(required, employeeId, date.yearMonth());
 	}
 
 	@AllArgsConstructor
 	private class TimeCardRequiredImpl implements GetTimeCardService.Require {
-
-		@Inject
-		private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepository;
 
 		@Override
 		public List<TimeLeavingOfDailyPerformance> findbyPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
@@ -212,9 +209,6 @@ public class StampSettingsEmbossFinder {
 	
 	@AllArgsConstructor
 	private class StampFunctionAvailableRequiredImpl implements StampFunctionAvailableService.Require {
-		
-		@Inject
-		private StampCardRepository stampCardRepo;
 		
 		@Override
 		public List<StampCard> getListStampCard(String sid) {
