@@ -165,8 +165,8 @@ module nts.uk.at.view.kmp001.c {
 			const vm = this;
 			vm.params = params;
 			const format = DATE_FORMAT,
-			endDate = moment().format(format),
-			startDate = moment().subtract(3, 'month').format(format);
+				endDate = moment().format(format),
+				startDate = moment().subtract(3, 'month').format(format);
 
 			vm.dateRange({ startDate, endDate });
 
@@ -183,7 +183,7 @@ module nts.uk.at.view.kmp001.c {
 					}
 				})
 		}
-		
+
 		getAllData() {
 			const vm = this;
 

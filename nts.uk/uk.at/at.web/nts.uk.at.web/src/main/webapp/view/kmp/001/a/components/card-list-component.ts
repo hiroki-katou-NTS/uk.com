@@ -90,8 +90,6 @@ module nts.uk.at.view.kmp001.a {
 						rowSelectionChanged: function(evt, ui) {
 							const selectedRows = ui.selectedRows.map(m => m.index) as number[];
 							const stampCard = ko.unwrap(vm.model.stampCardDto);
-							
-							debugger;
 
 							vm.model.selectedStampCardIndex(ui.row.index);
 
@@ -118,6 +116,11 @@ module nts.uk.at.view.kmp001.a {
 					},
 					dataRendered: function() {
 						$(vm.$el).find('.ui-icon.ui-icon-triangle-1-e').remove();
+						setTimeout(() => {
+							vm.$nextTick(() => {
+								$('.ip-stamp-card').focus();
+							})
+						}, 50);
 					}
 				});
 
@@ -132,7 +135,7 @@ module nts.uk.at.view.kmp001.a {
 
 				vm.$nextTick(() => {
 					if ($grid.data('igGrid') && $grid.data('igGridSelection') && $grid.igGrid('option', 'dataSource').length) {
-						
+
 						$('.ip-stamp-card').focus();
 					}
 				});
@@ -146,12 +149,6 @@ module nts.uk.at.view.kmp001.a {
 				if ($vm) {
 					ko.computed(() => {
 						const mode = ko.unwrap($vm.mode);
-
-						/*if (mode === 'new') {
-							if ($grid.data('igGrid') && $grid.data('igGridSelection') && $grid.igGrid('option', 'dataSource').length) {
-								$grid.igGridSelection("selectRow", 0);
-							}
-						}*/
 					});
 				}
 			}
@@ -174,9 +171,11 @@ module nts.uk.at.view.kmp001.a {
 								vm.$validate.constraint(ck, constraint);
 								vm.constraint.valueHasMutated();
 
-								$(document).ready(function() {
-									$('#ip-stamp-card').focus();
-								});
+								setTimeout(() => {
+									vm.$nextTick(() => {
+										$('.ip-stamp-card').focus();
+									})
+								}, 50);
 							}
 						});
 				});

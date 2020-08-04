@@ -66,6 +66,9 @@ module nts.uk.at.view.kmp001.a {
 					if (current) {
 						vm.$ajax(KMP001A_API.GET_INFOMAITON_EMPLOYEE + "/" + ko.toJS(current.employeeId) + "/" + ko.toJS(current.affiliationId) + "/" + ko.toJS(vm.baseDate))
 							.then((data: IModel) => {
+								if (data.stampCardDto.length > 0) {
+									data.stampCardDto[0].checked = true;
+								}
 								vm.model.update(ko.toJS(data));
 								vm.model.employeeId(current.employeeId);
 							});
@@ -90,6 +93,8 @@ module nts.uk.at.view.kmp001.a {
 		mounted() {
 			const vm = this;
 			const dataFormate = 'YYYY/MM/DD';
+
+			vm.$errors('clear');
 
 			if (!!vm.$user.role.attendance) {
 				vm.attendance(true);
@@ -162,7 +167,7 @@ module nts.uk.at.view.kmp001.a {
 					*/
 					returnDataFromCcg001: function(data: any) {
 						vm.baseDate(moment.utc(data.baseDate, DATE_FORMAT).format("YYYY-MM-DD"));
-						
+
 						vm.employees([]);
 
 						for (var i = 0; i < data.listEmployee.length; i++) {
@@ -183,11 +188,6 @@ module nts.uk.at.view.kmp001.a {
 						vm.reloadData();
 					}
 				});
-
-			vm.$nextTick(() => {
-				vm.$errors('clear');
-
-			})
 		}
 
 		showDiaLog() {
@@ -246,29 +246,38 @@ module nts.uk.at.view.kmp001.a {
 				if (stamp.stampNumber == '') {
 					vm.$dialog.info({ messageId: "Msg_1679" });
 				} else {
-					if (ko.toJS(vm.mode) == 'update') {
-						vm.$blockui("invisible");
 
-						const commandUpdate = { employeeId: ko.toJS(model.employeeId), olderCardNumber: stamp.defaultValue, newCardNumber: stamp.stampNumber };
-											
-						vm.$ajax(KMP001A_API.UPDATE, commandUpdate)
-							.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
-							.always(() => vm.$blockui("clear"));
-					} else {
-						vm.$blockui("invisible");
+					vm.validate()
+						.then((valid: boolean) => {
+							if (valid) {
+								if (ko.toJS(vm.mode) == 'update') {
+									vm.$blockui("invisible");
 
-						const commandNew = { employeeId: ko.toJS(model.employeeId), cardNumber: stamp.stampNumber };
-						
-						vm.$ajax(KMP001A_API.ADD, commandNew)
-							.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
-							.then(() => vm.reloadData(index))
-							.then(() => vm.model.code.valueHasMutated())
-							.fail((err: any) => {
-								nts.uk.ui.dialog.error({ messageId: err.messageId });
-								/*vm.$errors("#add", err.messageId);*/
-							})
-							.always(() => vm.$blockui("clear"));
-					}
+									const commandUpdate = { employeeId: ko.toJS(model.employeeId), olderCardNumber: stamp.defaultValue, newCardNumber: stamp.stampNumber };
+
+									vm.$ajax(KMP001A_API.UPDATE, commandUpdate)
+										.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+										.then(() => vm.reloadData(index))
+										.then(() => vm.model.code.valueHasMutated())
+										.always(() => vm.$blockui("clear"));
+								} else {
+									vm.$blockui("invisible");
+
+									const commandNew = { employeeId: ko.toJS(model.employeeId), cardNumber: stamp.stampNumber };
+
+									vm.$ajax(KMP001A_API.ADD, commandNew)
+										.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+										.then(() => vm.reloadData(index))
+										.then(() => vm.model.code.valueHasMutated())
+										.fail((err: any) => {
+											nts.uk.ui.dialog.error({ messageId: err.messageId });
+											/*vm.$errors("#add", err.messageId);*/
+										})
+										.always(() => vm.$blockui("clear"));
+								}
+							}
+						});
+
 				}
 			}
 			$(document).ready(function() {
@@ -284,7 +293,7 @@ module nts.uk.at.view.kmp001.a {
 					vm.settings([]);
 					const employees: IModel[] = ko.toJS(vm.employees);
 					const modelSetting = new Setting();
-					
+
 					for (var i = 0; i < data.length; i++) {
 						const setting = _.find(employees, e => e.employeeId === data[i].employee);
 
@@ -294,13 +303,26 @@ module nts.uk.at.view.kmp001.a {
 							vm.settings.push(ko.toJS(modelSetting));
 						}
 					}
-					
+
 					if (ko.toJS(vm.model.code) == '') {
 						vm.model.code(employees[selectedIndex].code);
 					}
 				}).then(() => {
 					vm.$blockui("clear");
 				});
+		}
+
+		public validate(action: 'clear' | undefined = undefined) {
+			if (action === 'clear') {
+				return $.Deferred().resolve()
+					.then(() => $('.nts-input').ntsError('clear'));
+			} else {
+				return $.Deferred().resolve()
+					/** Gọi xử lý validate của kiban */
+					.then(() => $('.nts-input').trigger("validate"))
+					/** Nếu có lỗi thì trả về false, không thì true */
+					.then(() => !$('.nts-input').ntsError('hasError'));
+			}
 		}
 	}
 

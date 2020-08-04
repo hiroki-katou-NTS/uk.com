@@ -117,7 +117,7 @@ module nts.uk.at.view.kdp002.b {
 						self.currentCode(self.items()[0].id);
 						dfd.resolve();
 					} else {
-						nts.uk.ui.dialog.alertError({ messageId: "Stamp Data Not Found!!!" }).then(() => {
+						nts.uk.ui.dialog.alertError("Stamp Data Not Found!!!").then(() => {
 							nts.uk.ui.windows.close();
 						});
 

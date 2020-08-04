@@ -23,15 +23,17 @@ module nts.uk.at.view.kdp.share {
 				<div class="grid-container" data-bind="
 						if: ko.toJS($component.selected) === pageNo,
 						css: 'btn-layout-type-' + buttonLayoutType">
-					<!-- ko foreach: buttonSettings -->
-					<button class="stamp-rec-btn"
-						data-bind="
-							btn-setting: $data,
-							click: function() { 
-								$component.params.click($data, ko.toJS($component.currentTab));
-							},
-							timeClick: -1
-						"></button>
+					<!-- ko foreach: _.chunk(ko.unwrap(buttonSettings), buttonLayoutType === 0 ? 2 : 4) -->
+					<div data-bind="foreach: $data">
+						<button class="stamp-rec-btn"
+							data-bind="
+								btn-setting: $data,
+								click: function() { 
+									$component.params.click($data, ko.toJS($component.currentTab));
+								},
+								timeClick: -1
+							"></button>
+					</div>
 					<!-- /ko -->
 				</div>
 			</div>
@@ -285,7 +287,7 @@ module nts.uk.at.view.kdp.share {
 	}
 
 	export interface ButtonSetting {
-		audioType: number;
+		audioType: 0 | 1 | 2;
 		btnBackGroundColor: string;
 		btnDisplayType: number;
 		btnName: string;
