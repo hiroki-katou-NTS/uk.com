@@ -1,7 +1,8 @@
 module kcp013.component {
 	import text = nts.uk.resource.getText;
+	import formatById = nts.uk.time.format.byId;
 
-	ko.components.register('combo-box', {
+	ko.components.register('working-hours', {
 		viewModel: {
 			createViewModel: function(params, componentInfo) {
 				var cvm = new Model(params.input, params.callback);
@@ -18,6 +19,7 @@ module kcp013.component {
 					optionsText: 'name',
 					editable: false,
 					width: 450,
+					enable: isEnable,
 					columns: [
 					{ prop: 'showNone', length: 0 },
 					{ prop: 'showDeferred', length: 0 },
@@ -44,7 +46,7 @@ module kcp013.component {
 		showNone: KnockoutObservable<string>;
 		showDeferred: KnockoutObservable<string>;
 		data: any;
-
+		isEnable: KnockoutObservable<boolean>;
 		constructor(param, callback) {
 			var self = this;
 			self.listWorkHours = ko.observableArray([]);
@@ -54,31 +56,32 @@ module kcp013.component {
 			self.selectItem = param.initiallySelected;
 			self.showNone = param.showNone;
 			self.showDeferred = param.showDeferred;
+			self.isEnable = ko.observable(param.disable);
 
-			self.checked = ko.observable(!self.fillter);
+			self.checked = ko.observable(param.fillter);
 			if (self.checked()) {
 				self.loadAllWorkHours(param);
 			} else {
 				self.loadWorkHours(param);
 			}
-
 			self.checked.subscribe(function(value) {
 				self.listWorkHours.removeAll();
-				if (value) {
-					self.loadAllWorkHours(param);
-				} else {
+				if (!value) {
 					self.loadWorkHours(param);
+				} else {
+					self.loadAllWorkHours(param);
 				}
 			});
 			self.selectedCode.subscribe(function(codeMap) {
-				if (codeMap) {
+				if (codeMap == null) {
+					return;
+				} else {
 					let obj = _.filter(self.listWorkHours(), function(o) { return o.code === codeMap; });
 					callback(obj);
-				} else {
-					callback(null);
 				}
 			})
 		}
+		// get Working Hours by workplaceId
 		public loadWorkHours(param): JQueryPromise<void> {
 			let self = this;
 			var dfd = $.Deferred();
@@ -91,6 +94,7 @@ module kcp013.component {
 			return dfd.promise();
 		}
 
+		// get All Working Hours by workplaceId
 		public loadAllWorkHours(param): JQueryPromise<void> {
 			let self = this;
 			var dfd = $.Deferred();
@@ -103,25 +107,30 @@ module kcp013.component {
 
 			return dfd.promise();
 		}
-
-		private getListWorkHours(data, param) {
+		// push data to listWorkHours
+		private geistWorkHours(data, param) {
 			var self = this;
+			let datas = [];
 			if (param.showNone == true && param.showDeferred == false) {
-				self.listWorkHours.push(new Input('', nts.uk.resource.getText('KCP013_5'), '', '', '', '', '', '', '', '1'));
+				datas.push(new Input('', nts.uk.resource.getText('KCP013_5'), '', '', '', '', '', '', '', '1'));
 			}
 			if (param.showNone == false && param.showDeferred == true) {
-				self.listWorkHours.push(new Input('', nts.uk.resource.getText('KCP013_6'), '', '', '', '', '', '', '', '1'));
+				datas.push(new Input('', nts.uk.resource.getText('KCP013_6'), '', '', '', '', '', '', '', '1'));
 			}
 			if (param.showNone == true && param.showDeferred == true) {
-				self.listWorkHours.push(new Input('', nts.uk.resource.getText('KCP013_5'), nts.uk.resource.getText('KCP013_6'), '', '', '', '', '', '', '1'));
+				datas.push(new Input('', nts.uk.resource.getText('KCP013_5') + ' ' + nts.uk.resource.getText('KCP013_6'), '', '', '', '', '', '', '', '1'));
 			}
-			data.forEach((x) => {
 
-				self.listWorkHours.push(new Input(x.code, x.name, x.tzStart1, x.tzEnd1, x.tzStart2, x.tzEnd2, x.workStyleClassfication, x.remark, x.useDistintion, ''));
+			data.forEach((x) => {
+				datas.push(new Input(x.code, x.name, formatById("Clock_Short_HM", x.tzStart1),
+					formatById("Clock_Short_HM", x.tzEnd1), formatById("Clock_Short_HM", x.tzStart2),
+					formatById("Clock_Short_HM", x.tzEnd2), x.workStyleClassfication, x.remark, x.useDistintion, ''));
 			})
+			self.listWorkHours(datas);
 
 		}
-		public checkSelectedItem(param) {
+	
+		ublic checkSelectedItem(param) {
 			let self = this;
 			if (self.selectItem instanceof Array) {
 				if (self.selectItem.length == 1) {
@@ -129,18 +138,7 @@ module kcp013.component {
 						return x.code == self.selectItem[0];
 					})[0];
 					if (ifthree) {
-						if (ifthree.code == self.selectItem[0]) {
-							self.selectedCode(self.selectItem[0]);
-						} else {
-							if (param.showNone == true || param.showDeferred == true) {
-								self.selectedCode(self.listWorkHours()[1].code);
-							}
-
-						}
-					} else {
-						if (param.showNone == true || param.showDeferred == true) {
-							self.selectedCode(self.listWorkHours()[1].code);
-						}
+						self.selectedCode(self.selectItem[0]);
 					}
 				}
 			}
@@ -162,7 +160,7 @@ module kcp013.component {
 
 			if (showNaci == '1') {
 				this.code = code;
-				this.name = name;
+				this.name = name + ' ' + tzStart1;
 				this.tzStartToEnd1 = '';
 				this.tzStartToEnd2 = '';
 				this.workStyleClassfication = workStyleClassfication;
@@ -180,13 +178,19 @@ module kcp013.component {
 				} else {
 					this.tzStartToEnd2 = '';
 				}
-				this.workStyleClassfication = workStyleClassfication;
+				if (workStyleClassfication === '通常勤務・変形労働用') {
+					this.workStyleClassfication = '就業時間帯の設定方法';
+				}
+				if (workStyleClassfication === 'フレックス勤務用') {
+					this.workStyleClassfication = 'フレックス勤務用';
+				}
 				this.remark = remark;
 			}
 
 
 
 		}
+
 	}
 
 }
