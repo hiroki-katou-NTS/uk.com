@@ -63,8 +63,7 @@ module nts.uk.at.view.kdp004.a {
 					}
 				}).always(() => {
 					service.getLogginSetting().done((res) => {
-
-						self.listCompany(res);
+						self.listCompany(_.filter(res, 'fingerAuthStamp'));
 					});
 
 				});
@@ -373,10 +372,12 @@ module nts.uk.at.view.kdp004.a {
 			}
 
 			settingUser(self: ScreenModel) {
-				self.openScreenF({
+
+				let param = self.loginInfo ? {
 					mode: 'admin',
 					companyId: self.loginInfo.companyId
-				}).done((loginResult) => {
+				} : { mode: 'admin' };
+				self.openScreenF(param).done((loginResult) => {
 					if (loginResult && loginResult.result) {
 						let result: any = loginResult.em;
 						result.selectedWP = self.loginInfo ? self.loginInfo.selectedWP : null;

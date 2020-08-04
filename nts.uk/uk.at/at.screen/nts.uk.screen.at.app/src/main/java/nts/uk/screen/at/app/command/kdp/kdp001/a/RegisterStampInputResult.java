@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.command.kdp.kdp001.a;
+package nts.uk.screen.at.app.command.kdp.kdp001.a;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

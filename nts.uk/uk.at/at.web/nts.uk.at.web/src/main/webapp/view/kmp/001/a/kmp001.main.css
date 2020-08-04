@@ -57,6 +57,15 @@
 	width: 180px;
 }
 
+#func-notifier-errors {
+    top: 143px;
+    left: 120px;
+    position: fixed;
+    width: 100px;
+    height: 24px;
+    z-index: 999999;
+}
+
 .view-kmp .model-component table td.label-column-left ~ div {
 	font-size: 16px;
 }
@@ -128,4 +137,8 @@
 #stampcard-list_container .ui-iggrid-rowselector-class .ui-igcheckbox-normal>.ui-igcheckbox-normal-on {
 	left: 0;
 	float: none !important;
+}
+
+.ui-iggrid-header ui-widget-header {
+    background-color: orange;
 }
