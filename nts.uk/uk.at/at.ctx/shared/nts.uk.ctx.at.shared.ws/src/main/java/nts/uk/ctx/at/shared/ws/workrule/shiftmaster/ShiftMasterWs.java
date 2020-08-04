@@ -91,6 +91,12 @@ public class ShiftMasterWs {
 	}
 	
 	@POST
+	@Path("getShiftMasterByWplGroup")
+	public List<ShiftMasterDto> getShiftMasterByWplGroup(FindShiftMasterDto dto){
+		return this.orgFinder.getShiftMastersByWorkPlace(dto.getWorkplaceGroupId(), dto.getTargetUnit());
+	}
+	
+	@POST
 	@Path("optainlistByWorkPlace")
 	public List<ShiftMasterDto> optainlistByWorkPlace(FindShiftMasterDto dto){
 		return this.orgFinder.getShiftMastersByWorkPlace(dto.getWorkplaceId(), dto.getTargetUnit());
