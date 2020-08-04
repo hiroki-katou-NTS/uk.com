@@ -137,7 +137,7 @@ module nts.uk.at.view.kdl044.a {
                  * 選択状態チェック
                  * 画面パラメータ[未選択許可区分]＝False and A2_1[シフト選択]の選択状態:  未選択    →   エラー
                  */
-				if (!self.dataTransfer().permission && self.selectedCodes().length == 0) {
+				if (!self.dataTransfer().permission && self.selectedCodes().length == 0 && self.dataTransfer().isMultiSelect() != true) {
 					alertError({ messageId: "Msg_1629" });
 					block.clear();
 					return;
