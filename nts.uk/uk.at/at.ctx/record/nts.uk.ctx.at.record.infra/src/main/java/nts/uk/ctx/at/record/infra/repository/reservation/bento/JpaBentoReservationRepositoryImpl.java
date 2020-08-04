@@ -78,6 +78,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		public int frameAtr;
 		public String cardNo;
 		public boolean ordered;
+		public String workLocationCode;
 		public int frameNo;
 		public GeneralDateTime registerDate;
 		public int quantity;
@@ -94,9 +95,10 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 					rs.getString("CONTRACT_CD"), 
 					GeneralDate.fromString(rs.getString("RESERVATION_YMD"), DATE_FORMAT), 
 					Integer.valueOf(rs.getString("RESERVATION_FRAME")), 
-					rs.getString("CARD_NO"), 
-					Integer.valueOf(rs.getString("ORDERED")) == 1 ? true : false, 
-					Integer.valueOf(rs.getString("MANU_FRAME")), 
+					rs.getString("CARD_NO"),
+					Integer.valueOf(rs.getString("ORDERED")) == 1 ? true : false,
+					rs.getString("WORK_LOCATION_CD"),
+					Integer.valueOf(rs.getString("MANU_FRAME")),
 					GeneralDateTime.fromString(rs.getString("REGIST_DATETIME"), DATE_TIME_FORMAT), 
 					Integer.valueOf(rs.getString("QUANTITY")), 
 					Boolean.valueOf(rs.getString("AUTO_RESERVATION_ATR"))));
@@ -116,6 +118,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 					int frameAtr = first.getFrameAtr();
 					String cardNo = first.getCardNo();
 					boolean ordered= first.isOrdered();
+					String workLocationCode = first.getWorkLocationCode();
 					List<KrcdtReservationDetail> reservationDetails = x.getValue().stream()
 							.collect(Collectors.groupingBy(FullJoinBentoReservation::getFrameNo))
 							.entrySet().stream().map(y -> {
@@ -128,7 +131,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 								boolean autoReservation = y.getValue().get(0).isAutoReservation();
 								return new KrcdtReservationDetail(detailPk, contractCD, quantity, autoReservation ? 1 : 0, null);
 							}).collect(Collectors.toList());
-					return new KrcdtReservation(pk, contractCD, date, frameAtr, cardNo, ordered ? 1 : 0, reservationDetails);
+					return new KrcdtReservation(pk, contractCD, date, frameAtr, cardNo, ordered ? 1 : 0,workLocationCode, reservationDetails);
 				}).collect(Collectors.toList());
 	}
 	

@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.reservation.bentoReservationSetting;
 
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -8,6 +8,7 @@ import nts.arc.layer.dom.DomainObject;
  * 予約修正内容
  */
 
+@AllArgsConstructor
 @Getter
 public class CorrectionContent extends DomainObject {
 

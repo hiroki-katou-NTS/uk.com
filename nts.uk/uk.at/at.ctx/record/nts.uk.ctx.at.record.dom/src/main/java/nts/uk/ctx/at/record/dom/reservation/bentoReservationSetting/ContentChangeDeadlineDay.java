@@ -44,4 +44,23 @@ public enum ContentChangeDeadlineDay {
     public final int value;
     public final String name;
 
+    private final static ContentChangeDeadlineDay[] values = ContentChangeDeadlineDay.values();
+
+    public static ContentChangeDeadlineDay valueOf(Integer value) {
+        // Invalid object.
+        if (value == null) {
+            return null;
+        }
+
+        // Find value.
+        for (ContentChangeDeadlineDay val : ContentChangeDeadlineDay.values) {
+            if (val.value == value) {
+                return val;
+            }
+        }
+
+        // Not found.
+        return null;
+    }
+
 }

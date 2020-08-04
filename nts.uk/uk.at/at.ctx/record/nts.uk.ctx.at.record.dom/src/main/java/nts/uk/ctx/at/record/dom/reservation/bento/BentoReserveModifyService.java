@@ -16,10 +16,10 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 public class BentoReserveModifyService {
 	
 	public static AtomTask reserve(Require require, ReservationRegisterInfo registerInfor, ReservationDate reservationDate,
-			GeneralDateTime dateTime, Map<Integer, BentoReservationCount> bentoDetails) {
+			GeneralDateTime dateTime, Map<Integer, BentoReservationCount> bentoDetails,Optional<WorkLocationCode> workLocationCode) {
 		
 		// 1: get(予約対象日)
-		BentoMenu bentoMenu = require.getBentoMenu(reservationDate);
+		BentoMenu bentoMenu = require.getBentoMenu(reservationDate,workLocationCode);
 		
 		// 3: get(予約登録情報, 予約対象日)
 		Optional<BentoReservation> opBeforeBento = require.getBefore(registerInfor, reservationDate);
@@ -34,7 +34,7 @@ public class BentoReserveModifyService {
 			}
 			if(!CollectionUtil.isEmpty(bentoDetails.values())) {
 				// 2: 予約する(予約登録情報, 予約対象日, Map<弁当メニュー枠番, 弁当予約個数>)
-				BentoReservation afterBento = bentoMenu.reserve(registerInfor, reservationDate, dateTime, bentoDetails);
+				BentoReservation afterBento = bentoMenu.reserve(registerInfor, reservationDate, dateTime,workLocationCode, bentoDetails);
 				
 				// 6: persist
 				require.reserve(afterBento);
@@ -43,8 +43,8 @@ public class BentoReserveModifyService {
 	}
 	
 	public static interface Require {
-		
-		BentoMenu getBentoMenu(ReservationDate reservationDate);
+
+		BentoMenu getBentoMenu(ReservationDate reservationDate,Optional<WorkLocationCode> workLocationCode);
 		
 		Optional<BentoReservation> getBefore(ReservationRegisterInfo registerInfor, ReservationDate reservationDate);
 		
