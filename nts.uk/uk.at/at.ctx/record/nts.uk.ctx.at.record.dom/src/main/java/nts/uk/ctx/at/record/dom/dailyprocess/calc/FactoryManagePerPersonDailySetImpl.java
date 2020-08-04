@@ -5,9 +5,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import lombok.val;
-
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
@@ -19,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSe
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -38,10 +39,6 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 	/*加給設定*/
 	@Inject
 	private BPSettingRepository bPSettingRepository;
-
-	//リポジトリ；法定労働
-	@Inject
-	private DailyStatutoryWorkingHours dailyStatutoryWorkingHours;
 	
 	/* 所定時間帯 */
 	@Inject
@@ -51,17 +48,24 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 	@Inject
 	private HolidayAddtionRepository hollidayAdditonRepository;
 	
+	@Inject
+	private RecordDomRequireService requireService;
+	
 	
 	@Override
 	public Optional<ManagePerPersonDailySet> create(String companyId, ManagePerCompanySet companySetting, IntegrationOfDaily daily, WorkingConditionItem nowWorkingItem ) {
 		try {
 			/*法定労働時間*/
-			DailyUnit dailyUnit = this.dailyStatutoryWorkingHours.getDailyUnit(companyId,
-						daily.getAffiliationInfor().getEmploymentCode().toString(),
-						daily.getAffiliationInfor().getEmployeeId(),
-						daily.getAffiliationInfor().getYmd(),
-						nowWorkingItem.getLaborSystem(),
-						companySetting.getUsageSetting());
+			DailyUnit dailyUnit = DailyStatutoryLaborTime.getDailyUnit(
+					requireService.createRequire(),
+					new CacheCarrier(),
+					companyId,
+					daily.getAffiliationInfor().getEmploymentCode().toString(),
+					daily.getAffiliationInfor().getEmployeeId(),
+					daily.getAffiliationInfor().getYmd(),
+					nowWorkingItem.getLaborSystem(),
+					companySetting.getUsageSetting());
+
 			if(dailyUnit == null || dailyUnit.getDailyTime() == null)
 				dailyUnit = new DailyUnit(new TimeOfDay(0));
 			

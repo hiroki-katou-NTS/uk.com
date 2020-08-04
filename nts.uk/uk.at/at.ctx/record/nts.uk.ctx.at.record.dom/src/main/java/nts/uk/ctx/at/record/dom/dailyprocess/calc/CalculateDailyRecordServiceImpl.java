@@ -439,7 +439,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		if (!workType.isPresent() || shouldTimeALLZero(integrationOfDaily, workType.get())) {
 			return Optional.of(CalculationRangeOfOneDay.createEmpty(integrationOfDaily));
 		}
-		WorkingSystem workingSystem = personCommonSetting.getPersonInfo().map(c -> c.getLaborSystem()).orElse(null);
+		
 		Optional<WorkTimeCode> workTimeCode = decisionWorkTimeCode(integrationOfDaily.getWorkInformation(), personCommonSetting, workType);
 
 		/* 就業時間帯勤務区分 */

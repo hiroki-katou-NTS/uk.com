@@ -1018,7 +1018,7 @@ public class TotalWorkingTime {
 
 
 	public TotalWorkingTime SpecialHolidayCalculationForOotsuka(ManageReGetClass recordClass, VacationClass vacationClass, WorkType workType, Optional<WorkTimeDailyAtr> workTimeDailyAtr, Optional<SettingOfFlexWork> flexCalcMethod, BonusPayAutoCalcSet bonusPayAutoCalcSet, List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, WorkingConditionItem conditionItem, Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo, DeductLeaveEarly leaveLateSet) {
-		switch(recordClass.getPersonalInfo().getWorkingSystem()) {
+		switch(conditionItem.getLaborSystem()) {
 			case FLEX_TIME_WORK:
 				AttendanceTimeOfExistMinus flexTime = this.excessOfStatutoryTimeOfDaily.getOverTimeWork().get().getFlexTime().getFlexTime().getTime();
 				if(flexTime.lessThan(0))
