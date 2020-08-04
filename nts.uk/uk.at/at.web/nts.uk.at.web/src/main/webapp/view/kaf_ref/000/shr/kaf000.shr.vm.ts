@@ -15,12 +15,12 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
             this.prePostAtr = ko.observable(null);
             this.employeeIDLst = ko.observableArray([]);
             this.appType = appType;
-            this.appDate = ko.observable(null);
+            this.appDate = ko.observable("");
             this.opAppReason = ko.observable(null);
             this.opAppStandardReasonCD = ko.observable(null);
             this.opReversionReason = ko.observable(null);
-            this.opAppStartDate = ko.observable(null);
-            this.opAppEndDate = ko.observable(null);
+            this.opAppStartDate = ko.observable("");
+            this.opAppEndDate = ko.observable("");
         }        
     }       
     

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.ws.application.common;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,6 +16,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.app.command.application.common.AppDetailBehaviorCmd;
 import nts.uk.ctx.at.request.app.command.application.common.ApproveAppHandler;
 import nts.uk.ctx.at.request.app.command.application.common.DeleteAppHandler;
@@ -299,13 +301,14 @@ public class ApplicationWebservice extends WebService {
 	@Path("changeAppDate")
 	public AppDispInfoWithDateDto changeAppDate(ChangeDateParam param) {
 		String companyID = AppContexts.user().companyId();
-		List<GeneralDate> dateLst = param.getDateLst().stream().map(x -> {
-			if(Strings.isBlank(x)) {
-				return null;
-			} else {
-				return GeneralDate.fromString(x, "yyyy/MM/dd");
-			}
-		}).collect(Collectors.toList());
+		List<GeneralDate> dateLst = new ArrayList<>();
+		if(Strings.isNotBlank(param.getStartDate()) && Strings.isNotBlank(param.getEndDate())) {
+			GeneralDate startDate = GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd");
+			GeneralDate endDate = GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd");
+			dateLst = new DatePeriod(startDate, endDate).datesBetween();
+		} else {
+			dateLst.add(GeneralDate.fromString(param.getAppDate(), "yyyy/MM/dd"));
+		}
 		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
 				companyID, 
 				dateLst, 

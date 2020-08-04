@@ -3,26 +3,26 @@
 		<div class="cell col-1">
 			<div class="cell valign-center" data-bind="ntsFormLabel:{}, text: $i18n('KAF000_49')"></div>
 		</div>
-		<div class="cell valign-center">
+		<div class="cell valign-top">
 			<div class="table">
-				<div class="cell">
+				<div class="cell valign-top" data-bind="if: dispCheckBox">
 					<div data-bind="i18n: 'KAF000_50', ntsCheckBox: { checked: checkBoxValue }"></div>
 				</div>
-				<div class="cell" data-bind="if: dispSingleDate">
+				<div class="cell valign-top" data-bind="if: dispSingleDate">
 					<div id="kaf000-a-component4-singleDate" 
 						data-bind="ntsDatePicker: {name: $i18n('KAF000_49'),
 												required:true, 
-												value: appDate, 
-												dateFormat: 'YYYY/MM/DD'}, 
-												acceptJapaneseCalendar: true">
+												value: appDate }">
 					</div>
 				</div>
-				<div class="cell" data-bind="ifnot: dispSingleDate">
-					<div data-bind="ntsDatePicker: {name: $i18n('KAF000_49'),
-												required:true, 
-												value: appDate, 
-												dateFormat: 'YYYY/MM/DD'}, 
-												acceptJapaneseCalendar: true">
+				<div class="cell valign-top" data-bind="if: !dispSingleDate()">
+					<div id="kaf000-a-component4-rangeDate" 
+						data-bind="ntsDateRangePicker: {
+												name: $i18n('KAF000_49'),
+												startName: $i18n('KAF000_49'),
+												endName: $i18n('KAF000_49'), 
+												required: true,
+												value: dateValue }">
 					</div>
 				</div>
 			</div>
