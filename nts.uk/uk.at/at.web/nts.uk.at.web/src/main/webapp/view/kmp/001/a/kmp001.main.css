@@ -138,3 +138,7 @@
 	left: 0;
 	float: none !important;
 }
+
+.ui-iggrid-header ui-widget-header {
+    background-color: orange;
+}
