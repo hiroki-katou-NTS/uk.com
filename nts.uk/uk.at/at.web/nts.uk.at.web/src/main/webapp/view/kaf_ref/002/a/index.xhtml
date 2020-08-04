@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kaf_ref/000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/kaf000.a.vm.js" />
+			<com:scriptfile path="/view/kaf_ref/002/a/kaf002.a.vm.js" />
+			
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button class="proceed" data-bind="text:this.$i18n('KAF009_3')" ></button>
+				
+				
+			</div>
+			<div id="contents-area">
+
+				<div>KAF002</div>
+
+
+				<div id="tab-panel"
+					data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+					<div class="tab-content-1">
+						<span>Tab Content 1</span><br />
+						<div id="gridTable">
+						</div>
+						
+					</div>
+					<div class="tab-content-2">
+						<span>Tab Content 2</span><br />
+					</div>
+					<div class="tab-content-3">
+						<span>Tab Content 3</span><br />
+					</div>
+					<div class="tab-content-4">
+						<span>Tab Content 4</span><br />
+					</div>
+				</div>
+
+
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
