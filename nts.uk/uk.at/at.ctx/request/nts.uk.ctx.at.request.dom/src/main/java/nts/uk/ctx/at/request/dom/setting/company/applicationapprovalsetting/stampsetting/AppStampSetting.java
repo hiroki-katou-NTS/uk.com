@@ -2,7 +2,9 @@ package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.sta
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.request.dom.setting.UseDivision;
@@ -16,6 +18,8 @@ import nts.uk.ctx.at.request.dom.setting.UseDivision;
 //打刻申請設定
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AppStampSetting implements DomainAggregate {
 	
 	/**

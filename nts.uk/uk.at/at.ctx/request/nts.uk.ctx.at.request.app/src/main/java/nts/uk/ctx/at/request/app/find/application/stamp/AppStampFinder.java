@@ -15,7 +15,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
-import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampDto;
+import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampDto_Old;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampNewPreDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampSetDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.StampCombinationDto;
@@ -102,12 +102,12 @@ public class AppStampFinder {
 		return stampCombinationDtos;
 	}
 	
-	public AppStampDto getAppStampByID(String appID){
+	public AppStampDto_Old getAppStampByID(String appID){
 		String companyID = AppContexts.user().companyId();
 		AppStamp_Old appStamp = appStampCommonDomainService.findByID(companyID, appID);
 		String employeeName = appStampCommonDomainService.getEmployeeName(appStamp.getApplication_New().getEmployeeID());
 		String inputEmpName = appStampCommonDomainService.getEmployeeName(appStamp.getApplication_New().getEnteredPersonID());
-		return AppStampDto.convertToDto(appStamp, employeeName, inputEmpName);
+		return AppStampDto_Old.convertToDto(appStamp, employeeName, inputEmpName);
 	}
 	
 	public List<AttendanceResultImport> getAttendanceItem(List<String> employeeIDLst, String date, Integer stampRequestMode){
