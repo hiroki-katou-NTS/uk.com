@@ -58,3 +58,8 @@
 #oViewModel label {
 	line-height: 27px;
 }
+
+.disabledWorkTime {
+	opacity: 0.3;
+	pointer-events: none;
+}

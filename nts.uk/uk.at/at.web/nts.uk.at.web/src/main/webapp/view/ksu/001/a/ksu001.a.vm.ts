@@ -23,7 +23,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         empItems: KnockoutObservableArray<PersonModel> = ko.observableArray([]);
         dataSource: KnockoutObservableArray<BasicSchedule> = ko.observableArray([]);
         visibleShiftPalette: KnockoutObservable<boolean> = ko.observable(true);
-
         mode: KnockoutObservable<string> = ko.observable('edit'); // edit || confirm 
         showA9: boolean;
 
@@ -79,6 +78,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         arrDay: Time[] = [];
         listSid: KnockoutObservableArray<string> = ko.observableArray([]);
+        listEmpData = [];
         listColorOfHeader: KnockoutObservableArray<ksu001.common.modelgrid.CellColor> = ko.observableArray([]);
 
         affiliationId: any = null;
@@ -101,6 +101,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         displayFormat: KnockoutObservable<number> = ko.observable(0);
         hasEmployee: KnockoutObservable<boolean> = ko.observable(false);
         KEY: string = 'USER_INFOR';
+        dataCell: any; // data để paste vào grid
 
         constructor() {
             let self = this;
@@ -132,9 +133,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.achievementDisplaySelected.subscribe(function(newValue) {
                 if (newValue == 1) {
                     self.isEnableCompareMonth(true);
+                    
                 } else {
                     self.isEnableCompareMonth(false);
                 }
+                let item = uk.localStorage.getItem(self.KEY);
+                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                    let userInfor = JSON.parse(data);
+                    userInfor.achievementDisplaySelected = newValue;
+                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
+                });
             });
 
             self.selectedModeDisplayInBody.subscribe(function(viewMode) {
@@ -181,21 +189,32 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $('#popup-area8').css('display', 'none');
             });
             
+            self.dataCell = {};
+            
         }
         // end constructor
 
         startPage(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            let viewMode = 'time'; // default
             let item = uk.localStorage.getItem(self.KEY);
+            let userInfor: IUserInfor = {};
             if (item.isPresent()) {
-                let userInfor: IUserInfor = JSON.parse(item.get());
-                viewMode = userInfor.disPlayFormat;
+                userInfor = JSON.parse(item.get());
             }
+            let viewMode = item.isPresent() ? userInfor.disPlayFormat : 'shortName';
 
             let param = {
-                viewMode: viewMode
-            };
+                isFirstLogin : item.isPresent() ? false : true,
+                viewMode     : item.isPresent() ? userInfor.disPlayFormat : 'time',
+                startDate    : item.isPresent() ? self.dateTimePrev  : '',  // param query Trích xuất employee
+                endDate      : item.isPresent() ? self.dateTimeAfter : '', // param query Trích xuất employee
+                workPlaceId  : item.isPresent() ? userInfor.workplaceId : '', // param query Trích xuất employee
+                palletUnit   : item.isPresent() ? userInfor.shiftPalletUnit : 1 , // 1: company , 2 : workPlace  ||  param (Hiển thi  theo "shift")
+                PageNumberSelected : item.isPresent() ? userInfor.shiftPalettePageNumber : 0 ,
+                getActualData      : item.isPresent() ? userInfor.achievementDisplaySelected : 2 , // lay du lieu thuc te (1 : co lay, 2 la khong lay) || param (Hiển thi  theo "shift")
+                listShiftPallet    : item.isPresent() ? ['1','2','3','4'] : [], // List of shifts không cần lấy mới
+            }
+            
             service.getDataStartScreen(param).done((data: IDataStartScreen) => {
 
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
@@ -207,8 +226,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, viewMode);
                 self.initExTable(dataBindGrid, viewMode);
-
-                // 
+                
+                // khởi tạo data localStorage khi khởi động lần đầu.
                 self.creatDataLocalStorege(data);
                 $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
                 dfd.resolve();
@@ -226,6 +245,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let userInfor: IUserInfor = {};
                 userInfor.disPlayFormat = self.selectedModeDisplayInBody();
                 userInfor.backgroundColor = 0; // 0 : 通常; 1: シフト
+                userInfor.achievementDisplaySelected = 2;
                 userInfor.shiftPalletUnit = 1;
                 userInfor.shiftPalettePageNumber = 0;
                 userInfor.shiftPalletPositionNumber = 0;
@@ -280,6 +300,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let dataBindGrid = self.convertDataToGrid(data, 'shortName');
 
                 self.updateExTable(dataBindGrid , 'shortName', true, true, true);
+                
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -323,7 +344,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                 let userInfor: IUserInfor = JSON.parse(data);
                 userInfor.workplaceId = dataBasic.workplaceId;
-                userInfor.workplaceId = dataBasic.workplaceGroupId;
+                userInfor.workplaceGroupId = dataBasic.workplaceGroupId;
                 userInfor.workPlaceName = dataBasic.targetOrganizationName;
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
             });
@@ -344,18 +365,24 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             for (let i = 0; i < data.listEmpInfo.length; i++) {
                 let emp: IEmpInfo = data.listEmpInfo[i];
                 let objDetailContentDs = new Object();
-                console.log('key  ' + i);
                 // set data to detailLeftmost
                 let businessName = emp.businessName == null || emp.businessName == undefined ? '' : emp.businessName.trim();
-                leftmostDs.push({ sid: emp.employeeId, codeNameOfEmp: emp.employeeCode + ' ' + businessName });
-
+                leftmostDs.push({ sid: i.toString() ,employeeId: emp.employeeId, codeNameOfEmp: emp.employeeCode + ' ' + businessName });
+                
+                self.listSid.push(emp.employeeId);
+                self.listEmpData.push({ id: emp.employeeId, code: emp.employeeCode, name : businessName });
                 let listWorkScheduleInforByEmp: Array<IWorkScheduleWorkInforDto> = _.filter(data.listWorkScheduleWorkInfor, function(workSchedul: IWorkScheduleWorkInforDto) { return workSchedul.employeeId === emp.employeeId });
                 let listWorkScheduleShiftByEmp: Array<IWorkScheduleShiftforDto> = _.filter(data.listWorkScheduleShift, function(workSchedul: IWorkScheduleShiftforDto) { return workSchedul.employeeId === emp.employeeId });
-
-                // set data to detailContent : datasource va deco
+                // set data middle
+                let personalCond: IPersonalConditions = _.filter(data.listPersonalConditions, function(o) { return o.sid = emp.employeeId; });
+                if(personalCond.length > 0){
+                   middleDs.push({ sid: i.toString() , employeeId: emp.employeeId, team: personalCond[0].teamName, rank: personalCond[0].rankName, qualification: personalCond[0].licenseClassification });
+                }
                 
+                // set data to detailContent : datasource va deco
                 if (viewMode == 'shift') {
-                    objDetailContentDs['sid'] = i;
+                    objDetailContentDs['sid'] = i.toString();
+                    objDetailContentDs['employeeId'] = emp.employeeId;
                     _.each(listWorkScheduleShiftByEmp, (cell: IWorkScheduleShiftforDto) => {
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
@@ -399,12 +426,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             if (cell.workHolidayCls == AttendanceHolidayAttr.HOLIDAY) {
                                 //detailContentDeco.push(new CellColor('_' + ymd, i, "color-holiday", 0));
                             }
+                            if (cell.shiftCode == '' || cell.shiftCode == null) {
+                                // デフォルト（黒）  Default (black)
+                            }
                         }
                     });
                     detailContentDs.push(objDetailContentDs);
                     
                 } else if (viewMode == 'shortName') {
-                    objDetailContentDs['sid'] = i;
+                    objDetailContentDs['sid'] = i.toString();
+                    objDetailContentDs['employeeId'] = emp.employeeId;
                     _.each(listWorkScheduleInforByEmp, (dateOfWorkSchedule: IWorkScheduleWorkInforDto) => {
                         let time = new Time(new Date(dateOfWorkSchedule.date));
                         let ymd = time.yearMonthDay;
@@ -454,7 +485,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 } else if (viewMode == 'time') {
                     
-                    objDetailContentDs['sid'] = i;
+                    objDetailContentDs['sid'] = i.toString();
+                    objDetailContentDs['employeeId'] = emp.employeeId;
                     _.each(listWorkScheduleInforByEmp, (dateOfWorkSchedule: IWorkScheduleWorkInforDto) => {
                         // set dataSource
                         let time = new Time(new Date(dateOfWorkSchedule.date));
@@ -521,23 +553,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
             }
 
-            if (data.displayControlPersonalCond == null) {
-                // ẩn A9    
-                $("#extable").exTable("hideMiddle");
-                self.showA9 = false;
-
-            } else {
-//                $("#extable").exTable("showMiddle");
-                self.showA9 = true;
-                _.each(data.listPersonalConditions, (personalCond: IPersonalConditions) => {
-                    middleDs.push({ sid: personalCond.sid, team: personalCond.teamName, rank: personalCond.rankName, qualification: personalCond.licenseClassification });
-                });
-            }
-
             // set data cho combobox WorkType
             let listWorkType = [];
             _.each(data.listWorkTypeInfo, (emp: IWorkTypeInfomation, i) => {
-                listWorkType.push(emp.workTypeDto);
+                let workTypeDto: IWorkTypeDto = {
+                    workTypeCode: emp.workTypeDto.workTypeCode, // 勤務種類コード - コード
+                    name: emp.workTypeDto.name,         // 勤務種類名称  - 表示名
+                    memo: emp.workTypeDto.memo,
+                    workTimeSetting: emp.workTimeSetting // 必須任意不要区分 { 必須である REQUIRED(0), 任意であるOPTIONAL(1), 不要であるNOT_REQUIRED(2)}
+                }
+                listWorkType.push(workTypeDto);
             });
             __viewContext.viewModel.viewAB.listWorkType(listWorkType);
 
@@ -551,7 +576,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else if (viewMode == 'shift') {
                 widthColumn = 50;
             }
+            
+            // イベント情報と個人条件のmapping (mapping "thông tin event" và "person condition")
+            if (data.displayControlPersonalCond == null) {
+                // ẩn A9    
+                $("#extable").exTable("hideMiddle");
+                self.showA9 = false;
 
+            } else {
+                self.showA9 = true;
+            }
+            
             detailColumns.push({ key: "sid", width: "5px", headerText: "ABC", visible: false });
             objDetailHeaderDs['sid'] = "";
             _.each(data.listDateInfo, (dateInfo: IDateInfo) => {
@@ -640,6 +675,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                 }
 
+                // A4_7
+                self.achievementDisplaySelected(userInfor.achievementDisplaySelected);
                 // A4_12 背景色の初期選択   (Chọn default màu nền)
                 self.backgroundColorSelected(userInfor.backgroundColor);
 
@@ -651,6 +688,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.heightGridSetting(userInfor.heightGridSetting);
                     self.selectedTypeHeightExTable(2);
                     self.isEnableInputHeight(true);
+                }
+                
+                
+                
+                // enable| disable combobox workTime
+                let workType = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == __viewContext.viewModel.viewAB.selectedWorkTypeCode(); });
+                if (workType.length > 0) {
+                    // check workTimeSetting 
+                    if (workType[0].workTimeSetting == 2) {
+                        __viewContext.viewModel.viewAB.isDisableWorkTime = true;
+                        $("#listWorkType").addClass("disabledWorkTime");
+                    } else {
+                        __viewContext.viewModel.viewAB.isDisableWorkTime = false;
+                        $("#listWorkType").removeClass("disabledWorkTime");
+                    }
                 }
 
                 // 
@@ -668,8 +720,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 bodyHeightMode = "dynamic",
                 windowXOccupation = 65,
                 windowYOccupation = 328;
-            let updateMode = viewMode === 'time' ? 'edit' :  'stick'
-
+            let updateMode = 'edit';
+            
             // phần leftMost
 
             let leftmostColumns = [];
@@ -772,11 +824,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         exit: function(ui) {
                             ui.tooltip("hide");
                         }
-                    }, {
-                        name: "Click",
-                        handler: function(ui) {
-                            console.log(`${ui.rowIdx}-${ui.columnKey}`);
-                        }
                     }]
             };
 
@@ -844,7 +891,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             $("#extable").exTable("scrollBack", 0, { h: 0 });
             $("#extable").exTable("saveScroll");
-
+            
             // set height grid theo localStorage đã lưu
             self.setPositionButonDownAndHeightGrid();
 
@@ -968,9 +1015,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 },
                 fields: ["workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "shiftName", "startTime", "endTime"],
             };
-            
-            $("#extable").exTable("viewMode", viewMode); 
-            $("#extable").exTable("updateMode", 'edit'); 
+
             if (updateLeftMost) {
                 $("#extable").exTable("updateTable", "leftmost", {}, leftmostContentUpdate);
             }
@@ -981,6 +1026,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $("#extable").exTable("updateTable", "detail", detailHeaderUpdate, detailContentUpdate);
             }
             $("#extable").exTable("scrollBack", 0, { h: 1050 });
+            $("#extable").exTable("viewMode", viewMode);
+            $("#extable").exTable("updateMode", 'edit');
             
         }
 
@@ -1495,11 +1542,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#coppy").addClass("btnControlUnSelected").removeClass("btnControlSelected");
             $("#input").addClass("btnControlUnSelected").removeClass("btnControlSelected");
             $("#extable").exTable("updateMode", "stick");
-            if (self.selectedModeDisplayInBody() == 'time') {
-                $("#extable").exTable("stickData", [new ExCell("111", "出勤1", "112", "通常８ｈ0", "9:00", "20:00")]);
-            } else if (self.selectedModeDisplayInBody() == 'shortName') {
-                $("#extable").exTable("stickData", [new ExCell("888", "出勤8", "999", "通常８ｈ9")]);
-            } else if (self.selectedModeDisplayInBody() == 'shift') {
+            
+            let item = uk.localStorage.getItem(self.KEY);
+            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                let userInfor : IUserInfor = JSON.parse(data);
+                userInfor.updateMode =  'stick';
+                uk.localStorage.setItemAsJson(self.KEY, userInfor);
+            });
+            
+            if (self.selectedModeDisplayInBody() == 'shift') {
                 $("#extable").exTable("stickData", [
                 new ExCell('', '', '', '', '', '', '1'),
                 new ExCell('', '', '', '', '', '', '2'),
@@ -1532,6 +1583,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 new ExCell('', '', '', '', '', '', '29'),
                 new ExCell('', '', '', '', '', '', '30'),
                 new ExCell('', '', '', '', '', '', '31')]);
+                
+                $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
+                    if(rowIdx%2 ==0){
+                        return { class: "red-text" };
+                    }else{
+                        return { class: "blue-text" };
+                    }
+                    
+                });
             }
             
             nts.uk.ui.block.clear();
@@ -1549,6 +1609,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#coppy").addClass("btnControlSelected").removeClass("btnControlUnSelected");
             $("#input").addClass("btnControlUnSelected").removeClass("btnControlSelected");
             $("#extable").exTable("updateMode", "copyPaste");
+            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                let userInfor : IUserInfor = JSON.parse(data);
+                userInfor.updateMode =  'copyPaste';
+                uk.localStorage.setItemAsJson(self.KEY, userInfor);
+            });
             nts.uk.ui.block.clear();
         }
 
@@ -1565,6 +1630,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#input").addClass("btnControlSelected").removeClass("btnControlUnSelected");
 
             $("#extable").exTable("updateMode", "edit");
+            
+            let item = uk.localStorage.getItem(self.KEY);
+            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                let userInfor: IUserInfor = JSON.parse(data);
+                userInfor.updateMode = 'edit';
+                uk.localStorage.setItemAsJson(self.KEY, userInfor);
+            });
+            
             nts.uk.ui.block.clear();
         }
         
@@ -1625,90 +1698,138 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return dfd.promise();
         }
 
-
         /**
-         * open dialog D
+          * open dialog D
          */
         openDialogD(): void {
             let self = this;
+            let item = uk.localStorage.getItem(self.KEY);
+
             setShared('dataForScreenD', {
                 dataSource: self.dataSource(),
                 empItems: self.empItems(),
-                startDate: moment(self.dtPrev()).format('YYYY/MM/DD'),
-                endDate: moment(self.dtAft()).format('YYYY/MM/DD'),
                 // in phare 2, permissionHandCorrection allow false
                 permissionHandCorrection: false,
-                listColorOfHeader: self.listColorOfHeader()
+                listColorOfHeader: self.listColorOfHeader(),
+                startDate: moment(self.dtPrev()).format('YYYY/MM/DD'),
+                endDate: moment(self.dtAft()).format('YYYY/MM/DD'),
+                workPlaceId: item.isPresent() ? item.get().workplaceId : '',
+                workPlaceName: item.isPresent() ? item.get().workPlaceName : '',
             });
 
             nts.uk.ui.windows.sub.modal("/view/ksu/001/d/index.xhtml").onClosed(() => {
                 if (getShared("dataFromScreenD") && !getShared("dataFromScreenD").clickCloseDialog) {
-                    self.dataSource([]);
-                    self.updateWhenChangeDatePeriod();
-                    //                    $.when(self.setDatasource()).done(() => {
-                    //                        self.updateExTable();
-                    //                    });
+                    // to do
                 }
             });
         }
-
-        /**
-         * open dialog L
-         */
-        openDialogL(): void {
+        
+        // A1_10_2
+        openKDL005() {
             let self = this;
-            $('#popup-area5').ntsPopup('hide');
-            //hiện giờ truyền sang workplaceId va tất cả emmployee . Sau này sửa truyền list employee theo workplace id
-            setShared("dataForScreenL", {
-                workplaceId: self.empItems()[0] ? self.empItems()[0].affiliationId : null,
-                empItems: self.empItems()
+
+            let empIds = self.listSid();
+            let today = new Date();
+            let baseDate = today.getFullYear() + '' + today.getMonth() + '' + today.getDay() + '';
+            let param: IEmployeeParam = {
+                employeeIds: empIds,
+                baseDate: baseDate
+            };
+
+            nts.uk.ui.windows.setShared('KDL005_DATA', param);
+            $('#A1_10_1').ntsPopup('hide');
+            if (param.employeeIds.length > 1) {
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/multi.xhtml");
+            } else {
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/single.xhtml");
+            }
+        }
+
+        // A1_10_3
+        openKDL009() {
+            let self = this;
+
+            let empIds = self.listSid();
+            let today = new Date();
+            let baseDate = today.getFullYear() + '' + today.getMonth() + '' + today.getDay() + '';
+            var param: IEmployeeParam = {
+                employeeIds: empIds,
+                baseDate: baseDate
+            };
+
+            nts.uk.ui.windows.setShared('KDL009_DATA', param);
+            $('#A1_10_1').ntsPopup('hide');
+            if (param.employeeIds.length > 1) {
+                nts.uk.ui.windows.sub.modal("/view/kdl/009/a/multi.xhtml");
+            } else {
+                nts.uk.ui.windows.sub.modal("/view/kdl/009/a/single.xhtml");
+            }
+        }
+        
+        // A1_10_4
+        openKDL020() {
+            let self = this;
+            setShared('KDL020A_PARAM', { baseDate: new Date(), employeeIds: self.listSid() });
+            $('#A1_10_1').ntsPopup('hide');
+            nts.uk.ui.windows.sub.modal('/view/kdl/020/a/index.xhtml').onClosed(function(): any {
             });
-            nts.uk.ui.windows.sub.modal("/view/ksu/001/l/index.xhtml");
         }
-
-        /**
-         * open dialog N
-         */
-        openDialogN(): void {
+        
+        // A1_10_5
+        openKDL029() {
             let self = this;
-            $('#popup-area5').ntsPopup('hide');
-            nts.uk.ui.windows.setShared("listEmployee", self.empItems());
-            nts.uk.ui.windows.sub.modal("/view/ksu/001/n/index.xhtml");
+            let param = {
+                employeeIds: self.listSid(),
+                baseDate: moment(new Date()).format("YYYY/MM/DD")
+            }
+            setShared('KDL029_PARAM', param);
+            $('#A1_10_1').ntsPopup('hide');
+            nts.uk.ui.windows.sub.modal('/view/kdl/029/a/index.xhtml').onClosed(function(): any {
+            });
         }
-
-        /**
-         * go to screen KML004
-         */
-        gotoKml004(): void {
-            nts.uk.ui.windows.sub.modal("/view/kml/004/a/index.xhtml");
-        }
-
-        /**
-        * go to screen KML002
-        */
-        gotoKml002(): void {
-            nts.uk.request.jump("/view/kml/002/h/index.xhtml");
-        }
-
-        /**
-        * Open dialog CDL027
-        */
-        openCDL027(): void {
-            let self = this,
-                period = {
+        
+        // A1_12_8
+        openQDialog() {
+            let self = this;
+            let period = {
                     startDate: self.dateTimePrev(),
                     endDate: self.dateTimeAfter()
-                },
-                param = {
-                    pgid: __viewContext.program.programId,
-                    functionId: 1,
-                    listEmployeeId: self.listSid(),
-                    period: period,
-                    displayFormat: self.displayFormat()
                 };
+            let item = uk.localStorage.getItem(self.KEY);
+            let param = {
+                period: period,
+                workPlaceId: item.isPresent() ? item.get().workplaceId : '',
+                workPlaceName: item.isPresent() ? item.get().workPlaceName : '',
+
+            };
             setShared("CDL027Params", param);
-            openDialog('com', "/view/cdl/027/a/index.xhtml");
+            $('#A1_12_1').ntsPopup('hide');
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/q/index.xhtml").onClosed(() => {
+            });
         }
+        
+        // A1_12_18
+        openLDialog(): void {
+            let self = this;
+            //hiện giờ truyền sang workplaceId va tất cả emmployee . Sau này sửa truyền list employee theo workplace id
+            setShared("dataForScreenL", {
+                endDate: self.dateTimeAfter()
+            });
+            $('#A1_12_1').ntsPopup('hide');
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/l/index.xhtml");
+        }
+        
+        // A1_12_20
+        openMDialog(): void {
+            let self = this;
+            setShared("KSU001M", {
+                listEmpData: self.listEmpData
+            });
+            $('#A1_12_1').ntsPopup('hide');
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/l/index.xhtml");
+        }
+        
+        
 
         compareArrByRowIndexAndColumnKey(a: any, b: any): any {
             return a.rowIndex == b.rowIndex && a.comlumnKey == b.comlumnKey;
@@ -1947,7 +2068,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
     interface IWorkTypeDto {
         workTypeCode: string, // 勤務種類コード - コード
         name: string,         // 勤務種類名称  - 表示名
-        memo: string          // 勤務種類備考  - 備考
+        memo: string,
+        workTimeSetting: number         // 必須任意不要区分 
     }
 
     interface IEditStateOfDailyAttdDto {
@@ -2004,15 +2126,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
     interface IUserInfor {
         disPlayFormat: string;
         backgroundColor: number; // 背景色
+        achievementDisplaySelected: number;
         shiftPalletUnit: number;
         shiftPalettePageNumber: number;
         shiftPalletPositionNumber: number;
         gridHeightSelection: number;
         heightGridSetting: number;
         workplaceId: string;
+        workplaceGroupId: string;
         workPlaceName: string;
         workType: {};
-        workTime: {}
+        workTime: {};
+        updateMode : string; // updatemode cua grid
     }
 
 }

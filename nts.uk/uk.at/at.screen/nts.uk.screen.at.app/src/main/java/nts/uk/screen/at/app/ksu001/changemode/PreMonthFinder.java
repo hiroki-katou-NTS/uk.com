@@ -27,7 +27,7 @@ import nts.uk.screen.at.app.ksu001.extracttargetemployees.EmployeeInformationDto
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.ExtractTargetEmployeesParam;
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.ScreenQueryExtractTargetEmployees;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforDto;
-import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DisplayInforOrganization;
+import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DisplayInforOrganizationDto;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScreenQueryGetInforOfInitStartup;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.TargetOrgIdenInforDto;
 import nts.uk.screen.at.app.ksu001.getworkscheduleshift.GetWorkScheduleShift;
@@ -78,7 +78,7 @@ public class PreMonthFinder {
 		TargetOrgIdenInforDto targetOrgIdenInfor = new TargetOrgIdenInforDto(TargetOrganizationUnit.WORKPLACE.value,
 				"dea95de1-a462-4028-ad3a-d68b8f180412", null);
 
-		DisplayInforOrganization displayInforOrganization = new DisplayInforOrganization("designation", "code", "name",
+		DisplayInforOrganizationDto displayInforOrganization = new DisplayInforOrganizationDto("designation", "code", "name",
 				"WorkPlaceName", "genericTerm");
 
 		DataScreenQueryGetInforDto resultStep1 = new DataScreenQueryGetInforDto(startDate, endDate, targetOrgIdenInfor,

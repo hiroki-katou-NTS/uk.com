@@ -15,13 +15,16 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.WorkScheDisplaySetting;
 import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.WorkScheDisplaySettingRepo;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetTargetIdentifiInforService;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.WorkplaceInfo;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmployeeOrganizationImport;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupImport;
 import nts.uk.ctx.bs.employee.pub.workplace.export.EmpOrganizationPub;
 import nts.uk.ctx.bs.employee.pub.workplace.workplacegroup.EmpOrganizationExport;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author laitv 
@@ -52,14 +55,14 @@ public class ScreenQueryGetInforOfInitStartup {
 		String sidLogin = AppContexts.user().employeeId();
 		RequireImpl require = new RequireImpl(empOrganizationPub);
 		TargetOrgIdenInfor targetOrgIdenInfor = GetTargetIdentifiInforService.get(require, datePeriod.end(), sidLogin);
-		TargetOrgIdenInforDto targetOrgIdenInforDto = new TargetOrgIdenInforDto( targetOrgIdenInfor );
-
-		// step 4
-		DisplayInforOrganization displayInforOrganization = new DisplayInforOrganization("designation", "code", "name",
-				"targetOrganizationName", "genericTerm");
 		
-		return new DataScreenQueryGetInforDto(datePeriod.start(), datePeriod.end(), targetOrgIdenInforDto,
-				displayInforOrganization);
+		// step 4
+		RequireWorkPlaceImpl requireWorkPlace = new RequireWorkPlaceImpl();
+		DisplayInfoOrganization displayInfoOrganization =  targetOrgIdenInfor.getDisplayInfor(requireWorkPlace, datePeriod.end());
+		
+		TargetOrgIdenInforDto targetOrgIdenInforDto = new TargetOrgIdenInforDto( targetOrgIdenInfor );
+		
+		return new DataScreenQueryGetInforDto(datePeriod.start(), datePeriod.end(), targetOrgIdenInforDto, displayInfoOrganization);
 	}
 	
 	@AllArgsConstructor
@@ -77,5 +80,32 @@ public class ScreenQueryGetInforOfInitStartup {
 			}).collect(Collectors.toList());
 			return data;
 		}
+	}
+	
+	@AllArgsConstructor
+	private static class RequireWorkPlaceImpl implements TargetOrgIdenInfor.Require {
+		
+		@Inject
+		private WorkplaceGroupAdapter workplaceGroupAdapter;
+		
+		@Override
+		public List<WorkplaceGroupImport> getSpecifyingWorkplaceGroupId(List<String> workplacegroupId) {
+			List<WorkplaceGroupImport> data = workplaceGroupAdapter.getbySpecWorkplaceGroupID(workplacegroupId);
+			return data;
+		}
+
+		@Override
+		public List<WorkplaceInfo> getWorkplaceInforFromWkpIds(List<String> listWorkplaceId, GeneralDate baseDate) {
+			
+			return null;
+		}
+
+		@Override
+		public List<String> getWKPID(String WKPGRPID) {
+			
+			return null;
+		}
+		
+		
 	}
 }

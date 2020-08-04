@@ -15,6 +15,8 @@ import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DateInformationDt
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DisplayControlPersonalCondDto;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.PersonalConditionsDto;
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.EmployeeInformationDto;
+import nts.uk.screen.at.app.ksu001.getshiftpalette.PageInfo;
+import nts.uk.screen.at.app.ksu001.getshiftpalette.TargetShiftPalette;
 import nts.uk.screen.at.app.ksu001.getworkscheduleshift.WorkScheduleShiftDto;
 
 /**
@@ -43,6 +45,10 @@ public class StartKSU001Dto {
 	public List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor; 
 	
 	// data trả về của step 5.1
-	public List<WorkScheduleShiftDto> listWorkScheduleShift;
+	public List<PageInfo> listPageInfoBasic; // List<ページ, 名称>
+	public TargetShiftPalette targetShiftPalette; // 対象のシフトパレッ
+	
+	
+	public List<WorkScheduleShiftDto> listWorkScheduleShift; // ・List<勤務予定（シフト）dto>
 	
 }
