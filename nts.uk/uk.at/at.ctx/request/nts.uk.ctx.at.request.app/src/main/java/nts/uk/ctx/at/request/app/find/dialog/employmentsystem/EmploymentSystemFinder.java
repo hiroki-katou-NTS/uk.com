@@ -20,8 +20,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecGenerationDigestionHis;
@@ -30,26 +28,13 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffHistory;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffManagementQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffOutputHisData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakHistoryData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.DayOffHistoryData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.UnOffSetOfDayOff;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeProcess;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.UnUserOfBreak;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcessCommon;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
@@ -79,16 +64,12 @@ public class EmploymentSystemFinder {
 	
 	@Inject
 	ShareEmploymentAdapter employeeAdaptor;
-	@Inject
-	private WorkplaceAdapter wpAdapter;
 //	@Inject
 //	private EmpSubstVacationRepository empSubrepo;
 //	@Inject
 //	private ComSubstVacationRepository comSubrepo;
 	@Inject
 	private CompensLeaveComSetRepository compensLeaveComSetRepository;
-	@Inject
-	private BreakDayOffMngInPeriodQuery breakDayOffMngInPeriod;
 	
 	@Inject
 	private AbsenceTenProcessCommon absenceTenProcessCommon;
@@ -137,51 +118,40 @@ public class EmploymentSystemFinder {
 		
 		AcquisitionNumberRestDayDto detailsdDto = new AcquisitionNumberRestDayDto();
 		
-		// #110215 10-2.代休の設定を取得する
-		SubstitutionHolidayOutput subHd = this.absenceTenProcessCommon.getSettingForSubstituteHoliday(companyId, employeeId,
-				GeneralDate.today());
-		
-		if(!subHd.isSubstitutionFlg() || !subHd.isTimeOfPeriodFlg() ) {
-			// #110215  取得した管理区分を渡す
-			detailsdDto.setIsManagementSection(false);
-			detailsdDto.setListPegManagement(new ArrayList<>());
-			detailsdDto.setListRemainNumberDetail(new ArrayList<>());
-			return detailsdDto;
-		}
-		
-		//	 基準日（指定がない場合はシステム日付）
+		//	 	基準日（指定がない場合はシステム日付）
 		if(baseDate.isEmpty()) {
 			baseDate = dtf.format(localDate);
 		} else {
 			baseDate = GeneralDate.fromString(baseDate, "yyyyMMdd").toString();
 		}
 		GeneralDate inputDate = GeneralDate.fromString(baseDate, "yyyy/MM/dd");
+		// #110215 10-2.代休の設定を取得する
+		SubstitutionHolidayOutput subHd = this.absenceTenProcessCommon.getSettingForSubstituteHoliday(companyId,
+				employeeId, GeneralDate.today());
+
+		if (!subHd.isSubstitutionFlg() || !subHd.isTimeOfPeriodFlg()) {
+			// #110215 取得した管理区分を渡す
+			detailsdDto.setIsManagementSection(false);
+			detailsdDto.setListPegManagement(new ArrayList<>());
+			detailsdDto.setListRemainNumberDetail(new ArrayList<>());
+			return detailsdDto;
+		}
 		
 		// 	アルゴリズム「休出代休発生消化履歴の取得」を実行する
 		Optional<BreakDayOffOutputHisData> data = breakDayOffManagementQuery.getBreakDayOffData(companyId, employeeId, inputDate);
 		
-		//	#110215 アルゴリズム「社員に対応する締め期間を取得する」を実行する		
+		// #110215 アルゴリズム「社員に対応する締め期間を取得する」を実行する
 		DatePeriod closingPeriod = closureService.findClosurePeriod(employeeId, inputDate);
 
-
-		//	#110215  期間内の休出代休残数を取得する
-		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(
-				companyId,
-				employeeId,
-				getDatePeroid(closingPeriod.start()),
-				false,
-				GeneralDate.today(),
-				false,
-				Collections.emptyList(),
-				Optional.empty(),
-				Optional.empty(),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Optional.empty());
-		SubstituteHolidayAggrResult substituteHolidayAggrResult = this.numberRemainVacationLeaveRangeProcess.getBreakDayOffMngInPeriod(inputParam);
-		// 	#110215 残数詳細を作成
-		List<RemainNumberDetailDto> listRemainNumberDetail = substituteHolidayAggrResult.getVacationDetails().getLstAcctAbsenDetail().stream()
-				.map(item -> {
+		// #110215 期間内の休出代休残数を取得する
+		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(companyId, employeeId,
+				getDatePeroid(closingPeriod.start()), false, inputDate, false, Collections.emptyList(),
+				Optional.empty(), Optional.empty(), Collections.emptyList(), Collections.emptyList(), Optional.empty());
+		SubstituteHolidayAggrResult substituteHolidayAggrResult = this.numberRemainVacationLeaveRangeProcess
+				.getBreakDayOffMngInPeriod(inputParam);
+		// #110215 残数詳細を作成
+		List<RemainNumberDetailDto> listRemainNumberDetail = substituteHolidayAggrResult.getVacationDetails()
+				.getLstAcctAbsenDetail().stream().map(item -> {
 					RemainNumberDetailDto itemDto = new RemainNumberDetailDto();
 					itemDto.setExpiredInCurrentMonth(false);
 					if (item.getOccurrentClass().equals(OccurrenceDigClass.OCCURRENCE)) {
@@ -221,8 +191,8 @@ public class EmploymentSystemFinder {
 					return itemDto;
 				}).collect(Collectors.toList());
 		detailsdDto.setListRemainNumberDetail(listRemainNumberDetail);
-		
-		// #110215 	紐付け情報を生成する ()
+
+		// #110215 紐付け情報を生成する ()
 		List<PegManagementDto> listPegManagement = substituteHolidayAggrResult.getLstSeqVacation().stream()
 				.map(item -> {
 					PegManagementDto itemDto = new PegManagementDto();
@@ -231,50 +201,51 @@ public class EmploymentSystemFinder {
 					itemDto.setUsageHour(0);
 					itemDto.setOccurrenceDate(item.getOutbreakDay());
 					return itemDto;
-				})
-				.collect(Collectors.toList());
+				}).collect(Collectors.toList());
 		detailsdDto.setListPegManagement(listPegManagement);
-		
-		// #110215	取得内容を画面に反映させる
-		if(data.isPresent()) {
-			//A8_1_2  	繰越日数 
+
+		// #110215 取得内容を画面に反映させる
+		if (data.isPresent()) {
+			// A8_1_2 繰越日数
 			detailsdDto.setCarryForwardDay(data.get().getTotalInfor().getCarryForwardDays());
-			//A8_2_2 	 実績発生日数
+			// A8_2_2 実績発生日数
 			detailsdDto.setOccurrenceDay(data.get().getTotalInfor().getRecordOccurrenceDays());
-			//A8_2_3 	予定発生日数
+			// A8_2_3 予定発生日数
 			detailsdDto.setScheduleOccurrencedDay(data.get().getTotalInfor().getScheOccurrenceDays());
-			//A8_3_2	使用日数
+			// A8_3_2 使用日数
 			detailsdDto.setUsageDay(data.get().getTotalInfor().getRecordUseDays());
-			//A8_3_3	予定使用日数
+			// A8_3_3 予定使用日数
 			detailsdDto.setScheduledUsageDay(data.get().getTotalInfor().getScheUseDays());
-			//A8_4_2	残数	
+			// A8_4_2 残数
 			detailsdDto.setRemainingDay(detailsdDto.getOccurrenceDay() - detailsdDto.getUsageDay());
-			//A8_4_3	予定残数
-			detailsdDto.setScheduledRemainingDay(detailsdDto.getScheduleOccurrencedDay() - detailsdDto.getScheduledUsageDay());
+			// A8_4_3 予定残数
+			detailsdDto.setScheduledRemainingDay(
+					detailsdDto.getScheduleOccurrencedDay() - detailsdDto.getScheduledUsageDay());
 			// 	残数詳細
 			detailsdDto.setListRemainNumberDetail(listRemainNumberDetail);
-			//	使用期限
+			// 	使用期限
 			detailsdDto.setExpiredDay(subHd.getExpirationOfsubstiHoliday());
-			//	使用区分
+			// 	使用区分
 			if (subHd.isSubstitutionFlg() || subHd.isTimeOfPeriodFlg()) {
 				detailsdDto.setIsManagementSection(true);
 			} else {
 				detailsdDto.setIsManagementSection(false);
 			}
-			//	繰越時間
+			// 	繰越時間
 			detailsdDto.setCarryForwardHour(data.get().getTotalInfor().getCarryForwardHours());
-			//	発生時間
+			// 	発生時間
 			detailsdDto.setOccurrenceHour(data.get().getTotalInfor().getRecordOccurrenceHours());
-			//	予定発生時間
+			// 	予定発生時間
 			detailsdDto.setScheduleOccurrencedHour(data.get().getTotalInfor().getScheHours());
-			//	使用時間
+			// 	使用時間
 			detailsdDto.setUsageHour(data.get().getTotalInfor().getActualNumberOfHourUsed());
-			//	予定使用時間
+			// 	予定使用時間
 			detailsdDto.setScheduledUsageHour(data.get().getTotalInfor().getScheUseHours());
-			//	残数時間
+			// 	残数時間
 			detailsdDto.setRemainingHour(detailsdDto.getOccurrenceHour() - detailsdDto.getUsageHour());
-			//	予定残数時間
-			detailsdDto.setScheduledRemainingHour(detailsdDto.getScheduleOccurrencedHour() - detailsdDto.getScheduledUsageHour());
+			//	 予定残数時間
+			detailsdDto.setScheduledRemainingHour(
+					detailsdDto.getScheduleOccurrencedHour() - detailsdDto.getScheduledUsageHour());
 		}
 		
 		return detailsdDto;
