@@ -123,6 +123,73 @@ public class SpecialLeaveManagementService {
 		return outputData;
 	}
 	
+//	/**
+//	 * RequestList273 期間内の特別休暇残を集計する
+//	 * @return
+//	 */
+//	public static InPeriodOfSpecialLeaveResultInfor complileInPeriodOfSpecialLeave(RequireM5 require, 
+//			CacheCarrier cacheCarrier, ComplileInPeriodOfSpecialLeaveParam param) {
+//		
+//		InPeriodOfSpecialLeaveResultInfor outputData = new InPeriodOfSpecialLeaveResultInfor();
+//		//ドメインモデル「特別休暇基本情報」を取得する
+//		Optional<SpecialLeaveBasicInfo> optBasicInfor = require.specialLeaveBasicInfo(param.getSid(), param.getSpecialLeaveCode(), UseAtr.USE);
+//		if(!optBasicInfor.isPresent()
+//				|| optBasicInfor.get().getUsed() == UseAtr.NOT_USE) {
+//			RemainDaysOfSpecialHoliday remainDays = new RemainDaysOfSpecialHoliday(new SpecialHolidayRemainInfor(0, 0, 0), 0, Optional.empty(), new ArrayList<>());
+//			InPeriodOfSpecialLeave specialLeaveInfor = new InPeriodOfSpecialLeave(new ArrayList<>(), remainDays, new ArrayList<>(), new ArrayList<>());
+//			return new InPeriodOfSpecialLeaveResultInfor(specialLeaveInfor, Finally.empty(), Finally.of(param.getComplileDate().end().addDays(1)));
+//		}
+//		//管理データを取得する
+//		ManagaData grantRemainData = getMngData(require, cacheCarrier, 
+//				param.getCid(),
+//				param.getSid(),
+//				param.getSpecialLeaveCode(),
+//				param.getComplileDate(),
+//				param.getOptBeforeResult());		
+//		
+//		SpecialHolidayDataParam speDataParam = new SpecialHolidayDataParam(param.getCid(),
+//				param.getSid(),
+//				param.getComplileDate(),
+//				param.getSpecialLeaveCode(),
+//				param.isMode(),
+//				param.isOverwriteFlg(),
+//				param.getRemainData(),
+//				param.getInterimSpecialData());
+//		//特別休暇暫定データを取得する
+//		SpecialHolidayInterimMngData specialHolidayInterimDataMng = specialHolidayData(require, speDataParam);
+//		
+//		SpecialLeaveGrantRemainingDataTotal speRemainData = new SpecialLeaveGrantRemainingDataTotal(grantRemainData.getRemainDatas(),
+//				grantRemainData.lstGrantDataMemory,
+//				grantRemainData.lstGrantDatabase);
+//		//特休の使用数を求める
+//		RemainDaysOfSpecialHoliday useInfor = getUseDays(param.getCid(),
+//				param.getSid(),
+//				param.getComplileDate(),
+//				speRemainData, 
+//				specialHolidayInterimDataMng.getLstSpecialInterimMng(),
+//				specialHolidayInterimDataMng.getLstInterimMng());
+//		InPeriodOfSpecialLeave getOffsetDay = getInforCurrentProcess(require, param, grantRemainData, specialHolidayInterimDataMng, speRemainData,
+//				useInfor);
+//		//特別休暇のエラーチェックをする
+//		List<SpecialLeaveError> lstError = lstError(getOffsetDay);
+//		//「特別休暇の集計結果情報」に集計結果を格納する
+//		getOffsetDay.setLstError(lstError);
+//		outputData.setAggSpecialLeaveResult(getOffsetDay);
+//		InPeriodOfSpecialLeave speTmp = toInPeriodOfSpecialLeave(getOffsetDay);
+//		speTmp = getInforNextProcess(require, cacheCarrier, param, grantRemainData, getOffsetDay, speTmp);
+//		outputData.setAggSpecialLeaveNextResult(Finally.of(speTmp));
+//		//翌月管理データ取得区分をチェックする
+//		if(param.isMngAtr()) {
+//			outputData.setAggSpecialLeaveResult(speTmp);
+//		}
+//		//次の集計期間の開始日を計算する
+//		outputData.setNextDate(Finally.of(param.getComplileDate().end().addDays(1)));
+//		return outputData;
+//	}
+	
+	
+	
+	
 	/** 管理データを取得する
 	 * @param cid
 	 * @param sid 
@@ -130,7 +197,7 @@ public class SpecialLeaveManagementService {
 	 * @param complileDate ・集計開始日 ・集計終了日
 	 * @return 特別休暇付与残数データ
 	 */
-	public static ManagaData getMngData(RequireM3 require, CacheCarrier cacheCarrier, String cid, String sid, int specialLeaveCode,
+	private static ManagaData getMngData(RequireM3 require, CacheCarrier cacheCarrier, String cid, String sid, int specialLeaveCode,
 			DatePeriod complileDate, Optional<InPeriodOfSpecialLeaveResultInfor> beforeResult) {
 		List<SpecialLeaveGrantRemainingData> lstDataBase = new ArrayList<>();
 		//「INPUT．特別休暇の集計結果情報」をチェックする
@@ -292,7 +359,7 @@ public class SpecialLeaveManagementService {
 	 * @return
 	 */
 
-	public static SpecialHolidayInterimMngData specialHolidayData(RequireM2 require, SpecialHolidayDataParam param) {
+	private static SpecialHolidayInterimMngData specialHolidayData(RequireM2 require, SpecialHolidayDataParam param) {
 		List<InterimSpecialHolidayMng> lstOutput = new ArrayList<>();
 		List<InterimRemain> lstInterimMng = new ArrayList<>();
 		//INPUT．モードをチェックする
@@ -374,7 +441,7 @@ public class SpecialLeaveManagementService {
 	 * @param interimDatas 特別休暇暫定データ一覧
 	 * @return
 	 */
-	public static RemainDaysOfSpecialHoliday getUseDays(String cid, String sid, DatePeriod complileDate,
+	private static RemainDaysOfSpecialHoliday getUseDays(String cid, String sid, DatePeriod complileDate,
 			SpecialLeaveGrantRemainingDataTotal speRemainData, List<InterimSpecialHolidayMng> interimSpeDatas, 
 			List<InterimRemain> lstInterimMng) {
 		//使用数付与前=0, 使用数付与後=0(初期化)
@@ -421,7 +488,7 @@ public class SpecialLeaveManagementService {
 	 * @param accumulationMaxDays ・蓄積上限日数
 	 * @return
 	 */
-	public static InPeriodOfSpecialLeave getOffsetDay1004(RequireM1 require, String cid, String sid, 
+	private static InPeriodOfSpecialLeave getOffsetDay1004(RequireM1 require, String cid, String sid, 
 			DatePeriod dateData, GeneralDate baseDate, int specialCode, SpecialLeaveGrantRemainingDataTotal lstGrantData,
 			SpecialHolidayInterimMngData interimDataMng, double accumulationMaxDays,
 			RemainDaysOfSpecialHoliday useInfor, boolean isMode) {
@@ -542,7 +609,7 @@ public class SpecialLeaveManagementService {
 	 * @param interimDataMng 特別休暇暫定データ一覧
 	 * @return
 	 */
-	public static SubtractUseDaysFromMngDataOut subtractUseDaysFromMngData1004(List<SpecialLeaveGrantRemainingData> lstGrantData,
+	private static SubtractUseDaysFromMngDataOut subtractUseDaysFromMngData1004(List<SpecialLeaveGrantRemainingData> lstGrantData,
 			SpecialHolidayInterimMngData interimDataMng, RemainDaysOfSpecialHoliday useInfor) {
 		InPeriodOfSpecialLeave output = new InPeriodOfSpecialLeave(new ArrayList<>(), useInfor, new ArrayList<>(), new ArrayList<>());
 		List<UseDaysOfPeriodSpeHoliday> lstUseDaysOutOfPeriod = new ArrayList<>();
@@ -629,7 +696,7 @@ public class SpecialLeaveManagementService {
 	 * @param grantDetailBefore 付与前の残数 
 	 * @return
 	 */
-	public static DataMngOfDeleteExpired adjustCarryForward1005(RequireM1 require, 
+	private static DataMngOfDeleteExpired adjustCarryForward1005(RequireM1 require, 
 			List<SpecialLeaveGrantRemainingData> lstGrantData, double accumulationMaxDays) {
 		List<SpecialLeaveGrantRemainingData> lstGrantDataMemory = new ArrayList<>();//付与予定
 		List<SpecialLeaveGrantRemainingData> lstGrantDatabase = new ArrayList<>();//付与済
@@ -710,7 +777,7 @@ public class SpecialLeaveManagementService {
 	 * @param grantDetailBefore
 	 * @return
 	 */
-	public static SpecialHolidayRemainInfor grantDetailBefore(List<SpecialLeaveGrantDetails> lstSpeLeaveGrantDetails,
+	private static SpecialHolidayRemainInfor grantDetailBefore(List<SpecialLeaveGrantDetails> lstSpeLeaveGrantDetails,
 			SpecialHolidayRemainInfor grantDetailBefore) {
 		for (SpecialLeaveGrantDetails speGrantDetail : lstSpeLeaveGrantDetails) {
 			//ループ中のパラメータ．特別休暇の付与明細．期限切れ区分をチェックする
@@ -733,7 +800,7 @@ public class SpecialLeaveManagementService {
 	 * @param baseDate: 基準日
 	 * @return
 	 */
-	public static RemainDaysOfSpecialHoliday remainDaysBefore(String cid, String sid, DatePeriod shukeiDate,
+	private static RemainDaysOfSpecialHoliday remainDaysBefore(String cid, String sid, DatePeriod shukeiDate,
 			SpecialLeaveGrantRemainingDataTotal lstGrantData, SpecialHolidayInterimMngData interimDataMng,
 			RemainDaysOfSpecialHoliday useInfor, GeneralDate baseDate, boolean isMode) {
 		
@@ -768,7 +835,7 @@ public class SpecialLeaveManagementService {
 	 * @param grantDetailBefore
 	 * @return
 	 */
-	public static InPeriodOfSpecialLeave grantDetailAfter(SpecialHolidayRemainInfor grantDetailAfter, 
+	private static InPeriodOfSpecialLeave grantDetailAfter(SpecialHolidayRemainInfor grantDetailAfter, 
 			InPeriodOfSpecialLeave getOffsetDay) {
 		//付与後明細．残数と付与数=0（初期化）
 		double grantDays = 0;
