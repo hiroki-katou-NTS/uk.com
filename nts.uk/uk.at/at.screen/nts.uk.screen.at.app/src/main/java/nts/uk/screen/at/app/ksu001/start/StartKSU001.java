@@ -11,6 +11,8 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoParam;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoResult;
@@ -27,7 +29,6 @@ import nts.uk.screen.at.app.ksu001.extracttargetemployees.EmployeeInformationDto
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.ExtractTargetEmployeesParam;
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.ScreenQueryExtractTargetEmployees;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforDto;
-import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DisplayInforOrganizationDto;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScreenQueryGetInforOfInitStartup;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.TargetOrgIdenInforDto;
 import nts.uk.screen.at.app.ksu001.getworkscheduleshift.GetWorkScheduleShift;
@@ -68,27 +69,15 @@ public class StartKSU001 {
 		GeneralDate startDate = resultStep1.startDate;
 		GeneralDate endDate = resultStep1.endDate; 
 		
-		// step 1 start
-		GeneralDate startDate = GeneralDate.ymd(2020, 7, 1);
-		GeneralDate endDate =  GeneralDate.ymd(2020, 7, 31);
-		
-		TargetOrgIdenInforDto targetOrgIdenInfor = new TargetOrgIdenInforDto(TargetOrganizationUnit.WORKPLACE.value,
-				"dea95de1-a462-4028-ad3a-d68b8f180412", null);
-
-		DisplayInforOrganizationDto displayInforOrganization = new DisplayInforOrganizationDto("designation", "code", "name",
-				"WorkPlaceName", "genericTerm");
-
-		DataScreenQueryGetInforDto resultStep1 = new DataScreenQueryGetInforDto(startDate, endDate, targetOrgIdenInfor,
-				displayInforOrganization);
-		// step 1 end
-		
 		// step 2 start
-		String workplaceId = "dea95de1-a462-4028-ad3a-d68b8f180412";
-		String workplaceGroupId = null;
-		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(endDate, workplaceId, workplaceGroupId);
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(workplaceGroupId == null ? TargetOrganizationUnit.WORKPLACE : TargetOrganizationUnit.WORKPLACE_GROUP,
+				workplaceId, workplaceGroupId);
+
+		
+		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(endDate, targetOrgIdenInfor);
 		List<EmployeeInformationImport> resultStep2 = extractTargetEmployees.getListEmp(param2);
 		// step 2 end
-		
+				
 		// step 3 start
 		List<String> listSid = resultStep2.stream().map(mapper -> mapper.getEmployeeId()).collect(Collectors.toList());
 		EventInfoAndPerCondPeriodParam param3 = new EventInfoAndPerCondPeriodParam(startDate, endDate, workplaceId,
@@ -109,11 +98,8 @@ public class StartKSU001 {
 		
 		if (param.viewMode == "shift") {
 			// step5.1
-			
-			
 		} else if (param.viewMode == "time" || param.viewMode == "shortName") {
 			// step4 || step 5.2
-			
 		}
 		
 		StartKSU001Dto result = convertData(resultStep1, resultStep2, resultStep3, listWorkTypeInfo, listWorkScheduleWorkInfor, listWorkScheduleShift);
@@ -122,18 +108,6 @@ public class StartKSU001 {
 
 	public StartKSU001Dto getDataStartScreen2(StartKSU001Param param) {
 		
-		/*
-		// step 1 call ScreenQuery
-		DataScreenQueryGetInforDto resultStep1 = getInforOfInitStartup.getDataInit();
-
-		// step 2
-		String workplaceId = resultStep1.targetOrgIdenInfor.workplaceId == null ? null
-				: resultStep1.targetOrgIdenInfor.workplaceId;
-		String workplaceGroupId = resultStep1.targetOrgIdenInfor.workplaceGroupId == null ? null
-				: resultStep1.targetOrgIdenInfor.workplaceGroupId;
-		GeneralDate startDate = resultStep1.startDate;
-		GeneralDate endDate = resultStep1.endDate; */
-		
 		// step 1 start
 		GeneralDate startDate = GeneralDate.ymd(2020, 7, 1);
 		GeneralDate endDate =  GeneralDate.ymd(2020, 7, 31);
@@ -141,7 +115,7 @@ public class StartKSU001 {
 		TargetOrgIdenInforDto targetOrgIdenInfor = new TargetOrgIdenInforDto(TargetOrganizationUnit.WORKPLACE.value,
 				"dea95de1-a462-4028-ad3a-d68b8f180412", null);
 
-		DisplayInforOrganizationDto displayInforOrganization = new DisplayInforOrganizationDto("designation", "code", "name",
+		DisplayInfoOrganization displayInforOrganization = new DisplayInfoOrganization("designation", "code", "name",
 				"WorkPlaceName", "genericTerm");
 
 		DataScreenQueryGetInforDto resultStep1 = new DataScreenQueryGetInforDto(startDate, endDate, targetOrgIdenInfor,
@@ -151,7 +125,7 @@ public class StartKSU001 {
 		// step 2 start
 		String workplaceId = "dea95de1-a462-4028-ad3a-d68b8f180412";
 		String workplaceGroupId = null;
-		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(endDate, workplaceId, workplaceGroupId);
+		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(endDate, new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,workplaceId, workplaceGroupId));
 		List<EmployeeInformationImport> resultStep2 = extractTargetEmployees.getListEmp(param2);
 		// step 2 end
 		
@@ -222,6 +196,5 @@ public class StartKSU001 {
 		// 5.1
 		result.setListWorkScheduleShift(listWorkScheduleShift);
 		return result;
-		
 	}
 }
