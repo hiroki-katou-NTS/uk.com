@@ -196,7 +196,7 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 	}
 	
 	// 時間外時間の詳細を作成
-	private AppOvertimeDetail createAppOvertimeDetail(RemainNumberTempRequireService.Require require,
+	private AppOvertimeDetail createAppOvertimeDetail(RemainNumberTempRequireService require,
 			CacheCarrier cacheCarrier, AppOvertimeDetail appOvertimeDetail, String employeeID, GeneralDate appDate,
 			ApplicationType appType, List<AppTimeItem> appTimeItems){
 		String companyID = appOvertimeDetail.getCid();
@@ -275,7 +275,7 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 	}
 	
 	// 画面から36協定対象時間を取得
-	private void getTime36FromScreen(RemainNumberTempRequireService.Require require, 
+	private void getTime36FromScreen(RemainNumberTempRequireService require, 
 			AppOvertimeDetail appOvertimeDetail, ApplicationType appType, List<AppTimeItem> appTimeItems){
 		String companyID = appOvertimeDetail.getCid();
 		Integer appTime = 0;

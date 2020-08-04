@@ -164,7 +164,7 @@ public class GetRsvLeaNumCriteriaDateImpl implements GetRsvLeaNumCriteriaDate {
 	 * @return 年休積立年休の集計結果
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	private AggrResultOfAnnAndRsvLeave getResult(RecordDomRequireService.Require require, CacheCarrier cacheCarrier,
+	private AggrResultOfAnnAndRsvLeave getResult(RecordDomRequireService require, CacheCarrier cacheCarrier,
 			String companyId, String employeeId, GeneralDate closureStart, GeneralDate aggrEnd, GeneralDate criteria){
 		
 		return GetAnnAndRsvRemNumWithinPeriod.algorithm(require, cacheCarrier,
