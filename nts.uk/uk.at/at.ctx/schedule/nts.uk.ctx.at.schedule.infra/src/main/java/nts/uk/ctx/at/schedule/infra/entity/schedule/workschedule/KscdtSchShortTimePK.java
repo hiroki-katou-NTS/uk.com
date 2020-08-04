@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
@@ -38,6 +39,7 @@ public class KscdtSchShortTimePK implements Serializable{
 	public GeneralDate ymd;
 	
 	/**"育児介護区分---0:育児---1:介護"*/
+	@Getter
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "CHILD_CARE_ATR")

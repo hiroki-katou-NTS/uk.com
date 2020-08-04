@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmpCombi;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -25,6 +26,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @NoArgsConstructor
 @Table(name="KSCDT_SCH_TIME")
+@Getter
 public class KscdtSchTime extends ContractUkJpaEntity {
 
 	@EmbeddedId
@@ -195,6 +197,9 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 	@OneToMany(targetEntity = KscdtSchShortTime.class, mappedBy = "kscdtSchTime", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "KSCDT_SCH_SHORTTIME")
 	public List<KscdtSchShortTime> shortTimes;
+	
+	
+	
 	
 	@Override
 	protected Object getKey() {

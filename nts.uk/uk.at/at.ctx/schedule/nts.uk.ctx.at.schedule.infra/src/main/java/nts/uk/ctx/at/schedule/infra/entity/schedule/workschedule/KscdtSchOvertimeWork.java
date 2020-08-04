@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -9,9 +12,17 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.OverTimeFrameTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.OverTimeFrameTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.overtimework.OverTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -23,6 +34,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @NoArgsConstructor
 @Table(name="KSCDT_SCH_OVERTIME_WORK")
+@Getter
 public class KscdtSchOvertimeWork extends ContractUkJpaEntity {
 	
 	@EmbeddedId
@@ -58,7 +70,7 @@ public class KscdtSchOvertimeWork extends ContractUkJpaEntity {
 				overTimeFrameTime.getBeforeApplicationTime().v()
 				);
 	}
-
+	
 	public KscdtSchOvertimeWork(KscdtSchOvertimeWorkPK pk, String cid, int overtimeWorkTime, int overtimeWorkTimeTrans,
 			int overtimeWorkTimePreApp) {
 		super();
@@ -69,6 +81,24 @@ public class KscdtSchOvertimeWork extends ContractUkJpaEntity {
 		this.overtimeWorkTimePreApp = overtimeWorkTimePreApp;
 	}
 	
-
+	public OverTimeOfDaily toDomain(){
+		List<KscdtSchOvertimeWork> overtimeWorks = kscdtSchTime.getOvertimeWorks();
+		OverTimeOfDaily overTimeOfDaily = null;
+		List<OverTimeFrameTimeSheet> overTimeFrameTimeSheets = new ArrayList<>();
+		List<OverTimeFrameTime>  overTimeFrameTimes = new ArrayList<>();
+		overtimeWorks.stream().forEach(x ->{
+			OverTimeFrameTimeSheet timesheet = new OverTimeFrameTimeSheet(null, new OverTimeFrameNo(x.getPk().frameNo));
+			OverTimeFrameTime time = new OverTimeFrameTime(
+					new OverTimeFrameNo(x.getPk().frameNo),
+					 TimeDivergenceWithCalculation.sameTime(new AttendanceTime(x.getOvertimeWorkTime()) ), 
+					 TimeDivergenceWithCalculation.sameTime(new AttendanceTime(x.getOvertimeWorkTimeTrans()) ),
+					new AttendanceTime(x.getOvertimeWorkTimePreApp()),
+					null);
+			overTimeFrameTimeSheets.add(timesheet);
+			overTimeFrameTimes.add(time);	
+		});
+		overTimeOfDaily = new OverTimeOfDaily(overTimeFrameTimeSheets, overTimeFrameTimes, null);
+		return overTimeOfDaily;
+	}
 
 }
