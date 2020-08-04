@@ -704,7 +704,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 }
             }
         }).catch((res: any) => {
-            // this.$modal.error({ messageParams: [] });
+            this.$modal.error({ messageId: res.messageId });
         });
     }
 
