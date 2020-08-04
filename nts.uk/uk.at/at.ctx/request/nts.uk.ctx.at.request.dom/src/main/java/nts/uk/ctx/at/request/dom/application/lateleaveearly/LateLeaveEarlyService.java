@@ -23,7 +23,8 @@ public interface LateLeaveEarlyService {
 	 *
 	 * @return ArrivedLateLeaveEarlyInfoOutput the lateEarlyLeaveInfo
 	 */
-	ArrivedLateLeaveEarlyInfoOutput getLateLeaveEarlyInfo(int appId, List<String> appDates);
+	ArrivedLateLeaveEarlyInfoOutput getLateLeaveEarlyInfo(int appId, List<String> appDates,
+			AppDispInfoStartupOutput appDispInfoStartupOutput);
 
 	/**
 	 * 申請日を変更する

@@ -1,4 +1,5 @@
 module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
+    import WorkManagement = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.WorkManagement;
 
     @component({
         name: 'kaf004_share',
@@ -6,9 +7,10 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
     })
 
     class Kaf004ShareViewModel extends ko.ViewModel {
-
+        // workManagement: WorkManagement;
         created(params: any) {
             const vm = this;
+            // vm.workManagement = new WorkManagement('--:--', '--:--', '--:--', '--:--', null, null, null, null);
         }
 
         mounted() {

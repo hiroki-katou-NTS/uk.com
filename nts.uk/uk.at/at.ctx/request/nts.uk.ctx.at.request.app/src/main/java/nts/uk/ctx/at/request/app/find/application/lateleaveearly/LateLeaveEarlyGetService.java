@@ -10,6 +10,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.lateleaveearly.dto.MessageListDto;
 import nts.uk.ctx.at.request.app.find.application.lateleaveearly.dto.PageInitDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoDto;
@@ -43,8 +44,10 @@ public class LateLeaveEarlyGetService {
 	 * @param appDates
 	 * @return ArrivedLateLeaveEarlyInfoDto
 	 */
-	public ArrivedLateLeaveEarlyInfoDto getLateLeaveEarly(int appId, List<String> appDates) {
-		return ArrivedLateLeaveEarlyInfoDto.convertDto(this.service.getLateLeaveEarlyInfo(appId, appDates));
+	public ArrivedLateLeaveEarlyInfoDto getLateLeaveEarly(int appId, List<String> appDates,
+			AppDispInfoStartupDto appDispInfoStartupDto) {
+		return ArrivedLateLeaveEarlyInfoDto
+				.convertDto(this.service.getLateLeaveEarlyInfo(appId, appDates, appDispInfoStartupDto.toDomain()));
 	}
 
 	/**
@@ -76,6 +79,11 @@ public class LateLeaveEarlyGetService {
 		ApplicationDto app = dto.getApplication();
 		app.setInputDate(GeneralDateTime.now().toString("yyyy/MM/dd HH:mm:ss"));
 		dto.setApplication(app);
+
+		if (app.getAppID() != null) {
+			return this.service.getMessageList(appType, dto.isAgentAtr(), dto.isNew(), dto.getInfoOutput().toDomain(),
+					app.toDomain());
+		}
 
 		return this.service.getMessageList(appType, dto.isAgentAtr(), dto.isNew(), dto.getInfoOutput().toDomain(),
 				Application.createFromNew(EnumAdaptor.valueOf(dto.getApplication().getPrePostAtr(), PrePostAtr.class),

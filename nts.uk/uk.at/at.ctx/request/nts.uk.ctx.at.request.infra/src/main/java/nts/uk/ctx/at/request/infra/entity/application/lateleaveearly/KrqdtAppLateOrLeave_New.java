@@ -85,8 +85,8 @@ public class KrqdtAppLateOrLeave_New extends ContractUkJpaEntity implements Seri
 		lateCancelation.add(new LateCancelation(2, EnumAdaptor.valueOf(this.earlyCancelAtr2, LateOrEarlyClassification.class)));
 		
 		lateOrLeaveEarlies.add(new TimeReport(1, LateOrEarlyClassification.LATE, new TimeWithDayAttr(this.lateTime1)));
-		lateOrLeaveEarlies.add(new TimeReport(2, LateOrEarlyClassification.EARLY, new TimeWithDayAttr(this.earlyTime1)));
-		lateOrLeaveEarlies.add(new TimeReport(1, LateOrEarlyClassification.LATE, new TimeWithDayAttr(this.lateTime2)));
+		lateOrLeaveEarlies.add(new TimeReport(1, LateOrEarlyClassification.EARLY, new TimeWithDayAttr(this.earlyTime1)));
+		lateOrLeaveEarlies.add(new TimeReport(2, LateOrEarlyClassification.LATE, new TimeWithDayAttr(this.lateTime2)));
 		lateOrLeaveEarlies.add(new TimeReport(2, LateOrEarlyClassification.EARLY, new TimeWithDayAttr(this.earlyTime2)));
 		
 		ArrivedLateLeaveEarly output = new ArrivedLateLeaveEarly(application);

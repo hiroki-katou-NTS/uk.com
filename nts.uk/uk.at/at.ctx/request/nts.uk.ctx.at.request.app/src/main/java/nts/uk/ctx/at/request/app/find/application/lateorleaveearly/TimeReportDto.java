@@ -22,7 +22,7 @@ public class TimeReportDto {
 	private int timeWithDayAttr;
 
 	public static TimeReportDto fromDomain(TimeReport value) {
-		return new TimeReportDto(value.getWorkNo(), value.getLateOrEarlyClassification().value, 1);
+		return new TimeReportDto(value.getWorkNo(), value.getLateOrEarlyClassification().value, value.getTimeWithDayAttr().v());
 	}
 
 	public TimeReport toDomain() {

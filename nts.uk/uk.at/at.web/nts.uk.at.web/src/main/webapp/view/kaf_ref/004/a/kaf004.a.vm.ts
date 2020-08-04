@@ -1,3 +1,4 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kaf004_ref.a.viewmodel {
     import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
@@ -51,10 +52,19 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             if (ko.toJS(vm.application().appDate)) {
                 appDates.push(ko.toJS(vm.application().appDate));
             }
+            vm.loadData([], [], AppType.EARLY_LEAVE_CANCEL_APPLICATION)
+            .then((loadDataFlag: any) => {
+                if(loadDataFlag) {
+                    let appType = AppType.EARLY_LEAVE_CANCEL_APPLICATION,
+                    appDates = [],
+                    appDispInfoStartupDto = ko.toJS(vm.appDispInfoStartupOutput),
+                    command = { appType, appDates, appDispInfoStartupDto };
+                    return vm.$ajax(API.initPage, command);
+                }
+            }).then((successData: any) => {
+                if(successData) {
+                    vm.application().appDate(moment(new Date()).format("YYYY/MM/DD"));
 
-
-            vm.$ajax(API.initPage + "/" + ko.toJS(vm.application().appType), appDates)
-                .done((successData: any) => {
                     vm.arrivedLateLeaveEarlyInfo(successData);
                     vm.appDispInfoStartupOutput(successData.appDispInfoStartupOutput);
                     vm.lateOrEarlyInfos(vm.arrivedLateLeaveEarlyInfo.earlyInfos);
@@ -68,10 +78,10 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         || !vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay
                         || !vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail
                         || !vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly) {
-                        vm.workManagement.scheAttendanceTime("--:--");
-                        vm.workManagement.scheAttendanceTime2("--:--");
-                        vm.workManagement.scheWorkTime("--:--");
-                        vm.workManagement.scheWorkTime2("--:--");
+                            vm.workManagement.scheAttendanceTime("--:--");
+                            vm.workManagement.scheAttendanceTime2("--:--");
+                            vm.workManagement.scheWorkTime("--:--");
+                            vm.workManagement.scheWorkTime2("--:--");
                     } else {
                         vm.workManagement.scheAttendanceTime(vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheAttendanceTime1);
                         vm.workManagement.scheAttendanceTime2(vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheAttendanceTime2);
@@ -99,12 +109,63 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 
 
                     vm.$blockui('hide');
-                }).fail((failData: any) => {
-                    vm.$dialog.error({
-                        messageId: failData.msgId
-                    });
-                    vm.$blockui("hide");
-                });
+                }
+            }).fail((failData: any) => {
+                console.log(failData);
+            }).always(() => vm.$blockui("hide"));
+
+            // vm.$ajax(API.initPage + "/" + ko.toJS(vm.application().appType), appDates)
+            //     .done((successData: any) => {
+            //         vm.arrivedLateLeaveEarlyInfo(successData);
+            //         vm.appDispInfoStartupOutput(successData.appDispInfoStartupOutput);
+            //         vm.lateOrEarlyInfos(vm.arrivedLateLeaveEarlyInfo.earlyInfos);
+            //         vm.lateOrEarlyInfo1(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 0 })));
+            //         vm.lateOrEarlyInfo2(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 1 })));
+            //         vm.lateOrEarlyInfo3(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 0 })));
+            //         vm.lateOrEarlyInfo4(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 1 })));
+
+            //         if (!vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput
+            //             || !vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput
+            //             || !vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay
+            //             || !vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail
+            //             || !vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly) {
+            //             vm.workManagement.scheAttendanceTime("--:--");
+            //             vm.workManagement.scheAttendanceTime2("--:--");
+            //             vm.workManagement.scheWorkTime("--:--");
+            //             vm.workManagement.scheWorkTime2("--:--");
+            //         } else {
+            //             vm.workManagement.scheAttendanceTime(vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheAttendanceTime1);
+            //             vm.workManagement.scheAttendanceTime2(vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheAttendanceTime2);
+            //             vm.workManagement.scheWorkTime(vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheDepartureTime1);
+            //             vm.workManagement.scheWorkTime2(vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheDepartureTime2);
+
+            //             vm.workManagement.workTime = vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.workTime;
+            //             vm.workManagement.workTime2 = vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.workTime1;
+            //             vm.workManagement.leaveTime = vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.leaveTime;
+            //             vm.workManagement.leaveTime2 = vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.leaveTime2;
+            //         }
+
+            //         if (!vm.workManagement.scheAttendanceTime) {
+            //             vm.workManagement.scheAttendanceTime("--:--");
+            //         }
+            //         if (!vm.workManagement.scheAttendanceTime2) {
+            //             vm.workManagement.scheAttendanceTime2("--:--");
+            //         }
+            //         if (!vm.workManagement.scheWorkTime) {
+            //             vm.workManagement.scheWorkTime("--:--");
+            //         }
+            //         if (!vm.workManagement.scheWorkTime2) {
+            //             vm.workManagement.scheWorkTime2("--:--");
+            //         }
+
+
+            //         vm.$blockui('hide');
+            //     }).fail((failData: any) => {
+            //         vm.$dialog.error({
+            //             messageId: failData.msgId
+            //         });
+            //         vm.$blockui("hide");
+            //     });
         }
 
         mounted() {
@@ -213,7 +274,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                 }
             }).fail((fail: any) => {
                 console.log(fail);
-            });
+            }).always(() => vm.$blockui("hide"));
         }
 
         private afterRegister(params?: any) {
@@ -226,8 +287,14 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     infoOutput: ko.toJS(vm.arrivedLateLeaveEarlyInfo)
                 }).done((success: any) => {
                     if (ko.toJS(vm.isSendMail)
-                        && !vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting.sendMailWhenRegister) {
+                        // && !vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting.sendMailWhenRegister)
+                        && true
+                    )
+                        {
                         vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+                            vm.$window.storage("KDL030_PARAM", {
+                                appID: success.appID
+                            });
                             vm.$window.modal("/view/kdl/030/a/index.xhtml").then((result: any) => {
                                 vm.$window.storage('childData').then(rs => {
                                     console.log(rs);
@@ -279,11 +346,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         return false;
                     }
                 }
-                // return false;
             }
-
-
-            return true;
         }
 
         // ※10 display
@@ -366,8 +429,6 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             return this.condition2() && this.condition8() && this.condition10Display(idItem);
         }
     }
-
-    type MODE = 'before' | 'after';
 
     const API = {
         initPage: "at/request/application/lateorleaveearly/initPage",

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.lateleaveearly;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -17,6 +18,7 @@ import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
@@ -74,6 +76,9 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 	@Inject
 	private DetailAfterUpdate afterUpdateService;
 
+	@Inject
+	private DetailAppCommonSetService detailAppCommonSetService;
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -82,10 +87,12 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 	 * getLateLeaveEarlyInfo(java.lang.String)
 	 */
 	@Override
-	public ArrivedLateLeaveEarlyInfoOutput getLateLeaveEarlyInfo(int appId, List<String> appDates) {
+	public ArrivedLateLeaveEarlyInfoOutput getLateLeaveEarlyInfo(int appId, List<String> appDates,
+			AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		String companyId = AppContexts.user().companyId();
 
-		ApplicationType applicationType = EnumAdaptor.valueOf(appId, ApplicationType.class);
+		// ApplicationType applicationType = EnumAdaptor.valueOf(appId,
+		// ApplicationType.class);
 
 		List<String> sIds = new ArrayList<String>();
 		sIds.add(AppContexts.user().employeeId());
@@ -97,9 +104,10 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			}
 		}
 
-		// 起動時の申請表示情報を取得する
-		AppDispInfoStartupOutput appDispInfoStartupOutput = common.getAppDispInfoStart(companyId, applicationType, sIds,
-				appDatesLst, true, Optional.empty(), Optional.empty());
+		// // 起動時の申請表示情報を取得する
+		// AppDispInfoStartupOutput appDispInfoStartupOutput =
+		// common.getAppDispInfoStart(companyId, applicationType, sIds,
+		// appDatesLst, true, Optional.empty(), Optional.empty());
 
 		// 遅刻早退取消初期（新規）
 		ArrivedLateLeaveEarlyInfoOutput displayInfo = this.initCancelLateEarlyApp(companyId, sIds, appDatesLst,
@@ -368,13 +376,8 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		String companyID = AppContexts.user().companyId();
 
 		List<ConfirmMsgOutput> listMsg = this.checkError(companyID, appType, agentAtr, isNew, infoOutput, application);
-		List<String> listMsgStr = new ArrayList<>();
 
-		for (ConfirmMsgOutput msgOutput : listMsg) {
-			listMsgStr.add(msgOutput.getMsgID());
-		}
-
-		return listMsgStr;
+		return listMsg.stream().map(item -> item.getMsgID()).collect(Collectors.toList());
 	}
 
 	/**
@@ -482,11 +485,12 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		String employeeId = AppContexts.user().employeeId();
 		ProcessResult processResult = null;
 
+		// ドメインモデル「遅刻早退取消申請」の新規登録する (đăng ký mới domain 「遅刻早退取消申請」)
+		this.registerDomain(application, infoOutput);
+
 		// 2-2.新規画面登録時承認反映情報の整理
 		this.registerService.newScreenRegisterAtApproveInfoReflect(employeeId, application);
 
-		// ドメインモデル「遅刻早退取消申請」の新規登録する (đăng ký mới domain 「遅刻早退取消申請」)
-		this.registerDomain(application, infoOutput);
 
 		if (infoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting()
 				.getAppTypeSetting().isSendMailWhenRegister()) {
@@ -536,13 +540,13 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 
 		String companyId = AppContexts.user().companyId();
 
-		// // 14-1.詳細画面起動前申請共通設定を取得する
-		// AppDispInfoStartupOutput appDispInfoStartupOutput =
-		// this.detailAppCommonSetService
-		// .getCommonSetBeforeDetail(companyId, appId);
+		// 14-1.詳細画面起動前申請共通設定を取得する
+		AppDispInfoStartupOutput appDispInfoStartupOutput = this.detailAppCommonSetService
+				.getCommonSetBeforeDetail(companyId, appId);
 
 		// 遅刻早退取消初期（詳細）
-		ArrivedLateLeaveEarlyInfoOutput info = this.initLateEarlyDetail(companyId, appId, infoStartupOutput);
+		ArrivedLateLeaveEarlyInfoOutput info = this.initLateEarlyDetail(companyId, appId, appDispInfoStartupOutput);
+
 		return info;
 	}
 

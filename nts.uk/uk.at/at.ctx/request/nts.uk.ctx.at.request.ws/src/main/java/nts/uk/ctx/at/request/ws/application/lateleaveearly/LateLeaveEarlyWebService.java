@@ -19,6 +19,7 @@ import nts.uk.ctx.at.request.app.find.application.lateleaveearly.LateLeaveEarlyG
 import nts.uk.ctx.at.request.app.find.application.lateleaveearly.dto.MessageListDto;
 import nts.uk.ctx.at.request.app.find.application.lateleaveearly.dto.PageInitDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoDto;
+import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.LateEarlyInitDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
@@ -41,9 +42,9 @@ public class LateLeaveEarlyWebService extends WebService {
 	private LateEarlyUpdateCommandHandler updateCommandHandler;
 
 	@POST
-	@Path("initPage/{appType}")
-	public ArrivedLateLeaveEarlyInfoDto initPage(@PathParam("appType") int appType, List<String> appDates) {
-		return this.service.getLateLeaveEarly(appType, appDates);
+	@Path("initPage")
+	public ArrivedLateLeaveEarlyInfoDto initPage(LateEarlyInitDto dto) {
+		return this.service.getLateLeaveEarly(dto.getAppType(), dto.getAppDates(), dto.getAppDispInfoStartupDto());
 	}
 
 	@POST

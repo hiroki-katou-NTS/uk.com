@@ -22,7 +22,7 @@ import nts.uk.ctx.at.request.infra.entity.application.lateleaveearly.KrqdtAppLat
 @Stateless
 public class LateLeaveEarlyRepositoryImp extends JpaRepository implements LateLeaveEarlyRepository {
 	private final String SELECT_BY_CID_APPID = "SELECT * FROM KRQDT_APP_LATE_OR_LEAVE " + "WHERE CID = @companyId"
-			+ "AND APP_ID = @appId";
+			+ " AND APP_ID = @appId";
 
 	/*
 	 * (non-Javadoc)
@@ -71,15 +71,15 @@ public class LateLeaveEarlyRepositoryImp extends JpaRepository implements LateLe
 		for (TimeReport report : listTime) {
 			if (report.getWorkNo() == 1) {
 				if (report.getLateOrEarlyClassification().value == 0) {
-					lateTime1 = report.getTimeWithDayAttr().rawHour();
+					lateTime1 = report.getTimeWithDayAttr().v();
 				} else {
-					earlyTime1 = report.getTimeWithDayAttr().rawHour();
+					earlyTime1 = report.getTimeWithDayAttr().v();
 				}
 			} else {
 				if (report.getLateOrEarlyClassification().value == 0) {
-					lateTime2 = report.getTimeWithDayAttr().rawHour();
+					lateTime2 = report.getTimeWithDayAttr().v();
 				} else {
-					earlyTime2 = report.getTimeWithDayAttr().rawHour();
+					earlyTime2 = report.getTimeWithDayAttr().v();
 				}
 			}
 		}
@@ -126,8 +126,8 @@ public class LateLeaveEarlyRepositoryImp extends JpaRepository implements LateLe
 	@Override
 	public ArrivedLateLeaveEarly getLateEarlyApp(String companyId, String appId, Application app) {
 
-		return new NtsStatement(SELECT_BY_CID_APPID, this.jdbcProxy()).paramString(companyId, companyId)
-				.paramString(appId, appId).getSingle(x -> KrqdtAppLateOrLeave_New.MAPPER.toEntity(x).toDomain(app))
+		return new NtsStatement(SELECT_BY_CID_APPID, this.jdbcProxy()).paramString("companyId", companyId)
+				.paramString("appId", appId).getSingle(x -> KrqdtAppLateOrLeave_New.MAPPER.toEntity(x).toDomain(app))
 				.get();
 	}
 
@@ -174,22 +174,24 @@ public class LateLeaveEarlyRepositoryImp extends JpaRepository implements LateLe
 		for (TimeReport report : listTime) {
 			if (report.getWorkNo() == 1) {
 				if (report.getLateOrEarlyClassification().value == 0) {
-					lateTime1 = report.getTimeWithDayAttr().rawHour();
+					lateTime1 = report.getTimeWithDayAttr().v();
 				} else {
-					earlyTime1 = report.getTimeWithDayAttr().rawHour();
+					earlyTime1 = report.getTimeWithDayAttr().v();
 				}
 			} else {
 				if (report.getLateOrEarlyClassification().value == 0) {
-					lateTime2 = report.getTimeWithDayAttr().rawHour();
+					lateTime2 = report.getTimeWithDayAttr().v();
 				} else {
-					earlyTime2 = report.getTimeWithDayAttr().rawHour();
+					earlyTime2 = report.getTimeWithDayAttr().v();
 				}
 			}
 		}
 
 		// create entity with value
-		KrqdtAppLateOrLeave_New entity = new KrqdtAppLateOrLeave_New();
-		entity.setKrqdtAppLateOrLeavePK(pk);
+		KrqdtAppLateOrLeave_New entity = new NtsStatement(SELECT_BY_CID_APPID, this.jdbcProxy())
+				.paramString("companyId", cID).paramString("appId", application.getAppID())
+				.getSingle(x -> KrqdtAppLateOrLeave_New.MAPPER.toEntity(x)).get();
+		// entity.setKrqdtAppLateOrLeavePK(pk);
 
 		// if(lateTime empty => lateCancelAtr1 = null)
 		if (lateTime1 != 0) {

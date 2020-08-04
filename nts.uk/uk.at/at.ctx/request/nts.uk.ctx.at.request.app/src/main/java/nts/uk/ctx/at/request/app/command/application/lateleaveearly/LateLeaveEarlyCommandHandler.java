@@ -42,7 +42,7 @@ public class LateLeaveEarlyCommandHandler extends CommandHandlerWithResult<LateL
 				dto.getApplication().getEmployeeID(), EnumAdaptor.valueOf(dto.getAppType(), ApplicationType.class),
 				new ApplicationDate(GeneralDate.fromString(dto.getApplication().getAppDate(), "yyyy/MM/dd")),
 				applicationDto.getEmployeeID(),
-				dto.getApplication().getOpStampRequestMode() == null ? null
+				dto.getApplication().getOpStampRequestMode() == null ? Optional.empty()
 						: Optional.of(EnumAdaptor.valueOf(dto.getApplication().getOpStampRequestMode(),
 								StampRequestMode.class)),
 				Optional.of(new ReasonForReversion(dto.getApplication().getOpReversionReason())),
