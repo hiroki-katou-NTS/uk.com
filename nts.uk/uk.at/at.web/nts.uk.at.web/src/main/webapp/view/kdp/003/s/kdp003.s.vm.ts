@@ -31,9 +31,6 @@ module nts.uk.at.kdp003.s {
 		created() {
 			const vm = this;
 			const { randomId } = nts.uk.util;
-			const { GOING_TO_WORK, WORKING_OUT } = ChangeClockArt;
-			const { GO_OUT, RETURN } = ChangeClockArt;
-			const { FIX, END_OF_SUPPORT, SUPPORT, TEMPORARY_SUPPORT_WORK } = ChangeClockArt;
 
 			vm.dataSources.filtereds = ko.computed({
 				read: () => {
@@ -54,8 +51,6 @@ module nts.uk.at.kdp003.s {
 								DEPARTURE,
 								DEPARTURE_BOUNCE,
 								DEPARTURE_OVERTIME,
-								OUT,
-								RETURN,
 								GETTING_STARTED,
 								DEPAR,
 								TEMPORARY_WORK,
@@ -64,9 +59,7 @@ module nts.uk.at.kdp003.s {
 								END_SUPPORT,
 								WORK_SUPPORT,
 								START_SUPPORT_EARLY_APPEARANCE,
-								START_SUPPORT_BREAK,
-								RESERVATION,
-								CANCEL_RESERVATION
+								START_SUPPORT_BREAK
 							} = ContentsStampType;
 
 							// bad algorithm :/
@@ -106,16 +99,16 @@ module nts.uk.at.kdp003.s {
 									filtereds.push(pushable);
 									break;
 								case '2':
-									if ([GOING_TO_WORK, WORKING_OUT].indexOf(item.changeClockArt) > -1) {
+									if ([ChangeClockArt.GOING_TO_WORK, ChangeClockArt.WORKING_OUT].indexOf(item.changeClockArt) > -1) {
 										filtereds.push(pushable);
 									}
 									break;
 								case '3':
-									if ([GO_OUT, RETURN].indexOf(item.changeClockArt) > -1) {
+									if ([ChangeClockArt.GO_OUT, ChangeClockArt.RETURN].indexOf(item.changeClockArt) > -1) {
 										filtereds.push(pushable);
 									}
 								case '4':
-									if ([FIX, END_OF_SUPPORT, SUPPORT, TEMPORARY_SUPPORT_WORK].indexOf(item.changeClockArt) > -1) {
+									if ([ChangeClockArt.FIX, ChangeClockArt.END_OF_SUPPORT, ChangeClockArt.SUPPORT, ChangeClockArt.TEMPORARY_SUPPORT_WORK].indexOf(item.changeClockArt) > -1) {
 										filtereds.push(pushable);
 									}
 									break;
