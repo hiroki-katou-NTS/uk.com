@@ -166,8 +166,8 @@ interface ComponentViewModel {
 	readonly $window: {
 		readonly size: {
 			(height: string | number, width: string | number): void;
-			readonly width: (width: string) => void;
-			readonly height: (height: string) => void;
+			readonly width: (width: number | string) => void;
+			readonly height: (height: number | string) => void;
 		};
 		readonly close: {
 			(): void;
