@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -109,9 +110,82 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 
 @Stateless
 public class RemainNumberTempRequireService {
-
 	@Inject
-	private Require require;
+	protected ComSubstVacationRepository comSubstVacationRepo;
+	@Inject
+	protected CompensLeaveComSetRepository compensLeaveComSetRepo;
+	@Inject
+	protected SpecialLeaveGrantRepository specialLeaveGrantRepo;
+	@Inject
+	protected EmpEmployeeAdapter empEmployeeAdapter;
+	@Inject
+	protected GrantDateTblRepository grantDateTblRepo;
+	@Inject
+	protected AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
+	@Inject
+	protected SpecialHolidayRepository specialHolidayRepo;
+	@Inject
+	protected InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo;
+	@Inject
+	protected SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo;
+	@Inject
+	protected InterimRecAbasMngRepository interimRecAbasMngRepo;
+	@Inject
+	protected EmpSubstVacationRepository empSubstVacationRepo;
+	@Inject 
+	protected InterimRemainRepository interimRemainRepo;
+	@Inject
+	protected SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepo;
+	@Inject
+	protected PayoutManagementDataRepository payoutManagementDataRepo;
+	@Inject
+	protected InterimBreakDayOffMngRepository interimBreakDayOffMngRepo;
+	@Inject
+	protected ComDayOffManaDataRepository comDayOffManaDataRepo;
+	@Inject
+	protected CompanyAdapter companyAdapter;
+	@Inject
+	protected ShareEmploymentAdapter shareEmploymentAdapter;
+	@Inject
+	protected LeaveManaDataRepository leaveManaDataRepo;
+	@Inject
+	protected WorkingConditionItemRepository workingConditionItemRepo;
+	@Inject
+	protected WorkingConditionRepository workingConditionRepo;
+	@Inject
+	protected WorkTimeSettingRepository workTimeSettingRepo;
+	@Inject
+	protected FixedWorkSettingRepository fixedWorkSettingRepo;
+	@Inject
+	protected FlowWorkSettingRepository flowWorkSettingRepo;
+	@Inject
+	protected DiffTimeWorkSettingRepository diffTimeWorkSettingRepo;
+	@Inject
+	protected FlexWorkSettingRepository flexWorkSettingRepo;
+	@Inject
+	protected PredetemineTimeSettingRepository predetemineTimeSettingRepo;
+	@Inject
+	protected ClosureRepository closureRepo;
+	@Inject
+	protected ClosureEmploymentRepository closureEmploymentRepo;
+	@Inject
+	protected WorkTypeRepository workTypeRepo;
+	@Inject
+	protected RemainCreateInforByApplicationData remainCreateInforByApplicationData;
+	@Inject
+	protected CompensLeaveEmSetRepository compensLeaveEmSetRepo;
+	@Inject
+	protected EmploymentSettingRepository employmentSettingRepo;
+	@Inject
+	protected RetentionYearlySettingRepository retentionYearlySettingRepo;
+	@Inject
+	protected AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepo;
+	@Inject
+	protected OutsideOTSettingRepository outsideOTSettingRepo;
+	@Inject
+	protected WorkdayoffFrameRepository workdayoffFrameRepo;
+	@Inject
+	protected YearHolidayRepository yearHolidayRepo;
 	
 	public static interface Require
 			extends InterimRemainOffPeriodCreateData.RequireM4, BreakDayOffMngInPeriodQuery.RequireM10,
@@ -125,89 +199,98 @@ public class RemainNumberTempRequireService {
 	}
 
 	public Require createRequire() {
-		return require;
+		return new RequireImp(comSubstVacationRepo, compensLeaveComSetRepo,
+				specialLeaveGrantRepo, empEmployeeAdapter, grantDateTblRepo,
+				annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo, 
+				specialLeaveBasicInfoRepo, interimRecAbasMngRepo, empSubstVacationRepo, 
+				interimRemainRepo, substitutionOfHDManaDataRepo,
+				payoutManagementDataRepo, interimBreakDayOffMngRepo, comDayOffManaDataRepo,
+				companyAdapter, shareEmploymentAdapter, leaveManaDataRepo, workingConditionItemRepo,
+				workingConditionRepo, workTimeSettingRepo, fixedWorkSettingRepo, 
+				flowWorkSettingRepo, diffTimeWorkSettingRepo, flexWorkSettingRepo,
+				predetemineTimeSettingRepo, closureRepo, closureEmploymentRepo, 
+				workTypeRepo, remainCreateInforByApplicationData, compensLeaveEmSetRepo, 
+				employmentSettingRepo, retentionYearlySettingRepo, annualPaidLeaveSettingRepo,
+				outsideOTSettingRepo, workdayoffFrameRepo, yearHolidayRepo);
 	}
 	
-	@Stateless
-	public class RequireImp implements Require {
-
-		public RequireImp() {}
+	@AllArgsConstructor
+	public static class RequireImp implements Require {
 		
-		@Inject
 		protected ComSubstVacationRepository comSubstVacationRepo;
-		@Inject
+		
 		protected CompensLeaveComSetRepository compensLeaveComSetRepo;
-		@Inject
+		
 		protected SpecialLeaveGrantRepository specialLeaveGrantRepo;
-		@Inject
+		
 		protected EmpEmployeeAdapter empEmployeeAdapter;
-		@Inject
+		
 		protected GrantDateTblRepository grantDateTblRepo;
-		@Inject
+		
 		protected AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
-		@Inject
+		
 		protected SpecialHolidayRepository specialHolidayRepo;
-		@Inject
+		
 		protected InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo;
-		@Inject
+		
 		protected SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo;
-		@Inject
+		
 		protected InterimRecAbasMngRepository interimRecAbasMngRepo;
-		@Inject
+		
 		protected EmpSubstVacationRepository empSubstVacationRepo;
-		@Inject 
+		 
 		protected InterimRemainRepository interimRemainRepo;
-		@Inject
+		
 		protected SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepo;
-		@Inject
+		
 		protected PayoutManagementDataRepository payoutManagementDataRepo;
-		@Inject
+		
 		protected InterimBreakDayOffMngRepository interimBreakDayOffMngRepo;
-		@Inject
+		
 		protected ComDayOffManaDataRepository comDayOffManaDataRepo;
-		@Inject
+		
 		protected CompanyAdapter companyAdapter;
-		@Inject
+		
 		protected ShareEmploymentAdapter shareEmploymentAdapter;
-		@Inject
+		
 		protected LeaveManaDataRepository leaveManaDataRepo;
-		@Inject
+		
 		protected WorkingConditionItemRepository workingConditionItemRepo;
-		@Inject
+		
 		protected WorkingConditionRepository workingConditionRepo;
-		@Inject
+		
 		protected WorkTimeSettingRepository workTimeSettingRepo;
-		@Inject
+		
 		protected FixedWorkSettingRepository fixedWorkSettingRepo;
-		@Inject
+		
 		protected FlowWorkSettingRepository flowWorkSettingRepo;
-		@Inject
+		
 		protected DiffTimeWorkSettingRepository diffTimeWorkSettingRepo;
-		@Inject
+		
 		protected FlexWorkSettingRepository flexWorkSettingRepo;
-		@Inject
+		
 		protected PredetemineTimeSettingRepository predetemineTimeSettingRepo;
-		@Inject
+		
 		protected ClosureRepository closureRepo;
-		@Inject
+		
 		protected ClosureEmploymentRepository closureEmploymentRepo;
-		@Inject
+		
 		protected WorkTypeRepository workTypeRepo;
-		@Inject
+		
 		protected RemainCreateInforByApplicationData remainCreateInforByApplicationData;
-		@Inject
+		
 		protected CompensLeaveEmSetRepository compensLeaveEmSetRepo;
-		@Inject
+		
 		protected EmploymentSettingRepository employmentSettingRepo;
-		@Inject
+		
 		protected RetentionYearlySettingRepository retentionYearlySettingRepo;
-		@Inject
+		
 		protected AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepo;
-		@Inject
+		
 		protected OutsideOTSettingRepository outsideOTSettingRepo;
-		@Inject
+		
 		protected WorkdayoffFrameRepository workdayoffFrameRepo;
-		@Inject
+		
 		protected YearHolidayRepository yearHolidayRepo;
 
 		@Override

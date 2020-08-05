@@ -111,6 +111,7 @@ module nts.uk.at.kdp003.s {
 									if ([ChangeClockArt.GO_OUT, ChangeClockArt.RETURN].indexOf(item.changeClockArt) > -1) {
 										filtereds.push(pushable);
 									}
+									break;
 								case '4':
 									if ([ChangeClockArt.FIX, ChangeClockArt.END_OF_SUPPORT, ChangeClockArt.SUPPORT, ChangeClockArt.TEMPORARY_SUPPORT_WORK].indexOf(item.changeClockArt) > -1) {
 										filtereds.push(pushable);
