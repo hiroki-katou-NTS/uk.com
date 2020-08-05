@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 810, height:600 };</script>
+			<script>var dialogSize = { width: 705, height:600 };</script>
 			<!--<com:scriptfile path="ksm004.e.start.js" />-->
 			<!--<com:scriptfile path="ksm004.e.service.js" />-->
 			<com:scriptfile set="IGNITE" />
@@ -25,11 +25,11 @@
 					<tr>
 						<td>
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM004_106')}</div>
-							<div tabindex="5" data-bind="ntsDatePicker: { value: baseDate, dateFormat: 'YYYY/MM', valueFormat: 'YYYY/MM', showJumpButtons: false }"></div>
+							<div tabindex="5" data-bind="ntsDatePicker: { value: baseDate, dateFormat: 'YYYY/MM', valueFormat: 'YYYY/MM', showJumpButtons: false, required: true }"></div>
 						</td>
 						<td>
                             <div id="day-off">
-                                <label id="label-day-off">​a​</label>​
+								<div class="label label-day-off" >_</div>
                                 <label id="day-off-text">#{i18n.getText('KSM004_107')}</label>
                             </div>
 						</td>
@@ -45,7 +45,7 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="12" data-bind="click:closeDialog">#{i18n.getText('KSM004_59')}</button>
+				<button class="btn-close-dialog" tabindex="12" data-bind="click:closeDialog">#{i18n.getText('KSM004_59')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

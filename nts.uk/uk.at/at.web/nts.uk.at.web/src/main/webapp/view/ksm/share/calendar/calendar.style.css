@@ -18,8 +18,8 @@
 }
 
 .holiday-calendar .day {
-    width: 30px;
-    line-height: 30px;
+    width: 25px;
+    line-height: 25px;
     text-align: center;
     display: inline-block;
     box-sizing: border-box;

@@ -26,11 +26,14 @@
     -webkit-overflow-scrolling: touch;
     height: 336px !important;
 }
-#label-day-off {
-    padding: 1px 6px;
+.label-day-off {
     background-color: #fabf8f;
     color: #fabf8f;
+    width: 20px !important;
 }
 .ksm004-f .holiday-calendar{
     margin: 9px;
+}
+.btn-close-dialog {
+    margin-top: 15px;
 }
