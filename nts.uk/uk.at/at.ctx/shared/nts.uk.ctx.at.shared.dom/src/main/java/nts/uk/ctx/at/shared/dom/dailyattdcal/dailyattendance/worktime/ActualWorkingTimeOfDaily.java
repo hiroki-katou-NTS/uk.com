@@ -82,7 +82,7 @@ public class ActualWorkingTimeOfDaily {
 	/**
 	 * Constructor
 	 */
-	private ActualWorkingTimeOfDaily(AttendanceTime constraintDiffTime, ConstraintTime constraintTime,
+	public ActualWorkingTimeOfDaily(AttendanceTime constraintDiffTime, ConstraintTime constraintTime,
 			AttendanceTime timeDiff, TotalWorkingTime totalWorkingTime, DivergenceTimeOfDaily divTime,
 			PremiumTimeOfDailyPerformance premiumTime) {
 		this.premiumTimeOfDailyPerformance = premiumTime;

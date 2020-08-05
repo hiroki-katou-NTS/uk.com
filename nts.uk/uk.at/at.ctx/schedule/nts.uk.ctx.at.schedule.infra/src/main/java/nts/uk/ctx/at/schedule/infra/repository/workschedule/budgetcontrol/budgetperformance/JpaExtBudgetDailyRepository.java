@@ -9,14 +9,16 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExtBudgetActualValue;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExtBudgetTime;
 import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetActItemCode;
+import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetActualValues;
 import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetDaily;
 import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetDailyRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.budgetcontrol.budgetperformance.KscdtExtBudgetDailyNew;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnitTest;
+
+
 
 /**
  * 日次の外部予算実績Repository
@@ -43,13 +45,14 @@ public class JpaExtBudgetDailyRepository extends JpaRepository implements ExtBud
 	public List<ExtBudgetDaily> getDailyExtBudgetResultsForPeriod(TargetOrgIdenInfor targetOrg, DatePeriod datePeriod,
 			ExtBudgetActItemCode itemCode) {
 		
-	/*	return this.queryProxy().query(GetDaily, KscdtExtBudgetDailyNew.class)
+
+		return this.queryProxy().query(GetDaily, KscdtExtBudgetDailyNew.class)
 				.setParameter("targetUnit", targetOrg.getUnit())
-                .setParameter("itemCode", itemCode) 
-                .setParameter("startDate", datePeriod.start())
-                .setParameter("endDate", datePeriod.end())
-                .getList(c -> c.toDomain());*/
-		return null;
+				.setParameter("itemCode", itemCode)
+				.setParameter("startDate", datePeriod.start())
+				.setParameter("endDate", datePeriod.end())
+				.getList(c -> toDomain(c));
+		
 	}
 
 	@Override
@@ -74,13 +77,23 @@ public class JpaExtBudgetDailyRepository extends JpaRepository implements ExtBud
 	}
 
 	private static ExtBudgetDaily toDomain (KscdtExtBudgetDailyNew entity){
-		ExtBudgetDaily domain  = new ExtBudgetDaily(
+		ExtBudgetActualValues val = null;
+		if(entity.budgetATR == 0)
+			val = new ExtBudgetTime(entity.val);
+		 else if(entity.budgetATR == 1)
+			val = new ExtBudgetTime(entity.val);
+		 else if(entity.budgetATR == 2)
+			val = new ExtBudgetTime(entity.val);
+		 else if(entity.budgetATR == 3)
+			val = new ExtBudgetTime(entity.val);
+		ExtBudgetDaily domain = new ExtBudgetDaily(
 				new TargetOrgIdenInfor(EnumAdaptor.valueOf( entity.pk.targetUnit, TargetOrganizationUnit.class),
-						entity.pk.targetUnit == 0 ? entity.pk.targetID : "", 
-						entity.pk.targetUnit == 0 ? "" : entity.pk.targetID ),
+						entity.pk.targetUnit == 0 ? entity.pk.targetID : null,
+						entity.pk.targetUnit == 0 ? null : entity.pk.targetID ),
 				new ExtBudgetActItemCode(entity.pk.itemCd),
 				entity.pk.ymd,
-				(nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetActualValue) new ExtBudgetActualValue("1"));
+				val) ;
+		
 		return domain;
 	}
 
