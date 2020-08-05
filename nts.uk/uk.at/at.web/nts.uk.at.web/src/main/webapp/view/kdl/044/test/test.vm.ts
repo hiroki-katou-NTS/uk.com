@@ -242,8 +242,9 @@ module test.viewmodel {
 				isMultiSelect: self.selectedMode() == 1 ? true : false,
 				permission: permissions,
 				filter: self.selectedFilter(),
-				filterIDs: [self.selectedWorkplaceId()],
+				filterIDs: self.selectedFilter() == 2 ? [self.currentIds()] : [self.selectedWorkplaceId()],
 				shifutoCodes: [],
+				workPlaceType: self.selectedFilter() ,
 				shiftCodeExpel: shifutoCodes
 			}
 			setShared('kdl044Data', dataSetShare);

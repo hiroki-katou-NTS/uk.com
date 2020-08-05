@@ -41,15 +41,15 @@ module nts.uk.at.view.kdl044.a {
 				let paras: any;
 				switch (data.filter) {
 					case 0: {
-						paras = { targetUnit: null, workplaceIds: null, workplaceGroupID: null };
+						paras = { targetUnit: null, workplaceIds: null, workplaceGroupId: null };
 						break;
 					}
 					case 1: {
-						paras = { targetUnit: 0, workplaceId: data.filterIDs[0], workplaceGroupID: null };
+						paras = { targetUnit: 0, workplaceId: data.filterIDs[0], workplaceGroupId: null };
 						break;
 					}
 					case 2: {
-						paras = { targetUnit: 1, workplaceId: null, workplaceGroupID: data.filterIDs };
+						paras = { targetUnit: 1, workplaceId: null, workplaceGroupId: data.filterIDs[0] };
 						break;
 					}
 				}
@@ -216,6 +216,12 @@ module nts.uk.at.view.kdl044.a {
              * 画面起動時に選択状態とするシフトマスタ      
              */
 			shifutoCodes?: Array<string>
+			
+			/**
+			 * 0,1 : WorkPlace
+			 * 2 : WorkPlaceGroup		
+			 */
+			workPlaceType?: number;
 
 			shiftCodeExpel?: Array<string>
 		}
