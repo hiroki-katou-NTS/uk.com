@@ -20,10 +20,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
+import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.infra.entity.reservation.bento.KrcdtReservation;
 import nts.uk.ctx.at.record.infra.entity.reservation.bento.KrcdtReservationDetail;
 import nts.uk.ctx.at.record.infra.entity.reservation.bento.KrcdtReservationDetailPK;
@@ -44,7 +41,13 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 	private static final String FIND_ALL_BY_DATE;
 	
 	private static final String FIND_BY_ORDER_PERIOD_EMP;
-	
+
+	private static final String FIND_RESERVATION_TARGET_DATE;
+
+	private static final String ACQUIRED_RESERVATION_DETAIL;
+
+	private static final String GET_EMPLOYEE_NOT_ORDER;
+
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a.CID, a.RESERVATION_ID, a.CONTRACT_CD, a.RESERVATION_YMD, a.RESERVATION_FRAME, a.CARD_NO, a.ORDERED,");
@@ -64,8 +67,23 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		
 		builderString = new StringBuilder();
 		builderString.append(SELECT);
-		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD >= 'startDate' AND a.RESERVATION_YMD <= 'endDate' AND a.ORDERED IN (ordered)");
+		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD = 'date' AND a.ORDERED IN (ordered) AND a.WORK_LOCATION_CD = workLocationCode ");
 		FIND_BY_ORDER_PERIOD_EMP = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append(SELECT);
+		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD = 'date' AND a.WORK_LOCATION_CD = workLocationCode ");
+        FIND_RESERVATION_TARGET_DATE = builderString.toString();
+
+        builderString = new StringBuilder();
+		builderString.append(SELECT);
+		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD = 'date' AND b.QUANTITY >= 2 AND a.WORK_LOCATION_CD = workLocationCode ");
+        ACQUIRED_RESERVATION_DETAIL = builderString.toString();
+
+        builderString = new StringBuilder();
+		builderString.append(SELECT);
+		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD = 'date' ");
+		GET_EMPLOYEE_NOT_ORDER = builderString.toString();
 	}
 	
 	@AllArgsConstructor
@@ -183,53 +201,100 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		String query = FIND_ALL_BY_DATE;
 		query = query.replaceFirst("cardNo", registerInfor.getReservationCardNo());
 		query = query.replaceFirst("date", reservationDate.getDate().toString());
-		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
-			ResultSet rs = stmt.executeQuery();
-			List<BentoReservation> bentoReservationLst = toEntity(createFullJoinBentoReservation(rs))
-					.stream().map(x -> x.toDomain()).collect(Collectors.toList());
-			return bentoReservationLst;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
+        return getBentoReservations(query);
+    }
 
 	@Override
-	public List<BentoReservation> findByOrderedPeriodEmpLst(List<ReservationRegisterInfo> inforLst, DatePeriod period, boolean ordered) {
+	public List<BentoReservation> findByOrderedPeriodEmpLst(List<ReservationRegisterInfo> inforLst, ReservationDate reservationDate,
+															boolean ordered,Optional<WorkLocationCode> workLocationCode) {
 		String query = FIND_BY_ORDER_PERIOD_EMP;
 		List<String> cardLst = inforLst.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList());
 		String cardLstStr = "";
-		if(CollectionUtil.isEmpty(inforLst)) {
-			cardLstStr = "''";
-		} else {
-			for(String cardStr : cardLst) {
-				cardLstStr += "'" + cardStr + "'";
-				if(cardLst.indexOf(cardStr) < cardLst.size() - 1) {
-					cardLstStr += ",";
-				}
-			}
-		}
-		String orderedParam = "";
+        cardLstStr = getString(inforLst, cardLst, cardLstStr);
+        String orderedParam = "";
 		if(ordered) {
 			orderedParam = "1";
 		} else {
 			orderedParam = "0,1";
 		}
 		query = query.replaceFirst("cardLst", cardLstStr);
-		query = query.replaceFirst("startDate", period.start().toString());
-		query = query.replaceFirst("endDate", period.end().toString());
-		query = query.replaceFirst("ordered", orderedParam);
-		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
-			ResultSet rs = stmt.executeQuery();
-			List<BentoReservation> bentoReservationLst = toEntity(createFullJoinBentoReservation(rs))
-					.stream().map(x -> x.toDomain()).collect(Collectors.toList());
-			return bentoReservationLst;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
+        query = query.replaceFirst("date", reservationDate.getDate().toString());
+        query = query.replaceFirst("ordered", orderedParam);
+		query = query.replaceFirst("workLocationCode", String.valueOf(workLocationCode));
+        return getBentoReservations(query);
+    }
+
+    @Override
+    public List<BentoReservation> getFromReservationTargetDate(List<ReservationRegisterInfo> inforLst, ReservationDate reservationDate, Optional<WorkLocationCode> workLocationCode) {
+        String query = FIND_RESERVATION_TARGET_DATE;
+	    List<String> cardLst = inforLst.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList());
+        String cardLstStr = "";
+        cardLstStr = getString(inforLst, cardLst, cardLstStr);
+
+        query = query.replaceFirst("cardLst", cardLstStr);
+        query = query.replaceFirst("date", reservationDate.getDate().toString());
+        query = query.replaceFirst("workLocationCode", String.valueOf(workLocationCode));
+        return getBentoReservations(query);
+    }
+
+    @Override
+    public List<BentoReservation> acquireReservationDetails(List<ReservationRegisterInfo> inforLst, ReservationDate reservationDate, Optional<WorkLocationCode> workLocationCode) {
+        String query = ACQUIRED_RESERVATION_DETAIL;
+        List<String> cardLst = inforLst.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList());
+        String cardLstStr = "";
+        cardLstStr = getString(inforLst, cardLst, cardLstStr);
+
+        query = query.replaceFirst("cardLst", cardLstStr);
+        query = query.replaceFirst("date", reservationDate.getDate().toString());
+        query = query.replaceFirst("workLocationCode", String.valueOf(workLocationCode));
+        return getBentoReservations(query);
+    }
+
+    @Override
+    public List<BentoReservation> getEmployeeNotOrder(List<ReservationRegisterInfo> inforLst, ReservationDate reservationDate) {
+		String query = GET_EMPLOYEE_NOT_ORDER;
+		List<String> cardLst = inforLst.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList());
+		String cardLstStr = "";
+		cardLstStr = getString(inforLst, cardLst, cardLstStr);
+
+		query = query.replaceFirst("cardLst", cardLstStr);
+		query = query.replaceFirst("date", reservationDate.getDate().toString());
+		List<BentoReservation> bentoReservations = getBentoReservations(query);
+
+		if (bentoReservations.size() <= 0){
+			return inforLst.stream().map(x -> x.convertToBentoReservation(x,reservationDate)).collect(Collectors.toList());
 		}
+		List<ReservationRegisterInfo> reservationRegisterInfos = inforLst.stream().filter(x -> bentoReservations.contains(x.getReservationCardNo())).collect(Collectors.toList());
+
+        return reservationRegisterInfos.stream().map(x -> x.convertToBentoReservation(x,reservationDate)).collect(Collectors.toList());
 	}
 
 	@Override
 	public void update(BentoReservation bentoReservation) {
 		commandProxy().update(KrcdtReservation.fromDomain(bentoReservation));
 	}
+    private List<BentoReservation> getBentoReservations(String query) {
+        try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            List<BentoReservation> bentoReservationLst = toEntity(createFullJoinBentoReservation(rs))
+                    .stream().map(x -> x.toDomain()).collect(Collectors.toList());
+            return bentoReservationLst;
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private String getString(List<ReservationRegisterInfo> inforLst, List<String> cardLst, String cardLstStr) {
+        if(CollectionUtil.isEmpty(inforLst)) {
+            cardLstStr = "''";
+        } else {
+            for(String cardStr : cardLst) {
+                cardLstStr += "'" + cardStr + "'";
+                if(cardLst.indexOf(cardStr) < cardLst.size() - 1) {
+                    cardLstStr += ",";
+                }
+            }
+        }
+        return cardLstStr;
+    }
 }
