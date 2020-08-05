@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.query.reservation;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -15,7 +16,6 @@ import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSettingRepository;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
@@ -47,9 +47,9 @@ public class ReservationQuery {
 		val listBento = bentoReservationRepo.findList(reservationRegisterInfo, new ReservationDate(date, EnumAdaptor.valueOf(param.getClosingTimeFrame(), ReservationClosingTimeFrame.class))) ;
 		//2 get(会社ID, 予約日)
 		String companyId = AppContexts.user().companyId();
-		val bento = bentoMenuRepo.getBentoMenu(companyId, date);
+		val bento = bentoMenuRepo.getBentoMenu(companyId, date, Optional.empty());
 		//3 締め時刻別のメニュー
-		BentoMenuByClosingTime bentoMenuClosingTime = bento.getByClosingTime();
+		BentoMenuByClosingTime bentoMenuClosingTime = bento.getByClosingTime(null);
 		return new ReservationDto(listBento.stream().map(x -> BentoReservationDto.fromDomain(x)).collect(Collectors.toList()), BentoMenuByClosingTimeDto.fromDomain(bentoMenuClosingTime));
 	}
 	
