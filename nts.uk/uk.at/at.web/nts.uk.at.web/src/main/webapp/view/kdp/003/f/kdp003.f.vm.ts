@@ -249,7 +249,11 @@ module nts.uk.at.kdp003.f {
 				})
 				// get mode from params or set default
 				.always(() => {
-					vm.$blockui('clear').then(() => vm.mode(vm.params.mode || 'admin'));
+					vm.$blockui('clear')
+					.then(() => vm.mode(vm.params.mode || 'admin'))
+					.then(() => {
+						$(vm.$el).find('[tabindex]').first().focus();
+					});
 				});
 		}
 
