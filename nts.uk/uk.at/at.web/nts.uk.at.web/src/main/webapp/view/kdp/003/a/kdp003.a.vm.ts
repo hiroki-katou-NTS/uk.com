@@ -50,7 +50,7 @@ module nts.uk.at.kdp003.a {
 		employeeData: EmployeeListParam = {
 			employees: ko.observableArray([]),
 			selectedId: ko.observable(undefined),
-			employeeAuthcUseArt: ko.observable(false),
+			nameSelectArt: ko.observable(false),
 			baseDate: ko.observable(new Date())
 		};
 
@@ -272,7 +272,7 @@ module nts.uk.at.kdp003.a {
 				// clear tabs button
 				vm.buttonPage.tabs([]);
 				// remove employee list
-				vm.employeeData.employeeAuthcUseArt(false);
+				vm.employeeData.nameSelectArt(false);
 			};
 
 			if (!_.isObject(storage)) {
@@ -295,7 +295,7 @@ module nts.uk.at.kdp003.a {
 						vm.fingerStampSetting(data);
 
 						if (stampSetting) {
-							const { employeeAuthcUseArt } = stampSetting;
+							const { nameSelectArt } = stampSetting;
 
 							// clear message and show screen
 							vm.message(null);
@@ -304,7 +304,7 @@ module nts.uk.at.kdp003.a {
 							vm.buttonPage.tabs(stampSetting.pageLayouts);
 
 							// show employee list
-							vm.employeeData.employeeAuthcUseArt(!!employeeAuthcUseArt);
+							vm.employeeData.nameSelectArt(!!nameSelectArt);
 						} else {
 							clearState();
 						}
