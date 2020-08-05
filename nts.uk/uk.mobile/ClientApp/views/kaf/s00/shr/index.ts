@@ -26,8 +26,11 @@ export class KafS00ShrComponent extends Vue {
                         self.$goto('ccg008a');   
                     }
                 });
+                if (recordDate == 0) {
+                    return false;
+                }
 
-                return false;
+                return true;
             }
             
             if (_.isNull(opErrorFlag)) {
