@@ -31,13 +31,13 @@ module nts.uk.at.view.kdl005.a {
             expirationDateText: KnockoutObservable<string> = ko.observable("");
 
             constructor() {
-                var self = this;
+                const vm = this;
 
-                self.kdl005Data = nts.uk.ui.windows.getShared("KDL005_DATA");
+                vm.kdl005Data = nts.uk.ui.windows.getShared("KDL005_DATA");
 
-                self.employeeInfo = ko.observable("");
+                vm.employeeInfo = ko.observable("");
 
-                self.dataItems = ko.observableArray([]);
+                vm.dataItems = ko.observableArray([]);
 
                 this.legendOptions = {
                     items: [
@@ -46,71 +46,71 @@ module nts.uk.at.view.kdl005.a {
                     ]
                 };
 
-                service.getEmployeeList(self.kdl005Data).done(function(data: any) {
-                    if(data.employeeBasicInfo.length > 1) {
-                        self.selectedCode.subscribe(function(value) {
+                service.getEmployeeList(vm.kdl005Data).done((data: any) => {
+                    if (data.employeeBasicInfo.length > 1) {
+                        vm.selectedCode.subscribe((value) => {
                             let itemData: any = _.find(data.employeeBasicInfo, ['employeeCode', value]);
-                            self.onSelectEmployee(
+                            vm.onSelectEmployee(
                                 itemData.employeeId,
-                                self.kdl005Data.baseDate,
+                                vm.kdl005Data.baseDate,
                                 itemData.employeeCode,
                                 itemData.businessName,
                             );
                         });
 
-                        // self.baseDate = ko.observable(new Date());
-                        self.selectedCode(data.employeeBasicInfo[0].employeeCode);
-                        self.multiSelectedCode = ko.observableArray([]);
-                        self.isShowAlreadySet = ko.observable(false);
-                        self.alreadySettingList = ko.observableArray([
+                        // vm.baseDate = ko.observable(new Date());
+                        vm.selectedCode(data.employeeBasicInfo[0].employeeCode);
+                        vm.multiSelectedCode = ko.observableArray([]);
+                        vm.isShowAlreadySet = ko.observable(false);
+                        vm.alreadySettingList = ko.observableArray([
                             {code: '1', isAlreadySetting: true},
                             {code: '2', isAlreadySetting: true}
                         ]);
-                        self.isDialog = ko.observable(false);
-                        self.isShowNoSelectRow = ko.observable(false);
-                        self.isMultiSelect = ko.observable(false);
-                        self.isShowWorkPlaceName = ko.observable(false);
-                        self.isShowSelectAllButton = ko.observable(false);
-                        self.employeeList = ko.observableArray<UnitModel>(_.map(data.employeeBasicInfo,
+                        vm.isDialog = ko.observable(false);
+                        vm.isShowNoSelectRow = ko.observable(false);
+                        vm.isMultiSelect = ko.observable(false);
+                        vm.isShowWorkPlaceName = ko.observable(false);
+                        vm.isShowSelectAllButton = ko.observable(false);
+                        vm.employeeList = ko.observableArray<UnitModel>(_.map(data.employeeBasicInfo,
                             (x: any) => {
                                 return {code:x.employeeCode ,name:x.businessName};
                             }));
-                        self.listComponentOption = {
-                            isShowAlreadySet: self.isShowAlreadySet(),
-                            isMultiSelect: self.isMultiSelect(),
+                        vm.listComponentOption = {
+                            isShowAlreadySet: vm.isShowAlreadySet(),
+                            isMultiSelect: vm.isMultiSelect(),
                             listType: ListType.EMPLOYEE,
-                            employeeInputList: self.employeeList,
+                            employeeInputList: vm.employeeList,
                             selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                            selectedCode: self.selectedCode,
-                            isDialog: self.isDialog(),
-                            isShowNoSelectRow: self.isShowNoSelectRow(),
-                            alreadySettingList: self.alreadySettingList,
-                            isShowWorkPlaceName: self.isShowWorkPlaceName(),
-                            isShowSelectAllButton: self.isShowSelectAllButton(),
+                            selectedCode: vm.selectedCode,
+                            isDialog: vm.isDialog(),
+                            isShowNoSelectRow: vm.isShowNoSelectRow(),
+                            alreadySettingList: vm.alreadySettingList,
+                            isShowWorkPlaceName: vm.isShowWorkPlaceName(),
+                            isShowSelectAllButton: vm.isShowSelectAllButton(),
                             maxRows: 12
                         };
 
 
-                        $('#component-items-list').ntsListComponent(self.listComponentOption)
+                        $('#component-items-list').ntsListComponent(vm.listComponentOption)
                         .done(() => {
                             $('#component-items-list').focusComponent();
                             // Employment List
-                            self.employeeList($('#component-items-list').getDataList());
+                            vm.employeeList($('#component-items-list').getDataList());
                         });
 
                         $("#date-fixed-table").ntsFixedTable({ height: 155 });
-                    } else if(data.employeeBasicInfo.length == 1) {
-                        // self.employeeInfo(nts.uk.resource.getText("KDL009_25", [data.employeeBasicInfo[0].employeeCode, data.employeeBasicInfo[0].businessName]));
+                    } else if (data.employeeBasicInfo.length == 1) {
+                        // vm.employeeInfo(nts.uk.resource.getText("KDL009_25", [data.employeeBasicInfo[0].employeeCode, data.employeeBasicInfo[0].businessName]));
 
-                        self.onSelectEmployee(
+                        vm.onSelectEmployee(
                             data.employeeBasicInfo[0].employeeId,
-                            self.kdl005Data.baseDate,
+                            vm.kdl005Data.baseDate,
                             data.employeeBasicInfo[0].employeeCode,
                             data.employeeBasicInfo[0].businessName,
                         );
                         $("#date-fixed-table").ntsFixedTable({ height: 155 });
                     } else {
-                        self.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
+                        vm.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
                         $("#date-fixed-table").ntsFixedTable({ height: 155 });
                     }
                 });
@@ -118,23 +118,23 @@ module nts.uk.at.view.kdl005.a {
 
             // 社員リストの先頭を選択
             onSelectEmployee(id: string, baseDate: any, employeeCode: string, employeeName: string) {
-                const self = this;
+                const vm = this;
                 // Show employee name
-                self.employeeInfo(nts.uk.resource.getText("KDL009_25", [employeeCode, employeeName]));
+                vm.employeeInfo(nts.uk.resource.getText("KDL009_25", [employeeCode, employeeName]));
                 // Get employee data
                 service.getDetailsConfirm(id, baseDate)
                     .done(function(data) {
                         if (data.deadLineDetails && data.deadLineDetails.isManaged) {
-                            self.expirationDateText(ExpirationDate[data.deadLineDetails.expirationTime]);
+                            vm.expirationDateText(ExpirationDate[data.deadLineDetails.expirationTime]);
                         }
-                        self.bindTimeData(data);
-                        self.bindSummaryData(data);
-                        self.isManagementSection(data.isManagementSection);
+                        vm.bindTimeData(data);
+                        vm.bindSummaryData(data);
+                        vm.isManagementSection(data.isManagementSection);
                     });
             }
 
             startPage(): JQueryPromise<any> {
-                var self = this;
+                const vm = this;
                 var dfd = $.Deferred();
 
                 dfd.resolve();
@@ -143,40 +143,25 @@ module nts.uk.at.view.kdl005.a {
             }
 
             private bindTimeData(data: AcquisitionNumberRestDayDto) {
-                let self = this;
+                const vm = this;
 
-                self.dataItems.removeAll();
+                vm.dataItems.removeAll();
 
                 // Convert to list item
-                ko.utils.arrayPushAll(self.dataItems, self.convertDetailToItem(data.listRemainNumberDetail, data.listPegManagement));
+                ko.utils.arrayPushAll(vm.dataItems, vm.convertDetailToItem(data.listRemainNumberDetail, data.listPegManagement));
             }
 
-            bindSummaryData(data: any) {
-                const self = this;
+            bindSummaryData(data: AcquisitionNumberRestDayDto) {
+                const vm = this;
                 const numberFormat = new nts.uk.ui.option.NumberEditorOption({ decimallength: 1 });
 
-                self.value01(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.carryForwardDay, numberFormat)]));
-                self.value02(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.occurrenceDay, numberFormat)]));
-                self.hint02(nts.uk.resource.getText("KDL005_33", [nts.uk.ntsNumber.formatNumber(data.scheduleOccurrencedDay, numberFormat)]));
-                self.value03(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.usageDay, numberFormat)]));
-                self.hint03(nts.uk.resource.getText("KDL005_34", [nts.uk.ntsNumber.formatNumber(data.scheduledUsageDay, numberFormat)]));
-                self.value04(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.remainingDay, numberFormat)]));
-                self.hint04(nts.uk.resource.getText("KDL005_35", [nts.uk.ntsNumber.formatNumber(data.scheduledRemainingDay, numberFormat)]));
-                // if (data.totalInfor != null) {
-                //     self.value01(data.totalInfor.carryForwardDays + nts.uk.resource.getText("KDL005_27"));
-                // } else {
-                //     self.value01(nts.uk.resource.getText("KDL005_27", ["0"]));
-                // }
-                // if (data.breakDay != null) {
-
-                //     self.value02(data.breakDay.occurrenceDays + nts.uk.resource.getText("KDL005_27"));
-                //     self.value03(data.breakDay.useDays + nts.uk.resource.getText("KDL005_27"));
-                //     self.value04(data.breakDay.remainDays + nts.uk.resource.getText("KDL005_27"));
-                // } else {
-                //     self.value02(nts.uk.resource.getText("KDL005_27", ["0"]));
-                //     self.value03(nts.uk.resource.getText("KDL005_27", ["0"]));
-                //     self.value04(nts.uk.resource.getText("KDL005_27", ["0"]));
-                // }
+                vm.value01(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.carryForwardDay, numberFormat)]));
+                vm.value02(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.occurrenceDay, numberFormat)]));
+                vm.hint02(nts.uk.resource.getText("KDL005_33", [nts.uk.ntsNumber.formatNumber(data.scheduleOccurrencedDay, numberFormat)]));
+                vm.value03(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.usageDay, numberFormat)]));
+                vm.hint03(nts.uk.resource.getText("KDL005_34", [nts.uk.ntsNumber.formatNumber(data.scheduledUsageDay, numberFormat)]));
+                vm.value04(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.remainingDay, numberFormat)]));
+                vm.hint04(nts.uk.resource.getText("KDL005_35", [nts.uk.ntsNumber.formatNumber(data.scheduledRemainingDay, numberFormat)]));
             }
 
             cancel() {
@@ -184,7 +169,7 @@ module nts.uk.at.view.kdl005.a {
             }
 
             private convertDetailToItem(listDetail: RemainNumberDetailDto[], listPeg: PegManagementDto[]): DataItems[] {
-                const self = this;
+                const vm = this;
                 const listItem: DataItems[] = [];
                 const mapOccurenceDate: Map<String, any[]> = {};
                 const mapUsageDate: Map<String, any[]> = {};
@@ -213,14 +198,14 @@ module nts.uk.at.view.kdl005.a {
                         if (listOccurenceDate) {
                             // Combined records
                             if (item) {
-                                item.listOccurrence.push(self.convertDetailDtoToModel(itemDetail));
+                                item.listOccurrence.push(vm.convertDetailDtoToModel(itemDetail));
                             } else {
                                 item = new DataItems({
                                     isMultiOccurrence: false,
                                     isMultiDigestion: false,
-                                    listOccurrence: [self.convertDetailDtoToModel(itemDetail)],
+                                    listOccurrence: [vm.convertDetailDtoToModel(itemDetail)],
                                     listDigestion: [],
-                                    singleRowDetail: self.convertDetailDtoToModel(itemDetail),
+                                    singleRowDetail: vm.convertDetailDtoToModel(itemDetail),
                                 });
                             }
                         } else {
@@ -228,7 +213,7 @@ module nts.uk.at.view.kdl005.a {
                             listItem.push(new DataItems({
                                 isMultiOccurrence: false,
                                 isMultiDigestion: false,
-                                singleRowDetail: self.convertDetailDtoToModel(itemDetail),
+                                singleRowDetail: vm.convertDetailDtoToModel(itemDetail),
                             }));
                         }
                     } else if (itemDetail.digestionDate) {
@@ -236,14 +221,14 @@ module nts.uk.at.view.kdl005.a {
                         if (listDigestionDate) {
                             // Combined records
                             if (item) {
-                                item.listDigestion.push(self.convertDetailDtoToModel(itemDetail));
+                                item.listDigestion.push(vm.convertDetailDtoToModel(itemDetail));
                             } else {
                                 item = new DataItems({
                                     isMultiOccurrence: false,
                                     isMultiDigestion: false,
                                     listOccurrence: [],
-                                    listDigestion: [self.convertDetailDtoToModel(itemDetail)],
-                                    singleRowDetail: self.convertDetailDtoToModel(itemDetail),
+                                    listDigestion: [vm.convertDetailDtoToModel(itemDetail)],
+                                    singleRowDetail: vm.convertDetailDtoToModel(itemDetail),
                                 });
                             }
                         } else {
@@ -251,7 +236,7 @@ module nts.uk.at.view.kdl005.a {
                             listItem.push(new DataItems({
                                 isMultiOccurrence: false,
                                 isMultiDigestion: false,
-                                singleRowDetail: self.convertDetailDtoToModel(itemDetail),
+                                singleRowDetail: vm.convertDetailDtoToModel(itemDetail),
                             }));
                         }
                     }

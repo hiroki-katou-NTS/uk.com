@@ -127,7 +127,7 @@ public class EmploymentSystemFinder {
 		GeneralDate inputDate = GeneralDate.fromString(baseDate, "yyyy/MM/dd");
 		// #110215 10-2.代休の設定を取得する
 		SubstitutionHolidayOutput subHd = this.absenceTenProcessCommon.getSettingForSubstituteHoliday(companyId,
-				employeeId, GeneralDate.today());
+				employeeId, inputDate);
 
 		if (!subHd.isSubstitutionFlg() || !subHd.isTimeOfPeriodFlg()) {
 			// #110215 取得した管理区分を渡す
@@ -144,9 +144,19 @@ public class EmploymentSystemFinder {
 		DatePeriod closingPeriod = closureService.findClosurePeriod(employeeId, inputDate);
 
 		// #110215 期間内の休出代休残数を取得する
-		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(companyId, employeeId,
-				getDatePeroid(closingPeriod.start()), false, inputDate, false, Collections.emptyList(),
-				Optional.empty(), Optional.empty(), Collections.emptyList(), Collections.emptyList(), Optional.empty());
+		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(
+				companyId, 
+				employeeId,
+				getDatePeroid(closingPeriod.start()), 
+				false, 
+				GeneralDate.today(), 
+				false, 
+				Collections.emptyList(),
+				Optional.empty(), 
+				Optional.empty(), 
+				Collections.emptyList(), 
+				Collections.emptyList(), 
+				Optional.empty());
 		SubstituteHolidayAggrResult substituteHolidayAggrResult = this.numberRemainVacationLeaveRangeProcess
 				.getBreakDayOffMngInPeriod(inputParam);
 		// #110215 残数詳細を作成
