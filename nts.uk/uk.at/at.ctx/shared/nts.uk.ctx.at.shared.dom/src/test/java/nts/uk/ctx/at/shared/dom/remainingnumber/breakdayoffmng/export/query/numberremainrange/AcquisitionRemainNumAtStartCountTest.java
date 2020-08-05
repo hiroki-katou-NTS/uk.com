@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.CarryForwardDayTimes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 
@@ -74,7 +75,8 @@ public class AcquisitionRemainNumAtStartCountTest {
 
 		List<AccumulationAbsenceDetail> lstAccuAbsenDetail = new ArrayList<>();
 		CarryForwardDayTimes resultActual = AcquisitionRemainNumAtStartCount.acquisition(require, CID, SID,
-				GeneralDate.ymd(2019, 11, 01), true, lstAccuAbsenDetail);
+				GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2019, 11, 30), true, lstAccuAbsenDetail,
+				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 		assertThat(resultActual.getCarryForwardDays()).isEqualTo(0.0);
 		assertThat(resultActual.getCarryForwardTime()).isEqualTo(-2);
 

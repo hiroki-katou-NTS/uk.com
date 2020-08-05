@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.assertj.core.groups.Tuple;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -20,8 +23,11 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.DayOffError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.VacationDetails;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
@@ -39,6 +45,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffset
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 @RunWith(JMockit.class)
@@ -86,7 +93,7 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(CID, SID,
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)), true,
 				GeneralDate.ymd(2019, 11, 30), true, interimMng, Optional.empty(), Optional.empty(), new ArrayList<>(),
-				dayOffMng, holidayAggrResult);
+				dayOffMng, holidayAggrResult, new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 
 		new Expectations() {
 			{
@@ -120,6 +127,7 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0), Arrays.asList(DayOffError.DAYERROR),
 				Finally.of(GeneralDate.ymd(2020, 11, 01)), new ArrayList<>());
 		NumberRemainVacationLeaveRangeQueryTest.assertData(resultActual, resultExpected);
+		assertThat(resultActual.getLstSeqVacation()).isEqualTo(new ArrayList<>());
 
 	}
 
@@ -164,7 +172,8 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(CID, SID,
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)), true,
 				GeneralDate.ymd(2019, 11, 30), true, interimMng, Optional.empty(), Optional.empty(), breakMng,
-				new ArrayList<>(), holidayAggrResult);
+				new ArrayList<>(), holidayAggrResult,
+				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 
 		new Expectations() {
 			{
@@ -204,6 +213,7 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0), Arrays.asList(),
 				Finally.of(GeneralDate.ymd(2020, 11, 01)), new ArrayList<>());
 		NumberRemainVacationLeaveRangeQueryTest.assertData(resultActual, resultExpected);
+		assertThat(resultActual.getLstSeqVacation()).isEqualTo(new ArrayList<>());
 
 	}
 
@@ -269,7 +279,7 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(CID, SID,
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)), true,
 				GeneralDate.ymd(2019, 11, 30), true, interimMng, Optional.empty(), Optional.empty(), breakMng,
-				dayOffMng, holidayAggrResult);
+				dayOffMng, holidayAggrResult, new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 
 		new Expectations() {
 			{
@@ -309,6 +319,19 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0), Arrays.asList(),
 				Finally.of(GeneralDate.ymd(2020, 11, 01)), new ArrayList<>());
 		NumberRemainVacationLeaveRangeQueryTest.assertData(resultActual, resultExpected);
+		// assertThat(resultActual.getLstSeqVacation()).isEqualTo(new ArrayList<>());
+		assertThat(resultActual.getLstSeqVacation())
+				.extracting(x -> x.getOutbreakDay(), x -> x.getDateOfUse(), x -> x.getDayNumberUsed(),
+						x -> x.getTargetSelectionAtr())
+				.containsExactly(
+						Tuple.tuple(GeneralDate.ymd(2019, 11, 2), GeneralDate.ymd(2019, 11, 4),
+								new ReserveLeaveRemainingDayNumber(1.0), TargetSelectionAtr.AUTOMATIC),
+						Tuple.tuple(GeneralDate.ymd(2019, 11, 3), GeneralDate.ymd(2019, 11, 5),
+								new ReserveLeaveRemainingDayNumber(1.0), TargetSelectionAtr.AUTOMATIC),
+						Tuple.tuple(GeneralDate.ymd(2019, 11, 9), GeneralDate.ymd(2019, 11, 14),
+								new ReserveLeaveRemainingDayNumber(1.0), TargetSelectionAtr.AUTOMATIC),
+						Tuple.tuple(GeneralDate.ymd(2019, 11, 10), GeneralDate.ymd(2019, 11, 15),
+								new ReserveLeaveRemainingDayNumber(1.0), TargetSelectionAtr.AUTOMATIC));
 
 	}
 
@@ -354,7 +377,7 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(CID, SID,
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)), true,
 				GeneralDate.ymd(2019, 11, 30), true, interimMng, Optional.empty(), Optional.empty(), breakMng,
-				dayOffMng, holidayAggrResult);
+				dayOffMng, holidayAggrResult, new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 
 		new Expectations() {
 			{
@@ -394,6 +417,14 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0), Arrays.asList(),
 				Finally.of(GeneralDate.ymd(2020, 11, 01)), new ArrayList<>());
 		NumberRemainVacationLeaveRangeQueryTest.assertData(resultActual, resultExpected);
+		assertThat(resultActual.getLstSeqVacation())
+				.extracting(x -> x.getOutbreakDay(), x -> x.getDateOfUse(), x -> x.getDayNumberUsed(),
+						x -> x.getTargetSelectionAtr())
+				.containsExactly(
+						Tuple.tuple(GeneralDate.ymd(2019, 11, 2), GeneralDate.ymd(2019, 11, 4),
+								new ReserveLeaveRemainingDayNumber(0.5), TargetSelectionAtr.AUTOMATIC),
+						Tuple.tuple(GeneralDate.ymd(2019, 11, 2), GeneralDate.ymd(2019, 11, 5),
+								new ReserveLeaveRemainingDayNumber(0.5), TargetSelectionAtr.AUTOMATIC));
 
 	}
 
@@ -439,7 +470,7 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(CID, SID,
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)), true,
 				GeneralDate.ymd(2019, 11, 30), true, interimMng, Optional.empty(), Optional.empty(), breakMng,
-				dayOffMng, holidayAggrResult);
+				dayOffMng, holidayAggrResult, new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 
 		new Expectations() {
 			{
@@ -479,6 +510,14 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0), Arrays.asList(DayOffError.DAYERROR),
 				Finally.of(GeneralDate.ymd(2020, 11, 01)), new ArrayList<>());
 		NumberRemainVacationLeaveRangeQueryTest.assertData(resultActual, resultExpected);
+		assertThat(resultActual.getLstSeqVacation())
+				.extracting(x -> x.getOutbreakDay(), x -> x.getDateOfUse(), x -> x.getDayNumberUsed(),
+						x -> x.getTargetSelectionAtr())
+				.containsExactly(
+						Tuple.tuple(GeneralDate.ymd(2019, 11, 2), GeneralDate.ymd(2019, 11, 4),
+								new ReserveLeaveRemainingDayNumber(1.0), TargetSelectionAtr.AUTOMATIC),
+						Tuple.tuple(GeneralDate.ymd(2019, 11, 3), GeneralDate.ymd(2019, 11, 4),
+								new ReserveLeaveRemainingDayNumber(0.5), TargetSelectionAtr.AUTOMATIC));
 
 	}
 
@@ -489,23 +528,27 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 	public void testCase6() {
 
 		List<InterimDayOffMng> dayOffMng = Arrays.asList(
-				new InterimDayOffMng("hdda6a46-2cbe-48c8-85f8-c04ca554e132", new RequiredTime(0), new RequiredDay(1.0),
+				new InterimDayOffMng("hdda6a46-2cbe-48c8-85f8-c04ca554e132", new RequiredTime(0), new RequiredDay(0.5),
 						new UnOffsetTime(0), new UnOffsetDay(0.5)),
-				new InterimDayOffMng("hdda6a46-2cbe-48c8-85f8-c04ca554e333", new RequiredTime(0), new RequiredDay(1.0),
+				new InterimDayOffMng("hdda6a46-2cbe-48c8-85f8-c04ca554e333", new RequiredTime(0), new RequiredDay(0.5),
 						new UnOffsetTime(0), new UnOffsetDay(0.5)));
 
-		List<InterimBreakMng> breakMng = Arrays.asList(new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e132",
-				new AttendanceTime(480), GeneralDate.ymd(2019, 8, 14), new OccurrenceTime(0), new OccurrenceDay(1.0),
-				new AttendanceTime(240), new UnUsedTime(0), new UnUsedDay(1.0)));
+//		List<InterimBreakMng> breakMng = Arrays.asList(new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e132",
+//				new AttendanceTime(480), GeneralDate.ymd(2019, 8, 14), new OccurrenceTime(0), new OccurrenceDay(1.0),
+//				new AttendanceTime(240), new UnUsedTime(0), new UnUsedDay(1.0)));
 
 		List<InterimRemain> interimMng = Arrays.asList(
-				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 8, 14),
-						CreateAtr.SCHEDULE, RemainType.BREAK, RemainAtr.SINGLE),
+//				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 8, 14),
+//						CreateAtr.SCHEDULE, RemainType.BREAK, RemainAtr.SINGLE),
 
 				new InterimRemain("hdda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 11, 14),
 						CreateAtr.SCHEDULE, RemainType.SUBHOLIDAY, RemainAtr.SINGLE),
 				new InterimRemain("hdda6a46-2cbe-48c8-85f8-c04ca554e333", SID, GeneralDate.ymd(2019, 11, 15),
 						CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
+
+		List<LeaveManagementData> leavFix = Arrays.asList(new LeaveManagementData(
+				"adda6a46-2cbe-48c8-85f8-c04ca554e132", CID, SID, true, GeneralDate.ymd(2019, 8, 14),
+				GeneralDate.ymd(2019, 11, 14), 1.0, 0, 1.0, 0, DigestionAtr.UNUSED.value, 0, 0));
 
 		Optional<SubstituteHolidayAggrResult> holidayAggrResult = Optional.of(new SubstituteHolidayAggrResult(
 				new VacationDetails(new ArrayList<>()), new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0),
@@ -515,12 +558,15 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				Finally.of(GeneralDate.ymd(2019, 12, 21)), Collections.emptyList()));
 
 		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(CID, SID,
-				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)), true,
-				GeneralDate.ymd(2019, 11, 30), true, interimMng, Optional.empty(), Optional.empty(), breakMng,
-				dayOffMng, holidayAggrResult);
+				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)), false,
+				GeneralDate.ymd(2019, 11, 30), true, interimMng, Optional.empty(), Optional.empty(), new ArrayList<>(),
+				dayOffMng, holidayAggrResult, new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 
 		new Expectations() {
 			{
+
+				require.getBySidYmd(CID, SID, (GeneralDate) any, DigestionAtr.UNUSED);
+				result = leavFix;
 
 				require.findByEmployeeIdOrderByStartDate(anyString);
 				result = Arrays.asList(new EmploymentHistShareImport(SID, "00",
@@ -531,13 +577,8 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
 				require.findComLeavEmpSet(CID, "00");
-				result = NumberRemainVacationLeaveRangeQueryTest.createComLeav(ManageDistinct.YES, ManageDistinct.NO, "00");
-				
-//				require.getClosureDataByEmployee(SID, (GeneralDate) any);
-//				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
-//
-//				require.getFirstMonth(CID);
-//				result = new CompanyDto(11);
+				result = NumberRemainVacationLeaveRangeQueryTest.createComLeav(ManageDistinct.YES, ManageDistinct.NO,
+						"00");
 
 			}
 
@@ -546,17 +587,19 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 		SubstituteHolidayAggrResult resultActual = NumberRemainVacationLeaveRangeQuery
 				.getBreakDayOffMngInPeriod(require, inputParam);
 
-//		new SubstituteHolidayAggrResult(vacationDetails, remainDay, remainTime, dayUse, timeUse, occurrenceDay,
-//		occurrenceTime, carryoverDay, carryoverTime, unusedDay, unusedTime, dayOffErrors, nextDay,
-//		lstSeqVacation);
 		SubstituteHolidayAggrResult resultExpected = new SubstituteHolidayAggrResult(
 				new VacationDetails(new ArrayList<>()), new ReserveLeaveRemainingDayNumber(-0.5),
-				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(2.0), new RemainingMinutes(0),
+				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(1.0), new RemainingMinutes(0),
 				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(0.5), new RemainingMinutes(240), Arrays.asList(DayOffError.DAYERROR),
+				new ReserveLeaveRemainingDayNumber(1.0), new RemainingMinutes(0),
+				new ReserveLeaveRemainingDayNumber(0.5), new RemainingMinutes(0), Arrays.asList(DayOffError.DAYERROR),
 				Finally.of(GeneralDate.ymd(2020, 11, 01)), new ArrayList<>());
 		NumberRemainVacationLeaveRangeQueryTest.assertData(resultActual, resultExpected);
+		assertThat(resultActual.getLstSeqVacation())
+				.extracting(x -> x.getOutbreakDay(), x -> x.getDateOfUse(), x -> x.getDayNumberUsed(),
+						x -> x.getTargetSelectionAtr())
+				.containsExactly(Tuple.tuple(GeneralDate.ymd(2019, 8, 14), GeneralDate.ymd(2019, 11, 14),
+						new ReserveLeaveRemainingDayNumber(0.5), TargetSelectionAtr.AUTOMATIC));
 
 	}
 
@@ -568,40 +611,40 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 	public void testCase7() {
 
 		List<InterimDayOffMng> dayOffMng = Arrays.asList(new InterimDayOffMng("hdda6a46-2cbe-48c8-85f8-c04ca554e132",
-				new RequiredTime(0), new RequiredDay(0.0), new UnOffsetTime(0), new UnOffsetDay(1.0)));
+				new RequiredTime(0), new RequiredDay(1.0), new UnOffsetTime(0), new UnOffsetDay(1.0)));
 
-		List<InterimBreakMng> breakMng = Arrays.asList(
-				new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e132", new AttendanceTime(480),
-						GeneralDate.max().addDays(-1), new OccurrenceTime(0), new OccurrenceDay(1.0),
-						new AttendanceTime(240), new UnUsedTime(0), new UnUsedDay(1.0)),
+		List<InterimBreakMng> breakMng = Arrays.asList(new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e132",
+				new AttendanceTime(480), GeneralDate.max().addDays(-1), new OccurrenceTime(0), new OccurrenceDay(1.0),
+				new AttendanceTime(240), new UnUsedTime(0), new UnUsedDay(1.0))
 
-				new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e133", new AttendanceTime(480),
-						GeneralDate.ymd(2020, 1, 14), new OccurrenceTime(0), new OccurrenceDay(1.0),
-						new AttendanceTime(240), new UnUsedTime(0), new UnUsedDay(0.5)));
+//				new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e133", new AttendanceTime(480),
+//						GeneralDate.ymd(2020, 1, 14), new OccurrenceTime(0), new OccurrenceDay(1.0),
+//						new AttendanceTime(240), new UnUsedTime(0), new UnUsedDay(0.5))
+		);
 
-		List<InterimRemain> interimMng = Arrays.asList(
-				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 11, 10),
-						CreateAtr.SCHEDULE, RemainType.BREAK, RemainAtr.SINGLE),
-				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e133", SID, GeneralDate.ymd(2019, 10, 14),
-						CreateAtr.SCHEDULE, RemainType.BREAK, RemainAtr.SINGLE),
+		List<InterimRemain> interimMng = Arrays.asList(new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID,
+				GeneralDate.ymd(2019, 11, 10), CreateAtr.SCHEDULE, RemainType.BREAK, RemainAtr.SINGLE),
+
+//				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e133", SID, GeneralDate.ymd(2019, 10, 14),
+//						CreateAtr.SCHEDULE, RemainType.BREAK, RemainAtr.SINGLE),
 
 				new InterimRemain("hdda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 11, 4),
 						CreateAtr.SCHEDULE, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
 
-		Optional<SubstituteHolidayAggrResult> holidayAggrResult = Optional.of(new SubstituteHolidayAggrResult(
-				new VacationDetails(new ArrayList<>()), new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0d),
-				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0), Collections.emptyList(),
-				Finally.of(GeneralDate.ymd(2019, 11, 01)), Collections.emptyList()));
+		List<LeaveManagementData> leavFix = Arrays.asList(new LeaveManagementData(
+				"adda6a46-2cbe-48c8-85f8-c04ca554e133", CID, SID, false, GeneralDate.ymd(2019, 10, 14),
+				GeneralDate.ymd(2020, 1, 14), 0.5, 0, 0.5, 0, DigestionAtr.UNUSED.value, 0, 0));
 
 		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(CID, SID,
-				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)), true,
+				new DatePeriod(GeneralDate.ymd(2019, 4, 1), GeneralDate.ymd(2020, 3, 31)), false,
 				GeneralDate.ymd(2019, 11, 30), true, interimMng, Optional.empty(), Optional.empty(), breakMng,
-				dayOffMng, holidayAggrResult);
+				dayOffMng, Optional.empty(), new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 
 		new Expectations() {
 			{
+
+				require.getBySidYmd(CID, SID, (GeneralDate) any, DigestionAtr.UNUSED);
+				result = leavFix;
 
 				require.findByEmployeeIdOrderByStartDate(anyString);
 				result = Arrays.asList(
@@ -629,12 +672,17 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 
 		SubstituteHolidayAggrResult resultExpected = new SubstituteHolidayAggrResult(
 				new VacationDetails(new ArrayList<>()), new ReserveLeaveRemainingDayNumber(0.5),
-				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(1.0), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(1.0), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0), Arrays.asList(),
-				Finally.of(GeneralDate.ymd(2020, 11, 01)), new ArrayList<>());
+				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(1.0), new RemainingMinutes(0),
+				new ReserveLeaveRemainingDayNumber(1.5), new RemainingMinutes(0),
+				new ReserveLeaveRemainingDayNumber(0.5), new RemainingMinutes(0),
+				new ReserveLeaveRemainingDayNumber(.0), new RemainingMinutes(0), Arrays.asList(DayOffError.PREFETCH_ERROR),
+				Finally.of(GeneralDate.ymd(2020, 04, 01)), new ArrayList<>());
 		NumberRemainVacationLeaveRangeQueryTest.assertData(resultActual, resultExpected);
+		assertThat(resultActual.getLstSeqVacation())
+				.extracting(x -> x.getOutbreakDay(), x -> x.getDateOfUse(), x -> x.getDayNumberUsed(),
+						x -> x.getTargetSelectionAtr())
+				.containsExactly(Tuple.tuple(GeneralDate.ymd(2019, 10, 14), GeneralDate.ymd(2019, 11, 4),
+						new ReserveLeaveRemainingDayNumber(1.0), TargetSelectionAtr.AUTOMATIC));
 
 	}
 }

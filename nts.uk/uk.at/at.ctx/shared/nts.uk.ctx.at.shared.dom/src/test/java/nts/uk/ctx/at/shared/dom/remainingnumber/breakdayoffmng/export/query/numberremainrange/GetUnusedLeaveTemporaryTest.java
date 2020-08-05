@@ -54,14 +54,14 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 @RunWith(JMockit.class)
-public class GetTemporaryDataTest {
+public class GetUnusedLeaveTemporaryTest {
 
 	private static String CID = "000000000000-0117";
 
 	private static String SID = "292ae91c-508c-4c6e-8fe8-3e72277dec16";
 
 	@Injectable
-	private GetTemporaryData.Require require;
+	private GetUnusedLeaveTemporary.Require require;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -72,18 +72,15 @@ public class GetTemporaryDataTest {
 	}
 
 	@Test
-	public void testProcess() {
+	public void testModeMonth() {
 
 		List<InterimDayOffMng> dayOffMng = Arrays.asList(
-				new InterimDayOffMng("62d542c3-4b79-4bf3-bd39-7e7f06711c34", new RequiredTime(0), new RequiredDay(1.0),
-						new UnOffsetTime(0), new UnOffsetDay(1.0)),
-				new InterimDayOffMng("077a8929-3df0-4fd6-859e-29e615a921ee", new RequiredTime(0), new RequiredDay(1.0),
-						new UnOffsetTime(0), new UnOffsetDay(1.0)),
 				new InterimDayOffMng("876caf30-5a4d-47b7-8147-d646f74be08a", new RequiredTime(0), new RequiredDay(1.0),
 						new UnOffsetTime(0), new UnOffsetDay(1.0)),
 				new InterimDayOffMng("077a8929-3df0-4fd6-859e-29e615a921ea", new RequiredTime(480),
 						new RequiredDay(1.0), new UnOffsetTime(480), new UnOffsetDay(1.0)));
 
+		// BREAK filter
 		List<InterimBreakMng> breakMng = Arrays.asList(
 				new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e132", new AttendanceTime(480),
 						GeneralDate.ymd(2020, 6, 6), new OccurrenceTime(480), new OccurrenceDay(1.0),
@@ -98,10 +95,6 @@ public class GetTemporaryDataTest {
 				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e333", SID, GeneralDate.ymd(2019, 11, 6),
 						CreateAtr.RECORD, RemainType.BREAK, RemainAtr.SINGLE),
 
-				new InterimRemain("62d542c3-4b79-4bf3-bd39-7e7f06711c34", SID, GeneralDate.ymd(2019, 11, 7),
-						CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE),
-				new InterimRemain("077a8929-3df0-4fd6-859e-29e615a921ee", SID, GeneralDate.ymd(2019, 11, 8),
-						CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE),
 				new InterimRemain("876caf30-5a4d-47b7-8147-d646f74be08a", SID, GeneralDate.ymd(2019, 11, 9),
 						CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE),
 				new InterimRemain("077a8929-3df0-4fd6-859e-29e615a921ea", SID, GeneralDate.ymd(2019, 11, 10),
@@ -122,20 +115,14 @@ public class GetTemporaryDataTest {
 		new Expectations() {
 			{
 
+//				require.getBreakDayOffMng("077a8929-3df0-4fd6-859e-29e615a921ea", anyBoolean, (DataManagementAtr) any);
+//				result = Arrays.asList(
+//						new InterimBreakDayOffMng("", DataManagementAtr.INTERIM, "077a8929-3df0-4fd6-859e-29e615a921ea",
+//								DataManagementAtr.INTERIM, new UseTime(0), new UseDay(0d), SelectedAtr.AUTOMATIC));
+
 				require.findEmploymentHistory(CID, SID, (GeneralDate) any);
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
-
-//				require.getClosureDataByEmployee(SID, (GeneralDate) any);
-//				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
-
-//				require.getFirstMonth(CID);
-//				result = new CompanyDto(11);
-
-				require.getBreakDayOffMng("077a8929-3df0-4fd6-859e-29e615a921ea", anyBoolean, (DataManagementAtr) any);
-				result = Arrays.asList(
-						new InterimBreakDayOffMng("", DataManagementAtr.INTERIM, "077a8929-3df0-4fd6-859e-29e615a921ea",
-								DataManagementAtr.INTERIM, new UseTime(240), new UseDay(0.5), SelectedAtr.AUTOMATIC));
 
 				require.findComLeavEmpSet(CID, anyString);
 				result = NumberRemainVacationLeaveRangeQueryTest.createComLeav(ManageDistinct.YES, ManageDistinct.YES,
@@ -144,39 +131,123 @@ public class GetTemporaryDataTest {
 			}
 
 		};
-		List<AccumulationAbsenceDetail> resultActual = GetTemporaryData.process(require, inputParam);
 
-		assertThat(resultActual).extracting(x -> x.getManageId(), x -> x.getEmployeeId(), x -> x.getDataAtr(),
+		List<AccumulationAbsenceDetail> actualResult = GetUnusedLeaveTemporary.process(require, inputParam);
+
+		assertThat(actualResult).extracting(x -> x.getManageId(), x -> x.getEmployeeId(), x -> x.getDataAtr(),
 				x -> x.getDateOccur().isUnknownDate(), x -> x.getDateOccur().getDayoffDate(),
 				x -> x.getNumberOccurren().getDay().v(), x -> x.getNumberOccurren().getTime(),
 				x -> x.getOccurrentClass(), x -> x.getUnbalanceNumber().getDay().v(),
 				x -> x.getUnbalanceNumber().getTime(),
 				x -> x.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE ? ((UnbalanceVacation) x).getDeadline()
 						: Optional.empty())
-				.containsExactly(Tuple.tuple("62d542c3-4b79-4bf3-bd39-7e7f06711c34", SID, MngDataStatus.RECORD, false,
-						Optional.of(GeneralDate.ymd(2019, 11, 7)), 1.0, Optional.of(new AttendanceTime(0)),
-						OccurrenceDigClass.DIGESTION, 1.0, Optional.of(new AttendanceTime(0)), Optional.empty()),
-						Tuple.tuple("077a8929-3df0-4fd6-859e-29e615a921ee", SID, MngDataStatus.RECORD, false,
-								Optional.of(GeneralDate.ymd(2019, 11, 8)), 1.0, Optional.of(new AttendanceTime(0)),
-								OccurrenceDigClass.DIGESTION, 1.0, Optional.of(new AttendanceTime(0)),
-								Optional.empty()),
-						Tuple.tuple("876caf30-5a4d-47b7-8147-d646f74be08a", SID, MngDataStatus.RECORD, false,
-								Optional.of(GeneralDate.ymd(2019, 11, 9)), 1.0, Optional.of(new AttendanceTime(0)),
-								OccurrenceDigClass.DIGESTION, 1.0, Optional.of(new AttendanceTime(0)),
-								Optional.empty()),
-						Tuple.tuple("077a8929-3df0-4fd6-859e-29e615a921ea", SID, MngDataStatus.RECORD, false,
-								Optional.of(GeneralDate.ymd(2019, 11, 10)), 1.0, Optional.of(new AttendanceTime(480)),
-								OccurrenceDigClass.DIGESTION, 0.5, Optional.of(new AttendanceTime(240)),
-								Optional.empty()),
+				.containsExactly(
 						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, MngDataStatus.SCHEDULE, false,
-								Optional.of(GeneralDate.ymd(2019, 11, 05)), 1.0, Optional.of(new AttendanceTime(480)),
+								Optional.of(GeneralDate.ymd(2019, 11, 5)), 1.0, Optional.of(new AttendanceTime(480)),
 								OccurrenceDigClass.OCCURRENCE, 1.0, Optional.of(new AttendanceTime(480)),
 								GeneralDate.ymd(2020, 02, 05)),
 						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e333", SID, MngDataStatus.RECORD, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 6)), 1.0, Optional.of(new AttendanceTime(480)),
 								OccurrenceDigClass.OCCURRENCE, 1.0, Optional.of(new AttendanceTime(480)),
 								GeneralDate.ymd(2020, 02, 06)));
+	}
 
+	@Test
+	public void testModeOther() {
+
+		List<InterimDayOffMng> dayOffMng = Arrays.asList(
+				new InterimDayOffMng("876caf30-5a4d-47b7-8147-d646f74be08a", new RequiredTime(0), new RequiredDay(1.0),
+						new UnOffsetTime(0), new UnOffsetDay(1.0)),
+				new InterimDayOffMng("077a8929-3df0-4fd6-859e-29e615a921ea", new RequiredTime(480),
+						new RequiredDay(1.0), new UnOffsetTime(480), new UnOffsetDay(1.0)));
+
+		// BREAK filter
+		List<InterimBreakMng> breakMng = Arrays.asList(
+				new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e132", new AttendanceTime(480),
+						GeneralDate.ymd(2020, 6, 6), new OccurrenceTime(480), new OccurrenceDay(1.0),
+						new AttendanceTime(240), new UnUsedTime(480), new UnUsedDay(1.0)),
+				new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e333", new AttendanceTime(480),
+						GeneralDate.ymd(2019, 6, 6), new OccurrenceTime(480), new OccurrenceDay(1.0),
+						new AttendanceTime(240), new UnUsedTime(480), new UnUsedDay(1.0)));
+
+		List<InterimRemain> interimMng = Arrays.asList(
+				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 11, 5),
+						CreateAtr.SCHEDULE, RemainType.BREAK, RemainAtr.SINGLE),
+				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e333", SID, GeneralDate.ymd(2019, 11, 6),
+						CreateAtr.RECORD, RemainType.BREAK, RemainAtr.SINGLE),
+
+				new InterimRemain("876caf30-5a4d-47b7-8147-d646f74be08a", SID, GeneralDate.ymd(2019, 11, 9),
+						CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE),
+				new InterimRemain("077a8929-3df0-4fd6-859e-29e615a921ea", SID, GeneralDate.ymd(2019, 11, 10),
+						CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
+
+		Optional<SubstituteHolidayAggrResult> holidayAggrResult = Optional.of(new SubstituteHolidayAggrResult(
+				new VacationDetails(Collections.emptyList()), new ReserveLeaveRemainingDayNumber(0d),
+				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0d), new RemainingMinutes(0),
+				new ReserveLeaveRemainingDayNumber(0d), new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0d),
+				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0d), new RemainingMinutes(0),
+				Collections.emptyList(), Finally.of(GeneralDate.ymd(2019, 12, 01)), Collections.emptyList()));
+
+		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(CID, SID,
+				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)), false,
+				GeneralDate.ymd(2019, 11, 30), false, interimMng, Optional.empty(), Optional.empty(), breakMng,
+				dayOffMng, holidayAggrResult, new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
+
+		new Expectations() {
+			{
+
+				require.getBreakDayOffMng("adda6a46-2cbe-48c8-85f8-c04ca554e132", anyBoolean, (DataManagementAtr) any);
+				result = Arrays.asList(
+						new InterimBreakDayOffMng("", DataManagementAtr.INTERIM, "adda6a46-2cbe-48c8-85f8-c04ca554e132",
+								DataManagementAtr.INTERIM, new UseTime(120), new UseDay(0.5), SelectedAtr.AUTOMATIC));
+
+				// 暫定残数管理データ
+				require.getRemainBySidPriod(SID, (DatePeriod) any, RemainType.BREAK);
+				result = Arrays.asList(
+						new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 11, 5),
+								CreateAtr.SCHEDULE, RemainType.BREAK, RemainAtr.SINGLE),
+						new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e333", SID, GeneralDate.ymd(2019, 11, 6),
+								CreateAtr.RECORD, RemainType.BREAK, RemainAtr.SINGLE));
+
+				require.getBySidPeriod(SID, (DatePeriod) any);
+				result = Arrays.asList(
+						new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e132", new AttendanceTime(480),
+								GeneralDate.ymd(2020, 6, 6), new OccurrenceTime(480), new OccurrenceDay(1.0),
+								new AttendanceTime(240), new UnUsedTime(480), new UnUsedDay(1.0)),
+						new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e333", new AttendanceTime(480),
+								GeneralDate.ymd(2019, 6, 6), new OccurrenceTime(480), new OccurrenceDay(1.0),
+								new AttendanceTime(240), new UnUsedTime(480), new UnUsedDay(1.0)));
+
+				require.findEmploymentHistory(CID, SID, (GeneralDate) any);
+				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
+						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
+
+				require.findComLeavEmpSet(CID, anyString);
+				result = NumberRemainVacationLeaveRangeQueryTest.createComLeav(ManageDistinct.YES, ManageDistinct.YES,
+						"02");
+
+			}
+
+		};
+
+		List<AccumulationAbsenceDetail> actualResult = GetUnusedLeaveTemporary.process(require, inputParam);
+
+		assertThat(actualResult).extracting(x -> x.getManageId(), x -> x.getEmployeeId(), x -> x.getDataAtr(),
+				x -> x.getDateOccur().isUnknownDate(), x -> x.getDateOccur().getDayoffDate(),
+				x -> x.getNumberOccurren().getDay().v(), x -> x.getNumberOccurren().getTime(),
+				x -> x.getOccurrentClass(), x -> x.getUnbalanceNumber().getDay().v(),
+				x -> x.getUnbalanceNumber().getTime(),
+				x -> x.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE ? ((UnbalanceVacation) x).getDeadline()
+						: Optional.empty())
+				.containsExactly(
+						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, MngDataStatus.SCHEDULE, false,
+								Optional.of(GeneralDate.ymd(2019, 11, 5)), 1.0, Optional.of(new AttendanceTime(480)),
+								OccurrenceDigClass.OCCURRENCE, 0.5, Optional.of(new AttendanceTime(360)),
+								GeneralDate.ymd(2020, 02, 05)),
+						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e333", SID, MngDataStatus.RECORD, false,
+								Optional.of(GeneralDate.ymd(2019, 11, 6)), 1.0, Optional.of(new AttendanceTime(480)),
+								OccurrenceDigClass.OCCURRENCE, 1.0, Optional.of(new AttendanceTime(480)),
+								GeneralDate.ymd(2020, 02, 06)));
 	}
 
 }

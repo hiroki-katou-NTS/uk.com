@@ -230,5 +230,17 @@ public class NumberRemainVacationLeaveRangeProcess {
 			}
 
 		}
+
+		@Override
+		public List<InterimBreakDayOffMng> getDayOffByIdAndDataAtr(DataManagementAtr breakAtr,
+				DataManagementAtr dayOffAtr, String dayOffId) {
+			return interimBreakDayOffMngRepository.getDayOffByIdAndDataAtr(breakAtr, dayOffAtr, dayOffId);
+		}
+
+		@Override
+		public List<InterimBreakDayOffMng> getBreakByIdAndDataAtr(DataManagementAtr breakAtr,
+				DataManagementAtr dayOffAtr, String breakId) {
+			return interimBreakDayOffMngRepository.getBreakByIdAndDataAtr(breakAtr, dayOffAtr, breakId);
+		}
 	}
 }

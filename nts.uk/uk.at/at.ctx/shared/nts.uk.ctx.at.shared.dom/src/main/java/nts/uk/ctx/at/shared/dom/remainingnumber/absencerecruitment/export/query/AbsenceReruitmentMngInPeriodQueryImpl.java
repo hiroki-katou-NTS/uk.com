@@ -190,7 +190,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 			}
 			//アルゴリズム「暫定振休と紐付けをしない確定振出を取得する」を実行する
 			//ドメインモデル「暫定振出振休紐付け管理」を取得する REPONSE 対応			
-			//List<InterimRecAbsMng> lstInterim = recAbsRepo.getRecBySidMngAtr(DataManagementAtr.CONFIRM, DataManagementAtr.INTERIM, confirmRecData.getPayoutId());
+			List<InterimRecAbsMng> lstInterim = recAbsRepo.getRecBySidMngAtr(DataManagementAtr.CONFIRM, DataManagementAtr.INTERIM, confirmRecData.getPayoutId());
 			double unUseDays = confirmRecData.getUnUsedDays().v();
 			/*for (InterimRecAbsMng interimData : lstInterim) {
 				unUseDays -= interimData.getUseDays().v();
