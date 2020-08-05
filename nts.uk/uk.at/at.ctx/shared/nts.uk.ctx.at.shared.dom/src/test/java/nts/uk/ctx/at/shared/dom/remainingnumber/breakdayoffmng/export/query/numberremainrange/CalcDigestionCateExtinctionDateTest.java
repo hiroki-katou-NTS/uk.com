@@ -55,7 +55,7 @@ public class CalcDigestionCateExtinctionDateTest {
 						new AttendanceTime(480), new AttendanceTime(240)),
 				new UnbalanceVacation(GeneralDate.ymd(2019, 12, 8), DigestionAtr.UNUSED,
 						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID, new CompensatoryDayoffDate(false, Optional.empty()),
+						new AccuVacationBuilder(SID, new CompensatoryDayoffDate(true, Optional.empty()),
 								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
 								"adda6a46-2cbe-48c8-85f8-c04ca554ddde")
 										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
@@ -119,7 +119,7 @@ public class CalcDigestionCateExtinctionDateTest {
 						GeneralDate.ymd(2019, 12, 8), DigestionAtr.UNUSED, Optional.of(GeneralDate.ymd(2019, 12, 30)),
 						StatutoryAtr.PUBLIC),
 				new UnbalanceCompensation(
-						new AccuVacationBuilder(SID, new CompensatoryDayoffDate(false, Optional.empty()),
+						new AccuVacationBuilder(SID, new CompensatoryDayoffDate(true, Optional.empty()),
 								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
 								"adda6a46-2cbe-48c8-85f8-c04ca554ddde")
 										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
