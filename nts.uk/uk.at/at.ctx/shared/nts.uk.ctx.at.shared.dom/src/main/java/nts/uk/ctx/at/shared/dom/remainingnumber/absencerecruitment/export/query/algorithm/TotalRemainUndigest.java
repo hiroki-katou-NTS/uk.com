@@ -5,6 +5,7 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsDaysRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 
 /**
@@ -24,12 +25,13 @@ public class TotalRemainUndigest {
 
 			if (data.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE) {
 
-				if (data.getUnbalanceCompensation().isPresent()
-						&& ((isMode && data.getUnbalanceCompensation().get().getDeadline().beforeOrEquals(date))
-								|| (!isMode && data.getUnbalanceCompensation().get().getDeadline().before(date)))) {
-					outData.setUnDigestedDays(outData.getUnDigestedDays() + data.getUnbalanceNumber().getDay().v());
+				UnbalanceCompensation dataCast = (UnbalanceCompensation) data;
+
+				if (((isMode && dataCast.getDeadline().beforeOrEquals(date))
+						|| (!isMode && dataCast.getDeadline().before(date)))) {
+					outData.setUnDigestedDays(outData.getUnDigestedDays() + dataCast.getUnbalanceNumber().getDay().v());
 				} else {
-					outData.setRemainDays(outData.getRemainDays() + data.getUnbalanceNumber().getDay().v());
+					outData.setRemainDays(outData.getRemainDays() + dataCast.getUnbalanceNumber().getDay().v());
 				}
 			} else {
 

@@ -48,9 +48,9 @@ public class CalcNumberOccurUsesTest {
 						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554ddff")
 								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
 										Optional.of(new AttendanceTime(0))))
-								.unbalanceNumber(new NumberConsecuVacation(
-										new ManagementDataRemainUnit(1.0), Optional.of(new AttendanceTime(0))))
-								.unbalanceVacation(null).build(),
+								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
+										Optional.of(new AttendanceTime(0))))
+								.build(),
 				new AccuVacationBuilder(SID,
 						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 11))),
 						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554dddd")
@@ -58,8 +58,8 @@ public class CalcNumberOccurUsesTest {
 										Optional.of(new AttendanceTime(0))))
 								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
 										Optional.of(new AttendanceTime(0))))
-								.unbalanceVacation(null).build(),
-								
+								.build(),
+
 				new AccuVacationBuilder(SID,
 						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 4))),
 						OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554bbbb")
@@ -67,18 +67,19 @@ public class CalcNumberOccurUsesTest {
 										Optional.of(new AttendanceTime(0))))
 								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
 										Optional.of(new AttendanceTime(0))))
-								.unbalanceVacation(null).build(),
-				new AccuVacationBuilder(SID,
-						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 14))),
-						OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554eaaa")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(0))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
-										Optional.of(new AttendanceTime(0))))
-								.unbalanceVacation(new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8),
-										DigestionAtr.UNUSED, Optional.of(GeneralDate.ymd(2019, 12, 30)),
-										new AttendanceTime(480), new AttendanceTime(240)))
-								.build());
+								.build(),
+				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
+						Optional.of(GeneralDate.ymd(2019, 12, 30)),
+						new AccuVacationBuilder(SID,
+								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 14))),
+								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
+								"adda6a46-2cbe-48c8-85f8-c04ca554eaaa")
+										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
+												Optional.of(new AttendanceTime(0))))
+										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
+												Optional.of(new AttendanceTime(0))))
+										.build(),
+						new AttendanceTime(480), new AttendanceTime(240)));
 
 		RemainUnDigestedDayTimes actualResult = CalcNumberOccurUses.process(lstAccDetail,
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)));

@@ -182,6 +182,17 @@ public class NumberCompensatoryLeavePeriodProcess {
 			return shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(employeeId);
 		}
 
+		@Override
+		public List<InterimRecAbsMng> getBySidMng(DataManagementAtr recAtr, DataManagementAtr absAtr, String absId) {
+			return interimRecAbasMngRepository.getBySidMng(recAtr, absAtr, absId);
+		}
+
+		@Override
+		public List<InterimRecAbsMng> getRecBySidMngAtr(DataManagementAtr recAtr, DataManagementAtr absAtr,
+				String recId) {
+			return interimRecAbasMngRepository.getRecBySidMngAtr(recAtr, absAtr, recId);
+		}
+
 	}
 	
 	private ClosureService.RequireM3 createImp() {

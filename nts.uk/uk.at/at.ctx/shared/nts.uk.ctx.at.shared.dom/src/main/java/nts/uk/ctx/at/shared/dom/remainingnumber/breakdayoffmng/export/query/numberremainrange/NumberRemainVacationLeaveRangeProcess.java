@@ -252,6 +252,7 @@ public class NumberRemainVacationLeaveRangeProcess {
 			}
 
 		}
+<<<<<<< HEAD
 		
 		private ClosureService.RequireM3 createImp() {
 			
@@ -273,6 +274,19 @@ public class NumberRemainVacationLeaveRangeProcess {
 					return shrEmpAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
 				}
 			};
+=======
+
+		@Override
+		public List<InterimBreakDayOffMng> getDayOffByIdAndDataAtr(DataManagementAtr breakAtr,
+				DataManagementAtr dayOffAtr, String dayOffId) {
+			return interimBreakDayOffMngRepository.getDayOffByIdAndDataAtr(breakAtr, dayOffAtr, dayOffId);
+		}
+
+		@Override
+		public List<InterimBreakDayOffMng> getBreakByIdAndDataAtr(DataManagementAtr breakAtr,
+				DataManagementAtr dayOffAtr, String breakId) {
+			return interimBreakDayOffMngRepository.getBreakByIdAndDataAtr(breakAtr, dayOffAtr, breakId);
+>>>>>>> 2079ec57059... update requestList 203, 204
 		}
 	}
 }
