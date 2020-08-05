@@ -9,6 +9,27 @@
 		<ui:define name="htmlHead">
 			
 			<com:scriptfile set="IGNITE" />
+			
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.sample.SampleTimeDuration
+   				</com:ValidatorScript>
+			<com:stylefile path="/view/kaf_ref/000/a/component1/kaf000.a.component1.css" />
+			<com:stylefile path="/view/kaf_ref/000/a/component2/kaf000.a.component2.css" />
+			<com:stylefile path="/view/kaf_ref/000/a/component3/kaf000.a.component3.css" />
+			<com:stylefile path="/view/kaf_ref/000/a/component4/kaf000.a.component4.css" />
+			<com:stylefile path="/view/kaf_ref/000/a/component5/kaf000.a.component5.css" />
+			<com:stylefile path="/view/kaf_ref/000/a/component6/kaf000.a.component6.css" />
+			
+			<com:scriptfile path="/view/kaf_ref/000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/component1/kaf000.a.component1.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/component2/kaf000.a.component2.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/component3/kaf000.a.component3.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/component4/kaf000.a.component4.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/component5/kaf000.a.component5.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/component6/kaf000.a.component6.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/component7/kaf000.a.component7.js" />
+			
+			<com:stylefile path="/view/kaf_ref/002/a/kaf002.a.main.css" />
 			<com:scriptfile path="/view/kaf_ref/000/shr/kaf000.shr.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/000/a/kaf000.a.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/002/a/kaf002.a.vm.js" />
@@ -27,22 +48,34 @@
 
 				<div id="tab-panel"
 					data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-					<div class="tab-content-1">
-						<span>Tab Content 1</span><br />
-						<div id="gridTable">
-						</div>
+					<div class="tab-content-1" style="width: 80%">
+						<table id="grid1"></table>
 						
 					</div>
 					<div class="tab-content-2">
-						<span>Tab Content 2</span><br />
+						<table id="grid2"></table>
+						
 					</div>
 					<div class="tab-content-3">
-						<span>Tab Content 3</span><br />
+						<table id="grid3"></table>
+						
 					</div>
 					<div class="tab-content-4">
-						<span>Tab Content 4</span><br />
+						<table id="grid4"></table>
+						
 					</div>
+					<div class="tab-content-5">
+						<table id="grid5"></table>
+						
+					</div>
+					<div class="tab-content-6">
+						<table id="grid6"></table>
+						
+					</div>
+					
 				</div>
+				
+				
 
 
 			</div>
