@@ -1,8 +1,8 @@
-package nts.uk.ctx.at.record.infra.repository.reservation.bentoReservationSetting;
+package nts.uk.ctx.at.record.infra.repository.reservation.reservationsetting;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.reservation.bentoReservationSetting.BentoReservationSetting;
-import nts.uk.ctx.at.record.dom.reservation.bentoReservationSetting.BentoReservationSettingRepository;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSettingRepository;
 import nts.uk.ctx.at.record.infra.entity.reservation.BentoReservationSetting.KrcmtBentoReservationSetting;
 import java.util.Optional;
 
@@ -12,9 +12,9 @@ public class BentoReservationSettingRepositoryImpl extends JpaRepository impleme
 
     static {
         StringBuilder builderString = new StringBuilder();
-        builderString.append("SELECT e ");
+        builderString.append(" SELECT e ");
         builderString.append(" FROM KrcmtBentoReservationSetting e ");
-        builderString.append(" WHERE e.KrcmtBentoReservationSetting.companyId = :companyId");
+        builderString.append(" WHERE e.KrcmtBentoReservationSetting.companyId = :companyId ");
 
         FIND = builderString.toString();
     }

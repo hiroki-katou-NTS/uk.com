@@ -1,12 +1,7 @@
-package nts.uk.ctx.at.record.dom.reservation.bentoReservationSetting;
+package nts.uk.ctx.at.record.dom.reservation.reservationsetting;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
-import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
  * 弁当予約設定
