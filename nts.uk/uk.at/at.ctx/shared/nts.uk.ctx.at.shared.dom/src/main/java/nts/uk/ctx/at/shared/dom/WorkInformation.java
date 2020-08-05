@@ -44,6 +44,9 @@ public class WorkInformation {
 	}
 
 	public WorkTimeCode getWorkTimeCode() {
+		if(this.workTimeCode == null) {
+			return null;
+		}
 		return this.workTimeCode.isPresent()?this.workTimeCode.get():null;
 	}
 

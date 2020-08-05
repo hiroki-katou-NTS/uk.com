@@ -2290,15 +2290,16 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		}
 		
 		// WorkType
-		Map<String, List<ExWorkTypeHisItemImport>> map = generalInfoImport
+		Map<String, ExWorkTypeHistoryImport> map = generalInfoImport
 				.getExWorkTypeHistoryImports().stream().collect(Collectors
-						.toMap(ExWorkTypeHistoryImport::getEmployeeId, ExWorkTypeHistoryImport::getExWorkTypeHisItemImports));
+						.toMap(ExWorkTypeHistoryImport::getEmployeeId,x->x));
 
-		Optional<ExWorkTypeHisItemImport> worktypeHistItemImport = Optional.empty();
-		List<ExWorkTypeHisItemImport> exWorktypeHistItemImports = map.get(employeeId);
+		Optional<ExWorkTypeHistoryImport> worktypeHistItemImport = Optional.empty();
+		ExWorkTypeHistoryImport exWorktypeHistItemImports = map.get(employeeId);
 		if (exWorktypeHistItemImports != null) {
-			worktypeHistItemImport = exWorktypeHistItemImports.stream().filter(item -> item.getPeriod().contains(day))
-					.findFirst();
+			if(exWorktypeHistItemImports.getPeriod().contains(day)) {
+				worktypeHistItemImport = Optional.of(exWorktypeHistItemImports);	
+			}
 		}
 		
 		// Get Data
@@ -2333,7 +2334,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			errMesInfos.add(employmentErrMes);
 		}
 		
-		if(exWorktypeHistItemImports.isEmpty()) {
+		if(!worktypeHistItemImport.isPresent()) {
 			ErrorMessageInfo employmentErrMes = new ErrorMessageInfo(companyId, employeeId, day,
 					EnumAdaptor.valueOf(0, ExecutionContent.class),
 					// trong EA đang để リソースID　=　？？？, nên đang để tạm là 100

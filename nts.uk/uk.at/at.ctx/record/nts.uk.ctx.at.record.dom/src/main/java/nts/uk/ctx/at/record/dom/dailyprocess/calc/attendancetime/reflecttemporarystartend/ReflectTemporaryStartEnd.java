@@ -16,13 +16,16 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectatt
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.temporarywork.ManageWorkTemporary;
 import nts.uk.ctx.at.record.dom.workrecord.temporarywork.ManageWorkTemporaryRepository;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.StampReflectRangeOutput;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.TimeZoneOutput;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepository;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -74,12 +77,25 @@ public class ReflectTemporaryStartEnd {
 							c.getWorkNo().v(), c.getAttendanceStamp(), c.getLeaveStamp(), null))
 					.collect(Collectors.toList());
 		}
-		
+		WorkInformation recordWorkInformation = integrationOfDaily.getWorkInformation().getRecordInfo();
+		WorkTimeCode workTimeCode = recordWorkInformation.getWorkTimeCode();
+		//時間帯反映する
 		reflectTimeOfDay.reflectTimeOfDay(integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(), stamp,
-				manageWorkTemporary.get().getMaxUsage().v(), listTimeFrame, AttendanceAtr.GO_OUT);
+				manageWorkTemporary.get().getMaxUsage().v(), listTimeFrame, AttendanceAtr.GO_OUT,workTimeCode);
 		//反映済み時間帯枠（Temporary）を日別実績の臨時出退勤の出退勤に上書きする
+		if (tempTime.isPresent()) {
+			for(TimeLeavingWork timeLeavingWork :tempTime.get().getTimeLeavingWorks()) {
+				for(TimeFrame tf :listTimeFrame) {
+					if(timeLeavingWork.getWorkNo().v().intValue() == tf.getFrameNo()) {
+						timeLeavingWork.setAttendanceStamp(tf.getStart());
+						timeLeavingWork.setLeaveStamp(tf.getEnd());
+						break;
+					}
+				}
+			}
+		}
 		
-		return reflectStampOuput;
+		return ReflectStampOuput.REFLECT;
 	}
 	
 	/**

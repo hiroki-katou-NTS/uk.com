@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 
 /**
  * 反映情報（Temporary）
@@ -21,12 +21,12 @@ public class ReflectionInformation {
 	private int frameNo;
 
 	/** 開始: 勤怠打刻(実打刻付き) */
-	private Optional<TimeActualStamp> start;
+	private Optional<WorkStamp> start;
 
 	/** 終了: 勤怠打刻(実打刻付き) */
-	private Optional<TimeActualStamp> end;
+	private Optional<WorkStamp> end;
 
-	public ReflectionInformation(int frameNo, Optional<TimeActualStamp> start, Optional<TimeActualStamp> end) {
+	public ReflectionInformation(int frameNo, Optional<WorkStamp> start, Optional<WorkStamp> end) {
 		super();
 		this.frameNo = frameNo;
 		this.start = start;

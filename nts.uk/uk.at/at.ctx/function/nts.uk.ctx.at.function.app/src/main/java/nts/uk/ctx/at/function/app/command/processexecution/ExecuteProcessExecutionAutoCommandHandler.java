@@ -87,8 +87,12 @@ import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.company.SyCompanyRecordAdapter;
 import nts.uk.ctx.at.record.dom.affiliationinformation.wkplaceinfochangeperiod.WkplaceInfoChangePeriod;
 import nts.uk.ctx.at.record.dom.affiliationinformation.wktypeinfochangeperiod.WkTypeInfoChangePeriod;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.CreateDailyResultDomainServiceNew;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultEmployeeDomainService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationEmployeeService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.getprocessingdate.GetProcessingDate;
@@ -288,6 +292,9 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
     
     @Inject
     private GetProcessingDate getProcessingDate;
+    
+    @Inject
+    private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
     
 	public static int MAX_DELAY_PARALLEL = 0;
 	
@@ -3153,11 +3160,15 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		if ("日別作成".equals(typeExecution)) {
 			try {
 				// ⑤社員の日別実績を作成する
-				processState = this.createDailyService.createDailyResultEmployeeWithNoInfoImport(asyContext, employeeId,
-						period, empCalAndSumExeLog.getCompanyID(), empCalAndSumExeLog.getEmpCalAndSumExecLogID(),
-						Optional.ofNullable(dailyCreateLog), processExecution.getExecSetting().getDailyPerf()
-								.getTargetGroupClassification().isRecreateTypeChangePerson() ? true : false,
-						false, false, null);
+//				processState = this.createDailyService.createDailyResultEmployeeWithNoInfoImport(asyContext, employeeId,
+//						period, empCalAndSumExeLog.getCompanyID(), empCalAndSumExeLog.getEmpCalAndSumExecLogID(),
+//						Optional.ofNullable(dailyCreateLog), processExecution.getExecSetting().getDailyPerf()
+//								.getTargetGroupClassification().isRecreateTypeChangePerson() ? true : false,
+//						false, false, null);
+				OutputCreateDailyResult status = createDailyResultDomainServiceNew.createDataNewWithNoImport(asyContext, employeeId, period,
+						ExecutionAttr.AUTO, companyId,
+						ExecutionTypeDaily.DELETE_ACHIEVEMENTS,Optional.of(empCalAndSumExeLog), Optional.empty());
+				processState = (status.getProcessState().value == 0?ProcessState.INTERRUPTION:ProcessState.SUCCESS);
 			} catch (Exception e) {
 				throw new CreateDailyException(e);
 			}

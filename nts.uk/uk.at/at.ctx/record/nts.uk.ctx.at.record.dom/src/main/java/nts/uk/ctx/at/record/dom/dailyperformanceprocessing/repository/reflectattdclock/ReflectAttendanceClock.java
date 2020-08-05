@@ -339,6 +339,8 @@ public class ReflectAttendanceClock {
 			//申告時刻を反映する
 			timeActualStamp.setOvertimeDeclaration(stamp.getRefActualResults().getOvertimeDeclaration());
 		}
+		//反映済み区分をtrueにする (反映済み区分 = true)
+		stamp.setReflectedCategory(true);
 		return ReflectStampOuput.REFLECT;
 	}
 	

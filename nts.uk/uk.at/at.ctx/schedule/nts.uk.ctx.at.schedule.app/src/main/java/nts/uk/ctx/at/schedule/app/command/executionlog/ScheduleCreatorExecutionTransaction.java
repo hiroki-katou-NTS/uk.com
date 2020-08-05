@@ -1560,10 +1560,6 @@ public class ScheduleCreatorExecutionTransaction {
 	}
 	
 	private EmployeeGeneralInfoImport convertEmployeeGeneral(CreateScheduleMasterCache masterCache) {
-		List<ExWorkTypeHisItemImport> itemImports = masterCache.getListBusTypeOfEmpHis().stream()
-				.map(mapper -> new ExWorkTypeHisItemImport(mapper.getHistoryId(),
-						new DatePeriod(mapper.getStartDate(), mapper.getEndDate()), mapper.getBusinessTypeCd()))
-				.collect(Collectors.toList());
 		EmployeeGeneralInfoImport generalInfoImport = new EmployeeGeneralInfoImport(
 				masterCache.getEmpGeneralInfo().getEmploymentDto().stream()
 						.map(mapper -> new ExEmploymentHistoryImport(mapper.getEmployeeId(),
@@ -1594,8 +1590,9 @@ public class ScheduleCreatorExecutionTransaction {
 										.collect(Collectors.toList())))
 						.collect(Collectors.toList()),
 				masterCache.getListBusTypeOfEmpHis().stream()
-						.map(mapper -> new ExWorkTypeHistoryImport(mapper.getCompanyId(), mapper.getEmployeeId(),
-								itemImports))
+						.map(mapper -> new ExWorkTypeHistoryImport(mapper.getCompanyId(), mapper.getEmployeeId(),mapper.getHistoryId(),
+								new DatePeriod(mapper.getStartDate(), mapper.getEndDate()),
+								mapper.getBusinessTypeCd()))
 						.collect(Collectors.toList()));
 		return generalInfoImport;
 		

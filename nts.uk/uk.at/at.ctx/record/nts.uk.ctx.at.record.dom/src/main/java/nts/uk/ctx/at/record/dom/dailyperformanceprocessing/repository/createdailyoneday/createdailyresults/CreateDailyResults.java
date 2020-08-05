@@ -20,7 +20,10 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordConverter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.AffiliationInforState;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ReflectWorkInforDomainService;
@@ -90,12 +93,10 @@ public class CreateDailyResults {
 	public List<ErrorMessageInfo> createDailyResult(String companyId, String employeeId, GeneralDate ymd,
 			boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime,
 			ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
-			EmployeeGeneralInfoImport employeeGeneralInfoImport, PeriodInMasterList periodInMasterList,
-			String empCalAndSumExecLogID) {
+			EmployeeGeneralInfoImport employeeGeneralInfoImport, PeriodInMasterList periodInMasterList,IntegrationOfDaily integrationOfDaily) {
 		List<ErrorMessageInfo> listErrorMessageInfo = new ArrayList<>();
 
 		// 日別実績の「情報系」のドメインを取得する
-		IntegrationOfDaily integrationOfDaily = preOvertimeReflectService.calculateForAppReflect(employeeId, ymd);
 		List<Integer> attendanceItemIdList = integrationOfDaily.getEditState().stream()
 				.map(editState -> editState.getAttendanceItemId()).distinct().collect(Collectors.toList());
 		
@@ -105,10 +106,18 @@ public class CreateDailyResults {
 				.setData(integrationOfDaily).completed();
 		List<ItemValue> listItemValue = converter.convert(attendanceItemIdList);
 		
-
+		if(integrationOfDaily.getWorkInformation() == null) {
+			integrationOfDaily.setWorkInformation(new WorkInfoOfDailyAttendance());
+		}
 		// 曜日を求める - 日別実績の勤務情報．曜日 ← 処理日の曜日
-		integrationOfDaily.getWorkInformation().setDayOfWeek(DayOfWeek.valueOf(ymd.dayOfWeekEnum().value));
+		integrationOfDaily.getWorkInformation().setDayOfWeek(DayOfWeek.valueOf(ymd.dayOfWeekEnum().value-1));
 
+		if(integrationOfDaily.getCalAttr() == null) {
+			integrationOfDaily.setCalAttr(new CalAttrOfDailyAttd());
+		}
+		if(integrationOfDaily.getAffiliationInfor() == null) {
+			integrationOfDaily.setAffiliationInfor(new AffiliationInforOfDailyAttd());
+		}
 		// 所属情報を反映する
 		AffiliationInforState affiliationInforState = reflectWorkInforDomainService.createAffiliationInforState(
 				companyId, employeeId, ymd, integrationOfDaily.getAffiliationInfor(), employeeGeneralInfoImport);

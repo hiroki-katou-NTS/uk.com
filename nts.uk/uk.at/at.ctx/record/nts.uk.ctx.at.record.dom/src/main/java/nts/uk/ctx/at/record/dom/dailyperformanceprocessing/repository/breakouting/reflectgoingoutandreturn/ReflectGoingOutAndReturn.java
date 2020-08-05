@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -16,10 +15,13 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectatt
 import nts.uk.ctx.at.record.dom.workrecord.goout.OutManage;
 import nts.uk.ctx.at.record.dom.workrecord.goout.OutManageRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.StampReflectRangeOutput;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.TimeZoneOutput;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -49,7 +51,7 @@ public class ReflectGoingOutAndReturn {
 			return reflectStampOuput;
 		}
 		Optional<OutingTimeOfDailyAttd> outingTime = integrationOfDaily.getOutingTime();
-		//時間帯から時間帯枠
+		//時間帯から時間帯枠（Temporary）に変換する
 		List<TimeFrame> listTimeFrame = new ArrayList<>();
 		if (outingTime.isPresent()) {
 			listTimeFrame = outingTime.get().getOutingTimeSheets().stream()
@@ -57,18 +59,30 @@ public class ReflectGoingOutAndReturn {
 							c.getOutingFrameNo().v(), c.getGoOut(), c.getComeBack(), c.getReasonForGoOut()))
 					.collect(Collectors.toList());
 		}
-		//
+		//外出管理を取得する
 		Optional<OutManage> outManage =  outManageRepository.findByID(companyID);
 		if(!outManage.isPresent()) {
 			return reflectStampOuput;
 		}
+		WorkInformation recordWorkInformation = integrationOfDaily.getWorkInformation().getRecordInfo();
+		WorkTimeCode workTimeCode = recordWorkInformation.getWorkTimeCode();
 		//時間帯反映する
 		reflectTimeOfDay.reflectTimeOfDay(integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(), stamp,
-				outManage.get().getMaxUsage().v(), listTimeFrame, AttendanceAtr.GO_OUT);
+				outManage.get().getMaxUsage().v(), listTimeFrame, AttendanceAtr.GO_OUT,workTimeCode);
 		
 		//反映済み時間帯枠（Temporary）を日別実績の外出時間帯の時間帯に上書きする
-		//TODO:chuyển ngược lại từ temporary vào domain ? (TKT)
-		return reflectStampOuput;
+		if (outingTime.isPresent()) {
+			for(OutingTimeSheet outingTimeSheet :outingTime.get().getOutingTimeSheets()) {
+				for(TimeFrame tf :listTimeFrame) {
+					if(outingTimeSheet.getOutingFrameNo().v().intValue() == tf.getFrameNo()) {
+						outingTimeSheet.setGoOut(tf.getStart());
+						outingTimeSheet.setComeBack(tf.getEnd());
+						break;
+					}
+				}
+			}
+		}
+		return ReflectStampOuput.REFLECT;
 		
 	}
 	
