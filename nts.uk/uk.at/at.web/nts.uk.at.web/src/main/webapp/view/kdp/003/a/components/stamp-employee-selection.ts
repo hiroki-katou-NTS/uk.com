@@ -88,7 +88,7 @@ module nts.uk.at.kdp003.a {
 				vm.options = {
 					employees: ko.observableArray([]),
 					selectedId: ko.observable(undefined),
-					employeeAuthcUseArt: ko.observable(true),
+					nameSelectArt: ko.observable(true),
 					baseDate: ko.observable(new Date())
 				};
 			} else {
@@ -280,7 +280,7 @@ module nts.uk.at.kdp003.a {
 	export interface EmployeeListParam {
 		employees: KnockoutObservableArray<Employee>;
 		selectedId: KnockoutObservable<string | null | undefined>;
-		employeeAuthcUseArt: KnockoutObservable<boolean>;
+		nameSelectArt: KnockoutObservable<boolean>;
 		baseDate: KnockoutObservable<Date>;
 	}
 }
