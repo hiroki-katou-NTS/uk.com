@@ -447,7 +447,7 @@ module nts.uk.at.kdp003.a {
 					return vm.$window.modal('at', DIALOG.F, {
 						mode: 'employee',
 						companyId: data.CID,
-						employee: employee || { code: data.SCD }
+						employee: employee ? { code: employee.employeeCode, name: employee.employeeName } : { code: data.SCD }
 					});
 				})
 				.then((data: f.TimeStampLoginData) => {
