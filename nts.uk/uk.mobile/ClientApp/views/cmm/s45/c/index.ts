@@ -3,6 +3,7 @@ import { component, Prop } from '@app/core/component';
 import { ApprovedComponent } from '@app/components';
 import { IApprovalPhase, AppDetailScreenInfo } from 'views/cmm/s45/shr/index.d';
 import { Phase } from 'views/cmm/s45/shr/index';
+import { AppType, AppTypeName } from 'views/kaf/s00/shr';
 
 import {
     CmmS45ComponentsApp1Component,
@@ -52,7 +53,7 @@ export class CmmS45CComponent extends Vue {
     };
     // 差し戻し理由
     public reversionReason: string = '';
-
+    
     public created() {
         let self = this;
         self.listAppMeta = self.params.listAppMeta;
@@ -293,6 +294,168 @@ export class CmmS45CComponent extends Vue {
         //     self.$goto('kafS05b', { appID: self.currentApp }); 
         // }
     }
+
+    get applicant() {
+        const vm = this;
+        if (!vm.appTransferData.appDispInfoStartupOutput) {
+            return '';
+        }
+
+        return vm.appTransferData.appDispInfoStartupOutput.appDispInfoNoDateOutput.opEmployeeInfo.bussinessName;
+    }
+
+    get representerDisp() {
+        const vm = this;
+        if (!vm.appTransferData.appDispInfoStartupOutput) {
+            return false;
+        }
+        let employeeID = vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.employeeID,
+            enteredPerson = vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.enteredPerson;
+        if (employeeID == enteredPerson) {
+            return false;
+        } else {
+            return true;
+        } 
+    }
+
+    get representer() {
+        const vm = this;
+        if (!vm.appTransferData.appDispInfoStartupOutput) {
+            return false;
+        }
+        let employeeID = vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.employeeID,
+            enteredPerson = vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.enteredPerson;
+        if (employeeID == enteredPerson) {
+            return false;
+        } else {
+            return true;
+        }   
+    }
+
+    get appDate() {
+        const vm = this;
+        if (!vm.appTransferData.appDispInfoStartupOutput) {
+            return '';
+        }
+        let appDate = vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.appDate;
+
+        return vm.$dt(new Date(appDate), 'YYYY/MM/DD(dd)');
+    }
+
+    get appTypeName() {
+        const vm = this;
+        if (!vm.appTransferData.appDispInfoStartupOutput) {
+            return '';
+        }
+        switch (vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.appType) {
+            case AppType.OVER_TIME_APPLICATION:
+                return AppTypeName.OVER_TIME_APPLICATION;
+                break;
+            case AppType.ABSENCE_APPLICATION:
+                return AppTypeName.ABSENCE_APPLICATION;
+                break;
+            case AppType.WORK_CHANGE_APPLICATION:
+                return AppTypeName.WORK_CHANGE_APPLICATION;
+                break;
+            case AppType.BUSINESS_TRIP_APPLICATION:
+                return AppTypeName.BUSINESS_TRIP_APPLICATION;
+                break;
+            case AppType.GO_RETURN_DIRECTLY_APPLICATION:
+                return AppTypeName.GO_RETURN_DIRECTLY_APPLICATION;
+                break;
+            case AppType.LEAVE_TIME_APPLICATION:
+                return AppTypeName.LEAVE_TIME_APPLICATION;
+                break;
+            case AppType.STAMP_APPLICATION:
+                return AppTypeName.STAMP_APPLICATION;
+                break;
+            case AppType.ANNUAL_HOLIDAY_APPLICATION:
+                return AppTypeName.ANNUAL_HOLIDAY_APPLICATION;
+                break;
+            case AppType.EARLY_LEAVE_CANCEL_APPLICATION:
+                return AppTypeName.EARLY_LEAVE_CANCEL_APPLICATION;
+                break;
+            case AppType.COMPLEMENT_LEAVE_APPLICATION:
+                return AppTypeName.COMPLEMENT_LEAVE_APPLICATION;
+                break;
+            case AppType.OPTIONAL_ITEM_APPLICATION:
+                return AppTypeName.OPTIONAL_ITEM_APPLICATION;
+                break;
+            default: 
+                return '';
+                break;
+        }
+    }
+
+    get prePost() {
+        const vm = this;
+        if (!vm.appTransferData.appDispInfoStartupOutput) {
+            return '';
+        }
+        let prePostResource = [{
+            code: 0,
+            text: 'KAFS00_10'
+        }, {
+            code: 1,
+            text: 'KAFS00_11'
+        }];
+
+        return _.find(prePostResource, (o: any) => o.code == vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr).text;
+    }
+
+    get inputDate() {
+        const vm = this;
+        if (!vm.appTransferData.appDispInfoStartupOutput) {
+            return '';
+        }
+        let appDate = vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.inputDate;
+
+        return vm.$dt(new Date(appDate), 'YYYY/MM/DD hh:mm'); 
+    }
+
+    get comboReasonDisp() {
+        const vm = this;
+        if (!vm.appTransferData.appDispInfoStartupOutput) {
+            return false;
+        }
+
+        return vm.appTransferData.appDispInfoStartupOutput.appDispInfoNoDateOutput.displayStandardReason == 0 ? false : true;
+    }
+
+    get textReasonDisp() {
+        const vm = this;
+        if (!vm.appTransferData.appDispInfoStartupOutput) {
+            return false;
+        }
+
+        return vm.appTransferData.appDispInfoStartupOutput.appDispInfoNoDateOutput.displayAppReason == 0 ? false : true;
+    }
+
+    get comboReason() {
+        const vm = this;
+        if (!vm.appTransferData.appDispInfoStartupOutput) {
+            return '';
+        }
+        let dropdownList = vm.appTransferData.appDispInfoStartupOutput.appDispInfoNoDateOutput.reasonTypeItemLst,
+            opComboReason = _.find(dropdownList, (o: any) => {
+            return o.appStandardReasonCD == vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD;
+        });
+        if (opComboReason) {
+            return opComboReason.opReasonForFixedForm;
+        }
+
+        return '';
+    }
+
+    get textReason() {
+        const vm = this;
+        if (!vm.appTransferData.appDispInfoStartupOutput) {
+            return '';
+        }
+
+        return vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason;
+    }
+
 }
 
 const API = {
