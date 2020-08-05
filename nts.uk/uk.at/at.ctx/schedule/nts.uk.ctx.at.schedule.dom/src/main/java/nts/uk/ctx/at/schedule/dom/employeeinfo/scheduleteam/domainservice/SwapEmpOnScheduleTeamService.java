@@ -33,7 +33,17 @@ public class SwapEmpOnScheduleTeamService {
 		for(String item : lstEmpID){
 			BelongScheduleTeam belong = scheduleTeam.addEmployee(item);
 			data.add(belong);
-		}	
+		}			
+		// require.チームを指定して所属スケジュールチームを削除する( チーム.職場グループID, チーム.コード )
+//					require.deleteSpecifyTeamAndScheduleTeam(scheduleTeam.getWKPGRPID(), scheduleTeam.getScheduleTeamCd().v());
+//					// $登録対象リスト: for
+//					data.forEach(x -> {
+//						if (require.empBelongTeam(x.getEmployeeID())) {
+//							require.delete(x.getEmployeeID());
+//						}
+//						require.insert(x);
+//					});
+//		
 		return AtomTask.of(() -> {
 			// require.チームを指定して所属スケジュールチームを削除する( チーム.職場グループID, チーム.コード )
 			require.deleteSpecifyTeamAndScheduleTeam(scheduleTeam.getWKPGRPID(), scheduleTeam.getScheduleTeamCd().v());

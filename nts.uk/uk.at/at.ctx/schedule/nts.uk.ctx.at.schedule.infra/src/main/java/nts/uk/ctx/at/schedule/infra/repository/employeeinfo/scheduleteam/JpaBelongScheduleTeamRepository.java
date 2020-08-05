@@ -27,8 +27,9 @@ public class JpaBelongScheduleTeamRepository extends JpaRepository implements Be
 	private static final String SELECT = " SELECT c FROM KscmtAffScheduleTeam c ";
 	
 	private static final String GET_BY_CID = SELECT +  " WHERE c.pk.CID = :CID " ;
-	
+
 	private static final String GET_BY_KEY = GET_BY_CID +" AND c.pk.SID = :empID "; 
+
 	
 	private static final String GET_ALL = GET_BY_CID +" AND c.WKPGRPID = :WKPGRPID AND c.scheduleTeamCd = :scheduleTeamCd "; 
 	
@@ -38,6 +39,7 @@ public class JpaBelongScheduleTeamRepository extends JpaRepository implements Be
 	
 	@Override
 	public void insert(BelongScheduleTeam belongScheduleTeam) {
+		KscmtAffScheduleTeam affScheduleTeam = KscmtAffScheduleTeam.toEntity(belongScheduleTeam);
 		this.commandProxy().insert(KscmtAffScheduleTeam.toEntity(belongScheduleTeam));
 		
 	}
@@ -63,8 +65,8 @@ public class JpaBelongScheduleTeamRepository extends JpaRepository implements Be
 
 	@Override
 	public void delete(String companyID, String empID) {
-		this.commandProxy().remove(KscmtAffScheduleTeam.class, new KscmtAffScheduleTeamPk(companyID, empID) );
-		
+		this.commandProxy().remove(KscmtAffScheduleTeam.class, new KscmtAffScheduleTeamPk(companyID, empID) );		
+
 	}
 
 	@Override

@@ -42,7 +42,7 @@ public class KscmtAffScheduleTeam extends  ContractUkJpaEntity{
 		return new KscmtAffScheduleTeam(
 				new KscmtAffScheduleTeamPk(AppContexts.user().companyId(), belongScheduleTeam.getEmployeeID()),
 				belongScheduleTeam.getWKPGRPID(),
-				belongScheduleTeam.getScheduleTeamCd().v());
+				belongScheduleTeam.getScheduleTeamCd().v().substring(1));
 	} 
 	
 	public BelongScheduleTeam toDomain(){
