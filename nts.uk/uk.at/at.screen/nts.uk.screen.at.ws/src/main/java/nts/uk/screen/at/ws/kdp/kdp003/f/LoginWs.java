@@ -48,12 +48,12 @@ public class LoginWs extends WebService {
 	@Path("adminmode")
 	public TimeStampInputLoginDto loginAdminMode(@Context HttpServletRequest request, TimeStampLoginCommand command) {		
 		return loginWithAdmin.loginAsEmbossingAdmin(command.getCompanyId(),
-				command.getEmployeeCode(), command.getPassword(),command.getCompanyCode(), true, true, request);
+				command.getEmployeeCode(), command.getPassword(),command.getCompanyCode(), command.isPasswordInvalid(), command.isAdminMode(), command.isRuntimeEnvironmentCreate(), request);
 	}
 	
 	@POST
 	@Path("employeemode")
 	public TimeStampInputLoginDto loginEmployeeMode(@Context HttpServletRequest request, TimeStampLoginCommand command) {
-		return loginWithEmployee.authenticateStampedEmployees(command.getCompanyId(), Optional.ofNullable(command.getEmployeeCode()), Optional.ofNullable(command.getEmployeeId()), Optional.ofNullable(command.getPassword()), command.getPassword().isEmpty() , false, false, request);
+		return loginWithEmployee.authenticateStampedEmployees(command.getCompanyId(), Optional.ofNullable(command.getEmployeeCode()), Optional.ofNullable(command.getEmployeeId()), Optional.ofNullable(command.getPassword()), command.isPasswordInvalid(), command.isAdminMode(), false, request);
 	}
 }

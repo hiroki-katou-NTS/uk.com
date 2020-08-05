@@ -34,10 +34,10 @@ public class StampCardEmployee {
 	@Inject
 	private EmployeeInformationRepository employeeInformationRepo;
 
-	public StampCardEmployeeDto getStampCard(String stampCard) {
-		StampCardEmployeeDto dto = new StampCardEmployeeDto();
+	public List<StampCardEmployeeDto> getStampCard(String stampCard) {
+		List<StampCardEmployeeDto> dto = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
-		List<EmployeeInformation> empInfoList = new ArrayList<>();
+		List<EmployeeInformation> empInfoList = null;
 
 		List<StampCard> stampCards = stampCardRepo.getListStampCardByCardNumber(stampCard);
 
@@ -53,15 +53,16 @@ public class StampCardEmployee {
 						.toGetPosition(false).toGetEmployment(false).toGetClassification(false)
 						.toGetEmploymentCls(false).build());
 				
-				if (!empInfoList.isEmpty() && empInfoList.size() > 0) {
-					dto.setStampNumber(stampCard);
-					dto.setEmployeeId(empInfoList.get(0).getEmployeeId());
-					dto.setBusinessName(empInfoList.get(0).getBusinessName());
-					dto.setEmployeeCode(empInfoList.get(0).getEmployeeCode());
+				if (empInfoList != null && !empInfoList.isEmpty()) {
+					
+					empInfoList.stream().map(m -> {
+						StampCardEmployeeDto card = new StampCardEmployeeDto(stampCard, m.getEmployeeCode(), m.getBusinessName(), m.getEmployeeId());
+						dto.add(card);
+						return card;
+					}).collect(Collectors.toList());
 				}
 			}
 		}
-
 		return dto;
 	}
 }

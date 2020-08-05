@@ -8,6 +8,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.RegisterStampCardCommandHandler;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.a.CardInformationCommands;
+import nts.uk.ctx.at.record.app.command.kmp.kmp001.a.CardNumberNewCommand;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.a.EmployeeCardInformationViewACommand;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.b.DeleteCardViewBCommand;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.b.DeleteCardViewBCommandHandler;
@@ -15,6 +16,8 @@ import nts.uk.ctx.at.record.app.command.kmp.kmp001.b.RegisterCardViewBCommand;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.b.RegisterCardViewBCommandHandler;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.c.RegisterStampCardViewCCommand;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.c.RegisterStampCardViewCCommandHandler;
+import nts.uk.ctx.at.record.app.command.kmp.kmp001.d.EdittingStampCardCommand;
+import nts.uk.ctx.at.record.app.command.kmp.kmp001.d.EdittingStampCardCommandHandler;
 
 /**
  * 
@@ -38,10 +41,13 @@ public class RegisterStampCardWs extends WebService {
 	@Inject
 	private DeleteCardViewBCommandHandler handlerDeleteViewB;
 	
+	@Inject
+	private EdittingStampCardCommandHandler handlerEditting; 
+	
 	/**新規モード時にIDカードNOの登録を行う */
 	@POST
 	@Path("view-a/save")
-	public void saveStampCardViewA(EmployeeCardInformationViewACommand command) {
+	public void saveStampCardViewA(CardNumberNewCommand command) {
 		commandHandler.saveStampCardViewA(command);
 	}
 	
@@ -75,5 +81,11 @@ public class RegisterStampCardWs extends WebService {
 	@Path("view-b/delete")
 	public void deleteStampCardViewB(DeleteCardViewBCommand command) {
 		this.handlerDeleteViewB.handle(command);
+	}
+	
+	@POST
+	@Path("view-d/editting")
+	public void edttingStampCard(EdittingStampCardCommand command) {
+		this.handlerEditting.handle(command);
 	}
 }

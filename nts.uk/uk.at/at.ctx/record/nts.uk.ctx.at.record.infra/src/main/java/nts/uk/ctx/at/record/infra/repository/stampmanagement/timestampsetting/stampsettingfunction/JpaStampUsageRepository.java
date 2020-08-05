@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.stampmanagement.timestampsetting.stampsettingfunction;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -33,6 +35,20 @@ public class JpaStampUsageRepository extends JpaRepository implements SettingsUs
 		SettingsUsingEmbossing domain = toDoamin(entityOpt.get());
 
 		return Optional.of(domain);
+	}
+
+	@Override
+	public List<SettingsUsingEmbossing> getSettingEmbossingByComIds(List<String> companyIds) {
+		if (companyIds == null || companyIds.size() == 0) {
+			return new ArrayList<SettingsUsingEmbossing>();
+		}
+		
+		String QUERY = "SELECT s FROM KrcmtStampUsage s WHERE s.companyId IN :companyIds";
+
+		return this.queryProxy()
+				.query(QUERY, KrcmtStampUsage.class)
+				.setParameter("companyIds", companyIds)
+				.getList(m -> toDoamin(m));
 	}
 
 	public KrcmtStampUsage toEntity(SettingsUsingEmbossing domain) {

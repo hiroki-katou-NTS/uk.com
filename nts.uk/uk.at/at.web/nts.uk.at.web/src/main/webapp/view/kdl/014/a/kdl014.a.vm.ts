@@ -179,12 +179,13 @@ module nts.uk.at.view.kdl014.a {
             self.date = param.date;
             self.time = param.time;
             param.stampAtr = param.stampAtr.trim();
-            
-            if (param.stampAtr === '出勤' || param.stampAtr === '入門' || param.stampAtr === '応援開始'
-                || param.stampAtr === '応援出勤' || param.stampAtr === '臨時出勤') {
+
+            if (param.stampAtr === '出勤' || param.stampAtr === '入門' || param.stampAtr === '応援開始' || param.stampAtr === '直行' || param.stampAtr === '早出'
+                || param.stampAtr === '応援休出' || param.stampAtr === '応援早出' || param.stampAtr === '休出' || param.stampAtr === '応援出勤' || param.stampAtr === '臨時出勤') {
+
                 self.stampAtr = `<div style="text-align: left">` + param.stampAtr + '</div>';
 
-            } else if (param.stampAtr === '退勤' || param.stampAtr === '退門' || param.stampAtr === '応援終了' || param.stampAtr === '臨時退勤') {
+            } else if (param.stampAtr === '退勤' || param.stampAtr === '退門' || param.stampAtr === '応援終了' || param.stampAtr === '臨時退勤' || param.stampAtr === '直帰' || param.stampAtr === '退勤+残業') {
                 self.stampAtr = `<div style="text-align: right">` + param.stampAtr + '</div>';
 
             } else {
