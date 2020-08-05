@@ -113,5 +113,12 @@ public class TimeDivergenceWithCalculation {
 	public TimeDivergenceWithCalculation calcDiverGenceTime() {
 		return new TimeDivergenceWithCalculation(this.time,this.calcTime);
 	}
+
+	public TimeDivergenceWithCalculation(AttendanceTime time, AttendanceTime calcTime, AttendanceTime divergenceTime) {
+		super();
+		this.time = time;
+		this.calcTime = calcTime;
+		this.divergenceTime = divergenceTime;
+	}
 	
 }

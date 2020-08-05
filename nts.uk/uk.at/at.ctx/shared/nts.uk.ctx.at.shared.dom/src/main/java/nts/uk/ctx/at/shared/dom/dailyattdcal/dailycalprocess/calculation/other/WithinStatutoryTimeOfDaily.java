@@ -68,7 +68,7 @@ public class WithinStatutoryTimeOfDaily {
 	 * @param workTime 就業時間
 	 * @param actualTime 
 	 */
-	private WithinStatutoryTimeOfDaily(AttendanceTime workTime,AttendanceTime actualTime, AttendanceTime premiumTime, WithinStatutoryMidNightTime midNightTime) {
+	public WithinStatutoryTimeOfDaily(AttendanceTime workTime,AttendanceTime actualTime, AttendanceTime premiumTime, WithinStatutoryMidNightTime midNightTime) {
 		this.workTime = workTime;
 		this.actualWorkTime = actualTime;
 		this.withinPrescribedPremiumTime = premiumTime;

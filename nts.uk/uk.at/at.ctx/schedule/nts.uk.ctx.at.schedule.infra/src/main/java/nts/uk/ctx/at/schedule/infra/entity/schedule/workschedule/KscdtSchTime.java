@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -16,15 +18,44 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmpCombi;
+import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.BonusPayTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.premiumtime.PremiumTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.ConstraintTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DeductionTotalTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ExcessOfStatutoryTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ExcessOverTimeWorkMidNightTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.OverTimeFrameTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.OverTimeFrameTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.RaiseSalaryTimeOfDailyPerfor;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ShortWorkTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.TimeDivergenceWithCalculationMinusExist;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.WithinStatutoryTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.breaktimegoout.BreakTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkFrameTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkFrameTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.overtimework.FlexTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.overtimework.OverTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.AbsenceOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.AnnualOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.HolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.OverSalaryOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.SpecialHolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.SubstituteHolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.TimeDigestOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -211,7 +242,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 	
 	/**
 	 * 
-	 * @param workingTime 勤務予定．勤怠時間．勤務時間．総労働時間
+	 * @param workingTime 勤務予定．勤怠時間．勤務時間
 	 * @param sID
 	 * @param yMD
 	 * @param cID
@@ -220,13 +251,15 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 	public static KscdtSchTime toEntity(ActualWorkingTimeOfDaily timeOfDailys, String sID, GeneralDate yMD, String cID) {
 		KscdtSchTimePK pk = new KscdtSchTimePK(sID, yMD);
 		
-		WithinStatutoryTimeOfDaily timeOfDaily = timeOfDailys.getTotalWorkingTime().getWithinStatutoryTimeOfDaily();
+		
 	
-		// 勤務予定．勤怠時間．勤務時間．総労働時間．所定内時間
+		// 勤務予定．勤怠時間．勤務時間．総労働時間
 		TotalWorkingTime workingTime = timeOfDailys.getTotalWorkingTime();
 		
+		WithinStatutoryTimeOfDaily timeOfDaily = workingTime.getWithinStatutoryTimeOfDaily();
+		
 		// 勤務予定．勤怠時間．勤務時間．総労働時間．所定外時間
-		ExcessOfStatutoryTimeOfDaily statutoryTimeOfDaily = timeOfDailys.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily();
+		ExcessOfStatutoryTimeOfDaily statutoryTimeOfDaily = workingTime.getExcessOfStatutoryTimeOfDaily();
 		
 		// 勤務予定．勤怠時間．勤務時間．総労働時間．所定外時間．残業時間
 		Optional<OverTimeOfDaily> overTimeOfDaily = statutoryTimeOfDaily.getOverTimeWork();
@@ -235,15 +268,43 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		ExcessOfStatutoryMidNightTime excessOfStatutoryMidNightTime = statutoryTimeOfDaily.getExcessOfStatutoryMidNightTime();
 		
 		// 勤務予定．勤怠時間．勤務時間．総労働時間.休暇時間
-		HolidayOfDaily holidayOfDaily = timeOfDailys.getTotalWorkingTime().getHolidayOfDaily();
+		HolidayOfDaily holidayOfDaily = workingTime.getHolidayOfDaily();
 		
+		// create KscdtSchOvertimeWork
+		//  勤務予定．勤怠時間．勤務時間.総労働時間.所定外時間.残業枠時間
+		List<KscdtSchOvertimeWork> kscdtSchOvertimeWork = overTimeOfDaily.get().getOverTimeWorkFrameTime()
+				.stream().map(mapper-> KscdtSchOvertimeWork.toEntity(mapper, cID, sID, yMD)).collect(Collectors.toList());
 		
-		// null đợi QA PRS_WORK_TIME_ACT 110806
-		// null EXT_FLEX_TIME 110810							
-		// null EXT_FLEX_TIME_PREAPP 110810		
-		Integer timeLghd = null;
-		Integer timeIlghd = null;
-		Integer timePubhd = null;
+		// create KscdtSchHolidayWork
+		// 勤務予定．勤怠時間．勤務時間．総労働時間．所定外時間．休出時間
+		HolidayWorkTimeOfDaily workTimeOfDaily = statutoryTimeOfDaily.getWorkHolidayTime().get();
+		List<HolidayWorkFrameTimeSheet> holidayWorkFrameTimeSheet = workTimeOfDaily.getHolidayWorkFrameTimeSheet();
+		List<HolidayWorkFrameTime> holidayWorkFrameTime = workTimeOfDaily.getHolidayWorkFrameTime();
+		List<KscdtSchHolidayWork> kscdtSchHolidayWork = new ArrayList<>();
+		for(HolidayWorkFrameTimeSheet x : holidayWorkFrameTimeSheet) {
+			KscdtSchHolidayWork work = holidayWorkFrameTime.stream().map(y-> KscdtSchHolidayWork.toEntity(x, y, sID, yMD, cID)).findFirst().get();
+			kscdtSchHolidayWork.add(work);
+		}
+		
+		// create KscdtSchBonusPay
+		// 勤務予定．勤怠時間．勤務時間．総労働時間．加給時間．割増時間
+		List<BonusPayTime> dailyPerfor = workingTime.getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes();
+		List<KscdtSchBonusPay> kscdtSchBonusPay = dailyPerfor.stream().map(mapper-> KscdtSchBonusPay.toEntity(sID, yMD, mapper)).collect(Collectors.toList());
+		
+		// create KscdtSchPremium
+		// 勤務予定．勤怠時間．勤務時間．割増時間．割増時間
+		List<PremiumTime> premiumTimes = timeOfDailys.getPremiumTimeOfDailyPerformance().getPremiumTimes();
+		List<KscdtSchPremium> kscdtSchPremium = premiumTimes.stream().map(mapper-> KscdtSchPremium.toEntity(mapper, sID, yMD)).collect(Collectors.toList());
+		
+		// 勤務予定．勤怠時間．勤務時間．総労働時間．短時間勤務時間
+		ShortWorkTimeOfDaily result = workingTime.getShotrTimeOfDaily();
+		List<KscdtSchShortTime> kscdtSchShortTime = new ArrayList<>();
+		kscdtSchShortTime.add(KscdtSchShortTime.toEntity(result, sID, yMD));
+		
+		// QA
+		Integer timeLghd = 0;
+		Integer timeIlghd = 0;
+		Integer timePubhd = 0;
 		if(statutoryTimeOfDaily.getWorkHolidayTime().isPresent()) {
 			if(statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().isPresent()) {
 				String check = statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().get().getHolidayWorkMidNightTime().get(0).getStatutoryAtr().name();
@@ -263,40 +324,127 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		}
 
 		KscdtSchTime kscdtSchTime = new KscdtSchTime(
-				pk, cID, 
-				workingTime.getWorkTimes().v(), workingTime.getTotalTime().v(), workingTime.getActualTime().v(), 
-				timeOfDaily.getWorkTime().v(), timeOfDaily.getActualWorkTime().v(), timeOfDaily.getWithinPrescribedPremiumTime().v(), 
-				timeOfDaily.getWithinStatutoryMidNightTime().getTime().getTime().v(), 
-				overTimeOfDaily.get().getOverTimeWorkSpentAtWork().v(),
-				statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayTimeSpentAtWork().v(), 
-				overTimeOfDaily.get().getIrregularWithinPrescribedOverTimeWork().v(), 
-			    overTimeOfDaily.get().getFlexTime().getFlexTime().getTime().v(), 
-			    overTimeOfDaily.get().getFlexTime().getBeforeApplicationTime().v(), 
-			    excessOfStatutoryMidNightTime.getTime().getTime().v(), // EXT_MIDNITE_OTW_TIME - QA 110821
-				timeLghd, timeIlghd, timePubhd, //EXT_MIDNITE_HDW_TIME_PUBHD
-				excessOfStatutoryMidNightTime.getTime().getTime().v(), //EXT_MIDNITE_TOTAL
-				excessOfStatutoryMidNightTime.getBeforeApplicationTime().v(), // EXT_MIDNITE_TOTAL_PREAPP - 31
-				3, // đang QA 110822
-				4, // đang QA 110822
-				workingTime.getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime().v(), // 34
-				holidayOfDaily.getAnnual().getUseTime().v(), // 35 HDPAID_TIME
-				holidayOfDaily.getAnnual().getDigestionUseTime().v(), // 36 HDPAID_HOURLY_TIME
-				holidayOfDaily.getSubstitute().getUseTime().v(), 
-				holidayOfDaily.getSubstitute().getDigestionUseTime().v(), // 38 HDCOM_HOURLY_TIME
-				holidayOfDaily.getOverSalary().getUseTime().v(), 
-				holidayOfDaily.getOverSalary().getDigestionUseTime().v(), // 40 HD60H_HOURLY_TIME
-				holidayOfDaily.getSpecialHoliday().getUseTime().v(), 
-				holidayOfDaily.getSpecialHoliday().getDigestionUseTime().v(), // 42 HDSP_HOURLY_TIME
-				holidayOfDaily.getYearlyReserved().getUseTime().v(), 
-				holidayOfDaily.getTimeDigest().getUseTime().v(), 
-				holidayOfDaily.getTimeDigest().getLeakageTime().v(), 
-				holidayOfDaily.getAbsence().getUseTime().v(), 
-				workingTime.getVacationAddTime().v(), 
-				timeOfDailys.getTimeDifferenceWorkingHours().v(), 
-				null, null, null, null, null, null
-				);
+				pk, 
+				cID, // cid
+				workingTime.getWorkTimes().v(), // count
+				workingTime.getTotalTime().v(), // totalTime
+				workingTime.getActualTime().v(), // totalTimeAct
+				timeOfDaily.getWorkTime().v(), // prsWorkTime
+				timeOfDaily.getActualWorkTime().v(), //prsWorkTimeAct
+				timeOfDaily.getWithinPrescribedPremiumTime().v(), // prsPrimeTime
+				timeOfDaily.getWithinStatutoryMidNightTime().getTime().getTime().v(), // prsMidniteTime
+				overTimeOfDaily.get().getOverTimeWorkSpentAtWork().v(), // extBindTimeOtw
+				statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayTimeSpentAtWork().v(), // extBindTimeHw
+				overTimeOfDaily.get().getIrregularWithinPrescribedOverTimeWork().v(), // extVarwkOtwTimeLegal
+			    overTimeOfDaily.get().getFlexTime().getFlexTime().getTime().v(), // extFlexTime
+			    overTimeOfDaily.get().getFlexTime().getBeforeApplicationTime().v(), // extFlexTimePreApp
+			    overTimeOfDaily.get().getExcessOverTimeWorkMidNightTime().get().getTime().getTime().v(), // EXT_MIDNITE_OTW_TIME // extMidNiteOtwTime
+				timeLghd, // extMidNiteHdwTimeLghd
+				timeIlghd, // extMidNiteHdwTimeIlghd
+				timePubhd, //EXT_MIDNITE_HDW_TIME_PUBHD // extMidNiteHdwTimePubhd
+				excessOfStatutoryMidNightTime.getTime().getTime().v(), //EXT_MIDNITE_TOTAL // extMidNiteTotal
+				excessOfStatutoryMidNightTime.getBeforeApplicationTime().v(), // EXT_MIDNITE_TOTAL_PREAPP - 31 // extMidNiteTotalPreApp
+				3, // đang QA 110822 // intervalAtdClock
+				4, // đang QA 110822 // intervalTime
+				workingTime.getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime().v(), // 34 // brkTotalTime
+				holidayOfDaily.getAnnual().getUseTime().v(), // 35 HDPAID_TIME // hdPaidTime
+				holidayOfDaily.getAnnual().getDigestionUseTime().v(), // 36 HDPAID_HOURLY_TIME // hdPaidHourlyTime
+				holidayOfDaily.getSubstitute().getUseTime().v(), // hdComTime
+				holidayOfDaily.getSubstitute().getDigestionUseTime().v(), // 38 HDCOM_HOURLY_TIME // hdComHourlyTime
+				holidayOfDaily.getOverSalary().getUseTime().v(), // hd60hTime
+				holidayOfDaily.getOverSalary().getDigestionUseTime().v(), // 40 HD60H_HOURLY_TIME // hd60hHourlyTime
+				holidayOfDaily.getSpecialHoliday().getUseTime().v(), // hdspTime
+				holidayOfDaily.getSpecialHoliday().getDigestionUseTime().v(), // 42 HDSP_HOURLY_TIME // hdspHourlyTime
+				holidayOfDaily.getYearlyReserved().getUseTime().v(), // hdstkTime
+				holidayOfDaily.getTimeDigest().getUseTime().v(), // hdHourlyTime
+				holidayOfDaily.getTimeDigest().getLeakageTime().v(), // hdHourlyShortageTime 
+				holidayOfDaily.getAbsence().getUseTime().v(), // absenceTime
+				workingTime.getVacationAddTime().v(), // vacationAddTime
+				timeOfDailys.getTimeDifferenceWorkingHours().v(), // staggeredWhTime
+				kscdtSchOvertimeWork, 
+				kscdtSchHolidayWork, 
+				kscdtSchBonusPay, 
+				kscdtSchPremium, 
+				kscdtSchShortTime);
 		return kscdtSchTime;
 		
+	}
+	
+	public ActualWorkingTimeOfDaily toDomain() {
+		// 拘束差異時間
+		AttendanceTime constraintDiffTime = new AttendanceTime(null);
+		// 拘束時間
+		ConstraintTime constraintTime = new ConstraintTime(null, null);
+		// 時差勤務時間
+		AttendanceTime timeDiff = new AttendanceTime(staggeredWhTime);
+		
+		// 総労働時間
+		KscdtSchOvertimeWork kscdtSchOvertimeWork = new KscdtSchOvertimeWork();
+		KscdtSchHolidayWork kscdtSchHolidayWork = new KscdtSchHolidayWork();
+
+		ExcessOfStatutoryMidNightTime nightTime = new ExcessOfStatutoryMidNightTime(new TimeDivergenceWithCalculation(new AttendanceTime(this.extMidNiteTotal), null, null), new AttendanceTime(this.extMidNiteTotalPreApp));
+		
+		ExcessOverTimeWorkMidNightTime midNightTimes = new ExcessOverTimeWorkMidNightTime(new TimeDivergenceWithCalculation(new AttendanceTime(extMidNiteTotalPreApp), null, null));
+		OverTimeOfDaily overTimeOfDaily = new OverTimeOfDaily(
+				new ArrayList<>(),
+				new ArrayList<>(),
+				Finally.of(midNightTimes),
+				new AttendanceTime(extVarwkOtwTimeLegal),
+				new FlexTime(TimeDivergenceWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus (extFlexTime)), new AttendanceTime(extFlexTimePreApp)), 
+				new AttendanceTime(extBindTimeOtw));
+		
+		ExcessOfStatutoryTimeOfDaily excessOfStatutoryTimeOfDaily = new ExcessOfStatutoryTimeOfDaily(nightTime,
+				Optional.ofNullable(kscdtSchOvertimeWork.toDomain(overTimeOfDaily)),
+				Optional.ofNullable(kscdtSchHolidayWork.toDomain(this.extBindTimeHw, this.extMidNiteHdwTimeLghd, this.extMidNiteHdwTimeIlghd, this.extMidNiteHdwTimePubhd)));
+		// raiseSalaryTimeOfDailyPerfor
+		KscdtSchBonusPay kscdtSchBonusPay = new KscdtSchBonusPay();
+		RaiseSalaryTimeOfDailyPerfor raiseSalaryTimeOfDailyPerfor = new RaiseSalaryTimeOfDailyPerfor(
+				kscdtSchBonusPay.toDomain(), null);
+		
+		// QA 110840
+		KscdtSchShortTime kscdtSchShortTime = new KscdtSchShortTime();
+		ShortWorkTimeOfDaily shotrTime = null;
+		
+		// WithinStatutoryMidNightTime
+		WithinStatutoryMidNightTime midNightTime = new WithinStatutoryMidNightTime(new TimeDivergenceWithCalculation(new AttendanceTime(prsMidniteTime), null, null));
+		WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily = new WithinStatutoryTimeOfDaily(new AttendanceTime(this.prsWorkTime), new AttendanceTime(this.prsWorkTimeAct), new AttendanceTime(this.prsPrimeTime), midNightTime);
+		
+		
+		SubstituteHolidayOfDaily substitute = new SubstituteHolidayOfDaily( new AttendanceTime(hdComTime),  new AttendanceTime(hdComHourlyTime));
+		OverSalaryOfDaily overSalary = new OverSalaryOfDaily(new AttendanceTime(hd60hTime), new AttendanceTime(hd60hHourlyTime));
+		SpecialHolidayOfDaily specialHoliday = new SpecialHolidayOfDaily(new AttendanceTime(hdspTime), new AttendanceTime(hdspHourlyTime));
+		YearlyReservedOfDaily yearlyReserved = new YearlyReservedOfDaily(new AttendanceTime(hdstkTime)); 
+		TimeDigestOfDaily timeDigest = new TimeDigestOfDaily(new AttendanceTime(hdHourlyTime), new AttendanceTime(hdHourlyShortageTime));
+		AnnualOfDaily annual = new AnnualOfDaily(new AttendanceTime(hdPaidTime), new AttendanceTime(hdPaidHourlyTime));
+		HolidayOfDaily holidayOfDaily = new HolidayOfDaily(
+				new AbsenceOfDaily(new AttendanceTime(absenceTime)),
+				timeDigest,
+				yearlyReserved,
+				substitute,
+				overSalary,
+				specialHoliday,
+				annual);
+		
+		
+		
+		DeductionTotalTime deductionTotalTime = DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(this.brkTotalTime)), null, null);
+		BreakTimeOfDaily breakTimeOfDaily = new BreakTimeOfDaily(null, deductionTotalTime, null, null, null);
+		
+		TotalWorkingTime totalWorkingTime = new TotalWorkingTime(new AttendanceTime(this.totalTime), null, new AttendanceTime(this.totalTimeAct),
+				withinStatutoryTimeOfDaily, excessOfStatutoryTimeOfDaily, new ArrayList<>(), new ArrayList<>(),
+				breakTimeOfDaily, new ArrayList<>(), raiseSalaryTimeOfDailyPerfor, new WorkTimes(this.count), null,
+				shotrTime, holidayOfDaily, new AttendanceTime(vacationAddTime));
+		
+		// 乖離時間
+		DivergenceTimeOfDaily divTime = null;
+		
+		// 割増時間
+		KscdtSchPremium kscdtSchPremium = new KscdtSchPremium();
+		PremiumTimeOfDailyPerformance premiumTime = new PremiumTimeOfDailyPerformance(kscdtSchPremium.toDomain());
+
+		ActualWorkingTimeOfDaily workingTimeOfDaily = new ActualWorkingTimeOfDaily(constraintDiffTime, constraintTime,
+				timeDiff, totalWorkingTime, divTime, premiumTime);
+		return workingTimeOfDaily;
 	}
 	
 	@Override
@@ -311,7 +459,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 			int extMidNiteTotalPreApp, int intervalAtdClock, int intervalTime, int brkTotalTime, int hdPaidTime,
 			int hdPaidHourlyTime, int hdComTime, int hdComHourlyTime, int hd60hTime, int hd60hHourlyTime, int hdspTime,
 			int hdspHourlyTime, int hdstkTime, int hdHourlyTime, int hdHourlyShortageTime, int absenceTime,
-			int vacationAddTime, int staggeredWhTime, KscdtSchBasicInfo basicInfo,
+			int vacationAddTime, int staggeredWhTime,
 			List<KscdtSchOvertimeWork> overtimeWorks, List<KscdtSchHolidayWork> holidayWorks,
 			List<KscdtSchBonusPay> bonusPays, List<KscdtSchPremium> premiums, List<KscdtSchShortTime> shortTimes) {
 		super();
@@ -352,12 +500,10 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		this.absenceTime = absenceTime;
 		this.vacationAddTime = vacationAddTime;
 		this.staggeredWhTime = staggeredWhTime;
-		this.basicInfo = basicInfo;
 		this.overtimeWorks = overtimeWorks;
 		this.holidayWorks = holidayWorks;
 		this.bonusPays = bonusPays;
 		this.premiums = premiums;
 		this.shortTimes = shortTimes;
 	}
-
 }

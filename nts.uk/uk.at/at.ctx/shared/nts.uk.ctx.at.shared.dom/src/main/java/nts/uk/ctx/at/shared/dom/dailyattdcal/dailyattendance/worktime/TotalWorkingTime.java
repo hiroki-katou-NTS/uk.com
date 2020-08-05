@@ -1302,5 +1302,43 @@ public class TotalWorkingTime {
 			throw new RuntimeException("unkwon pred need workType in IW Decision");
 		}
 	}
+
+
+	public TotalWorkingTime(AttendanceTime totalTime, AttendanceTime totalCalcTime, AttendanceTime actualTime,
+			WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily,
+			ExcessOfStatutoryTimeOfDaily excessOfStatutoryTimeOfDaily, List<LateTimeOfDaily> lateTimeOfDaily,
+			List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily, BreakTimeOfDaily breakTimeOfDaily,
+			List<OutingTimeOfDaily> outingTimeOfDailyPerformance,
+			RaiseSalaryTimeOfDailyPerfor raiseSalaryTimeOfDailyPerfor, WorkTimes workTimes,
+			TemporaryTimeOfDaily temporaryTime, ShortWorkTimeOfDaily shotrTimeOfDaily, HolidayOfDaily holidayOfDaily,
+			AttendanceTime vacationAddTime) {
+		super();
+		this.totalTime = totalTime;
+		this.totalCalcTime = totalCalcTime;
+		this.actualTime = actualTime;
+		this.withinStatutoryTimeOfDaily = withinStatutoryTimeOfDaily;
+		this.excessOfStatutoryTimeOfDaily = excessOfStatutoryTimeOfDaily;
+		this.lateTimeOfDaily = lateTimeOfDaily;
+		this.leaveEarlyTimeOfDaily = leaveEarlyTimeOfDaily;
+		this.breakTimeOfDaily = breakTimeOfDaily;
+		this.outingTimeOfDailyPerformance = outingTimeOfDailyPerformance;
+		this.raiseSalaryTimeOfDailyPerfor = raiseSalaryTimeOfDailyPerfor;
+		this.workTimes = workTimes;
+		this.temporaryTime = temporaryTime;
+		this.shotrTimeOfDaily = shotrTimeOfDaily;
+		this.holidayOfDaily = holidayOfDaily;
+		this.vacationAddTime = vacationAddTime;
+	}
+
+
+	public TotalWorkingTime(AttendanceTime attendanceTime, Object object, AttendanceTime attendanceTime2,
+			WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily2,
+			ExcessOfStatutoryTimeOfDaily excessOfStatutoryTimeOfDaily2, ArrayList<LateTimeOfDaily> arrayList,
+			ArrayList<LeaveEarlyTimeOfDaily> arrayList2, BreakTimeOfDaily breakTimeOfDaily2,
+			ArrayList<OutingTimeOfDaily> arrayList3, RaiseSalaryTimeOfDailyPerfor raiseSalaryTimeOfDailyPerfor2,
+			AttendanceTime attendanceTime3, Object object2, ShortWorkTimeOfDaily shotrTime,
+			HolidayOfDaily holidayOfDaily2, AttendanceTime attendanceTime4) {
+		// TODO Auto-generated constructor stub
+	}
 	
 }
