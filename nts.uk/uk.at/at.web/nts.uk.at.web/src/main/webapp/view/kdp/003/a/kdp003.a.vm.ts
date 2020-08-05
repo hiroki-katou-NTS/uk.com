@@ -614,7 +614,7 @@ module nts.uk.at.kdp003.a {
 		WKLOC_CD: string;
 	}
 
-	interface FingerStampSetting {
+	export interface FingerStampSetting {
 		stampResultDisplay: StampResultDisplay;
 		stampSetting: StampSetting;
 	}
