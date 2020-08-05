@@ -37,13 +37,8 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                             opReasonScheCantReflect: 0
                         }
                     }]
-                },
-                opStampRequestMode: 1,
-                opReversionReason: '1',
-                 opAppStartDate: '2020/08/07',
-                 opAppEndDate: '2020/08/08',
-                 opAppReason: 'jdjadja',
-                 opAppStandardReasonCD: 1
+                }
+                
 
 
             };
@@ -152,8 +147,8 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             vm.applicationTest.appDate = application.appDate;
             vm.applicationTest.appType = application.appType;
             vm.applicationTest.prePostAtr = application.prePostAtr;
-//            vm.applicationTest.opAppStartDate = application.opAppStartDate;
-//            vm.applicationTest.opAppEndDate = application.opAppEndDate;
+            vm.applicationTest.opAppStartDate = application.opAppStartDate;
+            vm.applicationTest.opAppEndDate = application.opAppEndDate;
             vm.applicationTest.opAppReason = application.opAppReason;
             vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;    
             vm.applicationTest.opReversionReason = application.opReversionReason;
@@ -221,6 +216,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
         
         changeDate() {
             console.log("change date");
+            vm.$blockui( "show" );
             let vm = this;
             let param = {
                     companyId: vm.$user.companyId,
@@ -248,7 +244,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                         messageId: res.msgId
                     } );
                 })
-                .always(() => true);
+                .always(() => vm.$blockui( "hide" ));
             
         }
 
