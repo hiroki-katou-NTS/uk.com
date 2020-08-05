@@ -16,9 +16,9 @@
 		<ui:define name="content">
 			<div id="functions-area"></div>
 			<div id="contents-area">
-				<button class="krm001-a-button-link" onclick="location.href = '../b/test/index.xhtml'">#{i18n.getText('KMR002_1')}</button>
+				<button class="krm001-a-button-link" onclick="location.href = '../b/test/index.xhtml'" data-bind="text: $vm.$i18n('KMR002_1')"></button>
 				<br/>
-				<button class="krm001-a-button-link" onclick="location.href = '../c/test/index.xhtml'">#{i18n.getText('KMR002_2')}</button>
+				<button class="krm001-a-button-link" onclick="location.href = '../c/test/index.xhtml'" data-bind="text: $vm.$i18n('KMR002_2')"></button>
 			</div>
 		</ui:define>
 	</ui:composition>

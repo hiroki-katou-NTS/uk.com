@@ -6,6 +6,10 @@ module nts.uk.at.kmr001.d {
 		HIGHTLIGHT: 'at/record/stamp/management/personal/stamp/getHighlightSetting'
 	};
 
+	const PATH = {
+	    REDIRECT : '/view/ccg/008/a/index.xhtml'
+    }
+
 	@bean()
 	export class KMR001DViewModel extends ko.ViewModel {
 		tabs: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -21,16 +25,16 @@ module nts.uk.at.kmr001.d {
 
         constructor() {
         	super();
-            var self = this;
-            self.itemList = ko.observableArray([
+            var vm = this;
+            vm.itemList = ko.observableArray([
                 new ItemModel('2010/01/01', '9999/12/31'),
                 new ItemModel('2000/01/01', '2009/12/31')
             ]);
-            self.itemName = ko.observable('');
-            self.currentCode = ko.observable(3);
-            self.selectedCode = ko.observable(null)
-            self.isEnable = ko.observable(true);
-            self.selectedCodes = ko.observableArray([]);
+            vm.itemName = ko.observable('');
+            vm.currentCode = ko.observable(3);
+            vm.selectedCode = ko.observable(null)
+            vm.isEnable = ko.observable(true);
+            vm.selectedCodes = ko.observableArray([]);
 
             $('#list-box').on('selectionChanging', function(event) {
                 console.log('Selecting value:' + (<any>event.originalEvent).detail);
@@ -39,8 +43,8 @@ module nts.uk.at.kmr001.d {
                 console.log('Selected value:' + (<any>event.originalEvent).detail)
             })
 
-            self.date = ko.observable('20000101');
-            self.yearMonth = ko.observable(200001);
+            vm.date = ko.observable('20000101');
+            vm.yearMonth = ko.observable(200001);
         }
 
         deselectAll() {
@@ -53,25 +57,6 @@ module nts.uk.at.kmr001.d {
 
 		created() {
 			const vm = this;
-			vm.$blockui('show')
-				.then(() => vm.$ajax('at', API.SETTING))
-				.then((data: any) => {
-					if (data) {
-						if (data.stampSetting) {
-							vm.tabs(data.stampSetting.pageLayouts);
-						}
-
-						if (data.stampToSuppress) {
-							vm.stampToSuppress(data.stampToSuppress);
-						}
-					}
-				})
-				.fail((res) => {
-					vm.$dialog.error({ messageId: res.messageId })
-						.then(() => vm.$jump("com", "/view/ccg/008/a/index.xhtml"));
-				})
-				.always(() => vm.$blockui('clear'));
-
 			_.extend(window, { vm });
 		}
 
