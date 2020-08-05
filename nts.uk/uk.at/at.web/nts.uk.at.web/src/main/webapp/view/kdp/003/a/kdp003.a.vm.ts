@@ -35,7 +35,7 @@ module nts.uk.at.kdp003.a {
 		// logingin: undefined
 		// login false: has messageId
 		// login success: null
-		message: KnockoutObservable<f.Message | string | null | undefined> = ko.observable(undefined);
+		message: KnockoutObservable<f.Message | string | null | undefined | false> = ko.observable(undefined);
 
 		// setting for button A3
 		showClockButton: {
@@ -192,7 +192,7 @@ module nts.uk.at.kdp003.a {
 				})
 				.then((data: null | k.Return) => {
 					if (data === null) {
-						if (ko.unwrap(vm.message) === undefined) {
+						if (!ko.unwrap(vm.message)) {
 							vm.message({ messageId: 'Msg_1647' });
 						}
 
@@ -246,7 +246,7 @@ module nts.uk.at.kdp003.a {
 					}
 
 					// if message is not set, clear it (show ui)
-					if (ko.unwrap(vm.message) === undefined) {
+					if (!ko.unwrap(vm.message)) {
 						vm.message(null);
 					}
 
@@ -288,7 +288,9 @@ module nts.uk.at.kdp003.a {
 						if (!stampResultDisplay) {
 							// UI[A6] 打刻利用失敗時のメッセージについて 
 							// note: 打刻オプション未購入
-							vm.message({ messageId: 'Msg_1644' });
+							if (!ko.unwrap(vm.message)) {
+								vm.message({ messageId: 'Msg_1644' });
+							}
 							return;
 						}
 
@@ -337,6 +339,10 @@ module nts.uk.at.kdp003.a {
 			const vm = this;
 			const { storage } = vm.$window;
 
+			if (!!ko.unwrap(vm.message)) {
+				vm.message(false);
+			}
+			
 			storage(KDP003_SAVE_DATA)
 				.then((data: StorageData) => {
 					const mode = 'admin';
@@ -391,9 +397,11 @@ module nts.uk.at.kdp003.a {
 								vm.message(state.errorMessage);
 							}
 						} else {
-							vm.message({
-								messageId: 'Msg_1647'
-							});
+							if (!ko.unwrap(vm.message)) {
+								vm.message({
+									messageId: 'Msg_1647'
+								});
+							}
 						}
 
 						return false;
@@ -401,9 +409,15 @@ module nts.uk.at.kdp003.a {
 						return vm.$window.modal('at', DIALOG.K, { multiSelect: true });
 					}
 				})
-				.then((data: null | k.Return) => {
-					if (!data) {
+				.then((data: false | undefined | k.Return) => {
+					if (data === false) {
 						return false;
+					} else if (data === undefined) {
+						if (!ko.unwrap(vm.message)) {
+							vm.message({
+								messageId: 'Msg_1647'
+							});
+						}
 					} else {
 						return storage(KDP003_SAVE_DATA)
 							// update workplaceId to storage
