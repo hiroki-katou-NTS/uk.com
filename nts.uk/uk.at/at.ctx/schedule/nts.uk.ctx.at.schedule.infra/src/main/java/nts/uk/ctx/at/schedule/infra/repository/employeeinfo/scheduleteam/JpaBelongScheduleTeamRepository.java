@@ -14,6 +14,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeamRepository;
 import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.scheduleteam.KscmtAffScheduleTeam;
+import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.scheduleteam.KscmtAffScheduleTeamPk;
 
 /**
  * 所属スケジュールチームRepository			
@@ -27,9 +28,9 @@ public class JpaBelongScheduleTeamRepository extends JpaRepository implements Be
 	
 	private static final String GET_BY_CID = SELECT +  " WHERE c.pk.CID = :CID " ;
 	
-	private static final String GET_BY_KEY = GET_BY_CID +" AND c.pk.SID = : empID "; 
+	private static final String GET_BY_KEY = GET_BY_CID +" AND c.pk.SID = :empID "; 
 	
-	private static final String GET_ALL = GET_BY_CID +" AND c.WKPGRPID = : WKPGRPID AND c.scheduleTeamCd = :scheduleTeamCd "; 
+	private static final String GET_ALL = GET_BY_CID +" AND c.WKPGRPID = :WKPGRPID AND c.scheduleTeamCd = :scheduleTeamCd "; 
 	
 	private static final String GET_BY_LIST_EMPID = GET_BY_CID + "AND c.pk.employeeID IN :empIDs" ;
 	
@@ -62,7 +63,7 @@ public class JpaBelongScheduleTeamRepository extends JpaRepository implements Be
 
 	@Override
 	public void delete(String companyID, String empID) {
-		// TODO Auto-generated method stub
+		this.commandProxy().remove(KscmtAffScheduleTeam.class, new KscmtAffScheduleTeamPk(companyID, empID) );
 		
 	}
 

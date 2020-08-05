@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.dom.access.role.SyRoleAdapter;
@@ -40,9 +41,37 @@ import repository.workplacegroup.JpaWorkplaceGroupRespository;
 @Stateless
 public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 
+	@Inject
+	private WorkplaceGroupRespository repo;
+	
+	@Inject
+	private JpaAffWorkplaceGroupRespository repoAffWorkplace;
+	
+	@Inject 
+	private WorkplacePub pub;
+	
+	@Inject
+	private JpaWorkplaceGroupRespository repoWorkplaceGroup;
+	
+	//職場グループ所属情報Repository
+	@Inject 
+	private JpaAffWorkplaceGroupRespository repoAffWorkplaceGroup;
+	
+	@Inject
+	private SyWorkplacePub syWorkplacePub;
+	
+	@Inject 
+	private GetStringWorkplaceManagerAdapter adapter;
+	
+	@Inject
+	private WorkplacePub wkplacePub;
+	
+	@Inject
+	private SyRoleAdapter syRoleAdapter;
+	
 	@Override
 	public List<WorkplaceGroupExport> getByWorkplaceGroupID(List<String> lstWorkplaceGroupId) {
-		Require require = new Require();
+		Require require = new Require(repo);
 		String companyId = AppContexts.user().companyId();
 		//	$職場グループリスト = require.職場グループIDを指定して職場グループを取得する( 職場グループIDリスト )	
 		List<WorkplaceGroup> data = require.getAllById(companyId, lstWorkplaceGroupId);
@@ -57,7 +86,7 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 
 	@Override
 	public List<WorkplaceGroupExport> getAllWorkplaces(GeneralDate date, String workplaceGroupId) {
-		Require require = new Require();
+		Require require = new Require(repo);
 		String companyId = AppContexts.user().companyId();
 		//	$職場グループリスト = require.職場グループIDを指定して職場グループを取得する( 職場グループIDリスト )	
 		List<WorkplaceGroup> data = require.getAllById(companyId, Arrays.asList(workplaceGroupId));
@@ -72,7 +101,7 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 
 	@Override
 	public List<EmpOrganizationExport> getAllEmployees(GeneralDate date, String workplaceGroupId) {
-		RequireAllEmpWhoBelongWklGroupSv requireGetAllEmp = new RequireAllEmpWhoBelongWklGroupSv();
+		RequireAllEmpWhoBelongWklGroupSv requireGetAllEmp = new RequireAllEmpWhoBelongWklGroupSv(repoAffWorkplace , pub);
 		//$社員の所属組織リスト = 職場グループに所属する社員をすべて取得する#取得する( require, 基準日, 職場グループID )	
 		List<EmployeeAffiliation> data = GetAllEmpWhoBelongWorkplaceGroupService.getAllEmp(requireGetAllEmp, date, workplaceGroupId);
 		List<EmpOrganizationExport> result = data.stream().map(c -> new EmpOrganizationExport(
@@ -89,11 +118,11 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 	@Override
 	public List<String> getReferableEmployees(GeneralDate date, String empID, String workplaceGroupId) {
 		//	return 職場グループを指定して参照可能な社員を取得する#取得する( require, 基準日, 社員ID, 職場グループID )
-		RequireWorkgroupService require = new RequireWorkgroupService();
+		RequireWorkgroupService require = new RequireWorkgroupService(repoWorkplaceGroup, repoAffWorkplaceGroup , syWorkplacePub , adapter , wkplacePub , syRoleAdapter );
 		List<String> data = GetEmpCanReferBySpecifyWorkgroupService.getEmpCanRefer(require, date, empID, workplaceGroupId);
 		return data;
 	}
-	
+	@AllArgsConstructor
 	class Require {
 		@Inject
 		private WorkplaceGroupRespository repo;
@@ -107,6 +136,8 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 			return  repo.getAllById(companyId, lstWKPGRPID);
 		}		
 	}
+	
+	@AllArgsConstructor
 	private static class RequireAllEmpWhoBelongWklGroupSv implements GetAllEmpWhoBelongWorkplaceGroupService.Require{
 		@Inject
 		private JpaAffWorkplaceGroupRespository repo;
@@ -130,6 +161,7 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 		}
 
 	}
+	@AllArgsConstructor
 	private static class RequireWorkgroupService implements GetEmpCanReferBySpecifyWorkgroupService.Require{
 		
 		@Inject
