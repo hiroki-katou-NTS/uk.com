@@ -61,6 +61,20 @@ public class StampResultConfirmationQuery {
 	
 	@Inject
 	private DailyRecordWorkFinder fullFinder;
+	@Inject
+	private SyWorkplaceAdapter syWorkplaceAdapter;
+	
+	@Inject
+	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
+	
+	@Inject
+	private IGetDailyLock iGetDailyLock;
+	@Inject
+	private ClosureRepository closureRepo;
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepo;
+	@Inject
+	private ShareEmploymentAdapter shareEmploymentAdapter;
 	
 	public StampResultConfirmDto getStampResultConfirm(StampResultConfirmRequest param) {
 		String cid = AppContexts.user().companyId();
@@ -111,21 +125,6 @@ public class StampResultConfirmationQuery {
 	}
 	
 	private class ConfirmStatusOfDayRequiredImpl implements ConfirmStatusOfDayService.Require {
-		
-		@Inject
-		private SyWorkplaceAdapter syWorkplaceAdapter;
-		
-		@Inject
-		private ConfirmStatusActualDayChange confirmStatusActualDayChange;
-		
-		@Inject
-		private IGetDailyLock iGetDailyLock;
-		@Inject
-		private ClosureRepository closureRepo;
-		@Inject
-		private ClosureEmploymentRepository closureEmploymentRepo;
-		@Inject
-		private ShareEmploymentAdapter shareEmploymentAdapter;
 		
 		@Override
 		public Closure getClosureDataByEmployee(String employeeId, GeneralDate baseDate) {

@@ -21,8 +21,6 @@ import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.bs.employee.app.cache.employee.history.DateHistoryItemCache;
-import nts.uk.ctx.bs.employee.app.cache.employment.EmploymentInfoCache;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
@@ -106,7 +104,7 @@ public class EmploymentPubImp implements SyEmploymentPub {
 		
 		// Query
 		Optional<EmploymentInfo> employmentInfo = require
-				.getDetailEmploymentHistoryItem(employeeId, baseDate);
+				.getDetailEmploymentHistoryItem(companyId, employeeId, baseDate);
 
 		Optional<DateHistoryItem> optHistoryItem = require
 				.getByEmployeeIdAndStandardDate(employeeId, baseDate);
@@ -285,15 +283,17 @@ public class EmploymentPubImp implements SyEmploymentPub {
 		}
 
 		@Override
-		public Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String sid, GeneralDate date) {
-			EmploymentInfoCache cache = cacheCarrier.get(EmploymentInfoCache.DOMAIN_NAME);
-			return cache.get(sid,date);
+		public Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String companyId, String sid, GeneralDate date) {
+//			EmploymentInfoCache cache = cacheCarrier.get(EmploymentInfoCache.DOMAIN_NAME);
+//			return cache.get(sid,date);
+			return empHistItemRepo.getDetailEmploymentHistoryItem(companyId, sid, date);
 		}
 
 		@Override
 		public Optional<DateHistoryItem> getByEmployeeIdAndStandardDate(String employeeId, GeneralDate standardDate) {
-			DateHistoryItemCache cache = cacheCarrier.get(DateHistoryItemCache.DOMAIN_NAME);
-			return cache.get(employeeId, standardDate);
+//			DateHistoryItemCache cache = cacheCarrier.get(DateHistoryItemCache.DOMAIN_NAME);
+//			return cache.get(employeeId, standardDate);
+			return empHistRepo.getByEmployeeIdAndStandardDate(employeeId, standardDate);
 		}
 		
 	}
@@ -304,7 +304,7 @@ public class EmploymentPubImp implements SyEmploymentPub {
 //		empHistItemRepo.getByListHistoryId(historyIds);
 		List<EmploymentHistoryItem> getByListHistoryId(List<String> historyIds);
 //		empHistItemRepo.getDetailEmploymentHistoryItem(companyId, employeeId, baseDate);
-		Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String sid, GeneralDate date);
+		Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String cid, String sid, GeneralDate date);
 //		empHistRepo.getByEmployeeIdAndStandardDate(employeeId, baseDate);
 		Optional<DateHistoryItem> getByEmployeeIdAndStandardDate(String employeeId, GeneralDate standardDate);
 		

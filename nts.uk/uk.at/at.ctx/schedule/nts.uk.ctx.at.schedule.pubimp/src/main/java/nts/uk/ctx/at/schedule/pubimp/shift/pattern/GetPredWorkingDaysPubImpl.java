@@ -12,14 +12,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.export.GetPredWorkingDays;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.export.GetPredWorkingDaysImpl;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
 import nts.uk.ctx.at.schedule.pub.shift.pattern.GetPredWorkindDaysPub;
-import nts.uk.ctx.at.shared.app.cache.worktype.WorkTypeCache;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+
 
 /**
  * 実装：所定労働日数を取得する
@@ -34,6 +35,9 @@ public class GetPredWorkingDaysPubImpl implements GetPredWorkindDaysPub {
 	
 	@Inject
 	private WorkMonthlySettingRepository workMonthlySetRepo;
+	
+	@Inject
+	private WorkTypeRepository workTypeRepository;
 	
 	/** 指定期間の所定労働日数を取得する(大塚用) */
 	@Override
@@ -67,8 +71,9 @@ public class GetPredWorkingDaysPubImpl implements GetPredWorkindDaysPub {
 
 		@Override
 		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
-			WorkTypeCache cache = cacheCarrier.get( WorkTypeCache.DOMAIN_NAME);
-			return cache.get(workTypeCd);
+//			WorkTypeCache cache = cacheCarrier.get( WorkTypeCache.DOMAIN_NAME);
+//			return cache.get(workTypeCd);
+			return workTypeRepository.findByPK(companyId, workTypeCd);
 		}
 	}
 }
