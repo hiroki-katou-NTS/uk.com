@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
@@ -82,7 +83,7 @@ public class KscdtSchOvertimeWork extends ContractUkJpaEntity {
 	}
 
 	//勤務予定．勤怠時間．勤務時間．総労働時間．所定外時間．残業時間
-	public OverTimeOfDaily toDomain(){
+	public OverTimeOfDaily toDomain(OverTimeOfDaily overTimeOfDailys){
 		List<KscdtSchOvertimeWork> overtimeWorks = kscdtSchTime.getOvertimeWorks();
 		OverTimeOfDaily overTimeOfDaily = null;
 		List<OverTimeFrameTimeSheet> overTimeFrameTimeSheets = new ArrayList<>();
@@ -98,7 +99,10 @@ public class KscdtSchOvertimeWork extends ContractUkJpaEntity {
 			overTimeFrameTimeSheets.add(timesheet);
 			overTimeFrameTimes.add(time);	
 		});
-		overTimeOfDaily = new OverTimeOfDaily(overTimeFrameTimeSheets, overTimeFrameTimes, null);
+		overTimeOfDaily = new OverTimeOfDaily(overTimeFrameTimeSheets, overTimeFrameTimes, 
+				Finally.of(overTimeOfDailys.getExcessOverTimeWorkMidNightTime().get()), overTimeOfDailys.getIrregularWithinPrescribedOverTimeWork()
+				, overTimeOfDailys.getFlexTime(), 
+				overTimeOfDailys.getOverTimeWorkSpentAtWork());
 		return overTimeOfDaily;
 	}
 

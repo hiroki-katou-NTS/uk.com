@@ -19,8 +19,10 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayMidnightWork;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkFrameTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkMidNightTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -79,7 +81,7 @@ public class KscdtSchHolidayWork extends ContractUkJpaEntity {
 		return kscdtSchHolidayWork;
 	}
 	//勤務予定．勤怠時間．勤務時間．総労働時間．所定外時間．休出時間
-	public HolidayWorkTimeOfDaily toDomain() {
+	public HolidayWorkTimeOfDaily toDomain(int extBindTimeHw, int extMidNiteHdwTimeLghd, int extMidNiteHdwTimeIlghd, int extMidNiteHdwTimePubhd) {
 		List<KscdtSchHolidayWork> holidayWorks = kscdtSchTime.getHolidayWorks();
 		HolidayWorkTimeOfDaily timeOfDaily = null;
 		List<HolidayWorkFrameTimeSheet> holidayWorkFrame = new ArrayList<>();
@@ -95,7 +97,12 @@ public class KscdtSchHolidayWork extends ContractUkJpaEntity {
 			holidayWorkFrame.add(frameTimeSheet);
 			holidayWorkFrameTime.add(frameTime);
 		});
-		timeOfDaily = new HolidayWorkTimeOfDaily(holidayWorkFrame, holidayWorkFrameTime, null, null);
+		
+		HolidayWorkMidNightTime workMidNightTime = new HolidayWorkMidNightTime( new TimeDivergenceWithCalculation(new AttendanceTime(extMidNiteHdwTimeLghd), null, null), null);
+		List<HolidayWorkMidNightTime> midNightTimes = new ArrayList<>();
+		midNightTimes.add(workMidNightTime);
+		HolidayMidnightWork midnightWork = new HolidayMidnightWork(midNightTimes);
+		timeOfDaily = new HolidayWorkTimeOfDaily(holidayWorkFrame, holidayWorkFrameTime, Finally.of(midnightWork), new AttendanceTime(extBindTimeHw));
 		return timeOfDaily;
 	}
 
