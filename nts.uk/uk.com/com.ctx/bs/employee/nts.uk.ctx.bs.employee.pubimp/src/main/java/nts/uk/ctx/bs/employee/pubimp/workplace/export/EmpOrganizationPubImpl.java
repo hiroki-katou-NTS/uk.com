@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.EmployeeAffiliation;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
@@ -25,10 +26,16 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class EmpOrganizationPubImpl implements EmpOrganizationPub {
-
+	
+	@Inject
+	private AffWorkplaceGroupRespository repo;
+	
+	@Inject
+	private WorkplacePub wkplacePub;
+	
 	@Override
 	public List<EmpOrganizationExport> getEmpOrganiztion(GeneralDate baseDate, List<String> lstEmpId) {
-		RequireWorkplaceGroupGettingService require = new RequireWorkplaceGroupGettingService();
+		RequireWorkplaceGroupGettingService require = new RequireWorkplaceGroupGettingService(repo,wkplacePub);
 		//$社員の所属組織リスト = 社員が所属する職場グループを取得する#取得する( require, 基準日, 社員IDリスト )
 		List<EmployeeAffiliation> data = WorkplaceGroupGettingService.get(require, baseDate, lstEmpId);
 		List<EmpOrganizationExport> result = data.stream().map(c -> new EmpOrganizationExport
@@ -40,7 +47,7 @@ public class EmpOrganizationPubImpl implements EmpOrganizationPub {
 		return result;
 	}
 
-	
+	@AllArgsConstructor
 	private static class RequireWorkplaceGroupGettingService implements WorkplaceGroupGettingService.Require{
 		@Inject
 		private AffWorkplaceGroupRespository repo;
