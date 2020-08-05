@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.schedule.dom.shift.pattern.daily.PatternCode
+				nts.uk.ctx.at.schedule.dom.shift.pattern.daily.PatternName
+				nts.uk.ctx.at.schedule.dom.shift.pattern.daily.Days
+			</com:ValidatorScript>
+			<com:stylefile path="ksm003.a.main.css" />
+			<com:scriptfile path="ksm003.a.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area" style="height: 55px">
+				<!-- B1_1: Button New -->
+				<button tabindex="1" id="btn_001"
+					class="button separate-button fix-button"
+					>#{i18n.getText('KSM003_20')}</button>
+				<!-- B1_2: Button Registration -->
+				<button tabindex="2" id="btn_002"
+					class="button proceed separate-button fix-button"
+					>#{i18n.getText('KSM003_21')}</button>
+				<!-- B1_3: Button Display pattern -->
+				<button tabindex="3" id="btn_005"
+					class="button separate-button fix-button"
+					>#{i18n.getText('KSM003_35')}</button>
+				<!-- B1_4: Button Delete -->
+				<button tabindex="4" id="btn_004"
+					class="button danger separate-button fix-button"
+					>#{i18n.getText('KSM003_22')}</button>
+				<!-- B1_4: Button Export Excel -->
+				<button tabindex="4"
+						>#{i18n.getText('KSM003_45')}</button>
+			</div>
+			<div id="content-area">
+				<div id="left-content" style="float: left"
+					 class="bg-green caret-right caret-background">
+					<div style="float: left; margin: 20px">
+						<!-- B3_1: Label -->
+						<div style="margin-bottom: 20px" data-bind="ntsFormLabel: {}">#{i18n.getText('KSM003_23')}</div>
+						<!-- B2_2: List Divergence Reason -->
+						<table  id="single-list"
+								data-bind="ntsGridList:{
+								width: 330,
+								height: 255,
+								options: itemLst,
+								optionsValue: 'code',
+								primaryKey: 'code',
+								columns: columns,
+								multiple: false,
+								value: selectedCode,
+								enable: true}">
+						</table>
+					</div>
+				</div>
+				<div id="right-content" style="float: left;">
+					<div data-bind="ntsFormLabel: {required: true,constraint:['PatternCode','PatternName'] }">#{i18n.getText('KSM003_28')}</div>
+					<input tabindex="5" class="nts-input" id="inpCode"
+						   data-bind="ntsTextEditor: {
+										  name: '#[KSM003_36]',
+                                          value: selectedCode,
+                                          constraint: 'PatternCode',
+                                          enable: isEditting,
+                                          required: true}" />
+					<!-- B3_3:Pattern Name-->
+					<input tabindex="6" class="nts-input" id="inpPattern"
+						   data-bind="ntsTextEditor: {
+										  name: '#[KSM003_37]',
+                                          value: selectedName,
+                                          constraint: 'PatternName',
+                                          required: true}" />
+					<!-- Button -->
+					<div style="padding-bottom: 10px ">
+						<Button class="button" data-bind="click: addLine">#{i18n.getText('KSM003_4')}</Button>
+						<Button class="button danger">#{i18n.getText('KSM003_5')}</Button>
+					</div>
+					<table>
+						<tr>
+							<td>
+								<table id="multi-list" data-bind="ntsGridList: {
+									height: 350,
+									options: gridItems,
+									optionsValue: 'id',
+									columns: gListColumns,
+									multiple: true,
+									value: currentCodeList}">
+								</table>
+								<br />
+							</td>
+							<td>
+								<div id="swap-up-down"
+									 data-bind="ntsUpDown: {
+											targetSource: gridItems,
+											primaryKey: 'id',
+											comId: '#multi-list',
+											type: 'grid',
+											enable: true
+										}"
+									 class="swap-contents">
+								</div>
+							</td>
+						</tr>
+					</table>
+
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

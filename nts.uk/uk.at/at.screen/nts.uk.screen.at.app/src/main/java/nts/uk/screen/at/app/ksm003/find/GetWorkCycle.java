@@ -5,11 +5,13 @@ import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleInfo;
 import nts.uk.shr.com.context.AppContexts;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Stateless
 public class GetWorkCycle {
 
     @Inject
@@ -30,9 +32,9 @@ public class GetWorkCycle {
      * @param code
      * @return
      */
-    public WorkCycleDto getWorkCycleInfo(String code) {
+    public WorkCycleDto getWorkCycleInfo(String patternCode) {
         String cid = AppContexts.user().companyId();
-        Optional<WorkCycle> workingCycle = workCycleQueryRepository.getByCidAndCode(cid, code);
+        Optional<WorkCycle> workingCycle = workCycleQueryRepository.getByCidAndCode(cid, patternCode);
         if (workingCycle.isPresent()) {
             return WorkCycleDto.createFromDomain(workingCycle.get());
         }

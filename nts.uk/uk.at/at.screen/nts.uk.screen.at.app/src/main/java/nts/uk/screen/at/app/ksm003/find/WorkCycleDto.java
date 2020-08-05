@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class WorkCycleDto {
 
-    private String name;
-
     private String code;
+
+    private String name;
 
     private List<WorkCyleInfoDto> infos;
 

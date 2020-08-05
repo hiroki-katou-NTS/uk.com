@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -12,26 +13,25 @@ import java.util.Optional;
  * 勤務サイクルの反映設定
  */
 @Getter
-@Setter
 public class WorkCycleRefSetting {
 
     // 勤務サイクルコード
-    private WorkCycleCode workCycleCode;
+    private final WorkCycleCode workCycleCode;
 
     // 反映順序
-    private List<WorkCreateMethod> refOrder;
+    private final List<WorkCreateMethod> refOrder;
 
     // スライド日数
-    private int numOfSlideDays;
+    private final int numOfSlideDays;
 
     // 法定休日の勤務種類
-    private Optional<WorkTypeCode> legalHolidayCd;
+    private final Optional<WorkTypeCode> legalHolidayCd;
 
     // 法定外休日の勤務種類
-    private Optional<WorkTypeCode> nonStatutoryHolidayCd;
+    private final Optional<WorkTypeCode> nonStatutoryHolidayCd;
 
     // 祝日の勤務種類
-    private Optional<WorkTypeCode> holidayCd;
+    private final Optional<WorkTypeCode> holidayCd;
 
     /**
      * [C-0] 勤務サイクルの反映設定(勤務サイクルコード, 反映順序, スライド日数,法定休日の勤務種類, 法定外休日の勤務種類, 祝日の勤務種類)
