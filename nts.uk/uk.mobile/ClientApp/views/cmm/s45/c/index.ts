@@ -300,8 +300,14 @@ export class CmmS45CComponent extends Vue {
         if (!vm.appTransferData.appDispInfoStartupOutput) {
             return '';
         }
+        let applicantID = vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.employeeID,
+            employeeInfoLst = vm.appTransferData.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst,
+            empInfo = _.find(employeeInfoLst, (o: any) => o.sid == applicantID);
+        if (empInfo) {
+            return empInfo.bussinessName;
+        }
 
-        return vm.appTransferData.appDispInfoStartupOutput.appDispInfoNoDateOutput.opEmployeeInfo.bussinessName;
+        return '';
     }
 
     get representerDisp() {
@@ -323,13 +329,11 @@ export class CmmS45CComponent extends Vue {
         if (!vm.appTransferData.appDispInfoStartupOutput) {
             return false;
         }
-        let employeeID = vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.employeeID,
-            enteredPerson = vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.enteredPerson;
-        if (employeeID == enteredPerson) {
-            return false;
-        } else {
-            return true;
-        }   
+        if (vm.representerDisp) {
+            return vm.appTransferData.appDispInfoStartupOutput.appDispInfoNoDateOutput.opEmployeeInfo.bussinessName;      
+        }
+
+        return '';
     }
 
     get appDate() {
