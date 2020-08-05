@@ -308,7 +308,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
             },
             output: {
                 // 定型理由
-                opAppStandardReasonCD: self.mode ? 1 : self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+                opAppStandardReasonCD: self.mode ? '' : self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
                 // 申請理由
                 opAppReason: self.mode ? '' : self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
             }
@@ -582,7 +582,16 @@ export class KafS07AComponent extends KafS00ShrComponent {
         }
     }
     public register() {
-        console.log(this.application);
+        const vm = this;
+        let validAll: boolean = true;
+        for (let child of vm.$children) {
+            child.$validate();
+            if (!child.$valid) {
+                validAll = false;
+            }
+        }
+        console.log(validAll);
+        console.log(vm.application);
         if (this.$valid) {
             this.$mask('show');
         }

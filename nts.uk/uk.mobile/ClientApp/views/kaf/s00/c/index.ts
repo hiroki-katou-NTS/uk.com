@@ -7,12 +7,16 @@ import { component, Prop, Watch } from '@app/core/component';
     template: require('./index.vue'),
     resource: require('./resources.json'),
     validations: {
-        reason: {
-            constraint: 'AppReason'
+        params: {
+            output: {
+                opAppReason: {
+                    constraint: 'AppReason'
+                }         
+            }
         }
     },
     constraints: [
-        'nts.uk.ctx.at.request.dom.application.AppReason'    
+        'nts.uk.ctx.at.request.dom.application.AppReason'  
     ]
 })
 export class KafS00CComponent extends Vue {
@@ -41,11 +45,12 @@ export class KafS00CComponent extends Vue {
         }
     };
     public dropdownList: Array<any> = [];
+    public currentAppReasonCD: any = 0;
 
     public created() {
         const self = this;
         let dropdownList = [{
-            appStandardReasonCD: 0,
+            appStandardReasonCD: '',
             displayOrder: 0,
             defaultValue: false,
             opReasonForFixedForm: self.$i18n('KAFS00_23'),   
@@ -65,6 +70,17 @@ export class KafS00CComponent extends Vue {
         }
         if (self.$input.opAppReason) {
             self.$output.opAppReason = self.$input.opAppReason;
+        }
+
+        if (self.$input.appLimitSetting.standardReasonRequired) {
+            self.$updateValidator('params.output.opAppStandardReasonCD', { 
+                required: true
+            });    
+        }
+        if (self.$input.appLimitSetting.requiredAppReason) {
+            self.$updateValidator('params.output.opAppReason', { 
+                required: true
+            });
         }
     }
 
@@ -100,7 +116,7 @@ export class KafS00CComponent extends Vue {
 }
 
 interface ReasonTypeItemDto {
-    appStandardReasonCD: number;
+    appStandardReasonCD: any;
     displayOrder: number;
     defaultValue: boolean;
     opReasonForFixedForm?: string;     
