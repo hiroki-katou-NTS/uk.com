@@ -113,13 +113,14 @@ module test.viewmodel {
 				new BoxModel(2, '職場グループ')
 			]);
 			self.selectedMode = ko.observable(1);
+			
 			self.selectedMode.subscribe((value) => {
 				if (value == 1) {
 					self.isMultiSelect(true);
 				}
 				else {
 					self.isMultiSelect(false);
-				});
+				}});
 			self.selectedPer = ko.observable(1);
 			self.selectedFilter = ko.observable(0);
 			self.enable = ko.observable(true);
