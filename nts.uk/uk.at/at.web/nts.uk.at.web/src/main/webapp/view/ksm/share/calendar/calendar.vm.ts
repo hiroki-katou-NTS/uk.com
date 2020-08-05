@@ -72,7 +72,8 @@ module nts.uk.at.view.ksm004.share {
                         // chuyển sang date
                         date: m.toDate(),
                         // nếu là ngày nghỉ truyề vào hoặc thứ 7, chủ nhật
-                        holiday: isSameMonth(m) ? (isHoliday(m) || [0, 6].indexOf(m.weekday()) !== -1) : false,
+                        // holiday: isSameMonth(m) ? (isHoliday(m) || [0, 6].indexOf(m.weekday()) !== -1) : false,
+                        holiday: isSameMonth(m) ? isHoliday(m) : false,
                         outMonth: !isSameMonth(m)
                     }));
 

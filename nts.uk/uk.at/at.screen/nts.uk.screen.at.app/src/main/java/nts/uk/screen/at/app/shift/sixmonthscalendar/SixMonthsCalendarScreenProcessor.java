@@ -4,7 +4,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.screen.at.app.shift.sixmonthscalendar.dto.SixMonthsCalendarClassScreenDto;
 import nts.uk.screen.at.app.shift.sixmonthscalendar.dto.SixMonthsCalendarCompanyScreenDto;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
 import nts.uk.screen.at.app.shift.sixmonthscalendar.dto.SixMonthsCalendarWorkPlaceScreenDto;
 import nts.uk.shr.com.context.AppContexts;
 

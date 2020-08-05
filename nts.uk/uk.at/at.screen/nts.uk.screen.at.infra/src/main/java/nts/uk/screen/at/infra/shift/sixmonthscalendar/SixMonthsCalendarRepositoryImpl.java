@@ -31,11 +31,10 @@ public class SixMonthsCalendarRepositoryImpl extends JpaRepository implements Si
 
         stringBuilder = new StringBuilder();
         stringBuilder.append("SELECT NEW " + SixMonthsCalendarWorkPlaceScreenDto.class.getName());
-        stringBuilder.append(
-                "(c.ksmmtCalendarWorkplacePK.workPlaceId, c.ksmmtCalendarCompanyPK.date , c.workingDayAtr) ");
+        stringBuilder.append(" (c.ksmmtCalendarWorkplacePK.workPlaceId, c.ksmmtCalendarWorkplacePK.date , c.workingDayAtr) ");
         stringBuilder.append("FROM KsmmtCalendarWorkplace c ");
-        stringBuilder.append("WHERE c.ksmmtCalendarWorkplacePK.workPlaceId = :workPlaceId");
-        stringBuilder.append("AND c.ksmmtCalendarCompanyPK.date >= :startDate AND c.ksmmtCalendarCompanyPK.date <= :endDate ");
+        stringBuilder.append("WHERE c.ksmmtCalendarWorkplacePK.workPlaceId = :workPlaceId ");
+        stringBuilder.append("AND c.ksmmtCalendarWorkplacePK.date >= :startDate AND c.ksmmtCalendarWorkplacePK.date <= :endDate ");
         stringBuilder.append("AND c.workingDayAtr != 0 ");
         SELECT_SIXMONTHS_WORKPLACE = stringBuilder.toString();
 

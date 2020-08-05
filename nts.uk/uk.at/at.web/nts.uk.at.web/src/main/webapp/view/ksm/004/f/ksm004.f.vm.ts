@@ -1,111 +1,88 @@
 module nts.uk.at.view.ksm004.f.viewmodel {
-    import ajax = nts.uk.request.ajax;
-    import format = nts.uk.text.format;
+    import share = nts.uk.at.view.ksm004.share;
 
     const paths: any = {
-        getSixMonthsCalendar: "screen/at/ksm004/ksm004/f/sixmonthscalendar/",
+        getSixMonthsCalendarCompany: "screen/at/ksm004/ksm004/f/sixmonthscalendarcompany/",
+        getSixMonthsCalendarWorkPlace: "screen/at/ksm004/ksm004/f/sixmonthscalendarworkplace/",
+        getSixMonthsCalendarClass: "screen/at/ksm004/ksm004/f/sixmonthscalendarclass/",
     };
 
     @bean()
     class ViewModel extends ko.ViewModel {
 
-        yearMonth: KnockoutObservable<number> = ko.observable(202007);
-        yearMonthList: KnockoutObservableArray<any> = ko.observableArray([]);
-        months: KnockoutObservableArray<HoliDayCalendar> = ko.observableArray([]);
-
         created() {
             const vm = this;
-            // let param = nts.uk.ui.windows.getShared('KSM004_F_PARAM') || { classification: 0, yearMonth: 20170101, workPlaceId: null, classCD: null };
-            this.generateYearMonth(vm.yearMonth).forEach(item => {
-                let year = item().toString().substring(0, 4);
-                let month = item().toString().substring(4, 6);
-                let fulltime = `${year}/${month}/01`;
-                vm.months.push(
-                    {
-                        baseDate: ko.observable(new Date(fulltime)),
-                        holidays: ko.observableArray([])
-                    }
-                )
-            });
+            let baseDate: KnockoutObservable<Date> = ko.observable(new Date);
+            let months: KnockoutObservableArray<HoliDayCalendar> = ko.observableArray([]);
+            let param = nts.uk.ui.windows.getShared('KSM004_F_PARAM') || { classification: 0, yearMonth: 20170101, workPlaceId: null, classId: null };
+
+            let yearParam: number = Number(param.yearMonth.toString().substring(0, 4));
+            let monthParam: number = Number(param.yearMonth.toString().substring(4,6))-1;
+            baseDate = ko.observable(new Date(yearParam, monthParam, 1));
+
+            baseDate.subscribe(value => {
+                this.$blockui("show");
+                let startDate = moment(this.getDateRange(value)[0]).format("YYYY-MM-DD");
+                let endDate = moment(this.getDateRange(value)[5]).format("YYYY-MM-DD");
+                if(param.classification == 1) {
+                    let workPlaceId = param.workPlaceId;
+                    vm.$ajax(paths.getSixMonthsCalendarWorkPlace+ workPlaceId + "/" + startDate + "/" + endDate).done(dataRes => {
+                        months.removeAll();
+                        let dayOffArr: KnockoutObservableArray<Date> = ko.observableArray([]);
+                        dataRes.forEach(item => dayOffArr.push(new Date(item.date)));
+                        this.getDateRange(value).forEach(item => months.push(
+                            {
+                                baseDate: ko.observable(item),
+                                holidays: dayOffArr
+                            }
+                        ));
+                    });
+                } else if(param.classification == 2){
+                    let classId = param.classId;
+                    vm.$ajax(paths.getSixMonthsCalendarClass+ classId+ "/" + startDate + "/" + endDate).done(dataRes => {
+                        months.removeAll();
+                        let dayOffArr: KnockoutObservableArray<Date> = ko.observableArray([]);
+                        dataRes.forEach(item => dayOffArr.push(new Date(item.date)));
+                        this.getDateRange(value).forEach(item => months.push(
+                            {
+                                baseDate: ko.observable(item),
+                                holidays: dayOffArr
+                            }
+                        ));
+                    });
+                } else {
+                    vm.$ajax(paths.getSixMonthsCalendarCompany+ startDate + "/" + endDate).done(dataRes => {
+                        months.removeAll();
+                        let dayOffArr: KnockoutObservableArray<Date> = ko.observableArray([]);
+                        dataRes.forEach(item => dayOffArr.push(new Date(item.date)));
+                        this.getDateRange(value).forEach(item => months.push(
+                            {
+                                baseDate: ko.observable(item),
+                                holidays: dayOffArr
+                            }
+                        ));
+                    });
+                }
+                this.$blockui("hide");
+            })
         }
 
         mounted() {
-            let vm = this;
-            vm.yearMonth.subscribe(function(newValue) {
-                vm.months([]);
-                this.generateYearMonth(ko.observable(newValue)).forEach(item => {
-                    let year = item().toString().substring(0, 4);
-                    let month = item().toString().substring(4, 6);
-                    let fulltime = `${year}/${month}/01`;
-                    vm.months.push(
-                        {
-                            baseDate: ko.observable(new Date(fulltime)),
-                            holidays: ko.observableArray([])
-                        }
-                    )
-                });
-            });
+
         }
 
         closeDialog() {
             nts.uk.ui.windows.close();
         }
 
-        getSixMonthsCalendar() {
+        getDateRange(baseDate: Date) {
+            // vm: ViewModel
             const vm = this;
-            const companyId = 0;
-            const startDate = moment(new Date("2016/01/20")).startOf('month').format('YYYY-MM-DD');
-            const endDate = moment(new Date("2019/01/20")).endOf('month').format('YYYY-MM-DD');
-            vm.$ajax(paths.getSixMonthsCalendar + startDate+ "/" + endDate).done((result: any) => {
-                console.log(result)
-            });
-            // let _path = nts.uk.text.format(paths.getSixMonthsCalendar, companyId, startDate, endDate);
-            // return nts.uk.request.ajax("at", _path);
+            const baseMoment = moment(baseDate);
+            // Trả ra danh sách baseDate của 6 tháng liên tiếp
+            return _.range(0, 6).map((m: number) => baseMoment.clone().add(m, 'month').toDate());
         }
-
-        generateYearMonth(yearMonth) {
-            const self = this;
-            console.log(yearMonth());
-            let year = yearMonth().toString().substring(0, 4);
-            let month = yearMonth().toString().substring(4, 6);
-            for(let i = 0; i < 6; i++) {
-             if(Number(month) === 12) {
-                 self.yearMonthList.push(ko.observable(Number(year+month)));
-                 month = '1';
-                 year = (Number(year)+1).toString();
-             } else if(Number(month) === 11 || Number(month) === 10){
-                 self.yearMonthList.push(ko.observable(Number(year+month)));
-                 month = (Number(month)+1).toString();
-             } else {
-                 self.yearMonthList.push(ko.observable(Number(year+month)));
-                 if (Number(month) === 9) {
-                     month = '10';
-                 } else {
-                     month = (Number(month)+1).toString();
-                     month = '0' + month;
-                 }
-             }
-            }
-            self.yearMonthList().forEach(item => console.log(item()));
-            return self.yearMonthList();
-        }
-
     }
-
-    interface ICalendarPanel{
-        optionDates: KnockoutObservableArray<any>;
-        yearMonth: KnockoutObservable<number>;
-        firstDay: number;
-        startDate: number;
-        endDate: number;
-        workplaceId: KnockoutObservable<string>;
-        workplaceName: KnockoutObservable<string>;
-        eventDisplay: KnockoutObservable<boolean>;
-        eventUpdatable: KnockoutObservable<boolean>;
-        holidayDisplay: KnockoutObservable<boolean>;
-        cellButtonDisplay: KnockoutObservable<boolean>;
-    }
-    import share = nts.uk.at.view.kdp.share;
 
     interface HoliDayCalendar  extends  share.CalendarParam{
     }

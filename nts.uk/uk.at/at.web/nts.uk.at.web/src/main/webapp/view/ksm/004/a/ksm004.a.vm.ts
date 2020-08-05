@@ -997,25 +997,39 @@ module nts.uk.at.view.ksm004.a {
                 }
             }
 
-            public openDialogF() {
+            public openDialogF(value) {
+                const vm = this;
                 nts.uk.ui.block.invisible();
-                const self = this;
-                nts.uk.ui.windows.setShared('KSM004_F_PARAM',
-                    {
-                        yearMonth: self.yearMonthPicked(),
-                        dataTest: 'hello'
+                if(value == 1) {
+                    nts.uk.ui.windows.setShared('KSM004_F_PARAM',
+                        {
+                            classification: value,
+                            yearMonth: vm.yearMonthPicked1(),
+                            workPlaceId: vm.currentCalendarWorkPlace().key()
+                        });
+                    nts.uk.ui.windows.sub.modal("/view/ksm/004/f/index.xhtml", { title: "hello", dialogClass: "no-close" }).onClosed(function() {
+                        vm.isShowDatepicker = false;
                     });
-                nts.uk.ui.windows.sub.modal("/view/ksm/004/f/index.xhtml", { title: "hello", dialogClass: "no-close" }).onClosed(function() {
-                    self.isShowDatepicker = false;
-                    // $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
-                    //     .done(()=>{
-                    //         self.isShowDatepicker = true;
-                    //         nts.uk.ui.block.clear();
-                    //     })
-                    //     .fail((res) => {
-                    //         nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
-                    //     });
-                });
+                } else if(value == 2) {
+                    nts.uk.ui.windows.setShared('KSM004_F_PARAM',
+                        {
+                            classification: value,
+                            yearMonth: vm.yearMonthPicked2(),
+                            classId: vm.currentCalendarClass().key()
+                        });
+                    nts.uk.ui.windows.sub.modal("/view/ksm/004/f/index.xhtml", { title: "hello", dialogClass: "no-close" }).onClosed(function() {
+                        vm.isShowDatepicker = false;
+                    });
+                } else {
+                    nts.uk.ui.windows.setShared('KSM004_F_PARAM',
+                        {
+                            classification: value,
+                            yearMonth: vm.yearMonthPicked1(),
+                        });
+                    nts.uk.ui.windows.sub.modal("/view/ksm/004/f/index.xhtml", { title: "hello", dialogClass: "no-close" }).onClosed(function() {
+                        vm.isShowDatepicker = false;
+                    });
+                }
                 nts.uk.ui.block.clear();
             }
             

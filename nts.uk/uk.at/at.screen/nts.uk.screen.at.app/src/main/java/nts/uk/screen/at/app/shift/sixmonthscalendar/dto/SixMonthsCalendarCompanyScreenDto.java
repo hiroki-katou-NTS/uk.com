@@ -9,15 +9,15 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCom
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class SixMonthsCalendarScreenDto {
+public class SixMonthsCalendarCompanyScreenDto {
     private String companyId;
 
     private GeneralDate date;
 
     private int workingDayAtr;
 
-    public static SixMonthsCalendarScreenDto fromDomain(CalendarCompany domain){
-        return new SixMonthsCalendarScreenDto(
+    public static SixMonthsCalendarCompanyScreenDto fromDomain(CalendarCompany domain){
+        return new SixMonthsCalendarCompanyScreenDto(
                 domain.getCompanyId(),
                 domain.getDate(),
                 domain.getWorkingDayAtr().value);
