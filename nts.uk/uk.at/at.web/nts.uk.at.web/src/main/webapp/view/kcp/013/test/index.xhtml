@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="test.service.js" />
+			<com:scriptfile path="test.start.js" />
+			<com:scriptfile path="test.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button style="margin-left: 100px;" data-bind="click: openDialog">Open
+					KCP013</button>
+			</div>
+			<div id="content-area">
+				<div id="left-content">
+					<div style="margin-left: 50px;">
+						<div
+							data-bind="ntsCheckBox: { checked: fillter, text: 'Fillter' }"></div>
+						|
+						<div
+							data-bind="ntsCheckBox: { checked: showNone, text: 'ShowNone' }"></div>
+						|
+						<div
+							data-bind="ntsCheckBox: { checked: showDeferred, text: 'ShowDeferred' }"></div>
+						| <input data-bind="ntsTextEditor: {value: initiallySelected}" />Initially
+						Selected Code
+					</div>
+					<div id="tree-grid"
+						style="width: 460px; margin-left: 50px; margin-top: 20px;">
+					</div>
+
+				</div>
+				<div id="right-content"></div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
