@@ -86,8 +86,8 @@ public class GetUnbalancedLeaveTemporary {
 		List<InterimBreakDayOffMng> lstInterimBreakDayOffMn = require
 				.getBreakDayOffMng(interimDay.getRight().getDayOffManaId(), false, DataManagementAtr.INTERIM);
 
-		double unOffsetDays = interimDay.getRight().getUnOffsetDay().v();
-		Integer unOffsetTimes = interimDay.getRight().getUnOffsetTimes().v();
+		double unOffsetDays = interimDay.getRight().getRequiredDay().v();
+		Integer unOffsetTimes = interimDay.getRight().getRequiredTime().v();
 		// 未相殺日数と未相殺時間を設定する
 		for (InterimBreakDayOffMng interimMng : lstInterimBreakDayOffMn) {
 			unOffsetDays -= interimMng.getUseDays().v();

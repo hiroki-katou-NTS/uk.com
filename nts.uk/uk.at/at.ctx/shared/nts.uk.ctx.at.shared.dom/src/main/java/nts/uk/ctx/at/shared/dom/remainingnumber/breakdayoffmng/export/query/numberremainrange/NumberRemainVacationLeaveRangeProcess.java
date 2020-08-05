@@ -7,7 +7,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.Getter;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -35,9 +34,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveE
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 
 @Stateless
@@ -65,13 +61,7 @@ public class NumberRemainVacationLeaveRangeProcess {
 	private InterimBreakDayOffMngRepository interimBreakDayOffMngRepository;
 
 	@Inject
-	private ClosureRepository closureRepo;
-
-	@Inject
-	private ClosureEmploymentRepository closureEmpRepo;
-	
-	@Inject
-	private ShareEmploymentAdapter shrEmpAdapter;
+	private ClosureService closureService;
 
 	@Inject
 	private CompanyAdapter companyAdapter;
@@ -80,9 +70,8 @@ public class NumberRemainVacationLeaveRangeProcess {
 
 		RequireImpl requireImpl = new RequireImpl.RequireImplBuilder(comDayOffManaDataRepository,
 				leaveManaDataRepository, shareEmploymentAdapter, compensLeaveEmSetRepository,
-				compensLeaveComSetRepository, closureRepo, closureEmpRepo, shrEmpAdapter)
-						.interimRemainRepo(interimRemainRepository)
-						.interimBreakDayOffMngRepo(interimBreakDayOffMngRepository)
+				compensLeaveComSetRepository).interimRemainRepo(interimRemainRepository)
+						.interimBreakDayOffMngRepo(interimBreakDayOffMngRepository).closureService(closureService)
 						.companyAdapter(companyAdapter).build();
 
 		return NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(requireImpl, inputParam);
@@ -105,13 +94,9 @@ public class NumberRemainVacationLeaveRangeProcess {
 
 		private final InterimBreakDayOffMngRepository interimBreakDayOffMngRepository;
 
+		private final ClosureService closureService;
+
 		private final CompanyAdapter companyAdapter;
-		
-		private ClosureRepository closureRepo;
-		
-		private ClosureEmploymentRepository closureEmpRepo;
-		
-		private ShareEmploymentAdapter shrEmpAdapter;
 
 		public RequireImpl(RequireImplBuilder builder) {
 			this.comDayOffManaDataRepository = builder.comDayOffManaDataRepository;
@@ -121,10 +106,8 @@ public class NumberRemainVacationLeaveRangeProcess {
 			this.compensLeaveComSetRepository = builder.compensLeaveComSetRepository;
 			this.interimRemainRepository = builder.interimRemainRepository;
 			this.interimBreakDayOffMngRepository = builder.interimBreakDayOffMngRepository;
+			this.closureService = builder.closureService;
 			this.companyAdapter = builder.companyAdapter;
-			this.closureEmpRepo = builder.closureEmpRepo;
-			this.closureRepo = builder.closureRepo;
-			this.shrEmpAdapter = builder.shrEmpAdapter;
 
 		}
 
@@ -177,7 +160,7 @@ public class NumberRemainVacationLeaveRangeProcess {
 
 		@Override
 		public Closure getClosureDataByEmployee(String employeeId, GeneralDate baseDate) {
-			return ClosureService.getClosureDataByEmployee(createImp(), new CacheCarrier(), employeeId, baseDate);
+			return closureService.getClosureDataByEmployee(employeeId, baseDate);
 		}
 
 		@Override
@@ -206,29 +189,19 @@ public class NumberRemainVacationLeaveRangeProcess {
 
 			public InterimBreakDayOffMngRepository interimBreakDayOffMngRepository;
 
+			public ClosureService closureService;
 
 			public CompanyAdapter companyAdapter;
-			
-			private ClosureRepository closureRepo;
-			
-			private ClosureEmploymentRepository closureEmpRepo;
-			
-			private ShareEmploymentAdapter shrEmpAdapter;
 
 			public RequireImplBuilder(ComDayOffManaDataRepository comDayOffManaDataRepository,
 					LeaveManaDataRepository leaveManaDataRepository, ShareEmploymentAdapter shareEmploymentAdapter,
 					CompensLeaveEmSetRepository compensLeaveEmSetRepository,
-					CompensLeaveComSetRepository compensLeaveComSetRepository,
-					ClosureRepository closureRepo, ClosureEmploymentRepository closureEmpRepo,
-					ShareEmploymentAdapter shrEmpAdapter) {
+					CompensLeaveComSetRepository compensLeaveComSetRepository) {
 				this.comDayOffManaDataRepository = comDayOffManaDataRepository;
 				this.leaveManaDataRepository = leaveManaDataRepository;
 				this.shareEmploymentAdapter = shareEmploymentAdapter;
 				this.compensLeaveEmSetRepository = compensLeaveEmSetRepository;
 				this.compensLeaveComSetRepository = compensLeaveComSetRepository;
-				this.closureRepo = closureRepo;
-				this.closureEmpRepo = closureEmpRepo;
-				this.shrEmpAdapter = shrEmpAdapter;
 			}
 
 			public RequireImplBuilder interimRemainRepo(InterimRemainRepository interimRemainRepository) {
@@ -242,6 +215,11 @@ public class NumberRemainVacationLeaveRangeProcess {
 				return this;
 			}
 
+			public RequireImplBuilder closureService(ClosureService closureService) {
+				this.closureService = closureService;
+				return this;
+			}
+
 			public RequireImplBuilder companyAdapter(CompanyAdapter companyAdapter) {
 				this.companyAdapter = companyAdapter;
 				return this;
@@ -252,27 +230,17 @@ public class NumberRemainVacationLeaveRangeProcess {
 			}
 
 		}
-		
-		private ClosureService.RequireM3 createImp() {
-			
-			return new ClosureService.RequireM3() {
-				
-				@Override
-				public Optional<Closure> closure(String companyId, int closureId) {
-					return closureRepo.findById(companyId, closureId);
-				}
-				
-				@Override
-				public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
-					return closureEmpRepo.findByEmploymentCD(companyID, employmentCD);
-				}
-				
-				@Override
-				public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
-						String employeeId, GeneralDate baseDate) {
-					return shrEmpAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
-				}
-			};
+
+		@Override
+		public List<InterimBreakDayOffMng> getDayOffByIdAndDataAtr(DataManagementAtr breakAtr,
+				DataManagementAtr dayOffAtr, String dayOffId) {
+			return interimBreakDayOffMngRepository.getDayOffByIdAndDataAtr(breakAtr, dayOffAtr, dayOffId);
+		}
+
+		@Override
+		public List<InterimBreakDayOffMng> getBreakByIdAndDataAtr(DataManagementAtr breakAtr,
+				DataManagementAtr dayOffAtr, String breakId) {
+			return interimBreakDayOffMngRepository.getBreakByIdAndDataAtr(breakAtr, dayOffAtr, breakId);
 		}
 	}
 }
