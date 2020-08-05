@@ -77,17 +77,17 @@ public class CalendarInformationServiceImpl implements ICalendarInformationServi
 	private UseSet getWorkingDayAtr(String companyID, String workplaceID, String classCD, GeneralDate date){
 		Optional<CalendarCompany> opCalendarCompany = calendarCompanyRepository.findCalendarCompanyByDate(companyID, date);
 		if(opCalendarCompany.isPresent()){
-			return opCalendarCompany.get().getWorkingDayAtr();
+			return opCalendarCompany.get().getWorkDayDivision();
 		}
 		
 		Optional<CalendarWorkplace> opCalendarWorkplace = calendarWorkPlaceRepository.findCalendarWorkplaceByDate(workplaceID, date);
 		if(opCalendarWorkplace.isPresent()){
-			return opCalendarWorkplace.get().getWorkingDayAtr();
+			return opCalendarWorkplace.get().getWorkDayDivision();
 		}
 		
 		Optional<CalendarClass> opCalendarClass = calendarClassRepository.findCalendarClassByDate(companyID, classCD, date);
 		if(opCalendarClass.isPresent()){
-			return opCalendarClass.get().getWorkingDayAtr();
+			return opCalendarClass.get().getWorkDayDivision();
 		}
 		
 		return null;

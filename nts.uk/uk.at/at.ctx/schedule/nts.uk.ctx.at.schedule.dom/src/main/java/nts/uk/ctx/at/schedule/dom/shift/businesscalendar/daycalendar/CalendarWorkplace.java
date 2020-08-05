@@ -14,17 +14,17 @@ public class CalendarWorkplace {
 	
 	private GeneralDate date;
 	
-	private UseSet workingDayAtr;
+	private UseSet WorkDayDivision;
 
-	private CalendarWorkplace(String workPlaceId, GeneralDate date, UseSet workingDayAtr) {
+	private CalendarWorkplace(String workPlaceId, GeneralDate date, UseSet WorkDayDivision) {
 		super();
 		this.workPlaceId = workPlaceId;
 		this.date = date;
-		this.workingDayAtr = workingDayAtr;
+		this.WorkDayDivision = WorkDayDivision;
 	}
 
-	public static CalendarWorkplace createFromJavaType(String workPlaceId, GeneralDate date, int workingDayAtr) {
-		return new  CalendarWorkplace(workPlaceId, date, EnumAdaptor.valueOf(workingDayAtr, UseSet.class));
+	public static CalendarWorkplace createFromJavaType(String workPlaceId, GeneralDate date, int WorkDayDivision) {
+		return new  CalendarWorkplace(workPlaceId, date, EnumAdaptor.valueOf(WorkDayDivision, UseSet.class));
 	}
 	
 	

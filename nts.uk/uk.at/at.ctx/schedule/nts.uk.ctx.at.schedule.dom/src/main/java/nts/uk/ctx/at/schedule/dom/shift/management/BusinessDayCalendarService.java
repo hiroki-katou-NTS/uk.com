@@ -47,11 +47,11 @@ public class BusinessDayCalendarService {
 			if(calendarWorkplace.isPresent()) {
 				// 終了状態：成功　を返す
 				// 取得したドメインモデル「職場営業日カレンダー日次」.稼働日区分
-				if(calendarWorkplace.get().getWorkingDayAtr() == UseSet.nonWorkingDay_inlaw) {
+				if(calendarWorkplace.get().getWorkDayDivision() == UseSet.nonWorkingDay_inlaw) {
 					// 非稼働日(法内)　→　休日区分　=　法定休日
 					TargetDaysHDCls target = new TargetDaysHDCls(HolidayCls.STATUTORY_HOLIDAYS, date);
 					return Optional.of(target);
-				} else if(calendarWorkplace.get().getWorkingDayAtr() == UseSet.nonWorkingDay_Outrage) {
+				} else if(calendarWorkplace.get().getWorkDayDivision() == UseSet.nonWorkingDay_Outrage) {
 					// 非稼働日(法外)　→　休日区分　=　法定外休日
 					TargetDaysHDCls target = new TargetDaysHDCls(HolidayCls.NON_STATUTORY_HOLIDAYS, date);
 					return Optional.of(target);
@@ -64,11 +64,11 @@ public class BusinessDayCalendarService {
 				if(calendarCompany.isPresent()) {
 					// 終了状態：成功　を返す
 					// 取得したドメインモデル「会社営業日カレンダー日次」.稼働日区分
-					if(calendarCompany.get().getWorkingDayAtr() == UseSet.nonWorkingDay_inlaw) {
+					if(calendarCompany.get().getWorkDayDivision() == UseSet.nonWorkingDay_inlaw) {
 						// 非稼働日(法内)　→　休日区分　=　法定休日
 						TargetDaysHDCls target = new TargetDaysHDCls(HolidayCls.STATUTORY_HOLIDAYS, date);
 						return Optional.of(target);
-					} else if(calendarCompany.get().getWorkingDayAtr() == UseSet.nonWorkingDay_Outrage) {
+					} else if(calendarCompany.get().getWorkDayDivision() == UseSet.nonWorkingDay_Outrage) {
 						// 非稼働日(法外)　→　休日区分　=　法定外休日
 						TargetDaysHDCls target = new TargetDaysHDCls(HolidayCls.NON_STATUTORY_HOLIDAYS, date);
 						return Optional.of(target);

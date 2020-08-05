@@ -19,18 +19,18 @@ public class CalendarCompany {
 	
 	private GeneralDate date;
 	
-	private UseSet workingDayAtr;
+	private UseSet WorkDayDivision;
 
-	public CalendarCompany(String companyId, GeneralDate date, UseSet workingDayAtr) {
+	public CalendarCompany(String companyId, GeneralDate date, UseSet WorkDayDivision) {
 		super();
 		this.companyId = companyId;
 		this.date = date;
-		this.workingDayAtr = workingDayAtr;
+		this.WorkDayDivision = WorkDayDivision;
 	}
 	
 	
-	public static CalendarCompany createFromJavaType(String companyId, GeneralDate date, int workingDayAtr){
-		return new CalendarCompany(companyId, date, EnumAdaptor.valueOf(workingDayAtr, UseSet.class));
+	public static CalendarCompany createFromJavaType(String companyId, GeneralDate date, int WorkDayDivision){
+		return new CalendarCompany(companyId, date, EnumAdaptor.valueOf(WorkDayDivision, UseSet.class));
 	}
 	
 	

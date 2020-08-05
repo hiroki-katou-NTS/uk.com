@@ -20,6 +20,6 @@ public class SixMonthsCalendarCompanyScreenDto {
         return new SixMonthsCalendarCompanyScreenDto(
                 domain.getCompanyId(),
                 domain.getDate(),
-                domain.getWorkingDayAtr().value);
+                domain.getWorkDayDivision().value);
     }
 }
