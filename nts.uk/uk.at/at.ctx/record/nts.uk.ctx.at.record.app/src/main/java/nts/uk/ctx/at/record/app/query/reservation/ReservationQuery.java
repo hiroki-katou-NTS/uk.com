@@ -40,12 +40,12 @@ public class ReservationQuery {
 	@Inject
 	private StampCardRepository stampCardRepository;
 
-	@Inject
-	private BentoReservationSettingRepository bentoReservationSettingRepository;
-
-	/** The item repository. */
-	@Inject
-	private AffWorkplaceHistoryItemRepository affWorkplaceHistoryItemRepository;
+//	@Inject
+//	private BentoReservationSettingRepository bentoReservationSettingRepository;
+//
+//	/** The item repository. */
+//	@Inject
+//	private AffWorkplaceHistoryItemRepository affWorkplaceHistoryItemRepository;
 	
 	public ReservationDto findAll(ReservationDateParam param) {
 		GeneralDate date = GeneralDate.fromString(param.getDate(), "yyyy/MM/dd");
@@ -53,16 +53,16 @@ public class ReservationQuery {
 		String employeeId = AppContexts.user().employeeId();
 		Optional<WorkLocationCode> workLocationCode = Optional.of(new WorkLocationCode(null));
 
-		Optional<BentoReservationSetting> bentoReservationSettings = bentoReservationSettingRepository.findByCId(companyId);
+//		Optional<BentoReservationSetting> bentoReservationSettings = bentoReservationSettingRepository.findByCId(companyId);
+//
+//		// get data work place history
+//		List<AffWorkplaceHistoryItem> hisItems = this.affWorkplaceHistoryItemRepository
+//				.getAffWrkplaHistItemByEmpIdAndDate(date, employeeId);
 
-		// get data work place history
-		List<AffWorkplaceHistoryItem> hisItems = this.affWorkplaceHistoryItemRepository
-				.getAffWrkplaHistItemByEmpIdAndDate(date, employeeId);
-
-		val checkOperation = bentoReservationSettings.get().getOperationDistinction().value;
-		if (checkOperation == OperationDistinction.BY_LOCATION.value){
-			workLocationCode = Optional.of(new WorkLocationCode(hisItems.get(0).getNormalWorkplaceId()));
-		}
+//		val checkOperation = bentoReservationSettings.get().getOperationDistinction().value;
+//		if (checkOperation == OperationDistinction.BY_LOCATION.value){
+//			workLocationCode = Optional.of(new WorkLocationCode(hisItems.get(0).getNormalWorkplaceId()));
+//		}
 
         StampCard stampCard = stampCardRepository.getLstStampCardByLstSidAndContractCd(
 				Arrays.asList(employeeId),
