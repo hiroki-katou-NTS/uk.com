@@ -144,6 +144,10 @@ module nts.uk.at.kdp003.s {
 
 			vm.filter.day.valueHasMutated();
 		}
+		
+		mounted() {
+			$('.nts-datepicker-wrapper').first().find('input').focus();
+		}
 
 		closeDialog() {
 			const vm = this;

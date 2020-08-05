@@ -187,7 +187,7 @@ module nts.uk.at.kdp003.a {
 							}
 
 							// if not exist workplaceID
-							return vm.$window.modal('at', DIALOG.K);
+							return vm.$window.modal('at', DIALOG.K, { multiSelect: true });
 						}) as JQueryDeferred<k.Return>;
 				})
 				.then((data: null | k.Return) => {
@@ -398,7 +398,7 @@ module nts.uk.at.kdp003.a {
 
 						return false;
 					} else {
-						return vm.$window.modal('at', DIALOG.K);
+						return vm.$window.modal('at', DIALOG.K, { multiSelect: true });
 					}
 				})
 				.then((data: null | k.Return) => {
