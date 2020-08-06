@@ -90,10 +90,10 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	private static final String DELETE_HIST_ITEM_BY_SID = "DELETE FROM BsymtEmploymentHistItem a "
 			+ " WHERE a.sid = : empId";
 	
-	private static final String GET_BY_CID_AND_EMPID = " SELECT a FROM BsymtEmploymentHist " 
+	private static final String GET_BY_CID_AND_EMPID = " SELECT a FROM BsymtEmploymentHist a " 
 														+ " WHERE a.companyId = :companyId"
 														+ " AND a.sid = :empId ";
-	private static final String GET_BY_CID_AND_EMPIDS = " SELECT a FROM BsymtEmploymentHist " 
+	private static final String GET_BY_CID_AND_EMPIDS = " SELECT a FROM BsymtEmploymentHist a " 
 			+ " WHERE a.companyId = :companyId "
 			+ " AND a.sid IN :empIds ";
 	private static final String GET_BY_KEY = " SELECT a FROM BsymtEmploymentHistItem "
