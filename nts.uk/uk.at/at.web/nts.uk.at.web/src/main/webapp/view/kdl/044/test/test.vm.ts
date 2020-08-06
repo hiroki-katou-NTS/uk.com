@@ -113,13 +113,14 @@ module test.viewmodel {
 				new BoxModel(2, '職場グループ')
 			]);
 			self.selectedMode = ko.observable(1);
+			
 			self.selectedMode.subscribe((value) => {
 				if (value == 1) {
 					self.isMultiSelect(true);
 				}
 				else {
 					self.isMultiSelect(false);
-				});
+				}});
 			self.selectedPer = ko.observable(1);
 			self.selectedFilter = ko.observable(0);
 			self.enable = ko.observable(true);
@@ -241,8 +242,9 @@ module test.viewmodel {
 				isMultiSelect: self.selectedMode() == 1 ? true : false,
 				permission: permissions,
 				filter: self.selectedFilter(),
-				filterIDs: [self.selectedWorkplaceId()],
+				filterIDs: self.selectedFilter() == 2 ? [self.currentIds()] : [self.selectedWorkplaceId()],
 				shifutoCodes: [],
+				workPlaceType: self.selectedFilter() ,
 				shiftCodeExpel: shifutoCodes
 			}
 			setShared('kdl044Data', dataSetShare);
