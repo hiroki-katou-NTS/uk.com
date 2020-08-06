@@ -17,8 +17,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.InitWkTypeWkTimeOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.PrintContentOfApp;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.PrintContentOfEachApp;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
@@ -197,16 +195,4 @@ public interface CommonAlgorithm {
 	 */
 	public void inconsistencyCheckHoliday(String companyID, EmployeeInfoImport employeeInfo, GeneralDate date,
 			WorkType workTypeApp, WorkType workTypeActual);
-	
-	/**
-	 * refactor 4
-	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.印刷内容を取得する.印刷内容を取得する
-	 * @param companyID 会社ID
-	 * @param appID 申請ID
-	 * @param appDispInfoStartupOutput 申請表示情報
-	 * @param opPrintContentOfEachApp 各申請の印刷内容＜Optional＞
-	 * @return
-	 */
-	public PrintContentOfApp print(String companyID, String appID, AppDispInfoStartupOutput appDispInfoStartupOutput,
-			Optional<PrintContentOfEachApp> opPrintContentOfEachApp);
 }
