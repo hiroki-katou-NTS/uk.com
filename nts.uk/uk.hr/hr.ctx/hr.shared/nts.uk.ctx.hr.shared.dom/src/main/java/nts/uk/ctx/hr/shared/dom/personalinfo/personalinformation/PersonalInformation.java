@@ -34,7 +34,7 @@ public class PersonalInformation implements DomainAggregate {
 	private GeneralDate startDate;
 	
 	// 業務区分
-	private String workId;
+	private int workId;
 	
 	// Optional
 	
