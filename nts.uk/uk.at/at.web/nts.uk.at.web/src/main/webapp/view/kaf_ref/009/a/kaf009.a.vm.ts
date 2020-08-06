@@ -82,7 +82,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 
             }).always(() => vm.$blockui("hide"));
             
-            vm.application().appDate.subscribe(value => {
+            vm.appDispInfoStartupOutput.subscribe(value => {
                 console.log(value);
                 if (value) {
                     vm.changeDate();
@@ -216,35 +216,48 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
         
         changeDate() {
             console.log("change date");
-            vm.$blockui( "show" );
-            let vm = this;
-            let param = {
-                    companyId: vm.$user.companyId,
-                    appDates: [vm.application().appDate()],
-                    employeeIds: vm.application().employeeIDLst(),
-                    inforGoBackCommonDirectDto: ko.toJS(vm.dataFetch())
-            }
-            vm.$ajax(API.changeDate, param)
-                .done(res => {
-                    if (res) {
-                        vm.dataFetch({
-                            workType: ko.observable(res.workType),
-                            workTime: ko.observable(res.workTime),
-                            appDispInfoStartup: ko.observable(res.appDispInfoStartup),
-                            goBackReflect: ko.observable(res.goBackReflect),
-                            lstWorkType: ko.observable(res.lstWorkType),
-                            goBackApplication: ko.observable(res.goBackApplication)
-                        });
-                    }
-                })
-                .fail(res => {
-                    
-                    console.log(res);
-                    vm.$dialog.error( {
-                        messageId: res.msgId
-                    } );
-                })
-                .always(() => vm.$blockui( "hide" ));
+            const vm = this;
+            let dataClone = _.clone(vm.dataFetch());
+            vm.dataFetch(dataClone);
+//            let vm = this;
+//            vm.$blockui( "show" );
+//            let param = {
+//                    companyId: vm.$user.companyId,
+//                    appDates: [vm.application().appDate()],
+//                    employeeIds: vm.application().employeeIDLst(),
+//                    inforGoBackCommonDirectDto: ko.toJS(vm.dataFetch())
+//            }
+//            vm.$ajax(API.changeDate, param)
+//                .done(res => {
+//                    if (res) {
+//                        vm.dataFetch({
+//                            workType: ko.observable(res.workType),
+//                            workTime: ko.observable(res.workTime),
+//                            appDispInfoStartup: ko.observable(res.appDispInfoStartup),
+//                            goBackReflect: ko.observable(res.goBackReflect),
+//                            lstWorkType: ko.observable(res.lstWorkType),
+//                            goBackApplication: ko.observable(res.goBackApplication)
+//                        });
+//                    }
+//                })
+//                .fail(res => {
+//                    
+//                    console.log(res);
+//                    vm.$dialog.error( {
+//                        messageId: res.msgId
+//                    } );
+//                })
+//                .always(() => vm.$blockui( "hide" ));
+            
+            
+//            vm.dataFetch(){
+//                workType: ko.observable(res.workType),
+//                workTime: ko.observable(res.workTime),
+//                appDispInfoStartup: ko.observable(res.appDispInfoStartup),
+//                goBackReflect: ko.observable(res.goBackReflect),
+//                lstWorkType: ko.observable(res.lstWorkType),
+//                goBackApplication: ko.observable(res.goBackApplication)
+//            });
             
         }
 
