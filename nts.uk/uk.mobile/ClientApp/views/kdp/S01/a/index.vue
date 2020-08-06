@@ -3,37 +3,42 @@
     <div id="clock" class="uk-bg-teal">
       <div class="col-12 pr-0 pt-2 font-weight-bold">
         <span id="date">
-          {{ current.date }}
+          {{ $dt.now | date("YYYY年 MM月 DD日（ddd）") }}
         </span>
         <button type="button" class="float-right btn btn-success">
           {{ "KDPS01_25" | i18n }}
         </button>
       </div>
-       <div class="col-12 pt-2 px-5 font-weight-bold">
-      <span id="time">{{ current.time }}</span>
-       </div>
+      <div class="col-12 pt-2 px-5 font-weight-bold">
+        <span id="time">{{ $dt.now | date("HH:MM") }}</span>
+      </div>
     </div>
     <div>
-      <pre>
-    {{ comment }}
-    </pre
+      <pre 
+        class="pl-4 pt-2"
+        style="min-height: 4rem;"
+        v-bind:style="{
+          'color': setting.stampPageComment.commentColor
+        }"
+      >{{ setting.stampPageComment.pageComment }}</pre
       >
     </div>
     <div class="d-flex flex-wrap">
       <div
-        class="col-6 mb-2 px-2"
+        class="col-6 mb-2 px-2 div-btn-stamp"
         v-for="button in setting.buttons"
-        v-bind:key="button.type"
+        v-bind:key="button.buttonPositionNo"
       >
         <button
           type="button"
+          v-if="button.buttonDisSet.backGroundColor !== ''"
           v-bind:style="{
-            color: button.color,
-            'background-color': button.bgColor
+            color: button.buttonDisSet.buttonNameSet.textColor,
+            'background-color': button.buttonDisSet.backGroundColor
           }"
-          class="col-12 btn btn-stamp btn-secondary "
+          class="col-12 btn-stamp btn btn-secondary "
         >
-          {{ button.displayText | i18n }}
+          {{ button.buttonDisSet.buttonNameSet.buttonName }}
         </button>
       </div>
     </div>
