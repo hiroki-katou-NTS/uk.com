@@ -848,6 +848,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	@Override
 	public List<EmploymentHistoryTerm> getEmploymentHistoryTerm(String companyId, List<String> lstEmpId,
 			DatePeriod datePeriod) {
+		List<EmploymentHistoryTerm> result = new ArrayList<>();
 		// $履歴リスト = [3-2] *社員IDを指定して履歴を取得する ( 会社ID, 社員IDリスト )
 		List<EmploymentHistory> lstEmpHist = getByCidAndListEmpID(companyId, lstEmpId);
 		List<DateHistoryItem> lstHistoryItems = lstEmpHist.stream()
@@ -859,8 +860,17 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		List<String> lstHistId =  lstHistoryItems.stream().map(c ->c.identifier()).collect(Collectors.toList());
 		//$履歴項目リスト = [4-2] *履歴IDを指定して履歴項目を取得する ( $履歴IDリスト )
 		List<EmploymentHistoryItem> listHistItem = getAllEmploymentHistoryItem(lstHistId);
-		
-		return null;
+		// $履歴項目 = $履歴項目リスト: find $.履歴ID == $汎用履歴項目.履歴ID
+		lstHistoryItems.stream().forEach(y -> {
+			// $履歴項目 = $履歴項目リスト: find $.履歴ID == $汎用履歴項目.履歴ID
+			Optional<EmploymentHistoryItem> dateHistoryItems = listHistItem.stream()
+					.filter(x -> x.getHistoryId().equals(y.identifier())).findFirst();
+			if (dateHistoryItems.isPresent()) {
+				EmploymentHistoryTerm data = new EmploymentHistoryTerm(y.span(), dateHistoryItems.get());
+				result.add(data);
+			}
+		});
+		return result;
 	}
 
 	
