@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
@@ -21,6 +22,7 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @Embeddable
 @EqualsAndHashCode
+@Getter
 public class KscdtSchEditStatePK implements Serializable {
 	/**
 	 * 
@@ -42,6 +44,6 @@ public class KscdtSchEditStatePK implements Serializable {
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "ATD_ITEM_ID")
-	public String atdItemId;
+	public int atdItemId;
 
 }

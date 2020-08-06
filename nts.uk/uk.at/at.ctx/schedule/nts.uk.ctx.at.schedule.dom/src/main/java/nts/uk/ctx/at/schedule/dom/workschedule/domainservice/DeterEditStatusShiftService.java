@@ -46,108 +46,39 @@ public class DeterEditStatusShiftService {
 	/**
 	 * [prv-1] 日別編集状態を判断する
 	 * 
-	 * @param workTypeStatus
-	 * @param workingHourStatus
+	 * @param workTypeStatus 勤務種類状態
+	 * @param workingHourStatus 就業時間帯状態
 	 * @return Optional<日別勤怠の編集状態>
 	 */
 	private static Optional<EditStateSetting> judgeDailyEditStatus(Optional<EditStateOfDailyAttd> workTypeStatus,
 			Optional<EditStateOfDailyAttd> workingHourStatus) {
+		
+		if(!workTypeStatus.isPresent()) {
+			if(!workingHourStatus.isPresent() || workingHourStatus.get().getEditStateSetting() == EditStateSetting.IMPRINT) {
+				return Optional.empty();	
+			}
+			return Optional.of(workingHourStatus.get().getEditStateSetting());
+		}
+		
+		if(!workingHourStatus.isPresent()) {
+			if(workTypeStatus.get().getEditStateSetting() == EditStateSetting.IMPRINT) {
+				return Optional.empty();
+			}
+			return Optional.of(workTypeStatus.get().getEditStateSetting());
+		}
 		val workTypeStt = workTypeStatus.get().getEditStateSetting();
 		val workHourStt = workingHourStatus.get().getEditStateSetting();
-		if (!workTypeStatus.isPresent() && !workingHourStatus.isPresent()) {
-			return Optional.empty();
+		
+		if(workTypeStt == EditStateSetting.REFLECT_APPLICATION || workHourStt == EditStateSetting.REFLECT_APPLICATION ) {
+			return Optional.of(EditStateSetting.REFLECT_APPLICATION);
 		}
-		if ((workTypeStt == EditStateSetting.IMPRINT) && !workingHourStatus.isPresent()) {
-			return Optional.empty();
+		
+		if(workTypeStt == EditStateSetting.HAND_CORRECTION_OTHER || workHourStt == EditStateSetting.HAND_CORRECTION_OTHER ) {
+			return Optional.of(EditStateSetting.HAND_CORRECTION_OTHER);
 		}
-		if ((workTypeStt == EditStateSetting.REFLECT_APPLICATION) && !workingHourStatus.isPresent()) {
-			return Optional.of(workTypeStt);
-		}
-		if ((workTypeStt == EditStateSetting.HAND_CORRECTION_OTHER) && !workingHourStatus.isPresent()) {
-			return Optional.of(workTypeStt);
-		}
-		if ((workTypeStt == EditStateSetting.HAND_CORRECTION_MYSELF) && !workingHourStatus.isPresent()) {
-			return Optional.of(workTypeStt);
-		}
-		//
-		if (!workTypeStatus.isPresent() && (workHourStt == EditStateSetting.IMPRINT)) {
-			return Optional.empty();
-		}
-		if ((workTypeStt == EditStateSetting.IMPRINT) && (workHourStt == EditStateSetting.IMPRINT)) {
-			return Optional.empty();
-		}
-
-		if ((workTypeStt == EditStateSetting.REFLECT_APPLICATION) && (workHourStt == EditStateSetting.IMPRINT)) {
-			return Optional.of(workTypeStt);
-		}
-		if ((workTypeStt == EditStateSetting.HAND_CORRECTION_OTHER) && (workHourStt == EditStateSetting.IMPRINT)) {
-			return Optional.of(workTypeStt);
-		}
-		if ((workTypeStt == EditStateSetting.HAND_CORRECTION_MYSELF) && (workHourStt == EditStateSetting.IMPRINT)) {
-			return Optional.of(workTypeStt);
-		}
-		//
-		if (!workTypeStatus.isPresent() && (workHourStt == EditStateSetting.REFLECT_APPLICATION)) {
-			return Optional.of(workHourStt);
-		}
-		if ((workTypeStt == EditStateSetting.IMPRINT) && (workHourStt == EditStateSetting.REFLECT_APPLICATION)) {
-			return Optional.of(workHourStt);
-		}
-
-		if ((workTypeStt == EditStateSetting.REFLECT_APPLICATION)
-				&& (workHourStt == EditStateSetting.REFLECT_APPLICATION)) {
-			return Optional.of(workHourStt);
-		}
-		if ((workTypeStt == EditStateSetting.HAND_CORRECTION_OTHER)
-				&& (workHourStt == EditStateSetting.REFLECT_APPLICATION)) {
-			return Optional.of(workHourStt);
-		}
-		if ((workTypeStt == EditStateSetting.HAND_CORRECTION_MYSELF)
-				&& (workHourStt == EditStateSetting.REFLECT_APPLICATION)) {
-			return Optional.of(workHourStt);
-		}
-		//
-		if (!workTypeStatus.isPresent() && (workHourStt == EditStateSetting.HAND_CORRECTION_OTHER)) {
-			return Optional.of(workHourStt);
-		}
-		if ((workTypeStt == EditStateSetting.IMPRINT) && (workHourStt == EditStateSetting.HAND_CORRECTION_OTHER)) {
-			return Optional.of(workHourStt);
-		}
-
-		if ((workTypeStt == EditStateSetting.REFLECT_APPLICATION)
-				&& (workHourStt == EditStateSetting.HAND_CORRECTION_OTHER)) {
-			return Optional.of(workTypeStt);
-		}
-		if ((workTypeStt == EditStateSetting.HAND_CORRECTION_OTHER)
-				&& (workHourStt == EditStateSetting.HAND_CORRECTION_OTHER)) {
-			return Optional.of(workHourStt);
-		}
-		if ((workTypeStt == EditStateSetting.HAND_CORRECTION_MYSELF)
-				&& (workHourStt == EditStateSetting.HAND_CORRECTION_OTHER)) {
-			return Optional.of(workHourStt);
-		}
-		//
-		if (!workTypeStatus.isPresent() && (workHourStt == EditStateSetting.HAND_CORRECTION_MYSELF)) {
-			return Optional.of(workHourStt);
-		}
-		if ((workTypeStt == EditStateSetting.IMPRINT) && (workHourStt == EditStateSetting.HAND_CORRECTION_MYSELF)) {
-			return Optional.of(workHourStt);
-		}
-
-		if ((workTypeStt == EditStateSetting.REFLECT_APPLICATION)
-				&& (workHourStt == EditStateSetting.HAND_CORRECTION_MYSELF)) {
-			return Optional.of(workTypeStt);
-		}
-		if ((workTypeStt == EditStateSetting.HAND_CORRECTION_OTHER)
-				&& (workHourStt == EditStateSetting.HAND_CORRECTION_MYSELF)) {
-			return Optional.of(workTypeStt);
-		}
-		if ((workTypeStt == EditStateSetting.HAND_CORRECTION_MYSELF)
-				&& (workHourStt == EditStateSetting.HAND_CORRECTION_MYSELF)) {
-			return Optional.of(workHourStt);
-		}
-		return Optional.empty();
-
+		
+		return Optional.of(EditStateSetting.HAND_CORRECTION_MYSELF);
+		
 	}
 
 }

@@ -1,61 +1,64 @@
 
 <div>
 	<div class="sidebar-content-header">
-		<span class="title">#{i18n.getText('Com_Workplace')}</span>
+		<span class="title">#{i18n.getText('Com_WorkplaceGroup')}</span>
 		<!-- Go back Style -->
 		<!-- B5 -->
-		<a class="goback"
-			data-bind="ntsLinkButton: { jump: '/view/ksm/015/a/index.xhtml' }">#{i18n.getText('KSM015_11')}</a>
+		<a class="goback" 
+			data-bind="ntsLinkButton: { jump: '/view/ksm/015/a/index.xhtml' } , visible: forAttendent">#{i18n.getText('KSM015_11')}</a>
 		<!-- C1 -->
 		<button tabindex="1" class="proceed" id="register-btn"
-			data-bind="click: register">#{i18n.getText('KSM015_8')}</button>
+			data-bind="click: register, disable: shiftItems().length == 0 || workplaceGroupList().length == 0">#{i18n.getText('KSM015_8')}</button>
 		<!-- C2 -->
 		<button class="danger" tabindex="3"
-			data-bind="click: deleteWkpGroup, disable: registerForm().newMode">
+			data-bind="click: deleteShiftMaster, disable: !isWorkplaceAlreadySetting()">
 			#{i18n.getText('KSM015_9')}</button>
 		<!-- C3 -->
-		<button tabindex="2" data-bind="click: exportExcel">
-			#{i18n.getText('KSM015_21')}</button>
+		<!-- <button tabindex="2" data-bind="click: openDialogCopy, disable: !isWorkplaceAlreadySetting()">
+			#{i18n.getText('KSM015_21')}</button> -->
 	</div>
 	<div class="contents-area">
-		<div id="ksm007">
+		<div id="ksm007d">
 			<div class="pull-left" style="width: 480px;">
-				<workplace-group params="options: options"> </workplace-group>
+			<div id="tree-grid-d">
+				<workplace-group id ="tree-grid-2"  params="options: options" > </workplace-group></div>
 			</div>
-			<div class="pull-left" style="width: 700px;">
+			<div class="pull-right" style="width: 700px;">
 				<div id="register-form-d">
-					<!-- A4 -->
-					<div id="form-title">
-          <span>#{i18n.getText('Com_Workplace')} :</span>
+					<!-- D2 -->
+					<div id="form-title-d">
+          <span>#{i18n.getText('Com_WorkplaceGroup')} :</span>
           <span data-bind="text: currentNames()"></span>
         </div>
 
         <div class="valign-center control-group">
+        <!-- D4_1 -->
           <div data-bind="ntsFormLabel: {required: true}">
-            #{i18n.getText('KSM015_23',["#Com_Workplace"])}
+            #{i18n.getText('KSM015_23',["#Com_WorkplaceGroup"])}
           </div>
         </div>
 
-					<!-- A7 -->
+					<!-- D4_2 -->
 					<div class="valign-center control-group">
 						<button class="small" tabindex="8"
-							data-bind="click: openDialogCDL008">
-							#{i18n.getText('KSM007_11')}</button>
-						<button class="small" tabindex="9"
-							data-bind="click: removeWorkplace">
-							#{i18n.getText('KSM007_12')}</button>
+							data-bind="click: openDialogKDL044, disable: workplaceGroupList().length == 0">
+							#{i18n.getText('KSM015_18')}</button>
+							<!-- D4_3 -->
+						<button class="small danger" tabindex="9"
+							data-bind="click: removeShift, disable: shiftItems().length == 0">
+							#{i18n.getText('KSM015_31')}</button>
 					</div>
 					<!-- A8 -->
 					<div>
 						<table id="workplace-list"
 							data-bind="ntsGridList: {
-								height: 350,
-                				width: 800,
-				                dataSource: registerForm().workplaces,
-				                optionsValue: 'workplaceId',
-				                columns: registerForm().gridColumns,
+								height: 330,
+                				width: 700,
+				                dataSource: shiftItems,
+				                optionsValue: 'shiftMasterCode',
+				                columns: shiftColumns,
 				                multiple: true,
-				                value: registerForm().selectedWorkplaces
+				                value: selectedShiftMaster
 				            }"></table>
 					</div>
 				</div>

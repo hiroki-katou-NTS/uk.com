@@ -89,7 +89,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			let self = this;
 			let dfd = $.Deferred();
 			nts.uk.ui.block.invisible();
-			service.startPage()
+			service.startPage(TargetUnit.WORKPLACE)
 				.done((data) => {
 					self.forAttendent(!_.isNull(data.forAttendent));
 					if (data.alreadyConfigWorkplaces) {
@@ -174,8 +174,9 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 				isMultiSelect: true,
 				filter: 0,
 				permission: false,
-				// shifutoCodes: _.map(self.shiftItems(), (val) => { return val.shiftMasterCode })
-				shifutoCodes: []
+				//shifutoCodes: _.map(self.shiftItems(), (val) => { return val.shiftMasterCode })
+				shifutoCodes: [],
+				shiftCodeExpel : _.map(self.shiftItems(), (val) => { return val.shiftMasterCode })
 			}, true);
 
 			nts.uk.ui.windows.sub.modal('/view/kdl/044/a/index.xhtml').onClosed(function(): any {
@@ -219,6 +220,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 				let lstSelection: any = nts.uk.ui.windows.getShared("CDL023Output");
 				if (!nts.uk.util.isNullOrEmpty(lstSelection)) {
 					let wkps = [];
+					let data = [];
 					lstSelection.forEach((wp) => {
 						wkps.push({ targetUnit: TargetUnit.WORKPLACE, workplaceId: wp, shiftMasterCodes: [] });
 					});
@@ -228,6 +230,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 						shiftMasterCodes: _.map(self.shiftItems(), (val) => { return val.shiftMasterCode }),
 						toWkps: wkps
 					}
+					let bundledErrors = [];
 					service.copyOrg(param)
 						.done((results) => {
 							let msg = '';
@@ -237,8 +240,19 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 									let status = result.status ? nts.uk.resource.getText('KSM015_26') : nts.uk.resource.getText('KSM015_27');
 									msg += dataWkp.code + ' ' + dataWkp.name + ' ' + status + '<br>';
 								}
+								data.push({
+									code : dataWkp.code + ' ' + dataWkp.name,
+									status : status
+								})
+								
+								bundledErrors.push({
+	                            message: dataWkp.code + ' ' + dataWkp.name,
+	                            messageId: status,
+	                            supplements: {}
+                      			});
 							});
-							nts.uk.ui.dialog.info(msg);
+							nts.uk.ui.windows.setShared("KSM_K_Input", data);
+							nts.uk.at.view.ksm015.dialog.bundledErrors({ errors: bundledErrors });
 							self.reloadAlreadySetting();
 						});
 				}
@@ -247,7 +261,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 
 		public reloadAlreadySetting() {
 			let self = this;
-			service.getAlreadyConfigOrg()
+			service.getAlreadyConfigOrg(TargetUnit.WORKPLACE)
 				.done((data) => {
 					let alreadySettings = []
 					_.forEach(data.workplaceIds, (wp) => {

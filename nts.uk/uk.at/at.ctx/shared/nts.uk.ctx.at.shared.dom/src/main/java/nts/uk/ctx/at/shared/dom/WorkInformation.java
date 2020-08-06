@@ -34,7 +34,7 @@ public class WorkInformation {
 
 	public WorkInformation(String workTimeCode, String workTypeCode) {
 
-		this.workTimeCode = StringUtils.isEmpty(workTimeCode) ? null : Optional.of(new WorkTimeCode(workTimeCode));
+		this.workTimeCode = StringUtils.isEmpty(workTimeCode) ? Optional.empty() : Optional.of(new WorkTimeCode(workTimeCode));
 		this.workTypeCode = workTypeCode == null ? null : new WorkTypeCode(workTypeCode);
 	}
 
@@ -48,6 +48,10 @@ public class WorkInformation {
 			return null;
 		}
 		return this.workTimeCode.isPresent()?this.workTimeCode.get():null;
+	}
+	
+	public Optional<WorkTimeCode> getWorkTimeCodeNotNull() {
+		return this.workTimeCode;
 	}
 
 	public WorkTypeCode getWorkTypeCode() {
@@ -119,7 +123,7 @@ public class WorkInformation {
 
 		// require.就業時間帯を取得する(ログイン会社ID, @就業時間帯コード) - CID sẽ dc truyền trên app
 		Optional<WorkTimeSetting> workTimeSetting = require
-				.findByCode(this.workTimeCode == null ? null : this.workTimeCode.get().v());
+				.findByCode(this.workTimeCode.isPresent() ? this.workTimeCode.get().v() : null);
 		// if $就業時間帯.isEmpty
 		if (!workTimeSetting.isPresent()) {
 			return ErrorStatusWorkInfo.WORKTIME_WAS_DELETE;

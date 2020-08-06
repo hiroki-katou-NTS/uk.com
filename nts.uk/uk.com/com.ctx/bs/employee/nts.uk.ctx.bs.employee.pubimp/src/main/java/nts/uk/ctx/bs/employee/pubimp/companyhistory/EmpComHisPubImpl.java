@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.history.CompanyWithEmployeeID;
@@ -20,11 +21,13 @@ import nts.uk.ctx.bs.employee.pub.companyhistory.EmpEnrollPeriodExported;
 
 @Stateless
 public class EmpComHisPubImpl implements EmpComHisPub {
-		
+	@Inject
+	private  AffCompanyHistRepository repo;
+	
 	@Override
 	public List<EmpEnrollPeriodExported> getEnrollmentPeriod(List<String> lstEmpId, DatePeriod datePeriod) {
 		List<EmpEnrollPeriodExported> result = new ArrayList<>();
-		Require require = new Require();
+		Require require = new Require(repo);
 		//$履歴リスト = require.期間を指定して社員ID付き履歴項目を取得する( 社員IDリスト, 期間 )																														
 		List<CompanyWithEmployeeID> data =  require.getHistoryItemByEmpID(lstEmpId, datePeriod) ;
 		data.forEach( x ->{
@@ -40,7 +43,7 @@ public class EmpComHisPubImpl implements EmpComHisPub {
 
 		return result;
 	}
-
+	@AllArgsConstructor
 	class Require{
 		
 		@Inject

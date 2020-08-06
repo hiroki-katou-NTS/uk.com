@@ -19,9 +19,9 @@ html {
     display: inline-block;
     margin-left: 20px;
 }
-.work-lable {
+.work-lable, .work-time-lable {
     display: inline-block;
-    width: 80px;
+    width: 100px;
 }
 #create-new{
     margin-left: 45px !important;
@@ -38,14 +38,31 @@ html {
 
 /* B9_2_2 */
 #test-color{
-	margin-left: 25px;
+	margin-left: 42px;
 }
 
 /* B9_2_3 */
 #label-test-color{
+	border-width: 1px !important;;
 	margin-left: 25px;
 	border-color: #AAB7B8 !important;
 	min-width: 40px;
 	height: 33px;
+	text-align: center;
+	line-height: 26px !important;
+}
+#worktype-chose{
+	width: 73px;
+}
+.sp-replacer{
+	width: 62px !important;
 }
 
+.sp-preview {
+	width: 45px;
+}
+
+.caret-right, .caret-inline{
+	margin-left: 2px !important;
+	color: #666 !important;
+}

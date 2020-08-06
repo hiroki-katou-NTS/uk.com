@@ -5,7 +5,7 @@ import java.util.Optional;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetActItemCode;
-import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetActualValue;
+import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetActualValues;
 import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetDaily;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
@@ -28,9 +28,9 @@ public class RegisterExtBudgetDailyService {
 	 * @return AtomTask
 	 */
 	public static AtomTask signUp(Require require, TargetOrgIdenInfor targetOrg, ExtBudgetActItemCode itemCode,
-			GeneralDate ymd, Optional<ExtBudgetActualValue> extBudgetActualValue) {
+			GeneralDate ymd, Optional<ExtBudgetActualValues> extBudgetActualValue) {
 
-		if (extBudgetActualValue.isPresent()) {
+		if (!extBudgetActualValue.isPresent()) {
 			return AtomTask.of(() -> {
 				require.delete(targetOrg, itemCode, ymd);
 			});

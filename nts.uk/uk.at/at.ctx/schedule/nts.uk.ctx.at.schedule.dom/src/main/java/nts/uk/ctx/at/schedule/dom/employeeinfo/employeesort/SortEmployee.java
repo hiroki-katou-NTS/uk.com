@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.LicenseClassification;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankCode;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamCd;
 
 
 /**
@@ -12,17 +14,17 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.LicenseClassific
  *
  */
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class SortEmployee {
 	
 	/** 社員ID **/ 
-	private String empID;
+	private final String empID;
 	/**	職位ID **/
 	private String jobtitleID;
 	/**	チーム (team)	 **/
-	private String scheduleTeamID;
+	private ScheduleTeamCd scheduleTeamCd;
 	/**	ランク (rank) **/
-	private String rankCode;
+	private RankCode rankCode;
 	/** 免許区分 (phân loại giấy phép) **/
 	private LicenseClassification licenseClassification;
 	
