@@ -31,10 +31,13 @@
 			<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true, text: $vm.$i18n('KMR001_5')}"></div>
 			<!--B3_2 -> 4-->
 			<div data-bind="ntsRadioBoxGroup: {
-					options: itemList,
+					options: ([
+						{id : 1, name : $i18n('KMR001_6')},
+						{id : 2, name : $i18n('KMR001_7')}
+            		]),
 					optionsValue: 'id',
 					optionsText: 'name',
-					value: selectedId,
+					value: model.operationClassification,
 					enable: enable}"></div>
 			<div class="break-line"></div>
 			<!--B5_1-->
@@ -57,7 +60,7 @@
 			<!--B19_2-->
 			<span class="label" data-bind="text: $vm.$i18n('KMR001_69')"></span>
 			<!--B19_3-->
-			<input data-bind="ntsTextEditor: {value: name1Textbox}" />
+			<input data-bind="ntsTextEditor: {value: model.name1Textbox}" />
 
 			<!--B19_4-->
 			<span class="label" data-bind="text: $vm.$i18n('KMR001_70')"></span>
@@ -128,7 +131,7 @@
 							options: itemsReservationChange,
 							optionsValue: 'appId',
 							visibleItemsCount: 5,
-							value: reservationChange,
+							value: model.reservationChange,
 							optionsText: 'appName',
 							editable: false,
 							enable: true,
@@ -144,7 +147,7 @@
 					options: itemsTimePeriod,
 					optionsValue: 'appId',
 					optionsText: 'appValue',
-					value: timePeriod,
+					value: model.timePeriod,
 					enable: true,
 					columns: [{ prop: 'appValue'}]}">
 			</div>
@@ -157,10 +160,13 @@
 			<div data-bind="ntsFormLabel: {text: $vm.$i18n('KMR001_77')}"></div>
 			<!--B21_2-->
 			<div data-bind="ntsRadioBoxGroup: {
-					options: orderedDataList,
+					options: ([
+						{id : 1, name : $i18n('KMR001_78')},
+						{id : 2, name : $i18n('KMR001_79')}
+            		]),
 					optionsValue: 'id',
-					optionsText: $vm.$i18n('name'),
-					value: selectedId,
+					optionsText: 'name',
+					value: model.selectedId,
 					enable: enable}"></div>
 			<div class="break-line"></div>
 			<!--B21_3-->
@@ -171,10 +177,13 @@
 			<div data-bind="ntsFormLabel: {text: $vm.$i18n('KMR001_26')}"></div>
 			<!--B14_2-->
 			<div data-bind="ntsRadioBoxGroup: {
-					options: orderDeadline,
+					options: ([
+						{id : 1, name : $i18n('KMR001_28')},
+						{id : 2, name : $i18n('KMR001_29')}
+					]),
 					optionsValue: 'id',
-					optionsText: $vm.$i18n('name'),
-					value: selectedId,
+					optionsText: 'name',
+					value: model.selectedId,
 					enable: enable}"></div>
 			<div class="break-line"></div>
 			<!--B14_3-->
@@ -190,10 +199,13 @@
 			<div data-bind="ntsFormLabel: {text: $vm.$i18n('KMR001_31')}"></div>
 			<!--B17_2-->
 			<div data-bind="ntsRadioBoxGroup: {
-					options: monthlyPerformanceCalList,
+					options: ([
+						{id : 1, name : $i18n('KMR001_33')},
+						{id : 2, name : $i18n('KMR001_34')}
+            		]),
 					optionsValue: 'id',
-					optionsText: $vm.$i18n('name'),
-					value: selectedId,
+					optionsText: 'name',
+					value: model.selectedId,
 					enable: enable}"></div>
 			<!--B17_3-->
 			<!--B17_4-->
@@ -203,10 +215,13 @@
 			<div data-bind="ntsFormLabel: {text: $vm.$i18n('KMR001_35')}"></div>
 			<!--B18_2-->
 			<div data-bind="ntsRadioBoxGroup: {
-					options: dailyActualCalList,
+					options: ([
+						{id : 1, name : $i18n('KMR001_33')},
+						{id : 2, name : $i18n('KMR001_34')}
+            		]),
 					optionsValue: 'id',
-					optionsText: $vm.$i18n('name'),
-					value: selectedId,
+					optionsText: 'name',
+					value: model.selectedId,
 					enable: enable}"></div>
 			<div class="break-line"></div>
 			<!--B18_3-->

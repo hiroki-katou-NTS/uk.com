@@ -9,12 +9,10 @@ module nts.uk.at.kmr001.a {
 
 	@bean()
 	export class KMR001AViewModel extends ko.ViewModel {
-		tabs: KnockoutObservableArray<any> = ko.observableArray([]);
-		stampToSuppress: KnockoutObservable<any> = ko.observable({});
+
 
 		created() {
-			const vm = this;
-			_.extend(window, { vm });
+
 		}
 
 		setting() {

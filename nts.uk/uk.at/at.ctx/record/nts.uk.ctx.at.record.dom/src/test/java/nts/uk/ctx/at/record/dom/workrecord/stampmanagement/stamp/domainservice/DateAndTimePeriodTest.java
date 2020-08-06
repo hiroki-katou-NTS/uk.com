@@ -1,8 +1,5 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
@@ -10,6 +7,8 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetStampTypeToSuppressService.Require;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * 

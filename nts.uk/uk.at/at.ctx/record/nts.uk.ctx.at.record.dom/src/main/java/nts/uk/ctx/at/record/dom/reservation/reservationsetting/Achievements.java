@@ -3,6 +3,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
+
 /**
  * 実績集計方法
  */

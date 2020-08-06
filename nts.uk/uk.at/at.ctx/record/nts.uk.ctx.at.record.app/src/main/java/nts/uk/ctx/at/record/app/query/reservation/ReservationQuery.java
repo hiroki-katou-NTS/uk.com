@@ -16,6 +16,8 @@ import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentomenuAdapter;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.SWkpHistExport;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSettingRepository;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
@@ -24,8 +26,6 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClo
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
-//import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
-//import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -40,29 +40,28 @@ public class ReservationQuery {
 	@Inject
 	private StampCardRepository stampCardRepository;
 
-//	@Inject
-//	private BentoReservationSettingRepository bentoReservationSettingRepository;
-//
-//	/** The item repository. */
-//	@Inject
-//	private AffWorkplaceHistoryItemRepository affWorkplaceHistoryItemRepository;
-	
+	@Inject
+	private BentomenuAdapter bentomenuAdapter;
+
+	@Inject
+	private BentoReservationSettingRepository bentoReservationSettingRepository;
+
 	public ReservationDto findAll(ReservationDateParam param) {
 		GeneralDate date = GeneralDate.fromString(param.getDate(), "yyyy/MM/dd");
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		Optional<WorkLocationCode> workLocationCode = Optional.of(new WorkLocationCode(null));
 
-//		Optional<BentoReservationSetting> bentoReservationSettings = bentoReservationSettingRepository.findByCId(companyId);
-//
-//		// get data work place history
-//		List<AffWorkplaceHistoryItem> hisItems = this.affWorkplaceHistoryItemRepository
-//				.getAffWrkplaHistItemByEmpIdAndDate(date, employeeId);
+		Optional<BentoReservationSetting> bentoReservationSettings = bentoReservationSettingRepository.findByCId(companyId);
 
-//		val checkOperation = bentoReservationSettings.get().getOperationDistinction().value;
-//		if (checkOperation == OperationDistinction.BY_LOCATION.value){
-//			workLocationCode = Optional.of(new WorkLocationCode(hisItems.get(0).getNormalWorkplaceId()));
-//		}
+		// get data work place history
+		Optional<SWkpHistExport> hisItems = this.bentomenuAdapter
+				.findBySid(employeeId,date);
+
+		val checkOperation = bentoReservationSettings.get().getOperationDistinction().value;
+		if (checkOperation == OperationDistinction.BY_LOCATION.value){
+			workLocationCode = Optional.of(new WorkLocationCode(hisItems.get().getWorkplaceCode()));
+		}
 
         StampCard stampCard = stampCardRepository.getLstStampCardByLstSidAndContractCd(
 				Arrays.asList(employeeId),

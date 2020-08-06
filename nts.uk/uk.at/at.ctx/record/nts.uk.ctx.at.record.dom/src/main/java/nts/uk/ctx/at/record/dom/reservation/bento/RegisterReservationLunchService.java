@@ -21,9 +21,10 @@ public class RegisterReservationLunchService {
      * 登録する
      */
     public static AtomTask register(
-            Require require,String companyId, OperationDistinction operationDistinction,Achievements arAchievements,
+            Require require, OperationDistinction operationDistinction,Achievements arAchievements,
             CorrectionContent correctionContent, BentoReservationClosingTime bentoReservationClosingTime) {
 
+        String companyId = AppContexts.user().companyId();
         GeneralDate date = GeneralDate.max();
 
         // 1: get(会社ID)
@@ -41,7 +42,7 @@ public class RegisterReservationLunchService {
             require.registerBentoMenu(finalHistoryID,bentoReservationClosingTime);
 
             if (bentoReservationSetting == null){
-                require.inSert(bentoReservationSetting);
+                require.inSert(operationDistinction,arAchievements,correctionContent);
             }else {
                 require.update(bentoReservationSetting);
             }
@@ -66,7 +67,8 @@ public class RegisterReservationLunchService {
          */
         void registerBentoMenu(String historyID,BentoReservationClosingTime bentoReservationClosingTime);
 
-        void inSert(BentoReservationSetting bentoReservationSetting);
+        void inSert(OperationDistinction operationDistinction,Achievements arAchievements,
+                    CorrectionContent correctionContent);
 
         void update(BentoReservationSetting bentoReservationSetting);
 
