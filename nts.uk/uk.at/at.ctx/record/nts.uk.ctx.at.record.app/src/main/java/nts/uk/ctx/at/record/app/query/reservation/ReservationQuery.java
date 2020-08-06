@@ -14,6 +14,8 @@ import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentomenuAdapter;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.SWkpHistExport;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSettingRepository;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
@@ -35,11 +37,32 @@ public class ReservationQuery {
 	
 	@Inject
 	private StampCardRepository stampCardRepository;
-	
+
+	@Inject
+	private BentomenuAdapter bentomenuAdapter;
+
+	@Inject
+	private BentoReservationSettingRepository bentoReservationSettingRepository;
+
 	public ReservationDto findAll(ReservationDateParam param) {
 		GeneralDate date = GeneralDate.fromString(param.getDate(), "yyyy/MM/dd");
-		StampCard stampCard = stampCardRepository.getLstStampCardByLstSidAndContractCd(
-				Arrays.asList(AppContexts.user().employeeId()),
+		String companyId = AppContexts.user().companyId();
+		String employeeId = AppContexts.user().employeeId();
+		Optional<WorkLocationCode> workLocationCode = Optional.of(new WorkLocationCode(null));
+
+		Optional<BentoReservationSetting> bentoReservationSettings = bentoReservationSettingRepository.findByCId(companyId);
+
+		// get data work place history
+		Optional<SWkpHistExport> hisItems = this.bentomenuAdapter
+				.findBySid(employeeId,date);
+
+		val checkOperation = bentoReservationSettings.get().getOperationDistinction().value;
+		if (checkOperation == OperationDistinction.BY_LOCATION.value){
+			workLocationCode = Optional.of(new WorkLocationCode(hisItems.get().getWorkplaceCode()));
+		}
+
+        StampCard stampCard = stampCardRepository.getLstStampCardByLstSidAndContractCd(
+				Arrays.asList(employeeId),
 				AppContexts.user().contractCode()).get(0);
 		
 		ReservationRegisterInfo reservationRegisterInfo = new ReservationRegisterInfo(stampCard.getStampNumber().toString());

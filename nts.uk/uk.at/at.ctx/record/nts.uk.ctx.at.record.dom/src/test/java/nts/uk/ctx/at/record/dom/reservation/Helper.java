@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoReservationUnitName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTime;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.*;
 
 import static nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame.*;
 
@@ -31,7 +32,33 @@ public class Helper {
 		public static class RegInfo {
 			public static ReservationRegisterInfo DUMMY = new ReservationRegisterInfo("cardNo");
 		}
-		
+
+		public static class WorkLocationCodeReg {
+			public static Optional<WorkLocationCode> DUMMY = Optional.of(new WorkLocationCode(""));
+
+		}
+
+		public static class operationDistinction {
+			public static OperationDistinction DUMMY = OperationDistinction.valueOf(1);
+		}
+
+		public static class achievements {
+			public static Achievements DUMMY = new Achievements(
+					new ReferenceTime(1),
+					AchievementMethod.valueOf(1),
+					AchievementMethod.valueOf(1)
+			);
+		}
+
+		public static class correctionContent {
+			public static CorrectionContent DUMMY = new CorrectionContent(
+					ContentChangeDeadline.valueOf(1),
+					ContentChangeDeadlineDay.valueOf(1),
+					OrderedData.valueOf(1),
+					OrderDeadline.valueOf(1)
+			);
+		}
+
 		public static class Date {
 			public static ReservationDate DUMMY = new ReservationDate(
 					GeneralDate.ymd(2000, 1, 1), FRAME1);

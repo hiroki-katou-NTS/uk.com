@@ -60,6 +60,9 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 			+ " INNER JOIN BsymtAffiWorkplaceHist aw on aw.hisId = awit.hisId"
 			+ " WHERE awit.workPlaceId IN :workplaceIds AND aw.strDate <= :endDate AND :startDate <= aw.endDate";
 
+	private static final String SELECT_BY_WKLCDs = "SELECT aw.sid FROM BsymtAffiWorkplaceHistItem aw"
+			+ " WHERE aw.workLocationCode IN :wkLCds";
+
 	/**
 	 * Convert from entity to domain
 	 * 
@@ -428,6 +431,23 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 			return Collections.emptyList();
 		}
 		return sids;
+	}
+
+	@Override
+	public List<String> getSIDByListWklocationId(List<String> workLocationCDS) {
+		if (CollectionUtil.isEmpty(workLocationCDS)) {
+			return new ArrayList<>();
+		}
+		List<String> listHistItem = new ArrayList<>();
+		CollectionUtil.split(workLocationCDS, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			listHistItem.addAll(this.queryProxy().query(GET_LIST_SID_BY_LIST_WKPID_DATEPERIOD, String.class)
+					.setParameter("wkLCds", subList)
+					.getList());
+		});
+		if (listHistItem.isEmpty()) {
+			return Collections.EMPTY_LIST;
+		}
+		return listHistItem;
 	}
 
 }

@@ -21,6 +21,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.reservation.bento.*;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.infra.entity.reservation.bento.KrcdtReservation;
 import nts.uk.ctx.at.record.infra.entity.reservation.bento.KrcdtReservationDetail;
 import nts.uk.ctx.at.record.infra.entity.reservation.bento.KrcdtReservationDetailPK;
@@ -42,11 +43,13 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 	
 	private static final String FIND_BY_ORDER_PERIOD_EMP;
 
-	private static final String FIND_RESERVATION_TARGET_DATE;
+	private static final String FIND_ALL_RESERVATION_DETAIL;
 
 	private static final String ACQUIRED_RESERVATION_DETAIL;
 
 	private static final String GET_EMPLOYEE_NOT_ORDER;
+
+	private static final String FIND_RESERVATION_INFOMATION;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -67,23 +70,31 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		
 		builderString = new StringBuilder();
 		builderString.append(SELECT);
-		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD = 'date' AND a.ORDERED IN (ordered) AND a.WORK_LOCATION_CD = workLocationCode ");
+		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD >= 'startDate' AND a.RESERVATION_YMD <= 'endDate'" +
+				" AND a.ORDERED IN (ordered) AND a.RESERVATION_FRAME = 'closingTimeFrame' ");
 		FIND_BY_ORDER_PERIOD_EMP = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append(SELECT);
-		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD = 'date' AND a.WORK_LOCATION_CD = workLocationCode ");
-        FIND_RESERVATION_TARGET_DATE = builderString.toString();
+		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD >= 'startDate' AND a.RESERVATION_YMD <= 'endDate'" +
+				" AND a.RESERVATION_FRAME = 'closingTimeFrame' ");
+		FIND_ALL_RESERVATION_DETAIL = builderString.toString();
 
         builderString = new StringBuilder();
 		builderString.append(SELECT);
-		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD = 'date' AND b.QUANTITY >= 2 AND a.WORK_LOCATION_CD = workLocationCode ");
+		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD >= 'startDate' AND a.RESERVATION_YMD <= 'endDate'" +
+				" AND a.RESERVATION_FRAME = 'closingTimeFrame' AND b.QUANTITY >= 2 ");
         ACQUIRED_RESERVATION_DETAIL = builderString.toString();
 
         builderString = new StringBuilder();
 		builderString.append(SELECT);
 		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD = 'date' ");
 		GET_EMPLOYEE_NOT_ORDER = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append(SELECT);
+        builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD = 'date' ");
+        FIND_RESERVATION_INFOMATION = builderString.toString();
 	}
 	
 	@AllArgsConstructor
@@ -202,9 +213,11 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
     }
 
 	@Override
-	public List<BentoReservation> findByOrderedPeriodEmpLst(List<ReservationRegisterInfo> inforLst, ReservationDate reservationDate,
-															boolean ordered,Optional<WorkLocationCode> workLocationCode) {
+	public List<BentoReservation> findByOrderedPeriodEmpLst(
+			List<ReservationRegisterInfo> inforLst, DatePeriod period,ReservationClosingTimeFrame closingTimeFrame,
+			boolean ordered,List<WorkLocationCode> workLocationCode) {
 		String query = FIND_BY_ORDER_PERIOD_EMP;
+
 		List<String> cardLst = inforLst.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList());
 		String cardLstStr = "";
         cardLstStr = getString(inforLst, cardLst, cardLstStr);
@@ -214,37 +227,77 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		} else {
 			orderedParam = "0,1";
 		}
+
+		List<String> workLst = workLocationCode.stream().map(x -> x.v()).collect(Collectors.toList());
+		String workLstStr = "";
+		workLstStr = getStringWork(workLocationCode, workLst, workLstStr);
+
+		if (workLocationCode.size() > 0){
+			query += " AND a.WORK_LOCATION_CD IN (workLstStr) ";
+			query = query.replaceFirst("workLocationCode", workLstStr);
+		}else {
+			query += " AND a.WORK_LOCATION_CD = NULL ";
+		}
+
 		query = query.replaceFirst("cardLst", cardLstStr);
-        query = query.replaceFirst("date", reservationDate.getDate().toString());
+		query = query.replaceFirst("startDate", period.start().toString());
+		query = query.replaceFirst("endDate", period.end().toString());
         query = query.replaceFirst("ordered", orderedParam);
-		query = query.replaceFirst("workLocationCode", String.valueOf(workLocationCode));
+		query = query.replaceFirst("closingTimeFrame", String.valueOf(closingTimeFrame));
         return getBentoReservations(query);
     }
 
     @Override
-    public List<BentoReservation> getFromReservationTargetDate(List<ReservationRegisterInfo> inforLst, ReservationDate reservationDate, Optional<WorkLocationCode> workLocationCode) {
-        String query = FIND_RESERVATION_TARGET_DATE;
+    public List<BentoReservation> getAllReservationDetail(
+			List<ReservationRegisterInfo> inforLst, DatePeriod period,ReservationClosingTimeFrame closingTimeFrame,
+			List<WorkLocationCode> workLocationCode) {
+        String query = FIND_ALL_RESERVATION_DETAIL;
 	    List<String> cardLst = inforLst.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList());
         String cardLstStr = "";
         cardLstStr = getString(inforLst, cardLst, cardLstStr);
 
+		List<String> workLst = workLocationCode.stream().map(x -> x.v()).collect(Collectors.toList());
+		String workLstStr = "";
+		workLstStr = getStringWork(workLocationCode, workLst, workLstStr);
+
+		if (workLocationCode.size() > 0){
+			query += " AND a.WORK_LOCATION_CD IN (workLstStr) ";
+			query = query.replaceFirst("workLocationCode", workLstStr);
+		}else {
+			query += " AND a.WORK_LOCATION_CD = NULL ";
+		}
         query = query.replaceFirst("cardLst", cardLstStr);
-        query = query.replaceFirst("date", reservationDate.getDate().toString());
-        query = query.replaceFirst("workLocationCode", String.valueOf(workLocationCode));
-        return getBentoReservations(query);
+		query = query.replaceFirst("startDate", period.start().toString());
+		query = query.replaceFirst("endDate", period.end().toString());
+		query = query.replaceFirst("closingTimeFrame", String.valueOf(closingTimeFrame));
+		return getBentoReservations(query);
     }
 
     @Override
-    public List<BentoReservation> acquireReservationDetails(List<ReservationRegisterInfo> inforLst, ReservationDate reservationDate, Optional<WorkLocationCode> workLocationCode) {
+    public List<BentoReservation> acquireReservationDetails(
+			List<ReservationRegisterInfo> inforLst, DatePeriod period,ReservationClosingTimeFrame closingTimeFrame,
+			List<WorkLocationCode> workLocationCode) {
         String query = ACQUIRED_RESERVATION_DETAIL;
         List<String> cardLst = inforLst.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList());
         String cardLstStr = "";
         cardLstStr = getString(inforLst, cardLst, cardLstStr);
 
+		List<String> workLst = workLocationCode.stream().map(x -> x.v()).collect(Collectors.toList());
+		String workLstStr = "";
+		workLstStr = getStringWork(workLocationCode, workLst, workLstStr);
+
+		if (workLocationCode.size() > 0){
+			query += " AND a.WORK_LOCATION_CD IN (workLstStr) ";
+			query = query.replaceFirst("workLocationCode", workLstStr);
+		}else {
+			query += " AND a.WORK_LOCATION_CD = NULL ";
+		}
+
         query = query.replaceFirst("cardLst", cardLstStr);
-        query = query.replaceFirst("date", reservationDate.getDate().toString());
-        query = query.replaceFirst("workLocationCode", String.valueOf(workLocationCode));
-        return getBentoReservations(query);
+		query = query.replaceFirst("startDate", period.start().toString());
+		query = query.replaceFirst("endDate", period.end().toString());
+		query = query.replaceFirst("closingTimeFrame", String.valueOf(closingTimeFrame));
+		return getBentoReservations(query);
     }
 
     @Override
@@ -267,6 +320,19 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
         return reservationRegisterInfos.stream().map(x -> x.convertToBentoReservation(x,reservationDate)).collect(Collectors.toList());
     }
 
+    @Override
+    public List<BentoReservation> getReservationInformation(List<ReservationRegisterInfo> inforLst, ReservationDate reservationDate) {
+		String query = FIND_RESERVATION_INFOMATION;
+		List<String> cardLst = inforLst.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList());
+		String cardLstStr = "";
+		cardLstStr = getString(inforLst, cardLst, cardLstStr);
+
+		query = query.replaceFirst("cardLst", cardLstStr);
+		query = query.replaceFirst("date", reservationDate.getDate().toString());
+
+		return getBentoReservations(query);
+    }
+
     private List<BentoReservation> getBentoReservations(String query) {
         try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
             ResultSet rs = stmt.executeQuery();
@@ -282,19 +348,35 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
         if(CollectionUtil.isEmpty(inforLst)) {
             cardLstStr = "''";
         } else {
-            for(String cardStr : cardLst) {
-                cardLstStr += "'" + cardStr + "'";
-                if(cardLst.indexOf(cardStr) < cardLst.size() - 1) {
-                    cardLstStr += ",";
-                }
-            }
+			cardLstStr = handleList(cardLst);
         }
         return cardLstStr;
-    }
 	}
 
 	@Override
 	public void update(BentoReservation bentoReservation) {
 		commandProxy().update(KrcdtReservation.fromDomain(bentoReservation));
 	}
+
+    private String getStringWork(List<WorkLocationCode> workLocationCodes, List<String> workLst, String workLstStr) {
+        if(CollectionUtil.isEmpty(workLocationCodes)) {
+			workLstStr = "''";
+        } else {
+			workLstStr = handleList(workLst);
+        }
+        return workLstStr;
+    }
+
+    private String handleList(List<String> list){
+		StringBuilder result = new StringBuilder();
+		for(int i = 0; i < list.size()-1; ++i) {
+			result.append("'");
+			result.append(list.get(i));
+			result.append("'");
+			result.append(",");
+		}
+		result.append(list.get(list.size()));
+		return result.toString();
+	}
+
 }
