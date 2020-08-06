@@ -15,6 +15,18 @@ public interface BentoReservationRepository {
 	
 	public void delete(BentoReservation bentoReservation);
 	
+	public List<BentoReservation> findByOrderedPeriodEmpLst(List<ReservationRegisterInfo> inforLst, ReservationDate reservationDate,
+															boolean ordered,Optional<WorkLocationCode> workLocationCode);
+
+    public List<BentoReservation> getFromReservationTargetDate(List<ReservationRegisterInfo> inforLst, ReservationDate reservationDate,
+                                                               Optional<WorkLocationCode> workLocationCode);
+
+    public List<BentoReservation> acquireReservationDetails (List<ReservationRegisterInfo> inforLst, ReservationDate reservationDate,
+                                                               Optional<WorkLocationCode> workLocationCode);
+
+    public List<BentoReservation> getEmployeeNotOrder (List<ReservationRegisterInfo> inforLst, ReservationDate reservationDate);
+
+
 	public List<BentoReservation> findByOrderedPeriodEmpLst(List<ReservationRegisterInfo> inforLst, DatePeriod period, boolean ordered);
 
 	public void update(BentoReservation bentoReservation);

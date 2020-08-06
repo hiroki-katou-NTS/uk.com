@@ -1,9 +1,6 @@
 package nts.uk.file.at.app.export.bento;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
@@ -87,8 +84,9 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 		// get*(対象社員リスト,期間,注文済み)
 		List<BentoReservation> bentoReservationLst = bentoReservationRepository.findByOrderedPeriodEmpLst(
 				stampCardLst.stream().map(x -> new ReservationRegisterInfo(x.getStampNumber().v())).collect(Collectors.toList()), 
-				period, 
-				ordered);
+				null,
+				ordered,
+                Optional.empty());
 		
 		if(CollectionUtil.isEmpty(bentoReservationLst)) {
 			throw new BusinessException("Msg_741");
