@@ -36,7 +36,7 @@ public class SwapEmpOnScheduleTeamServiceTest {
 		
 		NtsAssert.atomTask(
 				() -> SwapEmpOnScheduleTeamService.replace(require, scheduleTeam, lstEmpID),
-				any -> require.deleteSpecifyTeamAndScheduleTeam(scheduleTeam.getWKPGRPID(), scheduleTeam.getScheduleTeamCd().v())
+				any -> require.deleteSpecifyTeamAndScheduleTeam(any.get(), any.get())
 				);
 	}
 	
@@ -48,7 +48,7 @@ public class SwapEmpOnScheduleTeamServiceTest {
 	public void testReplace_1() {
 		ScheduleTeam scheduleTeam = new ScheduleTeam("WKPGRPID", new ScheduleTeamCd("ScheduleTeamCd"),
 				new ScheduleTeamName("ScheduleTeamName"), Optional.empty());
-		List<String> lstEmpID = Arrays.asList("emp1");
+		List<String> lstEmpID = Arrays.asList("emp1", "emp2");
 		
 		new Expectations() {
 			{
@@ -58,7 +58,7 @@ public class SwapEmpOnScheduleTeamServiceTest {
 		};
 		NtsAssert.atomTask(
 				() -> SwapEmpOnScheduleTeamService.replace(require, scheduleTeam, lstEmpID),
-				any -> require.deleteSpecifyTeamAndScheduleTeam(scheduleTeam.getWKPGRPID(), scheduleTeam.getScheduleTeamCd().v()),
+				any -> require.deleteSpecifyTeamAndScheduleTeam(any.get(), any.get()),
 				any -> require.empBelongTeam(any.get()),
 				any -> require.delete(any.get()),
 				any -> require.insert(any.get())
@@ -83,7 +83,7 @@ public class SwapEmpOnScheduleTeamServiceTest {
 		};
 		NtsAssert.atomTask(
 				() -> SwapEmpOnScheduleTeamService.replace(require, scheduleTeam, lstEmpID),
-				any -> require.deleteSpecifyTeamAndScheduleTeam(scheduleTeam.getWKPGRPID(), scheduleTeam.getScheduleTeamCd().v()),
+				any -> require.deleteSpecifyTeamAndScheduleTeam(any.get(), any.get()),
 				any -> require.empBelongTeam(any.get()),
 				any -> require.insert(any.get())
 				);

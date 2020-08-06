@@ -30,7 +30,7 @@ public class ShiftPalletsOrgTest {
 					new TargetOrgIdenInfor(
 							TargetOrganizationUnit.WORKPLACE, //dummy
 							"e34d86c4-1e32-463e-b86c-68551e0bbf18", //dummy
-							"e6fea7af-0365-4332-9943-e2c17f65bea6"), //dummy
+						""), //dummy
 					0, 
 					new ShiftPallet(
 							new ShiftPalletDisplayInfor(
@@ -55,7 +55,7 @@ public class ShiftPalletsOrgTest {
 					new TargetOrgIdenInfor(
 							TargetOrganizationUnit.WORKPLACE, //dummy
 							"e34d86c4-1e32-463e-b86c-68551e0bbf18", //dummy
-							"e6fea7af-0365-4332-9943-e2c17f65bea6"), //dummy
+							""), //dummy
 					11, 
 					new ShiftPallet(
 							new ShiftPalletDisplayInfor(
@@ -79,7 +79,7 @@ public class ShiftPalletsOrgTest {
 					new TargetOrgIdenInfor(
 							TargetOrganizationUnit.WORKPLACE, //dummy
 							"e34d86c4-1e32-463e-b86c-68551e0bbf18", //dummy
-							"e6fea7af-0365-4332-9943-e2c17f65bea6"), //dummy
+							""), //dummy
 					1, //dummy
 					new ShiftPallet(
 							PalletDisplayInfoHelper.DUMMY,
@@ -115,7 +115,7 @@ public class ShiftPalletsOrgTest {
 				new TargetOrgIdenInfor(
 						TargetOrganizationUnit.WORKPLACE, 
 						"e34d86c4-1e32-463e-b86c-68551e0bbf18", 
-						"e6fea7af-0365-4332-9943-e2c17f65bea6"), 
+						""), 
 				1, 
 				new ShiftPallet(
 						new ShiftPalletDisplayInfor(
@@ -146,7 +146,7 @@ public class ShiftPalletsOrgTest {
 			.containsExactly(
 					0,
 					"e34d86c4-1e32-463e-b86c-68551e0bbf18",
-					"e6fea7af-0365-4332-9943-e2c17f65bea6",
+					"",
 					1,
 					"shpaName",
 					NotUseAtr.USE.value,
@@ -164,7 +164,7 @@ public class ShiftPalletsOrgTest {
 				new TargetOrgIdenInfor(
 						TargetOrganizationUnit.WORKPLACE, 
 						"e34d86c4-1e32-463e-b86c-68551e0bbf18", 
-						"e6fea7af-0365-4332-9943-e2c17f65bea6"), 
+						""), 
 				10, 
 				new ShiftPallet(
 						new ShiftPalletDisplayInfor(
@@ -195,7 +195,7 @@ public class ShiftPalletsOrgTest {
 			.containsExactly(
 					0,
 					"e34d86c4-1e32-463e-b86c-68551e0bbf18",
-					"e6fea7af-0365-4332-9943-e2c17f65bea6",
+					"",
 					10,
 					"shpaName",
 					NotUseAtr.USE.value,
@@ -213,7 +213,61 @@ public class ShiftPalletsOrgTest {
 					new TargetOrgIdenInfor(
 							TargetOrganizationUnit.WORKPLACE, //dummy
 							"e34d86c4-1e32-463e-b86c-68551e0bbf18", //dummy
-							"e6fea7af-0365-4332-9943-e2c17f65bea6"), //dummy
+							""), //dummy
+					1, //dummy
+					new ShiftPallet(
+							new ShiftPalletDisplayInfor(
+									new ShiftPalletName("shpaName"), //dummy
+									NotUseAtr.USE, //dummy
+									new ShiftRemarks("shRemar")), //dummy
+							Arrays.asList( 
+									new ShiftPalletCombinations(
+											2, 
+											new ShiftCombinationName("combiName"),
+											Arrays.asList(new Combinations(
+													1, 
+													new ShiftMasterCode("0000001")))))));
+
+		ShiftPallet shiftPallet = new ShiftPallet(
+				new ShiftPalletDisplayInfor(
+						new ShiftPalletName("shpaName"), //dummy
+						NotUseAtr.USE, //dummy
+						new ShiftRemarks("shRemar")),//dummy
+				Arrays.asList(
+						new ShiftPalletCombinations(
+								7, 
+								new ShiftCombinationName("name71"), 
+								Arrays.asList(new Combinations(
+										1, 
+										new ShiftMasterCode("0000001")))),
+						new ShiftPalletCombinations(
+								4, 
+								new ShiftCombinationName("name40"), 
+								Arrays.asList(new Combinations(
+										1, 
+										new ShiftMasterCode("0000001")))),
+						new ShiftPalletCombinations(
+								5, 
+								new ShiftCombinationName("name05"), 
+								Arrays.asList(new Combinations(
+										1, 
+										new ShiftMasterCode("0000001"))))));
+
+		shiftPalletsOrg.modifyShiftPallets(shiftPallet);
+
+		assertThat(shiftPalletsOrg.getShiftPallet().getCombinations())
+			.extracting(d -> d.getPositionNumber(), d->d.getCombinationName().v())
+			.containsExactly(tuple(4,"name40") , tuple(5,"name05"), tuple(7,"name71"));
+	}
+	
+	@Test
+	public void modifyShiftPalletsOrg_success_useworkplacegroup() {
+
+		ShiftPalletsOrg shiftPalletsOrg = new ShiftPalletsOrg(
+					new TargetOrgIdenInfor(
+							TargetOrganizationUnit.WORKPLACE_GROUP, //dummy
+							"", //dummy
+							"h35d96c4-1e32-8756-b86c-68551e0bbf18"), //dummy
 					1, //dummy
 					new ShiftPallet(
 							new ShiftPalletDisplayInfor(
@@ -267,7 +321,7 @@ public class ShiftPalletsOrgTest {
 				new TargetOrgIdenInfor(
 						TargetOrganizationUnit.WORKPLACE, //dummy
 						"e34d86c4-1e32-463e-b86c-68551e0bbf18", //dummy
-						"e6fea7af-0365-4332-9943-e2c17f65bea6"), //dummy
+						""), //dummy
 				1, //dummy
 				new ShiftPallet(
 						new ShiftPalletDisplayInfor(
@@ -285,9 +339,11 @@ public class ShiftPalletsOrgTest {
 		ShiftPalletName shiftPalletName = new ShiftPalletName("shiftPalletNameNew");
 		ShiftPalletsOrg shiftPalletsOrgNew = shiftPalletsOrg.duplicate(2, shiftPalletName);
 		
-		assertSame(shiftPalletsOrgNew.getShiftPallet().getDisplayInfor().getShiftPalletName().v(), shiftPalletName.v());
-		assertSame(shiftPalletsOrgNew.getPage(), 2);
-		
+		assertThat(shiftPalletsOrgNew.getShiftPallet().getDisplayInfor().getShiftPalletName().v()).isEqualTo(shiftPalletName.v());
+		assertThat(shiftPalletsOrgNew.getPage()).isEqualTo(2);
+		assertThat(shiftPalletsOrgNew.getTargeOrg().getUnit()).isEqualTo(TargetOrganizationUnit.WORKPLACE);
+		assertThat(shiftPalletsOrgNew.getTargeOrg().getWorkplaceId().get()).isEqualTo("e34d86c4-1e32-463e-b86c-68551e0bbf18");	
+		assertThat(shiftPalletsOrgNew.getTargeOrg().getWorkplaceGroupId().get()).isEqualTo("");	
 	}
 
 	@Test

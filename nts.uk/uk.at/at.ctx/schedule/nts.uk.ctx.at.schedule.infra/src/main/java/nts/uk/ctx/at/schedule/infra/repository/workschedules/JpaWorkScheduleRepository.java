@@ -14,7 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaWorkScheduleRepository extends JpaRepository implements WorkScheduleRepository {
 
-	private static final String SELECT_BY_KEY = "SELECT c FROM KscdtSchBasicInfo c WHERE c.pk.SID = :employeeID AND c.pk.YMD = :ymd";
+	private static final String SELECT_BY_KEY = "SELECT c FROM KscdtSchBasicInfo c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd";
 
 	@Override
 	public Optional<WorkSchedule> get(String employeeID, GeneralDate ymd) {

@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.workschedule.displaysetting;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.PersonSymbolQualify;
@@ -23,7 +23,7 @@ public class WorkscheQualifiTest {
 		NtsAssert.invokeGetters(target);
 	}
 	@Test
-	public void test_listQualificationCD_null(){
+	public void test_listQualificationCD_empty(){
 		NtsAssert.businessException("Msg_1786",() -> WorkscheQualifi.workScheduleQualification(
 				new PersonSymbolQualify("1"), new ArrayList<>()));
 	}

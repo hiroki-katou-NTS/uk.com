@@ -267,10 +267,10 @@ public class ShiftPalletTest {
 								Arrays.asList(new Combinations(20, new ShiftMasterCode("0000007"))))));
 		
 		ShiftPalletName shiftPalletName = new ShiftPalletName("ShiftPalletNameNew");
-		ShiftPallet targetNew = target.duplicate(shiftPalletName);
+		ShiftPallet targetNew = target.reproduct(shiftPalletName);
 		
-		assertSame(targetNew.getDisplayInfor().getShiftPalletName().v(), shiftPalletName.v());
-		assertSame(targetNew.getDisplayInfor().getShiftPalletAtr(),NotUseAtr.USE);
+		assertThat(targetNew.getDisplayInfor().getShiftPalletName().v()).isEqualTo(shiftPalletName.v());
+		assertThat(targetNew.getDisplayInfor().getShiftPalletAtr()).isEqualTo(NotUseAtr.USE);
 	}
 
 	@Test

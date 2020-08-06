@@ -63,7 +63,7 @@ public class ShiftPallet implements DomainValue {
 	/**
 	 * [2] 複製する																							
 	 */
-	public ShiftPallet duplicate(ShiftPalletName shiftPalletName) {
+	public ShiftPallet reproduct(ShiftPalletName shiftPalletName) {
 		ShiftPalletDisplayInfor shiftPalletDisplayInfor = new ShiftPalletDisplayInfor(shiftPalletName, NotUseAtr.USE,
 				displayInfor.getRemarks());
 		return new ShiftPallet(shiftPalletDisplayInfor, this.combinations);

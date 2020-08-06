@@ -13,7 +13,28 @@ public class ShiftPalletsOrgHelper {
 				new TargetOrgIdenInfor(
 						TargetOrganizationUnit.WORKPLACE, //dummy
 						"e34d86c4-1e32-463e-b86c-68551e0bbf18", //dummy
-						"e6fea7af-0365-4332-9943-e2c17f65bea6"), //dummy
+						""), //dummy
+				1, 
+				new ShiftPallet(
+						new ShiftPalletDisplayInfor(
+								new ShiftPalletName("shpaName"), //dummy
+								NotUseAtr.USE, //dummy
+								new ShiftRemarks("shRemar")), //dummy
+						Arrays.asList(
+								new ShiftPalletCombinations(
+										1, //dummy
+										new ShiftCombinationName("shComName1"), //dummy
+										Arrays.asList(new Combinations(
+												1, //dummy
+												new ShiftMasterCode("0000001"))))))); //dummy
+	}
+	
+	public static ShiftPalletsOrg getShiftPalletsOrgDefault_workplacegrp() {
+		return new ShiftPalletsOrg(
+				new TargetOrgIdenInfor(
+						TargetOrganizationUnit.WORKPLACE_GROUP, //dummy
+						"", //dummy
+						"e34d86c4-1e32-463e-b86c-68551e0bbf18"), //dummy
 				1, 
 				new ShiftPallet(
 						new ShiftPalletDisplayInfor(

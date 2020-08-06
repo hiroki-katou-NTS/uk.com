@@ -20,8 +20,8 @@ public class DeleteScheduleTeamServiceTest {
 		String WKPGRPID = "WKPGRPID" ;
 		ScheduleTeamCd scheduleTeamCd = new ScheduleTeamCd("scheduleTeamCd");
 		NtsAssert.atomTask(() -> DeleteScheduleTeamService.delete(require, WKPGRPID, scheduleTeamCd),
-				any -> require.deleteScheduleTeam(WKPGRPID, scheduleTeamCd),
-				any -> require.deleteBelongScheduleTeam(WKPGRPID, scheduleTeamCd));
+				any -> require.deleteScheduleTeam(any.get(), any.get()),
+				any -> require.deleteBelongScheduleTeam(any.get(), any.get()));
 	}
 
 }
