@@ -78,8 +78,8 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			let dfd = $.Deferred();
 			nts.uk.ui.block.grayout();
 			if (self.registrationForm().shiftMasterName() == "" || self.registrationForm().workTypeCd() == ""
-				|| self.registrationForm().workTimeSetDisplay().includes(self.registrationForm().workTimeSetCd() + " " + "マスタ未登録")
-				|| self.registrationForm().workTypeDisplay().includes(self.registrationForm().workTypeCd() + " " + "マスタ未登録")) {
+				|| self.registrationForm().workTimeSetDisplay().search(self.registrationForm().workTimeSetCd() + " " + "マスタ未登録")
+				|| self.registrationForm().workTypeDisplay().search(self.registrationForm().workTypeCd() + " " + "マスタ未登録")) {
 				nts.uk.ui.block.clear();
 				return;
 			}
