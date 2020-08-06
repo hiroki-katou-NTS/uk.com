@@ -63,7 +63,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	 * @param companyId
 	 * @param employeeId 社員ID
 	 * @param aggrPeriod 集計期間
-	 * @param mode モード
+	 * @param mode 実績のみ参照区分
 	 * @param criteriaDate 基準日
 	 * @param isGetNextMonthData 翌月管理データ取得フラグ
 	 * @param isCalcAttendanceRate 出勤率計算フラグ
@@ -345,15 +345,15 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		// 暫定年休管理データを取得する
 		val tempAnnualLeaveMngs = getTempAnnualLeaveMngs(require, employeeId, aggrPeriod, mode, 
 															isOverWriteOpt, forOverWriteListOpt);
-		
-		for (val aggregatePeriodWork : aggregateWork){
-
-			// 年休の消滅・付与・消化
-			aggrResult = annualLeaveInfo.lapsedGrantDigest(
-					require,
-					companyId, employeeId, aggregatePeriodWork,
-					tempAnnualLeaveMngs, isGetNextMonthData, isCalcAttendanceRate, aggrResult, annualLeaveSet);
-		}
+// 一時的にコメントアウト　神野
+//		for (val aggregatePeriodWork : aggregateWork){
+//
+//			// 年休の消滅・付与・消化
+//			aggrResult = annualLeaveInfo.lapsedGrantDigest(
+//					require,
+//					companyId, employeeId, aggregatePeriodWork,
+//					tempAnnualLeaveMngs, isGetNextMonthData, isCalcAttendanceRate, aggrResult, annualLeaveSet);
+//		}
 		
 		// 年休不足分を付与残数データとして作成する
 		aggrResult = createShortRemainingDatas(employeeId, companyId, aggrResult, isOutShortRemainOpt);

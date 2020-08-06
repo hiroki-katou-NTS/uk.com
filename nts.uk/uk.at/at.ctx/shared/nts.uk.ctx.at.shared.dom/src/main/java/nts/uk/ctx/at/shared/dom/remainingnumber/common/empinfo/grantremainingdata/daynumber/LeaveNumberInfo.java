@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 明細
+ * 明細 
  * @author masaaki_jinno
  *
  */

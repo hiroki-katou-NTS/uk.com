@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber;
 
+/**
+ * 
+ */
 import java.math.BigDecimal;
 
 import nts.arc.primitive.DecimalPrimitiveValue;

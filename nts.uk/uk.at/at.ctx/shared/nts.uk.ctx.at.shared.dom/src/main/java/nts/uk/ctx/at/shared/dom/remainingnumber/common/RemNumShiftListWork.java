@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 
 
 /**
- * 休暇残数シフトリストWORK
+ * 休暇残数シフトリストWORK 
  * @author masaaki_jinno
  */
 @Getter

@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 
 /**
- * 休暇残数シフトWORK
+ * 休暇残数シフトWORK 
  * @author masaaki_jinno
  */
 @Getter
