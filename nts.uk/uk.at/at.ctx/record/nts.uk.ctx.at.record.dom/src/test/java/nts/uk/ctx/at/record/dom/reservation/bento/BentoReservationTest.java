@@ -1,8 +1,12 @@
 package nts.uk.ctx.at.record.dom.reservation.bento;
 
+import static nts.arc.time.GeneralDate.today;
+import static nts.arc.time.GeneralDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -20,7 +24,8 @@ public class BentoReservationTest {
 			
 			BentoReservation.reserve(
 					Helper.Reservation.RegInfo.DUMMY, 
-					Helper.Reservation.Date.DUMMY, 
+					Helper.Reservation.Date.DUMMY,
+					Helper.Reservation.WorkLocationCodeReg.DUMMY,
 					Collections.emptyList());
 			
 		});
@@ -56,6 +61,7 @@ public class BentoReservationTest {
 				null,
 				null,
 				true, // ordered!!
+				null,
 				Helper.Reservation.Detail.DUMMY_LIST);
 		
 		NtsAssert.businessException("Msg_1586", () -> {
@@ -67,8 +73,28 @@ public class BentoReservationTest {
 	public void getters() {
 
 		BentoReservation target = new BentoReservation(
-				null, null, true, Helper.Reservation.Detail.DUMMY_LIST);
+				null, null, true,null, Helper.Reservation.Detail.DUMMY_LIST);
 		NtsAssert.invokeGetters(target);
+	}
+
+	@Test
+	public void bookLunch() {
+
+		ReservationRegisterInfo regInfo = Helper.Reservation.RegInfo.DUMMY;
+		Optional<WorkLocationCode> workLocationCode = Helper.Reservation.WorkLocationCodeReg.DUMMY;
+		ReservationDate date = Helper.Reservation.Date.of(today());
+
+		BentoReservationDetail detail = Helper.Reservation.Detail.create(
+				GeneralDateTime.ymdhms(2000, 4, 1, 0, 0, 0),
+				1,  // dummy
+				1); // dummy
+		List<BentoReservationDetail> bentoReservationDetails = new ArrayList<>();
+		bentoReservationDetails.add(detail);
+
+		BentoReservation target = Helper.Reservation.DUMMY.bookLunch(regInfo,date,workLocationCode,bentoReservationDetails);
+
+		assertThat(target);
+
 	}
 
 }

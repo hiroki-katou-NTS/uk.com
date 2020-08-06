@@ -10,11 +10,14 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoAmount;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoReservationUnitName;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
+import java.util.Optional;
 
 @Entity
 @Table(name = "KRCMT_BENTO")
@@ -45,6 +48,9 @@ public class KrcmtBento extends UkJpaEntity {
 	
 	@Column(name = "RESERVATION2_ATR")
 	public boolean reservationAtr2;
+
+	@Column(name = "WORK_LOCATION_CD")
+	public String workLocationCode;
 	
 	@ManyToOne
     @PrimaryKeyJoinColumns({
@@ -66,7 +72,8 @@ public class KrcmtBento extends UkJpaEntity {
 				new BentoAmount(price2), 
 				new BentoReservationUnitName(unitName), 
 				reservationAtr1, 
-				reservationAtr2);
+				reservationAtr2,
+				Optional.of(new WorkLocationCode(workLocationCode)));
 	}
 	
 }

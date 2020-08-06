@@ -14,7 +14,9 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClo
 public class BentoReserveCommand {
 	
 	private GeneralDate date;
-	
+
+	private String workLocationCode;
+
 	private List<BentoReservationDetailCommand> details;
 	
 	public Map<Integer, BentoReservationCount> getFrame1Bentos() {
@@ -35,7 +37,7 @@ public class BentoReserveCommand {
 		private int frameNo;
 		
 		private int bentoCount;
-		
+
 		public ReservationClosingTimeFrame getClosingTimeFrame() {
 			return EnumAdaptor.valueOf(closingTimeFrame, ReservationClosingTimeFrame.class);
 		}

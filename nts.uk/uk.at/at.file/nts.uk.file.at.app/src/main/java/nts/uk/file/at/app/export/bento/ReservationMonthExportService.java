@@ -93,7 +93,7 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 		}
 		
 		// get(年月日)
-		BentoMenu bentoMenu = bentoMenuRepository.getBentoMenu(companyID, period.end());
+		BentoMenu bentoMenu = bentoMenuRepository.getBentoMenu(companyID, period.end(),null);
 		
 		/*
 		// 社員を並べ替える
