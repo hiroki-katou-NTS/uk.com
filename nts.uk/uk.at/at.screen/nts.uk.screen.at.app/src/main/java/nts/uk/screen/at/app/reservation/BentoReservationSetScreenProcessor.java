@@ -1,8 +1,10 @@
 package nts.uk.screen.at.app.reservation;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Optional;
 
+@Stateless
 public class BentoReservationSetScreenProcessor {
 
     @Inject

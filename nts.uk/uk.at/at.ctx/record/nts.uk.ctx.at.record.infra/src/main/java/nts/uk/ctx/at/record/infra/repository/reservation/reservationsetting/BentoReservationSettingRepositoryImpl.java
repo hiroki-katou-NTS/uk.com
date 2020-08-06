@@ -4,8 +4,11 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSettingRepository;
 import nts.uk.ctx.at.record.infra.entity.reservation.BentoReservationSetting.KrcmtBentoReservationSetting;
+
+import javax.ejb.Stateless;
 import java.util.Optional;
 
+@Stateless
 public class BentoReservationSettingRepositoryImpl extends JpaRepository implements BentoReservationSettingRepository {
 
     private static final String FIND;
