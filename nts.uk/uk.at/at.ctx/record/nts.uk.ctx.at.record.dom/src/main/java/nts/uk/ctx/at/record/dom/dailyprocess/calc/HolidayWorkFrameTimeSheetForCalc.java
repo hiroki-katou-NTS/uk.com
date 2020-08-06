@@ -315,9 +315,9 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 		//休出枠時間を作成
 		HolidayWorkFrameTime frame = new HolidayWorkFrameTime(
 				new HolidayWorkFrameNo(processingTimezone.getBreakFrameNoToHolidayAtr(todayWorkType.getHolidayAtr().get()).v().intValue()),
-				Finally.empty(),
-				Finally.empty(),
-				Finally.empty());
+				Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
+				Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
+				Finally.of(new AttendanceTime(0)));
 		
 		//休出枠時間帯を作成
 		HolidayWorkFrameTimeSheetForCalc holidayWorkFrameTimeSheet = new HolidayWorkFrameTimeSheetForCalc(

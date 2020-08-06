@@ -907,11 +907,18 @@ public class CalculationRangeOfOneDay {
 			IntegrationOfDaily integrationOfDaily,
 			PreviousAndNextDaily previousAndNextDaily,
 			Optional<SchedulePerformance> schedulePerformance) {
-
+		
+		if (todayWorkType.getDecisionAttendanceHolidayAttr()) {
+			//1日休日は就内就外を空で作成する
+			this.withinWorkingTimeSheet.set(WithinWorkTimeSheet.createEmpty());
+			this.outsideWorkTimeSheet.set(OutsideWorkTimeSheet.createEmpty());
+			return;
+		}
+		
 		//出退勤を取得
 		List<TimeLeavingWork> timeLeavingWorks = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks();
 		
-		//空の就業時間内時間枠を作成。これを遅刻早退と就内の処理で編集していく。
+		//空の就業時間内時間帯を作成。これを遅刻早退と就内の処理で編集していく。
 		WithinWorkTimeSheet creatingWithinWorkTimeSheet = new WithinWorkTimeSheet(new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty());
 		
 		//事前に遅刻早退、控除時間帯を取得する
@@ -947,7 +954,8 @@ public class CalculationRangeOfOneDay {
 					timeSheetOfDeductionItems,
 					creatingWithinWorkTimeSheet));
 			
-			if(this.withinWorkingTimeSheet.get().getWithinWorkTimeFrame().isEmpty()) return;
+			if(this.withinWorkingTimeSheet.get().getWithinWorkTimeFrame().isEmpty())
+				return;
 			
 			//流動勤務(平日・就外）
 			this.outsideWorkTimeSheet.set(
@@ -962,6 +970,12 @@ public class CalculationRangeOfOneDay {
 							this.withinWorkingTimeSheet.get(),
 							previousAndNextDaily));
 		} else {
+			//休出の場合でも就業時間内時間帯を作成する必要がある為、空で作成
+			this.withinWorkingTimeSheet = Finally.of(WithinWorkTimeSheet.createEmpty());
+			
+			if(!creatingWithinWorkTimeSheet.getStartEndToWithinWorkTimeFrame().isPresent())
+				return;
+				
 			//流動勤務(休日出勤)
 			 this.outsideWorkTimeSheet.set(
 					OutsideWorkTimeSheet.createHolidayAsFlow(

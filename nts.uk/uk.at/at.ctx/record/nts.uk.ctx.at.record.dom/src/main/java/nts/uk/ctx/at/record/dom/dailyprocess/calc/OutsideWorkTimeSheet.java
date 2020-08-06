@@ -68,6 +68,14 @@ public class OutsideWorkTimeSheet {
 		this.holidayWorkTimeSheet = holidayWorkTimeSheet;
 	}
 	
+	/**
+	 * 空で作成する
+	 * @return 就業時間外時間帯
+	 */
+	public static OutsideWorkTimeSheet createEmpty() {
+		return new OutsideWorkTimeSheet(Optional.empty(), Optional.empty());
+	}
+	
 	
 	/**
 	 * 就業時間外時間帯を作成する

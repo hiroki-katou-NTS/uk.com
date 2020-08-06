@@ -35,7 +35,9 @@ import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSpanForDailyCalc;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.CalcurationByActualTimeAtr;
@@ -122,6 +124,27 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		this.leaveEarlyVacationUseTime = Optional.empty();
 	}
 
+	
+	
+	/**
+	 * 空で作成する
+	 * @return就業時間内時間枠
+	 */
+	public static WithinWorkTimeFrame createEmpty() {
+		return new WithinWorkTimeFrame(
+				new EmTimeFrameNo(1),
+				new TimeSpanForDailyCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)),
+				new TimeSpanForDailyCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)),
+				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Optional.empty(),
+				Collections.emptyList(),
+				Optional.empty(),
+				Optional.empty());
+	}
+	
 	
 	public TimeSpanForDailyCalc getTimeSheet() {
 		return this.timeSheet;

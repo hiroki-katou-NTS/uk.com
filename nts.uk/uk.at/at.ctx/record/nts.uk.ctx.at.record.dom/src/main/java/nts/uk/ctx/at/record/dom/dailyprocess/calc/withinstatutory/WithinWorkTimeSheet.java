@@ -64,6 +64,9 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.CalcurationByActualTimeAtr;
@@ -138,6 +141,18 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			this.leaveEarlyDecisionClock.add(leaveEarlyDecisionClock.get());
 	}
 
+	
+	/**
+	 * 空で作成する
+	 * @return就業時間内時間帯
+	 */
+	public static WithinWorkTimeSheet createEmpty() {
+		return new WithinWorkTimeSheet(
+				Arrays.asList(WithinWorkTimeFrame.createEmpty()),
+				Collections.emptyList(),
+				Optional.empty(),
+				Optional.empty());
+	}
 
 	/**
 	 * 就業時間内時間帯
