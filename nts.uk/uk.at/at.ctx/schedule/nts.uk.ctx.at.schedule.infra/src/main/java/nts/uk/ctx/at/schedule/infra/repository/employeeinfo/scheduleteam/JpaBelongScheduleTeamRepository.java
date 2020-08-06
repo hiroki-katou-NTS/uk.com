@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import com.aspose.pdf.Collection;
 
@@ -15,6 +17,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeamRepository;
 import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.scheduleteam.KscmtAffScheduleTeam;
 import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.scheduleteam.KscmtAffScheduleTeamPk;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 所属スケジュールチームRepository			
@@ -28,12 +31,14 @@ public class JpaBelongScheduleTeamRepository extends JpaRepository implements Be
 	
 	private static final String GET_BY_CID = SELECT +  " WHERE c.pk.CID = :CID " ;
 
-	private static final String GET_BY_KEY = GET_BY_CID +" AND c.pk.SID = :empID "; 
+	private static final String GET_BY_KEY = GET_BY_CID +" AND c.pk.employeeID = :empID "; 
 
 	
 	private static final String GET_ALL = GET_BY_CID +" AND c.WKPGRPID = :WKPGRPID AND c.scheduleTeamCd = :scheduleTeamCd "; 
 	
 	private static final String GET_BY_LIST_EMPID = GET_BY_CID + "AND c.pk.employeeID IN :empIDs" ;
+	
+	//private static final String DELETE_BY_WKPGRPID = " DELETE FROM KscmtAffScheduleTeam c  WHERE c.pk.CID = :CID AND c.scheduleTeamCd = :scheduleTeamCd AND c.WKPGRPID = :WKPGRPID " ;
 	
 	//private static final String GET_
 	
@@ -63,6 +68,7 @@ public class JpaBelongScheduleTeamRepository extends JpaRepository implements Be
 		//this.commandProxy().remove
 	}
 
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	@Override
 	public void delete(String companyID, String empID) {
 		this.commandProxy().remove(KscmtAffScheduleTeam.class, new KscmtAffScheduleTeamPk(companyID, empID) );		
@@ -71,7 +77,11 @@ public class JpaBelongScheduleTeamRepository extends JpaRepository implements Be
 
 	@Override
 	public void delete(String companyID, String WKPGRPID, String scheduleTeamCd) {
-		// TODO Auto-generated method stub
+		
+		List<BelongScheduleTeam> lst = getAll(companyID, WKPGRPID, scheduleTeamCd);
+		lst.forEach( x ->{
+			this.commandProxy().remove(KscmtAffScheduleTeam.toEntity(x));
+		});
 		
 	}
 
