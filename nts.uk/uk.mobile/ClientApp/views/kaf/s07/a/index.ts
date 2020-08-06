@@ -559,7 +559,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
         }).then((res: any) => {
             this.$mask('hide');
             // KAFS00_D_申請登録後画面に移動する
-            this.$modal('kafs00d', { mode: this.mode ? 1 : 0, appID: res.appID });
+            this.$modal('kafs00d', { mode: this.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.appID });
         }).catch((res: any) => {
             this.$mask('hide');
             this.$modal.error({ messageId: res.errors[0].messageId });
@@ -592,13 +592,13 @@ export class KafS07AComponent extends KafS00ShrComponent {
         }
         console.log(validAll);
         console.log(vm.application);
-        if (this.$valid) {
+        if (this.$valid && validAll) {
             this.$mask('show');
         }
 
         // check validation 
         this.$validate();
-        if (!this.$valid) {
+        if (!this.$valid && validAll) {
             this.$mask('hide');
             window.scrollTo(500, 0);
 
@@ -746,6 +746,14 @@ export class Model {
     constructor() {
 
     }
+}
+
+// 画面モード
+export enum ScreenMode {
+    // 新規モード
+    NEW = 0,
+    // 詳細モード
+    DETAIL = 1
 }
 
 const API = {
