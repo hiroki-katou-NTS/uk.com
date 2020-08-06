@@ -95,5 +95,9 @@ module nts.uk.at.kmr001.c {
         name: string;
     }
 
+    class BentoMenuSetting{
+
+    }
+
 }
 

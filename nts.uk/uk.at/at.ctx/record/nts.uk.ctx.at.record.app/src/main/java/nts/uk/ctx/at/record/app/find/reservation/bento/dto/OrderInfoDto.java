@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 /**
  * 注文情報
  * @author Hoang Anh Tuan
@@ -19,7 +21,13 @@ public class OrderInfoDto {
     /** 合計タイトル */
     private String totalTittle;
 
+    /** 合計注文情報 */
+    private List<TotalOrderInfoDto> totalOrderInfoDtoList;
+
     /** 明細タイトル*/
     private int detailTittle;
+
+    /** 明細注文情報 */
+    private List<DetailOrderInfoDto> detailOrderInfoDtoList;
 
 }
