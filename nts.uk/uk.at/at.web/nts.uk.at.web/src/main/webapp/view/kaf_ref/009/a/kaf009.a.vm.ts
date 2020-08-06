@@ -50,7 +50,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
         created(params: any) {
             const vm = this;
             vm.application = ko.observable(new Application(AppType.GO_RETURN_DIRECTLY_APPLICATION));
-            vm.model = new Model(true, true, true, '001', 'WorkType', '001', 'WorkTime');
+            vm.model = new Model(true, true, true, '', '', '', '');
 //            vm.appDispInfoStartupOutput = ko.observable(CommonProcess.initCommonSetting());
 //            vm.application().appDate(moment(new Date()).format("YYYY/MM/DD"));
             
