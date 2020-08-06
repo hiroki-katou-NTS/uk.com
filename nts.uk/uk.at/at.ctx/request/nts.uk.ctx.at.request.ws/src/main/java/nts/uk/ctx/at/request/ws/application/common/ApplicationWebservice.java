@@ -19,13 +19,12 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.app.command.application.common.AppDetailBehaviorCmd;
 import nts.uk.ctx.at.request.app.command.application.common.ApproveAppHandler;
+import nts.uk.ctx.at.request.app.command.application.common.CancelAppHandler;
 import nts.uk.ctx.at.request.app.command.application.common.DeleteAppHandler;
 import nts.uk.ctx.at.request.app.command.application.common.DenyAppHandler;
 import nts.uk.ctx.at.request.app.command.application.common.ReflectAplicationCommmandHandler;
 import nts.uk.ctx.at.request.app.command.application.common.ReleaseAppHandler;
 import nts.uk.ctx.at.request.app.command.application.common.RemandApplicationHandler;
-import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCancelHandler;
-import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCommonCmd;
 import nts.uk.ctx.at.request.app.command.setting.request.ApplicationDeadlineCommand;
 import nts.uk.ctx.at.request.app.command.setting.request.UpdateApplicationDeadlineCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.common.AppDataDateFinder;
@@ -80,10 +79,6 @@ public class ApplicationWebservice extends WebService {
 	
 	@Inject
 	private RemandApplicationHandler remandApplicationHandler;
-	
-	@Inject
-	private UpdateApplicationCancelHandler cancelApp;
-	
 
 	@Inject
 	private AppDataDateFinder appDataDateFinder;
@@ -118,6 +113,9 @@ public class ApplicationWebservice extends WebService {
 	@Inject
 	private CommonAlgorithm commonAlgorithm;
 	
+	@Inject
+	private CancelAppHandler cancelApp;
+	
 	/**
 	 * remand application
 	 * @return
@@ -126,16 +124,6 @@ public class ApplicationWebservice extends WebService {
 	@Path("remandapp")
 	public MailSenderResult remandApp(RemandCommand command){
 		return remandApplicationHandler.handle(command);
-	}
-	
-	/**
-	 * cancel application
-	 * @return
-	 */
-	@POST
-	@Path("cancelapp")
-	public void cancelApp(UpdateApplicationCommonCmd command){
-		 this.cancelApp.handle(command);
 	}
 	
 	/**
@@ -348,6 +336,12 @@ public class ApplicationWebservice extends WebService {
 	public void checkVersion(VersionCheckParam param) {
 		String companyID = AppContexts.user().companyId();
 		detailBeforeUpdate.exclusiveCheck(companyID, param.appID, param.version);
+	}
+	
+	@POST
+	@Path("cancelapp")
+	public void cancelApp(AppDispInfoStartupDto command){
+		cancelApp.handle(command);
 	}
 	
 }

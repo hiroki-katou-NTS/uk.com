@@ -260,11 +260,23 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
         }
 
         btnCancel() {
-
+            const vm = this;
+            vm.$blockui("show");
+            vm.$dialog.confirm({ messageId: "Msg_249" }).then((result: 'no' | 'yes' | 'cancel') => {
+                if (result === 'yes') {
+                    return vm.$ajax(API.deleteapp, ko.toJS(vm.appDispInfoStartupOutput()));
+                }
+            }).done((successData: any) => {
+                vm.$dialog.info({ messageId: "Msg_224" }).then(() => {
+                    vm.loadData();
+                });
+            }).fail((res: any) => {
+                vm.handlerExecuteErrorMsg(res);
+            }).always(() => vm.$blockui("hide"));
         }
 
         handlerExecuteErrorMsg(res: any) {
-            const vm =this;
+            const vm = this;
             switch(res.messageId) {
             case "Msg_426": 
                 vm.$dialog.error({ messageId: "Msg_426" }).then(() => {
@@ -295,6 +307,7 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
         deleteapp: "at/request/application/deleteapp",
         approve: "at/request/application/approveapp",
     	deny: "at/request/application/denyapp",
-    	release: "at/request/application/releaseapp"
+        release: "at/request/application/releaseapp",
+        cancel: "at/request/application/cancelapp"
     }
 }

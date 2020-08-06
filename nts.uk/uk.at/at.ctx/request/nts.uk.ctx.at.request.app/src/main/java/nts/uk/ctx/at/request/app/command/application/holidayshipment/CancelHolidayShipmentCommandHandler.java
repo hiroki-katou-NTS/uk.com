@@ -58,7 +58,7 @@ public class CancelHolidayShipmentCommandHandler extends CommandHandler<HolidayS
 
 	private void cancelProcess(String companyID, String appID, int version) {
 		// アルゴリズム「詳細画面取消の処理」を実行する
-		processCancel.detailScreenCancelProcess(companyID, appID, version);
+		// processCancel.detailScreenCancelProcess(companyID, appID, version);
 	}
 
 }
