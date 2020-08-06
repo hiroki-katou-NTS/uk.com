@@ -1,6 +1,6 @@
 module nts.uk.at.view.ksu001.a {
     let __viewContext: any = window["__viewContext"] || {};
-
+    let KEY = 'USER_INFOR';
     __viewContext.ready(function() {
         __viewContext.viewModel = {
             viewAB: new ksu001.ab.viewmodel.ScreenModel(),
@@ -11,8 +11,18 @@ module nts.uk.at.view.ksu001.a {
         nts.uk.ui.block.grayout();
         __viewContext.viewModel.viewA.startPage().done(() => {
             __viewContext.bind(__viewContext.viewModel);
-            __viewContext.viewModel.viewA.getSettingDisplayWhenStart();
-
+            
+            uk.localStorage.getItem(KEY).ifPresent((data) => {
+                let userInfor = JSON.parse(data);
+                if (userInfor.disPlayFormat == 'shift') {
+                    if (userInfor.shiftPalletUnit == 1) {
+                        __viewContext.viewModel.viewAC.clickLinkButton(null, ko.observable(userInfor.shiftPalettePageNumberCom - 1));
+                    } else if (userInfor.shiftPalletUnit == 2) {
+                        __viewContext.viewModel.viewAC.clickLinkButton(null, ko.observable(userInfor.shiftPalettePageNumberOrg - 1));
+                    }
+                }
+            });
+            
             $(window).resize(function() {
                 __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
             });

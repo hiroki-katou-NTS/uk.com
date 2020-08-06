@@ -8,11 +8,10 @@ import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
 
 /**
  * @author laitv
- *
  */
 @Value
-public class PageShift {
+public class ShiftMasterMapWithWorkStyle {
 	public ShiftMasterDto shiftMaster;     // シフトマスタ
-	public int workStyle;  // 出勤休日区分
+	public String workStyle;               // 出勤休日区分 (co truong hơp workStyle = null nên ko để kiểu int được)
 	
 }

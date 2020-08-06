@@ -8,6 +8,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
     export class ScreenModel {
 
         listWorkType: KnockoutObservableArray<ksu001.a.viewmodel.IWorkTypeDto> = ko.observableArray([]);
+        listWorkTime: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedWorkTypeCode: KnockoutObservable<string>;
         objWorkTime: any;
         input: any

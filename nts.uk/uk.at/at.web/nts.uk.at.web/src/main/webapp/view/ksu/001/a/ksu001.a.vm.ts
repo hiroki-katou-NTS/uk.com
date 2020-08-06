@@ -34,7 +34,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         achievementDisplaySelected: KnockoutObservable<number> = ko.observable(2);
 
         // A4_12
-        backgroundColorSelected: KnockoutObservable<string> = ko.observable(0);
+        backgroundColorSelected: KnockoutObservable<string> = ko.observable(1);
 
         isEnableCompareMonth: KnockoutObservable<boolean> = ko.observable(true);
 
@@ -102,6 +102,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         hasEmployee: KnockoutObservable<boolean> = ko.observable(false);
         KEY: string = 'USER_INFOR';
         dataCell: any; // data để paste vào grid
+        listPageInfo : any;
+        targetShiftPalette : any;
 
         constructor() {
             let self = this;
@@ -112,9 +114,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             self.dtPrev.subscribe((newValue) => {
                 self.dateTimePrev(moment(self.dtPrev()).format('YYYY/MM/DD'));
+                let item = uk.localStorage.getItem(self.KEY);
+                if (!item.isPresent()) {
+                    let userInfor: IUserInfor = {};
+                    userInfor.startDate = self.dateTimePrev();
+                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
+                }
             });
             self.dtAft.subscribe((newValue) => {
                 self.dateTimeAfter(moment(self.dtAft()).format('YYYY/MM/DD'));
+                let item = uk.localStorage.getItem(self.KEY);
+                if (!item.isPresent()) {
+                    let userInfor: IUserInfor = {};
+                    userInfor.endDate = self.dateTimeAfter();
+                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
+                }
             });
 
             self.selectedTypeHeightExTable.subscribe((newValue) => {
@@ -201,34 +215,41 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (item.isPresent()) {
                 userInfor = JSON.parse(item.get());
             }
-            let viewMode = item.isPresent() ? userInfor.disPlayFormat : 'shortName';
+            let viewMode = item.isPresent() ? userInfor.disPlayFormat : 'time';
 
             let param = {
-                isFirstLogin : item.isPresent() ? false : true,
-                viewMode     : item.isPresent() ? userInfor.disPlayFormat : 'time',
-                startDate    : item.isPresent() ? self.dateTimePrev  : '',  // param query Trích xuất employee
-                endDate      : item.isPresent() ? self.dateTimeAfter : '', // param query Trích xuất employee
-                workPlaceId  : item.isPresent() ? userInfor.workplaceId : '', // param query Trích xuất employee
-                palletUnit   : item.isPresent() ? userInfor.shiftPalletUnit : 1 , // 1: company , 2 : workPlace  ||  param (Hiển thi  theo "shift")
-                PageNumberSelected : item.isPresent() ? userInfor.shiftPalettePageNumber : 0 ,
-                getActualData      : item.isPresent() ? userInfor.achievementDisplaySelected : 2 , // lay du lieu thuc te (1 : co lay, 2 la khong lay) || param (Hiển thi  theo "shift")
-                listShiftPallet    : item.isPresent() ? ['1','2','3','4'] : [], // List of shifts không cần lấy mới
+                isFirstLogin: item.isPresent() ? false : true,
+                viewMode: viewMode,
+                startDate: item.isPresent() ? self.dateTimePrev : '',
+                endDate: item.isPresent() ? self.dateTimeAfter : '',
+                workplaceId: item.isPresent() ? userInfor.workplaceId : '',
+                workplaceGroupId: item.isPresent() ? userInfor.workplaceGroupId : '',
+                shiftPalletUnit: item.isPresent() ? userInfor.shiftPalletUnit : 1, // 1: company , 2 : workPlace 
+                pageNumberCom: item.isPresent() ? userInfor.shiftPalettePageNumberCom : 1,
+                pageNumberOrg: item.isPresent() ? userInfor.shiftPalettePageNumberOrg : 1,
+                getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : 2, // lay du lieu thuc te (1 : co lay, 2 la khong lay) || param (Hiển thi  theo "shift")
+                listShiftMasterNotNeedGetNew: item.isPresent() ? [] : [], // List of shifts không cần lấy mới
+                listSid: self.listSid()
             }
-            
+
             service.getDataStartScreen(param).done((data: IDataStartScreen) => {
+                
+                // khởi tạo data localStorage khi khởi động lần đầu.
+                self.creatDataLocalStorege(data.dataBasicDto);
 
-                // set hiển thị ban đầu theo data đã lưu trong localStorege
                 self.getSettingDisplayWhenStart();
-
+                
+                if(viewMode == 'shift'){
+                     self.bingdingToShiftPallet(data);
+                }
+                
                 // set data Header
                 self.bindingToHeader(data);
-
+                
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, viewMode);
                 self.initExTable(dataBindGrid, viewMode);
                 
-                // khởi tạo data localStorage khi khởi động lần đầu.
-                self.creatDataLocalStorege(data);
                 $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
                 dfd.resolve();
             }).fail(function() {
@@ -237,9 +258,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return dfd.promise();
         }
 
-        creatDataLocalStorege(data: IDataStartScreen) {
+        creatDataLocalStorege(dataBasic: IDataBasicDto) {
             let self = this;
-            let dataBasic: IDataBasicDto = data.dataBasicDto;
             let item = uk.localStorage.getItem(self.KEY);
             if (!item.isPresent()) {
                 let userInfor: IUserInfor = {};
@@ -247,8 +267,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 userInfor.backgroundColor = 0; // 0 : 通常; 1: シフト
                 userInfor.achievementDisplaySelected = 2;
                 userInfor.shiftPalletUnit = 1;
-                userInfor.shiftPalettePageNumber = 0;
-                userInfor.shiftPalletPositionNumber = 0;
+                userInfor.shiftPalettePageNumberCom = 1;
+                userInfor.shiftPalletPositionNumberCom = 1;
+                userInfor.shiftPalettePageNumberOrg = 1;
+                userInfor.shiftPalletPositionNumberOrg = 1;
                 userInfor.gridHeightSelection = 1;
                 userInfor.heightGridSetting = '';
                 userInfor.workplaceId= dataBasic.workplaceId;
@@ -333,14 +355,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
 
         // binding ket qua cua <<ScreenQuery>> 初期起動の情報取得 
-        private bindingToHeader(data: IDataStartScreen) {
+        bindingToHeader(data: IDataStartScreen) {
             let self = this;
             let dataBasic: IDataBasicDto = data.dataBasicDto;
             self.dtPrev(dataBasic.startDate);
             self.dtAft(dataBasic.endDate);
             self.targetOrganizationName(dataBasic.targetOrganizationName);
             __viewContext.viewModel.viewAC.workplaceModeName(dataBasic.designation);
-            // save data to ocal Storage
+            
+            // save data to local Storage
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                 let userInfor: IUserInfor = JSON.parse(data);
                 userInfor.workplaceId = dataBasic.workplaceId;
@@ -348,6 +371,46 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 userInfor.workPlaceName = dataBasic.targetOrganizationName;
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
             });
+        }
+        
+        bingdingToShiftPallet(data: any) {
+            let self = this;
+            let item = uk.localStorage.getItem(self.KEY);
+            if (item.isPresent()) {
+                let userInfor: IUserInfor = JSON.parse(item.get());
+                __viewContext.viewModel.viewAC.selectedpalletUnit(userInfor.shiftPalletUnit);
+            } else {
+                __viewContext.viewModel.viewAC.selectedpalletUnit(1);
+            }
+
+            if (__viewContext.viewModel.viewAC.selectedpalletUnit() == 1) {
+                self.getDataComPattern(data.listPageInfo, data.targetShiftPalette.shiftPalletCom);
+            } else {
+                self.getDataComPattern(data.listPageInfo, data.targetShiftPalette.shiftPalletWorkPlace);
+            }
+        }
+        
+      
+        getDataComPattern(listPageInfo, shiftPalletCom) {
+            let self = this;
+            __viewContext.viewModel.viewAC.listComPattern(shiftPalletCom);
+            __viewContext.viewModel.viewAC.handleInitCom(
+                listPageInfo,
+                shiftPalletCom,
+                __viewContext.viewModel.viewAC.textButtonArrComPattern,
+                __viewContext.viewModel.viewAC.dataSourceCompany,
+                ko.observable(0));
+        }
+
+        getDataWkpPattern(listPageInfo, shiftPalletWorkPlace) {
+            let self = this;
+            __viewContext.viewModel.viewAC.listWkpPattern(shiftPalletWorkPlace);
+            __viewContext.viewModel.viewAC.handleInitWkp(
+                listPageInfo,
+                shiftPalletWorkPlace,
+                __viewContext.viewModel.viewAC.textButtonArrComPattern,
+                __viewContext.viewModel.viewAC.dataSourceCompany,
+                ko.observable(0));
         }
 
         // convert data lấy từ server để đẩy vào Grid
@@ -570,11 +633,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // set width cho column cho tung mode
             let widthColumn = 0;
             if (viewMode == 'time') {
-                widthColumn = 150;
+                widthColumn = 100;
             } else if (viewMode == 'shortName') {
-                widthColumn = 75;
-            } else if (viewMode == 'shift') {
                 widthColumn = 50;
+            } else if (viewMode == 'shift') {
+                widthColumn = 35;
             }
             
             // イベント情報と個人条件のmapping (mapping "thông tin event" và "person condition")
@@ -687,8 +750,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.isEnableInputHeight(true);
                 }
                 
-                
-                
                 // enable| disable combobox workTime
                 let workType = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == __viewContext.viewModel.viewAB.selectedWorkTypeCode(); });
                 if (workType.length > 0) {
@@ -701,7 +762,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         $("#listWorkType").removeClass("disabledWorkTime");
                     }
                 }
-
                 // 
                 __viewContext.viewModel.viewAC.selectedpalletUnit(userInfor.shiftPalletUnit);
             });
@@ -1204,105 +1264,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
         }
 
-
-
-        /**
-         * Get data of Basic Schedule = listDataShortName + listDataTimeZone + dataWScheState
-         */
-        getDataBasicSchedule(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred(),
-                obj = {
-                    employeeId: self.listSid(),
-                    startDate: self.dtPrev(),
-                    endDate: self.dtAft()
-                };
-        }
-
-        /**
-         * Get data to display symbol for dataSource(exTable)
-         */
-        setDataToDisplaySymbol(dataS): void {
-            let self = this;
-        }
-
-        handleSetSymbolForCell(item: any): void {
-            let self = this;
-        }
-
-        /**
-        * datasource = dataBasicSchedule + dataToDisplaySymbol
-        */
-        setDatasource(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            $.when(self.getDataBasicSchedule()).done(function() {
-                // set data hien thi o mode symbol
-                self.setDataToDisplaySymbol(self.dataSource())
-                dfd.resolve();
-            });
-            return dfd.promise();
-        }
-
-        /**
-         * Get data WorkScheduleState
-         * with itemId = 1~4 (set on server)
-         */
-        getDataWorkScheduleState(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred(),
-                obj = {
-                    employeeId: self.listSid(),
-                    startDate: self.dtPrev(),
-                    endDate: self.dtAft(),
-                };
-            service.getDataWorkScheduleState(obj).done(function(data) {
-                self.dataWScheduleState(data);
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
-            return dfd.promise();
-        }
-
-        /**
-         * Get data WorkEmpCombine
-         */
-        getDataWorkEmpCombine(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred(), lstWorkTypeCode: any[] = [], lstWorkTimeCode: any[] = [], obj: any = null;
-            _.each(__viewContext.viewModel.viewAB.listWorkType(), (item) => {
-                lstWorkTypeCode.push(item.workTypeCode);
-            });
-            _.each(__viewContext.viewModel.viewAB.listWorkTime(), (item) => {
-                lstWorkTimeCode.push(item.workTimeCode);
-            });
-
-            obj = {
-                lstWorkTypeCode: lstWorkTypeCode,
-                lstWorkTimeCode: lstWorkTimeCode
-            }
-            service.getDataWorkEmpCombine(obj).done(function(data) {
-                self.dataWorkEmpCombine(data);
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
-            return dfd.promise();
-        }
-
-        /**
-         * Get data of Schedule Display Control
-         */
-        getDataScheduleDisplayControl(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred();
-            service.getDataScheduleDisplayControl().done(function(data) {
-                self.dataScheduleDisplayControl(data);
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
-            return dfd.promise();
-        }
-
         /**
         * next a month
         */
@@ -1412,54 +1373,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return dfd.promise();
         }
 
-        /**
-        * Save data
-        */
-        saveData(): void {
-            let self = this;
-        }
-
-        /**
-         * Set color for cell = set text color + set background color
-         */
-        setColorForCell(detailContentDeco: any): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-        }
-
-
-        /**
-         * Set color for cell of leftmost : 個人名セルの背景色の判断処理
-         */
-        setColorForLeftmostContent(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            //            $.when(self.getDataScheduleDisplayControl()).done(() => {
-            if (self.isInsuranceStatus) {
-                //TO-DO    
-            }
-            dfd.resolve();
-            //            });
-            return dfd.promise();
-        }
-
-        /**
-         * Set color for cell : 明細セル背景色の判断処理
-         */
-        setColor(detailHeaderDeco: any, detailContentDeco: any): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            $.when(self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco),
-                self.setColorForCell(detailContentDeco), self.setColorForLeftmostContent()).done(() => {
-                    dfd.resolve();
-                });
-            return dfd.promise();
-        }
-
-        /**
-         * Set error
-         */
-        addListError(errorsRequest: Array<string>) {
-            let errors = [];
-        }
-
         editMode() {
             let self = this;
             nts.uk.ui.block.grayout();
@@ -1542,46 +1455,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#input").addClass("btnControlUnSelected").removeClass("btnControlSelected");
             $("#extable").exTable("updateMode", "stick");
             
-            let item = uk.localStorage.getItem(self.KEY);
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                 let userInfor : IUserInfor = JSON.parse(data);
-                userInfor.updateMode =  'stick';
+                userInfor.updateMode = 'stick';
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
             });
             
             if (self.selectedModeDisplayInBody() == 'shift') {
                 $("#extable").exTable("stickData", [
                 new ExCell('', '', '', '', '', '', '1'),
-                new ExCell('', '', '', '', '', '', '2'),
-                new ExCell('', '', '', '', '', '', '3'),
-                new ExCell('', '', '', '', '', '', '4'),
-                new ExCell('', '', '', '', '', '', '5'),
-                new ExCell('', '', '', '', '', '', '6'),
-                new ExCell('', '', '', '', '', '', '7'),
-                new ExCell('', '', '', '', '', '', '8'),
-                new ExCell('', '', '', '', '', '', '9'),
-                new ExCell('', '', '', '', '', '', '10'),
-                new ExCell('', '', '', '', '', '', '11'),
-                new ExCell('', '', '', '', '', '', '12'),
-                new ExCell('', '', '', '', '', '', '13'),
-                new ExCell('', '', '', '', '', '', '14'),
-                new ExCell('', '', '', '', '', '', '15'),
-                new ExCell('', '', '', '', '', '', '16'),
-                new ExCell('', '', '', '', '', '', '17'),
-                new ExCell('', '', '', '', '', '', '18'),
-                new ExCell('', '', '', '', '', '', '19'),
-                new ExCell('', '', '', '', '', '', '20'),
-                new ExCell('', '', '', '', '', '', '21'),
-                new ExCell('', '', '', '', '', '', '22'),
-                new ExCell('', '', '', '', '', '', '23'),
-                new ExCell('', '', '', '', '', '', '24'),
-                new ExCell('', '', '', '', '', '', '25'),
-                new ExCell('', '', '', '', '', '', '26'),
-                new ExCell('', '', '', '', '', '', '27'),
-                new ExCell('', '', '', '', '', '', '28'),
-                new ExCell('', '', '', '', '', '', '29'),
-                new ExCell('', '', '', '', '', '', '30'),
-                new ExCell('', '', '', '', '', '', '31')]);
+                new ExCell('', '', '', '', '', '', '2')]);
                 
                 $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
                     if(rowIdx%2 ==0){
@@ -1589,10 +1472,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }else{
                         return { class: "blue-text" };
                     }
-                    
                 });
             }
-            
             nts.uk.ui.block.clear();
         }
 
@@ -1616,9 +1497,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             nts.uk.ui.block.clear();
         }
 
-        /**
-         * copy data on cell
-         */
         inputData(): void {
             let self = this;
             if (self.mode() == 'confirm')
@@ -1630,7 +1508,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             $("#extable").exTable("updateMode", "edit");
             
-            let item = uk.localStorage.getItem(self.KEY);
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                 let userInfor: IUserInfor = JSON.parse(data);
                 userInfor.updateMode = 'edit';
@@ -1640,61 +1517,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             nts.uk.ui.block.clear();
         }
         
-        /**
-         * undo data on cell
-         */
         undoData(): void {
             $("#extable").exTable("stickUndo");
         }
 
-        /**
-         * redo data on cell
-         */
         redoData(): void {
             $("#extable").exTable("stickRedo");
-        }
-
-        /**
-         * get data form COM_PATTERN (for screen Q)
-         */
-        getDataComPattern(selectedLinkButton): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            service.getDataComPattern().done((data) => {
-                __viewContext.viewModel.viewAC.listComPattern(data);
-                __viewContext.viewModel.viewAC.handleInitCom(
-                    data,
-                    __viewContext.viewModel.viewAC.textButtonArrComPattern,
-                    __viewContext.viewModel.viewAC.dataSourceCompany,
-                    selectedLinkButton == null || selectedLinkButton == undefined ? ko.observable(0) : selectedLinkButton);
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
-
-            return dfd.promise();
-        }
-
-        /**
-         * get data form WKP_PATTERN (for screen Q)
-         */
-        getDataWkpPattern(selectedLinkButton): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            let obj: string = 'dea95de1-a462-4028-ad3a-d68b8f180412';  //self.empItems()[0] ? self.empItems()[0].affiliationId : '';
-
-            // let workplaceId : 'dea95de1-a462-4028-ad3a-d68b8f180412'; 
-            service.getDataWkpPattern(obj).done((data) => {
-                __viewContext.viewModel.viewAC.listWkpPattern(data);
-                __viewContext.viewModel.viewAC.handleInitWkp(
-                    data,
-                    __viewContext.viewModel.viewAC.textButtonArrComPattern,
-                    __viewContext.viewModel.viewAC.dataSourceCompany,
-                    selectedLinkButton == null || selectedLinkButton == undefined ? ko.observable(0) : selectedLinkButton);
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
-
-            return dfd.promise();
         }
 
         /**
@@ -2127,8 +1955,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         backgroundColor: number; // 背景色
         achievementDisplaySelected: number;
         shiftPalletUnit: number;
-        shiftPalettePageNumber: number;
-        shiftPalletPositionNumber: number;
+        shiftPalettePageNumberCom: number;
+        shiftPalletPositionNumberCom: number;
+        shiftPalettePageNumberOrg: number;
+        shiftPalletPositionNumberOrg: number;
         gridHeightSelection: number;
         heightGridSetting: number;
         workplaceId: string;
@@ -2137,6 +1967,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         workType: {};
         workTime: {};
         updateMode : string; // updatemode cua grid
+        startDate : string;
+        endDate : string;
     }
 
 }

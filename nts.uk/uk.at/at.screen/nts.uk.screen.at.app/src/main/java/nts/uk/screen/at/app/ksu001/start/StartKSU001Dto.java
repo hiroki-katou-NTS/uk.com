@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkScheduleWorkInforDto;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkTypeInfomation;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DateInformationDto;
@@ -45,10 +46,9 @@ public class StartKSU001Dto {
 	public List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor; 
 	
 	// data trả về của step 5.1
-	public List<PageInfo> listPageInfoBasic; // List<ページ, 名称>
+	public List<PageInfo> listPageInfo; // List<ページ, 名称>
 	public TargetShiftPalette targetShiftPalette; // 対象のシフトパレッ
-	
-	
+	public List<ShiftMasterMapWithWorkStyle> shiftMasterWithWorkStyleLst ;
 	public List<WorkScheduleShiftDto> listWorkScheduleShift; // ・List<勤務予定（シフト）dto>
 	
 }

@@ -75,7 +75,7 @@ public class DisplayInWorkInformation {
 		for (String sid : sids) {
 			for (int i = 1; i < 32; i++) {
 				WorkScheduleWorkInforDto w1 = new WorkScheduleWorkInforDto(sid, GeneralDate.ymd(2020, 7, i), false,
-						false, false, false, 1, "001 ", "出勤 ", new EditStateOfDailyAttdDto(1, 0), "001 ", "テスト固定 ",
+						false, false, false, 1, "001 ", "出勤出 ", new EditStateOfDailyAttdDto(1, 0), "001 ", "テスト",
 						new EditStateOfDailyAttdDto(1, 0), 480, new EditStateOfDailyAttdDto(1, 0), 1020,
 						new EditStateOfDailyAttdDto(1, 0), 1);
 				listWorkScheduleWorkInfor.add(w1);
@@ -130,7 +130,7 @@ public class DisplayInWorkInformation {
 		for (String sid : sids) {
 			for (int i = 1; i < 32; i++) {
 				WorkScheduleWorkInforDto w1 = new WorkScheduleWorkInforDto(sid, GeneralDate.ymd(2020, 8, i), false,
-						false, false, false, 1, "001 ", "N出勤 ", new EditStateOfDailyAttdDto(1, 0), "001 ", "Nテスト固定 ",
+						false, false, false, 1, "001 ", "勤出勤 ", new EditStateOfDailyAttdDto(1, 0), "001 ", "ト固定 ",
 						new EditStateOfDailyAttdDto(1, 0), 480, new EditStateOfDailyAttdDto(1, 0), 1020,
 						new EditStateOfDailyAttdDto(1, 0), 1);
 				listWorkScheduleWorkInfor.add(w1);
@@ -185,7 +185,7 @@ public class DisplayInWorkInformation {
 		for (String sid : sids) {
 			for (int i = 1; i < 31; i++) {
 				WorkScheduleWorkInforDto w1 = new WorkScheduleWorkInforDto(sid, GeneralDate.ymd(2020, 6, i), false,
-						false, false, false, 1, "001 ", "P出勤 ", new EditStateOfDailyAttdDto(1, 0), "001 ", "Pテスト固定 ",
+						false, false, false, 1, "001 ", "出勤出 ", new EditStateOfDailyAttdDto(1, 0), "001 ", "出ト固 ",
 						new EditStateOfDailyAttdDto(1, 0), 480, new EditStateOfDailyAttdDto(1, 0), 1020,
 						new EditStateOfDailyAttdDto(1, 0), 1);
 				listWorkScheduleWorkInfor.add(w1);

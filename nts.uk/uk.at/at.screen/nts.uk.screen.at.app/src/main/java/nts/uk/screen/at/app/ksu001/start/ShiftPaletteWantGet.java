@@ -3,14 +3,20 @@
  */
 package nts.uk.screen.at.app.ksu001.start;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * @author laitv
  *
  */
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
 public class ShiftPaletteWantGet {
-	public int shiftPalletUnit;              // ・取得したいシフトパレット：Optional<単位, ページ>  単位
+	public int shiftPalletUnit;              // Company | workPlace
 	public int pageNumber;                   // ・取得したいシフトパレット：Optional<単位, ページ>  ページ
 }

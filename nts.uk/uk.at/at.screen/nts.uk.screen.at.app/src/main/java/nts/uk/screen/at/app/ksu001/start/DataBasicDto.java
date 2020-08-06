@@ -22,8 +22,8 @@ public class DataBasicDto {
 		this.unit = resultStep1.targetOrgIdenInfor.unit;
 		this.workplaceId = resultStep1.targetOrgIdenInfor.workplaceId;
 		this.workplaceGroupId = resultStep1.targetOrgIdenInfor.workplaceGroupId;
-		this.designation = resultStep1.displayInforOrganization.designation;
-		this.targetOrganizationName = resultStep1.displayInforOrganization.targetOrganizationName;
+		this.designation = resultStep1.displayInforOrganization.getDesignation();
+		this.targetOrganizationName = resultStep1.displayInforOrganization.getDisplayName();
 	}
 	
 	

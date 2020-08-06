@@ -75,7 +75,7 @@ public class ScreenQueryExtractTargetEmployees {
 	final static String ZEZO_TIME = "00:00";
 	final static String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm";
 	
-	public List<EmployeeInformationImport> getListEmp2(ExtractTargetEmployeesParam param) {
+	public List<EmployeeInformationImport> dataSample(ExtractTargetEmployeesParam param) {
 		List<String> sids = Arrays.asList("fc4304be-8121-4bad-913f-3e48f4e2a752",
 				"338c26ac-9b80-4bab-aa11-485f3c624186", "89ea1474-d7d8-4694-9e9b-416ea1d6381c",
 				"ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570", "8f9edce4-e135-4a1e-8dca-ad96abe405d6",
@@ -142,48 +142,11 @@ public class ScreenQueryExtractTargetEmployees {
 		@Override
 		public String getRoleID(GeneralDate date, String employId) {
 			// (Lấy userID từ employeeID)
-			
 			Optional<String> userID = acquireUserIDFromEmpIDService.getUserIDByEmpID(employId);
 			if (!userID.isPresent()) {
 				return null;
 			}
-			
-			String roleId = null;
-			
-			RollInformationExport exportHUMAN_RESOURCE = roleExportRepo.getRoleIncludCategoryFromUserID(userID.get(), RoleType.HUMAN_RESOURCE.value, date, AppContexts.user().companyId());
-			RollInformationExport exportEMPLOYMENT = roleExportRepo.getRoleIncludCategoryFromUserID(userID.get(), RoleType.EMPLOYMENT.value, date, AppContexts.user().companyId());
-			RollInformationExport exportSALARY = roleExportRepo.getRoleIncludCategoryFromUserID(userID.get(), RoleType.SALARY.value, date, AppContexts.user().companyId());
-			RollInformationExport exportOFFICE_HELPER = roleExportRepo.getRoleIncludCategoryFromUserID(userID.get(), RoleType.OFFICE_HELPER.value, date, AppContexts.user().companyId());
-			RollInformationExport exportCOMPANY_MANAGER = roleExportRepo.getRoleIncludCategoryFromUserID(userID.get(), RoleType.COMPANY_MANAGER.value, date, AppContexts.user().companyId());
-			RollInformationExport exportSYSTEM_MANAGER = roleExportRepo.getRoleIncludCategoryFromUserID(userID.get(), RoleType.SYSTEM_MANAGER.value, date, AppContexts.user().companyId());
-			RollInformationExport exportPERSONAL_INFO= roleExportRepo.getRoleIncludCategoryFromUserID(userID.get(), RoleType.PERSONAL_INFO.value, date, AppContexts.user().companyId());
-			RollInformationExport exportGROUP_COMAPNY_MANAGER = roleExportRepo.getRoleIncludCategoryFromUserID(userID.get(), RoleType.GROUP_COMAPNY_MANAGER.value, date, AppContexts.user().companyId());
-			
-			if (exportHUMAN_RESOURCE != null) {
-				roleId = exportHUMAN_RESOURCE.getRoleId();
-			}
-			if (exportEMPLOYMENT != null) {
-				roleId = exportEMPLOYMENT.getRoleId();
-			}
-			if (exportSALARY != null) {
-				roleId = exportSALARY.getRoleId();
-			}
-			if (exportOFFICE_HELPER != null) {
-				roleId = exportOFFICE_HELPER.getRoleId();
-			}
-			if (exportCOMPANY_MANAGER != null) {
-				roleId = exportCOMPANY_MANAGER.getRoleId();
-			}
-			if (exportSYSTEM_MANAGER != null) {
-				roleId = exportSYSTEM_MANAGER.getRoleId();
-			}
-			if (exportPERSONAL_INFO != null) {
-				roleId = exportPERSONAL_INFO.getRoleId();
-			}
-			if (exportGROUP_COMAPNY_MANAGER != null) {
-				roleId = exportGROUP_COMAPNY_MANAGER.getRoleId();
-			}
-			
+			String roleId = AppContexts.user().roles().forAttendance();
 			return roleId;
 		}
 

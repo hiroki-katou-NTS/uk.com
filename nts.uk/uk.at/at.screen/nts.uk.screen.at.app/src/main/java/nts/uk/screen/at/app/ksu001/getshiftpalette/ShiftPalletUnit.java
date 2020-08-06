@@ -12,8 +12,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum ShiftPalletUnit {
 	
-	COMPANY(0),
-	WORKPLACE(1);
+	COMPANY(1),
+	WORKPLACE(2);
 	public int value;
 	
 }

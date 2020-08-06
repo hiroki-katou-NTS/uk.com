@@ -18,13 +18,7 @@ public class ShiftMasterDto {
 	public String color;
 	public String remark;
 	public String workTypeCd;
-	public String workTypeName;
 	public String workTimeCd;
-	public String workTimeName;
-	public String workTime1;
-	public String workTime2;
-	public int pagenumber;
-	public int palletUnit;
 
 	public ShiftMasterDto(ShiftMaster domain) {
 		this.companyId = domain.getCompanyId();
@@ -35,7 +29,5 @@ public class ShiftMasterDto {
 		this.remark = info.getRemarks().isPresent() ? info.getRemarks().get().v() : null;
 		this.workTypeCd = domain.getWorkTypeCode().v();
 		this.workTimeCd = domain.getWorkTimeCode() == null ? null : domain.getWorkTimeCode().v();
-		this.workTime1 = "";
-		this.workTime2 = "";
 	}
 }

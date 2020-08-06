@@ -14,6 +14,10 @@ import nts.uk.screen.at.app.ksu001.getshiftpalette.GetShiftPalette;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.GetShiftPaletteParam;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.GetShiftPaletteResult;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.GetWorkScheduleShift;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.GetWorkScheduleShiftParam;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.WorkScheduleShiftDto;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.WorkScheduleShiftResult;
 import nts.uk.screen.at.app.ksu001.getschedulesbyshift.GetSchedulesAndAchievementsByShift;
 import nts.uk.screen.at.app.ksu001.getschedulesbyshift.SchedulesbyShiftDataResult;
 
@@ -35,33 +39,30 @@ import nts.uk.screen.at.app.ksu001.getschedulesbyshift.SchedulesbyShiftDataResul
 public class DisplayInShift {
 	
 	@Inject
-	private GetShiftPalette getShiftPalette;
+	private GetShiftPalette getShiftPalette; 
 	@Inject
-	private GetSchedulesAndAchievementsByShift getScheduleByShift;
+	private GetSchedulesAndAchievementsByShift getSchedulesAndAchievementsByShift;
 	
-	public DisplayInShiftResult getData(DisplayInShiftParam param) {
-		
+
+	public DisplayInShiftResult dataSample(DisplayInShiftParam param) {
+
+		// Step 1
 		// khởi tạo param để truyền vào ScreenQuery シフトパレットを取得する
-		GetShiftPaletteParam paramOfGetShiftPalette = new GetShiftPaletteParam(param.listShiftMasterNotNeedGetNew, param.shiftPaletteWantGet, param.workplaceId, param.workplaceGroupId);
-		// gọi ScreenQuery シフトパレットを取得する
-		GetShiftPaletteResult shiftPaletteResult = getShiftPalette.getData(paramOfGetShiftPalette); 
-		
-		// khởi tạo param để truyền vào ScreenQuery 予定・実績をシフトで取得する
-		List<ShiftMasterDto> listShiftMasterAfterMerge = param.listShiftMasterNotNeedGetNew; // list này sẽ bao gồm cả ShiftMaster đã lưu dưới localStorage và ShiftMaster mới lấy.
-		List<ShiftMasterDto> listShiftMasterGetNew = shiftPaletteResult.getListOfShift().stream().map(i -> i.shiftMaster).collect(Collectors.toList()); // list ShiftMaster mới lấy.
-		List<ShiftMasterDto> listShiftMasterFromUI = param.listShiftMasterNotNeedGetNew; // list ShiftMaster mới lấy.
-		for (ShiftMasterDto shiftMasterDtoNew : listShiftMasterGetNew) {
-			if (!listShiftMasterFromUI.contains(shiftMasterDtoNew)) {
-				listShiftMasterAfterMerge.add(shiftMasterDtoNew); // chỉ thêm vào những ShiftMaster chưa tồn tại trong list ShiftMaster dưới localStorage
-			}
-		}
-		SchedulesbyShiftParam paramOfSchedulesbyshift = new SchedulesbyShiftParam(param.listSid, param.startDate, param.endDate, listShiftMasterAfterMerge, param.getActualData);
-		// gọi ScreenQuery 勤務予定（シフト）を取得する
-		SchedulesbyShiftDataResult schedulesbyShiftData = getScheduleByShift.getData(paramOfSchedulesbyshift);
-		
-		
+		GetShiftPaletteParam paramStep1 = new GetShiftPaletteParam(param.listShiftMasterNotNeedGetNew,
+				param.shiftPaletteWantGet, param.workplaceId, param.workplaceGroupId);
+		// call ScreenQuery シフトパレットを取得する
+		GetShiftPaletteResult resultStep1 = getShiftPalette.dataSample(paramStep1);
+
+		// Step 2 call ScreenQuery 予定・実績をシフトで取得する
+		SchedulesbyShiftParam paramStep2 = new SchedulesbyShiftParam(param.listShiftMasterNotNeedGetNew, param.listSid,
+				param.startDate, param.endDate, param.getActualData);
+		SchedulesbyShiftDataResult resultStep2 = getSchedulesAndAchievementsByShift.dataSample(paramStep2);
+
+		return new DisplayInShiftResult(resultStep1.listPageInfo, resultStep1.targetShiftPalette,
+				resultStep1.listShiftMaster, resultStep2.listWorkScheduleShift);
+	}
+
+	public DisplayInShiftResult getData(DisplayInShiftParam param) {
 		return null;
-		
-		
 	}
 }

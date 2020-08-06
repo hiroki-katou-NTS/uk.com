@@ -1,13 +1,12 @@
 package nts.uk.screen.at.app.ksu001.getshiftpalette;
 
 import java.util.List;
-import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.screen.at.app.ksu001.displayinshift.PageShift;
+import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 
 /**
  * 
@@ -21,9 +20,9 @@ import nts.uk.screen.at.app.ksu001.displayinshift.PageShift;
 @AllArgsConstructor
 public class GetShiftPaletteResult {
 
-	List<PageInfo> listPageInfo ; // List<ページ, 名称>
-	Optional<TargetShiftPalette> targetShiftPalette ; // 対象のシフトパレット： Optional<ページ, シフトパレット>
-	List<PageShift> listOfShift; // 取得したシフト一覧：List<シフトマスタ, Optional<出勤休日区分>> 
-	List<String> listShiftMasterCodeGetNew; // truong nay khong co trong output cua thuat toan.
+	public List<PageInfo> listPageInfo ; // List<ページ, 名称>
+	public TargetShiftPalette targetShiftPalette ; // 対象のシフトパレット： Optional<ページ, シフトパレット>
+	public List<ShiftMasterMapWithWorkStyle> listShiftMaster; // 取得したシフト一覧：List<シフトマスタ, Optional<出勤休日区分>> 
 	
+	List<String> listShiftMasterCodeGetNew; // truong nay khong co trong output cua thuat toan.
 }

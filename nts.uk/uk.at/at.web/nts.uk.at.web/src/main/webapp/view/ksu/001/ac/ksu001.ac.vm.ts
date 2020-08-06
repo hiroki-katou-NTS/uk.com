@@ -7,12 +7,13 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
 
         modeCompany: KnockoutObservable<boolean> = ko.observable(true);
         workplaceModeName : KnockoutObservable<String > = ko.observable(getText("Com_Workplace"));
-
+        workplaceId : any;
+        
         palletUnit: KnockoutObservableArray<any> = ko.observableArray([
             { code: 1, name: getText("Com_Company") },
             { code: 2, name: getText("Com_Workplace") }
         ]);
-        selectedpalletUnit: KnockoutObservable<number>;
+        selectedpalletUnit: KnockoutObservable<number> = ko.observable(1);
         overwrite: KnockoutObservable<boolean> = ko.observable(true);
 
         dataSourceCompany: KnockoutObservableArray<any> = ko.observableArray([null, null, null, null, null, null, null, null, null, null]);
@@ -32,6 +33,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
         indexLinkButtonCom: number = null;
         indexLinkButtonWkp: number = null;
         dataToStick: any = null;
+        listPageInfo : any;
 
         indexBtnSelected: number = 0;
 
@@ -72,7 +74,6 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 { id: "delete", text: getText("KSU001_1707"), action: self.remove.bind(self) }
             ];
             
-            self.selectedpalletUnit = ko.observable(1);
             self.selectedpalletUnit.subscribe((newValue) => {
                 if (newValue) {
                     uk.localStorage.getItem(self.KEY).ifPresent((data) => {
@@ -81,7 +82,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         uk.localStorage.setItemAsJson(self.KEY, userInfor);
                     });
 
-                    self.initScreenQ();
+                    //self.initScreenQ();
                 }
             });
 
@@ -110,11 +111,8 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 self.textName(data.text);
                 self.tooltip(data.tooltip);
             });
-            
         }
-
-    
-
+        
         /**
          * get content of link button
          */
@@ -132,35 +130,30 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 });
             }
         }
+        
+        getDataComPattern(){
+            
+        
+        }
 
         /**
          * handle init
          * change text of linkbutton
          * set data for datasource
          */
-        handleInitCom(listPattern: any, listTextButton: any, dataSource: any, index: any): any {
+        handleInitCom(listPageInfo: any, listPattern: any, listTextButton: any, dataSource: any, index: any): any {
             let self = this;
-            self.selectedLinkButtonCom = index;
+            self.listPageInfo = listPageInfo;
             //set default for listTextButton and dataSource
             self.dataSourceCompany([null, null, null, null, null, null, null, null, null, null]);
-            self.textButtonArrComPattern([
-                { name: ko.observable(nts.uk.resource.getText("ページ1", ['１'])), id: 0, formatter: _.escape },
-                { name: ko.observable(nts.uk.resource.getText("ページ2", ['２'])), id: 1, formatter: _.escape },
-                { name: ko.observable(nts.uk.resource.getText("ページ3", ['３'])), id: 2, formatter: _.escape },
-                { name: ko.observable(nts.uk.resource.getText("ページ4", ['４'])), id: 3, formatter: _.escape },
-                { name: ko.observable(nts.uk.resource.getText("ページ5", ['５'])), id: 4, formatter: _.escape },
-                { name: ko.observable(nts.uk.resource.getText("ページ6", ['６'])), id: 5, formatter: _.escape },
-                { name: ko.observable(nts.uk.resource.getText("ページ7", ['７'])), id: 6, formatter: _.escape },
-                { name: ko.observable(nts.uk.resource.getText("ページ8", ['８'])), id: 7, formatter: _.escape },
-                { name: ko.observable(nts.uk.resource.getText("ページ9", ['９'])), id: 8, formatter: _.escape },
-                { name: ko.observable(nts.uk.resource.getText("ページ10", ['１０'])), id: 9, formatter: _.escape },
-            ]);
-            
-            let textLinkButton = [];
+            self.textButtonArrComPattern([]);
+            for (let i = 0; i < listPageInfo.length; i++) {
+                self.textButtonArrComPattern().push({ name: ko.observable(listPageInfo[i].pageName), id: listPageInfo[i].pageNumber, formatter: _.escape });
+            }
+
             for (let i = 0; i < listPattern.length; i++) {
                 let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
-                //change text of linkbutton
-                self.textButtonArrComPattern()[listPattern[i].groupNo - 1].name(nts.uk.text.padRight(listPattern[i].groupName, ' ', 6));
+
                 //set data for dataSource
                 _.each(listPattern[i].patternItem, (pattItem) => {
                     let text = pattItem.patternName;
@@ -198,29 +191,22 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     source.splice(pattItem.patternNo - 1, 1, { text: text, tooltip: tooltip, data: arrPairObject });
                 });
                 self.dataSourceCompany().splice(listPattern[i].groupNo - 1, 1, source);
+                self.selectedLinkButtonCom(self.listPageInfo[index()].pageNumber - 1);
             }
-            
-            self.clickLinkButton(null, self.selectedLinkButtonCom);
         }
         
-        handleInitWkp(listPattern: any, listTextButton: any, dataSource: any, index: any): any {
+        handleInitWkp(listPageInfo: any, listPattern: any, listTextButton: any, dataSource: any, index: any): any {
             let self = this;
-            self.selectedLinkButtonWkp = index;
+            self.listPageInfo = listPageInfo;
+            
             //set default for listTextButton and dataSource
             self.dataSourceWorkplace([null, null, null, null, null, null, null, null, null, null]);
-            self.textButtonArrWkpPattern([
-                { name: ko.observable(nts.uk.resource.getText("ページ1", ['１'])), id: 0, formatter: _.escape },
-                { name: ko.observable(nts.uk.resource.getText("ページ2", ['２'])), id: 1, formatter: _.escape },
-                { name: ko.observable(nts.uk.resource.getText("ページ3", ['３'])), id: 2, formatter: _.escape },
-                { name: ko.observable(nts.uk.resource.getText("ページ4", ['４'])), id: 3, formatter: _.escape },
-                { name: ko.observable(nts.uk.resource.getText("ページ5", ['５'])), id: 4, formatter: _.escape },
-                { name: ko.observable(nts.uk.resource.getText("ページ6", ['６'])), id: 5, formatter: _.escape },
-                { name: ko.observable(nts.uk.resource.getText("ページ7", ['７'])), id: 6, formatter: _.escape },
-                { name: ko.observable(nts.uk.resource.getText("ページ8", ['８'])), id: 7, formatter: _.escape },
-                { name: ko.observable(nts.uk.resource.getText("ページ9", ['９'])), id: 8, formatter: _.escape },
-                { name: ko.observable(nts.uk.resource.getText("ページ10", ['１０'])), id: 9, formatter: _.escape },
-            ]);
-
+            self.textButtonArrWkpPattern([]);
+            for (let i = 0; i < listPageInfo.length; i++) {
+                self.textButtonArrWkpPattern().push({ name: ko.observable(listPageInfo[i].pageName), id: listPageInfo[i].pageNumber, formatter: _.escape });
+            }
+            
+            self.workplaceId = listPattern[0].workplaceId;
             for (let i = 0; i < listPattern.length; i++) {
                 let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
                 //change text of linkbutton
@@ -231,8 +217,6 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     let text = pattItem.patternName;
                     let arrPairShortName = [], arrPairObject = [];
                     _.forEach(pattItem.workPairSet, (wPSet) => {
-                        //                        self.selectedTab() === 'company' ? arrPairShortName.push('[' + wPSet.shiftCode + ']')
-                        //                            : arrPairSt.workTypeCode + ']');
 
                         let matchShiftWork = _.find(self.listShiftWork, ["shiftMasterCode", wPSet.shiftCode != null ? wPSet.shiftCode : wPSet.workTypeCode]);
                         let value = "";
@@ -267,7 +251,8 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 });
                 self.dataSourceWorkplace().splice(listPattern[i].groupNo - 1, 1, source);
             }
-             self.clickLinkButton(null, self.selectedLinkButtonWkp);
+            self.clickLinkButton(null, self.selectedLinkButtonWkp);
+            self.selectedLinkButtonWkp(self.listPageInfo[index()].pageNumber - 1);
         }
 
         /**
@@ -278,12 +263,6 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
                 index: number = param();
             
-            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                let userInfor = JSON.parse(data);
-                userInfor.shiftPalletPositionNumber = index;
-                uk.localStorage.setItemAsJson(self.KEY, userInfor);
-            });
-
             if (self.selectedpalletUnit() === 1) {
                 self.indexLinkButtonCom = index;
                 // link button has color gray when clicked
@@ -293,9 +272,16 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 });
                 $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonCom]).addClass('color-gray');
                 $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonCom]).addClass('background-linkbtn');
-                self.selectedLinkButtonCom(self.indexLinkButtonCom);
+                self.selectedLinkButtonCom(self.listPageInfo[index].pageNumber - 1);
                 //set sourceCompany
-                self.sourceCompany(self.dataSourceCompany()[self.indexLinkButtonCom] || source);
+                let indexDataPage = self.listPageInfo[index].pageNumber;
+                self.sourceCompany(self.dataSourceCompany()[indexDataPage - 1] || source);
+                
+                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                    let userInfor = JSON.parse(data);
+                    userInfor.shiftPalettePageNumberCom = index + 1;
+                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
+                });
                 
             } else {
                 self.indexLinkButtonWkp = index;
@@ -306,9 +292,16 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 });
                 $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonWkp]).addClass('color-gray');
                 $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonWkp]).addClass('background-linkbtn');
-                self.selectedLinkButtonWkp(self.indexLinkButtonWkp);
+                self.selectedLinkButtonWkp(self.listPageInfo[index].pageNumber - 1);
                 //set sourceWorkplace
-                self.sourceWorkplace(self.dataSourceWorkplace()[self.indexLinkButtonWkp] || source);
+                let indexDataPage = self.listPageInfo[index].pageNumber;
+                self.sourceWorkplace(self.dataSourceWorkplace()[indexDataPage - 1] || source);
+                
+                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                    let userInfor = JSON.parse(data);
+                    userInfor.shiftPalettePageNumberOrg = index + 1;
+                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
+                });
             }
             
             // set css table button
@@ -360,6 +353,65 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             $("#tableButton").trigger("namechanged", undefined);
         }
 
+
+        getDataComPattern(selectedLinkButton): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            let param = {
+                listShiftMasterNotNeedGetNew: [],
+                shiftPaletteWantGet: {
+                    shiftPalletUnit: self.palletUnit(),
+                    pageNumber: selectedLinkButton,
+                },
+                workplaceId: self.workplaceId,
+                workplaceGroupId: self.workplaceId
+            }
+
+            service.getShiftPallets(param).done((data) => {
+                self.listComPattern(data.shiftPalletCom);
+                self.handleInitCom(
+                    data.listPageInfo,
+                    data.shiftPalletCom,
+                    self.textButtonArrComPattern,
+                    self.dataSourceCompany,
+                    ko.observable(selectedLinkButton));
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+
+            return dfd.promise();
+        }
+
+        /**
+         */
+        getDataWkpPattern(selectedLinkButton): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            let param = {
+                listShiftMasterNotNeedGetNew: [],
+                shiftPaletteWantGet: {
+                    shiftPalletUnit: self.palletUnit(),
+                    pageNumber: selectedLinkButton,
+                },
+                workplaceId: self.workplaceId,
+                workplaceGroupId: self.workplaceId
+            }
+
+            service.getShiftPallets(param).done((data) => {
+                self.listComPattern(data);
+                self.handleInitWkp(
+                    data.listPageInfo,
+                    data.shiftPalletWorkPlace,
+                    self.textButtonArrComPattern,
+                    self.dataSourceCompany,
+                    ko.observable(selectedLinkButton));
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+
+            return dfd.promise();
+        }
+
         /**
          * Open dialog JB
          */
@@ -367,11 +419,11 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             let self = this, dfd = $.Deferred();
             setShared('dataForJB', {
                 selectedTab: self.selectedpalletUnit() == 1 ? 'company' : 'workplace',
-                workplaceName: '経理部職',
-                workplaceCode: '0000000001',
-                workplaceId: self.selectedpalletUnit() === 1 ? null : 'dea95de1-a462-4028-ad3a-d68b8f180412', // __viewContext.viewModel.viewA.workplaceId
-                listWorkType: __viewContext.viewModel.viewO.listWorkType(),
-                listWorkTime: __viewContext.viewModel.viewO.listWorkTime(),
+                workplaceName: self.workplaceModeName,
+                workplaceCode: '',
+                workplaceId: self.selectedpalletUnit() === 1 ? null : self.workplaceId,
+                listWorkType: __viewContext.viewModel.viewAB.listWorkType(),
+                listWorkTime: __viewContext.viewModel.viewAB.listWorkTime(),
                 selectedLinkButton: self.selectedpalletUnit() === 1 ? self.selectedLinkButtonCom() : self.selectedLinkButtonWkp(),
                 // listCheckNeededOfWorkTime for JA to JA send to JB
                 listCheckNeededOfWorkTime: __viewContext.viewModel.viewA.listCheckNeededOfWorkTime(),
@@ -382,12 +434,12 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 
                 if (self.selectedpalletUnit() === 1) {
                     self.modeCompany(true);
-                    __viewContext.viewModel.viewA.getDataComPattern(selectedLinkButton).done(() => {
+                    self.getDataComPattern(selectedLinkButton).done(() => {
                         console.log("get data com done");
                     });
                 } else {
                     self.modeCompany(false);
-                    __viewContext.viewModel.viewA.getDataWkpPattern(selectedLinkButton).done(() => {
+                    self.getDataWkpPattern(selectedLinkButton).done(() => {
                         console.log("get data workplace done");
                     });
                 }

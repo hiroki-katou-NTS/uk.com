@@ -2,6 +2,8 @@
  * 
  */
 package nts.uk.screen.at.app.ksu001.getshiftpalette;
+import java.util.List;
+
 import lombok.Value;
 import nts.uk.ctx.at.schedule.app.find.shift.shiftpalletsorg.ShiftPalletsOrgDto;
 import nts.uk.ctx.at.schedule.app.find.shift.shijtpalletcom.ComPatternScreenDto;
@@ -14,9 +16,8 @@ import nts.uk.ctx.at.schedule.app.find.shift.shijtpalletcom.ComPatternScreenDto;
 
 @Value
 public class TargetShiftPalette {
-	
-	public int pageNumber;
-	public ComPatternScreenDto shiftPalletCom;
-	public ShiftPalletsOrgDto  shiftPalletWorkPlace;
 
+	public int pageNumber; // ページ
+	public List<ComPatternScreenDto> shiftPalletCom; // シフトパレット
+	public List<ShiftPalletsOrgDto> shiftPalletWorkPlace; // シフトパレット
 }

@@ -1,17 +1,10 @@
 module nts.uk.at.view.ksu001.ac.service {
-     var paths: any = {
-        getDataComPattern: "at/schedule/shift/management/getListShijtPalletsByCom",
-        //getDataWkpPattern: "screen/at/schedule/basicschedule/getDataWkpPattern",
-        getDataWkpPattern: "at/schedule/shift/management/shiftpalletorg/getbyWorkplaceId",  
+    var paths: any = {
+        getShiftPallets: "screen/at/schedule/getShiftPallets",
     }
 
-
-    export function getDataComPattern(): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getDataComPattern);
-    }
-
-    export function getDataWkpPattern(obj): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getDataWkpPattern, obj);
+    export function getShiftPallets(param : any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getShiftPallets, param);
     }
 
 }

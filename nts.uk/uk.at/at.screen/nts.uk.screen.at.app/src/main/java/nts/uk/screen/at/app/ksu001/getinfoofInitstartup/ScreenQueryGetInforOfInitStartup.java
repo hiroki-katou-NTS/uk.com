@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetTargetIdentifiInforService;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.WorkplaceInfo;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupAdapter;
@@ -50,6 +51,21 @@ public class ScreenQueryGetInforOfInitStartup {
 	private WorkplaceExportService workplaceExportService;
 	@Inject
 	private AffWorkplaceGroupRespository affWorkplaceGroupRepo;
+	
+	public DataScreenQueryGetInforDto dataSample() {
+		GeneralDate startDate = GeneralDate.ymd(2020, 7, 1);
+		GeneralDate endDate =  GeneralDate.ymd(2020, 7, 31);
+		
+		TargetOrgIdenInforDto targetOrgIdenInfor = new TargetOrgIdenInforDto(TargetOrganizationUnit.WORKPLACE.value,
+				"dea95de1-a462-4028-ad3a-d68b8f180412", null);
+
+		DisplayInfoOrganization displayInforOrganization = new DisplayInfoOrganization("designation", "code", "name",
+				"WorkPlaceName", "genericTerm");
+
+		DataScreenQueryGetInforDto resultStep1 = new DataScreenQueryGetInforDto(startDate, endDate, targetOrgIdenInfor,
+				displayInforOrganization);
+		return resultStep1;
+	}
 	
 
 	public DataScreenQueryGetInforDto getDataInit() {

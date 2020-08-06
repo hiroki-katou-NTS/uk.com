@@ -79,14 +79,14 @@ public class PreMonthFinder {
 		String workplaceGroupId = null;
 		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(endDate,
 				new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, workplaceId, workplaceGroupId));
-		List<EmployeeInformationImport> resultStep2 = extractTargetEmployees.getListEmp2(param2);
+		List<EmployeeInformationImport> resultStep2 = extractTargetEmployees.dataSample(param2);
 		// step 2 end
 
 		// step 3 start
 		List<String> listSid = resultStep2.stream().map(mapper -> mapper.getEmployeeId()).collect(Collectors.toList());
 		EventInfoAndPerCondPeriodParam param3 = new EventInfoAndPerCondPeriodParam(startDate, endDate, workplaceId,
 				workplaceGroupId, listSid);
-		DataSpecDateAndHolidayDto resultStep3 = eventInfoAndPersonalCondPeriod.get(param3);
+		DataSpecDateAndHolidayDto resultStep3 = eventInfoAndPersonalCondPeriod.dataSample(param3);
 		// step 3 end
 
 		// step 4 || step 5.2 start
@@ -97,7 +97,7 @@ public class PreMonthFinder {
 		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = resultStep4.listWorkScheduleWorkInfor;
 
 		// step5.1
-		WorkScheduleShiftResult resultStep51 = getWorkScheduleShift.getData(new GetWorkScheduleShiftParam());
+		WorkScheduleShiftResult resultStep51 = getWorkScheduleShift.dataSample(new GetWorkScheduleShiftParam());
 		List<WorkScheduleShiftDto> listWorkScheduleShift = resultStep51.listWorkScheduleShift;
 
 		if (param.viewMode == "shift") {

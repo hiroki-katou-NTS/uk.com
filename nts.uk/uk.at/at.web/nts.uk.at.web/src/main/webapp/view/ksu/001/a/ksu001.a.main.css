@@ -105,7 +105,7 @@ table th, table td {
 }
 
 #work-setting button, #person-setting button, #sort-order-setting button{
-	width: 260px;
+	width: 110px;
 	margin-bottom: 10px;
 }
 
@@ -361,6 +361,7 @@ table th, table td {
 	width: fit-content;
 	height: 45px;
 	display: inline-block;
+	margin-bottom: 4px;
 }
 
 #functon-area-row2-right {
