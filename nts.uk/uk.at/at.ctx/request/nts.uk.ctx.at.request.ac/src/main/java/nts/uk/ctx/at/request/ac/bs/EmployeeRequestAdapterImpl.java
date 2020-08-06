@@ -223,4 +223,9 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 		return this.workplacePub.getWorkplaceIdAndUpper(companyId, baseDate, workplaceId);
 
 	}
+
+	@Override
+	public String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date) {
+		return workplacePub.getAffWkpHistItemByEmpDate(employeeID, date).getWorkplaceId();
+	}
 }

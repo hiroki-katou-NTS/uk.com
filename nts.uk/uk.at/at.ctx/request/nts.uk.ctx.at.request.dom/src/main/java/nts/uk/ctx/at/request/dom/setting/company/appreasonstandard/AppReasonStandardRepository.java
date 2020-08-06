@@ -16,4 +16,6 @@ public interface AppReasonStandardRepository {
 	
 	public Optional<AppReasonStandard> findByHolidayAppType(String companyID, HolidayAppType holidayAppType);
 	
+	public Optional<AppReasonStandard> findByCD(ApplicationType appType, AppStandardReasonCode appStandardReasonCode);
+	
 }

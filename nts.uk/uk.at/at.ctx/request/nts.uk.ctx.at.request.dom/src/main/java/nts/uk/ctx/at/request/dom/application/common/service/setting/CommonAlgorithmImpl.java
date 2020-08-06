@@ -42,6 +42,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.InitWkTypeWkTimeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.PrintContentOfApp;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.PrintContentOfEachApp;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.AppReasonOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.DeadlineLimitCurrentMonth;
@@ -55,11 +57,15 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.checkpreappaccept.PreAppAcceptLimit;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.service.AppDeadlineSettingGet;
+import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
+import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandardRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbyworkplace.RequestByWorkplaceRepository;
+import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceConfigInfoAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
@@ -73,6 +79,8 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.service.HolidayAtrOutput;
 import nts.uk.ctx.at.shared.dom.worktype.service.JudgmentOneDayHoliday;
+import nts.uk.shr.com.company.CompanyAdapter;
+import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -135,6 +143,15 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	
 	@Inject
 	private JudgmentOneDayHoliday judgmentOneDayHoliday;
+	
+	@Inject
+	private CompanyAdapter companyAdapter;
+	
+	@Inject
+	private WorkplaceConfigInfoAdapter workplaceConfigInfoAdapter;
+	
+	@Inject
+	private AppReasonStandardRepository appReasonStandardRepository;
 
 	@Override
 	public AppDispInfoNoDateOutput getAppDispInfo(String companyID, List<String> applicantLst, ApplicationType appType, 
@@ -687,6 +704,38 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		}
 		// メッセージを表示する(Msg_1648)を表示する
 		throw new BusinessException("Msg_1648", date.toString(), msgParam);
+	}
+
+	@Override
+	public PrintContentOfApp print(String companyID, String appID, AppDispInfoStartupOutput appDispInfoStartupOutput,
+			Optional<PrintContentOfEachApp> opPrintContentOfEachApp) {
+		// [RQ622]会社IDから会社情報を取得する([RQ622] Lấy companyInfo từ companyID)
+		CompanyInfor companyInfo = companyAdapter.getCurrentCompany().orElseGet(() -> {
+			throw new RuntimeException("System Error: Company Info");
+		});
+		// INPUT．申請表示情報．申請詳細画面情報．申請から事前事後区分、申請日、申請開始日、申請終了日、申請理由を取得する
+		ApplicationType appType = appDispInfoStartupOutput.getAppDetailScreenInfo().get().getApplication().getAppType();
+		// INPUT．申請表示情報．申請詳細画面情報．申請．申請種類をチェックする
+		switch(appType) {
+			default: 
+				break;
+		}
+		
+		// 社員と基準日から所属職場履歴項目を取得する
+		String wkpID = employeeAdaptor.getAffWkpHistItemByEmpDate(
+				appDispInfoStartupOutput.getAppDetailScreenInfo().get().getApplication().getEmployeeID(), 
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate());
+		// [No.560]職場IDから職場の情報をすべて取得する
+		List<WorkplaceInfor> workplaceInforLst = workplaceConfigInfoAdapter.getWorkplaceInforByWkpIds(
+				companyID, 
+				Arrays.asList(wkpID), 
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate());
+		// 指定する定型理由コードから定型理由を取得する
+		Optional<AppReasonStandard> opAppReasonStandard = appReasonStandardRepository.findByCD(
+				appType, 
+				appDispInfoStartupOutput.getAppDetailScreenInfo().get().getApplication().getOpAppStandardReasonCD().get());
+		
+		return null;
 	}
 
 }
