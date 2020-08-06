@@ -78,8 +78,8 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			let dfd = $.Deferred();
 			nts.uk.ui.block.grayout();
 			if (self.registrationForm().shiftMasterName() == "" || self.registrationForm().workTypeCd() == ""
-				|| self.registrationForm().workTimeSetDisplay().includes(self.registrationForm().workTimeSetCd() + " " + "マスタ未登録")
-				|| self.registrationForm().workTypeDisplay().includes(self.registrationForm().workTypeCd() + " " + "マスタ未登録")) {
+				|| self.registrationForm().workTimeSetName().search("マスタ未登録") != -1
+				|| self.registrationForm().workTypeName().search("マスタ未登録") != -1) {
 				nts.uk.ui.block.clear();
 				return;
 			}
@@ -106,6 +106,7 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 
 				if (workStyle == 0)
 					self.workStyle().color('#ff0000');
+					
 				self.workStyle().borderColor('solid');
 				self.workStyle().backGroundColor(self.registrationForm().color());
 				self.workStyle().workTimeSetDisplay(self.registrationForm().shiftMasterName());
