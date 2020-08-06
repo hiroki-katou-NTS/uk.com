@@ -21,22 +21,22 @@
 				<!-- B1_1: Button New -->
 				<button tabindex="1" id="btn_001"
 					class="button separate-button fix-button"
-					>#{i18n.getText('KSM003_20')}</button>
+					data-bind="click: switchNewMode">#{i18n.getText('KSM003_20')}</button>
 				<!-- B1_2: Button Registration -->
 				<button tabindex="2" id="btn_002"
 					class="button proceed separate-button fix-button"
-					>#{i18n.getText('KSM003_21')}</button>
+					data-bind="click:saveWorking, enable: $root.errors.isEmpty">#{i18n.getText('KSM003_21')}</button>
 				<!-- B1_3: Button Display pattern -->
 				<button tabindex="3" id="btn_005"
 					class="button separate-button fix-button"
-					>#{i18n.getText('KSM003_35')}</button>
+					data-bind="click: openDialogWorking, enable: $root.errors.isEmpty() &amp; isEditting()">#{i18n.getText('KSM003_35')}</button>
 				<!-- B1_4: Button Delete -->
 				<button tabindex="4" id="btn_004"
 					class="button danger separate-button fix-button"
-					>#{i18n.getText('KSM003_22')}</button>
+					data-bind="click: deletePattern, enable: $root.errors.isEmpty()  &amp; isEditting()">#{i18n.getText('KSM003_22')}</button>
 				<!-- B1_4: Button Export Excel -->
 				<button tabindex="4"
-						>#{i18n.getText('KSM003_45')}</button>
+						data-bind="click: exportExcel">#{i18n.getText('KSM003_45')}</button>
 			</div>
 			<div id="content-area">
 				<div id="left-content" style="float: left"
@@ -66,7 +66,7 @@
 										  name: '#[KSM003_36]',
                                           value: selectedCode,
                                           constraint: 'PatternCode',
-                                          enable: isEditting,
+                                          enable: !isEditting(),
                                           required: true}" />
 					<!-- B3_3:Pattern Name-->
 					<input tabindex="6" class="nts-input" id="inpPattern"
@@ -77,14 +77,14 @@
                                           required: true}" />
 					<!-- Button -->
 					<div style="padding-bottom: 10px ">
-						<Button class="button" data-bind="click: addLine">#{i18n.getText('KSM003_4')}</Button>
-						<Button class="button danger">#{i18n.getText('KSM003_5')}</Button>
+						<Button class="button" data-bind="click: addLine, enable: lessThan99Items()">#{i18n.getText('KSM003_4')}</Button>
+						<Button class="button danger" data-bind="{click: removeLine, enable: hasWorkingCycleItems()}">#{i18n.getText('KSM003_5')}</Button>
 					</div>
 					<table>
 						<tr>
 							<td>
 								<table id="multi-list" data-bind="ntsGridList: {
-									height: 350,
+									height: 380,
 									options: gridItems,
 									optionsValue: 'id',
 									columns: gListColumns,

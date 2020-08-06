@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
-import javax.enterprise.inject.New;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

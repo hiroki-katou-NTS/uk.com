@@ -17,9 +17,11 @@
 	margin-left: 40px;
 	margin-top: 10px;
 	float: left;
-	height: 350px;
+	height: auto;
 }
-
+#right-content .upDown-container {
+	padding-left: 10px;
+}
 #nts-input-name {
 	width: 0px !important;
 }
