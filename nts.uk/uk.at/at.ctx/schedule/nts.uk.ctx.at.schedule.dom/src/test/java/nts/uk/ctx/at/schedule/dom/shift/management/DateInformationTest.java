@@ -37,15 +37,50 @@ public class DateInformationTest {
 		DateInformation dateInformation = DateInformationHelper.DUMMY;
 		NtsAssert.invokeGetters(dateInformation);
 	}
+	/**
+	 * 	require.祝日が存在するか(年月日) == false
+	 *  if 対象組織.単位 != 職場
+	 *  require.会社行事を取得する(年月日) is empty
+	 *  require.会社の特定日設定を取得する(年月日) is empty
+	 */
+	@Test
+	public void testCreate_1() {
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, "workplaceId", null);
+		GeneralDate today = GeneralDate.today();
+		new Expectations() {
+			{
+				require.getHolidaysByDate(today);
+				result = false;
+				
+				require.findCompanyEventByPK(today);
+				
+				require.getComSpecByDate(today);
+			}
+		};
+		
+		DateInformation dateInformation = DateInformation.create(require, today, targetOrgIdenInfor);
+		
+		assertFalse(dateInformation.getOptWorkplaceEventName().isPresent());
+		assertTrue(dateInformation.getListSpecDayNameWorkplace().isEmpty());
+		
+		assertFalse(dateInformation.isSpecificDay());
+		assertFalse(dateInformation.getOptCompanyEventName().isPresent());
+		assertTrue(dateInformation.getListSpecDayNameCompany().isEmpty());
+		
+		assertFalse(dateInformation.isHoliday());
+		assertSame(today, dateInformation.getYmd());
+		assertSame(today.dayOfWeekEnum(), dateInformation.getYmd().dayOfWeekEnum());
+	}
 	
 	/**
+	 * 	require.祝日が存在するか(年月日) == true
 	 *  if 対象組織.単位 != 職場
 	 *  require.会社行事を取得する(年月日) is empty
 	 *  require.会社の特定日設定を取得する(年月日) is empty
 	 */
 	@Test
 	public void testCreate_2() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, "workplaceId", "workplaceGroupId");
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, "workplaceId", null);
 		GeneralDate today = GeneralDate.today();
 		new Expectations() {
 			{
@@ -73,6 +108,7 @@ public class DateInformationTest {
 	}
 	
 	/**
+	 * 
 	 *  if 対象組織.単位 != 職場
 	 *  require.会社行事を取得する(年月日) not empty
 	 *  require.会社の特定日設定を取得する(年月日) not empty
@@ -80,7 +116,7 @@ public class DateInformationTest {
 	 */
 	@Test
 	public void testCreate_3() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, "workplaceId", "workplaceGroupId");
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, null, "workplaceGroupId");
 		GeneralDate today = GeneralDate.today();
 		CompanyEvent companyEvent = DateInformationHelper.getCompanyEventDefault();
 		List<CompanySpecificDateItem> listCompanySpecificDateItem = DateInformationHelper.getListDefaultByNumberItem(2);
@@ -119,7 +155,7 @@ public class DateInformationTest {
 	 */
 	@Test
 	public void testCreate_4() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, "workplaceId", "workplaceGroupId");
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, null, "workplaceGroupId");
 		GeneralDate today = GeneralDate.today();
 		CompanyEvent companyEvent = DateInformationHelper.getCompanyEventDefault();
 		List<CompanySpecificDateItem> listCompanySpecificDateItem = DateInformationHelper.getListDefaultByNumberItem(2);
@@ -164,7 +200,7 @@ public class DateInformationTest {
 	 */
 	@Test
 	public void testCreate_5() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId", "workplaceGroupId");
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId", null);
 		GeneralDate today = GeneralDate.today();
 		new Expectations() {
 			{
@@ -194,7 +230,7 @@ public class DateInformationTest {
 	 */
 	@Test
 	public void testCreate_6() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId", "workplaceGroupId");
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId", null);
 		GeneralDate today = GeneralDate.today();
 		WorkplaceEvent workplaceEvent = WorkplaceEvent.createFromJavaType("workplaceId", GeneralDate.today(), "eventName");
 		new Expectations() {
@@ -228,7 +264,7 @@ public class DateInformationTest {
 	 */
 	@Test
 	public void testCreate_7() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId", "workplaceGroupId");
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId", null);
 		GeneralDate today = GeneralDate.today();
 		WorkplaceEvent workplaceEvent = WorkplaceEvent.createFromJavaType("workplaceId", GeneralDate.today(), "eventName");
 		List<WorkplaceSpecificDateItem> listWorkplaceSpecificDateItem =  DateInformationHelper.getListWorkplaceSpecificDateItemByNumber(2);
@@ -266,7 +302,7 @@ public class DateInformationTest {
 	 */
 	@Test
 	public void testCreate_8() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId", "workplaceGroupId");
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId", null);
 		GeneralDate today = GeneralDate.today();
 		WorkplaceEvent workplaceEvent = WorkplaceEvent.createFromJavaType("workplaceId", GeneralDate.today(), "eventName");
 		List<WorkplaceSpecificDateItem> listWorkplaceSpecificDateItem =  DateInformationHelper.getListWorkplaceSpecificDateItemByNumber(2);
