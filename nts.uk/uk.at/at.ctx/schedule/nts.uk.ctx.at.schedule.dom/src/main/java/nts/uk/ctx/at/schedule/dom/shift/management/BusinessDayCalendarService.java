@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompany;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompanyRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkPlaceRepository;
@@ -47,11 +48,11 @@ public class BusinessDayCalendarService {
 			if(calendarWorkplace.isPresent()) {
 				// 終了状態：成功　を返す
 				// 取得したドメインモデル「職場営業日カレンダー日次」.稼働日区分
-				if(calendarWorkplace.get().getWorkDayDivision() == UseSet.nonWorkingDay_inlaw) {
+				if(calendarWorkplace.get().getWorkDayDivision().value == WorkdayDivision.NON_WORKINGDAY_INLAW.value) {
 					// 非稼働日(法内)　→　休日区分　=　法定休日
 					TargetDaysHDCls target = new TargetDaysHDCls(HolidayCls.STATUTORY_HOLIDAYS, date);
 					return Optional.of(target);
-				} else if(calendarWorkplace.get().getWorkDayDivision() == UseSet.nonWorkingDay_Outrage) {
+				} else if(calendarWorkplace.get().getWorkDayDivision().value == WorkdayDivision.NON_WORKINGDAY_EXTRALEGAL.value) {
 					// 非稼働日(法外)　→　休日区分　=　法定外休日
 					TargetDaysHDCls target = new TargetDaysHDCls(HolidayCls.NON_STATUTORY_HOLIDAYS, date);
 					return Optional.of(target);
@@ -64,11 +65,11 @@ public class BusinessDayCalendarService {
 				if(calendarCompany.isPresent()) {
 					// 終了状態：成功　を返す
 					// 取得したドメインモデル「会社営業日カレンダー日次」.稼働日区分
-					if(calendarCompany.get().getWorkDayDivision() == UseSet.nonWorkingDay_inlaw) {
+					if(calendarCompany.get().getWorkDayDivision().value == WorkdayDivision.NON_WORKINGDAY_INLAW.value) {
 						// 非稼働日(法内)　→　休日区分　=　法定休日
 						TargetDaysHDCls target = new TargetDaysHDCls(HolidayCls.STATUTORY_HOLIDAYS, date);
 						return Optional.of(target);
-					} else if(calendarCompany.get().getWorkDayDivision() == UseSet.nonWorkingDay_Outrage) {
+					} else if(calendarCompany.get().getWorkDayDivision().value == WorkdayDivision.NON_WORKINGDAY_EXTRALEGAL.value) {
 						// 非稼働日(法外)　→　休日区分　=　法定外休日
 						TargetDaysHDCls target = new TargetDaysHDCls(HolidayCls.NON_STATUTORY_HOLIDAYS, date);
 						return Optional.of(target);
