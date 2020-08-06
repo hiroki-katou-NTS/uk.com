@@ -96,10 +96,10 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	private static final String GET_BY_CID_AND_EMPIDS = " SELECT a FROM BsymtEmploymentHist a " 
 			+ " WHERE a.companyId = :companyId "
 			+ " AND a.sid IN :empIds ";
-	private static final String GET_BY_KEY = " SELECT a FROM BsymtEmploymentHistItem "
+	private static final String GET_BY_KEY = " SELECT a FROM BsymtEmploymentHistItem a "
 											+ " WHERE a.hisId =:  histId "; 
 	
-	private static final String GET_BY_LIST_HISTID = " SELECT a FROM BsymtEmploymentHistItem "
+	private static final String GET_BY_LIST_HISTID = " SELECT a FROM BsymtEmploymentHistItem a"
 			+ " WHERE a.hisId IN :listHistId "; 
 	
 	private static final String GET_BY_DATE = " SELECT i.hisId ,i.sid ,i.empCode , i.salarySegment FROM BsymtEmploymentHistItem i "
@@ -780,7 +780,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		List<EmploymentHistory> lstEmpHis = new ArrayList<>();
 		List<BsymtEmploymentHist> listEntity = this.queryProxy().query(GET_BY_CID_AND_EMPIDS,BsymtEmploymentHist.class)
 				.setParameter("companyId", companyId)
-				.setParameter("empId", empIds).getList();
+				.setParameter("empIds", empIds).getList();
 		for(String empId : empIds){
 			List<DateHistoryItem> listDateHistory = listEntity.stream().filter(x-> x.sid.equals(empId)).map( c -> new DateHistoryItem(c.hisId, new DatePeriod(c.strDate, c.endDate))).collect(Collectors.toList());
 			EmploymentHistory history = new EmploymentHistory(companyId, empId, listDateHistory);
@@ -802,8 +802,8 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	@Override
 	public List<EmploymentHistoryItem> getAllEmploymentHistoryItem(List<String> listHistId) {
 		return this.queryProxy().query(GET_BY_LIST_HISTID, BsymtEmploymentHistItem.class)
-				.setParameter("listHistId", listHistId).getList(x -> new EmploymentHistoryItem(x.hisId, x.sid,
-						EnumAdaptor.valueOf(x.salarySegment, SalarySegment.class), new EmploymentCode(x.empCode)));
+				.setParameter("listHistId", listHistId).getList(x -> new EmploymentHistoryItem(x.hisId, x.sid,  
+						 x.salarySegment == null ? null : EnumAdaptor.valueOf(x.salarySegment, SalarySegment.class), new EmploymentCode(x.empCode)));
 
 	}
 
