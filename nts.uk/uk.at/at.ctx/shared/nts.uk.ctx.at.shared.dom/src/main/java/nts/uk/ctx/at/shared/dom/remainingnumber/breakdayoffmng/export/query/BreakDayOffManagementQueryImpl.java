@@ -409,6 +409,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 				.collect(Collectors.toList());
 		dayOffHisRecord.stream().forEach(y -> {
 			outputData.setRecordUseDays(outputData.getRecordUseDays() + y.getRequeiredDays());
+			outputData.setActualNumberOfHourUsed(outputData.getActualNumberOfHourUsed() + y.getRequiredHours());
 		});
 		//	実績発生日数を算出する
 		List<BreakHistoryData> breakHisRecord = lstBreakHis.stream()
@@ -435,6 +436,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 				.collect(Collectors.toList());
 		breakHisSche.stream().forEach(y -> {
 			outputData.setScheOccurrenceDays(outputData.getScheOccurrenceDays() + y.getOccurrenceDays());
+			outputData.setScheHours(outputData.getScheHours() + y.getNumberOfHours());
 		});
 		//	繰越数を算出する
 		//	確定済の休出履歴を抽出する
