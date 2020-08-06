@@ -14,11 +14,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReserveModifyService;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
+import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
@@ -53,19 +49,22 @@ public class BentoReserveMofidyCommandHandler extends CommandHandler<BentoReserv
 		RequireImpl require = new RequireImpl(bentoMenuRepository, bentoReservationRepository);
 		
 		GeneralDateTime datetime = GeneralDateTime.now();
+		Optional<WorkLocationCode> workLocationCode = Optional.of(new WorkLocationCode(command.getWorkLocationCode()));
         AtomTask persist1 = BentoReserveModifyService.reserve(
                 require, 
                 reservationRegisterInfo, 
                 new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME1), 
                 datetime,
-                command.getFrame1Bentos());
+                command.getFrame1Bentos(),
+				workLocationCode);
         
         AtomTask persist2 = BentoReserveModifyService.reserve(
                 require, 
                 reservationRegisterInfo, 
                 new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME2),
                 datetime,
-                command.getFrame2Bentos());
+                command.getFrame2Bentos(),
+				workLocationCode);
 		
 		transaction.execute(() -> {
             persist1.run();
@@ -82,9 +81,9 @@ public class BentoReserveMofidyCommandHandler extends CommandHandler<BentoReserv
 		private final BentoReservationRepository bentoReservationRepository;
 
 		@Override
-		public BentoMenu getBentoMenu(ReservationDate reservationDate) {
+		public BentoMenu getBentoMenu(ReservationDate reservationDate,Optional<WorkLocationCode> workLocationCode) {
 			String companyID = AppContexts.user().companyId();
-			return bentoMenuRepository.getBentoMenu(companyID, reservationDate.getDate());
+			return bentoMenuRepository.getBentoMenu(companyID, reservationDate.getDate(),workLocationCode);
 		}
 
 		@Override

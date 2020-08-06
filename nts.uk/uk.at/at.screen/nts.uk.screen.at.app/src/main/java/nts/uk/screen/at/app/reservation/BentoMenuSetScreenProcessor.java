@@ -3,9 +3,11 @@ package nts.uk.screen.at.app.reservation;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.context.AppContexts;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Optional;
 
+@Stateless
 public class BentoMenuSetScreenProcessor {
 
     @Inject

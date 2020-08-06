@@ -67,9 +67,9 @@ public class Bento {
 	 */
 	@Getter
 	private Optional<WorkLocationCode> workLocationCode;
-	
+
 	public Bento(int frameNo, BentoName name, BentoAmount amount1, BentoAmount amount2,
-			BentoReservationUnitName unit, boolean reservationTime1Atr, boolean reservationTime2Atr) {
+				 BentoReservationUnitName unit, boolean reservationTime1Atr, boolean reservationTime2Atr,Optional<WorkLocationCode> workLocationCode) {
 		this.frameNo = frameNo; 
 		this.name = name; 
 		this.amount1 = amount1; 
@@ -77,6 +77,7 @@ public class Bento {
 		this.unit = unit; 
 		this.reservationTime1Atr = reservationTime1Atr;
 		this.reservationTime2Atr = reservationTime2Atr;
+		this.workLocationCode = workLocationCode;
 	}
 	
 	/**

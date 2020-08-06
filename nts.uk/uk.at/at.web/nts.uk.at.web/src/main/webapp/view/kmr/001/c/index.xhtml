@@ -42,9 +42,9 @@
 							height: 350,
 							dataSource: items,
 							primaryKey: 'id',
-							columns: ko.observableArray([
-								{ headerText: '#{i18n.getText('KMR001_41')}', key: 'id', width: 50 },
-								{ headerText: '#{i18n.getText('KMR001_42')}', key: 'name', width: 250 }
+							columns: ([
+								{ headerText: $i18n('KMR001_41'), key: 'id', width: 50 },
+								{ headerText: $i18n('KMR001_42'), key: 'name', width: 250 }
 							]),
 							value: currentCode
 						}"></table>

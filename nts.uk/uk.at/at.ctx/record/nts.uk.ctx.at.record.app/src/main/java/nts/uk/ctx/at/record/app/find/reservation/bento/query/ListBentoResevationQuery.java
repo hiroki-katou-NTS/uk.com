@@ -6,10 +6,7 @@ import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -49,12 +46,11 @@ public class ListBentoResevationQuery {
 
     public List<BentoReservation> getOrderedBentoReservationsDetail(List<ReservationRegisterInfo> reservationRegisterInfos, DatePeriod period,
                                                              ReservationClosingTimeFrame reservationClosingTimeFrame, List<WorkLocationCode> workLocationCodes){
-        return handleData(bentoReservationRepository.findByOrderedPeriodEmpLst(reservationRegisterInfos, period, ORDERED), reservationClosingTimeFrame, workLocationCodes);
-
+        return handleData(bentoReservationRepository.findByOrderedPeriodEmpLst(reservationRegisterInfos, period, reservationClosingTimeFrame, ORDERED, workLocationCodes), reservationClosingTimeFrame, workLocationCodes);
     }
     public List<BentoReservation> getUnOrderedBentoReservationsDetail(List<ReservationRegisterInfo> reservationRegisterInfos, DatePeriod period,
                                                                     ReservationClosingTimeFrame reservationClosingTimeFrame, List<WorkLocationCode> workLocationCodes){
-        return handleData(bentoReservationRepository.findByOrderedPeriodEmpLst(reservationRegisterInfos, period, UN_ORDERED), reservationClosingTimeFrame, workLocationCodes);
+        return handleData(bentoReservationRepository.findByOrderedPeriodEmpLst(reservationRegisterInfos, period, reservationClosingTimeFrame, UN_ORDERED, workLocationCodes), reservationClosingTimeFrame, workLocationCodes);
     }
 
 

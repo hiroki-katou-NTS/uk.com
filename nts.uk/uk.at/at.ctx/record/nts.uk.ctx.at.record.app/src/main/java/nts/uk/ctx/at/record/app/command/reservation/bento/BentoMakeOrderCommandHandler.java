@@ -13,6 +13,8 @@ import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OrderDeadline;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,7 @@ import java.util.Optional;
  * @author Hoang Anh Tuan
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class BentoMakeOrderCommandHandler extends CommandHandler<List<BentoMakeOrderCommand>> {
 
     private final boolean ORDERED = true;
