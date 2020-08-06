@@ -26,6 +26,7 @@ import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMerge;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
+import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonTimeSup;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -73,9 +74,18 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 			"AND    a.krcdtMonMergePk.closureId = :closureId",
 			"AND    a.krcdtMonMergePk.closureDay = :closureDay",
 			"AND    a.krcdtMonMergePk.isLastDay = :isLastDay");
+	private static final String DELETE_OUEN_BY_PK = String.join(" ", "DELETE FROM KrcdtMonTimeSup a ",
+			"WHERE  a.id.employeeId = :employeeId ",
+			"AND    a.id.yearMonth = :yearMonth ",
+			"AND    a.id.closureId = :closureId",
+			"AND    a.id.closureDay = :closureDay",
+			"AND    a.id.isLastDay = :isLastDay");
 	private static final String DELETE_BY_YEAR_MONTH = String.join(" ", "DELETE FROM KrcdtMonMerge a ",
 			 "WHERE  a.krcdtMonMergePk.employeeId = :employeeId ",
-			 "AND 	 a.krcdtMonMergePk.yearMonth = :yearMonth ");	
+			 "AND 	 a.krcdtMonMergePk.yearMonth = :yearMonth ");
+	private static final String DELETE_OUEN_BY_YEAR_MONTH = String.join(" ", "DELETE FROM KrcdtMonTimeSup a ",
+			 "WHERE  a.id.employeeId = :employeeId ",
+			 "AND 	 a.id.yearMonth = :yearMonth ");	
 	private static final String FIND_BY_PERIOD_INTO_END = "SELECT a FROM KrcdtMonMerge a "
 			+ "WHERE a.krcdtMonMergePk.employeeId = :employeeId "
 			+ "AND a.endYmd >= :startDate "
@@ -94,7 +104,7 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 				closureDate.getClosureDay().v(),
 				(closureDate.getLastDayOfMonth() ? 1 : 0));
 		return this.queryProxy().find(key, KrcdtMonMerge.class)
-				.map(c -> toDomain(c));
+				.map(c -> toDomain(c, getOuen(c.krcdtMonMergePk)));
 	}
 
 	/** 検索　（年月） */
@@ -112,7 +122,8 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 			stmt.setInt(2, yearMonth.v());
 			
 			List<KrcdtMonMerge> entities = new NtsResultSet(stmt.executeQuery()).getList(rec -> KrcdtMonMerge.MAPPER.toEntity(rec));
-			return entities.stream().map(e -> toDomain(e)).collect(Collectors.toList());
+			return entities.stream().map(e -> toDomain(e, getOuen(e.krcdtMonMergePk)))
+									.collect(Collectors.toList());
 		}
 	}
 	
@@ -125,7 +136,7 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
 				.setParameter("closureId", closureId.value)
-				.getList(c -> toDomain(c));
+				.getList(c -> toDomain(c, getOuen(c.krcdtMonMergePk)));
 	}
 
 	/** 検索　（社員IDリスト） */
@@ -142,7 +153,7 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 					.setParameter("closureId", closureId.value)
 					.setParameter("closureDay", closureDate.getClosureDay().v())			
 					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
-					.getList(c -> toDomain(c)));
+					.getList(c -> toDomain(c, getOuen(c.krcdtMonMergePk))));
 		});
 		results.sort(Comparator.comparing(TimeOfMonthly::getEmployeeId));
 		return results;
@@ -160,7 +171,7 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 					.setParameter("employeeIds", splitData)
 					.setParameter("yearMonth", yearMonth.v())
 					.setParameter("closureId", closureId)
-					.getList(c -> toDomain(c)));
+					.getList(c -> toDomain(c, getOuen(c.krcdtMonMergePk))));
 		});
 		results.sort(Comparator.comparing(TimeOfMonthly::getEmployeeId));
 		return results;
@@ -191,7 +202,8 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 			if (tmp != 0) return tmp;	
 			return o1.getStartYmd().compareTo(o2.getStartYmd());
 		});
-		return results.stream().map(item -> toDomain(item)).collect(Collectors.toList());
+		return results.stream().map(item -> toDomain(item, getOuen(item.krcdtMonMergePk)))
+								.collect(Collectors.toList());
 	}
 		
 	/** 検索　（基準日） */
@@ -202,19 +214,19 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 				.setParameter("employeeId", employeeId)
 				.setParameter("startDate", criteriaDate)
 				.setParameter("endDate", criteriaDate)
-				.getList(c -> toDomain(c));
+				.getList(c -> toDomain(c, getOuen(c.krcdtMonMergePk)));
 	}
 	
 	/** 検索　（終了日を含む期間） */
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<TimeOfMonthly> findByPeriodIntoEndYmd(String employeeId, DatePeriod period) {
-		
+    	
 		return this.queryProxy().query(FIND_BY_PERIOD_INTO_END, KrcdtMonMerge.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("startDate", period.start())
 				.setParameter("endDate", period.end())
-				.getList(c -> toDomain(c));
+				.getList(c -> toDomain(c, getOuen(c.krcdtMonMergePk)));
 	}
 			
 	/** 登録および更新 */
@@ -234,14 +246,20 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 		
 		// 登録・更新を判断　および　キー値設定
 		boolean isNeedPersist = false;
+		
 		KrcdtMonMerge entity = this.getEntityManager().find(KrcdtMonMerge.class, key);
+		KrcdtMonTimeSup ouenEntity = getOuen(key);
 		if (entity == null){
 			isNeedPersist = true;
 			entity = new KrcdtMonMerge();
 			entity.krcdtMonMergePk = key;
+			
+			ouenEntity = new KrcdtMonTimeSup();
+			ouenEntity.id = key;
 		}
+		
 		if(domain.getAttendanceTime().isPresent()){
-			entity.toEntityAttendanceTimeOfMonthly(domain.getAttendanceTime().get());
+			entity.toEntityAttendanceTimeOfMonthly(domain.getAttendanceTime().get(), ouenEntity);
 		}
 		if(domain.getAffiliation().isPresent()){
 			entity.toEntityAffiliationInfoOfMonthly(domain.getAffiliation().get());
@@ -250,6 +268,7 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 		// 登録が必要な時、登録を実行
 		if (isNeedPersist) {
 			this.getEntityManager().persist(entity);
+			this.getEntityManager().persist(ouenEntity);
 		}
 	}
 	
@@ -264,6 +283,16 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 				.setParameter("closureDay", closureDate.getClosureDay().v())
 				.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
 				.executeUpdate();
+		
+
+		this.getEntityManager().createQuery(DELETE_OUEN_BY_PK)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
+				.setParameter("closureId", closureId.value)
+				.setParameter("closureDay", closureDate.getClosureDay().v())
+				.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
+				.executeUpdate();
+		
 	}
 		
 	/** 削除　（年月） */
@@ -274,6 +303,12 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
 				.executeUpdate();
+
+		this.getEntityManager().createQuery(DELETE_OUEN_BY_YEAR_MONTH)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
+				.executeUpdate();
+		
 	}
 	
 	@Override
@@ -325,8 +360,8 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 		}
 	}
 
-	private TimeOfMonthly toDomain(KrcdtMonMerge c) {
-		return new TimeOfMonthly(c.toDomainAttendanceTimeOfMonthly(), c.toDomainAffiliationInfoOfMonthly());
+	private TimeOfMonthly toDomain(KrcdtMonMerge c, KrcdtMonTimeSup ouen) {
+		return new TimeOfMonthly(c.toDomainAttendanceTimeOfMonthly(ouen), c.toDomainAffiliationInfoOfMonthly());
 	}
 
 	@Override
@@ -389,5 +424,9 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 			entity.dirtying();
 			this.commandProxy().update(entity);
 		});
+	}
+
+	private KrcdtMonTimeSup getOuen(KrcdtMonMergePk id) {
+		return this.getEntityManager().find(KrcdtMonTimeSup.class, id);
 	}
 }

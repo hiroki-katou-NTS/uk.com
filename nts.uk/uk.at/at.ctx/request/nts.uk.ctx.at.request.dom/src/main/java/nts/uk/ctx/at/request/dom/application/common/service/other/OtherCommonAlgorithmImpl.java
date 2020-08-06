@@ -111,8 +111,6 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	private ClosureEmploymentRepository closureEmploymentRepository;
 	
 	@Inject
-	private ClosureService closureService;
-	@Inject
 	private AbsenceLeaveAppRepository absRepo;
 	@Inject
 	private CompltLeaveSimMngRepository compLeaveRepo;
@@ -141,8 +139,6 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	private IApplicationContentService applicationContentService;
 	@Inject
 	private CollectAchievement collectAch;
-	@Inject
-	private WorkTypeIsClosedService workTypeRepo;
 	
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
@@ -203,8 +199,8 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		当月の期間を算出する(tính period của tháng hiện tại)
 		Object<String: startDate, String: endDate> obj2 = Period.find(obj1.tightenID, obj1.currentMonth); // obj2 <=> 締め期間(開始年月日,終了年月日) 
 		*/
-		DatePeriod datePeriod = closureService.getClosurePeriod(closure.get().getClosureId().value,
-				closure.get().getClosureMonth().getProcessingYm());
+		DatePeriod datePeriod = ClosureService.getClosurePeriod(closure.get().getClosureId().value,
+				closure.get().getClosureMonth().getProcessingYm(), closure);
 		return new PeriodCurrentMonth(closure.get().getClosureId(), datePeriod.start(), datePeriod.end());
 	}
 	/**
@@ -219,9 +215,9 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		for(String wkpID : wkpIDLst) {
 			// アルゴリズム「職場IDから職場別就業時間帯を取得」を実行する
 			List<WorkTimeSetting> listWorkTime = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyID, wkpID);
-			if(listWorkTime.size()>0) {
-				Collections.sort(listWorkTime, Comparator.comparing(x -> x.getWorktimeCode().v()));
-				return listWorkTime;
+			if(listWorkTime.size() > 0) {
+//				Collections.sort(listWorkTime, Comparator.comparing(x -> x.getWorktimeCode().v()));
+				return listWorkTime.stream().sorted(Comparator.comparing(x -> x.getWorktimeCode().v())).collect(Collectors.toList());
 			}
 		}
 		// アルゴリズム「廃止区分によって就業時間帯を取得する」を実行する
@@ -534,13 +530,24 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			AchievementOutput achInfor = collectAch.getAchievement(cid, sid, loopDate);
 			if(achInfor != null 
 					&& achInfor.getWorkType() != null
-					&& workTypeRepo.checkHoliday(achInfor.getWorkType().getWorkTypeCode()) //1日休日の判定
+					&& WorkTypeIsClosedService.checkHoliday(createRequireM1(), achInfor.getWorkType().getWorkTypeCode()) //1日休日の判定
 					) {
 				lstOutput.add(loopDate);
 			}
 		}
 		return lstOutput;
 	}
+	
+	private WorkTypeIsClosedService.RequireM1 createRequireM1() {
+		return new WorkTypeIsClosedService.RequireM1() {
+			
+			@Override
+			public Optional<WorkType> workType(String companyId, String workTypeCd) {
+				return workTypeRepository.findByPK(companyId, workTypeCd);
+			}
+		};
+	}
+	
 	@Override
 	public WorkType getWorkTypeScheduleSpec(String companyID, String employeeID, GeneralDate appDate) {
 		// Imported(申請承認)「勤務実績」を取得する
