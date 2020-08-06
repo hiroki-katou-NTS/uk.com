@@ -16,7 +16,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.ConfirmLeavePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.ConfirmLeavePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
