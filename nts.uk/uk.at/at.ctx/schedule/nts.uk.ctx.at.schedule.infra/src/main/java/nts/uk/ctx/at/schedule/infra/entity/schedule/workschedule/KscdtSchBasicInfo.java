@@ -229,12 +229,6 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		return new WorkSchedule(sID, yMD, EnumAdaptor.valueOf(confirmedATR ? 1 : 0, ConfirmedATR.class), 
 				workInfo, affInfo, lstBreakTime, lstEditState, Optional.ofNullable(optTimeLeaving), Optional.empty(), Optional.ofNullable(optSortTimeWork));
 	}
-	
-	public void fromEntity(WorkSchedule workSchedule) {
-		KscdtSchBasicInfoPK pk = new KscdtSchBasicInfoPK(workSchedule.getEmployeeID(), workSchedule.getYmd());
-		this.confirmedATR = workSchedule.getConfirmedATR().value == 1 ? true : false;
-		//this.empCd = workSchedule.get
-	}
 
 	@Override
 	protected Object getKey() {

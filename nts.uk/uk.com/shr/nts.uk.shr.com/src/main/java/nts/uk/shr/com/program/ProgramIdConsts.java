@@ -787,6 +787,7 @@ public class ProgramIdConsts {
 	public static final String KSM015A = "KSM015A";
 	public static final String KSM015B = "KSM015B";
 	public static final String KSM015C = "KSM015C";
+	public static final String KSM015D = "KSM015D";
 
 	public static final String KSC001A = "KSC001A";
 	public static final String KSC001B = "KSC001B";

@@ -268,7 +268,7 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 							} else { 
 								$('#worktime-lable').show();
 								}
-							$('.b73-desc').sh();
+							$('.b73-desc').show();
 						});
 				}
 			});
