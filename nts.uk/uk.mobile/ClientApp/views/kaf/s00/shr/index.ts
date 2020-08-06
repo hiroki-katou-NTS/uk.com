@@ -26,8 +26,11 @@ export class KafS00ShrComponent extends Vue {
                         self.$goto('ccg008a');   
                     }
                 });
+                if (recordDate == 0) {
+                    return false;
+                }
 
-                return false;
+                return true;
             }
             
             if (_.isNull(opErrorFlag)) {
@@ -85,6 +88,20 @@ export enum AppType {
     EARLY_LEAVE_CANCEL_APPLICATION = 9, // 遅刻早退取消申請
     COMPLEMENT_LEAVE_APPLICATION = 10, // 振休振出申請
     OPTIONAL_ITEM_APPLICATION = 15, // 任意項目申請
+}
+
+export enum AppTypeName {
+    OVER_TIME_APPLICATION = '残業申請',
+    ABSENCE_APPLICATION = '休暇申請',
+    WORK_CHANGE_APPLICATION = '勤務変更申請',
+    BUSINESS_TRIP_APPLICATION = '出張申請',
+    GO_RETURN_DIRECTLY_APPLICATION = '直行直帰申請',
+    LEAVE_TIME_APPLICATION = '休出時間申請',
+    STAMP_APPLICATION = '打刻申請',
+    ANNUAL_HOLIDAY_APPLICATION = '時間休暇申請',
+    EARLY_LEAVE_CANCEL_APPLICATION = '遅刻早退取消申請',
+    COMPLEMENT_LEAVE_APPLICATION = '振休振出申請',
+    OPTIONAL_ITEM_APPLICATION = '任意項目申請'
 }
 
 const API = {

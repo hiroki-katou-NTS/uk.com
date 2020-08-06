@@ -56,6 +56,7 @@ export class KafS00AComponent extends Vue {
             self.displayPreAppPeriod = data.data.preAppAcceptLimit.useReceptionRestriction;
             self.displayPostAppPeriod = data.data.postAppAcceptLimit.useReceptionRestriction;
             self.displayAppPeriod = self.displayPreAppPeriod || self.displayPostAppPeriod;
+            self.$mask('hide');
         }).catch((res: any) => {
             self.$mask('hide');
             self.$modal.error(res.messageId);

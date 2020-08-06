@@ -98,8 +98,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 }
             }]
         },
-        opStampRequestMode: 1,
-        opReversionReason: '1',
+        // opStampRequestMode: 1,
+        // opReversionReason: '1',
         // opAppStartDate: '2020/08/07',
         // opAppEndDate: '2020/08/08',
         // opAppReason: 'jdjadja',
@@ -308,7 +308,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
             },
             output: {
                 // 定型理由
-                opAppStandardReasonCD: self.mode ? 1 : self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+                opAppStandardReasonCD: self.mode ? '' : self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
                 // 申請理由
                 opAppReason: self.mode ? '' : self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
             }
@@ -516,9 +516,11 @@ export class KafS07AComponent extends KafS00ShrComponent {
             }
         }
         
-
-        this.application.opAppStandardReasonCD = this.kaf000_C_Params.output.opAppStandardReasonCD;
-        this.application.opAppReason = this.kaf000_C_Params.output.opAppReason;
+        if (this.kaf000_C_Params.output) {
+            this.application.opAppStandardReasonCD = this.kaf000_C_Params.output.opAppStandardReasonCD;
+            this.application.opAppReason = this.kaf000_C_Params.output.opAppReason;
+        }
+        this.application.enteredPerson = this.user.employeeId;
 
 
     }
@@ -580,7 +582,16 @@ export class KafS07AComponent extends KafS00ShrComponent {
         }
     }
     public register() {
-        console.log(this.application);
+        const vm = this;
+        let validAll: boolean = true;
+        for (let child of vm.$children) {
+            child.$validate();
+            if (!child.$valid) {
+                validAll = false;
+            }
+        }
+        console.log(validAll);
+        console.log(vm.application);
         if (this.$valid) {
             this.$mask('show');
         }
@@ -674,7 +685,6 @@ export class KafS07AComponent extends KafS00ShrComponent {
     // bind visible of view 
     public bindVisibleView(params: any) {
         let appWorkChangeDispInfo = params;
-
         this.isCondition1 = this.isDisplay1(appWorkChangeDispInfo);
         this.isCondition2 = this.isDisplay2(appWorkChangeDispInfo);
         this.isCondition3 = this.isDisplay3(appWorkChangeDispInfo);
@@ -703,7 +713,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 }
             }
         }).catch((res: any) => {
-            // this.$modal.error({ messageParams: [] });
+            this.$modal.error({ messageId: res.messageId });
         });
     }
 
