@@ -11,38 +11,27 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         enable: KnockoutObservable<boolean>;
         readonly: KnockoutObservable<boolean>;
         time: KnockoutObservable<number>;
-        items0 = (function() {
-            let list = [];
-            for (let i = 1; i < 50; i++) {
-                let dataObject = new TimePlaceOutput(i);
-                list.push(new GridItem(dataObject, STAMPTYPE.ATTENDENCE));
-            }
-            return list;
-        })();
+    
+        isFillColor1: KnockoutObservable<boolean> = ko.observable(true);
+
+        
         
         items1 = (function() {
-            let list = [];
-            let indexId = 1;
+            let list = []; 
             for (let i = 1; i < 3; i++) {
                 let dataObject = new TimePlaceOutput(i);
-                list.push(new GridItem(dataObject, STAMPTYPE.ATTENDENCE));
-                list[(indexId -1)].id = indexId;
-                indexId++;
+                list.push(new GridItem(dataObject, STAMPTYPE.ATTENDENCE)); 
             }
-            for (let i = 1; i < 4; i++) {
-                let dataObject = new TimePlaceOutput(i);
-                list.push(new GridItem(dataObject, STAMPTYPE.EXTRAORDINARY));
-                list[(indexId -1)].id = indexId;
-                indexId++;
-            }
+            
             return list;
         })();
         
         items2 = (function() {
             let list = [];
-            for (let i = 1; i < 11; i++) {
+            for (let i = 3; i < 6; i++) {
                 let dataObject = new TimePlaceOutput(i);
-                list.push(new GridItem(dataObject, STAMPTYPE.GOOUT_RETURNING));
+                list.push(new GridItem(dataObject, STAMPTYPE.EXTRAORDINARY));
+                
             }
             
             return list;
@@ -52,12 +41,22 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             let list = [];
             for (let i = 1; i < 11; i++) {
                 let dataObject = new TimePlaceOutput(i);
+                list.push(new GridItem(dataObject, STAMPTYPE.GOOUT_RETURNING));
+            }
+            
+            return list;
+        })();
+        
+        items4 = (function() {
+            let list = [];
+            for (let i = 1; i < 11; i++) {
+                let dataObject = new TimePlaceOutput(i);
                 list.push(new GridItem(dataObject, STAMPTYPE.BREAK));
             }
             
             return list;
         })();
-        items4 = (function() {
+        items5 = (function() {
             let list = [];
             for (let i = 1; i < 3; i++) {
                 let dataObject = new TimePlaceOutput(i);
@@ -67,7 +66,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             return list;
         })();
         
-        items5 = (function() {
+        items6 = (function() {
             let list = [];
             for (let i = 1; i < 3; i++) {
                 let dataObject = new TimePlaceOutput(i);
@@ -83,7 +82,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             const self = this;
             self.enable = ko.observable(true);
             self.readonly = ko.observable(false);
-            self.time = ko.observable(1200);
+            self.time = ko.observable(1400);
             
 //            self.$blockui("show");
 //            self.loadData([], [], AppType.STAMP_APPLICATION)
@@ -127,19 +126,20 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             let statesTable = [];
             for (let i = 1; i < 21; i++) {
                 statesTable.push(new CellState(String(i), "text1", ['titleColor']));
+                statesTable.push(new CellState(String(i), "flag", [nts.uk.ui.mgrid.color.Disable]));
             }
                 
 //            statesTable.push(new CellState(503, "flag", [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
 //            statesTable.push(new CellState(509, "flag", [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
 //            statesTable.push(new CellState(511, "flag", [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
             
-            
+            let items1_2 = this.items1.concat(this.items2);
             
 //            出勤／退勤
             $("#grid1").ntsGrid({ 
                 width: '970px',
                 height: '400px',
-                dataSource: this.items1,
+                dataSource: items1_2,
                 primaryKey: 'id',
                 virtualization: true,
                 virtualizationMode: 'continuous',
@@ -194,7 +194,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             $("#grid2").ntsGrid({ 
                 width: '970px',
                 height: '400px',
-                dataSource: this.items2,
+                dataSource: this.items3,
                 primaryKey: 'id',
                 virtualization: true,
                 virtualizationMode: 'continuous',
@@ -247,7 +247,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             $("#grid3").ntsGrid({ 
                 width: '970px',
                 height: '400px',
-                dataSource: this.items3,
+                dataSource: this.items4,
                 primaryKey: 'id',
                 virtualization: true,
                 virtualizationMode: 'continuous',
@@ -302,7 +302,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             $("#grid4").ntsGrid({ 
                 width: '970px',
                 height: '400px',
-                dataSource: this.items4,
+                dataSource: this.items5,
                 primaryKey: 'id',
                 virtualization: true,
                 virtualizationMode: 'continuous',
@@ -353,7 +353,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             $("#grid5").ntsGrid({ 
                 width: '970px',
                 height: '400px',
-                dataSource: this.items5,
+                dataSource: this.items6,
                 primaryKey: 'id',
                 virtualization: true,
                 virtualizationMode: 'continuous',
@@ -421,30 +421,43 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     }
     class GridItem {
         id: number;
-        flag: boolean;
+        flag: KnockoutObservable<boolean>;
+        startTimeRequest: KnockoutObservable<number> = ko.observable(null);
+        endTimeRequest: KnockoutObservable<number> = ko.observable(null);
+        typeReason: KnockoutObservable<number>;
         startTime: string;
         endTime: string;
         text1: string;
         constructor(dataObject: TimePlaceOutput, typeStamp : STAMPTYPE) {
-            this.id = dataObject.frameNo;
-            this.flag = false;
+            const self = this;
+            self.id = dataObject.frameNo;
+            self.flag = ko.observable(null);
             let start = _.isNull(dataObject.opStartTime) ? '--:--' : '10:00';
             let end = _.isNull(dataObject.opEndTime) ? '--:--' : '17:30';
-            this.startTime = '<div style="display: block; margin: 5px"> <p>'+ start +'</p><input style="width: 50px" data-name="Time Editor" data-bind= "ntsTimeEditor: { constraint: \'SampleTimeDuration\', inputFormat: \'time\', mode: \'time\', enable: enable, readonly: readonly, required: false}" /></div>';
-            this.endTime = '<div style="display: block; margin: 5px"> <p>'+ end +'</p><input style="width: 50px" data-name="Time Editor" data-bind= "ntsTimeEditor: { constraint: \'SampleTimeDuration\', inputFormat: \'time\', mode: \'time\', enable: enable, readonly: readonly, required: false}" /></div>';
+            let idGetList = typeStamp == STAMPTYPE.EXTRAORDINARY ? self.id - 3 : self.id - 1;
+            let param = 'items';
             if (typeStamp == STAMPTYPE.ATTENDENCE) {
                 this.text1 = nts.uk.resource.getText('KAF002_65', [dataObject.frameNo]); 
+                param = param + 1;
             } else if (typeStamp == STAMPTYPE.GOOUT_RETURNING) {
                 this.text1 = nts.uk.resource.getText('KAF002_67', [dataObject.frameNo]);
+                param = param + 3;
             } else if (typeStamp == STAMPTYPE.BREAK) {
                 this.text1 = nts.uk.resource.getText('KAF002_75', [dataObject.frameNo]);
+                param = param + 4;
             } else if (typeStamp == STAMPTYPE.PARENT) {
                 this.text1 = nts.uk.resource.getText('KAF002_68', [dataObject.frameNo]);
+                param = param + 5;
             } else if (typeStamp == STAMPTYPE.NURSE) {
                 this.text1 = nts.uk.resource.getText('KAF002_69', [dataObject.frameNo]);
+                param = param + 6;
             } else if (typeStamp == STAMPTYPE.EXTRAORDINARY) {
-                this.text1 = nts.uk.resource.getText('KAF002_66', [dataObject.frameNo]); 
+                this.text1 = nts.uk.resource.getText('KAF002_66', [dataObject.frameNo -2]); 
+                param = param + 2;
             }
+            this.startTime = '<div style="display: block; margin: 5px"><p>'+ start +'</p><input style="width: 50px" data-name="Time Editor" data-bind= "style: { \'background-color\': isFillColor1() ? \'#ffc0cb\' : \'gray\' } , ntsTimeEditor: { value: $data.'+ param +'['+ idGetList +'].startTimeRequest , constraint: \'SampleTimeDuration\', inputFormat: \'time\', mode: \'time\', enable: enable, readonly: readonly, required: false}" /></div>';
+            this.endTime = '<div style="display: block; margin: 5px"><p>'+ end +'</p><input style="width: 50px" data-name="Time Editor" data-bind= "ntsTimeEditor: { value: $data.'+ param + '['+ idGetList +'].endTimeRequest , constraint: \'SampleTimeDuration\', inputFormat: \'time\', mode: \'time\', enable: enable, readonly: readonly, required: false}" /></div>';
+           
         }
     }
     class GridItem2 {
@@ -480,8 +493,8 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             this.opWorkLocationCD = null;
             this.opGoOutReasonAtr = null;
             this.frameNo = index;
-            this.opStartTime = 1000;
-            this.opEndTime = 2000;
+            this.opStartTime = null;
+            this.opEndTime = null;
         }
         
     }
@@ -500,7 +513,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     class CellState {
         rowId: string;
         columnKey: string;
-        state: Array<any>
+        state: Array<any>;
         constructor(rowId: string, columnKey: string, state: Array<any>) {
             this.rowId = rowId;
             this.columnKey = columnKey;

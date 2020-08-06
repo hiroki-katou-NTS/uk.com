@@ -4,3 +4,7 @@
 .titleColor {
 	background-color: #CFF1A5;
 }
+.checkboxColor .box {
+	background-color: #888 !important;
+	pointer-events: none !important;
+}
