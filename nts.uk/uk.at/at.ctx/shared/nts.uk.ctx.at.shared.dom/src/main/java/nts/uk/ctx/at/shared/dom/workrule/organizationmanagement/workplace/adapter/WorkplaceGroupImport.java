@@ -12,16 +12,16 @@ import lombok.Getter;
 public class WorkplaceGroupImport {
 	
 	/** 職場グループID **/
-	private String workplaceGroupId;
+	private final String workplaceGroupId;
 	
 	/** 職場グループコード **/ 
-	private String workplaceGroupCode;
+	private final String workplaceGroupCode;
 	
 	/** 職場グループ名称 **/
-	private String workplaceGroupName;
+	private final String workplaceGroupName;
 	
 	/** 職場グループ種別**/
-	private int workplaceGroupType;
+	private final int workplaceGroupType;
 	//[C-0] 職場グループImported ( 職場グループID, 職場グループコード, 職場グループ名称, 職場グループ種別 )
 	public WorkplaceGroupImport(String workplaceGroupId, String workplaceGroupCode,
 			String workplaceGroupName, int workplaceGroupType) {

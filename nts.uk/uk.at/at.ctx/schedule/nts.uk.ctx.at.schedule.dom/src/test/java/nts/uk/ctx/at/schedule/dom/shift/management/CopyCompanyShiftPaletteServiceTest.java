@@ -35,10 +35,8 @@ public class CopyCompanyShiftPaletteServiceTest {
 			}
 		};
 		NtsAssert.businessException("Msg_1712", () -> {
-			AtomTask persist = CopyCompanyShiftPaletteService.duplicate(require, shiftPalletsCom, page, shiftPalletName,
-					overwrite);
-			persist.run();
-		});
+			CopyCompanyShiftPaletteService.duplicate(require, shiftPalletsCom, page, shiftPalletName,
+					overwrite);});
 	}
 	/**
 	 * require.会社別シフトパレットを存在するか(複製元のシフトパレット.会社ID, 複製先のページ) true
@@ -78,7 +76,7 @@ public class CopyCompanyShiftPaletteServiceTest {
 		new Expectations() {
 			{
 				require.exists(shiftPalletsCom.getCompanyId(), page);
-				result = true;
+				result = false;
 			}
 		};
 		NtsAssert.atomTask(() -> CopyCompanyShiftPaletteService.duplicate(require, shiftPalletsCom, page, shiftPalletName,

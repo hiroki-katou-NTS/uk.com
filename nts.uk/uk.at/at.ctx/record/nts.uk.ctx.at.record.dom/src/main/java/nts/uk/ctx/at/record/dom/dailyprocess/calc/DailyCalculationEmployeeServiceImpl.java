@@ -396,6 +396,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 				lockStatus = lockStatusService.getDetermineActualLocked(cid, 
 						stateInfo.getIntegrationOfDaily().getYmd(), closureEmploymentOptional.get().getClosureId(), PerformanceType.DAILY);
 			}
+
 			if(lockStatus == LockStatus.LOCK) {
 				continue;
 			}
@@ -417,10 +418,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 							new ErrMessageResource("024"), EnumAdaptor.valueOf(1, ExecutionContent.class),
 							stateInfo.getIntegrationOfDaily().getYmd(),
 							new ErrMessageContent(TextResource.localize("Msg_1541")));
-					// regist error message
-					this.errMessageInfoRepository.add(employmentErrMes);
 				}
-//				isHappendOptimistLockError.add(true);
 			}
 		}
 		return Pair.of(check, afterCalcRecord);
@@ -656,6 +654,4 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		}
 		return returnList;
 	}
-
-	
 }

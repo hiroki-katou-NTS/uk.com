@@ -82,7 +82,6 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCom
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.WorkInformation.Require;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExClassificationHistItemImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExClassificationHistoryImport;
@@ -558,7 +557,6 @@ public class ScheduleCreatorExecutionTransaction {
 				x -> x.getDatePeriod().contains(dateInPeriod) && creator.getEmployeeId().equals(x.getEmployeeId()))
 				.findFirst();
 		// if 取得失敗
-
 		if (!_workingConditionItem.isPresent()) {
 			String errorContent = this.internationalization.localize("Msg_602", "#KSC001_87").get();
 			// ドメインモデル「スケジュール作成エラーログ」を登録する
@@ -678,7 +676,7 @@ public class ScheduleCreatorExecutionTransaction {
 				listError.add(createScheduleOneDate.getScheduleErrorLog());
 				break;
 			default:// 処理正常
-				// 勤務予定を補正する - call 勤務予定を補正する - chưa xong đang đợi Tú chuyển sang - TQP
+				// 勤務予定を補正する - call 勤務予定を補正する
 				WorkSchedule workSchedule = correctWorkSchedule.correctWorkSchedule(
 						createScheduleOneDate.getWorkSchedule(), creator.getEmployeeId(), dateInPeriod);
 
@@ -1638,3 +1636,4 @@ public class ScheduleCreatorExecutionTransaction {
 	}
 
 }
+

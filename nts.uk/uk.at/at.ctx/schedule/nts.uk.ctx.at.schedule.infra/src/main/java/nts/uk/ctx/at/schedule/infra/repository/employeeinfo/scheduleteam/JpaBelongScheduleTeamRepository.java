@@ -1,13 +1,23 @@
 package nts.uk.ctx.at.schedule.infra.repository.employeeinfo.scheduleteam;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+
+import com.aspose.pdf.Collection;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeamRepository;
+import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.scheduleteam.KscmtAffScheduleTeam;
+import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.scheduleteam.KscmtAffScheduleTeamPk;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 所属スケジュールチームRepository			
@@ -17,57 +27,101 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeamRe
 @Stateless
 public class JpaBelongScheduleTeamRepository extends JpaRepository implements BelongScheduleTeamRepository{
 
+	private static final String SELECT = " SELECT c FROM KscmtAffScheduleTeam c ";
+	
+	private static final String GET_BY_CID = SELECT +  " WHERE c.pk.CID = :CID " ;
+
+	private static final String GET_BY_KEY = GET_BY_CID +" AND c.pk.employeeID = :empID "; 
+
+	
+	private static final String GET_ALL = GET_BY_CID +" AND c.WKPGRPID = :WKPGRPID AND c.scheduleTeamCd = :scheduleTeamCd "; 
+	
+	private static final String GET_BY_LIST_EMPID = GET_BY_CID + "AND c.pk.employeeID IN :empIDs" ;
+	
+	//private static final String DELETE_BY_WKPGRPID = " DELETE FROM KscmtAffScheduleTeam c  WHERE c.pk.CID = :CID AND c.scheduleTeamCd = :scheduleTeamCd AND c.WKPGRPID = :WKPGRPID " ;
+	
+	//private static final String GET_
+	
 	@Override
 	public void insert(BelongScheduleTeam belongScheduleTeam) {
-		// TODO Auto-generated method stub
+		KscmtAffScheduleTeam affScheduleTeam = KscmtAffScheduleTeam.toEntity(belongScheduleTeam);
+		this.commandProxy().insert(KscmtAffScheduleTeam.toEntity(belongScheduleTeam));
 		
 	}
 
 	@Override
 	public void update(BelongScheduleTeam belongScheduleTeam) {
-		// TODO Auto-generated method stub
+		Optional<KscmtAffScheduleTeam> entity = this.queryProxy()
+				.query(GET_BY_KEY, KscmtAffScheduleTeam.class)
+				.getSingle();
+		if(entity.isPresent()){
+			KscmtAffScheduleTeam newEntity = entity.get();
+			newEntity.fromEntity(belongScheduleTeam);
+			this.commandProxy().update(newEntity);
+		}
 		
 	}
 
 	@Override
 	public void delete(String companyID, String empID, String WKPGRPID, String scheduleTeamCd) {
 		// TODO Auto-generated method stub
-		
+		//this.commandProxy().remove
 	}
 
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	@Override
 	public void delete(String companyID, String empID) {
-		// TODO Auto-generated method stub
-		
+		this.commandProxy().remove(KscmtAffScheduleTeam.class, new KscmtAffScheduleTeamPk(companyID, empID) );		
+
 	}
 
 	@Override
 	public void delete(String companyID, String WKPGRPID, String scheduleTeamCd) {
-		// TODO Auto-generated method stub
+		
+		List<BelongScheduleTeam> lst = getAll(companyID, WKPGRPID, scheduleTeamCd);
+		lst.forEach( x ->{
+			this.commandProxy().remove(KscmtAffScheduleTeam.toEntity(x));
+		});
 		
 	}
 
 	@Override
 	public List<BelongScheduleTeam> getAll(String companyID, String WKPGRPID, String scheduleTeamCd) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy().query(GET_ALL, KscmtAffScheduleTeam.class)
+				.setParameter("CID", companyID)
+				.setParameter("WKPGRPID", WKPGRPID)
+				.setParameter("scheduleTeamCd", scheduleTeamCd)
+				.getList(c ->c.toDomain());
 	}
 
 	@Override
 	public Optional<BelongScheduleTeam> get(String companyID, String empID) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return this.queryProxy().query(GET_BY_KEY, KscmtAffScheduleTeam.class)
+				.setParameter("CID", companyID)
+				.setParameter("empID", empID)
+				.getSingle(c->c.toDomain());
 	}
 
 	@Override
 	public List<BelongScheduleTeam> get(String companyID, List<String> empIDs) {
-		// TODO Auto-generated method stub
-		return null;
+		if(CollectionUtil.isEmpty(empIDs)){
+			return new ArrayList<>();
+		}
+		return this.queryProxy().query(GET_BY_LIST_EMPID, KscmtAffScheduleTeam.class)
+				.setParameter("CID", companyID)
+				.setParameter("empIDs", empIDs)
+				.getList(c ->c.toDomain());
 	}
 
 	@Override
 	public boolean exists(String companyID, String empID) {
-		// TODO Auto-generated method stub
+		Optional<BelongScheduleTeam> data = queryProxy().query(GET_BY_KEY, KscmtAffScheduleTeam.class)
+				.setParameter("CID", companyID)
+				.setParameter("empID", empID)
+				.getSingle(c->c.toDomain());
+		if(data.isPresent())
+			return true;
 		return false;
 	}
 
@@ -103,13 +157,18 @@ public class JpaBelongScheduleTeamRepository extends JpaRepository implements Be
 
 	@Override
 	public Optional<BelongScheduleTeam> getScheduleTeam(String companyID, String empID) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub	
 		return null;
 	}
 
 	@Override
 	public boolean checkempBelongScheduleTeam(String companyId, String empID) {
-		// TODO Auto-generated method stub
+		Optional<BelongScheduleTeam> data = queryProxy().query(GET_BY_KEY, KscmtAffScheduleTeam.class)
+				.setParameter("CID", companyId)
+				.setParameter("empID", empID)
+				.getSingle(c->c.toDomain());
+		if(data.isPresent())
+			return true;
 		return false;
 	}
 

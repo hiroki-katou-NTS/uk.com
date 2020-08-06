@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryTerm;
@@ -21,10 +22,13 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class EmploymentHistoryPublishImpl implements EmploymentHistoryPublish{
-
+	
+	@Inject
+	public EmploymentHistoryRepository repo;
+	
 	@Override
 	public List<EmploymentPeriodExported> get(List<String> lstEmpID, DatePeriod datePeriod) {
-		Require require = new Require();
+		Require require = new Require(repo);
 		String companyId = AppContexts.user().companyId();
 		List<EmploymentHistoryTerm> data = require.getEmploymentHistoryTerm(companyId, lstEmpID, datePeriod);
 		List<EmploymentPeriodExported> result  = data.stream().map(c -> new EmploymentPeriodExported(
@@ -35,7 +39,7 @@ public class EmploymentHistoryPublishImpl implements EmploymentHistoryPublish{
 		
 		return result;
 	}
-	
+	@AllArgsConstructor
 	class Require {
 		@Inject
 		public EmploymentHistoryRepository repo;

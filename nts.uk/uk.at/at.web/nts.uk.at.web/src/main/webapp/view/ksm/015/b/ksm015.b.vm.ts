@@ -8,7 +8,7 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 		searchValue: KnockoutObservable<String>;
 		registrationForm: KnockoutObservable<RegistrationForm>;
 		workStyle: KnockoutObservable<WorkStyle>;
-		
+
 
 		constructor() {
 			var self = this;
@@ -19,17 +19,34 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			self.registrationForm = ko.observable(new RegistrationForm());
 			self.workStyle = ko.observable(new WorkStyle());
 			self.selectedShiftMaster.subscribe((value) => {
-			self.workStyle().color('');
-			self.workStyle().backGroundColor('');
-			self.workStyle().workTimeSetDisplay('');
-			self.workStyle().borderColor('');
 				if (!value) {
 					self.createNew();
 				} else {
 					nts.uk.ui.errors.clearAll();
 					self.bindShiftMasterInfoToForm(value);
+					$('.b73-desc').show();
+
 				}
+				self.clearPreviewColor();
+				self.getWorkStyle();
 			});
+
+			/*	self.registrationForm().workTypeCd.subscribe((value) => {
+					if(!value){
+					$(".table-workTime").hide();
+				} else {
+					$(".table-workTime").show();
+				}
+				});
+				
+				self.registrationForm().workTimeSetCd.subscribe((value) => {
+					if(!value){
+					$(".table-workType").hide();
+				} else {
+					$(".table-workType").show();
+				}
+				});*/
+
 		}
 
 		startPage(): JQueryPromise<any> {
@@ -41,57 +58,61 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 				self.shiftMasters(sorted);
 				if (data.shiftMasters && data.shiftMasters.length > 0) {
 					self.selectedShiftMaster(sorted[0].shiftMasterCode);
-					
+					self.getWorkStyle();
 				} else {
+					self.clearPreviewColor();
 					self.createNew();
 				}
 
-			}).fail(function (error) {
+			}).fail(function(error) {
 				nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-			}).always(function () {
+			}).always(function() {
 				nts.uk.ui.block.clear();
 			});
 
 			return dfd.promise();
 		}
-		
+
 		public getWorkStyle() {
 			let self = this;
 			let dfd = $.Deferred();
 			nts.uk.ui.block.grayout();
-			if(self.selectedShiftMaster() == ""){
+			if (self.registrationForm().shiftMasterName() == "" || self.registrationForm().workTypeCd() == ""
+				|| self.registrationForm().workTimeSetDisplay().includes(self.registrationForm().workTimeSetCd() + " " + "マスタ未登録")
+				|| self.registrationForm().workTypeDisplay().includes(self.registrationForm().workTypeCd() + " " + "マスタ未登録")) {
+				nts.uk.ui.block.clear();
 				return;
 			}
 			let dataByCode = _.filter(self.shiftMasters(), (val) => { return val.shiftMasterCode == self.selectedShiftMaster() }),
-			dto = {
-				shiftMasterCode : dataByCode[0].shiftMasterCode,
-				shiftMasterName : dataByCode[0].shiftMasterName,
-				workTypeCode : dataByCode[0].workTypeCd,
-				workTimeCode : dataByCode[0].workTimeCd,
-				color : dataByCode[0].color,
-				remarks : dataByCode[0].remark
-			};
-			
+				dto = {
+					shiftMasterCode: dataByCode.length > 0 ? dataByCode[0].shiftMasterCode : self.registrationForm().selectedCode(),
+					shiftMasterName: dataByCode.length > 0 ? dataByCode[0].shiftMasterName : self.registrationForm().shiftMasterName(),
+					workTypeCode: dataByCode.length > 0 ? dataByCode[0].workTypeCd : self.registrationForm().workTypeCd(),
+					workTimeCode: dataByCode.length > 0 ? dataByCode[0].workTimeCd : self.registrationForm().workTimeSetCd(),
+					color: dataByCode.length > 0 ? dataByCode[0].color : self.registrationForm().color(),
+					remarks: dataByCode.length > 0 ? dataByCode[0].remark : self.registrationForm().note()
+				};
+
 			service.getWorkStyle(dto).done((workStyle) => {
-			
-			if(workStyle == 0)
-			self.workStyle().color('#0000ff');
-			
-			if(workStyle == 1)
-			self.workStyle().color('#FF7F27');
-			
-			if(workStyle == 2)
-			self.workStyle().color('#FF7F27');
-			
-			if(workStyle == 3)
-			self.workStyle().color('#ff0000');
-			self.workStyle().borderColor('solid');
-			self.workStyle().backGroundColor(self.registrationForm().color());
-			self.workStyle().workTimeSetDisplay(dataByCode[0].shiftMasterName);
-			
-			}).fail(function (error) {
+
+				if (workStyle == 3)
+					self.workStyle().color('#0000ff');
+
+				if (workStyle == 1)
+					self.workStyle().color('#FF7F27');
+
+				if (workStyle == 2)
+					self.workStyle().color('#FF7F27');
+
+				if (workStyle == 0)
+					self.workStyle().color('#ff0000');
+				self.workStyle().borderColor('solid');
+				self.workStyle().backGroundColor(self.registrationForm().color());
+				self.workStyle().workTimeSetDisplay(dataByCode.length > 0 ? dataByCode[0].shiftMasterName : self.registrationForm().workTimeSetDisplay());
+
+			}).fail(function(error) {
 				nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-			}).always(function () {
+			}).always(function() {
 				nts.uk.ui.block.clear();
 			});
 		}
@@ -102,6 +123,24 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			self.selectedShiftMaster("");
 			self.registrationForm().clearData();
 			$('#requiredCode').focus();
+			self.clearPreviewColor();
+			$('.b73-desc').hide();
+			/*if(self.registrationForm().workTimeSetDisplay != ''){
+				$(".table-workTime").hide();
+			}
+			
+			if(self.registrationForm().workTypeSetDisplay != ''){
+				$(".table-workType").hide();
+			}*/
+
+		}
+
+		public clearPreviewColor() {
+			let self = this;
+			self.workStyle().color('#ff0000');
+			self.workStyle().borderColor('none');
+			self.workStyle().backGroundColor(self.registrationForm().color());
+			self.workStyle().workTimeSetDisplay("");
 		}
 
 		public bindShiftMasterInfoToForm(code: String) {
@@ -110,6 +149,11 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 				return val.shiftMasterCode === code;
 			});
 			self.registrationForm().bindData(selectedSm);
+			if (self.registrationForm().workTimeSetCd() == '') {
+				$('#worktime-lable').hide();
+			} else {
+				$('#worktime-lable').show();
+			}
 		}
 
 		public register() {
@@ -138,10 +182,11 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 							nts.uk.ui.dialog.info({ messageId: "Msg_15" });
 							self.shiftMasters(_.sortBy(data, 'shiftMasterCode'));
 							self.selectedShiftMaster(param.shiftMasterCode);
+							self.getWorkStyle();
 						});
-				}).fail(function (error) {
+				}).fail(function(error) {
 					nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-				}).always(function () {
+				}).always(function() {
 					nts.uk.ui.block.clear();
 				});
 		}
@@ -177,10 +222,12 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 									nts.uk.ui.dialog.info({ messageId: "Msg_16" });
 									nts.uk.ui.block.clear();
 								}
+								self.clearPreviewColor();
+								self.getWorkStyle();
 							});
 					}).fail((res) => {
 						nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-					}).always(function () {
+					}).always(function() {
 						nts.uk.ui.block.clear();
 					});
 				}).ifNo(() => {
@@ -198,7 +245,7 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 				selectedWorkTimeCode: self.registrationForm().workTimeSetCd()
 			}, true);
 
-			nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function (): any {
+			nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
 				//view all code of selected item 
 				var childData = nts.uk.ui.windows.getShared('childData');
 				if (childData) {
@@ -209,13 +256,19 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 					}
 					service.getWorkInfo(param)
 						.done((res) => {
-							self.registrationForm().workTypeName( res.workType ? res.workType.name : childData.selectedWorkTypeName);
+							self.registrationForm().workTypeName(res.workType ? res.workType.name : childData.selectedWorkTypeName);
 							self.registrationForm().workTypeCd(childData.selectedWorkTypeCode);
-							self.registrationForm().workTimeSetName(res.workTime ? res.workTime.workTimeName :  childData.selectedWorkTimeName);
+							self.registrationForm().workTimeSetName(res.workTime ? res.workTime.workTimeName : childData.selectedWorkTimeName);
 							self.registrationForm().workTimeSetCd(childData.selectedWorkTimeCode);
 							if (self.registrationForm().workTypeCd() || self.registrationForm().workTypeCd().trim() !== '') {
 								$('#worktype-chose').ntsError('clear');
 							}
+							if (self.registrationForm().workTimeSetCd() == '') {
+								$('#worktime-lable').hide();
+							} else { 
+								$('#worktime-lable').show();
+								}
+							$('.b73-desc').sh();
 						});
 				}
 			});

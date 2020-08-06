@@ -71,7 +71,7 @@ public class OverTimeOfDaily {
 	//残業枠時間
 	@Setter
 	private List<OverTimeFrameTime> overTimeWorkFrameTime;
-	//法定外深夜時間
+	//法定外深夜時間 (所定外深夜時間)
 	private Finally<ExcessOverTimeWorkMidNightTime> excessOverTimeWorkMidNightTime; 
 	//残業拘束時間
 	private AttendanceTime overTimeWorkSpentAtWork = new AttendanceTime(0);

@@ -35,27 +35,30 @@
       </div>
       <div id="register-form">
         <div id="form-title">
+        <!-- C3_1 -->
           <span>#{i18n.getText('Com_Workplace')} :</span>
           <span data-bind="text: workplaceName()"></span>
         </div>
 
         <div class="valign-center control-group">
+        <!-- C5 -->
           <div data-bind="ntsFormLabel: {required: true}">
             #{i18n.getText('KSM015_23',["#Com_Workplace"])}
           </div>
         </div>
         <div class="valign-center control-group">
-          <button data-bind="click: openDialogKDL044">
+          <button class = "small" data-bind="click: openDialogKDL044">
             #{i18n.getText('KSM015_30')}
           </button>
-          <button data-bind="click: clearShiftMaster">
+          <!-- C6_2 -->
+          <button class="small danger" data-bind="click: clearShiftMaster">
             #{i18n.getText('KSM015_31')}
           </button>
         </div>
         <table
           id="shift-list"
           data-bind="ntsGridList: {
-                height: 350,
+                height: 330,
                 width: 800,
                 options: shiftItems,
                 optionsValue: 'shiftMasterCode',
