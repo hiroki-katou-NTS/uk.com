@@ -14,12 +14,12 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaWorkScheduleRepository extends JpaRepository implements WorkScheduleRepository {
 
-	private static final String SELECT_BY_KEY = "SELECT c FROM KscdtSchBasicInfo c WHERE c.pk.CID = :CID AND c.pk.YMD = :YMD";
+	private static final String SELECT_BY_KEY = "SELECT c FROM KscdtSchBasicInfo c WHERE c.pk.SID = :employeeID AND c.pk.YMD = :ymd";
 
 	@Override
 	public Optional<WorkSchedule> get(String employeeID, GeneralDate ymd) {
 		Optional<WorkSchedule> workSchedule = this.queryProxy().query(SELECT_BY_KEY, KscdtSchBasicInfo.class)
-				.setParameter("SID", "employeeID").setParameter("YMD", "ymd")
+				.setParameter("employeeID", employeeID).setParameter("ymd", ymd)
 				.getSingle(c -> c.toDomain(employeeID, ymd));
 		return workSchedule;
 	}
@@ -38,7 +38,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	public void update(WorkSchedule workSchedule) {
 		String cID = AppContexts.user().companyId();
 		Optional<KscdtSchBasicInfo> oldData = this.queryProxy().query(SELECT_BY_KEY, KscdtSchBasicInfo.class)
-				.setParameter("SID", "employeeID").setParameter("YMD", "ymd").getSingle(c -> c);
+				.setParameter("employeeID", workSchedule.getEmployeeID()).setParameter("ymd", workSchedule.getYmd()).getSingle(c -> c);
 
 		if (oldData.isPresent()) {
 			KscdtSchBasicInfo newData = KscdtSchBasicInfo.toEntity(workSchedule, cID);
