@@ -23,6 +23,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryReposit
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
+import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
@@ -63,10 +64,13 @@ public class CreateOrderInfoFileQuery {
     @Inject
     private EmployeeDataMngInfoRepository employeeDataMngInfoRepository;
 
+    @Inject
+    private SyEmployeePub syEmployeePub;
+
     public OrderInfoDto createOrderInfoFileQuery(DatePeriod period, List<String> workplaceId,
-                    List<String> workplaceCode, Optional<BentoReservationSearchConditionDto> totalExtractCondition,
-                    Optional<BentoReservationSearchConditionDto> itemExtractCondition, Optional<Integer> frameNo, Optional<String> totalTitle,
-                    Optional<String> detailTitle, ReservationClosingTimeFrame reservationClosingTimeFrame){
+                                                 List<String> workplaceCode, Optional<BentoReservationSearchConditionDto> totalExtractCondition,
+                                                 Optional<BentoReservationSearchConditionDto> itemExtractCondition, Optional<Integer> frameNo, Optional<String> totalTitle,
+                                                 Optional<String> detailTitle, ReservationClosingTimeFrame reservationClosingTimeFrame){
         // 1. [RQ622]会社IDから会社情報を取得する
         Company company = companyRepository.find(AppContexts.user().companyId()).get();
 
@@ -78,18 +82,28 @@ public class CreateOrderInfoFileQuery {
 
     /** 2. 職場又は場所情報と打刻カードを取得 */
     public List<WorkplaceInformation> getWorkPlaceAndStampCard(List<String> workplaceIds, List<String> workLocationCodes, boolean isCheckedEmpInfo, DatePeriod period){
-        List<WorkplaceInformation> result = new ArrayList<>();
+        //List<WorkplaceInformation> result = new ArrayList<>();
+        List<String> sIds = new ArrayList<>();
+        List<WorkLocation> workLocations = new ArrayList<>();
+        List<WorkplaceInformation> workplaceInformations = new ArrayList<>();
+        List<EmployeeBasicInfoExport> empBasicInfoExports = new ArrayList<>();
         if(workplaceIds.size() > 0){
-            result = getWorkplaceInfoById(workplaceIds, AppContexts.user().companyId());
-            List<String> sIdsInwkPlace = getListEmpIdInWorkPlace(workplaceIds, period);
+            workplaceInformations = getWorkplaceInfoById(workplaceIds, AppContexts.user().companyId());
+            sIds = getListEmpIdInWorkPlace(workplaceIds, period);
 
-        }
-
-        if(workLocationCodes.size() > 0){
-            List<WorkLocation> workLocations = getWorkplaceInfoByCode(workLocationCodes);
+        }else if(workLocationCodes.size() > 0){
+            workLocations = getWorkplaceInfoByCode(workLocationCodes);
             List<AffWorkplaceHistoryItem> affWorkplaceHistoryItems = getListWorkHisItem(period.start(), workLocationCodes);
+            sIds = affWorkplaceHistoryItems.stream().map(AffWorkplaceHistoryItem::getEmployeeId).collect(Collectors.toList());
         }
 
+        Map<String, String> map = getStampCardFromSID(sIds);
+        if(isCheckedEmpInfo) {
+            empBasicInfoExports = getBasicInfo(sIds);
+
+        }
+
+        List<PlaceOfWorkInfoDto> placeOfWorkInfoDtos = convertToPlaceOfWorkInfoDto(workplaceInformations,workLocations);
 
         return Collections.EMPTY_LIST;
     }
@@ -156,13 +170,24 @@ public class CreateOrderInfoFileQuery {
 
 
     /** 社員ID(List)から個人社員基本情報を取得 */
-    public EmployeeBasicInfoExport getBasicInfo(List<String> sIds){
+    public List<EmployeeBasicInfoExport> getBasicInfo(List<String> sIds){
+        List<String> personIds = new ArrayList<>();
+        //ドメインモデル「社員データ管理情報」を取得する
         List<EmployeeDataMngInfo> employeeDataMngInfos = employeeDataMngInfoRepository.findByListEmployeeId(sIds);
+        //ドメインモデル「社員データ管理情報」が取得できたかどうかチェックする
         if(employeeDataMngInfos.size() > 0 ){
-            List<AffCompanyHistByEmployee> affCompanyHistByEmployees = affCompanyHistRepository.getAffEmployeeHistory(sIds);
-
+            //ドメインモデル「所属会社履歴（社員別）」を取得する
+            personIds = employeeDataMngInfos.stream()
+                    .map(EmployeeDataMngInfo::getPersonId).collect(Collectors.toList());
         }
-        return null;
+
+        //終了状態：成功
+        if(personIds.size() > 0){
+            return syEmployeePub.findBySIds(employeeDataMngInfos.stream()
+                    .map(EmployeeDataMngInfo::getEmployeeId).collect(Collectors.toList()));
+        }
+
+        return Collections.EMPTY_LIST;
     }
 
     /** convert to DTO::職場又は場所情報 */

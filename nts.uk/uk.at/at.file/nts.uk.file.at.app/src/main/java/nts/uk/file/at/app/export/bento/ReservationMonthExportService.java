@@ -82,11 +82,12 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 		List<StampCard> stampCardLst = stampCardRepository.getLstStampCardByLstSidAndContractCd(empLst, AppContexts.user().contractCode());
 		
 		// get*(対象社員リスト,期間,注文済み)
-		List<BentoReservation> bentoReservationLst = bentoReservationRepository.findByOrderedPeriodEmpLst(
-				stampCardLst.stream().map(x -> new ReservationRegisterInfo(x.getStampNumber().v())).collect(Collectors.toList()), 
-				null,
-				ordered,
-                Optional.empty());
+		List<BentoReservation> bentoReservationLst = new ArrayList<>();
+//				bentoReservationRepository.findByOrderedPeriodEmpLst(
+//				stampCardLst.stream().map(x -> new ReservationRegisterInfo(x.getStampNumber().v())).collect(Collectors.toList()),
+//				null,
+//				ordered,
+//                Optional.empty());
 		
 		if(CollectionUtil.isEmpty(bentoReservationLst)) {
 			throw new BusinessException("Msg_741");

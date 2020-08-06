@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
@@ -18,24 +17,23 @@ import nts.gul.collection.CollectionUtil;
  *
  */
 public class BentoReservation extends AggregateRoot{
-	
+
 	/**
 	 * 予約登録情報
 	 */
 	@Getter
 	private final ReservationRegisterInfo registerInfor;
-	
+
 	/**
 	 * 予約対象日
 	 */
 	@Getter
 	private final ReservationDate reservationDate;
-	
+
 	/**
 	 * 注文済み
 	 */
 	@Getter
-	@Setter
 	private boolean ordered;
 
 	/**
@@ -43,7 +41,7 @@ public class BentoReservation extends AggregateRoot{
 	 */
 	@Getter
 	private Optional<WorkLocationCode> workLocationCode;
-	
+
 	/**
 	 * 弁当予約明細リスト
 	 */
@@ -73,7 +71,7 @@ public class BentoReservation extends AggregateRoot{
 										   Optional<WorkLocationCode> workLocationCode,List<BentoReservationDetail> bentoReservationDetails) {
 		return new BentoReservation(registerInfor, reservationDate, false,workLocationCode, bentoReservationDetails);
 	}
-	
+
 	/**
 	 * 予約を取り消す
 	 * @param dateTime
@@ -88,7 +86,7 @@ public class BentoReservation extends AggregateRoot{
 			return Optional.of(reserve(registerInfor, reservationDate,workLocationCode, afterDetails));
 		}
 	}
-	
+
 	/**
 	 * 取消可能かチェックする
 	 */
