@@ -5,6 +5,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 
 @TimeRange(min = "-999:59", max="999:59")
 
+/**
+ * 年休残時間
+ * @author masaaki_jinno
+ *
+ */
 public class AnnualLeaveRemainingTime extends LeaveRemainingTime{
 
 	private static final long serialVersionUID = -3402887695920983416L;

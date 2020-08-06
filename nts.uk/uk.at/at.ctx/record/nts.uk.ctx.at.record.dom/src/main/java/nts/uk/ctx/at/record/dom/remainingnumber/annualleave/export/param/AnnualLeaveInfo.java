@@ -511,15 +511,16 @@ public class AnnualLeaveInfo implements Cloneable {
 				
 				boolean isForcibly = true; // ooooo
 				
-				// 消化する
-				LeaveGrantRemainingData.digest(
-						targetRemainingDatas,
-						require,
-						remNumShiftListWork,
-						leaveUsedNumber,
-						employeeId, 
-						aggregatePeriodWork.getPeriod().start(),
-						isForcibly);
+				// 一時的にコメントアウト　神野
+//				// 消化する
+//				LeaveGrantRemainingData.digest(
+//						targetRemainingDatas,
+//						require,
+//						remNumShiftListWork,
+//						leaveUsedNumber,
+//						employeeId, 
+//						aggregatePeriodWork.getPeriod().start(),
+//						isForcibly);
 				
 				// 残数不足で一部消化できなかったとき
 				if ( !remNumShiftListWork.getUnusedNumber().isZero() ){

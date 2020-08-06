@@ -5,6 +5,11 @@ import java.io.Serializable;
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 
+/**
+ * 使用回数
+ * @author masaaki_jinno
+ *
+ */
 @IntegerRange(min = 0, max = 99)
 public class UsedTimes extends IntegerPrimitiveValue<UsedTimes> implements Serializable{
 
