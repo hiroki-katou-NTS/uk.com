@@ -112,20 +112,17 @@ public class CreateDailyResults {
 		// 曜日を求める - 日別実績の勤務情報．曜日 ← 処理日の曜日
 		integrationOfDaily.getWorkInformation().setDayOfWeek(DayOfWeek.valueOf(ymd.dayOfWeekEnum().value-1));
 
-		if(integrationOfDaily.getCalAttr() == null) {
-			integrationOfDaily.setCalAttr(new CalAttrOfDailyAttd());
-		}
-		if(integrationOfDaily.getAffiliationInfor() == null) {
-			integrationOfDaily.setAffiliationInfor(new AffiliationInforOfDailyAttd());
-		}
 		// 所属情報を反映する
 		AffiliationInforState affiliationInforState = reflectWorkInforDomainService.createAffiliationInforState(
-				companyId, employeeId, ymd, integrationOfDaily.getAffiliationInfor(), employeeGeneralInfoImport);
+				companyId, employeeId, ymd, employeeGeneralInfoImport);
 		// エラーあるかを確認する
 		if (!affiliationInforState.getErrorNotExecLogID().isEmpty()) {
 			listErrorMessageInfo.add(new ErrorMessageInfo(companyId, employeeId, ymd, ExecutionContent.DAILY_CREATION,
 					new ErrMessageResource("005"), new ErrMessageContent(TextResource.localize("Msg_427"))));
 			return listErrorMessageInfo;
+		}
+		if(affiliationInforState.getAffiliationInforOfDailyPerfor().isPresent()) {
+			integrationOfDaily.setAffiliationInfor(affiliationInforState.getAffiliationInforOfDailyPerfor().get());
 		}
 		// ドメインモデル「労働条件項目」を取得する
 		Optional<WorkingConditionItem> optWorkingConditionItem = this.workingConditionItemRepository

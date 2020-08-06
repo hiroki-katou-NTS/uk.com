@@ -796,8 +796,8 @@ public class ScheduleCreatorExecutionTransaction {
 
 			// 所属情報を反映する
 			AffiliationInforState inforState = inforDomainService.createAffiliationInforState(command.getCompanyId(),
-					command.getEmployeeId(), dateInPeriod, integrationOfDaily.getAffiliationInfor(), generalInfoImport);
-
+					command.getEmployeeId(), dateInPeriod, generalInfoImport);
+			
 			// Outputを確認する
 			// if エラーあり
 			if (!inforState.getErrorNotExecLogID().isEmpty()) {
@@ -808,6 +808,9 @@ public class ScheduleCreatorExecutionTransaction {
 				createScheduleOneDate = new OutputCreateScheduleOneDate(null, errorLog,
 						ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY_WITH_ERROR.value));
 				return createScheduleOneDate;
+			}
+			if(inforState.getAffiliationInforOfDailyPerfor().isPresent()) {
+				integrationOfDaily.setAffiliationInfor(inforState.getAffiliationInforOfDailyPerfor().get());
 			}
 
 			// 勤務情報・勤務時間を用意する ↓

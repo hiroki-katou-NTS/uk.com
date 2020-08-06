@@ -2238,7 +2238,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	// 所属情報を反映する
 	@Override
 	public AffiliationInforState createAffiliationInforState(String companyId, String employeeId, GeneralDate day,
-			AffiliationInforOfDailyAttd dailyAttd, EmployeeGeneralInfoImport generalInfoImport) {
+			EmployeeGeneralInfoImport generalInfoImport) {
 
 		// employment
 		Map<String, List<ExEmploymentHistItemImport>> mapEmploymentHist = generalInfoImport
@@ -2352,7 +2352,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							jobTitleHistItemImport.get().getJobTitleId(),
 							workplaceHistItemImport.get().getWorkplaceId(),
 							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()), 
-							new BonusPaySettingCode(dailyAttd.getBonusPaySettingCode().v()))),errMesInfos);
+							new BonusPaySettingCode(worktypeHistItemImport.get().getBusinessTypeCd()))),errMesInfos);
 		} else {
 			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する

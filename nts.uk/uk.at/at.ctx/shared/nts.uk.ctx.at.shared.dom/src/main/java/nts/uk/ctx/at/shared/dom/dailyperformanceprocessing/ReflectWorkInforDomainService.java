@@ -124,7 +124,7 @@ public interface ReflectWorkInforDomainService {
 	 * @return
 	 */
 	public AffiliationInforState createAffiliationInforState(String companyId, String employeeId,
-			GeneralDate day, AffiliationInforOfDailyAttd dailyAttd, EmployeeGeneralInfoImport generalInfoImport);
+			GeneralDate day, EmployeeGeneralInfoImport generalInfoImport);
 	
 	/**
 	 * 勤務情報を反映する
