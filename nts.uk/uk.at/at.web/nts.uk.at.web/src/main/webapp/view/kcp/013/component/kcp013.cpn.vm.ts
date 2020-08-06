@@ -108,7 +108,7 @@ module kcp013.component {
 			return dfd.promise();
 		}
 		// push data to listWorkHours
-		private geistWorkHours(data, param) {
+		private getListWorkHours(data, param) {
 			var self = this;
 			let datas = [];
 			if (param.showNone == true && param.showDeferred == false) {
@@ -130,7 +130,7 @@ module kcp013.component {
 
 		}
 	
-		ublic checkSelectedItem(param) {
+		public checkSelectedItem(param) {
 			let self = this;
 			if (self.selectItem instanceof Array) {
 				if (self.selectItem.length == 1) {
