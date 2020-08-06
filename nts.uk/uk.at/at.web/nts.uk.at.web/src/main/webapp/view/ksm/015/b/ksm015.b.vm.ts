@@ -85,12 +85,12 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			}
 			let dataByCode = _.filter(self.shiftMasters(), (val) => { return val.shiftMasterCode == self.selectedShiftMaster() }),
 				dto = {
-					shiftMasterCode: dataByCode.length > 0 ? dataByCode[0].shiftMasterCode : self.registrationForm().selectedCode(),
-					shiftMasterName: dataByCode.length > 0 ? dataByCode[0].shiftMasterName : self.registrationForm().shiftMasterName(),
-					workTypeCode: dataByCode.length > 0 ? dataByCode[0].workTypeCd : self.registrationForm().workTypeCd(),
-					workTimeCode: dataByCode.length > 0 ? dataByCode[0].workTimeCd : self.registrationForm().workTimeSetCd(),
-					color: dataByCode.length > 0 ? dataByCode[0].color : self.registrationForm().color(),
-					remarks: dataByCode.length > 0 ? dataByCode[0].remark : self.registrationForm().note()
+					shiftMasterCode:  self.registrationForm().selectedCode(),
+					shiftMasterName: self.registrationForm().shiftMasterName(),
+					workTypeCode: self.registrationForm().workTypeCd(),
+					workTimeCode: self.registrationForm().workTimeSetCd(),
+					color: self.registrationForm().color(),
+					remarks: self.registrationForm().note()
 				};
 
 			service.getWorkStyle(dto).done((workStyle) => {
