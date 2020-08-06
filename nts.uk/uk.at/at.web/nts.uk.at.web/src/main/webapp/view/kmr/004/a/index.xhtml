@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:stylefile path="kmr004.a.style.css" />
+			<com:scriptfile path="kmr004.a.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area" class="divHeader">
+				<!-- Excel出力 -->
+				<button  id="A1_1" tabindex="1" class="proceed" data-bind="enable: true">#{i18n.getText('KMR004_1')}</button>
+				<button  id="A1_2" tabindex="2" class="proceed" data-bind="enable: true">#{i18n.getText('KMR004_2')}</button>
+			</div>
+			<div id="contents-area" data-bind="visible: true" style="display: none">
+				<table style="margin: 20px 0px 0px 20px">
+					<tr>
+						<td id="contents-left">
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMR004_3')}</div>
+							<div id="daterangepicker"
+								 data-bind="ntsDateRangePicker:
+								{required: true,
+								enable: true,
+								showNextPrevious: true,
+								value: dateValue}"></div>
+
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMR004_6')}</div>
+
+							<div class="cf" data-bind="ntsSwitchButton: {
+								name: 'Sample Switch',
+								options: roundingRules,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedRuleCode,
+								required: true,
+								enable: true }"></div>
+							<span class="label" style="margin-bottom: 15px;">#{i18n.getText('KMR004_10')}</span>
+
+							<div id="tree-grid"></div>
+
+						</td>
+
+
+						<td id="contents-right">
+							
+
+						</td>
+					</tr>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
