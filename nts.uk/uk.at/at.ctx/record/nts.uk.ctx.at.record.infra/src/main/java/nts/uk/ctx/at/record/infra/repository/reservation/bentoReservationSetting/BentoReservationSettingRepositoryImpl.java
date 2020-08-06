@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.infra.repository.reservation.bentoReservationSetting;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.reservation.bentoReservationSetting.BentoReservationSetting;
-import nts.uk.ctx.at.record.dom.reservation.bentoReservationSetting.BentoReservationSettingRepository;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSettingRepository;
 import nts.uk.ctx.at.record.infra.entity.reservation.BentoReservationSetting.KrcmtBentoReservationSetting;
 import java.util.Optional;
 
