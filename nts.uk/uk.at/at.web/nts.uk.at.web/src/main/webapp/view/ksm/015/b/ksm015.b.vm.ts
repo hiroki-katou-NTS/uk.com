@@ -108,7 +108,7 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 					self.workStyle().color('#ff0000');
 				self.workStyle().borderColor('solid');
 				self.workStyle().backGroundColor(self.registrationForm().color());
-				self.workStyle().workTimeSetDisplay(dataByCode.length > 0 ? dataByCode[0].shiftMasterName : self.registrationForm().workTimeSetDisplay());
+				self.workStyle().workTimeSetDisplay(self.registrationForm().shiftMasterName());
 
 			}).fail(function(error) {
 				nts.uk.ui.dialog.alertError({ messageId: error.messageId });
