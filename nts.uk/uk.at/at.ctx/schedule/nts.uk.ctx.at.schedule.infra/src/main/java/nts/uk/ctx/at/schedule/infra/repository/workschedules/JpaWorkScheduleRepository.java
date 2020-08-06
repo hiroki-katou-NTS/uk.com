@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.schedule.infra.repository.workschedules;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -9,16 +8,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchAtdLvwTime;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBasicInfo;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBonusPay;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBreakTs;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchEditState;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchHolidayWork;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchOvertimeWork;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchPremium;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTime;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTimeTs;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -181,7 +171,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				});
 			});
 
-			this.commandProxy().update(KscdtSchBasicInfo.toEntity(workSchedule, cID));
+			this.commandProxy().update(dataUpdate);
 		}
 	}
 }

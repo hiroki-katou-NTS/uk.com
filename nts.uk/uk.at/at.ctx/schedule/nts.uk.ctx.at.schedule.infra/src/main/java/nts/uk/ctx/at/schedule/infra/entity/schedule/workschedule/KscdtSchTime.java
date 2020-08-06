@@ -301,7 +301,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		List<KscdtSchShortTime> kscdtSchShortTime = new ArrayList<>();
 		kscdtSchShortTime.add(KscdtSchShortTime.toEntity(result, sID, yMD));
 		
-		// QA
+		// QA 110844
 		Integer timeLghd = 0;
 		Integer timeIlghd = 0;
 		Integer timePubhd = 0;
@@ -344,8 +344,8 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 				timePubhd, //EXT_MIDNITE_HDW_TIME_PUBHD // extMidNiteHdwTimePubhd
 				excessOfStatutoryMidNightTime.getTime().getTime().v(), //EXT_MIDNITE_TOTAL // extMidNiteTotal
 				excessOfStatutoryMidNightTime.getBeforeApplicationTime().v(), // EXT_MIDNITE_TOTAL_PREAPP - 31 // extMidNiteTotalPreApp
-				3, // đang QA 110822 // intervalAtdClock
-				4, // đang QA 110822 // intervalTime
+				0, // đang QA 110822 // intervalAtdClock
+				0, // đang QA 110822 // intervalTime
 				workingTime.getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime().v(), // 34 // brkTotalTime
 				holidayOfDaily.getAnnual().getUseTime().v(), // 35 HDPAID_TIME // hdPaidTime
 				holidayOfDaily.getAnnual().getDigestionUseTime().v(), // 36 HDPAID_HOURLY_TIME // hdPaidHourlyTime
@@ -370,7 +370,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		
 	}
 	
-	public ActualWorkingTimeOfDaily toDomain() {
+	public ActualWorkingTimeOfDaily toDomain(String sID, GeneralDate yMD) {
 		// 拘束差異時間
 		AttendanceTime constraintDiffTime = new AttendanceTime(null);
 		// 拘束時間
@@ -401,9 +401,9 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		RaiseSalaryTimeOfDailyPerfor raiseSalaryTimeOfDailyPerfor = new RaiseSalaryTimeOfDailyPerfor(
 				kscdtSchBonusPay.toDomain(), null);
 		
-		// QA 110840
+		// QA 110840 - cần ktra kỹ vì có thể sai
 		KscdtSchShortTime kscdtSchShortTime = new KscdtSchShortTime();
-		ShortWorkTimeOfDaily shotrTime = null;
+		ShortWorkTimeOfDaily shotrTime = kscdtSchShortTime.toDomain(sID, yMD);
 		
 		// WithinStatutoryMidNightTime
 		WithinStatutoryMidNightTime midNightTime = new WithinStatutoryMidNightTime(new TimeDivergenceWithCalculation(new AttendanceTime(prsMidniteTime), null, null));

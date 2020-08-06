@@ -2984,11 +2984,16 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
      */
 	public static final Program KSM015B = new Program(WebAppId.AT, ProgramIdConsts.KSM015B, "KSM015_3",
 			"/view/ksm/015/b/index.xhtml");	
-
 	/**
      * KSM015C
      */
 	public static final Program KSM015C = new Program(WebAppId.AT, ProgramIdConsts.KSM015C, "KSM015_6",
+			"/view/ksm/015/c/index.xhtml");	
+	
+	/**
+     * KSM015D
+     */
+	public static final Program KSM015D = new Program(WebAppId.AT, ProgramIdConsts.KSM015D, "KSM015_6",
 			"/view/ksm/015/c/index.xhtml");	
 	
 	/**
