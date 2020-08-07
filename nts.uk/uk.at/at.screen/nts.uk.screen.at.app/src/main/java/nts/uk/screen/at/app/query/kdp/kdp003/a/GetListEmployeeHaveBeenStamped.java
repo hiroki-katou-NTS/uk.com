@@ -24,12 +24,12 @@ public class GetListEmployeeHaveBeenStamped {
 	@Inject
 	private EmploymentSystemFinder employmentFinder;
 
-	public List<EmployeeStampData> getListEmployee(String companyId, String workplaceId, GeneralDate baseDate) {
+	public List<EmployeeStampData> getListEmployee(String companyId, List<String> workplaceId, GeneralDate baseDate) {
 		GeneralDate startDate = GeneralDate.ymd(baseDate.year(), baseDate.month(), 1);
 		GeneralDate endDate = GeneralDate.ymd(baseDate.year(), baseDate.month(), 1).addMonths(1).addDays(-1);
 
 		// note: アルゴリズム「期間内に特定の職場に所属している社員一覧を取得」を実行する
-		List<AffWorkplaceExport> affwork = workplacePub.findListSIdByCidAndWkpIdAndPeriod(workplaceId, startDate,
+		List<AffWorkplaceExport> affwork = workplacePub.getByLstWkpIdAndPeriod(workplaceId, startDate,
 				endDate);
 
 		List<String> employeeIds = affwork.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
