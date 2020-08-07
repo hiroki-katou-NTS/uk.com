@@ -13,16 +13,14 @@ import nts.uk.ctx.at.request.app.command.application.lateleaveearly.LateEarlyUpd
 import nts.uk.ctx.at.request.app.command.application.lateleaveearly.LateEarlyUpdateCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.lateleaveearly.LateLeaveEarlyCommand;
 import nts.uk.ctx.at.request.app.command.application.lateleaveearly.LateLeaveEarlyCommandHandler;
-import nts.uk.ctx.at.request.app.find.application.lateleaveearly.LateEarlyCancelAppSetDto;
 import nts.uk.ctx.at.request.app.find.application.lateleaveearly.LateEarlyDateChangeFinderDto;
 import nts.uk.ctx.at.request.app.find.application.lateleaveearly.LateLeaveEarlyGetService;
+import nts.uk.ctx.at.request.app.find.application.lateleaveearly.dto.ChangeAppDateDto;
 import nts.uk.ctx.at.request.app.find.application.lateleaveearly.dto.MessageListDto;
 import nts.uk.ctx.at.request.app.find.application.lateleaveearly.dto.PageInitDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.LateEarlyInitDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 
 /**
  * @author anhnm
@@ -48,11 +46,10 @@ public class LateLeaveEarlyWebService extends WebService {
 	}
 
 	@POST
-	@Path("changeAppDate/{appType}")
-	public LateEarlyDateChangeFinderDto changeAppDate(@PathParam("appType") int appType, List<String> appDates,
-			String baseDate, AppDispInfoNoDateOutput appDispNoDate, AppDispInfoWithDateOutput appDispWithDate,
-			LateEarlyCancelAppSetDto setting) {
-		return this.service.getChangeAppDate(appType, appDates, baseDate, appDispNoDate, appDispWithDate, setting);
+	@Path("changeAppDate")
+	public LateEarlyDateChangeFinderDto changeAppDate(ChangeAppDateDto dto) {
+		return this.service.getChangeAppDate(dto.getAppType(), dto.getAppDates(), dto.getBaseDate(),
+				dto.getAppDispNoDate().toDomain(), dto.getAppDispWithDate().toDomain(), dto.getSetting());
 	}
 
 	@POST
@@ -77,11 +74,5 @@ public class LateLeaveEarlyWebService extends WebService {
 	@Path("updateInfoApp")
 	public ProcessResult updateInfoApp(LateEarlyUpdateCommand command) {
 		return this.updateCommandHandler.handle(command);
-	}
-
-	@POST
-	@Path("print")
-	public void print() {
-
 	}
 }
