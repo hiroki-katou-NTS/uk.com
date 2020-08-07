@@ -91,7 +91,7 @@ module nts.uk.at.kdp003.a {
 
 			storage(KDP003_SAVE_DATA)
 				.then((data: undefined | StorageData) => {
-					if (data === undefined) {
+					if (data === undefined || data.WKPID.length === 0) {
 						return vm.$window.modal('at', DIALOG.F, { mode: 'admin' }) as JQueryDeferred<f.TimeStampLoginData>;
 					}
 					// data login by storage
@@ -190,13 +190,14 @@ module nts.uk.at.kdp003.a {
 							return vm.$window.modal('at', DIALOG.K, { multiSelect: true });
 						}) as JQueryDeferred<k.Return>;
 				})
-				.then((data: null | k.Return) => {
-					if (data === null) {
+				.then((data: null | undefined | k.Return) => {
+					if (_.isNil(data)) {
 						if (!ko.unwrap(vm.message)) {
 							vm.message({ messageId: 'Msg_1647' });
 						}
 
-						return false;
+						return storage(KDP003_SAVE_DATA, undefined)
+							.then(() => false) as any;
 					}
 
 					return storage(KDP003_SAVE_DATA)
@@ -212,7 +213,7 @@ module nts.uk.at.kdp003.a {
 
 							// return data from storage
 							return storage(KDP003_SAVE_DATA, storageData);
-						});
+						}) as JQueryDeferred<StorageData>;
 				})
 				.then((data: false | StorageData) => {
 					if (data !== false) {
@@ -382,7 +383,7 @@ module nts.uk.at.kdp003.a {
 
 						return data;
 					}
-					
+
 					return storage(KDP003_SAVE_DATA).then((storageData) => !!storageData) as any;
 				})
 				// check storage data
