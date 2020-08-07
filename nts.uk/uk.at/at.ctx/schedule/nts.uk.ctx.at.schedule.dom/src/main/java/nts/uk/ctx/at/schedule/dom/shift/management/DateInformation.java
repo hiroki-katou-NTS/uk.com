@@ -74,27 +74,27 @@ public class DateInformation {
 				 */
 
 				workplaceEventName = Optional.of(workplaceEvent.get().getEventName());
-				List<WorkplaceSpecificDateItem> listWorkplaceSpecificDateItem = require
-						.getWorkplaceSpecByDate(targetOrgIdenInfor.getWorkplaceId().get(), ymd);
-
-				if (!listWorkplaceSpecificDateItem.isEmpty()) {
-					/*
-					 * @特定日であるか = true
-					 * 
-					 * @職場の特定日名称リスト = require.特定日項目リストを取得する( $職場特定日設定.特定日項目リスト)
-					 * : map $.名称
-					 */
-					// @特定日であるか QA http://192.168.50.4:3000/issues/110662 - code
-					isSpecificDay = true;
-					List<SpecificDateItemNo> listSpecificDateItemNo = listWorkplaceSpecificDateItem.stream()
-							.map(c -> c.getSpecificDateItemNo()).collect(Collectors.toList());
-					List<SpecificDateItem> zlistSpecDayNameWorkplace = require
-							.getSpecifiDateByListCode(listSpecificDateItemNo);
-					lstSpecDayNameWorkplace = zlistSpecDayNameWorkplace.stream().map(c -> c.getSpecificName())
-							.collect(Collectors.toList());
-				}
-
 			}
+			List<WorkplaceSpecificDateItem> listWorkplaceSpecificDateItem = require
+					.getWorkplaceSpecByDate(targetOrgIdenInfor.getWorkplaceId().get(), ymd);
+
+			if (!listWorkplaceSpecificDateItem.isEmpty()) {
+				/*
+				 * @特定日であるか = true
+				 * 
+				 * @職場の特定日名称リスト = require.特定日項目リストを取得する( $職場特定日設定.特定日項目リスト) :
+				 * map $.名称
+				 */
+				// @特定日であるか QA http://192.168.50.4:3000/issues/110662 - code
+				isSpecificDay = true;
+				List<SpecificDateItemNo> listSpecificDateItemNo = listWorkplaceSpecificDateItem.stream()
+						.map(c -> c.getSpecificDateItemNo()).collect(Collectors.toList());
+				List<SpecificDateItem> zlistSpecDayNameWorkplace = require
+						.getSpecifiDateByListCode(listSpecificDateItemNo);
+				lstSpecDayNameWorkplace = zlistSpecDayNameWorkplace.stream().map(c -> c.getSpecificName())
+						.collect(Collectors.toList());
+			}
+
 		}
 
 		Optional<CompanyEvent> optCompanyEvent = require.findCompanyEventByPK(ymd);

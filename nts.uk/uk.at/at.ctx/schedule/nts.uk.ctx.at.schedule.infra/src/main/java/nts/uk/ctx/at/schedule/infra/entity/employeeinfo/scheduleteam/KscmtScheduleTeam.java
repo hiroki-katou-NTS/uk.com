@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @Entity
 @NoArgsConstructor
-@Table(name = "KSCMT_SCHEDULE_TEAM")
+@Table(name = "KSCMT_SCHEDULE_TEAM_OLD")
 public class KscmtScheduleTeam extends ContractUkJpaEntity {
 
 	@EmbeddedId

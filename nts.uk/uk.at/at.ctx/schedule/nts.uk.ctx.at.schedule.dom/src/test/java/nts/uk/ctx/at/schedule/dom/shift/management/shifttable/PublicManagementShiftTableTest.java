@@ -15,7 +15,7 @@ public class PublicManagementShiftTableTest {
 	@Test
 	public void getters() {
 		PublicManagementShiftTable data = new PublicManagementShiftTable(
-				new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId", "workplaceGroupId"),
+				TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId"),
 				GeneralDate.today(), Optional.empty());
 		NtsAssert.invokeGetters(data);
 	}
@@ -25,14 +25,16 @@ public class PublicManagementShiftTableTest {
 	 */
 	@Test
 	public void testCreatePublicManagementShiftTable() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId",
-				"workplaceGroupId");
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId");
 		GeneralDate endDatePublicationPeriod = GeneralDate.today();
 		Optional<GeneralDate> optEditStartDate = Optional.empty();
-		NtsAssert.systemError(() -> { PublicManagementShiftTable.createPublicManagementShiftTable(
+		PublicManagementShiftTable data = PublicManagementShiftTable.createPublicManagementShiftTable(
 					targetOrgIdenInfor, 
 					endDatePublicationPeriod, 
-					optEditStartDate);});
+					optEditStartDate);
+		assertThat(data.getTargetOrgIdenInfor()).isEqualTo(targetOrgIdenInfor);
+		assertThat(data.getEndDatePublicationPeriod()).isEqualTo(endDatePublicationPeriod);
+		assertThat(data.getOptEditStartDate()).isEqualTo(optEditStartDate);
 	}
 
 	/**
@@ -40,8 +42,7 @@ public class PublicManagementShiftTableTest {
 	 */
 	@Test
 	public void testCreatePublicManagementShiftTable_1() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId",
-				null);
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId");
 		GeneralDate endDatePublicationPeriod = GeneralDate.today();
 		Optional<GeneralDate> optEditStartDate = Optional.of(GeneralDate.today().addDays(1));
 		NtsAssert.systemError(() -> { PublicManagementShiftTable.createPublicManagementShiftTable(
@@ -56,8 +57,7 @@ public class PublicManagementShiftTableTest {
 	 */
 	@Test
 	public void testCreatePublicManagementShiftTable_2() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId",
-				null);
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId");
 		GeneralDate endDatePublicationPeriod = GeneralDate.today();
 		Optional<GeneralDate> optEditStartDate = Optional.of(GeneralDate.today().addDays(-1));
 		PublicManagementShiftTable data = PublicManagementShiftTable.createPublicManagementShiftTable(targetOrgIdenInfor, endDatePublicationPeriod,
@@ -74,8 +74,7 @@ public class PublicManagementShiftTableTest {
 	 */
 	@Test
 	public void testCreatePublicManagementShiftTable_3() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, null,
-				"workplaceGroupId");
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup("workplaceGroupId");
 		GeneralDate endDatePublicationPeriod = GeneralDate.today();
 		Optional<GeneralDate> optEditStartDate = Optional.of(GeneralDate.today().addDays(-1));
 		PublicManagementShiftTable data = PublicManagementShiftTable.createPublicManagementShiftTable(targetOrgIdenInfor, endDatePublicationPeriod,

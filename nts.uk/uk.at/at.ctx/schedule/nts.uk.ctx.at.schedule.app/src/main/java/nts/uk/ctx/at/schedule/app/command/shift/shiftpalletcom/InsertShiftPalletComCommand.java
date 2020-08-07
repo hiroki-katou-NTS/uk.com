@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.app.command.shift.shiftpalletcom;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -54,7 +55,7 @@ public class InsertShiftPalletComCommand {
 	
 	public ShiftPalletsOrg toDom(){	
 		return new ShiftPalletsOrg(
-				new TargetOrgIdenInfor(EnumAdaptor.valueOf(0, TargetOrganizationUnit.class) , workplaceId, null),
+				new TargetOrgIdenInfor(EnumAdaptor.valueOf(0, TargetOrganizationUnit.class) , Optional.of(workplaceId), Optional.empty()),
 				groupNo, new ShiftPallet(
 						new ShiftPalletDisplayInfor(new ShiftPalletName(groupName),
 								EnumAdaptor.valueOf(groupUsageAtr, NotUseAtr.class), new ShiftRemarks(note)),

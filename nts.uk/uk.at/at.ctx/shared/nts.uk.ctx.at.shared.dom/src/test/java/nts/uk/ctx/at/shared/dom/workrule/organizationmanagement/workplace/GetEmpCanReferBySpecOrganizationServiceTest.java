@@ -30,7 +30,7 @@ public class GetEmpCanReferBySpecOrganizationServiceTest {
 	public void testGetListEmpID() {
 		GeneralDate referenceDate = GeneralDate.today();
 		String epmloyeeId = "epmloyeeId";
-		TargetOrgIdenInfor targetOrgIdenInfor =new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, null, "workplaceGroupId");
+		TargetOrgIdenInfor targetOrgIdenInfor =TargetOrgIdenInfor.creatIdentifiWorkplaceGroup("workplaceGroupId");
 		new Expectations() {
 			{
 				require.getReferableEmp(referenceDate, epmloyeeId, targetOrgIdenInfor.getWorkplaceGroupId().get());
@@ -50,7 +50,7 @@ public class GetEmpCanReferBySpecOrganizationServiceTest {
 	public void testGetListEmpID_1() {
 		GeneralDate referenceDate = GeneralDate.today();
 		String epmloyeeId = "epmloyeeId";
-		TargetOrgIdenInfor targetOrgIdenInfor =new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, null, "workplaceGroupId");
+		TargetOrgIdenInfor targetOrgIdenInfor =TargetOrgIdenInfor.creatIdentifiWorkplaceGroup("workplaceGroupId");
 		List<String> listEmpId = Arrays.asList("emp1","emp2");
 		new Expectations() {
 			{
@@ -74,7 +74,7 @@ public class GetEmpCanReferBySpecOrganizationServiceTest {
 	public void testGetListEmpID_2() {
 		GeneralDate referenceDate = GeneralDate.today();
 		String epmloyeeId = "epmloyeeId";
-		TargetOrgIdenInfor targetOrgIdenInfor =new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId", null);
+		TargetOrgIdenInfor targetOrgIdenInfor =TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId");
 		String roleID = "roleId";
 		List<String> listEmpId = Arrays.asList("emp1","emp2");
 		

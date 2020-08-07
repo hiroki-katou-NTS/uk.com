@@ -29,10 +29,11 @@ public class RegisterScheduleTeamCommandHandler extends CommandHandler<ScheduleT
 	protected void handle(CommandHandlerContext<ScheduleTeamSaveCommand> context) {
 		ScheduleTeamSaveCommand command = context.getCommand();
 		ScheduleTeam scheduleTeam = new ScheduleTeam(command.getWorkplaceGroupId(),
-														new ScheduleTeamCd(command.getScheduleTeamCd()),
-														new ScheduleTeamName(command.getScheduleTeamName()),
-														Optional.of(new ScheduleTeamRemarks(command.getRemarks())));
-		scheduleTeamRepository.update(scheduleTeam);
+														new ScheduleTeamCd(command.getCode()),
+														new ScheduleTeamName(command.getName()),
+														Optional.of(new ScheduleTeamRemarks(command.getNote()))
+														);
+		scheduleTeamRepository.insert(scheduleTeam);
 	}
 
 }

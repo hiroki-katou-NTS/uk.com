@@ -65,8 +65,8 @@ public class SortSettingTest {
 		assertSame(listOrderedList.get(0).getSortOrder(), sortSettingNew.getOrderedList().get(0).getSortOrder());
 		
 		assertThat(listOrderedList)
-		.extracting(d->d.getType().value,d -> d.getSortOrder().value)
-		.containsExactly(tuple(0,4));
+		.extracting(d->d.getType(),d -> d.getSortOrder())
+		.containsExactly(tuple(SortType.SORT_ASC,SortOrder.CLASSIFY));
 		
 	}
 	

@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.app.find.schedule.scheduleteam.ScheduleTeamDetailQuery;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeamRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeam;
@@ -23,7 +23,6 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroupRespository;
 import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.EmployeeInfoData;
 import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.GetAllEmpWhoBelongWorkplaceGroupService;
 import nts.uk.ctx.bs.employee.pub.workplace.ResultRequest597Export;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -42,9 +41,6 @@ public class Ksu001LaScreenQuery {
 	@Inject
 	private WorkplacePub workplacePub;
 	
-	@Inject
-	private ScheduleTeamDetailQuery teamDetailQuery;
-	
 	/**	所属スケジュールチームRepository **/
 	@Inject
 	private BelongScheduleTeamRepository belongScheduleTeamRepository;
@@ -55,30 +51,46 @@ public class Ksu001LaScreenQuery {
 	
 	public List<EmployeeOrganizationInfoDto> getEmployeesOrganizationInfo(GeneralDate baseDate, String WKPGRID){		
 		
-		GetAllEmpWhoBelongWorkplaceGroupImpl require = new GetAllEmpWhoBelongWorkplaceGroupImpl(repoAffWorkplaceGroup, workplacePub);
-
-		List<EmployeeAffiliation> employeeAffiliations = GetAllEmpWhoBelongWorkplaceGroupService.getAllEmp(require, baseDate, WKPGRID);
-		
+		List<String> lstEmpId = new ArrayList<String>();
+		List<EmpTeamInfor> empTeamInfors  = new ArrayList<>();
+		GetAllEmpWhoBelongWorkplaceGroupImpl getAllEmpWhoBelongWorkplaceGroupImpl = new GetAllEmpWhoBelongWorkplaceGroupImpl(repoAffWorkplaceGroup, workplacePub);
 		GetScheduleTeamInfoImpl getScheduleTeamInfoImpl = new GetScheduleTeamInfoImpl(belongScheduleTeamRepository, teamRepository);
-		List<String> lstEmpId = employeeAffiliations.stream().map(x -> x.getEmployeeID()).collect(Collectors.toList());
-		if(lstEmpId != null) {
-			List<EmpTeamInfor> empTeamInfors = GetScheduleTeamInfoService.get(getScheduleTeamInfoImpl, lstEmpId);			
-		}		
+
+		final List<EmployeeAffiliation> employeeAffiliations = GetAllEmpWhoBelongWorkplaceGroupService.getAllEmp(getAllEmpWhoBelongWorkplaceGroupImpl, baseDate, WKPGRID);
+		
+		if(!CollectionUtil.isEmpty(employeeAffiliations)) {
+			lstEmpId = employeeAffiliations.stream().map(x -> x.getEmployeeID()).collect(Collectors.toList());
+		}	
+		if(!CollectionUtil.isEmpty(lstEmpId)) {					
+			empTeamInfors = GetScheduleTeamInfoService.get(getScheduleTeamInfoImpl, lstEmpId);			
+		}	
 		
 		List<EmployeeOrganizationInfoDto> teamDetailDtos = employeeAffiliations.stream().map(x -> new EmployeeOrganizationInfoDto(
 				x.getEmployeeID(), x.getEmployeeCode().get().v(), x.getBusinessName().get().toString(), "", "")).collect(Collectors.toList());
-//		ScheduleTeamDetailDto = teamDetailQuery.getDetailScheduleTeam(WKPGRID, scheduleTeamCd);
-//		employeeAffiliations.stream().map(x -> {
-//			ScheduleTeamDetailDto teamDetailDto = teamDetailQuery.getDetailScheduleTeam(WKPGRID, x.get);
-//		});
+
+//		List<EmployeeOrganizationInfoDto> teamDetailDtos = employeeAffiliations.stream().map(x -> {
+//			EmpTeamInfor empTeamInfor = empTeamInfors.stream().filter(y -> y.getEmployeeID()== x.getEmployeeID()).findFirst().orElse(null);
+//			
+//			return new EmployeeOrganizationInfoDto(x.getEmployeeID(), x.getEmployeeCode().get().v(), x.getBusinessName().get().toString(), empTeamInfor.getOptScheduleTeamCd().get().v()
+//					, empTeamInfor.getOptScheduleTeamName().get().v());
+//			
+//		}).collect(Collectors.toList());
 		
-//				
-//		List<EmployeeOrganizationInfoDto> employeeOrganizationInfoDtos = new ArrayList<EmployeeOrganizationInfoDto>();
-//		for(int i = 1; i<10; i++){
-//			employeeOrganizationInfoDtos.add(new EmployeeOrganizationInfoDto("00"+ i,"0" + i , "NSVN", "0"+i, "A"));				
-//		}
-//		return employeeOrganizationInfoDtos;
-		return teamDetailDtos;
+		for (int i = 0; i< empTeamInfors.size(); i++) {
+			EmpTeamInfor empTeamInfor = empTeamInfors.get(i);			
+			for(int j = 0; j< teamDetailDtos.size(); j ++) {				
+				EmployeeOrganizationInfoDto dto = teamDetailDtos.get(i);
+				if(dto.getEmployeeId() == empTeamInfor.getEmployeeID()) {
+					if(empTeamInfor.getOptScheduleTeamCd().isPresent()) {
+						dto.setTeamCd(empTeamInfor.getOptScheduleTeamCd().get().v());
+					}
+					if(empTeamInfor.getOptScheduleTeamName().isPresent()) {
+						dto.setTeamName( empTeamInfor.getOptScheduleTeamName().get().v());	
+					}									
+				}				
+			}			
+		}
+		return teamDetailDtos;		
 	}
 	
 	@AllArgsConstructor

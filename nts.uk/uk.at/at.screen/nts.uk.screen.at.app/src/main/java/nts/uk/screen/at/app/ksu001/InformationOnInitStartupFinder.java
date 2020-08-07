@@ -37,8 +37,7 @@ public class InformationOnInitStartupFinder {
 
 		// step 3
 		// goi domain service 社員の対象組織識別情報を取得する
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,
-				"dea95de1-a462-4028-ad3a-d68b8f180412", null);
+		TargetOrgIdenInfor targetOrgIdenInfor =TargetOrgIdenInfor.creatIdentifiWorkplace("dea95de1-a462-4028-ad3a-d68b8f180412");
 
 		// step 4
 		DisplayInforOrganization displayInforOrganization = new DisplayInforOrganization("designation", "code", "name",
