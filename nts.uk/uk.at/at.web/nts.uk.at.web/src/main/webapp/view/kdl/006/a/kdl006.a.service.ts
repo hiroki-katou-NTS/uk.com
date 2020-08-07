@@ -1,20 +1,20 @@
 module nts.uk.at.view.kdl006.a.service {
     var paths = {
-        getInfo : "screen/at/kdl014/get",
-        findStampMeanSmartPhone : "screen/at/kdl014/find/stampMeans/smart-phone",
-        findstampMeanTimeClock : "screen/at/kdl014/find/stampMeans/time-clock"
+        startPage : "screen/at/kdl006/startpage",
+        getworkplace : "screen/at/kdl006/getworkplace",
+        save : "screen/at/kdl006/save"
     }
         
-    export function getInfo(param: any): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getInfo, param);
+    export function startPage(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.startPage, param);
     }
     
-       export function findStampMeanSmartPhone(): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.findStampMeanSmartPhone);
+       export function getworkplace(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getworkplace, param);
     }
     
-       export function findstampMeanTimeClock(): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.findstampMeanTimeClock);
+       export function save(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.save, param);
     }
 }
 

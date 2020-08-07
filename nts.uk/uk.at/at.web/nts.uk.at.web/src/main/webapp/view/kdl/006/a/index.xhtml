@@ -36,7 +36,7 @@
 						value: selectedCode,
 						optionsText: 'periodDate',
 						columns: [
-							{ prop: 'code', length: 4 },
+							{ prop: 'closureName', length: 4 },
 							{ prop: 'periodDate', length: 25 },
 						]}"></div>
 				</div>
@@ -73,10 +73,10 @@
 						</colgroup>
 						<tbody data-bind="foreach: workplaceList">
 							<tr>
-								<td data-bind="text: data? workPlace: ''"></td>
-								<td data-bind="if: data" style="text-align: center;"><div tabindex="2" data-bind="ntsCheckBox: {checked: confirm}"></div></td>
-								<td data-bind="text: (data &amp;&amp; confirm())? person: ''"></td>
-								<td data-bind="text: (data &amp;&amp; confirm())? confirmedDateTime: ''" style="text-align: right;"></td>
+								<td data-bind="text: workPlaceName"></td>
+								<td data-bind="if: workPlaceId != ''" style="text-align: center;"><div tabindex="2" data-bind="ntsCheckBox: {checked: confirmEmployment}"></div></td>
+								<td data-bind="text: confirmEmployeeName"></td>
+								<td data-bind="text: confirmationTime" style="text-align: right;"></td>
 							</tr>
 						</tbody>
 					</table>
