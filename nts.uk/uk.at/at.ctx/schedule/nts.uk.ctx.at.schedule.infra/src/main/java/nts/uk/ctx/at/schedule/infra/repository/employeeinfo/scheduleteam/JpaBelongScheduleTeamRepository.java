@@ -1,9 +1,12 @@
 package nts.uk.ctx.at.schedule.infra.repository.employeeinfo.scheduleteam;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -11,6 +14,7 @@ import javax.ejb.TransactionAttributeType;
 
 import com.aspose.pdf.Collection;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
@@ -68,20 +72,34 @@ public class JpaBelongScheduleTeamRepository extends JpaRepository implements Be
 		//this.commandProxy().remove
 	}
 
+	@SneakyThrows
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	@Override
 	public void delete(String companyID, String empID) {
-		this.commandProxy().remove(KscmtAffScheduleTeam.class, new KscmtAffScheduleTeamPk(companyID, empID) );		
+		String delete = "DELETE FROM KSCMT_AFF_SCHEDULE_TEAM WHERE CID = ? AND SID = ?";
+		PreparedStatement ps1 = this.connection().prepareStatement(delete);
+		ps1.setString(1, companyID);
+		ps1.setString(2, empID);
+		ps1.executeUpdate();
 
 	}
 
+	@SneakyThrows
 	@Override
 	public void delete(String companyID, String WKPGRPID, String scheduleTeamCd) {
+
+		String delete = "DELETE FROM KSCMT_AFF_SCHEDULE_TEAM WHERE CID = ? AND WKPGRP_ID = ? AND CD = ? ";
+		PreparedStatement ps1 = this.connection().prepareStatement(delete);
+		ps1.setString(1, companyID);
+		ps1.setString(2, WKPGRPID);
+		ps1.setString(3, scheduleTeamCd);
 		
-		List<BelongScheduleTeam> lst = getAll(companyID, WKPGRPID, scheduleTeamCd);
-		lst.forEach( x ->{
-			this.commandProxy().remove(KscmtAffScheduleTeam.toEntity(x));
-		});
+		ps1.executeUpdate();
+//		List<BelongScheduleTeam> lst = getAll(companyID, WKPGRPID, scheduleTeamCd);
+//		List<KscmtAffScheduleTeam> data = lst.stream().map(x -> new KscmtAffScheduleTeam(
+//				new KscmtAffScheduleTeamPk(companyID, x.getEmployeeID()) ,
+//				x.getWKPGRPID(), x.getScheduleTeamCd().v())).collect(Collectors.toList());
+//		this.commandProxy().removeAll(data);
 		
 	}
 
@@ -158,6 +176,8 @@ public class JpaBelongScheduleTeamRepository extends JpaRepository implements Be
 	@Override
 	public Optional<BelongScheduleTeam> getScheduleTeam(String companyID, String empID) {
 		// TODO Auto-generated method stub	
+		
+		
 		return null;
 	}
 

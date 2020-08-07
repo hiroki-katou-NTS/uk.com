@@ -10,10 +10,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class ShiftPalletsOrgHelper {
 	public static ShiftPalletsOrg getShiftPalletsOrgDefault() {
 		return new ShiftPalletsOrg(
-				new TargetOrgIdenInfor(
-						TargetOrganizationUnit.WORKPLACE, //dummy
-						"e34d86c4-1e32-463e-b86c-68551e0bbf18", //dummy
-						""), //dummy
+				TargetOrgIdenInfor.creatIdentifiWorkplace("e34d86c4-1e32-463e-b86c-68551e0bbf18"),
 				1, 
 				new ShiftPallet(
 						new ShiftPalletDisplayInfor(
@@ -31,10 +28,7 @@ public class ShiftPalletsOrgHelper {
 	
 	public static ShiftPalletsOrg getShiftPalletsOrgDefault_workplacegrp() {
 		return new ShiftPalletsOrg(
-				new TargetOrgIdenInfor(
-						TargetOrganizationUnit.WORKPLACE_GROUP, //dummy
-						"", //dummy
-						"e34d86c4-1e32-463e-b86c-68551e0bbf18"), //dummy
+				TargetOrgIdenInfor.creatIdentifiWorkplaceGroup("e34d86c4-1e32-463e-b86c-68551e0bbf18"),
 				1, 
 				new ShiftPallet(
 						new ShiftPalletDisplayInfor(

@@ -33,7 +33,7 @@ public class TargetOrgIdenInforTest {
 		TargetOrganizationUnit unit = TargetOrganizationUnit.WORKPLACE;// dummy
 		String workplaceId = null;
 		String workplaceGroupId = null;
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, workplaceId, workplaceGroupId);
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, Optional.ofNullable(workplaceId), Optional.ofNullable(workplaceGroupId));
 		assertThat(targetOrgIdenInfor.getUnit()).isEqualTo(unit);
 		assertThat(targetOrgIdenInfor.getWorkplaceId().isPresent()).isFalse();
 		assertThat(targetOrgIdenInfor.getWorkplaceGroupId().isPresent()).isFalse();
@@ -44,7 +44,7 @@ public class TargetOrgIdenInforTest {
 		TargetOrganizationUnit unit = TargetOrganizationUnit.WORKPLACE;// dummy
 		String workplaceId = "workplaceId";
 		String workplaceGroupId = "workplaceGroupId";
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, workplaceId, workplaceGroupId);
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit,  Optional.ofNullable(workplaceId), Optional.ofNullable(workplaceGroupId));
 		assertThat(targetOrgIdenInfor.getUnit()).isEqualTo(unit);
 		assertThat(targetOrgIdenInfor.getWorkplaceId().isPresent()).isTrue();
 		assertThat(targetOrgIdenInfor.getWorkplaceGroupId().isPresent()).isTrue();

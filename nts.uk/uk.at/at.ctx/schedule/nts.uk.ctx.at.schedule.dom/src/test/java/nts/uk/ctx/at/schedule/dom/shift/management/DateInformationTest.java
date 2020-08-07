@@ -45,7 +45,7 @@ public class DateInformationTest {
 	 */
 	@Test
 	public void testCreate_1() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, "workplaceId", null);
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId");
 		GeneralDate today = GeneralDate.today();
 		new Expectations() {
 			{
@@ -80,7 +80,7 @@ public class DateInformationTest {
 	 */
 	@Test
 	public void testCreate_2() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, "workplaceId", null);
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId");;
 		GeneralDate today = GeneralDate.today();
 		new Expectations() {
 			{
@@ -116,7 +116,7 @@ public class DateInformationTest {
 	 */
 	@Test
 	public void testCreate_3() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, null, "workplaceGroupId");
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup("workplaceGroupId");
 		GeneralDate today = GeneralDate.today();
 		CompanyEvent companyEvent = DateInformationHelper.getCompanyEventDefault();
 		List<CompanySpecificDateItem> listCompanySpecificDateItem = DateInformationHelper.getListDefaultByNumberItem(2);
@@ -155,7 +155,7 @@ public class DateInformationTest {
 	 */
 	@Test
 	public void testCreate_4() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, null, "workplaceGroupId");
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup("workplaceGroupId");
 		GeneralDate today = GeneralDate.today();
 		CompanyEvent companyEvent = DateInformationHelper.getCompanyEventDefault();
 		List<CompanySpecificDateItem> listCompanySpecificDateItem = DateInformationHelper.getListDefaultByNumberItem(2);
@@ -200,7 +200,7 @@ public class DateInformationTest {
 	 */
 	@Test
 	public void testCreate_5() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId", null);
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId");;
 		GeneralDate today = GeneralDate.today();
 		new Expectations() {
 			{
@@ -230,7 +230,7 @@ public class DateInformationTest {
 	 */
 	@Test
 	public void testCreate_6() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId", null);
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId");;
 		GeneralDate today = GeneralDate.today();
 		WorkplaceEvent workplaceEvent = WorkplaceEvent.createFromJavaType("workplaceId", GeneralDate.today(), "eventName");
 		new Expectations() {
@@ -264,7 +264,7 @@ public class DateInformationTest {
 	 */
 	@Test
 	public void testCreate_7() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId", null);
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId");
 		GeneralDate today = GeneralDate.today();
 		WorkplaceEvent workplaceEvent = WorkplaceEvent.createFromJavaType("workplaceId", GeneralDate.today(), "eventName");
 		List<WorkplaceSpecificDateItem> listWorkplaceSpecificDateItem =  DateInformationHelper.getListWorkplaceSpecificDateItemByNumber(2);
@@ -302,7 +302,7 @@ public class DateInformationTest {
 	 */
 	@Test
 	public void testCreate_8() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId", null);
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId");;
 		GeneralDate today = GeneralDate.today();
 		WorkplaceEvent workplaceEvent = WorkplaceEvent.createFromJavaType("workplaceId", GeneralDate.today(), "eventName");
 		List<WorkplaceSpecificDateItem> listWorkplaceSpecificDateItem =  DateInformationHelper.getListWorkplaceSpecificDateItemByNumber(2);
