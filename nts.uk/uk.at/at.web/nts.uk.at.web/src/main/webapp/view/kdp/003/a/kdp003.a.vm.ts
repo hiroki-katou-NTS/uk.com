@@ -74,6 +74,11 @@ module nts.uk.at.kdp003.a {
 		created() {
 			const vm = this;
 
+			// show or hide stampHistoryButton
+			vm.message.subscribe((value) => {
+				vm.showClockButton.company(value === null);
+			});
+
 			// reload employee list after change baseDate
 			vm.employeeData.baseDate.subscribe(() => {
 				vm.$window.storage(KDP003_SAVE_DATA)
