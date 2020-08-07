@@ -197,18 +197,24 @@ export class KdpS01AComponent extends Vue {
 
         setInterval(() => {
 
-            console.log('check Suppress');
-            
-            vm.$http.post('at', servicePath.getSuppress).then((result: any) => {
-                let stampToSuppress: model.IStampToSuppress = result.data;
-
-                _.forEach(vm.setting.buttons, function (button) {
-
-                    vm.setBtnColor(button, stampToSuppress);
-
-                });
-            });
+            vm.getStampToSuppress();
         }, vm.setting.displaySettingsStampScreen.serverCorrectionInterval * 1000);
+    }
+
+    private getStampToSuppress() {
+        let vm = this;
+        vm.$mask('show');
+        vm.$http.post('at', servicePath.getSuppress).then((result: any) => {
+            vm.$mask('hide');
+            let stampToSuppress: model.IStampToSuppress = result.data;
+
+            _.forEach(vm.setting.buttons, function (button) {
+
+                vm.setBtnColor(button, stampToSuppress);
+
+            });
+        });
+
     }
 
     private getLstButton(lstButtonSet: Array<model.ButtonSettingsDto>, stampToSuppress: model.IStampToSuppress) {
@@ -264,38 +270,39 @@ export class KdpS01AComponent extends Vue {
                 command.geoCoordinate = { latitude, longitude };
                 vm.$mask('show');
 
-                vm.$http.post('at', servicePath.registerStamp, command).then((result: any) => {
+                vm.$http.post('at', servicePath.registerStamp, command)
+                    .then((result: any) => {
+                        vm.$mask('hide');
+                        vm.getStampToSuppress();
 
-                    vm.$mask('hide');
+                        switch (button.buttonValueType) {
+                            case 1:
+                            case 3:
+                            case 4:
+                                vm.openDialogB(result);
+                                break;
 
-                    switch (button.buttonValueType) {
-                        case 1:
-                        case 3:
-                        case 4:
-                            vm.openDialogB(result, button.buttonPositionNo);
-                            break;
-
-                        case 2: {
-                            if (vm.setting.usrAtrValue === 1) {
-                                vm.openDialogC(result, button.buttonPositionNo);
-                            } else {
-                                vm.openDialogB(result, button.buttonPositionNo);
+                            case 2: {
+                                if (vm.setting.usrAtrValue === 1) {
+                                    vm.openDialogC(result);
+                                } else {
+                                    vm.openDialogB(result);
+                                }
+                                break;
                             }
-                            break;
+                            default:
+                                break;
                         }
-                        default:
-                            break;
-                    }
 
-                }).catch((res: any) => {
-                    vm.showError(res);
-                });
+                    }).catch((res: any) => {
+                        vm.showError(res);
+                    });
             }
             console.log(command);
         });
     }
 
-    private openDialogB(date: Date, buttonPositionNo: number) {
+    private openDialogB(date: Date) {
 
         let vm = this;
         vm.$auth.user.then((userInfo) => {
@@ -304,17 +311,21 @@ export class KdpS01AComponent extends Vue {
                 resultDisplayTime: vm.setting.displaySettingsStampScreen.resultDisplayTime,
                 employeeId: userInfo.employeeId,
                 employeeCode: userInfo.employeeCode
+            }).then(() => {
+
             });
         });
     }
 
-    private openDialogC(date: Date, buttonPositionNo: number) {
+    private openDialogC(date: Date) {
         let vm = this;
         vm.$auth.user.then((userInfo) => {
             vm.$modal('screenC', {
                 resultDisplayTime: vm.setting.displaySettingsStampScreen.resultDisplayTime,
                 employeeId: userInfo.employeeId,
                 employeeCode: userInfo.employeeCode
+            }).then(() => {
+
             });
         });
     }
@@ -364,14 +375,6 @@ export class KdpS01AComponent extends Vue {
         } else {
             vm.$modal.error(res.message);
         }
-    }
-
-    public login() {
-
-
-    }
-
-    public mounted() {
     }
 }
 

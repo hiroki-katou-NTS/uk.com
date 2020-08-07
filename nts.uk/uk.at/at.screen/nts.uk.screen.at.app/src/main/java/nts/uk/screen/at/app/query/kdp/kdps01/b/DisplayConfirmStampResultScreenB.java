@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,6 +13,7 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
@@ -23,6 +25,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepo
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EmployeeStampInfo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetListStampEmployeeService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampInfoDisp;
+import nts.uk.screen.at.app.query.kdp.kdp001.a.EmployeeStampInfoDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -44,6 +47,9 @@ public class DisplayConfirmStampResultScreenB {
 
 	@Inject
 	private WorkLocationRepository workLocationRepo;
+	
+	@Inject
+	private EmployeeRecordAdapter sysEmpPub;
 
 	/**
 	 * 打刻結果(スマホ)の打刻情報を取得する
@@ -87,9 +93,13 @@ public class DisplayConfirmStampResultScreenB {
 				.orElse(null);
 		
 		String workLocationName = this.workLocationRepo.findByCode(AppContexts.user().companyId(), workLocationCd)
-				.map(x -> x.getWorkLocationName() != null ? x.getWorkLocationName().v() : null).orElse(null);
-
-		return new DisplayConfirmStampResultDto(empDatas, workLocationName);
+				.map(x -> x.getWorkLocationName() != null ? x.getWorkLocationName().v() : null).orElse("");
+		
+		//thêm 1 xử lý dể lấy username nữa;
+		
+		return new DisplayConfirmStampResultDto(
+				empDatas.stream().map(x -> EmployeeStampInfoDto.fromDomain(x)).collect(Collectors.toList()),
+				workLocationCd, workLocationName, this.sysEmpPub.getPersonInfor(AppContexts.user().employeeId()));
 	}
 
 	@AllArgsConstructor

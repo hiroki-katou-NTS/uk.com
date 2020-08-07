@@ -1,0 +1,294 @@
+
+export module model {
+    export interface ISettingSmartPhone {
+        //スマホ打刻の打刻設定
+        setting: ISettingsSmartphoneStamp;
+
+        //打刻後の実績表示
+        resulDisplay: IStampResultDisplay;
+
+        //抑制する打刻
+        stampToSuppress: IStampToSuppress;
+    }
+
+    export interface ISettingsSmartphoneStamp {
+        // 会社ID
+        cid: string;
+
+        // 打刻画面の表示設定
+        displaySettingsStampScreen: IDisplaySettingsStampScreenDto;
+
+        // ページレイアウト設定
+        pageLayoutSettings: Array<IStampPageLayoutDto>;
+
+        // 打刻ボタンを抑制する
+        buttonEmphasisArt: boolean;
+
+    }
+
+    export interface IStampPageLayoutDto {
+        /** ページNO */
+        pageNo: number;
+
+        /** ページ名 */
+        stampPageName: string;
+
+        /** ページコメント */
+        stampPageComment: IStampPageCommentDto;
+
+        /** ボタン配置タイプ */
+        buttonLayoutType: number;
+
+        /** ボタン詳細設定リスト */
+        lstButtonSet: Array<ButtonSettingsDto>;
+    }
+
+    export interface IStampPageCommentDto {
+        /** コメント */
+        pageComment: string;
+
+        /** コメント色 */
+        commentColor: string;
+    }
+
+    export interface ButtonSettingsDto {
+        /** ボタン位置NO */
+        buttonPositionNo: number;
+
+        /** ボタンの表示設定 */
+        buttonDisSet: IButtonDisSetDto;
+
+        buttonValueType: number;
+
+        usrArt: number;
+    }
+
+    export interface IButtonDisSetDto {
+        /** ボタン名称設定 */
+        buttonNameSet: IButtonNameSetDto;
+
+        /** 背景色 */
+        backGroundColor: string;
+    }
+
+    export interface IButtonNameSetDto {
+        /** 文字色 */
+        textColor: string;
+
+        /** ボタン名称 */
+        buttonName: string;
+    }
+
+    export interface IDisplaySettingsStampScreenDto {
+        /** 打刻画面のサーバー時刻補正間隔 */
+        serverCorrectionInterval: number;
+
+        /** 打刻画面の日時の色設定 */
+        settingDateTimeColor: ISettingDateTimeColorOfStampScreenDto;
+
+        /** 打刻結果自動閉じる時間 */
+        resultDisplayTime: number;
+
+    }
+
+    export interface ISettingDateTimeColorOfStampScreenDto {
+        /** 文字色 */
+        textColor: String;
+
+        /** 背景色 */
+        backgroundColor: String;
+
+    }
+
+
+
+    export interface IStampResultDisplay {
+        /** 会社ID */
+        companyId: string;
+
+        /** 使用区分 */
+        usrAtrValue: number;
+
+        /** 表示項目一覧 */
+        lstDisplayItemId: Array<IStampAttenDisplay>;
+
+    }
+
+    export interface IStampAttenDisplay {
+        /** 会社ID */
+        companyId: string;
+
+        /** 表示項目一覧 */
+        displayItemId: number;
+    }
+
+    export interface IStampToSuppress {
+        // 出勤
+        goingToWork: boolean;
+
+        // 退勤
+        departure: boolean;
+
+        // 外出 
+        goOut: boolean;
+
+        // 戻り
+        turnBack: boolean;
+    }
+
+    export interface ICheckStampResult {
+
+        // 打刻カード番号
+        cardNumber: string;
+        // 打刻利用可否
+        used: number;
+    }
+    export interface IRegisterSmartPhoneStampCommand {
+        /**
+         * 打刻日時
+         */
+        stampDatetime: string;
+        /**
+         * 打刻ボタン(ページNO,ボタンNO)
+         */
+        stampButton: IStampButtonCommand;
+        /**
+         * 地理座標
+         */
+        geoCoordinate: IGeoCoordinate;
+
+        /**
+         * 実績への反映内容
+         */
+
+        refActualResult: IRefectActualResultCommand;
+    }
+    interface IStampButtonCommand {
+        /** ページNO */
+        pageNo: number;
+
+        /** ボタン位置NO */
+        buttonPositionNo: number;
+    }
+    interface IRefectActualResultCommand {
+
+
+        cardNumberSupport: string;
+
+        /**
+         * 打刻場所コード 勤務場所コード old
+         */
+
+        workLocationCD: string;
+
+        /**
+         * 就業時間帯コード
+         */
+
+        workTimeCode: string;
+
+        /**
+         * 時間外の申告
+         */
+
+        overtimeDeclaration: IOvertimeDeclarationComamnd;
+    }
+
+    interface IOvertimeDeclarationComamnd {
+        overTime: number;
+
+        /**
+         * 時間外深夜時間
+         */
+        overLateNightTime: number;
+    }
+
+    interface IGeoCoordinate {
+        /** 緯度 */
+        latitude: number;
+
+        /** 経度 */
+        longitude: number;
+
+    }
+    export interface IScreenBParam {
+        stampDate: Date;
+        resultDisplayTime: number;
+        employeeId: string;
+        employeeCode: string;
+
+    }
+
+    export interface IScreenBResult {
+        empDatas: Array<IEmployeeStampInfo>;
+        workLocationName: string;
+        workLocationCd: string;
+        empInfo: IEmployeeRecordImport;
+    }
+
+    interface IEmployeeRecordImport {
+        pname: string;
+    }
+
+    interface IEmployeeStampInfo {
+        /**
+             * 社員ID
+             */
+        employeeId: string;
+
+        /**
+         * 年月日
+         */
+        date: Date;
+
+        /**
+         * 打刻情報リスト
+         */
+        listStampInfoDisp: Array<IStampInfoDisp>;
+    }
+
+    export interface IStampInfoDisp {
+        /**
+	 * 打刻カード番号
+	 */
+        stampNumber: string;
+
+        /**
+         * 打刻日時
+         */
+        stampDatetime: Date;
+
+        /**
+         * 打刻区分
+         */
+        stampAtr: string;
+
+        /**
+         * 打刻
+         */
+        stamp: Array<IStamp>;
+    }
+    interface IStamp {
+        /**
+	 * 契約コード
+	 * ver2　属性追加
+	 */
+        contractCode: string;
+
+        /**
+         * 打刻カード番号 カード番号(old)
+         */
+        cardNumber: string;
+
+        /**
+         * 打刻日時 年月日 (old) + 勤怠時刻 (old)
+         * 
+         */
+        stampDateTime: Date;
+
+        /**
+         * 打刻場所情報
+         */
+        locationInfor: IGeoCoordinate;
+    }
+}

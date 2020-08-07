@@ -1,4 +1,4 @@
-package nts.uk.screen.at.ws.kdp.kdps01.a;
+package nts.uk.screen.at.ws.kdp.kdps01;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -19,6 +19,9 @@ import nts.uk.screen.at.app.query.kdp.kdps01.a.GetOmissionContentDto;
 import nts.uk.screen.at.app.query.kdp.kdps01.a.GetSettingSmartPhone;
 import nts.uk.screen.at.app.query.kdp.kdps01.a.SettingSmartPhoneDto;
 import nts.uk.screen.at.app.query.kdp.kdps01.a.SuppressingStampButton;
+import nts.uk.screen.at.app.query.kdp.kdps01.b.DisplayConfirmStampResultDto;
+import nts.uk.screen.at.app.query.kdp.kdps01.b.DisplayConfirmStampResultScreenB;
+import nts.uk.screen.at.app.query.kdp.kdps01.b.StampInfoResultQuery;
 
 @Path("at/record/stamp/smart-phone")
 @Produces("application/json")
@@ -32,12 +35,17 @@ public class SmartPhoneStampWebService extends WebService {
 
 	@Inject
 	private RegisterSmartPhoneStampCommandHandler registerCommand;
-	
+
 	@Inject
 	private SuppressingStampButton suppressButton;
 
 	@Inject
 	private GetOmissionContent getOmission;
+
+	@Inject
+	private DisplayConfirmStampResultScreenB displayConfirmStampResultScreenB;
+
+	// Screen A
 
 	/**
 	 * 打刻入力(スマホ)の実行可能判定を行う
@@ -82,11 +90,23 @@ public class SmartPhoneStampWebService extends WebService {
 	/**
 	 * 打刻入力(スマホ)の打刻漏れの内容を取得する
 	 */
-	
+
 	@POST
 	@Path("get-omission")
 	public GetOmissionContentDto getOmission(StampButtonCommand query) {
 
 		return this.getOmission.getOmission(query);
+	}
+
+	/**
+	 * 打刻入力(スマホ)の打刻漏れの内容を取得する
+	 */
+
+	// Screen B
+
+	@POST
+	@Path("get-stamp-result")
+	public DisplayConfirmStampResultDto getStampInfoResult(StampInfoResultQuery query) {
+		return this.displayConfirmStampResultScreenB.getStampInfoResult(query.getPeriod());
 	}
 }

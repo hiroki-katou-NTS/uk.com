@@ -13,8 +13,15 @@ public class StampInfoDto {
 	 */
 	private final RelieveDto relieve;
 
+	/**
+	 * 打刻場所情報
+	 */
+	@Getter
+	private final StampLocationInforDto locationInfor;
+
 	public static StampInfoDto fromDomain(Stamp stamp) {
-		return new StampInfoDto(RelieveDto.fromDomain(stamp.getRelieve()));
+		return new StampInfoDto(RelieveDto.fromDomain(stamp.getRelieve()),
+				StampLocationInforDto.fromDomain(stamp.getLocationInfor()));
 	}
 
 }

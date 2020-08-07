@@ -4,7 +4,8 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EmployeeStampInfo;
+import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
+import nts.uk.screen.at.app.query.kdp.kdp001.a.EmployeeStampInfoDto;
 
 /**
  * 
@@ -17,10 +18,17 @@ public class DisplayConfirmStampResultDto {
 	/**
 	 * ドメインモデル：社員の打刻情報
 	 */
-	List<EmployeeStampInfo> empDatas;
+	private List<EmployeeStampInfoDto> empDatas;
+
+	/**
+	 * 打刻場所コード
+	 */
+	private String workLocationCd;
 	/**
 	 * 勤務場所名
 	 */
 	private String workLocationName;
+	
+	private EmployeeRecordImport empInfo;
 
 }

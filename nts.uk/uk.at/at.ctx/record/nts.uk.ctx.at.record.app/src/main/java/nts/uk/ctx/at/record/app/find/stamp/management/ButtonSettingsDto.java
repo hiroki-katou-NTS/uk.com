@@ -37,9 +37,10 @@ public class ButtonSettingsDto {
 		return new ButtonSettingsDto(domain.getButtonPositionNo().v(),
 				ButtonDisSetDto.fromDomain(domain.getButtonDisSet()), buttonType, domain.getUsrArt().value,
 				domain.getAudioType().value,
-				toButtonValueType(StampRecordDto.getCorrectTimeStampValue(stampType.getChangeHalfDay(),
-						stampType.getGoOutArt(), stampType.getSetPreClockArt(), stampType.getChangeClockArt(),
-						stampType.getChangeCalArt())));
+				stampType == null ? -1
+						: toButtonValueType(StampRecordDto.getCorrectTimeStampValue(stampType.getChangeHalfDay(),
+								stampType.getGoOutArt(), stampType.getSetPreClockArt(), stampType.getChangeClockArt(),
+								stampType.getChangeCalArt())));
 
 	}
 
