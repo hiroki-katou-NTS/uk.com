@@ -300,6 +300,19 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
                 break;
             }
         }
+
+        btnPrint() {
+            const vm = this;
+            vm.$blockui("show");
+            let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput()),
+                command = { appDispInfoStartupOutput };
+            vm.$ajax(API.print, command)
+            .done((successData: any) => {
+
+            }).fail((res: any) => {
+                vm.handlerExecuteErrorMsg(res);
+            }).always(() => vm.$blockui("hide"));    
+        }
     }
 
     const API = {
@@ -308,6 +321,7 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
         approve: "at/request/application/approveapp",
     	deny: "at/request/application/denyapp",
         release: "at/request/application/releaseapp",
-        cancel: "at/request/application/cancelapp"
+        cancel: "at/request/application/cancelapp",
+        print: "at/request/application/print"
     }
 }

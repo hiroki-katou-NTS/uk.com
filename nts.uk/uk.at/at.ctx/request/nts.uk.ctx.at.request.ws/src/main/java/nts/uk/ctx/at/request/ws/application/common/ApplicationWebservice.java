@@ -14,6 +14,7 @@ import javax.ws.rs.Produces;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -31,6 +32,8 @@ import nts.uk.ctx.at.request.app.find.application.common.AppDataDateFinder;
 import nts.uk.ctx.at.request.app.find.application.common.AppDateDataDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoWithDateDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppPrintQuery;
+import nts.uk.ctx.at.request.app.find.application.common.ApplicationExportService;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationFinder;
 import nts.uk.ctx.at.request.app.find.application.common.ApprovalRootOfSubjectRequestDto;
 import nts.uk.ctx.at.request.app.find.application.common.DetailMobDto;
@@ -115,6 +118,9 @@ public class ApplicationWebservice extends WebService {
 	
 	@Inject
 	private CancelAppHandler cancelApp;
+	
+	@Inject
+	private ApplicationExportService applicationExportService;
 	
 	/**
 	 * remand application
@@ -343,6 +349,12 @@ public class ApplicationWebservice extends WebService {
 	public void cancelApp(AppDispInfoStartupDto command){
 		cancelApp.handle(command);
 	}
+	
+	@POST
+    @Path("print")
+    public ExportServiceResult generate(AppPrintQuery query) {
+		return applicationExportService.start(query);
+    }
 	
 }
 

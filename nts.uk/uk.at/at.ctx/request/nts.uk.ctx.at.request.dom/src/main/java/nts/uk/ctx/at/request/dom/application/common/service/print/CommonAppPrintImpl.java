@@ -72,8 +72,8 @@ public class CommonAppPrintImpl implements CommonAppPrint {
 		//INPUT．申請表示情報．申請詳細画面情報．申請から事前事後区分、申請日、申請開始日、申請終了日、申請理由を取得する
 		printContentOfApp.setPrePostAtr(application.getPrePostAtr());
 		printContentOfApp.setAppDate(application.getAppDate().getApplicationDate());
-		printContentOfApp.setAppStartDate(application.getOpAppStartDate().get().getApplicationDate());
-		printContentOfApp.setAppEndDate(application.getOpAppEndDate().get().getApplicationDate());
+		printContentOfApp.setAppStartDate(application.getOpAppStartDate().map(x -> x.getApplicationDate()).orElse(null));
+		printContentOfApp.setAppEndDate(application.getOpAppEndDate().map(x -> x.getApplicationDate()).orElse(null));
 		printContentOfApp.setOpAppReason(application.getOpAppReason().orElse(null));
 		// INPUT．申請表示情報．申請詳細画面情報．申請から事前事後区分、申請日、申請開始日、申請終了日、申請理由を取得する
 		ApplicationType appType = application.getAppType();
@@ -101,7 +101,7 @@ public class CommonAppPrintImpl implements CommonAppPrint {
 		// 指定する定型理由コードから定型理由を取得する
 		Optional<AppReasonStandard> opAppReasonStandard = appReasonStandardRepository.findByCD(
 				appType, 
-				application.getOpAppStandardReasonCD().get());
+				application.getOpAppStandardReasonCD().orElse(null));
 		printContentOfApp.setAppReasonStandard(opAppReasonStandard.orElse(null));
 		// 印字する承認者を取得する
 		ApproverColumnContents approverColumnContents = this.getApproverToPrint(
