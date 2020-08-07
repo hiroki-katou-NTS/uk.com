@@ -17,12 +17,12 @@ import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
     resource: require('./resources.json'),
     validations: {
         valueWorkHours1: {
-            timeRange: true,
+            timeRange: false,
             required: true
         },
         valueWorkHours2: {
-            timeRange: true,
-            required: true
+            timeRange: false,
+            required: false
         }
     },
     constraints: [],
