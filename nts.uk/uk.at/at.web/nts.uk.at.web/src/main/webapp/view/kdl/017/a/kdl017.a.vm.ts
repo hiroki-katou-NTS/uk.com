@@ -159,6 +159,9 @@ module nts.uk.at.view.kdl017.a {
       service.get60hOvertimeDisplayInfoDetail(employeeId, baseDate)
         .done((data: any) => {
           vm.dataItems(data.remainNumberDetailDtos);
+          vm.carryoverNumber(data.carryoverNumber);
+          vm.usageNumber(data.usageNumber);
+          vm.residual(data.residual);
         }).fail((err) => vm.onError(err));
     }
   }
