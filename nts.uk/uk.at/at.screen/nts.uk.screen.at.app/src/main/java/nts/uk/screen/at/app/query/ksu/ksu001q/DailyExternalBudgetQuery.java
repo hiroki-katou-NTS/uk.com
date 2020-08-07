@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.query.ksu.ksu001q;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -47,8 +48,8 @@ public class DailyExternalBudgetQuery {
 		}
 
 		TargetOrgIdenInfor targetOrg = new TargetOrgIdenInfor(
-				TargetOrganizationUnit.valueOf(Integer.parseInt(dailyExternal.getUnit())), workplaceId,
-				workplaceGroupId);
+				TargetOrganizationUnit.valueOf(Integer.parseInt(dailyExternal.getUnit())), Optional.ofNullable(workplaceId),
+				Optional.ofNullable(workplaceGroupId));
 
 		DatePeriod datePeriod = new DatePeriod(GeneralDate.fromString(dailyExternal.getStartDate(), "yyyy/MM/dd"),
 				GeneralDate.fromString(dailyExternal.getEndDate(), "yyyy/MM/dd"));

@@ -88,8 +88,8 @@ public class JpaExtBudgetDailyRepository extends JpaRepository implements ExtBud
 			val = new ExtBudgetTime(entity.val);
 		ExtBudgetDaily domain = new ExtBudgetDaily(
 				new TargetOrgIdenInfor(EnumAdaptor.valueOf( entity.pk.targetUnit, TargetOrganizationUnit.class),
-						entity.pk.targetUnit == 0 ? entity.pk.targetID : null,
-						entity.pk.targetUnit == 0 ? null : entity.pk.targetID ),
+						entity.pk.targetUnit == 0 ? Optional.ofNullable(entity.pk.targetID): Optional.empty(),
+						entity.pk.targetUnit == 0 ? Optional.empty() : Optional.ofNullable(entity.pk.targetID)),
 				new ExtBudgetActItemCode(entity.pk.itemCd),
 				entity.pk.ymd,
 				val) ;

@@ -77,7 +77,7 @@ public class ShiftMasterOrgFinder {
 		TargetOrgIdenInfor target = null;
 		if(targetUnit != null && targetId != null) {
 			TargetOrganizationUnit unit = EnumAdaptor.valueOf(targetUnit, TargetOrganizationUnit.class);
-			target = new TargetOrgIdenInfor(unit, targetId, targetId);
+			target = new TargetOrgIdenInfor(unit, Optional.ofNullable(targetId), Optional.ofNullable(targetId));
 		}
 		List<ShiftMasterDto> shiftMasters = new ArrayList<>();
 		if(target == null) {
@@ -117,7 +117,7 @@ public class ShiftMasterOrgFinder {
 		TargetOrgIdenInfor target = null;
 		if(targetUnit != null && targetId != null) {
 			TargetOrganizationUnit unit = EnumAdaptor.valueOf(targetUnit, TargetOrganizationUnit.class);
-			target = new TargetOrgIdenInfor(unit, targetId, targetId);
+			target = new TargetOrgIdenInfor(unit, Optional.ofNullable(targetId), Optional.ofNullable(targetId));
 		}
 		
 		if(target == null) {

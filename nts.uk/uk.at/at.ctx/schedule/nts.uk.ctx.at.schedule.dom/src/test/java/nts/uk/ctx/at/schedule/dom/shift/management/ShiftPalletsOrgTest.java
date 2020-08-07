@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.Assert.assertSame;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.junit.Test;
 
@@ -27,10 +28,7 @@ public class ShiftPalletsOrgTest {
 
 		NtsAssert.businessException("Msg_1615", () -> {
 			ShiftPalletsOrg.create(
-					new TargetOrgIdenInfor(
-							TargetOrganizationUnit.WORKPLACE, //dummy
-							"e34d86c4-1e32-463e-b86c-68551e0bbf18", //dummy
-						""), //dummy
+					TargetOrgIdenInfor.creatIdentifiWorkplace("e34d86c4-1e32-463e-b86c-68551e0bbf18"),
 					0, 
 					new ShiftPallet(
 							new ShiftPalletDisplayInfor(
@@ -52,10 +50,7 @@ public class ShiftPalletsOrgTest {
 
 		NtsAssert.businessException("Msg_1615", () -> {
 			ShiftPalletsOrg.create(
-					new TargetOrgIdenInfor(
-							TargetOrganizationUnit.WORKPLACE, //dummy
-							"e34d86c4-1e32-463e-b86c-68551e0bbf18", //dummy
-							""), //dummy
+					TargetOrgIdenInfor.creatIdentifiWorkplace("e34d86c4-1e32-463e-b86c-68551e0bbf18"),
 					11, 
 					new ShiftPallet(
 							new ShiftPalletDisplayInfor(
@@ -76,10 +71,7 @@ public class ShiftPalletsOrgTest {
 	public void create_shiftPalletsOrg_sort() {
 
 		ShiftPalletsOrg target = ShiftPalletsOrg.create(
-					new TargetOrgIdenInfor(
-							TargetOrganizationUnit.WORKPLACE, //dummy
-							"e34d86c4-1e32-463e-b86c-68551e0bbf18", //dummy
-							""), //dummy
+				TargetOrgIdenInfor.creatIdentifiWorkplace("e34d86c4-1e32-463e-b86c-68551e0bbf18"),
 					1, //dummy
 					new ShiftPallet(
 							PalletDisplayInfoHelper.DUMMY,
@@ -112,10 +104,7 @@ public class ShiftPalletsOrgTest {
 	public void create_shiftPalletsOrg_1page__success() {
 
 		ShiftPalletsOrg target = new ShiftPalletsOrg(
-				new TargetOrgIdenInfor(
-						TargetOrganizationUnit.WORKPLACE, 
-						"e34d86c4-1e32-463e-b86c-68551e0bbf18", 
-						""), 
+				TargetOrgIdenInfor.creatIdentifiWorkplace("e34d86c4-1e32-463e-b86c-68551e0bbf18"),
 				1, 
 				new ShiftPallet(
 						new ShiftPalletDisplayInfor(
@@ -134,7 +123,7 @@ public class ShiftPalletsOrgTest {
 			.extracting(
 					d->d.getTargeOrg().getUnit().value,
 					d->d.getTargeOrg().getWorkplaceId().get(),
-					d->d.getTargeOrg().getWorkplaceGroupId().get(),
+					d->d.getTargeOrg().getWorkplaceGroupId(),
 					d->d.getPage(),
 					d->d.getShiftPallet().getDisplayInfor().getShiftPalletName().v(),
 					d->d.getShiftPallet().getDisplayInfor().getShiftPalletAtr().value,
@@ -146,7 +135,7 @@ public class ShiftPalletsOrgTest {
 			.containsExactly(
 					0,
 					"e34d86c4-1e32-463e-b86c-68551e0bbf18",
-					"",
+					Optional.empty(),
 					1,
 					"shpaName",
 					NotUseAtr.USE.value,
@@ -161,10 +150,7 @@ public class ShiftPalletsOrgTest {
 	public void create_shiftPalletsOrg_10pages__success() {
 
 		ShiftPalletsOrg target = new ShiftPalletsOrg(
-				new TargetOrgIdenInfor(
-						TargetOrganizationUnit.WORKPLACE, 
-						"e34d86c4-1e32-463e-b86c-68551e0bbf18", 
-						""), 
+				TargetOrgIdenInfor.creatIdentifiWorkplace("e34d86c4-1e32-463e-b86c-68551e0bbf18"),
 				10, 
 				new ShiftPallet(
 						new ShiftPalletDisplayInfor(
@@ -183,7 +169,7 @@ public class ShiftPalletsOrgTest {
 			.extracting(
 					d->d.getTargeOrg().getUnit().value,
 					d->d.getTargeOrg().getWorkplaceId().get(),
-					d->d.getTargeOrg().getWorkplaceGroupId().get(),
+					d->d.getTargeOrg().getWorkplaceGroupId(),
 					d->d.getPage(),
 					d->d.getShiftPallet().getDisplayInfor().getShiftPalletName().v(),
 					d->d.getShiftPallet().getDisplayInfor().getShiftPalletAtr().value,
@@ -195,7 +181,7 @@ public class ShiftPalletsOrgTest {
 			.containsExactly(
 					0,
 					"e34d86c4-1e32-463e-b86c-68551e0bbf18",
-					"",
+					Optional.empty(),
 					10,
 					"shpaName",
 					NotUseAtr.USE.value,
@@ -210,10 +196,7 @@ public class ShiftPalletsOrgTest {
 	public void modifyShiftPalletsOrg_success() {
 
 		ShiftPalletsOrg shiftPalletsOrg = new ShiftPalletsOrg(
-					new TargetOrgIdenInfor(
-							TargetOrganizationUnit.WORKPLACE, //dummy
-							"e34d86c4-1e32-463e-b86c-68551e0bbf18", //dummy
-							""), //dummy
+				TargetOrgIdenInfor.creatIdentifiWorkplace("e34d86c4-1e32-463e-b86c-68551e0bbf18"),
 					1, //dummy
 					new ShiftPallet(
 							new ShiftPalletDisplayInfor(
@@ -264,10 +247,7 @@ public class ShiftPalletsOrgTest {
 	public void modifyShiftPalletsOrg_success_useworkplacegroup() {
 
 		ShiftPalletsOrg shiftPalletsOrg = new ShiftPalletsOrg(
-					new TargetOrgIdenInfor(
-							TargetOrganizationUnit.WORKPLACE_GROUP, //dummy
-							"", //dummy
-							"h35d96c4-1e32-8756-b86c-68551e0bbf18"), //dummy
+				TargetOrgIdenInfor.creatIdentifiWorkplaceGroup("h35d96c4-1e32-8756-b86c-68551e0bbf18"),
 					1, //dummy
 					new ShiftPallet(
 							new ShiftPalletDisplayInfor(
@@ -318,10 +298,7 @@ public class ShiftPalletsOrgTest {
 	public void testDuplicate() {
 
 		ShiftPalletsOrg shiftPalletsOrg = new ShiftPalletsOrg(
-				new TargetOrgIdenInfor(
-						TargetOrganizationUnit.WORKPLACE, //dummy
-						"e34d86c4-1e32-463e-b86c-68551e0bbf18", //dummy
-						""), //dummy
+				TargetOrgIdenInfor.creatIdentifiWorkplace("e34d86c4-1e32-463e-b86c-68551e0bbf18"),
 				1, //dummy
 				new ShiftPallet(
 						new ShiftPalletDisplayInfor(
@@ -343,7 +320,7 @@ public class ShiftPalletsOrgTest {
 		assertThat(shiftPalletsOrgNew.getPage()).isEqualTo(2);
 		assertThat(shiftPalletsOrgNew.getTargeOrg().getUnit()).isEqualTo(TargetOrganizationUnit.WORKPLACE);
 		assertThat(shiftPalletsOrgNew.getTargeOrg().getWorkplaceId().get()).isEqualTo("e34d86c4-1e32-463e-b86c-68551e0bbf18");	
-		assertThat(shiftPalletsOrgNew.getTargeOrg().getWorkplaceGroupId().get()).isEqualTo("");	
+		assertThat(shiftPalletsOrgNew.getTargeOrg().getWorkplaceGroupId()).isEqualTo(Optional.empty());	
 	}
 
 	@Test
