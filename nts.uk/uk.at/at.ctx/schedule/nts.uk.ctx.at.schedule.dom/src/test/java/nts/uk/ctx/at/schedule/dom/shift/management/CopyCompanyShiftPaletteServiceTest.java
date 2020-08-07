@@ -70,7 +70,7 @@ public class CopyCompanyShiftPaletteServiceTest {
 		ShiftPalletsCom shiftPalletsCom = ShiftPalletsComHelper.DUMMY;
 		int page = 2;
 		ShiftPalletName shiftPalletName = new ShiftPalletName("shiftPalletName");
-		
+		boolean overwrite = true;
 		new Expectations() {
 			{
 				require.exists(shiftPalletsCom.getCompanyId(), page);
@@ -78,7 +78,25 @@ public class CopyCompanyShiftPaletteServiceTest {
 			}
 		};
 		NtsAssert.atomTask(() -> CopyCompanyShiftPaletteService.duplicate(require, shiftPalletsCom, page, shiftPalletName,
-				false),
+				overwrite),
+				any -> require.add(any.get())
+		);
+	}
+	
+	@Test
+	public void testDuplicate_3() {
+		ShiftPalletsCom shiftPalletsCom = ShiftPalletsComHelper.DUMMY;
+		int page = 2;
+		ShiftPalletName shiftPalletName = new ShiftPalletName("shiftPalletName");
+		boolean overwrite = false;
+		new Expectations() {
+			{
+				require.exists(shiftPalletsCom.getCompanyId(), page);
+				result = false;
+			}
+		};
+		NtsAssert.atomTask(() -> CopyCompanyShiftPaletteService.duplicate(require, shiftPalletsCom, page, shiftPalletName,
+				overwrite),
 				any -> require.add(any.get())
 		);
 	}

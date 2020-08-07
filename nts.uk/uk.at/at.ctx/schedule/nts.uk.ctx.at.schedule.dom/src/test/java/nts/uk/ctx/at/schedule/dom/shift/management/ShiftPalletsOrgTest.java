@@ -295,10 +295,10 @@ public class ShiftPalletsOrgTest {
 	}
 	
 	@Test
-	public void testDuplicate() {
+	public void testReproductUseWorkplaceGroup() {
 
 		ShiftPalletsOrg shiftPalletsOrg = new ShiftPalletsOrg(
-				TargetOrgIdenInfor.creatIdentifiWorkplace("e34d86c4-1e32-463e-b86c-68551e0bbf18"),
+				new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP,Optional.empty(), Optional.of("e34d86c4-1e32-463e-b86c-68551e0bbf18")),
 				1, //dummy
 				new ShiftPallet(
 						new ShiftPalletDisplayInfor(
@@ -314,13 +314,42 @@ public class ShiftPalletsOrgTest {
 												new ShiftMasterCode("0000001")))))));
 		
 		ShiftPalletName shiftPalletName = new ShiftPalletName("shiftPalletNameNew");
-		ShiftPalletsOrg shiftPalletsOrgNew = shiftPalletsOrg.duplicate(2, shiftPalletName);
+		ShiftPalletsOrg shiftPalletsOrgNew = shiftPalletsOrg.reproduct(2, shiftPalletName);
+		
+		assertThat(shiftPalletsOrgNew.getShiftPallet().getDisplayInfor().getShiftPalletName().v()).isEqualTo(shiftPalletName.v());
+		assertThat(shiftPalletsOrgNew.getPage()).isEqualTo(2);
+		assertThat(shiftPalletsOrgNew.getTargeOrg().getUnit()).isEqualTo(TargetOrganizationUnit.WORKPLACE_GROUP);
+		assertThat(shiftPalletsOrgNew.getTargeOrg().getWorkplaceGroupId().get()).isEqualTo("e34d86c4-1e32-463e-b86c-68551e0bbf18");	
+		assertThat(shiftPalletsOrgNew.getTargeOrg().getWorkplaceId().isPresent()).isFalse();	
+	}
+	
+	@Test
+	public void testReproductUseWorkplace() {
+
+		ShiftPalletsOrg shiftPalletsOrg = new ShiftPalletsOrg(
+				new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,Optional.of("e34d86c4-1e32-463e-b86c-68551e0bbf18"),Optional.empty()),
+				1, //dummy
+				new ShiftPallet(
+						new ShiftPalletDisplayInfor(
+								new ShiftPalletName("shpaName"), //dummy
+								NotUseAtr.USE, //dummy
+								new ShiftRemarks("shRemar")), //dummy
+						Arrays.asList( 
+								new ShiftPalletCombinations(
+										2, 
+										new ShiftCombinationName("combiName"),
+										Arrays.asList(new Combinations(
+												1, 
+												new ShiftMasterCode("0000001")))))));
+		
+		ShiftPalletName shiftPalletName = new ShiftPalletName("shiftPalletNameNew");
+		ShiftPalletsOrg shiftPalletsOrgNew = shiftPalletsOrg.reproduct(2, shiftPalletName);
 		
 		assertThat(shiftPalletsOrgNew.getShiftPallet().getDisplayInfor().getShiftPalletName().v()).isEqualTo(shiftPalletName.v());
 		assertThat(shiftPalletsOrgNew.getPage()).isEqualTo(2);
 		assertThat(shiftPalletsOrgNew.getTargeOrg().getUnit()).isEqualTo(TargetOrganizationUnit.WORKPLACE);
 		assertThat(shiftPalletsOrgNew.getTargeOrg().getWorkplaceId().get()).isEqualTo("e34d86c4-1e32-463e-b86c-68551e0bbf18");	
-		assertThat(shiftPalletsOrgNew.getTargeOrg().getWorkplaceGroupId()).isEqualTo(Optional.empty());	
+		assertThat(shiftPalletsOrgNew.getTargeOrg().getWorkplaceGroupId().isPresent()).isFalse();	
 	}
 
 	@Test

@@ -58,7 +58,7 @@ public class ShiftPalletsOrg implements DomainAggregate {
 	 * @author tutk
 	 *
 	 */
-	public ShiftPalletsOrg duplicate(int destinationPage, ShiftPalletName shiftPalletName){
+	public ShiftPalletsOrg reproduct(int destinationPage, ShiftPalletName shiftPalletName){
 		ShiftPallet shiftPallet = this.shiftPallet.reproduct(shiftPalletName);
 		return new ShiftPalletsOrg(this.targeOrg, destinationPage, shiftPallet);
 	}

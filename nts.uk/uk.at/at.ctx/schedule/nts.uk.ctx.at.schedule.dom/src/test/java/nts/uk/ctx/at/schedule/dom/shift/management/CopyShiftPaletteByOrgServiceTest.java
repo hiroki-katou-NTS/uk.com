@@ -69,7 +69,7 @@ public class CopyShiftPaletteByOrgServiceTest {
 		ShiftPalletsOrg shiftPalletsOrg = ShiftPalletsOrgHelper.getShiftPalletsOrgDefault();
 		int page = 2;
 		ShiftPalletName shiftPalletName = new ShiftPalletName("shiftPalletName");
-
+		boolean overwrite = true;			
 		new Expectations() {
 			{
 				require.exists(shiftPalletsOrg.getTargeOrg(), page);
@@ -77,7 +77,23 @@ public class CopyShiftPaletteByOrgServiceTest {
 			}
 		};
 		NtsAssert.atomTask(() -> CopyShiftPaletteByOrgService.duplicate(require, shiftPalletsOrg, page, shiftPalletName,
-				false), any -> require.add(any.get()));
+				overwrite), any -> require.add(any.get()));
+	}
+	
+	@Test
+	public void testDuplicate_3() {
+		ShiftPalletsOrg shiftPalletsOrg = ShiftPalletsOrgHelper.getShiftPalletsOrgDefault();
+		int page = 2;
+		ShiftPalletName shiftPalletName = new ShiftPalletName("shiftPalletName");
+		boolean overwrite = false;			
+		new Expectations() {
+			{
+				require.exists(shiftPalletsOrg.getTargeOrg(), page);
+				result = false;
+			}
+		};
+		NtsAssert.atomTask(() -> CopyShiftPaletteByOrgService.duplicate(require, shiftPalletsOrg, page, shiftPalletName,
+				overwrite), any -> require.add(any.get()));
 	}
 
 }
