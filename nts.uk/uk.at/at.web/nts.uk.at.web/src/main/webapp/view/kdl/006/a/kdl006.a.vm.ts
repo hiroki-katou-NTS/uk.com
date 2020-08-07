@@ -8,7 +8,7 @@ module nts.uk.at.view.kdl006.a {
     
     export class ScreenModel {
         tighteningList = ko.observableArray([]);
-        selectedCode = ko.observable('');
+        selectedId = ko.observable('');
         workplaceList = ko.observableArray([]);
         width = ko.observable('614');
         descriptive = ko.observable('');
@@ -19,8 +19,9 @@ module nts.uk.at.view.kdl006.a {
         constructor(){
             let self = this;
             self.closureId = getShared('KDL006-CLOSUREID');
-            self.selectedCode.subscribe((newValue) => {
-                self.descriptive(getText('KDL006_15',[newValue]));
+            self.selectedId.subscribe((newValue) => {
+                self.descriptive(getText('KDL006_15',[_.find(self.tighteningList(), ['closureId', self.selectedId()]).closureName]));
+                self.getWorkplace();
             });
             self.workplaceList.subscribe((newValue) => {
                 if(self.workplaceList().length > 12){
@@ -44,25 +45,38 @@ module nts.uk.at.view.kdl006.a {
                     c.push(new Closure(closure));
                 });
                 self.tighteningList(c);
-                self.workPlaceComfirmList = data.workPlaceComfirmList;
-                if(data.workPlaceComfirmList.length == 0){
-                    error({ messageId: 'Msg_1653' });    
-                }
-                let w = [];
-                for(let i = 0; i < (data.workPlaceComfirmList.length < 12 ? 12 : data.workPlaceComfirmList.length); i ++){
-                    w.push(new WorkPlace(data.workPlaceComfirmList[i]));
-                }
-                self.workplaceList(w);
+                self.selectedId(self.closureId);
                 dfd.resolve();
             }).fail(function(res) {
-                error({ messageId: res.messageId }).then(() => {
-                    self.close();
-                });
+                error({ messageId: res.messageId });
             }).always(() =>{
                 block.clear();
             });
             
             return dfd.promise();
+        }
+        
+        getWorkplace(): void {
+            let self = this;
+            block.grayout();
+            let closure = _.find(self.tighteningList(), ['closureId', self.selectedId()]);
+            if(closure){
+                service.getWorkplace(closure).done(function(data) {
+                    self.workPlaceComfirmList = data;
+                    if(data.length == 0){
+                        error({ messageId: 'Msg_1653' });    
+                    }
+                    let w = [];
+                    for(let i = 0; i < (data.length < 12 ? 12 : data.length); i ++){
+                        w.push(new WorkPlace(data[i]));
+                    }
+                    self.workplaceList(w);
+                }).fail(function(res) {
+                    error({ messageId: res.messageId });
+                }).always(() =>{
+                    block.clear();
+                });
+            }
         }
         
         save(){

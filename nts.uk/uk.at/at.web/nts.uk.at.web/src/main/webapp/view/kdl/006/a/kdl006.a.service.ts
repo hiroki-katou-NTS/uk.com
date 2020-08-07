@@ -1,7 +1,7 @@
 module nts.uk.at.view.kdl006.a.service {
     var paths = {
         startPage : "screen/at/kdl006/startpage",
-        getworkplace : "screen/at/kdl006/getworkplace",
+        getWorkplace : "screen/at/kdl006/getworkplace",
         save : "screen/at/kdl006/save"
     }
         
@@ -9,8 +9,8 @@ module nts.uk.at.view.kdl006.a.service {
         return nts.uk.request.ajax("at", paths.startPage, param);
     }
     
-       export function getworkplace(param: any): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getworkplace, param);
+       export function getWorkplace(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getWorkplace, param);
     }
     
        export function save(param: any): JQueryPromise<any> {
