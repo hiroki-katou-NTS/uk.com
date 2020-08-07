@@ -20,7 +20,7 @@
 	overflow: hidden;
 	font-weight: bold;
     color: #fff;
-	background-color: #738088;
+	background-color: #94B7FE;
 	margin-top: 5px;
 }
 
@@ -29,7 +29,7 @@
 }
 
 #stamp-employee-selection .button-group-filter button.selected {
-	background-color: rgb(48, 176, 213);
+	background-color: #a9a9a9;
 }
 
 #stamp-employee-selection .button-group-filter button:focus {
