@@ -306,7 +306,7 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
             vm.$blockui("show");
             let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput()),
                 command = { appDispInfoStartupOutput };
-            vm.$ajax(API.print, command)
+            nts.uk.request.exportFile("at", API.print, command)
             .done((successData: any) => {
 
             }).fail((res: any) => {
