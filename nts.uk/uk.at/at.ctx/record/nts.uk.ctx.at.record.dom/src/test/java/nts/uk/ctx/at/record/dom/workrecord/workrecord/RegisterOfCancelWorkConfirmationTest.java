@@ -44,13 +44,11 @@ public class RegisterOfCancelWorkConfirmationTest {
 	@Test
 	public void test() {
 		
-		RegisterOfCancelWorkConfirmation cancelWorkConfirmation = new RegisterOfCancelWorkConfirmation();
-		
 		NtsAssert.atomTask(
-				() -> cancelWorkConfirmation.get(require,
-						new CompanyId("DUMMY"),
-						new WorkplaceId("DUMMY"),
-						ClosureId.ClosureFour,
+				() -> RegisterOfCancelWorkConfirmation.get(require,
+						"DUMMY",
+						"DUMMY",
+						1,
 						new YearMonth(2020),
 						Optional.of("DUMMY"),
 						Optional.of(GeneralDateTime.now()),
@@ -65,8 +63,6 @@ public class RegisterOfCancelWorkConfirmationTest {
 	@Test
 	public void test_1() {
 		
-		RegisterOfCancelWorkConfirmation cancelWorkConfirmation = new RegisterOfCancelWorkConfirmation();
-		
 		new Expectations() {
 			{
 				require.get("DUMMY", "DUMMY", ClosureId.ClosureFour, new YearMonth(2020));
@@ -74,10 +70,10 @@ public class RegisterOfCancelWorkConfirmationTest {
 			}
 		};
 		
-		Optional<AtomTask> atom = cancelWorkConfirmation.get(require,
-				new CompanyId("DUMMY"),
-				new WorkplaceId("DUMMY"),
-				ClosureId.ClosureFour,
+		Optional<AtomTask> atom = RegisterOfCancelWorkConfirmation.get(require,
+				"DUMMY",
+				"DUMMY",
+				1,
 				new YearMonth(2020),
 				Optional.of("DUMMY"),
 				Optional.of(GeneralDateTime.now()),
@@ -97,8 +93,6 @@ public class RegisterOfCancelWorkConfirmationTest {
 	@Test
 	public void test_2() {
 		
-		RegisterOfCancelWorkConfirmation cancelWorkConfirmation = new RegisterOfCancelWorkConfirmation();
-		
 		new Expectations() {
 			{
 				require.get("DUMMY", "DUMMY", ClosureId.ClosureFour, new YearMonth(2020));
@@ -116,10 +110,10 @@ public class RegisterOfCancelWorkConfirmationTest {
 		};
 		
 		NtsAssert.atomTask(
-				() -> cancelWorkConfirmation.get(require,
-						new CompanyId("DUMMY"),
-						new WorkplaceId("DUMMY"),
-						ClosureId.ClosureFour,
+				() -> RegisterOfCancelWorkConfirmation.get(require,
+						"DUMMY",
+						"DUMMY",
+						1,
 						new YearMonth(2020),
 						Optional.of("DUMMY"),
 						Optional.of(GeneralDateTime.now()),

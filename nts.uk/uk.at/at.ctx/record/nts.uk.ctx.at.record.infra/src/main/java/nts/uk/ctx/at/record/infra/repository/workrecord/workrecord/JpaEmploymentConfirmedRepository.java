@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.workrecord.EmploymentConfirmed;
@@ -18,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
  * @author chungnt
  *
  */
-
+@Stateless
 public class JpaEmploymentConfirmedRepository extends JpaRepository implements EmploymentConfirmedRepository {
 
 	private static final String SELECT_WORK_FIXED = "SELECT r FROM KrcdtWorkFixed r WHERE r.pk.companyId = :companyId"
@@ -26,10 +28,10 @@ public class JpaEmploymentConfirmedRepository extends JpaRepository implements E
 			+ "and r.pk.closureId = :closureId" 
 			+ "and r.pk.processYM = :processYM";
 	
-	private static final String SELECT_LIST_WORK_FIXED = "SELECT r FROM KrcdtWorkFixed r WHERE r.pk.companyId = :companyId"
-			+ "and r.pk.workplaceId in :workplaceId" 
-			+ "and r.pk.closureId = :closureId" 
-			+ "and r.pk.processYM = :processYM";
+	private static final String SELECT_LIST_WORK_FIXED = "SELECT r FROM KrcdtWorkFixed r WHERE r.pk.companyId = :companyId "
+			+ "and r.pk.workplaceId in :workplaceId " 
+			+ "and r.pk.closureId = :closureId " 
+			+ "and r.pk.processYM = :processYM ";
 	
 	@Override
 	public void insert(EmploymentConfirmed domain) {
@@ -62,6 +64,9 @@ public class JpaEmploymentConfirmedRepository extends JpaRepository implements E
 	@Override
 	public List<EmploymentConfirmed> get(String companyId, List<String> workplaceId, ClosureId closureId,
 			YearMonth processYM) {
+		if(workplaceId.isEmpty()) {
+			return new ArrayList<>();
+		}
 		
 		List<EmploymentConfirmed> list = this.queryProxy().query(SELECT_LIST_WORK_FIXED, KrcdtWorkFixed.class)
 				.setParameter("companyId", companyId)
