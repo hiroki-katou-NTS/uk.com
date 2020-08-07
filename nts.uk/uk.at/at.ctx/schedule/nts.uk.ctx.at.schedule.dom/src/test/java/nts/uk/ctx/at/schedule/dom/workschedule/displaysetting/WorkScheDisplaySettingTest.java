@@ -27,7 +27,6 @@ public class WorkScheDisplaySettingTest {
 		DatePeriod period = displaySetting.calcuInitDisplayPeriod();
 		assertEquals(period.end().month(), GeneralDate.today().addMonths(1).month());
 	}
-	
 
 	@Test
 	public void calcuInitDisplayPeriod_nonPlusMonth() {

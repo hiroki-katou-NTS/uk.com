@@ -35,7 +35,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 				isShowSelectButton: true,
 				isDialog: false,
 				alreadySettingList: self.alreadySettingList,
-				maxRows: 15,
+				maxRows: 13,
 				tabindex: 1,
 				systemType: 2
 			};
@@ -273,8 +273,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 
 		public reCalGridWidth() {
 			let panelWidthResize = window.innerWidth - 650;
-			panelWidthResize = panelWidthResize < 400 ? 400 : panelWidthResize;
-			$('#shift-list').igGrid("option", "width", panelWidthResize);
+			panelWidthResize = panelWidthResize < 400 ? 400 : 700;
 			$('#form-title').css("width", panelWidthResize + "px");
 		}
 
