@@ -794,8 +794,8 @@ public class ScheduleCreatorExecutionTransaction {
 
 			// 所属情報を反映する
 			AffiliationInforState inforState = inforDomainService.createAffiliationInforState(command.getCompanyId(),
-					command.getEmployeeId(), dateInPeriod, integrationOfDaily.getAffiliationInfor(), generalInfoImport);
-
+					command.getEmployeeId(), dateInPeriod, generalInfoImport);
+			
 			// Outputを確認する
 			// if エラーあり
 			if (!inforState.getErrorNotExecLogID().isEmpty()) {
@@ -806,6 +806,9 @@ public class ScheduleCreatorExecutionTransaction {
 				createScheduleOneDate = new OutputCreateScheduleOneDate(null, errorLog,
 						ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY_WITH_ERROR.value));
 				return createScheduleOneDate;
+			}
+			if(inforState.getAffiliationInforOfDailyPerfor().isPresent()) {
+				integrationOfDaily.setAffiliationInfor(inforState.getAffiliationInforOfDailyPerfor().get());
 			}
 
 			// 勤務情報・勤務時間を用意する ↓
@@ -1558,10 +1561,6 @@ public class ScheduleCreatorExecutionTransaction {
 	}
 	
 	private EmployeeGeneralInfoImport convertEmployeeGeneral(CreateScheduleMasterCache masterCache) {
-		List<ExWorkTypeHisItemImport> itemImports = masterCache.getListBusTypeOfEmpHis().stream()
-				.map(mapper -> new ExWorkTypeHisItemImport(mapper.getHistoryId(),
-						new DatePeriod(mapper.getStartDate(), mapper.getEndDate()), mapper.getBusinessTypeCd()))
-				.collect(Collectors.toList());
 		EmployeeGeneralInfoImport generalInfoImport = new EmployeeGeneralInfoImport(
 				masterCache.getEmpGeneralInfo().getEmploymentDto().stream()
 						.map(mapper -> new ExEmploymentHistoryImport(mapper.getEmployeeId(),
@@ -1592,8 +1591,9 @@ public class ScheduleCreatorExecutionTransaction {
 										.collect(Collectors.toList())))
 						.collect(Collectors.toList()),
 				masterCache.getListBusTypeOfEmpHis().stream()
-						.map(mapper -> new ExWorkTypeHistoryImport(mapper.getCompanyId(), mapper.getEmployeeId(),
-								itemImports))
+						.map(mapper -> new ExWorkTypeHistoryImport(mapper.getCompanyId(), mapper.getEmployeeId(),mapper.getHistoryId(),
+								new DatePeriod(mapper.getStartDate(), mapper.getEndDate()),
+								mapper.getBusinessTypeCd()))
 						.collect(Collectors.toList()));
 		return generalInfoImport;
 		

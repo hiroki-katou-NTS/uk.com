@@ -25,5 +25,18 @@ public class AttendanceLeavingGate {
 		this.workNo = workNo;
 		this.attendance = Optional.ofNullable(attendance);
 		this.leaving = Optional.ofNullable(leaving);
+	}
+
+	public void setWorkNo(WorkNo workNo) {
+		this.workNo = workNo;
+	}
+
+	public void setAttendance(Optional<WorkStamp> attendance) {
+		this.attendance = attendance;
+	}
+
+	public void setLeaving(Optional<WorkStamp> leaving) {
+		this.leaving = leaving;
 	}	
+	
 }

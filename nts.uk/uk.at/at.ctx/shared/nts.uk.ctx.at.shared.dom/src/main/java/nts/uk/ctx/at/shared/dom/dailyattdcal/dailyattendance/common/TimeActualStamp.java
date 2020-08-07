@@ -175,5 +175,14 @@ public class TimeActualStamp {
 		this.overtimeDeclaration = Optional.ofNullable(overtimeDeclaration);
 		this.timeVacation = Optional.ofNullable(timeVacation);
 	}
+	public TimeActualStamp(Optional<WorkStamp> actualStamp, Optional<WorkStamp> stamp, Integer numberOfReflectionStamp,
+			Optional<OvertimeDeclaration> overtimeDeclaration, Optional<TimeZone> timeVacation) {
+		super();
+		this.actualStamp = actualStamp;
+		this.stamp = stamp;
+		this.numberOfReflectionStamp = numberOfReflectionStamp;
+		this.overtimeDeclaration = overtimeDeclaration;
+		this.timeVacation = timeVacation;
+	}
 	
 }
