@@ -212,7 +212,6 @@ module nts.uk.at.kdp003.a {
 				// show message from login data (return by f dialog)
 				.fail((message: { messageId: string }) => {
 					vm.message(message);
-					vm.$dialog.error(message);
 				});
 		}
 
@@ -372,7 +371,6 @@ module nts.uk.at.kdp003.a {
 				// show message from login data (return by f dialog)
 				.fail((message: { messageId: string }) => {
 					vm.message(message);
-					vm.$dialog.error(message);
 				});
 		}
 
@@ -390,7 +388,7 @@ module nts.uk.at.kdp003.a {
 					return vm.$window.modal('at', DIALOG.F, {
 						mode: 'employee',
 						companyId: data.CID,
-						employee: employee ? { code: employee.employeeCode, name: employee.employeeName } : { code: data.SCD }
+						employee: employee ? { code: employee.employeeCode, name: employee.employeeName } : null
 					});
 				})
 				.then((data: f.TimeStampLoginData) => {
@@ -433,7 +431,7 @@ module nts.uk.at.kdp003.a {
 				.then((data: StorageData) => {
 					const params: f.EmployeeModeParam | f.FingerVeinModeParam = {
 						mode: selectedId || employeeAuthcUseArt === true ? 'employee' : 'fingerVein',
-						companyId: (data || {}).CID || vm.$user.companyId
+						companyId: (data || {}).CID
 					};
 
 					if (selectedId) {
