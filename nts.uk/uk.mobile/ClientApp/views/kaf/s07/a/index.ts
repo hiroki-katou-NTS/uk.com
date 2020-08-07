@@ -49,6 +49,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
 
     public valueWorkHours2: { start: number, end: number } = null;
 
+    public isValidateAll: Boolean = true;
+
     // handle visible of view
 
     public isCondition1: boolean = false;
@@ -590,6 +592,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 validAll = false;
             }
         }
+        vm.isValidateAll = validAll;
         console.log(validAll);
         console.log(vm.application);
         if (this.$valid && validAll) {
@@ -598,7 +601,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
 
         // check validation 
         this.$validate();
-        if (!this.$valid && validAll) {
+        if (!this.$valid || !validAll) {
             this.$mask('hide');
             window.scrollTo(500, 0);
 
