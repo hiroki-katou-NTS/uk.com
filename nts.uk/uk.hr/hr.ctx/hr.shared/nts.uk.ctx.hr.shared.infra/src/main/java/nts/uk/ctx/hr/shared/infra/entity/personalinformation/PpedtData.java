@@ -3,12 +3,15 @@ package nts.uk.ctx.hr.shared.infra.entity.personalinformation;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Optional;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.apache.commons.lang3.text.translate.NumericEntityUnescaper.OPTION;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -1075,7 +1078,136 @@ public class PpedtData extends UkJpaEntity implements Serializable {
 		entity.selectCode19 = domain.getSelectCode09().map(m -> m).orElse(null);
 		entity.selectName19 = domain.getSelectName09().map(m -> m).orElse(null);
 		entity.selectId20 = BigInteger.valueOf(domain.getSelectId20());
+		entity.selectCode20 = domain.getSelectCode20().map(m -> m).orElse(null);
+		entity.selectName20 = domain.getSelectName20().map(m -> m).orElse(null);
 		
 		return entity;
+	}
+	
+	public PersonalInformation toDomain (PpedtData entity) {
+		PersonalInformation domain = new PersonalInformation();
+		
+		domain.setHistId(this.hisId);
+		domain.setContractCd(this.contractCd);
+		domain.setCid(Optional.of(this.cId));
+		domain.setCompanyCode(Optional.of(this.ccd));
+		domain.setPId(this.pId);
+		domain.setSid(Optional.of(this.scd));
+		domain.setScd(Optional.of(this.scd));
+		domain.setPersonName(Optional.of(this.personName));
+		domain.setWorkId(this.workId);
+		domain.setWorkName(Optional.of(this.workName));
+		domain.setStartDate(this.startDate);
+		domain.setEndDate(this.endDate);
+		domain.setReleaseDate(Optional.of(this.releaseDate));
+		domain.setRequestFlg(this.requestFlg);
+		domain.setRptLayoutId(this.rptLayoutId);
+		domain.setRptId(this.rptId.longValue());
+		domain.setRptNumber(Optional.of(this.rptNumber));
+		
+		domain.setStr01(Optional.of(this.str01));
+		domain.setStr02(Optional.of(this.str02));
+		domain.setStr03(Optional.of(this.str03));
+		domain.setStr04(Optional.of(this.str04));
+		domain.setStr05(Optional.of(this.str05));
+		domain.setStr06(Optional.of(this.str06));
+		domain.setStr07(Optional.of(this.str07));
+		domain.setStr08(Optional.of(this.str08));
+		domain.setStr09(Optional.of(this.str09));
+		domain.setStr10(Optional.of(this.str10));
+		domain.setStr11(Optional.of(this.str11));
+		domain.setStr12(Optional.of(this.str12));
+		domain.setStr13(Optional.of(this.str13));
+		domain.setStr14(Optional.of(this.str14));
+		domain.setStr15(Optional.of(this.str15));
+		domain.setStr16(Optional.of(this.str16));
+		domain.setStr17(Optional.of(this.str17));
+		domain.setStr18(Optional.of(this.str18));
+		domain.setStr19(Optional.of(this.str19));
+		domain.setStr20(Optional.of(this.str20));
+		domain.setStr21(Optional.of(this.str21));
+		domain.setStr22(Optional.of(this.str22));
+		domain.setStr23(Optional.of(this.str23));
+		domain.setStr24(Optional.of(this.str24));
+		domain.setStr25(Optional.of(this.str25));
+		domain.setStr26(Optional.of(this.str26));
+		domain.setStr27(Optional.of(this.str27));
+		domain.setStr28(Optional.of(this.str28));
+		domain.setStr29(Optional.of(this.str29));
+		domain.setStr30(Optional.of(this.str30));
+		domain.setStr31(Optional.of(this.str31));
+		domain.setStr32(Optional.of(this.str32));
+		domain.setStr33(Optional.of(this.str33));
+		domain.setStr34(Optional.of(this.str34));
+		domain.setStr35(Optional.of(this.str35));
+		domain.setStr36(Optional.of(this.str36));
+		domain.setStr37(Optional.of(this.str37));
+		domain.setStr38(Optional.of(this.str38));
+		domain.setStr39(Optional.of(this.str39));
+		domain.setStr40(Optional.of(this.str40));
+		domain.setStr41(Optional.of(this.str41));
+		domain.setStr42(Optional.of(this.str42));
+		domain.setStr43(Optional.of(this.str43));
+		domain.setStr44(Optional.of(this.str44));
+		domain.setStr45(Optional.of(this.str45));
+		domain.setStr46(Optional.of(this.str46));
+		domain.setStr47(Optional.of(this.str47));
+		domain.setStr48(Optional.of(this.str48));
+		domain.setStr49(Optional.of(this.str49));
+		domain.setStr50(Optional.of(this.str50));
+		domain.setStr51(Optional.of(this.str51));
+		domain.setStr52(Optional.of(this.str52));
+		domain.setStr53(Optional.of(this.str53));
+		domain.setStr54(Optional.of(this.str54));
+		domain.setStr55(Optional.of(this.str55));
+		domain.setStr56(Optional.of(this.str56));
+		domain.setStr57(Optional.of(this.str57));
+		domain.setStr58(Optional.of(this.str58));
+		domain.setStr59(Optional.of(this.str59));
+		domain.setStr60(Optional.of(this.str60));
+		
+		domain.setDate01(Optional.of(this.date01));
+		domain.setDate02(Optional.of(this.date02));
+		domain.setDate03(Optional.of(this.date03));
+		domain.setDate04(Optional.of(this.date04));
+		domain.setDate05(Optional.of(this.date05));
+		domain.setDate06(Optional.of(this.date06));
+		domain.setDate07(Optional.of(this.date07));
+		domain.setDate08(Optional.of(this.date08));
+		domain.setDate09(Optional.of(this.date09));
+		domain.setDate10(Optional.of(this.date10));
+		
+		domain.setInt01(this.int01);
+		domain.setInt02(this.int02);
+		domain.setInt03(this.int03);
+		domain.setInt04(this.int04);
+		domain.setInt05(this.int05);
+		domain.setInt06(this.int06);
+		domain.setInt07(this.int07);
+		domain.setInt08(this.int08);
+		domain.setInt09(this.int09);
+		domain.setInt10(this.int10);
+		domain.setInt11(this.int11);
+		domain.setInt12(this.int12);
+		domain.setInt13(this.int13);
+		domain.setInt14(this.int14);
+		domain.setInt15(this.int15);
+		domain.setInt16(this.int16);
+		domain.setInt17(this.int17);
+		domain.setInt18(this.int18);
+		domain.setInt19(this.int19);
+		domain.setInt20(this.int20);
+		domain.setInt21(this.int21);
+		domain.setInt22(this.int22);
+		domain.setInt23(this.int23);
+		domain.setInt24(this.int24);
+		domain.setInt25(this.int25);
+		domain.setInt26(this.int26);
+		domain.setInt27(this.int27);
+		domain.setInt28(this.int28);
+		domain.setInt29(this.int29);
+		domain.setInt30(this.int30);
+		
+		return domain;
 	}
 }

@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
@@ -14,6 +15,7 @@ import nts.arc.time.GeneralDate;
  * path: UKDesign.ドメインモデル.NittsuSystem.UniversalK.人事.shared.個人情報（人事）.個人情報.個人情報
  */
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class PersonalInformation implements DomainAggregate {
