@@ -2,10 +2,12 @@
 
 module nts.uk.at.kmr001.b {
 
-	// const API = {
-	// 	SETTING: 'at/record/stamp/management/personal/startPage',
-	// 	HIGHTLIGHT: 'at/record/stamp/management/personal/stamp/getHighlightSetting'
-	// };
+	const API = {
+		// SETTING: 'at/record/stamp/management/personal/startPage',
+		// HIGHTLIGHT: 'at/record/stamp/management/personal/stamp/getHighlightSetting'
+        START: 'screen/at/record/reservation/bento_menu/getBentoMenu'
+
+    };
 
 	const PATH = {
 	    REDIRECT: '/view/ccg/008/a/index.xhtml'
@@ -31,7 +33,7 @@ module nts.uk.at.kmr001.b {
 
         constructor() {
         	super();
-            var vm = this;
+            const vm = this;
 
             // vm.itemList2 ([
             //     {code: "1", name: "基本給"},
@@ -62,8 +64,11 @@ module nts.uk.at.kmr001.b {
 
 		created() {
 			const vm = this;
+            vm.$ajax(API.START).done(function (res){
+                console.log(res)
+            });
+			 _.extend(window, { vm });
 
-			_.extend(window, { vm });
 		}
 
 	}
