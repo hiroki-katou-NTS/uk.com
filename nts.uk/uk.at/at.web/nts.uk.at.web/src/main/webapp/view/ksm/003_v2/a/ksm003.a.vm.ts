@@ -33,14 +33,8 @@ module nts.uk.at.view.ksm003.a {
         lessThan99Items: KnockoutObservable<boolean> = ko.observable(true);
         itemLst: KnockoutObservableArray<DailyPatternItemDto> = ko.observableArray([]);
         gridItems: KnockoutObservableArray<WorkingCycleDtl> = ko.observableArray([]);
+        workingCycleItems: KnockoutObservableArray<WorkingCycleDtl> = ko.observableArray([]);
         mainModel: KnockoutObservable<DailyPatternDetailModel>;
-
-        /*gridItems: KnockoutObservableArray<WorkingCycleDtl> = ko.observableArray([
-            new WorkingCycleDtl("1", "1", "1", 1),
-            new WorkingCycleDtl("2", "2", "2", 2),
-            new WorkingCycleDtl("3", "3", "3", 3),
-        ]);*/
-
         currentCode: KnockoutObservable<any> = ko.observable("");
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
         count: number = 100;
@@ -59,6 +53,7 @@ module nts.uk.at.view.ksm003.a {
             let vm = this;
             vm.gListColumns = vm.columnSetting();
             vm.getListWorkingCycle();
+            vm.displayWorkingCycle();
         }
 
         mounted() {
@@ -212,7 +207,7 @@ module nts.uk.at.view.ksm003.a {
                     key: "patternCode",
                     formatter: _.escape,
                     width: 60,
-                    template: "<button>" + vm.$i18n("KSM003_34") + "</button>",
+                    template: '<button data-bind="attr: {id: \'btnVal\' + dispOrder}, click: openDialogWorkDays">' + vm.$i18n("KSM003_34") + '</button>',
                 },
                 {
                     headerText: nts.uk.resource.getText("KSM003_30"),
@@ -238,10 +233,9 @@ module nts.uk.at.view.ksm003.a {
                     key: "daysText",
                     width: 100,
                     template:
-                    '<span style="width: 20px"><input style="width: 20px;" data-bind="ntsNumberEditor: { value:${days} }" /></span>' +
-                    '<span style="width: 20px; padding-left: 5px">' +
-                    vm.$i18n("KSM003_34") +
-                    "</span>",
+                    '<span style="width: 20px"><input style="width: 20px;" ' +
+                    'data-bind="ntsNumberEditor: { constraint: \'Days\' , value: \'${days}\' }" /></span>' +
+                    '<span style="width: 20px; padding-left: 5px">' + vm.$i18n("KSM003_34") + "</span>"
                 },
             ];
         }
@@ -312,31 +306,41 @@ module nts.uk.at.view.ksm003.a {
             //bind item code name
             vm.mainModel().patternCode(dataRes.code);
             vm.mainModel().patternName(dataRes.name);
-            console.log(dataRes);
-            console.log(lstWorkType);
-            console.log(lstWorkTime);
-            // for (let k = 0; k < lstVal.length; k++) {
-            //     for (let i = 0; i < lstVal.length; i++) {
-            //         if (lstVal[k].dispOrder == i) {
-            //             vm.mainModel().dailyPatternVals()[i].days(lstVal[k].days);
-            //             let workTimeCode = lstVal[k].timeCode;
-            //             let workTypeCode = lstVal[k].typeCode;
-            //             // add workTypeName to List
-            //             if (workTypeCode && workTypeCode != '') {
-            //                 vm.mainModel().dailyPatternVals()[i].typeCode(workTypeCode);
-            //                 let workTypeName = _.find(lstWorkType, (i) => { return i.workTypeCode == workTypeCode }).name;
-            //                 vm.mainModel().dailyPatternVals()[i].setWorkTypeName(workTypeName);
-            //             }
-            //             // add workHoursName to List
-            //             if (workTimeCode && workTimeCode != '') {
-            //                 vm.mainModel().dailyPatternVals()[i].timeCode(workTimeCode);
-            //                 let workTimeName = _.find(lstWorkTime, (i) => { return i.code == workTimeCode }).name;
-            //                 vm.mainModel().dailyPatternVals()[i].setWorkTimeName(workTimeName);
-            //             }
-            //             break;
-            //         }
-            //     }
-            // }
+            // console.log(dataRes);
+            //console.log(lstWorkType);
+            //console.log(lstWorkTime);
+            let dailyPatternVals: Array<DailyPatternValModel> = [];
+            let workingCycleDtl: Array<WorkingCycleDtl> = [];
+
+            lstVal && lstVal.map( (item, i) => {
+                let dailyPatternValModel = new DailyPatternValModel(
+                    item.dispOrder,
+                    item.typeCode,
+                    item.timeCode,
+                    item.days
+                );
+                let workTypeName = _.find(lstWorkType, (element) => {
+                    return element.workTypeCode == item.typeCode }
+                    );
+                workTypeName = workTypeName && workTypeName.name || '';
+                dailyPatternValModel.setWorkTypeName(workTypeName);
+
+                let workTimeName = _.find(lstWorkTime, (element) => {
+                    return element.code == item.timeCode }
+                    );
+                workTimeName = workTimeName && workTimeName.name || '';
+                dailyPatternValModel.setWorkTimeName(workTimeName);
+
+                dailyPatternVals.push( dailyPatternValModel );
+
+                workingCycleDtl.push( new WorkingCycleDtl(
+                    item.dispOrder.toString(),
+                    dailyPatternValModel.workTypeInfo(),
+                    dailyPatternValModel.workingInfo(),
+                    1));
+            });
+
+            vm.gridItems(workingCycleDtl);
         }
 
         /**
@@ -362,17 +366,6 @@ module nts.uk.at.view.ksm003.a {
                 vm.hasWorkingCycleItems(false);
             }
             vm.disableAddNewLine();
-        }
-
-        addNewDailyPatternDetailDto() {
-            let vm = this;
-            let dailyPatternValDto = new DailyPatternValDto(null, null, null, null);
-            let dailyPatternDetailDto = new DailyPatternDetailDto(
-                "02",
-                "002 New name",
-                [dailyPatternValDto]
-            );
-            vm.itemLst([dailyPatternDetailDto]);
         }
 
         /**
@@ -488,6 +481,54 @@ module nts.uk.at.view.ksm003.a {
         saveWorking() {
             alert("saveWorking");
         }
+
+        displayWorkingCycle() {
+            let vm = this;
+            for (var i = 0; i < 99; i++) {
+                let workingCycleDtl = new WorkingCycleDtl(
+                    i.toString(),
+                    'Type ' + i.toString(),
+                    'hours ' + i.toString(),
+                     i
+                );
+                vm.workingCycleItems.push(workingCycleDtl);
+            }
+
+            $("#grid2").ntsGrid({
+                    height: '380px',
+                    dataSource: vm.workingCycleItems()  || [],
+                    primaryKey: 'id',
+                    virtualization: true,
+                    virtualizationMode: 'continuous',
+                    columns: [
+                        { headerText: 'Id', key: 'id', dataType: 'number', width: '0', hidden: true },
+                        { headerText: '', key: 'selectedItem', dataType: 'boolean', width: '35px', ntsControl: 'Checkbox', showHeaderCheckbox: true },
+                        { headerText: '',  key: "patternCode", dataType: 'string', width: '60px', unbound: true, ntsControl: 'Button' },
+                        { headerText:  nts.uk.resource.getText("KSM003_30"), key: 'typeOfWork', dataType: 'string', width: '130px', },
+                        { headerText: nts.uk.resource.getText("KSM003_31"), key: 'workingHours', dataType: 'string', width: '130px', },
+                        { headerText: nts.uk.resource.getText("KSM003_31"), key: 'days',  width: '80px',
+                            dataType: 'number', ntsControl: 'TextEditor', columnCssClass: 'daysWorking' },
+                        { headerText: '', key: 'dayGridText', dataType: 'string', columnCssClass: 'daysWorking1', width: '0' },
+                    ],
+                    features: [
+                        { type: 'local' }
+                        ],
+                    ntsControls: [
+                        { name: 'Checkbox', options: { value: 1, text: '' },
+                            optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
+                        { name: 'Button', text: vm.$i18n("KSM003_34"), click: function() { alert("Button!!"); }, controlType: 'Button' },
+                        { name: 'TextEditor', controlType: 'TextEditor',
+                            constraint: { valueType: 'Integer', required: true, format: "Number_Separated"},
+                            option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                                textmode: "text",
+                                placeholder: "Placeholder for text editor",
+                                width: "100px",
+                                textalign: "left"
+                            }))
+                        },
+                    ]
+                });
+        }
     }
 
     export class DailyPatternDetailModel {
@@ -586,31 +627,32 @@ module nts.uk.at.view.ksm003.a {
         /**
          * open dialog KDL003 by Work Days
          */
-        public openDialogWorkDays(): void {
-            var self = this;
-            nts.uk.ui.windows.setShared("parentCodes", {
-                selectWorkTypeCode: self.typeCode,
-                selectSiftCode: self.timeCode,
-            });
-            nts.uk.ui.windows.sub
-                .modal("/view/kdl/003/a/index.xhtml", {
-                    title: nts.uk.resource.getText("KDL003_1"),
-                })
-                .onClosed(function () {
-                    var childData = nts.uk.ui.windows.getShared("childData");
-                    if (childData) {
-                        self.typeCode(childData.selectedWorkTypeCode);
-                        self.timeCode(childData.selectedWorkTimeCode);
-                        self.setWorkTypeName(childData.selectedWorkTypeName);
-                        self.setWorkTimeName(childData.selectedWorkTimeName);
-                        if ($(".nts-editor").ntsError("hasError")) {
-                            $(".nts-editor").ntsError("clear");
-                        }
-                        if ($(".buttonEvent").ntsError("hasError")) {
-                            $(".buttonEvent").ntsError("clear");
-                        }
-                    }
-                });
+        openDialogWorkDays(){
+            alert(111);
+            // var self = this;
+            // nts.uk.ui.windows.setShared("parentCodes", {
+            //     selectWorkTypeCode: self.typeCode,
+            //     selectSiftCode: self.timeCode,
+            // });
+            // nts.uk.ui.windows.sub
+            //     .modal("/view/kdl/003/a/index.xhtml", {
+            //         title: nts.uk.resource.getText("KDL003_1"),
+            //     })
+            //     .onClosed(function () {
+            //         var childData = nts.uk.ui.windows.getShared("childData");
+            //         if (childData) {
+            //             self.typeCode(childData.selectedWorkTypeCode);
+            //             self.timeCode(childData.selectedWorkTimeCode);
+            //             self.setWorkTypeName(childData.selectedWorkTypeName);
+            //             self.setWorkTimeName(childData.selectedWorkTimeName);
+            //             if ($(".nts-editor").ntsError("hasError")) {
+            //                 $(".nts-editor").ntsError("clear");
+            //             }
+            //             if ($(".buttonEvent").ntsError("hasError")) {
+            //                 $(".buttonEvent").ntsError("clear");
+            //             }
+            //         }
+            //     });
         }
     }
 
@@ -693,6 +735,7 @@ module nts.uk.at.view.ksm003.a {
         workingHours: string;
         days: number;
         dayGridText: string;
+        selectedItem: boolean;
 
         constructor(id: string,
                     typeOfWork: string,
@@ -702,7 +745,8 @@ module nts.uk.at.view.ksm003.a {
             this.typeOfWork = typeOfWork;
             this.workingHours = workingHours;
             this.days = days;
-            this.dayGridText = nts.uk.resource.getText("KSM003_33");
+            this.dayGridText = '<span>' + nts.uk.resource.getText("KSM003_34") + '</span>';
+            this.selectedItem = false;
         }
     }
 
