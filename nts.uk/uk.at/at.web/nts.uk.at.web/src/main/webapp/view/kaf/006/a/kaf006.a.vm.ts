@@ -1097,9 +1097,35 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 lstid.push(emp.id);
             });
             let param = {employeeIds: lstid.length > 0 ? lstid : [self.employeeID()],
-                        baseDate: moment(new Date()).format("YYYY/MM/DD")}
+                        baseDate: moment(new Date()).toISOString().split("T")[0].replace('-', '').replace('-', '')}
             setShared('KDL029_PARAM', param);
             modal("/view/kdl/029/a/index.xhtml");
+        }
+
+        openKDL017() {
+            let self = this;
+            let lstid = [
+                'a9822333-49ea-4302-aba2-5adc10ae7618',
+                '546ed947-58b7-4c0a-bf2f-862b007fe689',
+                '1D75CF02-6843-4918-BB52-20B28E4B6374',
+                '441E74A5-A43D-4377-A869-0EE10FE45E48',
+                '4420a05e-2aef-4b93-889d-f98f4bb53517',
+                '90056534-0687-49c4-934b-da6ddbdbce6b',
+                '484c4aad-46f7-4439-8305-040e4f8eb3cf',
+                'd26b5cab-f788-47a6-bd5d-6cb4be9d1e8d',
+                'd2de28c4-1ef7-4a72-adfb-8e2c87f12336',
+            ];
+            _.each(self.employeeList(), function(emp){
+                lstid.push(emp.id);
+            });
+            let param = {employeeIds: lstid.length > 0 ? lstid : [self.employeeID()],
+                        baseDate: moment(new Date()).format("YYYY/MM/DD")}
+            setShared('KDL017_PARAM', param);
+            if (lstid.length > 1) {
+                modal("/view/kdl/017/a/multiple.xhtml");
+            } else {
+                modal("/view/kdl/017/a/single.xhtml");
+            }
         }
         /**
          * when click button A1_3: 代休参照ボタン

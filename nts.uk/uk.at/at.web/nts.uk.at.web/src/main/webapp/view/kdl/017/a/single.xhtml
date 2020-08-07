@@ -85,13 +85,13 @@
                         <span class="ui-widget-header" data-bind="text: $index"></span>
                       </td>
                       <td>
-                        <span data-bind="text: occurrenceDate"></span>
-                        <span data-bind="text: expirationDate"></span>
-                        <span data-bind="text: occurrenceNumber"></span>
+                        <span data-bind="text: occurrenceMonth"></span>
+                        <span data-bind="text: occurrenceTime"></span>
+                        <span data-bind="text: deadline"></span>
                       </td>
                       <td>
-                        <span data-bind="text: digestionDate"></span>
-                        <span data-bind="text: digestionNumber"></span>
+                        <span data-bind="text: usageDate"></span>
+                        <span data-bind="text: usageTime"></span>
                       </td>
                     </tr>
                   </com:ko-foreach>
@@ -105,14 +105,14 @@
               <!-- A4_1_1 -->
               <td width="120px">#{i18n.getText('KDL017_14')}</td>
               <td width="120px">
-                <span data-bind="text: value01"></span>
+                <span data-bind="text: carryoverNumber"></span>
               </td>
             </tr>
             <tr>
               <!-- A4_3_1 -->
               <td>#{i18n.getText('KDL017_18')}</td>
               <td>
-                <span data-bind="text: value02"></span>
+                <span data-bind="text: usageNumber"></span>
                 <span data-bind="text: hint02" class="margin-left-20"></span>
               </td>
             </tr>
@@ -120,7 +120,7 @@
               <!-- A4_4_1 -->
               <td>#{i18n.getText('KDL017_19')}</td>
               <td>
-                <span data-bind="text: value03"></span>
+                <span data-bind="text: residual"></span>
                 <span data-bind="text: hint03" class="margin-left-20"></span>
               </td>
             </tr>
