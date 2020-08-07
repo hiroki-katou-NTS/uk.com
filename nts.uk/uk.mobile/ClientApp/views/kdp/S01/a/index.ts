@@ -1,10 +1,17 @@
 import { component, Prop } from '@app/core/component';
-import { _, Vue } from '@app/provider';
-import { model } from 'views/kdp/S01/a/index.d';
+import { _, Vue, moment } from '@app/provider';
+import { model } from 'views/kdp/S01/shared/index.d';
+import { KdpS01BComponent } from '../b/index';
+import { KdpS01CComponent } from '../c/index';
+
+const basePath = 'at/record/stamp/smart-phone/';
 
 const servicePath = {
-    checkCanUseStamp: 'at/record/stamp/smart-phone/check-can-use-stamp',
-    getSetting: 'at/record/stamp/smart-phone/get-setting/'
+    checkCanUseStamp: basePath + 'check-can-use-stamp',
+    getSetting: basePath + 'get-setting/',
+    registerStamp: basePath + 'register-stamp',
+    getSuppress: basePath + 'get-suppress',
+    getOmission: basePath + 'get-omission'
 };
 
 @component({
@@ -13,7 +20,11 @@ const servicePath = {
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
-    constraints: []
+    constraints: [],
+    components: {
+        'screenB': KdpS01BComponent,
+        'screenC': KdpS01CComponent
+    }
 })
 
 
@@ -21,107 +32,123 @@ export class KdpS01AComponent extends Vue {
     @Prop({ default: () => ({}) })
     public params!: any;
     public setting: ISetting = {
+        displaySettingsStampScreen: {
+            serverCorrectionInterval: 10,
+            settingDateTimeColor: {
+                textColor: '',
+                backgroundColor: ''
+            },
+            resultDisplayTime: 10
+        },
+        lstDisplayItemId: [],
+        usrAtrValue: 1,
         stampPageComment: {
-            pageComment: '打刻入力を忘れず、行って下さい',
+            pageComment: '',
             commentColor: '#fabf8f'
         },
         buttons: [
             {
-                buttonValueType:-1 ,
+                buttonValueType: -1,
                 buttonPositionNo: 1,
                 buttonDisSet: {
                     buttonNameSet: {
-                        textColor: '#0000ff',
-                        buttonName: '出勤'
+                        textColor: '',
+                        buttonName: ''
                     },
-                    backGroundColor: '#E4C9FF'
-                }
+                    backGroundColor: ''
+                },
+                usrArt: 1
             },
             {
-                buttonValueType:-1 ,
+                buttonValueType: -1,
                 buttonPositionNo: 2,
                 buttonDisSet: {
                     buttonNameSet: {
-                        textColor: '#0000ff',
-                        buttonName: '退勤'
+                        textColor: '',
+                        buttonName: ''
                     },
-                    backGroundColor: '#E4C9FF'
-                }
+                    backGroundColor: ''
+                },
+                usrArt: 1
             },
             {
-                buttonValueType:-1 ,
+                buttonValueType: -1,
                 buttonPositionNo: 3,
                 buttonDisSet: {
                     buttonNameSet: {
-                        textColor: '#0000ff',
-                        buttonName: '外出'
+                        textColor: '',
+                        buttonName: ''
                     },
-                    backGroundColor: '#88D8FF'
-                }
+                    backGroundColor: ''
+                },
+                usrArt: 1
             },
             {
-                buttonValueType:-1 ,
+                buttonValueType: -1,
                 buttonPositionNo: 4,
                 buttonDisSet: {
                     buttonNameSet: {
-                        textColor: '#0000ff',
-                        buttonName: '戻り'
+                        textColor: '',
+                        buttonName: ''
                     },
-                    backGroundColor: '#88D8FF'
-                }
+                    backGroundColor: ''
+                },
+                usrArt: 1
             },
             {
-                buttonValueType:-1 ,
+                buttonValueType: -1,
                 buttonPositionNo: 5,
                 buttonDisSet: {
                     buttonNameSet: {
-                        textColor: '#0000ff',
-                        buttonName: '応援出勤'
+                        textColor: '',
+                        buttonName: ''
                     },
-                    backGroundColor: '#FED3C6'
-                }
+                    backGroundColor: ''
+                },
+                usrArt: 1
             },
             {
-                buttonValueType:-1 ,
+                buttonValueType: -1,
                 buttonPositionNo: 6,
                 buttonDisSet: {
                     buttonNameSet: {
-                        textColor: '#0000ff',
-                        buttonName: '応援退勤'
+                        textColor: '',
+                        buttonName: ''
                     },
-                    backGroundColor: '#FED3C6'
-                }
+                    backGroundColor: ''
+                },
+                usrArt: 1
             }
         ]
     };
 
     public created() {
-        let self = this;
-        self.startPage();
+        let vm = this;
+        vm.startPage();
     }
 
     private startPage() {
-        let self = this,
+        let vm = this,
             param = {};
 
-        self.$mask('show');
-        self.$http.post('at', servicePath.checkCanUseStamp, param).then((result: any) => {
+        vm.$mask('show');
+        vm.$http.post('at', servicePath.checkCanUseStamp, param).then((result: any) => {
 
-            self.$mask('hide');
+            vm.$mask('hide');
 
             let used: CanEngravingUsed = result.data.used;
 
             if (used !== CanEngravingUsed.AVAILABLE) {
 
-                self.$modal.error({ messageId: self.getErrorMsg(used), messageParams: ['KDPS01_1'] }).then(() => {
+                vm.$modal.error({ messageId: vm.getErrorMsg(used), messageParams: ['KDPS01_1'] }).then(() => {
 
-                    self.$goto('ccg008a');
+                    vm.$goto('ccg008a');
                 });
             }
-
-            self.$http.post('at', servicePath.getSetting).then((settingSmartPhone: any) => {
-
-                let data: model.ISettingSmartPhone = settingSmartPhone.data;
+            vm.$mask('show');
+            vm.$http.post('at', servicePath.getSetting).then((result: any) => {
+                vm.$mask('hide');
+                let data: model.ISettingSmartPhone = result.data;
 
                 if (_.has(data, 'setting.pageLayoutSettings') && data.setting.pageLayoutSettings.length > 0) {
 
@@ -130,41 +157,72 @@ export class KdpS01AComponent extends Vue {
                     if (page) {
 
                         if (page.lstButtonSet.length > 0) {
-                            self.setting.buttons = self.getLstButton(page.lstButtonSet, data.stampToSuppress);
+                            vm.setting.buttons = vm.getLstButton(page.lstButtonSet, data.stampToSuppress);
                         }
 
-                        self.setting.stampPageComment = page.stampPageComment;
+                        vm.setting.stampPageComment = page.stampPageComment;
 
                     } else {
-                        self.$modal.error('Not Found Button Data');
+                        vm.$modal.error('Not Found Button Data');
                     }
 
                 } else {
-                    self.$modal.error('Not Found Button Data');
+                    vm.$modal.error('Not Found Button Data');
+                }
+
+                if (_.has(data, 'setting.displaySettingsStampScreen')) {
+                    vm.setting.displaySettingsStampScreen = data.setting.displaySettingsStampScreen;
+                    vm.InitCountTime();
+
+                }
+
+                if (data.resulDisplay) {
+                    vm.setting.usrAtrValue = data.resulDisplay.usrAtrValue;
+                    vm.setting.lstDisplayItemId = _.map(data.resulDisplay.lstDisplayItemId, (x) => x.displayItemId);
                 }
 
             }).catch((res: any) => {
-                self.showError(res);
+                vm.showError(res);
             });
 
 
         }).catch((res: any) => {
-            self.showError(res);
+            vm.showError(res);
         });
+    }
+
+    private InitCountTime() {
+
+        let vm = this;
+
+        setInterval(() => {
+
+            console.log('check Suppress');
+            
+            vm.$http.post('at', servicePath.getSuppress).then((result: any) => {
+                let stampToSuppress: model.IStampToSuppress = result.data;
+
+                _.forEach(vm.setting.buttons, function (button) {
+
+                    vm.setBtnColor(button, stampToSuppress);
+
+                });
+            });
+        }, vm.setting.displaySettingsStampScreen.serverCorrectionInterval * 1000);
     }
 
     private getLstButton(lstButtonSet: Array<model.ButtonSettingsDto>, stampToSuppress: model.IStampToSuppress) {
 
-        let self = this,
+        let vm = this,
             buttonCount = 6,
             resultList: Array<model.ButtonSettingsDto> = [];
 
 
         for (let i = 1; i <= buttonCount; i++) {
 
-            let button = _.find(lstButtonSet, ['buttonPositionNo', i]),
+            let button = _.find(lstButtonSet, { 'buttonPositionNo': i, 'usrArt': 1 }),
                 buttonSetting: model.ButtonSettingsDto = {
-                    buttonValueType:-1 ,
+                    buttonValueType: -1,
                     buttonPositionNo: i,
                     buttonDisSet: {
                         buttonNameSet: {
@@ -172,7 +230,8 @@ export class KdpS01AComponent extends Vue {
                             buttonName: ''
                         },
                         backGroundColor: ''
-                    }
+                    },
+                    usrArt: 1
                 };
 
 
@@ -180,12 +239,84 @@ export class KdpS01AComponent extends Vue {
                 buttonSetting = button;
             }
 
-            self.setBtnColor(buttonSetting, stampToSuppress);
+            vm.setBtnColor(buttonSetting, stampToSuppress);
 
             resultList.push(buttonSetting);
         }
 
         return resultList;
+    }
+
+    public stampClick(button: model.ButtonSettingsDto) {
+        let vm = this,
+            command: model.IRegisterSmartPhoneStampCommand = {
+                stampDatetime: moment(vm.$dt.now).format('YYYY/MM/DD HH:MM:ss'),
+                stampButton: { pageNo: 1, buttonPositionNo: button.buttonPositionNo },
+                geoCoordinate: { latitude: null, longitude: null },
+                refActualResult: { cardNumberSupport: null, overtimeDeclaration: null, workLocationCD: null, workTimeCode: null }
+            };
+        navigator.geolocation.getCurrentPosition((position) => {
+
+            if (position) {
+                let latitude = position.coords.latitude,
+                    longitude = position.coords.longitude;
+
+                command.geoCoordinate = { latitude, longitude };
+                vm.$mask('show');
+
+                vm.$http.post('at', servicePath.registerStamp, command).then((result: any) => {
+
+                    vm.$mask('hide');
+
+                    switch (button.buttonValueType) {
+                        case 1:
+                        case 3:
+                        case 4:
+                            vm.openDialogB(result, button.buttonPositionNo);
+                            break;
+
+                        case 2: {
+                            if (vm.setting.usrAtrValue === 1) {
+                                vm.openDialogC(result, button.buttonPositionNo);
+                            } else {
+                                vm.openDialogB(result, button.buttonPositionNo);
+                            }
+                            break;
+                        }
+                        default:
+                            break;
+                    }
+
+                }).catch((res: any) => {
+                    vm.showError(res);
+                });
+            }
+            console.log(command);
+        });
+    }
+
+    private openDialogB(date: Date, buttonPositionNo: number) {
+
+        let vm = this;
+        vm.$auth.user.then((userInfo) => {
+            vm.$modal('screenB', {
+                stampDate: date,
+                resultDisplayTime: vm.setting.displaySettingsStampScreen.resultDisplayTime,
+                employeeId: userInfo.employeeId,
+                employeeCode: userInfo.employeeCode
+            });
+        });
+    }
+
+    private openDialogC(date: Date, buttonPositionNo: number) {
+        let vm = this;
+        vm.$auth.user.then((userInfo) => {
+            vm.$modal('screenC', {
+                resultDisplayTime: vm.setting.displaySettingsStampScreen.resultDisplayTime,
+                employeeId: userInfo.employeeId,
+                employeeCode: userInfo.employeeCode
+            });
+        });
     }
 
     private setBtnColor(buttonSetting: model.ButtonSettingsDto, stampToSuppress: model.IStampToSuppress) {
@@ -216,32 +347,32 @@ export class KdpS01AComponent extends Vue {
 
 
     private getErrorMsg(used: CanEngravingUsed) {
-    const msgs = [{ value: CanEngravingUsed.NOT_PURCHASED_STAMPING_OPTION, msg: 'Msg_1644' },
-    { value: CanEngravingUsed.ENGTAVING_FUNCTION_CANNOT_USED, msg: 'Msg_1645' },
-    { value: CanEngravingUsed.UNREGISTERED_STAMP_CARD, msg: 'Msg_1619' }];
+        const msgs = [{ value: CanEngravingUsed.NOT_PURCHASED_STAMPING_OPTION, msg: 'Msg_1644' },
+        { value: CanEngravingUsed.ENGTAVING_FUNCTION_CANNOT_USED, msg: 'Msg_1645' },
+        { value: CanEngravingUsed.UNREGISTERED_STAMP_CARD, msg: 'Msg_1619' }];
 
-    let item = _.find(msgs, ['value', used]);
+        let item = _.find(msgs, ['value', used]);
 
-    return item ? item.msg : '';
-}
+        return item ? item.msg : '';
+    }
 
     private showError(res: any) {
-    let self = this;
-    self.$mask('hide');
-    if (!_.isEqual(res.message, 'can not found message id')) {
-        self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
-    } else {
-        self.$modal.error(res.message);
+        let vm = this;
+        vm.$mask('hide');
+        if (!_.isEqual(res.message, 'can not found message id')) {
+            vm.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+        } else {
+            vm.$modal.error(res.message);
+        }
     }
-}
 
     public login() {
 
 
-}
+    }
 
     public mounted() {
-}
+    }
 }
 
 enum CanEngravingUsed {
@@ -278,4 +409,8 @@ interface ITime {
 interface ISetting {
     buttons: Array<model.ButtonSettingsDto>;
     stampPageComment: model.IStampPageCommentDto;
+    lstDisplayItemId: Array<number>;
+    usrAtrValue: number;
+    displaySettingsStampScreen: model.IDisplaySettingsStampScreenDto;
+
 }

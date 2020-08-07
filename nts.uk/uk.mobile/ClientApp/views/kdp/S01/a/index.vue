@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div id="clock" class="uk-bg-teal">
+    <div id="clock"
+    v-bind:style="{
+          'background-color': setting.displaySettingsStampScreen.settingDateTimeColor.backgroundColor,
+          'color': setting.displaySettingsStampScreen.settingDateTimeColor.textColor
+        }">
       <div class="col-12 pr-0 pt-2 font-weight-bold">
         <span id="date">
           {{ $dt.now | date("YYYY年 MM月 DD日（ddd）") }}
@@ -36,6 +40,7 @@
             color: button.buttonDisSet.buttonNameSet.textColor,
             'background-color': button.buttonDisSet.backGroundColor
           }"
+          v-on:click="stampClick(button)"
           class="col-12 btn-stamp btn btn-secondary "
         >
           {{ button.buttonDisSet.buttonNameSet.buttonName }}
