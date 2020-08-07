@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.print;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDisp
  * @author Doan Duy Hung
  *
  */
+@AllArgsConstructor
 @Getter
 public class PrintContentOfWorkChange {
 	

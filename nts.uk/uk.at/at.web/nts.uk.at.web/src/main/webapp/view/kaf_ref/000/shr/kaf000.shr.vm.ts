@@ -32,6 +32,36 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
             this.appType = appType;
         }      
     }
+
+	export interface PrintContentOfEachAppDto {
+		/**
+		 * 休暇申請の印刷内容
+		 */
+		
+		/**
+		 * 勤務変更申請の印刷内容
+		 */
+		opPrintContentOfWorkChange: any;
+		
+		/**
+		 * 時間休暇申請の印刷内容
+		 */
+		
+		/**
+		 * 打刻申請の印刷内容
+		 */
+		opAppStampOutput: any;
+		
+		/**
+		 * 遅刻早退取消申請の印刷内容
+		 */
+		opArrivedLateLeaveEarlyInfo: any;
+	
+		/**
+		 * 直行直帰申請の印刷内容
+		 */
+		opInforGoBackCommonDirectOutput: any;
+	}
     
     export module model {
         // loại người đăng nhập

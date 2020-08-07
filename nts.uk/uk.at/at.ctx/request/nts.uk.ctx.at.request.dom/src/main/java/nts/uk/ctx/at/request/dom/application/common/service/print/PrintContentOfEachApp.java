@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.print;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
  * @author Doan Duy Hung
  *
  */
+@Setter
 @Getter
 public class PrintContentOfEachApp {
 	
@@ -46,6 +48,8 @@ public class PrintContentOfEachApp {
 	
 	public PrintContentOfEachApp() {
 		this.opPrintContentOfWorkChange = Optional.empty();
+		this.opAppStampOutput = Optional.empty();
 		this.opArrivedLateLeaveEarlyInfo = Optional.empty();
+		this.opInforGoBackCommonDirectOutput = Optional.empty();
 	}
 }

@@ -6,6 +6,7 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
     import Status = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.Status;
     import ApprovalAtr = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.ApprovalAtr;
     import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
+	import PrintContentOfEachAppDto = nts.uk.at.view.kaf000_ref.shr.viewmodel.PrintContentOfEachAppDto;
 
     @bean()
     class Kaf000BViewModel extends ko.ViewModel {
@@ -15,6 +16,12 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
         appDispInfoStartupOutput: KnockoutObservable<any> = ko.observable(null);
         application: KnockoutObservable<Application> = ko.observable(new Application(0));
         approvalReason: KnockoutObservable<string> = ko.observable("");
+		printContentOfEachAppDto: PrintContentOfEachAppDto = {
+			opPrintContentOfWorkChange: null,
+			opAppStampOutput: null,
+			opArrivedLateLeaveEarlyInfo: null,
+			opInforGoBackCommonDirectOutput: null,
+		};
         childParam: any = {};
         
         displayApprovalButton: KnockoutObservable<boolean> = ko.observable(true);
@@ -51,6 +58,7 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
             vm.appType = ko.observable(99);
             vm.childParam = {
             	application: vm.application,
+				printContentOfEachAppDto: vm.printContentOfEachAppDto,
                 approvalReason: vm.approvalReason,
                 appDispInfoStartupOutput: vm.appDispInfoStartupOutput,
                 eventUpdate: function(a) { vm.getChildUpdateEvent.apply(vm, [a]) } 
@@ -305,13 +313,14 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
             const vm = this;
             vm.$blockui("show");
             let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput()),
-                command = { appDispInfoStartupOutput };
+				printContentOfEachAppDto = vm.printContentOfEachAppDto,
+                command = { appDispInfoStartupOutput, printContentOfEachAppDto };
             nts.uk.request.exportFile("at", API.print, command)
             .done((successData: any) => {
 
             }).fail((res: any) => {
                 vm.handlerExecuteErrorMsg(res);
-            }).always(() => vm.$blockui("hide"));    
+            }).always(() => vm.$blockui("hide"));   
         }
     }
 
