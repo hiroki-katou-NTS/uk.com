@@ -4,7 +4,7 @@
       <kafs00-a v-if="kaf000_A_Params != null" v-bind:params="kaf000_A_Params" />
     </div>
 
-    <div v-if="!$valid" class="alert error">
+    <div v-if="!$valid || !isValidateAll" class="alert error">
       <img
         class="iconWarn"
         src="https://www.iconsdb.com/icons/preview/red/warning-xxl.png"
