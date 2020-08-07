@@ -351,97 +351,79 @@ module nts.uk.at.kdp003.a {
 
 					return vm.$window.modal('at', DIALOG.F, { mode, companyId });
 				})
-				.then((data: f.TimeStampLoginData) => {
-					if (data) {
-						const { em } = data;
+				// check storage data
+				.then((loginData: undefined | f.TimeStampLoginData) => {
+					if (loginData === undefined) {
+						return {
+							loginData: null,
+							workspaceData: null
+						};
+					} else {
+						const params = { multiSelect: true };
 
-						if (em) {
-							// update or save login data to storage
-							storage(KDP003_SAVE_DATA)
-								.then((storageData: StorageData) => {
-									if (storageData) {
-										storageData.CCD = em.companyCode;
-										storageData.CID = em.companyId;
-										storageData.PWD = em.password;
-										storageData.SCD = em.employeeCode;
-										storageData.SID = em.employeeId;
-									} else {
-										storageData = {
-											CCD: em.companyCode,
-											CID: em.companyId,
-											PWD: em.password,
-											SCD: em.employeeCode,
-											SID: em.employeeId,
-											WKLOC_CD: '',
-											WKPID: []
-										};
+						return vm.$window.modal('at', DIALOG.K, params)
+							.then((workspaceData: undefined | k.Return) => {
+								return {
+									loginData,
+									workspaceData
+								};
+							}); // LoginSuccess
+					}
+				})
+				.then((data: LoginData) => {
+					if (!data.loginData || !data.workspaceData) {
+						return storage(KDP003_SAVE_DATA)
+							.then((data: undefined | StorageData) => {
+								if (_.isNil(data)) {
+									if (!ko.unwrap(vm.message)) {
+										vm.message({
+											messageId: 'Msg_1647'
+										});
 									}
 
-									storage(KDP003_SAVE_DATA, storageData);
-								});
-						}
-
-						return data;
-					}
-
-					return storage(KDP003_SAVE_DATA).then((storageData) => !!storageData) as any;
-				})
-				// check storage data
-				.then((state: boolean | f.TimeStampLoginData) => {
-					if (state === true) {
-						return true;
-					} else if (state === false || !!state.msgErrorId || !!state.errorMessage) {
-						if (state !== false) {
-							if (state.msgErrorId) {
-								vm.message({
-									messageId: state.msgErrorId
-								});
-							} else {
-								vm.message(state.errorMessage);
-							}
-						} else {
-							if (!ko.unwrap(vm.message)) {
-								vm.message({
-									messageId: 'Msg_1647'
-								});
-							}
-						}
-
-						return false;
-					} else {
-						return vm.$window.modal('at', DIALOG.K, { multiSelect: true });
-					}
-				})
-				.then((data: boolean | undefined | k.Return) => {
-					if (data === false) {
-						return false;
-					} else if (data === true || data === undefined) {
-						return storage(KDP003_SAVE_DATA)
-							.then((data: StorageData) => {
-								if (!data && !ko.unwrap(vm.message)) {
-									vm.message({
-										messageId: 'Msg_1647'
-									});
 									return false;
 								}
 
+								// reload with old data
 								return data;
 							});
-					} else {
-						return storage(KDP003_SAVE_DATA)
-							// update workplaceId to storage
-							.then((storageData: StorageData) => {
-								if (storageData) {
-									if (_.isArray(data.selectedId)) {
-										storageData.WKPID = data.selectedId;
-									} else {
-										storageData.WKPID = [data.selectedId];
-									}
-								}
-								// return data from storage
-								return storage(KDP003_SAVE_DATA, storageData);
-							});
 					}
+
+					const { loginData, workspaceData } = data;
+
+					if (loginData.msgErrorId) {
+						if (!ko.unwrap(vm.message)) {
+							vm.message({
+								messageId: loginData.msgErrorId
+							});
+						}
+
+						return false;
+					}
+
+					if (loginData.errorMessage) {
+						if (!ko.unwrap(vm.message)) {
+							vm.message(loginData.errorMessage);
+						}
+
+						return false;
+					}
+
+					// if login & select workspace success
+					const { em } = loginData;
+					const { selectedId } = workspaceData;
+
+					const storageData = {
+						CCD: em.companyCode,
+						CID: em.companyId,
+						PWD: em.password,
+						SCD: em.employeeCode,
+						SID: em.employeeId,
+						WKLOC_CD: '',
+						WKPID: _.isString(selectedId) ? [selectedId] : selectedId
+					};
+
+					return storage(KDP003_SAVE_DATA, storageData)
 				})
 				.then((data: false | StorageData) => {
 					// if login and storage data success
@@ -625,6 +607,11 @@ module nts.uk.at.kdp003.a {
 				}
 			}
 		}
+	}
+
+	interface LoginData {
+		loginData?: f.TimeStampLoginData,
+		workspaceData?: k.Return
 	}
 
 	interface StorageData {
