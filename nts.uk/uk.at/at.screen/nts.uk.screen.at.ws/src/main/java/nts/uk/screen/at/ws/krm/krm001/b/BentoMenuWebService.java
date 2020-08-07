@@ -5,11 +5,11 @@ import nts.uk.screen.at.app.reservation.BentoMenuSetScreenProcessor;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import java.util.Optional;
 
-@Path("screen/at/record/reservation//bento_menu")
+@Path("screen/at/record/reservation/bento_menu")
 @Produces("application/json")
 public class BentoMenuWebService {
 
@@ -18,7 +18,7 @@ public class BentoMenuWebService {
 
     @GET
     @Path("getBentoMenu")
-    public Optional<BentoMenuDto> getReservation() {
+    public BentoMenuDto getReservation() {
         return this.bentoMenuSetScreenProcessor.findDataBentoMenu();
     }
 }

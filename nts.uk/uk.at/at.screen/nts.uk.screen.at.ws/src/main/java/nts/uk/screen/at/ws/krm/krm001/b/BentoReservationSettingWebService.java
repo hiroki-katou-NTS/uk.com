@@ -5,10 +5,7 @@ import nts.uk.screen.at.app.reservation.BentoReservationSetScreenProcessor;
 import nts.uk.screen.at.app.reservation.BentoReservationSettingDto;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import java.util.Optional;
 
 @Path("screen/at/record/reservation//bento_reservation_setting")
@@ -18,9 +15,9 @@ public class BentoReservationSettingWebService extends WebService {
     @Inject
     private BentoReservationSetScreenProcessor bentoReservationSetScreenProcessor;
 
-    @GET
+    @POST
     @Path("get/{companyId}")
-    public Optional<BentoReservationSettingDto> getReservation(@PathParam("companyId") String companyId) {
+    public BentoReservationSettingDto getReservation(@PathParam("companyId") String companyId) {
         return this.bentoReservationSetScreenProcessor.findDataBentoReservationSetting(companyId);
     }
 
