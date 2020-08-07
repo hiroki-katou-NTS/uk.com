@@ -247,11 +247,11 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 columns: [
                     { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
                     { headerText: '', key: 'text1', dataType: 'string', width: '120px' }, 
-                    { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '290px' },
-                    { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '230px', 
+                    { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '100px' },
+                    { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '100px', 
 //                        ntsControl: 'Combobox', tabIndex: 0 
                         },
-                    { headerText: headerFlagContent1, key: 'flag', dataType: 'string', width: '200px' }
+                    { headerText: headerFlagContent1, key: 'flag', dataType: 'string', width: '100px' }
 //                        , showHeaderCheckbox: isShowHeaderCheckbox, ntsControl: 'Checkbox'
                     
                 ], 
@@ -259,8 +259,13 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                 columnSettings: [{
                                     columnKey: 'id', allowResizing: true, minimumWidth: 30
                                 }, {
-                                    columnKey: 'flag', allowResizing: true, minimumWidth: 30
-                                }] 
+                                    columnKey: 'flag', allowResizing: false, minimumWidth: 30
+                                }, {
+                                    columnKey: 'startTime', allowResizing: false, minimumWidth: 30
+                                }, {
+                                    columnKey: 'endTime', allowResizing: false, minimumWidth: 30
+                                }
+                                ] 
                             },
                             { 
                                 name: 'Selection',
@@ -304,19 +309,24 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                     { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
                     { headerText: '', key: 'text1', dataType: 'string', width: '120px' }, 
                     { headerText: self.$i18n('KAF002_22'), key: 'combobox', dataType: 'string', width: '120px', ntsControl: 'Combobox' }, 
-                    { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '290px' },
-                    { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '230px', 
+                    { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '100px' },
+                    { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '100px', 
 //                        ntsControl: 'Combobox', tabIndex: 0 
                         },
-                    { headerText: headerFlagContent2, key: 'flag', dataType: 'string', width: '200px'}
+                    { headerText: headerFlagContent2, key: 'flag', dataType: 'string', width: '100px'}
                     
                 ], 
                 features: [{ name: 'Resizing',
                                 columnSettings: [{
                                     columnKey: 'id', allowResizing: true, minimumWidth: 30
                                 }, {
-                                    columnKey: 'flag', allowResizing: false 
-                                }] 
+                                    columnKey: 'flag', allowResizing: false, minimumWidth: 30
+                                }, {
+                                    columnKey: 'startTime', allowResizing: false, minimumWidth: 30
+                                }, {
+                                    columnKey: 'endTime', allowResizing: false, minimumWidth: 30
+                                }
+                                ] 
                             },
                             { 
                                 name: 'Selection',
@@ -355,19 +365,24 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 columns: [
                     { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
                     { headerText: '', key: 'text1', dataType: 'string', width: '120px' }, 
-                    { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '290px' },
-                    { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '230px', 
+                    { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '100px' },
+                    { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '100px', 
 //                        ntsControl: 'Combobox', tabIndex: 0 
                         },
-                    { headerText: headerFlagContent3, key: 'flag', dataType: 'string', width: '200px'}
+                    { headerText: headerFlagContent3, key: 'flag', dataType: 'string', width: '100px'}
                     
                 ], 
                 features: [{ name: 'Resizing',
                                 columnSettings: [{
                                     columnKey: 'id', allowResizing: true, minimumWidth: 30
                                 }, {
-                                    columnKey: 'flag', allowResizing: false 
-                                }] 
+                                    columnKey: 'flag', allowResizing: false, minimumWidth: 30
+                                }, {
+                                    columnKey: 'startTime', allowResizing: false, minimumWidth: 30
+                                }, {
+                                    columnKey: 'endTime', allowResizing: false, minimumWidth: 30
+                                }
+                                ] 
                             },
                             { 
                                 name: 'Selection',
@@ -410,19 +425,24 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 columns: [
                     { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
                     { headerText: '', key: 'text1', dataType: 'string', width: '120px' }, 
-                    { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '290px' },
-                    { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '230px', 
+                    { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '100px' },
+                    { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '100px', 
 //                        ntsControl: 'Combobox', tabIndex: 0 
                         },
-                    { headerText: headerFlagContent4, key: 'flag', dataType: 'string', width: '200px'}
+                    { headerText: headerFlagContent4, key: 'flag', dataType: 'string', width: '100px'}
                     
                 ], 
                 features: [{ name: 'Resizing',
                                 columnSettings: [{
                                     columnKey: 'id', allowResizing: true, minimumWidth: 30
                                 }, {
-                                    columnKey: 'flag', allowResizing: false 
-                                }] 
+                                    columnKey: 'flag', allowResizing: false, minimumWidth: 30
+                                }, {
+                                    columnKey: 'startTime', allowResizing: false, minimumWidth: 30
+                                }, {
+                                    columnKey: 'endTime', allowResizing: false, minimumWidth: 30
+                                }
+                                ] 
                             },
                             { 
                                 name: 'Selection',
@@ -461,19 +481,24 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 columns: [
                     { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
                     { headerText: '', key: 'text1', dataType: 'string', width: '120px' }, 
-                    { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '290px' },
-                    { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '230px', 
+                    { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '100px' },
+                    { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '100px', 
 //                        ntsControl: 'Combobox', tabIndex: 0 
                         },
-                    { headerText: headerFlagContent5, key: 'flag', dataType: 'string', width: '200px'}
+                    { headerText: headerFlagContent5, key: 'flag', dataType: 'string', width: '100px'}
                     
                 ], 
                 features: [{ name: 'Resizing',
                                 columnSettings: [{
                                     columnKey: 'id', allowResizing: true, minimumWidth: 30
                                 }, {
-                                    columnKey: 'flag', allowResizing: false 
-                                }] 
+                                    columnKey: 'flag', allowResizing: false, minimumWidth: 30
+                                }, {
+                                    columnKey: 'startTime', allowResizing: false, minimumWidth: 30
+                                }, {
+                                    columnKey: 'endTime', allowResizing: false, minimumWidth: 30
+                                }
+                                ] 
                             },
                             { 
                                 name: 'Selection',
