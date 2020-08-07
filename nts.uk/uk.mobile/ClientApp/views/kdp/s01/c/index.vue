@@ -103,7 +103,11 @@
         {{ "KDPS01_50" | i18n }}
       </button>
     </div>
-    <button type="button" class="col-12 btn btn-secondary btn-block">
+    <button
+      type="button"
+      v-on:click="$close"
+      class="col-12 btn btn-secondary btn-block"
+    >
       {{ "KDPS01_51" | i18n }}
     </button>
   </div>
