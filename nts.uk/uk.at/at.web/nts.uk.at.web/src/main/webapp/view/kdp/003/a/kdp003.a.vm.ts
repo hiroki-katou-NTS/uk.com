@@ -342,7 +342,7 @@ module nts.uk.at.kdp003.a {
 			if (!!ko.unwrap(vm.message)) {
 				vm.message(false);
 			}
-			
+
 			storage(KDP003_SAVE_DATA)
 				.then((data: StorageData) => {
 					const mode = 'admin';
@@ -382,12 +382,14 @@ module nts.uk.at.kdp003.a {
 
 						return data;
 					}
-
-					return false;
+					
+					return storage(KDP003_SAVE_DATA).then((storageData) => !!storageData) as any;
 				})
 				// check storage data
-				.then((state: false | f.TimeStampLoginData) => {
-					if (state === false || !!state.msgErrorId || !!state.errorMessage) {
+				.then((state: boolean | f.TimeStampLoginData) => {
+					if (state === true) {
+						return true;
+					} else if (state === false || !!state.msgErrorId || !!state.errorMessage) {
 						if (state !== false) {
 							if (state.msgErrorId) {
 								vm.message({
@@ -409,15 +411,21 @@ module nts.uk.at.kdp003.a {
 						return vm.$window.modal('at', DIALOG.K, { multiSelect: true });
 					}
 				})
-				.then((data: false | undefined | k.Return) => {
+				.then((data: boolean | undefined | k.Return) => {
 					if (data === false) {
 						return false;
-					} else if (data === undefined) {
-						if (!ko.unwrap(vm.message)) {
-							vm.message({
-								messageId: 'Msg_1647'
+					} else if (data === true || data === undefined) {
+						return storage(KDP003_SAVE_DATA)
+							.then((data: StorageData) => {
+								if (!data && !ko.unwrap(vm.message)) {
+									vm.message({
+										messageId: 'Msg_1647'
+									});
+									return false;
+								}
+
+								return data;
 							});
-						}
 					} else {
 						return storage(KDP003_SAVE_DATA)
 							// update workplaceId to storage
