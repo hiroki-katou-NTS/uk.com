@@ -46,9 +46,9 @@ public class RegisterOfCancelWorkConfirmationTest {
 		
 		NtsAssert.atomTask(
 				() -> RegisterOfCancelWorkConfirmation.get(require,
-						"DUMMY",
-						"DUMMY",
-						1,
+						new CompanyId("DUMMY"),
+						new WorkplaceId("DUMMY"),
+						ClosureId.ClosureFour,
 						new YearMonth(2020),
 						Optional.of("DUMMY"),
 						Optional.of(GeneralDateTime.now()),
@@ -71,9 +71,9 @@ public class RegisterOfCancelWorkConfirmationTest {
 		};
 		
 		Optional<AtomTask> atom = RegisterOfCancelWorkConfirmation.get(require,
-				"DUMMY",
-				"DUMMY",
-				1,
+				new CompanyId("DUMMY"),
+				new WorkplaceId("DUMMY"),
+				ClosureId.ClosureFour,
 				new YearMonth(2020),
 				Optional.of("DUMMY"),
 				Optional.of(GeneralDateTime.now()),
@@ -111,9 +111,9 @@ public class RegisterOfCancelWorkConfirmationTest {
 		
 		NtsAssert.atomTask(
 				() -> RegisterOfCancelWorkConfirmation.get(require,
-						"DUMMY",
-						"DUMMY",
-						1,
+						new CompanyId("DUMMY"),
+						new WorkplaceId("DUMMY"),
+						ClosureId.ClosureFour,
 						new YearMonth(2020),
 						Optional.of("DUMMY"),
 						Optional.of(GeneralDateTime.now()),

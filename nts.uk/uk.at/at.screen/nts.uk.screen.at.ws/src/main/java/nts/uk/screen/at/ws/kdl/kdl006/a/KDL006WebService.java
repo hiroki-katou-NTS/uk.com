@@ -39,7 +39,7 @@ public class KDL006WebService extends WebService {
 	@POST
 	@Path("save")
 	public void registerICCardStamp(List<WorkPlaceConfirmCommand> command) {
-		this.commandHandler.Register(command);
+		this.commandHandler.register(command);
 	}
 	
 }

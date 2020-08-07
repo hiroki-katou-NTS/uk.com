@@ -39,11 +39,11 @@ public class RegisterOfCancelWorkConfirmation {
 	 *            解除するか
 	 * @return
 	 */
-	public static Optional<AtomTask> get(Require require, String companyId, String workplaceId, int closureId,
-			YearMonth processYM, Optional<String> employeeId, Optional<GeneralDateTime> date, boolean whetherToCancel) {
+	public static Optional<AtomTask> get(Require require, CompanyId companyId, WorkplaceId workplaceId, ClosureId closureId,
+			YearMonth processYM, Optional<String> employeeId, Optional<GeneralDateTime> date, Boolean whetherToCancel) {
 
 		if (whetherToCancel) {
-			EmploymentConfirmed employmentConfirmed = new EmploymentConfirmed(new CompanyId(companyId), new WorkplaceId(workplaceId), ClosureId.valueOf(closureId),
+			EmploymentConfirmed employmentConfirmed = new EmploymentConfirmed(companyId, workplaceId, closureId,
 					processYM, employeeId.get(), date.get());
 
 			AtomTask atomTask = AtomTask.of(() -> {
@@ -53,7 +53,7 @@ public class RegisterOfCancelWorkConfirmation {
 			return Optional.of(atomTask);
 		}
 		
-		Optional<EmploymentConfirmed> optEmploymentConfirmed = require.get(companyId, workplaceId, ClosureId.valueOf(closureId), processYM);
+		Optional<EmploymentConfirmed> optEmploymentConfirmed = require.get(companyId.v(), workplaceId.v(), closureId, processYM);
 		
 		if (!optEmploymentConfirmed.isPresent()) {
 			

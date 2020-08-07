@@ -15,7 +15,10 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.workrecord.EmploymentConfirmed;
 import nts.uk.ctx.at.record.dom.workrecord.workrecord.EmploymentConfirmedRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workrecord.RegisterOfCancelWorkConfirmation;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureIdHistory;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -31,7 +34,7 @@ public class KDL006CommandHandler {
 	@Inject
 	private TransactionService transaction;
 	
-	public void Register(List<WorkPlaceConfirmCommand> context) {
+	public void register(List<WorkPlaceConfirmCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		RegisterOfCancelWorkConfirmation.Require require = new RegisterOfCancelWorkConfirmationRequireImpl(employmentConfirmedRepo);
@@ -39,9 +42,9 @@ public class KDL006CommandHandler {
 		for (WorkPlaceConfirmCommand workPlace : context) {
 			atomTasks.add(RegisterOfCancelWorkConfirmation.get(
 					require, 
-					companyId, 
-					workPlace.workPlaceId,
-					workPlace.closureId, 
+					new CompanyId(companyId), 
+					new WorkplaceId(workPlace.workPlaceId),
+					ClosureId.valueOf(workPlace.closureId), 
 					new YearMonth(workPlace.currentMonth), 
 					Optional.of(employeeId), 
 					Optional.of(GeneralDateTime.now()), 
