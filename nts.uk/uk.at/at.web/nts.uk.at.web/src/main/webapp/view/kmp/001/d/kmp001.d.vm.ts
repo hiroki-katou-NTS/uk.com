@@ -92,6 +92,7 @@ module nts.uk.at.view.kmp001.d {
 			vm.$window.close({ length, paddingType });
 
 		}
+	}
 
 	export enum StampCardEditMethod {
 
