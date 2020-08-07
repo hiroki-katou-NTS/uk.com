@@ -273,7 +273,7 @@ module nts.uk.at.kdp003.a {
 		* undefined: not select
 		*/
 		selectedId: string | null | undefined;
-		employeeAuthcUseArt: boolean;
+		nameSelectArt: boolean;
 		baseDate: Date;
 	}
 

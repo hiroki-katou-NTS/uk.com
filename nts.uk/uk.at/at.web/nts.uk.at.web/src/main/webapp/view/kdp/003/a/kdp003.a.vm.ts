@@ -200,7 +200,7 @@ module nts.uk.at.kdp003.a {
 
 						return storage(KDP003_SAVE_DATA, storeData);
 					}
-					
+
 					return storageData;
 				})
 				.then((data: false | StorageData) => {
@@ -409,7 +409,7 @@ module nts.uk.at.kdp003.a {
 		stampButtonClick(btn: share.ButtonSetting, layout: share.PageLayout) {
 			const vm = this;
 			const { buttonPage, employeeData } = vm;
-			const { selectedId, employees, employeeAuthcUseArt } = ko.toJS(employeeData) as EmployeeListData;
+			const { selectedId, employees, nameSelectArt } = ko.toJS(employeeData) as EmployeeListData;
 			const reloadSetting = () => vm.$ajax('at', API.HIGHTLIGHT)
 				.then((data: any) => {
 					const oldData = ko.unwrap(buttonPage.stampToSuppress);
@@ -422,7 +422,7 @@ module nts.uk.at.kdp003.a {
 				});
 
 			// case: 社員一覧(A2)を選択していない場合
-			if (selectedId === undefined && employeeAuthcUseArt === true) {
+			if (selectedId === undefined && nameSelectArt === true) {
 				return vm.$dialog.error({ messageId: 'Msg_1646' });
 			}
 
@@ -430,7 +430,7 @@ module nts.uk.at.kdp003.a {
 			return vm.$window.storage(KDP003_SAVE_DATA)
 				.then((data: StorageData) => {
 					const params: f.EmployeeModeParam | f.FingerVeinModeParam = {
-						mode: selectedId || employeeAuthcUseArt === true ? 'employee' : 'fingerVein',
+						mode: selectedId || nameSelectArt === true ? 'employee' : 'fingerVein',
 						companyId: (data || {}).CID
 					};
 
