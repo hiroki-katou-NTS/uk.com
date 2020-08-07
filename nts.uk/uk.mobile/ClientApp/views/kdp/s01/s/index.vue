@@ -51,7 +51,11 @@
         </tr>
       </tbody>
     </table>
-    <button type="button" class="mt-3 col-12 btn btn-secondary btn-block">
+    <button
+      type="button"
+      v-on:click="$close"
+      class="mt-3 col-12 btn btn-secondary btn-block"
+    >
       {{ "KDPS01_64" | i18n }}
     </button>
   </div>
