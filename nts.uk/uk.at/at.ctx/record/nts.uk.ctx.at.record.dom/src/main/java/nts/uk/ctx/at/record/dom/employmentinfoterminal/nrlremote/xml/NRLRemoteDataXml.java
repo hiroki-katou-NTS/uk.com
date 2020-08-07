@@ -1,12 +1,10 @@
-package nts.uk.ctx.at.function.app.nrlremote.xml;
+package nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.xml;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.function.app.nrl.xml.Element;
 
 /**
  * @author ThanhNX
@@ -18,27 +16,26 @@ import nts.uk.ctx.at.function.app.nrl.xml.Element;
 @AllArgsConstructor
 public class NRLRemoteDataXml {
 
-	// NRL_No fix
-	private String type;
+	private String mac;
 
-	@XmlElement(name = Element.ITEM)
 	private String payload;
 
-	@XmlAttribute
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
+	@XmlElement(name = NRLRemoteElement.PAYLOAD)
 	public String getPayload() {
 		return payload;
 	}
 
 	public void setPayload(String payload) {
 		this.payload = payload;
+	}
+
+	@XmlElement(name = NRLRemoteElement.MAC)
+	public String getMac() {
+		return mac;
+	}
+
+	public void setMac(String mac) {
+		this.mac = mac;
 	}
 
 }

@@ -30,9 +30,11 @@ public class SendTimeRecordSetInfoService {
 			return Optional.empty();
 
 		// $タイムレコード設定 = require.タイムレコード設定更新リストRepository.find($就業情報端末.コード)
-		Optional<TimeRecordSetUpdateList> setUpdateOpt = require.findSettingUpdate(empTerOpt.get().getEmpInfoTerCode(), contractCode);
+		Optional<TimeRecordSetUpdateList> setUpdateOpt = require.findSettingUpdate(empTerOpt.get().getEmpInfoTerCode(),
+				contractCode);
 		// $設定フォーマット = require.タイムレコード設定フォーマットリストを取得する($就業情報端末.コード);
-		Optional<TimeRecordSetFormatList> setFormatOpt = require.findSetFormat(empTerOpt.get().getEmpInfoTerCode(), contractCode);
+		Optional<TimeRecordSetFormatList> setFormatOpt = require.findSetFormat(empTerOpt.get().getEmpInfoTerCode(),
+				contractCode);
 		if (!setUpdateOpt.isPresent() || !setFormatOpt.isPresent())
 			return Optional.empty();
 
@@ -43,8 +45,7 @@ public class SendTimeRecordSetInfoService {
 	public static interface Require {
 
 		// [R-1]就業情報端末を取得する
-		public Optional<EmpInfoTerminal> getEmpInfoTerWithMac(MacAddress maccAdd,
-				ContractCode contractCode);
+		public Optional<EmpInfoTerminal> getEmpInfoTerWithMac(MacAddress maccAdd, ContractCode contractCode);
 
 		// [R-2] タイムレコード設定更新リストを取得する
 		Optional<TimeRecordSetUpdateList> findSettingUpdate(EmpInfoTerminalCode empInfoTerCode,

@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetFormatList;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetUpdateList;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.dto.TimeRecordSetReceptFormatDto.TimeRecordSetFormatDtoBuilder;
@@ -37,9 +40,8 @@ public class TimeRecordSettingInfoDto {
 	// タイムレコード設定現在と更新受信リスト
 	private List<TimeRecordSetUpdateReceptDto> lstUpdateRecept;
 
-	public TimeRecordSettingInfoDto(String macAdd, String empInfoTerName, String romVersion,
-			String modelEmpInfoTer, List<TimeRecordSetReceptFormatDto> lstReceptFormat,
-			List<TimeRecordSetUpdateReceptDto> lstUpdateRecept) {
+	public TimeRecordSettingInfoDto(String macAdd, String empInfoTerName, String romVersion, String modelEmpInfoTer,
+			List<TimeRecordSetReceptFormatDto> lstReceptFormat, List<TimeRecordSetUpdateReceptDto> lstUpdateRecept) {
 		this.macAdd = macAdd;
 		this.empInfoTerName = empInfoTerName;
 		this.romVersion = romVersion;
@@ -89,7 +91,8 @@ public class TimeRecordSettingInfoDto {
 		List<TimeRecordSetReceptFormatDto> lstReceptFormat = setFormat.getLstTRSetFormat().stream().map(x -> {
 			return new TimeRecordSetFormatDtoBuilder(x.getMajorClassification().v(), x.getSmallClassification().v(),
 					x.getVariableName().v(), x.getType().inputType, String.valueOf(x.getNumberOfDigits().v()))
-							.settingValue(x.getSettingValue().v()).inputRange(x.getInputRange().v()).build();
+							.settingValue(x.getSettingValue().v()).inputRange(x.getInputRange().v())
+							.rebootFlg(x.isRebootFlg() ? "1" : "0").build();
 		}).collect(Collectors.toList());
 
 		List<TimeRecordSetUpdateReceptDto> lstUpdateRecept = setUpdate.getLstTRecordSetUpdate().stream().map(x -> {
@@ -98,8 +101,25 @@ public class TimeRecordSettingInfoDto {
 
 		return new TimeRecordSettingInfoDto(String.valueOf(setFormat.getEmpInfoTerCode().v()),
 				setFormat.getEmpInfoTerName().v(), setFormat.getRomVersion().v(),
-				String.valueOf(setFormat.getModelEmpInfoTer().value + 7), lstReceptFormat, lstUpdateRecept);
+				String.valueOf(setFormat.getModelEmpInfoTer().value), lstReceptFormat, lstUpdateRecept);
 
+	}
+
+	// [S-3] payloadを作る
+	public static String createPayLoad(TimeRecordSettingInfoDto settingDto) {
+		if (settingDto.getLstUpdateRecept().isEmpty())
+			return "";
+		StringBuilder builder = new StringBuilder("");
+		settingDto.getLstUpdateRecept().stream().forEach(x -> {
+			val master = settingDto.getLstReceptFormat().stream()
+					.filter(y -> y.getVariableName().equals(x.getVariableName())).findFirst();
+			builder.append(x.getVariableName());
+			builder.append("=");
+			builder.append(x.getUpdateValue());
+			master.ifPresent(data -> builder.append(data.getRebootFlg().equals("1") ? ",1" : ""));
+			builder.append("@");
+		});
+		return StringUtils.removeEnd(builder.toString(), "@");
 	}
 
 	// [S-1] タイムレコード設定受信フォーマットリストを作る

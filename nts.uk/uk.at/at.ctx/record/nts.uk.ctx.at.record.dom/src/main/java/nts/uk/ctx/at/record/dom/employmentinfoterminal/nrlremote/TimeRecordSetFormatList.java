@@ -47,9 +47,9 @@ public class TimeRecordSetFormatList extends NRLMachineInfo implements DomainAgg
 									.map(x -> new SettingValue(x.getUpdateValue())).orElse(new SettingValue("")))
 							.build();
 		}).collect(Collectors.toList());
-		return new TimeRecordSetFormatList(empInfoTerCode,
-				new EmpInfoTerminalName(input.getEmpInfoTerName()), new NRRomVersion(input.getRomVersion()),
-				ModelEmpInfoTer.valueOf(input.getModelEmpInfoTer()), lstTRSetFormat);
+		return new TimeRecordSetFormatList(empInfoTerCode, new EmpInfoTerminalName(input.getEmpInfoTerName()),
+				new NRRomVersion(input.getRomVersion()),
+				ModelEmpInfoTer.valueOf(Integer.parseInt(input.getModelEmpInfoTer())), lstTRSetFormat);
 	}
 
 }

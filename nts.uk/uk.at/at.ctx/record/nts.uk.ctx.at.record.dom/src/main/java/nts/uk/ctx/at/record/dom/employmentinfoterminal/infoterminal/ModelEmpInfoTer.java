@@ -7,11 +7,11 @@ package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal;
  */
 public enum ModelEmpInfoTer {
 
-	NRL_1(0),
+	NRL_1(7),
 
-	NRL_2(1),
+	NRL_2(8),
 
-	NRL_M(2);
+	NRL_M(9);
 
 	public final int value;
 

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.dto;
 
 public class NRRemoteCommon {
 
+	private NRRemoteCommon() {};
 	public static String ROW = "@";
 	
 	public static String ELEMENT = ",";

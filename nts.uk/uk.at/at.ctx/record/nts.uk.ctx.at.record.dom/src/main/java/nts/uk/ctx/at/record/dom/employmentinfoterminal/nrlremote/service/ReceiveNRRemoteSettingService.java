@@ -50,7 +50,7 @@ public class ReceiveNRRemoteSettingService {
 	public static interface Require {
 
 		// [R-1]就業情報端末を取得する
-		public Optional<EmpInfoTerminal> getEmpInfoTerWithMac(MacAddress maccAdd, ContractCode contractCode);
+		public Optional<EmpInfoTerminal> getEmpInfoTerWithMac(MacAddress macAdd, ContractCode contractCode);
 
 		// [R-2]タイムレコード設定フォーマットリストを削除する
 		// TimeRecordSetFormatList
