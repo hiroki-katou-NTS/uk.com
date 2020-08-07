@@ -380,6 +380,10 @@ module nts.uk.at.kdp003.a {
 			const { selectedId, employees } = data;
 			const employee = _.find(employees, (e) => e.employeeId === selectedId);
 
+			if (selectedId === undefined) {
+				return vm.$dialog.error({ messageId: 'Msg_1646' });
+			}
+
 			vm.$window
 				.storage(KDP003_SAVE_DATA)
 				.then((data: StorageData) => {

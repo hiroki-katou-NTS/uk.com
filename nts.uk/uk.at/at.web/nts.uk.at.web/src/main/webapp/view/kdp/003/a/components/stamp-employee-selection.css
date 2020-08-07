@@ -63,6 +63,12 @@
 	background-color: #007fff;
 }
 
+#stamp-employee-selection .list-group .check-out-of-list:hover {
+	color: #000;
+	background-color: #c5f1f7;
+}
+
+
 #stamp-employee-selection .list-group .list-employee {
 	border-top: 1px solid #ccc;
 }
