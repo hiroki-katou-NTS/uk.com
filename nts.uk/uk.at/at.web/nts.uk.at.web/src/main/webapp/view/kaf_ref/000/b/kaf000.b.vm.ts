@@ -16,7 +16,7 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
         appDispInfoStartupOutput: KnockoutObservable<any> = ko.observable(null);
         application: KnockoutObservable<Application> = ko.observable(new Application(0));
         approvalReason: KnockoutObservable<string> = ko.observable("");
-		printContentOfEachAppDto: PrintContentOfEachAppDto = {
+		opPrintContentOfEachApp: PrintContentOfEachAppDto = {
 			opPrintContentOfWorkChange: null,
 			opAppStampOutput: null,
 			opArrivedLateLeaveEarlyInfo: null,
@@ -58,7 +58,7 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
             vm.appType = ko.observable(99);
             vm.childParam = {
             	application: vm.application,
-				printContentOfEachAppDto: vm.printContentOfEachAppDto,
+				printContentOfEachAppDto: vm.opPrintContentOfEachApp,
                 approvalReason: vm.approvalReason,
                 appDispInfoStartupOutput: vm.appDispInfoStartupOutput,
                 eventUpdate: function(a) { vm.getChildUpdateEvent.apply(vm, [a]) } 
@@ -313,8 +313,8 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
             const vm = this;
             vm.$blockui("show");
             let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput()),
-				printContentOfEachAppDto = vm.printContentOfEachAppDto,
-                command = { appDispInfoStartupOutput, printContentOfEachAppDto };
+				opPrintContentOfEachApp = vm.opPrintContentOfEachApp,
+                command = { appDispInfoStartupOutput, opPrintContentOfEachApp };
             nts.uk.request.exportFile("at", API.print, command)
             .done((successData: any) => {
 
