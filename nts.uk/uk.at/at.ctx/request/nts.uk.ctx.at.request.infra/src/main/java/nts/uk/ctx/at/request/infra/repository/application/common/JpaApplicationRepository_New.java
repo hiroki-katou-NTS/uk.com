@@ -31,7 +31,6 @@ import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily;
@@ -39,6 +38,7 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdpApplicationPK_New;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_New;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 
@@ -589,8 +589,8 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			ReflectionInformation_New reflectInfor = new ReflectionInformation_New(
 					EnumAdaptor.valueOf(x.getInt("REFLECT_PLAN_STATE"), ReflectedState_New.class),
 					EnumAdaptor.valueOf(x.getInt("REFLECT_PER_STATE"), ReflectedState_New.class),
-					EnumAdaptor.valueOf(x.getInt("REFLECT_PLAN_ENFORCE_ATR"), DisabledSegment_New.class),
-					EnumAdaptor.valueOf(x.getInt("REFLECT_PER_ENFORCE_ATR"), DisabledSegment_New.class),
+					EnumAdaptor.valueOf(x.getInt("REFLECT_PLAN_ENFORCE_ATR"), NotUseAtr.class),
+					EnumAdaptor.valueOf(x.getInt("REFLECT_PER_ENFORCE_ATR"), NotUseAtr.class),
 					x.getInt("REFLECT_PLAN_SCHE_REASON") == null ? Optional.empty()
 							: Optional.ofNullable(EnumAdaptor.valueOf(x.getInt("REFLECT_PLAN_SCHE_REASON"),
 									ReasonNotReflect.class)),
