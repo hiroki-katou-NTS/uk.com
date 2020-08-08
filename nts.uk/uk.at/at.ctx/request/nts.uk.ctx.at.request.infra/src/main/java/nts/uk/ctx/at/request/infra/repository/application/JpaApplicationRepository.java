@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.repository.application.common;
+package nts.uk.ctx.at.request.infra.repository.application;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
