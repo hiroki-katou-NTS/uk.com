@@ -20,7 +20,8 @@ module nts.uk.at.view.kdl006.a {
             let self = this;
             self.closureId = getShared('KDL006-CLOSUREID');
             self.selectedId.subscribe((newValue) => {
-                self.descriptive(getText('KDL006_15',[_.find(self.tighteningList(), ['closureId', self.selectedId()]).closureName]));
+                let closure = _.find(self.tighteningList(), ['closureId', self.selectedId()]);
+                self.descriptive(getText('KDL006_15',[closure ? closure.closureName:'']));
                 self.getWorkplace();
             });
             self.workplaceList.subscribe((newValue) => {
@@ -81,6 +82,23 @@ module nts.uk.at.view.kdl006.a {
         
         save(){
             let self = this;
+            let self = this;
+            block.grayout();
+            let workPlaces = [];
+            _.forEach(self.workplaceList(), function(row) {
+                let w = _.find(self.workPlaceComfirmList, ['workPlaceId', row.workPlaceId]);
+                if(w && row.confirmEmployment() != w.confirmEmployment){
+                    workPlaces.push(w);
+                }    
+            });
+            if(workPlaces.length > 0){
+                service.save(workPlaces).done(function(data) {
+                }).fail(function(res) {
+                    error({ messageId: res.messageId });
+                }).always(() =>{
+                    block.clear();
+                });
+            }
         }
         
         close(): any {
@@ -120,7 +138,7 @@ module nts.uk.at.view.kdl006.a {
             self.closureName = param.closureName;
             self.start = new Date(param.start);
             self.end = new Date(param.end);
-            self.periodDate = param.start + getText('KDL006_16') + param.end;
+            self.periodDate = param.start + '〜' + param.end;
         }
     }
 }
