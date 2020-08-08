@@ -112,7 +112,7 @@ public class WorkConfirmationFinder {
 	
 	public List<WorkPlaceConfirmDto> getWorkPlace(ClosureInforDto closure) {
 		String cid = AppContexts.user().companyId();
-		String employeeId = AppContexts.user().companyId();
+		String employeeId = AppContexts.user().employeeId();
 		RequireImpl require = new RequireImpl(closureService, closureRepository, userAuthAdapter, roleAdaptor, workPlaceAuthRepo, authWorkPlaceAdapter, authWorkPlaceAdapter);
 		
 		List<String> workplace = GetListWorkplacesByEmpsService.get(require, cid, employeeId, Optional.of(closure.closureId));

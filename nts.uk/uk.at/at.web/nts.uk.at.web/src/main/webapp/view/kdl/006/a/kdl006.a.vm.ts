@@ -51,7 +51,6 @@ module nts.uk.at.view.kdl006.a {
             }).fail(function(res) {
                 error({ messageId: res.messageId });
             }).always(() =>{
-                block.clear();
             });
             
             return dfd.promise();
