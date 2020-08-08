@@ -549,9 +549,9 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		ReflectWorkChangeApp appWorkChangeReflect = new ReflectWorkChangeApp();
 		appWorkChangeReflect.setCompanyID(companyId);
 		appWorkChangeReflect.setWhetherReflectAttendance(NotUseAtr.valueOf(1));
+		Optional<ReflectWorkChangeApp> reflectOptional = appWorkChangeSetRepoNew.findByCompanyIdReflect(companyId);
+		appWorkChangeReflect = reflectOptional.isPresent() ? reflectOptional.get() : null;
 		
-		appWorkChangeReflect.setCompanyID(companyId);
-//		appWorkChangeReflect.setWhetherReflectAttendance(EnumAdaptor.valueOf(constantValue, enumClass));
 		appWorkChangeSettingOutput.setAppWorkChangeSet(appWorkChangeSet.isPresent() ? appWorkChangeSet.get() : null);
 		
 		appWorkChangeSettingOutput.setAppWorkChangeReflect(appWorkChangeReflect);
