@@ -26,6 +26,7 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TimeoffLeaveRecordWithPeriod;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrameNo;
+import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHisItem;
 import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHistory;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -55,6 +56,18 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	
 	private static final String SELECT_BY_LIST_SID =  "SELECT th.sid FROM BsymtTempAbsHistory th"
 			+ " WHERE th.sid IN :employeeIds ORDER BY th.sid ";
+	
+	private static final String GET_DATA32 = " SELECT k FROM BsymtTempAbsHistory k "
+			                        + " WHERE k.cid = :companyId "   
+			                        + " AND k.sid IN :lstEmpId ";	
+	private static final String GET_DATA5_1  = " SELECT k FROM BsymtTempAbsHisItem k"
+			                               + " WHERE k.histId IN : lstHisId ";
+	private static final String GET_DATA5_2  = " SELECT k FROM BsymtTempAbsHisItem k"
+            + " WHERE k.histId IN : lstHisId "
+			+ " AND k.tempAbsFrameNo IN : lstTempAbsenceFrNo ";
+	
+	
+	
 	
 	/**
 	 * Convert from domain to entity
@@ -474,7 +487,6 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 
 	@Override
 	public void insert(TempAbsenceHistory tempAbsenceHistory, TempAbsenceHisItem tempAbsenceHisItem) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -510,9 +522,19 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 
 	@Override
 	public List<TempAbsenceHisItem> specifyHisAndFrameNotGetHisItem(List<String> lstHisId,
-			List<TempAbsenceFrameNo> tempAbsenceFrNo) {
-		// TODO Auto-generated method stub
-		return null;
+			List<TempAbsenceFrameNo> lstTempAbsenceFrNo) {
+		List<TempAbsenceHisItem> data  = new ArrayList<>();
+		if(lstTempAbsenceFrNo.isEmpty()){
+		data = this.queryProxy().query(GET_DATA5_1, BsymtTempAbsHisItem.class)
+											.setParameter("lstHisId", lstHisId)
+											.getList(x -> BsymtTempAbsHisItem.toDomainHistItem(x));
+		}
+		else{
+			 data = this.queryProxy().query(GET_DATA5_2, BsymtTempAbsHisItem.class)
+					.setParameter("lstHisId", lstHisId)
+					.getList(x -> BsymtTempAbsHisItem.toDomainHistItem(x));	
+		}
+		return data;
 	}
 
 	@Override
@@ -531,7 +553,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	@Override
 	public List<TimeoffLeaveRecordWithPeriod> getLeaveHistoryItemsWithPeriod(String companyID, List<String> lstEmpId,
 			DatePeriod datePeriod) {
-		// TODO Auto-generated method stub
+		///// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -540,5 +562,25 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 			DatePeriod datePeriod) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	
+	
+	@Override
+	public List<TempAbsenceHistory> getHistoryByListEmp(String companyId, List<String> lstEmpId) {
+		List<TempAbsenceHistory> data = new ArrayList<>();
+		List<BsymtTempAbsHistory> data1 = this.queryProxy().query(GET_DATA32, BsymtTempAbsHistory.class)
+							.setParameter("companyId", companyId)
+							.setParameter("lstEmpId", lstEmpId)
+							.getList();
+		
+		for(String emp :lstEmpId){
+			List<BsymtTempAbsHistory> temp = data1.stream().filter(x->x.getSid().equals(emp)).collect(Collectors.toList());
+			Optional<TempAbsenceHistory> tempAbsenceHistory = BsymtTempAbsHistory.toDomainHis(temp);
+			if(tempAbsenceHistory.isPresent()){
+				data.add(tempAbsenceHistory.get());	
+			}
+		}
+		return data;
 	}
 }

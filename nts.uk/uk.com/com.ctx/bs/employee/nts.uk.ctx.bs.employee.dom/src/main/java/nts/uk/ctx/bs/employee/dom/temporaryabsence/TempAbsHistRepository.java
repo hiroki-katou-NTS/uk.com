@@ -146,6 +146,7 @@ public interface TempAbsHistRepository {
 	/** [3-1] 社員IDを指定して履歴を取得する ( 会社ID, 社員ID )**/
 	Optional<TempAbsenceHistory> specifyEmpIDGetHistory(String companyID , String employeeId);
 	/**[3-2] *社員IDを指定して履歴を取得する ( 会社ID, List<社員ID> )**/
+	List<TempAbsenceHistory> getHistoryByListEmp(String companyId , List<String> lstEmpId);
 	/** [4] 履歴IDを指定して履歴項目を取得する**/
 	Optional<TempAbsenceHisItem> getHistoryItemBySpecifyingHistoryID(String hisID);
 	/** [5] 履歴IDと枠NOを指定して履歴項目を取得する	 **/													
