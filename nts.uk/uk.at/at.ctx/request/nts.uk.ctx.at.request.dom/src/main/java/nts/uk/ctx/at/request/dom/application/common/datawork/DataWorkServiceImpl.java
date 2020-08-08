@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
@@ -115,7 +115,7 @@ public class DataWorkServiceImpl implements IDataWorkService {
 			return result;
 		}
 		// ドメインモデル「勤務種類」を取得
-		if (ApplicationType_Old.GO_RETURN_DIRECTLY_APPLICATION.value == apptype) {
+		if (ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value == apptype) {
 			List<Integer> allDayAtrs = allDayAtrs();
 			List<Integer> halfAtrs = halfAtrs();
 			result = workTypeRepository.findWorkType(companyID, 0, allDayAtrs, halfAtrs).stream()

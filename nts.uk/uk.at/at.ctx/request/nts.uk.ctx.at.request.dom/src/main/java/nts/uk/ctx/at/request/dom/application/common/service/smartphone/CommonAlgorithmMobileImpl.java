@@ -290,7 +290,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 		Optional<List<ActualContentDisplay>> opActualContentDisplayLst = Optional.empty();
 		Optional<List<PreAppContentDisplay>> opPreAppContentDisplayLst = Optional.empty();
 		if(appType == ApplicationType.OVER_TIME_APPLICATION &&
-				appType == ApplicationType.LEAVE_TIME_APPLICATION &&
+				appType == ApplicationType.HOLIDAY_WORK_APPLICATION &&
 				appType == ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION &&
 				appType == ApplicationType.STAMP_APPLICATION &&
 				appType == ApplicationType.ANNUAL_HOLIDAY_APPLICATION) {
@@ -410,7 +410,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 		// 入力者の社員情報を取得する
 		Optional<EmployeeInfoImport> opEmployeeInfoImport = commonAlgorithm.getEnterPersonInfor(
 				application.getEmployeeID(), 
-				application.getEnteredPerson());
+				application.getEnteredPersonID());
 		// 14-2.詳細画面起動前モードの判断
 		DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput = beforePreBootMode.judgmentDetailScreenMode(
 				companyID, 

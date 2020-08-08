@@ -11,7 +11,7 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.AppOvertimeFinder;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationForRemandService;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationForSendService;
@@ -30,7 +30,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class ApplicationFinder {
 
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 
 	@Inject
 	private DetailAppCommonSetService detailAppCommonSetService;
@@ -71,8 +71,12 @@ public class ApplicationFinder {
 	public ApplicationSendDto getAppByIdForSend(String appID){
 		ApplicationForSendOutput appOutput = appForSendService.getApplicationForSend(appID);
 		if (!Objects.isNull(appOutput)){
-			return ApplicationSendDto.fromDomain(ApplicationDto_New.fromDomain(appOutput.getApplication()), appOutput.getMailTemplate(),
-					appOutput.getApprovalRoot(), appOutput.getApplicantMail(), appOutput.getEmpName());
+			/*
+			 * return ApplicationSendDto.fromDomain(ApplicationDto_New.fromDomain(appOutput.
+			 * getApplication()), appOutput.getMailTemplate(), appOutput.getApprovalRoot(),
+			 * appOutput.getApplicantMail(), appOutput.getEmpName());
+			 */
+			return null;
 		}
 		return null;
 	}

@@ -83,9 +83,13 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                     });     
                 }
             }).fail((failData: any) => {
-                vm.$dialog.error({
-                    messageId: failData.msgId
-                }); 
+                let param;
+                if (failData.message) {
+                    param = {message: failData.message};
+                } else {
+                    param = {messageId: failData.messageId}
+                }
+                vm.$dialog.error(param); 
                 
             }).always(() => vm.$blockui("hide"));
             
@@ -202,9 +206,13 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                                 }
                             } )
                             .fail( err => {
-                                vm.$dialog.error( {
-                                    messageId: err.msgId
-                                } );
+                                let param;
+                                if (err.message) {
+                                    param = {message: err.message};
+                                } else {
+                                    param = {messageId: err.messageId}
+                                }
+                                vm.$dialog.error(param);
                             } )
                             .always(() => vm.$blockui( "hide" ) );
                     }
@@ -250,10 +258,13 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 })
                 .fail(res => {
                     
-                    console.log(res);
-                    vm.$dialog.error( {
-                        messageId: res.msgId
-                    } );
+                    let param;
+                    if (res.message) {
+                        param = {message: res.message};
+                    } else {
+                        param = {messageId: res.messageId}
+                    }
+                    vm.$dialog.error(param);
                 })
                 .always(() => vm.$blockui( "hide" ));
             

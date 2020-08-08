@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationDisplayAtr;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
@@ -54,7 +54,7 @@ public class AppListExtractConditionDto {
 				GeneralDate.fromString(dto.getStartDate(), dateFormat),
 				GeneralDate.fromString(dto.getEndDate(), dateFormat),
 				EnumAdaptor.valueOf(dto.getAppListAtr(),ApplicationListAtr.class),
-				dto.getAppType() == -1 ? null : EnumAdaptor.valueOf(dto.getAppType(), ApplicationType_Old.class),
+				dto.getAppType() == -1 ? null : EnumAdaptor.valueOf(dto.getAppType(), ApplicationType.class),
 				dto.isUnapprovalStatus(),
 				dto.isApprovalStatus(),
 				dto.isDenialStatus(),

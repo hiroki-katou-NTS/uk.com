@@ -9,11 +9,10 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
@@ -224,7 +223,7 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 			String cid = x.getKrqstAppEmploymentSetPK().getCid();
 			String empCode = x.getKrqstAppEmploymentSetPK().getEmploymentCode();
 			WorkTypeObjAppHoliday i = new WorkTypeObjAppHoliday();
-			i.setAppType(EnumAdaptor.valueOf(x.getKrqstAppEmploymentSetPK().getAppType(), ApplicationType_Old.class));
+			i.setAppType(EnumAdaptor.valueOf(x.getKrqstAppEmploymentSetPK().getAppType(), ApplicationType.class));
 			if(x.getKrqstAppEmploymentSetPK().getAppType() == 1) {
 				i.setHolidayAppType(Optional.of(EnumAdaptor.valueOf(x.getKrqstAppEmploymentSetPK().getHolidayOrPauseType(), HolidayType.class)));				
 			}else {

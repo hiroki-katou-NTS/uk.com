@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 /*import nts.arc.error.BusinessException;*/
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -9,17 +8,16 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 //import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 //import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
@@ -42,7 +40,7 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 	private GoBackDirectlyRepository_Old goBackDirectlyRepo;
 	
 	@Inject 
-	private ApplicationRepository_New appRepo;
+	private ApplicationRepository appRepo;
 
 //	@Inject
 //	private ApplicationSettingRepository applicationSettingRepository;
@@ -74,7 +72,7 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 	@Override
 	public void checkErrorBeforeUpdate(GoBackDirectly_Old goBackDirectly, String companyID, String appID, Long version) {
 		// アルゴリズム「4-1.詳細画面登録前の処理」を実行する
-		Application_New application_New = appRepo.findByID(companyID, appID).get();
+		Application application_New = appRepo.findByID(companyID, appID).get();
 		// error EA refactor 4
 		/*this.detailBeforeUpdate.processBeforeDetailScreenRegistration(
 				companyID, 
@@ -89,9 +87,10 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
 		// アルゴリズム「直行直帰するチェック」を実行する - client da duoc check
 		// アルゴリズム「直行直帰遅刻早退のチェック」を実行する
-		GoBackDirectLateEarlyOuput goBackLateEarly = goBackDirectlyRegisterService.goBackDirectLateEarlyCheck(goBackDirectly, application_New);
+		// GoBackDirectLateEarlyOuput goBackLateEarly = goBackDirectlyRegisterService.goBackDirectLateEarlyCheck(goBackDirectly, application_New);
 		//直行直帰遅刻早退のチェック
 		//TODO: chua the thuc hien duoc nen mac dinh luc nao cung co loi エラーあり
+		/*
 		if(goBackLateEarly.isError) {
 			//直行直帰申請共通設定.早退遅刻設定がチェックする
 			if(goBackCommonSet.getLateLeaveEarlySettingAtr() == CheckAtr.CHECKREGISTER) {
@@ -100,6 +99,7 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 				goBackDirectlyRegisterService.createThrowMsg("Msg_298", goBackLateEarly.msgLst);	
 			}
 		}
+		*/
 	}
 
 	/**

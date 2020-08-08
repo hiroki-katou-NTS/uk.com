@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.DefaultFlg;
 
 /**
@@ -26,7 +26,7 @@ public class DivergenceReason extends AggregateRoot{
 	/**
 	 * 申請種類
 	 */
-	private ApplicationType_Old appType;
+	private ApplicationType appType;
 	
 	/**
 	 * 定型理由項目
@@ -35,7 +35,7 @@ public class DivergenceReason extends AggregateRoot{
 	
 	public static DivergenceReason createSimpleFromJavaType(String companyID,int appType,String reasonID,int dispOrder,String reasonTemp, int defaultFlg){
 		ReasonTypeItem reasonTypeItem = new ReasonTypeItem(reasonID, dispOrder, new ReasonTempPrimitive(reasonTemp), EnumAdaptor.valueOf(defaultFlg,DefaultFlg.class));
-		return new DivergenceReason(companyID, EnumAdaptor.valueOf(appType,ApplicationType_Old.class), reasonTypeItem);
+		return new DivergenceReason(companyID, EnumAdaptor.valueOf(appType,ApplicationType.class), reasonTypeItem);
 		
 	}
 

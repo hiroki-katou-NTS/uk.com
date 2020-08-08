@@ -10,8 +10,8 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
@@ -61,32 +61,32 @@ public class LateOrLeaveEarlyFinder {
 	private LateOrLeaveEarlyRepository lateOrLeaveEarlyRepository;
 
 	@Inject
-	private ApplicationRepository_New appRepository;
+	private ApplicationRepository appRepository;
 	
 	public ScreenLateOrLeaveEarlyDto getLateOrLeaveEarly(String appID) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		String applicantName = "";
 	
-		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID, 1, ApplicationType_Old.EARLY_LEAVE_CANCEL_APPLICATION, null);
+		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID, 1, ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION, null);
 		 
 		
 		ApprovalRootPattern approvalRootPattern = collectApprovalRootPatternService.getApprovalRootPatternService(
 				companyID, 
 				employeeID, 
 				EmploymentRootAtr.APPLICATION, 
-				ApplicationType_Old.EARLY_LEAVE_CANCEL_APPLICATION, 
+				ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION, 
 				appCommonSettingOutput.generalDate, 
 				appID, 
 				true);
 		startupErrorCheckService.startupErrorCheck(
 				appCommonSettingOutput.generalDate, 
-				ApplicationType_Old.EARLY_LEAVE_CANCEL_APPLICATION.value,
+				ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value,
 				approvalRootPattern.getApprovalRootContentImport());
 		
 		/** ドメインモデル「申請定型理由」を取得 (Lấy 「申請定型理由」) */
 		
-		List<ApplicationReason> applicationReasons = applicationReasonRepository.getReasonByAppType(companyID, ApplicationType_Old.EARLY_LEAVE_CANCEL_APPLICATION.value);
+		List<ApplicationReason> applicationReasons = applicationReasonRepository.getReasonByAppType(companyID, ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value);
 		
 		/** ドメインモデル「複数回勤務」を取得 (Lấy 「複数回勤務」) */
 		
@@ -100,7 +100,7 @@ public class LateOrLeaveEarlyFinder {
 			if(lateOrLeaveEarlyOp.isPresent()){
 				LateOrLeaveEarly lateOrLeaveEarly =lateOrLeaveEarlyOp.get();
 				//Get application data
-				lateOrLeaveEarly.setApplication(appRepository.findByID(companyID, appID).get());
+				// lateOrLeaveEarly.setApplication(appRepository.findByID(companyID, appID).get());
 				lateOrLeaveEarlyDto = LateOrLeaveEarlyDto.fromDomain(lateOrLeaveEarly,lateOrLeaveEarly.getApplication().getVersion()); 
 				employeeID = lateOrLeaveEarly.getApplication().getEmployeeID();
 				applicantName = employeeAdapter.getEmployeeName(employeeID);

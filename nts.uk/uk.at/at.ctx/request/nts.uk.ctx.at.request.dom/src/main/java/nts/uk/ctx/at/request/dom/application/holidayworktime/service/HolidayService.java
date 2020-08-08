@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
@@ -116,7 +116,7 @@ public interface HolidayService {
 	 * @return
 	 */
 	public HdWorkDispInfoWithDateOutput initDataNew(String companyID, String employeeID, Optional<GeneralDate> appDate, GeneralDate baseDate, 
-			PrePostAtr_Old prePostAtr, AppEmploymentSetting appEmploymentSetting, List<WorkTimeSetting> workTimeLst, 
+			PrePostAtr prePostAtr, AppEmploymentSetting appEmploymentSetting, List<WorkTimeSetting> workTimeLst, 
 			ApprovalFunctionSetting approvalFunctionSet, RequestSetting requestSetting, List<AchievementOutput> achievementOutputLst);
 	
 	/**
@@ -154,7 +154,7 @@ public interface HolidayService {
 	 * @param breakTimeDisp 休憩入力欄を表示する
 	 * @return
 	 */
-	public HdWorkBreakTimeSetOutput getBreakTime(String companyID, ApplicationType_Old appType, String workTypeCD, String workTimeCD, 
+	public HdWorkBreakTimeSetOutput getBreakTime(String companyID, ApplicationType appType, String workTypeCD, String workTimeCD, 
 			Optional<TimeWithDayAttr> startTime, Optional<TimeWithDayAttr> endTime, UseAtr timeCalUse, Boolean breakTimeDisp);
 	
 	/**
@@ -187,7 +187,7 @@ public interface HolidayService {
 	 * @param appHdWorkInstruction 休出指示
 	 * @return
 	 */
-	public HdWorkCheckRegisterOutput individualErrorCheck(String companyID, String employeeID, GeneralDate appDate, GeneralDate baseDate, ApplicationType_Old appType, 
+	public HdWorkCheckRegisterOutput individualErrorCheck(String companyID, String employeeID, GeneralDate appDate, GeneralDate baseDate, ApplicationType appType, 
 			Application_New application, UseAtr timeCalUse, UseAtr timeInputUse, AppDateContradictionAtr appDateContradictionAtr, boolean agentAtr, 
 			boolean mode, List<AchievementOutput> achievementOutputLst, List<PreAppContentDisplay> appDetailContentLst, HolidayWorkInstruction appHdWorkInstruction, 
 			AppHolidayWork holidayWorkDomain, int calculateFlg, AppHdWorkDispInfoOutput appHdWorkDispInfoOutput);

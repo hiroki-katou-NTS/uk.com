@@ -8,8 +8,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCancel;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
@@ -18,11 +17,13 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStampGoOutPermit;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampWork;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdpAppStamp;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdpAppStampDetail;
-import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStamp_Old;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStampDetail;
+import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStamp_Old;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * 
@@ -52,10 +53,11 @@ public class JpaAppStampRepository_Old extends JpaRepository implements AppStamp
 
 	@Override
 	public void updateStamp(AppStamp_Old appStamp) {
+		String companyID = AppContexts.user().companyId();
 		Optional<KrqdtAppStamp_Old> optional = this.queryProxy().find(new KrqdpAppStamp(
-				appStamp.getApplication_New().getCompanyID(), 
-				appStamp.getApplication_New().getAppID()), KrqdtAppStamp_Old.class);
-		if(!optional.isPresent()) throw new RuntimeException(" Not found AppStamp in table KRQDT_APP_STAMP, appID =" + appStamp.getApplication_New().getAppID());
+				companyID, 
+				appStamp.getApplication().getAppID()), KrqdtAppStamp_Old.class);
+		if(!optional.isPresent()) throw new RuntimeException(" Not found AppStamp in table KRQDT_APP_STAMP, appID =" + appStamp.getApplication().getAppID());
 		
 		KrqdtAppStamp_Old krqdtAppStamp = convertToAppStampEntity(appStamp);
 		this.commandProxy().update(krqdtAppStamp);
@@ -105,7 +107,7 @@ public class JpaAppStampRepository_Old extends JpaRepository implements AppStamp
 		}
 		AppStamp_Old appStamp = AppStamp_Old.builder()
 				.stampRequestMode(EnumAdaptor.valueOf(krqdtAppStamp.stampRequestMode, StampRequestMode_Old.class))
-				.application_New(Application_New.builder().appID(krqdtAppStamp.krqdpAppStampPK.appID).build())
+				.application(new Application())
 				.appStampGoOutPermits(appStampGoOutPermits)
 				.appStampWorks(appStampWorks)
 				.appStampCancels(appStampCancels)
@@ -115,10 +117,11 @@ public class JpaAppStampRepository_Old extends JpaRepository implements AppStamp
 	}
 	
 	private KrqdtAppStamp_Old convertToAppStampEntity(AppStamp_Old appStamp){
+		String companyID = AppContexts.user().companyId();
 		KrqdtAppStamp_Old krqdtAppStamp = KrqdtAppStamp_Old.builder()
 				.krqdpAppStampPK(new KrqdpAppStamp(
-						appStamp.getApplication_New().getCompanyID(), 
-						appStamp.getApplication_New().getAppID()))
+						companyID, 
+						appStamp.getApplication().getAppID()))
 				.stampRequestMode(appStamp.getStampRequestMode().value)
 				.build();
 		List<KrqdtAppStampDetail> krqdtAppStampDetails = new ArrayList<KrqdtAppStampDetail>();
@@ -127,8 +130,8 @@ public class JpaAppStampRepository_Old extends JpaRepository implements AppStamp
 				for(AppStampGoOutPermit appStampGoOutPermit : appStamp.getAppStampGoOutPermits()){
 					krqdtAppStampDetails.add(KrqdtAppStampDetail.builder()
 							.krqdpAppStampDetailsPK(new KrqdpAppStampDetail(
-									appStamp.getApplication_New().getCompanyID(), 
-									appStamp.getApplication_New().getAppID(),
+									companyID, 
+									appStamp.getApplication().getAppID(),
 									appStamp.getStampRequestMode().value, 
 									appStampGoOutPermit.getStampAtr().value, 
 									appStampGoOutPermit.getStampFrameNo()))
@@ -145,8 +148,8 @@ public class JpaAppStampRepository_Old extends JpaRepository implements AppStamp
 				for(AppStampWork appStampWork : appStamp.getAppStampWorks()){
 					krqdtAppStampDetails.add(KrqdtAppStampDetail.builder()
 							.krqdpAppStampDetailsPK(new KrqdpAppStampDetail(
-									appStamp.getApplication_New().getCompanyID(), 
-									appStamp.getApplication_New().getAppID(),
+									companyID, 
+									appStamp.getApplication().getAppID(),
 									appStamp.getStampRequestMode().value, 
 									appStampWork.getStampAtr().value, 
 									appStampWork.getStampFrameNo()))
@@ -165,8 +168,8 @@ public class JpaAppStampRepository_Old extends JpaRepository implements AppStamp
 				for(AppStampCancel appStampCancel : appStamp.getAppStampCancels()){
 					krqdtAppStampDetails.add(KrqdtAppStampDetail.builder()
 							.krqdpAppStampDetailsPK(new KrqdpAppStampDetail(
-									appStamp.getApplication_New().getCompanyID(), 
-									appStamp.getApplication_New().getAppID(),
+									companyID, 
+									appStamp.getApplication().getAppID(),
 									appStamp.getStampRequestMode().value, 
 									appStampCancel.getStampAtr().value, 
 									appStampCancel.getStampFrameNo()))
@@ -183,8 +186,8 @@ public class JpaAppStampRepository_Old extends JpaRepository implements AppStamp
 				for(AppStampWork appStampWork : appStamp.getAppStampWorks()){
 					krqdtAppStampDetails.add(KrqdtAppStampDetail.builder()
 							.krqdpAppStampDetailsPK(new KrqdpAppStampDetail(
-									appStamp.getApplication_New().getCompanyID(), 
-									appStamp.getApplication_New().getAppID(),
+									companyID, 
+									appStamp.getApplication().getAppID(),
 									appStamp.getStampRequestMode().value, 
 									appStampWork.getStampAtr().value, 
 									appStampWork.getStampFrameNo()))

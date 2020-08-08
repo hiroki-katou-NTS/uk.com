@@ -4,7 +4,7 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWorkFull;
@@ -97,7 +97,7 @@ public interface AppListInitialRepository {
 	 * @return
 	 */
 	public TimeResultOutput getDataActual(String sID, GeneralDate date, List<OverTimeFrame> time, 
-			ApplicationType_Old appType, String wkTypeCd, String wkTimeCd, List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime);
+			ApplicationType appType, String wkTypeCd, String wkTimeCd, List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime);
 	/**
 	 * 6 - 申請一覧リスト取得振休振出
 	 * @param 申請　application

@@ -11,8 +11,8 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
@@ -49,7 +49,7 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 	ApprovalRootStateAdapter approvalRootStateAdapter;
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository_New;
+	private ApplicationRepository applicationRepository_New;
 	
 	@Inject
 	private ApplicationApprovalService appRepository;
@@ -149,7 +149,7 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 	
 
 	private void validateReason(String companyID,String reason) {
-		ApplicationType_Old appType= ApplicationType_Old.EARLY_LEAVE_CANCEL_APPLICATION;
+		ApplicationType appType= ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION;
 		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
 				.getApplicationSettingByComID(companyID);
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
@@ -191,10 +191,13 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 
 	@Override
 	public LateOrLeaveEarly findByID(String companyID, String appID) {
+		/*
 		LateOrLeaveEarly lateOrLeaveEarly = lateOrLeaveEarlyRepository.findByCode(companyID, appID).get();
 		Application_New application = applicationRepository_New.findByID(companyID, appID).get();
 		lateOrLeaveEarly.setApplication(application);
 		return lateOrLeaveEarly;
+		*/
+		return null;
 	}
 
 }

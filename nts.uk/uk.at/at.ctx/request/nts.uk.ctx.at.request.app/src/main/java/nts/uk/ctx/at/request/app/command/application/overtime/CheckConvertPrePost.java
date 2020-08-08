@@ -21,9 +21,9 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeInputDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingData;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingDataDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.PreAppOvertimeDto;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatus;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
@@ -112,7 +112,7 @@ public class CheckConvertPrePost {
 								companyID, 
 								employeeID, 
 								GeneralDate.fromString(appDate, DATE_FORMAT), 
-								ApplicationType_Old.OVER_TIME_APPLICATION);
+								ApplicationType.OVER_TIME_APPLICATION);
 						opAppBefore = preAppCheckResult.opAppBefore;
 						beforeAppStatus = preAppCheckResult.beforeAppStatus;
 					} else {
@@ -121,7 +121,7 @@ public class CheckConvertPrePost {
 					// 07-02_実績取得・状態チェック
 					if(CollectionUtil.isEmpty(actualLstUI)) {
 						ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck
-								.actualStatusCheck(companyID, employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType_Old.OVER_TIME_APPLICATION, 
+								.actualStatusCheck(companyID, employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.OVER_TIME_APPLICATION, 
 										result.getWorkType() == null ? null : result.getWorkType().getWorkTypeCode(), 
 										result.getSiftType() ==  null ? null : result.getSiftType().getSiftCode(), 
 										appOvertimeSetting.getPriorityStampSetAtr(), Optional.empty(), Collections.emptyList());
@@ -176,10 +176,10 @@ public class CheckConvertPrePost {
 				result.setAllPreAppPanelFlg(true);
 				AppOverTime appOverTime = otherCommonAlgorithm.getPreApplication(
 						employeeID,
-						EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class),
+						EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
 						overtimeRestAppCommonSet.getPreDisplayAtr(), 
 						appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT),
-						ApplicationType_Old.OVER_TIME_APPLICATION);
+						ApplicationType.OVER_TIME_APPLICATION);
 				if(appOverTime != null){
 					convertOverTimeDto(companyID,preAppOvertimeDto,result,appOverTime);
 					result.setPreAppPanelFlg(true);
@@ -197,9 +197,9 @@ public class CheckConvertPrePost {
 				List<DivergenceReason> divergenceReasons = commonOvertimeHoliday
 						.getDivergenceReasonForm(
 								companyID,
-								EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class),
+								EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
 								overtimeRestAppCommonSet.getDivergenceReasonFormAtr(),
-								ApplicationType_Old.OVER_TIME_APPLICATION);
+								ApplicationType.OVER_TIME_APPLICATION);
 				convertToDivergenceReasonDto(divergenceReasons,result);
 			}else{
 				result.setDisplayDivergenceReasonForm(false);
@@ -207,7 +207,7 @@ public class CheckConvertPrePost {
 			//01-07_乖離理由を取得
 			result.setDisplayDivergenceReasonInput(
 					commonOvertimeHoliday.displayDivergenceReasonInput(
-							EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class), 
+							EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
 							overtimeRestAppCommonSet.getDivergenceReasonInputAtr()));
 		} else {
 			if(overtimeRestAppCommonSet.getPerformanceDisplayAtr().value == UseAtr.USE.value){
@@ -226,8 +226,8 @@ public class CheckConvertPrePost {
 		PreActualColorResult preActualColorResult = preActualColorCheck.preActualColorCheck(
 				preExcessDisplaySetting, 
 				performanceExcessAtr, 
-				ApplicationType_Old.OVER_TIME_APPLICATION, 
-				EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class), 
+				ApplicationType.OVER_TIME_APPLICATION, 
+				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
 				Collections.emptyList(),
 				otTimeLst,
 				opAppBefore,

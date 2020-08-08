@@ -30,9 +30,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @Transactional
 public class ApplicationApprovalImpl implements ApplicationApprovalService {
-
-	@Inject
-	private ApplicationRepository_New applicationRepository_Old;
 	
 	@Inject
 	private ApplicationRepository applicationRepository;
@@ -89,16 +86,16 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			lateOrLeaveEarlyRepository.remove(companyID, appID);
 			break;
-		case LEAVE_TIME_APPLICATION:
+		case HOLIDAY_WORK_APPLICATION:
 			appHolidayWorkRepository.delete(companyID, appID);
 			Optional<BrkOffSupChangeMng> brOptional = this.brkOffSupChangeMngRepository.findHolidayAppID(appID);
 			if(brOptional.isPresent()){
-				Optional<Application_New> optapplicationLeaveApp = this.applicationRepository_Old.findByID(companyID, brOptional.get().getAbsenceLeaveAppID());
+				Optional<Application> optapplicationLeaveApp = this.applicationRepository.findByID(companyID, brOptional.get().getAbsenceLeaveAppID());
 				if(optapplicationLeaveApp.isPresent()){
-					Application_New applicationLeaveApp = optapplicationLeaveApp.get();
+					Application applicationLeaveApp = optapplicationLeaveApp.get();
 					applicationLeaveApp.setVersion(applicationLeaveApp.getVersion());
-					applicationLeaveApp.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
-					applicationRepository_Old.update(applicationLeaveApp);
+					// applicationLeaveApp.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
+					applicationRepository.update(applicationLeaveApp);
 				}
 				this.brkOffSupChangeMngRepository.remove(appID, brOptional.get().getAbsenceLeaveAppID());
 			}

@@ -15,8 +15,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
@@ -38,7 +38,7 @@ public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<Up
 	@Inject
 	private AppHolidayWorkRepository appHolidayWorkRepository;
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 	@Inject
 	private DetailAfterUpdate detailAfterUpdate;
 	@Inject
@@ -63,7 +63,7 @@ public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<Up
 		
 		AppTypeSetting appTypeSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
 				.getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
-				.filter(x -> x.getAppType() == ApplicationType_Old.BREAK_TIME_APPLICATION).findFirst().get();
+				.filter(x -> x.getAppType() == ApplicationType.HOLIDAY_WORK_APPLICATION).findFirst().get();
 		String appReason = Strings.EMPTY;	
 		String typicalReason = Strings.EMPTY;
 		String displayReason = Strings.EMPTY;
@@ -77,7 +77,7 @@ public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<Up
 			displayReason += updateHolidayWorkCommand.getApplicationReason();
 		} else {
 			if(Strings.isBlank(typicalReason)){
-				displayReason = applicationRepository.findByID(companyID, updateHolidayWorkCommand.getAppID()).get().getAppReason().v();
+				displayReason = applicationRepository.findByID(companyID, updateHolidayWorkCommand.getAppID()).get().getOpAppReason().get().v();
 			}
 		} 
 		ApplicationSetting applicationSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()

@@ -8,8 +8,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
@@ -25,7 +25,7 @@ import nts.uk.ctx.at.request.pub.screen.nts.uk.ctx.workflow.pub.employmentfuncti
 public class DailyProcessDenialImpl implements DailyProcessDenialPub {
 
 	@Inject
-	private ApplicationRepository_New respo;
+	private ApplicationRepository respo;
 	
 	@Inject
 	private AppDispNameRepository appDispNameRepository;
@@ -60,7 +60,7 @@ public class DailyProcessDenialImpl implements DailyProcessDenialPub {
 			    }
 		}
 	     if(date.size() != 0){
-	    	 List<Application_New> applicationExcessHoliday = listApp.stream().filter(x -> x.getAppType().value != ApplicationType_Old.ABSENCE_APPLICATION.value).collect(Collectors.toList());
+	    	 List<Application_New> applicationExcessHoliday = listApp.stream().filter(x -> x.getAppType().value != ApplicationType.ABSENCE_APPLICATION.value).collect(Collectors.toList());
 	 		for(Application_New app : applicationExcessHoliday){
 	 			DailyAggregationProcessExport processExport = new DailyAggregationProcessExport();
 	 			processExport.setEmployeeID(app.getEmployeeID());
@@ -70,7 +70,7 @@ public class DailyProcessDenialImpl implements DailyProcessDenialPub {
 	 			dailyAggregationProcessExports.add(processExport);
 	 		}
 	 		
-	 		List<Application_New> applicationHoliday = listApp.stream().filter(x -> x.getAppType().value == ApplicationType_Old.ABSENCE_APPLICATION.value).collect(Collectors.toList());
+	 		List<Application_New> applicationHoliday = listApp.stream().filter(x -> x.getAppType().value == ApplicationType.ABSENCE_APPLICATION.value).collect(Collectors.toList());
 			for(Application_New application_New : applicationHoliday){
 				DailyAggregationProcessExport applicationExport = new DailyAggregationProcessExport();
 				applicationExport.setEmployeeID(application_New.getEmployeeID());

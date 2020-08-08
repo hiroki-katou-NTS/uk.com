@@ -13,15 +13,17 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         enable3: KnockoutObservable<boolean>;
         enable4: KnockoutObservable<boolean>;
         enable5: KnockoutObservable<boolean>;
+        isLink1: boolean = true;
+        isLink2: boolean = true;
+        isLink3: boolean = true;
+        isLink4: boolean = true;
+        isLink5: boolean = true;
         readonly: KnockoutObservable<boolean>;
         time: KnockoutObservable<number>;
-        
-        
+        grid: any = null;
     
-        isFillColor1: KnockoutObservable<boolean> = ko.observable(true);
+        option: any;
 
-        
-        
         items1 = (function() {
             let list = []; 
             for (let i = 1; i < 3; i++) {
@@ -82,8 +84,28 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             return list;
         })();
         
-       
         
+        
+       
+        doSomething(s: string) {
+            const self = this;
+            if (s == '1') {
+                self.isLink1 = false;
+                self.loadGrid('#grid1', self.items1.concat(self.items2), 1);
+            } else if (s == '2') {
+                self.isLink2 = false;
+                self.loadGrid('#grid2', self.items3, 2);
+            } else if (s == '3') {
+                self.isLink3 = false;
+                self.loadGrid('#grid3', self.items4, 3);
+            } else if (s == '4') {
+                self.isLink4 = false;
+                self.loadGrid('#grid4', self.items5, 4);
+            } else if (s == '5') {
+                self.isLink5 = false;
+                self.loadGrid('#grid5', self.items6, 5);
+            }
+        }
         created() {
             const self = this;
             self.enable1 = ko.observable(false);
@@ -126,406 +148,31 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 {id: 'tab-6', title: self.$i18n('KAF002_34'), content: '.tab-content-6', enable: ko.observable(true), visible: ko.observable(true)}
             ]);
             self.selectedTab = ko.observable('tab-1');
-            
-            let comboColumns = [{ prop: 'code', length: 4 },
-                                { prop: 'name', length: 8 }];
-            let comboItems = [ new ItemModel('1', '基本給'),
-                               new ItemModel('2', '役職手当'),
-                               new ItemModel('3', '基本給2') ];
-            
-
-            
-            let items1_2 = this.items1.concat(this.items2);
-            
-            self.enable1.subscribe((value) => {
-                _.forEach(items1_2, item => {
-                   if (ko.toJS(item.flagEnable)) {
-                       item.flagObservable(value);                       
-                   }
-                });
-            });
-            self.enable2.subscribe((value) => {
-                _.forEach(self.items3, item => {
-                   if (ko.toJS(item.flagEnable)) {
-                       item.flagObservable(value);                       
-                   }
-                });
-            });
-            self.enable3.subscribe((value) => {
-                _.forEach(self.items4, item => {
-                   if (ko.toJS(item.flagEnable)) {
-                       item.flagObservable(value);                       
-                   }
-                });
-            });
-            self.enable4.subscribe((value) => {
-                _.forEach(self.items5, item => {
-                   if (ko.toJS(item.flagEnable)) {
-                       item.flagObservable(value);                       
-                   }
-                });
-            });
-            self.enable5.subscribe((value) => {
-                _.forEach(self.items6, item => {
-                   if (ko.toJS(item.flagEnable)) {
-                       item.flagObservable(value);                       
-                   }
-                });
-            });
-            
-            let statesTable1 = [];
-            let statesTable2 = [];
-            let statesTable3 = [];
-            let statesTable4 = [];
-            let statesTable5 = [];
-            let isShowHeaderCheckbox = true;
-            let numberDisble1 = 0;
-            let numberDisble2 = 0;
-            let numberDisble3 = 0;
-            let numberDisble4 = 0;
-            let numberDisble5 = 0;
-            for (let i = 1; i < items1_2.length + 1; i++) {
-                statesTable1.push(new CellState(i, "text1", ['titleColor']));
-                
-                if (!ko.toJS(items1_2[i-1].flagEnable)) {
-                    numberDisble1++;
-                }
-                             
-            }
-            
-            for (let i = 1; i < self.items3.length + 1; i++) {
-                statesTable2.push(new CellState(i, "text1", ['titleColor']));
-                
-                if (!ko.toJS(self.items3[i-1].flagEnable)) {
-                    numberDisble2++;
-                }
-                             
-            }
-            
-            for (let i = 1; i < self.items4.length + 1; i++) {
-                statesTable3.push(new CellState(i, "text1", ['titleColor']));
-                
-                if (!ko.toJS(self.items4[i-1].flagEnable)) {
-                    numberDisble3++;
-                }
-                             
-            }
-            
-            for (let i = 1; i < self.items5.length + 1; i++) {
-                statesTable4.push(new CellState(i, "text1", ['titleColor']));
-                
-                if (!ko.toJS(self.items5[i-1].flagEnable)) {
-                    numberDisble4++;
-                }
-                             
-            }
-            
-            for (let i = 1; i < self.items6.length + 1; i++) {
-                statesTable5.push(new CellState(i, "text1", ['titleColor']));
-                
-                if (!ko.toJS(self.items6[i-1].flagEnable)) {
-                    numberDisble5++;
-                }
-                             
-            }
-            let headerFlagContent1 = numberDisble1 != items1_2.length ? '<div style="display: block" align="center" data-bind="ntsCheckBox: { checked: enable1}">' + self.$i18n('KAF002_72')+ '</div>' : '<div style="display: block" align="center">' + self.$i18n('KAF002_72')+ '</div>';
-            let headerFlagContent2 = numberDisble2 != self.items3.length ? '<div style="display: block" align="center" data-bind="ntsCheckBox: { checked: enable2}">' + self.$i18n('KAF002_72')+ '</div>' : '<div style="display: block" align="center">' + self.$i18n('KAF002_72')+ '</div>';
-            let headerFlagContent3 = numberDisble3 != self.items4.length ? '<div style="display: block" align="center" data-bind="ntsCheckBox: { checked: enable3}">' + self.$i18n('KAF002_72')+ '</div>' : '<div style="display: block" align="center">' + self.$i18n('KAF002_72')+ '</div>';
-            let headerFlagContent4 = numberDisble4 != self.items5.length ? '<div style="display: block" align="center" data-bind="ntsCheckBox: { checked: enable4}">' + self.$i18n('KAF002_72')+ '</div>' : '<div style="display: block" align="center">' + self.$i18n('KAF002_72')+ '</div>';
-            let headerFlagContent5 = numberDisble5 != self.items6.length ? '<div style="display: block" align="center" data-bind="ntsCheckBox: { checked: enable5}">' + self.$i18n('KAF002_72')+ '</div>' : '<div style="display: block" align="center">' + self.$i18n('KAF002_72')+ '</div>';
-
-            
+     
 //            出勤／退勤
-            $("#grid1").ntsGrid({ 
-                width: '970px',
-                height: '400px',
-                dataSource: items1_2,
-                primaryKey: 'id',
-                virtualization: true,
-                virtualizationMode: 'continuous',
-                hidePrimaryKey: true,
-                columns: [
-                    { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
-                    { headerText: '', key: 'text1', dataType: 'string', width: '120px' }, 
-                    { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '100px' },
-                    { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '100px', 
-//                        ntsControl: 'Combobox', tabIndex: 0 
-                        },
-                    { headerText: headerFlagContent1, key: 'flag', dataType: 'string', width: '100px' }
-//                        , showHeaderCheckbox: isShowHeaderCheckbox, ntsControl: 'Checkbox'
-                    
-                ], 
-                features: [{ name: 'Resizing',
-                                columnSettings: [{
-                                    columnKey: 'id', allowResizing: true, minimumWidth: 30
-                                }, {
-                                    columnKey: 'flag', allowResizing: false, minimumWidth: 30
-                                }, {
-                                    columnKey: 'startTime', allowResizing: false, minimumWidth: 30
-                                }, {
-                                    columnKey: 'endTime', allowResizing: false, minimumWidth: 30
-                                }
-                                ] 
-                            },
-                            { 
-                                name: 'Selection',
-                                mode: 'row',
-                                multipleSelection: true
-                            }
-                ],
-                ntsFeatures: [
-//                    { name: 'CopyPaste' },
-                    { name: 'CellState',
-                        rowId: 'rowId',
-                        columnKey: 'columnKey',
-                        state: 'state',
-                        states: statesTable1
-                    }
-                    ],
-                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-//                                { name: 'SwitchButtons', options: [{ value: '1', text: 'Option 1' }, { value: '2', text: 'Option 2' }, { value: '3', text: 'Option 3' }], 
-//                                    optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true,
-//                                    distinction: { "503": ['1', '2'], "506": ["2", "3"], "600": ["1", "2"] }},
-//                                { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
-                                { name: 'Button', text: 'Open', click: function() { alert("Button!!"); }, controlType: 'Button' },
-                                { name: 'DeleteButton', text: 'Delete', controlType: 'DeleteButton', enable: true }]
-                });
             
-            
-            
+            self.loadGrid('#grid1', self.items1.concat(self.items2), 1);
+
 //            外出
             
+            self.loadGrid('#grid2', self.items3, 2);
             
-            $("#grid2").ntsGrid({ 
-                width: '970px',
-                height: '400px',
-                dataSource: this.items3,
-                primaryKey: 'id',
-                virtualization: true,
-                virtualizationMode: 'continuous',
-                hidePrimaryKey: true,
-//                enter: 'right',
-                columns: [
-                    { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
-                    { headerText: '', key: 'text1', dataType: 'string', width: '120px' }, 
-                    { headerText: self.$i18n('KAF002_22'), key: 'combobox', dataType: 'string', width: '120px', ntsControl: 'Combobox' }, 
-                    { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '100px' },
-                    { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '100px', 
-//                        ntsControl: 'Combobox', tabIndex: 0 
-                        },
-                    { headerText: headerFlagContent2, key: 'flag', dataType: 'string', width: '100px'}
-                    
-                ], 
-                features: [{ name: 'Resizing',
-                                columnSettings: [{
-                                    columnKey: 'id', allowResizing: true, minimumWidth: 30
-                                }, {
-                                    columnKey: 'flag', allowResizing: false, minimumWidth: 30
-                                }, {
-                                    columnKey: 'startTime', allowResizing: false, minimumWidth: 30
-                                }, {
-                                    columnKey: 'endTime', allowResizing: false, minimumWidth: 30
-                                }
-                                ] 
-                            },
-                            { 
-                                name: 'Selection',
-                                mode: 'row',
-                                multipleSelection: true
-                            }
-                ],
-                ntsFeatures: [
-                    { name: 'CellState',
-                        rowId: 'rowId',
-                        columnKey: 'columnKey',
-                        state: 'state',
-                        states: statesTable2
-                    }
-                    ],
-                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-//                                { name: 'SwitchButtons', options: [{ value: '1', text: 'Option 1' }, { value: '2', text: 'Option 2' }, { value: '3', text: 'Option 3' }], 
-//                                    optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true,
-//                                    distinction: { "503": ['1', '2'], "506": ["2", "3"], "600": ["1", "2"] }},
-                                { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
-                                { name: 'Button', text: 'Open', click: function() { alert("Button!!"); }, controlType: 'Button' },
-                                { name: 'DeleteButton', text: 'Delete', controlType: 'DeleteButton', enable: true }]
-                });
+  
+//            休憩           
             
-            
-//            休憩
-            $("#grid3").ntsGrid({ 
-                width: '970px',
-                height: '400px',
-                dataSource: this.items4,
-                primaryKey: 'id',
-                virtualization: true,
-                virtualizationMode: 'continuous',
-                hidePrimaryKey: true,
-//                enter: 'right',
-                columns: [
-                    { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
-                    { headerText: '', key: 'text1', dataType: 'string', width: '120px' }, 
-                    { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '100px' },
-                    { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '100px', 
-//                        ntsControl: 'Combobox', tabIndex: 0 
-                        },
-                    { headerText: headerFlagContent3, key: 'flag', dataType: 'string', width: '100px'}
-                    
-                ], 
-                features: [{ name: 'Resizing',
-                                columnSettings: [{
-                                    columnKey: 'id', allowResizing: true, minimumWidth: 30
-                                }, {
-                                    columnKey: 'flag', allowResizing: false, minimumWidth: 30
-                                }, {
-                                    columnKey: 'startTime', allowResizing: false, minimumWidth: 30
-                                }, {
-                                    columnKey: 'endTime', allowResizing: false, minimumWidth: 30
-                                }
-                                ] 
-                            },
-                            { 
-                                name: 'Selection',
-                                mode: 'row',
-                                multipleSelection: true
-                            }
-                ],
-                ntsFeatures: [
-//                    { name: 'CopyPaste' },
-                    { name: 'CellState',
-                        rowId: 'rowId',
-                        columnKey: 'columnKey',
-                        state: 'state',
-                        states: statesTable3
-                    }
-                    ],
-                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-//                                { name: 'SwitchButtons', options: [{ value: '1', text: 'Option 1' }, { value: '2', text: 'Option 2' }, { value: '3', text: 'Option 3' }], 
-//                                    optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true,
-//                                    distinction: { "503": ['1', '2'], "506": ["2", "3"], "600": ["1", "2"] }},
-//                                { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
-                                { name: 'Button', text: 'Open', click: function() { alert("Button!!"); }, controlType: 'Button' },
-                                { name: 'DeleteButton', text: 'Delete', controlType: 'DeleteButton', enable: true }]
-                });
-            
-            
-            
-            
+            self.loadGrid('#grid3', self.items4, 3);
+
             
 //            育児
-            $("#grid4").ntsGrid({ 
-                width: '970px',
-                height: '400px',
-                dataSource: this.items5,
-                primaryKey: 'id',
-                virtualization: true,
-                virtualizationMode: 'continuous',
-                hidePrimaryKey: true,
-//                enter: 'right',
-                columns: [
-                    { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
-                    { headerText: '', key: 'text1', dataType: 'string', width: '120px' }, 
-                    { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '100px' },
-                    { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '100px', 
-//                        ntsControl: 'Combobox', tabIndex: 0 
-                        },
-                    { headerText: headerFlagContent4, key: 'flag', dataType: 'string', width: '100px'}
-                    
-                ], 
-                features: [{ name: 'Resizing',
-                                columnSettings: [{
-                                    columnKey: 'id', allowResizing: true, minimumWidth: 30
-                                }, {
-                                    columnKey: 'flag', allowResizing: false, minimumWidth: 30
-                                }, {
-                                    columnKey: 'startTime', allowResizing: false, minimumWidth: 30
-                                }, {
-                                    columnKey: 'endTime', allowResizing: false, minimumWidth: 30
-                                }
-                                ] 
-                            },
-                            { 
-                                name: 'Selection',
-                                mode: 'row',
-                                multipleSelection: true
-                            }
-                ],
-                ntsFeatures: [
-//                    { name: 'CopyPaste' },
-                    { name: 'CellState',
-                        rowId: 'rowId',
-                        columnKey: 'columnKey',
-                        state: 'state',
-                        states: statesTable4
-                    }
-                    ],
-                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-//                                { name: 'SwitchButtons', options: [{ value: '1', text: 'Option 1' }, { value: '2', text: 'Option 2' }, { value: '3', text: 'Option 3' }], 
-//                                    optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true,
-//                                    distinction: { "503": ['1', '2'], "506": ["2", "3"], "600": ["1", "2"] }},
-//                                { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
-                                { name: 'Button', text: 'Open', click: function() { alert("Button!!"); }, controlType: 'Button' },
-                                { name: 'DeleteButton', text: 'Delete', controlType: 'DeleteButton', enable: true }]
-                });
+            
+            self.loadGrid('#grid4', self.items5, 4);
+
             
 //            介護
-            $("#grid5").ntsGrid({ 
-                width: '970px',
-                height: '400px',
-                dataSource: this.items6,
-                primaryKey: 'id',
-                virtualization: true,
-                virtualizationMode: 'continuous',
-                hidePrimaryKey: true,
-//                enter: 'right',
-                columns: [
-                    { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
-                    { headerText: '', key: 'text1', dataType: 'string', width: '120px' }, 
-                    { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '100px' },
-                    { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '100px', 
-//                        ntsControl: 'Combobox', tabIndex: 0 
-                        },
-                    { headerText: headerFlagContent5, key: 'flag', dataType: 'string', width: '100px'}
-                    
-                ], 
-                features: [{ name: 'Resizing',
-                                columnSettings: [{
-                                    columnKey: 'id', allowResizing: true, minimumWidth: 30
-                                }, {
-                                    columnKey: 'flag', allowResizing: false, minimumWidth: 30
-                                }, {
-                                    columnKey: 'startTime', allowResizing: false, minimumWidth: 30
-                                }, {
-                                    columnKey: 'endTime', allowResizing: false, minimumWidth: 30
-                                }
-                                ] 
-                            },
-                            { 
-                                name: 'Selection',
-                                mode: 'row',
-                                multipleSelection: true
-                            }
-                ],
-                ntsFeatures: [
-//                    { name: 'CopyPaste' },
-                    { name: 'CellState',
-                        rowId: 'rowId',
-                        columnKey: 'columnKey',
-                        state: 'state',
-                        states: statesTable5
-                    }
-                    ],
-                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-//                                { name: 'SwitchButtons', options: [{ value: '1', text: 'Option 1' }, { value: '2', text: 'Option 2' }, { value: '3', text: 'Option 3' }], 
-//                                    optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true,
-//                                    distinction: { "503": ['1', '2'], "506": ["2", "3"], "600": ["1", "2"] }},
-//                                { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
-                                { name: 'Button', text: 'Open', click: function() { alert("Button!!"); }, controlType: 'Button' },
-                                { name: 'DeleteButton', text: 'Delete', controlType: 'DeleteButton', enable: true }]
-                });
             
-            
-            
+            self.loadGrid('#grid5', self.items6, 5);
+
+
             
 //            応援 pending
             
@@ -533,6 +180,209 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         }
         
         mounted() {
+            
+        }
+        
+        
+        loadGrid(id: string,items: any, type: number) {
+            const self = this;
+            if (!items) {
+                
+                return;
+            }
+            if($(id + '_container').length > 0){
+                $(id).ntsGrid("destroy");
+            }
+            let statesTable = [];
+            let numberDisable = 0;
+            let isGreater_10 = items.length > 10;
+            
+            for (let i = 1; i < items.length + 1; i++) {
+                statesTable.push(new CellState(i, "text1", ['titleColor'])); 
+                if (!ko.toJS(items[i-1].flagEnable)) {
+                    numberDisable++;
+                }
+                             
+            }
+            if (type == 1) {            
+                self.enable1.subscribe((value) => {
+                    _.forEach(items, item => {
+                       if (ko.toJS(item.flagEnable)) {
+                           item.flagObservable(value);                       
+                       }
+                    });
+                });
+            } else if (type == 2) {
+                self.enable2.subscribe((value) => {
+                    _.forEach(items, item => {
+                       if (ko.toJS(item.flagEnable)) {
+                           item.flagObservable(value);                       
+                       }
+                    });
+                });
+            } else if (type == 3) {
+                self.enable3.subscribe((value) => {
+                    _.forEach(items, item => {
+                       if (ko.toJS(item.flagEnable)) {
+                           item.flagObservable(value);                       
+                       }
+                    });
+                });
+            } else if (type == 4) {
+                self.enable4.subscribe((value) => {
+                    _.forEach(items, item => {
+                       if (ko.toJS(item.flagEnable)) {
+                           item.flagObservable(value);                       
+                       }
+                    });
+                });
+            } else if (type == 5) {
+                self.enable5.subscribe((value) => {
+                    _.forEach(items, item => {
+                       if (ko.toJS(item.flagEnable)) {
+                           item.flagObservable(value);                       
+                       }
+                    });
+                });
+            }
+            let headerFlagContent = numberDisable != items.length ? '<div style="display: block" align="center" data-bind="ntsCheckBox: { checked: enable' + type + '}">' + self.$i18n('KAF002_72')+ '</div>' : '<div style="display: block" align="center">' + self.$i18n('KAF002_72')+ '</div>';
+            let dataSource;
+            if (type == 1) {
+                dataSource = items.length >= 10 && self.isLink1 ? items.slice(0, 3) : items;
+            } else if (type == 2) {
+                dataSource = items.length >= 10 && self.isLink2 ? items.slice(0, 3) : items;
+            } else if (type == 3) {
+                dataSource = items.length >= 10 && self.isLink3 ? items.slice(0, 3) : items;
+            } else if (type == 4) {
+                dataSource = items.length >= 10 && self.isLink4 ? items.slice(0, 3) : items;
+            } else if (type == 5) {
+                dataSource = items.length >= 10 && self.isLink5 ? items.slice(0, 3) : items;
+            }
+            let optionGrid = { 
+                    width: '100%',
+                    height: '360px',
+                    dataSource: dataSource,
+                    primaryKey: 'id',
+                    virtualization: true,
+                    virtualizationMode: 'continuous',
+                    hidePrimaryKey: true,
+                    columns: [
+                        { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
+                        { headerText: '', key: 'text1', dataType: 'string', width: '120px' }, 
+                        { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '100px' },
+                        { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '100px'},
+                        { headerText: headerFlagContent, key: 'flag', dataType: 'string', width: '100px' }
+    
+                    ], 
+                    features: [{ name: 'Resizing',
+                                    columnSettings: [{
+                                        columnKey: 'id', allowResizing: true, minimumWidth: 30
+                                    }, {
+                                        columnKey: 'flag', allowResizing: false, minimumWidth: 30
+                                    }, {
+                                        columnKey: 'startTime', allowResizing: false, minimumWidth: 30
+                                    }, {
+                                        columnKey: 'endTime', allowResizing: false, minimumWidth: 30
+                                    }
+                                    ] 
+                                },
+                                { 
+                                    name: 'Selection',
+                                    mode: 'row',
+                                    multipleSelection: true
+                                }
+                    ],
+                    ntsFeatures: [
+                        { 
+                            name: 'CellState',
+                            rowId: 'rowId',
+                            columnKey: 'columnKey',
+                            state: 'state',
+                            states: statesTable
+                        }
+                        ],
+                    ntsControls: [
+                                   
+                               ]
+                    };
+            self.option = optionGrid;
+            let comboColumns = [{ prop: 'code', length: 2 },
+                                { prop: 'name', length: 4 }];
+            let comboItems = [ new ItemModel('1', '基本給'),
+                               new ItemModel('2', '役職手当'),
+                               new ItemModel('3', '基本給2') ];
+            let option2 = { 
+              width: '100%',
+              height: '360px',
+              dataSource: dataSource,
+              primaryKey: 'id',
+              virtualization: true,
+              virtualizationMode: 'continuous',
+              hidePrimaryKey: true,
+              columns: [
+                  { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
+                  { headerText: '', key: 'text1', dataType: 'string', width: '120px' }, 
+                  { headerText: self.$i18n('KAF002_22'), key: 'typeReason', dataType: 'string', width: '137px', ntsControl: 'Combobox' }, 
+                  { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '100px' },
+                  { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '100px'},
+                  { headerText: headerFlagContent, key: 'flag', dataType: 'string', width: '100px'}
+                  
+              ], 
+              features: [{ name: 'Resizing',
+                              columnSettings: [{
+                                  columnKey: 'id', allowResizing: true, minimumWidth: 30
+                              }, {
+                                  columnKey: 'flag', allowResizing: false, minimumWidth: 30
+                              }, {
+                                  columnKey: 'startTime', allowResizing: false, minimumWidth: 30
+                              }, {
+                                  columnKey: 'endTime', allowResizing: false, minimumWidth: 30
+                              }
+                              ] 
+                          },
+                          { 
+                              name: 'Selection',
+                              mode: 'row',
+                              multipleSelection: true
+                          }
+              ],
+              ntsFeatures: [
+                  { name: 'CellState',
+                      rowId: 'rowId',
+                      columnKey: 'columnKey',
+                      state: 'state',
+                      states: statesTable
+                  }
+                  ],
+              ntsControls: [
+                              { name: 'Combobox', width: '50px', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true, spaceSize: 'small' }
+                              ]
+              };
+            if (type == 2) {
+                self.grid = $(id).ntsGrid(option2);
+            }else {                
+                self.grid = $(id).ntsGrid(optionGrid);
+            }
+            // add row to display expand row
+            if (items.length >= 10) {
+                if (type == 1 && self.isLink1) {
+                    $(id).append('<tr><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="3"><div style="display: block" align="center"><a style="background-color: white" data-bind="ntsLinkButton: { action: doSomething.bind($data, ' + type + ') }, text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
+                } else if(type == 2 && self.isLink2) {
+                    $(id).append('<tr><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="4"><div style="display: block" align="center"><a style="background-color: white" data-bind="ntsLinkButton: { action: doSomething.bind($data, ' + type + ') }, text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
+
+                } else if(type == 3 && self.isLink3) {
+                    $(id).append('<tr><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="3"><div style="display: block" align="center"><a style="background-color: white" data-bind="ntsLinkButton: { action: doSomething.bind($data, ' + type + ') }, text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
+
+                } else if(type == 4 && self.isLink4) {
+                    $(id).append('<tr><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="3"><div style="display: block" align="center"><a style="background-color: white" data-bind="ntsLinkButton: { action: doSomething.bind($data, ' + type + ') }, text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
+
+                } else if(type == 5 && self.isLink5) {
+                    $(id).append('<tr><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="3"><div style="display: block" align="center"><a style="background-color: white" data-bind="ntsLinkButton: { action: doSomething.bind($data, ' + type + ') }, text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
+
+                }
+ 
+            }
+            
             
         }
         
@@ -550,7 +400,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         endTimeRequest: KnockoutObservable<number> = ko.observable(null);
         startTimeActual: number;
         endTimeActual: number
-        typeReason: KnockoutObservable<number>;
+        typeReason?: string;
         startTime: string;
         endTime: string;
         text1: string;
@@ -559,7 +409,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         constructor(dataObject: TimePlaceOutput, typeStamp : STAMPTYPE) {
             const self = this;
             self.id = dataObject.frameNo;
-//            self.flag = false;
+            self.typeReason = '2';
             self.startTimeActual = dataObject.opStartTime;
             self.endTimeActual = dataObject.opEndTime;
             if (_.isNull(dataObject.opStartTime) && _.isNull(dataObject.opEndTime)) {
@@ -604,10 +454,9 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                         +'ntsTimeEditor: {value: $data.'+ param +'['+ idGetList +'].endTimeRequest, enable: !$data.' + param +'[' + idGetList +'].flagObservable() , constraint: \'SampleTimeDuration\', inputFormat: \'time\', mode: \'time\', readonly: readonly, required: false}" />'
                                 +'</div>'
                            +'</div>';
-//            style: { \'background-color\': isFillColor1() ? \'#ffc0cb\' : \'gray\'} , 
             
-            this.flag = '<div  style="display: block" align="center" data-bind="css: !$data.' + param + '[' + idGetList + '].flagEnable() ? \'disableFlag\' : \'enableFlag\' , ntsCheckBox: {enable: $data.' + param + '[' + idGetList + '].flagEnable, checked: $data.' + param + '[' + idGetList + '].flagObservable}"></div>';
-           
+//            this.flag = '<div  style="display: block" align="center" data-bind="css: !$data.' + param + '[' + idGetList + '].flagEnable ? \'disableFlag\' : \'enableFlag\' , ntsCheckBox: {enable: $data.' + param + '[' + idGetList + '].flagEnable, checked: $data.' + param + '[' + idGetList + '].flagObservable}"></div>';
+              this.flag = '<div data-bind="ntsCheckBox: {enable: enable1}"></div>';
         }
     }
     

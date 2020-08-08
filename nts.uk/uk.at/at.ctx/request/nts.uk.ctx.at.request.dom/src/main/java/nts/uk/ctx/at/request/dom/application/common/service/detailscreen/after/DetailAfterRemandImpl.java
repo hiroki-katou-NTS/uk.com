@@ -15,9 +15,9 @@ import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.gul.mail.send.MailContents;
-import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
@@ -49,7 +49,7 @@ import nts.uk.shr.com.url.RegisterEmbededURL;
 public class DetailAfterRemandImpl implements DetailAfterRemand {
 
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
@@ -89,7 +89,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		List<String> errorList = new ArrayList<>();
 		boolean isSendMail = true;
 		for (String appID : remandCm.getAppID()) {
-			Application_New application = applicationRepository.findByID(companyID, appID).get();
+			Application application = applicationRepository.findByID(companyID, appID).get();
 			//ドメインモデル「申請」の差し戻し理由を画面のコメントで更新する-(update lý do trả về của domain 「申請」 bằng comment trên màn hình)
 			//Bug#101502
 			//差し戻しの日付(Short_YMD) + 全角スペース +差し戻しを行った承認者の名前 + "⇒" + 差し戻し先 + "：" + 改行 + 差し戻しコメント(C1-5)
@@ -98,7 +98,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 			//差し戻しを行った承認者の名前
 			String reSname = employeeAdapter.getEmployeeName(AppContexts.user().employeeId());
 			String remandReason = GeneralDate.today().toString() + "　" + reSname + "⇒" + destination + "：" + "\n" + remandCm.getRemandReason();
-			application.setReversionReason(new AppReason(remandReason));
+			application.setOpReversionReason(Optional.of(new ReasonForReversion(remandReason)));
 			AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository
 					.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
 			MailSenderResult mailResult = new MailSenderResult(new ArrayList<>(), new ArrayList<>());
@@ -117,9 +117,9 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 				approvalRootStateAdapter.doRemandForApplicant(companyID, appID);
 				//Imported（承認申請）「差し戻し反映情報更新」-(Update thông tin phản ánh trả về) - RequestList No.481
 				//「反映情報」．実績反映状態を「差し戻し」にする
-				application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REMAND);
+				//application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REMAND);
 				//「反映情報」．予定反映状態を「差し戻し」にする
-				application.getReflectionInformation().setStateReflection(ReflectedState_New.REMAND);
+				//application.getReflectionInformation().setStateReflection(ReflectedState_New.REMAND);
 				//ドメインモデル「申請種類別設定」．承認処理時に自動でメールを送信するをチェックする-(Check 「申請種類別設定」．Tự động gửi mail khi approve)
 				if (appTypeDiscreteSetting.getSendMailWhenApprovalFlg().equals(AppCanAtr.CAN)) {
 					//申請者本人にメール送信する-(Send mail đến bản thân người làm đơn)
@@ -129,14 +129,14 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 			successList.addAll(mailResult.getSuccessList());
 			errorList.addAll(mailResult.getErrorList());
 			//UPDATE ドメインモデル「申請」
-			applicationRepository.updateWithVersion(application);
+			applicationRepository.update(application);
 			isSendMail = false;
 		}
 		return new MailSenderResult(successList, errorList);
 	}
 
 	@Override
-	public MailSenderResult getMailSenderResult(Application_New application, List<String> employeeList, String returnReason, boolean isSendMail) {
+	public MailSenderResult getMailSenderResult(Application application, List<String> employeeList, String returnReason, boolean isSendMail) {
 		//doi ung kaf011 - tranh spam mail
 		if(!isSendMail){
 			return new MailSenderResult(new ArrayList<>(), new ArrayList<>());
@@ -207,7 +207,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 					//｛4｝申請者の氏名 - 申請
 					employeeAdapter.getEmployeeName(applicantID),
 					//｛5｝申請日付 - 申請
-					application.getAppDate().toLocalDate().toString(),
+					application.getAppDate().getApplicationDate().toString(),
 					//｛6｝申請内容 - 申請
 					appContent + urlFull,
 					//｛7｝氏名 - ログイン者

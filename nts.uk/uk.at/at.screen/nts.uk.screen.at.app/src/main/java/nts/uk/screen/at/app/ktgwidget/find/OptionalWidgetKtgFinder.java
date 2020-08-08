@@ -27,7 +27,7 @@ import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.WidgetDisplayItemImport;
 import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.ChecksDailyPerformanceErrorRepository;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.holidayinstruction.HolidayInstructRepository;
 import nts.uk.ctx.at.request.dom.overtimeinstruct.OvertimeInstructRepository;
@@ -86,7 +86,7 @@ public class OptionalWidgetKtgFinder {
 	private HolidayInstructRepository holidayInstructRepo;
 	
 	@Inject
-	private ApplicationRepository_New applicationRepo_New;
+	private ApplicationRepository applicationRepo_New;
 	
 	@Inject
 	private ApplicationAdapter applicationAdapter;

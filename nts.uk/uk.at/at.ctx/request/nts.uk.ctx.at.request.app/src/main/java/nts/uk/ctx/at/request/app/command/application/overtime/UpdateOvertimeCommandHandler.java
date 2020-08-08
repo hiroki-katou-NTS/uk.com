@@ -18,14 +18,13 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingData;
 import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -58,7 +57,7 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 	private DetailAfterUpdate detailAfterUpdate;
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 	
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
@@ -80,7 +79,7 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 		String divergenceReason = opAppOverTime.get().getDivergenceReason(); 
 		if(outputMode==OutputMode.EDITMODE){
 			AppTypeDiscreteSetting appTypeDiscreteSetting = overtimeSettingData.appCommonSettingOutput.appTypeDiscreteSettings
-					.stream().filter(x -> x.getAppType()==ApplicationType_Old.OVER_TIME_APPLICATION).findAny().get();
+					.stream().filter(x -> x.getAppType()==ApplicationType.OVER_TIME_APPLICATION).findAny().get();
 			String typicalReason = Strings.EMPTY;
 			String displayReason = Strings.EMPTY;
 			if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(DisplayAtr.DISPLAY)){
@@ -93,7 +92,7 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 				displayReason += command.getApplicationReason();
 			} else {
 				if(Strings.isBlank(typicalReason)){
-					displayReason = applicationRepository.findByID(companyID, command.getAppID()).get().getAppReason().v();
+					displayReason = applicationRepository.findByID(companyID, command.getAppID()).get().getOpAppReason().get().v();
 				}
 			}
 			ApplicationSetting applicationSetting = overtimeSettingData.appCommonSettingOutput.applicationSetting;
@@ -112,8 +111,8 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 			Integer prePostAtr = opAppOverTime.get().getApplication().getPrePostAtr().value;
 			
 			OvertimeRestAppCommonSetting overtimeRestAppCommonSet = overtimeSettingData.overtimeRestAppCommonSet;
-			boolean displayDivergenceReasonCombox = (prePostAtr != PrePostAtr_Old.PREDICT.value) && (overtimeRestAppCommonSet.getDivergenceReasonFormAtr().value == UseAtr.USE.value);
-			boolean displayDivergenceReasonArea = (prePostAtr != PrePostAtr_Old.PREDICT.value) && (overtimeRestAppCommonSet.getDivergenceReasonInputAtr().value == UseAtr.USE.value);
+			boolean displayDivergenceReasonCombox = (prePostAtr != PrePostAtr.PREDICT.value) && (overtimeRestAppCommonSet.getDivergenceReasonFormAtr().value == UseAtr.USE.value);
+			boolean displayDivergenceReasonArea = (prePostAtr != PrePostAtr.PREDICT.value) && (overtimeRestAppCommonSet.getDivergenceReasonInputAtr().value == UseAtr.USE.value);
 			if(displayDivergenceReasonCombox){
 				divergenceReasonCombox += command.getDivergenceReasonContent();
 			}

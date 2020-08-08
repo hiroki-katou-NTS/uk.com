@@ -13,11 +13,9 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
@@ -181,7 +179,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
             if(lstDateHd != null && lstDateHd.contains(loopDate)){
                 continue;
             }
-			if(loopDate.equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr_Old.PREDICT) && application.isAppOverTime()){
+			if(loopDate.equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr.PREDICT) && application.isAppOverTime()){
 				confirmCheckOvertime(application.getCompanyID(), application.getEmployeeID(), loopDate);
 			}else{
 				// アルゴリズム「確定チェック」を実施する
@@ -268,12 +266,12 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
 		List<ReceptionRestrictionSetting> receptionRestrictionSetting = new ArrayList<>();
 		if(requestSetting.isPresent()){
-			receptionRestrictionSetting = requestSetting.get().getApplicationSetting().getListReceptionRestrictionSetting().stream().filter(x -> x.getAppType().equals(ApplicationType_Old.OVER_TIME_APPLICATION)).collect(Collectors.toList());
+			receptionRestrictionSetting = requestSetting.get().getApplicationSetting().getListReceptionRestrictionSetting().stream().filter(x -> x.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)).collect(Collectors.toList());
 		}
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
 		
 		// 事前事後区分(input)をチェックする
-		if(postAtr.equals(PrePostAtr_Old.POSTERIOR)){
+		if(postAtr.equals(PrePostAtr.POSTERIOR)){
 			// ドメインモデル「事後の受付制限」．未来日許可しないをチェックする
 			if (!appTypeDiscreteSetting.getRetrictPostAllowFutureFlg().equals(AllowAtr.ALLOW)) {
 				return;
@@ -442,7 +440,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
             if(lstDateHd != null && lstDateHd.contains(loopDate)){
                 continue;
             }
-			if(loopDate.equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr_Old.PREDICT) && 
+			if(loopDate.equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr.PREDICT) && 
 					application.getAppType() == ApplicationType.OVER_TIME_APPLICATION){
 				// アルゴリズム「6.確定チェック（事前残業申請用）」を実施する
 				confirmCheckOvertime(companyID, application.getEmployeeID(), loopDate);

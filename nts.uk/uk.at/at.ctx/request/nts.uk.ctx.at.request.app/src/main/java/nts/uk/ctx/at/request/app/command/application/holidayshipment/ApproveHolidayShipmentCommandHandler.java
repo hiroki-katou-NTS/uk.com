@@ -11,8 +11,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterApproval_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
@@ -47,7 +47,7 @@ public class ApproveHolidayShipmentCommandHandler
 	private InitMode initMode;
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 
 	@Override
 	protected ApproveProcessResult handle(CommandHandlerContext<HolidayShipmentCommand> context) {
@@ -64,7 +64,7 @@ public class ApproveHolidayShipmentCommandHandler
 		if(outputMode==OutputMode.EDITMODE){
 			AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
 					companyID, 
-					ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION.value).get();
+					ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value).get();
 				
 			String typicalReason = Strings.EMPTY;
 			String displayReason = Strings.EMPTY;
@@ -81,10 +81,10 @@ public class ApproveHolidayShipmentCommandHandler
 					boolean isApprovalRec = command.getRecAppID() != null;
 					boolean isApprovalAbs = command.getAbsAppID() != null;
 					if (isApprovalRec) {
-						displayReason = applicationRepository.findByID(companyID, command.getRecAppID()).get().getAppReason().v();
+						displayReason = applicationRepository.findByID(companyID, command.getRecAppID()).get().getOpAppReason().get().v();
 					}
 					if (isApprovalAbs) {
-						displayReason = applicationRepository.findByID(companyID, command.getAbsAppID()).get().getAppReason().v();
+						displayReason = applicationRepository.findByID(companyID, command.getAbsAppID()).get().getOpAppReason().get().v();
 					}
 				}
 			}
@@ -105,7 +105,7 @@ public class ApproveHolidayShipmentCommandHandler
 		ProcessResult processResult = approvalApplication(command, companyID, employeeID, version, memo, appReason, isUpdateReason);
 		
 		if(!isUpdateReason){
-			appReason = applicationRepository.findByID(companyID, processResult.getAppID()).get().getAppReason().v();
+			appReason = applicationRepository.findByID(companyID, processResult.getAppID()).get().getOpAppReason().get().v();
 		}
 		
 		/*return new ApproveProcessResult(

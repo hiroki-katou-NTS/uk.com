@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 
 /**
  * 代行申請で利用できる申請設定
@@ -19,9 +19,9 @@ public class ProxyAppSet extends DomainObject{
 	// 会社ID
 	private String companyId;
 	// 申請種類
-	private ApplicationType_Old appType;
+	private ApplicationType appType;
 	
 	public static ProxyAppSet createFromJavaType(String companyId, int appType){
-		return new ProxyAppSet(companyId, EnumAdaptor.valueOf(appType, ApplicationType_Old.class));
+		return new ProxyAppSet(companyId, EnumAdaptor.valueOf(appType, ApplicationType.class));
 	}
 }

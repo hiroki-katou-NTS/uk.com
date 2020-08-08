@@ -13,11 +13,11 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
@@ -25,6 +25,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveWorkingHour;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTime;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTimeCode;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentWorkingHour;
@@ -35,7 +36,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTimeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -49,7 +49,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 	@Inject
 	private DetailAfterUpdate detailAfterUpdate;
 	@Inject
-	private ApplicationRepository_New appRepo;
+	private ApplicationRepository appRepo;
 	@Inject
 	private AbsenceLeaveAppRepository absRepo;
 	@Inject
@@ -76,32 +76,32 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 	 * @return application after update
 	 */
 	private Application_New updateAbsDomain(SaveHolidayShipmentCommand command, String companyID, String appReason) {
-		AbsenceLeaveAppCommand appCmd = command.getAbsCmd();
-
-		Optional<Application_New> appLicationOpt = this.appRepo.findByID(companyID, appCmd.getAppID());
-		if (appLicationOpt.isPresent()) {
-			Application_New application = appLicationOpt.get();
-			application.setAppReason(new AppReason(appReason));
-			// application.setVersion(command.getAppCmd().getAppVersion());
-			this.appRepo.updateWithVersion(application);
-			Optional<AbsenceLeaveApp> absAppOpt = this.absRepo.findByID(appCmd.getAppID());
-			if (absAppOpt.isPresent()) {
-				AbsenceLeaveApp absApp = absAppOpt.get();
-				absApp.setWorkTimeCD(appCmd.getWkTimeCD());
-				WkTimeCommand wkTime1 = appCmd.getWkTime1();
-				absApp.setWorkTime1(new AbsenceLeaveWorkingHour(new WorkTime(wkTime1.getStartTime()),
-						new WorkTime(wkTime1.getEndTime())));
-//				WkTimeCommand wkTime2 = appCmd.getWkTime2();
-//				absApp.setWorkTime2(new AbsenceLeaveWorkingHour(new WorkTime(wkTime2.getStartTime()),
-//						new WorkTime(wkTime2.getEndTime())));
-				absApp.setWorkTypeCD(new WorkTypeCode(appCmd.getWkTypeCD()));
-				absApp.setChangeWorkHoursType(EnumAdaptor.valueOf(appCmd.getChangeWorkHoursType(), NotUseAtr.class));
-				this.absRepo.update(absApp);
-
-				return application;
-			}
-
-		}
+//		AbsenceLeaveAppCommand appCmd = command.getAbsCmd();
+//
+//		Optional<Application> appLicationOpt = this.appRepo.findByID(companyID, appCmd.getAppID());
+//		if (appLicationOpt.isPresent()) {
+//			Application application = appLicationOpt.get();
+//			application.setAppReason(new AppReason(appReason));
+//			// application.setVersion(command.getAppCmd().getAppVersion());
+//			this.appRepo.updateWithVersion(application);
+//			Optional<AbsenceLeaveApp> absAppOpt = this.absRepo.findByID(appCmd.getAppID());
+//			if (absAppOpt.isPresent()) {
+//				AbsenceLeaveApp absApp = absAppOpt.get();
+//				absApp.setWorkTimeCD(appCmd.getWkTimeCD());
+//				WkTimeCommand wkTime1 = appCmd.getWkTime1();
+//				absApp.setWorkTime1(new AbsenceLeaveWorkingHour(new WorkTime(wkTime1.getStartTime()),
+//						new WorkTime(wkTime1.getEndTime())));
+////				WkTimeCommand wkTime2 = appCmd.getWkTime2();
+////				absApp.setWorkTime2(new AbsenceLeaveWorkingHour(new WorkTime(wkTime2.getStartTime()),
+////						new WorkTime(wkTime2.getEndTime())));
+//				absApp.setWorkTypeCD(new WorkTypeCode(appCmd.getWkTypeCD()));
+//				absApp.setChangeWorkHoursType(EnumAdaptor.valueOf(appCmd.getChangeWorkHoursType(), NotUseAtr.class));
+//				this.absRepo.update(absApp);
+//
+//				return application;
+//			}
+//
+//		}
 		return null;
 
 	}
@@ -114,46 +114,46 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 	private Application_New updateRecDomain(SaveHolidayShipmentCommand command, String companyID, String appReason) {
 		RecruitmentAppCommand appCmd = command.getRecCmd();
 
-		Optional<Application_New> absAppLicationOpt = this.appRepo.findByID(companyID, appCmd.getAppID());
-		if (absAppLicationOpt.isPresent()) {
-			Application_New application = absAppLicationOpt.get();
-			application.setAppReason(new AppReason(appReason));
-			// application.setVersion(command.getAppCmd().getAppVersion());
-			this.appRepo.updateWithVersion(application);
-			Optional<RecruitmentApp> recAppOpt = this.recRepo.findByID(appCmd.getAppID());
-			if (recAppOpt.isPresent()) {
-				RecruitmentApp recApp = recAppOpt.get();
-				recApp.setWorkTimeCD(new WorkTimeCode(appCmd.getWkTimeCD()));
-				WkTimeCommand wkTime1 = appCmd.getWkTime1();
-				recApp.setWorkTime1(new RecruitmentWorkingHour(new WorkTime(wkTime1.getStartTime()),
-						EnumAdaptor.valueOf(wkTime1.getStartType(), NotUseAtr.class),
-						new WorkTime(wkTime1.getEndTime()),
-						EnumAdaptor.valueOf(wkTime1.getEndType(), NotUseAtr.class)));
-//				WkTimeCommand wkTime2 = appCmd.getWkTime2();
-//				recApp.setWorkTime2(new RecruitmentWorkingHour(new WorkTime(wkTime2.getStartTime()),
-//						EnumAdaptor.valueOf(wkTime2.getStartType(), NotUseAtr.class),
-//						new WorkTime(wkTime2.getEndTime()),
-//						EnumAdaptor.valueOf(wkTime2.getEndType(), NotUseAtr.class)));
-				recApp.setWorkTypeCD(new WorkTypeCode(appCmd.getWkTypeCD()));
-				this.recRepo.update(recApp);
-
-				return application;
-			}
-
-		}
+//		Optional<Application_New> absAppLicationOpt = this.appRepo.findByID(companyID, appCmd.getAppID());
+//		if (absAppLicationOpt.isPresent()) {
+//			Application_New application = absAppLicationOpt.get();
+//			application.setAppReason(new AppReason(appReason));
+//			// application.setVersion(command.getAppCmd().getAppVersion());
+//			this.appRepo.updateWithVersion(application);
+//			Optional<RecruitmentApp> recAppOpt = this.recRepo.findByID(appCmd.getAppID());
+//			if (recAppOpt.isPresent()) {
+//				RecruitmentApp recApp = recAppOpt.get();
+//				recApp.setWorkTimeCD(new WorkTimeCode(appCmd.getWkTimeCD()));
+//				WkTimeCommand wkTime1 = appCmd.getWkTime1();
+//				recApp.setWorkTime1(new RecruitmentWorkingHour(new WorkTime(wkTime1.getStartTime()),
+//						EnumAdaptor.valueOf(wkTime1.getStartType(), NotUseAtr.class),
+//						new WorkTime(wkTime1.getEndTime()),
+//						EnumAdaptor.valueOf(wkTime1.getEndType(), NotUseAtr.class)));
+////				WkTimeCommand wkTime2 = appCmd.getWkTime2();
+////				recApp.setWorkTime2(new RecruitmentWorkingHour(new WorkTime(wkTime2.getStartTime()),
+////						EnumAdaptor.valueOf(wkTime2.getStartType(), NotUseAtr.class),
+////						new WorkTime(wkTime2.getEndTime()),
+////						EnumAdaptor.valueOf(wkTime2.getEndType(), NotUseAtr.class)));
+//				recApp.setWorkTypeCD(new WorkTypeCode(appCmd.getWkTypeCD()));
+//				this.recRepo.update(recApp);
+//
+//				return application;
+//			}
+//
+//		}
 		return null;
 
 	}
 
 	private void preRegisComonProcessing(String companyID, String employeeID, GeneralDate appDate, int rootAtr,
-			ApplicationType_Old appType, int prePostAtr, String appID, int appVer, String wkTypeCD, String wkTimeCD) {
+			ApplicationType appType, int prePostAtr, String appID, int appVer, String wkTypeCD, String wkTimeCD) {
 		processBeforeRegOfDetailedScreen(companyID, employeeID, appDate, rootAtr, appType, prePostAtr, appID, appVer,
 				wkTypeCD, wkTimeCD);
 
 	}
 
 	private void processBeforeRegOfDetailedScreen(String companyID, String employeeID, GeneralDate appDate, int rootAtr,
-			ApplicationType_Old appType, int prePostAtr, String appID, int appVer, String wkTypeCD, String wkTimeCD) {
+			ApplicationType appType, int prePostAtr, String appID, int appVer, String wkTypeCD, String wkTimeCD) {
 		// error EA refactor 4
 		/*beforeRegisterRepo.processBeforeDetailScreenRegistration(companyID, employeeID, appDate,
 				EmploymentRootAtr.APPLICATION.value, appID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class),
@@ -184,7 +184,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 		
 		AbsenceLeaveAppCommand absCmd = command.getAbsCmd();
 		RecruitmentAppCommand recCmd = command.getRecCmd();
-		ApplicationType_Old appType = ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION;
+		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 		String employeeID = command.getAppCmd().getEmployeeID();
 		if (isSaveRec(comType)) {
 			// アルゴリズム「登録前共通処理（更新）」を実行する
@@ -226,7 +226,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 	}
 
 	private String errorCheckBeforeRegister(SaveHolidayShipmentCommand command, String companyID, int comType) {
-		ApplicationType_Old appType = ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION;
+		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 		// アルゴリズム「事前条件チェック」を実行する
 		return saveHanler.preconditionCheck(command, companyID, appType, comType);
 

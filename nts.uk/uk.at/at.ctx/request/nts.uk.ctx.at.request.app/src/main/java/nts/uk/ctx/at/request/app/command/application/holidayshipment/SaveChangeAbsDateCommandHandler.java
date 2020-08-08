@@ -20,10 +20,10 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
@@ -53,7 +53,7 @@ public class SaveChangeAbsDateCommandHandler
 	@Inject
 	private AbsenceLeaveAppRepository absRepo;
 	@Inject
-	private ApplicationRepository_New appRepo;
+	private ApplicationRepository appRepo;
 	@Inject
 	private NewAfterRegister_New newAfterReg;
 	@Inject
@@ -166,21 +166,22 @@ public class SaveChangeAbsDateCommandHandler
 	}
 
 	private Application_New getDetailApp(String appID) {
-		String companyID = AppContexts.user().companyId();
-		Optional<Application_New> app = appRepo.findByID(companyID, appID);
-		if (!app.isPresent()) {
-			throw new BusinessException("Msg_198");
-		}
-		return app.get();
+//		String companyID = AppContexts.user().companyId();
+//		Optional<Application_New> app = appRepo.findByID(companyID, appID);
+//		if (!app.isPresent()) {
+//			throw new BusinessException("Msg_198");
+//		}
+//		return app.get();
+		return null;
 	}
 
 	private Application_New createNewCommonApp(SaveHolidayShipmentCommand command, AbsenceLeaveAppCommand absCmd,
 			String appReason) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = command.getAppCmd().getEmployeeID();
-		ApplicationType_Old appType = ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION;
+		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 		Application_New commonApp = Application_New.firstCreate(companyID,
-				EnumAdaptor.valueOf(command.getAppCmd().getPrePostAtr(), PrePostAtr_Old.class), absCmd.getAppDate(),
+				EnumAdaptor.valueOf(command.getAppCmd().getPrePostAtr(), PrePostAtr.class), absCmd.getAppDate(),
 				appType, employeeID, new AppReason(appReason));
 		if (!AppContexts.user().employeeId().equals(employeeID)) {
 			commonApp.setEnteredPersonID(AppContexts.user().employeeId());
@@ -208,7 +209,7 @@ public class SaveChangeAbsDateCommandHandler
 	private String errorCheckBeforeReg(SaveHolidayShipmentCommand command, AbsenceLeaveAppCommand absCmd) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
-		ApplicationType_Old appType = ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION;
+		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 		// アルゴリズム「事前条件チェック」を実行する
 		String appReason = saveHanler.preconditionCheck(command, companyID, appType, ApplicationCombination.Abs.value);
 		// アルゴリズム「同日申請存在チェック」を実行する

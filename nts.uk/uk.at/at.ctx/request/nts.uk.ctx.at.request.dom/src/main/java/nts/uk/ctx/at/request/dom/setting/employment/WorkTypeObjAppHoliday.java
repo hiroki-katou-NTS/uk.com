@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.setting.employment;
 import java.util.List;
 
 import lombok.Getter;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 /**
  * 
  * @author Doan Duy Hung
@@ -35,7 +35,7 @@ public class WorkTypeObjAppHoliday {
 	/**
 	 * 申請種類
 	 */
-	private ApplicationType_Old appType;
+	private ApplicationType appType;
 	
 	/**
 	 * 表示する勤務種類を設定する

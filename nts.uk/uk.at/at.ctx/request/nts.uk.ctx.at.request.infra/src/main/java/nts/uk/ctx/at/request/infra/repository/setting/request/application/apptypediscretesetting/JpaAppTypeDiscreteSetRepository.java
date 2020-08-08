@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
@@ -36,7 +36,7 @@ public class JpaAppTypeDiscreteSetRepository extends JpaRepository implements Ap
 
 	private AppTypeDiscreteSetting toDomain(KrqstAppTypeDiscrete entity) {
 		return new AppTypeDiscreteSetting(entity.krqstAppTypeDiscretePK.companyID,
-				EnumAdaptor.valueOf(entity.krqstAppTypeDiscretePK.appType, ApplicationType_Old.class),
+				EnumAdaptor.valueOf(entity.krqstAppTypeDiscretePK.appType, ApplicationType.class),
 				EnumAdaptor.valueOf(entity.prePostInitAtr, InitValueAtr.class),
 				EnumAdaptor.valueOf(entity.prePostCanChangeFlg, AppCanAtr.class),
 				EnumAdaptor.valueOf(entity.typicalReasonDisplayFlg, DisplayAtr.class),

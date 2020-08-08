@@ -13,7 +13,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.C
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
@@ -44,7 +44,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class RemainCreateInforByApplicationDataImpl implements RemainCreateInforByApplicationData{
 	@Inject
-	private ApplicationRepository_New appRepository;
+	private ApplicationRepository appRepository;
 	@Inject
 	private IAppWorkChangeRepository workChangeService;
 	@Inject

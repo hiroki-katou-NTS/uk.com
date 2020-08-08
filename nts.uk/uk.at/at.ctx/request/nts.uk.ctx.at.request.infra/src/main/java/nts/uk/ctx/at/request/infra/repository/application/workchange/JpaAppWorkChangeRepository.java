@@ -121,7 +121,7 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements AppWork
 		application.setVersion(res.getInt("EXCLUS_VER"));
 		application.setPrePostAtr(EnumAdaptor.valueOf(res.getInt("PRE_POST_ATR"), PrePostAtr.class));
 		application.setInputDate(GeneralDateTime.fromString(df.format(res.getDate("INPUT_DATE")), pattern));
-		application.setEnteredPerson(res.getString("ENTERED_PERSON_SID"));
+		application.setEnteredPersonID(res.getString("ENTERED_PERSON_SID"));
 		if (res.getString("REASON_REVERSION") == null) {
 			application.setOpReversionReason(Optional.ofNullable(null));
 		}else {

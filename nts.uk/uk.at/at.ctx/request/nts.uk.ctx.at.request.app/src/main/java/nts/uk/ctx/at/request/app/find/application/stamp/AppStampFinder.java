@@ -35,11 +35,11 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.StampRe
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppCommonDomainService;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCommonDomainService;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampNewDomainService;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampNewPreOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
@@ -132,8 +132,8 @@ public class AppStampFinder {
 	public AppStampDto_Old getAppStampByID(String appID){
 		String companyID = AppContexts.user().companyId();
 		AppStamp_Old appStamp = appStampCommonDomainService.findByID(companyID, appID);
-		String employeeName = appStampCommonDomainService.getEmployeeName(appStamp.getApplication_New().getEmployeeID());
-		String inputEmpName = appStampCommonDomainService.getEmployeeName(appStamp.getApplication_New().getEnteredPersonID());
+		String employeeName = appStampCommonDomainService.getEmployeeName(appStamp.getApplication().getEmployeeID());
+		String inputEmpName = appStampCommonDomainService.getEmployeeName(appStamp.getApplication().getEnteredPersonID());
 		return AppStampDto_Old.convertToDto(appStamp, employeeName, inputEmpName);
 	}
 	

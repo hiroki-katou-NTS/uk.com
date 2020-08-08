@@ -6,8 +6,8 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
@@ -53,7 +53,7 @@ public interface CommonOvertimeHoliday {
 	 * @param appType 時間外表示区分
 	 * @return
 	 */
-	public Optional<AgreeOverTimeOutput> getAgreementTime(String companyID, String employeeID, ApplicationType_Old appType);
+	public Optional<AgreeOverTimeOutput> getAgreementTime(String companyID, String employeeID, ApplicationType appType);
 
 	/**
 	 * 01-04_加給時間を取得
@@ -71,7 +71,7 @@ public interface CommonOvertimeHoliday {
 	 * @param divergenceReasonInputAtr 乖離理由入力区分
 	 * @return
 	 */
-	public boolean displayDivergenceReasonInput(PrePostAtr_Old prePostAtr, UseAtr divergenceReasonInputAtr);
+	public boolean displayDivergenceReasonInput(PrePostAtr prePostAtr, UseAtr divergenceReasonInputAtr);
 	
 	/**
 	 * 01-08_乖離定型理由を取得
@@ -81,8 +81,8 @@ public interface CommonOvertimeHoliday {
 	 * @param appType 申請種類
 	 * @return
 	 */
-	public List<DivergenceReason> getDivergenceReasonForm(String companyID, PrePostAtr_Old prePostAtr, 
-			UseAtr divergenceReasonFormAtr, ApplicationType_Old appType);
+	public List<DivergenceReason> getDivergenceReasonForm(String companyID, PrePostAtr prePostAtr, 
+			UseAtr divergenceReasonFormAtr, ApplicationType appType);
 	
 	/**
 	 * 01-13_事前事後区分を取得
@@ -94,7 +94,7 @@ public interface CommonOvertimeHoliday {
 	 * @param displayPrePostFlg 事前事後区分表示
 	 * @return
 	 */
-	public DisplayPrePost getDisplayPrePost(String companyID, ApplicationType_Old appType, Integer uiType,
+	public DisplayPrePost getDisplayPrePost(String companyID, ApplicationType appType, Integer uiType,
 			OverTimeAtr overtimeAtr, GeneralDate appDate, AppDisplayAtr displayPrePostFlg);
 	
 	/**
@@ -105,7 +105,7 @@ public interface CommonOvertimeHoliday {
 	 * @param appType 申請種類
 	 * @return
 	 */
-	public boolean getRestTime(String companyID, UseAtr timeCalUse, Boolean breakInputFieldDisp, ApplicationType_Old appType);
+	public boolean getRestTime(String companyID, UseAtr timeCalUse, Boolean breakInputFieldDisp, ApplicationType appType);
 	
 	/**
 	 * 03-08_申請日の矛盾チェック
@@ -116,7 +116,7 @@ public interface CommonOvertimeHoliday {
 	 * @param appDateContradictionAtr 申請日矛盾区分
 	 * @return
 	 */
-	public List<ConfirmMsgOutput> inconsistencyCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType_Old appType, AppDateContradictionAtr appDateContradictionAtr);
+	public List<ConfirmMsgOutput> inconsistencyCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType, AppDateContradictionAtr appDateContradictionAtr);
 	
 	/**
 	 * 01-14_勤務時間取得
@@ -132,7 +132,7 @@ public interface CommonOvertimeHoliday {
 	 * @return
 	 */
 	public RecordWorkOutput getWorkingHours(String companyID, String employeeID, GeneralDate appDate, UseAtr timeCalUse, AtWorkAtr atworkTimeBeginDisp,
-			ApplicationType_Old appType, String workTimeCD, Optional<Integer> startTime, Optional<Integer> endTime, ApprovalFunctionSetting approvalFunctionSetting);
+			ApplicationType appType, String workTimeCD, Optional<Integer> startTime, Optional<Integer> endTime, ApprovalFunctionSetting approvalFunctionSetting);
 	
 	/**
 	 * 03-01_事前申請超過チェック
@@ -144,7 +144,7 @@ public interface CommonOvertimeHoliday {
 	 * @param overtimeInputs: 申請時間(input time in a ATTENDANCE)
 	 * @return 0: Normal. 1: 背景色を設定する
 	 */
-	ColorConfirmResult preApplicationExceededCheck(String companyId, GeneralDate appDate, GeneralDateTime inputDate, PrePostAtr_Old prePostAtr, int attendanceId, 
+	ColorConfirmResult preApplicationExceededCheck(String companyId, GeneralDate appDate, GeneralDateTime inputDate, PrePostAtr prePostAtr, int attendanceId, 
 			List<OverTimeInput> overtimeInputs, String employeeID) ;
 	
 	/**
@@ -157,7 +157,7 @@ public interface CommonOvertimeHoliday {
 	 * @param overtimeInputs: 申請時間(input time in a ATTENDANCE)
 	 * @return 0: Normal. 1: 背景色を設定する
 	 */
-	ColorConfirmResult preApplicationExceededCheck010(String companyId, GeneralDate appDate, GeneralDateTime inputDate, PrePostAtr_Old prePostAtr, 
+	ColorConfirmResult preApplicationExceededCheck010(String companyId, GeneralDate appDate, GeneralDateTime inputDate, PrePostAtr prePostAtr, 
 			int attendanceId, List<HolidayWorkInput> overtimeInputs, String employeeID) ;
 	
 	/**
@@ -294,7 +294,7 @@ public interface CommonOvertimeHoliday {
 	 * @param preExcessDisplaySetting 事前超過表示設定
 	 * @return
 	 */
-	public UseAtr preAppSetCheck(PrePostAtr_Old prePostAtr, UseAtr preExcessDisplaySetting);
+	public UseAtr preAppSetCheck(PrePostAtr prePostAtr, UseAtr preExcessDisplaySetting);
 	
 	/**
 	 * 03-02-1_チェック条件
@@ -302,7 +302,7 @@ public interface CommonOvertimeHoliday {
 	 * @param prePostAtr 事前事後区分
 	 * @return
 	 */
-	public AppDateContradictionAtr actualSetCheck(AppDateContradictionAtr performanceExcessAtr, PrePostAtr_Old prePostAtr);
+	public AppDateContradictionAtr actualSetCheck(AppDateContradictionAtr performanceExcessAtr, PrePostAtr prePostAtr);
 	
 	/**
 	 * 03-01_事前申請超過チェック（＃108410）

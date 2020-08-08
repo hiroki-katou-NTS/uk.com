@@ -21,7 +21,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.mail.send.MailContents;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
@@ -81,8 +82,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchieve
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.setting.UseDivision;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
@@ -109,7 +110,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	private EmployeeRequestAdapter employeeRequestAdapter;
 
 	@Inject
-	private ApplicationRepository_New appRepoNew;
+	private ApplicationRepository appRepoNew;
 
 	@Inject
 	private ApprovalStatusMailTempRepository approvalStatusMailTempRepo;
@@ -160,7 +161,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	private AppDetailInfoRepository repoAppDetail;
 
 	@Inject
-	private ApplicationRepository_New repoApp;
+	private ApplicationRepository repoApp;
 
 	@Inject
 	private RequestOfEachWorkplaceRepository repoRequestWkp;
@@ -992,8 +993,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 					appInputSub = checkExit.getInputDateSub().toString("yyyy/MM/dd HH:mm");
 				} else {// not exist
 						// lay thong tin chung
-					Application_New sub = repoApp.findByID(companyId, appIdSync).get();
-					appDateSub = sub.getAppDate().toString("yyyy/MM/dd");
+					Application sub = repoApp.findByID(companyId, appIdSync).get();
+					appDateSub = sub.getAppDate().getApplicationDate().toString("yyyy/MM/dd");
 					appInputSub = sub.getInputDate().toString("yyyy/MM/dd HH:mm");
 				}
 				appSub = repoAppDetail.getAppCompltLeaveInfo(companyId, appIdSync, sync.getType() == 0 ? 1 : 0, Collections.emptyList());
