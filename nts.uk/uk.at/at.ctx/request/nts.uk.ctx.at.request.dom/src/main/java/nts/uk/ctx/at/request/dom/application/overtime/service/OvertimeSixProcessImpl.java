@@ -9,15 +9,12 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
@@ -128,14 +125,14 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, appType);
 		if(overtimeRestAppCommonSetting.isPresent()){
 			if(overtimeRestAppCommonSetting.get().getPreDisplayAtr().value == UseAtr.USE.value){
-				List<Application_New> application = this.applicationRepository.getApp(employeeId,  GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value, appType);
-				if(application.size() > 0){
-					Optional<AppOverTime> appOvertime = this.overtimeRepository.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getAppID());
-					if(appOvertime.isPresent()){
-						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),AttendanceType.NORMALOVERTIME.value);
-						overtimeHours = convertCaculation(overtimeInputs,overtimeHours);
-					}
-				}
+//				List<Application_New> application = this.applicationRepository.getApp(employeeId,  GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value, appType);
+//				if(application.size() > 0){
+//					Optional<AppOverTime> appOvertime = this.overtimeRepository.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getAppID());
+//					if(appOvertime.isPresent()){
+//						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),AttendanceType.NORMALOVERTIME.value);
+//						overtimeHours = convertCaculation(overtimeInputs,overtimeHours);
+//					}
+//				}
 			}
 		}
 		return overtimeHours;
@@ -151,14 +148,14 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, appType);
 		if(overtimeRestAppCommonSetting.isPresent()){
 			if(overtimeRestAppCommonSetting.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
-				List<Application_New> application = this.applicationRepository.getApp(employeeId,  GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value, appType);
-				if(application.size() > 0){
-					Optional<AppOverTime> appOvertime = this.overtimeRepository.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getAppID());
-					if(appOvertime.isPresent()){
-						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),AttendanceType.BONUSPAYTIME.value);
-						caculationTimes = convertCaculation(overtimeInputs,caculationTimes);
-					}
-				}
+//				List<Application_New> application = this.applicationRepository.getApp(employeeId,  GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value, appType);
+//				if(application.size() > 0){
+//					Optional<AppOverTime> appOvertime = this.overtimeRepository.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getAppID());
+//					if(appOvertime.isPresent()){
+//						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),AttendanceType.BONUSPAYTIME.value);
+//						caculationTimes = convertCaculation(overtimeInputs,caculationTimes);
+//					}
+//				}
 			}
 		}
 		return caculationTimes;

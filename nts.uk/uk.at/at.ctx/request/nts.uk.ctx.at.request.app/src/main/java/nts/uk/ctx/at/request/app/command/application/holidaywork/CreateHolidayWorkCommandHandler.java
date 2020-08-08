@@ -11,8 +11,8 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -77,8 +77,9 @@ public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<Cr
 		appReason = typicalReason + displayReason;
 
 		// Create Application
-		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
-				command.getPrePostAtr(), appReason, appReason, command.getApplicantSID());
+//		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
+//				command.getPrePostAtr(), appReason, appReason, command.getApplicantSID());
+		Application appRoot = null;
 
 		Integer workClockStart1 = command.getWorkClockStart1() == null ? null : command.getWorkClockStart1().intValue();
 		Integer workClockEnd1 = command.getWorkClockEnd1() == null ? null : command.getWorkClockEnd1().intValue();

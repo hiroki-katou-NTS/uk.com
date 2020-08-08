@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
@@ -51,7 +51,7 @@ public interface OvertimeService {
 	public WorkTypeAndSiftType getWorkTypeAndSiftTypeByPersonCon(String companyID,String employeeID,GeneralDate baseDate,List<WorkTypeOvertime> workTypes, List<SiftType> siftTypes);
 	
 	
-	void CreateOvertime(AppOverTime domain, Application_New newApp);
+	void CreateOvertime(AppOverTime domain, Application newApp);
 	
 	/**
 	 * 起動時の36協定時間の状態を取得する

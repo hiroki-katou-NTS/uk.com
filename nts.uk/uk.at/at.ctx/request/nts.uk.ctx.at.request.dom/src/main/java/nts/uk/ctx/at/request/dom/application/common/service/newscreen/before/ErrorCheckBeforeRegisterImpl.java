@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -10,9 +9,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
@@ -77,19 +74,19 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		OvertimeCheckResult result = new OvertimeCheckResult();
 		result.setErrorCode(0);
 		// ドメインモデル「申請」
-		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, employeeID, appDate,
-				appType, PrePostAtr.PREDICT.value);
-		if (beforeApplication.isEmpty()) {
-			return result;
-		}
-		//承認区分が否認かチェック
-		//ドメインモデル「申請」．「反映情報」．実績反映状態をチェックする
-		ReflectedState_New stateLatestApp = beforeApplication.get(0).getReflectionInformation().getStateReflectionReal();
-		//否認、差戻しの場合
-		if (stateLatestApp.equals(ReflectedState_New.DENIAL) || stateLatestApp.equals(ReflectedState_New.REMAND)) {
-			result.setConfirm(true);
-			return result;
-		}
+//		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, employeeID, appDate,
+//				appType, PrePostAtr.PREDICT.value);
+//		if (beforeApplication.isEmpty()) {
+//			return result;
+//		}
+//		//承認区分が否認かチェック
+//		//ドメインモデル「申請」．「反映情報」．実績反映状態をチェックする
+//		ReflectedState_New stateLatestApp = beforeApplication.get(0).getReflectionInformation().getStateReflectionReal();
+//		//否認、差戻しの場合
+//		if (stateLatestApp.equals(ReflectedState_New.DENIAL) || stateLatestApp.equals(ReflectedState_New.REMAND)) {
+//			result.setConfirm(true);
+//			return result;
+//		}
 		//その以外
 		return result;
 	}

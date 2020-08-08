@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.infra.repository.application.overtime;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -24,8 +23,6 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
@@ -147,27 +144,28 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 
 	@Override
 	public Optional<AppOverTime> getAppOvertimeByDate(GeneralDate appDate, String employeeID, OverTimeAtr overTimeAtr) {
-		List<AppOverTime> appOverTimeList = this.queryProxy().query(FIND_BY_ATR, KrqdtAppOvertime.class)
-				.setParameter("overtimeAtr", overTimeAtr.value).getList(e -> convertToDomain(e));
-		// List<AppOverTime> fullList =
-		appOverTimeList.stream().map(x -> this.getFullAppOvertime(x.getCompanyID(), x.getAppID()).orElse(null))
-				.collect(Collectors.toList());
-		List<AppOverTime> resultList = appOverTimeList.stream().filter(x -> {
-			if (x == null)
-				return false;
-			Application_New app = x.getApplication();
-			if (app == null)
-				return false;
-			return app.getAppDate().equals(appDate) && app.getEmployeeID().equals(employeeID)
-					&& app.getPrePostAtr().equals(PrePostAtr.PREDICT);
-		}).collect(Collectors.toList());
-		if (CollectionUtil.isEmpty(resultList)) {
-			return Optional.empty();
-		}
-		resultList.sort(Comparator.comparing((AppOverTime x) -> {
-			return x.getApplication().getInputDate();
-		}).reversed());
-		return Optional.of(resultList.get(0));
+//		List<AppOverTime> appOverTimeList = this.queryProxy().query(FIND_BY_ATR, KrqdtAppOvertime.class)
+//				.setParameter("overtimeAtr", overTimeAtr.value).getList(e -> convertToDomain(e));
+//		// List<AppOverTime> fullList =
+//		appOverTimeList.stream().map(x -> this.getFullAppOvertime(x.getCompanyID(), x.getAppID()).orElse(null))
+//				.collect(Collectors.toList());
+//		List<AppOverTime> resultList = appOverTimeList.stream().filter(x -> {
+//			if (x == null)
+//				return false;
+//			Application_New app = x.getApplication();
+//			if (app == null)
+//				return false;
+//			return app.getAppDate().equals(appDate) && app.getEmployeeID().equals(employeeID)
+//					&& app.getPrePostAtr().equals(PrePostAtr.PREDICT);
+//		}).collect(Collectors.toList());
+//		if (CollectionUtil.isEmpty(resultList)) {
+//			return Optional.empty();
+//		}
+//		resultList.sort(Comparator.comparing((AppOverTime x) -> {
+//			return x.getApplication().getInputDate();
+//		}).reversed());
+//		return Optional.of(resultList.get(0));
+		return Optional.empty();
 	}
 
 	/**

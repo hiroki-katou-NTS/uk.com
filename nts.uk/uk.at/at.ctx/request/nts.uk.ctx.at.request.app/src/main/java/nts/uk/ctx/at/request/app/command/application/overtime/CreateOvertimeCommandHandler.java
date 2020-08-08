@@ -13,8 +13,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingData;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
@@ -104,9 +104,10 @@ public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<Creat
 		
 		divergenceReason = divergenceReasonCombox + divergenceReasonArea;
 		// Create Application
-		Application_New appRoot = factoryOvertime.buildApplication(appID, command.getApplicationDate(),
-				prePostAtr, appReason,
-				appReason,command.getApplicantSID());
+//		Application_New appRoot = factoryOvertime.buildApplication(appID, command.getApplicationDate(),
+//				prePostAtr, appReason,
+//				appReason,command.getApplicantSID());
+		Application appRoot = null;
 
 		Integer workClockFrom1 = command.getWorkClockFrom1() == null ? null : command.getWorkClockFrom1().intValue();
 		Integer workClockTo1 = command.getWorkClockTo1() == null ? null : command.getWorkClockTo1().intValue();

@@ -29,9 +29,7 @@ import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SpecAbsencePara
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.DisplayReasonDto;
-import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.appabsence.AllDayHalfDayLeaveAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
@@ -617,9 +615,10 @@ public class AppAbsenceFinder {
 			}
 			appReason = typicalReason + displayReason;
 		}
-		Application_New appRoot = iFactoryApplication.buildApplication(appID, startDate,
-				param.getApplicationCommand().getPrePostAtr(), appReason, appReason,
-				ApplicationType.ABSENCE_APPLICATION, startDate, endDate, param.getApplicationCommand().getApplicantSID());
+//		Application_New appRoot = iFactoryApplication.buildApplication(appID, startDate,
+//				param.getApplicationCommand().getPrePostAtr(), appReason, appReason,
+//				ApplicationType.ABSENCE_APPLICATION, startDate, endDate, param.getApplicationCommand().getApplicantSID());
+		Application appRoot = null;
 		AppForSpecLeave specHd = null;
 		AppForSpecLeaveCmd appForSpecLeaveCmd = param.getAppAbsenceCommand().getAppForSpecLeave();
 		if(param.getAppAbsenceCommand().getHolidayAppType() == HolidayAppType.SPECIAL_HOLIDAY.value && appForSpecLeaveCmd != null){
@@ -665,7 +664,7 @@ public class AppAbsenceFinder {
 		OutputMode outputMode = initMode.getDetailScreenInitMode(
 				appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getUser(), 
 				appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getReflectPlanState().value);
-		String appReason = opAppAbsence.get().getApplication().getAppReason().v();
+		// String appReason = opAppAbsence.get().getApplication().getAppReason().v();
 		if(outputMode==OutputMode.EDITMODE){
 			if(displayReasonSet!=null){
 				boolean displayFixedReason = displayReasonSet.getDisplayFixedReason() == 1 ? true : false;
@@ -690,7 +689,7 @@ public class AppAbsenceFinder {
 					}
 				}else{
 					if (Strings.isBlank(typicalReason)) {
-						displayReason = opAppAbsence.get().getApplication().getAppReason().v();
+						// displayReason = opAppAbsence.get().getApplication().getAppReason().v();
 					}
 				}
 				ApplicationSetting applicationSetting = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
@@ -700,7 +699,7 @@ public class AppAbsenceFinder {
 							&& Strings.isBlank(typicalReason+displayReason)) {
 						throw new BusinessException("Msg_115");
 					}
-					appReason = typicalReason + displayReason;
+					// appReason = typicalReason + displayReason;
 				}
 			}
 		}
@@ -713,9 +712,9 @@ public class AppAbsenceFinder {
 		appAbsence.setEndTime2(param.getAppAbsenceCommand().getEndTime2() == null ? null : new TimeWithDayAttr(param.getAppAbsenceCommand().getEndTime2()));
 		appAbsence.setWorkTypeCode(param.getAppAbsenceCommand().getWorkTypeCode() == null ? null : new WorkTypeCode(param.getAppAbsenceCommand().getWorkTypeCode()));
 		appAbsence.setWorkTimeCode(param.getAppAbsenceCommand().getWorkTimeCode() == null ? null : new WorkTimeCode(param.getAppAbsenceCommand().getWorkTimeCode()));
-		appAbsence.getApplication().setAppReason(new AppReason(appReason));
+		// appAbsence.getApplication().setAppReason(new AppReason(appReason));
 		appAbsence.setVersion(appAbsence.getVersion());
-		appAbsence.getApplication().setVersion(param.getApplicationCommand().getVersion());
+		// appAbsence.getApplication().setVersion(param.getApplicationCommand().getVersion());
 		AbsenceCheckRegisterOutput result = absenseProcess.checkBeforeUpdate(
 				companyID, 
 				appAbsenceStartInfoOutput, 

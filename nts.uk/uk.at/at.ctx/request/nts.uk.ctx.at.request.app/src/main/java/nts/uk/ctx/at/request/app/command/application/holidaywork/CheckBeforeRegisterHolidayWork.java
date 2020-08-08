@@ -21,9 +21,9 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HdWorkCheckReg
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
 import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.IErrorCheckBeforeRegister;
@@ -185,9 +185,9 @@ public class CheckBeforeRegisterHolidayWork {
 		}
 		
 		// Create Application
-		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
-				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),command.getApplicantSID());
-
+//		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
+//				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),command.getApplicantSID());
+		Application appRoot = null;
 		Integer workClockStart1 = command.getWorkClockStart1() == null ? null : command.getWorkClockStart1().intValue();
 		Integer workClockEnd1 = command.getWorkClockEnd1() == null ? null : command.getWorkClockEnd1().intValue();
 		Integer workClockStart2 = command.getWorkClockStart2() == null ? null : command.getWorkClockStart2().intValue();
@@ -315,11 +315,12 @@ public class CheckBeforeRegisterHolidayWork {
 		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, preActualColorResult);
 	}*/
 
-	public OvertimeCheckResultDto CheckBeforeRegister(int calculateFlg, Application_New app, AppHolidayWork appHolidayWork, boolean actualExceedConfirm) {
+	public OvertimeCheckResultDto CheckBeforeRegister(int calculateFlg, Application app, AppHolidayWork appHolidayWork, boolean actualExceedConfirm) {
+		String companyID = AppContexts.user().companyId();
 		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false, null);
 		// ３６協定時間上限チェック（月間）
 		Optional<AppOvertimeDetail> appOvertimeDetailOtp = commonOvertimeHoliday.registerHdWorkCheck36TimeLimit(
-				app.getCompanyID(), app.getEmployeeID(), app.getAppDate(), appHolidayWork.getHolidayWorkInputs());
+				companyID, app.getEmployeeID(), app.getAppDate().getApplicationDate(), appHolidayWork.getHolidayWorkInputs());
 		result.setAppOvertimeDetail(AppOvertimeDetailDto.fromDomain(appOvertimeDetailOtp));
 		// TODO: ３６協定時間上限チェック（年間）
 		beforeCheck.TimeUpperLimitYearCheck();
@@ -334,9 +335,9 @@ public class CheckBeforeRegisterHolidayWork {
 		String appID = IdentifierUtil.randomUniqueId();
 
 		// Create Application
-		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
-				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),command.getApplicantSID());
-
+//		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
+//				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),command.getApplicantSID());
+		Application appRoot =  null;
 		Integer workClockStart1 = command.getWorkClockStart1() == null ? null : command.getWorkClockStart1().intValue();
 		Integer workClockEnd1 = command.getWorkClockEnd1() == null ? null : command.getWorkClockEnd1().intValue();
 		Integer workClockStart2 = command.getWorkClockStart2() == null ? null : command.getWorkClockStart2().intValue();
@@ -360,7 +361,7 @@ public class CheckBeforeRegisterHolidayWork {
 		// 計算ボタン未クリックチェック
 		// Get setting info
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet
-				.prelaunchAppCommonSetService(appRoot.getCompanyID(), employeeId, 1, ApplicationType.HOLIDAY_WORK_APPLICATION, appRoot.getAppDate());
+				.prelaunchAppCommonSetService(companyId, employeeId, 1, ApplicationType.HOLIDAY_WORK_APPLICATION, appRoot.getAppDate().getApplicationDate());
 		// 時刻計算利用する場合にチェックしたい
 		ApprovalFunctionSetting requestSetting = appCommonSettingOutput.approvalFunctionSetting;
 		if (null != requestSetting) {
@@ -374,7 +375,7 @@ public class CheckBeforeRegisterHolidayWork {
 		List<HolidayWorkInput> holidayWorkInputs = findMap.get(AttendanceType.BREAKTIME);
 		
 		if (holidayWorkInputs != null && !holidayWorkInputs.isEmpty()) {
-			ColorConfirmResult colorConfirmResult = commonOvertimeHoliday.preApplicationExceededCheck010(appRoot.getCompanyID(), appRoot.getAppDate(),
+			ColorConfirmResult colorConfirmResult = commonOvertimeHoliday.preApplicationExceededCheck010(companyId, appRoot.getAppDate().getApplicationDate(),
 					appRoot.getInputDate(), appRoot.getPrePostAtr(), AttendanceType.BREAKTIME.value, holidayWorkInputs, command.getApplicantSID());
 			if (colorConfirmResult.isConfirm()) {
 				return colorConfirmResult;
@@ -441,9 +442,9 @@ public class CheckBeforeRegisterHolidayWork {
 		appHolidayWork.setWorkClock1(HolidayWorkClock.validateTime(command.getWorkClockStart1(), command.getWorkClockEnd1(), command.getGoAtr1(), command.getBackAtr1()));
 		appHolidayWork.setWorkClock2(HolidayWorkClock.validateTime(command.getWorkClockStart2(), command.getWorkClockEnd2(), command.getGoAtr2(), command.getBackAtr2()));
 		appHolidayWork.setWorkTypeCode(Strings.isBlank(command.getWorkTypeCode()) ? null : new WorkTypeCode(command.getWorkTypeCode()));
-		appHolidayWork.getApplication().setAppReason(new AppReason(applicationReason));
+		// appHolidayWork.getApplication().setAppReason(new AppReason(applicationReason));
 		appHolidayWork.setVersion(appHolidayWork.getVersion());
-		appHolidayWork.getApplication().setVersion(command.getVersion());
+		// appHolidayWork.getApplication().setVersion(command.getVersion());
 		
 		/*// 会社ID
 		String companyId = AppContexts.user().companyId();

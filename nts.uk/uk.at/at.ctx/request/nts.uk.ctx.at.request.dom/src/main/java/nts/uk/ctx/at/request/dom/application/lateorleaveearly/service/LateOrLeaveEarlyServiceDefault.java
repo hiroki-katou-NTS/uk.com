@@ -13,7 +13,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
@@ -77,7 +76,7 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		int early1 = lateOrLeaveEarly.getEarly1().value;
 		int early2 = lateOrLeaveEarly.getEarly2().value;
 		
-		validateReason(lateOrLeaveEarly.getApplication().getCompanyID(),lateOrLeaveEarly.getApplication().getAppReason().v());
+		// validateReason(lateOrLeaveEarly.getApplication().getCompanyID(),lateOrLeaveEarly.getApplication().getAppReason().v());
 
 		// [画面Bのみ]遅刻時刻早退時刻がともに設定されているとき、遅刻時刻≧早退時刻 (#Msg_381#)
 		if(lateTime1!=null && earlyTime1!=null && lateTime2!=null && earlyTime2!=null){
@@ -140,10 +139,10 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 			throw new BusinessException("Msg_382");
 		}
 		//申請承認設定->申請設定->申請制限設定.申請理由が必須＝trueのとき、申請理由が未入力 (#Msg_115#)
-		validateReason(lateOrLeaveEarly.getApplication().getCompanyID(),lateOrLeaveEarly.getApplication().getAppReason().v());
-		
-		lateOrLeaveEarlyRepository.update(lateOrLeaveEarly);
-		applicationRepository_New.updateWithVersion(lateOrLeaveEarly.getApplication());
+//		validateReason(lateOrLeaveEarly.getApplication().getCompanyID(),lateOrLeaveEarly.getApplication().getAppReason().v());
+//		
+//		lateOrLeaveEarlyRepository.update(lateOrLeaveEarly);
+//		applicationRepository_New.updateWithVersion(lateOrLeaveEarly.getApplication());
 	}
 	
 	

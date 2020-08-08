@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
@@ -84,7 +84,7 @@ public interface HolidayService {
 	 * @param domain
 	 * @param newApp
 	 */
-	void createHolidayWork(AppHolidayWork domain, Application_New newApp);
+	void createHolidayWork(AppHolidayWork domain, Application newApp);
 	
 	/**
 	 * 11.休出申請（振休変更）削除
@@ -166,7 +166,7 @@ public interface HolidayService {
 	 * @param calculateFlg 計算フラグ
 	 * @return
 	 */
-	public HdWorkCheckRegisterOutput checkBeforeRegister(String companyID, AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, Application_New application, 
+	public HdWorkCheckRegisterOutput checkBeforeRegister(String companyID, AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, Application application, 
 			boolean agentAtr, AppHolidayWork holidayWorkDomain, int calculateFlg);
 	
 	/**
@@ -188,7 +188,7 @@ public interface HolidayService {
 	 * @return
 	 */
 	public HdWorkCheckRegisterOutput individualErrorCheck(String companyID, String employeeID, GeneralDate appDate, GeneralDate baseDate, ApplicationType appType, 
-			Application_New application, UseAtr timeCalUse, UseAtr timeInputUse, AppDateContradictionAtr appDateContradictionAtr, boolean agentAtr, 
+			Application application, UseAtr timeCalUse, UseAtr timeInputUse, AppDateContradictionAtr appDateContradictionAtr, boolean agentAtr, 
 			boolean mode, List<AchievementOutput> achievementOutputLst, List<PreAppContentDisplay> appDetailContentLst, HolidayWorkInstruction appHdWorkInstruction, 
 			AppHolidayWork holidayWorkDomain, int calculateFlg, AppHdWorkDispInfoOutput appHdWorkDispInfoOutput);
 	
@@ -208,7 +208,7 @@ public interface HolidayService {
 	 * @param calculateFlg 計算フラグ
 	 * @return
 	 */
-	public HdWorkCheckRegisterOutput checkBeforeUpdate(String companyID, Application_New application, AppHdWorkDispInfoOutput appHdWorkDispInfoOutput,
+	public HdWorkCheckRegisterOutput checkBeforeUpdate(String companyID, Application application, AppHdWorkDispInfoOutput appHdWorkDispInfoOutput,
 			int calculateFlg, AppHolidayWork holidayWorkDomain);
 }
 	

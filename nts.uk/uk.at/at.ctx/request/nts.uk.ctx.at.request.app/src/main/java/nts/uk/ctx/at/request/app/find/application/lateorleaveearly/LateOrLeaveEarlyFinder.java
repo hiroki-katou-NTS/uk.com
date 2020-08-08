@@ -101,9 +101,9 @@ public class LateOrLeaveEarlyFinder {
 				LateOrLeaveEarly lateOrLeaveEarly =lateOrLeaveEarlyOp.get();
 				//Get application data
 				// lateOrLeaveEarly.setApplication(appRepository.findByID(companyID, appID).get());
-				lateOrLeaveEarlyDto = LateOrLeaveEarlyDto.fromDomain(lateOrLeaveEarly,lateOrLeaveEarly.getApplication().getVersion()); 
-				employeeID = lateOrLeaveEarly.getApplication().getEmployeeID();
-				applicantName = employeeAdapter.getEmployeeName(employeeID);
+//				lateOrLeaveEarlyDto = LateOrLeaveEarlyDto.fromDomain(lateOrLeaveEarly,lateOrLeaveEarly.getApplication().getVersion()); 
+//				employeeID = lateOrLeaveEarly.getApplication().getEmployeeID();
+//				applicantName = employeeAdapter.getEmployeeName(employeeID);
 			}
 		} else {
 			employeeID = AppContexts.user().employeeId();

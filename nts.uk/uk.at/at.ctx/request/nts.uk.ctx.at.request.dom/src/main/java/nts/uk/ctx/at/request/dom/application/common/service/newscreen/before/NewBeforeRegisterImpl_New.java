@@ -13,7 +13,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
@@ -104,88 +103,88 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 	@Inject
 	private StartupErrorCheckService startupErrorCheckService;
 	
-    public void processBeforeRegister(Application_New application, OverTimeAtr overTimeAtr, boolean checkOver1Year, List<GeneralDate> lstDateHd){
-		// アルゴリズム「未入社前チェック」を実施する
-		retirementCheckBeforeJoinCompany(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
-		
-		// アルゴリズム「社員の当月の期間を算出する」を実行する
-		PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
-		
-		GeneralDate startDate = application.getAppDate();
-		GeneralDate endDate = application.getAppDate();
-		if (application.getStartDate().isPresent() && application.getEndDate().isPresent()) {
-			startDate = application.getStartDate().get();
-			endDate = application.getEndDate().get();
-			
-			// 登録する期間のチェック
-			//((TimeSpan)(申請する終了日 - 申請する開始日)).Days > 31がtrue
-			if((ChronoUnit.DAYS.between(startDate.localDate(), endDate.localDate()) + 1)  > 31){
-				throw new BusinessException("Msg_277");
-			}
-			// 登録可能期間のチェック(１年以内)
-			//EA修正履歴 No.3210
-			//hoatt 2019.03.22
-			if(periodCurrentMonth.getStartDate().addYears(1).beforeOrEquals(endDate) && checkOver1Year) {
-				//締め期間．開始年月日.AddYears(1) <= 申請する終了日がtrue
-				//確認メッセージ（Msg_1518）を表示する
-				throw new BusinessException("Msg_1518", periodCurrentMonth.getStartDate().addYears(1).toString(DATE_FORMAT));
-			}
-			
-			// 過去月のチェック
-			if(startDate.before(periodCurrentMonth.getStartDate())) {
-				throw new BusinessException("Msg_236");			
-			}
-		}		
-		
-		// キャッシュから承認ルートを取得する(Lấy comfirm root từ cache)	
-		ApprovalRootContentImport_New approvalRootContentImport = approvalRootPatternService.getApprovalRootPatternService(
-				application.getCompanyID(), 
-				application.getEmployeeID(), 
-				EmploymentRootAtr.APPLICATION, 
-				application.getAppType(), 
-				application.getAppDate(),
-				application.getAppID(),
-				true).getApprovalRootContentImport();
-		startupErrorCheckService.startupErrorCheck(application.getAppDate(), application.getAppType().value, approvalRootContentImport);
-		switch (approvalRootContentImport.getErrorFlag()) {
-		case NO_CONFIRM_PERSON:
-			throw new BusinessException("Msg_238");
-		case APPROVER_UP_10:
-			throw new BusinessException("Msg_237");
-		case NO_APPROVER:
-			throw new BusinessException("Msg_324");
-		default:
-			break;
-		}
-		
-		// アルゴリズム「申請の締め切り期限をチェック」を実施する
-		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
-		if(empHistImport==null || empHistImport.getEmploymentCode()==null){
-			throw new BusinessException("Msg_426");
-		}
-		String employmentCD = empHistImport.getEmploymentCode();
-		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(application.getCompanyID(), employmentCD);
-		if(!closureEmployment.isPresent()){
-			throw new RuntimeException("Not found ClosureEmployment in table KCLMT_CLOSURE_EMPLOYMENT, employment =" + employmentCD);
-		}
-		deadlineApplicationCheck(application.getCompanyID(), closureEmployment.get().getClosureId(), application.getEmployeeID(),
-				periodCurrentMonth.getStartDate(), periodCurrentMonth.getEndDate(), startDate, endDate);
-		
-		// アルゴリズム「申請の受付制限をチェック」を実施する
-		// applicationAcceptanceRestrictionsCheck(application.getCompanyID(), application.getAppType(), application.getPrePostAtr(), startDate, endDate, overTimeAtr);
-		// 申請する開始日～申請する終了日までループする
-		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
-            //hoatt 2019/10/14 #109087を対応
-            if(lstDateHd != null && lstDateHd.contains(loopDate)){
-                continue;
-            }
-			if(loopDate.equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr.PREDICT) && application.isAppOverTime()){
-				confirmCheckOvertime(application.getCompanyID(), application.getEmployeeID(), loopDate);
-			}else{
-				// アルゴリズム「確定チェック」を実施する
-				confirmationCheck(application.getCompanyID(), application.getEmployeeID(), loopDate);
-			}
-		}
+    public void processBeforeRegister(Application application, OverTimeAtr overTimeAtr, boolean checkOver1Year, List<GeneralDate> lstDateHd){
+//		// アルゴリズム「未入社前チェック」を実施する
+//		retirementCheckBeforeJoinCompany(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
+//		
+//		// アルゴリズム「社員の当月の期間を算出する」を実行する
+//		PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
+//		
+//		GeneralDate startDate = application.getAppDate();
+//		GeneralDate endDate = application.getAppDate();
+//		if (application.getStartDate().isPresent() && application.getEndDate().isPresent()) {
+//			startDate = application.getStartDate().get();
+//			endDate = application.getEndDate().get();
+//			
+//			// 登録する期間のチェック
+//			//((TimeSpan)(申請する終了日 - 申請する開始日)).Days > 31がtrue
+//			if((ChronoUnit.DAYS.between(startDate.localDate(), endDate.localDate()) + 1)  > 31){
+//				throw new BusinessException("Msg_277");
+//			}
+//			// 登録可能期間のチェック(１年以内)
+//			//EA修正履歴 No.3210
+//			//hoatt 2019.03.22
+//			if(periodCurrentMonth.getStartDate().addYears(1).beforeOrEquals(endDate) && checkOver1Year) {
+//				//締め期間．開始年月日.AddYears(1) <= 申請する終了日がtrue
+//				//確認メッセージ（Msg_1518）を表示する
+//				throw new BusinessException("Msg_1518", periodCurrentMonth.getStartDate().addYears(1).toString(DATE_FORMAT));
+//			}
+//			
+//			// 過去月のチェック
+//			if(startDate.before(periodCurrentMonth.getStartDate())) {
+//				throw new BusinessException("Msg_236");			
+//			}
+//		}		
+//		
+//		// キャッシュから承認ルートを取得する(Lấy comfirm root từ cache)	
+//		ApprovalRootContentImport_New approvalRootContentImport = approvalRootPatternService.getApprovalRootPatternService(
+//				application.getCompanyID(), 
+//				application.getEmployeeID(), 
+//				EmploymentRootAtr.APPLICATION, 
+//				application.getAppType(), 
+//				application.getAppDate(),
+//				application.getAppID(),
+//				true).getApprovalRootContentImport();
+//		startupErrorCheckService.startupErrorCheck(application.getAppDate(), application.getAppType().value, approvalRootContentImport);
+//		switch (approvalRootContentImport.getErrorFlag()) {
+//		case NO_CONFIRM_PERSON:
+//			throw new BusinessException("Msg_238");
+//		case APPROVER_UP_10:
+//			throw new BusinessException("Msg_237");
+//		case NO_APPROVER:
+//			throw new BusinessException("Msg_324");
+//		default:
+//			break;
+//		}
+//		
+//		// アルゴリズム「申請の締め切り期限をチェック」を実施する
+//		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
+//		if(empHistImport==null || empHistImport.getEmploymentCode()==null){
+//			throw new BusinessException("Msg_426");
+//		}
+//		String employmentCD = empHistImport.getEmploymentCode();
+//		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(application.getCompanyID(), employmentCD);
+//		if(!closureEmployment.isPresent()){
+//			throw new RuntimeException("Not found ClosureEmployment in table KCLMT_CLOSURE_EMPLOYMENT, employment =" + employmentCD);
+//		}
+//		deadlineApplicationCheck(application.getCompanyID(), closureEmployment.get().getClosureId(), application.getEmployeeID(),
+//				periodCurrentMonth.getStartDate(), periodCurrentMonth.getEndDate(), startDate, endDate);
+//		
+//		// アルゴリズム「申請の受付制限をチェック」を実施する
+//		// applicationAcceptanceRestrictionsCheck(application.getCompanyID(), application.getAppType(), application.getPrePostAtr(), startDate, endDate, overTimeAtr);
+//		// 申請する開始日～申請する終了日までループする
+//		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
+//            //hoatt 2019/10/14 #109087を対応
+//            if(lstDateHd != null && lstDateHd.contains(loopDate)){
+//                continue;
+//            }
+//			if(loopDate.equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr.PREDICT) && application.isAppOverTime()){
+//				confirmCheckOvertime(application.getCompanyID(), application.getEmployeeID(), loopDate);
+//			}else{
+//				// アルゴリズム「確定チェック」を実施する
+//				confirmationCheck(application.getCompanyID(), application.getEmployeeID(), loopDate);
+//			}
+//		}
 	}
 	
 	// moi nguoi chi co the o mot cty vao mot thoi diem

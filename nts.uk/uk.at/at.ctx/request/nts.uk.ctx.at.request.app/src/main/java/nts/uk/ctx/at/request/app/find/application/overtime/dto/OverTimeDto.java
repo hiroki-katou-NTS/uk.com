@@ -1,14 +1,11 @@
 package nts.uk.ctx.at.request.app.find.application.overtime.dto;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AgreeOverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
@@ -30,7 +27,7 @@ public class OverTimeDto {
 	 * application
 	 * 
 	 */
-	private ApplicationDto_New application;
+	private ApplicationDto application;
 	/**
 	 * 会社ID
 	 * companyID
@@ -266,7 +263,7 @@ public class OverTimeDto {
 	/**
 	 * 事前申請内容
 	 */
-	private ApplicationDto_New opAppBefore;
+	private ApplicationDto opAppBefore;
 	
 	/** 事前申請状態 */
 	private boolean beforeAppStatus;
@@ -295,82 +292,83 @@ public class OverTimeDto {
 	public List<OvertimeColorCheck> resultLst;
 	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
-		return new OverTimeDto(
-				appOverTime.getVersion(),
-				ApplicationDto_New.fromDomain(appOverTime.getApplication()), 
-				appOverTime.getCompanyID(), 
-				appOverTime.getAppID(), 
-				"", 
-				false, 
-				"", 
-				"", 
-				null,
-				appOverTime.getOverTimeAtr().value, 
-				CollectionUtil.isEmpty(appOverTime.getOverTimeInput())
-					? Collections.emptyList() 
-					: appOverTime.getOverTimeInput().stream().map(x -> OvertimeInputDto.fromDomain(x)).collect(Collectors.toList()), 
-				0, 
-				appOverTime.getWorkTypeCode() == null ? null : new WorkTypeOvertime(appOverTime.getWorkTypeCode().v(), ""),
-				Collections.emptyList(),
-				appOverTime.getSiftCode() == null ? null : new SiftType(appOverTime.getSiftCode().v(),""),
-				Collections.emptyList(),
-				appOverTime.getWorkClockFrom1(), 
-				appOverTime.getWorkClockTo1(),  
-				appOverTime.getWorkClockFrom2(), 
-				appOverTime.getWorkClockTo2(), 
-				"", 
-				appOverTime.getDivergenceReason(), 
-				0, 
-				appOverTime.getFlexExessTime(), 
-				appOverTime.getOverTimeShiftNight(), 
-				false, 
-				false, 
-				false, 
-				Collections.emptyList(), 
-				false, 
-				false, 
-				Collections.emptyList(),
-				false, 
-				false, 
-				0, 
-				false,
-				false,
-				false,
-				false,
-				false, 
-				null,
-				null,
-				false,
-				false,
-				false,
-				false,
-				null,
-				false,
-				false,
-				false,
-				false,
-				null,
-				null,
-				null,
-				Collections.emptyList(),
-				false,
-				false,
-				0,
-				0,
-				"",
-				null,
-				0,
-				0,
-				null,
-				false,
-				0,
-				null,
-				null,
-				null, 
-				null,
-				Collections.emptyList(),
-				null,
-				Collections.emptyList());
+//		return new OverTimeDto(
+//				appOverTime.getVersion(),
+//				ApplicationDto_New.fromDomain(appOverTime.getApplication()), 
+//				appOverTime.getCompanyID(), 
+//				appOverTime.getAppID(), 
+//				"", 
+//				false, 
+//				"", 
+//				"", 
+//				null,
+//				appOverTime.getOverTimeAtr().value, 
+//				CollectionUtil.isEmpty(appOverTime.getOverTimeInput())
+//					? Collections.emptyList() 
+//					: appOverTime.getOverTimeInput().stream().map(x -> OvertimeInputDto.fromDomain(x)).collect(Collectors.toList()), 
+//				0, 
+//				appOverTime.getWorkTypeCode() == null ? null : new WorkTypeOvertime(appOverTime.getWorkTypeCode().v(), ""),
+//				Collections.emptyList(),
+//				appOverTime.getSiftCode() == null ? null : new SiftType(appOverTime.getSiftCode().v(),""),
+//				Collections.emptyList(),
+//				appOverTime.getWorkClockFrom1(), 
+//				appOverTime.getWorkClockTo1(),  
+//				appOverTime.getWorkClockFrom2(), 
+//				appOverTime.getWorkClockTo2(), 
+//				"", 
+//				appOverTime.getDivergenceReason(), 
+//				0, 
+//				appOverTime.getFlexExessTime(), 
+//				appOverTime.getOverTimeShiftNight(), 
+//				false, 
+//				false, 
+//				false, 
+//				Collections.emptyList(), 
+//				false, 
+//				false, 
+//				Collections.emptyList(),
+//				false, 
+//				false, 
+//				0, 
+//				false,
+//				false,
+//				false,
+//				false,
+//				false, 
+//				null,
+//				null,
+//				false,
+//				false,
+//				false,
+//				false,
+//				null,
+//				false,
+//				false,
+//				false,
+//				false,
+//				null,
+//				null,
+//				null,
+//				Collections.emptyList(),
+//				false,
+//				false,
+//				0,
+//				0,
+//				"",
+//				null,
+//				0,
+//				0,
+//				null,
+//				false,
+//				0,
+//				null,
+//				null,
+//				null, 
+//				null,
+//				Collections.emptyList(),
+//				null,
+//				Collections.emptyList());
+		return null;
 	}
 	
 }

@@ -1,43 +1,31 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveWorkingHour;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTime;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTimeCode;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentWorkingHour;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHolidayShipmentCommand> {
@@ -75,7 +63,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 	 *            from client
 	 * @return application after update
 	 */
-	private Application_New updateAbsDomain(SaveHolidayShipmentCommand command, String companyID, String appReason) {
+	private Application updateAbsDomain(SaveHolidayShipmentCommand command, String companyID, String appReason) {
 //		AbsenceLeaveAppCommand appCmd = command.getAbsCmd();
 //
 //		Optional<Application> appLicationOpt = this.appRepo.findByID(companyID, appCmd.getAppID());
@@ -111,7 +99,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 	 *            from client
 	 * @return application after update
 	 */
-	private Application_New updateRecDomain(SaveHolidayShipmentCommand command, String companyID, String appReason) {
+	private Application updateRecDomain(SaveHolidayShipmentCommand command, String companyID, String appReason) {
 		RecruitmentAppCommand appCmd = command.getRecCmd();
 
 //		Optional<Application_New> absAppLicationOpt = this.appRepo.findByID(companyID, appCmd.getAppID());
@@ -193,16 +181,16 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 					command.getAppCmd().getAppVersion(),recCmd.getWkTypeCD(),recCmd.getWkTimeCD());
 
 			// ドメイン「振出申請」を1件更新する
-			Application_New recApp = updateRecDomain(command, companyID, appReason);
-			// 暫定データの登録
-			interimRemainDataMngRegisterDateChange.registerDateChange(companyID,
-					recApp.getEmployeeID(),
-					Arrays.asList(recCmd.getAppDate()));
-			// アルゴリズム「詳細画面登録後の処理」を実行する
-			if (recApp != null) {
-				// error EA refactor 4
-				/*this.detailAfterUpdate.processAfterDetailScreenRegistration(recApp);*/
-			}
+//			Application_New recApp = updateRecDomain(command, companyID, appReason);
+//			// 暫定データの登録
+//			interimRemainDataMngRegisterDateChange.registerDateChange(companyID,
+//					recApp.getEmployeeID(),
+//					Arrays.asList(recCmd.getAppDate()));
+//			// アルゴリズム「詳細画面登録後の処理」を実行する
+//			if (recApp != null) {
+//				// error EA refactor 4
+//				/*this.detailAfterUpdate.processAfterDetailScreenRegistration(recApp);*/
+//			}
 		}
 
 		if (isSaveAbs(comType)) {
@@ -211,16 +199,16 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 					appType, command.getAppCmd().getPrePostAtr(), absCmd.getAppID(),
 					command.getAppCmd().getAppVersion(), absCmd.getWkTypeCD(), absCmd.getWkTimeCD());
 			// ドメイン「振休申請」を1件更新する
-			Application_New absApp = updateAbsDomain(command, companyID, appReason);
-			// 暫定データの登録
-			interimRemainDataMngRegisterDateChange.registerDateChange(companyID,
-					absApp.getEmployeeID(),
-					Arrays.asList(absCmd.getAppDate()));
-			// アルゴリズム「詳細画面登録後の処理」を実行する
-			if (absApp != null) {
-				// error EA refactor 4
-				/*this.detailAfterUpdate.processAfterDetailScreenRegistration(absApp);*/
-			}
+//			Application_New absApp = updateAbsDomain(command, companyID, appReason);
+//			// 暫定データの登録
+//			interimRemainDataMngRegisterDateChange.registerDateChange(companyID,
+//					absApp.getEmployeeID(),
+//					Arrays.asList(absCmd.getAppDate()));
+//			// アルゴリズム「詳細画面登録後の処理」を実行する
+//			if (absApp != null) {
+//				// error EA refactor 4
+//				/*this.detailAfterUpdate.processAfterDetailScreenRegistration(absApp);*/
+//			}
 		}
 
 	}
