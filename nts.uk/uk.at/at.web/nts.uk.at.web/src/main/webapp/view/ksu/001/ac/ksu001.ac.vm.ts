@@ -73,7 +73,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     self.changeMode();
                 }
             });
-
+// test
             self.selectedButtonTableCompany.subscribe((value) => {
                 self.dataToStick = $("#tableButton1").ntsButtonTable("getSelectedCells")[0] ? $("#tableButton1").ntsButtonTable("getSelectedCells")[0].data.data : null;
                 let arrDataToStick: any[] = _.map(self.dataToStick, 'data');
