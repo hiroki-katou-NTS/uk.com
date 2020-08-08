@@ -29,8 +29,6 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
-import nts.uk.ctx.at.request.infra.entity.application.common.KrqdpApplicationPK_New;
-import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_New;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdpTime36UpLimitPerMonthPK;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertime;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail;
@@ -79,18 +77,19 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 
 	@Override
 	public Optional<AppOverTime> getFullAppOvertime(String companyID, String appID) {
-		Optional<KrqdtAppOvertime> opKrqdtAppOvertime = this.queryProxy().find(new KrqdtAppOvertimePK(companyID, appID),
-				KrqdtAppOvertime.class);
-		Optional<KrqdtApplication_New> opKafdtApplication = this.queryProxy()
-				.find(new KrqdpApplicationPK_New(companyID, appID), KrqdtApplication_New.class);
-		if (!opKrqdtAppOvertime.isPresent() || !opKafdtApplication.isPresent()) {
-			return Optional.ofNullable(null);
-		}
-		KrqdtAppOvertime krqdtAppOvertime = opKrqdtAppOvertime.get();
-		KrqdtApplication_New kafdtApplication = opKafdtApplication.get();
-		AppOverTime appOverTime = krqdtAppOvertime.toDomain();
-		appOverTime.setApplication(kafdtApplication.toDomain());
-		return Optional.of(appOverTime);
+//		Optional<KrqdtAppOvertime> opKrqdtAppOvertime = this.queryProxy().find(new KrqdtAppOvertimePK(companyID, appID),
+//				KrqdtAppOvertime.class);
+//		Optional<KrqdtApplication_New> opKafdtApplication = this.queryProxy()
+//				.find(new KrqdpApplicationPK_New(companyID, appID), KrqdtApplication_New.class);
+//		if (!opKrqdtAppOvertime.isPresent() || !opKafdtApplication.isPresent()) {
+//			return Optional.ofNullable(null);
+//		}
+//		KrqdtAppOvertime krqdtAppOvertime = opKrqdtAppOvertime.get();
+//		KrqdtApplication_New kafdtApplication = opKafdtApplication.get();
+//		AppOverTime appOverTime = krqdtAppOvertime.toDomain();
+//		appOverTime.setApplication(kafdtApplication.toDomain());
+//		return Optional.of(appOverTime);
+		return Optional.empty();
 	}
 
 	@Override
