@@ -3,7 +3,9 @@
 module nts.uk.at.view.kdp.share {
 	const tabButtonTempate = `
 		<!-- ko if: ko.unwrap(filteredTabs).length -->
-		<div id="stamp-desc" data-bind="text: ko.unwrap(currentTab).stampPageComment"></div>
+		<div id="stamp-desc" data-bind="let: { $tab: ko.toJS(currentTab) }">
+			<div data-bind="html: $tab.stampPageComment, style: { color: $tab.stampPageCommentColor }"></div>
+		</div>
 		<div id="tab-button-group" class="ui-tabs ui-corner-all ui-widget ui-widget-content horizontal">
 			<ul class="ui-tabs-nav ui-corner-all ui-helper-reset ui-helper-clearfix ui-widget-header" data-bind="foreach: filteredTabs">
 				<li class="ui-tabs-tab ui-corner-top ui-state-default ui-tab"
@@ -134,9 +136,10 @@ module nts.uk.at.view.kdp.share {
 						$el
 							.find('button')
 							.attr('tabindex', $el.data('tabindex'));
-					})
-
-					return _.find(filteredTabs, (d) => d.pageNo === selected) || {
+					});
+					const exist = _.find(filteredTabs, (d) => d.pageNo === selected);
+					
+					const currentTab = _.clone(exist) || {
 						pageNo: -1,
 						buttonLayoutType: -1,
 						buttonSettings: [],
@@ -144,6 +147,11 @@ module nts.uk.at.view.kdp.share {
 						stampPageCommentColor: '',
 						stampPageName: ''
 					};
+					
+					// escape html and replace new line chars to break tag
+					currentTab.stampPageComment = _.escape(currentTab.stampPageComment).replace(/(\r|\n)/g, '<br />');
+										
+					return currentTab;
 				}
 			});
 
