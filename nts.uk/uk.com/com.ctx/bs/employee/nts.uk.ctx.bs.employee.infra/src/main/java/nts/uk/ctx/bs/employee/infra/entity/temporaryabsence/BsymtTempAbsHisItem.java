@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.entity.temporaryabsence;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -13,6 +14,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrameNo;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.GenericString;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 
@@ -188,5 +192,27 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 		}
 		this.familyMemberId = familyMemberId;
 		this.sameFamilyDays = sameFamilyDays;
+	}
+	
+//	public static BsymtTempAbsHisItem toEntity (TempAbsenceHisItem dom){
+//		BsymtTempAbsHisItem entity = new  BsymtTempAbsHisItem(
+//				dom.getHistoryId(),
+//				dom.getEmployeeId(), 
+//				dom.getTempAbsenceFrNo().v(), 
+//				dom.getRemarks().v(), 
+//				dom.getSoInsPayCategory().intValue(),
+//				dom.getFamilyMemberId());
+//				return null;
+//		
+//	}
+	public static TempAbsenceHisItem toDomainHistItem(BsymtTempAbsHisItem entity){
+		TempAbsenceHisItem data = new TempAbsenceHisItem(
+				new TempAbsenceFrameNo(BigDecimal.valueOf(entity.tempAbsFrameNo)),
+				entity.histId,
+				entity.sid, 
+			    new GenericString(entity.remarks)	,
+				entity.soInsPayCategory.intValue(),
+				entity.familyMemberId);
+		return data;
 	}
 }
