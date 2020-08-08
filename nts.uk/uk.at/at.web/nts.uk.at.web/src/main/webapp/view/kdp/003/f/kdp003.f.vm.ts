@@ -45,7 +45,7 @@ module nts.uk.at.kdp003.f {
 	};
 
 	@bean()
-	export class Kdp003FViewModel extends ko.ViewModel {
+	export class ViewModel extends ko.ViewModel {
 		mode: KnockoutObservable<MODE> = ko.observable(null);
 		message: KnockoutObservable<Message | null> = ko.observable(null);
 
@@ -272,7 +272,10 @@ module nts.uk.at.kdp003.f {
 					vm.$blockui('clear')
 						.then(() => vm.mode(vm.params.mode || 'admin'))
 						.then(() => {
-							$(vm.$el).find('[tabindex]').first().focus();
+							const cbi = '.ui-igcombo-field';
+							const cbw = '.ui-igcombo-wrapper';
+							
+							$(vm.$el).find(`[tabindex]:not(${cbw}):not(${cbi})`).first().focus();
 						});
 				});
 		}
