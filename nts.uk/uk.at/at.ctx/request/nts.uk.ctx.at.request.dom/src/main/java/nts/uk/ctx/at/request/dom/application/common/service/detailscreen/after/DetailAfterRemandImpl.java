@@ -16,7 +16,7 @@ import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -49,7 +49,7 @@ import nts.uk.shr.com.url.RegisterEmbededURL;
 public class DetailAfterRemandImpl implements DetailAfterRemand {
 
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;

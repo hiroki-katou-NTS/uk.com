@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
@@ -22,7 +22,7 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 	
 	public void processBeforeDetailScreenRegistration(String companyID, String employeeID, GeneralDate appDate,
 			int employeeRouteAtr, String appID, PrePostAtr postAtr, int version, String wkTypeCode,

@@ -14,7 +14,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
@@ -43,7 +43,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 	private MailSender mailSender;
 
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 
 	@Inject
 	private RegisterEmbededURL registerEmbededURL;

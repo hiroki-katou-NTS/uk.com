@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
@@ -40,7 +40,7 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 	private GoBackDirectlyRepository_Old goBackDirectlyRepo;
 	
 	@Inject 
-	private ApplicationRepository_New appRepo;
+	private ApplicationRepository appRepo;
 
 //	@Inject
 //	private ApplicationSettingRepository applicationSettingRepository;

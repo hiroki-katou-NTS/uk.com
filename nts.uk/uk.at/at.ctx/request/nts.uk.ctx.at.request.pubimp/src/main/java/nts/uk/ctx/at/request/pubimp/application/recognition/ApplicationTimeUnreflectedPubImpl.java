@@ -17,7 +17,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -31,7 +31,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class ApplicationTimeUnreflectedPubImpl implements ApplicationTimeUnreflectedPub {
 	@Inject
-	private ApplicationRepository_New repoApplication;
+	private ApplicationRepository repoApplication;
 	
 	@Inject
 	private OvertimeRepository repoOvertime;

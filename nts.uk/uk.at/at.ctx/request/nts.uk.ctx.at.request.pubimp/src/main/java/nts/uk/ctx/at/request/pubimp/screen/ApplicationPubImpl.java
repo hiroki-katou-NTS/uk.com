@@ -14,7 +14,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
@@ -44,7 +44,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class ApplicationPubImpl implements ApplicationPub {
 	@Inject
-	private ApplicationRepository_New applicationRepository_New;
+	private ApplicationRepository applicationRepository_New;
 	@Inject
 	private AppDispNameRepository appDispNameRepository;
 	@Inject

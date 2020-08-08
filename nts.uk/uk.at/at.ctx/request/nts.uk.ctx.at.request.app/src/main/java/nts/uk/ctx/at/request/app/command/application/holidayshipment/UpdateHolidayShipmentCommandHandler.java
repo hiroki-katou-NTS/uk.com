@@ -14,7 +14,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
@@ -49,7 +49,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 	@Inject
 	private DetailAfterUpdate detailAfterUpdate;
 	@Inject
-	private ApplicationRepository_New appRepo;
+	private ApplicationRepository appRepo;
 	@Inject
 	private AbsenceLeaveAppRepository absRepo;
 	@Inject

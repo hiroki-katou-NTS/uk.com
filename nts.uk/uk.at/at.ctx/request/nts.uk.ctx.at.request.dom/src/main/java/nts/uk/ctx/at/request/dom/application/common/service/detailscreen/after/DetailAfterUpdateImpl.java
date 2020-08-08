@@ -11,7 +11,7 @@ import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
@@ -36,7 +36,7 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;

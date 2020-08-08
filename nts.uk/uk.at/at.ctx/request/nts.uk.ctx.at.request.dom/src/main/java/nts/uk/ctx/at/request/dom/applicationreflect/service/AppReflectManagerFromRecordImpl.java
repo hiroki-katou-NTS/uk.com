@@ -21,7 +21,7 @@ import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -48,7 +48,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	@Inject
 	private ClosureStatusManagementRequestImport closureStatusImport;
 	@Inject
-	private ApplicationRepository_New applicationRepo;
+	private ApplicationRepository applicationRepo;
 	@Inject
 	private AppReflectManager appRefMng;
 	@Inject
@@ -57,7 +57,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	private ManagedParallelWithContext managedParallelWithContext;
 
 	@Inject
-	private ApplicationRepository_New repoApp;
+	private ApplicationRepository repoApp;
 
 	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)

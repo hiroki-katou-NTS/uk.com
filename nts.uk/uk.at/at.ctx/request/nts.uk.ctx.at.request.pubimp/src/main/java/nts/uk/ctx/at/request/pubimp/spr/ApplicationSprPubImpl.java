@@ -11,7 +11,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -32,7 +32,7 @@ public class ApplicationSprPubImpl implements ApplicationSprPub {
 	private OvertimeRepository overtimeRepository;
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository_New;
+	private ApplicationRepository applicationRepository_New;
 
 	@Override
 	public Optional<AppOverTimeSprExport> getAppOvertimeByDate(GeneralDate appDate, String employeeID, Integer overTimeAtr) {

@@ -7,7 +7,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
-public interface ApplicationRepository_New {
+public interface ApplicationRepository {
 	
 	// public Optional<Application_New> findByID(String companyID, String appID);
 	

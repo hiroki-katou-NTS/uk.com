@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 
 @Stateless
@@ -14,7 +14,7 @@ public class ApprovalInfoService implements ApprovalInfoInterface{
 	@Inject
 	private ApprovalRootStateAdapter apprRootStateAd;
 	@Inject
-	private ApplicationRepository_New appRepo;
+	private ApplicationRepository appRepo;
 	/**
 	 * 利用者の判定
 	 * @param 会社ID companyId

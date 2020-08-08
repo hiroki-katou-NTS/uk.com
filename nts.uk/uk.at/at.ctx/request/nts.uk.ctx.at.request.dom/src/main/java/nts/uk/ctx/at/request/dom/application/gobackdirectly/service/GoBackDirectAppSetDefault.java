@@ -5,7 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
@@ -44,7 +44,7 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 	private WorkTypeRepository workTypeRepo;
 
 	@Inject
-	private ApplicationRepository_New appRepo;
+	private ApplicationRepository appRepo;
 
 	@Inject 
 	private BeforePreBootMode beforePreBootMode;

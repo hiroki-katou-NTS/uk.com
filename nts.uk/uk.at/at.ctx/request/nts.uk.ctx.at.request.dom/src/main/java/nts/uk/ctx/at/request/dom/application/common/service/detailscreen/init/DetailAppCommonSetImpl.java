@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 //import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.NewAppCommonSetService;
@@ -35,7 +35,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 	
 	@Inject
 	private DetailScreenBefore detailScreenBefore;

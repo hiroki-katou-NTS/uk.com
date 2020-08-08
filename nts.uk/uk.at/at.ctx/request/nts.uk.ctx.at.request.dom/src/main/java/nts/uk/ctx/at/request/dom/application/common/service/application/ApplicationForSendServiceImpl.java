@@ -13,7 +13,7 @@ import javax.inject.Inject;
 
 import nts.arc.i18n.I18NText;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
@@ -33,7 +33,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class ApplicationForSendServiceImpl implements IApplicationForSendService{
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 	
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;

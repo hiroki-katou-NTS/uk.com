@@ -31,7 +31,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -55,7 +55,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @Stateless
-public class JpaApplicationRepository_New extends JpaRepository implements ApplicationRepository_New {
+public class JpaApplicationRepository extends JpaRepository implements ApplicationRepository {
 
 	/**
 	 * use lesser value for nested split WHERE IN parameters to make sure total

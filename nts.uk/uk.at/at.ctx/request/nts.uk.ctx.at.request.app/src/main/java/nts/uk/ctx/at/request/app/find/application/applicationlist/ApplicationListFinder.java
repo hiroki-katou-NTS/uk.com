@@ -15,7 +15,7 @@ import nts.arc.i18n.I18NText;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
@@ -48,7 +48,7 @@ public class ApplicationListFinder {
 	@Inject
 	private AppDispNameRepository repoAppDispName;
 	@Inject
-	private ApplicationRepository_New repoApplication;
+	private ApplicationRepository repoApplication;
 	private static final int MOBILE = 1; 
 	
 	public ApplicationListDto getAppList(AppListParamFilter param){

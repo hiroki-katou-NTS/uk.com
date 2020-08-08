@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -25,7 +25,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
 	
 	@Inject
-	private ApplicationRepository_New appRepository;
+	private ApplicationRepository appRepository;
 	
 	// @Inject
 	// private PersonalLaborConditionRepository

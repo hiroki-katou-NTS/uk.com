@@ -32,7 +32,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class ApplicationApprovalImpl implements ApplicationApprovalService {
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;

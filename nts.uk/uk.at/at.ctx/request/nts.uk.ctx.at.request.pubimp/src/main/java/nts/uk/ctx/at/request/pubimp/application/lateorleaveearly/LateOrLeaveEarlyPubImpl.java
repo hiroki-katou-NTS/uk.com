@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
 import nts.uk.ctx.at.request.pub.application.lateorleaveearly.LateOrLeaveEarlyExport;
@@ -27,7 +27,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class LateOrLeaveEarlyPubImpl implements LateOrLeaveEarlyPub {
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 	
 	@Inject
 	private LateOrLeaveEarlyRepository lateOrLeaveEarlyRepository;

@@ -22,7 +22,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
@@ -110,7 +110,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	private EmployeeRequestAdapter employeeRequestAdapter;
 
 	@Inject
-	private ApplicationRepository_New appRepoNew;
+	private ApplicationRepository appRepoNew;
 
 	@Inject
 	private ApprovalStatusMailTempRepository approvalStatusMailTempRepo;
@@ -161,7 +161,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	private AppDetailInfoRepository repoAppDetail;
 
 	@Inject
-	private ApplicationRepository_New repoApp;
+	private ApplicationRepository repoApp;
 
 	@Inject
 	private RequestOfEachWorkplaceRepository repoRequestWkp;

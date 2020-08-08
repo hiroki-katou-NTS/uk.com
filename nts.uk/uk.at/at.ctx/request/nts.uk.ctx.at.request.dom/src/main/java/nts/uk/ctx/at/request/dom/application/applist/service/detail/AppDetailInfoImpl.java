@@ -16,7 +16,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.i18n.I18NText;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
@@ -97,7 +97,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 	@Inject
 	private RecruitmentAppRepository recRepo;
 	@Inject
-	private ApplicationRepository_New repoApp;
+	private ApplicationRepository repoApp;
 	@Inject
 	private CompltLeaveSimMngRepository compLeaveRepo;
 

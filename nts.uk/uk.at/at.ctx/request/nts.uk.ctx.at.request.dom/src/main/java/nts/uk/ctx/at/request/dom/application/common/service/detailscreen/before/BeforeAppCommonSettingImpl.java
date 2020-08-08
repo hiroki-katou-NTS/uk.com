@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import nts.arc.scoped.session.SessionContextProvider;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.shr.com.context.AppContexts;
@@ -16,7 +16,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class BeforeAppCommonSettingImpl implements BeforeAppCommonSetting {
 
 	 @Inject
-	 ApplicationRepository_New appRepo;
+	 ApplicationRepository appRepo;
 	                  
 
 	/** 1-1.新規画面起動前申請共通設定を取得する */

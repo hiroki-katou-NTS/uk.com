@@ -23,7 +23,7 @@ import nts.gul.mail.send.MailContents;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -162,7 +162,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	private ApplicationReasonRepository applicationReasonRepository;
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 	
 	@Inject
 	private OvertimeRepository overtimeRepository;

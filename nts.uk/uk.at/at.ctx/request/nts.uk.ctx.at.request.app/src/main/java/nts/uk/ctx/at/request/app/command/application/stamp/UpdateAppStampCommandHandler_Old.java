@@ -17,7 +17,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.app.command.application.stamp.command.AppStampCmd;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCancel;
@@ -45,7 +45,7 @@ public class UpdateAppStampCommandHandler_Old extends CommandHandlerWithResult<A
 	private AppStampDetailDomainService applicationStampDetailDomainService;
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 	
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<AppStampCmd> context) {

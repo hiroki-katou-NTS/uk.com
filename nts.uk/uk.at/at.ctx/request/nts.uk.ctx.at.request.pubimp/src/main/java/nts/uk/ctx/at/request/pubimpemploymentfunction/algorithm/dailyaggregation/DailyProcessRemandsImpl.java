@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
@@ -25,7 +25,7 @@ import nts.uk.ctx.at.request.pub.screen.nts.uk.ctx.workflow.pub.employmentfuncti
 public class DailyProcessRemandsImpl implements DailyProcessRemandsPub {
 
 	@Inject
-	private ApplicationRepository_New respo;
+	private ApplicationRepository respo;
 	
 	@Inject
 	private AppDispNameRepository appDispNameRepository;

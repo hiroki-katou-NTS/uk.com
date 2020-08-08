@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.application.stamp;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 //import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
@@ -35,7 +35,7 @@ public class AppStampDetailDefaultImpl implements AppStampDetailDomainService {
 	private DetailAfterUpdate afterProcessDetail;
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 	
 	@Override
 	public void appStampPreProcess(AppStamp_Old appStamp) {

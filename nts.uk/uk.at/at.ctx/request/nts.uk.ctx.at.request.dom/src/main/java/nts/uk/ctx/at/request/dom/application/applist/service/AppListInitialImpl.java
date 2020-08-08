@@ -21,7 +21,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -122,7 +122,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	@Inject
 	private RequestOfEachCompanyRepository repoRequestCompany;
 	@Inject
-	private ApplicationRepository_New repoApp;
+	private ApplicationRepository repoApp;
 	@Inject
 	private WorkplaceAdapter wkpAdapter;
 	@Inject

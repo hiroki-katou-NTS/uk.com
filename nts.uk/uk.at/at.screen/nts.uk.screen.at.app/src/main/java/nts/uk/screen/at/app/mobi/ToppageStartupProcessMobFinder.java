@@ -36,7 +36,7 @@ import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.dom.standardtime.export.GetAgreementPeriodFromYear;
 import nts.uk.ctx.at.record.dom.standardtime.export.GetAgreementTimeOfMngPeriod;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
@@ -135,7 +135,7 @@ public class ToppageStartupProcessMobFinder {
 	@Inject
 	private ApprovalRootStateRepository approvalRootStateRepository;
 	@Inject
-	private ApplicationRepository_New applicationRepository_New;
+	private ApplicationRepository applicationRepository_New;
 	@Inject
 	private AgreementOperationSettingRepository agreementOperationSettingRepository;
 	@Inject

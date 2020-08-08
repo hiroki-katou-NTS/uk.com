@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -61,7 +61,7 @@ public class LateOrLeaveEarlyFinder {
 	private LateOrLeaveEarlyRepository lateOrLeaveEarlyRepository;
 
 	@Inject
-	private ApplicationRepository_New appRepository;
+	private ApplicationRepository appRepository;
 	
 	public ScreenLateOrLeaveEarlyDto getLateOrLeaveEarly(String appID) {
 		String companyID = AppContexts.user().companyId();

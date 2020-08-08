@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import javax.management.RuntimeErrorException;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
@@ -45,7 +45,7 @@ public class KTG002QueryProcessor {
 	private ApprovalRootStateRepository approvalRootStateRepository;
 
 	@Inject
-	private ApplicationRepository_New applicationRepository_New;
+	private ApplicationRepository applicationRepository_New;
 
 	public boolean checkDataApprove() {
 		String cid = AppContexts.user().companyId();

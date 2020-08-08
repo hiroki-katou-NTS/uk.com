@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.application.workchange;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.datawork.IDataWorkService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 
 	@Inject
-	private ApplicationRepository_New appRepository;
+	private ApplicationRepository appRepository;
 
 	@Inject
 	private EmployeeRequestAdapter employeeAdapter;

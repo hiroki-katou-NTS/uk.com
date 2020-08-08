@@ -13,7 +13,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -60,7 +60,7 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 	@Inject
 	private EmployeeRequestAdapter employeeAdapter;
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 	@Inject
 	private AppHolidayWorkRepository appHolidayWorkRepository;
 	@Inject

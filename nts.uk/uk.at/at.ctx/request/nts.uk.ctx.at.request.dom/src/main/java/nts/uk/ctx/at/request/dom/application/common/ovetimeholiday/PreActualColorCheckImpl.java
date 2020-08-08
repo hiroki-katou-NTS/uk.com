@@ -14,7 +14,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -47,7 +47,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	private CommonOvertimeHoliday commonOvertimeHoliday;
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 	
 	@Inject
 	public RangeOfDayTimeZoneService rangeOfDayTimeZoneService;
