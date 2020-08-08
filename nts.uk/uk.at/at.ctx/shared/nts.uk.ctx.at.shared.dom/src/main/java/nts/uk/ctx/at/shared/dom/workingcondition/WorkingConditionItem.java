@@ -224,4 +224,13 @@ public class WorkingConditionItem extends AggregateRoot {
 		
 	}
 
+	public WorkingConditionItem(String historyId, ManageAtr scheduleManagementAtr, String employeeId) {
+		super();
+		this.historyId = historyId;
+		this.scheduleManagementAtr = scheduleManagementAtr;
+		this.employeeId = employeeId;
+	}
+	
+	
+
 }

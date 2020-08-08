@@ -106,6 +106,7 @@ import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessType
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.AffiliationInforState;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ReflectWorkInforDomainService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
@@ -119,6 +120,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
@@ -216,6 +218,19 @@ public class ScheduleCreatorExecutionTransaction {
 	
 	@Inject
 	private ScheCreExeWorkTimeHandler workTimeHandler;
+	
+	@Inject
+	private WorkTypeRepository workTypeRepo;
+	
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepository;
+	
+	@Inject
+	private WorkTimeSettingService workTimeSettingService;
+	
+	@Inject
+	private BasicScheduleService basicScheduleService;
+
 
 	public void execute(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, String companyId, String exeId,
@@ -518,31 +533,30 @@ public class ScheduleCreatorExecutionTransaction {
 
 		// 「社員の在職状態」から該当社員、該当日の在職状態を取得する
 		// EA修正履歴 No2716
-		List<EmploymentInfoImported> listEmploymentInfo = masterCache.getMapEmploymentStatus()
-				.get(creator.getEmployeeId());
-		Optional<EmploymentInfoImported> optEmploymentInfo = Optional.empty();
+		List<ScheManaStatuTempo> listEmploymentInfo = masterCache.getListManaStatuTempo();
+		Optional<ScheManaStatuTempo> optEmploymentInfo = Optional.empty();
 
 		if (listEmploymentInfo != null) {
 			optEmploymentInfo = listEmploymentInfo.stream()
-					.filter(employmentInfo -> employmentInfo.getStandardDate().equals(dateInPeriod)).findFirst();
+					.filter(employmentInfo -> employmentInfo.getDate().equals(dateInPeriod)).findFirst();
 		}
 		// データ（処理状態付き）を生成して返す
 		// if 退職、取得できない
 		// status employment equal RETIREMENT (退職)
 		if (!optEmploymentInfo.isPresent()
-				|| optEmploymentInfo.get().getEmploymentState() == ScheduleCreatorExecutionCommandHandler.RETIREMENT) {
+				|| optEmploymentInfo.get().getScheManaStatus().value == ScheManaStatus.NOT_ENROLLED.value) {
 
 			// return 社員の当日在職状態＝Null, 社員の当日労働条件＝Null, エラー＝Null, 勤務予定＝Null, 処理状態＝処理終了する
 			DataProcessingStatusResult result = new DataProcessingStatusResult(null, null,
 					ProcessingStatus.valueOf(ProcessingStatus.END_PROCESS.value), null, null, null);
 			return result;
 		}
-		EmploymentInfoImported employmentInfo = optEmploymentInfo.get();
+		ScheManaStatuTempo employmentInfo = optEmploymentInfo.get();
 		// 
 		// if 入社前OR出向中
 		// status employment equal BEFORE_JOINING (入社前) or equal ON_LOAN (出向中)
-		if (employmentInfo.getEmploymentState() == ScheduleCreatorExecutionCommandHandler.BEFORE_JOINING
-				|| employmentInfo.getEmploymentState() == ScheduleCreatorExecutionCommandHandler.ON_LOAN) {
+		if (employmentInfo.getScheManaStatus() == ScheManaStatus.INVALID_DATA
+				|| employmentInfo.getScheManaStatus() == ScheManaStatus.DO_NOT_MANAGE_SCHEDULE) {
 
 			// return 社員の当日在職状態＝Null 社員の当日労働条件＝Null エラー＝Null 勤務予定＝Null 処理状態＝次の日へ
 			DataProcessingStatusResult result = new DataProcessingStatusResult(null, null,
@@ -609,7 +623,10 @@ public class ScheduleCreatorExecutionTransaction {
 		// 空の勤務予定を作成する
 		// データ（処理状態付き）を生成して返す
 		return new DataProcessingStatusResult(CID, null,
-				ProcessingStatus.valueOf(ProcessingStatus.NORMAL_PROCESS.value), null, workingConditionItem,
+				ProcessingStatus.valueOf(ProcessingStatus.NORMAL_PROCESS.value), 
+				new WorkSchedule("", null, null, null, null, 
+						new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty())
+				, workingConditionItem,
 				employmentInfo);
 
 	}
@@ -819,27 +836,32 @@ public class ScheduleCreatorExecutionTransaction {
 
 			// Outputを確認する
 			List<TimezoneUse> lstTimeZone = new ArrayList<>();
-			if (output.getExecutionLog().isPresent()) {
-				// エラーあり
-				throw new BusinessException(output.getExecutionLog().get().getErrorContent());
+			if(output == null) {
+				lstTimeZone = new ArrayList<>();
 			} else {
-				// Nullの場合
-				// 勤務予定時間帯を取得する
-				if (output.getInformation().getWorkTimeCode() == null) {
-					// 勤務予定時間帯を返す
-					lstTimeZone = new ArrayList<>();
+				if (output.getExecutionLog().isPresent()) {
+					// エラーあり
+					throw new BusinessException(output.getExecutionLog().get().getErrorContent());
 				} else {
-					// Nullではない場合
-					// 所定時間帯を取得する
-					PredetermineTimeSetForCalc getTimezone = workTimeService.getPredeterminedTimezone(
-							AppContexts.user().companyId(), output.getInformation().getWorkTimeCode().v(),
-							output.getInformation().getWorkTypeCode().v(), null);
-					// 取得できた所定時間帯Listを絞り込みする
-					// 勤務予定時間帯を返す
-					lstTimeZone = getTimezone.getTimezones().stream().filter(x -> x.getUseAtr() == UseSetting.USE)
-							.collect(Collectors.toList());
-				}
-			} 
+					// Nullの場合
+					// 勤務予定時間帯を取得する
+					if (output.getInformation().getWorkTimeCode() == null) {
+						// 勤務予定時間帯を返す
+						lstTimeZone = new ArrayList<>();
+					} else {
+						// Nullではない場合
+						// 所定時間帯を取得する
+						PredetermineTimeSetForCalc getTimezone = workTimeService.getPredeterminedTimezone(
+								AppContexts.user().companyId(), output.getInformation().getWorkTimeCode().v(),
+								output.getInformation().getWorkTypeCode().v(), null);
+						// 取得できた所定時間帯Listを絞り込みする
+						// 勤務予定時間帯を返す
+						lstTimeZone = getTimezone.getTimezones().stream().filter(x -> x.getUseAtr() == UseSetting.USE)
+								.collect(Collectors.toList());
+					}
+				} 
+			}
+			
 			// -----------↑
 			// 「パラメータ（Temporary）。社員の短時間勤務一覧」から該当の短時間勤務を取得する
 			// 勤務情報、勤務予定時間帯、社員の短時間勤務を返す
@@ -863,6 +885,7 @@ public class ScheduleCreatorExecutionTransaction {
 		}
 		return createScheduleOneDate;
 	}
+
 	
 	public OutputCreateScheduleOneDate putDataWorkschedule(WorkInformation information,
 			PrepareWorkOutput prepareWorkOutput, IntegrationOfDaily integrationOfDaily,
@@ -870,7 +893,7 @@ public class ScheduleCreatorExecutionTransaction {
 			List<Integer> attendanceItemIdList, DailyRecordToAttendanceItemConverter itemConverter,
 			List<ItemValue> listItemValue) {
 		// 勤務情報が正常な状態かをチェックする
-		WorkInformation.Require require = new WorkInformationImpl();
+		WorkInformation.Require require = new WorkInformationImpl(workTypeRepo, workTimeSettingRepository, workTimeSettingService, basicScheduleService);
 		ErrorStatusWorkInfo checkErrorCondition = information.checkErrorCondition(require);
 
 		// 正常の場合
@@ -996,17 +1019,16 @@ public class ScheduleCreatorExecutionTransaction {
 		PrepareWorkOutput prepareWorkOutput = null;
 		// パラメータの勤務Mapを確認する
 		// データあり
-		if (results.get(dateInPeriod) == null) {
+		if (results.get(dateInPeriod) != null) {
 			return new PrepareWorkOutput(results.get(dateInPeriod), null, null, Optional.empty());
-		}
-		;
+		};
 		Optional<ScheManaStatuTempo> optEmploymentInfo = Optional.empty();
 		if (!masterCache.getListManaStatuTempo().isEmpty()) {
 			optEmploymentInfo = masterCache.getListManaStatuTempo().stream()
 					.filter(employmentInfo -> employmentInfo.getDate().equals(dateInPeriod)).findFirst();
 		}
 		// データなし
-		// 社員の在職状態を確認する chưa làm xong
+		// 社員の在職状態を確認する 
 		// if 休職中、休業中
 		// if 休職中
 		if (!results.isEmpty() && (optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.ON_LEAVE)) {
@@ -1602,35 +1624,44 @@ public class ScheduleCreatorExecutionTransaction {
 	@AllArgsConstructor
 	public static class WorkInformationImpl implements WorkInformation.Require{
 
+private final String companyId = AppContexts.user().companyId();
+		
+		@Inject
+		private WorkTypeRepository workTypeRepo;
+		
+		@Inject
+		private WorkTimeSettingRepository workTimeSettingRepository;
+		
+		@Inject
+		private WorkTimeSettingService workTimeSettingService;
+		
+		@Inject
+		private BasicScheduleService basicScheduleService;
+
+		@Override
+		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
+			 return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
+		}
+
 		@Override
 		public Optional<WorkType> findByPK(String workTypeCd) {
-			// TODO Auto-generated method stub
-			return null;
+			return workTypeRepo.findByPK(companyId, workTypeCd);
 		}
 
 		@Override
 		public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
-			// TODO Auto-generated method stub
-			return null;
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
 		@Override
-		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd,
-				Integer workNo) {
-			// TODO Auto-generated method stub
-			return null;
+		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd,
+				String workTypeCd, Integer workNo) {
+			return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
 		}
 
 		@Override
 		public WorkStyle checkWorkDay(String workTypeCode) {
-			// TODO Auto-generated method stub
-			return null;
+			return basicScheduleService.checkWorkDay(workTypeCode);
 		}
 		
 	}

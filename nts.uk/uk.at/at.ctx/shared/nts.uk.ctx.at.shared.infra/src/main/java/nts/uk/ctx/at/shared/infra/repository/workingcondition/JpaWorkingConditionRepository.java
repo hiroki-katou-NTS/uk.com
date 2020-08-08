@@ -31,17 +31,19 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondPK_;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond_;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkingConditionRepository.
@@ -732,12 +734,31 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	private final static String SELECT_BY_ID_DATE = new StringBuilder("SELECT item FROM KshmtWorkingCondItem item ")
+			.append(" LEFT JOIN item.kshmtWorkingCond hst ")
+			.append(" WHERE hst.cid = :cid ")
+			.append(" AND hst.strD <= :ymds ")
+			.append(" AND hst.endD >= :ymds ")
+			.append(" AND item.sid = :sid").toString();
+//	private static final String SELECT_BY_ID_DATE = "SELECT item FROM KshmtWorkingCondItem item LEFT JOIN KshmtWorkingCond hst "
+//			+ "ON item.sid = hst.sid and item.historyId = hst.kshmtWorkingCondPK.historyId "
+//			+ "WHERE hst.cid = :cid AND hst.strD <= :ymds AND hst.strD >= :ymds AND item.sid = :sid ";
+	// [6-1] 社員を指定して年月日時点の履歴項目を取得する ( 会社ID, 年月日, 社員ID )
 	@Override
 	public Optional<WorkingConditionItem> getWorkingConditionItemByEmpIDAndDate(String companyID, GeneralDate ymd,
-			String empID) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
+			String employeeID) {
+		Optional<WorkingConditionItem> workSchedule = this.queryProxy().query(SELECT_BY_ID_DATE, KshmtWorkingCondItem.class)
+				.setParameter("cid", companyID)
+				.setParameter("sid", employeeID)
+				.setParameter("ymds", ymd)
+				.getSingle(c -> this.toDomain(c));
+		
+		return workSchedule;
+	}
+	
+	public WorkingConditionItem toDomain(KshmtWorkingCondItem c) {
+		WorkingConditionItem conditionItem = new WorkingConditionItem(c.getHistoryId(), ManageAtr.valueOf(c.getScheManagementAtr()), c.getSid());
+		return conditionItem;
 	}
 
 	@Override
