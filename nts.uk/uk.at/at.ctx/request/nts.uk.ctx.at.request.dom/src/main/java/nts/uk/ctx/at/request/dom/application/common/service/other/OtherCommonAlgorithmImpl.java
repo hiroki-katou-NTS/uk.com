@@ -28,7 +28,6 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
@@ -648,12 +647,12 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	}
 	
 	@Override
-	public AppOverTime getPreApplication(String employeeID, PrePostAtr_Old prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType_Old appType) {
+	public AppOverTime getPreApplication(String employeeID, PrePostAtr prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType_Old appType) {
 		String companyID =  AppContexts.user().companyId();
 		AppOverTime result = new AppOverTime();
-		if (prePostAtr == PrePostAtr_Old.POSTERIOR) {
+		if (prePostAtr == PrePostAtr.POSTERIOR) {
 			if(preDisplayAtr == UseAtr.USE){
-				List<Application_New> applicationLst = applicationRepository.getApp(employeeID, appDate, PrePostAtr_Old.PREDICT.value, appType.value);
+				List<Application_New> applicationLst = applicationRepository.getApp(employeeID, appDate, PrePostAtr.PREDICT.value, appType.value);
 				if(!CollectionUtil.isEmpty(applicationLst)){
 					Application_New applicationOvertime = Application_New.firstCreate(companyID, prePostAtr, appDate, appType, employeeID, new AppReason(Strings.EMPTY));
 					applicationOvertime.setAppDate(applicationLst.get(0).getAppDate());

@@ -16,7 +16,7 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
@@ -131,7 +131,7 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 		AppHolidayWorkPreAndReferDto result = new AppHolidayWorkPreAndReferDto();
 			if(overtimeRestAppCommonSet.isPresent() && overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.USE.value){
 				List<Application_New> application = this.applicationRepository.getApp(employeeId,
-						appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr_Old.PREDICT.value,
+						appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value,
 						ApplicationType_Old.BREAK_TIME_APPLICATION.value);
 				if(!CollectionUtil.isEmpty(application)){
 					result.setAppDate(application.get(0).getAppDate());
@@ -204,7 +204,7 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 			String appDate, ApprovalFunctionSetting approvalFunctionSetting, List<CaculationTime> breakTimes) {
 		AppHolidayWorkPreAndReferDto result = new AppHolidayWorkPreAndReferDto();
 		// 事前事後区分チェック, 申請日入力チェック
-		if(prePostAtr == PrePostAtr_Old.PREDICT.value && appDate == null){
+		if(prePostAtr == PrePostAtr.PREDICT.value && appDate == null){
 			return result;
 		}
 		//Imported(申請承認)「勤務実績」を取得する

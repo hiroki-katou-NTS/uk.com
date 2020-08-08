@@ -23,7 +23,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
@@ -180,7 +180,7 @@ public class SaveChangeAbsDateCommandHandler
 		String employeeID = command.getAppCmd().getEmployeeID();
 		ApplicationType_Old appType = ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION;
 		Application_New commonApp = Application_New.firstCreate(companyID,
-				EnumAdaptor.valueOf(command.getAppCmd().getPrePostAtr(), PrePostAtr_Old.class), absCmd.getAppDate(),
+				EnumAdaptor.valueOf(command.getAppCmd().getPrePostAtr(), PrePostAtr.class), absCmd.getAppDate(),
 				appType, employeeID, new AppReason(appReason));
 		if (!AppContexts.user().employeeId().equals(employeeID)) {
 			commonApp.setEnteredPersonID(AppContexts.user().employeeId());

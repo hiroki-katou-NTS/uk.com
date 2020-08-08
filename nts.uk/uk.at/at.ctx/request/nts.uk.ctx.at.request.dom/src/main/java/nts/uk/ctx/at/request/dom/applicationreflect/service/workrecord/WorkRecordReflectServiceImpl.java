@@ -3,7 +3,8 @@ package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 /*import nts.arc.time.GeneralDate;*/
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.WorkChangeCommonReflectPara;
 
 @Stateless
@@ -12,7 +13,7 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 	private AppReflectProcessRecord reflectRecord;
 	@Override
 	public void workRecordreflect(AppReflectRecordPara appRecordInfor) {
-		boolean isPre = appRecordInfor.getPrePosAtr() == PrePostAtr_Old.PREDICT ? true : false;
+		boolean isPre = appRecordInfor.getPrePosAtr() == PrePostAtr.PREDICT ? true : false;
 		//申請種類
 		switch (appRecordInfor.getAppType()) {
 		case OVER_TIME_APPLICATION:

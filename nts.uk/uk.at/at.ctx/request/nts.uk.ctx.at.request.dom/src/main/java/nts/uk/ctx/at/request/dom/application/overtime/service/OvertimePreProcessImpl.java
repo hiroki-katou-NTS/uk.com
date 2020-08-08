@@ -14,7 +14,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
@@ -149,7 +149,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	public AppOvertimeReference getResultContentActual(int prePostAtr, String workType, String siftCode, String companyID, String employeeID, String appDate) {
 		AppOvertimeReference result = null;
 		// Input．事前事後区分をチェック
-		if(PrePostAtr_Old.PREDICT.value == prePostAtr) {
+		if(PrePostAtr.PREDICT.value == prePostAtr) {
 			return result;
 		}
 		// 日付入力したかチェックする

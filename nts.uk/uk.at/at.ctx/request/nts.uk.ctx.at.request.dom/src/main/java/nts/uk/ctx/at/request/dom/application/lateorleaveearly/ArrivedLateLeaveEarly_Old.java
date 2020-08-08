@@ -14,7 +14,6 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 @Setter
 @Getter
@@ -31,7 +30,7 @@ public class ArrivedLateLeaveEarly_Old extends Application_New{
 			AppReason appReason, ApplicationType appType, String employeeID, Optional<GeneralDate> startDate,
 			Optional<GeneralDate> endDate, ReflectionInformation_New reflectionInformation) {
 		super(version, companyID, appID, 
-				EnumAdaptor.valueOf(prePostAtr.value, PrePostAtr_Old.class), 
+				EnumAdaptor.valueOf(prePostAtr.value, PrePostAtr.class), 
 				inputDate, enteredPersonID, reversionReason, appDate, appReason, 
 				EnumAdaptor.valueOf(appType.value, ApplicationType_Old.class),
 				employeeID, startDate, endDate, reflectionInformation);

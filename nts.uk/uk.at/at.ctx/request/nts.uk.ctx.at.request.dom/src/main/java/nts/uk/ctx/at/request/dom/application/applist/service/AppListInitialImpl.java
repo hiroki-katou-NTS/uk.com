@@ -18,11 +18,12 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
@@ -62,8 +63,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchieve
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 //import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.setting.UseDivision;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSet;
@@ -101,7 +102,6 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 /**
  * 
  * @author hoatt
@@ -704,10 +704,10 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 
 		List<ApplicationFullOutput> lstOtPost = lstAppFull.stream().filter(c -> c.getApplication().isAppOverTime())
-				.filter(c -> c.getApplication().getPrePostAtr().equals(PrePostAtr_Old.POSTERIOR))
+				.filter(c -> c.getApplication().getPrePostAtr().equals(PrePostAtr.POSTERIOR))
 				.collect(Collectors.toList());
 		List<ApplicationFullOutput> lstHdPost = lstAppFull.stream().filter(c -> c.getApplication().isAppHdWork())
-				.filter(c -> c.getApplication().getPrePostAtr().equals(PrePostAtr_Old.POSTERIOR))
+				.filter(c -> c.getApplication().getPrePostAtr().equals(PrePostAtr.POSTERIOR))
 				.collect(Collectors.toList());
 
 		// 事後申請で且申請種類が「残業申請」または「休出時間申請」の場合 (Xin sau của xin làm thêm hoặc làm ngày nghỉ)
@@ -726,7 +726,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				//ドメインモデル「申請」を取得する
 				//※2018/04/17
 				//複数存在する場合は、最後に新規登録された内容を対象とする
-				List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr_Old.PREDICT.value,
+				List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr.PREDICT.value,
 						ApplicationType_Old.OVER_TIME_APPLICATION.value);
 				if (lstAppPre.isEmpty()) {
 					checkColor = new CheckColorTime(appID, 1);
@@ -806,7 +806,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			//承認一覧表示設定.休出の事前申請
 			if (displaySet.getHwAdvanceDisAtr().equals(DisplayAtr.DISPLAY)) {// 表示する
 				//ドメインモデル「申請」を取得する
-				List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr_Old.PREDICT.value,
+				List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr.PREDICT.value,
 						ApplicationType_Old.BREAK_TIME_APPLICATION.value);
 				if (lstAppPre.isEmpty()) {
 					checkColor = new CheckColorTime(appID, 1);
@@ -1828,7 +1828,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				int detailSet = this.finddetailSet(lstMaster, appID);
 				AppOverTimeInfoFull overTime = this.find005(lstAppOt, appID);
 				AppPrePostGroup subData = this.findSubData(lstSubData, appID);
-				if (appMode.equals(ApplicationListAtr.APPROVER) && app.getPrePostAtr().equals(PrePostAtr_Old.POSTERIOR)) {//承認モード(事後)
+				if (appMode.equals(ApplicationListAtr.APPROVER) && app.getPrePostAtr().equals(PrePostAtr.POSTERIOR)) {//承認モード(事後)
 					content = contentDtail.getContentOverTimeAf(overTime, detailSet, appReasonDisAtr, appReason,
 							subData);
 				} else {
@@ -1862,7 +1862,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			case BREAK_TIME_APPLICATION: {//休出時間申請
 				AppHolidayWorkFull hdWork = this.find010(ldtAppHdWork, appID);
 				AppPrePostGroup subData = this.findSubData(lstSubData, appID);
-				if (appMode.equals(ApplicationListAtr.APPROVER) && app.getPrePostAtr().equals(PrePostAtr_Old.POSTERIOR)) {//承認モード(事後)
+				if (appMode.equals(ApplicationListAtr.APPROVER) && app.getPrePostAtr().equals(PrePostAtr.POSTERIOR)) {//承認モード(事後)
 					content = contentDtail.getContentHdWorkAf(hdWork, appReasonDisAtr, appReason, subData);
 				} else {
 					content = contentDtail.getContentHdWorkBf(hdWork, companyID, appID, appReasonDisAtr, appReason,

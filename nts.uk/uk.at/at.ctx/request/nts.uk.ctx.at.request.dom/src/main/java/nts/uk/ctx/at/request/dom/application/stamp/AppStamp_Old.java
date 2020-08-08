@@ -14,7 +14,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
@@ -48,7 +48,7 @@ public class AppStamp_Old extends AggregateRoot {
 	public static AppStamp_Old createGoOutPermitStamp(String companyID, GeneralDate appDate, String employeeID, AppReason appReason, List<AppStampGoOutPermit> appStampGoOutPermits){
 		return new AppStamp_Old(
 				StampRequestMode_Old.STAMP_GO_OUT_PERMIT, 
-				Application_New.firstCreate(companyID, PrePostAtr_Old.PREDICT, appDate, ApplicationType_Old.STAMP_APPLICATION, employeeID, appReason), 
+				Application_New.firstCreate(companyID, PrePostAtr.PREDICT, appDate, ApplicationType_Old.STAMP_APPLICATION, employeeID, appReason), 
 				appStampGoOutPermits, 
 				Collections.emptyList(), 
 				Collections.emptyList(), 
@@ -58,7 +58,7 @@ public class AppStamp_Old extends AggregateRoot {
 	public static AppStamp_Old createWorkStamp(String companyID, GeneralDate appDate, String employeeID, AppReason appReason, List<AppStampWork> appStampWorks){
 		return new AppStamp_Old(
 				StampRequestMode_Old.STAMP_WORK, 
-				Application_New.firstCreate(companyID, PrePostAtr_Old.POSTERIOR, appDate, ApplicationType_Old.STAMP_APPLICATION, employeeID, appReason), 
+				Application_New.firstCreate(companyID, PrePostAtr.POSTERIOR, appDate, ApplicationType_Old.STAMP_APPLICATION, employeeID, appReason), 
 				Collections.emptyList(), 
 				appStampWorks, 
 				Collections.emptyList(), 
@@ -68,7 +68,7 @@ public class AppStamp_Old extends AggregateRoot {
 	public static AppStamp_Old createCancelStamp(String companyID, GeneralDate appDate, String employeeID, AppReason appReason, List<AppStampCancel> appStampCancels){
 		return new AppStamp_Old(
 				StampRequestMode_Old.STAMP_CANCEL, 
-				Application_New.firstCreate(companyID, PrePostAtr_Old.POSTERIOR, appDate, ApplicationType_Old.STAMP_APPLICATION, employeeID, appReason), 
+				Application_New.firstCreate(companyID, PrePostAtr.POSTERIOR, appDate, ApplicationType_Old.STAMP_APPLICATION, employeeID, appReason), 
 				Collections.emptyList(), 
 				Collections.emptyList(), 
 				appStampCancels, 
@@ -78,7 +78,7 @@ public class AppStamp_Old extends AggregateRoot {
 	public static AppStamp_Old createOnlineRecordStamp(String companyID, GeneralDate appDate, String employeeID, AppReason appReason, Optional<AppStampOnlineRecord> appStampOnlineRecord){
 		return new AppStamp_Old(
 				StampRequestMode_Old.STAMP_ONLINE_RECORD, 
-				Application_New.firstCreate(companyID, PrePostAtr_Old.POSTERIOR, appDate, ApplicationType_Old.STAMP_APPLICATION, employeeID, appReason), 
+				Application_New.firstCreate(companyID, PrePostAtr.POSTERIOR, appDate, ApplicationType_Old.STAMP_APPLICATION, employeeID, appReason), 
 				Collections.emptyList(), 
 				Collections.emptyList(), 
 				Collections.emptyList(), 
@@ -88,7 +88,7 @@ public class AppStamp_Old extends AggregateRoot {
 	public static AppStamp_Old createOtherStamp(String companyID, GeneralDate appDate, String employeeID, AppReason appReason, List<AppStampWork> appStampWorks){
 		return new AppStamp_Old(
 				StampRequestMode_Old.OTHER, 
-				Application_New.firstCreate(companyID, PrePostAtr_Old.POSTERIOR, appDate, ApplicationType_Old.STAMP_APPLICATION, employeeID, appReason), 
+				Application_New.firstCreate(companyID, PrePostAtr.POSTERIOR, appDate, ApplicationType_Old.STAMP_APPLICATION, employeeID, appReason), 
 				Collections.emptyList(), 
 				appStampWorks, 
 				Collections.emptyList(), 

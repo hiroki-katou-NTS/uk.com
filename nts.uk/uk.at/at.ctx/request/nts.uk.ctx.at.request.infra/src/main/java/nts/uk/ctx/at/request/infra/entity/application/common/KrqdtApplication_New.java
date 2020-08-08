@@ -18,7 +18,7 @@ import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
@@ -131,7 +131,7 @@ public class KrqdtApplication_New extends UkJpaEntity {
 				.version(this.version)
 				.companyID(this.krqdpApplicationPK.companyID)
 				.appID(this.krqdpApplicationPK.appID)
-				.prePostAtr(EnumAdaptor.valueOf(this.prePostAtr, PrePostAtr_Old.class))
+				.prePostAtr(EnumAdaptor.valueOf(this.prePostAtr, PrePostAtr.class))
 				.inputDate(this.inputDate)
 				.enteredPersonID(this.enteredPersonID)
 				.reversionReason(new AppReason(this.reversionReason))

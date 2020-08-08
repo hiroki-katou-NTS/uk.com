@@ -13,7 +13,7 @@ import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
@@ -122,7 +122,7 @@ public class ApplicationDto_New {
 				appDto.getVersion(), 
 				appDto.getCompanyID(), 
 				appDto.getApplicationID(),
-				EnumAdaptor.valueOf(appDto.getPrePostAtr(), PrePostAtr_Old.class), 
+				EnumAdaptor.valueOf(appDto.getPrePostAtr(), PrePostAtr.class), 
 				GeneralDateTime.fromString(appDto.getInputDate(), DATE_TIME_FORMAT), 
 				appDto.getEnteredPersonSID(), 
 				new AppReason(appDto.getReversionReason()), 

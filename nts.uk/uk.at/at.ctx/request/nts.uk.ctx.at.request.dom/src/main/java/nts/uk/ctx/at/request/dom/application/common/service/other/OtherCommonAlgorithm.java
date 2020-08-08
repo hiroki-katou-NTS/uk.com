@@ -9,7 +9,6 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
@@ -176,7 +175,7 @@ public interface OtherCommonAlgorithm {
 	 * @param appType 申請種類
 	 * @return
 	 */
-	public AppOverTime getPreApplication(String employeeID, PrePostAtr_Old prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType_Old appType);
+	public AppOverTime getPreApplication(String employeeID, PrePostAtr prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType_Old appType);
 	
 	/**
 	 * 12.マスタ勤務種類、就業時間帯データをチェック

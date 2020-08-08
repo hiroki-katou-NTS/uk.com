@@ -15,14 +15,16 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.closurestatus.ClosureStatusManagementRequestImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExeStateOfCalAndSumImport;
@@ -34,7 +36,6 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymont
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRecord {
@@ -255,7 +256,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 			List<Application_New> lstApp = appForSid.get(sid);
 			lstApp = lstApp.stream().sorted((a,b) -> a.getInputDate().compareTo(b.getInputDate())).collect(Collectors.toList());
 			lstApp.stream().forEach(app -> {
-				if((app.getPrePostAtr().equals(PrePostAtr_Old.PREDICT)&&
+				if((app.getPrePostAtr().equals(PrePostAtr.PREDICT)&&
 						app.getAppType().equals(ApplicationType_Old.OVER_TIME_APPLICATION)
 					|| app.getAppType().equals(ApplicationType_Old.BREAK_TIME_APPLICATION))
 					|| app.getAppType().equals(ApplicationType_Old.GO_RETURN_DIRECTLY_APPLICATION)

@@ -23,7 +23,7 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingDa
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.PreAppOvertimeDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatus;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
@@ -176,7 +176,7 @@ public class CheckConvertPrePost {
 				result.setAllPreAppPanelFlg(true);
 				AppOverTime appOverTime = otherCommonAlgorithm.getPreApplication(
 						employeeID,
-						EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class),
+						EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
 						overtimeRestAppCommonSet.getPreDisplayAtr(), 
 						appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT),
 						ApplicationType_Old.OVER_TIME_APPLICATION);
@@ -197,7 +197,7 @@ public class CheckConvertPrePost {
 				List<DivergenceReason> divergenceReasons = commonOvertimeHoliday
 						.getDivergenceReasonForm(
 								companyID,
-								EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class),
+								EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
 								overtimeRestAppCommonSet.getDivergenceReasonFormAtr(),
 								ApplicationType_Old.OVER_TIME_APPLICATION);
 				convertToDivergenceReasonDto(divergenceReasons,result);
@@ -207,7 +207,7 @@ public class CheckConvertPrePost {
 			//01-07_乖離理由を取得
 			result.setDisplayDivergenceReasonInput(
 					commonOvertimeHoliday.displayDivergenceReasonInput(
-							EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class), 
+							EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
 							overtimeRestAppCommonSet.getDivergenceReasonInputAtr()));
 		} else {
 			if(overtimeRestAppCommonSet.getPerformanceDisplayAtr().value == UseAtr.USE.value){
@@ -227,7 +227,7 @@ public class CheckConvertPrePost {
 				preExcessDisplaySetting, 
 				performanceExcessAtr, 
 				ApplicationType_Old.OVER_TIME_APPLICATION, 
-				EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class), 
+				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
 				Collections.emptyList(),
 				otTimeLst,
 				opAppBefore,

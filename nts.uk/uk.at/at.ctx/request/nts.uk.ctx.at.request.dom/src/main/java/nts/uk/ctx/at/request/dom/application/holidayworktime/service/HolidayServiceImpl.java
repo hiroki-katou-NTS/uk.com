@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
@@ -21,8 +20,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -40,15 +38,12 @@ import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColo
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreAppCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput_Old;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMng;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
@@ -65,25 +60,19 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTim
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTypeHolidayWork;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
-import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.application.overtime.service.output.RecordWorkOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
-import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
@@ -602,7 +591,7 @@ public class HolidayServiceImpl implements HolidayService {
 	}
 	@Override
 	public HdWorkDispInfoWithDateOutput initDataNew(String companyID, String employeeID, Optional<GeneralDate> appDate,
-			GeneralDate baseDate, PrePostAtr_Old prePostAtr, AppEmploymentSetting appEmploymentSetting,
+			GeneralDate baseDate, PrePostAtr prePostAtr, AppEmploymentSetting appEmploymentSetting,
 			List<WorkTimeSetting> workTimeLst, ApprovalFunctionSetting approvalFunctionSet,
 			RequestSetting requestSetting, List<AchievementOutput> achievementOutputLst) {
 		HdWorkDispInfoWithDateOutput result = new HdWorkDispInfoWithDateOutput();

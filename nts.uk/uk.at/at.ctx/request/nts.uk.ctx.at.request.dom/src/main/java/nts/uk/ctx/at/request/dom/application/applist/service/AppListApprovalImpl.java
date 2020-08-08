@@ -6,12 +6,9 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterApproval_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSet;
 import nts.uk.shr.com.context.AppContexts;
 /**
@@ -30,7 +27,7 @@ public class AppListApprovalImpl implements AppListApprovalRepository{
 	 * 15 - 申請一覧承認登録チェック
 	 */
 	@Override
-	public boolean checkResAppvListApp(AppCommonSet appCommonSet, PrePostAtr_Old prePostAtr, String achievement,
+	public boolean checkResAppvListApp(AppCommonSet appCommonSet, PrePostAtr prePostAtr, String achievement,
 			String workOperation) {
 		// TODO Auto-generated method stub
 		return true;

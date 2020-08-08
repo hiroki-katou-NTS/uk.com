@@ -18,7 +18,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
@@ -46,7 +46,7 @@ public class AppHdTimeNotReflectedPubImpl implements AppHdTimeNotReflectedPub {
 		String companyId = AppContexts.user().companyId();
 		Map<String, AppHolidayWork> mapHd = new HashMap<>();
 		List<ApplicationHdTimeExport> results = new ArrayList<>();
-		List<Application_New> appHd = repoApplication.getListAppByType(companyId, sId, startDate, endDate, PrePostAtr_Old.POSTERIOR.value,
+		List<Application_New> appHd = repoApplication.getListAppByType(companyId, sId, startDate, endDate, PrePostAtr.POSTERIOR.value,
 				ApplicationType_Old.BREAK_TIME_APPLICATION.value, Arrays.asList(ReflectedState_New.NOTREFLECTED.value,ReflectedState_New.WAITREFLECTION.value));
 		List<String> lstId = new ArrayList<>();
 		Map<GeneralDate, String> mapApp = new HashMap<>();

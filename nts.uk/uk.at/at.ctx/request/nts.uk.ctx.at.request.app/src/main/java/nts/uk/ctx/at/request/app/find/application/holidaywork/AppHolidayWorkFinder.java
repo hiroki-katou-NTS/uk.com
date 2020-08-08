@@ -25,7 +25,7 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWork
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkDetailDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
@@ -41,14 +41,11 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput_Old;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput_Old;
 //import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkDetailOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
@@ -470,7 +467,7 @@ public class AppHolidayWorkFinder {
 				preExcessDisplaySetting, 
 				performanceExcessAtr, 
 				ApplicationType_Old.BREAK_TIME_APPLICATION, 
-				EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class),
+				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
 				breaktimeInputCaculations, 
 				otTimeLst, 
 				preAppCheckResult.opAppBefore, 

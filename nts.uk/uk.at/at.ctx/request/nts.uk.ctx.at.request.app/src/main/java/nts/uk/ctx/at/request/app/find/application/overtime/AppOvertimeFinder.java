@@ -26,7 +26,6 @@ import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AgreeOverTimeDto;
-import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppCommonSettingOutputDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOverTimeMobDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetailDto;
@@ -47,7 +46,7 @@ import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingD
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.Changeable;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -87,7 +86,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeAndSiftTyp
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.output.RecordWorkOutput;
 import nts.uk.ctx.at.request.dom.setting.UseDivision;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSettingRepository;
@@ -330,7 +328,7 @@ public class AppOvertimeFinder {
 				preExcessDisplaySetting, 
 				performanceExcessAtr, 
 				ApplicationType_Old.OVER_TIME_APPLICATION, 
-				EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class),
+				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
 				overtimeInputCaculations, 
 				otTimeLst, 
 				opAppBefore == null ? Optional.empty() : Optional.of(ApplicationDto_New.toEntity(opAppBefore)), 
@@ -411,7 +409,7 @@ public class AppOvertimeFinder {
 				preExcessDisplaySetting, 
 				performanceExcessAtr, 
 				ApplicationType_Old.OVER_TIME_APPLICATION, 
-				EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class),
+				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
 				overtimeInputCaculations, 
 				otTimeLst, 
 				opAppBefore == null ? Optional.empty() : Optional.of(ApplicationDto_New.toEntity(opAppBefore)), 
@@ -526,7 +524,7 @@ public class AppOvertimeFinder {
 			List<DivergenceReason> divergenceReasons = commonOvertimeHoliday
 					.getDivergenceReasonForm(
 							companyID,
-							EnumAdaptor.valueOf(overTimeDto.getApplication().getPrePostAtr(), PrePostAtr_Old.class),
+							EnumAdaptor.valueOf(overTimeDto.getApplication().getPrePostAtr(), PrePostAtr.class),
 							overtimeRestAppCommonSet.getDivergenceReasonFormAtr(),
 							ApplicationType_Old.OVER_TIME_APPLICATION);
 			convertToDivergenceReasonDto(divergenceReasons,overTimeDto);
@@ -633,7 +631,7 @@ public class AppOvertimeFinder {
 		//01-07_乖離理由を取得
 		overTimeDto.setDisplayDivergenceReasonInput(
 				commonOvertimeHoliday.displayDivergenceReasonInput(
-						EnumAdaptor.valueOf(overTimeDto.getApplication().getPrePostAtr(), PrePostAtr_Old.class), 
+						EnumAdaptor.valueOf(overTimeDto.getApplication().getPrePostAtr(), PrePostAtr.class), 
 						overtimeRestAppCommonSet.getDivergenceReasonInputAtr()));
 		AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.getPerformanceExcessAtr();
 		overTimeDto.setPerformanceExcessAtr(performanceExcessAtr.value);
@@ -648,7 +646,7 @@ public class AppOvertimeFinder {
 		}
 		// hien thi don xin truoc
 		overTimeDto.setAllPreAppPanelFlg(false);
-		if(overtimeRestAppCommonSet.getPreDisplayAtr().value == UseAtr.USE.value && overTimeDto.getApplication().getPrePostAtr()  == PrePostAtr_Old.POSTERIOR.value){
+		if(overtimeRestAppCommonSet.getPreDisplayAtr().value == UseAtr.USE.value && overTimeDto.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value){
 			overTimeDto.setAllPreAppPanelFlg(true);
 		}
 		
@@ -684,7 +682,7 @@ public class AppOvertimeFinder {
 						false))
 				.collect(Collectors.toList());
 		AppOvertimeReference appOvertimeReference = new AppOvertimeReference();
-		if(appOverTime.getApplication().getPrePostAtr() == PrePostAtr_Old.POSTERIOR) {
+		if(appOverTime.getApplication().getPrePostAtr() == PrePostAtr.POSTERIOR) {
 			List<OvertimeColorCheck> otTimeLst = new ArrayList<>();
 			overTimeInputs.forEach(overtimeInput -> {
 				otTimeLst.add(OvertimeColorCheck.createApp(overtimeInput.getAttendanceID(), overtimeInput.getFrameNo(), overtimeInput.getApplicationTime()));
@@ -881,7 +879,7 @@ public class AppOvertimeFinder {
 		}
 		// hien thi don xin truoc
 		result.setAllPreAppPanelFlg(false);
-		if(overtimeRestAppCommonSet.getPreDisplayAtr().value == UseAtr.USE.value && result.getApplication().getPrePostAtr()  == PrePostAtr_Old.POSTERIOR.value){
+		if(overtimeRestAppCommonSet.getPreDisplayAtr().value == UseAtr.USE.value && result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value){
 			result.setAllPreAppPanelFlg(true);
 		}
 		
@@ -903,10 +901,10 @@ public class AppOvertimeFinder {
 		
 		//01-09_事前申請を取得
 		if(result.isAllPreAppPanelFlg()){
-			if(prePostAtr  == PrePostAtr_Old.POSTERIOR.value ){
+			if(prePostAtr  == PrePostAtr.POSTERIOR.value ){
 				AppOverTime appOvertime = otherCommonAlgorithm.getPreApplication(
 						employeeID,
-						EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class),
+						EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
 						overtimeRestAppCommonSet.getPreDisplayAtr(), 
 						appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT),
 						ApplicationType_Old.OVER_TIME_APPLICATION);
@@ -919,7 +917,7 @@ public class AppOvertimeFinder {
 				
 			}
 		}
-		if (prePostAtr  == PrePostAtr_Old.POSTERIOR.value ) {
+		if (prePostAtr  == PrePostAtr.POSTERIOR.value ) {
 			// 01-18_実績の内容を表示し直す : chưa xử lí
 			AppOvertimeReference appOvertimeReference = new AppOvertimeReference();
 			appOvertimeReference.setAppDateRefer(appDate);
@@ -1076,7 +1074,7 @@ public class AppOvertimeFinder {
 			List<DivergenceReason> divergenceReasons = commonOvertimeHoliday
 					.getDivergenceReasonForm(
 							companyID,
-							EnumAdaptor.valueOf(result.getApplication().getPrePostAtr(), PrePostAtr_Old.class),
+							EnumAdaptor.valueOf(result.getApplication().getPrePostAtr(), PrePostAtr.class),
 							overtimeRestAppCommonSet.getDivergenceReasonFormAtr(),
 							ApplicationType_Old.OVER_TIME_APPLICATION);
 			convertToDivergenceReasonDto(divergenceReasons,result);
@@ -1085,7 +1083,7 @@ public class AppOvertimeFinder {
 		//01-07_乖離理由を取得
 		result.setDisplayDivergenceReasonInput(
 				commonOvertimeHoliday.displayDivergenceReasonInput(
-						EnumAdaptor.valueOf(result.getApplication().getPrePostAtr(), PrePostAtr_Old.class), 
+						EnumAdaptor.valueOf(result.getApplication().getPrePostAtr(), PrePostAtr.class), 
 						overtimeRestAppCommonSet.getDivergenceReasonInputAtr()));
 		
 		// xu li hien thi du lieu xin truoc
@@ -1101,7 +1099,7 @@ public class AppOvertimeFinder {
 			result.setReferencePanelFlg(true);
 		}
 		// hien thi don xin truoc
-		if(overtimeRestAppCommonSet.getPreDisplayAtr().value == UseAtr.USE.value && result.getApplication().getPrePostAtr()  == PrePostAtr_Old.POSTERIOR.value){
+		if(overtimeRestAppCommonSet.getPreDisplayAtr().value == UseAtr.USE.value && result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value){
 			result.setAllPreAppPanelFlg(true);
 		}else{
 			result.setAllPreAppPanelFlg(false);
@@ -1109,11 +1107,11 @@ public class AppOvertimeFinder {
 		if(result.isAllPreAppPanelFlg()){
 			// 01-09_事前申請を取得
 			// 07-01_事前申請状態チェック
-			if(result.getApplication().getPrePostAtr()  == PrePostAtr_Old.POSTERIOR.value ){
+			if(result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value ){
 				result.setPreAppPanelFlg(false);
 				AppOverTime appOvertime = otherCommonAlgorithm.getPreApplication(
 						employeeID,
-						EnumAdaptor.valueOf(result.getApplication().getPrePostAtr(), PrePostAtr_Old.class),
+						EnumAdaptor.valueOf(result.getApplication().getPrePostAtr(), PrePostAtr.class),
 						overtimeRestAppCommonSet.getPreDisplayAtr(), 
 						appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT),
 						ApplicationType_Old.OVER_TIME_APPLICATION);
@@ -1125,7 +1123,7 @@ public class AppOvertimeFinder {
 				}			
 			}
 		}
-		if(result.getApplication().getPrePostAtr()  == PrePostAtr_Old.POSTERIOR.value && appDate != null){
+		if(result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value && appDate != null){
 			// 01-18_実績の内容を表示し直す
 			// 07-02_実績取得・状態チェック
 			if (approvalFunctionSetting != null) {
@@ -1543,11 +1541,11 @@ public class AppOvertimeFinder {
 			appOverTimeMobDto.typicalReasonDisplayFlg = true;
 		}
 		appOverTimeMobDto.displayAppReasonContentFlg = otherCommonAlgorithm.displayAppReasonContentFlg(appTypeDiscreteSetting.get().getDisplayReasonFlg());
-		if(appOverTimeMobDto.prePostAtr != PrePostAtr_Old.PREDICT.value && overtimeRestAppCommonSet.getDivergenceReasonFormAtr().value == UseAtr.USE.value){
+		if(appOverTimeMobDto.prePostAtr != PrePostAtr.PREDICT.value && overtimeRestAppCommonSet.getDivergenceReasonFormAtr().value == UseAtr.USE.value){
 			appOverTimeMobDto.displayDivergenceReasonForm = true;
 		}
 		appOverTimeMobDto.displayDivergenceReasonInput = commonOvertimeHoliday.displayDivergenceReasonInput(
-						EnumAdaptor.valueOf(appOverTimeMobDto.prePostAtr, PrePostAtr_Old.class), overtimeRestAppCommonSet.getDivergenceReasonInputAtr());
+						EnumAdaptor.valueOf(appOverTimeMobDto.prePostAtr, PrePostAtr.class), overtimeRestAppCommonSet.getDivergenceReasonInputAtr());
 		return appOverTimeMobDto;
 	}
 	
@@ -1735,7 +1733,7 @@ public class AppOvertimeFinder {
 		}
 		
 		// Input．事前事後区分　AND　Input.申請日をチェック
-		if(result.getApplication().getPrePostAtr() == PrePostAtr_Old.POSTERIOR.value && appDate != null){
+		if(result.getApplication().getPrePostAtr() == PrePostAtr.POSTERIOR.value && appDate != null){
 			// 07-01_事前申請状態チェック
 			PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(
 					companyID, 

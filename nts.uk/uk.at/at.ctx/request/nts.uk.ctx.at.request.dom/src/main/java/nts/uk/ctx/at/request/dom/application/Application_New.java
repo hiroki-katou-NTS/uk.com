@@ -28,7 +28,7 @@ public class Application_New extends DomainObject {
 	private String appID;
 	@Setter
 	// 事前事後区分
-	private PrePostAtr_Old prePostAtr;
+	private PrePostAtr prePostAtr;
 	
 	// 入力日
 	private GeneralDateTime inputDate;
@@ -67,7 +67,7 @@ public class Application_New extends DomainObject {
 	// 反映情報
 	private ReflectionInformation_New reflectionInformation;
 	
-	public static Application_New firstCreate(String companyID, PrePostAtr_Old prePostAtr, GeneralDate appDate, ApplicationType_Old appType, String employeeID, AppReason appReason){
+	public static Application_New firstCreate(String companyID, PrePostAtr prePostAtr, GeneralDate appDate, ApplicationType_Old appType, String employeeID, AppReason appReason){
 		return Application_New.builder()
 				.version(0L)
 				.companyID(companyID)
