@@ -191,10 +191,13 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 
 	@Override
 	public LateOrLeaveEarly findByID(String companyID, String appID) {
+		/*
 		LateOrLeaveEarly lateOrLeaveEarly = lateOrLeaveEarlyRepository.findByCode(companyID, appID).get();
 		Application_New application = applicationRepository_New.findByID(companyID, appID).get();
 		lateOrLeaveEarly.setApplication(application);
 		return lateOrLeaveEarly;
+		*/
+		return null;
 	}
 
 }

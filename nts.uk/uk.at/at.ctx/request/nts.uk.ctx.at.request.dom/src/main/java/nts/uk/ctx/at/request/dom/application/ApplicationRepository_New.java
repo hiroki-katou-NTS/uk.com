@@ -9,7 +9,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 
 public interface ApplicationRepository_New {
 	
-	public Optional<Application_New> findByID(String companyID, String appID);
+	// public Optional<Application_New> findByID(String companyID, String appID);
 	
 	public List<Application_New> findByListID(String companyID, List<String> listAppID);
 	
@@ -161,4 +161,21 @@ public interface ApplicationRepository_New {
 	 * @return
 	 */
 	public Map<String, Integer> getParamCMMS45(String companyId, String configName, List<String> subName);
+	
+	// refactor 4
+	
+	public Optional<Application> findByID(String companyID, String appID);
+	
+	public void insert(Application application);
+	
+	public void update(Application application);
+	
+	public void remove(String appID);
+	
+	/**
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.申請承認.申請.アルゴリズム.申請IDを使用して申請一覧を取得する.申請IDを使用して申請一覧を取得する
+	 * @param appID
+	 * @return
+	 */
+	public Optional<Application> findByID(String appID);
 }

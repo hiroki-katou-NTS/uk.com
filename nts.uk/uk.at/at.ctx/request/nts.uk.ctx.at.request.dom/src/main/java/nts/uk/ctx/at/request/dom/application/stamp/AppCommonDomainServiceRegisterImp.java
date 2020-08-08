@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
@@ -33,7 +33,7 @@ public class AppCommonDomainServiceRegisterImp implements AppCommonDomainService
 	private NewAfterRegister_New newAfterRegister;
 	
 	@Inject
-	private ApplicationRepository appRepository;
+	private ApplicationRepository_New appRepository;
 	
 	@Inject
 	private DetailAfterUpdate detailAfterUpdate;

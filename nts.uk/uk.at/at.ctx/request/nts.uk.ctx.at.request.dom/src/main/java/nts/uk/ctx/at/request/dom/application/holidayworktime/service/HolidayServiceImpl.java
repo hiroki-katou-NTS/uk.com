@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -523,19 +524,21 @@ public class HolidayServiceImpl implements HolidayService {
 		BrkOffSupChangeMng brkOffSupChangeMng = opBrkOffSupChangeMng.get();
 		
 		// アルゴリズム「振休申請復活」を実行する (9.振休申請復活)
-		Application_New application = applicationRepository.findByID(companyID, appID).get();
+		Application application = applicationRepository.findByID(companyID, appID).get();
 		// 「振休振出申請.反映情報.実績反映状態(stateReflectionReal)」を「未反映(notReflected)」に更新する
-		application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
+		// application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
 		applicationRepository.update(application);
 		
 		// ドメインモデル「振休申請休出変更管理」を削除する
 		brkOffSupChangeMngRepository.remove(brkOffSupChangeMng.getRecAppID(), brkOffSupChangeMng.getAbsenceLeaveAppID());
 		
 		// 暫定データの登録
+		/*
 		interimRemainDataMngRegisterDateChange.registerDateChange(
 				companyID, 
 				application.getEmployeeID(), 
 				Arrays.asList(application.getAppDate()));
+		*/
 	}
 	@Override
 	public AppHdWorkDispInfoOutput getStartNew(String companyID, List<String> employeeIDLst, List<GeneralDate> dateLst) {

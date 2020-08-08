@@ -166,12 +166,13 @@ public class SaveChangeAbsDateCommandHandler
 	}
 
 	private Application_New getDetailApp(String appID) {
-		String companyID = AppContexts.user().companyId();
-		Optional<Application_New> app = appRepo.findByID(companyID, appID);
-		if (!app.isPresent()) {
-			throw new BusinessException("Msg_198");
-		}
-		return app.get();
+//		String companyID = AppContexts.user().companyId();
+//		Optional<Application_New> app = appRepo.findByID(companyID, appID);
+//		if (!app.isPresent()) {
+//			throw new BusinessException("Msg_198");
+//		}
+//		return app.get();
+		return null;
 	}
 
 	private Application_New createNewCommonApp(SaveHolidayShipmentCommand command, AbsenceLeaveAppCommand absCmd,

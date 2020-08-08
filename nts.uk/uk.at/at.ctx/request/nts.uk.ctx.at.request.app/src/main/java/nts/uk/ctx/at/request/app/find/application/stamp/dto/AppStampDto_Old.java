@@ -50,11 +50,11 @@ public class AppStampDto_Old {
 		if(appStamp == null) return null;
 		return new AppStampDto_Old(
 				appStamp.getVersion(),
-				appStamp.getApplication_New().getAppID(), 
-				appStamp.getApplication_New().getAppDate().toString("yyyy/MM/dd"), 
-				appStamp.getApplication_New().getAppReason().v(), 
-				appStamp.getApplication_New().getEmployeeID(), 
-				appStamp.getApplication_New().getEnteredPersonID(), 
+				appStamp.getApplication().getAppID(), 
+				appStamp.getApplication().getAppDate().getApplicationDate().toString("yyyy/MM/dd"), 
+				appStamp.getApplication().getOpAppReason().get().v(), 
+				appStamp.getApplication().getEmployeeID(), 
+				appStamp.getApplication().getEnteredPersonID(), 
 				appStamp.getStampRequestMode().value, 
 				appStamp.getAppStampGoOutPermits().stream().map(x -> AppStampGoOutPermitDto.convertToDto(x)).collect(Collectors.toList()), 
 				appStamp.getAppStampWorks().stream().map(x -> AppStampWorkDto.convertToDto(x)).collect(Collectors.toList()), 
@@ -62,8 +62,8 @@ public class AppStampDto_Old {
 				AppStampOnlineRecordDto.convertToDto(appStamp.getAppStampOnlineRecord().orElse(null)),
 				employeeName,
 				inputEmpName,
-				appStamp.getApplication_New().getInputDate().toString("yyyy/MM/dd"),
-				appStamp.getApplication_New().getReflectionInformation().getStateReflectionReal()==ReflectedState_New.REFLECTED?true:false);
+				appStamp.getApplication().getInputDate().toString("yyyy/MM/dd"),
+				false);
 	}
 }
 

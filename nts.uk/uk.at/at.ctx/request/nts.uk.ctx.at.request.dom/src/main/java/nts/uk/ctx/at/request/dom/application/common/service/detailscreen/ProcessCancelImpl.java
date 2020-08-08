@@ -4,7 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
 
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
 public class ProcessCancelImpl implements ProcessCancel {
 
 	@Inject
-	private ApplicationRepository appRepo;
+	private ApplicationRepository_New appRepo;
 	
 	@Override
 	public void detailScreenCancelProcess(String companyID, String appID, Application application) {

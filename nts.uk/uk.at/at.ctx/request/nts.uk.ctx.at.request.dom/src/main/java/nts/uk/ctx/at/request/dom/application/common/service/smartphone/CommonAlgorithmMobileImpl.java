@@ -410,7 +410,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 		// 入力者の社員情報を取得する
 		Optional<EmployeeInfoImport> opEmployeeInfoImport = commonAlgorithm.getEnterPersonInfor(
 				application.getEmployeeID(), 
-				application.getEnteredPerson());
+				application.getEnteredPersonID());
 		// 14-2.詳細画面起動前モードの判断
 		DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput = beforePreBootMode.judgmentDetailScreenMode(
 				companyID, 

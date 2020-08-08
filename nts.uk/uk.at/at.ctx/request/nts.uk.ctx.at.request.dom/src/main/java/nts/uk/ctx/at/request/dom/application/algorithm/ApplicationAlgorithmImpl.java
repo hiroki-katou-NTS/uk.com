@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.SendMailAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
@@ -22,7 +22,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 public class ApplicationAlgorithmImpl implements ApplicationAlgorithm {
 	
 	@Inject
-	private ApplicationRepository applicationRepository;
+	private ApplicationRepository_New applicationRepository;
 	
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;

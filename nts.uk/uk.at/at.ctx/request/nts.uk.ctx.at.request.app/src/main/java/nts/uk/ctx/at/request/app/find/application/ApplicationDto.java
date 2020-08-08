@@ -112,7 +112,7 @@ public class ApplicationDto {
 				application.getEmployeeID(), 
 				application.getAppType().value, 
 				application.getAppDate().getApplicationDate().toString(), 
-				application.getEnteredPerson(), 
+				application.getEnteredPersonID(), 
 				application.getInputDate().toString(), 
 				ReflectionStatusDto.fromDomain(application.getReflectionStatus()), 
 				application.getOpStampRequestMode().map(x -> x.value).orElse(null), 

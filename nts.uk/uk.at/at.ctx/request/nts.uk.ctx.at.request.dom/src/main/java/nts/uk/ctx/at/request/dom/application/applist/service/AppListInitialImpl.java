@@ -20,6 +20,7 @@ import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -322,8 +323,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 						appDateSub = checkExit.getAppDateSub().toString("yyyy/MM/dd");
 						appInputSub = checkExit.getInputDateSub().toString("yyyy/MM/dd HH:mm");
 					} else {// not exist lay thong tin chung
-						Application_New sub = repoApp.findByID(companyId, appIdSync).get();
-						appDateSub = sub.getAppDate().toString("yyyy/MM/dd");
+						Application sub = repoApp.findByID(companyId, appIdSync).get();
+						appDateSub = sub.getAppDate().getApplicationDate().toString("yyyy/MM/dd");
 						appInputSub = sub.getInputDate().toString("yyyy/MM/dd HH:mm");
 					}
 					appSub = repoAppDetail.getAppCompltLeaveInfo(companyId, appIdSync, sync.getType() == 0 ? 1 : 0,
@@ -567,8 +568,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 						appInputSub = checkExit.getInputDateSub().toString("yyyy/MM/dd HH:mm");
 					} else {// not exist
 							// lay thong tin chung
-						Application_New sub = repoApp.findByID(companyId, appIdSync).get();
-						appDateSub = sub.getAppDate().toString("yyyy/MM/dd");
+						Application sub = repoApp.findByID(companyId, appIdSync).get();
+						appDateSub = sub.getAppDate().getApplicationDate().toString("yyyy/MM/dd");
 						appInputSub = sub.getInputDate().toString("yyyy/MM/dd HH:mm");
 					}
 					appSub = repoAppDetail.getAppCompltLeaveInfo(companyId, appIdSync, sync.getType() == 0 ? 1 : 0,

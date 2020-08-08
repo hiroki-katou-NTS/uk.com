@@ -81,10 +81,10 @@ public class ApproveHolidayShipmentCommandHandler
 					boolean isApprovalRec = command.getRecAppID() != null;
 					boolean isApprovalAbs = command.getAbsAppID() != null;
 					if (isApprovalRec) {
-						displayReason = applicationRepository.findByID(companyID, command.getRecAppID()).get().getAppReason().v();
+						displayReason = applicationRepository.findByID(companyID, command.getRecAppID()).get().getOpAppReason().get().v();
 					}
 					if (isApprovalAbs) {
-						displayReason = applicationRepository.findByID(companyID, command.getAbsAppID()).get().getAppReason().v();
+						displayReason = applicationRepository.findByID(companyID, command.getAbsAppID()).get().getOpAppReason().get().v();
 					}
 				}
 			}
@@ -105,7 +105,7 @@ public class ApproveHolidayShipmentCommandHandler
 		ProcessResult processResult = approvalApplication(command, companyID, employeeID, version, memo, appReason, isUpdateReason);
 		
 		if(!isUpdateReason){
-			appReason = applicationRepository.findByID(companyID, processResult.getAppID()).get().getAppReason().v();
+			appReason = applicationRepository.findByID(companyID, processResult.getAppID()).get().getOpAppReason().get().v();
 		}
 		
 		/*return new ApproveProcessResult(

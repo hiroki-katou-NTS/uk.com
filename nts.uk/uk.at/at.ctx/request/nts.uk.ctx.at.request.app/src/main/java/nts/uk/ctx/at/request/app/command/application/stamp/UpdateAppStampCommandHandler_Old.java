@@ -16,10 +16,9 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.app.command.application.stamp.command.AppStampCmd;
 import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCancel;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
@@ -28,6 +27,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStampGoOutAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampGoOutPermit;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampWork;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -56,12 +56,12 @@ public class UpdateAppStampCommandHandler_Old extends CommandHandlerWithResult<A
 			applicationReason = !appStampCmd.getTitleReason().isEmpty()? appStampCmd.getTitleReason() + System.lineSeparator() + appStampCmd.getDetailReason() : appStampCmd.getDetailReason();
 		}
 		StampRequestMode_Old stampRequestMode = EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode_Old.class);
-		Optional<Application_New> optApplication = applicationRepository.findByID(companyID, appStampCmd.getAppID());
+		Optional<Application> optApplication = applicationRepository.findByID(companyID, appStampCmd.getAppID());
 		if(!optApplication.isPresent()){
 			throw new BusinessException("Msg_198");
 		}
-		Application_New application = optApplication.get();
-		application.setAppReason(new AppReason(applicationReason));
+		Application application = optApplication.get();
+		application.setOpAppReason(Optional.of(new AppReason(applicationReason)));
 		List<AppStampGoOutPermit> appStampGoOutPermits = Collections.emptyList();
 		List<AppStampWork> appStampWorks = Collections.emptyList();
 		List<AppStampCancel> appStampCancels = Collections.emptyList();

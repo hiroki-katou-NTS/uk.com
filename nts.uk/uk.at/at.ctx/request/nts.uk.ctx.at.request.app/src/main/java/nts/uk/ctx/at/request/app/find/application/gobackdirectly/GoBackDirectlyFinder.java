@@ -302,7 +302,7 @@ public class GoBackDirectlyFinder {
 					application.getEmployeeID(),
 					application.getAppType(),
 					application.getAppDate(),
-					application.getEnteredPerson(),
+					application.getEnteredPersonID(),
 					application.getOpStampRequestMode(),
 					application.getOpReversionReason(),
 					application.getOpAppStartDate(),

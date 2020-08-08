@@ -57,7 +57,7 @@ public class Application implements DomainAggregate {
 	/**
 	 * 入力者
 	 */
-	private String enteredPerson;
+	private String enteredPersonID;
 	
 	/**
 	 * 入力日
@@ -115,7 +115,7 @@ public class Application implements DomainAggregate {
 		this.employeeID = employeeID;
 		this.appType = appType;
 		this.appDate = appDate;
-		this.enteredPerson = enteredPerson;
+		this.enteredPersonID = enteredPerson;
 		this.inputDate = inputDate;
 		this.reflectionStatus = reflectionStatus;
 		this.opStampRequestMode = Optional.empty();
@@ -134,7 +134,7 @@ public class Application implements DomainAggregate {
 				application.getEmployeeID(), 
 				application.getAppType(), 
 				application.getAppDate(), 
-				application.getEnteredPerson(), 
+				application.getEnteredPersonID(), 
 				application.getInputDate(), 
 				application.getReflectionStatus());
 		this.opStampRequestMode = application.getOpStampRequestMode();

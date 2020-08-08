@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
@@ -22,7 +22,7 @@ public class RegisterAtApproveReflectionInfoDefault_New implements RegisterAtApp
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
 	
 	@Inject
-	private ApplicationRepository applicationRepository;
+	private ApplicationRepository_New applicationRepository;
 	@Inject
 	private AppReflectManagerFromRecord appReflectManager;
 	@Inject
@@ -30,7 +30,7 @@ public class RegisterAtApproveReflectionInfoDefault_New implements RegisterAtApp
 	@Override
 	public void newScreenRegisterAtApproveInfoReflect(String empID, Application application) {
 		// 2.承認する(ApproveService)
-		approvalRootStateAdapter.doApprove(application.getAppID(), application.getEnteredPerson(), "");
+		approvalRootStateAdapter.doApprove(application.getAppID(), application.getEnteredPersonID(), "");
 		// アルゴリズム「承認全体が完了したか」を実行する(thực hiện thuật toán 「」)
 		Boolean approvalCompletionFlag = approvalRootStateAdapter.isApproveAllComplete(application.getAppID());
 		if(!approvalCompletionFlag) {

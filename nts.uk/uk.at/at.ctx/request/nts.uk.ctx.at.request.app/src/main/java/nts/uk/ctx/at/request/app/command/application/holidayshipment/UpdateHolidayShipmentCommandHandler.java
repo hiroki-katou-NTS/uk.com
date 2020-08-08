@@ -13,6 +13,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -75,32 +76,32 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 	 * @return application after update
 	 */
 	private Application_New updateAbsDomain(SaveHolidayShipmentCommand command, String companyID, String appReason) {
-		AbsenceLeaveAppCommand appCmd = command.getAbsCmd();
-
-		Optional<Application_New> appLicationOpt = this.appRepo.findByID(companyID, appCmd.getAppID());
-		if (appLicationOpt.isPresent()) {
-			Application_New application = appLicationOpt.get();
-			application.setAppReason(new AppReason(appReason));
-			// application.setVersion(command.getAppCmd().getAppVersion());
-			this.appRepo.updateWithVersion(application);
-			Optional<AbsenceLeaveApp> absAppOpt = this.absRepo.findByID(appCmd.getAppID());
-			if (absAppOpt.isPresent()) {
-				AbsenceLeaveApp absApp = absAppOpt.get();
-				absApp.setWorkTimeCD(appCmd.getWkTimeCD());
-				WkTimeCommand wkTime1 = appCmd.getWkTime1();
-				absApp.setWorkTime1(new AbsenceLeaveWorkingHour(new WorkTime(wkTime1.getStartTime()),
-						new WorkTime(wkTime1.getEndTime())));
-//				WkTimeCommand wkTime2 = appCmd.getWkTime2();
-//				absApp.setWorkTime2(new AbsenceLeaveWorkingHour(new WorkTime(wkTime2.getStartTime()),
-//						new WorkTime(wkTime2.getEndTime())));
-				absApp.setWorkTypeCD(new WorkTypeCode(appCmd.getWkTypeCD()));
-				absApp.setChangeWorkHoursType(EnumAdaptor.valueOf(appCmd.getChangeWorkHoursType(), NotUseAtr.class));
-				this.absRepo.update(absApp);
-
-				return application;
-			}
-
-		}
+//		AbsenceLeaveAppCommand appCmd = command.getAbsCmd();
+//
+//		Optional<Application> appLicationOpt = this.appRepo.findByID(companyID, appCmd.getAppID());
+//		if (appLicationOpt.isPresent()) {
+//			Application application = appLicationOpt.get();
+//			application.setAppReason(new AppReason(appReason));
+//			// application.setVersion(command.getAppCmd().getAppVersion());
+//			this.appRepo.updateWithVersion(application);
+//			Optional<AbsenceLeaveApp> absAppOpt = this.absRepo.findByID(appCmd.getAppID());
+//			if (absAppOpt.isPresent()) {
+//				AbsenceLeaveApp absApp = absAppOpt.get();
+//				absApp.setWorkTimeCD(appCmd.getWkTimeCD());
+//				WkTimeCommand wkTime1 = appCmd.getWkTime1();
+//				absApp.setWorkTime1(new AbsenceLeaveWorkingHour(new WorkTime(wkTime1.getStartTime()),
+//						new WorkTime(wkTime1.getEndTime())));
+////				WkTimeCommand wkTime2 = appCmd.getWkTime2();
+////				absApp.setWorkTime2(new AbsenceLeaveWorkingHour(new WorkTime(wkTime2.getStartTime()),
+////						new WorkTime(wkTime2.getEndTime())));
+//				absApp.setWorkTypeCD(new WorkTypeCode(appCmd.getWkTypeCD()));
+//				absApp.setChangeWorkHoursType(EnumAdaptor.valueOf(appCmd.getChangeWorkHoursType(), NotUseAtr.class));
+//				this.absRepo.update(absApp);
+//
+//				return application;
+//			}
+//
+//		}
 		return null;
 
 	}
@@ -113,33 +114,33 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 	private Application_New updateRecDomain(SaveHolidayShipmentCommand command, String companyID, String appReason) {
 		RecruitmentAppCommand appCmd = command.getRecCmd();
 
-		Optional<Application_New> absAppLicationOpt = this.appRepo.findByID(companyID, appCmd.getAppID());
-		if (absAppLicationOpt.isPresent()) {
-			Application_New application = absAppLicationOpt.get();
-			application.setAppReason(new AppReason(appReason));
-			// application.setVersion(command.getAppCmd().getAppVersion());
-			this.appRepo.updateWithVersion(application);
-			Optional<RecruitmentApp> recAppOpt = this.recRepo.findByID(appCmd.getAppID());
-			if (recAppOpt.isPresent()) {
-				RecruitmentApp recApp = recAppOpt.get();
-				recApp.setWorkTimeCD(new WorkTimeCode(appCmd.getWkTimeCD()));
-				WkTimeCommand wkTime1 = appCmd.getWkTime1();
-				recApp.setWorkTime1(new RecruitmentWorkingHour(new WorkTime(wkTime1.getStartTime()),
-						EnumAdaptor.valueOf(wkTime1.getStartType(), NotUseAtr.class),
-						new WorkTime(wkTime1.getEndTime()),
-						EnumAdaptor.valueOf(wkTime1.getEndType(), NotUseAtr.class)));
-//				WkTimeCommand wkTime2 = appCmd.getWkTime2();
-//				recApp.setWorkTime2(new RecruitmentWorkingHour(new WorkTime(wkTime2.getStartTime()),
-//						EnumAdaptor.valueOf(wkTime2.getStartType(), NotUseAtr.class),
-//						new WorkTime(wkTime2.getEndTime()),
-//						EnumAdaptor.valueOf(wkTime2.getEndType(), NotUseAtr.class)));
-				recApp.setWorkTypeCD(new WorkTypeCode(appCmd.getWkTypeCD()));
-				this.recRepo.update(recApp);
-
-				return application;
-			}
-
-		}
+//		Optional<Application_New> absAppLicationOpt = this.appRepo.findByID(companyID, appCmd.getAppID());
+//		if (absAppLicationOpt.isPresent()) {
+//			Application_New application = absAppLicationOpt.get();
+//			application.setAppReason(new AppReason(appReason));
+//			// application.setVersion(command.getAppCmd().getAppVersion());
+//			this.appRepo.updateWithVersion(application);
+//			Optional<RecruitmentApp> recAppOpt = this.recRepo.findByID(appCmd.getAppID());
+//			if (recAppOpt.isPresent()) {
+//				RecruitmentApp recApp = recAppOpt.get();
+//				recApp.setWorkTimeCD(new WorkTimeCode(appCmd.getWkTimeCD()));
+//				WkTimeCommand wkTime1 = appCmd.getWkTime1();
+//				recApp.setWorkTime1(new RecruitmentWorkingHour(new WorkTime(wkTime1.getStartTime()),
+//						EnumAdaptor.valueOf(wkTime1.getStartType(), NotUseAtr.class),
+//						new WorkTime(wkTime1.getEndTime()),
+//						EnumAdaptor.valueOf(wkTime1.getEndType(), NotUseAtr.class)));
+////				WkTimeCommand wkTime2 = appCmd.getWkTime2();
+////				recApp.setWorkTime2(new RecruitmentWorkingHour(new WorkTime(wkTime2.getStartTime()),
+////						EnumAdaptor.valueOf(wkTime2.getStartType(), NotUseAtr.class),
+////						new WorkTime(wkTime2.getEndTime()),
+////						EnumAdaptor.valueOf(wkTime2.getEndType(), NotUseAtr.class)));
+//				recApp.setWorkTypeCD(new WorkTypeCode(appCmd.getWkTypeCD()));
+//				this.recRepo.update(recApp);
+//
+//				return application;
+//			}
+//
+//		}
 		return null;
 
 	}

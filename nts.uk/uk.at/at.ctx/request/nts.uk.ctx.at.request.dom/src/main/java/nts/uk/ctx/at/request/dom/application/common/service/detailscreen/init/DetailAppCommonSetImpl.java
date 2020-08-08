@@ -11,9 +11,9 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 //import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.NewAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.DetailScreenBefore;
@@ -51,14 +51,14 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 	
 	@Override
 	public ApplicationMetaOutput getDetailAppCommonSet(String companyID, String applicationID) {
-		Optional<Application_New> opApplication = applicationRepository.findByID(companyID, applicationID);
+		Optional<Application> opApplication = applicationRepository.findByID(companyID, applicationID);
 		if(!opApplication.isPresent()){
 			throw new BusinessException("Msg_198");
 		}
 		return new ApplicationMetaOutput(
 				opApplication.get().getAppID(),
 				opApplication.get().getAppType(), 
-				opApplication.get().getAppDate());
+				opApplication.get().getAppDate().getApplicationDate());
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 		// 入力者の社員情報を取得する (Lấy employee inforrmation của người nhập)
 		Optional<EmployeeInfoImport> opEmployeeInfoImport = commonAlgorithm.getEnterPersonInfor(
 				detailScreenAppData.getApplication().getEmployeeID(), 
-				detailScreenAppData.getApplication().getEnteredPerson());
+				detailScreenAppData.getApplication().getEnteredPersonID());
 		// 詳細画面の利用者とステータスを取得する
 		DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput = beforePreBootMode.judgmentDetailScreenMode(
 				companyID, 

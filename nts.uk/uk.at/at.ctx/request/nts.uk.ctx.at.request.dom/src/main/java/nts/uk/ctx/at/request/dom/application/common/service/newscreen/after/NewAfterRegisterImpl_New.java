@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.SendMailAtr;
 import nts.uk.ctx.at.request.dom.application.algorithm.ApplicationAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
@@ -30,7 +30,7 @@ public class NewAfterRegisterImpl_New implements NewAfterRegister_New {
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
 	@Inject
-	private ApplicationRepository applicationRepository;
+	private ApplicationRepository_New applicationRepository;
 	
 	public ProcessResult processAfterRegister(String appID, AppTypeSetting appTypeSetting, boolean mailServerSet){
 		boolean isProcessDone = true;

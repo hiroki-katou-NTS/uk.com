@@ -77,7 +77,7 @@ public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<Up
 			displayReason += updateHolidayWorkCommand.getApplicationReason();
 		} else {
 			if(Strings.isBlank(typicalReason)){
-				displayReason = applicationRepository.findByID(companyID, updateHolidayWorkCommand.getAppID()).get().getAppReason().v();
+				displayReason = applicationRepository.findByID(companyID, updateHolidayWorkCommand.getAppID()).get().getOpAppReason().get().v();
 			}
 		} 
 		ApplicationSetting applicationSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()

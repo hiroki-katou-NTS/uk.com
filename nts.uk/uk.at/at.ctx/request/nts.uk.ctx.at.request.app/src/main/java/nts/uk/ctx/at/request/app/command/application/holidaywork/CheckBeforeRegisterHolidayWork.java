@@ -409,7 +409,7 @@ public class CheckBeforeRegisterHolidayWork {
 			displayReason += command.getApplicationReason();
 		} else {
 			if(Strings.isBlank(typicalReason)){
-				displayReason = applicationRepository.findByID(companyID, command.getAppID()).get().getAppReason().v();
+				displayReason = applicationRepository.findByID(companyID, command.getAppID()).get().getOpAppReason().get().v();
 			}
 		} 
 		ApplicationSetting applicationSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
