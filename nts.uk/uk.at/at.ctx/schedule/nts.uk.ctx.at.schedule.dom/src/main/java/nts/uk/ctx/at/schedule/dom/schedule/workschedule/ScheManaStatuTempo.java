@@ -164,11 +164,7 @@ public class ScheManaStatuTempo {
 	 */
 	private static Optional<ManageAtr> getManageAtr(Require require, String employeeID, GeneralDate date) {
 		Optional<WorkingConditionItem> zWorkingConditionIDtem = require.getBySidAndStandardDate(employeeID, date);
-		if (!zWorkingConditionIDtem.isPresent()) {
-			return Optional.empty();
-		}
-		   ManageAtr reusult = zWorkingConditionIDtem.map(c -> c.getScheduleManagementAtr()).get();
-		return Optional.ofNullable(reusult);
+		return zWorkingConditionIDtem.map(c -> c.getScheduleManagementAtr());
 	}
 
 	/**

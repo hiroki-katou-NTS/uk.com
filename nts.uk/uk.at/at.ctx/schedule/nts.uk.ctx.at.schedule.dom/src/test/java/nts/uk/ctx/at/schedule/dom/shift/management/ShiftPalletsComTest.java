@@ -237,7 +237,7 @@ public class ShiftPalletsComTest {
 	}
 	
 	@Test
-	public void testDuplicate() {
+	public void testReproduct() {
 
 		ShiftPalletsCom shiftPalletsCom = new ShiftPalletsCom(
 					"000000000000-0001", 
@@ -255,7 +255,7 @@ public class ShiftPalletsComTest {
 													1, 
 													new ShiftMasterCode("0000001")))))));
 		ShiftPalletName shiftPalletName = new ShiftPalletName("shiftPalletNameNew");
-		ShiftPalletsCom shiftPalletsComNew = shiftPalletsCom.duplicate(2, shiftPalletName);
+		ShiftPalletsCom shiftPalletsComNew = shiftPalletsCom.reproduct(2, shiftPalletName);
 		
 		assertThat(shiftPalletsComNew.getShiftPallet().getDisplayInfor().getShiftPalletName().v()).isEqualTo(shiftPalletName.v());
 		assertThat(shiftPalletsComNew.getPage()).isEqualTo(2);

@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
@@ -22,6 +23,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @Getter
+@Setter
 @NoArgsConstructor
 public class TimeLeavingWork extends DomainObject{
 	
@@ -79,12 +81,17 @@ public class TimeLeavingWork extends DomainObject{
 	private TimeSpanForCalc craeteTimeSpan() {
 		//Optional<TimeActualStamp> val = attendanceStamp.orElse(Optional.of(new TimeActualStamp()));
 		TimeActualStamp att_myObj = attendanceStamp.orElse(new TimeActualStamp()); //出勤
-		WorkStamp att_stamp = att_myObj.getStamp().orElse(new WorkStamp()); //出勤（実じゃない）
-		TimeWithDayAttr att_attr = att_stamp.getTimeDay().getTimeWithDay().get(); //出勤時刻
-		
+		TimeWithDayAttr att_attr = null;
+		if(att_myObj.getStamp().isPresent()) {
+			WorkStamp att_stamp = att_myObj.getStamp().orElse(new WorkStamp()); //出勤（実じゃない）
+			att_attr = att_stamp.getTimeDay().getTimeWithDay().isPresent()? att_stamp.getTimeDay().getTimeWithDay().get():null; //出勤時刻
+		}
 		TimeActualStamp lea_myObj = leaveStamp.orElse(new TimeActualStamp()); //退勤
-		WorkStamp lea_stamp = lea_myObj.getStamp().orElse(new WorkStamp()); //退勤（実じゃない）                                                                                                                                                                                                 
-		TimeWithDayAttr lea_attr = lea_stamp.getTimeDay().getTimeWithDay().get(); //退勤時刻
+		TimeWithDayAttr lea_attr  = null;
+		if(lea_myObj.getStamp().isPresent()) {
+			WorkStamp lea_stamp = lea_myObj.getStamp().orElse(new WorkStamp()); //退勤（実じゃない）                                                                                                                                                                                                 
+			lea_attr = lea_stamp.getTimeDay().getTimeWithDay().isPresent()?lea_stamp.getTimeDay().getTimeWithDay().get():null; //退勤時刻
+		}
 		
 		return new TimeSpanForCalc(att_attr,lea_attr);
 		/*

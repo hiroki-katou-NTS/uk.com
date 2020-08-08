@@ -20,6 +20,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.AppReflectManagerFromRecordImport;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.CreateDailyResultDomainServiceNew;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationService;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
@@ -48,9 +49,6 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 	private TargetPersonRepository targetPersonRepository;
 	
 	@Inject
-	private CreateDailyResultDomainService createDailyResultDomainService;
-	
-	@Inject
 	private DailyCalculationService dailyCalculationService;
 	
 	@Inject
@@ -62,6 +60,9 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 	private ExecutionLogRepository executionLogRepository;
 	@Inject
 	private AppReflectManagerFromRecordImport appReflectService;
+	
+	@Inject
+	private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
 //	@Inject
 //	private PersonInfoAdapter personInfoAdapter;
 	
@@ -142,8 +143,14 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 			
 			Optional<ExecutionLog> dailyCreationLog =
 					Optional.of(logsMap.get(ExecutionContent.DAILY_CREATION));
-			finalStatus = this.createDailyResultDomainService.createDailyResult(asyncContext, employeeIdList,
-					periodTime, executionAttr, companyId, empCalAndSumExecLogID, dailyCreationLog);
+//			finalStatus = this.createDailyResultDomainService.createDailyResult(asyncContext, employeeIdList,
+//					periodTime, executionAttr, companyId, empCalAndSumExecLogID, dailyCreationLog);
+			
+			Optional<Boolean> checkLock = dailyCreationLog.isPresent()
+					? Optional.ofNullable(dailyCreationLog.get().getIsCalWhenLock())
+					: Optional.empty();
+			finalStatus =createDailyResultDomainServiceNew.createDailyResult(asyncContext, employeeIdList, periodTime, executionAttr,
+					companyId, ExecutionTypeDaily.DELETE_ACHIEVEMENTS,empCalAndSumExeLog, checkLock).value ==0?ProcessState.INTERRUPTION:ProcessState.SUCCESS;
 			
 			//*****　更新タイミングが悪い。ここで書かずに、日別作成の中で書くべき。（2018.1.16 Shuichi Ishida）
 			//***** タイミング調整に関しては、実行ログの監視処理の完了判定も、念のため、確認が必要。
@@ -191,8 +198,6 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 		//承認反映
 		if(finalStatus == ProcessState.SUCCESS
 				&& logsMap.containsKey(ExecutionContent.REFLRCT_APPROVAL_RESULT)) {
-			Optional<ExecutionLog> reflectApproval =
-					Optional.of(logsMap.get(ExecutionContent.REFLRCT_APPROVAL_RESULT));
 			dataSetter.updateData("reflectApprovalStartTime", GeneralDateTime.now().toString());
 			// fix bug 110491
 			GeneralDateTime reflectApprovalStartTime = GeneralDateTime.now();

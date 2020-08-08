@@ -54,4 +54,25 @@ public class EmpMedicalWorkStyleHistoryTest {
 				.containsExactly(tuple(date1, "historyId01"), tuple(date2,"historyId02"));
 	}
 
+	@Test
+	public void test_items() {
+		List<DateHistoryItem> result = new ArrayList<DateHistoryItem>();
+		
+		DatePeriod date1 = new DatePeriod(GeneralDate.ymd(2020, 1, 1), GeneralDate.ymd(2020, 1, 2));		
+		DatePeriod date2 = new DatePeriod(GeneralDate.ymd(2020, 1, 3), GeneralDate.ymd(9999, 12, 31));		
+
+		DateHistoryItem item1 = new DateHistoryItem("historyId01",
+				date1);
+		DateHistoryItem item2 = new DateHistoryItem("historyId02",
+				date2);
+		result.add(item1);
+		result.add(item2);
+		EmpMedicalWorkStyleHistory history = EmpMedicalWorkStyleHistory.get("EMPLOYEEID01", // dummy
+				result);
+		List<DateHistoryItem> actual = history.items();
+		
+		assertThat(actual).extracting(x -> x.span(), x -> x.identifier())
+				.containsExactly(tuple(date1, "historyId01"), tuple(date2,"historyId02"));
+	}
+
 }

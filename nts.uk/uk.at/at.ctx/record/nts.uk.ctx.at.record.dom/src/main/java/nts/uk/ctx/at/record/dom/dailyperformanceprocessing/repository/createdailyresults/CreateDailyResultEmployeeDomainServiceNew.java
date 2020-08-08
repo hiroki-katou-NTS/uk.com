@@ -10,6 +10,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
@@ -44,7 +45,7 @@ public interface CreateDailyResultEmployeeDomainServiceNew {
 	 */
 	@SuppressWarnings("rawtypes")
 	OutputCreateDailyResult createDailyResultEmployee(AsyncCommandHandlerContext asyncContext, String employeeId,
-			DatePeriod periodTimes, String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog,
+			DatePeriod periodTimes, String companyId, Optional<EmpCalAndSumExeLog> empCalAndSumExeLog,
 			boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime,
 			EmployeeGeneralInfoImport employeeGeneralInfoImport,
 			Optional<StampReflectionManagement> stampReflectionManagement,
@@ -67,13 +68,8 @@ public interface CreateDailyResultEmployeeDomainServiceNew {
 	@SuppressWarnings("rawtypes")
 	ProcessState createDailyResultEmployeeWithNoInfoImport(AsyncCommandHandlerContext asyncContext, String employeeId,
 			DatePeriod periodTimes, String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog,
-			boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime, Optional<StampReflectionManagement> stampReflectionManagement);
+			boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime, 
+			Optional<StampReflectionManagement> stampReflectionManagement);
 
-	@SuppressWarnings("rawtypes")
-	ProcessState createDailyResultEmployeeWithNoInfoImportNew(AsyncCommandHandlerContext asyncContext,
-			String employeeId, List<GeneralDate> executeDate, String companyId, String empCalAndSumExecLogID,
-			Optional<ExecutionLog> executionLog, boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime,
-			Optional<StampReflectionManagement> stampReflectionManagement,
-			Optional<EmploymentHistoryImported> employmentHisOptional, String employmentCode,List<EmploymentHistoryImported> listEmploymentHis);
-
+	
 }

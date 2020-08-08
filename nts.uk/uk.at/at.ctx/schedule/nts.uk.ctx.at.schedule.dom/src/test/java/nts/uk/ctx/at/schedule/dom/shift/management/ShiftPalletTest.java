@@ -243,7 +243,7 @@ public class ShiftPalletTest {
 					"0000007");
 	}
 	@Test
-	public void testDuplicate() {
+	public void testReproduct() {
 
 		ShiftPallet target = new ShiftPallet(
 				new ShiftPalletDisplayInfor(

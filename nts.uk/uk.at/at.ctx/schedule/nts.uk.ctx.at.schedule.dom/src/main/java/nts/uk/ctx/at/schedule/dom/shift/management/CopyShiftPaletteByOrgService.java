@@ -30,7 +30,7 @@ public class CopyShiftPaletteByOrgService {
 			if(checkExists) {
 				require.delete(shiftPalletsOrg.getTargeOrg(), page);
 			}
-			ShiftPalletsOrg shiftPalletsOrgNew = shiftPalletsOrg.duplicate(page, shiftPalletName);
+			ShiftPalletsOrg shiftPalletsOrgNew = shiftPalletsOrg.reproduct(page, shiftPalletName);
 			require.add(shiftPalletsOrgNew);
 		});
 	}

@@ -706,7 +706,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	@Override
 	public Optional<WorkingCondition> getWorkingCondition(String companyID, String empID) {
 		// TODO Auto-generated method stub
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
@@ -718,7 +718,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	@Override
 	public Optional<WorkingConditionItem> getWorkingConditionItem(String histID) {
 		// TODO Auto-generated method stub
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
@@ -737,7 +737,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	public Optional<WorkingConditionItem> getWorkingConditionItemByEmpIDAndDate(String companyID, GeneralDate ymd,
 			String empID) {
 		// TODO Auto-generated method stub
-		return null;
+		return Optional.empty();
 	}
 
 	@Override

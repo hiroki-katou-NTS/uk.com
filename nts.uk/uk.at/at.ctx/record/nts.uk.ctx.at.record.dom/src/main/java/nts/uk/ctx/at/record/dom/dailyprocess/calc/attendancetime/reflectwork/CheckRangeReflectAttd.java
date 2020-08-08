@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.St
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
- * 出勤打刻の反映範囲か確認する
+ * 出勤打刻の反映範囲か確認する (new_2020)
  * @author tutk
  *
  */
