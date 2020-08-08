@@ -23,32 +23,32 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
 			opInforGoBackCommonDirectOutput: null,
 		};
         childParam: any = {};
-        
+
         displayApprovalButton: KnockoutObservable<boolean> = ko.observable(true);
         enableApprovalButton: KnockoutObservable<boolean> = ko.observable(true);
         displayApprovalLabel: KnockoutObservable<boolean> = ko.observable(false);
-        
+
         displayDenyButton: KnockoutObservable<boolean> = ko.observable(true);
         enableDenyButton: KnockoutObservable<boolean> = ko.observable(true);
         displayDenyLabel: KnockoutObservable<boolean> = ko.observable(false);
-        
+
         displayReleaseButton: KnockoutObservable<boolean> = ko.observable(true);
         enableReleaseButton: KnockoutObservable<boolean> = ko.observable(true);
-        
+
         displayRemandButton: KnockoutObservable<boolean> = ko.observable(true);
         enableRemandButton: KnockoutObservable<boolean> = ko.observable(true);
-        
+
         displayUpdateButton: KnockoutObservable<boolean> = ko.observable(true);
         enableUpdateButton: KnockoutObservable<boolean> = ko.observable(true);
-        
+
         displayDeleteButton: KnockoutObservable<boolean> = ko.observable(true);
         enableDeleteButton: KnockoutObservable<boolean> = ko.observable(true);
-        
+
         displayCancelButton: KnockoutObservable<boolean> = ko.observable(true);
         enableCancelButton: KnockoutObservable<boolean> = ko.observable(true);
-        
+
         errorEmpty: KnockoutObservable<boolean> = ko.observable(true);
-        
+
         childUpdateEvent!: () => void;
 
         created(params: any) {
@@ -61,7 +61,7 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
 				printContentOfEachAppDto: vm.printContentOfEachAppDto,
                 approvalReason: vm.approvalReason,
                 appDispInfoStartupOutput: vm.appDispInfoStartupOutput,
-                eventUpdate: function(a) { vm.getChildUpdateEvent.apply(vm, [a]) } 
+                eventUpdate: function(a) { vm.getChildUpdateEvent.apply(vm, [a]) }
             }
             vm.loadData();
         }
@@ -92,7 +92,7 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
                 vm.handlerExecuteErrorMsg(res);
             }).always(() => vm.$blockui("hide"));
         }
-    
+
         setControlButton(
             userTypeValue: any, // phân loại người dùng
             approvalAtrValue: any, // trạng thái approval của Phase
@@ -144,7 +144,7 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
                 && (approvalAtrValue == ApprovalAtr.APPROVED));
 
             vm.displayDenyLabel((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER)
-                && (approvalAtrValue == ApprovalAtr.DENIAL));    
+                && (approvalAtrValue == ApprovalAtr.DENIAL));
         }
 
         back() {
@@ -173,14 +173,14 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
             let memo = vm.approvalReason(),
             	appDispInfoStartupOutput = vm.appDispInfoStartupOutput(),
             	command = { memo, appDispInfoStartupOutput };
-            	
+
             vm.$ajax(API.approve, command)
             .done((successData: any) => {
                 vm.$dialog.info({ messageId: "Msg_220" }).then(() => {
                     vm.loadData();
                 });
             }).fail((res: any) => {
-                vm.handlerExecuteErrorMsg(res);  
+                vm.handlerExecuteErrorMsg(res);
             }).always(() => vm.$blockui("hide"));
         }
 
@@ -190,7 +190,7 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
             let memo = vm.approvalReason(),
             	appDispInfoStartupOutput = vm.appDispInfoStartupOutput(),
             	command = { memo, appDispInfoStartupOutput };
-            	
+
             vm.$ajax(API.deny, command)
             .done((successData: any) => {
                 if(successData.processDone) {
@@ -227,13 +227,13 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
 
         updateData() {
             const vm = this;
-           
+
             // nếu component con có bind event ra
             if(_.isFunction(vm.childUpdateEvent)) {
                 vm.childUpdateEvent();
             }
         }
-    
+
         // Hàm phục vụ việc gọi lại trong viewmodel của component con
         // và cập nhật update function của component con ra ngoài
         getChildUpdateEvent(evt: () => void) {
@@ -259,12 +259,12 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
                 }
             }).done((successData: any) => {
                 vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
-                    vm.$jump("at", "/view/cmm/045/a/index.xhtml");    
+                    vm.$jump("at", "/view/cmm/045/a/index.xhtml");
                 });
             }).fail((res: any) => {
                 vm.handlerExecuteErrorMsg(res);
             }).always(() => vm.$blockui("hide"));
-            
+
         }
 
         btnCancel() {
@@ -286,25 +286,25 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
         handlerExecuteErrorMsg(res: any) {
             const vm = this;
             switch(res.messageId) {
-            case "Msg_426": 
+            case "Msg_426":
                 vm.$dialog.error({ messageId: "Msg_426" }).then(() => {
                     vm.$jump("at", "/view/cmm/045/a/index.xhtml");
-                });      
+                });
                 break;
             case "Msg_197":
                 vm.$dialog.error({ messageId: "Msg_197" }).then(() => {
                     vm.loadData();
-                });      
+                });
                 break;
             case "Msg_198":
                 vm.$dialog.error({ messageId: "Msg_198" }).then(() => {
                     vm.$jump("at", "/view/cmm/045/a/index.xhtml");
-                });      
+                });
                 break;
-            default: 
+            default:
                 vm.$dialog.error(res.message).then(() => {
-                    vm.$jump("com", "/view/ccg/008/a/index.xhtml"); 
-                }); 
+                    vm.$jump("com", "/view/ccg/008/a/index.xhtml");
+                });
                 break;
             }
         }
@@ -320,7 +320,7 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
 
             }).fail((res: any) => {
                 vm.handlerExecuteErrorMsg(res);
-            }).always(() => vm.$blockui("hide"));   
+            }).always(() => vm.$blockui("hide"));
         }
     }
 

@@ -5,6 +5,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
     import LateOrEarlyInfo = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.LateOrEarlyInfo;
     import ArrivedLateLeaveEarlyInfo = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.ArrivedLateLeaveEarlyInfo;
     import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
+    import PrintContentOfEachAppDto = nts.uk.at.view.kaf000_ref.shr.viewmodel.PrintContentOfEachAppDto;
 
     @component({
         name: 'kaf004-b',
@@ -22,14 +23,17 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
         lateOrEarlyInfo3: KnockoutObservable<LateOrEarlyInfo>;
         lateOrEarlyInfo4: KnockoutObservable<LateOrEarlyInfo>;
         isSendMail: KnockoutObservable<Boolean>;
+        printContentOfEachAppDto: KnockoutObservable<PrintContentOfEachAppDto>;
 
         created(
             params: {
                 appDispInfoStartupOutput: any,
+                printContentOfEachAppDto: PrintContentOfEachAppDto,
                 eventUpdate: (evt: () => void) => void
             }) {
             const vm = this;
             vm.isSendMail = ko.observable(true);
+            vm.printContentOfEachAppDto = ko.observable(params.printContentOfEachAppDto);
 
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             // vm.application = ko.observable(new Application(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.appID, 1, [], 9, "", "", 0));
@@ -60,7 +64,9 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                 }
             });
 
+
             vm.createParamKAF004();
+            // params.printContentOfEachAppDto.opArrivedLateLeaveEarlyInfo = ko.toJS(vm.arrivedLateLeaveEarlyInfo);
 
             // gui event con ra viewmodel cha
             // nhớ dùng bind(vm) để ngữ cảnh lúc thực thi
@@ -68,7 +74,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
             params.eventUpdate(vm.update.bind(vm));
         }
 
-        createParamKAF004() {
+        async createParamKAF004() {
             const vm = this;
             let command = {
                 appId: ko.toJS(vm.application.appID),
@@ -80,8 +86,9 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                 .done((res: any) => {
                     vm.arrivedLateLeaveEarlyInfo = ko.observable(res);
                     vm.appDispInfoStartupOutput = ko.observable(res.appDispInfoStartupOutput);
+                    vm.printContentOfEachAppDto().opArrivedLateLeaveEarlyInfo = res;
 
-                    vm.lateOrEarlyInfos(vm.arrivedLateLeaveEarlyInfo.earlyInfos);
+                    vm.lateOrEarlyInfos(vm.arrivedLateLeaveEarlyInfo().earlyInfos);
                     vm.lateOrEarlyInfo1(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 0 })));
                     vm.lateOrEarlyInfo2(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 1 })));
                     vm.lateOrEarlyInfo3(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 0 })));

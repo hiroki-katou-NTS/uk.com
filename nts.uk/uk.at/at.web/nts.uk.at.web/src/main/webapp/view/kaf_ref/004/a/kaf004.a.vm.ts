@@ -118,6 +118,9 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     console.log(failData);
                 }).always(() => vm.$blockui("hide"));
 
+            let ele = $("#kaf000-a-component4-singleDate");
+            ele.focusout(() => {})
+
             vm.application().appDate.subscribe(() => {
                 vm.$blockui("show");
 
@@ -350,7 +353,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                 // 起動したら、実績データがある場合 (Sau khi khởi động t/h có data thực tế)
                 switch (idItem) {
                     case IdItem.A6_7: {
-                        return !!ko.toJS(this.workManagement.workTime);
+                        return ko.toJS(this.workManagement.workTime) === null;
                     } case IdItem.A6_13: {
                         return !!ko.toJS(this.workManagement.leaveTime);
                     } case IdItem.A6_19: {

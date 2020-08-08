@@ -23,6 +23,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.service.print.ApplicationGenerator;
 import nts.uk.ctx.at.request.dom.application.common.service.print.ApproverPrintDetails;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfApp;
+import nts.uk.ctx.at.request.infra.repository.application.lateleaveearly.AsposeLateLeaveEarly;
 import nts.uk.ctx.at.request.infra.repository.application.workchange.AsposeWorkChange;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -34,14 +35,17 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class AsposeApplication extends AsposeCellsReportGenerator implements ApplicationGenerator {
-	
+
 	@Inject
 	private AsposeWorkChange asposeWorkChange;
+
+	@Inject
+	private AsposeLateLeaveEarly asposeLateLeaveEarly;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, PrintContentOfApp printContentOfApp, ApplicationType appType) {
 		try {
-			
+
 			val designer = this.createContext(this.getFileTemplate(appType));
 			Workbook workbook = designer.getWorkbook();
 			WorksheetCollection worksheets = workbook.getWorksheets();
@@ -51,7 +55,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			printEachAppContent(worksheet, printContentOfApp, appType);
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
-			
+
 			//SaveOptions saveOptions = SaveOptions.;
 			//designer.saveWithOtherOption(this.createNewFile(generatorContext, this.getReportName(this.getFileName(appType))), saveOptions);
 			designer.saveAsExcel(this.createNewFile(generatorContext, this.getReportName(this.getFileName(appType))));
@@ -59,10 +63,15 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		
+
 	}
-	
+
 	private void printEachAppContent(Worksheet worksheet, PrintContentOfApp printContentOfApp, ApplicationType appType) {
+		Cell comboReasonLabel;
+		Cell textReasonLabel;
+		Cell comboReasonContent;
+		Cell textReasonContent;
+
 		switch (appType) {
 		case OVER_TIME_APPLICATION:
 			break;
@@ -70,10 +79,10 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			break;
 		case WORK_CHANGE_APPLICATION:
 			asposeWorkChange.printWorkChangeContent(worksheet, printContentOfApp);
-			Cell comboReasonLabel = worksheet.getCells().get("B15");
-			Cell textReasonLabel = worksheet.getCells().get("B18");
-			Cell comboReasonContent = worksheet.getCells().get("D15");
-			Cell textReasonContent = worksheet.getCells().get("D18");
+			comboReasonLabel = worksheet.getCells().get("B15");
+			textReasonLabel = worksheet.getCells().get("B18");
+			comboReasonContent = worksheet.getCells().get("D15");
+			textReasonContent = worksheet.getCells().get("D18");
 			printBottomKAF000(comboReasonLabel, textReasonLabel, comboReasonContent, textReasonContent, printContentOfApp);
 			break;
 		case BUSINESS_TRIP_APPLICATION:
@@ -87,6 +96,13 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case ANNUAL_HOLIDAY_APPLICATION:
 			break;
 		case EARLY_LEAVE_CANCEL_APPLICATION:
+			asposeLateLeaveEarly.printLateEarlyContent(worksheet, printContentOfApp);
+			comboReasonLabel = worksheet.getCells().get("B13");
+			textReasonLabel = worksheet.getCells().get("B16");
+			comboReasonContent = worksheet.getCells().get("D13");
+			textReasonContent = worksheet.getCells().get("D16");
+			printBottomKAF000(comboReasonLabel, textReasonLabel, comboReasonContent, textReasonContent,
+					printContentOfApp);
 			break;
 		case COMPLEMENT_LEAVE_APPLICATION:
 			break;
@@ -96,7 +112,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			break;
 		}
 	}
-	
+
 	private String getFileTemplate(ApplicationType appType) {
 		switch (appType) {
 		case OVER_TIME_APPLICATION:
@@ -116,7 +132,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case ANNUAL_HOLIDAY_APPLICATION:
 			return "";
 		case EARLY_LEAVE_CANCEL_APPLICATION:
-			return "";
+			return "application/KAF004_template.xlsx";
 		case COMPLEMENT_LEAVE_APPLICATION:
 			return "";
 		case OPTIONAL_ITEM_APPLICATION:
@@ -125,7 +141,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			return "testAppTemplate";
 		}
 	}
-	
+
 	private String getFileName(ApplicationType appType) {
 		switch (appType) {
 		case OVER_TIME_APPLICATION:
@@ -145,7 +161,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case ANNUAL_HOLIDAY_APPLICATION:
 			return "";
 		case EARLY_LEAVE_CANCEL_APPLICATION:
-			return "";
+			return "遅刻早退取消申請.xlsx";
 		case COMPLEMENT_LEAVE_APPLICATION:
 			return "";
 		case OPTIONAL_ITEM_APPLICATION:
@@ -154,7 +170,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			return "testAppName";
 		}
 	}
-	
+
 	private void printPageHeader(Worksheet worksheet, PrintContentOfApp printContentOfApp) {
 		PageSetup pageSetup = worksheet.getPageSetup();
 		pageSetup.setFirstPageNumber(1);
@@ -162,7 +178,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		pageSetup.setHeader(1, "&16&\"ＭＳ ゴシック\"" + "applicationName");
 		pageSetup.setHeader(2, "&9&\"ＭＳ ゴシック\"" + GeneralDateTime.now().toString());
 	}
-	
+
 	private void printTopKAF000(Worksheet worksheet, PrintContentOfApp printContentOfApp) {
 		Cells cells = worksheet.getCells();
 		TextBoxCollection textBoxCollection = worksheet.getTextBoxes();
@@ -235,7 +251,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			TextBox textBoxStatus5 = textBoxCollection.get("STATUS5");
 			textBoxStatus5.setText(approverPrintDetails5.getApprovalBehaviorAtr().name);
 		}
-		
+
 		Cell cellD6 = cells.get("D6");
 		GeneralDate startDate = printContentOfApp.getAppStartDate();
 		GeneralDate endDate = printContentOfApp.getAppEndDate();
@@ -249,7 +265,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		} else {
 			cellD6.setValue(printContentOfApp.getAppDate().toString("yyyy年　MM月　dd日　(E)"));
 		}
-		
+
 		Cell cellD7 = cells.get("D7");
 		cellD7.setValue(printContentOfApp.getPrePostAtr().name);
 	}
@@ -266,5 +282,5 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			textReasonContent.setValue(printContentOfApp.getOpAppReason().v());
 		}
 	}
-	
+
 }
