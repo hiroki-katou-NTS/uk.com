@@ -39,7 +39,7 @@ public class ReflectionInformation_New extends DomainObject {
 	
 	// 実績反映不可理由
 	@Setter
-	private Optional<ReasonNotReflectDaily_New> notReasonReal;
+	private Optional<ReasonNotReflectDaily> notReasonReal;
 	
 	// 予定反映日時
 	@Setter

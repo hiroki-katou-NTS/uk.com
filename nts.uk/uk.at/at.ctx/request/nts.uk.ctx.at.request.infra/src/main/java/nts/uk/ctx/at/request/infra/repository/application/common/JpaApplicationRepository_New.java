@@ -34,7 +34,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect;
-import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
+import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdpApplicationPK_New;
@@ -596,7 +596,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 									ReasonNotReflect.class)),
 					x.getInt("REFLECT_PER_SCHE_REASON") == null ? Optional.empty()
 							: Optional.ofNullable(EnumAdaptor.valueOf(x.getInt("REFLECT_PER_SCHE_REASON"),
-									ReasonNotReflectDaily_New.class)),
+									ReasonNotReflectDaily.class)),
 					Optional.ofNullable(x.getGeneralDateTime("REFLECT_PLAN_TIME")),
 					Optional.ofNullable(x.getGeneralDateTime("REFLECT_PER_TIME")));
 			return new Application_New(x.getLong("EXCLUS_VER"), x.getString("CID"), x.getString("APP_ID"),

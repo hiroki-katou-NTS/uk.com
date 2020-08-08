@@ -15,7 +15,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect;
-import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
+import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 
@@ -144,7 +144,7 @@ public class ApplicationDto_New {
 						.notReason(Optional.ofNullable(appDto.getReflectPlanScheReason())
 								.map(x -> EnumAdaptor.valueOf(x, ReasonNotReflect.class)))
 						.notReasonReal(Optional.ofNullable(appDto.getReflectPerScheReason())
-								.map(x -> EnumAdaptor.valueOf(x, ReasonNotReflectDaily_New.class)))
+								.map(x -> EnumAdaptor.valueOf(x, ReasonNotReflectDaily.class)))
 						.dateTimeReflection(Optional
 								.ofNullable(appDto.getReflectPlanTime() == null ? null : GeneralDateTime.fromString(appDto.getReflectPlanTime(), DATE_TIME_FORMAT)))
 						.dateTimeReflectionReal(Optional
