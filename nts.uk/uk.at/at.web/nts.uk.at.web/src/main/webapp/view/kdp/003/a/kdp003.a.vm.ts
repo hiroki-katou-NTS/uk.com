@@ -151,7 +151,7 @@ module nts.uk.at.kdp003.a {
 				})
 				.then((data: LoginData) => {
 					// if dialog f return data (first login)
-					if (data.loginData && !data.storageData) {
+					if (data.loginData && !data.loginData.msgErrorId && !data.loginData.errorMessage && !data.storageData) {
 						const { loginData } = data;
 						const params = { multiSelect: true };
 
