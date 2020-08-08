@@ -29,8 +29,8 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReasonNotReflect;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
-import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
@@ -293,7 +293,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		}
 		if(isSche) {
 			appInfor.getReflectionInformation().setStateReflection(ReflectedState_New.REFLECTED);
-			appInfor.getReflectionInformation().setNotReason(Optional.of(ReasonNotReflect_New.WORK_CONFIRMED));	
+			appInfor.getReflectionInformation().setNotReason(Optional.of(ReasonNotReflect.WORK_CONFIRMED));	
 			appInfor.getReflectionInformation().setDateTimeReflection(Optional.of(GeneralDateTime.now()));
 		}
 		if(isRecord) {

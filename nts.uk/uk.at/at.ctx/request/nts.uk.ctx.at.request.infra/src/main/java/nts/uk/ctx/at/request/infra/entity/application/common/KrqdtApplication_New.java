@@ -19,8 +19,8 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReasonNotReflect;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
-import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -151,7 +151,7 @@ public class KrqdtApplication_New extends UkJpaEntity {
 					.stateReflectionReal(EnumAdaptor.valueOf(this.stateReflectionReal, ReflectedState_New.class))
 					.forcedReflection(EnumAdaptor.valueOf(this.forcedReflection, DisabledSegment_New.class))
 					.forcedReflectionReal(EnumAdaptor.valueOf(this.forcedReflectionReal, DisabledSegment_New.class))
-					.notReason(Optional.ofNullable(this.notReason).map(x -> EnumAdaptor.valueOf(x, ReasonNotReflect_New.class)))
+					.notReason(Optional.ofNullable(this.notReason).map(x -> EnumAdaptor.valueOf(x, ReasonNotReflect.class)))
 					.notReasonReal(Optional.ofNullable(this.notReasonReal).map(x -> EnumAdaptor.valueOf(x, ReasonNotReflectDaily_New.class)))
 					.dateTimeReflection(Optional.ofNullable(this.dateTimeReflection))
 					.dateTimeReflectionReal(Optional.ofNullable(this.dateTimeReflectionReal))
