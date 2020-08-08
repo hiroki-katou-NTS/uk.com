@@ -57,6 +57,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 
 	private static final String SELECT_BY_LIST_SID = "SELECT th.sid FROM BsymtTempAbsHistory th"
 			+ " WHERE th.sid IN :employeeIds ORDER BY th.sid ";
+	
 
 	/**
 	 * Convert from domain to entity
@@ -249,8 +250,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			String sql = "SELECT * FROM BSYMT_TEMP_ABS_HISTORY" + " WHERE CID = ?" + " AND START_DATE <= ?"
 					+ " AND END_DATE >= ?" + " AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")"
-					+ " ORDER BY SID, START_DATE DESC";
-			;
+					+ " ORDER BY SID, START_DATE DESC";;
 
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 
@@ -527,7 +527,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 			DatePeriod datePeriod, List<TempAbsenceFrameNo> lstTempAbsenceFrameNo) {
 		// TODO Auto-generated method stub
 		// $履歴リスト = [3-2] *社員IDを指定して履歴を取得する ( 会社ID, 社員IDリスト )
-		List<TempAbsenceHistory> absenceHistories = this.specifyEmpIDGetHistory(companyID, lstEmpId);
+		List<TempAbsenceHistory> absenceHistories = this.getHistoryByListEmp(companyID, lstEmpId);
 
 		// $汎用履歴項目リスト = $履歴リスト:
 		List<DateHistoryItem> dateHistoryItems = new ArrayList<>();
@@ -594,11 +594,26 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 				datePeriod, lstTempAbsenceFrameNo);
 		return recordWithPeriods;
 	}
+	
+	private static final String GET_DATA32 = " SELECT k FROM BsymtTempAbsHistory k "
+            + " WHERE k.cid = :companyId "   
+            + " AND k.sid IN :lstEmpId ";
 
 	@Override
-	public List<TempAbsenceHistory> specifyEmpIDGetHistory(String companyID, List<String> employeeId) {
-		// TODO Auto-generated method stub
-		List<TempAbsenceHistory> absenceHistories = new ArrayList<TempAbsenceHistory>();
-		return absenceHistories;
+	public List<TempAbsenceHistory> getHistoryByListEmp(String companyId, List<String> lstEmpId) {
+		List<TempAbsenceHistory> data = new ArrayList<>();
+		List<BsymtTempAbsHistory> data1 = this.queryProxy().query(GET_DATA32, BsymtTempAbsHistory.class)
+							.setParameter("companyId", companyId)
+							.setParameter("lstEmpId", lstEmpId)
+							.getList();
+		
+		for(String emp :lstEmpId){
+			List<BsymtTempAbsHistory> temp = data1.stream().filter(x->x.getSid().equals(emp)).collect(Collectors.toList());
+			Optional<TempAbsenceHistory> tempAbsenceHistory = BsymtTempAbsHistory.toDomainHis(temp);
+			if(tempAbsenceHistory.isPresent()){
+				data.add(tempAbsenceHistory.get());	
+			}
+		}
+		return data;
 	}
 }
