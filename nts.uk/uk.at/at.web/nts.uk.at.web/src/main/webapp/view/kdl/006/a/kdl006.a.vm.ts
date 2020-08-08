@@ -85,14 +85,14 @@ module nts.uk.at.view.kdl006.a {
             _.forEach(self.workplaceList(), function(row) {
                 let w = _.find(self.workPlaceComfirmList, ['workPlaceId', row.workPlaceId]);
                 if(w && row.confirmEmployment() != w.confirmEmployment){
-                    w.closureId = self.selectedId();
-                    w.currentMonth = _.find(self.tighteningList(), ['closureId', self.selectedId()]).yearMonth;
-                    workPlaces.push(w);
+                    row.closureId = self.selectedId();
+                    row.currentMonth = _.find(self.tighteningList(), ['closureId', self.selectedId()]).yearMonth;
+                    workPlaces.push(row);
                 }    
             });
             if(workPlaces.length > 0){
                 block.grayout();
-                service.save(workPlaces).done(function(data) {
+                service.save(ko.toJS(workPlaces)).done(function(data) {
                     self.getWorkplace();
                 }).fail(function(res) {
                     error({ messageId: res.messageId });

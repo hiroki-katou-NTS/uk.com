@@ -66,7 +66,7 @@ public class KDL006CommandHandler {
 		
 		@Override
 		public void insert(EmploymentConfirmed domain) {
-			this.insert(domain);
+			this.employmentConfirmedRepo.insert(domain);
 		}
 
 		@Override
@@ -76,7 +76,7 @@ public class KDL006CommandHandler {
 
 		@Override
 		public Optional<EmploymentConfirmed> get(String companyId, String workplaceId, ClosureId closureId, YearMonth processYM) {
-			return this.get(companyId, workplaceId, closureId, processYM);
+			return this.employmentConfirmedRepo.get(companyId, workplaceId, closureId, processYM);
 		}
 
 	}
