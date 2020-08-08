@@ -18,7 +18,6 @@ import nts.uk.ctx.at.record.dom.workrecord.workrecord.RegisterOfCancelWorkConfir
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureIdHistory;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -48,7 +47,7 @@ public class KDL006CommandHandler {
 					new YearMonth(workPlace.currentMonth), 
 					Optional.of(employeeId), 
 					Optional.of(GeneralDateTime.now()), 
-					workPlace.whetherToCancel));
+					workPlace.confirmEmployment));
 		}
 		
 		transaction.execute(() -> {

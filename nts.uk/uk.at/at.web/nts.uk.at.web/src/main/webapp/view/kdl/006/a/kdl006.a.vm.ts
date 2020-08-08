@@ -40,9 +40,9 @@ module nts.uk.at.view.kdl006.a {
             let self = this;
             let dfd = $.Deferred();
             block.grayout();
-            service.startPage({closureId: self.closureId}).done(function(data) {
+            service.startPage().done(function(data) {
                 let c = [];
-                _.forEach(data.closureList, function(closure) {
+                _.forEach(data, function(closure) {
                     c.push(new Closure(closure));
                 });
                 self.tighteningList(c);
@@ -82,17 +82,19 @@ module nts.uk.at.view.kdl006.a {
         
         save(){
             let self = this;
-            let self = this;
-            block.grayout();
             let workPlaces = [];
             _.forEach(self.workplaceList(), function(row) {
                 let w = _.find(self.workPlaceComfirmList, ['workPlaceId', row.workPlaceId]);
                 if(w && row.confirmEmployment() != w.confirmEmployment){
+                    w.closureId = self.selectedId();
+                    w.currentMonth = _.find(self.tighteningList(), ['closureId', self.selectedId()]).yearMonth;
                     workPlaces.push(w);
                 }    
             });
             if(workPlaces.length > 0){
+                block.grayout();
                 service.save(workPlaces).done(function(data) {
+                    self.getWorkplace();
                 }).fail(function(res) {
                     error({ messageId: res.messageId });
                 }).always(() =>{

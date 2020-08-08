@@ -11,8 +11,6 @@ public class WorkPlaceConfirmCommand {
 	
 	public Integer currentMonth;
 	
-	public String confirmEmployeeId;
-	
-	public Boolean whetherToCancel;
+	public Boolean confirmEmployment;
 	
 }

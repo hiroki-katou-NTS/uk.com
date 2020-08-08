@@ -11,7 +11,6 @@ import nts.uk.ctx.at.record.app.command.kdl.kdl006.KDL006CommandHandler;
 import nts.uk.ctx.at.record.app.command.kdl.kdl006.WorkPlaceConfirmCommand;
 import nts.uk.screen.at.app.query.kdl.kdl006.a.WorkConfirmationFinder;
 import nts.uk.screen.at.app.query.kdl.kdl006.a.dto.ClosureInforDto;
-import nts.uk.screen.at.app.query.kdl.kdl006.a.dto.WorkConfirmationDto;
 import nts.uk.screen.at.app.query.kdl.kdl006.a.dto.WorkPlaceConfirmDto;
 
 @Path("screen/at/kdl006")
@@ -26,8 +25,8 @@ public class KDL006WebService extends WebService {
 	
 	@POST
 	@Path("startpage")
-	public WorkConfirmationDto startPage(KDL006Param param) {
-		return this.workConfirmationFinder.DisplayOfWorkConfirmationDialog(param.closureId);
+	public List<ClosureInforDto> startPage() {
+		return this.workConfirmationFinder.DisplayOfWorkConfirmationDialog();
 	}
 	
 	@POST
@@ -42,8 +41,4 @@ public class KDL006WebService extends WebService {
 		this.commandHandler.register(command);
 	}
 	
-}
-
-class KDL006Param{
-	public Integer closureId;
 }

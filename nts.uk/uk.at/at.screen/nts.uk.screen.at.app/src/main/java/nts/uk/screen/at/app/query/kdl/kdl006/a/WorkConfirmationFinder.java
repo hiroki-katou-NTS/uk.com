@@ -43,7 +43,6 @@ import nts.uk.query.model.employee.EmployeeInformationRepository;
 import nts.uk.query.model.workplace.WorkplaceAdapter;
 import nts.uk.query.model.workplace.WorkplaceInfoImport;
 import nts.uk.screen.at.app.query.kdl.kdl006.a.dto.ClosureInforDto;
-import nts.uk.screen.at.app.query.kdl.kdl006.a.dto.WorkConfirmationDto;
 import nts.uk.screen.at.app.query.kdl.kdl006.a.dto.WorkPlaceConfirmDto;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -78,7 +77,7 @@ public class WorkConfirmationFinder {
 	@Inject
 	private EmployeeInformationRepository employeeInformationRepo;
 
-	public WorkConfirmationDto DisplayOfWorkConfirmationDialog(int closureId) {
+	public List<ClosureInforDto> DisplayOfWorkConfirmationDialog() {
 		String cid = AppContexts.user().companyId();
 		List<Closure> lstClosure = closureRepository.findAllActive(cid, UseClassification.UseClass_Use);
 		if(lstClosure.isEmpty()) {
@@ -101,12 +100,14 @@ public class WorkConfirmationFinder {
 		}
 		closureList.sort(Comparator.comparing(ClosureInforDto::getClosureId));
 		
-		Optional<ClosureInforDto> closure = closureList.stream().filter(c-> c.getClosureId() == closureId).findFirst();
-		if(closure.isPresent()) {
-			return new WorkConfirmationDto(closureList, this.getWorkPlace(closure.get()));
-		}else {
-			return new WorkConfirmationDto(closureList, this.getWorkPlace(closureList.get(0)));
-		}
+		return closureList; 
+		
+//		Optional<ClosureInforDto> closure = closureList.stream().filter(c-> c.getClosureId() == closureId).findFirst();
+//		if(closure.isPresent()) {
+//			return new WorkConfirmationDto(closureList, this.getWorkPlace(closure.get()));
+//		}else {
+//			return new WorkConfirmationDto(closureList, this.getWorkPlace(closureList.get(0)));
+//		}
 	}
 	
 	public List<WorkPlaceConfirmDto> getWorkPlace(ClosureInforDto closure) {
