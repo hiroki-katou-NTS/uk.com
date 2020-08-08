@@ -28,6 +28,7 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TimeoffLeaveRecordWithPeriod;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrameNo;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.GenericString;
+import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHisItem;
 import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHistory;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -507,12 +508,26 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	private static final String GET_DATA5_1  = " SELECT k FROM BsymtTempAbsHisItem k"
+            + " WHERE k.histId IN : lstHisId ";
+	private static final String GET_DATA5_2  = " SELECT k FROM BsymtTempAbsHisItem k"
+			+ " WHERE k.histId IN : lstHisId "
+			+ " AND k.tempAbsFrameNo IN : lstTempAbsenceFrNo ";
 
 	@Override
 	public List<TempAbsenceHisItem> specifyHisAndFrameNotGetHisItem(List<String> lstHisId,
-			List<TempAbsenceFrameNo> tempAbsenceFrNo) {
-		// TODO Auto-generated method stub
-		return null;
+			List<TempAbsenceFrameNo> lstTempAbsenceFrNo) {
+		List<TempAbsenceHisItem> data = new ArrayList<TempAbsenceHisItem>();
+		if (lstTempAbsenceFrNo.isEmpty()) {
+			data = this.queryProxy().query(GET_DATA5_1, BsymtTempAbsHisItem.class).setParameter("lstHisId", lstHisId)
+					.getList(x -> BsymtTempAbsHisItem.toDomainHistItem(x));
+		} else {
+			data = this.queryProxy().query(GET_DATA5_2, BsymtTempAbsHisItem.class).setParameter("lstHisId", lstHisId)
+					.getList(x -> BsymtTempAbsHisItem.toDomainHistItem(x));
+		}
+
+		return data;
 	}
 
 	@Override
@@ -599,6 +614,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
             + " WHERE k.cid = :companyId "   
             + " AND k.sid IN :lstEmpId ";
 
+	// [3-2]
 	@Override
 	public List<TempAbsenceHistory> getHistoryByListEmp(String companyId, List<String> lstEmpId) {
 		List<TempAbsenceHistory> data = new ArrayList<>();
