@@ -169,6 +169,11 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 self.$mask('hide');
             }).catch((err: any) => {
                 self.$mask('hide');
+                if (_.isArray(err.errors)) {
+                    this.$modal.error({ messageId: err.errors[0].messageId });
+                } else {
+                    this.$modal.error({ messageId: err.errors.messageId }); 
+                }
             });
     }
 
@@ -545,6 +550,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 self.$mask('hide');
                 self.$modal.error({ messageId: res.messageId });
                 
+                
             });
 
     }
@@ -564,7 +570,11 @@ export class KafS07AComponent extends KafS00ShrComponent {
             this.$modal('kafs00d', { mode: this.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.appID });
         }).catch((res: any) => {
             this.$mask('hide');
-            this.$modal.error({ messageId: res.errors[0].messageId });
+            if (_.isArray(res.errors)) {
+                this.$modal.error({ messageId: res.errors[0].messageId });
+            } else {
+                this.$modal.error({ messageId: res.errors.messageId }); 
+            }
         });
     }
     public handleConfirmMessage(listMes: any, res: any) {
@@ -642,7 +652,12 @@ export class KafS07AComponent extends KafS00ShrComponent {
         }).catch((res: any) => {
             this.$mask('hide');
             // show message error
-            this.$modal.error({ messageId: res.errors[0].messageId });
+            if (_.isArray(res.errors)) {
+                this.$modal.error({ messageId: res.errors[0].messageId });
+            } else {
+                this.$modal.error({ messageId: res.errors.messageId }); 
+            }
+
         });
 
     }
