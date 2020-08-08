@@ -26,7 +26,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.error.ThrowableAnalyzer;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
@@ -193,7 +193,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				return;
 			}
 			break;
-		case BREAK_TIME_APPLICATION:
+		case HOLIDAY_WORK_APPLICATION:
 			Optional<AppHolidayWork> getFullAppHolidayWork = holidayWorkRepo.getAppHolidayWorkFrame(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!getFullAppHolidayWork.isPresent()) {
 				return;
@@ -249,8 +249,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				continue;
 			}
 			//休暇申請の申請日は休日　又は　勤務変更申請の申請日は休日と休日を除外するチェックの場合反映するが残数データを作成してない
-			if(appInfor.getAppType() == ApplicationType_Old.ABSENCE_APPLICATION
-					|| (appInfor.getAppType() == ApplicationType_Old.WORK_CHANGE_APPLICATION && workchangeData.getExcludeHolidayAtr() == 1)) {
+			if(appInfor.getAppType() == ApplicationType.ABSENCE_APPLICATION
+					|| (appInfor.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION && workchangeData.getExcludeHolidayAtr() == 1)) {
 				List<GeneralDate> lstHoliday = otherCommonAlg.lstDateIsHoliday(appInfor.getCompanyID(),
 						appInfor.getEmployeeID(), new DatePeriod(loopDate,loopDate));
 				lstHoliday.stream().forEach(x -> {

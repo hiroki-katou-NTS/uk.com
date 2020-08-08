@@ -21,7 +21,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
@@ -727,7 +727,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				//※2018/04/17
 				//複数存在する場合は、最後に新規登録された内容を対象とする
 				List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr.PREDICT.value,
-						ApplicationType_Old.OVER_TIME_APPLICATION.value);
+						ApplicationType.OVER_TIME_APPLICATION.value);
 				if (lstAppPre.isEmpty()) {
 					checkColor = new CheckColorTime(appID, 1);
 				} else {
@@ -761,7 +761,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					lstRestEnd.add(restTime.getEndTime());
 				}
 				WkTypeWkTime wkT = this.findWkTOt(lstAppOt, appID);
-				TimeResultOutput result = this.getDataActual(sID, appDate, time, ApplicationType_Old.OVER_TIME_APPLICATION,
+				TimeResultOutput result = this.getDataActual(sID, appDate, time, ApplicationType.OVER_TIME_APPLICATION,
 						wkT.getWkTypeCd(), wkT.getWkTimeCd(), lstWkType, lstWkTime);
 				if (result.isCheckColor()) {
 					if (this.checkExistColor(lstColorTime, appID)) {
@@ -807,7 +807,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			if (displaySet.getHwAdvanceDisAtr().equals(DisplayAtr.DISPLAY)) {// 表示する
 				//ドメインモデル「申請」を取得する
 				List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr.PREDICT.value,
-						ApplicationType_Old.BREAK_TIME_APPLICATION.value);
+						ApplicationType.HOLIDAY_WORK_APPLICATION.value);
 				if (lstAppPre.isEmpty()) {
 					checkColor = new CheckColorTime(appID, 1);
 				} else {
@@ -835,7 +835,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				//アルゴリズム「申請一覧リスト取得実績残業申請」を実行する-(5.2)
 				List<OverTimeFrame> time = appHdPost.getLstFrame();
 				WkTypeWkTime wkT = this.findWkTHd(lstAppHdWork, appID);
-				TimeResultOutput result = this.getDataActual(sID, appDate, time, ApplicationType_Old.BREAK_TIME_APPLICATION,
+				TimeResultOutput result = this.getDataActual(sID, appDate, time, ApplicationType.HOLIDAY_WORK_APPLICATION,
 						wkT.getWkTypeCd(), wkT.getWkTimeCd(), lstWkType, lstWkTime);
 				if (result.isCheckColor()) {
 					if (this.checkExistColor(lstColorTime, appID)) {
@@ -884,11 +884,11 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 */
 	@Override
 	public TimeResultOutput getDataActual(String sID, GeneralDate date, List<OverTimeFrame> time,
-			ApplicationType_Old appType, String wkTypeCd, String wkTimeCd, List<WorkType> lstWkType,
+			ApplicationType appType, String wkTypeCd, String wkTimeCd, List<WorkType> lstWkType,
 			List<WorkTimeSetting> lstWkTime) {
 		OverrideSet overrideSet = OverrideSet.SYSTEM_TIME_PRIORITY;
 		Optional<CalcStampMiss> calStampMiss = Optional.empty();
-		if (appType.equals(ApplicationType_Old.OVER_TIME_APPLICATION)) {
+		if (appType.equals(ApplicationType.OVER_TIME_APPLICATION)) {
 			Optional<AppOvertimeSetting> otSet = appOtSetRepo.getAppOver();
 			overrideSet = otSet.isPresent() ? otSet.get().getPriorityStampSetAtr() : overrideSet;
 		} else {
@@ -950,7 +950,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		;
 		String workTypeName = "";
 		String workTimeName = "";
-		if (appType.equals(ApplicationType_Old.BREAK_TIME_APPLICATION)) {
+		if (appType.equals(ApplicationType.HOLIDAY_WORK_APPLICATION)) {
 			if (Strings.isNotBlank(cal.workType)) {
 				workTypeName = repoAppDetail.findWorkTypeName(lstWkType, cal.workType);
 			}
@@ -995,7 +995,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	public Boolean getListAppStampIsCancel(Application_New application, String companyID) {
 		String applicantID = "";
 		// 申請種類-(Check AppType)
-		if (!application.getAppType().equals(ApplicationType_Old.STAMP_APPLICATION)) {
+		if (!application.getAppType().equals(ApplicationType.STAMP_APPLICATION)) {
 			return null;
 		}
 		// 打刻申請.打刻申請モード-(Check 打刻申請モード)
@@ -1148,7 +1148,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	}
 
 	//tim ten hien thi loai don xin
-	private String findAppName(List<AppDispName> appDispName, ApplicationType_Old appType) {
+	private String findAppName(List<AppDispName> appDispName, ApplicationType appType) {
 		for (AppDispName appName : appDispName) {
 			if (appName.getAppType().value == appType.value) {
 				return appName.getDispName().v();
@@ -1859,7 +1859,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 						ScreenAtr.CMM045.value);
 				break;
 			}
-			case BREAK_TIME_APPLICATION: {//休出時間申請
+			case HOLIDAY_WORK_APPLICATION: {//休出時間申請
 				AppHolidayWorkFull hdWork = this.find010(ldtAppHdWork, appID);
 				AppPrePostGroup subData = this.findSubData(lstSubData, appID);
 				if (appMode.equals(ApplicationListAtr.APPROVER) && app.getPrePostAtr().equals(PrePostAtr.POSTERIOR)) {//承認モード(事後)

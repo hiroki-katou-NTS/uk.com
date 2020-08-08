@@ -27,7 +27,7 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 			WorkChangeCommonReflectPara absenceInfor = appRecordInfor.getAbsenceInfor();
 			reflectRecord.absenceReflectRecor(absenceInfor, isPre);
 			break;
-		case BREAK_TIME_APPLICATION:
+		case HOLIDAY_WORK_APPLICATION:
 			HolidayWorkReflectPara holidayworkData = appRecordInfor.getHolidayworkInfor();
 			reflectRecord.holidayWorkReflectRecord(holidayworkData, isPre);
 			break;

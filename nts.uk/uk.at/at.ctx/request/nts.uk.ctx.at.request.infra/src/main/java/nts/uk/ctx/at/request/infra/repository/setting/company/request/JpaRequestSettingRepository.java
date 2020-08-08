@@ -13,7 +13,7 @@ import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.setting.company.request.AuthorizationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
@@ -246,7 +246,7 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 	@Override
 	public void update(List<ReceptionRestrictionSetting> receiption, List<AppTypeSetting> appType) {
 		String companyId = AppContexts.user().companyId();
-		List<ApplicationType_Old> listInsert = new ArrayList<>();
+		List<ApplicationType> listInsert = new ArrayList<>();
 		List<AppTypeSetting> listFilter = new ArrayList<>();
 		// update before and after 
 		for(ReceptionRestrictionSetting item: receiption){ 
@@ -294,7 +294,7 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 		if(listInsert.isEmpty()){
 			listFilter = appType;
 		}else{
-			for(ApplicationType_Old i : listInsert){
+			for(ApplicationType i : listInsert){
 				listFilter = appType.stream().filter(c -> !c.getAppType().equals(i))
 																	.collect(Collectors.toList());
 			}

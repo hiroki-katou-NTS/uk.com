@@ -28,7 +28,7 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamCalculateOve
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamChangeAppDate;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkParam;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
@@ -220,12 +220,12 @@ public class OvertimeWebService extends WebService{
 	@Path("confirmInconsistency")
 	public List<String> confirmInconsistency(CreateHolidayWorkCommand command) {
 		String companyID = AppContexts.user().companyId();
-		Optional<OvertimeRestAppCommonSetting>  overTimeSettingOpt = overTimeSetRepo.getOvertimeRestAppCommonSetting(companyID, ApplicationType_Old.OVER_TIME_APPLICATION.value);
+		Optional<OvertimeRestAppCommonSetting>  overTimeSettingOpt = overTimeSetRepo.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
 		List<ConfirmMsgOutput> outputLst = commonOvertimeHoliday.inconsistencyCheck(
 				companyID, 
 				command.getApplicantSID(), 
 				command.getApplicationDate(),
-				ApplicationType_Old.OVER_TIME_APPLICATION,
+				ApplicationType.OVER_TIME_APPLICATION,
 				overTimeSettingOpt.get().getAppDateContradictionAtr());
 		List<String> result = new ArrayList<>();
 		if(!CollectionUtil.isEmpty(outputLst)) {

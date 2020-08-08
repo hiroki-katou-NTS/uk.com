@@ -20,7 +20,7 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetail
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingData;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingDataDto;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
@@ -126,7 +126,7 @@ public class CheckBeforeRegisterOvertime {
 		// 計算ボタン未クリックチェック
 		// Get setting info
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet
-				.prelaunchAppCommonSetService(app.getCompanyID(), employeeId, 1, ApplicationType_Old.OVER_TIME_APPLICATION, app.getAppDate());
+				.prelaunchAppCommonSetService(app.getCompanyID(), employeeId, 1, ApplicationType.OVER_TIME_APPLICATION, app.getAppDate());
 		// 時刻計算利用する場合にチェックしたい
 		ApprovalFunctionSetting requestSetting = appCommonSettingOutput.approvalFunctionSetting;
 		if (null != requestSetting) {
@@ -160,7 +160,7 @@ public class CheckBeforeRegisterOvertime {
 			preActualColorResult = preActualColorCheck.preActualColorCheck(
 					preExcessDisplaySetting, 
 					performanceExcessAtr, 
-					ApplicationType_Old.OVER_TIME_APPLICATION, 
+					ApplicationType.OVER_TIME_APPLICATION, 
 					app.getPrePostAtr(), 
 					Collections.emptyList(), 
 					otTimeLst,

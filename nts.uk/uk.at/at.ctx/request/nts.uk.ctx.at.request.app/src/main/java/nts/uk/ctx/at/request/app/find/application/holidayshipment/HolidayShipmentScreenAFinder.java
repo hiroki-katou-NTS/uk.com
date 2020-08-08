@@ -35,7 +35,7 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmen
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -156,7 +156,7 @@ public class HolidayShipmentScreenAFinder {
 	@Inject
 	private HolidayShipmentService holidayShipmentService;
 	
-	private static final ApplicationType_Old APP_TYPE = ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION;
+	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
 	/**
 	 * start event
@@ -789,7 +789,7 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 
-	public HolidayShipmentDto commonProcessBeforeStart(ApplicationType_Old appType, String companyID, String employeeID,
+	public HolidayShipmentDto commonProcessBeforeStart(ApplicationType appType, String companyID, String employeeID,
 			GeneralDate baseDate, AppCommonSettingOutput appCommonSettingOutput) {
 		HolidayShipmentDto result = new HolidayShipmentDto();
 
@@ -988,7 +988,7 @@ public class HolidayShipmentScreenAFinder {
 	public List<WorkType> extractTargetWkTypes(String companyID, String employmentCode, int breakOutType, List<WorkType> wkTypes) {
 		// ドメインモデル「申請別対象勤務種類」を取得する
 		// AppEmploymentRepository change return method to Optional<AppEmploymentSetting>
-		Optional<AppEmploymentSetting> empSetOpt = appEmploymentSetting.getEmploymentSetting(companyID, employmentCode, ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION.value);
+		Optional<AppEmploymentSetting> empSetOpt = appEmploymentSetting.getEmploymentSetting(companyID, employmentCode, ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
 		if (empSetOpt.isPresent()) {
 			AppEmploymentSetting appEmploymentSetting = empSetOpt.get();
 			List<WorkTypeObjAppHoliday> workTypeObjAppHolidayList = appEmploymentSetting.getListWTOAH();

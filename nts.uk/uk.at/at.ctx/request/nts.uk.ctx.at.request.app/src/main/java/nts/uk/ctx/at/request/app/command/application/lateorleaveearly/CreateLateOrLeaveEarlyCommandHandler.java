@@ -13,7 +13,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
@@ -66,7 +66,7 @@ public class CreateLateOrLeaveEarlyCommandHandler
 		String appReason = genReason(command.getReasonTemp(), command.getAppReason(), companyID);
 		Application_New application = Application_New.firstCreate(companyID,
 				EnumAdaptor.valueOf(command.getPrePostAtr(), PrePostAtr.class), command.getApplicationDate(),
-				ApplicationType_Old.EARLY_LEAVE_CANCEL_APPLICATION, employeeID, new AppReason(appReason));
+				ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION, employeeID, new AppReason(appReason));
 		LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(application,
 				command.getActualCancel(), command.getEarly1(), command.getEarlyTime1(), command.getLate1(),
 				command.getLateTime1(), command.getEarly2(), command.getEarlyTime2(), command.getLate2(),
@@ -89,7 +89,7 @@ public class CreateLateOrLeaveEarlyCommandHandler
 	public String genReason(String fixedReason, String reasonText, String companyID) {
 		String appReason = "";
 		Optional<AppTypeDiscreteSetting> appTypeSetOpt = this.appTypeSetRepo
-				.getAppTypeDiscreteSettingByAppType(companyID, ApplicationType_Old.EARLY_LEAVE_CANCEL_APPLICATION.value);
+				.getAppTypeDiscreteSettingByAppType(companyID, ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value);
 		if (!appTypeSetOpt.isPresent()) {
 			throw new BusinessException("申請種類別設定 == null");
 		}

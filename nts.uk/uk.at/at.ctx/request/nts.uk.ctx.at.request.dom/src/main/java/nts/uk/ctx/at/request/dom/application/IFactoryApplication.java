@@ -5,5 +5,5 @@ import nts.arc.time.GeneralDate;
 public interface IFactoryApplication {
 	// 申請
 	Application_New buildApplication(String appID, GeneralDate applicationDate, int prePostAtr, String appReasonID,
-					String applicationReason,ApplicationType_Old appType,GeneralDate startDate,GeneralDate endDate,String employeeID);
+					String applicationReason,ApplicationType appType,GeneralDate startDate,GeneralDate endDate,String employeeID);
 }

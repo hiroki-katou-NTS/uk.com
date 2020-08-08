@@ -19,7 +19,7 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingData;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
@@ -79,7 +79,7 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 		String divergenceReason = opAppOverTime.get().getDivergenceReason(); 
 		if(outputMode==OutputMode.EDITMODE){
 			AppTypeDiscreteSetting appTypeDiscreteSetting = overtimeSettingData.appCommonSettingOutput.appTypeDiscreteSettings
-					.stream().filter(x -> x.getAppType()==ApplicationType_Old.OVER_TIME_APPLICATION).findAny().get();
+					.stream().filter(x -> x.getAppType()==ApplicationType.OVER_TIME_APPLICATION).findAny().get();
 			String typicalReason = Strings.EMPTY;
 			String displayReason = Strings.EMPTY;
 			if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(DisplayAtr.DISPLAY)){

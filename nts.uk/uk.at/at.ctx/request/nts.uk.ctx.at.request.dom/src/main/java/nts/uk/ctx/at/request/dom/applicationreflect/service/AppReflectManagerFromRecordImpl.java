@@ -22,7 +22,7 @@ import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
@@ -187,13 +187,13 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	@Override
 	public List<Application_New> getApps(String sid, DatePeriod datePeriod, ExecutionTypeExImport exeType) {
 		List<Integer> lstApptype = new ArrayList<>();
-		lstApptype.add(ApplicationType_Old.ABSENCE_APPLICATION.value);
-		lstApptype.add(ApplicationType_Old.OVER_TIME_APPLICATION.value);
-		lstApptype.add(ApplicationType_Old.STAMP_APPLICATION.value);
-		lstApptype.add(ApplicationType_Old.BREAK_TIME_APPLICATION.value);
-		lstApptype.add(ApplicationType_Old.WORK_CHANGE_APPLICATION.value);
-		lstApptype.add(ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION.value);
-		lstApptype.add(ApplicationType_Old.GO_RETURN_DIRECTLY_APPLICATION.value);
+		lstApptype.add(ApplicationType.ABSENCE_APPLICATION.value);
+		lstApptype.add(ApplicationType.OVER_TIME_APPLICATION.value);
+		lstApptype.add(ApplicationType.STAMP_APPLICATION.value);
+		lstApptype.add(ApplicationType.HOLIDAY_WORK_APPLICATION.value);
+		lstApptype.add(ApplicationType.WORK_CHANGE_APPLICATION.value);
+		lstApptype.add(ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
+		lstApptype.add(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);
 		List<Integer> lstRecordStatus = new ArrayList<>();
 		List<Integer> lstScheStatus = new ArrayList<>();
 		List<Application_New> lstApp = new ArrayList<>();
@@ -257,12 +257,12 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 			lstApp = lstApp.stream().sorted((a,b) -> a.getInputDate().compareTo(b.getInputDate())).collect(Collectors.toList());
 			lstApp.stream().forEach(app -> {
 				if((app.getPrePostAtr().equals(PrePostAtr.PREDICT)&&
-						app.getAppType().equals(ApplicationType_Old.OVER_TIME_APPLICATION)
-					|| app.getAppType().equals(ApplicationType_Old.BREAK_TIME_APPLICATION))
-					|| app.getAppType().equals(ApplicationType_Old.GO_RETURN_DIRECTLY_APPLICATION)
-					|| app.getAppType().equals(ApplicationType_Old.WORK_CHANGE_APPLICATION)
-					|| app.getAppType().equals(ApplicationType_Old.ABSENCE_APPLICATION)
-					|| app.getAppType().equals(ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION)){
+						app.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)
+					|| app.getAppType().equals(ApplicationType.HOLIDAY_WORK_APPLICATION))
+					|| app.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION)
+					|| app.getAppType().equals(ApplicationType.WORK_CHANGE_APPLICATION)
+					|| app.getAppType().equals(ApplicationType.ABSENCE_APPLICATION)
+					|| app.getAppType().equals(ApplicationType.COMPLEMENT_LEAVE_APPLICATION)){
 					
 					GeneralDate startDate = app.getStartDate().isPresent() ? app.getStartDate().get() : app.getAppDate();
 					GeneralDate endDate = app.getEndDate().isPresent() ? app.getEndDate().get() : app.getAppDate();

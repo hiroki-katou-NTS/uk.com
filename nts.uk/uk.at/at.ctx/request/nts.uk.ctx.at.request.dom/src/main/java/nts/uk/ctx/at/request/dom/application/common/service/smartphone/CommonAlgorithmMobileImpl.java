@@ -290,7 +290,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 		Optional<List<ActualContentDisplay>> opActualContentDisplayLst = Optional.empty();
 		Optional<List<PreAppContentDisplay>> opPreAppContentDisplayLst = Optional.empty();
 		if(appType == ApplicationType.OVER_TIME_APPLICATION &&
-				appType == ApplicationType.LEAVE_TIME_APPLICATION &&
+				appType == ApplicationType.HOLIDAY_WORK_APPLICATION &&
 				appType == ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION &&
 				appType == ApplicationType.STAMP_APPLICATION &&
 				appType == ApplicationType.ANNUAL_HOLIDAY_APPLICATION) {

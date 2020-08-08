@@ -42,7 +42,7 @@ public class DeleteAppHandler extends CommandHandlerWithResult<AppDispInfoStartu
 				applicationDto.toDomain(), 
 				context.getCommand().toDomain());
 		// アルゴリズム「11.休出申請（振休変更）削除」を実行する
-		if(processDeleteResult.getAppType()==ApplicationType.LEAVE_TIME_APPLICATION){
+		if(processDeleteResult.getAppType()==ApplicationType.HOLIDAY_WORK_APPLICATION){
 			holidayService.delHdWorkByAbsLeaveChange(appID);
 		}
 		return processDeleteResult.getProcessResult();

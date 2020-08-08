@@ -12,24 +12,24 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.DailyAttendanceItemAdapter;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampSetOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting_Old;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting_Old;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -71,7 +71,7 @@ public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 	@Override
 	public AppStampSetOutput appStampSet(String companyID) {
 		StampRequestSetting_Old stampRequestSetting = this.stampRequestSettingRepository.findByCompanyID(companyID).get();
-		List<ApplicationReason> applicationReasons = this.applicationReasonRepository.getReasonByAppType(companyID, ApplicationType_Old.STAMP_APPLICATION.value);
+		List<ApplicationReason> applicationReasons = this.applicationReasonRepository.getReasonByAppType(companyID, ApplicationType.STAMP_APPLICATION.value);
 		return new AppStampSetOutput(stampRequestSetting, applicationReasons);
 	}
 
@@ -83,7 +83,7 @@ public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
 				appStamp.getApplication_New().getCompanyID(), 
-				ApplicationType_Old.STAMP_APPLICATION.value).get();
+				ApplicationType.STAMP_APPLICATION.value).get();
 		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)
 				||appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
 			if(applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)&&

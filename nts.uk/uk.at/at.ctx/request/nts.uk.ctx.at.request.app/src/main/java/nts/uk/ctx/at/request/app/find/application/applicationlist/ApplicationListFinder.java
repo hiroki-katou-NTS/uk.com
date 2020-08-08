@@ -12,10 +12,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.i18n.I18NText;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
@@ -31,7 +32,6 @@ import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 11 - 申請一覧初期処理
@@ -213,8 +213,8 @@ public class ApplicationListFinder {
 		}
 		if(isSpr && extractCondition == 1){
 			if(!this.findAppTypeOt(lstAppType)){
-				String name = repoAppDispName.getDisplay(ApplicationType_Old.OVER_TIME_APPLICATION.value).get().getDispName().v();
-				lstAppType.add(new AppInfor(ApplicationType_Old.OVER_TIME_APPLICATION.value, name));
+				String name = repoAppDispName.getDisplay(ApplicationType.OVER_TIME_APPLICATION.value).get().getDispName().v();
+				lstAppType.add(new AppInfor(ApplicationType.OVER_TIME_APPLICATION.value, name));
 			}
 		}
 		return lstAppType.stream().sorted((x, y) -> x.getAppType()-y.getAppType()).collect(Collectors.toList());

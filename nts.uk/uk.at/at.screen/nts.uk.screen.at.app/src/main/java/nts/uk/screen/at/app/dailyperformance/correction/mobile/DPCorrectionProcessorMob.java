@@ -29,6 +29,7 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.person.EmployeeInfoFunAdapterDto;
 import nts.uk.ctx.at.record.dom.adapter.employment.EmploymentHisOfEmployeeImport;
@@ -126,7 +127,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.lock.ConfirmationMonthDt
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * @author ductm
@@ -432,7 +432,7 @@ public class DPCorrectionProcessorMob {
 			if (disableSignMap != null) {
 				boolean disable = (x.getReflectState() == ReflectedState_New.NOTREFLECTED.value
 						|| x.getReflectState() == ReflectedState_New.REMAND.value)
-						&& x.getAppType() != nts.uk.ctx.at.request.dom.application.ApplicationType_Old.OVER_TIME_APPLICATION.value;
+						&& x.getAppType() != nts.uk.ctx.at.request.dom.application.ApplicationType.OVER_TIME_APPLICATION.value;
 				if (disableSignMap.containsKey(key)) {
 					disableSignMap.put(key, disableSignMap.get(key) || disable);
 				} else {

@@ -50,7 +50,7 @@ public class Application_New extends DomainObject {
 	private AppReason appReason;
 	
 	// 申請種類
-	private ApplicationType_Old appType;
+	private ApplicationType appType;
 	
 	// 申請者
 	@Setter
@@ -67,7 +67,7 @@ public class Application_New extends DomainObject {
 	// 反映情報
 	private ReflectionInformation_New reflectionInformation;
 	
-	public static Application_New firstCreate(String companyID, PrePostAtr prePostAtr, GeneralDate appDate, ApplicationType_Old appType, String employeeID, AppReason appReason){
+	public static Application_New firstCreate(String companyID, PrePostAtr prePostAtr, GeneralDate appDate, ApplicationType appType, String employeeID, AppReason appReason){
 		return Application_New.builder()
 				.version(0L)
 				.companyID(companyID)
@@ -87,45 +87,33 @@ public class Application_New extends DomainObject {
 	}
 	
 	public boolean isAppOverTime(){
-		return this.appType  == ApplicationType_Old.OVER_TIME_APPLICATION;
+		return this.appType  == ApplicationType.OVER_TIME_APPLICATION;
 	}
 	public boolean isAppGoBack(){
-		return this.appType  == ApplicationType_Old.GO_RETURN_DIRECTLY_APPLICATION;
+		return this.appType  == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION;
 	}
 	public boolean isAppHdWork(){
-		return this.appType  == ApplicationType_Old.BREAK_TIME_APPLICATION;
+		return this.appType  == ApplicationType.HOLIDAY_WORK_APPLICATION;
 	}
 	public boolean isAppWkChange(){
-		return this.appType  == ApplicationType_Old.WORK_CHANGE_APPLICATION;
+		return this.appType  == ApplicationType.WORK_CHANGE_APPLICATION;
 	}
 	public boolean isAppAbsence(){
-		return this.appType  == ApplicationType_Old.ABSENCE_APPLICATION;
+		return this.appType  == ApplicationType.ABSENCE_APPLICATION;
 	}
 	public boolean isAppCompltLeave(){
-		return this.appType  == ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION;
+		return this.appType  == ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 	}
 	public boolean isAppBusinessTrip(){
-		return this.appType  == ApplicationType_Old.BUSINESS_TRIP_APPLICATION;
+		return this.appType  == ApplicationType.BUSINESS_TRIP_APPLICATION;
 	}
 	public boolean isAppStemApp(){
-		return this.appType  == ApplicationType_Old.STAMP_APPLICATION;
+		return this.appType  == ApplicationType.STAMP_APPLICATION;
 	}
 	public boolean isAnnualHolidayApp(){
-		return this.appType  == ApplicationType_Old.ANNUAL_HOLIDAY_APPLICATION;
+		return this.appType  == ApplicationType.ANNUAL_HOLIDAY_APPLICATION;
 	}
 	public boolean isAppEarlyLeaveCancel(){
-		return this.appType  == ApplicationType_Old.EARLY_LEAVE_CANCEL_APPLICATION;
-	}
-	public boolean isAppStempNrApplication(){
-		return this.appType  == ApplicationType_Old.STAMP_NR_APPLICATION;
-	}
-	public boolean isAppLongBusinessTrip(){
-		return this.appType  == ApplicationType_Old.LONG_BUSINESS_TRIP_APPLICATION;
-	}
-	public boolean isAppBusinessTripAppHelper(){
-		return this.appType  == ApplicationType_Old.BUSINESS_TRIP_APPLICATION_OFFICE_HELPER;
-	}
-	public boolean isApp_36(){
-		return this.appType  == ApplicationType_Old.APPLICATION_36;
+		return this.appType  == ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION;
 	}
 }

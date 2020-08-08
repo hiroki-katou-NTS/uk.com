@@ -201,7 +201,7 @@ public class Application implements DomainAggregate {
 	} 
 	
 	public boolean isLeaveTimeApp() {
-		return appType == ApplicationType.LEAVE_TIME_APPLICATION;
+		return appType == ApplicationType.HOLIDAY_WORK_APPLICATION;
 	} 
 	
 	/**

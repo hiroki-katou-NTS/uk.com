@@ -22,7 +22,7 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetail
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
@@ -161,7 +161,7 @@ public class CheckBeforeRegisterHolidayWork {
 		
 		AppTypeSetting appTypeSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
 				.getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
-				.filter(x -> x.getAppType() == ApplicationType_Old.BREAK_TIME_APPLICATION).findFirst().get();
+				.filter(x -> x.getAppType() == ApplicationType.HOLIDAY_WORK_APPLICATION).findFirst().get();
 		
 		String typicalReason = Strings.EMPTY;
 		String displayReason = Strings.EMPTY;
@@ -360,7 +360,7 @@ public class CheckBeforeRegisterHolidayWork {
 		// 計算ボタン未クリックチェック
 		// Get setting info
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet
-				.prelaunchAppCommonSetService(appRoot.getCompanyID(), employeeId, 1, ApplicationType_Old.BREAK_TIME_APPLICATION, appRoot.getAppDate());
+				.prelaunchAppCommonSetService(appRoot.getCompanyID(), employeeId, 1, ApplicationType.HOLIDAY_WORK_APPLICATION, appRoot.getAppDate());
 		// 時刻計算利用する場合にチェックしたい
 		ApprovalFunctionSetting requestSetting = appCommonSettingOutput.approvalFunctionSetting;
 		if (null != requestSetting) {
@@ -395,7 +395,7 @@ public class CheckBeforeRegisterHolidayWork {
 		
 		AppTypeSetting appTypeSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
 				.getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
-				.filter(x -> x.getAppType() == ApplicationType_Old.BREAK_TIME_APPLICATION).findFirst().get();
+				.filter(x -> x.getAppType() == ApplicationType.HOLIDAY_WORK_APPLICATION).findFirst().get();
 		String appReason = Strings.EMPTY;	
 		String typicalReason = Strings.EMPTY;
 		String displayReason = Strings.EMPTY;

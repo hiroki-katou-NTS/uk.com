@@ -80,7 +80,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			break;
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			break;
-		case LEAVE_TIME_APPLICATION:
+		case HOLIDAY_WORK_APPLICATION:
 			break;
 		case STAMP_APPLICATION:
 			break;
@@ -109,7 +109,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			return "";
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			return "";
-		case LEAVE_TIME_APPLICATION:
+		case HOLIDAY_WORK_APPLICATION:
 			return "";
 		case STAMP_APPLICATION:
 			return "";
@@ -138,7 +138,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			return "";
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			return "";
-		case LEAVE_TIME_APPLICATION:
+		case HOLIDAY_WORK_APPLICATION:
 			return "";
 		case STAMP_APPLICATION:
 			return "";

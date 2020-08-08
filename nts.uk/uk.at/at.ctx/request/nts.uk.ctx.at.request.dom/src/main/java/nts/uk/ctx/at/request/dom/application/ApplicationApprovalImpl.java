@@ -89,7 +89,7 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			lateOrLeaveEarlyRepository.remove(companyID, appID);
 			break;
-		case LEAVE_TIME_APPLICATION:
+		case HOLIDAY_WORK_APPLICATION:
 			appHolidayWorkRepository.delete(companyID, appID);
 			Optional<BrkOffSupChangeMng> brOptional = this.brkOffSupChangeMngRepository.findHolidayAppID(appID);
 			if(brOptional.isPresent()){

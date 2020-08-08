@@ -7,7 +7,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
@@ -57,7 +56,7 @@ public interface OtherCommonAlgorithm {
 	 * @param appType
 	 * @param appDate
 	 */
-	public InitValueAtr judgmentPrePostAtr(ApplicationType_Old appType,GeneralDate appDate,boolean checkCaller);
+	public InitValueAtr judgmentPrePostAtr(ApplicationType appType,GeneralDate appDate,boolean checkCaller);
 	/**
 	 * 9.同時申請された振休振出申請を取得する
 	 * @author hoatt
@@ -157,7 +156,7 @@ public interface OtherCommonAlgorithm {
 	 * @param appType 申請種類
 	 * @return
 	 */
-	public List<ApplicationReason> getApplicationReasonType(String companyID, DisplayAtr typicalReasonDisplayFlg, ApplicationType_Old appType);
+	public List<ApplicationReason> getApplicationReasonType(String companyID, DisplayAtr typicalReasonDisplayFlg, ApplicationType appType);
 	
 	/**
 	 * 01-06_申請理由を取得
@@ -175,7 +174,7 @@ public interface OtherCommonAlgorithm {
 	 * @param appType 申請種類
 	 * @return
 	 */
-	public AppOverTime getPreApplication(String employeeID, PrePostAtr prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType_Old appType);
+	public AppOverTime getPreApplication(String employeeID, PrePostAtr prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType appType);
 	
 	/**
 	 * 12.マスタ勤務種類、就業時間帯データをチェック

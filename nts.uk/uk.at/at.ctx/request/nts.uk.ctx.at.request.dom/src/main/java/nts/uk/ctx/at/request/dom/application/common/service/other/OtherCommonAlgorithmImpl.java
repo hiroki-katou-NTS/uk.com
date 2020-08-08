@@ -25,7 +25,6 @@ import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
@@ -241,7 +240,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
 		List<ReceptionRestrictionSetting> receptionRestrictionSetting = new ArrayList<>();
 		if(requestSetting.isPresent()){
-			receptionRestrictionSetting = requestSetting.get().getApplicationSetting().getListReceptionRestrictionSetting().stream().filter(x -> x.getAppType().equals(ApplicationType_Old.OVER_TIME_APPLICATION)).collect(Collectors.toList());
+			receptionRestrictionSetting = requestSetting.get().getApplicationSetting().getListReceptionRestrictionSetting().stream().filter(x -> x.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)).collect(Collectors.toList());
 		}
 		//if appdate > systemDate 
 		if (appDate == null || appDate.equals(systemDate)) { // if appDate = systemDate
@@ -299,7 +298,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	 * 5.事前事後区分の判断
 	 */
 	@Override
-	public InitValueAtr judgmentPrePostAtr(ApplicationType_Old appType, GeneralDate appDate,boolean checkCaller) {
+	public InitValueAtr judgmentPrePostAtr(ApplicationType appType, GeneralDate appDate,boolean checkCaller) {
 		InitValueAtr outputInitValueAtr = null;
 		String companyID = AppContexts.user().companyId();
 		Optional<AppTypeDiscreteSetting> appTypeDisc = appTypeDiscreteSettingRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
@@ -623,9 +622,9 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	}
 	
 	@Override
-	public List<ApplicationReason> getApplicationReasonType(String companyID, DisplayAtr typicalReasonDisplayFlg, ApplicationType_Old appType) {
+	public List<ApplicationReason> getApplicationReasonType(String companyID, DisplayAtr typicalReasonDisplayFlg, ApplicationType appType) {
 		// Input．申請種類をチェックする
-		if(appType != ApplicationType_Old.ABSENCE_APPLICATION) {
+		if(appType != ApplicationType.ABSENCE_APPLICATION) {
 			// Input．定型理由の表示区分をチェック
 			if (typicalReasonDisplayFlg == DisplayAtr.NOT_DISPLAY) {
 				return Collections.emptyList();
@@ -647,7 +646,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	}
 	
 	@Override
-	public AppOverTime getPreApplication(String employeeID, PrePostAtr prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType_Old appType) {
+	public AppOverTime getPreApplication(String employeeID, PrePostAtr prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType appType) {
 		String companyID =  AppContexts.user().companyId();
 		AppOverTime result = new AppOverTime();
 		if (prePostAtr == PrePostAtr.POSTERIOR) {

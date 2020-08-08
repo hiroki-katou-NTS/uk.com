@@ -28,9 +28,8 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
@@ -55,7 +54,6 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.S
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentWorkingHour;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.triprequestsetting.ContractCheck;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
@@ -166,7 +164,7 @@ public class SaveHolidayShipmentCommandHandler
 	private ProcessResult createNewForHolidayBreakge(SaveHolidayShipmentCommand command, String companyID, String sID,
 			GeneralDate recDate, GeneralDate absDate, int comType) {
 		// アルゴリズム「事前条件チェック」を実行する
-		String appReason = preconditionCheck(command, companyID, ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION, comType);
+		String appReason = preconditionCheck(command, companyID, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, comType);
 //		// アルゴリズム「登録前エラーチェック（新規）」を実行する
 //		errorCheckBeforeRegister(command, companyID, sID, recDate, absDate, comType, appReason);
 //		//振休残数不足チェック
@@ -199,13 +197,13 @@ public class SaveHolidayShipmentCommandHandler
 		List<ConfirmMsgDto> result = new ArrayList<>();
 		
 		// アルゴリズム「事前条件チェック」を実行する
-		String appReason = preconditionCheck(command, companyID, ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION, comType);
+		String appReason = preconditionCheck(command, companyID, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, comType);
 		// アルゴリズム「登録前エラーチェック（新規）」を実行する
 		result.addAll(errorCheckBeforeRegister(command, companyID, sID, recDate, absDate, comType, appReason));
 		//振休残数不足チェック
 		checkForlackOfRest(companyID, sID, command);
 		
-		ApplicationType_Old appType = ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION;
+		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 		
 		if (isSaveRec(comType)) {
 			Application_New commonApp = IfacApp.buildApplication(command.getRecCmd().getAppID(), recDate,
@@ -413,7 +411,7 @@ public class SaveHolidayShipmentCommandHandler
 
 	private Application_New createNewAbsApp(SaveHolidayShipmentCommand command, String companyID, String sID,
 			GeneralDate absDate, String appReason) {
-		ApplicationType_Old appType = ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION;
+		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 		Application_New commonApp = IfacApp.buildApplication(command.getAbsCmd().getAppID(), absDate,
 				command.getAppCmd().getPrePostAtr(), null, appReason, appType, absDate, absDate, sID);
 
@@ -451,7 +449,7 @@ public class SaveHolidayShipmentCommandHandler
 
 	private Application_New createNewRecApp(SaveHolidayShipmentCommand command, String companyID, String sID,
 			GeneralDate recDate, String appReason) {
-		ApplicationType_Old appType = ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION;
+		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 		
 		Application_New commonApp = IfacApp.buildApplication(command.getRecCmd().getAppID(), recDate,
 				command.getAppCmd().getPrePostAtr(), null, appReason, appType, recDate, recDate, sID);
@@ -910,7 +908,7 @@ public class SaveHolidayShipmentCommandHandler
 	public void vacationTransferCheck(String sID, GeneralDate appDate, int prePostAtr) {
 		// ドメインモデル「申請」を取得する
 		List<Application_New> sameDateApps = appRepo
-				.getApp(sID, appDate, prePostAtr, ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION.value).stream()
+				.getApp(sID, appDate, prePostAtr, ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value).stream()
 				.filter(x -> !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.CANCELED)
 						&& !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.WAITCANCEL)
 						&& !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.DENIAL))
@@ -958,7 +956,7 @@ public class SaveHolidayShipmentCommandHandler
 //
 //	}
 
-	public String preconditionCheck(SaveHolidayShipmentCommand command, String companyID, ApplicationType_Old appType,
+	public String preconditionCheck(SaveHolidayShipmentCommand command, String companyID, ApplicationType appType,
 			int comType) {
 		if (isSaveRec(comType)) {
 			// 勤務種類、就業時間帯チェックのメッセージを表示
@@ -1032,11 +1030,11 @@ public class SaveHolidayShipmentCommandHandler
 	}
 
 	private String GenAndInspectionOfAppReason(SaveHolidayShipmentCommand command, String companyID,
-			ApplicationType_Old appType) {
+			ApplicationType appType) {
 		RequestSetting requestSetting = requestSettingRepository.findByCompany(companyID).get();
 		
 		AppTypeSetting appTypeSetting = requestSetting.getApplicationSetting().getListAppTypeSetting()
-				.stream().filter(x -> x.getAppType() == ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION)
+				.stream().filter(x -> x.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION)
 				.findFirst().get();
 
 		String typicalReason = getTypicalReason(command, appTypeSetting);

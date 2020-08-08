@@ -5,7 +5,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
@@ -27,7 +26,7 @@ public class CollectApprovalRootPatternImpl implements CollectApprovalRootPatter
 	
 	@Override
 	public ApprovalRootPattern getApprovalRootPatternService(String companyID, String employeeID, EmploymentRootAtr rootAtr,
-			ApplicationType_Old appType, GeneralDate appDate, String appID, Boolean isCreate) {
+			ApplicationType appType, GeneralDate appDate, String appID, Boolean isCreate) {
 		return rootBaseDateGet.getBaseDateFromRoot(companyID, employeeID, rootAtr,
 			appType, appDate, appID, isCreate);
 	}
