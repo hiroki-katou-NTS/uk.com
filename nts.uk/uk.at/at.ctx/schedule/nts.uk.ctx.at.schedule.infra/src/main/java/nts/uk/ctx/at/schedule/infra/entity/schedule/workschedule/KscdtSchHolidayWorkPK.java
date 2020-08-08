@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 /**
@@ -21,6 +22,7 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @Embeddable
 @EqualsAndHashCode
+@Getter
 public class KscdtSchHolidayWorkPK implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -37,7 +39,7 @@ public class KscdtSchHolidayWorkPK implements Serializable{
 	@Column(name = "YMD")
 	public GeneralDate ymd;
 	
-	/** 事前申請時間 **/
+	/** 休出枠NO **/
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "FRAME_NO")

@@ -1,21 +1,20 @@
 package nts.uk.screen.at.app.query.kcp013;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class AcquireWorkingHoursDto {
-	private String code;
-	private String name;
-	private String tzStart1;
-	private String tzEnd1;
-	private String tzStart2;
-	private String tzEnd2;
-	private String workStyleClassfication;
-	private String remark;
-	private int useDistintion;
+
+	private List<WorkTimeSetting> listWorkTime;
+
+	private List<PredetemineTimeSetting> predetemineTimeSettings;
 
 }

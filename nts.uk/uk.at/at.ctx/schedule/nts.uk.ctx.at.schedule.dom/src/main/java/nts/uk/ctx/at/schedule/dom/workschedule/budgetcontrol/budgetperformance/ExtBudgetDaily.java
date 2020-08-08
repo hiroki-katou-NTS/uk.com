@@ -26,6 +26,6 @@ public class ExtBudgetDaily implements DomainAggregate{
 	
 	/**	値- 外部予算実績値  **/
 	@Getter
-    private ExtBudgetActualValue actualValue;
+    private ExtBudgetActualValues actualValue;
 	
 }

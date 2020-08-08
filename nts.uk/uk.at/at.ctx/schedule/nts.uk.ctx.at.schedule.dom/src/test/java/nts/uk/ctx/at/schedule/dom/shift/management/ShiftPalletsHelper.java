@@ -60,10 +60,7 @@ public class ShiftPalletsHelper {
 	
 	public static class ShiftPalletsOrgHelper {
 		public static ShiftPalletsOrg DUMMY = new ShiftPalletsOrg(
-				new TargetOrgIdenInfor(
-						TargetOrganizationUnit.WORKPLACE,
-						"e34d86c4-1e32-463e-b86c-68551e0bbf18",
-						"e6fea7af-0365-4332-9943-e2c17f65bea6"),
+				TargetOrgIdenInfor.creatIdentifiWorkplace("e34d86c4-1e32-463e-b86c-68551e0bbf18"),
 				1,  
 				PalletHelper.DUMMY);
 	}

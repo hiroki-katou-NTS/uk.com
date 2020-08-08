@@ -105,7 +105,8 @@ public class GetScheduleTeamInfoServiceTest {
 		
 		List<ScheduleTeam> listScheduleTeam = Arrays.asList(
 				new ScheduleTeam("wkp1", new ScheduleTeamCd("ScheduleTeamCd1"),new ScheduleTeamName("ScheduleTeamName1"), Optional.empty()),
-				new ScheduleTeam("wkp2", new ScheduleTeamCd("ScheduleTeamCd2"),new ScheduleTeamName("ScheduleTeamName2"), Optional.empty())
+				new ScheduleTeam("wkp2", new ScheduleTeamCd("ScheduleTeamCd2"),new ScheduleTeamName("ScheduleTeamName2"), Optional.empty()),
+				new ScheduleTeam("wkp3", new ScheduleTeamCd("ScheduleTeamCd3"),new ScheduleTeamName("ScheduleTeamName3"), Optional.empty())
 				);
 		new Expectations() {
 			{

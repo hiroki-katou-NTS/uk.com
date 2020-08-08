@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TimeoffLeaveRecordWithPeriod;
@@ -23,6 +24,9 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class EmployeeLeaveHistoryPublishImpl implements EmployeeLeaveHistoryPublish {
 	
+	@Inject
+	public TempAbsHistRepository tempAbsHistRepository;
+	
 	@Override
 	public List<EmpLeavePeriodExport> getBySpecifyingPeriod(List<String> lstEmpId, DatePeriod datePeriod) {
 		//[1] 期間を指定して休職期間を取得する
@@ -34,7 +38,7 @@ public class EmployeeLeaveHistoryPublishImpl implements EmployeeLeaveHistoryPubl
 			}).collect(Collectors.toList()));
 		});*/
 		//$履歴項目リスト = require.期間付き休職履歴を取得する( 社員IDリスト, 期間 )
-		Require require = new Require();
+		Require require = new Require(tempAbsHistRepository);
 		String companyId = AppContexts.user().companyId();
 		List<TimeoffLeaveRecordWithPeriod> data =  require.getLeaveHistoryItemsWithPeriod(companyId, lstEmpId, datePeriod);
 		List<EmpLeavePeriodExport> result = data.stream().map(c -> new EmpLeavePeriodExport(c.getTempAbsenceHisItem().getEmployeeId(), c.getDatePeriod())).collect(Collectors.toList());
@@ -46,7 +50,7 @@ public class EmployeeLeaveHistoryPublishImpl implements EmployeeLeaveHistoryPubl
 	public List<EmpLeaveWorkPeriodExport> getHolidayPeriod(List<String> lstEmpId, DatePeriod datePeriod) {
 		//[2] 期間を指定して休業期間を取得する
 		// $履歴項目リスト = require.期間付き休業履歴を取得する( 社員IDリスト, 期間 )
-		Require require = new Require();
+		Require require = new Require(tempAbsHistRepository);
 		String companyId = AppContexts.user().companyId();
 		List<TimeoffLeaveRecordWithPeriod> data = require.getByEmpIdsAndStandardDate(companyId, lstEmpId, datePeriod);
 		List<EmpLeaveWorkPeriodExport> result = data
@@ -56,7 +60,7 @@ public class EmployeeLeaveHistoryPublishImpl implements EmployeeLeaveHistoryPubl
 		//return $履歴項目リスト: map 社員の休業期間( $.履歴項目.社員ID, $.期間, $.履歴項目.枠NO )	
 		return result;
 	}
-
+    @AllArgsConstructor
 	class Require {
 		@Inject
 		public TempAbsHistRepository tempAbsHistRepository;

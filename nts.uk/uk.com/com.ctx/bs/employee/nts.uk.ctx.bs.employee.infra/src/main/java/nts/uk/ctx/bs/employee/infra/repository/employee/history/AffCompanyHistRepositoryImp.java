@@ -824,7 +824,21 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 
 	@Override
 	public List<CompanyWithEmployeeID> getHistoryItemByEmpID(List<String> lstEmpId, DatePeriod datePeriod) {
-		// TODO Auto-generated method stub
-		return null;
+		//getAffEmployeeHistory
+		//$社員別履歴リスト = [3-2] *社員IDを指定して履歴を取得する ( 社員IDリスト )																					
+
+		List<AffCompanyHistByEmployee> data = getAffEmployeeHistory(lstEmpId);
+		List<List<CompanyWithEmployeeID>> flatMap = data.stream().map( c ->{
+			List<AffCompanyHistItem> histItems = c.getLstAffCompanyHistoryItem().stream().
+					filter(x-> (datePeriod.contains(x.getDatePeriod().start()) || datePeriod.contains(x.getDatePeriod().end()) || 
+							x.getDatePeriod().contains(datePeriod.start()) || x.getDatePeriod().contains(datePeriod.end()))
+					).collect(Collectors.toList());
+			List<CompanyWithEmployeeID> results = histItems.stream().map(mapper-> new CompanyWithEmployeeID(c.getSId(), mapper)).collect(Collectors.toList());
+			return results;
+		}).collect(Collectors.toList());
+
+		List<CompanyWithEmployeeID> employeeIds = flatMap.stream().flatMap(x->x.stream()).collect(Collectors.toList());
+		
+		return employeeIds;
 	}
 }

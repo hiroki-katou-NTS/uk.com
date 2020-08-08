@@ -1,0 +1,176 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetMoney
+				nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExtBudgetTime
+				nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetNumberPerson
+				nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetNumericalVal
+			</com:ValidatorScript>
+			<script type='text/javascript'>
+				var dialogSize = {
+					width : 440,
+					height : 490
+				};
+			</script>
+			<style>
+table {
+	border: 1px solid black;
+	width: 100%;
+	border-style: double;
+	border-color: darkgrey;
+}
+
+th, td {
+	width: 110px;
+	border: 1px solid black;
+	border-color: darkgrey;
+	padding-right: 10px;
+	height: 22px;
+}
+
+thead>tr {
+	position: relative;
+	display: inherit;
+}
+
+thead>tr>th {
+	background-color: lightgreen;
+}
+
+input {
+	border: 1px solid black;
+	border-color: darkgrey;
+}
+
+tbody {
+	display: block;
+	height: 232px;
+	overflow: auto;
+}
+</style>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ksu001.q.main.css" />
+			<com:scriptfile path="ksu001.q.service.js" />
+			<com:scriptfile path="ksu001.q.vm.js" />
+			<com:scriptfile path="ksu001.q.start.js" />
+
+			<com:scriptfile path="../common/ksu001.js" />
+
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button class="proceed" tabindex="1" data-bind="click: register">#{i18n.getText('KSU001_3702')}</button>
+				<button id="close" tabindex="2" style="margin-left: 270px;"
+					data-bind="click: closeDialog">#{i18n.getText('KSU001_3703')}</button>
+			</div>
+			<div id="content-area">
+				<div id="left-content">
+					<div>
+						<div data-bind=""></div>
+					</div>
+					<div>
+						<div>
+							<div style="margin-left: 30px; margin-top: 10px"
+								data-bind="ntsFormLabel: {}">
+								<span data-bind="text: organizationName"></span>
+							</div>
+						</div>
+						<hr
+							style="border-color: E0FFFF; margin-top: 10px; width: 90%; margin-left: auto; margin-right: auto;" />
+						<div style="display: flex;">
+							<div style="margin-left: 40px; margin-top: 10px"
+								data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_3704')}</div>
+							<div style="margin-left: 30px; margin-top: 20px"
+								data-bind="ntsComboBox: {
+										options: externalBudgetModel().externalBudgetItems,
+										optionsValue: 'code',
+										value: selectItemCode,
+										optionsText: 'name',
+										enable: true,
+										editable: false,
+										required: true,
+										width: 250,
+										columns: [
+											{ prop: 'code', length: 3 },
+											{ prop: 'name', length: 3 },
+											{ prop: 'attribute', length: 3 },
+											{ prop: 'unit', length: 3 },
+										]}"></div>
+						</div>
+						<div style="display: flex;">
+							<div style="margin-left: 40px; margin-top: 10px"
+								data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_3705')}</div>
+							<div style="margin-left: 30px; margin-top: 20px">
+
+								<table id="wrapper" style="width: 265px;">
+									<thead>
+										<tr>
+											<th>#{i18n.getText('KSU001_3706')}</th>
+											<th data-bind="text: labelQ32"></th>
+										</tr>
+									</thead>
+									<tbody data-bind="foreach: listperiods">
+										<tr>
+											<td data-bind="text: date"></td>
+											<td
+												data-bind="visible: $parent.check, with: $parent.yearmontheditor"><input
+												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 100px; height: 12px;"
+												data-bind="ntsNumberEditor: {
+													value: $parent.value,
+													constraint: 'ExtBudgetTime',
+													option: option,
+													required: false,
+													enable: false,
+													readonly: true}" /></td>
+											<td
+												data-bind="visible: $parent.check1, with: $parent.currencyeditor"><input
+												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 100px; height: 12px;"
+												data-bind="ntsNumberEditor: {
+													value: $parent.value,
+													constraint: 'ExtBudgetMoney',
+													option: option,
+													required: false,
+													enable: false,
+													readonly: true}" /></td>
+											<td
+												data-bind="visible: $parent.check2, with: $parent.numbereditor"><input
+												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 100px; height: 12px;"
+												data-bind="ntsNumberEditor: {
+													value: $parent.value,
+													constraint: 'ExtBudgetNumberPerson',
+													option: option,
+													required: false,
+													enable: false,
+													readonly: true}" /></td>
+											<td
+												data-bind="visible: $parent.check3, with: $parent.numbereditor"><input
+												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 100px; height: 12px;"
+												data-bind="ntsNumberEditor: {
+													value: $parent.value,
+													constraint: 'ExtBudgetNumericalVal',
+													option: option,
+													required: false,
+													enable: false,
+													readonly: true}" /></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div></div>
+					</div>
+				</div>
+
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+
+</html>

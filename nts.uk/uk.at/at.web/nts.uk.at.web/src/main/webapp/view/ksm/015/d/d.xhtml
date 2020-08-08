@@ -1,11 +1,11 @@
 
 <div>
 	<div class="sidebar-content-header">
-		<span class="title">#{i18n.getText('Com_Workplace')}</span>
+		<span class="title">#{i18n.getText('Com_WorkplaceGroup')}</span>
 		<!-- Go back Style -->
 		<!-- B5 -->
-		<a class="goback"
-			data-bind="ntsLinkButton: { jump: '/view/ksm/015/a/index.xhtml' }">#{i18n.getText('KSM015_11')}</a>
+		<a class="goback" 
+			data-bind="ntsLinkButton: { jump: '/view/ksm/015/a/index.xhtml' } , visible: forAttendent">#{i18n.getText('KSM015_11')}</a>
 		<!-- C1 -->
 		<button tabindex="1" class="proceed" id="register-btn"
 			data-bind="click: register, disable: shiftItems().length == 0 || workplaceGroupList().length == 0">#{i18n.getText('KSM015_8')}</button>
@@ -14,34 +14,36 @@
 			data-bind="click: deleteShiftMaster, disable: !isWorkplaceAlreadySetting()">
 			#{i18n.getText('KSM015_9')}</button>
 		<!-- C3 -->
-		<button tabindex="2" data-bind="click: openDialogCopy, disable: !isWorkplaceAlreadySetting()">
-			#{i18n.getText('KSM015_21')}</button>
+		<!-- <button tabindex="2" data-bind="click: openDialogCopy, disable: !isWorkplaceAlreadySetting()">
+			#{i18n.getText('KSM015_21')}</button> -->
 	</div>
 	<div class="contents-area">
 		<div id="ksm007d">
 			<div class="pull-left" style="width: 480px;">
-			<div id="tree-grid">
+			<div id="tree-grid-d">
 				<workplace-group id ="tree-grid-2"  params="options: options" > </workplace-group></div>
 			</div>
-			<div class="pull-left" style="width: 700px;">
+			<div class="pull-right" style="width: 700px;">
 				<div id="register-form-d">
-					<!-- A4 -->
+					<!-- D2 -->
 					<div id="form-title-d">
-          <span>#{i18n.getText('Com_Workplace')} :</span>
+          <span>#{i18n.getText('Com_WorkplaceGroup')} :</span>
           <span data-bind="text: currentNames()"></span>
         </div>
 
         <div class="valign-center control-group">
+        <!-- D4_1 -->
           <div data-bind="ntsFormLabel: {required: true}">
-            #{i18n.getText('KSM015_23',["#Com_Workplace"])}
+            #{i18n.getText('KSM015_23',["#Com_WorkplaceGroup"])}
           </div>
         </div>
 
-					<!-- A7 -->
+					<!-- D4_2 -->
 					<div class="valign-center control-group">
 						<button class="small" tabindex="8"
 							data-bind="click: openDialogKDL044, disable: workplaceGroupList().length == 0">
 							#{i18n.getText('KSM015_18')}</button>
+							<!-- D4_3 -->
 						<button class="small danger" tabindex="9"
 							data-bind="click: removeShift, disable: shiftItems().length == 0">
 							#{i18n.getText('KSM015_31')}</button>
@@ -51,7 +53,7 @@
 						<table id="workplace-list"
 							data-bind="ntsGridList: {
 								height: 330,
-                				width: 1153,
+                				width: 700,
 				                dataSource: shiftItems,
 				                optionsValue: 'shiftMasterCode',
 				                columns: shiftColumns,

@@ -4,6 +4,6 @@ package nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance;
  * @author Hieult
  *
  */
-public interface ExtBudgetActualValue {
+public interface ExtBudgetActualValues {
 
 }

@@ -13,5 +13,5 @@ public interface StampDomainService {
             String empCalAndSumExecLogID, GeneralDate date, String employeeId, String companyId,RecreateFlag recreateFlag);
     //打刻を取得する (new)
     public List<Stamp> handleDataNew(StampReflectRangeOutput s,
-            String empCalAndSumExecLogID, GeneralDate date, String employeeId, String companyId,EmbossingExecutionFlag flag);
+            GeneralDate date, String employeeId, String companyId,EmbossingExecutionFlag flag);
 }

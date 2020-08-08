@@ -18,13 +18,13 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ScheduleTeamSaveCommand {
 	/** チームコード */
-	private String scheduleTeamCd;
+	private String code;
 	
 	/** チーム名称 */
-	private String scheduleTeamName;
+	private String name;
 	
 	/** チーム備考 */
-	private String remarks;
+	private String note;
 	
 	/** 職場グループID */
 	private String workplaceGroupId;

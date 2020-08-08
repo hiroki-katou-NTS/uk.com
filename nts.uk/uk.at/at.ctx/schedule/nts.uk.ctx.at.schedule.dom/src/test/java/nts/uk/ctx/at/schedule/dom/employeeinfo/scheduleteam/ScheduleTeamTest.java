@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam;
 
-import static org.junit.Assert.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 
@@ -24,9 +24,9 @@ public class ScheduleTeamTest {
 		String employeeID = "employeeID";
 		BelongScheduleTeam belongScheduleTeam = scheduleTeam.addEmployee(employeeID);
 		
-		assertSame(employeeID, belongScheduleTeam.getEmployeeID());
-		assertSame(scheduleTeam.getWKPGRPID(), belongScheduleTeam.getWKPGRPID());
-		assertSame(scheduleTeam.getScheduleTeamCd().v(), belongScheduleTeam.getScheduleTeamCd().v());
+		assertThat(employeeID).isEqualTo(belongScheduleTeam.getEmployeeID());
+		assertThat(scheduleTeam.getWKPGRPID()).isEqualTo(belongScheduleTeam.getWKPGRPID());
+		assertThat(scheduleTeam.getScheduleTeamCd().v()).isEqualTo(belongScheduleTeam.getScheduleTeamCd().v());
 		
 	}
 

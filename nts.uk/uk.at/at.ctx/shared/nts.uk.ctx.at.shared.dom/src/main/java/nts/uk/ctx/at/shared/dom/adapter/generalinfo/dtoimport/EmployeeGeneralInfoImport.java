@@ -1,32 +1,35 @@
 package nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 @Getter
+@Setter
 public class EmployeeGeneralInfoImport {
 	
 	/** 雇用履歴一覧 */
-	List<ExEmploymentHistoryImport> employmentHistoryImports;
+	List<ExEmploymentHistoryImport> employmentHistoryImports = new ArrayList<>(); 
 	
 	/** 分類履歴一覧 */
-	List<ExClassificationHistoryImport> exClassificationHistoryImports;
+	List<ExClassificationHistoryImport> exClassificationHistoryImports= new ArrayList<>();
 	
 	/** 職位履歴一覧 */
-	List<ExJobTitleHistoryImport> exJobTitleHistoryImports;
+	List<ExJobTitleHistoryImport> exJobTitleHistoryImports= new ArrayList<>();
 	
 	/** 職場履歴一覧 */
-	List<ExWorkPlaceHistoryImport> exWorkPlaceHistoryImports;
+	List<ExWorkPlaceHistoryImport> exWorkPlaceHistoryImports= new ArrayList<>();
 
 	/** 勤務種別一覧 */
-	List<ExWorkTypeHistoryImport> exWorkTypeHistoryImports;
+	List<ExWorkTypeHistoryImport> exWorkTypeHistoryImports= new ArrayList<>();
 	
 	/** 部門履歴一覧 */
-	List<ExDepartmentHistoryImport> exDepartmentHistoryImports;
+	List<ExDepartmentHistoryImport> exDepartmentHistoryImports= new ArrayList<>();
 
 	public EmployeeGeneralInfoImport(List<ExEmploymentHistoryImport> employmentHistoryImports,
 			List<ExClassificationHistoryImport> exClassificationHistoryImports,

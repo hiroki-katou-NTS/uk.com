@@ -12,8 +12,11 @@ import org.junit.runner.RunWith;
 
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
+import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeam;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamCd;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamName;
@@ -36,7 +39,7 @@ public class SwapEmpOnScheduleTeamServiceTest {
 		
 		NtsAssert.atomTask(
 				() -> SwapEmpOnScheduleTeamService.replace(require, scheduleTeam, lstEmpID),
-				any -> require.deleteSpecifyTeamAndScheduleTeam(scheduleTeam.getWKPGRPID(), scheduleTeam.getScheduleTeamCd().v())
+				any -> require.deleteSpecifyTeamAndScheduleTeam(any.get(), any.get())
 				);
 	}
 	
@@ -48,21 +51,55 @@ public class SwapEmpOnScheduleTeamServiceTest {
 	public void testReplace_1() {
 		ScheduleTeam scheduleTeam = new ScheduleTeam("WKPGRPID", new ScheduleTeamCd("ScheduleTeamCd"),
 				new ScheduleTeamName("ScheduleTeamName"), Optional.empty());
-		List<String> lstEmpID = Arrays.asList("emp1");
+		List<String> lstEmpID = Arrays.asList("emp1", "emp2");
 		
 		new Expectations() {
 			{
-				require.empBelongTeam(anyString);
+				require.empBelongTeam("emp1");
+				result = true;
+
+				require.empBelongTeam("emp2");
 				result = true;
 			}
 		};
-		NtsAssert.atomTask(
-				() -> SwapEmpOnScheduleTeamService.replace(require, scheduleTeam, lstEmpID),
-				any -> require.deleteSpecifyTeamAndScheduleTeam(scheduleTeam.getWKPGRPID(), scheduleTeam.getScheduleTeamCd().v()),
-				any -> require.empBelongTeam(any.get()),
-				any -> require.delete(any.get()),
-				any -> require.insert(any.get())
-				);
+		AtomTask atomTask = SwapEmpOnScheduleTeamService.replace(require, scheduleTeam, lstEmpID);
+		new Verifications()  {
+			{
+				require.deleteSpecifyTeamAndScheduleTeam(anyString, anyString);
+				times = 0;
+				
+				require.empBelongTeam("emp1");
+				times = 0;
+				
+				require.insert((BelongScheduleTeam)any);
+				times = 0;
+
+				require.delete(anyString);
+				times = 0;
+				
+				require.empBelongTeam("emp2");
+				times = 0;
+			}
+		};
+		atomTask.run();
+		new Verifications() {
+			{
+				require.deleteSpecifyTeamAndScheduleTeam(anyString, anyString);
+				times = 1;
+				
+				require.empBelongTeam("emp1");
+				times = 1;
+				
+				require.insert((BelongScheduleTeam)any);
+				times = 2;
+
+				require.delete(anyString);
+				times = 2;
+				
+				require.empBelongTeam("emp2");
+				times = 1;
+			}
+		};
 	}
 	
 	/**
@@ -83,7 +120,7 @@ public class SwapEmpOnScheduleTeamServiceTest {
 		};
 		NtsAssert.atomTask(
 				() -> SwapEmpOnScheduleTeamService.replace(require, scheduleTeam, lstEmpID),
-				any -> require.deleteSpecifyTeamAndScheduleTeam(scheduleTeam.getWKPGRPID(), scheduleTeam.getScheduleTeamCd().v()),
+				any -> require.deleteSpecifyTeamAndScheduleTeam(any.get(), any.get()),
 				any -> require.empBelongTeam(any.get()),
 				any -> require.insert(any.get())
 				);

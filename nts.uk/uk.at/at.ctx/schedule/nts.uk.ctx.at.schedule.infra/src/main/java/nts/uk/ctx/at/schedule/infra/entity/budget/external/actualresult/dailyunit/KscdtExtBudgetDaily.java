@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Setter
 @Getter
-@Table(name = "KSCDT_EXT_BUDGET_DAILY")
+@Table(name = "KSCDT_EXT_BUDGET_DAILY_OLD")
 public class KscdtExtBudgetDaily extends UkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */

@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 /**
@@ -20,6 +21,7 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @Embeddable
 @EqualsAndHashCode
+@Getter
 public class KscdtSchShortTimeTsPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;

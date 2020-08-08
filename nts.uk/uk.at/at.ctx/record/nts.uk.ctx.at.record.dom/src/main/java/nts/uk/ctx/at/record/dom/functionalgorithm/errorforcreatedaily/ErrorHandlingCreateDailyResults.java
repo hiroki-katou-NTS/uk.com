@@ -39,13 +39,15 @@ public class ErrorHandlingCreateDailyResults {
 			String empCalAndSumExeLogId, ExecutionContent executionContent, ErrMessageResource resourceID,
 			ErrMessageContent messageError) {
 		// エラー処理
-		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
-		ErrMessageInfo errMessageInfo = new ErrMessageInfo(employeeId, empCalAndSumExeLogId, resourceID,
-				executionContent, disposalDay, messageError);
-		errMesInfos.add(errMessageInfo);
-		this.errMessageInfoRepository.addList(errMesInfos);
+		if(empCalAndSumExeLogId != null) {
+			List<ErrMessageInfo> errMesInfos = new ArrayList<>();
+			ErrMessageInfo errMessageInfo = new ErrMessageInfo(employeeId, empCalAndSumExeLogId, resourceID,
+					executionContent, disposalDay, messageError);
+			errMesInfos.add(errMessageInfo);
+			this.errMessageInfoRepository.addList(errMesInfos);
+		}
 
-		// 社員の日別実績のエラーを作成する
+		// 社員の日別実績のエラーを作成する	
 		// ドメインモデル「社員の日別実績エラー一覧」の事前条件をチェックする
 		Boolean existErrorCode = this.employeeDailyPerErrorRepository.checkExistErrorCode(employeeId, disposalDay,
 				"S025");	

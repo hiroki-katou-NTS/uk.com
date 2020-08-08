@@ -9,15 +9,14 @@ module nts.uk.at.view.ksm015.c {
 		viewModel.viewmodelC.startPage().done(function() {
 			__viewContext.bind(viewModel);
 			viewModel.viewmodelC.reCalGridWidth();
-			viewModel.viewmodelD.reCalGridWidth();
 			viewModel.viewmodelD.startPage().done(function() {
 			
 			});
         });
-		$(window).resize(function () {
+	/*	$(window).resize(function () {
 			viewModel.viewmodelC.reCalGridWidth();
 			viewModel.viewmodelD.reCalGridWidth();
-		});
+		});*/
 		
 	});
 }

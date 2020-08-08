@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualSt
 public class TimeFrame {
 	/**
 	 * 反映回数
+	 * 打刻\反映回数を
 	 */
 	private int numberOfReflections;
 	/**
@@ -48,5 +49,20 @@ public class TimeFrame {
 	public void setFrameNo(int frameNo) {
 		this.frameNo = frameNo;
 	}
+
+	public void setGoOutReason(Optional<GoingOutReason> goOutReason) {
+		this.goOutReason = goOutReason;
+	}
+
+	public void setEnd(Optional<TimeActualStamp> end) {
+		this.end = end;
+	}
+
+	public void setNumberOfReflections(int numberOfReflections) {
+		this.numberOfReflections = numberOfReflections;
+	}
+	
+	
+	
 	
 }

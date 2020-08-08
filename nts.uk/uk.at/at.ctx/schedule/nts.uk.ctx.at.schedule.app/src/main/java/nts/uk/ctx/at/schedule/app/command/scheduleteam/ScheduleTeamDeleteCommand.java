@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class ScheduleTeamDeleteCommand {
 	/** チームコード */
-	private String scheduleTeamCd;
+	private String code;
 	/** 職場グループID */
 	private String workplaceGroupId;
 

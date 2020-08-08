@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 /**
@@ -21,6 +22,7 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @Embeddable
 @EqualsAndHashCode
+@Getter
 public class KscdtSchBonusPayPK implements Serializable {
 
 	
@@ -44,7 +46,7 @@ public class KscdtSchBonusPayPK implements Serializable {
 	@Column(name = "BONUSPAY_TYPE")
 	public int bonuspayType;
 	
-	/** 事前申請時間 **/
+	/** 加給NO **/
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "FRAME_NO")

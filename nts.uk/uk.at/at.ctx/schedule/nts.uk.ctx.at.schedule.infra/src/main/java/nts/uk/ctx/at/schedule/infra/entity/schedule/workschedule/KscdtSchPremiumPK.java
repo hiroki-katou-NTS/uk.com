@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
@@ -39,6 +40,7 @@ public class KscdtSchPremiumPK implements Serializable {
 	public GeneralDate ymd;
 	
 	/** 割増時間NO **/
+	@Getter
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "FRAME_NO")

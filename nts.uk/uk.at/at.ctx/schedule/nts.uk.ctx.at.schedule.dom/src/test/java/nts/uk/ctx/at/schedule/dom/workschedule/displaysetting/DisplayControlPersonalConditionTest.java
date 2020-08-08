@@ -51,14 +51,17 @@ public class DisplayControlPersonalConditionTest {
 	public void get_Have_Msg() {
 		List<PersonInforDisplayControl> result = Arrays.asList(
 				new PersonInforDisplayControl(
-						EnumAdaptor.valueOf(0, ConditionATRWorkSchedule.class),
-						EnumAdaptor.valueOf(1, NotUseAtr.class)),
+						EnumAdaptor.valueOf(ConditionATRWorkSchedule.INSURANCE_STATUS.value, ConditionATRWorkSchedule.class),
+						EnumAdaptor.valueOf(NotUseAtr.USE.value, NotUseAtr.class)),
 				new PersonInforDisplayControl(
-						EnumAdaptor.valueOf(1, ConditionATRWorkSchedule.class),
-						EnumAdaptor.valueOf(1, NotUseAtr.class)),
+						EnumAdaptor.valueOf(ConditionATRWorkSchedule.TEAM.value, ConditionATRWorkSchedule.class),
+						EnumAdaptor.valueOf(NotUseAtr.USE.value, NotUseAtr.class)),
 				new PersonInforDisplayControl(
-						EnumAdaptor.valueOf(2, ConditionATRWorkSchedule.class),
-						EnumAdaptor.valueOf(1, NotUseAtr.class)));
+						EnumAdaptor.valueOf(ConditionATRWorkSchedule.RANK.value, ConditionATRWorkSchedule.class),
+						EnumAdaptor.valueOf(NotUseAtr.USE.value, NotUseAtr.class)),
+				new PersonInforDisplayControl(
+						EnumAdaptor.valueOf(ConditionATRWorkSchedule.QUALIFICATION.value, ConditionATRWorkSchedule.class),
+						EnumAdaptor.valueOf(NotUseAtr.USE.value, NotUseAtr.class)));
 		NtsAssert.
 		businessException("Msg_1682", 
 				() -> { DisplayControlPersonalCondition.get(
@@ -66,21 +69,30 @@ public class DisplayControlPersonalConditionTest {
 				result,
 				Optional.empty());
 		});}
+	
+	@Test
+	public void test_msg_1786(){
+		NtsAssert.
+		businessException("Msg_1786", 
+				() -> { WorkscheQualifi.workScheduleQualification(
+						new PersonSymbolQualify("1"), 
+						new ArrayList<>());});}
 
 	@Test
 	public void test_getSucces(){
-		WorkscheQualifi qualifi = new WorkscheQualifi(new PersonSymbolQualify("1"), Collections.emptyList());
+		 List<QualificationCD> listQualificationCD = Arrays.asList(new QualificationCD("1"), new QualificationCD("2"));
+		WorkscheQualifi qualifi = WorkscheQualifi.workScheduleQualification(new PersonSymbolQualify("1"), listQualificationCD);
 		
 		List<PersonInforDisplayControl> result = Arrays.asList(
 				new PersonInforDisplayControl(
-						EnumAdaptor.valueOf(3, ConditionATRWorkSchedule.class),
-						EnumAdaptor.valueOf(1, NotUseAtr.class)));
+						EnumAdaptor.valueOf(ConditionATRWorkSchedule.QUALIFICATION.value, ConditionATRWorkSchedule.class),
+						EnumAdaptor.valueOf(ConditionATRWorkSchedule.TEAM.value, NotUseAtr.class)));
 		
 		DisplayControlPersonalCondition condition = DisplayControlPersonalCondition.get(
 				"cid", result, Optional.ofNullable(qualifi));
 		assertThat(condition.getCompanyID().equals("cid")).isTrue();
 		assertThat(condition.getOtpWorkscheQualifi().get().getQualificationMark().v().equals("1")).isTrue();
-		assertThat(condition.getOtpWorkscheQualifi().get().getListQualificationCD().isEmpty()).isTrue();
+		assertThat(condition.getOtpWorkscheQualifi().get().getListQualificationCD().isEmpty()).isFalse();
 		assertThat(condition.getListConditionDisplayControl()).extracting(x-> x.getConditionATR().value,
 				x-> x.getDisplayCategory().value)
 		.containsExactly(tuple(3,1));
@@ -92,7 +104,10 @@ public class DisplayControlPersonalConditionTest {
 
 		// ------------------------- Mocking ↓
 		List<EmpTeamInfor> infors = listEmp.stream().map(x-> new EmpTeamInfor(
-				x, Optional.ofNullable(new ScheduleTeamCd(x + "EmpTeamInforCode")), Optional.ofNullable(new ScheduleTeamName(x + "EmpTeamInforName")))).collect(Collectors.toList());
+				x, Optional.ofNullable(new ScheduleTeamCd(x + "EmpTeamInforCode")), 
+				Optional.ofNullable(new ScheduleTeamName(x == "003" ? "" : x + "EmpTeamInforName"))
+				)).collect(Collectors.toList());
+		
 		new MockUp<GetScheduleTeamInfoService>() {
 			@Mock
 			public List<EmpTeamInfor> get(GetScheduleTeamInfoService.Require require, List<String> lstEmpId) {
@@ -101,7 +116,8 @@ public class DisplayControlPersonalConditionTest {
 		};
 		
 		// ------------------------- Mocking ↓
-		List<EmpRankInfor> lstRank = listEmp.stream().map(x-> new EmpRankInfor(x, new RankCode(x + "RankCode"), new RankSymbol(x + "RankSymbol"))).collect(Collectors.toList());
+		List<EmpRankInfor> lstRank = listEmp.stream().map(x-> new EmpRankInfor
+				(x, new RankCode(x + "RankCode"), new RankSymbol(x == "003" ? "" : x + "RankSymbol"))).collect(Collectors.toList());
 		new MockUp<GetEmRankInforService>() {
 			@Mock
 			public List<EmpRankInfor> get(GetEmRankInforService.Require require, List<String> listEmp) {
@@ -110,7 +126,9 @@ public class DisplayControlPersonalConditionTest {
 		};
 		
 		// ------------------------- Mocking ↓
-		List<EmpLicenseClassification> lstEmpLicense = listEmp.stream().map(x-> new EmpLicenseClassification(x, Optional.of(LicenseClassification.valueOf(LicenseClassification.NURSE.value)))).collect(Collectors.toList());
+		List<EmpLicenseClassification> lstEmpLicense = listEmp.stream().map(x-> new EmpLicenseClassification
+				(x, Optional.of(LicenseClassification.valueOf(LicenseClassification.NURSE.value)))).collect(Collectors.toList());
+		
 		new MockUp<GetEmpLicenseClassificationService>() {
 			@Mock
 			public List<EmpLicenseClassification> get(GetEmpLicenseClassificationService.Require require, GeneralDate generalDate, List<String> listEmp) {
@@ -124,7 +142,7 @@ public class DisplayControlPersonalConditionTest {
 				x-> x.getOptLicenseClassification().get().name(),
 				x-> x.getOptRankSymbol().get(),
 				x-> x.getTeamName().get())
-		.containsExactly(tuple("003","NURSE", "003RankSymbol", "003EmpTeamInforName") , 
+		.containsExactly(tuple("003","NURSE", "", "") , 
 						tuple("004","NURSE", "004RankSymbol", "004EmpTeamInforName"));}
 }
 

@@ -121,7 +121,7 @@ public class StampServiceImpl implements StampDomainService {
 	}
 
 	@Override
-	public List<Stamp> handleDataNew(StampReflectRangeOutput s, String empCalAndSumExecLogID, GeneralDate date,
+	public List<Stamp> handleDataNew(StampReflectRangeOutput s, GeneralDate date,
 			String employeeId, String companyId, EmbossingExecutionFlag flag) {
 		List<Stamp> listStamp = new ArrayList<>();
 		// ドメインモデル「打刻カード」を取得する
