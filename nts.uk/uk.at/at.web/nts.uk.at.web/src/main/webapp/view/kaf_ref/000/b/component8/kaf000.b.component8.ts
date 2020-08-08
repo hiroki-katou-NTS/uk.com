@@ -38,17 +38,18 @@ module nts.uk.at.view.kaf000_ref.b.component8.viewmodel {
         
         getFrameIndex(loopPhase, loopFrame, loopApprover) {
             if(_.size(loopFrame.listApprover()) > 1) {
-                return loopApprover.approverInListOrder();    
+                return _.findIndex(loopFrame.listApprover(), o => o == loopApprover);     
             }
-            return _.findIndex(loopPhase.listApprovalFrame(), o => o == loopFrame);    
+            return loopFrame.frameOrder(); 
         }
         
         frameCount(listFrame) {
-            const vm = this;   
-            if(_.size(listFrame) > 1) { 
-                return _.size(listFrame);
+            const vm = this;    
+            let listExist = _.filter(listFrame, x => _.size(x.listApprover()) > 0);
+            if(_.size(listExist) > 1) { 
+                return _.size(listExist);
             }
-            return _.chain(listFrame).map(o => vm.approverCount(o.listApprover())).value()[0];        
+            return _.chain(listExist).map(o => vm.approverCount(o.listApprover())).value()[0];        
         }
         
         approverCount(listApprover) {
@@ -100,9 +101,16 @@ module nts.uk.at.view.kaf000_ref.b.component8.viewmodel {
         }
         
         getApproverLabel(loopPhase, loopFrame, loopApprover) {
-            const vm = this,
-                index = vm.getFrameIndex(loopPhase, loopFrame, loopApprover);
-            return vm.$i18n("KAF000_9",[index+'']);    
+            const vm = this;
+           	let index = vm.getFrameIndex(loopPhase, loopFrame, loopApprover);
+            // case group approver
+            if(_.size(loopFrame.listApprover()) > 1) {
+                index++;
+            }
+            if(index <= 10){
+                return vm.$i18n("KAF000_9",[index+'']);    
+            }
+            return "";   
         }
     }
 }
