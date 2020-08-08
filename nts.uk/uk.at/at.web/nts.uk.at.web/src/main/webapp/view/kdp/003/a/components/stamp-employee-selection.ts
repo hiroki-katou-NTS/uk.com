@@ -245,7 +245,7 @@ module nts.uk.at.kdp003.a {
 					if (grid && $grid.data('igGrid')) {
 						const top = grid.getBoundingClientRect().top;
 						const minHeight = rowh * 3;
-						const maxHeight = Math.floor((window.innerHeight - top - 20) / rowh) * rowh;
+						const maxHeight = window.innerHeight - top - 25;
 
 						$grid.igGrid('option', 'height', `${Math.max(minHeight, maxHeight)}px`);
 					}

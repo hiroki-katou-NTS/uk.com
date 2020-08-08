@@ -57,7 +57,8 @@ module nts.uk.at.view.kdp.share {
 				.css({
 					'color': data.btnTextColor,
 					'background-color': data.btnBackGroundColor,
-					'visibility': data.btnPositionNo === -1 ? 'hidden' : 'visible'
+					'visibility': data.btnPositionNo === -1 ? 'hidden' : 'visible',
+					'height': data.height + 'px'
 				});
 		}
 	}
@@ -89,6 +90,8 @@ module nts.uk.at.view.kdp.share {
 		currentTab!: KnockoutComputed<PageLayout>;
 
 		filteredTabs!: KnockoutComputed<PageLayout[]>;
+
+		buttonSize: KnockoutObservable<number> = ko.observable(0);
 
 		constructor(public params: StampParam) {
 			super();
@@ -138,7 +141,7 @@ module nts.uk.at.view.kdp.share {
 							.attr('tabindex', $el.data('tabindex'));
 					});
 					const exist = _.find(filteredTabs, (d) => d.pageNo === selected);
-					
+
 					const currentTab = _.clone(exist) || {
 						pageNo: -1,
 						buttonLayoutType: -1,
@@ -147,10 +150,10 @@ module nts.uk.at.view.kdp.share {
 						stampPageCommentColor: '',
 						stampPageName: ''
 					};
-					
+
 					// escape html and replace new line chars to break tag
 					currentTab.stampPageComment = _.escape(currentTab.stampPageComment).replace(/(\r|\n)/g, '<br />');
-										
+
 					return currentTab;
 				}
 			});
@@ -158,6 +161,7 @@ module nts.uk.at.view.kdp.share {
 			vm.filteredTabs = ko.computed({
 				read: () => {
 					const data = ko.unwrap(params.tabs);
+					const buttonSize = ko.unwrap(vm.buttonSize);
 					const setting: StampToSuppress = ko.unwrap(params.stampToSuppress as any) || {
 						goingToWork: false,
 						departure: false,
@@ -172,8 +176,9 @@ module nts.uk.at.view.kdp.share {
 						if (tab) {
 							const cloned = _.cloneDeep(tab);
 							const buttons: ButtonSetting[] = [];
-							const { buttonSettings } = cloned;
-							const size = (cloned.buttonLayoutType === LAYOUT_TYPE.LARGE_2_SMALL_4) ? 6 : 8;
+							const { buttonSettings, buttonLayoutType } = cloned;
+							const { SMALL_8, LARGE_2_SMALL_4 } = LAYOUT_TYPE;
+							const size = (buttonLayoutType === LARGE_2_SMALL_4) ? 6 : 8;
 
 							for (let j = 1; j <= size; j++) {
 								const btn = _.find(buttonSettings, (btn) => btn.btnPositionNo === j);
@@ -203,6 +208,10 @@ module nts.uk.at.view.kdp.share {
 											break
 									}
 
+									const constance = ((buttonLayoutType === LARGE_2_SMALL_4 && j < 3) || buttonLayoutType === SMALL_8) ? 2 : 1;
+
+									btn.height = Math.max(buttonSize, 42) * constance + (buttonLayoutType === SMALL_8 ? 7 : 0);
+
 									buttons.push(btn);
 								} else {
 									buttons.push({
@@ -218,7 +227,8 @@ module nts.uk.at.view.kdp.share {
 										changeHalfDay: -1,
 										goOutArt: -1,
 										setPreClockArt: -1,
-										usrArt: -1
+										usrArt: -1,
+										height: buttonSize
 									});
 								}
 							}
@@ -264,6 +274,21 @@ module nts.uk.at.view.kdp.share {
 			}
 
 			vm.selected.valueHasMutated();
+
+			$(window)
+				.on('resize', () => {
+					if (vm.$el) {
+						const tabs = vm.$el.querySelector('#tab-button-group');
+
+						if (tabs) {
+							const bound = tabs.getBoundingClientRect();
+							const height = Math.floor((window.innerHeight - bound.top - 110) / 4);
+
+							vm.buttonSize(height);
+						}
+					}
+				})
+				.trigger('resize');
 		}
 	}
 
@@ -308,6 +333,7 @@ module nts.uk.at.view.kdp.share {
 		goOutArt: number;
 		setPreClockArt: number;
 		usrArt: NotUseAtr;
+		height: number;
 	}
 
 	export enum NotUseAtr {

@@ -93,6 +93,8 @@ module nts.uk.at.kdp003.a {
 		mounted() {
 			const vm = this;
 			const { storage } = vm.$window;
+			
+			$(window).trigger('resize');
 
 			storage(KDP003_SAVE_DATA)
 				.then((storageData: undefined | StorageData) => {
