@@ -491,7 +491,7 @@ module nts.uk.at.kdp003.a {
 									}
 								}).then(() => {
 									const { stampResultDisplay } = fingerStampSetting;
-									const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 };
+									const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
 									const { USE } = NotUseAtr;
 									const { WORKING_OUT, TEMPORARY_LEAVING } = share.ChangeClockArt;
 
