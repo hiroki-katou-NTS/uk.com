@@ -30,12 +30,12 @@ public class DateInformationHelper {
 			Optional.ofNullable(new EventName("OptCompanyEventName")), listNameWorkplace, listNameCompany);
 
 	public static TargetOrgIdenInfor getTargetOrgIdenInforWorkplace() {
-		return new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId", "workplaceGroupId");
+		return TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId") ;
 
 	}
 
 	public static TargetOrgIdenInfor getTargetOrgIdenInforWorkplaceGroup() {
-		return new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, "workplaceId", "workplaceGroupId");
+		return TargetOrgIdenInfor.creatIdentifiWorkplaceGroup("workplaceGroupId");
 
 	}
 

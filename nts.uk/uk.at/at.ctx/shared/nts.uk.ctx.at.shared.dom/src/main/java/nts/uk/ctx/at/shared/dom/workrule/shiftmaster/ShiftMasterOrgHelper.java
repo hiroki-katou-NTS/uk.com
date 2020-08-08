@@ -15,9 +15,7 @@ public class ShiftMasterOrgHelper {
 	}
 	
 	public static TargetOrgIdenInfor getTargetOrgIdenInforEmpty() {
-		return new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,
-				"workplaceId",
-				"workplaceGroupId");
+		return TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId");
 	}
 	
 	public static boolean checkExist(boolean param){

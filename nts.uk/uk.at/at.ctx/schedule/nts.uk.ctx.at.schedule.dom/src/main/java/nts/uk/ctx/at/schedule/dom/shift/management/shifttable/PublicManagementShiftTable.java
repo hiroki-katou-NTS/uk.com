@@ -28,11 +28,11 @@ public class PublicManagementShiftTable implements DomainAggregate {
 	//[C-1] 作る
 	public static PublicManagementShiftTable createPublicManagementShiftTable(TargetOrgIdenInfor targetOrgIdenInfor , GeneralDate endDatePublicationPeriod ,Optional<GeneralDate> optEditStartDate ){
 
-		if(!optEditStartDate.isPresent())
-			throw new RuntimeException("System Error");	
-		if((optEditStartDate.get()).after(endDatePublicationPeriod) ){
-			throw new RuntimeException("System Error");
-		}	
+		if(optEditStartDate.isPresent()) {
+			if((optEditStartDate.get()).after(endDatePublicationPeriod) ){
+				throw new RuntimeException("System Error");
+			}
+		}
 		return new PublicManagementShiftTable(targetOrgIdenInfor, endDatePublicationPeriod, optEditStartDate);
 	}
 	

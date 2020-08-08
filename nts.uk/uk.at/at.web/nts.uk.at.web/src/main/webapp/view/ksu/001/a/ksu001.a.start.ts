@@ -12,17 +12,6 @@ module nts.uk.at.view.ksu001.a {
         __viewContext.viewModel.viewA.startPage().done(() => {
             __viewContext.bind(__viewContext.viewModel);
             
-            uk.localStorage.getItem(KEY).ifPresent((data) => {
-                let userInfor = JSON.parse(data);
-                if (userInfor.disPlayFormat == 'shift') {
-                    if (userInfor.shiftPalletUnit == 1) {
-                        __viewContext.viewModel.viewAC.clickLinkButton(null, ko.observable(userInfor.shiftPalettePageNumberCom - 1));
-                    } else if (userInfor.shiftPalletUnit == 2) {
-                        __viewContext.viewModel.viewAC.clickLinkButton(null, ko.observable(userInfor.shiftPalettePageNumberOrg - 1));
-                    }
-                }
-            });
-            
             $(window).resize(function() {
                 __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
             });

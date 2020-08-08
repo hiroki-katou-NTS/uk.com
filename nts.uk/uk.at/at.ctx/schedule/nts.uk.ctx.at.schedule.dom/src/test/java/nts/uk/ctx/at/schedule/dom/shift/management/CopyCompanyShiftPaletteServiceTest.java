@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
-import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.schedule.dom.shift.management.CopyCompanyShiftPaletteService.Require;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsHelper.ShiftPalletsComHelper;
@@ -24,7 +23,7 @@ public class CopyCompanyShiftPaletteServiceTest {
 	@Test
 	public void testDuplicate_throw_1712() {
 		ShiftPalletsCom shiftPalletsCom = ShiftPalletsComHelper.DUMMY;
-		int page = 1;
+		int page = 2;
 		ShiftPalletName shiftPalletName = new ShiftPalletName("shiftPalletName");
 		boolean overwrite = false;
 		
@@ -45,7 +44,7 @@ public class CopyCompanyShiftPaletteServiceTest {
 	@Test
 	public void testDuplicate() {
 		ShiftPalletsCom shiftPalletsCom = ShiftPalletsComHelper.DUMMY;
-		int page = 1;
+		int page = 2;
 		ShiftPalletName shiftPalletName = new ShiftPalletName("shiftPalletName");
 		boolean overwrite = true;
 		
@@ -69,10 +68,9 @@ public class CopyCompanyShiftPaletteServiceTest {
 	@Test
 	public void testDuplicate_2() {
 		ShiftPalletsCom shiftPalletsCom = ShiftPalletsComHelper.DUMMY;
-		int page = 1;
+		int page = 2;
 		ShiftPalletName shiftPalletName = new ShiftPalletName("shiftPalletName");
 		boolean overwrite = true;
-		
 		new Expectations() {
 			{
 				require.exists(shiftPalletsCom.getCompanyId(), page);
@@ -80,7 +78,25 @@ public class CopyCompanyShiftPaletteServiceTest {
 			}
 		};
 		NtsAssert.atomTask(() -> CopyCompanyShiftPaletteService.duplicate(require, shiftPalletsCom, page, shiftPalletName,
-					overwrite),
+				overwrite),
+				any -> require.add(any.get())
+		);
+	}
+	
+	@Test
+	public void testDuplicate_3() {
+		ShiftPalletsCom shiftPalletsCom = ShiftPalletsComHelper.DUMMY;
+		int page = 2;
+		ShiftPalletName shiftPalletName = new ShiftPalletName("shiftPalletName");
+		boolean overwrite = false;
+		new Expectations() {
+			{
+				require.exists(shiftPalletsCom.getCompanyId(), page);
+				result = false;
+			}
+		};
+		NtsAssert.atomTask(() -> CopyCompanyShiftPaletteService.duplicate(require, shiftPalletsCom, page, shiftPalletName,
+				overwrite),
 				any -> require.add(any.get())
 		);
 	}

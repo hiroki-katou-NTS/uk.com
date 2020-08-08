@@ -104,6 +104,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         dataCell: any; // data để paste vào grid
         listPageInfo : any;
         targetShiftPalette : any;
+        workPlaceId : any;
 
         constructor() {
             let self = this;
@@ -228,7 +229,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 pageNumberCom: item.isPresent() ? userInfor.shiftPalettePageNumberCom : 1,
                 pageNumberOrg: item.isPresent() ? userInfor.shiftPalettePageNumberOrg : 1,
                 getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : 2, // lay du lieu thuc te (1 : co lay, 2 la khong lay) || param (Hiển thi  theo "shift")
-                listShiftMasterNotNeedGetNew: item.isPresent() ? [] : [], // List of shifts không cần lấy mới
+                listShiftMasterNotNeedGetNew: item.isPresent() ? userInfor.shiftMasterWithWorkStyleLst : [], // List of shifts không cần lấy mới
                 listSid: self.listSid()
             }
 
@@ -239,8 +240,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 self.getSettingDisplayWhenStart();
                 
-                if(viewMode == 'shift'){
-                     self.bingdingToShiftPallet(data);
+                if (viewMode == 'shift') {
+                    self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                    self.bingdingToShiftPallet(data);
                 }
                 
                 // set data Header
@@ -268,24 +270,37 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 userInfor.achievementDisplaySelected = 2;
                 userInfor.shiftPalletUnit = 1;
                 userInfor.shiftPalettePageNumberCom = 1;
-                userInfor.shiftPalletPositionNumberCom = 1;
+                userInfor.shiftPalletPositionNumberCom = { column : 0 , row : 0 };
                 userInfor.shiftPalettePageNumberOrg = 1;
-                userInfor.shiftPalletPositionNumberOrg = 1;
+                userInfor.shiftPalletPositionNumberOrg = { column : 0 , row : 0 };
                 userInfor.gridHeightSelection = 1;
                 userInfor.heightGridSetting = '';
                 userInfor.workplaceId= dataBasic.workplaceId;
                 userInfor.workPlaceName= dataBasic.targetOrganizationName;
                 userInfor.workType = {}; 
                 userInfor.workTime = {}; 
+                userInfor.shiftMasterWithWorkStyleLst = [];
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
             }
         }
 
         shiftModeStart(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred(),
-                param = {
-                     viewMode : 'shift'
-                };
+            let self = this, dfd = $.Deferred();
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor: IUserInfor = JSON.parse(item.get());
+            let param = {
+                viewMode : 'shift',
+                startDate: self.dateTimePrev,
+                endDate  : self.dateTimeAfter,
+                workplaceId     : userInfor.workplaceId,
+                workplaceGroupId: userInfor.workplaceGroupId,
+                shiftPalletUnit : userInfor.shiftPalletUnit, // 1: company , 2 : workPlace 
+                pageNumberCom   : userInfor.shiftPalettePageNumberCom,
+                pageNumberOrg   : userInfor.shiftPalettePageNumberOrg,
+                getActualData   : userInfor.achievementDisplaySelected, // lay du lieu thuc te (1 : co lay, 2 la khong lay) || param (Hiển thi  theo "shift")
+                listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst, // List of shifts không cần lấy mới
+                listSid: self.listSid()
+            };
             self.saveModeGridToLocalStorege('shift');
             self.visibleShiftPalette(true);
             self.visibleBtnInput(false);
@@ -294,10 +309,27 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.getSettingDisplayWhenStart();
                 // set data Header
                 self.bindingToHeader(data);
+                
+                // set data shiftPallet
+                __viewContext.viewModel.viewAC.flag = false;
+                __viewContext.viewModel.viewAC.selectedpalletUnit(userInfor.shiftPalletUnit);
+                if(userInfor.shiftPalletUnit == 1){
+                    __viewContext.viewModel.viewAC.handleInitCom(
+                        data.listPageInfo,
+                        data.targetShiftPalette.shiftPalletCom,
+                        ko.observable(userInfor.shiftPalettePageNumberCom - 1));
+                }else{
+                    __viewContext.viewModel.viewAC.handleInitWkp(
+                        data.listPageInfo,
+                        data.targetShiftPalette.shiftPalletWorkPlace,
+                        ko.observable(userInfor.shiftPalettePageNumberOrg - 1));
+                }
+                __viewContext.viewModel.viewAC.flag = true;
+                
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, 'shift');
-                
                 self.updateExTable(dataBindGrid, 'shift', true, true, true);
+                
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -373,6 +405,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
         }
         
+        saveShiftMasterToLocalStorage(shiftMasterWithWorkStyleLst: Array<IShiftMasterMapWithWorkStyle>) {
+            let self = this;
+            // save data to local Storage
+            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                let userInfor: IUserInfor = JSON.parse(data);
+                userInfor.shiftMasterWithWorkStyleLst = shiftMasterWithWorkStyleLst;
+                uk.localStorage.setItemAsJson(self.KEY, userInfor);
+            });
+        }
+        
         bingdingToShiftPallet(data: any) {
             let self = this;
             let item = uk.localStorage.getItem(self.KEY);
@@ -382,35 +424,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else {
                 __viewContext.viewModel.viewAC.selectedpalletUnit(1);
             }
-
-            if (__viewContext.viewModel.viewAC.selectedpalletUnit() == 1) {
-                self.getDataComPattern(data.listPageInfo, data.targetShiftPalette.shiftPalletCom);
-            } else {
-                self.getDataComPattern(data.listPageInfo, data.targetShiftPalette.shiftPalletWorkPlace);
-            }
-        }
-        
-      
-        getDataComPattern(listPageInfo, shiftPalletCom) {
-            let self = this;
-            __viewContext.viewModel.viewAC.listComPattern(shiftPalletCom);
-            __viewContext.viewModel.viewAC.handleInitCom(
-                listPageInfo,
-                shiftPalletCom,
-                __viewContext.viewModel.viewAC.textButtonArrComPattern,
-                __viewContext.viewModel.viewAC.dataSourceCompany,
-                ko.observable(0));
-        }
-
-        getDataWkpPattern(listPageInfo, shiftPalletWorkPlace) {
-            let self = this;
-            __viewContext.viewModel.viewAC.listWkpPattern(shiftPalletWorkPlace);
-            __viewContext.viewModel.viewAC.handleInitWkp(
-                listPageInfo,
-                shiftPalletWorkPlace,
-                __viewContext.viewModel.viewAC.textButtonArrComPattern,
-                __viewContext.viewModel.viewAC.dataSourceCompany,
-                ko.observable(0));
         }
 
         // convert data lấy từ server để đẩy vào Grid
@@ -762,8 +775,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         $("#listWorkType").removeClass("disabledWorkTime");
                     }
                 }
-                // 
-                __viewContext.viewModel.viewAC.selectedpalletUnit(userInfor.shiftPalletUnit);
             });
         }
 
@@ -1822,9 +1833,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         listDateInfo: Array<IDateInfo>,
         listEmpInfo: Array<IEmpInfo>,
         listPersonalConditions: Array<IPersonalConditions>,
+        
         listWorkTypeInfo: Array<IWorkTypeInfomation>,
         listWorkScheduleWorkInfor: Array<IWorkScheduleWorkInforDto>,
+        
+        listPageInfo: Array<IPageInfo>,
+        shiftMasterWithWorkStyleLst : Array<IShiftMasterMapWithWorkStyle>,
         listWorkScheduleShift: Array<IWorkScheduleShiftforDto>,
+    }
+    
+    interface IPageInfo {
+        pageName: string,
+        pageNumber: number,
     }
 
     interface IDataBasicDto {
@@ -1956,9 +1976,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         achievementDisplaySelected: number;
         shiftPalletUnit: number;
         shiftPalettePageNumberCom: number;
-        shiftPalletPositionNumberCom: number;
+        shiftPalletPositionNumberCom: {};
         shiftPalettePageNumberOrg: number;
-        shiftPalletPositionNumberOrg: number;
+        shiftPalletPositionNumberOrg: {};
         gridHeightSelection: number;
         heightGridSetting: number;
         workplaceId: string;
@@ -1969,6 +1989,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         updateMode : string; // updatemode cua grid
         startDate : string;
         endDate : string;
+        shiftMasterWithWorkStyleLst : Array<IShiftMasterMapWithWorkStyle>;
     }
-
+    
+    interface IShiftMasterMapWithWorkStyle {
+        companyId: string;
+        shiftMasterName: string;
+        shiftMasterCode: string;
+        color: string;
+        remark: string;
+        workTypeCode: string;
+        workTimeCode: string;
+        workStyle: string;
+    }
 }

@@ -21,7 +21,6 @@ public interface ShiftPalletsOrgRepository {
 	// Find by key
 	public Optional<ShiftPalletsOrg> findShiftPalletOrg(int targetUnit, String targetId, int page);
 
-	// ①<<Query>> 会社別シフトパレットの一覧を取得する
 	public List<ShiftPalletsOrg> findbyWorkPlaceId(int targetUnit, String workplaceId);
 
 	// Delete with id and page

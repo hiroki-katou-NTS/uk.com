@@ -41,9 +41,9 @@ public interface AffCompanyHistRepository {
 	 * @return
 	 */
 	Map<String, AffCompanyHist> getAffCompanyHistoryOfEmployee(String cid, List<String> sids);
-	/**[3-2] *社員IDを指定して履歴を取得する ( List<社員ID> )**/
-	List<AffCompanyHist> getAffCompanyHistoryOfEmployees(List<String> employeeIds);
 	
+	List<AffCompanyHist> getAffCompanyHistoryOfEmployees(List<String> employeeIds);
+	/**[3-2] *社員IDを指定して履歴を取得する ( List<社員ID> )**/
 	/**
 	 * return AffCompanyHistByEmployee
 	 * @param employeeIds

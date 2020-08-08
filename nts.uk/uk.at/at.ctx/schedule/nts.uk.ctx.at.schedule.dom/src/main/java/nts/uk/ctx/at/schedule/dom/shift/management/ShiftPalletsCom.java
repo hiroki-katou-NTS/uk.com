@@ -56,8 +56,8 @@ public class ShiftPalletsCom implements DomainAggregate {
 	 * @author tutk
 	 *
 	 */
-	public ShiftPalletsCom duplicate(int destinationPage, ShiftPalletName shiftPalletName){
-		ShiftPallet shiftPallet = this.shiftPallet.duplicate(shiftPalletName);
+	public ShiftPalletsCom reproduct(int destinationPage, ShiftPalletName shiftPalletName){
+		ShiftPallet shiftPallet = this.shiftPallet.reproduct(shiftPalletName);
 		return new ShiftPalletsCom(this.companyId, destinationPage, shiftPallet);
 	}
 	

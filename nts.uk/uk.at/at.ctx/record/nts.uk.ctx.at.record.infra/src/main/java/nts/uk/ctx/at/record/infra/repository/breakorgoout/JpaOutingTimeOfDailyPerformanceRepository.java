@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -415,8 +416,8 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		query.append("WHERE a.krcdtDaiOutingTimePK.employeeId IN :employeeId ");
 		query.append("AND a.krcdtDaiOutingTimePK.ymd <= :end AND a.krcdtDaiOutingTimePK.ymd >= :start");
 		TypedQueryWrapper<KrcdtDaiOutingTime> tQuery = queryProxy().query(query.toString(), KrcdtDaiOutingTime.class);
-		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
-			result.addAll(tQuery.setParameter("employeeId", empIds).setParameter("start", ymd.start())
+//		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			result.addAll(tQuery.setParameter("employeeId", employeeId).setParameter("start", ymd.start())
 					.setParameter("end", ymd.end()).getList().stream()
 					.collect(Collectors
 							.groupingBy(c -> c.krcdtDaiOutingTimePK.employeeId + c.krcdtDaiOutingTimePK.ymd.toString()))
@@ -425,7 +426,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 							c.getValue().get(0).krcdtDaiOutingTimePK.ymd,
 							c.getValue().stream().map(x -> toDtomain(x)).collect(Collectors.toList())))
 					.collect(Collectors.toList()));
-		});
+//		});
 		return result;
 	}
 

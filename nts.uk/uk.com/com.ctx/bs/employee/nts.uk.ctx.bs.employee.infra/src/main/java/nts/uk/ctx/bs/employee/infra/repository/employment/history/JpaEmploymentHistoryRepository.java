@@ -90,16 +90,16 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	private static final String DELETE_HIST_ITEM_BY_SID = "DELETE FROM BsymtEmploymentHistItem a "
 			+ " WHERE a.sid = : empId";
 	
-	private static final String GET_BY_CID_AND_EMPID = " SELECT a FROM BsymtEmploymentHist " 
+	private static final String GET_BY_CID_AND_EMPID = " SELECT a FROM BsymtEmploymentHist a " 
 														+ " WHERE a.companyId = :companyId"
 														+ " AND a.sid = :empId ";
-	private static final String GET_BY_CID_AND_EMPIDS = " SELECT a FROM BsymtEmploymentHist " 
+	private static final String GET_BY_CID_AND_EMPIDS = " SELECT a FROM BsymtEmploymentHist a " 
 			+ " WHERE a.companyId = :companyId "
 			+ " AND a.sid IN :empIds ";
-	private static final String GET_BY_KEY = " SELECT a FROM BsymtEmploymentHistItem "
+	private static final String GET_BY_KEY = " SELECT a FROM BsymtEmploymentHistItem a "
 											+ " WHERE a.hisId =:  histId "; 
 	
-	private static final String GET_BY_LIST_HISTID = " SELECT a FROM BsymtEmploymentHistItem "
+	private static final String GET_BY_LIST_HISTID = " SELECT a FROM BsymtEmploymentHistItem a"
 			+ " WHERE a.hisId IN :listHistId "; 
 	
 	private static final String GET_BY_DATE = " SELECT i.hisId ,i.sid ,i.empCode , i.salarySegment FROM BsymtEmploymentHistItem i "
@@ -780,7 +780,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		List<EmploymentHistory> lstEmpHis = new ArrayList<>();
 		List<BsymtEmploymentHist> listEntity = this.queryProxy().query(GET_BY_CID_AND_EMPIDS,BsymtEmploymentHist.class)
 				.setParameter("companyId", companyId)
-				.setParameter("empId", empIds).getList();
+				.setParameter("empIds", empIds).getList();
 		for(String empId : empIds){
 			List<DateHistoryItem> listDateHistory = listEntity.stream().filter(x-> x.sid.equals(empId)).map( c -> new DateHistoryItem(c.hisId, new DatePeriod(c.strDate, c.endDate))).collect(Collectors.toList());
 			EmploymentHistory history = new EmploymentHistory(companyId, empId, listDateHistory);
@@ -802,8 +802,8 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	@Override
 	public List<EmploymentHistoryItem> getAllEmploymentHistoryItem(List<String> listHistId) {
 		return this.queryProxy().query(GET_BY_LIST_HISTID, BsymtEmploymentHistItem.class)
-				.setParameter("listHistId", listHistId).getList(x -> new EmploymentHistoryItem(x.hisId, x.sid,
-						EnumAdaptor.valueOf(x.salarySegment, SalarySegment.class), new EmploymentCode(x.empCode)));
+				.setParameter("listHistId", listHistId).getList(x -> new EmploymentHistoryItem(x.hisId, x.sid,  
+						 x.salarySegment == null ? null : EnumAdaptor.valueOf(x.salarySegment, SalarySegment.class), new EmploymentCode(x.empCode)));
 
 	}
 
@@ -848,6 +848,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	@Override
 	public List<EmploymentHistoryTerm> getEmploymentHistoryTerm(String companyId, List<String> lstEmpId,
 			DatePeriod datePeriod) {
+		List<EmploymentHistoryTerm> result = new ArrayList<>();
 		// $履歴リスト = [3-2] *社員IDを指定して履歴を取得する ( 会社ID, 社員IDリスト )
 		List<EmploymentHistory> lstEmpHist = getByCidAndListEmpID(companyId, lstEmpId);
 		List<DateHistoryItem> lstHistoryItems = lstEmpHist.stream()
@@ -859,8 +860,17 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		List<String> lstHistId =  lstHistoryItems.stream().map(c ->c.identifier()).collect(Collectors.toList());
 		//$履歴項目リスト = [4-2] *履歴IDを指定して履歴項目を取得する ( $履歴IDリスト )
 		List<EmploymentHistoryItem> listHistItem = getAllEmploymentHistoryItem(lstHistId);
-		
-		return null;
+		// $履歴項目 = $履歴項目リスト: find $.履歴ID == $汎用履歴項目.履歴ID
+		lstHistoryItems.stream().forEach(y -> {
+			// $履歴項目 = $履歴項目リスト: find $.履歴ID == $汎用履歴項目.履歴ID
+			Optional<EmploymentHistoryItem> dateHistoryItems = listHistItem.stream()
+					.filter(x -> x.getHistoryId().equals(y.identifier())).findFirst();
+			if (dateHistoryItems.isPresent()) {
+				EmploymentHistoryTerm data = new EmploymentHistoryTerm(y.span(), dateHistoryItems.get());
+				result.add(data);
+			}
+		});
+		return result;
 	}
 
 	

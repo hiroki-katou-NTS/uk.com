@@ -152,11 +152,12 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	public IntegrationOfDaily calculateForAppReflect(String employeeId,
 			GeneralDate dateData) {
 		Optional<WorkInfoOfDailyPerformance> optWorkInfor = workRepository.find(employeeId, dateData);
-		WorkInfoOfDailyPerformance workInfor = optWorkInfor.get();
+		WorkInfoOfDailyPerformance workInfor =optWorkInfor.isPresent()? optWorkInfor.get():null;
 		List<String> emps = Arrays.asList(employeeId);
 		DatePeriod dates =  new DatePeriod(dateData, dateData);
 		//日別実績の計算区分
-		CalAttrOfDailyPerformance calAtrrOfDailyData = calAttrOfDaily.finds(emps, dates).get(0);
+		List<CalAttrOfDailyPerformance> listCalAttrOfDailyPerformance = calAttrOfDaily.finds(emps, dates);
+		CalAttrOfDailyPerformance calAtrrOfDailyData = listCalAttrOfDailyPerformance.isEmpty()?null:listCalAttrOfDailyPerformance.get(0);
 		//日別実績の所属情報
 		Optional<AffiliationInforOfDailyPerfor> findByKey = affiliationInfor.finds(emps, dates).stream().findFirst();
 		//日別実績の勤務種別
@@ -193,23 +194,23 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 		List<RemarksOfDailyPerform> remark = remarks.getRemarksBykey(employeeId, dateData);
 		//日別実績の臨時出退勤
 		Optional<TemporaryTimeOfDailyPerformance> temporaryData = temporary.finds(emps, dates).stream().findFirst();
-		IntegrationOfDaily integration = new IntegrationOfDaily(workInfor.getWorkInformation(), 
-				calAtrrOfDailyData.getCalcategory(), 
+		IntegrationOfDaily integration = new IntegrationOfDaily(workInfor != null?workInfor.getWorkInformation():null, 
+				calAtrrOfDailyData != null?calAtrrOfDailyData.getCalcategory():null, 
 				findByKey.isPresent() ? findByKey.get().getAffiliationInfor() : null,
 				// workType,
-				Optional.ofNullable(pcLogOnDarta.get().getTimeZone()), 
+				pcLogOnDarta.isPresent()?Optional.ofNullable(pcLogOnDarta.get().getTimeZone()):Optional.empty(), 
 				findEror, 
-				Optional.ofNullable(findByEmployeeIdAndDate.get().getOutingTime()), 
+				findByEmployeeIdAndDate.isPresent()?Optional.ofNullable(findByEmployeeIdAndDate.get().getOutingTime()):Optional.empty(), 
 				lstBreakTime.stream().map(mapper-> new BreakTimeOfDailyAttd(mapper.getTimeZone().getBreakType(), mapper.getTimeZone().getBreakTimeSheets())).collect(Collectors.toList()), 
-				Optional.ofNullable(findAttendanceTime.get().getTime()), 
-				Optional.ofNullable(findByKeyTimeLeaving.get().getAttendance()), 
+				findAttendanceTime.isPresent()?Optional.ofNullable(findAttendanceTime.get().getTime()):Optional.empty(), 
+				findByKeyTimeLeaving.isPresent()?Optional.ofNullable(findByKeyTimeLeaving.get().getAttendance()):Optional.empty(), 
 				//findTimeByWork,
-				Optional.ofNullable(findShortTimeOfDaily.get().getTimeZone()), 
-				Optional.ofNullable(findSpecificData.get().getSpecificDay()), 
-				Optional.ofNullable(findLeavingGate.get().getTimeZone()), 
-				Optional.ofNullable(findAnyItem.get().getAnyItem()), 
+				findShortTimeOfDaily.isPresent()?Optional.ofNullable(findShortTimeOfDaily.get().getTimeZone()):Optional.empty(), 
+				findSpecificData.isPresent()?Optional.ofNullable(findSpecificData.get().getSpecificDay()):Optional.empty(), 
+				findLeavingGate.isPresent()?Optional.ofNullable(findLeavingGate.get().getTimeZone()):Optional.empty(), 
+				findAnyItem.isPresent()?Optional.ofNullable(findAnyItem.get().getAnyItem()):Optional.empty(), 
 				lstEditState.stream().map(mapper-> new EditStateOfDailyAttd(mapper.getEditState().getAttendanceItemId(), mapper.getEditState().getEditStateSetting())).collect(Collectors.toList()),
-				Optional.ofNullable(temporaryData.get().getAttendance()),
+				temporaryData.isPresent()?Optional.ofNullable(temporaryData.get().getAttendance()):Optional.empty(),
 				remark.stream().map(mapper-> new RemarksOfDailyAttd(mapper.getRemarks().getRemarks(), mapper.getRemarks().getRemarkNo())).collect(Collectors.toList()));
 		return integration;
 	}

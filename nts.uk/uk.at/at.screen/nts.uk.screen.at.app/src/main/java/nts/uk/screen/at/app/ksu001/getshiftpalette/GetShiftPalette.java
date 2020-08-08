@@ -81,18 +81,22 @@ public class GetShiftPalette {
 		}
 		
 		// Step5
-		List<String> listShiftMasterCodeGetNew = result.listShiftMasterCodeGetNew;
-		List<ShiftMasterMapWithWorkStyle> listShiftMaster = new ArrayList<>();
+		List<String> listShiftMasterCodeOfPageSelectd = result.listShiftMasterCodeOfPageSelectd;
+		
+		List<ShiftMasterMapWithWorkStyle> listShiftMaster = param.listShiftMasterNotNeedGetNew;
 		
 		GetCombinationrAndWorkHolidayAtrService.Require require = new RequireImpl(shiftMasterRepo, basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
 		
 		// listShiftMasterCode này chỉ bao gồm những Code chưa được lưu ở localStorage.
-		Map<ShiftMaster,Optional<WorkStyle>> sMap = GetCombinationrAndWorkHolidayAtrService.getCode(require,AppContexts.user().companyId(), listShiftMasterCodeGetNew);
-		
+		Map<ShiftMaster,Optional<WorkStyle>> sMap = GetCombinationrAndWorkHolidayAtrService.getCode(require,AppContexts.user().companyId(), listShiftMasterCodeOfPageSelectd);
+		List<String> listShiftMasterCodeFromUI = param.listShiftMasterNotNeedGetNew.stream().map(mapper -> mapper.getShiftMasterCode()).collect(Collectors.toList()); // ko cần get mới
+
 		for (Map.Entry<ShiftMaster, Optional<WorkStyle>> entry : sMap.entrySet()) {
-			System.out.println("ShiftMaster : " + entry.getKey() + " WorkStyle : " + entry.getValue());
-			ShiftMasterMapWithWorkStyle shift = new ShiftMasterMapWithWorkStyle(new ShiftMasterDto(entry.getKey()), entry.getValue().isPresent() ? entry.getValue().get().value + "" : null);
-			listShiftMaster.add(shift);
+			String shiftMasterCd = entry.getKey().getShiftMasterCode().toString();
+			if(!listShiftMasterCodeFromUI.contains(shiftMasterCd)){
+				ShiftMasterMapWithWorkStyle shift = new ShiftMasterMapWithWorkStyle(entry.getKey(), entry.getValue().isPresent() ? entry.getValue().get().value + "" : null);
+				listShiftMaster.add(shift);
+			}
 		}
 		result.setListShiftMaster(listShiftMaster);
 		return result;
@@ -132,16 +136,14 @@ public class GetShiftPalette {
 			listShiftPalletComDto.add(shiftPalletCom);
 		}
 		
-		targetShiftPalette = new TargetShiftPalette(param.shiftPaletteWantGet.getPageNumber(), listShiftPalletComDto, null);
+		targetShiftPalette = new TargetShiftPalette(param.shiftPaletteWantGet.getPageNumberCom(), listShiftPalletComDto, null);
 		
 		// get List SHiftMasterCode
-		
-		
-		Optional<ShiftPalletsCom>shiftPalletsComWantGet = listShiftPalletsCom.stream().filter(i -> i.getPage() == param.shiftPaletteWantGet.getPageNumber()).findFirst();
+		Optional<ShiftPalletsCom> shiftPalletsComWantGet = listShiftPalletsCom.stream().filter(i -> i.getPage() == param.shiftPaletteWantGet.getPageNumberCom()).findFirst();
 		List<ShiftPalletCombinations> combinations = shiftPalletsComWantGet.isPresent() ? shiftPalletsComWantGet.get().getShiftPallet().getCombinations() : listShiftPalletsCom.get(0).getShiftPallet().getCombinations();
-		List<String> listShiftMasterCodeGetNew = getListShiftMasterCode(combinations, param).stream().collect(Collectors.toList()); 
+		List<String> listShiftMasterCodeOfPageSelectd = getListShiftMasterCode(combinations).stream().collect(Collectors.toList()); 
 		
-		return new GetShiftPaletteResult(listPageInfo, targetShiftPalette, new ArrayList<>(), listShiftMasterCodeGetNew);									
+		return new GetShiftPaletteResult(listPageInfo, targetShiftPalette, new ArrayList<>(), listShiftMasterCodeOfPageSelectd);									
 	}
 	
 	public GetShiftPaletteResult getShiftPalletWkp(GetShiftPaletteParam param) {
@@ -160,45 +162,35 @@ public class GetShiftPalette {
 		for (int i = 0; i < listShiftPalletsOrg.size(); i++) {
 			ShiftPalletsOrg shiftPalletsOrg = listShiftPalletsOrg.get(i);
 			listPageInfo.add(new PageInfo(shiftPalletsOrg.getPage(), shiftPalletsOrg.getShiftPallet().getDisplayInfor().getShiftPalletName().v()));
-			
 			ShiftPalletsOrgDto shiftPalletsOrgDto = new ShiftPalletsOrgDto(shiftPalletsOrg, param.getWorkplaceId());
-		
+			listShiftPalletOrgDto.add(shiftPalletsOrgDto);
 		}
-		
-		targetShiftPalette = new TargetShiftPalette(param.shiftPaletteWantGet.getPageNumber(), null, listShiftPalletOrgDto);
+		targetShiftPalette = new TargetShiftPalette(param.shiftPaletteWantGet.getPageNumberOrg(), null, listShiftPalletOrgDto);
 		
 		// get List ShiftMasterCode
-		Optional<ShiftPalletsOrg> shiftPalletsOrgOpt = listShiftPalletsOrg.stream()
-				.filter(i -> i.getPage() == param.shiftPaletteWantGet.getPageNumber()).findFirst();
-		List<ShiftPalletCombinations> combinations = shiftPalletsOrgOpt.isPresent() ? shiftPalletsOrgOpt.get().getShiftPallet().getCombinations() : listShiftPalletsOrg.get(0).getShiftPallet().getCombinations();
-		List<String> listShiftMasterCodeGetNew = getListShiftMasterCode(combinations, param).stream().collect(Collectors.toList());
+		Optional<ShiftPalletsOrg> shiftPalletsOrg = listShiftPalletsOrg.stream().filter(i -> i.getPage() == param.shiftPaletteWantGet.getPageNumberOrg()).findFirst();
+		List<ShiftPalletCombinations> combinations = shiftPalletsOrg.isPresent() ? shiftPalletsOrg.get().getShiftPallet().getCombinations() : listShiftPalletsOrg.get(0).getShiftPallet().getCombinations();
+		List<String> listShiftMasterCodeOfPageSelectd = getListShiftMasterCode(combinations).stream().collect(Collectors.toList());
 		
-		return new GetShiftPaletteResult(listPageInfo, targetShiftPalette, new ArrayList<>(), listShiftMasterCodeGetNew);	
+		return new GetShiftPaletteResult(listPageInfo, targetShiftPalette, new ArrayList<>(), listShiftMasterCodeOfPageSelectd);	
 	}
 	
-	public Set<String> getListShiftMasterCode(List<ShiftPalletCombinations> shiftPalletCombinations, GetShiftPaletteParam param){
+	public List<String> getListShiftMasterCode(List<ShiftPalletCombinations> shiftPalletCombinations){
 		
-		Set<String>  listShiftMasterCodeGetNew = new HashSet<>();  // danh sach nay chỉ bao gôm những shiftMasterCode mới lấy.
-		List<String> listShiftMasterCodeFromUI = param.listShiftMasterNotNeedGetNew.stream().map(mapper -> mapper.getShiftMasterCode()).collect(Collectors.toList()); // ko cần get mới
+		Set<String>  listShiftMasterCodeOfPage = new HashSet<>();  // danh sach nay chỉ bao gôm những shiftMasterCode mới lấy.
 		
 		if (shiftPalletCombinations.isEmpty()) {
-			return new HashSet<>();
+			return new ArrayList<>();
 		}
 		
 		for (int i = 0; i < shiftPalletCombinations.size(); i++) {
 			List<Combinations> combinations = shiftPalletCombinations.get(i).getCombinations();
 			for (int j = 0; j < combinations.size(); j++) {
 				String shiftMasterCode = combinations.get(j).getShiftCode().v();
-				if (listShiftMasterCodeFromUI.isEmpty()) {
-					listShiftMasterCodeGetNew.add(shiftMasterCode);
-				}else{
-					if (!listShiftMasterCodeFromUI.contains(shiftMasterCode)) {
-						listShiftMasterCodeGetNew.add(shiftMasterCode);
-					}
-				}
+				listShiftMasterCodeOfPage.add(shiftMasterCode);
 			}
 		}
-		return listShiftMasterCodeGetNew;
+		return listShiftMasterCodeOfPage.stream().collect(Collectors.toList());
 	};
 	
 	@AllArgsConstructor

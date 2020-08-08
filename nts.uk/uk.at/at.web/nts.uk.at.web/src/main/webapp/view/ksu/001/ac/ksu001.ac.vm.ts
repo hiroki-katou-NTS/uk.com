@@ -7,13 +7,12 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
 
         modeCompany: KnockoutObservable<boolean> = ko.observable(true);
         workplaceModeName : KnockoutObservable<String > = ko.observable(getText("Com_Workplace"));
-        workplaceId : any;
         
         palletUnit: KnockoutObservableArray<any> = ko.observableArray([
             { code: 1, name: getText("Com_Company") },
             { code: 2, name: getText("Com_Workplace") }
         ]);
-        selectedpalletUnit: KnockoutObservable<number> = ko.observable(1);
+        selectedpalletUnit: KnockoutObservable<number> ;
         overwrite: KnockoutObservable<boolean> = ko.observable(true);
 
         dataSourceCompany: KnockoutObservableArray<any> = ko.observableArray([null, null, null, null, null, null, null, null, null, null]);
@@ -35,34 +34,13 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
         dataToStick: any = null;
         listPageInfo : any;
 
-        indexBtnSelected: number = 0;
+        btnSelectedCom = {};
+        btnSelectedOrg = {};
 
-        textButtonArrComPattern: KnockoutObservableArray<any> = ko.observableArray([
-            { name: ko.observable(getText("KSU001_1603", ['１'])), id: 0 },
-            { name: ko.observable(getText("KSU001_1603", ['２'])), id: 1 },
-            { name: ko.observable(getText("KSU001_1603", ['３'])), id: 2 },
-            { name: ko.observable(getText("KSU001_1603", ['４'])), id: 3 },
-            { name: ko.observable(getText("KSU001_1603", ['５'])), id: 4 },
-            { name: ko.observable(getText("KSU001_1603", ['６'])), id: 5 },
-            { name: ko.observable(getText("KSU001_1603", ['７'])), id: 6 },
-            { name: ko.observable(getText("KSU001_1603", ['８'])), id: 7 },
-            { name: ko.observable(getText("KSU001_1603", ['９'])), id: 8 },
-            { name: ko.observable(getText("KSU001_1603", ['１０'])), id: 9 },
-        ]);
+        textButtonArrComPattern: KnockoutObservableArray<any> = ko.observableArray([]);
 
-        textButtonArrWkpPattern: KnockoutObservableArray<any> = ko.observableArray([
-            { name: ko.observable(getText("KSU001_1603", ['１'])), id: 0 },
-            { name: ko.observable(getText("KSU001_1603", ['２'])), id: 1 },
-            { name: ko.observable(getText("KSU001_1603", ['３'])), id: 2 },
-            { name: ko.observable(getText("KSU001_1603", ['４'])), id: 3 },
-            { name: ko.observable(getText("KSU001_1603", ['５'])), id: 4 },
-            { name: ko.observable(getText("KSU001_1603", ['６'])), id: 5 },
-            { name: ko.observable(getText("KSU001_1603", ['７'])), id: 6 },
-            { name: ko.observable(getText("KSU001_1603", ['８'])), id: 7 },
-            { name: ko.observable(getText("KSU001_1603", ['９'])), id: 8 },
-            { name: ko.observable(getText("KSU001_1603", ['１０'])), id: 9 },
-        ]);
-        
+        textButtonArrWkpPattern: KnockoutObservableArray<any> = ko.observableArray([]);
+        listShiftWork: any[] = ko.observableArray([]);
         KEY : string = 'USER_INFOR';
 
         constructor() {
@@ -74,7 +52,17 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 { id: "delete", text: getText("KSU001_1707"), action: self.remove.bind(self) }
             ];
             
+            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                let userInfor: IUserInfor = JSON.parse(data);
+                self.selectedpalletUnit = ko.observable(userInfor.shiftPalletUnit);
+            }).ifEmpty((data) => {
+                self.selectedpalletUnit = ko.observable(1);
+            });
+            
             self.selectedpalletUnit.subscribe((newValue) => {
+                if (self.flag == false)
+                    return;
+                
                 if (newValue) {
                     uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                         let userInfor = JSON.parse(data);
@@ -82,103 +70,135 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         uk.localStorage.setItemAsJson(self.KEY, userInfor);
                     });
 
-                    //self.initScreenQ();
+                    self.changeMode();
                 }
             });
 
-            self.selectedButtonTableCompany.subscribe( (value) => {
-                console.log(value);
-                self.dataToStick = $("#tableButton").ntsButtonTable("getSelectedCells")[0] ? $("#tableButton").ntsButtonTable("getSelectedCells")[0].data.data : null;
+            self.selectedButtonTableCompany.subscribe((value) => {
+                self.dataToStick = $("#tableButton1").ntsButtonTable("getSelectedCells")[0] ? $("#tableButton1").ntsButtonTable("getSelectedCells")[0].data.data : null;
                 let arrDataToStick: any[] = _.map(self.dataToStick, 'data');
                 $("#extable").exTable("stickData", arrDataToStick);
-                self.indexBtnSelected = self.selectedButtonTableCompany().column + self.selectedButtonTableCompany().row * 10;
+                // save data to local Storage
+                if (value.column == -1 || value.row == -1)
+                    return;   
                 
+                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                    let userInfor: any = JSON.parse(data);
+                    userInfor.shiftPalletPositionNumberCom = { column : self.selectedButtonTableCompany().column , row : self.selectedButtonTableCompany().row };
+                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
+                });
             });
 
-            self.selectedButtonTableWorkplace.subscribe(function() {
-                self.dataToStick = $("#tableButton").ntsButtonTable("getSelectedCells")[0] ? $("#tableButton").ntsButtonTable("getSelectedCells")[0].data.data : null;
+            self.selectedButtonTableWorkplace.subscribe((value) => {
+                self.dataToStick = $("#tableButton2").ntsButtonTable("getSelectedCells")[0] ? $("#tableButton2").ntsButtonTable("getSelectedCells")[0].data.data : null;
                 let arrDataToStick: any[] = _.map(self.dataToStick, 'data');
                 $("#extable").exTable("stickData", arrDataToStick);
-                self.indexBtnSelected = self.selectedButtonTableWorkplace().column + self.selectedButtonTableWorkplace().row * 10;
+                // save data to local Storage
+                if (value.column == -1 || value.row == -1)
+                    return;  
+                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                    let userInfor: IUserInfor = JSON.parse(data);
+                    userInfor.shiftPalletPositionNumberOrg = {column : self.selectedButtonTableWorkplace().column , row : self.selectedButtonTableWorkplace().row };
+                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
+                });
             });
 
-            $("#tableButton").bind("getdatabutton", function(evt, data) {
+            $("#tableButton1").bind("getdatabutton", function(evt, data) {
                 self.textName(data.text);
                 self.tooltip(data.tooltip);
             });
 
-            $("#tableButton").bind("getdatabutton", function(evt, data) {
+            $("#tableButton2").bind("getdatabutton", function(evt, data) {
                 self.textName(data.text);
                 self.tooltip(data.tooltip);
             });
         }
         
         /**
-         * get content of link button
          */
-        initScreenQ(): void {
+        changeMode(): void {
             let self = this;
             if (self.selectedpalletUnit() === 1) {
                 self.modeCompany(true);
-                __viewContext.viewModel.viewA.getDataComPattern().done(() => {
-                    console.log("get data com done");
+                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                    let userInfor : IUserInfor = JSON.parse(data);
+                    self.getDataComPattern(userInfor.shiftPalettePageNumberCom - 1);
+                }).ifEmpty((data) => {
+                    let userInfor : IUserInfor = JSON.parse(data);
+                    self.getDataComPattern(0);
                 });
             } else {
                 self.modeCompany(false);
-                __viewContext.viewModel.viewA.getDataWkpPattern().done(() => {
-                     console.log("get data workplace done");
+                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                    let userInfor: IUserInfor = JSON.parse(data);
+                    self.getDataWkpPattern(userInfor.shiftPalettePageNumberOrg - 1);
+                }).ifEmpty((data) => {
+                    let userInfor: IUserInfor = JSON.parse(data);
+                    self.getDataWkpPattern(0);
                 });
             }
         }
         
-        getDataComPattern(){
-            
-        
-        }
-
         /**
          * handle init
          * change text of linkbutton
          * set data for datasource
          */
-        handleInitCom(listPageInfo: any, listPattern: any, listTextButton: any, dataSource: any, index: any): any {
+        handleInitCom(listPageInfo: any, listPattern: any, index: any): any {
             let self = this;
+            self.modeCompany(true);
             self.listPageInfo = listPageInfo;
             //set default for listTextButton and dataSource
             self.dataSourceCompany([null, null, null, null, null, null, null, null, null, null]);
             self.textButtonArrComPattern([]);
+            self.textButtonArrComPattern.valueHasMutated();
+            let arr = [];
             for (let i = 0; i < listPageInfo.length; i++) {
-                self.textButtonArrComPattern().push({ name: ko.observable(listPageInfo[i].pageName), id: listPageInfo[i].pageNumber, formatter: _.escape });
+                arr.push({ name: ko.observable(listPageInfo[i].pageName), id: listPageInfo[i].pageNumber, formatter: _.escape });
             }
-
+            self.textButtonArrComPattern(arr);
+            self.textButtonArrComPattern.valueHasMutated();
+            
+            // get listShiftMaster luu torng localStorage
+            let itemLocal = uk.localStorage.getItem(self.KEY);
+            let userInfor = JSON.parse(itemLocal.get());
+            let listShiftMaster = userInfor.shiftMasterWithWorkStyleLst;
+            let listWorkType = __viewContext.viewModel.viewAB.listWorkType();
+            let listWorkTime = __viewContext.viewModel.viewAB.listWorkTime();
+            debugger;
             for (let i = 0; i < listPattern.length; i++) {
                 let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
-
                 //set data for dataSource
                 _.each(listPattern[i].patternItem, (pattItem) => {
                     let text = pattItem.patternName;
-                    let arrPairShortName = [], arrPairObject = [];
+                    let arrPairShortName = [], arrPairObject: any = [];
+                    
                     _.forEach(pattItem.workPairSet, (wPSet) => {
-
-                        let matchShiftWork = _.find(self.listShiftWork, ["shiftMasterCode", wPSet.shiftCode != null ? wPSet.shiftCode : wPSet.workTypeCode]);
-                        let value = "";
-                        if (self.selectedpalletUnit() === 1) {
-                            let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.shiftCode + 'マスタ未登録]';
-                            value = shortName;
-                            arrPairShortName.push(shortName);
-                        } else {
-                            let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.workTypeCode + 'マスタ未登録]';
-                            value = shortName;
-                            arrPairShortName.push(shortName);
-                        }
-                        arrPairObject.push({
-                            index: self.selectedpalletUnit() === 1 ? wPSet.order : wPSet.pairNo,
-                            value: value,
-                            shiftMasterCode: self.selectedpalletUnit() === 1 ? wPSet.shiftCode : wPSet.workTypeCode
-                        });
+//                        let matchShiftWork = _.find(self.listShiftWork, ["shiftMasterCode", wPSet.shiftCode != null ? wPSet.shiftCode : wPSet.workTypeCode]);
+//                        let value = "";
+//                        if (self.selectedTab() === 'company') {
+//                            let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.shiftCode + 'マスタ未登録]';
+//                            value = shortName;
+//                            arrPairShortName.push(shortName);
+//                        } else {
+//                            let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.workTypeCode + 'マスタ未登録]';
+//                            value = shortName;
+//                            arrPairShortName.push(shortName);
+//                        }
+//                        arrPairObject.push({
+//                            index: self.selectedTab() === 'company' ? wPSet.order : wPSet.pairNo,
+//                            value: value,
+//                            shiftMasterCode: self.selectedTab() === 'company' ? wPSet.shiftCode : wPSet.workTypeCode
+//                        });
                     });
-
-                    // screen JA must not set symbol for arrPairObject
+                    
+                    let arrDataOfArrPairObject: any = [];
+                    _.each(arrPairObject, (data) => {
+                        arrDataOfArrPairObject.push(data.data);
+                    });
+                    //set symbol for arrPairObject
+                    //                    $.when(__viewContext.viewModel.viewA.setDataToDisplaySymbol(arrDataOfArrPairObject)).done(() => {
+                    //__viewContext.viewModel.viewA.setDataToDisplaySymbol(arrDataOfArrPairObject)
                     // set tooltip
                     let arrTooltipClone = _.clone(arrPairShortName);
                     for (let i = 7; i < arrTooltipClone.length; i += 7) {
@@ -187,31 +207,36 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     }
                     let tooltip: string = arrPairShortName.join('→');
                     tooltip = tooltip.replace(/→lb/g, '\n');
-                    // Insert data to source
+
+                    //insert data to source
                     source.splice(pattItem.patternNo - 1, 1, { text: text, tooltip: tooltip, data: arrPairObject });
                 });
                 self.dataSourceCompany().splice(listPattern[i].groupNo - 1, 1, source);
-                self.selectedLinkButtonCom(self.listPageInfo[index()].pageNumber - 1);
             }
+            self.selectedLinkButtonCom(self.listPageInfo[index()].pageNumber - 1);
+            self.clickLinkButton(null, index);
         }
         
-        handleInitWkp(listPageInfo: any, listPattern: any, listTextButton: any, dataSource: any, index: any): any {
+        handleInitWkp(listPageInfo: any, listPattern: any, index: any): any {
             let self = this;
+            self.modeCompany(false);
             self.listPageInfo = listPageInfo;
-            
             //set default for listTextButton and dataSource
             self.dataSourceWorkplace([null, null, null, null, null, null, null, null, null, null]);
-            self.textButtonArrWkpPattern([]);
-            for (let i = 0; i < listPageInfo.length; i++) {
-                self.textButtonArrWkpPattern().push({ name: ko.observable(listPageInfo[i].pageName), id: listPageInfo[i].pageNumber, formatter: _.escape });
-            }
+            self.textButtonArrComPattern([]);
+            self.textButtonArrComPattern.valueHasMutated();
             
-            self.workplaceId = listPattern[0].workplaceId;
+            self.textButtonArrWkpPattern([]);
+            self.textButtonArrWkpPattern.valueHasMutated();
+            let arr = [];
+            for (let i = 0; i < listPageInfo.length; i++) {
+                arr.push({ name: ko.observable(listPageInfo[i].pageName), id: listPageInfo[i].pageNumber, formatter: _.escape });
+            }
+            self.textButtonArrWkpPattern(arr);
+            self.textButtonArrWkpPattern.valueHasMutated();
+            
             for (let i = 0; i < listPattern.length; i++) {
                 let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
-                //change text of linkbutton
-                self.textButtonArrWkpPattern()[listPattern[i].groupNo - 1].name(nts.uk.text.padRight(listPattern[i].groupName, ' ', 6));
-
                 //set data for dataSource
                 _.each(listPattern[i].patternItem, (pattItem) => {
                     let text = pattItem.patternName;
@@ -251,8 +276,8 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 });
                 self.dataSourceWorkplace().splice(listPattern[i].groupNo - 1, 1, source);
             }
-            self.clickLinkButton(null, self.selectedLinkButtonWkp);
             self.selectedLinkButtonWkp(self.listPageInfo[index()].pageNumber - 1);
+            self.clickLinkButton(null, index);
         }
 
         /**
@@ -261,79 +286,95 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
         clickLinkButton(element: any, param?: any): void {
             let self = this,
                 source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
-                index: number = param();
-            
-            if (self.selectedpalletUnit() === 1) {
-                self.indexLinkButtonCom = index;
-                // link button has color gray when clicked
-                _.each($('#group-link-button-ja a.hyperlink'), (a) => {
-                    $(a).removeClass('color-gray');
-                    $(a).removeClass('background-linkbtn');
-                });
-                $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonCom]).addClass('color-gray');
-                $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonCom]).addClass('background-linkbtn');
-                self.selectedLinkButtonCom(self.listPageInfo[index].pageNumber - 1);
-                //set sourceCompany
-                let indexDataPage = self.listPageInfo[index].pageNumber;
-                self.sourceCompany(self.dataSourceCompany()[indexDataPage - 1] || source);
-                
-                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                    let userInfor = JSON.parse(data);
-                    userInfor.shiftPalettePageNumberCom = index + 1;
-                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
-                });
-                
-            } else {
-                self.indexLinkButtonWkp = index;
-                // link button has color gray when clicked
-                _.each($('#group-link-button-ja a.hyperlink'), (a) => {
-                    $(a).removeClass('color-gray');
-                    $(a).removeClass('background-linkbtn');
-                });
-                $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonWkp]).addClass('color-gray');
-                $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonWkp]).addClass('background-linkbtn');
-                self.selectedLinkButtonWkp(self.listPageInfo[index].pageNumber - 1);
-                //set sourceWorkplace
-                let indexDataPage = self.listPageInfo[index].pageNumber;
-                self.sourceWorkplace(self.dataSourceWorkplace()[indexDataPage - 1] || source);
-                
-                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                    let userInfor = JSON.parse(data);
-                    userInfor.shiftPalettePageNumberOrg = index + 1;
-                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
-                });
-            }
-            
-            // set css table button
-            _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
-                if ($('.ntsButtonTableButton')[index].innerHTML == "+") {
-                    $($('.ntsButtonTableButton')[index]).addClass('nowithContent');
-                } else {
-                    $($('.ntsButtonTableButton')[index]).addClass('withContent');
+                index: number = param(),
+                indexDataPage = self.listPageInfo[index].pageNumber;
+
+            self.getShiftPalletWhenChangePage(indexDataPage).done(() => {
+                if (self.selectedpalletUnit() === 1) {
+                    self.indexLinkButtonCom = index;
+                    // link button has color gray when clicked
+                    _.each($('#group-link-button-ja a.hyperlink'), (a) => {
+                        $(a).removeClass('color-gray');
+                        $(a).removeClass('background-linkbtn');
+                    });
+                    $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonCom]).addClass('color-gray');
+                    $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonCom]).addClass('background-linkbtn');
+                    
+                    let shiftPalletPositionNumberCom = {};
+                    uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                        let userInfor = JSON.parse(data);
+                        userInfor.shiftPalettePageNumberCom = index + 1;
+                        shiftPalletPositionNumberCom = userInfor.shiftPalletPositionNumberCom;
+                        uk.localStorage.setItemAsJson(self.KEY, userInfor);
+                    });
+                    //set sourceCompa    
+                    self.sourceCompany(self.dataSourceCompany()[indexDataPage - 1] || source);
+                    self.selectedLinkButtonCom(self.listPageInfo[index].pageNumber - 1);
+                    self.selectedButtonTableCompany(shiftPalletPositionNumberCom);
+
+                } else if (self.selectedpalletUnit() === 2) {
+                    self.indexLinkButtonWkp = index;
+                    // link button has color gray when clicked
+                    _.each($('#group-link-button-ja a.hyperlink'), (a) => {
+                        $(a).removeClass('color-gray');
+                        $(a).removeClass('background-linkbtn');
+                    });
+                    $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonWkp]).addClass('color-gray');
+                    $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonWkp]).addClass('background-linkbtn');
+                   
+                   
+
+                    let shiftPalletPositionNumberOrg = {};
+                    uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                        let userInfor = JSON.parse(data);
+                        userInfor.shiftPalettePageNumberOrg = index + 1;
+                        shiftPalletPositionNumberOrg = userInfor.shiftPalletPositionNumberOrg;
+                        uk.localStorage.setItemAsJson(self.KEY, userInfor);
+                        
+                    });
+                    self.selectedLinkButtonWkp(self.listPageInfo[index].pageNumber - 1);
+                    //set sourceWorkplace
+                    self.sourceWorkplace(self.dataSourceWorkplace()[indexDataPage - 1] || source);
+                    self.selectedButtonTableWorkplace(shiftPalletPositionNumberOrg);
                 }
+
+                // set css table button
+                _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
+                    if ($('.ntsButtonTableButton')[index].innerHTML == "+") {
+                        $($('.ntsButtonTableButton')[index]).addClass('nowithContent');
+                    } else {
+                        $($('.ntsButtonTableButton')[index]).addClass('withContent');
+                    }
+                });
             });
+        }
+        
+        getShiftPalletWhenChangePage(pageNumber: number): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            let dataLocal = uk.localStorage.getItem(self.KEY);
+            let userInfor = JSON.parse(dataLocal.get());
+
+            let param = {
+                listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst,
+                shiftPalletUnit: self.selectedpalletUnit(),
+                pageNumberCom: pageNumber,
+                pageNumberOrg: pageNumber,
+                workplaceId: userInfor.workplaceId,
+            }
+
+            service.getShiftPalletWhenChangePage(param).done((data) => {
+                __viewContext.viewModel.viewA.saveShiftMasterToLocalStorage(data.listShiftMaster);
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+            return dfd.promise();
         }
 
         /**
          * Open popup to change name button
          */
-        openPopup(button): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            $("#tableButton").trigger("getdatabutton", { text: button[0].innerText });
-            $("#popup-area").css('visibility', 'visible');
-            let buttonWidth = button.outerWidth(true) - 30;
-            $("#popup-area").position({ "of": button, my: "left+" + buttonWidth + " top", at: "left+" + buttonWidth + " top" });
-            $("#tableButton").bind("namechanged", function(evt, data) {
-                $("#tableButton").unbind("namechanged");
-                if (!nts.uk.util.isNullOrUndefined(data)) {
-                    dfd.resolve(data);
-                } else {
-                    dfd.resolve(button.parent().data("cell-data"));
-                }
-                self.refreshDataSource();
-            });
-            return dfd.promise();
-        }
+        openPopup(button) {}
 
         /**
          * decision change name button
@@ -356,26 +397,30 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
 
         getDataComPattern(selectedLinkButton): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
+            let dataLocal = uk.localStorage.getItem(self.KEY);
+            let userInfor = JSON.parse(dataLocal.get());
+            
             let param = {
-                listShiftMasterNotNeedGetNew: [],
+                listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst,
                 shiftPaletteWantGet: {
-                    shiftPalletUnit: self.palletUnit(),
-                    pageNumber: selectedLinkButton,
+                    shiftPalletUnit: self.selectedpalletUnit(),
+                    pageNumberCom: selectedLinkButton+1,
                 },
-                workplaceId: self.workplaceId,
-                workplaceGroupId: self.workplaceId
+                workplaceId: userInfor.workplaceId,
+                workplaceGroupId: ''
             }
-
+            nts.uk.ui.block.grayout();
             service.getShiftPallets(param).done((data) => {
+                let indexSelected = _.findIndex(data.listPageInfo, function(o) { return o.pageNumber == selectedLinkButton+1; });
                 self.listComPattern(data.shiftPalletCom);
                 self.handleInitCom(
                     data.listPageInfo,
-                    data.shiftPalletCom,
-                    self.textButtonArrComPattern,
-                    self.dataSourceCompany,
-                    ko.observable(selectedLinkButton));
+                    data.targetShiftPalette.shiftPalletCom,
+                    ko.observable(indexSelected));
+                nts.uk.ui.block.clear();
                 dfd.resolve();
             }).fail(function() {
+                nts.uk.ui.block.clear();
                 dfd.reject();
             });
 
@@ -386,29 +431,32 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
          */
         getDataWkpPattern(selectedLinkButton): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            let param = {
-                listShiftMasterNotNeedGetNew: [],
-                shiftPaletteWantGet: {
-                    shiftPalletUnit: self.palletUnit(),
-                    pageNumber: selectedLinkButton,
-                },
-                workplaceId: self.workplaceId,
-                workplaceGroupId: self.workplaceId
-            }
+            let dataLocal = uk.localStorage.getItem(self.KEY);
+            let userInfor = JSON.parse(dataLocal.get());
 
+            let param = {
+                listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst,
+                shiftPaletteWantGet: {
+                    shiftPalletUnit: self.selectedpalletUnit(),
+                    pageNumberOrg: selectedLinkButton + 1,
+                },
+                workplaceId: userInfor.workplaceId,
+                workplaceGroupId: ''
+            }
+            nts.uk.ui.block.grayout();
             service.getShiftPallets(param).done((data) => {
+                let indexSelected = _.findIndex(data.listPageInfo, function(o) { return o.pageNumber == selectedLinkButton + 1; });
                 self.listComPattern(data);
                 self.handleInitWkp(
                     data.listPageInfo,
-                    data.shiftPalletWorkPlace,
-                    self.textButtonArrComPattern,
-                    self.dataSourceCompany,
-                    ko.observable(selectedLinkButton));
+                    data.targetShiftPalette.shiftPalletWorkPlace,
+                    ko.observable(indexSelected));
+                nts.uk.ui.block.clear();
                 dfd.resolve();
             }).fail(function() {
+                nts.uk.ui.block.clear();
                 dfd.reject();
             });
-
             return dfd.promise();
         }
 
@@ -417,11 +465,14 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
          */
         openDialogJB1(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
+            let dataLocal = uk.localStorage.getItem(self.KEY);
+            let userInfor = JSON.parse(dataLocal.get());
+            
             setShared('dataForJB', {
                 selectedTab: self.selectedpalletUnit() == 1 ? 'company' : 'workplace',
                 workplaceName: self.workplaceModeName,
                 workplaceCode: '',
-                workplaceId: self.selectedpalletUnit() === 1 ? null : self.workplaceId,
+                workplaceId: self.selectedpalletUnit() === 1 ? null : userInfor.workplaceId,
                 listWorkType: __viewContext.viewModel.viewAB.listWorkType(),
                 listWorkTime: __viewContext.viewModel.viewAB.listWorkTime(),
                 selectedLinkButton: self.selectedpalletUnit() === 1 ? self.selectedLinkButtonCom() : self.selectedLinkButtonWkp(),
@@ -430,7 +481,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 overwrite : self.overwrite()
             });
             nts.uk.ui.windows.sub.modal("/view/ksu/001/jb/index.xhtml").onClosed(() => {
-                let selectedLinkButton: any = ko.observable(getShared("dataFromJA").selectedLinkButton);
+                let selectedLinkButton: any = getShared("dataFromJA").selectedLinkButton;
                 
                 if (self.selectedpalletUnit() === 1) {
                     self.modeCompany(true);
@@ -508,5 +559,38 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 self.dataSourceWorkplace()[self.indexLinkButtonWkp] = self.sourceWorkplace();
             }
         }
+    }
+
+    interface IUserInfor {
+        disPlayFormat: string;
+        backgroundColor: number; // 背景色
+        achievementDisplaySelected: number;
+        shiftPalletUnit: number;
+        shiftPalettePageNumberCom: number;
+        shiftPalletPositionNumberCom: {};
+        shiftPalettePageNumberOrg: number;
+        shiftPalletPositionNumberOrg: {};
+        gridHeightSelection: number;
+        heightGridSetting: number;
+        workplaceId: string;
+        workplaceGroupId: string;
+        workPlaceName: string;
+        workType: {};
+        workTime: {};
+        updateMode: string; // updatemode cua grid
+        startDate: string;
+        endDate: string;
+        shiftMasterWithWorkStyleLst: Array<IShiftMasterMapWithWorkStyle>;
+    }
+
+    interface IShiftMasterMapWithWorkStyle {
+        companyId: string;
+        shiftMasterName: string;
+        shiftMasterCode: string;
+        color: string;
+        remark: string;
+        workTypeCode: string;
+        workTimeCode: string;
+        workStyle: string;
     }
 }

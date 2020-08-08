@@ -11,6 +11,9 @@ import nts.uk.screen.at.app.ksu001.changemode.PreMonthFinder;
 import nts.uk.screen.at.app.ksu001.changemode.ShiftModeFinder;
 import nts.uk.screen.at.app.ksu001.changemode.ShortNameModeFinder;
 import nts.uk.screen.at.app.ksu001.changemode.TimeModeFinder;
+import nts.uk.screen.at.app.ksu001.changepage.ChangePageParam;
+import nts.uk.screen.at.app.ksu001.changepage.GetDataWhenChangePage;
+import nts.uk.screen.at.app.ksu001.changepage.GetShiftPalChangePageResult;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.GetShiftPalette;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.GetShiftPaletteParam;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.GetShiftPaletteResult;
@@ -41,6 +44,8 @@ public class KSU001WebService extends WebService{
 	private PreMonthFinder preMonthFinder;
 	@Inject
 	private GetShiftPalette getShiftPalette;
+	@Inject
+	private GetDataWhenChangePage getDataWhenChangePage;
 	
 	@POST
 	@Path("start")
@@ -52,21 +57,21 @@ public class KSU001WebService extends WebService{
 	@POST
 	@Path("shift")
 	public StartKSU001Dto getDataShiftMode(StartKSU001Param param){
-		StartKSU001Dto data = shiftModeFinder.getDataStartScreen(param);
+		StartKSU001Dto data = startKSU001.getDataStartScreen(param);
 		return data;
 	}
 	
 	@POST
 	@Path("shortname")
 	public StartKSU001Dto getDataShortNameMode(StartKSU001Param param){
-		StartKSU001Dto data = shortNameModeFinder.getDataStartScreen(param);
+		StartKSU001Dto data = startKSU001.getDataStartScreen(param);
 		return data;
 	}
 	
 	@POST
 	@Path("time")
 	public StartKSU001Dto getDataTimeMode(StartKSU001Param param){
-		StartKSU001Dto data = timeModeFinder.getDataStartScreen(param);
+		StartKSU001Dto data = startKSU001.getDataStartScreen(param);
 		return data;
 	}
 	
@@ -86,10 +91,17 @@ public class KSU001WebService extends WebService{
 	}
 	
 	@POST
-	@Path("getShiftPallets") // get cho cả 2 trường hợp company và workPlace
-	public GetShiftPaletteResult getListShiftPalletsByCom(GetShiftPaletteParam param) {
+	@Path("getShiftPallets") // get cho cả 2 trường hợp company và workPlace , goi sau khi đ
+	public GetShiftPaletteResult getShiftPallets(GetShiftPaletteParam param) {
 		return getShiftPalette.dataSample(param);
 	}
+	
+	@POST
+	@Path("change-page") // get cho cả 2 trường hợp company và workPlace , goi sau khi đ
+	public GetShiftPalChangePageResult getShiftPallet(ChangePageParam param) {
+		return getDataWhenChangePage.gatData(param);
+	}
 
+	
 	
 }

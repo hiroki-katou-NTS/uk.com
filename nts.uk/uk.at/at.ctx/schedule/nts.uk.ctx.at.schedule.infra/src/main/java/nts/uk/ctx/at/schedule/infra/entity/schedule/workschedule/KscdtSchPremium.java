@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -9,8 +12,10 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.premiumtime.PremiumTime;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -24,6 +29,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @NoArgsConstructor
 @Table(name = "KSCDT_SCH_PREMIUM")
+@Getter
 public class KscdtSchPremium extends ContractUkJpaEntity {
 
 	@EmbeddedId
@@ -56,6 +62,16 @@ public class KscdtSchPremium extends ContractUkJpaEntity {
 	public static KscdtSchPremium toEntity(PremiumTime premiumTime, String sid, GeneralDate ymd) {
 		return new KscdtSchPremium(new KscdtSchPremiumPK(sid, ymd, premiumTime.getPremiumTimeNo()),
 				AppContexts.user().companyId(), premiumTime.getPremitumTime().v());
+	}
+	//勤務予定．勤怠時間．勤務時間．割増時間．割増時間
+	public List<PremiumTime> toDomain(){
+		List<KscdtSchPremium> listKscdtSchPremium = kscdtSchTime.getPremiums();
+		List<PremiumTime> result = new ArrayList<>();
+		listKscdtSchPremium.stream().forEach( x ->{
+			PremiumTime time = new PremiumTime(x.getPk().getFrameNo(), new AttendanceTime(x.getPremiumTime()));
+			result.add(time);
+		});
+		return result;
 	}
 
 }

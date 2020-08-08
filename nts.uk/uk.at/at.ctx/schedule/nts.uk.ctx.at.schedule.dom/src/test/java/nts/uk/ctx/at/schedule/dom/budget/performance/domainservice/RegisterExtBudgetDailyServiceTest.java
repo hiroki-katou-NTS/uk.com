@@ -16,7 +16,7 @@ import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetUnitPric
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExtBudgetTime;
 import nts.uk.ctx.at.schedule.dom.budget.performance.domainservice.RegisterExtBudgetDailyService.Require;
 import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetActItemCode;
-import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetActualValue;
+import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetActualValues;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterOrgHelper;
 
@@ -34,7 +34,7 @@ public class RegisterExtBudgetDailyServiceTest {
 		TargetOrgIdenInfor targetOrg = ShiftMasterOrgHelper.getTargetOrgIdenInforEmpty();
 		ExtBudgetActItemCode itemCode = new ExtBudgetActItemCode("itemCode");
 		GeneralDate ymd = GeneralDate.today();
-		Optional<ExtBudgetActualValue> extBudgetActualValue = Optional.empty();
+		Optional<ExtBudgetActualValues> extBudgetActualValue = Optional.empty();
 
 		NtsAssert.atomTask(
 				() -> RegisterExtBudgetDailyService.signUp(require, targetOrg, itemCode, ymd, extBudgetActualValue),
@@ -49,7 +49,7 @@ public class RegisterExtBudgetDailyServiceTest {
 		TargetOrgIdenInfor targetOrg = ShiftMasterOrgHelper.getTargetOrgIdenInforEmpty();
 		ExtBudgetActItemCode itemCode = new ExtBudgetActItemCode("itemCode");
 		GeneralDate ymd = GeneralDate.today();
-		Optional<ExtBudgetActualValue> extBudgetActualValue = Optional.of(new ExtBudgetMoney(999));
+		Optional<ExtBudgetActualValues> extBudgetActualValue = Optional.of(new ExtBudgetMoney(999));
 
 		NtsAssert.atomTask(
 				() -> RegisterExtBudgetDailyService.signUp(require, targetOrg, itemCode, ymd, extBudgetActualValue),
@@ -64,7 +64,7 @@ public class RegisterExtBudgetDailyServiceTest {
 		TargetOrgIdenInfor targetOrg = ShiftMasterOrgHelper.getTargetOrgIdenInforEmpty();
 		ExtBudgetActItemCode itemCode = new ExtBudgetActItemCode("itemCode");
 		GeneralDate ymd = GeneralDate.today();
-		Optional<ExtBudgetActualValue> extBudgetActualValue = Optional.of(new ExtBudgetUnitPrice(999));
+		Optional<ExtBudgetActualValues> extBudgetActualValue = Optional.of(new ExtBudgetUnitPrice(999));
 
 		NtsAssert.atomTask(
 				() -> RegisterExtBudgetDailyService.signUp(require, targetOrg, itemCode, ymd, extBudgetActualValue),
@@ -79,7 +79,7 @@ public class RegisterExtBudgetDailyServiceTest {
 		TargetOrgIdenInfor targetOrg = ShiftMasterOrgHelper.getTargetOrgIdenInforEmpty();
 		ExtBudgetActItemCode itemCode = new ExtBudgetActItemCode("itemCode");
 		GeneralDate ymd = GeneralDate.today();
-		Optional<ExtBudgetActualValue> extBudgetActualValue = Optional.of(new ExtBudgetNumericalVal(999));
+		Optional<ExtBudgetActualValues> extBudgetActualValue = Optional.of(new ExtBudgetNumericalVal(999));
 
 		NtsAssert.atomTask(
 				() -> RegisterExtBudgetDailyService.signUp(require, targetOrg, itemCode, ymd, extBudgetActualValue),
@@ -94,7 +94,7 @@ public class RegisterExtBudgetDailyServiceTest {
 		TargetOrgIdenInfor targetOrg = ShiftMasterOrgHelper.getTargetOrgIdenInforEmpty();
 		ExtBudgetActItemCode itemCode = new ExtBudgetActItemCode("itemCode");
 		GeneralDate ymd = GeneralDate.today();
-		Optional<ExtBudgetActualValue> extBudgetActualValue = Optional.of(new ExtBudgetNumberPerson(999));
+		Optional<ExtBudgetActualValues> extBudgetActualValue = Optional.of(new ExtBudgetNumberPerson(999));
 
 		NtsAssert.atomTask(
 				() -> RegisterExtBudgetDailyService.signUp(require, targetOrg, itemCode, ymd, extBudgetActualValue),
@@ -109,7 +109,7 @@ public class RegisterExtBudgetDailyServiceTest {
 		TargetOrgIdenInfor targetOrg = ShiftMasterOrgHelper.getTargetOrgIdenInforEmpty();
 		ExtBudgetActItemCode itemCode = new ExtBudgetActItemCode("itemCode");
 		GeneralDate ymd = GeneralDate.today();
-		Optional<ExtBudgetActualValue> extBudgetActualValue = Optional.of(new ExtBudgetTime(999));
+		Optional<ExtBudgetActualValues> extBudgetActualValue = Optional.of(new ExtBudgetTime(999));
 
 		NtsAssert.atomTask(
 				() -> RegisterExtBudgetDailyService.signUp(require, targetOrg, itemCode, ymd, extBudgetActualValue),

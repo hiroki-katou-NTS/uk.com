@@ -113,7 +113,7 @@ public class StartKSU001 {
 			param51.setWorkplaceId(workplaceId);
 			param51.setWorkplaceGroupId(workplaceGroupId);
 			param51.setListShiftMasterNotNeedGetNew(new ArrayList<>());
-			param51.setShiftPaletteWantGet(new ShiftPaletteWantGet(param.shiftPalletUnit, param.pageNumber ));
+			param51.setShiftPaletteWantGet(new ShiftPaletteWantGet(param.shiftPalletUnit, param.pageNumberCom, param.pageNumberOrg ));
 			param51.setGetActualData(param.getActualData);
 			
 			DisplayInShiftResult resultStep51 =  displayInShift.dataSample(param51);

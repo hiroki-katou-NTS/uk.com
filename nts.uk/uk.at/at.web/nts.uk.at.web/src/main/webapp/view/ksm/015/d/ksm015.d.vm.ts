@@ -23,7 +23,7 @@ module nts.uk.at.view.ksm015.d.viewmodel {
 		constructor() {
 			let self = this;
 			let ksm015Data = new Ksm015Data();
-			self.shiftColumns = ko.observableArray(ksm015Data.shiftGridColumns);
+			self.shiftColumns = ko.observableArray(ksm015Data.shiftGridColumnsD);
 			self.shiftItems = ko.observableArray([]);
 			self.selectedShiftMaster = ko.observableArray([]);
 			self.alreadySettingList = ko.observableArray([]);
@@ -267,8 +267,8 @@ module nts.uk.at.view.ksm015.d.viewmodel {
 				isMultiSelect: true,
 				filter: 0,
 				permission: false,
-				shifutoCodes: _.map(self.shiftItems(), (val) => { return val.shiftMasterCode })
-				//shifutoCodes: []
+				//shifutoCodes: _.map(self.shiftItems(), (val) => { return val.shiftMasterCode })
+				shifutoCodes: []
 			}, true);
 
 			nts.uk.ui.windows.sub.modal('/view/kdl/044/a/index.xhtml').onClosed(function(): any {
@@ -286,17 +286,8 @@ module nts.uk.at.view.ksm015.d.viewmodel {
 			});
 		}
 
-		public getAndBindWorkplaceInfo(workplaceIds, date) {
-		}
-
-        /**
-        * Export excel
-        */
-		public exportExcel(): void {
-		}
-
 		public reCalGridWidth() {
-			let panelWidthResize = window.innerWidth - 750;
+			let panelWidthResize = window.innerWidth - 650;
 			panelWidthResize = panelWidthResize < 400 ? 400 : panelWidthResize;
 			$('#workplace-list').igGrid("option", "width", panelWidthResize);
 			$('#form-title-d').css("width", panelWidthResize + "px");

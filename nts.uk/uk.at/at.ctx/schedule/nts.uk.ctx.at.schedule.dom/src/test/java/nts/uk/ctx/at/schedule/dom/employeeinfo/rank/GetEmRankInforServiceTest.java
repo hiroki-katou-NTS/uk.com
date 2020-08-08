@@ -24,11 +24,15 @@ public class GetEmRankInforServiceTest {
 	
 	@Test
 	public void testEmployeeRankNull() {
-		List<String> listEmpId = Arrays.asList("003","004"); // dummy
+		List<String> listEmpId = Arrays.asList("003","004");
 		List<String> listIdNull = Arrays.asList("001","002");
 		List<EmployeeRank> listEmpRank = new ArrayList<EmployeeRank>();
-		listEmpRank.addAll(listIdNull.stream().map(mapper-> new EmployeeRank(mapper, new RankCode(mapper)))
-				.collect(Collectors.toList()));
+
+		EmployeeRank rank1 = new EmployeeRank("001", new RankCode("001"));
+		EmployeeRank rank2 = new EmployeeRank("002", new RankCode("002"));
+		
+		listEmpRank.add(rank1);
+		listEmpRank.add(rank2);
 		
 		new Expectations() {
 			{
@@ -56,10 +60,14 @@ public class GetEmRankInforServiceTest {
 	
 	@Test
 	public void testEmployeeRankNotNull_RankNotNull() {
-		List<String> listEmpId = Arrays.asList("11","12"); // dummy
+		List<String> listEmpId = Arrays.asList("11","12");
 		List<EmployeeRank> listEmpRank = new ArrayList<EmployeeRank>();
-		listEmpRank.addAll(listEmpId.stream().map(mapper-> new EmployeeRank(mapper, new RankCode(mapper)))
-				.collect(Collectors.toList()));
+		
+		EmployeeRank rank1 = new EmployeeRank("11", new RankCode("11"));
+		EmployeeRank rank2 = new EmployeeRank("12", new RankCode("12"));
+		
+		listEmpRank.add(rank1);
+		listEmpRank.add(rank2);
 		
 		new Expectations() {
 			{
@@ -86,11 +94,16 @@ public class GetEmRankInforServiceTest {
 	
 	@Test
 	public void testEmployeeRankNotNull_RankNull() {
-		List<String> listEmpId = Arrays.asList("001","002"); // dummy
+		List<String> listEmpId = Arrays.asList("001","002");
 		List<String> listIdNull = Arrays.asList("0011","0012");
+		
+		EmployeeRank rank1 = new EmployeeRank("001", new RankCode("001"));
+		EmployeeRank rank2 = new EmployeeRank("002", new RankCode("002"));
+		
 		List<EmployeeRank> listEmpRank = new ArrayList<EmployeeRank>();
-		listEmpRank.addAll(listEmpId.stream().map(mapper-> new EmployeeRank(mapper, new RankCode(mapper)))
-				.collect(Collectors.toList()));
+		
+		listEmpRank.add(rank1);
+		listEmpRank.add(rank2);
 		
 		new Expectations() {
 			{

@@ -18,5 +18,6 @@ import lombok.Setter;
 @Getter
 public class ShiftPaletteWantGet {
 	public int shiftPalletUnit;              // Company | workPlace
-	public int pageNumber;                   // ・取得したいシフトパレット：Optional<単位, ページ>  ページ
+	public int pageNumberCom;                   // ・取得したいシフトパレット：Optional<単位, ページ>  ページ
+	public int pageNumberOrg; 
 }

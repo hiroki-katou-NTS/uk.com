@@ -78,26 +78,26 @@ class Ksu001UViewModel extends ko.ViewModel {
         for (let i = 0; i < 7; i ++  ){
             let date = new Date(parseInt(splitEndDate[0]), parseInt(splitEndDate[1])-1, parseInt(splitEndDate[2]) - i);
             // var count = 0;?
-            // if(i < periodTimeEdit){              
+            if(i < periodTimeEdit){              
                 self.optionDates.push({
                     start: self.formatDate(date),
                     textColor: 'red',
-                    backgroundColor: 'gray',
+                    backgroundColor: '#b9f542',
                     listText: [
-                        "EDIT"
+                        "編集中"
                     ]
                 });
 
-            // } else {
-            //     self.optionDates.push({
-            //         start: self.formatDate(date),
-            //         textColor: 'black',
-            //         backgroundColor: 'green',
-            //         listText: [
-            //             "PUBLIC"
-            //         ]
-            //     });
-            // }
+            } else {
+                self.optionDates.push({
+                    start: self.formatDate(date),
+                    textColor: 'black',
+                    backgroundColor: '#b9f542',
+                    listText: [
+                        "公開"
+                    ]
+                });
+            }
         }
     }
    

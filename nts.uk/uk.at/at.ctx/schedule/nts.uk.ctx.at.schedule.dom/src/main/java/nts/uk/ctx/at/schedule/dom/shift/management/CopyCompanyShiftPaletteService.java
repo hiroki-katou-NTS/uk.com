@@ -28,7 +28,7 @@ public class CopyCompanyShiftPaletteService {
 			if(checkExists) {
 				require.deleteByPage(shiftPalletsCom.getCompanyId(), page);
 			}
-			ShiftPalletsCom shiftPalletsComNew = shiftPalletsCom.duplicate(page, shiftPalletName);
+			ShiftPalletsCom shiftPalletsComNew = shiftPalletsCom.reproduct(page, shiftPalletName);
 			require.add(shiftPalletsComNew);
 		});
 	}

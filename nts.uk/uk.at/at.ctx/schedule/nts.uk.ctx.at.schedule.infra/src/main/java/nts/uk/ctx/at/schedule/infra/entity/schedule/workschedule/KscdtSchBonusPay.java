@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -9,8 +12,13 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.BonusPayTime;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -21,6 +29,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @NoArgsConstructor
 @Table(name="KSCDT_SCH_BONUSPAY")
+@Getter
 public class KscdtSchBonusPay extends ContractUkJpaEntity{
 	
 	@EmbeddedId
@@ -52,13 +61,33 @@ public class KscdtSchBonusPay extends ContractUkJpaEntity{
 	protected Object getKey() {
 		return this.pK;
 	}
-	public static KscdtSchBonusPay toEntity(String sid , GeneralDate ymd){
-		//KscdtSchBonusPayPK entity = new KscdtSchBonusPayPK(sid, ymd, bonuspayType, frameNo)
-		// -------------------QA http://192.168.50.4:3000/issues/110810
-		return null;
+	//
+	public static KscdtSchBonusPay toEntity(String sid , GeneralDate ymd ,BonusPayTime bonusPayTime){
+		//Truyen 0 vào tao QA 加給種類 // -------------------QA http://192.168.50.4:3000/issues/110810
+		KscdtSchBonusPayPK pk = new KscdtSchBonusPayPK(sid, ymd, 0, bonusPayTime.getBonusPayTimeItemNo());
+		
+		return new KscdtSchBonusPay(pk,
+				AppContexts.user().companyId(),
+				bonusPayTime.getBonusPayTime().v(),
+				bonusPayTime.getWithinBonusPay().getTime().v(), 
+				bonusPayTime.getExcessBonusPayTime().getTime().v());
 		
 	}
-
+	//勤務予定．勤怠時間．勤務時間．総労働時間．加給時間．加給時間
+	public  List<BonusPayTime> toDomain(){
+		List<KscdtSchBonusPay> lstBonusPayTime = kscdtSchTime.getBonusPays();
+		List<BonusPayTime> result = new ArrayList<>();
+		lstBonusPayTime.stream().forEach( x -> {
+			BonusPayTime payTime = new BonusPayTime(
+					x.getPK().getFrameNo(),
+					new AttendanceTime(x.getPremiumTime()), 
+					TimeWithCalculation.sameTime(new AttendanceTime(x.getPremiumTimeWithIn())),
+					TimeWithCalculation.sameTime(new AttendanceTime(x.getPremiumTimeWithOut())));
+			result.add(payTime);
+		});
+		return result;
+	}
+	
 
 	public KscdtSchBonusPay(KscdtSchBonusPayPK pK, String cid, int premiumTime, int premiumTimeWithIn,
 			int premiumTimeWithOut) {

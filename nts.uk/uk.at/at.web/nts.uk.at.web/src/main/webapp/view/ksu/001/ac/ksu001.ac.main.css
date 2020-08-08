@@ -35,14 +35,14 @@
 	color: #E0F59E !important;
 }
 
-#tableButton {
+#tableButton1 {
 	background-color: rgb(237,250,194);
 	width: 915px;
 	height: 57px;
 	margin-top: 5px;
 }
 
-#tableButton button {
+#tableButton1 button {
 	width: 85px !important;
 	height: 20px;
 	box-shadow : 0 1px rgba(0, 0, 0, 0.4);
@@ -50,7 +50,26 @@
 	color : black;
 }
 
-#tableButton table td {
+#tableButton1 table td {
+	padding: 3px 3px !important;
+}
+
+#tableButton2 {
+	background-color: rgb(237,250,194);
+	width: 915px;
+	height: 57px;
+	margin-top: 5px;
+}
+
+#tableButton2 button {
+	width: 85px !important;
+	height: 20px;
+	box-shadow : 0 1px rgba(0, 0, 0, 0.4);
+	border : 1px solid grey;
+	color : black;
+}
+
+#tableButton2 table td {
 	padding: 3px 3px !important;
 }
 

@@ -63,11 +63,12 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             });
         }
 
-        getDataWorkTime(data) {
+        getDataWorkTime(data, listWorkTime) {
             let self = this;
             self.objWorkTime = data;
             self.updateDataCell(data);
             uk.localStorage.setItem("workTimeCodeSelected", data[0].code);
+            self.listWorkTime(listWorkTime);
         }
         
         updateDataCell(objWorkTime : any) {
@@ -77,7 +78,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                 return;
             
             let objWorkType = _.filter(self.listWorkType(), function(o) { return o.workTypeCode == self.selectedWorkTypeCode(); });
-
+            // stick data
             self.dataCell = {
                 workTypeCode: objWorkType[0].workTypeCode,
                 workTypeName: objWorkType[0].name,

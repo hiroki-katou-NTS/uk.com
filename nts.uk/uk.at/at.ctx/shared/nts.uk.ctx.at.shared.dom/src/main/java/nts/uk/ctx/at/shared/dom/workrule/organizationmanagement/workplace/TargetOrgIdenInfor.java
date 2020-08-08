@@ -41,13 +41,6 @@ public class TargetOrgIdenInfor implements DomainValue {
 	private final Optional<String> workplaceGroupId;
 
 	
-	public TargetOrgIdenInfor(TargetOrganizationUnit unit, String workplaceId, String workplaceGroupId) {
-		super();
-		this.unit = unit;
-		this.workplaceId = Optional.ofNullable(workplaceId);
-		this.workplaceGroupId = Optional.ofNullable(workplaceGroupId);
-	}
-	
 	public TargetOrgIdenInfor(TargetOrganizationUnit unit, Optional<String> workplaceId,
 			Optional<String> workplaceGroupId) {
 		super();
