@@ -13,16 +13,17 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         enable3: KnockoutObservable<boolean>;
         enable4: KnockoutObservable<boolean>;
         enable5: KnockoutObservable<boolean>;
+        isLink1: boolean = true;
+        isLink2: boolean = true;
+        isLink3: boolean = true;
+        isLink4: boolean = true;
+        isLink5: boolean = true;
         readonly: KnockoutObservable<boolean>;
         time: KnockoutObservable<number>;
         grid: any = null;
-        
-        
     
-        isFillColor1: KnockoutObservable<boolean> = ko.observable(true);
+        option: any;
 
-        
-        
         items1 = (function() {
             let list = []; 
             for (let i = 1; i < 3; i++) {
@@ -87,7 +88,23 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         
        
         doSomething(s: string) {
-            console.log(s);
+            const self = this;
+            if (s == '1') {
+                self.isLink1 = false;
+                self.loadGrid('#grid1', self.items1.concat(self.items2), 1);
+            } else if (s == '2') {
+                self.isLink2 = false;
+                self.loadGrid('#grid2', self.items3, 2);
+            } else if (s == '3') {
+                self.isLink3 = false;
+                self.loadGrid('#grid3', self.items4, 3);
+            } else if (s == '4') {
+                self.isLink4 = false;
+                self.loadGrid('#grid4', self.items5, 4);
+            } else if (s == '5') {
+                self.isLink5 = false;
+                self.loadGrid('#grid5', self.items6, 5);
+            }
         }
         created() {
             const self = this;
@@ -173,6 +190,9 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 
                 return;
             }
+            if($(id + '_container').length > 0){
+                $(id).ntsGrid("destroy");
+            }
             let statesTable = [];
             let numberDisable = 0;
             let isGreater_10 = items.length > 10;
@@ -225,12 +245,23 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                     });
                 });
             }
-            let headerFlagContent = numberDisable != items.length ? '<div style="display: block" align="center" data-bind="ntsCheckBox: { checked: enable1}">' + self.$i18n('KAF002_72')+ '</div>' : '<div style="display: block" align="center">' + self.$i18n('KAF002_72')+ '</div>';
-            
+            let headerFlagContent = numberDisable != items.length ? '<div style="display: block" align="center" data-bind="ntsCheckBox: { checked: enable' + type + '}">' + self.$i18n('KAF002_72')+ '</div>' : '<div style="display: block" align="center">' + self.$i18n('KAF002_72')+ '</div>';
+            let dataSource;
+            if (type == 1) {
+                dataSource = items.length >= 10 && self.isLink1 ? items.slice(0, 3) : items;
+            } else if (type == 2) {
+                dataSource = items.length >= 10 && self.isLink2 ? items.slice(0, 3) : items;
+            } else if (type == 3) {
+                dataSource = items.length >= 10 && self.isLink3 ? items.slice(0, 3) : items;
+            } else if (type == 4) {
+                dataSource = items.length >= 10 && self.isLink4 ? items.slice(0, 3) : items;
+            } else if (type == 5) {
+                dataSource = items.length >= 10 && self.isLink5 ? items.slice(0, 3) : items;
+            }
             let optionGrid = { 
                     width: '100%',
                     height: '360px',
-                    dataSource: items,
+                    dataSource: dataSource,
                     primaryKey: 'id',
                     virtualization: true,
                     virtualizationMode: 'continuous',
@@ -274,7 +305,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                    
                                ]
                     };
-            
+            self.option = optionGrid;
             let comboColumns = [{ prop: 'code', length: 2 },
                                 { prop: 'name', length: 4 }];
             let comboItems = [ new ItemModel('1', '基本給'),
@@ -283,7 +314,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             let option2 = { 
               width: '100%',
               height: '360px',
-              dataSource: self.items3.length >= 10 ? self.items3.slice(1, 3) : self.items3,
+              dataSource: dataSource,
               primaryKey: 'id',
               virtualization: true,
               virtualizationMode: 'continuous',
@@ -291,7 +322,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
               columns: [
                   { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
                   { headerText: '', key: 'text1', dataType: 'string', width: '120px' }, 
-                  { headerText: self.$i18n('KAF002_22'), key: 'combo', dataType: 'string', width: '230px', ntsControl: 'Combobox' }, 
+                  { headerText: self.$i18n('KAF002_22'), key: 'typeReason', dataType: 'string', width: '137px', ntsControl: 'Combobox' }, 
                   { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '100px' },
                   { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '100px'},
                   { headerText: headerFlagContent, key: 'flag', dataType: 'string', width: '100px'}
@@ -332,6 +363,25 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             }else {                
                 self.grid = $(id).ntsGrid(optionGrid);
             }
+            // add row to display expand row
+            if (items.length >= 10) {
+                if (type == 1 && self.isLink1) {
+                    $(id).append('<tr><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="3"><div style="display: block" align="center"><a style="background-color: white" data-bind="ntsLinkButton: { action: doSomething.bind($data, ' + type + ') }, text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
+                } else if(type == 2 && self.isLink2) {
+                    $(id).append('<tr><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="4"><div style="display: block" align="center"><a style="background-color: white" data-bind="ntsLinkButton: { action: doSomething.bind($data, ' + type + ') }, text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
+
+                } else if(type == 3 && self.isLink3) {
+                    $(id).append('<tr><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="3"><div style="display: block" align="center"><a style="background-color: white" data-bind="ntsLinkButton: { action: doSomething.bind($data, ' + type + ') }, text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
+
+                } else if(type == 4 && self.isLink4) {
+                    $(id).append('<tr><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="3"><div style="display: block" align="center"><a style="background-color: white" data-bind="ntsLinkButton: { action: doSomething.bind($data, ' + type + ') }, text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
+
+                } else if(type == 5 && self.isLink5) {
+                    $(id).append('<tr><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="3"><div style="display: block" align="center"><a style="background-color: white" data-bind="ntsLinkButton: { action: doSomething.bind($data, ' + type + ') }, text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
+
+                }
+ 
+            }
             
             
         }
@@ -350,7 +400,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         endTimeRequest: KnockoutObservable<number> = ko.observable(null);
         startTimeActual: number;
         endTimeActual: number
-        typeReason: KnockoutObservable<number>;
+        typeReason?: string;
         startTime: string;
         endTime: string;
         text1: string;
@@ -359,7 +409,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         constructor(dataObject: TimePlaceOutput, typeStamp : STAMPTYPE) {
             const self = this;
             self.id = dataObject.frameNo;
-//            self.flag = false;
+            self.typeReason = '2';
             self.startTimeActual = dataObject.opStartTime;
             self.endTimeActual = dataObject.opEndTime;
             if (_.isNull(dataObject.opStartTime) && _.isNull(dataObject.opEndTime)) {
@@ -404,10 +454,9 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                         +'ntsTimeEditor: {value: $data.'+ param +'['+ idGetList +'].endTimeRequest, enable: !$data.' + param +'[' + idGetList +'].flagObservable() , constraint: \'SampleTimeDuration\', inputFormat: \'time\', mode: \'time\', readonly: readonly, required: false}" />'
                                 +'</div>'
                            +'</div>';
-//            style: { \'background-color\': isFillColor1() ? \'#ffc0cb\' : \'gray\'} , 
             
-            this.flag = '<div  style="display: block" align="center" data-bind="css: !$data.' + param + '[' + idGetList + '].flagEnable() ? \'disableFlag\' : \'enableFlag\' , ntsCheckBox: {enable: $data.' + param + '[' + idGetList + '].flagEnable, checked: $data.' + param + '[' + idGetList + '].flagObservable}"></div>';
-           
+//            this.flag = '<div  style="display: block" align="center" data-bind="css: !$data.' + param + '[' + idGetList + '].flagEnable ? \'disableFlag\' : \'enableFlag\' , ntsCheckBox: {enable: $data.' + param + '[' + idGetList + '].flagEnable, checked: $data.' + param + '[' + idGetList + '].flagObservable}"></div>';
+              this.flag = '<div data-bind="ntsCheckBox: {enable: enable1}"></div>';
         }
     }
     
