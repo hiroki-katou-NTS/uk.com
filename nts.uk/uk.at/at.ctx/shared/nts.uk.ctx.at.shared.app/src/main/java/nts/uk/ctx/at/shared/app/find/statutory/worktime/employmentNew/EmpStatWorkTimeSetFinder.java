@@ -12,18 +12,15 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.statutory.worktime.employmentNew.EmpStatWorkTimeSetDto.EmpStatWorkTimeSetDtoBuilder;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpDeforLaborSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpDeforLaborSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeEmp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeEmpRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeEmp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeEmpRepo;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -32,25 +29,16 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class EmpStatWorkTimeSetFinder {
 
-	/** The normal setting repository. */
+	/** The trans labor time repository. */
 	@Inject
-	private EmpNormalSettingRepository normalSettingRepository;
+	private DeforLaborTimeEmpRepo transLaborTimeRepository;
 
-	/** The flex setting repository. */
+	/** The regular labor time repository. */
 	@Inject
-	private EmpFlexSettingRepository flexSettingRepository;
+	private RegularLaborTimeEmpRepo regularLaborTimeRepository;
 
-	/** The defor labor setting repository. */
 	@Inject
-	private EmpDeforLaborSettingRepository deforLaborSettingRepository;
-
-	/** The trans work time repository. */
-	@Inject
-	private EmpTransWorkTimeRepository transWorkTimeRepository;
-
-	/** The regular work time repository. */
-	@Inject
-	private EmpRegularWorkTimeRepository regularWorkTimeRepository;
+	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
 
 	/**
 	 * Gets the details.
@@ -69,30 +57,29 @@ public class EmpStatWorkTimeSetFinder {
 		dtoBuilder.year(year);
 		dtoBuilder.employmentCode(emplCode);
 
-		Optional<EmpNormalSetting> optEmpNormalSet = this.normalSettingRepository.find(companyId, emplCode, year);
-		if (optEmpNormalSet.isPresent()) {
-			dtoBuilder.normalSetting(EmpNormalSettingDto.fromDomain(optEmpNormalSet.get()));
-		}
-
-		Optional<EmpFlexSetting> optEmpFlexSet = this.flexSettingRepository.find(companyId, emplCode, year);
-		if (optEmpFlexSet.isPresent()) {
-			dtoBuilder.flexSetting(EmpFlexSettingDto.fromDomain(optEmpFlexSet.get()));
-		}
-
-		Optional<EmpDeforLaborSetting> optEmpDeforLaborSet = this.deforLaborSettingRepository.find(companyId, emplCode,
-				year);
-		if (optEmpDeforLaborSet.isPresent()) {
-			dtoBuilder.deforLaborSetting(EmpDeforLaborSettingDto.fromDomain(optEmpDeforLaborSet.get()));
-		}
-
-		Optional<EmpTransLaborTime> optTransLaborTime = this.transWorkTimeRepository.find(companyId, emplCode);
+		Optional<DeforLaborTimeEmp> optTransLaborTime = this.transLaborTimeRepository.find(companyId, emplCode);
 		if (optTransLaborTime.isPresent()) {
-			dtoBuilder.transLaborTime(WorkingTimeSettingDto.fromDomain(optTransLaborTime.get().getWorkingTimeSet()));
+			dtoBuilder.transLaborTime(WorkingTimeSettingDto.fromDomain(optTransLaborTime.get()));
 		}
 
-		Optional<EmpRegularLaborTime> optEmpRegular = this.regularWorkTimeRepository.findById(companyId, emplCode);
-		if (optEmpRegular.isPresent()) {
-			dtoBuilder.regularLaborTime(WorkingTimeSettingDto.fromDomain(optEmpRegular.get().getWorkingTimeSet()));
+		Optional<RegularLaborTimeEmp> optComRegular = this.regularLaborTimeRepository.findById(companyId, emplCode);
+		if (optComRegular.isPresent()) {
+			dtoBuilder.regularLaborTime(WorkingTimeSettingDto.fromDomain(optComRegular.get()));
+		}
+
+		val regularSet = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.REGULAR_LABOR, year);
+		if (!regularSet.isEmpty()) {
+			dtoBuilder.normalSetting(EmpNormalSettingDto.with(companyId, emplCode, year, regularSet));
+		}
+		
+		val flexSet = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.FLEX, year);
+		if (!flexSet.isEmpty()) {
+			dtoBuilder.flexSetting(EmpFlexSettingDto.with(companyId, emplCode, year, flexSet));
+		}
+
+		val deforSet = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.DEFOR_LABOR, year);
+		if (!deforSet.isEmpty()) {
+			dtoBuilder.deforLaborSetting(EmpDeforLaborSettingDto.with(year, companyId, emplCode, deforSet));
 		}
 
 		return dtoBuilder.build();
@@ -104,21 +91,21 @@ public class EmpStatWorkTimeSetFinder {
 	 * @return the list
 	 */
 	public List<EmpRegularWorkHourDto> findAllEmpRegWorkHour() {
-
 		// get company id
-		String companyId = AppContexts.user().companyId();
-		List<EmpRegularWorkHourDto> listEmpRegWorkHourDto = new ArrayList<>();
-
-		// get list employment regular labor time
-		List<EmpRegularLaborTime> listEmpRegLaborTime = this.regularWorkTimeRepository.findListByCid(companyId);
-
+		String companyId = AppContexts.user().companyId();		
+		List<EmpRegularWorkHourDto> listShainRegWorkHourDto = new ArrayList<>();
+		
+		// get list employee regular labor time
+		List<RegularLaborTimeEmp> listShainRegLaborTime = this.regularLaborTimeRepository.findListByCid(companyId);
+		
 		// check list is not empty
-		if (!listEmpRegLaborTime.isEmpty()) {
-			listEmpRegWorkHourDto = listEmpRegLaborTime.stream().map(domain -> EmpRegularWorkHourDto.fromDomain(domain))
-					.collect(Collectors.toList());
+		if(!listShainRegLaborTime.isEmpty()){			
+			listShainRegWorkHourDto = listShainRegLaborTime.stream().map(domain -> 
+			EmpRegularWorkHourDto.fromDomain(domain))
+			.collect(Collectors.toList());
 		}
-
-		return listEmpRegWorkHourDto;
+		
+		return listShainRegWorkHourDto;
 	}
 
 }

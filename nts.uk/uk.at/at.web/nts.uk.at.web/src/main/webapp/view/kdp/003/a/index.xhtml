@@ -29,9 +29,9 @@
 				<div class="control-panel" data-bind="
 							if: ko.unwrap($vm.message) !== undefined,
 							css: {
-								'has-time-sheet': ko.unwrap($vm.employeeData.employeeAuthcUseArt) === true
+								'has-time-sheet': ko.unwrap($vm.employeeData.nameSelectArt) === true
 							}">
-					<div class="time-sheet" data-bind="if: ko.toJS($vm.message) === null &amp;&amp; ko.unwrap($vm.employeeData.employeeAuthcUseArt) === true">
+					<div class="time-sheet" data-bind="if: ko.toJS($vm.message) === null &amp;&amp; ko.unwrap($vm.employeeData.nameSelectArt) === true">
 						<div data-bind="stamp-employee-selection: employeeData"></div>
 					</div>
 					<div id="stamp-input" class="time-stamp">

@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeSetDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
@@ -52,6 +54,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -84,8 +87,6 @@ public class HolidayShipmentScreenBFinder {
 	@Inject
 	private RequestSettingRepository reqSetRepo;
 	@Inject
-	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
-	@Inject
 	private WithDrawalReqSetRepository withDrawRepo;
 	@Inject
 	private WorkTimeSettingRepository wkTimeSetRepo;
@@ -94,6 +95,8 @@ public class HolidayShipmentScreenBFinder {
 	
 	@Inject
 	private HolidayShipmentService holidayShipmentService;
+	@Inject
+	private RemainNumberTempRequireService requireService;
 
 	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
@@ -103,6 +106,9 @@ public class HolidayShipmentScreenBFinder {
 	 * @param applicationID
 	 */
 	public HolidayShipmentDto findByID(String applicationID) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+		
 		HolidayShipmentDto screenInfo = new HolidayShipmentDto();
 		String companyID = AppContexts.user().companyId();
 		String enteredEmployeeID = AppContexts.user().employeeId();
@@ -178,7 +184,8 @@ public class HolidayShipmentScreenBFinder {
 				aFinder.commonProcessAtStartup(companyID, employeeID, refDate, recAppDate, recWorkTypeCD, recWorkTimeCD,
 						absAppDate, absWorkTypeCD, absWorkTimeCD, screenInfo, appCommonSettingOutput);
 				//[No.506]振休残数を取得する
-				double absRecMng = absRertMngInPeriod.getAbsRecMngRemain(employeeID, GeneralDate.today()).getRemainDays();
+				double absRecMng = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(require, cacheCarrier,
+											employeeID, GeneralDate.today()).getRemainDays();
 				screenInfo.setAbsRecMng(absRecMng);
 			}
 		}
@@ -325,6 +332,9 @@ public class HolidayShipmentScreenBFinder {
 	
 	// 1.振休振出申請（詳細）起動処理
 	public DisplayInforWhenStarting startPageBRefactor(String applicationID) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+		
 		DisplayInforWhenStarting result = new DisplayInforWhenStarting();
 		String companyID = AppContexts.user().companyId();
 		
@@ -389,7 +399,8 @@ public class HolidayShipmentScreenBFinder {
 		
 		if(application.isPresent()) {
 			//[No.506]振休残数を取得する(Lấy số ngày nghỉ bù còn lại)
-			AbsRecRemainMngOfInPeriod absRecMngRemain = absRertMngInPeriod.getAbsRecMngRemain(application.get().getEmployeeID(), GeneralDate.today());
+			AbsRecRemainMngOfInPeriod absRecMngRemain = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(require, cacheCarrier, 
+					application.get().getEmployeeID(), GeneralDate.today());
 			
 			//一番近い期限日を取得する
 			result.setRemainingHolidayInfor(new RemainingHolidayInfor(absRecMngRemain));

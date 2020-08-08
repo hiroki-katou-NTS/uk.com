@@ -198,7 +198,7 @@ module nts.uk.at.view.kdp.share {
 									buttons.push(btn);
 								} else {
 									buttons.push({
-										audioType: -1,
+										audioType: 0,
 										btnBackGroundColor: '',
 										btnDisplayType: -1,
 										btnName: '',

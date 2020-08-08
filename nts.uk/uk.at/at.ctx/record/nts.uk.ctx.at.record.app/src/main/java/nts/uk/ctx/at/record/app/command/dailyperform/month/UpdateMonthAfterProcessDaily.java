@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.record.app.service.dailycheck.CheckCalcMonthService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AggregateSpecifiedDailys;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -31,12 +33,15 @@ public class UpdateMonthAfterProcessDaily {
 
 	@Inject
 	private CheckCalcMonthService checkCalcMonthService;
-
-	@Inject
-	private AggregateSpecifiedDailys aggregateSpecifiedDailys;
+	
+	@Inject 
+	private RecordDomRequireService requireService;
 	
 	public List<IntegrationOfMonthly> updateMonth(List<DailyRecordWorkCommand> commandNew,
 			List<IntegrationOfDaily> domainDailyNew, Optional<IntegrationOfMonthly> monthlyWork, UpdateMonthDailyParam month) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier(); 
+		
 		String companyId = AppContexts.user().companyId();
 		List<IntegrationOfMonthly> result = new ArrayList<>();
 		if (!monthlyWork.isPresent()){
@@ -54,7 +59,7 @@ public class UpdateMonthAfterProcessDaily {
 						.filter(x -> x.getWorkInformation().getEmployeeId().equals(key)).collect(Collectors.toList());
 				needCalc.getRight().forEach(data -> {
 					//月の実績を集計する
-					aggregateSpecifiedDailys.algorithm(companyId, key,
+					AggregateSpecifiedDailys.algorithm(require, cacheCarrier, companyId, key,
 							data.getYearMonth(), data.getClosureId(), data.getClosureDate(), data.getPeriod(), Optional.empty(), domainDailyGroupEmp,
 							monthlyWork).ifPresent(monthDomain -> {
 								monthDomain.getAffiliationInfo().ifPresent(a -> a.setVersion(month.getVersion()));
@@ -75,7 +80,7 @@ public class UpdateMonthAfterProcessDaily {
 		} else if (monthlyWork.isPresent()) {
 			List<IntegrationOfDaily> domainDailyGroupEmp = commandNew.stream().map(x -> x.toDomain()).collect(Collectors.toList());
 			long time = System.currentTimeMillis();
-			Optional<IntegrationOfMonthly> monthDomainOpt = aggregateSpecifiedDailys.algorithm(companyId, month.getEmployeeId(),
+			Optional<IntegrationOfMonthly> monthDomainOpt = AggregateSpecifiedDailys.algorithm(require, cacheCarrier, companyId, month.getEmployeeId(),
 					new YearMonth(month.getYearMonth()), ClosureId.valueOf(month.getClosureId()), month.getClosureDate().toDomain(), month.getDatePeriod(), Optional.empty(), domainDailyGroupEmp,
 					monthlyWork);
 			if(monthDomainOpt.isPresent()) {
