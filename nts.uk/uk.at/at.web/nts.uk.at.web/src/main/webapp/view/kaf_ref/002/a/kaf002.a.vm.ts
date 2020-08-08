@@ -140,67 +140,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             
             self.loadGrid('#grid2', self.items3, 2);
             
-//            $("#grid2").ntsGrid({ 
-//                width: '100%',
-//                height: '360px',
-//                dataSource: self.items3.length >= 10 ? self.items3.slice(1, 3) : self.items3,
-//                primaryKey: 'id',
-//                virtualization: true,
-//                virtualizationMode: 'continuous',
-//                hidePrimaryKey: true,
-////                enter: 'right',
-//                columns: [
-//                    { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
-//                    { headerText: '', key: 'text1', dataType: 'string', width: '120px' }, 
-//                    { headerText: self.$i18n('KAF002_22'), key: 'combobox', dataType: 'string', width: '120px', ntsControl: 'Combobox' }, 
-//                    { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '100px' },
-//                    { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '100px', 
-////                        ntsControl: 'Combobox', tabIndex: 0 
-//                        },
-//                    { headerText: headerFlagContent2, key: 'flag', dataType: 'string', width: '100px'}
-//                    
-//                ], 
-//                features: [{ name: 'Resizing',
-//                                columnSettings: [{
-//                                    columnKey: 'id', allowResizing: true, minimumWidth: 30
-//                                }, {
-//                                    columnKey: 'flag', allowResizing: false, minimumWidth: 30
-//                                }, {
-//                                    columnKey: 'startTime', allowResizing: false, minimumWidth: 30
-//                                }, {
-//                                    columnKey: 'endTime', allowResizing: false, minimumWidth: 30
-//                                }
-//                                ] 
-//                            },
-//                            { 
-//                                name: 'Selection',
-//                                mode: 'row',
-//                                multipleSelection: true
-//                            }
-//                ],
-//                ntsFeatures: [
-//                    { name: 'CellState',
-//                        rowId: 'rowId',
-//                        columnKey: 'columnKey',
-//                        state: 'state',
-//                        states: statesTable2
-//                    }
-//                    ],
-//                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-////                                { name: 'SwitchButtons', options: [{ value: '1', text: 'Option 1' }, { value: '2', text: 'Option 2' }, { value: '3', text: 'Option 3' }], 
-////                                    optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true,
-////                                    distinction: { "503": ['1', '2'], "506": ["2", "3"], "600": ["1", "2"] }},
-//                                { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
-//                                { name: 'Button', text: 'Open', click: function() { alert("Button!!"); }, controlType: 'Button' },
-//                                { name: 'DeleteButton', text: 'Delete', controlType: 'DeleteButton', enable: true }]
-//                });
-//            if (self.items3.length >=10) {
-//                $('#grid2').append('<tr><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="3"><div style="display: block" align="center"><a style="background-color: white" data-bind="ntsLinkButton: { action: doSomething.bind($data, \'hoang\') }, text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
-//                
-//            }
-            
-            
-            
+  
 //            休憩           
             
             self.loadGrid('#grid3', self.items4, 3);
