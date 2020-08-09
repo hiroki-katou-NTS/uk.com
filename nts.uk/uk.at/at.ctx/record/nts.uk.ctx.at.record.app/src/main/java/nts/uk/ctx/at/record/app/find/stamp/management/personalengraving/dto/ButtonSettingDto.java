@@ -1,14 +1,11 @@
 package nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto;
 
-import java.util.Optional;
-
 import lombok.Data;
 import nts.uk.ctx.at.record.app.find.stamp.management.ButtonSettingsDto;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonDisSet;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonNameSet;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 
 /**
  * @author anhdt
@@ -45,19 +42,19 @@ public class ButtonSettingDto {
 		ButtonType btnType = btnSet.getButtonType();
 		this.btnReservationArt = btnType.getReservationArt().value;
 		
-		Optional<StampType> oStampType = btnType.getStampType();
-		if(oStampType.isPresent()) {
-			StampType stampType = oStampType.get();
-			this.changeHalfDay = stampType.isChangeHalfDay();
-			this.goOutArt = stampType.getGoOutArt().isPresent() ? stampType.getGoOutArt().get().value : null;
-			this.setPreClockArt = stampType.getSetPreClockArt() == null ? null : stampType.getSetPreClockArt().value;
-			this.changeClockArt = stampType.getChangeClockArt() == null ? null : stampType.getChangeClockArt().value;
-			this.changeCalArt = stampType.getChangeCalArt() == null ? null : stampType.getChangeCalArt().value;
-		}
+		btnType.getStampType().ifPresent(x->{
+			this.changeHalfDay = x.isChangeHalfDay();
+			this.goOutArt = x.getGoOutArt().isPresent() ? x.getGoOutArt().get().value : null;
+			this.setPreClockArt = x.getSetPreClockArt() == null ? null : x.getSetPreClockArt().value;
+			this.changeClockArt = x.getChangeClockArt() == null ? null : x.getChangeClockArt().value;
+			this.changeCalArt = x.getChangeCalArt() == null ? null : x.getChangeCalArt().value;
+		});
 		
 		this.usrArt = btnSet.getUsrArt().value;
 		this.audioType = btnSet.getAudioType().value;
-		this.btnDisplayType = ButtonSettingsDto.toButtonValueType(StampRecordDto.getCorrectTimeStampValue(changeHalfDay,
-				goOutArt, setPreClockArt, changeClockArt, changeCalArt));
+		this.btnDisplayType = changeHalfDay != null
+				? ButtonSettingsDto.toButtonValueType(StampRecordDto.getCorrectTimeStampValue(changeHalfDay, goOutArt,
+						setPreClockArt, changeClockArt, changeCalArt))
+				: -1;
 	}
 }

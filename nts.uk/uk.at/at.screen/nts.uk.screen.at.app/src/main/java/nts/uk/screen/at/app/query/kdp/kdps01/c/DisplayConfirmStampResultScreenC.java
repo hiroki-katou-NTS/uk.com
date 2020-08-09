@@ -25,7 +25,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ch
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.StatusActualDay;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.ConfirmStatusOfDayService;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
@@ -44,34 +43,34 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class DisplayConfirmStampResultScreenC {
-	
+
 	@Inject
 	private ClosureService closereSv;
-	
+
 	@Inject
 	private SyWorkplaceAdapter syWorkplaceAdapter;
-	
+
 	@Inject
 	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
-	
+
 	@Inject
 	private IGetDailyLock iGetDailyLock;
 
 	@Inject
 	private DisplayScreenStampingResultFinder stampingFinder;
-	
+
 	@Inject
 	private CompanyDailyItemService companyDailyItemService;
-	
+
 	@Inject
 	private DailyRecordWorkFinder fullFinder;
-	
+
 	@Inject
 	private WorkTypeRepository wkTypeRepo;
-	
+
 	@Inject
-	private  WorkTimeSettingRepository WorkTimeSettingRepo;
-	
+	private WorkTimeSettingRepository WorkTimeSettingRepo;
+
 	@Inject
 	private DailyAttendanceItemRepository DailyAttendanceItemRepo;
 
@@ -88,88 +87,93 @@ public class DisplayConfirmStampResultScreenC {
 	 * @return 勤務種類名 ←勤務種類.表示名
 	 * @return 就業時間帯名 ←就業時間帯の設定.表示名
 	 */
-	public DisplayConfirmStampResultScreenCDto getStampInfoResult(DatePeriod period,GeneralDate baseDate,List<Integer> attendanceItemIds) {
-		
+	public DisplayConfirmStampResultScreenCDto getStampInfoResult(DatePeriod period, GeneralDate baseDate,
+			List<Integer> attendanceItemIds) {
+
 		DisplayConfirmStampResultScreenCDto result = new DisplayConfirmStampResultScreenCDto();
-		
-		String companyId =  AppContexts.user().companyId();
-		
-		String sid =  AppContexts.user().employeeId();
-		//1 get*(期間)
-		
+
+		String companyId = AppContexts.user().companyId();
+
+		String sid = AppContexts.user().employeeId();
+		// 1 get*(期間) 打刻結果の打刻情報を取得する
+
 		List<DisplayScreenStampingResultDto> stampings = this.stampingFinder.getDisplay(period,
 				AppContexts.user().employeeId());
-		
-		//2 require, ログイン会社ID, ログイン社員ID, 年月日
-		
-		ConfirmStatusOfDayRequiredImpl required = new ConfirmStatusOfDayRequiredImpl(closereSv, syWorkplaceAdapter, confirmStatusActualDayChange, iGetDailyLock);
-		ConfirmStatusActualResult confirmResult= ConfirmStatusOfDayService.get(required,companyId, sid, baseDate);
-		//3 call ()
-		//アルゴリズム「会社の日次項目を取得する」を実行する
-		
+
+		result.setStampings(stampings);
+
+		// 2 require, ログイン会社ID, ログイン社員ID, 年月日
+		// 日の実績の確認状況を取得する
+
+		ConfirmStatusOfDayRequiredImpl required = new ConfirmStatusOfDayRequiredImpl(closereSv, syWorkplaceAdapter,
+				confirmStatusActualDayChange, iGetDailyLock);
+
+		result.setConfirmResult(ConfirmStatusActualResultDto
+				.fromDomain(ConfirmStatusOfDayService.get(required, companyId, sid, baseDate)));
+		// 3 call ()
+		// アルゴリズム「会社の日次項目を取得する」を実行する
+
 		List<AttItemName> dailyItems = companyDailyItemService.getDailyItems(companyId,
-				Optional.of(AppContexts.user().roles().forPersonnel()), attendanceItemIds, Collections.emptyList());
-		//4 call()
+				Optional.ofNullable(AppContexts.user().roles().forPersonnel()), attendanceItemIds,
+				Collections.emptyList());
+		// 4 call()
+		// アルゴリズム「指定した勤怠項目IDに対応する項目を返す」を実行する
 
 		DailyModifyResult dailyResult = AttendanceItemUtil
 				.toItemValues(this.fullFinder.find(Arrays.asList(sid), period),
-						dailyItems
-						.stream()
-						.map(x -> x.getAttendanceItemId())
-						.collect(Collectors.toList()))
-				.entrySet()
-				.stream()
-				.map(c -> DailyModifyResult.builder().items(c.getValue()).workingDate(c.getKey().workingDate()).employeeId(c.getKey().employeeId()).completed())
+						dailyItems.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList()))
+				.entrySet().stream().map(c -> DailyModifyResult.builder().items(c.getValue())
+						.workingDate(c.getKey().workingDate()).employeeId(c.getKey().employeeId()).completed())
 				.findFirst().orElse(null);
-		
-		List<ItemValue> itemValues = dailyResult != null ? dailyResult.getItems() : Collections.emptyList();
-		
-		//5 get 会社ID、コード 実績値.勤怠項目ID=28
-		
-		String workTypeCd = itemValues.stream()
-									.filter(x -> x.getItemId() == 28)
-									.findFirst()
-									.map(x -> x.getValue())
-									.orElse("");
-		
-		this.wkTypeRepo.findByPK(companyId, workTypeCd)
-				.ifPresent(x -> result.setWorkTypeName(x.getName() != null ? x.getName().v() : null));
-		
-		//6 get 会社ID、コード 実績値.勤怠項目ID＝29
-		
-		String workTimeCode = itemValues.stream()
-				.filter(x -> x.getItemId() == 29)
-				.findFirst()
-				.map(x -> x.getValue())
+
+		List<ItemValueDto> itemValues = dailyResult != null ? dailyResult.getItems().stream()
+				.map(x -> ItemValueDto.fromDomain(x, dailyResult.getDate())).collect(Collectors.toList())
+				: Collections.emptyList();
+
+		result.setItemValues(itemValues);
+
+		// 5 get 会社ID、コード 実績値.勤怠項目ID=28
+
+		String workTypeCd = itemValues.stream().filter(x -> x.getItemId() == 28).findFirst().map(x -> x.getValue())
 				.orElse("");
+
+		this.wkTypeRepo.findByPK(companyId, workTypeCd)
+				.ifPresent(x -> result.setWorkTypeName(x.getName() != null ? x.getName().v() : ""));
+
+		// 6 get 会社ID、コード 実績値.勤怠項目ID＝29
+
+		String workTimeCode = itemValues.stream().filter(x -> x.getItemId() == 29).findFirst().map(x -> x.getValue())
+				.orElse("");
+
 		this.WorkTimeSettingRepo.findByCodeAndAbolishCondition(companyId, workTimeCode, AbolishAtr.NOT_ABOLISH)
 				.ifPresent(x -> result.setWorkTimeName(
 						x.getWorkTimeDisplayName() != null ? x.getWorkTimeDisplayName().getWorkTimeName().v() : null));
-		
-		//7 <call>
-		
-		//this.DailyAttendanceItemRepo.findByAttendanceItemIdAndAtr(companyId, attendanceItemIds, dailyAttendanceAtr)
-		
-		
 
-		return null;
+		// 7 <call>
+
+		List<ItemDisplayedDto> attendanceItems = this.DailyAttendanceItemRepo.getListById(companyId, attendanceItemIds)
+				.stream().map(x -> ItemDisplayedDto.fromDomain(x)).collect(Collectors.toList());
+
+		result.setLstItemDisplayed(attendanceItems);
+
+		return result;
 	}
-	
+
 	@AllArgsConstructor
 	private class ConfirmStatusOfDayRequiredImpl implements ConfirmStatusOfDayService.Require {
-		
+
 		@Inject
 		private ClosureService closereSv;
-		
+
 		@Inject
 		private SyWorkplaceAdapter syWorkplaceAdapter;
-		
+
 		@Inject
 		private ConfirmStatusActualDayChange confirmStatusActualDayChange;
-		
+
 		@Inject
 		private IGetDailyLock iGetDailyLock;
-		
+
 		@Override
 		public Closure getClosureDataByEmployee(String employeeId, GeneralDate baseDate) {
 			return closereSv.getClosureDataByEmployee(employeeId, baseDate);
@@ -189,8 +193,9 @@ public class DisplayConfirmStampResultScreenC {
 		public List<ConfirmStatusActualResult> processConfirmStatus(String companyId, String empTarget,
 				List<String> employeeIds, Optional<DatePeriod> periodOpt, Optional<YearMonth> yearMonthOpt,
 				Optional<DailyLock> dailyLockOpt) {
-			return confirmStatusActualDayChange.processConfirmStatus(companyId, empTarget, employeeIds, periodOpt, yearMonthOpt, dailyLockOpt);
+			return confirmStatusActualDayChange.processConfirmStatus(companyId, empTarget, employeeIds, periodOpt,
+					yearMonthOpt, dailyLockOpt);
 		}
-		
+
 	}
 }

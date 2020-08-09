@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.SelfConfirmDay;
 
 /**
  * 
@@ -19,10 +20,15 @@ public class ConfirmDetailCommand {
 	/**
 	 * 年月日
 	 */
-	private GeneralDate ymd;
+	private String ymd;
 
 	/**
 	 * 本人確認状況
 	 */
-	private Boolean IdentityVerificationStatus;
+	private Boolean identityVerificationStatus;
+
+	public SelfConfirmDay toParam() {
+
+		return new SelfConfirmDay(GeneralDate.fromString(this.ymd, "yyyy/MM/dd"), this.identityVerificationStatus);
+	}
 }
