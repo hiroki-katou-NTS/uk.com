@@ -211,6 +211,11 @@ export module model {
         longitude: number;
 
     }
+
+    export interface IScreenCParam {
+        attendanceItemIds: Array<number>;
+    }
+
     export interface IScreenBParam {
         stampDate: Date;
         resultDisplayTime: number;
@@ -230,7 +235,7 @@ export module model {
         pname: string;
     }
 
-    interface IEmployeeStampInfo {
+    export interface IEmployeeStampInfo {
         /**
              * 社員ID
              */
@@ -290,5 +295,88 @@ export module model {
          * 打刻場所情報
          */
         locationInfor: IGeoCoordinate;
+    }
+
+    interface IDisplayConfirmStampResultScreenCDto {
+        /**
+             * ドメインモデル：社員の打刻情報
+             */
+        stampings: Array<any>;
+
+        /**
+         * 日の実績の確認状況
+         */
+        confirmResult: IConfirmStatusActualResultDto;
+        /**
+         * 表示可能項目＜勤怠項目ID、名称、属性、PrimitiveValue＞
+         */
+        lstItemDisplayed: Array<any>;
+
+        /**
+         * 実績値＜勤怠項目ID、値、年月日＞
+         */
+        itemValues: Array<any>;
+        /**
+         * 勤務種類名
+         */
+        workTypeName: string;
+
+        /**
+         * 就業時間帯名 ←就業時間帯の設定.表示名
+         */
+        workTimeName: string;
+
+    }
+
+    interface IConfirmStatusActualResultDto {
+
+        /**
+         * 対象社員
+         */
+        employeeId: string;
+
+        /**
+         * 対象年月日
+         */
+        date: Date;
+
+        /**
+         * 確認状態 or 承認状態
+         */
+        status: boolean;
+
+        /**
+         * 実施可否
+         */
+        permissionCheck: number;
+
+        /**
+         * 解除可否
+         */
+        permissionRelease: number;
+    }
+
+    export interface IRegisterVerifiDailyResultCommand {
+        /**
+         * 社員ID
+         */
+        employeeId : string;
+    
+        /**
+         * 本人確認内容
+         */
+        confirmDetails:Array<IConfirmDetailCommand>;
+    }
+
+    interface IConfirmDetailCommand {
+        /**
+         * 年月日
+         */
+	    ymd:Date;
+
+        /**
+         * 本人確認状況
+         */
+        IdentityVerificationStatus:Boolean;
     }
 }
