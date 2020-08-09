@@ -36,16 +36,18 @@ public class ButtonSettingsDto {
 		StampTypeDto stampType = buttonType.getStampType();
 		return new ButtonSettingsDto(domain.getButtonPositionNo().v(),
 				ButtonDisSetDto.fromDomain(domain.getButtonDisSet()), buttonType, domain.getUsrArt().value,
-				domain.getAudioType().value,
-				stampType == null ? -1
-						: toButtonValueType(StampRecordDto.getCorrectTimeStampValue(stampType.getChangeHalfDay(),
-								stampType.getGoOutArt(), stampType.getSetPreClockArt(), stampType.getChangeClockArt(),
-								stampType.getChangeCalArt())));
+				domain.getAudioType().value, toButtonValueType(stampType));
 
 	}
 
-	public static int toButtonValueType(int correctTimeStampValue) {
+	public static int toButtonValueType(StampTypeDto stampType) {
 
+		if (stampType == null) {
+			return -1;
+		}
+		int correctTimeStampValue = StampRecordDto.getCorrectTimeStampValue(stampType.getChangeHalfDay(),
+				stampType.getGoOutArt(), stampType.getSetPreClockArt(), stampType.getChangeClockArt(),
+				stampType.getChangeCalArt());
 		switch (EnumAdaptor.valueOf(correctTimeStampValue, ContentsStampType.class)) {
 		// 1 2 3 4 10 12 14 16 17 18
 		case WORK:

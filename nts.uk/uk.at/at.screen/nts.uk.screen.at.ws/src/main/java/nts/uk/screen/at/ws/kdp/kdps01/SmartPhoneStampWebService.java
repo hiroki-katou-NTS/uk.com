@@ -15,17 +15,17 @@ import nts.uk.ctx.at.record.app.command.kdp.kdps01.a.CheckCanUseSmartPhoneStampC
 import nts.uk.ctx.at.record.app.command.kdp.kdps01.a.CheckCanUseSmartPhoneStampResult;
 import nts.uk.ctx.at.record.app.command.kdp.kdps01.a.RegisterSmartPhoneStampCommand;
 import nts.uk.ctx.at.record.app.command.kdp.kdps01.a.RegisterSmartPhoneStampCommandHandler;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EmployeeStampInfo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampToSuppress;
 import nts.uk.screen.at.app.command.kdp.kdps01.c.RegisterVerifiDailyResultCommand;
 import nts.uk.screen.at.app.command.kdp.kdps01.c.RegisterVerifiDailyResultCommandHandler;
+import nts.uk.screen.at.app.query.kdp.kdp001.a.EmployeeStampInfoDto;
 import nts.uk.screen.at.app.query.kdp.kdps01.a.GetOmissionContent;
 import nts.uk.screen.at.app.query.kdp.kdps01.a.GetOmissionContentDto;
 import nts.uk.screen.at.app.query.kdp.kdps01.a.GetSettingSmartPhone;
 import nts.uk.screen.at.app.query.kdp.kdps01.a.SettingSmartPhoneDto;
 import nts.uk.screen.at.app.query.kdp.kdps01.a.SuppressingStampButton;
-import nts.uk.screen.at.app.query.kdp.kdps01.b.DisplayConfirmStampResultScreenBDto;
 import nts.uk.screen.at.app.query.kdp.kdps01.b.DisplayConfirmStampResultScreenB;
+import nts.uk.screen.at.app.query.kdp.kdps01.b.DisplayConfirmStampResultScreenBDto;
 import nts.uk.screen.at.app.query.kdp.kdps01.b.DisplayConfirmStampResultScreenBQuery;
 import nts.uk.screen.at.app.query.kdp.kdps01.c.DisplayConfirmStampResultScreenC;
 import nts.uk.screen.at.app.query.kdp.kdps01.c.DisplayConfirmStampResultScreenCDto;
@@ -156,7 +156,7 @@ public class SmartPhoneStampWebService extends WebService {
 	 */
 	@POST
 	@Path("display-history")
-	public List<EmployeeStampInfo> displayHistory(DisplayHistorySmartPhoneStampQuery query) {
+	public List<EmployeeStampInfoDto> displayHistory(DisplayHistorySmartPhoneStampQuery query) {
 		return this.displayHistorySmartPhoneStamp.displayHistorySmartPhoneStampList(query.getPeriod());
 	}
 

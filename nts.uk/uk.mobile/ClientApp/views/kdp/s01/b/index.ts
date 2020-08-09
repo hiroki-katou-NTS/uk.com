@@ -5,7 +5,7 @@ import { _, Vue, moment } from '@app/provider';
 const basePath = 'at/record/stamp/smart-phone/';
 
 const servicePath = {
-    getStampResult: basePath + 'get-stamp-result'
+    getStampResult: basePath + 'get-stamp-result-screen-b'
 };
 
 @component({
@@ -36,12 +36,12 @@ export class KdpS01BComponent extends Vue {
 
     public created() {
         let vm = this,
-
             command = {
                 startDate: moment(vm.params.stampDate ? vm.params.stampDate : vm.$dt.now).format('YYYY/MM/DD'),
                 endDate: moment(vm.params.stampDate ? vm.params.stampDate : vm.$dt.now).format('YYYY/MM/DD')
             };
 
+        vm.$mask('show');
         vm.$http.post('at', servicePath.getStampResult, command).then((result: any) => {
             vm.$mask('hide');
 
@@ -49,7 +49,8 @@ export class KdpS01BComponent extends Vue {
 
             if (data.empDatas) {
 
-                let item: model.IStampInfoDisp = _.head(_(data.empDatas).flatMap('listStampInfoDisp').sortBy('stampDatetime').value());
+                let items = _(data.empDatas).flatMap('listStampInfoDisp').value();
+                let item = _.head(_.orderBy(items, ['stampDatetime'], ['desc']));
                 if (item) {
                     vm.screenData.date = item.stampDatetime;
                     vm.screenData.stampAtr = item.stampAtr;
@@ -63,7 +64,7 @@ export class KdpS01BComponent extends Vue {
                 vm.$modal.error('Not Found Stamp Data');
             }
 
-            vm.screenData.localtion = data.workLocationCd + ' ' + data.workLocationName;
+            vm.screenData.localtion = [data.workLocationCd, data.workLocationName].join(' ');
             vm.$auth.user.then((user) => {
                 vm.screenData.employeeCode = user.employeeCode;
                 vm.screenData.employeeName = data.empInfo.pname;
@@ -108,4 +109,6 @@ interface IScreenData {
     stampCard: string;
     localtion: string;
 }
+
+
 

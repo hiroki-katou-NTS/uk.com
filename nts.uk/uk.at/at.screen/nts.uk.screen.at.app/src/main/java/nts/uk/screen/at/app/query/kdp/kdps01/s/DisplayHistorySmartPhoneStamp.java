@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.query.kdp.kdps01.s;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EmployeeStampInfo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetListStampEmployeeService;
+import nts.uk.screen.at.app.query.kdp.kdp001.a.EmployeeStampInfoDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -49,7 +51,7 @@ public class DisplayHistorySmartPhoneStamp {
 	 * 
 	 * ドメイン：社員の打刻情報
 	 */
-	public List<EmployeeStampInfo> displayHistorySmartPhoneStampList(DatePeriod period) {
+	public List<EmployeeStampInfoDto> displayHistorySmartPhoneStampList(DatePeriod period) {
 
 		List<EmployeeStampInfo> empDatas = new ArrayList<>();
 		EmpStampDataRequiredImpl empStampDataR = new EmpStampDataRequiredImpl(stampCardRepo, stampRecordRepo,
@@ -65,7 +67,7 @@ public class DisplayHistorySmartPhoneStamp {
 			}
 		}
 
-		return empDatas;
+		return empDatas.stream().map(x -> EmployeeStampInfoDto.fromDomain(x)).collect(Collectors.toList());
 	}
 
 	@AllArgsConstructor

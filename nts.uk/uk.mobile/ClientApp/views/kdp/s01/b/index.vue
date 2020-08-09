@@ -11,11 +11,11 @@
       <label>{{ "KDPS01_27" | i18n }}</label>
     </div>
     <div class="col-12 value">
-      <label class="col-7 px-1">{{ screenData.date| date("YYYY年 MM月 DD日（ddd）") }}</label>
+      <label class="col-7 px-1">{{ screenData.date | date("YYYY年 MM月 DD日（ddd）") }}</label>
       <label
         class="col-5 stamp-time font-weight-bold "
         style="line-height: 1rem;"
-        >{{ screenData.date| date("HH:MM")   }}</label
+        >{{ screenData.date | date("HH:MM")}}</label
       >
     </div>
 

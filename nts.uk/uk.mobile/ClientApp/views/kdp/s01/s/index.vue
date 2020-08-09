@@ -25,6 +25,7 @@
               <button
                 type="button"
                 class="col-12 btn btn-success btn-lg btn-block"
+                v-click:500="loadData"
               >
                 {{ "KDPS01_54" | i18n }}
               </button>
@@ -33,6 +34,19 @@
         </div>
       </div>
     </div>
+    <div class="mt-2 d-flex">
+      <div class="col-6 px-0">
+        <nts-label>{{ "KDPS01_55" | i18n }}</nts-label>
+      </div>
+      <div class="col-6 px-0">
+        <nts-dropdown showTitle="false" v-model="selectedValue">
+          <option v-for="item in dropdownList" :value="item.code">
+            {{ item.text | i18n }}
+          </option>
+        </nts-dropdown>
+      </div>
+    </div>
+
     <table class="table mt-3 table-bordered uk-table-striped">
       <thead>
         <tr>
@@ -42,11 +56,18 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in setting.items" v-bind:key="item.id">
-          <td>{{ item.date }}</td>
-          <td>{{ item.symbol }} {{ item.time }}</td>
-          <td v-bind:style="{ 'text-align': item.textAlign }">
-            {{ item.stampType }}
+        <tr v-for="item in getItems" v-bind:key="item.stampDatetime">
+          <td>{{ item.stampDatetime | date("D（ddd）") }}</td>
+          <td>
+            {{ getSymbol(item) | i18n }}
+            {{ item.stampDatetime | date("HH:MM") }}
+          </td>
+          <td
+            v-bind:style="{
+              'text-align': getTextAlign(item)
+            }"
+          >
+            {{ item.stampAtr }}
           </td>
         </tr>
       </tbody>
