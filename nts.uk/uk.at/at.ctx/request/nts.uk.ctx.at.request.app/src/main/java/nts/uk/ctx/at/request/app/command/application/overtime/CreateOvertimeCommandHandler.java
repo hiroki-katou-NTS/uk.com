@@ -8,13 +8,11 @@ import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.util.Strings;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingData;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
@@ -25,11 +23,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IFactoryOvertime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -59,29 +52,29 @@ public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<Creat
 		
 		OvertimeSettingData overtimeSettingData = command.getOvertimeSettingDataDto().toDomain();
 		
-		AppTypeDiscreteSetting appTypeDiscreteSetting = overtimeSettingData.appCommonSettingOutput.appTypeDiscreteSettings
-				.stream().filter(x -> x.getAppType()==ApplicationType.OVER_TIME_APPLICATION).findAny().get();
-		String appReason = Strings.EMPTY;	
-		String typicalReason = Strings.EMPTY;
-		String displayReason = Strings.EMPTY;
-		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg() == DisplayAtr.DISPLAY){
-			typicalReason += command.getAppReasonID();
-		}
-		if(appTypeDiscreteSetting.getDisplayReasonFlg() == AppDisplayAtr.DISPLAY){
-			if(Strings.isNotBlank(typicalReason)){
-				displayReason += System.lineSeparator();
-			}
-			displayReason += command.getApplicationReason();
-		}
-		ApplicationSetting applicationSetting = overtimeSettingData.appCommonSettingOutput.applicationSetting;
-		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg() == DisplayAtr.DISPLAY
-			||appTypeDiscreteSetting.getDisplayReasonFlg() == AppDisplayAtr.DISPLAY){
-			if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
-					&& Strings.isBlank(typicalReason+displayReason)) {
-				throw new BusinessException("Msg_115");
-			}
-		}
-		appReason = typicalReason + displayReason;
+//		AppTypeDiscreteSetting appTypeDiscreteSetting = overtimeSettingData.appCommonSettingOutput.appTypeDiscreteSettings
+//				.stream().filter(x -> x.getAppType()==ApplicationType.OVER_TIME_APPLICATION).findAny().get();
+//		String appReason = Strings.EMPTY;	
+//		String typicalReason = Strings.EMPTY;
+//		String displayReason = Strings.EMPTY;
+//		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg() == DisplayAtr.DISPLAY){
+//			typicalReason += command.getAppReasonID();
+//		}
+//		if(appTypeDiscreteSetting.getDisplayReasonFlg() == AppDisplayAtr.DISPLAY){
+//			if(Strings.isNotBlank(typicalReason)){
+//				displayReason += System.lineSeparator();
+//			}
+//			displayReason += command.getApplicationReason();
+//		}
+//		ApplicationSetting applicationSetting = overtimeSettingData.appCommonSettingOutput.applicationSetting;
+//		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg() == DisplayAtr.DISPLAY
+//			||appTypeDiscreteSetting.getDisplayReasonFlg() == AppDisplayAtr.DISPLAY){
+//			if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
+//					&& Strings.isBlank(typicalReason+displayReason)) {
+//				throw new BusinessException("Msg_115");
+//			}
+//		}
+//		appReason = typicalReason + displayReason;
 		
 		String divergenceReason = Strings.EMPTY;  
 		String divergenceReasonCombox = Strings.EMPTY;

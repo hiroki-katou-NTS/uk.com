@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.dom.application;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,9 +11,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRoo
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -30,8 +26,8 @@ public class RegisterMailSendCheckImpl implements RegisterMailSendCheck {
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
 
-	@Inject
-	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+//	@Inject
+//	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 
 	@Override
 	public ProcessResult sendMail(Application application) {
@@ -43,14 +39,14 @@ public class RegisterMailSendCheckImpl implements RegisterMailSendCheck {
 		List<String> autoFailServer = new ArrayList<>(); 
 		List<String> destinationList = new ArrayList<>();
 		// ドメインモデル「申請種類別設定」．新規登録時に自動でメールを送信するをチェックする
-		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value);
-		if(!appTypeDiscreteSettingOp.isPresent()) {
-			throw new RuntimeException("Not found AppTypeDiscreteSetting in table KRQST_APP_TYPE_DISCRETE, appType =" + application.getAppType().value);
-		}
-		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
-		if(appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.NOTCAN)){
-			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, application.getAppID(),"");
-		}
+//		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value);
+//		if(!appTypeDiscreteSettingOp.isPresent()) {
+//			throw new RuntimeException("Not found AppTypeDiscreteSetting in table KRQST_APP_TYPE_DISCRETE, appType =" + application.getAppType().value);
+//		}
+//		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
+//		if(appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.NOTCAN)){
+//			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, application.getAppID(),"");
+//		}
 		isAutoSendMail = true;
 		// アルゴリズム「送信先リストの取得」を実行する
 		destinationList = approvalRootStateAdapter.getNextApprovalPhaseStateMailList(

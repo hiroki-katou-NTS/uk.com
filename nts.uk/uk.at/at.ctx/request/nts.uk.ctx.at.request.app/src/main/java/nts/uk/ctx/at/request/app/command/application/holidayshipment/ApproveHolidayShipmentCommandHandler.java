@@ -1,18 +1,14 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterApproval;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
@@ -20,12 +16,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -40,8 +31,8 @@ public class ApproveHolidayShipmentCommandHandler
 	@Inject
 	ApplicationSettingRepository applicationSettingRepository;
 	
-	@Inject
-	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+//	@Inject
+//	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 	
 	@Inject
 	private InitMode initMode;
@@ -62,43 +53,43 @@ public class ApproveHolidayShipmentCommandHandler
 		String appReason = Strings.EMPTY;
 		boolean isUpdateReason = false;
 		if(outputMode==OutputMode.EDITMODE){
-			AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
-					companyID, 
-					ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value).get();
-				
-			String typicalReason = Strings.EMPTY;
-			String displayReason = Strings.EMPTY;
-			if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)){
-				typicalReason += context.getCommand().getComboBoxReason();
-			}
-			if(appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
-				if(Strings.isNotBlank(typicalReason)){
-					displayReason += System.lineSeparator();
-				}
-				displayReason += context.getCommand().getTextAreaReason();
-			} else {
-				if(Strings.isBlank(typicalReason)){
-					boolean isApprovalRec = command.getRecAppID() != null;
-					boolean isApprovalAbs = command.getAbsAppID() != null;
-					if (isApprovalRec) {
-						displayReason = applicationRepository.findByID(companyID, command.getRecAppID()).get().getOpAppReason().get().v();
-					}
-					if (isApprovalAbs) {
-						displayReason = applicationRepository.findByID(companyID, command.getAbsAppID()).get().getOpAppReason().get().v();
-					}
-				}
-			}
-			Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository.getApplicationSettingByComID(companyID);
-			ApplicationSetting applicationSetting = applicationSettingOp.get();
-			if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)
-				||appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
-				if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
-						&& Strings.isBlank(typicalReason+displayReason)) {
-					throw new BusinessException("Msg_115");
-				}
-				appReason = typicalReason + displayReason;
-				isUpdateReason = true;
-			}
+//			AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
+//					companyID, 
+//					ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value).get();
+//				
+//			String typicalReason = Strings.EMPTY;
+//			String displayReason = Strings.EMPTY;
+//			if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)){
+//				typicalReason += context.getCommand().getComboBoxReason();
+//			}
+//			if(appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
+//				if(Strings.isNotBlank(typicalReason)){
+//					displayReason += System.lineSeparator();
+//				}
+//				displayReason += context.getCommand().getTextAreaReason();
+//			} else {
+//				if(Strings.isBlank(typicalReason)){
+//					boolean isApprovalRec = command.getRecAppID() != null;
+//					boolean isApprovalAbs = command.getAbsAppID() != null;
+//					if (isApprovalRec) {
+//						displayReason = applicationRepository.findByID(companyID, command.getRecAppID()).get().getOpAppReason().get().v();
+//					}
+//					if (isApprovalAbs) {
+//						displayReason = applicationRepository.findByID(companyID, command.getAbsAppID()).get().getOpAppReason().get().v();
+//					}
+//				}
+//			}
+//			Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository.getApplicationSettingByComID(companyID);
+//			ApplicationSetting applicationSetting = applicationSettingOp.get();
+//			if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)
+//				||appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
+//				if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
+//						&& Strings.isBlank(typicalReason+displayReason)) {
+//					throw new BusinessException("Msg_115");
+//				}
+//				appReason = typicalReason + displayReason;
+//				isUpdateReason = true;
+//			}
 		}
 		
 		// アルゴリズム「振休振出申請の承認」を実行する

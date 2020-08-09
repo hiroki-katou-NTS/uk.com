@@ -62,8 +62,6 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.over
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReasonRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
@@ -120,8 +118,8 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	@Inject
 	private DivergenceReasonRepository diReasonRepository;
 
-	@Inject
-	private AppTypeDiscreteSettingRepository discreteRepo;
+//	@Inject
+//	private AppTypeDiscreteSettingRepository discreteRepo;
 
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
@@ -303,12 +301,12 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		if (displayPrePostFlg == AppDisplayAtr.DISPLAY) {
 			result.setDisplayPrePostFlg(AppDisplayAtr.DISPLAY.value);
 			// ドメインモデル「申請種類別設定」.事前事後区分の初期表示
-			Optional<AppTypeDiscreteSetting> discreteSetting = discreteRepo
-					.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
-			if (discreteSetting.isPresent()) {
-				result.setPrePostAtr(discreteSetting.get().getPrePostInitFlg().value);
-				result.setPrePostCanChangeFlg(discreteSetting.get().getPrePostCanChangeFlg().value == 1 ? true : false);
-			}
+//			Optional<AppTypeDiscreteSetting> discreteSetting = discreteRepo
+//					.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
+//			if (discreteSetting.isPresent()) {
+//				result.setPrePostAtr(discreteSetting.get().getPrePostInitFlg().value);
+//				result.setPrePostCanChangeFlg(discreteSetting.get().getPrePostCanChangeFlg().value == 1 ? true : false);
+//			}
 		} else {
 			// 事前事後区分表示を非表示
 			result.setDisplayPrePostFlg(AppDisplayAtr.NOTDISPLAY.value);

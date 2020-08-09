@@ -6,13 +6,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -20,11 +17,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.IFactoryHolidayWork;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
@@ -44,8 +37,8 @@ public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<Cr
 	@Inject
 	ApplicationSettingRepository applicationSettingRepository;
 	
-	@Inject
-	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+//	@Inject
+//	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 	
 	/**
 	 * 2.休出申請（新規）登録処理
@@ -59,22 +52,22 @@ public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<Cr
 		// 申請ID
 		String appID = IdentifierUtil.randomUniqueId();
 		
-		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
-				companyId, 
-				ApplicationType.HOLIDAY_WORK_APPLICATION.value).get();
-		String appReason = Strings.EMPTY;	
-		String typicalReason = Strings.EMPTY;
-		String displayReason = Strings.EMPTY;
-		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(DisplayAtr.DISPLAY)){
-			typicalReason += command.getAppReasonID();
-		}
-		if(appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
-			if(Strings.isNotBlank(typicalReason)){
-				displayReason += System.lineSeparator();
-			}
-			displayReason += command.getApplicationReason();
-		}
-		appReason = typicalReason + displayReason;
+//		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
+//				companyId, 
+//				ApplicationType.HOLIDAY_WORK_APPLICATION.value).get();
+//		String appReason = Strings.EMPTY;	
+//		String typicalReason = Strings.EMPTY;
+//		String displayReason = Strings.EMPTY;
+//		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(DisplayAtr.DISPLAY)){
+//			typicalReason += command.getAppReasonID();
+//		}
+//		if(appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
+//			if(Strings.isNotBlank(typicalReason)){
+//				displayReason += System.lineSeparator();
+//			}
+//			displayReason += command.getApplicationReason();
+//		}
+//		appReason = typicalReason + displayReason;
 
 		// Create Application
 //		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),

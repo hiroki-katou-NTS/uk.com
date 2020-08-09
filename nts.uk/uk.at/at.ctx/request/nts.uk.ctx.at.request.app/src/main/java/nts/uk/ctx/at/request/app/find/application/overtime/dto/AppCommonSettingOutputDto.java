@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.app.find.application.overtime.dto;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,7 +34,7 @@ public class AppCommonSettingOutputDto {
 		appCommonSettingOutput.generalDate = GeneralDate.fromString(generalDate, "yyyy/MM/dd");
 		appCommonSettingOutput.applicationSetting = applicationSetting.toDomain();
 		// appCommonSettingOutput.approvalFunctionSetting = ApprovalFunctionSettingDto.createFromJavaType(approvalFunctionSetting);
-		appCommonSettingOutput.appTypeDiscreteSettings = appTypeDiscreteSettings.stream().map(x -> x.toDomain()).collect(Collectors.toList());
+		// appCommonSettingOutput.appTypeDiscreteSettings = appTypeDiscreteSettings.stream().map(x -> x.toDomain()).collect(Collectors.toList());
 //		appCommonSettingOutput.applicationDeadlines = applicationDeadlines.stream()
 //				.map(x -> ApplicationDeadline.createSimpleFromJavaType(x.companyId, x.closureId, x.userAtr, x.deadline, x.deadlineCriteria)).collect(Collectors.toList());
 		appCommonSettingOutput.appEmploymentWorkType = appEmploymentWorkType == null ? Optional.empty() : appEmploymentWorkType.toDomainOptional();

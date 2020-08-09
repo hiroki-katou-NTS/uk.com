@@ -8,14 +8,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.DailyAttendanceItemAdapter;
@@ -24,10 +20,6 @@ import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetti
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting_Old;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -56,8 +48,8 @@ public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 	@Inject
 	private ApplicationRepository applicationRepository;
 	
-	@Inject
-	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+//	@Inject
+//	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 	
 	@Inject
 	private DailyAttendanceItemAdapter dailyAttendanceItemAdapter;
@@ -82,16 +74,16 @@ public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 		 ※詳細はアルゴリズム参照*/
 		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository.getApplicationSettingByComID(companyID);
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
-		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
-				companyID, 
-				ApplicationType.STAMP_APPLICATION.value).get();
-		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)
-				||appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
-			if(applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)&&
-					Strings.isEmpty(appStamp.getApplication().getOpAppReason().get().v())){
-						throw new BusinessException("Msg_115");
-			}
-		}
+//		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
+//				companyID, 
+//				ApplicationType.STAMP_APPLICATION.value).get();
+//		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)
+//				||appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
+//			if(applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)&&
+//					Strings.isEmpty(appStamp.getApplication().getOpAppReason().get().v())){
+//						throw new BusinessException("Msg_115");
+//			}
+//		}
 		StampRequestSetting_Old stampRequestSetting = stampRequestSettingRepository.findByCompanyID(companyID).get();
 		appStamp.customValidate(stampRequestSetting.getStampPlaceDisp());
 	}

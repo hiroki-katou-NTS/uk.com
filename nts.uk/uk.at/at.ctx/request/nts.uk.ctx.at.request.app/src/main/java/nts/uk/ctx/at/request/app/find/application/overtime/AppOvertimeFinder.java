@@ -48,7 +48,6 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.FlexExcessUseSetAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -83,8 +82,8 @@ public class AppOvertimeFinder {
 	@Inject
 	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
 	
-	@Inject
-	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+//	@Inject
+//	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 	
 	@Inject
 	private OvertimeWorkFrameRepository overtimeFrameRepository;

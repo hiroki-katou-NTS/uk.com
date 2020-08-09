@@ -9,7 +9,6 @@ import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyRegisterService;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 
 @Stateless
 @Transactional
@@ -20,8 +19,8 @@ public class InsertGoBackDirectlyCommandHandler_Old extends CommandHandlerWithRe
 	@Inject
 	ApplicationSettingRepository applicationSettingRepository;
 	
-	@Inject
-	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+//	@Inject
+//	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 	@Inject
 	private IFactoryApplication iFactoryApplication;
 	

@@ -799,12 +799,12 @@ public class HolidayShipmentScreenAFinder {
 
 		result.setManualSendMailAtr(
 				appCommonSettingOutput.applicationSetting.getManualSendMailAtr().value == 1 ? true : false);
-		result.setSendMailWhenApprovalFlg(
-				appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenApprovalFlg().value == 1 ? true
-						: false);
-		result.setSendMailWhenRegisterFlg(
-				appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenRegisterFlg().value == 1 ? true
-						: false);
+//		result.setSendMailWhenApprovalFlg(
+//				appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenApprovalFlg().value == 1 ? true
+//						: false);
+//		result.setSendMailWhenRegisterFlg(
+//				appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenRegisterFlg().value == 1 ? true
+//						: false);
 		startupErrorCheck(employeeID, baseDate, companyID);
 
 		return result;

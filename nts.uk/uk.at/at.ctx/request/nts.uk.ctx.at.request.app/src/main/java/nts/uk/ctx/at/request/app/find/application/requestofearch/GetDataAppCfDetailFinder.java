@@ -13,15 +13,14 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.busin
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class GetDataAppCfDetailFinder {
 
-	@Inject
-	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepo;
+//	@Inject
+//	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepo;
 
 	@Inject
 	private nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;

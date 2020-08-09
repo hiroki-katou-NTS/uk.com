@@ -6,8 +6,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import org.apache.logging.log4j.util.Strings;
-
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
@@ -19,10 +17,6 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 
 @Stateless
 @Transactional
@@ -52,8 +46,8 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 	@Inject
 	private ApplicationApprovalService appRepository;
 	
-	@Inject
-	private AppTypeDiscreteSettingRepository appTypeSetRepo;
+//	@Inject
+//	private AppTypeDiscreteSettingRepository appTypeSetRepo;
 	@Override
 	public boolean isExist(String companyID, String appID) {
 		// TODO Auto-generated method stub
@@ -113,16 +107,16 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		lateOrLeaveEarlyRepository.add(lateOrLeaveEarly);
 		//applicationRepository_New.insert(lateOrLeaveEarly.getApplication());
 	}
-	private boolean isReasonTextFieldDisplay(AppTypeDiscreteSetting appTypeSet) {
-
-		return appTypeSet.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY);
-
-	}
-
-	private boolean isComboBoxReasonDisplay(AppTypeDiscreteSetting appTypeSet) {
-		return appTypeSet.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY);
-
-	}
+//	private boolean isReasonTextFieldDisplay(AppTypeDiscreteSetting appTypeSet) {
+//
+//		return appTypeSet.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY);
+//
+//	}
+//
+//	private boolean isComboBoxReasonDisplay(AppTypeDiscreteSetting appTypeSet) {
+//		return appTypeSet.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY);
+//
+//	}
 
 	@Override
 	public void updateLateOrLeaveEarly(LateOrLeaveEarly lateOrLeaveEarly) {
@@ -150,16 +144,16 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		ApplicationType appType= ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION;
 		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
 				.getApplicationSettingByComID(companyID);
-		ApplicationSetting applicationSetting = applicationSettingOp.get();
-		AppTypeDiscreteSetting appTypeSet = appTypeSetRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value)
-				.get();
-		boolean isAllReasonControlDisplay = isComboBoxReasonDisplay(appTypeSet) && isReasonTextFieldDisplay(appTypeSet);
-		
-		boolean isReasonBlankWhenRequired = applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
-				&& Strings.isBlank(reason);
-		if (isReasonBlankWhenRequired && isAllReasonControlDisplay) {
-			throw new BusinessException("Msg_115");
-		}
+//		ApplicationSetting applicationSetting = applicationSettingOp.get();
+//		AppTypeDiscreteSetting appTypeSet = appTypeSetRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value)
+//				.get();
+//		boolean isAllReasonControlDisplay = isComboBoxReasonDisplay(appTypeSet) && isReasonTextFieldDisplay(appTypeSet);
+//		
+//		boolean isReasonBlankWhenRequired = applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
+//				&& Strings.isBlank(reason);
+//		if (isReasonBlankWhenRequired && isAllReasonControlDisplay) {
+//			throw new BusinessException("Msg_115");
+//		}
 	}
 
 	@Override

@@ -4,7 +4,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -15,7 +14,6 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
@@ -40,10 +38,6 @@ import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.applimitset.AppLimitSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.ReceptionRestrictionSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.AllowAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 
@@ -61,8 +55,8 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithmService;
 	
-	@Inject
-	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+//	@Inject
+//	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 	
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
@@ -253,44 +247,44 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 		GeneralDate systemDate = GeneralDate.today();
 		
 		// キャッシュから取得
-		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
-		if(!appTypeDiscreteSettingOp.isPresent()) {
-			throw new RuntimeException("Not found AppTypeDiscreteSetting in table KRQST_APP_TYPE_DISCRETE, appType =" +  appType);
-		}
-		Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
-		List<ReceptionRestrictionSetting> receptionRestrictionSetting = new ArrayList<>();
-		if(requestSetting.isPresent()){
-			receptionRestrictionSetting = requestSetting.get().getApplicationSetting().getListReceptionRestrictionSetting().stream().filter(x -> x.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)).collect(Collectors.toList());
-		}
-		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
-		
-		// 事前事後区分(input)をチェックする
-		if(postAtr.equals(PrePostAtr.POSTERIOR)){
-			// ドメインモデル「事後の受付制限」．未来日許可しないをチェックする
-			if (!appTypeDiscreteSetting.getRetrictPostAllowFutureFlg().equals(AllowAtr.ALLOW)) {
-				return;
-			}
-			// 未来日の事後申請かチェックする
-			if (startDate.after(systemDate) || endDate.after(systemDate)) {
-				throw new BusinessException("Msg_328");
-			} 
-		} else {
-			// ドメインモデル「事前の受付制限」．利用区分をチェックする
-			if(appTypeDiscreteSetting.getRetrictPreUseFlg().equals(UseAtr.NOTUSE)){
-				return;
-			}
-			// 申請する開始日(input)から申請する終了日(input)までループする
-			boolean hasError = false;
-			for(int i = 0; startDate.compareTo(endDate) + i <= 0; i++){
-				// 対象日が申請可能かを判定する
-				// error EA refactor 4
-				// hasError = applyPossibleCheck.check(appType, startDate, overtimeAppAtr, appTypeDiscreteSetting, i, receptionRestrictionSetting);
-				if (hasError == true) {
-					throw new BusinessException("Msg_327", startDate.addDays(i).toString(DATE_FORMAT));
-				}
-			}
-		
-		}
+//		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
+//		if(!appTypeDiscreteSettingOp.isPresent()) {
+//			throw new RuntimeException("Not found AppTypeDiscreteSetting in table KRQST_APP_TYPE_DISCRETE, appType =" +  appType);
+//		}
+//		Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
+//		List<ReceptionRestrictionSetting> receptionRestrictionSetting = new ArrayList<>();
+//		if(requestSetting.isPresent()){
+//			receptionRestrictionSetting = requestSetting.get().getApplicationSetting().getListReceptionRestrictionSetting().stream().filter(x -> x.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)).collect(Collectors.toList());
+//		}
+//		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
+//		
+//		// 事前事後区分(input)をチェックする
+//		if(postAtr.equals(PrePostAtr.POSTERIOR)){
+//			// ドメインモデル「事後の受付制限」．未来日許可しないをチェックする
+//			if (!appTypeDiscreteSetting.getRetrictPostAllowFutureFlg().equals(AllowAtr.ALLOW)) {
+//				return;
+//			}
+//			// 未来日の事後申請かチェックする
+//			if (startDate.after(systemDate) || endDate.after(systemDate)) {
+//				throw new BusinessException("Msg_328");
+//			} 
+//		} else {
+//			// ドメインモデル「事前の受付制限」．利用区分をチェックする
+//			if(appTypeDiscreteSetting.getRetrictPreUseFlg().equals(UseAtr.NOTUSE)){
+//				return;
+//			}
+//			// 申請する開始日(input)から申請する終了日(input)までループする
+//			boolean hasError = false;
+//			for(int i = 0; startDate.compareTo(endDate) + i <= 0; i++){
+//				// 対象日が申請可能かを判定する
+//				// error EA refactor 4
+//				// hasError = applyPossibleCheck.check(appType, startDate, overtimeAppAtr, appTypeDiscreteSetting, i, receptionRestrictionSetting);
+//				if (hasError == true) {
+//					throw new BusinessException("Msg_327", startDate.addDays(i).toString(DATE_FORMAT));
+//				}
+//			}
+//		
+//		}
 	}
 	
 	public void confirmationCheck(String companyID, String employeeID, GeneralDate appDate){

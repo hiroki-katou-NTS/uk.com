@@ -1,48 +1,17 @@
 package nts.uk.ctx.at.request.app.command.application.overtime;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingData;
-import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<UpdateOvertimeCommand, ProcessResult>{

@@ -14,8 +14,6 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmpl
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 
 @Stateless
@@ -35,8 +33,8 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 //	@Inject
 //	private RequestOfEachCompanyRepository requestOfEachCompanyRepository;
 	
-	@Inject
-	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+//	@Inject
+//	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 	@Inject
 	private AppEmploymentSettingRepository appEmploymentSetting;
 	public AppCommonSettingOutput prelaunchAppCommonSetService(String companyID, String employeeID, int rootAtr, ApplicationType targetApp, GeneralDate appDate){
@@ -50,11 +48,11 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
 		
 		appCommonSettingOutput.applicationSetting = applicationSetting;
-		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, targetApp.value);
-		if(appTypeDiscreteSettingOp.isPresent()) {
-			AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
-			appCommonSettingOutput.appTypeDiscreteSettings.add(appTypeDiscreteSetting);
-		}
+//		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, targetApp.value);
+//		if(appTypeDiscreteSettingOp.isPresent()) {
+//			AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
+//			appCommonSettingOutput.appTypeDiscreteSettings.add(appTypeDiscreteSetting);
+//		}
 		// ドメインモデル「申請設定」．承認ルートの基準日をチェックする ( Domain model "application setting". Check base date of approval route )
 		if(applicationSetting.getBaseDateFlg().equals(BaseDateFlg.APP_DATE)){
 			if(appDate==null){
