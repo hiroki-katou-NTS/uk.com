@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
 import nts.uk.ctx.at.request.app.find.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingDto;
-import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 
 @NoArgsConstructor
@@ -19,7 +18,7 @@ public class AppCommonSettingDto {
 	
 	public ApplicationSettingDto applicationSettingDto;  
 	
-	public ApprovalFunctionSettingDto approvalFunctionSettingDto;
+	// public ApprovalFunctionSettingDto approvalFunctionSettingDto;
 	
 	public List<AppTypeDiscreteSettingDto> appTypeDiscreteSettingDtos;  
 	
@@ -30,7 +29,7 @@ public class AppCommonSettingDto {
 		AppCommonSettingDto appCommonSettingDto = new AppCommonSettingDto();
 		appCommonSettingDto.generalDate = output.generalDate.toString();
 		appCommonSettingDto.applicationSettingDto = ApplicationSettingDto.convertToDto(output.applicationSetting);
-		appCommonSettingDto.approvalFunctionSettingDto = ApprovalFunctionSettingDto.convertToDto(output.approvalFunctionSetting);
+		// appCommonSettingDto.approvalFunctionSettingDto = ApprovalFunctionSettingDto.convertToDto(output.approvalFunctionSetting);
 		if(output.appTypeDiscreteSettings==null || output.appTypeDiscreteSettings.isEmpty()) {
 			appCommonSettingDto.appTypeDiscreteSettingDtos = null;
 		} else {

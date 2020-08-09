@@ -1,23 +1,7 @@
 package nts.uk.ctx.at.request.app.command.setting.workplace;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.InstructionCategory;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.setting.UseDivision;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AtWorkAtr;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApplicationDetailSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.DisplayBreakTime;
-import nts.uk.ctx.at.request.dom.setting.workplace.InstructionUseSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.Memo;
-import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
-import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.AppUseSetRemark;
-import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
 
 @Data
 @AllArgsConstructor
@@ -98,29 +82,29 @@ public class ApprovalFunctionSettingCommand {
 	 */
 	private int instructionUseAtr;
 	
-	public ApprovalFunctionSetting toDomainDetail() {
-		return new ApprovalFunctionSetting(
-				SettingFlg.toEnum(this.prerequisiteForpauseFlg), 
-				new InstructionUseSetting(
-						InstructionCategory.toEnum(this.instructionAtr), 
-						new Memo(this.instructionMemo), 
-						UseAtr.toEnum(this.instructionUseAtr)), 
-				SettingFlg.toEnum(this.holidayTimeAppCalFlg), 
-				SettingFlg.toEnum(this.otAppSettingFlg), 
-				SettingFlg.toEnum(this.lateOrLeaveAppCancelFlg), 
-				SettingFlg.toEnum(this.lateOrLeaveAppSettingFlg), 
-				new ApplicationUseSetting(
-						EnumAdaptor.valueOf(this.useAtr, UseDivision.class), 
-						EnumAdaptor.valueOf(this.appType, ApplicationType.class),
-						new AppUseSetRemark(this.memo)), 
-				Optional.of(new ApplicationDetailSetting(
-						this.breakInputFieldDisFlg == 1? true : false, 
-						this.breakTimeDisFlg == 1? true : false, 
-						EnumAdaptor.valueOf(this.atworkTimeBeginDisFlg, AtWorkAtr.class), 
-						this.goOutTimeBeginDisFlg == 1 ? true : false, 
-						this.requiredInstructionFlg == 1 ? true : false, 
-						UseAtr.toEnum(this.timeCalUseAtr), 
-						UseAtr.toEnum(this.timeInputUseAtr), 
-						EnumAdaptor.valueOf(this.timeEndDispFlg, DisplayBreakTime.class))));
-	}
+//	public ApprovalFunctionSetting toDomainDetail() {
+//		return new ApprovalFunctionSetting(
+//				SettingFlg.toEnum(this.prerequisiteForpauseFlg), 
+//				new InstructionUseSetting(
+//						InstructionCategory.toEnum(this.instructionAtr), 
+//						new Memo(this.instructionMemo), 
+//						UseAtr.toEnum(this.instructionUseAtr)), 
+//				SettingFlg.toEnum(this.holidayTimeAppCalFlg), 
+//				SettingFlg.toEnum(this.otAppSettingFlg), 
+//				SettingFlg.toEnum(this.lateOrLeaveAppCancelFlg), 
+//				SettingFlg.toEnum(this.lateOrLeaveAppSettingFlg), 
+//				new ApplicationUseSetting(
+//						EnumAdaptor.valueOf(this.useAtr, UseDivision.class), 
+//						EnumAdaptor.valueOf(this.appType, ApplicationType.class),
+//						new AppUseSetRemark(this.memo)), 
+//				Optional.of(new ApplicationDetailSetting(
+//						this.breakInputFieldDisFlg == 1? true : false, 
+//						this.breakTimeDisFlg == 1? true : false, 
+//						EnumAdaptor.valueOf(this.atworkTimeBeginDisFlg, AtWorkAtr.class), 
+//						this.goOutTimeBeginDisFlg == 1 ? true : false, 
+//						this.requiredInstructionFlg == 1 ? true : false, 
+//						UseAtr.toEnum(this.timeCalUseAtr), 
+//						UseAtr.toEnum(this.timeInputUseAtr), 
+//						EnumAdaptor.valueOf(this.timeEndDispFlg, DisplayBreakTime.class))));
+//	}
 }

@@ -16,8 +16,6 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
-import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampDto_Old;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampNewPreDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampOutputDto;
@@ -25,7 +23,6 @@ import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampSetDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.StampCombinationDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.stamp.dto.StampRequestSettingDto;
-import nts.uk.ctx.at.request.app.find.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
@@ -79,12 +76,12 @@ public class AppStampFinder {
 		GeneralDate targetDate = Strings.isNotBlank(date) ? GeneralDate.fromString(date, "yyyy/MM/dd") : GeneralDate.today();
 		AppStampNewPreOutput appStampNewPreOutput = this.appStampNewDomainService.appStampPreProcess(companyID, employeeID, targetDate);
 		AppStampNewPreDto appStampNewPreDto = new AppStampNewPreDto();
-		appStampNewPreDto.appCommonSettingDto = new AppCommonSettingDto(
-				targetDate.toString("yyyy/MM/dd"), 
-				ApplicationSettingDto.convertToDto(appStampNewPreOutput.appCommonSettingOutput.applicationSetting), 
-				null, 
-				appStampNewPreOutput.appCommonSettingOutput.appTypeDiscreteSettings.stream().map(x -> AppTypeDiscreteSettingDto.convertToDto(x)).collect(Collectors.toList()), 
-				null);
+//		appStampNewPreDto.appCommonSettingDto = new AppCommonSettingDto(
+//				targetDate.toString("yyyy/MM/dd"), 
+//				ApplicationSettingDto.convertToDto(appStampNewPreOutput.appCommonSettingOutput.applicationSetting), 
+//				null, 
+//				appStampNewPreOutput.appCommonSettingOutput.appTypeDiscreteSettings.stream().map(x -> AppTypeDiscreteSettingDto.convertToDto(x)).collect(Collectors.toList()), 
+//				null);
 		appStampNewPreDto.appStampSetDto = new AppStampSetDto(
 				new StampRequestSettingDto(
 						companyID, 

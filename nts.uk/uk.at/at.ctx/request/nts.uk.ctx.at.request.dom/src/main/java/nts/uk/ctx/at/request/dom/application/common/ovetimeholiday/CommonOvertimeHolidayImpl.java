@@ -28,9 +28,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.WpSpecificDateSettingAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.dto.WpSpecificDateSettingImport;
@@ -59,9 +57,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WeekdayHolidayClassification;
-import nts.uk.ctx.at.request.dom.application.overtime.service.output.RecordWorkOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AtWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
@@ -69,8 +65,6 @@ import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReas
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.DisplayBreakTime;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.employmentrules.employmenttimezone.BreakTimeZoneService;
@@ -85,9 +79,7 @@ import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.Duplicatio
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -432,91 +424,92 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		return true;
 	}
 
-	@Override
-	public RecordWorkOutput getWorkingHours(String companyID, String employeeID, GeneralDate appDate, UseAtr timeCalUse, AtWorkAtr atworkTimeBeginDisp,
-			ApplicationType appType, String workTimeCD, Optional<Integer> startTime, Optional<Integer> endTime, ApprovalFunctionSetting approvalFunctionSetting) {
-		UseAtr recordWorkDisplay = UseAtr.NOTUSE;
-		Integer startTime1 = null;
-		Integer endTime1 = null;
-		Integer startTime2 = null;
-		Integer endTime2 = null;
-		if (timeCalUse == UseAtr.NOTUSE && appType == ApplicationType.OVER_TIME_APPLICATION) {
-			return new RecordWorkOutput(recordWorkDisplay, startTime1, endTime1, startTime2, endTime2);
-		}
-		recordWorkDisplay = UseAtr.USE;
-		if (appDate == null) {
-			return new RecordWorkOutput(recordWorkDisplay, startTime1, endTime1, startTime2, endTime2);
-		}
-
-		switch (atworkTimeBeginDisp) {
-		case NOTDISPLAY: {
-			break;
-		}
-		case DISPLAY: {
-			// 01-14-2_実績から出退勤を初期表示
-			RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
-			startTime1 = recordWorkInfoImport.getAttendanceStampTimeFirst();
-			endTime1 = recordWorkInfoImport.getLeaveStampTimeFirst();
-			startTime2 = recordWorkInfoImport.getAttendanceStampTimeSecond();
-			endTime2 = recordWorkInfoImport.getLeaveStampTimeSecond();
-			break;
-		}
-		case AT_START_WORK_OFF_PERFORMANCE: {
-			// 01-14-3_始業時刻、退勤時刻を初期表示
-			RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
-			Optional<PredetemineTimeSetting> workTimeSet = workTimeSetRepository.findByWorkTimeCode(companyID,
-					recordWorkInfoImport.getWorkTimeCode());
-			if (workTimeSet.isPresent()) {
-				List<TimezoneUse> lstTimezone = workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone()
-						.stream().sorted(Comparator.comparing(TimezoneUse::getWorkNo)).collect(Collectors.toList());
-				if (lstTimezone.size() > 1 && lstTimezone.get(1).getUseAtr().value == UseAtr.USE.value) {
-					startTime2 = lstTimezone.get(1).getStart().v();
-				}
-				if (lstTimezone.size() > 0) {
-					startTime1 = lstTimezone.get(0).getStart().v();
-				}
-			}
-			if (recordWorkInfoImport.getLeaveStampTimeFirst() == null) {
-				if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeEndDispFlg()
-						.equals(DisplayBreakTime.SYSTEM_TIME)) {
-					endTime1 = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
-				}
-			} else {
-				endTime1 = recordWorkInfoImport.getLeaveStampTimeFirst();
-			}
-			if (recordWorkInfoImport.getLeaveStampTimeSecond() == null) {
-				if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeEndDispFlg()
-						.equals(DisplayBreakTime.SYSTEM_TIME)) {
-					endTime2 = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
-				}
-			} else {
-				endTime2 = recordWorkInfoImport.getLeaveStampTimeSecond();
-			}
-			break;
-		}
-		case AT_START_WORK_OFF_ENDWORK: {
-			// 01-14-4_始業時刻、終業時刻を初期表示
-			Optional<PredetemineTimeSetting> workTimeSet = workTimeSetRepository.findByWorkTimeCode(companyID, workTimeCD);
-			if (workTimeSet.isPresent()) {
-				List<TimezoneUse> lstTimezone = workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone()
-						.stream().sorted(Comparator.comparing(TimezoneUse::getWorkNo)).collect(Collectors.toList());
-				if (lstTimezone.size() > 1 && lstTimezone.get(1).getUseAtr().value == UseAtr.USE.value) {
-					startTime2 = lstTimezone.get(1).getStart().v();
-					endTime2 = lstTimezone.get(1).getEnd().v();
-				}
-				if (lstTimezone.size() > 0) {
-					startTime1 = lstTimezone.get(0).getStart().v();
-					endTime1 = lstTimezone.get(0).getEnd().v();
-				}
-			}
-			break;
-		}
-		default:
-			break;
-		}
-
-		return new RecordWorkOutput(recordWorkDisplay, startTime1, endTime1, startTime2, endTime2);
-	}
+//	@Override
+//	public RecordWorkOutput getWorkingHours(String companyID, String employeeID, GeneralDate appDate, UseAtr timeCalUse, AtWorkAtr atworkTimeBeginDisp,
+//			ApplicationType appType, String workTimeCD, Optional<Integer> startTime, Optional<Integer> endTime, ApprovalFunctionSetting approvalFunctionSetting) {
+//		UseAtr recordWorkDisplay = UseAtr.NOTUSE;
+//		Integer startTime1 = null;
+//		Integer endTime1 = null;
+//		Integer startTime2 = null;
+//		Integer endTime2 = null;
+//		if (timeCalUse == UseAtr.NOTUSE && appType == ApplicationType.OVER_TIME_APPLICATION) {
+//			return new RecordWorkOutput(recordWorkDisplay, startTime1, endTime1, startTime2, endTime2);
+//		}
+//		recordWorkDisplay = UseAtr.USE;
+//		if (appDate == null) {
+//			return new RecordWorkOutput(recordWorkDisplay, startTime1, endTime1, startTime2, endTime2);
+//		}
+//
+//		switch (atworkTimeBeginDisp) {
+//		case NOTDISPLAY: {
+//			break;
+//		}
+//		case DISPLAY: {
+//			// 01-14-2_実績から出退勤を初期表示
+//			RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
+//			startTime1 = recordWorkInfoImport.getAttendanceStampTimeFirst();
+//			endTime1 = recordWorkInfoImport.getLeaveStampTimeFirst();
+//			startTime2 = recordWorkInfoImport.getAttendanceStampTimeSecond();
+//			endTime2 = recordWorkInfoImport.getLeaveStampTimeSecond();
+//			break;
+//		}
+//		case AT_START_WORK_OFF_PERFORMANCE: {
+//			// 01-14-3_始業時刻、退勤時刻を初期表示
+//			RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
+//			Optional<PredetemineTimeSetting> workTimeSet = workTimeSetRepository.findByWorkTimeCode(companyID,
+//					recordWorkInfoImport.getWorkTimeCode());
+//			if (workTimeSet.isPresent()) {
+//				List<TimezoneUse> lstTimezone = workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone()
+//						.stream().sorted(Comparator.comparing(TimezoneUse::getWorkNo)).collect(Collectors.toList());
+//				if (lstTimezone.size() > 1 && lstTimezone.get(1).getUseAtr().value == UseAtr.USE.value) {
+//					startTime2 = lstTimezone.get(1).getStart().v();
+//				}
+//				if (lstTimezone.size() > 0) {
+//					startTime1 = lstTimezone.get(0).getStart().v();
+//				}
+//			}
+//			if (recordWorkInfoImport.getLeaveStampTimeFirst() == null) {
+//				if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeEndDispFlg()
+//						.equals(DisplayBreakTime.SYSTEM_TIME)) {
+//					endTime1 = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
+//				}
+//			} else {
+//				endTime1 = recordWorkInfoImport.getLeaveStampTimeFirst();
+//			}
+//			if (recordWorkInfoImport.getLeaveStampTimeSecond() == null) {
+//				if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeEndDispFlg()
+//						.equals(DisplayBreakTime.SYSTEM_TIME)) {
+//					endTime2 = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
+//				}
+//			} else {
+//				endTime2 = recordWorkInfoImport.getLeaveStampTimeSecond();
+//			}
+//			break;
+//		}
+//		case AT_START_WORK_OFF_ENDWORK: {
+//			// 01-14-4_始業時刻、終業時刻を初期表示
+//			Optional<PredetemineTimeSetting> workTimeSet = workTimeSetRepository.findByWorkTimeCode(companyID, workTimeCD);
+//			if (workTimeSet.isPresent()) {
+//				List<TimezoneUse> lstTimezone = workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone()
+//						.stream().sorted(Comparator.comparing(TimezoneUse::getWorkNo)).collect(Collectors.toList());
+//				if (lstTimezone.size() > 1 && lstTimezone.get(1).getUseAtr().value == UseAtr.USE.value) {
+//					startTime2 = lstTimezone.get(1).getStart().v();
+//					endTime2 = lstTimezone.get(1).getEnd().v();
+//				}
+//				if (lstTimezone.size() > 0) {
+//					startTime1 = lstTimezone.get(0).getStart().v();
+//					endTime1 = lstTimezone.get(0).getEnd().v();
+//				}
+//			}
+//			break;
+//		}
+//		default:
+//			break;
+//		}
+//
+//		return new RecordWorkOutput(recordWorkDisplay, startTime1, endTime1, startTime2, endTime2);
+//		return null;
+//	}
 
 	/**
 	 * 03-01_事前申請超過チェック
@@ -934,72 +927,72 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	 * java.lang.String, java.lang.String,
 	 * nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting)
 	 */
-	@Override
-	public List<CaculationTime> checkDisplayColor(List<CaculationTime> overTimeInputs,
-			List<OvertimeInputCaculation> overtimeInputCaculations, int prePostAtr, GeneralDateTime inputDate,
-			GeneralDate appDate, int appType, String employeeID, String companyID,
-			ApprovalFunctionSetting approvalFunctionSetting, String siftCD) {
-		for (CaculationTime overtimeInput : overTimeInputs) {
-			for (OvertimeInputCaculation overtimeInputCaculation : overtimeInputCaculations) {
-				if (overtimeInput.getFrameNo() == overtimeInputCaculation.getFrameNo()) {
-					if (overtimeInput.getApplicationTime() != null && !overtimeInput.getApplicationTime()
-							.equals(overtimeInputCaculation.getResultCaculation())) {
-						overtimeInput.setErrorCode(3); // 色定義名：計算値
-					}
-					if (overtimeInputCaculation.getResultCaculation() != null
-							&& overtimeInputCaculation.getResultCaculation() == 0) {
-						continue;
-					} else if (overtimeInputCaculation.getResultCaculation() != null
-							&& overtimeInputCaculation.getResultCaculation() > 0) {
-						// 06-04_計算実績超過チェック
-						List<CaculationTime> caculations = new ArrayList<>();
-						caculations.add(overtimeInput);
-						List<OvertimeInputCaculation> overtimeCals = new ArrayList<>();
-						overtimeCals.add(overtimeInputCaculation);
-						overtimeInput.setErrorCode(overtimeSixProcess
-								.checkCaculationActualExcess(prePostAtr, appType, employeeID, companyID,
-										approvalFunctionSetting, appDate, caculations, siftCD, overtimeCals)
-								.getErrorCode());
-					}
-				}
-			}
-		}
-		return overTimeInputs;
-
-	}
-
-	@Override
-	public ColorConfirmResult checkDisplayColorCF(List<CaculationTime> overTimeInputs,
-			List<OvertimeInputCaculation> overtimeInputCaculations, int prePostAtr, GeneralDateTime inputDate,
-			GeneralDate appDate, int appType, String employeeID, String companyID,
-			ApprovalFunctionSetting approvalFunctionSetting, String siftCD) {
-		for (CaculationTime overtimeInput : overTimeInputs) {
-			for (OvertimeInputCaculation overtimeInputCaculation : overtimeInputCaculations) {
-				if (overtimeInput.getFrameNo() == overtimeInputCaculation.getFrameNo()) {
-					if (overtimeInput.getApplicationTime() != null && !overtimeInput.getApplicationTime()
-							.equals(overtimeInputCaculation.getResultCaculation())) {
-						overtimeInput.setErrorCode(3); // 色定義名：計算値
-					}
-					if (overtimeInputCaculation.getResultCaculation() != null
-							&& overtimeInputCaculation.getResultCaculation() == 0) {
-						continue;
-					} else if (overtimeInputCaculation.getResultCaculation() != null
-							&& overtimeInputCaculation.getResultCaculation() > 0) {
-						// 03-01_事前申請超過チェック
-						ColorConfirmResult colorConfirmResult = this.preApplicationExceededCheck(companyID, appDate,
-								inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
-								overtimeInputCaculation.getAttendanceID(), overtimeSixProcess.convert(overtimeInput),
-								employeeID);
-						if (colorConfirmResult.isConfirm()) {
-							return colorConfirmResult;
-						}
-					}
-				}
-			}
-		}
-		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, null);
-
-	}
+//	@Override
+//	public List<CaculationTime> checkDisplayColor(List<CaculationTime> overTimeInputs,
+//			List<OvertimeInputCaculation> overtimeInputCaculations, int prePostAtr, GeneralDateTime inputDate,
+//			GeneralDate appDate, int appType, String employeeID, String companyID,
+//			ApprovalFunctionSetting approvalFunctionSetting, String siftCD) {
+//		for (CaculationTime overtimeInput : overTimeInputs) {
+//			for (OvertimeInputCaculation overtimeInputCaculation : overtimeInputCaculations) {
+//				if (overtimeInput.getFrameNo() == overtimeInputCaculation.getFrameNo()) {
+//					if (overtimeInput.getApplicationTime() != null && !overtimeInput.getApplicationTime()
+//							.equals(overtimeInputCaculation.getResultCaculation())) {
+//						overtimeInput.setErrorCode(3); // 色定義名：計算値
+//					}
+//					if (overtimeInputCaculation.getResultCaculation() != null
+//							&& overtimeInputCaculation.getResultCaculation() == 0) {
+//						continue;
+//					} else if (overtimeInputCaculation.getResultCaculation() != null
+//							&& overtimeInputCaculation.getResultCaculation() > 0) {
+//						// 06-04_計算実績超過チェック
+//						List<CaculationTime> caculations = new ArrayList<>();
+//						caculations.add(overtimeInput);
+//						List<OvertimeInputCaculation> overtimeCals = new ArrayList<>();
+//						overtimeCals.add(overtimeInputCaculation);
+//						overtimeInput.setErrorCode(overtimeSixProcess
+//								.checkCaculationActualExcess(prePostAtr, appType, employeeID, companyID,
+//										approvalFunctionSetting, appDate, caculations, siftCD, overtimeCals)
+//								.getErrorCode());
+//					}
+//				}
+//			}
+//		}
+//		return overTimeInputs;
+//
+//	}
+//
+//	@Override
+//	public ColorConfirmResult checkDisplayColorCF(List<CaculationTime> overTimeInputs,
+//			List<OvertimeInputCaculation> overtimeInputCaculations, int prePostAtr, GeneralDateTime inputDate,
+//			GeneralDate appDate, int appType, String employeeID, String companyID,
+//			ApprovalFunctionSetting approvalFunctionSetting, String siftCD) {
+//		for (CaculationTime overtimeInput : overTimeInputs) {
+//			for (OvertimeInputCaculation overtimeInputCaculation : overtimeInputCaculations) {
+//				if (overtimeInput.getFrameNo() == overtimeInputCaculation.getFrameNo()) {
+//					if (overtimeInput.getApplicationTime() != null && !overtimeInput.getApplicationTime()
+//							.equals(overtimeInputCaculation.getResultCaculation())) {
+//						overtimeInput.setErrorCode(3); // 色定義名：計算値
+//					}
+//					if (overtimeInputCaculation.getResultCaculation() != null
+//							&& overtimeInputCaculation.getResultCaculation() == 0) {
+//						continue;
+//					} else if (overtimeInputCaculation.getResultCaculation() != null
+//							&& overtimeInputCaculation.getResultCaculation() > 0) {
+//						// 03-01_事前申請超過チェック
+//						ColorConfirmResult colorConfirmResult = this.preApplicationExceededCheck(companyID, appDate,
+//								inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
+//								overtimeInputCaculation.getAttendanceID(), overtimeSixProcess.convert(overtimeInput),
+//								employeeID);
+//						if (colorConfirmResult.isConfirm()) {
+//							return colorConfirmResult;
+//						}
+//					}
+//				}
+//			}
+//		}
+//		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, null);
+//
+//	}
 
 	@Override
 	public List<CaculationTime> checkDisplayColorHol(List<CaculationTime> breakTimeInputs,
@@ -1137,35 +1130,36 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	public List<OvertimeInputCaculation> calculator(AppCommonSettingOutput appCommonSettingOutput, String appDate,
 			String siftCD, String workTypeCode, Integer startTime, Integer endTime, List<Integer> startTimeRests,
 			List<Integer> endTimeRests) {
-		String companyID = AppContexts.user().companyId();
-		String employeeID = AppContexts.user().employeeId();
-		boolean isSettingDisplay = appCommonSettingOutput.approvalFunctionSetting.getApplicationDetailSetting().get()
-				.getBreakInputFieldDisp().equals(true)
-				&& appCommonSettingOutput.getApprovalFunctionSetting().getApplicationDetailSetting().get()
-						.getTimeCalUse().equals(UseAtr.USE);
-		if (!isSettingDisplay) {
-			Optional<TimeWithDayAttr> opStartTime = startTime==null ? Optional.empty() : Optional.of(new TimeWithDayAttr(startTime)); 
-			Optional<TimeWithDayAttr> opEndTime = endTime==null ? Optional.empty() : Optional.of(new TimeWithDayAttr(endTime)); 
-			// 休憩時間帯を取得する
-			List<DeductionTime> breakTimes = this.getBreakTimes(companyID, workTypeCode, siftCD, opStartTime, opEndTime);
-
-			if (!CollectionUtil.isEmpty(breakTimes)) {
-				startTimeRests = breakTimes.stream().map(x -> x.getStart().v())
-						.collect(Collectors.toList());
-
-				endTimeRests = breakTimes.stream().map(x -> x.getEnd().v())
-						.collect(Collectors.toList());
-			}
-		}
-
-		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation
-				.getCalculation(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), workTypeCode, siftCD,
-						startTime, endTime, startTimeRests, endTimeRests);
-		Map<Integer, TimeWithCalculationImport> overTime = dailyAttendanceTimeCaculationImport.getOverTime();
-		List<OvertimeInputCaculation> overtimeInputCaculations = convertMaptoList(overTime,
-				dailyAttendanceTimeCaculationImport.getFlexTime(),
-				dailyAttendanceTimeCaculationImport.getMidNightTime());
-		return overtimeInputCaculations;
+//		String companyID = AppContexts.user().companyId();
+//		String employeeID = AppContexts.user().employeeId();
+//		boolean isSettingDisplay = appCommonSettingOutput.approvalFunctionSetting.getApplicationDetailSetting().get()
+//				.getBreakInputFieldDisp().equals(true)
+//				&& appCommonSettingOutput.getApprovalFunctionSetting().getApplicationDetailSetting().get()
+//						.getTimeCalUse().equals(UseAtr.USE);
+//		if (!isSettingDisplay) {
+//			Optional<TimeWithDayAttr> opStartTime = startTime==null ? Optional.empty() : Optional.of(new TimeWithDayAttr(startTime)); 
+//			Optional<TimeWithDayAttr> opEndTime = endTime==null ? Optional.empty() : Optional.of(new TimeWithDayAttr(endTime)); 
+//			// 休憩時間帯を取得する
+//			List<DeductionTime> breakTimes = this.getBreakTimes(companyID, workTypeCode, siftCD, opStartTime, opEndTime);
+//
+//			if (!CollectionUtil.isEmpty(breakTimes)) {
+//				startTimeRests = breakTimes.stream().map(x -> x.getStart().v())
+//						.collect(Collectors.toList());
+//
+//				endTimeRests = breakTimes.stream().map(x -> x.getEnd().v())
+//						.collect(Collectors.toList());
+//			}
+//		}
+//
+//		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation
+//				.getCalculation(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), workTypeCode, siftCD,
+//						startTime, endTime, startTimeRests, endTimeRests);
+//		Map<Integer, TimeWithCalculationImport> overTime = dailyAttendanceTimeCaculationImport.getOverTime();
+//		List<OvertimeInputCaculation> overtimeInputCaculations = convertMaptoList(overTime,
+//				dailyAttendanceTimeCaculationImport.getFlexTime(),
+//				dailyAttendanceTimeCaculationImport.getMidNightTime());
+//		return overtimeInputCaculations;
+		return null;
 	}
 
 	private List<OvertimeInputCaculation> convertMaptoList(Map<Integer, TimeWithCalculationImport> overTime,

@@ -14,7 +14,6 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absencelea
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp.RecruitmentAppDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
-import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 /*import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;*/
@@ -40,7 +39,7 @@ public class HolidayShipmentDto {
 	/**
 	 * 申請承認機能設定
 	 */
-	private ApprovalFunctionSettingDto approvalFunctionSetting;
+	// private ApprovalFunctionSettingDto approvalFunctionSetting;
 	/**
 	 * 基準日
 	 */

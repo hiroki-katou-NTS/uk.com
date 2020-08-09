@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime.service;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -10,13 +9,10 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.time.GeneralDate;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
 import nts.uk.ctx.at.request.dom.application.holidayinstruction.HolidayInstruct;
 import nts.uk.ctx.at.request.dom.application.holidayinstruction.HolidayInstructRepository;
@@ -26,16 +22,10 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHoli
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
-import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
-import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
@@ -191,56 +181,56 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 		// }
 		return result;
 	}
-	@Override
-	public AppHolidayWorkPreAndReferDto getResultContentActual(int prePostAtr, String siftCode, String companyID, String employeeID,
-			String appDate, ApprovalFunctionSetting approvalFunctionSetting, List<CaculationTime> breakTimes) {
-		AppHolidayWorkPreAndReferDto result = new AppHolidayWorkPreAndReferDto();
-		// 事前事後区分チェック, 申請日入力チェック
-		if(prePostAtr == PrePostAtr.PREDICT.value && appDate == null){
-			return result;
-		}
-		//Imported(申請承認)「勤務実績」を取得する
-		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,GeneralDate.fromString(appDate, DATE_FORMAT));
-		if (!StringUtil.isNullOrEmpty(recordWorkInfoImport.getWorkTypeCode(), false)) {
-			WorkTypeOvertime workTypeOvertime = new WorkTypeOvertime();
-			workTypeOvertime.setWorkTypeCode(recordWorkInfoImport.getWorkTypeCode().toString());
-			Optional<WorkType> workType = workTypeRepository.findByPK(companyID,
-					recordWorkInfoImport.getWorkTypeCode().toString());
-			if (workType.isPresent()) {
-				workTypeOvertime.setWorkTypeName(workType.get().getName().toString());
-			}
-			result.setWorkType(workTypeOvertime);
-		}
-		if (!StringUtil.isNullOrEmpty(recordWorkInfoImport.getWorkTimeCode(), false)) {
-			SiftType siftType = new SiftType();
-
-			siftType.setSiftCode(recordWorkInfoImport.getWorkTimeCode());
-			Optional<WorkTimeSetting> workTime = workTimeRepository.findByCode(companyID,
-					recordWorkInfoImport.getWorkTimeCode().toString());
-			if (workTime.isPresent()) {
-				siftType.setSiftName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().toString());
-			}
-			result.setWorkTime(siftType);
-		}
-		result.setWorkClockStart1(recordWorkInfoImport.getAttendanceStampTimeFirst());
-		result.setWorkClockEnd1(recordWorkInfoImport.getLeaveStampTimeFirst());
-		result.setWorkClockStart2(recordWorkInfoImport.getAttendanceStampTimeSecond());
-		result.setWorkClockEnd2(recordWorkInfoImport.getLeaveStampTimeSecond());
-		result.setAppDate(GeneralDate.fromString(appDate, DATE_FORMAT));
-		//申請日の判断
-		Optional<PredetemineTimeSetting> workTimeSetOtp = workTimeSetRepository.findByWorkTimeCode(companyID, siftCode);
-		if (workTimeSetOtp.isPresent()) {
-			PredetemineTimeSetting workTimeSet = workTimeSetOtp.get();
-			
-			if(iOvertimePreProcess.checkTimeDay(appDate,workTimeSet)){
-				//当日の場合, 03-02-3_当日の場合
-				
-			}else{
-				// 当日以外の場合,03-02-2_当日以外の場合
-			}
-		}
-		return result;
-	}
+//	@Override
+//	public AppHolidayWorkPreAndReferDto getResultContentActual(int prePostAtr, String siftCode, String companyID, String employeeID,
+//			String appDate, ApprovalFunctionSetting approvalFunctionSetting, List<CaculationTime> breakTimes) {
+//		AppHolidayWorkPreAndReferDto result = new AppHolidayWorkPreAndReferDto();
+//		// 事前事後区分チェック, 申請日入力チェック
+//		if(prePostAtr == PrePostAtr.PREDICT.value && appDate == null){
+//			return result;
+//		}
+//		//Imported(申請承認)「勤務実績」を取得する
+//		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,GeneralDate.fromString(appDate, DATE_FORMAT));
+//		if (!StringUtil.isNullOrEmpty(recordWorkInfoImport.getWorkTypeCode(), false)) {
+//			WorkTypeOvertime workTypeOvertime = new WorkTypeOvertime();
+//			workTypeOvertime.setWorkTypeCode(recordWorkInfoImport.getWorkTypeCode().toString());
+//			Optional<WorkType> workType = workTypeRepository.findByPK(companyID,
+//					recordWorkInfoImport.getWorkTypeCode().toString());
+//			if (workType.isPresent()) {
+//				workTypeOvertime.setWorkTypeName(workType.get().getName().toString());
+//			}
+//			result.setWorkType(workTypeOvertime);
+//		}
+//		if (!StringUtil.isNullOrEmpty(recordWorkInfoImport.getWorkTimeCode(), false)) {
+//			SiftType siftType = new SiftType();
+//
+//			siftType.setSiftCode(recordWorkInfoImport.getWorkTimeCode());
+//			Optional<WorkTimeSetting> workTime = workTimeRepository.findByCode(companyID,
+//					recordWorkInfoImport.getWorkTimeCode().toString());
+//			if (workTime.isPresent()) {
+//				siftType.setSiftName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().toString());
+//			}
+//			result.setWorkTime(siftType);
+//		}
+//		result.setWorkClockStart1(recordWorkInfoImport.getAttendanceStampTimeFirst());
+//		result.setWorkClockEnd1(recordWorkInfoImport.getLeaveStampTimeFirst());
+//		result.setWorkClockStart2(recordWorkInfoImport.getAttendanceStampTimeSecond());
+//		result.setWorkClockEnd2(recordWorkInfoImport.getLeaveStampTimeSecond());
+//		result.setAppDate(GeneralDate.fromString(appDate, DATE_FORMAT));
+//		//申請日の判断
+//		Optional<PredetemineTimeSetting> workTimeSetOtp = workTimeSetRepository.findByWorkTimeCode(companyID, siftCode);
+//		if (workTimeSetOtp.isPresent()) {
+//			PredetemineTimeSetting workTimeSet = workTimeSetOtp.get();
+//			
+//			if(iOvertimePreProcess.checkTimeDay(appDate,workTimeSet)){
+//				//当日の場合, 03-02-3_当日の場合
+//				
+//			}else{
+//				// 当日以外の場合,03-02-2_当日以外の場合
+//			}
+//		}
+//		return result;
+//	}
 	@Override
 	// TODO
 	//01-10_0時跨ぎチェック

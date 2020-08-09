@@ -34,7 +34,6 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absencelea
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp.RecruitmentAppDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
-import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
@@ -64,7 +63,6 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTyp
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -628,10 +626,10 @@ public class HolidayShipmentScreenAFinder {
 	private void setApprovalFunctionSetting(String employeeID, GeneralDate refDate, HolidayShipmentDto output,
 			String companyID) {
 		List<String> workPlaceIds = empAdaptor.findWpkIdsBySid(companyID, employeeID, refDate);
-		if (!CollectionUtil.isEmpty(workPlaceIds)) {
-			output.setApprovalFunctionSetting(
-					ApprovalFunctionSettingDto.convertToDto(AcApprovalFuncSet(companyID, workPlaceIds)));
-		}
+//		if (!CollectionUtil.isEmpty(workPlaceIds)) {
+//			output.setApprovalFunctionSetting(
+//					ApprovalFunctionSettingDto.convertToDto(AcApprovalFuncSet(companyID, workPlaceIds)));
+//		}
 	}
 
 	private void setAppEmploymentSettings(AppCommonSettingOutput appCommonSet, String employmentCD,
@@ -695,8 +693,8 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 
-	private ApprovalFunctionSetting AcApprovalFuncSet(String companyID, List<String> wpkIds) {
-		ApprovalFunctionSetting result = null;
+//	private ApprovalFunctionSetting AcApprovalFuncSet(String companyID, List<String> wpkIds) {
+//		ApprovalFunctionSetting result = null;
 //		for (String wpID : wpkIds) {
 //			Optional<ApprovalFunctionSetting> wpOpt = requestWpRepo.getFunctionSetting(companyID, wpID, APP_TYPE.value);
 //			if (wpOpt.isPresent()) {
@@ -708,9 +706,9 @@ public class HolidayShipmentScreenAFinder {
 //		if (comOpt.isPresent()) {
 //			result = comOpt.get();
 //		}
-		return result;
-
-	}
+//		return result;
+//
+//	}
 	/**
 	 * 振出用勤務種類の取得
 	 * @param companyID

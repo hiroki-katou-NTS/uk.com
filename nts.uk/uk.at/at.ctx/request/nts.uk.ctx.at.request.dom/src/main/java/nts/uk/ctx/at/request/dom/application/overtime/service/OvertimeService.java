@@ -1,14 +1,11 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 
 public interface OvertimeService {
@@ -27,7 +24,7 @@ public interface OvertimeService {
 	 * @param requestAppDetailSetting
 	 * @return
 	 */
-	public List<WorkTypeOvertime> getWorkType(String companyID,String employeeID,ApprovalFunctionSetting approvalFunctionSetting,Optional<AppEmploymentSetting> appEmploymentSettings);
+	// public List<WorkTypeOvertime> getWorkType(String companyID,String employeeID,ApprovalFunctionSetting approvalFunctionSetting,Optional<AppEmploymentSetting> appEmploymentSettings);
 	
 	/**
 	 * 08_就業時間帯取得
@@ -37,7 +34,7 @@ public interface OvertimeService {
 	 * @param requestAppDetailSetting
 	 * @return
 	 */
-	public List<SiftType> getSiftType(String companyID,String employeeID,ApprovalFunctionSetting approvalFunctionSetting,GeneralDate baseDate);
+	// public List<SiftType> getSiftType(String companyID,String employeeID,ApprovalFunctionSetting approvalFunctionSetting,GeneralDate baseDate);
 	
 	/**
 	 * 09_勤務種類就業時間帯の初期選択をセットする

@@ -6,7 +6,6 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
@@ -14,16 +13,13 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkBreakTimeSetOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkCheckRegisterOutput;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkDetailOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.InitWorkTypeWorkTime;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTimeHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTypeHolidayWork;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -115,9 +111,9 @@ public interface HolidayService {
 	 * @param achievementOutputLst 表示する実績内容
 	 * @return
 	 */
-	public HdWorkDispInfoWithDateOutput initDataNew(String companyID, String employeeID, Optional<GeneralDate> appDate, GeneralDate baseDate, 
-			PrePostAtr prePostAtr, AppEmploymentSetting appEmploymentSetting, List<WorkTimeSetting> workTimeLst, 
-			ApprovalFunctionSetting approvalFunctionSet, RequestSetting requestSetting, List<AchievementOutput> achievementOutputLst);
+//	public HdWorkDispInfoWithDateOutput initDataNew(String companyID, String employeeID, Optional<GeneralDate> appDate, GeneralDate baseDate, 
+//			PrePostAtr prePostAtr, AppEmploymentSetting appEmploymentSetting, List<WorkTimeSetting> workTimeLst, 
+//			ApprovalFunctionSetting approvalFunctionSet, RequestSetting requestSetting, List<AchievementOutput> achievementOutputLst);
 	
 	/**
 	 * 1-2.起動時勤務種類リストを取得する

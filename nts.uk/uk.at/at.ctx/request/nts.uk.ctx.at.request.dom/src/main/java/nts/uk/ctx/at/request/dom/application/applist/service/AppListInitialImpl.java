@@ -26,7 +26,6 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationDisplayAtr;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
@@ -67,7 +66,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppComp
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
-import nts.uk.ctx.at.request.dom.setting.UseDivision;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.primitive.ShowName;
@@ -81,9 +79,6 @@ import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
-import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbyworkplace.RequestByWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
@@ -1996,8 +1991,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		return new WkTypeWkTime(null, null);
 	}
 	
-	@Override
-	public List<ApprovalFunctionSetting> detailSetKAF022(String companyId, String wkpId, GeneralDate date) {
+//	@Override
+//	public List<ApprovalFunctionSetting> detailSetKAF022(String companyId, String wkpId, GeneralDate date) {
 		//ドメイン「職場別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by workplace)
 //		if(Strings.isNotBlank(wkpId)) {
 //			Optional<RequestOfEachWorkplace> wpkSet = Optional.empty();
@@ -2020,6 +2015,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 //		Optional<RequestOfEachCompany> comSet = Optional.empty();
 //		comSet = repoRequestCompany.getRequestByCompany(companyId);
 //		return comSet.isPresent() ? comSet.get().getListApprovalFunctionSetting() : new ArrayList<>();
-		return Collections.emptyList();
-	}
+//		return Collections.emptyList();
+//	}
 }
