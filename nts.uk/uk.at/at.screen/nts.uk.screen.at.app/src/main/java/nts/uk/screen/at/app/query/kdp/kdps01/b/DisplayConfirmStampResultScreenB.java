@@ -61,7 +61,7 @@ public class DisplayConfirmStampResultScreenB {
 	 * 
 	 *         勤務場所名
 	 */
-	public DisplayConfirmStampResultDto getStampInfoResult(DatePeriod period) {
+	public DisplayConfirmStampResultScreenBDto getStampInfoResult(DatePeriod period) {
 		// 取得する(@Require, 社員ID, 年月日)
 		List<EmployeeStampInfo> empDatas = new ArrayList<>();
 		EmpStampDataRequiredImpl empStampDataR = new EmpStampDataRequiredImpl(stampCardRepo, stampRecordRepo,
@@ -97,7 +97,7 @@ public class DisplayConfirmStampResultScreenB {
 		
 		//thêm 1 xử lý dể lấy username nữa;
 		
-		return new DisplayConfirmStampResultDto(
+		return new DisplayConfirmStampResultScreenBDto(
 				empDatas.stream().map(x -> EmployeeStampInfoDto.fromDomain(x)).collect(Collectors.toList()),
 				workLocationCd, workLocationName, this.sysEmpPub.getPersonInfor(AppContexts.user().employeeId()));
 	}

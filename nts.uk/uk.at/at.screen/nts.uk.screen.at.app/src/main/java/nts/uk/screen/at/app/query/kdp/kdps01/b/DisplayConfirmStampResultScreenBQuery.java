@@ -9,7 +9,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class StampInfoResultQuery {
+public class DisplayConfirmStampResultScreenBQuery {
 	// 打刻日時(日付)
 	private String startDate;
 	// 打刻日時(日付)

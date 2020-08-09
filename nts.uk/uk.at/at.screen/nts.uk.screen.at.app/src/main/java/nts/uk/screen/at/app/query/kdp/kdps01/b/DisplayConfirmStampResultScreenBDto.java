@@ -14,7 +14,7 @@ import nts.uk.screen.at.app.query.kdp.kdp001.a.EmployeeStampInfoDto;
  */
 @Data
 @AllArgsConstructor
-public class DisplayConfirmStampResultDto {
+public class DisplayConfirmStampResultScreenBDto {
 	/**
 	 * ドメインモデル：社員の打刻情報
 	 */
