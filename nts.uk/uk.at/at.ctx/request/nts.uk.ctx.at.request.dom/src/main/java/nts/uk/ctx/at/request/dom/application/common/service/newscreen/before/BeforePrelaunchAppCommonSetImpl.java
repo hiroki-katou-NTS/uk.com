@@ -1,10 +1,4 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
-/*import java.util.stream.Collectors;
-import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompany;
-import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplace;*/
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -23,9 +17,6 @@ import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
-import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
 
 @Stateless
 public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommonSet {
@@ -38,11 +29,11 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 	@Inject
 	private EmployeeRequestAdapter employeeAdaptor;
 	
-	@Inject
-	private RequestOfEachWorkplaceRepository requestOfEachWorkplaceRepository;
-	
-	@Inject
-	private RequestOfEachCompanyRepository requestOfEachCompanyRepository;
+//	@Inject
+//	private RequestOfEachWorkplaceRepository requestOfEachWorkplaceRepository;
+//	
+//	@Inject
+//	private RequestOfEachCompanyRepository requestOfEachCompanyRepository;
 	
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
@@ -80,27 +71,27 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 		appCommonSettingOutput.generalDate = baseDate;
 		
 		// 申請本人の所属職場を含める上位職場を取得する ( Acquire the upper workplace to include the workplace of the applicant himself / herself )
-		List<String> workPlaceIDs = employeeAdaptor.findWpkIdsBySid(companyID, employeeID, baseDate);
-		List<ApprovalFunctionSetting> loopResult = new ArrayList<>();
-		for(String workPlaceID : workPlaceIDs) {
-			// ドメインモデル「職場別申請承認設定」を取得する ( Acquire domain model "Application approval setting by workplace" )
-			Optional<ApprovalFunctionSetting> settingOfEarchWorkplaceOp = requestOfEachWorkplaceRepository.getFunctionSetting(companyID, workPlaceID, targetApp.value);
-			if(settingOfEarchWorkplaceOp.isPresent()) {
-				loopResult.add(settingOfEarchWorkplaceOp.get());
-				break;
-			}
-		}
-		// ドメインモデル「職場別申請承認設定」を取得できたかチェックする ( Check whether domain model "application approval setting by workplace" could be acquired )
-		if(loopResult.size() == 0) {
-			//ドメインモデル「会社別申請承認設定」を取得する ( Acquire the domain model "application approval setting by company" )
-			Optional<ApprovalFunctionSetting> rqOptional = requestOfEachCompanyRepository.getFunctionSetting(companyID, targetApp.value);
-			if(rqOptional.isPresent()){
-				appCommonSettingOutput.approvalFunctionSetting = rqOptional.get();
-			}
-		} else {
-				// ドメインモデル「会社別申請承認設定」を取得する ( Acquire the domain model "application approval setting by company" )
-				appCommonSettingOutput.approvalFunctionSetting = loopResult.get(0);
-		}
+//		List<String> workPlaceIDs = employeeAdaptor.findWpkIdsBySid(companyID, employeeID, baseDate);
+//		List<ApprovalFunctionSetting> loopResult = new ArrayList<>();
+//		for(String workPlaceID : workPlaceIDs) {
+//			// ドメインモデル「職場別申請承認設定」を取得する ( Acquire domain model "Application approval setting by workplace" )
+//			Optional<ApprovalFunctionSetting> settingOfEarchWorkplaceOp = requestOfEachWorkplaceRepository.getFunctionSetting(companyID, workPlaceID, targetApp.value);
+//			if(settingOfEarchWorkplaceOp.isPresent()) {
+//				loopResult.add(settingOfEarchWorkplaceOp.get());
+//				break;
+//			}
+//		}
+//		// ドメインモデル「職場別申請承認設定」を取得できたかチェックする ( Check whether domain model "application approval setting by workplace" could be acquired )
+//		if(loopResult.size() == 0) {
+//			//ドメインモデル「会社別申請承認設定」を取得する ( Acquire the domain model "application approval setting by company" )
+//			Optional<ApprovalFunctionSetting> rqOptional = requestOfEachCompanyRepository.getFunctionSetting(companyID, targetApp.value);
+//			if(rqOptional.isPresent()){
+//				appCommonSettingOutput.approvalFunctionSetting = rqOptional.get();
+//			}
+//		} else {
+//				// ドメインモデル「会社別申請承認設定」を取得する ( Acquire the domain model "application approval setting by company" )
+//				appCommonSettingOutput.approvalFunctionSetting = loopResult.get(0);
+//		}
 		
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する ( Execute the algorithm "Acquire employee affiliation employment history" )
 		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID, employeeID, baseDate);

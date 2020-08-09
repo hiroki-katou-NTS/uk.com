@@ -20,16 +20,16 @@ import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApproverRegisterSet;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompany;
-import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
+import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompanyRepository;
 import nts.uk.shr.com.context.AppContexts;
 //HOATT - CMM018_2
 @Stateless
 public class ApplicationUseAtrFinder {
 
 	@Inject
-	private RequestOfEachCompanyRepository repoRequestCom;
+	private RequestByCompanyRepository requestByCompanyRepository;
 	@Inject
 	private ApplicationSettingRepository repoAppSet;
 	@Inject
@@ -52,11 +52,9 @@ public class ApplicationUseAtrFinder {
 		String companyId = AppContexts.user().companyId();
 		//会社別申請承認設定の取得
 		if(tab == 0) {//lay setting theo company
-			Optional<RequestOfEachCompany> comS = repoRequestCom.getRequestByCompany(companyId);
+			Optional<ApprovalFunctionSet> comS = requestByCompanyRepository.findByCompanyID(companyId);
 			if(comS.isPresent()) {
-				lstAppUseSet = comS.get().getListApprovalFunctionSetting().stream()
-						.map(c -> c.getAppUseSetting())
-						.collect(Collectors.toList());
+				lstAppUseSet = comS.get().getAppUseSetLst();
 			}
 			lstResult = lstAppUseSet.stream().map(c -> new AppUseAtrDto(c.getAppType().value, c.getUseDivision().value)).collect(Collectors.toList());
 			return lstResult;

@@ -65,8 +65,6 @@ import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
-import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -120,10 +118,10 @@ public class HolidayShipmentScreenAFinder {
 	private PredetemineTimeSettingRepository preTimeSetRepo;
 	@Inject
 	private CollectAchievement collectAchievement;
-	@Inject
-	private RequestOfEachWorkplaceRepository requestWpRepo;
-	@Inject
-	private RequestOfEachCompanyRepository requestComRepo;
+//	@Inject
+//	private RequestOfEachWorkplaceRepository requestWpRepo;
+//	@Inject
+//	private RequestOfEachCompanyRepository requestComRepo;
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	@Inject
@@ -699,17 +697,17 @@ public class HolidayShipmentScreenAFinder {
 
 	private ApprovalFunctionSetting AcApprovalFuncSet(String companyID, List<String> wpkIds) {
 		ApprovalFunctionSetting result = null;
-		for (String wpID : wpkIds) {
-			Optional<ApprovalFunctionSetting> wpOpt = requestWpRepo.getFunctionSetting(companyID, wpID, APP_TYPE.value);
-			if (wpOpt.isPresent()) {
-				result = wpOpt.get();
-			}
-		}
-		// 職場別設定なし
-		Optional<ApprovalFunctionSetting> comOpt = requestComRepo.getFunctionSetting(companyID, APP_TYPE.value);
-		if (comOpt.isPresent()) {
-			result = comOpt.get();
-		}
+//		for (String wpID : wpkIds) {
+//			Optional<ApprovalFunctionSetting> wpOpt = requestWpRepo.getFunctionSetting(companyID, wpID, APP_TYPE.value);
+//			if (wpOpt.isPresent()) {
+//				result = wpOpt.get();
+//			}
+//		}
+//		// 職場別設定なし
+//		Optional<ApprovalFunctionSetting> comOpt = requestComRepo.getFunctionSetting(companyID, APP_TYPE.value);
+//		if (comOpt.isPresent()) {
+//			result = comOpt.get();
+//		}
 		return result;
 
 	}
