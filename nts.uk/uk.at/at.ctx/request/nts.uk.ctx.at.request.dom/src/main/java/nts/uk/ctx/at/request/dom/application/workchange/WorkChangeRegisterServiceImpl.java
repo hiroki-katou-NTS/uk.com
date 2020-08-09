@@ -14,7 +14,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -34,7 +34,7 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 	ApplicationApprovalService appRepository;
 
 	@Inject
-	NewAfterRegister_New newAfterRegister;
+	NewAfterRegister newAfterRegister;
 
 	@Inject
 	private BasicScheduleService basicScheduleService;

@@ -24,7 +24,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSp
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
@@ -41,7 +41,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 	@Inject 
 	private AbsenceServiceProcess absenceServiceProcess;
 	@Inject
-	private NewAfterRegister_New newAfterRegister;
+	private NewAfterRegister newAfterRegister;
 	@Inject
 	private RegisterAtApproveReflectionInfoService_New registerService;
 	@Inject

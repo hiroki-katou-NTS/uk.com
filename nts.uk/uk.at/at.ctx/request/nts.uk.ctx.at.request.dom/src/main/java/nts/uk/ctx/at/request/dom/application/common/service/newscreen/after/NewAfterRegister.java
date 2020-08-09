@@ -9,7 +9,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
  * @author Doan Duy Hung
  *
  */
-public interface NewAfterRegister_New {
+public interface NewAfterRegister {
 	
 	/**
 	 * 2-3.新規画面登録後の処理

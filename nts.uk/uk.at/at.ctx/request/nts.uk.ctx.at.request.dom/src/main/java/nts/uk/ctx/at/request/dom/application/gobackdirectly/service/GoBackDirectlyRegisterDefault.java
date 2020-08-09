@@ -27,7 +27,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.ba
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
@@ -74,7 +74,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	@Inject
 	GoBackDirectlyCommonSettingRepository goBackDirectCommonSetRepo;
 	@Inject 
-	NewAfterRegister_New newAfterRegister;
+	NewAfterRegister newAfterRegister;
 	@Inject
 	ApplicationSettingRepository applicationSettingRepository;
 	@Inject

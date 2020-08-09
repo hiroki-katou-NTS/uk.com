@@ -13,7 +13,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.FactoryLateOrLeaveEarly;
@@ -38,7 +38,7 @@ public class CreateLateOrLeaveEarlyCommandHandler
 	private FactoryLateOrLeaveEarly factoryLateOrLeaveEarly;
 
 	@Inject
-	private NewAfterRegister_New newAfterRegister;
+	private NewAfterRegister newAfterRegister;
 
 	@Inject
 	private RegisterAtApproveReflectionInfoService_New registerService;

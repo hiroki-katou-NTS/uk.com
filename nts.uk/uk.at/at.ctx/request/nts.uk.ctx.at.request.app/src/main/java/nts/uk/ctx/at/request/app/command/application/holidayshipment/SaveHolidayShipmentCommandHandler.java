@@ -33,7 +33,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.Employment
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
@@ -121,7 +121,7 @@ public class SaveHolidayShipmentCommandHandler
 	@Inject
 	private IFactoryApplication IfacApp;
 	@Inject
-	private NewAfterRegister_New newAfterReg;
+	private NewAfterRegister newAfterReg;
 	@Inject
 	private HolidayShipmentScreenAFinder afinder;
 	@Inject

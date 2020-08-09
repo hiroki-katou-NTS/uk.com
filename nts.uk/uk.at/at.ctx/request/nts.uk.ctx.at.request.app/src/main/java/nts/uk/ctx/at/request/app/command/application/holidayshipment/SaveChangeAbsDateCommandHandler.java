@@ -22,7 +22,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
@@ -53,7 +53,7 @@ public class SaveChangeAbsDateCommandHandler
 	@Inject
 	private ApplicationRepository appRepo;
 	@Inject
-	private NewAfterRegister_New newAfterReg;
+	private NewAfterRegister newAfterReg;
 	@Inject
 	private OtherCommonAlgorithm ortherAl;
 	@Inject
