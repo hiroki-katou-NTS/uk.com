@@ -32,7 +32,7 @@ import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
@@ -109,7 +109,7 @@ public class SaveHolidayShipmentCommandHandler
 	@Inject
 	private NewBeforeRegister processBeforeRegister;
 	@Inject
-	private RegisterAtApproveReflectionInfoService_New registerAppReplection;
+	private RegisterAtApproveReflectionInfoService registerAppReplection;
 	@Inject
 	private AbsenceLeaveAppRepository absRepo;
 	@Inject

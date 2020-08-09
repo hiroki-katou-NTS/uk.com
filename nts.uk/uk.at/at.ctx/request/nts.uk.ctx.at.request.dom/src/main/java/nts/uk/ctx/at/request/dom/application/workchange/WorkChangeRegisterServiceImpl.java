@@ -13,7 +13,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -28,7 +28,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService {
 
 	@Inject
-	private RegisterAtApproveReflectionInfoService_New registerService;
+	private RegisterAtApproveReflectionInfoService registerService;
 
 	@Inject
 	ApplicationApprovalService appRepository;

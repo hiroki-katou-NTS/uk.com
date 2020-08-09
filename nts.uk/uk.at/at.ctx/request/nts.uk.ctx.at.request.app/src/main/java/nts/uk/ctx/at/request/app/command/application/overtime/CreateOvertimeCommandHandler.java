@@ -17,7 +17,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
@@ -46,7 +46,7 @@ public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<Creat
 	private NewAfterRegister newAfterRegister;
 
 	@Inject
-	private RegisterAtApproveReflectionInfoService_New registerService;
+	private RegisterAtApproveReflectionInfoService registerService;
 
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<CreateOvertimeCommand> context) {

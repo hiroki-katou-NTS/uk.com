@@ -7,7 +7,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
@@ -30,7 +30,7 @@ public class AppStampNewDefaultImpl implements AppStampNewDomainService {
 	private NewBeforeRegister newBeforeRegister; 
 	
 	@Inject
-	private RegisterAtApproveReflectionInfoService_New registerAtApproveReflectionInfoService;
+	private RegisterAtApproveReflectionInfoService registerAtApproveReflectionInfoService;
 	
 	@Inject
 	private AppStampRepository_Old appStampRepository;

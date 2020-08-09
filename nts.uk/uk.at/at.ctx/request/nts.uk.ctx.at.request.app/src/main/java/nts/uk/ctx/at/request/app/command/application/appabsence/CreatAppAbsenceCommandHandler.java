@@ -23,7 +23,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -43,7 +43,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 	@Inject
 	private NewAfterRegister newAfterRegister;
 	@Inject
-	private RegisterAtApproveReflectionInfoService_New registerService;
+	private RegisterAtApproveReflectionInfoService registerService;
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	@Inject
