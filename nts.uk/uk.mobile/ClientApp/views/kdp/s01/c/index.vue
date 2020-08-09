@@ -11,11 +11,13 @@
       <label>{{ "KDPS01_27" | i18n }}</label>
     </div>
     <div class="col-12 value">
-      <label class="col-6 px-1">{{ screenData.date }}</label>
+      <label class="col-7 px-1">{{
+        screenData.date | date("YYYY年 MM月 DD日（ddd）")
+      }}</label>
       <label
-        class="col-6 stamp-time font-weight-bold"
+        class="col-5 stamp-time font-weight-bold"
         style="line-height: 1rem;"
-        >{{ screenData.time }}</label
+        >{{ screenData.date | date("HH:MM") }}</label
       >
     </div>
 
@@ -23,11 +25,11 @@
       <label>{{ "KDPS01_28" | i18n }}</label>
     </div>
     <div class="col-12 value uk-text-blue">
-      <div class="col-6 d-inline-block"></div>
+      <div class="col-7 d-inline-block"></div>
       <label
-        class=" col-6 stamp-text font-weight-bold"
+        class=" col-5 stamp-text font-weight-bold"
         style="line-height: 1rem;"
-        >{{ screenData.stampTypeText }}</label
+        >{{ screenData.stampAtr }}</label
       >
     </div>
 
@@ -42,62 +44,46 @@
       {{ "KDPS01_43" | i18n }}
     </div>
 
-    <div class="col-12 value">
+    <div v-if="screenData.workTypeName" class="col-12 value">
       <label>{{ screenData.workTypeName }}</label>
+      <hr class="uk-bg-white-smoke mb-2 mt-0" />
     </div>
-    <hr class="uk-bg-white-smoke mb-2 mt-0" />
+    
 
-    <div class="col-12 value">
+    <div v-if="screenData.workTimeName" class="col-12 value">
       <label>{{ screenData.workTimeName }}</label>
+      <hr class="uk-bg-white-smoke mb-2 mt-0" />
     </div>
-    <hr class="uk-bg-white-smoke mb-2 mt-0" />
+    
 
     <div class="col-12 value">
       <label class="px-0 col-6 uk-text-over-time"
         >{{ "KDPS01_44" | i18n }}
       </label>
-      <label class="col-6">8:48 ～ 20:18</label>
+      <label class="col-6 px-0">{{ screenData.attendanceItem.attendance }}</label>
+       <hr class="uk-bg-white-smoke mb-2 mt-0" />
     </div>
-    <hr class="uk-bg-white-smoke mb-2 mt-0" />
+   
 
-    <div class="col-12 value">
-      <label class="px-0 col-6">就業時間</label>
-      <label class="col-6">10：00</label>
+    <div
+      class="col-12 value"
+      v-for="item in screenData.attendanceItem.timeItems"
+      v-bind:key="item.itemId"
+    >
+      <label class="px-0 col-6">{{ item.title }}</label>
+      <label class="col-6 px-0">{{ item.value }}</label>
+      <hr class="uk-bg-white-smoke mb-2 mt-0" />
     </div>
-    <hr class="uk-bg-white-smoke mb-2 mt-0" />
-
-    <div class="col-12 value">
-      <label class="px-0 col-6">残業</label>
-      <label class="col-6">2：00</label>
-    </div>
-    <hr class="uk-bg-white-smoke mb-2 mt-0" />
-
-    <div class="col-12 value">
-      <label class="px-0 col-6">休憩時間</label>
-      <label class="col-6">1：00</label>
-    </div>
-    <hr class="uk-bg-white-smoke mb-2 mt-0" />
-
-    <div class="col-12 value">
-      <label class="px-0 col-6">日別項目</label>
-      <label class="col-6">1234567</label>
-    </div>
-    <hr class="uk-bg-white-smoke mb-2 mt-0" />
-
-    <div class="col-12 value">
-      <label class="px-0 col-6">日別項目</label>
-      <label class="col-6">1234567</label>
-    </div>
-    <hr class="uk-bg-white-smoke mb-2 mt-0" />
 
     <div class="col-12 value mt-3">
-      <label v-show="!disabled">{{ "KDPS01_48" | i18n }}</label>
-      <label v-show="disabled">{{ "KDPS01_49" | i18n }}</label>
+      <label v-show="isHasImplementation === 1">{{ "KDPS01_48" | i18n }}</label>
+      <label v-show="isHasImplementation === 2">{{ "KDPS01_49" | i18n }}</label>
     </div>
     <div>
       <button
-        v-bind:disabled="disabled"
+        v-bind:disabled=" isHasImplementation === 2"
         type="button"
+        v-click:500="regDailyResult"
         class="mb-3 col-12 btn btn-success btn-block btn-lg"
       >
         {{ "KDPS01_50" | i18n }}
