@@ -38,14 +38,14 @@ public class AppCommonSettingDto {
 					.map(x-> AppTypeDiscreteSettingDto.convertToDto(x))
 					.collect(Collectors.toList());
 		}
-		if(output.applicationDeadlines==null || output.applicationDeadlines.isEmpty()) {
-			appCommonSettingDto.applicationDeadlineDtos = null;
-		} else {
-			appCommonSettingDto.applicationDeadlineDtos = output.applicationDeadlines
-					.stream()
-					.map(x-> ApplicationDeadlineDto.convertToDto(x))
-					.collect(Collectors.toList());
-		}
+//		if(output.applicationDeadlines==null || output.applicationDeadlines.isEmpty()) {
+//			appCommonSettingDto.applicationDeadlineDtos = null;
+//		} else {
+//			appCommonSettingDto.applicationDeadlineDtos = output.applicationDeadlines
+//					.stream()
+//					.map(x-> ApplicationDeadlineDto.convertToDto(x))
+//					.collect(Collectors.toList());
+//		}
 		return appCommonSettingDto;
 	}
 }

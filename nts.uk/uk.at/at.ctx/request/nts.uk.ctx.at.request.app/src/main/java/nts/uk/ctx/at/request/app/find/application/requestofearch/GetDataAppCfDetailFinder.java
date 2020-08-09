@@ -35,8 +35,8 @@ public class GetDataAppCfDetailFinder {
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
 	
-	@Inject
-	private nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository applicationDeadlineRepository;
+//	@Inject
+//	private nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository applicationDeadlineRepository;
 	
 	@Inject
 	private WorkplaceAdapter workplaceAdapter;
@@ -214,13 +214,13 @@ public class GetDataAppCfDetailFinder {
 		String companyId = AppContexts.user().companyId();
 		List<ApplicationDeadlineDto> result = new ArrayList<>();
 		for(Integer obj : closureId){
-			ApplicationDeadlineDto appDead = this.applicationDeadlineRepository.getDeadlineByClosureId(companyId, obj)
-					.map(c -> {
-						return new ApplicationDeadlineDto(companyId, obj, 
-															c.getUserAtr().value, c.getDeadline().v(), 
-															c.getDeadlineCriteria().value);
-					}).orElse(null);
-			result.add(appDead);
+//			ApplicationDeadlineDto appDead = this.applicationDeadlineRepository.getDeadlineByClosureId(companyId, obj)
+//					.map(c -> {
+//						return new ApplicationDeadlineDto(companyId, obj, 
+//															c.getUserAtr().value, c.getDeadline().v(), 
+//															c.getDeadlineCriteria().value);
+//					}).orElse(null);
+//			result.add(appDead);
 		}
 		return result;
 	}

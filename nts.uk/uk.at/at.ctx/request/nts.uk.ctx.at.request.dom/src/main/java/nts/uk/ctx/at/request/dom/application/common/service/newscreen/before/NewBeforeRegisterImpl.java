@@ -22,9 +22,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImpor
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.actuallock.ActualLockAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.actuallock.ActualLockImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.daycalendar.ObtainDeadlineDateAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
@@ -43,9 +41,6 @@ import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepositor
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.applimitset.AppLimitSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.ReceptionRestrictionSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
-import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.DeadlineCriteria;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AllowAtr;
@@ -60,8 +55,8 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 	@Inject
 	private EmployeeRequestAdapter employeeAdaptor;
 	
-	@Inject
-	private ApplicationDeadlineRepository appDeadlineRepository;
+//	@Inject
+//	private ApplicationDeadlineRepository appDeadlineRepository;
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithmService;
@@ -212,43 +207,43 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 		// if(passwordLevel!=0) return;
 		
 		// ドメインモデル「申請締切設定」．利用区分をチェックする(check利用区分)
-		Optional<ApplicationDeadline> appDeadlineOp = appDeadlineRepository.getDeadlineByClosureId(companyID, closureID);
-		if(!appDeadlineOp.isPresent()) {
-			throw new RuntimeException("Not found ApplicationDeadline in table KRQST_APP_DEADLINE, closureID =" + closureID);
-		}
-		ApplicationDeadline appDeadline = appDeadlineOp.get();
-		
-		GeneralDate systemDate = GeneralDate.today();
-		// ドメインモデル「申請締切設定」．利用区分をチェックする(check利用区分)
-		if(appDeadline.getUserAtr().equals(UseAtr.NOTUSE)) { 
-			return; 
-		};
-		
-		// 申請する開始日(input)から申請する終了日(input)までループする
-		for(int i = 0; appStartDate.compareTo(appEndDate) + i <= 0; i++){
-			GeneralDate loopDate = appStartDate.addDays(i);
-			if(loopDate.after(deadlineEndDate)){
-				continue;
-			}
-			GeneralDate deadline = null;
-			// ドメインモデル「申請締切設定」．締切基準をチェックする
-			if(appDeadline.getDeadlineCriteria().equals(DeadlineCriteria.WORKING_DAY)) {
-				// アルゴリズム「社員所属職場履歴を取得」を実行する
-				WkpHistImport wkpHistImport = workplaceAdapter.findWkpBySid(employeeID, systemDate);
-				// アルゴリズム「締切日を取得する」を実行する
-				deadline = obtainDeadlineDateAdapter.obtainDeadlineDate(
-						deadlineEndDate, 
-						appDeadline.getDeadline().v(), 
-						wkpHistImport.getWorkplaceId(), 
-						companyID);
-			} else {
-				deadline = deadlineEndDate.addDays(appDeadline.getDeadline().v());
-			}
-			// システム日付と申請締め切り日を比較する
-			if(systemDate.after(deadline)) {
-				throw new BusinessException("Msg_327", deadline.toString(DATE_FORMAT)); 
-			}
-		}	
+//		Optional<ApplicationDeadline> appDeadlineOp = appDeadlineRepository.getDeadlineByClosureId(companyID, closureID);
+//		if(!appDeadlineOp.isPresent()) {
+//			throw new RuntimeException("Not found ApplicationDeadline in table KRQST_APP_DEADLINE, closureID =" + closureID);
+//		}
+//		ApplicationDeadline appDeadline = appDeadlineOp.get();
+//		
+//		GeneralDate systemDate = GeneralDate.today();
+//		// ドメインモデル「申請締切設定」．利用区分をチェックする(check利用区分)
+//		if(appDeadline.getUserAtr().equals(UseAtr.NOTUSE)) { 
+//			return; 
+//		};
+//		
+//		// 申請する開始日(input)から申請する終了日(input)までループする
+//		for(int i = 0; appStartDate.compareTo(appEndDate) + i <= 0; i++){
+//			GeneralDate loopDate = appStartDate.addDays(i);
+//			if(loopDate.after(deadlineEndDate)){
+//				continue;
+//			}
+//			GeneralDate deadline = null;
+//			// ドメインモデル「申請締切設定」．締切基準をチェックする
+//			if(appDeadline.getDeadlineCriteria().equals(DeadlineCriteria.WORKING_DAY)) {
+//				// アルゴリズム「社員所属職場履歴を取得」を実行する
+//				WkpHistImport wkpHistImport = workplaceAdapter.findWkpBySid(employeeID, systemDate);
+//				// アルゴリズム「締切日を取得する」を実行する
+//				deadline = obtainDeadlineDateAdapter.obtainDeadlineDate(
+//						deadlineEndDate, 
+//						appDeadline.getDeadline().v(), 
+//						wkpHistImport.getWorkplaceId(), 
+//						companyID);
+//			} else {
+//				deadline = deadlineEndDate.addDays(appDeadline.getDeadline().v());
+//			}
+//			// システム日付と申請締め切り日を比較する
+//			if(systemDate.after(deadline)) {
+//				throw new BusinessException("Msg_327", deadline.toString(DATE_FORMAT)); 
+//			}
+//		}	
 	}
 	
 	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType appType, PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate, OvertimeAppAtr overtimeAppAtr){

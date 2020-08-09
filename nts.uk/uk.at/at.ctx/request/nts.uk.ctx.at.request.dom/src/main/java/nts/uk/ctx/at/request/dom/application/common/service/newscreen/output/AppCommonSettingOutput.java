@@ -7,7 +7,6 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 /**
@@ -26,7 +25,7 @@ public class AppCommonSettingOutput {
 	
 	public List<AppTypeDiscreteSetting> appTypeDiscreteSettings;  
 	
-	public List<ApplicationDeadline> applicationDeadlines;
+	// public List<ApplicationDeadline> applicationDeadlines;
 	/**
 	 * 雇用別申請承認設定
 	 */
@@ -38,6 +37,6 @@ public class AppCommonSettingOutput {
 		this.applicationSetting = null;
 		// this.approvalFunctionSetting = null;
 		this.appTypeDiscreteSettings = new ArrayList<>();
-		this.applicationDeadlines = new ArrayList<>();
+		// this.applicationDeadlines = new ArrayList<>();
 	}
 }

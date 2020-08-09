@@ -12,7 +12,6 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingD
 import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
 import nts.uk.ctx.at.request.app.find.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingDto;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
-import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
 
 @Data
 @AllArgsConstructor
@@ -37,8 +36,8 @@ public class AppCommonSettingOutputDto {
 		appCommonSettingOutput.applicationSetting = applicationSetting.toDomain();
 		// appCommonSettingOutput.approvalFunctionSetting = ApprovalFunctionSettingDto.createFromJavaType(approvalFunctionSetting);
 		appCommonSettingOutput.appTypeDiscreteSettings = appTypeDiscreteSettings.stream().map(x -> x.toDomain()).collect(Collectors.toList());
-		appCommonSettingOutput.applicationDeadlines = applicationDeadlines.stream()
-				.map(x -> ApplicationDeadline.createSimpleFromJavaType(x.companyId, x.closureId, x.userAtr, x.deadline, x.deadlineCriteria)).collect(Collectors.toList());
+//		appCommonSettingOutput.applicationDeadlines = applicationDeadlines.stream()
+//				.map(x -> ApplicationDeadline.createSimpleFromJavaType(x.companyId, x.closureId, x.userAtr, x.deadline, x.deadlineCriteria)).collect(Collectors.toList());
 		appCommonSettingOutput.appEmploymentWorkType = appEmploymentWorkType == null ? Optional.empty() : appEmploymentWorkType.toDomainOptional();
 		return appCommonSettingOutput;
 	}
