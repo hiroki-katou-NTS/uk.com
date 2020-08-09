@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto_Old;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
@@ -247,7 +247,7 @@ public class AppHolidayWorkDto {
 	private int preExcessDisplaySetting;
 	private List<CaculationTime> caculationTimes;
 	
-	private AppDispInfoStartupDto_Old appDispInfoStartupDto;
+	private AppDispInfoStartupDto appDispInfoStartupDto;
 	private DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput;
 	private DetailScreenInitModeOutput detailScreenInitModeOutput;
 	private PreActualColorResult preActualColorResult;
