@@ -14,7 +14,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterApproval_New;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterApproval;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
@@ -35,7 +35,7 @@ public class ApproveHolidayShipmentCommandHandler
 	@Inject
 	private DetailBeforeUpdate detailBefUpdate;
 	@Inject
-	private DetailAfterApproval_New detailAfAppv;
+	private DetailAfterApproval detailAfAppv;
 	
 	@Inject
 	ApplicationSettingRepository applicationSettingRepository;

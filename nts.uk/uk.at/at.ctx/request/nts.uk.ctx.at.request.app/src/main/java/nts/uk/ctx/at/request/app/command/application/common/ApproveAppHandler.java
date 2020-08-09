@@ -7,7 +7,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterApproval_New;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterApproval;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.AppDetailScreenInfo;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
@@ -25,7 +25,7 @@ public class ApproveAppHandler extends CommandHandlerWithResult<AppDetailBehavio
 	private DetailBeforeUpdate beforeRegisterRepo;
 	
 	@Inject
-	private DetailAfterApproval_New detailAfterApproval_New;
+	private DetailAfterApproval detailAfterApproval_New;
 	
 	@Inject
 	ApplicationSettingRepository applicationSettingRepository;
