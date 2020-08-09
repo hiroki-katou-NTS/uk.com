@@ -304,7 +304,7 @@ public class CheckConvertPrePost {
 			DivergenceReasonDto divergenceReasonDto = new DivergenceReasonDto();
 			divergenceReasonDto.setDivergenceReasonID(divergenceReason.getReasonTypeItem().getReasonID());
 			divergenceReasonDto.setReasonTemp(divergenceReason.getReasonTypeItem().getReasonTemp().toString());
-			divergenceReasonDto.setDivergenceReasonIdDefault(divergenceReason.getReasonTypeItem().getDefaultFlg().value);
+			// divergenceReasonDto.setDivergenceReasonIdDefault(divergenceReason.getReasonTypeItem().getDefaultFlg().value);
 			
 			divergenceReasonDtos.add(divergenceReasonDto);
 		}

@@ -32,7 +32,6 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeIn
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTypeKAF011;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absenceleaveapp.AbsenceLeaveAppDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp.RecruitmentAppDto;
-import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
@@ -51,7 +50,6 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombinat
 import nts.uk.ctx.at.request.dom.application.holidayshipment.BreakOutType;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentService;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
@@ -104,8 +102,8 @@ public class HolidayShipmentScreenAFinder {
 	private ComSubstVacationRepository comSubrepo;
 	@Inject
 	private WithDrawalReqSetRepository withDrawRepo;
-	@Inject
-	private ApplicationReasonRepository appResonRepo;
+//	@Inject
+//	private ApplicationReasonRepository appResonRepo;
 	@Inject
 	private EmployeeRequestAdapter empAdaptor;
 	@Inject
@@ -523,8 +521,8 @@ public class HolidayShipmentScreenAFinder {
 
 		// アルゴリズム「振休振出申請定型理由の取得」を実行する
 
-		output.setAppReasonComboItems(appResonRepo.getReasonByAppType(companyID, APP_TYPE.value).stream()
-				.map(x -> ApplicationReasonDto.convertToDto(x)).collect(Collectors.toList()));
+//		output.setAppReasonComboItems(appResonRepo.getReasonByAppType(companyID, APP_TYPE.value).stream()
+//				.map(x -> ApplicationReasonDto.convertToDto(x)).collect(Collectors.toList()));
 
 		// アルゴリズム「基準日別設定の取得」を実行する
 		setDateSpecificSetting(companyID, employeeID, refDate, false, recWkTypeCD, recWkTimeCD, absWkTypeCD,

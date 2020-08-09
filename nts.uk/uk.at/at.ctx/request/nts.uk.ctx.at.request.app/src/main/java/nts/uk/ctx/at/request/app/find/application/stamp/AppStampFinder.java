@@ -19,10 +19,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampDto_Old;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampNewPreDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampOutputDto;
-import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampSetDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.StampCombinationDto;
-import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
-import nts.uk.ctx.at.request.app.find.setting.company.request.stamp.dto.StampRequestSettingDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
@@ -82,36 +79,36 @@ public class AppStampFinder {
 //				null, 
 //				appStampNewPreOutput.appCommonSettingOutput.appTypeDiscreteSettings.stream().map(x -> AppTypeDiscreteSettingDto.convertToDto(x)).collect(Collectors.toList()), 
 //				null);
-		appStampNewPreDto.appStampSetDto = new AppStampSetDto(
-				new StampRequestSettingDto(
-						companyID, 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getTopComment().getComment().v(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getTopComment().getFontColor(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getTopComment().getFontWeight(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getBottomComment().getComment().v(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getBottomComment().getFontColor(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getBottomComment().getFontWeight(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getResultDisp().value, 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getSupFrameDispNO().v(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampPlaceDisp().value, 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampDisplayControl().getStampAtrWorkDisp().value, 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampDisplayControl().getStampAtrGoOutDisp().value, 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampDisplayControl().getStampAtrCareDisp().value, 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampDisplayControl().getStampAtrSupDisp().value,
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampDisplayControl().getStampAtrChildCareDisp().value,
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getGoOutTypeDisplayControl().getStampGoOutAtrPrivateDisp().value, 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getGoOutTypeDisplayControl().getStampGoOutAtrPublicDisp().value, 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getGoOutTypeDisplayControl().getStampGoOutAtrCompensationDisp().value, 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getGoOutTypeDisplayControl().getStampGoOutAtrUnionDisp().value),  
-				appStampNewPreOutput.appStampSetOutput.getApplicationReasons().stream()
-					.map(x -> new ApplicationReasonDto(
-							x.getCompanyId(),
-							x.getAppType().value,
-							x.getReasonID(),
-							x.getDispOrder(),
-							x.getReasonTemp().v(),
-							x.getDefaultFlg().value))
-					.collect(Collectors.toList()));
+//		appStampNewPreDto.appStampSetDto = new AppStampSetDto(
+//				new StampRequestSettingDto(
+//						companyID, 
+//						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getTopComment().getComment().v(), 
+//						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getTopComment().getFontColor(), 
+//						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getTopComment().getFontWeight(), 
+//						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getBottomComment().getComment().v(), 
+//						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getBottomComment().getFontColor(), 
+//						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getBottomComment().getFontWeight(), 
+//						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getResultDisp().value, 
+//						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getSupFrameDispNO().v(), 
+//						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampPlaceDisp().value, 
+//						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampDisplayControl().getStampAtrWorkDisp().value, 
+//						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampDisplayControl().getStampAtrGoOutDisp().value, 
+//						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampDisplayControl().getStampAtrCareDisp().value, 
+//						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampDisplayControl().getStampAtrSupDisp().value,
+//						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampDisplayControl().getStampAtrChildCareDisp().value,
+//						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getGoOutTypeDisplayControl().getStampGoOutAtrPrivateDisp().value, 
+//						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getGoOutTypeDisplayControl().getStampGoOutAtrPublicDisp().value, 
+//						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getGoOutTypeDisplayControl().getStampGoOutAtrCompensationDisp().value, 
+//						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getGoOutTypeDisplayControl().getStampGoOutAtrUnionDisp().value),  
+//				appStampNewPreOutput.appStampSetOutput.getApplicationReasons().stream()
+//					.map(x -> new ApplicationReasonDto(
+//							x.getCompanyId(),
+//							x.getAppType().value,
+//							x.getReasonID(),
+//							x.getDispOrder(),
+//							x.getReasonTemp().v(),
+//							x.getDefaultFlg().value))
+//					.collect(Collectors.toList()));
 		appStampNewPreDto.companyID = companyID;
 		appStampNewPreDto.employeeID = employeeID;
 		appStampNewPreDto.employeeName = appStampNewPreOutput.employeeName;

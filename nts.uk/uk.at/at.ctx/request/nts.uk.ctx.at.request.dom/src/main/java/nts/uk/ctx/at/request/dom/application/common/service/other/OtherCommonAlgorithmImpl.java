@@ -51,8 +51,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
@@ -154,8 +152,8 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	@Inject
 	private DisplayReasonRepository displayRep;
 	
-	@Inject
-	private ApplicationReasonRepository applicationReasonRepository;
+//	@Inject
+//	private ApplicationReasonRepository applicationReasonRepository;
 	
 	@Inject
 	private ApplicationRepository applicationRepository;
@@ -617,20 +615,20 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		}
 	}
 	
-	@Override
-	public List<ApplicationReason> getApplicationReasonType(String companyID, DisplayAtr typicalReasonDisplayFlg, ApplicationType appType) {
-		// Input．申請種類をチェックする
-		if(appType != ApplicationType.ABSENCE_APPLICATION) {
-			// Input．定型理由の表示区分をチェック
-			if (typicalReasonDisplayFlg == DisplayAtr.NOT_DISPLAY) {
-				return Collections.emptyList();
-			}
-		}
-		// ドメインモデル「申請定型理由」を取得
-		List<ApplicationReason> applicationReasons = applicationReasonRepository.getReasonByAppType(companyID, appType.value);
-		return applicationReasons;
-		
-	}
+//	@Override
+//	public List<ApplicationReason> getApplicationReasonType(String companyID, DisplayAtr typicalReasonDisplayFlg, ApplicationType appType) {
+//		// Input．申請種類をチェックする
+//		if(appType != ApplicationType.ABSENCE_APPLICATION) {
+//			// Input．定型理由の表示区分をチェック
+//			if (typicalReasonDisplayFlg == DisplayAtr.NOT_DISPLAY) {
+//				return Collections.emptyList();
+//			}
+//		}
+//		// ドメインモデル「申請定型理由」を取得
+//		List<ApplicationReason> applicationReasons = applicationReasonRepository.getReasonByAppType(companyID, appType.value);
+//		return applicationReasons;
+//		
+//	}
 	
 	@Override
 	public boolean displayAppReasonContentFlg(AppDisplayAtr displayReasonFlg) {

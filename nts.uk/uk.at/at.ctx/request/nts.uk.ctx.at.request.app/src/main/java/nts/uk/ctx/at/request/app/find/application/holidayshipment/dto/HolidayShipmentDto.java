@@ -12,7 +12,6 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettin
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absenceleaveapp.AbsenceLeaveAppDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp.RecruitmentAppDto;
-import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
@@ -70,7 +69,7 @@ public class HolidayShipmentDto {
 
 	private boolean manualSendMailAtr;
 
-	private List<ApplicationReasonDto> appReasonComboItems;
+	// private List<ApplicationReasonDto> appReasonComboItems;
 
 	private WorkTimeInfoDto workTimeInfo;
 

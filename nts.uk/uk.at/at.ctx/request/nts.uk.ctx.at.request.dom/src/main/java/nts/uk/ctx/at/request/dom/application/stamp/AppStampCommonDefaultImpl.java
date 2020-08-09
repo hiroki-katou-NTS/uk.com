@@ -20,8 +20,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.DailyAttendanceItemAdapter;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampSetOutput;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting_Old;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
@@ -43,8 +41,8 @@ public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 	@Inject
 	private StampRequestSettingRepository stampRequestSettingRepository;
 	
-	@Inject
-	private ApplicationReasonRepository applicationReasonRepository;
+//	@Inject
+//	private ApplicationReasonRepository applicationReasonRepository;
 	
 	@Inject
 	private ApplicationSettingRepository applicationSettingRepository;
@@ -71,9 +69,10 @@ public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 
 	@Override
 	public AppStampSetOutput appStampSet(String companyID) {
-		StampRequestSetting_Old stampRequestSetting = this.stampRequestSettingRepository.findByCompanyID(companyID).get();
-		List<ApplicationReason> applicationReasons = this.applicationReasonRepository.getReasonByAppType(companyID, ApplicationType.STAMP_APPLICATION.value);
-		return new AppStampSetOutput(stampRequestSetting, applicationReasons);
+//		StampRequestSetting_Old stampRequestSetting = this.stampRequestSettingRepository.findByCompanyID(companyID).get();
+//		List<ApplicationReason> applicationReasons = this.applicationReasonRepository.getReasonByAppType(companyID, ApplicationType.STAMP_APPLICATION.value);
+//		return new AppStampSetOutput(stampRequestSetting, applicationReasons);
+		return null;
 	}
 
 	@Override
