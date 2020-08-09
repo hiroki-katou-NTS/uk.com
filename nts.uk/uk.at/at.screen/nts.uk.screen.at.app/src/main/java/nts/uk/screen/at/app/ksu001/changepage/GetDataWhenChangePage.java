@@ -25,7 +25,9 @@ import nts.uk.ctx.at.schedule.app.find.shift.shijtpalletcom.WorkPairSetScreenDto
 import nts.uk.ctx.at.schedule.dom.shift.management.Combinations;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletCombinations;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsCom;
+import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsComRepository;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrg;
+import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrgRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -70,6 +72,12 @@ public class GetDataWhenChangePage {
 	@Inject
 	private ShiftMasterRepository shiftMasterRepo;
 	
+	
+	@Inject
+	private ShiftPalletsComRepository shiftPalletsComRepository;
+	@Inject
+	private ShiftPalletsOrgRepository shiftPalletsOrgRepository;
+	
 	public GetShiftPalChangePageResult gatData(ChangePageParam param) {
 		
 		GetShiftPalChangePageResult result = new GetShiftPalChangePageResult();
@@ -88,7 +96,6 @@ public class GetDataWhenChangePage {
 		
 		GetCombinationrAndWorkHolidayAtrService.Require require = new RequireImpl(shiftMasterRepo, basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
 		
-		// listShiftMasterCode này chỉ bao gồm những Code chưa được lưu ở localStorage.
 		Map<ShiftMaster,Optional<WorkStyle>> sMap = GetCombinationrAndWorkHolidayAtrService.getCode(require,AppContexts.user().companyId(), listShiftMasterCodeOfPageSelectd);
 		List<String> listShiftMasterCodeFromUI = param.listShiftMasterNotNeedGetNew.stream().map(mapper -> mapper.getShiftMasterCode()).collect(Collectors.toList()); // ko cần get mới
 
@@ -104,7 +111,13 @@ public class GetDataWhenChangePage {
 	}
 	
 	public GetShiftPalChangePageResult getShiftPalletCom(ChangePageParam param) {
-		ShiftPalletsCom shiftPalletsCom = getShiftPalettebyComAndSpePage.getShiftPalletCom(param.pageNumberCom);
+		
+		//ShiftPalletsCom shiftPalletsCom = getShiftPalettebyComAndSpePage.getShiftPalletCom(param.pageNumberCom); dung phai goi ham nay, nhung ham nay dang tra ra data sai
+		
+		// cho a Hieu fix ham tren roi dung lai
+		List<ShiftPalletsCom> listShiftPalletsCom = shiftPalletsComRepository.findShiftPalletUse(AppContexts.user().companyId());
+		ShiftPalletsCom shiftPalletsCom = listShiftPalletsCom.stream().filter(item -> item.getPage() == param.pageNumberCom).findFirst().get();
+		//
 		
 		PageInfo pageInfo = null; 
 		TargetShiftPalette targetShiftPalette = null; 
@@ -141,7 +154,10 @@ public class GetDataWhenChangePage {
 	
 	public GetShiftPalChangePageResult getShiftPalletWkp(ChangePageParam param) {
 		
-		ShiftPalletsOrg shiftPalletsOrg = getShiftPalettebyOrgAndSpePage.getShiftPalletOrg(param.pageNumberOrg, param.workplaceId);
+		//ShiftPalletsOrg shiftPalletsOrg = getShiftPalettebyOrgAndSpePage.getShiftPalletOrg(param.pageNumberOrg, param.workplaceId);
+		List<ShiftPalletsOrg> listShiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceId(0, param.getWorkplaceId());
+		ShiftPalletsOrg shiftPalletsOrg = listShiftPalletsOrg.stream().filter(item -> item.getPage() == param.pageNumberCom).findFirst().get();
+			
 		
 		PageInfo pageInfo = null; 
 		TargetShiftPalette targetShiftPalette = null;

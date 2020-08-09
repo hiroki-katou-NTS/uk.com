@@ -5,6 +5,7 @@ package nts.uk.screen.at.app.ksu001.start;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -80,7 +81,7 @@ public class StartKSU001 {
 		GeneralDate endDate   = param.endDate   == null || param.endDate   == "" ? resultStep1.endDate   : GeneralDate.fromString(param.endDate, DATE_FORMAT);
 		
 		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(workplaceGroupId == null ? TargetOrganizationUnit.WORKPLACE : TargetOrganizationUnit.WORKPLACE_GROUP,
-				workplaceId, workplaceGroupId);
+				workplaceId == null ? Optional.empty() : Optional.of(workplaceId), workplaceGroupId  == null ? Optional.empty() : Optional.of(workplaceGroupId));
 		
 		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(endDate, targetOrgIdenInfor);
 		List<EmployeeInformationImport> resultStep2 = extractTargetEmployees.dataSample(param2);

@@ -28,7 +28,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         // A4 popup-area6 
         // A4_4
-        selectedModeDisplayInBody: KnockoutObservable<number> = ko.observable('time');
+        selectedModeDisplayInBody: KnockoutObservable<number> = ko.observable(undefined);
 
         // A4_7
         achievementDisplaySelected: KnockoutObservable<number> = ko.observable(2);
@@ -160,6 +160,24 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 });
             });
 
+            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                let userInfor: IUserInfor = JSON.parse(data);
+                // A4_4 表示形式の初期選択と画面モード (Chọn default của các hình thức hiển thị và mode màn hình)
+                if (userInfor.disPlayFormat == 'shift') {
+                    self.selectedModeDisplayInBody('shift');
+                    self.visibleShiftPalette(true);
+                } else if (userInfor.disPlayFormat == 'shortName') {
+                    self.selectedModeDisplayInBody('shortName');
+                    self.visibleShiftPalette(false);
+                } else if (userInfor.disPlayFormat == 'time') {
+                    self.selectedModeDisplayInBody('time');
+                    self.visibleShiftPalette(false);
+                }
+            }).ifEmpty((data) => {
+                self.selectedModeDisplayInBody('time');
+                self.visibleShiftPalette(false);
+            });
+
             self.selectedModeDisplayInBody.subscribe(function(viewMode) {
                 if (viewMode == null)
                     return;
@@ -240,10 +258,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 self.getSettingDisplayWhenStart();
                 
-                if (viewMode == 'shift') {
+                 if (viewMode == 'shift') {
                     self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
                     self.bingdingToShiftPallet(data);
                 }
+                
                 
                 // set data Header
                 self.bindingToHeader(data);
@@ -307,6 +326,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             service.getDataOfShiftMode(param).done((data: IDataStartScreen) => {
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
                 self.getSettingDisplayWhenStart();
+                
+                self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
                 // set data Header
                 self.bindingToHeader(data);
                 
@@ -317,12 +338,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     __viewContext.viewModel.viewAC.handleInitCom(
                         data.listPageInfo,
                         data.targetShiftPalette.shiftPalletCom,
-                        ko.observable(userInfor.shiftPalettePageNumberCom - 1));
+                        userInfor.shiftPalettePageNumberCom);
                 }else{
                     __viewContext.viewModel.viewAC.handleInitWkp(
                         data.listPageInfo,
                         data.targetShiftPalette.shiftPalletWorkPlace,
-                        ko.observable(userInfor.shiftPalettePageNumberOrg - 1));
+                        userInfor.shiftPalettePageNumberOrg);
                 }
                 __viewContext.viewModel.viewAC.flag = true;
                 
@@ -418,12 +439,28 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         bingdingToShiftPallet(data: any) {
             let self = this;
             let item = uk.localStorage.getItem(self.KEY);
-            if (item.isPresent()) {
-                let userInfor: IUserInfor = JSON.parse(item.get());
-                __viewContext.viewModel.viewAC.selectedpalletUnit(userInfor.shiftPalletUnit);
+            let userInfor: IUserInfor = JSON.parse(item.get());
+
+            // set data shiftPallet
+            __viewContext.viewModel.viewAC.flag = false;
+            __viewContext.viewModel.viewAC.selectedpalletUnit(userInfor.shiftPalletUnit);
+            if (userInfor.shiftPalletUnit == 1) {
+                __viewContext.viewModel.viewAC.handleInitCom(
+                    data.listPageInfo,
+                    data.targetShiftPalette.shiftPalletCom,
+                    userInfor.shiftPalettePageNumberCom);
             } else {
-                __viewContext.viewModel.viewAC.selectedpalletUnit(1);
+                __viewContext.viewModel.viewAC.handleInitWkp(
+                    data.listPageInfo,
+                    data.targetShiftPalette.shiftPalletWorkPlace,
+                    userInfor.shiftPalettePageNumberOrg);
             }
+            __viewContext.viewModel.viewAC.flag = true;
+        }
+        
+        indexOfPageSelected(listPageInfo : any, shiftPalettePageNumber : any) {
+            let index = _.findIndex(listPageInfo, function(o) { return o.pageNumber == shiftPalettePageNumber; });
+            return index != -1 ? index : 0;
         }
 
         // convert data lấy từ server để đẩy vào Grid
@@ -730,23 +767,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                 let userInfor: IUserInfor = JSON.parse(data);
-
-                // A4_4 表示形式の初期選択と画面モード (Chọn default của các hình thức hiển thị và mode màn hình)
-                if (userInfor.disPlayFormat == '') {
-                    self.selectedModeDisplayInBody('time');
-                    self.visibleShiftPalette(false);
-                } else {
-                    if (userInfor.disPlayFormat == 'shift') {
-                        self.selectedModeDisplayInBody('shift');
-                        self.visibleShiftPalette(true);
-                    } else if (userInfor.disPlayFormat == 'shortName') {
-                        self.selectedModeDisplayInBody('shortName');
-                        self.visibleShiftPalette(false);
-                    } else if (userInfor.disPlayFormat == 'time') {
-                        self.selectedModeDisplayInBody('time');
-                        self.visibleShiftPalette(false);
-                    }
-                }
 
                 // A4_7
                 self.achievementDisplaySelected(userInfor.achievementDisplaySelected);

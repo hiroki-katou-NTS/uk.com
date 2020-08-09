@@ -273,15 +273,16 @@ public class EventInfoAndPersonalConditionsPeriod {
 				companyEventRepo, publicHolidayRepo, specificDateItemRepo);
 		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
 		period.datesBetween().stream().forEach(date -> {
-			TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(param.workplaceGroupId == null
-					? TargetOrganizationUnit.WORKPLACE : TargetOrganizationUnit.WORKPLACE_GROUP, param.workplaceId,
-					param.workplaceGroupId);
+			TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(
+					param.workplaceGroupId == null ? TargetOrganizationUnit.WORKPLACE : TargetOrganizationUnit.WORKPLACE_GROUP, 
+					(param.workplaceId == null || param.workplaceId == "") ? Optional.empty() : Optional.of(param.workplaceId),
+					(param.workplaceGroupId == null || param.workplaceGroupId == "") ? Optional.empty() : Optional.of(param.workplaceGroupId));
 			DateInformation dateInformation = null;
 			dateInformation = DateInformation.create(require, date, targetOrgIdenInfor);
 			listDateInfo.add(dateInformation);
 		});
 
-		// step2
+		// step2 Optional.of(workplaceId), Optional.of(workplaceGroupId)
 		Optional<DisplayControlPersonalCondition> displayControlPerCond = displayControlPerCondRepo
 				.get(AppContexts.user().companyId());
 		if (!displayControlPerCond.isPresent()) {

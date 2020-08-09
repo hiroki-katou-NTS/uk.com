@@ -8,9 +8,6 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.ksu001.changemode.NextMonthFinder;
 import nts.uk.screen.at.app.ksu001.changemode.PreMonthFinder;
-import nts.uk.screen.at.app.ksu001.changemode.ShiftModeFinder;
-import nts.uk.screen.at.app.ksu001.changemode.ShortNameModeFinder;
-import nts.uk.screen.at.app.ksu001.changemode.TimeModeFinder;
 import nts.uk.screen.at.app.ksu001.changepage.ChangePageParam;
 import nts.uk.screen.at.app.ksu001.changepage.GetDataWhenChangePage;
 import nts.uk.screen.at.app.ksu001.changepage.GetShiftPalChangePageResult;
@@ -32,12 +29,6 @@ public class KSU001WebService extends WebService{
 
 	@Inject
 	private StartKSU001 startKSU001;
-	@Inject
-	private ShiftModeFinder shiftModeFinder;
-	@Inject
-	private ShortNameModeFinder shortNameModeFinder;
-	@Inject
-	private TimeModeFinder timeModeFinder;
 	@Inject
 	private NextMonthFinder nextMonthFinder;
 	@Inject

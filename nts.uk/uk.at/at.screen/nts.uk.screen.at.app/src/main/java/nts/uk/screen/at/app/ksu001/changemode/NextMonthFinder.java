@@ -4,6 +4,7 @@
 package nts.uk.screen.at.app.ksu001.changemode;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -78,7 +79,7 @@ public class NextMonthFinder {
 		String workplaceId = "dea95de1-a462-4028-ad3a-d68b8f180412";
 		String workplaceGroupId = null;
 		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(endDate,
-				new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, workplaceId, workplaceGroupId));
+				new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, Optional.of(workplaceId), Optional.of(workplaceGroupId)));
 		List<EmployeeInformationImport> resultStep2 = extractTargetEmployees.dataSample(param2);
 		// step 2 end
 
