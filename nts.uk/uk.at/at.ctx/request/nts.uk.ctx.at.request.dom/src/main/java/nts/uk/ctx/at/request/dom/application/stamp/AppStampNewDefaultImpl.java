@@ -10,7 +10,7 @@ import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampNewPreOutput;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSettingRepository;
@@ -27,7 +27,7 @@ public class AppStampNewDefaultImpl implements AppStampNewDomainService {
 	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
 	
 	@Inject
-	private NewBeforeRegister_New newBeforeRegister; 
+	private NewBeforeRegister newBeforeRegister; 
 	
 	@Inject
 	private RegisterAtApproveReflectionInfoService_New registerAtApproveReflectionInfoService;

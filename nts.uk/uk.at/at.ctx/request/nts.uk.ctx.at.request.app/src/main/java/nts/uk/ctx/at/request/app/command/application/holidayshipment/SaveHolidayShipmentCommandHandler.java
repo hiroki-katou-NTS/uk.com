@@ -34,7 +34,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceA
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
@@ -107,7 +107,7 @@ public class SaveHolidayShipmentCommandHandler
 	@Inject
 	private HolidaySettingRepository holidayRepo;
 	@Inject
-	private NewBeforeRegister_New processBeforeRegister;
+	private NewBeforeRegister processBeforeRegister;
 	@Inject
 	private RegisterAtApproveReflectionInfoService_New registerAppReplection;
 	@Inject

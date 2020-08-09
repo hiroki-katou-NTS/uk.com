@@ -13,10 +13,10 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 
 /**
  * 
- * 2-1.新規画面登録前の処理
+ * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.2-1.新規画面登録前の処理(beforeRegister)
  *
  */
-public interface NewBeforeRegister_New {
+public interface NewBeforeRegister {
     /*public void processBeforeRegister(Application_New application, OverTimeAtr overTimeAtr, boolean checkOver1Year, List<GeneralDate> lstDateHd);*/
 	/**
 	 * 1.入社前退職チェック

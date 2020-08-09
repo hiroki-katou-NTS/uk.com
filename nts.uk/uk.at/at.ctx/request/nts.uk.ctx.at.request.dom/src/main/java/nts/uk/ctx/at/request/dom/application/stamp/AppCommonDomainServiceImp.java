@@ -19,7 +19,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
@@ -46,7 +46,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	private AppStampReflectRepository appStampReflectRepo;
 	
 	@Inject
-	private NewBeforeRegister_New registerBefore;
+	private NewBeforeRegister registerBefore;
 	
 	@Inject
 	private AppStampRepository appStampRepo;

@@ -35,7 +35,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumb
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
@@ -137,7 +137,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	private DetailBeforeUpdate detailBeforeUpdate;
 	
 	@Inject
-	private NewBeforeRegister_New newBeforeRegister;
+	private NewBeforeRegister newBeforeRegister;
 	
 	@Inject
 	private InterimRemainDataMngCheckRegister interimRemainCheckReg;

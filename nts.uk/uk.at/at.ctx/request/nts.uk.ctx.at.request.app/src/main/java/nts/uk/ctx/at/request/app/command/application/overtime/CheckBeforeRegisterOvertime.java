@@ -30,7 +30,7 @@ import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColo
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.IErrorCheckBeforeRegister;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
@@ -47,7 +47,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class CheckBeforeRegisterOvertime {
 
 	@Inject
-	private NewBeforeRegister_New newBeforeRegister;
+	private NewBeforeRegister newBeforeRegister;
 	@Inject
 	private IErrorCheckBeforeRegister beforeCheck;
 	@Inject

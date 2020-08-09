@@ -21,7 +21,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementEarly;
@@ -56,7 +56,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 	private CommonAlgorithm common;
 
 	@Inject
-	private NewBeforeRegister_New newBeforeRegister;
+	private NewBeforeRegister newBeforeRegister;
 
 	@Inject
 	private RegisterAtApproveReflectionInfoService_New registerService;
