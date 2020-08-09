@@ -3,6 +3,8 @@ import { _, Vue, moment } from '@app/provider';
 import { model } from 'views/kdp/S01/shared/index.d';
 import { KdpS01BComponent } from '../b/index';
 import { KdpS01CComponent } from '../c/index';
+import { KdpS01SComponent } from '../s/index';
+import { KdpS01TComponent } from '../t/index';
 
 const basePath = 'at/record/stamp/smart-phone/';
 
@@ -23,7 +25,9 @@ const servicePath = {
     constraints: [],
     components: {
         'screenB': KdpS01BComponent,
-        'screenC': KdpS01CComponent
+        'screenC': KdpS01CComponent,
+        'screenS': KdpS01SComponent,
+        'screenT': KdpS01TComponent
     }
 })
 
@@ -203,9 +207,9 @@ export class KdpS01AComponent extends Vue {
 
     private getStampToSuppress() {
         let vm = this;
-        vm.$mask('show');
+        
         vm.$http.post('at', servicePath.getSuppress).then((result: any) => {
-            vm.$mask('hide');
+            
             let stampToSuppress: model.IStampToSuppress = result.data;
 
             _.forEach(vm.setting.buttons, function (button) {
@@ -321,12 +325,24 @@ export class KdpS01AComponent extends Vue {
         let vm = this;
         vm.$auth.user.then((userInfo) => {
             vm.$modal('screenC', {
-                resultDisplayTime: vm.setting.displaySettingsStampScreen.resultDisplayTime,
-                employeeId: userInfo.employeeId,
-                employeeCode: userInfo.employeeCode
+                attendanceItemIds: vm.setting.lstDisplayItemId
             }).then(() => {
 
             });
+        });
+    }
+
+    public openDialogS() {
+        let vm = this;
+        vm.$modal('screenS').then(() => {
+
+        });
+    }
+
+    public openDialogT() {
+        let vm = this;
+        vm.$modal('screenT').then(() => {
+
         });
     }
 

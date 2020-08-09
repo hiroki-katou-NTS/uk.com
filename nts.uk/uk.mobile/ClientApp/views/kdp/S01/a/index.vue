@@ -9,7 +9,7 @@
         <span id="date">
           {{ $dt.now | date("YYYY年 MM月 DD日（ddd）") }}
         </span>
-        <button type="button" class="float-right btn btn-success">
+        <button  v-click:500="openDialogS" type="button" class="float-right btn btn-success">
           {{ "KDPS01_25" | i18n }}
         </button>
       </div>
@@ -40,7 +40,7 @@
             color: button.buttonDisSet.buttonNameSet.textColor,
             'background-color': button.buttonDisSet.backGroundColor
           }"
-          v-on:click="stampClick(button)"
+          v-click:500="()=>stampClick(button)"
           class="col-12 btn-stamp btn btn-secondary "
         >
           {{ button.buttonDisSet.buttonNameSet.buttonName }}
