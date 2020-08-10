@@ -59,13 +59,13 @@ export class CmmS45ComponentsApp2Component extends Vue {
         this.bindCodition(params.appWorkChangeDispInfo);
 
         let workTypeCode = params.appWorkChange.opWorkTypeCD;
-        let workTypeName = _.find(params.appWorkChangeDispInfo.workTypeLst, (item: any) => item.workTypeCode == workTypeCode).abbreviationName || this.$i18n('KAFS07_10');
-
+        let workType = _.find(params.appWorkChangeDispInfo.workTypeLst, (item: any) => item.workTypeCode == workTypeCode);
+        let workTypeName = workType ? workType.abbreviationName : this.$i18n('KAFS07_10');
         this.$app().workType = workTypeCode + '  ' + workTypeName;
 
         let workTimeCode = params.appWorkChange.opWorkTimeCD;
-        let workTimeName = _.find(params.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == workTimeCode).workTimeDisplayName.workTimeName || this.$i18n('KAFS07_10');
-
+        let workTime = _.find(params.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == workTimeCode);
+        let workTimeName = workTime ?  workTime.workTimeDisplayName.workTimeName : this.$i18n('KAFS07_10');
         this.$app().workTime = workTimeCode + '  ' + workTimeName;
         if (!_.isEmpty(params.appWorkChange.timeZoneWithWorkNoLst)) {
             let time1 = _.find(params.appWorkChange.timeZoneWithWorkNoLst, (item: any) => item.workNo == 1);
@@ -73,11 +73,13 @@ export class CmmS45ComponentsApp2Component extends Vue {
             if (time1) {
                 this.$app().workHours1 = this.$dt.timedr(time1.timeZone.startTime) + ' ~ ' + this.$dt.timedr(time1.timeZone.endTime);
             } else {
+                this.$app().workHours1 = '';
                 this.$app().isWorkHours1 = false;
             }
             if (time2) {
                 this.$app().workHours2 = this.$dt.timedr(time2.timeZone.startTime) + ' ~ ' + this.$dt.timedr(time2.timeZone.endTime);
             } else {
+                this.$app().workHours2 = '';
                 this.$app().isWorkHours2 = false;
             }
         }

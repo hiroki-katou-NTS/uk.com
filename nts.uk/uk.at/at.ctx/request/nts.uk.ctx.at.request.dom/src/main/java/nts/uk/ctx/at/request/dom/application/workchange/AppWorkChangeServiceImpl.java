@@ -512,10 +512,20 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent() ? appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get() : null);
 		
 //		勤務種類・就業時間帯を変更する時
+		Optional<String> workTimeOp = Optional.empty();
+		if (woSelect != null) {
+			if (woSelect.getWorkTime() != null) {
+				if (woSelect.getWorkTime().getWorktimeCode() != null) {
+					workTimeOp = Optional.ofNullable(woSelect.getWorkTime().getWorktimeCode().v());
+				}
+				
+			}
+			
+		}
 		ChangeWkTypeTimeOutput changeWkTypeTimeOutput = this.changeWorkTypeWorkTime(
 				companyId,
 				woSelect.getWorkType().getWorkTypeCode().v(),
-				Optional.ofNullable(woSelect.getWorkTime().getWorktimeCode().v()),
+				workTimeOp,
 				appWorkChangeSettingOutput.getAppWorkChangeSet());
 		
 		
@@ -528,7 +538,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		appWorkChangeDispInfo.setSetupType(Optional.ofNullable(changeWkTypeTimeOutput.getSetupType()));
 		appWorkChangeDispInfo.setPredetemineTimeSetting(changeWkTypeTimeOutput.getOpPredetemineTimeSetting());
 		appWorkChangeDispInfo.setWorkTypeCD(Optional.ofNullable(woSelect.getWorkType().getWorkTypeCode().v()));
-		appWorkChangeDispInfo.setWorkTimeCD(Optional.ofNullable(woSelect.getWorkTime().getWorktimeCode().v()));
+		appWorkChangeDispInfo.setWorkTimeCD(workTimeOp);
 		
 //		勤務変更申請の表示情報．勤務変更申請の反映 = 取得した「勤務変更申請の反映」
 		appWorkChangeDispInfo.setReflectWorkChangeApp(appWorkChangeSettingOutput.getAppWorkChangeReflect());
