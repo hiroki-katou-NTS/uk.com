@@ -14,7 +14,7 @@ module nts.uk.at.view.ksm004.share {
 	<div class="week" data-bind="foreach: $model.daysOfWeek">
 		<div class="day" data-bind="date: $data.date, format: 'ddd', css: { holiday: $data.holiday }"></div>
 	</div>
-	<div class="month" data-bind="foreach: _.chunk($model.daysOfMonth, 7)">
+	<div class="month" data-bind="foreach: _.chunk($model.daysOfMonth, 7), css: {isEmtyMonth: $model.isEmtyMonth }">
 		<div class="week" data-bind="foreach: $data">
 			<div class="day" data-bind="date: $data.date, format: 'DD', css: { holiday: $data.holiday, 'out-month': $data.outMonth }"></div>
 		</div>
@@ -80,7 +80,8 @@ module nts.uk.at.view.ksm004.share {
                 // Lọc ra 7 ngày đầu tiên để hiện thị thứ
                 const daysOfWeek = _.filter(daysOfMonth, (__: Date, i: number) => i < 7);
 
-                return { baseDate, daysOfWeek, daysOfMonth };
+                const isEmtyMonth = _.filter(daysOfMonth, data => data.holiday).length === 0;
+                return { baseDate, daysOfWeek, daysOfMonth, isEmtyMonth };
             });
         }
 
@@ -95,6 +96,7 @@ module nts.uk.at.view.ksm004.share {
         baseDate: Date;
         daysOfWeek: CalendarDate[];
         daysOfMonth: CalendarDate[];
+        isEmtyMonth: boolean;
     }
 
     interface CalendarDate {
