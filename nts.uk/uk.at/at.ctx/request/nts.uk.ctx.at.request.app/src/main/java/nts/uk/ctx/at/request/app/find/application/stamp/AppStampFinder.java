@@ -54,7 +54,7 @@ public class AppStampFinder {
 	private AppStampCommonDomainService appStampCommonDomainService;
 	
 	//refactor4
-	public static final String PATTERN_DATE = "yyyy/MM/DD";
+	public static final String PATTERN_DATE = "yyyy/MM/dd";
 	
 	@Inject
 	private AppCommonDomainService appCommonStampDomainService;

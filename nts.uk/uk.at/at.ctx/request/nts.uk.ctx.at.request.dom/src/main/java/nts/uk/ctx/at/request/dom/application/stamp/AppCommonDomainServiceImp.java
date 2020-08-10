@@ -140,38 +140,62 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		/**
 		 * 介護時間帯
 		 */
-		List<TimePlaceOutput> nursing = stampRecordOutput.getNursingTime();
 		
+		List<TimePlaceOutput> nursing = Collections.emptyList();
+		
+		if (!CollectionUtil.isEmpty(stampRecordOutput.getNursingTime())) {
+			nursing = stampRecordOutput.getNursingTime();
+		}
 		/**
 		 * 休憩時間帯
 		 */
-		List<TimePlaceOutput> breakTime = stampRecordOutput.getBreakTime();
+		List<TimePlaceOutput> breakTime = Collections.emptyList();
+		if(!CollectionUtil.isEmpty(stampRecordOutput.getBreakTime())) {
+			breakTime = stampRecordOutput.getBreakTime();
+		}
 		
 		/**
 		 * 勤務時間帯
 		 */
-		List<TimePlaceOutput> workingTime = stampRecordOutput.getWorkingTime();
-		
+		List<TimePlaceOutput> workingTime = Collections.emptyList();
+		if(!CollectionUtil.isEmpty(stampRecordOutput.getWorkingTime())) {
+			breakTime = stampRecordOutput.getWorkingTime();
+		}
 		
 		/**
 		 * 育児時間帯
-		 */
-		List<TimePlaceOutput> parentingTime = stampRecordOutput.getParentingTime();
+		 */		
+		List<TimePlaceOutput> parentingTime = Collections.emptyList();
+		if(!CollectionUtil.isEmpty(stampRecordOutput.getParentingTime())) {
+			breakTime = stampRecordOutput.getParentingTime();
+		}
 		/**
 		 * 外出時間帯
 		 */
-		List<TimePlaceOutput> outingTime = stampRecordOutput.getOutingTime();
+		
+		List<TimePlaceOutput> outingTime = Collections.emptyList();
+		if(!CollectionUtil.isEmpty(stampRecordOutput.getOutingTime())) {
+			breakTime = stampRecordOutput.getOutingTime();
+		}
 		
 		/**
 		 * 応援時間帯
 		 */
-		List<TimePlaceOutput> supportTime = stampRecordOutput.getSupportTime();
+		
+		List<TimePlaceOutput> supportTime = Collections.emptyList();
+		if(!CollectionUtil.isEmpty(stampRecordOutput.getSupportTime())) {
+			breakTime = stampRecordOutput.getSupportTime();
+		}
 
 		
 		/**
 		 * 臨時時間帯
 		 */
-		List<TimePlaceOutput> extraordinaryTime = stampRecordOutput.getExtraordinaryTime();
+		
+		List<TimePlaceOutput> extraordinaryTime = Collections.emptyList();
+		if(!CollectionUtil.isEmpty(stampRecordOutput.getExtraordinaryTime())) {
+			breakTime = stampRecordOutput.getExtraordinaryTime();
+		}
 		
 		this.addErros(errorStampInfos, StampAtrOther.NURSE, nursing);
 		this.addErros(errorStampInfos, StampAtrOther.BREAK, breakTime);

@@ -10,7 +10,7 @@ import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 public class StartAppStampParam {
 	
 	private String companyId;
-	
+		
 	private String date;
 	
 	private AppDispInfoStartupDto appDispInfoStartupDto;
