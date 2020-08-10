@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 //遅刻早退区分
-public enum LateOrEarlyClassification {
+public enum LateOrEarlyAtr {
 //	遅刻
 	LATE(0,"遅刻"),
 //	早退

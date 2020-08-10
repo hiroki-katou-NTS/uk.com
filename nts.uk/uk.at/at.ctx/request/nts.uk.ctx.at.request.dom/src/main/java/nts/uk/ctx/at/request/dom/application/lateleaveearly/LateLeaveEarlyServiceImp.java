@@ -31,11 +31,12 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoOutput;
+import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateCancelation;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateEarlyDateChangeOutput;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrEarlyClassification;
+import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrEarlyAtr;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrEarlyInfo;
+import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeReport;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.CancelAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSetRepository;
@@ -62,7 +63,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 	private RegisterAtApproveReflectionInfoService registerService;
 
 	@Inject
-	private LateLeaveEarlyRepository lateEarlyRepository;
+	private ArrivedLateLeaveEarlyRepository lateEarlyRepository;
 
 	@Inject
 	private ApplicationApprovalService applicationService;
@@ -236,7 +237,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			LateOrEarlyInfo attend1 = this.checkDataStatus(
 					Optional.of(opAchievementDetail.get().getAchievementEarly().getScheAttendanceTime1().rawHour()),
 					Optional.of(opAchievementDetail.get().getOpWorkTime().get()), listAppSet.getCancelAtr(),
-					new LateOrEarlyInfo(false, 1, false, false, LateOrEarlyClassification.LATE));
+					new LateOrEarlyInfo(false, 1, false, false, LateOrEarlyAtr.LATE));
 
 			// 「OUTPUT.取り消す初期情報＜List＞」に取得した「取り消す初期情報」を追加する （出勤１）
 			infoLst.add(attend1);
@@ -247,7 +248,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			LateOrEarlyInfo leave1 = this.checkDataStatus(
 					Optional.of(opAchievementDetail.get().getAchievementEarly().getScheDepartureTime1().rawHour()),
 					Optional.of(opAchievementDetail.get().getOpLeaveTime().get()), listAppSet.getCancelAtr(),
-					new LateOrEarlyInfo(false, 1, false, false, LateOrEarlyClassification.EARLY));
+					new LateOrEarlyInfo(false, 1, false, false, LateOrEarlyAtr.EARLY));
 
 			// 「OUTPUT.取り消す初期情報＜List＞」に取得した「取り消す初期情報」を追加する（退勤１）
 			infoLst.add(leave1);
@@ -259,7 +260,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 				LateOrEarlyInfo attend2 = this.checkDataStatus(
 						Optional.of(opAchievementDetail.get().getAchievementEarly().getScheAttendanceTime2().rawHour()),
 						Optional.of(opAchievementDetail.get().getOpWorkTime2().get()), listAppSet.getCancelAtr(),
-						new LateOrEarlyInfo(false, 2, false, false, LateOrEarlyClassification.LATE));
+						new LateOrEarlyInfo(false, 2, false, false, LateOrEarlyAtr.LATE));
 
 				// 「OUTPUT.取り消す初期情報＜List＞」に取得した「取り消す初期情報」を追加する （出勤２）
 				infoLst.add(attend2);
@@ -270,7 +271,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 				LateOrEarlyInfo leave2 = this.checkDataStatus(
 						Optional.of(opAchievementDetail.get().getAchievementEarly().getScheDepartureTime2().rawHour()),
 						Optional.of(opAchievementDetail.get().getOpDepartureTime2().get()), listAppSet.getCancelAtr(),
-						new LateOrEarlyInfo(false, 2, false, false, LateOrEarlyClassification.EARLY));
+						new LateOrEarlyInfo(false, 2, false, false, LateOrEarlyAtr.EARLY));
 
 				// 「OUTPUT.取り消す初期情報＜List＞」に取得した「取り消す初期情報」を追加する （退勤２）
 				infoLst.add(leave2);
@@ -308,7 +309,8 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 	 */
 	@Override
 	public LateEarlyDateChangeOutput getChangeAppDate(int appType, List<String> appDates, String baseDate,
-			AppDispInfoNoDateOutput appDispNoDate, AppDispInfoWithDateOutput appDispWithDate, LateEarlyCancelAppSet listAppSet) {
+			AppDispInfoNoDateOutput appDispNoDate, AppDispInfoWithDateOutput appDispWithDate,
+			LateEarlyCancelAppSet listAppSet) {
 		String companyId = AppContexts.user().companyId();
 		List<GeneralDate> dateLst = new ArrayList<>();
 		List<LateOrEarlyInfo> earlyInfos = new ArrayList<>();
@@ -333,15 +335,15 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		}
 
 		Optional<GeneralDate> appDate = Optional.empty();
-		if(!appDates.isEmpty()) {
+		if (!appDates.isEmpty()) {
 			appDate = Optional.of(GeneralDate.fromString(appDates.get(0), DATE_FORMAT));
 		}
 
 		// 遅刻早退実績のチェック処理
 		Optional<String> errorInfo = this.checkLateEarlyResult(lateEarlyActualResults, appDate);
 
-		// エラー情報がない　AND　申請対象日　≠　Empty(ko có "errorInfo" AND appDate ≠　Empty
-		if(!errorInfo.isPresent() && baseDate != null) {
+		// エラー情報がない AND 申請対象日 ≠ Empty(ko có "errorInfo" AND appDate ≠ Empty
+		if (!errorInfo.isPresent() && baseDate != null) {
 			Optional<AchievementDetail> opAchieve = Optional.empty();
 
 			if (appDispInfoWithDateOutput.getOpActualContentDisplayLst().isPresent()
@@ -350,8 +352,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 						.getOpAchievementDetail();
 			}
 
-			earlyInfos = this.initialInfo(listAppSet, opAchieve,
-					appDispNoDate.isManagementMultipleWorkCycles());
+			earlyInfos = this.initialInfo(listAppSet, opAchieve, appDispNoDate.isManagementMultipleWorkCycles());
 		}
 
 		LateEarlyDateChangeOutput output = new LateEarlyDateChangeOutput(appDispInfoWithDateOutput, earlyInfos);
@@ -399,60 +400,121 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 	private List<ConfirmMsgOutput> checkError(String companyID, int appType, boolean agentAtr, boolean isNew,
 			ArrivedLateLeaveEarlyInfoOutput infoOutput, Application application) {
 		List<ConfirmMsgOutput> listMsg = new ArrayList<>();
+		List<TimeReport> timeReportsTemp;
+		List<LateCancelation> cancelTemp;
+		int attendTime = 0;
+		int leaveTime = 0;
+		int attendTime2 = 0;
+		int leaveTime2 = 0;
+		LateCancelation cancelAttend = null;
+		LateCancelation cancelLeave = null;
+		LateCancelation cancelAttend2 = null;
+		LateCancelation cancelLeave2 = null;
 
-		if (infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst()
-				.isPresent()
-				&& infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
-						.getOpActualContentDisplayLst().get().size() > 0
-				&& infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
-						.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().isPresent()) {
-			// 事前制約をチェックする (Kiểm tra các ràng buộc trước)
-			if (application.getPrePostAtr().value == 0) {
-				// 事前モード：
-				// 「出勤時刻・退勤時刻・出勤時刻２・退勤時刻２」か１つは入力必須
-				if (infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
-						.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
-						.getAchievementEarly().getScheAttendanceTime1() == null
-						&& infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
-								.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
-								.getAchievementEarly().getScheAttendanceTime2() == null
-						&& infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
-								.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
-								.getAchievementEarly().getScheDepartureTime1() == null
-						&& infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
-								.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
-								.getAchievementEarly().getScheDepartureTime2() == null) {
-					throw new BusinessException("Msg_1681");
+
+
+			// Get attend time by workno = 1 && classification = 0
+			timeReportsTemp = infoOutput.getArrivedLateLeaveEarly().get().getLateOrLeaveEarlies().stream().map(x -> {
+				if (x.getWorkNo() == 1 && x.getLateOrEarlyClassification().value == 0) {
+					return x;
 				}
-			} else {
-				// 事後モード：
-				// 「4つ時刻・4つ取り消す」のいずれか１つは設定必須
+				return null;
+			}).filter(m -> (m != null)).collect(Collectors.toList());
 
+			attendTime = timeReportsTemp.isEmpty() ? 0 : timeReportsTemp.get(0).getTimeWithDayAttr().v();
+
+			// Get leave time by workno = 1 && classification = 1
+			timeReportsTemp = infoOutput.getArrivedLateLeaveEarly().get().getLateOrLeaveEarlies().stream().map(x -> {
+				if (x.getWorkNo() == 1 && x.getLateOrEarlyClassification().value == 1) {
+					return x;
+				}
+				return null;
+			}).filter(m -> (m != null)).collect(Collectors.toList());
+
+			leaveTime = timeReportsTemp.isEmpty() ? 0 : timeReportsTemp.get(0).getTimeWithDayAttr().v();
+
+			// Get attend time 2 by workno = 2 && classification = 0
+			timeReportsTemp = infoOutput.getArrivedLateLeaveEarly().get().getLateOrLeaveEarlies().stream().map(x -> {
+				if (x.getWorkNo() == 2 && x.getLateOrEarlyClassification().value == 0) {
+					return x;
+				}
+				return null;
+			}).filter(m -> (m != null)).collect(Collectors.toList());
+
+			attendTime2 = timeReportsTemp.isEmpty() ? 0 : timeReportsTemp.get(0).getTimeWithDayAttr().v();
+
+			// Get attend time 2 by workno = 2 && classification = 1
+			timeReportsTemp = infoOutput.getArrivedLateLeaveEarly().get().getLateOrLeaveEarlies().stream().map(x -> {
+				if (x.getWorkNo() == 2 && x.getLateOrEarlyClassification().value == 0) {
+					return x;
+				}
+				return null;
+			}).filter(m -> (m != null)).collect(Collectors.toList());
+
+			leaveTime2 = timeReportsTemp.isEmpty() ? 0 : timeReportsTemp.get(0).getTimeWithDayAttr().v();
+
+			// Get attend time by workno = 1 && classification = 0
+			cancelTemp = infoOutput.getArrivedLateLeaveEarly().get().getLateCancelation().stream().map(x -> {
+				if (x.getWorkNo() == 1 && x.getLateOrEarlyClassification().value == 0) {
+					return x;
+				}
+				return null;
+			}).filter(m -> (m != null)).collect(Collectors.toList());
+
+			cancelAttend = cancelTemp.isEmpty() ? null : cancelTemp.get(0);
+
+			// Get attend time by workno = 1 && classification = 1
+			cancelTemp = infoOutput.getArrivedLateLeaveEarly().get().getLateCancelation().stream().map(x -> {
+				if (x.getWorkNo() == 1 && x.getLateOrEarlyClassification().value == 1) {
+					return x;
+				}
+				return null;
+			}).filter(m -> (m != null)).collect(Collectors.toList());
+
+			cancelLeave = cancelTemp.isEmpty() ? null : cancelTemp.get(0);
+
+			// Get attend time by workno = 2 && classification = 0
+			cancelTemp = infoOutput.getArrivedLateLeaveEarly().get().getLateCancelation().stream().map(x -> {
+				if (x.getWorkNo() == 2 && x.getLateOrEarlyClassification().value == 0) {
+					return x;
+				}
+				return null;
+			}).filter(m -> (m != null)).collect(Collectors.toList());
+
+			cancelAttend2 = cancelTemp.isEmpty() ? null : cancelTemp.get(0);
+
+			// Get attend time by workno = 2 && classification = 1
+			cancelTemp = infoOutput.getArrivedLateLeaveEarly().get().getLateCancelation().stream().map(x -> {
+				if (x.getWorkNo() == 2 && x.getLateOrEarlyClassification().value == 1) {
+					return x;
+				}
+				return null;
+			}).filter(m -> (m != null)).collect(Collectors.toList());
+
+			cancelLeave = cancelTemp.isEmpty() ? null : cancelTemp.get(0);
+
+			if (attendTime != 0 && leaveTime != 0) {
+				if (attendTime > leaveTime) {
+					throw new BusinessException("Msg_1677");
+				}
+				if (attendTime2 != 0 && attendTime > attendTime2) {
+					throw new BusinessException("Msg_1677");
+				}
 			}
-
-			// 出勤時刻 ＜ 退勤時刻
-			// 出勤時刻2 ＜ 退勤時刻2
-			// 退勤時刻 ＜ 出勤時刻2
-			if (infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst()
-					.get().get(0).getOpAchievementDetail().get().getAchievementEarly().getScheAttendanceTime1()
-					.rawHour() < infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
-							.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
-							.getAchievementEarly().getScheDepartureTime1().rawHour()
-					|| infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
-							.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
-							.getAchievementEarly().getScheAttendanceTime2().rawHour() < infoOutput
-									.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
-									.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
-									.getAchievementEarly().getScheDepartureTime2().rawHour()
-					|| infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
-							.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
-							.getAchievementEarly().getScheDepartureTime1().rawHour() < infoOutput
-									.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
-									.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
-									.getAchievementEarly().getScheAttendanceTime2().rawHour()) {
+			if (attendTime2 != 0 && leaveTime2 != 0 && attendTime2 > leaveTime2) {
 				throw new BusinessException("Msg_1677");
 			}
-		}
+
+		if (application.getPrePostAtr().value == 0) {
+			if (attendTime == 0 && attendTime2 == 0 && leaveTime == 0 && leaveTime2 == 0) {
+				throw new BusinessException("Msg_1681");
+			}
+		} else {
+			if (attendTime == 0 && attendTime2 == 0 && leaveTime == 0 && leaveTime2 == 0 && cancelAttend == null
+					&& cancelAttend2 == null && cancelLeave == null && cancelLeave2 == null) {
+				throw new BusinessException("Msg_1681");
+			}
+			}
 
 
 		if (isNew) {
@@ -491,7 +553,6 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 
 		// 2-2.新規画面登録時承認反映情報の整理
 		this.registerService.newScreenRegisterAtApproveInfoReflect(employeeId, application);
-
 
 		if (infoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting()
 				.getAppTypeSetting().isSendMailWhenRegister()) {
