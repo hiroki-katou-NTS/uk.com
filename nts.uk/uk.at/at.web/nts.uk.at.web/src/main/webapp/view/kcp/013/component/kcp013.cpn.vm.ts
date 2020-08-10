@@ -19,7 +19,6 @@ module kcp013.component {
 					optionsText: 'name',
 					editable: false,
 					width: 450,
-					enable: isEnable,
 					columns: [
 					{ prop: 'showNone', length: 0 },
 					{ prop: 'showDeferred', length: 0 },
@@ -40,7 +39,7 @@ module kcp013.component {
 		listWorkHours: KnockoutObservableArray<Input>;
 		selectedCode: KnockoutObservable<string>;
 		fillter: boolean;
-		workPlaceId: string;
+		workPlaceId: KnockoutObservable<string>;
 		checked: KnockoutObservable<boolean>
 		selectItem: any;
 		showNone: KnockoutObservable<string>;
@@ -57,7 +56,7 @@ module kcp013.component {
 			self.showNone = param.showNone;
 			self.showDeferred = param.showDeferred;
 			self.isEnable = ko.observable(param.disable);
-
+            
 			self.checked = ko.observable(param.fillter);
 			if (self.checked()) {
 				self.loadAllWorkHours(param);
@@ -85,6 +84,8 @@ module kcp013.component {
 		public loadWorkHours(param): JQueryPromise<void> {
 			let self = this;
 			var dfd = $.Deferred();
+            let wkpId = param.workPlaceId();
+            param.workPlaceId = wkpId;
 			nts.uk.request.ajax('at', GET_WORK_HOURS_URL, param).done((data) => {
 				self.getListWorkHours(data, param)
 				self.listWorkHours.valueHasMutated();
@@ -97,7 +98,9 @@ module kcp013.component {
 		// get All Working Hours by workplaceId
 		public loadAllWorkHours(param): JQueryPromise<void> {
 			let self = this;
-			var dfd = $.Deferred();
+            var dfd = $.Deferred();
+            let wkpId = param.workPlaceId();
+            param.workPlaceId = wkpId;
 			nts.uk.request.ajax('at', GET_ALL_WORK_HOURS_URL).done((data) => {
 				self.getListWorkHours(data, param)
 				self.listWorkHours.valueHasMutated();

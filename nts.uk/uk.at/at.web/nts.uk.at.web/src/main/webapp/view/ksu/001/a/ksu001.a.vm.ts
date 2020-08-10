@@ -255,7 +255,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 // khởi tạo data localStorage khi khởi động lần đầu.
                 self.creatDataLocalStorege(data.dataBasicDto);
-
+                
+                __viewContext.viewModel.viewAB.workPlaceId(data.dataBasicDto.workplaceId);
+        
                 self.getSettingDisplayWhenStart();
                 
                  if (viewMode == 'shift') {

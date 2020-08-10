@@ -11,7 +11,7 @@ module nts.uk.at.view.kcp013.a.viewmodel {
 			let data = getShared("data");
 			self.input = {
 				fillter: data.fillter,
-				workPlaceId: data.workPlaceId,
+				workPlaceId: ko.observable(data.workPlaceId),
 				initiallySelected: [data.initiallySelected],
 				displayFormat: '',
 				showNone: data.showNone,

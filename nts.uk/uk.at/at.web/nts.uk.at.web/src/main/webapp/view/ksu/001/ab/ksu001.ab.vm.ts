@@ -15,20 +15,20 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
         dataCell: any; // data để paste vào grid
         isDisableWorkTime : boolean;
         enableWorkTime : KnockoutObservable<boolean> = ko.observable(true);
-        
-        
+        workPlaceId: KnockoutObservable<string>;
 
         constructor() {
             let self = this;
             let workTypeCodeSave = uk.localStorage.getItem('workTypeCodeSelected');
             let workTimeCodeSave = uk.localStorage.getItem('workTimeCodeSelected');
             let isDisableWorkTime = false;
+            self.workPlaceId = ko.observable('');
 
             self.listWorkType = ko.observableArray([]);
             self.selectedWorkTypeCode = ko.observable(workTypeCodeSave.isPresent() ? workTypeCodeSave.get() : '');
             self.input = {
                 fillter: false,
-                workPlaceId: 'abc',
+                workPlaceId: self.workPlaceId,
                 initiallySelected: [workTimeCodeSave.isPresent() ? workTimeCodeSave.get() : ''],
                 displayFormat: '',
                 showNone: true,
@@ -36,7 +36,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                 selectMultiple: true,
                 isEnable: true
             };
-
+            
             self.dataCell = {};
 
             self.selectedWorkTypeCode.subscribe((newValue) => {
@@ -48,7 +48,6 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                 let workType = _.filter(self.listWorkType(), function(o) { return o.workTypeCode == newValue; });
                 if (workType.length > 0) {
                     console.log(workType[0]);
-
                     // check workTimeSetting 
                     if (workType[0].workTimeSetting == 2) {
                         self.isDisableWorkTime = true;
