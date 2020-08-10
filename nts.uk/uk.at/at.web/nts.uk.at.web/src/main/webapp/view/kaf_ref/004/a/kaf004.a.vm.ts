@@ -112,7 +112,17 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                             vm.workManagement.scheWorkTime2("--:--");
                         }
 
+                        // Test data
+                        vm.workManagement.scheAttendanceTime("8:30");
+                        vm.workManagement.scheWorkTime("17:30");
+                        vm.workManagement.scheAttendanceTime2("18:00");
+                        vm.workManagement.scheWorkTime2("23:00");
 
+                        vm.workManagement.workTime(1030);
+                        vm.workManagement.leaveTime(510);
+                        vm.workManagement.workTime2(1110);
+                        vm.workManagement.leaveTime2(1200);
+                        // Test data
                     }
                 }).fail((failData: any) => {
                     console.log(failData);
@@ -290,6 +300,9 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                             }
                         }).fail((fail: any) => {
                             console.log(fail);
+                            if(fail) {
+                                vm.$dialog.error({messageId: fail.messageId});
+                            }
                         })
                     }
                 }).always(() => vm.$blockui("hide"));
@@ -355,16 +368,17 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     case IdItem.A6_7: {
                         return ko.toJS(this.workManagement.workTime) === null;
                     } case IdItem.A6_13: {
-                        return !!ko.toJS(this.workManagement.leaveTime);
+                        return ko.toJS(this.workManagement.leaveTime) === null;
                     } case IdItem.A6_19: {
-                        return !!ko.toJS(this.workManagement.workTime2);
+                        return ko.toJS(this.workManagement.workTime2) === null;
                     } case IdItem.A6_25: {
-                        return !!ko.toJS(this.workManagement.leaveTime2);
+                        return ko.toJS(this.workManagement.leaveTime2) === null;
                     } default: {
                         return false;
                     }
                 }
             }
+            return true;
         }
 
         // ※10 display
