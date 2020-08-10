@@ -15,8 +15,6 @@ public class BentoReserveCommand {
 	
 	private GeneralDate date;
 
-	private String workLocationCode;
-
 	private List<BentoReservationDetailCommand> details;
 	
 	public Map<Integer, BentoReservationCount> getFrame1Bentos() {
