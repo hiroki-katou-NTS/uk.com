@@ -194,6 +194,21 @@ export class KdpS01SComponent extends Vue {
         return 'center';
     }
 
+    public getTextColor(item) {
+
+        const daysColor = [
+            { day: 0, color: '#FF0000' },
+            { day: 6, color: '#0000FF' }
+        ];
+
+        let day = moment.utc(item.stampDatetime).day(),
+
+            dayColor = _.find(daysColor, ['day', day]);
+
+        return dayColor ? dayColor.color : '#000000';
+
+    }
+
 
     public login() {
 

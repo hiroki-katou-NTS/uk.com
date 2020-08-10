@@ -40,7 +40,11 @@
       </div>
       <div class="col-6 px-0">
         <nts-dropdown showTitle="false" v-model="selectedValue">
-          <option v-for="item in dropdownList" :value="item.code">
+          <option
+            v-for="(item, k) in dropdownList"
+            :value="item.code"
+            v-bind:key="k"
+          >
             {{ item.text | i18n }}
           </option>
         </nts-dropdown>
@@ -57,7 +61,13 @@
       </thead>
       <tbody>
         <tr v-for="item in getItems" v-bind:key="item.stampDatetime">
-          <td>{{ item.stampDatetime | date("D（ddd）") }}</td>
+          <td
+            v-bind:style="{
+              color: getTextColor(item)
+            }"
+          >
+            {{ item.stampDatetime | date("D（ddd）") }}
+          </td>
           <td>
             {{ getSymbol(item) | i18n }}
             {{ item.stampDatetime | date("HH:MM") }}
