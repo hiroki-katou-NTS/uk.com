@@ -36,7 +36,7 @@
 					data-bind="click: deletePattern, enable: $root.errors.isEmpty()  &amp; isEditting()">#{i18n.getText('KSM003_22')}</button>
 				<!-- B1_4: Button Export Excel -->
 				<button tabindex="4"
-						data-bind="click: exportExcel">#{i18n.getText('KSM003_45')}</button>
+						data-bind="click: downloadExcel">#{i18n.getText('KSM003_45')}</button>
 			</div>
 			<div id="content-area">
 				<div id="left-content" style="float: left"
@@ -105,6 +105,16 @@
 										}"
 									 class="swap-contents">
 								</div>
+							<!--	<div id="swapUpDown"
+									 data-bind="ntsUpDown: {
+											targetSource: gridItems,
+											primaryKey: 'id',
+											comId: '#workingList',
+											type: 'grid',
+											enable: true
+										}"
+									 class="swap-contents">
+								</div>-->
 							</td>
 						</tr>
 					</table>
