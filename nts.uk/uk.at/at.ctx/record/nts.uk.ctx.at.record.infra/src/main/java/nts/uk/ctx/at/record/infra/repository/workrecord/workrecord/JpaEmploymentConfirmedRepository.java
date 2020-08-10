@@ -62,16 +62,14 @@ public class JpaEmploymentConfirmedRepository extends JpaRepository implements E
 	}
 	
 	public KrcdtWorkFixed toEntity(EmploymentConfirmed domain) {
-		KrcdtWorkFixed entity = new KrcdtWorkFixed();
-		
-		entity.confirm_date_time = domain.getDate();
-		entity.employeeId = domain.getEmployeeId();
-		entity.pk.companyId = domain.getCompanyId().v();
-		entity.pk.closureId = domain.getClosureId().value;
-		entity.pk.processYM = domain.getProcessYM().v();
-		entity.pk.workplaceId = domain.getWorkplaceId().v();
-		
-		return entity;
+		return new KrcdtWorkFixed(
+				new KrcdtWorkFixedPk(
+						domain.getCompanyId().v(), 
+						domain.getWorkplaceId().v(), 
+						domain.getClosureId().value, 
+						domain.getProcessYM().v()), 
+				domain.getEmployeeId(), 
+				domain.getDate());
 	}
 	
 	public EmploymentConfirmed toDomain(KrcdtWorkFixed entity) {
