@@ -233,6 +233,7 @@ export module model {
 
     interface IEmployeeRecordImport {
         pname: string;
+        employeeCode: string;
     }
 
     export interface IEmployeeStampInfo {
@@ -326,6 +327,8 @@ export module model {
          */
         workTimeName: string;
 
+        empInfo: IEmployeeRecordImport;
+
     }
 
     interface IConfirmStatusActualResultDto {
@@ -360,23 +363,23 @@ export module model {
         /**
          * 社員ID
          */
-        employeeId : string;
-    
+        employeeId: string;
+
         /**
          * 本人確認内容
          */
-        confirmDetails:Array<IConfirmDetailCommand>;
+        confirmDetails: Array<IConfirmDetailCommand>;
     }
 
     interface IConfirmDetailCommand {
         /**
          * 年月日
          */
-	    ymd:Date;
+        ymd: Date;
 
         /**
          * 本人確認状況
          */
-        IdentityVerificationStatus:Boolean;
+        IdentityVerificationStatus: Boolean;
     }
 }

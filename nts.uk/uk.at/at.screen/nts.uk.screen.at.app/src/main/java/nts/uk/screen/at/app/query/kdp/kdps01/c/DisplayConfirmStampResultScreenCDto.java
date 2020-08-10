@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.stamp.management.DisplayScreenStampingResultDto;
+import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 
 /**
  * 
@@ -54,4 +55,6 @@ public class DisplayConfirmStampResultScreenCDto {
 	 * 就業時間帯名 ←就業時間帯の設定.表示名
 	 */
 	private String workTimeName;
+	
+	private EmployeeRecordImport empInfo;
 }

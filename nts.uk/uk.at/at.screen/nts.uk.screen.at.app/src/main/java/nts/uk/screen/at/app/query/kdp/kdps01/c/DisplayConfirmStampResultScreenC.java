@@ -16,6 +16,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.DisplayScreenStampingResultDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.DisplayScreenStampingResultFinder;
+import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
+import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
@@ -73,6 +75,9 @@ public class DisplayConfirmStampResultScreenC {
 
 	@Inject
 	private DailyAttendanceItemRepository DailyAttendanceItemRepo;
+
+	@Inject
+	private EmployeeRecordAdapter sysEmpPub;
 
 	/**
 	 * 打刻結果(スマホ)の確認及び実績の確認画面を取得する
@@ -155,6 +160,8 @@ public class DisplayConfirmStampResultScreenC {
 				.stream().map(x -> ItemDisplayedDto.fromDomain(x)).collect(Collectors.toList());
 
 		result.setLstItemDisplayed(attendanceItems);
+
+		result.setEmpInfo(this.sysEmpPub.getPersonInfor(AppContexts.user().employeeId()));
 
 		return result;
 	}

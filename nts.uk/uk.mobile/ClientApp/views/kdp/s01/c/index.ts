@@ -6,7 +6,7 @@ import { TimeWithDay } from '@app/utils/time';
 const basePath = 'at/record/stamp/smart-phone/';
 
 const servicePath = {
-    getStampResult: basePath + 'get-stamp-result-screen-c' ,
+    getStampResult: basePath + 'get-stamp-result-screen-c',
     regDailyResult: basePath + 'reg-daily-result'
 };
 
@@ -93,7 +93,8 @@ export class KdpS01CComponent extends Vue {
             }
 
             vm.$auth.user.then((user) => {
-                vm.screenData.employeeCode = user.employeeCode;
+                vm.screenData.employeeCode = data.empInfo ? data.empInfo.employeeCode : user.employeeCode;
+                vm.screenData.employeeName = data.empInfo ? data.empInfo.pname : '';
             });
 
 
