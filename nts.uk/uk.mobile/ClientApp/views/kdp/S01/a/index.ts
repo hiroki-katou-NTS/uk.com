@@ -207,9 +207,9 @@ export class KdpS01AComponent extends Vue {
 
     private getStampToSuppress() {
         let vm = this;
-        
+
         vm.$http.post('at', servicePath.getSuppress).then((result: any) => {
-            
+
             let stampToSuppress: model.IStampToSuppress = result.data;
 
             _.forEach(vm.setting.buttons, function (button) {
@@ -283,14 +283,14 @@ export class KdpS01AComponent extends Vue {
                             case 1:
                             case 3:
                             case 4:
-                                vm.openDialogB(result);
+                                vm.openDialogB(result, command.stampButton);
                                 break;
 
                             case 2: {
                                 if (vm.setting.usrAtrValue === 1) {
-                                    vm.openDialogC(result);
+                                    vm.openDialogC(result, command.stampButton);
                                 } else {
-                                    vm.openDialogB(result);
+                                    vm.openDialogB(result, command.stampButton);
                                 }
                                 break;
                             }
@@ -306,7 +306,7 @@ export class KdpS01AComponent extends Vue {
         });
     }
 
-    private openDialogB(date: Date) {
+    private openDialogB(date: Date, stampButton: model.IStampButtonCommand) {
 
         let vm = this;
         vm.$auth.user.then((userInfo) => {
@@ -317,17 +317,30 @@ export class KdpS01AComponent extends Vue {
                 employeeCode: userInfo.employeeCode
             }).then(() => {
 
+                vm.$http.post('at', servicePath.getOmission, stampButton).then((result: any) => {
+                    let data: model.IGetOmissionContentDto = result.data;
+                    if (data && data.errorInfo && data.errorInfo.length > 0) {
+                        vm.openDialogT(data);
+                    }
+                });
             });
         });
     }
 
-    private openDialogC(date: Date) {
+    private openDialogC(date: Date, stampButton: model.IStampButtonCommand) {
         let vm = this;
         vm.$auth.user.then((userInfo) => {
             vm.$modal('screenC', {
                 attendanceItemIds: vm.setting.lstDisplayItemId
             }).then(() => {
 
+                vm.$http.post('at', servicePath.getOmission, stampButton).then((result: any) => {
+                    let data: model.IGetOmissionContentDto = result.data;
+
+                    if (data && data.errorInfo && data.errorInfo.length > 0) {
+                        vm.openDialogT(data);
+                    }
+                });
             });
         });
     }
@@ -339,9 +352,9 @@ export class KdpS01AComponent extends Vue {
         });
     }
 
-    public openDialogT() {
+    public openDialogT(data) {
         let vm = this;
-        vm.$modal('screenT').then(() => {
+        vm.$modal('screenT', data).then(() => {
 
         });
     }

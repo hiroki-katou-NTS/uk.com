@@ -41,46 +41,46 @@ export class KdpS01SComponent extends Vue {
         items: [
             {
                 id: 1,
-                date: '15(金)',
-                stampType: '出勤',
+                date: '',
+                stampType: '',
                 stamp: {
-                    relieve: { stampMeans: 'スマホ打刻' },
+                    relieve: { stampMeans: '' },
                     buttonValueType: -1
                 }
             },
             {
                 id: 2,
-                date: '14(木)',
-                stampType: '退勤',
+                date: '',
+                stampType: '',
                 stamp: {
-                    relieve: { stampMeans: 'スマホ打刻' },
+                    relieve: { stampMeans: '' },
                     buttonValueType: -1
                 }
             },
             {
                 id: 3,
-                date: '13(木)',
-                stampType: '退門',
+                date: '',
+                stampType: '',
                 stamp: {
-                    relieve: { stampMeans: 'スマホ打刻' },
+                    relieve: { stampMeans: '' },
                     buttonValueType: -1
                 }
             },
             {
                 id: 4,
-                date: '12(木)',
-                stampType: '外出(私用)',
+                date: '',
+                stampType: '',
                 stamp: {
-                    relieve: { stampMeans: 'スマホ打刻' },
+                    relieve: { stampMeans: '' },
                     buttonValueType: -1
                 }
             },
             {
                 id: 5,
-                date: '11(木)',
-                stampType: '出勤',
+                date: '',
+                stampType: '',
                 stamp: {
-                    relieve: { stampMeans: 'スマホ打刻' },
+                    relieve: { stampMeans: '' },
                     buttonValueType: -1
                 }
             }
@@ -227,10 +227,10 @@ interface Iitem {
 }
 
 enum ButtonType {
-    // 出勤系
+    // 系
 
     GOING_TO_WORK = 1,
-    // 退勤系
+    // 系
 
     WORKING_OUT = 2,
     // "外出系"

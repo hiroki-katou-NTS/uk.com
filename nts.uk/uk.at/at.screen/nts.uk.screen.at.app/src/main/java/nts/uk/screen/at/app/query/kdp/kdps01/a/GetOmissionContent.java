@@ -65,7 +65,7 @@ public class GetOmissionContent {
 	private AppDispNameRepository appDispRepo;
 
 	public GetOmissionContentDto getOmission(StampButtonCommand query) {
-		
+
 		GetOmissionContentDto result = new GetOmissionContentDto();
 
 		CheckAttdErrorAfterStampRequiredImpl require = new CheckAttdErrorAfterStampRequiredImpl(stamPromptAppRepo,
@@ -74,8 +74,9 @@ public class GetOmissionContent {
 		// 1.require, 社員ID, 打刻手段, 打刻ボタン
 		List<DailyAttdErrorInfo> errorInfo = CheckAttdErrorAfterStampService.get(require,
 				AppContexts.user().employeeId(), query.toDomainValue());
-		
-		result.setErrorInfo(errorInfo);
+
+		result.setErrorInfo(
+				errorInfo.stream().map(x -> DailyOmissionAttdErrorInfoDto.fromDomain(x)).collect(Collectors.toList()));
 
 		// アルゴリズム「メニューの表示名を取得する」を実行する
 
@@ -97,20 +98,22 @@ public class GetOmissionContent {
 									+ "/index.xhtml"
 									+ (item.getQueryString() != null ? "?" + item.getQueryString() : "");
 
-							return new AppDispNameExp(companyId, x.value, item.getDisplayName(), url);
+							return new AppDispNameExp(companyId, x.value, item.getDisplayName(), screen, screenCd,
+									item.getScreenId(), item.getQueryString(), url);
 						}).collect(Collectors.toList());
 				appDispNames.addAll(appNames);
 			});
 		}
-		
+
 		result.setAppDispNames(appDispNames);
 
 		// アルゴリズム「申請種類を取得する」を実行する
 
-		List<AppDispNameDto> appNames = this.appDispRepo.getAll().stream().map(x->AppDispNameDto.convertToDto(x)).collect(Collectors.toList());
-		
+		List<AppDispNameDto> appNames = this.appDispRepo.getAll().stream().map(x -> AppDispNameDto.convertToDto(x))
+				.collect(Collectors.toList());
+
 		result.setAppNames(appNames);
-		
+
 		return result;
 
 	}

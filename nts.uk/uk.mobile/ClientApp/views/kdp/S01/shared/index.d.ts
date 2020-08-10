@@ -163,7 +163,7 @@ export module model {
 
         refActualResult: IRefectActualResultCommand;
     }
-    interface IStampButtonCommand {
+    export interface IStampButtonCommand {
         /** ページNO */
         pageNo: number;
 
@@ -381,5 +381,18 @@ export module model {
          * 本人確認状況
          */
         IdentityVerificationStatus: Boolean;
+    }
+
+    export interface IStampButtonCommand {
+        /** ページNO */
+        pageNo: number;
+
+        /** ボタン位置NO */
+        buttonPositionNo: number;
+    }
+
+    export interface IGetOmissionContentDto{
+        errorInfo:any;
+        appDispNames:Array<any>;
     }
 }
