@@ -31,9 +31,6 @@ module nts.uk.at.view.kdl006.a {
                     $('.scroll').css({"width": "630", "overflow-y": "hidden"});
                 }
             });
-            $(document).ready(function() {
-                $('#combo-box').focus();
-            });
         }
         
         startPage(): JQueryPromise<any> {
@@ -75,6 +72,7 @@ module nts.uk.at.view.kdl006.a {
                     error({ messageId: res.messageId });
                 }).always(() =>{
                     block.clear();
+                    $('#combo-box').focus();
                 });
             }
         }
