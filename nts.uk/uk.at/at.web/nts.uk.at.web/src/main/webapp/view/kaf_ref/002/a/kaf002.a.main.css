@@ -10,3 +10,13 @@
 input {
 	text-align: center !important;
 }
+.customeLink:hover {
+	text-decoration:underline;
+}
+.nts-combo-container {
+	height: 31px !important;
+	margin-top: 3px;
+}
+td .ntsCheckBox-label {
+	margin-top: 10px !important;
+}
