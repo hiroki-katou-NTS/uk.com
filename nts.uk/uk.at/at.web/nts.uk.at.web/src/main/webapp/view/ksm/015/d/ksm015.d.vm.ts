@@ -267,7 +267,7 @@ module nts.uk.at.view.ksm015.d.viewmodel {
 				isMultiSelect: true,
 				filter: 0,
 				permission: false,
-				//shifutoCodes: _.map(self.shiftItems(), (val) => { return val.shiftMasterCode })
+				shiftCodeExpel: _.map(self.shiftItems(), (val) => { return val.shiftMasterCode }),
 				shifutoCodes: []
 			}, true);
 

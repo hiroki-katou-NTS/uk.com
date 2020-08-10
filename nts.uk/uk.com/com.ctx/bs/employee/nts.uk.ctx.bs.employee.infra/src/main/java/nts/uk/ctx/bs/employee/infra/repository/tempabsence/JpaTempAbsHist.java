@@ -518,6 +518,9 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	@Override
 	public List<TempAbsenceHisItem> specifyHisAndFrameNotGetHisItem(List<String> lstHisId,
 			List<TempAbsenceFrameNo> lstTempAbsenceFrNo) {
+		if (lstHisId.isEmpty()) {
+			return new ArrayList<>();
+		}
 		List<Integer> lstTempAbsenceFrNos = lstTempAbsenceFrNo.stream().map(item -> item.v().intValue()).collect(Collectors.toList());
 		List<TempAbsenceHisItem> data = new ArrayList<TempAbsenceHisItem>();
 		if (lstTempAbsenceFrNo.isEmpty()) {
