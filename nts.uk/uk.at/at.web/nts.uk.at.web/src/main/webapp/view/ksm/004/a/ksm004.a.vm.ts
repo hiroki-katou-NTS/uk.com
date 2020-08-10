@@ -1024,7 +1024,7 @@ module nts.uk.at.view.ksm004.a {
                     nts.uk.ui.windows.setShared('KSM004_F_PARAM',
                         {
                             classification: value,
-                            yearMonth: vm.yearMonthPicked1(),
+                            yearMonth: vm.yearMonthPicked(),
                         });
                     nts.uk.ui.windows.sub.modal("/view/ksm/004/f/index.xhtml", { title: "hello", dialogClass: "no-close" }).onClosed(function() {
                         vm.isShowDatepicker = false;
