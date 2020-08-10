@@ -18,7 +18,7 @@ module nts.uk.at.view.kdl006.a {
         
         constructor(){
             let self = this;
-            self.closureId = getShared('KDL006-CLOSUREID');
+            self.closureId = parseInt(getShared('KDL006-CLOSUREID'));
             self.selectedId.subscribe((newValue) => {
                 let closure = _.find(self.tighteningList(), ['closureId', self.selectedId()]);
                 self.descriptive(getText('KDL006_15',[closure ? closure.closureName:'']));
