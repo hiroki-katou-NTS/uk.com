@@ -31,7 +31,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoOutput;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateCancelation;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateEarlyDateChangeOutput;
@@ -64,7 +63,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 	private RegisterAtApproveReflectionInfoService registerService;
 
 	@Inject
-	private LateLeaveEarlyRepository lateEarlyRepository;
+	private ArrivedLateLeaveEarlyRepository lateEarlyRepository;
 
 	@Inject
 	private ApplicationApprovalService applicationService;
