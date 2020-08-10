@@ -5,6 +5,10 @@
 package nts.uk.ctx.at.shared.infra.entity.workingcondition;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,6 +25,9 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -110,5 +117,44 @@ public class KshmtWorkingCond extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.kshmtWorkingCondPK;
 	}
+
+	public KshmtWorkingCond(KshmtWorkingCondPK kshmtWorkingCondPK, String cid, GeneralDate strD, GeneralDate endD) {
+		super();
+		this.kshmtWorkingCondPK = kshmtWorkingCondPK;
+		this.cid = cid;
+		this.strD = strD;
+		this.endD = endD;
+	}
+	
+	public static List<KshmtWorkingCond> toEntity(WorkingCondition dom){
+		List<KshmtWorkingCond> listEntity = new ArrayList<>();
+		List<DateHistoryItem> listDate = dom.getDateHistoryItem();
+		listDate.stream().forEach( x ->{
+			KshmtWorkingCond data = new KshmtWorkingCond(
+					new KshmtWorkingCondPK(dom.getEmployeeId(), x.identifier()),
+					dom.getCompanyId(),
+					x.span().start(),
+					x.span().end());
+			listEntity.add(data);
+		});	
+		return listEntity;
+	}
+
+
+	public static Optional<WorkingCondition> toDomainHis(List<KshmtWorkingCond> lstEntity){
+		if(lstEntity.isEmpty()){
+			return Optional.empty();
+		}
+		List<DateHistoryItem> lstDateHis = lstEntity.stream()
+				.map(c -> new DateHistoryItem(c.getKshmtWorkingCondPK().getHistoryId(),
+						new DatePeriod(c.getStrD(), c.getEndD())))
+				.collect(Collectors.toList());
+		WorkingCondition dom = new WorkingCondition(
+				lstEntity.get(0).getCid(),
+				lstEntity.get(0).getKshmtWorkingCondPK().getSid(),
+				lstDateHis);
+		return Optional.of(dom);
+	}
+
 
 }

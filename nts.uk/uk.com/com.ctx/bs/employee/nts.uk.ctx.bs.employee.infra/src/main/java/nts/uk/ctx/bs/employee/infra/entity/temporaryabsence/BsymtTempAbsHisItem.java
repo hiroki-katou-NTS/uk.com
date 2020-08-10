@@ -194,17 +194,19 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 		this.sameFamilyDays = sameFamilyDays;
 	}
 	
-//	public static BsymtTempAbsHisItem toEntity (TempAbsenceHisItem dom){
-//		BsymtTempAbsHisItem entity = new  BsymtTempAbsHisItem(
-//				dom.getHistoryId(),
-//				dom.getEmployeeId(), 
-//				dom.getTempAbsenceFrNo().v(), 
-//				dom.getRemarks().v(), 
-//				dom.getSoInsPayCategory().intValue(),
-//				dom.getFamilyMemberId());
-//				return null;
-//		
-//	}
+	public static BsymtTempAbsHisItem toEntity (TempAbsenceHisItem dom){
+
+		BsymtTempAbsHisItem entity = new BsymtTempAbsHisItem(
+				dom.getHistoryId(),
+				dom.getEmployeeId(), 
+				dom.getTempAbsenceFrNo().v().intValue(), 
+				dom.getRemarks().v(), 
+				dom.getSoInsPayCategory().intValue(),
+				dom.getFamilyMemberId());
+		
+				return entity;
+	
+	}
 	public static TempAbsenceHisItem toDomainHistItem(BsymtTempAbsHisItem entity){
 		TempAbsenceHisItem data = new TempAbsenceHisItem(
 				new TempAbsenceFrameNo(BigDecimal.valueOf(entity.tempAbsFrameNo)),
