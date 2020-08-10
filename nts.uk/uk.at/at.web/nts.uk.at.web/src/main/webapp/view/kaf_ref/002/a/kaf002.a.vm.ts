@@ -27,7 +27,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
 //    ※M2.1_1
 //    打刻申請起動時の表示情報.申請設定（基準日関係なし）.複数回勤務の管理　＝　true
     
-        isCondition2: boolean = true;
+        isCondition2: boolean = false;
 
 //    打刻申請起動時の表示情報.臨時勤務利用　＝　true
     
@@ -262,7 +262,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             let isGreater_10 = items.length > 10;
             
             for (let i = 1; i < items.length + 1; i++) {
-                statesTable.push(new CellState(i, "text1", ['titleColor'])); 
+//                statesTable.push(new CellState(i, "text1", ['titleColor'])); 
                 if (!ko.toJS(items[i-1].flagEnable)) {
                     numberDisable++;
                 }
@@ -436,7 +436,9 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             }else {                
                 $(id).ntsGrid(optionGrid);
             }
-            if (!_.isNull($()))
+            // if isCondition2 => error state of text1
+            let nameAtr = 'td[aria-describedby ="grid' + type + '_text1"]';
+            $(nameAtr).addClass('titleColor');
             // add row to display expand row
             if (items.length >= 10) {
                 if (type == 1 && self.isLink1) {
@@ -455,7 +457,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
 
                 }
  
-            }
+            }   
             
             
         }
