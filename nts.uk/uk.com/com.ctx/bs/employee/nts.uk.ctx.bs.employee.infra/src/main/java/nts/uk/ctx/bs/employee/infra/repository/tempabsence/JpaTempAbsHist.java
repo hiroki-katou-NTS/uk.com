@@ -59,7 +59,37 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	private static final String SELECT_BY_LIST_SID = "SELECT th.sid FROM BsymtTempAbsHistory th"
 			+ " WHERE th.sid IN :employeeIds ORDER BY th.sid ";
 	
-
+	private static final String GET_DATA31 = " SELECT k FROM BsymtTempAbsHistory k "
+            + " WHERE k.cid = :cid "   
+            + " AND k.sid =:employeeId ";
+	
+	private static final String GET_DATA_4 = " SELECT h FROM BsymtTempAbsHisItem h  " 
+			                               + " WHERE h.histId = :hisID ";
+			                             
+	
+	
+	private static final String GET_DATA_6 = " SELECT h FROM BsymtTempAbsHisItem h INNER JOIN BsymtTempAbsHistory i"
+			                                + " ON h.sid = i.sid AND h.histId = i.histId"
+			                                + " WHERE i.cid = :cid"
+			                                + " AND i.startDate <= :ymd"
+							            	+ " AND ymd <= i.endDate";  ;
+	private static final String GET_DATA_71 = " SELECT h FROM BsymtTempAbsHisItem h INNER JOIN BsymtTempAbsHistory i"
+			                                + " ON h.sid = i.sid AND h.histId = i.histId " 
+			                                + " WHERE i.cid = :cid  AND i.sid = :sid "
+			                                + " AND i.startDate <= :ymd  "
+			                                + " AND ymd <= i.endDate";  
+	
+	private static final String GET_DATA_72 = " SELECT h FROM BsymtTempAbsHisItem h INNER JOIN BsymtTempAbsHistory i"
+							            	+ " ON h.sid = i.sid AND h.histId = i.histId " 
+							            	+ " WHERE i.cid = :cid  AND i.sid IN :sid "
+							            	+ " AND i.startDate <= :ymd  "
+							            	+ " AND ymd <= i.endDate";  
+	
+	private static final String DELETE21History = " DELETE FROM BsymtTempAbsHistory h "
+			                             +  " WHERE h.cid = :companyID AND h.sid = :empID AND h.histId = :historyID " ;
+	
+	private static final String DELETE21HistoryItem = " DELETE FROM BsymtTempAbsHisItem h "
+            				+  " WHERE h.sid = :empID  AND h.histId = :historyID " ;		                              
 	/**
 	 * Convert from domain to entity
 	 * 
@@ -487,7 +517,12 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 
 	@Override
 	public void delete(String companyID, String empID, String historyID) {
-		// TODO Auto-generated method stub
+		this.getEntityManager().createQuery(DELETE21History)
+		                       .setParameter("empID", empID)
+		                       .setParameter("historyID", historyID).executeUpdate();
+		this.getEntityManager().createQuery(DELETE21History)
+        .setParameter("empID", empID)
+        .setParameter("historyID", historyID).executeUpdate();
 
 	}
 
@@ -499,14 +534,22 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 
 	@Override
 	public Optional<TempAbsenceHistory> specifyEmpIDGetHistory(String companyID, String employeeId) {
-		// TODO Auto-generated method stub
+		
+		Optional<TempAbsenceHistory> data = BsymtTempAbsHistory.toDomainHis(
+				this.queryProxy().query(GET_DATA31, BsymtTempAbsHistory.class)
+												 .setParameter("cid", companyID)
+												 .setParameter("employeeId", employeeId)
+												 .getList()); 
+		
 		return null;
 	}
 
 	@Override
 	public Optional<TempAbsenceHisItem> getHistoryItemBySpecifyingHistoryID(String hisID) {
-		// TODO Auto-generated method stub
-		return null;
+		 Optional<TempAbsenceHisItem> data = this.queryProxy().query(GET_DATA_4, BsymtTempAbsHisItem.class)
+				                                              .setParameter("hisID", hisID)
+				                                              .getSingle( c -> BsymtTempAbsHisItem.toDomainHistItem(c));
+		return data;
 	}
 	
 	private static final String GET_DATA5_1  = " SELECT k FROM BsymtTempAbsHisItem k"
@@ -535,15 +578,18 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 
 	@Override
 	public List<TempAbsenceHisItem> getHisItemsAsOfDate(String companyId, GeneralDate date) {
-		// TODO Auto-generated method stub
-		return null;
+		List<TempAbsenceHisItem> data = this.queryProxy().query(GET_DATA_6, BsymtTempAbsHisItem.class)
+														 .setParameter("cid", companyId)
+														 .setParameter("ymd", date)
+														 .getList(  c -> BsymtTempAbsHisItem.toDomainHistItem(c));
+		return data;
 	}
 
 	// [8-1] 期間付き履歴項目を取得する
 	@Override
 	public List<TimeoffLeaveRecordWithPeriod> getHistoryItemWithPeriod(String companyID, List<String> lstEmpId,
 			DatePeriod datePeriod, List<TempAbsenceFrameNo> lstTempAbsenceFrameNo) {
-		// TODO Auto-generated method stub
+		
 		// $履歴リスト = [3-2] *社員IDを指定して履歴を取得する ( 会社ID, 社員IDリスト )
 		List<TempAbsenceHistory> absenceHistories = this.getHistoryByListEmp(companyID, lstEmpId);
 
@@ -633,6 +679,27 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 				data.add(tempAbsenceHistory.get());	
 			}
 		}
+		return data;
+	}
+
+	@Override
+	public Optional<TempAbsenceHisItem> getEmpAndHistoryItem(String companyId,String empID, GeneralDate ymd) {
+		
+		Optional<TempAbsenceHisItem> data = this.queryProxy().query(GET_DATA_71, BsymtTempAbsHisItem.class)
+											.setParameter("cid", companyId)
+											.setParameter("sid", empID )
+											.setParameter("ymd", ymd )
+											.getSingle( c ->BsymtTempAbsHisItem.toDomainHistItem(c) );
+		return data;
+	}
+
+	@Override
+	public List<TempAbsenceHisItem> getListEmpAndHistoryItem(String companyId, List<String> empIDs, GeneralDate ymd) {
+		List<TempAbsenceHisItem> data = this.queryProxy().query(GET_DATA_72, BsymtTempAbsHisItem.class)
+				.setParameter("cid", companyId)
+				.setParameter("sid", empIDs )
+				.setParameter("ymd", ymd )
+				.getList( c ->BsymtTempAbsHisItem.toDomainHistItem(c) );
 		return data;
 	}
 }
