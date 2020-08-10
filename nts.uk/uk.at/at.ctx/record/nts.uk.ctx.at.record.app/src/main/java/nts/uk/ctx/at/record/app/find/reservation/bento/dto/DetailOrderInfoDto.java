@@ -16,11 +16,17 @@ import java.util.List;
 @AllArgsConstructor
 public class DetailOrderInfoDto {
 
+    /** 予約弁当情報 */
+    private List<BentoReservedInfoDto> bentoReservedInfoDtos;
+
     /** 予約日 */
     private GeneralDate reservationDate;
 
-    /** 明細注文情報 */
-    private String detailOrderInfo;
+    /** 予約登録情報 */
+    private String reservationRegisInfo;
+
+    /** 締め時刻名 */
+    private String closingTimeName;
 
     /** 職場又は場所情報 */
     private List<PlaceOfWorkInfoDto> placeOfWorkInfoDtos;
