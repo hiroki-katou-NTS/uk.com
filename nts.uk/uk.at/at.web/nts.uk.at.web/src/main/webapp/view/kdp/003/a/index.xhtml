@@ -34,11 +34,11 @@
 					<div class="time-sheet" data-bind="if: ko.toJS($vm.message) === null &amp;&amp; ko.unwrap($vm.employeeData.nameSelectArt) === true">
 						<div data-bind="stamp-employee-selection: employeeData"></div>
 					</div>
-					<div id="stamp-input" class="time-stamp">
+					<div id="stamp-input" class="time-stamp" data-bind="let: { fss: ko.unwrap(fingerStampSetting) }">
 						<div data-bind="stamp-clock: {
 								setting: {
-									textColor: '#fff',
-									backGroundColor: '#0033cc'
+									textColor: (fss.stampSetting || {}).textColor || '#000',
+									backGroundColor: (fss.stampSetting || {}).backGroundColor || '#fff'
 								},
 								events: {
 									setting: {
