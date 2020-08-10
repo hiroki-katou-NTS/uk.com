@@ -510,20 +510,23 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	}
 	
 	private static final String GET_DATA5_1  = " SELECT k FROM BsymtTempAbsHisItem k"
-            + " WHERE k.histId IN : lstHisId ";
+            + " WHERE k.histId IN :lstHisId ";
 	private static final String GET_DATA5_2  = " SELECT k FROM BsymtTempAbsHisItem k"
-			+ " WHERE k.histId IN : lstHisId "
-			+ " AND k.tempAbsFrameNo IN : lstTempAbsenceFrNo ";
+			+ " WHERE k.histId IN :lstHisId "
+			+ " AND k.tempAbsFrameNo IN :lstTempAbsenceFrNo ";
 
 	@Override
 	public List<TempAbsenceHisItem> specifyHisAndFrameNotGetHisItem(List<String> lstHisId,
 			List<TempAbsenceFrameNo> lstTempAbsenceFrNo) {
+		List<Integer> lstTempAbsenceFrNos = lstTempAbsenceFrNo.stream().map(item -> item.v().intValue()).collect(Collectors.toList());
 		List<TempAbsenceHisItem> data = new ArrayList<TempAbsenceHisItem>();
 		if (lstTempAbsenceFrNo.isEmpty()) {
 			data = this.queryProxy().query(GET_DATA5_1, BsymtTempAbsHisItem.class).setParameter("lstHisId", lstHisId)
 					.getList(x -> BsymtTempAbsHisItem.toDomainHistItem(x));
 		} else {
-			data = this.queryProxy().query(GET_DATA5_2, BsymtTempAbsHisItem.class).setParameter("lstHisId", lstHisId)
+			data = this.queryProxy().query(GET_DATA5_2, BsymtTempAbsHisItem.class)
+					.setParameter("lstHisId", lstHisId)
+					.setParameter("lstTempAbsenceFrNo", lstTempAbsenceFrNos)
 					.getList(x -> BsymtTempAbsHisItem.toDomainHistItem(x));
 		}
 
