@@ -1492,19 +1492,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
             });
             
-            if (self.selectedModeDisplayInBody() == 'shift') {
-                $("#extable").exTable("stickData", [
-                new ExCell('', '', '', '', '', '', '1'),
-                new ExCell('', '', '', '', '', '', '2')]);
-                
-                $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
-                    if(rowIdx%2 ==0){
-                        return { class: "red-text" };
-                    }else{
-                        return { class: "blue-text" };
-                    }
-                });
-            }
             nts.uk.ui.block.clear();
         }
 

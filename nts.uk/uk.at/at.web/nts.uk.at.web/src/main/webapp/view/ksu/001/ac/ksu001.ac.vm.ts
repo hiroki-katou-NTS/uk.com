@@ -70,18 +70,42 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             });
 
             self.selectedButtonTableCompany.subscribe((value) => {
-                self.dataToStick = $("#tableButton1").ntsButtonTable("getSelectedCells")[0] ? $("#tableButton1").ntsButtonTable("getSelectedCells")[0].data.data : null;
-                let arrDataToStick: any[] = _.map(self.dataToStick, 'data');
-                $("#extable").exTable("stickData", arrDataToStick);
-                // save data to local Storage
-                if (value.column == -1 || value.row == -1)
-                    return;   
+                let indexBtnSelected = value.column + value.row*10;
+                let arrDataToStick = []; 
+                if (value.column == -1 || value.row == -1){
+                     $("#extable").exTable("stickData", arrDataToStick);
+                }else{
+                    for (let i = 0; i < value.data.data.length; i++) {
+                        let obj = value.data.data[i];
+                        let shiftMasterName = obj.value.toString();
+                        shiftMasterName = shiftMasterName.slice(1);  // xoa dau [ ở đầu
+                        shiftMasterName = shiftMasterName.slice(0, shiftMasterName.length - 1);// xoa dau ] ở cuối
+                        if(shiftMasterName.includes('マスタ未登録')){
+                           arrDataToStick.push(new ExCell('', '', '', '', '', '', '')); 
+                        }else{
+                           arrDataToStick.push(new ExCell('', '', '', '', '', '', shiftMasterName)); 
+                        }
+                    }
+                    $("#extable").exTable("stickData", arrDataToStick);
+                }
                 
-                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                    let userInfor: any = JSON.parse(data);
-                    userInfor.shiftPalletPositionNumberCom = { column : self.selectedButtonTableCompany().column , row : self.selectedButtonTableCompany().row };
-                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
-                });
+                if (value.column !== -1 && value.row !== -1) {
+                    uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                        let userInfor: any = JSON.parse(data);
+                        userInfor.shiftPalletPositionNumberCom = { column: self.selectedButtonTableCompany().column, row: self.selectedButtonTableCompany().row };
+                        uk.localStorage.setItemAsJson(self.KEY, userInfor);
+                    });
+                }
+                
+                //$("#extable").exTable("stickStyler", function(rowIdx, key, data) {
+//                    if (rowIdx % 2 == 0) {
+//                        return { class: "red-text" };
+//                    } else {
+//                        return { class: "blue-text" };
+//                    }
+//                });
+                
+                
             });
 
             self.selectedButtonTableWorkplace.subscribe((value) => {
@@ -306,6 +330,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             let self = this,
                 source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
                 indexBtn: number = indexLinkBtn();
+            nts.uk.ui.block.grayout();
             let pageNumberSelected = self.listPageInfo[indexBtn].pageNumber;
             let dataLocal = uk.localStorage.getItem(self.KEY);
             let userInfor = JSON.parse(dataLocal.get());
@@ -340,8 +365,27 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     //set sourceCompa  
                     let listPattern = data.targetShiftPalette.shiftPalletCom;
                     self.updateDataSourceCompany(listPattern , data.listShiftMaster);
+                    self.sourceCompany(self.dataSourceCompany()[pageNumberSelected - 1] || source);
                     self.selectedLinkButtonCom(indexBtn);
-                    //self.selectedButtonTableCompany(shiftPalletPositionNumberCom);
+                    
+                    // select button Table
+                    let indexBtnSelected = shiftPalletPositionNumberCom.column + shiftPalletPositionNumberCom.row*10;
+                    let dataSourceOfBtnSelect = self.sourceCompany()[indexBtnSelected];
+                    if (dataSourceOfBtnSelect.hasOwnProperty('data')) {
+                        // trường hợp 
+                        shiftPalletPositionNumberCom.data = dataSourceOfBtnSelect;
+                        self.selectedButtonTableCompany(shiftPalletPositionNumberCom);
+                    } else {
+                        // trường hợp 
+                        let x = _.filter(self.sourceCompany(), function(o) { return o.hasOwnProperty('data') });
+                        if (x.length > 0) {
+                            let indexc = _.indexOf(self.sourceCompany(), x[0]);
+                            let obj = self.getRowColumnIndex(indexc);
+                            obj.data = x[0].data;
+                            self.selectedButtonTableCompany(obj);
+                        }
+                    }
+                    nts.uk.ui.block.clear();
 
                 } else if (self.selectedpalletUnit() === 2) {
                     // link button has color gray when clicked
@@ -363,8 +407,27 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     //set sourceWorkplace
                     let listPattern = data.targetShiftPalette.shiftPalletWorkPlace;
                     self.updateDataSourceWorkplace(listPattern, data.listShiftMaster);
+                    self.sourceWorkplace(self.dataSourceWorkplace()[pageNumberSelected - 1] || source);
                     self.selectedLinkButtonWkp(indexBtn);
-                    //self.selectedButtonTableWorkplace(shiftPalletPositionNumberOrg);
+                    
+                    // select button Table
+                    let indexBtnSelected = shiftPalletPositionNumberOrg.column + shiftPalletPositionNumberOrg.row * 10;
+                    let dataSourceOfBtnSelect = self.sourceWorkplace()[indexBtnSelected];
+                    if (dataSourceOfBtnSelect.hasOwnProperty('data')) {
+                        // trường hợp 
+                        shiftPalletPositionNumberOrg.data = dataSourceOfBtnSelect;
+                        self.selectedButtonTableWorkplace(shiftPalletPositionNumberOrg);
+
+                    } else {
+                        // trường hợp 
+                        let x = _.filter(self.sourceCompany(), function(o) { return o.hasOwnProperty('data') });
+                        let indexc = _.indexOf(self.sourceCompany(), x[0]);
+                        let obj = self.getRowColumnIndex(indexc);
+                        obj.data = x[0].data;
+                        self.selectedButtonTableWorkplace(obj);
+                    }
+                    
+                    debugger;
                 }
 
                 // set css table button
@@ -375,7 +438,20 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         $($('.ntsButtonTableButton')[index]).addClass('withContent');
                     }
                 });
-            }).fail(function() { });
+                nts.uk.ui.block.clear();
+            }).fail(function() {
+                nts.uk.ui.block.clear();
+            });
+        }
+        
+        getRowColumnIndex(indexBtnSelected: number) {
+            if (indexBtnSelected < 10) {
+                let obj = {row : 0 , column : indexBtnSelected};
+                return obj;
+            } else {
+                let obj = {row : 1 , column : indexBtnSelected - 10};
+                return obj;
+            }
         }
         
         getShiftPalletWhenChangePage(pageNumber: number): JQueryPromise<any> {
@@ -580,6 +656,24 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             } else {
                 self.dataSourceWorkplace()[self.selectedLinkButtonWkp()] = self.sourceWorkplace();
             }
+        }
+    }
+    class ExCell {
+        workTypeCode: string;
+        workTypeName: string;
+        workTimeCode: string;
+        workTimeName: string;
+        shiftName: string;
+        startTime: any;
+        endTime: any;
+        constructor(workTypeCode: string, workTypeName: string, workTimeCode: string, workTimeName: string, startTime?: string, endTime?: string, shiftName?: any) {
+            this.workTypeCode = workTypeCode;
+            this.workTypeName = workTypeName;
+            this.workTimeCode = workTimeCode;
+            this.workTimeName = workTimeName;
+            this.shiftName = shiftName !== null ? shiftName : '';
+            this.startTime = (startTime == undefined || startTime == null) ? '' : startTime;
+            this.endTime = (endTime == undefined || endTime == null) ? '' : endTime;
         }
     }
 
