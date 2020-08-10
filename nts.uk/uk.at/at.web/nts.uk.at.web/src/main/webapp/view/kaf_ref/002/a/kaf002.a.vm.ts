@@ -7,7 +7,6 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
-        texteditor: any;
         enable1: KnockoutObservable<boolean> = ko.observable(false);
         enable2: KnockoutObservable<boolean> = ko.observable(false);
         enable3: KnockoutObservable<boolean> = ko.observable(false);
@@ -19,67 +18,47 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         isLink4: boolean = true;
         isLink5: boolean = true;
         readonly: KnockoutObservable<boolean>;
+    
+//    ※M2.1_2 = ※M
+//    打刻申請起動時の表示情報.打刻申請設定.取消の機能の使用する　＝　使用する(use)
+    // set visible for flag column
+        isCondition1: boolean = true;
+    
+//    ※M2.1_1
+//    打刻申請起動時の表示情報.申請設定（基準日関係なし）.複数回勤務の管理　＝　true
+    
+        isCondition2: boolean = true;
 
-
-        items1 = (function() {
-            let list = []; 
-            for (let i = 1; i < 3; i++) {
-                let dataObject = new TimePlaceOutput(i);
-                list.push(new GridItem(dataObject, STAMPTYPE.ATTENDENCE)); 
-            }
-            
-            return list;
-        })();
-        
-        items2 = (function() {
-            let list = [];
-            for (let i = 3; i < 6; i++) {
-                let dataObject = new TimePlaceOutput(i);
-                list.push(new GridItem(dataObject, STAMPTYPE.EXTRAORDINARY));
-                
-            }
-            
-            return list;
-        })();
-        
-        items3 = (function() {
-            let list = [];
-            for (let i = 1; i < 11; i++) {
-                let dataObject = new TimePlaceOutput(i);
-                list.push(new GridItem(dataObject, STAMPTYPE.GOOUT_RETURNING));
-            }
-            
-            return list;
-        })();
-        
-        items4 = (function() {
-            let list = [];
-            for (let i = 1; i < 11; i++) {
-                let dataObject = new TimePlaceOutput(i);
-                list.push(new GridItem(dataObject, STAMPTYPE.BREAK));
-            }
-            
-            return list;
-        })();
-        items5 = (function() {
-            let list = [];
-            for (let i = 1; i < 3; i++) {
-                let dataObject = new TimePlaceOutput(i);
-                list.push(new GridItem(dataObject, STAMPTYPE.PARENT));
-            }
-            
-            return list;
-        })();
-        
-        items6 = (function() {
-            let list = [];
-            for (let i = 1; i < 3; i++) {
-                let dataObject = new TimePlaceOutput(i);
-                list.push(new GridItem(dataObject, STAMPTYPE.NURSE));
-            }
-            
-            return list;
-        })();
+//    打刻申請起動時の表示情報.臨時勤務利用　＝　true
+    
+        isCondition3: boolean = true;
+    
+//  ※1打刻申請起動時の表示情報.打刻申請の反映.出退勤を反映する　＝　する
+    
+        isCondition4: boolean = true;
+//   ※2打刻申請起動時の表示情報.打刻申請の反映.外出時間帯を反映する　＝　する
+    
+        isCondition5: boolean = true;
+    
+//    ※3打刻申請起動時の表示情報.打刻申請の反映.休憩時間帯を反映する　＝　する
+    
+        isCondition6: boolean = true;
+//    ※4打刻申請起動時の表示情報.打刻申請の反映.育児時間帯を反映する　＝　する
+    
+        isCondition7: boolean = true;
+//    ※5打刻申請起動時の表示情報.打刻申請の反映.介護時間帯を反映する　＝　する
+    
+        isCondition8: boolean = true;
+//    ※6打刻申請起動時の表示情報.打刻申請の反映.終了を反映する　＝　する
+    
+        isCondition9: boolean = true;
+    
+        items1 : any;
+        items2: any;  
+        items3: any;
+        items4: any;
+        items5: any;
+        items6: any;
         
         
         
@@ -91,33 +70,124 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 self.isLink1 = false;
                 self.loadGrid('#grid1', self.items1.concat(self.items2), 1);
                 // bind again data
-                ko.applyBindings(self, document.getElementById('grid1_flag'));
-                ko.applyBindings(self, document.getElementById('grid1'));
+                if (!_.isNull(document.getElementById('grid1_flag'))) {
+                    ko.applyBindings(self, document.getElementById('grid1_flag'));                    
+                }
+                if (!_.isNull(document.getElementById('grid1'))) {
+                    ko.applyBindings(self, document.getElementById('grid1'));                    
+                }
             } else if (s == '2') {
                 self.isLink2 = false;
-                self.loadGrid('#grid2', self.items3, 2);       
-                ko.applyBindings(self, document.getElementById('grid2_flag'));
-                ko.applyBindings(self, document.getElementById('grid2'));
+                self.loadGrid('#grid2', self.items3, 2); 
+                if (!_.isNull(document.getElementById('grid2_flag'))) {
+                    ko.applyBindings(self, document.getElementById('grid2_flag'));                    
+                }
+                if (!_.isNull(document.getElementById('grid2'))) {
+                    ko.applyBindings(self, document.getElementById('grid2'));                    
+                }
             } else if (s == '3') {
                 self.isLink3 = false;
                 self.loadGrid('#grid3', self.items4, 3);
-                ko.applyBindings(self, document.getElementById('grid3_flag'));
-                ko.applyBindings(self, document.getElementById('grid3'));
+                if (!_.isNull(document.getElementById('grid3_flag'))) {
+                    ko.applyBindings(self, document.getElementById('grid3_flag'));                    
+                }
+                if (!_.isNull(document.getElementById('grid3'))) {
+                    ko.applyBindings(self, document.getElementById('grid3'));                    
+                }
             } else if (s == '4') {
                 self.isLink4 = false;
                 self.loadGrid('#grid4', self.items5, 4);
-                ko.applyBindings(self, document.getElementById('grid4_flag'));
-                ko.applyBindings(self, document.getElementById('grid4'));
+                if (!_.isNull(document.getElementById('grid4_flag'))) {
+                    ko.applyBindings(self, document.getElementById('grid4_flag'));                    
+                }
+                if (!_.isNull(document.getElementById('grid4'))) {
+                    ko.applyBindings(self, document.getElementById('grid4'));                    
+                }
             } else if (s == '5') {
                 self.isLink5 = false;
-                self.loadGrid('#grid5', self.items6, 5);
-                ko.applyBindings(self, document.getElementById('grid5_flag'));
-                ko.applyBindings(self, document.getElementById('grid5'));
+                self.loadGrid('#grid5', self.items6, 5); 
+                if (!_.isNull(document.getElementById('grid5_flag'))) {
+                    ko.applyBindings(self, document.getElementById('grid5_flag'));                    
+                }
+                if (!_.isNull(document.getElementById('grid5'))) {
+                    ko.applyBindings(self, document.getElementById('grid5'));                    
+                }
             }
         }
         created() {
             const self = this;
             
+            self.items1 = (function() {
+                let list = []; 
+                for (let i = 1; i < 3; i++) {
+                    let dataObject = new TimePlaceOutput(i);
+                    if (!(i >= 2 && !self.isCondition2)) {
+                        list.push(new GridItem(dataObject, STAMPTYPE.ATTENDENCE)); 
+                    } 
+                }
+                
+                return list;
+            })();
+            self.items2 = (function() {
+                let list = [];
+                for (let i = 3; i < 6; i++) {
+                    let dataObject = new TimePlaceOutput(i);
+                    if (self.isCondition3) {
+                        list.push(new GridItem(dataObject, STAMPTYPE.EXTRAORDINARY));
+                        
+                    }
+                    
+                    
+                }
+                
+                return list;
+            })();
+            
+            self.items3 = (function() {
+                let list = [];
+                if (!self.isCondition5) {
+                    return;
+                }
+                for (let i = 1; i < 11; i++) {
+                    let dataObject = new TimePlaceOutput(i);
+                    list.push(new GridItem(dataObject, STAMPTYPE.GOOUT_RETURNING));
+                }
+                
+                return list;
+            })();
+            
+            self.items4 = (function() {
+                let list = [];
+                if (!self.isCondition6) {
+                    return;
+                }
+                for (let i = 1; i < 11; i++) {
+                    let dataObject = new TimePlaceOutput(i);
+                    list.push(new GridItem(dataObject, STAMPTYPE.BREAK));
+                }
+                
+                return list;
+            })();
+            
+            self.items5 = (function() {
+                let list = [];
+                for (let i = 1; i < 3; i++) {
+                    let dataObject = new TimePlaceOutput(i);
+                    list.push(new GridItem(dataObject, STAMPTYPE.PARENT));
+                }
+                
+                return list;
+            })();
+            
+            self.items6 = (function() {
+                let list = [];
+                for (let i = 1; i < 3; i++) {
+                    let dataObject = new TimePlaceOutput(i);
+                    list.push(new GridItem(dataObject, STAMPTYPE.NURSE));
+                }
+                
+                return list;
+            })();
             self.readonly = ko.observable(false);
             
 //            self.$blockui("show");
@@ -130,26 +200,14 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
 //                        command = { ApplicantEmployeeID, ApplicantList, appDispInfoStartupOutput };
 //                }
 //            })
-            self.texteditor = {
-                    value: ko.observable(''),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: "Placeholder for text editor",
-                        width: "100px",
-                        textalign: "left"
-                    })),
-                    required: ko.observable(true),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
+            
             self.tabs = ko.observableArray([
-                {id: 'tab-1', title: self.$i18n('KAF002_29'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true)},
-                {id: 'tab-2', title: self.$i18n('KAF002_31'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true)},
-                {id: 'tab-3', title: self.$i18n('KAF002_76'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true)},
-                {id: 'tab-4', title: self.$i18n('KAF002_32'), content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true)},
-                {id: 'tab-5', title: self.$i18n('KAF002_33'), content: '.tab-content-5', enable: ko.observable(true), visible: ko.observable(true)},
-                {id: 'tab-6', title: self.$i18n('KAF002_34'), content: '.tab-content-6', enable: ko.observable(true), visible: ko.observable(true)}
+                {id: 'tab-1', title: self.$i18n('KAF002_29'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(self.isCondition4)},
+                {id: 'tab-2', title: self.$i18n('KAF002_31'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(self.isCondition5)},
+                {id: 'tab-3', title: self.$i18n('KAF002_76'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(self.isCondition6)},
+                {id: 'tab-4', title: self.$i18n('KAF002_32'), content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(self.isCondition7)},
+                {id: 'tab-5', title: self.$i18n('KAF002_33'), content: '.tab-content-5', enable: ko.observable(true), visible: ko.observable(self.isCondition8)},
+                {id: 'tab-6', title: self.$i18n('KAF002_34'), content: '.tab-content-6', enable: ko.observable(true), visible: ko.observable(self.isCondition9)}
             ]);
             
             self.selectedTab = ko.observable('tab-1');
@@ -312,7 +370,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                ]
             
                     };
-           
+            
             let comboColumns = [{ prop: 'code', length: 2 },
                                 { prop: 'name', length: 4 }];
             let comboItems = [ new ItemModel('1', '基本給'),
@@ -365,11 +423,20 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                             { name: 'Combobox', width: '50px', height: '100px', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true, spaceSize: 'small' }
                               ]
               };
+            if (!self.isCondition1) {
+                if (type == 2){
+                    option2.columns.pop();
+                }else {                    
+                    optionGrid.columns.pop();
+                }
+            }
+            
             if (type == 2) {
                 $(id).ntsGrid(option2);
             }else {                
                 $(id).ntsGrid(optionGrid);
             }
+            if (!_.isNull($()))
             // add row to display expand row
             if (items.length >= 10) {
                 if (type == 1 && self.isLink1) {

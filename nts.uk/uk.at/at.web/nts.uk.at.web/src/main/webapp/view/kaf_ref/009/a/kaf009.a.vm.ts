@@ -207,10 +207,15 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                             } )
                             .fail( err => {
                                 let param;
-                                if (err.message) {
-                                    param = {message: err.message};
+                                if (err.message && err.messageId) {
+                                    param = {messageId: err.messageId};
                                 } else {
-                                    param = {messageId: err.messageId}
+                                    
+                                    if (err.message) {
+                                        param = {message: err.message};
+                                    } else {
+                                        param = {messageId: err.messageId};
+                                    }
                                 }
                                 vm.$dialog.error(param);
                             } )
