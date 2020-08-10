@@ -36,7 +36,14 @@ public class JpaEmploymentConfirmedRepository extends JpaRepository implements E
 
 	@Override
 	public void delete(EmploymentConfirmed domain) {
-		this.commandProxy().remove(toEntity(domain));
+		this.commandProxy().remove(
+				KrcdtWorkFixed.class, 
+				new KrcdtWorkFixedPk(
+					domain.getCompanyId().v(), 
+					domain.getWorkplaceId().v(), 
+					domain.getClosureId().value, 
+					domain.getProcessYM().v())
+		);
 	}
 
 	@Override
