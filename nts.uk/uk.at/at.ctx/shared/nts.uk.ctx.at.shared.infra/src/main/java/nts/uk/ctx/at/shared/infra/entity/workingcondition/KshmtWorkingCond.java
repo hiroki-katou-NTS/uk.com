@@ -156,4 +156,5 @@ public class KshmtWorkingCond extends UkJpaEntity implements Serializable {
 		return Optional.of(dom);
 	}
 
+
 }

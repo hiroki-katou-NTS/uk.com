@@ -97,7 +97,7 @@ public interface BelongScheduleTeamRepository {
 	 * @param empID
 	 * @return
 	 */
-	public Optional<BelongScheduleTeam> get( String companyID,String WKPGRPID,List<String> empID );
+	public Optional<BelongScheduleTeam> get( String companyID,String WKPGRPID,List<String> empIDs );
 	/**
 	 * [7] スケジュールチームに所属する社員を取得する			
 	 * @param companyID
@@ -112,7 +112,7 @@ public interface BelongScheduleTeamRepository {
 	 * @param empID
 	 * @return
 	 */
-	public Optional<BelongScheduleTeam> getScheduleTeam(String companyID , String empID);
+	public Optional<ScheduleTeam> getScheduleTeam(String companyID , String empID);
 	/**
 	 * [9] 社員がスケジュールチームに所属しているか
 	 * @param companyId
