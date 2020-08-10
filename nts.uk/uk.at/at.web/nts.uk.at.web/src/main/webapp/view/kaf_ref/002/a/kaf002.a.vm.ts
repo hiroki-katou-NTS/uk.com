@@ -1,10 +1,11 @@
 module nts.uk.at.view.kaf002_ref.a.viewmodel {
-    
+    import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
     import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
     import Kaf000AViewModel = nts.uk.at.view.kaf000_ref.a.viewmodel.Kaf000AViewModel;
     @bean()
     class Kaf002AViewModel extends Kaf000AViewModel {
         
+        application: KnockoutObservable<Application>;
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
         enable1: KnockoutObservable<boolean> = ko.observable(false);
@@ -27,7 +28,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
 //    ※M2.1_1
 //    打刻申請起動時の表示情報.申請設定（基準日関係なし）.複数回勤務の管理　＝　true
     
-        isCondition2: boolean = false;
+        isCondition2: boolean = true;
 
 //    打刻申請起動時の表示情報.臨時勤務利用　＝　true
     
@@ -191,15 +192,17 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             self.readonly = ko.observable(false);
             
 //            self.$blockui("show");
-//            self.loadData([], [], AppType.STAMP_APPLICATION)
-//            .then((loadDataFlag: any) => {
-//                if(loadDataFlag) {
-//                    let ApplicantEmployeeID: null,
-//                        ApplicantList: null,
-//                        appDispInfoStartupOutput = ko.toJS(self.appDispInfoStartupOutput),
-//                        command = { ApplicantEmployeeID, ApplicantList, appDispInfoStartupOutput };
-//                }
-//            })
+            self.application = ko.observable(new Application(AppType.STAMP_APPLICATION));
+
+            self.loadData([], [], AppType.STAMP_APPLICATION)
+            .then((loadDataFlag: any) => {
+                if(loadDataFlag) {
+                    let ApplicantEmployeeID: null,
+                        ApplicantList: null,
+                        appDispInfoStartupOutput = ko.toJS(self.appDispInfoStartupOutput),
+                        command = { ApplicantEmployeeID, ApplicantList, appDispInfoStartupOutput };
+                }
+            })
             
             self.tabs = ko.observableArray([
                 {id: 'tab-1', title: self.$i18n('KAF002_29'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(self.isCondition4)},
@@ -207,7 +210,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 {id: 'tab-3', title: self.$i18n('KAF002_76'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(self.isCondition6)},
                 {id: 'tab-4', title: self.$i18n('KAF002_32'), content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(self.isCondition7)},
                 {id: 'tab-5', title: self.$i18n('KAF002_33'), content: '.tab-content-5', enable: ko.observable(true), visible: ko.observable(self.isCondition8)},
-                {id: 'tab-6', title: self.$i18n('KAF002_34'), content: '.tab-content-6', enable: ko.observable(true), visible: ko.observable(self.isCondition9)}
+                {id: 'tab-6', title: self.$i18n('KAF002_34'), content: '.tab-content-6', enable: ko.observable(false), visible: ko.observable(self.isCondition9)}
             ]);
             
             self.selectedTab = ko.observable('tab-1');
