@@ -128,128 +128,69 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     console.log(failData);
                 }).always(() => vm.$blockui("hide"));
 
+            let ele = $("#kaf000-a-component4-singleDate");
+            ele.focusout(() => {})
 
+            vm.application().appDate.subscribe(() => {
+                vm.$blockui("show");
 
-            // vm.application().appDate.subscribe(() => {
-            //     vm.$blockui("show");
+                let command = {
+                    appType: vm.application().appType,
+                    appDates: [ko.toJS(vm.application().appDate)],
+                    baseDate: vm.application().appDate,
+                    appDispNoDate: vm.appDispInfoStartupOutput().appDispInfoNoDateOutput,
+                    appDispWithDate: vm.appDispInfoStartupOutput().appDispInfoWithDateOutput,
+                    setting: vm.arrivedLateLeaveEarlyInfo().lateEarlyCancelAppSet
+                }
+                vm.$ajax(API.changeAppDate, command).done((success: any) => {
+                    console.log(success);
+                    if (success.errorInfo) {
+                        const message: any = {
+                            messageId: "Msg_1707",
+                            messageParams: [ko.toJS(vm.application().appDate)]
+                        };
 
-            //     let command = {
-            //         appType: vm.application().appType,
-            //         appDates: [ko.toJS(vm.application().appDate)],
-            //         baseDate: vm.application().appDate,
-            //         appDispNoDate: vm.appDispInfoStartupOutput().appDispInfoNoDateOutput,
-            //         appDispWithDate: vm.appDispInfoStartupOutput().appDispInfoWithDateOutput,
-            //         setting: vm.arrivedLateLeaveEarlyInfo().lateEarlyCancelAppSet
-            //     }
-            //     vm.$ajax(API.changeAppDate, command).done((success: any) => {
-            //         console.log(success);
-            //         if (success.errorInfo) {
-            //             const message: any = {
-            //                 messageId: "Msg_1707",
-            //                 messageParams: [ko.toJS(vm.application().appDate)]
-            //             };
+                        vm.$errors("#kaf000-a-component4-singleDate", message);
+                    } else {
+                        vm.appDispInfoStartupOutput().appDispInfoWithDateOutput = success.appDispInfoWithDateOutput;
+                        vm.lateOrEarlyInfos(success.lateOrEarlyInfoLst);
+                        vm.lateOrEarlyInfo1(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 0 })));
+                        vm.lateOrEarlyInfo2(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 1 })));
+                        vm.lateOrEarlyInfo3(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 0 })));
+                        vm.lateOrEarlyInfo4(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 1 })));
 
-            //             vm.$errors("#kaf000-a-component4-singleDate", message);
-            //         } else {
-            //             vm.appDispInfoStartupOutput().appDispInfoWithDateOutput = success.appDispInfoWithDateOutput;
-            //             vm.lateOrEarlyInfos(success.lateOrEarlyInfoLst);
-            //             vm.lateOrEarlyInfo1(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 0 })));
-            //             vm.lateOrEarlyInfo2(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 1 })));
-            //             vm.lateOrEarlyInfo3(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 0 })));
-            //             vm.lateOrEarlyInfo4(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 1 })));
+                        vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput = success.appDispInfoWithDateOutput;
+                        // if (!vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput
+                        //     || !vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput
+                        //     || !vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay
+                        //     || !vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail
+                        //     || !vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly) {
+                        //     vm.workManagement.scheAttendanceTime("--:--");
+                        //     vm.workManagement.scheAttendanceTime2("--:--");
+                        //     vm.workManagement.scheWorkTime("--:--");
+                        //     vm.workManagement.scheWorkTime2("--:--");
+                        // } else {
+                        //     vm.workManagement.scheAttendanceTime(vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheAttendanceTime1);
+                        //     vm.workManagement.scheAttendanceTime2(vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheAttendanceTime2);
+                        //     vm.workManagement.scheWorkTime(vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheDepartureTime1);
+                        //     vm.workManagement.scheWorkTime2(vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheDepartureTime2);
 
-            //             vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput = success.appDispInfoWithDateOutput;
-            //             // if (!vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput
-            //             //     || !vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput
-            //             //     || !vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay
-            //             //     || !vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail
-            //             //     || !vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly) {
-            //             //     vm.workManagement.scheAttendanceTime("--:--");
-            //             //     vm.workManagement.scheAttendanceTime2("--:--");
-            //             //     vm.workManagement.scheWorkTime("--:--");
-            //             //     vm.workManagement.scheWorkTime2("--:--");
-            //             // } else {
-            //             //     vm.workManagement.scheAttendanceTime(vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheAttendanceTime1);
-            //             //     vm.workManagement.scheAttendanceTime2(vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheAttendanceTime2);
-            //             //     vm.workManagement.scheWorkTime(vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheDepartureTime1);
-            //             //     vm.workManagement.scheWorkTime2(vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheDepartureTime2);
+                        //     vm.workManagement.workTime = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.workTime;
+                        //     vm.workManagement.workTime2 = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.workTime1;
+                        //     vm.workManagement.leaveTime = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.leaveTime;
+                        //     vm.workManagement.leaveTime2 = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.leaveTime2;
+                        // }
+                    }
 
-            //             //     vm.workManagement.workTime = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.workTime;
-            //             //     vm.workManagement.workTime2 = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.workTime1;
-            //             //     vm.workManagement.leaveTime = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.leaveTime;
-            //             //     vm.workManagement.leaveTime2 = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.leaveTime2;
-            //             // }
-            //         }
-
-            //     }).fail((error: any) => {
-            //         console.log(error);
-            //     }).always(() => vm.$blockui("hide"));
-            // });
+                }).fail((error: any) => {
+                    console.log(error);
+                }).always(() => vm.$blockui("hide"));
+            });
         }
 
         mounted() {
             const vm = this;
 
-            let ele = $("#kaf000-a-component4-singleDate");
-            $("#kaf000-a-component4-singleDate").focusout(() => {
-                vm.$validate(ele).then((valid) => {
-                    if (valid) {
-                        vm.$blockui("show");
-
-                        let command = {
-                            appType: vm.application().appType,
-                            appDates: [ko.toJS(vm.application().appDate)],
-                            baseDate: vm.application().appDate,
-                            appDispNoDate: vm.appDispInfoStartupOutput().appDispInfoNoDateOutput,
-                            appDispWithDate: vm.appDispInfoStartupOutput().appDispInfoWithDateOutput,
-                            setting: vm.arrivedLateLeaveEarlyInfo().lateEarlyCancelAppSet
-                        }
-                        vm.$ajax(API.changeAppDate, command).done((success: any) => {
-                            console.log(success);
-                            if (success.errorInfo) {
-                                const message: any = {
-                                    messageId: "Msg_1707",
-                                    messageParams: [ko.toJS(vm.application().appDate)]
-                                };
-
-                                vm.$errors("#kaf000-a-component4-singleDate", message);
-                            } else {
-                                vm.appDispInfoStartupOutput().appDispInfoWithDateOutput = success.appDispInfoWithDateOutput;
-                                vm.lateOrEarlyInfos(success.lateOrEarlyInfoLst);
-                                vm.lateOrEarlyInfo1(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 0 })));
-                                vm.lateOrEarlyInfo2(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 1 })));
-                                vm.lateOrEarlyInfo3(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 0 })));
-                                vm.lateOrEarlyInfo4(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 1 })));
-
-                                vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput = success.appDispInfoWithDateOutput;
-                                // if (!vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput
-                                //     || !vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput
-                                //     || !vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay
-                                //     || !vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail
-                                //     || !vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly) {
-                                //     vm.workManagement.scheAttendanceTime("--:--");
-                                //     vm.workManagement.scheAttendanceTime2("--:--");
-                                //     vm.workManagement.scheWorkTime("--:--");
-                                //     vm.workManagement.scheWorkTime2("--:--");
-                                // } else {
-                                //     vm.workManagement.scheAttendanceTime(vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheAttendanceTime1);
-                                //     vm.workManagement.scheAttendanceTime2(vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheAttendanceTime2);
-                                //     vm.workManagement.scheWorkTime(vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheDepartureTime1);
-                                //     vm.workManagement.scheWorkTime2(vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.achievementEarly.scheDepartureTime2);
-
-                                //     vm.workManagement.workTime = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.workTime;
-                                //     vm.workManagement.workTime2 = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.workTime1;
-                                //     vm.workManagement.leaveTime = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.leaveTime;
-                                //     vm.workManagement.leaveTime2 = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.leaveTime2;
-                                // }
-                            }
-
-                        });
-
-                        vm.$blockui("hide");
-                    }
-                })
-            })
         }
 
         register() {
@@ -359,8 +300,8 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                             }
                         }).fail((fail: any) => {
                             console.log(fail);
-                            if (fail) {
-                                vm.$dialog.error({ messageId: fail.messageId });
+                            if(fail) {
+                                vm.$dialog.error({messageId: fail.messageId});
                             }
                         })
                     }
