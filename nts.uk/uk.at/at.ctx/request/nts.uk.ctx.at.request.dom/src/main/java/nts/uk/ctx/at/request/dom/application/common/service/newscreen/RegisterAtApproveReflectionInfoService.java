@@ -8,7 +8,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
  * @author Doan Duy Hung
  *
  */
-public interface RegisterAtApproveReflectionInfoService_New {
+public interface RegisterAtApproveReflectionInfoService {
 	/**
 	 * 2-2.新規画面登録時承認反映情報の整理
 	 * @param empID

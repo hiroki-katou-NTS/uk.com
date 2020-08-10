@@ -18,7 +18,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 
 @Stateless
-public class NewAfterRegisterImpl_New implements NewAfterRegister_New {
+public class NewAfterRegisterImpl implements NewAfterRegister {
 	
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;

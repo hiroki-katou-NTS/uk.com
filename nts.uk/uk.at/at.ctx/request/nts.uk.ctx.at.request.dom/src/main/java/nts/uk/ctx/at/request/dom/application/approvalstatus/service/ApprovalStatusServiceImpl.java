@@ -85,16 +85,12 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppComp
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
-import nts.uk.ctx.at.request.dom.setting.UseDivision;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
-import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -163,11 +159,11 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	@Inject
 	private ApplicationRepository repoApp;
 
-	@Inject
-	private RequestOfEachWorkplaceRepository repoRequestWkp;
-
-	@Inject
-	private RequestOfEachCompanyRepository repoRequestCompany;
+//	@Inject
+//	private RequestOfEachWorkplaceRepository repoRequestWkp;
+//
+//	@Inject
+//	private RequestOfEachCompanyRepository repoRequestCompany;
 
 	@Inject
 	private WorkplaceAdapter wkpAdapter;
@@ -937,28 +933,29 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	private Integer detailSet(String companyId, String wkpId, Integer appType, GeneralDate date){
-		//ドメイン「職場別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by workplace)
-		Optional<ApprovalFunctionSetting> appFuncSet = null;
-		appFuncSet = repoRequestWkp.getFunctionSetting(companyId, wkpId, appType);
-		if(appFuncSet.isPresent() && appFuncSet.get().getAppUseSetting().getUseDivision() == UseDivision.TO_USE){
-			return appFuncSet.get().getApplicationDetailSetting().get().getTimeCalUse().value;
-		}
-		//取得できなかった場合
-		//<Imported>(就業）職場ID(リスト）を取得する - ※RequestList83-1
-		List<String> lstWpkIDPr = wkpAdapter.findListWpkIDParentDesc(companyId, wkpId, date);
-		if(lstWpkIDPr.size() > 1){
-			for (int i=1;i < lstWpkIDPr.size(); i++) {
-				//ドメイン「職場別申請承認設定」を取得する
-				appFuncSet = repoRequestWkp.getFunctionSetting(companyId, lstWpkIDPr.get(i), appType);
-				if(appFuncSet.isPresent() && appFuncSet.get().getAppUseSetting().getUseDivision() == UseDivision.TO_USE){
-					return appFuncSet.get().getApplicationDetailSetting().get().getTimeCalUse().value;
-				}
-			}
-		}
-		//ドメイン「会社別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by company)
-		appFuncSet = repoRequestCompany.getFunctionSetting(companyId, appType);
-		return appFuncSet.isPresent() &&  appFuncSet.get().getAppUseSetting().getUseDivision() == UseDivision.TO_USE
-				? appFuncSet.get().getApplicationDetailSetting().get().getTimeCalUse().value : 0;
+//		//ドメイン「職場別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by workplace)
+//		Optional<ApprovalFunctionSetting> appFuncSet = null;
+//		appFuncSet = repoRequestWkp.getFunctionSetting(companyId, wkpId, appType);
+//		if(appFuncSet.isPresent() && appFuncSet.get().getAppUseSetting().getUseDivision() == UseDivision.TO_USE){
+//			return appFuncSet.get().getApplicationDetailSetting().get().getTimeCalUse().value;
+//		}
+//		//取得できなかった場合
+//		//<Imported>(就業）職場ID(リスト）を取得する - ※RequestList83-1
+//		List<String> lstWpkIDPr = wkpAdapter.findListWpkIDParentDesc(companyId, wkpId, date);
+//		if(lstWpkIDPr.size() > 1){
+//			for (int i=1;i < lstWpkIDPr.size(); i++) {
+//				//ドメイン「職場別申請承認設定」を取得する
+//				appFuncSet = repoRequestWkp.getFunctionSetting(companyId, lstWpkIDPr.get(i), appType);
+//				if(appFuncSet.isPresent() && appFuncSet.get().getAppUseSetting().getUseDivision() == UseDivision.TO_USE){
+//					return appFuncSet.get().getApplicationDetailSetting().get().getTimeCalUse().value;
+//				}
+//			}
+//		}
+//		//ドメイン「会社別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by company)
+//		appFuncSet = repoRequestCompany.getFunctionSetting(companyId, appType);
+//		return appFuncSet.isPresent() &&  appFuncSet.get().getAppUseSetting().getUseDivision() == UseDivision.TO_USE
+//				? appFuncSet.get().getApplicationDetailSetting().get().getTimeCalUse().value : 0;
+		return null;
 	}
 
 	/**

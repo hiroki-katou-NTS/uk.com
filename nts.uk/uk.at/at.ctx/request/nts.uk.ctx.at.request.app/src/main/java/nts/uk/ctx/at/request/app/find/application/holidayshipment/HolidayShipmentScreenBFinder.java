@@ -14,9 +14,9 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.DisplayInf
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absenceleaveapp.AbsenceLeaveAppDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp.RecruitmentAppDto;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.ApplicationMetaOutput;
@@ -169,7 +169,7 @@ public class HolidayShipmentScreenBFinder {
 		return null;
 	}
 
-	private void setEmployeeDisplayText(Application_New appOutput, HolidayShipmentDto screenInfo) {
+	private void setEmployeeDisplayText(Application appOutput, HolidayShipmentDto screenInfo) {
 		String resultName = "", enterEmployeeID = appOutput.getEnteredPersonID(), targetEmployeeID = appOutput.getEmployeeID();
 
 		boolean isSameLogin = targetEmployeeID.equals(enterEmployeeID);

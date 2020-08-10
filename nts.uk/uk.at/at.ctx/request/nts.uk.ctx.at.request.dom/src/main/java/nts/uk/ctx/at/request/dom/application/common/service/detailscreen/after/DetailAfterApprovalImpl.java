@@ -21,7 +21,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
+public class DetailAfterApprovalImpl implements DetailAfterApproval {
 	
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;

@@ -1,26 +1,18 @@
 package nts.uk.ctx.at.request.dom.application.common.datawork;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 //import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -54,20 +46,20 @@ public class DataWorkServiceImpl implements IDataWorkService {
 			AppCommonSettingOutput appCommonSetting,int apptype) {
 		DataWork dataWork = new DataWork();
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する
-		ApprovalFunctionSetting approvalFunctionSetting = appCommonSetting.approvalFunctionSetting;
-		if (approvalFunctionSetting == null) {
-			return null;
-		}
-		Optional<AppEmploymentSetting> appEmploymentWorkType = appCommonSetting.appEmploymentWorkType;
-		// 勤務種類取得
-		List<String> workTypeCodes = getWorkType(companyId, sId, approvalFunctionSetting, appEmploymentWorkType,apptype);
-		dataWork.setWorkTypeCodes(workTypeCodes);
-		// 就業時間帯取得
-		List<String> workTimeCodes = getSiftType(companyId, sId, approvalFunctionSetting);
-		dataWork.setWorkTimeCodes(workTimeCodes);
-
-		// 勤務種類就業時間帯の初期選択をセットする
-		getSelectedDataWork(companyId, sId, appDate, workTypeCodes, workTimeCodes, dataWork);
+//		ApprovalFunctionSetting approvalFunctionSetting = appCommonSetting.approvalFunctionSetting;
+//		if (approvalFunctionSetting == null) {
+//			return null;
+//		}
+//		Optional<AppEmploymentSetting> appEmploymentWorkType = appCommonSetting.appEmploymentWorkType;
+//		// 勤務種類取得
+//		List<String> workTypeCodes = getWorkType(companyId, sId, approvalFunctionSetting, appEmploymentWorkType,apptype);
+//		dataWork.setWorkTypeCodes(workTypeCodes);
+//		// 就業時間帯取得
+//		List<String> workTimeCodes = getSiftType(companyId, sId, approvalFunctionSetting);
+//		dataWork.setWorkTimeCodes(workTimeCodes);
+//
+//		// 勤務種類就業時間帯の初期選択をセットする
+//		getSelectedDataWork(companyId, sId, appDate, workTypeCodes, workTimeCodes, dataWork);
 
 		return dataWork;
 	}
@@ -82,47 +74,47 @@ public class DataWorkServiceImpl implements IDataWorkService {
 	 * @param apptype 
 	 * @return
 	 */
-	public List<String> getWorkType(String companyID, String employeeID,
-			ApprovalFunctionSetting approvalFunctionSetting, Optional<AppEmploymentSetting> appEmploymentSettings, int apptype) {
-		List<String> result = new ArrayList<>();
-		if (approvalFunctionSetting == null) {
-			return result;
-		}
-		// 時刻計算利用チェック
-		// アルゴリズム「社員所属雇用履歴を取得」を実行する
-		SEmpHistImport sEmpHistImport = employeeAdapter.getEmpHist(companyID, employeeID, GeneralDate.today());
-
-		if (sEmpHistImport != null && appEmploymentSettings.isPresent()) {
-			// ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する
-			List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(appEmploymentSettings.get().getListWTOAH()) ? null : 
-				CollectionUtil.isEmpty(appEmploymentSettings.get().getListWTOAH().get(0).getWorkTypeList()) ? null :
-					appEmploymentSettings.get().getListWTOAH().get(0).getWorkTypeList()
-					.stream().map(x -> new AppEmployWorkType(companyID, employeeID, appEmploymentSettings.get().getListWTOAH().get(0).getAppType(),
-							appEmploymentSettings.get().getListWTOAH().get(0).getAppType().value == 10 ? appEmploymentSettings.get().getListWTOAH().get(0).getSwingOutAtr().get().value : appEmploymentSettings.get().getListWTOAH().get(0).getAppType().value == 1 ? appEmploymentSettings.get().getListWTOAH().get(0).getHolidayAppType().get().value : 9, x))
-					.collect(Collectors.toList());
-			if (CollectionUtil.isEmpty(lstEmploymentWorkType)) {
-				result = this.workTypeRepository.findNotDeprecated(companyID).stream()
-				.map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
-				return result;
-			}
-			Collections.sort(lstEmploymentWorkType, Comparator.comparing(AppEmployWorkType::getWorkTypeCode));
-			List<String> workTypeCodes = new ArrayList<>();
-			lstEmploymentWorkType.forEach(x -> {
-				workTypeCodes.add(x.getWorkTypeCode());
-			});
-			result = this.workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCodes).stream()
-					.map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
-			return result;
-		}
-		// ドメインモデル「勤務種類」を取得
-		if (ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value == apptype) {
-			List<Integer> allDayAtrs = allDayAtrs();
-			List<Integer> halfAtrs = halfAtrs();
-			result = workTypeRepository.findWorkType(companyID, 0, allDayAtrs, halfAtrs).stream()
-					.map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
-		}
-		return result;
-	}
+//	public List<String> getWorkType(String companyID, String employeeID,
+//			ApprovalFunctionSetting approvalFunctionSetting, Optional<AppEmploymentSetting> appEmploymentSettings, int apptype) {
+//		List<String> result = new ArrayList<>();
+//		if (approvalFunctionSetting == null) {
+//			return result;
+//		}
+//		// 時刻計算利用チェック
+//		// アルゴリズム「社員所属雇用履歴を取得」を実行する
+//		SEmpHistImport sEmpHistImport = employeeAdapter.getEmpHist(companyID, employeeID, GeneralDate.today());
+//
+//		if (sEmpHistImport != null && appEmploymentSettings.isPresent()) {
+//			// ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する
+//			List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(appEmploymentSettings.get().getListWTOAH()) ? null : 
+//				CollectionUtil.isEmpty(appEmploymentSettings.get().getListWTOAH().get(0).getWorkTypeList()) ? null :
+//					appEmploymentSettings.get().getListWTOAH().get(0).getWorkTypeList()
+//					.stream().map(x -> new AppEmployWorkType(companyID, employeeID, appEmploymentSettings.get().getListWTOAH().get(0).getAppType(),
+//							appEmploymentSettings.get().getListWTOAH().get(0).getAppType().value == 10 ? appEmploymentSettings.get().getListWTOAH().get(0).getSwingOutAtr().get().value : appEmploymentSettings.get().getListWTOAH().get(0).getAppType().value == 1 ? appEmploymentSettings.get().getListWTOAH().get(0).getHolidayAppType().get().value : 9, x))
+//					.collect(Collectors.toList());
+//			if (CollectionUtil.isEmpty(lstEmploymentWorkType)) {
+//				result = this.workTypeRepository.findNotDeprecated(companyID).stream()
+//				.map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
+//				return result;
+//			}
+//			Collections.sort(lstEmploymentWorkType, Comparator.comparing(AppEmployWorkType::getWorkTypeCode));
+//			List<String> workTypeCodes = new ArrayList<>();
+//			lstEmploymentWorkType.forEach(x -> {
+//				workTypeCodes.add(x.getWorkTypeCode());
+//			});
+//			result = this.workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCodes).stream()
+//					.map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
+//			return result;
+//		}
+//		// ドメインモデル「勤務種類」を取得
+//		if (ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value == apptype) {
+//			List<Integer> allDayAtrs = allDayAtrs();
+//			List<Integer> halfAtrs = halfAtrs();
+//			result = workTypeRepository.findWorkType(companyID, 0, allDayAtrs, halfAtrs).stream()
+//					.map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
+//		}
+//		return result;
+//	}
 
 	/**
 	 * 就業時間帯取得
@@ -132,21 +124,21 @@ public class DataWorkServiceImpl implements IDataWorkService {
 	 * @param requestAppDetailSetting
 	 * @return
 	 */
-	public List<String> getSiftType(String companyID, String employeeID,
-			ApprovalFunctionSetting approvalFunctionSetting) {
-		if (approvalFunctionSetting == null) {
-			return Collections.emptyList();
-		}
-		// 1.職場別就業時間帯を取得
-		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,
-				GeneralDate.today()).stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
-
-		if (!CollectionUtil.isEmpty(listWorkTimeCodes)) {
-			List<WorkTimeSetting> workTimes = workTimeSettingRepository.findByCodes(companyID, listWorkTimeCodes);
-			return workTimes.stream().map(item -> item.getWorktimeCode().v()).collect(Collectors.toList());
-		}
-		return Collections.emptyList();
-	}
+//	public List<String> getSiftType(String companyID, String employeeID,
+//			ApprovalFunctionSetting approvalFunctionSetting) {
+//		if (approvalFunctionSetting == null) {
+//			return Collections.emptyList();
+//		}
+//		// 1.職場別就業時間帯を取得
+//		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,
+//				GeneralDate.today()).stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
+//
+//		if (!CollectionUtil.isEmpty(listWorkTimeCodes)) {
+//			List<WorkTimeSetting> workTimes = workTimeSettingRepository.findByCodes(companyID, listWorkTimeCodes);
+//			return workTimes.stream().map(item -> item.getWorktimeCode().v()).collect(Collectors.toList());
+//		}
+//		return Collections.emptyList();
+//	}
 
 	/**
 	 * 勤務種類就業時間帯の初期選択をセットする

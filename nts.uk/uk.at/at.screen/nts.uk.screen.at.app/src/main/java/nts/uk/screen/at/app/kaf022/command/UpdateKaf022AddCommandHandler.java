@@ -27,7 +27,6 @@ import nts.uk.ctx.at.request.app.command.setting.company.otrestappcommon.UpdateO
 import nts.uk.ctx.at.request.app.command.setting.company.request.apptypesetting.UpdateDisplayReasonCmdHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.request.stamp.UpdateStampRequestSettingCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.vacationapplicationsetting.UpdateHdAppSetCommandHandler;
-import nts.uk.ctx.at.request.app.command.setting.request.UpdateApplicationDeadlineCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.request.gobackdirectlycommon.UpdateGoBackDirectlyCommonSettingCommandHandler;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.UpdateApprovalSettingCommandHandler;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.UpdateJobAssignSettingCommandHandler;
@@ -37,8 +36,8 @@ import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateJobtitl
 @Transactional
 public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddCommand>{
 	// 申請締切設定
-	@Inject
-	private UpdateApplicationDeadlineCommandHandler updateApp;
+//	@Inject
+//	private UpdateApplicationDeadlineCommandHandler updateApp;
 	// 申請一覧共通設定
 	@Inject 
 	private UpdateAppCommonSetCommandHandler updateAppCom;
@@ -119,7 +118,7 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 	protected void handle(CommandHandlerContext<Kaf022AddCommand> context) {
 		Kaf022AddCommand kaf022 = context.getCommand();
 		// update list command object
-		this.updateApp.handle(kaf022.getAppDead());
+		// this.updateApp.handle(kaf022.getAppDead());
 		
 //		this.updateAppSet.handle(kaf022.getAppSet());
 		

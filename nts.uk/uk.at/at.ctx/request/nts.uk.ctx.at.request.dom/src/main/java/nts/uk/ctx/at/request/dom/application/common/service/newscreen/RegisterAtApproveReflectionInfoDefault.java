@@ -16,7 +16,7 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.InformationSettingOf
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
 
 @Stateless
-public class RegisterAtApproveReflectionInfoDefault_New implements RegisterAtApproveReflectionInfoService_New {
+public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApproveReflectionInfoService {
 	
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;

@@ -12,7 +12,6 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDt
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.AppOvertimeFinder;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationForRemandService;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationForSendService;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForRemandOutput;
@@ -58,10 +57,11 @@ public class ApplicationFinder {
 
 	public List<ApplicationMetaDto> getAppbyDate(ApplicationPeriodDto dto) {
 		String companyID = AppContexts.user().companyId();
-		return this.applicationRepository.getApplicationIdByDate(companyID, dto.getStartDate(), dto.getEndDate())
-				.stream().map(c -> {
-					return new ApplicationMetaDto(c.getAppID(), c.getAppType().value, c.getAppDate());
-				}).collect(Collectors.toList());
+//		return this.applicationRepository.getApplicationIdByDate(companyID, dto.getStartDate(), dto.getEndDate())
+//				.stream().map(c -> {
+//					return new ApplicationMetaDto(c.getAppID(), c.getAppType().value, c.getAppDate());
+//				}).collect(Collectors.toList());
+		return null;
 	}
 
 	public ApplicationForRemandOutput getAppByIdForRemand(List<String> lstAppID) {

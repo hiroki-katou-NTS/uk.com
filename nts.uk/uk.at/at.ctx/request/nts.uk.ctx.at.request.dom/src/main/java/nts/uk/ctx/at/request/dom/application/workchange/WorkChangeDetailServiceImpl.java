@@ -11,7 +11,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
@@ -37,8 +36,8 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 	@Inject 
 	private InitMode initMode;
 	
-	@Inject
-	ApplicationReasonRepository appFormReposity;
+//	@Inject
+//	ApplicationReasonRepository appFormReposity;
 	
 	@Inject
 	private WorkTimeSettingRepository workTimeRepository;

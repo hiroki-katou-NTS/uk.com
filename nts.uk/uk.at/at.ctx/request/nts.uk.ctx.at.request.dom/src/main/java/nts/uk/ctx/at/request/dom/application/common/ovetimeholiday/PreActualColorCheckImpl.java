@@ -14,11 +14,10 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
@@ -67,7 +66,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	@Override
 	public PreActualColorResult preActualColorCheck(UseAtr preExcessDisplaySetting, AppDateContradictionAtr performanceExcessAtr,
 			ApplicationType appType, PrePostAtr prePostAtr, List<OvertimeInputCaculation> calcTimeList, List<OvertimeColorCheck> overTimeLst,
-			Optional<Application_New> opAppBefore, boolean beforeAppStatus, List<OvertimeColorCheck> actualLst, ActualStatus actualStatus) {
+			Optional<Application> opAppBefore, boolean beforeAppStatus, List<OvertimeColorCheck> actualLst, ActualStatus actualStatus) {
 		PreActualColorResult result = new PreActualColorResult();
 		// アルゴリズム「チェック条件」を実行する
 		UseAtr preAppSetCheck = commonOvertimeHoliday.preAppSetCheck(prePostAtr, preExcessDisplaySetting);
@@ -108,23 +107,23 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	public PreAppCheckResult preAppStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType) {
 		PreAppCheckResult preAppCheckResult = new PreAppCheckResult();
 		// ドメインモデル「申請」を取得(lây domain "đơn xin")
-		List<Application_New> appBeforeLst = applicationRepository.getBeforeApplication(companyID, employeeID, appDate, appType.value, PrePostAtr.PREDICT.value);
-		Optional<Application_New> opAppBefore = CollectionUtil.isEmpty(appBeforeLst) ? Optional.empty() : Optional.of(appBeforeLst.get(0)); 
-		// 事前申請漏れチェック
-		if(!opAppBefore.isPresent()){
-			preAppCheckResult.beforeAppStatus = true;
-			preAppCheckResult.opAppBefore = Optional.empty();
-			return preAppCheckResult;
-		}
-		preAppCheckResult.opAppBefore = opAppBefore;
-		Application_New appBefore = opAppBefore.get();
-		ReflectedState_New refPlan = appBefore.getReflectionInformation()
-				.getStateReflectionReal();
-		// 事前申請否認チェック
-		if (refPlan.equals(ReflectedState_New.DENIAL) || refPlan.equals(ReflectedState_New.REMAND)) {
-			preAppCheckResult.beforeAppStatus = true;
-			return preAppCheckResult;
-		}
+//		List<Application_New> appBeforeLst = applicationRepository.getBeforeApplication(companyID, employeeID, appDate, appType.value, PrePostAtr.PREDICT.value);
+//		Optional<Application_New> opAppBefore = CollectionUtil.isEmpty(appBeforeLst) ? Optional.empty() : Optional.of(appBeforeLst.get(0)); 
+//		// 事前申請漏れチェック
+//		if(!opAppBefore.isPresent()){
+//			preAppCheckResult.beforeAppStatus = true;
+//			preAppCheckResult.opAppBefore = Optional.empty();
+//			return preAppCheckResult;
+//		}
+//		preAppCheckResult.opAppBefore = opAppBefore;
+//		Application_New appBefore = opAppBefore.get();
+//		ReflectedState_New refPlan = appBefore.getReflectionInformation()
+//				.getStateReflectionReal();
+//		// 事前申請否認チェック
+//		if (refPlan.equals(ReflectedState_New.DENIAL) || refPlan.equals(ReflectedState_New.REMAND)) {
+//			preAppCheckResult.beforeAppStatus = true;
+//			return preAppCheckResult;
+//		}
 		return preAppCheckResult;
 	}
 
@@ -396,12 +395,12 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	}
 
 	@Override
-	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application_New> opAppBefore, UseAtr preAppSetCheck) {
+	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application> opAppBefore, UseAtr preAppSetCheck) {
 		String companyID = AppContexts.user().companyId();
 		int compareValue = 0;
 		// 事前申請をチェックする
 		if(null != opAppBefore && opAppBefore.isPresent()){
-			Application_New appBefore = opAppBefore.get();
+			Application appBefore = opAppBefore.get();
 			// 申請種類をチェックする
 			if(appType==ApplicationType.OVER_TIME_APPLICATION){
 				AppOverTime appOverTime = overtimeRepository.getFullAppOvertime(companyID, appBefore.getAppID()).get();

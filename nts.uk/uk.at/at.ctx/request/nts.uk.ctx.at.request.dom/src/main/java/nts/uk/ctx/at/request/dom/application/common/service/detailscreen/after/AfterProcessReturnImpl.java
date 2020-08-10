@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 import javax.ejb.Stateless;
 //import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 //import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 //import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
 //import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
@@ -25,7 +25,7 @@ public class AfterProcessReturnImpl implements AfterProcessReturn {
 //	@Inject
 //	private MailSender mailSender;
 	@Override
-	public void detailScreenProcessAfterReturn(Application_New application, boolean checkApplicant, int orderPhase) {
+	public void detailScreenProcessAfterReturn(Application application, boolean checkApplicant, int orderPhase) {
 		/*
 		//String companyID = AppContexts.user().companyId();
 		// if 差し戻し先が申請本人の場合(the applicant )

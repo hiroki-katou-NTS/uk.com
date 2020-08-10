@@ -26,8 +26,6 @@ import nts.uk.ctx.at.request.app.command.application.common.DenyAppHandler;
 import nts.uk.ctx.at.request.app.command.application.common.ReflectAplicationCommmandHandler;
 import nts.uk.ctx.at.request.app.command.application.common.ReleaseAppHandler;
 import nts.uk.ctx.at.request.app.command.application.common.RemandApplicationHandler;
-import nts.uk.ctx.at.request.app.command.setting.request.ApplicationDeadlineCommand;
-import nts.uk.ctx.at.request.app.command.setting.request.UpdateApplicationDeadlineCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.common.AppDataDateFinder;
 import nts.uk.ctx.at.request.app.find.application.common.AppDateDataDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
@@ -85,8 +83,8 @@ public class ApplicationWebservice extends WebService {
 
 	@Inject
 	private AppDataDateFinder appDataDateFinder;
-	@Inject
-	private UpdateApplicationDeadlineCommandHandler update;
+//	@Inject
+//	private UpdateApplicationDeadlineCommandHandler update;
 
 	@Inject
 	private ReflectAplicationCommmandHandler relect;
@@ -238,11 +236,11 @@ public class ApplicationWebservice extends WebService {
 	 * @param command
 	 * @author yennth
 	 */
-	@POST
-	@Path("update")
-	public void update(List<ApplicationDeadlineCommand> command){
-		this.update.handle(command);
-	}
+//	@POST
+//	@Path("update")
+//	public void update(List<ApplicationDeadlineCommand> command){
+//		this.update.handle(command);
+//	}
 	
 	@POST
 	@Path("reflect-app")

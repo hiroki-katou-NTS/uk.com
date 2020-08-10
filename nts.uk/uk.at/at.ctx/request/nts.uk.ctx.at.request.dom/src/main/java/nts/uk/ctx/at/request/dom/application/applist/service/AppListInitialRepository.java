@@ -11,7 +11,6 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWo
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOverTimeInfoFull;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 /**
@@ -156,5 +155,5 @@ public interface AppListInitialRepository {
 	 * @param date
 	 * @return
 	 */
-	public List<ApprovalFunctionSetting> detailSetKAF022(String companyId, String wkpId, GeneralDate date);
+	// public List<ApprovalFunctionSetting> detailSetKAF022(String companyId, String wkpId, GeneralDate date);
 }

@@ -63,12 +63,13 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 
 	@Override
 	public List<ApplicationMetaOutput> getListDetailAppCommonSet(String companyID, List<String> listAppID) {
-		return applicationRepository.findByListID(companyID, listAppID)
-				.stream().map(x -> new ApplicationMetaOutput(
-						x.getAppID(),
-						x.getAppType(),
-						x.getAppDate()
-				)).collect(Collectors.toList());
+//		return applicationRepository.findByListID(companyID, listAppID)
+//				.stream().map(x -> new ApplicationMetaOutput(
+//						x.getAppID(),
+//						x.getAppType(),
+//						x.getAppDate()
+//				)).collect(Collectors.toList());
+		return null;
 				
 	}
 

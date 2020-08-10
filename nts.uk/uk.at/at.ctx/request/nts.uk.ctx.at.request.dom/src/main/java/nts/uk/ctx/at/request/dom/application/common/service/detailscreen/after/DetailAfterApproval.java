@@ -10,7 +10,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
  * @author Doan Duy Hung
  *
  */
-public interface DetailAfterApproval_New {
+public interface DetailAfterApproval {
 	
 	/**
 	 * 8-2.詳細画面承認後の処理 
