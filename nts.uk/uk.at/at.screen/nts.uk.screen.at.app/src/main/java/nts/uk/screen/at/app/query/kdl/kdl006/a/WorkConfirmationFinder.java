@@ -11,6 +11,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -25,6 +27,7 @@ import nts.uk.ctx.at.auth.dom.employmentrole.dto.ClosureInformation;
 import nts.uk.ctx.at.auth.dom.employmentrole.dto.RollInformation;
 import nts.uk.ctx.at.auth.dom.employmentrole.dto.WorkPlaceAuthorityDto;
 import nts.uk.ctx.at.auth.dom.employmentrole.dto.WorkplaceManagerDto;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.workrecord.EmploymentConfirmed;
 import nts.uk.ctx.at.record.dom.workrecord.workrecord.EmploymentConfirmedRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -46,15 +49,11 @@ import nts.uk.screen.at.app.query.kdl.kdl006.a.dto.ClosureInforDto;
 import nts.uk.screen.at.app.query.kdl.kdl006.a.dto.WorkPlaceConfirmDto;
 import nts.uk.shr.com.context.AppContexts;
 
-/**UKDesign.UniversalK.就業.KDL_ダイアログ.KDL014_打刻参照ダイアログ.メニュー別OCD.打刻実績を参照する.打刻実績の取得処理*/
 @Stateless
 public class WorkConfirmationFinder {
 
 	@Inject
 	private ClosureRepository closureRepository;
-	
-	@Inject
-	private ClosureService closureService;
 	
 	@Inject
 	private UserAuthAdapter userAuthAdapter;
@@ -76,6 +75,9 @@ public class WorkConfirmationFinder {
 	
 	@Inject
 	private EmployeeInformationRepository employeeInformationRepo;
+	
+	@Inject 
+	private RecordDomRequireService requireService;
 
 	public List<ClosureInforDto> DisplayOfWorkConfirmationDialog() {
 		String cid = AppContexts.user().companyId();
@@ -113,7 +115,7 @@ public class WorkConfirmationFinder {
 	public List<WorkPlaceConfirmDto> getWorkPlace(ClosureInforDto closure) {
 		String cid = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
-		RequireImpl require = new RequireImpl(closureService, closureRepository, userAuthAdapter, roleAdaptor, workPlaceAuthRepo, authWorkPlaceAdapter, authWorkPlaceAdapter);
+		RequireImpl require = new RequireImpl(closureRepository, userAuthAdapter, roleAdaptor, workPlaceAuthRepo, authWorkPlaceAdapter, authWorkPlaceAdapter, requireService);
 		
 		List<String> workplace = GetListWorkplacesByEmpsService.get(require, cid, employeeId, Optional.of(closure.closureId));
 		
@@ -154,14 +156,11 @@ public class WorkConfirmationFinder {
 							confirmEmployeeName, 
 							employmentConfirmed.isPresent() ? Optional.of(employmentConfirmed.get().getDate()) : Optional.empty()));
 		}
-		
 		return workPlaceConfirmList;
 	}
 	
 	@AllArgsConstructor
 	private class RequireImpl implements GetListWorkplacesByEmpsService.Require {
-		
-		private ClosureService closureService;
 		
 		private ClosureRepository closureRepository;
 		
@@ -174,6 +173,8 @@ public class WorkConfirmationFinder {
 		private AuthWorkPlaceAdapter authWorkPlaceAdapter;
 		
 		private AuthWorkPlaceAdapter workPlaceAdapter;
+		
+		private RecordDomRequireService requireService;
 		
 		@Override
 		public Optional<String> getUserID(String employeeId) {
@@ -233,8 +234,10 @@ public class WorkConfirmationFinder {
 		@Override
 		public List<ClosureInformation> getProcessCloseCorrespondToEmps(List<String> sIds, GeneralDate baseDate) {
 			List<ClosureInformation> result = new ArrayList<>();
+			val require = requireService.createRequire();
+			val cacheCarrier = new CacheCarrier();
 			for (String employeeId : sIds) {
-				Closure closure = closureService.getClosureDataByEmployee(employeeId, baseDate);
+				Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, baseDate);
 				ClosureInformation closureInformation = new ClosureInformation(employeeId, closure!=null ? closure.getClosureId().value : null);
 				result.add(closureInformation);
 			}
@@ -243,7 +246,7 @@ public class WorkConfirmationFinder {
 		
 		@Override
 		public List<ClosureInfo> getCurrentMonthForAllClosure() {
-			return closureService.getAllClosureInfo();
+			return ClosureService.getAllClosureInfo(ClosureService.createRequireM2(closureRepository));
 		}
 		
 		//指定した締めの当月期間を算出する
@@ -253,7 +256,7 @@ public class WorkConfirmationFinder {
 			Optional<Closure> closure = closureRepository.findById(companyId, closureId);
 			if(closure.isPresent()) {
 				CurrentMonth currentMonth = closure.get().getClosureMonth();
-				return Optional.of(closureService.getClosurePeriod(closureId, currentMonth.getProcessingYm()));
+				return Optional.of(ClosureService.getClosurePeriod(closure.get(), currentMonth.getProcessingYm()));
 			}
 			return Optional.empty();
 		}
