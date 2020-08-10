@@ -24,4 +24,5 @@ public class WorkdayPatternItem extends DomainObject {
         this.dayOfWeek = dayOfWeek;
         this.workdayDivision = workdayDivision;
     }
+
 }

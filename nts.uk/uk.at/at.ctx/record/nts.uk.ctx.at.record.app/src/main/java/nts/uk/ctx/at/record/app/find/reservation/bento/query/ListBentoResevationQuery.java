@@ -46,11 +46,11 @@ public class ListBentoResevationQuery {
 
     public List<BentoReservation> getOrderedBentoReservationsDetail(List<ReservationRegisterInfo> reservationRegisterInfos, DatePeriod period,
                                                              ReservationClosingTimeFrame reservationClosingTimeFrame, List<WorkLocationCode> workLocationCodes){
-        return handleData(bentoReservationRepository.findByOrderedPeriodEmpLst(reservationRegisterInfos, period, reservationClosingTimeFrame, ORDERED, workLocationCodes), reservationClosingTimeFrame, workLocationCodes);
+        return handleData(bentoReservationRepository.getReservationDetailFromOrder(reservationRegisterInfos, period, reservationClosingTimeFrame, ORDERED, workLocationCodes), reservationClosingTimeFrame, workLocationCodes);
     }
     public List<BentoReservation> getUnOrderedBentoReservationsDetail(List<ReservationRegisterInfo> reservationRegisterInfos, DatePeriod period,
                                                                     ReservationClosingTimeFrame reservationClosingTimeFrame, List<WorkLocationCode> workLocationCodes){
-        return handleData(bentoReservationRepository.findByOrderedPeriodEmpLst(reservationRegisterInfos, period, reservationClosingTimeFrame, UN_ORDERED, workLocationCodes), reservationClosingTimeFrame, workLocationCodes);
+        return handleData(bentoReservationRepository.getReservationDetailFromOrder(reservationRegisterInfos, period, reservationClosingTimeFrame, UN_ORDERED, workLocationCodes), reservationClosingTimeFrame, workLocationCodes);
     }
 
 

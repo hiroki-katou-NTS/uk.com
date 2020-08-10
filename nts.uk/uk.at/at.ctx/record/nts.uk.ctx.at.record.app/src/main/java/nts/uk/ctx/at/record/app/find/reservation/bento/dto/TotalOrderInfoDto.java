@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
+import java.util.List;
+
 /**
  * 合計注文情報
  * @author Hoang Anh Tuan
@@ -24,12 +26,12 @@ public class TotalOrderInfoDto {
     private int totalFee;
 
     /** 弁当合計 */
-    private BentoTotalDto bentoTotalDto;
+    private List<BentoTotalDto> bentoTotalDto;
 
     /** 締め時刻名 */
     private String closedName;
 
     /** 職場又は場所情報 */
-    private PlaceOfWorkInfoDto placeOfWorkInfoDto;
+    private List<PlaceOfWorkInfoDto> placeOfWorkInfoDto;
 
 }

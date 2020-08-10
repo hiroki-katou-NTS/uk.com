@@ -20,7 +20,7 @@ public class BentoReservationInfoForEmpDto {
     private int quantity;
 
     /** 社員ID */
-    private int empId;
+    private String empId;
 
     /** 社員コード */
     private String empCode;

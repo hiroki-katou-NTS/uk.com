@@ -55,13 +55,13 @@ public class ReservationQuery {
 		Optional<BentoReservationSetting> bentoReservationSettings = bentoReservationSettingRepository.findByCId(companyId);
 
 		// get data work place history
-		Optional<SWkpHistExport> hisItems = this.bentomenuAdapter
-				.findBySid(employeeId,date);
+		Optional<SWkpHistExport> hisItems = this.bentomenuAdapter.findBySid(employeeId,date);
+        int checkOperation = -1;
+        if(bentoReservationSettings.isPresent())
+            checkOperation = bentoReservationSettings.get().getOperationDistinction().value;
 
-		val checkOperation = bentoReservationSettings.get().getOperationDistinction().value;
-		if (checkOperation == OperationDistinction.BY_LOCATION.value){
+		if (checkOperation == OperationDistinction.BY_LOCATION.value)
 			workLocationCode = Optional.of(new WorkLocationCode(hisItems.get().getWorkplaceCode()));
-		}
 
         StampCard stampCard = stampCardRepository.getLstStampCardByLstSidAndContractCd(
 				Arrays.asList(employeeId),
