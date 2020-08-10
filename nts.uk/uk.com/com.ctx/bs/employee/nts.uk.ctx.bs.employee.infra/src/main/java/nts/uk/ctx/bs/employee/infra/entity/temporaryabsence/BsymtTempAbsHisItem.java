@@ -211,7 +211,7 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 				entity.histId,
 				entity.sid, 
 			    new GenericString(entity.remarks)	,
-				entity.soInsPayCategory.intValue(),
+			    entity.soInsPayCategory == null ? null : entity.soInsPayCategory.intValue(),
 				entity.familyMemberId);
 		return data;
 	}

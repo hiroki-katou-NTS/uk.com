@@ -54,7 +54,7 @@ public class PrepareWorkOutput {
 		super();
 		this.information = information;
 		this.scheduleTimeZone = scheduleTimeZone;
-		this.lstWorkTimeDto = lstWorkTimeDto;
+		this.lstWorkTimeDto = workTimeDto;
 		this.executionLog = executionLog;
 		this.workType = workType;
 	}
