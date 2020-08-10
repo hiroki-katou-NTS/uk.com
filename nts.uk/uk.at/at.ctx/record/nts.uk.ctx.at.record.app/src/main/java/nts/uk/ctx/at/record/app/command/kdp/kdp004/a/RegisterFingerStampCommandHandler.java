@@ -91,7 +91,7 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 		TimeStampInputResult inputResult = EnterStampForSharedStampService.create(
 																						require
 																						, AppContexts.user().contractCode()
-																						, AppContexts.user().employeeId()
+																						, cmd.getEmployeeId()
 																						, Optional.ofNullable(null)
 																						, new Relieve(EnumAdaptor.valueOf(cmd.getAuthcMethod(), AuthcMethod.class), StampMeans.FINGER_AUTHC)
 																						, cmd.getStampDatetime()

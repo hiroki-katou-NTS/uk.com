@@ -78,7 +78,7 @@ public class LeaveManagementData extends AggregateRoot {
 		this.subHDAtr = EnumAdaptor.valueOf(subHDAtr, DigestionAtr.class);
 		this.fullDayTime = new AttendanceTime(equivalentADay);
 		this.halfDayTime = new AttendanceTime(equivalentHalfDay);
-		
+		this.disapearDate = Optional.empty();
 	}
 	
 	

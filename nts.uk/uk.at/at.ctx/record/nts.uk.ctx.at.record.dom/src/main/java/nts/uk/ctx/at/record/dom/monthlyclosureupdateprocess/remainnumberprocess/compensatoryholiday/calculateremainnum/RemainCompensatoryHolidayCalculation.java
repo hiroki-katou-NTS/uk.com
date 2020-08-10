@@ -5,10 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
@@ -25,12 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author HungTT - <<Work>> 代休残数計算
  *
  */
-
-@Stateless
 public class RemainCompensatoryHolidayCalculation {
-
-	@Inject
-	private BreakDayOffMngInPeriodQuery breakDayoffMng;
 
 	/**
 	 * 代休残数計算
@@ -39,8 +32,9 @@ public class RemainCompensatoryHolidayCalculation {
 	 * @param interimRemainMngMap 暫定管理データリスト
 	 * @return 代休の集計結果
 	 */
-	public BreakDayOffRemainMngOfInPeriod calculateRemainCompensatory(AggrPeriodEachActualClosure period,
-			String empId, Map<GeneralDate, DailyInterimRemainMngData> interimRemainMngMap) {
+	public static BreakDayOffRemainMngOfInPeriod calculateRemainCompensatory(RequireM1 require, 
+			CacheCarrier cacheCarrier, AggrPeriodEachActualClosure period, String empId,
+			Map<GeneralDate, DailyInterimRemainMngData> interimRemainMngMap) {
 		
 		String companyId = AppContexts.user().companyId();
 
@@ -66,6 +60,11 @@ public class RemainCompensatoryHolidayCalculation {
 		// 期間内の休出代休残数を取得する
 		BreakDayOffRemainMngParam param = new BreakDayOffRemainMngParam(companyId, empId, period.getPeriod(), true,
 				period.getPeriod().end(), true, interimMng, breakMng, dayOffMng, Optional.empty(), Optional.empty(), Optional.empty());
-		return this.breakDayoffMng.getBreakDayOffMngInPeriod(param);
+		
+		return BreakDayOffMngInPeriodQuery.getBreakDayOffMngInPeriod(require, cacheCarrier, param);
+	}
+	
+	public static interface RequireM1 extends BreakDayOffMngInPeriodQuery.RequireM10 {
+		
 	}
 }

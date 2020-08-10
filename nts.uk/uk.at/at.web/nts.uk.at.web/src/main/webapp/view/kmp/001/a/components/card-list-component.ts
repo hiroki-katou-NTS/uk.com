@@ -4,21 +4,40 @@ module nts.uk.at.view.kmp001.a {
 	import share = nts.uk.at.view.kmp001;
 
 	const templateCardList = `
-	<div>
-		<div
-			data-bind="ntsFormLabel: {
-				constraint: $component.constraint, 
-				required: true, 
-				text: $i18n('KMP001_22') }">
+	<!-- ko if: ko.unwrap(model.stampCardDto).length === 0 -->
+			<div
+				data-bind="ntsFormLabel: {
+					constraint: $component.constraint, 
+					required: true,
+					text: $i18n('KMP001_22') }">
+			</div>
+			<input id="card-input" class="ip-stamp-card"
+				data-bind="ntsTextEditor: {
+					value: ko.observable(''),
+					constraint: $component.constraint,
+					enabled: true,
+					width: 200
+			}"/>		
+		<!-- /ko -->
+		<!-- ko if: ko.unwrap(model.stampCardDto).length !== 0 -->
+		<div data-bind="foreach: model.stampCardDto">
+			<!-- ko if: $index() === 0 -->
+				<div
+					data-bind="ntsFormLabel: {
+						constraint: $component.constraint, 
+						required: true, 
+						text: $i18n('KMP001_22') }">
+				</div>
+				<input id="card-input" class="ip-stamp-card"
+					data-bind="ntsTextEditor: {
+						value: stampNumber,
+						constraint: $component.constraint,
+						enabled: true,
+						width: 200
+				}"/>
+			<!-- /ko -->
 		</div>
-		<input 
-			data-bind="ntsTextEditor: {
-				value: ko.observable(''),
-				constraint: $component.constraint,
-				enabled: true, 
-				required: true
-			}"/>	
-	</div>
+		<!-- /ko -->
 	<table id="stampcard-list"></table>
 	`;
 
@@ -32,6 +51,7 @@ module nts.uk.at.view.kmp001.a {
 	})
 	export class CardListComponent extends ko.ViewModel {
 		model!: share.Model;
+		maxLength: KnockoutObservable<string>;
 
 		public constraint: KnockoutObservable<string> = ko.observable('StampNumber');
 
@@ -39,6 +59,103 @@ module nts.uk.at.view.kmp001.a {
 			const vm = this;
 
 			vm.model = params.model;
+			vm.maxLength = params.maxLength;
+
+			vm.reloadSetting();
+
+			vm.maxLength
+				.subscribe(() => {
+					vm.reloadSetting();
+				})
+		}
+
+		mounted() {
+			const vm = this;
+			const row = 5;
+
+			const $grid = $(vm.$el)
+				.find('#stampcard-list')
+				.igGrid({
+					columns: [
+						{ headerText: vm.$i18n('KMP001_31'), key: "stampCardId", dataType: "string", width: 1, hidden: true },
+						{ headerText: vm.$i18n('KMP001_22'), key: "stampNumber", dataType: "string", width: 200, hidden: false }
+					],
+					height: `${30 + (23 * row)}px`,
+					dataSource: [],
+					features: [{
+						name: "Selection",
+						mode: "row",
+						multipleSelection: true,
+						activation: true,
+						rowSelectionChanged: function(evt, ui) {
+							const selectedRows = ui.selectedRows.map(m => m.index) as number[];
+							const stampCard = ko.unwrap(vm.model.stampCardDto);
+
+							vm.model.selectedStampCardIndex(ui.row.index);
+
+							_.each(stampCard, (stamp: any, index: number) => {
+								if (selectedRows.indexOf(index) > -1) {
+									// check
+									_.extend(stamp, { checked: true });
+								} else {
+									// uncheck
+									_.extend(stamp, { checked: false });
+								}
+							})
+
+							vm.model.stampCardDto(stampCard);
+						}
+					}, {
+						name: "RowSelectors",
+						enableCheckBoxes: true,
+						enableRowNumbering: false,
+						enableSelectAllForPaging: false // this option is true by default
+					}],
+					rendered: function() {
+						$(vm.$el).find('.ui-iggrid-rowselector-header').html('').append($('<span>', { class: 'ui-iggrid-headertext', text: vm.$i18n('KMP001_31') }));
+					},
+					dataRendered: function() {
+						$(vm.$el).find('.ui-icon.ui-icon-triangle-1-e').remove();
+						setTimeout(() => {
+							vm.$nextTick(() => {
+								$('.ip-stamp-card').focus();
+							})
+						}, 50);
+					}
+				});
+
+			ko.computed(() => {
+				const stampCard = ko.unwrap(vm.model.stampCardDto);
+
+				$grid.igGrid('option', 'dataSource', ko.toJS(stampCard));
+			});
+
+			ko.computed(() => {
+				const index = ko.unwrap(vm.model.selectedStampCardIndex);
+
+				vm.$nextTick(() => {
+					if ($grid.data('igGrid') && $grid.data('igGridSelection') && $grid.igGrid('option', 'dataSource').length) {
+
+						$('.ip-stamp-card').focus();
+					}
+				});
+			});
+
+			const el = document.querySelector('.sidebar-content-header');
+
+			if (el) {
+				const $vm = ko.dataFor(el);
+
+				if ($vm) {
+					ko.computed(() => {
+						const mode = ko.unwrap($vm.mode);
+					});
+				}
+			}
+		}
+
+		reloadSetting() {
+			const vm = this;
 
 			vm.$ajax(KMP001A_CARD_LIST.GET_STAMPCARDDIGIT)
 				.then((data: any) => {
@@ -53,105 +170,15 @@ module nts.uk.at.view.kmp001.a {
 
 								vm.$validate.constraint(ck, constraint);
 								vm.constraint.valueHasMutated();
+
+								setTimeout(() => {
+									vm.$nextTick(() => {
+										$('.ip-stamp-card').focus();
+									})
+								}, 50);
 							}
 						});
 				});
-
-			vm.$errors('.nts-editor', { messageId: 'Msg_09' });
-		}
-
-		mounted() {
-			const vm = this;
-			const row = 4;
-
-			const $grid = $(vm.$el)
-				.find('#stampcard-list')
-				.igGrid({
-					columns: [
-						{ headerText: vm.$i18n('KMP001_31'), key: "stampCardId", dataType: "string", width: 1, hidden: true },
-						{ headerText: vm.$i18n('KMP001_22'), key: "stampNumber", dataType: "string", width: 200, hidden: false }
-					],
-					height: `${26 + (23 * row)}px`,
-					dataSource: [],
-					features: [{
-						name: "Selection",
-						mode: "row",
-						multipleSelection: true,
-						activation: true,
-						rowSelectionChanging: function(evt, ui) {
-							const el = document.querySelector('.sidebar-content-header');
-
-							if (el) {
-								const $vm = ko.dataFor(el);
-
-								if ($vm) {
-									if (ko.unwrap($vm.mode) === 'new') {
-										return false;
-									}
-								}
-							}
-						},
-						rowSelectionChanged: function(evt, ui) {
-							const selectedRows = ui.selectedRows.map(m => m.index) as number[];
-							const stampCard = ko.unwrap(vm.model.stampCard);
-
-							vm.model.selectedStampCardIndex(ui.row.index);
-
-							_.each(stampCard, (stamp: any, index: number) => {
-								if (selectedRows.indexOf(index) > -1) {
-									// check
-									_.extend(stamp, { checked: true });
-								} else {
-									// uncheck
-									_.extend(stamp, { checked: false });
-								}
-							})
-
-							vm.model.stampCard(stampCard);
-						}
-					}, {
-						name: "RowSelectors",
-						enableCheckBoxes: true,
-						enableRowNumbering: false,
-						enableSelectAllForPaging: false // this option is true by default
-					}],
-					cellClick: function(evt, ui) {
-						// vm.selectedCardNo(ui.rowIndex);
-					},
-					rendered: function() {
-						$(vm.$el).find('.ui-iggrid-rowselector-header').html('').append($('<span>', { class: 'ui-iggrid-headertext', text: vm.$i18n('KMP001_31') }));
-					},
-					dataRendered: function() {
-						$(vm.$el).find('.ui-icon.ui-icon-triangle-1-e').remove();
-					}
-				});
-
-			/*if ($grid.data('igGrid') && $grid.data('igGridSelection') && $grid.igGrid('option', 'dataSource').length) {
-				$grid.igGridSelection("selectRow", 0);
-			}*/
-
-			ko.computed(() => {
-				const stampCard = ko.unwrap(vm.model.stampCard);
-
-				$grid.igGrid('option', 'dataSource', ko.toJS(stampCard));
-			});
-
-
-			const el = document.querySelector('.sidebar-content-header');
-
-			if (el) {
-				const $vm = ko.dataFor(el);
-
-				if ($vm) {
-					ko.computed(() => {
-						const mode = ko.unwrap($vm.mode);
-
-						if (mode === 'new') {
-							$grid.igGridSelection('clearSelection');
-						}
-					});
-				}
-			}
 		}
 	}
 }

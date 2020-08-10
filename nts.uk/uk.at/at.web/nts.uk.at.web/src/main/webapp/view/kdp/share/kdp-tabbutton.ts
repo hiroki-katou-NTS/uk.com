@@ -3,7 +3,9 @@
 module nts.uk.at.view.kdp.share {
 	const tabButtonTempate = `
 		<!-- ko if: ko.unwrap(filteredTabs).length -->
-		<div id="stamp-desc" data-bind="text: ko.unwrap(currentTab).stampPageComment"></div>
+		<div id="stamp-desc" data-bind="let: { $tab: ko.toJS(currentTab) }">
+			<div data-bind="html: $tab.stampPageComment, style: { color: $tab.stampPageCommentColor }"></div>
+		</div>
 		<div id="tab-button-group" class="ui-tabs ui-corner-all ui-widget ui-widget-content horizontal">
 			<ul class="ui-tabs-nav ui-corner-all ui-helper-reset ui-helper-clearfix ui-widget-header" data-bind="foreach: filteredTabs">
 				<li class="ui-tabs-tab ui-corner-top ui-state-default ui-tab"
@@ -23,15 +25,17 @@ module nts.uk.at.view.kdp.share {
 				<div class="grid-container" data-bind="
 						if: ko.toJS($component.selected) === pageNo,
 						css: 'btn-layout-type-' + buttonLayoutType">
-					<!-- ko foreach: buttonSettings -->
-					<button class="stamp-rec-btn"
-						data-bind="
-							btn-setting: $data,
-							click: function() { 
-								$component.params.click($data, ko.toJS($component.currentTab));
-							},
-							timeClick: -1
-						"></button>
+					<!-- ko foreach: _.chunk(ko.unwrap(buttonSettings), buttonLayoutType === 0 ? 2 : 4) -->
+					<div data-bind="foreach: $data">
+						<button class="stamp-rec-btn"
+							data-bind="
+								btn-setting: $data,
+								click: function() { 
+									$component.params.click($data, ko.toJS($component.currentTab));
+								},
+								timeClick: -1
+							"></button>
+					</div>
 					<!-- /ko -->
 				</div>
 			</div>
@@ -53,7 +57,8 @@ module nts.uk.at.view.kdp.share {
 				.css({
 					'color': data.btnTextColor,
 					'background-color': data.btnBackGroundColor,
-					'visibility': data.btnPositionNo === -1 ? 'hidden' : 'visible'
+					'visibility': data.btnPositionNo === -1 ? 'hidden' : 'visible',
+					'height': data.height + 'px'
 				});
 		}
 	}
@@ -85,6 +90,8 @@ module nts.uk.at.view.kdp.share {
 		currentTab!: KnockoutComputed<PageLayout>;
 
 		filteredTabs!: KnockoutComputed<PageLayout[]>;
+
+		buttonSize: KnockoutObservable<number> = ko.observable(0);
 
 		constructor(public params: StampParam) {
 			super();
@@ -132,9 +139,10 @@ module nts.uk.at.view.kdp.share {
 						$el
 							.find('button')
 							.attr('tabindex', $el.data('tabindex'));
-					})
+					});
+					const exist = _.find(filteredTabs, (d) => d.pageNo === selected);
 
-					return _.find(filteredTabs, (d) => d.pageNo === selected) || {
+					const currentTab = _.clone(exist) || {
 						pageNo: -1,
 						buttonLayoutType: -1,
 						buttonSettings: [],
@@ -142,12 +150,18 @@ module nts.uk.at.view.kdp.share {
 						stampPageCommentColor: '',
 						stampPageName: ''
 					};
+
+					// escape html and replace new line chars to break tag
+					currentTab.stampPageComment = _.escape(currentTab.stampPageComment).replace(/(\r|\n)/g, '<br />');
+
+					return currentTab;
 				}
 			});
 
 			vm.filteredTabs = ko.computed({
 				read: () => {
 					const data = ko.unwrap(params.tabs);
+					const buttonSize = ko.unwrap(vm.buttonSize);
 					const setting: StampToSuppress = ko.unwrap(params.stampToSuppress as any) || {
 						goingToWork: false,
 						departure: false,
@@ -162,8 +176,9 @@ module nts.uk.at.view.kdp.share {
 						if (tab) {
 							const cloned = _.cloneDeep(tab);
 							const buttons: ButtonSetting[] = [];
-							const { buttonSettings } = cloned;
-							const size = (cloned.buttonLayoutType === LAYOUT_TYPE.LARGE_2_SMALL_4) ? 6 : 8;
+							const { buttonSettings, buttonLayoutType } = cloned;
+							const { SMALL_8, LARGE_2_SMALL_4 } = LAYOUT_TYPE;
+							const size = (buttonLayoutType === LARGE_2_SMALL_4) ? 6 : 8;
 
 							for (let j = 1; j <= size; j++) {
 								const btn = _.find(buttonSettings, (btn) => btn.btnPositionNo === j);
@@ -193,10 +208,14 @@ module nts.uk.at.view.kdp.share {
 											break
 									}
 
+									const constance = ((buttonLayoutType === LARGE_2_SMALL_4 && j < 3) || buttonLayoutType === SMALL_8) ? 2 : 1;
+
+									btn.height = Math.max(buttonSize, 42) * constance + (buttonLayoutType === SMALL_8 ? 7 : 0);
+
 									buttons.push(btn);
 								} else {
 									buttons.push({
-										audioType: -1,
+										audioType: 0,
 										btnBackGroundColor: '',
 										btnDisplayType: -1,
 										btnName: '',
@@ -208,7 +227,8 @@ module nts.uk.at.view.kdp.share {
 										changeHalfDay: -1,
 										goOutArt: -1,
 										setPreClockArt: -1,
-										usrArt: -1
+										usrArt: -1,
+										height: buttonSize
 									});
 								}
 							}
@@ -252,8 +272,23 @@ module nts.uk.at.view.kdp.share {
 					.removeAttr(tid)
 					.data(tid, tabindex);
 			}
-			
+
 			vm.selected.valueHasMutated();
+
+			$(window)
+				.on('resize', () => {
+					if (vm.$el) {
+						const tabs = vm.$el.querySelector('#tab-button-group');
+
+						if (tabs) {
+							const bound = tabs.getBoundingClientRect();
+							const height = Math.floor((window.innerHeight - bound.top - 110) / 4);
+
+							vm.buttonSize(height);
+						}
+					}
+				})
+				.trigger('resize');
 		}
 	}
 
@@ -285,7 +320,7 @@ module nts.uk.at.view.kdp.share {
 	}
 
 	export interface ButtonSetting {
-		audioType: number;
+		audioType: 0 | 1 | 2;
 		btnBackGroundColor: string;
 		btnDisplayType: number;
 		btnName: string;
@@ -293,10 +328,63 @@ module nts.uk.at.view.kdp.share {
 		btnReservationArt: number;
 		btnTextColor: string;
 		changeCalArt: number;
-		changeClockArt: number;
+		changeClockArt: ChangeClockArt;
 		changeHalfDay: number;
 		goOutArt: number;
 		setPreClockArt: number;
-		usrArt: number;
+		usrArt: NotUseAtr;
+		height: number;
+	}
+
+	export enum NotUseAtr {
+		/** The use. */
+		USE = 1,
+
+		/** The not use. */
+		NOT_USE = 0
+	}
+
+	export enum ChangeClockArt {
+		/** 0. 出勤 */
+		GOING_TO_WORK = 0,
+
+		/** 1. 退勤 */
+		WORKING_OUT = 1,
+
+		/** 2. 入門 */
+		OVER_TIME = 2,
+
+		/** 3. 退門 */
+		BRARK = 3,
+
+		/** 4. 外出 */
+		GO_OUT = 4,
+
+		/** 5. 戻り */
+		RETURN = 5,
+
+		/** 6. 応援開始 */
+		FIX = 6,
+
+		/** 7. 臨時出勤 */
+		TEMPORARY_WORK = 7,
+
+		/** 8. 応援終了 */
+		END_OF_SUPPORT = 8,
+
+		/** 9. 臨時退勤 */
+		TEMPORARY_LEAVING = 9,
+
+		/** 10. PCログオン */
+		PC_LOG_ON = 10,
+
+		/** 11. PCログオフ */
+		PC_LOG_OFF = 11,
+
+		/** 12. 応援出勤 */
+		SUPPORT = 12,
+
+		/** 13. 臨時+応援出勤 */
+		TEMPORARY_SUPPORT_WORK = 13
 	}
 }

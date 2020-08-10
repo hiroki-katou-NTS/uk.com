@@ -13,7 +13,7 @@
 .view-dialog .boxSquare .label-column-select {
 	width: 120px;
 	margin: 20px;
-	padding-top: 20px;
+	padding-top: 20px !important;
 }
 
 .view-dialog .view-button {
@@ -26,4 +26,8 @@
 	font-size: 25px;
 	padding-left: 10px;
 	padding-right: 10px;
+}
+
+#viewd-radio-box {
+	padding-top: 20px !important;
 }

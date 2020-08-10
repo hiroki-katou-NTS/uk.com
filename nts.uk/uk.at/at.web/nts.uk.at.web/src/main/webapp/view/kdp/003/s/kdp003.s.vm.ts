@@ -31,9 +31,6 @@ module nts.uk.at.kdp003.s {
 		created() {
 			const vm = this;
 			const { randomId } = nts.uk.util;
-			const { GOING_TO_WORK, WORKING_OUT } = ChangeClockArt;
-			const { GO_OUT, RETURN } = ChangeClockArt;
-			const { FIX, END_OF_SUPPORT, SUPPORT, TEMPORARY_SUPPORT_WORK } = ChangeClockArt;
 
 			vm.dataSources.filtereds = ko.computed({
 				read: () => {
@@ -46,31 +43,77 @@ module nts.uk.at.kdp003.s {
 						.each((item: StampData) => {
 							const d = moment(item.stampDate, 'YYYY/MM/DD');
 							const day = d.clone().locale('en').format('dddd');
+							const {
+								WORK,
+								WORK_STRAIGHT,
+								WORK_EARLY,
+								WORK_BREAK,
+								DEPARTURE,
+								DEPARTURE_BOUNCE,
+								DEPARTURE_OVERTIME,
+								GETTING_STARTED,
+								DEPAR,
+								TEMPORARY_WORK,
+								TEMPORARY_LEAVING,
+								START_SUPPORT,
+								END_SUPPORT,
+								WORK_SUPPORT,
+								START_SUPPORT_EARLY_APPEARANCE,
+								START_SUPPORT_BREAK,
+								RESERVATION,
+								CANCEL_RESERVATION
+							} = ContentsStampType;
+
+							// bad algorithm :/
+							const LEFT_ALIGNS = [
+								WORK,
+								WORK_STRAIGHT,
+								WORK_EARLY,
+								WORK_BREAK,
+								GETTING_STARTED,
+								TEMPORARY_WORK,
+								START_SUPPORT,
+								WORK_SUPPORT,
+								START_SUPPORT_EARLY_APPEARANCE,
+								START_SUPPORT_BREAK,
+								RESERVATION,
+								CANCEL_RESERVATION
+							];
+							const RIGHT_ALIGNS = [
+								DEPARTURE,
+								DEPARTURE_BOUNCE,
+								DEPARTURE_OVERTIME,
+								DEPAR,
+								TEMPORARY_LEAVING,
+								END_SUPPORT
+							];
 
 							const pushable = {
 								id: randomId(),
 								time: `${item.stampHow} ${item.stampTime}`,
 								date: `<div class="color-schedule-${day.toLowerCase()}">${d.format('YYYY/MM/DD(dd)')}</div>`,
-								name: `<div style="text-align: ${item.changeClockArt === 0 ? 'left' : item.changeClockArt === 1 ? 'right' : 'center'};">${item.stampArt}</div>`
+								name: `<div style="text-align: ${LEFT_ALIGNS.indexOf(item.correctTimeStampValue) > -1 ? 'left' :
+									RIGHT_ALIGNS.indexOf(item.correctTimeStampValue) > -1 ? 'right' : 'center'};">${item.stampArt}</div>`
 							};
 
+							// S1 bussiness logic
 							switch (engraving) {
 								default:
 								case '1':
 									filtereds.push(pushable);
 									break;
 								case '2':
-									if ([GOING_TO_WORK, WORKING_OUT].indexOf(item.changeClockArt) > -1) {
+									if ([ChangeClockArt.GOING_TO_WORK, ChangeClockArt.WORKING_OUT].indexOf(item.changeClockArt) > -1) {
 										filtereds.push(pushable);
 									}
 									break;
 								case '3':
-									if ([GO_OUT, RETURN].indexOf(item.changeClockArt) > -1) {
+									if ([ChangeClockArt.GO_OUT, ChangeClockArt.RETURN].indexOf(item.changeClockArt) > -1) {
 										filtereds.push(pushable);
 									}
+									break;
 								case '4':
-									// S1 bussiness logic
-									if ([FIX, END_OF_SUPPORT, SUPPORT, TEMPORARY_SUPPORT_WORK].indexOf(item.changeClockArt) > -1) {
+									if ([ChangeClockArt.FIX, ChangeClockArt.END_OF_SUPPORT, ChangeClockArt.SUPPORT, ChangeClockArt.TEMPORARY_SUPPORT_WORK].indexOf(item.changeClockArt) > -1) {
 										filtereds.push(pushable);
 									}
 									break;
@@ -101,6 +144,10 @@ module nts.uk.at.kdp003.s {
 
 			vm.filter.day.valueHasMutated();
 		}
+		
+		mounted() {
+			$('.nts-datepicker-wrapper').first().find('input').focus();
+		}
 
 		closeDialog() {
 			const vm = this;
@@ -112,46 +159,126 @@ module nts.uk.at.kdp003.s {
 	export type ENGRAVING = '1' | '2' | '3' | '4';
 
 	export enum ChangeClockArt {
-		GOING_TO_WORK = 0, // 出勤
+		/** 0. 出勤 */
+		GOING_TO_WORK = 0,
 
-		/** 退勤 */
+		/** 1. 退勤 */
 		WORKING_OUT = 1,
 
-		/** 入門 */
+		/** 2. 入門 */
 		OVER_TIME = 2,
 
-		/** 退門 */
+		/** 3. 退門 */
 		BRARK = 3,
 
-		/** 外出 */
+		/** 4. 外出 */
 		GO_OUT = 4,
 
-		/** 戻り */
+		/** 5. 戻り */
 		RETURN = 5,
 
-		/** 応援開始 */
+		/** 6. 応援開始 */
 		FIX = 6,
 
-		/** 臨時出勤 */
+		/** 7. 臨時出勤 */
 		TEMPORARY_WORK = 7,
 
-		/** 応援終了 */
+		/** 8. 応援終了 */
 		END_OF_SUPPORT = 8,
 
-		/** 臨時退勤 */
+		/** 9. 臨時退勤 */
 		TEMPORARY_LEAVING = 9,
 
-		/** PCログオン */
+		/** 10. PCログオン */
 		PC_LOG_ON = 10,
 
-		/** PCログオフ */
+		/** 11. PCログオフ */
 		PC_LOG_OFF = 11,
 
-		/** 応援出勤 */
+		/** 12. 応援出勤 */
 		SUPPORT = 12,
 
-		/** 臨時+応援出勤 */
+		/** 13. 臨時+応援出勤 */
 		TEMPORARY_SUPPORT_WORK = 13
+	}
+
+	export enum ChangeCalArt {
+		/** N: なし */
+		NONE = 0,
+
+		/** N: 早出 */
+		EARLY_APPEARANCE = 1,
+
+		/** N: 残業 */
+		OVER_TIME = 2,
+
+		/** N: 休出 */
+		BRARK = 3,
+
+		/** N: ﾌﾚｯｸｽ */
+		FIX = 4
+	}
+
+	export enum ContentsStampType {
+		/** 1: 出勤 */
+		WORK = 1,
+
+		/** 2: 出勤＋直行 */
+		WORK_STRAIGHT = 2,
+
+		/** 3: 出勤＋早出 */
+		WORK_EARLY = 3,
+
+		/** 4: 出勤＋休出 */
+		WORK_BREAK = 4,
+
+		/** 5: 退勤 */
+		DEPARTURE = 5,
+
+		/** 6: 退勤＋直帰 */
+		DEPARTURE_BOUNCE = 6,
+
+		/** 7: 退勤＋残業 */
+		DEPARTURE_OVERTIME = 7,
+
+		/** 8: 外出 */
+		OUT = 8,
+
+		/** 9: 戻り */
+		RETURN = 9,
+
+		/** 10: 入門 */
+		GETTING_STARTED = 10,
+
+		/** 11: 退門 */
+		DEPAR = 11,
+
+		/** 12: 臨時出勤 */
+		TEMPORARY_WORK = 12,
+
+		/** 13: 臨時退勤 */
+		TEMPORARY_LEAVING = 13,
+
+		/** 14: 応援開始 */
+		START_SUPPORT = 14,
+
+		/** 15: 応援終了 */
+		END_SUPPORT = 15,
+
+		/** 16: 出勤＋応援 */
+		WORK_SUPPORT = 16,
+
+		/** 17: 応援開始＋早出 */
+		START_SUPPORT_EARLY_APPEARANCE = 17,
+
+		/** 18: 応援開始＋休出 */
+		START_SUPPORT_BREAK = 18,
+
+		/** 19: 予約 */
+		RESERVATION = 19,
+
+		/** 20: 予約取消  */
+		CANCEL_RESERVATION = 20
 	}
 
 	export interface Filter {
@@ -168,11 +295,12 @@ module nts.uk.at.kdp003.s {
 		attendanceTime: string;
 		authcMethod: number;
 		cardNumberSupport: string;
-		changeCalArt: number;
-		changeClockArt: number;
+		changeCalArt: ChangeCalArt;
+		changeClockArt: ChangeClockArt;
 		changeClockArtName: string;
 		changeHalfDay: boolean;
 		corectTtimeStampType: string;
+		correctTimeStampValue: ContentsStampType;
 		empInfoTerCode: string;
 		goOutArt: string;
 		latitude: number;

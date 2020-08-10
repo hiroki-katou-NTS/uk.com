@@ -33,7 +33,10 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
@@ -76,7 +79,9 @@ public class GetSettingStampInput {
 	private PredetemineTimeSettingRepository preRepo;
 	
 	@Inject
-	private WorkingConditionService workingService;
+	private WorkingConditionRepository workingConditionRepository;
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepository;
 
 	public SettingPotalStampInputDto getSettingPotalStampInput() {
 		// get ログイン会社ID
@@ -121,9 +126,7 @@ public class GetSettingStampInput {
 			StampToSuppress stampToSuppress = null;
 
 			if (settingOpt.get().isButtonEmphasisArt()) {
-				GetStampTypeToSuppressServiceRequireImpl stampTypeRequire = new GetStampTypeToSuppressServiceRequireImpl(
-						stampSetPerRepo, settingsSmartphoneStampRepo, portalStampSettingsrepo, stampRecordRepo,
-						stampRepo, stampCardRepo, preRepo, workingService);
+				GetStampTypeToSuppressServiceRequireImpl stampTypeRequire = new GetStampTypeToSuppressServiceRequireImpl();
 				if (infoPotal == null) {
 					infoPotal = new EmpInfoPotalStampDto();
 				}
@@ -172,72 +175,59 @@ public class GetSettingStampInput {
 	}
 
 	@AllArgsConstructor
-	private class GetStampTypeToSuppressServiceRequireImpl implements GetStampTypeToSuppressService.Require {
-
-		@Inject
-		private StampSetPerRepository stampSetPerRepo;
-
-		@Inject
-		private SettingsSmartphoneStampRepository settingsSmartphoneStampRepo;
-
-		@Inject
-		private PortalStampSettingsRepository portalStampSettingsrepo;
-
-		@Inject
-		private StampRecordRepository stampRecordRepo;
-
-		@Inject
-		private StampDakokuRepository stampRepo;
-
-		@Inject
-		private StampCardRepository stampCardRepo;
-		
-		@Inject
-		private PredetemineTimeSettingRepository preRepo;
-		
-		@Inject
-		private WorkingConditionService workingService;
+	private class GetStampTypeToSuppressServiceRequireImpl implements GetStampTypeToSuppressService.Require,
+		WorkingConditionService.RequireM1{
 		
 
 		@Override
 		public List<StampCard> getListStampCard(String sid) {
-			return this.stampCardRepo.getListStampCard(sid);
+			return stampCardRepo.getListStampCard(sid);
 		}
 
 		@Override
 		public List<StampRecord> getStampRecord(List<StampNumber> stampNumbers, GeneralDate date) {
-			return this.stampRecordRepo.get(AppContexts.user().contractCode(), stampNumbers, date);
+			return stampRecordRepo.get(AppContexts.user().contractCode(), stampNumbers, date);
 		}
 
 		@Override
 		public List<Stamp> getStamp(List<StampNumber> stampNumbers, GeneralDate date) {
 			String contractCode = AppContexts.user().contractCode();
-			return this.stampRepo.get(contractCode, stampNumbers, date);
+			return stampRepo.get(contractCode, stampNumbers, date);
 		}
 		@Override
 		public Optional<WorkingConditionItem> findWorkConditionByEmployee(String employeeId, GeneralDate baseDate) {
-			return this.workingService.findWorkConditionByEmployee(employeeId, baseDate);
+			return WorkingConditionService.findWorkConditionByEmployee(this, employeeId, baseDate);
 		}
 
 		@Override
 		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String workTimeCode) {
 			String companyId = AppContexts.user().companyId();
-			return this.preRepo.findByWorkTimeCode(companyId, workTimeCode);
+			return preRepo.findByWorkTimeCode(companyId, workTimeCode);
 		}
 
 		@Override
 		public Optional<StampSettingPerson> getStampSet(String companyId) {
-			return this.stampSetPerRepo.getStampSet(companyId);
+			return stampSetPerRepo.getStampSet(companyId);
 		}
 
 		@Override
 		public Optional<SettingsSmartphoneStamp> getSettingsSmartphone(String companyId) {
-			return this.settingsSmartphoneStampRepo.get(companyId);
+			return settingsSmartphoneStampRepo.get(companyId);
 		}
 
 		@Override
 		public Optional<PortalStampSettings> getPotalSettings(String comppanyID) {
-			return this.portalStampSettingsrepo.get(comppanyID);
+			return portalStampSettingsrepo.get(comppanyID);
+		}
+
+		@Override
+		public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
+			return workingConditionRepository.getBySidAndStandardDate(companyId, employeeId, baseDate);
+		}
+
+		@Override
+		public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
+			return workingConditionItemRepository.getByHistoryId(historyId);
 		}
 
 		

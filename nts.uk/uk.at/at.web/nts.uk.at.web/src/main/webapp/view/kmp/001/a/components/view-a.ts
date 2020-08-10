@@ -3,32 +3,37 @@ module nts.uk.at.view.kmp001.a {
 	import share = nts.uk.at.view.kmp001;
 
 	const template = `
-<div id="com-ccg001"></div>
-<div class="sidebar-content-header">
-	<span class="title" data-bind="text: $i18n('KMP001_1')"></span>
-	<button data-bind="text: $i18n('KMP001_4'), click: addNew, enable: mode() == 'update'"></button>
-	<button class="proceed" data-bind="text: $i18n('KMP001_5')"></button>
-	<button class="danger" data-bind="text: $i18n('KMP001_6'), enable: mode() == 'update'"></button>
-	<!-- ko if: attendance -->
-	<button data-bind="text: $i18n('KMP001_7'), click: showDiaLog"></button>
-	<!-- /ko -->
-</div>
-<div class="view-kmp">
-	<div class="list-component float-left viewa">
-		<div id="list-employee"></div>
-	</div>
-	<div class="float-left model-component" 
-		data-bind="component: { 
-			name: 'editor-area', 
-			params: { model: model } }"></div>
-<div>
+		<div id="com-ccg001"></div>
+		<div class="sidebar-content-header">
+			<span class="title" data-bind="text: $i18n('KMP001_1')"></span>
+			<button data-bind="text: $i18n('KMP001_4'), click: addNew, enable: mode() == 'update'"></button>
+			<button id="add" class="proceed" data-bind="text: $i18n('KMP001_5'), click: addStampCard"></button>
+			<button class="danger" data-bind="text: $i18n('KMP001_6'), click: deleteStampCard, enable: mode() == 'update'"></button>
+			<!-- ko if: attendance -->
+			<button data-bind="text: $i18n('KMP001_7'), click: showDiaLog"></button>
+			<!-- /ko -->
+		</div>
+		<div class="view-kmp">
+			<div class="list-component float-left viewa">
+				<div id="list-employee"></div>
+			</div>
+			<div class="float-left model-component" 
+				data-bind="component: { 
+					name: 'editor-area', 
+					params: { model: model, maxLength: maxLength}}"></div>
+		<div>
 `;
 
 	const KMP001A_API = {
 		GET_STAMPCARDDIGIT: 'screen/pointCardNumber/getStampCardDigit',
 		GET_STATUS_SETTING: 'screen/pointCardNumber/getStatusEmployeeSettingStampCard',
-		GET_INFOMAITON_EMPLOYEE: 'screen/pointCardNumber/getEmployeeInfoCardNumber'
+		GET_INFOMAITON_EMPLOYEE: 'screen/pointCardNumber/getEmployeeInfoCardNumber',
+		ADD: 'at/record/register-stamp-card/view-a/save',
+		UPDATE: 'at/record/register-stamp-card/view-a/update',
+		DELETE: 'at/record/register-stamp-card/view-a/delete'
 	};
+
+	const DATE_FORMAT = 'YYYY/MM/DD';
 
 	@component({
 		name: 'view-a',
@@ -38,56 +43,61 @@ module nts.uk.at.view.kmp001.a {
 		attendance: KnockoutObservable<boolean> = ko.observable(true);
 
 		public employees: KnockoutObservableArray<IModel> = ko.observableArray([]);
-		public model: Model = new Model();
+		public model: share.Model = new share.Model();
 		public settings: KnockoutObservableArray<ISetting> = ko.observableArray([]);
 		public employeeIds: KnockoutObservableArray<string> = ko.observableArray([]);
 		public baseDate: KnockoutObservable<string> = ko.observable('');
 		public currentCodes: KnockoutObservableArray<string> = ko.observableArray([]);
 		public mode: KnockoutObservable<MODE> = ko.observable('update');
+		public maxLength: KnockoutObservable<string> = ko.observable('');
 
 		created() {
 			const vm = this;
 
+			$(document).ready(function() {
+				$('#com-ccg001').focus();
+			});
+
 			vm.model.code
 				.subscribe((c: string) => {
 					const employees: IModel[] = ko.toJS(vm.employees);
-					const current = _.find(employees, e => e.code === c);
+					const current = _.find(employees, e => e.code === c)
 
 					if (current) {
 						vm.$ajax(KMP001A_API.GET_INFOMAITON_EMPLOYEE + "/" + ko.toJS(current.employeeId) + "/" + ko.toJS(current.affiliationId) + "/" + ko.toJS(vm.baseDate))
-							.then((data: IModel[]) => {
-								vm.model.update(ko.toJS(data));
+							.then((data: IModel) => {
+								if (data.stampCardDto.length > 0) {
+									data.stampCardDto[0].checked = true;
+								}
+
+								vm.$errors('clear').then(() => {
+									vm.model.update(ko.toJS(data));
+									vm.model.employeeId(current.employeeId);
+								})
 							});
-					} else {
-						// reset data ve mode them moi
 					}
+					vm.mode("update");
+					$(document).ready(function() {
+						$('.ip-stamp-card').focus();
+					});
 				});
 
 			vm.employees
 				.subscribe(() => {
-					vm.$blockui("invisible")
-					vm.$ajax(KMP001A_API.GET_STATUS_SETTING, ko.toJS(vm.employeeIds))
-						.then((data: IEmployeeId[]) => {
-							const employees: IModel[] = ko.toJS(vm.employees);
-							const modelSetting = new Setting();
-							for (var i = 0; i < data.length; i++) {
-								const setting = _.find(employees, e => e.employeeId === data[i].employee);
-
-								if (setting) {
-									modelSetting.code(setting.code);
-									modelSetting.isAlreadySetting(true);
-									vm.settings.push(ko.toJS(modelSetting));
-								}
-							}
-						}).then(() => {
-							vm.$blockui("clear");
-						});
+					vm.reloadData(0);
+					vm.model.code.valueHasMutated();
+					$(document).ready(function() {
+						$('.ip-stamp-card').focus();
+					});
 				})
+
 		}
 
 		mounted() {
 			const vm = this;
 			const dataFormate = 'YYYY/MM/DD';
+
+			vm.$errors('clear');
 
 			if (!!vm.$user.role.attendance) {
 				vm.attendance(true);
@@ -111,7 +121,7 @@ module nts.uk.at.view.kmp001.a {
 					disableSelection: false,
 					maxRows: 20,
 					maxWidth: 450
-				}
+				} as any
 			);
 
 			$('#com-ccg001')
@@ -147,7 +157,7 @@ module nts.uk.at.view.kmp001.a {
 
 					/** Advanced search properties */
 					showEmployment: true, //雇用条件
-					showDepartment: true,
+					showDepartment: false,
 					showWorkplace: true, //職場条件
 					showClassification: true, //分類条件
 					showJobTitle: true, //職位条件
@@ -159,7 +169,9 @@ module nts.uk.at.view.kmp001.a {
 					* @param: data: the data return from CCG001
 					*/
 					returnDataFromCcg001: function(data: any) {
-						vm.baseDate(moment.utc(data.baseDate, "YYYY/MM/DD").format("YYYY-MM-DD"));
+						vm.baseDate(moment.utc(data.baseDate, DATE_FORMAT).format("YYYY-MM-DD"));
+
+						vm.employees([]);
 
 						for (var i = 0; i < data.listEmployee.length; i++) {
 							vm.employeeIds.push(data.listEmployee[i].employeeId);
@@ -168,12 +180,15 @@ module nts.uk.at.view.kmp001.a {
 						const employees = data.listEmployee
 							.map(m => ({
 								affiliationId: m.affiliationId,
+								affiliationName: m.affiliationName,
 								code: m.employeeCode,
 								name: m.employeeName,
 								employeeId: m.employeeId
 							}));
 
 						vm.employees(employees);
+						vm.model.clear();
+						vm.reloadData();
 					}
 				});
 		}
@@ -183,184 +198,134 @@ module nts.uk.at.view.kmp001.a {
 
 			vm.$window
 				.modal('/view/kmp/001/d/index.xhtml')
-				.then(() => {
-
+				.then((data: any) => {
+					vm.maxLength(data.length);
 				});
 		}
 
 		addNew() {
 			const vm = this;
-
-			vm.mode("new");
+			if (ko.unwrap(vm.model.code) != '') {
+				vm.mode("new");
+				vm.model.addNewStampCard();
+			}
+			$(document).ready(function() {
+				$('.ip-stamp-card').focus();
+			});
 		}
-	}
 
-	const editorTemplate = `
-<div>
-	<table class="layout-grid">
-		<tbody>
-			<tr>
-				<td class="label-column-a-left">
-					<div id="td-bottom" data-bind="text: $i18n('KMP001_16')"></div>
-				</td>
-				<td class="label-column-a-right">
-					<div id="td-bottom" data-bind="text: model.workplaceName"></div>
-				</td>
-			</tr>
-			<tr>
-				<td class="label-column-a-left">
-					<div id="td-bottom" data-bind="text: $component.$i18n('KMP001_9')"></div>
-				</td>
-				<td class="label-column-a-right">
-					<div id="td-bottom" data-bind="text: model.businessName"></div>
-				</td>
-			</tr>
-			<tr>
-				<td class="label-column-a-left">
-					<div id="td-bottom" data-bind="text: $component.$i18n('KMP001_20')"></div>
-				</td>
-				<td class="label-column-a-right">
-					<div id="td-bottom" data-bind="text: model.entryDate"></div>
-				</td>
-			</tr>
-			<tr>
-				<td class="label-column-a-left">
-					<div id="td-bottom" data-bind="text: $component.$i18n('KMP001_21')"></div>
-				</td>
-				<td class="label-column-a-right">
-					<div id="td-bottom" data-bind="text: model.retiredDate"></div>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-</div>
-<div>
-	<div>
-		<div class="list-card" 
-			data-bind="component: { name: 'card-list-component', params: { model: model } }"></div>
-	</div>
-</div>
-`
+		deleteStampCard() {
+			const vm = this,
+				model: IModel = ko.toJS(vm.model),
+				checkeds = model.stampCardDto.filter((f) => f.checked),
+				index = _.map(ko.unwrap(vm.employees), m => m.code).indexOf(model.code);
 
-	@component({
-		name: 'editor-area',
-		template: editorTemplate
-	})
-	class RightPanelComponent extends ko.ViewModel {
-		model!: Model;
+			if (checkeds != null) {
+				const command = { employeeId: model.employeeId, cardNumbers: checkeds.map(m => m.stampNumber), cardId: checkeds.map(m => m.stampCardId) };
+				nts.uk.ui.dialog
+					.confirm({ messageId: "Msg_18" })
+					.ifYes(() => {
+						vm.$ajax(KMP001A_API.DELETE, command)
+							.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
+							.then(() => vm.reloadData(index))
+							.then(() => vm.model.code.valueHasMutated())
+							.always(() => vm.$blockui("clear"));
+					})
 
-		created(params: any) {
+			}
+			$(document).ready(function() {
+				$('.ip-stamp-card').focus();
+			});
+		}
+
+		addStampCard() {
+			const vm = this,
+				model: IModel = ko.toJS(vm.model),
+				index = _.map(ko.unwrap(vm.employees), m => m.code).indexOf(model.code);;
+
+			if (ko.unwrap(vm.model.code) != '') {
+				const stamp: share.IStampCard = ko.toJS(model.stampCardDto[0]);
+
+				if (stamp.stampNumber == '') {
+					vm.$dialog.info({ messageId: "Msg_1679" });
+				} else {
+
+					vm.validate()
+						.then((valid: boolean) => {
+							if (valid) {
+								if (ko.toJS(vm.mode) == 'update') {
+									vm.$blockui("invisible");
+
+									const commandUpdate = { employeeId: ko.toJS(model.employeeId), olderCardNumber: stamp.defaultValue, newCardNumber: stamp.stampNumber };
+
+									vm.$ajax(KMP001A_API.UPDATE, commandUpdate)
+										.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+										.then(() => vm.reloadData(index))
+										.then(() => vm.model.code.valueHasMutated())
+										.always(() => vm.$blockui("clear"));
+								} else {
+									vm.$blockui("invisible");
+
+									const commandNew = { employeeId: ko.toJS(model.employeeId), cardNumber: stamp.stampNumber };
+
+									vm.$ajax(KMP001A_API.ADD, commandNew)
+										.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+										.then(() => vm.reloadData(index))
+										.then(() => vm.model.code.valueHasMutated())
+										.fail((err: any) => {
+											nts.uk.ui.dialog.error({ messageId: err.messageId });
+											/*vm.$errors("#add", err.messageId);*/
+										})
+										.always(() => vm.$blockui("clear"));
+								}
+							}
+						});
+
+				}
+			}
+			$(document).ready(function() {
+				$('.ip-stamp-card').focus();
+			});
+		}
+
+		reloadData(selectedIndex: number = 0) {
 			const vm = this;
+			vm.$blockui("invisible")
+			vm.$ajax(KMP001A_API.GET_STATUS_SETTING, ko.toJS(vm.employeeIds))
+				.then((data: IEmployeeId[]) => {
+					vm.settings([]);
+					const employees: IModel[] = ko.toJS(vm.employees);
+					const modelSetting = new Setting();
 
-			vm.model = params.model;
+					for (var i = 0; i < data.length; i++) {
+						const setting = _.find(employees, e => e.employeeId === data[i].employee);
 
-			vm.$ajax(KMP001A_API.GET_STAMPCARDDIGIT)
-				.then((data: string) => {
-					// Đây là maxleght 
+						if (setting) {
+							modelSetting.code(setting.code);
+							modelSetting.isAlreadySetting(true);
+							vm.settings.push(ko.toJS(modelSetting));
+						}
+					}
+
+					if (ko.toJS(vm.model.code) == '') {
+						vm.model.code(employees[selectedIndex].code);
+					}
+				}).then(() => {
+					vm.$blockui("clear");
 				});
 		}
 
-		mounted() {
-			const vm = this;
-
-			_.extend(window, { vm });
-		}
-	}
-
-
-
-
-	interface IStampCard {
-		stampCardId: string;
-		stampNumber: string;
-	}
-
-	class StampCard {
-		stampCardId: KnockoutObservable<string> = ko.observable('');
-		stampNumber: KnockoutObservable<string> = ko.observable('');
-
-		constructor(params?: IStampCard) {
-			const model = this;
-
-			model.update(params);
-		}
-
-		public update(params?: IStampCard) {
-			const model = this;
-
-			if (params) {
-				model.stampCardId(params.stampCardId);
-				model.stampNumber(params.stampNumber);
+		public validate(action: 'clear' | undefined = undefined) {
+			if (action === 'clear') {
+				return $.Deferred().resolve()
+					.then(() => $('.nts-input').ntsError('clear'));
+			} else {
+				return $.Deferred().resolve()
+					/** Gọi xử lý validate của kiban */
+					.then(() => $('.nts-input').trigger("validate"))
+					/** Nếu có lỗi thì trả về false, không thì true */
+					.then(() => !$('.nts-input').ntsError('hasError'));
 			}
-		}
-	}
-
-	class Model {
-		code: KnockoutObservable<string> = ko.observable('');
-		affiliationId: KnockoutObservable<string> = ko.observable('');
-		birthDay: KnockoutObservable<Date | null> = ko.observable(null);
-		businessName: KnockoutObservable<string> = ko.observable('');
-		employeeCode: KnockoutObservable<string> = ko.observable('');
-		employeeId: KnockoutObservable<string> = ko.observable('');
-		entryDate: KnockoutObservable<Date | null> = ko.observable(null);
-		gender: KnockoutObservable<number> = ko.observable(0);
-		pid: KnockoutObservable<string> = ko.observable('');
-		retiredDate: KnockoutObservable<Date | null> = ko.observable(null);
-		stampCard: KnockoutObservableArray<StampCard> = ko.observableArray([]);
-		workplaceId: KnockoutObservable<string> = ko.observable('');
-		workplaceName: KnockoutObservable<string> = ko.observable('');
-
-		public create(params?: IModel) {
-			const self = this;
-
-			if (params) {
-				self.employeeId(params.employeeId);
-
-				self.update(params);
-			}
-		}
-
-		public update(params?: IModel) {
-			const self = this;
-
-			if (params) {
-				self.birthDay(params.birthDay);
-				self.businessName(params.businessName);
-				self.employeeCode(params.employeeCode);
-				self.entryDate(params.entryDate);
-				self.gender(params.gender);
-				self.pid(params.pid);
-				self.retiredDate(params.retiredDate);
-				self.workplaceId(params.workplaceId);
-				self.workplaceName(params.workplaceName);
-
-				self.stampCard(params.stampCardDto.map(m => new StampCard(m)));
-			}
-		}
-	}
-
-	interface ISetting {
-		code: string;
-		isAlreadySetting: boolean;
-	}
-
-	class Setting {
-		code: KnockoutObservable<string> = ko.observable('');
-		isAlreadySetting: KnockoutObservable<boolean> = ko.observable(true);
-
-		constructor(params?: ISetting) {
-			const seft = this;
-
-			if (params) {
-				seft.code(params.code);
-				seft.update(params);
-			}
-		}
-
-		update(params: ISetting) {
-			const seft = this;
-
-			seft.isAlreadySetting(params.isAlreadySetting);
 		}
 	}
 

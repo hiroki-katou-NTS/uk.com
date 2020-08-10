@@ -76,7 +76,7 @@ public class PointCardNumberWs extends WebService {
 	
 	@POST
 	@Path("getEmployeeFromCardNo/{cardNumber}")
-	public StampCardEmployeeDto getEmployeeInformationFromCardNo (@PathParam("cardNumber") String cardnumber) {
+	public List<StampCardEmployeeDto> getEmployeeInformationFromCardNo (@PathParam("cardNumber") String cardnumber) {
 		return this.stampCardViewB.getStampCard(cardnumber);
 	}
 	
