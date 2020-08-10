@@ -159,13 +159,22 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             let userInfor = JSON.parse(itemLocal.get());
             let listShiftMasterSaveLocal = userInfor.shiftMasterWithWorkStyleLst;
             
-            for (let i = 0; i < listPattern.length; i++) {
+            self.updateDataSourceCompany(listPattern , listShiftMasterSaveLocal);
+            
+            let indexLinkBtnCom = self.indexOfPageSelected(listPageInfo , pageNumber);
+            self.selectedLinkButtonCom(indexLinkBtnCom);
+            self.clickLinkButton(null, ko.observable(indexLinkBtnCom));
+        }
+        
+        updateDataSourceCompany(listShiftPalletCom, listShiftMasterSaveLocal) {
+            let self = this;
+            for (let i = 0; i < listShiftPalletCom.length; i++) {
                 let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
                 //set data for dataSource
-                _.each(listPattern[i].patternItem, (pattItem) => {
+                _.each(listShiftPalletCom[i].patternItem, (pattItem) => {
                     let text = pattItem.patternName;
                     let arrPairShortName = [], arrPairObject: any = [];
-                    
+
                     _.forEach(pattItem.workPairSet, (wPSet) => {
                         let matchShiftWork = _.find(listShiftMasterSaveLocal, ["shiftMasterCode", wPSet.shiftCode != null ? wPSet.shiftCode : wPSet.workTypeCode]);
                         let value = "";
@@ -184,12 +193,12 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                             shiftMasterCode: self.selectedpalletUnit() === 1 ? wPSet.shiftCode : wPSet.workTypeCode
                         });
                     });
-                    
+
                     let arrDataOfArrPairObject: any = [];
                     _.each(arrPairObject, (data) => {
                         arrDataOfArrPairObject.push(data.data);
                     });
-                    
+
                     let arrTooltipClone = _.clone(arrPairShortName);
                     for (let i = 7; i < arrTooltipClone.length; i += 7) {
                         arrPairShortName.splice(i, 0, 'lb');
@@ -201,11 +210,8 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     //insert data to source
                     source.splice(pattItem.patternNo - 1, 1, { text: text, tooltip: tooltip, data: arrPairObject });
                 });
-                self.dataSourceCompany().splice(listPattern[i].groupNo - 1, 1, source);
+                self.dataSourceCompany().splice(listShiftPalletCom[i].groupNo - 1, 1, source);
             }
-            let indexLinkBtnCom = self.indexOfPageSelected(listPageInfo , pageNumber);
-            self.selectedLinkButtonCom(indexLinkBtnCom);
-            self.clickLinkButton(null, ko.observable(indexLinkBtnCom));
         }
 
         private indexOfPageSelected(listPageInfo : any, shiftPalettePageNumber : any) {
@@ -236,10 +242,19 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             let userInfor = JSON.parse(itemLocal.get());
             let listShiftMasterSaveLocal = userInfor.shiftMasterWithWorkStyleLst;
 
-            for (let i = 0; i < listPattern.length; i++) {
+            self.updateDataSourceWorkplace(listPattern, listShiftMasterSaveLocal);
+            
+            let indexLinkBtnOrg = self.indexOfPageSelected(listPageInfo , pageNumber);
+            self.selectedLinkButtonWkp(indexLinkBtnOrg);
+            self.clickLinkButton(null, ko.observable(indexLinkBtnOrg));
+        }
+        
+        updateDataSourceWorkplace(listShiftPalletWorkPlace, listShiftMasterSaveLocal) {
+            let self = this;
+            for (let i = 0; i < listShiftPalletWorkPlace.length; i++) {
                 let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
                 //set data for dataSource
-                _.each(listPattern[i].patternItem, (pattItem) => {
+                _.each(listShiftPalletWorkPlace[i].patternItem, (pattItem) => {
                     let text = pattItem.patternName;
                     let arrPairShortName = [], arrPairObject = [];
 
@@ -276,15 +291,12 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     }
                     let tooltip: string = arrPairShortName.join('→');
                     tooltip = tooltip.replace(/→lb/g, '\n');
-                    
+
                     // Insert data to source
                     source.splice(pattItem.patternNo - 1, 1, { text: text, tooltip: tooltip, data: arrPairObject });
                 });
-                self.dataSourceWorkplace().splice(listPattern[i].groupNo - 1, 1, source);
+                self.dataSourceWorkplace().splice(listShiftPalletWorkPlace[i].groupNo - 1, 1, source);
             }
-            let indexLinkBtnOrg = self.indexOfPageSelected(listPageInfo , pageNumber);
-            self.selectedLinkButtonWkp(indexLinkBtnOrg);
-            self.clickLinkButton(null, ko.observable(indexLinkBtnOrg));
         }
 
         /**
@@ -324,10 +336,10 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         shiftPalletPositionNumberCom = userInfor.shiftPalletPositionNumberCom;
                         uk.localStorage.setItemAsJson(self.KEY, userInfor);
                     });
-
-
-                    //set sourceCompa    
-                    self.sourceCompany(self.dataSourceCompany()[pageNumberSelected - 1] || source);
+                    
+                    //set sourceCompa  
+                    let listPattern = data.targetShiftPalette.shiftPalletCom;
+                    self.updateDataSourceCompany(listPattern , data.listShiftMaster);
                     self.selectedLinkButtonCom(indexBtn);
                     //self.selectedButtonTableCompany(shiftPalletPositionNumberCom);
 
@@ -349,7 +361,8 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         uk.localStorage.setItemAsJson(self.KEY, userInfor);
                     });
                     //set sourceWorkplace
-                    self.sourceWorkplace(self.dataSourceWorkplace()[pageNumberSelected - 1] || source);
+                    let listPattern = data.targetShiftPalette.shiftPalletWorkPlace;
+                    self.updateDataSourceWorkplace(listPattern, data.listShiftMaster);
                     self.selectedLinkButtonWkp(indexBtn);
                     //self.selectedButtonTableWorkplace(shiftPalletPositionNumberOrg);
                 }
