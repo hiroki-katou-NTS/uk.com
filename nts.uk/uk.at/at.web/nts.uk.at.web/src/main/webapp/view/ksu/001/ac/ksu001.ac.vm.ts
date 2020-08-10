@@ -70,26 +70,26 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             });
 
             self.selectedButtonTableCompany.subscribe((value) => {
-                let indexBtnSelected = value.column + value.row*10;
-                let arrDataToStick = []; 
-                if (value.column == -1 || value.row == -1){
-                     $("#extable").exTable("stickData", arrDataToStick);
-                }else{
+                let indexBtnSelected = value.column + value.row * 10;
+                let arrDataToStick = [];
+                if (value.column == -1 || value.row == -1) {
+                    $("#extable").exTable("stickData", arrDataToStick);
+                } else {
                     for (let i = 0; i < value.data.data.length; i++) {
                         let obj = value.data.data[i];
                         let shiftMasterName = obj.value.toString();
                         let removeFirstChar = shiftMasterName.slice(1);  // xoa dau [ ở đầu
-                        let removeEndChar   = removeFirstChar.slice(0, removeFirstChar.length - 1);// xoa dau ] ở cuối
+                        let removeEndChar = removeFirstChar.slice(0, removeFirstChar.length - 1);// xoa dau ] ở cuối
                         shiftMasterName = removeEndChar;
-                        if(shiftMasterName.includes('マスタ未登録')){
-                           arrDataToStick.push(new ExCell('', '', '', '', '', '', '')); 
-                        }else{
-                           arrDataToStick.push(new ExCell('', '', '', '', '', '', shiftMasterName)); 
+                        if (shiftMasterName.includes('マスタ未登録')) {
+                            arrDataToStick.push(new ExCell('', '', '', '', '', '', ''));
+                        } else {
+                            arrDataToStick.push(new ExCell('', '', '', '', '', '', shiftMasterName));
                         }
                     }
                     $("#extable").exTable("stickData", arrDataToStick);
                 }
-                
+
                 if (value.column !== -1 && value.row !== -1) {
                     uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                         let userInfor: any = JSON.parse(data);
@@ -97,30 +97,43 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         uk.localStorage.setItemAsJson(self.KEY, userInfor);
                     });
                 }
-                
+
                 //$("#extable").exTable("stickStyler", function(rowIdx, key, data) {
-//                    if (rowIdx % 2 == 0) {
-//                        return { class: "red-text" };
-//                    } else {
-//                        return { class: "blue-text" };
-//                    }
-//                });
-                
-                
+                //                    if (rowIdx % 2 == 0) {
+                //                        return { class: "red-text" };
+                //                    } else {
+                //                        return { class: "blue-text" };
+                //                    }
+                //                });
             });
 
             self.selectedButtonTableWorkplace.subscribe((value) => {
-                self.dataToStick = $("#tableButton2").ntsButtonTable("getSelectedCells")[0] ? $("#tableButton2").ntsButtonTable("getSelectedCells")[0].data.data : null;
-                let arrDataToStick: any[] = _.map(self.dataToStick, 'data');
-                $("#extable").exTable("stickData", arrDataToStick);
-                // save data to local Storage
-                if (value.column == -1 || value.row == -1)
-                    return;  
-                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                    let userInfor: IUserInfor = JSON.parse(data);
-                    userInfor.shiftPalletPositionNumberOrg = {column : self.selectedButtonTableWorkplace().column , row : self.selectedButtonTableWorkplace().row };
-                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
-                });
+                let arrDataToStickWkp = [];
+                if (value.column == -1 || value.row == -1) {
+                    $("#extable").exTable("stickData", arrDataToStickWkp);
+                } else {
+                    for (let i = 0; i < value.data.data.length; i++) {
+                        let obj = value.data.data[i];
+                        let shiftMasterName = obj.value.toString();
+                        let removeFirstChar = shiftMasterName.slice(1);  // xoa dau [ ở đầu
+                        let removeEndChar = removeFirstChar.slice(0, removeFirstChar.length - 1);// xoa dau ] ở cuối
+                        shiftMasterName = removeEndChar;
+                        if (shiftMasterName.includes('マスタ未登録')) {
+                            arrDataToStickWkp.push(new ExCell('', '', '', '', '', '', ''));
+                        } else {
+                            arrDataToStickWkp.push(new ExCell('', '', '', '', '', '', shiftMasterName));
+                        }
+                    }
+                    $("#extable").exTable("stickData", arrDataToStickWkp);
+                }
+
+                if (value.column !== -1 && value.row !== -1) {
+                    uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                        let userInfor: IUserInfor = JSON.parse(data);
+                        userInfor.shiftPalletPositionNumberOrg = { column: self.selectedButtonTableWorkplace().column, row: self.selectedButtonTableWorkplace().row };
+                        uk.localStorage.setItemAsJson(self.KEY, userInfor);
+                    });
+                }
             });
 
             $("#tableButton1").bind("getdatabutton", function(evt, data) {
