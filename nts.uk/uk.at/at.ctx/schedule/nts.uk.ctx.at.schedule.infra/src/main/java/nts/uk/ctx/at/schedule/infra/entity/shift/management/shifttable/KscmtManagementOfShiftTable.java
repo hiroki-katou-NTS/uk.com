@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.infra.entity.shift.management.shifttable;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -21,10 +23,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCMT_PALETTE_CMP")
-public class ManagementOfShiftTable extends ContractUkJpaEntity {
+public class KscmtManagementOfShiftTable extends ContractUkJpaEntity  implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public ManagementOfShiftTablePk pk;
+	public KscmtManagementOfShiftTablePk pk;
 
 	@Column(name = "OPEN_END_DATE")
 	public GeneralDate endDate;
@@ -37,9 +41,9 @@ public class ManagementOfShiftTable extends ContractUkJpaEntity {
 		return this.pk;
 	}
 
-	public static ManagementOfShiftTable toEntity(PublicManagementShiftTable shiftTable) {
-		return new ManagementOfShiftTable(
-				new ManagementOfShiftTablePk(AppContexts.user().companyId(),
+	public static KscmtManagementOfShiftTable toEntity(PublicManagementShiftTable shiftTable) {
+		return new KscmtManagementOfShiftTable(
+				new KscmtManagementOfShiftTablePk(AppContexts.user().companyId(),
 						shiftTable.getTargetOrgIdenInfor().getUnit().value,
 						shiftTable.getTargetOrgIdenInfor().getUnit().value == 0
 								? shiftTable.getTargetOrgIdenInfor().getWorkplaceId().get()

@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.PublicManagementShiftTable;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.PublicManagementShiftTableRepository;
-import nts.uk.ctx.at.schedule.infra.entity.shift.management.shifttable.ManagementOfShiftTable;
-import nts.uk.ctx.at.schedule.infra.entity.shift.management.shifttable.ManagementOfShiftTablePk;
+import nts.uk.ctx.at.schedule.infra.entity.shift.management.shifttable.KscmtManagementOfShiftTable;
+import nts.uk.ctx.at.schedule.infra.entity.shift.management.shifttable.KscmtManagementOfShiftTablePk;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.com.context.AppContexts;
@@ -21,19 +21,19 @@ public class JpaManagementShiftTableRepository extends JpaRepository implements 
 
 	@Override
 	public void insert(PublicManagementShiftTable shiftTable) {
-		this.commandProxy().insert(ManagementOfShiftTable.toEntity(shiftTable));
+		this.commandProxy().insert(KscmtManagementOfShiftTable.toEntity(shiftTable));
 
 	}
 
 	@Override
 	public void update(PublicManagementShiftTable shiftTable) {
-		Optional<ManagementOfShiftTable> result = this.queryProxy()
-				.find(new ManagementOfShiftTablePk(AppContexts.user().companyId(),
+		Optional<KscmtManagementOfShiftTable> result = this.queryProxy()
+				.find(new KscmtManagementOfShiftTablePk(AppContexts.user().companyId(),
 						shiftTable.getTargetOrgIdenInfor().getUnit().value,
 						shiftTable.getTargetOrgIdenInfor().getUnit().value == 0
 								? shiftTable.getTargetOrgIdenInfor().getWorkplaceId().get()
 								: shiftTable.getTargetOrgIdenInfor().getWorkplaceGroupId().get()),
-						ManagementOfShiftTable.class);
+						KscmtManagementOfShiftTable.class);
 		if (result.isPresent()) {
 			result.get().endDate = shiftTable.getEndDatePublicationPeriod();
 			result.get().startDate = shiftTable.getOptEditStartDate().isPresent()
@@ -44,7 +44,7 @@ public class JpaManagementShiftTableRepository extends JpaRepository implements 
 
 	@Override
 	public Optional<PublicManagementShiftTable> get(TargetOrgIdenInfor idenInfor) {
-		Optional<ManagementOfShiftTable> result = this.queryProxy().query(GET, ManagementOfShiftTable.class)
+		Optional<KscmtManagementOfShiftTable> result = this.queryProxy().query(GET, KscmtManagementOfShiftTable.class)
 				.setParameter("targetUnit", idenInfor.getUnit().value)
 				.setParameter("targetID", idenInfor.getUnit().value == 0 ? idenInfor.getWorkplaceId().get()
 						: idenInfor.getWorkplaceGroupId().get())

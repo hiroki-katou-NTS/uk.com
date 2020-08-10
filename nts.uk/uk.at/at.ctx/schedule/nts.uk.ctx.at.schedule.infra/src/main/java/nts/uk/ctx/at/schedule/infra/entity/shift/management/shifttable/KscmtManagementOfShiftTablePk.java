@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.infra.entity.shift.management.shifttable;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -9,7 +11,9 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class ManagementOfShiftTablePk {
+public class KscmtManagementOfShiftTablePk  implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	/** 会社ID */
 	@Column(name = "CID")
