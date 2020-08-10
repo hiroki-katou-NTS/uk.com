@@ -84,7 +84,7 @@ module kcp013.component {
 		public loadWorkHours(param): JQueryPromise<void> {
 			let self = this;
 			var dfd = $.Deferred();
-            let wkpId = param.workPlaceId();
+            let wkpId = typeof param.workPlaceId == 'function' ?  param.workPlaceId() : param.workPlaceId;
             param.workPlaceId = wkpId;
 			nts.uk.request.ajax('at', GET_WORK_HOURS_URL, param).done((data) => {
 				self.getListWorkHours(data, param)
@@ -99,7 +99,7 @@ module kcp013.component {
 		public loadAllWorkHours(param): JQueryPromise<void> {
 			let self = this;
             var dfd = $.Deferred();
-            let wkpId = param.workPlaceId();
+            let wkpId = typeof param.workPlaceId == 'function' ?  param.workPlaceId() : param.workPlaceId;
             param.workPlaceId = wkpId;
 			nts.uk.request.ajax('at', GET_ALL_WORK_HOURS_URL).done((data) => {
 				self.getListWorkHours(data, param)
