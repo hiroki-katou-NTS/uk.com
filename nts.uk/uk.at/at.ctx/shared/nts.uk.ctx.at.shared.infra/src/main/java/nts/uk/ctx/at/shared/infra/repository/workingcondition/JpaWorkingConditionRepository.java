@@ -33,7 +33,6 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
@@ -683,7 +682,8 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 
 	@Override
 	public void insert(WorkingCondition workingCondition, WorkingConditionItem workingConditionItem) {
-		// TODO Auto-generated method stub
+		this.commandProxy().insertAll(KshmtWorkingCond.toEntity(workingCondition));
+		this.commandProxy().insert(KshmtWorkingCondItem.toEntity(workingConditionItem));
 		
 	}
 
@@ -692,57 +692,144 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 		// TODO Auto-generated method stub
 		
 	}
-
+	
+	
+	private final static String SELECT_WORK_COND_BY_SID_HIST = new StringBuilder("SELECT item FROM KshmtWorkingCond item ")
+			.append(" LEFT JOIN  item.KshmtWorkingCondItem hst ")
+			.append(" WHERE item.cid = :cid ")
+			.append(" AND  item.kshmtWorkingCondPK.sid = :empID ")
+			.append(" AND  item.kshmtWorkingCondPK.historyId = :historyId ")
+			.toString();
+	private final static String SELECT_ITEM_BY_SID_HIST = new StringBuilder("SELECT item FROM KshmtWorkingCondItem item ")
+			.append(" LEFT JOIN item.kshmtWorkingCond hst ")
+			.append(" WHERE hst.cid = :cid ")
+			.append(" AND item.sid = :sid")
+			.append(" AND item.historyId = :historyId")
+			.toString();
 	@Override
 	public void delete(String companyID, String empID, String histID) {
-		// TODO Auto-generated method stub
+		//労働条件
+		Optional<KshmtWorkingCond> kshmtWorkingCond = this.queryProxy().query(SELECT_WORK_COND_BY_SID_HIST, KshmtWorkingCond.class)
+				.setParameter("cid", companyID)
+				.setParameter("empID", empID)
+				.setParameter("historyId", histID)
+				.getSingle();
+		if(kshmtWorkingCond.isPresent()) {
+			this.commandProxy().remove(kshmtWorkingCond.get());
+		}
 		
+		//労働条件項目
+		Optional<KshmtWorkingCondItem> kshmtWorkingCondItem = this.queryProxy().query(SELECT_ITEM_BY_SID_HIST, KshmtWorkingCondItem.class)
+				.setParameter("cid", companyID)
+				.setParameter("sid", empID)
+				.setParameter("historyId", histID)
+				.getSingle();
+		if(kshmtWorkingCondItem.isPresent()) {
+			this.commandProxy().remove(kshmtWorkingCondItem.get());
+		}
 	}
 
+	
+	private final static String SELECT_ITEM_BY_SID = new StringBuilder("SELECT item FROM KshmtWorkingCondItem item ")
+			.append(" LEFT JOIN item.kshmtWorkingCond hst ")
+			.append(" WHERE hst.cid = :cid ")
+			.append(" AND item.sid = :sid").toString();
 	@Override
 	public void delete(String companyID, String empID) {
-		// TODO Auto-generated method stub
+		List<KshmtWorkingCond> lstKshmtWorkingCond = this.queryProxy().query(SELECT_WORK_COND_BY_SID, KshmtWorkingCond.class)
+				.setParameter("cid", companyID)
+				.setParameter("empID", empID)
+				.getList();
+		this.commandProxy().removeAll(lstKshmtWorkingCond);
 		
+		Optional<KshmtWorkingCondItem> kshmtWorkingCondItem = this.queryProxy().query(SELECT_ITEM_BY_SID, KshmtWorkingCondItem.class)
+			.setParameter("cid", companyID)
+			.setParameter("sid", empID)
+			.getSingle();
+		if(kshmtWorkingCondItem.isPresent()) {
+			this.commandProxy().remove(kshmtWorkingCondItem.get());
+		}
 	}
-
+	
+	
+	private final static String SELECT_WORK_COND_BY_SID = new StringBuilder("SELECT item FROM KshmtWorkingCond item ")
+			.append(" LEFT JOIN  item.KshmtWorkingCondItem hst ")
+			.append(" WHERE item.cid = :cid ")
+			.append(" AND  item.kshmtWorkingCondPK.sid = :empID ")
+			.toString();
 	@Override
 	public Optional<WorkingCondition> getWorkingCondition(String companyID, String empID) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
+		List<KshmtWorkingCond> lstEntity = this.queryProxy().query(SELECT_WORK_COND_BY_SID, KshmtWorkingCond.class)
+				.setParameter("cid", companyID)
+				.setParameter("empID", empID)
+				.getList();
+		Optional<WorkingCondition> workSchedules = KshmtWorkingCond.toDomainHis(lstEntity);
+		return workSchedules;
 	}
 
+	
+	
 	@Override
 	public List<WorkingCondition> getWorkingConditionByListEmpID(String companyID, List<String> lstEmpID) {
-		// TODO Auto-generated method stub
-		return null;
+		List<WorkingCondition> data = new ArrayList<>();
+		for(String empID :lstEmpID) {
+			Optional<WorkingCondition> workingCondition  = getWorkingCondition(companyID, empID);
+			if(workingCondition.isPresent()) {
+				data.add(workingCondition.get());
+			}
+		}
+		return data;
 	}
-
+	
+	
+	private final static String SELECT_BY_HISTID = new StringBuilder("SELECT item FROM KshmtWorkingCondItem item ")
+			.append(" LEFT JOIN  item.kshmtWorkingCond hst ")
+			.append(" WHERE hst.historyId = :histID ").toString();
 	@Override
 	public Optional<WorkingConditionItem> getWorkingConditionItem(String histID) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
+		Optional<WorkingConditionItem> workSchedules = this.queryProxy().query(SELECT_BY_HISTID, KshmtWorkingCondItem.class)
+				.setParameter("histID", histID)
+				.getSingle(c -> c.toDomain());
+		return workSchedules;
 	}
-
+	
+	
+	private final static String SELECT_BY_LIST_HISTID = new StringBuilder("SELECT item FROM KshmtWorkingCondItem item ")
+			.append(" LEFT JOIN  item.kshmtWorkingCond hst ")
+			.append(" WHERE hst.historyId IN :listHistID ").toString();
 	@Override
 	public List<WorkingConditionItem> getWorkingConditionItemByListHistID(List<String> listHistID) {
-		// TODO Auto-generated method stub
-		return null;
+		if(listHistID.isEmpty()) {
+			return new ArrayList<>();
+		}
+		List<WorkingConditionItem> workSchedules = this.queryProxy().query(SELECT_BY_LIST_HISTID, KshmtWorkingCondItem.class)
+				.setParameter("listHistID", listHistID)
+				.getList(c -> c.toDomain());
+				return workSchedules;
 	}
-
+	
+	
+	private final static String SELECT_BY_ID_DATE_NOT_SID = new StringBuilder("SELECT item FROM KshmtWorkingCondItem item ")
+			.append(" LEFT JOIN  item.kshmtWorkingCond hst ")
+			.append(" WHERE hst.cid = :cid ")
+			.append(" AND hst.strD <= :ymds ")
+			.append(" AND hst.endD >= :ymds ").toString();
 	@Override
 	public List<WorkingConditionItem> getWorkingConditionItemByCompanyIDAndDate(String companyID, GeneralDate ymd) {
-		// TODO Auto-generated method stub
-		return null;
+		List<WorkingConditionItem> workSchedules = this.queryProxy().query(SELECT_BY_ID_DATE_NOT_SID, KshmtWorkingCondItem.class)
+		.setParameter("cid", companyID)
+		.setParameter("ymds", ymd)
+		.getList(c -> c.toDomain());
+		return workSchedules;
 	}
+	
+	
 	private final static String SELECT_BY_ID_DATE = new StringBuilder("SELECT item FROM KshmtWorkingCondItem item ")
 			.append(" LEFT JOIN item.kshmtWorkingCond hst ")
 			.append(" WHERE hst.cid = :cid ")
 			.append(" AND hst.strD <= :ymds ")
 			.append(" AND hst.endD >= :ymds ")
 			.append(" AND item.sid = :sid").toString();
-//	private static final String SELECT_BY_ID_DATE = "SELECT item FROM KshmtWorkingCondItem item LEFT JOIN KshmtWorkingCond hst "
-//			+ "ON item.sid = hst.sid and item.historyId = hst.kshmtWorkingCondPK.historyId "
-//			+ "WHERE hst.cid = :cid AND hst.strD <= :ymds AND hst.strD >= :ymds AND item.sid = :sid ";
 	// [6-1] 社員を指定して年月日時点の履歴項目を取得する ( 会社ID, 年月日, 社員ID )
 	@Override
 	public Optional<WorkingConditionItem> getWorkingConditionItemByEmpIDAndDate(String companyID, GeneralDate ymd,
@@ -751,23 +838,31 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 				.setParameter("cid", companyID)
 				.setParameter("sid", employeeID)
 				.setParameter("ymds", ymd)
-				.getSingle(c -> this.toDomain(c));
-		
+				.getSingle(c -> c.toDomain());
 		return workSchedule;
 	}
 	
-	public WorkingConditionItem toDomain(KshmtWorkingCondItem c) {
-		WorkingConditionItem conditionItem = new WorkingConditionItem(c.getHistoryId(), ManageAtr.valueOf(c.getScheManagementAtr()), c.getSid());
-		return conditionItem;
-	}
-
+	
+	private final static String SELECT_BY_LIST_ID_AND_DATE = new StringBuilder("SELECT item FROM KshmtWorkingCondItem item ")
+			.append(" LEFT JOIN item.kshmtWorkingCond hst ")
+			.append(" WHERE hst.cid = :cid ")
+			.append(" AND hst.strD <= :ymds ")
+			.append(" AND hst.endD >= :ymds ")
+			.append(" AND item.sid IN :empID").toString();
+	
 	@Override
 	public List<WorkingConditionItem> getWorkingConditionItemByLstEmpIDAndDate(String companyID, GeneralDate ymd,
 			List<String> empID) {
-		// TODO Auto-generated method stub
-		return null;
+		List<WorkingConditionItem> workSchedules = this.queryProxy()
+				.query(SELECT_BY_LIST_ID_AND_DATE, KshmtWorkingCondItem.class)
+				.setParameter("cid", companyID)
+				.setParameter("ymds", ymd)
+				.setParameter("empID", empID)
+				.getList(c -> c.toDomain());
+		return workSchedules;
 	}
 
+	
 	@Override
 	public List<WorkingConditionItemWithPeriod> getWorkingConditionItemWithPeriod(String companyID,
 			List<String> lstEmpID, DatePeriod datePeriod) {
@@ -776,3 +871,4 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	}
 
 }
+
