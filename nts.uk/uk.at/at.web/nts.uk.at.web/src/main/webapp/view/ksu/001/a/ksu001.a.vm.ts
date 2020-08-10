@@ -263,7 +263,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.bingdingToShiftPallet(data);
                 }
                 
-                
                 // set data Header
                 self.bindingToHeader(data);
                 

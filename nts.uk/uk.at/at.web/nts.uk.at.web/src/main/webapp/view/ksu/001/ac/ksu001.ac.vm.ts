@@ -78,8 +78,9 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     for (let i = 0; i < value.data.data.length; i++) {
                         let obj = value.data.data[i];
                         let shiftMasterName = obj.value.toString();
-                        shiftMasterName = shiftMasterName.slice(1);  // xoa dau [ ở đầu
-                        shiftMasterName = shiftMasterName.slice(0, shiftMasterName.length - 1);// xoa dau ] ở cuối
+                        let removeFirstChar = shiftMasterName.slice(1);  // xoa dau [ ở đầu
+                        let removeEndChar   = removeFirstChar.slice(0, removeFirstChar.length - 1);// xoa dau ] ở cuối
+                        shiftMasterName = removeEndChar;
                         if(shiftMasterName.includes('マスタ未登録')){
                            arrDataToStick.push(new ExCell('', '', '', '', '', '', '')); 
                         }else{
