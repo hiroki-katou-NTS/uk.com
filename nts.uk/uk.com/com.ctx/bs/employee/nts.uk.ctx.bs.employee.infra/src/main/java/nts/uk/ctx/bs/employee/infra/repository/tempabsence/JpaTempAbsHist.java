@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -61,12 +62,11 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	
 	private static final String GET_DATA31 = " SELECT k FROM BsymtTempAbsHistory k "
             + " WHERE k.cid = :cid "   
-            + " AND k.sid =:employeeId ";
+            + " AND k.sid = :employeeId ";
 	
 	private static final String GET_DATA_4 = " SELECT h FROM BsymtTempAbsHisItem h  " 
 			                               + " WHERE h.histId = :hisID ";
-			                             
-	
+
 	
 	private static final String GET_DATA_6 = " SELECT h FROM BsymtTempAbsHisItem h INNER JOIN BsymtTempAbsHistory i"
 			                                + " ON h.sid = i.sid AND h.histId = i.histId"
@@ -85,11 +85,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 							            	+ " AND i.startDate <= :ymd  "
 							            	+ " AND ymd <= i.endDate";  
 	
-	private static final String DELETE21History = " DELETE FROM BsymtTempAbsHistory h "
-			                             +  " WHERE h.cid = :companyID AND h.sid = :empID AND h.histId = :historyID " ;
-	
-	private static final String DELETE21HistoryItem = " DELETE FROM BsymtTempAbsHisItem h "
-            				+  " WHERE h.sid = :empID  AND h.histId = :historyID " ;		                              
+	                              
 	/**
 	 * Convert from domain to entity
 	 * 
@@ -505,33 +501,117 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 
 	@Override
 	public void insert(TempAbsenceHistory tempAbsenceHistory, TempAbsenceHisItem tempAbsenceHisItem) {
-		// TODO Auto-generated method stub
+		this.commandProxy().insert(BsymtTempAbsHistory.toEntity(tempAbsenceHistory));
+		this.commandProxy().insert(BsymtTempAbsHisItem.toEntity(tempAbsenceHisItem));
 
 	}
-
+	
+	
+	private static final String GET_DATA_BY_LST_HISTID = " SELECT h FROM BsymtTempAbsHisItem h  " 
+									 + " WHERE k.cid = :cid "   
+							         + " AND k.sid = :sid "
+						             + " AND h.histId IN :lstHistID ";	
 	@Override
 	public void update(TempAbsenceHistory tempAbsenceHistory, TempAbsenceHisItem tempAbsenceHisItem) {
-		// TODO Auto-generated method stub
+		List<String> lstHistIDNew = tempAbsenceHistory.getHistoryIds();
+	   // List<BsymtTempAbsHistory> lstNewEntity = new ArrayList<>();
+		List<DateHistoryItem> lstDateHistoryItemAdd = new ArrayList<>();
+		List<DateHistoryItem> lstDateHistoryItemUpdate = new ArrayList<>();
+		List<DateHistoryItem> lstDateHistoryItemRemove= new ArrayList<>();
+		//GET_DATA_BY_LST_HISTID
+		List<BsymtTempAbsHistory> lstOldEntity = this.queryProxy().query(GET_DATA_BY_LST_HISTID, BsymtTempAbsHistory.class)
+																.setParameter("cid", tempAbsenceHistory.getCompanyId())	
+																.setParameter("sid", tempAbsenceHistory.getEmployeeId())
+															.getList();
+		List<String> lstHistIDOld = lstOldEntity.stream().map(x->x.getHistId()).collect(Collectors.toList());
+		List<String> lstHistIdUpdate = new ArrayList<>();
+		List<String> lstHistIdAdd = new ArrayList<>();
+		List<String> lstHistIdDelete = new ArrayList<>();
+		for(String hist : lstHistIDNew){
+			if(lstHistIDOld.contains(hist)){
+				lstHistIdUpdate.add(hist);
+			}
+			lstHistIdAdd.add(hist);
+		}
+		
+		for(String hist : lstHistIDOld){
+			if(!lstHistIDNew.contains(hist)){
+				lstHistIdDelete.add(hist);
+			
+			}
+		}
+		for(String i : lstHistIdDelete){
+			DateHistoryItem item = tempAbsenceHistory.getDateHistoryItems().stream()
+					.filter(c -> c.identifier().equals(i)).findFirst().get();
+			lstDateHistoryItemRemove.add(item);	
+				}
+		for (String i : lstHistIdAdd) {
+			DateHistoryItem item = tempAbsenceHistory.getDateHistoryItems().stream()
+					.filter(c -> c.identifier().equals(i)).findFirst().get();
+			lstDateHistoryItemAdd.add(item);
+		}
+		for(String i : lstHistIdUpdate ){
+			DateHistoryItem item = tempAbsenceHistory.getDateHistoryItems().stream()
+					.filter(c -> c.identifier().equals(i)).findFirst().get();
+			lstDateHistoryItemUpdate.add(item);
+		}
+		//Add
+		TempAbsenceHistory addTempAbsenceHistory  = new TempAbsenceHistory(tempAbsenceHistory.getCompanyId(), tempAbsenceHistory.getEmployeeId(), lstDateHistoryItemAdd);
+		this.commandProxy().insert(BsymtTempAbsHistory.toEntity(addTempAbsenceHistory));
+		//Remove
+		TempAbsenceHistory removeTempAbsenceHistory = new TempAbsenceHistory(tempAbsenceHistory.getCompanyId(), tempAbsenceHistory.getEmployeeId(), lstDateHistoryItemRemove);
+		this.commandProxy().remove(removeTempAbsenceHistory);
+		//Update 
+		TempAbsenceHistory upDateTempAbsenceHistory = new TempAbsenceHistory(tempAbsenceHistory.getCompanyId(), tempAbsenceHistory.getEmployeeId(), lstDateHistoryItemUpdate);
+		this.commandProxy().update(upDateTempAbsenceHistory);
+		
+		// Update TempAbsenceHisItem
+		BsymtTempAbsHisItem entityHisItem = this.queryProxy().find(tempAbsenceHisItem.getHistoryId(), BsymtTempAbsHisItem.class).get();
+		entityHisItem.sid = tempAbsenceHisItem.getEmployeeId();
+		entityHisItem.tempAbsFrameNo = tempAbsenceHisItem.getTempAbsenceFrNo().v().intValue();
+		entityHisItem.remarks = tempAbsenceHisItem.getRemarks().v();
+		entityHisItem.soInsPayCategory = tempAbsenceHisItem.getSoInsPayCategory();
+		entityHisItem.familyMemberId = tempAbsenceHisItem.getFamilyMemberId();
+		this.commandProxy().update(entityHisItem);
+		
+		
 
 	}
+	private static final String DELETE21History = " DELETE FROM BsymtTempAbsHistory h "
+            +  " WHERE h.cid = :companyID AND h.sid = :empID AND h.histId = :historyID " ;
 
+	private static final String DELETE21HistoryItem = " DELETE FROM BsymtTempAbsHisItem h "
+			+  " WHERE h.sid = :empID  AND h.histId = :historyID " ;		
 	@Override
 	public void delete(String companyID, String empID, String historyID) {
 		this.getEntityManager().createQuery(DELETE21History)
+		                       .setParameter("companyID", companyID)
 		                       .setParameter("empID", empID)
 		                       .setParameter("historyID", historyID).executeUpdate();
-		this.getEntityManager().createQuery(DELETE21History)
+		this.getEntityManager().createQuery(DELETE21HistoryItem)
         .setParameter("empID", empID)
         .setParameter("historyID", historyID).executeUpdate();
 
 	}
+	private static final String DELETE22History = " DELETE FROM BsymtTempAbsHistory h "
+            +  " WHERE h.cid = :companyID AND h.sid = :empID " ;
+
+	private static final String DELETE22HistoryItem = " DELETE FROM BsymtTempAbsHisItem h "
+			+  " WHERE h.sid = :empID   " ;	
 
 	@Override
 	public void delete(String companyID, String empID) {
-		// TODO Auto-generated method stub
+				this.getEntityManager().createQuery(DELETE22History)
+		        .setParameter("companyID", companyID)
+		        .setParameter("empID", empID)
+		        .executeUpdate();
+				this.getEntityManager().createQuery(DELETE22HistoryItem)
+		        .setParameter("empID", empID)
+		        .executeUpdate();
 
 	}
 
+	
 	@Override
 	public Optional<TempAbsenceHistory> specifyEmpIDGetHistory(String companyID, String employeeId) {
 		
@@ -541,7 +621,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 												 .setParameter("employeeId", employeeId)
 												 .getList()); 
 		
-		return null;
+		return data;
 	}
 
 	@Override

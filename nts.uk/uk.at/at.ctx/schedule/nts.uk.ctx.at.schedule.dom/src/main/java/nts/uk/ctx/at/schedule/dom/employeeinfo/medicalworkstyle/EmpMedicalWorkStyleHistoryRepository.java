@@ -15,7 +15,7 @@ public interface EmpMedicalWorkStyleHistoryRepository {
 	Optional<EmpMedicalWorkFormHisItem> get(String empID , GeneralDate referenceDate);
 	
 	/** [2] 社員の医療勤務形態項目*get(List<社員ID>, 基準日) **/
-	List<EmpMedicalWorkFormHisItem> get(List<String> listEmp , GeneralDate referenceDate);
+	List<EmpMedicalWorkFormHisItem> get(List<String> listEmpId , GeneralDate referenceDate);
 	
 	/** [3] insert(社員の医療勤務形態履歴, 社員の医療勤務形態履歴項目) **/
 	void insert(EmpMedicalWorkStyleHistory empMedicalWorkStyleHistory , EmpMedicalWorkFormHisItem empMedicalWorkFormHisItem );
