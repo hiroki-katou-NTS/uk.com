@@ -3,7 +3,6 @@ package nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 
 /**
  * The Class WorkdayPatternItem.
