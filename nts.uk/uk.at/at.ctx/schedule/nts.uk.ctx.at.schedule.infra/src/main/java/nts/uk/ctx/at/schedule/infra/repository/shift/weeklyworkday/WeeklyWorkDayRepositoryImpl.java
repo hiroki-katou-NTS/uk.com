@@ -1,20 +1,15 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.weeklyworkday;
 
-import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay.WeeklyWorkDayPattern;
 import nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay.WeeklyWorkDayRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.weeklyworkday.KscmtWeeklyWorkingdays;
-import nts.uk.ctx.at.schedule.infra.entity.shift.weeklyworkday.KscmtWeeklyWorkingdaysPK;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class WeeklyWorkDayRepositoryImpl extends JpaRepository implements WeeklyWorkDayRepository {
 
     /**
-     * select a KscmtTeam ALL
+     * select a kscmtWeeklyWorkingdays ALL
      */
     private static final String SELECT_ALL = "SELECT w FROM KscmtWeeklyWorkingdays w";
 
@@ -22,7 +17,10 @@ public class WeeklyWorkDayRepositoryImpl extends JpaRepository implements Weekly
 
     @Override
     public WeeklyWorkDayPattern getWeeklyWorkDayPatternByCompanyId(String companyId) {
-        List<KscmtWeeklyWorkingdays> kscmtWeeklyWorkingdays = this.queryProxy().query(GET_BY_COMPANY_ID, KscmtWeeklyWorkingdays.class).setParameter("companyId", companyId).getList();
+        List<KscmtWeeklyWorkingdays> kscmtWeeklyWorkingdays = this.queryProxy().query(
+                GET_BY_COMPANY_ID, KscmtWeeklyWorkingdays.class)
+                .setParameter("companyId", companyId)
+                .getList();
         return KscmtWeeklyWorkingdays.listEntitytoDomain(kscmtWeeklyWorkingdays);
     }
 

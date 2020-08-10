@@ -40,3 +40,7 @@
 .holiday-calendar .month .day.out-month {
     color: #ddd;
 }
+
+.holiday-calendar .isEmtyMonth {
+    background-color: lightgray;
+}
