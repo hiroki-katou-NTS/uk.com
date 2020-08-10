@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -230,7 +231,6 @@ public class WorkingConditionItem extends AggregateRoot {
 		this.scheduleManagementAtr = scheduleManagementAtr;
 		this.employeeId = employeeId;
 	}
-	
-	
+
 
 }
