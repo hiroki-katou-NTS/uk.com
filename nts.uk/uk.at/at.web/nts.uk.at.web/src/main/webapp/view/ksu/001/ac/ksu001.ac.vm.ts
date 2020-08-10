@@ -295,8 +295,18 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
                 indexBtn: number = indexLinkBtn();
             let pageNumberSelected = self.listPageInfo[indexBtn].pageNumber;
+            let dataLocal = uk.localStorage.getItem(self.KEY);
+            let userInfor = JSON.parse(dataLocal.get());
 
-            self.getShiftPalletWhenChangePage(pageNumberSelected).done(() => {
+            let param = {
+                listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst,
+                shiftPalletUnit: self.selectedpalletUnit(),
+                pageNumberCom: pageNumberSelected,
+                pageNumberOrg: pageNumberSelected,
+                workplaceId: userInfor.workplaceId,
+            }
+
+            service.getShiftPalletWhenChangePage(param).done((data) => {
                 if (self.selectedpalletUnit() === 1) {
                     // link button has color gray when clicked
                     _.each($('#group-link-button-ja a.hyperlink'), (a) => {
@@ -305,14 +315,17 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     });
                     $($('#group-link-button-ja a.hyperlink')[indexBtn]).addClass('color-gray');
                     $($('#group-link-button-ja a.hyperlink')[indexBtn]).addClass('background-linkbtn');
-                    
+
                     let shiftPalletPositionNumberCom = {};
-                    uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                        let userInfor = JSON.parse(data);
+                    uk.localStorage.getItem(self.KEY).ifPresent((dataLocal) => {
+                        let userInfor = JSON.parse(dataLocal);
                         userInfor.shiftPalettePageNumberCom = pageNumberSelected;
+                        userInfor.shiftMasterWithWorkStyleLst = data.listShiftMaster;
                         shiftPalletPositionNumberCom = userInfor.shiftPalletPositionNumberCom;
                         uk.localStorage.setItemAsJson(self.KEY, userInfor);
                     });
+
+
                     //set sourceCompa    
                     self.sourceCompany(self.dataSourceCompany()[pageNumberSelected - 1] || source);
                     self.selectedLinkButtonCom(indexBtn);
@@ -326,17 +339,17 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     });
                     $($('#group-link-button-ja a.hyperlink')[indexBtn]).addClass('color-gray');
                     $($('#group-link-button-ja a.hyperlink')[indexBtn]).addClass('background-linkbtn');
-                   
+
                     let shiftPalletPositionNumberOrg = {};
-                    uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                        let userInfor = JSON.parse(data);
-                        userInfor.shiftPalettePageNumberOrg = index + 1;
+                    uk.localStorage.getItem(self.KEY).ifPresent((dataLocal) => {
+                        let userInfor = JSON.parse(dataLocal);
+                        userInfor.shiftPalettePageNumberOrg = pageNumberSelected;
+                        userInfor.shiftMasterWithWorkStyleLst = data.listShiftMaster;
                         shiftPalletPositionNumberOrg = userInfor.shiftPalletPositionNumberOrg;
                         uk.localStorage.setItemAsJson(self.KEY, userInfor);
-                        
                     });
                     //set sourceWorkplace
-                    self.sourceWorkplace(self.dataSourceWorkplace()[pageNumberSelected -1] || source);
+                    self.sourceWorkplace(self.dataSourceWorkplace()[pageNumberSelected - 1] || source);
                     self.selectedLinkButtonWkp(indexBtn);
                     //self.selectedButtonTableWorkplace(shiftPalletPositionNumberOrg);
                 }
@@ -349,7 +362,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         $($('.ntsButtonTableButton')[index]).addClass('withContent');
                     }
                 });
-            });
+            }).fail(function() { });
         }
         
         getShiftPalletWhenChangePage(pageNumber: number): JQueryPromise<any> {
