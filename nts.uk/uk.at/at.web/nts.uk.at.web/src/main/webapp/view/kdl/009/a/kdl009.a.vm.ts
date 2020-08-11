@@ -1,6 +1,8 @@
 module nts.uk.at.view.kdl009.a {
     export module viewmodel {
-        export class ScreenModel {
+
+        @bean()
+        export class ScreenModel extends ko.ViewModel {
             //Grid data
             listComponentOption: any;
             selectedCode: KnockoutObservable<string> = ko.observable('');
@@ -30,9 +32,8 @@ module nts.uk.at.view.kdl009.a {
             hint04: KnockoutObservable<string> = ko.observable("");
             expirationDateText: KnockoutObservable<string> = ko.observable("");
 
-            constructor() {
+            created(params: any) {
                 const vm = this;
-
                 vm.kdl009Data = nts.uk.ui.windows.getShared("KDL009_DATA");
                 vm.employeeInfo = ko.observable("");
                 vm.dataItems = ko.observableArray([]);
@@ -42,7 +43,11 @@ module nts.uk.at.view.kdl009.a {
                         { labelText: nts.uk.resource.getText("KDL009_30") }
                     ]
                 };
+            }
 
+            mounted() {
+                const vm = this;
+                vm.$blockui('grayout');
                 service.getEmployee(vm.kdl009Data)
                     .done((data: any) => {
                         if (data.employeeBasicInfo.length > 1) {
@@ -70,13 +75,15 @@ module nts.uk.at.view.kdl009.a {
                         }
                         $("#date-fixed-table").ntsFixedTable({ height: 150 });
                     })
-                    .fail(vm.onError);
+                    .fail(vm.onError)
+                    .always(() => vm.$blockui('clear'));
             }
 
             // On select employee
             private onEmployeeSelect(baseDate: any, employeeId: string, employeeCode: string, employeeName: string) {
                 const vm = this;
                 vm.employeeInfo(nts.uk.resource.getText("KDL009_25", [employeeCode, employeeName]));
+                vm.$blockui('grayout');
                 service.getAcquisitionNumberRestDays(employeeId, baseDate)
                     .done((data) => {
                         vm.expirationDateText(ExpirationDate[data.expiredDay]);
@@ -84,7 +91,8 @@ module nts.uk.at.view.kdl009.a {
                         vm.bindSummaryData(data);
                         vm.isManagementSection(data.isManagementSection);
                     })
-                    .fail(vm.onError);
+                    .fail(vm.onError)
+                    .always(() => vm.$blockui('clear'));
             }
 
             // On error
