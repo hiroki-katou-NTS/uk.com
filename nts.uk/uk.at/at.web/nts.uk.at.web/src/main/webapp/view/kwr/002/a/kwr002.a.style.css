@@ -65,5 +65,9 @@ body {
 }
 
 .switch-ml {
-	margin-left: 35px;
+	margin-left: 61px;
+}
+
+.w-label-date {
+	width: 60px;
 }
