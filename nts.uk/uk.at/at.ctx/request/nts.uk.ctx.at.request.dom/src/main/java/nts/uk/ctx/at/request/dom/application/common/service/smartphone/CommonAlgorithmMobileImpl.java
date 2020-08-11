@@ -64,6 +64,7 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmpl
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
+import nts.uk.ctx.at.shared.dom.workmanagementmultiple.UseATR;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -166,7 +167,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 				appReasonOutput.getDisplayAppReason(), 
 				appReasonOutput.getDisplayStandardReason(), 
 				appReasonOutput.getReasonTypeItemLst(), 
-				opWorkManagementMultiple.isPresent());
+				opWorkManagementMultiple.map(x -> x.getUseATR()==UseATR.use).orElse(false));
 	}
 
 	@Override
