@@ -1,6 +1,7 @@
 import { _, Vue } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
 import { KDL002Component } from '../../../kdl/002';
+import { Kdl001Component } from '../../../kdl/001';
 import { KafS00DComponent } from '../../../kaf/s00/d';
 import {
     KafS00AComponent,
@@ -31,7 +32,8 @@ import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
         'kafs00-b': KafS00BComponent,
         'kafs00-c': KafS00CComponent,
         'worktype': KDL002Component,
-        'kafs00d': KafS00DComponent
+        'kafs00d': KafS00DComponent,
+        'worktime': Kdl001Component,
     },
 
 })
@@ -734,40 +736,69 @@ export class KafS07AComponent extends KafS00ShrComponent {
         this.isCondition4 = this.isDisplay4(appWorkChangeDispInfo);
 
     }
-    public openKDL002() {
+    public openKDL002(name: string) {
         console.log(_.map(this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode));
-        this.$modal(
-            'worktype',
-            {
-                seledtedWkTypeCDs: _.map(_.uniqBy(this.data.appWorkChangeDispInfo.workTypeLst, (e: any) => e.workTypeCode), (item: any) => item.workTypeCode),
-                selectedWorkTypeCD: this.model.workType.code,
-                seledtedWkTimeCDs: _.map(this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode),
-                selectedWorkTimeCD: this.model.workTime.code,
-                isSelectWorkTime: 1,
-            }
-        ).then((f: any) => {
-            if (f) {
-                this.model.workType.code = f.selectedWorkType.workTypeCode;
-                this.model.workType.name = f.selectedWorkType.name;
-                this.model.workTime.code = f.selectedWorkTime.code;
-                this.model.workTime.name = f.selectedWorkTime.name;
-                if (!this.isCondition4) {
-                    this.model.workTime.time = f.selectedWorkTime.workTime1;
+        if (name == 'worktype') {
+            this.$modal(
+                'worktype',
+                {
+                    seledtedWkTypeCDs: _.map(_.uniqBy(this.data.appWorkChangeDispInfo.workTypeLst, (e: any) => e.workTypeCode), (item: any) => item.workTypeCode),
+                    selectedWorkTypeCD: this.model.workType.code,
+                    seledtedWkTimeCDs: _.map(this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode),
+                    selectedWorkTimeCD: this.model.workTime.code,
+                    isSelectWorkTime: 1,
                 }
-            }
-        }).catch((res: any) => {
-            if (res.messageId) {
-                this.$modal.error({ messageId: res.messageId });
-            } else {
-
-                if (_.isArray(res.errors)) {
-                    this.$modal.error({ messageId: res.errors[0].messageId });
+            ).then((f: any) => {
+                if (f) {
+                    this.model.workType.code = f.selectedWorkType.workTypeCode;
+                    this.model.workType.name = f.selectedWorkType.name;
+                    this.model.workTime.code = f.selectedWorkTime.code;
+                    this.model.workTime.name = f.selectedWorkTime.name;
+                    if (!this.isCondition4) {
+                        this.model.workTime.time = f.selectedWorkTime.workTime1;
+                    }
+                }
+            }).catch((res: any) => {
+                if (res.messageId) {
+                    this.$modal.error({ messageId: res.messageId });
                 } else {
-                    this.$modal.error({ messageId: res.errors.messageId }); 
+    
+                    if (_.isArray(res.errors)) {
+                        this.$modal.error({ messageId: res.errors[0].messageId });
+                    } else {
+                        this.$modal.error({ messageId: res.errors.messageId }); 
+                    }
                 }
-            }
-        });
-
+            });
+        } else {
+            this.$modal(
+                'worktime',
+                {
+                    isAddNone: 1,
+                    seledtedWkTimeCDs: _.map(this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode),
+                    selectedWorkTimeCD: this.model.workTime.code,
+                    isSelectWorkTime: 1
+                }
+            ).then((f: any) => {
+                if (f) {
+                    this.model.workTime.code = f.selectedWorkTime.code;
+                    this.model.workTime.name = f.selectedWorkTime.name;
+                }
+            }).catch((res: any) => {
+                    if (res.messageId) {
+                        this.$modal.error({ messageId: res.messageId });
+                    } else {
+        
+                        if (_.isArray(res.errors)) {
+                            this.$modal.error({ messageId: res.errors[0].messageId });
+                        } else {
+                            this.$modal.error({ messageId: res.errors.messageId }); 
+                        }
+                    }
+                });
+        }
+        
+        
 
         
     }

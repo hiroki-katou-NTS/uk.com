@@ -26,7 +26,7 @@
       <div class="card-body">
         <!-- A4_2 -->
         <span class="textSize uk-text-dark-gray">{{'KAFS07_3' | i18n}}</span>
-        <button type="button" class="btn btn-selection mt-2 mb-2" v-on:click="openKDL002()">
+        <button type="button" class="btn btn-selection mt-2 mb-2" v-on:click="openKDL002('worktype')">
           <!-- A4_2_1 -->
           <span class="badge badge-secondary">{{model.workType.code}}</span>
           <span>{{model.workType.name}}</span>
@@ -38,7 +38,7 @@
           type="button"
           v-bind:enable="isCondition3"
           class="btn btn-selection mt-2 mb-2"
-          v-on:click="openKDL002()"
+          v-on:click="openKDL002('worktime')"
         >
           <!-- A4_3_1 -->
           <span class="badge badge-secondary">{{model.workTime.code}}</span>
