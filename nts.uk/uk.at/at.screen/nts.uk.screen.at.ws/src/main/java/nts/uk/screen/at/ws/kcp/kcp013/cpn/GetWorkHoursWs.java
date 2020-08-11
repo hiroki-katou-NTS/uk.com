@@ -96,7 +96,9 @@ public class GetWorkHoursWs {
 							.findFirst().get().getStart().v(),
 					setting.getPrescribedTimezoneSetting().getLstTimezone().stream().filter((x) -> x.getWorkNo() == 2)
 							.findFirst().get().getEnd().v(),
-					String.valueOf(i.getWorkTimeDivision().getWorkTimeDailyAtr().description), i.getNote().v(), 0);
+					String.valueOf(i.getWorkTimeDivision().getWorkTimeDailyAtr().description) == "フレックス勤務用" ? "フレックス勤務用"
+							: String.valueOf(i.getWorkTimeDivision().getWorkTimeMethodSet().description),
+					i.getNote().v(), 0);
 		}).collect(Collectors.toList());
 
 		if (optional != null) {

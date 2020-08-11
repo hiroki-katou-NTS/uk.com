@@ -25,17 +25,9 @@ public class KscmtSyacndDispCtlQuaPk implements Serializable {
 	@Column(name = "CID")
 	public String cid;
 
-	/**
-	 * 条件区分 0:保険加入状況 1:チーム 2:ランク 3:資格 4:免許区分
-	 */
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "CND_ATR")
-	public int cndAtr;
-
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "QUALIFICATION_CD")
-	public int qualification;
+	public String qualification;
 
 }
