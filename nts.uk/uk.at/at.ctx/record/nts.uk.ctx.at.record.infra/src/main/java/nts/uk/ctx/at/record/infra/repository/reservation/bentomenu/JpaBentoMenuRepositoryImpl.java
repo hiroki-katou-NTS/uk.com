@@ -194,7 +194,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 
 		if (workLocationCode.isPresent()){
 			query += " AND c.WORK_LOCATION_CD = 'workLocationCode' ";
-			query = query.replaceFirst("workLocationCode", String.valueOf(workLocationCode));
+			query = query.replaceFirst("workLocationCode", String.valueOf(workLocationCode.get()));
 		}
 
 		query = query.replaceFirst("companyID", companyID);
