@@ -48,14 +48,14 @@ public class JpaAppEmploymentSetRepository extends JpaRepository implements AppE
 	
 	private Map<String, Object> toObject(NtsResultRecord rec) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		// KRQST_APPLICATION
+		// KRQST_APP_APV_EMP
 		map.put("aCID", rec.getString("aCID"));
 		map.put("aEMPLOYMENT_CODE", rec.getString("aEMPLOYMENT_CODE"));
 		map.put("aAPP_TYPE", rec.getInt("aAPP_TYPE"));
 		map.put("aHOLIDAY_OR_PAUSE_TYPE", rec.getInt("aHOLIDAY_OR_PAUSE_TYPE"));
 		map.put("aHOLIDAY_TYPE_USE_FLG", rec.getInt("aHOLIDAY_TYPE_USE_FLG"));
 		map.put("aDISPLAY_FLAG", rec.getInt("aDISPLAY_FLAG"));
-		// KRQST_APP_TYPE
+		// KRQST_APP_WORKTYPE_EMP
 		map.put("bCID", rec.getString("bCID"));
 		map.put("bEMPLOYMENT_CODE", rec.getString("bEMPLOYMENT_CODE"));
 		map.put("bAPP_TYPE", rec.getInt("bAPP_TYPE"));
@@ -73,10 +73,12 @@ public class JpaAppEmploymentSetRepository extends JpaRepository implements AppE
 						ApplicationType appType = EnumAdaptor.valueOf((int) y.getValue().get(0).get("aAPP_TYPE"), ApplicationType.class);
 						TargetWorkTypeByApp targetWorkTypeByApp = TargetWorkTypeByApp.createNew(
 								appType.value, 
-								(boolean) y.getValue().get(0).get("aDISPLAY_FLAG"), 
+								(int) y.getValue().get(0).get("aDISPLAY_FLAG") == 0 ? false : true, 
 								workTypeCDLst, 
 								appType == ApplicationType.COMPLEMENT_LEAVE_APPLICATION ? (int) y.getValue().get(0).get("aHOLIDAY_OR_PAUSE_TYPE") : null, 
-								(boolean) y.getValue().get(0).get("aHOLIDAY_TYPE_USE_FLG"), 
+								(Integer) y.getValue().get(0).get("aHOLIDAY_TYPE_USE_FLG") == null 
+									? null
+									: (int) y.getValue().get(0).get("aHOLIDAY_TYPE_USE_FLG") == 0 ? true : false, 
 								appType == ApplicationType.ABSENCE_APPLICATION ? (int) y.getValue().get(0).get("aHOLIDAY_OR_PAUSE_TYPE") : null, 
 								appType == ApplicationType.BUSINESS_TRIP_APPLICATION ? (int) y.getValue().get(0).get("aHOLIDAY_OR_PAUSE_TYPE") : null);
 						return targetWorkTypeByApp;

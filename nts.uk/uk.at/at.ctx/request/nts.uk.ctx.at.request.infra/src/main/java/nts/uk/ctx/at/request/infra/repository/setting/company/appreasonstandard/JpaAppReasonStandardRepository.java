@@ -27,7 +27,7 @@ public class JpaAppReasonStandardRepository extends JpaRepository implements App
 
 	@Override
 	public Optional<AppReasonStandard> findByAppType(String companyID, ApplicationType appType) {
-		String sql = "select * from KRCMT_APP_REASON where CID = @companyID and APP_TYPE = @appType";
+		String sql = "select * from KRCMT_APP_REASON where CID = @companyID and APP_TYPE = @appType order by DISPORDER ASC";
 		List<ReasonTypeItem> reasonTypeItemLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("companyID", companyID)
 				.paramInt("appType", appType.value)

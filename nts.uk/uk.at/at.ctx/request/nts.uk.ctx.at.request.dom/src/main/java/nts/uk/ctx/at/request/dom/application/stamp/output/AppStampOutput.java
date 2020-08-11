@@ -29,7 +29,7 @@ public class AppStampOutput {
 	private AppDispInfoStartupOutput appDispInfoStartupOutput;
 	
 //	レコーダイメージ申請
-	private Optional<AppRecordImage> appRecordImage;
+	private Optional<AppRecordImage> appRecordImage = Optional.empty();
 	
 //	打刻エラー情報
 	private Optional<List<ErrorStampInfo>> errorListOptional = Optional.empty();

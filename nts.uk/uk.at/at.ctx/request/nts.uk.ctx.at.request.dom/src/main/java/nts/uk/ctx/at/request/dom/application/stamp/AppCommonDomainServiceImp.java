@@ -137,6 +137,18 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	public List<ErrorStampInfo> getErrorStampList(StampRecordOutput stampRecordOutput) {
 //		「打刻エラー情報」＝Empty
 		List<ErrorStampInfo> errorStampInfos = new ArrayList<ErrorStampInfo>();
+		
+		// create dummy data
+		
+		stampRecordOutput =  new StampRecordOutput(
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList());
+		
 		/**
 		 * 介護時間帯
 		 */

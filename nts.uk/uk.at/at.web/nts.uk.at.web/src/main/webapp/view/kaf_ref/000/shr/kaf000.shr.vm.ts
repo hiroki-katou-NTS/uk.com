@@ -171,9 +171,15 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
                 }             
             }
             // {2}事後受付日
-            let postPart = vm.$i18n('KAF000_39', [moment(vm.$date.today()).format("YYYY/MM/DD")]);
+            let postPart = "";
+			if(allowFutureDay) {
+				postPart = vm.$i18n('KAF000_39', [moment(vm.$date.today()).format("YYYY/MM/DD")]);	
+			}
             // {3}締め切り期限日
-            let deadlinePart = vm.$i18n('KAF000_40', [value.appDispInfoWithDateOutput.opAppDeadline]);
+            let deadlinePart = "";
+			if(appDeadlineUseCategory) {
+				deadlinePart = vm.$i18n('KAF000_40', [value.appDispInfoWithDateOutput.opAppDeadline]);	
+			}
             vm.deadline(prePart + postPart + deadlinePart);    
         }
         
