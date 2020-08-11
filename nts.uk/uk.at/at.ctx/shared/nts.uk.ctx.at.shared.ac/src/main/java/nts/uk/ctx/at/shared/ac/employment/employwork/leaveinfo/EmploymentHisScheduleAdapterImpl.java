@@ -31,7 +31,7 @@ public class EmploymentHisScheduleAdapterImpl implements EmploymentHisScheduleAd
 		List<EmploymentPeriodExported> data = publish.get(listEmpId, datePeriod);
 		List<EmploymentPeriodImported> result = data.stream()
 				.map(c -> new EmploymentPeriodImported(c.getEmpID(), c.getDatePeriod(), c.getEmploymentCd(),
-						Optional.ofNullable((EnumAdaptor.valueOf(c.getOtpSalarySegment().get(), SalarySegment.class)))))
+						!c.getOtpSalarySegment().isPresent() ? Optional.empty() : Optional.ofNullable(EnumAdaptor.valueOf(c.getOtpSalarySegment().get(), SalarySegment.class))))
 				.collect(Collectors.toList());
 		// return 社員の雇用履歴Publish.取得する( 基準日, 社員IDリスト )
 		return result;

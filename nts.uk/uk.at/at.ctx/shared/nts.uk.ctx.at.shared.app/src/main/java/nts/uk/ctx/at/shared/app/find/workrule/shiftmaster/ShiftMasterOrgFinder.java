@@ -77,7 +77,7 @@ public class ShiftMasterOrgFinder {
 		TargetOrgIdenInfor target = null;
 		if(targetUnit != null && targetId != null) {
 			TargetOrganizationUnit unit = EnumAdaptor.valueOf(targetUnit, TargetOrganizationUnit.class);
-			target = new TargetOrgIdenInfor(unit, targetId, targetId);
+			target = new TargetOrgIdenInfor(unit, Optional.ofNullable(targetId), Optional.ofNullable(targetId));
 		}
 		List<ShiftMasterDto> shiftMasters = new ArrayList<>();
 		if(target == null) {
@@ -117,7 +117,7 @@ public class ShiftMasterOrgFinder {
 		TargetOrgIdenInfor target = null;
 		if(targetUnit != null && targetId != null) {
 			TargetOrganizationUnit unit = EnumAdaptor.valueOf(targetUnit, TargetOrganizationUnit.class);
-			target = new TargetOrgIdenInfor(unit, targetId, targetId);
+			target = new TargetOrgIdenInfor(unit, Optional.ofNullable(targetId), Optional.ofNullable(targetId));
 		}
 		
 		if(target == null) {
@@ -161,7 +161,7 @@ public class ShiftMasterOrgFinder {
 	
 	public AlreadySettingWorkplaceDto getAlreadySettingWplGr(int unit) {
 		AlreadySettingWorkplaceDto result = new AlreadySettingWorkplaceDto();
-		result.setWorkplaceIds(shiftMasterOrgRp.getAlreadySettingWorkplaceGrp(AppContexts.user().companyId(), unit)
+		result.setWorkplaceGrpIds(shiftMasterOrgRp.getAlreadySettingWorkplaceGrp(AppContexts.user().companyId(), unit)
 					.stream().map(d -> d.getTargetOrg().getWorkplaceGroupId().get()).distinct().collect(Collectors.toList()));
 		
 		return result;

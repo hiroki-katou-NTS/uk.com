@@ -37,5 +37,18 @@ public class LogOnInfo {
 			return Optional.of(this.logOff.get());
 		}
 	}
+
+	public void setWorkNo(PCLogOnNo workNo) {
+		this.workNo = workNo;
+	}
+
+	public void setLogOff(Optional<TimeWithDayAttr> logOff) {
+		this.logOff = logOff;
+	}
+
+	public void setLogOn(Optional<TimeWithDayAttr> logOn) {
+		this.logOn = logOn;
+	}
+	
 	
 }

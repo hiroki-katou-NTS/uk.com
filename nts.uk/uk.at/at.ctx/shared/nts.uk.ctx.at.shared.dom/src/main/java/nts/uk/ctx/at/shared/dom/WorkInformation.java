@@ -44,6 +44,9 @@ public class WorkInformation {
 	}
 
 	public WorkTimeCode getWorkTimeCode() {
+		if(this.workTimeCode == null) {
+			return null;
+		}
 		return this.workTimeCode.isPresent()?this.workTimeCode.get():null;
 	}
 	
@@ -91,6 +94,10 @@ public class WorkInformation {
 		if (!workType.isPresent()) {
 			return ErrorStatusWorkInfo.WORKTYPE_WAS_DELETE;
 		}
+		
+		if(workType.get().getDeprecate() == DeprecateClassification.Deprecated) {
+			return ErrorStatusWorkInfo.WORKTYPE_WAS_ABOLISHED;
+		}
 
 		// require.勤務種類を取得する(@勤務種類コード)
 		SetupType setupType = require.checkNeededOfWorkTimeSetting(this.workTypeCode.v());
@@ -104,9 +111,9 @@ public class WorkInformation {
 			break;
 		case OPTIONAL:// 任意
 			// @就業時間帯コード ==null
-//			if (this.getWorkTimeCode() == null) {
-//				return ErrorStatusWorkInfo.NORMAL;
-//			}
+			if (!this.workTimeCode.isPresent() ) {
+				return ErrorStatusWorkInfo.NORMAL;
+			}
 			break;
 		default: // 不要
 			// @就業時間帯コード.isPresent
@@ -124,10 +131,6 @@ public class WorkInformation {
 		// if $就業時間帯.isEmpty
 		if (!workTimeSetting.isPresent()) {
 			return ErrorStatusWorkInfo.WORKTIME_WAS_DELETE;
-		}
-		
-		if(workType.get().getDeprecate() == DeprecateClassification.Deprecated) {
-			return ErrorStatusWorkInfo.WORKTYPE_WAS_ABOLISHED;
 		}
 		if(workTimeSetting.get().getAbolishAtr() == AbolishAtr.ABOLISH ) {
 			return ErrorStatusWorkInfo.WORKTIME_HAS_BEEN_ABOLISHED;

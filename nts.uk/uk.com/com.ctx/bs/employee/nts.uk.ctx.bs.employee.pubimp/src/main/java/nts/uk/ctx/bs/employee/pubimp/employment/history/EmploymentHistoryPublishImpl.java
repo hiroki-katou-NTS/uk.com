@@ -35,7 +35,7 @@ public class EmploymentHistoryPublishImpl implements EmploymentHistoryPublish{
 				c.getEmploymentHistoryItem().getEmployeeId(),
 				c.getDatePeriod(),
 				c.getEmploymentHistoryItem().getEmploymentCode().v(),
-			Optional.ofNullable(new Integer	(c.getEmploymentHistoryItem().getSalarySegment().value)))).collect(Collectors.toList());
+			Optional.ofNullable(c.getEmploymentHistoryItem().getSalarySegment() == null ? null : c.getEmploymentHistoryItem().getSalarySegment().value))).collect(Collectors.toList());
 		
 		return result;
 	}

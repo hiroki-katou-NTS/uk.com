@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-
 /**
  * 
  * @author HieuLt
@@ -23,21 +22,20 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class KscmtSyacndDispCtlPK implements Serializable {
 
-
 	private static final long serialVersionUID = 1L;
-	
-	/** 会社ID **/
+
+	/** 会社ID */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "CID")
 	public String cid;
-	
-	/**条件区分 **/
+
+	/**
+	 * 条件区分 0:保険加入状況 1:チーム 2:ランク 3:資格 4:免許区分
+	 */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "CND_ATR")
 	public int cndAtr;
-	
-	
-	
+
 }

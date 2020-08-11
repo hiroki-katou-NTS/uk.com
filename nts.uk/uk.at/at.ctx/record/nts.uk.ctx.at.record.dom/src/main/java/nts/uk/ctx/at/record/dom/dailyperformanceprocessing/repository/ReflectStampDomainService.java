@@ -63,6 +63,5 @@ public interface ReflectStampDomainService {
 	 */
 	public OutputAcquireReflectEmbossingNew acquireReflectEmbossingNew(String companyID, String employeeID,
 			GeneralDate processingDate,ExecutionTypeDaily executionType,EmbossingExecutionFlag flag,
-			String empCalAndSumExecLogID,
 			IntegrationOfDaily integrationOfDaily);
 }

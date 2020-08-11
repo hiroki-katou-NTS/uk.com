@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -24,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
  */
 @AllArgsConstructor
 @Getter
+@Setter
 public class OutingTimeSheet extends DomainObject {
 	
 	/*

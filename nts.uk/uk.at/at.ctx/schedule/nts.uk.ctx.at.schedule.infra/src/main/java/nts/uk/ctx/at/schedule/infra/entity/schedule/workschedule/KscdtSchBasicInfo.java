@@ -103,7 +103,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 	@Column(name = "BACK_STRAIGHT_ATR")
 	public boolean backStraightAtr;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KscdtSchTime kscdtSchTime;
@@ -228,12 +228,6 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		optSortTimeWork = new ShortTimeOfDailyAttd(shortWorkingTimeSheets);
 		return new WorkSchedule(sID, yMD, EnumAdaptor.valueOf(confirmedATR ? 1 : 0, ConfirmedATR.class), 
 				workInfo, affInfo, lstBreakTime, lstEditState, Optional.ofNullable(optTimeLeaving), Optional.empty(), Optional.ofNullable(optSortTimeWork));
-	}
-	
-	public void fromEntity(WorkSchedule workSchedule) {
-		KscdtSchBasicInfoPK pk = new KscdtSchBasicInfoPK(workSchedule.getEmployeeID(), workSchedule.getYmd());
-		this.confirmedATR = workSchedule.getConfirmedATR().value == 1 ? true : false;
-		//this.empCd = workSchedule.get
 	}
 
 	@Override

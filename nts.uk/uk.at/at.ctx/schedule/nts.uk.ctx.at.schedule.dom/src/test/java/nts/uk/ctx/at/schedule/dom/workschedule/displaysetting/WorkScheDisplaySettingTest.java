@@ -21,23 +21,22 @@ public class WorkScheDisplaySettingTest {
 	public void calcuInitDisplayPeriod_plusMonth() {
 		WorkScheDisplaySetting displaySetting = new WorkScheDisplaySetting(
 				"companyID", // dummy
-				InitDispMonth.valueOf(InitDispMonth.NEXT_MONTH.value), 
-				new OneMonth(new DateInMonth(01, false))); // dummy
+				InitDispMonth.NEXT_MONTH, 
+				new OneMonth(DateInMonth.of(1))); // dummy
 		
 		DatePeriod period = displaySetting.calcuInitDisplayPeriod();
 		assertEquals(period.end().month(), GeneralDate.today().addMonths(1).month());
 	}
-	
 
 	@Test
 	public void calcuInitDisplayPeriod_nonPlusMonth() {
 		WorkScheDisplaySetting displaySetting = new WorkScheDisplaySetting(
 				"companyID", // dummy
-				InitDispMonth.valueOf(InitDispMonth.CURRENT_MONTH.value), 
-				new OneMonth(new DateInMonth(10, true))); // dummy
+				InitDispMonth.CURRENT_MONTH, 
+				new OneMonth(DateInMonth.lastDay())); // dummy
 		
 		DatePeriod period2 = displaySetting.calcuInitDisplayPeriod();
-		assertNotEquals(period2.end().month(), GeneralDate.today().addMonths(1).month());
+		assertEquals(period2.end().month(), GeneralDate.today().month());
 	}
 	
 	@Test

@@ -54,7 +54,7 @@ public class InitialStartupScreenQuery {
 		// 1. 組織の表示情報を取得する(Require, 年月日)
 		if (Integer.parseInt(target.getUnit()) == 1) {
 			TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(
-					TargetOrganizationUnit.valueOf(Integer.parseInt(target.getUnit())), null, target.getId());
+					TargetOrganizationUnit.valueOf(Integer.parseInt(target.getUnit())),Optional.empty(),Optional.of(target.getId()));
 			DisplayInfoOrganization infoOrganization = targetOrgIdenInfor.getDisplayInfor(require,
 					GeneralDate.fromString(target.getEndDate(), "yyyy/MM/dd"));
 			dto.setOrgName(infoOrganization.getName());
@@ -64,7 +64,7 @@ public class InitialStartupScreenQuery {
 
 		if (Integer.parseInt(target.getUnit()) == 0) {
 			TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(
-					TargetOrganizationUnit.valueOf(Integer.parseInt(target.getUnit())), target.getId(), null);
+					TargetOrganizationUnit.valueOf(Integer.parseInt(target.getUnit())), Optional.of(target.getId()), Optional.empty());
 			DisplayInfoOrganization infoOrganization = targetOrgIdenInfor.getDisplayInfor(require,
 					GeneralDate.fromString(target.getEndDate(), "yyyy/MM/dd"));
 			dto.setOrgName(infoOrganization.getName());

@@ -55,13 +55,7 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 	private AffWorkplaceGroupRespository repoAffWorkplaceGroup;
 
 	@Inject
-	private WorkplacePub syWorkplacePub;
-
-	@Inject
 	private GetStringWorkplaceManagerAdapter adapter;
-
-	@Inject
-	private WorkplacePub wkplacePub;
 
 	@Inject
 	private SyRoleAdapter syRoleAdapter;
@@ -114,7 +108,7 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 	public List<String> getReferableEmployees(GeneralDate date, String empID, String workplaceGroupId) {
 		// return 職場グループを指定して参照可能な社員を取得する#取得する( require, 基準日, 社員ID, 職場グループID )
 		RequireWorkgroupService require = new RequireWorkgroupService(repoWorkplaceGroup, repoAffWorkplaceGroup,
-				syWorkplacePub, adapter, wkplacePub, syRoleAdapter);
+				pub, adapter, pub, syRoleAdapter);
 		List<String> data = GetEmpCanReferBySpecifyWorkgroupService.getEmpCanRefer(require, date, empID,
 				workplaceGroupId);
 		return data;

@@ -56,7 +56,7 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 
 		// 外部予算日次を登録する
 		TargetOrgIdenInfor targetOrg = new TargetOrgIdenInfor(
-				TargetOrganizationUnit.valueOf(Integer.parseInt(command.getUnit())), workplaceId, workplaceGroupId);
+				TargetOrganizationUnit.valueOf(Integer.parseInt(command.getUnit())), Optional.ofNullable(workplaceId), Optional.ofNullable(workplaceGroupId));
 
 		RequireImpl require = new RequireImpl(extBudgetDailyRepository);
 

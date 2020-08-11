@@ -56,8 +56,37 @@ public class JpaShiftMaterOrgImpl extends JpaRepository implements ShiftMasterOr
 
 	@Override
 	public void update(ShiftMasterOrganization shiftMater) {
-		delete(shiftMater.getCompanyId(), shiftMater.getTargetOrg());
-		insert(shiftMater);
+		List<String> shiftMasterCodes = shiftMater.getListShiftMaterCode();
+		String get = "Select a.kshmtShiftMaterOrgPK.shiftMaterCode From KshmtShiftMaterOrg a "
+				+ " Where a.kshmtShiftMaterOrgPK.companyId = :companyId "
+				+ " And a.kshmtShiftMaterOrgPK.targetUnit = :targetUnit "
+				+ " And a.kshmtShiftMaterOrgPK.targetId = :targetId";
+		List<String> result = this.queryProxy().query(get, String.class)
+				.setParameter("companyId", shiftMater.getCompanyId())
+				.setParameter("targetUnit", shiftMater.getTargetOrg().getUnit().value)
+				.setParameter("targetId", shiftMater.getTargetOrg().getUnit().value == 0 ? 
+						shiftMater.getTargetOrg().getWorkplaceId().get()
+						: shiftMater.getTargetOrg().getWorkplaceGroupId().get())
+				.getList(e -> e);
+		List<String> listToDel = result.stream().filter(e-> !shiftMasterCodes.contains(e)).collect(Collectors.toList());
+		String delete = "delete from KshmtShiftMaterOrg o "
+				+ " where o.kshmtShiftMaterOrgPK.companyId = :companyId "
+				+ " and o.kshmtShiftMaterOrgPK.targetUnit = :targetUnit "
+				+ " and o.kshmtShiftMaterOrgPK.targetId = :targetId "
+				+ "  and o.kshmtShiftMaterOrgPK.shiftMaterCode IN :shiftMaterCode";
+		if (!listToDel.isEmpty()) {			
+			this.queryProxy().query(delete).setParameter("companyId", shiftMater.getCompanyId())
+			.setParameter("targetUnit", shiftMater.getTargetOrg().getUnit().value)
+			.setParameter("targetId", shiftMater.getTargetOrg().getUnit().value == 0 ? 
+					shiftMater.getTargetOrg().getWorkplaceId().get()
+					: shiftMater.getTargetOrg().getWorkplaceGroupId().get())
+			.setParameter("shiftMaterCode", listToDel);
+		}
+		
+		List<String> listToInsert = shiftMasterCodes.stream().filter(e-> !result.contains(e)).collect(Collectors.toList());
+		listToInsert.forEach(code -> {
+			this.commandProxy().insert(KshmtShiftMaterOrg.toEntity(shiftMater, code));
+		});
 	}
 
 	@Override

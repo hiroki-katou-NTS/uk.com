@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 650, height: 270 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ksu001.jd.main.css" />
+			<com:scriptfile path="ksu001.jd.vm.js" />
+			<com:scriptfile path="ksu001.jd.service.js" />
+			<com:scriptfile path="ksu001.jd.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<table>
+					<tr>
+						<td style="width: 100px"><span class="label">#{i18n.getText('KSU001_153')}</span>
+						</td>
+						<td style="width: 130px">
+							<div data-bind="ntsFormLabel: {required: false}">
+								#{i18n.getText('KSU001_154')}</div>
+						</td>
+						<td><span data-bind="text: orgName"></span></td>
+					</tr>
+				</table>
+				<table style="margin-top:10px">
+					<tr>
+						<td style="width: 100px"><span class="label">#{i18n.getText('KSU001_155')}</span>
+						</td>
+						<td style="width: 130px">
+							<div data-bind="ntsFormLabel: {required: true}">
+								#{i18n.getText('KSU001_156')}</div>
+							<!-- <div data-bind="ntsFormLabel: {constraint: 'LayoutCode_シフトパレット名称',required: true}">
+								#{i18n.getText('KSU001_156')}</div> -->
+						</td>
+						<td>
+							<div tabindex="1" id="combo-box-des"
+								data-bind="ntsComboBox: {
+									name: '#{i18n.getText('KSU001_156')}',
+									options: itemList,
+									optionsValue: 'code',
+									visibleItemsCount: 7,
+									value: selectedCode,
+									optionsText: 'name',
+									columns: [
+										{ prop: 'code', length: 6 },
+										{ prop: 'name', length: 8 },
+								]}"></div>
+						</td>
+						<td style="width: 150px; text-align: center;"><input id="input-desName" style="width: 70px" 
+							data-bind="ntsTextEditor: 
+							{value: desName, enable: true, required: true, name: '#[KSU001_160]'}" />
+						</td>
+						<!-- <td><input id="input-desName"
+							data-bind="ntsTextEditor: 
+							{value: desName, enable: true, constraint:'シフトパレット名称',required: true, name: '#[KSU001_160]'}" />
+						</td> -->
+					</tr>
+				</table>
+			</div>
+			<div id="functions-area-bottom" style="height: 80px;">
+				<div
+					data-bind="ntsCheckBox: { checked: checked, enable: true, style: 'warnpanel', text: '#{i18n.getText('KSU001_157')}' }"></div>
+				<div style="margin-top:10px;">
+				<button class="proceed"
+					data-bind="enable: true, click: decision">#{i18n.getText('KSU001_158')}</button>
+				<button data-bind="click: closeDialog">#{i18n.getText('KSU001_159')}</button>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

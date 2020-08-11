@@ -56,26 +56,27 @@ public class CreateDailyOneDay {
 	public OutputCreateDailyOneDay createDailyOneDay(String companyId, String employeeId, GeneralDate ymd,
 			boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime,ExecutionTypeDaily executionType,
 			EmbossingExecutionFlag flag,EmployeeGeneralInfoImport employeeGeneralInfoImport,
-			PeriodInMasterList periodInMasterList,String empCalAndSumExecLogID) {
+			PeriodInMasterList periodInMasterList) {
 		List<ErrorMessageInfo> listErrorMessageInfo = new ArrayList<>();
 		//ドメインモデル「日別実績の勤務情報」を取得する (Lấy dữ liệu từ domain)
         // 日別実績の「情報系」のドメインを取得する
  		IntegrationOfDaily integrationOfDaily = preOvertimeReflectService.calculateForAppReflect(employeeId, ymd);
-        
+ 		integrationOfDaily.setYmd(ymd);
+ 		integrationOfDaily.setEmployeeId(employeeId);
         //「勤務種類」と「実行タイプ」をチェックする
         //日別実績が既に存在しない場合OR「作成する」の場合	
         if(integrationOfDaily.getWorkInformation() == null || executionType == ExecutionTypeDaily.CREATE) {
         	//日別実績を作成する 
         	listErrorMessageInfo.addAll(createDailyResults.createDailyResult(companyId, employeeId, ymd,
 					reCreateWorkType, reCreateWorkPlace, reCreateRestTime, executionType, flag,
-					employeeGeneralInfoImport, periodInMasterList, empCalAndSumExecLogID));
+					employeeGeneralInfoImport, periodInMasterList,integrationOfDaily));
         	if(!listErrorMessageInfo.isEmpty()) {
         		return new OutputCreateDailyOneDay( listErrorMessageInfo,null,new ArrayList<>());
         	}
         }
         //打刻を取得して反映する 
 		OutputAcquireReflectEmbossingNew outputAcquireReflectEmbossingNew = reflectStampDomainServiceImpl
-				.acquireReflectEmbossingNew(companyId, employeeId, ymd, executionType, flag, empCalAndSumExecLogID,
+				.acquireReflectEmbossingNew(companyId, employeeId, ymd, executionType, flag,
 						integrationOfDaily);
         listErrorMessageInfo.addAll(outputAcquireReflectEmbossingNew.getListErrorMessageInfo());
         if(!listErrorMessageInfo.isEmpty()) {
