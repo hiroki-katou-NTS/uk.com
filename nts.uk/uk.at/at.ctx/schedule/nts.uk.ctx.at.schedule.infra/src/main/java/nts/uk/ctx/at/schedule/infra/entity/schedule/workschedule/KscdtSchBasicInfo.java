@@ -103,7 +103,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 	@Column(name = "BACK_STRAIGHT_ATR")
 	public boolean backStraightAtr;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KscdtSchTime kscdtSchTime;
