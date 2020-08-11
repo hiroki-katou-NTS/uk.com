@@ -14,8 +14,8 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.hr.shared.dom.personalinfo.personalinformation.PersonalInformation;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformation;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -27,845 +27,845 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "PPEDT_DATA")
-public class PpedtData extends UkJpaEntity implements Serializable {
-	
+public class PpedtData extends ContractUkJpaEntity implements Serializable {
+
 	@Id
 	@Column(name = "HIST_ID")
 	@Basic(optional = false)
-	public String hisId;
+	private String hisId;
 
 	@Column(name = "CONTRACT_CD")
 	@Basic(optional = false)
-	public String contractCd;
-	
+	private String contractCd;
+
 	@Column(name = "CID")
 	@Basic(optional = true)
-	public String cId;
-	
+	private String cId;
+
 	@Column(name = "CCD")
 	@Basic(optional = true)
-	public String ccd;
+	private String ccd;
 
 	@Column(name = "PID")
 	@Basic(optional = false)
-	public String pId;
-	
+	private String pId;
+
 	@Column(name = "SID")
 	@Basic(optional = true)
-	public String sid;
+	private String sid;
 
 	@Column(name = "SCD")
 	@Basic(optional = true)
-	public String scd;
+	private String scd;
 
 	@Column(name = "PERSON_NAME")
 	@Basic(optional = true)
-	public String personName;
-	
+	private String personName;
+
 	@Column(name = "WORK_ID")
 	@Basic(optional = false)
-	public int workId;
-	
+	private int workId;
+
 	@Column(name = "WORK_NAME")
 	@Basic(optional = true)
-	public String workName;
-	
+	private String workName;
+
 	@Column(name = "START_DATE")
 	@Basic(optional = false)
-	public GeneralDate startDate;
-	
+	private GeneralDate startDate;
+
 	@Column(name = "END_DATE")
 	@Basic(optional = false)
-	public GeneralDate endDate;
-	
+	private GeneralDate endDate;
+
 	@Column(name = "RELEASE_DATE")
 	@Basic(optional = true)
-	public GeneralDate releaseDate;
-	
+	private GeneralDate releaseDate;
+
 	@Column(name = "REQUEST_FLG")
 	@Basic(optional = true)
-	public int requestFlg;
-	
+	private int requestFlg;
+
 	@Column(name = "RPT_LAYOUT_ID")
 	@Basic(optional = true)
-	public int rptLayoutId;
-	
+	private int rptLayoutId;
+
 	@Column(name = "RPTID")
 	@Basic(optional = true)
-	public BigInteger rptId;
-	
+	private BigInteger rptId;
+
 	@Column(name = "RPT_NUMBER")
 	@Basic(optional = true)
-	public String rptNumber;
-	
+	private String rptNumber;
+
 	@Column(name = "STR_01")
 	@Basic(optional = true)
-	public String str01;
-	
+	private String str01;
+
 	@Column(name = "STR_02")
 	@Basic(optional = true)
-	public String str02;
-	
+	private String str02;
+
 	@Column(name = "STR_03")
 	@Basic(optional = true)
-	public String str03;
-	
+	private String str03;
+
 	@Column(name = "STR_04")
 	@Basic(optional = true)
-	public String str04;
-	
+	private String str04;
+
 	@Column(name = "STR_05")
 	@Basic(optional = true)
-	public String str05;
-	
+	private String str05;
+
 	@Column(name = "STR_06")
 	@Basic(optional = true)
-	public String str06;
-	
+	private String str06;
+
 	@Column(name = "STR_07")
 	@Basic(optional = true)
-	public String str07;
-	
+	private String str07;
+
 	@Column(name = "STR_08")
 	@Basic(optional = true)
-	public String str08;
-	
+	private String str08;
+
 	@Column(name = "STR_09")
 	@Basic(optional = true)
-	public String str09;
-	
+	private String str09;
+
 	@Column(name = "STR_10")
 	@Basic(optional = true)
-	public String str10;
-	
+	private String str10;
+
 	@Column(name = "STR_11")
 	@Basic(optional = true)
-	public String str11;
-	
+	private String str11;
+
 	@Column(name = "STR_12")
 	@Basic(optional = true)
-	public String str12;
-	
+	private String str12;
+
 	@Column(name = "STR_13")
 	@Basic(optional = true)
-	public String str13;
-	
+	private String str13;
+
 	@Column(name = "STR_14")
 	@Basic(optional = true)
-	public String str14;
-	
+	private String str14;
+
 	@Column(name = "STR_15")
 	@Basic(optional = true)
-	public String str15;
-	
+	private String str15;
+
 	@Column(name = "STR_16")
 	@Basic(optional = true)
-	public String str16;
-	
+	private String str16;
+
 	@Column(name = "STR_17")
 	@Basic(optional = true)
-	public String str17;
-	
+	private String str17;
+
 	@Column(name = "STR_18")
 	@Basic(optional = true)
-	public String str18;
-	
+	private String str18;
+
 	@Column(name = "STR_19")
 	@Basic(optional = true)
-	public String str19;
-	
+	private String str19;
+
 	@Column(name = "STR_20")
 	@Basic(optional = true)
-	public String str20;
-	
+	private String str20;
+
 	@Column(name = "STR_21")
 	@Basic(optional = true)
-	public String str21;
-	
+	private String str21;
+
 	@Column(name = "STR_22")
 	@Basic(optional = true)
-	public String str22;
-	
+	private String str22;
+
 	@Column(name = "STR_23")
 	@Basic(optional = true)
-	public String str23;
-	
+	private String str23;
+
 	@Column(name = "STR_24")
 	@Basic(optional = true)
-	public String str24;
-	
+	private String str24;
+
 	@Column(name = "STR_25")
 	@Basic(optional = true)
-	public String str25;
-	
+	private String str25;
+
 	@Column(name = "STR_26")
 	@Basic(optional = true)
-	public String str26;
-	
+	private String str26;
+
 	@Column(name = "STR_27")
 	@Basic(optional = true)
-	public String str27;
-	
+	private String str27;
+
 	@Column(name = "STR_28")
 	@Basic(optional = true)
-	public String str28;
-	
+	private String str28;
+
 	@Column(name = "STR_29")
 	@Basic(optional = true)
-	public String str29;
-	
+	private String str29;
+
 	@Column(name = "STR_30")
 	@Basic(optional = true)
-	public String str30;
-	
+	private String str30;
+
 	@Column(name = "STR_31")
 	@Basic(optional = true)
-	public String str31;
-	
+	private String str31;
+
 	@Column(name = "STR_32")
 	@Basic(optional = true)
-	public String str32;
-	
+	private String str32;
+
 	@Column(name = "STR_33")
 	@Basic(optional = true)
-	public String str33;
-	
+	private String str33;
+
 	@Column(name = "STR_34")
 	@Basic(optional = true)
-	public String str34;
-	
+	private String str34;
+
 	@Column(name = "STR_35")
 	@Basic(optional = true)
-	public String str35;
-	
+	private String str35;
+
 	@Column(name = "STR_36")
 	@Basic(optional = true)
-	public String str36;
-	
+	private String str36;
+
 	@Column(name = "STR_37")
 	@Basic(optional = true)
-	public String str37;
-	
+	private String str37;
+
 	@Column(name = "STR_38")
 	@Basic(optional = true)
-	public String str38;
-	
+	private String str38;
+
 	@Column(name = "STR_39")
 	@Basic(optional = true)
-	public String str39;
-	
+	private String str39;
+
 	@Column(name = "STR_40")
 	@Basic(optional = true)
-	public String str40;
-	
+	private String str40;
+
 	@Column(name = "STR_41")
 	@Basic(optional = true)
-	public String str41;
-	
+	private String str41;
+
 	@Column(name = "STR_42")
 	@Basic(optional = true)
-	public String str42;
-	
+	private String str42;
+
 	@Column(name = "STR_43")
 	@Basic(optional = true)
-	public String str43;
-	
+	private String str43;
+
 	@Column(name = "STR_44")
 	@Basic(optional = true)
-	public String str44;
-	
+	private String str44;
+
 	@Column(name = "STR_45")
 	@Basic(optional = true)
-	public String str45;
-	
+	private String str45;
+
 	@Column(name = "STR_46")
 	@Basic(optional = true)
-	public String str46;
-	
+	private String str46;
+
 	@Column(name = "STR_47")
 	@Basic(optional = true)
-	public String str47;
-	
+	private String str47;
+
 	@Column(name = "STR_48")
 	@Basic(optional = true)
-	public String str48;
-	
+	private String str48;
+
 	@Column(name = "STR_49")
 	@Basic(optional = true)
-	public String str49;
-	
+	private String str49;
+
 	@Column(name = "STR_50")
 	@Basic(optional = true)
-	public String str50;
-	
+	private String str50;
+
 	@Column(name = "STR_51")
 	@Basic(optional = true)
-	public String str51;
-	
+	private String str51;
+
 	@Column(name = "STR_52")
 	@Basic(optional = true)
-	public String str52;
-	
+	private String str52;
+
 	@Column(name = "STR_53")
 	@Basic(optional = true)
-	public String str53;
-	
+	private String str53;
+
 	@Column(name = "STR_54")
 	@Basic(optional = true)
-	public String str54;
-	
+	private String str54;
+
 	@Column(name = "STR_55")
 	@Basic(optional = true)
-	public String str55;
-	
+	private String str55;
+
 	@Column(name = "STR_56")
 	@Basic(optional = true)
-	public String str56;
-	
+	private String str56;
+
 	@Column(name = "STR_57")
 	@Basic(optional = true)
-	public String str57;
-	
+	private String str57;
+
 	@Column(name = "STR_58")
 	@Basic(optional = true)
-	public String str58;
-	
+	private String str58;
+
 	@Column(name = "STR_59")
 	@Basic(optional = true)
-	public String str59;
-	
+	private String str59;
+
 	@Column(name = "STR_60")
 	@Basic(optional = true)
-	public String str60;
-	
+	private String str60;
+
 	@Column(name = "DATE_01")
 	@Basic(optional = true)
-	public GeneralDate date01;
-	
+	private GeneralDate date01;
+
 	@Column(name = "DATE_02")
 	@Basic(optional = true)
-	public GeneralDate date02;
-	
+	private GeneralDate date02;
+
 	@Column(name = "DATE_03")
 	@Basic(optional = true)
-	public GeneralDate date03;
-	
+	private GeneralDate date03;
+
 	@Column(name = "DATE_04")
 	@Basic(optional = true)
-	public GeneralDate date04;
-	
+	private GeneralDate date04;
+
 	@Column(name = "DATE_05")
 	@Basic(optional = true)
-	public GeneralDate date05;
-	
+	private GeneralDate date05;
+
 	@Column(name = "DATE_06")
 	@Basic(optional = true)
-	public GeneralDate date06;
-	
+	private GeneralDate date06;
+
 	@Column(name = "DATE_07")
 	@Basic(optional = true)
-	public GeneralDate date07;
-	
+	private GeneralDate date07;
+
 	@Column(name = "DATE_08")
 	@Basic(optional = true)
-	public GeneralDate date08;
-	
+	private GeneralDate date08;
+
 	@Column(name = "DATE_09")
 	@Basic(optional = true)
-	public GeneralDate date09;
-	
+	private GeneralDate date09;
+
 	@Column(name = "DATE_10")
 	@Basic(optional = true)
-	public GeneralDate date10;
-	
+	private GeneralDate date10;
+
 	@Column(name = "INT_01")
 	@Basic(optional = true)
-	public int int01;
-	
+	private int int01;
+
 	@Column(name = "INT_02")
 	@Basic(optional = true)
-	public int int02;
-	
+	private int int02;
+
 	@Column(name = "INT_03")
 	@Basic(optional = true)
-	public int int03;
-	
+	private int int03;
+
 	@Column(name = "INT_04")
 	@Basic(optional = true)
-	public int int04;
-	
+	private int int04;
+
 	@Column(name = "INT_05")
 	@Basic(optional = true)
-	public int int05;
-	
+	private int int05;
+
 	@Column(name = "INT_06")
 	@Basic(optional = true)
-	public int int06;
-	
+	private int int06;
+
 	@Column(name = "INT_07")
 	@Basic(optional = true)
-	public int int07;
-	
+	private int int07;
+
 	@Column(name = "INT_08")
 	@Basic(optional = true)
-	public int int08;
-	
+	private int int08;
+
 	@Column(name = "INT_09")
 	@Basic(optional = true)
-	public int int09;
-	
+	private int int09;
+
 	@Column(name = "INT_10")
 	@Basic(optional = true)
-	public int int10;
-	
+	private int int10;
+
 	@Column(name = "INT_11")
 	@Basic(optional = true)
-	public int int11;
-	
+	private int int11;
+
 	@Column(name = "INT_12")
 	@Basic(optional = true)
-	public int int12;
-	
+	private int int12;
+
 	@Column(name = "INT_13")
 	@Basic(optional = true)
-	public int int13;
-	
+	private int int13;
+
 	@Column(name = "INT_14")
 	@Basic(optional = true)
-	public int int14;
-	
+	private int int14;
+
 	@Column(name = "INT_15")
 	@Basic(optional = true)
-	public int int15;
-	
+	private int int15;
+
 	@Column(name = "INT_16")
 	@Basic(optional = true)
-	public int int16;
-	
+	private int int16;
+
 	@Column(name = "INT_17")
 	@Basic(optional = true)
-	public int int17;
-	
+	private int int17;
+
 	@Column(name = "INT_18")
 	@Basic(optional = true)
-	public int int18;
-	
+	private int int18;
+
 	@Column(name = "INT_19")
 	@Basic(optional = true)
-	public int int19;
-	
+	private int int19;
+
 	@Column(name = "INT_20")
 	@Basic(optional = true)
-	public int int20;
-	
+	private int int20;
+
 	@Column(name = "INT_21")
 	@Basic(optional = true)
-	public int int21;
-	
+	private int int21;
+
 	@Column(name = "INT_22")
 	@Basic(optional = true)
-	public int int22;
-	
+	private int int22;
+
 	@Column(name = "INT_23")
 	@Basic(optional = true)
-	public int int23;
-	
+	private int int23;
+
 	@Column(name = "INT_24")
 	@Basic(optional = true)
-	public int int24;
-	
+	private int int24;
+
 	@Column(name = "INT_25")
 	@Basic(optional = true)
-	public int int25;
-	
+	private int int25;
+
 	@Column(name = "INT_26")
 	@Basic(optional = true)
-	public int int26;
-	
+	private int int26;
+
 	@Column(name = "INT_27")
 	@Basic(optional = true)
-	public int int27;
-	
+	private int int27;
+
 	@Column(name = "INT_28")
 	@Basic(optional = true)
-	public int int28;
-	
+	private int int28;
+
 	@Column(name = "INT_29")
 	@Basic(optional = true)
-	public int int29;
-	
+	private int int29;
+
 	@Column(name = "INT_30")
 	@Basic(optional = true)
-	public int int30;
-	
+	private int int30;
+
 	@Column(name = "NUM_01")
 	@Basic(optional = true)
-	public BigDecimal number01;
-	
+	private BigDecimal number01;
+
 	@Column(name = "NUM_02")
 	@Basic(optional = true)
-	public BigDecimal number02;
-	
+	private BigDecimal number02;
+
 	@Column(name = "NUM_03")
 	@Basic(optional = true)
-	public BigDecimal number03;
-	
+	private BigDecimal number03;
+
 	@Column(name = "NUM_04")
 	@Basic(optional = true)
-	public BigDecimal number04;
-	
+	private BigDecimal number04;
+
 	@Column(name = "NUM_05")
 	@Basic(optional = true)
-	public BigDecimal number05;
-	
+	private BigDecimal number05;
+
 	@Column(name = "NUM_06")
 	@Basic(optional = true)
-	public BigDecimal number06;
-	
+	private BigDecimal number06;
+
 	@Column(name = "NUM_07")
 	@Basic(optional = true)
-	public BigDecimal number07;
-	
+	private BigDecimal number07;
+
 	@Column(name = "NUM_08")
 	@Basic(optional = true)
-	public BigDecimal number08;
-	
+	private BigDecimal number08;
+
 	@Column(name = "NUM_09")
 	@Basic(optional = true)
-	public BigDecimal number09;
-	
+	private BigDecimal number09;
+
 	@Column(name = "NUM_10")
 	@Basic(optional = true)
-	public BigDecimal number10;
-	
+	private BigDecimal number10;
+
 	@Column(name = "NUM_11")
 	@Basic(optional = true)
-	public BigDecimal number11;
-	
+	private BigDecimal number11;
+
 	@Column(name = "NUM_12")
 	@Basic(optional = true)
-	public BigDecimal number12;
-	
+	private BigDecimal number12;
+
 	@Column(name = "NUM_13")
 	@Basic(optional = true)
-	public BigDecimal number13;
-	
+	private BigDecimal number13;
+
 	@Column(name = "NUM_14")
 	@Basic(optional = true)
-	public BigDecimal number14;
-	
+	private BigDecimal number14;
+
 	@Column(name = "NUM_15")
 	@Basic(optional = true)
-	public BigDecimal number15;
-	
+	private BigDecimal number15;
+
 	@Column(name = "NUM_16")
 	@Basic(optional = true)
-	public BigDecimal number16;
-	
+	private BigDecimal number16;
+
 	@Column(name = "NUM_17")
 	@Basic(optional = true)
-	public BigDecimal number17;
-	
+	private BigDecimal number17;
+
 	@Column(name = "NUM_18")
 	@Basic(optional = true)
-	public BigDecimal number18;
-	
+	private BigDecimal number18;
+
 	@Column(name = "NUM_19")
 	@Basic(optional = true)
-	public BigDecimal number19;
-	
+	private BigDecimal number19;
+
 	@Column(name = "NUM_20")
 	@Basic(optional = true)
-	public BigDecimal number20;
-	
+	private BigDecimal number20;
+
 	@Column(name = "NUM_21")
 	@Basic(optional = true)
-	public BigDecimal number21;
-	
+	private BigDecimal number21;
+
 	@Column(name = "NUM_22")
 	@Basic(optional = true)
-	public BigDecimal number22;
-	
+	private BigDecimal number22;
+
 	@Column(name = "NUM_23")
 	@Basic(optional = true)
-	public BigDecimal number23;
-	
+	private BigDecimal number23;
+
 	@Column(name = "NUM_24")
 	@Basic(optional = true)
-	public BigDecimal number24;
-	
+	private BigDecimal number24;
+
 	@Column(name = "NUM_25")
 	@Basic(optional = true)
-	public BigDecimal number25;
-	
+	private BigDecimal number25;
+
 	@Column(name = "NUM_26")
 	@Basic(optional = true)
-	public BigDecimal number26;
-	
+	private BigDecimal number26;
+
 	@Column(name = "NUM_27")
 	@Basic(optional = true)
-	public BigDecimal number27;
-	
+	private BigDecimal number27;
+
 	@Column(name = "NUM_28")
 	@Basic(optional = true)
-	public BigDecimal number28;
-	
+	private BigDecimal number28;
+
 	@Column(name = "NUM_29")
 	@Basic(optional = true)
-	public BigDecimal number29;
-	
+	private BigDecimal number29;
+
 	@Column(name = "NUM_30")
 	@Basic(optional = true)
-	public BigDecimal number30;
-	
+	private BigDecimal number30;
+
 	@Column(name = "SELECT_ID_01")
 	@Basic(optional = true)
-	public BigInteger selectId01;
-	
+	private BigInteger selectId01;
+
 	@Column(name = "SELECT_CODE_01")
 	@Basic(optional = true)
-	public String selectCode01;
-	
+	private String selectCode01;
+
 	@Column(name = "SELECT_NAME_01")
 	@Basic(optional = true)
-	public String selectName01;
-	
+	private String selectName01;
+
 	@Column(name = "SELECT_ID_02")
 	@Basic(optional = true)
-	public BigInteger selectId02;
-	
+	private BigInteger selectId02;
+
 	@Column(name = "SELECT_CODE_02")
 	@Basic(optional = true)
-	public String selectCode02;
-	
+	private String selectCode02;
+
 	@Column(name = "SELECT_NAME_02")
 	@Basic(optional = true)
-	public String selectName02;
-	
+	private String selectName02;
+
 	@Column(name = "SELECT_ID_03")
 	@Basic(optional = true)
-	public BigInteger selectId03;
-	
+	private BigInteger selectId03;
+
 	@Column(name = "SELECT_CODE_03")
 	@Basic(optional = true)
-	public String selectCode03;
-	
+	private String selectCode03;
+
 	@Column(name = "SELECT_NAME_03")
 	@Basic(optional = true)
-	public String selectName03;
-	
+	private String selectName03;
+
 	@Column(name = "SELECT_ID_04")
 	@Basic(optional = true)
-	public BigInteger selectId04;
-	
+	private BigInteger selectId04;
+
 	@Column(name = "SELECT_CODE_04")
 	@Basic(optional = true)
-	public String selectCode04;
-	
+	private String selectCode04;
+
 	@Column(name = "SELECT_NAME_04")
 	@Basic(optional = true)
-	public String selectName04;
-	
+	private String selectName04;
+
 	@Column(name = "SELECT_ID_05")
 	@Basic(optional = true)
-	public BigInteger selectId05;
-	
+	private BigInteger selectId05;
+
 	@Column(name = "SELECT_CODE_05")
 	@Basic(optional = true)
-	public String selectCode05;
-	
+	private String selectCode05;
+
 	@Column(name = "SELECT_NAME_05")
 	@Basic(optional = true)
-	public String selectName05;
-	
+	private String selectName05;
+
 	@Column(name = "SELECT_ID_06")
 	@Basic(optional = true)
-	public BigInteger selectId06;
-	
+	private BigInteger selectId06;
+
 	@Column(name = "SELECT_CODE_06")
 	@Basic(optional = true)
-	public String selectCode06;
-	
+	private String selectCode06;
+
 	@Column(name = "SELECT_NAME_06")
 	@Basic(optional = true)
-	public String selectName06;
-	
+	private String selectName06;
+
 	@Column(name = "SELECT_ID_07")
 	@Basic(optional = true)
-	public BigInteger selectId07;
-	
+	private BigInteger selectId07;
+
 	@Column(name = "SELECT_CODE_07")
 	@Basic(optional = true)
-	public String selectCode07;
-	
+	private String selectCode07;
+
 	@Column(name = "SELECT_NAME_07")
 	@Basic(optional = true)
-	public String selectName07;
-	
+	private String selectName07;
+
 	@Column(name = "SELECT_ID_08")
 	@Basic(optional = true)
-	public BigInteger selectId08;
-	
+	private BigInteger selectId08;
+
 	@Column(name = "SELECT_CODE_08")
 	@Basic(optional = true)
-	public String selectCode08;
-	
+	private String selectCode08;
+
 	@Column(name = "SELECT_NAME_08")
 	@Basic(optional = true)
-	public String selectName08;
-	
+	private String selectName08;
+
 	@Column(name = "SELECT_ID_09")
 	@Basic(optional = true)
-	public BigInteger selectId09;
-	
+	private BigInteger selectId09;
+
 	@Column(name = "SELECT_CODE_09")
 	@Basic(optional = true)
-	public String selectCode09;
-	
+	private String selectCode09;
+
 	@Column(name = "SELECT_NAME_09")
 	@Basic(optional = true)
-	public String selectName09;
-	
+	private String selectName09;
+
 	@Column(name = "SELECT_ID_10")
 	@Basic(optional = true)
-	public BigInteger selectId10;
-	
+	private BigInteger selectId10;
+
 	@Column(name = "SELECT_CODE_10")
 	@Basic(optional = true)
-	public String selectCode10;
-	
+	private String selectCode10;
+
 	@Column(name = "SELECT_NAME_10")
 	@Basic(optional = true)
-	public String selectName10;
-	
+	private String selectName10;
+
 	@Column(name = "SELECT_ID_11")
 	@Basic(optional = true)
-	public BigInteger selectId11;
-	
+	private BigInteger selectId11;
+
 	@Column(name = "SELECT_CODE_11")
 	@Basic(optional = true)
-	public String selectCode11;
-	
+	private String selectCode11;
+
 	@Column(name = "SELECT_NAME_11")
 	@Basic(optional = true)
-	public String selectName11;
-	
+	private String selectName11;
+
 	@Column(name = "SELECT_ID_12")
 	@Basic(optional = true)
-	public BigInteger selectId12;
-	
+	private BigInteger selectId12;
+
 	@Column(name = "SELECT_CODE_12")
 	@Basic(optional = true)
-	public String selectCode12;
-	
+	private String selectCode12;
+
 	@Column(name = "SELECT_NAME_12")
 	@Basic(optional = true)
-	public String selectName12;
-	
+	private String selectName12;
+
 	@Column(name = "SELECT_ID_13")
 	@Basic(optional = true)
-	public BigInteger selectId13;
-	
+	private BigInteger selectId13;
+
 	@Column(name = "SELECT_CODE_13")
 	@Basic(optional = true)
-	public String selectCode13;
-	
+	private String selectCode13;
+
 	@Column(name = "SELECT_NAME_13")
 	@Basic(optional = true)
-	public String selectName13;
-	
+	private String selectName13;
+
 	@Column(name = "SELECT_ID_14")
 	@Basic(optional = true)
-	public BigInteger selectId14;
-	
+	private BigInteger selectId14;
+
 	@Column(name = "SELECT_CODE_14")
 	@Basic(optional = true)
-	public String selectCode14;
-	
+	private String selectCode14;
+
 	@Column(name = "SELECT_NAME_14")
 	@Basic(optional = true)
-	public String selectName14;
-	
+	private String selectName14;
+
 	@Column(name = "SELECT_ID_15")
 	@Basic(optional = true)
-	public BigInteger selectId15;
-	
+	private BigInteger selectId15;
+
 	@Column(name = "SELECT_CODE_15")
 	@Basic(optional = true)
-	public String selectCode15;
-	
+	private String selectCode15;
+
 	@Column(name = "SELECT_NAME_15")
 	@Basic(optional = true)
-	public String selectName15;
-	
+	private String selectName15;
+
 	@Column(name = "SELECT_ID_16")
 	@Basic(optional = true)
-	public BigInteger selectId16;
-	
+	private BigInteger selectId16;
+
 	@Column(name = "SELECT_CODE_16")
 	@Basic(optional = true)
-	public String selectCode16;
-	
+	private String selectCode16;
+
 	@Column(name = "SELECT_NAME_16")
 	@Basic(optional = true)
-	public String selectName16;
-	
+	private String selectName16;
+
 	@Column(name = "SELECT_ID_17")
 	@Basic(optional = true)
-	public BigInteger selectId17;
-	
+	private BigInteger selectId17;
+
 	@Column(name = "SELECT_CODE_17")
 	@Basic(optional = true)
-	public String selectCode17;
-	
+	private String selectCode17;
+
 	@Column(name = "SELECT_NAME_17")
 	@Basic(optional = true)
-	public String selectName17;
-	
+	private String selectName17;
+
 	@Column(name = "SELECT_ID_18")
 	@Basic(optional = true)
-	public BigInteger selectId18;
-	
+	private BigInteger selectId18;
+
 	@Column(name = "SELECT_CODE_18")
 	@Basic(optional = true)
-	public String selectCode18;
-	
+	private String selectCode18;
+
 	@Column(name = "SELECT_NAME_18")
 	@Basic(optional = true)
-	public String selectName18;
-	
+	private String selectName18;
+
 	@Column(name = "SELECT_ID_19")
 	@Basic(optional = true)
-	public BigInteger selectId19;
-	
+	private BigInteger selectId19;
+
 	@Column(name = "SELECT_CODE_19")
 	@Basic(optional = true)
-	public String selectCode19;
-	
+	private String selectCode19;
+
 	@Column(name = "SELECT_NAME_19")
 	@Basic(optional = true)
-	public String selectName19;
-	
+	private String selectName19;
+
 	@Column(name = "SELECT_ID_20")
 	@Basic(optional = true)
-	public BigInteger selectId20;
-	
+	private BigInteger selectId20;
+
 	@Column(name = "SELECT_CODE_20")
 	@Basic(optional = true)
-	public String selectCode20;
-	
+	private String selectCode20;
+
 	@Column(name = "SELECT_NAME_20")
 	@Basic(optional = true)
-	public String selectName20;
-	
+	private String selectName20;
+
 	@Override
 	protected Object getKey() {
 		return hisId;
 	}
-	
+
 	public PpedtData toEntity(PersonalInformation domain) {
 		PpedtData entity = new PpedtData();
-		
+
 		entity.hisId = domain.getHistId();
 		entity.contractCd = domain.getContractCd();
 		entity.cId = domain.getCid().map(m -> m).orElse(null);
@@ -883,7 +883,7 @@ public class PpedtData extends UkJpaEntity implements Serializable {
 		entity.rptLayoutId = domain.getRptLayoutId();
 		entity.rptId = BigInteger.valueOf(domain.getRptId());
 		entity.rptNumber = domain.getRptNumber().map(m -> m).orElse(null);
-		
+
 		entity.str01 = domain.getStr01().map(m -> m).orElse(null);
 		entity.str02 = domain.getStr02().map(m -> m).orElse(null);
 		entity.str03 = domain.getStr03().map(m -> m).orElse(null);
@@ -944,7 +944,7 @@ public class PpedtData extends UkJpaEntity implements Serializable {
 		entity.str58 = domain.getStr58().map(m -> m).orElse(null);
 		entity.str59 = domain.getStr59().map(m -> m).orElse(null);
 		entity.str60 = domain.getStr60().map(m -> m).orElse(null);
-		
+
 		entity.date01 = domain.getDate01().map(m -> m).orElse(null);
 		entity.date02 = domain.getDate02().map(m -> m).orElse(null);
 		entity.date03 = domain.getDate03().map(m -> m).orElse(null);
@@ -955,7 +955,7 @@ public class PpedtData extends UkJpaEntity implements Serializable {
 		entity.date08 = domain.getDate08().map(m -> m).orElse(null);
 		entity.date09 = domain.getDate09().map(m -> m).orElse(null);
 		entity.date10 = domain.getDate10().map(m -> m).orElse(null);
-		
+
 		entity.int01 = domain.getInt01();
 		entity.int02 = domain.getInt02();
 		entity.int03 = domain.getInt03();
@@ -986,7 +986,7 @@ public class PpedtData extends UkJpaEntity implements Serializable {
 		entity.int28 = domain.getInt28();
 		entity.int29 = domain.getInt29();
 		entity.int30 = domain.getInt30();
-		
+
 		entity.number01 = BigDecimal.valueOf(domain.getNumber01());
 		entity.number02 = BigDecimal.valueOf(domain.getNumber02());
 		entity.number03 = BigDecimal.valueOf(domain.getNumber03());
@@ -1017,7 +1017,7 @@ public class PpedtData extends UkJpaEntity implements Serializable {
 		entity.number28 = BigDecimal.valueOf(domain.getNumber28());
 		entity.number29 = BigDecimal.valueOf(domain.getNumber29());
 		entity.number30 = BigDecimal.valueOf(domain.getNumber30());
-		
+
 		entity.selectId01 = BigInteger.valueOf(domain.getSelectId01());
 		entity.selectCode01 = domain.getSelectCode01().map(m -> m).orElse(null);
 		entity.selectName01 = domain.getSelectName01().map(m -> m).orElse(null);
@@ -1078,13 +1078,13 @@ public class PpedtData extends UkJpaEntity implements Serializable {
 		entity.selectId20 = BigInteger.valueOf(domain.getSelectId20());
 		entity.selectCode20 = domain.getSelectCode20().map(m -> m).orElse(null);
 		entity.selectName20 = domain.getSelectName20().map(m -> m).orElse(null);
-		
+
 		return entity;
 	}
-	
-	public PersonalInformation toDomain (PpedtData entity) {
+
+	public PersonalInformation toDomain(PpedtData entity) {
 		PersonalInformation domain = new PersonalInformation();
-		
+
 		domain.setHistId(this.hisId);
 		domain.setContractCd(this.contractCd);
 		domain.setCid(Optional.of(this.cId));
@@ -1102,7 +1102,7 @@ public class PpedtData extends UkJpaEntity implements Serializable {
 		domain.setRptLayoutId(this.rptLayoutId);
 		domain.setRptId(this.rptId.longValue());
 		domain.setRptNumber(Optional.of(this.rptNumber));
-		
+
 		domain.setStr01(Optional.of(this.str01));
 		domain.setStr02(Optional.of(this.str02));
 		domain.setStr03(Optional.of(this.str03));
@@ -1163,7 +1163,7 @@ public class PpedtData extends UkJpaEntity implements Serializable {
 		domain.setStr58(Optional.of(this.str58));
 		domain.setStr59(Optional.of(this.str59));
 		domain.setStr60(Optional.of(this.str60));
-		
+
 		domain.setDate01(Optional.of(this.date01));
 		domain.setDate02(Optional.of(this.date02));
 		domain.setDate03(Optional.of(this.date03));
@@ -1174,7 +1174,7 @@ public class PpedtData extends UkJpaEntity implements Serializable {
 		domain.setDate08(Optional.of(this.date08));
 		domain.setDate09(Optional.of(this.date09));
 		domain.setDate10(Optional.of(this.date10));
-		
+
 		domain.setInt01(this.int01);
 		domain.setInt02(this.int02);
 		domain.setInt03(this.int03);
@@ -1205,7 +1205,7 @@ public class PpedtData extends UkJpaEntity implements Serializable {
 		domain.setInt28(this.int28);
 		domain.setInt29(this.int29);
 		domain.setInt30(this.int30);
-		
+
 		domain.setNumber01(this.number01.doubleValue());
 		domain.setNumber02(this.number02.doubleValue());
 		domain.setNumber03(this.number03.doubleValue());
@@ -1236,7 +1236,7 @@ public class PpedtData extends UkJpaEntity implements Serializable {
 		domain.setNumber28(this.number28.doubleValue());
 		domain.setNumber29(this.number29.doubleValue());
 		domain.setNumber30(this.number30.doubleValue());
-		
+
 		domain.setSelectId01(this.selectId01.longValue());
 		domain.setSelectCode01(Optional.of(this.selectCode01));
 		domain.setSelectName01(Optional.of(this.selectName01));
@@ -1297,7 +1297,7 @@ public class PpedtData extends UkJpaEntity implements Serializable {
 		domain.setSelectId01(this.selectId20.longValue());
 		domain.setSelectCode01(Optional.of(this.selectCode20));
 		domain.setSelectName01(Optional.of(this.selectName20));
-		
+
 		return domain;
 	}
 }

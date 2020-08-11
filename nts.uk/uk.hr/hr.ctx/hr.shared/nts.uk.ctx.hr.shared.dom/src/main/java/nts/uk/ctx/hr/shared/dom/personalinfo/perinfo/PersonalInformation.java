@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.shared.dom.personalinfo.personalinformation;
+package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo;
 
 import java.util.Optional;
 
