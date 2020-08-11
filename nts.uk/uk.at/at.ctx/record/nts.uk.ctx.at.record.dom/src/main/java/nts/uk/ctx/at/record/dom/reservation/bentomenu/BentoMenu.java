@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
@@ -39,7 +40,8 @@ public class BentoMenu extends AggregateRoot {
 	 * 締め時刻
 	 */
 	@Getter
-	private final BentoReservationClosingTime closingTime;
+	@Setter
+	private BentoReservationClosingTime closingTime;
 	
 	public BentoMenu(String historyID, List<Bento> menu, BentoReservationClosingTime closingTime) {
 		// inv-1	1 <= ＠メニュー.size <= 40

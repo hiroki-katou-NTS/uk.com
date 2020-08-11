@@ -54,7 +54,7 @@ public class RegisterReservationLunchServiceTest {
                 () -> RegisterReservationLunchService.register(
                         require, operationDistinction, achievements, correctionContent, null),
                 any -> require.registerBentoMenu(any.get(),any.get()),
-                any -> require.inSert(any.get(),any.get(),any.get()),
+                any -> require.inSert(any.get()),
                 any -> require.update(any.get())
                 );
     }
