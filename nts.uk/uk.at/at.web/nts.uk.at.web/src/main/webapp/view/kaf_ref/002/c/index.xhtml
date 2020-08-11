@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+
+			<com:scriptfile set="IGNITE" />
+			
+			
+			
+			<com:stylefile path="/view/kaf_ref/002/c/kaf002.c.main.css" />
+			<com:scriptfile path="/view/kaf_ref/000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/kaf000.a.vm.js" />
+			<com:scriptfile path="/view/kaf_ref/002/c/kaf002.c.vm.js" />
+			<com:scriptfile path="/view/kaf_ref/002/m/kaf002.m.vm.js" />
+			
+
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button class="proceed" data-bind="text:this.$i18n('KAF009_3')"></button>
+				
+
+			</div>
+			<div id="contents-area">
+				<div style=" display: block; margin-bottom: 10px">
+					<!-- C2_1 -->
+					<div style="display: inline-block; width: 100px" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_8')}</div>
+					<!-- C2_2 -->
+					<div style="margin-left: 100px; display: inline" data-bind="text:'項目移送'" class="label"> </div>
+				</div>
+				
+				<div style=" display: block; margin-bottom: 10px">
+					<!-- C3_1 -->
+					<div style="display: inline-block; width: 100px" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_71')}</div>
+					<!-- C3_2 -->
+					<div style="margin-left: 100px; display: inline" class="label">項目移送</div>
+				</div>
+				
+				<div style=" display: block; margin-bottom: 10px">
+					<!-- C4_1 -->
+					<div style="display: inline-block; width: 100px" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_9')}</div>
+					<!-- C4_2 -->
+					<div style="margin-left: 100px; display: inline" class="label">項目移送</div>
+				</div>
+				
+				<!-- C5 -->
+				
+				<div class="label" style="margin: 10px" >1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 </div>
+				<div style="display:block">
+					<!-- C6_1 -->
+					<div style="float: left" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_17')}</div>
+					<!-- C6_2 -->
+					<div data-bind="component: {name: 'kaf002-m'}" style="margin-left: 100px; width: 100%">
+						
+					</div>
+				</div>
+				<div class="label" style="margin: 10px" >1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 </div>
+				
+				
+				
+			</div>
+			
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

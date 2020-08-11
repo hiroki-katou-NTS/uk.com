@@ -18,7 +18,6 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         isLink3: boolean = true;
         isLink4: boolean = true;
         isLink5: boolean = true;
-        readonly: KnockoutObservable<boolean>;
     
 //    ※M2.1_2 = ※M
 //    打刻申請起動時の表示情報.打刻申請設定.取消の機能の使用する　＝　使用する(use)
@@ -189,9 +188,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 
                 return list;
             })();
-            self.readonly = ko.observable(false);
             
-//            self.$blockui("show");
             self.application = ko.observable(new Application(AppType.STAMP_APPLICATION));
 
             self.loadData([], [], AppType.STAMP_APPLICATION)
@@ -522,7 +519,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                    +'<div align="center">'
                                            +'<input style="width: 50px; text-align: center" data-name="Time Editor" data-bind="'
                                            +'style:{\'background-color\': $data.'+ param +'['+ idGetList +'].flagEnable() ? ($data.'+param+'['+ idGetList + '].startTimeActual ? ($data.' + param + '['+ idGetList +'].flagObservable() ? \'#b1b1b1\' : \'\') : \'#ffc0cb\') : \'\'},' 
-                                           +'ntsTimeEditor: {value: $data.'+ param +'['+ idGetList +'].startTimeRequest, enable: !$data.' + param +'[' + idGetList +'].flagObservable() , constraint: \'SampleTimeDuration\', inputFormat: \'time\', mode: \'time\', readonly: readonly, required: false}" />'
+                                           +'ntsTimeEditor: {value: $data.'+ param +'['+ idGetList +'].startTimeRequest, enable: !$data.' + param +'[' + idGetList +'].flagObservable() , constraint: \'SampleTimeDuration\', inputFormat: \'time\', mode: \'time\', required: false}" />'
                                    +'</div>'
                               +'</div>';
             this.endTime = '<div style="display: block; margin: 0px 5px 5px 5px">'
@@ -530,7 +527,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                 +'<div align="center">'
                                         +'<input style="width: 50px; text-align: center" data-name="Time Editor" data-bind="'
                                         +'style:{\'background-color\': $data.'+ param +'['+ idGetList +'].flagEnable() ? ($data.'+param+'['+ idGetList + '].endTimeActual ? ($data.' + param + '['+ idGetList +'].flagObservable() ? \'#b1b1b1\' : \'\') : \'#ffc0cb\') : \'\'},' 
-                                        +'ntsTimeEditor: {value: $data.'+ param +'['+ idGetList +'].endTimeRequest, enable: !$data.' + param +'[' + idGetList +'].flagObservable() , constraint: \'SampleTimeDuration\', inputFormat: \'time\', mode: \'time\', readonly: readonly, required: false}" />'
+                                        +'ntsTimeEditor: {value: $data.'+ param +'['+ idGetList +'].endTimeRequest, enable: !$data.' + param +'[' + idGetList +'].flagObservable() , constraint: \'SampleTimeDuration\', inputFormat: \'time\', mode: \'time\', required: false}" />'
                                 +'</div>'
                            +'</div>';
             
