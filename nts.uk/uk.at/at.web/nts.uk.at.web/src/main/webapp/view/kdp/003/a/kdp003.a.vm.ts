@@ -259,8 +259,6 @@ module nts.uk.at.kdp003.a {
 							return;
 						}
 
-						vm.fingerStampSetting(data);
-
 						if (stampSetting) {
 							const { nameSelectArt } = stampSetting;
 
