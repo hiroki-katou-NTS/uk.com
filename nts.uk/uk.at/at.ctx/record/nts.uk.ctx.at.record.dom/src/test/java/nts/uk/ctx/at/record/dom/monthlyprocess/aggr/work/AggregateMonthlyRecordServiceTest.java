@@ -31,9 +31,6 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.calcmethod.flex.com.ComFlexMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.calcmethod.other.com.ComDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.calcmethod.other.com.ComRegulaMonthActCalSet;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
@@ -41,6 +38,9 @@ import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeaveResultInfor;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.com.ComFlexMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.com.ComDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.com.ComRegulaMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -209,22 +209,22 @@ public class AggregateMonthlyRecordServiceTest {
 			monthlyWork.getAnyItemList().addAll(anyItemOfMons);
 		}
 		
-		val result = this.aggregateMonthlyService.aggregate(
-				companyId,
-				employeeId,
-				yearMonth,
-				closureId,
-				closureDate,
-				period,
-				prevAggrResult,
-				Optional.ofNullable(prevAbsRecResult),
-				Optional.ofNullable(prevBreakDayOffResult),
-				prevSpecialLeaveResultMap,
-				companySets,
-				employeeSets,
-				Optional.ofNullable(dailyWorks),
-				Optional.ofNullable(monthlyWork));
-		
-		result.toString();
+//		val result = this.aggregateMonthlyService.aggregate(
+//				companyId,
+//				employeeId,
+//				yearMonth,
+//				closureId,
+//				closureDate,
+//				period,
+//				prevAggrResult,
+//				Optional.ofNullable(prevAbsRecResult),
+//				Optional.ofNullable(prevBreakDayOffResult),
+//				prevSpecialLeaveResultMap,
+//				companySets,
+//				employeeSets,
+//				Optional.ofNullable(dailyWorks),
+//				Optional.ofNullable(monthlyWork));
+//		
+//		result.toString();
 	}
 }
