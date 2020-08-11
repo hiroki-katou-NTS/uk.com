@@ -71,7 +71,7 @@ public class InitialStartupScreenQuery {
 //			dto.setOrgName("ラベル");
 		}
 
-		// 2. 取得する(職場ID)
+		// 2. 取得する
 		List<ExternalBudget> budgets = externalBudgetRepository.findAll(companyId);
 
 		List<ExternalBudgetItem> externalBudgetItems = budgets.stream().map(x -> {
