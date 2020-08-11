@@ -6,31 +6,22 @@ module nts.uk.at.kmr001.d {
 		HIGHTLIGHT: 'at/record/stamp/management/personal/stamp/getHighlightSetting'
 	};
 
+	const PATH = {
+	    REDIRECT : '/view/ccg/008/a/index.xhtml'
+    }
+
 	@bean()
 	export class KMR001DViewModel extends ko.ViewModel {
-		tabs: KnockoutObservableArray<any> = ko.observableArray([]);
-		stampToSuppress: KnockoutObservable<any> = ko.observable({});
-        itemList: KnockoutObservableArray<ItemModel>;
-        itemName: KnockoutObservable<string>;
-        currentCode: KnockoutObservable<number>
-        selectedCode: KnockoutObservable<string>;
-        selectedCodes: KnockoutObservableArray<string>;
-        isEnable: KnockoutObservable<boolean>;
-        date: KnockoutObservable<string>;
-        yearMonth: KnockoutObservable<number>;
+		model: ClosureSetting = new ClosureSetting;
 
         constructor() {
         	super();
-            var self = this;
-            self.itemList = ko.observableArray([
+            var vm = this;
+            //get from db
+            vm.model.itemList = ko.observableArray([
                 new ItemModel('2010/01/01', '9999/12/31'),
                 new ItemModel('2000/01/01', '2009/12/31')
             ]);
-            self.itemName = ko.observable('');
-            self.currentCode = ko.observable(3);
-            self.selectedCode = ko.observable(null)
-            self.isEnable = ko.observable(true);
-            self.selectedCodes = ko.observableArray([]);
 
             $('#list-box').on('selectionChanging', function(event) {
                 console.log('Selecting value:' + (<any>event.originalEvent).detail);
@@ -39,8 +30,6 @@ module nts.uk.at.kmr001.d {
                 console.log('Selected value:' + (<any>event.originalEvent).detail)
             })
 
-            self.date = ko.observable('20000101');
-            self.yearMonth = ko.observable(200001);
         }
 
         deselectAll() {
@@ -53,25 +42,6 @@ module nts.uk.at.kmr001.d {
 
 		created() {
 			const vm = this;
-			vm.$blockui('show')
-				.then(() => vm.$ajax('at', API.SETTING))
-				.then((data: any) => {
-					if (data) {
-						if (data.stampSetting) {
-							vm.tabs(data.stampSetting.pageLayouts);
-						}
-
-						if (data.stampToSuppress) {
-							vm.stampToSuppress(data.stampToSuppress);
-						}
-					}
-				})
-				.fail((res) => {
-					vm.$dialog.error({ messageId: res.messageId })
-						.then(() => vm.$jump("com", "/view/ccg/008/a/index.xhtml"));
-				})
-				.always(() => vm.$blockui('clear'));
-
 			_.extend(window, { vm });
 		}
 
@@ -97,6 +67,21 @@ module nts.uk.at.kmr001.d {
         constructor(from: string, to: string) {
 			this.from = from;
 			this.to = to;
+        }
+    }
+    class ClosureSetting{
+        tabs: KnockoutObservableArray<any> = ko.observableArray([]);
+        stampToSuppress: KnockoutObservable<any> = ko.observable({});
+        itemList: KnockoutObservableArray<ItemModel>;
+        itemName: KnockoutObservable<string> = ko.observable("");
+        currentCode: KnockoutObservable<number> = ko.observable(3);
+        selectedCode: KnockoutObservable<string> = ko.observable(null);
+        selectedCodes: KnockoutObservableArray<string> = ko.observableArray([]);
+        isEnable: KnockoutObservable<boolean> = ko.observable(true);
+        date: KnockoutObservable<string> = ko.observable('20000101');
+        yearMonth: KnockoutObservable<number>= ko.observable(200001);
+        constructor(){
+
         }
     }
 }

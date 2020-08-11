@@ -2,41 +2,25 @@
 
 module nts.uk.at.kmr001.c {
 
-    import getText = nts.uk.resource.getText;
-    import modal = nts.uk.ui.windows.sub.modal;
-    import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
-    import block = nts.uk.ui.block;
-
-
     const API = {
         SETTING: 'at/record/stamp/management/personal/startPage',
         HIGHTLIGHT: 'at/record/stamp/management/personal/stamp/getHighlightSetting',
         GET_ALL : 'ctx/at/schedule/shift/pattern/daily/getall'
     };
 
+    const PATH = {
+        REDIRECT: '/view/ccg/008/a/index.xhtml',
+        KMR001_D: '/view/kmr/001/d/index.xhtml'
+    }
+
     @bean()
     export class Kmr001CVmViewModel extends ko.ViewModel {
 
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-        columns: KnockoutObservableArray<any> = ko.observableArray([
-            { headerText: getText('KMR002_41'), key: 'id', formatter: _.escape, width: 50 },
-            { headerText: getText('KMR002_42'), key: 'name', formatter: _.escape, width: 250 }
-        ]);
         currentCode: KnockoutObservable<any> = ko.observable();
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
-
-        //C6_2
-        lunchBoxTextbox: KnockoutObservable<string> = ko.observable("");
-        //C7_2
-        amount1Textbox: KnockoutObservable<string> = ko.observable("");
-        //C8_2
-        amount2Textbox: KnockoutObservable<string> = ko.observable("");
-        //C9_2
-        unitTextbox: KnockoutObservable<string> = ko.observable("");
-        //C10_2
-        maxNumberOfReservationsTxtbox: KnockoutObservable<string> = ko.observable("");
-
+        model: BentoMenuSetting = new BentoMenuSetting(ko.observable(""),ko.observable(""),ko.observable(""),
+            ko.observable(""),ko.observable(""));
         constructor() {
             super();
             var vm = this;
@@ -56,14 +40,6 @@ module nts.uk.at.kmr001.c {
 
         created() {
             const vm = this;
-            vm.$blockui('show')
-                .then(() => vm.$ajax('at', API.SETTING))
-                .fail((res) => {
-                    vm.$dialog.error({ messageId: res.messageId })
-                        .then(() => vm.$jump("com", "/view/ccg/008/a/index.xhtml"));
-                })
-                .always(() => vm.$blockui('clear'));
-
             _.extend(window, { vm });
         }
 
@@ -74,24 +50,23 @@ module nts.uk.at.kmr001.c {
                     vm.items([]);
                     // vm.switchNewMode();
                 } else {
-                    vm.items([]);
                     vm.items(dataRes);
                 }
             });
         }
 
         openConfigHisDialog() {
-            block.invisible();
-            let self = this;
-            setShared('KMR001_C_PARAMS', { });
-
-            modal("/view/kmr/001/d/index.xhtml").onClosed(function() {
-                let params = getShared('KMR001_C_PARAMS');
-                if (params.isSuccess) {
-
-                }
-            });
-            block.clear();
+            let vm = this;
+            vm.$blockui('invisible');
+            vm.$window.modal('at', PATH.KMR001_D, {});
+            vm.$blockui('clear');
+            //block.invisible();
+            //block.invisible();
+            //setShared('KMR001_C_PARAMS', { });
+            // modal(PATH.KMR001_D).onClosed(function() {
+            //     let params = getShared('KMR001_C_PARAMS');
+            // });
+            //block.clear();
         }
     }
 
@@ -108,6 +83,22 @@ module nts.uk.at.kmr001.c {
     interface ReservedItemDto {
         id: number;
         name: string;
+    }
+
+    class BentoMenuSetting{
+        lunchBox: KnockoutObservable<string> = ko.observable("");
+        amount1: KnockoutObservable<string> = ko.observable("");
+        amount2: KnockoutObservable<string> = ko.observable("");
+        unit: KnockoutObservable<string> = ko.observable("");
+        maxNumberOfReservations: KnockoutObservable<string> = ko.observable("");
+        constructor(lunchBox: KnockoutObservable<string>, amount1: KnockoutObservable<string>,
+                    amount2: KnockoutObservable<string>, unit: KnockoutObservable<string>, maxNumberOfReservations: KnockoutObservable<string>){
+            this.lunchBox = lunchBox;
+            this.amount1 = amount1;
+            this.amount2 = amount2;
+            this.unit = unit;
+            this.maxNumberOfReservations = maxNumberOfReservations;
+        }
     }
 
 }
