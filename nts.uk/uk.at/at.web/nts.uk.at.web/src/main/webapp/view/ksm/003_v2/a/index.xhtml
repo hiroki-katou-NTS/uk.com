@@ -33,7 +33,7 @@
 				<!-- B1_4: Button Delete -->
 				<button tabindex="4" id="btn_004"
 					class="button danger separate-button fix-button"
-					data-bind="click: deletePattern, enable: $root.errors.isEmpty()  &amp; isEditting()">#{i18n.getText('KSM003_22')}</button>
+					data-bind="click: deletePattern, enable: $root.errors.isEmpty() &amp; isEditting()">#{i18n.getText('KSM003_22')}</button>
 				<!-- B1_4: Button Export Excel -->
 				<button tabindex="4"
 						data-bind="click: downloadExcel">#{i18n.getText('KSM003_45')}</button>
@@ -83,7 +83,7 @@
 					<table>
 						<tr>
 							<td>
-								<table id="multi-list" data-bind="ntsGridList: {
+								<table id="multi-list" class="working-time" data-bind="ntsGridList: {
 									height: 380,
 									options: gridItems,
 									optionsValue: 'id',
@@ -91,8 +91,6 @@
 									multiple: true,
 									value: currentCodeList}">
 								</table>
-								<br />
-								<table id="grid2"></table>
 							</td>
 							<td>
 								<div id="swap-up-down"
@@ -105,18 +103,12 @@
 										}"
 									 class="swap-contents">
 								</div>
-							<!--	<div id="swapUpDown"
-									 data-bind="ntsUpDown: {
-											targetSource: gridItems,
-											primaryKey: 'id',
-											comId: '#workingList',
-											type: 'grid',
-											enable: true
-										}"
-									 class="swap-contents">
-								</div>-->
 							</td>
 						</tr>
+                        <tr>
+                            <td><table id="grid2"></table></td>
+                            <td></td>
+                        </tr>
 					</table>
 
 				</div>

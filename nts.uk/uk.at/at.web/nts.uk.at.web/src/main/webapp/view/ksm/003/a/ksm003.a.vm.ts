@@ -149,7 +149,7 @@ module nts.uk.at.view.ksm003.a {
                     for (let i = 0; i <= 9; i++) {
                         if (lstVal[k].dispOrder == i) {
                             //set display order
-                            //                        self.mainModel().dailyPatternVals()[k].dispOrder = i;
+                            //self.mainModel().dailyPatternVals()[k].dispOrder = i;
                             //set day
                             self.mainModel().dailyPatternVals()[i].days(lstVal[k].days);
                             let workTimeCode = lstVal[k].workingHoursCd;
@@ -429,6 +429,7 @@ module nts.uk.at.view.ksm003.a {
                 });
                 nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml", { title: nts.uk.resource.getText('KDL003_1') }).onClosed(function() {
                     var childData = nts.uk.ui.windows.getShared('childData');
+                    console.log(childData);
                     if (childData) {
                         self.workTypeSetCd(childData.selectedWorkTypeCode);
                         self.workingHoursCd(childData.selectedWorkTimeCode);
