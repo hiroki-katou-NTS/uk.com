@@ -345,15 +345,15 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		// 暫定年休管理データを取得する
 		val tempAnnualLeaveMngs = getTempAnnualLeaveMngs(require, employeeId, aggrPeriod, mode, 
 															isOverWriteOpt, forOverWriteListOpt);
-// 一時的にコメントアウト　神野
-//		for (val aggregatePeriodWork : aggregateWork){
-//
-//			// 年休の消滅・付与・消化
-//			aggrResult = annualLeaveInfo.lapsedGrantDigest(
-//					require,
-//					companyId, employeeId, aggregatePeriodWork,
-//					tempAnnualLeaveMngs, isGetNextMonthData, isCalcAttendanceRate, aggrResult, annualLeaveSet);
-//		}
+
+		for (val aggregatePeriodWork : aggregateWork){
+
+			// 年休の消滅・付与・消化
+			aggrResult = annualLeaveInfo.lapsedGrantDigest(
+					require,
+					companyId, employeeId, aggregatePeriodWork,
+					tempAnnualLeaveMngs, isGetNextMonthData, isCalcAttendanceRate, aggrResult, annualLeaveSet);
+		}
 		
 		// 年休不足分を付与残数データとして作成する
 		aggrResult = createShortRemainingDatas(employeeId, companyId, aggrResult, isOutShortRemainOpt);
