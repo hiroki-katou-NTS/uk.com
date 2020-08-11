@@ -91,6 +91,7 @@ module nts.uk.at.view.kdl006.a {
             if(workPlaces.length > 0){
                 block.grayout();
                 service.save(ko.toJS(workPlaces)).done(function(data) {
+                    info({messageId: 'Msg_15'});
                     self.getWorkplace();
                 }).fail(function(res) {
                     error({ messageId: res.messageId });
