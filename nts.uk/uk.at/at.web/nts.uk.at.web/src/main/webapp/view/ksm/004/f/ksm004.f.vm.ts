@@ -19,7 +19,6 @@ module nts.uk.at.view.ksm004.f.viewmodel {
             let yearParam: number = Number(param.yearMonth.toString().substring(0, 4));
             let monthParam: number = Number(param.yearMonth.toString().substring(4,6))-1;
             vm.baseDate = ko.observable(new Date(yearParam, monthParam, 1));
-            console.log(vm.baseDate());
 
             vm.baseDate.subscribe(value => {
                 if(value) {

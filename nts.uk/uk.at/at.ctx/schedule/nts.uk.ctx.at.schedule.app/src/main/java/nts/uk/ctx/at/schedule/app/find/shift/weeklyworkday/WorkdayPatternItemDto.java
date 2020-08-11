@@ -1,9 +1,10 @@
 package nts.uk.ctx.at.schedule.app.find.shift.weeklyworkday;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class WorkdayPatternItemDto {
 
