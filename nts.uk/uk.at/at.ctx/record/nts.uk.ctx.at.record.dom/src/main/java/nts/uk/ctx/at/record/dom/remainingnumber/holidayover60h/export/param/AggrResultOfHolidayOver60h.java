@@ -7,7 +7,7 @@ import java.util.Optional;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
 
 /**
- * 60H超休の集計結果
+ * 60H超休の集計結果  
  * @author masaaki_jinno
  *
  */

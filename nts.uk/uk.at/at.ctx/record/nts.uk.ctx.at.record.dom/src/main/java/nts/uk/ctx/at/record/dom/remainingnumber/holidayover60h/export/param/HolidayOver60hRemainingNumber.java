@@ -4,7 +4,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.holidayover60h.HolidayOver60h;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
 
 /**
- * 60H超休情報残数
+ * 60H超休情報残数 
  * @author masaaki_jinno
  *
  */

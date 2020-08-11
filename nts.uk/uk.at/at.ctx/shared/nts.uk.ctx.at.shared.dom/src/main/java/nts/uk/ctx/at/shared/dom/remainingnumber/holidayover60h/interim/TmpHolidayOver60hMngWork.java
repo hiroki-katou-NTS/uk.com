@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAt
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 
 /**
- * 暫定60H超休管理データWORK
+ * 暫定60H超休管理データWORK 
  * @author masaaki_jinno
  *
  */

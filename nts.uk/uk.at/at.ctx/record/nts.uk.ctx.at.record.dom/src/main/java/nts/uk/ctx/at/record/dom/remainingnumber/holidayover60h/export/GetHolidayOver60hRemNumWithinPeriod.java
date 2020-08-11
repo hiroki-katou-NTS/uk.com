@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolida
 public interface GetHolidayOver60hRemNumWithinPeriod {
 
 	/**
-	 * 期間中の60H超休残数を取得
+	 * 期間中の60H超休残数を取得 
 	 * @param require Require
 	 * @param cacheCarrier CacheCarrier
 	 * @param companyId 会社ID

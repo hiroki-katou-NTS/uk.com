@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingda
 import nts.arc.primitive.TimeDurationPrimitiveValue;
 
 /**
- * 休暇未消化時間 
+ * 休暇未消化時間  
  * @author masaaki_jinno
  *
  */

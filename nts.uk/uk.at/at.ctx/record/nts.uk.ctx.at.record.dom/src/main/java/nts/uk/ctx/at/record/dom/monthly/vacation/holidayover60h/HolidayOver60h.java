@@ -5,7 +5,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedTime;
 
 /**
- * 60H超休
+ * 60H超休 
  * @author masaaki_jinno
  *
  */

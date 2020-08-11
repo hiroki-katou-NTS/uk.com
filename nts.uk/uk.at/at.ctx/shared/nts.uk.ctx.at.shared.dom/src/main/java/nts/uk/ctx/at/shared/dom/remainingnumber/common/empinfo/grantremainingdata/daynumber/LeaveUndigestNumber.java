@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 休暇未消化数 
+ * 休暇未消化数  
  * @author masaaki_jinno
  *
  */

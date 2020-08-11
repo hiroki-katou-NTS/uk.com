@@ -4,7 +4,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.empinfo.grantremainingdata.HolidayOver60hGrantRemainingData;
 
 /**
- * 60H超休付与残数
+ * 60H超休付与残数   
  * @author masaaki_jinno
  *
  */

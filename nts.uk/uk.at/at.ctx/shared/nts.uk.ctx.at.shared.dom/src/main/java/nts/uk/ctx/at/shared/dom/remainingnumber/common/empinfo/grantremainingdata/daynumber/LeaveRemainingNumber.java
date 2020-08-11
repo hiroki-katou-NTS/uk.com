@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdTime;
 
 /**
- * 休暇残数 
+ * 休暇残数  
  * @author masaaki_jinno
  *
  */

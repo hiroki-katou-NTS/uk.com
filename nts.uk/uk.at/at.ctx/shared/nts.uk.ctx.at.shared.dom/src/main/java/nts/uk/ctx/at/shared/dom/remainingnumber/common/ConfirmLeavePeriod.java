@@ -4,7 +4,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
- * 休暇の集計期間を確認する 
+ * 休暇の集計期間を確認する  
  * @author shuichi_ishida
  */
 public class ConfirmLeavePeriod {

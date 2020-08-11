@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.param;
 import lombok.AllArgsConstructor;
 
 /**
- * 60H超休エラー
+ * 60H超休エラー  
  * @author masaaki_jinno
  *
  */

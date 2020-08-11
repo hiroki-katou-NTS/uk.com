@@ -6,7 +6,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 @TimeRange(min = "-999:59", max="999:59")
 
 /**
- * 年休残時間
+ * 年休残時間 
  * @author masaaki_jinno
  *
  */

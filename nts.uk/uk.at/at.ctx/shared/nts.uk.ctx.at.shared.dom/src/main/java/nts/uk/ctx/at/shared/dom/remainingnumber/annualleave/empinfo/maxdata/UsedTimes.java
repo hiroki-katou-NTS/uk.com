@@ -6,7 +6,7 @@ import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 
 /**
- * 使用回数
+ * 使用回数 
  * @author masaaki_jinno
  *
  */

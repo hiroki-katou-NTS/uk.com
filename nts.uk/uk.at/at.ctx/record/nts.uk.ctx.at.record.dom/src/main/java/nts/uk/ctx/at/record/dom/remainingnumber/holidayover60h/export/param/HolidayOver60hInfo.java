@@ -5,7 +5,7 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 
 /**
- * ６０H超休情報
+ * ６０H超休情報 
  * @author masaaki_jinno
  *
  */

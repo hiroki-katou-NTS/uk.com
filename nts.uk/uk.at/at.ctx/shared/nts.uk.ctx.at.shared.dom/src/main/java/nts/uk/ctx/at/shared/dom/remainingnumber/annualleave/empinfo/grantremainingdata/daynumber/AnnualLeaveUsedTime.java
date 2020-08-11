@@ -4,7 +4,7 @@ import nts.arc.primitive.constraint.TimeRange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedTime;
 
 /**
- * 年休使用数（時間）
+ * 年休使用数（時間） 
  * @author masaaki_jinno
  *
  */

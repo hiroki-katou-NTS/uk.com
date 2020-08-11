@@ -4,7 +4,7 @@ import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;
 
 /**
- * 休暇付与時間 
+ * 休暇付与時間   
  * @author masaaki_jinno
  *
  */
