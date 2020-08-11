@@ -9,23 +9,18 @@ import lombok.Setter;
 import nts.uk.ctx.at.record.app.command.workrecord.monthcal.common.DeforWorkTimeAggrSetDto;
 import nts.uk.ctx.at.record.app.command.workrecord.monthcal.common.FlexMonthWorkTimeAggrSetDto;
 import nts.uk.ctx.at.record.app.command.workrecord.monthcal.common.RegularWorkTimeAggrSetDto;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforWorkTimeAggrSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.RegularWorkTimeAggrSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpDeforLaborMonthActCalSetGetMemento;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpFlexMonthActCalSetGetMemento;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpRegulaMonthActCalSetGetMemento;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.emp.EmpFlexMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.DeforLaborCalSetting;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.emp.EmpDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.emp.EmpRegulaMonthActCalSet;
 
 /**
  * The Class SaveEmpMonthCalSetCommand.
  */
 @Getter
 @Setter
-public class SaveEmpMonthCalSetCommand implements EmpDeforLaborMonthActCalSetGetMemento,
-		EmpFlexMonthActCalSetGetMemento, EmpRegulaMonthActCalSetGetMemento {
+public class SaveEmpMonthCalSetCommand {
 
 	/** The employment code. */
 	private String employmentCode;
@@ -39,69 +34,25 @@ public class SaveEmpMonthCalSetCommand implements EmpDeforLaborMonthActCalSetGet
 	/** The defor aggr setting. */
 	private DeforWorkTimeAggrSetDto deforAggrSetting;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.
-	 * EmpDeforLaborMonthActCalSetGetMemento#getCompanyId()
-	 */
-	@Override
-	public CompanyId getCompanyId() {
-		return new CompanyId(AppContexts.user().companyId());
+	public EmpDeforLaborMonthActCalSet defor(String cid) {
+		return EmpDeforLaborMonthActCalSet.of(new EmploymentCode(employmentCode), cid,
+				deforAggrSetting.getAggregateTimeSet().domain(), 
+				deforAggrSetting.getExcessOutsideTimeSet().domain(), 
+				new DeforLaborCalSetting(deforAggrSetting.isOtTransCriteria()), 
+				deforAggrSetting.getSettlementPeriod().domain());
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.
-	 * EmpDeforLaborMonthActCalSetGetMemento#getEmploymentCode()
-	 */
-	@Override
-	public EmploymentCode getEmploymentCode() {
-		return new EmploymentCode(this.employmentCode);
+	public EmpRegulaMonthActCalSet regular(String cid) {
+		return EmpRegulaMonthActCalSet.of(new EmploymentCode(employmentCode), cid, 
+				regAggrSetting.getAggregateTimeSet().domain(), 
+				regAggrSetting.getExcessOutsideTimeSet().domain());
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.
-	 * EmpRegulaMonthActCalSetGetMemento#getRegularAggrSetting()
-	 */
-	@Override
-	public RegularWorkTimeAggrSet getRegularAggrSetting() {
-		return this.regAggrSetting.toDomain();
+	public EmpFlexMonthActCalSet flex(String cid) {
+		
+		return EmpFlexMonthActCalSet.of(cid, 
+				flexAggrSetting.aggrMethod(), 
+				flexAggrSetting.insufficSet(), 
+				flexAggrSetting.legalAggrSet(), 
+				flexAggrSetting.flexTimeHandle(),
+				new EmploymentCode(employmentCode));
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.
-	 * EmpFlexMonthActCalSetGetMemento#getFlexAggrSetting()
-	 */
-	@Override
-	public FlexMonthWorkTimeAggrSet getFlexAggrSetting() {
-		return this.flexAggrSetting.toDomain();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.
-	 * EmpDeforLaborMonthActCalSetGetMemento#getDeforAggrSetting()
-	 */
-	@Override
-	public DeforWorkTimeAggrSet getDeforAggrSetting() {
-		return this.deforAggrSetting.toDomain();
-	}
-	
-	/**
-	 * Gets the empl code.
-	 *
-	 * @return the empl code
-	 */
-	public String getEmplCode() {
-		return this.employmentCode;
-	}
-	
-
 }

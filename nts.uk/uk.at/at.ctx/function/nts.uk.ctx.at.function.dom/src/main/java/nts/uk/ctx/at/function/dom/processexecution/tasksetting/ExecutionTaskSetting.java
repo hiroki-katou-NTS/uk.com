@@ -76,7 +76,7 @@ public class ExecutionTaskSetting extends AggregateRoot {
 	public void validate() {
 		if (startTime != null && endTime.getEndTime() != null) {
 			// 画面項目「C2_6：終了時刻入力欄」に開始時刻より前の時刻を入力し、登録することはできない。
-			if (endTime.getEndTime().lessThan(startTime)) {
+			if (endTime.getEndTime().lessThan(startTime.v())) {
 				throw new BusinessException("Msg_849");
 			}
 			

@@ -7,7 +7,7 @@ module nts.uk.at.view.kmp001.d {
 	};
 
 	export interface ReturnData {
-		length: number;
+		maxLength: number;
 		paddingType: StampCardEditMethod;
 	}
 
@@ -70,6 +70,10 @@ module nts.uk.at.view.kmp001.d {
 
 					vm.paddingType(data.stampCardEditMethod);
 				});
+
+			$(document).ready(function() {
+				$('#combo-box').focus();
+			});
 		}
 
 		closeDialog() {
@@ -83,11 +87,11 @@ module nts.uk.at.view.kmp001.d {
 			const length = ko.unwrap(vm.selectedLength);
 			const paddingType = ko.unwrap(vm.paddingType);
 			const command = { digitsNumber: length, stampMethod: paddingType };
-			
+
 			vm.$ajax(KMP001D_API.UPDATE_EDITTING, command);
 			vm.$window.close({ length, paddingType });
-		
-	}
+
+		}
 
 	export enum StampCardEditMethod {
 

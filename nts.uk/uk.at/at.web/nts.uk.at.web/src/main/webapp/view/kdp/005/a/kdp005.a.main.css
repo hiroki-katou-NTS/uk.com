@@ -97,3 +97,7 @@ html {
 	text-align: center;
 	font-size: 1.7vmin;
 }
+
+#kdp002a #stamp-header .button-group{
+	bottom: 15px;
+}

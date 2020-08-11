@@ -2,7 +2,7 @@
 
 module nts.uk.at.kdp003.a {
 	const stampEmployeeSelectionTemplate = `
-		<div data-bind="ntsDatePicker: { value: baseDate }"></div>
+		<div data-bind="ntsDatePicker: { value: $component.options.baseDate }"></div>
 		<div class="button-group-filter" data-bind="foreach: buttons">
 			<button class="small filter" data-bind="
 					i18n: text, 
@@ -22,8 +22,35 @@ module nts.uk.at.kdp003.a {
 			</div>
 		</div>
 	`;
-	
+
 	const COMPONENT_NAME = 'stamp-employee-selection';
+
+	enum CHARACTER {
+		ALL = '全員',
+		A = 'ア',
+		KA = 'カ',
+		SA = 'サ',
+		TA = 'タ',
+		NA = 'ナ',
+		HA = 'ハ',
+		MA = 'マ',
+		YA = 'ヤ',
+		RA = 'ラ',
+		WA = 'ワ'
+	};
+
+	const CHARACTERS = {
+		A: ['ア', 'イ', 'ウ', 'エ', 'オ', 'ァ', 'ィ', 'ゥ', 'ェ', 'ォ', 'ヴ'],
+		KA: ['カ', 'キ', 'ク', 'ケ', 'コ', 'ガ', 'ギ', 'グ', 'ゲ', 'ゴ', 'ヵ', 'ヶ'],
+		SA: ['サ', 'シ', 'ス', 'セ', 'ソ', 'ザ', 'ジ', 'ズ', 'ゼ', 'ゾ'],
+		TA: ['タ', 'チ', 'ツ', 'テ', 'ト', 'ダ', 'ヂ', 'ヅ', 'デ', 'ド', '	ッ'],
+		NA: ['ナ', 'ニ', 'ヌ', 'ネ', 'ノ'],
+		HA: ['ハ', 'ヒ', 'フ', 'ヘ', 'ホ', 'バ', 'ビ', 'ブ', 'ベ', 'ボ', 'パ', 'ピ', 'プ', 'ペ', 'ポ'],
+		MA: ['マ', 'ミ', 'ム', 'メ', 'モ'],
+		YA: ['ヤ', 'ユ', 'ヨ', 'ャ', 'ュ', 'ョ'],
+		RA: ['ラ', 'リ', 'ル', 'レ', 'ロ'],
+		WA: ['ワ', 'ヲ', 'ン', 'ヮ']
+	};
 
 	@handler({
 		bindingName: COMPONENT_NAME,
@@ -48,8 +75,6 @@ module nts.uk.at.kdp003.a {
 	export class StampEmployeeSelectionComponent extends ko.ViewModel {
 		$grid!: JQuery;
 
-		baseDate: KnockoutObservable<Date> = ko.observable(new Date());
-
 		button: KnockoutObservable<string> = ko.observable('KDP003_111');
 
 		buttons: KnockoutObservableArray<Button> = ko.observableArray([]);
@@ -63,7 +88,8 @@ module nts.uk.at.kdp003.a {
 				vm.options = {
 					employees: ko.observableArray([]),
 					selectedId: ko.observable(undefined),
-					employeeAuthcUseArt: ko.observable(true)
+					employeeAuthcUseArt: ko.observable(true),
+					baseDate: ko.observable(new Date())
 				};
 			} else {
 				if (!_.has(vm.options, 'employees')) {
@@ -73,116 +99,89 @@ module nts.uk.at.kdp003.a {
 				if (!_.has(vm.options, 'selectedId')) {
 					vm.options.selectedId = ko.observable(undefined);
 				}
+				
+				if (!_.has(vm.options, 'baseDate')) {
+					vm.options.baseDate = ko.observable(new Date());
+				}
 			}
+		}
+
+
+		/**
+		 * order list employee by name and code
+		 */
+		private orderedData(data: Employee[]) {
+			return _.orderBy(data, ['employeeName', 'employeeCode'], ['asc', 'asc'])
 		}
 
 		created() {
 			const vm = this;
-			const buttons: Button[] = [];
-			const employees: Employee[] = [];
 
-			// mock data
-			['ア', 'カ', 'サ', 'タ', 'ナ', 'ハ', 'マ', 'ヤ', 'ラ', 'ワ']
-				.forEach((t, i) => {
-					_.extend(names, {
-						[`KDP003_10${i}`]: t
-					});
-				});
+			// initial list button filter
+			const buttons: Button[] = _.range(1, 12, 1)
+				.map(m => ({
+					width: m === 11 ? 2 : 1,
+					text: `KDP003_1${_.padStart(`${m}`, 2, '0')}`
+				}));
 
-			_.extend(names, {
-				'KDP003_111': '全員'
-			});
-
-			[
-				'ア大塚', 'イ大塚', 'ウ大塚', 'エ大塚', 'オ大塚', 'ァ大塚', 'ァ大塚', 'ィ大塚', 'ゥ大塚', 'ェ大塚', 'ォ大塚', 'ヴ大塚',
-				'カ大塚', 'キ大塚', 'ク大塚', 'ケ大塚', 'コ大塚', 'ガ大塚', 'ギ大塚', 'グ大塚', 'ゲ大塚', 'ゴ大塚', 'ヵ大塚', 'ヶ大塚',
-				'サ大塚', 'シ大塚', 'ス大塚', 'セ大塚', 'ソ大塚', 'ザ大塚', 'ジ大塚', 'ズ大塚', 'ゼ大塚', 'ゾ大塚'
-			]
-				.forEach((t, i) => {
-					employees.push({
-						id: _.padStart(`${i + 1}`, 12, '0'),
-						code: _.padStart(`${i + 1}`, 6, '0'),
-						name: t
-					})
-				});
-
-			vm.options.employees(employees);
-			// end mock data
+			vm.buttons(buttons);
 
 			ko.computed({
 				read: () => {
 					const $grid = vm.$grid;
 					const type = ko.unwrap(vm.button);
-					const dataSource = ko.unwrap(vm.options.employees);
+					const dataSource: Employee[] = ko.unwrap(vm.options.employees);
 
-					const filtereds = [];
+					const filtereds: Employee[] = [];
 					const doFilter = (codes: string[]) => {
-						return _.filter(dataSource, (record: Employee) => codes.indexOf(record.name[0]) > -1);
+						return _.filter(dataSource, (record: Employee) => codes.indexOf(record.employeeName[0]) > -1);
 					};
 
 					if ($grid && $grid.data('igGrid')) {
 						switch (vm.$i18n(type)) {
 							default:
-							case '全員':
+							case CHARACTER.ALL:
 								filtereds.push(...dataSource);
 								break;
-							case 'ア':
-								filtereds.push(...doFilter(['ア', 'イ', 'ウ', 'エ', 'オ', 'ァ', 'ィ', 'ゥ', 'ェ', 'ォ', 'ヴ']));
+							case CHARACTER.A:
+								filtereds.push(...doFilter(CHARACTERS.A));
 								break;
-							case 'カ':
-								filtereds.push(...doFilter(['カ', 'キ', 'ク', 'ケ', 'コ', 'ガ', 'ギ', 'グ', 'ゲ', 'ゴ', 'ヵ', 'ヶ']));
+							case CHARACTER.KA:
+								filtereds.push(...doFilter(CHARACTERS.KA));
 								break;
-							case 'サ':
-								filtereds.push(...doFilter(['サ', 'シ', 'ス', 'セ', 'ソ', 'ザ', 'ジ', 'ズ', 'ゼ', 'ゾ']));
+							case CHARACTER.SA:
+								filtereds.push(...doFilter(CHARACTERS.SA));
 								break;
-							case 'タ':
-								filtereds.push(...doFilter(['タ', 'チ', 'ツ', 'テ', 'ト', 'ダ', 'ヂ', 'ヅ', 'デ', 'ド', '	ッ']));
+							case CHARACTER.TA:
+								filtereds.push(...doFilter(CHARACTERS.TA));
 								break;
-							case 'ナ':
-								filtereds.push(...doFilter(['ナ', 'ニ', 'ヌ', 'ネ', 'ノ']));
+							case CHARACTER.NA:
+								filtereds.push(...doFilter(CHARACTERS.NA));
 								break;
-							case 'ハ':
-								filtereds.push(...doFilter(['ハ', 'ヒ', 'フ', 'ヘ', 'ホ', 'バ', 'ビ', 'ブ', 'ベ', 'ボ', 'パ', 'ピ', 'プ', 'ペ', 'ポ']));
+							case CHARACTER.HA:
+								filtereds.push(...doFilter(CHARACTERS.HA));
 								break;
-							case 'マ':
-								filtereds.push(...doFilter(['マ', 'ミ', 'ム', 'メ', 'モ']));
+							case CHARACTER.MA:
+								filtereds.push(...doFilter(CHARACTERS.MA));
 								break;
-							case 'ヤ':
-								filtereds.push(...doFilter(['ヤ', 'ユ', 'ヨ', 'ャ', 'ュ', 'ョ']));
+							case CHARACTER.YA:
+								filtereds.push(...doFilter(CHARACTERS.YA));
 								break;
-							case 'ラ':
-								filtereds.push(...doFilter(['ラ', 'リ', 'ル', 'レ', 'ロ']));
+							case CHARACTER.RA:
+								filtereds.push(...doFilter(CHARACTERS.RA));
 								break;
-							case 'ワ':
-								filtereds.push(...doFilter(['ワ', 'ヲ', 'ン', 'ヮ']));
+							case CHARACTER.WA:
+								filtereds.push(...doFilter(CHARACTERS.WA));
 								break;
 						}
 
 						vm.options.selectedId(undefined);
 						$grid.igGridSelection('clearSelection');
 
-						$grid.igGrid('option', 'dataSource', _.orderBy(filtereds, ['name', 'code'], ['asc', 'asc']));
+						$grid.igGrid('option', 'dataSource', vm.orderedData(filtereds));
 					}
 				}
 			});
-
-			// initial list button filter 
-			_.each([
-				'KDP003_100',
-				'KDP003_101',
-				'KDP003_102',
-				'KDP003_103',
-				'KDP003_104',
-				'KDP003_105',
-				'KDP003_106',
-				'KDP003_107',
-				'KDP003_108',
-				'KDP003_109'
-			], (text) => buttons.push({ text, width: 1 }));
-
-			buttons.push({ text: 'KDP003_111', width: 2 });
-
-			vm.buttons(buttons);
 		}
 
 		mounted() {
@@ -195,8 +194,9 @@ module nts.uk.at.kdp003.a {
 				.igGrid({
 					showHeader: false,
 					columns: [
-						{ headerText: "", key: "code", width: '80px', dataType: "string" },
-						{ headerText: "", key: "name", dataType: "string" }
+						{ headerText: "", key: "employeeId", dataType: "string", hidden: true },
+						{ headerText: "", key: "employeeCode", width: '80px', dataType: "string" },
+						{ headerText: "", key: "employeeName", dataType: "string" }
 					],
 					features: [
 						{
@@ -204,10 +204,10 @@ module nts.uk.at.kdp003.a {
 							mode: "row",
 							rowSelectionChanged: function(__: any, ui: any) {
 								const { index } = ui.row;
-								const dataSources = $grid.igGrid('option', 'dataSource');
+								const dataSources: Employee[] = $grid.igGrid('option', 'dataSource');
 
 								if (dataSources[index]) {
-									vm.options.selectedId(dataSources[index].id);
+									vm.options.selectedId(dataSources[index].employeeId);
 								} else {
 									vm.options.selectedId(undefined);
 
@@ -220,13 +220,12 @@ module nts.uk.at.kdp003.a {
 					],
 					width: "240px",
 					height: `${65 * 7}px`,
-					dataSource: _.orderBy(ko.toJS(vm.options.employees), ['name', 'code'], ['asc', 'asc'])
+					dataSource: vm.orderedData(ko.toJS(vm.options.employees))
 				});
 
-			_.extend(window, { vmm: vm, $grid });
-
-			$(vm.$el).find('[data-bind]').removeAttr('data-bind');
-
+			/**
+			 * trigger resize and show row on grid by window height
+			 */
 			$(window)
 				.on('resize', () => {
 					const grid = $grid.get(0);
@@ -252,11 +251,6 @@ module nts.uk.at.kdp003.a {
 				$grid.igGridSelection('clearSelection');
 			}
 		}
-
-		destroy() {
-			const vm = this;
-			console.log('destroy', vm);
-		}
 	}
 
 	interface Button {
@@ -265,9 +259,9 @@ module nts.uk.at.kdp003.a {
 	}
 
 	export interface Employee {
-		id: string;
-		code: string;
-		name: string;
+		employeeId: string;
+		employeeCode: string;
+		employeeName: string;
 	}
 
 	export interface EmployeeListData {
@@ -280,11 +274,13 @@ module nts.uk.at.kdp003.a {
 		*/
 		selectedId: string | null | undefined;
 		employeeAuthcUseArt: boolean;
+		baseDate: Date;
 	}
 
 	export interface EmployeeListParam {
 		employees: KnockoutObservableArray<Employee>;
 		selectedId: KnockoutObservable<string | null | undefined>;
 		employeeAuthcUseArt: KnockoutObservable<boolean>;
+		baseDate: KnockoutObservable<Date>;
 	}
 }

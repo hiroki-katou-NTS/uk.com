@@ -10,10 +10,13 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.GetRsvLeaNumCriteriaDate;
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.RsvLeaGrantRemainingExport;
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.RsvLeaNumByCriteriaDate;
@@ -28,7 +31,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMngRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 実装：基準日時点の積立年休残数を取得する
@@ -40,26 +42,21 @@ public class GetRsvLeaNumCriteriaDateImpl implements GetRsvLeaNumCriteriaDate {
 	/** 社員 */
 	@Inject
 	private EmpEmployeeAdapter empEmployee;
-	/** 社員に対応する締め開始日を取得する */
-	@Inject
-	private GetClosureStartForEmployee getClosureStartForEmployee;
-	/** 次回年休付与を計算 */
-	@Inject
-	private CalcNextAnnualLeaveGrantDate calcNextAnnualLeaveGrantNum;
-	/** 期間中の年休積休残数を取得 */
-	@Inject
-	private GetAnnAndRsvRemNumWithinPeriod getAnnAndRsvRemNumWithinPeriod;
 	/** 暫定残数管理データ */
 	@Inject
 	private InterimRemainRepository interimRemainRepo;
 	/** 暫定積立年休管理データ */
 	@Inject
 	private TmpResereLeaveMngRepository tmpReserveLeaveMng;
+	@Inject
+	private RecordDomRequireService requireService;
 	
 	/** 基準日時点の積立年休残数を取得する */
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<RsvLeaNumByCriteriaDate> algorithm(String employeeId, GeneralDate criteria) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
 		
 		String companyId = AppContexts.user().companyId();
 		
@@ -68,7 +65,7 @@ public class GetRsvLeaNumCriteriaDateImpl implements GetRsvLeaNumCriteriaDate {
 		if (employee == null) return Optional.empty();
 		
 		//　社員に対応する締め開始日を取得する
-		val closureStartOpt = this.getClosureStartForEmployee.algorithm(employeeId);
+		val closureStartOpt = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
 		if (!closureStartOpt.isPresent()) return Optional.empty();
 		val closureStart = closureStartOpt.get();
 		
@@ -80,7 +77,7 @@ public class GetRsvLeaNumCriteriaDateImpl implements GetRsvLeaNumCriteriaDate {
 		GeneralDate aggrEnd = adjustDate.addYears(1).addDays(-1);
 		
 		// 「次回年休付与を計算」を実行
-		val nextAnnualLeaveGrants = this.calcNextAnnualLeaveGrantNum.algorithm(
+		val nextAnnualLeaveGrants = CalcNextAnnualLeaveGrantDate.algorithm(require, cacheCarrier,
 				companyId, employeeId, Optional.of(new DatePeriod(adjustDate, aggrEnd)));
 		if (nextAnnualLeaveGrants.size() > 0){
 			// 次回付与日前日　←　先頭の「次回年休付与」．付与年月日-1日
@@ -92,7 +89,8 @@ public class GetRsvLeaNumCriteriaDateImpl implements GetRsvLeaNumCriteriaDate {
 		}
 		
 		// 期間中の年休積休残数を取得
-		val aggrResult = this.getResult(companyId, employeeId, closureStart, aggrEnd, adjustDate);
+		val aggrResult = this.getResult(require, cacheCarrier, companyId, employeeId,
+				closureStart, aggrEnd, adjustDate);
 		val aggrResultOfReserveOpt = aggrResult.getReserveLeave();
 		if (!aggrResultOfReserveOpt.isPresent()) return Optional.empty();
 		val aggrResultOfReserve = aggrResultOfReserveOpt.get();
@@ -166,10 +164,10 @@ public class GetRsvLeaNumCriteriaDateImpl implements GetRsvLeaNumCriteriaDate {
 	 * @return 年休積立年休の集計結果
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	private AggrResultOfAnnAndRsvLeave getResult(
+	private AggrResultOfAnnAndRsvLeave getResult(RecordDomRequireService.Require require, CacheCarrier cacheCarrier,
 			String companyId, String employeeId, GeneralDate closureStart, GeneralDate aggrEnd, GeneralDate criteria){
 		
-		return this.getAnnAndRsvRemNumWithinPeriod.algorithm(
+		return GetAnnAndRsvRemNumWithinPeriod.algorithm(require, cacheCarrier,
 				companyId,
 				employeeId,
 				new DatePeriod(closureStart, aggrEnd),

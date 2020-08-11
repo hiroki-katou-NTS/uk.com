@@ -4,9 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.statutory.worktime.shared;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.DeformationLaborSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WorkingTimeSetting;
 
 /**
  * The Class DeformationLaborSettingDto.
@@ -20,30 +23,19 @@ public class DeformationLaborSettingDto {
 	/** The week start. */
 	private int weekStart;
 
-	/**
-	 * From domain.
-	 *
-	 * @param domain the domain
-	 * @return the deformation labor setting dto
-	 */
-	public static DeformationLaborSettingDto fromDomain(DeformationLaborSetting domain) {
-		WorkingTimeSettingDto statutorySetting = WorkingTimeSettingDto.fromDomain(domain.getStatutorySetting());
+	public static <T extends WorkingTimeSetting, U extends MonthlyWorkTimeSet> 
+		DeformationLaborSettingDto with (T week, List<U> workTime) {
+		
 		DeformationLaborSettingDto dto = new DeformationLaborSettingDto();
-		dto.setStatutorySetting(statutorySetting);
-		dto.setWeekStart(domain.getWeekStart().value);
+		
+		dto.setWeekStart(week.getWeeklyTime().getStart().value);
+		dto.setStatutorySetting(new WorkingTimeSettingDto(
+				week.getDailyTime().getDailyTime().valueAsMinutes(),
+				workTime.stream()
+							.map(c -> new MonthlyDto(c.getYm().month(), c.getLaborTime().getLegalLaborTime().v()))
+							.collect(Collectors.toList()), 
+				week.getWeeklyTime().getTime().valueAsMinutes()));
+		
 		return dto;
-	}
-
-	/**
-	 * To domain.
-	 *
-	 * @param dto the dto
-	 * @return the deformation labor setting
-	 */
-	public static DeformationLaborSetting toDomain(DeformationLaborSettingDto dto) {
-		DeformationLaborSetting domain = new DeformationLaborSetting();
-		domain.setStatutorySetting(WorkingTimeSettingDto.toDomain(dto.getStatutorySetting()));
-		domain.setWeekStart(WeekStart.valueOf(dto.getWeekStart()));
-		return domain;
 	}
 }

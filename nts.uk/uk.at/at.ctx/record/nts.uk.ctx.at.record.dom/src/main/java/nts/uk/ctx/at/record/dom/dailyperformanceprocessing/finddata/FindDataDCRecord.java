@@ -11,6 +11,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.application.ApplicationRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.application.ApplicationRecordImport;
@@ -25,6 +26,7 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessing
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.EmployeeDateErrorOuput;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
@@ -69,9 +71,6 @@ public class FindDataDCRecord implements IFindDataDCRecord {
 	private SyCompanyRecordAdapter syCompanyRecordAdapter;
 
 	@Inject
-	private GetClosurePeriod getClosurePeriod;
-
-	@Inject
 	private IdentificationRepository identificationRepository;
 
 	@Inject
@@ -85,6 +84,8 @@ public class FindDataDCRecord implements IFindDataDCRecord {
 
 	@Inject
 	private RealityStatusService realityStatusService;
+	@Inject 
+	private RecordDomRequireService requireService;
 
 	@Override
 	public Optional<IdentityProcessUseSet> findIdentityByKey(String companyId) {
@@ -130,7 +131,8 @@ public class FindDataDCRecord implements IFindDataDCRecord {
 		if (lstClosurePeriodMap.containsKey(key)) {
 			return lstClosurePeriodMap.get(key);
 		} else {
-			List<ClosurePeriod> lstResult = getClosurePeriod.fromPeriod(employeeId, period.end(), period);
+			List<ClosurePeriod> lstResult = GetClosurePeriod.fromPeriod(requireService.createRequire(),
+					new CacheCarrier(), employeeId, period.end(), period);
 			lstClosurePeriodMap.put(key, lstResult);
 			return lstResult;
 		}

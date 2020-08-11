@@ -17,19 +17,25 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
+import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeekStart;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeeklyUnit;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeSha;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeShaRepo;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaRegLaborTime;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaRegLaborTimePK;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaRegLaborTimePK_;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaRegLaborTime_;
 
 /**
- * The Class JpaShainRegularLaborTimeRepository.
+ * The Class JpaRegularLaborTimeShaRepository.
  */
 @Stateless
-public class JpaShainRegularLaborTimeRepository extends JpaRepository implements ShainRegularWorkTimeRepository {
+public class JpaShainRegularLaborTimeRepository extends JpaRepository implements RegularLaborTimeShaRepo {
 
 	/*
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.
@@ -37,7 +43,7 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 * worktime.employeeNew.ShainRegularWorkTime)
 	 */
 	@Override
-	public void add(ShainRegularLaborTime setting) {
+	public void add(RegularLaborTimeSha setting) {
 		commandProxy().insert(this.toEntity(setting));
 	}
 
@@ -47,7 +53,7 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 * worktime.employeeNew.ShainRegularWorkTime)
 	 */
 	@Override
-	public void update(ShainRegularLaborTime setting) {
+	public void update(RegularLaborTimeSha setting) {
 		commandProxy().update(this.toEntity(setting));
 	}
 
@@ -66,7 +72,7 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 * ShainRegularWorkTimeRepository#find(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Optional<ShainRegularLaborTime> find(String cid, String empId) {
+	public Optional<RegularLaborTimeSha> find(String cid, String empId) {
 		Optional<KshstShaRegLaborTime> optEntity = this.queryProxy().find(new KshstShaRegLaborTimePK(cid, empId), KshstShaRegLaborTime.class);
 
 		// Check exist
@@ -84,9 +90,14 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 *            the empl reg work hour
 	 * @return the kshst sha reg labor time
 	 */
-	private KshstShaRegLaborTime toEntity(ShainRegularLaborTime emplRegWorkHour) {
+	private KshstShaRegLaborTime toEntity(RegularLaborTimeSha domain) {
 		KshstShaRegLaborTime entity = new KshstShaRegLaborTime();
-		emplRegWorkHour.saveToMemento(new JpaShainRegularLaborTimeSetMemento(entity));
+
+		entity.setDailyTime(domain.getDailyTime().getDailyTime().v());
+		entity.setWeeklyTime(domain.getWeeklyTime().getTime().v());
+		entity.setWeekStr(domain.getWeeklyTime().getStart().value);
+		entity.setKshstShaRegLaborTimePK(new KshstShaRegLaborTimePK(domain.getComId(), domain.getEmpId()));
+		
 		return entity;
 	}
 
@@ -97,8 +108,12 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 *            the entity
 	 * @return the shain regular work time
 	 */
-	private ShainRegularLaborTime toDomain(KshstShaRegLaborTime entity) {
-		return new ShainRegularLaborTime(new JpaShainRegularLaborTimeGetMemento(entity));
+	private RegularLaborTimeSha toDomain(KshstShaRegLaborTime entity) {
+		return RegularLaborTimeSha.of(entity.getKshstShaRegLaborTimePK().getCid(),
+				entity.getKshstShaRegLaborTimePK().getSid(),
+				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime()), 
+								EnumAdaptor.valueOf(entity.getWeekStr(), WeekStart.class)), 
+				new DailyUnit(new TimeOfDay(entity.getDailyTime())));
 	}
 	
 	/**
@@ -107,18 +122,25 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 * @param entities the entities
 	 * @return the list
 	 */
-	private List<ShainRegularLaborTime> toDomain(List<KshstShaRegLaborTime> entities) {
+	private List<RegularLaborTimeSha> toDomain(List<KshstShaRegLaborTime> entities) {
 		if (entities == null || entities.isEmpty()) {
 			return Collections.emptyList();
 		}
-		return entities.stream().map(entity -> new ShainRegularLaborTime(new JpaShainRegularLaborTimeGetMemento(entity))).collect(Collectors.toList());
+		
+		return entities.stream().map(entity -> {
+			return RegularLaborTimeSha.of(entity.getKshstShaRegLaborTimePK().getCid(),
+				entity.getKshstShaRegLaborTimePK().getSid(),
+				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime()), 
+								EnumAdaptor.valueOf(entity.getWeekStr(), WeekStart.class)), 
+				new DailyUnit(new TimeOfDay(entity.getDailyTime())));
+		}).collect(Collectors.toList());
 	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository#findAll(java.lang.String)
 	 */
 	@Override
-	public List<ShainRegularLaborTime> findAll(String cid) {
+	public List<RegularLaborTimeSha> findAll(String cid) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 

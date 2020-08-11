@@ -15,6 +15,7 @@ import nts.uk.ctx.at.auth.app.find.employmentrole.dto.InitDisplayPeriodSwitchSet
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.CheckTarget;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.CheckTrackRecordApprovalDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.screen.at.app.ktgwidget.find.KTG001Dto;
 import nts.uk.screen.at.app.ktgwidget.find.TargetDto;
@@ -28,7 +29,7 @@ public class KTG001QueryProcessor {
 	private CheckTrackRecordApprovalDay checkTrackRecordApprovalDay;
 
 	@Inject
-	private ClosureService closureService;
+	private ClosureRepository closureRepo;
 	
 	@Inject
 	private InitDisplayPeriodSwitchSetFinder displayPeriodfinder;
@@ -37,7 +38,7 @@ public class KTG001QueryProcessor {
 		String CID = AppContexts.user().companyId();
 
 		// 基準日の会社の締めをすべて取得する
-		List<ClosureInfo> listClosure = closureService.getAllClosureInfo();
+		List<ClosureInfo> listClosure = ClosureService.getAllClosureInfo(ClosureService.createRequireM2(closureRepo));
 
 		// 取得した「締め」からチェック対象を作成する
 		List<CheckTargetItem> listCheckTargetItem = new ArrayList<>();
@@ -78,7 +79,7 @@ public class KTG001QueryProcessor {
 	public List<CheckTarget> dataDailyResults(String employeeID, int yearmonth) {
 		// 全締めの当月と期間を取得する
 		// Get thời gian và all closure tháng đó
-		List<ClosureInfo> listClosure = closureService.getAllClosureInfo();
+		List<ClosureInfo> listClosure = ClosureService.getAllClosureInfo(ClosureService.createRequireM2(closureRepo));
 		// 取得した「締め」からチェック対象を作成する
 		List<CheckTarget> listCheckTarget = new ArrayList<>();
 		for (ClosureInfo closure : listClosure) {

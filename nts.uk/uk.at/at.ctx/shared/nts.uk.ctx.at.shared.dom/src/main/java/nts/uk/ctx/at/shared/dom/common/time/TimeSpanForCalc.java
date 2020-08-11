@@ -14,6 +14,7 @@ import lombok.Getter;
 //import lombok.Setter;
 import lombok.val;
 import nts.arc.layer.dom.DomainObject;
+import nts.arc.time.clock.ClockHourMinuteSpan;
 import nts.uk.ctx.at.shared.dom.common.ComparableRange;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
@@ -51,6 +52,17 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Int
 			this.start = start;
 			this.end = end;
 		}
+	}
+	
+	/**
+	 * 計算時間帯を作る
+	 * @param clockSpan 時分時間帯
+	 * @return
+	 */
+	public static TimeSpanForCalc create(ClockHourMinuteSpan clockSpan) {
+		return new TimeSpanForCalc(
+				new TimeWithDayAttr(clockSpan.start().v()),
+				new TimeWithDayAttr(clockSpan.end().v()));
 	}
 	
 	

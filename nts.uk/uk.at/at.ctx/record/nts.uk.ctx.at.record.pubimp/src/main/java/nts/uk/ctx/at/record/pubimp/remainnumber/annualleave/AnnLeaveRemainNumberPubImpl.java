@@ -12,8 +12,10 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
@@ -25,12 +27,12 @@ import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveGrantRemaining;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.CheckShortageFlex;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AggrResultOfAnnualLeaveEachMonth;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveOfThisMonth;
@@ -54,7 +56,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
@@ -63,22 +64,10 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 	private AnnLeaEmpBasicInfoDomService annLeaService;
 
 	@Inject
-	private GetClosureStartForEmployee closureStartService;
-
-	@Inject
 	private CheckShortageFlex checkShortageFlex;
-
-	@Inject
-	private GetAnnLeaRemNumWithinPeriod getAnnLeaRemNumWithinPeriod;
 
 //	@Inject
 //	private AnnLeaEmpBasicInfoRepository annLeaBasicInfoRepo;
-
-	@Inject
-	private CalcNextAnnualLeaveGrantDate calNxAnnLeaGrantDate;
-
-	@Inject
-	private GetClosurePeriod getClosurePeriod;
 	
 	@Inject
 	private InterimRemainRepository interimRemainRepo;
@@ -89,12 +78,17 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 	/** 社員 */
 	@Inject
 	private EmpEmployeeAdapter empEmployee;
+	@Inject 
+	private RecordDomRequireService requireService;
 	
 //	@Inject
 //	private AnnLeaGrantRemDataRepository repoAnnLeaGrantRe;
 
 	@Override
 	public AnnLeaveOfThisMonth getAnnLeaveOfThisMonth(String employeeId) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+		
 		AnnLeaveOfThisMonth result = new AnnLeaveOfThisMonth();
 		try {
 
@@ -104,7 +98,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			result.setFirstMonthRemNumDays(remainNumber.getDays());
 			result.setFirstMonthRemNumMinutes(remainNumber.getMinutes());
 			// 計算した年休残数を出力用クラスにコピー
-			Optional<GeneralDate> startDate = closureStartService.algorithm(employeeId);
+			Optional<GeneralDate> startDate = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
 			if (!startDate.isPresent())
 				return null;
 			// 社員に対応する締め期間を取得する
@@ -116,7 +110,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			}
 			
 			// 期間中の年休残数を取得
-			Optional<AggrResultOfAnnualLeave> aggrResult = getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeId,
+			Optional<AggrResultOfAnnualLeave> aggrResult = GetAnnLeaRemNumWithinPeriodProc.algorithm(
+					require, cacheCarrier, companyId, employeeId,
 					datePeriod, InterimRemainMngMode.OTHER, datePeriod.end(), false, false, Optional.empty(),
 					Optional.empty(), Optional.empty(), Optional.empty());
 			if (!aggrResult.isPresent())
@@ -148,8 +143,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			// ドメインモデル「年休社員基本情報」を取得   
 //			Optional<AnnualLeaveEmpBasicInfo> basicInfo = annLeaBasicInfoRepo.get(employeeId);
 			// 次回年休付与を計算
-			List<NextAnnualLeaveGrant> annualLeaveGrant = calNxAnnLeaGrantDate.algorithm(companyId, employeeId,
-					Optional.empty());
+			List<NextAnnualLeaveGrant> annualLeaveGrant = CalcNextAnnualLeaveGrantDate.algorithm(
+					require, cacheCarrier, companyId, employeeId, Optional.empty());
 			if (annualLeaveGrant!= null && annualLeaveGrant.size() > 0){
 				result.setGrantDate(annualLeaveGrant.get(0).getGrantDate());
 				result.setGrantDays(annualLeaveGrant.get(0).getGrantDays().v());
@@ -163,6 +158,9 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 	@Override
 	public List<AggrResultOfAnnualLeaveEachMonth> getAnnLeaveRemainAfterThisMonth(String employeeId,
 			DatePeriod datePeriod) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+		
 		try {
 
 			String companyId = AppContexts.user().companyId();
@@ -176,7 +174,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			if (periodByYearMonth == null || periodByYearMonth.size() == 0)
 				return null;
 			// 集計期間を計算する
-			List<ClosurePeriod> listClosurePeriod = getClosurePeriod.get(companyId, employeeId,
+			List<ClosurePeriod> listClosurePeriod = GetClosurePeriod.get(require, companyId, employeeId,
 					periodByYearMonth.get(periodByYearMonth.size() - 1).end(), Optional.empty(), Optional.empty(),
 					Optional.empty());
 			// 締め処理期間のうち、同じ年月の期間をまとめる
@@ -206,7 +204,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
             Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualLeave = Optional.empty();
             for (ClosurePeriodEachYear item : listClosurePeriodEachYear) {
 				// 期間中の年休残数を取得
-                aggrResultOfAnnualLeave = getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeId,
+                aggrResultOfAnnualLeave = GetAnnLeaRemNumWithinPeriodProc.algorithm(
+                		require, cacheCarrier, companyId, employeeId,
 						item.getDatePeriod(), InterimRemainMngMode.OTHER, item.getDatePeriod().end(), false, false,
                         Optional.empty(), Optional.empty(), aggrResultOfAnnualLeave, Optional.empty());
 				// 結果をListに追加
@@ -222,12 +221,15 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 
 	@Override
 	public NextHolidayGrantDate getNextHolidayGrantDate(String companyId, String employeeId) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+		
 		NextHolidayGrantDate result = new NextHolidayGrantDate();
 		// ドメインモデル「年休社員基本情報」を取得
 //		Optional<AnnualLeaveEmpBasicInfo> basicInfo = annLeaBasicInfoRepo.get(employeeId);
 		// 次回年休付与を計算
-		List<NextAnnualLeaveGrant> annualLeaveGrant = calNxAnnLeaGrantDate.algorithm(companyId, employeeId,
-				Optional.empty());
+		List<NextAnnualLeaveGrant> annualLeaveGrant = CalcNextAnnualLeaveGrantDate.algorithm(
+				require, cacheCarrier, companyId, employeeId, Optional.empty());
 		if (annualLeaveGrant.size() == 0)
 			return null;
 		result.setGrantDate(annualLeaveGrant.get(0).getGrantDate());
@@ -238,6 +240,9 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 	@Override	
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public ReNumAnnLeaReferenceDateExport getReferDateAnnualLeaveRemainNumber(String employeeID, GeneralDate date) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+		
 		ReNumAnnLeaReferenceDateExport result = new ReNumAnnLeaReferenceDateExport();
 		List<AnnualLeaveGrantExport> annualLeaveGrantExports = new ArrayList<>();
 		List<AnnualLeaveManageInforExport> annualLeaveManageInforExports = new ArrayList<>();
@@ -247,7 +252,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 		EmployeeImport employee = this.empEmployee.findByEmpId(employeeID);
 		if (employee == null) return null;
 		// 社員に対応する締め開始日を取得する
-		Optional<GeneralDate> startDate = closureStartService.algorithm(employeeID);
+		Optional<GeneralDate> startDate = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeID);
 		if (!startDate.isPresent()) return null;
 		// 「基準日」と「締め開始日」を比較　→　「補正後基準日」
 		GeneralDate adjustDate = date;
@@ -255,7 +260,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 		// 集計終了日　←　「補正後基準日」+1年-1日
 		GeneralDate aggrEnd = adjustDate.addYears(1).addDays(-1);
 		// 「次回年休付与日を計算」を実行
-		List<NextAnnualLeaveGrant> nextAnnualLeaveGrants = this.calNxAnnLeaGrantDate.algorithm(
+		List<NextAnnualLeaveGrant> nextAnnualLeaveGrants = CalcNextAnnualLeaveGrantDate.algorithm(
+				require, cacheCarrier,
 				companyId, employeeID, Optional.of(new DatePeriod(adjustDate, aggrEnd)));
 		if (nextAnnualLeaveGrants.size() > 0){
 			// 次回付与日前日　←　先頭の「次回年休付与」．付与年月日-1日
@@ -267,7 +273,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 		}
 		// 期間中の年休残数を取得
 		DatePeriod datePeriod = new DatePeriod(startDate.get(), aggrEnd);
-		Optional<AggrResultOfAnnualLeave> aggrResult = getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeID,
+		Optional<AggrResultOfAnnualLeave> aggrResult = GetAnnLeaRemNumWithinPeriodProc.algorithm(require,cacheCarrier, companyId, employeeID,
 				datePeriod, InterimRemainMngMode.OTHER, adjustDate, false, false, Optional.of(false), Optional.empty(),
 				Optional.empty(), Optional.empty());
 		if(aggrResult.isPresent()){
@@ -453,8 +459,12 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 	 */
 	@Override
 	public NextHolidayGrantDate getNextHdGrantDateVer2(String companyId, String employeeId, Optional<GeneralDate> closureDate) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+		
 		NextHolidayGrantDate result = new NextHolidayGrantDate();
-		List<NextAnnualLeaveGrant> annLeaGrant = calNxAnnLeaGrantDate.calNextHdGrantV2(companyId, employeeId, Optional.empty(),
+		List<NextAnnualLeaveGrant> annLeaGrant = CalcNextAnnualLeaveGrantDate.calNextHdGrantV2(
+				require, cacheCarrier, companyId, employeeId, Optional.empty(),
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), closureDate);
 		if (annLeaGrant.size() == 0)
 			return null;
@@ -466,6 +476,9 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 	@Override
 	public List<AggrResultOfAnnualLeaveEachMonth> getAnnLeaRemainAfThisMonVer2(String employeeId,
 			DatePeriod datePeriod, MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+		
 		try {
 			String companyId = AppContexts.user().companyId();
 			// 社員に対応する処理締めを取得する
@@ -477,7 +490,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			if (periodByYearMonth == null || periodByYearMonth.size() == 0)
 				return new ArrayList<>();
 			// 集計期間を計算する
-			List<ClosurePeriod> listClosurePeriod = getClosurePeriod.get(companyId, employeeId,
+			List<ClosurePeriod> listClosurePeriod = GetClosurePeriod.get(require, companyId, employeeId,
 					periodByYearMonth.get(periodByYearMonth.size() - 1).end(), Optional.empty(), Optional.empty(),
 					Optional.empty());
 			// 締め処理期間のうち、同じ年月の期間をまとめる
@@ -507,8 +520,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
             Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualLeave = Optional.empty();
             for (ClosurePeriodEachYear item : listClosurePeriodEachYear) {
 				// 期間中の年休残数を取得
-            	GetAnnLeaRemNumWithinPeriodProc a = getAnnLeaRemNumWithinPeriod.createProc();
-            	aggrResultOfAnnualLeave = a.algorithm(companyId, employeeId,
+            	aggrResultOfAnnualLeave = GetAnnLeaRemNumWithinPeriodProc.algorithm(
+            			require, cacheCarrier, companyId, employeeId,
             			item.getDatePeriod(), InterimRemainMngMode.OTHER, item.getDatePeriod().end(), false, false,
 		    			Optional.empty(), Optional.empty(), aggrResultOfAnnualLeave, false,
 		    			companySets == null ?  Optional.empty() : Optional.of(companySets),
@@ -529,10 +542,13 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 	//RequestList #No.265 - ver2
 	@Override
 	public AnnLeaveOfThisMonth getAnnLeaOfThisMonVer2(String employeeId, MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+		
 		AnnLeaveOfThisMonth result = new AnnLeaveOfThisMonth();
 		try {
 			// 計算した年休残数を出力用クラスにコピー
-			Optional<GeneralDate> startDate = closureStartService.algorithm(employeeId);
+			Optional<GeneralDate> startDate = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
 			if (!startDate.isPresent()) {
 				return null;
 			}
@@ -550,8 +566,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			result.setFirstMonthRemNumMinutes(remainNumber.getMinutes());
 			
 			// 期間中の年休残数を取得
-			GetAnnLeaRemNumWithinPeriodProc proc = getAnnLeaRemNumWithinPeriod.createProc();
-			Optional<AggrResultOfAnnualLeave> aggrResult = proc.algorithm( companyId, employeeId,
+			Optional<AggrResultOfAnnualLeave> aggrResult = GetAnnLeaRemNumWithinPeriodProc.algorithm( 
+					require, cacheCarrier, companyId, employeeId,
 					datePeriod, InterimRemainMngMode.OTHER, datePeriod.end(),
 					false, false, Optional.empty(), Optional.empty(), Optional.empty(), false,
 					companySets == null ?  Optional.empty() : Optional.of(companySets), 
@@ -589,7 +605,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			// ドメインモデル「年休社員基本情報」を取得   
 //			Optional<AnnualLeaveEmpBasicInfo> basicInfo = annLeaBasicInfoRepo.get(employeeId);
 			// 次回年休付与を計算
-			List<NextAnnualLeaveGrant> annualLeaveGrant = calNxAnnLeaGrantDate.algorithm(companyId, employeeId,
+			List<NextAnnualLeaveGrant> annualLeaveGrant = CalcNextAnnualLeaveGrantDate.algorithm(require, cacheCarrier, companyId, employeeId,
 					Optional.empty());
 			if (annualLeaveGrant!= null && annualLeaveGrant.size() > 0){
 				result.setGrantDate(annualLeaveGrant.get(0).getGrantDate());
