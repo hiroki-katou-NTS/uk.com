@@ -161,7 +161,7 @@ public class ShiftMasterOrgFinder {
 	
 	public AlreadySettingWorkplaceDto getAlreadySettingWplGr(int unit) {
 		AlreadySettingWorkplaceDto result = new AlreadySettingWorkplaceDto();
-		result.setWorkplaceIds(shiftMasterOrgRp.getAlreadySettingWorkplaceGrp(AppContexts.user().companyId(), unit)
+		result.setWorkplaceGrpIds(shiftMasterOrgRp.getAlreadySettingWorkplaceGrp(AppContexts.user().companyId(), unit)
 					.stream().map(d -> d.getTargetOrg().getWorkplaceGroupId().get()).distinct().collect(Collectors.toList()));
 		
 		return result;
