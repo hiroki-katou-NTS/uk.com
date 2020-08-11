@@ -8,8 +8,10 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.reservation.Helper;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.Achievements;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.CorrectionContent;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
+import nts.uk.shr.com.context.AppContexts;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,12 +37,26 @@ public class RegisterReservationLunchServiceTest {
                 Helper.ClosingTime.UNLIMITED);
 
         new Expectations() {{
-            require.getBentoMenu(null,date);
+            String cid = "0000001";
+            require.getBentoMenu(cid,date);
             result = menu;
         }};
 
+        BentoReservationSetting bentoReservationSetting = new BentoReservationSetting(
+                "0000001",operationDistinction,null,achievements);
+        new Expectations() {{
+            String cid = "0000001";
+            require.getReservationSettings(cid);
+            result = bentoReservationSetting;
+        }};
+
         NtsAssert.atomTask(
-                () -> RegisterReservationLunchService.register(require, operationDistinction, achievements, correctionContent, null));
+                () -> RegisterReservationLunchService.register(
+                        require, operationDistinction, achievements, correctionContent, null),
+                any -> require.registerBentoMenu(any.get(),any.get()),
+                any -> require.inSert(any.get()),
+                any -> require.update(any.get())
+                );
     }
 
 }
