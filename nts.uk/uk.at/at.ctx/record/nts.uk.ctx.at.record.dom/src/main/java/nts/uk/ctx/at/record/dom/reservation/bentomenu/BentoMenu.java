@@ -71,10 +71,10 @@ public class BentoMenu extends AggregateRoot {
 	 * @return
 	 */
 	public BentoMenuByClosingTime getByClosingTime(Optional<WorkLocationCode> workLocationCode) {
-		List<BentoItemByClosingTime> menu1 = menu.stream().filter(x -> x.isReservationTime1Atr() && x.getWorkLocationCode() == workLocationCode)
+		List<BentoItemByClosingTime> menu1 = menu.stream().filter(x -> x.isReservationTime1Atr() && x.getWorkLocationCode().equals(workLocationCode))
 				.map(x -> x.itemByClosingTime())
 				.collect(Collectors.toList());
-		List<BentoItemByClosingTime> menu2 = menu.stream().filter(x -> x.isReservationTime2Atr() && x.getWorkLocationCode() == workLocationCode)
+		List<BentoItemByClosingTime> menu2 = menu.stream().filter(x -> x.isReservationTime2Atr() && x.getWorkLocationCode().equals(workLocationCode))
 				.map(x -> x.itemByClosingTime())
 				.collect(Collectors.toList());
 		return BentoMenuByClosingTime.createForCurrent(closingTime, menu1, menu2);
@@ -97,8 +97,6 @@ public class BentoMenu extends AggregateRoot {
 	
 	/**
 	 * 合計金額を計算する
-	 * @param frameNo
-	 * @param quantity
 	 * @return
 	 */
 	public BentoAmountTotal calculateTotalAmount(Map<Integer, Integer> bentoDetails) {
