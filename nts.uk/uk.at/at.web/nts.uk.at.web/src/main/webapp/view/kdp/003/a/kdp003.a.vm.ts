@@ -68,7 +68,7 @@ module nts.uk.at.kdp003.a {
 				})
 			};
 
-		fingerStampSetting: KnockoutObservable<FingerStampSetting | null> = ko.observable(null);
+		fingerStampSetting: KnockoutObservable<FingerStampSetting> = ko.observable(DEFAULT_SETTING);
 
 
 		created() {
@@ -93,10 +93,16 @@ module nts.uk.at.kdp003.a {
 		mounted() {
 			const vm = this;
 			const { storage } = vm.$window;
-			
+
 			$(window).trigger('resize');
 
-			storage(KDP003_SAVE_DATA)
+			vm.$ajax('at', API.FINGER_STAMP_SETTING)
+				.then((data: FingerStampSetting) => {
+					if (data) {
+						vm.fingerStampSetting(data);
+					}
+				})
+				.then(() => storage(KDP003_SAVE_DATA))
 				.then((storageData: undefined | StorageData) => {
 					if (storageData === undefined) {
 						return vm.$window.modal('at', DIALOG.F, { mode: 'admin' })
@@ -240,7 +246,8 @@ module nts.uk.at.kdp003.a {
 			}
 
 			// <<Command>> 打刻入力を利用できるかを確認する
-			return vm.$ajax('at', API.FINGER_STAMP_SETTING)
+			return $.Deferred()
+				.resolve(ko.toJS(vm.fingerStampSetting))
 				.then((data: FingerStampSetting) => {
 					if (data) {
 						const { stampSetting, stampResultDisplay } = data;
@@ -251,8 +258,6 @@ module nts.uk.at.kdp003.a {
 							vm.setMessage({ messageId: 'Msg_1644' });
 							return;
 						}
-
-						vm.fingerStampSetting(data);
 
 						if (stampSetting) {
 							const { nameSelectArt } = stampSetting;
@@ -384,10 +389,10 @@ module nts.uk.at.kdp003.a {
 		stampHistory() {
 			const vm = this;
 			const data: EmployeeListData = ko.toJS(vm.employeeData);
-			const { selectedId, employees } = data;
+			const { selectedId, employees, nameSelectArt } = data;
 			const employee = _.find(employees, (e) => e.employeeId === selectedId);
 
-			if (selectedId === undefined) {
+			if (selectedId === undefined && nameSelectArt) {
 				return vm.$dialog.error({ messageId: 'Msg_1646' });
 			}
 
@@ -399,7 +404,7 @@ module nts.uk.at.kdp003.a {
 					return vm.$window.modal('at', DIALOG.F, {
 						mode: 'employee',
 						companyId: data.CID,
-						employee: employee ? { code: employee.employeeCode, name: employee.employeeName } : null
+						employee: employee ? { code: employee.employeeCode, name: employee.employeeName } : nameSelectArt ? null : { code: data.SCD }
 					});
 				})
 				.then((data: f.TimeStampLoginData) => {
@@ -459,6 +464,13 @@ module nts.uk.at.kdp003.a {
 								}
 							});
 						}
+					} else if (!!data && !ko.unwrap(vm.employeeData.nameSelectArt)) {
+						_.extend(params, {
+							employee: {
+								id: data.SID,
+								code: data.SCD
+							}
+						});
 					}
 
 					return vm.$window.modal('at', DIALOG.F, params);
@@ -651,4 +663,26 @@ module nts.uk.at.kdp003.a {
 		// 3 打刻カード未登録
 		UNREGISTERED_STAMP_CARD = 3
 	}
+
+	const DEFAULT_SETTING: FingerStampSetting = {
+		"stampSetting": {
+			"buttonEmphasisArt": true,
+			"historyDisplayMethod": null,
+			"correctionInterval": 60,
+			"textColor": "#000",
+			"backGroundColor": "#cccccc",
+			"resultDisplayTime": 360,
+			"pageLayouts": [],
+			"cid": "",
+			"nameSelectArt": false,
+			"passwordRequiredArt": true,
+			"employeeAuthcUseArt": false,
+			"authcFailCnt": 10
+		},
+		"stampResultDisplay": {
+			"companyId": "",
+			"notUseAttr": 1,
+			"displayItemId": []
+		}
+	};
 }
