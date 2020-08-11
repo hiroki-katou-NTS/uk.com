@@ -138,7 +138,7 @@ module nts.uk.at.view.kdl006.a {
             self.closureName = param.closureName;
             self.start = new Date(param.start);
             self.end = new Date(param.end);
-            self.periodDate = param.start + '〜' + param.end;
+            self.periodDate = param.start + getText('KDL006_20') + param.end;
         }
     }
 }
