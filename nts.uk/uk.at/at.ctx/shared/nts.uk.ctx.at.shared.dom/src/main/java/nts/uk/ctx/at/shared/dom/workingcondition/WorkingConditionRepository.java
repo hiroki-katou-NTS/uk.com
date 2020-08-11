@@ -159,14 +159,14 @@ public interface WorkingConditionRepository {
 	 */
 	List<WorkingConditionItem> getWorkingConditionItemByListHistID(List<String> listHistID);
 	/**
-	 * [5] 年月日時点の履歴項目を取得する
+	 * [5] 年月日時点の履歴項目を取得する 1
 	 * @param companyID
 	 * @param ymd
 	 * @return
 	 */
 	List<WorkingConditionItem> getWorkingConditionItemByCompanyIDAndDate(String companyID , GeneralDate ymd);
 	/**
-	 * [6-1] 社員を指定して年月日時点の履歴項目を取得する ( 会社ID, 年月日, 社員ID )
+	 * [6-1] 社員を指定して年月日時点の履歴項目を取得する ( 会社ID, 年月日, 社員ID ) 1
 	 * @param companyID
 	 * @param ymd
 	 * @param empID

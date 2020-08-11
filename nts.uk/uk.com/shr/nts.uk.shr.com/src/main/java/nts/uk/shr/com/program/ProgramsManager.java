@@ -2999,7 +2999,7 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
      * KSM015D
      */
 	public static final Program KSM015D = new Program(WebAppId.AT, ProgramIdConsts.KSM015D, "KSM015_6",
-			"/view/ksm/015/c/index.xhtml");	
+			"/view/ksm/015/d/index.xhtml");	
 	
 	/**
      * KDP002
