@@ -479,8 +479,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 b = {
                     workNo: 2,
                     timeZone: {
-                        startTime: this.valueWorkHours2.start,
-                        endTime: this.valueWorkHours2.end
+                        startTime: this.valueWorkHours2 ? this.valueWorkHours2.start : null,
+                        endTime: this.valueWorkHours2 ? this.valueWorkHours2.end : null
                     }
                 };
                 this.appWorkChangeDto.timeZoneWithWorkNoLst.push(b);
@@ -626,17 +626,16 @@ export class KafS07AComponent extends KafS00ShrComponent {
         vm.isValidateAll = validAll;
         console.log(validAll);
         console.log(vm.application);
-        if (this.$valid && validAll) {
-            this.$mask('show');
-        }
-
+       
         // check validation 
         this.$validate();
         if (!this.$valid || !validAll) {
-            this.$mask('hide');
             window.scrollTo(500, 0);
 
             return;
+        }
+        if (this.$valid && validAll) {
+            this.$mask('show');
         }
         this.bindAppWorkChangeRegister();
         console.log(this.appWorkChangeDto);
@@ -744,7 +743,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 selectedWorkTypeCD: this.model.workType.code,
                 seledtedWkTimeCDs: _.map(this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode),
                 selectedWorkTimeCD: this.model.workTime.code,
-                isSelectWorkTime: '1',
+                isSelectWorkTime: 1,
             }
         ).then((f: any) => {
             if (f) {
@@ -768,6 +767,9 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 }
             }
         });
+
+
+        
     }
 
 }
