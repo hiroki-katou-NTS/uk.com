@@ -445,7 +445,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 
 			// Get attend time 2 by workno = 2 && classification = 1
 			timeReportsTemp = infoOutput.getArrivedLateLeaveEarly().get().getLateOrLeaveEarlies().stream().map(x -> {
-				if (x.getWorkNo() == 2 && x.getLateOrEarlyClassification().value == 0) {
+			if (x.getWorkNo() == 2 && x.getLateOrEarlyClassification().value == 1) {
 					return x;
 				}
 				return null;

@@ -16,21 +16,21 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.
 import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
+import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * 
+ *
  * @author Doan Duy Hung
  *
  */
 @Stateless
 @Transactional
 public class ApplicationApprovalImpl implements ApplicationApprovalService {
-	
+
 	@Inject
 	private ApplicationRepository applicationRepository;
 
@@ -50,17 +50,17 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 	private AppWorkChangeRepository workChangeRepository;
 
 	@Inject
-	private LateOrLeaveEarlyRepository lateOrLeaveEarlyRepository;
-	
+	private ArrivedLateLeaveEarlyRepository lateOrLeaveEarlyRepository;
+
 	@Inject
 	private AppHolidayWorkRepository appHolidayWorkRepository;
-	
+
 	@Inject
 	private AbsenceLeaveAppRepository absRepo;
-	
+
 	@Inject
 	private RecruitmentAppRepository recRepo;
-	
+
 	@Inject
 	private AppAbsenceRepository appAbsenceRepository;
 	@Inject
@@ -119,9 +119,9 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 	public void insertApp(Application application, List<ApprovalPhaseStateImport_New> listApprovalPhaseState) {
 		applicationRepository.insert(application);
 		approvalRootStateAdapter.insertApp(
-				application.getAppID(), 
-				application.getAppDate().getApplicationDate(), 
-				application.getEmployeeID(), 
+				application.getAppID(),
+				application.getAppDate().getApplicationDate(),
+				application.getEmployeeID(),
 				listApprovalPhaseState);
 	}
 

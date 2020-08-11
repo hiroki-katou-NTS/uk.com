@@ -14,4 +14,6 @@ public interface ArrivedLateLeaveEarlyRepository {
 	ArrivedLateLeaveEarly getLateEarlyApp(String companyId, String appId, Application application);
 
 	void updateLateLeaveEarly(String cID, Application application, ArrivedLateLeaveEarly infoOutput);
+
+	void remove(String cID, String appId);
 }
