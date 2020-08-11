@@ -128,12 +128,12 @@ public class WorkInformation {
 	 * 
 	 * @return WorkStyle 出勤休日区分
 	 */
-	public WorkStyle getWorkStyle(Require require) {
+	public Optional<WorkStyle> getWorkStyle(Require require) {
 		WorkStyle workStyle = require.checkWorkDay(this.workTypeCode.v());
 		if (workStyle == null) {
-			throw new BusinessException("Msg_1636");
+			return Optional.empty();
 		}
-		return workStyle;
+		return Optional.of(workStyle);
 	}
 
 	/**
