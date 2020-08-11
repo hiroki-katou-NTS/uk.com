@@ -940,7 +940,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             return ["workTypeName", "workTimeName", "startTime", "endTime"];
                     }
                 },
-                fields: ["workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "shiftName", "startTime", "endTime"],
+                fields: ["workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "shiftName", "startTime", "endTime", "workStyle"],
             };
 
             let start = performance.now();
@@ -1823,7 +1823,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         shiftName: string;
         startTime: any;
         endTime: any;
-        constructor(workTypeCode: string, workTypeName: string, workTimeCode: string, workTimeName: string, startTime?: string, endTime?: string, shiftName?: any) {
+        workStyle: number;
+        
+        constructor(workTypeCode: string, workTypeName: string, workTimeCode: string, workTimeName: string, startTime?: string, endTime?: string, shiftName?: any, workStyle? : any) {
             this.workTypeCode = workTypeCode;
             this.workTypeName = workTypeName;
             this.workTimeCode = workTimeCode;
@@ -1831,6 +1833,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             this.shiftName = shiftName !== null ? shiftName : '';
             this.startTime = ( startTime == undefined || startTime == null ) ? '' : startTime;
             this.endTime = ( endTime == undefined || endTime == null ) ? '' : endTime;
+            this.workStyle = workStyle !== null ? workStyle : '';
         }
     }
 

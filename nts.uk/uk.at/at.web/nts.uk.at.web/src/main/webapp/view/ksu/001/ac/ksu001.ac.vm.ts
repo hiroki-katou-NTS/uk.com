@@ -72,31 +72,39 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             self.selectedButtonTableCompany.subscribe((value) => {
                 let indexBtnSelected = value.column + value.row * 10;
                 let arrDataToStick = [];
+
+                // get listShiftMaster luu torng localStorage
+                let itemLocal = uk.localStorage.getItem(self.KEY);
+                let userInfor = JSON.parse(itemLocal.get());
+                let listShiftMasterSaveLocal = userInfor.shiftMasterWithWorkStyleLst;
+
                 if (value.column == -1 || value.row == -1) {
                     $("#extable").exTable("stickData", arrDataToStick);
                 } else {
+                    let isMasterNotReg = false;
                     for (let i = 0; i < value.data.data.length; i++) {
                         let obj = value.data.data[i];
                         let shiftMasterName = obj.value.toString();
                         let shiftMasterCode = obj.shiftMasterCode;
-                        
+
+                        let workInfo = _.filter(listShiftMasterSaveLocal, function(o) { return o.shiftMasterCode === shiftMasterCode; });
+
                         let removeFirstChar = shiftMasterName.slice(1);  // xoa dau [ ở đầu
                         let removeEndChar = removeFirstChar.slice(0, removeFirstChar.length - 1);// xoa dau ] ở cuối
                         shiftMasterName = removeEndChar;
                         if (shiftMasterName.includes('マスタ未登録')) {
-                            arrDataToStick.push(new ExCell('', '', '', '', '', '', ''));
+                            isMasterNotReg = true;
                         } else {
                             arrDataToStick.push(new ExCell('', '', '', '', '', '', shiftMasterName));
                         }
                     }
                     $("#extable").exTable("stickData", arrDataToStick);
+
                     // set color for cell
                     $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data) {
-                        
-                        //let stateWorkTypeCode = _.find(self.listStateWorkTypeCode(), { 'workTypeCode': data.workTypeCode }).state;
-                        //if (stateWorkTypeCode == 3) return { textColor: "#0000ff" }; // color-attendance
-                        //else if (stateWorkTypeCode == 0) return { textColor: "#ff0000" };// color-schedule-sunday
-                        //else return { textColor: "#FF7F27" };// color-half-day-work
+                        if (data.shiftName == '23f') return { textColor: "#0000ff" }; // color-attendance
+                        else if (data.shiftName == 'HHHH') return { textColor: "#ff0000" };// color-schedule-sunday
+                        else return { textColor: "#FF7F27" };// color-half-day-work
                     });
                 }
 
@@ -686,14 +694,17 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
         shiftName: string;
         startTime: any;
         endTime: any;
-        constructor(workTypeCode: string, workTypeName: string, workTimeCode: string, workTimeName: string, startTime?: string, endTime?: string, shiftName?: any) {
+        workStyle: number;
+        
+        constructor(workTypeCode: string, workTypeName: string, workTimeCode: string, workTimeName: string, startTime?: string, endTime?: string, shiftName?: any, workStyle? : any) {
             this.workTypeCode = workTypeCode;
             this.workTypeName = workTypeName;
             this.workTimeCode = workTimeCode;
             this.workTimeName = workTimeName;
             this.shiftName = shiftName !== null ? shiftName : '';
-            this.startTime = (startTime == undefined || startTime == null) ? '' : startTime;
-            this.endTime = (endTime == undefined || endTime == null) ? '' : endTime;
+            this.startTime = ( startTime == undefined || startTime == null ) ? '' : startTime;
+            this.endTime = ( endTime == undefined || endTime == null ) ? '' : endTime;
+            this.workStyle = workStyle !== null ? workStyle : '';
         }
     }
 
