@@ -26,7 +26,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class ApplicationContentServiceImpl implements ApplicationContentService {
+public class AppContentServiceImpl implements AppContentService {
 	
 	@Inject
 	private AppReasonStandardRepository appReasonStandardRepository;

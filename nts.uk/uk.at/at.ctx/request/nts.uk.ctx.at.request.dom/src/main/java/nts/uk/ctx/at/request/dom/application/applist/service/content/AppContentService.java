@@ -16,7 +16,7 @@ import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.disp
  * @author Doan Duy Hung
  *
  */
-public interface ApplicationContentService {
+public interface AppContentService {
 	
 	/**
 	 * refactor 4

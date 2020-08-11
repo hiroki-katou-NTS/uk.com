@@ -13,7 +13,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.i18n.I18NText;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
-import nts.uk.ctx.at.request.dom.application.applist.service.content.ApplicationContentService;
+import nts.uk.ctx.at.request.dom.application.applist.service.content.AppContentService;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.ArrivedLateLeaveEarlyItemContent;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
@@ -35,7 +35,7 @@ public class AppDataCreationImpl implements AppDataCreation {
 	private ArrivedLateLeaveEarlyRepository arrivedLateLeaveEarlyRepository;
 	
 	@Inject
-	private ApplicationContentService applicationContentService;
+	private AppContentService appContentService;
 
 	@Override
 	public void createAppStampData(Application application, DisplayAtr appReasonDisAtr, String screenID,
@@ -87,7 +87,7 @@ public class AppDataCreationImpl implements AppDataCreation {
 			return String.valueOf(x.getWorkNo()) + String.valueOf(x.getLateOrEarlyAtr().value);
 		}));
 		// アルゴリズム「申請内容（遅刻早退取消）」を実行する
-		return applicationContentService.getArrivedLateLeaveEarlyContent(
+		return appContentService.getArrivedLateLeaveEarlyContent(
 				application.getOpAppReason().orElse(null), 
 				appReasonDisAtr, 
 				screenID, 
