@@ -23,6 +23,8 @@ module nts.uk.at.kdp003.a {
 		</div>
 	`;
 
+
+	const ROW_HEIGHT = 45;
 	const COMPONENT_NAME = 'stamp-employee-selection';
 
 	enum CHARACTER {
@@ -99,7 +101,7 @@ module nts.uk.at.kdp003.a {
 				if (!_.has(vm.options, 'selectedId')) {
 					vm.options.selectedId = ko.observable(undefined);
 				}
-				
+
 				if (!_.has(vm.options, 'baseDate')) {
 					vm.options.baseDate = ko.observable(new Date());
 				}
@@ -134,7 +136,7 @@ module nts.uk.at.kdp003.a {
 
 					const filtereds: Employee[] = [];
 					const doFilter = (codes: string[]) => {
-						return _.filter(dataSource, (record: Employee) => codes.indexOf(record.employeeName[0]) > -1);
+						return _.filter(dataSource, (record: Employee) => codes.indexOf(record.employeeNameKana[0]) > -1);
 					};
 
 					if ($grid && $grid.data('igGrid')) {
@@ -199,17 +201,17 @@ module nts.uk.at.kdp003.a {
 						{ headerText: "", key: "employeeName", dataType: "string" }
 					],
 					features: [
-	                    {
-	                        name: "Tooltips",
-	                        columnSettings: [
-	                            { columnKey: "employeeId", allowTooltips: false },
-	                            { columnKey: "employeeCode", allowTooltips: false },
-	                            { columnKey: "employeeName", allowTooltips: true }
-	                        ],
-	                        visibility: "always",
-	                        showDelay: 1000,
-	                        hideDelay: 500
-	                    },
+						{
+							name: "Tooltips",
+							columnSettings: [
+								{ columnKey: "employeeId", allowTooltips: false },
+								{ columnKey: "employeeCode", allowTooltips: false },
+								{ columnKey: "employeeName", allowTooltips: true }
+							],
+							visibility: "always",
+							showDelay: 1000,
+							hideDelay: 500
+						},
 						{
 							name: "Selection",
 							mode: "row",
@@ -230,7 +232,7 @@ module nts.uk.at.kdp003.a {
 						}
 					],
 					width: "240px",
-					height: `${65 * 7}px`,
+					height: `${ROW_HEIGHT * 7}px`,
 					dataSource: vm.orderedData(ko.toJS(vm.options.employees))
 				});
 
@@ -239,12 +241,11 @@ module nts.uk.at.kdp003.a {
 			 */
 			$(window)
 				.on('resize', () => {
-					const rowh = 45;
 					const grid = $grid.get(0);
 
 					if (grid && $grid.data('igGrid')) {
 						const top = grid.getBoundingClientRect().top;
-						const minHeight = rowh * 3;
+						const minHeight = ROW_HEIGHT * 3;
 						const maxHeight = window.innerHeight - top - 25;
 
 						$grid.igGrid('option', 'height', `${Math.max(minHeight, maxHeight)}px`);
@@ -274,6 +275,7 @@ module nts.uk.at.kdp003.a {
 		employeeId: string;
 		employeeCode: string;
 		employeeName: string;
+		employeeNameKana: string;
 	}
 
 	export interface EmployeeListData {
