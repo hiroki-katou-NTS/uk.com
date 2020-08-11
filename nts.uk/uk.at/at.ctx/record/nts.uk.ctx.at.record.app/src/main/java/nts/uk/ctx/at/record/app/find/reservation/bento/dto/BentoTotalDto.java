@@ -14,7 +14,7 @@ import lombok.Setter;
 public class BentoTotalDto {
 
     /** 単位 */
-    private int unit;
+    private String unit;
 
     /** 名称 */
     private String name;

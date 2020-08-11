@@ -9,5 +9,5 @@ public interface BentoReservationScreenRepository {
      * @param companyId
      * @return
      */
-    Optional<BentoReservationSettingDto> findDataBentoRervation(String companyId);
+    BentoReservationSettingDto findDataBentoRervation(String companyId);
 }

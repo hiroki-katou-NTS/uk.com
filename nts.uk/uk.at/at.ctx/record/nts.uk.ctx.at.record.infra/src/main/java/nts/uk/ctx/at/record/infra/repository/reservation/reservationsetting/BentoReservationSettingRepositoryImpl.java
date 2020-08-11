@@ -8,23 +8,17 @@ import nts.uk.ctx.at.record.infra.entity.reservation.BentoReservationSetting.Krc
 import javax.ejb.Stateless;
 import java.util.Optional;
 
+import static nts.uk.ctx.at.record.infra.entity.reservation.BentoReservationSetting.KrcmtBentoReservationSetting.toDomain;
+
 @Stateless
 public class BentoReservationSettingRepositoryImpl extends JpaRepository implements BentoReservationSettingRepository {
 
-    private static final String FIND;
-
-    static {
-        StringBuilder builderString = new StringBuilder();
-        builderString.append(" SELECT e ");
-        builderString.append(" FROM KrcmtBentoReservationSetting e ");
-        builderString.append(" WHERE e.KrcmtBentoReservationSetting.companyId = :companyId ");
-
-        FIND = builderString.toString();
-    }
-
     @Override
     public Optional<BentoReservationSetting> findByCId(String companyId) {
-        return this.queryProxy().query(FIND, KrcmtBentoReservationSetting.class).setParameter("companyId", companyId).getSingle(c -> KrcmtBentoReservationSetting.toDomain(c));
+        String QUERY_BY_ID = "SELECT s FROM KrcmtBentoReservationSetting s WHERE s.companyID = :companyId";
+        return this.queryProxy()
+                .query(QUERY_BY_ID, KrcmtBentoReservationSetting.class)
+                .setParameter("companyId", companyId).getSingle(x -> KrcmtBentoReservationSetting.toDomain(x));
     }
 
 }

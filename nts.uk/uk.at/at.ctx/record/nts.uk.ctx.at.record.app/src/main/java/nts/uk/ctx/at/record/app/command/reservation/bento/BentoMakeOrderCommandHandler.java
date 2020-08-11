@@ -31,10 +31,10 @@ public class BentoMakeOrderCommandHandler extends CommandHandler<List<BentoMakeO
     private final boolean ORDERED = true;
 
     @Inject
-    BentoReservationSettingRepository bentoReservationSettingRepository;
+    private BentoReservationSettingRepository bentoReservationSettingRepository;
 
     @Inject
-    BentoReservationRepository bentoReservationRepository;
+    private BentoReservationRepository bentoReservationRepository;
 
     @Override
     protected void handle(CommandHandlerContext<List<BentoMakeOrderCommand>> context) {

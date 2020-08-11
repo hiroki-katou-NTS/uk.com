@@ -33,11 +33,11 @@
 					<div class="break-line"></div>
 					<!--D1_5-->
 					<div id="list-box" data-bind="ntsListBox: {
-						options: itemList,
+						options: model.itemList,
 						optionsValue: 'from',
 						optionsText: 'to',
 						multiple: true,
-						value: selectedCodes,
+						value: model.selectedCodes,
 						enable:true,
 						rows: 2,
 						columns: [
@@ -52,11 +52,11 @@
 					<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true, text: $vm.$i18n('KMR001_56')}"></div>
 					<div class="break-line"></div>
 					<!--D3_2-->
-					<div data-bind="ntsDatePicker: { value: date }"></div>
+					<div data-bind="ntsDatePicker: { value: model.date }"></div>
 					<!--D3_3-->
 					<span class="label"> ~ </span>
 					<!--D3_4-->
-					<span class="label">9999/12</span>
+					<span class="label disable">9999/12</span>
 				</div>
 
 				<div class="break-line"></div>

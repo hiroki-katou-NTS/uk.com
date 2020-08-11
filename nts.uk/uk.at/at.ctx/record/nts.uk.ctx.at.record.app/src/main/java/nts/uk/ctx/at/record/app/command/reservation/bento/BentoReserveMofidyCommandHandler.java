@@ -9,6 +9,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
@@ -17,7 +18,12 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentomenuAdapter;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.SWkpHistExport;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSettingRepository;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -35,11 +41,21 @@ public class BentoReserveMofidyCommandHandler extends CommandHandler<BentoReserv
 	@Inject
 	private BentoReservationRepository bentoReservationRepository;
 
+	@Inject
+	private BentoReserveCommonService bentoReserveCommonService;
+
+
 	@Override
 	protected void handle(CommandHandlerContext<BentoReserveCommand> context) {
 		
 		BentoReserveCommand command = context.getCommand();
-		
+
+		// Get WorkLocationCode by Cid
+		String companyId = AppContexts.user().companyId();
+		String employeeId = AppContexts.user().employeeId();
+		Optional<WorkLocationCode> workLocationCode = bentoReserveCommonService.getWorkLocationCode(companyId,employeeId,command.getDate());
+		// End
+
 		StampCard stampCard = stampCardRepository.getLstStampCardByLstSidAndContractCd(
 				Arrays.asList(AppContexts.user().employeeId()),
 				AppContexts.user().contractCode()).get(0);
@@ -49,7 +65,6 @@ public class BentoReserveMofidyCommandHandler extends CommandHandler<BentoReserv
 		RequireImpl require = new RequireImpl(bentoMenuRepository, bentoReservationRepository);
 		
 		GeneralDateTime datetime = GeneralDateTime.now();
-		Optional<WorkLocationCode> workLocationCode = Optional.of(new WorkLocationCode(command.getWorkLocationCode()));
         AtomTask persist1 = BentoReserveModifyService.reserve(
                 require, 
                 reservationRegisterInfo, 
@@ -70,7 +85,6 @@ public class BentoReserveMofidyCommandHandler extends CommandHandler<BentoReserv
             persist1.run();
             persist2.run();
 		});
-		
 	}
 	
 	@AllArgsConstructor
