@@ -25,6 +25,7 @@ module nts.uk.at.kdp003.a {
 
 
 	const ROW_HEIGHT = 45;
+	const MIN_HEIGHT = ROW_HEIGHT * 7;
 	const COMPONENT_NAME = 'stamp-employee-selection';
 
 	enum CHARACTER {
@@ -232,7 +233,7 @@ module nts.uk.at.kdp003.a {
 						}
 					],
 					width: "240px",
-					height: `${ROW_HEIGHT * 7}px`,
+					height: `${MIN_HEIGHT}px`,
 					dataSource: vm.orderedData(ko.toJS(vm.options.employees))
 				});
 
@@ -245,10 +246,9 @@ module nts.uk.at.kdp003.a {
 
 					if (grid && $grid.data('igGrid')) {
 						const top = grid.getBoundingClientRect().top;
-						const minHeight = ROW_HEIGHT * 3;
 						const maxHeight = window.innerHeight - top - 25;
 
-						$grid.igGrid('option', 'height', `${Math.max(minHeight, maxHeight)}px`);
+						$grid.igGrid('option', 'height', `${Math.max(MIN_HEIGHT, maxHeight)}px`);
 					}
 				})
 				.trigger('resize');
