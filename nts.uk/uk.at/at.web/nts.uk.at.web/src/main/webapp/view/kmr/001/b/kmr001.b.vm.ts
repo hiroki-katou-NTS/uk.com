@@ -29,7 +29,8 @@ module nts.uk.at.kmr001.b {
         selectedCode: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
-        model : Reservation = new Reservation;
+        model : Reservation = new Reservation(ko.observable(-1),ko.observable(),ko.observable(),
+            ko.observable(""),ko.observable(-1));
 
         constructor() {
         	super();
@@ -91,8 +92,13 @@ module nts.uk.at.kmr001.b {
         timePeriod:  KnockoutObservable<TimePeriod> = ko.observable();
         name1Textbox: KnockoutObservable<string> = ko.observable("");
         selectedId: KnockoutObservable<number> = ko.observable(-1);
-        constructor(){
-
+        constructor(operationClassification: KnockoutObservable<number>, reservationChange: KnockoutObservable<ReservationChange>,
+                    timePeriod:  KnockoutObservable<TimePeriod>, name1Textbox: KnockoutObservable<string>, selectedId: KnockoutObservable<number>){
+            this.operationClassification = operationClassification;
+            this.reservationChange = reservationChange;
+            this.timePeriod = timePeriod;
+            this.name1Textbox = name1Textbox;
+            this.selectedId = selectedId;
         }
     }
 

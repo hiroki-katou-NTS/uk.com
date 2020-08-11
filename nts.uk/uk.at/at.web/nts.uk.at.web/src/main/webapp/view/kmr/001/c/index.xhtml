@@ -62,7 +62,7 @@
 					<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true, text: $vm.$i18n('KMR001_5')}"></div>
 
 					<!--C6_2-->
-					<input data-bind="ntsTextEditor: {value: lunchBoxTextbox}" />
+					<input data-bind="ntsTextEditor: {value: model.lunchBox}" />
 
 					<div class="break-line"></div>
 
@@ -91,14 +91,14 @@
 					<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true, text: $vm.$i18n('KMR001_45')}"></div>
 
 					<!--C9_2-->
-					<input id="kmr001-c-9-2" data-bind="ntsTextEditor: {value: unitTextbox}" />
+					<input id="kmr001-c-9-2" data-bind="ntsTextEditor: {value: model.unit}" />
 					<div class="break-line"></div>
 
 					<!--C7_1-->
 					<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true, text: $vm.$i18n('KMR001_43')}"></div>
 
 					<!--C7_2-->
-					<input id="kmr001-c-7-2" data-bind="ntsNumberEditor: { value: amount1Textbox, enable: true,
+					<input id="kmr001-c-7-2" data-bind="ntsNumberEditor: { value: model.amount1, enable: true,
 						required: true,option: {decimallength: 4 }}" />
 					<div class="break-line"></div>
 
@@ -106,7 +106,7 @@
 					<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true, text: $vm.$i18n('KMR001_44')}"></div>
 
 					<!--C8_2-->
-					<input id="kmr001-c-8-2" data-bind="ntsNumberEditor: { value: amount2Textbox, enable: true,
+					<input id="kmr001-c-8-2" data-bind="ntsNumberEditor: { value: model.amount2, enable: true,
 						required: true,option: {decimallength: 4 }}" />
 					<div class="break-line"></div>
 
@@ -114,7 +114,7 @@
 					<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true, text: $vm.$i18n('KMR001_24')}"></div>
 
 					<!--C10_2-->
-					<input id="kmr001-c-10-2" data-bind="ntsNumberEditor: { value: maxNumberOfReservationsTxtbox, enable: true,
+					<input id="kmr001-c-10-2" data-bind="ntsNumberEditor: { value: model.maxNumberOfReservations, enable: true,
 					 	required: true,option: {decimallength: 2 }}"/>
 				</div>
 			</div>
