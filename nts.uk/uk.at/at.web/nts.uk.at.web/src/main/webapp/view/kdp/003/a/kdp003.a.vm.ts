@@ -389,10 +389,10 @@ module nts.uk.at.kdp003.a {
 		stampHistory() {
 			const vm = this;
 			const data: EmployeeListData = ko.toJS(vm.employeeData);
-			const { selectedId, employees } = data;
+			const { selectedId, employees, nameSelectArt } = data;
 			const employee = _.find(employees, (e) => e.employeeId === selectedId);
 
-			if (selectedId === undefined) {
+			if (selectedId === undefined && nameSelectArt) {
 				return vm.$dialog.error({ messageId: 'Msg_1646' });
 			}
 
@@ -404,7 +404,7 @@ module nts.uk.at.kdp003.a {
 					return vm.$window.modal('at', DIALOG.F, {
 						mode: 'employee',
 						companyId: data.CID,
-						employee: employee ? { code: employee.employeeCode, name: employee.employeeName } : null
+						employee: employee ? { code: employee.employeeCode, name: employee.employeeName } : nameSelectArt ? null : { code: data.SCD }
 					});
 				})
 				.then((data: f.TimeStampLoginData) => {
@@ -464,6 +464,13 @@ module nts.uk.at.kdp003.a {
 								}
 							});
 						}
+					} else if (!!data && !ko.unwrap(vm.employeeData.nameSelectArt)) {
+						_.extend(params, {
+							employee: {
+								id: data.SID,
+								code: data.SCD
+							}
+						});
 					}
 
 					return vm.$window.modal('at', DIALOG.F, params);
