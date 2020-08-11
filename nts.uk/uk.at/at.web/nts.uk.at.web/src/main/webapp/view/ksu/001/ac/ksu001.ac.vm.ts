@@ -78,6 +78,8 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     for (let i = 0; i < value.data.data.length; i++) {
                         let obj = value.data.data[i];
                         let shiftMasterName = obj.value.toString();
+                        let shiftMasterCode = obj.shiftMasterCode;
+                        
                         let removeFirstChar = shiftMasterName.slice(1);  // xoa dau [ ở đầu
                         let removeEndChar = removeFirstChar.slice(0, removeFirstChar.length - 1);// xoa dau ] ở cuối
                         shiftMasterName = removeEndChar;
@@ -88,6 +90,14 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         }
                     }
                     $("#extable").exTable("stickData", arrDataToStick);
+                    // set color for cell
+                    $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data) {
+                        
+                        //let stateWorkTypeCode = _.find(self.listStateWorkTypeCode(), { 'workTypeCode': data.workTypeCode }).state;
+                        //if (stateWorkTypeCode == 3) return { textColor: "#0000ff" }; // color-attendance
+                        //else if (stateWorkTypeCode == 0) return { textColor: "#ff0000" };// color-schedule-sunday
+                        //else return { textColor: "#FF7F27" };// color-half-day-work
+                    });
                 }
 
                 if (value.column !== -1 && value.row !== -1) {
@@ -435,7 +445,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                             shiftPalletPositionNumberOrg.row    = obj.row;
                             shiftPalletPositionNumberOrg.column = obj.column;
                             shiftPalletPositionNumberOrg.data   = x[0];
-                            self.selectedButtonTableCompany(shiftPalletPositionNumberOrg);
+                            self.selectedButtonTableWorkplace(shiftPalletPositionNumberOrg);
                         }
                     }
                 }
