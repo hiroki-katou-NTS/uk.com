@@ -19,18 +19,8 @@ module nts.uk.at.kmr001.c {
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         currentCode: KnockoutObservable<any> = ko.observable();
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
-
-        //C6_2
-        lunchBoxTextbox: KnockoutObservable<string> = ko.observable("");
-        //C7_2
-        amount1Textbox: KnockoutObservable<string> = ko.observable("");
-        //C8_2
-        amount2Textbox: KnockoutObservable<string> = ko.observable("");
-        //C9_2
-        unitTextbox: KnockoutObservable<string> = ko.observable("");
-        //C10_2
-        maxNumberOfReservationsTxtbox: KnockoutObservable<string> = ko.observable("");
-
+        model: BentoMenuSetting = new BentoMenuSetting(ko.observable(""),ko.observable(""),ko.observable(""),
+            ko.observable(""),ko.observable(""));
         constructor() {
             super();
             var vm = this;
@@ -96,7 +86,19 @@ module nts.uk.at.kmr001.c {
     }
 
     class BentoMenuSetting{
-
+        lunchBox: KnockoutObservable<string> = ko.observable("");
+        amount1: KnockoutObservable<string> = ko.observable("");
+        amount2: KnockoutObservable<string> = ko.observable("");
+        unit: KnockoutObservable<string> = ko.observable("");
+        maxNumberOfReservations: KnockoutObservable<string> = ko.observable("");
+        constructor(lunchBox: KnockoutObservable<string>, amount1: KnockoutObservable<string>,
+                    amount2: KnockoutObservable<string>, unit: KnockoutObservable<string>, maxNumberOfReservations: KnockoutObservable<string>){
+            this.lunchBox = lunchBox;
+            this.amount1 = amount1;
+            this.amount2 = amount2;
+            this.unit = unit;
+            this.maxNumberOfReservations = maxNumberOfReservations;
+        }
     }
 
 }

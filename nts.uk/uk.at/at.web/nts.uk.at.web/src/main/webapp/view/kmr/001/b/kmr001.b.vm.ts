@@ -2,10 +2,12 @@
 
 module nts.uk.at.kmr001.b {
 
-	// const API = {
-	// 	SETTING: 'at/record/stamp/management/personal/startPage',
-	// 	HIGHTLIGHT: 'at/record/stamp/management/personal/stamp/getHighlightSetting'
-	// };
+	const API = {
+		// SETTING: 'at/record/stamp/management/personal/startPage',
+		// HIGHTLIGHT: 'at/record/stamp/management/personal/stamp/getHighlightSetting'
+        START: 'screen/at/record/reservation/bento_menu/getBentoMenu'
+
+    };
 
 	const PATH = {
 	    REDIRECT: '/view/ccg/008/a/index.xhtml'
@@ -27,11 +29,12 @@ module nts.uk.at.kmr001.b {
         selectedCode: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
-        model : Reservation = new Reservation;
+        model : Reservation = new Reservation(ko.observable(-1),ko.observable(),ko.observable(),
+            ko.observable(""),ko.observable(-1));
 
         constructor() {
         	super();
-            var vm = this;
+            const vm = this;
 
             // vm.itemList2 ([
             //     {code: "1", name: "基本給"},
@@ -62,8 +65,11 @@ module nts.uk.at.kmr001.b {
 
 		created() {
 			const vm = this;
+            vm.$ajax(API.START).done(function (res){
+                console.log(res)
+            });
+			 _.extend(window, { vm });
 
-			_.extend(window, { vm });
 		}
 
 	}
@@ -86,8 +92,13 @@ module nts.uk.at.kmr001.b {
         timePeriod:  KnockoutObservable<TimePeriod> = ko.observable();
         name1Textbox: KnockoutObservable<string> = ko.observable("");
         selectedId: KnockoutObservable<number> = ko.observable(-1);
-        constructor(){
-
+        constructor(operationClassification: KnockoutObservable<number>, reservationChange: KnockoutObservable<ReservationChange>,
+                    timePeriod:  KnockoutObservable<TimePeriod>, name1Textbox: KnockoutObservable<string>, selectedId: KnockoutObservable<number>){
+            this.operationClassification = operationClassification;
+            this.reservationChange = reservationChange;
+            this.timePeriod = timePeriod;
+            this.name1Textbox = name1Textbox;
+            this.selectedId = selectedId;
         }
     }
 

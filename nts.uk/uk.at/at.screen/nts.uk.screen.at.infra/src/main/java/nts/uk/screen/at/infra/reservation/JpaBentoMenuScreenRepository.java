@@ -33,7 +33,7 @@ public class JpaBentoMenuScreenRepository extends JpaRepository implements Bento
     }
 
     @Override
-    public Optional<BentoMenuDto> findDataBentoMenu(String companyId, GeneralDate date) {
-        return this.queryProxy().query(FIND_BENTO_MENU_DATE, BentoMenuDto.class).setParameter("companyId", companyId).setParameter("date", date).getSingle();
+    public BentoMenuDto findDataBentoMenu(String companyId, GeneralDate date) {
+        return this.queryProxy().query(FIND_BENTO_MENU_DATE, BentoMenuDto.class).setParameter("companyId", companyId).setParameter("date", date).getSingleOrNull();
     }
 }

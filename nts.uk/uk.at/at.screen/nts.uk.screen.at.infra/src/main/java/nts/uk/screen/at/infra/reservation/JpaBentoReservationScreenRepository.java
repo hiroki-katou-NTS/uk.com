@@ -23,7 +23,7 @@ public class JpaBentoReservationScreenRepository extends JpaRepository implement
     }
 
     @Override
-    public Optional<BentoReservationSettingDto> findDataBentoRervation(String companyId) {
-        return this.queryProxy().query(SELECT_BENTO_RERSERVATION_SETTING, BentoReservationSettingDto.class).setParameter("companyId", companyId).getSingle();
+    public BentoReservationSettingDto findDataBentoRervation(String companyId) {
+        return this.queryProxy().query(SELECT_BENTO_RERSERVATION_SETTING, BentoReservationSettingDto.class).setParameter("companyId", companyId).getSingleOrNull();
     }
 }

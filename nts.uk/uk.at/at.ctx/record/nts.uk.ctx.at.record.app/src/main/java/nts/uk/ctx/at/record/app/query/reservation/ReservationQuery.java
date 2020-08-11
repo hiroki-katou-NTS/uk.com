@@ -1,14 +1,5 @@
 package nts.uk.ctx.at.record.app.query.reservation;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
@@ -16,17 +7,25 @@ import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentomenuAdapter;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.SWkpHistExport;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSettingRepository;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.shr.com.context.AppContexts;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -50,18 +49,18 @@ public class ReservationQuery {
 		GeneralDate date = GeneralDate.fromString(param.getDate(), "yyyy/MM/dd");
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
-		Optional<WorkLocationCode> workLocationCode = Optional.of(new WorkLocationCode(null));
+		Optional<WorkLocationCode> workLocationCode = Optional.empty();
 
 		Optional<BentoReservationSetting> bentoReservationSettings = bentoReservationSettingRepository.findByCId(companyId);
 
 		// get data work place history
-		Optional<SWkpHistExport> hisItems = this.bentomenuAdapter
-				.findBySid(employeeId,date);
+		Optional<SWkpHistExport> hisItems = this.bentomenuAdapter.findBySid(employeeId,date);
+        int checkOperation = -1;
+        if(bentoReservationSettings.isPresent())
+            checkOperation = bentoReservationSettings.get().getOperationDistinction().value;
 
-		val checkOperation = bentoReservationSettings.get().getOperationDistinction().value;
-		if (checkOperation == OperationDistinction.BY_LOCATION.value){
+		if (checkOperation == OperationDistinction.BY_LOCATION.value)
 			workLocationCode = Optional.of(new WorkLocationCode(hisItems.get().getWorkplaceCode()));
-		}
 
         StampCard stampCard = stampCardRepository.getLstStampCardByLstSidAndContractCd(
 				Arrays.asList(employeeId),

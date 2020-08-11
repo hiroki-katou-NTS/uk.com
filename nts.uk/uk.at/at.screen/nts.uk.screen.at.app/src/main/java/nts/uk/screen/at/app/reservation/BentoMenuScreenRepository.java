@@ -11,5 +11,5 @@ public interface BentoMenuScreenRepository {
      * @param companyId
      * @return
      */
-    Optional<BentoMenuDto> findDataBentoMenu(String companyId, GeneralDate date);
+    BentoMenuDto findDataBentoMenu(String companyId, GeneralDate date);
 }

@@ -9,15 +9,22 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentomenuAdapter;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.SWkpHistExport;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSettingRepository;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -34,12 +41,21 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 	
 	@Inject
 	private BentoReservationRepository bentoReservationRepository;
+
+	@Inject
+	private BentoReserveCommonService bentoReserveCommonService;
 	
 	@Override
 	protected void handle(CommandHandlerContext<BentoReserveCommand> context) {
-		
+
 		BentoReserveCommand command = context.getCommand();
-		
+
+		// Get WorkLocationCode by Cid
+		String companyId = AppContexts.user().companyId();
+		String employeeId = AppContexts.user().employeeId();
+ 		Optional<WorkLocationCode> workLocationCode = bentoReserveCommonService.getWorkLocationCode(companyId,employeeId,command.getDate());
+		// End
+
 		StampCard stampCard = stampCardRepository.getLstStampCardByLstSidAndContractCd(
 				Arrays.asList(AppContexts.user().employeeId()),
 				AppContexts.user().contractCode()).get(0);
@@ -58,7 +74,7 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 						new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME1), 
 						datetime,
 						command.getFrame1Bentos(),
-						Optional.of(new WorkLocationCode(command.getWorkLocationCode())));
+						workLocationCode);
 				persist1.run();
 			}
 			
@@ -69,7 +85,7 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 						new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME2), 
 						datetime,
 						command.getFrame2Bentos(),
-						Optional.of(new WorkLocationCode(command.getWorkLocationCode())));
+						workLocationCode);
 				persist2.run();
 			}
 		});
