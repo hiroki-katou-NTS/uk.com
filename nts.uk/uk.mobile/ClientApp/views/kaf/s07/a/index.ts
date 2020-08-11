@@ -754,9 +754,9 @@ export class KafS07AComponent extends KafS00ShrComponent {
                     this.model.workType.name = f.selectedWorkType.name;
                     this.model.workTime.code = f.selectedWorkTime.code;
                     this.model.workTime.name = f.selectedWorkTime.name;
-                    if (!this.isCondition4) {
+                    // if (!this.isCondition4) {
                         this.model.workTime.time = f.selectedWorkTime.workTime1;
-                    }
+                    // }
                 }
             }).catch((res: any) => {
                 if (res.messageId) {
@@ -783,6 +783,9 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 if (f) {
                     this.model.workTime.code = f.selectedWorkTime.code;
                     this.model.workTime.name = f.selectedWorkTime.name;
+                    // if (!this.isCondition4) {
+                        this.model.workTime.time = f.selectedWorkTime.workTime1;
+                    // }
                 }
             }).catch((res: any) => {
                     if (res.messageId) {
