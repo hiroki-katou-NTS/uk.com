@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.query.kdp.kdp003.a;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -67,7 +68,7 @@ public class GetListEmployeeHaveBeenStamped {
 		// note: アルゴリズム「<<Public>> 社員の情報を取得する」を実行する
 		List<EmployeeInformation> export = empInfoRepo.find(query);
 		
-		return employeeIds.stream().map(empid -> {
+		return new HashSet<>(employeeIds).stream().map(empid -> {
 			Optional<EmployeeInformation> emb = export.stream().filter(f -> f.getEmployeeId().equals(empid))
 					.findFirst();
 
