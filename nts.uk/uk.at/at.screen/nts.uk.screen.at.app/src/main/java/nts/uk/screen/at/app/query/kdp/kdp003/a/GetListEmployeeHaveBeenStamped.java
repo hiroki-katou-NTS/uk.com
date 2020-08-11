@@ -73,7 +73,8 @@ public class GetListEmployeeHaveBeenStamped {
 
 			return EmployeeStampData.builder()
 					.employeeId(empid).employeeCode(emb.map(m -> m.getEmployeeCode()).orElse(""))
-					.employeeName(emb.map(m -> m.getBusinessNameKana().isEmpty() ? m.getBusinessName() : m.getBusinessNameKana()).orElse(""))
+					.employeeName(emb.map(m -> m.getBusinessName()).orElse(""))
+					.employeeNameKana(emb.map(m -> m.getBusinessNameKana()).orElse(""))
 					.build();
 		}).collect(Collectors.toList());
 	}
