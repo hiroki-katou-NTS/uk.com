@@ -1055,8 +1055,8 @@ module nts.uk.at.view.ksm004.a {
                     $("#print-button_3").show();
                 }
             }
-            
-             /**
+
+            /**
              * closeDialog
              */
             public opencdl028Dialog() {
@@ -1070,10 +1070,10 @@ module nts.uk.at.view.ksm004.a {
                     var params = nts.uk.ui.windows.getShared("CDL028_A_PARAMS");
                     if (params.status) {
                         self.exportExcel(params.mode, params.startDateFiscalYear, params.endDateFiscalYear);
-                     }
+                    }
                 });
-            }                                                           
-        
+            }
+
             /**
              * Print file excel
              */
