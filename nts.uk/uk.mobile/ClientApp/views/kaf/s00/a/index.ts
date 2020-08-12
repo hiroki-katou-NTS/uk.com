@@ -49,7 +49,7 @@ export class KafS00AComponent extends Vue {
             } else {
                 self.preAppPeriod = self.$i18n('KAFS00_5', self.$dt(data.data.preAppAcceptLimit.opAcceptableDate, 'MM月DD日'));
             }
-            self.postAppPeriod = data.data.postAppAcceptLimit.opAcceptableDate;   
+            self.postAppPeriod = self.$i18n('KAFS00_6', data.data.postAppAcceptLimit.opAcceptableDate);   
             
             self.displayAppMsg = data.data.applicationUseSetting.useDivision && data.data.applicationUseSetting.memo;
             self.displayAppMsgForCurrentMonth = data.data.deadlineLimitCurrentMonth.useAtr;
