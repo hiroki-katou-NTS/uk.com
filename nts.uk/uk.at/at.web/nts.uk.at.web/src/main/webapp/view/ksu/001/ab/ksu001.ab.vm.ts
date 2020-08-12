@@ -21,7 +21,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             let self = this;
             let workTypeCodeSave = uk.localStorage.getItem('workTypeCodeSelected');
             let workTimeCodeSave = uk.localStorage.getItem('workTimeCodeSelected');
-            let isDisableWorkTime = false;
+            self.isDisableWorkTime = false;
             self.workPlaceId = ko.observable('');
 
             self.listWorkType = ko.observableArray([]);
@@ -32,7 +32,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                 initiallySelected: [workTimeCodeSave.isPresent() ? workTimeCodeSave.get() : ''],
                 displayFormat: '',
                 showNone: true,
-                showDeferred: false,
+                showDeferred: true,
                 selectMultiple: true,
                 isEnable: true
             };
@@ -69,13 +69,13 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             uk.localStorage.setItem("workTimeCodeSelected", data[0].code);
             self.listWorkTime(listWorkTime);
         }
-        
-        updateDataCell(objWorkTime : any) {
+
+        updateDataCell(objWorkTime: any) {
             let self = this;
-            
+
             if (objWorkTime == undefined)
                 return;
-            
+
             let objWorkType = _.filter(self.listWorkType(), function(o) { return o.workTypeCode == self.selectedWorkTypeCode(); });
             // stick data
             self.dataCell = {
@@ -87,26 +87,6 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                 endTime: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].tzEnd1) : '',
             };
             __viewContext.viewModel.viewA.dataCell = self.dataCell;
-            
-            // 貼り付けのパターン2
-            if( self.isDisableWorkTime = true){
-                if (objWorkTime[0].code == '') {
-                    self.isDisableWorkTime = true;
-                } else {
-                    self.isDisableWorkTime = false;
-                }
-            }
-
-            // set style text 貼り付けのパターン1
-            if (self.isDisableWorkTime) {
-                $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
-                    return { textColor: "red" };
-                });
-            }else{
-                $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
-                    return { textColor: "blue" };
-                });    
-            }
 
             if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'time') {
                 let dataWorkType = __viewContext.viewModel.viewA.dataCell;
@@ -114,6 +94,24 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             } else if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'shortName') {
                 let dataWorkType = __viewContext.viewModel.viewA.dataCell;
                 $("#extable").exTable("stickData", [{ workTypeCode: dataWorkType.workTypeCode, workTypeName: dataWorkType.workTypeName, workTimeCode: dataWorkType.workTimeCode, workTimeName: dataWorkType.workTimeName }]);
+            }
+
+            // set style text 貼り付けのパターン1
+            if (self.isDisableWorkTime) {
+                $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
+                    return { textColor: "red" };
+                });
+            } else {
+                $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
+                    return { textColor: "blue" };
+                });
+            }
+            
+            // 貼り付けのパターン2
+            if (self.isDisableWorkTime == false && objWorkTime[0].code == '') {
+                $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
+                    return { textColor: "red" };
+                });
             }
         }
     }

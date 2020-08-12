@@ -50,10 +50,13 @@ public class GetWorkScheduleShift {
 				"c141daf2-70a4-4f4b-a488-847f4686e848");
 		for (String sid : sids) {
 			for (int i = 1; i < 32; i++) {
+				boolean isEdit = true;
 				boolean isActive = true;
+				isActive = i%2==0 ? true : false;
+				isEdit = isActive;
 				WorkScheduleShiftDto w1 = new WorkScheduleShiftDto(sid, GeneralDate.ymd(2020, 7, i), 
 						true, true, true, true , 1, 
-						i%2==0? "001" : "002", i%2==0? "出勤" : "テス", new ShiftEditStateDto(sid,GeneralDate.ymd(2020, 7, i), 0), 1, isActive);
+						i%2==0? "001" : "002", i%2==0? "出勤" : "テス", new ShiftEditStateDto(sid,GeneralDate.ymd(2020, 7, i), 0), 1, isEdit, isActive);
 				listWorkScheduleShift.add(w1);
 			}
 		}
@@ -83,10 +86,13 @@ public class GetWorkScheduleShift {
 				"c141daf2-70a4-4f4b-a488-847f4686e848");
 		for (String sid : sids) {
 			for (int i = 1; i < 32; i++) {
+				boolean isEdit = true;
 				boolean isActive = true;
+				isActive = i%2==0 ? true : false;
+				isEdit = isActive;
 				WorkScheduleShiftDto w1 = new WorkScheduleShiftDto(sid, GeneralDate.ymd(2020, 8, i), 
 						true, true, true, true , 1, 
-						i%2==0? "001" : "002", i%2==0? "C" : "D", new ShiftEditStateDto(sid,GeneralDate.ymd(2020, 8, i), 0), 1, isActive);
+						i%2==0? "001" : "002", i%2==0? "C" : "D", new ShiftEditStateDto(sid,GeneralDate.ymd(2020, 8, i), 0), 1,isEdit, isActive);
 				listWorkScheduleShift.add(w1);
 			}
 		}
@@ -116,10 +122,13 @@ public class GetWorkScheduleShift {
 				"c141daf2-70a4-4f4b-a488-847f4686e848");
 		for (String sid : sids) {
 			for (int i = 1; i < 31; i++) {
+				boolean isEdit = true;
 				boolean isActive = true;
+				isActive = i%2==0 ? true : false;
+				isEdit = isActive;
 				WorkScheduleShiftDto w1 = new WorkScheduleShiftDto(sid, GeneralDate.ymd(2020, 6, i), 
 						true, true, true, true , 1, 
-						i%2==0? "001" : "002", i%2==0? "X" : "Y", new ShiftEditStateDto(sid,GeneralDate.ymd(2020, 6, i), 0), 1, isActive);
+						i%2==0? "001" : "002", i%2==0? "X" : "Y", new ShiftEditStateDto(sid,GeneralDate.ymd(2020, 6, i), 0), 1,isEdit, isActive);
 				listWorkScheduleShift.add(w1);
 			}
 		}

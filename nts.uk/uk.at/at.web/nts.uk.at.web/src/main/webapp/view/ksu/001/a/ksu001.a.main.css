@@ -23,7 +23,8 @@
 .btnControlUnSelected{background-color : #ffffff ; color : #000000 }
 
 .x-link {
-    width: fit-content;
+    white-space: nowrap;
+    text-align: left;
 }
 
 #tab-1, #tab-2 {
@@ -416,6 +417,12 @@ table th, table td {
 
 tbody a.x-link {
 	color: black !important;
+}
+
+.hoverEmployeeName {
+  color: #0D86D1 !important;
+  text-decoration: underline !important;
+  cursor: pointer !important;
 }
 
 tbody a.x-link:hover {

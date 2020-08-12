@@ -41,7 +41,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
 
         constructor() {
             let self = this;
-
+            
             self.contextMenu = [
                 { id: "openDialog", text: getText("KSU001_1705"), action: self.openDialogJB.bind(self) },
                 { id: "openPopup", text: getText("KSU001_1706"), action: self.openPopup.bind(self) },
@@ -53,6 +53,14 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 self.selectedpalletUnit = ko.observable(userInfor.shiftPalletUnit);
             }).ifEmpty((data) => {
                 self.selectedpalletUnit = ko.observable(1);
+            });
+            
+            self.overwrite.subscribe((newValue) => {
+                if (newValue) {
+                    $("#extable").exTable("stickOverWrite", true);
+                } else {
+                    $("#extable").exTable("stickOverWrite", false);
+                }
             });
             
             self.selectedpalletUnit.subscribe((newValue) => {

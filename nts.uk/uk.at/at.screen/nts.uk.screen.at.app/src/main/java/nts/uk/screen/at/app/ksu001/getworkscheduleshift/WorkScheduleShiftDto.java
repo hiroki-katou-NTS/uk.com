@@ -40,6 +40,9 @@ public class WorkScheduleShiftDto {
 	public Integer workHolidayCls;
 	
 	//để check điều kiện ※Aa1
+	public boolean isEdit;
+	
+	//để check điều kiện ※Aa2
 	public boolean isActive;
 
 }

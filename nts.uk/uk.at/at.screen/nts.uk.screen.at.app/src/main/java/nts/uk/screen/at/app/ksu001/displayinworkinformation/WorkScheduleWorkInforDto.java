@@ -50,4 +50,10 @@ public class WorkScheduleWorkInforDto {
 	public EditStateOfDailyAttdDto endTimeEditState;
 	// 出勤休日区分
 	public Integer workHolidayCls;
+	
+	//để check điều kiện ※Abc1
+	public boolean isEdit;
+	
+	//để check điều kiện ※Abc2
+	public boolean isActive;
 }
