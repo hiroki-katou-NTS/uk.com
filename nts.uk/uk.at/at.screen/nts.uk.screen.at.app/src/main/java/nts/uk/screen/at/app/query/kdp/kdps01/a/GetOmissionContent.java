@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.query.kdp.kdp002.a;
+package nts.uk.screen.at.app.query.kdp.kdps01.a;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,11 +10,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.app.command.kdp.kdp004.a.StampButtonCommand;
 import nts.uk.ctx.at.record.dom.stamp.application.StampPromptAppRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.StampPromptApplication;
 import nts.uk.ctx.at.record.dom.stamp.card.management.personalengraving.AppDispNameExp;
@@ -24,31 +23,31 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplication;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplicationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CheckAttdErrorAfterStampService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.DailyAttdErrorInfo;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageNo;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
-import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
-import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.request.app.find.setting.company.displayname.AppDispNameDto;
+import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuPub;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApplicationType;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * @author anhdt 打刻漏れの内容を取得する
+ * 
+ * @author sonnlb
+ *
+ *         UKDesign.UniversalK.就業.KDP_打刻.KDPS01_打刻入力(スマホ).A:打刻入力(スマホ).メニュー別OCD.打刻入力(スマホ)の打刻漏れの内容を取得する
  */
 @Stateless
-public class GetOmissionContentsFinder {
+public class GetOmissionContent {
 
 	@Inject
 	private StampPromptAppRepository stamPromptAppRepo;
+
+	@Inject
+	private ClosureService closureService;
 
 	@Inject
 	private ErAlApplicationRepository erAlApplicationRepo;
@@ -61,22 +60,23 @@ public class GetOmissionContentsFinder {
 
 	@Inject
 	private StandardMenuPub menuPub;
-	
-	@Inject
-	private ClosureRepository closureRepository;
-	
-	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepository;
-	
-	@Inject
-	private ShareEmploymentAdapter shrEmpAdapter;
 
-	public DailyAttdErrorInfoDto getOmissionContents(int pageNo, int buttonDisNo) {
-		String employeeId = AppContexts.user().employeeId();
-		CheckAttdErrorAfterStampRequiredImpl required = new CheckAttdErrorAfterStampRequiredImpl();
-		StampButton stampButton = new StampButton(new PageNo(pageNo), new ButtonPositionNo(buttonDisNo));
+	@Inject
+	private AppDispNameRepository appDispRepo;
 
-		List<DailyAttdErrorInfo> errorInfo = CheckAttdErrorAfterStampService.get(required, employeeId, stampButton);
+	public GetOmissionContentDto getOmission(StampButtonCommand query) {
+
+		GetOmissionContentDto result = new GetOmissionContentDto();
+
+		CheckAttdErrorAfterStampRequiredImpl require = new CheckAttdErrorAfterStampRequiredImpl(stamPromptAppRepo,
+				closureService, erAlApplicationRepo, employeeDailyPerErrorRepo, stampSetPerRepo);
+
+		// 1.require, 社員ID, 打刻手段, 打刻ボタン
+		List<DailyAttdErrorInfo> errorInfo = CheckAttdErrorAfterStampService.get(require,
+				AppContexts.user().employeeId(), query.toDomainValue());
+
+		result.setErrorInfo(
+				errorInfo.stream().map(x -> DailyOmissionAttdErrorInfoDto.fromDomain(x)).collect(Collectors.toList()));
 
 		// アルゴリズム「メニューの表示名を取得する」を実行する
 
@@ -105,14 +105,36 @@ public class GetOmissionContentsFinder {
 			});
 		}
 
-		return new DailyAttdErrorInfoDto(errorInfo, appDispNames);
+		result.setAppDispNames(appDispNames);
+
+		// アルゴリズム「申請種類を取得する」を実行する
+
+		List<AppDispNameDto> appNames = this.appDispRepo.getAll().stream().map(x -> AppDispNameDto.convertToDto(x))
+				.collect(Collectors.toList());
+
+		result.setAppNames(appNames);
+
+		return result;
+
 	}
 
-	@NoArgsConstructor
-	private class CheckAttdErrorAfterStampRequiredImpl 
-		implements CheckAttdErrorAfterStampService.Require, ClosureService.RequireM3 {
-		
-		CacheCarrier cacheCarrier = new CacheCarrier();
+	@AllArgsConstructor
+	private class CheckAttdErrorAfterStampRequiredImpl implements CheckAttdErrorAfterStampService.Require {
+
+		@Inject
+		private StampPromptAppRepository stamPromptAppRepo;
+
+		@Inject
+		private ClosureService closureService;
+
+		@Inject
+		private ErAlApplicationRepository erAlApplicationRepo;
+
+		@Inject
+		private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepo;
+
+		@Inject
+		private StampSetPerRepository stampSetPerRepo;
 
 		@Override
 		public Optional<StampPromptApplication> getStampSet() {
@@ -121,12 +143,12 @@ public class GetOmissionContentsFinder {
 
 		@Override
 		public DatePeriod findClosurePeriod(String employeeId, GeneralDate baseDate) {
-			return ClosureService.findClosurePeriod(this, cacheCarrier, employeeId, baseDate);
+			return closureService.findClosurePeriod(employeeId, baseDate);
 		}
 
 		@Override
 		public Optional<ClosurePeriod> getClosurePeriod(String employeeId, GeneralDate baseDate) {
-			Closure closure = ClosureService.getClosureDataByEmployee(this, cacheCarrier, employeeId, baseDate);
+			Closure closure = closureService.getClosureDataByEmployee(employeeId, baseDate);
 			if (closure == null)
 				return Optional.empty();
 			Optional<ClosurePeriod> closurePeriodOpt = closure.getClosurePeriodByYmd(baseDate);
@@ -148,22 +170,5 @@ public class GetOmissionContentsFinder {
 			return stampSetPerRepo.getStampSetting(AppContexts.user().companyId());
 		}
 
-		@Override
-		public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
-			return closureEmploymentRepository.findByEmploymentCD(companyID, employmentCD);
-		}
-
-		@Override
-		public Optional<Closure> closure(String companyId, int closureId) {
-			return closureRepository.findById(companyId, closureId);
-		}
-
-		@Override
-		public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
-				String employeeId, GeneralDate baseDate) {
-			return shrEmpAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
-		}
-
 	}
-
 }
