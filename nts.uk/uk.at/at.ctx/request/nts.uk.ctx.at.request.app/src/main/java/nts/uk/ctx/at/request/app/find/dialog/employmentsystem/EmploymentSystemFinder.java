@@ -56,8 +56,6 @@ public class EmploymentSystemFinder {
 //	private EmpSubstVacationRepository empSubrepo;
 //	@Inject
 //	private ComSubstVacationRepository comSubrepo;
-//	@Inject
-//	private CompensLeaveComSetRepository compensLeaveComSetRepository;
 	
 	@Inject
 	private AbsenceTenProcessCommon absenceTenProcessCommon;

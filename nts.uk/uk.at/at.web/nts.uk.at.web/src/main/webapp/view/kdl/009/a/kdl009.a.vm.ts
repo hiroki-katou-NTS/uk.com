@@ -1,6 +1,8 @@
 module nts.uk.at.view.kdl009.a {
     export module viewmodel {
-        export class ScreenModel {
+
+        @bean()
+        export class ScreenModel extends ko.ViewModel {
             //Grid data
             listComponentOption: any;
             selectedCode: KnockoutObservable<string> = ko.observable('');
@@ -30,61 +32,67 @@ module nts.uk.at.view.kdl009.a {
             hint04: KnockoutObservable<string> = ko.observable("");
             expirationDateText: KnockoutObservable<string> = ko.observable("");
 
-            constructor() {
-                const self = this;
-
-                self.kdl009Data = nts.uk.ui.windows.getShared("KDL009_DATA");
-                self.employeeInfo = ko.observable("");
-                self.dataItems = ko.observableArray([]);
-                self.legendOptions = {
+            created(params: any) {
+                const vm = this;
+                vm.kdl009Data = nts.uk.ui.windows.getShared("KDL009_DATA");
+                vm.employeeInfo = ko.observable("");
+                vm.dataItems = ko.observableArray([]);
+                vm.legendOptions = {
                     items: [
                         { labelText: nts.uk.resource.getText("KDL009_29") },
                         { labelText: nts.uk.resource.getText("KDL009_30") }
                     ]
                 };
+            }
 
-                service.getEmployee(self.kdl009Data)
+            mounted() {
+                const vm = this;
+                vm.$blockui('grayout');
+                service.getEmployee(vm.kdl009Data)
                     .done((data: any) => {
                         if (data.employeeBasicInfo.length > 1) {
-                            self.selectedCode.subscribe((value) => {
+                            vm.selectedCode.subscribe((value) => {
                                 const itemSelected: any = _.find(data.employeeBasicInfo, ['employeeCode', value]);
-                                self.onEmployeeSelect(
+                                vm.onEmployeeSelect(
                                     data.baseDate,
                                     itemSelected.employeeId,
                                     itemSelected.employeeCode,
                                     itemSelected.businessName,
                                 );
                             });
-                            self.bindEmpList(data.employeeBasicInfo);
+                            vm.bindEmpList(data.employeeBasicInfo);
                         } else if (data.employeeBasicInfo.length == 1) {
                             const itemSelected: any = data.employeeBasicInfo[0];
-                            self.onEmployeeSelect(
+                            vm.onEmployeeSelect(
                                 data.baseDate,
                                 itemSelected.employeeId,
                                 itemSelected.employeeCode,
                                 itemSelected.businessName,
                             );
                         } else {
-                            self.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
+                            vm.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_918" });
                         }
                         $("#date-fixed-table").ntsFixedTable({ height: 150 });
                     })
-                    .fail(self.onError);
+                    .fail(vm.onError)
+                    .always(() => vm.$blockui('clear'));
             }
 
             // On select employee
             private onEmployeeSelect(baseDate: any, employeeId: string, employeeCode: string, employeeName: string) {
-                const self = this;
-                self.employeeInfo(nts.uk.resource.getText("KDL009_25", [employeeCode, employeeName]));
+                const vm = this;
+                vm.employeeInfo(nts.uk.resource.getText("KDL009_25", [employeeCode, employeeName]));
+                vm.$blockui('grayout');
                 service.getAcquisitionNumberRestDays(employeeId, baseDate)
                     .done((data) => {
-                        self.expirationDateText(ExpirationDate[data.expiredDay]);
-                        self.bindTimeData(data);
-                        self.bindSummaryData(data);
-                        self.isManagementSection(data.isManagementSection);
+                        vm.expirationDateText(ExpirationDate[data.expiredDay]);
+                        vm.bindTimeData(data);
+                        vm.bindSummaryData(data);
+                        vm.isManagementSection(data.isManagementSection);
                     })
-                    .fail(self.onError);
+                    .fail(vm.onError)
+                    .always(() => vm.$blockui('clear'));
             }
 
             // On error
@@ -93,58 +101,55 @@ module nts.uk.at.view.kdl009.a {
             }
 
             startPage(): JQueryPromise<any> {
-                var self = this;
                 var dfd = $.Deferred();
-
                 dfd.resolve();
-
                 return dfd.promise();
             }
 
             bindEmpList(data: any) {
-                const self = this;
+                const vm = this;
 
                 // self.baseDate = ko.observable(new Date());
-                self.selectedCode(data[0].employeeCode);
-                self.multiSelectedCode = ko.observableArray([]);
-                self.isShowAlreadySet = ko.observable(false);
-                self.alreadySettingList = ko.observableArray([
+                vm.selectedCode(data[0].employeeCode);
+                vm.multiSelectedCode = ko.observableArray([]);
+                vm.isShowAlreadySet = ko.observable(false);
+                vm.alreadySettingList = ko.observableArray([
                     { code: '1', isAlreadySetting: true },
                     { code: '2', isAlreadySetting: true }
                 ]);
-                self.isDialog = ko.observable(false);
-                self.isShowNoSelectRow = ko.observable(false);
-                self.isMultiSelect = ko.observable(false);
-                self.isShowWorkPlaceName = ko.observable(false);
-                self.isShowSelectAllButton = ko.observable(false);
-                this.employeeList = ko.observableArray<UnitModel>(_.map(data, (x: any) => ({ code: x.employeeCode, name: x.businessName })));
-                self.listComponentOption = {
-                    isShowAlreadySet: self.isShowAlreadySet(),
-                    isMultiSelect: self.isMultiSelect(),
+                vm.isDialog = ko.observable(false);
+                vm.isShowNoSelectRow = ko.observable(false);
+                vm.isMultiSelect = ko.observable(false);
+                vm.isShowWorkPlaceName = ko.observable(false);
+                vm.isShowSelectAllButton = ko.observable(false);
+                vm.employeeList = ko.observableArray<UnitModel>(_.map(data, (x: any) => ({ code: x.employeeCode, name: x.businessName })));
+                vm.listComponentOption = {
+                    isShowAlreadySet: vm.isShowAlreadySet(),
+                    isMultiSelect: vm.isMultiSelect(),
                     listType: ListType.EMPLOYEE,
-                    employeeInputList: self.employeeList,
+                    employeeInputList: vm.employeeList,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                    selectedCode: self.selectedCode,
-                    isDialog: self.isDialog(),
-                    isShowNoSelectRow: self.isShowNoSelectRow(),
-                    alreadySettingList: self.alreadySettingList,
-                    isShowWorkPlaceName: self.isShowWorkPlaceName(),
-                    isShowSelectAllButton: self.isShowSelectAllButton(),
+                    selectedCode: vm.selectedCode,
+                    isDialog: vm.isDialog(),
+                    isShowNoSelectRow: vm.isShowNoSelectRow(),
+                    alreadySettingList: vm.alreadySettingList,
+                    isShowWorkPlaceName: vm.isShowWorkPlaceName(),
+                    isShowSelectAllButton: vm.isShowSelectAllButton(),
                     maxRows: 12
                 };
 
-                $('#component-items-list').ntsListComponent(self.listComponentOption);
+                $('#component-items-list').ntsListComponent(vm.listComponentOption);
             }
 
             private bindTimeData(data: AcquisitionNumberRestDayDto) {
-                const self = this;
-                self.dataItems.removeAll();
+                const vm = this;
+                vm.dataItems.removeAll();
                 // Convert to list item
-                ko.utils.arrayPushAll(self.dataItems, self.convertDetailToItem(data.listRemainNumberDetail, data.listPegManagement));
+                ko.utils.arrayPushAll(vm.dataItems, vm.convertDetailToItem(data.listRemainNumberDetail, data.listPegManagement));
             }
 
             private convertDetailToItem(listDetail: RemainNumberDetailDto[], listPeg: PegManagementDto[]): DataItems[] {
-                const self = this;
+                const vm = this;
                 const listItem: DataItems[] = [];
                 const mapOccurenceDate: Map<String, any[]> = {};
                 const mapUsageDate: Map<String, any[]> = {};
@@ -173,14 +178,14 @@ module nts.uk.at.view.kdl009.a {
                         if (listOccurenceDate) {
                             // Combined records
                             if (item) {
-                                item.listOccurrence.push(self.convertDetailDtoToModel(itemDetail));
+                                item.listOccurrence.push(vm.convertDetailDtoToModel(itemDetail));
                             } else {
                                 item = new DataItems({
                                     isMultiOccurrence: false,
                                     isMultiDigestion: false,
-                                    listOccurrence: [self.convertDetailDtoToModel(itemDetail)],
+                                    listOccurrence: [vm.convertDetailDtoToModel(itemDetail)],
                                     listDigestion: [],
-                                    singleRowDetail: self.convertDetailDtoToModel(itemDetail),
+                                    singleRowDetail: vm.convertDetailDtoToModel(itemDetail),
                                 });
                             }
                         } else {
@@ -188,7 +193,7 @@ module nts.uk.at.view.kdl009.a {
                             listItem.push(new DataItems({
                                 isMultiOccurrence: false,
                                 isMultiDigestion: false,
-                                singleRowDetail: self.convertDetailDtoToModel(itemDetail),
+                                singleRowDetail: vm.convertDetailDtoToModel(itemDetail),
                             }));
                         }
                     } else if (itemDetail.digestionDate) {
@@ -196,14 +201,14 @@ module nts.uk.at.view.kdl009.a {
                         if (listDigestionDate) {
                             // Combined records
                             if (item) {
-                                item.listDigestion.push(self.convertDetailDtoToModel(itemDetail));
+                                item.listDigestion.push(vm.convertDetailDtoToModel(itemDetail));
                             } else {
                                 item = new DataItems({
                                     isMultiOccurrence: false,
                                     isMultiDigestion: false,
                                     listOccurrence: [],
-                                    listDigestion: [self.convertDetailDtoToModel(itemDetail)],
-                                    singleRowDetail: self.convertDetailDtoToModel(itemDetail),
+                                    listDigestion: [vm.convertDetailDtoToModel(itemDetail)],
+                                    singleRowDetail: vm.convertDetailDtoToModel(itemDetail),
                                 });
                             }
                         } else {
@@ -211,7 +216,7 @@ module nts.uk.at.view.kdl009.a {
                             listItem.push(new DataItems({
                                 isMultiOccurrence: false,
                                 isMultiDigestion: false,
-                                singleRowDetail: self.convertDetailDtoToModel(itemDetail),
+                                singleRowDetail: vm.convertDetailDtoToModel(itemDetail),
                             }));
                         }
                     }
@@ -296,15 +301,15 @@ module nts.uk.at.view.kdl009.a {
             }
 
             bindSummaryData(data: AcquisitionNumberRestDayDto) {
-                const self = this;
+                const vm = this;
                 const numberFormat = new nts.uk.ui.option.NumberEditorOption({ decimallength: 1 });
-                self.value01(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.carryForwardDay, numberFormat)]));
-                self.value02(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.occurrenceDay, numberFormat)]));
-                self.hint02(nts.uk.resource.getText("KDL005_33", [nts.uk.ntsNumber.formatNumber(data.scheduleOccurrencedDay, numberFormat)]));
-                self.value03(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.usageDay, numberFormat)]));
-                self.hint03(nts.uk.resource.getText("KDL005_34", [nts.uk.ntsNumber.formatNumber(data.scheduledUsageDay, numberFormat)]));
-                self.value04(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.remainingDay, numberFormat)]));
-                self.hint04(nts.uk.resource.getText("KDL005_35", [nts.uk.ntsNumber.formatNumber(data.scheduledRemainingDay, numberFormat)]));
+                vm.value01(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.carryForwardDay, numberFormat)]));
+                vm.value02(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.occurrenceDay, numberFormat)]));
+                vm.hint02(nts.uk.resource.getText("KDL005_33", [nts.uk.ntsNumber.formatNumber(data.scheduleOccurrencedDay, numberFormat)]));
+                vm.value03(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.usageDay, numberFormat)]));
+                vm.hint03(nts.uk.resource.getText("KDL005_34", [nts.uk.ntsNumber.formatNumber(data.scheduledUsageDay, numberFormat)]));
+                vm.value04(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.remainingDay, numberFormat)]));
+                vm.hint04(nts.uk.resource.getText("KDL005_35", [nts.uk.ntsNumber.formatNumber(data.scheduledRemainingDay, numberFormat)]));
             }
 
             cancel() {

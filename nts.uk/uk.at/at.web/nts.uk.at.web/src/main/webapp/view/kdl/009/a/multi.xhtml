@@ -6,7 +6,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1020, height: 580 };</script>
+			<script>var dialogSize = { width: 1030, height: 580 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="kdl009.a.start.js" />
 			<com:scriptfile path="kdl009.a.vm.js" />
@@ -63,7 +63,7 @@
 												<td rowspan="2">
 													<span data-bind="text: listOccurrence[0].occurrenceDateText"></span>
 													<span data-bind="text: listOccurrence[0].expirationDateText"></span>
-													<span data-bind="text: listOccurrence[0].occurrenceNumberText" class="margin-left-20"></span>
+													<span data-bind="text: listOccurrence[0].occurrenceNumberText" class="float-right margin-right-20"></span>
 												</td>
 												<td class="border-dotted">
 													<span data-bind="text: listDigestion[0].digestionDateText"></span>
@@ -83,7 +83,7 @@
 												<td class="border-dotted">
 													<span data-bind="text: listOccurrence[0].occurrenceDateText"></span>
 													<span data-bind="text: listOccurrence[0].expirationDateText"></span>
-													<span data-bind="text: listOccurrence[0].occurrenceNumberText" class="margin-left-20"></span>
+													<span data-bind="text: listOccurrence[0].occurrenceNumberText" class="float-right margin-right-20"></span>
 												</td>
 												<td rowspan="2">
 													<span data-bind="text: listDigestion[0].digestionDateText"></span>
@@ -94,7 +94,7 @@
 												<td>
 													<span data-bind="text: listOccurrence[1].occurrenceDateText"></span>
 													<span data-bind="text: listOccurrence[1].expirationDateText"></span>
-													<span data-bind="text: listOccurrence[1].occurrenceNumberText" class="margin-left-20"></span>
+													<span data-bind="text: listOccurrence[1].occurrenceNumberText" class="float-right margin-right-20"></span>
 												</td>
 											</tr>
 										</com:ko-if>
@@ -104,7 +104,7 @@
 												<td>
 													<span data-bind="text: singleRowDetail.occurrenceDateText"></span>
 													<span data-bind="text: singleRowDetail.expirationDateText"></span>
-													<span data-bind="text: singleRowDetail.occurrenceNumberText" class="margin-left-20"></span>
+													<span data-bind="text: singleRowDetail.occurrenceNumberText" class="float-right margin-right-20"></span>
 												</td>
 												<td>
 													<span data-bind="text: singleRowDetail.digestionDateText"></span>

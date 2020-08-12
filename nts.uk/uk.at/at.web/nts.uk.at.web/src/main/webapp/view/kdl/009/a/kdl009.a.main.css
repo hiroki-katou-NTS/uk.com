@@ -8,6 +8,9 @@
 .date-fixed-table .nts-fixed-body-container {
 	overflow-x: hidden;
 }
+.date-fixed-table .scroll-header.nts-fixed-header {
+	height: 30px;
+}
 
 table#date-fixed-table {
 	empty-cells: show;
@@ -60,6 +63,9 @@ table.summary-table td:last-child {
 .margin-left-20 {
 	margin-left: 20px;
 }
+.margin-right-20 {
+	margin-right: 20px;
+}
 
 #description {
 	margin-top: 5px;
@@ -70,4 +76,7 @@ table.summary-table td:last-child {
 
 .big-text {
 	font-size: 2rem;
+}
+.float-right {
+	float: right;
 }
