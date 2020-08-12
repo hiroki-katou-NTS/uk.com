@@ -86,6 +86,11 @@ export class CmmS45ComponentsApp2Component extends Vue {
                 this.$app().workHours2 = this.$i18n('KAFS07_15');
                 this.$app().isWorkHours2 = false;
             }
+        } else {
+            if (this.isCondition1) {
+                this.$app().workHours1 = this.$i18n('KAFS07_15');
+                this.$app().workHours2 = this.$i18n('KAFS07_15');
+            }
         }
         this.$app().straight = params.appWorkChange.straightGo == 1 ? true : false;
         this.$app().bounce = params.appWorkChange.straightBack == 1 ? true : false;
