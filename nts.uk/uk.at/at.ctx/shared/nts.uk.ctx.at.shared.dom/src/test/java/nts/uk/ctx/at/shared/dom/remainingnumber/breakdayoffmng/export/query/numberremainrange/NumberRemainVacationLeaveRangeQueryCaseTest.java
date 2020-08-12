@@ -12,9 +12,11 @@ import org.assertj.core.groups.Tuple;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.value.Finally;
@@ -47,6 +49,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedTi
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 
 @RunWith(JMockit.class)
 public class NumberRemainVacationLeaveRangeQueryCaseTest {
@@ -174,7 +177,7 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				GeneralDate.ymd(2019, 11, 30), true, interimMng, Optional.empty(), Optional.empty(), breakMng,
 				new ArrayList<>(), holidayAggrResult,
 				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
-
+		val cacheCarrier = new CacheCarrier();
 		new Expectations() {
 			{
 
@@ -189,7 +192,7 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
-				require.getClosureDataByEmployee(SID, (GeneralDate) any);
+				ClosureService.getClosureDataByEmployee(require, cacheCarrier, SID, (GeneralDate) any);
 				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
 				require.getFirstMonth(CID);
@@ -280,7 +283,7 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)), true,
 				GeneralDate.ymd(2019, 11, 30), true, interimMng, Optional.empty(), Optional.empty(), breakMng,
 				dayOffMng, holidayAggrResult, new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
-
+		val cacheCarrier = new CacheCarrier();
 		new Expectations() {
 			{
 
@@ -295,7 +298,7 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
-				require.getClosureDataByEmployee(SID, (GeneralDate) any);
+				ClosureService.getClosureDataByEmployee(require, cacheCarrier, SID, (GeneralDate) any);
 				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
 				require.getFirstMonth(CID);
@@ -378,7 +381,7 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)), true,
 				GeneralDate.ymd(2019, 11, 30), true, interimMng, Optional.empty(), Optional.empty(), breakMng,
 				dayOffMng, holidayAggrResult, new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
-
+		val cacheCarrier = new CacheCarrier();
 		new Expectations() {
 			{
 
@@ -393,7 +396,7 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
-				require.getClosureDataByEmployee(SID, (GeneralDate) any);
+				ClosureService.getClosureDataByEmployee(require, cacheCarrier, SID, (GeneralDate) any);
 				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
 				require.getFirstMonth(CID);
@@ -471,7 +474,7 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)), true,
 				GeneralDate.ymd(2019, 11, 30), true, interimMng, Optional.empty(), Optional.empty(), breakMng,
 				dayOffMng, holidayAggrResult, new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
-
+		val cacheCarrier = new CacheCarrier();
 		new Expectations() {
 			{
 
@@ -486,7 +489,7 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
-				require.getClosureDataByEmployee(SID, (GeneralDate) any);
+				ClosureService.getClosureDataByEmployee(require, cacheCarrier, SID, (GeneralDate) any);
 				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
 				require.getFirstMonth(CID);
@@ -639,7 +642,7 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				new DatePeriod(GeneralDate.ymd(2019, 4, 1), GeneralDate.ymd(2020, 3, 31)), false,
 				GeneralDate.ymd(2019, 11, 30), true, interimMng, Optional.empty(), Optional.empty(), breakMng,
 				dayOffMng, Optional.empty(), new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
-
+		val cacheCarrier = new CacheCarrier();
 		new Expectations() {
 			{
 
@@ -657,7 +660,7 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
-				require.getClosureDataByEmployee(SID, (GeneralDate) any);
+				ClosureService.getClosureDataByEmployee(require, cacheCarrier, SID, (GeneralDate) any);
 				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
 				require.getFirstMonth(CID);

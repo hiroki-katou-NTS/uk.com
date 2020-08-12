@@ -14,9 +14,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.value.Finally;
@@ -49,6 +51,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 
 @RunWith(JMockit.class)
@@ -154,7 +157,7 @@ public class NumberCompensatoryLeavePeriodQueryTestCase {
 				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(0.0),
 				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(0.0),
 				Finally.of(GeneralDate.ymd(2019, 12, 21)), Collections.emptyList(), Collections.emptyList());
-
+		val cacheCarrier = new CacheCarrier();
 		new Expectations() {
 			{
 				require.findByEmployeeIdOrderByStartDate(anyString);
@@ -168,7 +171,7 @@ public class NumberCompensatoryLeavePeriodQueryTestCase {
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
-				require.getClosureDataByEmployee(SID, (GeneralDate) any);
+				ClosureService.getClosureDataByEmployee(require, cacheCarrier, SID, (GeneralDate) any);
 				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
 				require.getFirstMonth(CID);
@@ -240,7 +243,7 @@ public class NumberCompensatoryLeavePeriodQueryTestCase {
 				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(0.0),
 				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(0.0),
 				Finally.of(GeneralDate.ymd(2019, 12, 21)), Collections.emptyList(), Collections.emptyList());
-
+		val cacheCarrier = new CacheCarrier();
 		new Expectations() {
 			{
 				require.findByEmployeeIdOrderByStartDate(anyString);
@@ -254,7 +257,7 @@ public class NumberCompensatoryLeavePeriodQueryTestCase {
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
-				require.getClosureDataByEmployee(SID, (GeneralDate) any);
+				ClosureService.getClosureDataByEmployee(require, cacheCarrier, SID, (GeneralDate) any);
 				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
 				require.getFirstMonth(CID);
@@ -315,7 +318,7 @@ public class NumberCompensatoryLeavePeriodQueryTestCase {
 				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(0.0),
 				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(0.0),
 				Finally.of(GeneralDate.ymd(2019, 12, 21)), Collections.emptyList(), Collections.emptyList());
-
+		val cacheCarrier = new CacheCarrier();
 		new Expectations() {
 			{
 				require.findByEmployeeIdOrderByStartDate(anyString);
@@ -329,7 +332,7 @@ public class NumberCompensatoryLeavePeriodQueryTestCase {
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
-				require.getClosureDataByEmployee(SID, (GeneralDate) any);
+				ClosureService.getClosureDataByEmployee(require, cacheCarrier, SID, (GeneralDate) any);
 				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
 				require.getFirstMonth(CID);
@@ -387,7 +390,7 @@ public class NumberCompensatoryLeavePeriodQueryTestCase {
 				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(0.0),
 				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(0.0),
 				Finally.of(GeneralDate.ymd(2019, 12, 21)), Collections.emptyList(), Collections.emptyList());
-
+		val cacheCarrier = new CacheCarrier();
 		new Expectations() {
 			{
 				require.findByEmployeeIdOrderByStartDate(anyString);
@@ -401,7 +404,7 @@ public class NumberCompensatoryLeavePeriodQueryTestCase {
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
-				require.getClosureDataByEmployee(SID, (GeneralDate) any);
+				ClosureService.getClosureDataByEmployee(require, cacheCarrier, SID, (GeneralDate) any);
 				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
 				require.getFirstMonth(CID);
