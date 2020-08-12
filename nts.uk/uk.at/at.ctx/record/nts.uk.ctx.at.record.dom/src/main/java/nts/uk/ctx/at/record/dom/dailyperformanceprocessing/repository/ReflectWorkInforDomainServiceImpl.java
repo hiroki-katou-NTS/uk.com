@@ -1657,7 +1657,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		}
 
 		// ドメインモデル「打刻反映管理」を取得する
-		if (stampReflectionManagement == null) {
+		if (stampReflectionManagement == null || !stampReflectionManagement.isPresent()) {
 			stampReflectionManagement = this.stampReflectionManagementRepository.findByCid(companyId);
 		}
 

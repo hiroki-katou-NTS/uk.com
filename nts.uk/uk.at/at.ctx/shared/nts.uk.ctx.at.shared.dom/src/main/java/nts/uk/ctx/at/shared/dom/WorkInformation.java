@@ -117,11 +117,10 @@ public class WorkInformation {
 			break;
 		default: // 不要
 			// @就業時間帯コード.isPresent
-			if (this.getWorkTimeCode() != null) {
-				return ErrorStatusWorkInfo.WORKTIME_ARE_SET_WHEN_UNNECESSARY;
-//				return ErrorStatusWorkInfo.NORMAL;
+			if (!this.workTimeCode.isPresent() ) {
+				return ErrorStatusWorkInfo.NORMAL;
 			}
-//			return ErrorStatusWorkInfo.WORKTIME_ARE_SET_WHEN_UNNECESSARY;
+			return ErrorStatusWorkInfo.WORKTIME_ARE_SET_WHEN_UNNECESSARY;
 
 		}
 

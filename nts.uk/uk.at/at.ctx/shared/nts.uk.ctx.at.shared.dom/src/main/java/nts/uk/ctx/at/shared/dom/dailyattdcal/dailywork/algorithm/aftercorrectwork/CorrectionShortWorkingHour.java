@@ -47,10 +47,12 @@ public class CorrectionShortWorkingHour {
 			if (shortTimeHistItem.isEmpty() || !domainDaily.getShortTime().isPresent())
 				return domainDaily;
 			// 短時間勤務を変更
+			if (domainDaily.getShortTime().isPresent())
 			domainDaily.getShortTime().get().change(shortTimeHistItem.get(0), domainDaily.getEditState());
 
 		} else {
 			// 短時間勤務をクリア
+			if (domainDaily.getShortTime().isPresent())
 			domainDaily.getShortTime().get().clear(domainDaily.getEditState());
 		}
 
