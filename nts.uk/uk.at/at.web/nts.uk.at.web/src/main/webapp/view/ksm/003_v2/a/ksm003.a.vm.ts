@@ -876,10 +876,10 @@ module nts.uk.at.view.ksm003.a {
             });
             this.isChecked = ko.observable(isChecked);
 
-            this.isChecked.subscribe((value) => {
+            /*this.isChecked.subscribe((value) => {
                 console.log(this);
                 __viewContext['viewModel'].enableDisableRemove(true);
-            });
+            });*/
         }
 
         public resetModel(displayOrder: number) {
@@ -928,8 +928,9 @@ module nts.uk.at.view.ksm003.a {
                         self.timeCode(childData.selectedWorkTimeCode);
                         self.setWorkTypeName(childData.selectedWorkTypeName);
                         self.setWorkTimeName(childData.selectedWorkTimeName);
-                        if ($(".nts-editor").ntsError("hasError")) (".nts-editor").ntsError("clear");
+                        if ($(".nts-neditor").ntsError("hasError")) (".nts-neditor").ntsError("clear");
                         if ($(".buttonEvent").ntsError("hasError")) $(".buttonEvent").ntsError("clear");
+                        console.log(self);
                     }
                 });
         }
