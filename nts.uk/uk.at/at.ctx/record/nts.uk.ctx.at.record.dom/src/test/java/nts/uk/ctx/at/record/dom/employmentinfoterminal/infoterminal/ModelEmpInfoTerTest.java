@@ -24,7 +24,7 @@ public class ModelEmpInfoTerTest {
 
 	@Test
 	public void testEnum() {
-		assertEquals(ModelEmpInfoTer.NRL_2, ModelEmpInfoTer.valueOf(1));
+		assertEquals(ModelEmpInfoTer.NRL_2, ModelEmpInfoTer.valueOf(8));
 
 		assertNull(ModelEmpInfoTer.valueOf(4));
 

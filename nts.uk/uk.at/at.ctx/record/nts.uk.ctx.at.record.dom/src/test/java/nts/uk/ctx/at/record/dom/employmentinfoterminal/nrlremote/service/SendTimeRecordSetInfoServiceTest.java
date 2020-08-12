@@ -92,7 +92,6 @@ public class SendTimeRecordSetInfoServiceTest {
 								new EmpInfoTerminalName("AT"), new ContractCode("0000000000000"))
 										.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).build());
 
-				// Optional<TimeRecordSetUpdateList>
 				require.findSettingUpdate((EmpInfoTerminalCode) any, (ContractCode) any);
 				result = Optional.of(new TimeRecordSetUpdateList(new EmpInfoTerminalCode(1234),
 						new EmpInfoTerminalName("AT"), new NRRomVersion("111"), ModelEmpInfoTer.NRL_1,
@@ -119,7 +118,6 @@ public class SendTimeRecordSetInfoServiceTest {
 								new EmpInfoTerminalName("AT"), new ContractCode("0000000000000"))
 										.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).build());
 
-				// Optional<TimeRecordSetUpdateList>
 				require.findSettingUpdate((EmpInfoTerminalCode) any, (ContractCode) any);
 				result = Optional.of(new TimeRecordSetUpdateList(new EmpInfoTerminalCode(1234),
 						new EmpInfoTerminalName("AT"), new NRRomVersion("111"), ModelEmpInfoTer.NRL_1,
@@ -128,7 +126,6 @@ public class SendTimeRecordSetInfoServiceTest {
 
 						)));
 
-				// Optional<TimeRecordSetFormatList>
 				require.findSetFormat((EmpInfoTerminalCode) any, (ContractCode) any);
 				result = Optional.of(new TimeRecordSetFormatList(new EmpInfoTerminalCode(1234),
 						new EmpInfoTerminalName("AT"), new NRRomVersion("111"), ModelEmpInfoTer.NRL_1,
