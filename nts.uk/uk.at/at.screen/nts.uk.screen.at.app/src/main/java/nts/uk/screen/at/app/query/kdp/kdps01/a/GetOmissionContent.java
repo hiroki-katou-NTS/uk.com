@@ -48,9 +48,6 @@ import nts.uk.shr.com.context.AppContexts;
 public class GetOmissionContent {
 
 	@Inject
-	private ClosureService closureService;
-
-	@Inject
 	private StandardMenuPub menuPub;
 
 	@Inject

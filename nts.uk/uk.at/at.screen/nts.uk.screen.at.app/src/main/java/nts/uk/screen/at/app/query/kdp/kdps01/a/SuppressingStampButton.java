@@ -62,9 +62,6 @@ public class SuppressingStampButton {
 
 	@Inject
 	private PredetemineTimeSettingRepository preRepo;
-
-	@Inject
-	private WorkingConditionService workingService;
 	
 	@Inject
 	private WorkingConditionRepository workingConditionRepository;
@@ -77,7 +74,7 @@ public class SuppressingStampButton {
 
 		GetStampTypeToSuppressServiceImpl require = new GetStampTypeToSuppressServiceImpl(stampSetPerRepo,
 				settingsSmartphoneStampRepo, portalStampSettingsrepo, stampRecordRepo, stampRepo, stampCardRepo,
-				preRepo, workingService ,workingConditionRepository ,workingConditionItemRepository);
+				preRepo,workingConditionRepository ,workingConditionItemRepository);
 
 		return GetStampTypeToSuppressService.get(require, AppContexts.user().employeeId(), StampMeans.SMART_PHONE);
 
@@ -106,9 +103,6 @@ public class SuppressingStampButton {
 
 		@Inject
 		private PredetemineTimeSettingRepository preRepo;
-
-		@Inject
-		private WorkingConditionService workingService;
 		
 		@Inject
 		private WorkingConditionRepository workingConditionRepository;
@@ -134,7 +128,7 @@ public class SuppressingStampButton {
 
 		@Override
 		public Optional<WorkingConditionItem> findWorkConditionByEmployee(String employeeId, GeneralDate baseDate) {
-			return workingService.findWorkConditionByEmployee(this, employeeId, baseDate);
+			return WorkingConditionService.findWorkConditionByEmployee(this, employeeId, baseDate);
 		}
 
 		@Override
