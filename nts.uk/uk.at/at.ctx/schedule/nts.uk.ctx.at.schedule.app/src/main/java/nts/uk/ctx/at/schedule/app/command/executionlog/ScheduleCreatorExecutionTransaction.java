@@ -103,6 +103,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.Short
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.AffiliationInforState;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ReflectWorkInforDomainService;
@@ -624,7 +625,7 @@ public class ScheduleCreatorExecutionTransaction {
 		// データ（処理状態付き）を生成して返す
 		return new DataProcessingStatusResult(CID, null,
 				ProcessingStatus.valueOf(ProcessingStatus.NORMAL_PROCESS.value), 
-				new WorkSchedule("", null, null, null, null, 
+				new WorkSchedule("", null, null, new WorkInfoOfDailyAttendance(), null, 
 						new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty())
 				, workingConditionItem,
 				employmentInfo);
@@ -876,7 +877,7 @@ public class ScheduleCreatorExecutionTransaction {
 				createScheduleOneDate = new OutputCreateScheduleOneDate(null, prepareWorkOutput.getExecutionLog().get(),
 						ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY_WITH_ERROR.value));
 			} else {
-				WorkInformation information = results.get(dateInPeriod);
+				WorkInformation information = new WorkInformation(prepareWorkOutput.getInformation().getWorkTimeCode(), prepareWorkOutput.getInformation().getWorkTypeCode());
 
 				// 勤務情報が正常な状態かをチェックする - xử lý tiếp theo call đến method ở dưới
 				createScheduleOneDate = this.putDataWorkschedule(information, prepareWorkOutput, integrationOfDaily, command, dateInPeriod,
@@ -893,6 +894,7 @@ public class ScheduleCreatorExecutionTransaction {
 			List<Integer> attendanceItemIdList, DailyRecordToAttendanceItemConverter itemConverter,
 			List<ItemValue> listItemValue) {
 		// 勤務情報が正常な状態かをチェックする
+		
 		WorkInformation.Require require = new WorkInformationImpl(workTypeRepo, workTimeSettingRepository, workTimeSettingService, basicScheduleService);
 		ErrorStatusWorkInfo checkErrorCondition = information.checkErrorCondition(require);
 
@@ -900,15 +902,11 @@ public class ScheduleCreatorExecutionTransaction {
 		if (checkErrorCondition.value == ErrorStatusWorkInfo.NORMAL.value) {
 			// 取得した情報をもとに「勤務予定」を入れる (TKT-TQP)
 			Optional<WorkTypeSet> workTypeSet = prepareWorkOutput.getWorkType().get().getWorkTypeSetList().stream()
-					.filter(x -> x.getCompanyId() == command.getCompanyId()
-							&& x.getWorkTypeCd() == prepareWorkOutput.getInformation().getWorkTypeCode())
+					.filter(x -> x.getCompanyId().equals(command.getCompanyId())
+							&& x.getWorkTypeCd().equals(prepareWorkOutput.getInformation().getWorkTypeCode()))
 					.findFirst();
-			// 勤務情報。勤務実績の勤務情報。勤務種類 = 処理中の勤務種類コード
-			integrationOfDaily.getWorkInformation().getRecordInfo()
-					.setWorkTypeCode(prepareWorkOutput.getInformation().getWorkTypeCode());
-			// 勤務情報。勤務実績の勤務情報。就業時間帯 =処理中の 就業時間帯コード
-			integrationOfDaily.getWorkInformation().getRecordInfo()
-					.setWorkTimeCode(prepareWorkOutput.getInformation().getWorkTimeCode());
+			// 勤務情報。勤務実績の勤務情報。勤務種類 = 処理中の勤務種類コード & 勤務情報。勤務実績の勤務情報。就業時間帯 =処理中の 就業時間帯コード
+			integrationOfDaily.getWorkInformation().setRecordInfo(new WorkInformation(prepareWorkOutput.getInformation().getWorkTimeCode(), prepareWorkOutput.getInformation().getWorkTypeCode()));
 			// 出勤打刻自動セット ~ 出勤時刻を直行とする
 			integrationOfDaily.getWorkInformation().setGoStraightAtr(
 					EnumAdaptor.valueOf(workTypeSet.get().getAttendanceTime().value, NotUseAttribute.class));
@@ -1052,7 +1050,7 @@ public class ScheduleCreatorExecutionTransaction {
 				// ・勤務種類コード＝取得した勤務種類コード
 				// ・就業時間帯コード＝Null
 				WorkInformation workInformation = new WorkInformation(null, lstWorkType.get(0).getWorkTypeCode());
-				return new PrepareWorkOutput(workInformation, null, null, null);
+				return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
 			}
 
 		}
@@ -1082,7 +1080,7 @@ public class ScheduleCreatorExecutionTransaction {
 				// ・勤務種類コード＝取得した勤務種類コード
 				// ・就業時間帯コード＝Null
 				WorkInformation workInformation = new WorkInformation(null, lstWorkType.get(0).getWorkTypeCode());
-				return new PrepareWorkOutput(workInformation, null, null, null);
+				return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
 			}
 		}
 
@@ -1141,7 +1139,7 @@ public class ScheduleCreatorExecutionTransaction {
 			}
 			// 勤務情報を返す
 			WorkInformation workInformation = new WorkInformation(workTimeCode, worktypeCode);
-			return new PrepareWorkOutput(workInformation, null, null, null, workType);
+			return new PrepareWorkOutput(workInformation, null, null, Optional.empty(), workType);
 
 		}
 		// スケジュール作成ログを作成して返す
@@ -1213,7 +1211,7 @@ public class ScheduleCreatorExecutionTransaction {
 			WorkInformation workInformation = new WorkInformation(
 					workSchedules.get(0).getWorkInfo().getRecordInfo().getWorkTimeCode(),
 					workSchedules.get(0).getWorkInfo().getRecordInfo().getWorkTypeCode());
-			return new PrepareWorkOutput(workInformation, null, null, null);
+			return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
 		}
 	}
 	
@@ -1247,7 +1245,7 @@ public class ScheduleCreatorExecutionTransaction {
 					
 					// 「勤務種類コード」、「就業時間帯コード」を返す
 					WorkInformation workInformation =  new WorkInformation(workTimeCode.v(), workType.getWorkTypeCode().v());
-					return new PrepareWorkOutput(workInformation, null, null, null);
+					return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
 					
 				} 
 //				else {
@@ -1279,7 +1277,7 @@ public class ScheduleCreatorExecutionTransaction {
 						WorkingCode workTimeCode = this.getWorkingCode(command, masterCache, itemDto, new WorkingCode(monthlySetting.get().getWorkingCode().v()), workType, dateInPeriod);
 						
 						WorkInformation workInformation =  new WorkInformation(workTimeCode != null ? workTimeCode.v() : null, workType.getWorkTypeCode().v());
-						return new PrepareWorkOutput(workInformation, null, null, null);
+						return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
 					}
 				}
 				// Null の場合 - if !itemDto.get().getMonthlyPattern().isPresent()
@@ -1318,7 +1316,7 @@ public class ScheduleCreatorExecutionTransaction {
 				    	workInformation =  new WorkInformation(itemDto.get().getWorkCategory().getHolidayTime().getWorkTimeCode().get(), 
 				    			itemDto.get().getWorkCategory().getHolidayTime().getWorkTypeCode().get());
 				    }
-				    return new PrepareWorkOutput(workInformation, null, null, null);
+				    return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
 				}
 			}
 		}

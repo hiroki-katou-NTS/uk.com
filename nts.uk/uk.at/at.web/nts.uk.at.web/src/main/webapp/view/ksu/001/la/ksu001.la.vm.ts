@@ -1,5 +1,6 @@
 module nts.uk.at.view.ksu001.la {
     import blockUI = nts.uk.ui.block;    
+    
     export module viewmodel {
         export class ScreenModel {
             listComponentOption: any;
@@ -16,7 +17,8 @@ module nts.uk.at.view.ksu001.la {
             workplaceGroupName: KnockoutObservable<string> = ko.observable("");
             enableDelete: KnockoutObservable<boolean> = ko.observable(true);
             isEditing: KnockoutObservable<boolean> = ko.observable(false);
-            scheduleTeamModel: KnockoutObservable<ScheduleTeamModel> = ko.observable(new ScheduleTeamModel("", "", "", ""));
+            baseDate: KnockoutObservable<string> = ko.observable("");
+            scheduleTeamModel: KnockoutObservable<ScheduleTeamModel> = ko.observable(new ScheduleTeamModel("", "", "", "",[]));
 
             constructor() {
                 var self = this;
@@ -69,13 +71,18 @@ module nts.uk.at.view.ksu001.la {
                     selectedCode: self.selectedCode,
                     isDialog: false
                 };
+                
             }
 
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 var dfd = $.Deferred();
+                let baseDateTemp = nts.uk.ui.windows.getShared("baseDate").split('T');  
+                let temp = baseDateTemp[0].split('-');
+                let baseDate = temp[0]+'/'+temp[1]+'/'+temp[2];
+                self.baseDate(baseDate);
                 blockUI.invisible();
-                let dateRequest: any = {baseDate: "2020/08/04"};                
+                let dateRequest: any = {baseDate: self.baseDate()};                
                 service.findWorkplaceGroup(dateRequest).done((x: WorkplaceGroup) => {
                     let workplaceGroup = ko.toJS(x);
                     self.workplaceGroupName(workplaceGroup.workplaceGroupName);
@@ -99,7 +106,7 @@ module nts.uk.at.view.ksu001.la {
             private getEmpOrgInfo(): void {
                 const self = this;
                 let request:any = {};
-                request.baseDate = "2020/08/04";
+                request.baseDate = self.baseDate();
                 request.workplaceGroupId = self.workplaceGroupId(); 
 
                 service.findEmpOrgInfo(request).done((dataAll: Array<ItemModel>)=>{

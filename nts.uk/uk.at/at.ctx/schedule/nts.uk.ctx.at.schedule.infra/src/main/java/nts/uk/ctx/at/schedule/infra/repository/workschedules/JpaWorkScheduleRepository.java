@@ -9,6 +9,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBasicInfo;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBasicInfoPK;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -174,4 +175,14 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			this.commandProxy().update(dataUpdate);
 		}
 	}
+
+	@Override
+	public void delete(String sid, GeneralDate ymd) {
+		Optional<WorkSchedule> optWorkSchedule = this.get(sid, ymd);
+		if(optWorkSchedule.isPresent()){
+			this.commandProxy().remove(KscdtSchBasicInfo.class, new KscdtSchBasicInfoPK(sid, ymd));
+		}	
+	}
+
+
 }
