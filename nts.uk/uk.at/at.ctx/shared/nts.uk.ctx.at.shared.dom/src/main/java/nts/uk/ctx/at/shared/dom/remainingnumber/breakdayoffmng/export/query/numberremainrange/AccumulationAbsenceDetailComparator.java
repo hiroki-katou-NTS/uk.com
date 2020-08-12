@@ -17,10 +17,6 @@ public class AccumulationAbsenceDetailComparator implements Comparator<Accumulat
 		}
 		if (!comDay1.getDayoffDate().isPresent() && !comDay2.getDayoffDate().isPresent())
 			return 0;
-		if (!comDay1.getDayoffDate().isPresent())
-			return 1;
-		if (!comDay2.getDayoffDate().isPresent())
-			return -1;
 
 		return comDay1.getDayoffDate().get().compareTo(comDay2.getDayoffDate().get());
 	}

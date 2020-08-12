@@ -20,6 +20,12 @@ public enum DayOffError {
 	/**
 	 * 相殺できないエラー
 	 */
-	OFFSETNUMBER(2);
+	OFFSETNUMBER(2),
+	
+	/**
+	 * 先取り制限エラー
+	 */
+	PREFETCH_ERROR(3);
+	
 	public final Integer value;
 }

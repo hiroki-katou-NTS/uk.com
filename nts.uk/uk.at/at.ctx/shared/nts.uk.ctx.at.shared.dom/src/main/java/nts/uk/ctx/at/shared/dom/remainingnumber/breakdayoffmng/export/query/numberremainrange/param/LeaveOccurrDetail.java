@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
  * 休暇発生明細
  */
 @Getter
-public class LeaveOccurrDetail{
+public class LeaveOccurrDetail extends AccumulationAbsenceDetail {
 
 	/**
 	 * 期限日
@@ -30,8 +30,11 @@ public class LeaveOccurrDetail{
 	@Setter
 	private Optional<GeneralDate> extinctionDate;
 
-	public LeaveOccurrDetail(GeneralDate deadline, DigestionAtr digestionCate,
+	public LeaveOccurrDetail(AccumulationAbsenceDetail detail, GeneralDate deadline, DigestionAtr digestionCate,
 			Optional<GeneralDate> extinctionDate) {
+		super(new AccuVacationBuilder(detail.getEmployeeId(), detail.getDateOccur(), detail.getOccurrentClass(),
+				detail.getDataAtr(), detail.getManageId()).numberOccurren(detail.getNumberOccurren())
+						.unbalanceNumber(detail.getUnbalanceNumber()));
 		this.deadline = deadline;
 		this.digestionCate = digestionCate;
 		this.extinctionDate = extinctionDate;

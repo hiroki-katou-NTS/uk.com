@@ -8,6 +8,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.InterimMngParamCommon;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
@@ -34,8 +35,8 @@ public class AbsRecMngInPeriodRefactParamInput extends InterimMngParamCommon {
 	public AbsRecMngInPeriodRefactParamInput(String cid, String sid, DatePeriod dateData, GeneralDate screenDisplayDate,
 			boolean mode, boolean replaceChk, List<InterimAbsMng> useAbsMng, List<InterimRemain> interimMng,
 			List<InterimRecMng> useRecMng, Optional<CompenLeaveAggrResult> optBeforeResult,
-			Optional<CreateAtr> creatorAtr, Optional<DatePeriod> processDate) {
-		super(cid, sid, dateData, mode, screenDisplayDate, replaceChk, interimMng, creatorAtr, processDate);
+			Optional<CreateAtr> creatorAtr, Optional<DatePeriod> processDate, FixedManagementDataMonth fixManaDataMonth) {
+		super(cid, sid, dateData, mode, screenDisplayDate, replaceChk, interimMng, creatorAtr, processDate, fixManaDataMonth);
 		this.useAbsMng = useAbsMng;
 		this.useRecMng = useRecMng;
 		this.optBeforeResult = optBeforeResult;

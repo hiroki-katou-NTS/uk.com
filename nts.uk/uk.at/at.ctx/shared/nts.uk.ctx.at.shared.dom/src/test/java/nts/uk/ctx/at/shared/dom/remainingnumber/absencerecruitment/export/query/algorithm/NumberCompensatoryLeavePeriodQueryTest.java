@@ -22,7 +22,6 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.PauseError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
@@ -33,6 +32,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataDaysAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQueryTest;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.VacationDetails;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
@@ -152,7 +152,8 @@ public class NumberCompensatoryLeavePeriodQueryTest {
 		AbsRecMngInPeriodRefactParamInput inputParam = new AbsRecMngInPeriodRefactParamInput(CID, SID,
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)),
 				GeneralDate.ymd(2019, 11, 30), false, false, useAbsMng, interimMng, useRecMng,
-				Optional.of(compenLeaveAggrResult), Optional.empty(), Optional.empty());
+				Optional.of(compenLeaveAggrResult), Optional.empty(), Optional.empty(),
+				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 
 		CompenLeaveAggrResult resultActual = NumberCompensatoryLeavePeriodQuery.process(require, inputParam);
 
@@ -160,10 +161,10 @@ public class NumberCompensatoryLeavePeriodQueryTest {
 		// "occurrenceDay", "dayUse", "carryoverDay", "nextDay", "lstSeqVacation",
 		// "pError"})
 		CompenLeaveAggrResult resultExpected = new CompenLeaveAggrResult(new VacationDetails(new ArrayList<>()),
-				new ReserveLeaveRemainingDayNumber(-1.0), new ReserveLeaveRemainingDayNumber(0.0),
-				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(4.0),
-				new ReserveLeaveRemainingDayNumber(-1.0), Finally.of(GeneralDate.ymd(2020, 11, 1)), new ArrayList<>(),
-				Arrays.asList(PauseError.PAUSEREMAINNUMBER));
+				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(0.0),
+				new ReserveLeaveRemainingDayNumber(1.0), new ReserveLeaveRemainingDayNumber(4.0),
+				new ReserveLeaveRemainingDayNumber(0.0), Finally.of(GeneralDate.ymd(2020, 11, 1)), new ArrayList<>(),
+				Arrays.asList());
 
 		assertData(resultActual, resultExpected);
 
@@ -231,16 +232,16 @@ public class NumberCompensatoryLeavePeriodQueryTest {
 		AbsRecMngInPeriodRefactParamInput inputParam = new AbsRecMngInPeriodRefactParamInput(CID, SID,
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)),
 				GeneralDate.ymd(2019, 11, 30), false, false, useAbsMng, interimMng, useRecMng, Optional.empty(),
-				Optional.empty(), Optional.empty());
+				Optional.empty(), Optional.empty(), new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 
 		CompenLeaveAggrResult resultActual = NumberCompensatoryLeavePeriodQuery.process(require, inputParam);
 		// @ConstructorProperties(value={"vacationDetails", "remainDay", "unusedDay",
 		// "occurrenceDay", "dayUse", "carryoverDay", "nextDay", "lstSeqVacation",
 		// "pError"})
 		CompenLeaveAggrResult resultExpected = new CompenLeaveAggrResult(new VacationDetails(new ArrayList<>()),
-				new ReserveLeaveRemainingDayNumber(1.0), new ReserveLeaveRemainingDayNumber(0.0),
-				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(2.0),
-				new ReserveLeaveRemainingDayNumber(1.0), Finally.of(GeneralDate.ymd(2020, 11, 1)), new ArrayList<>(),
+				new ReserveLeaveRemainingDayNumber(2.0), new ReserveLeaveRemainingDayNumber(0.0),
+				new ReserveLeaveRemainingDayNumber(1.0), new ReserveLeaveRemainingDayNumber(2.0),
+				new ReserveLeaveRemainingDayNumber(2.0), Finally.of(GeneralDate.ymd(2020, 11, 1)), new ArrayList<>(),
 				new ArrayList<>());
 
 		assertData(resultActual, resultExpected);
@@ -339,7 +340,8 @@ public class NumberCompensatoryLeavePeriodQueryTest {
 		AbsRecMngInPeriodRefactParamInput inputParam = new AbsRecMngInPeriodRefactParamInput(CID, SID,
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)),
 				GeneralDate.ymd(2019, 11, 30), true, true, useAbsMng, interimMng, useRecMng,
-				Optional.of(compenLeaveAggrResult), Optional.empty(), Optional.empty());
+				Optional.of(compenLeaveAggrResult), Optional.empty(), Optional.empty(),
+				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 
 		CompenLeaveAggrResult resultActual = NumberCompensatoryLeavePeriodQuery.process(require, inputParam);
 
@@ -347,10 +349,10 @@ public class NumberCompensatoryLeavePeriodQueryTest {
 		// "occurrenceDay", "dayUse", "carryoverDay", "nextDay", "lstSeqVacation",
 		// "pError"})
 		CompenLeaveAggrResult resultExpected = new CompenLeaveAggrResult(new VacationDetails(new ArrayList<>()),
-				new ReserveLeaveRemainingDayNumber(-1.0), new ReserveLeaveRemainingDayNumber(1.0),
+				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(0.0),
 				new ReserveLeaveRemainingDayNumber(4.5), new ReserveLeaveRemainingDayNumber(2.5),
 				new ReserveLeaveRemainingDayNumber(1.0), Finally.of(GeneralDate.ymd(2020, 11, 1)), new ArrayList<>(),
-				Arrays.asList(PauseError.PAUSEREMAINNUMBER));
+				Arrays.asList());
 
 		assertData(resultActual, resultExpected);
 
