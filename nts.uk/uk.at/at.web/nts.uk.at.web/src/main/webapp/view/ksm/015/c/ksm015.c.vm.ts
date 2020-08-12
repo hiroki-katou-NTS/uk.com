@@ -247,7 +247,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 								
 								bundledErrors.push({
 	                            message: dataWkp.code + ' ' + dataWkp.name,
-	                            messageId: status,
+	                            messageId: nts.uk.resource.getText('KSM015_26'),
 	                            supplements: {}
                       			});
 							});
