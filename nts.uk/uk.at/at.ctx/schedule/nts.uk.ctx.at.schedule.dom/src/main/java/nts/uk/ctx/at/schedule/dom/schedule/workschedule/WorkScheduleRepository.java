@@ -33,6 +33,8 @@ public interface WorkScheduleRepository {
 	 */
 	
 	void update(WorkSchedule workSchedule);
+	/** Delete (勤務予定) **/
+	void delete(String sid , GeneralDate ymd);
 	
 }
 

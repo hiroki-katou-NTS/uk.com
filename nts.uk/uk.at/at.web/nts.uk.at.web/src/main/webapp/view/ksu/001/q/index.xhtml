@@ -19,42 +19,6 @@
 					height : 490
 				};
 			</script>
-			<style>
-table {
-	border: 1px solid black;
-	width: 100%;
-	border-style: double;
-	border-color: darkgrey;
-}
-
-th, td {
-	width: 110px;
-	border: 1px solid black;
-	border-color: darkgrey;
-	padding-right: 10px;
-	height: 22px;
-}
-
-thead>tr {
-	position: relative;
-	display: inherit;
-}
-
-thead>tr>th {
-	background-color: lightgreen;
-}
-
-input {
-	border: 1px solid black;
-	border-color: darkgrey;
-}
-
-tbody {
-	display: block;
-	height: 232px;
-	overflow: auto;
-}
-</style>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.q.main.css" />
 			<com:scriptfile path="ksu001.q.service.js" />
@@ -96,12 +60,13 @@ tbody {
 										enable: true,
 										editable: false,
 										required: true,
-										width: 250,
+										width: 265,
+										visibleItemsCount: 10,
 										columns: [
-											{ prop: 'code', length: 3 },
-											{ prop: 'name', length: 3 },
-											{ prop: 'attribute', length: 3 },
-											{ prop: 'unit', length: 3 },
+											{ prop: 'code', length: 2 },
+											{ prop: 'name', length: 2 },
+											{ prop: 'attribute', length: 2 },
+											{ prop: 'unit', length: 2 },
 										]}"></div>
 						</div>
 						<div style="display: flex;">
@@ -121,7 +86,7 @@ tbody {
 											<td data-bind="text: date"></td>
 											<td
 												data-bind="visible: $parent.check, with: $parent.yearmontheditor"><input
-												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 100px; height: 12px;"
+												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 118px; height: 20px;"
 												data-bind="ntsNumberEditor: {
 													value: $parent.value,
 													constraint: 'ExtBudgetTime',
@@ -131,7 +96,7 @@ tbody {
 													readonly: true}" /></td>
 											<td
 												data-bind="visible: $parent.check1, with: $parent.currencyeditor"><input
-												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 100px; height: 12px;"
+												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 118px; height: 20px;"
 												data-bind="ntsNumberEditor: {
 													value: $parent.value,
 													constraint: 'ExtBudgetMoney',
@@ -141,7 +106,7 @@ tbody {
 													readonly: true}" /></td>
 											<td
 												data-bind="visible: $parent.check2, with: $parent.numbereditor"><input
-												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 100px; height: 12px;"
+												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 118px; height: 20px;"
 												data-bind="ntsNumberEditor: {
 													value: $parent.value,
 													constraint: 'ExtBudgetNumberPerson',
@@ -151,7 +116,7 @@ tbody {
 													readonly: true}" /></td>
 											<td
 												data-bind="visible: $parent.check3, with: $parent.numbereditor"><input
-												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 100px; height: 12px;"
+												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 118px; height: 20px;"
 												data-bind="ntsNumberEditor: {
 													value: $parent.value,
 													constraint: 'ExtBudgetNumericalVal',

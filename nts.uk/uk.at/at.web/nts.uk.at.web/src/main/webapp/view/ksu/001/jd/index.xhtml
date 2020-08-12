@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 600, height: 300 };</script>
+			<script>var dialogSize = { width: 650, height: 270 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.jd.main.css" />
 			<com:scriptfile path="ksu001.jd.vm.js" />
@@ -19,18 +19,20 @@
 			<div id="contents-area">
 				<table>
 					<tr>
-						<td><span class="label">#{i18n.getText('KSU001_153')}</span>
+						<td style="width: 100px"><span class="label">#{i18n.getText('KSU001_153')}</span>
 						</td>
-						<td>
+						<td style="width: 130px">
 							<div data-bind="ntsFormLabel: {required: false}">
 								#{i18n.getText('KSU001_154')}</div>
 						</td>
 						<td><span data-bind="text: orgName"></span></td>
 					</tr>
+				</table>
+				<table style="margin-top:10px">
 					<tr>
-						<td><span class="label">#{i18n.getText('KSU001_155')}</span>
+						<td style="width: 100px"><span class="label">#{i18n.getText('KSU001_155')}</span>
 						</td>
-						<td>
+						<td style="width: 130px">
 							<div data-bind="ntsFormLabel: {required: true}">
 								#{i18n.getText('KSU001_156')}</div>
 							<!-- <div data-bind="ntsFormLabel: {constraint: 'LayoutCode_シフトパレット名称',required: true}">
@@ -50,7 +52,7 @@
 										{ prop: 'name', length: 8 },
 								]}"></div>
 						</td>
-						<td><input id="input-desName"
+						<td style="width: 150px; text-align: center;"><input id="input-desName" style="width: 70px" 
 							data-bind="ntsTextEditor: 
 							{value: desName, enable: true, required: true, name: '#[KSU001_160]'}" />
 						</td>
@@ -61,12 +63,14 @@
 					</tr>
 				</table>
 			</div>
-			<div id="functions-area-bottom">
+			<div id="functions-area-bottom" style="height: 80px;">
 				<div
 					data-bind="ntsCheckBox: { checked: checked, enable: true, style: 'warnpanel', text: '#{i18n.getText('KSU001_157')}' }"></div>
+				<div style="margin-top:10px;">
 				<button class="proceed"
 					data-bind="enable: true, click: decision">#{i18n.getText('KSU001_158')}</button>
 				<button data-bind="click: closeDialog">#{i18n.getText('KSU001_159')}</button>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

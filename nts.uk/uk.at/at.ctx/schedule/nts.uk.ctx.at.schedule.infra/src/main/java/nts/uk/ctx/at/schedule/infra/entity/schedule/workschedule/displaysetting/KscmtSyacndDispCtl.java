@@ -2,13 +2,10 @@ package nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.displaysetting
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.CascadeType;
+import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -33,7 +30,7 @@ public class KscmtSyacndDispCtl extends ContractUkJpaEntity implements Serializa
 
 	/** 表示区分 **/
 	@Column(name = "DISP_ATR")
-	public boolean dispAtr;
+	public int dispAtr;
 
 	/** 表示記号 **/
 	@Column(name = "SYNAME")
@@ -44,13 +41,19 @@ public class KscmtSyacndDispCtl extends ContractUkJpaEntity implements Serializa
 		return this.pk;
 	}
 
-	@OneToMany(targetEntity = KscmtSyacndDispCtlQua.class, mappedBy = "kscmtSyacndDispCtl", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinTable(name = "KSCMT_PALETTE_ORG_COMBI_DTL")
-	public List<KscmtSyacndDispCtlQua> ctlQuas;
+	// @OneToMany(targetEntity = KscmtSyacndDispCtlQua.class, mappedBy =
+	// "kscmtSyacndDispCtl", cascade = CascadeType.ALL, orphanRemoval = true,
+	// fetch = FetchType.LAZY)
+	// @JoinTable(name = "KSCMT_SYACND_DISPCTL_QUA")
+	// public List<KscmtSyacndDispCtlQua> ctlQuas;
 
-	public static KscmtSyacndDispCtl toEntity(DisplayControlPersonalCondition dom) {
-		//KscmtSyacndDispCtlPK dispCtlPK = new KscmtSyacndDispCtlPK(dom.getCompanyID(), dom.)
-		KscmtSyacndDispCtl dispCtl = new KscmtSyacndDispCtl();
-		return dispCtl;
+	public static List<KscmtSyacndDispCtl> toEntities(DisplayControlPersonalCondition dom) {
+		String qualificationMark = dom.getOtpWorkscheQualifi().isPresent()
+				? dom.getOtpWorkscheQualifi().get().getQualificationMark().v() : null;
+		return dom.getListConditionDisplayControl().stream().map(i -> {
+			KscmtSyacndDispCtlPK dispCtlPK = new KscmtSyacndDispCtlPK(dom.getCompanyID(), i.getConditionATR().value);
+			return new KscmtSyacndDispCtl(dispCtlPK, i.getDisplayCategory().value, qualificationMark);
+
+		}).collect(Collectors.toList());
 	}
 }

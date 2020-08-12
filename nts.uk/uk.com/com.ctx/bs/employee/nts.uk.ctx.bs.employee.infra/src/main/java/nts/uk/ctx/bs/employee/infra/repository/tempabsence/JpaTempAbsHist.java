@@ -507,10 +507,10 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	}
 	
 	
-	private static final String GET_DATA_BY_LST_HISTID = " SELECT h FROM BsymtTempAbsHisItem h  " 
+	private static final String GET_DATA_BY_LST_HISTID = " SELECT k FROM BsymtTempAbsHistory k  " 
 									 + " WHERE k.cid = :cid "   
 							         + " AND k.sid = :sid "
-						             + " AND h.histId IN :lstHistID ";	
+						             + " AND k.histId IN :lstHistID ";	
 	@Override
 	public void update(TempAbsenceHistory tempAbsenceHistory, TempAbsenceHisItem tempAbsenceHisItem) {
 		List<String> lstHistIDNew = tempAbsenceHistory.getHistoryIds();
@@ -522,6 +522,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 		List<BsymtTempAbsHistory> lstOldEntity = this.queryProxy().query(GET_DATA_BY_LST_HISTID, BsymtTempAbsHistory.class)
 																.setParameter("cid", tempAbsenceHistory.getCompanyId())	
 																.setParameter("sid", tempAbsenceHistory.getEmployeeId())
+																.setParameter("lstHistID", lstHistIDNew)
 															.getList();
 		List<String> lstHistIDOld = lstOldEntity.stream().map(x->x.getHistId()).collect(Collectors.toList());
 		List<String> lstHistIdUpdate = new ArrayList<>();
@@ -641,9 +642,9 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	@Override
 	public List<TempAbsenceHisItem> specifyHisAndFrameNotGetHisItem(List<String> lstHisId,
 			List<TempAbsenceFrameNo> lstTempAbsenceFrNo) {
-		if (lstHisId.isEmpty()) {
-			return new ArrayList<>();
-		}
+        if (lstHisId.isEmpty()) {
+            return new ArrayList<>();
+        }
 		List<Integer> lstTempAbsenceFrNos = lstTempAbsenceFrNo.stream().map(item -> item.v().intValue()).collect(Collectors.toList());
 		List<TempAbsenceHisItem> data = new ArrayList<TempAbsenceHisItem>();
 		if (lstTempAbsenceFrNo.isEmpty()) {

@@ -57,3 +57,37 @@
 	vertical-align: top
 }
 
+table {
+	border: 1px solid black;
+	width: 100%;
+	border-style: double;
+	border-color: darkgrey;
+}
+
+th, td {
+	width: 121px;
+	border: 1px solid black;
+	border-color: darkgrey;
+	padding-right: 0px;
+	height: 21px;
+}
+
+thead>tr {
+	position: relative;
+	display: inherit;
+}
+
+thead>tr>th {
+	background-color: lightgreen;
+}
+
+input {
+	border: 1px solid black;
+	border-color: darkgrey;
+}
+
+tbody {
+	display: block;
+	height: 232px;
+	overflow: auto;
+}

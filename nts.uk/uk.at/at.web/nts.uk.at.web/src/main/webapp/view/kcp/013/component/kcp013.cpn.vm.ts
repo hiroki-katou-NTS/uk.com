@@ -21,14 +21,12 @@ module kcp013.component {
 					width: 450,
 					enable: isEnable,
 					columns: [
-					{ prop: 'showNone', length: 0 },
-					{ prop: 'showDeferred', length: 0 },
-					{ prop: 'code', length: 4 },
-					{ prop: 'name', length: 4 },
-					{ prop: 'tzStartToEnd1', length: 5 },
-					{ prop: 'tzStartToEnd2', length: 5 },
-					{ prop: 'workStyleClassfication', length: 5 },
-					{ prop: 'remark', length: 5 },]}">
+					{ prop: 'code', length: 1 },
+					{ prop: 'name', length: 1 },
+					{ prop: 'tzStartToEnd1', length: 1 },
+					{ prop: 'tzStartToEnd2', length: 1 },
+					{ prop: 'workStyleClassfication', length: 1 },
+					{ prop: 'remark', length: 1 },]}">
 				</div>
 				<div data-bind="ntsCheckBox: { checked: checked, text: nts.uk.resource.getText('KCP013_3')}"></div>
 			</div>
@@ -40,7 +38,7 @@ module kcp013.component {
 		listWorkHours: KnockoutObservableArray<Input>;
 		selectedCode: KnockoutObservable<string>;
 		fillter: boolean;
-		workPlaceId: string;
+		workPlaceId: KnockoutObservable<string>;
 		checked: KnockoutObservable<boolean>
 		selectItem: any;
 		showNone: KnockoutObservable<string>;
@@ -52,7 +50,7 @@ module kcp013.component {
 			self.listWorkHours = ko.observableArray([]);
 			self.selectedCode = ko.observable('');
 			self.fillter = param.fillter;
-			self.workPlaceId = param.workPlaceId;
+			self.workPlaceId = ko.observable(param.workPlaceId);
 			self.selectItem = param.initiallySelected;
 			self.showNone = param.showNone;
 			self.showDeferred = param.showDeferred;
@@ -77,7 +75,8 @@ module kcp013.component {
 					return;
 				} else {
 					let obj = _.filter(self.listWorkHours(), function(o) { return o.code === codeMap; });
-					callback(obj);
+					let listWorkTime = self.listWorkHours();
+					callback(obj, listWorkTime);
 				}
 			})
 		}
@@ -118,7 +117,8 @@ module kcp013.component {
 				datas.push(new Input('', nts.uk.resource.getText('KCP013_6'), '', '', '', '', '', '', '', '1'));
 			}
 			if (param.showNone == true && param.showDeferred == true) {
-				datas.push(new Input('', nts.uk.resource.getText('KCP013_5') + ' ' + nts.uk.resource.getText('KCP013_6'), '', '', '', '', '', '', '', '1'));
+				datas.push(new Input('', nts.uk.resource.getText('KCP013_5'), '', '', '', '', '', '', '', '1'));
+				datas.push(new Input(' ', nts.uk.resource.getText('KCP013_6'), '', '', '', '', '', '', '', '1'));
 			}
 
 			data.forEach((x) => {
@@ -129,7 +129,7 @@ module kcp013.component {
 			self.listWorkHours(datas);
 
 		}
-	
+
 		public checkSelectedItem(param) {
 			let self = this;
 			if (self.selectItem instanceof Array) {
@@ -160,7 +160,7 @@ module kcp013.component {
 
 			if (showNaci == '1') {
 				this.code = code;
-				this.name = name + ' ' + tzStart1;
+				this.name = name;
 				this.tzStartToEnd1 = '';
 				this.tzStartToEnd2 = '';
 				this.workStyleClassfication = workStyleClassfication;
@@ -178,16 +178,9 @@ module kcp013.component {
 				} else {
 					this.tzStartToEnd2 = '';
 				}
-				if (workStyleClassfication === '通常勤務・変形労働用') {
-					this.workStyleClassfication = '就業時間帯の設定方法';
-				}
-				if (workStyleClassfication === 'フレックス勤務用') {
-					this.workStyleClassfication = 'フレックス勤務用';
-				}
+				this.workStyleClassfication = workStyleClassfication;
 				this.remark = remark;
 			}
-
-
 
 		}
 
