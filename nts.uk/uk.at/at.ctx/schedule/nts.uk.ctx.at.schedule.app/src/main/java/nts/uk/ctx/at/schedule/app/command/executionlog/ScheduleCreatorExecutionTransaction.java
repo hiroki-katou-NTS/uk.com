@@ -1323,7 +1323,7 @@ public class ScheduleCreatorExecutionTransaction {
 				    } else {
 				    	// データがない
 				    	// 「個人勤務日区分別勤務」。休日時を取得する
-				    	workInformation =  new WorkInformation(itemDto.get().getWorkCategory().getHolidayTime().getWorkTimeCode().get(), 
+				    	workInformation =  new WorkInformation(itemDto.get().getWorkCategory().getHolidayTime().getWorkTimeCode().isPresent() ? itemDto.get().getWorkCategory().getHolidayTime().getWorkTimeCode().get() : null, 
 				    			itemDto.get().getWorkCategory().getHolidayTime().getWorkTypeCode().get());
 				    }
 				    return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
