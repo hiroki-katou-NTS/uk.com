@@ -404,7 +404,7 @@ module nts.uk.at.kdp003.a {
 					return vm.$window.modal('at', DIALOG.F, {
 						mode: 'employee',
 						companyId: data.CID,
-						employee: employee ? { code: employee.employeeCode, name: employee.employeeName } : nameSelectArt ? null : { code: data.SCD }
+						employee: null
 					});
 				})
 				.then((data: f.TimeStampLoginData) => {
@@ -464,13 +464,6 @@ module nts.uk.at.kdp003.a {
 								}
 							});
 						}
-					} else if (!!data && !ko.unwrap(vm.employeeData.nameSelectArt)) {
-						_.extend(params, {
-							employee: {
-								id: data.SID,
-								code: data.SCD
-							}
-						});
 					}
 
 					return vm.$window.modal('at', DIALOG.F, params);
