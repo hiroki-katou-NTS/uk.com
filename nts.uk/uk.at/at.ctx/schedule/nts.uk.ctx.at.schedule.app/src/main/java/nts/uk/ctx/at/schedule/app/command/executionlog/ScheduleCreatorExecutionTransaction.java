@@ -634,7 +634,7 @@ public class ScheduleCreatorExecutionTransaction {
 						new WorkInfoOfDailyAttendance(new WorkInformation("", ""), 
 								new WorkInformation("", ""), 
 								CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use, 
-								nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek.valueOf(dateInPeriod.dayOfWeek()), new ArrayList<>()), 
+								nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek.valueOf(dateInPeriod.dayOfWeek() - 1), new ArrayList<>()), 
 						null, 
 						new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty())
 				, workingConditionItem,
@@ -1323,7 +1323,7 @@ public class ScheduleCreatorExecutionTransaction {
 				    } else {
 				    	// データがない
 				    	// 「個人勤務日区分別勤務」。休日時を取得する
-				    	workInformation =  new WorkInformation(itemDto.get().getWorkCategory().getHolidayTime().getWorkTimeCode().get(), 
+				    	workInformation =  new WorkInformation(itemDto.get().getWorkCategory().getHolidayTime().getWorkTimeCode().isPresent() ? itemDto.get().getWorkCategory().getHolidayTime().getWorkTimeCode().get() : null, 
 				    			itemDto.get().getWorkCategory().getHolidayTime().getWorkTypeCode().get());
 				    }
 				    return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
