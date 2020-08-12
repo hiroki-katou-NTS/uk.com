@@ -6,12 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
-import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationDisplayAtr;
-import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -49,20 +44,21 @@ public class AppListExtractConditionDto {
 	private String empRefineCondition;
 	
 	public AppListExtractCondition convertDtotoDomain(AppListExtractConditionDto dto){
-		String dateFormat = "yyyy/MM/dd";
-		return new AppListExtractCondition(
-				GeneralDate.fromString(dto.getStartDate(), dateFormat),
-				GeneralDate.fromString(dto.getEndDate(), dateFormat),
-				EnumAdaptor.valueOf(dto.getAppListAtr(),ApplicationListAtr.class),
-				dto.getAppType() == -1 ? null : EnumAdaptor.valueOf(dto.getAppType(), ApplicationType.class),
-				dto.isUnapprovalStatus(),
-				dto.isApprovalStatus(),
-				dto.isDenialStatus(),
-				dto.isAgentApprovalStatus(),
-				dto.isRemandStatus(),
-				dto.isCancelStatus(),
-				EnumAdaptor.valueOf(dto.getAppDisplayAtr(), ApplicationDisplayAtr.class),
-				dto.getListEmployeeId(),
-				dto.getEmpRefineCondition());
+//		String dateFormat = "yyyy/MM/dd";
+//		return new AppListExtractCondition(
+//				GeneralDate.fromString(dto.getStartDate(), dateFormat),
+//				GeneralDate.fromString(dto.getEndDate(), dateFormat),
+//				EnumAdaptor.valueOf(dto.getAppListAtr(),ApplicationListAtr.class),
+//				dto.getAppType() == -1 ? null : EnumAdaptor.valueOf(dto.getAppType(), ApplicationType.class),
+//				dto.isUnapprovalStatus(),
+//				dto.isApprovalStatus(),
+//				dto.isDenialStatus(),
+//				dto.isAgentApprovalStatus(),
+//				dto.isRemandStatus(),
+//				dto.isCancelStatus(),
+//				EnumAdaptor.valueOf(dto.getAppDisplayAtr(), ApplicationDisplayAtr.class),
+//				dto.getListEmployeeId(),
+//				dto.getEmpRefineCondition());
+		return null;
 	}
 }

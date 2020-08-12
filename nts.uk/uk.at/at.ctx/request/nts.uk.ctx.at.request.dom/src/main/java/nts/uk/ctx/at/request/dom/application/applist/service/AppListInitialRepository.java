@@ -9,6 +9,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWorkFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOverTimeInfoFull;
+import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -46,8 +47,7 @@ public interface AppListInitialRepository {
 	 * @param lstAppType
 	 * @return
 	 */
-	public AppListOutPut getApplicationListByApp(AppListExtractCondition param, int appReasonDisAtr,
-			int device, List<Integer> lstAppType);
+	public AppListInfo getApplicationListByApp(AppListExtractCondition param, int device, AppListInfo appListInfo);
 	/**
 	 * 2.1 - 申請一覧対象申請者取得
 	 * @param 抽出条件　param
