@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.command.kdp.kdp004.a.StampButtonCommand;
@@ -27,8 +28,11 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
 import nts.uk.ctx.at.request.app.find.setting.company.displayname.AppDispNameDto;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuPub;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApplicationType;
@@ -44,10 +48,23 @@ import nts.uk.shr.com.context.AppContexts;
 public class GetOmissionContent {
 
 	@Inject
-	private StampPromptAppRepository stamPromptAppRepo;
+	private ClosureService closureService;
 
 	@Inject
-	private ClosureService closureService;
+	private StandardMenuPub menuPub;
+
+	@Inject
+	private AppDispNameRepository appDispRepo;
+
+	@Inject
+	private ClosureRepository closureRepo;
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepo;
+	@Inject
+	private ShareEmploymentAdapter shareEmploymentAdapter;
+
+	@Inject
+	private StampPromptAppRepository stamPromptAppRepo;
 
 	@Inject
 	private ErAlApplicationRepository erAlApplicationRepo;
@@ -58,18 +75,12 @@ public class GetOmissionContent {
 	@Inject
 	private StampSetPerRepository stampSetPerRepo;
 
-	@Inject
-	private StandardMenuPub menuPub;
-
-	@Inject
-	private AppDispNameRepository appDispRepo;
-
 	public GetOmissionContentDto getOmission(StampButtonCommand query) {
 
 		GetOmissionContentDto result = new GetOmissionContentDto();
 
 		CheckAttdErrorAfterStampRequiredImpl require = new CheckAttdErrorAfterStampRequiredImpl(stamPromptAppRepo,
-				closureService, erAlApplicationRepo, employeeDailyPerErrorRepo, stampSetPerRepo);
+				erAlApplicationRepo, employeeDailyPerErrorRepo, stampSetPerRepo);
 
 		// 1.require, 社員ID, 打刻手段, 打刻ボタン
 		List<DailyAttdErrorInfo> errorInfo = CheckAttdErrorAfterStampService.get(require,
@@ -125,9 +136,6 @@ public class GetOmissionContent {
 		private StampPromptAppRepository stamPromptAppRepo;
 
 		@Inject
-		private ClosureService closureService;
-
-		@Inject
 		private ErAlApplicationRepository erAlApplicationRepo;
 
 		@Inject
@@ -143,12 +151,16 @@ public class GetOmissionContent {
 
 		@Override
 		public DatePeriod findClosurePeriod(String employeeId, GeneralDate baseDate) {
-			return closureService.findClosurePeriod(employeeId, baseDate);
+			return ClosureService.findClosurePeriod(
+					ClosureService.createRequireM3(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),
+					new CacheCarrier(), employeeId, baseDate);
 		}
 
 		@Override
 		public Optional<ClosurePeriod> getClosurePeriod(String employeeId, GeneralDate baseDate) {
-			Closure closure = closureService.getClosureDataByEmployee(employeeId, baseDate);
+			Closure closure = ClosureService.getClosureDataByEmployee(
+					ClosureService.createRequireM3(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),
+					new CacheCarrier(), employeeId, baseDate);
 			if (closure == null)
 				return Optional.empty();
 			Optional<ClosurePeriod> closurePeriodOpt = closure.getClosurePeriodByYmd(baseDate);

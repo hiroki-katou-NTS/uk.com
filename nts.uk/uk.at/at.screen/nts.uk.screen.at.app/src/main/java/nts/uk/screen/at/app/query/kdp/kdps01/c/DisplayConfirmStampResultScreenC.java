@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -17,7 +18,6 @@ import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.DisplayScreenStampingResultDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.DisplayScreenStampingResultFinder;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
-import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
@@ -26,11 +26,16 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ch
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.IGetDailyLock;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.StatusActualDay;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.ConfirmStatusOfDayService;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -45,9 +50,6 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class DisplayConfirmStampResultScreenC {
-
-	@Inject
-	private ClosureService closereSv;
 
 	@Inject
 	private SyWorkplaceAdapter syWorkplaceAdapter;
@@ -78,6 +80,15 @@ public class DisplayConfirmStampResultScreenC {
 
 	@Inject
 	private EmployeeRecordAdapter sysEmpPub;
+
+	@Inject
+	private ClosureRepository closureRepo;
+
+	@Inject
+	private ClosureEmploymentRepository closureEmpRepo;
+
+	@Inject
+	private ShareEmploymentAdapter shrEmpAdapter;
 
 	/**
 	 * 打刻結果(スマホ)の確認及び実績の確認画面を取得する
@@ -110,7 +121,7 @@ public class DisplayConfirmStampResultScreenC {
 		// 2 require, ログイン会社ID, ログイン社員ID, 年月日
 		// 日の実績の確認状況を取得する
 
-		ConfirmStatusOfDayRequiredImpl required = new ConfirmStatusOfDayRequiredImpl(closereSv, syWorkplaceAdapter,
+		ConfirmStatusOfDayRequiredImpl required = new ConfirmStatusOfDayRequiredImpl(syWorkplaceAdapter,
 				confirmStatusActualDayChange, iGetDailyLock);
 
 		result.setConfirmResult(ConfirmStatusActualResultDto
@@ -170,9 +181,6 @@ public class DisplayConfirmStampResultScreenC {
 	private class ConfirmStatusOfDayRequiredImpl implements ConfirmStatusOfDayService.Require {
 
 		@Inject
-		private ClosureService closereSv;
-
-		@Inject
 		private SyWorkplaceAdapter syWorkplaceAdapter;
 
 		@Inject
@@ -183,7 +191,7 @@ public class DisplayConfirmStampResultScreenC {
 
 		@Override
 		public Closure getClosureDataByEmployee(String employeeId, GeneralDate baseDate) {
-			return closereSv.getClosureDataByEmployee(employeeId, baseDate);
+			return ClosureService.getClosureDataByEmployee(createImp(), new CacheCarrier(), employeeId, baseDate);
 		}
 
 		@Override
@@ -204,5 +212,27 @@ public class DisplayConfirmStampResultScreenC {
 					yearMonthOpt, dailyLockOpt);
 		}
 
+	}
+
+	private ClosureService.RequireM3 createImp() {
+
+		return new ClosureService.RequireM3() {
+
+			@Override
+			public Optional<Closure> closure(String companyId, int closureId) {
+				return closureRepo.findById(companyId, closureId);
+			}
+
+			@Override
+			public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
+				return closureEmpRepo.findByEmploymentCD(companyID, employmentCD);
+			}
+
+			@Override
+			public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
+					String employeeId, GeneralDate baseDate) {
+				return shrEmpAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
+			}
+		};
 	}
 }

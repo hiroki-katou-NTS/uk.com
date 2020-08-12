@@ -24,7 +24,10 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
@@ -62,20 +65,26 @@ public class SuppressingStampButton {
 
 	@Inject
 	private WorkingConditionService workingService;
+	
+	@Inject
+	private WorkingConditionRepository workingConditionRepository;
+	
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepository;
 
 	public StampToSuppress getSuppressingStampButton() {
 		// 1.取得する(Require, 社員ID, 打刻手段)
 
 		GetStampTypeToSuppressServiceImpl require = new GetStampTypeToSuppressServiceImpl(stampSetPerRepo,
 				settingsSmartphoneStampRepo, portalStampSettingsrepo, stampRecordRepo, stampRepo, stampCardRepo,
-				preRepo, workingService);
+				preRepo, workingService ,workingConditionRepository ,workingConditionItemRepository);
 
 		return GetStampTypeToSuppressService.get(require, AppContexts.user().employeeId(), StampMeans.SMART_PHONE);
 
 	}
 
 	@AllArgsConstructor
-	private class GetStampTypeToSuppressServiceImpl implements GetStampTypeToSuppressService.Require {
+	private class GetStampTypeToSuppressServiceImpl implements GetStampTypeToSuppressService.Require , WorkingConditionService.RequireM1 {
 
 		@Inject
 		private StampSetPerRepository stampSetPerRepo;
@@ -100,6 +109,12 @@ public class SuppressingStampButton {
 
 		@Inject
 		private WorkingConditionService workingService;
+		
+		@Inject
+		private WorkingConditionRepository workingConditionRepository;
+		
+		@Inject
+		private WorkingConditionItemRepository workingConditionItemRepository;
 
 		@Override
 		public List<StampCard> getListStampCard(String sid) {
@@ -119,7 +134,7 @@ public class SuppressingStampButton {
 
 		@Override
 		public Optional<WorkingConditionItem> findWorkConditionByEmployee(String employeeId, GeneralDate baseDate) {
-			return this.workingService.findWorkConditionByEmployee(employeeId, baseDate);
+			return workingService.findWorkConditionByEmployee(this, employeeId, baseDate);
 		}
 
 		@Override
@@ -141,6 +156,16 @@ public class SuppressingStampButton {
 		@Override
 		public Optional<PortalStampSettings> getPotalSettings(String comppanyID) {
 			return this.portalStampSettingsrepo.get(comppanyID);
+		}
+
+		@Override
+		public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
+			return workingConditionRepository.getBySidAndStandardDate(companyId, employeeId, baseDate);
+		}
+
+		@Override
+		public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
+			return workingConditionItemRepository.getByHistoryId(historyId);
 		}
 
 	}
