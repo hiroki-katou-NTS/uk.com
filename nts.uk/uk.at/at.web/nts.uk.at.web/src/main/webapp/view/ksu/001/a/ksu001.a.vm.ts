@@ -225,6 +225,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             self.dataCell = {};
             
+            self.enableBtnRedo(false);
+            self.enableBtnUndo(false);
+
+            $("#extable").on("extablecellupdated", (dataCell) => {
+                console.log(dataCell);
+                if (dataCell) {
+                    self.enableBtnRedo(true);
+                    self.enableBtnUndo(true);
+                } else {
+                    self.enableBtnRedo(false);
+                    self.enableBtnUndo(false);
+                }
+            });
         }
         // end constructor
         
@@ -259,7 +272,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 __viewContext.viewModel.viewAB.workPlaceId(data.dataBasicDto.workplaceId);
         
-                self.getSettingDisplayWhenStart();
+                self.getSettingDisplayWhenStart(viewMode);
                 
                  if (viewMode == 'shift') {
                     self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
@@ -327,7 +340,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.visibleBtnInput(false);
             service.getDataOfShiftMode(param).done((data: IDataStartScreen) => {
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
-                self.getSettingDisplayWhenStart();
+                self.getSettingDisplayWhenStart('shift');
                 
                 self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
                 // set data Header
@@ -370,7 +383,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.visibleBtnInput(false);
             service.getDataOfShortNameMode(param).done((data: IDataStartScreen) => {
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
-                self.getSettingDisplayWhenStart();
+                self.getSettingDisplayWhenStart('shortName');
                 // set data Header
                 self.bindingToHeader(data);
                 // set data Grid
@@ -395,7 +408,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.visibleBtnInput(true);
             service.getDataOfTimeMode(param).done((data: IDataStartScreen) => {
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
-                self.getSettingDisplayWhenStart();
+                self.getSettingDisplayWhenStart('time');
                 // set data Header
                 self.bindingToHeader(data);
                 // set data Grid
@@ -804,7 +817,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         /**
          * get setting ban dau
          */
-        getSettingDisplayWhenStart() {
+        getSettingDisplayWhenStart(viewMode) {
             let self = this;
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                 let userInfor: IUserInfor = JSON.parse(data);
@@ -822,6 +835,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.heightGridSetting(userInfor.heightGridSetting);
                     self.selectedTypeHeightExTable(2);
                     self.isEnableInputHeight(true);
+                }
+                
+                if (viewMode == 'time') {
+                    self.visibleBtnInput(true);
+                } else {
+                    self.visibleBtnInput(false);
                 }
                 
                 // enable| disable combobox workTime
@@ -1162,12 +1181,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (updateMiddle) {
                 $("#extable").exTable("updateTable", "middle", {} , middleContentUpdate);
             }
+            
+            $("#extable").exTable("mode", viewMode, 'stick', null, [{
+                    name: "BodyCellStyle",
+                    decorator: detailContentDeco
+            }]);
+            
             if (updateDetail) {
                 $("#extable").exTable("updateTable", "detail", detailHeaderUpdate, detailContentUpdate);
             }
             $("#extable").exTable("scrollBack", 0, { h: 1050 });
-            $("#extable").exTable("viewMode", viewMode);
-            $("#extable").exTable("updateMode", 'edit');
             
         }
 
@@ -1480,15 +1503,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.visibleBtnUndo(true);
             self.visibleBtnRedo(true);
             self.enableBtnUndo(true);
-            self.enableBtnRedo(true);
-            self.enableHelpBtn(true);
             
-//            $('#extable > div.ex-body-leftmost > table > tbody a').hover(
-//                function() {
-//                    $(this).addClass("hoverEmployeeName");
-//                }
-//            );
-
             nts.uk.ui.block.clear();
         }
 
@@ -1517,12 +1532,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             self.visibleBtnUndo(true);
             self.visibleBtnRedo(true);
-            self.enableBtnUndo(false);
-            self.enableBtnRedo(false);
             self.enableHelpBtn(false);
             
-//            $( "#extable > div.ex-body-leftmost > table > tbody a" ).off( "mouseenter mouseleave" );
-
             nts.uk.ui.block.clear();
         }
 
