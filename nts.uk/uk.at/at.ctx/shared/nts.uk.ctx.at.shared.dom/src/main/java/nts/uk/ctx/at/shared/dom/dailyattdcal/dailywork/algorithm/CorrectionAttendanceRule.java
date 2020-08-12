@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordConverter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.aftercorrectatt.CorrectionAfterTimeChange;
@@ -21,8 +22,9 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 
-	private DailyRecordToAttendanceItemConverter attendanceItemConvertFactory;
-
+	@Inject
+	private DailyRecordConverter attendanceItemConvertFactory;
+	
 	@Inject
 	private CorrectionAfterTimeChange correctionAfterTimeChange;
 
@@ -35,7 +37,7 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 
 		String companyId = AppContexts.user().companyId();
 
-		DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory.setData(domainDaily).completed();
+		DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory.createDailyConverter().setData(domainDaily).completed();
 		List<Integer> atendanceId = converter.editStates().stream().filter(x -> x.isHandCorrect())
 				.map(x -> x.getAttendanceItemId()).distinct().collect(Collectors.toList());
 
@@ -56,7 +58,7 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 		}
 
 		// 手修正を基に戻す
-		DailyRecordToAttendanceItemConverter afterConverter = attendanceItemConvertFactory.setData(afterDomain)
+		DailyRecordToAttendanceItemConverter afterConverter = attendanceItemConvertFactory.createDailyConverter().setData(afterDomain)
 				.completed();
 		afterConverter.merge(beforeItems);
 

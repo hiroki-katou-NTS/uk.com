@@ -69,6 +69,8 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 	@EmbeddedId
 	public KscdtSchBasicInfoPK pk;
 
+	@Column(name = "CID")
+	public String companyId;
 	/** "予定確定区分 ---true:確定済み---false:未確定" **/
 	@Column(name = "DECISION_STATUS")
 	public boolean confirmedATR;
@@ -103,9 +105,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 	@Column(name = "BACK_STRAIGHT_ATR")
 	public boolean backStraightAtr;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "basicInfo", orphanRemoval = true)
 	public KscdtSchTime kscdtSchTime;
 
 	@OneToMany(targetEntity = KscdtSchEditState.class, mappedBy = "kscdtSchBasicInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -171,7 +171,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		KscdtSchBasicInfoPK basicInfoPK = new KscdtSchBasicInfoPK(workSchedule.getEmployeeID(), workSchedule.getYmd());
 		// null - QA 110800
 		KscdtSchBasicInfo basicInfo = new KscdtSchBasicInfo(basicInfoPK,
-				workSchedule.getConfirmedATR().value == 1 ? true : false, workInfo.getEmploymentCode().v(),
+				cID, workSchedule.getConfirmedATR().value == 1 ? true : false, workInfo.getEmploymentCode().v(),
 				workInfo.getJobTitleID(), workInfo.getWplID(), workInfo.getClsCode().v(),
 				workInfo.getBonusPaySettingCode().v(), null, workInformation.getWorkTypeCode().v(),
 				workInformation.getWorkTimeCode().v(), workInfoOfDaily.getGoStraightAtr().value == 1 ? true : false,
@@ -206,9 +206,10 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		// create Optional<TimeLeavingOfDailyAttd>
 		TimeLeavingOfDailyAttd optTimeLeaving = null;
 		List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
+		TimeWithDayAttr timeWithDayAttr = null;
 		atdLvwTimes.stream().forEach(mapper-> {
-			WorkStamp workStamp = new WorkStamp(EnumAdaptor.valueOf(mapper.getAtdClock(), TimeWithDayAttr.class), null, null);
-			WorkStamp workStamp2 = new WorkStamp(EnumAdaptor.valueOf(mapper.getLwkClock(), TimeWithDayAttr.class), null, null);
+			WorkStamp workStamp = new WorkStamp(new TimeWithDayAttr(mapper.getAtdClock()), null, null);
+			WorkStamp workStamp2 = new WorkStamp(new TimeWithDayAttr(mapper.getAtdClock()), null, null);
 			TimeActualStamp timeActualStamp = new TimeActualStamp(null, workStamp, null);
 			TimeActualStamp timeActualStamp2 = new TimeActualStamp(null, workStamp2, null);
 			TimeLeavingWork timeLeavingWork = new TimeLeavingWork(new WorkNo(mapper.getPk().getWorkNo()), timeActualStamp, timeActualStamp2);

@@ -53,23 +53,6 @@ public interface CreateDailyResultEmployeeDomainServiceNew {
 			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList,
 			ExecutionTypeDaily executionType, Optional<Boolean> checkLock);
 	
-	/**
-	 * create method for kbt002 call
-	 * 
-	 * @param asyncContext
-	 * @param employeeId
-	 * @param periodTimes
-	 * @param companyId
-	 * @param empCalAndSumExecLogID
-	 * @param executionLog
-	 * @param reCreateWorkType
-	 * @return
-	 */
-	@SuppressWarnings("rawtypes")
-	ProcessState createDailyResultEmployeeWithNoInfoImport(AsyncCommandHandlerContext asyncContext, String employeeId,
-			DatePeriod periodTimes, String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog,
-			boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime, 
-			Optional<StampReflectionManagement> stampReflectionManagement);
 
 	
 }

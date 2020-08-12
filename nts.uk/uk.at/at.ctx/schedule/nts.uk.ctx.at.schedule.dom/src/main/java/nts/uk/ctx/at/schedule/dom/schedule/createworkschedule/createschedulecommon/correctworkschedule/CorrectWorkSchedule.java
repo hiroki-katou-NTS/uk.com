@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
@@ -42,7 +43,7 @@ public class CorrectWorkSchedule {
 	public WorkSchedule correctWorkSchedule(WorkSchedule workSchedule,String employeeId,GeneralDate targetDate) {
 		//勤務予定から日別勤怠（Work）に変換する
 		//(tạo 1 biến class IntegrationOfDaily , biến nào k có thì để empty) (TKT-TQP)
-		IntegrationOfDaily integrationOfDaily = new IntegrationOfDaily(workSchedule.getWorkInfo(), null, workSchedule.getAffInfo(), 
+		IntegrationOfDaily integrationOfDaily = new IntegrationOfDaily(employeeId, targetDate, workSchedule.getWorkInfo(), null, workSchedule.getAffInfo(), 
 				Optional.empty(), new ArrayList<>(), Optional.empty(), workSchedule.getLstBreakTime(), workSchedule.getOptAttendanceTime(), 
 				workSchedule.getOptTimeLeaving(), workSchedule.getOptSortTimeWork(), Optional.empty(), Optional.empty(), 
 				Optional.empty(), workSchedule.getLstEditState(), Optional.empty(), new ArrayList<>());
@@ -72,9 +73,11 @@ public class CorrectWorkSchedule {
 	 */
 	private List<IntegrationOfDaily> calcWorkScheduleInfo(IntegrationOfDaily integrationOfDaily, String employeeId,GeneralDate targetDate) {
 		List<IntegrationOfDaily> lstInteOfDaily = new ArrayList<>();
+		integrationOfDaily.setEmployeeId(employeeId);
+		integrationOfDaily.setYmd(targetDate);
 		lstInteOfDaily.add(integrationOfDaily);
 		CalculateOption calculateOption = new CalculateOption(false, true);
-		lstInteOfDaily = centerNew.calculatePassCompanySetting(calculateOption, lstInteOfDaily, ExecutionType.valueOf(ExecutionType.NORMAL_EXECUTION.nameId));
+		lstInteOfDaily = centerNew.calculatePassCompanySetting(calculateOption, lstInteOfDaily, EnumAdaptor.valueOf(ExecutionType.NORMAL_EXECUTION.value, ExecutionType.class));
 		
 		return lstInteOfDaily;
 	}

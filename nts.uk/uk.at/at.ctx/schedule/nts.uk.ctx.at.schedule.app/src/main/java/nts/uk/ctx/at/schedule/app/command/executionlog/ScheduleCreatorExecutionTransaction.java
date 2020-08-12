@@ -95,12 +95,14 @@ import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkTypeHisItemI
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkTypeHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordConverter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
@@ -308,7 +310,9 @@ public class ScheduleCreatorExecutionTransaction {
 		// Outputの勤務種類一覧を繰り返す
 		this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
 				result.getListWorkSchedule(), ws -> {
-
+					if(ws.getAffInfo().getBonusPaySettingCode().v().length() > 3) {
+						ws.getAffInfo().setBonusPaySettingCode(new BonusPaySettingCode(ws.getAffInfo().getBonusPaySettingCode().v().substring(0,3)));
+					}
 					// 勤務予定を登録する
 					this.workScheduleRepository.insert(ws);
 					
@@ -321,6 +325,7 @@ public class ScheduleCreatorExecutionTransaction {
 		this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
 				result.getListError(), error -> {
 					// エラーを登録する
+					error.setExecutionId(command.getExecutionId());
 					this.scheduleErrorLogRepository.addByTransaction(error);
 				});
 				
@@ -625,7 +630,12 @@ public class ScheduleCreatorExecutionTransaction {
 		// データ（処理状態付き）を生成して返す
 		return new DataProcessingStatusResult(CID, null,
 				ProcessingStatus.valueOf(ProcessingStatus.NORMAL_PROCESS.value), 
-				new WorkSchedule("", null, null, new WorkInfoOfDailyAttendance(), null, 
+				new WorkSchedule(command.getEmployeeId(), dateInPeriod, ConfirmedATR.UNSETTLED, 
+						new WorkInfoOfDailyAttendance(new WorkInformation("", ""), 
+								new WorkInformation("", ""), 
+								CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use, 
+								nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek.valueOf(dateInPeriod.dayOfWeek()), new ArrayList<>()), 
+						null, 
 						new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty())
 				, workingConditionItem,
 				employmentInfo);
@@ -634,7 +644,7 @@ public class ScheduleCreatorExecutionTransaction {
 
 	/**
 	 * 個人情報をもとにスケジュールを作成する-Creates the schedule based person.
-	 * 
+	 * 勤務予定を作成する
 	 * @param command
 	 * @param creator
 	 * @param domain
@@ -792,7 +802,7 @@ public class ScheduleCreatorExecutionTransaction {
 					ProcessingStatus.valueOf(result.getProcessingStatus().value));
 		} else {
 			// 日別のコンバーターを作成する
-			integrationOfDaily = new IntegrationOfDaily(result.getWorkSchedule().getWorkInfo(), null,
+			integrationOfDaily = new IntegrationOfDaily(result.getWorkSchedule().getEmployeeID(), result.getWorkSchedule().getYmd(),result.getWorkSchedule().getWorkInfo(), null,
 					result.getWorkSchedule().getAffInfo(), Optional.empty(), new ArrayList<>(), Optional.empty(),
 					result.getWorkSchedule().getLstBreakTime(), result.getWorkSchedule().getOptAttendanceTime(),
 					result.getWorkSchedule().getOptTimeLeaving(), result.getWorkSchedule().getOptSortTimeWork(),
@@ -976,7 +986,7 @@ public class ScheduleCreatorExecutionTransaction {
 				break;
 			}
 			}
-			return new OutputCreateScheduleOneDate(null, errorLog, null);
+			return new OutputCreateScheduleOneDate(null, errorLog, ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY_WITH_ERROR.value));
 		}
 
 	}

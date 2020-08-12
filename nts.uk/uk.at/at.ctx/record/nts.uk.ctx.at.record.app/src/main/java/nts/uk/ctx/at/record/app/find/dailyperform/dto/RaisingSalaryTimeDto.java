@@ -48,10 +48,10 @@ public class RaisingSalaryTimeDto implements ItemConst {
 	
 	public BonusPayTime toDomain(){
 		return new BonusPayTime(no,
-						rasingSalaryTime == null ? AttendanceTime.ZERO : new AttendanceTime(rasingSalaryTime.getTime()), 
-						inLegalRasingSalaryTime == null ? TimeWithCalculation.sameTime(AttendanceTime.ZERO) 
+						rasingSalaryTime == null|| rasingSalaryTime.getTime() == null ? AttendanceTime.ZERO : new AttendanceTime(rasingSalaryTime.getTime()), 
+						inLegalRasingSalaryTime == null || rasingSalaryTime.getTime() == null ? TimeWithCalculation.sameTime(AttendanceTime.ZERO) 
 								: inLegalRasingSalaryTime.createTimeWithCalc(),
-						outOfLegalRasingSalaryTime == null ? TimeWithCalculation.sameTime(AttendanceTime.ZERO) 
+						outOfLegalRasingSalaryTime == null || outOfLegalRasingSalaryTime.getTime() == null ? TimeWithCalculation.sameTime(AttendanceTime.ZERO) 
 								: outOfLegalRasingSalaryTime.createTimeWithCalc());
 	}
 }
