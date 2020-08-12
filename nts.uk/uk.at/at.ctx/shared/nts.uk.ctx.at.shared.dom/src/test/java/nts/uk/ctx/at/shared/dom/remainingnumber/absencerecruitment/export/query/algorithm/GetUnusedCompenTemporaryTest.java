@@ -13,9 +13,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -45,6 +47,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.shr.com.context.loginuser.DefaultLoginUserContext;
 
 @RunWith(JMockit.class)
 public class GetUnusedCompenTemporaryTest {
@@ -84,6 +88,9 @@ public class GetUnusedCompenTemporaryTest {
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)),
 				GeneralDate.ymd(2019, 11, 30), true, false, new ArrayList<>(), interimMng, useRecMng, Optional.empty(),
 				Optional.empty(), Optional.empty(), new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
+		val cacheCarrier = new CacheCarrier();
+		DefaultLoginUserContext context = new DefaultLoginUserContext("", true);
+		context.setCompanyId(CID);
 
 		new Expectations() {
 			{
@@ -98,7 +105,8 @@ public class GetUnusedCompenTemporaryTest {
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
-				require.getClosureDataByEmployee(SID, (GeneralDate) any);
+				
+				ClosureService.getClosureDataByEmployee(require, cacheCarrier, SID, (GeneralDate) any);
 				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
 				require.getFirstMonth(CID);
@@ -150,6 +158,7 @@ public class GetUnusedCompenTemporaryTest {
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)),
 				GeneralDate.ymd(2019, 11, 30), false, false, new ArrayList<>(), interimMng, useRecMng, Optional.empty(),
 				Optional.empty(), Optional.empty(), new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
+		val cacheCarrier = new CacheCarrier();
 
 		new Expectations() {
 			{
@@ -178,7 +187,7 @@ public class GetUnusedCompenTemporaryTest {
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
-				require.getClosureDataByEmployee(SID, (GeneralDate) any);
+				ClosureService.getClosureDataByEmployee(require, cacheCarrier, SID, (GeneralDate) any);
 				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
 				require.getFirstMonth(CID);

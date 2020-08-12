@@ -38,7 +38,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 
 @Stateless
 public class NumberCompensatoryLeavePeriodProcess {
@@ -65,13 +64,10 @@ public class NumberCompensatoryLeavePeriodProcess {
 	private ComSubstVacationRepository comSubstVacationRepository;
 
 	@Inject
-	private ClosureRepository closureRepo;
+	private ClosureEmploymentRepository closureEmploymentRepo;
 
 	@Inject
-	private ClosureEmploymentRepository closureEmpRepo;
-	
-	@Inject
-	private ShareEmploymentAdapter shrEmpAdapter;
+	private ClosureRepository closureRepo;
 
 	@Inject
 	private CompanyAdapter companyAdapter;
@@ -80,9 +76,8 @@ public class NumberCompensatoryLeavePeriodProcess {
 		RequireImpl impl = new RequireImplBuilder(substitutionOfHDManaDataRepository, payoutManagementDataRepository,
 				interimRemainRepository, interimRecAbasMngRepository, shareEmploymentAdapter)
 						.empSubstVacationRepository(empSubstVacationRepository)
-						.comSubstVacationRepository(comSubstVacationRepository)
-						.comSubstVacationRepository(comSubstVacationRepository)
-						.companyAdapter(companyAdapter).build();
+						.comSubstVacationRepository(comSubstVacationRepository).companyAdapter(companyAdapter)
+						.closureEmploymentRepo(closureEmploymentRepo).closureRepo(closureRepo).build();
 
 		return NumberCompensatoryLeavePeriodQuery.process(impl, inputParam);
 
@@ -104,7 +99,12 @@ public class NumberCompensatoryLeavePeriodProcess {
 
 		private final ComSubstVacationRepository comSubstVacationRepository;
 
+
 		private final CompanyAdapter companyAdapter;
+
+		private final ClosureEmploymentRepository closureEmploymentRepo;
+
+		private final ClosureRepository closureRepo;
 
 		public RequireImpl(RequireImplBuilder builder) {
 			this.substitutionOfHDManaDataRepository = builder.getSubstitutionOfHDManaDataRepository();
@@ -115,6 +115,8 @@ public class NumberCompensatoryLeavePeriodProcess {
 			this.empSubstVacationRepository = builder.getEmpSubstVacationRepository();
 			this.comSubstVacationRepository = builder.getComSubstVacationRepository();
 			this.companyAdapter = builder.getCompanyAdapter();
+			this.closureEmploymentRepo = builder.getClosureEmploymentRepo();
+			this.closureRepo = builder.getClosureRepo();
 
 		}
 
@@ -168,11 +170,6 @@ public class NumberCompensatoryLeavePeriodProcess {
 		}
 
 		@Override
-		public Closure getClosureDataByEmployee(String employeeId, GeneralDate baseDate) {
-			return ClosureService.getClosureDataByEmployee(createImp(), new CacheCarrier(), employeeId, baseDate);
-		}
-
-		@Override
 		public CompanyDto getFirstMonth(String companyId) {
 			return companyAdapter.getFirstMonth(companyId);
 		}
@@ -193,28 +190,22 @@ public class NumberCompensatoryLeavePeriodProcess {
 			return interimRecAbasMngRepository.getRecBySidMngAtr(recAtr, absAtr, recId);
 		}
 
-	}
-	
-	private ClosureService.RequireM3 createImp() {
-		
-		return new ClosureService.RequireM3() {
-			
-			@Override
-			public Optional<Closure> closure(String companyId, int closureId) {
-				return closureRepo.findById(companyId, closureId);
-			}
-			
-			@Override
-			public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
-				return closureEmpRepo.findByEmploymentCD(companyID, employmentCD);
-			}
-			
-			@Override
-			public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
-					String employeeId, GeneralDate baseDate) {
-				return shrEmpAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
-			}
-		};
+		@Override
+		public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
+				String employeeId, GeneralDate baseDate) {
+			return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
+		}
+
+		@Override
+		public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
+			return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
+		}
+
+		@Override
+		public Optional<Closure> closure(String companyId, int closureId) {
+			return closureRepo.findById(companyId, closureId);
+		}
+
 	}
 
 	@Getter
@@ -234,7 +225,12 @@ public class NumberCompensatoryLeavePeriodProcess {
 
 		private ComSubstVacationRepository comSubstVacationRepository;
 
+
 		private CompanyAdapter companyAdapter;
+
+		private ClosureEmploymentRepository closureEmploymentRepo;
+
+		private ClosureRepository closureRepo;
 
 		public RequireImplBuilder(SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepository,
 				PayoutManagementDataRepository payoutManagementDataRepository,
@@ -258,8 +254,19 @@ public class NumberCompensatoryLeavePeriodProcess {
 			return this;
 		}
 
+
 		public RequireImplBuilder companyAdapter(CompanyAdapter companyAdapter) {
 			this.companyAdapter = companyAdapter;
+			return this;
+		}
+
+		public RequireImplBuilder closureEmploymentRepo(ClosureEmploymentRepository closureEmploymentRepo) {
+			this.closureEmploymentRepo = closureEmploymentRepo;
+			return this;
+		}
+
+		public RequireImplBuilder closureRepo(ClosureRepository closureRepo) {
+			this.closureRepo = closureRepo;
 			return this;
 		}
 

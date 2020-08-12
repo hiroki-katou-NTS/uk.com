@@ -4,12 +4,15 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
@@ -29,7 +32,8 @@ public class GetTightSetting {
 		}
 
 		// 社員に対応する処理締めを取得する
-		Closure cls = require.getClosureDataByEmployee(employeeId, baseDate);
+		val cacheCarrier = new CacheCarrier();
+		Closure cls = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, baseDate);
 		// 指定した年月日時点の締め期間を取得する
 		Optional<ClosurePeriod> clsPeriod = cls.getClosurePeriodByYmd(dateOccurrence);
 
@@ -59,10 +63,10 @@ public class GetTightSetting {
 
 	}
 
-	public static interface Require {
+	public static interface Require extends ClosureService.RequireM3{
 
 		// ClosureService
-		Closure getClosureDataByEmployee(String employeeId, GeneralDate baseDate);
+		//Closure getClosureDataByEmployee(String employeeId, GeneralDate baseDate);
 
 		// CompanyAdapter
 		CompanyDto getFirstMonth(String companyId);
