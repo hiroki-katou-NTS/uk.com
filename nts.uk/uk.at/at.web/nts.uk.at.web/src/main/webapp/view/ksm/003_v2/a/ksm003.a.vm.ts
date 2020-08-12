@@ -398,8 +398,11 @@ module nts.uk.at.view.ksm003.a {
                 let empty: Array<DailyPatternValModel> = [];
                 vm.mainModel().dailyPatternVals(empty);
                 vm.enableRemoveItem(false);
+                vm.dailyPatternValModel([]);
+                dailyPatternVals = [];
             }
 
+            vm.selectedCheckAll(false);
             dailyPatternVals.push(dailyPatternValModel);
             vm.dailyPatternValModel(dailyPatternVals);
             vm.mainModel().dailyPatternVals(dailyPatternVals);
