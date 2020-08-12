@@ -38,7 +38,10 @@ module nts.uk.at.view.ksm003.a {
         mainModel: KnockoutObservable<DailyPatternDetailModel>;
         currentCode: KnockoutObservable<any> = ko.observable("");
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
-        count: number = 100;
+
+        dailyPatternValModel: KnockoutObservableArray<DailyPatternValModel> = ko.observableArray([]);
+        selectedSubCheck: KnockoutObservable<boolean> = ko.observable(false);
+        selectedCheckAll: KnockoutObservable<boolean> = ko.observable(false);
 
         API = {
             getListWorkCycleDto: 'screen/at/ksm003/a/get',
@@ -50,10 +53,11 @@ module nts.uk.at.view.ksm003.a {
             patternDailyRegister: "ctx/at/schedule/pattern/work/cycle/register",
         };
 
-        maxWorkingTimeItems: number = 10;
+        maxWorkingTimeItems: number = 15;
 
         constructor(params: any) {
             super();
+            $("#fixedTable").ntsFixedTable({ height: 365, width: 430});
         }
 
         created(params: any) {
@@ -77,6 +81,10 @@ module nts.uk.at.view.ksm003.a {
             //enable remove button
             vm.currentCodeList.subscribe(function (codeSelected: string) {
                 vm.hasWorkingCycleItems(codeSelected.length > 0);
+            });
+
+            vm.selectedCheckAll.subscribe(function(value: string){
+                //vm.selectedSubCheck(value);
             });
 
             var dailyPatternVals: Array<DailyPatternValModel> = [];
@@ -351,8 +359,8 @@ module nts.uk.at.view.ksm003.a {
             vm.gridItems(workingCycleDtl);
             vm.displayWorkingCycle(vm.gridItems());
 
+            vm.dailyPatternValModel(dailyPatternVals);
             vm.mainModel().dailyPatternVals(dailyPatternVals);
-
         }
 
         /**
@@ -388,7 +396,10 @@ module nts.uk.at.view.ksm003.a {
 
             let dailyPatternVals = vm.mainModel().dailyPatternVals();
             dailyPatternVals.push(dailyPatternValModel);
+
+            vm.dailyPatternValModel(dailyPatternVals);
             vm.mainModel().dailyPatternVals(dailyPatternVals);
+
 
             vm.displayWorkingCycle(vm.gridItems());
             vm.disableAddNewLine();
@@ -406,14 +417,21 @@ module nts.uk.at.view.ksm003.a {
                     let currentCodeList = vm.currentCodeList();
                     let currentDataList = vm.gridItems();
                     let newDataList = [];
+                    let dailyPatternValModel: Array<DailyPatternValModel> = [];
+
                     currentCodeList &&
                     currentDataList &&
                     currentDataList.map((item, i) => {
                         const found = currentCodeList.some(
                             (element) => element == item.id
                         );
-                        if (!found) newDataList.push(item);
+                        if (!found) {
+                            newDataList.push(item);
+                            dailyPatternValModel.push( new DailyPatternValModel(item.id, item.typeOfWork, item.workingHours, item.days));
+                        }
                     });
+                    vm.mainModel().dailyPatternVals(dailyPatternValModel);
+                    vm.dailyPatternValModel(dailyPatternValModel);
 
                     vm.gridItems(newDataList);
                     vm.disableAddNewLine();
@@ -657,11 +675,11 @@ module nts.uk.at.view.ksm003.a {
 
         displayWorkingCycle(workingCycleItems) {
             let vm = this;
-            vm.workingCycleItems = ko.observableArray(workingCycleItems);
+            //vm.workingCycleItems = ko.observableArray(workingCycleItems);
 
             $("#grid2").ntsGrid({
                 height: '380px',
-                dataSource: vm.workingCycleItems() || [],
+                dataSource: workingCycleItems || [],
                 primaryKey: 'id',
                 virtualization: true,
                 virtualizationMode: 'continuous',
@@ -816,6 +834,7 @@ module nts.uk.at.view.ksm003.a {
         timeCode: KnockoutObservable<string>;
         days: KnockoutObservable<number>;
         isSetting: KnockoutComputed<boolean>;
+        isChecked: KnockoutObservable<boolean>;
 
         constructor(dispOrder: number,
                     typeCode: string,
@@ -833,13 +852,13 @@ module nts.uk.at.view.ksm003.a {
                 }
                 return false;
             });
+            this.isChecked = ko.observable(false);
         }
 
         public resetModel(displayOrder: number) {
             this.dispOrder = displayOrder;
             this.typeCode("");
             this.timeCode("");
-            this.days(null);
             this.days(null);
             this.workTypeInfo("");
             this.workingInfo("");
@@ -865,32 +884,27 @@ module nts.uk.at.view.ksm003.a {
         /**
          * open dialog KDL003 by Work Days
          */
-        openDialogWorkDays() {
-            alert(111);
-            // var self = this;
-            // nts.uk.ui.windows.setShared("parentCodes", {
-            //     selectWorkTypeCode: self.typeCode,
-            //     selectSiftCode: self.timeCode,
-            // });
-            // nts.uk.ui.windows.sub
-            //     .modal("/view/kdl/003/a/index.xhtml", {
-            //         title: nts.uk.resource.getText("KDL003_1"),
-            //     })
-            //     .onClosed(function () {
-            //         var childData = nts.uk.ui.windows.getShared("childData");
-            //         if (childData) {
-            //             self.typeCode(childData.selectedWorkTypeCode);
-            //             self.timeCode(childData.selectedWorkTimeCode);
-            //             self.setWorkTypeName(childData.selectedWorkTypeName);
-            //             self.setWorkTimeName(childData.selectedWorkTimeName);
-            //             if ($(".nts-editor").ntsError("hasError")) {
-            //                 $(".nts-editor").ntsError("clear");
-            //             }
-            //             if ($(".buttonEvent").ntsError("hasError")) {
-            //                 $(".buttonEvent").ntsError("clear");
-            //             }
-            //         }
-            //     });
+        public  openDialogWorkDays() {
+            var self = this;
+            nts.uk.ui.windows.setShared("parentCodes", {
+                selectWorkTypeCode: self.typeCode,
+                selectSiftCode: self.timeCode,
+            });
+            nts.uk.ui.windows.sub
+                .modal("/view/kdl/003/a/index.xhtml", {
+                    title: nts.uk.resource.getText("KDL003_1"),
+                })
+                .onClosed(function () {
+                    var childData = nts.uk.ui.windows.getShared("childData");
+                    if (childData) {
+                        self.typeCode(childData.selectedWorkTypeCode);
+                        self.timeCode(childData.selectedWorkTimeCode);
+                        self.setWorkTypeName(childData.selectedWorkTypeName);
+                        self.setWorkTimeName(childData.selectedWorkTimeName);
+                        if ($(".nts-editor").ntsError("hasError")) (".nts-editor").ntsError("clear");
+                        if ($(".buttonEvent").ntsError("hasError")) $(".buttonEvent").ntsError("clear");
+                    }
+                });
         }
     }
 
@@ -995,8 +1009,8 @@ module nts.uk.at.view.ksm003.a {
             this.typeOfWork = typeOfWork;
             this.workingHours = workingHours;
             this.days = days;
-            this.dayGridText = '<span>' + nts.uk.resource.getText("KSM003_34") + '</span>';
-            //this.selectedItem = false;
+            this.dayGridText = '<span>' + nts.uk.resource.getText("KSM003_33") + '</span>';
+            this.selectedItem = false;
         }
     }
 

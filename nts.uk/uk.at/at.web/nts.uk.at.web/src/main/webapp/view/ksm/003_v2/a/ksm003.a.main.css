@@ -44,6 +44,13 @@
 #right-content table.ui-iggrid-headertable thead td:last-child {
 	width: 0;
 }
+#right-content table td .nts-editor-wrapped {
+	width: auto !important;
+}
+#right-content .nts-fixed-table .scroll-header {
+    height: 30px !important;
+}
+
 #nts-input-name {
 	width: 0px !important;
 }
