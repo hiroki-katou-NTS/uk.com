@@ -6,6 +6,7 @@ import nts.uk.ctx.at.schedule.app.command.shift.workcycle.DeleteWorkCycleCommand
 import nts.uk.ctx.at.schedule.app.command.shift.workcycle.UpdateWorkCycleCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.shift.workcycle.command.AddWorkCycleCommand;
 import nts.uk.ctx.at.schedule.app.command.shift.workcycle.command.DeleteWorkCycleCommand;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.WorkCycleCreateResult;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -19,21 +20,26 @@ import java.util.List;
 public class WorkCycleWs extends WebService {
 
     @Inject
-    AddWorkCycleCommandHandler addWorkCycleCommandHandler;
+    private AddWorkCycleCommandHandler addWorkCycleCommandHandler;
 
     @Inject
-    DeleteWorkCycleCommandHandler deleteWorkCycleCommandHandler;
+    private DeleteWorkCycleCommandHandler deleteWorkCycleCommandHandler;
 
     @Inject
-    UpdateWorkCycleCommandHandler updateWorkCycleCommandHandler;
+    private UpdateWorkCycleCommandHandler updateWorkCycleCommandHandler;
 
     @POST
     @Path("register")
-    public void registerWorkCycle(AddWorkCycleCommand command) { this.addWorkCycleCommandHandler.handle(command); }
+    public WorkCycleCreateResult registerWorkCycle(AddWorkCycleCommand command) {
+        return this.addWorkCycleCommandHandler.handle(command);
+    }
 
     @POST
     @Path("update")
-    public void updateWorkCycle(AddWorkCycleCommand command) { this.updateWorkCycleCommandHandler.handle(command); }
+    public WorkCycleCreateResult updateWorkCycle(AddWorkCycleCommand command)
+    {
+        return this.updateWorkCycleCommandHandler.handle(command);
+    }
 
     @POST
     @Path("delete")

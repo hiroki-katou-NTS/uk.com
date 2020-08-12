@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.app.command.shift.workcycle;
 
 import lombok.AllArgsConstructor;
+import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.AtomTask;
@@ -49,17 +50,12 @@ public class AddWorkCycleCommandHandler extends CommandHandlerWithResult<AddWork
     @Override
     protected WorkCycleCreateResult handle(CommandHandlerContext<AddWorkCycleCommand> context) {
 
-        //Dummy
-        WorkCycle temp = AddWorkCycleCommand.createTemp(AppContexts.user().companyId());
-        //Dummy
-
-        AddWorkCycleCommand command = context.getCommand();
+        val command = context.getCommand();
         String cid = AppContexts.user().companyId();
         RegisterWorkCycleServiceImlp require = new RegisterWorkCycleServiceImlp(workCycleRepository);
         WorkInformation.Require workRequired = new WorkInfoRequireImpl(basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
-//        WorkCycleCreateResult result = RegisterWorkCycleService.register(workRequired, require, AddWorkCycleCommand.createFromCommand(command, cid), true);
-        WorkCycleCreateResult result = RegisterWorkCycleService.register(workRequired, require, temp, true);
-        if (result.getErrorStatusList().isEmpty()) {
+        WorkCycleCreateResult result = RegisterWorkCycleService.register(workRequired, require, AddWorkCycleCommand.createFromCommand(command, cid), true);
+        if (!result.isHasError()) {
             AtomTask atomTask = result.getAtomTask().get();
             transaction.execute(() ->{
                 atomTask.run();
@@ -71,7 +67,6 @@ public class AddWorkCycleCommandHandler extends CommandHandlerWithResult<AddWork
     @AllArgsConstructor
     private class RegisterWorkCycleServiceImlp implements RegisterWorkCycleService.Require {
 
-        @Inject
         WorkCycleRepository workCycleRepository;
 
         @Override
@@ -95,19 +90,14 @@ public class AddWorkCycleCommandHandler extends CommandHandlerWithResult<AddWork
 
         private final String companyId = AppContexts.user().companyId();
 
-        @Inject
         private BasicScheduleService service;
 
-        @Inject
         private WorkTypeRepository workTypeRepo;
 
-        @Inject
         private WorkTimeSettingRepository workTimeSettingRepository;
 
-        @Inject
         private WorkTimeSettingService workTimeSettingService;
 
-        @Inject
         private BasicScheduleService basicScheduleService;
 
         @Override
