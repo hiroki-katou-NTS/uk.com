@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.reservation.bento.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 @Setter
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class OrderInfoDto {
 
     /** 会社名 */
@@ -25,7 +27,7 @@ public class OrderInfoDto {
     private List<TotalOrderInfoDto> totalOrderInfoDtoList;
 
     /** 明細タイトル*/
-    private int detailTittle;
+    private String detailTittle;
 
     /** 明細注文情報 */
     private List<DetailOrderInfoDto> detailOrderInfoDtoList;

@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 一覧弁当予約を取得する
+ *  一覧弁当予約を取得する
  * @author Hoang Anh Tuan
  */
 @Stateless
@@ -41,7 +41,7 @@ public class ListBentoResevationQuery {
 
         /** 検索条件 == 新規注文 */
         if(searchCondition == BentoReservationSearchConditionDto.NEW_ORDER){
-
+            return getNewOrderDetail(period,reservationRegisterInfos,reservationClosingTimeFrame);
         }
         /** 検索条件 ==　全部 */
         if(searchCondition == BentoReservationSearchConditionDto.ALL) {
@@ -66,6 +66,16 @@ public class ListBentoResevationQuery {
                                 .filter(item -> workLocationCodes.contains(item.getWorkLocationCode().get()))
                                 .filter(item -> reservationClosingTimeFrame == item.getReservationDate().getClosingTimeFrame())
                                 .collect(Collectors.toList());
+    }
+
+    public List<BentoReservation> getNewOrderDetail(DatePeriod period, List<ReservationRegisterInfo> reservationRegisterInfos, ReservationClosingTimeFrame reservationClosingTimeFrame){
+        Set<BentoReservation> reservations = new HashSet<>();
+        period.stream().forEach( date ->{
+            reservations.addAll(bentoReservationRepository.getEmployeeNotOrder(reservationRegisterInfos,
+                    new ReservationDate(date,reservationClosingTimeFrame )));
+                }
+        );
+        return new ArrayList<>(reservations);
     }
 
 }
