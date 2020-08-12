@@ -1,6 +1,3 @@
-/// <reference path="../../../../../../../../../../uk.com/com.web/nts.uk.com.web/src/main/webapp/view/kcp/share/tree.ts" />
-/// <reference path="../../../../../../../../../../uk.com/com.web/nts.uk.com.web/src/main/webapp/view/kcp/share/list.ts" />
-
 module nts.uk.at.view.kmr004.a {
     import getText = nts.uk.resource.getText;
     import tree = kcp.share.tree;
