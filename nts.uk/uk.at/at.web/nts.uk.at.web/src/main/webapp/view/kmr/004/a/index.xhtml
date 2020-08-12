@@ -143,19 +143,23 @@
 											<td class="align-top">
 												<div id="A10_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KMR004_15')}</div>
 											</td>
-											<td><table><tr><td>
-												<div id="A10_2" tabindex="19" class="verticalRadioBoxGroup" data-bind="ntsRadioBoxGroup: {
-													options: conditionRadio,
-													optionsValue: 'id',
-													optionsText: 'name',
-													value: conditionRadioSelected,
-													enable: conditionRadioEnable}">
-												</div></td>
-												<td>
-                                                &#160;&#160;&#160;&#160;
-												<div class="style-normal" id="A10_5" tabindex="21" style="margin-left: -82px;"
-                                                     data-bind="ntsCheckBox: { checked: separatePageCheckboxChecked, enable: separatePageCheckboxEnable}">#{i18n.getText('KMR004_25')}</div>
-                                                </td>
+											<td>
+												<table><tr>
+													<td style="padding-top: 0px;">
+														<div id="A10_2" tabindex="19" class="verticalRadioBoxGroup" data-bind="ntsRadioBoxGroup: {
+															options: conditionRadio,
+															optionsValue: 'id',
+															optionsText: 'name',
+															value: conditionRadioSelected,
+															enable: conditionRadioEnable}">
+														</div>
+													</td>
+													<td style="padding-top: 0px;">
+														&#160;&#160;&#160;&#160;
+														<div class="style-normal" id="A10_5" tabindex="21" style="margin-left: -82px;"
+															 data-bind="ntsCheckBox: { checked: separatePageCheckboxChecked, enable: separatePageCheckboxEnable}">#{i18n.getText('KMR004_25')}
+														</div>
+													</td>
 												</tr></table>
 												&#160;&#160;&#160;&#160;&#160;&#160;
                                                 <div id="A10_6" tabindex="22" data-bind="ntsComboBox: {

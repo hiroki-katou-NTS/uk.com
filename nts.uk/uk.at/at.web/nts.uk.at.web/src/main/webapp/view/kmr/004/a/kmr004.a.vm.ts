@@ -113,7 +113,6 @@ module nts.uk.at.view.kmr004.a {
 					width: "100px",
 					textalign: "left"
 				})),
-				required: ko.observable(true),
 				enable: ko.observable(true),
 				readonly: ko.observable(false)
 			};
@@ -127,7 +126,6 @@ module nts.uk.at.view.kmr004.a {
                     width: "100px",
                     textalign: "left"
                 })),
-                required: ko.observable(true),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
