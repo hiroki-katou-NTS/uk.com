@@ -70,7 +70,7 @@
           </td>
           <td>
             {{ getSymbol(item) | i18n }}
-            {{ item.stampDatetime | date("HH:MM") }}
+            {{ item.stampDatetime | date("HH:mm") }}
           </td>
           <td
             v-bind:style="{

@@ -86,7 +86,7 @@ export class KdpS01CComponent extends Vue {
             let goingWork = vm.getValue(data.itemValues, 31),
                 leave = vm.getValue(data.itemValues, 34);
 
-            if (!!goingWork && !!leave && !!goingWork.value && leave.value) {
+            if (!!goingWork && !!leave && !!goingWork.value && !!leave.value) {
                 vm.screenData.attendanceItem.attendance = [TimeWithDay.getDayName(Number(goingWork.value)) + TimeWithDay.toString(Number(goingWork.value)), TimeWithDay.getDayName(Number(leave.value)) + TimeWithDay.toString(Number(leave.value))].join(' ～ ');
             } else {
                 vm.screenData.attendanceItem.attendance = '';
@@ -163,11 +163,7 @@ export class KdpS01CComponent extends Vue {
             result = item.value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
         }
 
-
-
         return result;
-
-
     }
 
 

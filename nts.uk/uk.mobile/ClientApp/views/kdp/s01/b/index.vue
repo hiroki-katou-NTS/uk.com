@@ -15,7 +15,7 @@
       <label
         class="col-5 stamp-time font-weight-bold "
         style="line-height: 1rem;"
-        >{{ screenData.date | date("HH:MM")}}</label
+        >{{ screenData.date | date("HH:mm") }}</label
       >
     </div>
 
