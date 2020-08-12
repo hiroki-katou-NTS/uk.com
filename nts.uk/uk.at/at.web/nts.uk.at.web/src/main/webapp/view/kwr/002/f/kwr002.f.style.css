@@ -1,0 +1,18 @@
+.F1_1 {
+    display: inline-block;
+    width: 170px;
+}
+
+.F1_2 {
+    display: inline-block;
+    width: 170px;
+}
+.row-mb {
+    margin-bottom: 10px;
+}
+
+.proceed {
+	width: 100px;
+	height: 40px;
+	font-weight: 550px;
+}

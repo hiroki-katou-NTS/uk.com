@@ -281,6 +281,18 @@ module nts.uk.com.view.kwr002.b {
             return data;
         };
 
+        openKDL002F() {
+            let self = this;
+            block.grayout();
+            // setShared('inputDialogD',
+            //     { repeatMonthDateList: self.curExecSetting().repeatMonthDateList()
+            //     });
+            modal("/view/kbt/002/d/index.xhtml").onClosed(function(){
+
+                block.clear();
+            });
+        }
+
         start() {
             block.invisible();
             let self = this;

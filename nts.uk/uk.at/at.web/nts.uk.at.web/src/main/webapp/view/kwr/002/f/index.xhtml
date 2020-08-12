@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 1150,
+					height : 860
+				};
+			</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kwr002.f.style.css" />
+			<com:scriptfile path="kwr002.f.service.js" />
+			<com:scriptfile path="kwr002.f.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="row row-mb">
+					<!-- F1_9 -->
+					<div class="F1_1">#{i18n.getText('KWR002_233')}</div>
+					<!-- F1_1 -->
+					<div class="F1_2" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR002_226')}</div>
+					<!-- F1_2 -->
+					<div class="F1_1">#{i18n.getText('KWR002_233')}</div>
+					<!-- F1_2 -->
+					<div class="F1_1">#{i18n.getText('KWR002_233')}</div>
+				</div>
+				<div class="row">
+					<!-- F1_10 -->
+					<div class="F1_1">#{i18n.getText('KWR002_234')}</div>
+					<!-- F1_4 -->
+					<div class="F1_2" data-bind="ntsFormLabel: {required : true }">#{i18n.getText('KWR002_227')}</div>
+					<!-- F1_5 -->
+					<div class="F1_1">
+						<input tabindex="2" class="D1_6 save-error" data-bind="ntsTextEditor:{
+						name: '#[KWR002_228]',
+						value: F1_5_value,
+						required: true}" />
+					</div>
+					<!-- F1_6 -->
+					<div class="F1_1">
+						<input tabindex="2" class="D1_6 save-error" data-bind="ntsTextEditor:{
+						name: '#[KWR002_229]',
+						value: F1_6_value,
+						required: true}" />
+					</div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<div class="confirm">
+					<!-- F1_7 -->
+					<button data-bind="click: executeCopy" tabindex="4" class="proceed">#{i18n.getText('KWR002_230')}</button>
+					<!-- F1_8 -->
+					<button data-bind="click: closeDialog" tabindex="5">#{i18n.getText('KWR002_231')}</button>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
