@@ -156,7 +156,6 @@ module nts.uk.at.view.kmr004.a {
             self.conditionRadioEnable = ko.observable(true);
 			self.conditionListCcbEnable = ko.observable(false);
 			self.conditionRadioSelected.subscribe((newValue)=>{
-				console.log(newValue);
                 if (newValue == 1){
 					self.separatePageCheckboxEnable(true);
                 } else {
