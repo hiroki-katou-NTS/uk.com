@@ -92,10 +92,10 @@ module nts.uk.at.view.kdl006.a {
                 block.grayout();
                 service.save(ko.toJS(workPlaces)).done(function(data) {
                     self.getWorkplace();
+                    info({messageId: 'Msg_15'});
                 }).fail(function(res) {
                     error({ messageId: res.messageId });
                 }).always(() =>{
-                    block.clear();
                 });
             }
         }
@@ -137,7 +137,7 @@ module nts.uk.at.view.kdl006.a {
             self.closureName = param.closureName;
             self.start = new Date(param.start);
             self.end = new Date(param.end);
-            self.periodDate = param.start + '〜' + param.end;
+            self.periodDate = param.start + getText('KDL006_20') + param.end;
         }
     }
 }

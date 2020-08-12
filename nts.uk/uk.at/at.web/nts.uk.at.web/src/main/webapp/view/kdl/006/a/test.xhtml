@@ -13,7 +13,14 @@
 				var ScreenModel = (function () {
 	                function ScreenModel() {
 		                this.closureId = ko.observable(1);
+		                this.closureList = ko.observableArray([]);
 	                }
+	                ScreenModel.prototype.start = function (){
+		                var self = this;
+	                	return nts.uk.request.ajax("at", "screen/at/kdl006/startpage").done(function (data){
+								self.closureList(data);
+		                	});
+		            }
 	                ScreenModel.prototype.openDailog = function () {
 	 				   	nts.uk.ui.windows.setShared('KDL006-CLOSUREID', this.closureId());
 	 				   	nts.uk.ui.windows.sub.modal('/view/kdl/006/a/index.xhtml');
@@ -21,14 +28,25 @@
 	                return ScreenModel;
 				}());
 				__viewContext.ready(function() {
-		            __viewContext.bind(new ScreenModel());
+					var a = new ScreenModel();
+					a.start().done(function() {
+						__viewContext.bind(a);
+					});
 			    });
 			</script>
 		</ui:define>
 
 		<ui:define name="content">
 			<div>
-				<input data-bind="ntsTextEditor: {value: closureId}" />
+				<div id="combo-box" tabindex="1" data-bind="ntsComboBox: {
+					width: '160',
+					name: '#[KDL006_14]',
+					options: closureList,
+					value: closureId,
+					columns: [
+						{ prop: 'closureId', length: 4 },
+						{ prop: 'closureName', length: 15 },
+						]}"></div>
 			</div>
 			<button data-bind="click: openDailog">open Dialog</button>
 		</ui:define>

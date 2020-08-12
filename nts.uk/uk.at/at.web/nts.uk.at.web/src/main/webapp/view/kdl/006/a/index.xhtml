@@ -75,8 +75,8 @@
 							<tr>
 								<td data-bind="text: workPlaceName"></td>
 								<td data-bind="if: workPlaceId != ''" style="text-align: center;"><div tabindex="2" data-bind="ntsCheckBox: {checked: confirmEmployment}"></div></td>
-								<td data-bind="text: confirmEmployment() ? confirmEmployeeName: ''"></td>
-								<td data-bind="text: confirmEmployment() ? confirmationTime: ''" style="text-align: right;"></td>
+								<td data-bind="text: confirmEmployeeName"></td>
+								<td data-bind="text: confirmationTime" style="text-align: right;"></td>
 							</tr>
 						</tbody>
 					</table>
