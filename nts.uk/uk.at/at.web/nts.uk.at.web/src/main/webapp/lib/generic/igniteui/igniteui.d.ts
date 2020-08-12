@@ -11069,7 +11069,7 @@ interface IgCategoryChart {
 	widget?: any;
 
 	/**
- 	 * Gets or sets a collection of data items used to generate the chart.
+ 	 * Gets or sets a collection of data items used to generatePdf the chart.
 	 * Value of this property can be a list of objects containing one or more numeric properties.  Additionally, if the objects in the list implement the IEnumerable interface, the Category Chart will attempt to delve into the sub-collections when reading through the data source.  Databinding can be further configured by attributing the data item classes with the DataSeriesMemberIntentAttribute.
 	 */
 	itemsSource?: any;
@@ -11085,7 +11085,7 @@ interface IgCategoryChart {
 	excludedProperties?: any;
 
 	/**
- 	 * Gets or sets the type of chart series to generate from the data.
+ 	 * Gets or sets the type of chart series to generatePdf from the data.
 	 *
 	 * Valid values:
 	 * "line" Specifies category line series with markers at each data point
@@ -12458,13 +12458,13 @@ interface JQuery {
 	igCategoryChart(optionLiteral: 'option', optionName: "widget", optionValue: any): void;
 
 	/**
-	 * Gets  a collection of data items used to generate the chart.
+	 * Gets  a collection of data items used to generatePdf the chart.
 	 * Value of this property can be a list of objects containing one or more numeric properties.  Additionally, if the objects in the list implement the IEnumerable interface, the Category Chart will attempt to delve into the sub-collections when reading through the data source.  Databinding can be further configured by attributing the data item classes with the DataSeriesMemberIntentAttribute.
 	 */
 	igCategoryChart(optionLiteral: 'option', optionName: "itemsSource"): any;
 
 	/**
-	 * Sets a collection of data items used to generate the chart.
+	 * Sets a collection of data items used to generatePdf the chart.
 	 * Value of this property can be a list of objects containing one or more numeric properties.  Additionally, if the objects in the list implement the IEnumerable interface, the Category Chart will attempt to delve into the sub-collections when reading through the data source.  Databinding can be further configured by attributing the data item classes with the DataSeriesMemberIntentAttribute.
 	 *
 	 * @optionValue New value to be set.
@@ -12496,12 +12496,12 @@ interface JQuery {
 	igCategoryChart(optionLiteral: 'option', optionName: "excludedProperties", optionValue: any): void;
 
 	/**
-	 * Gets  the type of chart series to generate from the data.
+	 * Gets  the type of chart series to generatePdf from the data.
 	 */
 	igCategoryChart(optionLiteral: 'option', optionName: "chartType"): string;
 
 	/**
-	 * Sets the type of chart series to generate from the data.
+	 * Sets the type of chart series to generatePdf from the data.
 	 *
 	 * @optionValue New value to be set.
 	 */
@@ -49974,7 +49974,7 @@ interface IgHierarchicalGrid {
 
 	/**
  	 * If true, will autogenerate all layouts assuming default values for "childrenDataProperty"
-	 * When autoGenerateLayouts is enabled, it will automatically generate all columns recursively. (all columns on all levels)
+	 * When autoGenerateLayouts is enabled, it will automatically generatePdf all columns recursively. (all columns on all levels)
 	 */
 	autoGenerateLayouts?: boolean;
 
@@ -50282,13 +50282,13 @@ interface JQuery {
 
 	/**
 	 * If true, will autogenerate all layouts assuming default values for "childrenDataProperty"
-	 * When autoGenerateLayouts is enabled, it will automatically generate all columns recursively. (all columns on all levels)
+	 * When autoGenerateLayouts is enabled, it will automatically generatePdf all columns recursively. (all columns on all levels)
 	 */
 	igHierarchicalGrid(optionLiteral: 'option', optionName: "autoGenerateLayouts"): boolean;
 
 	/**
 	 * If true, will autogenerate all layouts assuming default values for "childrenDataProperty"
-	 * When autoGenerateLayouts is enabled, it will automatically generate all columns recursively. (all columns on all levels)
+	 * When autoGenerateLayouts is enabled, it will automatically generatePdf all columns recursively. (all columns on all levels)
 	 *
 	 * @optionValue New value to be set.
 	 */
