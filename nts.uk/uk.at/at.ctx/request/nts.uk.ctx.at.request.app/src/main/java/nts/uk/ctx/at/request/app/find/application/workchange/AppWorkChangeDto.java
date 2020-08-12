@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -95,15 +97,15 @@ public class AppWorkChangeDto extends ApplicationDto{
 				NotUseAtr.valueOf(this.straightGo),
 				NotUseAtr.valueOf(this.straightBack),
 				Optional.ofNullable(new WorkTypeCode(this.opWorkTypeCD)),
-				Optional.ofNullable(new WorkTimeCode(this.opWorkTimeCD)),
+				StringUtils.isBlank(this.opWorkTimeCD) ? Optional.ofNullable(new WorkTimeCode(this.opWorkTimeCD)) : Optional.empty(),
 				CollectionUtil.isEmpty(timeZoneWithWorkNoLst) ? Collections.emptyList() : timeZoneWithWorkNoLst.stream().map(item -> item.toDomain()).collect(Collectors.toList()));
 	}
 	public AppWorkChange toDomain(Application app) {
 		return new AppWorkChange(
 				NotUseAtr.valueOf(this.straightGo),
 				NotUseAtr.valueOf(this.straightBack),
-				Optional.ofNullable(new WorkTypeCode(this.opWorkTypeCD)),
-				Optional.ofNullable(new WorkTimeCode(this.opWorkTimeCD)),
+				StringUtils.isBlank(this.opWorkTypeCD) ? Optional.empty() : Optional.ofNullable(new WorkTypeCode(this.opWorkTypeCD)),
+				StringUtils.isBlank(this.opWorkTimeCD) ? Optional.empty() : Optional.ofNullable(new WorkTimeCode(this.opWorkTimeCD)),
 				CollectionUtil.isEmpty(timeZoneWithWorkNoLst) ? Collections.emptyList() : timeZoneWithWorkNoLst.stream().map(item -> item.toDomain()).collect(Collectors.toList()),
 				app);
 	}

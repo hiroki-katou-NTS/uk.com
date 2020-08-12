@@ -102,8 +102,8 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements AppWork
 				// do have value of companyID
 				new KrqdtAppWorkChangePk(AppContexts.user().companyId(), domain.getAppID()),
 				contractCD,
-				domain.getOpWorkTypeCD().get().v(),
-				domain.getOpWorkTimeCD().get().v(),
+				domain.getOpWorkTypeCD().isPresent() ? domain.getOpWorkTypeCD().get().v() : null,
+				domain.getOpWorkTimeCD().isPresent() ? domain.getOpWorkTimeCD().get().v() : null,
 				domain.getStraightGo().value,
 				domain.getStraightBack().value,
 				timeZoneWithWorkNo1 == null ? null : timeZoneWithWorkNo1.getTimeZone().getStartTime().v(),
@@ -160,13 +160,13 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements AppWork
 		appWorkChange.setStraightGo(EnumAdaptor.valueOf(res.getInt("GO_WORK_ATR"), NotUseAtr.class));
 		appWorkChange.setStraightBack(EnumAdaptor.valueOf(res.getInt("BACK_HOME_ATR"), NotUseAtr.class));
 		if (res.getString("WORK_TYPE_CD") == null) {
-			appWorkChange.setOpWorkTypeCD(Optional.ofNullable(null));
+			appWorkChange.setOpWorkTypeCD(Optional.empty());
 		}else {
 			appWorkChange.setOpWorkTypeCD(Optional.of(new WorkTypeCode(res.getString("WORK_TYPE_CD"))));
 		}
 		
 		if (res.getString("WORK_TIME_CD") == null) {
-			appWorkChange.setOpWorkTimeCD(Optional.ofNullable(null));
+			appWorkChange.setOpWorkTimeCD(Optional.empty());
 		}else {
 			appWorkChange.setOpWorkTimeCD(Optional.of(new WorkTimeCode(res.getString("WORK_TIME_CD"))));
 		}

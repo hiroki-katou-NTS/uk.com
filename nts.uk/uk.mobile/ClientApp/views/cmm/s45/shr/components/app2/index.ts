@@ -66,6 +66,10 @@ export class CmmS45ComponentsApp2Component extends Vue {
         let workTimeCode = params.appWorkChange.opWorkTimeCD;
         let workTime = _.find(params.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == workTimeCode);
         let workTimeName = workTime ?  workTime.workTimeDisplayName.workTimeName : this.$i18n('KAFS07_10');
+        if (!workTimeCode) {
+            workTimeCode = this.$i18n('KAFS07_9');
+            workTimeName = '';
+        }
         this.$app().workTime = workTimeCode + '  ' + workTimeName;
         if (!_.isEmpty(params.appWorkChange.timeZoneWithWorkNoLst)) {
             let time1 = _.find(params.appWorkChange.timeZoneWithWorkNoLst, (item: any) => item.workNo == 1);
@@ -73,13 +77,13 @@ export class CmmS45ComponentsApp2Component extends Vue {
             if (time1) {
                 this.$app().workHours1 = this.$dt.timedr(time1.timeZone.startTime) + ' ~ ' + this.$dt.timedr(time1.timeZone.endTime);
             } else {
-                this.$app().workHours1 = '';
+                this.$app().workHours1 = this.$i18n('KAFS07_15');
                 this.$app().isWorkHours1 = false;
             }
             if (time2) {
                 this.$app().workHours2 = this.$dt.timedr(time2.timeZone.startTime) + ' ~ ' + this.$dt.timedr(time2.timeZone.endTime);
             } else {
-                this.$app().workHours2 = '';
+                this.$app().workHours2 = this.$i18n('KAFS07_15');
                 this.$app().isWorkHours2 = false;
             }
         }
