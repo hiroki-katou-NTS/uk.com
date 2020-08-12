@@ -15,12 +15,12 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.val;
 import nts.arc.error.BusinessException;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
-import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecGenerationDigestionHis;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentManaQuery;
@@ -30,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffManagementQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffOutputHisData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeProcess;
@@ -38,47 +39,37 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcessCommon;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class EmploymentSystemFinder {	
 	@Inject
-	BreakDayOffManagementQuery breakDayOffManagementQuery;
-	
+	private BreakDayOffManagementQuery breakDayOffManagementQuery;
 	@Inject
-	EmployeeRequestAdapter employeeRequestAdapter;
-	
+	private EmployeeRequestAdapter employeeRequestAdapter;
 	@Inject
-	ClosureService closureService;
-	
-	@Inject
-	AbsenceReruitmentManaQuery absenceReruitmentManaQuery;
-	
-	@Inject
-	CompensLeaveEmSetRepository compensLeaveEmSetRepository;
-	
-	@Inject
-	ShareEmploymentAdapter employeeAdaptor;
+	private AbsenceReruitmentManaQuery absenceReruitmentManaQuery;
+//	@Inject
+//	private CompensLeaveEmSetRepository compensLeaveEmSetRepository;
 //	@Inject
 //	private EmpSubstVacationRepository empSubrepo;
 //	@Inject
 //	private ComSubstVacationRepository comSubrepo;
-	@Inject
-	private CompensLeaveComSetRepository compensLeaveComSetRepository;
+//	@Inject
+//	private CompensLeaveComSetRepository compensLeaveComSetRepository;
 	
 	@Inject
 	private AbsenceTenProcessCommon absenceTenProcessCommon;
-	
+
 	@Inject
 	private NumberCompensatoryLeavePeriodProcess numberCompensatoryLeavePeriodProcess;
 
 	@Inject
 	private NumberRemainVacationLeaveRangeProcess numberRemainVacationLeaveRangeProcess;
+	
+	@Inject
+	private RemainNumberTempRequireService requireService;
 	
 	/** 
 	 * KDL005
@@ -111,15 +102,16 @@ public class EmploymentSystemFinder {
 	 * @return
 	 */
 	public AcquisitionNumberRestDayDto getDetailsConfirm(String employeeId, String baseDate) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
 		String companyId = AppContexts.user().companyId();
-		
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
 		LocalDate localDate = LocalDate.now();
 		
 		AcquisitionNumberRestDayDto detailsdDto = new AcquisitionNumberRestDayDto();
 		
-		//	 	基準日（指定がない場合はシステム日付）
-		if(baseDate.isEmpty()) {
+		// 基準日（指定がない場合はシステム日付）
+		if (baseDate.isEmpty()) {
 			baseDate = dtf.format(localDate);
 		} else {
 			baseDate = GeneralDate.fromString(baseDate, "yyyyMMdd").toString();
@@ -141,7 +133,7 @@ public class EmploymentSystemFinder {
 		Optional<BreakDayOffOutputHisData> data = breakDayOffManagementQuery.getBreakDayOffData(companyId, employeeId, inputDate);
 		
 		// #110215 アルゴリズム「社員に対応する締め期間を取得する」を実行する
-		DatePeriod closingPeriod = closureService.findClosurePeriod(employeeId, inputDate);
+		DatePeriod closingPeriod = ClosureService.findClosurePeriod(require, cacheCarrier, employeeId, inputDate);
 
 		// #110215 期間内の休出代休残数を取得する
 		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(
@@ -265,27 +257,27 @@ public class EmploymentSystemFinder {
 		return new DatePeriod(startDate, startDate.addYears(1).addDays(-1));
 	}
 
-	private DeadlineDetails getDeadlineDetails(String companyId, Optional<EmploymentHistoryImported> empImpOpt) {
-		DeadlineDetails  result  = null;
-		
-		if (empImpOpt.isPresent()) {
-			CompensatoryLeaveEmSetting emSet = this.compensLeaveEmSetRepository.find(companyId,
-					empImpOpt.get().getEmploymentCode());
-
-			if (emSet == null) {
-				CompensatoryLeaveComSetting comSet = this.compensLeaveComSetRepository.find(companyId);
-				if(comSet == null){
-					throw new BusinessException("代休管理設定 && 雇用の代休管理設定 = null");
-				}
-				result = new DeadlineDetails(comSet.getIsManaged().value, comSet.getCompensatoryAcquisitionUse().getExpirationTime().value );
-			}else{
-				result = new DeadlineDetails(emSet.getIsManaged().value, emSet.getCompensatoryAcquisitionUse().getExpirationTime().value);
-			}
-		}
-		
-		return result;
-		
-	}
+//	private DeadlineDetails getDeadlineDetails(String companyId, Optional<EmploymentHistoryImported> empImpOpt) {
+//		DeadlineDetails  result  = null;
+//		
+//		if (empImpOpt.isPresent()) {
+//			CompensatoryLeaveEmSetting emSet = this.compensLeaveEmSetRepository.find(companyId,
+//					empImpOpt.get().getEmploymentCode());
+//
+//			if (emSet == null) {
+//				CompensatoryLeaveComSetting comSet = this.compensLeaveComSetRepository.find(companyId);
+//				if(comSet == null){
+//					throw new BusinessException("代休管理設定 && 雇用の代休管理設定 = null");
+//				}
+//				result = new DeadlineDetails(comSet.getIsManaged().value, comSet.getCompensatoryAcquisitionUse().getExpirationTime().value );
+//			}else{
+//				result = new DeadlineDetails(emSet.getIsManaged().value, emSet.getCompensatoryAcquisitionUse().getExpirationTime().value);
+//			}
+//		}
+//		
+//		return result;
+//		
+//	}
 
 	/**
 	 * KDL009
@@ -324,6 +316,8 @@ public class EmploymentSystemFinder {
 	 * @return
 	 */
 	public AcquisitionNumberRestDayDto getAcquisitionNumberRestDays(String employeeId, String baseDate) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
 		String companyId = AppContexts.user().companyId();
 		GeneralDate inputDate = GeneralDate.fromString(baseDate, "yyyyMMdd");
 		AcquisitionNumberRestDayDto result = new AcquisitionNumberRestDayDto();
@@ -341,7 +335,7 @@ public class EmploymentSystemFinder {
 		}
 
 		// Step 社員に対応する締め期間を取得する		
-		DatePeriod closingPeriod = this.closureService.findClosurePeriod(employeeId, inputDate);
+		DatePeriod closingPeriod = ClosureService.findClosurePeriod(require, cacheCarrier, employeeId, inputDate);
 		
 		// Step アルゴリズム「期間内の振出振休残数を取得する」を実行する
 		AbsRecMngInPeriodRefactParamInput inputParam = new AbsRecMngInPeriodRefactParamInput(

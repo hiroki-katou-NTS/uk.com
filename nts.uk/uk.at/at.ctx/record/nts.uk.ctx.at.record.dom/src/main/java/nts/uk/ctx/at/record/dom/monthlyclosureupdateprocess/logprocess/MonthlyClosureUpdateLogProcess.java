@@ -1,49 +1,36 @@
 package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.logprocess;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
+import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureCompleteStatus;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureExecutionStatus;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosurePersonExecutionResult;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosurePersonExecutionStatus;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErrorAlarmAtr;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErrorInfor;
-import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErrorInforRepository;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateLog;
-import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateLogRepository;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdatePersonLog;
-import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdatePersonLogRepository;
 
 /**
  * 
  * @author HungTT - <<Work>> 月締め更新ログ処理
  *
  */
-
-@Stateless
 public class MonthlyClosureUpdateLogProcess {
-
-	@Inject
-	private MonthlyClosureUpdateLogRepository mClosureUpdateLogRepo;
-
-	@Inject
-	private MonthlyClosureUpdatePersonLogRepository mClosureUpdatePerLogRepo;
-
-	@Inject
-	private MonthlyClosureUpdateErrorInforRepository mClosureErrorInforRepo;
-
+	
 	/**
 	 * 月締め更新ログ処理
 	 * 
 	 * @param monthlyClosureUpdateLogId
 	 */
-	public void monthlyClosureUpdateLogProcess(String monthlyClosureUpdateLogId) {
-		MonthlyClosureUpdateLog updateLog = mClosureUpdateLogRepo.getLogById(monthlyClosureUpdateLogId).get();
-		switch (checkExecutionResult(monthlyClosureUpdateLogId)) {
+	public static AtomTask monthlyClosureUpdateLogProcess(RequireM3 require, String monthlyClosureUpdateLogId) {
+		
+		MonthlyClosureUpdateLog updateLog = require.monthlyClosureUpdateLog(monthlyClosureUpdateLogId).get();
+		
+		switch (checkExecutionResult(require, monthlyClosureUpdateLogId)) {
 		case COMPLETE: // アラームなし - no alarm
 			updateLog.updateCompleteStatus(MonthlyClosureCompleteStatus.COMPLETE);
 			break;
@@ -57,20 +44,25 @@ public class MonthlyClosureUpdateLogProcess {
 			break;
 		}
 		updateLog.updateExecuteStatus(MonthlyClosureExecutionStatus.COMPLETED_NOT_CONFIRMED);
-		mClosureUpdateLogRepo.updateStatus(updateLog);
+		
+		return AtomTask.of(() -> require.updateMonthlyClosureUpdateLog(updateLog));
 	}
 
-	private MonthlyClosureCompleteStatus checkExecutionResult(String monthlyClosureUpdateLogId) {
-		List<MonthlyClosureUpdatePersonLog> listPersonLog = mClosureUpdatePerLogRepo.getAll(monthlyClosureUpdateLogId);
+	private static MonthlyClosureCompleteStatus checkExecutionResult(RequireM2 require, String monthlyClosureUpdateLogId) {
+		List<MonthlyClosureUpdatePersonLog> listPersonLog = require.monthlyClosureUpdatePersonLog(monthlyClosureUpdateLogId);
+		
 		List<MonthlyClosureUpdatePersonLog> listPersonLogError = listPersonLog.stream()
 				.filter(item -> item.getExecutionResult() == MonthlyClosurePersonExecutionResult.NOT_UPDATED_WITH_ERROR)
 				.collect(Collectors.toList());
+		
 		if (!listPersonLogError.isEmpty())
 			// エラーあり - there is error
 			return MonthlyClosureCompleteStatus.COMPLETE_WITH_ERROR;
+		
 		List<MonthlyClosureUpdatePersonLog> listPersonLogAlarm = listPersonLog.stream()
 				.filter(item -> item.getExecutionResult() == MonthlyClosurePersonExecutionResult.UPDATED_WITH_ALARM)
 				.collect(Collectors.toList());
+		
 		if (!listPersonLogAlarm.isEmpty())
 			// アラームあり - there is alarm
 			return MonthlyClosureCompleteStatus.COMPLETE_WITH_ALARM;
@@ -84,12 +76,14 @@ public class MonthlyClosureUpdateLogProcess {
 	 * @param monthlyClosureUpdateLogId
 	 * @param employeeId
 	 */
-	public void monthlyClosureUpdatePersonLogProcess(String monthlyClosureUpdateLogId, String employeeId,
+	public static AtomTask monthlyClosureUpdatePersonLogProcess(RequireM1 require, String monthlyClosureUpdateLogId, String employeeId,
 			MonthlyClosureUpdatePersonLog personLog) {
-		List<MonthlyClosureUpdateErrorInfor> optErrorInfor = mClosureErrorInforRepo
-				.getByLogIdAndEmpId(monthlyClosureUpdateLogId, employeeId);
+		List<MonthlyClosureUpdateErrorInfor> optErrorInfor = require
+				.monthlyClosureUpdateErrorInfor(monthlyClosureUpdateLogId, employeeId);
+		
 		if (optErrorInfor.isEmpty()) {
 			personLog.updateResult(MonthlyClosurePersonExecutionResult.UPDATED);
+			
 		} else {
 			optErrorInfor = optErrorInfor.stream().filter(it -> it.getAtr() == MonthlyClosureUpdateErrorAlarmAtr.ERROR)
 					.collect(Collectors.toList());
@@ -101,7 +95,26 @@ public class MonthlyClosureUpdateLogProcess {
 		}
 
 		personLog.updateStatus(MonthlyClosurePersonExecutionStatus.COMPLETE);
-		mClosureUpdatePerLogRepo.add(personLog);
+		
+		return AtomTask.of(() -> require.addMonthlyClosureUpdatePersonLog(personLog));
 	}
 
+	public static interface RequireM3 extends RequireM2 {
+		
+		Optional<MonthlyClosureUpdateLog> monthlyClosureUpdateLog(String id);
+		
+		void updateMonthlyClosureUpdateLog(MonthlyClosureUpdateLog domain);
+	}
+	
+	private static interface RequireM2 {
+		
+		List<MonthlyClosureUpdatePersonLog> monthlyClosureUpdatePersonLog(String monthlyClosureUpdateLogId);
+	}
+	
+	public static interface RequireM1 {
+		
+		List<MonthlyClosureUpdateErrorInfor> monthlyClosureUpdateErrorInfor(String monthlyClosureUpdateLogId, String employeeId);
+
+		void addMonthlyClosureUpdatePersonLog(MonthlyClosureUpdatePersonLog domain);
+	}
 }

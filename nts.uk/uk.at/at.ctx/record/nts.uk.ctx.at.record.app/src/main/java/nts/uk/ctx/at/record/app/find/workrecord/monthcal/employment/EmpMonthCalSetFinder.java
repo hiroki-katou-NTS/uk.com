@@ -7,9 +7,9 @@ package nts.uk.ctx.at.record.app.find.workrecord.monthcal.employment;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpDeforLaborMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpFlexMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpRegulaMonthActCalSetRepository;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.emp.EmpFlexMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.emp.EmpDeforLaborMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.emp.EmpRegulaMonthActCalSetRepo;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -20,15 +20,15 @@ public class EmpMonthCalSetFinder {
 
 	/** The emp defor labor month act cal set repo. */
 	@Inject
-	private EmpDeforLaborMonthActCalSetRepository empDeforLaborMonthActCalSetRepo;
+	private EmpDeforLaborMonthActCalSetRepo empDeforLaborMonthActCalSetRepo;
 
 	/** The emp flex month act cal set repo. */
 	@Inject
-	private EmpFlexMonthActCalSetRepository empFlexMonthActCalSetRepo;
+	private EmpFlexMonthActCalSetRepo empFlexMonthActCalSetRepo;
 
 	/** The emp regula month act cal set repo. */
 	@Inject
-	private EmpRegulaMonthActCalSetRepository empRegulaMonthActCalSetRepo;
+	private EmpRegulaMonthActCalSetRepo empRegulaMonthActCalSetRepo;
 
 	/**
 	 * Gets the details.
@@ -41,9 +41,9 @@ public class EmpMonthCalSetFinder {
 
 		EmpMonthCalSetDto dto = EmpMonthCalSetDto.builder().build();
 
-		empDeforLaborMonthActCalSetRepo.find(cid, emplCode).ifPresent(domain -> domain.saveToMemento(dto));
-		empFlexMonthActCalSetRepo.find(cid, emplCode).ifPresent(domain -> domain.saveToMemento(dto));
-		empRegulaMonthActCalSetRepo.find(cid, emplCode).ifPresent(domain -> domain.saveToMemento(dto));
+		empDeforLaborMonthActCalSetRepo.find(cid, emplCode).ifPresent(domain -> dto.transfer(domain));
+		empFlexMonthActCalSetRepo.find(cid, emplCode).ifPresent(domain -> dto.transfer(domain));
+		empRegulaMonthActCalSetRepo.find(cid, emplCode).ifPresent(domain -> dto.transfer(domain));
 
 		return dto;
 	}
