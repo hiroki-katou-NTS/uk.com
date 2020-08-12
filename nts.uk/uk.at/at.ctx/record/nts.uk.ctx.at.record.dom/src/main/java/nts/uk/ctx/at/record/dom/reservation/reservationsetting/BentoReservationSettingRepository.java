@@ -10,4 +10,9 @@ public interface BentoReservationSettingRepository {
      * @return
      */
     Optional<BentoReservationSetting> findByCId(String companyId);
+
+    public void add(BentoReservationSetting bentoReservationSetting);
+
+    public void update(BentoReservationSetting bentoReservationSetting);
+
 }

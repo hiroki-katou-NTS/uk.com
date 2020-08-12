@@ -68,4 +68,16 @@ public class KrcmtBentoReservationSetting extends UkJpaEntity {
                 achievements
                 );
     }
+
+    public static KrcmtBentoReservationSetting fromDomain(BentoReservationSetting bentoReservationSetting) {
+        return new KrcmtBentoReservationSetting(
+                bentoReservationSetting.getCompanyId(),
+                bentoReservationSetting.getOperationDistinction().value,
+                bentoReservationSetting.getAchievements().getReferenceTime().v(),
+                bentoReservationSetting.getCorrectionContent().getOrderDeadline().value,
+                bentoReservationSetting.getAchievements().getMonthlyResults().value,
+                bentoReservationSetting.getAchievements().getDailyResults().value,
+                bentoReservationSetting.getCorrectionContent().getContentChangeDeadline().value,
+                bentoReservationSetting.getCorrectionContent().getContentChangeDeadlineDay().value);
+    }
 }

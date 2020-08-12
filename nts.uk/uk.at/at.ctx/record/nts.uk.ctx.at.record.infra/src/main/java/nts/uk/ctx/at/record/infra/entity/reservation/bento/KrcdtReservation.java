@@ -66,7 +66,7 @@ public class KrcdtReservation extends UkJpaEntity {
 				new ReservationRegisterInfo(cardNo), 
 				new ReservationDate(date, EnumAdaptor.valueOf(frameAtr, ReservationClosingTimeFrame.class)), 
 				ordered == 0 ? false : true,
-				Optional.of(new WorkLocationCode(workLocationCode)),
+				Optional.ofNullable(workLocationCode == null? null: new WorkLocationCode(workLocationCode)),
 				reservationDetails.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 	}
 	
@@ -81,7 +81,8 @@ public class KrcdtReservation extends UkJpaEntity {
 				bentoReservation.getReservationDate().getClosingTimeFrame().value, 
 				bentoReservation.getRegisterInfor().getReservationCardNo(), 
 				bentoReservation.isOrdered() ? 1 : 0 ,
-				bentoReservation.getWorkLocationCode().get().v(),
+				bentoReservation.getWorkLocationCode().isPresent()?
+						bentoReservation.getWorkLocationCode().get().v(): null ,
 				bentoReservation.getBentoReservationDetails().stream().map(x -> KrcdtReservationDetail.fromDomain(x, reservationId)).collect(Collectors.toList()));
 	}
 }
