@@ -7,40 +7,21 @@ module nts.uk.at.view.ksm003.a {
     class ViewModel extends ko.ViewModel {
         // Init
         columns: KnockoutObservableArray<any> = ko.observableArray([
-            {
-                headerText: nts.uk.resource.getText("KSM003_26"),
-                key: "code",
-                formatter: _.escape,
-                width: 100,
-            },
-            {
-                headerText: nts.uk.resource.getText("KSM003_27"),
-                key: "name",
-                formatter: _.escape,
-                width: 200,
-            },
+            { headerText: nts.uk.resource.getText("KSM003_26"),key: "code",formatter: _.escape,idth: 100 },
+            { headerText: nts.uk.resource.getText("KSM003_27"),key: "name",formatter: _.escape,width: 200 },
         ]);
-
-        gListColumns: Array<any>;
-        currentCodeList: KnockoutObservableArray<any>;
-        items: KnockoutObservableArray<DailyPatternItemDto> = ko.observableArray(
-            []
-        );
-
+        items: KnockoutObservableArray<DailyPatternItemDto> = ko.observableArray([]);
         selectedCode: KnockoutObservable<string> = ko.observable("");
         selectedName: KnockoutObservable<string> = ko.observable("");
         isEditting: KnockoutObservable<boolean> = ko.observable(false);
-        hasWorkingCycleItems: KnockoutObservable<boolean> = ko.observable(false);
+        enableRemoveItem: KnockoutObservable<boolean> = ko.observable(false);
         lessThan99Items: KnockoutObservable<boolean> = ko.observable(true);
         itemLst: KnockoutObservableArray<DailyPatternItemDto> = ko.observableArray([]);
         gridItems: KnockoutObservableArray<WorkingCycleDtl> = ko.observableArray([]);
-        workingCycleItems: KnockoutObservableArray<WorkingCycleDtl> = ko.observableArray([]);
         mainModel: KnockoutObservable<DailyPatternDetailModel>;
         currentCode: KnockoutObservable<any> = ko.observable("");
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
-
         dailyPatternValModel: KnockoutObservableArray<DailyPatternValModel> = ko.observableArray([]);
-
         selectedCheckAll: KnockoutObservable<boolean> = ko.observable(false);
 
         API = {
@@ -51,18 +32,19 @@ module nts.uk.at.view.ksm003.a {
             patternDailyUpdate: "ctx/at/schedule/pattern/work/cycle/update",
             patternDailyDelete: "ctx/at/schedule/pattern/work/cycle/delete",
             patternDailyRegister: "ctx/at/schedule/pattern/work/cycle/register",
+            getDailyByPattenCode: "ctx/at/schedule/shift/pattern/daily/find/",
+            //findNotDeprecatedByListCode: "at/share/worktype/findNotDeprecatedByListCode",
         };
 
         maxWorkingTimeItems: number = 15;
 
         constructor(params: any) {
             super();
-            $("#fixedTable").ntsFixedTable({ height: 365, width: 430});
+            $("#fixedTable").ntsFixedTable({ height: 365, width: 450});
         }
 
         created(params: any) {
             let vm = this;
-            vm.gListColumns = vm.columnSetting();
             vm.getListWorkingCycle();
         }
 
@@ -78,25 +60,35 @@ module nts.uk.at.view.ksm003.a {
                 }
                 vm.disableAddNewLine();
             });
+
             //enable remove button
-            vm.currentCodeList.subscribe((codeSelected: string) => {
-                vm.hasWorkingCycleItems(codeSelected.length > 0);
+            vm.currentCodeList.subscribe(function(codeSelected: string){
+                vm.enableRemoveItem(codeSelected.length > 0);
             });
 
-            vm.selectedCheckAll.subscribe((value: string) => {
-
+            vm.selectedCheckAll.subscribe(function(value: boolean){
                 let dailyPatternItems : Array<DailyPatternValModel> = [];
+                let checkedAll: boolean = value;
+                let hasOneItemChecked : boolean = false;
+                let totalItemCheked: number = 0;
 
+                vm.enableRemoveItem(false);
                 vm.dailyPatternValModel() && vm.dailyPatternValModel().map( ( item, i) => {
-                    dailyPatternItems.push(
-                        new DailyPatternValModel(
-                            item.dispOrder, item.workTypeInfo(),
-                            item.workingInfo(), item.days(),value
-                        )
-                    );
+                    item.isChecked(checkedAll ? checkedAll : item.isChecked());
+                    dailyPatternItems.push(item);
+                    if( item.isChecked()) totalItemCheked++;
+                    if( !hasOneItemChecked ) hasOneItemChecked = item.isChecked();
                 });
 
-                vm.hasWorkingCycleItems(value);
+                if( totalItemCheked == vm.dailyPatternValModel().length && !checkedAll) {
+                    vm.enableRemoveItem(false);
+                    dailyPatternItems = [];
+                    vm.dailyPatternValModel().map( ( item, i) => {
+                        item.isChecked(false);
+                        dailyPatternItems.push(item);
+                    });
+                } else
+                    vm.enableRemoveItem(hasOneItemChecked);
 
                 vm.dailyPatternValModel([]);
                 vm.dailyPatternValModel(dailyPatternItems);
@@ -122,16 +114,9 @@ module nts.uk.at.view.ksm003.a {
                         vm.selectedCode(vm.itemLst()[0].code);
                         vm.selectedName(vm.itemLst()[0].name);
                         $("#inpPattern").focus();
-                        //load Working Cycle listing
-                        //let Pattern = vm.itemLst()[0].code;
-                        //vm.getPatternValByPatternCd(Pattern);
                     }
                 }
             );
-        }
-        public  enableDisableRemove( flag: boolean) {
-            let self = this;
-            self.hasWorkingCycleItems(flag);
         }
 
         public switchNewMode(): void {
@@ -141,10 +126,9 @@ module nts.uk.at.view.ksm003.a {
             self.selectedName("");
             self.mainModel().patternName("");
             self.mainModel().resetModel();
-            $("#inpCode").focus();
             self.clearError();
-            //clear grid and add new line into WorkingCycleDtl
             self.addNewLineItem(true);
+            $("#inpCode").focus();
         }
 
         // clear Error
@@ -172,7 +156,22 @@ module nts.uk.at.view.ksm003.a {
             return;
         }
 
-        addLine() {
+        enableDisableRemove(flag: boolean, obj: any) {
+            let vm = this;
+            let dailyPatternValModel = vm.dailyPatternValModel();
+            let totalChecked: number = 0;
+            dailyPatternValModel && dailyPatternValModel.map((item, i) => {
+                if( item.dispOrder == obj.dispOrder) {
+                    dailyPatternValModel[i].isChecked(flag);
+                }
+                if( item.isChecked()) totalChecked++;
+            });
+
+            vm.enableRemoveItem(totalChecked > 0);
+            vm.selectedCheckAll(totalChecked == dailyPatternValModel.length);
+        }
+
+        addNewItem() {
             this.addNewLineItem(false);
         }
 
@@ -182,7 +181,7 @@ module nts.uk.at.view.ksm003.a {
             let lstWorkTime: Array<WorkTimeDto> = [];
             vm.$errors("clear");
             vm.$ajax(
-                "ctx/at/schedule/shift/pattern/daily/find" + "/" + patternCode
+                vm.API.getDailyByPattenCode + patternCode
             ).done((dataRes: any) => {
                 if (dataRes !== undefined) {
                     vm.isEditting(true);
@@ -202,7 +201,7 @@ module nts.uk.at.view.ksm003.a {
                     });
                     //find work type
                     vm.$ajax(
-                        "at/share/worktype/findNotDeprecatedByListCode",
+                        vm.API.findWordType,
                         lstWorkTypeCode
                     ).done((data: Array<WorkTypeDto>) => {
                         lstWorkType = data;
@@ -214,7 +213,7 @@ module nts.uk.at.view.ksm003.a {
                             }
                         });
                         vm.$ajax(
-                            "at/shared/worktimesetting/findByCodes",
+                            vm.API.findWorkTimeByCode,
                             lstWorkTimeCode
                         ).done((data: Array<WorkTimeDto>) => {
                             lstWorkTime = data;
@@ -375,9 +374,6 @@ module nts.uk.at.view.ksm003.a {
                     item.days));
             });
 
-            vm.gridItems(workingCycleDtl);
-            vm.displayWorkingCycle(vm.gridItems());
-
             vm.dailyPatternValModel(dailyPatternVals);
             vm.mainModel().dailyPatternVals(dailyPatternVals);
         }
@@ -389,38 +385,24 @@ module nts.uk.at.view.ksm003.a {
         addNewLineItem(isAddNew: boolean) {
             let vm = this;
             let id: number;
-
-            let totalItems: number = vm.gridItems().length > 0 ? vm.gridItems().length + 1 : 1;
+            let dailyPatternVals = vm.mainModel().dailyPatternVals();
+            let totalItems: number = dailyPatternVals.length > 0 ? dailyPatternVals.length + 1 : 1;
             if (totalItems > vm.maxWorkingTimeItems) {
                 this.$dialog.info({messageId: "Msg_1688"});
                 return;
             }
-
             id = totalItems + 1; //< 99
-            let workingCycleDtl = new WorkingCycleDtl(id.toString(), totalItems.toString(), null, null);
             let dailyPatternValModel = new DailyPatternValModel(id, null, null, null);
-
-            if (!isAddNew) {
-                vm.gridItems.push(workingCycleDtl);
-            } else {
-                vm.gridItems([workingCycleDtl]);
-                vm.hasWorkingCycleItems(false);
-            }
-
             //add to model
             if (isAddNew) {
                 let empty: Array<DailyPatternValModel> = [];
                 vm.mainModel().dailyPatternVals(empty);
+                vm.enableRemoveItem(false);
             }
 
-            let dailyPatternVals = vm.mainModel().dailyPatternVals();
             dailyPatternVals.push(dailyPatternValModel);
-
             vm.dailyPatternValModel(dailyPatternVals);
             vm.mainModel().dailyPatternVals(dailyPatternVals);
-
-
-            vm.displayWorkingCycle(vm.gridItems());
             vm.disableAddNewLine();
         }
 
@@ -434,25 +416,25 @@ module nts.uk.at.view.ksm003.a {
                 if (result === 'no' || result === 'cancel') vm.$blockui("hide");
                 if (result === 'yes') {
                     let currentCodeList = vm.currentCodeList();
-                    let currentDataList = vm.gridItems();
+                    let currentDataList = vm.mainModel().dailyPatternVals();
                     let newDataList = [];
                     let dailyPatternValModel: Array<DailyPatternValModel> = [];
 
-                    currentCodeList &&
-                    currentDataList &&
-                    currentDataList.map((item, i) => {
-                        const found = currentCodeList.some(
-                            (element) => element == item.id
-                        );
-                        if (!found) {
-                            newDataList.push(item);
-                            dailyPatternValModel.push( new DailyPatternValModel(item.id, item.typeOfWork, item.workingHours, item.days));
+                    currentCodeList && currentDataList && currentDataList.map((item, i) => {
+                        if (!item.isChecked()) {
+                            dailyPatternValModel.push(
+                                new DailyPatternValModel(
+                                    item.dispOrder, item.workTypeInfo(),
+                                    item.workingInfo(), item.days()
+                                ));
                         }
                     });
+                    //update model
+                    vm.mainModel().dailyPatternVals([]);
                     vm.mainModel().dailyPatternVals(dailyPatternValModel);
+                    //update data resource
+                    vm.dailyPatternValModel([]);
                     vm.dailyPatternValModel(dailyPatternValModel);
-
-                    vm.gridItems(newDataList);
                     vm.disableAddNewLine();
                     vm.$blockui("hide");
                 }
@@ -692,85 +674,6 @@ module nts.uk.at.view.ksm003.a {
             });
         }
 
-        displayWorkingCycle(workingCycleItems) {
-            let vm = this;
-            //vm.workingCycleItems = ko.observableArray(workingCycleItems);
-
-            $("#grid2").ntsGrid({
-                height: '380px',
-                dataSource: workingCycleItems || [],
-                primaryKey: 'id',
-                virtualization: true,
-                virtualizationMode: 'continuous',
-                columns: [
-                    {headerText: '', key: 'id', dataType: 'number', width: '0', hidden: true},
-                    {
-                        headerText: '',
-                        key: 'selectedItem',
-                        dataType: 'boolean',
-                        width: '35px',
-                        ntsControl: 'Checkbox',
-                        showHeaderCheckbox: true
-                    },
-                    {
-                        headerText: '',
-                        key: "patternCode",
-                        dataType: 'string',
-                        width: '60px',
-                        unbound: true,
-                        ntsControl: 'Button'
-                    },
-                    {
-                        headerText: nts.uk.resource.getText("KSM003_30"),
-                        key: 'typeOfWork',
-                        dataType: 'string',
-                        width: '130px',
-                    },
-                    {
-                        headerText: nts.uk.resource.getText("KSM003_31"),
-                        key: 'workingHours',
-                        dataType: 'string',
-                        width: '130px',
-                    },
-                    {
-                        headerText: nts.uk.resource.getText("KSM003_31"), key: 'days', width: '80px',
-                        dataType: 'number', ntsControl: 'TextEditor', columnCssClass: 'daysWorking'
-                    },
-                    {
-                        headerText: '',
-                        key: 'dayGridText',
-                        dataType: 'string',
-                        columnCssClass: 'daysWorking1',
-                        width: '0'
-                    },
-                ],
-                features: [
-                    {name: 'Selection', mode: 'row', multipleSelection: true}
-                ],
-                ntsControls: [
-                    {
-                        name: 'Checkbox', options: {value: 1, text: ''},
-                        optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true
-                    },
-                    {
-                        name: 'Button', text: vm.$i18n("KSM003_34"), click: function () {
-                            alert("Button!!");
-                        }, controlType: 'Button'
-                    },
-                    {
-                        name: 'TextEditor', controlType: 'TextEditor',
-                        constraint: {valueType: 'Integer', required: true, format: "Number_Separated"},
-                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                            textmode: "text",
-                            placeholder: "Placeholder for text editor",
-                            width: "100px",
-                            textalign: "left"
-                        }))
-                    },
-                ]
-            });
-        }
-
         //validate form
         private validate(): boolean {
             let self = this;
@@ -874,12 +777,11 @@ module nts.uk.at.view.ksm003.a {
                 }
                 return false;
             });
-            this.isChecked = ko.observable(isChecked);
+            this.isChecked = ko.observable(isChecked ? isChecked : this.isChecked);
 
-            /*this.isChecked.subscribe((value) => {
-                console.log(this);
-                __viewContext['viewModel'].enableDisableRemove(true);
-            });*/
+            this.isChecked.subscribe((value) => {
+                nts.uk.ui._viewModel.content.enableDisableRemove(value, this);
+            });
         }
 
         public resetModel(displayOrder: number) {
