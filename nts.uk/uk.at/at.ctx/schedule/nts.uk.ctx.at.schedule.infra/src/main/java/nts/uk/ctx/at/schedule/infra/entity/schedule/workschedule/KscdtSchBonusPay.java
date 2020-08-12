@@ -68,9 +68,9 @@ public class KscdtSchBonusPay extends ContractUkJpaEntity{
 		
 		return new KscdtSchBonusPay(pk,
 				AppContexts.user().companyId(),
-				bonusPayTime.getBonusPayTime().v(),
-				bonusPayTime.getWithinBonusPay().getTime().v(), 
-				bonusPayTime.getExcessBonusPayTime().getTime().v());
+				bonusPayTime.getBonusPayTime() == null ? 0 : bonusPayTime.getBonusPayTime().v(),
+				bonusPayTime.getBonusPayTime() == null ? 0 : bonusPayTime.getWithinBonusPay().getTime().v(), 
+				bonusPayTime.getBonusPayTime() == null ? 0 : bonusPayTime.getExcessBonusPayTime().getTime().v());
 		
 	}
 	//勤務予定．勤怠時間．勤務時間．総労働時間．加給時間．加給時間

@@ -22,13 +22,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_PALETTE_CMP")
-public class KscmtManagementOfShiftTable extends ContractUkJpaEntity  implements Serializable {
+@Table(name = "KSCDT_SHIFT_TBL_OPEN_CTL")
+public class KscdtManagementOfShiftTable extends ContractUkJpaEntity  implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KscmtManagementOfShiftTablePk pk;
+	public KscdtManagementOfShiftTablePk pk;
 
 	@Column(name = "OPEN_END_DATE")
 	public GeneralDate endDate;
@@ -41,9 +41,9 @@ public class KscmtManagementOfShiftTable extends ContractUkJpaEntity  implements
 		return this.pk;
 	}
 
-	public static KscmtManagementOfShiftTable toEntity(PublicManagementShiftTable shiftTable) {
-		return new KscmtManagementOfShiftTable(
-				new KscmtManagementOfShiftTablePk(AppContexts.user().companyId(),
+	public static KscdtManagementOfShiftTable toEntity(PublicManagementShiftTable shiftTable) {
+		return new KscdtManagementOfShiftTable(
+				new KscdtManagementOfShiftTablePk(AppContexts.user().companyId(),
 						shiftTable.getTargetOrgIdenInfor().getUnit().value,
 						shiftTable.getTargetOrgIdenInfor().getUnit().value == 0
 								? shiftTable.getTargetOrgIdenInfor().getWorkplaceId().get()

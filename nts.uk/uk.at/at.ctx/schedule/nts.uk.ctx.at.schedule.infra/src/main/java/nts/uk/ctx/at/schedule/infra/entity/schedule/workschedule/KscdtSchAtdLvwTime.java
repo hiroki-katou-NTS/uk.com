@@ -70,8 +70,8 @@ public class KscdtSchAtdLvwTime extends ContractUkJpaEntity {
 			}
 		}
 		return new KscdtSchAtdLvwTime(pk, cID, 
-				timeWithDayAtt.v(),
-				timeWithDayLea.v());
+				timeWithDayAtt == null ? 0 : timeWithDayAtt.v(),
+				timeWithDayLea == null ? 0 :timeWithDayLea.v());
 	}
 	
 	@Override
