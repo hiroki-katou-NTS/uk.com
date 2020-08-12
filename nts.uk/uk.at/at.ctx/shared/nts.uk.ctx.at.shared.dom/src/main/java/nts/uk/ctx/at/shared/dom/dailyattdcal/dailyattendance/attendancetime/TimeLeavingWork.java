@@ -84,12 +84,16 @@ public class TimeLeavingWork extends DomainObject{
 		TimeWithDayAttr att_attr = null;
 		if(att_myObj.getStamp().isPresent()) {
 			WorkStamp att_stamp = att_myObj.getStamp().orElse(new WorkStamp()); //出勤（実じゃない）
+			
+			if(att_stamp.getTimeDay() != null)
 			att_attr = att_stamp.getTimeDay().getTimeWithDay().isPresent()? att_stamp.getTimeDay().getTimeWithDay().get():null; //出勤時刻
 		}
 		TimeActualStamp lea_myObj = leaveStamp.orElse(new TimeActualStamp()); //退勤
 		TimeWithDayAttr lea_attr  = null;
 		if(lea_myObj.getStamp().isPresent()) {
-			WorkStamp lea_stamp = lea_myObj.getStamp().orElse(new WorkStamp()); //退勤（実じゃない）                                                                                                                                                                                                 
+			WorkStamp lea_stamp = lea_myObj.getStamp().orElse(new WorkStamp()); //退勤（実じゃない）             
+			
+			if(lea_stamp.getTimeDay() != null)
 			lea_attr = lea_stamp.getTimeDay().getTimeWithDay().isPresent()?lea_stamp.getTimeDay().getTimeWithDay().get():null; //退勤時刻
 		}
 		

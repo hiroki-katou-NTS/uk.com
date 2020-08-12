@@ -236,4 +236,50 @@ public class IntegrationOfDaily {
 		}
 	}
 	
+	public IntegrationOfDaily(
+			String employeeId,
+			GeneralDate ymd,
+			WorkInfoOfDailyAttendance workInformation, 
+			CalAttrOfDailyAttd calAttr,
+			AffiliationInforOfDailyAttd affiliationInfor,
+			Optional<PCLogOnInfoOfDailyAttd> pcLogOnInfo,
+			List<EmployeeDailyPerError> employeeError,
+			Optional<OutingTimeOfDailyAttd> outingTime,
+			List<BreakTimeOfDailyAttd> breakTime,
+			Optional<AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyPerformance,
+			Optional<TimeLeavingOfDailyAttd> attendanceLeave, 
+			Optional<ShortTimeOfDailyAttd> shortTime,
+			Optional<SpecificDateAttrOfDailyAttd> specDateAttr,
+			Optional<AttendanceLeavingGateOfDailyAttd> attendanceLeavingGate,
+			Optional<AnyItemValueOfDailyAttd> anyItemValue,
+			List<EditStateOfDailyAttd> editState, 
+			Optional<TemporaryTimeOfDailyAttd> tempTime,
+			List<RemarksOfDailyAttd> remarks) {
+		super();
+		this.employeeId = employeeId;
+		this.ymd = ymd;
+		this.workInformation = workInformation;
+		this.calAttr = calAttr;
+		this.affiliationInfor = affiliationInfor;
+		this.pcLogOnInfo = pcLogOnInfo;
+		if(employeeError != null) {
+			this.employeeError = new ArrayList<>(employeeError);
+		}
+		else {
+			this.employeeError = Collections.emptyList();
+		}
+		this.outingTime = outingTime;
+		this.breakTime = breakTime;
+		this.attendanceTimeOfDailyPerformance = attendanceTimeOfDailyPerformance;
+		this.attendanceLeave = attendanceLeave;
+		this.shortTime = shortTime;
+		this.specDateAttr = specDateAttr;
+		this.attendanceLeavingGate = attendanceLeavingGate;
+		this.anyItemValue = anyItemValue;
+		this.editState = editState;
+		this.tempTime = tempTime;
+		this.remarks = remarks;
+	}
+
+	
 }
