@@ -40,7 +40,7 @@ public class DetailAfterDenyImpl implements DetailAfterDeny {
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 
 	@Override
-	public ProcessResult doDeny(String companyID, String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+	public ProcessResult doDeny(String companyID, String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput, String memo) {
 		String loginID = AppContexts.user().employeeId();
 		boolean isProcessDone = false;
 		boolean isAutoSendMail = false;
@@ -48,7 +48,7 @@ public class DetailAfterDenyImpl implements DetailAfterDeny {
 		List<String> autoFailMail = new ArrayList<>();
 		List<String> autoFailServer = new ArrayList<>();
 		// 3.否認する(DenyService)
-		Boolean releaseFlg = approvalRootStateAdapter.doDeny(appID, loginID);
+		Boolean releaseFlg = approvalRootStateAdapter.doDeny(appID, loginID, memo);
 		if(!releaseFlg) {
 			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, appID,"");
 		}

@@ -210,20 +210,20 @@ public class JpaAppStampSettingRepository extends JpaRepository implements AppSt
 		
 //		公用
 		GoOutTypeDispControl type2 = new GoOutTypeDispControl();
-		type1.setGoOutType(GoOutType.OFFICE);
+		type2.setGoOutType(GoOutType.OFFICE);
 		type2.setDisplay(EnumAdaptor.valueOf(res.getInt("STAMP_OUT_PUB_DISP_ATR"), DisplayAtr.class));
 		goOutTypeDispControl.add(type2);
 		
 //		有償
 		GoOutTypeDispControl type3 = new GoOutTypeDispControl();
-		type1.setGoOutType(GoOutType.COMPENSATION);
+		type3.setGoOutType(GoOutType.COMPENSATION);
 		type3.setDisplay(EnumAdaptor.valueOf(res.getInt("STAMP_OUT_COMP_DISP_ATR"), DisplayAtr.class));
 		goOutTypeDispControl.add(type3);
 		
 //		組合
 		
 		GoOutTypeDispControl type4 = new GoOutTypeDispControl();
-		type1.setGoOutType(GoOutType.UNION);
+		type4.setGoOutType(GoOutType.UNION);
 		type4.setDisplay(EnumAdaptor.valueOf(res.getInt("STAMP_OUT_UNION_DISP_ATR"), DisplayAtr.class));
 		goOutTypeDispControl.add(type4);
 		

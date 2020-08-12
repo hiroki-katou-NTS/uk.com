@@ -8,16 +8,24 @@
         </div>
         <div class="card-body">
             <div v-if="displayFixedReason">
-                <span class="small-header">{{'KAFS00_17' | i18n}}</span>
-                <nts-dropdown v-model="params.output.opAppStandardReasonCD">
-                    <option v-for="(item, itemIndex) in dropdownList" v-bind:key="itemIndex" v-bind:value="item.appStandardReasonCD">
-                        {{item.opReasonForFixedForm | i18n}}
-                    </option>
-                </nts-dropdown>
+                <div class="mb-1">
+                    <span class="small-header">{{'KAFS00_17' | i18n}}</span>
+                </div>
+                <div>
+                    <nts-dropdown v-model="params.output.opAppStandardReasonCD">
+                        <option v-for="(item, itemIndex) in dropdownList" v-bind:key="itemIndex" v-bind:value="item.appStandardReasonCD">
+                            {{item.opReasonForFixedForm | i18n}}
+                        </option>
+                    </nts-dropdown>
+                </div>
             </div>
             <div v-if="displayAppReason">
-                <span class="small-header">{{'KAFS00_18' | i18n}}</span>
-                <nts-text-area　v-model="params.output.opAppReason" />
+                <div class="mb-1">
+                    <span class="small-header">{{'KAFS00_18' | i18n}}</span>
+                </div>
+                <div>
+                    <nts-text-area　v-model="params.output.opAppReason" />
+                </div>
             </div>
         </div>
     </div>

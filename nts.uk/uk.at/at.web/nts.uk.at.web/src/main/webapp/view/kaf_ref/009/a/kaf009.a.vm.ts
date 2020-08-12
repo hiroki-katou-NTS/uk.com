@@ -37,13 +37,8 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                             opReasonScheCantReflect: 0
                         }
                     }]
-                },
-                opStampRequestMode: 1,
-                opReversionReason: '1',
-                 opAppStartDate: '2020/08/07',
-                 opAppEndDate: '2020/08/08',
-                 opAppReason: 'jdjadja',
-                 opAppStandardReasonCD: 1
+                }
+                
 
 
             };
@@ -55,18 +50,25 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
         created(params: any) {
             const vm = this;
             vm.application = ko.observable(new Application(AppType.GO_RETURN_DIRECTLY_APPLICATION));
-            vm.model = new Model(true, true, true, '001', 'WorkType', '001', 'WorkTime');
+            vm.model = new Model(true, true, true, '', '', '', '');
 //            vm.appDispInfoStartupOutput = ko.observable(CommonProcess.initCommonSetting());
 //            vm.application().appDate(moment(new Date()).format("YYYY/MM/DD"));
             
             vm.$blockui("show");
             vm.loadData([], [], AppType.GO_RETURN_DIRECTLY_APPLICATION)
             .then((loadDataFlag: any) => {
+                vm.appDispInfoStartupOutput.subscribe(value => {
+                    console.log(value);
+                    if (value) {
+                        vm.changeDate();
+                    }
+                });
                 if(loadDataFlag) {
                     let ApplicantEmployeeID: null,
                         ApplicantList: null,
                         appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
                         command = { ApplicantEmployeeID, ApplicantList, appDispInfoStartupOutput };
+                        
                     return vm.$ajax(API.startNew, command);
                 }
             }).then((res: any) => {
@@ -81,18 +83,17 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                     });     
                 }
             }).fail((failData: any) => {
-                vm.$dialog.error({
-                    messageId: failData.msgId
-                }); 
+                let param;
+                if (failData.message) {
+                    param = {message: failData.message};
+                } else {
+                    param = {messageId: failData.messageId}
+                }
+                vm.$dialog.error(param); 
                 
             }).always(() => vm.$blockui("hide"));
             
-            vm.application().appDate.subscribe(value => {
-                console.log(value);
-                if (value) {
-                    vm.changeDate();
-                }
-            });
+            
             
 
         }
@@ -152,8 +153,8 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             vm.applicationTest.appDate = application.appDate;
             vm.applicationTest.appType = application.appType;
             vm.applicationTest.prePostAtr = application.prePostAtr;
-//            vm.applicationTest.opAppStartDate = application.opAppStartDate;
-//            vm.applicationTest.opAppEndDate = application.opAppEndDate;
+            vm.applicationTest.opAppStartDate = application.opAppStartDate;
+            vm.applicationTest.opAppEndDate = application.opAppEndDate;
             vm.applicationTest.opAppReason = application.opAppReason;
             vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;    
             vm.applicationTest.opReversionReason = application.opReversionReason;
@@ -205,9 +206,18 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                                 }
                             } )
                             .fail( err => {
-                                vm.$dialog.error( {
-                                    messageId: err.msgId
-                                } );
+                                let param;
+                                if (err.message && err.messageId) {
+                                    param = {messageId: err.messageId};
+                                } else {
+                                    
+                                    if (err.message) {
+                                        param = {message: err.message};
+                                    } else {
+                                        param = {messageId: err.messageId};
+                                    }
+                                }
+                                vm.$dialog.error(param);
                             } )
                             .always(() => vm.$blockui( "hide" ) );
                     }
@@ -221,14 +231,24 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
         
         changeDate() {
             console.log("change date");
-            let vm = this;
-            let param = {
-                    companyId: vm.$user.companyId,
-                    appDates: [vm.application().appDate()],
-                    employeeIds: vm.application().employeeIDLst(),
-                    inforGoBackCommonDirectDto: ko.toJS(vm.dataFetch())
+            const vm = this;
+            let dataClone = _.clone(vm.dataFetch());
+            if (!_.isNull(dataClone)) {
+                vm.dataFetch(dataClone);
+                return;
             }
-            vm.$ajax(API.changeDate, param)
+            vm.$blockui( "show" );
+//            let param = {
+//                    companyId: vm.$user.companyId,
+//                    appDates: [vm.application().appDate()],
+//                    employeeIds: vm.application().employeeIDLst(),
+//                    inforGoBackCommonDirectDto: ko.toJS(vm.dataFetch())
+//            }
+            let ApplicantEmployeeID: null,
+            ApplicantList: null,
+            appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
+            command = { ApplicantEmployeeID, ApplicantList, appDispInfoStartupOutput };
+            vm.$ajax(API.startNew, command)
                 .done(res => {
                     if (res) {
                         vm.dataFetch({
@@ -243,12 +263,25 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 })
                 .fail(res => {
                     
-                    console.log(res);
-                    vm.$dialog.error( {
-                        messageId: res.msgId
-                    } );
+                    let param;
+                    if (res.message) {
+                        param = {message: res.message};
+                    } else {
+                        param = {messageId: res.messageId}
+                    }
+                    vm.$dialog.error(param);
                 })
-                .always(() => true);
+                .always(() => vm.$blockui( "hide" ));
+            
+            
+//            vm.dataFetch(){
+//                workType: ko.observable(res.workType),
+//                workTime: ko.observable(res.workTime),
+//                appDispInfoStartup: ko.observable(res.appDispInfoStartup),
+//                goBackReflect: ko.observable(res.goBackReflect),
+//                lstWorkType: ko.observable(res.lstWorkType),
+//                goBackApplication: ko.observable(res.goBackApplication)
+//            });
             
         }
 

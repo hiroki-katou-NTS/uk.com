@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -17,12 +16,11 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
@@ -85,7 +83,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
 	
 	@Inject
-	private NewBeforeRegister_New newBeforeRegister;
+	private NewBeforeRegister newBeforeRegister;
 	
 	@Inject
 	private DetailAppCommonSetService detailAppCommonSetService;
@@ -108,7 +106,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	@Inject
 	private AppWorkChangeSetRepository appWorkChangeSetRepoNew;
 
-	public WorkTypeObjAppHoliday geWorkTypeObjAppHoliday(AppEmploymentSetting x, ApplicationType_Old hdType) {
+	public WorkTypeObjAppHoliday geWorkTypeObjAppHoliday(AppEmploymentSetting x, ApplicationType hdType) {
 		return x.getListWTOAH().stream().filter(y -> y.getAppType() == hdType).findFirst().get();
 	}
 	
@@ -514,10 +512,20 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent() ? appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get() : null);
 		
 //		勤務種類・就業時間帯を変更する時
+		Optional<String> workTimeOp = Optional.empty();
+		if (woSelect != null) {
+			if (woSelect.getWorkTime() != null) {
+				if (woSelect.getWorkTime().getWorktimeCode() != null) {
+					workTimeOp = Optional.ofNullable(woSelect.getWorkTime().getWorktimeCode().v());
+				}
+				
+			}
+			
+		}
 		ChangeWkTypeTimeOutput changeWkTypeTimeOutput = this.changeWorkTypeWorkTime(
 				companyId,
 				woSelect.getWorkType().getWorkTypeCode().v(),
-				Optional.ofNullable(woSelect.getWorkTime().getWorktimeCode().v()),
+				workTimeOp,
 				appWorkChangeSettingOutput.getAppWorkChangeSet());
 		
 		
@@ -530,7 +538,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		appWorkChangeDispInfo.setSetupType(Optional.ofNullable(changeWkTypeTimeOutput.getSetupType()));
 		appWorkChangeDispInfo.setPredetemineTimeSetting(changeWkTypeTimeOutput.getOpPredetemineTimeSetting());
 		appWorkChangeDispInfo.setWorkTypeCD(Optional.ofNullable(woSelect.getWorkType().getWorkTypeCode().v()));
-		appWorkChangeDispInfo.setWorkTimeCD(Optional.ofNullable(woSelect.getWorkTime().getWorktimeCode().v()));
+		appWorkChangeDispInfo.setWorkTimeCD(workTimeOp);
 		
 //		勤務変更申請の表示情報．勤務変更申請の反映 = 取得した「勤務変更申請の反映」
 		appWorkChangeDispInfo.setReflectWorkChangeApp(appWorkChangeSettingOutput.getAppWorkChangeReflect());
@@ -549,9 +557,9 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		ReflectWorkChangeApp appWorkChangeReflect = new ReflectWorkChangeApp();
 		appWorkChangeReflect.setCompanyID(companyId);
 		appWorkChangeReflect.setWhetherReflectAttendance(NotUseAtr.valueOf(1));
+		Optional<ReflectWorkChangeApp> reflectOptional = appWorkChangeSetRepoNew.findByCompanyIdReflect(companyId);
+		appWorkChangeReflect = reflectOptional.isPresent() ? reflectOptional.get() : null;
 		
-		appWorkChangeReflect.setCompanyID(companyId);
-//		appWorkChangeReflect.setWhetherReflectAttendance(EnumAdaptor.valueOf(constantValue, enumClass));
 		appWorkChangeSettingOutput.setAppWorkChangeSet(appWorkChangeSet.isPresent() ? appWorkChangeSet.get() : null);
 		
 		appWorkChangeSettingOutput.setAppWorkChangeReflect(appWorkChangeReflect);

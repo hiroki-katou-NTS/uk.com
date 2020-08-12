@@ -104,7 +104,7 @@ public class KrqdtApplication extends ContractUkJpaEntity {
 				application.getVersion(), 
 				application.getPrePostAtr().value, 
 				application.getInputDate(), 
-				application.getEnteredPerson(), 
+				application.getEnteredPersonID(), 
 				application.getOpReversionReason().map(x -> x.v()).orElse(null), 
 				application.getAppDate().getApplicationDate(), 
 				application.getOpAppStandardReasonCD().map(x -> x.v()).orElse(null), 

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.ws.application.common;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,23 +14,24 @@ import javax.ws.rs.Produces;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.app.command.application.common.AppDetailBehaviorCmd;
 import nts.uk.ctx.at.request.app.command.application.common.ApproveAppHandler;
+import nts.uk.ctx.at.request.app.command.application.common.CancelAppHandler;
 import nts.uk.ctx.at.request.app.command.application.common.DeleteAppHandler;
 import nts.uk.ctx.at.request.app.command.application.common.DenyAppHandler;
 import nts.uk.ctx.at.request.app.command.application.common.ReflectAplicationCommmandHandler;
 import nts.uk.ctx.at.request.app.command.application.common.ReleaseAppHandler;
 import nts.uk.ctx.at.request.app.command.application.common.RemandApplicationHandler;
-import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCancelHandler;
-import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCommonCmd;
-import nts.uk.ctx.at.request.app.command.setting.request.ApplicationDeadlineCommand;
-import nts.uk.ctx.at.request.app.command.setting.request.UpdateApplicationDeadlineCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.common.AppDataDateFinder;
 import nts.uk.ctx.at.request.app.find.application.common.AppDateDataDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoWithDateDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppPrintQuery;
+import nts.uk.ctx.at.request.app.find.application.common.ApplicationExportService;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationFinder;
 import nts.uk.ctx.at.request.app.find.application.common.ApprovalRootOfSubjectRequestDto;
 import nts.uk.ctx.at.request.app.find.application.common.DetailMobDto;
@@ -78,15 +80,11 @@ public class ApplicationWebservice extends WebService {
 	
 	@Inject
 	private RemandApplicationHandler remandApplicationHandler;
-	
-	@Inject
-	private UpdateApplicationCancelHandler cancelApp;
-	
 
 	@Inject
 	private AppDataDateFinder appDataDateFinder;
-	@Inject
-	private UpdateApplicationDeadlineCommandHandler update;
+//	@Inject
+//	private UpdateApplicationDeadlineCommandHandler update;
 
 	@Inject
 	private ReflectAplicationCommmandHandler relect;
@@ -116,6 +114,12 @@ public class ApplicationWebservice extends WebService {
 	@Inject
 	private CommonAlgorithm commonAlgorithm;
 	
+	@Inject
+	private CancelAppHandler cancelApp;
+	
+	@Inject
+	private ApplicationExportService applicationExportService;
+	
 	/**
 	 * remand application
 	 * @return
@@ -124,16 +128,6 @@ public class ApplicationWebservice extends WebService {
 	@Path("remandapp")
 	public MailSenderResult remandApp(RemandCommand command){
 		return remandApplicationHandler.handle(command);
-	}
-	
-	/**
-	 * cancel application
-	 * @return
-	 */
-	@POST
-	@Path("cancelapp")
-	public void cancelApp(UpdateApplicationCommonCmd command){
-		 this.cancelApp.handle(command);
 	}
 	
 	/**
@@ -242,11 +236,11 @@ public class ApplicationWebservice extends WebService {
 	 * @param command
 	 * @author yennth
 	 */
-	@POST
-	@Path("update")
-	public void update(List<ApplicationDeadlineCommand> command){
-		this.update.handle(command);
-	}
+//	@POST
+//	@Path("update")
+//	public void update(List<ApplicationDeadlineCommand> command){
+//		this.update.handle(command);
+//	}
 	
 	@POST
 	@Path("reflect-app")
@@ -299,13 +293,14 @@ public class ApplicationWebservice extends WebService {
 	@Path("changeAppDate")
 	public AppDispInfoWithDateDto changeAppDate(ChangeDateParam param) {
 		String companyID = AppContexts.user().companyId();
-		List<GeneralDate> dateLst = param.getDateLst().stream().map(x -> {
-			if(Strings.isBlank(x)) {
-				return null;
-			} else {
-				return GeneralDate.fromString(x, "yyyy/MM/dd");
-			}
-		}).collect(Collectors.toList());
+		List<GeneralDate> dateLst = new ArrayList<>();
+		if(Strings.isNotBlank(param.getStartDate()) && Strings.isNotBlank(param.getEndDate())) {
+			GeneralDate startDate = GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd");
+			GeneralDate endDate = GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd");
+			dateLst = new DatePeriod(startDate, endDate).datesBetween();
+		} else {
+			dateLst.add(GeneralDate.fromString(param.getAppDate(), "yyyy/MM/dd"));
+		}
 		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
 				companyID, 
 				dateLst, 
@@ -346,6 +341,18 @@ public class ApplicationWebservice extends WebService {
 		String companyID = AppContexts.user().companyId();
 		detailBeforeUpdate.exclusiveCheck(companyID, param.appID, param.version);
 	}
+	
+	@POST
+	@Path("cancelapp")
+	public void cancelApp(AppDispInfoStartupDto command){
+		cancelApp.handle(command);
+	}
+	
+	@POST
+    @Path("print")
+    public ExportServiceResult generate(AppPrintQuery query) {
+		return applicationExportService.start(query);
+    }
 	
 }
 

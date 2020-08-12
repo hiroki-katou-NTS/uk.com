@@ -219,17 +219,12 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		List<WorkTimeSetting> workTimeLst = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID, baseDate);
 		// 社員所属雇用履歴を取得する
 		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID, employeeID, baseDate);
-		// xử lý trên UI
-		/*if(empHistImport==null || empHistImport.getEmploymentCode()==null){
+		if(empHistImport==null || empHistImport.getEmploymentCode()==null){
 			// エラーメッセージ(Msg_426)を返す
 			throw new BusinessException("Msg_426");
-		}*/
-		// 雇用別申請承認設定を取得する
-		String employmentCD = null;
-		if(empHistImport!=null && empHistImport.getEmploymentCode()!=null){
-			employmentCD = empHistImport.getEmploymentCode();
 		}
-		Optional<AppEmploymentSet> opAppEmploymentSet = appEmploymentSetRepository.findByCompanyIDAndEmploymentCD(companyID, employmentCD);
+		// 雇用別申請承認設定を取得する
+		Optional<AppEmploymentSet> opAppEmploymentSet = appEmploymentSetRepository.findByCompanyIDAndEmploymentCD(companyID, empHistImport.getEmploymentCode());
 	
 		// INPUT．「新規詳細モード」を確認する
 		Optional<List<ApprovalPhaseStateImport_New>> opListApprovalPhaseState = Optional.empty();
@@ -693,5 +688,4 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		// メッセージを表示する(Msg_1648)を表示する
 		throw new BusinessException("Msg_1648", date.toString(), msgParam);
 	}
-
 }

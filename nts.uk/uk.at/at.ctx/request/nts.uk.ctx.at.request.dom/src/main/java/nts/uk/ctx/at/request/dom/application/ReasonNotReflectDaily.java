@@ -14,7 +14,7 @@ public enum ReasonNotReflectDaily {
 	/**
 	 * 実績確定済
 	 */
-	ACTUAL_COMFIRMED(0, "実績確定済"),
+	ACTUAL_CONFIRMED(0, "実績確定済"),
 	
 	/**
 	 * 実績がロックされている

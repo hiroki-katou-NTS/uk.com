@@ -24,7 +24,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppContentDetailCMM045;
@@ -442,7 +442,7 @@ public class ApprovalStatusFinder {
 			ApplicationDetailDto detail = new ApplicationDetailDto();
 			
 			int detailSet = app.getDetailSet();
-			ApplicationType_Old appType = app.getAppDispName().getAppType();
+			ApplicationType appType = app.getAppDispName().getAppType();
 			ApplicationDto_New applicaton_N = ApplicationDto_New.fromDomain(app.getAppContent().getApplication());
 			//listApp.add(applicaton_N);
 			String appId = applicaton_N.getApplicationID();
@@ -534,7 +534,7 @@ public class ApprovalStatusFinder {
 				appContent = contentDtail.getContentGoBack(null, companyID, appId, 0, "", ScreenAtr.KAF018.value);
 				break;
 			// 休出時間申請
-			case BREAK_TIME_APPLICATION:
+			case HOLIDAY_WORK_APPLICATION:
 				appContent = contentDtail.getContentHdWorkBf(null, companyID, appId, 0, "", ScreenAtr.KAF018.value, lstWkType, lstWkTime);
 				break;
 			// 打刻申請
@@ -552,22 +552,6 @@ public class ApprovalStatusFinder {
 			// 振休振出申請
 			case COMPLEMENT_LEAVE_APPLICATION:
 				appContent = contentDtail.getContentComplt(null, companyID, appId, 0, "", ScreenAtr.KAF018.value, lstWkType);
-				break;
-			// 打刻申請（NR形式）
-			case STAMP_NR_APPLICATION:
-				// TODO
-				break;
-			// 連続出張申請
-			case LONG_BUSINESS_TRIP_APPLICATION:
-				// TODO
-				break;
-			// 出張申請オフィスヘルパー
-			case BUSINESS_TRIP_APPLICATION_OFFICE_HELPER:
-				// TODO
-				break;
-			// ３６協定時間申請
-			case APPLICATION_36:
-				// TODO
 				break;
 
 			default:

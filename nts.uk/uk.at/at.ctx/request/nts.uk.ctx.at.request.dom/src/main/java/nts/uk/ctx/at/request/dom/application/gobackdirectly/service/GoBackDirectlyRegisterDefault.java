@@ -19,23 +19,19 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttenTimeLateLeaveImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttenTimeParam;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
@@ -44,7 +40,6 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyReposi
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.ApplicationStatus;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
@@ -52,12 +47,9 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDire
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflect;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.WorkChangeFlg;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -72,17 +64,17 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterService {
 	@Inject
-	RegisterAtApproveReflectionInfoService_New registerAppReplection;
+	RegisterAtApproveReflectionInfoService registerAppReplection;
 	@Inject
 	GoBackDirectlyRepository_Old goBackDirectRepo;
 	@Inject
 	ApplicationApprovalService appRepo;
 	@Inject
-	NewBeforeRegister_New processBeforeRegister;
+	NewBeforeRegister processBeforeRegister;
 	@Inject
 	GoBackDirectlyCommonSettingRepository goBackDirectCommonSetRepo;
 	@Inject 
-	NewAfterRegister_New newAfterRegister;
+	NewAfterRegister newAfterRegister;
 	@Inject
 	ApplicationSettingRepository applicationSettingRepository;
 	@Inject
@@ -111,7 +103,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	private GoBackDirectlyRepository goBackDirectlyRepository;
 	
 	@Inject
-	private RegisterAtApproveReflectionInfoService_New registerAtApprove;
+	private RegisterAtApproveReflectionInfoService registerAtApprove;
 	
 	@Inject
 	private DetailAfterUpdate detailAfterUpdate;
@@ -126,61 +118,61 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	 */
 	// insert ref
 	@Override
-	public ProcessResult register(GoBackDirectly_Old goBackDirectly, Application_New application) {
-		String employeeID = application.getEmployeeID();
-		String workTimeCD = "";
-		String workTypeCD = "";
-		// ドメインモデル「直行直帰申請共通設定」．勤務の変更をチェックする
-		GoBackDirectlyCommonSetting setting = goBackDirectCommonSetRepo.findByCompanyID(application.getCompanyID()).get();
-		if(setting.getWorkChangeFlg()==WorkChangeFlg.DECIDECHANGE){
-			workTypeCD = goBackDirectly.getWorkTypeCD().map(x -> x.v()).orElse("");
-			workTimeCD = goBackDirectly.getSiftCD().map(x -> x.v()).orElse("");
-		} else {
-			// 実績の取得
-			/*AchievementOutput achievementOutput = collectAchievement.getAchievement(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());*/
-			AchievementOutput achievementOutput = null;
-			workTimeCD = achievementOutput.getWorkTime().getWorkTimeCD();
-			workTypeCD = achievementOutput.getWorkType().getWorkTypeCode();
-		}
-		// 取得した「勤務種類コード」「就業時間帯コード」をチェックする
-		Optional<TimezoneUse> opTimezoneUse = Optional.empty();
-		if(Strings.isNotBlank(workTypeCD) && Strings.isNotBlank(workTimeCD)){
-			// 所定時間帯を取得する
-			PredetermineTimeSetForCalc predetermineTimeSetForCalc = workTimeSettingService.getPredeterminedTimezone(application.getCompanyID(), workTimeCD, workTypeCD, null); 
-			opTimezoneUse = predetermineTimeSetForCalc.getTimezones().stream().filter(x -> x.getWorkNo() == 1).findAny();
-		}
-		// 勤務開始1に時刻が入力されたか
-		if(!goBackDirectly.getWorkTimeStart1().isPresent()){
-			// 取得した「勤務種類コード」「就業時間帯コード」をチェックする
-			if(Strings.isNotBlank(workTypeCD) && Strings.isNotBlank(workTimeCD)){
-				// 勤務開始1に(勤務NO=1)の「計算用所定時間設定」．時間帯．開始を入れる
-				goBackDirectly.setWorkTimeStart1(opTimezoneUse.map(x -> new WorkTimeGoBack(x.getStart().v())));
-			}
-		}
-		// 勤務終了1に時刻が入力されたか
-		if(!goBackDirectly.getWorkTimeEnd1().isPresent()){
-			// 取得した「勤務種類コード」「就業時間帯コード」をチェックする
-			if(Strings.isNotBlank(workTypeCD) && Strings.isNotBlank(workTimeCD)){
-				// 勤務終了1に(勤務NO=1)の「計算用所定時間設定」．時間帯．終了を入れる
-				goBackDirectly.setWorkTimeEnd1(opTimezoneUse.map(x -> new WorkTimeGoBack(x.getEnd().v())));
-			}
-		}
-		//アルゴリズム「直行直帰登録」を実行する		
-		goBackDirectRepo.insert(goBackDirectly);
-		// error EA refactor 4
-		/*appRepo.insert(application);*/
-		// 2-2.新規画面登録時承認反映情報の整理
-		// error EA refactor 4
-		/*registerAppReplection.newScreenRegisterAtApproveInfoReflect(employeeID, application);*/
-		
-		// 暫定データの登録
-		interimRemainDataMngRegisterDateChange.registerDateChange(
-				application.getCompanyID(), 
-				employeeID, 
-				Arrays.asList(application.getAppDate()));
-		
-		//アルゴリズム「2-3.新規画面登録後の処理」を実行する 
-		/*return newAfterRegister.processAfterRegister(application);*/
+	public ProcessResult register(GoBackDirectly_Old goBackDirectly, Application application) {
+//		String employeeID = application.getEmployeeID();
+//		String workTimeCD = "";
+//		String workTypeCD = "";
+//		// ドメインモデル「直行直帰申請共通設定」．勤務の変更をチェックする
+//		GoBackDirectlyCommonSetting setting = goBackDirectCommonSetRepo.findByCompanyID(application.getCompanyID()).get();
+//		if(setting.getWorkChangeFlg()==WorkChangeFlg.DECIDECHANGE){
+//			workTypeCD = goBackDirectly.getWorkTypeCD().map(x -> x.v()).orElse("");
+//			workTimeCD = goBackDirectly.getSiftCD().map(x -> x.v()).orElse("");
+//		} else {
+//			// 実績の取得
+//			/*AchievementOutput achievementOutput = collectAchievement.getAchievement(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());*/
+//			AchievementOutput achievementOutput = null;
+//			workTimeCD = achievementOutput.getWorkTime().getWorkTimeCD();
+//			workTypeCD = achievementOutput.getWorkType().getWorkTypeCode();
+//		}
+//		// 取得した「勤務種類コード」「就業時間帯コード」をチェックする
+//		Optional<TimezoneUse> opTimezoneUse = Optional.empty();
+//		if(Strings.isNotBlank(workTypeCD) && Strings.isNotBlank(workTimeCD)){
+//			// 所定時間帯を取得する
+//			PredetermineTimeSetForCalc predetermineTimeSetForCalc = workTimeSettingService.getPredeterminedTimezone(application.getCompanyID(), workTimeCD, workTypeCD, null); 
+//			opTimezoneUse = predetermineTimeSetForCalc.getTimezones().stream().filter(x -> x.getWorkNo() == 1).findAny();
+//		}
+//		// 勤務開始1に時刻が入力されたか
+//		if(!goBackDirectly.getWorkTimeStart1().isPresent()){
+//			// 取得した「勤務種類コード」「就業時間帯コード」をチェックする
+//			if(Strings.isNotBlank(workTypeCD) && Strings.isNotBlank(workTimeCD)){
+//				// 勤務開始1に(勤務NO=1)の「計算用所定時間設定」．時間帯．開始を入れる
+//				goBackDirectly.setWorkTimeStart1(opTimezoneUse.map(x -> new WorkTimeGoBack(x.getStart().v())));
+//			}
+//		}
+//		// 勤務終了1に時刻が入力されたか
+//		if(!goBackDirectly.getWorkTimeEnd1().isPresent()){
+//			// 取得した「勤務種類コード」「就業時間帯コード」をチェックする
+//			if(Strings.isNotBlank(workTypeCD) && Strings.isNotBlank(workTimeCD)){
+//				// 勤務終了1に(勤務NO=1)の「計算用所定時間設定」．時間帯．終了を入れる
+//				goBackDirectly.setWorkTimeEnd1(opTimezoneUse.map(x -> new WorkTimeGoBack(x.getEnd().v())));
+//			}
+//		}
+//		//アルゴリズム「直行直帰登録」を実行する		
+//		goBackDirectRepo.insert(goBackDirectly);
+//		// error EA refactor 4
+//		/*appRepo.insert(application);*/
+//		// 2-2.新規画面登録時承認反映情報の整理
+//		// error EA refactor 4
+//		/*registerAppReplection.newScreenRegisterAtApproveInfoReflect(employeeID, application);*/
+//		
+//		// 暫定データの登録
+//		interimRemainDataMngRegisterDateChange.registerDateChange(
+//				application.getCompanyID(), 
+//				employeeID, 
+//				Arrays.asList(application.getAppDate()));
+//		
+//		//アルゴリズム「2-3.新規画面登録後の処理」を実行する 
+//		/*return newAfterRegister.processAfterRegister(application);*/
 		return null;
 	}
 	/**Refactor 4
@@ -263,7 +255,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	}
 	
 	@Override
-	public List<ConfirmMsgOutput> checkBeforRegister(GoBackDirectly_Old goBackDirectly, Application_New application, boolean checkOver1Year) {
+	public List<ConfirmMsgOutput> checkBeforRegister(GoBackDirectly_Old goBackDirectly, Application application, boolean checkOver1Year) {
 		String companyID = AppContexts.user().companyId();
 //		確認メッセージリスト＝Empty
 		List<ConfirmMsgOutput> lstConfirm = new ArrayList<ConfirmMsgOutput>();
@@ -349,7 +341,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	 * アルゴリズム「直行直帰遅刻早退のチェック」を実行する
 	 */
 	@Override
-	public GoBackDirectLateEarlyOuput goBackDirectLateEarlyCheck(GoBackDirectly_Old goBackDirectly, Application_New application) {
+	public GoBackDirectLateEarlyOuput goBackDirectLateEarlyCheck(GoBackDirectly_Old goBackDirectly, Application application) {
 		
 		String companyID = AppContexts.user().companyId();
 		// ドメインモデル「直行直帰申請共通設定」を取得する
@@ -359,43 +351,43 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
 		// 設定：直行直帰申請共通設定.早退遅刻設定		
 		if (goBackCommonSet.getLateLeaveEarlySettingAtr() != CheckAtr.NOTCHECK) {//チェックする
-			ScBasicScheduleImport scBasicScheduleImport = scBasicScheduleAdapter.findByID(application.getEmployeeID(), application.getAppDate()).orElse(null);
-			// check Valid 1
-			CheckValidOutput validOut1 = this.goBackLateEarlyCheckValidity(goBackDirectly, goBackCommonSet, 1, scBasicScheduleImport);
-			// check Valid 2
-//			CheckValidOutput validOut2 = this.goBackLateEarlyCheckValidity(goBackDirectly, goBackCommonSet, 2);
-			// チェック対象１またはチェック対象２がTrueの場合
-			if (validOut1.isCheckValid) {
-				// アルゴリズム「1日分の勤怠時間を仮計算」を実行する
-				//Mac Dinh tra ve 0
-				
-				//日別実績の勤怠時間.実働時間.総労働時間.早退時間.時間 
-				//TODO: chua the lam duoc do chua co 日別実績
-				
-				DailyAttenTimeParam dailyAttenTimeParam = new DailyAttenTimeParam(
-						application.getEmployeeID(), 
-						application.getAppDate(), 
-						validOut1.workTypeCD, 
-						validOut1.siftCd, 
-						validOut1.workTimeStart == null ? null : new AttendanceTime(validOut1.workTimeStart.v()), 
-						validOut1.workTimeEnd == null ? null : new AttendanceTime(validOut1.workTimeEnd.v()), 
-						goBackDirectly.getWorkTimeStart2().map(x -> new AttendanceTime(x.v())).orElse(null), 
-						goBackDirectly.getWorkTimeEnd2().map(x -> new AttendanceTime(x.v())).orElse(null));
-				DailyAttenTimeLateLeaveImport dailyAttenTimeLateLeaveImport = dailyAttendanceTimeCaculation.calcDailyLateLeave(dailyAttenTimeParam);
-				
-				// So sách tới 日別実績 để biết đi sớm về muộn, nếu  
-				
-				if (dailyAttenTimeLateLeaveImport.getLeaveEarlyTime().v() > 0) {
-					output.isError = true;
-					output.msgLst.add("s=Msg_296");
-					output.msgLst.add(goBackDirectly.getWorkTimeEnd1().map(x -> x.v().toString()).orElse(""));
-				} 
-				if (dailyAttenTimeLateLeaveImport.getLateTime().v() > 0) {
-					output.isError = true;
-					output.msgLst.add("s=Msg_295");
-					output.msgLst.add(goBackDirectly.getWorkTimeStart1().map(x -> x.v().toString()).orElse(""));
-				}
-			}
+//			ScBasicScheduleImport scBasicScheduleImport = scBasicScheduleAdapter.findByID(application.getEmployeeID(), application.getAppDate()).orElse(null);
+//			// check Valid 1
+//			CheckValidOutput validOut1 = this.goBackLateEarlyCheckValidity(goBackDirectly, goBackCommonSet, 1, scBasicScheduleImport);
+//			// check Valid 2
+////			CheckValidOutput validOut2 = this.goBackLateEarlyCheckValidity(goBackDirectly, goBackCommonSet, 2);
+//			// チェック対象１またはチェック対象２がTrueの場合
+//			if (validOut1.isCheckValid) {
+//				// アルゴリズム「1日分の勤怠時間を仮計算」を実行する
+//				//Mac Dinh tra ve 0
+//				
+//				//日別実績の勤怠時間.実働時間.総労働時間.早退時間.時間 
+//				//TODO: chua the lam duoc do chua co 日別実績
+//				
+//				DailyAttenTimeParam dailyAttenTimeParam = new DailyAttenTimeParam(
+//						application.getEmployeeID(), 
+//						application.getAppDate(), 
+//						validOut1.workTypeCD, 
+//						validOut1.siftCd, 
+//						validOut1.workTimeStart == null ? null : new AttendanceTime(validOut1.workTimeStart.v()), 
+//						validOut1.workTimeEnd == null ? null : new AttendanceTime(validOut1.workTimeEnd.v()), 
+//						goBackDirectly.getWorkTimeStart2().map(x -> new AttendanceTime(x.v())).orElse(null), 
+//						goBackDirectly.getWorkTimeEnd2().map(x -> new AttendanceTime(x.v())).orElse(null));
+//				DailyAttenTimeLateLeaveImport dailyAttenTimeLateLeaveImport = dailyAttendanceTimeCaculation.calcDailyLateLeave(dailyAttenTimeParam);
+//				
+//				// So sách tới 日別実績 để biết đi sớm về muộn, nếu  
+//				
+//				if (dailyAttenTimeLateLeaveImport.getLeaveEarlyTime().v() > 0) {
+//					output.isError = true;
+//					output.msgLst.add("s=Msg_296");
+//					output.msgLst.add(goBackDirectly.getWorkTimeEnd1().map(x -> x.v().toString()).orElse(""));
+//				} 
+//				if (dailyAttenTimeLateLeaveImport.getLateTime().v() > 0) {
+//					output.isError = true;
+//					output.msgLst.add("s=Msg_295");
+//					output.msgLst.add(goBackDirectly.getWorkTimeStart1().map(x -> x.v().toString()).orElse(""));
+//				}
+//			}
 		}
 		return output;
 	}
@@ -548,7 +540,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		return true;
 	}
 	@Override
-	public ProcessResult registerNew(String companyId, Application_New application_New, GoBackDirectly_Old goBackDirectly,
+	public ProcessResult registerNew(String companyId, Application application_New, GoBackDirectly_Old goBackDirectly,
 			InforGoBackCommonDirectOutput_Old inforGoBackCommonDirectOutput) {
 //		INPUT.「直行直帰申請起動時の表示情報.直行直帰申請共通設定」．勤務の変更をチェックする
 		WorkChangeFlg changeFlg = inforGoBackCommonDirectOutput.getGobackDirectCommon().getWorkChangeFlg();

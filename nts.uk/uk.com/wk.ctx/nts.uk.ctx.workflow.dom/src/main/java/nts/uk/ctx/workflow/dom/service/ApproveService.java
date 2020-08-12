@@ -17,9 +17,10 @@ public interface ApproveService {
 	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.ワークフロー.Export.就業.2.承認する(ApproveService).2.承認する(ApproveService)
 	 * @param rootStateID インスタンスID
 	 * @param employeeID 社員ID
+	 * @param memo 承認コメン
 	 * @return 承認フェーズ枠番
 	 */
-	public Integer doApprove(String rootStateID, String employeeID);
+	public Integer doApprove(String rootStateID, String employeeID, String memo);
 	
 	/**
 	 * 1.指定する承認フェーズの承認が完了したか

@@ -13,11 +13,12 @@ import nts.uk.ctx.at.request.dom.application.Application;
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.打刻申請
  *
  */
-//打刻申請
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
+//打刻申請
 public class AppStamp extends Application {
 //	時刻
 	private List<TimeStampApp> listTimeStampApp;

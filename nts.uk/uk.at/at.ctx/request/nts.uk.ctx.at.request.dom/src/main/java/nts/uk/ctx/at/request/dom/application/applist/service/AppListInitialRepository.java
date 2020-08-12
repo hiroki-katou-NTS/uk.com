@@ -4,14 +4,14 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWorkFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOverTimeInfoFull;
+import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 /**
@@ -47,8 +47,7 @@ public interface AppListInitialRepository {
 	 * @param lstAppType
 	 * @return
 	 */
-	public AppListOutPut getApplicationListByApp(AppListExtractCondition param, int appReasonDisAtr,
-			int device, List<Integer> lstAppType);
+	public AppListInfo getApplicationListByApp(AppListExtractCondition param, int device, AppListInfo appListInfo);
 	/**
 	 * 2.1 - 申請一覧対象申請者取得
 	 * @param 抽出条件　param
@@ -97,7 +96,7 @@ public interface AppListInitialRepository {
 	 * @return
 	 */
 	public TimeResultOutput getDataActual(String sID, GeneralDate date, List<OverTimeFrame> time, 
-			ApplicationType_Old appType, String wkTypeCd, String wkTimeCd, List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime);
+			ApplicationType appType, String wkTypeCd, String wkTimeCd, List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime);
 	/**
 	 * 6 - 申請一覧リスト取得振休振出
 	 * @param 申請　application
@@ -156,5 +155,5 @@ public interface AppListInitialRepository {
 	 * @param date
 	 * @return
 	 */
-	public List<ApprovalFunctionSetting> detailSetKAF022(String companyId, String wkpId, GeneralDate date);
+	// public List<ApprovalFunctionSetting> detailSetKAF022(String companyId, String wkpId, GeneralDate date);
 }

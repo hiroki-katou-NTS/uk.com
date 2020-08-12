@@ -15,14 +15,14 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
-import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
-import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReasonNotReflect;
+import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 
@@ -131,13 +131,13 @@ public class KrqdtApplication_New extends UkJpaEntity {
 				.version(this.version)
 				.companyID(this.krqdpApplicationPK.companyID)
 				.appID(this.krqdpApplicationPK.appID)
-				.prePostAtr(EnumAdaptor.valueOf(this.prePostAtr, PrePostAtr_Old.class))
+				.prePostAtr(EnumAdaptor.valueOf(this.prePostAtr, PrePostAtr.class))
 				.inputDate(this.inputDate)
 				.enteredPersonID(this.enteredPersonID)
 				.reversionReason(new AppReason(this.reversionReason))
 				.appDate(this.appDate)
 				.appReason(new AppReason(this.appReason))
-				.appType(EnumAdaptor.valueOf(this.appType, ApplicationType_Old.class))
+				.appType(EnumAdaptor.valueOf(this.appType, ApplicationType.class))
 				.employeeID(this.employeeID)
 				.startDate(Optional.ofNullable(this.startDate))
 				.endDate(Optional.ofNullable(this.endDate))
@@ -149,10 +149,10 @@ public class KrqdtApplication_New extends UkJpaEntity {
 		return ReflectionInformation_New.builder()
 					.stateReflection(EnumAdaptor.valueOf(this.stateReflection, ReflectedState_New.class))
 					.stateReflectionReal(EnumAdaptor.valueOf(this.stateReflectionReal, ReflectedState_New.class))
-					.forcedReflection(EnumAdaptor.valueOf(this.forcedReflection, DisabledSegment_New.class))
-					.forcedReflectionReal(EnumAdaptor.valueOf(this.forcedReflectionReal, DisabledSegment_New.class))
-					.notReason(Optional.ofNullable(this.notReason).map(x -> EnumAdaptor.valueOf(x, ReasonNotReflect_New.class)))
-					.notReasonReal(Optional.ofNullable(this.notReasonReal).map(x -> EnumAdaptor.valueOf(x, ReasonNotReflectDaily_New.class)))
+					.forcedReflection(EnumAdaptor.valueOf(this.forcedReflection, NotUseAtr.class))
+					.forcedReflectionReal(EnumAdaptor.valueOf(this.forcedReflectionReal, NotUseAtr.class))
+					.notReason(Optional.ofNullable(this.notReason).map(x -> EnumAdaptor.valueOf(x, ReasonNotReflect.class)))
+					.notReasonReal(Optional.ofNullable(this.notReasonReal).map(x -> EnumAdaptor.valueOf(x, ReasonNotReflectDaily.class)))
 					.dateTimeReflection(Optional.ofNullable(this.dateTimeReflection))
 					.dateTimeReflectionReal(Optional.ofNullable(this.dateTimeReflectionReal))
 					.build();

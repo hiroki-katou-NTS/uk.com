@@ -1,17 +1,14 @@
 package nts.uk.ctx.at.request.app.find.application.lateorleaveearly;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
-import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
@@ -21,8 +18,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.outpu
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -35,8 +30,8 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class LateOrLeaveEarlyFinder {
 	
-	@Inject
-	private ApplicationReasonRepository applicationReasonRepository;
+//	@Inject
+//	private ApplicationReasonRepository applicationReasonRepository;
 	
 	@Inject 
 	private EmployeeRequestAdapter employeeAdapter;
@@ -61,59 +56,60 @@ public class LateOrLeaveEarlyFinder {
 	private LateOrLeaveEarlyRepository lateOrLeaveEarlyRepository;
 
 	@Inject
-	private ApplicationRepository_New appRepository;
+	private ApplicationRepository appRepository;
 	
 	public ScreenLateOrLeaveEarlyDto getLateOrLeaveEarly(String appID) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		String applicantName = "";
 	
-		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID, 1, ApplicationType_Old.EARLY_LEAVE_CANCEL_APPLICATION, null);
+		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID, 1, ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION, null);
 		 
 		
 		ApprovalRootPattern approvalRootPattern = collectApprovalRootPatternService.getApprovalRootPatternService(
 				companyID, 
 				employeeID, 
 				EmploymentRootAtr.APPLICATION, 
-				ApplicationType_Old.EARLY_LEAVE_CANCEL_APPLICATION, 
+				ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION, 
 				appCommonSettingOutput.generalDate, 
 				appID, 
 				true);
 		startupErrorCheckService.startupErrorCheck(
 				appCommonSettingOutput.generalDate, 
-				ApplicationType_Old.EARLY_LEAVE_CANCEL_APPLICATION.value,
+				ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value,
 				approvalRootPattern.getApprovalRootContentImport());
 		
 		/** ドメインモデル「申請定型理由」を取得 (Lấy 「申請定型理由」) */
 		
-		List<ApplicationReason> applicationReasons = applicationReasonRepository.getReasonByAppType(companyID, ApplicationType_Old.EARLY_LEAVE_CANCEL_APPLICATION.value);
+		// List<ApplicationReason> applicationReasons = applicationReasonRepository.getReasonByAppType(companyID, ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value);
 		
 		/** ドメインモデル「複数回勤務」を取得 (Lấy 「複数回勤務」) */
 		
 		Optional<WorkManagementMultiple> workManagementMultiple  = workManagementMultipleRepository.findByCode(companyID);
-		List<ApplicationReasonDto> listApplicationReasonDto = applicationReasons.stream()
-																.map(r -> new ApplicationReasonDto(r.getReasonID(), r.getReasonTemp().v(), r.getDefaultFlg().value))
-																.collect(Collectors.toList());
+//		List<ApplicationReasonDto> listApplicationReasonDto = applicationReasons.stream()
+//																.map(r -> new ApplicationReasonDto(r.getReasonID(), r.getReasonTemp().v(), r.getDefaultFlg().value))
+//																.collect(Collectors.toList());
 		LateOrLeaveEarlyDto lateOrLeaveEarlyDto = null;
 		if(Strings.isNotEmpty(appID)) {
 			Optional<LateOrLeaveEarly> lateOrLeaveEarlyOp = lateOrLeaveEarlyRepository.findByCode(companyID, appID);
 			if(lateOrLeaveEarlyOp.isPresent()){
 				LateOrLeaveEarly lateOrLeaveEarly =lateOrLeaveEarlyOp.get();
 				//Get application data
-				lateOrLeaveEarly.setApplication(appRepository.findByID(companyID, appID).get());
-				lateOrLeaveEarlyDto = LateOrLeaveEarlyDto.fromDomain(lateOrLeaveEarly,lateOrLeaveEarly.getApplication().getVersion()); 
-				employeeID = lateOrLeaveEarly.getApplication().getEmployeeID();
-				applicantName = employeeAdapter.getEmployeeName(employeeID);
+				// lateOrLeaveEarly.setApplication(appRepository.findByID(companyID, appID).get());
+//				lateOrLeaveEarlyDto = LateOrLeaveEarlyDto.fromDomain(lateOrLeaveEarly,lateOrLeaveEarly.getApplication().getVersion()); 
+//				employeeID = lateOrLeaveEarly.getApplication().getEmployeeID();
+//				applicantName = employeeAdapter.getEmployeeName(employeeID);
 			}
 		} else {
 			employeeID = AppContexts.user().employeeId();
 			applicantName = employeeAdapter.getEmployeeName(employeeID);
 		}
 
-		return new ScreenLateOrLeaveEarlyDto(lateOrLeaveEarlyDto, listApplicationReasonDto, 
-				employeeID, 
-				applicantName,AppCommonSettingDto.convertToDto(appCommonSettingOutput),
-				workManagementMultiple.isPresent() ? WorkManagementMultipleDto.convertoDto(workManagementMultiple.get()) : null);
+//		return new ScreenLateOrLeaveEarlyDto(lateOrLeaveEarlyDto, listApplicationReasonDto, 
+//				employeeID, 
+//				applicantName,AppCommonSettingDto.convertToDto(appCommonSettingOutput),
+//				workManagementMultiple.isPresent() ? WorkManagementMultipleDto.convertoDto(workManagementMultiple.get()) : null);
+		return null;
 		
 	}
 }

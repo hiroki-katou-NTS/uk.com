@@ -70,4 +70,6 @@ public interface EmployeeRequestAdapter {
 	 * @return
 	 */
 	public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId);
+	
+	public String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date);
 }

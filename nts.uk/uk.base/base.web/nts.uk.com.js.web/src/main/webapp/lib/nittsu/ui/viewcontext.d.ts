@@ -5,181 +5,258 @@
 /// <reference path="../generic.d.ts/knockout.d.ts" />
 /// <reference path="../nts.uk.com.web.nittsu.bundles.d.ts" />
 
-declare var __viewContext: ViewContext;
-declare var systemLanguage: string;
-declare var names: Names;
-declare var messages: Messages;
-
-interface ViewContext {
-	rootPath: string;
-	primitiveValueConstraints: { [key: string]: any };
-	codeNames: { [key: string]: string };
-	messages: { [key: string]: string };
-	env: any;
-	noHeader: boolean;
-
-	title: string;
-	transferred: nts.uk.util.optional.Optional<any>;
-
-	ready: (callback: () => void) => void;
-	bind: (viewModel: any) => void;
-}
-interface Names {
-}
-interface Messages { }
-
+/** Decorator for load ViewModel of main View*/
 declare function bean(): any;
 
-declare function handler(params: { virtual?: boolean; bindingName: string; validatable?: boolean; }): any;
+/** Decorator for auto create binding handler */
+declare function handler(params: BindingOption): any;
 
-declare function component(params: { name: string; template: string; }): any;
+/** Decorator for load ViewModel of Component */
+declare function component(params: ViewModelOption): any;
+
+/** Current language */
+declare const systemLanguage: string;
+
+/** Resources data */
+declare const names: Resources;
+
+/** Messages data */
+declare const messages: Resources;
+
+/** ViewContext (root object of UK App) */
+declare const __viewContext: ViewContext;
+
+declare type WEB_APP = 'at' | 'com' | 'hr' | 'pr';
+
+interface ViewContext {
+	readonly noHeader: boolean;
+
+	readonly rootPath: string;
+
+	readonly env: Environment;
+
+	readonly messages: Resources;
+	readonly codeNames: Resources;
+
+	readonly primitiveValueConstraints: PrimitiveConstraints;
+
+	readonly title: string;
+	readonly transferred: nts.uk.util.optional.Optional<any>;
+
+	readonly bind: (viewModel: any) => void;
+	readonly ready: (callback: () => void) => void;
+}
+
+// Data structure of names and messages
+interface Resources {
+	readonly [key: string]: string;
+}
+
+// Data structure of primitiveConstraints
+interface PrimitiveConstraints {
+	[key: string]: Constraint;
+}
+
+// Constraint structure
+interface Constraint {
+	min?: number | Date;
+	max?: number | Date;
+	maxLength?: number;
+	mantissaMaxLength?: number;
+	isZeroPadded?: boolean;
+	formatOption?: {
+		autofill: boolean;
+		fillcharacter: string;
+		filldirection: 'left' | 'right';
+	};
+	charType?: 'Any' | 'Kana' | 'AnyHalfWidth' | 'AlphaNumeric' | 'Numeric';
+	valueType?: 'String' | 'Decimal' | 'Integer' | 'HalfInt' | 'Date' | 'Time' | 'Clock' | 'Duration' | 'TimePoint';
+	[key: string]: any;
+}
+
+interface Environment {
+	readonly isCloud: boolean;
+	readonly isOnPremise: boolean;
+	readonly japaneseEras: any[];
+	readonly pathToManual: string;
+	readonly products: {
+		readonly attendance: boolean;
+		readonly payroll: boolean;
+		readonly personnel: boolean;
+	};
+	readonly systemName: string;
+}
+
+interface BindingOption {
+	readonly virtual?: boolean;
+	readonly bindingName: string;
+	readonly validatable?: boolean;
+}
+
+interface ViewModelOption {
+	readonly name: string;
+	readonly template: string;
+}
 
 interface KnockoutStatic {
-	ViewModel: {
-		new(): {
-			$el: HTMLElement;
-			readonly $user: {
-				readonly contractCode: string;
-				readonly companyId: string;
-				readonly companyCode: string;
-				readonly isEmployee: boolean;
-				readonly employeeId: string;
-				readonly employeeCode: string;
-				readonly selectedLanguage: {
-					readonly basicLanguageId: string;
-					readonly personNameLanguageId: string;
-				};
-				readonly role: {
-					readonly attendance: string | null;
-					readonly companyAdmin: string | null;
-					readonly groupCompanyAdmin: string | null;
-					readonly officeHelper: string | null;
-					readonly payroll: string | null;
-					readonly personalInfo: string | null;
-					readonly personnel: string | null;
-					readonly systemAdmin: string | null;
-				};
-			};
-			readonly $program: {
-				webapi: 'com' | 'pr' | 'hr' | 'at';
-				programId: string;
-				programName: string;
-				path: string;
-				isDebugMode: boolean;
-			};
-			readonly $date: {
-				now(): Date;
-				today(): Date;
-			};
-			readonly $i18n: {
-				(textId: string): string;
-				(textId: string, params: string[]): string;
-				readonly text: {
-					(textId: string): string;
-					(textId: string, params: string[]): string;
-				};
-				readonly message: {
-					(messageId: string): string;
-					(messageId: string, params: string[]): string;
-				};
-				controlName(name: string): string;
-			};
-			readonly $ajax: {
-				(url: string): JQueryDeferred<any>;
-				(url: string, data: any): JQueryDeferred<any>;
-			};
-			readonly $window: {
-				readonly size: {
-					(height: string | number, width: string | number): void;
-					readonly width: (width: string) => void;
-					readonly height: (height: string) => void;
-				};
-				readonly close: {
-					(): void;
-					(result: any): void;
-				};
-				readonly modal: {
-					(url: string): JQueryDeferred<any>;
-					(url: string, data: any): JQueryDeferred<any>;
-					(webapp: 'com' | 'hr' | 'pr' | 'at', url: string): JQueryDeferred<any>;
-					(webapp: 'com' | 'hr' | 'pr' | 'at', url: string, data: any): JQueryDeferred<any>;
-				};
-				readonly modeless: {
-					(url: string): JQueryDeferred<any>;
-					(url: string, data: any): JQueryDeferred<any>;
-					(webapp: 'com' | 'hr' | 'pr' | 'at', url: string): JQueryDeferred<any>;
-					(webapp: 'com' | 'hr' | 'pr' | 'at', url: string, data: any): JQueryDeferred<any>;
-				};
-				readonly storage: {
-					(name: string): JQueryDeferred<any>;
-					(name: string, params: any): JQueryDeferred<any>;
-				};
-			}
-			readonly $dialog: {
-				readonly info: {
-					(options: { messageId: string; }): JQueryDeferred<void>;
-					(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<void>;
-				};
-				readonly alert: {
-					(options: { messageId: string; }): JQueryDeferred<void>;
-					(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<void>;
-				};
-				readonly error: {
-					(options: { messageId: string; }): JQueryDeferred<void>;
-					(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<void>;
-				};
-				readonly confirm: {
-					(options: { messageId: string; }): JQueryDeferred<'no' | 'yes' | 'cancel'>;
-					(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<'no' | 'yes' | 'cancel'>;
-				};
-			}
-			readonly $blockui: (act: 'show' | 'hide' | 'clear' | 'invisible' | 'grayout') => JQueryDeferred<void>;
-			readonly $validate: {
-				(): JQueryDeferred<boolean>;
-				(selector: string): JQueryDeferred<boolean>;
-				(selectors: string[]): JQueryDeferred<boolean>;
-				(...selectors: string[]): JQueryDeferred<boolean>;
-				readonly constraint: {
-					(): JQueryDeferred<{ [name: string]: any }>;
-					(name: string): JQueryDeferred<any>;
-					(name: string, value: any): JQueryDeferred<void>;
-				};
-			};
-			readonly $errors: {
-				(): JQueryDeferred<boolean>;
-				(act: 'clear'): JQueryDeferred<boolean>;
-				(act: 'clear', names: string[]): JQueryDeferred<boolean>;
-				(act: 'clear', ...names: string[]): JQueryDeferred<boolean>;
-				(name: string, messageId: string): JQueryDeferred<boolean>;
-				(name: string, message: { messageId: string }): JQueryDeferred<boolean>;
-				(name: string, message: { messageId: string; params: string[]; }): JQueryDeferred<boolean>;
-				(errors: { [name: string]: { messageId: string; params?: string[]; } }): JQueryDeferred<boolean>;
-			}
-			readonly $jump: {
-				(url: string): void;
-				(url: string, params: any): void;
-				(webapp: 'com' | 'hr' | 'pr' | 'at', url: string): void;
-				(webapp: 'com' | 'hr' | 'pr' | 'at', url: string, params: any): void;
-				readonly self: {
-					(url: string): void;
-					(url: string, params: any): void;
-					(webapp: 'com' | 'hr' | 'pr' | 'at', url: string): void;
-					(webapp: 'com' | 'hr' | 'pr' | 'at', url: string, params: any): void;
-				}
-				readonly blank: {
-					(url: string): void;
-					(url: string, params: any): void;
-					(webapp: 'com' | 'hr' | 'pr' | 'at', url: string): void;
-					(webapp: 'com' | 'hr' | 'pr' | 'at', url: string, params: any): void;
-				}
-			};
+	readonly ViewModel: {
+		new(): ComponentViewModel;
+	}
+}
 
-            /**
-             * $nextTick be call when DOM is ready or all descendant component, binding are updated. 
-             */
-			readonly $nextTick: {
-				(cb: () => void): number;
-			};
+interface ComponentViewModel {
+	readonly $el: HTMLElement;
+	readonly $user: {
+		readonly contractCode: string;
+		readonly companyId: string;
+		readonly companyCode: string;
+		readonly isEmployee: boolean;
+		readonly employeeId: string;
+		readonly employeeCode: string;
+		readonly selectedLanguage: {
+			readonly basicLanguageId: string;
+			readonly personNameLanguageId: string;
+		};
+		readonly role: {
+			readonly attendance: string | null;
+			readonly companyAdmin: string | null;
+			readonly groupCompanyAdmin: string | null;
+			readonly officeHelper: string | null;
+			readonly payroll: string | null;
+			readonly personalInfo: string | null;
+			readonly personnel: string | null;
+			readonly systemAdmin: string | null;
+		};
+	};
+	readonly $program: {
+		readonly webapi: WEB_APP;
+		readonly programId: string;
+		readonly programName: string;
+		readonly path: string;
+		readonly isDebugMode: boolean;
+	};
+	readonly $date: {
+		readonly now: {
+			(): Date;
+		};
+		readonly today: {
+			(): Date;
+		};
+	};
+	readonly $i18n: {
+		(textId: string): string;
+		(textId: string, params: string[]): string;
+		readonly text: {
+			(textId: string): string;
+			(textId: string, params: string[]): string;
+		};
+		readonly message: {
+			(messageId: string): string;
+			(messageId: string, messageParams: string[]): string;
+		};
+		readonly controlName: {
+			(name: string): string;
+		};
+	};
+	readonly $ajax: {
+		(url: string): JQueryDeferred<any>;
+		(url: string, data: any): JQueryDeferred<any>;
+		(webapp: WEB_APP, url: string, data: any): JQueryDeferred<any>;
+	};
+	readonly $window: {
+		readonly size: {
+			(height: string | number, width: string | number): void;
+			readonly width: (width: string) => void;
+			readonly height: (height: string) => void;
+		};
+		readonly close: {
+			(): void;
+			(result: any): void;
+		};
+		readonly modal: {
+			(url: string): JQueryDeferred<any>;
+			(url: string, data: any): JQueryDeferred<any>;
+			(webapp: WEB_APP, url: string): JQueryDeferred<any>;
+			(webapp: WEB_APP, url: string, data: any): JQueryDeferred<any>;
+		};
+		readonly modeless: {
+			(url: string): JQueryDeferred<any>;
+			(url: string, data: any): JQueryDeferred<any>;
+			(webapp: WEB_APP, url: string): JQueryDeferred<any>;
+			(webapp: WEB_APP, url: string, data: any): JQueryDeferred<any>;
+		};
+		readonly storage: {
+			(name: string): JQueryDeferred<any>;
+			(name: string, params: any): JQueryDeferred<any>;
 		};
 	}
+	readonly $dialog: {
+		readonly info: {
+			(message: string): JQueryDeferred<void>;
+			(options: { messageId: string; }): JQueryDeferred<void>;
+			(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<void>;
+		};
+		readonly alert: {
+			(message: string): JQueryDeferred<void>;
+			(options: { messageId: string; }): JQueryDeferred<void>;
+			(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<void>;
+		};
+		readonly error: {
+			(message: string): JQueryDeferred<void>;
+			(options: { messageId: string; }): JQueryDeferred<void>;
+			(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<void>;
+		};
+		readonly confirm: {
+			(message: string): JQueryDeferred<void>;
+			(options: { messageId: string; }): JQueryDeferred<'no' | 'yes' | 'cancel'>;
+			(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<'no' | 'yes' | 'cancel'>;
+		};
+	}
+	readonly $blockui: (act: 'show' | 'hide' | 'clear' | 'invisible' | 'grayout') => JQueryDeferred<void>;
+	readonly $validate: {
+		(): JQueryDeferred<boolean>;
+		(selector: string): JQueryDeferred<boolean>;
+		(selectors: string[]): JQueryDeferred<boolean>;
+		(...selectors: string[]): JQueryDeferred<boolean>;
+		readonly constraint: {
+			(): JQueryDeferred<PrimitiveConstraints>;
+			(name: string): JQueryDeferred<Constraint>;
+			(name: string, value: Constraint): JQueryDeferred<void>;
+		};
+	};
+	readonly $errors: {
+		(): JQueryDeferred<boolean>;
+		(act: 'clear'): JQueryDeferred<boolean>;
+		(act: 'clear', names: string[]): JQueryDeferred<boolean>;
+		(act: 'clear', ...names: string[]): JQueryDeferred<boolean>;
+		(name: string, messageId: string): JQueryDeferred<boolean>;
+		(name: string, message: { messageId: string }): JQueryDeferred<boolean>;
+		(name: string, message: { messageId: string; messageParams: string[]; }): JQueryDeferred<boolean>;
+		(errors: { [name: string]: { messageId: string; messageParams?: string[]; } }): JQueryDeferred<boolean>;
+	}
+	readonly $jump: {
+		(url: string): void;
+		(url: string, params: any): void;
+		(webapp: WEB_APP, url: string): void;
+		(webapp: WEB_APP, url: string, params: any): void;
+		readonly self: {
+			(url: string): void;
+			(url: string, params: any): void;
+			(webapp: WEB_APP, url: string): void;
+			(webapp: WEB_APP, url: string, params: any): void;
+		}
+		readonly blank: {
+			(url: string): void;
+			(url: string, params: any): void;
+			(webapp: WEB_APP, url: string): void;
+			(webapp: WEB_APP, url: string, params: any): void;
+		}
+	};
+
+	/**
+	 * $nextTick be call when DOM is ready or all descendant component, binding are updated.
+	 */
+	readonly $nextTick: {
+		(cb: () => void): number;
+	};
 }

@@ -16,19 +16,14 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailContents;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
@@ -51,30 +46,20 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.C
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.Division;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReason;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.ReceptionRestrictionSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -99,8 +84,8 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	
 	@Inject
 	private EmployeeRequestAdapter employeeAdaptor;
-	@Inject
-	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepo;
+//	@Inject
+//	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepo;
 	
 	@Inject
 	private ApplicationSettingRepository appSettingRepo;
@@ -153,18 +138,18 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	
 	@Inject
 	private WorkTypeRepository workTypeRepository;
-	@Inject
-	private AppTypeDiscreteSettingRepository appTypeSetRepo;
+//	@Inject
+//	private AppTypeDiscreteSettingRepository appTypeSetRepo;
 	@Inject
 	private AppAbsenceRepository repoAbsence;
 	@Inject
 	private DisplayReasonRepository displayRep;
 	
-	@Inject
-	private ApplicationReasonRepository applicationReasonRepository;
+//	@Inject
+//	private ApplicationReasonRepository applicationReasonRepository;
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 	
 	@Inject
 	private OvertimeRepository overtimeRepository;
@@ -233,88 +218,89 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 
 	@Override
 	public PrePostAtr preliminaryJudgmentProcessing(ApplicationType appType, GeneralDate appDate, OvertimeAppAtr overtimeAppAtr) {
-		GeneralDate systemDate = GeneralDate.today();
-		Integer systemTime = GeneralDateTime.now().localDateTime().getHour()*60 
-				+ GeneralDateTime.now().localDateTime().getMinute();
-		String companyID = AppContexts.user().companyId();
-		PrePostAtr prePostAtr = null;
-		Optional<AppTypeDiscreteSetting> appTypeDisc = appTypeDiscreteSettingRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
-		Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
-		List<ReceptionRestrictionSetting> receptionRestrictionSetting = new ArrayList<>();
-		if(requestSetting.isPresent()){
-			receptionRestrictionSetting = requestSetting.get().getApplicationSetting().getListReceptionRestrictionSetting().stream().filter(x -> x.getAppType().equals(ApplicationType_Old.OVER_TIME_APPLICATION)).collect(Collectors.toList());
-		}
-		//if appdate > systemDate 
-		if (appDate == null || appDate.equals(systemDate)) { // if appDate = systemDate
-//			// if RetrictPreUseFlg = notuse ->prePostAtr = POSTERIOR
-//			if(appTypeDisc.get().getRetrictPreUseFlg() == UseAtr.NOTUSE) {
-//				prePostAtr = PrePostAtr.POSTERIOR;
-//			}else {
-//				//「事前の受付制限」．チェック方法が日数でチェック
+//		GeneralDate systemDate = GeneralDate.today();
+//		Integer systemTime = GeneralDateTime.now().localDateTime().getHour()*60 
+//				+ GeneralDateTime.now().localDateTime().getMinute();
+//		String companyID = AppContexts.user().companyId();
+//		PrePostAtr prePostAtr = null;
+//		Optional<AppTypeDiscreteSetting> appTypeDisc = appTypeDiscreteSettingRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
+//		Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
+//		List<ReceptionRestrictionSetting> receptionRestrictionSetting = new ArrayList<>();
+//		if(requestSetting.isPresent()){
+//			receptionRestrictionSetting = requestSetting.get().getApplicationSetting().getListReceptionRestrictionSetting().stream().filter(x -> x.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)).collect(Collectors.toList());
+//		}
+//		//if appdate > systemDate 
+//		if (appDate == null || appDate.equals(systemDate)) { // if appDate = systemDate
+////			// if RetrictPreUseFlg = notuse ->prePostAtr = POSTERIOR
+////			if(appTypeDisc.get().getRetrictPreUseFlg() == UseAtr.NOTUSE) {
+////				prePostAtr = PrePostAtr.POSTERIOR;
+////			}else {
+////				//「事前の受付制限」．チェック方法が日数でチェック
+////				if(appTypeDisc.get().getRetrictPreMethodFlg() == CheckMethod.DAYCHECK) {
+////					prePostAtr = PrePostAtr.POSTERIOR;
+////				}else {//システム日時と受付制限日時と比較する
+////					if(systemTime.compareTo(appTypeDisc.get().getRetrictPreTimeDay().v())==1) {
+////						
+////						prePostAtr = PrePostAtr.POSTERIOR;
+////					}else { // if systemDateTime <=  RetrictPreTimeDay - > xin truoc
+////						prePostAtr = PrePostAtr.PREDICT;
+////					}
+////				}
+////			}
+//			if(appType == ApplicationType.OVER_TIME_APPLICATION){
 //				if(appTypeDisc.get().getRetrictPreMethodFlg() == CheckMethod.DAYCHECK) {
 //					prePostAtr = PrePostAtr.POSTERIOR;
-//				}else {//システム日時と受付制限日時と比較する
-//					if(systemTime.compareTo(appTypeDisc.get().getRetrictPreTimeDay().v())==1) {
-//						
+//				}else{
+//					int resultCompare = 0;
+//					if(overtimeAppAtr == OvertimeAppAtr.EARLY_OVERTIME && receptionRestrictionSetting.get(0).getBeforehandRestriction().getPreOtTime() != null){
+//						resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getPreOtTime().v());
+//					}else if(overtimeAppAtr == OvertimeAppAtr.NORMAL_OVERTIME && receptionRestrictionSetting.get(0).getBeforehandRestriction().getNormalOtTime() !=  null){
+//						resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getNormalOtTime().v());
+//					}else if(overtimeAppAtr == OvertimeAppAtr.EARLY_NORMAL_OVERTIME && receptionRestrictionSetting.get(0).getBeforehandRestriction().getTimeBeforehandRestriction() !=  null){
+//						resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getTimeBeforehandRestriction().v());
+//					}
+//					if(resultCompare == 1) {
 //						prePostAtr = PrePostAtr.POSTERIOR;
 //					}else { // if systemDateTime <=  RetrictPreTimeDay - > xin truoc
 //						prePostAtr = PrePostAtr.PREDICT;
 //					}
 //				}
+//			}else{
+//				prePostAtr = PrePostAtr.POSTERIOR;
 //			}
-			if(appType == ApplicationType.OVER_TIME_APPLICATION){
-				if(appTypeDisc.get().getRetrictPreMethodFlg() == CheckMethod.DAYCHECK) {
-					prePostAtr = PrePostAtr.POSTERIOR;
-				}else{
-					int resultCompare = 0;
-					if(overtimeAppAtr == OvertimeAppAtr.EARLY_OVERTIME && receptionRestrictionSetting.get(0).getBeforehandRestriction().getPreOtTime() != null){
-						resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getPreOtTime().v());
-					}else if(overtimeAppAtr == OvertimeAppAtr.NORMAL_OVERTIME && receptionRestrictionSetting.get(0).getBeforehandRestriction().getNormalOtTime() !=  null){
-						resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getNormalOtTime().v());
-					}else if(overtimeAppAtr == OvertimeAppAtr.EARLY_NORMAL_OVERTIME && receptionRestrictionSetting.get(0).getBeforehandRestriction().getTimeBeforehandRestriction() !=  null){
-						resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getTimeBeforehandRestriction().v());
-					}
-					if(resultCompare == 1) {
-						prePostAtr = PrePostAtr.POSTERIOR;
-					}else { // if systemDateTime <=  RetrictPreTimeDay - > xin truoc
-						prePostAtr = PrePostAtr.PREDICT;
-					}
-				}
-			}else{
-				prePostAtr = PrePostAtr.POSTERIOR;
-			}
-			
-		} else if(appDate.after(systemDate) ) {
-			//xin truoc 事前事後区分= 事前
-			prePostAtr = PrePostAtr.PREDICT;
-			
-		} else if(appDate.before(systemDate)) { // if appDate < systemDate
-			//xin sau 事前事後区分= 事後
-			prePostAtr = PrePostAtr.POSTERIOR;
-		}
-		
-			
-		return prePostAtr;
+//			
+//		} else if(appDate.after(systemDate) ) {
+//			//xin truoc 事前事後区分= 事前
+//			prePostAtr = PrePostAtr.PREDICT;
+//			
+//		} else if(appDate.before(systemDate)) { // if appDate < systemDate
+//			//xin sau 事前事後区分= 事後
+//			prePostAtr = PrePostAtr.POSTERIOR;
+//		}
+//		
+//			
+//		return prePostAtr;
+		return null;
 	}
 	/**
 	 * 5.事前事後区分の判断
 	 */
 	@Override
-	public InitValueAtr judgmentPrePostAtr(ApplicationType_Old appType, GeneralDate appDate,boolean checkCaller) {
+	public InitValueAtr judgmentPrePostAtr(ApplicationType appType, GeneralDate appDate,boolean checkCaller) {
 		InitValueAtr outputInitValueAtr = null;
-		String companyID = AppContexts.user().companyId();
-		Optional<AppTypeDiscreteSetting> appTypeDisc = appTypeDiscreteSettingRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
-		Optional<ApplicationSetting> appSetting = appSettingRepo.getApplicationSettingByComID(companyID);
-		if(appSetting.get().getDisplayPrePostFlg() == AppDisplayAtr.DISPLAY) { // AppDisplayAtr displayPrePostFlg
-			//メニューから起動(Boot from menu) : checkCaller == true
-			if(checkCaller) {
-				outputInitValueAtr = appTypeDisc.get().getPrePostInitFlg();
-			}else {// その他のPG（日別修正、トップページアラーム、残業指示）から起動(Start from other PG (daily correction, top page alarm, overtime work instruction)): checkCaller == false
-				outputInitValueAtr = InitValueAtr.POST;
-			}
-		}else { //if not display
-			outputInitValueAtr = InitValueAtr.NOCHOOSE;
-		}
+//		String companyID = AppContexts.user().companyId();
+//		Optional<AppTypeDiscreteSetting> appTypeDisc = appTypeDiscreteSettingRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
+//		Optional<ApplicationSetting> appSetting = appSettingRepo.getApplicationSettingByComID(companyID);
+//		if(appSetting.get().getDisplayPrePostFlg() == AppDisplayAtr.DISPLAY) { // AppDisplayAtr displayPrePostFlg
+//			//メニューから起動(Boot from menu) : checkCaller == true
+//			if(checkCaller) {
+//				outputInitValueAtr = appTypeDisc.get().getPrePostInitFlg();
+//			}else {// その他のPG（日別修正、トップページアラーム、残業指示）から起動(Start from other PG (daily correction, top page alarm, overtime work instruction)): checkCaller == false
+//				outputInitValueAtr = InitValueAtr.POST;
+//			}
+//		}else { //if not display
+//			outputInitValueAtr = InitValueAtr.NOCHOOSE;
+//		}
 		return outputInitValueAtr;
 	}
 	/**
@@ -613,30 +599,30 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			return true;
 		}else{
 			//ドメインモデル「申請種類別設定」を取得する
-			Optional<AppTypeDiscreteSetting> appTypeSet = appTypeSetRepo.getAppTypeDiscreteSettingByAppType(companyId, application.getAppType().value);
-			if(appTypeSet.isPresent() && appTypeSet.get().getTypicalReasonDisplayFlg().equals(AppDisplayAtr.NOTDISPLAY) &&
-					appTypeSet.get().getDisplayReasonFlg().equals(AppDisplayAtr.NOTDISPLAY)){
-				//定型理由の表示＝しない　AND 申請理由の表示＝しない
-				return false;//output：・結果＝未使用
-			}
+//			Optional<AppTypeDiscreteSetting> appTypeSet = appTypeSetRepo.getAppTypeDiscreteSettingByAppType(companyId, application.getAppType().value);
+//			if(appTypeSet.isPresent() && appTypeSet.get().getTypicalReasonDisplayFlg().equals(AppDisplayAtr.NOTDISPLAY) &&
+//					appTypeSet.get().getDisplayReasonFlg().equals(AppDisplayAtr.NOTDISPLAY)){
+//				//定型理由の表示＝しない　AND 申請理由の表示＝しない
+//				return false;//output：・結果＝未使用
+//			}
 			return true;//output：・結果＝使用
 		}
 	}
 	
-	@Override
-	public List<ApplicationReason> getApplicationReasonType(String companyID, DisplayAtr typicalReasonDisplayFlg, ApplicationType_Old appType) {
-		// Input．申請種類をチェックする
-		if(appType != ApplicationType_Old.ABSENCE_APPLICATION) {
-			// Input．定型理由の表示区分をチェック
-			if (typicalReasonDisplayFlg == DisplayAtr.NOT_DISPLAY) {
-				return Collections.emptyList();
-			}
-		}
-		// ドメインモデル「申請定型理由」を取得
-		List<ApplicationReason> applicationReasons = applicationReasonRepository.getReasonByAppType(companyID, appType.value);
-		return applicationReasons;
-		
-	}
+//	@Override
+//	public List<ApplicationReason> getApplicationReasonType(String companyID, DisplayAtr typicalReasonDisplayFlg, ApplicationType appType) {
+//		// Input．申請種類をチェックする
+//		if(appType != ApplicationType.ABSENCE_APPLICATION) {
+//			// Input．定型理由の表示区分をチェック
+//			if (typicalReasonDisplayFlg == DisplayAtr.NOT_DISPLAY) {
+//				return Collections.emptyList();
+//			}
+//		}
+//		// ドメインモデル「申請定型理由」を取得
+//		List<ApplicationReason> applicationReasons = applicationReasonRepository.getReasonByAppType(companyID, appType.value);
+//		return applicationReasons;
+//		
+//	}
 	
 	@Override
 	public boolean displayAppReasonContentFlg(AppDisplayAtr displayReasonFlg) {
@@ -648,38 +634,38 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	}
 	
 	@Override
-	public AppOverTime getPreApplication(String employeeID, PrePostAtr_Old prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType_Old appType) {
-		String companyID =  AppContexts.user().companyId();
-		AppOverTime result = new AppOverTime();
-		if (prePostAtr == PrePostAtr_Old.POSTERIOR) {
-			if(preDisplayAtr == UseAtr.USE){
-				List<Application_New> applicationLst = applicationRepository.getApp(employeeID, appDate, PrePostAtr_Old.PREDICT.value, appType.value);
-				if(!CollectionUtil.isEmpty(applicationLst)){
-					Application_New applicationOvertime = Application_New.firstCreate(companyID, prePostAtr, appDate, appType, employeeID, new AppReason(Strings.EMPTY));
-					applicationOvertime.setAppDate(applicationLst.get(0).getAppDate());
-					Optional<AppOverTime> appOvertime = this.overtimeRepository
-							.getAppOvertime(applicationLst.get(0).getCompanyID(), applicationLst.get(0).getAppID());
-					if (appOvertime.isPresent()) {
-						result.setWorkTypeCode(appOvertime.get().getWorkTypeCode());
-						result.setSiftCode(appOvertime.get().getSiftCode());
-						result.setWorkClockFrom1(appOvertime.get().getWorkClockFrom1());
-						result.setWorkClockTo1(appOvertime.get().getWorkClockTo1());
-						result.setWorkClockFrom2(appOvertime.get().getWorkClockFrom2());
-						result.setWorkClockTo2(appOvertime.get().getWorkClockTo2());
-
-						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(
-								appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),
-								AttendanceType.NORMALOVERTIME.value);
-						result.setOverTimeInput(overtimeInputs);
-						result.setOverTimeShiftNight(appOvertime.get().getOverTimeShiftNight());
-						result.setFlexExessTime(appOvertime.get().getFlexExessTime());
-						result.setApplication(applicationOvertime);
-						result.setAppID(appOvertime.get().getAppID());
-						return result;
-					}
-				}
-			}
-		}
+	public AppOverTime getPreApplication(String employeeID, PrePostAtr prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType appType) {
+//		String companyID =  AppContexts.user().companyId();
+//		AppOverTime result = new AppOverTime();
+//		if (prePostAtr == PrePostAtr.POSTERIOR) {
+//			if(preDisplayAtr == UseAtr.USE){
+//				List<Application_New> applicationLst = applicationRepository.getApp(employeeID, appDate, PrePostAtr.PREDICT.value, appType.value);
+//				if(!CollectionUtil.isEmpty(applicationLst)){
+//					Application_New applicationOvertime = Application_New.firstCreate(companyID, prePostAtr, appDate, appType, employeeID, new AppReason(Strings.EMPTY));
+//					applicationOvertime.setAppDate(applicationLst.get(0).getAppDate());
+//					Optional<AppOverTime> appOvertime = this.overtimeRepository
+//							.getAppOvertime(applicationLst.get(0).getCompanyID(), applicationLst.get(0).getAppID());
+//					if (appOvertime.isPresent()) {
+//						result.setWorkTypeCode(appOvertime.get().getWorkTypeCode());
+//						result.setSiftCode(appOvertime.get().getSiftCode());
+//						result.setWorkClockFrom1(appOvertime.get().getWorkClockFrom1());
+//						result.setWorkClockTo1(appOvertime.get().getWorkClockTo1());
+//						result.setWorkClockFrom2(appOvertime.get().getWorkClockFrom2());
+//						result.setWorkClockTo2(appOvertime.get().getWorkClockTo2());
+//
+//						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(
+//								appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),
+//								AttendanceType.NORMALOVERTIME.value);
+//						result.setOverTimeInput(overtimeInputs);
+//						result.setOverTimeShiftNight(appOvertime.get().getOverTimeShiftNight());
+//						result.setFlexExessTime(appOvertime.get().getFlexExessTime());
+//						result.setApplication(applicationOvertime);
+//						result.setAppID(appOvertime.get().getAppID());
+//						return result;
+//					}
+//				}
+//			}
+//		}
 		return null;
 	}
 	

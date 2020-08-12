@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.AppTimeDigest;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubDigestion;
@@ -31,7 +31,7 @@ public class AppAbsence extends AggregateRoot {
 	/**
 	 * application
 	 */
-	private Application_New application;
+	private Application application;
 	/**
 	 * 会社ID
 	 */

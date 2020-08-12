@@ -14,4 +14,6 @@ public interface RequestByCompanyRepository {
 	
 	public Optional<ApprovalFunctionSet> findByAppType(String companyID, ApplicationType appType);
 	
+	public Optional<ApprovalFunctionSet> findByCompanyID(String companyID);
+	
 }

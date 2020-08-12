@@ -73,7 +73,7 @@ public interface ApprovalRootStateAdapter {
 	
 	public List<String> getNextApprovalPhaseStateMailList(String rootStateID, Integer approvalPhaseStateNumber);
 	
-	public Integer doApprove(String rootStateID, String employeeID);
+	public Integer doApprove(String rootStateID, String employeeID, String memo);
 	
 	public Boolean isApproveAllComplete(String rootStateID);
 	
@@ -95,7 +95,7 @@ public interface ApprovalRootStateAdapter {
 	
 	public Boolean doRelease(String companyID, String rootStateID, String employeeID);
 	
-	public Boolean doDeny(String rootStateID, String employeeID);
+	public Boolean doDeny(String rootStateID, String employeeID, String memo);
 	
 	public Boolean judgmentTargetPersonIsApprover(String companyID, String rootStateID, String employeeID);
 	

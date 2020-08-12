@@ -3,9 +3,9 @@ package nts.uk.ctx.at.request.app.find.application.holidayshipment.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeSetDto;
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto_Old;
-import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absenceleaveapp.AbsenceLeaveAppDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp.RecruitmentAppDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
@@ -26,7 +26,7 @@ public class DisplayInforWhenStarting {
 	//振休残数情報
 	public RemainingHolidayInfor remainingHolidayInfor;
 	//申請表示情報
-	public AppDispInfoStartupDto_Old appDispInfoStartup;
+	public AppDispInfoStartupDto appDispInfoStartup;
 	//振休振出申請設定
 	private WithDrawalReqSetDto drawalReqSet;
 	
@@ -37,7 +37,7 @@ public class DisplayInforWhenStarting {
 	//振出申請
 	public RecruitmentAppDto recApp;
 	//申請
-	private ApplicationDto_New application;
+	private ApplicationDto application;
 	//社員名
 	private String employeeName;
 	//申請種類別設定

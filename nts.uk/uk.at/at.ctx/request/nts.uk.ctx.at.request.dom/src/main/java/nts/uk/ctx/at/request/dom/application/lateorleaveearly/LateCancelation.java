@@ -12,5 +12,5 @@ public class LateCancelation {
 //	勤務NO
 	private int workNo;
 //	区分
-	private LateOrEarlyClassification lateOrEarlyClassification; 
+	private LateOrEarlyAtr lateOrEarlyClassification; 
 }

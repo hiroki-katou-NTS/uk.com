@@ -12,7 +12,7 @@ import javax.persistence.criteria.CriteriaBuilder.Case;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
@@ -26,7 +26,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Workp
 public class AggregateApprovalStatus {
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 
 	public ApprovalSttAppOutput aggregate(String companyId, WorkplaceInfor workplace, List<ApprovalStatusEmployeeOutput> appSttEmployees) {
 		

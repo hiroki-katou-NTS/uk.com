@@ -15,9 +15,10 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
@@ -36,14 +37,13 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.service.JudgmentOneDayHoliday;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ApplicationListForScreen {
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository_New;
+	private ApplicationRepository applicationRepository_New;
 	@Inject
 	private AppDispNameRepository appDispNameRepository;
 	/*@Inject
@@ -79,8 +79,8 @@ public class ApplicationListForScreen {
 			return applicationExports;
 		}
 		List<Application_New> applicationExcessHoliday = application.stream()
-				.filter(x -> x.getAppType().value != ApplicationType_Old.ABSENCE_APPLICATION.value &&
-							x.getAppType().value != ApplicationType_Old.WORK_CHANGE_APPLICATION.value)
+				.filter(x -> x.getAppType().value != ApplicationType.ABSENCE_APPLICATION.value &&
+							x.getAppType().value != ApplicationType.WORK_CHANGE_APPLICATION.value)
 				.collect(Collectors.toList());
 		List<AppDispName> allApps = appDispNameRepository.getAll(application.stream().map(c -> c.getAppType().value).distinct().collect(Collectors.toList()));
 		if(!applicationExcessHoliday.isEmpty()){
@@ -129,7 +129,7 @@ public class ApplicationListForScreen {
 				}
 			}
 		}
-		List<Application_New> applicationHoliday = application.stream().filter(x -> x.getAppType().value == ApplicationType_Old.ABSENCE_APPLICATION.value).collect(Collectors.toList());
+		List<Application_New> applicationHoliday = application.stream().filter(x -> x.getAppType().value == ApplicationType.ABSENCE_APPLICATION.value).collect(Collectors.toList());
 		if(!applicationHoliday.isEmpty()){
 			Optional<HdAppSet> hdAppSet = this.hdAppSetRepository.getAll();
 			List<AppAbsence> apps = appAbsenceRepository.getAbsenceByIds(companyID, applicationHoliday.stream().map(c -> c.getAppID()).distinct().collect(Collectors.toList()));
@@ -183,7 +183,7 @@ public class ApplicationListForScreen {
 			}
 		}
 		
-		List<Application_New> appWorkChangeLst = application.stream().filter(x -> x.getAppType().value == ApplicationType_Old.WORK_CHANGE_APPLICATION.value).collect(Collectors.toList());
+		List<Application_New> appWorkChangeLst = application.stream().filter(x -> x.getAppType().value == ApplicationType.WORK_CHANGE_APPLICATION.value).collect(Collectors.toList());
 		if(!appWorkChangeLst.isEmpty()){
 			List<AppWorkChange_Old> appWorkChanges = new ArrayList<>();
 			List<ScBasicScheduleImport> basicSchedules = new ArrayList<>();
@@ -254,7 +254,7 @@ public class ApplicationListForScreen {
 		return basicSchedules.stream().filter(c -> c.getEmployeeId().equals(empId) && c.getDate().equals(loopDate)).findFirst();
 	}
 	
-	private String getAppName(String companyID, List<AppDispName> allApps, ApplicationType_Old appType) {
+	private String getAppName(String companyID, List<AppDispName> allApps, ApplicationType appType) {
 		return allApps.stream().filter(c -> c.getAppType() == appType).findFirst()
 														.orElseGet(() -> new AppDispName(companyID, appType, new DispName("")))
 														.getDispName().toString();
@@ -315,7 +315,7 @@ public class ApplicationListForScreen {
 		mapDate.entrySet().stream().forEach(x -> {
 			Map<Object, List<AppGroupExportDto>> mapDateType = x.getValue().stream().collect(Collectors.groupingBy(y -> y.getAppType()));
 			mapDateType.entrySet().stream().forEach(y -> {
-				if(Integer.valueOf(y.getKey().toString())==ApplicationType_Old.ABSENCE_APPLICATION.value){
+				if(Integer.valueOf(y.getKey().toString())==ApplicationType.ABSENCE_APPLICATION.value){
 					Map<Object, List<AppGroupExportDto>> mapDateTypeAbsence = y.getValue().stream().collect(Collectors.groupingBy(z -> z.getAppTypeName()));
 					mapDateTypeAbsence.entrySet().stream().forEach(z -> {
 						result.add(z.getValue().get(0));
@@ -342,47 +342,47 @@ public class ApplicationListForScreen {
 			if(appDispName.getDispName() == null){
 				continue;
 			}
-			if(appDispName.getAppType()==ApplicationType_Old.OVER_TIME_APPLICATION){
+			if(appDispName.getAppType()==ApplicationType.OVER_TIME_APPLICATION){
 				// outputパラメータに残業申請のモード別の値をセットする
 				result.add(new AppWithDetailExportDto(
-						ApplicationType_Old.OVER_TIME_APPLICATION.value, 
+						ApplicationType.OVER_TIME_APPLICATION.value, 
 						appDispName.getDispName().v() + "申請" + " (" + OverTimeAtr.PREOVERTIME.name + ")", 
 						OverTimeAtr.PREOVERTIME.value + 1,
 						null));
 				result.add(new AppWithDetailExportDto(
-						ApplicationType_Old.OVER_TIME_APPLICATION.value, 
+						ApplicationType.OVER_TIME_APPLICATION.value, 
 						appDispName.getDispName().v() + "申請" + " (" + OverTimeAtr.REGULAROVERTIME.name + ")", 
 						OverTimeAtr.REGULAROVERTIME.value + 1,
 						null));
 				result.add(new AppWithDetailExportDto(
-						ApplicationType_Old.OVER_TIME_APPLICATION.value, 
+						ApplicationType.OVER_TIME_APPLICATION.value, 
 						appDispName.getDispName().v() + "申請" + " (" + OverTimeAtr.ALL.name + ")", 
 						OverTimeAtr.ALL.value + 1,
 						null));
-			} else if(appDispName.getAppType()==ApplicationType_Old.STAMP_APPLICATION){
+			} else if(appDispName.getAppType()==ApplicationType.STAMP_APPLICATION){
 				// outputパラメータに打刻申請のモード別の値をセットする
 				result.add(new AppWithDetailExportDto(
-						ApplicationType_Old.STAMP_APPLICATION.value, 
+						ApplicationType.STAMP_APPLICATION.value, 
 						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_GO_OUT_PERMIT.name + ")", 
 						null,
 						StampRequestMode_Old.STAMP_GO_OUT_PERMIT.value));
 				result.add(new AppWithDetailExportDto(
-						ApplicationType_Old.STAMP_APPLICATION.value, 
+						ApplicationType.STAMP_APPLICATION.value, 
 						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_WORK.name + ")", 
 						null,
 						StampRequestMode_Old.STAMP_WORK.value));
 				result.add(new AppWithDetailExportDto(
-						ApplicationType_Old.STAMP_APPLICATION.value, 
+						ApplicationType.STAMP_APPLICATION.value, 
 						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_CANCEL.name + ")", 
 						null,
 						StampRequestMode_Old.STAMP_CANCEL.value));
 				result.add(new AppWithDetailExportDto(
-						ApplicationType_Old.STAMP_APPLICATION.value, 
+						ApplicationType.STAMP_APPLICATION.value, 
 						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_ONLINE_RECORD.name + ")", 
 						null,
 						StampRequestMode_Old.STAMP_ONLINE_RECORD.value));
 				result.add(new AppWithDetailExportDto(
-						ApplicationType_Old.STAMP_APPLICATION.value, 
+						ApplicationType.STAMP_APPLICATION.value, 
 						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.OTHER.name + ")", 
 						null,
 						StampRequestMode_Old.OTHER.value));

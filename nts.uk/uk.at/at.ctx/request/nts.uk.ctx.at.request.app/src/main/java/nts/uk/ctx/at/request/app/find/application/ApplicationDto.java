@@ -2,6 +2,8 @@ package nts.uk.ctx.at.request.app.find.application;
 
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -110,7 +112,7 @@ public class ApplicationDto {
 				application.getEmployeeID(), 
 				application.getAppType().value, 
 				application.getAppDate().getApplicationDate().toString(), 
-				application.getEnteredPerson(), 
+				application.getEnteredPersonID(), 
 				application.getInputDate().toString(), 
 				ReflectionStatusDto.fromDomain(application.getReflectionStatus()), 
 				application.getOpStampRequestMode().map(x -> x.value).orElse(null), 
@@ -135,16 +137,16 @@ public class ApplicationDto {
 		if(opStampRequestMode != null) {
 			application.setOpStampRequestMode(Optional.of(EnumAdaptor.valueOf(opStampRequestMode, StampRequestMode.class)));
 		}
-		if(opReversionReason != null) {
+		if(!StringUtils.isBlank(opReversionReason)) {
 			application.setOpReversionReason(Optional.of(new ReasonForReversion(opReversionReason)));
 		}
-		if(opAppStartDate != null) {
+		if(!StringUtils.isBlank(opAppStartDate)) {
 			application.setOpAppStartDate(Optional.of(new ApplicationDate(GeneralDate.fromString(opAppStartDate, "yyyy/MM/dd"))));
 		}
-		if(opAppEndDate != null) {
+		if(!StringUtils.isBlank(opAppEndDate)) {
 			application.setOpAppEndDate(Optional.of(new ApplicationDate(GeneralDate.fromString(opAppEndDate, "yyyy/MM/dd"))));
 		}
-		if(opAppReason != null) {
+		if(!StringUtils.isBlank(opAppReason)) {
 			application.setOpAppReason(Optional.of(new AppReason(opAppReason)));
 		}
 		if(opAppStandardReasonCD != null) {

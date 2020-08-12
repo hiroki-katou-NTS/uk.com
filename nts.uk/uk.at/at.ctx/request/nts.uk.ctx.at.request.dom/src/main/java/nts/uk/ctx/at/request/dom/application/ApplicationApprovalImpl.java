@@ -16,14 +16,14 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.
 import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
+import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * 
+ *
  * @author Doan Duy Hung
  *
  */
@@ -31,9 +31,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class ApplicationApprovalImpl implements ApplicationApprovalService {
 
-	@Inject
-	private ApplicationRepository_New applicationRepository_Old;
-	
 	@Inject
 	private ApplicationRepository applicationRepository;
 
@@ -53,17 +50,17 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 	private AppWorkChangeRepository workChangeRepository;
 
 	@Inject
-	private LateOrLeaveEarlyRepository lateOrLeaveEarlyRepository;
-	
+	private ArrivedLateLeaveEarlyRepository lateOrLeaveEarlyRepository;
+
 	@Inject
 	private AppHolidayWorkRepository appHolidayWorkRepository;
-	
+
 	@Inject
 	private AbsenceLeaveAppRepository absRepo;
-	
+
 	@Inject
 	private RecruitmentAppRepository recRepo;
-	
+
 	@Inject
 	private AppAbsenceRepository appAbsenceRepository;
 	@Inject
@@ -89,16 +86,16 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			lateOrLeaveEarlyRepository.remove(companyID, appID);
 			break;
-		case LEAVE_TIME_APPLICATION:
+		case HOLIDAY_WORK_APPLICATION:
 			appHolidayWorkRepository.delete(companyID, appID);
 			Optional<BrkOffSupChangeMng> brOptional = this.brkOffSupChangeMngRepository.findHolidayAppID(appID);
 			if(brOptional.isPresent()){
-				Optional<Application_New> optapplicationLeaveApp = this.applicationRepository_Old.findByID(companyID, brOptional.get().getAbsenceLeaveAppID());
+				Optional<Application> optapplicationLeaveApp = this.applicationRepository.findByID(companyID, brOptional.get().getAbsenceLeaveAppID());
 				if(optapplicationLeaveApp.isPresent()){
-					Application_New applicationLeaveApp = optapplicationLeaveApp.get();
+					Application applicationLeaveApp = optapplicationLeaveApp.get();
 					applicationLeaveApp.setVersion(applicationLeaveApp.getVersion());
-					applicationLeaveApp.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
-					applicationRepository_Old.update(applicationLeaveApp);
+					// applicationLeaveApp.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
+					applicationRepository.update(applicationLeaveApp);
 				}
 				this.brkOffSupChangeMngRepository.remove(appID, brOptional.get().getAbsenceLeaveAppID());
 			}
@@ -122,9 +119,9 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 	public void insertApp(Application application, List<ApprovalPhaseStateImport_New> listApprovalPhaseState) {
 		applicationRepository.insert(application);
 		approvalRootStateAdapter.insertApp(
-				application.getAppID(), 
-				application.getAppDate().getApplicationDate(), 
-				application.getEmployeeID(), 
+				application.getAppID(),
+				application.getAppDate().getApplicationDate(),
+				application.getEmployeeID(),
 				listApprovalPhaseState);
 	}
 

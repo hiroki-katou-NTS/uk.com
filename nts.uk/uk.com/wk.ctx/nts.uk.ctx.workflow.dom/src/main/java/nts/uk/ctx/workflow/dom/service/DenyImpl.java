@@ -40,7 +40,7 @@ public class DenyImpl implements DenyService {
 	private CollectApprovalAgentInforService collectApprovalAgentInforService;
 
 	@Override
-	public Boolean doDeny(String rootStateID, String employeeID) {
+	public Boolean doDeny(String rootStateID, String employeeID, String memo) {
 		String companyID = AppContexts.user().companyId();
 		// 否認を実行したかフラグ=false（初期化）
 		Boolean executedFlag = false;
@@ -79,7 +79,7 @@ public class DenyImpl implements DenyService {
 								approverInfor.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 								approverInfor.setAgentID(employeeID);
 								approverInfor.setApprovalDate(GeneralDate.today());
-								//approverInfor.setApprovalReason(memo);
+								approverInfor.setApprovalReason(memo);
 								approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 								executedFlag = true;
 							} else {
@@ -90,7 +90,7 @@ public class DenyImpl implements DenyService {
 							approverInfor.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 							approverInfor.setAgentID("");
 							approverInfor.setApprovalDate(GeneralDate.today());
-							//approverInfor.setApprovalReason(memo);
+							approverInfor.setApprovalReason(memo);
 							approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 							executedFlag = true;
 						}
@@ -103,7 +103,7 @@ public class DenyImpl implements DenyService {
 							approverInfor.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 							approverInfor.setAgentID(employeeID);
 							approverInfor.setApprovalDate(GeneralDate.today());
-							//approverInfor.setApprovalReason(memo);
+							approverInfor.setApprovalReason(memo);
 							approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 							executedFlag = true;
 						}
@@ -112,7 +112,7 @@ public class DenyImpl implements DenyService {
 							approverInfor.setApproverID(employeeID);
 							approverInfor.setAgentID("");
 							approverInfor.setApprovalDate(GeneralDate.today());
-							//approverInfor.setApprovalReason(memo);
+							approverInfor.setApprovalReason(memo);
 							approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 							executedFlag = true;
 						}

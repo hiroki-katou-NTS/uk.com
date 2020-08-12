@@ -10,14 +10,14 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
-import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
-import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReasonNotReflect;
+import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 
@@ -122,13 +122,13 @@ public class ApplicationDto_New {
 				appDto.getVersion(), 
 				appDto.getCompanyID(), 
 				appDto.getApplicationID(),
-				EnumAdaptor.valueOf(appDto.getPrePostAtr(), PrePostAtr_Old.class), 
+				EnumAdaptor.valueOf(appDto.getPrePostAtr(), PrePostAtr.class), 
 				GeneralDateTime.fromString(appDto.getInputDate(), DATE_TIME_FORMAT), 
 				appDto.getEnteredPersonSID(), 
 				new AppReason(appDto.getReversionReason()), 
 				GeneralDate.fromString(appDto.getApplicationDate(), DATE_FORMAT),
 				new AppReason(appDto.getApplicationReason()),
-				EnumAdaptor.valueOf(appDto.getApplicationType(), ApplicationType_Old.class), 
+				EnumAdaptor.valueOf(appDto.getApplicationType(), ApplicationType.class), 
 				appDto.getApplicantSID(),
 				Optional.ofNullable((GeneralDate.fromString(appDto.getStartDate(), DATE_FORMAT))),
 				Optional.ofNullable((GeneralDate.fromString(appDto.getEndDate(), DATE_FORMAT))), 
@@ -138,13 +138,13 @@ public class ApplicationDto_New {
 						.stateReflectionReal(
 								EnumAdaptor.valueOf(appDto.getReflectPerState(), ReflectedState_New.class))
 						.forcedReflection(
-								EnumAdaptor.valueOf(appDto.getReflectPlanEnforce(), DisabledSegment_New.class))
+								EnumAdaptor.valueOf(appDto.getReflectPlanEnforce(), NotUseAtr.class))
 						.forcedReflectionReal(
-								EnumAdaptor.valueOf(appDto.getReflectPerEnforce(), DisabledSegment_New.class))
+								EnumAdaptor.valueOf(appDto.getReflectPerEnforce(), NotUseAtr.class))
 						.notReason(Optional.ofNullable(appDto.getReflectPlanScheReason())
-								.map(x -> EnumAdaptor.valueOf(x, ReasonNotReflect_New.class)))
+								.map(x -> EnumAdaptor.valueOf(x, ReasonNotReflect.class)))
 						.notReasonReal(Optional.ofNullable(appDto.getReflectPerScheReason())
-								.map(x -> EnumAdaptor.valueOf(x, ReasonNotReflectDaily_New.class)))
+								.map(x -> EnumAdaptor.valueOf(x, ReasonNotReflectDaily.class)))
 						.dateTimeReflection(Optional
 								.ofNullable(appDto.getReflectPlanTime() == null ? null : GeneralDateTime.fromString(appDto.getReflectPlanTime(), DATE_TIME_FORMAT)))
 						.dateTimeReflectionReal(Optional
