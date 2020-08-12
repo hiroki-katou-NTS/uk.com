@@ -10,13 +10,19 @@ module nts.uk.at.view.ksu001.jd {
             orgName: KnockoutObservable<string> = ko.observable( '' );
             //先名称入力
             desName: KnockoutObservable<string> = ko.observable( '' );
-            itemList: KnockoutObservableArray<any> = ko.observableArray( [{code: '1', name: '1'}] );
+            itemList: KnockoutObservableArray<Infor> = ko.observableArray( [] );
             selectedCode: KnockoutObservable<string> = ko.observable( '' );
-            checked: KnockoutObservable<boolean> = ko.observable( true );
+            checked: KnockoutObservable<boolean> = ko.observable( false );
+            target: KnockoutObservable<number> = ko.observable( 0 );
+            targetID: KnockoutObservable<string>;
 
             constructor() {
                 let self = this;
 
+                //target: 会社:2/職場:0/職場グループ:1
+                let dataShare = getShared( 'dataForJD' );
+                self.target = ko.observable( dataShare.target );
+                self.targetID = ko.observable( dataShare.targetID );
             }
 
             /**
@@ -45,42 +51,75 @@ module nts.uk.at.view.ksu001.jd {
                 let self = this,
                     dfd = $.Deferred();
 
-                let dataShare = getShared( 'dataForJD' )
-                //target = 0 -> workplace, target = 1 -> workplaceGroup, target = 2 -> company 
-//                let datas = {
-//                    page: dataShare.page,
-//                    target: dataShare.target,
-//                    organization: dataShare.organization
-//                }
-//
-//                service.getShiftMasterWorkInfo( datas ).done(( data ) => {
-//                    data.unshift( { shiftMasterName: nts.uk.resource.getText( "KSU001_98" ), shiftMasterCode: "", workTime1: "", workTime2: "", remark: "" } );
-//                    if ( data ) {
-//                        for ( let i = 0; i < data.length; i++ ) {
-//                            data[i].workTime1 = data[i].workTime1 + " " + data[i].workTime2;
-//                        }
-//                    }
-//                    self.listWorkType( _.sortBy( data, ['shiftMasterCode'] ) );
-//                } ).fail(( res: any ) => {
-//                    nts.uk.ui.dialog.alert( { messageId: res.messageId } );
-//                } );
-                dfd.resolve();
+                //「会社」の場合
+                if ( self.target() == 2 ) {
+                    service.getShiftPaletteByCompany().done(( data ) => {
+                        let shiftPaletData = [];
+                        let page: string;
+                        self.orgName( '' );
+                        _.sortBy( data, 'page' ).forEach( e => {
+                            if ( e.name != null ) {
+                                page = getText( 'KSU001_110' ) + e.page + getText( 'KSU001_161' );
+                                shiftPaletData.push( new Infor( page, page + e.name ) );
+                            } else {
+                                page = getText( 'KSU001_110' ) + e.page;
+                                shiftPaletData.push( new Infor( page, page ) );
+                            }
+                        } );
+                        self.itemList( shiftPaletData );
+                        dfd.resolve();
+                    } );
+                }
+                //職場　の場合
+                else if ( self.target() == 0 ) {
+                    service.getShiftPaletteByWP(self.targetID()).done(( data ) => {
+                        let shiftPaletData = [];
+                        let page: string;
+                        self.orgName( '' );
+                        _.sortBy( data, 'page' ).forEach( e => {
+                            if ( e.name != null ) {
+                                page = getText( 'KSU001_110' ) + e.page + getText( 'KSU001_161' );
+                                shiftPaletData.push( new Infor( page, page + e.name ) );
+                            } else {
+                                page = getText( 'KSU001_110' ) + e.page;
+                                shiftPaletData.push( new Infor( page, page ) );
+                            }
+                        } );
+                        self.itemList( shiftPaletData );
+                        dfd.resolve();
+                    } );
+                }
+                //職場グループ　の場合
+                else if ( self.target() == 1 ) {
+                    service.getShiftPaletteByWPG(self.targetID()).done(( data ) => {
+                        let shiftPaletData = [];
+                        let page: string;
+                        self.orgName( '' );
+                        _.sortBy( data, 'page' ).forEach( e => {
+                            if ( e.name != null ) {
+                                page = getText( 'KSU001_110' ) + e.page + getText( 'KSU001_161' );
+                                shiftPaletData.push( new Infor( page, page + e.name ) );
+                            } else {
+                                page = getText( 'KSU001_110' ) + e.page;
+                                shiftPaletData.push( new Infor( page, page ) );
+                            }
+                        } );
+                        self.itemList( shiftPaletData );
+                        dfd.resolve();
+                    } );
+                }
                 return dfd.promise();
             }
 
         }
-        interface IData {
-            code: string,
-            name: string
-        }
 
-        export class InforError {
-            code: KnockoutObservable<string>;
-            name: KnockoutObservable<string>;
-            constructor( param: IData ) {
+        export class Infor {
+            page: string;
+            name: string;
+            constructor( page: string, name: string ) {
                 let self = this;
-                self.code = ko.observable( param.code );
-                self.name = ko.observable( param.name );
+                self.page = page;
+                self.name = name;
             }
         }
     }

@@ -1,12 +1,23 @@
 module nts.uk.at.view.ksu001.jd.service {
-    var paths: any = {
-        
-        getShiftMasterWorkInfo: "ctx/at/shared/workrule/shiftmaster/getlistByWorkPlace"
+    var paths: any = { 
+        getShiftPaletteByCompany: "at/schedule/shift/management/getShiftPaletteByCompany",
+        getShiftPaletteByWP: "at/schedule/shift/management/shiftpalletorg/getShiftPaletteByWP/{0}",
+        getShiftPaletteByWPG: "at/schedule/shift/management/shiftpalletorg/getShiftPaletteByWPG/{0}"
     }
 
-    export function getShiftMasterWorkInfo(obj): JQueryPromise<any> {
+    export function getShiftPaletteByCompany(): JQueryPromise<any> {
      
-        return nts.uk.request.ajax("at", paths.getShiftMasterWorkInfo, obj);
+        return nts.uk.request.ajax(paths.getShiftPaletteByCompany);
+    }
+
+    export function getShiftPaletteByWP(workplaceId: string): JQueryPromise<any> {
+     
+        return nts.uk.request.ajax(paths.getShiftPaletteByWP, workplaceId);
+    }
+
+    export function getShiftPaletteByWPG(WPGId: string): JQueryPromise<any> {
+     
+        return nts.uk.request.ajax(paths.getShiftPaletteByWPG, WPGId);
     }
 
 }

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscmtManagementOfShiftTablePk  implements Serializable {
+public class KscdtManagementOfShiftTablePk  implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.app.find.shift.shijtpalletcom;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,5 +37,16 @@ public class ShiftPalletComFinder {
 																							.collect(Collectors.toList());
 		return listShiftPalletsComDto;									
 		
+	}
+	
+	/** 
+	 *<<Query>> 会社別シフトパレットの一覧を取得する
+	 */
+	public List<ShiftPalletComDto> getShiftPaletteByCompany() {
+		return shiftPalletsComRepository
+				.findShiftPallet(AppContexts.user().companyId())
+				.stream().map(i-> new ShiftPalletComDto(i.getPage(), 
+						i.getShiftPallet().getDisplayInfor().getShiftPalletName().v()))
+				.collect(Collectors.toList());
 	}
 }
