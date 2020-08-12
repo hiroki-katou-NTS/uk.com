@@ -49,13 +49,23 @@ export class KafS00CComponent extends Vue {
 
     public created() {
         const self = this;
-        let dropdownList = [{
+        self.dropdownList = [{
             appStandardReasonCD: '',
             displayOrder: 0,
             defaultValue: false,
             opReasonForFixedForm: self.$i18n('KAFS00_23'),   
         }];
-        self.dropdownList = _.concat(dropdownList, self.$input.reasonTypeItemLst);
+        _.forEach(self.$input.reasonTypeItemLst, (value) => {
+            self.dropdownList.push({
+                appStandardReasonCD: value.appStandardReasonCD,
+                displayOrder: value.displayOrder,
+                defaultValue: value.defaultValue,
+                opReasonForFixedForm: value.appStandardReasonCD + ' ' + value.opReasonForFixedForm,     
+            });   
+        });
+
+
+        // self.dropdownList = _.concat(dropdownList, self.$input.reasonTypeItemLst);
         if (self.$input.opAppStandardReasonCD) {
             self.$output.opAppStandardReasonCD = _.find(self.dropdownList, (o: ReasonTypeItemDto) => {
                                                     return o.appStandardReasonCD == self.$input.opAppStandardReasonCD;
