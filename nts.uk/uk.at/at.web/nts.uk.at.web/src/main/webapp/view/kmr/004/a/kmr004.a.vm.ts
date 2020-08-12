@@ -1,6 +1,3 @@
-/// <reference path="../../../../../../../../../../uk.com/com.web/nts.uk.com.web/src/main/webapp/view/kcp/share/tree.ts" />
-/// <reference path="../../../../../../../../../../uk.com/com.web/nts.uk.com.web/src/main/webapp/view/kcp/share/list.ts" />
-
 module nts.uk.at.view.kmr004.a {
     import getText = nts.uk.resource.getText;
     import tree = kcp.share.tree;
@@ -113,7 +110,6 @@ module nts.uk.at.view.kmr004.a {
 					width: "100px",
 					textalign: "left"
 				})),
-				required: ko.observable(true),
 				enable: ko.observable(true),
 				readonly: ko.observable(false)
 			};
@@ -127,7 +123,6 @@ module nts.uk.at.view.kmr004.a {
                     width: "100px",
                     textalign: "left"
                 })),
-                required: ko.observable(true),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
@@ -140,7 +135,7 @@ module nts.uk.at.view.kmr004.a {
             ]);
 
             self.totalRadioEnable = ko.observable(true);
-			self.totalRadioSelectedId = ko.observable(0);
+			self.totalRadioSelectedId = ko.observable(2); // Default selected: A8_4 注文済み
 			self.extractionConditionChecked = ko.observable(false);
             self.extractionConditionEnable = ko.observable(false);
             self.totalRadioSelectedId.subscribe((newValue)=>{
@@ -156,11 +151,11 @@ module nts.uk.at.view.kmr004.a {
 				new BoxModel(6, getText('KMR004_24'))
             ]);
 
-            self.conditionRadioSelected = ko.observable(0);
+            self.conditionRadioSelected = ko.observable(1); // Default selected: A10_3 全件
+            self.separatePageCheckboxEnable = ko.observable(true);
             self.conditionRadioEnable = ko.observable(true);
 			self.conditionListCcbEnable = ko.observable(false);
 			self.conditionRadioSelected.subscribe((newValue)=>{
-				console.log(newValue);
                 if (newValue == 1){
 					self.separatePageCheckboxEnable(true);
                 } else {
@@ -181,15 +176,6 @@ module nts.uk.at.view.kmr004.a {
                     self.conditionRadioSelected = ko.observable(0);
                 }
                 
-            });
-			
-            self.separatePageCheckboxEnable = ko.observable(false);
-            self.totalRadioSelectedId.subscribe((newValue)=>{
-                if (newValue == 4){
-                    self.separatePageCheckboxEnable(true);
-                } else {
-                    self.separatePageCheckboxEnable(false);
-                }
             });
 
 			self.conditionListCcb = ko.observableArray([
