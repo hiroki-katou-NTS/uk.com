@@ -11,12 +11,15 @@
 			<com:scriptfile set="IGNITE" />
 			
 			
-			
+			<com:stylefile path="/view/kaf_ref/002/m/kaf002.m.main.css" />
 			<com:stylefile path="/view/kaf_ref/002/c/kaf002.c.main.css" />
 			<com:scriptfile path="/view/kaf_ref/000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile path="/view/kaf_ref/002/m/kaf002.m.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/000/a/kaf000.a.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/002/c/kaf002.c.vm.js" />
-			<com:scriptfile path="/view/kaf_ref/002/m/kaf002.m.vm.js" />
+			
+			
+			
 			
 
 		</ui:define>
@@ -55,7 +58,7 @@
 					<!-- C6_1 -->
 					<div style="float: left" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_17')}</div>
 					<!-- C6_2 -->
-					<div data-bind="component: {name: 'kaf002-m'}" style="margin-left: 100px; width: 100%">
+					<div data-bind="component: {name: 'kaf002-m', params: {dataSourceOb: dataSourceOb, tabMs: tabMs, isVisibleComlumn: isVisibleComlumn}}" style="margin-left: 100px; width: 100%">
 						
 					</div>
 				</div>
