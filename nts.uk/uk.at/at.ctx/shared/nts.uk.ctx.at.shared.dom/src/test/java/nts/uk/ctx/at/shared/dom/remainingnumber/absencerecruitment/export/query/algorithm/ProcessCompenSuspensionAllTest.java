@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -13,9 +14,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.value.Finally;
@@ -30,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.Inter
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQueryTest;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.VacationDetails;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
@@ -49,6 +53,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 
 @RunWith(JMockit.class)
 public class ProcessCompenSuspensionAllTest {
@@ -72,6 +77,7 @@ public class ProcessCompenSuspensionAllTest {
 	@Test
 	public void test() {
 
+		val cacheCarrier = new CacheCarrier();
 		new Expectations() {
 			{
 
@@ -91,7 +97,7 @@ public class ProcessCompenSuspensionAllTest {
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
-				require.getClosureDataByEmployee(SID, (GeneralDate) any);
+				ClosureService.getClosureDataByEmployee(require, cacheCarrier, SID, (GeneralDate) any);
 				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
 				require.getFirstMonth(CID);
@@ -153,7 +159,8 @@ public class ProcessCompenSuspensionAllTest {
 		AbsRecMngInPeriodRefactParamInput inputParam = new AbsRecMngInPeriodRefactParamInput(CID, SID,
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)),
 				GeneralDate.ymd(2019, 11, 30), true, true, useAbsMng, interimMng, useRecMng,
-				Optional.of(compenLeaveAggrResult), Optional.empty(), Optional.empty());
+				Optional.of(compenLeaveAggrResult), Optional.empty(), Optional.empty(),
+				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 
 		List<AccumulationAbsenceDetail> actual = ProcessCompenSuspensionAll.process(require, inputParam);
 

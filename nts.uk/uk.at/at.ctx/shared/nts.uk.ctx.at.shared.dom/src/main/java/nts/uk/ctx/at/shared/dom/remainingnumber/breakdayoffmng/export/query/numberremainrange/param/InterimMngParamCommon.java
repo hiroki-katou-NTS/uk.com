@@ -33,7 +33,7 @@ public class InterimMngParamCommon {
 
 	/** 上書きフラグ: True: 上書き, False: 未上書き */
 	private boolean replaceChk;
-	
+
 	/** 上書き用の暫定残数管理データ */
 	/** 上書き用の暫定休出代休紐付け管理 */
 	private List<InterimRemain> interimMng;
@@ -46,4 +46,9 @@ public class InterimMngParamCommon {
 	 * 対象期間
 	 */
 	private Optional<DatePeriod> processDate;
+
+	/**
+	 * 追加用確定管理データ
+	 */
+	private FixedManagementDataMonth fixManaDataMonth;
 }

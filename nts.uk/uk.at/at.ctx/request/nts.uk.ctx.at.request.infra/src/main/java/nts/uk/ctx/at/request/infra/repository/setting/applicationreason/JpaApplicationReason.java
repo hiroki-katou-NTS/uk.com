@@ -38,6 +38,8 @@ public class JpaApplicationReason extends JpaRepository implements ApplicationRe
 	
 	private static final String DELETEREASON = "DELETE FROM KrqstAppReason c WHERE c.krqstAppReasonPK.companyId = :companyId "
 			+ "AND c.krqstAppReasonPK.appType = :appType AND c.krqstAppReasonPK.reasonID = :reasonID ";
+	
+	private static final String FINDBYLISTAPPTYPE = FINDBYCOMPANYID + " AND c.krqstAppReasonPK.appType IN :appTypes";
 
 	/**
 	 * get reason by companyid
@@ -155,6 +157,12 @@ public class JpaApplicationReason extends JpaRepository implements ApplicationRe
 		.setParameter("appType", appType)
 		.setParameter("reasonID", reasonID)
 		.executeUpdate();
+	}
+
+	@Override
+	public List<ApplicationReason> getReasonByAppType(String companyId, List<Integer> appTypes) {
+		return this.queryProxy().query(FINDBYLISTAPPTYPE, KrqstAppReason.class).setParameter("companyId", companyId)
+				.setParameter("appTypes", appTypes).getList(c -> toDomain(c));
 	}
 
 }
