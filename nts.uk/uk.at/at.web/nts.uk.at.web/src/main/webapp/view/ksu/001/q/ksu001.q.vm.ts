@@ -111,7 +111,7 @@ module nts.uk.at.view.ksu001.q {
 
 				self.daylist = self.getDaysArray(new Date(period.startDate), new Date(period.endDate));
 				self.arrayDate = self.daylist.map((v) => {
-					return moment(v).format("YYYY/MM/DD") + '(' + moment(v).format('dd') + ')';
+					return moment(v).format("YYYY/MM/DD") + '  (' + moment(v).format('dd') + ')';
 				});
 
 				self.numbereditor = {
@@ -147,7 +147,7 @@ module nts.uk.at.view.ksu001.q {
 							// self.listperiods.push(item);
 							self.listperiodsTemp.map((x) => {
 								if (x.date.slice(0, 10) == item.date) {
-									return x.value = item.value.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+									return x.value = item.value.toString();
 								}
 							})
 						});

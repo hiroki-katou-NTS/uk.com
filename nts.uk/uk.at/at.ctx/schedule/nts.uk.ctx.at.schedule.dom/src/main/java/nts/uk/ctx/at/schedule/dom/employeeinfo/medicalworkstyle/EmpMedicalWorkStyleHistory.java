@@ -7,9 +7,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.time.calendar.period.GeneralPeriod;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.history.HistoryItem;
 import nts.uk.shr.com.history.strategic.PersistentHistory;
 /**
  * 社員の医療勤務形態履歴
