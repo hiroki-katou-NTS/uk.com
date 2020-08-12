@@ -50,9 +50,9 @@ export class KdpS01BComponent extends Vue {
             if (data.empDatas) {
 
                 let items = _(data.empDatas).flatMap('listStampInfoDisp').value();
-                let item = _.head(_.orderBy(items, ['stampDatetime'], ['desc']));
+                let item = _.head(_.orderBy(items, ['stampStringDatetime'], ['desc']));
                 if (item) {
-                    vm.screenData.date = item.stampDatetime;
+                    vm.screenData.date =  item.stampStringDatetime;
                     vm.screenData.stampAtr = item.stampAtr;
                     if (item.stamp.length) {
                         let stamp = item.stamp[0];

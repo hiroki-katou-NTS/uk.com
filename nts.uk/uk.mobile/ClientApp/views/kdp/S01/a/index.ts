@@ -260,7 +260,7 @@ export class KdpS01AComponent extends Vue {
     public stampClick(button: model.ButtonSettingsDto) {
         let vm = this,
             command: model.IRegisterSmartPhoneStampCommand = {
-                stampDatetime: moment(vm.$dt.now).format('YYYY/MM/DD HH:MM:ss'),
+                stampDatetime: moment(vm.$dt.now).format('YYYY/MM/DD HH:mm:ss'),
                 stampButton: { pageNo: 1, buttonPositionNo: button.buttonPositionNo },
                 geoCoordinate: { latitude: null, longitude: null },
                 refActualResult: { cardNumberSupport: null, overtimeDeclaration: null, workLocationCD: null, workTimeCode: null }
@@ -302,7 +302,6 @@ export class KdpS01AComponent extends Vue {
                         vm.showError(res);
                     });
             }
-            console.log(command);
         });
     }
 

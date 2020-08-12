@@ -14,7 +14,7 @@
         </button>
       </div>
       <div class="col-12 pt-2 px-5 font-weight-bold">
-        <span id="time">{{ $dt.now | date("HH:MM") }}</span>
+        <span id="time">{{ $dt.now | date("HH:mm") }}</span>
       </div>
     </div>
     <div>
