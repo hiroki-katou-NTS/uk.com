@@ -40,7 +40,7 @@ module nts.uk.at.view.ksm003.a {
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
 
         dailyPatternValModel: KnockoutObservableArray<DailyPatternValModel> = ko.observableArray([]);
-        selectedSubCheck: KnockoutObservable<boolean> = ko.observable(false);
+
         selectedCheckAll: KnockoutObservable<boolean> = ko.observable(false);
 
         API = {
@@ -79,12 +79,27 @@ module nts.uk.at.view.ksm003.a {
                 vm.disableAddNewLine();
             });
             //enable remove button
-            vm.currentCodeList.subscribe(function (codeSelected: string) {
+            vm.currentCodeList.subscribe((codeSelected: string) => {
                 vm.hasWorkingCycleItems(codeSelected.length > 0);
             });
 
-            vm.selectedCheckAll.subscribe(function(value: string){
-                //vm.selectedSubCheck(value);
+            vm.selectedCheckAll.subscribe((value: string) => {
+
+                let dailyPatternItems : Array<DailyPatternValModel> = [];
+
+                vm.dailyPatternValModel() && vm.dailyPatternValModel().map( ( item, i) => {
+                    dailyPatternItems.push(
+                        new DailyPatternValModel(
+                            item.dispOrder, item.workTypeInfo(),
+                            item.workingInfo(), item.days(),value
+                        )
+                    );
+                });
+
+                vm.hasWorkingCycleItems(value);
+
+                vm.dailyPatternValModel([]);
+                vm.dailyPatternValModel(dailyPatternItems);
             });
 
             var dailyPatternVals: Array<DailyPatternValModel> = [];
@@ -113,6 +128,10 @@ module nts.uk.at.view.ksm003.a {
                     }
                 }
             );
+        }
+        public  enableDisableRemove( flag: boolean) {
+            let self = this;
+            self.hasWorkingCycleItems(flag);
         }
 
         public switchNewMode(): void {
@@ -834,12 +853,15 @@ module nts.uk.at.view.ksm003.a {
         timeCode: KnockoutObservable<string>;
         days: KnockoutObservable<number>;
         isSetting: KnockoutComputed<boolean>;
+
         isChecked: KnockoutObservable<boolean>;
 
         constructor(dispOrder: number,
                     typeCode: string,
                     timeCode: string,
-                    days: number) {
+                    days: number,
+                    isChecked: boolean = false
+                    ) {
             this.dispOrder = dispOrder;
             this.typeCode = ko.observable(typeCode);
             this.timeCode = ko.observable(timeCode);
@@ -852,7 +874,12 @@ module nts.uk.at.view.ksm003.a {
                 }
                 return false;
             });
-            this.isChecked = ko.observable(false);
+            this.isChecked = ko.observable(isChecked);
+
+            this.isChecked.subscribe((value) => {
+                console.log(this);
+                __viewContext['viewModel'].enableDisableRemove(true);
+            });
         }
 
         public resetModel(displayOrder: number) {
