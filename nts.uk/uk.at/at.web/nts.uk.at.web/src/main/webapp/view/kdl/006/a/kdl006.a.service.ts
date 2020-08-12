@@ -5,8 +5,8 @@ module nts.uk.at.view.kdl006.a.service {
         save : "screen/at/kdl006/save"
     }
         
-    export function startPage(param: any): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.startPage, param);
+    export function startPage(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.startPage);
     }
     
        export function getWorkplace(param: any): JQueryPromise<any> {
