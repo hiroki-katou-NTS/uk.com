@@ -634,7 +634,7 @@ public class ScheduleCreatorExecutionTransaction {
 						new WorkInfoOfDailyAttendance(new WorkInformation("", ""), 
 								new WorkInformation("", ""), 
 								CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use, 
-								nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek.valueOf(dateInPeriod.dayOfWeek()), new ArrayList<>()), 
+								nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek.valueOf(dateInPeriod.dayOfWeek() - 1), new ArrayList<>()), 
 						null, 
 						new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty())
 				, workingConditionItem,
