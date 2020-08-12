@@ -14,6 +14,7 @@ import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformationReposito
  */
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class DeletePersonInfoHR {
 
 	@Inject

@@ -1,5 +1,9 @@
 package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo;
 
+import java.util.List;
+
+import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.get.GetPersonInfoHRInput;
+
 /**
  * 
  * @author chungnt
@@ -16,4 +20,7 @@ public interface PersonalInformationRepository {
 	
 	// 個人情報を削除する
 	void delete(String hisId);
+	
+	// 個人情報を取得する
+	List<PersonalInformation> getPersonInfoHR (GetPersonInfoHRInput input);
 }
