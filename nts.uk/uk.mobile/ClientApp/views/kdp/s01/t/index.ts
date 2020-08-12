@@ -63,12 +63,8 @@ export class KdpS01TComponent extends Vue {
 
     }
 
-    public login() {
-
-
-    }
-
     public mounted() {
+        this.pgName = 'KDPS01_23';
     }
 }
 

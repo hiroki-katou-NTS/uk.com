@@ -50,6 +50,10 @@ export class KdpS01CComponent extends Vue {
         }
     };
 
+    public mounted() {
+        this.pgName = 'KDPS01_5';
+    }
+
 
     public created() {
         let vm = this;
