@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformation;
@@ -27,6 +28,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "PPEDT_DATA")
+@Getter
 public class PpedtData extends ContractUkJpaEntity implements Serializable {
 
 	@Id

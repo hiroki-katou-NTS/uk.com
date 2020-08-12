@@ -25,7 +25,7 @@ public class GetPersonInfoHR {
 	
 	public List<GetPersonInfoHROutput> getPersonInfo (GetPersonInfoHRInput input) {
 		
-		List<PersonalInformation> domains = this.personInfoRepo.getPersonInfoHR(input);
+		List<PersonalInformation> domains = this.personInfoRepo.get(input);
 		
 		return domains.stream().map(m -> {
 			GetPersonInfoHROutput personInfoHROutput = mapping(m);

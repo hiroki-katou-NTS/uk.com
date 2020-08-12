@@ -13,7 +13,7 @@ import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformationReposito
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.get.GetPersonInfoHRInput;
 import nts.uk.ctx.hr.shared.infra.entity.personalinformation.PpedtData;
 
-/**	
+/**
  * 
  * @author chungnt
  *
@@ -49,20 +49,50 @@ public class JpaPersonalInformationRepository extends JpaRepository implements P
 
 	// Get
 	@Override
-	public List<PersonalInformation> getPersonInfoHR(GetPersonInfoHRInput input) {
+	public List<PersonalInformation> get(GetPersonInfoHRInput input) {
 		String GET_PERSONALINFO = "SELECT a FROM PpedtData a WHERE a.cId = :cId AND a.workId = :workId";
 		List<PpedtData> personalInformations = new ArrayList<>();
-		
+
 		if (input.getColumnName().isEmpty() && !input.getTypeSort().isEmpty()) {
+
+			if (input.getTypeSort().toUpperCase().equals("ASC") || input.getTypeSort().toUpperCase().equals("DESC")) {
+				GET_PERSONALINFO = GET_PERSONALINFO.concat(" ORDER BY a." + input.getColumnName() + " " + input.getTypeSort());
+			}
+		}
 		
-//			if (input.getTypeSort().toUpperCase().equals("ASC") || input.getTypeSort().toUpperCase().equals("DESC")) {
-//				GET_PERSONALINFO = GET_PERSONALINFO.concat(" ORDER BY ")
-//			}
+		personalInformations = this.queryProxy().query(GET_PERSONALINFO, PpedtData.class)
+				.setParameter("cId", input.getCompanyId()).setParameter("workId", input.getBusinessId()).getList();
+		
+		if (!input.getEmployeeId().isEmpty()) {
+			List<PpedtData> ppdetData = new ArrayList<>();
 			
-		} else {
-			personalInformations = this.queryProxy().query(GET_PERSONALINFO, PpedtData.class)
-					.setParameter("cId", input.getCompanyId())
-					.setParameter("workId", input.getBusinessId()).getList();
+			for (int i = 0 ; i < input.getEmployeeId().size() ; i++) {
+				
+				for (int j = 0 ; j < personalInformations.size() ; j++) {
+					
+					if (input.getEmployeeId().get(i).equals(personalInformations.get(j).getSid())) {
+						ppdetData.add(personalInformations.get(j));
+					}
+				}
+			}
+			
+			personalInformations = ppdetData;
+		}
+		
+		if (!input.getPersonalId().isEmpty()) {
+			List<PpedtData> ppdetData = new ArrayList<>();
+			
+			for (int i = 0 ; i < input.getPersonalId().size() ; i++) {
+				
+				for (int j = 0 ; j < personalInformations.size() ; j++) {
+					
+					if (input.getPersonalId().get(i).equals(personalInformations.get(j).getPersonName())) {
+						ppdetData.add(personalInformations.get(j));
+					}
+				}
+			}
+			
+			personalInformations = ppdetData;
 		}
 
 		return personalInformations.stream().map(m -> m.toDomain(m)).collect(Collectors.toList());

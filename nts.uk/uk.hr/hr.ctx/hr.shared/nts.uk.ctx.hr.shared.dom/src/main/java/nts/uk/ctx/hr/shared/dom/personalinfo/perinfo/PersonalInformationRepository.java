@@ -22,5 +22,5 @@ public interface PersonalInformationRepository {
 	void delete(String hisId);
 	
 	// 個人情報を取得する
-	List<PersonalInformation> getPersonInfoHR (GetPersonInfoHRInput input);
+	List<PersonalInformation> get(GetPersonInfoHRInput input);
 }
