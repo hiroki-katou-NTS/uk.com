@@ -14,7 +14,7 @@ import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformation;
  *
  */
 
-public class GetdDispatchedInformation {
+public class GetDispatchedInformation {
 
 	/**
 	 * 
@@ -36,7 +36,7 @@ public class GetdDispatchedInformation {
 	 * @param employeeIds
 	 * @return
 	 */
-	public List<TemporaryDispatchInformation> get(Require require, String contractCode, String companyId,
+	public static List<TemporaryDispatchInformation> get(Require require, String contractCode, String companyId,
 			GeneralDate baseDate, boolean employeeCode, boolean employeeName, boolean expirationDate,
 			boolean nameSelectedMaster, boolean classification1, boolean classification2, boolean classification3,
 			boolean nameCompany, boolean address, boolean addressKana, boolean include, List<String> employeeIds) {

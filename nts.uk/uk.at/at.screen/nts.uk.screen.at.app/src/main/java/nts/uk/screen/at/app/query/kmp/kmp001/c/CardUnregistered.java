@@ -111,5 +111,4 @@ public class CardUnregistered {
 			return dakokuRepo.getStempRcNotResgistNumberStamp(AppContexts.user().contractCode(), period);
 		}
 	}
-
 }
