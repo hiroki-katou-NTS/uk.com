@@ -10,28 +10,44 @@ import nts.uk.ctx.at.record.dom.reservation.bento.IBentoMenuHistoryRepository;
 import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenuHist;
 import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenuHistPK;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 import javax.ejb.Stateless;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Stateless
 public class JpaBentoMenuHistotyRepository extends JpaRepository implements IBentoMenuHistoryRepository {
     private static final String QUERY_GET_BYCID = "SELECT  hist FROM  KrcmtBentoMenuHist hist "
-            + "WHERE hist.pk.companyID = :cid ";
-    private static final  String QUERY_GET_BYCID_AND_HISTID =  "DELETE  hist FROM  KrcmtBentoMenuHist hist "
-            + "WHERE hist.pk.companyID = :cid AND hist.pk.histID = histID";
+            + "WHERE hist.pk.companyID = :cid ORDER BY hist.startDate ASC ";
+    private static final String REMOVE_BY_CID = "delete   FROM  KrcmtBentoMenuHist hist" +
+            " WHERE hist.pk.companyID = :cid ";
+    private static final String REMOVE_BY_CID_HISTID;
+
+    static {
+        StringBuilder builderString = new StringBuilder();
+        builderString.append("DELETE  ");
+        builderString.append("FROM KrcmtBentoMenuHist a ");
+        builderString.append("WHERE a.pk.companyID = :cid ");
+        builderString.append("AND a.pk.histID = :histId ");
+        REMOVE_BY_CID_HISTID = builderString.toString();
+    }
 
     @Override
 
-    public Optional<BentoMenuHistory> findByCompanyId(String contractCD) {
-        val cid = AppContexts.user().companyId();
-        List<BentoMenuHistory> listEntity = this.queryProxy().query(QUERY_GET_BYCID, BentoMenuHistory.class)
+    public Optional<BentoMenuHistory> findByCompanyId(String cid) {
+        List<KrcmtBentoMenuHist> listEntity = this.queryProxy().query(QUERY_GET_BYCID, KrcmtBentoMenuHist.class)
                 .setParameter("cid", cid)
                 .getList();
         if (!listEntity.isEmpty()) {
-            return Optional.of((BentoMenuHistory) listEntity);
+            List<DateHistoryItem> historyItems = new ArrayList<>();
+            listEntity.forEach((item) -> {
+                historyItems.add(new DateHistoryItem(item.pk.histID, new DatePeriod(item.startDate,item.endDate)));
+            });
+            BentoMenuHistory result = new BentoMenuHistory(cid,historyItems);
+            return Optional.of( result);
         }
         return Optional.empty();
     }
@@ -44,20 +60,26 @@ public class JpaBentoMenuHistotyRepository extends JpaRepository implements IBen
 
     @Override
     public void update(BentoMenuHistory item) {
-
-        this.commandProxy().updateAll(KrcmtBentoMenuHist.toEntity(item));
+        List<KrcmtBentoMenuHist> updateList = new ArrayList<>();
+        item.getHistoryItems().stream().forEach(i->{
+            val old = this.queryProxy().find(new KrcmtBentoMenuHistPK(item.companyId,i.identifier()),KrcmtBentoMenuHist.class);
+            if (old.isPresent()){
+               updateList.add(old.get().update(i));
+            }
+        });
+        this.commandProxy().updateAll(updateList);
     }
 
     @Override
     public void delete(String companyId, String historyId) {
+         val entity = this.queryProxy().find(new KrcmtBentoMenuHistPK(companyId,historyId),KrcmtBentoMenuHist.class);
+         if(entity.isPresent()){
+             if(entity.get().endDate!= GeneralDate.max()){
+                 throw new BusinessException("invalid BentoMenuHistory!");
+             }
+             this.commandProxy().remove(entity);
+         }
 
-      val item =   this.queryProxy().find(new KrcmtBentoMenuHistPK(companyId,historyId),KrcmtBentoMenuHist.class);
-        if(!item.isPresent()){
-            throw new BusinessException("invalid BentoMenuHistory!");
-
-        }else {
-            this.commandProxy().remove(item);
-        }
 
     }
 }

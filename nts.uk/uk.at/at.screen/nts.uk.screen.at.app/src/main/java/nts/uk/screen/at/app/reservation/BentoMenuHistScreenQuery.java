@@ -8,28 +8,44 @@ import nts.uk.shr.com.history.DateHistoryItem;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Stateless
 public class BentoMenuHistScreenQuery {
 
     @Inject
-    IBentoMenuHistoryRepository bentoMenuHistoryRepository;
+    private IBentoMenuHistoryRepository bentoMenuHistoryRepository;
 
-    public Optional<BentoMenuHistory> getListBentoMenuHist(){
+    public BentoMenuHistDto getListBentoMenuHist() {
+        val rs = new BentoMenuHistDto();
         val cid = AppContexts.user().companyId();
-        val rs = bentoMenuHistoryRepository.findByCompanyId(cid);
-        if(!rs.isPresent()){
-            return Optional.empty();
+        val bento = bentoMenuHistoryRepository.findByCompanyId(cid);
+        val dateItem = new ArrayList<DateHistoryItemDto>();
+        if (bento.isPresent()) {
+
+            bento.get().getHistoryItems().stream().forEach(e ->
+                    dateItem.add(new DateHistoryItemDto(e.identifier(), e.start().toString(), e.end().toString()))
+            );
+            rs.setCompanyId(cid);
+            rs.setHistoryItems(dateItem);
         }
         return rs;
+
     }
-    public Optional<DateHistoryItem> getBentoMenuHist(String hisId){
+
+    public DateHistoryItemDto getBentoMenuHist(String hisId) {
         val cid = AppContexts.user().companyId();
-        val listItem = bentoMenuHistoryRepository.findByCompanyId(cid);
-        val rs = listItem.get().items().stream().filter(e->e.identifier().equals(hisId)).findFirst();
-        if(!rs.isPresent()){
-            return Optional.empty();
+        val bento = bentoMenuHistoryRepository.findByCompanyId(cid);
+        val rs = new DateHistoryItemDto();
+        if (bento.isPresent()) {
+            val item = bento.get().items().stream().filter(e -> e.identifier().equals(hisId)).findFirst();
+
+            if (item.isPresent()) {
+                rs.historyId = item.get().identifier();
+                rs.endDate = item.get().end().toString();
+                rs.startDate = item.get().start().toString();
+            }
         }
         return rs;
     }

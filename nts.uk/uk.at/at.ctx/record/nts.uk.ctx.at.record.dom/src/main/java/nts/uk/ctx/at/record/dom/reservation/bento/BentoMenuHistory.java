@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.reservation.bento;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -10,7 +11,10 @@ import nts.uk.shr.com.history.strategic.PersistentHistory;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+
+/**
+ * 弁当メニュー履歴
+ */
 
 /**
  * 弁当メニュー履歴
