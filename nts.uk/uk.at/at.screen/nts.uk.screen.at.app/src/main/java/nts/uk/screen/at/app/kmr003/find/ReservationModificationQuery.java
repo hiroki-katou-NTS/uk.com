@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  * @author Le Huu Dat
  */
 @Stateless
-public class Kmr003Query {
+public class ReservationModificationQuery {
 
     @Inject
     private BentoReservationSettingRepository bentoReservationSettingRepo;
@@ -146,47 +146,47 @@ public class Kmr003Query {
         // 7: 弁当予約が強制修正できる状態を取得する
         List<EmployeeInfoMonthFinishDto> empInfoMonthFinishs = new ArrayList<>();
         List<ReservationInfoForEmployeeDto> reservationInfoForEmps = new ArrayList<>();
-        for (String id : empIds){
-            Optional<PersonEmpBasicInfoDto> empBasicInfoOpt = empBasicInfos.stream().filter(x -> x.getEmployeeId() == id).findFirst();
-            if (!empBasicInfoOpt.isPresent()) continue;
-            PersonEmpBasicInfoDto empBasicInfo = empBasicInfoOpt.get();
-
-            Optional<StampCard> stampCardOpt = stampCards.stream().filter(x -> x.getEmployeeId() == id).findFirst();
+        for (BentoReservation bentoReservation : bentoReservations){
+            Optional<StampCard> stampCardOpt = stampCards.stream()
+                    .filter(x -> x.getStampNumber().v().equals(bentoReservation.getRegisterInfor().getReservationCardNo()))
+                    .findFirst();
             if (!stampCardOpt.isPresent()) continue;
             StampCard stampCard = stampCardOpt.get();
 
-            Optional<BentoReservation> bentoReservationOpt = bentoReservations.stream()
-                    .filter(x -> x.getRegisterInfor().getReservationCardNo().equals(stampCard.getStampNumber().v())).findFirst();
+            Optional<PersonEmpBasicInfoDto> empBasicInfoOpt = empBasicInfos.stream()
+                    .filter(x -> x.getEmployeeId().equals(stampCard.getEmployeeId()))
+                    .findFirst();
+            if (!empBasicInfoOpt.isPresent()) continue;
+            PersonEmpBasicInfoDto empBasicInfo = empBasicInfoOpt.get();
 
             // 6.1: 社員の予約情報を作る
             ReservationInfoForEmployeeDto reservationInfoForEmp = new ReservationInfoForEmployeeDto();
             reservationInfoForEmp.setReservationCardNo(stampCard.getStampNumber().v());
-            reservationInfoForEmp.setReservationMemberId(id);
+            reservationInfoForEmp.setReservationMemberId(empBasicInfo.getEmployeeId());
             reservationInfoForEmp.setReservationMemberCode(empBasicInfo.getEmployeeCode());
             reservationInfoForEmp.setReservationMemberName(empBasicInfo.getBusinessName());
-            if (bentoReservationOpt.isPresent()){
-                BentoReservation bentoReservation = bentoReservationOpt.get();
-                reservationInfoForEmp.setReservationDate(bentoReservation.getReservationDate().getDate());
-                // reservationInfoForEmp.setReservationTime(); //TODO
-                reservationInfoForEmp.setOrdered(bentoReservation.isOrdered());
-                reservationInfoForEmp.setClosingTimeFrame(bentoReservation.getReservationDate().getClosingTimeFrame().value);
-                List<ReservationDetailDto> reservationDetails = bentoReservation.getBentoReservationDetails()
-                        .stream().map(x -> new ReservationDetailDto(x.getBentoCount().v(), x.getFrameNo()))
-                        .collect(Collectors.toList());
-                reservationInfoForEmp.setReservationDetails(reservationDetails);
-            }
+            reservationInfoForEmp.setReservationDate(bentoReservation.getReservationDate().getDate());
+            // reservationInfoForEmp.setReservationTime(); //TODO
+            reservationInfoForEmp.setOrdered(bentoReservation.isOrdered());
+            reservationInfoForEmp.setClosingTimeFrame(bentoReservation.getReservationDate().getClosingTimeFrame().value);
+            List<ReservationDetailDto> reservationDetails = bentoReservation.getBentoReservationDetails()
+                    .stream().map(x -> new ReservationDetailDto(x.getBentoCount().v(), x.getFrameNo()))
+                    .collect(Collectors.toList());
+            reservationInfoForEmp.setReservationDetails(reservationDetails);
+
             reservationInfoForEmps.add(reservationInfoForEmp);
+        }
 
-            boolean canReservation = bentoReserveCommonService.canReservation(id, reservationDate.getDate());
-            if (!canReservation){
-
+        for (PersonEmpBasicInfoDto empBasicInfo : empBasicInfos){
+            boolean canModify = bentoReserveCommonService.canModifyReservation(empBasicInfo.getEmployeeId(),
+                    reservationDate.getDate());
+            if (!canModify){
                 // 6.2: 月締め処理が済んでいる社員情報を作る
                 if (searchCondition == BentoReservationSearchConditionDto.NEW_ORDER){
                     empInfoMonthFinishs.add(new EmployeeInfoMonthFinishDto(empBasicInfo.getEmployeeCode(),
                             empBasicInfo.getBusinessName()));
                 }
-
-                // 6.3 生活値を更新
+                // 6.3 生活値を更新 //TODO
             }
         }
         result.setEmployeeInfoMonthFinishs(empInfoMonthFinishs);

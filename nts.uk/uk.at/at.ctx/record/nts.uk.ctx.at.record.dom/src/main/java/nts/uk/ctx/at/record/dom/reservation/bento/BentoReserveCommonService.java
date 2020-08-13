@@ -45,12 +45,12 @@ public class BentoReserveCommonService {
      * @param date 予約日
      * @return True: 予約でき. False: 予約できない
      */
-    public boolean canReservation(String employeeId, GeneralDate date){
+    public boolean canModifyReservation(String employeeId, GeneralDate date){
         // 社員に対応する締め開始日を取得する
         Optional<GeneralDate> closureStartOpt = getClosureStartForEmployee.algorithm(employeeId);
         if (closureStartOpt.isPresent()){
             // 修正できる状態
-            return date.before(closureStartOpt.get());
+            return closureStartOpt.get().before(date);
         }
         return false;
     }
