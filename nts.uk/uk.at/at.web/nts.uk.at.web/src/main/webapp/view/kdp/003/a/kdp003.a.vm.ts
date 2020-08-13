@@ -96,7 +96,7 @@ module nts.uk.at.kdp003.a {
 
 			$(window).trigger('resize');
 
-			vm.$ajax('at', API.FINGER_STAMP_SETTING)
+			return vm.$ajax('at', API.FINGER_STAMP_SETTING)
 				.then((data: FingerStampSetting) => {
 					if (data) {
 						vm.fingerStampSetting(data);
@@ -377,7 +377,7 @@ module nts.uk.at.kdp003.a {
 				.then((data: false | StorageData) => {
 					// if login and storage data success
 					if (data) {
-						return vm.loadData(data);
+						return vm.mounted();
 					}
 				})
 				// show message from login data (return by f dialog)
@@ -404,7 +404,7 @@ module nts.uk.at.kdp003.a {
 					return vm.$window.modal('at', DIALOG.F, {
 						mode: 'employee',
 						companyId: data.CID,
-						employee: null
+						employee: employee ? { id: employee.employeeId, code: employee.employeeCode, name: employee.employeeName } : null
 					});
 				})
 				.then((data: f.TimeStampLoginData) => {
