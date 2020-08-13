@@ -26,4 +26,6 @@ public interface BentoMenuRepository {
 
 	public void update(BentoMenu bentoMenu);
 
+	public void delete(String companyId, String historyId);
+
 }

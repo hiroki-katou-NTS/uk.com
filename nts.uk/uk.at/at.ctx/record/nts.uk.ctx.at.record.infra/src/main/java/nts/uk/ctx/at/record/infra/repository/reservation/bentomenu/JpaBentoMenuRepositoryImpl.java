@@ -12,9 +12,11 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import lombok.val;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
 import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenu;
+import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenuPK;
 import org.apache.logging.log4j.util.Strings;
 
 import lombok.AllArgsConstructor;
@@ -49,7 +51,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 
 	private static final String FIND_BENTO_MENU_BY_HISTID;
 
-	private static final String FIND_BENTO_MENU_BY_EndDate;
+	private static final String FIND_BENTO_MENU_BY_ENDATE;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -78,7 +80,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		builderString = new StringBuilder();
 		builderString.append(SELECT);
 		builderString.append(" WHERE a.CID = 'companyID' AND b.END_YMD = 'date' ");
-		FIND_BENTO_MENU_BY_EndDate = builderString.toString();
+		FIND_BENTO_MENU_BY_ENDATE = builderString.toString();
 	}
 	
 	@AllArgsConstructor
@@ -251,7 +253,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 
 	@Override
 	public BentoMenu getBentoMenuByEndDate(String companyID, GeneralDate date) {
-		String query = FIND_BENTO_MENU_BY_EndDate;
+		String query = FIND_BENTO_MENU_BY_ENDATE;
 		query = query.replaceFirst("companyID", companyID);
 		query = query.replaceFirst("date", date.toString());
 		return getBentoMenu(query);
@@ -278,6 +280,11 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 	@Override
 	public void update(BentoMenu bentoMenu) {
 		commandProxy().update(KrcmtBentoMenu.fromDomain(bentoMenu));
+	}
+
+	@Override
+	public void delete(String companyId, String historyId) {
+		this.commandProxy().remove(KrcmtBentoMenu.class, new KrcmtBentoMenuPK(companyId, historyId));
 	}
 
 }

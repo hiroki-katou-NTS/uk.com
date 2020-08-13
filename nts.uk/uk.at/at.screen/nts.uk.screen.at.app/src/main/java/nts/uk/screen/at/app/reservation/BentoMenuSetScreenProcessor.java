@@ -24,4 +24,10 @@ public class BentoMenuSetScreenProcessor {
 
         return BentoMenuJoinBentoSettingDto.SetData(bentoMenuDto,reservationSettingDto);
     }
+
+    public BentoMenuDto getBentoMenuByHist() {
+        String companyID = AppContexts.user().companyId();
+        GeneralDate generalDate = GeneralDate.max();
+        return bentoMenuScreenRepository.findDataBentoMenu(companyID,generalDate);
+    }
 }

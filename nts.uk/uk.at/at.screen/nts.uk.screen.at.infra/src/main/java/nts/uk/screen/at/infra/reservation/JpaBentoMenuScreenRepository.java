@@ -15,6 +15,9 @@ public class JpaBentoMenuScreenRepository extends JpaRepository implements Bento
 
     private static final String FIND_BENTO_MENU_DATE;
 
+    private static final String FIND_BENTO_MENU_BY_EndDate;
+
+
     static {
         StringBuilder builderString = new StringBuilder();
         builderString.append(" SELECT NEW " + BentoMenuDto.class.getName());
@@ -27,7 +30,7 @@ public class JpaBentoMenuScreenRepository extends JpaRepository implements Bento
 
         builderString = new StringBuilder();
         builderString.append(SELECT);
-        builderString.append(" WHERE b.pk.companyID = :companyId AND b.endDate = :date ");
+        builderString.append(" WHERE b.pk.companyID = :companyID AND b.endDate = :date ");
         FIND_BENTO_MENU_DATE = builderString.toString();
 
     }
@@ -35,6 +38,6 @@ public class JpaBentoMenuScreenRepository extends JpaRepository implements Bento
     @Override
     public BentoMenuDto findDataBentoMenu(String companyId, GeneralDate date) {
         return this.queryProxy().query(FIND_BENTO_MENU_DATE, BentoMenuDto.class)
-                .setParameter("companyId", companyId).setParameter("date", date).getSingleOrNull();
+                .setParameter("companyID", companyId).setParameter("date", date).getSingleOrNull();
     }
 }
