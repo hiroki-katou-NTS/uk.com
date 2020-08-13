@@ -52,6 +52,7 @@ module nts.uk.at.view.ksm003.a {
             vm.selectedCode.subscribe(function (codeChanged: string) {
 
                 vm.dayIsRequired(true);
+                vm.selectedCheckAll(false);
 
                 if (codeChanged) {
                     vm.getPatternValByPatternCd(codeChanged);
