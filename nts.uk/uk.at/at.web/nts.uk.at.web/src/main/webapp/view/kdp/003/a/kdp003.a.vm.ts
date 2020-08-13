@@ -136,7 +136,7 @@ module nts.uk.at.kdp003.a {
 					// <<ScreenQuery>> 打刻管理者でログインする
 					return vm.$ajax('at', API.COMPANIES)
 						.then((data: f.CompanyItem[]) => {
-							if (_.every(data, d => d.selectUseOfName === false)) {
+							if (!data.length || _.every(data, d => d.selectUseOfName === false)) {
 								// note: ログイン失敗(打刻会社一覧が取得できない場合)
 								vm.setMessage({ messageId: 'Msg_1527' });
 
@@ -397,10 +397,10 @@ module nts.uk.at.kdp003.a {
 							isAdminMode: true,
 							runtimeEnvironmentCreate: true
 						};
-						
+
 						// login again (wtf?????)
 						return vm.$ajax('at', API.LOGIN_ADMIN, loginParams)
-								.then(() => vm.loadData(data)) as JQueryPromise<any>;
+							.then(() => vm.loadData(data)) as JQueryPromise<any>;
 					}
 				})
 				// show message from login data (return by f dialog)
