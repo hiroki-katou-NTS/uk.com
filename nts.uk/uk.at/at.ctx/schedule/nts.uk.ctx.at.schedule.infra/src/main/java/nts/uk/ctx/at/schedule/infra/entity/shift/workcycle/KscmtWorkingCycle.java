@@ -65,4 +65,9 @@ public class KscmtWorkingCycle extends UkJpaEntity implements Serializable {
                 domain.getName().v()
         );
     }
+
+    public KscmtWorkingCycle updateEntity(WorkCycle domain) {
+        this.workCycleName = domain.getName().v();
+        return this;
+    }
 }

@@ -48,11 +48,10 @@ public class JpaWorkCycleRepository extends JpaRepository implements WorkCycleRe
      */
     @Override
     public void update(WorkCycle item) {
-        this.commandProxy().update(item);
+        val oldItem = this.getEntityManager().find(KscmtWorkingCycle.class,new KscmtWorkingCyclePK(item.getCid(),item.getCode().v()) );
+        this.commandProxy().update(oldItem.updateEntity(item));
         // Delete detail
-        this.queryProxy().query(DELETE_ALL_INFO_BY_CODE, KscmtWorkingCycleDtl.class)
-                .setParameter("cid", item.getCid())
-                .setParameter("code", item.getCode());
+        deleteDetail(item.getCid(),item.getCode().v());
         // Update detail
         List<KscmtWorkingCycleDtl> infos = KscmtWorkingCycleDtl.toEntity(item);
         infos.stream().forEach(i -> {
@@ -60,6 +59,12 @@ public class JpaWorkCycleRepository extends JpaRepository implements WorkCycleRe
         });
     }
 
+    private void deleteDetail(String cid, String code) {
+        this.getEntityManager().createQuery(DELETE_ALL_INFO_BY_CODE, KscmtWorkingCycleDtl.class)
+                .setParameter("cid", cid)
+                .setParameter("code", code).executeUpdate();
+        this.getEntityManager().flush();
+    }
     /**
      * [3] get
      * @param cid

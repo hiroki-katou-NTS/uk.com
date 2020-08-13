@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleInfo;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -21,6 +22,10 @@ public class KscmtWorkingCycleDtl extends UkJpaEntity implements Serializable {
 
     @EmbeddedId
     public KscmtWorkingCycleDtlPK kscmtWorkingCycleDtlPK;
+
+    @Basic(optional = false)
+    @Column(name = "CONTRACT_CD")
+    public String contractCD;
 
     @Basic(optional = false)
     @Column(name = "WKTP_CD")
@@ -42,8 +47,9 @@ public class KscmtWorkingCycleDtl extends UkJpaEntity implements Serializable {
     public static List<KscmtWorkingCycleDtl> toEntity(WorkCycle domain) {
         List<KscmtWorkingCycleDtl> result = domain.getInfos().stream().map(i -> new KscmtWorkingCycleDtl(
                 new KscmtWorkingCycleDtlPK(domain.getCid(), domain.getCode().v(), i.getDispOrder().v()),
+                AppContexts.user().contractCode(),
                 i.getWorkInformation().getWorkTypeCode().v(),
-                i.getWorkInformation().getWorkTimeCode().v(),
+                i.getWorkInformation().getWorkTimeCode() != null? i.getWorkInformation().getWorkTimeCode().v():null,
                 i.getDays().v()
         )).collect(Collectors.toList());
         return result;

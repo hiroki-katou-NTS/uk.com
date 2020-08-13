@@ -44,8 +44,32 @@
 #right-content table.ui-iggrid-headertable thead td:last-child {
 	width: 0;
 }
+#right-content table td .nts-editor-wrapped {
+	width: auto !important;
+}
+#right-content .nts-fixed-table .scroll-header {
+    height: 30px !important;
+}
+
 #nts-input-name {
 	width: 0px !important;
+}
+#right-content .nts-fixed-header-wrapper {
+    display: flex;
+    align-items: center;
+}
+#right-content .nts-fixed-header-wrapper .fixed-table-list {
+    float: left;
+}
+#right-content .nts-fixed-header-wrapper .up-down-button {
+    float: left;
+    width: 30px;
+    display: flex;
+    flex-wrap: wrap;
+	padding-left: 20px;
+}
+#right-content .nts-fixed-header-wrapper .up-down-button button {
+	margin: 5px 0;
 }
 
 .row {
