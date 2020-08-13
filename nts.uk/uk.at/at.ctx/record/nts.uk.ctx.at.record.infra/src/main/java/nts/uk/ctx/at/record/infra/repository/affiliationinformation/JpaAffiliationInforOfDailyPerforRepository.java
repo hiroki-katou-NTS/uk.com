@@ -200,7 +200,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 	private List<AffiliationInforOfDailyPerfor> internalQuery(DatePeriod baseDate, List<String> empIds) {
 //		String subEmp = NtsStatement.In.createParamsString(empIds);
 		List<AffiliationInforOfDailyPerfor> result = new ArrayList<>();
-		String sql = "select EMP_CODE, SID, JOB_ID, WKP_ID, YMD, CLS_CODE, BONUS_PAY_CODE from KRCDT_DAI_AFFILIATION_INF "
+		String sql = "select EMP_CODE, SID, JOB_ID, WKP_ID, YMD, CLS_CODE, BONUS_PAY_CODE,WORK_TYPE_CODE from KRCDT_DAI_AFFILIATION_INF "
 				+ " where SID in (" + NtsStatement.In.createParamsString(empIds) + ")"
 				+ " and YMD <= ?"
 				+ " and YMD >= ?";
