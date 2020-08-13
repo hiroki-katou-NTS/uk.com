@@ -133,7 +133,7 @@ public class Helper {
 			public static final Bento DUMMY = bentoReserveFrame(1, true, true);
 
 			public static class WorkLocationCodeReg {
-				public static Optional<WorkLocationCode> DUMMY = Optional.of(new WorkLocationCode(""));
+				public static Optional<WorkLocationCode> DUMMY = Optional.empty();
 			}
 			public static Bento bentoAmount(int frameNo, Integer amount1, Integer amount2) {
 

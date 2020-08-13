@@ -20,4 +20,10 @@ public interface BentoMenuRepository {
 
 	public List<BentoMenu> getBentoMenu(String companyID, GeneralDate date, ReservationClosingTimeFrame reservationClosingTimeFrame);
 
+	public BentoMenu getBentoMenuByHistId(String companyID, String histId);
+
+	public void add(BentoMenu bentoMenu);
+
+	public void update(BentoMenu bentoMenu);
+
 }

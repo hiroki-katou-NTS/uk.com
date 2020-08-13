@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.reservation.bento;
 
-import lombok.val;
-import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
@@ -42,7 +40,8 @@ public class RegisterReservationLunchService {
             require.registerBentoMenu(finalHistoryID,bentoReservationClosingTime);
 
             if (bentoReservationSetting == null){
-                require.inSert(operationDistinction,arAchievements,correctionContent);
+                BentoReservationSetting newSetting = new BentoReservationSetting(companyId,operationDistinction,correctionContent,arAchievements);
+                require.inSert(newSetting);
             }else {
                 require.update(bentoReservationSetting);
             }
@@ -56,9 +55,8 @@ public class RegisterReservationLunchService {
          */
         BentoReservationSetting getReservationSettings(String cid);
 
-
         /**
-         * 弁当予約設定を取得する
+         * 弁当メニュを取得する
          */
         BentoMenu getBentoMenu(String cid,GeneralDate date);
 
@@ -67,9 +65,14 @@ public class RegisterReservationLunchService {
          */
         void registerBentoMenu(String historyID,BentoReservationClosingTime bentoReservationClosingTime);
 
-        void inSert(OperationDistinction operationDistinction,Achievements arAchievements,
-                    CorrectionContent correctionContent);
+        /**
+         * Insert（弁当予約設定）
+         */
+        void inSert(BentoReservationSetting bentoReservationSetting);
 
+        /**
+         * Update（弁当予約設定）
+         */
         void update(BentoReservationSetting bentoReservationSetting);
 
     }
