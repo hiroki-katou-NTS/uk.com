@@ -145,21 +145,6 @@ module nts.uk.at.view.ksm003.a {
             }
         }
 
-        /*changeDaysValue(input: any, id: string) {
-            let vm = this;
-            //Get data from grid
-            let grid = $("#workingCycleDtl");
-            let data = grid.igGrid("option", "dataSource");
-            let itemChanged = _.findIndex(data, function (obj) {
-                return obj.id == id;
-            });
-            if (itemChanged != -1) {
-                data[itemChanged].days = input.value;
-                grid.igGrid("option", "dataSource", data);
-            }
-            return;
-        }*/
-
         enableDisableRemove(flag: boolean, obj: any) {
             let vm = this;
             let dailyPatternValModel = vm.dailyPatternValModel();
@@ -179,54 +164,6 @@ module nts.uk.at.view.ksm003.a {
             let vm = this;
             vm.dayIsRequired(true);
             this.addNewLineItem(false);
-        }
-
-        private columnSetting(): Array<any> {
-            let vm = this;
-            return [
-                {
-                    headerText: "id",
-                    key: "id",
-                    hidden: true,
-                    formatter: _.escape,
-                    width: 100,
-                },
-                {
-                    headerText: "",
-                    key: "patternCode",
-                    formatter: _.escape,
-                    width: 60,
-                    template: '<button data-bind="attr: {id: \'btnVal\' + dispOrder}, click: openDialogWorkDays">' + vm.$i18n("KSM003_34") + '</button>',
-                },
-                {
-                    headerText: nts.uk.resource.getText("KSM003_30"),
-                    key: "typeOfWork",
-                    formatter: _.escape,
-                    width: 100,
-                },
-                {
-                    headerText: nts.uk.resource.getText("KSM003_31"),
-                    key: "workingHours",
-                    formatter: _.escape,
-                    width: 100,
-                },
-                {
-                    headerText: nts.uk.resource.getText("KSM003_31"),
-                    key: "days",
-                    formatter: _.escape,
-                    width: 100,
-                    hidden: true,
-                },
-                {
-                    headerText: nts.uk.resource.getText("KSM003_31"),
-                    key: "daysText",
-                    width: 100,
-                    template:
-                    '<span style="width: 20px"><input style="width: 20px;" ' +
-                    'data-bind="ntsNumberEditor: { constraint: \'Days\' , value: \'${days}\' }" /></span>' +
-                    '<span style="width: 20px; padding-left: 5px">' + vm.$i18n("KSM003_34") + "</span>"
-                },
-            ];
         }
 
         // get Pattern Val By PatternCd form database
@@ -426,17 +363,18 @@ module nts.uk.at.view.ksm003.a {
 
                     vm.$blockui('show');
 
-                    /*if( nts.uk.util.isNullOrEmpty( self.selectedCode() )) {
+                    if( nts.uk.util.isNullOrEmpty( vm.selectedCode() )) {
                         return;
-                    }*/
+                    }
+
                     vm.$ajax(
                         vm.API.patternDailyDelete,
                         { workCycleCode: vm.selectedCode() }
                     ).done((response) => {
-                        //console.log(response);
                         vm.$dialog.info({messageId: "Msg_16"}).then(function () {
                             vm.reloadAfterDelete( dataHistory );
                         });
+                        vm.$blockui('hide');
                     }).fail(function (res) {
                         vm.$dialog.error(res.message).then(() => {
                             vm.$blockui('hide');
@@ -455,7 +393,6 @@ module nts.uk.at.view.ksm003.a {
          * delete divergence reason
          */
         deleteDailyPattern(patternCd: string): JQueryPromise<any> {
-            console.log(patternCd);
             return nts.uk.request.ajax("at", this.API.patternDailyDelete, patternCd);
         }
 
@@ -656,8 +593,6 @@ module nts.uk.at.view.ksm003.a {
         }
 
         saveDailyPattern(dto: DailyPatternDetailDto): JQueryPromise<Array<DailyPatternDetailModel>> {
-            //dto.patternCode = nts.uk.text.padLeft(dto.patternCode, '0', 2);
-            //dto.code = nts.uk.text.padLeft(dto.code, '0', 2);
             let apiUrl = (!this.isEditting()) ? this.API.patternDailyRegister : this.API.patternDailyUpdate;
             return nts.uk.request.ajax("at", apiUrl, dto);
         }
@@ -946,6 +881,7 @@ module nts.uk.at.view.ksm003.a {
     // tức là khi ta chỉ định một đối tượng nào đó có kiểu như thế nào, ta sẽ chỉ định interface cho nó.
     // vì igGrid là control của jquery, nó không phải là một observable, nên ta chỉ cần các đối tượng js đơn giản (chỉ chứa các primitive value)
     // là được, (dùng interface để định nghĩa cấu trúc cho data thôi), không cần tạo class.
+
     interface WorkingCycleData {
         id: string;
         typeOfWork: string;
@@ -975,15 +911,4 @@ module nts.uk.at.view.ksm003.a {
             this.selectedItem = false;
         }
     }
-
-   /* export interface WorkingCycleDto {
-        name: string;
-        code: string;
-    }*/
 }
-
-/*
-function changeDaysValue(params, code) {
-    nts.uk.ui._viewModel.content.changeDaysValue(params, code);
-}
-*/
