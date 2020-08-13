@@ -159,15 +159,6 @@ public interface AppWorkChangeService {
 	
 	
 	/**
-	 * 
-	 * @param companyId
-	 * @param appId
-	 * @param appWorkChangeDispInfo
-	 * @return
-	 */
-	public AppWorkChangeOutput getAppWorkChangeUpdateOutput(String companyId, String appId, AppWorkChangeDispInfo appWorkChangeDispInfo);
-	
-	/**
 	 * 勤務変更申請の登録前チェック処理
 	 * @param mode
 	 * @param companyId

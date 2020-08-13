@@ -857,9 +857,8 @@ export enum ScreenMode {
 }
 
 const API = {
-    startNew: 'at/request/application/workchange/startNew',
-    startS07: 'at/request/application/workchange/startMobile',
-    checkBeforRegister: 'at/request/application/workchange/checkBeforeRegister_New',
-    registerAppWorkChange: 'at/request/application/workchange/addWorkChange_New',
-    updateAppWorkChange: 'at/request/application/workchange/changeDateKAFS07'
+    startS07: 'at/request/application/workchange/mobile/startMobile',
+    checkBeforRegister: 'at/request/application/workchange/mobile/checkBeforeRegister_New',
+    registerAppWorkChange: 'at/request/application/workchange/mobile/addWorkChange_New',
+    updateAppWorkChange: 'at/request/application/workchange/mobile/changeDateKAFS07'
 };

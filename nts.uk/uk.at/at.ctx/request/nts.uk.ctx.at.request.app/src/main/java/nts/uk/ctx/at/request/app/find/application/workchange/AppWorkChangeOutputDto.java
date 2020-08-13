@@ -5,7 +5,9 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.app.find.application.common.AppDetailScreenInfoDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeOutput;
 
 @AllArgsConstructor
@@ -30,7 +32,12 @@ public class AppWorkChangeOutputDto {
 	public AppWorkChangeOutput toDomain() {
 		AppWorkChangeOutput appWorkChangeOutput = new AppWorkChangeOutput();
 		appWorkChangeOutput.setAppWorkChangeDispInfo(appWorkChangeDispInfo.toDomain());
-		appWorkChangeOutput.setAppWorkChange(Optional.ofNullable(appWorkChange.toDomain()));
+		Optional<AppWorkChange> appWorkChange = Optional.empty();
+		AppDetailScreenInfoDto appDetailScreenInfoDto = appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDetailScreenInfo();
+		if (appDetailScreenInfoDto != null) {
+			appWorkChange = Optional.ofNullable(this.appWorkChange.toDomain(appDetailScreenInfoDto.getApplication().toDomain()));
+		}
+		appWorkChangeOutput.setAppWorkChange(appWorkChange);
 		return appWorkChangeOutput;
 	}
 }
