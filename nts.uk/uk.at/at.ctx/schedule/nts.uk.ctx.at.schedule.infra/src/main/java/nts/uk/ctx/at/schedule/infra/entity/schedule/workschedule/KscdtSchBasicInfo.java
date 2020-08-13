@@ -46,6 +46,8 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.Short
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -226,9 +228,13 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 			shortWorkingTimeSheets.add(shortWorkingTimeSheet);
 		});
 		
+		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = this.kscdtSchTime.toDomain(sID, yMD);
+		AttendanceTimeOfDailyAttendance attendance = new AttendanceTimeOfDailyAttendance(
+				null, actualWorkingTimeOfDaily, 
+				null, null, null, null);
 		optSortTimeWork = new ShortTimeOfDailyAttd(shortWorkingTimeSheets);
 		return new WorkSchedule(sID, yMD, EnumAdaptor.valueOf(confirmedATR ? 1 : 0, ConfirmedATR.class), 
-				workInfo, affInfo, lstBreakTime, lstEditState, Optional.ofNullable(optTimeLeaving), Optional.empty(), Optional.ofNullable(optSortTimeWork));
+				workInfo, affInfo, lstBreakTime, lstEditState, Optional.ofNullable(optTimeLeaving), Optional.ofNullable(attendance), Optional.ofNullable(optSortTimeWork));
 	}
 
 	@Override
