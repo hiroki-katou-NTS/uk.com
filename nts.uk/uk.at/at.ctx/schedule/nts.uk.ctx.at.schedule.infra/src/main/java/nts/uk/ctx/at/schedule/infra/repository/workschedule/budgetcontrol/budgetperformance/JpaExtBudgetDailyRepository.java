@@ -56,7 +56,7 @@ public class JpaExtBudgetDailyRepository extends JpaRepository implements ExtBud
 			GeneralDate ymd) {
 		
 		List<ExtBudgetDaily> data = this.queryProxy().query(Getdata, KscdtExtBudgetDailyNew.class)
-											.setParameter("targetUnit", targetOrg.getUnit())
+											.setParameter("targetUnit", targetOrg.getUnit().value)
 											.setParameter("itemCode", itemCode)
 											.setParameter("ymd", ymd)
 											.getList( c ->toDomain(c));
