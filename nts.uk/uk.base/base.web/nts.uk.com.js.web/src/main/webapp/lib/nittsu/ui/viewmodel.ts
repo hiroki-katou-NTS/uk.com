@@ -181,7 +181,6 @@ BaseViewModel.prototype.$program = __viewContext['program'];
 
 const $date = {
 	diff: 0,
-	interval: -1,
 	tick: -1,
 	now() {
 		return Date.now()
@@ -214,17 +213,12 @@ BaseViewModel.prototype.$date = Object.defineProperties($date, {
 		}
 	},
 	interval: {
-		get() {
-			return $date.interval;
-		},
-		set(v: number) {
-			$date.interval = v;
-
+		value: function $interval(interval: number) {
 			// clear default intervale
 			clearInterval($date.tick);
 
 			// set new interface
-			$date.tick = setInterval(getTime, $date.interval);
+			$date.tick = setInterval(getTime, interval);
 		}
 	}
 });
