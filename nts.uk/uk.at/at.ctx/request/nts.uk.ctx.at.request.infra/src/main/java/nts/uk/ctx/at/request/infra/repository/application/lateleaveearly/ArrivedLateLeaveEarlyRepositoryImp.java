@@ -214,12 +214,7 @@ public class ArrivedLateLeaveEarlyRepositoryImp extends JpaRepository implements
 
 	@Override
 	public void remove(String cID, String appId) {
-		// create entity with value
-		KrqdtAppLateOrLeave_New entity = new NtsStatement(SELECT_BY_CID_APPID, this.jdbcProxy())
-				.paramString("companyId", cID).paramString("appId", appId)
-				.getSingle(x -> KrqdtAppLateOrLeave_New.MAPPER.toEntity(x)).get();
-
-		this.commandProxy().remove(entity);
+		this.commandProxy().remove(KrqdtAppLateOrLeave_New.class, new KrqdtAppLateOrLeavePK_New(cID, appId));
 	}
 
 }

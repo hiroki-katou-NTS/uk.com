@@ -263,4 +263,26 @@ public class AsposeLateLeaveEarly {
 		}
 
 	}
+
+	public void deleteEmptyRow(Worksheet worksheet) {
+		Cells cells = worksheet.getCells();
+
+		Cell cellB8 = cells.get("B8");
+		Cell cellB9 = cells.get("B9");
+		Cell cellB10 = cells.get("B10");
+		Cell cellB11 = cells.get("B11");
+
+		if (cellB11.getValue().toString().isEmpty()) {
+			worksheet.getCells().deleteRow(10);
+		}
+		if (cellB10.getValue().toString().isEmpty()) {
+			worksheet.getCells().deleteRow(9);
+		}
+		if (cellB9.getValue().toString().isEmpty()) {
+			worksheet.getCells().deleteRow(8);
+		}
+		if (cellB8.getValue().toString().isEmpty()) {
+			worksheet.getCells().deleteRow(7);
+		}
+	}
 }

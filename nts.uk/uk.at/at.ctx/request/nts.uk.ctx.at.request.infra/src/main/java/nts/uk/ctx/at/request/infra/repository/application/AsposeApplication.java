@@ -103,6 +103,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			textReasonContent = worksheet.getCells().get("D16");
 			printBottomKAF000(comboReasonLabel, textReasonLabel, comboReasonContent, textReasonContent,
 					printContentOfApp);
+			asposeLateLeaveEarly.deleteEmptyRow(worksheet);
 			break;
 		case COMPLEMENT_LEAVE_APPLICATION:
 			break;

@@ -122,16 +122,6 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         vm.workManagement.workTime2(1110);
                         vm.workManagement.leaveTime2(1200);
                         // Test data
-
-                        var _oldValue = "";
-                        vm.application().appDate.subscribe((oldValue) => {
-                            console.log(oldValue);
-                            _oldValue = oldValue;
-                        }, null, "beforeChange");
-                        vm.application().appDate.subscribe((newValue) => {
-                            console.log(newValue);
-                            console.log(newValue === _oldValue);
-                        })
                     }
                 }).fail((failData: any) => {
                     console.log(failData);
