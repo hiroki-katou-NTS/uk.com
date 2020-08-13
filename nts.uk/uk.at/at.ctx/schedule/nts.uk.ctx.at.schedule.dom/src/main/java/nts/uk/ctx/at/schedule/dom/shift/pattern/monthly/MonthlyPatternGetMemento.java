@@ -34,4 +34,13 @@ public interface MonthlyPatternGetMemento {
 	 */
 	public MonthlyPatternName getMonthlyPatternName();
 
+	/**
+	 * Gets the contract code.
+	 *
+	 * @return the contract code
+	 */
+	public String getContractCd();
+
+
+
 }

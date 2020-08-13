@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Interface WorkMonthlySettingRepository.
@@ -72,4 +73,40 @@ public interface WorkMonthlySettingRepository  {
 	 * @param monthlyPatternCode the monthly pattern code
 	 */
 	public void remove(String companyId, String monthlyPatternCode);
+
+	/**
+	 * Find by start YMD - end YMD.
+	 *
+	 * @param companyId the company id
+	 * @param monthlyPatternCode the monthly pattern code
+	 * @param DatePeriod the base dates
+	 * @return the list
+	 */
+	public List<WorkMonthlySetting> findByPeriod(String companyId, String monthlyPatternCode, DatePeriod datePeriod);
+
+	/**
+	 * Check exist KscmtWorkMonthSet.
+	 *
+	 * @param companyId the company id
+	 * @param monthlyPatternCode the monthly pattern code
+	 * @param date the ymd K
+	 * @return the list
+	 */
+	public Boolean exists(String companyId, String monthlyPatternCode, GeneralDate date);
+
+	/**
+	 * add KscmtWorkMonthSet.
+	 *
+	 * @param workMonthlySetting
+	 * @return
+	 */
+	public void add(WorkMonthlySetting workMonthlySetting);
+
+	/**
+	 * update KscmtWorkMonthSet.
+	 *
+	 * @param workMonthlySetting
+	 * @return
+	 */
+	public void update(WorkMonthlySetting workMonthlySetting);
 }
