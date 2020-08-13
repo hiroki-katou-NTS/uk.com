@@ -377,7 +377,30 @@ module nts.uk.at.kdp003.a {
 				.then((data: false | StorageData) => {
 					// if login and storage data success
 					if (data) {
-						return vm.mounted();
+						// data login by storage
+						const {
+							CCD,
+							CID,
+							PWD,
+							SCD,
+							SID
+						} = data;
+
+						const loginParams: f.ModelData = {
+							contractCode: '000000000000',
+							companyCode: CCD,
+							companyId: CID,
+							employeeCode: SCD,
+							employeeId: SID,
+							password: PWD,
+							passwordInvalid: false,
+							isAdminMode: true,
+							runtimeEnvironmentCreate: true
+						};
+						
+						// login again (wtf?????)
+						return vm.$ajax('at', API.LOGIN_ADMIN, loginParams)
+								.then(() => vm.loadData(data)) as JQueryPromise<any>;
 					}
 				})
 				// show message from login data (return by f dialog)
