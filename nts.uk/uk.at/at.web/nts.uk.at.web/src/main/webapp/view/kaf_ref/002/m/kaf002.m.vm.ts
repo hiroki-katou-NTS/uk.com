@@ -14,10 +14,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         // tab can load more >=10
 
         isLinkList: Array<boolean>;
-        
-        //set visible checkbox column
-        isVisibleCheckBox: Array<boolean>;
-        
+      
         nameGrids: KnockoutObservableArray<any>;
         
         //set param
@@ -32,10 +29,13 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         // set param
         tabMs: Array<TabM>;
         
+        isPreAtr: KnockoutObservable<boolean>;
+        
         created(params) {
             
             const self = this;
             self.tabMs = params.tabMs;
+            self.isPreAtr = params.isPreAtr;
             self.isVisibleComlumn = params.isVisibleComlumn;
             self.dataSourceOb = params.dataSourceOb;
             self.dataSource = self.dataSourceOb();
@@ -65,6 +65,13 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             self.tabs = ko.observableArray(paramTabs);
             // select first tab
             self.selectedTab = ko.observable( paramTabs[0].id );
+            
+            self.isPreAtr.subscribe((value) => {
+               if(!_.isNull(value)) {
+                   self.loadAll();
+               }
+               
+            });
             
         }
         
@@ -106,19 +113,6 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         }
         mounted() {
             const self = this;
-//            if (_.isEmpty(self.dataSource)) return;
-//            
-//            _.each(self.dataSource, (item, index) => {
-//                _.forEach(item, i => {
-//                    i.index = index;  
-//                    // change text element to know value biding from array
-//                    i.changeElement();
-//                }); 
-//             });
-//            _.each(self.dataSource, (item, index) => {
-//                self.loadGrid(ko.toJS(self.nameGrids)[index], item, item[0].typeStamp);
-//            })
-//            self.binding();
             self.loadAll();
             
         }
@@ -132,6 +126,12 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         i.index = index;  
                         // change text element to know value biding from array
                         i.changeElement();
+                        
+                        if (ko.toJS(self.isPreAtr)) {
+//                            self.isVisibleComlumn = false;
+                            i.changeElementByPreAtr();
+                        }
+                        
                     }); 
                     
                 }
@@ -146,53 +146,11 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         
         
         constructor() {
-            super();
-            
-   
-            
+            super();   
         }
         
         initDataSource() {
-            const self = this;
-            // param of parent
-//            let items3 = (function() {
-//                let list = [];
-//                
-//                for (let i = 1; i < 11; i++) {
-//                    let dataObject = new TimePlaceOutput(i);
-//                    list.push(new GridItem(dataObject, STAMPTYPE.GOOUT_RETURNING));
-//                }
-//                
-//                return list;
-//            })();
-//            
-//            let items4 = (function() {
-//                let list = [];
-//                
-//                for (let i = 1; i < 11; i++) {
-//                    let dataObject = new TimePlaceOutput(i);
-//                    list.push(new GridItem(dataObject, STAMPTYPE.BREAK));
-//                }
-//                
-//                return list;
-//            })();
-//            
-//            let items5 = (function() {
-//                let list = [];
-//                for (let i = 1; i < 3; i++) {
-//                    let dataObject = new TimePlaceOutput(i);
-//                    list.push(new GridItem(dataObject, STAMPTYPE.PARENT));
-//                }
-//                
-//                return list;
-//            })();
-//            
-//            
-//            self.dataSource = [];
-//            self.dataSource.push(items3);
-//            self.dataSource.push(items4);
-//            self.dataSource.push(items5);
-            
+            const self = this;       
             _.each(self.dataSource, (item, index) => {
                _.forEach(item, i => {
                    i.index = index;
@@ -269,12 +227,12 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                     features: [{ name: 'Resizing',
                                     columnSettings: [{
                                         columnKey: 'id', allowResizing: false, minimumWidth: 30
-                                    }, {
-                                        columnKey: 'flag', allowResizing: false, minimumWidth: 30
-                                    }, {
+                                    },  {
                                         columnKey: 'startTime', allowResizing: false, minimumWidth: 30
                                     }, {
                                         columnKey: 'endTime', allowResizing: false, minimumWidth: 30
+                                    }, {
+                                        columnKey: 'flag', allowResizing: false, minimumWidth: 30
                                     }
                                     ] 
                                 },
@@ -324,12 +282,12 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
               features: [{ name: 'Resizing',
                               columnSettings: [{
                                   columnKey: 'id', allowResizing: true, minimumWidth: 30
-                              }, {
-                                  columnKey: 'flag', allowResizing: false, minimumWidth: 30
-                              }, {
+                              },  {
                                   columnKey: 'startTime', allowResizing: false, minimumWidth: 30
                               }, {
                                   columnKey: 'endTime', allowResizing: false, minimumWidth: 30
+                              }, {
+                                  columnKey: 'flag', allowResizing: false, minimumWidth: 30
                               }
                               ] 
                           },
@@ -351,12 +309,9 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                             { name: 'Combobox', width: '50px', height: '100px', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true, spaceSize: 'small' }
                               ]
               };
-            if (!self.isVisibleComlumn) {
-                if (type == 2){
-                    option2.columns.pop();
-                }else {                    
-                    optionGrid.columns.pop();
-                }
+            if (!self.isVisibleComlumn || ko.toJS(self.isPreAtr)) {
+                option2.columns.pop();                   
+                optionGrid.columns.pop();
             }
             
             
@@ -370,12 +325,6 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             $(nameAtr).addClass('titleColor');
             // add row to display expand row
             if (items.length >= 10 && self.isLinkList[items[0].index]) {
-//                if (type != 1) {
-//                    $('#' + id).append('<tr><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="3"><div class="moreRow" style="display: block" align="center"><a  data-bind="ntsLinkButton: { action: doSomething.bind($data, ' + items + ') }, text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
-//                } else {
-//                    $('#' + id).append('<tr id="trLink2"><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="4"><div class="moreRow" style="display: block" align="center"><a data-bind="ntsLinkButton: { action: doSomething.bind($data, ' + type + ') }, text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
-//
-//                } 
                 $('#' + id).append('<tr id="trLink2"><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="4"><div id="moreRow'+ String(items[0].index) + '" style="display: block" align="center"><a data-bind="ntsLinkButton: { action: doSomething.bind($data, dataSource['+ items[0].index +']) }, text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
  
             } else {
@@ -487,6 +436,24 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 + '</div>';
 
             this.flag = '<div class="flag" style="display: block" align="center" data-bind="css: !' + param + '[' + idGetList + '].flagEnable ? \'disableFlag\' : \'enableFlag\' , ntsCheckBox: {enable: ' + param + '[' + idGetList + '].flagEnable, checked: ' + param + '[' + idGetList + '].flagObservable}"></div>';
+        }
+        public changeElementByPreAtr() {
+            const self = this;
+            let param = 'dataSource[' + String(self.index) +']';
+            let idGetList = self.id - 1;
+            
+            this.startTime = '<div class="startTime" style="display: block; margin: 0px 5px 5px 5px">'
+                + '<div align="center">'
+                + '<input style="width: 50px; text-align: center" data-name="Time Editor" data-bind="'
+                + 'ntsTimeEditor: {value: ' + param + '[' + idGetList + '].startTimeRequest , constraint: \'SampleTimeDuration\', inputFormat: \'time\', mode: \'time\', required: false}" />'
+                + '</div>'
+                + '</div>';
+            this.endTime = '<div class="endTime" style="display: block; margin: 0px 5px 5px 5px">'
+                + '<div align="center">'
+                + '<input style="width: 50px; text-align: center" data-name="Time Editor" data-bind="'
+                + 'ntsTimeEditor: {value: ' + param + '[' + idGetList + '].endTimeRequest , constraint: \'SampleTimeDuration\', inputFormat: \'time\', mode: \'time\', required: false}" />'
+                + '</div>'
+                + '</div>';
         }
         
     }
