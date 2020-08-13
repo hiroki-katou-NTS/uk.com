@@ -42,8 +42,7 @@ module nts.uk.at.view.ksu001.jd {
              * decision
              */
             decision(): void {
-                let self = this,
-                    dfd = $.Deferred();
+                let self = this;
 
                 $(".nts-input").trigger("validate");
                 if (nts.uk.ui.errors.hasError()) {
@@ -67,7 +66,6 @@ module nts.uk.at.view.ksu001.jd {
                         self.msgDone();
                     } ).fail( function( error ) {
                         alertError( { messageId: error.messageId, messageParams: error.parameterIds } );
-                        dfd.reject();
                     } ).always( function() {
                         clear();
                     } );
@@ -94,7 +92,6 @@ module nts.uk.at.view.ksu001.jd {
                         self.msgDone();
                     } ).fail( function( error ) {
                         alertError( { messageId: error.messageId, messageParams: error.parameterIds } );
-                        dfd.reject();
                     } ).always( function() {
                         clear();
                     } );
@@ -121,7 +118,6 @@ module nts.uk.at.view.ksu001.jd {
                         self.msgDone();
                     } ).fail( function( error ) {
                         alertError( { messageId: error.messageId, messageParams: error.parameterIds } );
-                        dfd.reject();
                     } ).always( function() {
                         clear();
                     } );
