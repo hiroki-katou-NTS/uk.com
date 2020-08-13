@@ -537,14 +537,18 @@ export class KafS07AComponent extends KafS00ShrComponent {
         }
 
         if (this.kaf000_B_Params) {
-            this.application.appDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-            this.application.opAppStartDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-            this.application.prePostAtr = this.kaf000_B_Params.output.prePostAtr;
-            if (this.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-                this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
-            } else {
-                this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+            if (this.mode) {
+                this.application.appDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+                this.application.opAppStartDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+                if (this.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+                    this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
+                } else {
+                    this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+                }
             }
+
+            this.application.prePostAtr = this.kaf000_B_Params.output.prePostAtr;
+
         }
 
         if (this.kaf000_C_Params.output) {
