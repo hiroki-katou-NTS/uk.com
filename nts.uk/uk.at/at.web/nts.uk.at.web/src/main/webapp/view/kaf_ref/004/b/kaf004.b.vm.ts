@@ -208,20 +208,8 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                     application: params,
                     arrivedLateLeaveEarlyDto: vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly
                 }).done((success: any) => {
-                    if (ko.toJS(vm.isSendMail)
-                        // && !vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting.sendMailWhenRegister)
-                        && true
-                    ) {
-                        vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-                            vm.$window.storage("KDL030_PARAM", {
-                                appID: success.appID
-                            });
-                            vm.$window.modal("/view/kdl/030/a/index.xhtml").then((result: any) => {
-                                vm.$window.storage('childData').then(rs => {
-                                    console.log(rs);
-                                });
-                            });
-                        });
+                    if(success) {
+                        vm.$dialog.info({ messageId: "Msg_15" });
                     }
                 }).fail((fail: any) => {
                     if (fail) {
