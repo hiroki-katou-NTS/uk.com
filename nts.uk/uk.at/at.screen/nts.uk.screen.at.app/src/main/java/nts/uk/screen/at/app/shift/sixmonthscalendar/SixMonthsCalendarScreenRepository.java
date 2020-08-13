@@ -23,5 +23,5 @@ public interface SixMonthsCalendarScreenRepository {
 
     List<SixMonthsCalendarWorkPlaceScreenDto> getSixMonthsCalendarWorkPlaceByYearMonth(String workPlaceId, DatePeriod yearMonth);
 
-    List<SixMonthsCalendarClassScreenDto> getSixMonthsCalendarClassByYearMonth(String classId, DatePeriod yearMonth);
+    List<SixMonthsCalendarClassScreenDto> getSixMonthsCalendarClassByYearMonth(String conpanyId, String classId, DatePeriod yearMonth);
 }

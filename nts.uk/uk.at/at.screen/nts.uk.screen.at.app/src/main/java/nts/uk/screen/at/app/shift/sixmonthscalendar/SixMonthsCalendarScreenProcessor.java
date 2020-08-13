@@ -27,7 +27,7 @@ public class SixMonthsCalendarScreenProcessor {
     }
 
     public List<SixMonthsCalendarClassScreenDto> getSixMonthsCalendarClass(String classId, DatePeriod datePeriod) {
-//        String companyId = AppContexts.user().companyId();
-        return repository.getSixMonthsCalendarClassByYearMonth(classId, datePeriod);
+        String companyId = AppContexts.user().companyId();
+        return repository.getSixMonthsCalendarClassByYearMonth(companyId, classId, datePeriod);
     }
 }
