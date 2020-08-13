@@ -67,7 +67,7 @@ public class ScheManaStatuTempoTest {
 	public void testCreate_1() {
 		String employeeID = "employeeID";
 		GeneralDate date = GeneralDate.today();
-		List<EmpEnrollPeriodImport> listAffCompanyHistSharedImport = Arrays.asList(new EmpEnrollPeriodImport(employeeID, new DatePeriod(date, date), SecondSituation.NONE));
+		Optional<EmpEnrollPeriodImport> listAffCompanyHistSharedImport = Optional.of(new EmpEnrollPeriodImport(employeeID, new DatePeriod(date, date), SecondSituation.NONE));
 		new Expectations() {
 			{
 				require.getAffCompanyHistByEmployee(Arrays.asList(employeeID), (DatePeriod) any);
@@ -93,8 +93,8 @@ public class ScheManaStatuTempoTest {
 	public void testCreate_2() {
 		String employeeID = "employeeID";
 		GeneralDate date = GeneralDate.today();
-		List<EmpEnrollPeriodImport> listAffCompanyHistSharedImport = Arrays.asList(new EmpEnrollPeriodImport(employeeID, new DatePeriod(date, date), SecondSituation.NONE));
-		List<EmploymentPeriodImported> listEmploymentPeriodImported = Arrays.asList(new EmploymentPeriodImported(employeeID, new DatePeriod(date, date), "empCode", Optional.empty()));
+		Optional<EmpEnrollPeriodImport> listAffCompanyHistSharedImport = Optional.of(new EmpEnrollPeriodImport(employeeID, new DatePeriod(date, date), SecondSituation.NONE));
+		Optional<EmploymentPeriodImported> listEmploymentPeriodImported = Optional.of(new EmploymentPeriodImported(employeeID, new DatePeriod(date, date), "empCode", Optional.empty()));
 		new Expectations() {
 			{
 				require.getAffCompanyHistByEmployee(Arrays.asList(employeeID), (DatePeriod) any);
@@ -124,8 +124,8 @@ public class ScheManaStatuTempoTest {
 	public void testCreate_3() {
 		String employeeID = "employeeID";
 		GeneralDate date = GeneralDate.today();
-		List<EmpEnrollPeriodImport> listAffCompanyHistSharedImport = Arrays.asList(new EmpEnrollPeriodImport(employeeID, new DatePeriod(date, date), SecondSituation.NONE));
-		List<EmploymentPeriodImported> listEmploymentPeriodImported = Arrays.asList(new EmploymentPeriodImported(employeeID, new DatePeriod(date, date), "empCode", Optional.empty()));
+		Optional<EmpEnrollPeriodImport> listAffCompanyHistSharedImport = Optional.of(new EmpEnrollPeriodImport(employeeID, new DatePeriod(date, date), SecondSituation.NONE));
+		Optional<EmploymentPeriodImported> listEmploymentPeriodImported = Optional.of(new EmploymentPeriodImported(employeeID, new DatePeriod(date, date), "empCode", Optional.empty()));
 		WorkingConditionItem workingConditionItem = new WorkingConditionItem(null, ManageAtr.NOTUSE, null, null, null, null, employeeID, null, null, null, null, null, null, null, null);
 		new Expectations() {
 			{
@@ -157,10 +157,10 @@ public class ScheManaStatuTempoTest {
 	public void testCreate_4() {
 		String employeeID = "employeeID";
 		GeneralDate date = GeneralDate.today();
-		List<EmpEnrollPeriodImport> listAffCompanyHistSharedImport = Arrays.asList(new EmpEnrollPeriodImport(employeeID, new DatePeriod(date, date), SecondSituation.NONE));
-		List<EmploymentPeriodImported> listEmploymentPeriodImported = Arrays.asList(new EmploymentPeriodImported(employeeID, new DatePeriod(date, date), "empCode", Optional.empty()));
+		Optional<EmpEnrollPeriodImport> listAffCompanyHistSharedImport = Optional.of(new EmpEnrollPeriodImport(employeeID, new DatePeriod(date, date), SecondSituation.NONE));
+		Optional<EmploymentPeriodImported> listEmploymentPeriodImported = Optional.of(new EmploymentPeriodImported(employeeID, new DatePeriod(date, date), "empCode", Optional.empty()));
 		WorkingConditionItem workingConditionItem = new WorkingConditionItem(null, ManageAtr.USE, null, null, null, null, employeeID, null, null, null, null, null, null, null, null);
-		List<EmployeeLeaveJobPeriodImport> listEmployeeLeaveJobPeriodImport = Arrays.asList(new EmployeeLeaveJobPeriodImport(employeeID, new DatePeriod(date, date)));
+		Optional<EmployeeLeaveJobPeriodImport> listEmployeeLeaveJobPeriodImport = Optional.of(new EmployeeLeaveJobPeriodImport(employeeID, new DatePeriod(date, date)));
 		new Expectations() {
 			{
 				require.getAffCompanyHistByEmployee(Arrays.asList(employeeID), (DatePeriod) any);
@@ -195,11 +195,11 @@ public class ScheManaStatuTempoTest {
 	public void testCreate_5() {
 		String employeeID = "employeeID";
 		GeneralDate date = GeneralDate.today();
-		List<EmpEnrollPeriodImport> listAffCompanyHistSharedImport = Arrays.asList(new EmpEnrollPeriodImport(employeeID, new DatePeriod(date, date), SecondSituation.NONE));
-		List<EmploymentPeriodImported> listEmploymentPeriodImported = Arrays.asList(new EmploymentPeriodImported(employeeID, new DatePeriod(date, date), "empCode", Optional.empty()));
+		Optional<EmpEnrollPeriodImport> listAffCompanyHistSharedImport = Optional.of(new EmpEnrollPeriodImport(employeeID, new DatePeriod(date, date), SecondSituation.NONE));
+		Optional<EmploymentPeriodImported> listEmploymentPeriodImported = Optional.of(new EmploymentPeriodImported(employeeID, new DatePeriod(date, date), "empCode", Optional.empty()));
 		WorkingConditionItem workingConditionItem = new WorkingConditionItem(null, ManageAtr.USE, null, null, null, null, employeeID, null, null, null, null, null, null, null, null);
 		TempAbsenceFrameNo tempAbsenceFrNo = new TempAbsenceFrameNo(BigDecimal.valueOf(1));
-		List<EmpLeaveWorkPeriodImport> listEmpLeaveWorkPeriodImport = Arrays.asList(new EmpLeaveWorkPeriodImport(employeeID, tempAbsenceFrNo, new DatePeriod(date, date)));
+		Optional<EmpLeaveWorkPeriodImport> listEmpLeaveWorkPeriodImport = Optional.of(new EmpLeaveWorkPeriodImport(employeeID, tempAbsenceFrNo, new DatePeriod(date, date)));
 		new Expectations() {
 			{
 				require.getAffCompanyHistByEmployee(Arrays.asList(employeeID), (DatePeriod) any);
@@ -236,8 +236,8 @@ public class ScheManaStatuTempoTest {
 	public void testCreate_6() {
 		String employeeID = "employeeID";
 		GeneralDate date = GeneralDate.today();
-		List<EmpEnrollPeriodImport> listAffCompanyHistSharedImport = Arrays.asList(new EmpEnrollPeriodImport(employeeID, new DatePeriod(date, date), SecondSituation.NONE));
-		List<EmploymentPeriodImported> listEmploymentPeriodImported = Arrays.asList(new EmploymentPeriodImported(employeeID, new DatePeriod(date, date), "empCode", Optional.empty()));
+		Optional<EmpEnrollPeriodImport> listAffCompanyHistSharedImport = Optional.of(new EmpEnrollPeriodImport(employeeID, new DatePeriod(date, date), SecondSituation.NONE));
+		Optional<EmploymentPeriodImported> listEmploymentPeriodImported = Optional.of(new EmploymentPeriodImported(employeeID, new DatePeriod(date, date), "empCode", Optional.empty()));
 		WorkingConditionItem workingConditionItem = new WorkingConditionItem(null, ManageAtr.USE, null, null, null, null, employeeID, null, null, null, null, null, null, null, null);
 		new Expectations() {
 			{

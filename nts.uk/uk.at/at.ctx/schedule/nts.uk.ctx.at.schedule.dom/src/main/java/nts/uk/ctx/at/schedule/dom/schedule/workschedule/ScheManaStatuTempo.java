@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
@@ -132,8 +133,7 @@ public class ScheManaStatuTempo {
 		DatePeriod datePeriod = new DatePeriod(date, date);
 
 		//return require.在籍期間を取得する( 社員ID, 年月日 ).isPresent()
-		boolean reusult = require.getAffCompanyHistByEmployee(Arrays.asList(employeeID), datePeriod).isEmpty();
-		return !reusult;
+		return require.getAffCompanyHistByEmployee(Arrays.asList(employeeID), datePeriod).isPresent();
 	}
 
 	/**
@@ -149,10 +149,10 @@ public class ScheManaStatuTempo {
 		DatePeriod datePeriod = new DatePeriod(date, date);
 		// $雇用履歴項目 = require.雇用履歴を取得する( list: 社員ID, 期間( 年月日, 年月日 ) ): findFirst
 		// ・・
-		List<EmploymentPeriodImported> lstEmpHistItem = require.getEmploymentHistory(Arrays.asList(employeeID), datePeriod);
-		if(!lstEmpHistItem.isEmpty())
+		val lstEmpHistItem = require.getEmploymentHistory(Arrays.asList(employeeID), datePeriod);
+		if(lstEmpHistItem.isPresent())
 		{
-			EmploymentPeriodImported employmentPeriod  = lstEmpHistItem.get(0);
+			EmploymentPeriodImported employmentPeriod  = lstEmpHistItem.get();
 			return 	Optional.ofNullable(new EmploymentCode(employmentPeriod.getEmploymentCd()));
 		}
 		return Optional.empty();
@@ -181,9 +181,8 @@ public class ScheManaStatuTempo {
 	 */
 	private static boolean onLeave(Require require, String employeeID, GeneralDate date) {
 		DatePeriod datePeriod = new DatePeriod(date, date);
-		List<EmployeeLeaveJobPeriodImport> lstEmployeeLeaveJobPeriodImport = require.getByDatePeriod(Arrays.asList(employeeID), datePeriod);
-		boolean result = lstEmployeeLeaveJobPeriodImport.isEmpty();		
-		return (!result);
+		val lstEmployeeLeaveJobPeriodImport = require.getByDatePeriod(Arrays.asList(employeeID), datePeriod);
+		return lstEmployeeLeaveJobPeriodImport.isPresent();		
 
 	}
 
@@ -199,11 +198,11 @@ public class ScheManaStatuTempo {
 			GeneralDate date) {
 
 		DatePeriod datePeriod = new DatePeriod(date, date);
-		List<EmpLeaveWorkPeriodImport> lstEmpLeaveWorkPeriodImport = require.specAndGetHolidayPeriod(Arrays.asList(employeeID), datePeriod);
-		if(lstEmpLeaveWorkPeriodImport.isEmpty()){
+		val lstEmpLeaveWorkPeriodImport = require.specAndGetHolidayPeriod(Arrays.asList(employeeID), datePeriod);
+		if(!lstEmpLeaveWorkPeriodImport.isPresent()){
 			return Optional.empty();
 		}
-		EmpLeaveWorkPeriodImport data = lstEmpLeaveWorkPeriodImport.get(0);
+		EmpLeaveWorkPeriodImport data = lstEmpLeaveWorkPeriodImport.get();
 		return Optional.ofNullable(data.getTempAbsenceFrNo());
 	}
 
@@ -216,7 +215,7 @@ public class ScheManaStatuTempo {
 		 * [R-1] 在籍期間を取得する( 社員ID, 年月日 ) : Optional
 		 * 社員の所属会社履歴Adapter.期間を指定して在籍期間を取得する
 		 */
-		List<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod);
+		Optional<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod);
 
 		/**
 		 * [R-2] 労働条件履歴を取得する 労働条件Repository.社員を指定して年月日時点の履歴項目を取得する
@@ -231,7 +230,7 @@ public class ScheManaStatuTempo {
 		 * 社員の休職履歴Adapter.期間を指定して休職期間を取得する( list: 社員ID, 期間: 年月日 )
 		 * 
 		 */
-		List<EmployeeLeaveJobPeriodImport> getByDatePeriod(List<String> lstEmpID, DatePeriod datePeriod);
+		Optional<EmployeeLeaveJobPeriodImport> getByDatePeriod(List<String> lstEmpID, DatePeriod datePeriod);
 
 		/**
 		 * 
@@ -242,7 +241,7 @@ public class ScheManaStatuTempo {
 		 * @param datePeriod
 		 * @return
 		 */
-		List<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(List<String> lstEmpID, DatePeriod datePeriod);
+		Optional<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(List<String> lstEmpID, DatePeriod datePeriod);
 
 		/**
 		 * [R-5] 雇用履歴を取得する(Get EmploymentHistory)
@@ -252,7 +251,7 @@ public class ScheManaStatuTempo {
 		 * @param datePeriod
 		 * @return List EmploymentPeriod
 		 */
-		List<EmploymentPeriodImported> getEmploymentHistory(List<String> lstEmpID, DatePeriod datePeriod);
+		Optional<EmploymentPeriodImported> getEmploymentHistory(List<String> lstEmpID, DatePeriod datePeriod);
 
 	}
 
