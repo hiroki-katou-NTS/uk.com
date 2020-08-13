@@ -116,7 +116,7 @@ public class WithinStatutoryTimeOfDaily {
 		}
 		//就業時間の計算
 
-			workTime = calcWithinStatutoryTime(recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get(),vacationClass,workType,
+			workTime = calcWithinStatutoryTime(recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().isPresent() ? recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get() : null,vacationClass,workType,
 					  									  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),
 					  									  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
 														  recordReget.getPersonalInfo().getWorkingSystem(),

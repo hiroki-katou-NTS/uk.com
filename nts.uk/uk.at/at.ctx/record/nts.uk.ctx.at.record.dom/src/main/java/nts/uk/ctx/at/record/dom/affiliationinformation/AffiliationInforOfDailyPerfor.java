@@ -7,6 +7,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 /**
@@ -26,11 +27,11 @@ public class AffiliationInforOfDailyPerfor extends AggregateRoot {
 	private AffiliationInforOfDailyAttd  affiliationInfor;
 
 	public AffiliationInforOfDailyPerfor(EmploymentCode employmentCode, String employeeId, String jobTitleID,
-			String wplID, GeneralDate ymd, ClassificationCode clsCode, BonusPaySettingCode bonusPaySettingCode) {
+			String wplID, GeneralDate ymd, ClassificationCode clsCode, BonusPaySettingCode bonusPaySettingCode,BusinessTypeCode businessTypeCode) {
 		super();
 		this.employeeId = employeeId;
 		this.ymd = ymd;
-		this.affiliationInfor = new AffiliationInforOfDailyAttd(employmentCode, jobTitleID, wplID, clsCode,
+		this.affiliationInfor = new AffiliationInforOfDailyAttd(employmentCode, jobTitleID, wplID, clsCode,businessTypeCode,
 				bonusPaySettingCode);
 	}
 
@@ -41,6 +42,6 @@ public class AffiliationInforOfDailyPerfor extends AggregateRoot {
 		this.ymd = ymd;
 		this.affiliationInfor = affiliationInfor;
 	}
-	
+
 
 }

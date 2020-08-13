@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 @Data
@@ -50,6 +51,8 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 //	@AttendanceItemValue
 	private String subscriptionCode;
 	
+	private String businessTypeCode;
+	
 	public static AffiliationInforOfDailyPerforDto getDto(AffiliationInforOfDailyPerfor domain){
 		AffiliationInforOfDailyPerforDto dto = new AffiliationInforOfDailyPerforDto();
 		if(domain != null){
@@ -61,7 +64,10 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 			dto.setWorkplaceID(domain.getAffiliationInfor().getWplID());
 			dto.setBaseDate(domain.getYmd());
 			dto.setEmployeeId(domain.getEmployeeId());
+			dto.setBusinessTypeCode(domain.getAffiliationInfor().getBusinessTypeCode().isPresent()?
+					domain.getAffiliationInfor().getBusinessTypeCode().get().v():null);
 			dto.exsistData();
+			
 		}
 		return dto;
 	}
@@ -77,6 +83,8 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 			dto.setWorkplaceID(domain.getWplID());
 			dto.setBaseDate(ymd);
 			dto.setEmployeeId(employeeID);
+			dto.setBusinessTypeCode(domain.getBusinessTypeCode().isPresent()?
+					domain.getBusinessTypeCode().get().v():null);
 			dto.exsistData();
 		}
 		return dto;
@@ -92,6 +100,8 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 		dto.setWorkplaceID(workplaceID);
 		dto.setBaseDate(workingDate());
 		dto.setEmployeeId(employeeId());
+		dto.setEmploymentCode(employmentCode);
+		dto.setBusinessTypeCode(businessTypeCode);
 		if(this.isHaveData()){
 			dto.exsistData();
 		}
@@ -122,7 +132,8 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 		AffiliationInforOfDailyPerfor domain = new AffiliationInforOfDailyPerfor(new EmploymentCode(this.employmentCode), 
 												employeeId, this.jobId, this.workplaceID, date,
 												new ClassificationCode(this.classificationCode),
-												new BonusPaySettingCode(this.subscriptionCode));
+												this.subscriptionCode ==null?null:new BonusPaySettingCode(this.subscriptionCode),
+												this.businessTypeCode ==null?null:new BusinessTypeCode(this.businessTypeCode));
 		return domain.getAffiliationInfor();
 	}
 }

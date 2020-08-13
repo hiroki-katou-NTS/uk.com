@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.adapter.workschedule.BreakTimeOfDailyAttdImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.TimeLeavingWorkImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforImport;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
@@ -64,11 +65,10 @@ public class WorkScheduleReflected {
 					new ErrMessageResource("006"), new ErrMessageContent(TextResource.localize("Msg_431"))));
 			return listErrorMessageInfo;
 		}
+		WorkInformation wi = new WorkInformation(scheduleWorkInfor.get().getWorkTime() ==null?null: new WorkTimeCode(scheduleWorkInfor.get().getWorkTime()), new WorkTypeCode(scheduleWorkInfor.get().getWorkTyle())); 
 		//勤務情報をコピーする (Copy thông tin 勤務)
-		workInformation.getRecordInfo().setWorkTypeCode(new WorkTypeCode(scheduleWorkInfor.get().getWorkTyle()));
-		workInformation.getRecordInfo().setWorkTimeCode(scheduleWorkInfor.get().getWorkTime() ==null?null: new WorkTimeCode(scheduleWorkInfor.get().getWorkTime()));
-		workInformation.getScheduleInfo().setWorkTypeCode(new WorkTypeCode(scheduleWorkInfor.get().getWorkTyle()));
-		workInformation.getScheduleInfo().setWorkTimeCode(scheduleWorkInfor.get().getWorkTime() ==null?null: new WorkTimeCode(scheduleWorkInfor.get().getWorkTime()));
+		workInformation.setRecordInfo(wi);
+		workInformation.setScheduleInfo(wi);
 		workInformation.setGoStraightAtr(EnumAdaptor.valueOf(scheduleWorkInfor.get().getGoStraightAtr(),NotUseAttribute.class));
 		workInformation.setBackStraightAtr(EnumAdaptor.valueOf(scheduleWorkInfor.get().getBackStraightAtr(),NotUseAttribute.class));
 		//計算状態を未計算にする
@@ -107,9 +107,11 @@ public class WorkScheduleReflected {
 			listScheduleTimeSheet.add(
 				new ScheduleTimeSheet(
 					timeLeavingWorkImport.getWorkNo(),
-					timeLeavingWorkImport.getAttendanceStamp().get().getActualStamp().get().getTimeDay()
-							.getTimeWithDay(),
-					timeLeavingWorkImport.getLeaveStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay()
+					timeLeavingWorkImport.getAttendanceStamp().get().getActualStamp().isPresent() 
+					?timeLeavingWorkImport.getAttendanceStamp().get().getActualStamp().get().getTimeDay()
+							.getTimeWithDay():0,
+					timeLeavingWorkImport.getLeaveStamp().get().getActualStamp().isPresent()?
+					timeLeavingWorkImport.getLeaveStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay():0
 				)
 			);
 		}

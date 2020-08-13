@@ -801,9 +801,13 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 
 	@Override
 	public List<EmploymentHistoryItem> getAllEmploymentHistoryItem(List<String> listHistId) {
-		return this.queryProxy().query(GET_BY_LIST_HISTID, BsymtEmploymentHistItem.class)
-				.setParameter("listHistId", listHistId).getList(x -> new EmploymentHistoryItem(x.hisId, x.sid,  
-						 x.salarySegment == null ? null : EnumAdaptor.valueOf(x.salarySegment, SalarySegment.class), new EmploymentCode(x.empCode)));
+		List<EmploymentHistoryItem> historyItems = new ArrayList<>();
+		if(!listHistId.isEmpty()) {
+			historyItems = this.queryProxy().query(GET_BY_LIST_HISTID, BsymtEmploymentHistItem.class)
+					.setParameter("listHistId", listHistId).getList(x -> new EmploymentHistoryItem(x.hisId, x.sid,  
+							 x.salarySegment == null ? null : EnumAdaptor.valueOf(x.salarySegment, SalarySegment.class), new EmploymentCode(x.empCode)));
+		}
+		return historyItems;
 
 	}
 

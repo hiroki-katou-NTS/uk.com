@@ -53,19 +53,11 @@ import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo.Require;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
-import nts.uk.ctx.at.shared.dom.adapter.employee.AffCompanyHistSharedImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
-import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeRecordImport;
-import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
-import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmployeeLeaveJobPeriodImport;
-import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmploymentPeriod;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
@@ -613,12 +605,12 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	private List<WorkCondItemDto> acquireWorkingConditionInformation(List<String> sIds, DatePeriod datePeriod) {
 		// EA修正履歴 No1829
 		//ドメインモデル「労働条件」を取得する
-		List<WorkingCondition> listWorkingCondition = this.workingConditionRepository.getBySidsAndDatePeriodNew(sIds,
+		List<WorkingCondition> listWorkingCondition = this.workingConditionRepository.getBySidsAndDatePeriod(sIds,
 				datePeriod);
 
 		//ドメインモデル「労働条件項目」を取得する
 		List<WorkingConditionItem> listWorkingConditionItem = this.workingConditionItemRepository
-				.getBySidsAndDatePeriodNew(sIds, datePeriod);
+				.getBySidsAndDatePeriod(sIds, datePeriod);
 		//取得した労働条件と労働条件項目を返す
 		Map<String, WorkingConditionItem> mapWorkingCondtionItem = listWorkingConditionItem.stream()
 				.collect(Collectors.toMap(WorkingConditionItem::getHistoryId, x -> x));
@@ -761,8 +753,11 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		private EmploymentHisScheduleAdapter scheAdapter;
 		
 		@Override
-		public List<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod) {
-			return comHisAdapter.getEnrollmentPeriod(sids, datePeriod);
+		public Optional<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod) {
+			val result = comHisAdapter.getEnrollmentPeriod(sids, datePeriod);
+            if (result.isEmpty())
+                return Optional.empty();
+            return Optional.of(result.get(0));
 		}
 
 		@Override
@@ -771,18 +766,27 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		}
 
 		@Override
-		public List<EmployeeLeaveJobPeriodImport> getByDatePeriod(List<String> lstEmpID, DatePeriod datePeriod) {
-			return empHisAdapter.getLeaveBySpecifyingPeriod(lstEmpID, datePeriod);
+		public Optional<EmployeeLeaveJobPeriodImport> getByDatePeriod(List<String> lstEmpID, DatePeriod datePeriod) {
+			val result =  empHisAdapter.getLeaveBySpecifyingPeriod(lstEmpID, datePeriod);
+            if (result.isEmpty())
+                return Optional.empty();
+            return Optional.of(result.get(0));
 		}
 
 		@Override
-		public List<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(List<String> lstEmpID, DatePeriod datePeriod) {
-			return leaHisAdapter.getHolidayPeriod(lstEmpID, datePeriod);
+		public Optional<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(List<String> lstEmpID, DatePeriod datePeriod) {
+			val result =  leaHisAdapter.getHolidayPeriod(lstEmpID, datePeriod);
+            if (result.isEmpty())
+                return Optional.empty();
+            return Optional.of(result.get(0));
 		}
 
 		@Override
-		public List<EmploymentPeriodImported> getEmploymentHistory(List<String> lstEmpID, DatePeriod datePeriod) {
-			return scheAdapter.getEmploymentPeriod(lstEmpID, datePeriod);
+		public Optional<EmploymentPeriodImported> getEmploymentHistory(List<String> lstEmpID, DatePeriod datePeriod) {
+			val result =  scheAdapter.getEmploymentPeriod(lstEmpID, datePeriod);
+            if (result.isEmpty())
+                return Optional.empty();
+            return Optional.of(result.get(0));
 		}
 	}
 }
