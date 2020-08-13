@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class DeleteBentoMenuHistCommand {
-    public String histotyId;
+    public String historyId;
 }

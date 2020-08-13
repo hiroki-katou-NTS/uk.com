@@ -19,7 +19,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.Optional;
 @Stateless
-@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class UpdateBentoMenuHistCommandHandler extends CommandHandler<UpdateBentoMenuHistCommand> {
     @Inject
     private IBentoMenuHistoryRepository bentoMenuHistoryRepository;
@@ -28,8 +27,8 @@ public class UpdateBentoMenuHistCommandHandler extends CommandHandler<UpdateBent
         val command = commandHandlerContext.getCommand();
         val cid = AppContexts.user().companyId();
         RequireImpl requei = new RequireImpl(bentoMenuHistoryRepository);
-        AtomTask atomTask = UpdateBentoMenuHistService.register(requei,
-                new DatePeriod(command.startDatePerio,command.endDatePerio),command.getHistotyId(),cid);
+         AtomTask atomTask = UpdateBentoMenuHistService.register(requei,
+                new DatePeriod(command.startDatePerio,command.endDatePerio),command.getHistoryId(),cid);
         transaction.execute(()->{
             atomTask.run();
         });
@@ -41,8 +40,7 @@ public class UpdateBentoMenuHistCommandHandler extends CommandHandler<UpdateBent
 
         @Override
         public Optional<BentoMenuHistory> findByCompanyId(String cid) {
-            bentoMenuHistoryRepository.findByCompanyId(cid);
-            return Optional.empty();
+            return  bentoMenuHistoryRepository.findByCompanyId(cid);
         }
 
         @Override

@@ -7,7 +7,7 @@ import nts.arc.time.GeneralDate;
 public class UpdateBentoMenuHistCommand {
     public GeneralDate startDatePerio;
     public GeneralDate endDatePerio;
-    public String histotyId;
+    public String historyId;
 
 }
 

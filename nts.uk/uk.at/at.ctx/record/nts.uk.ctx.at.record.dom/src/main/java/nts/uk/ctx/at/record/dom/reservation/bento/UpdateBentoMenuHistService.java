@@ -29,14 +29,8 @@ public class UpdateBentoMenuHistService {
         //Update item
         listhist.changeSpan(optionalHisItem.get(), period);
 
-        BentoMenuHistory finalListhist = listhist;
         return AtomTask.of(()->{
                 require.update(optionalHisItem.get());
-                val item = finalListhist.immediatelyBefore(optionalHisItem.get());
-                if(item.isPresent()){
-                    val itemToBeUpdateBefore = item.get();
-                    require.update(itemToBeUpdateBefore);
-                }
 
         });
     }
