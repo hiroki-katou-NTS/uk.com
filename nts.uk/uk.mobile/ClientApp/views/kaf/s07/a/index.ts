@@ -146,7 +146,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
         self.$auth.user.then((usr: any) => {
             self.user = usr;
         }).then(() => {
-            return self.loadCommonSetting(AppType.WORK_CHANGE_APPLICATION);    
+            return self.loadCommonSetting(AppType.WORK_CHANGE_APPLICATION);
         }).then((loadData: any) => {
             if (loadData) {
                 return self.$http.post('at', API.startS07, {
@@ -159,29 +159,29 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 });
             }
         }).then((res: any) => {
-                if (!res) {
-                    return;
-                }
-                self.data = res.data;
-                self.createParamA();
-                self.createParamB();
-                self.createParamC();
-                // let appWorkChange = res.data.appWorkChange;
-                self.bindStart();
-                self.$mask('hide');
-            }).catch((err: any) => {
-                self.$mask('hide');
-                if (err.messageId) {
-                    this.$modal.error({ messageId: err.messageId });
+            if (!res) {
+                return;
+            }
+            self.data = res.data;
+            self.createParamA();
+            self.createParamB();
+            self.createParamC();
+            // let appWorkChange = res.data.appWorkChange;
+            self.bindStart();
+            self.$mask('hide');
+        }).catch((err: any) => {
+            self.$mask('hide');
+            if (err.messageId) {
+                this.$modal.error({ messageId: err.messageId });
+            } else {
+
+                if (_.isArray(err.errors)) {
+                    this.$modal.error({ messageId: err.errors[0].messageId });
                 } else {
-    
-                    if (_.isArray(err.errors)) {
-                        this.$modal.error({ messageId: err.errors[0].messageId });
-                    } else {
-                        this.$modal.error({ messageId: err.errors.messageId }); 
-                    }
+                    this.$modal.error({ messageId: err.errors.messageId });
                 }
-            });
+            }
+        });
     }
 
 
@@ -256,16 +256,24 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 console.log('changedate' + oldV + '--' + newV);
                 let startDate = _.clone(self.kaf000_B_Params.output.startDate);
                 let endDate = _.clone(self.kaf000_B_Params.output.endDate);
+                if (_.isNull(startDate)) {
+
+                    return;
+                }
                 let listDate = [];
                 if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
                     listDate.push(self.$dt(newV, 'YYYY/MM/DD'));
                 }
-                let isCheckDate = startDate.getTime() <= endDate.getTime();
-                if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
-                    while (startDate.getTime() <= endDate.getTime()) {
-                        listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
-                        startDate.setDate(startDate.getDate() + 1);
+
+                if (!_.isNull(endDate)) {
+                    let isCheckDate = startDate.getTime() <= endDate.getTime();
+                    if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
+                        while (startDate.getTime() <= endDate.getTime()) {
+                            listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
+                            startDate.setDate(startDate.getDate() + 1);
+                        }
                     }
+
                 }
                 self.changeDate(listDate);
             });
@@ -277,14 +285,21 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 }
                 let startDate = _.clone(self.kaf000_B_Params.output.startDate);
                 let endDate = _.clone(self.kaf000_B_Params.output.endDate);
+                if (_.isNull(endDate)) {
+
+                    return;
+                }
                 let listDate = [];
-                let isCheckDate = startDate.getTime() <= endDate.getTime();
-                if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
-                    while (startDate.getTime() <= endDate.getTime()) {
-                        listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
-                        startDate.setDate(startDate.getDate() + 1);
+                if (!_.isNull(startDate)) {
+                    let isCheckDate = startDate.getTime() <= endDate.getTime();
+                    if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
+                        while (startDate.getTime() <= endDate.getTime()) {
+                            listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
+                            startDate.setDate(startDate.getDate() + 1);
+                        }
                     }
                 }
+
                 self.changeDate(listDate);
             });
             self.$watch('kaf000_B_Params.input.newModeContent.initSelectMultiDay', (newV, oldV) => {
@@ -526,12 +541,12 @@ export class KafS07AComponent extends KafS00ShrComponent {
             this.application.opAppStartDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
             this.application.prePostAtr = this.kaf000_B_Params.output.prePostAtr;
             if (this.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-                this.application.opAppEndDate =  this.$dt.date(this.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
+                this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
             } else {
                 this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
             }
         }
-        
+
         if (this.kaf000_C_Params.output) {
             this.application.opAppStandardReasonCD = this.kaf000_C_Params.output.opAppStandardReasonCD;
             this.application.opAppReason = this.kaf000_C_Params.output.opAppReason;
@@ -560,15 +575,15 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 if (res.messageId) {
                     this.$modal.error({ messageId: res.messageId });
                 } else {
-    
+
                     if (_.isArray(res.errors)) {
                         this.$modal.error({ messageId: res.errors[0].messageId });
                     } else {
-                        this.$modal.error({ messageId: res.errors.messageId }); 
+                        this.$modal.error({ messageId: res.errors.messageId });
                     }
                 }
-                
-                
+
+
             });
 
     }
@@ -595,7 +610,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 if (_.isArray(res.errors)) {
                     this.$modal.error({ messageId: res.errors[0].messageId });
                 } else {
-                    this.$modal.error({ messageId: res.errors.messageId }); 
+                    this.$modal.error({ messageId: res.errors.messageId });
                 }
             }
         });
@@ -628,7 +643,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
         vm.isValidateAll = validAll;
         console.log(validAll);
         console.log(vm.application);
-       
+
         // check validation 
         this.$validate();
         if (!this.$valid || !validAll) {
@@ -681,7 +696,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 if (_.isArray(res.errors)) {
                     this.$modal.error({ messageId: res.errors[0].messageId });
                 } else {
-                    this.$modal.error({ messageId: res.errors.messageId }); 
+                    this.$modal.error({ messageId: res.errors.messageId });
                 }
             }
 
@@ -760,11 +775,11 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 if (res.messageId) {
                     this.$modal.error({ messageId: res.messageId });
                 } else {
-    
+
                     if (_.isArray(res.errors)) {
                         this.$modal.error({ messageId: res.errors[0].messageId });
                     } else {
-                        this.$modal.error({ messageId: res.errors.messageId }); 
+                        this.$modal.error({ messageId: res.errors.messageId });
                     }
                 }
             });
@@ -784,22 +799,22 @@ export class KafS07AComponent extends KafS00ShrComponent {
                     this.model.workTime.time = f.selectedWorkTime.workTime1;
                 }
             }).catch((res: any) => {
-                    if (res.messageId) {
-                        this.$modal.error({ messageId: res.messageId });
-                    } else {
-        
-                        if (_.isArray(res.errors)) {
-                            this.$modal.error({ messageId: res.errors[0].messageId });
-                        } else {
-                            this.$modal.error({ messageId: res.errors.messageId }); 
-                        }
-                    }
-                });
-        }
-        
-        
+                if (res.messageId) {
+                    this.$modal.error({ messageId: res.messageId });
+                } else {
 
-        
+                    if (_.isArray(res.errors)) {
+                        this.$modal.error({ messageId: res.errors[0].messageId });
+                    } else {
+                        this.$modal.error({ messageId: res.errors.messageId });
+                    }
+                }
+            });
+        }
+
+
+
+
     }
 
 }
