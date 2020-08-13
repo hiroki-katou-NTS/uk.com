@@ -29,6 +29,9 @@ public class KrcmtBentoReservationSetting extends UkJpaEntity {
     @Column(name = "ORDERED_DEA")
     public int orderDeadline;
 
+    @Column(name = "ORDERED_DATA")
+    public int orderData;
+
     @Column(name = "MON_RES")
     public int monthlyResults;
 
@@ -75,6 +78,7 @@ public class KrcmtBentoReservationSetting extends UkJpaEntity {
                 bentoReservationSetting.getOperationDistinction().value,
                 bentoReservationSetting.getAchievements().getReferenceTime().v(),
                 bentoReservationSetting.getCorrectionContent().getOrderDeadline().value,
+                bentoReservationSetting.getCorrectionContent().getOrderedData().value,
                 bentoReservationSetting.getAchievements().getMonthlyResults().value,
                 bentoReservationSetting.getAchievements().getDailyResults().value,
                 bentoReservationSetting.getCorrectionContent().getContentChangeDeadline().value,
