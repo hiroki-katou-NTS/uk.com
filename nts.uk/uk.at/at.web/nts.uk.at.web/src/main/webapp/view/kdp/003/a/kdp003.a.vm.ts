@@ -261,6 +261,9 @@ module nts.uk.at.kdp003.a {
 
 						if (stampSetting) {
 							const { nameSelectArt } = stampSetting;
+							
+							// update interval for display datetime
+							vm.$date.interval(stampSetting.correctionInterval);
 
 							// clear message and show screen
 							vm.message(null);
