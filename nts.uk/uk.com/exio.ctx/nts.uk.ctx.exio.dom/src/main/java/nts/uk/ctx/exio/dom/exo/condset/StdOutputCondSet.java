@@ -55,10 +55,15 @@ public class StdOutputCondSet extends AggregateRoot {
 	/**
 	 * 文字列形式
 	 */
-	private StringFormat stringFormat;
+	private StringFormat stringFormat; 
+	
+	/**
+	 * 出力期間設定
+	 */
+	private OutputPeriodSetting outputPeriodSetting;
 
 	public StdOutputCondSet(String cid, String conditionSetCode, int categoryId, int delimiter, int itemOutputName,
-			int autoExecution, String conditionSetName, int conditionOutputName, int stringFormat) {
+			int autoExecution, String conditionSetName, int conditionOutputName, int stringFormat, OutputPeriodSetting outputPeriodSetting) {
 		super();
 		this.cid = cid;
 		this.conditionSetCode = new ExternalOutputConditionCode(conditionSetCode);
@@ -69,5 +74,6 @@ public class StdOutputCondSet extends AggregateRoot {
 		this.conditionSetName = new ExternalOutputConditionName(conditionSetName);
 		this.conditionOutputName = EnumAdaptor.valueOf(conditionOutputName, NotUseAtr.class);
 		this.stringFormat = EnumAdaptor.valueOf(stringFormat, StringFormat.class);
+		this.outputPeriodSetting = outputPeriodSetting;
 	}
 }
