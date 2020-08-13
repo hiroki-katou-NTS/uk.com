@@ -58,8 +58,8 @@ export class KafS00BComponent extends Vue {
             text: 'KAFS00_13'
         }];
         self.dateRange = {
-            start: new Date(),
-            end: new Date(),
+            start: null,
+            end: null,
         };
         if (self.$input.newModeContent.appTypeSetting.displayInitialSegment != 2) {
             self.$output.prePostAtr = self.$input.newModeContent.appTypeSetting.displayInitialSegment;
