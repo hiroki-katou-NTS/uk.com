@@ -15,5 +15,5 @@ public class EmployeeInfoMonthFinishDto {
     /** 社員コード */
     private String employeeCode;
     /** 社員名 */
-    private int employeeName;
+    private String employeeName;
 }

@@ -1,15 +1,9 @@
 package nts.uk.screen.at.app.kmr003.find;
 
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.app.find.reservation.bento.dto.BentoReservationSearchConditionDto;
-import nts.uk.ctx.at.record.app.find.reservation.bento.dto.ClosingTimeDto;
-import nts.uk.ctx.at.record.app.find.reservation.bento.dto.HeaderInfoDto;
-import nts.uk.ctx.at.record.app.find.reservation.bento.dto.ModificationInfoForReservationDto;
+import nts.uk.ctx.at.record.app.find.reservation.bento.dto.*;
 import nts.uk.ctx.at.record.app.find.reservation.bento.query.ListBentoResevationQuery;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
-import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
+import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
@@ -58,6 +52,9 @@ public class Kmr003Query {
     @Inject
     private ListBentoResevationQuery listBentoResevationQuery;
 
+    @Inject
+    private BentoReserveCommonService bentoReserveCommonService;
+
     /**
      * 修正する予約を抽出する
      */
@@ -80,11 +77,11 @@ public class Kmr003Query {
         // 社員と基準日から所属職場履歴項目を取得する
         List<AffWorkplaceHistoryItem> wpHistItems = affWorkplaceHistoryItemRepo
                 .getAffWrkplaHistItemByListEmpIdAndDateV2(reservationDate.getDate(), userIds);
-        Optional<WorkLocationCode> workLocationCodeOtp = Optional.empty();
+        Optional<WorkLocationCode> workLocationCodeOpt = Optional.empty();
         if (!wpHistItems.isEmpty()) {
             AffWorkplaceHistoryItem wpHistItem = wpHistItems.get(0);
             if (wpHistItem.getWorkLocationCode().isPresent()) {
-                workLocationCodeOtp = Optional.of(new WorkLocationCode(wpHistItem.getWorkLocationCode().get()));
+                workLocationCodeOpt = Optional.of(new WorkLocationCode(wpHistItem.getWorkLocationCode().get()));
             }
         }
 
@@ -116,16 +113,16 @@ public class Kmr003Query {
                 menu = bentoMenu.getByClosingTime(Optional.empty());
             } else {
                 // 4.1: 場所より締め時刻別のメニュー(勤務場所コード)
-                menu = bentoMenu.getByClosingTime(workLocationCodeOtp);
+                menu = bentoMenu.getByClosingTime(workLocationCodeOpt);
             }
 
             // 4.3: 締め時刻を作る
             List<ClosingTimeDto> bentoClosingTimes = new ArrayList<>();
             BentoReservationClosingTime closingTime = menu.getClosingTime();
             ReservationClosingTime closingTime1 = closingTime.getClosingTime1();
-            Optional<ReservationClosingTime> closingTime2Otp = closingTime.getClosingTime2();
-            if (reservationClosingTimeFrame == ReservationClosingTimeFrame.FRAME2 && closingTime2Otp.isPresent()) {
-                ReservationClosingTime closingTime2 = closingTime2Otp.get();
+            Optional<ReservationClosingTime> closingTime2Opt = closingTime.getClosingTime2();
+            if (reservationClosingTimeFrame == ReservationClosingTimeFrame.FRAME2 && closingTime2Opt.isPresent()) {
+                ReservationClosingTime closingTime2 = closingTime2Opt.get();
                 Integer start = closingTime2.getStart().isPresent() ? closingTime2.getStart().get().v() : null;
                 bentoClosingTimes.add(new ClosingTimeDto(closingTime2.getReservationTimeName().v(), closingTime2.getFinish().v(), start));
             } else {
@@ -140,19 +137,62 @@ public class Kmr003Query {
         if (!reservationRegisterInfos.isEmpty()) {
             DatePeriod datePeriod = new DatePeriod(reservationDate.getDate(), reservationDate.getDate());
             List<WorkLocationCode> workLocationCodes = new ArrayList<>();
-            workLocationCodeOtp.ifPresent(workLocationCodes::add);
+            workLocationCodeOpt.ifPresent(workLocationCodes::add);
             // 一覧弁当予約を取得する
             bentoReservations = listBentoResevationQuery.getListBentoResevationQuery(searchCondition, datePeriod,
                     reservationRegisterInfos, workLocationCodes, reservationClosingTimeFrame);
         }
 
-
         // 7: 弁当予約が強制修正できる状態を取得する
-        // TODO
+        List<EmployeeInfoMonthFinishDto> empInfoMonthFinishs = new ArrayList<>();
+        List<ReservationInfoForEmployeeDto> reservationInfoForEmps = new ArrayList<>();
+        for (String id : empIds){
+            Optional<PersonEmpBasicInfoDto> empBasicInfoOpt = empBasicInfos.stream().filter(x -> x.getEmployeeId() == id).findFirst();
+            if (!empBasicInfoOpt.isPresent()) continue;
+            PersonEmpBasicInfoDto empBasicInfo = empBasicInfoOpt.get();
+
+            Optional<StampCard> stampCardOpt = stampCards.stream().filter(x -> x.getEmployeeId() == id).findFirst();
+            if (!stampCardOpt.isPresent()) continue;
+            StampCard stampCard = stampCardOpt.get();
+
+            Optional<BentoReservation> bentoReservationOpt = bentoReservations.stream()
+                    .filter(x -> x.getRegisterInfor().getReservationCardNo().equals(stampCard.getStampNumber().v())).findFirst();
+
+            // 6.1: 社員の予約情報を作る
+            ReservationInfoForEmployeeDto reservationInfoForEmp = new ReservationInfoForEmployeeDto();
+            reservationInfoForEmp.setReservationCardNo(stampCard.getStampNumber().v());
+            reservationInfoForEmp.setReservationMemberId(id);
+            reservationInfoForEmp.setReservationMemberCode(empBasicInfo.getEmployeeCode());
+            reservationInfoForEmp.setReservationMemberName(empBasicInfo.getBusinessName());
+            if (bentoReservationOpt.isPresent()){
+                BentoReservation bentoReservation = bentoReservationOpt.get();
+                reservationInfoForEmp.setReservationDate(bentoReservation.getReservationDate().getDate());
+                // reservationInfoForEmp.setReservationTime(); //TODO
+                reservationInfoForEmp.setOrdered(bentoReservation.isOrdered());
+                reservationInfoForEmp.setClosingTimeFrame(bentoReservation.getReservationDate().getClosingTimeFrame().value);
+                List<ReservationDetailDto> reservationDetails = bentoReservation.getBentoReservationDetails()
+                        .stream().map(x -> new ReservationDetailDto(x.getBentoCount().v(), x.getFrameNo()))
+                        .collect(Collectors.toList());
+                reservationInfoForEmp.setReservationDetails(reservationDetails);
+            }
+            reservationInfoForEmps.add(reservationInfoForEmp);
+
+            boolean canReservation = bentoReserveCommonService.canReservation(id, reservationDate.getDate());
+            if (!canReservation){
+
+                // 6.2: 月締め処理が済んでいる社員情報を作る
+                if (searchCondition == BentoReservationSearchConditionDto.NEW_ORDER){
+                    empInfoMonthFinishs.add(new EmployeeInfoMonthFinishDto(empBasicInfo.getEmployeeCode(),
+                            empBasicInfo.getBusinessName()));
+                }
+
+                // 6.3 生活値を更新
+            }
+        }
+        result.setEmployeeInfoMonthFinishs(empInfoMonthFinishs);
+        result.setReservationInfoForEmployees(reservationInfoForEmps);
 
         // 8: 予約の修正起動情報
-        // TODO
-
-        return null;
+        return result;
     }
 }
