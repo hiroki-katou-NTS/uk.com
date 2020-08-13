@@ -140,6 +140,6 @@ export class AppWorkChange {
     }
 }
 const API = {
-    start: 'at/request/application/workchange/startDetailMobile'
+    start: 'at/request/application/workchange/mobile/startDetailMobile'
 };
 

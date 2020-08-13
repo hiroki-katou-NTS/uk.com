@@ -72,7 +72,7 @@
                     <nts-date-range-input v-model="dateRange" />
                 </div>
                 <div v-if="!$input.newModeContent.initSelectMultiDay">
-                    <nts-date-input v-model="$output.startDate"/>
+                    <nts-date-input v-model="date"/>
                 </div>
             </div>
         </div>

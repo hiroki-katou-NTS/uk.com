@@ -7,6 +7,9 @@ import { component, Prop, Watch } from '@app/core/component';
     template: require('./index.vue'),
     resource: require('./resources.json'),
     validations: {
+        date: {
+            required: true  
+        },
         dateRange: {
             required: true,
             dateRange: true
@@ -39,6 +42,7 @@ export class KafS00BComponent extends Vue {
     };
     public prePostResource: Array<Object> = [];
     public dateSwitchResource: Array<Object> = [];
+    public date: Date = null;
     public dateRange: any = {};
 
     public created() {
@@ -63,6 +67,19 @@ export class KafS00BComponent extends Vue {
         };
         if (self.$input.newModeContent.appTypeSetting.displayInitialSegment != 2) {
             self.$output.prePostAtr = self.$input.newModeContent.appTypeSetting.displayInitialSegment;
+        }
+        if (self.$input.newModeContent) {
+            if (self.$input.newModeContent.initSelectMultiDay) {
+                self.$updateValidator('dateRange', { validate: true });
+                self.$updateValidator('date', { validate: false });
+            } else {
+                self.$updateValidator('dateRange', { validate: false });
+                self.$updateValidator('date', { validate: true });
+            }
+        }
+        if (self.$input.detailModeContent) {
+            self.$updateValidator('dateRange', { validate: false });
+            self.$updateValidator('date', { validate: false });    
         }
     }
 
@@ -105,6 +122,25 @@ export class KafS00BComponent extends Vue {
         
         return _.find(self.prePostResource, (o: any) => o.code == self.$input.detailModeContent.prePostAtr).text;
     }
+
+    @Watch('$input.newModeContent.initSelectMultiDay')
+    public initSelectMultiDayWatcher(value: any) {
+        const self = this;
+        if (value) {
+            self.$updateValidator('dateRange', { validate: true });
+            self.$updateValidator('date', { validate: false });
+        } else {
+            self.$updateValidator('dateRange', { validate: false });
+            self.$updateValidator('date', { validate: true });
+        }
+    } 
+
+    @Watch('date')
+    public dateWatcher() {
+        const self = this;
+        self.$output.startDate = self.date;
+        self.$output.endDate = self.date;
+    } 
 
     @Watch('dateRange')
     public dateRangeWatcher() {
