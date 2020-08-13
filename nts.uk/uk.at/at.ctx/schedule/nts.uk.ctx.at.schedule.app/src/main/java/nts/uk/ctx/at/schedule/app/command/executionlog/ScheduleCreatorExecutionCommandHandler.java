@@ -613,12 +613,12 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	private List<WorkCondItemDto> acquireWorkingConditionInformation(List<String> sIds, DatePeriod datePeriod) {
 		// EA修正履歴 No1829
 		//ドメインモデル「労働条件」を取得する
-		List<WorkingCondition> listWorkingCondition = this.workingConditionRepository.getBySidsAndDatePeriodNew(sIds,
+		List<WorkingCondition> listWorkingCondition = this.workingConditionRepository.getBySidsAndDatePeriod(sIds,
 				datePeriod);
 
 		//ドメインモデル「労働条件項目」を取得する
 		List<WorkingConditionItem> listWorkingConditionItem = this.workingConditionItemRepository
-				.getBySidsAndDatePeriodNew(sIds, datePeriod);
+				.getBySidsAndDatePeriod(sIds, datePeriod);
 		//取得した労働条件と労働条件項目を返す
 		Map<String, WorkingConditionItem> mapWorkingCondtionItem = listWorkingConditionItem.stream()
 				.collect(Collectors.toMap(WorkingConditionItem::getHistoryId, x -> x));

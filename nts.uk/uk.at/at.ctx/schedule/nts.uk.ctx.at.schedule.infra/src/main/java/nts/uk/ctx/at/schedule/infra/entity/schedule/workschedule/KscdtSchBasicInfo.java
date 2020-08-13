@@ -174,7 +174,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 				cID, workSchedule.getConfirmedATR().value == 1 ? true : false, workInfo.getEmploymentCode().v(),
 				workInfo.getJobTitleID(), workInfo.getWplID(), workInfo.getClsCode().v(),
 				workInfo.getBonusPaySettingCode().v(), null, workInformation.getWorkTypeCode().v(),
-				workInformation.getWorkTimeCode().v(), workInfoOfDaily.getGoStraightAtr().value == 1 ? true : false,
+				workInformation.getWorkTimeCode() == null ? null : workInformation.getWorkTimeCode().v(), workInfoOfDaily.getGoStraightAtr().value == 1 ? true : false,
 				workInfoOfDaily.getBackStraightAtr().value == 1 ? true : false, kscdtSchTimes, kscdtEditStates, kscdtSchAtdLvwTimes,
 				kscdtSchShortTimeTs, kscdtSchBreakTs);
 		return basicInfo;

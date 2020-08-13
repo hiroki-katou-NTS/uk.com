@@ -34,8 +34,11 @@ public class AutoCorrectStampOfTimeZone {
 
 		// 直行直帰による、戻り時刻補正
 		/// domain no map
-		domainDaily
-				.setOutingTime(ReturnDirectTimeCorrection.process(companyId, timeLeaving, domainDaily.getOutingTime()));
+		if(timeLeaving != null) {
+			domainDaily
+			.setOutingTime(ReturnDirectTimeCorrection.process(companyId, timeLeaving, domainDaily.getOutingTime()));
+		}
+		
 
 		return domainDaily;
 

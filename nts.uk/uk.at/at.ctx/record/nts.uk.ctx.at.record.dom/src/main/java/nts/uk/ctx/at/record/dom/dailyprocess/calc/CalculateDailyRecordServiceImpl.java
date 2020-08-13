@@ -286,6 +286,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 
 		if (!calculateOption.isMasterTime()) {
 			// エラーチェック
+			if(integrationOfDaily != null) {
+			result.getIntegrationOfDaily().setEmployeeId(integrationOfDaily.getEmployeeId());
+			result.getIntegrationOfDaily().setYmd((integrationOfDaily.getYmd()));
+			}
 			result.setIntegrationOfDaily(calculationErrorCheckService.errorCheck(result.getIntegrationOfDaily(),
 					personCommonSetting, companyCommonSetting));
 		}
