@@ -16,9 +16,9 @@ public class JpaBentoReservationScreenRepository extends JpaRepository implement
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("SELECT NEW " + BentoReservationSettingDto.class.getName());
         stringBuilder.append(
-                "(c.operationDistinction, c.referenceTime, c.orderDeadline, c.monthlyResults, c.dailyResults, c.contentChangeDeadline, c.contentChangeDeadlineDay ) ");
+                "(c.operationDistinction, c.referenceTime,c.contentChangeDeadline,c.contentChangeDeadlineDay, c.orderDeadline, c.monthlyResults, c.dailyResults,c.orderData ) ");
         stringBuilder.append("FROM KrcmtBentoReservationSetting c ");
-        stringBuilder.append("WHERE c.companyId = :companyId ");
+        stringBuilder.append("WHERE c.companyID = :companyId ");
         SELECT_BENTO_RERSERVATION_SETTING = stringBuilder.toString();
     }
 

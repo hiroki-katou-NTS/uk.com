@@ -21,4 +21,15 @@ public class BentoReservationSettingRepositoryImpl extends JpaRepository impleme
                 .setParameter("companyId", companyId).getSingle(x -> KrcmtBentoReservationSetting.toDomain(x));
     }
 
+    @Override
+    public void add(BentoReservationSetting bentoReservationSetting) {
+        commandProxy().insert(KrcmtBentoReservationSetting.fromDomain(bentoReservationSetting));
+
+    }
+
+    @Override
+    public void update(BentoReservationSetting bentoReservationSetting) {
+        commandProxy().update(KrcmtBentoReservationSetting.fromDomain(bentoReservationSetting));
+    }
+
 }

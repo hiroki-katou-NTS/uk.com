@@ -1,0 +1,195 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <com:stylefile path="kmr004.a.style.css"/>
+        <com:scriptfile path="kmr004.a.vm.js"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area" class="divHeader">
+            <button id="A1_1" tabindex="1" class="proceed" data-bind="enable: true">#{i18n.getText('KMR004_1')}</button>
+            <button id="A1_2" tabindex="2" class="proceed" data-bind="enable: true">#{i18n.getText('KMR004_2')}</button>
+        </div>
+        <div id="contents-area">
+            <div id="left-content">
+                <table class="table_content">
+                    <colgroup>
+                        <col/>
+                        <col/>
+                    </colgroup>
+                    <tr>
+                        <td>
+                            <div id="A3_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KMR004_3')}</div>
+                        </td>
+                        <td>
+                            <!--A3_2 A3_3-->
+                            <div id="date-range-picker" tabindex="4"
+                                 data-bind="ntsDateRangePicker: {
+                                    required: true,
+									enable: true,
+									showNextPrevious: true,
+									value: dateRangeValue}">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div id="A4_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KMR004_6')}</div>
+                        </td>
+                        <td>
+                            <div id="A4_2" tabindex="6" class="cf" data-bind="ntsSwitchButton: {
+									name: 'Sample Switch',
+									options: roundingRules,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedRuleCode,
+									required: true,
+									enable: true }"></div>
+                            <span id="A4_5" class="label" style="margin-bottom: 15px;">#{i18n.getText('KMR004_10')}</span>
+                        </td>
+                    </tr>
+                </table>
+                <!-- A2_1, A11_1 -->
+                <div id="tree-grid" tabindex="3"></div>
+            </div>
+            <div id="right-content">
+                <table class="table_content">
+                    <tr>
+                        <td>
+                            <div id="A5_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KMR004_11')}</div>
+                            <div id="A5_2" tabindex="8" data-bind="ntsCheckBox: {checked: checked1, enable: enable1, style: 'button'}">#{i18n.getText('KMR004_12')}</div>
+                            <div id="A5_3" tabindex="9" data-bind="ntsCheckBox: {checked: checked2, enable: enable2, style: 'button'}">#{i18n.getText('KMR004_13')}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div id="A6_1" tabindex="10" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+                                <div id="A6_4" class="tab-content-1">
+
+									<table class="table_content">
+										<colgroup>
+											<col/>
+											<col/>
+										</colgroup>
+										<tr>
+                                            <td>
+												<div id="A7_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KMR004_14')}</div>
+											</td>
+                                            <td>
+												<div id="A7_2" tabindex="13" data-bind="with: texteditorOrderTotal">
+													<input data-bind="ntsTextEditor: {
+														value: simpleValue,
+														constraint: constraint,
+														option: option,
+														required: false,
+														enable: enable,
+														readonly: readonly}"/>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="align-top">
+												<div id="A8_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KMR004_15')}</div>
+											</td>
+											<td>
+												<div id="A8_2" tabindex="14" class="verticalRadioBoxGroup" data-bind="ntsRadioBoxGroup: {
+													options: totalRadio,
+													optionsValue: 'id',
+													optionsText: 'name',
+													value: totalRadioSelectedId,
+													enable: totalRadioEnable}">
+												</div> <br/>
+                                                &#160;&#160;&#160;&#160;
+												<div id="A8_6" tabindex="17" class="style-normal"
+                                                     data-bind="ntsCheckBox: { checked: extractionConditionChecked, enable: extractionConditionEnable}">#{i18n.getText('KMR004_20')}</div>
+											</td>
+										</tr>
+									</table>
+								<br/>
+                                </div>
+                                <div id="A6_5" tabindex="11" class="tab-content-2">
+
+									<table class="table_content">
+										<colgroup>
+											<col/>
+											<col/>
+										</colgroup>
+										<tr>
+                                            <td>
+												<div id="A9_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KMR004_14')}</div>
+											</td>
+                                            <td>
+												<div id="A9_2" tabindex="18" data-bind="with: texteditorOrderStatement">
+													<input data-bind="ntsTextEditor: {
+														value: simpleValue,
+														constraint: constraint,
+														option: option,
+														required: false,
+														enable: enable,
+														readonly: readonly}"/>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="align-top">
+												<div id="A10_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KMR004_15')}</div>
+											</td>
+											<td>
+												<table><tr>
+													<td style="padding-top: 0px;">
+														<div id="A10_2" tabindex="19" class="verticalRadioBoxGroup" data-bind="ntsRadioBoxGroup: {
+															options: conditionRadio,
+															optionsValue: 'id',
+															optionsText: 'name',
+															value: conditionRadioSelected,
+															enable: conditionRadioEnable}">
+														</div>
+													</td>
+													<td style="padding-top: 0px;">
+														&#160;&#160;&#160;&#160;
+														<div class="style-normal" id="A10_5" tabindex="21" style="margin-left: -82px;"
+															 data-bind="ntsCheckBox: { checked: separatePageCheckboxChecked, enable: separatePageCheckboxEnable}">#{i18n.getText('KMR004_25')}
+														</div>
+													</td>
+												</tr></table>
+												&#160;&#160;&#160;&#160;&#160;&#160;
+                                                <div id="A10_6" tabindex="22" data-bind="ntsComboBox: {
+													name: '#[KMR004_26]',
+													options: conditionListCcb,
+													optionsValue: 'code',
+													visibleItemsCount: 40,
+													value: conditionCode,
+													optionsText: 'name',
+													editable: false,
+													enable: conditionListCcbEnable,
+													required: false,
+													selectFirstIfNull: false,
+													columns: [
+														{ prop: 'code', length: 4 },
+														{ prop: 'name', length: 10 },
+													]}">
+												</div>
+											</td>
+										</tr>
+									</table>
+								<br/>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

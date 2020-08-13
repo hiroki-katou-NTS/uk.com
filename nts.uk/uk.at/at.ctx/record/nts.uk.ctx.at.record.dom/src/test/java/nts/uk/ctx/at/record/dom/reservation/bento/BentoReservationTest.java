@@ -9,11 +9,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.val;
+import org.junit.Rule;
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.reservation.Helper;
+import org.junit.rules.ExpectedException;
 
 public class BentoReservationTest {
 		
@@ -91,10 +94,39 @@ public class BentoReservationTest {
 		List<BentoReservationDetail> bentoReservationDetails = new ArrayList<>();
 		bentoReservationDetails.add(detail);
 
-		BentoReservation target = Helper.Reservation.DUMMY.bookLunch(regInfo,date,workLocationCode,bentoReservationDetails);
+		BentoReservation target = BentoReservation.bookLunch(regInfo,date,workLocationCode,bentoReservationDetails);
 
-		assertThat(target);
+		BentoReservation targetedResult = new BentoReservation(regInfo,date,false,workLocationCode,bentoReservationDetails);
 
+		assertThat(target).isEqualToComparingFieldByField(targetedResult);
+
+	}
+
+	@Rule
+	public ExpectedException exceptionRule = ExpectedException.none();
+
+	@Test
+	public void bookLunch_1() {
+		exceptionRule.expect(RuntimeException.class);
+		exceptionRule.expectMessage("System error");
+		ReservationRegisterInfo regInfo = Helper.Reservation.RegInfo.DUMMY;
+		Optional<WorkLocationCode> workLocationCode = Helper.Reservation.WorkLocationCodeReg.DUMMY;
+		ReservationDate date = Helper.Reservation.Date.of(today());
+
+		BentoReservation.bookLunch(regInfo,date,workLocationCode,new ArrayList<>());
+	}
+
+	@Test
+	public void modifyLunch() {
+
+		BentoReservationDetail detail = new BentoReservationDetail(2,null,false,new BentoReservationCount(1));
+
+		BentoReservation target = Helper.Reservation.DUMMY;
+
+		target.modifyLunch(true,detail);
+
+		assertThat(target.isOrdered()).isEqualTo(true);
+		assertThat(target.getBentoReservationDetails().size()).isEqualTo(2);
 	}
 
 }
