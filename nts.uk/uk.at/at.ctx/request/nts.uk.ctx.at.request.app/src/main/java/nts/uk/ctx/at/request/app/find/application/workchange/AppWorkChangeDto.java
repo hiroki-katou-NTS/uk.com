@@ -96,8 +96,8 @@ public class AppWorkChangeDto extends ApplicationDto{
 		return new AppWorkChange(
 				NotUseAtr.valueOf(this.straightGo),
 				NotUseAtr.valueOf(this.straightBack),
-				Optional.ofNullable(new WorkTypeCode(this.opWorkTypeCD)),
-				StringUtils.isBlank(this.opWorkTimeCD) ? Optional.ofNullable(new WorkTimeCode(this.opWorkTimeCD)) : Optional.empty(),
+				StringUtils.isBlank(this.opWorkTypeCD) ? Optional.empty() : Optional.ofNullable(new WorkTypeCode(this.opWorkTypeCD)),
+				StringUtils.isBlank(this.opWorkTimeCD) ? Optional.empty() : Optional.ofNullable(new WorkTimeCode(this.opWorkTimeCD)) ,
 				CollectionUtil.isEmpty(timeZoneWithWorkNoLst) ? Collections.emptyList() : timeZoneWithWorkNoLst.stream().map(item -> item.toDomain()).collect(Collectors.toList()));
 	}
 	public AppWorkChange toDomain(Application app) {
@@ -105,7 +105,7 @@ public class AppWorkChangeDto extends ApplicationDto{
 				NotUseAtr.valueOf(this.straightGo),
 				NotUseAtr.valueOf(this.straightBack),
 				StringUtils.isBlank(this.opWorkTypeCD) ? Optional.empty() : Optional.ofNullable(new WorkTypeCode(this.opWorkTypeCD)),
-				StringUtils.isBlank(this.opWorkTimeCD) ? Optional.empty() : Optional.ofNullable(new WorkTimeCode(this.opWorkTimeCD)),
+				StringUtils.isBlank(this.opWorkTimeCD) ? Optional.empty() : Optional.ofNullable(new WorkTimeCode(this.opWorkTimeCD)) ,
 				CollectionUtil.isEmpty(timeZoneWithWorkNoLst) ? Collections.emptyList() : timeZoneWithWorkNoLst.stream().map(item -> item.toDomain()).collect(Collectors.toList()),
 				app);
 	}
