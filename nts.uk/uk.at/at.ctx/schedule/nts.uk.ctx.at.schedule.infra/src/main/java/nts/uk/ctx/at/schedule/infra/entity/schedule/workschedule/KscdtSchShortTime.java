@@ -90,11 +90,10 @@ public class KscdtSchShortTime extends ContractUkJpaEntity {
 	}
 
 	// 勤務予定．勤怠時間．勤務時間．総労働時間．短時間勤務時間
-	public ShortWorkTimeOfDaily toDomain(String sID, GeneralDate yMD) {
-		List<KscdtSchShortTime> schShortTimes = kscdtSchTime.getShortTimes();
+	public ShortWorkTimeOfDaily toDomain(String sID, GeneralDate yMD, List<KscdtSchShortTime> shortTimes) {
 		List<ShortWorkTimeOfDaily> result = new ArrayList<>();
-
-		schShortTimes.stream().forEach(x -> {
+		if(!shortTimes.isEmpty()) {
+		shortTimes.stream().forEach(x -> {
 			if(x.pk.sid.equals(this.pk.sid) && x.pk.ymd.equals(this.pk.ymd)) {
 			ShortWorkTimeOfDaily timeOfDaily = new ShortWorkTimeOfDaily(new WorkTimes(x.getCount()),
 					DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(x.getTotalTime())),
@@ -104,6 +103,7 @@ public class KscdtSchShortTime extends ContractUkJpaEntity {
 			result.add(timeOfDaily);
 			}
 		});
+		}
 		ShortWorkTimeOfDaily timeOfDaily = result.stream().filter(predicate->predicate.getChildCareAttribute().value == this.pk.childCareAtr).findFirst().get();
 		return timeOfDaily;
 	}
