@@ -69,7 +69,7 @@ public class JpaExtBudgetDailyRepository extends JpaRepository implements ExtBud
 		
 
 		return this.queryProxy().query(GetDaily, KscdtExtBudgetDailyNew.class)
-				.setParameter("targetUnit", targetOrg.getUnit())
+				.setParameter("targetUnit", targetOrg.getUnit().value)
 				.setParameter("itemCode", itemCode)
 				.setParameter("startDate", datePeriod.start())
 				.setParameter("endDate", datePeriod.end())
