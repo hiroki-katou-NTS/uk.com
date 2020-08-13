@@ -24,6 +24,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.print.ApplicationGen
 import nts.uk.ctx.at.request.dom.application.common.service.print.ApproverPrintDetails;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfApp;
 import nts.uk.ctx.at.request.infra.repository.application.lateleaveearly.AsposeLateLeaveEarly;
+import nts.uk.ctx.at.request.infra.repository.application.stamp.AsposeAppStamp;
 import nts.uk.ctx.at.request.infra.repository.application.workchange.AsposeWorkChange;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -41,6 +42,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 
 	@Inject
 	private AsposeLateLeaveEarly asposeLateLeaveEarly;
+	
+	@Inject
+	private AsposeAppStamp asposeAppStamp;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, PrintContentOfApp printContentOfApp, ApplicationType appType) {
@@ -92,6 +96,13 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case HOLIDAY_WORK_APPLICATION:
 			break;
 		case STAMP_APPLICATION:
+			
+			asposeAppStamp.printAppStampContent(worksheet, printContentOfApp);
+			comboReasonLabel = worksheet.getCells().get("B15");
+			textReasonLabel = worksheet.getCells().get("B18");
+			comboReasonContent = worksheet.getCells().get("D15");
+			textReasonContent = worksheet.getCells().get("D18");
+			printBottomKAF000(comboReasonLabel, textReasonLabel, comboReasonContent, textReasonContent, printContentOfApp);
 			break;
 		case ANNUAL_HOLIDAY_APPLICATION:
 			break;
