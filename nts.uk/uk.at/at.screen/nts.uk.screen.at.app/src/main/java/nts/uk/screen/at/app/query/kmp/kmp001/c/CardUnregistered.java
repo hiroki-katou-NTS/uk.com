@@ -1,11 +1,9 @@
 package nts.uk.screen.at.app.query.kmp.kmp001.c;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -16,13 +14,11 @@ import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetNewestStampNotRegisteredService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampInfoDisp;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 
 /**
  * UKDesign.UniversalK.就業.KDP_打刻.KMP001_IDカードの登録.C：IDカード未登録打刻指定.メニュー別OCD.初期表示を行う
@@ -54,11 +50,6 @@ public class CardUnregistered {
 		if (stampInfoDisps.isEmpty()) {
 			return dto;
 		}
-		
-//		List<String> codes = stampInfoDisps.stream().map(m -> toWorkLocaltions(m)).flatMap(Collection::stream)
-//				.collect(Collectors.toList());
-		
-//		List<WorkLocation> listLocation = codes.stream().map(m -> this.workLocationRepo.findByCode(companyID, m)).collect(Collectors.toList());
 
 		return stampInfoDisps.stream().map(m -> {
 			CardUnregisteredDto cardUnregisteredDto = new CardUnregisteredDto();
@@ -71,13 +62,6 @@ public class CardUnregistered {
 
 	}
 
-	private List<String> toWorkLocaltions(StampInfoDisp info) {
-		return info.getStamp().stream().map(x-> toWorkLocation(x)).collect(Collectors.toList());
-	}
-	
-	private String toWorkLocation(Stamp stamp) {
-		return stamp.getRefActualResults().getWorkLocationCD().map(x -> x.v()).orElse(null);
-	}
 
 	private String getNameWork(String companyID, StampInfoDisp disp) {
 		List<Stamp> stamps = disp.getStamp();
