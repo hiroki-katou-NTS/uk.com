@@ -3,7 +3,7 @@
 } 
 #tree-grid {
     margin: 17px 30px 0px 20px;
-    width: 453px;
+    width: 443px;
     float: left;
 }
 #register-form {
@@ -26,4 +26,7 @@
 
 .row-search{
 	margin-top: -17px !important;
+}
+.contents-area{
+	    overflow-x: hidden!important;
 }

@@ -59,6 +59,7 @@ public class ScheManaStatuTempo {
 		 * 
 		 * @予定管理状態 = 予定管理状態．在籍していない return this
 		 */
+		// trường hợp trước khi vào cty
 		if (!enrolled) {
 			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.NOT_ENROLLED,
 					Optional.empty(), Optional.empty());		
@@ -69,6 +70,7 @@ public class ScheManaStatuTempo {
 		 * @予定管理状態 = 予定管理状態．データ不正 return this
 		 */
 		Optional<EmploymentCode> zEmpployeeCd = ScheManaStatuTempo.getEmplomentCd(require, employeeID, date);
+		// nằm ngoài khoảng lịch sử employment
 		if (!zEmpployeeCd.isPresent()) {
 			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.INVALID_DATA, Optional.empty(),
 					Optional.empty());
@@ -83,14 +85,16 @@ public class ScheManaStatuTempo {
 		 * 
 		 * @予定管理状態 = 予定管理状態．予定管理しない return this
 		 */
+		// nằm ngoài khoảng thời gian của workcondition
 		if (!zScheduleManaCategory.isPresent()) {
 			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.INVALID_DATA, Optional.empty(),
 					Optional.empty());
-		
+		// SCHE_MANAGEMENT_ATR của KSHMT_WORKING_COND_ITEM = 0 
 		} else if (zScheduleManaCategory.get().value == ManageAtr.NOTUSE.value) {
 			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.DO_NOT_MANAGE_SCHEDULE,
 					Optional.empty(), Optional.empty());
 		}
+		// SCHE_MANAGEMENT_ATR của KSHMT_WORKING_COND_ITEM = 1
 		/*
 		 * if [S-4] 休職中か( require, 社員ID, 年月日 )
 		 * 
