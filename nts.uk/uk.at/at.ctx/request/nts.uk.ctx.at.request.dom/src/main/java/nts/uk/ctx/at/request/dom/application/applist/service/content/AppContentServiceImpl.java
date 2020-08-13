@@ -128,4 +128,56 @@ public class AppContentServiceImpl implements AppContentService {
 		return result;
 	}
 
+	@Override
+	public List<ListOfAppTypes> getAppNameInAppList() {
+		List<ListOfAppTypes> result = new ArrayList<>();
+		// アルゴリズム「申請一覧申請種類のプログラムID」を実行する
+		List<AppTypeMapProgramID> appTypeMapProgramIDLst = this.getListProgramIDOfAppType();
+		for(AppTypeMapProgramID item : appTypeMapProgramIDLst) {
+			result.add(new ListOfAppTypes(
+					item.getAppType(), 
+					Strings.EMPTY, 
+					false, 
+					Optional.of(item.getProgramID()), 
+					item.getApplicationTypeDisplay() == null ? Optional.empty() : Optional.of(item.getApplicationTypeDisplay()), 
+					Optional.of("A")));
+		}
+		return result;
+	}
+
+	@Override
+	public List<AppTypeMapProgramID> getListProgramIDOfAppType() {
+		List<AppTypeMapProgramID> result = new ArrayList<>();
+		// 残業申請＝KAF005、0
+		result.add(new AppTypeMapProgramID(ApplicationType.OVER_TIME_APPLICATION, "KAF005", ApplicationTypeDisplay.EARLY_OVERTIME));
+		// 残業申請＝KAF005、1
+		result.add(new AppTypeMapProgramID(ApplicationType.OVER_TIME_APPLICATION, "KAF005", ApplicationTypeDisplay.NORMAL_OVERTIME));
+		// 残業申請＝KAF005、2
+		result.add(new AppTypeMapProgramID(ApplicationType.OVER_TIME_APPLICATION, "KAF005", ApplicationTypeDisplay.EARLY_NORMAL_OVERTIME));
+		// 休暇申請＝KAF006
+		result.add(new AppTypeMapProgramID(ApplicationType.ABSENCE_APPLICATION, "KAF006", null));
+		// 勤務変更申請＝KAF007
+		result.add(new AppTypeMapProgramID(ApplicationType.WORK_CHANGE_APPLICATION, "KAF007", null));
+		// 出張申請＝KAF008
+		result.add(new AppTypeMapProgramID(ApplicationType.BUSINESS_TRIP_APPLICATION, "KAF008", null));
+		// 直行直帰申請＝KAF009
+		result.add(new AppTypeMapProgramID(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, "KAF009", null));
+		// 休出時間申請＝KAF010
+		result.add(new AppTypeMapProgramID(ApplicationType.HOLIDAY_WORK_APPLICATION, "KAF010", null));
+		// 打刻申請＝KAF002、0
+		result.add(new AppTypeMapProgramID(ApplicationType.STAMP_APPLICATION, "KAF002", ApplicationTypeDisplay.STAMP_ADDITIONAL));
+		// 打刻申請＝KAF002、1
+		result.add(new AppTypeMapProgramID(ApplicationType.STAMP_APPLICATION, "KAF002", ApplicationTypeDisplay.STAMP_ONLINE_RECORD));
+		// 時間年休申請＝KAF012
+		result.add(new AppTypeMapProgramID(ApplicationType.ANNUAL_HOLIDAY_APPLICATION, "KAF012", null));
+		// 遅刻早退取消申請＝KAF004
+		result.add(new AppTypeMapProgramID(ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION, "KAF004", null));
+		// 振休振出申請＝KAF011
+		result.add(new AppTypeMapProgramID(ApplicationType.COMPLEMENT_LEAVE_APPLICATION, "KAF011", null));
+		// 任意申請＝KAF020
+		result.add(new AppTypeMapProgramID(ApplicationType.OPTIONAL_ITEM_APPLICATION, "KAF020", null));
+		// 対象の申請種類に対しプログラムIDを返す
+		return result;
+	}
+
 }
