@@ -96,7 +96,7 @@ module nts.uk.at.kdp003.a {
 
 			$(window).trigger('resize');
 
-			vm.$ajax('at', API.FINGER_STAMP_SETTING)
+			return vm.$ajax('at', API.FINGER_STAMP_SETTING)
 				.then((data: FingerStampSetting) => {
 					if (data) {
 						vm.fingerStampSetting(data);
@@ -136,7 +136,7 @@ module nts.uk.at.kdp003.a {
 					// <<ScreenQuery>> 打刻管理者でログインする
 					return vm.$ajax('at', API.COMPANIES)
 						.then((data: f.CompanyItem[]) => {
-							if (_.every(data, d => d.selectUseOfName === false)) {
+							if (!data.length || _.every(data, d => d.selectUseOfName === false)) {
 								// note: ログイン失敗(打刻会社一覧が取得できない場合)
 								vm.setMessage({ messageId: 'Msg_1527' });
 
@@ -377,7 +377,30 @@ module nts.uk.at.kdp003.a {
 				.then((data: false | StorageData) => {
 					// if login and storage data success
 					if (data) {
-						return vm.loadData(data);
+						// data login by storage
+						const {
+							CCD,
+							CID,
+							PWD,
+							SCD,
+							SID
+						} = data;
+
+						const loginParams: f.ModelData = {
+							contractCode: '000000000000',
+							companyCode: CCD,
+							companyId: CID,
+							employeeCode: SCD,
+							employeeId: SID,
+							password: PWD,
+							passwordInvalid: false,
+							isAdminMode: true,
+							runtimeEnvironmentCreate: true
+						};
+
+						// login again (wtf?????)
+						return vm.$ajax('at', API.LOGIN_ADMIN, loginParams)
+							.then(() => vm.loadData(data)) as JQueryPromise<any>;
 					}
 				})
 				// show message from login data (return by f dialog)
@@ -404,7 +427,7 @@ module nts.uk.at.kdp003.a {
 					return vm.$window.modal('at', DIALOG.F, {
 						mode: 'employee',
 						companyId: data.CID,
-						employee: null
+						employee: employee ? { id: employee.employeeId, code: employee.employeeCode, name: employee.employeeName } : null
 					});
 				})
 				.then((data: f.TimeStampLoginData) => {
