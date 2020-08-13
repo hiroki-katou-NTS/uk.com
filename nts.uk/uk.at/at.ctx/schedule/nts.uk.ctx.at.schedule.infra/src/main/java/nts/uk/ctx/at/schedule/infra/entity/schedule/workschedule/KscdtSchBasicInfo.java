@@ -29,6 +29,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.breakorgoout.primitivevalue.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
@@ -215,12 +216,12 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		atdLvwTimes.stream().forEach(mapper-> {
 			WorkStamp workStamp = new WorkStamp(new TimeWithDayAttr(mapper.getAtdClock()), new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.REAL_STAMP,null), new TimeWithDayAttr(mapper.getAtdClock())), Optional.empty());
 			WorkStamp workStamp2 = new WorkStamp(new TimeWithDayAttr(mapper.getLwkClock()), new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.REAL_STAMP,null), new TimeWithDayAttr(mapper.getLwkClock())), Optional.empty());
-			TimeActualStamp timeActualStamp = new TimeActualStamp(null, workStamp, null);
-			TimeActualStamp timeActualStamp2 = new TimeActualStamp(null, workStamp2, null);
+			TimeActualStamp timeActualStamp = new TimeActualStamp(null, workStamp, 0);
+			TimeActualStamp timeActualStamp2 = new TimeActualStamp(null, workStamp2, 0);
 			TimeLeavingWork timeLeavingWork = new TimeLeavingWork(new WorkNo(mapper.getPk().getWorkNo()), timeActualStamp, timeActualStamp2);
 			timeLeavingWorks.add(timeLeavingWork);
 		});
-		optTimeLeaving = new TimeLeavingOfDailyAttd(timeLeavingWorks, null);
+		optTimeLeaving = new TimeLeavingOfDailyAttd(timeLeavingWorks, new WorkTimes(0));
 		
 		// create Optional<ShortTimeOfDailyAttd> optSortTimeWork
 		ShortTimeOfDailyAttd optSortTimeWork = null;
@@ -234,7 +235,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = this.kscdtSchTime.toDomain(sID, yMD);
 		AttendanceTimeOfDailyAttendance attendance = new AttendanceTimeOfDailyAttendance(
 				null, actualWorkingTimeOfDaily, 
-				null, null, null, null);
+				null, new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0), null);
 		optSortTimeWork = new ShortTimeOfDailyAttd(shortWorkingTimeSheets);
 		return new WorkSchedule(sID, yMD, EnumAdaptor.valueOf(confirmedATR ? 1 : 0, ConfirmedATR.class), 
 				workInfo, affInfo, lstBreakTime, lstEditState, Optional.ofNullable(optTimeLeaving), Optional.ofNullable(attendance), Optional.ofNullable(optSortTimeWork));
