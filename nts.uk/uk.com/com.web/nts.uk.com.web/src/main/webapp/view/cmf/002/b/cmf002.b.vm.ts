@@ -11,7 +11,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         isNewMode:                      KnockoutObservable<boolean> = ko.observable(true);
         checkFocus:                     KnockoutObservable<boolean> = ko.observable(true);
         standType:                      KnockoutObservable<number> = ko.observable(1);
-        index:                          KnockoutObservable<number> = ko.observable(0);  
+        index:                          KnockoutObservable<number> = ko.observable(0);
         conditionSettingList:           KnockoutObservableArray<IConditionSet> = ko.observableArray([]);
         outputItemList:                 KnockoutObservableArray<IOutputItem>   = ko.observableArray([]);
         selectedConditionSetting:       KnockoutObservable<IConditionSet> = ko.observable();
@@ -82,7 +82,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 self.checkFocus(mode);
             }
         }
-        
+
         setCondSetCode(code: string) {
             let self = this;
             self.selectedConditionSettingCode('');
@@ -107,10 +107,10 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     if (conditionSetCode) {
                         self.setCondSetCode(conditionSetCode);
                         self.index(self.getIndex(conditionSetCode));
-                    }                    
+                    }
                     let code = self.conditionSettingList()[self.index()].conditionSetCode;
                     self.setCondSetCode(code);
-                    setTimeout(function(){ 
+                    setTimeout(function(){
                         $("tr[data-id='" + code + "'] ").focus();
                         self.setNewMode(false);
                     }, 100);
@@ -120,7 +120,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             }).always(() => {
                 block.clear();
             });
-            
+
         }
 
 
@@ -139,11 +139,11 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().conditionSetCode(condSet.conditionSetCode);
             self.conditionSetData().conditionSetName(condSet.conditionSetName);
             self.conditionSetData().categoryId(categoryId);
-            
+
             if (self.listCategory() && self.listCategory().length > 0 && categoryName) {
                 self.categoryName(categoryId + "　" + categoryName);
             } else {
-                self.categoryName("");                
+                self.categoryName("");
             }
             self.conditionSetData().conditionOutputName(condSet.conditionOutputName);
             self.conditionSetData().autoExecution(condSet.autoExecution);
@@ -151,7 +151,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().stringFormat(condSet.stringFormat);
             self.conditionSetData().itemOutputName(condSet.itemOutputName);
         }
-        
+
         getOutItem(selectedConditionSettingCode: string){
             let self = this;
             let itemList: Array<IOutputItem> = [];
@@ -167,8 +167,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 });
             }
         }
-        
-        
+
+
         getCategoryName(cateId){
             let self = this;
             let category :Category = _.find(self.listCategory(), function (x) { return x.categoryId == cateId; });
@@ -176,15 +176,15 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 return category.categoryName;
             }
         }
-        
+
         getIndex(conditionCode) {
             let self = this;
             let index = _.findIndex(self.conditionSettingList(), { 'conditionSetCode': conditionCode });
             return index;
         }
-        
-        
-        
+
+
+
         deleteCnd() {
             let self = this;
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
@@ -204,21 +204,21 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                         } else {
                             self.initScreen(null);
                         }
-                    }); 
+                    });
                 });
              });
         }
-        
+
         openCopyScreen() {
             let self = this;
             setShared('CMF002_T_PARAMS', {
-                    standType:self.standType() , 
-                    conditionSetCd: self.selectedConditionSetting().conditionSetCode , 
+                    standType:self.standType() ,
+                    conditionSetCd: self.selectedConditionSetting().conditionSetCode ,
                     conditionName: self.selectedConditionSetting().conditionSetName});
-            
+
             modal("/view/cmf/002/t/index.xhtml").onClosed(function() {
                 let params = getShared('CMF002_T_Output');
-                
+
                 if (params) {
                     let override = params.overWrite;
                     let destinationCode = params.copyDestinationCode;
@@ -245,20 +245,20 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                             }
                             self.checkFocusWhenCopy = true;
                             self.initScreen(destinationCode);
-                        });  
+                        });
                     });
                 }
             });
         }
-        
-        
+
+
         openVScreen(){
             let self = this;
             setShared('CMF002_V_PARAMS', {
                 categoryId :self.conditionSetData().categoryId() || '',
                 roleAuthority: self.roleAuthority
             });
- 
+
             modal("/view/cmf/002/v1/index.xhtml").onClosed(function() {
                 let params = getShared('CMF002_B_PARAMS');
                 if (params) {
@@ -267,7 +267,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     nts.uk.ui.errors.clearAll();
                 }
             });
-           
+
         }
 
         openDscreen(){
@@ -279,9 +279,9 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     cndSetName: self.conditionSetData().conditionSetName()
                     });
             modal("/view/cmf/002/d/index.xhtml");
-            
+
         }
-        
+
         openCscreen(){
             let self = this;
             setShared('CMF002_C_PARAMS_FROM_B', {
@@ -291,7 +291,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     categoryName: self.categoryName(),
                     standType: self.standType()
             });
-            
+
             modal("/view/cmf/002/c/index.xhtml").onClosed(function() {
                 let params = getShared('CMF002_B_PARAMS_FROM_C');
                 let data :any = {
@@ -301,10 +301,25 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 if (params.isUpdateExecution) {
                     self.getOutItem(data.conditionSetCd);
                 }
-                
+
             });
         }
-        
+
+        public openWscreen() {
+            const vm = this;
+            setShared('CMF002_W_PARAMS', {
+                // TODO
+                categoryName: vm.categoryName(),
+                categoryId: vm.conditionSetData().categoryId(),
+                cndSetCd: vm.conditionSetData().conditionSetCode(),
+                cndSetName: vm.conditionSetData().conditionSetName(),
+            });
+            modal("/view/cmf/002/w/index.xhtml").onClosed(() => {
+                // TODO
+                const params = getShared('CMF002_B_PARAMS_FROM_W');
+            });
+        }
+
         createNewCondition() {
             let self = this;
             let outputItem: Array<IOutputItem> = [];
@@ -324,8 +339,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().itemOutputName(0);
             self.setNewMode(true);
         }
-           
-    
+
+
         register(){
             let self = this;
             nts.uk.ui.errors.clearAll();
@@ -362,12 +377,12 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 if(res)
                     dialog.alertError(res);
             });
-      
+
         }
-        
+
         startPage(): JQueryPromise<any> {
             let self = this;
-            
+
             if (!self.roleAuthority) {
                 self.listCategory(null);
                 return;
@@ -473,7 +488,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         outItemName: string;
         order: number;
     }
-    
+
     export class OutputItem {
         outItemCd: KnockoutObservable<string> = ko.observable('');
         outItemName: KnockoutObservable<string> = ko.observable('');
@@ -490,7 +505,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         categoryId: string;
         categoryName: string;
     }
-    
+
     export class Category {
         categoryId:   KnockoutObservable<string> = ko.observable('');
         categoryName: KnockoutObservable<string> = ko.observable('');
@@ -501,4 +516,3 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         }
     }
  }
-

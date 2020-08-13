@@ -1,0 +1,164 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+  <ui:composition template="../../../../master/dialog.xhtml">
+
+    <!-- head -->
+    <ui:define name="htmlHead">
+      <script>
+        var dialogSize = {
+          width: 500,
+          height: 620
+        };
+      </script>
+
+      <com:stylefile path="cmf002.w.style.css" />
+      <com:scriptfile set="IGNITE" />
+      <com:scriptfile path="cmf002.w.service.js" />
+      <com:scriptfile path="cmf002.w.vm.js" />
+
+    </ui:define>
+
+    <!-- content -->
+    <ui:define name="content">
+      <div id="contents-area">
+        <div class="cmf002-w-content">
+          <!-- W1 -->
+          <div class="div-line">
+            <!-- W1-1 -->
+            <div id="W1_1" class="column-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF002_532')}</div>
+            <!-- W1_2 -->
+            <div id="W1_2" class="cf cmf002-w-switch-btn" tabindex="1" data-bind="ntsSwitchButton: {
+              value: selectedPeriodSetting,
+              options: listPeriodSetting,
+              optionsValue: 'code',
+              optionsText: 'name',
+              required: true,
+              enable: true,
+            }"></div>
+          </div>
+
+          <!-- W2 -->
+          <div class="div-line">
+            <!-- W2-1 -->
+            <div id="W2_1" class="column-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF002_533')}</div>
+            <!-- W2_2 -->
+            <div id="W2_2" tabindex="2" data-bind="ntsComboBox: {
+              width: 150,
+              value: selectedStartDateSegment,
+              options: listStartDateSegment,
+              optionsValue: 'code',
+              optionsText: 'name',
+              visibleItemsCount: 5,
+              required: true,
+              selectFirstIfNull: true,
+              columns: [
+                { prop: 'code', length: 2 },
+                { prop: 'name', length: 10 },
+              ]}"></div>
+          </div>
+
+          <!-- W3 -->
+          <div class="div-line">
+            <!-- W3-1 -->
+            <div id="W3_1" class="column-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF002_534')}</div>
+            <!-- W3_2 -->
+            <div id="W3_2" tabindex="3" data-bind="ntsComboBox: {
+              width: 150,
+              value: selectedStartDateSegment,
+              options: listStartDateSegment,
+              optionsValue: 'code',
+              optionsText: 'name',
+              visibleItemsCount: 5,
+              required: true,
+              selectFirstIfNull: true,
+              columns: [
+                { prop: 'code', length: 2 },
+                { prop: 'name', length: 10 },
+              ]}"></div>
+          </div>
+
+          <!-- W4 -->
+          <div class="div-line">
+            <!-- W4-1 -->
+            <div id="W4_1" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_535')}</div>
+            <!-- W4_2 -->
+            <input id="W4_2" tabindex="3" class="cmf002-w-input" data-bind="ntsTextEditor: {
+              value: startDateAdjustment
+            }" />
+          </div>
+
+          <!-- W5 -->
+          <div class="div-line">
+            <!-- W5-1 -->
+            <div id="W5_1" class="column-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF002_537')}</div>
+            <!-- W5_2 -->
+            <div id="W5_2" tabindex="5" data-bind="ntsComboBox: {
+              width: 150,
+              value: selectedStartDateSegment,
+              options: listStartDateSegment,
+              optionsValue: 'code',
+              optionsText: 'name',
+              visibleItemsCount: 5,
+              required: true,
+              selectFirstIfNull: true,
+              columns: [
+                { prop: 'code', length: 2 },
+                { prop: 'name', length: 10 },
+              ]}"></div>
+          </div>
+
+          <!-- W6 -->
+          <div class="div-line">
+            <!-- W6-1 -->
+            <div id="W6_1" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_539')}</div>
+            <!-- W6_2 -->
+            <input id="W6_2" tabindex="6" class="cmf002-w-input" data-bind="ntsTextEditor: {
+              value: startDateAdjustment
+            }" />
+          </div>
+
+
+          <!-- W7 -->
+          <div class="div-line">
+            <!-- W7-1 -->
+            <div id="W7_1" class="column-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF002_540')}</div>
+            <!-- W7_2 -->
+            <div id="W7_2" tabindex="8" data-bind="ntsComboBox: {
+              width: 150,
+              value: selectedStartDateSegment,
+              options: listStartDateSegment,
+              optionsValue: 'code',
+              optionsText: 'name',
+              visibleItemsCount: 5,
+              required: true,
+              selectFirstIfNull: true,
+              columns: [
+                { prop: 'code', length: 2 },
+                { prop: 'name', length: 10 },
+              ]}"></div>
+          </div>
+
+          <!-- W8 -->
+          <div class="div-line">
+            <!-- W8-1 -->
+            <div id="W8_1" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_541')}</div>
+            <!-- W8_2 -->
+            <div id="W8_2" tabindex="9" data-bind="ntsDatePicker: { value: baseDateSpecified }"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="functions-area-bottom">
+        <!-- btn close dialog -->
+        <button tabindex="10" class="proceed x-large cmf002-w-main-btn" data-bind="click: closeDialog">#{i18n.getText('CMF002_161')}</button>
+        <button tabindex="11" data-bind="click: closeDialog">#{i18n.getText('CMF002_162')}</button>
+      </div>
+    </ui:define>
+  </ui:composition>
+</body>
+
+</html>
