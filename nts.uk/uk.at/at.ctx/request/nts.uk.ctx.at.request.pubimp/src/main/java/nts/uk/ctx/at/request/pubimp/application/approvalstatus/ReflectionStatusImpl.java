@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.pub.application.approvalstatus.ApplicationNewExport;
@@ -19,7 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class ReflectionStatusImpl implements ReflectionStatusPub {
 	
 	@Inject
-	private ApplicationRepository_New repo;
+	private ApplicationRepository repo;
 
 
 	private ApplicationNewExport fromDomain(Application_New domain){

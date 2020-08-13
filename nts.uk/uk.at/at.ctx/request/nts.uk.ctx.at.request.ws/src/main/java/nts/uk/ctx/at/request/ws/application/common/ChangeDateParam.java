@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.ws.application.common;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
@@ -15,7 +13,11 @@ import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 @Getter
 public class ChangeDateParam {
 	
-	private List<String> dateLst;
+	private String appDate;
+	
+	private String startDate;
+	
+	private String endDate;
 	
 	private AppDispInfoStartupDto appDispInfoStartupOutput;
 	

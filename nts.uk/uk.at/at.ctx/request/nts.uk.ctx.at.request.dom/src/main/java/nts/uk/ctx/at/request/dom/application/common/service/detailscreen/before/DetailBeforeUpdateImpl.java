@@ -7,22 +7,16 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 @Stateless
 public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 
 	@Inject
-	private NewBeforeRegister_New newBeforeRegister;
-
-	@Inject
-	private ApplicationRepository_New applicationRepository_Old;
+	private NewBeforeRegister newBeforeRegister;
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
@@ -101,20 +95,20 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 	 */
 	@Override
 	public boolean processBefDetailScreenReg(String companyID, String employeeID, GeneralDate appDate,
-			int employeeRouteAtr, String appID, PrePostAtr_Old postAtr, int version) {
+			int employeeRouteAtr, String appID, PrePostAtr postAtr, int version) {
 		// 選択した勤務種類の矛盾チェック(check sự mâu thuẫn của worktype đã chọn)
 		// selectedWorkTypeConflictCheck();
 
-		Application_New application = applicationRepository_Old.findByID(companyID, appID).get();
-		GeneralDate startDate = application.getAppDate();
-		GeneralDate endDate = application.getAppDate();
+		Application application = applicationRepository.findByID(companyID, appID).get();
+		GeneralDate startDate = application.getAppDate().getApplicationDate();
+		GeneralDate endDate = application.getAppDate().getApplicationDate();
 		// 申請する開始日～申請する終了日までループする
 		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
-			if(loopDate.equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr_Old.PREDICT) && application.isAppOverTime()){
-				newBeforeRegister.confirmCheckOvertime(application.getCompanyID(), application.getEmployeeID(), loopDate);
+			if(loopDate.equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr.PREDICT) && application.isOverTimeApp()){
+				newBeforeRegister.confirmCheckOvertime(companyID, application.getEmployeeID(), loopDate);
 			}else{
 				// アルゴリズム「確定チェック」を実施する
-				newBeforeRegister.confirmationCheck(application.getCompanyID(), application.getEmployeeID(), loopDate);
+				newBeforeRegister.confirmationCheck(companyID, application.getEmployeeID(), loopDate);
 			}
 		}
 		
@@ -125,7 +119,7 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 	@Override
 	public boolean exclusiveCheckErr(String companyID, String appID, int version) {
 		if (applicationRepository.findByID(companyID, appID).isPresent()) {
-			Application_New application = applicationRepository_Old.findByID(companyID, appID).get();
+			Application application = applicationRepository.findByID(companyID, appID).get();
 			if (application.getVersion() != version) {
 				return false;
 			}

@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.init;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.output.AppCommonSetOutput;
 
@@ -12,6 +12,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.outpu
  */
 public interface NewAppCommonSetService {
 	
-	public AppCommonSetOutput getNewAppCommonSet(String companyID, String employeeID, EmploymentRootAtr rootAtr, ApplicationType_Old appType, GeneralDate appDate);
+	public AppCommonSetOutput getNewAppCommonSet(String companyID, String employeeID, EmploymentRootAtr rootAtr, ApplicationType appType, GeneralDate appDate);
 	
 }

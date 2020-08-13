@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.gobackdirectly;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,7 +31,6 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayServ
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeService;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkTypeWorkTimeSelect;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.service.GoBackDirectCommonService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
@@ -42,8 +40,8 @@ import nts.uk.shr.com.context.AppContexts;
 public class GoBackDirectlyFinder {
 	@Inject
 	private GoBackDirectlyRepository_Old goBackDirectRepo;
-	@Inject
-	private GoBackDirectCommonService goBackCommon;
+//	@Inject
+//	private GoBackDirectCommonService goBackCommon;
 	@Inject
 	private GoBackDirectAppSetService goBackAppSet;
 	@Inject
@@ -117,30 +115,30 @@ public class GoBackDirectlyFinder {
 	 * @return
 	 */
 
-	public GoBackDirectSettingDto getGoBackDirectCommonSetting(List<String> employeeIDs, String paramDate) {
-		String companyID = AppContexts.user().companyId();
-		GeneralDate appDate = GeneralDate.fromString(paramDate, "yyyy/MM/dd");
-		List<GeneralDate> listDate = new ArrayList<GeneralDate>();
-		listDate.add(appDate);
-		GoBackDirectSettingDto result = new GoBackDirectSettingDto();
-
-		String sID = AppContexts.user().employeeId();
-		List<EmployeeOvertimeDto> employeeOTs = new ArrayList<>();
-		if (!CollectionUtil.isEmpty(employeeIDs)) {
-			sID = employeeIDs.get(0);
-			List<EmployeeInfoImport> employees = this.atEmployeeAdapter.getByListSID(employeeIDs);
-			if (!CollectionUtil.isEmpty(employees)) {
-				for (EmployeeInfoImport emp : employees) {
-					EmployeeOvertimeDto employeeOT = new EmployeeOvertimeDto(emp.getSid(), emp.getBussinessName());
-					employeeOTs.add(employeeOT);
-				}
-
-			}
-		}
-		result = GoBackDirectSettingDto.convertToDto(goBackCommon.getSettingData(companyID, sID, appDate));
-		result.setEmployees(employeeOTs);
-		return result;
-	}
+//	public GoBackDirectSettingDto getGoBackDirectCommonSetting(List<String> employeeIDs, String paramDate) {
+//		String companyID = AppContexts.user().companyId();
+//		GeneralDate appDate = GeneralDate.fromString(paramDate, "yyyy/MM/dd");
+//		List<GeneralDate> listDate = new ArrayList<GeneralDate>();
+//		listDate.add(appDate);
+//		GoBackDirectSettingDto result = new GoBackDirectSettingDto();
+//
+//		String sID = AppContexts.user().employeeId();
+//		List<EmployeeOvertimeDto> employeeOTs = new ArrayList<>();
+//		if (!CollectionUtil.isEmpty(employeeIDs)) {
+//			sID = employeeIDs.get(0);
+//			List<EmployeeInfoImport> employees = this.atEmployeeAdapter.getByListSID(employeeIDs);
+//			if (!CollectionUtil.isEmpty(employees)) {
+//				for (EmployeeInfoImport emp : employees) {
+//					EmployeeOvertimeDto employeeOT = new EmployeeOvertimeDto(emp.getSid(), emp.getBussinessName());
+//					employeeOTs.add(employeeOT);
+//				}
+//
+//			}
+//		}
+//		result = GoBackDirectSettingDto.convertToDto(goBackCommon.getSettingData(companyID, sID, appDate));
+//		result.setEmployees(employeeOTs);
+//		return result;
+//	}
 	/**
 	 * 起動時の申請表示情報を取得する
 	 * @param companyId 会社ID
@@ -302,7 +300,7 @@ public class GoBackDirectlyFinder {
 					application.getEmployeeID(),
 					application.getAppType(),
 					application.getAppDate(),
-					application.getEnteredPerson(),
+					application.getEnteredPersonID(),
 					application.getOpStampRequestMode(),
 					application.getOpReversionReason(),
 					application.getOpAppStartDate(),

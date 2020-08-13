@@ -17,10 +17,10 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
@@ -33,7 +33,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class AppNotReflectedPubImpl implements AppNotReflectedPub {
 	@Inject
-	private ApplicationRepository_New repoApplication;
+	private ApplicationRepository repoApplication;
 	
 	@Inject
 	private OvertimeRepository repoOvertime;
@@ -53,11 +53,11 @@ public class AppNotReflectedPubImpl implements AppNotReflectedPub {
 		Map<String, AppOverTime> mapOt = new HashMap<>();
 		List<ApplicationOvertimeExport> results = new ArrayList<>();
 		//条件を元に、ドメインモデル「残業申請」を取得する
-		List<Application_New> appOt = repoApplication.getListAppByType(companyId, sId, startDate, endDate, PrePostAtr_Old.POSTERIOR.value,
-				ApplicationType_Old.OVER_TIME_APPLICATION.value, Arrays.asList(ReflectedState_New.NOTREFLECTED.value,ReflectedState_New.WAITREFLECTION.value));
+		List<Application_New> appOt = repoApplication.getListAppByType(companyId, sId, startDate, endDate, PrePostAtr.POSTERIOR.value,
+				ApplicationType.OVER_TIME_APPLICATION.value, Arrays.asList(ReflectedState_New.NOTREFLECTED.value,ReflectedState_New.WAITREFLECTION.value));
 		//条件を元に、ドメインモデル「休日出勤申請」を取得する
-		List<Application_New> appHdw = repoApplication.getListAppByType(companyId, sId, startDate, endDate, PrePostAtr_Old.POSTERIOR.value,
-				ApplicationType_Old.BREAK_TIME_APPLICATION.value, Arrays.asList(ReflectedState_New.NOTREFLECTED.value,ReflectedState_New.WAITREFLECTION.value));
+		List<Application_New> appHdw = repoApplication.getListAppByType(companyId, sId, startDate, endDate, PrePostAtr.POSTERIOR.value,
+				ApplicationType.HOLIDAY_WORK_APPLICATION.value, Arrays.asList(ReflectedState_New.NOTREFLECTED.value,ReflectedState_New.WAITREFLECTION.value));
 		List<String> lstIdOt = new ArrayList<>();
 		List<String> lstIdHdw = new ArrayList<>();
 		Map<GeneralDate, String> mapAppOt = new HashMap<>();

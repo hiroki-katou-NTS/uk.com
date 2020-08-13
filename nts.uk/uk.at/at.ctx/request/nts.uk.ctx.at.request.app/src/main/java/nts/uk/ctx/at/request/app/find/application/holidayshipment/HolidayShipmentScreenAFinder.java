@@ -16,32 +16,25 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.appabsence.AppAbsenceFinder;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeSetDto;
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto_Old;
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoWithDateDto_Old;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.DisplayInforWhenStarting;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.DisplayInformationApplication;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.RemainingHolidayInfor;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTypeKAF011;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absenceleaveapp.AbsenceLeaveAppDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp.RecruitmentAppDto;
-import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
-import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
@@ -52,15 +45,11 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchieve
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput_Old;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.BreakOutType;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentService;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
@@ -72,11 +61,7 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTyp
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
-import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -117,8 +102,8 @@ public class HolidayShipmentScreenAFinder {
 	private ComSubstVacationRepository comSubrepo;
 	@Inject
 	private WithDrawalReqSetRepository withDrawRepo;
-	@Inject
-	private ApplicationReasonRepository appResonRepo;
+//	@Inject
+//	private ApplicationReasonRepository appResonRepo;
 	@Inject
 	private EmployeeRequestAdapter empAdaptor;
 	@Inject
@@ -129,10 +114,10 @@ public class HolidayShipmentScreenAFinder {
 	private PredetemineTimeSettingRepository preTimeSetRepo;
 	@Inject
 	private CollectAchievement collectAchievement;
-	@Inject
-	private RequestOfEachWorkplaceRepository requestWpRepo;
-	@Inject
-	private RequestOfEachCompanyRepository requestComRepo;
+//	@Inject
+//	private RequestOfEachWorkplaceRepository requestWpRepo;
+//	@Inject
+//	private RequestOfEachCompanyRepository requestComRepo;
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	@Inject
@@ -165,7 +150,7 @@ public class HolidayShipmentScreenAFinder {
 	@Inject
 	private HolidayShipmentService holidayShipmentService;
 	
-	private static final ApplicationType_Old APP_TYPE = ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION;
+	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
 	/**
 	 * start event
@@ -536,8 +521,8 @@ public class HolidayShipmentScreenAFinder {
 
 		// アルゴリズム「振休振出申請定型理由の取得」を実行する
 
-		output.setAppReasonComboItems(appResonRepo.getReasonByAppType(companyID, APP_TYPE.value).stream()
-				.map(x -> ApplicationReasonDto.convertToDto(x)).collect(Collectors.toList()));
+//		output.setAppReasonComboItems(appResonRepo.getReasonByAppType(companyID, APP_TYPE.value).stream()
+//				.map(x -> ApplicationReasonDto.convertToDto(x)).collect(Collectors.toList()));
 
 		// アルゴリズム「基準日別設定の取得」を実行する
 		setDateSpecificSetting(companyID, employeeID, refDate, false, recWkTypeCD, recWkTimeCD, absWkTypeCD,
@@ -639,10 +624,10 @@ public class HolidayShipmentScreenAFinder {
 	private void setApprovalFunctionSetting(String employeeID, GeneralDate refDate, HolidayShipmentDto output,
 			String companyID) {
 		List<String> workPlaceIds = empAdaptor.findWpkIdsBySid(companyID, employeeID, refDate);
-		if (!CollectionUtil.isEmpty(workPlaceIds)) {
-			output.setApprovalFunctionSetting(
-					ApprovalFunctionSettingDto.convertToDto(AcApprovalFuncSet(companyID, workPlaceIds)));
-		}
+//		if (!CollectionUtil.isEmpty(workPlaceIds)) {
+//			output.setApprovalFunctionSetting(
+//					ApprovalFunctionSettingDto.convertToDto(AcApprovalFuncSet(companyID, workPlaceIds)));
+//		}
 	}
 
 	private void setAppEmploymentSettings(AppCommonSettingOutput appCommonSet, String employmentCD,
@@ -706,22 +691,22 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 
-	private ApprovalFunctionSetting AcApprovalFuncSet(String companyID, List<String> wpkIds) {
-		ApprovalFunctionSetting result = null;
-		for (String wpID : wpkIds) {
-			Optional<ApprovalFunctionSetting> wpOpt = requestWpRepo.getFunctionSetting(companyID, wpID, APP_TYPE.value);
-			if (wpOpt.isPresent()) {
-				result = wpOpt.get();
-			}
-		}
-		// 職場別設定なし
-		Optional<ApprovalFunctionSetting> comOpt = requestComRepo.getFunctionSetting(companyID, APP_TYPE.value);
-		if (comOpt.isPresent()) {
-			result = comOpt.get();
-		}
-		return result;
-
-	}
+//	private ApprovalFunctionSetting AcApprovalFuncSet(String companyID, List<String> wpkIds) {
+//		ApprovalFunctionSetting result = null;
+//		for (String wpID : wpkIds) {
+//			Optional<ApprovalFunctionSetting> wpOpt = requestWpRepo.getFunctionSetting(companyID, wpID, APP_TYPE.value);
+//			if (wpOpt.isPresent()) {
+//				result = wpOpt.get();
+//			}
+//		}
+//		// 職場別設定なし
+//		Optional<ApprovalFunctionSetting> comOpt = requestComRepo.getFunctionSetting(companyID, APP_TYPE.value);
+//		if (comOpt.isPresent()) {
+//			result = comOpt.get();
+//		}
+//		return result;
+//
+//	}
 	/**
 	 * 振出用勤務種類の取得
 	 * @param companyID
@@ -798,7 +783,7 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 
-	public HolidayShipmentDto commonProcessBeforeStart(ApplicationType_Old appType, String companyID, String employeeID,
+	public HolidayShipmentDto commonProcessBeforeStart(ApplicationType appType, String companyID, String employeeID,
 			GeneralDate baseDate, AppCommonSettingOutput appCommonSettingOutput) {
 		HolidayShipmentDto result = new HolidayShipmentDto();
 
@@ -814,12 +799,12 @@ public class HolidayShipmentScreenAFinder {
 
 		result.setManualSendMailAtr(
 				appCommonSettingOutput.applicationSetting.getManualSendMailAtr().value == 1 ? true : false);
-		result.setSendMailWhenApprovalFlg(
-				appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenApprovalFlg().value == 1 ? true
-						: false);
-		result.setSendMailWhenRegisterFlg(
-				appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenRegisterFlg().value == 1 ? true
-						: false);
+//		result.setSendMailWhenApprovalFlg(
+//				appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenApprovalFlg().value == 1 ? true
+//						: false);
+//		result.setSendMailWhenRegisterFlg(
+//				appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenRegisterFlg().value == 1 ? true
+//						: false);
 		startupErrorCheck(employeeID, baseDate, companyID);
 
 		return result;
@@ -997,7 +982,7 @@ public class HolidayShipmentScreenAFinder {
 	public List<WorkType> extractTargetWkTypes(String companyID, String employmentCode, int breakOutType, List<WorkType> wkTypes) {
 		// ドメインモデル「申請別対象勤務種類」を取得する
 		// AppEmploymentRepository change return method to Optional<AppEmploymentSetting>
-		Optional<AppEmploymentSetting> empSetOpt = appEmploymentSetting.getEmploymentSetting(companyID, employmentCode, ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION.value);
+		Optional<AppEmploymentSetting> empSetOpt = appEmploymentSetting.getEmploymentSetting(companyID, employmentCode, ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
 		if (empSetOpt.isPresent()) {
 			AppEmploymentSetting appEmploymentSetting = empSetOpt.get();
 			List<WorkTypeObjAppHoliday> workTypeObjAppHolidayList = appEmploymentSetting.getListWTOAH();

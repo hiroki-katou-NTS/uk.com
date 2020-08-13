@@ -13,10 +13,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkLocationCD;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-//打刻申請時刻
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+//打刻申請時刻
 public class TimeStampApp {
 //	反映先
 	DestinationTimeApp destinationTimeApp;

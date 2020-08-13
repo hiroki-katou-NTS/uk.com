@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateCancelation;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrEarlyClassification;
+import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrEarlyAtr;
 
 @Data
 @AllArgsConstructor
@@ -23,6 +23,6 @@ public class LateCancelationDto {
 	public LateCancelation toDomain() {
 		return new LateCancelation(
 				workNo,
-				EnumAdaptor.valueOf(lateOrEarlyClassification, LateOrEarlyClassification.class));
+				EnumAdaptor.valueOf(lateOrEarlyClassification, LateOrEarlyAtr.class));
 	}
 }

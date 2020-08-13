@@ -1,42 +1,24 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
-import nts.arc.time.GeneralDate;
-import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
 import nts.uk.ctx.at.request.dom.application.common.datawork.IDataWorkService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforeAppCommonSetting;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
-//import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
-//import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 @Stateless
 public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 
 	@Inject
-	private ApplicationRepository_New appRepository;
+	private ApplicationRepository appRepository;
 
 	@Inject
 	private EmployeeRequestAdapter employeeAdapter;
@@ -54,8 +36,8 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 	@Inject 
 	private InitMode initMode;
 	
-	@Inject
-	ApplicationReasonRepository appFormReposity;
+//	@Inject
+//	ApplicationReasonRepository appFormReposity;
 	
 	@Inject
 	private WorkTimeSettingRepository workTimeRepository;

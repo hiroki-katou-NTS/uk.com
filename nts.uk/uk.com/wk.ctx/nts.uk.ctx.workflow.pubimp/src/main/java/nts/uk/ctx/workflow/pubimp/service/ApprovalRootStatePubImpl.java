@@ -329,8 +329,8 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	}
 
 	@Override
-	public Integer doApprove(String rootStateID, String employeeID) {
-		return approveService.doApprove(rootStateID, employeeID);
+	public Integer doApprove(String rootStateID, String employeeID, String memo) {
+		return approveService.doApprove(rootStateID, employeeID, memo);
 	}
 
 	@Override
@@ -379,8 +379,8 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	}
 
 	@Override
-	public Boolean doDeny(String rootStateID, String employeeID) {
-		return denyService.doDeny(rootStateID, employeeID);
+	public Boolean doDeny(String rootStateID, String employeeID, String memo) {
+		return denyService.doDeny(rootStateID, employeeID, memo);
 	}
 
 	@Override
@@ -734,7 +734,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		List<ApprovalRootState> approvalRootSates = this.approvalRootStateRepository.findAppByListEmployeeIDAndListRecordDate(approvalRecordDates, employeeIDs, rootType);
 		if(!CollectionUtil.isEmpty(approvalRootSates)){
 			for(ApprovalRootState approvalRootState : approvalRootSates){
-				 this.doApprove(approvalRootState.getRootStateID(), approverID);
+				 this.doApprove(approvalRootState.getRootStateID(), approverID, "");
 			}
 		}
 	}

@@ -14,6 +14,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandardRepository;
+import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonTypeItem;
 
 /**
@@ -26,7 +27,7 @@ public class JpaAppReasonStandardRepository extends JpaRepository implements App
 
 	@Override
 	public Optional<AppReasonStandard> findByAppType(String companyID, ApplicationType appType) {
-		String sql = "select * from KRCMT_APP_REASON where CID = @companyID and APP_TYPE = @appType";
+		String sql = "select * from KRCMT_APP_REASON where CID = @companyID and APP_TYPE = @appType order by DISPORDER ASC";
 		List<ReasonTypeItem> reasonTypeItemLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("companyID", companyID)
 				.paramInt("appType", appType.value)
@@ -45,6 +46,11 @@ public class JpaAppReasonStandardRepository extends JpaRepository implements App
 
 	@Override
 	public Optional<AppReasonStandard> findByHolidayAppType(String companyID, HolidayAppType holidayAppType) {
+		return Optional.empty();
+	}
+
+	@Override
+	public Optional<AppReasonStandard> findByCD(ApplicationType appType, AppStandardReasonCode appStandardReasonCode) {
 		return Optional.empty();
 	}
 

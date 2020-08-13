@@ -6,7 +6,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * refactor 4
- * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.設定.会社別.申請承認設定.承認一覧設定.承認一覧表示設定
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.申請承認.設定.会社別.申請承認設定.承認一覧設定.承認一覧表示設定
  * @author Doan Duy Hung
  *
  */

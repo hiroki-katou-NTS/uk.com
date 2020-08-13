@@ -76,11 +76,11 @@ public class GoBackDirectlyService extends WebService {
 	 * 
 	 * @return
 	 */
-	@POST
-	@Path("getGoBackCommonSetting")
-	public GoBackDirectSettingDto getGoBackCommonSetting(ParamGetAppGoBack param) {
-		return this.goBackDirectlyFinder.getGoBackDirectCommonSetting(param.getEmployeeIDs(), param.getAppDate());
-	}
+//	@POST
+//	@Path("getGoBackCommonSetting")
+//	public GoBackDirectSettingDto getGoBackCommonSetting(ParamGetAppGoBack param) {
+//		return this.goBackDirectlyFinder.getGoBackDirectCommonSetting(param.getEmployeeIDs(), param.getAppDate());
+//	}
 
 	/**
 	 * 

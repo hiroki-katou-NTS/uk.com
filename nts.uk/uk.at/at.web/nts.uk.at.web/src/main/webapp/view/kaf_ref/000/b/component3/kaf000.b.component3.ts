@@ -14,7 +14,7 @@ module nts.uk.at.view.kaf000_ref.b.component3.viewmodel {
         enableApprovalReason: KnockoutObservable<boolean>;
         created(params: any) {
             const vm = this;
-            vm.approvalReason = params.application().opReversionReason;
+            vm.approvalReason = params.approvalReason;
             vm.dispApprovalReason = ko.observable(false);
             vm.enableApprovalReason = ko.observable(false);
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput();

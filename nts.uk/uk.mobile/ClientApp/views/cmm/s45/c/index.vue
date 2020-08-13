@@ -131,12 +131,30 @@
         </div>
       </div> 
     </div>
+    <div class="row mt-1 content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_21' | i18n}}</div>
+    <div class="row content-div border-top uk-border-light-gray text-break">
+      <span>{{ applicant | i18n }}</span> 
+      <span v-if="representerDisp" class="uk-text-dark-gray child-font-size">{{ 'CMMS45_22' | i18n(representer) }}</span>
+    </div>
+    <div class="row content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_23' | i18n}}</div>
+    <div class="row content-div border-top uk-border-light-gray">
+      <div class="col-12">
+        <div class="row">{{ appDate | i18n }} {{ appTypeName }} {{'CMMS45_24' | i18n(prePost)}}</div>
+        <div class="row uk-text-dark-gray child-font-size">{{'CMMS45_25' | i18n(inputDate)}}</div>
+      </div>
+    </div>
     <div>
       <app1 v-if="appType==1" v-bind:params="{appOvertime: appDetail}" />
       <app2 v-if="appType==2" v-bind:params="appTransferData" />
       <app3 v-if="appType==3" />
     </div>
-    
+    <div v-if="comboReasonDisp || textReasonDisp" class="row content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_34' | i18n}}</div>
+    <div v-if="comboReasonDisp || textReasonDisp" class="row content-div border-top uk-border-light-gray text-break">
+      <div class="col-12">
+        <div v-if="comboReasonDisp" class="row">{{ comboReason | i18n }}</div> 
+        <div v-if="textReasonDisp" class="row">{{ textReason | i18n }}</div>
+      </div>
+    </div>
     <div
       class="fixed-action-btn" v-show="displayEditFloat"
       v-float-action="{ icon: 'fas fa-pen', background: 'uk-bg-sea-green', forceground: 'uk-text-dark-gray' }"

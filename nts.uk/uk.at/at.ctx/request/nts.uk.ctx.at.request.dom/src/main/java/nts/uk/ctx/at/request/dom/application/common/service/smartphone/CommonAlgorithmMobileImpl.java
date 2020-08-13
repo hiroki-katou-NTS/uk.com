@@ -64,6 +64,7 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmpl
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
+import nts.uk.ctx.at.shared.dom.workmanagementmultiple.UseATR;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -135,7 +136,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 			ApplicationType appType, Optional<HolidayAppType> opHolidayAppType, List<GeneralDate> dateLst,
 			Optional<OvertimeAppAtr> opOvertimeAppAtr) {
 		// 申請共通設定情報を取得する
-		AppDispInfoNoDateOutput appDispInfoNoDateOutput = this.getAppCommonSetInfo(mode, companyID, employeeID, appType, opHolidayAppType);
+		AppDispInfoNoDateOutput appDispInfoNoDateOutput = this.getAppCommonSetInfo(companyID, employeeID, appType, opHolidayAppType);
 		// 基準日に関係する申請設定情報を取得する
 		AppDispInfoWithDateOutput appDispInfoWithDateOutput = this.getAppSetInfoRelatedBaseDate(mode, companyID, employeeID,
 				dateLst, appType, appDispInfoNoDateOutput.getApplicationSetting(), opOvertimeAppAtr);
@@ -144,14 +145,10 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 	}
 
 	@Override
-	public AppDispInfoNoDateOutput getAppCommonSetInfo(boolean mode, String companyID, String employeeID,
-			ApplicationType appType, Optional<HolidayAppType> opHolidayAppType) {
-		List<EmployeeInfoImport> employeeInfoLst = Collections.emptyList();
-		// INPUT．「起動モード」をチェックする
-		if(mode) {
-			// 申請者情報を取得する
-			employeeInfoLst = commonAlgorithm.getEmployeeInfoLst(Arrays.asList(employeeID));
-		}
+	public AppDispInfoNoDateOutput getAppCommonSetInfo(String companyID, String employeeID,
+		ApplicationType appType, Optional<HolidayAppType> opHolidayAppType) {
+		// 申請者情報を取得する
+		List<EmployeeInfoImport> employeeInfoLst = commonAlgorithm.getEmployeeInfoLst(Arrays.asList(employeeID));
 		// 申請別の申請設定の取得
 		ApplicationSetting applicationSetting = applicationSettingRepository.findByAppType(companyID, appType);
 		// 申請理由を取得する
@@ -170,7 +167,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 				appReasonOutput.getDisplayAppReason(), 
 				appReasonOutput.getDisplayStandardReason(), 
 				appReasonOutput.getReasonTypeItemLst(), 
-				opWorkManagementMultiple.isPresent());
+				opWorkManagementMultiple.map(x -> x.getUseATR()==UseATR.use).orElse(false));
 	}
 
 	@Override
@@ -295,7 +292,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 		Optional<List<ActualContentDisplay>> opActualContentDisplayLst = Optional.empty();
 		Optional<List<PreAppContentDisplay>> opPreAppContentDisplayLst = Optional.empty();
 		if(appType == ApplicationType.OVER_TIME_APPLICATION &&
-				appType == ApplicationType.LEAVE_TIME_APPLICATION &&
+				appType == ApplicationType.HOLIDAY_WORK_APPLICATION &&
 				appType == ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION &&
 				appType == ApplicationType.STAMP_APPLICATION &&
 				appType == ApplicationType.ANNUAL_HOLIDAY_APPLICATION) {
@@ -415,7 +412,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 		// 入力者の社員情報を取得する
 		Optional<EmployeeInfoImport> opEmployeeInfoImport = commonAlgorithm.getEnterPersonInfor(
 				application.getEmployeeID(), 
-				application.getEnteredPerson());
+				application.getEnteredPersonID());
 		// 14-2.詳細画面起動前モードの判断
 		DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput = beforePreBootMode.judgmentDetailScreenMode(
 				companyID, 

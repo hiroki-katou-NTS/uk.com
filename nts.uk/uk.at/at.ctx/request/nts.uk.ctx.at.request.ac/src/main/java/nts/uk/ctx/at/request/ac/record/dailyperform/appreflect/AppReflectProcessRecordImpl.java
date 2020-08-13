@@ -33,13 +33,12 @@ import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.ScheTimeReflectPu
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.OverTimeRecordPubAtr;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.OvertimeAppPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.PreOvertimePubParameter;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.CommonReflectPara;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.GobackAppRequestPara;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.WorkChangeCommonReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppReflectProcessRecord;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.ApprovalProcessingUseSettingAc;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.CommonReflectPara;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.GobackAppRequestPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.GobackReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.HolidayWorkReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.IdentityProcessUseSetAc;
@@ -48,6 +47,7 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.OvertimeR
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.ScheAndRecordIsReflect;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
@@ -63,12 +63,12 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				appInfor.getEmployeeID(),
 				appDate, 
 				ReflectRecordAtr.REFLECT,
-				appInfor.getReflectionInformation().getForcedReflectionReal() == DisabledSegment_New.TODO ? true : false,
+				appInfor.getReflectionInformation().getForcedReflectionReal() == NotUseAtr.USE ? true : false,
 				EnumAdaptor.valueOf(appInfor.getReflectionInformation().getStateReflectionReal().value, ReflectedStatePubRecord.class),
 				EnumAdaptor.valueOf(appInfor.getReflectionInformation().getStateReflection().value,  ReflectedStatePubRecord.class),
 				EnumAdaptor.valueOf(appInfor.getPrePostAtr().value, PrePostRecordAtr.class),
 				EnumAdaptor.valueOf(appInfor.getAppType().value, ApplicationType.class),
-				appInfor.getReflectionInformation().getForcedReflection() == DisabledSegment_New.TODO ? true : false);
+				appInfor.getReflectionInformation().getForcedReflection() == NotUseAtr.USE ? true : false);
         ScheAndRecordIsReflectPub checkResult = recordPub.appReflectProcess(para, EnumAdaptor.valueOf(executionType.value, ExecutionType.class),isCalWhenLock);
 		return new ScheAndRecordIsReflect(checkResult.isScheReflect(), checkResult.isRecordReflect());
 	}

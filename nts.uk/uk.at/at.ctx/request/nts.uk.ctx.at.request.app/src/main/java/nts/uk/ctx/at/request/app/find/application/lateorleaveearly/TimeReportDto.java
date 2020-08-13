@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrEarlyClassification;
+import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrEarlyAtr;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeReport;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -22,11 +22,11 @@ public class TimeReportDto {
 	private int timeWithDayAttr;
 
 	public static TimeReportDto fromDomain(TimeReport value) {
-		return new TimeReportDto(value.getWorkNo(), value.getLateOrEarlyClassification().value, 1);
+		return new TimeReportDto(value.getWorkNo(), value.getLateOrEarlyClassification().value, value.getTimeWithDayAttr().v());
 	}
 
 	public TimeReport toDomain() {
-		return new TimeReport(workNo, EnumAdaptor.valueOf(lateOrEarlyClassification, LateOrEarlyClassification.class),
+		return new TimeReport(workNo, EnumAdaptor.valueOf(lateOrEarlyClassification, LateOrEarlyAtr.class),
 				new TimeWithDayAttr(timeWithDayAttr));
 	}
 }

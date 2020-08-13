@@ -1,6 +1,7 @@
 import { _, Vue } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
 import { KDL002Component } from '../../../kdl/002';
+import { Kdl001Component } from '../../../kdl/001';
 import { KafS00DComponent } from '../../../kaf/s00/d';
 import {
     KafS00AComponent,
@@ -17,12 +18,12 @@ import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
     resource: require('./resources.json'),
     validations: {
         valueWorkHours1: {
-            timeRange: true,
+            timeRange: false,
             required: true
         },
         valueWorkHours2: {
-            timeRange: true,
-            required: true
+            timeRange: false,
+            required: false
         }
     },
     constraints: [],
@@ -31,7 +32,8 @@ import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
         'kafs00-b': KafS00BComponent,
         'kafs00-c': KafS00CComponent,
         'worktype': KDL002Component,
-        'kafs00d': KafS00DComponent
+        'kafs00d': KafS00DComponent,
+        'worktime': Kdl001Component,
     },
 
 })
@@ -48,6 +50,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
     public valueWorkHours1: { start: number, end: number } = null;
 
     public valueWorkHours2: { start: number, end: number } = null;
+
+    public isValidateAll: Boolean = true;
 
     // handle visible of view
 
@@ -98,8 +102,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 }
             }]
         },
-        opStampRequestMode: 1,
-        opReversionReason: '1',
+        // opStampRequestMode: 1,
+        // opReversionReason: '1',
         // opAppStartDate: '2020/08/07',
         // opAppEndDate: '2020/08/08',
         // opAppReason: 'jdjadja',
@@ -167,6 +171,16 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 self.$mask('hide');
             }).catch((err: any) => {
                 self.$mask('hide');
+                if (err.messageId) {
+                    this.$modal.error({ messageId: err.messageId });
+                } else {
+    
+                    if (_.isArray(err.errors)) {
+                        this.$modal.error({ messageId: err.errors[0].messageId });
+                    } else {
+                        this.$modal.error({ messageId: err.errors.messageId }); 
+                    }
+                }
             });
     }
 
@@ -308,7 +322,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
             },
             output: {
                 // 定型理由
-                opAppStandardReasonCD: self.mode ? 1 : self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+                opAppStandardReasonCD: self.mode ? '' : self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
                 // 申請理由
                 opAppReason: self.mode ? '' : self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
             }
@@ -336,10 +350,12 @@ export class KafS07AComponent extends KafS00ShrComponent {
     public bindWork(params: any) {
         const self = this;
         self.model.workType.code = self.mode ? params.appWorkChangeDispInfo.workTypeCD : (params.appWorkChange ? (params.appWorkChange.opWorkTypeCD ? params.appWorkChange.opWorkTypeCD : '') : '');
-        self.model.workType.name = _.find(params.appWorkChangeDispInfo.workTypeLst, (item: any) => item.workTypeCode == self.model.workType.code).abbreviationName || self.$i18n('KAFS07_10');
+        let isExist = _.find(params.appWorkChangeDispInfo.workTypeLst, (item: any) => item.workTypeCode == self.model.workType.code);
+        self.model.workType.name = isExist ? isExist.abbreviationName : self.$i18n('KAFS07_10');
 
         self.model.workTime.code = self.mode ? params.appWorkChangeDispInfo.workTimeCD : (params.appWorkChange ? (params.appWorkChange.opWorkTimeCD ? params.appWorkChange.opWorkTimeCD : '') : '');
-        self.model.workTime.name = _.find(params.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == self.model.workTime.code).workTimeDisplayName.workTimeName || self.$i18n('KAFS07_10');
+        isExist = _.find(params.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == self.model.workTime.code);
+        self.model.workTime.name = isExist ? isExist.workTimeDisplayName.workTimeName : self.$i18n('KAFS07_10');
         self.bindWorkTime(params.appWorkChangeDispInfo);
     }
     public bindWorkTime(params: any) {
@@ -465,8 +481,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 b = {
                     workNo: 2,
                     timeZone: {
-                        startTime: this.valueWorkHours2.start,
-                        endTime: this.valueWorkHours2.end
+                        startTime: this.valueWorkHours2 ? this.valueWorkHours2.start : null,
+                        endTime: this.valueWorkHours2 ? this.valueWorkHours2.end : null
                     }
                 };
                 this.appWorkChangeDto.timeZoneWithWorkNoLst.push(b);
@@ -516,9 +532,11 @@ export class KafS07AComponent extends KafS00ShrComponent {
             }
         }
         
-
-        this.application.opAppStandardReasonCD = this.kaf000_C_Params.output.opAppStandardReasonCD;
-        this.application.opAppReason = this.kaf000_C_Params.output.opAppReason;
+        if (this.kaf000_C_Params.output) {
+            this.application.opAppStandardReasonCD = this.kaf000_C_Params.output.opAppStandardReasonCD;
+            this.application.opAppReason = this.kaf000_C_Params.output.opAppReason;
+        }
+        this.application.enteredPerson = this.user.employeeId;
 
 
     }
@@ -539,7 +557,17 @@ export class KafS07AComponent extends KafS00ShrComponent {
             })
             .catch((res: any) => {
                 self.$mask('hide');
-                self.$modal.error({ messageId: res.messageId });
+                if (res.messageId) {
+                    this.$modal.error({ messageId: res.messageId });
+                } else {
+    
+                    if (_.isArray(res.errors)) {
+                        this.$modal.error({ messageId: res.errors[0].messageId });
+                    } else {
+                        this.$modal.error({ messageId: res.errors.messageId }); 
+                    }
+                }
+                
                 
             });
 
@@ -557,10 +585,19 @@ export class KafS07AComponent extends KafS00ShrComponent {
         }).then((res: any) => {
             this.$mask('hide');
             // KAFS00_D_申請登録後画面に移動する
-            this.$modal('kafs00d', { mode: this.mode ? 1 : 0, appID: res.appID });
+            this.$modal('kafs00d', { mode: this.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.appID });
         }).catch((res: any) => {
             this.$mask('hide');
-            this.$modal.error({ messageId: res.errors[0].messageId });
+            if (res.messageId) {
+                this.$modal.error({ messageId: res.messageId });
+            } else {
+
+                if (_.isArray(res.errors)) {
+                    this.$modal.error({ messageId: res.errors[0].messageId });
+                } else {
+                    this.$modal.error({ messageId: res.errors.messageId }); 
+                }
+            }
         });
     }
     public handleConfirmMessage(listMes: any, res: any) {
@@ -580,18 +617,27 @@ export class KafS07AComponent extends KafS00ShrComponent {
         }
     }
     public register() {
-        console.log(this.application);
-        if (this.$valid) {
-            this.$mask('show');
+        const vm = this;
+        let validAll: boolean = true;
+        for (let child of vm.$children) {
+            child.$validate();
+            if (!child.$valid) {
+                validAll = false;
+            }
         }
-
+        vm.isValidateAll = validAll;
+        console.log(validAll);
+        console.log(vm.application);
+       
         // check validation 
         this.$validate();
-        if (!this.$valid) {
-            this.$mask('hide');
+        if (!this.$valid || !validAll) {
             window.scrollTo(500, 0);
 
             return;
+        }
+        if (this.$valid && validAll) {
+            this.$mask('show');
         }
         this.bindAppWorkChangeRegister();
         console.log(this.appWorkChangeDto);
@@ -628,7 +674,17 @@ export class KafS07AComponent extends KafS00ShrComponent {
         }).catch((res: any) => {
             this.$mask('hide');
             // show message error
-            this.$modal.error({ messageId: res.errors[0].messageId });
+            if (res.messageId) {
+                this.$modal.error({ messageId: res.messageId });
+            } else {
+
+                if (_.isArray(res.errors)) {
+                    this.$modal.error({ messageId: res.errors[0].messageId });
+                } else {
+                    this.$modal.error({ messageId: res.errors.messageId }); 
+                }
+            }
+
         });
 
     }
@@ -674,37 +730,76 @@ export class KafS07AComponent extends KafS00ShrComponent {
     // bind visible of view 
     public bindVisibleView(params: any) {
         let appWorkChangeDispInfo = params;
-
         this.isCondition1 = this.isDisplay1(appWorkChangeDispInfo);
         this.isCondition2 = this.isDisplay2(appWorkChangeDispInfo);
         this.isCondition3 = this.isDisplay3(appWorkChangeDispInfo);
         this.isCondition4 = this.isDisplay4(appWorkChangeDispInfo);
 
     }
-    public openKDL002() {
+    public openKDL002(name: string) {
         console.log(_.map(this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode));
-        this.$modal(
-            'worktype',
-            {
-                seledtedWkTypeCDs: _.map(_.uniqBy(this.data.appWorkChangeDispInfo.workTypeLst, (e: any) => e.workTypeCode), (item: any) => item.workTypeCode),
-                selectedWorkTypeCD: this.model.workType.code,
-                seledtedWkTimeCDs: _.map(this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode),
-                selectedWorkTimeCD: this.model.workTime.code,
-                isSelectWorkTime: '1',
-            }
-        ).then((f: any) => {
-            if (f) {
-                this.model.workType.code = f.selectedWorkType.workTypeCode;
-                this.model.workType.name = f.selectedWorkType.name;
-                this.model.workTime.code = f.selectedWorkTime.code;
-                this.model.workTime.name = f.selectedWorkTime.name;
-                if (!this.isCondition4) {
+        if (name == 'worktype') {
+            this.$modal(
+                'worktype',
+                {
+                    seledtedWkTypeCDs: _.map(_.uniqBy(this.data.appWorkChangeDispInfo.workTypeLst, (e: any) => e.workTypeCode), (item: any) => item.workTypeCode),
+                    selectedWorkTypeCD: this.model.workType.code,
+                    seledtedWkTimeCDs: _.map(this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode),
+                    selectedWorkTimeCD: this.model.workTime.code,
+                    isSelectWorkTime: 1,
+                }
+            ).then((f: any) => {
+                if (f) {
+                    this.model.workType.code = f.selectedWorkType.workTypeCode;
+                    this.model.workType.name = f.selectedWorkType.name;
+                    this.model.workTime.code = f.selectedWorkTime.code;
+                    this.model.workTime.name = f.selectedWorkTime.name;
                     this.model.workTime.time = f.selectedWorkTime.workTime1;
                 }
-            }
-        }).catch((res: any) => {
-            // this.$modal.error({ messageParams: [] });
-        });
+            }).catch((res: any) => {
+                if (res.messageId) {
+                    this.$modal.error({ messageId: res.messageId });
+                } else {
+    
+                    if (_.isArray(res.errors)) {
+                        this.$modal.error({ messageId: res.errors[0].messageId });
+                    } else {
+                        this.$modal.error({ messageId: res.errors.messageId }); 
+                    }
+                }
+            });
+        } else {
+            this.$modal(
+                'worktime',
+                {
+                    isAddNone: 1,
+                    seledtedWkTimeCDs: _.map(this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode),
+                    selectedWorkTimeCD: this.model.workTime.code,
+                    isSelectWorkTime: 1
+                }
+            ).then((f: any) => {
+                if (f) {
+                    this.model.workTime.code = f.selectedWorkTime.code;
+                    this.model.workTime.name = f.selectedWorkTime.name;
+                    this.model.workTime.time = f.selectedWorkTime.workTime1;
+                }
+            }).catch((res: any) => {
+                    if (res.messageId) {
+                        this.$modal.error({ messageId: res.messageId });
+                    } else {
+        
+                        if (_.isArray(res.errors)) {
+                            this.$modal.error({ messageId: res.errors[0].messageId });
+                        } else {
+                            this.$modal.error({ messageId: res.errors.messageId }); 
+                        }
+                    }
+                });
+        }
+        
+        
+
+        
     }
 
 }
@@ -736,6 +831,14 @@ export class Model {
     constructor() {
 
     }
+}
+
+// 画面モード
+export enum ScreenMode {
+    // 新規モード
+    NEW = 0,
+    // 詳細モード
+    DETAIL = 1
 }
 
 const API = {

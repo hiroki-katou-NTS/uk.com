@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrEarlyClassification;
+import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrEarlyAtr;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrEarlyInfo;
 
 @Data
@@ -31,6 +31,6 @@ public class LateOrEarlyInfoDto {
 
 	public LateOrEarlyInfo toDomain() {
 		return new LateOrEarlyInfo(this.isCheck, this.workNo, this.isActive, this.isIndicated,
-				EnumAdaptor.valueOf(this.category, LateOrEarlyClassification.class));
+				EnumAdaptor.valueOf(this.category, LateOrEarlyAtr.class));
 	}
 }
