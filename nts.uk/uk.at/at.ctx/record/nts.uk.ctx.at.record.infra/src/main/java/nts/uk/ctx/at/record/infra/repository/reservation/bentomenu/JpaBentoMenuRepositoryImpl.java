@@ -49,6 +49,8 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 
 	private static final String FIND_BENTO_MENU_BY_HISTID;
 
+	private static final String FIND_BENTO_MENU_BY_EndDate;
+
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append(" SELECT a.CID, a.HIST_ID, a.CONTRACT_CD, a.RESERVATION_FRAME1_NAME, a.RESERVATION_FRAME1_START_TIME, a.RESERVATION_FRAME1_END_TIME, ");
@@ -72,6 +74,11 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		builderString.append(SELECT);
 		builderString.append(" WHERE a.CID = 'companyID' AND a.HIST_ID = 'histId' ");
 		FIND_BENTO_MENU_BY_HISTID = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append(SELECT);
+		builderString.append(" WHERE a.CID = 'companyID' AND b.END_YMD = 'date' ");
+		FIND_BENTO_MENU_BY_EndDate = builderString.toString();
 	}
 	
 	@AllArgsConstructor
@@ -239,6 +246,14 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		String query = FIND_BENTO_MENU_BY_HISTID;
 		query = query.replaceFirst("companyID", companyID);
 		query = query.replaceFirst("histId", histId);
+		return getBentoMenu(query);
+	}
+
+	@Override
+	public BentoMenu getBentoMenuByEndDate(String companyID, GeneralDate date) {
+		String query = FIND_BENTO_MENU_BY_EndDate;
+		query = query.replaceFirst("companyID", companyID);
+		query = query.replaceFirst("date", date.toString());
 		return getBentoMenu(query);
 	}
 

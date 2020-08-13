@@ -12,6 +12,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 弁当メニュー履歴
+ */
 public class BentoMenuHistory extends AggregateRoot implements PersistentHistory<DateHistoryItem, DatePeriod, GeneralDate> {
     /**
      * 会社ID

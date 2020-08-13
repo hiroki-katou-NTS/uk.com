@@ -66,7 +66,7 @@ public class BentoReserveSettingCommandHandler extends CommandHandler<BentoReser
 
         @Override
         public BentoMenu getBentoMenu(String cid, GeneralDate date) {
-            return bentoMenuRepository.getBentoMenu(cid,date);
+            return bentoMenuRepository.getBentoMenuByEndDate(cid,date);
         }
 
         @Override
