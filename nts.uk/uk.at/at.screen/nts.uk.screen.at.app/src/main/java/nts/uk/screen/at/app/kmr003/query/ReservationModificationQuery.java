@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.kmr003.find;
+package nts.uk.screen.at.app.kmr003.query;
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.*;
