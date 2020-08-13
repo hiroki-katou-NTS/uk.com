@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformation;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformationRepository;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.get.GetPersonInfoHRInput;
@@ -95,6 +96,23 @@ public class JpaPersonalInformationRepository extends JpaRepository implements P
 			personalInformations = ppdetData;
 		}
 
+		return personalInformations.stream().map(m -> m.toDomain(m)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<PersonalInformation> getdDispatchedInformation(String contractCd, String cId, int workId,
+			GeneralDate baseDate) {
+		String GET_DISPATCHED_INFORMATION = "SELECT a FROM PpedtData a WHERE a.contractCd = :contractCd" 
+				+ " AND a.cId = :cId" 
+				+ " AND a.workId = :workId"
+				+ " AND a.startDate <= baseDate AND s.endDate >= baseDate ";
+		
+		List<PpedtData> personalInformations = this.queryProxy().query(GET_DISPATCHED_INFORMATION, PpedtData.class)
+				.setParameter("contractCd", contractCd)
+				.setParameter("cId", cId)
+				.setParameter("workId", workId)
+				.setParameter("baseDate", baseDate).getList();
+		
 		return personalInformations.stream().map(m -> m.toDomain(m)).collect(Collectors.toList());
 	}
 }
