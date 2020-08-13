@@ -7,8 +7,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
     @bean()
     class Kaf002CViewModel extends Kaf000AViewModel {
        dataSourceOb: KnockoutObservableArray<any>;
-    // length of tabM == length of dataSource
-        tabMs: Array<TabM> = [new TabM(this.$i18n('KAF002_29'), true, true),
+       tabMs: Array<TabM> = [new TabM(this.$i18n('KAF002_29'), true, true),
                               new TabM(this.$i18n('KAF002_31'), true, true),
                               new TabM(this.$i18n('KAF002_76'), true, true),
                               new TabM(this.$i18n('KAF002_32'), true, true),
@@ -18,7 +17,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
     //  ※M2.1_2 = ※M
     //  打刻申請起動時の表示情報.打刻申請設定.取消の機能の使用する　＝　使用する(use)
       // set visible for flag column
-      isVisibleComlumn: boolean = false;
+      isVisibleComlumn: boolean = true;
+      isPreAtr: KnockoutObservable<boolean> = ko.observable(false);
         created() {
             const self = this;
             self.dataSourceOb = ko.observableArray( [] );
