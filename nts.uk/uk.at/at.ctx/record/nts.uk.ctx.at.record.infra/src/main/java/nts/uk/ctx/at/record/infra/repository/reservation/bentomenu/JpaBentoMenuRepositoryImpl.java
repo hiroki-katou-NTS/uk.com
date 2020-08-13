@@ -13,6 +13,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import org.apache.logging.log4j.util.Strings;
 
 import lombok.AllArgsConstructor;
@@ -225,6 +226,27 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		query = query.replaceFirst("companyID", companyID);
 		query = query.replaceAll("startDate", period.start().toString());
 		query = query.replaceAll("endDate", period.end().toString());
+		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+			ResultSet rs = stmt.executeQuery();
+			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));
+			return bentoMenuLst;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
+	@Override
+	public List<BentoMenu> getBentoMenu(String companyID, GeneralDate date, ReservationClosingTimeFrame reservationClosingTimeFrame) {
+		String query = FIND_BENTO_MENU_DATE;
+
+		if (reservationClosingTimeFrame == ReservationClosingTimeFrame.FRAME1) {
+			query += " AND a.RESERVATION_FRAME1_START_TIME IS NOT NULL ";
+		} else {
+			query += " AND a.RESERVATION_FRAME2_START_TIME IS NOT NULL ";
+		}
+
+		query = query.replaceFirst("companyID", companyID);
+		query = query.replaceAll("date", date.toString());
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
 			ResultSet rs = stmt.executeQuery();
 			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));
