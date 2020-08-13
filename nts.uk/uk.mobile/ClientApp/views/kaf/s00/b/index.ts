@@ -68,12 +68,18 @@ export class KafS00BComponent extends Vue {
         if (self.$input.newModeContent.appTypeSetting.displayInitialSegment != 2) {
             self.$output.prePostAtr = self.$input.newModeContent.appTypeSetting.displayInitialSegment;
         }
-        if (self.$input.newModeContent.initSelectMultiDay) {
-            self.$updateValidator('dateRange', { validate: true });
-            self.$updateValidator('date', { validate: false });
-        } else {
+        if (self.$input.newModeContent) {
+            if (self.$input.newModeContent.initSelectMultiDay) {
+                self.$updateValidator('dateRange', { validate: true });
+                self.$updateValidator('date', { validate: false });
+            } else {
+                self.$updateValidator('dateRange', { validate: false });
+                self.$updateValidator('date', { validate: true });
+            }
+        }
+        if (self.$input.detailModeContent) {
             self.$updateValidator('dateRange', { validate: false });
-            self.$updateValidator('date', { validate: true });
+            self.$updateValidator('date', { validate: false });    
         }
     }
 
