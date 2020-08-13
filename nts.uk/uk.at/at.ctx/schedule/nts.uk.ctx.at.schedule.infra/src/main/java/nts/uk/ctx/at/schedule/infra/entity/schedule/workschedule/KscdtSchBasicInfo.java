@@ -37,7 +37,10 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.Work
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
@@ -210,8 +213,8 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
 		TimeWithDayAttr timeWithDayAttr = null;
 		atdLvwTimes.stream().forEach(mapper-> {
-			WorkStamp workStamp = new WorkStamp(new TimeWithDayAttr(mapper.getAtdClock()), null, null);
-			WorkStamp workStamp2 = new WorkStamp(new TimeWithDayAttr(mapper.getAtdClock()), null, null);
+			WorkStamp workStamp = new WorkStamp(new TimeWithDayAttr(mapper.getAtdClock()), new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.REAL_STAMP,null), new TimeWithDayAttr(mapper.getAtdClock())), Optional.empty());
+			WorkStamp workStamp2 = new WorkStamp(new TimeWithDayAttr(mapper.getLwkClock()), new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.REAL_STAMP,null), new TimeWithDayAttr(mapper.getLwkClock())), Optional.empty());
 			TimeActualStamp timeActualStamp = new TimeActualStamp(null, workStamp, null);
 			TimeActualStamp timeActualStamp2 = new TimeActualStamp(null, workStamp2, null);
 			TimeLeavingWork timeLeavingWork = new TimeLeavingWork(new WorkNo(mapper.getPk().getWorkNo()), timeActualStamp, timeActualStamp2);

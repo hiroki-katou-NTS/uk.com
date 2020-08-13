@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainObject;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 /**
@@ -26,6 +29,8 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 		//分類コード
 		private ClassificationCode clsCode;
 		//勤務種別コード
+		private Optional<BusinessTypeCode> businessTypeCode;
+		//加給コード : optional
 		private BonusPaySettingCode bonusPaySettingCode;
 		public AffiliationInforOfDailyAttd(EmploymentCode employmentCode, String jobTitleID, String wplID,
 				ClassificationCode clsCode, BonusPaySettingCode bonusPaySettingCode) {
@@ -36,5 +41,17 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 			this.clsCode = clsCode;
 			this.bonusPaySettingCode = bonusPaySettingCode;
 		}
+		public AffiliationInforOfDailyAttd(EmploymentCode employmentCode, String jobTitleID, String wplID,
+				ClassificationCode clsCode, BusinessTypeCode businessTypeCode,
+				BonusPaySettingCode bonusPaySettingCode) {
+			super();
+			this.employmentCode = employmentCode;
+			this.jobTitleID = jobTitleID;
+			this.wplID = wplID;
+			this.clsCode = clsCode;
+			this.businessTypeCode = Optional.ofNullable(businessTypeCode);
+			this.bonusPaySettingCode = bonusPaySettingCode;
+		}
+		
 		
 }

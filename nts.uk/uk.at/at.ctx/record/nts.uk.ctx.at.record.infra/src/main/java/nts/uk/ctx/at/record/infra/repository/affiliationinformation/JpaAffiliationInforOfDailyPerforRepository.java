@@ -31,6 +31,7 @@ import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDaiAffiliat
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
@@ -136,7 +137,9 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 						rec.getString("WKP_ID"), 
 						ymd, 
 						new ClassificationCode(rec.getString("CLS_CODE")), 
-						new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE")));
+						new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE")),
+						rec.getString("WORK_TYPE_CODE")== null?null: new BusinessTypeCode(rec.getString("WORK_TYPE_CODE"))
+						);
 				return ent;
 			});
 			
@@ -197,7 +200,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 	private List<AffiliationInforOfDailyPerfor> internalQuery(DatePeriod baseDate, List<String> empIds) {
 //		String subEmp = NtsStatement.In.createParamsString(empIds);
 		List<AffiliationInforOfDailyPerfor> result = new ArrayList<>();
-		String sql = "select EMP_CODE, SID, JOB_ID, WKP_ID, YMD, CLS_CODE, BONUS_PAY_CODE from KRCDT_DAI_AFFILIATION_INF "
+		String sql = "select EMP_CODE, SID, JOB_ID, WKP_ID, YMD, CLS_CODE, BONUS_PAY_CODE,WORK_TYPE_CODE from KRCDT_DAI_AFFILIATION_INF "
 				+ " where SID in (" + NtsStatement.In.createParamsString(empIds) + ")"
 				+ " and YMD <= ?"
 				+ " and YMD >= ?";
@@ -215,7 +218,10 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 			result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 				AffiliationInforOfDailyPerfor ent = new AffiliationInforOfDailyPerfor(new EmploymentCode(rec.getString("EMP_CODE")), 
 						rec.getString("SID"), rec.getString("JOB_ID"), rec.getString("WKP_ID"), rec.getGeneralDate("YMD"), 
-						new ClassificationCode(rec.getString("CLS_CODE")), new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE")));
+						new ClassificationCode(rec.getString("CLS_CODE")),
+						new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE")),
+						rec.getString("WORK_TYPE_CODE")== null?null: new BusinessTypeCode(rec.getString("WORK_TYPE_CODE"))
+						);
 				return ent;
 			});
 		} catch (SQLException e) {
@@ -260,7 +266,8 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 				return new AffiliationInforOfDailyPerfor(new EmploymentCode(rec.getString("EMP_CODE")), 
 						rec.getString("SID"), rec.getString("JOB_ID"), rec.getString("WKP_ID"), rec.getGeneralDate("YMD"), 
-						new ClassificationCode(rec.getString("CLS_CODE")), new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE")));
+						new ClassificationCode(rec.getString("CLS_CODE")), new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE")),
+						rec.getString("WORK_TYPE_CODE")== null?null: new BusinessTypeCode(rec.getString("WORK_TYPE_CODE")));
 			});
 		}
 	}

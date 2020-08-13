@@ -51,7 +51,7 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 			List<TimeLeavingWorkExport> timeLeavingWorks = data.getOptTimeLeaving().get().getTimeLeavingWorks().stream()
 					.map(c -> convertToTimeLeavingWork(c)).collect(Collectors.toList());
 			timeLeavingOfDailyAttd = new TimeLeavingOfDailyAttdExport(timeLeavingWorks,
-					data.getOptTimeLeaving().get().getWorkTimes().v());
+					data.getOptTimeLeaving().get().getWorkTimes() ==null?0:data.getOptTimeLeaving().get().getWorkTimes().v());
 		}
 		List<BreakTimeOfDailyAttdExport> listBreakTimeOfDaily = data.getLstBreakTime().stream()
 				.map(c -> new BreakTimeOfDailyAttdExport(c.getBreakType().value,
@@ -61,7 +61,7 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 				)).collect(Collectors.toList());
 
 		WorkScheduleExport workScheduleExport = new WorkScheduleExport(
-				data.getWorkInfo().getRecordInfo().getWorkTimeCode().v(),
+				data.getWorkInfo().getRecordInfo().getWorkTypeCode().v(),
 				data.getWorkInfo().getRecordInfo().getWorkTimeCode() == null ? null
 						: data.getWorkInfo().getRecordInfo().getWorkTimeCode().v(),
 				data.getWorkInfo().getGoStraightAtr().value, data.getWorkInfo().getBackStraightAtr().value,
