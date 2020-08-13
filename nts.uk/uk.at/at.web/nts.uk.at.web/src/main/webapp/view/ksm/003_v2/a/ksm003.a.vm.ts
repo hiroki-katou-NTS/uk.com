@@ -1,7 +1,6 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.ksm003.a {
-    import _viewModel = nts.uk.ui._viewModel;
 
     @bean()
     class ViewModel extends ko.ViewModel {
