@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
@@ -20,7 +21,7 @@ public class AppSetForProxyApp {
 	/**
 	 * 申請種類
 	 */
-	private List<ApplicationType> appTypeLst;
+	private ApplicationType appType;
 	
 	/**
 	 * 残業区分
@@ -32,11 +33,19 @@ public class AppSetForProxyApp {
 	 */
 	private Optional<StampRequestMode> opStampRequestMode;
 	
-	public AppSetForProxyApp(List<ApplicationType> appTypeLst,
+	public AppSetForProxyApp(ApplicationType appType,
 			Optional<OvertimeAppAtr> opOvertimeAppAtr, Optional<StampRequestMode> opStampRequestMode) {
-		this.appTypeLst = appTypeLst;
+		this.appType = appType;
 		this.opOvertimeAppAtr = opOvertimeAppAtr;
 		this.opStampRequestMode = opStampRequestMode;
+	}
+
+	public static AppSetForProxyApp create(int applicationType, Integer overTimeAtr, Integer stampRequestMode) {
+		return new AppSetForProxyApp(
+				EnumAdaptor.valueOf(applicationType, ApplicationType.class),
+				overTimeAtr == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(overTimeAtr, OvertimeAppAtr.class)),
+				stampRequestMode == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(stampRequestMode, StampRequestMode.class))
+		);
 	}
 	
 }

@@ -58,11 +58,11 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ " WHERE a.krqdpApplicationPK.companyID = :companyID";
 	private static final String SELECT_APP = "SELECT c FROM KrqdtApplication_New c "
 			+ "WHERE c.employeeID = :applicantSID " + "AND c.appDate = :appDate " + "AND c.prePostAtr = :prePostAtr "
-			+ "AND c.appType = :applicationType " + "ORDER BY c.inputDate DESC";
+			+ "AND c.appType = :closureId " + "ORDER BY c.inputDate DESC";
 	private static final String SELECT_BY_DATE = SELECT_FROM_APPLICATION
 			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate";
 	private static final String SELECT_BEFORE_APPLICATION = SELECT_FROM_APPLICATION + " AND a.employeeID = :employeeID"
-			+ " AND a.appDate = :appDate " + " AND a.appType = :applicationType "
+			+ " AND a.appDate = :appDate " + " AND a.appType = :closureId "
 			+ " AND a.prePostAtr = :prePostAtr ORDER BY a.inputDate DESC";
 
 	// hoatt
@@ -108,7 +108,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	public List<Application_New> getApp(String applicantSID, GeneralDate appDate, int prePostAtr, int appType) {
 		return this.queryProxy().query(SELECT_APP, KrqdtApplication_New.class)
 				.setParameter("applicantSID", applicantSID).setParameter("appDate", appDate)
-				.setParameter("prePostAtr", prePostAtr).setParameter("applicationType", appType)
+				.setParameter("prePostAtr", prePostAtr).setParameter("closureId", appType)
 				.getList(c -> c.toDomain());
 	}
 
@@ -175,7 +175,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			int appType, int prePostAtr) {
 		return this.queryProxy().query(SELECT_BEFORE_APPLICATION, KrqdtApplication_New.class)
 				.setParameter("companyID", companyId).setParameter("employeeID", employeeID)
-				.setParameter("appDate", appDate).setParameter("applicationType", appType)
+				.setParameter("appDate", appDate).setParameter("closureId", appType)
 				.setParameter("prePostAtr", prePostAtr).getList(c -> c.toDomain());
 	}
 

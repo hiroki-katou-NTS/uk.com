@@ -69,8 +69,9 @@ public class DetailAfterDenyImpl implements DetailAfterDeny {
 		}
 		// interimRemainDataMngRegisterDateChange.registerDateChange(companyID, application.getEmployeeID(), dateLst);
 		// ノートのIF文を参照
+		// TODO: 申請設定 domain has changed!
 		boolean condition = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet() &&
-				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSetting().isSendMailWhenApproval();
+				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().get(0).isSendMailWhenApproval();
 		if(!condition) {
 			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, appID,"");
 		}

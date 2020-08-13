@@ -1,36 +1,18 @@
 package nts.uk.ctx.at.request.infra.repository.setting.company.applicationapprovalsetting.applicationsetting;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 import javax.ejb.Stateless;
 
-import org.apache.commons.lang3.BooleanUtils;
+import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.applicationsetting.KrqstApplicationSet;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.AppSetForProxyApp;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.appdeadlineset.AppDeadlineSetting;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.appdispset.AppDisplaySetting;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.AppLimitSetting;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AfterhandRestriction;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.BeforehandRestriction;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.OTAppBeforeAccepRestric;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.ReceptionRestrictionSetting;
 
 /**
  * refactor 4
@@ -66,7 +48,17 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 		}
 		return applicationSettingLst.get(0);
 	}
-	
+
+	@Override
+	public Optional<ApplicationSetting> findByCompanyId(String companyId) {
+		return this.queryProxy().find(companyId, KrqstApplicationSet.class).map(KrqstApplicationSet::toDomainApplicationSetting);
+	}
+
+	@Override
+	public Integer getNightOvertimeReflectAtr(String companyId) {
+		return this.queryProxy().find(companyId, KrqstApplicationSet.class).map(KrqstApplicationSet::getTimeNightReflectAtr).orElse(null);
+	}
+
 	private Map<String, Object> toObject(NtsResultRecord rec) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		// KRQST_APPLICATION
@@ -109,62 +101,63 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 	}
 	
 	private List<ApplicationSetting> convertToDomain(List<Map<String, Object>> mapLst) {
-		List<ApplicationSetting> result = mapLst.stream().collect(Collectors.groupingBy(x -> x.get("aCID"))).entrySet()
-			.stream().map(x -> {
-				List<AppDeadlineSetting> appDeadlineSetLst = x.getValue().stream().collect(Collectors.groupingBy(y -> y.get("cCLOSURE_ID"))).entrySet()
-					.stream().map(y -> {
-						AppDeadlineSetting appDeadlineSetting = AppDeadlineSetting.createNew(
-								(int) y.getValue().get(0).get("cUSE_ATR"), 
-								(int) y.getValue().get(0).get("cCLOSURE_ID"), 
-								(int) y.getValue().get(0).get("cMCLOSE_DAYS"), 
-								(int) y.getValue().get(0).get("cMCLOSE_CRITERIA_ATR"));
-						return appDeadlineSetting;
-					}).collect(Collectors.toList());
-				ApplicationType dAppType = EnumAdaptor.valueOf((int) x.getValue().get(0).get("dAPP_TYPE"), ApplicationType.class);
-				ApplicationSetting applicationSetting = new ApplicationSetting(
-						(String) x.getValue().get(0).get("aCID"), 
-						new AppLimitSetting(
-								BooleanUtils.toBoolean((int)x.getValue().get(0).get("aMON_ATD_CONFIRM_ATR")), 
-								BooleanUtils.toBoolean((int)x.getValue().get(0).get("aATD_LOCK_ATR")), 
-								BooleanUtils.toBoolean((int)x.getValue().get(0).get("aATD_CONFIRM_ATR")), 
-								BooleanUtils.toBoolean((int)x.getValue().get(0).get("aREASON_REQUIRE_ATR")), 
-								BooleanUtils.toBoolean((int)x.getValue().get(0).get("aFIXED_REASON_REQUIRE_ATR")), 
-								BooleanUtils.toBoolean((int)x.getValue().get(0).get("aDAY_ATD_CONFIRM_ATR"))), 
-						AppTypeSetting.createNew(
-								(int) x.getValue().get(0).get("bAPP_TYPE"), 
-								BooleanUtils.toBoolean((int)x.getValue().get(0).get("bAPP_SEND_MAIL_ATR")), 
-								BooleanUtils.toBoolean((int)x.getValue().get(0).get("bAPV_SEND_MAIL_ATR")), 
-								(int) x.getValue().get(0).get("bPRE_POST_INIT_ATR"), 
-								BooleanUtils.toBoolean((int)x.getValue().get(0).get("bPRE_POST_CHANGE_ATR"))), 
-						new AppSetForProxyApp(
-								Arrays.asList(dAppType), 
-								dAppType == ApplicationType.OVER_TIME_APPLICATION 
-									? Optional.of(EnumAdaptor.valueOf((int) x.getValue().get(0).get("dOPTION_ATR"), OvertimeAppAtr.class))
-									: Optional.empty(), 
-								dAppType == ApplicationType.STAMP_APPLICATION 
-									? Optional.of(EnumAdaptor.valueOf((int) x.getValue().get(0).get("dOPTION_ATR"), StampRequestMode.class))
-									: Optional.empty()), 
-						appDeadlineSetLst, 
-						AppDisplaySetting.createNew(
-								(int) x.getValue().get(0).get("aPRE_POST_DISPLAY_ATR"), 
-								(int) x.getValue().get(0).get("aSEND_MAIL_INI_ATR")), 
-						new ReceptionRestrictionSetting(
-								OTAppBeforeAccepRestric.createNew(
-										(int) x.getValue().get(0).get("bPRE_OT_CHECK_SET"), 
-										(int) x.getValue().get(0).get("bPRE_EARLY_DAYS"), 
-										BooleanUtils.toBoolean((int)x.getValue().get(0).get("bUSE_ATR")), 
-										(Integer) x.getValue().get(0).get("bPRE_OT_BEF_WORK_TIME"), 
-										(Integer) x.getValue().get(0).get("bPRE_OT_AFT_WORK_TIME"), 
-										(Integer) x.getValue().get(0).get("bPRE_OT_BEF_AFT_WORK_TIME")), 
-								new AfterhandRestriction(BooleanUtils.toBoolean((int)x.getValue().get(0).get("bPOST_FUTURE_ALLOW_ATR"))), 
-								BeforehandRestriction.createNew(
-										(int) x.getValue().get(0).get("bPRE_EARLY_DAYS"), 
-										BooleanUtils.toBoolean((int)x.getValue().get(0).get("bUSE_ATR"))), 
-								EnumAdaptor.valueOf((int) x.getValue().get(0).get("bAPP_TYPE"), ApplicationType.class)), 
-						EnumAdaptor.valueOf((int) x.getValue().get(0).get("aBASE_DATE_SET"), RecordDate.class));
-				return applicationSetting;
-			}).collect(Collectors.toList());
-		return result;
+//		List<ApplicationSetting> result = mapLst.stream().collect(Collectors.groupingBy(x -> x.get("aCID"))).entrySet()
+//			.stream().map(x -> {
+//				List<AppDeadlineSetting> appDeadlineSetLst = x.getValue().stream().collect(Collectors.groupingBy(y -> y.get("cCLOSURE_ID"))).entrySet()
+//					.stream().map(y -> {
+//						AppDeadlineSetting appDeadlineSetting = AppDeadlineSetting.createNew(
+//								(int) y.getValue().get(0).get("cUSE_ATR"),
+//								(int) y.getValue().get(0).get("cCLOSURE_ID"),
+//								(int) y.getValue().get(0).get("cMCLOSE_DAYS"),
+//								(int) y.getValue().get(0).get("cMCLOSE_CRITERIA_ATR"));
+//						return appDeadlineSetting;
+//					}).collect(Collectors.toList());
+//				ApplicationType dAppType = EnumAdaptor.valueOf((int) x.getValue().get(0).get("dAPP_TYPE"), ApplicationType.class);
+//				ApplicationSetting applicationSetting = new ApplicationSetting(
+//						(String) x.getValue().get(0).get("aCID"),
+//						new AppLimitSetting(
+//								BooleanUtils.toBoolean((int)x.getValue().get(0).get("aMON_ATD_CONFIRM_ATR")),
+//								BooleanUtils.toBoolean((int)x.getValue().get(0).get("aATD_LOCK_ATR")),
+//								BooleanUtils.toBoolean((int)x.getValue().get(0).get("aATD_CONFIRM_ATR")),
+//								BooleanUtils.toBoolean((int)x.getValue().get(0).get("aREASON_REQUIRE_ATR")),
+//								BooleanUtils.toBoolean((int)x.getValue().get(0).get("aFIXED_REASON_REQUIRE_ATR")),
+//								BooleanUtils.toBoolean((int)x.getValue().get(0).get("aDAY_ATD_CONFIRM_ATR"))),
+//						AppTypeSetting.createNew(
+//								(int) x.getValue().get(0).get("bAPP_TYPE"),
+//								BooleanUtils.toBoolean((int)x.getValue().get(0).get("bAPP_SEND_MAIL_ATR")),
+//								BooleanUtils.toBoolean((int)x.getValue().get(0).get("bAPV_SEND_MAIL_ATR")),
+//								(int) x.getValue().get(0).get("bPRE_POST_INIT_ATR"),
+//								BooleanUtils.toBoolean((int)x.getValue().get(0).get("bPRE_POST_CHANGE_ATR"))),
+//						new AppSetForProxyApp(
+//								dAppType,
+//								dAppType == ApplicationType.OVER_TIME_APPLICATION
+//									? Optional.of(EnumAdaptor.valueOf((int) x.getValue().get(0).get("dOPTION_ATR"), OvertimeAppAtr.class))
+//									: Optional.empty(),
+//								dAppType == ApplicationType.STAMP_APPLICATION
+//									? Optional.of(EnumAdaptor.valueOf((int) x.getValue().get(0).get("dOPTION_ATR"), StampRequestMode.class))
+//									: Optional.empty()),
+//						appDeadlineSetLst,
+//						AppDisplaySetting.createNew(
+//								(int) x.getValue().get(0).get("aPRE_POST_DISPLAY_ATR"),
+//								(int) x.getValue().get(0).get("aSEND_MAIL_INI_ATR")),
+//						new ReceptionRestrictionSetting(
+//								OTAppBeforeAccepRestric.createNew(
+//										(int) x.getValue().get(0).get("bPRE_OT_CHECK_SET"),
+//										(int) x.getValue().get(0).get("bPRE_EARLY_DAYS"),
+//										BooleanUtils.toBoolean((int)x.getValue().get(0).get("bUSE_ATR")),
+//										(Integer) x.getValue().get(0).get("bPRE_OT_BEF_WORK_TIME"),
+//										(Integer) x.getValue().get(0).get("bPRE_OT_AFT_WORK_TIME"),
+//										(Integer) x.getValue().get(0).get("bPRE_OT_BEF_AFT_WORK_TIME")),
+//								new AfterhandRestriction(BooleanUtils.toBoolean((int)x.getValue().get(0).get("bPOST_FUTURE_ALLOW_ATR"))),
+//								BeforehandRestriction.createNew(
+//										(int) x.getValue().get(0).get("bPRE_EARLY_DAYS"),
+//										BooleanUtils.toBoolean((int)x.getValue().get(0).get("bUSE_ATR"))),
+//								EnumAdaptor.valueOf((int) x.getValue().get(0).get("bAPP_TYPE"), ApplicationType.class)),
+//						EnumAdaptor.valueOf((int) x.getValue().get(0).get("aBASE_DATE_SET"), RecordDate.class));
+//				return applicationSetting;
+//			}).collect(Collectors.toList());
+//		return result;
+		return new ArrayList<>();
 	}
 
 }

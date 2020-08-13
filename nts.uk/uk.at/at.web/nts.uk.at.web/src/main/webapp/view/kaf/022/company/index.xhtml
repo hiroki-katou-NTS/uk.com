@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="kaf022.company.main.css" />
+
+        <com:scriptfile path="kaf022.company.service.js" />
+
+        <com:scriptfile path="aa/kaf022.a.vm.js" />
+        <com:scriptfile path="b/kaf022.b.vm.js" />
+        <com:scriptfile path="v/kaf022.v.vm.js" />
+
+        <com:scriptfile path="kaf022.company.vm.js" />
+        <com:scriptfile path="kaf022.company.start.js" />
+
+        <com:EnumScript>
+            nts.uk.ctx.at.request.dom.application.ApplicationType
+            nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppType
+            nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.HolidayAppType
+            nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.PrePostInitialAtr
+            nts.uk.ctx.at.request.dom.application.BreakReflect
+            nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.UnitAssignmentOvertime
+        </com:EnumScript>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area">
+        </div>
+        <div id="contents-area">
+            <div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab, direction: 'vertical' }">
+                <div class="tab-content-01" data-bind="with: viewmodelA">
+                    <ui:include src="./aa/a.xhtml" />
+                </div>
+                <div class="tab-content-02" data-bind="with: viewmodelV">
+                    <ui:include src="./v/v.xhtml" />
+                </div>
+                <div class="tab-content-03" data-bind="with: viewmodelB">
+                    <ui:include src="./b/b.xhtml" />
+                </div>
+                <div class="tab-content-04">
+                    <span>Tab Content C</span><br/>
+                </div>
+                <div class="tab-content-05">
+                    <span>Tab Content D</span><br/>
+                </div>
+                <div class="tab-content-06">
+                    <span>Tab Content E</span><br/>
+                </div>
+                <div class="tab-content-07">
+                    <span>Tab Content F</span><br/>
+                </div>
+                <div class="tab-content-08">
+                    <span>Tab Content G</span><br/>
+                </div>
+                <div class="tab-content-09">
+                    <span>Tab Content H</span><br/>
+                </div>
+                <div class="tab-content-10">
+                    <span>Tab Content I</span><br/>
+                </div>
+                <div class="tab-content-11">
+                    <span>Tab Content J</span><br/>
+                </div>
+                <div class="tab-content-12">
+                    <span>Tab Content K</span><br/>
+                </div>
+                <div class="tab-content-13">
+                    <span>Tab Content N</span><br/>
+                </div>
+                <div class="tab-content-14">
+                    <span>Tab Content Q</span><br/>
+                </div>
+                <div class="tab-content-15">
+                    <span>Tab Content Y</span><br/>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

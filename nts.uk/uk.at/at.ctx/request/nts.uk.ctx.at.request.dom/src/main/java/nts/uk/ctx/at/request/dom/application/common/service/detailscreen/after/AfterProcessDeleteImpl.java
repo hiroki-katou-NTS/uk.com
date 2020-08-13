@@ -48,8 +48,9 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 		List<String> autoFailMail = new ArrayList<>();
 		List<String> autoFailServer = new ArrayList<>();
 		// ノートのIF文を参照
+		// TODO: 申請設定 domain has changed!
 		boolean condition = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet() && 
-				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSetting().isSendMailWhenRegister();
+				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().get(0).isSendMailWhenRegister();
 		if(condition) {
 			isAutoSendMail = true;
 			// アルゴリズム「削除時のメール通知者を取得する」を実行する ( Thực hiện thuật toán 「削除時のメール通知者を取得するLấy người thông báo mail khi delete」

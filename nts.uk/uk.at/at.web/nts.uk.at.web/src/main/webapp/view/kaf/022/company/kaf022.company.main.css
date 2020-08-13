@@ -1,0 +1,70 @@
+#fixed-table-a4 tr {
+	height: 38px !important;
+}
+
+.a4_8 {
+	width: 85px;
+	margin: 5px;
+}
+
+.time-input {
+	width: 42px;
+}
+
+/*td .ntsRadioBox {*/
+	/*width: 120px;*/
+	/*padding-left: 10px*/
+/*}*/
+
+/*td .ntsRadioBox:not(.overtime-method) {*/
+	/*margin-right: 100px;*/
+/*}*/
+
+#fixed-table-a7 td span {
+	padding-left: 10px;
+}
+
+td .control-group {
+	margin-bottom: 0;
+}
+
+.color-header {
+	background-color: #CFF1A5;
+	white-space: normal !important;
+	padding-left: 10px !important;
+}
+
+.nts-fixed-table.cf {
+	padding: 10px 0;
+}
+
+.panel-frame {
+	margin: 10px 0;
+}
+
+#fixed-table-a11 tr {
+	height: 30px
+}
+
+#fixed-table-a17 tr {
+	height: 30px
+}
+
+#fixed-table-a19 tr {
+	height: 30px
+}
+
+#fixed-table-a12 tr {
+	height: 30px
+}
+
+#fixed-table-a20 tr {
+	height: 30px
+}
+#fixed-table-a21 tr {
+	height: 30px
+}
+
+.hdtype {
+	padding-left: 20px;
+}

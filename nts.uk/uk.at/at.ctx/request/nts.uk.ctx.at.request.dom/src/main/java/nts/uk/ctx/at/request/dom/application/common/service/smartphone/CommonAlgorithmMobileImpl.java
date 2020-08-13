@@ -284,11 +284,12 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 			opErrorFlag = Optional.of(approvalRootContentImport_New.getErrorFlag());
 		}
 		// 事前事後の初期選択状態を取得する
+		// TODO: 申請設定 domain has changed!
 		PrePostInitAtr prePostInitAtr = this.getPrePostInitAtr(
 				appDateLst.stream().findFirst(), 
 				appType, 
 				applicationSetting.getAppDisplaySetting().getPrePostDisplayAtr(),
-				applicationSetting.getAppTypeSetting().getDisplayInitialSegment(), 
+				applicationSetting.getAppTypeSettings().get(0).getDisplayInitialSegment(),
 				opOvertimeAppAtr);
 		// INPUT．「申請種類」をチェックする
 		Optional<List<ActualContentDisplay>> opActualContentDisplayLst = Optional.empty();

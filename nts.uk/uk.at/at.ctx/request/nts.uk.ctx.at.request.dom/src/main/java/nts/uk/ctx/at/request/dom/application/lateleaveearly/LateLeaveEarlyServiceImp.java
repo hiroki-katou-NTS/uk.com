@@ -488,12 +488,14 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		// ドメインモデル「遅刻早退取消申請」の新規登録する (đăng ký mới domain 「遅刻早退取消申請」)
 		this.registerDomain(application, infoOutput);
 
+		// TODO: 申請設定 domain has changed!
 		if (infoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting()
-				.getAppTypeSetting().isSendMailWhenRegister()) {
+				.getAppTypeSettings().get(0).isSendMailWhenRegister()) {
 			// 「新規登録時に自動でメールを送信する」がする(chọn auto send mail 「新規登録時に自動でメールを送信する」)
+			// TODO: 申請設定 domain has changed!
 			processResult = this.newAfterRegister.processAfterRegister(application.getAppID(),
 					infoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting()
-							.getAppTypeSetting(),
+							.getAppTypeSettings().get(0),
 					infoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet());
 		}
 

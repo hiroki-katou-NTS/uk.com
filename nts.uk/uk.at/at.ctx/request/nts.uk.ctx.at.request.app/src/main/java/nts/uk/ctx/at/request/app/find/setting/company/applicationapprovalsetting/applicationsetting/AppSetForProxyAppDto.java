@@ -25,7 +25,7 @@ public class AppSetForProxyAppDto {
 	/**
 	 * 申請種類
 	 */
-	private List<Integer> appTypeLst;
+	private Integer appType;
 	
 	/**
 	 * 残業区分
@@ -38,16 +38,17 @@ public class AppSetForProxyAppDto {
 	private Integer opStampRequestMode;
 	
 	public static AppSetForProxyAppDto fromDomain(AppSetForProxyApp appSetForProxyApp) {
+		if (appSetForProxyApp == null) return null;
 		return new AppSetForProxyAppDto(
-				appSetForProxyApp.getAppTypeLst().stream().map(x -> x.value).collect(Collectors.toList()), 
+				appSetForProxyApp.getAppType().value,
 				appSetForProxyApp.getOpOvertimeAppAtr().map(x -> x.value).orElse(null), 
 				appSetForProxyApp.getOpStampRequestMode().map(x -> x.value).orElse(null));
 	}
-	
+
 	public AppSetForProxyApp toDomain() {
 		return new AppSetForProxyApp(
-				appTypeLst.stream().map(x -> EnumAdaptor.valueOf(x, ApplicationType.class)).collect(Collectors.toList()), 
-				opOvertimeAppAtr == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(opOvertimeAppAtr, OvertimeAppAtr.class)), 
+				EnumAdaptor.valueOf(appType, ApplicationType.class),
+				opOvertimeAppAtr == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(opOvertimeAppAtr, OvertimeAppAtr.class)),
 				opStampRequestMode == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(opStampRequestMode, StampRequestMode.class)));
 	}
 }

@@ -44,6 +44,7 @@ public class AppTypeSettingDto {
 	private boolean canClassificationChange;
 	
 	public static AppTypeSettingDto fromDomain(AppTypeSetting appTypeSetting) {
+		if (appTypeSetting == null) return null;
 		return new AppTypeSettingDto(
 				appTypeSetting.getAppType().value, 
 				appTypeSetting.isSendMailWhenRegister(), 
@@ -51,13 +52,13 @@ public class AppTypeSettingDto {
 				appTypeSetting.getDisplayInitialSegment().value, 
 				appTypeSetting.isCanClassificationChange());
 	}
-	
+
 	public AppTypeSetting toDomain() {
 		return new AppTypeSetting(
-				EnumAdaptor.valueOf(appType, ApplicationType.class), 
-				sendMailWhenRegister, 
-				sendMailWhenApproval, 
-				EnumAdaptor.valueOf(displayInitialSegment, PrePostInitAtr.class), 
+				EnumAdaptor.valueOf(appType, ApplicationType.class),
+				sendMailWhenRegister,
+				sendMailWhenApproval,
+				EnumAdaptor.valueOf(displayInitialSegment, PrePostInitAtr.class),
 				canClassificationChange);
 	}
 }

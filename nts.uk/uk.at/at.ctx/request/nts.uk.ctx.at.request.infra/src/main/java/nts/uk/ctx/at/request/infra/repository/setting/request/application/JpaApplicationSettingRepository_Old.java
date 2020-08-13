@@ -132,7 +132,7 @@ public class JpaApplicationSettingRepository_Old extends JpaRepository implement
 //	@Override
 //	public List<ApplicationSetting> getApplicationSettingByCompany(String companyID) {
 //		return this.queryProxy().query(SELECT_WITH_CID, KrqstApplicationSetting.class)
-//				.setParameter("companyID", companyID).getList(c -> toDomain(c));
+//				.setParameter("companyID", companyID).getList(c -> toDomainApplicationSetting(c));
 //	}
 
 

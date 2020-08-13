@@ -306,10 +306,12 @@ public class ApplicationWebservice extends WebService {
 				return GeneralDate.fromString(x, "yyyy/MM/dd");
 			}
 		}).collect(Collectors.toList());
+
+		// TODO: 申請設定 domain has changed!
 		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
 				companyID, 
 				dateLst, 
-				param.getAppDispInfoStartupOutput().toDomain().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSetting().getAppType(), 
+				param.getAppDispInfoStartupOutput().toDomain().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().get(0).getAppType(),
 				param.getAppDispInfoStartupOutput().toDomain().getAppDispInfoNoDateOutput(), 
 				param.getAppDispInfoStartupOutput().toDomain().getAppDispInfoWithDateOutput(),
 				param.getOpOvertimeAppAtr() == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(param.getOpOvertimeAppAtr(), OvertimeAppAtr.class)));

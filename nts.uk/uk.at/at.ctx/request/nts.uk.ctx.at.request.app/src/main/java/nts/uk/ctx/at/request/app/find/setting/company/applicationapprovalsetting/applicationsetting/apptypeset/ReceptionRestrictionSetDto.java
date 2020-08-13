@@ -38,6 +38,7 @@ public class ReceptionRestrictionSetDto {
 	private int appType;
 	
 	public static ReceptionRestrictionSetDto fromDomain(ReceptionRestrictionSetting receptionRestrictionSetting) {
+		if (receptionRestrictionSetting == null) return null;
 		return new ReceptionRestrictionSetDto(
 				OTAppBeforeAccepRestricDto.fromDomain(receptionRestrictionSetting.getOtAppBeforeAccepRestric()), 
 				receptionRestrictionSetting.getAfterhandRestriction(), 

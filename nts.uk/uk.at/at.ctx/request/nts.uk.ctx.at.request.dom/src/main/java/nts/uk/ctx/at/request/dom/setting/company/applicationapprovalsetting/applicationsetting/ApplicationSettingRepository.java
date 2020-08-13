@@ -2,6 +2,8 @@ package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.app
 
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 
+import java.util.Optional;
+
 /**
  * refactor 4
  * @author Doan Duy Hung
@@ -16,5 +18,8 @@ public interface ApplicationSettingRepository {
 	 * @return 申請設定
 	 */
 	public ApplicationSetting findByAppType(String companyID, ApplicationType appType);
-	
+
+	Optional<ApplicationSetting> findByCompanyId(String companyId);
+
+	Integer getNightOvertimeReflectAtr(String companyId);
 }

@@ -21,9 +21,11 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeService;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeSetRepository;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkChangeCheckRegOutput;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.AppWorkChangeSet;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet_Old;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -33,6 +35,9 @@ public class AppWorkChangeFinder {
 
 	@Inject
 	private IAppWorkChangeSetRepository appWRep;
+
+	@Inject
+	private AppWorkChangeSetRepository appWorkChangeSetRepo;
 
 	@Inject
 	private IWorkChangeRegisterService workChangeRegisterService;
@@ -45,6 +50,15 @@ public class AppWorkChangeFinder {
 		Optional<AppWorkChangeSet_Old> app = appWRep.findWorkChangeSetByID(companyId);
 		if (app.isPresent()) {
 			return AppWorkChangeSetDto_Old.fromDomain(app.get());
+		}
+		return null;
+	}
+
+	public AppWorkChangeSetDto findByCompany() {
+		String companyId = AppContexts.user().companyId();
+		Optional<AppWorkChangeSet> appWorkChangeSet = appWorkChangeSetRepo.findByCompanyId(companyId);
+		if (appWorkChangeSet.isPresent()) {
+			AppWorkChangeSetDto.fromDomain(appWorkChangeSet.get());
 		}
 		return null;
 	}
