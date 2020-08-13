@@ -145,6 +145,7 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.BaseAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
@@ -2351,8 +2352,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							new EmploymentCode(employmentHistItemImport.get().getEmploymentCode()),
 							jobTitleHistItemImport.get().getJobTitleId(),
 							workplaceHistItemImport.get().getWorkplaceId(),
-							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()), 
-							new BonusPaySettingCode(worktypeHistItemImport.get().getBusinessTypeCd()))),errMesInfos);
+							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()),
+							worktypeHistItemImport.get().getBusinessTypeCd() == null?null: new BusinessTypeCode(worktypeHistItemImport.get().getBusinessTypeCd()),
+							null
+							)
+						),errMesInfos);
 		} else {
 			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する
