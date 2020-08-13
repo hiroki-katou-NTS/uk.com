@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.dispatchedinformation;
+package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.dispatchedinformation.get;
 
 import java.util.List;
 
@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformation;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformationRepository;
+import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.dispatchedinformation.TemporaryDispatchInformation;
 
 /**
  * 

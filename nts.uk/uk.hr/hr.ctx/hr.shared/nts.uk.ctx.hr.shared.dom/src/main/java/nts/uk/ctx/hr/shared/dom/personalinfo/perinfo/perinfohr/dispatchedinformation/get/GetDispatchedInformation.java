@@ -1,10 +1,11 @@
-package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.dispatchedinformation;
+package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.dispatchedinformation.get;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformation;
+import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.dispatchedinformation.TemporaryDispatchInformation;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.人事.shared.個人情報（人事）.個人情報.アルゴリズム.出向派遣履歴
@@ -42,14 +43,25 @@ public class GetDispatchedInformation {
 			boolean nameCompany, boolean address, boolean addressKana, boolean include, List<String> employeeIds) {
 		
 		List<TemporaryDispatchInformation> temporaryDispatchInformations = new ArrayList<>();
-
-		if (employeeIds.isEmpty()) {
-			return temporaryDispatchInformations;
-		}
-		
 		List<PersonalInformation> informations = require.getdDispatchedInformation(contractCode, companyId, 6, baseDate);
 		List<PersonalInformation> informations1 = new ArrayList<>();
 		boolean checkfinal = false;
+
+		if (employeeIds.isEmpty()) {
+			
+			for (int i = 0 ; i < informations.size() ; i++) {
+				if (informations.get(i).getSid().isPresent()) {
+					informations1.add(informations.get(i));
+					TemporaryDispatchInformation information = new TemporaryDispatchInformation(employeeIds.get(i));
+					information.setTemporaryDispatcher(true);
+					temporaryDispatchInformations.add(information);
+				}
+			}
+			
+			informations = informations1;
+			
+			return temporaryDispatchInformations;
+		}
 
 		for (int i = 0; i < employeeIds.size(); i++) {
 			for (int j = 0; j < informations.size(); j++) {
@@ -151,7 +163,7 @@ public class GetDispatchedInformation {
 						temporaryDispatchInformations.get(j).setTemporaryAssignment(informations.get(i).getSelectCode03().map(m -> m).orElse(""));
 					}
 				}
-			}
+			}	
 		}
 		
 		if (classification3 && nameSelectedMaster) {
