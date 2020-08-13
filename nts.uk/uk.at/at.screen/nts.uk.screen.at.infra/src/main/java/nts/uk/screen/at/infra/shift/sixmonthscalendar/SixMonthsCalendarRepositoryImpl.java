@@ -44,6 +44,7 @@ public class SixMonthsCalendarRepositoryImpl extends JpaRepository implements Si
                 "(c.ksmmtCalendarClassPK.companyId, c.ksmmtCalendarClassPK.classId, c.ksmmtCalendarClassPK.date , c.workingDayAtr) ");
         stringBuilder.append("FROM KsmmtCalendarClass c ");
         stringBuilder.append("WHERE c.ksmmtCalendarClassPK.classId = :classId ");
+        stringBuilder.append("AND c.ksmmtCalendarClassPK.companyId = :companyId ");
         stringBuilder.append("AND c.ksmmtCalendarClassPK.date >= :startDate AND c.ksmmtCalendarClassPK.date <= :endDate ");
         stringBuilder.append("AND c.workingDayAtr != 0 ");
         SELECT_SIXMONTHS_CLASSIFICATION = stringBuilder.toString();
@@ -68,8 +69,9 @@ public class SixMonthsCalendarRepositoryImpl extends JpaRepository implements Si
     }
 
     @Override
-    public List<SixMonthsCalendarClassScreenDto> getSixMonthsCalendarClassByYearMonth(String classId, DatePeriod yearMonth) {
+    public List<SixMonthsCalendarClassScreenDto> getSixMonthsCalendarClassByYearMonth(String conpanyId, String classId, DatePeriod yearMonth) {
         return this.queryProxy().query(SELECT_SIXMONTHS_CLASSIFICATION, SixMonthsCalendarClassScreenDto.class)
+                .setParameter("companyId", conpanyId)
                 .setParameter("classId", classId)
                 .setParameter("startDate", yearMonth.start())
                 .setParameter("endDate", yearMonth.end())
