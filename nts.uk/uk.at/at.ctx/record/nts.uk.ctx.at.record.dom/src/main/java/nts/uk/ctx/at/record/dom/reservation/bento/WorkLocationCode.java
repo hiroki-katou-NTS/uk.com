@@ -8,7 +8,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
  * 勤務場所コード
  */
 
-@StringMaxLength(4)
+@StringMaxLength(7)
 @ZeroPaddedCode
 public class WorkLocationCode extends UpperCaseAlphaNumericPrimitiveValue<WorkLocationCode> {
 

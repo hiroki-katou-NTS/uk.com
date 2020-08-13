@@ -1,16 +1,16 @@
 package nts.uk.ctx.at.record.dom.reservation.bento;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 弁当予約
@@ -101,7 +101,7 @@ public class BentoReservation extends AggregateRoot{
 	/**
 	 * 強制弁当予約する
 	 */
-	public BentoReservation bookLunch(ReservationRegisterInfo registerInfor, ReservationDate reservationDate,
+	public static BentoReservation bookLunch(ReservationRegisterInfo registerInfor, ReservationDate reservationDate,
 			Optional<WorkLocationCode> workLocationCode,List<BentoReservationDetail> bentoReservationDetails)
 	{
 		return new BentoReservation(registerInfor, reservationDate, false,workLocationCode, bentoReservationDetails);
@@ -110,10 +110,10 @@ public class BentoReservation extends AggregateRoot{
 	/**
 	 * 強制弁当予約修正する
 	 */
-	public BentoReservation modifyLunch(boolean ordered, BentoReservationDetail bentoReservationDetail)
-	{
+	public BentoReservation modifyLunch(boolean ordered, BentoReservationDetail bentoReservationDetail) {
 	    this.ordered = ordered;
-	    this.bentoReservationDetails.add(bentoReservationDetail);
+		this.bentoReservationDetails = new ArrayList<>(this.bentoReservationDetails);
+		this.bentoReservationDetails.add(bentoReservationDetail);
         return this;
 	}
 
