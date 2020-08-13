@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualH
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrantInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.DailyInterimRemainMngDataAndFlg;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.ReferenceAtr;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
@@ -50,30 +52,25 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	@Inject
 	private AnnualLeaveRemainHistRepository annualRepo;
 	@Inject
-	private ClosureService closureService;
-	@Inject
-	private GetClosureStartForEmployee startDateForEmployee;
-	@Inject
-	private AggregateMonthlyRecordService aggRecordService;
-	@Inject
 	private TmpAnnualHolidayMngRepository annualRepository;
 	@Inject
 	private InterimRemainRepository interimRepo;
-	@Inject
-	private GetAnnLeaRemNumWithinPeriod annWithinPeriod;
 	@Inject
 	private AnnualLeaveTimeRemainHistRepository annTimeRemainHisRepo;	
 	/** 月別実績の勤怠時間 */
 	@Inject
 	private AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepo;
-	/** 暫定年休管理データを作成する */
-	@Inject
-	private CreateInterimAnnualMngData createInterimAnnual;
 	@Inject
 	private AnnLeaGrantRemDataRepository annLeaRemRepo;
+	@Inject 
+	private RecordDomRequireService requireService;
+	
 	@Override
 	public Optional<AnnualHolidayGrantInfor> getAnnGrantInfor(String cid, String sid, ReferenceAtr referenceAtr,
 			YearMonth ym, GeneralDate ymd) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+	
 		//指定した月を基準に、前回付与日から次回付与日までの期間を取得
 		Optional<DatePeriod> optPeriod = periodGrantInfor.getPeriodGrantDate(cid, sid, ym, ymd);
 		if(!optPeriod.isPresent()) {
@@ -82,7 +79,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		DatePeriod period = optPeriod.get();
 		AnnualHolidayGrantInfor outPut = new AnnualHolidayGrantInfor(sid, period.end().addDays(1), new ArrayList<>());
 		//社員に対応する処理締めを取得する
-		Closure closureOfEmp = closureService.getClosureDataByEmployee(sid, ymd);
+		Closure closureOfEmp = ClosureService.getClosureDataByEmployee(require, cacheCarrier, sid, ymd);
 		//指定月の締め開始日を取得
 		Optional<GeneralDate> optStartDate = this.getStartDateByClosure(sid, ym, closureOfEmp.getClosureMonth().getProcessingYm(), ymd);
 		if(!optStartDate.isPresent()) {
@@ -110,20 +107,21 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		
 		//期間中の年休残数を取得
 		boolean isPastMonth = ym.greaterThanOrEqualTo(closureOfEmp.getClosureMonth().getProcessingYm()) ? false : true;
-		Optional<AggrResultOfAnnualLeave> optAnnualLeaveRemain = annWithinPeriod.algorithm(cid,
-				sid,
-				new DatePeriod(startDate, period.end()),
-				InterimRemainMngMode.MONTHLY,
-				startDate, 
-				false,
-				false,
-				Optional.of(true),//上書きフラグ
-				Optional.of(lstTmpAnnual), //上書き用の暫定年休管理データ
-				Optional.empty(),//前回の年休の集計結果
-				Optional.of(true),//集計開始日を締め開始日とする
-				Optional.of(false), //不足分付与残数データ出力区分
-				Optional.of(isPastMonth),//過去月集計モード
-				Optional.of(ym)); //年月
+		Optional<AggrResultOfAnnualLeave> optAnnualLeaveRemain = GetAnnLeaRemNumWithinPeriodProc
+				.algorithm(require, cacheCarrier, cid,
+					sid,
+					new DatePeriod(startDate, period.end()),
+					InterimRemainMngMode.MONTHLY,
+					startDate, 
+					false,
+					false,
+					Optional.of(true),//上書きフラグ
+					Optional.of(lstTmpAnnual), //上書き用の暫定年休管理データ
+					Optional.empty(),//前回の年休の集計結果
+					Optional.of(true),//集計開始日を締め開始日とする
+					Optional.of(false), //不足分付与残数データ出力区分
+					Optional.of(isPastMonth),//過去月集計モード
+					Optional.of(ym)); //年月
 		if(!optAnnualLeaveRemain.isPresent()) {
 			return Optional.of(outPut);
 		}
@@ -167,10 +165,13 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	 * @return
 	 */
 	public Optional<GeneralDate> getStartDateByClosure(String sid, YearMonth ym, YearMonth processingYm, GeneralDate ymd) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+	
 		//INPUT．指定月が当月かどうかを判断する
 		if(ym.greaterThanOrEqualTo(processingYm)) {
 			//社員に対応する締め期間を取得する
-			DatePeriod period = closureService.findClosurePeriod(sid, ymd);
+			DatePeriod period = ClosureService.findClosurePeriod(require, cacheCarrier, sid, ymd);
 			return Optional.of(period.start());
 		}
 		//ドメインモデル「年休付与残数履歴データ」を取得
@@ -184,15 +185,18 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			return Optional.empty();
 		}
 		AnnualLeaveRemainingHistory annRemainHisInfor = lstAnn.get(0);
-		DatePeriod datePeriodClosure = closureService.getClosurePeriod(annRemainHisInfor.getClosureId().value, annRemainHisInfor.getYearMonth());
+		DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(require, annRemainHisInfor.getClosureId().value, annRemainHisInfor.getYearMonth());
 		return Optional.of(datePeriodClosure.start());
 	}
 	@Override
 	public List<DailyInterimRemainMngDataAndFlg> lstRemainData(String cid, String sid, DatePeriod datePeriod,
 			ReferenceAtr referenceAtr) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+	
 		List<DailyInterimRemainMngDataAndFlg> lstOutputData = new ArrayList<>();
 		//社員に対応する締め開始日を取得する
-		Optional<GeneralDate> startDateOpt = startDateForEmployee.algorithm(sid);
+		Optional<GeneralDate> startDateOpt = GetClosureStartForEmployee.algorithm(require, cacheCarrier, sid);
 		if(!startDateOpt.isPresent()) {
 			return lstOutputData;
 		}
@@ -201,12 +205,12 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		//参照先区分を判断
 		if(referenceAtr == ReferenceAtr.RECORD) {
 			//日別実績を取得 INPUT．期間．開始日 <= 年月日 <= INPUT．期間．終了日
-			lstOutputData = this.getAnnualHolidayRemainData(cid, sid, datePeriod);			
+			lstOutputData = this.getAnnualHolidayRemainData(require, cacheCarrier, cid, sid, datePeriod);			
 		} else {
 			//INPUT．開始と締め開始日を比較
 			if(datePeriod.start().before(startDate)) {
 				//日別実績を取得 INPUT．期間．開始日 <= 年月日 <= 取得した締め開始日 ー 1日
-				lstOutputData = this.getAnnualHolidayRemainData(cid, sid, new DatePeriod(datePeriod.start(), startDate.addDays(-1)));				
+				lstOutputData = this.getAnnualHolidayRemainData(require, cacheCarrier, cid, sid, new DatePeriod(datePeriod.start(), startDate.addDays(-1)));				
 			} 
 			//暫定年休管理データを取得 締め開始日 <= 対象日 < INPUT．期間．終了日
 			List<TmpAnnualHolidayMng> lstTmpAnnual = annualRepository.getBySidPeriod(sid, new DatePeriod(startDate, datePeriod.end()));
@@ -243,7 +247,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		for (val attendanceTime : attendanceTimes){
 			
 			// 月別実績の勤怠時間からフレックス補填の暫定年休管理データを作成する
-			val compensFlexOpt = this.createInterimAnnual.ofCompensFlex(
+			val compensFlexOpt = CreateInterimAnnualMngData.ofCompensFlex(
 					attendanceTime, attendanceTime.getDatePeriod().end());
 			if (compensFlexOpt.isPresent()) {
 				lstFlex.add(compensFlexOpt.get());
@@ -279,14 +283,15 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		return lstOutputData;
 	}
 		
-	private List<DailyInterimRemainMngDataAndFlg> getAnnualHolidayRemainData(String cid, String sid, DatePeriod datePeriod) {
+	private List<DailyInterimRemainMngDataAndFlg> getAnnualHolidayRemainData(
+			RecordDomRequireService.Require require, CacheCarrier cacheCarrier,
+			String cid, String sid, DatePeriod datePeriod) {
 		
 		List<DailyInterimRemainMngDataAndFlg> lstOutputData = new ArrayList<>();
 		
 		//Workを考慮した月次処理用の暫定残数管理データを作成する
-		Map<GeneralDate, DailyInterimRemainMngData> mapRemainData = aggRecordService.mapInterimRemainData(cid, 
-				sid,
-				datePeriod);
+		Map<GeneralDate, DailyInterimRemainMngData> mapRemainData = AggregateMonthlyRecordService
+				.mapInterimRemainData(require, cacheCarrier, cid, sid, datePeriod);
 		if(mapRemainData != null) {
 			for (DailyInterimRemainMngData y : mapRemainData.values()) {
 				if(y.getAnnualHolidayData().isPresent()) {

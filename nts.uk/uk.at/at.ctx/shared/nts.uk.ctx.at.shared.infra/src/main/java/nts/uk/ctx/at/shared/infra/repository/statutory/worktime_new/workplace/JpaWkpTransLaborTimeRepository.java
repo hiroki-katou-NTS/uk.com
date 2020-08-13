@@ -8,9 +8,15 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
+import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeekStart;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeeklyUnit;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeWkpRepo;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpTransLabTime;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpTransLabTimePK;
 
@@ -19,7 +25,7 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.Ksh
  */
 @Stateless
 public class JpaWkpTransLaborTimeRepository extends JpaRepository
-		implements WkpTransLaborTimeRepository {
+		implements DeforLaborTimeWkpRepo {
 
 	/*
 	 * (non-Javadoc)
@@ -28,7 +34,7 @@ public class JpaWkpTransLaborTimeRepository extends JpaRepository
 	 * WkpTransLaborTimeRepository#find(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Optional<WkpTransLaborTime> find(String cid, String wkpId) {
+	public Optional<DeforLaborTimeWkp> find(String cid, String wkpId) {
 		// Get info
 		Optional<KshstWkpTransLabTime> optEntity = this.queryProxy()
 				.find(new KshstWkpTransLabTimePK(cid, wkpId), KshstWkpTransLabTime.class);
@@ -39,8 +45,7 @@ public class JpaWkpTransLaborTimeRepository extends JpaRepository
 		}
 
 		// Return
-		return Optional
-				.of(new WkpTransLaborTime(new JpaWkpTransLaborTimeGetMemento(optEntity.get())));
+		return Optional.of(toDomain(optEntity.get()));
 
 	}
 
@@ -52,9 +57,15 @@ public class JpaWkpTransLaborTimeRepository extends JpaRepository
 	 * worktime.workplaceNew.WkpTransLaborTime)
 	 */
 	@Override
-	public void add(WkpTransLaborTime domain) {
+	public void add(DeforLaborTimeWkp domain) {
 		KshstWkpTransLabTime entity = new KshstWkpTransLabTime();
-		domain.saveToMemento(new JpaWkpTransLaborTimeSetMemento(entity));
+
+		entity.setDailyTime(domain.getDailyTime().getDailyTime().v());
+		entity.setWeeklyTime(domain.getWeeklyTime().getTime().v());
+		entity.setWeekStr(domain.getWeeklyTime().getStart().value);
+		entity.setKshstWkpTransLabTimePK(new KshstWkpTransLabTimePK(domain.getComId(), 
+													domain.getWorkplaceId()));
+		
 		this.commandProxy().insert(entity);
 	}
 
@@ -78,11 +89,27 @@ public class JpaWkpTransLaborTimeRepository extends JpaRepository
 	 * worktime.workplaceNew.WkpTransLaborTime)
 	 */
 	@Override
-	public void update(WkpTransLaborTime domain) {
+	public void update(DeforLaborTimeWkp domain) {
 		KshstWkpTransLabTime entity = this.queryProxy().find(
-				new KshstWkpTransLabTimePK(domain.getCompanyId().v(), domain.getWorkplaceId().v()),
+				new KshstWkpTransLabTimePK(domain.getComId(), domain.getWorkplaceId()),
 				KshstWkpTransLabTime.class).get();
-		domain.saveToMemento(new JpaWkpTransLaborTimeSetMemento(entity));
+		
+		entity.setDailyTime(domain.getDailyTime().getDailyTime().v());
+		entity.setWeeklyTime(domain.getWeeklyTime().getTime().v());
+		entity.setWeekStr(domain.getWeeklyTime().getStart().value);
+		
 		this.commandProxy().update(entity);
+	}
+	
+	/**
+	 * To domain.
+	 *
+	 */
+	private DeforLaborTimeWkp toDomain(KshstWkpTransLabTime entity) {
+		return DeforLaborTimeWkp.of(entity.getKshstWkpTransLabTimePK().getCid(),
+				entity.getKshstWkpTransLabTimePK().getCid(),
+				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime()), 
+								EnumAdaptor.valueOf(entity.getWeekStr(), WeekStart.class)), 
+				new DailyUnit(new TimeOfDay(entity.getDailyTime())));
 	}
 }

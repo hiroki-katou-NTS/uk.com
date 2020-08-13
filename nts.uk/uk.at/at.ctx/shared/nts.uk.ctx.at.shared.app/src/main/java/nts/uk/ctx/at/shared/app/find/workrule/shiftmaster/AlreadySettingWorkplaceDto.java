@@ -13,4 +13,6 @@ import lombok.Data;
 @Data
 public class AlreadySettingWorkplaceDto {
 	List<String> workplaceIds;
+	
+	List<String> workplaceGrpIds; 
 } 

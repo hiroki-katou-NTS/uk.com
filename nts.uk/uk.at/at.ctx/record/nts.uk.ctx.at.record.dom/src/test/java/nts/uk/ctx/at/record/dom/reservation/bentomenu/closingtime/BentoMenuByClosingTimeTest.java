@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime;
 
-import static nts.arc.time.ClockHourMinute.now;
+import static nts.arc.time.clock.ClockHourMinute.now;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collections;

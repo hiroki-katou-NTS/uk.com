@@ -9,7 +9,7 @@ module nts.uk.at.view.kmp001.b {
 		</div>
 		<div class="search_label" style="padding-bottom: 0px">
 			<span class="sub_title" data-bind= "text: $i18n('KMP001_22')"></span>
-			<input data-bind="ntsTextEditor: {value: inputStampCard}" style="width: 225px"/>
+			<input id="input-stamp-card" data-bind="ntsTextEditor: {value: inputStampCard}" style="width: 225px"/>
 			<button id="top_bottom" data-bind= "text: $i18n('KMP001_23'),
 												click: getStampCard">
 			</button>
@@ -122,13 +122,16 @@ module nts.uk.at.view.kmp001.b {
 					const stampCards: IStampCard[] = ko.toJS(vm.items);
 					const current = _.find(stampCards, e => e.stampNumber === c);
 
+					vm.employee.clear();
 					if (current) {
 						vm.employee.employeeId(current.employeeId);
 						vm.model.employeeId(current.employeeId);
+						vm.employee.employeeId.valueHasMutated();
 					}
 					else {
 						vm.items([]);
 						vm.model.clear();
+						vm.employee.clear();
 					}
 				});
 
@@ -143,6 +146,14 @@ module nts.uk.at.view.kmp001.b {
 				})
 		}
 
+		mounted() {
+			const vm = this;
+			
+			$(document).ready(function() {
+				$('#input-stamp-card').focus();
+			});
+		}
+		
 		getStampCard() {
 			const vm = this;
 			vm.$blockui("invisible");
@@ -153,7 +164,7 @@ module nts.uk.at.view.kmp001.b {
 			if (stampInput == '') {
 				vm.$dialog.info({ messageId: "Msg_1679" });
 			} else {
-				vm.reloadAllStampCard
+				vm.reloadAllStampCard(0);
 			}
 			vm.$blockui("clear")
 		}
@@ -161,6 +172,7 @@ module nts.uk.at.view.kmp001.b {
 		getAllStampCard() {
 			const vm = this;
 			vm.mode("all");
+			vm.inputStampCard('');
 			vm.reloadAllStampCard(0);
 		}
 
@@ -223,17 +235,20 @@ module nts.uk.at.view.kmp001.b {
 				vm.$blockui("invisible");
 				vm.$ajax(KMP001B_API.GET_STAMPCARD + vm.stampCardBackSelect)
 					.then((data: IStampCard[]) => {
-						if (data.stampNumber != null) {
+						if (data) {
 							vm.items(data);
-							vm.model.stampNumber(data[selectedIndex].stampNumber);
-							vm.model.update(data[selectedIndex]);
-						} else {
-							vm.items([]);
-							vm.model.clear();
+							if (data[selectedIndex]) {
+								vm.model.stampNumber(data[selectedIndex].stampNumber);
+								vm.model.update(data[selectedIndex]);
+							} else {
+								vm.model.stampNumber('');
+							}
 						}
+
 					}).always(() => {
 						vm.$blockui("clear");
 					});
+
 			}
 		}
 
@@ -264,9 +279,14 @@ module nts.uk.at.view.kmp001.b {
 
 			vm.$blockui("invisible");
 			if (ko.toJS(vm.model.employeeId) != '' && ko.toJS(vm.employee.employeeId) != '') {
-				vm.$ajax(KMP001B_API.DELETE_STAMP, command)
-					.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
-					.then(() => vm.reloadAllStampCard(newIndex));
+				nts.uk.ui.dialog
+					.confirm({ messageId: "Msg_18" })
+					.ifYes(() => {
+						vm.$ajax(KMP001B_API.DELETE_STAMP, command)
+							.done(() => vm.$dialog.info({ messageId: "Msg_16" }))
+							.then(() => vm.model.clear())
+							.then(() => vm.reloadAllStampCard(0));
+					})
 			}
 			vm.$blockui("clear");
 		}
@@ -290,8 +310,8 @@ module nts.uk.at.view.kmp001.b {
 
 	interface IStampCard {
 		stampNumber: string;
-		employeeCode: string;
 		businessName: string;
+		employeeCode: string;
 		employeeId: string;
 	}
 
@@ -320,15 +340,17 @@ module nts.uk.at.view.kmp001.b {
 
 		update(params: IStampCard) {
 			const seft = this;
-
 			seft.employeeCode(params.employeeCode);
 			seft.businessName(params.businessName);
 			seft.employeeId(params.employeeId);
 		}
 
 		clear() {
-			const self = this;
-			self.update({ stampNumber: '', employeeCode: '', businessName: '', employeeId: '' })
+			const seft = this;
+			seft.stampNumber('');
+			seft.employeeCode('');
+			seft.businessName('');
+			seft.employeeId('');
 		}
 	}
 
@@ -355,6 +377,11 @@ module nts.uk.at.view.kmp001.b {
 			seft.businessName(params.businessName);
 			seft.entryDate(params.entryDate);
 			seft.retiredDate(params.retiredDate);
+		}
+
+		clear() {
+			const self = this;
+			self.update({ businessName: '', employeeCode: '', employeeId: '', entryDate: null, retiredDate: null })
 		}
 	}
 

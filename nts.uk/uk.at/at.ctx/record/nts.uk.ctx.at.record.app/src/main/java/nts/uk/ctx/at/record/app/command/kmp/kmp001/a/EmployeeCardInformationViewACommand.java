@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class EmployeeCardInformationViewACommand {
 
 	private String employeeId;
-	private String cardNumber;
+	private String olderCardNumber;
+	private String newCardNumber;
 	
 }

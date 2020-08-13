@@ -152,9 +152,6 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 	@Inject
 	private ClosureRepository closureRepository;
-
-	@Inject
-	private ClosureService closureService;
 	
 	@Inject
 	private I18NResourcesForUK internationalization;
@@ -641,8 +638,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		if (!optionalClosure.isPresent())
 			return new StateAndValueDatePeriod(dateBeforeCorrection, false);
 		// アルゴリズム「当月の期間を算出する」を実行
-		DatePeriod dateP = this.closureService.getClosurePeriod(optionalClosure.get().getClosureId().value,
-				optionalClosure.get().getClosureMonth().getProcessingYm());
+		DatePeriod dateP = ClosureService.getClosurePeriod(optionalClosure.get().getClosureId().value,
+				optionalClosure.get().getClosureMonth().getProcessingYm(), optionalClosure);
 		// Input「対象開始日」と、取得した「開始年月日」を比較
 		DatePeriod dateAfterCorrection = dateBeforeCorrection;
 		if (dateBeforeCorrection.start().before(dateP.start())) {

@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
@@ -16,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
@@ -85,6 +85,10 @@ public class WorkInformation {
 		if (!workType.isPresent()) {
 			return ErrorStatusWorkInfo.WORKTYPE_WAS_DELETE;
 		}
+		
+		if(workType.get().getDeprecate() == DeprecateClassification.Deprecated) {
+			return ErrorStatusWorkInfo.WORKTYPE_WAS_ABOLISHED;
+		}
 
 		// require.勤務種類を取得する(@勤務種類コード)
 		SetupType setupType = require.checkNeededOfWorkTimeSetting(this.workTypeCode.v());
@@ -98,6 +102,7 @@ public class WorkInformation {
 			break;
 		case OPTIONAL:
 			// @就業時間帯コード ==null
+
 			if (this.getWorkTimeCode() == null) {
 				return ErrorStatusWorkInfo.NORMAL;
 			}
@@ -128,12 +133,12 @@ public class WorkInformation {
 	 * 
 	 * @return WorkStyle 出勤休日区分
 	 */
-	public WorkStyle getWorkStyle(Require require) {
+	public Optional<WorkStyle> getWorkStyle(Require require) {
 		WorkStyle workStyle = require.checkWorkDay(this.workTypeCode.v());
 		if (workStyle == null) {
-			throw new BusinessException("Msg_1636");
+			return Optional.empty();
 		}
-		return workStyle;
+		return Optional.of(workStyle);
 	}
 
 	/**
@@ -219,5 +224,12 @@ public class WorkInformation {
 		 */
 		WorkStyle checkWorkDay(String workTypeCode);
 	}
-
+	
+	public boolean isExamWorkTime() {
+		if (workTimeCode == null) {
+			return false;
+		}
+		
+		return workTimeCode.equals("102") || workTimeCode.equals("103");
+	}
 }
