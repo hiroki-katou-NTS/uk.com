@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.get;
+package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

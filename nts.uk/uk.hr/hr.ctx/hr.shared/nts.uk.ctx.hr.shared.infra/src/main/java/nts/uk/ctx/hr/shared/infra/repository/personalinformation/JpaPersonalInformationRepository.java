@@ -11,7 +11,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformation;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformationRepository;
-import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.get.GetPersonInfoHRInput;
+import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.GetPersonInfoHRInput;
 import nts.uk.ctx.hr.shared.infra.entity.personalinformation.PpedtData;
 
 /**
@@ -48,51 +48,54 @@ public class JpaPersonalInformationRepository extends JpaRepository implements P
 		}
 	}
 
-	// Get
+	/*
+	 * input.getColumnName() <= phải truyền đúng tên cột của entity PpedtData
+	 */
 	@Override
 	public List<PersonalInformation> get(GetPersonInfoHRInput input) {
 		String GET_PERSONALINFO = "SELECT a FROM PpedtData a WHERE a.cId = :cId AND a.workId = :workId";
 		List<PpedtData> personalInformations = new ArrayList<>();
 
-		if (input.getColumnName().isEmpty() && !input.getTypeSort().isEmpty()) {
+		if (!input.getColumnName().isEmpty() && !input.getTypeSort().isEmpty()) {
 
 			if (input.getTypeSort().toUpperCase().equals("ASC") || input.getTypeSort().toUpperCase().equals("DESC")) {
-				GET_PERSONALINFO = GET_PERSONALINFO.concat(" ORDER BY a." + input.getColumnName() + " " + input.getTypeSort());
+				GET_PERSONALINFO = GET_PERSONALINFO
+						.concat(" ORDER BY a." + input.getColumnName() + " " + input.getTypeSort());
 			}
 		}
-		
+
 		personalInformations = this.queryProxy().query(GET_PERSONALINFO, PpedtData.class)
 				.setParameter("cId", input.getCompanyId()).setParameter("workId", input.getBusinessId()).getList();
-		
+
 		if (!input.getEmployeeId().isEmpty()) {
 			List<PpedtData> ppdetData = new ArrayList<>();
-			
-			for (int i = 0 ; i < input.getEmployeeId().size() ; i++) {
-				
-				for (int j = 0 ; j < personalInformations.size() ; j++) {
-					
+
+			for (int i = 0; i < input.getEmployeeId().size(); i++) {
+
+				for (int j = 0; j < personalInformations.size(); j++) {
+
 					if (input.getEmployeeId().get(i).equals(personalInformations.get(j).getSid())) {
 						ppdetData.add(personalInformations.get(j));
 					}
 				}
 			}
-			
+
 			personalInformations = ppdetData;
 		}
-		
+
 		if (!input.getPersonalId().isEmpty()) {
 			List<PpedtData> ppdetData = new ArrayList<>();
-			
-			for (int i = 0 ; i < input.getPersonalId().size() ; i++) {
-				
-				for (int j = 0 ; j < personalInformations.size() ; j++) {
-					
+
+			for (int i = 0; i < input.getPersonalId().size(); i++) {
+
+				for (int j = 0; j < personalInformations.size(); j++) {
+
 					if (input.getPersonalId().get(i).equals(personalInformations.get(j).getPersonName())) {
 						ppdetData.add(personalInformations.get(j));
 					}
 				}
 			}
-			
+
 			personalInformations = ppdetData;
 		}
 
@@ -100,19 +103,31 @@ public class JpaPersonalInformationRepository extends JpaRepository implements P
 	}
 
 	@Override
-	public List<PersonalInformation> getdDispatchedInformation(String contractCd, String cId, int workId,
+	public List<PersonalInformation> getDispatchedInfos(String contractCd, String cId, int workId,
 			GeneralDate baseDate) {
-		String GET_DISPATCHED_INFORMATION = "SELECT a FROM PpedtData a WHERE a.contractCd = :contractCd" 
-				+ " AND a.cId = :cId" 
-				+ " AND a.workId = :workId"
+		String GET_DISPATCHED_INFORMATION = "SELECT a FROM PpedtData a WHERE a.contractCd = :contractCd"
+				+ " AND a.cId = :cId" + " AND a.workId = :workId"
 				+ " AND a.startDate <= baseDate AND s.endDate >= baseDate ";
-		
+
 		List<PpedtData> personalInformations = this.queryProxy().query(GET_DISPATCHED_INFORMATION, PpedtData.class)
-				.setParameter("contractCd", contractCd)
-				.setParameter("cId", cId)
-				.setParameter("workId", workId)
+				.setParameter("contractCd", contractCd).setParameter("cId", cId).setParameter("workId", workId)
 				.setParameter("baseDate", baseDate).getList();
-		
+
+		return personalInformations.stream().map(m -> m.toDomain(m)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<PersonalInformation> getgetDispatchedInfoByStr10s(String contractCd, String cId, int workId,
+			GeneralDate baseDate) {
+
+		String GET_DISPATCHED_INFORMATION = "SELECT a FROM PpedtData a WHERE a.contractCd = :contractCd"
+				+ " AND a.str10 = :cId" + " AND a.workId = :workId"
+				+ " AND a.startDate <= baseDate AND s.endDate >= baseDate ";
+
+		List<PpedtData> personalInformations = this.queryProxy().query(GET_DISPATCHED_INFORMATION, PpedtData.class)
+				.setParameter("contractCd", contractCd).setParameter("cId", cId).setParameter("workId", workId)
+				.setParameter("baseDate", baseDate).getList();
+
 		return personalInformations.stream().map(m -> m.toDomain(m)).collect(Collectors.toList());
 	}
 }

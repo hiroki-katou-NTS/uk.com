@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr;
+package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,6 +7,12 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformation;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformationRepository;
+
+/**
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.人事.shared.個人情報（人事）.個人情報.アルゴリズム.個人情報（人事）(Thông tin cá nhân (Nhân sự).個人情報の追加 (Thêm thông tin cá nhân)).個人情報の追加
+ * @author chungnt
+ *
+ */
 
 public class AddPersonInfoHR {
 
@@ -17,6 +23,10 @@ public class AddPersonInfoHR {
 		
 		if (!personInfoHRInputs.isEmpty()) {
 			List<PersonalInformation> perInfos =  personInfoHRInputs.stream().map(m -> {
+//				PersonalInformation perInfoBuilder = PersonalInformation.builder()
+//						.contractCd(m.getContractCd())
+//						.histId(m.getHistId())
+//						.build();
 				PersonalInformation perInfo = new PersonalInformation(m.getContractCd(),
 						m.getEndDate(),
 						m.getHistId(),
@@ -227,10 +237,8 @@ public class AddPersonInfoHR {
 				return perInfo;
 			}).collect(Collectors.toList());
 			
-			if (!perInfos.isEmpty()) {
-				for (int i = 0; i < perInfos.size(); i++) {
-					repo.insert(perInfos.get(i));
-				}
+			for (PersonalInformation personalInformation : perInfos) {
+				repo.insert(personalInformation);
 			}
 		}
 	}

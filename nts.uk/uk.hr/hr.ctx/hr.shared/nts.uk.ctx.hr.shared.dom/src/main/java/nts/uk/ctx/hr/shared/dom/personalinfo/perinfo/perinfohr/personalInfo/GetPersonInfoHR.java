@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.get;
+package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +13,7 @@ import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformationReposito
 
 /**
  * 
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.人事.shared.個人情報（人事）.個人情報.アルゴリズム.個人情報（人事）(Thông tin cá nhân (Nhân sự).個人情報の取得 (Get thông tin cá nhân).個人情報の取得
  * @author chungnt
  *
  */

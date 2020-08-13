@@ -3,6 +3,7 @@ package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +17,7 @@ import nts.arc.time.GeneralDate;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Getter
 @Setter
 public class PersonalInformation implements DomainAggregate {

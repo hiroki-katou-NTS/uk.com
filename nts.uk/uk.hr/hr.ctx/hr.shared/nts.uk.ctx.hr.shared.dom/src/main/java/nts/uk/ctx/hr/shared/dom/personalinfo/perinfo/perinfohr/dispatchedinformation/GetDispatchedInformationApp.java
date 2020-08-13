@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.dispatchedinformation.get;
+package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.dispatchedinformation;
 
 import java.util.List;
 
@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformation;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformationRepository;
-import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.dispatchedinformation.TemporaryDispatchInformation;
 
 /**
  * 
@@ -53,7 +52,7 @@ public class GetDispatchedInformationApp {
 		@Override
 		public List<PersonalInformation> getdDispatchedInformation(String contractCd, String cId, int workId,
 				GeneralDate baseDate) {
-			return recordRepo.getdDispatchedInformation(contractCd, cId, workId, baseDate);
+			return recordRepo.getDispatchedInfos(contractCd, cId, workId, baseDate);
 		}
 	}
 }

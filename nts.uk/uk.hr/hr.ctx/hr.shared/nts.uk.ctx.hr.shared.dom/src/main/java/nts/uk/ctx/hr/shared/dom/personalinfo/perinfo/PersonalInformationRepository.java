@@ -3,7 +3,7 @@ package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.get.GetPersonInfoHRInput;
+import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.GetPersonInfoHRInput;
 
 /**
  * 
@@ -25,5 +25,7 @@ public interface PersonalInformationRepository {
 	// 個人情報を取得する
 	List<PersonalInformation> get(GetPersonInfoHRInput input);
 	
-	List<PersonalInformation> getdDispatchedInformation(String contractCd, String cId, int workId, GeneralDate baseDate);
+	List<PersonalInformation> getDispatchedInfos(String contractCd, String cId, int workId, GeneralDate baseDate);
+	
+	List<PersonalInformation> getgetDispatchedInfoByStr10s(String contractCd, String cId, int workId, GeneralDate baseDate);
 }
