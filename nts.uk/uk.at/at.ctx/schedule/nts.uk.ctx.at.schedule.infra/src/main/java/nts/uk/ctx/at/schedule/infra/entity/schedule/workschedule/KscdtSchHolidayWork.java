@@ -81,11 +81,11 @@ public class KscdtSchHolidayWork extends ContractUkJpaEntity {
 		return kscdtSchHolidayWork;
 	}
 	//勤務予定．勤怠時間．勤務時間．総労働時間．所定外時間．休出時間
-	public HolidayWorkTimeOfDaily toDomain(int extBindTimeHw, int extMidNiteHdwTimeLghd, int extMidNiteHdwTimeIlghd, int extMidNiteHdwTimePubhd) {
-		List<KscdtSchHolidayWork> holidayWorks = kscdtSchTime.getHolidayWorks();
+	public HolidayWorkTimeOfDaily toDomain(int extBindTimeHw, int extMidNiteHdwTimeLghd, int extMidNiteHdwTimeIlghd, int extMidNiteHdwTimePubhd, List<KscdtSchHolidayWork> holidayWorks) {
 		HolidayWorkTimeOfDaily timeOfDaily = null;
 		List<HolidayWorkFrameTimeSheet> holidayWorkFrame = new ArrayList<>();
 		List<HolidayWorkFrameTime> holidayWorkFrameTime = new ArrayList<>();
+		if(!holidayWorks.isEmpty()) {
 		holidayWorks.stream().forEach(x -> {
 			HolidayWorkFrameTimeSheet frameTimeSheet = new HolidayWorkFrameTimeSheet(
 					new HolidayWorkFrameNo(x.getPk().getFrameNo()), new TimeSpanForCalc(
@@ -97,7 +97,7 @@ public class KscdtSchHolidayWork extends ContractUkJpaEntity {
 			holidayWorkFrame.add(frameTimeSheet);
 			holidayWorkFrameTime.add(frameTime);
 		});
-		
+		}
 		HolidayWorkMidNightTime workMidNightTime = new HolidayWorkMidNightTime( new TimeDivergenceWithCalculation(new AttendanceTime(extMidNiteHdwTimeLghd), null, null), null);
 		List<HolidayWorkMidNightTime> midNightTimes = new ArrayList<>();
 		midNightTimes.add(workMidNightTime);

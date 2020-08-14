@@ -64,13 +64,14 @@ public class KscdtSchPremium extends ContractUkJpaEntity {
 				AppContexts.user().companyId(), premiumTime.getPremitumTime().v());
 	}
 	//勤務予定．勤怠時間．勤務時間．割増時間．割増時間
-	public List<PremiumTime> toDomain(){
-		List<KscdtSchPremium> listKscdtSchPremium = kscdtSchTime.getPremiums();
+	public List<PremiumTime> toDomain(List<KscdtSchPremium> premiums){
 		List<PremiumTime> result = new ArrayList<>();
-		listKscdtSchPremium.stream().forEach( x ->{
+		if(!premiums.isEmpty()) {
+		premiums.stream().forEach( x ->{
 			PremiumTime time = new PremiumTime(x.getPk().getFrameNo(), new AttendanceTime(x.getPremiumTime()));
 			result.add(time);
 		});
+		}
 		return result;
 	}
 

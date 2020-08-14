@@ -74,10 +74,10 @@ public class KscdtSchBonusPay extends ContractUkJpaEntity{
 		
 	}
 	//勤務予定．勤怠時間．勤務時間．総労働時間．加給時間．加給時間
-	public  List<BonusPayTime> toDomain(){
-		List<KscdtSchBonusPay> lstBonusPayTime = kscdtSchTime.getBonusPays();
+	public  List<BonusPayTime> toDomain(List<KscdtSchBonusPay> bonusPays){
 		List<BonusPayTime> result = new ArrayList<>();
-		lstBonusPayTime.stream().forEach( x -> {
+		if(!bonusPays.isEmpty()) {
+		bonusPays.stream().forEach( x -> {
 			BonusPayTime payTime = new BonusPayTime(
 					x.getPK().getFrameNo(),
 					new AttendanceTime(x.getPremiumTime()), 
@@ -85,6 +85,7 @@ public class KscdtSchBonusPay extends ContractUkJpaEntity{
 					TimeWithCalculation.sameTime(new AttendanceTime(x.getPremiumTimeWithOut())));
 			result.add(payTime);
 		});
+		}
 		return result;
 	}
 	

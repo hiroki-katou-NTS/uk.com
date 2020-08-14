@@ -3,6 +3,9 @@ module nts.uk.at.view.ksu001.jd {
     import getShared = nts.uk.ui.windows.getShared;
     import alertError = nts.uk.ui.dialog.alertError;
     import getText = nts.uk.resource.getText;
+    import invisible = nts.uk.ui.block.invisible;
+    import clear = nts.uk.ui.block.clear;
+    import info = nts.uk.ui.dialog.info;
 
     export module viewmodel {
         export class ScreenModel {
@@ -15,6 +18,8 @@ module nts.uk.at.view.ksu001.jd {
             checked: KnockoutObservable<boolean> = ko.observable( false );
             target: KnockoutObservable<number> = ko.observable( 0 );
             targetID: KnockoutObservable<string>;
+            //ページ元番号
+            originalPage: KnockoutObservable<number>;
 
             constructor() {
                 let self = this;
@@ -23,6 +28,14 @@ module nts.uk.at.view.ksu001.jd {
                 let dataShare = getShared( 'dataForJD' );
                 self.target = ko.observable( dataShare.target );
                 self.targetID = ko.observable( dataShare.targetID );
+                self.originalPage = ko.observable( dataShare.pageNumber );
+                self.selectedCode.subscribe(( data ) => {
+                    let getName = _.find( self.itemList(), function( o ) { return o.page == self.selectedCode(); } );
+
+                    if ( getName != null && getName.name.split( getText( 'KSU001_161' ) ).length > 1 ) {
+                        self.orgName( getName.name.split( getText( 'KSU001_161' ) )[1] );
+                    }
+                } );
             }
 
             /**
@@ -31,13 +44,96 @@ module nts.uk.at.view.ksu001.jd {
             decision(): void {
                 let self = this;
 
-                setShared( "dataFromJB", {
-                    text: self.textName(),
-                    tooltip: tooltip,
-                    data: arrData
-                } );
+                $(".nts-input").trigger("validate");
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
+                invisible();
+                //「会社」の場合
+                if ( self.target() == 2 ) {
+                    let data = {
+                        //ページ元番号
+                        originalPage: self.originalPage(),
+                        //ページ元番号
+                        destinationPage: parseInt( self.selectedCode().split( getText( 'KSU001_161' ) )[0]
+                            .split( getText( 'KSU001_110' ) )[1] ),
+                        //ページ先名称
+                        destinationName: self.desName(),
+                        //上書きするか
+                        overwrite: self.checked()
+                    }
+                    service.duplicateComShiftPalet( data ).done(() => {
+                        self.msgDone();
+                    } ).fail( function( error ) {
+                        alertError( { messageId: error.messageId, messageParams: error.parameterIds } );
+                    } ).always( function() {
+                        clear();
+                    } );
 
-                nts.uk.ui.windows.close();
+                }
+                //職場　の場合
+                else if ( self.target() == 0 ) {
+                    let data = {
+                        targetID: self.targetID(),
+                        //WORKPLACE:0, WORKPLACE_GROUP1
+                        targetUnit: self.target(),
+
+                        //ページ元番号
+                        originalPage: self.originalPage(),
+                        //ページ元番号
+                        destinationPage: parseInt( self.selectedCode().split( getText( 'KSU001_161' ) )[0]
+                            .split( getText( 'KSU001_110' ) )[1] ),
+                        //ページ先名称
+                        destinationName: self.desName(),
+                        //上書きするか
+                        overwrite: self.checked()
+                    }
+                    service.duplicateOrgShiftPalet( data ).done(() => {
+                        self.msgDone();
+                    } ).fail( function( error ) {
+                        alertError( { messageId: error.messageId, messageParams: error.parameterIds } );
+                    } ).always( function() {
+                        clear();
+                    } );
+
+                }
+                //職場グループ　の場合
+                else if ( self.target() == 1 ) {
+                    let data = {
+                        targetID: self.targetID(),
+                        //WORKPLACE:0, WORKPLACE_GROUP1
+                        targetUnit: self.target(),
+
+                        //ページ元番号
+                        originalPage: self.originalPage(),
+                        //ページ元番号
+                        destinationPage: parseInt( self.selectedCode().split( getText( 'KSU001_161' ) )[0]
+                            .split( getText( 'KSU001_110' ) )[1] ),
+                        //ページ先名称
+                        destinationName: self.desName(),
+                        //上書きするか
+                        overwrite: self.checked()
+                    }
+                    service.duplicateOrgShiftPalet( data ).done(() => {
+                        self.msgDone();
+                    } ).fail( function( error ) {
+                        alertError( { messageId: error.messageId, messageParams: error.parameterIds } );
+                    } ).always( function() {
+                        clear();
+                    } );
+
+                }
+            }
+
+            msgDone(): void {
+                let self = this;
+                setShared( "dataFromJD", {
+                    page: parseInt( self.selectedCode().split( getText( 'KSU001_161' ) )[0]
+                        .split( getText( 'KSU001_110' ) )[1] )
+                } );
+                info( { messageId: "Msg_20" } ).then( function() {
+                    self.closeDialog();
+                } );
             }
 
             /**
@@ -50,7 +146,7 @@ module nts.uk.at.view.ksu001.jd {
             startPage(): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
-
+                invisible();
                 //「会社」の場合
                 if ( self.target() == 2 ) {
                     service.getShiftPaletteByCompany().done(( data ) => {
@@ -68,11 +164,16 @@ module nts.uk.at.view.ksu001.jd {
                         } );
                         self.itemList( shiftPaletData );
                         dfd.resolve();
+                    } ).fail( function( error ) {
+                        alertError( { messageId: error.messageId } );
+                        dfd.reject();
+                    } ).always( function() {
+                        clear();
                     } );
                 }
                 //職場　の場合
                 else if ( self.target() == 0 ) {
-                    service.getShiftPaletteByWP(self.targetID()).done(( data ) => {
+                    service.getShiftPaletteByWP( self.targetID() ).done(( data ) => {
                         let shiftPaletData = [];
                         let page: string;
                         self.orgName( '' );
@@ -87,11 +188,16 @@ module nts.uk.at.view.ksu001.jd {
                         } );
                         self.itemList( shiftPaletData );
                         dfd.resolve();
+                    } ).fail( function( error ) {
+                        alertError( { messageId: error.messageId } );
+                        dfd.reject();
+                    } ).always( function() {
+                        clear();
                     } );
                 }
                 //職場グループ　の場合
                 else if ( self.target() == 1 ) {
-                    service.getShiftPaletteByWPG(self.targetID()).done(( data ) => {
+                    service.getShiftPaletteByWPG( self.targetID() ).done(( data ) => {
                         let shiftPaletData = [];
                         let page: string;
                         self.orgName( '' );
@@ -106,6 +212,11 @@ module nts.uk.at.view.ksu001.jd {
                         } );
                         self.itemList( shiftPaletData );
                         dfd.resolve();
+                    } ).fail( function( error ) {
+                        alertError( { messageId: error.messageId } );
+                        dfd.reject();
+                    } ).always( function() {
+                        clear();
                     } );
                 }
                 return dfd.promise();

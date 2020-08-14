@@ -83,11 +83,11 @@ public class KscdtSchOvertimeWork extends ContractUkJpaEntity {
 	}
 
 	//勤務予定．勤怠時間．勤務時間．総労働時間．所定外時間．残業時間
-	public OverTimeOfDaily toDomain(OverTimeOfDaily overTimeOfDailys){
-		List<KscdtSchOvertimeWork> overtimeWorks = kscdtSchTime.getOvertimeWorks();
+	public OverTimeOfDaily toDomain(OverTimeOfDaily overTimeOfDailys, List<KscdtSchOvertimeWork> overtimeWorks){
 		OverTimeOfDaily overTimeOfDaily = null;
 		List<OverTimeFrameTimeSheet> overTimeFrameTimeSheets = new ArrayList<>();
 		List<OverTimeFrameTime>  overTimeFrameTimes = new ArrayList<>();
+		if(!overtimeWorks.isEmpty()) {
 		overtimeWorks.stream().forEach(x ->{
 			OverTimeFrameTimeSheet timesheet = new OverTimeFrameTimeSheet(null, new OverTimeFrameNo(x.getPk().frameNo));
 			OverTimeFrameTime time = new OverTimeFrameTime(
@@ -99,6 +99,7 @@ public class KscdtSchOvertimeWork extends ContractUkJpaEntity {
 			overTimeFrameTimeSheets.add(timesheet);
 			overTimeFrameTimes.add(time);	
 		});
+		}
 		overTimeOfDaily = new OverTimeOfDaily(overTimeFrameTimeSheets, overTimeFrameTimes, 
 				Finally.of(overTimeOfDailys.getExcessOverTimeWorkMidNightTime().get()), overTimeOfDailys.getIrregularWithinPrescribedOverTimeWork()
 				, overTimeOfDailys.getFlexTime(), 

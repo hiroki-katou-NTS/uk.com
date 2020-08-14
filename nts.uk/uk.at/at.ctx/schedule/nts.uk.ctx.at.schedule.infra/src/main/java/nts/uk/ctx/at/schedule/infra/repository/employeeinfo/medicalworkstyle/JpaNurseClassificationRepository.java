@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 @Stateless
 public class JpaNurseClassificationRepository extends JpaRepository implements NurseClassificationRepository {
 
-	private static String FIND_WITH_COMPANYID = "select a from KscmtNurseLicense a where a.kscmtNurseLicensePK.companyId = :companyId";
+	private static String FIND_WITH_COMPANYID = "select a from KscmtNurseLicense a where a.kscmtNurseLicensePK.companyId = :companyId ORDER BY a.kscmtNurseLicensePK.code ";
 
 	//[1] 会社の看護区分リストを取得する
 	@Override
