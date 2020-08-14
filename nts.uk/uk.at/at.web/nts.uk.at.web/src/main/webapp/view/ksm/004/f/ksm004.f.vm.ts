@@ -24,7 +24,7 @@ module nts.uk.at.view.ksm004.f.viewmodel {
                 if(value) {
                     this.$blockui("show");
                     let startDate = moment(this.getDateRange(value)[0]).format("YYYY-MM-DD");
-                    let endDate = moment(this.getDateRange(value)[5]).format("YYYY-MM-DD");
+                    let endDate = moment(this.getDateRange(value)[5]).add(30, "days").format("YYYY-MM-DD");
                     if(param.classification == 1) {
                         let workPlaceId = param.workPlaceId;
                         vm.$ajax(paths.getSixMonthsCalendarWorkPlace+ workPlaceId + "/" + startDate + "/" + endDate).done(dataRes => {
