@@ -52,7 +52,7 @@ export class KdpS01BComponent extends Vue {
                 let items = _(data.empDatas).flatMap('listStampInfoDisp').value();
                 let item = _.head(_.orderBy(items, ['stampStringDatetime'], ['desc']));
                 if (item) {
-                    vm.screenData.date =  item.stampStringDatetime;
+                    vm.screenData.date = item.stampStringDatetime;
                     vm.screenData.stampAtr = item.stampAtr;
                     if (item.stamp.length) {
                         let stamp = item.stamp[0];
@@ -91,13 +91,8 @@ export class KdpS01BComponent extends Vue {
 
     }
 
-    public login() {
-
-
-    }
-
     public mounted() {
-
+        this.pgName = 'KDPS01_5';
     }
 }
 

@@ -404,6 +404,10 @@ export class KdpS01AComponent extends Vue {
             vm.$modal.error(res.message);
         }
     }
+
+    public mounted() {
+        this.pgName = 'KDPS01_1';
+    }
 }
 
 enum CanEngravingUsed {

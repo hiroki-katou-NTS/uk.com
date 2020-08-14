@@ -209,13 +209,8 @@ export class KdpS01SComponent extends Vue {
 
     }
 
-
-    public login() {
-
-
-    }
-
     public mounted() {
+        this.pgName = 'KDPS01_22';
     }
 }
 interface Iitem {
