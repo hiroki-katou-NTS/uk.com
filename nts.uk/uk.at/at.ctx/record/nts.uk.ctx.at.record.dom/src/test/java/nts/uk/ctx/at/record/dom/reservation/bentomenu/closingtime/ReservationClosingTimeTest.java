@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
-import static nts.arc.time.ClockHourMinute.*;
+import static nts.arc.time.clock.ClockHourMinute.*;
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.record.dom.reservation.Helper;

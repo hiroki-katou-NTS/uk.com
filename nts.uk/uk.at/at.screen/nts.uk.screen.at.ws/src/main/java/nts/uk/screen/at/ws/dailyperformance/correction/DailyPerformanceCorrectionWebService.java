@@ -293,6 +293,7 @@ public class DailyPerformanceCorrectionWebService {
 		if(dataResultAfterIU.getDomainMonthOpt().isPresent()) {
 			session.setAttribute("domainMonths", dataResultAfterIU.getDomainMonthOpt());
 		}
+
 		session.setAttribute("lstSidDateErrorCalc", dataResultAfterIU.getLstSidDateDomainError());
 		session.setAttribute("errorAllCalc", dataResultAfterIU.isErrorAllSidDate());
 		return dataResultAfterIU;
@@ -477,10 +478,11 @@ public class DailyPerformanceCorrectionWebService {
 		Optional<MonthlyRecordWorkDto> domainMonthOpt = objectCacheMonth == null ? Optional.empty()
 				: (Optional<MonthlyRecordWorkDto>) objectCacheMonth;
 		dataParent.setDomainMonthOpt(domainMonthOpt);
-		
+
 		ParamCommonAsync paramCommonAsync = (ParamCommonAsync) session.getAttribute("resultMonthReturn");
 		dataParent.setParamCommonAsync(paramCommonAsync);
 		val result = dailyCalculationService.calculateCorrectedResults(dataParent);
+
 		session.setAttribute("domainEdits", result.getCalculatedRows());
 		session.setAttribute("lstSidDateErrorCalc", result.getLstSidDateDomainError());
 		session.setAttribute("errorAllCalc", result.isErrorAllSidDate());

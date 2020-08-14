@@ -22,7 +22,6 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employee.EmployeeWtSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 
 /**
@@ -80,7 +79,7 @@ public class ManagePerCompanySet {
 	
 	Optional<UsageUnitSetting> usageSetting;
 	
-	Optional<EmployeeWtSetting>  employeeWTSetting;
+//	Optional<EmployeeWtSetting>  employeeWTSetting;
 	
 	public ManagePerCompanySet(Map<String, AggregateRoot> holidayAddition,
 			Optional<HolidayAddtionSet> holidayAdditionPerCompany,
@@ -95,8 +94,7 @@ public class ManagePerCompanySet {
 			List<EmpCondition> empCondition,
 			Optional<ZeroTime> zeroTime,
 			Optional<UpperLimitTotalWorkingHour> upperControl,
-			Optional<UsageUnitSetting> usageSetting,
-			Optional<EmployeeWtSetting>  employeeWTSetting) {
+			Optional<UsageUnitSetting> usageSetting) {
 		super();
 		this.holidayAddition = holidayAddition;
 		this.holidayAdditionPerCompany = holidayAdditionPerCompany;
@@ -113,6 +111,6 @@ public class ManagePerCompanySet {
 		this.personnelCostSettings = Collections.emptyList();
 		this.upperControl = upperControl;
 		this.usageSetting = usageSetting;
-		this.employeeWTSetting = employeeWTSetting;
+//		this.employeeWTSetting = employeeWTSetting;
 	}
 }

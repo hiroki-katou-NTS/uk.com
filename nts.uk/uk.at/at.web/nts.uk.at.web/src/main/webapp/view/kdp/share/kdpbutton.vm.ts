@@ -4,6 +4,7 @@ module nts.uk.at.view.kdp.share {
 		SMALL_8: 1
 	}
 	const DEFAULT_GRAY = '#E8E9EB';
+	const NULL_COLOR = '#FFFFFF';
 	const GET_HIGHLIGHT_SETTING_URL = 'at/record/stamp/management/personal/stamp/getHighlightSetting';
 	export class StampButtonLayOut {
 		oldLayout: KnockoutObservable<any> = ko.observable({});
@@ -48,7 +49,6 @@ module nts.uk.at.view.kdp.share {
 				// A14 時刻に従ってボタンの色が変わる処理
 				let btnBackGroundColor = btn ? btn.btnBackGroundColor : '';
 				if (self.useHighlightFunction().isUse && btn) {
-					btnBackGroundColor = DEFAULT_GRAY;
 					if (btn.btnDisplayType == 1) {
 						btnBackGroundColor = !self.useHighlightFunction().goingToWork ? btn.btnBackGroundColor : DEFAULT_GRAY;
 					}
@@ -60,6 +60,10 @@ module nts.uk.at.view.kdp.share {
 					}
 					if (btn.btnDisplayType == 4) {
 						btnBackGroundColor = !self.useHighlightFunction().turnBack ? btn.btnBackGroundColor : DEFAULT_GRAY;
+					}
+					
+					if (_.isNil(btn.btnDisplayType)){
+						btnBackGroundColor = btn.btnBackGroundColor.indexOf("#FFFFFF") == -1 ? btn.btnBackGroundColor : NULL_COLOR;
 					}
 					btn.btnBackGroundColor = btnBackGroundColor;
 				}

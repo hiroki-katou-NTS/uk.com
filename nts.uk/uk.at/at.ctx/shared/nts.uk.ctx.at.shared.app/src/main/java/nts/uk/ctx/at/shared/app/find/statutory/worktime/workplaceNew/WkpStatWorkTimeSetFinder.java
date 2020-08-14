@@ -12,18 +12,15 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.statutory.worktime.workplaceNew.WkpStatWorkTimeSetDto.WkpStatWorkTimeSetDtoBuilder;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpFlexSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpFlexSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpNormalSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpNormalSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTimeRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeWkpRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeWkpRepo;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -32,25 +29,16 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class WkpStatWorkTimeSetFinder {
 
-	/** The normal setting repository. */
-	@Inject
-	private WkpNormalSettingRepository normalSettingRepository;
-
-	/** The flex setting repository. */
-	@Inject
-	private WkpFlexSettingRepository flexSettingRepository;
-
-	/** The defor labor setting repository. */
-	@Inject
-	private WkpDeforLaborSettingRepository deforLaborSettingRepository;
-
 	/** The trans labor time repository. */
 	@Inject
-	private WkpTransLaborTimeRepository transWorkTimeRepository;
+	private DeforLaborTimeWkpRepo transLaborTimeRepository;
 
 	/** The regular labor time repository. */
 	@Inject
-	private WkpRegularLaborTimeRepository regularWorkTimeRepository;
+	private RegularLaborTimeWkpRepo regularLaborTimeRepository;
+
+	@Inject
+	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
 
 	/**
 	 * Gets the details.
@@ -67,30 +55,29 @@ public class WkpStatWorkTimeSetFinder {
 		dtoBuilder.year(year);
 		dtoBuilder.workplaceId(wkpId);
 
-		Optional<WkpNormalSetting> optWkpNormalSet = this.normalSettingRepository.find(companyId, wkpId, year);
-		if (optWkpNormalSet.isPresent()) {
-			dtoBuilder.normalSetting(WkpNormalSettingDto.fromDomain(optWkpNormalSet.get()));
-		}
-
-		Optional<WkpFlexSetting> optWkpFlexSet = this.flexSettingRepository.find(companyId, wkpId, year);
-		if (optWkpFlexSet.isPresent()) {
-			dtoBuilder.flexSetting(WkpFlexSettingDto.fromDomain(optWkpFlexSet.get()));
-		}
-
-		Optional<WkpDeforLaborSetting> optWkpDeforLaborSet = this.deforLaborSettingRepository.find(companyId, wkpId,
-				year);
-		if (optWkpDeforLaborSet.isPresent()) {
-			dtoBuilder.deforLaborSetting(WkpDeforLaborSettingDto.fromDomain(optWkpDeforLaborSet.get()));
-		}
-
-		Optional<WkpTransLaborTime> optTransLaborTime = this.transWorkTimeRepository.find(companyId, wkpId);
+		Optional<DeforLaborTimeWkp> optTransLaborTime = this.transLaborTimeRepository.find(companyId, wkpId);
 		if (optTransLaborTime.isPresent()) {
-			dtoBuilder.transLaborTime(WorkingTimeSettingDto.fromDomain(optTransLaborTime.get().getWorkingTimeSet()));
+			dtoBuilder.transLaborTime(WorkingTimeSettingDto.fromDomain(optTransLaborTime.get()));
 		}
 
-		Optional<WkpRegularLaborTime> optWkpRegular = this.regularWorkTimeRepository.find(companyId, wkpId);
-		if (optWkpRegular.isPresent()) {
-			dtoBuilder.regularLaborTime(WorkingTimeSettingDto.fromDomain(optWkpRegular.get().getWorkingTimeSet()));
+		Optional<RegularLaborTimeWkp> optComRegular = this.regularLaborTimeRepository.find(companyId, wkpId);
+		if (optComRegular.isPresent()) {
+			dtoBuilder.regularLaborTime(WorkingTimeSettingDto.fromDomain(optComRegular.get()));
+		}
+
+		val regularSet = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.REGULAR_LABOR, year);
+		if (!regularSet.isEmpty()) {
+			dtoBuilder.normalSetting(WkpNormalSettingDto.with(companyId, wkpId, year, regularSet));
+		}
+		
+		val flexSet = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.FLEX, year);
+		if (!flexSet.isEmpty()) {
+			dtoBuilder.flexSetting(WkpFlexSettingDto.with(companyId, wkpId, year, flexSet));
+		}
+
+		val deforSet = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.DEFOR_LABOR, year);
+		if (!deforSet.isEmpty()) {
+			dtoBuilder.deforLaborSetting(WkpDeforLaborSettingDto.with(year, companyId, wkpId, deforSet));
 		}
 
 		return dtoBuilder.build();
@@ -107,13 +94,15 @@ public class WkpStatWorkTimeSetFinder {
 		String companyId = AppContexts.user().companyId();
 		List<WkpRegularWorkHourDto> listWkpRegWorkHourDto = new ArrayList<>();
 
-		// get list wkp regular labor time
-		List<WkpRegularLaborTime> listWkpRegLaborTime = this.regularWorkTimeRepository.findAll(companyId);
-
+		
+		// get list employee regular labor time
+		List<RegularLaborTimeWkp> listWkpRegLaborTime = this.regularLaborTimeRepository.findAll(companyId);
+		
 		// check list is not empty
-		if (!listWkpRegLaborTime.isEmpty()) {
+		if(!listWkpRegLaborTime.isEmpty()){			
 			listWkpRegWorkHourDto = listWkpRegLaborTime.stream()
-					.map(domain -> WkpRegularWorkHourDto.fromDomain(domain)).collect(Collectors.toList());
+					.map(domain -> WkpRegularWorkHourDto.fromDomain(domain))
+					.collect(Collectors.toList());
 		}
 		
 		return listWkpRegWorkHourDto;

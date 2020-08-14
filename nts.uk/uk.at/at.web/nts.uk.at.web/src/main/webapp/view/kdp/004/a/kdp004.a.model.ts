@@ -7,6 +7,7 @@ interface StampSetting {
 	resultDisplayTime: number;
 	pageLayouts: Array<PageLayout>;
 	authcFailCnt:number;
+	employeeAuthcUseArt:boolean;
 }
 
 interface PageLayout {
@@ -42,6 +43,7 @@ interface ILoginInfo {
 interface IAuthResult {
 	isSuccess: boolean;
 	authType: number;
+	em:any;
 }
 
 class StampTab {
