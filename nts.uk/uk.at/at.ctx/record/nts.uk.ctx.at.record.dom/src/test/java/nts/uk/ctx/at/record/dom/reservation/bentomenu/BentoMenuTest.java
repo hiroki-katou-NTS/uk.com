@@ -401,7 +401,6 @@ public class BentoMenuTest {
 		target.setClosingTime(closing);
 
 
-		assertThat(actual.getMenu2().size()).isEqualTo(0);
-		assertThat(actual.getClosingTime().value).isEqualTo(target.getClosingTime().value);
+		assertThat(target.getClosingTime()).isEqualToComparingFieldByField(closing);
 	}
 }
