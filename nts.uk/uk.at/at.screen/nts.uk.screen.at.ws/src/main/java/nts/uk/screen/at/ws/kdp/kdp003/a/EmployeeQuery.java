@@ -1,5 +1,7 @@
 package nts.uk.screen.at.ws.kdp.kdp003.a;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +15,7 @@ import nts.arc.time.GeneralDate;
 public class EmployeeQuery {
 	private String companyId;
 	
-	private String workplaceId;
+	private List<String> workplaceIds;
 	
 	private GeneralDate baseDate;
 }

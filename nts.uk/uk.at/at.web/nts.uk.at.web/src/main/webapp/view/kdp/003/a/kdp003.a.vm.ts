@@ -27,7 +27,7 @@ module nts.uk.at.kdp003.a {
 		KDP002_T: '/view/kdp/002/t/index.xhtml'
 	};
 
-	const KDP003_SAVE_DATA = 'KDP003_DATA';
+	const KDP003_SAVE_DATA = 'loginKDP003';
 
 	@bean()
 	export class ViewModel extends ko.ViewModel {
@@ -68,11 +68,16 @@ module nts.uk.at.kdp003.a {
 				})
 			};
 
-		fingerStampSetting: KnockoutObservable<FingerStampSetting | null> = ko.observable(null);
+		fingerStampSetting: KnockoutObservable<FingerStampSetting> = ko.observable(DEFAULT_SETTING);
 
 
 		created() {
 			const vm = this;
+
+			// show or hide stampHistoryButton
+			vm.message.subscribe((value) => {
+				vm.showClockButton.company(value === null);
+			});
 
 			// reload employee list after change baseDate
 			vm.employeeData.baseDate.subscribe(() => {
@@ -89,11 +94,23 @@ module nts.uk.at.kdp003.a {
 			const vm = this;
 			const { storage } = vm.$window;
 
-			storage(KDP003_SAVE_DATA)
-				.then((data: undefined | StorageData) => {
-					if (data === undefined) {
-						return vm.$window.modal('at', DIALOG.F, { mode: 'admin' }) as JQueryDeferred<f.TimeStampLoginData>;
+			$(window).trigger('resize');
+
+			return vm.$ajax('at', API.FINGER_STAMP_SETTING)
+				.then((data: FingerStampSetting) => {
+					if (data) {
+						vm.fingerStampSetting(data);
 					}
+				})
+				.then(() => storage(KDP003_SAVE_DATA))
+				.then((storageData: undefined | StorageData) => {
+					if (storageData === undefined) {
+						return vm.$window.modal('at', DIALOG.F, { mode: 'admin' })
+							.then((loginData: f.TimeStampLoginData) => ({
+								loginData
+							})) as JQueryPromise<LoginData>;
+					}
+
 					// data login by storage
 					const {
 						CCD,
@@ -101,9 +118,9 @@ module nts.uk.at.kdp003.a {
 						PWD,
 						SCD,
 						SID
-					} = data as StorageData;
+					} = storageData as StorageData;
 
-					const loginData: f.ModelData = {
+					const loginParams: f.ModelData = {
 						contractCode: '000000000000',
 						companyCode: CCD,
 						companyId: CID,
@@ -119,144 +136,95 @@ module nts.uk.at.kdp003.a {
 					// <<ScreenQuery>> 打刻管理者でログインする
 					return vm.$ajax('at', API.COMPANIES)
 						.then((data: f.CompanyItem[]) => {
-							if (_.every(data, d => d.selectUseOfName === false)) {
+							if (!data.length || _.every(data, d => d.selectUseOfName === false)) {
 								// note: ログイン失敗(打刻会社一覧が取得できない場合)
-								vm.message({ messageId: 'Msg_1527' });
+								vm.setMessage({ messageId: 'Msg_1527' });
 
 								// UI[F2]  打刻使用可能会社の取得と判断 
 								vm.showClockButton.setting(false);
 
-								return null;
+								return {
+									storageData
+								};
 							}
 
 							vm.showClockButton.setting(true);
 
-							return vm.$ajax('at', API.LOGIN_ADMIN, loginData);
-						}) as JQueryDeferred<undefined | f.TimeStampLoginData>;
+							return vm.$ajax('at', API.LOGIN_ADMIN, loginParams)
+								.then((loginData: f.TimeStampLoginData) => ({
+									loginData,
+									storageData
+								}));
+						}) as JQueryPromise<LoginData>;
 				})
-				.then((data: null | undefined | f.TimeStampLoginData) => {
-					if (data === null) {
-						return false;
-					} else if (data === undefined) {
-						// note: ログイン失敗(キャンセル)
-						vm.message({ messageId: 'Msg_1647' });
+				.then((data: LoginData) => {
+					// if dialog f return data (first login)
+					if (data.loginData && !data.loginData.msgErrorId && !data.loginData.errorMessage && !data.storageData) {
+						const { loginData } = data;
+						const params = { multiSelect: true };
 
-						return false;
-					} else {
-						// note: 利用不可モードで表示
-						if (!data.msgErrorId && !data.errorMessage) {
-							const { em } = data;
-
-							return storage(KDP003_SAVE_DATA)
-								.then((storeData: undefined | StorageData) => {
-									// storage successful login data
-									const storageData: StorageData = {
-										CID: em.companyId,
-										CCD: em.companyCode,
-										PWD: em.password,
-										SCD: em.employeeCode,
-										SID: em.employeeId,
-										WKLOC_CD: (storeData || {}).WKLOC_CD || '',
-										WKPID: (storeData || {}).WKPID || []
-									};
-
-									return storage(KDP003_SAVE_DATA, storageData);
-								})
-								.then(() => true);
-						} else {
-							// note: ログイン失敗(打刻会社一覧が取得できない場合)
-							if (!data.msgErrorId) {
-								vm.message(data.errorMessage);
-							} else {
-								vm.message({ messageId: data.msgErrorId });
-							}
-
-							return false;
-						}
-					}
-				})
-				.then((data: boolean) => {
-					if (data === false) {
-						return null;
+						return vm.$window
+							.modal('at', DIALOG.K, params)
+							.then((workplaceData: k.Return) => ({
+								loginData,
+								workplaceData
+							})) as JQueryPromise<LoginData>;
 					}
 
-					return storage(KDP003_SAVE_DATA)
-						.then((data: StorageData) => {
-							if (data.WKPID.length) {
-								return { selectedId: data.WKPID };
-							}
-
-							// if not exist workplaceID
-							return vm.$window.modal('at', DIALOG.K, { multiSelect: true });
-						}) as JQueryDeferred<k.Return>;
+					return data;
 				})
-				.then((data: null | k.Return) => {
-					if (data === null) {
-						if (!ko.unwrap(vm.message)) {
-							vm.message({ messageId: 'Msg_1647' });
-						}
+				.then((data: LoginData) => {
+					// if not return full data (first login)
+					if (!data.storageData && (!data.loginData || !data.workplaceData)) {
+						vm.setMessage({ messageId: 'Msg_1647' });
 
 						return false;
 					}
 
-					return storage(KDP003_SAVE_DATA)
-						// update workplaceId to storage
-						.then((storageData: StorageData) => {
-							if (storage) {
-								if (_.isArray(data.selectedId)) {
-									storageData.WKPID = data.selectedId;
-								} else {
-									storageData.WKPID = [data.selectedId];
-								}
-							}
+					const { loginData, storageData, workplaceData } = data;
 
-							// return data from storage
-							return storage(KDP003_SAVE_DATA, storageData);
-						});
-				})
-				.then((data: false | StorageData) => {
-					if (data !== false) {
-						const params: f.CommanStampInput = {
-							companyId: data.CID,
-							employeeCode: data.SCD,
-							employeeId: data.SID,
-							stampMeans: StampMeans.NAME_SELECTION
+					if (loginData.msgErrorId) {
+						vm.setMessage({ messageId: loginData.msgErrorId });
+
+						return false;
+					}
+
+					if (loginData.errorMessage) {
+						vm.setMessage(loginData.errorMessage);
+
+						return false;
+					}
+
+					// if login & select workspace success
+					const { em } = loginData;
+
+					if (workplaceData) {
+						const { selectedId } = workplaceData;
+
+						const storeData = {
+							CCD: em.companyCode,
+							CID: em.companyId,
+							PWD: em.password,
+							SCD: em.employeeCode,
+							SID: em.employeeId,
+							WKLOC_CD: '',
+							WKPID: _.isString(selectedId) ? [selectedId] : selectedId
 						};
 
-						return vm.$ajax('at', API.CONFIRM_STAMP_INPUT, params)
-							.then((stamp: f.ConfirmStampInput) => {
-								if (stamp.used === CanEngravingUsed.ENGTAVING_FUNCTION_CANNOT_USED) {
-									vm.message({
-										messageId: 'Msg_1645',
-										messageParams: [vm.$i18n('KDP002_2')]
-									});
-
-									return false;
-								}
-
-								return data;
-							}) as JQueryDeferred<false | StorageData>;
+						return storage(KDP003_SAVE_DATA, storeData);
 					}
 
-					return false;
+					return storageData;
 				})
 				.then((data: false | StorageData) => {
-					if (data === false) {
-						return false;
+					// if login and storage data success
+					if (data) {
+						return vm.loadData(data);
 					}
-
-					// if message is not set, clear it (show ui)
-					if (!ko.unwrap(vm.message)) {
-						vm.message(null);
-					}
-
-					// login success and datas are valid
-					return vm.loadData(data);
 				})
 				// show message from login data (return by f dialog)
 				.fail((message: { messageId: string }) => {
 					vm.message(message);
-					vm.$dialog.error(message);
 				});
 		}
 
@@ -265,9 +233,7 @@ module nts.uk.at.kdp003.a {
 		private loadData(storage: StorageData) {
 			const vm = this;
 			const clearState = () => {
-				if (!ko.unwrap(vm.message)) {
-					vm.message({ messageId: 'KDP002_2' });
-				}
+				vm.setMessage({ messageId: 'KDP002_2' });
 
 				// clear tabs button
 				vm.buttonPage.tabs([]);
@@ -280,7 +246,8 @@ module nts.uk.at.kdp003.a {
 			}
 
 			// <<Command>> 打刻入力を利用できるかを確認する
-			return vm.$ajax('at', API.FINGER_STAMP_SETTING)
+			return $.Deferred()
+				.resolve(ko.toJS(vm.fingerStampSetting))
 				.then((data: FingerStampSetting) => {
 					if (data) {
 						const { stampSetting, stampResultDisplay } = data;
@@ -288,16 +255,15 @@ module nts.uk.at.kdp003.a {
 						if (!stampResultDisplay) {
 							// UI[A6] 打刻利用失敗時のメッセージについて 
 							// note: 打刻オプション未購入
-							if (!ko.unwrap(vm.message)) {
-								vm.message({ messageId: 'Msg_1644' });
-							}
+							vm.setMessage({ messageId: 'Msg_1644' });
 							return;
 						}
 
-						vm.fingerStampSetting(data);
-
 						if (stampSetting) {
 							const { nameSelectArt } = stampSetting;
+							
+							// update interval for display datetime
+							vm.$date.interval(stampSetting.correctionInterval * 60000);
 
 							// clear message and show screen
 							vm.message(null);
@@ -317,7 +283,7 @@ module nts.uk.at.kdp003.a {
 				.then(() => vm.$ajax('at', API.HIGHTLIGHT))
 				.then((data: share.StampToSuppress) => vm.buttonPage.stampToSuppress(data))
 				// <<ScreenQuery>>: 打刻入力(氏名選択)で社員の一覧を取得する
-				.then(() => vm.loadEmployees(storage)) as JQueryDeferred<any>;
+				.then(() => vm.loadEmployees(storage)) as JQueryPromise<any>;
 		}
 
 		private loadEmployees(storage: StorageData) {
@@ -326,13 +292,13 @@ module nts.uk.at.kdp003.a {
 			const params = {
 				baseDate: moment(baseDate).toISOString(),
 				companyId: (storage || {}).CID || '',
-				workplaceId: (storage.WKPID || [])[0] || ''
+				workplaceIds: (storage || {}).WKPID || []
 			};
 
 			return vm.$ajax('at', API.EMPLOYEE_LIST, params)
 				.then((data: Employee[]) => {
 					vm.employeeData.employees(data);
-				}) as JQueryDeferred<any>;
+				}) as JQueryPromise<any>;
 		}
 
 		setting() {
@@ -342,7 +308,7 @@ module nts.uk.at.kdp003.a {
 			if (!!ko.unwrap(vm.message)) {
 				vm.message(false);
 			}
-			
+
 			storage(KDP003_SAVE_DATA)
 				.then((data: StorageData) => {
 					const mode = 'admin';
@@ -350,108 +316,111 @@ module nts.uk.at.kdp003.a {
 
 					return vm.$window.modal('at', DIALOG.F, { mode, companyId });
 				})
-				.then((data: f.TimeStampLoginData) => {
-					if (data) {
-						const { em } = data;
-
-						if (em) {
-							// update or save login data to storage
-							storage(KDP003_SAVE_DATA)
-								.then((storageData: StorageData) => {
-									if (storageData) {
-										storageData.CCD = em.companyCode;
-										storageData.CID = em.companyId;
-										storageData.PWD = em.password;
-										storageData.SCD = em.employeeCode;
-										storageData.SID = em.employeeId;
-									} else {
-										storageData = {
-											CCD: em.companyCode,
-											CID: em.companyId,
-											PWD: em.password,
-											SCD: em.employeeCode,
-											SID: em.employeeId,
-											WKLOC_CD: '',
-											WKPID: []
-										};
-									}
-
-									storage(KDP003_SAVE_DATA, storageData);
-								});
-						}
-
-						return data;
-					}
-
-					return false;
-				})
 				// check storage data
-				.then((state: false | f.TimeStampLoginData) => {
-					if (state === false || !!state.msgErrorId || !!state.errorMessage) {
-						if (state !== false) {
-							if (state.msgErrorId) {
-								vm.message({
-									messageId: state.msgErrorId
-								});
-							} else {
-								vm.message(state.errorMessage);
-							}
-						} else {
-							if (!ko.unwrap(vm.message)) {
-								vm.message({
-									messageId: 'Msg_1647'
-								});
-							}
-						}
-
-						return false;
+				.then((loginData: undefined | f.TimeStampLoginData) => {
+					if (loginData === undefined) {
+						return {};
 					} else {
-						return vm.$window.modal('at', DIALOG.K, { multiSelect: true });
+						const params = { multiSelect: true };
+
+						return vm.$window.modal('at', DIALOG.K, params)
+							.then((workplaceData: undefined | k.Return) => {
+								return {
+									loginData,
+									workplaceData
+								};
+							}) as JQueryPromise<LoginData>;
 					}
 				})
-				.then((data: false | undefined | k.Return) => {
-					if (data === false) {
-						return false;
-					} else if (data === undefined) {
-						if (!ko.unwrap(vm.message)) {
-							vm.message({
-								messageId: 'Msg_1647'
-							});
-						}
-					} else {
+				.then((data: LoginData) => {
+					if (!data.loginData || !data.workplaceData) {
 						return storage(KDP003_SAVE_DATA)
-							// update workplaceId to storage
-							.then((storageData: StorageData) => {
-								if (storageData) {
-									if (_.isArray(data.selectedId)) {
-										storageData.WKPID = data.selectedId;
-									} else {
-										storageData.WKPID = [data.selectedId];
-									}
+							.then((data: undefined | StorageData) => {
+								if (_.isNil(data)) {
+									vm.setMessage({ messageId: 'Msg_1647' });
+
+									return false;
 								}
-								// return data from storage
-								return storage(KDP003_SAVE_DATA, storageData);
+
+								// reload with old data
+								return data;
 							});
 					}
+
+					const { loginData, workplaceData } = data;
+
+					if (loginData.msgErrorId) {
+						vm.setMessage({ messageId: loginData.msgErrorId });
+
+						return false;
+					}
+
+					if (loginData.errorMessage) {
+						vm.setMessage(loginData.errorMessage);
+
+						return false;
+					}
+
+					// if login & select workspace success
+					const { em } = loginData;
+					const { selectedId } = workplaceData;
+
+					const storageData = {
+						CCD: em.companyCode,
+						CID: em.companyId,
+						PWD: em.password,
+						SCD: em.employeeCode,
+						SID: em.employeeId,
+						WKLOC_CD: '',
+						WKPID: _.isString(selectedId) ? [selectedId] : selectedId
+					};
+
+					return storage(KDP003_SAVE_DATA, storageData) as JQueryPromise<StorageData>;
 				})
 				.then((data: false | StorageData) => {
 					// if login and storage data success
 					if (data) {
-						return vm.loadData(data);
+						// data login by storage
+						const {
+							CCD,
+							CID,
+							PWD,
+							SCD,
+							SID
+						} = data;
+
+						const loginParams: f.ModelData = {
+							contractCode: '000000000000',
+							companyCode: CCD,
+							companyId: CID,
+							employeeCode: SCD,
+							employeeId: SID,
+							password: PWD,
+							passwordInvalid: false,
+							isAdminMode: true,
+							runtimeEnvironmentCreate: true
+						};
+
+						// login again (wtf?????)
+						return vm.$ajax('at', API.LOGIN_ADMIN, loginParams)
+							.then(() => vm.loadData(data)) as JQueryPromise<any>;
 					}
 				})
 				// show message from login data (return by f dialog)
 				.fail((message: { messageId: string }) => {
 					vm.message(message);
-					vm.$dialog.error(message);
 				});
 		}
 
 		stampHistory() {
 			const vm = this;
 			const data: EmployeeListData = ko.toJS(vm.employeeData);
-			const { selectedId, employees } = data;
+			const { selectedId, employees, nameSelectArt } = data;
 			const employee = _.find(employees, (e) => e.employeeId === selectedId);
+
+			if (selectedId === undefined && nameSelectArt) {
+				return vm.$dialog.error({ messageId: 'Msg_1646' });
+			}
 
 			vm.$window
 				.storage(KDP003_SAVE_DATA)
@@ -461,7 +430,7 @@ module nts.uk.at.kdp003.a {
 					return vm.$window.modal('at', DIALOG.F, {
 						mode: 'employee',
 						companyId: data.CID,
-						employee: employee ? { code: employee.employeeCode, name: employee.employeeName } : { code: data.SCD }
+						employee: employee ? { id: employee.employeeId, code: employee.employeeCode, name: employee.employeeName } : null
 					});
 				})
 				.then((data: f.TimeStampLoginData) => {
@@ -482,7 +451,7 @@ module nts.uk.at.kdp003.a {
 		stampButtonClick(btn: share.ButtonSetting, layout: share.PageLayout) {
 			const vm = this;
 			const { buttonPage, employeeData } = vm;
-			const { selectedId, employees, employeeAuthcUseArt } = ko.toJS(employeeData) as EmployeeListData;
+			const { selectedId, employees, nameSelectArt } = ko.toJS(employeeData) as EmployeeListData;
 			const reloadSetting = () => vm.$ajax('at', API.HIGHTLIGHT)
 				.then((data: any) => {
 					const oldData = ko.unwrap(buttonPage.stampToSuppress);
@@ -495,7 +464,7 @@ module nts.uk.at.kdp003.a {
 				});
 
 			// case: 社員一覧(A2)を選択していない場合
-			if (selectedId === undefined && employeeAuthcUseArt === true) {
+			if (selectedId === undefined && nameSelectArt === true) {
 				return vm.$dialog.error({ messageId: 'Msg_1646' });
 			}
 
@@ -503,8 +472,8 @@ module nts.uk.at.kdp003.a {
 			return vm.$window.storage(KDP003_SAVE_DATA)
 				.then((data: StorageData) => {
 					const params: f.EmployeeModeParam | f.FingerVeinModeParam = {
-						mode: selectedId || employeeAuthcUseArt === true ? 'employee' : 'fingerVein',
-						companyId: (data || {}).CID || vm.$user.companyId
+						mode: selectedId || nameSelectArt === true ? 'employee' : 'fingerVein',
+						companyId: (data || {}).CID
 					};
 
 					if (selectedId) {
@@ -555,7 +524,7 @@ module nts.uk.at.kdp003.a {
 									}
 								}).then(() => {
 									const { stampResultDisplay } = fingerStampSetting;
-									const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 };
+									const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
 									const { USE } = NotUseAtr;
 									const { WORKING_OUT, TEMPORARY_LEAVING } = share.ChangeClockArt;
 
@@ -564,14 +533,14 @@ module nts.uk.at.kdp003.a {
 									if (notUseAttr === USE && [WORKING_OUT, TEMPORARY_LEAVING].indexOf(btn.changeClockArt) > -1) {
 										return storage('KDP010_2C', displayItemId)
 											.then(() => storage('infoEmpToScreenC', employeeInfo))
-											.then(() => modal('at', DIALOG.KDP002_C)) as JQueryDeferred<any>;
+											.then(() => modal('at', DIALOG.KDP002_C)) as JQueryPromise<any>;
 									} else {
 										const { stampSetting } = fingerStampSetting;
 										const { resultDisplayTime } = stampSetting;
 
 										return storage('resultDisplayTime', resultDisplayTime)
 											.then(() => storage('infoEmpToScreenB', employeeInfo))
-											.then(() => modal('at', DIALOG.KDP002_B)) as JQueryDeferred<any>;
+											.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
 									}
 								});
 							}
@@ -592,6 +561,14 @@ module nts.uk.at.kdp003.a {
 
 			if (type !== 0) {
 				new Audio(type === 1 ? oha : otsu).play();
+			}
+		}
+
+		setMessage(message: string | f.Message) {
+			const vm = this;
+
+			if (!ko.unwrap(vm.message)) {
+				vm.message(message);
 			}
 		}
 	}
@@ -616,6 +593,12 @@ module nts.uk.at.kdp003.a {
 				}
 			}
 		}
+	}
+
+	interface LoginData {
+		loginData?: f.TimeStampLoginData;
+		workplaceData?: k.Return;
+		storageData?: StorageData;
 	}
 
 	interface StorageData {
@@ -699,4 +682,26 @@ module nts.uk.at.kdp003.a {
 		// 3 打刻カード未登録
 		UNREGISTERED_STAMP_CARD = 3
 	}
+
+	const DEFAULT_SETTING: FingerStampSetting = {
+		"stampSetting": {
+			"buttonEmphasisArt": true,
+			"historyDisplayMethod": null,
+			"correctionInterval": 60,
+			"textColor": "#000",
+			"backGroundColor": "#cccccc",
+			"resultDisplayTime": 360,
+			"pageLayouts": [],
+			"cid": "",
+			"nameSelectArt": false,
+			"passwordRequiredArt": true,
+			"employeeAuthcUseArt": false,
+			"authcFailCnt": 10
+		},
+		"stampResultDisplay": {
+			"companyId": "",
+			"notUseAttr": 1,
+			"displayItemId": []
+		}
+	};
 }

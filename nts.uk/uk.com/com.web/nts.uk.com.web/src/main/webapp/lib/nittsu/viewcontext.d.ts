@@ -142,6 +142,9 @@ interface ComponentViewModel {
 		readonly today: {
 			(): Date;
 		};
+		readonly interval: {
+			(intv: number): void;
+		};
 	};
 	readonly $i18n: {
 		(textId: string): string;
