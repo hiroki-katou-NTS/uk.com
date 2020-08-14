@@ -7,6 +7,11 @@
 <body>
 <ui:composition template="/master/dialog.xhtml">
 	<ui:define name="htmlHead">
+		<com:ValidatorScript>
+			nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth
+			nts.uk.ctx.at.record.dom.reservation.bento.rules.BentoReservationTimeName
+			nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationTime
+		</com:ValidatorScript>
 		<com:scriptfile set="IGNITE" />
 		<com:stylefile path="./kmr001.b.style.css" />
 		<com:stylefile path="../kmr001.common.styles.css"/>
@@ -17,23 +22,23 @@
 
 		<div id="contents-area">
 			<!--B1_1-->
-			<a class="hyperlink" href="../a/index.xhtml" data-bind="text: $vm.$i18n('KMR001_3')"></a>
+			<a class="hyperlink" href="../a/index.xhtml" data-bind="text: $i18n('KMR001_3')"></a>
 			<!--B1_2-->
-			<button class="proceed sidebar-button" data-bind="text: $vm.$i18n('KMR001_4')"></button>
+			<button class="proceed sidebar-button" data-bind="text: $i18n('KMR001_4')"></button>
 			<hr/>
 			<div class="break-line"></div>
 
 			<!--B2_1-->
-			<div class="label" data-bind="text: $vm.$i18n('KMR001_3')" ></div>
+			<div class="label" data-bind="text: $i18n('KMR001_3')" ></div>
 			<hr/>
 			<!--B2_2-->
 			<!--B3_1-->
-			<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true, text: $vm.$i18n('KMR001_5')}"></div>
+			<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true, text: $i18n('KMR001_5')}"></div>
 			<!--B3_2 -> 4-->
 			<div data-bind="ntsRadioBoxGroup: {
 					options: ([
-						{id : 1, name : $i18n('KMR001_6')},
-						{id : 2, name : $i18n('KMR001_7')}
+						{id : 0, name : $i18n('KMR001_6')},
+						{id : 1, name : $i18n('KMR001_7')}
             		]),
 					optionsValue: 'id',
 					optionsText: 'name',
@@ -41,29 +46,31 @@
 					enable: enable}"></div>
 			<div class="break-line"></div>
 			<!--B5_1-->
-			<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true, text: $vm.$i18n('KMR001_9')} "></div>
+			<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true, text: $i18n('KMR001_9')} "></div>
 
 			<!--B5_2-->
 			<span >
 				<input class="kmr-time-editor" data-bind="ntsTimeEditor: {
 				mode: 'time',
 				inputFormat: 'time',
-				required: false }"  />
+				required: false }
+				value: model
+				"  />
 			</span>
 
 			<!--B5_3-->
-			<span class="label" data-bind="text: $vm.$i18n('KMR001_10')" ></span>
+			<span class="label" data-bind="text: $i18n('KMR001_10')" ></span>
 			<div class="break-line"></div>
 			<!--B19_1-->
-			<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true, text: $vm.$i18n('KMR001_35')}"></div>
+			<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true, text: $i18n('KMR001_35')}"></div>
 
 			<!--B19_2-->
-			<span class="label" data-bind="text: $vm.$i18n('KMR001_69')"></span>
+			<span class="label" data-bind="text: $i18n('KMR001_69')"></span>
 			<!--B19_3-->
 			<input data-bind="ntsTextEditor: {value: model.name1Textbox}" />
 
 			<!--B19_4-->
-			<span class="label" data-bind="text: $vm.$i18n('KMR001_70')"></span>
+			<span class="label" data-bind="text: $i18n('KMR001_70')"></span>
 
 			<!--B19_5-->
 			<span>
@@ -74,7 +81,7 @@
 			</span>
 
 			<!--B19_6-->
-			<span class="label" data-bind="text: $vm.$i18n('KMR001_58')"></span>
+			<span class="label" data-bind="text: $i18n('KMR001_58')"></span>
 
 			<!--B19_7-->
 			<span >
@@ -89,13 +96,13 @@
 			<div data-bind="ntsFormLabel: {}">締め時刻１</div>
 
 			<!--B20_2-->
-			<span class="label" data-bind="text: $vm.$i18n('KMR001_73')"></span>
+			<span class="label" data-bind="text: $i18n('KMR001_73')"></span>
 
 			<!--B20_3-->
 			<!--<input data-bind="ntsTextEditor: {value: true}" />-->
 
 			<!--B20_4-->
-			<span class="label" data-bind="text: $vm.$i18n('KMR001_74')"></span>
+			<span class="label" data-bind="text: $i18n('KMR001_74')"></span>
 
 			<!--B20_5-->
 			<span>
@@ -106,7 +113,7 @@
 			</span>
 
 			<!--B20_6-->
-			<span class="label" data-bind="text: $vm.$i18n('KMR001_58')"></span>
+			<span class="label" data-bind="text: $i18n('KMR001_58')"></span>
 
 			<!--B20_7-->
 			<span>
@@ -118,12 +125,12 @@
 
 			<div class="break-line"></div>
 			<!--B12-->
-			<span class="label" data-bind="text: $vm.$i18n('KMR001_25')"></span>
+			<span class="label" data-bind="text: $i18n('KMR001_25')"></span>
 			<!--B13-->
 			<hr/>
 
 			<!--B10_1-->
-			<div data-bind="ntsFormLabel: {text: $vm.$i18n('KMR001_21')}"></div>
+			<div data-bind="ntsFormLabel: {text: $i18n('KMR001_21')}"></div>
 			<!--B10_2-->
 			<div id="combo-box" tabindex="1" data-bind="ntsComboBox: {
 							width: '150px',
@@ -157,7 +164,7 @@
 			<div class="break-line"></div>
 
 			<!--B21_1-->
-			<div data-bind="ntsFormLabel: {text: $vm.$i18n('KMR001_77')}"></div>
+			<div data-bind="ntsFormLabel: {text: $i18n('KMR001_77')}"></div>
 			<!--B21_2-->
 			<div data-bind="ntsRadioBoxGroup: {
 					options: ([
@@ -174,7 +181,7 @@
 
 
 			<!--B14_1-->
-			<div data-bind="ntsFormLabel: {text: $vm.$i18n('KMR001_26')}"></div>
+			<div data-bind="ntsFormLabel: {text: $i18n('KMR001_26')}"></div>
 			<!--B14_2-->
 			<div data-bind="ntsRadioBoxGroup: {
 					options: ([
@@ -191,12 +198,12 @@
 
 			<div class="break-line"></div>
 			<!--B15-->
-			<span class="label" data-bind="text: $vm.$i18n('KMR001_30')"></span>
+			<span class="label" data-bind="text: $i18n('KMR001_30')"></span>
 			<hr/>
 			<div class="break-line"></div>
 
 			<!--B17_1-->
-			<div data-bind="ntsFormLabel: {text: $vm.$i18n('KMR001_31')}"></div>
+			<div data-bind="ntsFormLabel: {text: $i18n('KMR001_31')}"></div>
 			<!--B17_2-->
 			<div data-bind="ntsRadioBoxGroup: {
 					options: ([
@@ -212,7 +219,7 @@
 			<div class="break-line"></div>
 
 			<!--B18_1-->
-			<div data-bind="ntsFormLabel: {text: $vm.$i18n('KMR001_35')}"></div>
+			<div data-bind="ntsFormLabel: {text: $i18n('KMR001_35')}"></div>
 			<!--B18_2-->
 			<div data-bind="ntsRadioBoxGroup: {
 					options: ([

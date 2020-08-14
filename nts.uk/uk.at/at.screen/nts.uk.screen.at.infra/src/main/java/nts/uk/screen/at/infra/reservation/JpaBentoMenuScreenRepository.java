@@ -15,9 +15,6 @@ public class JpaBentoMenuScreenRepository extends JpaRepository implements Bento
 
     private static final String FIND_BENTO_MENU_DATE;
 
-    private static final String FIND_BENTO_MENU_BY_EndDate;
-
-
     static {
         StringBuilder builderString = new StringBuilder();
         builderString.append(" SELECT NEW " + BentoMenuDto.class.getName());
