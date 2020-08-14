@@ -86,7 +86,8 @@ public class CreateDailyOneDay {
         //勤怠ルールの補正処理
 		integrationOfDaily = iCorrectionAttendanceRule.process(integrationOfDaily,
 				new ChangeDailyAttendance(true, true, true, true));
-        	
+		integrationOfDaily.setYmd(ymd);
+		integrationOfDaily.setEmployeeId(employeeId);
 		return new OutputCreateDailyOneDay( listErrorMessageInfo,integrationOfDaily,outputAcquireReflectEmbossingNew.getListStamp());
 		
 	}
