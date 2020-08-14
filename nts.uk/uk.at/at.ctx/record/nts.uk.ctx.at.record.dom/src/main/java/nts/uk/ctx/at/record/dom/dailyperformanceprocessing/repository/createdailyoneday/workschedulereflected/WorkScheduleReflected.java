@@ -85,8 +85,8 @@ public class WorkScheduleReflected {
 		//1日半日出勤・1日休日系の判定
 		WorkStyle workStyle =  wkTypeOpt.get(0).checkWorkDay();
 		if(workStyle == WorkStyle.ONE_DAY_REST) {
-			listErrorMessageInfo.add(new ErrorMessageInfo(companyId, employeeId, ymd, ExecutionContent.DAILY_CREATION,
-					new ErrMessageResource("016"), new ErrMessageContent(TextResource.localize("Msg_591"))));
+//			listErrorMessageInfo.add(new ErrorMessageInfo(companyId, employeeId, ymd, ExecutionContent.DAILY_CREATION,
+//					new ErrMessageResource("016"), new ErrMessageContent(TextResource.localize("Msg_591"))));
 			return listErrorMessageInfo;
 		}
 		//ドメインモデル「就業時間帯の設定」を取得

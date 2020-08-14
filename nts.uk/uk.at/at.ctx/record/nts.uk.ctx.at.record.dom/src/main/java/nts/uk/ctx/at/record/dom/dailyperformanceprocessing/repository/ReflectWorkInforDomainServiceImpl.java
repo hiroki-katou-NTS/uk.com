@@ -703,7 +703,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							new EmploymentCode(employmentHistItemImport.get().getEmploymentCode()),
 							jobTitleHistItemImport.get().getJobTitleId(),
 							workplaceHistItemImport.get().getWorkplaceId(),
-							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()), null)));
+							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()),null, null)));
 		} else {
 			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する
@@ -941,7 +941,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					Optional.of(new AffiliationInforOfDailyAttd(
 							new EmploymentCode(employmentHasData.get().getEmploymentCode()),
 							jobTitleHasData.get().getJobTitleId(), workPlaceHasData.get().getWorkplaceId(),
-							new ClassificationCode(classificationHasData.get().getClassificationCode()), null)));
+							new ClassificationCode(classificationHasData.get().getClassificationCode()),
+							null,
+							null)));
 		} else {
 			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する
@@ -1216,11 +1218,14 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					workInfoOfDailyPerformanceUpdate, affiliationInforOfDailyPerfor, periodInMasterList);
 
 			if (bonusPaySetting.isPresent()) {
+				
 				affiliationInforOfDailyPerfor = new AffiliationInforOfDailyAttd(
 						affiliationInforOfDailyPerfor.getEmploymentCode(),
 						affiliationInforOfDailyPerfor.getJobTitleID(),
 						affiliationInforOfDailyPerfor.getWplID(),
-						affiliationInforOfDailyPerfor.getClsCode(), bonusPaySetting.get().getCode());
+						affiliationInforOfDailyPerfor.getClsCode(),
+						affiliationInforOfDailyPerfor.getBusinessTypeCode().isPresent()?affiliationInforOfDailyPerfor.getBusinessTypeCode().get():null,
+						 bonusPaySetting.get().getCode());
 			}
 
 			// 計算区分を日別実績に反映する

@@ -82,14 +82,15 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
 			String bonusPaycode = affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode() != null ? "'" + affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().v() + "'" : null;
-			String insertTableSQL = "INSERT INTO KRCDT_DAI_AFFILIATION_INF ( SID , YMD , EMP_CODE, JOB_ID , CLS_CODE , WKP_ID , BONUS_PAY_CODE ) "
+			String businessTypeCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().isPresent() ? "'" + affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().get().v() + "'" : null;
+			String insertTableSQL = "INSERT INTO KRCDT_DAI_AFFILIATION_INF ( SID , YMD , EMP_CODE, JOB_ID , CLS_CODE , WKP_ID , BONUS_PAY_CODE,WORK_TYPE_CODE ) "
 					+ "VALUES( '" + affiliationInforOfDailyPerfor.getEmployeeId() + "' , '"
 					+ affiliationInforOfDailyPerfor.getYmd() + "' , '"
 					+ affiliationInforOfDailyPerfor.getAffiliationInfor().getEmploymentCode().v() + "' , '"
 					+ affiliationInforOfDailyPerfor.getAffiliationInfor().getJobTitleID() + "' , '"
 					+ affiliationInforOfDailyPerfor.getAffiliationInfor().getClsCode().v() + "' , '"
 					+ affiliationInforOfDailyPerfor.getAffiliationInfor().getWplID() + "' , "
-					+ bonusPaycode + " )";
+					+ bonusPaycode +" , " + businessTypeCode + " )";
 			Statement statementI = con.createStatement();
 			statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 		} catch (Exception e) {
@@ -106,6 +107,8 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		entity.krcdtDaiAffiliationInfPK.ymd = affiliationInforOfDailyPerfor.getYmd();
 		entity.bonusPayCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode() != null
 				? affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().v() : null;
+		entity.businessTypeCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().isPresent()
+				? affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().get().v() : null;
 		entity.classificationCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getClsCode() == null ? null
 				: affiliationInforOfDailyPerfor.getAffiliationInfor().getClsCode().v();
 		entity.employmentCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getEmploymentCode() == null ? null
@@ -173,10 +176,11 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String bonusPaycode = domain.getAffiliationInfor().getBonusPaySettingCode() != null ? "'" + domain.getAffiliationInfor().getBonusPaySettingCode().v() + "'" : null;
+		String businessTypeCode = domain.getAffiliationInfor().getBusinessTypeCode().isPresent() ? "'" + domain.getAffiliationInfor().getBusinessTypeCode().get().v() + "'" : null;
 		String updateTableSQL = " UPDATE KRCDT_DAI_AFFILIATION_INF SET EMP_CODE = '"
 				+ domain.getAffiliationInfor().getEmploymentCode().v() + "' , JOB_ID = '" + domain.getAffiliationInfor().getJobTitleID()
 				+ "' , CLS_CODE = '" + domain.getAffiliationInfor().getClsCode().v() + "' , WKP_ID = '" + domain.getAffiliationInfor().getWplID()
-				+ "' , BONUS_PAY_CODE = " + bonusPaycode + " WHERE SID = '"
+				+ "' , BONUS_PAY_CODE = " + bonusPaycode +",WORK_TYPE_CODE ="+ businessTypeCode + "  WHERE SID = '"
 				+ domain.getEmployeeId() + "' AND YMD = '" + domain.getYmd() + "'";
 		try {
 				con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(updateTableSQL));
@@ -250,7 +254,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		String subEmp = NtsStatement.In.createParamsString(subList);
     	String subInDate = NtsStatement.In.createParamsString(subListDate);
     	
-		StringBuilder query = new StringBuilder("SELECT EMP_CODE, SID, JOB_ID, WKP_ID, YMD, CLS_CODE, BONUS_PAY_CODE FROM KRCDT_DAI_AFFILIATION_INF");
+		StringBuilder query = new StringBuilder("SELECT EMP_CODE, SID, JOB_ID, WKP_ID, YMD, CLS_CODE, BONUS_PAY_CODE,WORK_TYPE_CODE FROM KRCDT_DAI_AFFILIATION_INF");
 		query.append(" WHERE SID IN (" + subEmp + ")");
 		query.append(" AND YMD IN (" + subInDate + ")");
 		
