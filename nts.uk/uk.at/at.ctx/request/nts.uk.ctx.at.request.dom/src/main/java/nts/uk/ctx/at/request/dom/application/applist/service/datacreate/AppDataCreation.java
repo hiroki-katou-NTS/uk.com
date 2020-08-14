@@ -57,8 +57,9 @@ public interface AppDataCreation {
 	 * @param appListExtractCondition
 	 * @return
 	 */
-	public ListOfApplication createAppLstData(String companyID, List<Application> appLst, DatePeriod period, boolean mode, 
-			Map<String,List<ApprovalPhaseStateImport_New>> mapApproval, int device, AppListExtractCondition appListExtractCondition);
+	public AppListInfo createAppLstData(String companyID, List<ListOfApplication> appLst, DatePeriod period, ApplicationListAtr mode, 
+			Map<String,List<ApprovalPhaseStateImport_New>> mapApproval, int device, AppListExtractCondition appListExtractCondition, 
+			AppListInfo appListInfo);
 	
 	/**
 	 * refactor 4
