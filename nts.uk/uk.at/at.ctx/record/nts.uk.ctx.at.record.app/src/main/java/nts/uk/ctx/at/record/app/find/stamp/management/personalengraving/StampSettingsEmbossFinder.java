@@ -83,6 +83,12 @@ public class StampSettingsEmbossFinder {
 	@Inject
 	private ConfirmUseOfStampEmbossCommandHandler confirmHandler;
 
+	@Inject
+	protected WorkingConditionRepository workingConditionRepo;
+	
+	@Inject
+	protected WorkingConditionItemRepository workingConditionItemRepo;
+
 	public KDP002AStartPageOutput getSettings() {
 
 		String companyId = AppContexts.user().companyId();
@@ -137,7 +143,7 @@ public class StampSettingsEmbossFinder {
 	public StampToSuppress getStampToSuppress(String employeeId) {
 		StampTypeToSuppressRequiredImpl stampTypeToSuppressR = new StampTypeToSuppressRequiredImpl(stampCardRepo,
 				stampRecordRepo, stampDakokuRepo, stampSetPerRepo, predetemineTimeSettingRepo,
-				settingsSmartphoneStampRepo, portalStampSettingsrepo);
+				settingsSmartphoneStampRepo, portalStampSettingsrepo, workingConditionItemRepo, workingConditionRepo);
 
 		return GetStampTypeToSuppressService.get(stampTypeToSuppressR, employeeId, StampMeans.INDIVITION);
 	}
@@ -211,12 +217,16 @@ public class StampSettingsEmbossFinder {
 				StampDakokuRepository stampDakokuRepo, StampSetPerRepository stampSetPerRepo,
 				PredetemineTimeSettingRepository predetemineTimeSettingRepo,
 				SettingsSmartphoneStampRepository settingsSmartphoneStampRepo,
-				PortalStampSettingsRepository portalStampSettingsrepo) {
+				PortalStampSettingsRepository portalStampSettingsrepo,
+				WorkingConditionItemRepository workingConditionItemRepo,
+				WorkingConditionRepository workingConditionRepo) {
 			super(stampCardRepo, stampRecordRepo, stampDakokuRepo);
 			this.stampSetPerRepo = stampSetPerRepo;
 			this.predetemineTimeSettingRepo = predetemineTimeSettingRepo;
 			this.settingsSmartphoneStampRepo = settingsSmartphoneStampRepo;
 			this.portalStampSettingsrepo = portalStampSettingsrepo;
+			this.workingConditionItemRepo = workingConditionItemRepo;
+			this.workingConditionRepo = workingConditionRepo;
 		}
 
 		@Override
@@ -247,12 +257,12 @@ public class StampSettingsEmbossFinder {
 
 		@Override
 		public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
-			return workingConditionRepo.getBySidAndStandardDate(companyId, employeeId, baseDate);
+			return this.workingConditionRepo.getBySidAndStandardDate(companyId, employeeId, baseDate);
 		}
 
 		@Override
 		public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
-			return workingConditionItemRepo.getByHistoryId(historyId);
+			return this.workingConditionItemRepo.getByHistoryId(historyId);
 		}
 
 	}

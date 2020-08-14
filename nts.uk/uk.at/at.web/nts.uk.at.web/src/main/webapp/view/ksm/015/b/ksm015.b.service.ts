@@ -8,6 +8,7 @@ module nts.uk.at.view.ksm015.b.service {
         getShiftMaster: 'ctx/at/shared/workrule/shiftmaster/getlist',
         deleteShiftMaster: 'ctx/at/shared/workrule/shiftmaster/delete',
         getWorkInfo: 'ctx/at/shared/workrule/shiftmaster/workinfo/get',
+		getWorkStyle: 'ctx/at/screen/workrule/shiftmaster/getWorkStyle'
     }
     export function startPage(): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.startPage);
@@ -27,6 +28,10 @@ module nts.uk.at.view.ksm015.b.service {
 
     export function getWorkInfo(data): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getWorkInfo, data);
+    }
+
+ 	export function getWorkStyle(data): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getWorkStyle, data);
     }
 
     /**
