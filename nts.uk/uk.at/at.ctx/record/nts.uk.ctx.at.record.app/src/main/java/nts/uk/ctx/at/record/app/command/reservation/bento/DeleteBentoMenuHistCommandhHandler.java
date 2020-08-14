@@ -20,6 +20,7 @@ public class DeleteBentoMenuHistCommandhHandler extends CommandHandler<DeleteBen
     protected void handle(CommandHandlerContext<DeleteBentoMenuHistCommand> commandHandlerContext) {
         val command = commandHandlerContext.getCommand();
         val cid = AppContexts.user().companyId();
-        bentoMenuHistoryRepository.delete(cid,command.getHistotyId());
+        val listOld = bentoMenuHistoryRepository.findByCompanyId(cid);
+        bentoMenuHistoryRepository.delete(cid,command.getHistoryId(),listOld.get());
     }
 }
