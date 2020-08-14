@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.query.ksu.ksu001q;
+package nts.uk.screen.at.app.ksu.ksu001q.query;
 
 import lombok.Data;
 

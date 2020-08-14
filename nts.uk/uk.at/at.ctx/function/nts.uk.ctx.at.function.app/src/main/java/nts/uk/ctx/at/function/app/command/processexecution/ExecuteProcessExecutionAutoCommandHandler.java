@@ -3165,9 +3165,13 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 //						Optional.ofNullable(dailyCreateLog), processExecution.getExecSetting().getDailyPerf()
 //								.getTargetGroupClassification().isRecreateTypeChangePerson() ? true : false,
 //						false, false, null);
+				ExecutionTypeDaily executionTypeDaily = ExecutionTypeDaily.CREATE;
+				if(dailyCreateLog.getDailyCreationSetInfo().isPresent() && dailyCreateLog.getDailyCreationSetInfo().get().getExecutionType() == ExecutionType.RERUN  ) {
+					executionTypeDaily = ExecutionTypeDaily.DELETE_ACHIEVEMENTS;
+				}
 				OutputCreateDailyResult status = createDailyResultDomainServiceNew.createDataNewWithNoImport(asyContext, employeeId, period,
 						ExecutionAttr.AUTO, companyId,
-						ExecutionTypeDaily.DELETE_ACHIEVEMENTS,Optional.of(empCalAndSumExeLog), Optional.empty());
+						executionTypeDaily,Optional.of(empCalAndSumExeLog), Optional.empty());
 				processState = (status.getProcessState().value == 0?ProcessState.INTERRUPTION:ProcessState.SUCCESS);
 			} catch (Exception e) {
 				throw new CreateDailyException(e);

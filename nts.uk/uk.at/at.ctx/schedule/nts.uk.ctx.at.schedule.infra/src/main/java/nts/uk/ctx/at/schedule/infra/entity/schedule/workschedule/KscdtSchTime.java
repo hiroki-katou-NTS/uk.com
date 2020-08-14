@@ -408,17 +408,17 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 				new AttendanceTime(extBindTimeOtw));
 
 		ExcessOfStatutoryTimeOfDaily excessOfStatutoryTimeOfDaily = new ExcessOfStatutoryTimeOfDaily(nightTime,
-				Optional.ofNullable(kscdtSchOvertimeWork.toDomain(overTimeOfDaily)),
+				Optional.ofNullable(kscdtSchOvertimeWork.toDomain(overTimeOfDaily, overtimeWorks)),
 				Optional.ofNullable(kscdtSchHolidayWork.toDomain(this.extBindTimeHw, this.extMidNiteHdwTimeLghd,
-						this.extMidNiteHdwTimeIlghd, this.extMidNiteHdwTimePubhd)));
+						this.extMidNiteHdwTimeIlghd, this.extMidNiteHdwTimePubhd,holidayWorks)));
 		// raiseSalaryTimeOfDailyPerfor
 		KscdtSchBonusPay kscdtSchBonusPay = new KscdtSchBonusPay();
 		RaiseSalaryTimeOfDailyPerfor raiseSalaryTimeOfDailyPerfor = new RaiseSalaryTimeOfDailyPerfor(
-				kscdtSchBonusPay.toDomain(), new ArrayList<>());
+				kscdtSchBonusPay.toDomain(bonusPays), new ArrayList<>());
 
 		// QA 110840 - cần ktra kỹ vì có thể sai
 		KscdtSchShortTime kscdtSchShortTime = new KscdtSchShortTime();
-		ShortWorkTimeOfDaily shotrTime = kscdtSchShortTime.toDomain(sID, yMD);
+		ShortWorkTimeOfDaily shotrTime = kscdtSchShortTime.toDomain(sID, yMD, shortTimes);
 
 		// WithinStatutoryMidNightTime
 		WithinStatutoryMidNightTime midNightTime = new WithinStatutoryMidNightTime(
@@ -454,7 +454,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 
 		// 割増時間
 		KscdtSchPremium kscdtSchPremium = new KscdtSchPremium();
-		PremiumTimeOfDailyPerformance premiumTime = new PremiumTimeOfDailyPerformance(kscdtSchPremium.toDomain());
+		PremiumTimeOfDailyPerformance premiumTime = new PremiumTimeOfDailyPerformance(kscdtSchPremium.toDomain(premiums));
 
 		ActualWorkingTimeOfDaily workingTimeOfDaily = new ActualWorkingTimeOfDaily(constraintDiffTime, constraintTime,
 				timeDiff, totalWorkingTime, divTime, premiumTime);

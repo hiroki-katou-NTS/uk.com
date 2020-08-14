@@ -186,7 +186,9 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 							AffiliationInforOfDailyAttd affiliationInforOfDailyAttd = new AffiliationInforOfDailyAttd(affiliationInforOfDailyPerfor.get().getAffiliationInfor().getEmploymentCode(),
 									affiliationInforOfDailyPerfor.get().getAffiliationInfor().getJobTitleID(),
 									affiliationInforOfDailyPerfor.get().getAffiliationInfor().getWplID(), 
-									affiliationInforOfDailyPerfor.get().getAffiliationInfor().getClsCode(), 
+									affiliationInforOfDailyPerfor.get().getAffiliationInfor().getClsCode(),
+									affiliationInforOfDailyPerfor.get().getAffiliationInfor().getBusinessTypeCode().isPresent()?
+											affiliationInforOfDailyPerfor.get().getAffiliationInfor().getBusinessTypeCode().get():null,
 									affiliationInforOfDailyPerfor.get().getAffiliationInfor().getBonusPaySettingCode());
 							calAttrOfDailyPerformance = new CalAttrOfDailyPerformance(employeeID, processingDate, this.reflectWorkInforDomainService.reflectCalAttOfDaiPer(
 									companyID, employeeID, processingDate, affiliationInforOfDailyPerfor.get().getAffiliationInfor(),

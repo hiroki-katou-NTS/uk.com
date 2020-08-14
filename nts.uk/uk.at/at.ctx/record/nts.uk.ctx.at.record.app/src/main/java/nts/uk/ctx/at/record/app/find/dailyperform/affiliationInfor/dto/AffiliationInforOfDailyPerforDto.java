@@ -83,7 +83,7 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 			dto.setWorkplaceID(domain.getWplID());
 			dto.setBaseDate(ymd);
 			dto.setEmployeeId(employeeID);
-			dto.setBusinessTypeCode(domain.getBusinessTypeCode().isPresent()?
+			dto.setBusinessTypeCode(domain.getBusinessTypeCode() != null && domain.getBusinessTypeCode().isPresent()?
 					domain.getBusinessTypeCode().get().v():null);
 			dto.exsistData();
 		}

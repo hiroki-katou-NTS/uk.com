@@ -52,6 +52,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.NotU
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -179,7 +180,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		KscdtSchBasicInfo basicInfo = new KscdtSchBasicInfo(basicInfoPK,
 				cID, workSchedule.getConfirmedATR().value == 1 ? true : false, workInfo.getEmploymentCode().v(),
 				workInfo.getJobTitleID(), workInfo.getWplID(), workInfo.getClsCode().v(),
-				workInfo.getBonusPaySettingCode().v(), null, workInformation.getWorkTypeCode().v(),
+				!workInfo.getBusinessTypeCode().isPresent() ||workInfo.getBusinessTypeCode() ==null ?null:workInfo.getBusinessTypeCode().get().v(), null, workInformation.getWorkTypeCode().v(),
 				workInformation.getWorkTimeCode() == null ? null : workInformation.getWorkTimeCode().v(), workInfoOfDaily.getGoStraightAtr().value == 1 ? true : false,
 				workInfoOfDaily.getBackStraightAtr().value == 1 ? true : false, kscdtSchTimes, kscdtEditStates, kscdtSchAtdLvwTimes,
 				kscdtSchShortTimeTs, kscdtSchBreakTs);
@@ -193,7 +194,9 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		WorkInfoOfDailyAttendance workInfo = new WorkInfoOfDailyAttendance(recordInfo, null, null, EnumAdaptor.valueOf(goStraightAtr ? 1 : 0, NotUseAttribute.class), EnumAdaptor.valueOf(backStraightAtr ? 1 : 0, NotUseAttribute.class), null, null);
 		
 		// create AffiliationInforOfDailyAttd
-		AffiliationInforOfDailyAttd affInfo = new AffiliationInforOfDailyAttd(new EmploymentCode(empCd), jobId, wkpId, new ClassificationCode(clsCd), new BonusPaySettingCode(busTypeCd));
+		AffiliationInforOfDailyAttd affInfo = new AffiliationInforOfDailyAttd(new EmploymentCode(empCd), jobId, wkpId, new ClassificationCode(clsCd),
+				busTypeCd==null?null:new BusinessTypeCode(busTypeCd),
+				null);
 		
 		// create List<BreakTimeOfDailyAttd> 
 		List<BreakTimeOfDailyAttd> lstBreakTime = new ArrayList<>();
@@ -232,7 +235,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 			shortWorkingTimeSheets.add(shortWorkingTimeSheet);
 		});
 		
-		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = this.kscdtSchTime.toDomain(sID, yMD);
+		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = null;
 		AttendanceTimeOfDailyAttendance attendance = new AttendanceTimeOfDailyAttendance(
 				null, actualWorkingTimeOfDaily, 
 				null, new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0), null);
