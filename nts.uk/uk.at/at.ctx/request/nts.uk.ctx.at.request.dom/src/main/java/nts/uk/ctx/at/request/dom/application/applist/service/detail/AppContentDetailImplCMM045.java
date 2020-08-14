@@ -17,6 +17,7 @@ import org.apache.logging.log4j.util.Strings;
 import lombok.val;
 import nts.arc.i18n.I18NText;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppPrePostGroup;
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
@@ -24,6 +25,8 @@ import nts.uk.ctx.at.request.dom.application.applist.service.OverTimeFrame;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.AppContentService;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.ArrivedLateLeaveEarlyItemContent;
 import nts.uk.ctx.at.request.dom.application.applist.service.datacreate.StampAppOutputTmp;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateCancelation;
@@ -51,6 +54,8 @@ import nts.uk.ctx.at.request.dom.application.stamp.TimeZoneStampClassification;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * HOATT DOI UNG NOI DUNG DON XIN CMM045, KAF018, KDL030 GOP THANH 1 XU LY CHUNG
@@ -78,6 +83,9 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 	
 	@Inject
 	private AppRecordImageRepository appRecordImageRepository;
+	
+	@Inject
+	private GoBackDirectlyRepository goBackDirectlyRepository;
 	
 	private final static String KDL030 = "\n";
 	private final static String CMM045 = "<br/>";
@@ -216,24 +224,39 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 	 * @return
 	 */
 	@Override
-	public String getContentGoBack(AppGoBackInfoFull goBack, String companyId, String appId, Integer appReasonDisAtr, String appReason, int screenAtr) {
-		if(goBack == null){
-			//ドメインモデル「直行直帰申請」を取得
-			goBack = appDetailInfoRepo.getAppGoBackInfo(companyId, appId);
-		}
-		//申請内容　＝　申請内容（勤務変更申請、直行直帰申請）
-		String go1 = goBack.getGoWorkAtr1() == 1 ? goBack.getWorkTimeStart1() == "" ? I18NText.getText("CMM045_259") + goBack.getWorkTimeStart1() :
-			I18NText.getText("CMM045_259") + "　" + goBack.getWorkTimeStart1() : "";
-		String back1 = goBack.getBackHomeAtr1() == 1 ? goBack.getWorkTimeEnd1() == "" ? I18NText.getText("CMM045_260") + goBack.getWorkTimeEnd1() :
-			I18NText.getText("CMM045_260") + "　" + goBack.getWorkTimeEnd1() : "";
-		String go2 = goBack.getGoWorkAtr2() != null && goBack.getGoWorkAtr2() == 1 ? goBack.getWorkTimeStart2() == "" ?
-				I18NText.getText("CMM045_259") + goBack.getWorkTimeStart2() : I18NText.getText("CMM045_259") + "　" + goBack.getWorkTimeStart2() : "";
-        String back2 = goBack.getBackHomeAtr2() != null && goBack.getBackHomeAtr2() == 1 ? goBack.getWorkTimeEnd2() == "" ?
-        		I18NText.getText("CMM045_260") + goBack.getWorkTimeEnd2() : I18NText.getText("CMM045_260") + "　" + goBack.getWorkTimeEnd2() : "";
-        String goback1 = go1 == "" ? back1 : back1 == "" ? go1 : go1 + "　" + back1;
-        String goback2 = go2 == "" ? back2 : back2 == "" ? go2 : go2 + "　" + back2;
-        String gobackA = goback1 == "" ? goback2 : goback2 == "" ? goback1 : goback1 + "　" + goback2;
-		return this.checkAddReason(gobackA, appReason, appReasonDisAtr, screenAtr);
+	public String getContentGoBack(Application application, DisplayAtr appReasonDisAtr, List<WorkTimeSetting> workTimeLst, List<WorkType> workTypeLst, ScreenAtr screenAtr) {
+		String companyID = AppContexts.user().companyId();
+		GoBackDirectly goBackDirectly = goBackDirectlyRepository.find(companyID, application.getAppID()).get();
+		return appContentService.getWorkChangeGoBackContent(
+				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, 
+				Strings.EMPTY, 
+				Strings.EMPTY, 
+				goBackDirectly.getStraightLine(), 
+				new TimeWithDayAttr(0), 
+				goBackDirectly.getStraightDistinction(), 
+				new TimeWithDayAttr(0), 
+				new TimeWithDayAttr(0), 
+				new TimeWithDayAttr(0), 
+				appReasonDisAtr, 
+				application.getOpAppReason().orElse(null), 
+				application);
+//		if(goBack == null){
+//			//ドメインモデル「直行直帰申請」を取得
+//			goBack = appDetailInfoRepo.getAppGoBackInfo(companyId, appId);
+//		}
+//		//申請内容　＝　申請内容（勤務変更申請、直行直帰申請）
+//		String go1 = goBack.getGoWorkAtr1() == 1 ? goBack.getWorkTimeStart1() == "" ? I18NText.getText("CMM045_259") + goBack.getWorkTimeStart1() :
+//			I18NText.getText("CMM045_259") + "　" + goBack.getWorkTimeStart1() : "";
+//		String back1 = goBack.getBackHomeAtr1() == 1 ? goBack.getWorkTimeEnd1() == "" ? I18NText.getText("CMM045_260") + goBack.getWorkTimeEnd1() :
+//			I18NText.getText("CMM045_260") + "　" + goBack.getWorkTimeEnd1() : "";
+//		String go2 = goBack.getGoWorkAtr2() != null && goBack.getGoWorkAtr2() == 1 ? goBack.getWorkTimeStart2() == "" ?
+//				I18NText.getText("CMM045_259") + goBack.getWorkTimeStart2() : I18NText.getText("CMM045_259") + "　" + goBack.getWorkTimeStart2() : "";
+//        String back2 = goBack.getBackHomeAtr2() != null && goBack.getBackHomeAtr2() == 1 ? goBack.getWorkTimeEnd2() == "" ?
+//        		I18NText.getText("CMM045_260") + goBack.getWorkTimeEnd2() : I18NText.getText("CMM045_260") + "　" + goBack.getWorkTimeEnd2() : "";
+//        String goback1 = go1 == "" ? back1 : back1 == "" ? go1 : go1 + "　" + back1;
+//        String goback2 = go2 == "" ? back2 : back2 == "" ? go2 : go2 + "　" + back2;
+//        String gobackA = goback1 == "" ? goback2 : goback2 == "" ? goback1 : goback1 + "　" + goback2;
+//		return this.checkAddReason(gobackA, appReason, appReasonDisAtr, screenAtr);
 	}
 	/**
 	 * get Content HdWorkBf

@@ -531,7 +531,8 @@ public class ApprovalStatusFinder {
 				break;
 			// 直行直帰申請
 			case GO_RETURN_DIRECTLY_APPLICATION:
-				appContent = contentDtail.getContentGoBack(null, companyID, appId, 0, "", ScreenAtr.KAF018.value);
+//				appContent = contentDtail.getContentGoBack(null, companyID, appId, 0, "", ScreenAtr.KAF018.value);
+				appContent = "";
 				break;
 			// 休出時間申請
 			case HOLIDAY_WORK_APPLICATION:

@@ -1868,8 +1868,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			}
 			case GO_RETURN_DIRECTLY_APPLICATION: {//直行直帰申請
 				AppGoBackInfoFull goBack = this.find009(lstAppGoBack, appID);
-				content = contentDtail.getContentGoBack(goBack, companyID, appID, appReasonDisAtr, appReason,
-						ScreenAtr.CMM045.value);
+//				content = contentDtail.getContentGoBack(goBack, companyID, appID, appReasonDisAtr, appReason,
+//						ScreenAtr.CMM045.value);
+				content = "";
 				break;
 			}
 			case HOLIDAY_WORK_APPLICATION: {//休出時間申請
