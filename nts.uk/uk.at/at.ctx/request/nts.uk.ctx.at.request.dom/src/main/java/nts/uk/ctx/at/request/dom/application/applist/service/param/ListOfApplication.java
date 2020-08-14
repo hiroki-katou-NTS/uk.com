@@ -5,7 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.ReflectionStatus;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
 
 /**
@@ -70,7 +70,7 @@ public class ListOfApplication {
 	/**
 	 * 反映状態
 	 */
-	private ReflectionStatus reflectionStatus;
+	private ReflectedState reflectionStatus;
 	
 	/**
 	 * 時刻計算利用区分

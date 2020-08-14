@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.applist.extractcondition;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -43,45 +44,45 @@ public class AppListExtractCondition {
 	/**
 	 * 社員IDリスト
 	 */
-	private List<String> listEmployeeId;
+	private Optional<List<String>> opListEmployeeID;
 	
 	/**
 	 * 承認状況＿差戻
 	 */
-	private boolean remandStatus;
+	private Optional<Boolean> opRemandStatus;
 	
 	/**
 	 * 承認状況＿取消
 	 */
-	private boolean cancelStatus;
+	private Optional<Boolean> opCancelStatus;
 	
 	/**
 	 * 承認状況＿承認済
 	 */
-	private boolean approvalStatus;
+	private Optional<Boolean> opApprovalStatus;
 	
 	/**
 	 * 承認状況＿代行承認済
 	 */
-	private boolean agentApprovalStatus;
+	private Optional<Boolean> opAgentApprovalStatus;
 	
 	/**
 	 * 承認状況＿否認
 	 */
-	private boolean denialStatus;
+	private Optional<Boolean> opDenialStatus;
 	
 	/**
 	 * 承認状況＿未承認
 	 */
-	private boolean unapprovalStatus;
+	private Optional<Boolean> opUnapprovalStatus;
 	
 	/**
 	 * 申請種類
 	 */
-	private ApplicationType appType;
+	private Optional<List<ApplicationType>> opAppTypeLst;
 	
 	/**
 	 * 申請種類リスト
 	 */
-	private List<ListOfAppTypes> listOfAppTypes;
+	private Optional<List<ListOfAppTypes>> opListOfAppTypes;
 }

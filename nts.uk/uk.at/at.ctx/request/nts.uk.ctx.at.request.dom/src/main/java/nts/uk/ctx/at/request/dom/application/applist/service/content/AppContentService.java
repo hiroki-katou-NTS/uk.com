@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
@@ -12,6 +13,8 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonForFixedForm;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * refactor 4
@@ -79,11 +82,32 @@ public interface AppContentService {
 	 * @param appReasonDisAtr 申請理由表示区分
 	 * @param appReason 申請理由
 	 * @param screenAtr ScreenID
-	 * @param stampAppOutputTmp 打刻申請出力用Tmp
+	 * @param stampAppOutputTmpLst 打刻申請出力用Tmp
 	 * @param appType 申請種類
 	 * @param appStandardReasonCD 定型理由コード
 	 * @return
 	 */
-	public String getAppStampContent(DisplayAtr appReasonDisAtr, AppReason appReason, ScreenAtr screenAtr, StampAppOutputTmp stampAppOutputTmp,
+	public String getAppStampContent(DisplayAtr appReasonDisAtr, AppReason appReason, ScreenAtr screenAtr, List<StampAppOutputTmp> stampAppOutputTmpLst,
 			ApplicationType appType, AppStandardReasonCode appStandardReasonCD);
+	
+	/**
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.各申請データを作成.申請内容.申請内容（勤務変更申請、直行直帰申請）.申請内容（勤務変更申請、直行直帰申請）
+	 * @param appType 申請種類
+	 * @param workTypeName 勤務種類名称
+	 * @param workTimeName 就業時間帯名称
+	 * @param goWorkAtr1 勤務直行1
+	 * @param workTimeStart1 勤務時間開始1
+	 * @param goBackAtr1 勤務直帰1
+	 * @param workTimeEnd1 勤務時間終了1
+	 * @param breakTimeStart1 休憩時間開始1
+	 * @param breakTimeEnd1 休憩時間終了1
+	 * @param appReasonDisAtr 申請理由表示区分
+	 * @param appReason 申請理由
+	 * @param application 申請
+	 * @return
+	 */
+	public String getWorkChangeGoBackContent(ApplicationType appType, String workTypeName, String workTimeName, NotUseAtr goWorkAtr1, TimeWithDayAttr workTimeStart1, 
+			NotUseAtr goBackAtr1, TimeWithDayAttr workTimeEnd1, TimeWithDayAttr breakTimeStart1, TimeWithDayAttr breakTimeEnd1, DisplayAtr appReasonDisAtr,
+			AppReason appReason, Application application);
 }
