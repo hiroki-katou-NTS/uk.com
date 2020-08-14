@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class WorkPlaceConfigInfo.
@@ -25,11 +26,24 @@ public class WorkplaceConfigInfo extends AggregateRoot {
 	/** The history id. */
 	// 履歴ID
 	private String historyId;
+	
+	/**
+	 * 履歴の期間
+	 * レスポンス対応のために後付けで追加したので、値が入っているとは限らない
+	 */
+	private DatePeriod period;
 
 	/** The lst wkp hierarchy. */
 	// 階層
 	private List<WorkplaceHierarchy> lstWkpHierarchy;
 
+	public WorkplaceConfigInfo(String companyId, String historyId, List<WorkplaceHierarchy> lstWkpHierarchy) {
+		this.companyId = companyId;
+		this.historyId = historyId;
+		this.lstWkpHierarchy = lstWkpHierarchy;
+		this.period = null;
+	}
+	
 	/**
 	 * Instantiates a new workplace config info.
 	 */
@@ -73,6 +87,7 @@ public class WorkplaceConfigInfo extends AggregateRoot {
 	    newEntity.companyId = other.getCompanyId();
 	    newEntity.historyId = other.getHistoryId();
 	    newEntity.lstWkpHierarchy = lstWkpHierarchy;
+	    newEntity.period = other.period;
 	    return newEntity;
 	}
 	
@@ -80,6 +95,7 @@ public class WorkplaceConfigInfo extends AggregateRoot {
         WorkplaceConfigInfo newEntity = new WorkplaceConfigInfo();
         newEntity.companyId = this.companyId;
         newEntity.historyId = newHistoryId;
+        newEntity.period = null;
         newEntity.lstWkpHierarchy = this.lstWkpHierarchy;
         return newEntity;
     }

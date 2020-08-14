@@ -181,6 +181,7 @@ BaseViewModel.prototype.$program = __viewContext['program'];
 
 const $date = {
 	diff: 0,
+	tick: -1,
 	now() {
 		return Date.now()
 	},
@@ -189,11 +190,16 @@ const $date = {
 	}
 };
 
-request.ajax('/server/time/now').then((time: string) => {
-	Object.defineProperty($date, 'diff', {
-		value: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
+const getTime = () => {
+	request.ajax('/server/time/now').then((time: string) => {
+		_.extend($date, {
+			diff: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
+		});
 	});
-})
+};
+
+// get date time now
+getTime();
 
 BaseViewModel.prototype.$date = Object.defineProperties($date, {
 	now: {
@@ -204,6 +210,15 @@ BaseViewModel.prototype.$date = Object.defineProperties($date, {
 	today: {
 		value: function $today() {
 			return moment($date.now()).startOf('day').toDate();
+		}
+	},
+	interval: {
+		value: function $interval(interval: number) {
+			// clear default intervale
+			clearInterval($date.tick);
+
+			// set new interface
+			$date.tick = setInterval(getTime, interval);
 		}
 	}
 });
@@ -416,7 +431,8 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
 						$storeSession(name, params);
 						// for old page
 						windows.setShared(name, params);
-					});
+					})
+					.then(() => $storeSession(name));
 			}
 		}
 	}

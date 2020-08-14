@@ -18,7 +18,7 @@ import java.util.Optional;
 public class DeleteWorkCycleCommandHandler extends CommandHandler<DeleteWorkCycleCommand> {
 
     @Inject
-    WorkCycleRepository workCycleRepository;
+    private WorkCycleRepository workCycleRepository;
 
     @Override
     protected void handle(CommandHandlerContext<DeleteWorkCycleCommand> context) {
