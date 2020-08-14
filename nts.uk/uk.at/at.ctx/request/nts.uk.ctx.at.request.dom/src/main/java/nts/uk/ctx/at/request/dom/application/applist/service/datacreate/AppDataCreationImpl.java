@@ -255,15 +255,13 @@ public class AppDataCreationImpl implements AppDataCreation {
 	}
 
 	@Override
-	public ListOfApplication createAppLstData(String companyID, List<Application> appLst, DatePeriod period,
-			boolean mode, Map<String, List<ApprovalPhaseStateImport_New>> mapApproval, int device,
-			AppListExtractCondition appListExtractCondition) {
-		AppListInfo appListInfo = new AppListInfo();
-		AppLstApprovalLstDispSet appLstApprovalLstDispSet = new AppLstApprovalLstDispSet();
+	public AppListInfo createAppLstData(String companyID, List<ListOfApplication> appLst, DatePeriod period,
+			ApplicationListAtr mode, Map<String, List<ApprovalPhaseStateImport_New>> mapApproval, int device,
+			AppListExtractCondition appListExtractCondition, AppListInfo appListInfo) {
 		// ドメインモデル「承認一覧表示設定」を取得する
 		Optional<ApprovalListDisplaySetting> opApprovalListDisplaySetting = approvalListDispSetRepository.findByCID(companyID);
 		if(opApprovalListDisplaySetting.isPresent()) {
-			appLstApprovalLstDispSet.setWorkplaceNameDisp(opApprovalListDisplaySetting.get().getDisplayWorkPlaceName().value);
+			appListInfo.getDisplaySet().setWorkplaceNameDisp(opApprovalListDisplaySetting.get().getDisplayWorkPlaceName().value);
 		}
 		if(device==PC) {
 			// ドメインモデル「就業時間帯」を取得
@@ -273,23 +271,27 @@ public class AppDataCreationImpl implements AppDataCreation {
 			// 勤怠名称を取得 ( Lấy tên working time)
 		}
 		
-		for(Application app : appLst) {
+		for(ListOfApplication app : appLst) {
 			// 申請一覧リスト取得マスタ情報 ( Thông tin master lấy applicationLisst)
 			
 			// 各申請データを作成 ( Tạo data tên application)
 			ListOfApplication listOfApp = null;
 			// 
-			if(listOfApp.getAppContent()=="-1") {
-				
+			if(listOfApp.getAppContent()!="-1") {
+				// 
+				appListInfo.getAppLst().remove(listOfApp);
 			} else {
-				// appListInfo.setAppLst(listOfApp);
+				appListInfo.getAppLst().add(listOfApp);
 			}
 		}
-		
-		
-		
-		
-		return null;
+		// アルゴリズム「申請一覧の並び順を変更する」を実行する
+		appListInfo = this.changeOrderOfAppLst(appListInfo, appListExtractCondition, device);
+		if(mode == ApplicationListAtr.APPROVER && device == PC) {
+			// アルゴリズム「申請一覧リスト取得承認件数」を実行する(Thực hiện thuật toán [so luong approve lấy list danh sách đơn xin])
+			ApplicationStatus applicationStatus = appListInitialRepository.countAppListApproval(appListInfo.getAppLst(), appListInfo.getNumberOfApp());
+			appListInfo.setNumberOfApp(applicationStatus);
+		}
+		return appListInfo;
 	}
 
 	@Override
