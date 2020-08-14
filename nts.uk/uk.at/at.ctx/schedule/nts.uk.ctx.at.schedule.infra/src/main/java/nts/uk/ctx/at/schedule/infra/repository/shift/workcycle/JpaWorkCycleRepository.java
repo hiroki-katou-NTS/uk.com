@@ -127,7 +127,10 @@ public class JpaWorkCycleRepository extends JpaRepository implements WorkCycleRe
     public void delete(String cid, String code) {
         KscmtWorkingCyclePK key = new KscmtWorkingCyclePK(cid, code);
         this.commandProxy().remove(KscmtWorkingCycle.class, key);
-        this.queryProxy().query(DELETE_ALL_INFO_BY_CODE, KscmtWorkingCycleDtl.class).setParameter("cid", cid).setParameter("code", code);
+
+        this.getEntityManager().createQuery(DELETE_ALL_INFO_BY_CODE, KscmtWorkingCycleDtl.class)
+                .setParameter("cid", cid)
+                .setParameter("code", code).executeUpdate();
     }
 
 
