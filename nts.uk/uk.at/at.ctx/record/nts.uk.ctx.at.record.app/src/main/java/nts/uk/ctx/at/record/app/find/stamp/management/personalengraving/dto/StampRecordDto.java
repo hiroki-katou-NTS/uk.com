@@ -5,6 +5,8 @@ import java.util.Optional;
 import lombok.Data;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.record.app.find.stamp.management.ButtonSettingsDto;
+import nts.uk.ctx.at.record.app.find.stamp.management.StampTypeDto;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
@@ -61,8 +63,10 @@ public class StampRecordDto {
 	private Double longitude;
 
 	private String attendanceTime;
-	
+
 	private int correctTimeStampValue;
+
+	private int buttonValueType;
 
 	public StampRecordDto(StampRecord stampRecord, Stamp stamp) {
 		this.stampNumber = stampRecord.getStampNumber().v();
@@ -115,8 +119,11 @@ public class StampRecordDto {
 					? getTimeString(stamp.getAttendanceTime().get().v())
 					: null;
 			this.timeStampType = this.stampArtName;
-			this.correctTimeStampValue = StampRecordDto.getCorrectTimeStampValue(this.changeHalfDay, this.goOutArt, this.setPreClockArt, this.changeClockArt,
-					this.changeCalArt);
+			this.correctTimeStampValue = StampRecordDto.getCorrectTimeStampValue(this.changeHalfDay, this.goOutArt,
+					this.setPreClockArt, this.changeClockArt, this.changeCalArt);
+			this.buttonValueType = ButtonSettingsDto.toButtonValueType(StampTypeDto.fromDomain(stamp.getType()));
+		} else {
+			this.buttonValueType = ButtonSettingsDto.toButtonValueType(null);
 		}
 	}
 
@@ -169,24 +176,28 @@ public class StampRecordDto {
 			this.attendanceTime = stamp.getAttendanceTime().isPresent()
 					? getTimeString(stamp.getAttendanceTime().get().v())
 					: null;
-			this.correctTimeStampValue = StampRecordDto.getCorrectTimeStampValue(this.changeHalfDay, this.goOutArt, this.setPreClockArt, this.changeClockArt,
-							this.changeCalArt);
+			this.correctTimeStampValue = StampRecordDto.getCorrectTimeStampValue(this.changeHalfDay, this.goOutArt,
+					this.setPreClockArt, this.changeClockArt, this.changeCalArt);
+			this.buttonValueType = ButtonSettingsDto.toButtonValueType(StampTypeDto.fromDomain(stamp.getType()));
+
+		} else {
+			this.buttonValueType = ButtonSettingsDto.toButtonValueType(null);
 		}
 	}
 
 	public static int getCorrectTimeStampValue(boolean changeHalfDay, Integer goOutArt, Integer setPreClockArt,
 			Integer changeClockArt, Integer changeCalArt) {
 		// 19 予約 NONE NONE False => 予約系
-		// 20 予約取消  NONE NONE False => なし
-		// do 19 và 20 cùng điều kiện như nhau và hiển thị như nhau nên chỉ trả về 1 giá trị 19 thôi 
+		// 20 予約取消 NONE NONE False => なし
+		// do 19 và 20 cùng điều kiện như nhau và hiển thị như nhau nên chỉ trả về 1 giá
+		// trị 19 thôi
 		if (changeClockArt == null) {
 			return 19;
 		}
 
 		// 1 出勤 None None False => 出勤系
-		if (changeClockArt == ChangeClockArt.GOING_TO_WORK.value
-				&& setPreClockArt == SetPreClockArt.NONE.value && changeCalArt == ChangeCalArt.NONE.value
-				&& changeHalfDay == false) {
+		if (changeClockArt == ChangeClockArt.GOING_TO_WORK.value && setPreClockArt == SetPreClockArt.NONE.value
+				&& changeCalArt == ChangeCalArt.NONE.value && changeHalfDay == false) {
 			return ContentsStampType.WORK.value;
 		}
 		// 2 出勤 直行 None False => 出勤系
@@ -195,51 +206,38 @@ public class StampRecordDto {
 			return ContentsStampType.WORK_STRAIGHT.value;
 		}
 		// 3 出勤 直行 None False => 出勤系
-		if (changeClockArt == ChangeClockArt.GOING_TO_WORK.value
-				&& changeCalArt == ChangeCalArt.EARLY_APPEARANCE.value
+		if (changeClockArt == ChangeClockArt.GOING_TO_WORK.value && changeCalArt == ChangeCalArt.EARLY_APPEARANCE.value
 				&& setPreClockArt == SetPreClockArt.NONE.value && changeHalfDay == false) {
 			return ContentsStampType.WORK_EARLY.value;
 		}
-		// 4  出勤 休出 None False => 出勤系
-		if (changeClockArt == ChangeClockArt.GOING_TO_WORK.value
-				&& changeCalArt == ChangeCalArt.BRARK.value
-				&& setPreClockArt == SetPreClockArt.NONE.value 
-				&& changeHalfDay == false) {
+		// 4 出勤 休出 None False => 出勤系
+		if (changeClockArt == ChangeClockArt.GOING_TO_WORK.value && changeCalArt == ChangeCalArt.BRARK.value
+				&& setPreClockArt == SetPreClockArt.NONE.value && changeHalfDay == false) {
 			return ContentsStampType.WORK_BREAK.value;
 		}
 		// 5 退勤 None None False => 退勤系
-		if (changeClockArt == ChangeClockArt.WORKING_OUT.value 
-				&& changeCalArt == ChangeCalArt.NONE.value
-				&& setPreClockArt == SetPreClockArt.NONE.value 
-				&& changeHalfDay == false) {
+		if (changeClockArt == ChangeClockArt.WORKING_OUT.value && changeCalArt == ChangeCalArt.NONE.value
+				&& setPreClockArt == SetPreClockArt.NONE.value && changeHalfDay == false) {
 			return ContentsStampType.DEPARTURE.value;
 		}
 		// 6 退勤 None 直帰 False => 退勤系
-		if (changeClockArt == ChangeClockArt.WORKING_OUT.value
-				&& changeCalArt == ChangeCalArt.NONE.value
-				&& setPreClockArt == SetPreClockArt.BOUNCE.value
-				&& changeHalfDay == false) {
+		if (changeClockArt == ChangeClockArt.WORKING_OUT.value && changeCalArt == ChangeCalArt.NONE.value
+				&& setPreClockArt == SetPreClockArt.BOUNCE.value && changeHalfDay == false) {
 			return ContentsStampType.DEPARTURE_BOUNCE.value;
 		}
 		// 7 退勤 None 直帰 False => 退勤系
-		if (changeClockArt == ChangeClockArt.WORKING_OUT.value 
-				&& changeCalArt == ChangeCalArt.OVER_TIME.value
-				&& setPreClockArt == SetPreClockArt.NONE.value 
-				&& changeHalfDay == false) {
+		if (changeClockArt == ChangeClockArt.WORKING_OUT.value && changeCalArt == ChangeCalArt.OVER_TIME.value
+				&& setPreClockArt == SetPreClockArt.NONE.value && changeHalfDay == false) {
 			return ContentsStampType.DEPARTURE_OVERTIME.value;
 		}
 		// 8 退勤 None None False => 外出系
-		if (changeClockArt == ChangeClockArt.GO_OUT.value 
-				&& changeCalArt == ChangeCalArt.NONE.value
-				&& setPreClockArt == SetPreClockArt.NONE.value 
-				&& changeHalfDay == false) {
+		if (changeClockArt == ChangeClockArt.GO_OUT.value && changeCalArt == ChangeCalArt.NONE.value
+				&& setPreClockArt == SetPreClockArt.NONE.value && changeHalfDay == false) {
 			return ContentsStampType.OUT.value;
 		}
 		// 9 戻り None None False => 戻り系
-		if (changeClockArt == ChangeClockArt.RETURN.value 
-				&& changeCalArt == ChangeCalArt.NONE.value
-				&& setPreClockArt == SetPreClockArt.NONE.value 
-				&& changeHalfDay == false) {
+		if (changeClockArt == ChangeClockArt.RETURN.value && changeCalArt == ChangeCalArt.NONE.value
+				&& setPreClockArt == SetPreClockArt.NONE.value && changeHalfDay == false) {
 			return ContentsStampType.RETURN.value;
 		}
 		// 10 入門 None None False => 出勤系
@@ -253,17 +251,13 @@ public class StampRecordDto {
 			return ContentsStampType.DEPAR.value;
 		}
 		// 12 臨時出勤 None None False => 出勤系
-		if (changeClockArt == ChangeClockArt.TEMPORARY_WORK.value 
-				&& changeCalArt == ChangeCalArt.NONE.value
-				&& setPreClockArt == SetPreClockArt.NONE.value 
-				&& changeHalfDay == false) {
+		if (changeClockArt == ChangeClockArt.TEMPORARY_WORK.value && changeCalArt == ChangeCalArt.NONE.value
+				&& setPreClockArt == SetPreClockArt.NONE.value && changeHalfDay == false) {
 			return ContentsStampType.TEMPORARY_WORK.value;
 		}
 		// 13 臨時出勤 None None False => 退勤系
-		if (changeClockArt == ChangeClockArt.TEMPORARY_LEAVING.value
-				&& changeCalArt == ChangeCalArt.NONE.value 
-				&& setPreClockArt == SetPreClockArt.NONE.value
-				&& changeHalfDay == false) {
+		if (changeClockArt == ChangeClockArt.TEMPORARY_LEAVING.value && changeCalArt == ChangeCalArt.NONE.value
+				&& setPreClockArt == SetPreClockArt.NONE.value && changeHalfDay == false) {
 			return ContentsStampType.TEMPORARY_LEAVING.value;
 		}
 		// 14 応援開始 None None False => 出勤系
@@ -291,11 +285,10 @@ public class StampRecordDto {
 				&& setPreClockArt == SetPreClockArt.NONE.value && changeHalfDay == false) {
 			return ContentsStampType.START_SUPPORT_BREAK.value;
 		}
-		
-		//19 va 20 tam thoi khong co
+
+		// 19 va 20 tam thoi khong co
 		// 19 予約 NONE NONE False => 予約系
-		// 20 予約取消  NONE NONE False => なし
-		
+		// 20 予約取消 NONE NONE False => なし
 
 		return -1;
 	}
