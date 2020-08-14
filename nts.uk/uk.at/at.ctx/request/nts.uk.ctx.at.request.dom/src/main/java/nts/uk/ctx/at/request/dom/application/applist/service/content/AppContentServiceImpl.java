@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.applist.service.content;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +12,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.i18n.I18NText;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
@@ -26,6 +26,8 @@ import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonForFixe
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonTypeItem;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * refactor 4
@@ -221,6 +223,68 @@ public class AppContentServiceImpl implements AppContentService {
 		}
 		// アルゴリズム「申請内容の申請理由」を実行する
 		String appReasonContent = this.getAppReasonContent(appReasonDisAtr, appReason, screenAtr, appStandardReasonCD, appType, Optional.empty());
+		if(Strings.isNotBlank(appReasonContent)) {
+			result += appReasonContent;
+		}
+		return result;
+	}
+
+	@Override
+	public String getWorkChangeGoBackContent(ApplicationType appType, String workTypeName, String workTimeName,
+			NotUseAtr goWorkAtr1, TimeWithDayAttr workTimeStart1, NotUseAtr goBackAtr1, TimeWithDayAttr workTimeEnd1,
+			TimeWithDayAttr breakTimeStart1, TimeWithDayAttr breakTimeEnd1, DisplayAtr appReasonDisAtr,
+			AppReason appReason, Application application) {
+		// 申請内容　＝　String.Empty ( Nội dung application = 　String.Empty)
+		String result = Strings.EMPTY;
+		if(appType == ApplicationType.WORK_CHANGE_APPLICATION) {
+			// 申請内容　＝　Input．勤務種類名称 ( Nội dung = Input. Work type name)
+			result = workTypeName;
+			// 申請内容　+＝’　’　＋　Input．就業時間帯名称  ( Nội dung +＝　 Input.Working hour name)
+			result += " " + workTimeName;
+		}
+		// Input．．勤務直行1をチェック ( Check Input．．đi làm thẳng 1
+		if(goWorkAtr1 == NotUseAtr.NOT_USE) {
+			// 申請内容　+＝　Input．勤務時間開始1
+			result += workTimeStart1.getInDayTimeWithFormat();
+		} else {
+			if(appType == ApplicationType.WORK_CHANGE_APPLICATION) {
+				// 申請内容　+＝’　’＋#CMM045_252
+				result += " " + I18NText.getText("CMM045_252");
+				// 申請内容　+＝　Input．勤務時間開始1
+				result += workTimeStart1.getInDayTimeWithFormat();
+			} else if(appType == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION) {
+				// 申請内容　+＝#CMM045_259＋’　’ ( Nội dung đơn xin　+＝#CMM045_259)
+				result += I18NText.getText("CMM045_259");
+			}
+		}
+		// Input．勤務直帰1をチェック
+		if(goBackAtr1 == NotUseAtr.NOT_USE) {
+			// 申請内容　+＝　#CMM045_100 
+			result += I18NText.getText("CMM045_100");
+			// 申請内容　+＝　Input．勤務時間終了1
+			result += workTimeEnd1.getInDayTimeWithFormat();
+		} else {
+			if(appType == ApplicationType.WORK_CHANGE_APPLICATION) {
+				// 申請内容　+＝　#CMM045_100　+　#CMM045_252
+				result += I18NText.getText("CMM045_100") + I18NText.getText("CMM045_252");
+				// 申請内容　+＝　Input．勤務時間終了1
+				result += workTimeEnd1.getInDayTimeWithFormat();
+			} else if(appType == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION) {
+				// 申請内容　+＝　#CMM045_260
+				result += I18NText.getText("CMM045_260");
+			}
+		}
+		if(appType == ApplicationType.WORK_CHANGE_APPLICATION) {
+			// 
+		}
+		// 申請理由内容　＝　申請内容の申請理由
+		String appReasonContent = this.getAppReasonContent(
+				appReasonDisAtr, 
+				appReason, 
+				null, 
+				application.getOpAppStandardReasonCD().orElse(null), 
+				appType, 
+				Optional.empty());
 		if(Strings.isNotBlank(appReasonContent)) {
 			result += appReasonContent;
 		}

@@ -51,14 +51,16 @@ public interface AppContentDetailCMM045 {
 	public String getContentWorkChange(AppWorkChangeFull wkChange, String companyId, String appId, Integer appReasonDisAtr,
 			String appReason, int screenAtr, List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime);
 	/**
-	 * 直行直帰申請データを作成
-	 * get content go back
-	 * 直行直帰申請 kaf009 - appType = 4
-	 * @param appId
-	 * @param detailSet
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.各申請データを作成.直行直帰申請データを作成.直行直帰申請データを作成
+	 * @param application 申請
+	 * @param appReasonDisAtr 申請理由表示区分
+	 * @param workTimeLst 就業時間帯リスト
+	 * @param workTypeLst 勤務種類リスト
+	 * @param screenAtr ScreenID
 	 * @return
 	 */
-	public String getContentGoBack(AppGoBackInfoFull goBack, String companyId, String appId, Integer appReasonDisAtr, String appReason, int screenAtr);
+	public String getContentGoBack(Application application, DisplayAtr appReasonDisAtr, List<WorkTimeSetting> workTimeLst, List<WorkType> workTypeLst, ScreenAtr screenAtr);
 	/**
 	 * get Content HdWorkBf
 	 * 休日出勤時間申請 kaf010 - appTYpe = 6
