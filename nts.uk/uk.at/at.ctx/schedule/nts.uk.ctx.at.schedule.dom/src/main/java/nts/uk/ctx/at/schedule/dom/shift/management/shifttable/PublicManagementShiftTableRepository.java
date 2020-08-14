@@ -14,4 +14,5 @@ public interface PublicManagementShiftTableRepository {
 	
 	//[3] get
 	Optional<PublicManagementShiftTable> get(TargetOrgIdenInfor idenInfor);
+
 }
