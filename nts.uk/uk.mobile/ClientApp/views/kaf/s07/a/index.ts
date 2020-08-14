@@ -158,6 +158,19 @@ export class KafS07AComponent extends KafS00ShrComponent {
                     appWorkChangeDto: self.mode ? null : self.data.appWorkChange
                 });
             }
+            if (self.appDispInfoStartupOutput) {
+                if (self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag != 0) {
+                    return self.$http.post('at', API.startS07, {
+                        mode: self.mode,
+                        companyId: self.user.companyId,
+                        employeeId: self.user.employeeId,
+                        listDates: [],
+                        appWorkChangeOutputDto: self.mode ? null : self.data,
+                        appWorkChangeDto: self.mode ? null : self.data.appWorkChange
+                    });
+                }
+            }
+
         }).then((res: any) => {
             if (!res) {
                 return;
@@ -572,6 +585,24 @@ export class KafS07AComponent extends KafS00ShrComponent {
             .then((res: any) => {
                 self.data.appWorkChangeDispInfo = res.data;
                 self.bindStart();
+                let opErrorFlag = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
+                msgID = '';
+                switch (opErrorFlag) {
+                    case 1:
+                        msgID = 'Msg_324';
+                        break;
+                    case 2: 
+                        msgID = 'Msg_238';
+                        break;
+                    case 3:
+                        msgID = 'Msg_237';
+                        break;
+                    default: 
+                        break;
+                }  
+                if (!_.isEmpty(msgID)) { 
+                    self.$modal.error({ messageId: msgID });
+                }
                 self.$mask('hide');
             })
             .catch((res: any) => {
