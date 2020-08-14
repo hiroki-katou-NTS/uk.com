@@ -17,6 +17,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Optional;
 @Stateless
 public class UpdateBentoMenuHistCommandHandler extends CommandHandler<UpdateBentoMenuHistCommand> {
@@ -44,7 +45,7 @@ public class UpdateBentoMenuHistCommandHandler extends CommandHandler<UpdateBent
         }
 
         @Override
-        public void update(DateHistoryItem item) {
+        public void update(List<DateHistoryItem> item) {
             bentoMenuHistoryRepository.update(BentoMenuHistory.toDomain(AppContexts.user().companyId(),item));
 
         }

@@ -41,8 +41,8 @@ public class BentoMenuHistory extends AggregateRoot implements PersistentHistory
 
         this.historyItems = historyItems;
     }
-    public static BentoMenuHistory toDomain(String cid, DateHistoryItem item){
-        return new BentoMenuHistory(cid, Arrays.asList(item));
+    public static BentoMenuHistory toDomain(String cid, List<DateHistoryItem> items){
+        return new BentoMenuHistory(cid, items);
     }
 
 }

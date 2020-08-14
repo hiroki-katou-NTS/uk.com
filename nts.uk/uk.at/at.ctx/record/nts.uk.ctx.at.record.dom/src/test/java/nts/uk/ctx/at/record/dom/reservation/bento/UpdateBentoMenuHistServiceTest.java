@@ -94,4 +94,28 @@ public class UpdateBentoMenuHistServiceTest {
                 any->require.update(any.get())
         );
     }
+
+    @Test
+    public void testUpdateBentoMenuHist_04(){
+
+        val date2 = new DateHistoryItem("histId1",new DatePeriod(GeneralDate.today().addDays(-6),GeneralDate.today().addDays(-1)));
+        val date = new DateHistoryItem("histId",new DatePeriod(GeneralDate.today(),GeneralDate.max()));
+        val list = new ArrayList<DateHistoryItem>();
+        list.add(date2);
+        list.add(date);
+
+        BentoMenuHistory item = new BentoMenuHistory("cid",list);
+        new Expectations(){
+            {
+                require.findByCompanyId("cid");
+                result = Optional.of(item);
+            }
+        };
+        NtsAssert.atomTask(
+                ()->UpdateBentoMenuHistService.register(require,new DatePeriod(GeneralDate.today().addDays(4)
+                        ,GeneralDate.max()),"histId","cid"),
+                any->require.update(any.get())
+        );
+    }
+
 }
