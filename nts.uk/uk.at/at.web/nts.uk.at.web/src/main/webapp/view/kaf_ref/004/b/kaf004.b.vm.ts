@@ -27,6 +27,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
 
         created(
             params: {
+                application: any,
                 appDispInfoStartupOutput: any,
                 printContentOfEachAppDto: PrintContentOfEachAppDto,
                 eventUpdate: (evt: () => void) => void
@@ -37,16 +38,16 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
 
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             // vm.application = ko.observable(new Application(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.appID, 1, [], 9, "", "", 0));
-            vm.application = ko.observable(new Application(AppType.EARLY_LEAVE_CANCEL_APPLICATION));
-            vm.application.appID = params.appDispInfoStartupOutput().appDetailScreenInfo.application.appID;
-            vm.application().prePostAtr(params.appDispInfoStartupOutput().appDetailScreenInfo.application.prePostAtr);
-            vm.application().employeeIDLst(params.appDispInfoStartupOutput().appDetailScreenInfo.application.employeeIDLst);
-            vm.application().appDate(params.appDispInfoStartupOutput().appDetailScreenInfo.application.appDate);
-            vm.application().opAppReason(params.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppReason);
-            vm.application().opAppStandardReasonCD(params.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppStandardReasonCD);
-            vm.application().opReversionReason(params.appDispInfoStartupOutput().appDetailScreenInfo.application.opReversionReason);
-            vm.application().opAppStartDate(params.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppStartDate);
-            vm.application().opAppEndDate(params.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppEndDate);
+            vm.application = params.application;
+            // vm.application.appID = params.appDispInfoStartupOutput().appDetailScreenInfo.application.appID;
+            // vm.application().prePostAtr(params.appDispInfoStartupOutput().appDetailScreenInfo.application.prePostAtr);
+            // vm.application().employeeIDLst(params.appDispInfoStartupOutput().appDetailScreenInfo.application.employeeIDLst);
+            // vm.application().appDate(params.appDispInfoStartupOutput().appDetailScreenInfo.application.appDate);
+            // vm.application().opAppReason(params.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppReason);
+            // vm.application().opAppStandardReasonCD(params.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppStandardReasonCD);
+            // vm.application().opReversionReason(params.appDispInfoStartupOutput().appDetailScreenInfo.application.opReversionReason);
+            // vm.application().opAppStartDate(params.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppStartDate);
+            // vm.application().opAppEndDate(params.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppEndDate);
 
             vm.workManagement = new WorkManagement('--:--', '--:--', '--:--', '--:--', null, null, null, null);
 
@@ -77,7 +78,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
         async createParamKAF004() {
             const vm = this;
             let command = {
-                appId: ko.toJS(vm.application.appID),
+                appId: ko.toJS(vm.application().appID),
                 infoStartup: ko.toJS(vm.appDispInfoStartupOutput)
             };
 
@@ -87,7 +88,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                     this.fetchData(res);
                 }).fail((err: any) => {
                     console.log()
-                    vm.$dialog.error({ messageId: err.msgId });
+                    vm.$dialog.error({ messageId: err.messageId });
                 }).always(() => vm.$blockui('hide'));
         }
 
@@ -145,7 +146,10 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
 
         update() {
             const vm = this;
-            let application = vm.appDispInfoStartupOutput().appDetailScreenInfo.application;
+            let application = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDetailScreenInfo.application;
+            application.opAppReason = ko.toJS(vm.application().opAppReason);
+            application.opAppStandardReasonCD = ko.toJS(vm.application().opAppStandardReasonCD);
+            application.opReversionReason = ko.toJS(vm.application().opReversionReason);
 
             vm.$blockui("show");
             vm.$validate()
@@ -187,7 +191,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                                 this.fetchData(res);
                             }).fail((err: any) => {
                                 console.log()
-                                vm.$dialog.error({ messageId: err.msgId });
+                                vm.$dialog.error({ messageId: err.messageId });
                             });
                     }
                 }).always(() => vm.$blockui('hide'));

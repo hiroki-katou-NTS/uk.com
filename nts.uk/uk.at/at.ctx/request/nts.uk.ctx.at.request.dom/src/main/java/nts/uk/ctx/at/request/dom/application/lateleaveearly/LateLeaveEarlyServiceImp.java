@@ -13,6 +13,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
@@ -79,6 +80,9 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 
 	@Inject
 	private DetailAppCommonSetService detailAppCommonSetService;
+
+	@Inject
+	private ApplicationRepository applicationRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -684,5 +688,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		String companyId = AppContexts.user().companyId();
 
 		this.lateEarlyRepository.updateLateLeaveEarly(companyId, application, arrivedLateLeaveEarly);
+
+		this.applicationRepository.update(application);
 	}
 }

@@ -110,18 +110,6 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         if (!vm.workManagement.scheWorkTime2) {
                             vm.workManagement.scheWorkTime2("--:--");
                         }
-
-                        // Test data
-                        vm.workManagement.scheAttendanceTime("8:30");
-                        vm.workManagement.scheWorkTime("17:30");
-                        vm.workManagement.scheAttendanceTime2("18:00");
-                        vm.workManagement.scheWorkTime2("23:00");
-
-                        vm.workManagement.workTime(510);
-                        vm.workManagement.leaveTime(1030);
-                        vm.workManagement.workTime2(1110);
-                        vm.workManagement.leaveTime2(1200);
-                        // Test data
                     }
                 }).fail((failData: any) => {
                     console.log(failData);
@@ -147,6 +135,26 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                 }
                 vm.$ajax(API.changeAppDate, command).done((success: any) => {
                     console.log(success);
+                    // Test data
+                    vm.workManagement.clearData();
+                    vm.workManagement.scheAttendanceTime("--:--")
+                    vm.workManagement.scheAttendanceTime2("--:--")
+                    vm.workManagement.scheWorkTime("--:--")
+                    vm.workManagement.scheWorkTime2("--:--")
+                    if(vm.application().appDate() === "2020/08/15") {
+                        vm.workManagement.scheAttendanceTime("8:30");
+                        vm.workManagement.scheWorkTime("17:30");
+                        vm.workManagement.scheAttendanceTime2("18:00");
+                        vm.workManagement.scheWorkTime2("23:00");
+
+                        vm.workManagement.workTime(510);
+                        vm.workManagement.leaveTime(1030);
+                        vm.workManagement.workTime2(1110);
+                        vm.workManagement.leaveTime2(1200);
+                        return;
+                    }
+                    // Test data
+
                     if (success.errorInfo) {
                         const message: any = {
                             messageId: "Msg_1707",
@@ -183,6 +191,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         //     vm.workManagement.leaveTime = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.leaveTime;
                         //     vm.workManagement.leaveTime2 = vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput.actualContentDisplay.achievementDetail.leaveTime2;
                         // }
+
                     }
 
                 }).fail((error: any) => {
@@ -364,9 +373,8 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         public condition2(): boolean {
             const vm = this;
 
-            if (vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput) {
-                vm.managementMultipleWorkCycles(vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles);
-            }
+                vm.managementMultipleWorkCycles(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles);
+
 
             // 「遅刻早退取消申請起動時の表示情報」.申請表示情報.申請設定（基準日関係なし）.複数回勤務の管理＝true
             return ko.toJS(vm.managementMultipleWorkCycles());
@@ -474,14 +482,14 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 
         // ※8＆※10
         public condition8_10(idItem: number) {
-            // return this.condition8() && this.condition10Display(idItem);
-            return true;
+            return this.condition8() && this.condition10Display(idItem);
+            // return true;
         }
 
         // ※2＆※８&※10
         public condition2_8_10(idItem: number) {
-            return true;
-            // return this.condition2() && this.condition8() && this.condition10Display(idItem);
+            // return true;
+            return this.condition2() && this.condition8() && this.condition10Display(idItem);
         }
     }
 
