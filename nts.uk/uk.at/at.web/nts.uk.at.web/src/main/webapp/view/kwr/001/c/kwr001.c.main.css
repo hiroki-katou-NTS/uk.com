@@ -154,3 +154,16 @@ button.ntsUpButton, button.ntsDownButton {
 	margin-left: 42px;
 	width: 152px;
 }
+
+.ml-15 {
+	margin-left: 15px;
+}
+
+.ml-5 {
+	margin-left: 5px;
+}
+
+.c5-3 {
+	display: flex;
+	align-items: center;
+}

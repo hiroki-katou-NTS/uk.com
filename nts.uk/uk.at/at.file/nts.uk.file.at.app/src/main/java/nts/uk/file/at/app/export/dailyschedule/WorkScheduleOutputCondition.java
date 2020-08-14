@@ -26,13 +26,25 @@ public class WorkScheduleOutputCondition  {
 	private OutputItemSettingCode code;
 	// 改ページ区分
 	private PageBreakIndicator pageBreakIndicator;
-	// 日別勤務表用明細・合計出力設定
+	// 明細・合計出力設定
 	private WorkScheduleSettingTotalOutput settingDetailTotalOutput;
 	// 条件設定
 	private OutputConditionSetting conditionSetting;
 	// 勤務実績のエラーアラームコード
 	private Optional<List<ErrorAlarmWorkRecordCode>> errorAlarmCode;
-	
+	// 項目選択区分
+	private ItemSelectionType selectionType;
+	// 定型選択_出力レイアウトID
+	private String standardSelectionLayoutId;
+	// 自由設定_出力レイアウトID
+	private String freeSettingLayoutId;
+	// 自由設定_コード
+	private OutputItemSettingCode freeSettingCode;
+	// ゼロ表示区分
+	private ZeroDisplayType zeroDisplayType;
+	// 項目表示切替
+	private SwitchItemDisplay switchItemDisplay;
+
 	/**
 	 * Creates the domain from java type.
 	 *

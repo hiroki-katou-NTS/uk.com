@@ -24,11 +24,31 @@ module nts.uk.at.view.kwr001.a {
             
             // switch button A6_2
             selectedDataOutputType: KnockoutObservable<number>;
-            
+
+            // radio button group A7_2
+            selectedCodeA7_2: KnockoutObservable<number> = ko.observable(0);
+
+            // switch button A8_2
+            dataZeroDisplayType: KnockoutObservableArray<any> = ko.observableArray([
+                { code: 0, name: nts.uk.resource.getText("KWR001_149") },
+                { code: 1, name: nts.uk.resource.getText("KWR001_150") }
+            ]);
+            selectedDataZeroDisplayType: KnockoutObservable<number> = ko.observable(0);
+
+            // switch button A11_2
+            dataDisplayItemType: KnockoutObservableArray<any> = ko.observableArray([
+                { code: 0, name: nts.uk.resource.getText("KWR001_151") },
+                { code: 1, name: nts.uk.resource.getText("KWR001_152") }
+            ]);
+            selectedDataDisplayItemType: KnockoutObservable<number> = ko.observable(0);
+
             // dropdownlist A7_3
             itemListCodeTemplate: KnockoutObservableArray<ItemModel>;
             selectedCodeA7_3: KnockoutObservable<string>;
-            
+
+            // dropdownlist A7_8
+            selectedCodeA7_8: KnockoutObservable<string>;
+
             // dropdownlist A9_2
             itemListTypePageBrake: KnockoutObservableArray<ItemModel>;
             selectedCodeA9_2: KnockoutObservable<number>;
@@ -76,6 +96,8 @@ module nts.uk.at.view.kwr001.a {
             enableBtnConfigure: KnockoutObservable<boolean>;
             enableConfigErrCode: KnockoutObservable<boolean>;
             isEmployeeCharge: KnockoutObservable<boolean>;
+            enableA7_2: KnockoutObservable<boolean>;
+            enableA7_8: KnockoutObservable<boolean>;
             
             taskId: KnockoutObservable<string>;
             errorLogs : KnockoutObservableArray<EmployeeError>;
@@ -88,6 +110,8 @@ module nts.uk.at.view.kwr001.a {
                 self.enableConfigErrCode = ko.observable(true);
                 self.enableByOutputFormat = ko.observable(true);
                 self.enableBtnConfigure = ko.observable(true);
+                self.enableA7_2 = ko.observable(true);
+                self.enableA7_8 = ko.observable(false);
                 
                 self.checkedA10_2 = ko.observable(false);
                 self.checkedA10_3 = ko.observable(false);
@@ -143,6 +167,10 @@ module nts.uk.at.view.kwr001.a {
                 self.taskId = ko.observable('');
                 self.errorLogs = ko.observableArray([]);
                 self.errorLogsNoWorkplace = ko.observableArray([]);
+                self.selectedCodeA7_2.subscribe((value) => {
+                    self.enableA7_2(value === 0);
+                    self.enableA7_8(value === 1);
+                });
                 
                 // start set variable for CCG001
                 self.ccg001ComponentOption = {
@@ -236,6 +264,7 @@ module nts.uk.at.view.kwr001.a {
                 self.selectedCodeA9_2 = ko.observable(1);
                 
                 self.selectedCodeA7_3 = ko.observable(''); 
+                self.selectedCodeA7_8 = ko.observable(''); 
                 
                 // TODO: hoangdd - lay du lieu tu service
                 self.itemListConditionSet = ko.observableArray([
@@ -339,7 +368,8 @@ module nts.uk.at.view.kwr001.a {
                     self.checkedA10_3(workScheduleOutputCondition.settingDetailTotalOutput.personalTotal);
                     self.checkedA10_4(workScheduleOutputCondition.settingDetailTotalOutput.workplaceTotal);
                     // update spec ver 25, only hidden temporary
-                    // self.checkedA10_5(workScheduleOutputCondition.settingDetailTotalOutput.totalNumberDay);
+                    // 2020/08/13 update specs ver 34
+                    self.checkedA10_5(workScheduleOutputCondition.settingDetailTotalOutput.totalNumberDay);
                     self.checkedA10_5(false);
                     self.checkedA10_6(workScheduleOutputCondition.settingDetailTotalOutput.grossTotal);
                     self.checkedA10_7(workScheduleOutputCondition.settingDetailTotalOutput.cumulativeWorkplace);
@@ -503,6 +533,7 @@ module nts.uk.at.view.kwr001.a {
                             };
                             nts.uk.ui.block.grayout();
                             service.exportExcel(dto).done(function(response){
+                                debugger
                                 var employeeStr = "";
                                 self.errorLogs.removeAll();
                                 self.errorLogsNoWorkplace.removeAll();
@@ -637,10 +668,18 @@ module nts.uk.at.view.kwr001.a {
                     return false;
                 }
                 
-                if (_.isEmpty(self.selectedCodeA7_3())) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1141" });
-                    return false;
+                if (this.selectedCodeA7_2() === 0) {
+                    if (_.isEmpty(self.selectedCodeA7_3())) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1141" });
+                        return false;
+                    }
+                } else {
+                    if (_.isEmpty(self.selectedCodeA7_8())) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1141" });
+                        return false;
+                    }
                 }
+               
                 
                 if (_.isEmpty(self.multiSelectedCode())) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_884" });

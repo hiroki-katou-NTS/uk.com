@@ -36,6 +36,9 @@ module nts.uk.at.view.kwr001.c {
             checkedManualInput: KnockoutObservable<boolean>;
             checkedNotCalculated: KnockoutObservable<boolean>;
             checkedExceedByApplication: KnockoutObservable<boolean>;
+            checkReasonForDivergence: KnockoutObservable<boolean>;
+            checkDeviationError: KnockoutObservable<boolean>;
+            checkDeviationAlarm: KnockoutObservable<boolean>;
 
             // start: variable global store data from service 
             allMainDom: KnockoutObservable<any>;
@@ -53,6 +56,26 @@ module nts.uk.at.view.kwr001.c {
             remarkInputContents: KnockoutObservableArray<ItemModel>;
             currentRemarkInputContent: KnockoutObservable<string>;
             isEnableRemarkInputContents: KnockoutObservable<boolean>;
+
+            // switch btn A9_2
+            dataSizeClassificationType: KnockoutObservableArray<any> = ko.observableArray([
+                { code: 0, name: nts.uk.resource.getText("KWR001_153") },
+                { code: 1, name: nts.uk.resource.getText("KWR001_154") }
+            ]);
+            selectedSizeClassificationType: KnockoutObservable<number> = ko.observable(0);
+
+            // combobox C5_1
+            itemProjectType: KnockoutObservableArray<any> = ko.observableArray([
+                { code: 0, name: nts.uk.resource.getText("KWR001_156") },
+                { code: 1, name: nts.uk.resource.getText("KWR001_157") },
+                { code: 2, name: nts.uk.resource.getText("KWR001_158") },
+                { code: 3, name: nts.uk.resource.getText("KWR001_159") },
+                { code: 4, name: nts.uk.resource.getText("KWR001_160") },
+            ]);
+            selectedProjectType: KnockoutObservable<number> = ko.observable(0);
+
+            // C7_13 label
+            sizeClassificationLabel: KnockoutObservable<string>;
 
             constructor() {
                 var self = this;
@@ -121,6 +144,9 @@ module nts.uk.at.view.kwr001.c {
                 self.checkedManualInput = ko.observable(false);
                 self.checkedNotCalculated = ko.observable(false);
                 self.checkedExceedByApplication = ko.observable(false);
+                self.checkReasonForDivergence = ko.observable(false);
+                self.checkDeviationError = ko.observable(false);
+                self.checkDeviationAlarm = ko.observable(false);
 
                 self.storeCurrentCodeBeforeCopy = ko.observable('');
 
@@ -142,6 +168,15 @@ module nts.uk.at.view.kwr001.c {
                 self.isEnableRemarkInputContents = ko.observable(false);
                 self.mapIdCodeAtd = {};
                 self.mapCodeIdAtd = {};
+
+                self.sizeClassificationLabel = ko.observable(nts.uk.resource.getText("KWR001_65"));
+                self.selectedSizeClassificationType.subscribe(value => {
+                    if (value === 1) {
+                        self.sizeClassificationLabel(nts.uk.resource.getText("KWR001_142"));
+                    } else {
+                        self.sizeClassificationLabel(nts.uk.resource.getText("KWR001_65"));
+                    }
+                })
             }
 
             /*

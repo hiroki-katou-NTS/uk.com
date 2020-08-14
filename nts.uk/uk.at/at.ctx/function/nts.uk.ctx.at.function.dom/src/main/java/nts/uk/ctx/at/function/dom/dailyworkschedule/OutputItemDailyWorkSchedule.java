@@ -46,6 +46,9 @@ public class OutputItemDailyWorkSchedule extends AggregateRoot{
 	/** The remark input no. */
 	// 備考入力No
 	private RemarkInputContent remarkInputNo;
+
+	// 文字の大きさ
+	private FontSizeEnum fontSize;
 	
 	private static final String MAX_ATTENDANCE_ITEM = "48";
 	
