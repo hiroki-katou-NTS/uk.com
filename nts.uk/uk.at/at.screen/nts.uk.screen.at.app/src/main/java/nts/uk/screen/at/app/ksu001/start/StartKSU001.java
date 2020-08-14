@@ -13,7 +13,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShift;
@@ -36,14 +35,9 @@ import nts.uk.screen.at.app.ksu001.extracttargetemployees.ExtractTargetEmployees
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.ScreenQueryExtractTargetEmployees;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforDto;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScreenQueryGetInforOfInitStartup;
-import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.TargetOrgIdenInforDto;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.PageInfo;
-import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftPalletUnit;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.TargetShiftPalette;
-import nts.uk.screen.at.app.ksu001.getworkscheduleshift.GetWorkScheduleShift;
-import nts.uk.screen.at.app.ksu001.getworkscheduleshift.GetWorkScheduleShiftParam;
 import nts.uk.screen.at.app.ksu001.getworkscheduleshift.WorkScheduleShiftDto;
-import nts.uk.screen.at.app.ksu001.getworkscheduleshift.WorkScheduleShiftResult;
 
 /**
  * @author laitv 初期起動 path:
@@ -66,8 +60,19 @@ public class StartKSU001 {
 	
 	private static final String DATE_FORMAT = "yyyyMMdd";
 	
-	public StartKSU001Dto getDataStartScreen(StartKSU001Param param) {
+	public StartKSU001Dto getDataStartScreenZ(StartKSU001Param param) {
 		
+		// step 1
+		DataScreenQueryGetInforDto resultStep1 = getInforOfInitStartup.getData();
+		
+		// step 2 
+		
+		
+		
+		return null;
+	}
+	
+	public StartKSU001Dto getDataStartScreen(StartKSU001Param param) {
 		
 		// step 1 
 		DataScreenQueryGetInforDto resultStep1 = getInforOfInitStartup.dataSample();

@@ -19,7 +19,7 @@ module kcp013.component {
 					optionsText: 'name',
 					editable: false,
 					width: 450,
-					enable: isEnable,
+					enable: true,
 					visibleItemsCount: 10,
 					columns: [
 					{ prop: 'code', length: 1 },

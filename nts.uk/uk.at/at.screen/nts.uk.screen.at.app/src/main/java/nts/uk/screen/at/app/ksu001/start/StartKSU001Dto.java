@@ -48,7 +48,7 @@ public class StartKSU001Dto {
 	// data trả về của step 5.1
 	public List<PageInfo> listPageInfo; // List<ページ, 名称>
 	public TargetShiftPalette targetShiftPalette; // 対象のシフトパレッ
-	public List<ShiftMasterMapWithWorkStyle> shiftMasterWithWorkStyleLst ;
+	public List<ShiftMasterMapWithWorkStyle> shiftMasterWithWorkStyleLst;
 	public List<WorkScheduleShiftDto> listWorkScheduleShift; // ・List<勤務予定（シフト）dto>
 	
 }

@@ -33,19 +33,18 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                 displayFormat: '',
                 showNone: true,
                 showDeferred: true,
-                selectMultiple: true,
-                isEnable: true
+                selectMultiple: true
             };
-            
+
             self.dataCell = {};
 
             self.selectedWorkTypeCode.subscribe((newValue) => {
                 if (newValue == null || newValue == undefined)
                     return;
-
                 uk.localStorage.setItem("workTypeCodeSelected", newValue);
 
                 let workType = _.filter(self.listWorkType(), function(o) { return o.workTypeCode == newValue; });
+                console.log(workType);
                 if (workType.length > 0) {
                     console.log(workType[0]);
                     // check workTimeSetting 
@@ -57,7 +56,6 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         $("#listWorkType").removeClass("disabledWorkTime");
                     }
                 }
-
                 self.updateDataCell(self.objWorkTime);
             });
         }
@@ -79,31 +77,64 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             let objWorkType = _.filter(self.listWorkType(), function(o) { return o.workTypeCode == self.selectedWorkTypeCode(); });
             // stick data
             self.dataCell = {
-                workTypeCode: objWorkType[0].workTypeCode,
-                workTypeName: objWorkType[0].name,
-                workTimeCode: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0) ? (objWorkTime[0].code) : '',
-                workTimeName: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].name) : '',
-                startTime: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].tzStart1) : '',
-                endTime: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].tzEnd1) : '',
+                objWorkType : objWorkType[0],
+                objWorkTime : objWorkTime[0]
             };
             __viewContext.viewModel.viewA.dataCell = self.dataCell;
 
             if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'time') {
                 let dataWorkType = __viewContext.viewModel.viewA.dataCell;
-                $("#extable").exTable("stickData", [{ workTypeCode: dataWorkType.workTypeCode, workTypeName: dataWorkType.workTypeName, workTimeCode: dataWorkType.workTimeCode, workTimeName: dataWorkType.workTimeName, startTime: dataWorkType.startTime, endTime: dataWorkType.endTime }]);
+                $("#extable").exTable("stickData", {
+                    workTypeCode: objWorkType[0].workTypeCode,
+                    workTypeName: objWorkType[0].name,
+                    workTimeCode: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0) ? (objWorkTime[0].code) : '',
+                    workTimeName: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].name) : '',
+                    startTime: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].tzStart1) : '',
+                    endTime: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].tzEnd1) : ''
+                });
+                
             } else if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'shortName') {
                 let dataWorkType = __viewContext.viewModel.viewA.dataCell;
-                $("#extable").exTable("stickData", [{ workTypeCode: dataWorkType.workTypeCode, workTypeName: dataWorkType.workTypeName, workTimeCode: dataWorkType.workTimeCode, workTimeName: dataWorkType.workTimeName }]);
+                $("#extable").exTable("stickData", {
+                    workTypeCode: objWorkType[0].workTypeCode,
+                    workTypeName: objWorkType[0].name,
+                    workTimeCode: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0) ? (objWorkTime[0].code) : '',
+                    workTimeName: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].name) : ''
+                });
             }
 
             // set style text 貼り付けのパターン1
             if (self.isDisableWorkTime) {
                 $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
+                    debugger;
                     return { textColor: "red" };
                 });
             } else {
                 $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
-                    return { textColor: "blue" };
+                    debugger;
+                    let workInfo = _.filter(self.listWorkType(), function(o) { return o.workTypeCode == self.selectedWorkTypeCode(); });
+                    if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'time'
+                        || __viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'shortName') {
+                        if (workInfo.length > 0) {
+                            let workStyle = workInfo[0].workStyle;
+                            if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
+                                return { textColor: "#0000ff" }; // color-attendance
+                            }
+                            if (workStyle == AttendanceHolidayAttr.MORNING) {
+                                return { textColor: "#FF7F27" };// color-half-day-work
+                            }
+                            if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
+                                return { textColor: "#FF7F27" };// color-half-day-work
+                            }
+                            if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
+                                return { textColor: "#ff0000" };// color-holiday
+                            }
+                            if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
+                                // デフォルト（黒）  Default (black)
+                                return { textColor: "#000000" }
+                            }
+                        }
+                    }
                 });
             }
             
@@ -113,6 +144,14 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                     return { textColor: "red" };
                 });
             }
+            let obj = {};
         }
+    }
+    
+    enum AttendanceHolidayAttr {
+        FULL_TIME = 3, //(3, "１日出勤系"),
+        MORNING = 1, //(1, "午前出勤系"),
+        AFTERNOON = 2, //(2, "午後出勤系"),
+        HOLIDAY = 0, //(0, "１日休日系");
     }
 }

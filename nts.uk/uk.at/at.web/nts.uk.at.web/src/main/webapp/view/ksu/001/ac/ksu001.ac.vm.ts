@@ -80,8 +80,9 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             self.selectedButtonTableCompany.subscribe((value) => {
                 let indexBtnSelected = value.column + value.row * 10;
                 let arrDataToStick = [];
+                let detailContentDecoUpdate = [];
 
-                // get listShiftMaster luu torng localStorage
+                // get listShiftMaster luu trong localStorage
                 let itemLocal = uk.localStorage.getItem(self.KEY);
                 let userInfor = JSON.parse(itemLocal.get());
                 let listShiftMasterSaveLocal = userInfor.shiftMasterWithWorkStyleLst;
@@ -94,25 +95,49 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         let obj = value.data.data[i];
                         let shiftMasterName = obj.value.toString();
                         let shiftMasterCode = obj.shiftMasterCode;
-
-                        let workInfo = _.filter(listShiftMasterSaveLocal, function(o) { return o.shiftMasterCode === shiftMasterCode; });
-
                         let removeFirstChar = shiftMasterName.slice(1);  // xoa dau [ ở đầu
                         let removeEndChar = removeFirstChar.slice(0, removeFirstChar.length - 1);// xoa dau ] ở cuối
                         shiftMasterName = removeEndChar;
                         if (shiftMasterName.includes('マスタ未登録')) {
                             isMasterNotReg = true;
                         } else {
-                            arrDataToStick.push(new ExCell('', '', '', '', '', '', shiftMasterName));
+                            arrDataToStick.push(new ExCell('', '', '', '', '', '', shiftMasterName, obj.shiftMasterCode));
                         }
                     }
+                    if (isMasterNotReg == true) {
+                        arrDataToStick = [];
+                    }
+                    
                     $("#extable").exTable("stickData", arrDataToStick);
-
+                    
                     // set color for cell
                     $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data) {
-                        if (data.shiftName == '23f') return { textColor: "#0000ff" }; // color-attendance
-                        else if (data.shiftName == 'HHHH') return { textColor: "#ff0000" };// color-schedule-sunday
-                        else return { textColor: "#FF7F27" };// color-half-day-work
+                        let workInfo = _.filter(listShiftMasterSaveLocal, function(o) { return o.shiftMasterCode === data.shiftCode; });
+                        if (workInfo.length > 0) {
+                            /**
+                             *  1日休日系  ONE_DAY_REST(0)
+                             *  午前出勤系 MORNING_WORK(1)
+                             *  午後出勤系 AFTERNOON_WORK(2)
+                             *  1日出勤系 ONE_DAY_WORK(3)
+                             */
+                            let workStyle = workInfo[0].workStyle;
+                            if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
+                                return { textColor: "#0000ff" }; // color-attendance
+                            }
+                            if (workStyle == AttendanceHolidayAttr.MORNING) {
+                                return { textColor: "#FF7F27" };// color-half-day-work
+                            }
+                            if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
+                                return { textColor: "#FF7F27" };// color-half-day-work
+                            }
+                            if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
+                                return { textColor: "#ff0000" };// color-holiday
+                            }
+                            if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
+                                // デフォルト（黒）  Default (black)
+                                return { textColor: "#000000" }
+                            }
+                        }
                     });
                 }
 
@@ -126,24 +151,53 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             });
 
             self.selectedButtonTableWorkplace.subscribe((value) => {
+                let indexBtnSelected = value.column + value.row * 10;
                 let arrDataToStickWkp = [];
-                if (value.column == -1 || value.row == -1) {
-                    $("#extable").exTable("stickData", arrDataToStickWkp);
-                } else {
-                    for (let i = 0; i < value.data.data.length; i++) {
-                        let obj = value.data.data[i];
-                        let shiftMasterName = obj.value.toString();
-                        let removeFirstChar = shiftMasterName.slice(1);  // xoa dau [ ở đầu
-                        let removeEndChar = removeFirstChar.slice(0, removeFirstChar.length - 1);// xoa dau ] ở cuối
-                        shiftMasterName = removeEndChar;
-                        if (shiftMasterName.includes('マスタ未登録')) {
-                            arrDataToStickWkp.push(new ExCell('', '', '', '', '', '', ''));
-                        } else {
-                            arrDataToStickWkp.push(new ExCell('', '', '', '', '', '', shiftMasterName));
-                        }
+                // get listShiftMaster luu trong localStorage
+                let itemLocal = uk.localStorage.getItem(self.KEY);
+                let userInfor = JSON.parse(itemLocal.get());
+                let listShiftMasterSaveLocal = userInfor.shiftMasterWithWorkStyleLst;
+
+                let isMasterNotReg = false;
+                for (let i = 0; i < value.data.data.length; i++) {
+                    let obj = value.data.data[i];
+                    let shiftMasterName = obj.value.toString();
+                    let shiftMasterCode = obj.shiftMasterCode;
+
+                    let workInfo = _.filter(listShiftMasterSaveLocal, function(o) { return o.shiftMasterCode === shiftMasterCode; });
+
+                    let removeFirstChar = shiftMasterName.slice(1);  // xoa dau [ ở đầu
+                    let removeEndChar = removeFirstChar.slice(0, removeFirstChar.length - 1);// xoa dau ] ở cuối
+                    shiftMasterName = removeEndChar;
+                    if (shiftMasterName.includes('マスタ未登録')) {
+                        isMasterNotReg = true;
+                    } else {
+                        arrDataToStickWkp.push(new ExCell('', '', '', '', '', '', shiftMasterName));
                     }
-                    $("#extable").exTable("stickData", arrDataToStickWkp);
                 }
+                if (isMasterNotReg == true) {
+                    arrDataToStickWkp = [];
+                }
+
+                $("#extable").exTable("stickData", arrDataToStickWkp);
+
+                // set color for cell
+                $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data) {
+                    if (data.shiftName == '23f') return { textColor: "#0000ff" }; // color-attendance
+                    else if (data.shiftName == 'HHHH') return { textColor: "#ff0000" };// color-schedule-sunday
+                    else return { textColor: "#FF7F27" };// color-half-day-work
+                });
+
+                $("#extable").exTable("stickValidate", function(rowIdx, key, data) {
+                    console.log(rowIdx);
+                    console.log(data);
+                    if (rowIdx == 1) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+
 
                 if (value.column !== -1 && value.row !== -1) {
                     uk.localStorage.getItem(self.KEY).ifPresent((data) => {
@@ -163,6 +217,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 self.textName(data.text);
                 self.tooltip(data.tooltip);
             });
+            
         }
         
         /**
@@ -747,5 +802,12 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
         workTypeCode: string;
         workTimeCode: string;
         workStyle: string;
+    }
+
+    enum AttendanceHolidayAttr {
+        FULL_TIME = 3, //(3, "１日出勤系"),
+        MORNING = 1, //(1, "午前出勤系"),
+        AFTERNOON = 2, //(2, "午後出勤系"),
+        HOLIDAY = 0, //(0, "１日休日系");
     }
 }
