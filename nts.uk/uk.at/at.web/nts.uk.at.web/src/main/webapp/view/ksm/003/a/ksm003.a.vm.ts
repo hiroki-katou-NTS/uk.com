@@ -483,6 +483,11 @@ module nts.uk.at.view.ksm003.a {
                 return;
             }
 
+            if (workingTimeCycleList.length > 99) {
+                nts.uk.ui.dialog.info({ messageId: "Msg_1688" });
+                return;
+            }
+
             if (vm.validate()) return;
 
             let messageIds: Array<string> = ["Msg_23", "Msg_24", , "Msg_25", "Msg_389", "Msg_390",
