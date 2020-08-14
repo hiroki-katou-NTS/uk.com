@@ -54,8 +54,8 @@ public class KrcmtBentoReservationSetting extends UkJpaEntity {
         CorrectionContent correctionContent = new CorrectionContent(
                 ContentChangeDeadline.valueOf(entity.contentChangeDeadline),
                 ContentChangeDeadlineDay.valueOf(entity.contentChangeDeadlineDay),
-                OrderedData.valueOf(entity.monthlyResults),
-                OrderDeadline.valueOf(entity.dailyResults)
+                OrderedData.valueOf(entity.orderData),
+                OrderDeadline.valueOf(entity.orderDeadline)
         );
 
         Achievements achievements = new Achievements(
