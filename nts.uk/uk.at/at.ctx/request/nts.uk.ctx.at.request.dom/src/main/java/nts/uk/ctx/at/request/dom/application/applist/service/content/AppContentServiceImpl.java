@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.applist.service.content;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,11 +11,14 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.i18n.I18NText;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
+import nts.uk.ctx.at.request.dom.application.applist.service.datacreate.StampAppOutputTmp;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandardRepository;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
@@ -35,11 +39,11 @@ public class AppContentServiceImpl implements AppContentService {
 	private AppReasonStandardRepository appReasonStandardRepository;
 
 	@Override
-	public String getArrivedLateLeaveEarlyContent(AppReason appReason, DisplayAtr appReasonDisAtr, String screenID, List<ArrivedLateLeaveEarlyItemContent> itemContentLst,
+	public String getArrivedLateLeaveEarlyContent(AppReason appReason, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, List<ArrivedLateLeaveEarlyItemContent> itemContentLst,
 			ApplicationType appType, AppStandardReasonCode appStandardReasonCD) {
 		String result = Strings.EMPTY;
 		String paramString = Strings.EMPTY;
-		if(screenID.equals("KAF018") || screenID.equals("CMM045")) {
+		if(screenAtr == ScreenAtr.KAF018 || screenAtr == ScreenAtr.CMM045) {
 			// @＝改行
 			paramString = "\n";
 		} else {
@@ -47,22 +51,25 @@ public class AppContentServiceImpl implements AppContentService {
 			paramString = "	";
 		}
 		// ・<List>（項目名、勤務NO、区分（遅刻早退）、時刻、取消）
-		for(int i = 0; i < itemContentLst.size(); i++) {
-			ArrivedLateLeaveEarlyItemContent item = itemContentLst.get(0);
-			if(i > 0) {
-				// 申請内容＋＝@
-				result += paramString;
-			}
-			// <List>.取消
-			if(!item.isCancellation()) {
-				// 申請内容＋＝項目名＋勤務NO＋'　'＋時刻
-				result += item.getItemName() + item.getWorkNo() + " " + item.getOpTimeWithDayAttr().get().getFullText();
-			} else {
-				// 申請内容＋＝項目名＋勤務NO＋'　'＋#CMM045_292(取消)
-				result += item.getItemName() + item.getWorkNo() + "	" + I18NText.getText("CMM045_292");
+		if(!CollectionUtil.isEmpty(itemContentLst)) {
+			for(int i = 0; i < itemContentLst.size(); i++) {
+				ArrivedLateLeaveEarlyItemContent item = itemContentLst.get(0);
+				if(i > 0) {
+					// 申請内容＋＝@
+					result += paramString;
+				}
+				// <List>.取消
+				if(!item.isCancellation()) {
+					// 申請内容＋＝項目名＋勤務NO＋'　'＋時刻
+					result += item.getItemName() + item.getWorkNo() + " " + item.getOpTimeWithDayAttr().get().getFullText();
+				} else {
+					// 申請内容＋＝項目名＋勤務NO＋'　'＋#CMM045_292(取消)
+					result += item.getItemName() + item.getWorkNo() + "	" + I18NText.getText("CMM045_292");
+				}
 			}
 		}
-		String appReasonContent = this.getAppReasonContent(appReasonDisAtr, appReason, screenID, appStandardReasonCD, appType, Optional.empty());
+		// アルゴリズム「申請内容の申請理由」を実行する
+		String appReasonContent = this.getAppReasonContent(appReasonDisAtr, appReason, screenAtr, appStandardReasonCD, appType, Optional.empty());
 		if(Strings.isNotBlank(appReasonContent)) {
 			result += appReasonContent;
 		}
@@ -97,18 +104,18 @@ public class AppContentServiceImpl implements AppContentService {
 	}
 
 	@Override
-	public String getAppReasonContent(DisplayAtr appReasonDisAtr, AppReason appReason, String screenID,
+	public String getAppReasonContent(DisplayAtr appReasonDisAtr, AppReason appReason, ScreenAtr screenAtr,
 			AppStandardReasonCode appStandardReasonCD, ApplicationType appType,
 			Optional<HolidayAppType> opHolidayAppType) {
 		// 申請理由内容　＝　String.Empty
 		String result = Strings.EMPTY;
-		if(!(!screenID.equals("KAF018") && appReason!= null && appReasonDisAtr == DisplayAtr.DISPLAY)) {
+		if(!(screenAtr != ScreenAtr.KAF018 && appReason!= null && appReasonDisAtr == DisplayAtr.DISPLAY)) {
 			return result;
 		}
 		// アルゴリズム「申請内容定型理由取得」を実行する
 		ReasonForFixedForm reasonForFixedForm = this.getAppStandardReasonContent(appType, appStandardReasonCD, opHolidayAppType);
 		if(reasonForFixedForm!=null) {
-			if(screenID.equals("メール送信画面")) {
+			if(screenAtr == ScreenAtr.KDL030) {
 				// 申請理由内容　+＝　”申請理由：”を改行
 				result += "申請理由：  " + "\n";
 				// 申請理由内容　+＝　定型理由＋改行＋Input．申請理由
@@ -118,7 +125,7 @@ public class AppContentServiceImpl implements AppContentService {
 				result += reasonForFixedForm.v() + " " + appReason.v();
 			}
 		} else {
-			if(screenID.equals("メール送信画面")) {
+			if(screenAtr == ScreenAtr.KDL030) {
 				// 申請理由内容　+＝　”申請理由：”を改行
 				result += "申請理由：  " + "\n";
 				// 申請理由内容　+＝　Input．申請理由
@@ -180,6 +187,44 @@ public class AppContentServiceImpl implements AppContentService {
 		// 任意申請＝KAF020
 		result.add(new AppTypeMapProgramID(ApplicationType.OPTIONAL_ITEM_APPLICATION, "KAF020", null));
 		// 対象の申請種類に対しプログラムIDを返す
+		return result;
+	}
+
+	@Override
+	public String getAppStampContent(DisplayAtr appReasonDisAtr, AppReason appReason, ScreenAtr screenAtr,
+			StampAppOutputTmp stampAppOutputTmp, ApplicationType appType, AppStandardReasonCode appStandardReasonCD) {
+		String result = Strings.EMPTY;
+		String paramString = Strings.EMPTY;
+		if(screenAtr == ScreenAtr.KAF018 || screenAtr == ScreenAtr.CMM045) {
+			// @＝改行
+			paramString = "\n";
+		} else {
+			// @＝”　”
+			paramString = "	";
+		}
+		List<StampAppOutputTmp> stampAppOutputTmpLst = Arrays.asList(stampAppOutputTmp);
+		if(!CollectionUtil.isEmpty(stampAppOutputTmpLst)) {
+			for(int i = 0; i < stampAppOutputTmpLst.size(); i++) {
+				StampAppOutputTmp item = stampAppOutputTmpLst.get(0);
+				if(i > 0) {
+					// 申請内容＋＝@
+					result += paramString;
+				}
+				// 打刻申請出力用Tmp.取消
+				if(!item.isCancel()) {
+					// 申請内容＋＝$.項目名＋'　'＋$.開始時刻＋#CMM045_100(～)＋$.終了時刻
+					result += item.getOpItemName().get() + item.getOpStartTime().get().getFullText() + I18NText.getText("CMM045_100") + item.getOpEndTime().get().getFullText();
+				} else {
+					// 申請内容＋＝$.項目名＋'　'＋#CMM045_292(取消)
+					result += item.getOpItemName().get() + I18NText.getText("CMM045_292");
+				}
+			}
+		}
+		// アルゴリズム「申請内容の申請理由」を実行する
+		String appReasonContent = this.getAppReasonContent(appReasonDisAtr, appReason, screenAtr, appStandardReasonCD, appType, Optional.empty());
+		if(Strings.isNotBlank(appReasonContent)) {
+			result += appReasonContent;
+		}
 		return result;
 	}
 

@@ -12,24 +12,24 @@ import lombok.AllArgsConstructor;
 public enum GoOutReasonAtr {
 	
 	/**
+	 * 私用
+	 */
+	PRIVATE(0, "私用"),
+	
+	/**
 	 * 公用
 	 */
-	PUBLIC(0, "公用"),
+	PUBLIC(1, "公用"),
 	
 	/**
 	 * 有償
 	 */
-	COMPENSATION(1, "有償"),
-	
-	/**
-	 * 私用
-	 */
-	PRIVATE(2, ""),
+	COMPENSATION(2, "有償"),
 	
 	/**
 	 * 組合
 	 */
-	UNION(3, "");
+	UNION(3, "組合");
 
 	public final int value;
 	public final String name;

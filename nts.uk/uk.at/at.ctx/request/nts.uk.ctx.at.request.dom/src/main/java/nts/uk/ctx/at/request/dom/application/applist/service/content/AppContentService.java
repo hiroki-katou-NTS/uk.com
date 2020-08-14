@@ -7,6 +7,8 @@ import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
+import nts.uk.ctx.at.request.dom.application.applist.service.datacreate.StampAppOutputTmp;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonForFixedForm;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
@@ -30,7 +32,7 @@ public interface AppContentService {
 	 * @param appStandardReasonCD 定型理由コード
 	 * @return
 	 */
-	public String getArrivedLateLeaveEarlyContent(AppReason appReason, DisplayAtr appReasonDisAtr, String screenID, List<ArrivedLateLeaveEarlyItemContent> itemContentLst,
+	public String getArrivedLateLeaveEarlyContent(AppReason appReason, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, List<ArrivedLateLeaveEarlyItemContent> itemContentLst,
 			ApplicationType appType, AppStandardReasonCode appStandardReasonCD);
 	
 	/**
@@ -54,7 +56,7 @@ public interface AppContentService {
 	 * @param opHolidayAppType 休暇申請の種類(Optional)
 	 * @return
 	 */
-	public String getAppReasonContent(DisplayAtr appReasonDisAtr, AppReason appReason, String screenID, AppStandardReasonCode appStandardReasonCD,
+	public String getAppReasonContent(DisplayAtr appReasonDisAtr, AppReason appReason, ScreenAtr screenAtr, AppStandardReasonCode appStandardReasonCD,
 			ApplicationType appType, Optional<HolidayAppType> opHolidayAppType);
 	
 	/**
@@ -70,4 +72,18 @@ public interface AppContentService {
 	 * @return
 	 */
 	public List<AppTypeMapProgramID> getListProgramIDOfAppType(); 
+	
+	/**
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.申請内容ver4.申請内容（打刻申請）.申請内容（打刻申請）
+	 * @param appReasonDisAtr 申請理由表示区分
+	 * @param appReason 申請理由
+	 * @param screenAtr ScreenID
+	 * @param stampAppOutputTmp 打刻申請出力用Tmp
+	 * @param appType 申請種類
+	 * @param appStandardReasonCD 定型理由コード
+	 * @return
+	 */
+	public String getAppStampContent(DisplayAtr appReasonDisAtr, AppReason appReason, ScreenAtr screenAtr, StampAppOutputTmp stampAppOutputTmp,
+			ApplicationType appType, AppStandardReasonCode appStandardReasonCD);
 }
