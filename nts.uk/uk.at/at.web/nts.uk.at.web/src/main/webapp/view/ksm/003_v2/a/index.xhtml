@@ -9,9 +9,9 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:ValidatorScript>
-				nts.uk.ctx.at.schedule.dom.shift.pattern.daily.PatternCode
-				nts.uk.ctx.at.schedule.dom.shift.pattern.daily.PatternName
 				nts.uk.ctx.at.schedule.dom.shift.pattern.daily.Days
+				nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleCode
+				nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleName
 			</com:ValidatorScript>
 			<com:stylefile path="ksm003.a.main.css" />
 			<com:scriptfile path="ksm003.a.vm.js" />
@@ -35,8 +35,7 @@
 					class="button danger separate-button fix-button"
 					data-bind="click: deletePattern, enable: $root.errors.isEmpty() &amp; isEditting()">#{i18n.getText('KSM003_22')}</button>
 				<!-- B1_4: Button Export Excel -->
-				<button tabindex="4"
-						data-bind="click: downloadExcel">#{i18n.getText('KSM003_45')}</button>
+				<button tabindex="4" data-bind="click: downloadExcel">#{i18n.getText('KSM003_45')}</button>
 			</div>
 			<div id="content-area">
 				<div id="left-content" style="float: left" class="bg-green caret-right caret-background">
@@ -59,12 +58,12 @@
 					</div>
 				</div>
 				<div id="right-content" style="float: left;">
-					<div data-bind="ntsFormLabel: {required: true,constraint:['PatternCode','PatternName'] }">#{i18n.getText('KSM003_28')}</div>
+					<div data-bind="ntsFormLabel: {required: true,constraint:['WorkCycleCode','WorkCycleName'] }">#{i18n.getText('KSM003_28')}</div>
 					<input tabindex="5" class="nts-input" id="inpCode"
 						   data-bind="ntsTextEditor: {
 										  name: '#[KSM003_36]',
                                           value: selectedCode,
-                                          constraint: 'PatternCode',
+                                          constraint: 'WorkCycleCode',
                                           enable: !isEditting(),
                                           required: true}" />
 					<!-- B3_3:Pattern Name-->
@@ -72,42 +71,13 @@
 						   data-bind="ntsTextEditor: {
 										  name: '#[KSM003_37]',
                                           value: selectedName,
-                                          constraint: 'PatternName',
+                                          constraint: 'WorkCycleName',
                                           required: true}" />
 					<!-- Button -->
 					<div style="padding-bottom: 10px;">
 						<Button class="button" data-bind="click: addNewItem, enable: lessThan99Items()">#{i18n.getText('KSM003_4')}</Button>
 						<Button class="button danger" data-bind="{click: removeLine, enable: enableRemoveItem()}">#{i18n.getText('KSM003_5')}</Button>
 					</div>
-					<!--<table>
-						<tr>
-							<td>
-								<table id="multi-list" class="working-time" data-bind="ntsGridList: {
-									height: 380,
-									options: gridItems,
-									optionsValue: 'id',
-									columns: gListColumns,
-									multiple: true,
-									value: currentCodeList}">
-								</table>
-							</td>
-							<td>
-								<div id="swap-up-down"
-									 data-bind="ntsUpDown: {
-											targetSource: gridItems,
-											primaryKey: 'id',
-											comId: '#multi-list',
-											type: 'grid',
-											enable: true
-										}"
-									 class="swap-contents">
-								</div>
-							</td>
-						</tr>
-                        <tr>
-                            <td colspan="2"><table id="grid2"></table></td>
-						</tr>
-					</table><br />-->
 					<div class="nts-fixed-header-container ui-iggrid nts-fixed-header">
 						<div class="nts-fixed-header-wrapper">
 							<div class="fixed-table-list">
@@ -122,7 +92,7 @@
 									<thead>
 									<tr>
 										<th class="ui-widget-header" style="text-align: center;">
-                                            <div class="chkboxListAll" data-bind="ntsCheckBox: { checked: selectedCheckAll }"></div>
+                                            <div class="chkboxListAll" data-bind="ntsCheckBox: { checked: selectedCheckAll, name: '#[KSM003_23]' }"></div>
                                         </th>
 										<th class="ui-widget-header"></th>
 										<th class="ui-widget-header">#{i18n.getText('KSM003_30')}</th>
@@ -131,20 +101,20 @@
 									</tr>
 									</thead>
 									<tbody data-bind="foreach: dailyPatternValModel">
-									<tr>
-										<td><div class="chkbox-list" data-bind="ntsCheckBox: { checked: isChecked}"></div></td>
+									<tr data-bind="attr: {id: 'row-' + dispOrder}">
+										<td><div class="chkbox-list" data-bind="ntsCheckBox: { checked: isChecked }"></div></td>
 										<td><button class="button buttonEvent" data-bind="attr: {id: 'btnVal' + dispOrder}, click: openDialogWorkDays">#{i18n.getText('KSM003_34')}</button></td>
 										<td><span data-bind="text: workTypeInfo"></span></td>
 										<td><span data-bind="text: workingInfo"></span></td>
-										<td><input class="nts-neditor" data-bind="ntsNumberEditor: {value: days, constraint: 'Days'}" style="width: 20px; text-align: center;" /> #{i18n.getText('KSM003_33')}</td>
+										<td><input class="nts-editor" data-bind="attr: {id: 'days' + dispOrder}, ntsNumberEditor: {value: days, constraint: 'Days', required: $parent.dayIsRequired(), name: '#[KSM003_3]' }" style="width: 20px; text-align: center;" /> #{i18n.getText('KSM003_33')}</td>
 									</tr>
 									</tbody>
 								</table>
 							</div>
 							<div class="up-down-button">
                                 <div class="buttons">
-								    <button tabindex="23" class="auto-height" data-bind="click: function() { alert(111);}"><i class="icon icon-button-arrow-top"/></button>
-								    <button tabindex="24" class="auto-height down-btn" data-bind="click: function() { alert(111);}"><i class="icon icon-button-arrow-bottom"/></button>
+								    <button tabindex="23" class="auto-height" data-bind="click: upBtn"><i class="icon icon-button-arrow-top"/></button>
+								    <button tabindex="24" class="auto-height down-btn" data-bind="click: downBtn"><i class="icon icon-button-arrow-bottom"/></button>
                                 </div>
 							</div>
 						</div>
