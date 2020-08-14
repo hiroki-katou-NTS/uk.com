@@ -20,10 +20,12 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * ScreenQuery職場で使える就業時間帯取得
+ * ScreenQuery職場で使える就業時間帯取得.
+ * UKDesign.UniversalK.共通.KCP_共通部品.KCP013_就業時間帯選択.メニュー別OCD
  * 
- * ScreenQuery就業時間帯を全件取得
- * 
+ * ScreenQuery就業時間帯を全件取得.
+ * UKDesign.UniversalK.共通.KCP_共通部品.KCP013_就業時間帯選択.メニュー別OCD
+ *
  * @author thanhlv
  *
  */
@@ -42,13 +44,22 @@ public class GetAllWorkingHoursQuery {
 	@Inject
 	private WorkManagementMultipleRepository workMultipleRepo;
 
-	// 複数回勤務を取得
+	/**
+	 * 複数回勤務を取得
+	 * 
+	 * @return
+	 */
 	public Optional<WorkManagementMultiple> getUseDistinction() {
 		String companyId = AppContexts.user().companyId();
 		return workMultipleRepo.findByCode(companyId);
 	}
 
-	// 職場が選択できる就業時間帯を取得する
+	/**
+	 * 職場が選択できる就業時間帯を取得する
+	 * 
+	 * @param request
+	 * @return
+	 */
 	public AcquireWorkingHoursDto getWorkingHours(AcquireWorkingHoursRequest request) {
 
 		AcquireWorkingHoursDto dto = new AcquireWorkingHoursDto();
@@ -75,7 +86,11 @@ public class GetAllWorkingHoursQuery {
 		return dto;
 	}
 
-	// 就業時間帯を全件取得
+	/**
+	 * 就業時間帯を全件取得
+	 * 
+	 * @return
+	 */
 	public AcquireWorkingHoursDto getAllWorkingHoursDtos() {
 
 		String companyId = AppContexts.user().companyId();
