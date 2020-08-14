@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.dom.application.applist.extractcondition.Applicatio
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.AppContentService;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.ArrivedLateLeaveEarlyItemContent;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppLstApprovalLstDispSet;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
@@ -74,7 +75,7 @@ public class AppDataCreationImpl implements AppDataCreation {
 	}
 
 	@Override
-	public String createArrivedLateLeaveEarlyData(Application application, DisplayAtr appReasonDisAtr, String screenID,
+	public String createArrivedLateLeaveEarlyData(Application application, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr,
 			String companyID) {
 		// ドメインモデル「遅刻早退取消申請」
 		ArrivedLateLeaveEarly arrivedLateLeaveEarly = arrivedLateLeaveEarlyRepository.getLateEarlyApp(companyID, application.getAppID(), application);
@@ -117,7 +118,7 @@ public class AppDataCreationImpl implements AppDataCreation {
 		return appContentService.getArrivedLateLeaveEarlyContent(
 				application.getOpAppReason().orElse(null), 
 				appReasonDisAtr, 
-				screenID, 
+				screenAtr, 
 				itemContentLst, 
 				application.getAppType(), 
 				application.getOpAppStandardReasonCD().orElse(null));
