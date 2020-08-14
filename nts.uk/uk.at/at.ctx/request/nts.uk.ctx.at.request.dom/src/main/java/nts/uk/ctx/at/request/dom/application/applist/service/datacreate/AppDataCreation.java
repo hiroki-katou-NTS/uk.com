@@ -6,7 +6,9 @@ import java.util.Map;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
+import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
@@ -40,7 +42,7 @@ public interface AppDataCreation {
 	 * @param companyID
 	 * @return
 	 */
-	public String createArrivedLateLeaveEarlyData(Application application, DisplayAtr appReasonDisAtr, String screenID, String companyID);
+	public String createArrivedLateLeaveEarlyData(Application application, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, String companyID);
 	
 	/**
 	 * refactor 4
