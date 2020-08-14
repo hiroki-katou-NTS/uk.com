@@ -23,7 +23,7 @@ public class WorkCycleDto {
     public static WorkCycleDto createFromDomain(WorkCycle domain) {
         List<WorkCyleInfoDto> infos = domain.getInfos().stream().map(i -> new WorkCyleInfoDto(
                 i.getWorkInformation().getWorkTypeCode().v(),
-                i.getWorkInformation().getWorkTimeCode().v(),
+                i.getWorkInformation().getWorkTimeCode() != null? i.getWorkInformation().getWorkTimeCode().v(): null,
                 i.getDays().v(),
                 i.getDispOrder().v()
         )).collect(Collectors.toList());
