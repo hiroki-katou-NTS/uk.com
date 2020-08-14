@@ -10,6 +10,7 @@ import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExt
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWorkFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOverTimeInfoFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
+import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -37,8 +38,7 @@ public interface AppListInitialRepository {
 	 * @param 申請種類リスト　lstAppType
 	 * @return
 	 */
-	public AppListOutPut getApplicationList(AppListExtractCondition param, ApprovalListDisplaySetting displaySet,
-			int device, List<Integer> lstAppType);
+	public AppListInfo getApplicationList(AppListExtractCondition param, int device, AppListInfo appListInfo);
 	/**
 	 * 2 - 申請一覧リスト取得申請
 	 * @param param
@@ -64,14 +64,15 @@ public interface AppListInitialRepository {
 	 */
 	public AppListOutPut getAppListByApproval(AppListExtractCondition param, ApprovalListDisplaySetting displaySet,
 			int device, List<Integer> lstAppType);
+
 	/**
-	 * 4 - 申請一覧リスト取得承認件数
-	 * @param 申請一覧　lstApp
-	 * @param 社員ID　sID
-	 * @param lstSync
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.申請一覧リスト取得承認件数.申請一覧リスト取得承認件数
+	 * @param listApp 申請一覧(LIST）
+	 * @param appStatus 申請件数
 	 * @return
 	 */
-	public AppInfoStatus countAppListApproval(List<ApplicationFullOutput> lstApp, String sID, List<AppCompltLeaveSync> lstSync);
+	public ApplicationStatus countAppListApproval(List<ListOfApplication> listApp, ApplicationStatus appStatus);
 	/**
 	 * 5 - 申請一覧リスト取得実績
 	 * @param 申請一覧　lstApp

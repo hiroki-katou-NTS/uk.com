@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationStatus;
 
 /**
  * refactor 4
@@ -23,7 +24,7 @@ public class AppListInfo {
 	/**
 	 * 申請件数
 	 */
-	private int numberOfApp;
+	private ApplicationStatus numberOfApp;
 	
 	/**
 	 * 表示行数超

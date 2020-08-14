@@ -19,8 +19,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.request.dom.application.Application;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -28,8 +27,8 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
+import nts.uk.ctx.at.request.dom.application.applist.service.datacreate.AppDataCreation;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppAbsenceFull;
-import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppCompltLeaveFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppContentDetailCMM045;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppDetailInfoRepository;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppGoBackInfoFull;
@@ -40,6 +39,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.ContentApp;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.WkTypeWkTime;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
+import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmploymentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.SyEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmploymentHisImport;
@@ -155,6 +155,10 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	private OvertimeWorkFrameRepository repoOverTimeFr;
 	@Inject
 	private WorkdayoffFrameRepository repoWork;
+	
+	@Inject
+	private AppDataCreation appDataCreation;
+	
 	private static final int PC = 0;
 	private static final int MOBILE = 1;
 
@@ -194,18 +198,16 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * 1 - 申請一覧リスト取得
 	 */
 	@Override
-	public AppListOutPut getApplicationList(AppListExtractCondition param, ApprovalListDisplaySetting displaySet,
-			int device, List<Integer> lstAppType) {
+	public AppListInfo getApplicationList(AppListExtractCondition param, int device, AppListInfo appListInfo) {
 		//申請一覧区分が申請 OR 承認-(Check xem là application hay aprove)
-		AppListOutPut appFull = null;
 		if (param.getAppListAtr().equals(ApplicationListAtr.APPLICATION)) {//申請
 			//アルゴリズム「申請一覧リスト取得申請」を実行する - 2
-			// appFull = this.getApplicationListByApp(param, displaySet.getAppReasonDisAtr().value, device, lstAppType);
+			appListInfo = this.getApplicationListByApp(param, device, appListInfo);
 		} else {//承認
 				//アルゴリズム「申請一覧リスト取得承認」を実行する - 3
-			appFull = this.getAppListByApproval(param, displaySet, device, lstAppType);
+			// appFull = this.getAppListByApproval(param, displaySet, device, lstAppType);
 		}
-		return appFull;
+		return appListInfo;
 	}
 
 	/**
@@ -213,20 +215,33 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 */
 	@Override
 	public AppListInfo getApplicationListByApp(AppListExtractCondition param, int device, AppListInfo appListInfo) {
-		String companyId = AppContexts.user().companyId();
+		String companyID = AppContexts.user().companyId();
 		// アルゴリズム「申請一覧対象申請者取得」を実行する
 		ListApplicantOutput checkMySelf = this.getListApplicantForListApp(param);
-		
-		
-		
-		
-		
-		
+		List<ListOfApplication> appLst = new ArrayList<>();
+		boolean condition = param.getOpListOfAppTypes().map(x -> {
+			return !x.stream().filter(y -> !y.isChoice()).findAny().isPresent();
+		}).orElse(false);
+		if(condition) {
+			// ドメインモデル「申請」を取得する
+		} else {
+			// ドメインモデル「申請」を取得する
+		}
 		// 承認ルートの内容取得
-		// Map<String,List<ApprovalPhaseStateImport_New>> mapResult = approvalRootStateAdapter.getApprovalRootContents(appIDs, companyID);
-		
-		
-		
+		Map<String,List<ApprovalPhaseStateImport_New>> mapResult = approvalRootStateAdapter.getApprovalRootContents(
+				appLst.stream().map(x -> x.getAppID()).collect(Collectors.toList()), 
+				companyID);
+		// 申請一覧リストのデータを作成
+		appListInfo = appDataCreation.createAppLstData(
+				companyID, 
+				appLst, 
+				new DatePeriod(appListInfo.getDisplaySet().getStartDateDisp(), appListInfo.getDisplaySet().getEndDateDisp()), 
+				ApplicationListAtr.APPLICATION, 
+				mapResult, 
+				device, 
+				param, 
+				appListInfo);
+		return appListInfo;
 		
 		/*
 		
@@ -378,7 +393,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		return new AppListOutPut(lstAppMasterInfo, lstAppFilter, null, null, null, null, null, lstContentApp,
 				lstAppCompltLeaveSync);// NOTE
 		*/
-		return null;
 	}
 
 	/**
@@ -394,19 +408,19 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		boolean mySelf = false;
 		List<String> lstSID = new ArrayList<>();
 		// 申請一覧抽出条件. 社員IDリストを確認
-		if (param.getListEmployeeId().isEmpty()) {// リストが存在しない場合
+		if (!param.getOpListEmployeeID().isPresent() || CollectionUtil.isEmpty(param.getOpListEmployeeID().get())) {// リストが存在しない場合
 			// 社員IDリストにログイン者の社員IDをセットする
 			lstSID.add(sIdLogin);
 			// 自分の申請＝True
 			mySelf = true;
 		} else {// リストが存在する場合
 				// 社員IDリストが１件でログイン者IDの場合
-			if (param.getListEmployeeId().size() == 1 && param.getListEmployeeId().get(0).equals(sIdLogin)) {// 1件でログイン者IDだった場合
+			if (param.getOpListEmployeeID().get().size() == 1 && param.getOpListEmployeeID().get().get(0).equals(sIdLogin)) {// 1件でログイン者IDだった場合
 				// 自分の申請と判断する
 				// 自分の申請＝True
 				mySelf = true;
 			}
-			lstSID = param.getListEmployeeId();
+			lstSID = param.getOpListEmployeeID().get();
 		}
 		return new ListApplicantOutput(mySelf, lstSID);
 	}
@@ -636,50 +650,34 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * lam o ui 4 - 申請一覧リスト取得承認件数
 	 */
 	@Override
-	public AppInfoStatus countAppListApproval(List<ApplicationFullOutput> lstAppFull, String sID,
-			List<AppCompltLeaveSync> lstSync) {
-		ApplicationStatus appStatus = new ApplicationStatus(0, 0, 0, 0, 0, 0);
-		for (ApplicationFullOutput appFull : lstAppFull) {
-			PhaseFrameStatus status = appFull.getStatusA();	
-			if (status == null) {
-				appFull.setStatus(null);
-			} else {
-				int statusApp = this.calApplication(
-						appFull.getApplication().getReflectionInformation().getStateReflectionReal(), status,
-						status.getAgentId(), sID);
-				appFull.setStatus(statusApp);
-				appFull.setAgentId(status.getAgentId());
+	public ApplicationStatus countAppListApproval(List<ListOfApplication> listApp, ApplicationStatus appStatus) {
+		for (ListOfApplication appFull : listApp) {
+			int add = 1;
+			if(appFull.getAppTye() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION && appFull.getOpComplementLeaveApp().isPresent()) {
+				add = 2;
 			}
-		}
-
-		List<ApplicationFullOutput> listApp = lstAppFull.stream().filter(c -> c.getStatus() != null)
-				.collect(Collectors.toList());
-		for (ApplicationFullOutput appFull : listApp) {
-			// check co sync k?
-			boolean check = this.checkSync(lstSync, appFull.getApplication().getAppID());
-			int add = check ? 2 : 1;
-			switch (appFull.getStatus()) {
-			case 1://承認状況＝否
+			switch (appFull.getReflectionStatus()) {
+			case DENIAL://承認状況＝否
 					//否認件数に＋１する
 				appStatus.setDenialNumber(appStatus.getDenialNumber() + add);
 				break;
-			case 2://承認状況＝差戻
+			case REMAND://承認状況＝差戻
 					//差戻件数に＋１する
 				appStatus.setRemandNumner(appStatus.getRemandNumner() + add);
 				break;
-			case 3://承認状況＝取消
+			case CANCELED://承認状況＝取消
 					//取消件数に＋１する
 				appStatus.setCancelNumber(appStatus.getCancelNumber() + add);
 				break;
-			case 4://承認状況＝承認済み/反映済み
-				if (StringUtil.isNullOrEmpty(appFull.getAgentId(), true) || appFull.getAgentId().equals(sID)) {
-					//代行者＝未登録  または  代行者＝ログインID
-					appStatus.setApprovalNumber(appStatus.getApprovalNumber() + add);
-				} else {// 代行者≠ログインID
-					appStatus.setApprovalAgentNumber(appStatus.getApprovalAgentNumber() + add);
-				}
+			case REFLECTED://承認状況＝承認済み/反映済み
+//				if (StringUtil.isNullOrEmpty(appFull.getAgentId(), true) || appFull.getAgentId().equals(sID)) {
+//					//代行者＝未登録  または  代行者＝ログインID
+//					appStatus.setApprovalNumber(appStatus.getApprovalNumber() + add);
+//				} else {// 代行者≠ログインID
+//					appStatus.setApprovalAgentNumber(appStatus.getApprovalAgentNumber() + add);
+//				}
 				break;
-			case 5://承認状況＝未
+			case NOTREFLECTED://承認状況＝未
 					//未承認件数に＋１する
 				appStatus.setUnApprovalNumber(appStatus.getUnApprovalNumber() + add);
 				break;
@@ -687,7 +685,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				break;
 			}
 		}
-		return new AppInfoStatus(lstAppFull, appStatus);
+		return appStatus;
 	}
 
 	private boolean checkSync(List<AppCompltLeaveSync> lstSync, String appId) {
@@ -710,7 +708,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		List<CheckColorTime> lstColorTime = new ArrayList<>();
 		List<AppPrePostGroup> lstAppGroup = new ArrayList<>();
 		// アルゴリズム「申請一覧リスト取得承認件数」を実行する(countAppListApproval): 4 - 申請一覧リスト取得承認件数
-		AppInfoStatus appStatus = this.countAppListApproval(lstAppFull, sIDLogin, lstSync);
+		// AppInfoStatus appStatus = this.countAppListApproval(lstAppFull, sIDLogin, lstSync);
+		AppInfoStatus appStatus = null;
 		if (device == MOBILE) {
 			return new AppListAtrOutput(appStatus.getLstAppFull(), appStatus.getCount(), lstColorTime, lstAppGroup);
 		}
