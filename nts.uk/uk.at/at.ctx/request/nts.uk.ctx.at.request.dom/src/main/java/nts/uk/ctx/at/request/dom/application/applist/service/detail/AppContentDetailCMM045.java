@@ -151,10 +151,10 @@ public interface AppContentDetailCMM045 {
 	/**
 	 * refactor 4
 	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.申請データ作成ver4.遅刻早退取消申請データを作成.遅刻早退取消申請データを作成
-	 * @param application
-	 * @param appReasonDisAtr
-	 * @param screenID
-	 * @param companyID
+	 * @param application 申請
+	 * @param appReasonDisAtr 申請理由表示区分
+	 * @param screenID ScreenID
+	 * @param companyID 会社ID
 	 * @return
 	 */
 	public String createArrivedLateLeaveEarlyData(Application application, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, String companyID);

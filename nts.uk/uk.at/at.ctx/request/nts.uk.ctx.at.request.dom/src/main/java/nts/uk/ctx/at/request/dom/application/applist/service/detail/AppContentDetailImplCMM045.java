@@ -44,6 +44,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.DestinationTimeApp;
 import nts.uk.ctx.at.request.dom.application.stamp.DestinationTimeZoneApp;
 import nts.uk.ctx.at.request.dom.application.stamp.StampFrameNo;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
+import nts.uk.ctx.at.request.dom.application.stamp.TimeStampApp;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeStampAppEnum;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeStampAppOther;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeZoneStampClassification;
@@ -797,17 +798,17 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 		AppStamp appStamp = appStampRepository.findByAppID(companyID, application.getAppID()).get();
 		List<StampAppOutputTmp> listTmp = new ArrayList<>();
 		// 「打刻申請.時刻の取消」よりリストを収集する
-//		for(TimeStampApp timeStampApp : appStamp.getListTimeStampApp()) {
-//			listTmp.add(new StampAppOutputTmp(
-//					0, 
-//					false, 
-//					timeStampApp.getDestinationTimeApp().getTimeStampAppEnum().value, 
-//				 	new StampFrameNo(timeStampApp.getDestinationTimeApp().getEngraveFrameNo()), 
-//					Optional.of(timeStampApp.getTimeOfDay()), 
-//					timeStampApp.getAppStampGoOutAtr(), 
-//					Optional.empty(), 
-//					Optional.of(timeStampApp.getTimeOfDay())));
-//		} 
+		for(TimeStampApp timeStampApp : appStamp.getListTimeStampApp()) {
+			listTmp.add(new StampAppOutputTmp(
+					0, 
+					false, 
+					timeStampApp.getDestinationTimeApp().getTimeStampAppEnum().value, 
+				 	new StampFrameNo(timeStampApp.getDestinationTimeApp().getEngraveFrameNo()), 
+					Optional.of(timeStampApp.getTimeOfDay()), 
+					timeStampApp.getAppStampGoOutAtr(), 
+					Optional.empty(), 
+					Optional.of(timeStampApp.getTimeOfDay())));
+		} 
 		// 「打刻申請.時刻の取消」よりリストを収集する
 		for(DestinationTimeApp destinationTimeApp : appStamp.getListDestinationTimeApp()) {
 			listTmp.add(new StampAppOutputTmp(
