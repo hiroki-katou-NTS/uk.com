@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.query.ksu.ksu001q.command;
+package nts.uk.screen.at.app.ksu.ksu001q.command;
 
 import java.util.List;
 

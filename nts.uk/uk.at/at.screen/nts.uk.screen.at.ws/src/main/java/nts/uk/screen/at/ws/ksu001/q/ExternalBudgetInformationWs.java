@@ -8,14 +8,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.screen.at.app.query.ksu.ksu001q.DailyExternalBudget;
-import nts.uk.screen.at.app.query.ksu.ksu001q.DailyExternalBudgetDto;
-import nts.uk.screen.at.app.query.ksu.ksu001q.DailyExternalBudgetQuery;
-import nts.uk.screen.at.app.query.ksu.ksu001q.InitialStartupScreenQuery;
-import nts.uk.screen.at.app.query.ksu.ksu001q.InitialStartupScreenRequest;
-import nts.uk.screen.at.app.query.ksu.ksu001q.InitialStartupScreenResultDto;
-import nts.uk.screen.at.app.query.ksu.ksu001q.command.RegisterExternalBudgetDailyCommand;
-import nts.uk.screen.at.app.query.ksu.ksu001q.command.RegisterExternalBudgetDailyCommandHandler;
+import nts.uk.screen.at.app.ksu.ksu001q.command.RegisterExternalBudgetDailyCommand;
+import nts.uk.screen.at.app.ksu.ksu001q.command.RegisterExternalBudgetDailyCommandHandler;
+import nts.uk.screen.at.app.ksu.ksu001q.query.DailyExternalBudget;
+import nts.uk.screen.at.app.ksu.ksu001q.query.DailyExternalBudgetDto;
+import nts.uk.screen.at.app.ksu.ksu001q.query.DailyExternalBudgetQuery;
+import nts.uk.screen.at.app.ksu.ksu001q.query.InitialStartupScreenQuery;
+import nts.uk.screen.at.app.ksu.ksu001q.query.InitialStartupScreenRequest;
+import nts.uk.screen.at.app.ksu.ksu001q.query.InitialStartupScreenResultDto;
 
 /**
  * The Class ExternalBudgetInformationWs.
