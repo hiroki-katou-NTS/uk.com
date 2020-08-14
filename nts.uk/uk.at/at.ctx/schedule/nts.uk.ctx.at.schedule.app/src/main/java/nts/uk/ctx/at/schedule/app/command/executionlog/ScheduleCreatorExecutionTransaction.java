@@ -1249,7 +1249,7 @@ public class ScheduleCreatorExecutionTransaction {
 					WorkType workType = lstWorkTypes.stream().filter(x-> x.getWorkTypeCode().v().equals(basicWorkSetting.get().getWorktypeCode().v())).findFirst().get();
 					
 					// 「就業時間帯コード」を取得する
-					WorkingCode workTimeCode = this.getWorkingCode(command,masterCache, itemDto, basicWorkSetting.get().getWorkingCode(), workType, dateInPeriod);
+					WorkingCode workTimeCode = this.getWorkingCode(command,masterCache, itemDto, basicWorkSetting.isPresent() ? basicWorkSetting.get().getWorkingCode() : null, workType, dateInPeriod);
 					
 					// 「勤務種類コード」、「就業時間帯コード」を返す
 					WorkInformation workInformation =  new WorkInformation(workTimeCode == null ? null : workTimeCode.v(), workType.getWorkTypeCode().v());
@@ -1397,7 +1397,7 @@ public class ScheduleCreatorExecutionTransaction {
 				TimeZoneScheduledMasterAtr referenceWorkingHours = itemDto.get().getScheduleMethod().get()
 				.getWorkScheduleBusCal().get().getReferenceWorkingHours();
 				ScheduleErrorLogGeterCommand logGeterCommand = new ScheduleErrorLogGeterCommand(command.getExecutionId(), command.getCompanyId(), dateInPeriod);
-				WorkTimeConvertCommand timeConvertCommand = new WorkTimeConvertCommand(command.getEmployeeId(), logGeterCommand, referenceWorkingHours.value, workType.getWorkTypeCode().v(), workingCode.v());
+				WorkTimeConvertCommand timeConvertCommand = new WorkTimeConvertCommand(command.getEmployeeId(), logGeterCommand, referenceWorkingHours.value, workType.getWorkTypeCode().v(),workingCode == null ? null : workingCode.v());
 				workTimeCode = new WorkingCode(workTimeHandler.getWorkTimeZoneCodeInOffice(timeConvertCommand, masterCache.getListWorkingConItem()));
 				return workTimeCode;
 			}
@@ -1510,7 +1510,7 @@ public class ScheduleCreatorExecutionTransaction {
 			if (mapClassificationHist != null) {
 				// 「特定期間の社員情報。雇用履歴一覧」から該当社員、該当日の分類情報を取得する
 				Optional<ExClassificationHistoryImported> optClassificationHistItem = mapClassificationHist.stream()
-						.filter(predicate-> predicate.getEmployeeId() == command.getEmployeeId())
+						.filter(predicate-> predicate.getEmployeeId().equals(command.getEmployeeId()))
 						.map(x -> new ExClassificationHistoryImported(command.getEmployeeId(),
 								x.getClassificationItems().stream().filter(
 										y -> y.getPeriod().contains(dateInPeriod))

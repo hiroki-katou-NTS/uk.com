@@ -94,7 +94,7 @@ public class KscdtSchShortTime extends ContractUkJpaEntity {
 		List<ShortWorkTimeOfDaily> result = new ArrayList<>();
 		if(!shortTimes.isEmpty()) {
 		shortTimes.stream().forEach(x -> {
-			if(x.pk.sid.equals(this.pk.sid) && x.pk.ymd.equals(this.pk.ymd)) {
+			if(x.pk.sid.equals(sID) && x.pk.ymd.equals(yMD)) {
 			ShortWorkTimeOfDaily timeOfDaily = new ShortWorkTimeOfDaily(new WorkTimes(x.getCount()),
 					DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(x.getTotalTime())),
 							TimeWithCalculation.sameTime(new AttendanceTime(x.getTotalTimeWithIn())),
@@ -104,7 +104,7 @@ public class KscdtSchShortTime extends ContractUkJpaEntity {
 			}
 		});
 		}
-		ShortWorkTimeOfDaily timeOfDaily = result.stream().filter(predicate->predicate.getChildCareAttribute().value == this.pk.childCareAtr).findFirst().get();
+		ShortWorkTimeOfDaily timeOfDaily = result.stream().findFirst().get();
 		return timeOfDaily;
 	}
 
