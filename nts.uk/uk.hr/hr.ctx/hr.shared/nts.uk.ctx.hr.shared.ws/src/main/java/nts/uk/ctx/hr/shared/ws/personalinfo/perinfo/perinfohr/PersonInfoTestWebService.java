@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.dispatchedinformation.GetDispatchedInformationApp;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.dispatchedinformation.InputDispatchedInformation;
+import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.dispatchedinformation.ReceiveInfoForBaseDateApp;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.dispatchedinformation.TemporaryDispatchInformation;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.DeletePersonInfoHR;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.GetPersonInfoHR;
@@ -36,6 +37,9 @@ public class PersonInfoTestWebService extends WebService {
 	
 	@Inject 
 	private GetDispatchedInformationApp getDispatched;
+	
+	@Inject
+	private ReceiveInfoForBaseDateApp receiveInfo;
 
 //	@POST
 //	@Path("addPersonInfo")
@@ -59,6 +63,12 @@ public class PersonInfoTestWebService extends WebService {
 	@Path("getDispatchedInformation")
 	public List<TemporaryDispatchInformation> testGetDispatchedInformation(InputDispatchedInformation input) {
 		return getDispatched.get(input);
+	}
+	
+	@POST
+	@Path("getReceiveInfoForBaseDate")
+	public List<TemporaryDispatchInformation> testReceiveInfoForBaseDate(InputDispatchedInformation input) {
+		return receiveInfo.get(input);
 	}
 	
 }

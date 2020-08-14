@@ -16,43 +16,45 @@ import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformationReposito
  *
  */
 @Stateless
-public class GetDispatchedInformationApp {
+public class ReceiveInfoForBaseDateApp {
 
 	@Inject
 	private PersonalInformationRepository recordRepo;
 
-	public List<TemporaryDispatchInformation> get(InputDispatchedInformation input) {
+	public List<TemporaryDispatchInformation> get(InputDispatchedInformation input){
 		
-		GetDispatchedInformationRequireImpl require = new GetDispatchedInformationRequireImpl(recordRepo);
-
-		return GetDispatchedInformation.get(require,
+		ReceiveInfoForBaseDateRequireImpl require = new ReceiveInfoForBaseDateRequireImpl(recordRepo);
+		
+		List<TemporaryDispatchInformation> temporaryDispatchInformations = ReceiveInfoForBaseDate.get(require,
 				input.contractCode,
-				input.companyId, 
+				input.companyId,
 				input.baseDate,
 				input.employeeCode,
 				input.employeeName,
 				input.expirationDate,
 				input.nameSelectedMaster,
 				input.classification1,
-				input.classification2, 
-				input.classification3, 
-				input.nameCompany, 
+				input.classification2,
+				input.classification3,
+				input.nameCompany,
 				input.address, 
-				input.addressKana, 
-				input.include,
-				input.employeeIds) ;
+				input.addressKana,
+				input.include, 
+				input.employeeIds);
+		
+		return temporaryDispatchInformations;
 	}
 
 	@AllArgsConstructor
-	private class GetDispatchedInformationRequireImpl implements GetDispatchedInformation.Require {
+	private class ReceiveInfoForBaseDateRequireImpl implements ReceiveInfoForBaseDate.Require {
 
 		@Inject
 		private PersonalInformationRepository recordRepo;
 
 		@Override
-		public List<PersonalInformation> getdDispatchedInformation(String contractCd, String cId,
+		public List<PersonalInformation> getDispatchedInfoByStr10s(String contractCd, String cId,
 				GeneralDate baseDate) {
-			return recordRepo.getDispatchedInfos(contractCd, cId, baseDate);
+			return recordRepo.getDispatchedInfoByStr10s(contractCd, cId, baseDate);
 		}
 	}
 }

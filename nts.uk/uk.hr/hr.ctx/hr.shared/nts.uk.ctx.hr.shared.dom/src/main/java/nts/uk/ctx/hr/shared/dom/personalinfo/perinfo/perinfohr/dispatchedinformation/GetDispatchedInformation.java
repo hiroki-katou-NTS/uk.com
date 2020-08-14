@@ -42,7 +42,7 @@ public class GetDispatchedInformation {
 			boolean nameCompany, boolean address, boolean addressKana, boolean include, List<String> employeeIds) {
 		
 		List<TemporaryDispatchInformation> temporaryDispatchInformations = new ArrayList<>();
-		List<PersonalInformation> informations = require.getdDispatchedInformation(contractCode, companyId, 6, baseDate);
+		List<PersonalInformation> informations = require.getdDispatchedInformation(contractCode, companyId, baseDate);
 		List<PersonalInformation> informations1 = new ArrayList<>();
 		boolean checkfinal = false;
 
@@ -217,7 +217,7 @@ public class GetDispatchedInformation {
 		 * @param baseDate
 		 * @return
 		 */
-		List<PersonalInformation> getdDispatchedInformation(String contractCd, String cId, int workId,
+		List<PersonalInformation> getdDispatchedInformation(String contractCd, String cId,
 				GeneralDate baseDate);
 	}
 }

@@ -103,21 +103,21 @@ public class JpaPersonalInformationRepository extends JpaRepository implements P
 	}
 
 	@Override
-	public List<PersonalInformation> getDispatchedInfos(String contractCd, String cId, int workId,
+	public List<PersonalInformation> getDispatchedInfos(String contractCd, String cId,
 			GeneralDate baseDate) {
 		String GET_DISPATCHED_INFORMATION = "SELECT a FROM PpedtData a WHERE a.contractCd = :contractCd"
 				+ " AND a.cId = :cId" + " AND a.workId = :workId"
 				+ " AND a.startDate <= baseDate AND s.endDate >= baseDate ";
 
 		List<PpedtData> personalInformations = this.queryProxy().query(GET_DISPATCHED_INFORMATION, PpedtData.class)
-				.setParameter("contractCd", contractCd).setParameter("cId", cId).setParameter("workId", workId)
+				.setParameter("contractCd", contractCd).setParameter("cId", cId).setParameter("workId", 6)
 				.setParameter("baseDate", baseDate).getList();
 
 		return personalInformations.stream().map(m -> m.toDomain(m)).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<PersonalInformation> getgetDispatchedInfoByStr10s(String contractCd, String cId, int workId,
+	public List<PersonalInformation> getDispatchedInfoByStr10s(String contractCd, String cId,
 			GeneralDate baseDate) {
 
 		String GET_DISPATCHED_INFORMATION = "SELECT a FROM PpedtData a WHERE a.contractCd = :contractCd"
@@ -125,7 +125,7 @@ public class JpaPersonalInformationRepository extends JpaRepository implements P
 				+ " AND a.startDate <= baseDate AND s.endDate >= baseDate ";
 
 		List<PpedtData> personalInformations = this.queryProxy().query(GET_DISPATCHED_INFORMATION, PpedtData.class)
-				.setParameter("contractCd", contractCd).setParameter("cId", cId).setParameter("workId", workId)
+				.setParameter("contractCd", contractCd).setParameter("cId", cId).setParameter("workId", 6)
 				.setParameter("baseDate", baseDate).getList();
 
 		return personalInformations.stream().map(m -> m.toDomain(m)).collect(Collectors.toList());
