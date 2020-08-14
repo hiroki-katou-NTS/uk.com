@@ -17,11 +17,59 @@
 	margin-left: 40px;
 	margin-top: 10px;
 	float: left;
-	height: 350px;
+	height: auto;
+}
+#right-content .upDown-container {
+	padding-left: 10px;
+}
+#right-content .daysWorking .nts-input {
+	width: auto !important;
+    max-width: 30px;
+    text-align: center;
+}
+#right-content .daysWorking1 {
+	width: 0;
+	position: relative;
+	overflow: initial;
+}
+#right-content .daysWorking1 span {
+	position: absolute;
+	left: -10px;
+	z-index: 1000;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: 50px;
+}
+#right-content table.nts-grid tbody td:last-child,
+#right-content table.ui-iggrid-headertable thead td:last-child {
+	width: 0;
+}
+#right-content table td .nts-editor-wrapped {
+	width: auto !important;
+}
+#right-content .nts-fixed-table .scroll-header {
+    height: 30px !important;
 }
 
 #nts-input-name {
 	width: 0px !important;
+}
+#right-content .nts-fixed-header-wrapper {
+    display: flex;
+    align-items: center;
+}
+#right-content .nts-fixed-header-wrapper .fixed-table-list {
+    float: left;
+}
+#right-content .nts-fixed-header-wrapper .up-down-button {
+    float: left;
+    width: 30px;
+    display: flex;
+    flex-wrap: wrap;
+	padding-left: 20px;
+}
+#right-content .nts-fixed-header-wrapper .up-down-button button {
+	margin: 5px 0;
 }
 
 .row {
