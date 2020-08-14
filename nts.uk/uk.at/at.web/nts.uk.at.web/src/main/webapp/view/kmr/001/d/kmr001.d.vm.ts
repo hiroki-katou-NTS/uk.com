@@ -326,7 +326,7 @@ module nts.uk.at.kmr001.d {
                 this.historyId = params.historyId;
                 this.startDate = params.startDate;
                 this.endDate = params.endDate;
-                this.displayText = params.startDate + " " + getText("") + " " + params.endDate;
+                this.displayText = params.startDate + " " + getText("CMM011_125") + " " + params.endDate;
             }
         }
 

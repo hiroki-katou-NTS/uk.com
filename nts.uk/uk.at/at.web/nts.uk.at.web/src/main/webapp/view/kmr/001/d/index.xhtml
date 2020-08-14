@@ -9,8 +9,8 @@
     <ui:define name="htmlHead">
         <script>
             var dialogSize = {
-                width : 620,
-                height : 350
+                width : 680,
+                height : 450
             };
         </script>
 
@@ -22,17 +22,22 @@
 
     <!-- PAGE CONTENT -->
     <ui:define name="content">
-        <div id="contents-area" class="fixed-flex-layout">
-            <div class="fixed-flex-layout-left">
-                <div class="valign-center control-group" style="padding-top: 20px">
-                    <button tabindex="1" data-bind="enable: screenMode() == 0 || screenMode() == 3, click: addHistory">#{i18n.getText('CMM011_117')}</button>
-                    <button tabindex="2" data-bind="enable: screenMode() == 0 &amp;&amp; isLatestHistory(), click: updateHistory">#{i18n.getText('CMM011_118')}</button>
-                    <button tabindex="3" class="danger" data-bind="enable: (screenMode() == 0 &amp;&amp; isLatestHistory()) || screenMode() == 3, click: deleteHistory">#{i18n.getText('CMM011_119')}</button>
-                </div>
+        <div id="contents-area" class="fixed-flex-layout kmr001-d">
+            <div id="left-content" style="float: left"
+                 class="bg-green caret-right caret-background">
+                <div style="float: left; margin: 20px">
+                    <div class="valign-center control-group" style="padding-top: 20px">
+                        <!--KMR001_52-->
+                        <button tabindex="1" data-bind="enable: screenMode() == 0 || screenMode() == 3, click: addHistory">#{i18n.getText('CMM011_117')}</button>
+                        <!--KMR001_53-->
+                        <button tabindex="2" data-bind="enable: screenMode() == 0 &amp;&amp; isLatestHistory(), click: updateHistory">#{i18n.getText('CMM011_118')}</button>
+                        <!--KMR001_54-->
+                        <button tabindex="3" class="danger" data-bind="enable: (screenMode() == 0 &amp;&amp; isLatestHistory()) || screenMode() == 3, click: deleteHistory">#{i18n.getText('CMM011_119')}</button>
+                    </div>
 
-                <div tabindex="4" id="B1_4"
-                     data-bind="ntsListBox: {
-						name: '#[CMM011_120]',
+                    <div tabindex="4" id="B1_4"
+                         data-bind="ntsListBox: {
+						name: '#[KMR001_55]',
 						options: lstWpkHistory,
 						optionsValue: 'historyId',
 						optionsText: 'displayText',
@@ -42,19 +47,20 @@
 						rows: 5,
 						columns: [
 							{ key: 'displayText', length: 15 }
-						]}"></div>
+						]}">
+                    </div>
+                </div>
             </div>
-
-            <div class="fixed-flex-layout-right">
-                <div class="valign-center control-group" style="width: 323px; padding-top: 20px">
+            <div  id="right-content" style="float: left;">
+                <div class="valign-center control-group" style="width: 323px; padding-top: 20px;margin-bottom: 33px">
                     <span class="label" data-bind="visible: screenMode() == 0">#{i18n.getText('CMM011_121')}</span>
                     <span class="label" data-bind="visible: screenMode() == 1 || screenMode() == 2">#{i18n.getText('CMM011_122')}</span>
                     <span class="label" data-bind="visible: screenMode() == 3">#{i18n.getText('CMM011_123')}</span>
                 </div>
                 <div class="valign-center control-group" style="width: 323px;">
-                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM011_124')}</div>
+                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMR001_56')}</div>
                     <div tabindex="5" id="B3_5" data-bind="ntsDatePicker: {
-							name: '#[CMM011_126]',
+							name: '#[KMR001_57]',
 							required: true,
 							value: selectedStartDateInput,
 							dateFormat: 'YYYY/MM/DD',
@@ -71,8 +77,8 @@
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button class="x-large proceed" tabindex="7" data-bind="click: registerConfig,">#{i18n.getText('CMM011_127')}</button>
-            <button class="large" tabindex="8" data-bind="click: cancel">#{i18n.getText('CMM011_128')}</button>
+            <button class="x-large proceed" tabindex="7" data-bind="click: registerConfig,">#{i18n.getText('KMR001_59')}</button>
+            <button class="large" tabindex="8" data-bind="click: cancel">#{i18n.getText('KMR001_60')}</button>
         </div> enable: $root.errors.isEmpty &amp;&amp; !(lstWpkHistory().length > 0 &amp;&amp; !selectedHistoryId())
     </ui:define>
 </ui:composition>
