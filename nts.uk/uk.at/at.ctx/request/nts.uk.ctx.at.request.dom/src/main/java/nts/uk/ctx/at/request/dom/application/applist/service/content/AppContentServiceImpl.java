@@ -192,7 +192,7 @@ public class AppContentServiceImpl implements AppContentService {
 
 	@Override
 	public String getAppStampContent(DisplayAtr appReasonDisAtr, AppReason appReason, ScreenAtr screenAtr,
-			StampAppOutputTmp stampAppOutputTmp, ApplicationType appType, AppStandardReasonCode appStandardReasonCD) {
+			List<StampAppOutputTmp> stampAppOutputTmpLst, ApplicationType appType, AppStandardReasonCode appStandardReasonCD) {
 		String result = Strings.EMPTY;
 		String paramString = Strings.EMPTY;
 		if(screenAtr == ScreenAtr.KAF018 || screenAtr == ScreenAtr.CMM045) {
@@ -202,7 +202,6 @@ public class AppContentServiceImpl implements AppContentService {
 			// @＝”　”
 			paramString = "	";
 		}
-		List<StampAppOutputTmp> stampAppOutputTmpLst = Arrays.asList(stampAppOutputTmp);
 		if(!CollectionUtil.isEmpty(stampAppOutputTmpLst)) {
 			for(int i = 0; i < stampAppOutputTmpLst.size(); i++) {
 				StampAppOutputTmp item = stampAppOutputTmpLst.get(0);

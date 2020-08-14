@@ -2,7 +2,9 @@ package nts.uk.ctx.at.request.dom.application.applist.service.datacreate;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.stamp.StampFrameNo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakout.GoOutReasonAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -13,6 +15,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author Doan Duy Hung
  *
  */
+@AllArgsConstructor
+@Setter
 @Getter
 public class StampAppOutputTmp {
 	
