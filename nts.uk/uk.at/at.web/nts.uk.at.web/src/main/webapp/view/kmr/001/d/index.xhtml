@@ -1,74 +1,86 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
-		<ui:define name="htmlHead">
-			<script>
-                var dialogSize = {
-                    width : 700,
-                    height : 500
-                };
-			</script>
-			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="./kmr001.d.style.css" />
-			<com:stylefile path="../kmr001.common.styles.css"/>
-			<com:scriptfile path="./kmr001.d.vm.js" />
-		</ui:define>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>
+            var dialogSize = {
+                width : 680,
+                height : 450
+            };
+        </script>
 
-		<ui:define name="content">
-			<div id="functions-area"></div>
-			<div id="contents-area" class="kdp-003-a">
-				<!--D1_1-->
-				<div id="kmr001-d-left-content" data-bind="ntsPanel:{width: '300px', height: '300px', direction: 'right', showIcon: false, visible: true}">
-					<!--D1_2-->
-					<button data-bind="text: $vm.$i18n('KMR001_52')"></button>
-					<!--D1_3-->
-					<button class="proceed" data-bind="text: $vm.$i18n('KMR001_53')"></button>
-					<!--D1_4-->
-					<button class="danger" data-bind="text: $vm.$i18n('KMR001_54')"></button>
-					<div class="break-line"></div>
-					<!--D1_5-->
-					<div id="list-box" data-bind="ntsListBox: {
-						options: model.itemList,
-						optionsValue: 'from',
-						optionsText: 'to',
-						multiple: true,
-						value: model.selectedCodes,
-						enable:true,
-						rows: 2,
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="./kmr001.d.style.css" />
+        <com:stylefile path="../kmr001.common.styles.css"/>
+        <com:scriptfile path="./kmr001.d.vm.js" />
+    </ui:define>
+
+    <!-- PAGE CONTENT -->
+    <ui:define name="content">
+        <div id="contents-area" class="fixed-flex-layout kmr001-d">
+            <div id="left-content" style="float: left"
+                 class="bg-green caret-right caret-background">
+                <div style="float: left; margin: 20px">
+                    <div class="valign-center control-group" style="padding-top: 20px">
+                        <!--KMR001_52-->
+                        <button tabindex="1" data-bind="enable: screenMode() == 0 || screenMode() == 3, click: addHistory">#{i18n.getText('CMM011_117')}</button>
+                        <!--KMR001_53-->
+                        <button tabindex="2" data-bind="enable: screenMode() == 0 &amp;&amp; isLatestHistory(), click: updateHistory">#{i18n.getText('CMM011_118')}</button>
+                        <!--KMR001_54-->
+                        <button tabindex="3" class="danger" data-bind="enable: (screenMode() == 0 &amp;&amp; isLatestHistory()) || screenMode() == 3, click: deleteHistory">#{i18n.getText('CMM011_119')}</button>
+                    </div>
+
+                    <div tabindex="4" id="B1_4"
+                         data-bind="ntsListBox: {
+						name: '#[KMR001_55]',
+						options: lstWpkHistory,
+						optionsValue: 'historyId',
+						optionsText: 'displayText',
+						multiple: false,
+						value: selectedHistoryId,
+						enable: true,
+						rows: 5,
 						columns: [
-							{ key: 'from', length: 10 },
-							{ key: 'to', length: 10 }
-						]}"></div>
-				</div>
-				<div id="kmr001-d-right-content">
-					<!--D2-->
-					<span class="label">項目移送</span>
-					<!--D3_1-->
-					<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true, text: $vm.$i18n('KMR001_56')}"></div>
-					<div class="break-line"></div>
-					<!--D3_2-->
-					<div data-bind="ntsDatePicker: { value: model.date }"></div>
-					<!--D3_3-->
-					<span class="label"> ~ </span>
-					<!--D3_4-->
-					<span class="label disable">9999/12</span>
-				</div>
-
-				<div class="break-line"></div>
-                <hr/>
-				<div id="kmr001-d-bottom-content">
-					<!--D5_1-->
-					<button class="proceed" data-bind="text: $vm.$i18n('KMR001_59')"></button>
-					<!--D5_2-->
-					<button data-bind="click: cancel, text: $vm.$i18n('KMR001_60')"></button>
-				</div>
-			</div>
-		</ui:define>
-	</ui:composition>
+							{ key: 'displayText', length: 15 }
+						]}">
+                    </div>
+                </div>
+            </div>
+            <div  id="right-content" style="float: left;">
+                <div class="valign-center control-group" style="width: 323px; padding-top: 20px;margin-bottom: 33px">
+                    <span class="label" data-bind="visible: screenMode() == 0">#{i18n.getText('CMM011_121')}</span>
+                    <span class="label" data-bind="visible: screenMode() == 1 || screenMode() == 2">#{i18n.getText('CMM011_122')}</span>
+                    <span class="label" data-bind="visible: screenMode() == 3">#{i18n.getText('CMM011_123')}</span>
+                </div>
+                <div class="valign-center control-group" style="width: 323px;">
+                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMR001_56')}</div>
+                    <div tabindex="5" id="B3_5" data-bind="ntsDatePicker: {
+							name: '#[KMR001_57]',
+							required: true,
+							value: selectedStartDateInput,
+							dateFormat: 'YYYY/MM/DD',
+							enable: true}, visible: screenMode() == 1 || screenMode() == 2 || screenMode() == 3"></div>
+                    <span class="label" data-bind="text: selectedStartDateText, visible: screenMode() == 0"></span>
+                    <span class="label">#{i18n.getText('CMM011_125')}</span>
+                    <span class="label" data-bind="text: selectedEndDate"></span>
+                </div>
+                <!--<div class="valign-center control-group" data-bind="visible: screenMode() == 2"  style="width: 323px;">-->
+                    <!--<div tabindex="6" data-bind="ntsCheckBox: { checked: copyPreviousConfig }, visible: initMode() == 0">#{i18n.getText('CMM011_206')}</div>-->
+                    <!--<div tabindex="6" data-bind="ntsCheckBox: { checked: copyPreviousConfig }, visible: initMode() == 1">#{i18n.getText('CMM011_306')}</div>-->
+                    <!--<button data-bind="visible: false, ntsHelpButton: {textId: 'Help Button Text', position: 'right center' }">？</button>-->
+                <!--</div>-->
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <button class="x-large proceed" tabindex="7" data-bind="click: registerConfig,">#{i18n.getText('KMR001_59')}</button>
+            <button class="large" tabindex="8" data-bind="click: cancel">#{i18n.getText('KMR001_60')}</button>
+        </div> enable: $root.errors.isEmpty &amp;&amp; !(lstWpkHistory().length > 0 &amp;&amp; !selectedHistoryId())
+    </ui:define>
+</ui:composition>
 </body>
 </html>

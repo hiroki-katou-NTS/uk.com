@@ -10,29 +10,19 @@ import java.util.List;
 @AllArgsConstructor
 public class BentoMenuDto {
 
-    public String contractCD;
+    //BentoMenu
 
     public String reservationFrameName1;
 
-    public Integer reservationStartTime1;
+    public int reservationStartTime1;
 
     public int reservationEndTime1;
 
     public String reservationFrameName2;
 
-    public Integer reservationStartTime2;
+    public int reservationStartTime2;
 
-    public Integer reservationEndTime2;
-
-    public GeneralDate startDate;
-
-    public GeneralDate endDate;
-
-    public List<BentoDto> bentos;
-
-    public void setWorkTypeSet(List<BentoDto> bentos) {
-        this.bentos = bentos;
-    }
+    public int reservationEndTime2;
 
 }
 

@@ -27,16 +27,14 @@ public class UpdateBentoMenuHistService {
             throw new BusinessException("invalid BentoMenuHistory!");
         }
         //Update item
-        listhist.changeSpan(optionalHisItem.get(), period);
+         listhist.changeSpan(optionalHisItem.get(), period);
 
-        BentoMenuHistory finalListhist = listhist;
+        val itemBefore = listhist.immediatelyBefore(optionalHisItem.get());
+
         return AtomTask.of(()->{
                 require.update(optionalHisItem.get());
-                val item = finalListhist.immediatelyBefore(optionalHisItem.get());
-                if(item.isPresent()){
-                    val itemToBeUpdateBefore = item.get();
-                    require.update(itemToBeUpdateBefore);
-                }
+                require.update(itemBefore.get());
+
 
         });
     }
