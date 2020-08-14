@@ -9,5 +9,5 @@ public interface IBentoMenuHistoryRepository {
     Optional<BentoMenuHistory> findByCompanyId(String companyId);
     void add(BentoMenuHistory item);
     void update(BentoMenuHistory item);
-    void delete(String companyId, String historyId);
+    void delete(String companyId, String historyId,BentoMenuHistory listOld);
 }
