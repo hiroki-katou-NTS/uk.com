@@ -12,9 +12,13 @@ import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.dispatchedinforma
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.dispatchedinformation.InputDispatchedInformation;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.dispatchedinformation.ReceiveInfoForBaseDateApp;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.dispatchedinformation.TemporaryDispatchInformation;
+import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.AddPersonInfoHR;
+import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.AddPersonInfoHRInput;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.DeletePersonInfoHR;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.GetPersonInfoHR;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.GetPersonInfoHRInput;
+import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.UpdatePersonInfoHR;
+import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.UpdatePersonInfoHRInput;
 
 /**
  * 
@@ -26,8 +30,11 @@ import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.GetP
 @Produces("application/json")
 public class PersonInfoTestWebService extends WebService {
 	
-//	@Inject
-//	private AddPersonInfoHR addPerson;
+	@Inject
+	private AddPersonInfoHR addPerson;
+	
+	@Inject
+	private UpdatePersonInfoHR updatePerson;
 	
 	@Inject 
 	private DeletePersonInfoHR deletePerson;
@@ -41,11 +48,17 @@ public class PersonInfoTestWebService extends WebService {
 	@Inject
 	private ReceiveInfoForBaseDateApp receiveInfo;
 
-//	@POST
-//	@Path("addPersonInfo")
-//	public void testAddPersonHR(List<AddPersonInfoHRInput> list) {
-//		addPerson.add(list);
-//	}
+	@POST
+	@Path("addPersonInfo")
+	public void testAddPersonHR(List<AddPersonInfoHRInput> input) {
+		addPerson.add(input);
+	}
+	
+	@POST
+	@Path("updatePersonInfo")
+	public void testUpdatePersonHR(List<UpdatePersonInfoHRInput> input) {
+		updatePerson.update(input);
+	}
 	
 	@POST
 	@Path("deletePersonInfo/{histId}")
