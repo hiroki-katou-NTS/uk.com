@@ -4,15 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
-import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
-import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 
 /**
  * refactor 4
@@ -21,29 +17,6 @@ import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.disp
  *
  */
 public interface AppDataCreation {
-	
-	/**
-	 * refactor 4
-	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.申請データ作成ver4.打刻申請データを作成.打刻申請データを作成
-	 * @param application 申請
-	 * @param appReasonDisAtr 申請理由表示区分
-	 * @param screenAtr ScreenID
-	 * @param companyID 会社ID
-	 * @param listOfAppTypes 申請種類リスト
-	 * @return
-	 */
-	public String createAppStampData(Application application, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, String companyID, ListOfAppTypes listOfAppTypes);
-	
-	/**
-	 * refactor 4
-	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.申請データ作成ver4.遅刻早退取消申請データを作成.遅刻早退取消申請データを作成
-	 * @param application
-	 * @param appReasonDisAtr
-	 * @param screenID
-	 * @param companyID
-	 * @return
-	 */
-	public String createArrivedLateLeaveEarlyData(Application application, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, String companyID);
 	
 	/**
 	 * refactor 4
