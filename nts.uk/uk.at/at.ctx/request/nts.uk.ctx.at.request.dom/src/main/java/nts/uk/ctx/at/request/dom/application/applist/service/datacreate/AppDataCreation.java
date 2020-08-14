@@ -27,11 +27,12 @@ public interface AppDataCreation {
 	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.申請データ作成ver4.打刻申請データを作成.打刻申請データを作成
 	 * @param application 申請
 	 * @param appReasonDisAtr 申請理由表示区分
-	 * @param screenID ScreenID
+	 * @param screenAtr ScreenID
 	 * @param companyID 会社ID
 	 * @param listOfAppTypes 申請種類リスト
+	 * @return
 	 */
-	public void createAppStampData(Application application, DisplayAtr appReasonDisAtr, String screenID, String companyID, ListOfAppTypes listOfAppTypes);
+	public String createAppStampData(Application application, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, String companyID, ListOfAppTypes listOfAppTypes);
 	
 	/**
 	 * refactor 4

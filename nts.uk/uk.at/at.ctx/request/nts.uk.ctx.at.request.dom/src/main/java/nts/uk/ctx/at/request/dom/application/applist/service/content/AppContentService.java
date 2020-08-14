@@ -79,11 +79,11 @@ public interface AppContentService {
 	 * @param appReasonDisAtr 申請理由表示区分
 	 * @param appReason 申請理由
 	 * @param screenAtr ScreenID
-	 * @param stampAppOutputTmp 打刻申請出力用Tmp
+	 * @param stampAppOutputTmpLst 打刻申請出力用Tmp
 	 * @param appType 申請種類
 	 * @param appStandardReasonCD 定型理由コード
 	 * @return
 	 */
-	public String getAppStampContent(DisplayAtr appReasonDisAtr, AppReason appReason, ScreenAtr screenAtr, StampAppOutputTmp stampAppOutputTmp,
+	public String getAppStampContent(DisplayAtr appReasonDisAtr, AppReason appReason, ScreenAtr screenAtr, List<StampAppOutputTmp> stampAppOutputTmpLst,
 			ApplicationType appType, AppStandardReasonCode appStandardReasonCD);
 }
