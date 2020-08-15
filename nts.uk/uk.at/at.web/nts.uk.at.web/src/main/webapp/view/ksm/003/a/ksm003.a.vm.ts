@@ -59,7 +59,6 @@ module nts.uk.at.view.ksm003.a {
                     vm.isEditting(false);
                     vm.clearError();
                 }
-                vm.disableAddNewLine();
             });
 
             //enable remove button
@@ -72,7 +71,6 @@ module nts.uk.at.view.ksm003.a {
                 let checkedAll: boolean = value;
                 let hasOneItemChecked : boolean = false;
                 let totalItemCheked: number = 0;
-
                 vm.enableRemoveItem(false);
                 vm.dailyPatternValModel() && vm.dailyPatternValModel().map( ( item, i) => {
                     item.isChecked(checkedAll ? checkedAll : item.isChecked());
@@ -179,6 +177,10 @@ module nts.uk.at.view.ksm003.a {
                     vm.selectedCode(dataRes.code);
                     vm.selectedName(dataRes.name);
                     vm.clearError();
+
+                    //disabel addNew button
+                    vm.lessThan99Items(dataRes.infos.length <= vm.maxWorkingTimeItems);
+
                     //get list item
                     let dailyPatternVals = dataRes.infos.map(function (item) {
                         return new DailyPatternValModel(
@@ -244,10 +246,12 @@ module nts.uk.at.view.ksm003.a {
                     item.timeCode,
                     item.days
                 );
+
                 let workTypeName = _.find(lstWorkType, (element) => {
                         return element.workTypeCode == item.typeCode
                     }
                 );
+
                 workTypeName = workTypeName && workTypeName.name || '';
                 dailyPatternValModel.setWorkTypeName(workTypeName);
 
@@ -255,6 +259,7 @@ module nts.uk.at.view.ksm003.a {
                         return element.code == item.timeCode
                     }
                 );
+
                 workTimeName = workTimeName && workTimeName.name || '';
                 dailyPatternValModel.setWorkTimeName(workTimeName);
 
@@ -321,8 +326,8 @@ module nts.uk.at.view.ksm003.a {
                         if (!item.isChecked()) {
                             dailyPatternValModel.push(
                                 new DailyPatternValModel(
-                                    item.dispOrder, item.workTypeInfo(),
-                                    item.workingInfo(), item.days()
+                                    item.dispOrder, item.typeCode(),
+                                    item.timeCode(), item.days()
                                 ));
                         }
                     });
@@ -481,9 +486,7 @@ module nts.uk.at.view.ksm003.a {
                     messageParams: [nts.uk.resource.getText("KSM003_23")]
                 });
                 return;
-            }
-
-            if (workingTimeCycleList.length > 99) {
+            } else if (workingTimeCycleList.length > vm.maxWorkingTimeItems ) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_1688" });
                 return;
             }
@@ -519,30 +522,36 @@ module nts.uk.at.view.ksm003.a {
             }
 
             this.saveDailyPattern(detailDto).done(function (res) {
-
-                if( !nts.uk.util.isNullOrEmpty(res.errorStatusList) && res.hasError ) {
-                    res.errorStatusList.map( (error, i) => {
-                        switch ( error ) {
+                let MsgId = '';
+                if(res.errorStatusList.length > 0 ) {
+                    res.errorStatusList.map( (error_type, i) => {
+                        console.log(error_type);
+                        switch ( error_type ) {
                             case 'WORKTIME_WAS_DELETE':
-                                $('#row-' + i).ntsError('set', {messageId: "Msg_1609"});
+                                MsgId = "Msg_1609";
                                 break;
                             case 'WORKTYPE_WAS_DELETE':
-                                $('#row-' + i).ntsError('set', {messageId: "Msg_1608"});
+                                MsgId = "Msg_1608";
                                 break;
                             case 'WORKTIME_ARE_REQUIRE_NOT_SET':
-                                $('#row-' + i).ntsError('set', {messageId: "Msg_435"});
+                                MsgId = "Msg_435";
                                 break;
                             case 'WORKTIME_ARE_SET_WHEN_UNNECESSARY':
-                                $('#row-' + i).ntsError('set', {messageId: "Msg_434"});
+                                MsgId = "Msg_434";
                                 break;
                             case 'WORKTYPE_WAS_ABOLISHED':
-                                $('#row-' + i).ntsError('set', {messageId: "Msg_416"});
+                                MsgId = "Msg_416";
                                 break;
                             case 'WORKTIME_HAS_BEEN_ABOLISHED':
-                                $('#row-' + i).ntsError('set', {messageId: "Msg_417"});
+                                MsgId = "Msg_417";
                                 break;
                             default: //NORMAL
+                                MsgId = '';
                                 break;
+                        }
+
+                        if( !nts.uk.util.isNullOrEmpty(MsgId) ) {
+                            $('#fixed-table-list').ntsError('set', {messageId: MsgId, messageParams: [i + '行目: ']});
                         }
                     })
 
