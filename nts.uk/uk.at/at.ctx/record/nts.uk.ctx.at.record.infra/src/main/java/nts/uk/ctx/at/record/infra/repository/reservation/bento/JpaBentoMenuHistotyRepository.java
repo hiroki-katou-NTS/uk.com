@@ -67,27 +67,11 @@ public class JpaBentoMenuHistotyRepository extends JpaRepository implements IBen
     }
 
     @Override
-    public void delete(String companyId, String historyId,BentoMenuHistory listOld) {
+    public void delete(String companyId, String historyId) {
          val entity = this.queryProxy().find(new KrcmtBentoMenuHistPK(companyId,historyId),KrcmtBentoMenuHist.class);
-         List<KrcmtBentoMenuHist> updateList;
          if(entity.isPresent()){
-             val maxDate = GeneralDate.max();
-             if(!(entity.get().endDate.equals(maxDate))){
-                 throw new RuntimeException("just only latest item can be removed.");
-             }
-             updateList = KrcmtBentoMenuHist.toEntity(listOld);
-             Collections.reverse(updateList);
-             updateList.remove(0);
-             val itemUpdate= updateList.get(0);
-             updateList.remove(0);
-             itemUpdate.endDate = GeneralDate.max();
-             updateList.add(itemUpdate);
-             this.commandProxy().updateAll(updateList);
              this.commandProxy().remove(KrcmtBentoMenuHist.class,new KrcmtBentoMenuHistPK(companyId,historyId));
-
          }
-
-
     }
 
 }
