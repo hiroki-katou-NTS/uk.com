@@ -112,7 +112,6 @@ public class BentoReservation extends AggregateRoot{
 	 */
 	public BentoReservation modifyLunch(boolean ordered, BentoReservationDetail bentoReservationDetail) {
 	    this.ordered = ordered;
-		this.bentoReservationDetails = new ArrayList<>(this.bentoReservationDetails);
 		this.bentoReservationDetails.add(bentoReservationDetail);
         return this;
 	}
