@@ -48,10 +48,12 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.Child
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
@@ -191,7 +193,8 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		
 		// create WorkInfoOfDailyAttendance
 		WorkInformation recordInfo = new WorkInformation(new WorkTimeCode(wktmCd),new WorkTypeCode(wktpCd));
-		WorkInfoOfDailyAttendance workInfo = new WorkInfoOfDailyAttendance(recordInfo, null, null, EnumAdaptor.valueOf(goStraightAtr ? 1 : 0, NotUseAttribute.class), EnumAdaptor.valueOf(backStraightAtr ? 1 : 0, NotUseAttribute.class), null, null);
+		WorkInfoOfDailyAttendance workInfo = new WorkInfoOfDailyAttendance(recordInfo, null, CalculationState.No_Calculated, EnumAdaptor.valueOf(goStraightAtr ? 1 : 0, NotUseAttribute.class), 
+				EnumAdaptor.valueOf(backStraightAtr ? 1 : 0, NotUseAttribute.class), EnumAdaptor.valueOf(GeneralDate.today().dayOfWeek(), DayOfWeek.class), new ArrayList<>());
 		
 		// create AffiliationInforOfDailyAttd
 		AffiliationInforOfDailyAttd affInfo = new AffiliationInforOfDailyAttd(new EmploymentCode(empCd), jobId, wkpId, new ClassificationCode(clsCd),
@@ -235,7 +238,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 			shortWorkingTimeSheets.add(shortWorkingTimeSheet);
 		});
 		
-		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = null;
+		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = kscdtSchTime.toDomain(sID, yMD);
 		AttendanceTimeOfDailyAttendance attendance = new AttendanceTimeOfDailyAttendance(
 				null, actualWorkingTimeOfDaily, 
 				null, new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0), null);
