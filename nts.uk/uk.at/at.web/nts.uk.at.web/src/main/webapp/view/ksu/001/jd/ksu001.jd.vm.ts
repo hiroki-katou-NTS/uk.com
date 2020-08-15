@@ -44,8 +44,8 @@ module nts.uk.at.view.ksu001.jd {
             decision(): void {
                 let self = this;
 
-                $(".nts-input").trigger("validate");
-                if (nts.uk.ui.errors.hasError()) {
+                $( ".nts-input" ).trigger( "validate" );
+                if ( nts.uk.ui.errors.hasError() ) {
                     return;
                 }
                 invisible();
@@ -150,19 +150,7 @@ module nts.uk.at.view.ksu001.jd {
                 //「会社」の場合
                 if ( self.target() == 2 ) {
                     service.getShiftPaletteByCompany().done(( data ) => {
-                        let shiftPaletData = [];
-                        let page: string;
-                        self.orgName( '' );
-                        _.sortBy( data, 'page' ).forEach( e => {
-                            if ( e.name != null ) {
-                                page = getText( 'KSU001_110' ) + e.page + getText( 'KSU001_161' );
-                                shiftPaletData.push( new Infor( page, page + e.name ) );
-                            } else {
-                                page = getText( 'KSU001_110' ) + e.page;
-                                shiftPaletData.push( new Infor( page, page ) );
-                            }
-                        } );
-                        self.itemList( shiftPaletData );
+                        self.createitemList( data );
                         dfd.resolve();
                     } ).fail( function( error ) {
                         alertError( { messageId: error.messageId } );
@@ -174,19 +162,7 @@ module nts.uk.at.view.ksu001.jd {
                 //職場　の場合
                 else if ( self.target() == 0 ) {
                     service.getShiftPaletteByWP( self.targetID() ).done(( data ) => {
-                        let shiftPaletData = [];
-                        let page: string;
-                        self.orgName( '' );
-                        _.sortBy( data, 'page' ).forEach( e => {
-                            if ( e.name != null ) {
-                                page = getText( 'KSU001_110' ) + e.page + getText( 'KSU001_161' );
-                                shiftPaletData.push( new Infor( page, page + e.name ) );
-                            } else {
-                                page = getText( 'KSU001_110' ) + e.page;
-                                shiftPaletData.push( new Infor( page, page ) );
-                            }
-                        } );
-                        self.itemList( shiftPaletData );
+                        self.createitemList( data );
                         dfd.resolve();
                     } ).fail( function( error ) {
                         alertError( { messageId: error.messageId } );
@@ -198,19 +174,7 @@ module nts.uk.at.view.ksu001.jd {
                 //職場グループ　の場合
                 else if ( self.target() == 1 ) {
                     service.getShiftPaletteByWPG( self.targetID() ).done(( data ) => {
-                        let shiftPaletData = [];
-                        let page: string;
-                        self.orgName( '' );
-                        _.sortBy( data, 'page' ).forEach( e => {
-                            if ( e.name != null ) {
-                                page = getText( 'KSU001_110' ) + e.page + getText( 'KSU001_161' );
-                                shiftPaletData.push( new Infor( page, page + e.name ) );
-                            } else {
-                                page = getText( 'KSU001_110' ) + e.page;
-                                shiftPaletData.push( new Infor( page, page ) );
-                            }
-                        } );
-                        self.itemList( shiftPaletData );
+                        self.createitemList( data );
                         dfd.resolve();
                     } ).fail( function( error ) {
                         alertError( { messageId: error.messageId } );
@@ -220,6 +184,22 @@ module nts.uk.at.view.ksu001.jd {
                     } );
                 }
                 return dfd.promise();
+            }
+
+            createitemList( data: any ): void {
+                let self = this;
+                let shiftPaletData = [];
+                let page: string;
+                _.sortBy( data, 'page' ).forEach( e => {
+                    if ( e.name != null ) {
+                        page = getText( 'KSU001_110' ) + e.page + getText( 'KSU001_161' );
+                        shiftPaletData.push( new Infor( page, page + e.name ) );
+                    } else {
+                        page = getText( 'KSU001_110' ) + e.page;
+                        shiftPaletData.push( new Infor( page, page ) );
+                    }
+                } );
+                self.itemList( shiftPaletData );
             }
 
         }

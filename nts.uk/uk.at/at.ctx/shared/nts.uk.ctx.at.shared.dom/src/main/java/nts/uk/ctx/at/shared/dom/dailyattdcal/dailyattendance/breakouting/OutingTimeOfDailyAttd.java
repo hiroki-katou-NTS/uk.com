@@ -25,7 +25,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 @Getter
 public class OutingTimeOfDailyAttd {
 	//時間帯
-	private List<OutingTimeSheet> outingTimeSheets;
+	private List<OutingTimeSheet> outingTimeSheets = new ArrayList<>();
 
 	public OutingTimeOfDailyAttd(List<OutingTimeSheet> outingTimeSheets) {
 		super();
