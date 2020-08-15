@@ -260,9 +260,10 @@ public class ScheduleCreatorExecutionTransaction {
 				//勤務予定削除する
 				this.deleteSchedule(scheduleCreator.getEmployeeId(),period);
 			}else {
-				//勤務予定作成する 
+				//勤務予定作成する  ↓
 				this.createSchedule(command, scheduleExecutionLog, context, period, masterCache, listBasicSchedule,
 					companySetting, scheduleCreator, registrationListDateSchedule, content, carrier);
+				// ----------↑
 			}
 		} finally {
 			CalculationCache.clear();
@@ -344,6 +345,7 @@ public class ScheduleCreatorExecutionTransaction {
 		String companyId = AppContexts.user().companyId();
 		//勤務予定ドメインを削除する (TKT-TQP)
 		//TODO: đang đợi Hiểu làm đề gọi vào
+		workScheduleRepository.delete(employeeId, period);
 		//暫定データの登録
 		this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, period.datesBetween());
 		
@@ -850,7 +852,10 @@ public class ScheduleCreatorExecutionTransaction {
 			} else {
 				if (output.getExecutionLog().isPresent()) {
 					// エラーあり
-					throw new BusinessException(output.getExecutionLog().get().getErrorContent());
+					createScheduleOneDate = new OutputCreateScheduleOneDate(null, output.getExecutionLog().get(),
+							ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY_WITH_ERROR.value));
+							return createScheduleOneDate;
+					//throw new BusinessException(output.getExecutionLog().get().getErrorContent());
 				} else {
 					// Nullの場合
 					// 勤務予定時間帯を取得する
@@ -1279,6 +1284,7 @@ public class ScheduleCreatorExecutionTransaction {
 						
 						// 勤務種類一覧から勤務種類を取得する
 						List<WorkType> lstWorkTypes = masterCache.getListWorkType();
+						lstWorkTypes = lstWorkTypes.stream().filter(x-> x.getWorkTypeCode().v().equals(monthlySetting.get().getWorkTypeCode().v())).collect(Collectors.toList());
 						WorkType workType = lstWorkTypes.stream().filter(x-> x.getWorkTypeCode().v().equals(monthlySetting.get().getWorkTypeCode().v())).findFirst().get();
 						
 						// 「就業時間帯コード」を取得する
@@ -1408,7 +1414,7 @@ public class ScheduleCreatorExecutionTransaction {
 				TimeZoneScheduledMasterAtr referenceWorkingHours = itemDto.get().getScheduleMethod().get()
 						.getWorkScheduleBusCal().get().getReferenceWorkingHours();
 						ScheduleErrorLogGeterCommand logGeterCommand = new ScheduleErrorLogGeterCommand(command.getExecutionId(), command.getCompanyId(), dateInPeriod);
-						WorkTimeConvertCommand timeConvertCommand = new WorkTimeConvertCommand(command.getEmployeeId(), logGeterCommand, referenceWorkingHours.value, workType.getWorkTypeCode().v(), workingCode.v());
+						WorkTimeConvertCommand timeConvertCommand = new WorkTimeConvertCommand(command.getEmployeeId(), logGeterCommand, referenceWorkingHours.value, workType.getWorkTypeCode().v(), workingCode == null ? null : workingCode.v());
 						workTimeCode = new WorkingCode(workTimeHandler.getWorkTimeZoneCodeInOfficeDayOfWeek(timeConvertCommand, masterCache.getListWorkingConItem()));
 						return workTimeCode;
 			}
