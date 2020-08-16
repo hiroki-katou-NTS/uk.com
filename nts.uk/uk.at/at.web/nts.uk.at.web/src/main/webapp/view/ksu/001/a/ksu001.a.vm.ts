@@ -197,8 +197,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $(".settingHeightGrid").css('display', 'none');
                     $("#extable").exTable("stickMode", "multi");
                     self.shiftModeStart().done(() => {
-                        let marginleft : number = $("#extable").width() - 280 - 27 - 27 - 30;
-                        $(".toRight").css('margin-left', marginleft);
+                        self.setPositionButonToRight();
                         $(".settingHeightGrid").css('display', '');
                         self.stopRequest(true);
                     });
@@ -207,8 +206,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $(".settingHeightGrid").css('display', 'none');
                     $("#extable").exTable("stickMode", "single");
                     self.shortNameModeStart().done(() => {
-                        let marginleft : number = $("#extable").width() - 280 - 27 - 27 - 30;
-                        $(".toRight").css('margin-left', marginleft);
+                        self.setPositionButonToRight();
                         $(".settingHeightGrid").css('display', '');
                         self.stopRequest(true);
                     });
@@ -217,8 +215,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $(".settingHeightGrid").css('display', 'none');
                     $("#extable").exTable("stickMode", "single");
                     self.timeModeStart().done(() => {
-                        let marginleft : number = $("#extable").width() - 280 - 27 - 27 - 30;
-                        $(".toRight").css('margin-left', marginleft);
+                        self.setPositionButonToRight();
                         $(".settingHeightGrid").css('display', '');
                         self.stopRequest(true);
                     });
@@ -381,8 +378,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, viewMode);
                 self.initExTable(dataBindGrid, viewMode);
-                
                 $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+                self.setPositionButonToRight();
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -1442,7 +1439,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             self.indexBtnToDown = self.indexBtnToDown + 1;
         }
-
+        
+        setPositionButonToRight() {
+            let marginleft: number = $("#extable").width() - 280 - 27 - 27 - 30;
+            $(".toRight").css('margin-left', marginleft);
+        }
 
         setPositionButonDownAndHeightGrid() {
             let self = this;
