@@ -534,8 +534,7 @@ html {
 	background: url(../image/toright.png) no-repeat center;
 	width: 27px;
 	height: 15px;
-	margin-right: 58px;
-	float: right;
+	float: left;
 }
 
 .toDown {
@@ -549,9 +548,8 @@ html {
 	background: url(../image/iconsetting.png) no-repeat center;
 	width: 27px;
 	height: 27px;
-	float: right;
-	right: 30px;
 }
+
 
 #A16 table td {
 	border: 0px solid #ccc !important;

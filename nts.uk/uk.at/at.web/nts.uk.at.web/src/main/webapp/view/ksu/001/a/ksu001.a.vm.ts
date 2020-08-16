@@ -190,19 +190,36 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.removeClass();
                 self.stopRequest(false);
                 // close screen O1 when change mode
-                if (viewMode == 'shift') { // mode シフト表示  
+                if (viewMode == 'shift') { // mode シフト表示   
+                    if (window.innerWidth > 1462) {
+                        $("#extable").width('1404');
+                    }
+                    $(".settingHeightGrid").css('display', 'none');
                     $("#extable").exTable("stickMode", "multi");
                     self.shiftModeStart().done(() => {
+                        let marginleft : number = $("#extable").width() - 280 - 27 - 27 - 30;
+                        $(".toRight").css('margin-left', marginleft);
+                        $(".settingHeightGrid").css('display', '');
                         self.stopRequest(true);
                     });
                 } else if (viewMode == 'shortName') { // mode 略名表示
+                    $("#extable").width(window.innerWidth - 51);
+                    $(".settingHeightGrid").css('display', 'none');
                     $("#extable").exTable("stickMode", "single");
                     self.shortNameModeStart().done(() => {
+                        let marginleft : number = $("#extable").width() - 280 - 27 - 27 - 30;
+                        $(".toRight").css('margin-left', marginleft);
+                        $(".settingHeightGrid").css('display', '');
                         self.stopRequest(true);
                     });
                 } else if (viewMode == 'time') {  // mode 勤務表示 
+                    $("#extable").width(window.innerWidth - 51);
+                    $(".settingHeightGrid").css('display', 'none');
                     $("#extable").exTable("stickMode", "single");
                     self.timeModeStart().done(() => {
+                        let marginleft : number = $("#extable").width() - 280 - 27 - 27 - 30;
+                        $(".toRight").css('margin-left', marginleft);
+                        $(".settingHeightGrid").css('display', '');
                         self.stopRequest(true);
                     });
                 }
@@ -300,7 +317,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.enableBtnUndo(false);
 
             $("#extable").on("extablecellupdated", (dataCell) => {
+                if(self.selectedModeDisplayInBody() == 'time'){
+                    let dataCell = $("#extable").exTable("updatedCells");
+                    let startTime = dataCell.value.startTime;
+                    let endTime   = dataCell.value.endTime;
+                    
+                
+                }
                 console.log(dataCell);
+                debugger;
                 if (dataCell) {
                     self.enableBtnRedo(true);
                     self.enableBtnUndo(true);
