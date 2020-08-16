@@ -1,6 +1,6 @@
 module nts.uk.at.view.kmr004.a {
     const API = {
-        START: "screen/at/record/reservation/list/start"
+        START: "screen/at/record/reservation-conf-list/start"
     };
 
     // const PATH = {
