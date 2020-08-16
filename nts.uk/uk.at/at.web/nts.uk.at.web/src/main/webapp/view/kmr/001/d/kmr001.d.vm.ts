@@ -87,7 +87,9 @@ module nts.uk.at.kmr001.d {
                 console.log(data);
                 if (data) {
                     if( !nts.uk.util.isNullOrEmpty(data.historyItems)){
-                        self.lstWpkHistory(_.map(data.historyItems,
+                        let rs = _.orderBy(data.historyItems, function(o)
+                        { return new Date(o.endDate); }, ['desc']);
+                        self.lstWpkHistory(_.map(rs,
                             i => new HistoryItem(i)));
                         let selectedHist = _.find(data, h => h.historyId == self.bkHistoryId);
                         if (selectedHist && self.bkStartDate == null && self.bkEndDate == null) {
@@ -109,6 +111,7 @@ module nts.uk.at.kmr001.d {
             });
             return dfd.promise();
         }
+
 
         addHistory() {
             let self = this;
@@ -323,7 +326,7 @@ module nts.uk.at.kmr001.d {
                 this.historyId = params.historyId;
                 this.startDate = params.startDate;
                 this.endDate = params.endDate;
-                this.displayText = params.startDate + " " + getText("") + " " + params.endDate;
+                this.displayText = params.startDate + " " + getText("CMM011_125") + " " + params.endDate;
             }
         }
 

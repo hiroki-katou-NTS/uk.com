@@ -21,6 +21,7 @@ public class BentoMenuHistScreenQuery {
         val rs = new BentoMenuHistDto();
         val cid = AppContexts.user().companyId();
         val bento = bentoMenuHistoryRepository.findByCompanyId(cid);
+
         val dateItem = new ArrayList<DateHistoryItemDto>();
         if (bento.isPresent()) {
 

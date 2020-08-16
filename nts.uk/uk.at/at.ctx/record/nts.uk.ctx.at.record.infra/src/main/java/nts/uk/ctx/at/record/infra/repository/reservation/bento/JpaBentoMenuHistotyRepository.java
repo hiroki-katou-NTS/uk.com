@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.reservation.bento;
 
 import lombok.val;
-import nts.arc.error.BusinessException;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -9,14 +9,10 @@ import nts.uk.ctx.at.record.dom.reservation.bento.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bento.IBentoMenuHistoryRepository;
 import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenuHist;
 import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenuHistPK;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 import javax.ejb.Stateless;
-import java.time.Period;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Stateless
 public class JpaBentoMenuHistotyRepository extends JpaRepository implements IBentoMenuHistoryRepository {
@@ -74,12 +70,8 @@ public class JpaBentoMenuHistotyRepository extends JpaRepository implements IBen
     public void delete(String companyId, String historyId) {
          val entity = this.queryProxy().find(new KrcmtBentoMenuHistPK(companyId,historyId),KrcmtBentoMenuHist.class);
          if(entity.isPresent()){
-             if(entity.get().endDate!= GeneralDate.max()){
-                 throw new BusinessException("invalid BentoMenuHistory!");
-             }
-             this.commandProxy().remove(entity);
+             this.commandProxy().remove(KrcmtBentoMenuHist.class,new KrcmtBentoMenuHistPK(companyId,historyId));
          }
-
-
     }
+
 }
