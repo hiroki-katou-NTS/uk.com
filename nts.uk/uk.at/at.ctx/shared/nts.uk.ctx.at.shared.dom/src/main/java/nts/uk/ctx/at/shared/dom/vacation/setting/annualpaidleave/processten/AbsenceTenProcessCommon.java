@@ -63,6 +63,19 @@ public class AbsenceTenProcessCommon {
 				comSubstVacationRepository);
 		return GetSettingCompensaLeave.process(impl, companyID, employeeID, baseDate);
 	}
+	
+	/**
+	 * 10-5.60H超休の設定を取得する
+	 * 
+	 * @param companyId
+	 * @param employeeId
+	 * @param baseDate
+	 * @return
+	 */
+	public SixtyHourSettingOutput getSixtyHourSetting(String companyId, String employeeId, GeneralDate baseDate) {
+		// TODO fix data algorithm
+		return new SixtyHourSettingOutput(true, 2);
+	}
 
 	public class RequireImp implements GetSettingCompensaLeave.Require, SettingSubstituteHolidayProcess.Require {
 
