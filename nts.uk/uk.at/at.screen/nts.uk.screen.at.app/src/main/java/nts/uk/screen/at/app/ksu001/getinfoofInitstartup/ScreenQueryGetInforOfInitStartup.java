@@ -53,6 +53,9 @@ public class ScreenQueryGetInforOfInitStartup {
 	private AffWorkplaceGroupRespository affWorkplaceGroupRepo;
 	
 	public DataScreenQueryGetInforDto dataSample() {
+		
+		// chu y A3_2_3 
+		
 		GeneralDate startDate = GeneralDate.ymd(2020, 7, 1);
 		GeneralDate endDate =  GeneralDate.ymd(2020, 7, 31);
 		
@@ -68,7 +71,7 @@ public class ScreenQueryGetInforOfInitStartup {
 	}
 	
 
-	public DataScreenQueryGetInforDto getDataInit() {
+	public DataScreenQueryGetInforDto getData() {
 		// Step 1,2
 		String companyID = AppContexts.user().companyId();
 		Optional<WorkScheDisplaySetting> workScheDisplaySettingOpt = workScheDisplaySettingRepo.get(companyID);

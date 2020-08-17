@@ -4,8 +4,6 @@ import java.util.Optional;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.workschedule.ScheManaStatuTempo;
-import nts.uk.ctx.at.schedule.dom.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.ShiftEditState;
 
 /**
@@ -39,8 +37,8 @@ public class WorkShiftScheduleDto {
 	private String employeeId;
 	
 	
-	public WorkShiftScheduleDto(ScheManaStatuTempo scheduleManagementState, WorkSchedule workSchedule) {
-		this.employeeId = scheduleManagementState.getEmployeeID();
-		// TODO: hieu lam not nhe
-	}
+//	public WorkShiftScheduleDto(ScheManaStatuTempo scheduleManagementState, WorkSchedule workSchedule) {
+//		this.employeeId = scheduleManagementState.getEmployeeID();
+//		// TODO: hieu lam not nhe
+//	}
 }

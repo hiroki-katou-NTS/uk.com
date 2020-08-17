@@ -21,7 +21,7 @@ public class ShiftMasterMapWithWorkStyle {
 	public String remark;
 	public String workTypeCode;
 	public String workTimeCode;
-	public String workStyle;  // 出勤休日区分 (co truong hơp workStyle = null nên ko để kiểu int được)
+	public String workStyle;  // 出勤休日区分 (co truong hơp workStyle = null nên ko để kiểu int được) class WorkStyle
 
 	public ShiftMasterMapWithWorkStyle(ShiftMaster domain, String workStyle) {
 		this.companyId = domain.getCompanyId();
