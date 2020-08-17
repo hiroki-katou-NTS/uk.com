@@ -1,4 +1,4 @@
-module nts.uk.at.view.ksu001.a.viewmodel {
+module nts.uk.at.view.ksu001.common.viewmodel {
     import formatById = nts.uk.time.format.byId;
 
     export interface IWorkType {
