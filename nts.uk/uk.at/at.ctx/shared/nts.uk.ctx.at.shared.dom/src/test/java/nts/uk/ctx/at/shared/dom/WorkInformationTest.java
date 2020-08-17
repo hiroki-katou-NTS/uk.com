@@ -14,16 +14,22 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.WorkInformation.Require;
+import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDisplayName;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeNote;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.shr.com.primitive.Memo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @RunWith(JMockit.class)
@@ -84,7 +90,7 @@ public class WorkInformationTest {
 				result = SetupType.REQUIRED;
 
 				require.findByCode(workInformation.getWorkTimeCode().v());
-				result = Optional.of(new WorkingTimeSetting());
+				result = Optional.empty();
 			}
 		};
 		assertThat(workInformation.checkNormalCondition(require)).isTrue();
@@ -134,11 +140,25 @@ public class WorkInformationTest {
 		assertThat(workInformation.checkErrorCondition(require)).isEqualTo(ErrorStatusWorkInfo.WORKTIME_WAS_DELETE);
 	}
 	
-	//if SetupType = OPTIONAL 
-	@Test
-	public void testCheckErrorCondition_is_WORKTIME_WAS_DELETE_2() {
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
 
+	
+	/**
+	 * if SetupType = REQUIRED 
+	 * @就業時間帯コード !=null
+	 * require.就業時間帯を取得する(ログイン会社ID, @就業時間帯コード) not empty
+	 * if $勤務種類.廃止区分 != 廃止する
+	 * if $就業時間帯.廃止区分 == 廃止する
+	 */
+	@Test
+	public void testCheckErrorCondition_is_WORKTIME_HAS_BEEN_ABOLISHED() {
+		WorkInformation workInformation = new WorkInformation("worktimecode", "workTypeCode");
+		WorkType workType = new WorkType();
+		workType.setDeprecate(DeprecateClassification.NotDeprecated);
+		WorkTimeSetting workTimeSetting = new WorkTimeSetting("companyId",
+				new WorkTimeCode("WorkTimeCode"), 
+				new WorkTimeDivision(), AbolishAtr.ABOLISH, new ColorCode("colorCode"),
+				new WorkTimeDisplayName(), new Memo("memo"), new WorkTimeNote("WorkTimeNote"));
+		workTimeSetting.setAbolishAtr(AbolishAtr.ABOLISH);
 		new Expectations() {
 			{
 				require.findByPK(workInformation.getWorkTypeCode().v());
@@ -184,8 +204,32 @@ public class WorkInformationTest {
 				result = Optional.of(new WorkType());
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
-				result = SetupType.NOT_REQUIRED;
+				result = SetupType.OPTIONAL;
+				
+				require.findByCode(workInformation.getWorkTimeCode().v());
+			}
+		};
 
+		assertThat(workInformation.checkErrorCondition(require))
+				.isEqualTo(ErrorStatusWorkInfo.WORKTIME_WAS_DELETE);
+	}
+	
+	/**
+	 * 
+	 * @就業時間帯コード !=null
+	 * require.就業時間帯を取得する(ログイン会社ID, @就業時間帯コード) not empty
+	 * if $勤務種類.廃止区分 == 廃止する
+	 */
+	@Test
+	public void testCheckErrorCondition_is_WORKTYPE_WAS_ABOLISHED_1() {
+		WorkInformation workInformation = new WorkInformation("worktimecode", "workTypeCode");
+		WorkType workType = new WorkType();
+		workType.setDeprecate(DeprecateClassification.Deprecated);
+		new Expectations() {
+			{
+
+				require.findByPK(workInformation.getWorkTypeCode().v());
+				result = Optional.of(workType);
 			}
 		};
 
@@ -206,13 +250,23 @@ public class WorkInformationTest {
 				result = SetupType.REQUIRED;
 
 				require.findByCode(workInformation.getWorkTimeCode().v());
-				result = Optional.of(new WorkingTimeSetting());
+				result = Optional.empty();
 
 			}
 		};
 
 		assertThat(workInformation.checkErrorCondition(require)).isEqualTo(ErrorStatusWorkInfo.NORMAL);
 	}
+
+	
+	
+	/**
+	 * if SetupType = NOT_REQUIRED 
+	 * @就業時間帯コード ==null
+	 * require.就業時間帯を取得する(ログイン会社ID, @就業時間帯コード) not empty
+	 * if $勤務種類.廃止区分 != 廃止する
+	 * if $就業時間帯.廃止区分 == 廃止する
+	 */
 
 	@Test
 	public void testCheckErrorCondition_is_NORMAL_2() {
@@ -348,6 +402,53 @@ public class WorkInformationTest {
 		};
 
 		assertThat(workInformation.getWorkInfoAndTimeZone(require).isPresent()).isTrue();
+	}
+	
+	/**
+	 * test ver 5
+	 * worktimecode is null
+	 */
+	@Test
+	public void testCheckErrorCondition_1() { 
+		WorkInformation workInformation = new WorkInformation(null, "workTypeCode");
+		new Expectations() {
+			{
+
+				require.findByPK(workInformation.getWorkTypeCode().v());
+				result = Optional.of(new WorkType());
+
+				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
+				result = SetupType.OPTIONAL;
+				
+			}
+		};
+
+		assertThat(workInformation.checkErrorCondition(require))
+				.isEqualTo(ErrorStatusWorkInfo.NORMAL);
+	}
+	
+	/**
+	 * test ver 5
+	 * worktimecode not null
+	 */
+	@Test
+	public void testCheckErrorCondition_2() { 
+		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		new Expectations() {
+			{
+
+				require.findByPK(workInformation.getWorkTypeCode().v());
+				result = Optional.of(new WorkType());
+
+				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
+				result = SetupType.OPTIONAL;
+				
+				require.findByCode(workInformation.getWorkTimeCode().v());
+			}
+		};
+
+		assertThat(workInformation.checkErrorCondition(require))
+				.isEqualTo(ErrorStatusWorkInfo.WORKTIME_WAS_DELETE);
 	}
 
 }

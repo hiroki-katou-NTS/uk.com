@@ -29,6 +29,7 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.EmpmInfo;
@@ -41,7 +42,6 @@ import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHis
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist_;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaEmploymentHistoryItemRepository extends JpaRepository implements EmploymentHistoryItemRepository {
@@ -93,7 +93,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String companyId, String sid, GeneralDate date) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(" SELECT a.CODE ,a.NAME FROM BSYMT_EMPLOYMENT a");
+		builder.append(" SELECT a.CODE ,a.NAME ,h.START_DATE ,h.END_DATE FROM BSYMT_EMPLOYMENT a");
 		builder.append(" INNER JOIN BSYMT_EMPLOYMENT_HIST h");
 		builder.append(" ON a.CID = h.CID");
 		builder.append(" INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM i");
@@ -112,6 +112,10 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 				}
 				if (rec.getString("NAME") != null) {
 					emp.setEmploymentName(rec.getString("NAME"));
+				}
+				if(rec.getGeneralDate("START_DATE") != null && rec.getGeneralDate("END_DATE") != null){
+					emp.setPeriod(new DatePeriod(rec.getGeneralDate("START_DATE"),
+												 rec.getGeneralDate("END_DATE")));
 				}
 				return emp;
 			});

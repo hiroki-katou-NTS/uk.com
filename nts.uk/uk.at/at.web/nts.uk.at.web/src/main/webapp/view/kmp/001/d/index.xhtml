@@ -17,7 +17,7 @@
 		<ui:define name="content">
 			<div class="view-dialog">
 				<div style="padding: 10px">
-					<div class="box">
+					<div class="boxSquare">
 						<table>
 							<tbody>
 								<tr>
@@ -26,41 +26,14 @@
 									</td>
 									<td class="label-column">
 										<div id="combo-box" data-bind="ntsComboBox: {
-											options: ko.observableArray([{
-												code: '1',
-												name: 'Option 1'
-											},{
-												code: '2',
-												name: 'Option 1'
-											},{
-												code: '3',
-												name: 'Option 1'
-											},{
-												code: '4',
-												name: 'Option 1'
-											},{
-												code: '5',
-												name: 'Option 1'
-											},{
-												code: '6',
-												name: 'Option 1'
-											},{
-												code: '7',
-												name: 'Option 1'
-											},{
-												code: '8',
-												name: 'Option 1'
-											},{
-												code: '9',
-												name: 'Option 1'
-											}]),
-											optionsValue: 'code',
+											options: cardLengths,
+											optionsValue: 'value',
 											visibleItemsCount: 6,
 											width: 60,
-											value: selectedCode,
-											optionsText: 'name',
+											value: selectedLength,
+											optionsText: 'text',
 											columns: [
-												{ prop: 'code', length: 2 }
+												{ prop: 'text', length: 2 }
 											]}"></div>
 									</td>
 								</tr>
@@ -70,24 +43,12 @@
 										<hr></hr>
 									</td>
 								</tr>
-								<tr>
-									<td class="label-column-select">
-										<input type="radio" name="number"/>
-										<label for="number">前ゼロ</label>
-									</td>
-									<td class="label-column-select">
-										<input type="radio" name="number"/>
-										<label for="number">#{i18n.getText('KMP001_44')}</label>
-									</td>
-								</tr>
-								<tr>
-									<td class="label-column-select">
-										<input type="radio"  name="number"/>
-										<label for="number">#{i18n.getText('KMP001_43')}</label>
-									</td>
-									<td class="label-column-select">
-										<input type="radio" checked="checked" name="number"/>
-										<label for="number">#{i18n.getText('KMP001_45')}</label>
+								<tr data-bind="foreach: _.chunk(paddingTypes, 2)">
+									<td class="label-column-select" data-bind="foreach: $data">
+										<label class="ntsRadioBox" id="viewd-radio-box">
+											<input type="radio" data-bind="checkedValue: value, checked: $vm.paddingType"  />
+											<span class="box"></span><span class="label" data-bind="text: $vm.$i18n(label)"></span>
+										</label>
 									</td>
 								</tr>
 							</tbody>
@@ -97,8 +58,8 @@
 				<hr></hr>
 				<div class="view-button">
 					<div>
-						<button id="button_decide" class="proceed" data-bind="text: $i18n('KMP001_46')"></button>
-						<button data-bind="text: $i18n('KMP001_47')"></button>
+						<button id="button_decide" class="proceed" data-bind="text: $i18n('KMP001_46'), click: addSetting"></button>
+						<button data-bind="text: $i18n('KMP001_47'), click: closeDialog"></button>
 					</div>
 				</div>
 			</div>

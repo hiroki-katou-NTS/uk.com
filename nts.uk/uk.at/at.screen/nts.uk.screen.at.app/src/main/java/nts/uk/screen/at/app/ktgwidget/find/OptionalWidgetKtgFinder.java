@@ -10,6 +10,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -27,6 +29,7 @@ import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.WidgetDisplayItemImport;
 import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.ChecksDailyPerformanceErrorRepository;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.holidayinstruction.HolidayInstructRepository;
@@ -74,7 +77,7 @@ public class OptionalWidgetKtgFinder {
 	private ClosureRepository closureRepo;
 	
 	@Inject
-	private ClosureService closureService;
+	private RecordDomRequireService requireService;
 	
 	@Inject
 	private OptionalWidgetAdapter optionalWidgetAdapter; 
@@ -95,16 +98,7 @@ public class OptionalWidgetKtgFinder {
 	private ChecksDailyPerformanceErrorRepository checksDailyPerformanceErrorRepo;
 	
 	@Inject
-	private BreakDayOffMngInPeriodQuery breakDayOffMngInPeriodQuery;
-	
-	@Inject 
-	private AbsenceReruitmentMngInPeriodQuery absenceReruitmentMngInPeriodQuery;
-	
-	@Inject
 	private ShNursingLeaveSettingPub shNursingLeaveSettingPub;
-	
-	@Inject
-	private SpecialLeaveManagementService specialLeaveManagementService;
 	
 	@Inject
 	private SpecialHolidayRepository specialHolidayRepository;
@@ -120,9 +114,9 @@ public class OptionalWidgetKtgFinder {
 		
 		YearMonth processingDate = closure.get().getClosureMonth().getProcessingYm();
 		
-		DatePeriod currentMonth = closureService.getClosurePeriod(closureId, processingDate);
+		DatePeriod currentMonth = ClosureService.getClosurePeriod(closureId, processingDate, closure);
 		
-		DatePeriod nextMonth = closureService.getClosurePeriod(closureId, processingDate.addMonths(1));
+		DatePeriod nextMonth = ClosureService.getClosurePeriod(requireService.createRequire(), closureId, processingDate.addMonths(1));
 		
 		DatePeriodDto dto = new DatePeriodDto(currentMonth.start(), currentMonth.end(), nextMonth.start(), nextMonth.end());
 		
@@ -170,6 +164,9 @@ public class OptionalWidgetKtgFinder {
 	
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public OptionalWidgetInfoDto getDataRecord(String code, GeneralDate startDate, GeneralDate endDate) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+		
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		DatePeriod datePeriod = new DatePeriod(startDate, endDate);
@@ -384,14 +381,16 @@ public class OptionalWidgetKtgFinder {
 					//BreakDayOffRemainMngOfInPeriod time = breakDayOffMngInPeriodQuery.getBreakDayOffMngInPeriod(param);
 					//to do some thinks
 					// 26/09 đổi sang lấy thông tin từ request 505
-					dto.setRemainAlternationNoDay(breakDayOffMngInPeriodQuery.getBreakDayOffMngRemain(employeeId, systemDate));
+					dto.setRemainAlternationNoDay(BreakDayOffMngInPeriodQuery
+							.getBreakDayOffMngRemain(require, cacheCarrier, employeeId, systemDate));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAINS_LEFT.value) {
 					//sử lý 19
 					//requestList 204 Dudt
 					//AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyId, employeeId, datePeriod, systemDate, false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 					//AbsRecRemainMngOfInPeriod time = absenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(param);
 					// 26/09 đổi sang lấy thông tin từ request 506
-					dto.setRemainsLeft(absenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(employeeId, systemDate).getRemainDays());
+					dto.setRemainsLeft(AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(
+							require, cacheCarrier, employeeId, systemDate).getRemainDays());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PUBLIC_HD_NO.value) {
 					//not use
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HD_REMAIN_NO.value) {
@@ -447,7 +446,9 @@ public class OptionalWidgetKtgFinder {
 								specialHoliday.getSpecialHolidayCode().v(),
 								false, false,
 								new ArrayList<>(), new ArrayList<>(), Optional.empty());
-						InPeriodOfSpecialLeave inPeriodOfSpecialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(param).getAggSpecialLeaveResult();
+						InPeriodOfSpecialLeave inPeriodOfSpecialLeave = SpecialLeaveManagementService
+								.complileInPeriodOfSpecialLeave(require, cacheCarrier, param)
+								.getAggSpecialLeaveResult();
 						boolean showAfter = false;
 						GeneralDate date = GeneralDate.today();
 						List<SpecialLeaveGrantDetails> lstSpeLeaveGrantDetails = inPeriodOfSpecialLeave.getLstSpeLeaveGrantDetails(); 
