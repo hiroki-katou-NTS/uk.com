@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.find.reservation.bento.dto;
+package nts.uk.screen.at.app.kmr003.query;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,13 +11,13 @@ import java.util.List;
  */
 @Setter
 @Getter
-public class ModificationInfoForReservationDto {
+public class ReservationModifyDto {
     /** 弁当ヘッダー */
-    private List<HeaderInfoDto> bentoHeaderInfos;
+    private List<HeaderInfoDto> bentos;
     /** 弁当メニューの締め時刻 */
     private List<ClosingTimeDto> bentoClosingTimes;
     /** 月締め処理が済んでいる社員情報 */
-    private List<EmployeeInfoMonthFinishDto> employeeInfoMonthFinishs;
+    private List<EmployeeInfoMonthFinishDto> empFinishs;
     /** 社員の予約情報 */
-    private List<ReservationInfoForEmployeeDto> reservationInfoForEmployees;
+    private List<ReservationModifyEmployeeDto> reservationModifyEmps;
 }

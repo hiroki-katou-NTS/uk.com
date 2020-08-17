@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.reservation.bento;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 
@@ -15,6 +16,8 @@ public interface BentoReservationRepository {
 	public void add(BentoReservation bentoReservation);
 
 	public void delete(BentoReservation bentoReservation);
+
+    public void delete(String cid, List<ReservationRegisterInfo> reservationCardNo, ReservationDate reservationDate);
 
 	public List<BentoReservation> findByOrderedPeriodEmpLst(List<ReservationRegisterInfo> inforLst, DatePeriod period, boolean ordered);
 

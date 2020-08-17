@@ -43,6 +43,8 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 	
 	private static final String FIND_BY_ORDER_PERIOD_EMP;
 
+	private static final String FIND_BY_CID_CARD_NO_DATE_FRAME;
+
 	private static final String GET_RESERVATION_DETAIL_FROM_ORDER;
 
 	private static final String FIND_ALL_RESERVATION_DETAIL;
@@ -74,6 +76,11 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
         builderString.append(SELECT);
         builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD >= 'startDate' AND a.RESERVATION_YMD <= 'endDate' AND a.ORDERED IN (ordered)");
         FIND_BY_ORDER_PERIOD_EMP = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append(SELECT);
+        builderString.append("WHERE a.CID = 'cid' AND a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD = 'date' AND a.RESERVATION_FRAME = frame ");
+        FIND_BY_CID_CARD_NO_DATE_FRAME = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append(SELECT);
@@ -212,6 +219,35 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
 		}
+	}
+
+	@Override
+	public void delete(String cid, List<ReservationRegisterInfo> reservationCardNo, ReservationDate reservationDate){
+        String query = FIND_BY_CID_CARD_NO_DATE_FRAME;
+        List<String> cardLst = reservationCardNo.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList());
+        String cardLstStr = "";
+        if(CollectionUtil.isEmpty(reservationCardNo)) {
+            cardLstStr = "''";
+        } else {
+            for(String cardStr : cardLst) {
+                cardLstStr += "'" + cardStr + "'";
+                if(cardLst.indexOf(cardStr) < cardLst.size() - 1) {
+                    cardLstStr += ",";
+                }
+            }
+        }
+        query = query.replaceFirst("cardLst", cardLstStr);
+        query = query.replaceFirst("date", reservationDate.getDate().toString());
+        query = query.replaceFirst("frameAtr", String.valueOf(reservationDate.getClosingTimeFrame().value));
+
+        try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            List<KrcdtReservation> krcdtReservations = toEntity(createFullJoinBentoReservation(rs));
+            commandProxy().removeAll(krcdtReservations);
+            this.getEntityManager().flush();
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.find.reservation.bento.dto;
+package nts.uk.screen.at.app.kmr003.query;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
-public class ReservationDetailDto {
+public class ReservationModifyDetailDto {
     /** 個数 */
     private int number;
     /** 弁当メニュー枠番 */

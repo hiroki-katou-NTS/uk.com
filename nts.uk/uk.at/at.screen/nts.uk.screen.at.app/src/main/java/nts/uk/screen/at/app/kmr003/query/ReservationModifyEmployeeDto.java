@@ -1,8 +1,9 @@
-package nts.uk.ctx.at.record.app.find.reservation.bento.dto;
+package nts.uk.screen.at.app.kmr003.query;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 import java.util.List;
 
@@ -12,9 +13,9 @@ import java.util.List;
  */
 @Setter
 @Getter
-public class ReservationInfoForEmployeeDto {
+public class ReservationModifyEmployeeDto {
     /** 予約明細 */
-    private List<ReservationDetailDto> reservationDetails;
+    private List<ReservationModifyDetailDto> reservationDetails;
     /** 予約者のカード番号 */
     private String reservationCardNo;
     /** 予約者員ID */
@@ -26,9 +27,9 @@ public class ReservationInfoForEmployeeDto {
     /** 注文日 */
     private GeneralDate reservationDate;
     /** 注文時刻 */
-    private int reservationTime;
+    private GeneralDateTime reservationTime;
     /** 活性 */
-    private boolean ordered = true;
+    private boolean activity = true;
     /** 締め時刻枠 */
     private int closingTimeFrame;
 }

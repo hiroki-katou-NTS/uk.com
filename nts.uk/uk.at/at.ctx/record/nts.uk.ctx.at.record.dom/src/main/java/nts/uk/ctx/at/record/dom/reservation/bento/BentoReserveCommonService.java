@@ -17,8 +17,6 @@ import java.util.Optional;
 public class BentoReserveCommonService {
     @Inject
     private BentomenuAdapter bentomenuAdapter;
-    @Inject
-    private GetClosureStartForEmployee getClosureStartForEmployee;
 
     @Inject
     private BentoReservationSettingRepository bentoReservationSettingRepository;
@@ -37,21 +35,5 @@ public class BentoReserveCommonService {
         Optional<WorkLocationCode> workLocationCode = hisItems.isPresent() ? Optional.of(new WorkLocationCode(hisItems.get().getWorkplaceCode()))
                 : Optional.empty();
         return workLocationCode;
-    }
-
-    /**
-     * 弁当予約が強制修正できる状態を取得する
-     * @param employeeId 社員ID
-     * @param date 予約日
-     * @return True: 予約でき. False: 予約できない
-     */
-    public boolean canModifyReservation(String employeeId, GeneralDate date){
-        // 社員に対応する締め開始日を取得する
-        Optional<GeneralDate> closureStartOpt = getClosureStartForEmployee.algorithm(employeeId);
-        if (closureStartOpt.isPresent()){
-            // 修正できる状態
-            return closureStartOpt.get().before(date);
-        }
-        return false;
     }
 }

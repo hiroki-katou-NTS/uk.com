@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.find.reservation.bento.dto;
+package nts.uk.screen.at.app.kmr003.query;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
