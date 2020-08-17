@@ -364,22 +364,22 @@ export class KdpS01AComponent extends Vue {
 
         if (buttonSetting.buttonValueType === ButtonType.GOING_TO_WORK) {
             // 出勤
-            buttonSetting.buttonDisSet.backGroundColor = stampToSuppress.goingToWork ? buttonSetting.buttonDisSet.backGroundColor : DEFAULT_GRAY;
+            buttonSetting.buttonDisSet.backGroundColor = !stampToSuppress.goingToWork ? buttonSetting.buttonDisSet.backGroundColor : DEFAULT_GRAY;
         }
 
         if (buttonSetting.buttonValueType === ButtonType.WORKING_OUT) {
             // 退勤
-            buttonSetting.buttonDisSet.backGroundColor = stampToSuppress.departure ? buttonSetting.buttonDisSet.backGroundColor : DEFAULT_GRAY;
+            buttonSetting.buttonDisSet.backGroundColor = !stampToSuppress.departure ? buttonSetting.buttonDisSet.backGroundColor : DEFAULT_GRAY;
         }
 
         if (buttonSetting.buttonValueType === ButtonType.GO_OUT) {
             // 外出
-            buttonSetting.buttonDisSet.backGroundColor = stampToSuppress.goOut ? buttonSetting.buttonDisSet.backGroundColor : DEFAULT_GRAY;
+            buttonSetting.buttonDisSet.backGroundColor = !stampToSuppress.goOut ? buttonSetting.buttonDisSet.backGroundColor : DEFAULT_GRAY;
         }
 
         if (buttonSetting.buttonValueType === ButtonType.RETURN) {
             // 戻り
-            buttonSetting.buttonDisSet.backGroundColor = stampToSuppress.turnBack ? buttonSetting.buttonDisSet.backGroundColor : DEFAULT_GRAY;
+            buttonSetting.buttonDisSet.backGroundColor = !stampToSuppress.turnBack ? buttonSetting.buttonDisSet.backGroundColor : DEFAULT_GRAY;
         }
     }
 
