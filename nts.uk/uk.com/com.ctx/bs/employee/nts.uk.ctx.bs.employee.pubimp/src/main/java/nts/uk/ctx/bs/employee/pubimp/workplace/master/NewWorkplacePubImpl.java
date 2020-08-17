@@ -848,7 +848,8 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 				.employeeId(affWrkPlc.get().getEmployeeId()).workplaceId(param.getWorkplaceId())
 				.workplaceCode(param.getWorkplaceCode()).workplaceName(param.getWorkplaceName())
 				.wkpDisplayName(param.getDisplayName())
-				.workLocationCd(affWrkPlcItem.get().getWorkLocationCode().orElse(null))
+				.workLocationCd(affWrkPlcItem.get().getWorkLocationCode().isPresent()?
+						affWrkPlcItem.get().getWorkLocationCode().get().v() : null )
 				.build());
 	}
 }
