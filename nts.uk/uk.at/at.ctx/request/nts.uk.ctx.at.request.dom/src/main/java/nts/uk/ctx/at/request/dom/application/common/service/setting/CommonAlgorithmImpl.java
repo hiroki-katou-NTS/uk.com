@@ -76,6 +76,7 @@ import nts.uk.ctx.at.shared.dom.worktype.service.HolidayAtrOutput;
 import nts.uk.ctx.at.shared.dom.worktype.service.JudgmentOneDayHoliday;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.time.AttendanceClock;
 
 @Stateless
 public class CommonAlgorithmImpl implements CommonAlgorithm {
@@ -244,7 +245,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				appType, 
 				appDispInfoNoDateOutput.getApplicationSetting().getAppDisplaySetting().getPrePostDisplayAtr(), 
 				appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSetting().getDisplayInitialSegment(),
-				opOvertimeAppAtr);
+				opOvertimeAppAtr,
+				appDispInfoNoDateOutput.getOpAdvanceReceptionHours().orElse(null));
 		// 雇用に紐づく締めを取得する
 		int closureID = closureService.getClosureIDByEmploymentCD(empHistImport.getEmploymentCode());
 		// 申請締切設定を取得する
@@ -295,7 +297,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 
 	@Override
 	public AppDispInfoRelatedDateOutput getAppDispInfoRelatedDate(String companyID, String employeeID, List<GeneralDate> dateLst, 
-			ApplicationType appType, DisplayAtr prePostAtrDisp, PrePostInitAtr initValueAtr, Optional<OvertimeAppAtr> opOvertimeAppAtr) {
+			ApplicationType appType, DisplayAtr prePostAtrDisp, PrePostInitAtr initValueAtr, Optional<OvertimeAppAtr> opOvertimeAppAtr,
+			AttendanceClock advanceReceptionHours) {
 		AppDispInfoRelatedDateOutput output = new AppDispInfoRelatedDateOutput();
 		// INPUT．事前事後区分表示をチェックする
 		if(prePostAtrDisp == DisplayAtr.NOT_DISPLAY) {
@@ -348,7 +351,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 					appType, 
 					appDispInfoNoDateOutput.getApplicationSetting().getAppDisplaySetting().getPrePostDisplayAtr(), 
 					appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSetting().getDisplayInitialSegment(),
-					opOvertimeAppAtr);
+					opOvertimeAppAtr,
+					appDispInfoNoDateOutput.getOpAdvanceReceptionHours().orElse(null));
 			appDispInfoWithDateOutput.setPrePostAtr(result.getPrePostAtr());
 			appDispInfoWithDateOutput.setOpActualContentDisplayLst(
 					CollectionUtil.isEmpty(result.getActualContentDisplayLst()) ? Optional.empty() : Optional.of(result.getActualContentDisplayLst()));

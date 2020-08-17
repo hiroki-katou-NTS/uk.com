@@ -9,10 +9,11 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.BeforeAddCheckMethod;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.checkpostappaccept.PostAppAcceptLimit;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.checkpreappaccept.PreAppAcceptLimit;
+import nts.uk.shr.com.time.AttendanceClock;
 
 /**
  * refactor 4
- * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.設定.会社別.申請承認設定.申請設定.申請種類別設定.受付制限設定
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.申請承認.設定.会社別.申請承認設定.申請設定.申請種類別設定.受付制限設定
  * @author Doan Duy Hung
  *
  */
@@ -48,7 +49,7 @@ public class ReceptionRestrictionSetting {
 	}
 	
 	/**
-	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.設定.会社別.申請承認設定.申請設定.申請種類別設定.アルゴリズム.事前申請がいつから受付可能か確認する.事前申請がいつから受付可能か確認する
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.申請承認.設定.会社別.申請承認設定.申請設定.申請種類別設定.アルゴリズム.事前申請がいつから受付可能か確認する.事前申請がいつから受付可能か確認する
 	 * @param opOvertimeAppAtr Optional＜残業申請区分＞
 	 * @return
 	 */
@@ -119,7 +120,7 @@ public class ReceptionRestrictionSetting {
 	}
 	
 	/**
-	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.設定.会社別.申請承認設定.申請設定.申請種類別設定.アルゴリズム.事後申請がいつから受付可能か確認する.事後申請がいつから受付可能か確認する
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.申請承認.設定.会社別.申請承認設定.申請設定.申請種類別設定.アルゴリズム.事後申請がいつから受付可能か確認する.事後申請がいつから受付可能か確認する
 	 * @return
 	 */
 	public PostAppAcceptLimit checkWhenPostAppCanBeAccepted() {
@@ -134,6 +135,20 @@ public class ReceptionRestrictionSetting {
 		}
 		// 事後申請の受付制限．受付制限利用する = false
 		return new PostAppAcceptLimit(false);
+	}
+	
+	/**
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.申請承認.設定.会社別.申請承認設定.申請設定.申請種類別設定.アルゴリズム.対象日が申請可能かを判定する.対象日が申請可能かを判定する
+	 * @param appType 対象申請
+	 * @param date 対象日
+	 * @param overtimeAppAtr 残業区分
+	 * @param advanceReceptionDate 事前受付日
+	 * @param advanceReceptionHours 事前受付時分
+	 * @return
+	 */
+	public boolean applyPossibleCheck(ApplicationType appType, GeneralDate date, OvertimeAppAtr overtimeAppAtr, 
+			GeneralDate advanceReceptionDate, AttendanceClock advanceReceptionHours) {
+		return false;
 	}
 	
 }

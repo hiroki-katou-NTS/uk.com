@@ -272,7 +272,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 					application.getEmployeeID(), 
 					new DatePeriod(application.getOpAppStartDate().get().getApplicationDate(), application.getOpAppEndDate().get().getApplicationDate()));
 		}
-	
+		AppDispInfoStartupOutput appDispInfoStartupOutput = null;
 		// 登録時チェック処理（全申請共通）
 		List<ConfirmMsgOutput> confirmMsgLst = null;
 				newBeforeRegister.processBeforeRegister_New(
@@ -282,7 +282,8 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 				application, 
 				null, 
 				errorFlag, 
-				lstDateHd);
+				lstDateHd,
+				appDispInfoStartupOutput);
 		// 「確認メッセージリスト」を全てと取得した「休日の申請日<List>」を返す
 		output.setConfirmMsgLst(confirmMsgLst);
 		output.setHolidayDateLst(lstDateHd);

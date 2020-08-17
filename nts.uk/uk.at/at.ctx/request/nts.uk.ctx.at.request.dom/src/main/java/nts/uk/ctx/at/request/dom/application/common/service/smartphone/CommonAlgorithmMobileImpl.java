@@ -361,7 +361,8 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 		PrePostAtr prePostAtr = otherCommonAlgorithm.preliminaryJudgmentProcessing(
 				appType,
 				opAppDate.get(), 
-				opOvertimeAppAtr.orElse(null));
+				opOvertimeAppAtr.orElse(null),
+				null);
 		return EnumAdaptor.valueOf(prePostAtr.value, PrePostInitAtr.class);
 	}
 

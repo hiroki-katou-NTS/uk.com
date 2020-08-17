@@ -194,7 +194,9 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 				inforGoBackCommonDirectOutput
 				.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().isPresent() ? inforGoBackCommonDirectOutput
 						.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().get() : null,
-				Collections.emptyList());
+				Collections.emptyList(),
+				inforGoBackCommonDirectOutput
+				.getAppDispInfoStartup());
 		return listResult;
 	}
 	/**Refactor4

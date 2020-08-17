@@ -261,7 +261,8 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 				application,
 				null,
 				appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().isPresent() ? appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().get() : null,
-				null);
+				null,
+				appStampOutput.getAppDispInfoStartupOutput());
 		
 		
 		return listConfirmMs;

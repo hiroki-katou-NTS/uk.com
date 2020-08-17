@@ -19,27 +19,27 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforIm
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.actuallock.ActualLockAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.actuallock.ActualLockImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.daycalendar.ObtainDeadlineDateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service.ActualLockingCheck;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service.DayActualConfirmDoneCheck;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service.MonthActualConfirmDoneCheck;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service.WorkConfirmDoneCheck;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.ApplyPossibleCheck;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.ReceptionRestrictionSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.applimitset.AppLimitSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class NewBeforeRegisterImpl implements NewBeforeRegister {
@@ -49,23 +49,12 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 	@Inject
 	private EmployeeRequestAdapter employeeAdaptor;
 	
-//	@Inject
-//	private ApplicationDeadlineRepository appDeadlineRepository;
-	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithmService;
-	
-//	@Inject
-//	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 	
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
 	
-	@Inject
-	private WorkplaceAdapter workplaceAdapter;
-	
-	@Inject
-	private ObtainDeadlineDateAdapter obtainDeadlineDateAdapter;
 	@Inject
 	private RequestSettingRepository requestSettingRepository;
 	@Inject
@@ -82,15 +71,6 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 
 	@Inject
 	private ActualLockingCheck actualLockingCheck;
-
-	@Inject
-	private ApplyPossibleCheck applyPossibleCheck;
-	
-	@Inject
-	private CollectApprovalRootPatternService approvalRootPatternService;
-	
-	@Inject
-	private StartupErrorCheckService startupErrorCheckService;
 	
     public void processBeforeRegister(Application application, OverTimeAtr overTimeAtr, boolean checkOver1Year, List<GeneralDate> lstDateHd){
 //		// アルゴリズム「未入社前チェック」を実施する
@@ -194,97 +174,59 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 		}
 	}
 	
-	public void deadlineApplicationCheck(String companyID, Integer closureID, String employeeID, 
-			GeneralDate deadlineStartDate, GeneralDate deadlineEndDate, GeneralDate appStartDate, GeneralDate appEndDate){
-		/*ログイン者のパスワードレベルが０の場合、チェックしない
-		ロールが決まったら、要追加*/
-		// if(passwordLevel!=0) return;
-		
-		// ドメインモデル「申請締切設定」．利用区分をチェックする(check利用区分)
-//		Optional<ApplicationDeadline> appDeadlineOp = appDeadlineRepository.getDeadlineByClosureId(companyID, closureID);
-//		if(!appDeadlineOp.isPresent()) {
-//			throw new RuntimeException("Not found ApplicationDeadline in table KRQST_APP_DEADLINE, closureID =" + closureID);
-//		}
-//		ApplicationDeadline appDeadline = appDeadlineOp.get();
-//		
-//		GeneralDate systemDate = GeneralDate.today();
-//		// ドメインモデル「申請締切設定」．利用区分をチェックする(check利用区分)
-//		if(appDeadline.getUserAtr().equals(UseAtr.NOTUSE)) { 
-//			return; 
-//		};
-//		
-//		// 申請する開始日(input)から申請する終了日(input)までループする
-//		for(int i = 0; appStartDate.compareTo(appEndDate) + i <= 0; i++){
-//			GeneralDate loopDate = appStartDate.addDays(i);
-//			if(loopDate.after(deadlineEndDate)){
-//				continue;
-//			}
-//			GeneralDate deadline = null;
-//			// ドメインモデル「申請締切設定」．締切基準をチェックする
-//			if(appDeadline.getDeadlineCriteria().equals(DeadlineCriteria.WORKING_DAY)) {
-//				// アルゴリズム「社員所属職場履歴を取得」を実行する
-//				WkpHistImport wkpHistImport = workplaceAdapter.findWkpBySid(employeeID, systemDate);
-//				// アルゴリズム「締切日を取得する」を実行する
-//				deadline = obtainDeadlineDateAdapter.obtainDeadlineDate(
-//						deadlineEndDate, 
-//						appDeadline.getDeadline().v(), 
-//						wkpHistImport.getWorkplaceId(), 
-//						companyID);
-//			} else {
-//				deadline = deadlineEndDate.addDays(appDeadline.getDeadline().v());
-//			}
-//			// システム日付と申請締め切り日を比較する
-//			if(systemDate.after(deadline)) {
-//				throw new BusinessException("Msg_327", deadline.toString(DATE_FORMAT)); 
-//			}
-//		}	
+	public void deadlineAppCheck(GeneralDate appStartDate, GeneralDate appEndDate,
+			GeneralDate closureStartDate, GeneralDate closureEndDate, AppDispInfoWithDateOutput appDispInfoWithDateOutput){
+		// INPUT．申請表示情報(基準日関係あり)．申請締め切り日利用区分をチェックする
+		if(appDispInfoWithDateOutput.getAppDeadlineUseCategory()==NotUseAtr.NOT_USE) {
+			return;
+		}
+		// INPUT．申請する開始日からINPUT．申請する終了日までループする
+		for(GeneralDate loopAppDate = appStartDate; loopAppDate.beforeOrEquals(appEndDate); loopAppDate = loopAppDate.addDays(1)) {
+			// 当月の申請をするかチェックする
+			if(loopAppDate.afterOrEquals(closureStartDate) && loopAppDate.beforeOrEquals(appEndDate)) {
+				// システム日付とINPUT．申請表示情報(基準日関係あり)．申請締め切り日を比較する
+				if(GeneralDate.today().after(appDispInfoWithDateOutput.getOpAppDeadline().get())) {
+					// エラーメッセージ(Msg_327)
+					throw new BusinessException("Msg_327", loopAppDate.toString());
+				}
+			}
+		}
 	}
 	
-	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType appType, PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate, OvertimeAppAtr overtimeAppAtr){
-		/*ログイン者のパスワードレベルが０の場合、チェックしない
-		ロールが決まったら、要追加*/
-		// if(passwordLevel!=0) return;
+	public void appAcceptanceRestrictionsCheck(PrePostAtr prePostAtr, GeneralDate appStartDate, GeneralDate appEndDate,
+			ApplicationType appType, OvertimeAppAtr overtimeAppAtr, AppDispInfoNoDateOutput appDispInfoNoDateOutput){
 		GeneralDate systemDate = GeneralDate.today();
-		
-		// キャッシュから取得
-//		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
-//		if(!appTypeDiscreteSettingOp.isPresent()) {
-//			throw new RuntimeException("Not found AppTypeDiscreteSetting in table KRQST_APP_TYPE_DISCRETE, appType =" +  appType);
-//		}
-//		Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
-//		List<ReceptionRestrictionSetting> receptionRestrictionSetting = new ArrayList<>();
-//		if(requestSetting.isPresent()){
-//			receptionRestrictionSetting = requestSetting.get().getApplicationSetting().getListReceptionRestrictionSetting().stream().filter(x -> x.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)).collect(Collectors.toList());
-//		}
-//		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
-//		
-//		// 事前事後区分(input)をチェックする
-//		if(postAtr.equals(PrePostAtr.POSTERIOR)){
-//			// ドメインモデル「事後の受付制限」．未来日許可しないをチェックする
-//			if (!appTypeDiscreteSetting.getRetrictPostAllowFutureFlg().equals(AllowAtr.ALLOW)) {
-//				return;
-//			}
-//			// 未来日の事後申請かチェックする
-//			if (startDate.after(systemDate) || endDate.after(systemDate)) {
-//				throw new BusinessException("Msg_328");
-//			} 
-//		} else {
-//			// ドメインモデル「事前の受付制限」．利用区分をチェックする
-//			if(appTypeDiscreteSetting.getRetrictPreUseFlg().equals(UseAtr.NOTUSE)){
-//				return;
-//			}
-//			// 申請する開始日(input)から申請する終了日(input)までループする
-//			boolean hasError = false;
-//			for(int i = 0; startDate.compareTo(endDate) + i <= 0; i++){
-//				// 対象日が申請可能かを判定する
-//				// error EA refactor 4
-//				// hasError = applyPossibleCheck.check(appType, startDate, overtimeAppAtr, appTypeDiscreteSetting, i, receptionRestrictionSetting);
-//				if (hasError == true) {
-//					throw new BusinessException("Msg_327", startDate.addDays(i).toString(DATE_FORMAT));
-//				}
-//			}
-//		
-//		}
+		ReceptionRestrictionSetting receptionRestrictionSetting = appDispInfoNoDateOutput.getApplicationSetting().getReceptionRestrictionSetting();
+		// INPUT．事前事後区分をチェックする
+		if(prePostAtr==PrePostAtr.POSTERIOR) {
+			// INPUT．申請設定（基準日関係なし）．申請承認設定．申請設定．受付制限設定．事後の受付制限．未来日許可しないをチェックする
+			if(!receptionRestrictionSetting.getAfterhandRestriction().isAllowFutureDay()) {
+				return;
+			}
+			// 未来日の事後申請かチェックする
+			if(appStartDate.after(systemDate) || appEndDate.after(systemDate)) {
+				// エラーメッセージ(Msg_328)
+				throw new BusinessException("Msg_328");
+			}
+		}
+		// INPUT．申請表示情報(基準日関係なし)．事前申請の受付制限をチェックする
+		if(appDispInfoNoDateOutput.getAdvanceAppAcceptanceLimit()==NotUseAtr.NOT_USE) {
+			return;
+		}
+		// INPUT．申請する開始日からINPUT．申請する終了日までループする
+		for(GeneralDate loopAppDate = appStartDate; loopAppDate.afterOrEquals(appEndDate); loopAppDate = loopAppDate.addDays(1)) {
+			// 対象日が申請可能かを判定する
+			boolean errorFlg = receptionRestrictionSetting.applyPossibleCheck(
+					appType, 
+					loopAppDate, 
+					overtimeAppAtr, 
+					appDispInfoNoDateOutput.getOpAdvanceReceptionDate().orElse(null), 
+					appDispInfoNoDateOutput.getOpAdvanceReceptionHours().orElse(null));
+			if(errorFlg) {
+				// エラーメッセージ(Msg_327)
+				throw new BusinessException("Msg_327", loopAppDate.toString());
+			}
+		}
 	}
 	
 	public void confirmationCheck(String companyID, String employeeID, GeneralDate appDate){
@@ -371,7 +313,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 	@Override
 	public List<ConfirmMsgOutput> processBeforeRegister_New(String companyID, EmploymentRootAtr employmentRootAtr, boolean agentAtr,
 			Application application, OvertimeAppAtr overtimeAppAtr, ErrorFlagImport errorFlg,
-			List<GeneralDate> lstDateHd) {
+			List<GeneralDate> lstDateHd, AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		// アルゴリズム「未入社前チェック」を実施する
 		retirementCheckBeforeJoinCompany(companyID, application.getEmployeeID(), application.getAppDate().getApplicationDate());
@@ -416,11 +358,12 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 		}
 
 		// アルゴリズム「申請の締め切り期限をチェック」を実施する
-		deadlineApplicationCheck(companyID, periodCurrentMonth.getClosureId().value, application.getEmployeeID(),
-				periodCurrentMonth.getStartDate(), periodCurrentMonth.getEndDate(), opStartDate.get(), opEndDate.get());
+		deadlineAppCheck(opStartDate.get(), opEndDate.get(), 
+				periodCurrentMonth.getStartDate(), periodCurrentMonth.getEndDate(), appDispInfoStartupOutput.getAppDispInfoWithDateOutput());
 		
 		// アルゴリズム「申請の受付制限をチェック」を実施する
-		applicationAcceptanceRestrictionsCheck(companyID, application.getAppType(), application.getPrePostAtr(), opStartDate.get(), opEndDate.get(), overtimeAppAtr);
+		appAcceptanceRestrictionsCheck(application.getPrePostAtr(), opStartDate.get(), opEndDate.get(), 
+				application.getAppType(), overtimeAppAtr, appDispInfoStartupOutput.getAppDispInfoNoDateOutput());
 		
 		// 申請する開始日～申請する終了日までループする
 		for(GeneralDate loopDate = opStartDate.get(); loopDate.beforeOrEquals(opEndDate.get()); loopDate = loopDate.addDays(1)){
