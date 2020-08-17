@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
+import nts.uk.ctx.at.request.dom.application.stamp.EngraveAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakout.GoOutReasonAtr;
 
@@ -31,7 +31,7 @@ public class AppRecordImageDto extends ApplicationDto{
 	
 	public AppRecordImage toDomain() {
 		return new AppRecordImage(
-				EnumAdaptor.valueOf(appStampCombinationAtr, AppStampCombinationAtr.class),
+				EnumAdaptor.valueOf(appStampCombinationAtr, EngraveAtr.class),
 				EnumAdaptor.valueOf(attendanceTime, AttendanceTime.class),
 				appStampGoOutAtr != null ? Optional.of(EnumAdaptor.valueOf(appStampGoOutAtr, GoOutReasonAtr.class)) : Optional.empty());
 	}

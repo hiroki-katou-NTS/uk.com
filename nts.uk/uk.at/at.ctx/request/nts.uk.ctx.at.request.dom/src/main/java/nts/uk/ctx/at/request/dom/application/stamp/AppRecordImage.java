@@ -18,8 +18,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakout.GoOutReaso
 //レコーダイメージ申請
 public class AppRecordImage extends Application{
 //	打刻区分
-	private AppStampCombinationAtr appStampCombinationAtr;
-	
+	private EngraveAtr appStampCombinationAtr;	
 //	申請時刻
 	private AttendanceTime attendanceTime;
 //	外出理由
