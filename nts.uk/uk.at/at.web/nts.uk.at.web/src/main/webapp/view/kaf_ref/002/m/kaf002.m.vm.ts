@@ -443,13 +443,13 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             let idGetList = self.id - 1;
             
             this.startTime = '<div class="startTime" style="display: block; margin: 0px 5px 5px 5px">'
-                + '<div align="center">'
+                + '<div align="center" style="padding-top: 10px; padding-bottom: 5px">'
                 + '<input style="width: 50px; text-align: center" data-name="Time Editor" data-bind="'
                 + 'ntsTimeEditor: {value: ' + param + '[' + idGetList + '].startTimeRequest , constraint: \'SampleTimeDuration\', inputFormat: \'time\', mode: \'time\', required: false}" />'
                 + '</div>'
                 + '</div>';
             this.endTime = '<div class="endTime" style="display: block; margin: 0px 5px 5px 5px">'
-                + '<div align="center">'
+                + '<div align="center" style="padding-top: 10px; padding-bottom: 5px">'
                 + '<input style="width: 50px; text-align: center" data-name="Time Editor" data-bind="'
                 + 'ntsTimeEditor: {value: ' + param + '[' + idGetList + '].endTimeRequest , constraint: \'SampleTimeDuration\', inputFormat: \'time\', mode: \'time\', required: false}" />'
                 + '</div>'

@@ -18,7 +18,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
     //  打刻申請起動時の表示情報.打刻申請設定.取消の機能の使用する　＝　使用する(use)
       // set visible for flag column
       isVisibleComlumn: boolean = true;
-      isPreAtr: KnockoutObservable<boolean> = ko.observable(false);
+      isPreAtr: KnockoutObservable<boolean> = ko.observable(true);
         created() {
             const self = this;
             self.dataSourceOb = ko.observableArray( [] );
