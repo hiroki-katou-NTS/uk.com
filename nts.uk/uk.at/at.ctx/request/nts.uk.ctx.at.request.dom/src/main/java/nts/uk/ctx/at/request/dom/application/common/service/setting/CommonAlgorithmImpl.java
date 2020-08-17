@@ -62,6 +62,7 @@ import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCom
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbyworkplace.RequestByWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
+import nts.uk.ctx.at.shared.dom.workmanagementmultiple.UseATR;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -161,7 +162,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				appReasonOutput.getDisplayAppReason(), 
 				appReasonOutput.getDisplayStandardReason(), 
 				appReasonOutput.getReasonTypeItemLst(), 
-				opWorkManagementMultiple.isPresent());
+				opWorkManagementMultiple.map(x -> x.getUseATR()==UseATR.use).orElse(false));
 		if(preAppAcceptLimit.isUseReceptionRestriction()) {
 			appDispInfoNoDateOutput.setOpAdvanceReceptionDate(preAppAcceptLimit.getOpAcceptableDate());
 			appDispInfoNoDateOutput.setOpAdvanceReceptionHours(preAppAcceptLimit.getOpAvailableTime());
