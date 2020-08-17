@@ -3,13 +3,11 @@ package nts.uk.ctx.at.record.app.command.reservation.bento;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationStateService;
+import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.shr.com.context.AppContexts;
@@ -44,16 +42,22 @@ public class ForceDeleteBentoReserveCommandHandler extends CommandHandler<ForceD
         val reservationDate = new ReservationDate(command.getDate(), closingTimeFrame);
         List<ReservationRegisterInfo> reservationRegisterInfos = new ArrayList<>();
         for (ForceDeleteBentoReserveCommand.ReservationInfo item : command.getReservationInfos()) {
-            // TODO
             RequireImpl require = new RequireImpl(getClosureStartForEmployee);
             boolean canModify = BentoReservationStateService.check(require, item.getEmpployeeId(), command.getDate());
 
             if (!canModify) {
-                ReservationRegisterInfo reservationRegisterInfo = new ReservationRegisterInfo(item.getReservationCardNo());
-                reservationRegisterInfos.add(reservationRegisterInfo);
+                throw new BusinessException("Msg_1838");
+            }
+
+            ReservationRegisterInfo reservationRegisterInfo = new ReservationRegisterInfo(item.getReservationCardNo());
+            reservationRegisterInfos.add(reservationRegisterInfo);
+        }
+        List<BentoReservation> bentoReservations = bentoReservationRepository.getReservationInformation(reservationRegisterInfos, reservationDate);
+        for (BentoReservation item : bentoReservations) {
+            if (item.getReservationDate().getClosingTimeFrame().value == command.getClosingTimeFrame()) {
+                bentoReservationRepository.delete(item);
             }
         }
-        bentoReservationRepository.delete(cid, reservationRegisterInfos, reservationDate);
     }
 
     @AllArgsConstructor
