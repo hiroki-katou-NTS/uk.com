@@ -5,6 +5,7 @@ module nts.uk.at.kmr004.test {
         PDF_ALL : "order/report/all/pdf",
         PDF_DETAIL : "order/report/detail/pdf",
         EXCEL : "order/report/print/excel",
+        EXCEL_DETAL : "order/report/print/excel-detail",
         exportFile: "bento/report/reservation/month"
     };
     const PATH = {
@@ -53,6 +54,19 @@ module nts.uk.at.kmr004.test {
             $("#exportTitle").trigger("validate");
             vm.$blockui("invisible");
             nts.uk.request.exportFile("at", API.EXCEL).done((data) => {
+                vm.$blockui("clear");
+            }).fail((res: any) => {
+                vm.$dialog.error({ messageId : res.messageId }).then(function(){
+                    vm.$blockui("clear");
+                });
+            });
+        }
+
+        printExcelDetail(){
+            let vm = this;
+            $("#exportTitle").trigger("validate");
+            vm.$blockui("invisible");
+            nts.uk.request.exportFile("at", API.EXCEL_DETAL).done((data) => {
                 vm.$blockui("clear");
             }).fail((res: any) => {
                 vm.$dialog.error({ messageId : res.messageId }).then(function(){
