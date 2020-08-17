@@ -9,11 +9,11 @@ package nts.uk.ctx.at.schedule.app.find.shift.pattern.dto;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkingCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingSetMemento;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * The Class WorkMonthlySettingDto.
@@ -78,7 +78,7 @@ public class WorkMonthlySettingDto implements WorkMonthlySettingSetMemento{
 	 * setSiftCode(nts.uk.ctx.at.shared.dom.worktime.SiftCode)
 	 */
 	@Override
-	public void setWorkingCode(WorkingCode workingCode) {
+	public void setWorkingCode(WorkTimeCode workingCode) {
 		this.workingCode = workingCode == null ? "" : workingCode.v();
 	}
 
