@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.query.ksu.ksu001q.command;
+package nts.uk.screen.at.app.ksu.ksu001q.command;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +23,8 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 
 /**
- * 外部予算日次を登録するHandler
+ * 外部予算日次を登録する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.予算管理.App.外部予算日次を登録する.外部予算日次を登録する
  * 
  * @author thanhlv
  *
@@ -56,44 +57,47 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 
 		// 外部予算日次を登録する
 		TargetOrgIdenInfor targetOrg = new TargetOrgIdenInfor(
-				TargetOrganizationUnit.valueOf(Integer.parseInt(command.getUnit())), Optional.ofNullable(workplaceId), Optional.ofNullable(workplaceGroupId));
+				TargetOrganizationUnit.valueOf(Integer.parseInt(command.getUnit())), Optional.ofNullable(workplaceId),
+				Optional.ofNullable(workplaceGroupId));
 
 		RequireImpl require = new RequireImpl(extBudgetDailyRepository);
 
 		String type = command.getType();
 		// 登録する(Require, 対象組織識別情報, 外部予算実績項目コード, 外部予算実績受入値年月日, Optional<外部予算実績値>)
 		// 登録する(対象組織、項目コード、年月日、外部予算実績値): AtomTask
-		if (type.equals("時間")) {
+		switch (type) {
+		case "時間":
 			for (DateAndValueMap item : dateAndValueMap) {
 				RegisterExtBudgetDailyService.signUp(require, targetOrg,
 						new ExtBudgetActItemCode(command.getItemCode()),
 						GeneralDate.fromString(item.getDate(), "yyyy/MM/dd"),
 						Optional.ofNullable(new ExtBudgetTime(Integer.parseInt(item.getValue()))));
 			}
-		}
-		if (type.equals("金額")) {
+			break;
+		case "金額":
 			for (DateAndValueMap item : dateAndValueMap) {
 				RegisterExtBudgetDailyService.signUp(require, targetOrg,
 						new ExtBudgetActItemCode(command.getItemCode()),
 						GeneralDate.fromString(item.getDate(), "yyyy/MM/dd"),
 						Optional.ofNullable(new ExtBudgetMoney(Integer.parseInt(item.getValue()))));
 			}
-		}
-		if (type.equals("人数")) {
+			break;
+		case "人数":
 			for (DateAndValueMap item : dateAndValueMap) {
 				RegisterExtBudgetDailyService.signUp(require, targetOrg,
 						new ExtBudgetActItemCode(command.getItemCode()),
 						GeneralDate.fromString(item.getDate(), "yyyy/MM/dd"),
 						Optional.ofNullable(new ExtBudgetNumberPerson(Integer.parseInt(item.getValue()))));
 			}
-		}
-		if (type.equals("数値")) {
+			break;
+		case "数値":
 			for (DateAndValueMap item : dateAndValueMap) {
 				RegisterExtBudgetDailyService.signUp(require, targetOrg,
 						new ExtBudgetActItemCode(command.getItemCode()),
 						GeneralDate.fromString(item.getDate(), "yyyy/MM/dd"),
 						Optional.ofNullable(new ExtBudgetNumericalVal(Integer.parseInt(item.getValue()))));
 			}
+			break;
 		}
 	}
 

@@ -6,7 +6,7 @@
 <body>
     <ui:composition template="../../../../master/dialog.xhtml">
         <ui:define name="htmlHead">
-            <script>var dialogSize = { width: 700, height: 910 };</script>
+            <script>var dialogSize = { width: 650, height: 860 };</script>
 
             <com:scriptfile set="IGNITE" />            
             <com:stylefile path="/view/kcp/006/a/fullcalendar-lib/nts-calendar.css" of="/nts.uk.at.web" />
@@ -21,35 +21,37 @@
 
         <ui:define name="content">
             <div id="functions-area">
-                <button tabindex="1" class="proceed">#{i18n.getText('KSU001_4001')}</button>
-                <button tabindex="2" style="margin-right: 5%; float:right"
-                    data-bind="click: closeDialog">#{i18n.getText('KSU001_4002')}</button>
+                <button tabindex="1" class="proceed" data-bind="click: registerShiftTable">#{i18n.getText('KSU001_4001')}</button>
+                <button tabindex="2" data-bind="click: closeDialog">#{i18n.getText('KSU001_4002')}</button>
             </div>
             <div id="content-area">
                 <div style="margin-left: 6%; margin-top: 20px;" data-bind="text: workplaceName"></div>
-                <hr style="margin: 10px 5%;" />
-                <div class="container-custom">
-                    <button tabindex="4" class=" auto-height">
-                        <div class="flex valign-center" > <i class="img-icon icon-prev"></i> #{i18n.getText('KSU001_4008')}</div>
-                    </button>                   
-                    <div data-bind="ntsPanel:{width: '129px', height: '15px', direction: 'bottom', showIcon: false, visible: true}" style="margin: 0px 10px;">
-                        <div style="margin-top: -6px; margin-left: 7px;"
-                                data-bind="ntsSwitchButton:{
-                                            name:'#[KSU001_4009]',
-                                            options: $vm.lstLicense,
-											optionsValue: 'licenseCode',
-											optionsText: 'licenseName',
-											value:  $vm.stepSelected,
-											required: true,
-                                            enable: true  }">
-                        </div>
-                    </div>               
-                    <button tabindex="7" class="auto-height">
-                        <div class="flex valign-center" >#{i18n.getText('KSU001_4012')}<i class="img-icon icon-next"></i></div>
-                    </button>
-
+                <hr style="margin: 10px 5%;" />                
+                    <div class="container-custom">
+                        <button tabindex="4" class="auto-height" data-bind="click: Prev">
+                            <div class="flex valign-center" > <i class="img-icon icon-prev"></i> #{i18n.getText('KSU001_4008')}</div>
+                        </button>                   
+                        <div data-bind="ntsPanel:{width: '129px', height: '15px', direction: 'bottom', showIcon: false, visible: true}" style="margin: 0px 10px;">
+                            <div style="margin-top: -6px; margin-left: 7px;"
+                                    data-bind="ntsSwitchButton:{
+                                                name:'#[KSU001_4009]',
+                                                options: $vm.lstStep,
+                                                optionsValue: 'code',
+                                                optionsText: 'name',
+                                                value:  $vm.stepSelected,
+                                                required: true,
+                                                enable: true  }">
+                            </div>
+                        </div>               
+                        <button tabindex="7" class="auto-height" data-bind="click: Forward">
+                            <div class="flex valign-center" >#{i18n.getText('KSU001_4012')}<i class="img-icon icon-next"></i></div>
+                        </button>                           
+                    </div>  
+                
+                <div class="container-custom-btn">
+                    <button tabindex="8" class ="normal" data-bind="click: clearBtn" >#{i18n.getText('KSU001_4013')}</button>
                 </div>
-                <div class="container-custom">
+                <div class="container-custom"> 
                     <div class="nts-calendar-container ">
                         <com:ko-if bind="showCalendarHeader">
                             <div class="nts-calendar-header">
@@ -63,7 +65,7 @@
                                 showJumpButtons: true}"></div>
                             </div>
                         </com:ko-if>
-                        <div id="calendar" data-bind="ntsCalendar: {
+                        <div id="calendar" style="width: 500px;" data-bind="ntsCalendar: {
                             optionDates: optionDates, 
                             yearMonth: yearMonthPicked, 
                             firstDay: firstDay, 
@@ -77,11 +79,8 @@
                             cellButtonDisplay: cellButtonDisplay}"></div>
                     </div>
 
-                </div>
-              
-
-            </div>
-            <button style="float: right; margin-right: 7%;" tabindex="8" class ="large" >#{i18n.getText('KSU001_4013')}</button>
+                </div>  
+            </div>            
 
         </ui:define>
     </ui:composition>

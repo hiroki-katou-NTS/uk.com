@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBasicInfo;
@@ -183,6 +184,15 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			this.commandProxy().remove(KscdtSchBasicInfo.class, new KscdtSchBasicInfoPK(sid, ymd));
 		}	
 	}
-
+	
+	@Override
+	public void delete(String sid, DatePeriod datePeriod) {
+		datePeriod.forEach(ymd->{
+			Optional<WorkSchedule> optWorkSchedule = this.get(sid, ymd);
+			if(optWorkSchedule.isPresent()){
+				this.commandProxy().remove(KscdtSchBasicInfo.class, new KscdtSchBasicInfoPK(sid, ymd));
+			}
+		});
+	}
 
 }

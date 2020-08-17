@@ -24,7 +24,7 @@ module test.viewmodel {
 		openDialog() {
 			let self = this;
 			nts.uk.ui.block.invisible();
-			setShared('dataForJD', {});
+			setShared('dataForJD', {target: 2, targetID:"", pageNumber: 1});
 			nts.uk.ui.windows.sub.modal("/view/ksu/001/jd/index.xhtml", { dialogClass: "no-close" })
 				.onClosed(() => {
 //					let isCancel = getShared('kdl044_IsCancel') != null ? getShared('kdl044_IsCancel') : true;

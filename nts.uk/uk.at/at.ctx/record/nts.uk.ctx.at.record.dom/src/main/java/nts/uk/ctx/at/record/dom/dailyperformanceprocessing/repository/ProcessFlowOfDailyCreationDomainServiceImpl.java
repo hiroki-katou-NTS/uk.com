@@ -35,6 +35,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -141,16 +142,22 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 			// fix bug 110491
 			GeneralDateTime dailyCreateStartTime = GeneralDateTime.now();
 			
-			Optional<ExecutionLog> dailyCreationLog =
+			Optional<ExecutionLog> dailyCreationLog = 
 					Optional.of(logsMap.get(ExecutionContent.DAILY_CREATION));
 //			finalStatus = this.createDailyResultDomainService.createDailyResult(asyncContext, employeeIdList,
 //					periodTime, executionAttr, companyId, empCalAndSumExecLogID, dailyCreationLog);
-			
+			ExecutionTypeDaily executionTypeDaily = ExecutionTypeDaily.CREATE;
+			if(dailyCreationLog.isPresent() &&dailyCreationLog.get().getDailyCreationSetInfo().isPresent()) {
+				if( dailyCreationLog.get().getDailyCreationSetInfo().get().getExecutionType() == ExecutionType.RERUN ) {
+					executionTypeDaily = ExecutionTypeDaily.DELETE_ACHIEVEMENTS;
+				}
+				
+			}
 			Optional<Boolean> checkLock = dailyCreationLog.isPresent()
 					? Optional.ofNullable(dailyCreationLog.get().getIsCalWhenLock())
 					: Optional.empty();
 			finalStatus =createDailyResultDomainServiceNew.createDailyResult(asyncContext, employeeIdList, periodTime, executionAttr,
-					companyId, ExecutionTypeDaily.DELETE_ACHIEVEMENTS,empCalAndSumExeLog, checkLock).value ==0?ProcessState.INTERRUPTION:ProcessState.SUCCESS;
+					companyId, executionTypeDaily,empCalAndSumExeLog, checkLock).value ==0?ProcessState.INTERRUPTION:ProcessState.SUCCESS;
 			
 			//*****　更新タイミングが悪い。ここで書かずに、日別作成の中で書くべき。（2018.1.16 Shuichi Ishida）
 			//***** タイミング調整に関しては、実行ログの監視処理の完了判定も、念のため、確認が必要。

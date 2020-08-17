@@ -36,7 +36,7 @@ public class TimeStampDto implements ItemConst {
 	private int stampSourceInfo;
 	
 	public static TimeStampDto createTimeStamp(WorkStamp c) {
-		return c == null || c.getTimeDay().getTimeWithDay() == null ? null : new TimeStampDto(c.getTimeDay().getTimeWithDay().get().valueAsMinutes(),
+		return c == null || c.getTimeDay().getTimeWithDay()  == null  || !c.getTimeDay().getTimeWithDay().isPresent()? null : new TimeStampDto(c.getTimeDay().getTimeWithDay().get().valueAsMinutes(),
 												c.getAfterRoundingTime().valueAsMinutes(),
 												!c.getLocationCode().isPresent() ? null : c.getLocationCode().get().v(),
 												c.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value);

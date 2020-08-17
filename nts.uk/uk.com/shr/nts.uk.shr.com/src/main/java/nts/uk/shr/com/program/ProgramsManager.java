@@ -770,7 +770,7 @@ public class ProgramsManager {
     /**
      * KSU001Q
      */
-    public static final Program KSU001Q = new Program(WebAppId.AT, ProgramIdConsts.KSU001Q, "",
+    public static final Program KSU001Q = new Program(WebAppId.AT, ProgramIdConsts.KSU001Q, "KSU001_3701",
             "/view/ksu/001/q/index.xhtml");
     /**
      * KML002A

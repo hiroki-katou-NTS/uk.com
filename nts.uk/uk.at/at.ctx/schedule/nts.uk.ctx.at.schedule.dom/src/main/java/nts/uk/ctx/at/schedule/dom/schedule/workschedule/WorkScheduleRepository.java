@@ -3,6 +3,7 @@ package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 
 /**
@@ -35,6 +36,8 @@ public interface WorkScheduleRepository {
 	void update(WorkSchedule workSchedule);
 	/** Delete (勤務予定) **/
 	void delete(String sid , GeneralDate ymd);
+
+	void delete(String sid, DatePeriod datePeriod);
 	
 }
 

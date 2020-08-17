@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -19,7 +20,7 @@ public class TemporaryTimeOfDailyAttd implements DomainObject {
 	
 	// 1 ~ 3
 	//出退勤
-	private List<TimeLeavingWork> timeLeavingWorks;
+	private List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
 
 	public TemporaryTimeOfDailyAttd(WorkTimes workTimes, List<TimeLeavingWork> timeLeavingWorks) {
 		super();

@@ -34,7 +34,6 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditState
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ReflectWorkInforDomainService;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
-import nts.uk.ctx.at.shared.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -76,7 +75,10 @@ public class TimeLeavingOfDailyService {
 		if (wt == null) {
 			return EventHandleResult.withResult(EventHandleAction.ABORT, working);
 		}
-		Optional<TimeLeavingOfDailyPerformance> dailyPerformance = Optional.ofNullable(new TimeLeavingOfDailyPerformance(wi.getEmployeeId(), wi.getYmd(), working.getAttendanceLeave().isPresent() ? working.getAttendanceLeave().get() : null));
+		Optional<TimeLeavingOfDailyPerformance> dailyPerformance = !working.getAttendanceLeave().isPresent()
+				|| working.getAttendanceLeave() == null ? Optional.empty()
+						: Optional.of(new TimeLeavingOfDailyPerformance(wi.getEmployeeId(), wi.getYmd(),
+								working.getAttendanceLeave().get()));
 		TimeLeavingOfDailyPerformance tlo = getWithDefaul(dailyPerformance,
 				() -> getTimeLeaveDefault(wi.getEmployeeId(), wi.getYmd()));
 
