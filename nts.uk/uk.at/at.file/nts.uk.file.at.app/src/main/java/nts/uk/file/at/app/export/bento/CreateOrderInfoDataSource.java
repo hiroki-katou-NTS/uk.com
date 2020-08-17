@@ -27,4 +27,5 @@ public class CreateOrderInfoDataSource {
     private String detailTitle;
     private int reservationClosingTimeFrame;
     private boolean isBreakPage;
+    private String reservationTimeZone;
 }
