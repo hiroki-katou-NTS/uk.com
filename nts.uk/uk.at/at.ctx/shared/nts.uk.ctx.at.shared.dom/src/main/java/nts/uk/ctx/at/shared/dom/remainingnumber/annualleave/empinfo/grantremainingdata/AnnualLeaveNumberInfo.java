@@ -13,6 +13,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.*;
 
+/**
+ * 年休明細
+ * @author masaaki_jinno
+ *
+ */
 @Getter
 //@AllArgsConstructor
 public class AnnualLeaveNumberInfo extends LeaveNumberInfo implements Serializable {

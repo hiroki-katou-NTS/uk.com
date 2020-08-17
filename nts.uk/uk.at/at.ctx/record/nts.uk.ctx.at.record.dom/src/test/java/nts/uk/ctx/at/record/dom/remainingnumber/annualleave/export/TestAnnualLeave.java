@@ -26,9 +26,13 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualL
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata.TestData;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata.TestDataForOverWriteList;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata.TestOutputAggrResultOfAnnualLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.GetHolidayOver60hRemNumWithinPeriod;
+import nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.GetHolidayOver60hRemNumWithinPeriodImpl;
+import nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.param.AggrResultOfHolidayOver60h;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingTimes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
+import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolidayOver60hMngWork;
 
 /**
  * 年休　テストコード
@@ -51,6 +55,43 @@ public class TestAnnualLeave {
 	
 	/** テストケース */
 	private List<AnnualleaveTestCase> caseList;
+	
+	
+	
+	
+	
+//	GetHolidayOver60hRemNumWithinPeriod.RequireM1 require
+//		= new GetHolidayOver60hRemNumWithinPeriodImpl.GetHolidayOver60hRemNumWithinPeriodRequireM1();
+//	
+//	CacheCarrier cacheCarrier1 = new CacheCarrier();
+//	String companyId1 = "XXX";
+//	String employeeId1 = "";
+//	DatePeriod aggrPeriod1;
+//	InterimRemainMngMode mode1;
+//	GeneralDate criteriaDate;
+//		
+//	GetHolidayOver60hRemNumWithinPeriod a 
+//		= new GetHolidayOver60hRemNumWithinPeriodImpl();
+//	
+//	AggrResultOfHolidayOver60h aggrResultOfHolidayOver60h
+//		= a.algorithm(
+//			require, 
+//			cacheCarrier1,
+//			companyId1, 
+//			employeeId1, 
+//			aggrPeriod1, 
+//			mode1,
+//			criteriaDate, 
+//			Optional.empty(),
+//			Optional.empty(),
+//			Optional.empty()
+//			);
+	
+	
+		
+		
+		
+	
 	
 	/*検証用のドメイン取得処理*/
 	@Before

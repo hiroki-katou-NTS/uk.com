@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service;
 /**
- * 特別休暇の集計結果情報
+ * 特別休暇の集計結果情報 　　未使用　神野
  * @author do_dt
  *
  */

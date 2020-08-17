@@ -21,6 +21,7 @@ public class AnnualLeaveUsedNumber implements Cloneable, SerializableWithOptiona
 	
 	/** 使用日数 */
 	private AnnualLeaveUsedDays usedDays;
+	
 	/** 使用時間 */
 	private Optional<AnnualLeaveUsedTime> usedTime;
 	

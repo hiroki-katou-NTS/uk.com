@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 明細   
+ * 明細   （休暇数情報）
  * @author masaaki_jinno
  *
  */

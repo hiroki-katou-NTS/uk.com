@@ -24,9 +24,10 @@ public class AnnualLeave implements Cloneable, Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	/** 使用数 */
+	/** 使用情報 */
 	private AnnualLeaveUsedInfo usedNumberInfo;
-	/** 残数 */
+	
+	/** 残数情報 */
 	private AnnualLeaveRemainingNumberInfo remainingNumberInfo;
 	
 //	/** 残数付与前 */

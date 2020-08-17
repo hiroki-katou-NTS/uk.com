@@ -1,12 +1,15 @@
-package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber;
+package nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
 
 @Getter
 @Setter
@@ -15,10 +18,15 @@ import lombok.Setter;
 // 特別休暇残数
 public class SpecialLeaveRemainingNumber {
 
-	// 日数
+	/** 合計残日数 */
 	public DayNumberOfRemain dayNumberOfRemain;
-	// 時間
+	
+	/** 合計残時間 */
 	public Optional<TimeOfRemain> timeOfRemain;
+	
+	/** 明細 */
+	private List<SpecialLeaveRemainingDetail> details;
+	
 	
 	private SpecialLeaveRemainingNumber(BigDecimal days, Integer minutes) {
 		this.dayNumberOfRemain = new DayNumberOfRemain(days== null? 0.0d: days.doubleValue());
