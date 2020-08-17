@@ -5,7 +5,6 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoUpdateService;
-import nts.uk.ctx.at.record.dom.reservation.bento.UpdateBentoMenuHistService;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 

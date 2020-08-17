@@ -17,6 +17,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Optional;
 @Stateless
 public class UpdateBentoMenuHistCommandHandler extends CommandHandler<UpdateBentoMenuHistCommand> {
@@ -25,9 +26,9 @@ public class UpdateBentoMenuHistCommandHandler extends CommandHandler<UpdateBent
     @Override
     protected void handle(CommandHandlerContext<UpdateBentoMenuHistCommand> commandHandlerContext) {
         val command = commandHandlerContext.getCommand();
-        val cid = AppContexts.user().companyId();
+         val cid = AppContexts.user().companyId();
         RequireImpl requei = new RequireImpl(bentoMenuHistoryRepository);
-         AtomTask atomTask = UpdateBentoMenuHistService.register(requei,
+          AtomTask atomTask = UpdateBentoMenuHistService.register(requei,
                 new DatePeriod(command.startDatePerio,command.endDatePerio),command.getHistoryId(),cid);
         transaction.execute(()->{
             atomTask.run();
@@ -44,7 +45,7 @@ public class UpdateBentoMenuHistCommandHandler extends CommandHandler<UpdateBent
         }
 
         @Override
-        public void update(DateHistoryItem item) {
+        public void update(List<DateHistoryItem> item) {
             bentoMenuHistoryRepository.update(BentoMenuHistory.toDomain(AppContexts.user().companyId(),item));
 
         }

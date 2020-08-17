@@ -53,6 +53,8 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 
 	private static final String FIND_RESERVATION_INFOMATION;
 
+	private static final String FIND_ALL_RESERVATION_OF_A_BENTO;
+
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a.CID, a.RESERVATION_ID, a.CONTRACT_CD, a.RESERVATION_YMD, a.RESERVATION_FRAME, a.CARD_NO, a.ORDERED,");
@@ -102,6 +104,12 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
         builderString.append(SELECT);
         builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD = 'date' ");
         FIND_RESERVATION_INFOMATION = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append(SELECT);
+		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD >= 'startDate' AND a.RESERVATION_YMD <= 'endDate'" +
+				" AND a.RESERVATION_FRAME = 'closingTimeFrame' AND b.pk.frameNo = frameNo ");
+		FIND_ALL_RESERVATION_OF_A_BENTO = builderString.toString();
 	}
 	
 	@AllArgsConstructor
@@ -247,40 +255,34 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
         query = query.replaceFirst("startDate", period.start().toString());
         query = query.replaceFirst("endDate", period.end().toString());
         query = query.replaceFirst("ordered", orderedParam);
-        try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
-            ResultSet rs = stmt.executeQuery();
-            List<BentoReservation> bentoReservationLst = toEntity(createFullJoinBentoReservation(rs))
-                    .stream().map(x -> x.toDomain()).collect(Collectors.toList());
-            return bentoReservationLst;
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        }
+        return getBentoReservations(query);
+//        try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+//            ResultSet rs = stmt.executeQuery();
+//            List<BentoReservation> bentoReservationLst = toEntity(createFullJoinBentoReservation(rs))
+//                    .stream().map(x -> x.toDomain()).collect(Collectors.toList());
+//            return bentoReservationLst;
+//        } catch (SQLException ex) {
+//            throw new RuntimeException(ex);
+//        }
     }
 
 	@Override
 	public List<BentoReservation> getReservationDetailFromOrder(List<ReservationRegisterInfo> inforLst, DatePeriod period, ReservationClosingTimeFrame closingTimeFrame, boolean ordered, List<WorkLocationCode> workLocationCode) {
 		String query = GET_RESERVATION_DETAIL_FROM_ORDER;
-
 		List<String> cardLst = inforLst.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList());
-		String cardLstStr = "";
-		cardLstStr = getString(inforLst, cardLst, cardLstStr);
-		String orderedParam = "";
-		if(ordered) {
-			orderedParam = "1";
-		} else {
-			orderedParam = "0,1";
-		}
+		String cardLstStr = getString(inforLst, cardLst);
+		String orderedParam;
+		if(ordered) orderedParam = "1";
+		else orderedParam = "0,1";
 
 		List<String> workLst = workLocationCode.stream().map(x -> x.v()).collect(Collectors.toList());
-		String workLstStr = "";
-		workLstStr = getStringWork(workLocationCode, workLst, workLstStr);
+		String workLstStr = getStringWork(workLocationCode, workLst);
 
 		if (workLocationCode.size() > 0){
 			query += " AND a.WORK_LOCATION_CD IN (workLstStr) ";
 			query = query.replaceFirst("workLocationCode", workLstStr);
-		}else {
+		}else
 			query += " AND a.WORK_LOCATION_CD = NULL ";
-		}
 
 		query = query.replaceFirst("cardLst", cardLstStr);
 		query = query.replaceFirst("startDate", period.start().toString());
@@ -294,69 +296,47 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
     public List<BentoReservation> getAllReservationDetail(
 			List<ReservationRegisterInfo> inforLst, DatePeriod period,ReservationClosingTimeFrame closingTimeFrame,
 			List<WorkLocationCode> workLocationCode) {
-        String query = FIND_ALL_RESERVATION_DETAIL;
-	    List<String> cardLst = inforLst.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList());
-        String cardLstStr = "";
-        cardLstStr = getString(inforLst, cardLst, cardLstStr);
-
-		List<String> workLst = workLocationCode.stream().map(x -> x.v()).collect(Collectors.toList());
-		String workLstStr = "";
-		workLstStr = getStringWork(workLocationCode, workLst, workLstStr);
-
-		if (workLocationCode.size() > 0){
-			query += " AND a.WORK_LOCATION_CD IN (workLstStr) ";
-			query = query.replaceFirst("workLocationCode", workLstStr);
-		}else {
-			query += " AND a.WORK_LOCATION_CD = NULL ";
-		}
-        query = query.replaceFirst("cardLst", cardLstStr);
-		query = query.replaceFirst("startDate", period.start().toString());
-		query = query.replaceFirst("endDate", period.end().toString());
-		query = query.replaceFirst("closingTimeFrame", String.valueOf(closingTimeFrame));
-		return getBentoReservations(query);
+		return handleQuery(inforLst, period, closingTimeFrame, workLocationCode, FIND_ALL_RESERVATION_DETAIL);
     }
 
-    @Override
+	@Override
     public List<BentoReservation> acquireReservationDetails(
 			List<ReservationRegisterInfo> inforLst, DatePeriod period,ReservationClosingTimeFrame closingTimeFrame,
 			List<WorkLocationCode> workLocationCode) {
-        String query = ACQUIRED_RESERVATION_DETAIL;
-        List<String> cardLst = inforLst.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList());
-        String cardLstStr = "";
-        cardLstStr = getString(inforLst, cardLst, cardLstStr);
+		return handleQuery(inforLst, period, closingTimeFrame, workLocationCode, ACQUIRED_RESERVATION_DETAIL);
+    }
+
+	private List<BentoReservation> handleQuery(List<ReservationRegisterInfo> inforLst, DatePeriod period, ReservationClosingTimeFrame closingTimeFrame, List<WorkLocationCode> workLocationCode, String query) {
+		List<String> cardLst = inforLst.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList());
+		String cardLstStr = getString(inforLst, cardLst);
 
 		List<String> workLst = workLocationCode.stream().map(x -> x.v()).collect(Collectors.toList());
-		String workLstStr = "";
-		workLstStr = getStringWork(workLocationCode, workLst, workLstStr);
+		String workLstStr = getStringWork(workLocationCode, workLst);
 
 		if (workLocationCode.size() > 0){
 			query += " AND a.WORK_LOCATION_CD IN (workLstStr) ";
 			query = query.replaceFirst("workLocationCode", workLstStr);
-		}else {
+		}else
 			query += " AND a.WORK_LOCATION_CD = NULL ";
-		}
-
-        query = query.replaceFirst("cardLst", cardLstStr);
+		query = query.replaceFirst("cardLst", cardLstStr);
 		query = query.replaceFirst("startDate", period.start().toString());
 		query = query.replaceFirst("endDate", period.end().toString());
 		query = query.replaceFirst("closingTimeFrame", String.valueOf(closingTimeFrame));
 		return getBentoReservations(query);
-    }
+	}
 
     @Override
     public List<BentoReservation> getEmployeeNotOrder(List<ReservationRegisterInfo> inforLst, ReservationDate reservationDate) {
 		String query = GET_EMPLOYEE_NOT_ORDER;
 		List<String> cardLst = inforLst.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList());
-		String cardLstStr = "";
-		cardLstStr = getString(inforLst, cardLst, cardLstStr);
+		String cardLstStr = getString(inforLst, cardLst);
 
 		query = query.replaceFirst("cardLst", cardLstStr);
 		query = query.replaceFirst("date", reservationDate.getDate().toString());
 		List<BentoReservation> bentoReservations = getBentoReservations(query);
 
-		if (bentoReservations.size() <= 0){
+		if (bentoReservations.size() <= 0)
 			return inforLst.stream().map(x -> x.convertToBentoReservation(x,reservationDate)).collect(Collectors.toList());
-		}
 
 		List<ReservationRegisterInfo> reservationRegisterInfos = inforLst.stream().filter(x -> bentoReservations.contains(x.getReservationCardNo())).collect(Collectors.toList());
 
@@ -367,12 +347,9 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
     public List<BentoReservation> getReservationInformation(List<ReservationRegisterInfo> inforLst, ReservationDate reservationDate) {
 		String query = FIND_RESERVATION_INFOMATION;
 		List<String> cardLst = inforLst.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList());
-		String cardLstStr = "";
-		cardLstStr = getString(inforLst, cardLst, cardLstStr);
-
+		String cardLstStr = getString(inforLst, cardLst);
 		query = query.replaceFirst("cardLst", cardLstStr);
 		query = query.replaceFirst("date", reservationDate.getDate().toString());
-
 		return getBentoReservations(query);
     }
 
@@ -387,13 +364,9 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
         }
     }
 
-    private String getString(List<ReservationRegisterInfo> inforLst, List<String> cardLst, String cardLstStr) {
-        if(CollectionUtil.isEmpty(inforLst)) {
-            cardLstStr = "''";
-        } else {
-			cardLstStr = handleList(cardLst);
-        }
-        return cardLstStr;
+    private String getString(List<ReservationRegisterInfo> inforLst, List<String> cardLst) {
+        if(CollectionUtil.isEmpty(inforLst)) return "''";
+        else return handleList(cardLst);
 	}
 
 	@Override
@@ -401,13 +374,35 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		commandProxy().update(KrcdtReservation.fromDomain(bentoReservation));
 	}
 
-    private String getStringWork(List<WorkLocationCode> workLocationCodes, List<String> workLst, String workLstStr) {
-        if(CollectionUtil.isEmpty(workLocationCodes)) {
-			workLstStr = "''";
-        } else {
-			workLstStr = handleList(workLst);
-        }
-        return workLstStr;
+	@Override
+	@SneakyThrows
+	public List<BentoReservation> getAllReservationOfBento(int frameNo,
+														   List<ReservationRegisterInfo> inforLst, DatePeriod period, ReservationClosingTimeFrame closingTimeFrame,
+														   List<WorkLocationCode> workLocationCode) {
+		String query = FIND_ALL_RESERVATION_OF_A_BENTO;
+		List<String> cardLst = inforLst.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList());
+		String cardLstStr = getString(inforLst, cardLst);
+
+		List<String> workLst = workLocationCode.stream().map(x -> x.v()).collect(Collectors.toList());
+		String workLstStr = getStringWork(workLocationCode, workLst);
+
+		if (workLocationCode.size() > 0){
+			query += " AND a.WORK_LOCATION_CD IN (workLstStr) ";
+			query = query.replaceFirst("workLocationCode", workLstStr);
+		}else
+			query += " AND a.WORK_LOCATION_CD = NULL ";
+
+		query = query.replaceFirst("frameNo", String.valueOf(frameNo));
+		query = query.replaceFirst("cardLst", cardLstStr);
+		query = query.replaceFirst("startDate", period.start().toString());
+		query = query.replaceFirst("endDate", period.end().toString());
+		query = query.replaceFirst("closingTimeFrame", String.valueOf(closingTimeFrame));
+		return getBentoReservations(query);
+	}
+
+	private String getStringWork(List<WorkLocationCode> workLocationCodes, List<String> workLst) {
+        if(CollectionUtil.isEmpty(workLocationCodes)) return  "''";
+        else return handleList(workLst);
     }
 
     private String handleList(List<String> list){

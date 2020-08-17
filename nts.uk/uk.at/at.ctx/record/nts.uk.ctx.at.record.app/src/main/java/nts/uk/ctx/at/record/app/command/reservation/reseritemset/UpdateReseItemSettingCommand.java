@@ -5,7 +5,7 @@ import lombok.Value;
 
 import java.math.BigDecimal;
 
-@Value
+//@Value
 public class UpdateReseItemSettingCommand extends CreateReseItemSettingCommand {
 
 }
