@@ -5274,13 +5274,15 @@ module nts.uk.ui.exTable {
             }
             
             let div = agencies[index];
-            div.style.left = left + "px";
-            div.style.height = height + "px";
-            
-            if (vertSumHidden) {
-                helper.addClass(div, STAY_CLS);
-            } else {
-                helper.removeClass(div, STAY_CLS);
+            if (!_.isNil(div)) {
+                div.style.left = left + "px";
+                div.style.height = height + "px";
+                
+                if (vertSumHidden) {
+                    helper.addClass(div, STAY_CLS);
+                } else {
+                    helper.removeClass(div, STAY_CLS);
+                }
             }
         }
         
@@ -6436,7 +6438,7 @@ module nts.uk.ui.exTable {
             let self = this;
             switch(name) {
                 case "setHeight":
-                    resize.setHeight(self, params[0]); 
+                    resize.setHeight(self[0], params[0]); 
                     break;
                 case "gridHeightMode":
                     changeGridHeightMode(self, params[0]);

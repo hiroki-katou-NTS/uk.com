@@ -534,4 +534,10 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 		return scheduleStartClock.greaterThanOrEqualTo(scheduleEndClock);
 	}
 
+	@Override
+	public List<WorkType> getAllWorkTypeNotAbolished(String companyId) {
+		List<WorkType> data = workTypeRepo.getAllWorkTypeNotAbolished(companyId);
+		return data;
+	}
+
 }

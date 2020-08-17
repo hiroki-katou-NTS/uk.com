@@ -10,101 +10,80 @@ module nts.uk.at.view.ksu001.a.viewmodel {
     import formatById = nts.uk.time.format.byId;
     import openDialog = nts.uk.ui.windows.sub.modal;
     import getText = nts.uk.resource.getText;
-
+    import util = nts.uk.util;
 
     /**
      * load screen O->Q->A
      * reference file a.start.ts
      */
     export class ScreenModel {
-        employeeIdLogin: string = null;
-        //tree-grid
-        itemsTree: KnockoutObservableArray<Node>;
-        selectedCodeTree: KnockoutObservableArray<Node>;
-        singleSelectedCodeTree: KnockoutObservable<Node>;
+
+        employeeIdLogin: string = __viewContext.user.employeeId;
+        key: string;
 
         empItems: KnockoutObservableArray<PersonModel> = ko.observableArray([]);
-        dataSource: KnockoutObservableArray<BasicSchedule> = ko.observableArray([]);
-        ccgcomponent: GroupOption = ko.observable();
-        selectedCode: KnockoutObservableArray<any> = ko.observableArray([]);
-        showinfoSelectedEmployee: KnockoutObservable<boolean> = ko.observable(true);
+        
+        visibleShiftPalette: KnockoutObservable<boolean> = ko.observable(true);
+        mode: KnockoutObservable<string> = ko.observable('edit'); // edit || confirm 
+        showA9: boolean;
 
-        //Pop-up
-        items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-        columns: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([
-            { headerText: getText("KSU001_19"), key: 'code', width: 50 },
-            { headerText: getText("KSU001_20"), key: 'name', width: 150 },
-            { headerText: 'コード', key: 'id', width: 50, hidden: true },
-        ]);
-        currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
+        // A4 popup-area6 
+        // A4_4
+        selectedModeDisplayInBody: KnockoutObservable<number> = ko.observable(undefined);
 
-        backgroundColorList: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            new ItemModel('001', '就業時間帯'),
-            new ItemModel('002', '通常')
-        ]);
-        selectedBackgroundColor: KnockoutObservable<string> = ko.observable('001');
-        itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            new ItemModel('基本給1', '基本給'),
-            new ItemModel('基本給2', '役職手当'),
-            new ItemModel('基本給3', '基本給')
-        ]);
-        selectedCode1: KnockoutObservable<string> = ko.observable('0003');
-        roundingRules: KnockoutObservableArray<any> = ko.observableArray([
-            new BoxModel(1, getText("KSU001_89")),
-            new BoxModel(2, getText("KSU001_90")),
-        ]);
-        selectedDisplayLastWeek: any = ko.observable(1);
-        selectedDisplayBank: any = ko.observable(1);
-        selectedDisplayVertical: any = ko.observable(1);
-        selectedCompareMonth: any = ko.observable(1);
-        itemList1: KnockoutObservableArray<any> = ko.observableArray([
-            new BoxModel(1, '画面サイズ'),
-            new BoxModel(2, '高さを指定'),
-        ]);
-        selectedTypeHeightExTable: KnockoutObservable<number> = ko.observable(1);
-        isEnableInputHeight: KnockoutObservable<boolean> = ko.observable(false);
+        // A4_7
+        achievementDisplaySelected: KnockoutObservable<number> = ko.observable(2);
+
+        // A4_12
+        backgroundColorSelected: KnockoutObservable<string> = ko.observable(0);
+        showComboboxA4_12: KnockoutObservable<boolean> = ko.observable(true);
+
         isEnableCompareMonth: KnockoutObservable<boolean> = ko.observable(true);
 
-        itemList2: KnockoutObservableArray<any> = ko.observableArray([
-            new BoxModel(1, getText("KSU001_339")),
-            new BoxModel(2, getText("KSU001_340")),
-            new BoxModel(3, getText("KSU001_341"))
-        ]);
-        selectedIds: KnockoutObservableArray<number> = ko.observableArray([1, 2]);
         popupVal: KnockoutObservable<string> = ko.observable('');
         selectedDate: KnockoutObservable<string> = ko.observable('1993/23/12');
 
-        //Date time
+        //Date time A3_1
+
         currentDate: Date = new Date();
-        dtPrev: KnockoutObservable<Date> = ko.observable(null);
-        dtAft: KnockoutObservable<Date> = ko.observable(null);
+        dtPrev: KnockoutObservable<Date> = ko.observable(new Date()); // A3_1_2
+        dtAft: KnockoutObservable<Date> = ko.observable(new Date());  // A3_1_4
         dateTimePrev: KnockoutObservable<string>;
         dateTimeAfter: KnockoutObservable<string>;
 
-        //Switch
-        timePeriod: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 1, name: '抽出' },
-            { code: 2, name: '２８日' },
-            { code: 3, name: '末日' }]);
-        selectedTimePeriod: KnockoutObservable<number> = ko.observable(1);
+        //Switch  A3_2
+        selectedModeDisplay: KnockoutObservable<number> = ko.observable(3);
 
-        modeDisplay: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 1, name: '略名' },
-            { code: 2, name: '時刻' }
-            //{ code: 3, name: '記号' } de bat man Ja    
-        ]);
-        selectedModeDisplay: KnockoutObservable<number> = ko.observable(1);
+        // A2_2
+        targetOrganizationName: KnockoutObservable<string> = ko.observable('');
 
-        modeDisplayObject: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 1, name: '予定' },
-            { code: 2, name: '実績' }]);
-        selectedModeDisplayObject: KnockoutObservable<number> = ko.observable(1);
+        // popup Setting Grid
+        selectedTypeHeightExTable: KnockoutObservable<number> = ko.observable(1);
+        heightGridSetting: KnockoutObservable<string> = ko.observable('');
+        isEnableInputHeight: KnockoutObservable<boolean> = ko.observable(false);
+
+        // dùng cho xử lý của botton toLeft, toRight, toDown
+        indexBtnToLeft: number = 0;
+        indexBtnToRight: number = 0;
+        indexBtnToDown: number = 0;
+
+        enableBtnPaste: KnockoutObservable<boolean>  = ko.observable(true);
+        enableBtnCoppy: KnockoutObservable<boolean>  = ko.observable(true);
+        enableBtnInput: KnockoutObservable<boolean>  = ko.observable(true);
+        visibleBtnInput: KnockoutObservable<boolean> = ko.observable(true);
+        enableBtnUndo: KnockoutObservable<boolean>   = ko.observable(true);
+        enableBtnRedo: KnockoutObservable<boolean>   = ko.observable(true);
+        visibleBtnUndo: KnockoutObservable<boolean>  = ko.observable(true);
+        visibleBtnRedo: KnockoutObservable<boolean>  = ko.observable(true);
+        enableHelpBtn: KnockoutObservable<boolean>   = ko.observable(true);
 
         arrDay: Time[] = [];
         listSid: KnockoutObservableArray<string> = ko.observableArray([]);
-        lengthListSid: any;
+        listEmpData = [];
+        listColorOfHeader: KnockoutObservableArray<ksu001.common.modelgrid.CellColor> = ko.observableArray([]);
+
         affiliationId: any = null;
-        affiliationName: KnockoutObservable<string> = ko.observableArray('');
+        affiliationName: KnockoutObservable<string> = ko.observable('');
         dataWScheduleState: KnockoutObservableArray<WorkScheduleState> = ko.observableArray([]);
         listStateWorkTypeCode: KnockoutObservableArray<any> = ko.observableArray([]);
         listCheckNeededOfWorkTime: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -114,21 +93,25 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         dataWorkEmpCombine: KnockoutObservableArray<any> = ko.observableArray([]);
         dataScheduleDisplayControl: KnockoutObservable<any> = ko.observableArray([]);
         isInsuranceStatus: boolean = false;
-        listColorOfHeader: KnockoutObservableArray<ksu001.common.viewmodel.CellColor> = ko.observableArray([]);
+
         flag: boolean = true;
-        isClickChangeDisplayMode: boolean = false;
+
         stopRequest: KnockoutObservable<boolean> = ko.observable(true);
         arrLockCellInit: KnockoutObservableArray<Cell> = ko.observableArray([]);
         // 表示形式 ＝ 日付別(固定) = 0
         displayFormat: KnockoutObservable<number> = ko.observable(0);
         hasEmployee: KnockoutObservable<boolean> = ko.observable(false);
+        KEY: string = 'USER_INFOR';
+        dataCell: any; // data để paste vào grid
+        listPageInfo : any;
+        targetShiftPalette : any;
+        workPlaceId : any;
+        arrListCellLock = [];
+        detailContentDeco = [];
+        detailColumns = [];
 
         constructor() {
             let self = this;
-            //Tree grid
-            self.itemsTree = ko.observableArray([]);
-            self.selectedCodeTree = ko.observableArray([]);
-            self.singleSelectedCodeTree = ko.observable(null);
 
             //Date time
             self.dateTimeAfter = ko.observable(moment(self.dtAft()).format('YYYY/MM/DD'));
@@ -136,141 +119,181 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             self.dtPrev.subscribe((newValue) => {
                 self.dateTimePrev(moment(self.dtPrev()).format('YYYY/MM/DD'));
+                let item = uk.localStorage.getItem(self.KEY);
+                if (!item.isPresent()) {
+                    let userInfor: IUserInfor = {};
+                    userInfor.startDate = self.dateTimePrev();
+                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
+                }
             });
             self.dtAft.subscribe((newValue) => {
                 self.dateTimeAfter(moment(self.dtAft()).format('YYYY/MM/DD'));
+                let item = uk.localStorage.getItem(self.KEY);
+                if (!item.isPresent()) {
+                    let userInfor: IUserInfor = {};
+                    userInfor.endDate = self.dateTimeAfter();
+                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
+                }
             });
 
-            //Pop-up
-            for (let i = 1; i <= 12; i++) {
-                self.items.push(new ItemModel('00' + i, '基本給' + i, '00' + i));
-            }
-
-            self.selectedTypeHeightExTable.subscribe(function(newValue) {
-                $('#input-heightExtable').ntsError('clear');
-                if (newValue == 1) {
+            self.selectedTypeHeightExTable.subscribe((newValue) => {
+                if (newValue == TypeHeightExTable.DEFAULT) { // 
                     self.isEnableInputHeight(false);
-                } else {
+                    self.heightGridSetting('');
+                    $('#input-heightExtable').ntsError('clear');
+                } else if (newValue == TypeHeightExTable.SETTING) {
                     self.isEnableInputHeight(true);
-                    setTimeout(() =>{
-                        $('#input-heightExtable').focus();                        
+                    setTimeout(() => {
+                        $('#input-heightExtable').focus();
                     }, 1);
                 }
             });
 
-            self.selectedDisplayVertical.subscribe(function(newValue) {
+            self.achievementDisplaySelected.subscribe(function(newValue) {
                 if (newValue == 1) {
                     self.isEnableCompareMonth(true);
+                    
                 } else {
                     self.isEnableCompareMonth(false);
                 }
+                let item = uk.localStorage.getItem(self.KEY);
+                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                    let userInfor = JSON.parse(data);
+                    userInfor.achievementDisplaySelected = newValue;
+                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
+                });
             });
 
-            self.selectedModeDisplay.subscribe(function(newValue) {
+            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                let userInfor: IUserInfor = JSON.parse(data);
+                // A4_4 表示形式の初期選択と画面モード (Chọn default của các hình thức hiển thị và mode màn hình)
+                if (userInfor.disPlayFormat == 'shift') {
+                    self.selectedModeDisplayInBody('shift');
+                    self.visibleShiftPalette(true);
+                } else if (userInfor.disPlayFormat == 'shortName') {
+                    self.selectedModeDisplayInBody('shortName');
+                    self.visibleShiftPalette(false);
+                } else if (userInfor.disPlayFormat == 'time') {
+                    self.selectedModeDisplayInBody('time');
+                    self.visibleShiftPalette(false);
+                }
+            }).ifEmpty((data) => {
+                self.selectedModeDisplayInBody('time');
+                self.visibleShiftPalette(false);
+            });
+
+            self.selectedModeDisplayInBody.subscribe(function(viewMode) {
+                if (viewMode == null)
+                    return;
+                console.log('mode:  ' + viewMode);
                 nts.uk.ui.errors.clearAll();
-                __viewContext.viewModel.viewO.time1('');
-                __viewContext.viewModel.viewO.time2('');
-                
+                self.removeClass();
                 self.stopRequest(false);
                 // close screen O1 when change mode
-                let currentScreen = __viewContext.viewModel.viewO.currentScreen;
-                if (currentScreen) {
-                    currentScreen.close();
-                }
-                
-                let detailContentDeco: any[] = [];
-
-                if (newValue == 1) {
-                    $('#contain-view').show();
-                    $('#contain-view').removeClass('h-90');
-                    $('#group-bt').show();
-                    $('#oViewModel').show();
-                    $('#qViewModel').hide();
-                    self.setColorForCell(detailContentDeco).done(() => {
-                        $("#extable").exTable("mode", "shortName", "stick", { y: 210 }, [{
-                            name: "BodyCellStyle",
-                            decorator: detailContentDeco
-                        }]);
-                        self.stopRequest(true);
-                    });
-                    $("#extable").exTable("stickMode", "single");
-                    $("#combo-box1").focus();
-                    // get data to stickData
-                    $("#extable").exTable("stickData", __viewContext.viewModel.viewO.nameWorkTimeType());
-                } else if (newValue == 2) {
-                    $('#contain-view').hide();
-                    self.setColorForCell(detailContentDeco).done(() => {
-                        $("#extable").exTable("mode", "time", "edit", { y: 150 }, [{
-                            name: "BodyCellStyle",
-                            decorator: detailContentDeco
-                        }]);
-                        self.stopRequest(true);
-                    });
-                } else {
-                    $('#contain-view').show();
-                    $('#contain-view').addClass('h-90');
-                    $('#oViewModel').hide();
-                    $('#qViewModel').show();
-                    $('#group-bt').show();
-                    self.setColorForCell(detailContentDeco).done(() => {
-                        $("#extable").exTable("mode", "symbol", "stick", { y: 245 }, [{
-                            name: "BodyCellStyle",
-                            decorator: detailContentDeco
-                        }]);
-                        self.stopRequest(true);
-                    });
+                if (viewMode == 'shift') { // mode シフト表示   
+                    if (window.innerWidth > 1462) {
+                        $("#extable").width('1404');
+                    }
+                    $(".settingHeightGrid").css('display', 'none');
                     $("#extable").exTable("stickMode", "multi");
-                    $("#tab-panel").focus();
-                    // get data to stickData
-                    // if buttonTable not selected, set stickData is null
-                    if ((__viewContext.viewModel.viewQ.selectedTab() == 'company' && $("#test1").ntsButtonTable("getSelectedCells")[0] == undefined)
-                        || (__viewContext.viewModel.viewQ.selectedTab() == 'workplace' && $("#test2").ntsButtonTable("getSelectedCells")[0] == undefined)) {
-                        $("#extable").exTable("stickData", null);
-                    } else if (__viewContext.viewModel.viewQ.selectedTab() == 'company') {
-                        let dataToStick = _.map($("#test1").ntsButtonTable("getSelectedCells")[0].data.data, 'data');
-                        $("#extable").exTable("stickData", dataToStick);
-                    } else if (__viewContext.viewModel.viewQ.selectedTab() == 'workplace') {
-                        let dataToStick = _.map($("#test2").ntsButtonTable("getSelectedCells")[0].data.data, 'data');
-                        $("#extable").exTable("stickData", dataToStick);
-                    }
-                    // jump initScreenQ only once
-                    if (self.flag) {
-                        //select first link button
-                        __viewContext.viewModel.viewQ.initScreenQ();
-                        self.flag = false;
-                    }
+                    self.shiftModeStart().done(() => {
+                        self.setPositionButonToRight();
+                        $(".settingHeightGrid").css('display', '');
+                        self.stopRequest(true);
+                    });
+                } else if (viewMode == 'shortName') { // mode 略名表示
+                    $("#extable").width(window.innerWidth - 51);
+                    $(".settingHeightGrid").css('display', 'none');
+                    $("#extable").exTable("stickMode", "single");
+                    self.shortNameModeStart().done(() => {
+                        self.setPositionButonToRight();
+                        $(".settingHeightGrid").css('display', '');
+                        self.stopRequest(true);
+                    });
+                } else if (viewMode == 'time') {  // mode 勤務表示 
+                    $("#extable").width(window.innerWidth - 51);
+                    $(".settingHeightGrid").css('display', 'none');
+                    $("#extable").exTable("stickMode", "single");
+                    self.timeModeStart().done(() => {
+                        self.setPositionButonToRight();
+                        $(".settingHeightGrid").css('display', '');
+                        self.stopRequest(true);
+                    });
                 }
             });
-            // TODO - comment do chua lam phan du lieu thuc te
-//            self.selectedModeDisplayObject.subscribe((newValue) => {
-//                if (self.listSid().length > 0) {
-//                    if (newValue == 2) {
-//                        // actual data display mode 
-//                        // (in phase 2 not done, so the actual data = intended data)
-//                        // if actual data is null, display intended data
-//                        self.setDatasource().done(function() {
-//                            self.updateExTable();
-//                        });
-//                    } else {
-//                        // intended data display mode 
-//                        self.setDatasource().done(function() {
-//                            self.updateExTable();
-//                        });
-//                    }
-//                }
-//            });
 
-            self.selectedBackgroundColor.subscribe((newValue) => {
-                self.updateExTable();
-            });
+            self.backgroundColorSelected.subscribe((value) => {
+                if (util.isNullOrUndefined(value) || util.isNullOrEmpty(value))
+                    return;
+                // update lại màu background phần detail
+                let self = this;
+                let shiftMasterWithWorkStyleLst;
+                let detailContentDecoUpdate = [];
 
-            //display for A3_2
-            self.lengthListSid = ko.pureComputed(() => {
-                let sizeListSid: number = self.listSid().length;
-                if(sizeListSid > 0){
-                    self.hasEmployee(true);
+                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                    let userInfor: IUserInfor = JSON.parse(data);
+                    userInfor.backgroundColor = value;
+                    shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
+                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
+                });
+                let dataSourceDetailBody = $("#extable").exTable("dataSource", "detail").body;
+
+                if (value == 1) {
+                    // truong hop chuyen tu normal ---> shift
+                } else {
+                    // truong hop chuyen tu shift  ---> normal
+                    for (let i = 0; i < dataSourceDetailBody.length; i++) {
+                        let empData = dataSourceDetailBody[i];
+                        for (const property in empData) {
+                            let rowOfSelf = self.employeeIdLogin === empData['employeeId'] ? true : false;
+
+                            if (property == 'sid' || property == 'employeeId') {
+                            } else {
+                                let ymd = property + ""; // columnId
+                                // set Deco BackGround
+                                if (rowOfSelf) {
+                                    detailContentDecoUpdate.push(new CellColor(ymd, i + "", "bg-daily-alter-self", 0));
+                                } else {
+                                    detailContentDecoUpdate.push(new CellColor(ymd, i + "", "bg-daily-alter-other", 0));
+                                }
+                                let cellData = empData[property];
+                                // set Deco text color
+                                // A10_color⑥ スケジュール明細の文字色  (Màu chữ của "Schedule detail")  
+                                if (util.isNullOrUndefined(cellData.shiftCode) || util.isNullOrEmpty(cellData.shiftCode)) {
+                                    // デフォルト（黒）  Default (black)
+                                } else {
+                                    let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == cellData.shiftCode; });
+                                    if (objShiftMasterWithWorkStyle.length > 0) {
+                                        /**
+                                         *  1日休日系  ONE_DAY_REST(0)
+                                         *  午前出勤系 MORNING_WORK(1)
+                                         *  午後出勤系 AFTERNOON_WORK(2)
+                                         *  1日出勤系 ONE_DAY_WORK(3)
+                                         */
+                                        let workStyle = objShiftMasterWithWorkStyle[0].workStyle;
+                                        if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
+                                            detailContentDecoUpdate.push(new CellColor( ymd, i + "", "color-attendance", 0));
+                                        }
+                                        if (workStyle == AttendanceHolidayAttr.MORNING) {
+                                            detailContentDecoUpdate.push(new CellColor(ymd, i + "", "color-half-day-work", 0));
+                                        }
+                                        if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
+                                            detailContentDecoUpdate.push(new CellColor(ymd, i + "", "color-half-day-work", 0));
+                                        }
+                                        if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
+                                            detailContentDecoUpdate.push(new CellColor(ymd, i + "", "color-holiday", 0));
+                                        }
+                                        if (util.isNullOrUndefined(workStyle) || util.isNullOrEmpty(workStyle)) {
+                                            // デフォルト（黒）  Default (black)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    self.updateExTableWhenChangeModeBg(dataSourceDetailBody, detailContentDecoUpdate);
+                    self.stopRequest(true);
                 }
-                return getText('KSU001_54', [sizeListSid.toString()]);
             });
 
             self.stopRequest.subscribe(function(value) {
@@ -280,259 +303,821 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     nts.uk.ui.block.clear();
                 }
             });
-
-            /**
-             * close popup
-             */
-            $(".close-popup").click(function() {
-                $('#popup-area8').css('display', 'none');
-            });
-        }
-
-        /**
-         * get data for screen O, Q , A before bind
-         */
-        startKSU001(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            // get data for screen O 
-            // initScreen: get data workType-workTime for 2 combo-box of screen O
-            // and startDate-endDate of screen A
-            __viewContext.viewModel.viewO.initScreen().done(() => {
-                self.getDataScheduleDisplayControl(); 
-                self.getDataComPattern();
-                self.dtPrev(moment.utc(__viewContext.viewModel.viewO.startDateScreenA, 'YYYY/MM/DD'));
-                self.dtAft(moment.utc(__viewContext.viewModel.viewO.endDateScreenA, 'YYYY/MM/DD'));
-                self.employeeIdLogin = __viewContext.viewModel.viewO.employeeIdLogin;
-                // get state of list workTypeCode
-                // get data for screen A
-                let lstWorkTypeCode = [];
-                _.map(__viewContext.viewModel.viewO.listWorkType(), (workType: nts.uk.at.view.ksu001.common.viewmodel.WorkType) => {
-                    lstWorkTypeCode.push(workType.workTypeCode);
-                });
-                // get data for dialog C
-                // self.initShiftCondition();
-                // init and get data for screen A
-                // checkNeededOfWorkTimeSetting(): get list state of workTypeCode relate to need of workTime
-                self.listStateWorkTypeCode(__viewContext.viewModel.viewO.checkStateWorkTypeCode);
-                self.listCheckNeededOfWorkTime(__viewContext.viewModel.viewO.checkNeededOfWorkTimeSetting);
-                self.dataWorkEmpCombine(__viewContext.viewModel.viewO.workEmpCombines);
-
-                self.initExTable();
-                dfd.resolve();
-            });
-            return dfd.promise();
-        }
-
-        /**
-         * CCG001 return listEmployee
-         * When listEmployee changed, call function updateExtable to refresh data of exTable
-         */
-        searchEmployee(dataEmployee: EmployeeSearchDto[]) {
-            let self = this;
-            self.stopRequest(false);
-
-            self.empItems.removeAll();
-            _.forEach(dataEmployee, function(item: EmployeeSearchDto) {
-                self.empItems.push(new PersonModel({
-                    empId: item.employeeId,
-                    empCd: item.employeeCode,
-                    empName: item.employeeName,
-                    affiliationId: item.affiliationId,
-                    affiliationCode: item.affiliationCode,
-                    affiliationName: item.affiliationName,
-                }));
-            });
-            self.affiliationId = self.empItems()[0].affiliationId;
-            self.affiliationName(self.empItems()[0].affiliationName);
-            // get data for listSid
-            self.listSid([]);
-            let arrSid: string[] = [];
-            _.each(self.empItems(), (x) => {
-                arrSid.push(x.empId);
-            });
-            self.listSid(arrSid);
-            //getDataOfWorkPlace(): get workPlaceName to display A3-1
-            //getDataWkpPattern() : get data WorkPattern for screen Q
-            $.when(self.getDataWkpPattern()).done(() => {
-                if (__viewContext.viewModel.viewQ.selectedTab() === 'workplace') {
-                    __viewContext.viewModel.viewQ.initScreenQ();
-                }
-
-                if (self.selectedModeDisplayObject() == 1) {
-                    // intended data display mode 
-                    self.setDatasource().done(function() {
-                        self.updateExTable();
-                    });
-                } else {
-                    // actual data display mode 
-                    // in phare 2, set actual data = intended data
-                    self.setDatasource().done(function() {
-                        self.updateExTable();
-                    });
-                }
-            }).fail(() => { self.stopRequest(true); });
-        }
-
-        initCCG001(): JQueryPromise<any>  {
-            let self = this, dfd = $.Deferred();
-            // Component option
-            self.ccgcomponent = {
-                maxPeriodRange: 'oneMonth',
-                /** Common properties */
-                systemType: 2, // システム区分
-                showEmployeeSelection: false, // 検索タイプ
-                showQuickSearchTab: false, // クイック検索
-                showAdvancedSearchTab: true, // 詳細検索
-                showBaseDate: false, // 基準日利用
-                showClosure: false, // 就業締め日利用
-                showAllClosure: false, // 全締め表示
-                showPeriod: true, // 対象期間利用
-                periodFormatYM: false, // 対象期間精度
-
-                /** Required parameter */
-                periodStartDate: self.dateTimePrev, // 対象期間開始日
-                periodEndDate: self.dateTimeAfter, // 対象期間終了日
-                inService: true, // 在職区分
-                leaveOfAbsence: false, // 休職区分
-                closed: false, // 休業区分
-                retirement: false, // 退職区分
-
-                /** Quick search tab options */
-                showAllReferableEmployee: true, // 参照可能な社員すべて
-                showOnlyMe: false, // 自分だけ
-                showSameWorkplace: true, // 同じ職場の社員
-                showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
-
-                /** Advanced search properties */
-                showEmployment: true, // 雇用条件
-                showWorkplace: true, // 職場条件
-                showClassification: true, // 分類条件
-                showJobTitle: true, // 職位条件
-                showWorktype: true, // 勤種条件
-                isMutipleCheck: true, // 選択モード
-                showOnStart: true,
-
-                /** Return data */
-                returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                    self.searchEmployee(data.listEmployee);
-                    // set startDate-endDate
-                    let isAllowUpdateExTable = false;
-                    if (moment(self.dtPrev()).format('YYYYMMDD') !== moment(data.periodStart).format('YYYYMMDD')) {
-                        self.dtPrev(new Date(data.periodStart));
-                        isAllowUpdateExTable = true;
-                    }
-
-                    if (moment(self.dtAft()).format('YYYYMMDD') !== moment(data.periodEnd).format('YYYYMMDD')) {
-                        self.dtAft(new Date(data.periodEnd));
-                        isAllowUpdateExTable = true;
-                    }
-
-                    if (isAllowUpdateExTable) {
-                        self.updateDetailAndHorzSum();
-                    }
-                }
-            }
-            // Start component
-            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
-                dfd.resolve();
-            });
+         
+            self.showComboboxA4_12 = ko.computed(function() {
+                return self.selectedModeDisplayInBody() == 'shift' && self.mode() == 'edit' ;
+            }, this);
             
+            self.dataCell = {};
+            
+            self.enableBtnRedo(false);
+            self.enableBtnUndo(false);
+
+            $("#extable").on("extablecellupdated", (dataCell) => {
+                if(self.selectedModeDisplayInBody() == 'time'){
+                    let dataCell = $("#extable").exTable("updatedCells");
+                    let startTime = dataCell.value.startTime;
+                    let endTime   = dataCell.value.endTime;
+                    
+                
+                }
+                console.log(dataCell);
+                debugger;
+                if (dataCell) {
+                    self.enableBtnRedo(true);
+                    self.enableBtnUndo(true);
+                } else {
+                    self.enableBtnRedo(false);
+                    self.enableBtnUndo(false);
+                }
+            });
+        }
+        // end constructor
+        
+        startPage(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor: IUserInfor = {};
+            if (item.isPresent()) {
+                userInfor = JSON.parse(item.get());
+            }
+            let viewMode = item.isPresent() ? userInfor.disPlayFormat : 'time';
+
+            let param = {
+                isFirstLogin: item.isPresent() ? false : true,
+                viewMode: viewMode,
+                startDate: item.isPresent() ? self.dateTimePrev : '',
+                endDate: item.isPresent() ? self.dateTimeAfter : '',
+                workplaceId: item.isPresent() ? userInfor.workplaceId : '',
+                workplaceGroupId: item.isPresent() ? userInfor.workplaceGroupId : '',
+                shiftPalletUnit: item.isPresent() ? userInfor.shiftPalletUnit : 1, // 1: company , 2 : workPlace 
+                pageNumberCom: item.isPresent() ? userInfor.shiftPalettePageNumberCom : 1,
+                pageNumberOrg: item.isPresent() ? userInfor.shiftPalettePageNumberOrg : 1,
+                getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : 2, // lay du lieu thuc te (1 : co lay, 2 la khong lay) || param (Hiển thi  theo "shift")
+                listShiftMasterNotNeedGetNew: item.isPresent() ? userInfor.shiftMasterWithWorkStyleLst : [], // List of shifts không cần lấy mới
+                listSid: self.listSid()
+            }
+
+            service.getDataStartScreen(param).done((data: IDataStartScreen) => {
+                
+                // khởi tạo data localStorage khi khởi động lần đầu.
+                self.creatDataLocalStorege(data.dataBasicDto);
+                
+                __viewContext.viewModel.viewAB.workPlaceId(data.dataBasicDto.workplaceId);
+        
+                self.getSettingDisplayWhenStart(viewMode);
+                
+                 if (viewMode == 'shift') {
+                    self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                    self.bingdingToShiftPallet(data);
+                }
+                
+                // set data Header
+                self.bindingToHeader(data);
+                
+                // set data Grid
+                let dataBindGrid = self.convertDataToGrid(data, viewMode);
+                self.initExTable(dataBindGrid, viewMode);
+                $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+                self.setPositionButonToRight();
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
             return dfd.promise();
         }
 
-        /**
-         * Create exTable
-         */
-        initExTable(): void {
-            let self = this,
-                timeRanges = [],
-                //Get dates in time period
-                currentDay = new Date(self.dtPrev().toString());
+        creatDataLocalStorege(dataBasic: IDataBasicDto) {
+            let self = this;
+            let item = uk.localStorage.getItem(self.KEY);
+            if (!item.isPresent()) {
+                let userInfor: IUserInfor = {};
+                userInfor.disPlayFormat = self.selectedModeDisplayInBody();
+                userInfor.backgroundColor = 0; // 0 : 通常; 1: シフト   // mau nền default của shiftMode
+                userInfor.achievementDisplaySelected = 2;
+                userInfor.shiftPalletUnit = 1;
+                userInfor.shiftPalettePageNumberCom = 1;
+                userInfor.shiftPalletPositionNumberCom = { column : 0 , row : 0 };
+                userInfor.shiftPalettePageNumberOrg = 1;
+                userInfor.shiftPalletPositionNumberOrg = { column : 0 , row : 0 };
+                userInfor.gridHeightSelection = 1;
+                userInfor.heightGridSetting = '';
+                userInfor.workplaceId= dataBasic.workplaceId;
+                userInfor.workPlaceName= dataBasic.targetOrganizationName;
+                userInfor.workType = {}; 
+                userInfor.workTime = {}; 
+                userInfor.shiftMasterWithWorkStyleLst = [];
+                uk.localStorage.setItemAsJson(self.KEY, userInfor);
+            }
+        }
 
-            // create data for columns
-            let leftmostDs = [],
-                middleDs = [],
-                middleContentDeco = [],
-                detailHeaderDeco = [],
-                detailContentDeco = [],
-                detailHeaderDs = [],
-                detailContentDs = [],
-                objDetailHeaderDs = {},
-                detailColumns = [],
-                horzSumHeaderDs = [],
-                horzSumContentDs = [],
-                leftHorzContentDs = [],
-                vertSumContentDs = [];
+        shiftModeStart(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor: IUserInfor = JSON.parse(item.get());
+            let param = {
+                viewMode : 'shift',
+                startDate: self.dateTimePrev,
+                endDate  : self.dateTimeAfter,
+                workplaceId     : userInfor.workplaceId,
+                workplaceGroupId: userInfor.workplaceGroupId,
+                shiftPalletUnit : userInfor.shiftPalletUnit, // 1: company , 2 : workPlace 
+                pageNumberCom   : userInfor.shiftPalettePageNumberCom,
+                pageNumberOrg   : userInfor.shiftPalettePageNumberOrg,
+                getActualData   : userInfor.achievementDisplaySelected, // lay du lieu thuc te (1 : co lay, 2 la khong lay) || param (Hiển thi  theo "shift")
+                listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst, // List of shifts không cần lấy mới
+                listSid: self.listSid()
+            };
+            self.saveModeGridToLocalStorege('shift');
+            self.visibleShiftPalette(true);
+            self.visibleBtnInput(false);
+            service.getDataOfShiftMode(param).done((data: IDataStartScreen) => {
+                // set hiển thị ban đầu theo data đã lưu trong localStorege
+                self.getSettingDisplayWhenStart('shift');
+                
+                self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                // set data Header
+                self.bindingToHeader(data);
+                
+                // set data shiftPallet
+                __viewContext.viewModel.viewAC.flag = false;
+                __viewContext.viewModel.viewAC.selectedpalletUnit(userInfor.shiftPalletUnit);
+                if(userInfor.shiftPalletUnit == 1){
+                    __viewContext.viewModel.viewAC.handleInitCom(
+                        data.listPageInfo,
+                        data.targetShiftPalette.shiftPalletCom,
+                        userInfor.shiftPalettePageNumberCom);
+                }else{
+                    __viewContext.viewModel.viewAC.handleInitWkp(
+                        data.listPageInfo,
+                        data.targetShiftPalette.shiftPalletWorkPlace,
+                        userInfor.shiftPalettePageNumberOrg);
+                }
+                __viewContext.viewModel.viewAC.flag = true;
+                
+                // set data Grid
+                let dataBindGrid = self.convertDataToGrid(data, 'shift');
+                self.updateExTable(dataBindGrid, 'shift', true, true, true);
+                
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
 
-            while (currentDay <= self.dtAft()) {
-                self.arrDay.push(new Time(currentDay));
-                let time = new Time(currentDay);
-                objDetailHeaderDs['_' + time.yearMonthDay] = '';
-                detailColumns.push({
-                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", primitiveValue: "TimeWithDayAttr", visible: true
-                });
+        shortNameModeStart(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred(),
+                param = {
+                    viewMode : 'shortName'
+                };
+            self.saveModeGridToLocalStorege('shortName');
+            self.visibleShiftPalette(false);
+            self.visibleBtnInput(false);
+            service.getDataOfShortNameMode(param).done((data: IDataStartScreen) => {
+                // set hiển thị ban đầu theo data đã lưu trong localStorege
+                self.getSettingDisplayWhenStart('shortName');
+                // set data Header
+                self.bindingToHeader(data);
+                // set data Grid
+                let dataBindGrid = self.convertDataToGrid(data, 'shortName');
 
-                currentDay.setDate(currentDay.getDate() + 1);
+                self.updateExTable(dataBindGrid , 'shortName', true, true, true);
+                
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+
+        timeModeStart(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred(),
+                param = {
+                     viewMode : 'time'
+                };
+            self.saveModeGridToLocalStorege('time');
+            self.visibleShiftPalette(false);
+            self.visibleBtnInput(true);
+            service.getDataOfTimeMode(param).done((data: IDataStartScreen) => {
+                // set hiển thị ban đầu theo data đã lưu trong localStorege
+                self.getSettingDisplayWhenStart('time');
+                // set data Header
+                self.bindingToHeader(data);
+                // set data Grid
+                let dataBindGrid = self.convertDataToGrid(data, 'time');
+
+                self.updateExTable(dataBindGrid, 'time', true, true, true);
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+
+        // binding ket qua cua <<ScreenQuery>> 初期起動の情報取得 
+        bindingToHeader(data: IDataStartScreen) {
+            let self = this;
+            let dataBasic: IDataBasicDto = data.dataBasicDto;
+            self.dtPrev(dataBasic.startDate);
+            self.dtAft(dataBasic.endDate);
+            self.targetOrganizationName(dataBasic.targetOrganizationName);
+            __viewContext.viewModel.viewAC.workplaceModeName(dataBasic.designation);
+            
+            // save data to local Storage
+            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                let userInfor: IUserInfor = JSON.parse(data);
+                userInfor.workplaceId = dataBasic.workplaceId;
+                userInfor.workplaceGroupId = dataBasic.workplaceGroupId;
+                userInfor.workPlaceName = dataBasic.targetOrganizationName;
+                uk.localStorage.setItemAsJson(self.KEY, userInfor);
+            });
+        }
+        
+        saveShiftMasterToLocalStorage(shiftMasterWithWorkStyleLst: Array<IShiftMasterMapWithWorkStyle>) {
+            let self = this;
+            // save data to local Storage
+            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                let userInfor: IUserInfor = JSON.parse(data);
+                userInfor.shiftMasterWithWorkStyleLst = shiftMasterWithWorkStyleLst;
+                uk.localStorage.setItemAsJson(self.KEY, userInfor);
+            });
+        }
+        
+        bingdingToShiftPallet(data: any) {
+            let self = this;
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor: IUserInfor = JSON.parse(item.get());
+
+            // set data shiftPallet
+            __viewContext.viewModel.viewAC.flag = false;
+            __viewContext.viewModel.viewAC.selectedpalletUnit(userInfor.shiftPalletUnit);
+            if (userInfor.shiftPalletUnit == 1) {
+                __viewContext.viewModel.viewAC.handleInitCom(
+                    data.listPageInfo,
+                    data.targetShiftPalette.shiftPalletCom,
+                    userInfor.shiftPalettePageNumberCom);
+            } else {
+                __viewContext.viewModel.viewAC.handleInitWkp(
+                    data.listPageInfo,
+                    data.targetShiftPalette.shiftPalletWorkPlace,
+                    userInfor.shiftPalettePageNumberOrg);
+            }
+            __viewContext.viewModel.viewAC.flag = true;
+        }
+        
+        indexOfPageSelected(listPageInfo : any, shiftPalettePageNumber : any) {
+            let index = _.findIndex(listPageInfo, function(o) { return o.pageNumber == shiftPalettePageNumber; });
+            return index != -1 ? index : 0;
+        }
+
+        // convert data lấy từ server để đẩy vào Grid
+        private convertDataToGrid(data: IDataStartScreen, viewMode: string) {
+            let self = this;
+            let result = {};
+            let leftmostDs        = [];
+            let middleDs          = [];
+            let detailColumns     = [];
+            let objDetailHeaderDs = {};
+            let detailHeaderDeco  = [];
+            let detailContentDs   = [];
+            let detailContentDeco = [];
+            let htmlToolTip       = [];
+            
+            let arrListCellLock = [];
+            
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor: IUserInfor = JSON.parse(item.get());
+            
+            for (let i = 0; i < data.listEmpInfo.length; i++) {
+                let emp: IEmpInfo = data.listEmpInfo[i];
+                let objDetailContentDs = new Object();
+                // set data to detailLeftmost
+                let businessName = emp.businessName == null || emp.businessName == undefined ? '' : emp.businessName.trim();
+                leftmostDs.push({ sid: i.toString() ,employeeId: emp.employeeId, codeNameOfEmp: emp.employeeCode + ' ' + businessName });
+                
+                self.listSid.push(emp.employeeId);
+                self.listEmpData.push({ id: emp.employeeId, code: emp.employeeCode, name : businessName });
+                let listWorkScheduleInforByEmp: Array<IWorkScheduleWorkInforDto> = _.filter(data.listWorkScheduleWorkInfor, function(workSchedul: IWorkScheduleWorkInforDto) { return workSchedul.employeeId === emp.employeeId });
+                let listWorkScheduleShiftByEmp: Array<IWorkScheduleShiftInforDto> = _.filter(data.listWorkScheduleShift, function(workSchedul: IWorkScheduleShiftInforDto) { return workSchedul.employeeId === emp.employeeId });
+                // set data middle
+                let personalCond: IPersonalConditions = _.filter(data.listPersonalConditions, function(o) { return o.sid = emp.employeeId; });
+                if(personalCond.length > 0){
+                   middleDs.push({ sid: i.toString() , employeeId: emp.employeeId, team: personalCond[0].teamName, rank: personalCond[0].rankName, qualification: personalCond[0].licenseClassification });
+                }
+                
+                // set data to detailContent : datasource va deco
+                if (viewMode == 'shift') {
+                    objDetailContentDs['sid'] = i.toString();
+                    objDetailContentDs['employeeId'] = emp.employeeId;
+
+                    var style = document.createElement('style');
+                    style.type = 'text/css';
+                    for (let j = 0; j < listWorkScheduleShiftByEmp.length; j++) {
+                        let cell: IWorkScheduleShiftInforDto = listWorkScheduleShiftByEmp[j];
+                        let time = new Time(new Date(cell.date));
+                        let ymd = time.yearMonthDay;
+                        let shiftName = '';
+                        shiftName = (cell.haveData == true && cell.shiftName == null) ? getText("KSU001_94") : cell.shiftName;
+                        if (cell.needToWork == false)
+                            shiftName = '';
+                        objDetailContentDs['_' + ymd] = new ExCell('', '', '', '', '', '', shiftName, cell.shiftCode);
+
+                        // điều kiện ※Aa1
+                        if (cell.isEdit == false) {
+                            detailContentDeco.push(new CellColor('_' + ymd, i + "", "xseal", 0));
+                        }
+
+                        // điều kiện ※Aa2
+                        if (cell.isActive == false) {
+                            arrListCellLock.push({ rowId: i, columnId: "_" + ymd });
+                        }
+
+                        // set Deco background
+                        if (userInfor.backgroundColor == 1) {
+                            // A10_color② シフト表示：シフトの背景色  (Hiển thị Shift: màu nền của shift)                                                 
+                            let shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
+                            if (cell.shiftCode != null && cell.shiftCode != '') {
+                                let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == cell.shiftCode; });
+                                if (objShiftMasterWithWorkStyle.length > 0) {
+                                    style.innerHTML = '.' + 'background_cell' + j + '{ background-color:' + '#'+ objShiftMasterWithWorkStyle[0].color + '}';
+                                    //detailContentDeco.push(new CellColor('_' + ymd, i+"", 'background_cell' + j, 0)); 
+                                }
+                            }
+                        } else if (userInfor.backgroundColor == 0) {
+                            // A10_color③ シフト表示：通常の背景色  (hiển thị shift: màu nền normal)                                                     
+                            if (cell.achievements == true || cell.needToWork == false) {
+                                //detailContentDeco.push(new CellColor('_' + ymd, i+"", "bg-schedule-uncorrectable", 0));
+                            } else if (cell.supportCategory != SupportCategory.NotCheering) {
+                                //detailContentDeco.push(new CellColor('_' + ymd, i+"", "bg-schedule-support", 0)); 
+                            } else {
+                                if (cell.shiftEditState.editStateSetting == 0) {
+                                    // HAND_CORRECTION_MYSELF(0), 手修正（本人）
+                                    //detailContentDeco.push(new CellColor('_' + ymd, i+"", "bg-daily-alter-self", 0));
+                                }
+                                if (cell.shiftEditState.editStateSetting == 1) {
+                                    //HAND_CORRECTION_OTHER(1), 手修正（他人）
+                                    //detailContentDeco.push(new CellColor('_' + ymd, i+"", "bg-daily-alter-other", 1));
+                                }
+                                if (cell.shiftEditState.editStateSetting == 2) {
+                                    //REFLECT_APPLICATION(2), 申請反映
+                                    //detailContentDeco.push(new CellColor('_' + ymd, i+"", "bg-daily-reflect-application", 2));
+                                }
+                            }
+                        }
+                        
+                        // set Deco text color
+                        // A10_color⑥ スケジュール明細の文字色  (Màu chữ của "Schedule detail")                                                         
+                        if (cell.achievements == true) {
+                            //detailContentDeco.push(new CellColor('_' + ymd, i+"", "color-schedule-performance", 0));
+                        } else {
+                            if ((cell.shiftCode == '' || cell.shiftCode == null)) {
+                                // デフォルト（黒）  Default (black) 
+                            } else {
+                                if (cell.workHolidayCls == AttendanceHolidayAttr.FULL_TIME) {
+                                    //detailContentDeco.push(new CellColor('_' + ymd, i+"", "color-attendance", 0));
+                                }
+                                if (cell.workHolidayCls == AttendanceHolidayAttr.MORNING) {
+                                    //detailContentDeco.push(new CellColor('_' + ymd, i+"", "color-half-day-work", 0));
+                                }
+                                if (cell.workHolidayCls == AttendanceHolidayAttr.AFTERNOON) {
+                                    //detailContentDeco.push(new CellColor('_' + ymd, i+"", "color-half-day-work", 0));
+                                }
+                                if (cell.workHolidayCls == AttendanceHolidayAttr.HOLIDAY) {
+                                    //detailContentDeco.push(new CellColor('_' + ymd, i+"", "color-holiday", 0));
+                                }
+                            }
+                        }
+                    };
+                    detailContentDs.push(objDetailContentDs);
+                    self.arrListCellLock = arrListCellLock;
+                    
+                } else if (viewMode == 'shortName') {
+                    objDetailContentDs['sid'] = i.toString();
+                    objDetailContentDs['employeeId'] = emp.employeeId;
+                    _.each(listWorkScheduleInforByEmp, (cell: IWorkScheduleWorkInforDto) => {
+                        let time = new Time(new Date(cell.date));
+                        let ymd = time.yearMonthDay;
+                        let workTypeName = (cell.workTypeCode != null && cell.workTypeName == null) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName;
+                        let workTimeName = (cell.workTimeCode != null && cell.workTimeName == null) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
+                        objDetailContentDs['_' + ymd] = new ExCell(cell.workTypeCode, workTypeName, cell.workTimeCode, workTimeName);
+
+                        // điều kiện ※Abc1
+                        if (cell.isEdit == false) {
+                            detailContentDeco.push(new CellColor('_' + ymd, i + "", "xseal", 0));
+                            detailContentDeco.push(new CellColor('_' + ymd, i + "", "xseal", 1));
+                        }
+
+                        // điều kiện ※Abc2
+                        if (cell.isActive == false) {
+                            arrListCellLock.push({ rowId: i, columnId: "_" + ymd });
+                        }
+                        
+                        // set Deco background
+                        // A10_color⑤ 勤務略名表示の背景色 (Màu nền hiển thị "chuyên cần, tên viết tắt")                                                   
+                        if (cell.achievements == true || cell.needToWork == false) {
+                            //detailContentDeco.push(new CellColor('_' + ymd, i, "bg-schedule-uncorrectable", 0));
+                            //detailContentDeco.push(new CellColor('_' + ymd, i, "bg-schedule-uncorrectable", 1));
+                        } else {
+                            if (cell.workTypeEditStatus.editStateSetting == 0) {
+                                // HAND_CORRECTION_MYSELF(0), 手修正（本人）
+                                //detailContentDeco.push(new CellColor('_' + ymd, i, "bg-daily-alter-self", 0));
+                            }
+                            if (cell.workTimeEditStatus.editStateSetting == 1) {
+                                //HAND_CORRECTION_OTHER(1), 手修正（他人）
+                                //detailContentDeco.push(new CellColor('_' + ymd, i, "bg-daily-alter-other", 1));
+                            }
+                        }
+
+                        // set Deco text color
+                        // A10_color⑥ スケジュール明細の文字色  (Màu chữ của "Schedule detail")
+                        if (cell.achievements == true) {
+                            //detailContentDeco.push(new CellColor('_' + ymd, i, "color-schedule-performance", 0));
+                            //detailContentDeco.push(new CellColor('_' + ymd, i, "color-schedule-performance", 1));
+                        } else {
+                            if (cell.workHolidayCls == AttendanceHolidayAttr.FULL_TIME) {
+                                //detailContentDeco.push(new CellColor('_' + ymd, i, "color-attendance", 0));
+                                //detailContentDeco.push(new CellColor('_' + ymd, i, "color-attendance", 1));
+                            }
+                            if (cell.workHolidayCls == AttendanceHolidayAttr.MORNING) {
+                                //detailContentDeco.push(new CellColor('_' + ymd, i, "color-half-day-work", 0));
+                                //detailContentDeco.push(new CellColor('_' + ymd, i, "color-half-day-work", 1));
+                            }
+                            if (cell.workHolidayCls == AttendanceHolidayAttr.AFTERNOON) {
+                                //detailContentDeco.push(new CellColor('_' + ymd, i, "color-half-day-work", 0));
+                                //detailContentDeco.push(new CellColor('_' + ymd, i, "color-half-day-work", 1));
+                            }
+                            if (cell.workHolidayCls == AttendanceHolidayAttr.HOLIDAY) {
+                                //detailContentDeco.push(new CellColor('_' + ymd, i, "color-holiday", 0));
+                                //detailContentDeco.push(new CellColor('_' + ymd, i, "color-holiday", 1));
+                            }
+                        }
+                    });
+                    detailContentDs.push(objDetailContentDs);
+                    self.arrListCellLock = arrListCellLock;
+
+                } else if (viewMode == 'time') {
+                    objDetailContentDs['sid'] = i.toString();
+                    objDetailContentDs['employeeId'] = emp.employeeId;
+                    _.each(listWorkScheduleInforByEmp, (cell: IWorkScheduleWorkInforDto) => {
+                        // set dataSource
+                        let time = new Time(new Date(cell.date));
+                        let ymd = time.yearMonthDay;
+                        let workTypeName = (cell.workTypeCode != null && cell.workTypeName == null) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName;
+                        let workTimeName = (cell.workTimeCode != null && cell.workTimeName == null) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
+                        let startTime = formatById("Clock_Short_HM", cell.startTime);
+                        let endTime = formatById("Clock_Short_HM", cell.endTime);
+                        let workTypeCode = cell.workTypeCode;
+                        let workTimeCode = cell.workTimeCode;
+                        objDetailContentDs['_' + ymd] = new ExCell(workTypeCode, workTypeName, workTimeCode, workTimeName, startTime, endTime);
+
+                         // điều kiện ※Abc1
+                        if (cell.isEdit == false) {
+                            detailContentDeco.push(new CellColor('_' + ymd, i + "", "xseal", 0));
+                            detailContentDeco.push(new CellColor('_' + ymd, i + "", "xseal", 1));
+                        }
+                        
+                        // dieu kien ※Ac    
+                        if (!(cell.isEdit == true && workTimeName != null && workTimeName != '' && workTimeName != undefined)) {
+                            detailContentDeco.push(new CellColor('_' + ymd, i + "", "xseal", 2));
+                            detailContentDeco.push(new CellColor('_' + ymd, i + "", "xseal", 3));
+                        }
+
+                        // điều kiện ※Abc2
+                        if (cell.isActive == false) {
+                            arrListCellLock.push({ rowId: i, columnId: "_" + ymd });
+                        }
+                        
+                        // set Deco background
+                        // A10_color⑤ 勤務略名表示の背景色 (Màu nền hiển thị "chuyên cần, tên viết tắt")
+                        if (cell.achievements == true || cell.needToWork == false) {
+                            //detailContentDeco.push(new CellColor('_' + ymd, i+ "", "bg-schedule-uncorrectable", 0));
+                            //detailContentDeco.push(new CellColor('_' + ymd, i+ "", "bg-schedule-uncorrectable", 1));
+                            //detailContentDeco.push(new CellColor('_' + ymd, i+ "", "bg-schedule-uncorrectable", 2));
+                            //detailContentDeco.push(new CellColor('_' + ymd, i+ "", "bg-schedule-uncorrectable", 3));
+                        } else {
+                            if (cell.workTypeEditStatus.editStateSetting == 0) {
+                                // HAND_CORRECTION_MYSELF(0), 手修正（本人）
+                                //detailContentDeco.push(new CellColor('_' + ymd, i+ "", "bg-daily-alter-self", 0));
+                            }
+                            if (cell.workTimeEditStatus.editStateSetting == 1) {
+                                //HAND_CORRECTION_OTHER(1), 手修正（他人）
+                                //detailContentDeco.push(new CellColor('_' + ymd, i+ "", "bg-daily-alter-other", 1));
+                            }
+                            if (cell.startTimeEditState.editStateSetting == 2) {
+                                //REFLECT_APPLICATION(2), 申請反映
+                                //detailContentDeco.push(new CellColor('_' + ymd, i+ "", "bg-daily-reflect-application", 2));
+                            }
+                            if (cell.endTimeEditState.editStateSetting == 2) {
+                                //REFLECT_APPLICATION(2), 申請反映
+                                //detailContentDeco.push(new CellColor('_' + ymd, i+ "", "bg-daily-reflect-application", 3));
+                            }
+                        }
+
+                        // set Deco text color
+                        // A10_color⑥ スケジュール明細の文字色  (Màu chữ của "Schedule detail")
+                        if (cell.achievements == true) {
+                            //detailContentDeco.push(new CellColor('_' + ymd, i+ "", "color-schedule-performance", 0));
+                            //detailContentDeco.push(new CellColor('_' + ymd, i+ "", "color-schedule-performance", 1));
+                            //detailContentDeco.push(new CellColor('_' + ymd, i+ "", "color-schedule-performance", 2));
+                            //detailContentDeco.push(new CellColor('_' + ymd, i+ "", "color-schedule-performance", 3));
+                        } else {
+                            if (cell.workHolidayCls == AttendanceHolidayAttr.FULL_TIME) {
+                                //detailContentDeco.push(new CellColor('_' + ymd, i+ "", "color-attendance", 0));
+                                //detailContentDeco.push(new CellColor('_' + ymd, i+ "", "color-attendance", 1));
+                            }
+                            if (cell.workHolidayCls == AttendanceHolidayAttr.MORNING) {
+                                //detailContentDeco.push(new CellColor('_' + ymd, i+ "", "color-half-day-work", 0));
+                                //detailContentDeco.push(new CellColor('_' + ymd, i+ "", "color-half-day-work", 1));
+                            }
+                            if (cell.workHolidayCls == AttendanceHolidayAttr.AFTERNOON) {
+                                //detailContentDeco.push(new CellColor('_' + ymd, i+ "", "color-half-day-work", 0));
+                                //detailContentDeco.push(new CellColor('_' + ymd, i+ "", "color-half-day-work", 1));
+                            }
+                            if (cell.workHolidayCls == AttendanceHolidayAttr.HOLIDAY) {
+                                //detailContentDeco.push(new CellColor('_' + ymd, i+ "", "color-holiday", 0));
+                                //detailContentDeco.push(new CellColor('_' + ymd, i+ "", "color-holiday", 1));
+                            }
+                        }
+                    });
+                    detailContentDs.push(objDetailContentDs);
+                    self.arrListCellLock = arrListCellLock;
+                }
             }
 
-            //create dataSource for detailHeader
-            detailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
-            detailHeaderDs.push(objDetailHeaderDs);
+            // set data cho combobox WorkType
+            let listWorkType = [];
+            _.each(data.listWorkTypeInfo, (emp: IWorkTypeInfomation, i) => {
+                let workTypeDto: IWorkTypeDto = {
+                    workTypeCode: emp.workTypeDto.workTypeCode, // 勤務種類コード - コード
+                    name: emp.workTypeDto.name,         // 勤務種類名称  - 表示名
+                    memo: emp.workTypeDto.memo,
+                    workTimeSetting: emp.workTimeSetting, // 必須任意不要区分 :  必須である REQUIRED(0), 任意であるOPTIONAL(1), 不要であるNOT_REQUIRED(2)
+                    workStyle: emp.workStyle,
+                }
+                listWorkType.push(workTypeDto);
+            });
+            __viewContext.viewModel.viewAB.listWorkType(listWorkType);
 
-            //define the detailColumns
-            horzSumHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
 
-            //create leftMost Header and Content
-            let leftmostColumns = [{
-                headerText: getText("KSU001_56"), key: "empName", width: "160px"
+            // set width cho column cho tung mode
+            let widthColumn = 0;
+            if (viewMode == 'time') {
+                widthColumn = 100;
+            } else if (viewMode == 'shortName') {
+                widthColumn = 50;
+            } else if (viewMode == 'shift') {
+                widthColumn = 35;
+            }
+            
+            // イベント情報と個人条件のmapping (mapping "thông tin event" và "person condition")
+            if (data.displayControlPersonalCond == null) {
+                self.showA9 = false;
+            } else {
+                self.showA9 = true;
+            }
+            
+            detailColumns.push({ key: "sid", width: "5px", headerText: "ABC", visible: false });
+            objDetailHeaderDs['sid'] = "";
+            _.each(data.listDateInfo, (dateInfo: IDateInfo) => {
+                self.arrDay.push(new Time(new Date(dateInfo.ymd)));
+                let time = new Time(new Date(dateInfo.ymd));
+                detailColumns.push({
+                    key: "_" + time.yearMonthDay, width: widthColumn + "px", handlerType: "input", dataType: "label/label/time/time", headerControl: "link"
+                });
+                let ymd = time.yearMonthDay;
+                let field = '_' + ymd;
+                if (dateInfo.isToday) {
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-that-day"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-that-day"));
+                } else if (dateInfo.isSpecificDay) {
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date"));
+                } else if (dateInfo.isHoliday) {
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday"));
+                } else if (dateInfo.dayOfWeek == 7) {
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday"));
+                } else if (dateInfo.dayOfWeek == 6) {
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-saturday"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-saturday"));
+                } else if (dateInfo.dayOfWeek > 0 || dateInfo.dayOfWeek < 6) {
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-weekdays"));
+                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-weekdays"));
+                }
+
+                if (dateInfo.isSpecificDay || dateInfo.optCompanyEventName != null || dateInfo.optWorkplaceEventName != null) {
+                    objDetailHeaderDs['_' + ymd] = "<div class='header-image-event'></div>";
+                    let heightToolTip = 22 + 22 + 22 * dateInfo.listSpecDayNameCompany.length + 22 * dateInfo.listSpecDayNameWorkplace.length + 5; //22 là chiều cao 1 row của table trong tooltip
+                    htmlToolTip.push(new HtmlToolTip('_' + ymd, dateInfo.htmlTooltip, heightToolTip));
+                } else {
+                    objDetailHeaderDs['_' + ymd] = "<div class='header-image-no-event'></div>";
+                }
+            });
+            self.listColorOfHeader(detailHeaderDeco);
+            self.dataSource = detailContentDs;
+            result = {
+                leftmostDs: leftmostDs,
+                middleDs: middleDs,
+                detailColumns: detailColumns,
+                objDetailHeaderDs: objDetailHeaderDs,
+                detailHeaderDeco: detailHeaderDeco,
+                htmlToolTip: htmlToolTip,
+                detailContentDs: detailContentDs,
+                detailContentDeco: detailContentDeco,
+                arrListCellLock: arrListCellLock
+
+            };
+            if (viewMode == 'shift') {
+                self.detailColumns = detailColumns;
+            }
+            let empLogin = _.filter(detailContentDs, function(o) { return o.employeeId == self.employeeIdLogin; });
+            if (empLogin.length > 0) {
+                self.key = empLogin[0].sid;
+            } else {
+                self.key = 0;
+            }
+            return result;
+        }
+
+        saveModeGridToLocalStorege(mode) {
+            let self = this;
+            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                let userInfor = JSON.parse(data);
+                userInfor.disPlayFormat = mode;
+                uk.localStorage.setItemAsJson(self.KEY, userInfor);
+            });
+        }
+
+        /**
+         * get setting ban dau
+         */
+        getSettingDisplayWhenStart(viewMode) {
+            let self = this;
+            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                let userInfor: IUserInfor = JSON.parse(data);
+
+                // A4_7
+                self.achievementDisplaySelected(userInfor.achievementDisplaySelected);
+                // A4_12 背景色の初期選択   (Chọn default màu nền)
+                self.backgroundColorSelected(userInfor.backgroundColor);
+
+                // get setting height grid
+                if (userInfor.gridHeightSelection == 1) {
+                    self.selectedTypeHeightExTable(1);
+                    self.isEnableInputHeight(false);
+                } else {
+                    self.heightGridSetting(userInfor.heightGridSetting);
+                    self.selectedTypeHeightExTable(2);
+                    self.isEnableInputHeight(true);
+                }
+                
+                if (viewMode == 'time') {
+                    self.visibleBtnInput(true);
+                } else {
+                    self.visibleBtnInput(false);
+                }
+                
+                // enable| disable combobox workTime
+                let workType = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == __viewContext.viewModel.viewAB.selectedWorkTypeCode(); });
+                if (workType.length > 0) {
+                    // check workTimeSetting 
+                    if (workType[0].workTimeSetting == 2) {
+                        __viewContext.viewModel.viewAB.isDisableWorkTime = true;
+                        $("#listWorkType").addClass("disabledWorkTime");
+                    } else {
+                        __viewContext.viewModel.viewAB.isDisableWorkTime = false;
+                        $("#listWorkType").removeClass("disabledWorkTime");
+                    }
+                }
+            });
+        }
+
+        /**
+        * Create exTable
+        */
+        initExTable(dataBindGrid: any, viewMode: string): void {
+            let self = this,
+                //Get dates in time period
+                currentDay = new Date(),
+                bodyHeightMode = "dynamic",
+                windowXOccupation = 65,
+                windowYOccupation = 328;
+            let updateMode = 'edit';
+            
+            // phần leftMost
+
+            let leftmostColumns = [];
+            let leftmostHeader = {};
+            let leftmostContent = {};
+            let leftmostDs = dataBindGrid.leftmostDs;
+
+            leftmostColumns = [{
+                key: "codeNameOfEmp", headerText: getText("KSU001_56"), width: "160px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
+                css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { console.log(rowIdx); },
+                headerControl: "link", headerHandler: function() { alert("Link!"); }
             }];
 
-            let leftmostHeader = {
+            leftmostHeader = {
                 columns: leftmostColumns,
                 rowHeight: "60px",
                 width: "160px"
             };
 
-            let leftmostContent = {
+            leftmostContent = {
                 columns: leftmostColumns,
                 dataSource: leftmostDs,
-                primaryKey: "empId"
+                primaryKey: "sid"
             };
 
-            //create Middle Header and Content
-            let middleColumns = [
-                { headerText: getText("KSU001_57"), key: "team", width: "50px" },
-                { headerText: getText("KSU001_58"), key: "rank", width: "50px" },
-                { headerText: getText("KSU001_59"), key: "qualification", width: "50px" },
-                { headerText: getText("KSU001_60"), key: "employmentName", width: "100px" },
-                { headerText: getText("KSU001_61"), key: "workplaceName", width: "150px" },
-                { headerText: getText("KSU001_62"), key: "classificationName", width: "100px" },
-                { headerText: getText("KSU001_63"), key: "positionName", width: "100px" },
+            // Phần middle
+            let middleDs = dataBindGrid.middleDs;
+            let updateMiddleDs = [];
+            let middleColumns = [];
+            let middleContentDeco = [];
+            let middleHeader = {};
+            let middleContent = {};
+
+            middleColumns = [
+                { headerText: getText("KSU001_4023"), key: "team", width: "40px", css: { whiteSpace: "none" } },
+                { headerText: getText("KSU001_4024"), key: "rank", width: "40px", css: { whiteSpace: "none" } },
+                { headerText: getText("KSU001_4025"), key: "qualification", width: "40px", css: { whiteSpace: "none" } }
             ];
 
-            let middleHeader = {
-                columns: middleColumns,
-                width: "100px",
+            if (self.showA9) {
+                middleHeader = {
+                    columns: middleColumns,
+                    width: "120px",
+                    features: [{
+                        name: "HeaderRowHeight",
+                        rows: { 0: "60px" }
+                    }]
+                };
+
+                middleContent = {
+                    columns: middleColumns,
+                    dataSource: middleDs,
+                    primaryKey: "sid",
+                    features: [{
+                        name: "BodyCellStyle",
+                        decorator: middleContentDeco
+                    }]
+                };
+            }
+
+            // Phần detail
+            let detailHeaderDeco = dataBindGrid.detailHeaderDeco;
+            let detailHeaderDs = [];
+            let detailContentDeco = dataBindGrid.detailContentDeco;
+            let detailContentDs = dataBindGrid.detailContentDs;
+            let detailColumns = dataBindGrid.detailColumns;
+            let objDetailHeaderDs = dataBindGrid.objDetailHeaderDs;
+            let htmlToolTip = dataBindGrid.htmlToolTip;
+            let timeRanges = [];
+
+            //create dataSource for detailHeader
+            detailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
+            detailHeaderDs.push(objDetailHeaderDs);
+
+            let detailHeader = {
+                columns: detailColumns,
+                dataSource: detailHeaderDs,
+                width: "700px",
                 features: [{
                     name: "HeaderRowHeight",
-                    rows: { 0: "60px" }
-                }]
+                    rows: { 0: "40px", 1: "20px" }
+                }, {
+                        name: "HeaderCellStyle",
+                        decorator: detailHeaderDeco
+                    }, {
+                        name: "ColumnResizes"
+                    }, {
+                    }, {
+                        name: "Hover",
+                        selector: ".header-image-event",
+                        enter: function(ui) {
+                            if (ui.rowIdx === 1 && $(ui.target).is(".header-image-event")) {
+                                let objTooltip = _.filter(htmlToolTip, function(o) { return o.key == ui.columnKey; });
+                                if (objTooltip.length > 0) {
+                                    let heightToolTip = objTooltip[0].heightToolTip;
+                                    ui.tooltip("show", $("<div/>").css({ width: "315px", height: heightToolTip + "px" }).html(objTooltip[0].value));
+                                } else {
+                                    ui.tooltip("show", $("<div/>").css({ width: "60px", height: 60 + "px" }).html(''));
+                                }
+                            }
+                        },
+                        exit: function(ui) {
+                            ui.tooltip("hide");
+                        }
+                    }]
             };
 
-            let middleContent = {
-                columns: middleColumns,
-                dataSource: middleDs,
-                primaryKey: "empId",
-                features: [{
-                    name: "BodyCellStyle",
-                    decorator: middleContentDeco
-                }]
-            };
-            //create Detail Content
             let detailContent = {
                 columns: detailColumns,
                 dataSource: detailContentDs,
-                primaryKey: "empId",
+                primaryKey: "sid",
+                //        highlight: false,
                 features: [{
                     name: "BodyCellStyle",
                     decorator: detailContentDeco
@@ -540,387 +1125,357 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         name: "TimeRange",
                         ranges: timeRanges
                     }],
-                view: function(mode, obj) {
+                view: function(mode) {
                     switch (mode) {
+                        case "shift":
+                            return ["shiftName"];
                         case "shortName":
                             return ["workTypeName", "workTimeName"];
-                        case "symbol":
-                            return ["symbolName"];
                         case "time":
-                            return ["startTime", "endTime"];
+                            return ["workTypeName", "workTimeName", "startTime", "endTime"];
                     }
                 },
-                fields: ["workTypeCode", "workTimeCode", "startTime", "endTime"],
-                upperInput: "startTime",
-                lowerInput: "endTime",
-                banEmptyInput: ["time"]
+                fields: ["workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "shiftName", "startTime", "endTime", "shiftCode"],
             };
 
-            //create VerticalSum Header and Content
-            let vertSumColumns = [
-                {
-                    headerText: "公休日数",
-                    group: [
-                        { headerText: "可能数", key: "noCan", width: "100px" },
-                        { headerText: "取得数", key: "noGet", width: "100px" }
-                    ]
+            let start = performance.now();
+
+            new nts.uk.ui.exTable.ExTable($("#extable"), {
+                headerHeight: "60px",
+                bodyRowHeight: "50px",
+                bodyHeight: "500px",
+                horizontalSumHeaderHeight: "0px",
+                horizontalSumBodyHeight: "0px",
+                horizontalSumBodyRowHeight: "0px",
+                areaResize: true,
+                bodyHeightMode: bodyHeightMode,
+                windowXOccupation: windowXOccupation,
+                windowYOccupation: windowYOccupation,
+                manipulatorId: self.key,
+                manipulatorKey: "sid",
+                updateMode: updateMode,
+                pasteOverWrite: true,
+                stickOverWrite: true,
+                viewMode: viewMode,
+                showTooltipIfOverflow: true,
+                errorMessagePopup: true,
+                determination: {
+                    rows: [0],
+                    columns: ["codeNameOfEmp"]
+                },
+                heightSetter: {
+                    showBodyHeightButton: true,
+                    click: function() {
+                        alert("Show dialog");
+                    }
                 }
-            ];
+            })
+                .LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent)
+                .MiddleHeader(middleHeader).MiddleContent(middleContent)
+                .DetailHeader(detailHeader).DetailContent(detailContent)
+                .create();
 
-            let vertSumHeader = {
-                columns: vertSumColumns,
-                width: "200px",
-                features: [{
-                    name: "HeaderRowHeight",
-                    rows: { 0: "35px", 1: "25px" }
-                }]
-            };
+            $("#extable").exTable("scrollBack", 0, { h: 0 });
+            $("#extable").exTable("saveScroll");
+            
+            // set height grid theo localStorage đã lưu
+            self.setPositionButonDownAndHeightGrid();
+            
+            //self.setLockCell(dataBindGrid.arrListCellLock);
 
-            let vertSumContent = {
-                columns: vertSumColumns,
-                dataSource: vertSumContentDs,
-                primaryKey: "empId"
-            };
-
-            //create LeftHorzSum Header and Content
-            let leftHorzColumns = [
-                { headerText: "項目名", key: "itemName", width: "160px" },
-                { headerText: "合計", key: "sum", width: "600px" }
-            ];
-
-            let leftHorzSumHeader = {
-                columns: leftHorzColumns,
-                rowHeight: "40px"
-            };
-
-            let leftHorzSumContent = {
-                columns: leftHorzColumns,
-                dataSource: leftHorzContentDs,
-                primaryKey: "itemId"
-            };
-            // create HorizontalSum Content
-            let horizontalSumContent = {
-                columns: detailColumns,
-                dataSource: horzSumContentDs,
-                primaryKey: "itemId"
-            };
-
-            $.when(self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco)).done(() => {
-                // create Detail Header
-                let detailHeader = {
-                    columns: detailColumns,
-                    dataSource: detailHeaderDs,
-                    width: "700px",
-                    features: [{
-                        name: "HeaderRowHeight",
-                        rows: { 0: "40px", 1: "20px" }
-                    }, {
-                            name: "HeaderCellStyle",
-                            decorator: detailHeaderDeco
-                        }, {
-                            name: "ColumnResizes"
-                        }, {
-                            name: "HeaderPopups",
-                            menu: {
-                                rows: [0],
-                                items: [
-                                    { id: "日付別", text: getText("KSU001_325"), selectHandler: function(id) { alert('Open KSU003'); } },
-                                    { id: "シフト別", text: getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
-                                ]
-                            },
-                            //                            popup: {
-                            //                                rows: [1],
-                            //                                provider: function(columnKey) {
-                            //                                    self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
-                            //                                    return $("#popup-area8");
-                            //                                }
-                            //                            }
-
-                        }]
-                };
-
-                //create HorizontalSum Header
-                let horizontalSumHeader = {
-                    columns: detailColumns,
-                    dataSource: horzSumHeaderDs,
-                    rowHeight: "40px",
-                    features: [{
-                        name: "HeaderRowHeight",
-                        rows: { 0: "40px" }
-                    }, {
-                            name: "HeaderCellStyle",
-                            decorator: detailHeaderDeco
-                        }]
-                };
-
-                new nts.uk.ui.exTable.ExTable($("#extable"), {
-                    headerHeight: "60px", bodyRowHeight: "28px", bodyHeight: "0px",
-                    horizontalSumHeaderHeight: "40px", horizontalSumBodyHeight: "75px",
-                    horizontalSumBodyRowHeight: "20px",
-                    areaResize: true,
-                    bodyHeightMode: "dynamic",
-                    windowXOccupation: 20,
-                    windowYOccupation: 230,
-                    manipulatorId: self.employeeIdLogin,
-                    manipulatorKey: "empId",
-                    updateMode: "stick",
-                    pasteOverWrite: true,
-                    stickOverWrite: true,
-                    viewMode: "shortName",
-                    determination: {
-                        rows: [0, 1],
-                        columns: ["empName"]
-                    },
-                })
-                    .LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent)
-                    //                    .MiddleHeader(middleHeader).MiddleContent(middleContent)
-                    .DetailHeader(detailHeader).DetailContent(detailContent)
-                    //                    .VerticalSumHeader(vertSumHeader).VerticalSumContent(vertSumContent)
-                    //                    .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
-                    //                    .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent)    
-                    .create();
-
-                // set stick single
-                $("#extable").exTable("stickData", __viewContext.viewModel.viewO.nameWorkTimeType());
-                $("#extable").exTable("stickMode", "single");
-
-
-                /**
-                 * update text for row 2 of detailHeader
-                 */
-                $("#popup-set").click(function() {
-                    $("#extable").exTable("popupValue", self.popupVal());
-                });
-                
-                $('#extable').css({
-                	'float': 'left',
-            		'top': '2px',
-            		'left': '80px',
-                });
-                self.setWidth();
-            });
+            console.log(performance.now() - start);
         }
         
-        setWidth(): any {
-            $(".ex-header-detail").width(window.innerWidth - 277);
-            $(".ex-body-detail").width(window.innerWidth - 253);
-            $("#extable").width(window.innerWidth - 253); 
+        //set lock cell
+        setLockCell(arrListCellLock: any) {
+            _.forEach(arrListCellLock, (x) => {
+                $("#extable").exTable("lockCell", x.rowId + "", x.columnId);
+            });
         }
 
-        /**
-         *  update extable
-         *  create new dataSource for some part of exTable
-         *  set color for extable
-         */
-        updateExTable(): void {
+        updateExTable(dataBindGrid: any, viewMode : string , updateLeftMost : boolean, updateMiddle : boolean, updateDetail : boolean): void {
             let self = this;
             // save scroll's position
             $("#extable").exTable("saveScroll");
             self.stopRequest(false);
-
-            let newLeftMostDs = [], newMiddleDs = [], newDetailContentDs = [], newDetailHeaderDs = [], newObjDetailHeaderDs = [], newVertSumContentDs = [], newLeftHorzContentDs = [];
-
-            _.each(self.listSid(), (x) => {
-                //newLeftMost dataSource
-                let empItem: PersonModel = _.find(self.empItems(), ['empId', x]);
-                newLeftMostDs.push({ empId: x, empName: empItem.empCd + ' ' + empItem.empName });
-                //newMiddle dataSource
-                newMiddleDs.push({ empId: x, team: "1", rank: "A", qualification: "★", employmentName: "アルバイト", workplaceName: "東京本社", classificationName: "分類", positionName: "一般" });
-                //newDetail dataSource
-                let dsOfSid: any = _.filter(self.dataSource(), ['employeeId', x]);
-                newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
-                //newVertSumContent dataSource
-                newVertSumContentDs.push({ empId: x, noCan: 6, noGet: 6 });
-            });
-
-            //create new detailHeaderDs
-            newDetailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
-            for (let i = 0; i < self.arrDay.length; i++) {
-                newObjDetailHeaderDs['_' + self.arrDay[i].yearMonthDay] = '';
-            }
-            newDetailHeaderDs.push(newObjDetailHeaderDs);
-
-            //newLeftHorzSContent dataSource
-            for (let i = 0; i < 5; i++) {
-                newLeftHorzContentDs.push({ itemId: i.toString(), itemName: "8:00 ~ 9:00", sum: "23.5" });
-            }
-
-            //get new horzSumContentDs
-            let horzSumContentDs = [];
-            for (let i = 0; i < 5; i++) {
-                let obj = {};
-                obj["itemId"] = i.toString();
-                obj["empId"] = "";
-                for (let j = 0; j < self.arrDay.length; j++) {
-                    obj['_' + self.arrDay[j].yearMonthDay] = "10";
-                }
-                horzSumContentDs.push(obj);
-            }
-
-            let newDetailColumns = [];
-            //define the new detailColumns
-            _.each(self.arrDay, (x: Time) => {
-                newDetailColumns.push({
-                    key: "_" + x.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", primitiveValue: "TimeWithDayAttr", visible: true
-                });
-            });
-
-            let updateMiddleContent = {
-                dataSource: newMiddleDs,
-            };
-
-            let leftmostContentDeco = [], detailHeaderDeco = [], detailContentDeco = [];
+            
+            // update phan leftMost
+            let leftmostDs = dataBindGrid.leftmostDs;
             let leftmostColumns = [{
-                key: "empName", headerText: "", width: "160px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
-                css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { }
+                key: "codeNameOfEmp", headerText: getText("KSU001_56"), width: "160px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
+                css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { console.log(rowIdx); },
+                headerControl: "link", headerHandler: function() { alert("Link!"); }
             }];
 
-            self.setColor(detailHeaderDeco, detailContentDeco).done(() => {
-                let updateLeftmostContent = {
-                    columns: leftmostColumns,
-                    dataSource: newLeftMostDs,
-                    features: [{
-                        name: "BodyCellStyle",
-                        decorator: leftmostContentDeco
-                    }]
-                };
+            let leftmostContentUpdate = {
+                columns: leftmostColumns,
+                dataSource: leftmostDs,
+                primaryKey: "sid"
+            };
+            
+            // update Phần Middle
+            let middleDs = dataBindGrid.middleDs;
+            let middleColumns = [];
+            let middleContentDeco = [];
+            let middleHeader = {};
+            let middleContentUpdate = {};
 
-                let updateDetailHeader = {
-                    columns: newDetailColumns,
-                    dataSource: newDetailHeaderDs,
-                    features: [{
-                        name: "HeaderRowHeight",
-                        rows: { 0: "40px", 1: "20px" }
-                    }, {
-                            name: "HeaderCellStyle",
-                            decorator: detailHeaderDeco
-                        }, {
-                            name: "HeaderPopups",
-                            menu: {
-                                rows: [0],
-                                items: [
-                                    { id: "日付別", text: getText("KSU001_325"), selectHandler: function(id) { alert('Open KSU003'); } },
-                                    { id: "シフト別", text: getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
-                                ]
-                            },
-                            //                            popup: {
-                            //                                rows: [1],
-                            //                                provider: function(columnKey) {
-                            //                                    self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
-                            //                                    return $("#popup-area8");
-                            //                                }
-                            //                            }
-                        }]
-                };
+            middleColumns = [
+                { headerText: getText("KSU001_4023"), key: "team", width: "40px", css: { whiteSpace: "none" } },
+                { headerText: getText("KSU001_4024"), key: "rank", width: "40px", css: { whiteSpace: "none" } },
+                { headerText: getText("KSU001_4025"), key: "qualification", width: "40px", css: { whiteSpace: "none" } }
+            ];       
 
-                let updateDetailContent = {
-                    columns: newDetailColumns,
-                    dataSource: newDetailContentDs,
-                    features: [{
-                        name: "BodyCellStyle",
-                        decorator: detailContentDeco
-                    }]
-                };
+            middleContentUpdate = {
+                columns: middleColumns,
+                dataSource: middleDs,
+                primaryKey: "sid",
+                features: [{
+                    name: "BodyCellStyle",
+                    decorator: middleContentDeco
+                }]
+            };
+             
+            // update Phần Detail
+            let detailHeaderDeco = dataBindGrid.detailHeaderDeco;
+            let detailHeaderDs = [];
+            let detailContentDeco = dataBindGrid.detailContentDeco;
+            let detailContentDs = dataBindGrid.detailContentDs;
+            let detailColumns = dataBindGrid.detailColumns;
+            let objDetailHeaderDs = dataBindGrid.objDetailHeaderDs;
+            let htmlToolTip = dataBindGrid.htmlToolTip;
+            let timeRanges = [];
 
-                let updateHorzSumHeader = {
-                    columns: newDetailColumns,
-                    dataSource: newDetailHeaderDs,
-                    features: [{
+            //create dataSource for detailHeader
+            detailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
+            detailHeaderDs.push(objDetailHeaderDs);
+            let detailHeaderUpdate = {
+                columns: detailColumns,
+                dataSource: detailHeaderDs,
+                features: [{
+                    name: "HeaderRowHeight",
+                    rows: { 0: "40px", 1: "20px" }
+                }, {
                         name: "HeaderCellStyle",
                         decorator: detailHeaderDeco
+                    }, {
+                        name: "ColumnResizes"
+                    }, {
+                    }, {
+                        name: "Hover",
+                        selector: ".header-image-event",
+                        enter: function(ui) {
+                            if (ui.rowIdx === 1 && $(ui.target).is(".header-image-event")) {
+                                let objTooltip = _.filter(htmlToolTip, function(o) { return o.key == ui.columnKey; });
+                                if (objTooltip.length > 0) {
+                                    let heightToolTip = objTooltip[0].heightToolTip;
+                                    ui.tooltip("show", $("<div/>").css({ width: "315px", height: heightToolTip + "px" }).html(objTooltip[0].value));
+                                } else {
+                                    ui.tooltip("show", $("<div/>").css({ width: "60px", height: 60 + "px" }).html(''));
+                                }
+                            }
+                        },
+                        exit: function(ui) {
+                            ui.tooltip("hide");
+                        }
+                    }, {
+                        name: "Click",
+                        handler: function(ui) {
+                            console.log(`${ui.rowIdx}-${ui.columnKey}`);
+                        }
                     }]
-                };
-
-                let updateHorzSumContent = {
-                    columns: newDetailColumns,
-                    dataSource: horzSumContentDs
-                };
-
-                let updateVertSumContent = {
-                    dataSource: newVertSumContentDs,
-                };
-
-                let updateLeftHorzSumContent = {
-                    dataSource: newLeftHorzContentDs
-                };
-
-                $("#extable").exTable("updateTable", "leftmost", {}, updateLeftmostContent);
-                //                $("#extable").exTable("updateTable", "middle", {}, updateMiddleContent);
-                //                $("#extable").exTable("updateTable", "verticalSummaries", {}, updateVertSumContent);
-                //                $("#extable").exTable("updateTable", "leftHorizontalSummaries", {}, updateLeftHorzSumContent);
-                $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
-                //                $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
-
-                $("#extable").on("extablecellupdated", function() { });
-                $("#extable").on("extablerowupdated", function() { });
-
-                // scroll Back
-                setTimeout(function() {
-                    $("#extable").exTable("scrollBack", 2);
-                }, 1000);
-
-                //set lock cell
-                _.forEach(self.dataSource(), (x) => {
-                    if (x.confirmedAtr == 1) {
-                        $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
+            };
+            
+            let detailContentUpdate = {
+                columns: detailColumns,
+                dataSource: detailContentDs,
+                primaryKey: "sid",
+                //        highlight: false,
+                features: [{
+                    name: "BodyCellStyle",
+                    decorator: detailContentDeco
+                }, {
+                        name: "TimeRange",
+                        ranges: timeRanges
+                    }],
+                view: function(mode) {
+                    switch (mode) {
+                        case "shift":
+                            return ["shiftName"];
+                        case "shortName":
+                            return ["workTypeName", "workTimeName"];
+                        case "time":
+                            return ["workTypeName", "workTimeName", "startTime", "endTime"];
                     }
-                });
-                // get cell is locked
-                self.arrLockCellInit($("#extable").exTable("lockCells"));
+                },
+                fields: ["workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "shiftName", "startTime", "endTime", "shiftCode"],
+            };
 
-                // validate when stick data in cell
-                $("#extable").exTable("stickValidate", function(rowIdx, key, data) {
-                    if (__viewContext.viewModel.viewO.selectedWorkTimeCode() == '据え置き') {
-                        let dataS: BasicSchedule =
-                            _.find(self.dataSource(), { 'date': moment(key, '_YYYYMMDD').format('YYYY/MM/DD'), 'employeeId': self.listSid()[rowIdx] });
-                        let wTimeCode: string = dataS ? dataS.workTimeCode : null;
-                        let wTime: any =
-                            wTimeCode ? _.find(__viewContext.viewModel.viewO.listWorkTime(), { 'workTimeCode': wTimeCode }) : null;
-                        let wTimeName: string = wTime ? wTime.abName : null;
-                        $("#extable").exTable("stickData", {
-                            workTypeCode: data.workTypeCode,
-                            workTypeName: data.workTypeName,
-                            workTimeCode: wTimeCode,
-                            workTimeName: wTimeName,
-                            startTime: dataS ? dataS.scheduleStartClock : '',
-                            endTime: dataS ? dataS.scheduleEndClock : ''
-                        });
-                        return true;
-                    }
+            if (updateLeftMost) {
+                $("#extable").exTable("updateTable", "leftmost", {}, leftmostContentUpdate);
+            }
+            if (updateMiddle) {
+                $("#extable").exTable("updateTable", "middle", {} , middleContentUpdate);
+            }
+            
+            $("#extable").exTable("mode", viewMode, 'edit', null, [{
+                    name: "BodyCellStyle",
+                    decorator: detailContentDeco
+            }]);
+            
+            if (updateDetail) {
+                $("#extable").exTable("updateTable", "detail", detailHeaderUpdate, detailContentUpdate);
+            }
+            $("#extable").exTable("scrollBack", 0, { h: 1050 });
+            
+        }
+        
+        // khi thay đổi combobox backgrounndMode
+        updateExTableWhenChangeModeBg(dataSourceDetailBody,detailContentDecoUpdate ): void {
+            let self = this;
+            // save scroll's position
+            $("#extable").exTable("saveScroll");
+            self.stopRequest(false);
+             
+            // update Phần Detail
+            let detailContentDeco = detailContentDecoUpdate;
+            let detailContentDs = dataSourceDetailBody;
+            let detailColumns = self.detailColumns;
 
-                    let workTypeCd: any = _.find(self.listCheckNeededOfWorkTime(), ['workTypeCode', data.workTypeCode]);
-                    // if workTypeCode is not required( state = 2) worktime is needless
-                    if (workTypeCd && workTypeCd.state == 2 && !_.isEmpty(data.workTimeCode)) {
-                        return function() {
-                            alertError({ messageId: 'Msg_434' });
-                        };
+            let detailContentUpdate = {
+                columns: detailColumns,
+                dataSource: detailContentDs,
+                primaryKey: "sid",
+                //        highlight: false,
+                features: [{
+                    name: "BodyCellStyle",
+                    decorator: detailContentDeco
+                }, {
+                        name: "TimeRange",
+                        ranges: []
+                    }],
+                view: function(mode) {
+                    switch (mode) {
+                        case "shift":
+                            return ["shiftName"];
+                        case "shortName":
+                            return ["workTypeName", "workTimeName"];
+                        case "time":
+                            return ["workTypeName", "workTimeName", "startTime", "endTime"];
                     }
-                    // if workTypeCode is required( state = 0) worktime is need
-                    if (workTypeCd && workTypeCd.state == 0 && _.isEmpty(data.workTimeCode)) {
-                        return function() {
-                            alertError({ messageId: 'Msg_435' });
-                        };
-                    }
+                },
+                fields: ["workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "shiftName", "startTime", "endTime", "shiftCode"],
+            };
 
-                    return true;
-                });
-                
-                // set color for cell
-                $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data) {
-                    let stateWorkTypeCode = _.find(self.listStateWorkTypeCode(), { 'workTypeCode': data.workTypeCode }).state;
-                    if (stateWorkTypeCode == 3) return { textColor: "#0000ff" }; // color-attendance
-                    else if (stateWorkTypeCode == 0) return { textColor: "#ff0000" };// color-schedule-sunday
-                    else return { textColor: "#FF7F27" };// color-half-day-work
-                });
-            }).always(() => {
-                self.stopRequest(true);
+            $("#extable").exTable("mode", 'shift', 'stick', null, [{
+                name: "BodyCellStyle",
+                decorator: detailContentDeco
+            }]);
+
+            $("#extable").exTable("updateTable", "detail", {}, detailContentUpdate);
+            $("#extable").exTable("scrollBack", 0, { h: 1050 });
+        }
+
+        // save setting hight cua grid vao localStorage
+        saveHeightGridToLocal() {
+            let self = this;
+
+            $('#input-heightExtable').trigger("validate");
+            if (nts.uk.ui.errors.hasError())
+                return;
+
+            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                let userInfor = JSON.parse(data);
+                userInfor.gridHeightSelection = self.selectedTypeHeightExTable();
+                if (self.selectedTypeHeightExTable() == TypeHeightExTable.DEFAULT) {
+                    userInfor.heightGridSetting = '';
+                } else if (self.selectedTypeHeightExTable() == TypeHeightExTable.SETTING) {
+                    userInfor.heightGridSetting = self.heightGridSetting();
+                }
+                uk.localStorage.setItemAsJson(self.KEY, userInfor);
             });
+
+            $('#A16').ntsPopup('hide');
+        }
+
+        // xử lý cho button A13
+        toLeft() {
+            let self = this;
+            if (self.indexBtnToLeft % 2 == 0) {
+                if (self.showA9) {
+                    $("#extable").exTable("hideMiddle");
+                }
+                $(".toLeft").css("background", "url(../image/toright.png) no-repeat center");
+                $(".toLeft").css("margin-left", "185px");
+            } else {
+                if (self.showA9) {
+                    $("#extable").exTable("showMiddle");
+                }
+                $(".toLeft").css("background", "url(../image/toleft.png) no-repeat center");
+                $(".toLeft").css("margin-left", "310px");
+            }
+            self.indexBtnToLeft = self.indexBtnToLeft + 1;
+
+        }
+
+        toRight() {
+            let self = this;
+            if (self.indexBtnToRight % 2 == 0) {
+                $(".toRight").css("background", "url(../image/toleft.png) no-repeat center");
+
+            } else {
+                $(".toRight").css("background", "url(../image/toright.png) no-repeat center");
+            }
+            self.indexBtnToRight = self.indexBtnToRight + 1;
+        }
+
+        toDown() {
+            let self = this;
+            if (self.indexBtnToDown % 2 == 0) {
+                $(".toDown").css("background", "url(../image/toup.png) no-repeat center");
+
+            } else {
+                $(".toDown").css("background", "url(../image/todown.png) no-repeat center");
+            }
+            self.indexBtnToDown = self.indexBtnToDown + 1;
+        }
+        
+        setPositionButonToRight() {
+            let marginleft: number = $("#extable").width() - 280 - 27 - 27 - 30;
+            $(".toRight").css('margin-left', marginleft);
+        }
+
+        setPositionButonDownAndHeightGrid() {
+            let self = this;
+            if (uk.localStorage.getItem(self.KEY).isPresent()) {
+                let userInfor = JSON.parse(uk.localStorage.getItem(self.KEY).get());
+                if (userInfor.gridHeightSelection == 2) {
+                    $("#extable").exTable("setHeight", userInfor.heightGridSetting);
+                    let heightBodySetting: number = + userInfor.heightGridSetting;
+                    let heightBody = heightBodySetting + 60 - 25; // 60 chieu cao header, 25 chieu cao button
+                    $(".toDown").css({ "margin-top": heightBody + 'px' });
+                } else {
+                    let heightExtable = $("#extable").height();
+                    let margintop = heightExtable - 52;
+                    $(".toDown").css({ "margin-top": margintop + 'px' });
+                }
+            } else {
+                let heightExtable = $("#extable").height();
+                let margintop = heightExtable - 52;
+                $(".toDown").css({ "margin-top": margintop + 'px' });
+            }
+        }
+
+        setWidth(): any {
+            $(".ex-header-detail").width(window.innerWidth - 572);
+            $(".ex-body-detail").width(window.innerWidth - 554);
+            $("#extable").width(window.innerWidth - 554);
         }
 
         /**
          * update new data of header and content of detail and horizSum
          */
-        updateDetailAndHorzSum(): void {
+        updateWhenChangeDatePeriod(): void {
             let self = this;
             // save scroll's position
             $("#extable").exTable("saveScroll");
@@ -928,12 +1483,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let currentDay = new Date(self.dtPrev().toString());
             self.arrDay = [];
             let newDetailColumns = [], newObjDetailHeaderDs = [], newDetailHeaderDs = [], newDetailContentDs = [];
+
+            newDetailColumns.push({ key: "sid", width: "50px", headerText: "sid", visible: false });
             while (moment(currentDay).format('YYYY-MM-DD') <= moment(self.dtAft()).format('YYYY-MM-DD')) {
                 self.arrDay.push(new Time(currentDay));
                 let time = new Time(currentDay);
                 //define the new detailColumns
                 newDetailColumns.push({
-                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", primitiveValue: "TimeWithDayAttr", visible: true
+                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "label/label/time/time", visible: true
                 });
                 //create new detailHeaderDs
                 newObjDetailHeaderDs['_' + time.yearMonthDay] = '';
@@ -945,21 +1502,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             newDetailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
             newDetailHeaderDs.push(newObjDetailHeaderDs);
 
-            //get new horzSumContentDs
-            let horzSumContentDs = [];
-            for (let i = 0; i < 5; i++) {
-                let obj = {};
-                obj["itemId"] = i.toString();
-                obj["empId"] = "";
-                for (let j = 0; j < self.arrDay.length; j++) {
-                    obj['_' + self.arrDay[j].yearMonthDay] = "10";
-                }
-                horzSumContentDs.push(obj);
-            }
-
             let detailHeaderDeco = [], detailContentDeco = [];
 
-            //if haven't data in extable, only update header detail and header horizontal
+            //if haven't data in extable, only update header detail
             if (self.empItems().length == 0) {
                 $.when(self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco)).done(() => {
                     let updateDetailHeader = {
@@ -980,28 +1525,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                         { id: "シフト別", text: getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
                                     ]
                                 },
-                                //                                popup: {
-                                //                                    rows: [1],
-                                //                                    provider: function(columnKey) {
-                                //                                        self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
-                                //                                        return $("#popup-area8");
-                                //                                    }
-                                //                                }
-
                             }]
                     };
 
-                    let updateHorzSumHeader = {
-                        columns: newDetailColumns,
-                        dataSource: newDetailHeaderDs,
-                        features: [{
-                            name: "HeaderCellStyle",
-                            decorator: detailHeaderDeco
-                        }]
-                    };
-
                     $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
-                    //                    $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, {});
 
                     setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
 
@@ -1013,402 +1540,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     });
                     // get cell is locked
                     self.arrLockCellInit($("#extable").exTable("lockCells"));
-
                     self.stopRequest(true);
                 });
-            } else if (self.selectedModeDisplayObject() == 1) {
-                self.setDatasource().done(() => {
-                    self.setColor(detailHeaderDeco, detailContentDeco).done(() => {
-                        let updateDetailHeader = {
-                            columns: newDetailColumns,
-                            dataSource: newDetailHeaderDs,
-                            features: [{
-                                name: "HeaderRowHeight",
-                                rows: { 0: "40px", 1: "20px" }
-                            }, {
-                                    name: "HeaderCellStyle",
-                                    decorator: detailHeaderDeco
-                                }, {
-                                    name: "HeaderPopups",
-                                    menu: {
-                                        rows: [0],
-                                        items: [
-                                            { id: "日付別", text: getText("KSU001_325"), selectHandler: function(id) { alert('Open KSU003'); } },
-                                            { id: "シフト別", text: getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
-                                        ]
-                                    },
-                                    //                                    popup: {
-                                    //                                        rows: [1],
-                                    //                                        provider: function(columnKey) {
-                                    //                                            self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
-                                    //                                            return $("#popup-area8");
-                                    //                                        }
-                                    //                                    }
+            } else if (self.selectedModeDisplayInBody() == 'time') {
 
-                                }]
-                        };
 
-                        //intended data display mode 
-                        //dataSource of detail
-                        _.each(self.listSid(), (x) => {
-                            let dsOfSid: any = _.filter(self.dataSource(), ['employeeId', x]);
-                            newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(),
-                                __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
-                        });
+            } else if (self.selectedModeDisplayInBody() == 'shortName') {
 
-                        let updateDetailContent = {
-                            columns: newDetailColumns,
-                            dataSource: newDetailContentDs,
-                            features: [{
-                                name: "BodyCellStyle",
-                                decorator: detailContentDeco
-                            }]
-                        };
 
-                        let updateHorzSumHeader = {
-                            columns: newDetailColumns,
-                            dataSource: newDetailHeaderDs,
-                            features: [{
-                                name: "HeaderCellStyle",
-                                decorator: detailHeaderDeco
-                            }]
-                        };
+            } else if (self.selectedModeDisplayInBody() == 'shift') {
 
-                        let updateHorzSumContent = {
-                            columns: newDetailColumns,
-                            dataSource: horzSumContentDs
-                        };
-                        
-                        $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
-                        //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
-                        setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
-
-                        //set lock cell
-                        _.forEach(self.dataSource(), (x) => {
-                            if (x.confirmedAtr == 1) {
-                                $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
-                            }
-                        });
-                        // get cell is locked
-                        self.arrLockCellInit($("#extable").exTable("lockCells"));
-                    });
-                }).always(() => {
-                    self.stopRequest(true);
-                });
-            } else if (self.selectedModeDisplayObject() == 2) {
-                // in phare 2, set dataSource of actual data = dataSource of intended data
-                self.setDatasource().done(() => {
-                    self.setColor(detailHeaderDeco, detailContentDeco).done(() => {
-                        let updateDetailHeader = {
-                            columns: newDetailColumns,
-                            dataSource: newDetailHeaderDs,
-                            features: [{
-                                name: "HeaderRowHeight",
-                                rows: { 0: "40px", 1: "20px" }
-                            }, {
-                                    name: "HeaderCellStyle",
-                                    decorator: detailHeaderDeco
-                                }, {
-                                    name: "HeaderPopups",
-                                    menu: {
-                                        rows: [0],
-                                        items: [
-                                            { id: "日付別", text: getText("KSU001_325"), selectHandler: function(id) { alert('Open KSU003'); } },
-                                            { id: "シフト別", text: getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
-                                        ]
-                                    },
-                                    //                                    popup: {
-                                    //                                        rows: [1],
-                                    //                                        provider: function(columnKey) {
-                                    //                                            self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
-                                    //                                            return $("#popup-area8");
-                                    //                                        }
-                                    //                                    }
-                                }]
-                        };
-
-                        // actual data display mode , if hasn't actual data, display intended data
-                        _.each(self.listSid(), (x) => {
-                            let dsOfSid: any = _.filter(self.dataSource(), ['employeeId', x]);
-                            newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(),
-                                __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
-                        });
-
-                        let updateDetailContent = {
-                            columns: newDetailColumns,
-                            dataSource: newDetailContentDs,
-                            features: [{
-                                name: "BodyCellStyle",
-                                decorator: detailContentDeco
-                            }]
-                        };
-
-                        let updateHorzSumHeader = {
-                            columns: newDetailColumns,
-                            dataSource: newDetailHeaderDs,
-                            features: [{
-                                name: "HeaderCellStyle",
-                                decorator: detailHeaderDeco
-                            }]
-                        };
-
-                        let updateHorzSumContent = {
-                            columns: newDetailColumns,
-                            dataSource: horzSumContentDs
-                        };
-                        
-                        $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
-                        //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
-
-                        setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
-
-                        //set lock cell
-                        _.forEach(self.dataSource(), (x) => {
-                            if (x.confirmedAtr == 1) {
-                                $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
-                            }
-                        });
-                        // get cell is locked
-                        self.arrLockCellInit($("#extable").exTable("lockCells"));
-                    });
-                }).always(() => {
-                    self.stopRequest(true);
-                });
-            } else {
-                self.stopRequest(true);
             }
-        }
-
-        /**
-         * Shift condition A2_4
-         */
-        initShiftCondition(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred();
-            service.buildTreeShiftCondition().done(function(itemsTree) {
-                self.itemsTree(itemsTree);
-                dfd.resolve();
-            });
-            return dfd.promise();
-        }
-
-        /**
-         * Get data of Basic Schedule = listDataShortName + listDataTimeZone + dataWScheState
-         */
-        getDataBasicSchedule(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred(),
-                obj = {
-                    employeeId: self.listSid(),
-                    startDate: self.dtPrev(),
-                    endDate: self.dtAft()
-                };
-
-            service.getDataBasicSchedule(obj).done(function(datas) {
-                let arrTmp: any = [];
-                self.dataSource([]);
-                _.each(datas, data =>{
-                    arrTmp.push(new BasicSchedule({
-                            date: data.date,
-                            employeeId: data.employeeId,
-                            workTimeCode: data.workTimeCode,
-                            workTypeCode: data.workTypeCode,
-                            confirmedAtr: data.confirmedAtr,
-                            isIntendedData: true, // = true la du lieu du dinh
-                            scheduleCnt: data.scheduleCnt,
-                            scheduleStartClock: data.scheduleStartClock,
-                            scheduleEndClock: data.scheduleEndClock,
-                            bounceAtr: data.bounceAtr
-                        }));
-                });
-                
-                self.dataSource(arrTmp);
-                
-//                //set dataSource for mode shortName
-//                self.dataSource([]);
-//                _.each(data.listDataShortName, (itemData: BasicSchedule) => {
-//                    let itemDataSource: BasicSchedule = _.find(self.dataSource(), { 'employeeId': itemData.employeeId, 'date': itemData.date });
-//                    if (itemDataSource) {
-//                        itemDataSource.workTimeCode = itemData.workTimeCode;
-//                        itemDataSource.workTypeCode = itemData.workTypeCode;
-//                        itemDataSource.confirmedAtr = itemData.confirmedAtr;
-//                        itemDataSource.isIntendedData = true
-//                    } else {
-//                        self.dataSource.push(new BasicSchedule({
-//                            date: itemData.date,
-//                            employeeId: itemData.employeeId,
-//                            workTimeCode: itemData.workTimeCode,
-//                            workTypeCode: itemData.workTypeCode,
-//                            confirmedAtr: itemData.confirmedAtr,
-//                            isIntendedData: true
-//                        }));
-//                    }
-//                });
-//
-//                //set dataSource for mode timeZone
-//                _.each(self.dataSource(), (itemDataSource: BasicSchedule) => {
-//                    let itemDataTimeZone: any = _.find(data.listDataTimeZone, { 'employeeId': itemDataSource.employeeId, 'date': itemDataSource.date });
-//                    if (itemDataTimeZone) {
-//                        itemDataSource.scheduleStartClock = itemDataTimeZone.scheduleStartClock;
-//                        itemDataSource.scheduleEndClock = itemDataTimeZone.scheduleEndClock;
-//                    } else {
-//                        itemDataSource.scheduleStartClock = null;
-//                        itemDataSource.scheduleEndClock = null;
-//                    }
-//                });
-
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
-            return dfd.promise();
-        }
-
-        /**
-         * Get data to display symbol for dataSource(exTable)
-         */
-        setDataToDisplaySymbol(dataS): void {
-            let self = this;
-            if (self.dataScheduleDisplayControl() && +self.dataScheduleDisplayControl().symbolAtr == 1) {
-                _.each(dataS, (x) => {
-                    let workEmpCombine = _.find(self.dataWorkEmpCombine(), { 'workTypeCode': x.workTypeCode, 'workTimeCode': x.workTimeCode });
-                    if (workEmpCombine) {
-                        x.symbolName = workEmpCombine.symbolName;
-                    } else {
-                        self.handleSetSymbolForCell(x);
-                    }
-                });
-            } else {
-                _.each(dataS, (item) => {
-                    self.handleSetSymbolForCell(item);
-                });
-            }
-        }
-
-        handleSetSymbolForCell(item: any): void {
-            let self = this;
-            let symbolName: string = '';
-            if (_.isEmpty(item.workTimeCode)) {
-                let workTypeItem: any = _.find(__viewContext.viewModel.viewO.listWorkType(), { 'workTypeCode': item.workTypeCode });
-                symbolName = workTypeItem ? workTypeItem.symbolicName : '';
-            } else {
-                let workTimeItem: any = _.find(__viewContext.viewModel.viewO.listWorkTime(), { 'workTimeCode': item.workTimeCode });
-                symbolName = workTimeItem ? workTimeItem.symbolName : '';
-            }
-            //state = 0 || 3 : rest || work all day
-            //state = 1 || 2 : work in morning || work in afternoon
-            let stateWorkTypeCode = _.find(self.listStateWorkTypeCode(), { 'workTypeCode': item.workTypeCode });
-            if (stateWorkTypeCode) {
-                let state = stateWorkTypeCode.state;
-                if (state == 1 && self.dataScheduleDisplayControl() && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
-                    item.symbolName = symbolName + self.dataScheduleDisplayControl().symbolHalfDayName;
-                } else if (state == 2 && self.dataScheduleDisplayControl() && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
-                    item.symbolName = self.dataScheduleDisplayControl().symbolHalfDayName + symbolName;
-                } else {
-                    //                    if (state == 0 || state == 3) {
-                    item.symbolName = symbolName;
-                }
-            }
-        }
-
-        /**
-        * datasource = dataBasicSchedule + dataToDisplaySymbol
-        */
-        setDatasource(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            $.when(self.getDataBasicSchedule()).done(function() {
-                // set data hien thi o mode symbol
-                self.setDataToDisplaySymbol(self.dataSource())
-                dfd.resolve();
-            });
-            return dfd.promise();
-        }
-
-        /**
-         * Get data WorkScheduleState
-         * with itemId = 1~4 (set on server)
-         */
-        getDataWorkScheduleState(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred(),
-                obj = {
-                    employeeId: self.listSid(),
-                    startDate: self.dtPrev(),
-                    endDate: self.dtAft(),
-                };
-            service.getDataWorkScheduleState(obj).done(function(data) {
-                self.dataWScheduleState(data);
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
-            return dfd.promise();
-        }
-
-        /**
-         * Get data WkpSpecificDate, ComSpecificDate, PublicHoliday
-         */
-        getDataSpecDateAndHoliday(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred(),
-                obj = {
-                    workplaceId: self.empItems()[0] ? self.empItems()[0].affiliationId : null,
-                    startDate: self.dtPrev(),
-                    endDate: self.dtAft()
-                };
-            service.getDataSpecDateAndHoliday(obj).done(function(data) {
-                self.dataWkpSpecificDate(data.listWkpSpecificDate);
-                self.dataComSpecificDate(data.listComSpecificDate);
-                self.dataPublicHoliday(data.listPublicHoliday);
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
-            return dfd.promise();
-        }
-
-        /**
-         * Get data WorkEmpCombine
-         */
-        getDataWorkEmpCombine(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred(), lstWorkTypeCode: any[] = [], lstWorkTimeCode: any[] = [], obj: any = null;
-            _.each(__viewContext.viewModel.viewO.listWorkType(), (item) => {
-                lstWorkTypeCode.push(item.workTypeCode);
-            });
-            _.each(__viewContext.viewModel.viewO.listWorkTime(), (item) => {
-                lstWorkTimeCode.push(item.workTimeCode);
-            });
-
-            obj = {
-                lstWorkTypeCode: lstWorkTypeCode,
-                lstWorkTimeCode: lstWorkTimeCode
-            }
-            service.getDataWorkEmpCombine(obj).done(function(data) {
-                self.dataWorkEmpCombine(data);
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
-            return dfd.promise();
-        }
-
-        /**
-         * Get data of Schedule Display Control
-         */
-        getDataScheduleDisplayControl(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred();
-            service.getDataScheduleDisplayControl().done(function(data) {
-                self.dataScheduleDisplayControl(data);
-                //TO-DO
-                //                if (!!data && data.personInforAtr == 7) {
-                //                    self.isInsuranceStatus = true;
-                //                }
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
-            return dfd.promise();
         }
 
         /**
@@ -1416,20 +1559,40 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         */
         nextMonth(): void {
             let self = this;
+            if (self.selectedModeDisplay() == 1 || self.selectedModeDisplay() == 2)
+                return;
+
+            let dtMoment = moment(self.dtAft());
+            dtMoment.add(1, 'days');
+            self.dtPrev(dtMoment.toDate());
+            dtMoment = dtMoment.add(1, 'months');
+            dtMoment.subtract(1, 'days');
+            self.dtAft(dtMoment.toDate());
             self.stopRequest(false);
-            if (self.selectedTimePeriod() == 1) {
-                // Recalculate the time period
-                let dtMoment = moment(self.dtAft());
-                dtMoment.add(1, 'days');
-                self.dtPrev(dtMoment.toDate());
-                dtMoment = dtMoment.add(1, 'months');
-                dtMoment.subtract(1, 'days');
-                self.dtAft(dtMoment.toDate());
-                self.dataSource([]);
-                self.updateDetailAndHorzSum();
-            } else {
+            
+            let self = this,
+                dfd = $.Deferred(),
+                viewMode = self.selectedModeDisplayInBody();
+
+            let param = {
+                viewMode: viewMode
+            };
+            service.getDataNextMonth(param).done((data: IDataStartScreen) => {
+                // set hiển thị ban đầu theo data đã lưu trong localStorege
+                self.getSettingDisplayWhenStart();
+                // set data Header
+                self.bindingToHeader(data);
+                // set data Grid
+                let dataBindGrid = self.convertDataToGrid(data, viewMode);
+
+                self.updateExTable(dataBindGrid, viewMode, false, true, true);
+                dfd.resolve();
                 self.stopRequest(true);
-            }
+            }).fail(function() {
+                dfd.reject();
+                self.stopRequest(true);
+            });
+            return dfd.promise();
         }
 
         /**
@@ -1437,783 +1600,436 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         */
         backMonth(): void {
             let self = this;
-            self.stopRequest(false);
-            if (self.selectedTimePeriod() == 1) {
-                //Recalculate the time period
-                let dtMoment = moment(self.dtPrev());
-                dtMoment.subtract(1, 'days');
-                self.dtAft(dtMoment.toDate());
-                if (dtMoment.date() === dtMoment.daysInMonth()) {
-                    dtMoment = dtMoment.subtract(1, 'months');
-                    dtMoment.endOf('months');
-                } else {
-                    dtMoment = dtMoment.subtract(1, 'months');
-                }
-                dtMoment.add(1, 'days');
-                self.dtPrev(new Date(dtMoment.format('YYYY/MM/DD')));
-                self.dataSource([]);
-                self.updateDetailAndHorzSum();
-            } else {
-                self.stopRequest(true);
-            }
-        }
-
-        /**
-        * Save data
-        */
-        saveData(): void {
-            let self = this;
-            setTimeout(function() {
-                let arrObj: any[] = [],
-                    arrCell: Cell[] = $("#extable").exTable("updatedCells"),
-                    arrTmp: Cell[] = _.clone(arrCell),
-                    arrLockCellAfterSave: Cell[] = $("#extable").exTable("lockCells"),
-                    newArrCell = [];
-                
-                // compare 2 array lockCell init and after
-                if (arrCell.length == 0 && _.isEqual(self.arrLockCellInit(), arrLockCellAfterSave)) {
-                    return;
-                }
-                
-                self.stopRequest(false);
-                                    
-                let arrNewCellIsLocked: any[] = _.differenceWith(arrLockCellAfterSave, self.arrLockCellInit(), _.isEqual),
-                    arrNewCellIsUnlocked: any[] = _.differenceWith(self.arrLockCellInit(), arrLockCellAfterSave, _.isEqual);
-
-                // neu o mode time thi can merge cac object giong nhau vao thanh 1
-                if (self.selectedModeDisplay() == 2) {
-                    _.each(arrTmp, (item) => {
-                        let arrFilter = _.filter(arrTmp, { 'rowIndex': item.rowIndex, 'columnKey': item.columnKey });
-                        if (arrFilter.length > 1) {
-                            let sTime: any = '', eTime: any = '';
-                            _.each(arrFilter, (data) => {
-                                if (data.innerIdx == 0) {
-                                    sTime = data.value.startTime;
-                                } 
-                                if (data.innerIdx == 1) {
-                                    eTime = data.value.endTime;
-                                }
-                                _.remove(arrCell, data);
-                            });
-                            // set innerIdx = -1: do sua startTime va endTime (=> cell) trong mode Time
-                            arrCell.push(new Cell({
-                                rowIndex: item.rowIndex,
-                                columnKey: item.columnKey,
-                                value: new ksu001.common.viewmodel.ExCell ({
-                                    workTypeCode: item.value.workTypeCode,
-                                    workTypeName: item.value.workTypeName,
-                                    workTimeCode: item.value.workTimeCode,
-                                    workTimeName: item.value.workTimeName,
-                                    symbolName: item.value.symbolName,
-                                    startTime: sTime,
-                                    endTime: eTime,
-                                }),
-                                innerIdx: -1,    
-                            }));
-                        }
-                    });
-                }
-                
-                // distinct arrCell- do khi thay doi 1 cell co 2 row thi a Manh ban ra 2 cell vs innerIdx khac nhau
-                _.each(arrCell, cell => {
-                    if (!_.find(newArrCell, { 'rowIndex': cell.rowIndex, 'columnKey': cell.columnKey })) {
-                        newArrCell.push(cell);
-                    };
-                });
-                arrCell = newArrCell;
-                
-                arrNewCellIsUnlocked = _.differenceBy(arrNewCellIsUnlocked, arrCell, ['rowIndex', 'columnKey']);
-                arrCell.push.apply(arrCell, arrNewCellIsUnlocked);
-                arrCell = _.differenceBy(arrCell, arrNewCellIsLocked, ['rowIndex', 'columnKey']);
-
-                for (let i = 0; i < arrCell.length; i += 1) {
-                    let cell: any = arrCell[i], valueCell = cell.value, sid = self.listSid()[Number(cell.rowIndex)];
-                    
-                     // slice string '_YYYYMMDD' to 'YYYYMMDD'
-                    let date: string = moment.utc(cell.columnKey.slice(1, cell.columnKey.length), 'YYYYMMDD').toISOString(),
-                        basicSchedule: any = _.find(self.dataSource(), {'employeeId': sid, 'date': moment(date).format('YYYY/MM/DD') }),
-                        bounceAtr: any = 1, //set static bounceAtr =  1
-                        confirmedAtr: any =  0,
-                        workScheduleTimeZone: any = (self.selectedModeDisplay() != 1 && valueCell.workTimeCode != null) ? [{
-                            scheduleCnt: 1,
-                            scheduleStartClock: (typeof valueCell.startTime === 'number') ? valueCell.startTime
-                                : (valueCell.startTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueCell.startTime).asMinutes : null),
-                            scheduleEndClock: (typeof valueCell.endTime === 'number') ? valueCell.endTime
-                                : (valueCell.endTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueCell.endTime).asMinutes : null),
-                            bounceAtr: bounceAtr
-                        }] : null;
-                        
-                    arrObj.push({
-                        date: date,
-                        employeeId: sid,
-                        workTimeCode: valueCell.workTimeCode,
-                        workTypeCode: valueCell.workTypeCode,
-                        confirmedAtr: confirmedAtr,
-                        workScheduleTimeZoneSaveCommands: workScheduleTimeZone
-                    });
-                }
-                
-                for (let i = 0; i < arrNewCellIsLocked.length; i += 1) {
-                    let newCellIsLocked: any = arrNewCellIsLocked[i], 
-                        valueNewCellIsLocked = newCellIsLocked.value,
-                        sid = self.listSid()[newCellIsLocked.rowIndex];
-                    if(!valueNewCellIsLocked.workTypeCode) { 
-                        $("#extable").exTable("unlockCell", sid, newCellIsLocked.columnKey);
-                        continue;
-                    }
-                    // slice string '_YYYYMMDD' to 'YYYYMMDD'
-                    let date: string = moment.utc(newCellIsLocked.columnKey.slice(1, newCellIsLocked.columnKey.length), 'YYYYMMDD').toISOString(),
-                        basicSchedule: any = _.find(self.dataSource(), {'employeeId': sid, 'date': moment(date).format('YYYY/MM/DD') }),
-                        bounceAtr: any = 1, //set static bounceAtr =  1
-                        confirmedAtr: any =  1,
-                        workScheduleTimeZone: any = (valueNewCellIsLocked.workTimeCode != null && self.selectedModeDisplay() != 1) ? [{
-                            scheduleCnt: 1,
-                            scheduleStartClock: (typeof valueNewCellIsLocked.startTime === 'number') ? valueNewCellIsLocked.startTime
-                                : (valueNewCellIsLocked.startTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueNewCellIsLocked.startTime).asMinutes : null),
-                            scheduleEndClock: (typeof valueNewCellIsLocked.endTime === 'number') ? valueNewCellIsLocked.endTime
-                                : (valueNewCellIsLocked.endTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueNewCellIsLocked.endTime).asMinutes : null),
-                            bounceAtr: bounceAtr
-                        }] : null;
-                        
-                    arrObj.push({
-                        date: date,
-                        employeeId: self.listSid()[Number(newCellIsLocked.rowIndex)],
-                        workTimeCode: valueNewCellIsLocked.workTimeCode,
-                        workTypeCode: valueNewCellIsLocked.workTypeCode,
-                        confirmedAtr: confirmedAtr,
-                        workScheduleTimeZoneSaveCommands: workScheduleTimeZone
-                    });
-                }
-                
-                if(arrObj.length <= 0){
-                    self.stopRequest(true);
-                    return;
-                }
-                
-                let dataRegisterBasicSchedule: any = {
-                    modeDisplay: self.selectedModeDisplay(),
-                    listRegisterBasicSchedule: arrObj
-                };
-                
-                service.registerData(dataRegisterBasicSchedule).done(function(error: any) {
-                    //get data and update extable
-                    self.setDatasource().done(function() {
-                        self.updateExTable();
-                        if (error.length != 0) {
-                            self.addListError(error);
-                        }
-                    });
-                }).fail(function(error: any) {
-                    alertError({ messageId: error.messageId });
-                    self.setDatasource().done(function() {
-                        self.updateExTable();
-                    });
-                }).always(() => {
-                    self.stopRequest(true);
-                });
-            }, 1);
-        }
-
-        /**
-         * Set color for cell = set text color + set background color
-         */
-        setColorForCell(detailContentDeco: any): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            
-            /* set color for text in cell - 明細セル文字色の判断処理 */
-            if (self.selectedModeDisplayObject() == 2) {
-                // isIntendedData': false => this is actual data
-                let arrActualData: any[] = _.filter(self.dataSource(), { 'isIntendedData': false });
-                if (arrActualData.length > 0) {
-                    _.each(arrActualData, (item: BasicSchedule) => {
-                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "color-schedule-performance", 0));
-                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "color-schedule-performance", 1));
-                    });
-                }
-            }
-            
-            // lstData: list object in dataSource. It has workTypeCode, which exist in master data WORKTYPE
-            let lstData: BasicSchedule[] = [];
-            _.each(__viewContext.viewModel.viewO.listWorkType(), (item) => {
-                let obj = _.filter(self.dataSource(), { 'workTypeCode': item.workTypeCode });
-                if (obj) {
-                    lstData.push.apply(lstData, obj);
-                }
-            });
-            
-            if (self.selectedModeDisplay() == 2) {
-                // when mode is time(時刻) dont set color for text in cell
-                _.each(lstData, (item) => {
-                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(item.date, 'YYYY/MM/DD', true).format('YYYYMMDD'), item.employeeId, '', 0));
-                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(item.date, 'YYYY/MM/DD', true).format('YYYYMMDD'), item.employeeId, '', 1));
-                });
-            } else {
-                // when mode is shortName(略名) and mode symbol(記号)
-                let lstWorkTypeCode = [],
-                    lstIntendedData = _.filter(self.dataSource(), { 'isIntendedData': true });
-                if (lstIntendedData.length > 0) {
-                    _.map(lstIntendedData, (x) => {
-                        if (!_.includes(lstWorkTypeCode, x.workTypeCode)) {
-                            lstWorkTypeCode.push(x.workTypeCode);
-                        }
-                    });
-                }
-
-                _.each(lstData, (item) => {
-                    let stateWorkTypeCode = _.find(self.listStateWorkTypeCode(), { 'workTypeCode': item.workTypeCode });
-                    if (stateWorkTypeCode) {
-                        let state = stateWorkTypeCode.state;
-                        if (state == 3) {
-                            //state == 3 is work-day
-                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(item.date, 'YYYY/MM/DD', true).format('YYYYMMDD'), item.employeeId, "color-attendance", 0));
-                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(item.date, 'YYYY/MM/DD', true).format('YYYYMMDD'), item.employeeId, "color-attendance", 1));
-                        } else if (state == 0) {
-                            //state == 0 is holiday-day
-                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(item.date, 'YYYY/MM/DD', true).format('YYYYMMDD'), item.employeeId, "color-holiday", 0));
-                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(item.date, 'YYYY/MM/DD', true).format('YYYYMMDD'), item.employeeId, "color-holiday", 1));
-                        } else {
-                            //state == 1 || 2 is work-half-day
-                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(item.date, 'YYYY/MM/DD', true).format('YYYYMMDD'), item.employeeId, "color-half-day-work", 0));
-                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(item.date, 'YYYY/MM/DD', true).format('YYYYMMDD'), item.employeeId, "color-half-day-work", 1));
-                        }
-                    }
-                });
-            }
-            
-            /* set background color for cell*/
-            
-            //            if (self.selectedBackgroundColor() === '001') {
-            // Return value：就業時間帯 -> query table WorkTime to get color code
-            // TO-DO
-            //                dfd.resolve();
-            //            } else {
-            // TO-DO
-            // 日単位でチェック handler will return state 　非表示　or 確定　or 応援者　or 修正不可
-            
-            // get data from WorkScheduleState
-            self.getDataWorkScheduleState().done(() => {
-                let data = [],
-                    innerIdx: number = 1;
-                if (self.selectedModeDisplay() === 3) {
-                    // refer スケジュール明細セル　背景色制御 in document
-                    //scheduleItemId = 1: it is id of WorkType
-                    //scheduleItemId = 2: it is id of WorkTime
-                    data = _.reduce(self.dataWScheduleState(), (result, item) => {
-                        if (item.scheduleItemId == 1 || item.scheduleItemId == 2) {
-                            // ham find ben duoi luon chi tim duoc toi da 1 gia tri
-                            let scheState: any = _.find(result, { 'employeeId': item.employeeId, 'date': item.date });
-                            if (scheState == undefined) {
-                                // neu chua co data cho employeeId va date tuong ung thi insert
-                                result.push(item);
-                            } else if (scheState.scheduleEditState > item.scheduleEditState) {
-                                // neu co data cho employeeId va date tuong ung nhung state khong uu tien thi remove roi insert
-                                _.remove(result, { 'employeeId': item.employeeId, 'date': item.date });
-                                result.push(item);
-                            }
-                        }
-                        return result;
-                    }, []);
-                } else {
-                    // Return value of ScheduleEditState of WorkScheduleState
-                    if (self.selectedModeDisplay() === 2) {
-                        //scheduleItemId = 3: it is id of StartTime
-                        //scheduleItemId = 4: it is id of EndTime
-                        data = _.reduce(self.dataWScheduleState(), (result, item) => {
-                            if (item.scheduleItemId == 3 || item.scheduleItemId == 4) {
-                                result.push(item);
-                            }
-                            return result;
-                        }, []);
-                    } else {
-                        //scheduleItemId = 1: it is id of WorkType
-                        //scheduleItemId = 2: it is id of WorkTime
-                        data = _.reduce(self.dataWScheduleState(), (result, item) => {
-                            if (item.scheduleItemId == 1 || item.scheduleItemId == 2) {
-                                result.push(item);
-                            }
-                            return result;
-                        }, []);
-                    }
-
-                }
-                // set background color    
-                _.each(data, (item) => {
-                    let columnKey: string = "_" + moment(new Date(item.date)).format('YYYYMMDD');
-                    // neu la mode symbol thi luon set innerIdx = 0 de mau background luon hien thi dung
-                    // do mau background luon hien thi mau theo innerIdx = 0
-                    if (self.selectedModeDisplay() === 3) {
-                        innerIdx = 0;
-                    } else {
-                        if (item.scheduleItemId == 1 || item.scheduleItemId == 3) {
-                            innerIdx = 0;
-                        } else {
-                            innerIdx = 1;
-                        }
-                    }
-                    
-                    if (item.scheduleEditState == 1) {
-                        //手修正(本人) = bg-daily-alter-self
-                        let cell = _.find(detailContentDeco, { 'columnKey': columnKey, 'rowId': item.employeeId, 'innerIdx': innerIdx });
-                        if (_.isNil(cell)){
-                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor(columnKey, item.employeeId, "bg-daily-alter-self", innerIdx));
-                        } else{
-                            cell.clazz = 'bg-daily-alter-self' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
-                        } 
-                    } else if (item.scheduleEditState == 2) {
-                        //手修正(他人) = bg-daily-alter-other
-                        let cell = _.find(detailContentDeco, { 'columnKey': columnKey, 'rowId': item.employeeId, 'innerIdx': innerIdx });
-                        if (_.isNil(cell)){
-                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor(columnKey, item.employeeId, "bg-daily-alter-other", innerIdx));
-                        } else {
-                            cell.clazz = 'bg-daily-alter-other' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
-                        } 
-                    } else if (item.scheduleEditState == 3) {
-                        //申請反映 = bg-daily-reflect-application
-                        let cell = _.find(detailContentDeco, { 'columnKey': columnKey, 'rowId': item.employeeId, 'innerIdx': innerIdx });
-                        if (_.isNil(cell)){
-                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor(columnKey, item.employeeId, "bg-daily-reflect-application", innerIdx));    
-                        } else {
-                            cell.clazz = 'bg-daily-reflect-application' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
-                        } 
-                    }
-                });
-                
-                dfd.resolve();
-            });
-            return dfd.promise();
-        }
-
-        /**
-         * Set color for cell header: 日付セル背景色文字色制御
-         * 
-         */
-        setColorForCellHeaderDetailAndHoz(detailHeaderDeco: any): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-
-            if (self.isClickChangeDisplayMode) {
-                self.isClickChangeDisplayMode = false;
-                _.map(self.listColorOfHeader(), (item) => {
-                    detailHeaderDeco.push(item);
-                });
-                dfd.resolve();
+            if (self.selectedModeDisplay() == 1 || self.selectedModeDisplay() == 2)
                 return;
+            
+            let dtMoment = moment(self.dtPrev());
+            dtMoment.subtract(1, 'days');
+            self.dtAft(dtMoment.toDate());
+            if (dtMoment.date() === dtMoment.daysInMonth()) {
+                dtMoment = dtMoment.subtract(1, 'months');
+                dtMoment.endOf('months');
+            } else {
+                dtMoment = dtMoment.subtract(1, 'months');
             }
-            // getDataSpecDateAndHoliday always query to server
-            // because date is changed when click nextMonth or backMonth
-            $.when(self.getDataSpecDateAndHoliday()).done(() => {
-                _.each(self.arrDay, (date) => {
-                    let ymd = date.yearMonthDay;
-                    let dateFormat = moment(date.yearMonthDay).format('YYYY/MM/DD');
-                    if (_.includes(self.dataWkpSpecificDate(), dateFormat) || _.includes(self.dataComSpecificDate(), dateFormat)) {
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-schedule-specific-date"));
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 1, "bg-schedule-specific-date"));
-                    } else if (_.includes(self.dataPublicHoliday(), dateFormat)) {
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-schedule-sunday color-schedule-sunday"));
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 1, "bg-schedule-sunday color-schedule-sunday"));
-                    } else if (date.weekDay === '土') {
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-schedule-saturday color-schedule-saturday"));
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 1, "bg-schedule-saturday color-schedule-saturday"));
-                    } else if (date.weekDay === '日') {
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-schedule-sunday color-schedule-sunday"));
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 1, "bg-schedule-sunday color-schedule-sunday"));
-                    } else {
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-weekdays color-weekdays"));
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 1, "bg-weekdays color-weekdays"));
-                    }
-                });
+            dtMoment.add(1, 'days');
+            self.dtPrev(new Date(dtMoment.format('YYYY/MM/DD'))); 
+                    
+            self.stopRequest(false);
+            let self = this,
+                dfd = $.Deferred(),
+                viewMode = self.selectedModeDisplayInBody();
 
-                // set class bg-schedule-that-day for currentDay
-                if (self.dateTimePrev() <= moment().format('YYYY/MM/DD') && moment().format('YYYY/MM/DD') <= self.dateTimeAfter()) {
-                    let arrCellColorFilter = _.filter(detailHeaderDeco, ['columnKey', "_" + moment().format('YYYYMMDD')]);
-                    _.map(arrCellColorFilter, (cellColor: any) => {
-                        cellColor.clazz = cellColor.clazz.replace(/bg-\w*/g, 'bg-schedule-that-day');
-                    });
-                }
+            let param = {
+                viewMode: viewMode
+            };
+            service.getDataPreMonth(param).done((data: IDataStartScreen) => {
+                // set hiển thị ban đầu theo data đã lưu trong localStorege
+                self.getSettingDisplayWhenStart();
+                // set data Header
+                self.bindingToHeader(data);
+                // set data Grid
+                let dataBindGrid = self.convertDataToGrid(data, viewMode);
 
-                self.listColorOfHeader(detailHeaderDeco);
+                self.updateExTable(dataBindGrid, viewMode, false, true, true);
                 dfd.resolve();
+                self.stopRequest(true);
+            }).fail(function() {
+                dfd.reject();
+                self.stopRequest(true);
             });
             return dfd.promise();
         }
 
         /**
-         * Set color for cell of leftmost : 個人名セルの背景色の判断処理
+         * call <<ScreenQuery>> 表示期間を変更する（シフト）
          */
-        setColorForLeftmostContent(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            //            $.when(self.getDataScheduleDisplayControl()).done(() => {
-            if (self.isInsuranceStatus) {
-                //TO-DO    
+        changeDisplayPeriodShift(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred(),
+                obj = {
+                    startDate: self.dtPrev(),
+                    endDate: self.dtAft(),
+                    days28: self.selectedModeDisplay() == 2 ? true : false,
+                    isNextMonth: isNextMonth
+
+                };
+            service.getSendingPeriod().done((data) => {
+                self.dtAft(data.endDate);
+                self.dtPrev(data.startDate);
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+
+        editMode() {
+            let self = this;
+            nts.uk.ui.block.grayout();
+            self.mode('edit');
+            // set color button
+            $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+            $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
+            $("#group-bt").css({ 'border-right': '2px solid #ccc' });
+
+
+            self.removeClass();
+
+            // set enable btn A7_1, A7_2, A7_3, A7_4, A7_5
+            self.enableBtnPaste(true);
+            self.enableBtnCoppy(true);
+            if (self.selectedModeDisplayInBody() == 'time') {
+                self.visibleBtnInput(true);
+                self.enableBtnInput(true);
+            } else {
+                self.visibleBtnInput(false);
+                self.enableBtnInput(false);
             }
-            dfd.resolve();
-            //            });
-            return dfd.promise();
+
+            self.visibleBtnUndo(true);
+            self.visibleBtnRedo(true);
+            self.enableBtnUndo(true);
+            
+            nts.uk.ui.block.clear();
         }
 
-        /**
-         * Set color for cell : 明細セル背景色の判断処理
-         */
-        setColor(detailHeaderDeco: any, detailContentDeco: any): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            $.when(self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco),
-                self.setColorForCell(detailContentDeco), self.setColorForLeftmostContent()).done(() => {
-                    dfd.resolve();
-                });
-            return dfd.promise();
+        confirmMode() {
+            let self = this;
+            nts.uk.ui.block.grayout();
+            self.mode('confirm');
+            // set color button
+            $(".confirmMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+            $(".editMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
+            $("#group-bt").css({ 'border-right': '0px solid #ccc' });
+
+            self.removeClass();
+
+            // set enable btn A7_1, A7_2,, A7_3, A7_4, A7_5
+            self.enableBtnPaste(false);
+            self.enableBtnCoppy(false);
+
+            if (self.selectedModeDisplayInBody() == 'time') {
+                self.visibleBtnInput(true);
+                self.enableBtnInput(false);
+            } else {
+                self.visibleBtnInput(false);
+                self.enableBtnInput(false);
+            }
+
+            self.visibleBtnUndo(true);
+            self.visibleBtnRedo(true);
+            self.enableHelpBtn(false);
+            
+            nts.uk.ui.block.clear();
         }
 
-        /**
-         * Set error
-         */
-        addListError(errorsRequest: Array<string>) {
-            let errors = [];
-            _.forEach(errorsRequest, function(err) {
-                let errSplits = err.split(",");
-                if (errSplits.length == 1) {
-                    errors.push({ message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
-                } else {
-                    errors.push({
-                        message: nts.uk.resource.getMessage(errSplits[0], [getText(errSplits[1]), getText(errSplits[2])]),
-                        messageId: errSplits[0],
-                        supplements: {}
-                    });
-                }
-            });
-
-            nts.uk.ui.dialog.bundledErrors({ errors: errors });
+        removeClass() {
+            let self = this;
+            $("#paste").removeClass("btnControlUnSelected").removeClass("btnControlSelected");
+            $("#coppy").removeClass("btnControlUnSelected").removeClass("btnControlSelected");
+            $("#input").removeClass("btnControlUnSelected").removeClass("btnControlSelected");
         }
 
         /**
          * paste data on cell
+         * stick
          */
         pasteData(): void {
             let self = this;
+            if (self.mode() == 'confirm')
+                return;
+            nts.uk.ui.block.grayout();
+            $("#paste").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+            $("#coppy").addClass("btnControlUnSelected").removeClass("btnControlSelected");
+            $("#input").addClass("btnControlUnSelected").removeClass("btnControlSelected");
             $("#extable").exTable("updateMode", "stick");
-             
-            if (self.selectedModeDisplay() == 1) {
-                // set sticker single
-                $("#extable").exTable("stickData", __viewContext.viewModel.viewO.nameWorkTimeType());
+            if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                 $("#extable").exTable("stickMode", "single");
-            } else if (self.selectedModeDisplay() == 3) {
+            } else if (self.selectedModeDisplayInBody() == 'shift') {
                 $("#extable").exTable("stickMode", "multi");
             }
+            
+            $("#extable").exTable("stickValidate", function(rowIdx, key, data) {
+                console.log(data);
+                console.log(self.dataCell);
+                let workType = self.dataCell.objWorkType;
+                let workTime = self.dataCell.objWorkTime;
+                
+                if((workType.workTimeSetting == 0 && workTime.code == '') || (workType.workTimeSetting == 0 && workTime.code == ' ')){
+                      nts.uk.ui.dialog.alertError({ messageId: 'Msg_435' });
+                      return false;
+                }else{
+                    return true;    
+                }
+            });
+            
+            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                let userInfor : IUserInfor = JSON.parse(data);
+                userInfor.updateMode = 'stick';
+                uk.localStorage.setItemAsJson(self.KEY, userInfor);
+            });
+            nts.uk.ui.block.clear();
         }
 
         /**
          * copy data on cell
          */
-        copyData(): void {
+        coppyData(): void {
+            let self = this;
+            if (self.mode() == 'confirm')
+                return;
+            nts.uk.ui.block.grayout();
+            $("#paste").addClass("btnControlUnSelected").removeClass("btnControlSelected");
+            $("#coppy").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+            $("#input").addClass("btnControlUnSelected").removeClass("btnControlSelected");
             $("#extable").exTable("updateMode", "copyPaste");
+            
+            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                let userInfor : IUserInfor = JSON.parse(data);
+                userInfor.updateMode =  'copyPaste';
+                uk.localStorage.setItemAsJson(self.KEY, userInfor);
+            });
+            nts.uk.ui.block.clear();
         }
 
-        /**
-         * undo data on cell
-         */
+        inputData(): void {
+            let self = this;
+            if (self.mode() == 'confirm')
+                return;
+            nts.uk.ui.block.grayout();
+            $("#paste").addClass("btnControlUnSelected").removeClass("btnControlSelected");
+            $("#coppy").addClass("btnControlUnSelected").removeClass("btnControlSelected");
+            $("#input").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+
+            $("#extable").exTable("updateMode", "edit");
+            
+            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                let userInfor: IUserInfor = JSON.parse(data);
+                userInfor.updateMode = 'edit';
+                uk.localStorage.setItemAsJson(self.KEY, userInfor);
+            });
+            
+            nts.uk.ui.block.clear();
+        }
+        
         undoData(): void {
             $("#extable").exTable("stickUndo");
         }
 
-        /**
-         * get data form COM_PATTERN (for screen Q)
-         */
-        getDataComPattern(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            service.getDataComPattern().done((data) => {
-                __viewContext.viewModel.viewQ.listComPattern(data);
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
-
-            return dfd.promise();
+        redoData(): void {
+            $("#extable").exTable("stickRedo");
         }
 
         /**
-         * get data form WKP_PATTERN (for screen Q)
-         */
-        getDataWkpPattern(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            let obj: string = self.empItems()[0] ? self.empItems()[0].affiliationId : '';
-            service.getDataWkpPattern(obj).done((data) => {
-                __viewContext.viewModel.viewQ.listWkpPattern(data);
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
-
-            return dfd.promise();
-        }
-
-        /**
-         * open dialog C
-         */
-        openDialogC(): void {
-            let self = this;
-            $('#popup-area3').ntsPopup('hide');
-            nts.uk.ui.windows.setShared('selectionCondition', self.selectedCodeTree());
-            nts.uk.ui.windows.setShared('startDate', self.dateTimePrev());
-            nts.uk.ui.windows.setShared('endDate', self.dateTimeAfter());
-            nts.uk.ui.windows.setShared("listEmployee", self.empItems());
-            nts.uk.ui.windows.sub.modal("/view/ksu/001/c/index.xhtml");
-        }
-
-        /**
-         * open dialog D
+          * open dialog D
          */
         openDialogD(): void {
             let self = this;
+            let item = uk.localStorage.getItem(self.KEY);
+
             setShared('dataForScreenD', {
                 dataSource: self.dataSource(),
                 empItems: self.empItems(),
-                startDate: moment(self.dtPrev()).format('YYYY/MM/DD'),
-                endDate: moment(self.dtAft()).format('YYYY/MM/DD'),
                 // in phare 2, permissionHandCorrection allow false
                 permissionHandCorrection: false,
-                listColorOfHeader: self.listColorOfHeader()
+                listColorOfHeader: self.listColorOfHeader(),
+                startDate: moment(self.dtPrev()).format('YYYY/MM/DD'),
+                endDate: moment(self.dtAft()).format('YYYY/MM/DD'),
+                workPlaceId: item.isPresent() ? item.get().workplaceId : '',
+                workPlaceName: item.isPresent() ? item.get().workPlaceName : '',
             });
-            
+
             nts.uk.ui.windows.sub.modal("/view/ksu/001/d/index.xhtml").onClosed(() => {
                 if (getShared("dataFromScreenD") && !getShared("dataFromScreenD").clickCloseDialog) {
-                    self.dataSource([]);
-                    self.updateDetailAndHorzSum();
-//                    $.when(self.setDatasource()).done(() => {
-//                        self.updateExTable();
-//                    });
+                    // to do
                 }
             });
         }
-
-        /**
-         * open dialog L
-         */
-        openDialogL(): void {
+        
+        // A1_10_2
+        openKDL005() {
             let self = this;
-            $('#popup-area5').ntsPopup('hide');
+
+            let empIds = self.listSid();
+            let today = new Date();
+            let baseDate = today.getFullYear() + '' + today.getMonth() + '' + today.getDay() + '';
+            let param: IEmployeeParam = {
+                employeeIds: empIds,
+                baseDate: baseDate
+            };
+
+            nts.uk.ui.windows.setShared('KDL005_DATA', param);
+            $('#A1_10_1').ntsPopup('hide');
+            if (param.employeeIds.length > 1) {
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/multi.xhtml");
+            } else {
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/single.xhtml");
+            }
+        }
+
+        // A1_10_3
+        openKDL009() {
+            let self = this;
+
+            let empIds = self.listSid();
+            let today = new Date();
+            let baseDate = today.getFullYear() + '' + today.getMonth() + '' + today.getDay() + '';
+            var param: IEmployeeParam = {
+                employeeIds: empIds,
+                baseDate: baseDate
+            };
+
+            nts.uk.ui.windows.setShared('KDL009_DATA', param);
+            $('#A1_10_1').ntsPopup('hide');
+            if (param.employeeIds.length > 1) {
+                nts.uk.ui.windows.sub.modal("/view/kdl/009/a/multi.xhtml");
+            } else {
+                nts.uk.ui.windows.sub.modal("/view/kdl/009/a/single.xhtml");
+            }
+        }
+        
+        // A1_10_4
+        openKDL020() {
+            let self = this;
+            setShared('KDL020A_PARAM', { baseDate: new Date(), employeeIds: self.listSid() });
+            $('#A1_10_1').ntsPopup('hide');
+            nts.uk.ui.windows.sub.modal('/view/kdl/020/a/index.xhtml').onClosed(function(): any {
+            });
+        }
+        
+        // A1_10_5
+        openKDL029() {
+            let self = this;
+            let param = {
+                employeeIds: self.listSid(),
+                baseDate: moment(new Date()).format("YYYY/MM/DD")
+            }
+            setShared('KDL029_PARAM', param);
+            $('#A1_10_1').ntsPopup('hide');
+            nts.uk.ui.windows.sub.modal('/view/kdl/029/a/index.xhtml').onClosed(function(): any {
+            });
+        }
+        
+        // A1_12_8
+        openQDialog() {
+            let self = this;
+            let period = {
+                    startDate: self.dateTimePrev(),
+                    endDate: self.dateTimeAfter()
+                };
+            let item = uk.localStorage.getItem(self.KEY);
+            let param = {
+                period: period,
+                workPlaceId: item.isPresent() ? item.get().workplaceId : '',
+                workPlaceName: item.isPresent() ? item.get().workPlaceName : '',
+
+            };
+            setShared("CDL027Params", param);
+            $('#A1_12_1').ntsPopup('hide');
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/q/index.xhtml").onClosed(() => {
+            });
+        }
+        
+        // A1_12_18
+        openLDialog(): void {
+            let self = this;
             //hiện giờ truyền sang workplaceId va tất cả emmployee . Sau này sửa truyền list employee theo workplace id
             setShared("dataForScreenL", {
-                workplaceId: self.empItems()[0] ? self.empItems()[0].affiliationId : null,
-                empItems: self.empItems()
+                endDate: self.dateTimeAfter()
             });
+            $('#A1_12_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modal("/view/ksu/001/l/index.xhtml");
         }
-
-        /**
-         * open dialog N
-         */
-        openDialogN(): void {
+        
+        // A1_12_20
+        openMDialog(): void {
             let self = this;
-            $('#popup-area5').ntsPopup('hide');
-            nts.uk.ui.windows.setShared("listEmployee", self.empItems());
-            nts.uk.ui.windows.sub.modal("/view/ksu/001/n/index.xhtml");
-        }
-
-        /**
-         * go to screen KML004
-         */
-        gotoKml004(): void {
-            nts.uk.ui.windows.sub.modal("/view/kml/004/a/index.xhtml");
-        }
-
-        /**
-        * go to screen KML002
-        */
-        gotoKml002(): void {
-            nts.uk.request.jump("/view/kml/002/h/index.xhtml");
+            setShared("KSU001M", {
+                listEmpData: self.listEmpData
+            });
+            $('#A1_12_1').ntsPopup('hide');
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/l/index.xhtml");
         }
         
-         /**
-         * Open dialog CDL027
-         */
-        openCDL027(): void {
-            let self = this,
-                period = {
-                    startDate : self.dateTimePrev(),
-                    endDate : self.dateTimeAfter()  
-                },
-                param = {
-                    pgid: __viewContext.program.programId,
-                    functionId: 1,
-                    listEmployeeId: self.listSid(),
-                    period : period,
-                    displayFormat: self.displayFormat() 
-                };
-            setShared("CDL027Params", param);
-            openDialog('com',"/view/cdl/027/a/index.xhtml");
-        }
         
+
         compareArrByRowIndexAndColumnKey(a: any, b: any): any {
             return a.rowIndex == b.rowIndex && a.comlumnKey == b.comlumnKey;
         }
-
     }
 
-    class Node {
-        code: string;
-        name: string;
-        nodeText: string;
-        custom: string;
-        childs: Array<Node>;
-        constructor(code: string, name: string, childs: Array<Node>) {
-            var self = this;
-            self.code = code;
-            self.name = name;
-            self.nodeText = self.code + ' ' + self.name;
-            self.childs = childs;
-            self.custom = 'Random' + new Date().getTime();
+    export enum viewMode {
+        SYMBOL = 1,
+        SHORTNAME = 2,
+        TIME = 3
+    }
+
+    export enum TypeHeightExTable {
+        DEFAULT = 1,
+        SETTING = 2
+    }
+
+    class ExItem {
+        sid: string;
+        empName: string;
+
+        constructor(sid: string, dsOfSid: BasicSchedule[], listWorkType: ksu001.common.modelgrid.WorkType[], listWorkTime: ksu001.common.modelgrid.WorkTime[], manual: boolean, arrDay: Time[]) {
+            this.sid = sid;
+            this.empName = sid;
+            // create detailHeader (ex: 4/1 | 4/2)
+            if (manual) {
+                for (let i = 0; i < arrDay.length; i++) {
+                    if (+arrDay[i].day == 1) {
+                        this['_' + arrDay[i].yearMonthDay] = arrDay[i].month + '/' + arrDay[i].day + "<br/>" + arrDay[i].weekDay;
+                    } else {
+                        this['_' + arrDay[i].yearMonthDay] = arrDay[i].day + "<br/>" + arrDay[i].weekDay;
+                    }
+                }
+                return;
+            }
         }
     }
 
-    class BoxModel {
-        id: number;
-        name: string;
-        constructor(id, name) {
-            var self = this;
-            self.id = id;
-            self.name = name;
-        }
-    }
-
-    interface ICell {
-        rowIndex: string,
-        columnKey: string,
-        value: ksu001.common.viewmodel.ExCell,
-        innerIdx: number
-    }
-
-    class Cell {
-        rowIndex: string;
-        columnKey: string;
-        value: ksu001.common.viewmodel.ExCell;
-        innerIdx: number;
-
-        constructor(params: ICell) {
-            this.rowIndex = params.rowIndex;
-            this.columnKey = params.columnKey;
-            this.value = params.value;
-            this.innerIdx = params.innerIdx;
+    class CellColor {
+        columnKey: any;
+        rowId: any;
+        innerIdx: any;
+        clazz: any;
+        constructor(columnKey: any, rowId: any, clazz: any, innerIdx?: any) {
+            this.columnKey = columnKey;
+            this.rowId = rowId;
+            this.innerIdx = innerIdx;
+            this.clazz = clazz;
         }
     }
 
     interface IPersonModel {
-        empId: string,
-        empCd: string,
-        empName: string,
+        employeeId: string,
+        employeeCode: string,
+        employeeName: string,
         workplaceId: string,
-        wokplaceCd: string,
+        wokplaceCode: string,
         workplaceName: string,
         baseDate?: number
     }
 
     class PersonModel {
-        empId: string;
-        empCd: string;
-        empName: string;
-    	affiliationCode: string;
-    	affiliationId: string;
-    	affiliationName: string;
+        employeeId: string;
+        employeeCode: string;
+        employeeName: string;
+        wokplaceCode: string;
+        workplaceId: string;
+        workplaceName: string;
         baseDate: number;
 
         constructor(param: IPersonModel) {
-            this.empId = param.empId;
-            this.empCd = param.empCd;
-            this.empName = param.empName;
-            this.affiliationCode = param.affiliationCode;
-            this.affiliationId = param.affiliationId;
-            this.affiliationName = param.affiliationName;
+            this.employeeId = param.employeeId;
+            this.employeeCode = param.employeeCode;
+            this.employeeName = param.employeeName;
+            this.wokplaceCode = param.wokplaceCode;
+            this.workplaceId = param.workplaceId;
+            this.workplaceName = param.workplaceName;
             this.baseDate = param.baseDate;
-        }
-    }
-
-    interface IBasicSchedule {
-        date: string,
-        employeeId: string,
-        workTimeCode?: string,
-        workTypeCode?: string,
-        confirmedAtr?: number,
-        isIntendedData?: boolean,
-        scheduleCnt?: number,
-        scheduleStartClock?: number,
-        scheduleEndClock?: number,
-        bounceAtr?: number,
-        symbolName?: string
-    }
-
-    class BasicSchedule {
-        date: string;
-        employeeId: string;
-        workTimeCode: string;
-        workTypeCode: string;
-        confirmedAtr: number;
-        isIntendedData: boolean;
-        scheduleCnt: number;
-        scheduleStartClock: number;
-        scheduleEndClock: number;
-        bounceAtr: number;
-        symbolName: string;
-
-        constructor(params: IBasicSchedule) {
-            this.date = params.date;
-            this.employeeId = params.employeeId;
-            this.workTimeCode = params.workTimeCode;
-            this.workTypeCode = params.workTypeCode;
-            this.confirmedAtr = params.confirmedAtr;
-            this.isIntendedData = params.isIntendedData;
-            this.scheduleCnt = params.scheduleCnt;
-            this.scheduleStartClock = params.scheduleStartClock;
-            this.scheduleEndClock = params.scheduleEndClock;
-            this.bounceAtr = params.bounceAtr;
-            this.symbolName = params.symbolName;
-        }
-    }
-
-    class WorkScheduleState {
-        date: Date;
-        employeeId: string;
-        scheduleItemId: number;
-        scheduleEditState: number;
-
-        constructor(date: Date, employeeId: string, scheduleItemId: number, scheduleEditState: number) {
-            this.date = date;
-            this.employeeId = employeeId;
-            this.scheduleItemId = scheduleItemId;
-            this.scheduleEditState = scheduleEditState;
-        }
-    }
-
-    class TimeModel {
-        dateTimePrev: string;
-        dateTimeAfter: string;
-        text: string;
-        constructor(dateTimePrev: string, dateTimeAfter: string, text: string) {
-            this.dateTimePrev = dateTimePrev;
-            this.dateTimePrev = dateTimeAfter;
-            this.text = dateTimePrev + dateTimeAfter;
-        }
-    }
-
-    class ItemModel {
-        code: string;
-        name: string;
-        description: string;
-        constructor(code: string, name: string, description?: string) {
-            this.code = code;
-            this.name = name;
-            this.description = description;
-        }
-    }
-
-    class TimeRange {
-        columnKey: any;
-        rowId: any;
-        innerIdx: any;
-        max: string;
-        min: string;
-        constructor(columnKey: any, rowId: any, max: string, min: string, innerIdx?: any) {
-            this.columnKey = columnKey;
-            this.rowId = rowId;
-            this.innerIdx = innerIdx;
-            this.max = max;
-            this.min = min;
         }
     }
 
@@ -2233,76 +2049,214 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
     }
 
-    class ExItem {
-        empId: string;
-        empName: string;
-
-        constructor(empId: string, dsOfSid: BasicSchedule[], listWorkType: ksu001.common.viewmodel.WorkType[], listWorkTime: ksu001.common.viewmodel.WorkTime[], manual: boolean, arrDay: Time[]) {
-            this.empId = empId;
-            this.empName = empId;
-            // create detailHeader (ex: 4/1 | 4/2)
-            if (manual) {
-                for (let i = 0; i < arrDay.length; i++) {
-                    if (+arrDay[i].day == 1) {
-                        this['_' + arrDay[i].yearMonthDay] = arrDay[i].month + '/' + arrDay[i].day + "<br/>" + arrDay[i].weekDay;
-                    } else {
-                        this['_' + arrDay[i].yearMonthDay] = arrDay[i].day + "<br/>" + arrDay[i].weekDay;
-                    }
-                }
-                return;
-            }
-            //create detailContent 
-            for (let i = 0; i < arrDay.length; i++) {
-                let obj: BasicSchedule = _.find(dsOfSid, (x) => {
-                    return moment(new Date(x.date)).format('D') == arrDay[i].day;
-                });
-                if (obj) {
-                    //get code and name of workType and workTime
-                    let workTypeCode = null, workTypeName = null, workTimeCode = null, workTimeName = null;
-                    let workType = _.find(listWorkType, ['workTypeCode', obj.workTypeCode]);
-                    if (workType) {
-                        workTypeCode = obj.workTypeCode;
-                        workTypeName = workType.abbreviationName;
-                    } else {
-                        workTypeCode = null;
-                        workTypeName = obj.workTypeCode != null ? getText('KSU001_103', [obj.workTypeCode]) : null;
-                    }
-
-                    let workTime = _.find(listWorkTime, ['workTimeCode', obj.workTimeCode]);
-                    if (workTime) {
-                        workTimeCode = obj.workTimeCode;
-                        workTimeName = workTime.abName;
-                    } else {
-                        workTimeCode = null;
-                        workTimeName = obj.workTimeCode != null ? getText('KSU001_103', [obj.workTimeCode]) : null;
-                    }
-
-                    this['_' + arrDay[i].yearMonthDay] = new ksu001.common.viewmodel.ExCell({
-                        workTypeCode: workTypeCode,
-                        workTypeName: workTypeName,
-                        workTimeCode: workTimeCode,
-                        workTimeName: workTimeName,
-                        symbolName: obj.symbolName,
-                        startTime: obj.scheduleStartClock ? formatById("Clock_Short_HM", obj.scheduleStartClock) : '',
-                        endTime: obj.scheduleStartClock ? formatById("Clock_Short_HM", obj.scheduleEndClock) : ''
-                    });
-                } else {
-                    this['_' + arrDay[i].yearMonthDay] = new ksu001.common.viewmodel.ExCell({
-                        workTypeCode: null,
-                        workTypeName: null,
-                        workTimeCode: null,
-                        workTimeName: null,
-                        symbolName: '',
-                        //startTime/endTime để là '' chứ không phải null
-                        //do màn hình ở mode Time, click cell mà k thay đổi rồi click vào cell khác
-                        //khi đó cell bị click trả ra giá trị là ''
-                        //nếu để startTime/endTime null thì cell đó sẽ nhận thấy là đã thay đổi giá trị
-                        //điều đó là không đúng
-                        startTime: '',
-                        endTime: ''
-                    });
-                }
-            }
+    class ExCell {
+        workTypeCode: string;
+        workTypeName: string;
+        workTimeCode: string;
+        workTimeName: string;
+        shiftName: string;
+        startTime: any;
+        endTime: any;
+        shiftCode: string;
+        
+        
+        constructor(workTypeCode: string, workTypeName: string, workTimeCode: string, workTimeName: string, startTime?: string, endTime?: string, shiftName?: any, shiftCode? : any) {
+            this.workTypeCode = workTypeCode;
+            this.workTypeName = workTypeName;
+            this.workTimeCode = workTimeCode;
+            this.workTimeName = workTimeName;
+            this.shiftName = shiftName !== null ? shiftName : '';
+            this.startTime = ( startTime == undefined || startTime == null ) ? '' : startTime;
+            this.endTime = ( endTime == undefined || endTime == null ) ? '' : endTime;
+            this.shiftCode = shiftCode !== null ? shiftCode : '';
         }
+    }
+
+
+    interface IDataStartScreen {
+        dataBasicDto: IDataBasicDto,
+        displayControlPersonalCond: IDisplayControlPersonalCond,
+        listDateInfo: Array<IDateInfo>,
+        listEmpInfo: Array<IEmpInfo>,
+        listPersonalConditions: Array<IPersonalConditions>,
+        
+        listWorkTypeInfo: Array<IWorkTypeInfomation>,
+        listWorkScheduleWorkInfor: Array<IWorkScheduleWorkInforDto>,
+        
+        listPageInfo: Array<IPageInfo>,
+        shiftMasterWithWorkStyleLst : Array<IShiftMasterMapWithWorkStyle>,
+        listWorkScheduleShift: Array<IWorkScheduleShiftInforDto>,
+    }
+    
+    interface IPageInfo {
+        pageName: string,
+        pageNumber: number,
+    }
+
+    interface IDataBasicDto {
+        startDate: string,
+        endDate: string,
+        designation: string,
+        targetOrganizationName: string,
+        unit: number,
+        workplaceId: string,
+        workplaceGroupId: string
+    }
+
+    interface IDisplayControlPersonalCond {
+        companyID: string,
+        listQualificationCD: string,
+        qualificationMark: string,
+        listConditionDisplayControl: Array<IConditionDisplayControl>
+    }
+
+    interface IConditionDisplayControl {
+        conditionATR: number,
+        displayCategory: number
+    }
+
+    interface IDateInfo {
+        ymd: string,
+        dayOfWeek: number,
+        isHoliday: boolean,
+        isSpecificDay: boolean,
+        optCompanyEventName: string,
+        optWorkplaceEventName: string,
+        listSpecDayNameCompany: Array<string>,
+        listSpecDayNameWorkplace: Array<string>,
+        isToday: boolean,
+        htmlTooltip: string
+    }
+
+    interface IEmpInfo {
+        employeeId: string,
+        employeeCode: string,
+        businessName: string
+    }
+
+    interface IPersonalConditions {
+        sid: string,
+        teamName: string,
+        rankName: string,
+        licenseClassification: string
+    }
+
+    class HtmlToolTip {
+        key: string;
+        value: string;
+        heightToolTip: number;
+        constructor(key: string, value: string, heightToolTip: number) {
+            this.key = key;
+            this.value = value;
+            this.heightToolTip = heightToolTip;
+        }
+    }
+
+    interface IWorkTypeInfomation {
+        workTypeDto: IWorkTypeDto,    // 勤務種類選択 - 勤務種類 
+        workTimeSetting: number,          // 必須任意不要区分    
+        workStyle: number,          // 出勤休日区分
+    }
+
+    interface IWorkTypeDto {
+        workTypeCode: string, // 勤務種類コード - コード
+        name: string,         // 勤務種類名称  - 表示名
+        memo: string,
+        workTimeSetting: number         // 必須任意不要区分 
+    }
+
+    interface IEditStateOfDailyAttdDto {
+        attendanceItemId: number;
+        editStateSetting: number; // enum AttendanceHolidayAttr
+        date: Date;
+    }
+
+    interface IWorkScheduleWorkInforDto {
+        employeeId: string; // 社員ID
+        date: Date; // 年月日
+        haveData: boolean; // データがあるか
+        achievements: boolean; // 実績か
+        confirmed: boolean; // 確定済みか
+        needToWork: boolean; // 勤務予定が必要か
+        supportCategory: number; // 応援か tu 1-> 5
+        //Khu vực Optional
+        workTypeCode: string; // 勤務種類コード 
+        workTypeName: string; // 勤務種類名
+        workTypeEditStatus: IEditStateOfDailyAttdDto; // 勤務種類編集状態
+        workTimeCode: string; // 就業時間帯コード
+        workTimeName: string; // 就業時間帯名
+        workTimeEditStatus: IEditStateOfDailyAttdDto; // 就業時間帯編集状態
+        startTime: number; // 開始時刻
+        startTimeEditState: IEditStateOfDailyAttdDto; // 開始時刻編集状態
+        endTime: number; // 終了時刻
+        endTimeEditState: IEditStateOfDailyAttdDto; // 終了時刻編集状態
+        workHolidayCls: number; // 出勤休日区分
+        isEdit: boolean;
+        isActive: boolean;
+    }
+
+    interface IWorkScheduleShiftInforDto {
+        employeeId: string; // 社員ID
+        date: Date; // 年月日
+        haveData: boolean; // データがあるか
+        achievements: boolean; // 実績か
+        confirmed: boolean; // 確定済みか
+        needToWork: boolean; // 勤務予定が必要か
+        supportCategory: number; // 応援か tu 1-> 5
+        //Khu vực Optional
+        shiftCode: string; // シフトコード
+        shiftName: string; // シフト名称
+        shiftEditState: IEditStateOfDailyAttdDto; // シフトの編集状態
+        workHolidayCls: number; // 出勤休日区分
+        isEdit: boolean;
+        isActive: boolean;
+    }
+
+    enum AttendanceHolidayAttr {
+        FULL_TIME = 3, //(3, "１日出勤系"),
+        MORNING = 1, //(1, "午前出勤系"),
+        AFTERNOON = 2, //(2, "午後出勤系"),
+        HOLIDAY = 0, //(0, "１日休日系");
+    }
+
+    enum SupportCategory {
+        NotCheering = 1, // 応援ではない
+        TimeSupporter = 2, // 時間帯応援元
+        TimeSupport = 3, // 時間帯応援先
+        SupportFrom = 4, // 終日応援元
+        SupportTo = 5, // 終日応援先
+    }
+
+    interface IUserInfor {
+        disPlayFormat: string;
+        backgroundColor: number; // 背景色
+        achievementDisplaySelected: number;
+        shiftPalletUnit: number;
+        shiftPalettePageNumberCom: number;
+        shiftPalletPositionNumberCom: {};
+        shiftPalettePageNumberOrg: number;
+        shiftPalletPositionNumberOrg: {};
+        gridHeightSelection: number;
+        heightGridSetting: number;
+        workplaceId: string;
+        workplaceGroupId: string;
+        workPlaceName: string;
+        workType: {};
+        workTime: {};
+        updateMode : string; // updatemode cua grid
+        startDate : string;
+        endDate : string;
+        shiftMasterWithWorkStyleLst : Array<IShiftMasterMapWithWorkStyle>;
+    }
+    
+    interface IShiftMasterMapWithWorkStyle {
+        companyId: string;
+        shiftMasterName: string;
+        shiftMasterCode: string;
+        color: string;
+        remark: string;
+        workTypeCode: string;
+        workTimeCode: string;
+        workStyle: string;
     }
 }

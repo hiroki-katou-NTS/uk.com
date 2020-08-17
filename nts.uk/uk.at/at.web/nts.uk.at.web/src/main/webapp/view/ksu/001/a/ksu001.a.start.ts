@@ -1,18 +1,23 @@
 module nts.uk.at.view.ksu001.a {
     let __viewContext: any = window["__viewContext"] || {};
-
+    let KEY = 'USER_INFOR';
     __viewContext.ready(function() {
         __viewContext.viewModel = {
-            viewO: new ksu001.o.viewmodel.ScreenModel(),
-            viewQ: new ksu001.q.viewmodel.ScreenModel(),
+            viewAB: new ksu001.ab.viewmodel.ScreenModel(),
+            viewAC: new ksu001.ac.viewmodel.ScreenModel(),
             viewA: new ksu001.a.viewmodel.ScreenModel()
         };
+        
         nts.uk.ui.block.grayout();
-        __viewContext.viewModel.viewA.startKSU001().done(() => {
+        __viewContext.viewModel.viewA.startPage().done(() => {
             __viewContext.bind(__viewContext.viewModel);
-            __viewContext.viewModel.viewA.initCCG001().done(() => {
-                nts.uk.ui.block.clear();
+            
+            $(window).resize(function() {
+                __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
+                __viewContext.viewModel.viewA.setPositionButonToRight();
             });
+
+            nts.uk.ui.block.clear();
         });
 
         initEvent();
@@ -24,97 +29,85 @@ module nts.uk.at.view.ksu001.a {
             alert("Item is deleted in multi grid is " + e["detail"]["target"]);
         }));
 
-        //popup 1
-        $('#popup-area2').ntsPopup({
+        //A1_10_1 click btn10
+        $('#A1_10_1').ntsPopup({
             position: {
                 my: 'left top',
                 at: 'left bottom+3',
-                of: $('.create')
+                of: $('#A1_10')
             }
         });
 
-        $('.create').click(function() {
-            $('#popup-area2').ntsPopup("toggle");
+        $('#A1_10').click(function() {
+            $('#A1_10_1').ntsPopup("toggle");
         });
-
-        //popup 2
-        $('#popup-area3').ntsPopup({
+        
+        //A1_7_1 click btn7
+        $('#A1_7_1').ntsPopup({
             position: {
                 my: 'left top',
                 at: 'left bottom+3',
-                of: $('.check')
+                of: $('#A1_7')
             }
         });
 
-        $('.check').click(function() {
-            $('#popup-area3').ntsPopup("toggle");
+        $('#A1_7').click(function() {
+            $('#A1_7_1').ntsPopup("toggle");
+        });
+        
+
+        // A1_12_1 click btn12
+        $('#A1_12_1').ntsPopup({
+            position: {
+                my: 'right top',
+                at: 'right bottom+3',
+                of: $('#A1_12')
+            }
         });
 
-        //popup 3
-        $('#popup-area4').ntsPopup({
+        $('#A1_12').click(function() {
+            $('#A1_12_1').ntsPopup("toggle");
+        });
+
+        //click btnA4
+        $('#A4_1').ntsPopup({
             position: {
                 my: 'left top',
                 at: 'left bottom+3',
-                of: $('.vacation')
+                of: $('#A4')
             }
         });
-
-        $('.vacation').click(function() {
-            $('#popup-area4').ntsPopup("toggle");
+        
+        $('#A4').click(function() {
+            $('#A4_1').ntsPopup("toggle");
         });
-
-        //popup 4
-        $('#popup-area5').ntsPopup({
+        
+        
+        //click btnA5
+        $('#A5_1').ntsPopup({
             position: {
                 my: 'left top',
                 at: 'left bottom+3',
-                of: $('.setting')
+                of: $('#A5')
             }
         });
 
-        $('.setting').click(function() {
-            $('#popup-area5').ntsPopup("toggle");
+        $('#A5').click(function() {
+            $('#A5_1').ntsPopup("toggle");
         });
 
-        //popup A3-20
-        $('#popup-area6').ntsPopup({
+        
+        //popup setting grid
+        $('#A16').ntsPopup({
             position: {
                 my: 'left top',
                 at: 'left bottom+3',
-                of: $('.setting-button')
+                of: $('.settingHeightGrid')
             }
         });
 
-        $('.setting-button').click(function() {
-            $('#popup-area6').ntsPopup("toggle");
+        $('.settingHeightGrid').click(function() {
+            $('#A16').ntsPopup("toggle");
         });
-
-        //popup A2-2
-        $('#popup-area7').ntsPopup({
-            position: {
-                my: 'left top',
-                at: 'left bottom+3',
-                of: $('.done')
-            }
-        });
-
-        $('.done').click(function() {
-            $('#popup-area7').ntsPopup("toggle");
-        });
-
-
-        //popup A3-24
-        $('#popup-area9').ntsPopup({
-            position: {
-                my: 'left top',
-                at: 'left bottom+3',
-                of: $('.color-button')
-            }
-        });
-
-        $('.color-button').click(function() {
-            $('#popup-area9').ntsPopup("toggle");
-        });
-
     }
 }

@@ -9,11 +9,64 @@ module nts.uk.at.view.ksu001.a.service {
         getDataScheduleDisplayControl: "screen/at/schedule/basicschedule/getScheduleDisplayControl",
         getDataWorkEmpCombine: "screen/at/schedule/basicschedule/getWorkEmpCombine",
         getDataSpecDateAndHoliday: "screen/at/schedule/basicschedule/getDataSpecDateAndHoliday",
-        getDataComPattern: "screen/at/schedule/basicschedule/getDataComPattern",
-        getDataWkpPattern: "screen/at/schedule/basicschedule/getDataWkpPattern",
         findWorkPlaceById: "bs/employee/workplace/info/findDetail",
+        getDataComPattern: "at/schedule/shift/management/getListShijtPalletsByCom",
+        getDataWkpPattern: "at/schedule/shift/management/shiftpalletorg/getbyWorkplaceId",
+        
+        // lai start
+        getSendingPeriod: "screen/at/schedule/schedule/start/getSendingPeriod",
+        
+        getDataStartScreen: "screen/at/schedule/start",
+        getDataOfShiftMode: "screen/at/schedule/shift",
+        getDataOfShortNameMode: "screen/at/schedule/shortname",
+        getDataOfTimeMode: "screen/at/schedule/time",
+        getDataNextMonth: "screen/at/schedule/next-month",
+        getDataPreMonth: "screen/at/schedule/pre-month",
+    }
+    
+    export function getDataStartScreen(param): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataStartScreen, param);
     }
 
+    export function getDataOfShiftMode(param): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataOfShiftMode, param);
+    }
+
+    export function getDataOfShortNameMode(param): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataOfShortNameMode, param);
+    }
+
+    export function getDataOfTimeMode(param): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataOfTimeMode, param);
+    }
+    
+    export function getSendingPeriod(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getSendingPeriod, obj);
+    }
+    
+     export function getDataNextMonth(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataNextMonth, obj);
+    }
+    
+     export function getDataPreMonth(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataPreMonth, obj);
+    }
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     export function getDataBasicSchedule(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getDataBasicSchedule, obj);
     }

@@ -27,7 +27,11 @@ public interface ShiftMasterRepository {
 	public List<ShiftMasterDto> getByListShiftMaterCd(String companyId, List<String> listShiftMaterCode);
 
 	List<ShiftMasterDto> getAllDtoByCid(String companyId);
+
 	/** [9] *get(会社ID, List<勤務情報>) **/
 	List<ShiftMaster> get(String companyID , List<WorkInformation> lstWorkInformation);
+
+	/** [7] *get(会社ID, List<シフトマスタコード>) **/
+	List<ShiftMaster> getByListShiftMaterCd2(String companyId, List<String> shiftMaterCodes);
 
 }

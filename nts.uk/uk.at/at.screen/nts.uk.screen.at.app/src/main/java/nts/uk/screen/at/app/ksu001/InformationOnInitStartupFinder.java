@@ -7,11 +7,14 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.WorkScheDisplaySetting;
 import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.WorkScheDisplaySettingRepo;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
+import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforDto;
+import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.TargetOrgIdenInforDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -38,11 +41,11 @@ public class InformationOnInitStartupFinder {
 		// step 3
 		// goi domain service 社員の対象組織識別情報を取得する
 		TargetOrgIdenInfor targetOrgIdenInfor =TargetOrgIdenInfor.creatIdentifiWorkplace("dea95de1-a462-4028-ad3a-d68b8f180412");
-
+		TargetOrgIdenInforDto  targetOrgIdenInforDto = new TargetOrgIdenInforDto(targetOrgIdenInfor);
 		// step 4
-		DisplayInforOrganization displayInforOrganization = new DisplayInforOrganization("designation", "code", "name",
+		DisplayInfoOrganization displayInforOrganization = new DisplayInfoOrganization("designation", "code", "name",
 				"showName", "genericTerm");
-		return new DataScreenQueryGetInforDto(datePeriod.start(), datePeriod.end(), targetOrgIdenInfor,
+		return new DataScreenQueryGetInforDto(datePeriod.start(), datePeriod.end(), targetOrgIdenInforDto,
 				displayInforOrganization);
 
 	}

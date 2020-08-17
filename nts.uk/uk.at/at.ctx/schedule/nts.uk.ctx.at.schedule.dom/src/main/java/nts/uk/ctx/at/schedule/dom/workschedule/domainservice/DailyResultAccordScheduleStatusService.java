@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework
  */
 public class DailyResultAccordScheduleStatusService {
 	
-	
+
 	/**
 	 * 	[1] 取得する	
 	 * @param require
