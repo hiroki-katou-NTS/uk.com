@@ -148,47 +148,47 @@ export class KdpS01AComponent extends Vue {
 
                     vm.$goto('ccg008a');
                 });
-            }
-            vm.$mask('show');
-            vm.$http.post('at', servicePath.getSetting).then((result: any) => {
-                vm.$mask('hide');
-                let data: model.ISettingSmartPhone = result.data;
+            } else {
+                vm.$mask('show');
+                vm.$http.post('at', servicePath.getSetting).then((result: any) => {
+                    vm.$mask('hide');
+                    let data: model.ISettingSmartPhone = result.data;
 
-                if (_.has(data, 'setting.pageLayoutSettings') && data.setting.pageLayoutSettings.length > 0) {
+                    if (_.has(data, 'setting.pageLayoutSettings') && data.setting.pageLayoutSettings.length > 0) {
 
-                    let page = _.find(data.setting.pageLayoutSettings, ['pageNo', 1]) as model.IStampPageLayoutDto;
+                        let page = _.find(data.setting.pageLayoutSettings, ['pageNo', 1]) as model.IStampPageLayoutDto;
 
-                    if (page) {
+                        if (page) {
 
-                        if (page.lstButtonSet.length > 0) {
-                            vm.setting.buttons = vm.getLstButton(page.lstButtonSet, data.stampToSuppress);
+                            if (page.lstButtonSet.length > 0) {
+                                vm.setting.buttons = vm.getLstButton(page.lstButtonSet, data.stampToSuppress);
+                            }
+
+                            vm.setting.stampPageComment = page.stampPageComment;
+
+                        } else {
+                            vm.$modal.error('Not Found Button Data');
                         }
-
-                        vm.setting.stampPageComment = page.stampPageComment;
 
                     } else {
                         vm.$modal.error('Not Found Button Data');
                     }
 
-                } else {
-                    vm.$modal.error('Not Found Button Data');
-                }
+                    if (_.has(data, 'setting.displaySettingsStampScreen')) {
+                        vm.setting.displaySettingsStampScreen = data.setting.displaySettingsStampScreen;
+                        vm.InitCountTime();
 
-                if (_.has(data, 'setting.displaySettingsStampScreen')) {
-                    vm.setting.displaySettingsStampScreen = data.setting.displaySettingsStampScreen;
-                    vm.InitCountTime();
+                    }
 
-                }
+                    if (data.resulDisplay) {
+                        vm.setting.usrAtrValue = data.resulDisplay.usrAtrValue;
+                        vm.setting.lstDisplayItemId = _.map(data.resulDisplay.lstDisplayItemId, (x) => x.displayItemId);
+                    }
 
-                if (data.resulDisplay) {
-                    vm.setting.usrAtrValue = data.resulDisplay.usrAtrValue;
-                    vm.setting.lstDisplayItemId = _.map(data.resulDisplay.lstDisplayItemId, (x) => x.displayItemId);
-                }
-
-            }).catch((res: any) => {
-                vm.showError(res);
-            });
-
+                }).catch((res: any) => {
+                    vm.showError(res);
+                });
+            }
 
         }).catch((res: any) => {
             vm.showError(res);

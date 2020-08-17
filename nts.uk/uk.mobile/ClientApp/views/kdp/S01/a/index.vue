@@ -5,7 +5,7 @@
           'background-color': setting.displaySettingsStampScreen.settingDateTimeColor.backgroundColor,
           'color': setting.displaySettingsStampScreen.settingDateTimeColor.textColor
         }">
-      <div class="col-12 pr-0 pt-2 font-weight-bold">
+      <div class="col-12 pr-1 pt-2 font-weight-bold">
         <span id="date">
           {{ $dt.now | date("YYYY年 MM月 DD日（ddd）") }}
         </span>

@@ -380,7 +380,7 @@ export module model {
         /**
          * 本人確認状況
          */
-        IdentityVerificationStatus: Boolean;
+        identityVerificationStatus: Boolean;
     }
 
     export interface IStampButtonCommand {

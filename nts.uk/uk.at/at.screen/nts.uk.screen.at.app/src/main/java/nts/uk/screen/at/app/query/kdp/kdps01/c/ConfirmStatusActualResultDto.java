@@ -38,17 +38,18 @@ public class ConfirmStatusActualResultDto {
 	/**
 	 * 実施可否
 	 */
-	protected int permissionCheck;
+	protected Integer permissionCheck;
 
 	/**
 	 * 解除可否
 	 */
-	protected int permissionRelease;
+	protected Integer permissionRelease;
 
 	public static ConfirmStatusActualResultDto fromDomain(ConfirmStatusActualResult domain) {
 
 		return new ConfirmStatusActualResultDto(domain.getEmployeeId(), domain.getDate(), domain.isStatus(),
-				domain.getPermissionCheck().value, domain.getPermissionRelease().value);
+				domain.getPermissionCheck() != null ? domain.getPermissionCheck().value : null,
+				domain.getPermissionRelease() != null ? domain.getPermissionRelease().value : null);
 
 	}
 }
