@@ -15,6 +15,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
+import nts.arc.time.ClockHourMinute;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -77,6 +78,7 @@ import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.mail.MailSender;
+import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.url.RegisterEmbededURL;
 
 @Stateless
@@ -217,70 +219,36 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	}
 
 	@Override
-	public PrePostAtr preliminaryJudgmentProcessing(ApplicationType appType, GeneralDate appDate, OvertimeAppAtr overtimeAppAtr) {
-//		GeneralDate systemDate = GeneralDate.today();
-//		Integer systemTime = GeneralDateTime.now().localDateTime().getHour()*60 
-//				+ GeneralDateTime.now().localDateTime().getMinute();
-//		String companyID = AppContexts.user().companyId();
-//		PrePostAtr prePostAtr = null;
-//		Optional<AppTypeDiscreteSetting> appTypeDisc = appTypeDiscreteSettingRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
-//		Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
-//		List<ReceptionRestrictionSetting> receptionRestrictionSetting = new ArrayList<>();
-//		if(requestSetting.isPresent()){
-//			receptionRestrictionSetting = requestSetting.get().getApplicationSetting().getListReceptionRestrictionSetting().stream().filter(x -> x.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)).collect(Collectors.toList());
-//		}
-//		//if appdate > systemDate 
-//		if (appDate == null || appDate.equals(systemDate)) { // if appDate = systemDate
-////			// if RetrictPreUseFlg = notuse ->prePostAtr = POSTERIOR
-////			if(appTypeDisc.get().getRetrictPreUseFlg() == UseAtr.NOTUSE) {
-////				prePostAtr = PrePostAtr.POSTERIOR;
-////			}else {
-////				//「事前の受付制限」．チェック方法が日数でチェック
-////				if(appTypeDisc.get().getRetrictPreMethodFlg() == CheckMethod.DAYCHECK) {
-////					prePostAtr = PrePostAtr.POSTERIOR;
-////				}else {//システム日時と受付制限日時と比較する
-////					if(systemTime.compareTo(appTypeDisc.get().getRetrictPreTimeDay().v())==1) {
-////						
-////						prePostAtr = PrePostAtr.POSTERIOR;
-////					}else { // if systemDateTime <=  RetrictPreTimeDay - > xin truoc
-////						prePostAtr = PrePostAtr.PREDICT;
-////					}
-////				}
-////			}
-//			if(appType == ApplicationType.OVER_TIME_APPLICATION){
-//				if(appTypeDisc.get().getRetrictPreMethodFlg() == CheckMethod.DAYCHECK) {
-//					prePostAtr = PrePostAtr.POSTERIOR;
-//				}else{
-//					int resultCompare = 0;
-//					if(overtimeAppAtr == OvertimeAppAtr.EARLY_OVERTIME && receptionRestrictionSetting.get(0).getBeforehandRestriction().getPreOtTime() != null){
-//						resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getPreOtTime().v());
-//					}else if(overtimeAppAtr == OvertimeAppAtr.NORMAL_OVERTIME && receptionRestrictionSetting.get(0).getBeforehandRestriction().getNormalOtTime() !=  null){
-//						resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getNormalOtTime().v());
-//					}else if(overtimeAppAtr == OvertimeAppAtr.EARLY_NORMAL_OVERTIME && receptionRestrictionSetting.get(0).getBeforehandRestriction().getTimeBeforehandRestriction() !=  null){
-//						resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getTimeBeforehandRestriction().v());
-//					}
-//					if(resultCompare == 1) {
-//						prePostAtr = PrePostAtr.POSTERIOR;
-//					}else { // if systemDateTime <=  RetrictPreTimeDay - > xin truoc
-//						prePostAtr = PrePostAtr.PREDICT;
-//					}
-//				}
-//			}else{
-//				prePostAtr = PrePostAtr.POSTERIOR;
-//			}
-//			
-//		} else if(appDate.after(systemDate) ) {
-//			//xin truoc 事前事後区分= 事前
-//			prePostAtr = PrePostAtr.PREDICT;
-//			
-//		} else if(appDate.before(systemDate)) { // if appDate < systemDate
-//			//xin sau 事前事後区分= 事後
-//			prePostAtr = PrePostAtr.POSTERIOR;
-//		}
-//		
-//			
-//		return prePostAtr;
-		return null;
+	public PrePostAtr preliminaryJudgmentProcessing(ApplicationType appType, GeneralDate appDate, OvertimeAppAtr overtimeAppAtr,
+			AttendanceClock advanceReceptionHours) {
+		// 申請対象日とシステム日付を比較する
+		GeneralDate systemDate = GeneralDate.today();
+		if(appDate.after(systemDate)) {
+			// 事前事後区分=事前
+			return PrePostAtr.PREDICT;
+		}
+		if(appDate.before(systemDate)) {
+			// 事前事後区分=事後 
+			return PrePostAtr.POSTERIOR;
+		}
+		// INPUT．申請種類をチェックする
+		if(appType != ApplicationType.OVER_TIME_APPLICATION) {
+			// 事前事後区分=事後
+			return PrePostAtr.POSTERIOR;
+		}
+		// INPUT.事前受付時分をチェックする
+		if(advanceReceptionHours == null) {
+			// 事前事後区分=事後 
+			return PrePostAtr.POSTERIOR;
+		}
+		// システム日時とINPUT.事前受付時分と比較する
+		ClockHourMinute systemTime = ClockHourMinute.now();
+		if(systemTime.v() > advanceReceptionHours.v()) {
+			// 事前事後区分=事後 
+			return PrePostAtr.POSTERIOR;
+		}
+		// 事前事後区分=事前 
+		return PrePostAtr.PREDICT;
 	}
 	/**
 	 * 5.事前事後区分の判断
