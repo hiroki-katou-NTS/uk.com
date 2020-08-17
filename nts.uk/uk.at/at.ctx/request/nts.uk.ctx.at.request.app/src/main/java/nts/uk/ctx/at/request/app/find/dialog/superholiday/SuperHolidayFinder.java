@@ -26,8 +26,6 @@ public class SuperHolidayFinder {
 
 	@Inject
 	private RemainNumberTempRequireService requireService;
-	
-	
 
 	/**
 	 * KDL017

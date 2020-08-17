@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -10,10 +12,11 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemain
 import nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.param.AggrResultOfHolidayOver60h;
 import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolidayOver60hMngWork;
 
-public interface GetHolidayOver60hRemNumWithinPeriod {
+@Stateless
+public class GetHolidayOver60hRemNumWithinPeriodImpl implements GetHolidayOver60hRemNumWithinPeriod {
 
 	/**
-	 * 期間中の60H超休残数を取得 
+	 * 期間中の60H超休残数を取得
 	 * @param require Require
 	 * @param cacheCarrier CacheCarrier
 	 * @param companyId 会社ID
@@ -26,7 +29,7 @@ public interface GetHolidayOver60hRemNumWithinPeriod {
 	 * @param prevAnnualLeaveOpt 前回の60H超休の集計結果
 	 * @return 60H超休の集計結果
 	 */
-	AggrResultOfHolidayOver60h algorithm(
+	public AggrResultOfHolidayOver60h algorithm(
 			GetHolidayOver60hRemNumWithinPeriod.RequireM1 require, 
 			CacheCarrier cacheCarrier,
 			String companyId, 
@@ -36,13 +39,23 @@ public interface GetHolidayOver60hRemNumWithinPeriod {
 			GeneralDate criteriaDate, 
 			Optional<Boolean> isOverWriteOpt, 
 			Optional<List<TmpHolidayOver60hMngWork>> forOverWriteList,
-			Optional<AggrResultOfHolidayOver60h> prevHolidayOver60h);
-
+			Optional<AggrResultOfHolidayOver60h> prevHolidayOver60h) {
+		
+		AggrResultOfHolidayOver60h result = new AggrResultOfHolidayOver60h();
+		
+		return result;		
+	}
+	
 	/**
 	 * Require
 	 * @author masaaki_jinno
 	 *
 	 */
-	public static interface RequireM1{
+	public class GetHolidayOver60hRemNumWithinPeriodRequireM1 implements GetHolidayOver60hRemNumWithinPeriod.RequireM1 {
+		public GetHolidayOver60hRemNumWithinPeriodRequireM1(){
+		}
 	}
+		
+	
 }
+	
