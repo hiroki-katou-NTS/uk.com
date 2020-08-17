@@ -30,12 +30,15 @@ public class SWkpHistExport {
     // 職場表示名
     private String wkpDisplayName;
 
-    public SWkpHistExport(DatePeriod dateRange, String employeeId, String workplaceId, String workplaceCode, String workplaceName, String wkpDisplayName) {
+    /** 勤務場所コード */
+    private String workLocationCd;
+    public SWkpHistExport(DatePeriod dateRange, String employeeId, String workplaceId, String workplaceCode, String workplaceName, String wkpDisplayName, String workLocationCd) {
         this.dateRange = dateRange;
         this.employeeId = employeeId;
         this.workplaceId = workplaceId;
         this.workplaceCode = workplaceCode;
         this.workplaceName = workplaceName;
         this.wkpDisplayName = wkpDisplayName;
+        this.workLocationCd = workLocationCd;
     }
 }

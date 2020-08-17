@@ -32,10 +32,10 @@ import java.util.stream.Collectors;
 public class ReservationQuery {
 	@Inject
 	private BentoReservationRepository bentoReservationRepo;
-	
+
 	@Inject
 	private BentoMenuRepository bentoMenuRepo;
-	
+
 	@Inject
 	private StampCardRepository stampCardRepository;
 
@@ -60,7 +60,11 @@ public class ReservationQuery {
             checkOperation = bentoReservationSettings.get().getOperationDistinction().value;
 
 		if (checkOperation == OperationDistinction.BY_LOCATION.value)
-			workLocationCode = Optional.of(new WorkLocationCode(hisItems.get().getWorkplaceCode()));
+			if (!hisItems.isPresent()){
+			 	throw new RuntimeException("Invalid workplace history");
+			}
+			workLocationCode = Optional.ofNullable(hisItems.get().getWorkLocationCd() == null ? null :
+					new WorkLocationCode(hisItems.get().getWorkLocationCd()));
 
         StampCard stampCard = stampCardRepository.getLstStampCardByLstSidAndContractCd(
 				Arrays.asList(employeeId),
@@ -73,7 +77,8 @@ public class ReservationQuery {
 		val bento = bentoMenuRepo.getBentoMenu(companyId, date,workLocationCode);
 		//3 締め時刻別のメニュー
 		BentoMenuByClosingTime bentoMenuClosingTime = bento.getByClosingTime(workLocationCode);
-		return new ReservationDto(listBento.stream().map(x -> BentoReservationDto.fromDomain(x)).collect(Collectors.toList()), BentoMenuByClosingTimeDto.fromDomain(bentoMenuClosingTime));
+		return new ReservationDto(listBento.stream().map(x -> BentoReservationDto.fromDomain(x)).collect(Collectors.toList()), BentoMenuByClosingTimeDto.fromDomain(bentoMenuClosingTime),
+				workLocationCode.isPresent()? workLocationCode.get().v() : null );
 	}
 	
 }
