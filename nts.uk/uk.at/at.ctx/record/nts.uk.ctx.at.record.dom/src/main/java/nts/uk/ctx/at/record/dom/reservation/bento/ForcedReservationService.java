@@ -5,6 +5,7 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 
+import javax.ejb.Stateless;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 /**
  * 弁当予約を強制予約する
  */
+@Stateless
 public class ForcedReservationService {
     public static AtomTask reserve(Require require, List<ReservationRegisterInfo> registerInfor,
                                    ReservationDate reservationDate, GeneralDateTime reservationDateTime, Optional<WorkLocationCode> workLocationCode)
@@ -25,7 +27,7 @@ public class ForcedReservationService {
         }
 
         return AtomTask.of(()->{
-            val
+            //val
         });
     }
 
