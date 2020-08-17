@@ -7,6 +7,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Optional;
 
+/**
+ * 予約確認一覧
+ *
+ * @author 3si - Dang Huu Khai
+ */
 @Stateless
 public class ReservationConfirmationListScreenQuery {
 
@@ -15,10 +20,10 @@ public class ReservationConfirmationListScreenQuery {
 
     public ReservationConfirmationListDto getReservationConfirmationListStartupInfo(String companyId) {
         ReservationConfirmationListDto dto = new ReservationConfirmationListDto();
-        Optional<BentoReservationSetting> bentoReservationSetting = domainService.getReservationConfirmationListStartupInfo(companyId);
-        if (bentoReservationSetting.isPresent()) {
-            BentoReservationSetting rawBentoReservationSetting = bentoReservationSetting.get();
-            dto.setOperationDistinction(rawBentoReservationSetting.getOperationDistinction());
+        Optional<BentoReservationSetting> optBentoReservationSetting = domainService.getBentoReservationSetting(companyId);
+        if (optBentoReservationSetting.isPresent()) {
+            BentoReservationSetting bentoReservationSetting = optBentoReservationSetting.get();
+            dto.setOperationDistinction(bentoReservationSetting.getOperationDistinction());
         }
 
         return dto;

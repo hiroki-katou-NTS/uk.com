@@ -5,6 +5,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
 
+/**
+ * @author 3si - Dang Huu Khai
+ */
 @Getter
 @Setter
 @NoArgsConstructor

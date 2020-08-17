@@ -11,6 +11,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+/**
+ * @author 3si - Dang Huu Khai
+ */
 @Path("screen/at/record/reservation-conf-list")
 @Produces("application/json")
 public class ReservationConfirmationListWebService extends WebService {
@@ -20,7 +23,7 @@ public class ReservationConfirmationListWebService extends WebService {
 
     @POST
     @Path("start")
-    public ReservationConfirmationListDto getOperationDistinction() {
+    public ReservationConfirmationListDto getReservationConfirmationListStartupInfo() {
         LoginUserContext user = AppContexts.user();
 
         // 予約確認一覧
