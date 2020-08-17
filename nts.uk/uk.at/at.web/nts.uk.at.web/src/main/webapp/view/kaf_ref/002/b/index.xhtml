@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+
+			<com:scriptfile set="IGNITE" />
+			
+			<com:ValidatorScript>
+				nts.uk.ctx.at.request.dom.application.AppReason
+			</com:ValidatorScript>
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.sample.SampleTimeDuration
+   				</com:ValidatorScript>
+			<com:stylefile path="/view/kaf_ref/002/b/kaf002.b.main.css" />
+			<com:scriptfile path="/view/kaf_ref/000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/kaf000.a.vm.js" />
+			<com:scriptfile path="/view/kaf_ref/002/b/kaf002.b.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button class="proceed" data-bind="text:this.$i18n('KAF009_3')"></button>
+
+			</div>
+			<div id="contents-area">
+				
+				<div class="label" style="margin: 10px">1 2 3 4 5 6 7 8 9 1 2
+					3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9
+				</div>
+				
+				<div class="inlineBlockFirst">
+					<!-- B6_1 -->
+					<div class="labelFirst" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_79')}</div>
+					<div data-bind="ntsComboBox: {
+						options: dataSource,
+						optionsValue: 'code',
+						value: selectedCode,
+						optionsText: 'name',
+						required: true
+					}"></div>
+				</div>
+				
+				<div class="blockSecond">
+					<input class="inputBlockSecond"  
+						data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: {	value: time, required: true, inputFormat: 'time', constraint: 'SampleTimeDuration', mode: 'time'
+													}"/>
+					
+					<div class="dropListBlockSecond" data-bind="visible: selectedCode() == 3, ntsComboBox: {
+						options: dataSourceReason,
+						optionsValue: 'code',
+						value: selectedCodeReason,
+						optionsText: 'name',
+						required: true
+					}"></div>
+				</div>
+				
+				<div class="label" style="margin: 10px">1 2 3 4 5 6 7 8 9 1 2
+					3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9
+				</div>
+
+
+
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
