@@ -395,13 +395,13 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                 // 起動したら、実績データがある場合 (Sau khi khởi động t/h có data thực tế)
                 switch (idItem) {
                     case IdItem.A6_7: {
-                        return ko.toJS(this.workManagement.workTime) === null;
+                        return _.isEmpty(ko.toJS(this.workManagement.workTime));
                     } case IdItem.A6_13: {
-                        return ko.toJS(this.workManagement.leaveTime) === null;
+                        return _.isEmpty(ko.toJS(this.workManagement.leaveTime));
                     } case IdItem.A6_19: {
-                        return ko.toJS(this.workManagement.workTime2) === null;
+                        return _.isEmpty(ko.toJS(this.workManagement.workTime2));
                     } case IdItem.A6_25: {
-                        return ko.toJS(this.workManagement.leaveTime2) === null;
+                        return _.isEmpty(ko.toJS(this.workManagement.leaveTime2));
                     } default: {
                         return false;
                     }
