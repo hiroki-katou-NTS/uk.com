@@ -22,6 +22,7 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
@@ -39,8 +40,18 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 
 	/** The Constant INDEX_ONE. */
 	public static final int INDEX_ONE = 1;
-	
-	
+
+	private final String SELECT_FROM_WORKMONTH_SET = "SELECT w FROM KscmtWorkMonthSet w";
+
+	private final String SELECT_BY_CID = SELECT_FROM_WORKMONTH_SET
+			+ " WHERE w.kscmtWorkMonthSetPK.cid = :cid";
+
+	private final String SELECT_BY_PERIOD = SELECT_BY_CID
+			+ " AND w.kscmtWorkMonthSetPK.mPatternCd = :mPatternCd"
+			+ " AND w.kscmtWorkMonthSetPK.ymdM >= :startDate "
+			+ " AND w.kscmtWorkMonthSetPK.ymdM <= :endDate"
+			+ " w.kscmtWorkMonthSetPK.ymdM ASC";
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -70,7 +81,7 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 		// convert to map entity
 		Map<GeneralDate, KscmtWorkMonthSet> mapEntity = entitys.stream()
 				.collect(Collectors.toMap((entity) -> {
-					return entity.getKscmtWorkMonthSetPK().getYmdK();
+					return entity.getKscmtWorkMonthSetPK().getYmdM();
 				}, Function.identity()));
 		
 		// update all entity
@@ -290,12 +301,12 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 					.get(KscmtWorkMonthSetPK_.ymdK).in(splitData)));
 			
 			// set where to SQL
-		   cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-			
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
 			// order by ymdk id asc
-		   cq.orderBy(criteriaBuilder.asc(
+			cq.orderBy(criteriaBuilder.asc(
 					root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK)));
-			
+
 			resultList.addAll(em.createQuery(cq).getResultList());
 		});
 
@@ -315,7 +326,33 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 	public void remove(String companyId, String monthlyPatternCode) {
 		this.commandProxy().removeAll(this.toEntityRemove(companyId, monthlyPatternCode));
 	}
-	
+
+	@Override
+	public List<WorkMonthlySetting> findByPeriod(String companyId, String monthlyPatternCode, DatePeriod datePeriod) {
+		return this.queryProxy().query(SELECT_BY_PERIOD, KscmtWorkMonthSet.class)
+				.setParameter("cid", companyId)
+				.setParameter("mPatternCd", monthlyPatternCode)
+				.setParameter("startDate", datePeriod.start())
+				.setParameter("endDate", datePeriod.end())
+				.getList(x -> this.toDomain(x));
+	}
+
+	@Override
+	public Boolean exists(String companyId, String monthlyPatternCode, GeneralDate date) {
+		Optional<KscmtWorkMonthSet> kscmtWorkMonthSet = this.queryProxy().find(new KscmtWorkMonthSetPK(companyId, monthlyPatternCode, date), KscmtWorkMonthSet.class);
+		return kscmtWorkMonthSet.isPresent();
+	}
+
+	@Override
+	public void add(WorkMonthlySetting workMonthlySetting) {
+		this.commandProxy().insert(toEntity(workMonthlySetting));
+	}
+
+	@Override
+	public void update(WorkMonthlySetting workMonthlySetting) {
+		this.commandProxy().update(toEntity(workMonthlySetting));
+	}
+
 	/**
 	 * To entity remove.
 	 *
