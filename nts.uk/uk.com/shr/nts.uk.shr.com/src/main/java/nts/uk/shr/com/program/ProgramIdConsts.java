@@ -1079,6 +1079,10 @@ public class ProgramIdConsts {
 	/** CAS004 */
 	public static final String CAS004A = "CAS004A";
 	public static final String CAS004B = "CAS004B";
+	
+	/** KMP001 */
+	public static final String KMP001A = "KMP001A";
+	public static final String KMP001D = "KMP001D";
 
 	public static final String KDL020A = "KDL020A";
 	

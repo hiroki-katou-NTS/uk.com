@@ -7,7 +7,7 @@ module nts.uk.at.view.kmp001.d {
 	};
 
 	export interface ReturnData {
-		length: number;
+		maxLength: number;
 		paddingType: StampCardEditMethod;
 	}
 
@@ -28,11 +28,11 @@ module nts.uk.at.view.kmp001.d {
 					value: StampCardEditMethod.PreviousZero,
 					label: 'KMP001_42'
 				}, {
-					value: StampCardEditMethod.PreviousSpace,
-					label: 'KMP001_44'
-				}, {
 					value: StampCardEditMethod.AfterZero,
 					label: 'KMP001_43'
+				}, {
+					value: StampCardEditMethod.PreviousSpace,
+					label: 'KMP001_44'
 				}, {
 					value: StampCardEditMethod.AfterSpace,
 					label: 'KMP001_45'
@@ -64,13 +64,16 @@ module nts.uk.at.view.kmp001.d {
 
 		mounted() {
 			const vm = this;
-
 			vm.$ajax(KMP001D_API.GET_START)
 				.then((data: any) => {
 					vm.selectedLength(data.stampCardDigitNumber);
 
 					vm.paddingType(data.stampCardEditMethod);
 				});
+
+			$(document).ready(function() {
+				$('#combo-box').focus();
+			});
 		}
 
 		closeDialog() {
@@ -83,13 +86,12 @@ module nts.uk.at.view.kmp001.d {
 			const vm = this;
 			const length = ko.unwrap(vm.selectedLength);
 			const paddingType = ko.unwrap(vm.paddingType);
-			const command = { digitsNumber: length, stampMethod: paddingType};
-			
-			vm.$ajax(KMP001D_API.UPDATE_EDITTING, command);
+			const command = { digitsNumber: length, stampMethod: paddingType };
 
+			vm.$ajax(KMP001D_API.UPDATE_EDITTING, command);
 			vm.$window.close({ length, paddingType });
+
 		}
-	}
 
 	export enum StampCardEditMethod {
 
@@ -108,7 +110,7 @@ module nts.uk.at.view.kmp001.d {
 
 	interface PaddingType {
 		value: StampCardEditMethod;
-		label: 'KMP001_42' | 'KMP001_44' | 'KMP001_43' | 'KMP001_45';
+		label: 'KMP001_42' | 'KMP001_43' | 'KMP001_44' | 'KMP001_45';
 	}
 
 	class StampCardLength {

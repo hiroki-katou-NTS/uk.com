@@ -56,7 +56,7 @@ public class StampCardEmployee {
 				if (empInfoList != null && !empInfoList.isEmpty()) {
 					
 					empInfoList.stream().map(m -> {
-						StampCardEmployeeDto card = new StampCardEmployeeDto(stampCard, m.getEmployeeId(), m.getBusinessName(), m.getEmployeeCode());
+						StampCardEmployeeDto card = new StampCardEmployeeDto(stampCard, m.getEmployeeCode(), m.getBusinessName(), m.getEmployeeId());
 						dto.add(card);
 						return card;
 					}).collect(Collectors.toList());

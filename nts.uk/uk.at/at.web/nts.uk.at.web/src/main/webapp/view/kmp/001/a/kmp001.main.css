@@ -5,7 +5,6 @@
 
 .sidebar-content-header ~ div {
 	padding: 20px;
-	float: left;
 }
 
 .view-kmp .nts-searchbbox-wrapper .form-label {
@@ -28,8 +27,13 @@
 	margin-left: 50px;
 }
 
+.ntsSearchBox_Component {
+	margin-top: 4px;	
+}
+
 .view-kmp .model-component table.layout-grid td div {
 	padding-bottom: 15px;
+	float: left;
 }
 
 .view-kmp .model-component table td.label-column {
@@ -42,10 +46,24 @@
 
 .view-kmp .model-component table td.label-column-a-right {
 	width: 300px;
+	float: left;
+}
+
+#right_name {
+	margin-left: 15px;
 }
 
 .view-kmp .model-component table td.label-column-left {
 	width: 180px;
+}
+
+#func-notifier-errors {
+    top: 143px;
+    left: 120px;
+    position: fixed;
+    width: 100px;
+    height: 24px;
+    z-index: 999999;
 }
 
 .view-kmp .model-component table td.label-column-left ~ div {
@@ -88,12 +106,6 @@
 	margin-left: 5px;
 }
 
-.search_label {
-	float: left;
-	width: 100vw;
-	padding-bottom: 0px;
-}
-
 .search_label .sub_title {
 	margin-right: 10px;
 }
@@ -125,4 +137,8 @@
 #stampcard-list_container .ui-iggrid-rowselector-class .ui-igcheckbox-normal>.ui-igcheckbox-normal-on {
 	left: 0;
 	float: none !important;
+}
+
+.ui-iggrid-header ui-widget-header {
+    background-color: orange;
 }

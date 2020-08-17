@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 /**
@@ -21,8 +20,6 @@ public class DetermineActualResultLock {
 	/** 締め  */
 	@Inject
 	private ClosureRepository closureRepository;
-	@Inject
-	private ClosureService closureSevice;
 	/**
 	 * 実績ロックされているか判定する
 	 * 
@@ -59,7 +56,7 @@ public class DetermineActualResultLock {
 		if (closure.isPresent()) {		
 			//基準日が当月に含まれているかチェックする
 			//Optional<ClosurePeriod> closurePeriod = closure.get().getClosurePeriodByYmd(baseDate);
-			if (closureSevice.includeDate(baseDate, closure.get())) {
+			if (ClosureService.includeDate(baseDate, closure.get())) {
 				//基準日が締め期間に含まれている
 				return LockStatus.LOCK;
 			}else{
