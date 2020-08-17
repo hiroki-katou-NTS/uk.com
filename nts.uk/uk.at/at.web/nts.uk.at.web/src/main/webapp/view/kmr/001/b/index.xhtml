@@ -20,11 +20,11 @@
 
 	<ui:define name="content">
 
-		<div id="contents-area">
+		<div id="contents-area" data-bind="with: model" >
 			<!--B1_1-->
 			<a class="hyperlink" href="../a/index.xhtml" data-bind="text: $i18n('KMR001_3')"></a>
 			<!--B1_2-->
-			<button class="proceed sidebar-button" data-bind="text: $i18n('KMR001_4')"></button>
+			<button class="proceed sidebar-button" data-bind="click: vm.registerBento, text: $i18n('KMR001_4')"></button>
 			<hr/>
 			<div class="break-line"></div>
 
@@ -42,8 +42,8 @@
             		]),
 					optionsValue: 'id',
 					optionsText: 'name',
-					value: model.operationClassification,
-					enable: enable}"></div>
+					value: operationDistinction,
+					enable: true}"></div>
 			<div class="break-line"></div>
 			<!--B5_1-->
 			<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true, text: $i18n('KMR001_9')} "></div>
@@ -51,11 +51,14 @@
 			<!--B5_2-->
 			<span >
 				<input class="kmr-time-editor" data-bind="ntsTimeEditor: {
-				mode: 'time',
 				inputFormat: 'time',
-				required: false }
-				value: model
-				"  />
+				mode: 'time',
+				enable: true,
+				readonly: false,
+				required: false,
+				constraint: 'AttendanceTimeMonth',
+				value: referenceTime
+				}"  />
 			</span>
 
 			<!--B5_3-->
@@ -67,7 +70,7 @@
 			<!--B19_2-->
 			<span class="label" data-bind="text: $i18n('KMR001_69')"></span>
 			<!--B19_3-->
-			<input data-bind="ntsTextEditor: {value: model.name1Textbox}" />
+			<input data-bind="ntsTextEditor: {value: reservationFrameName1, constraint: 'BentoReservationTimeName'}" />
 
 			<!--B19_4-->
 			<span class="label" data-bind="text: $i18n('KMR001_70')"></span>
@@ -77,7 +80,11 @@
 				<input class="kmr-time-editor" data-bind="ntsTimeEditor: {
 				mode: 'time',
 				inputFormat: 'time',
-				required: false }"  />
+				required: false },
+				value: reservationStartTime1,
+				constraint: 'BentoReservationTime'
+				"  />
+
 			</span>
 
 			<!--B19_6-->
@@ -88,7 +95,11 @@
 				<input class="kmr-time-editor" data-bind="ntsTimeEditor: {
 				mode: 'time',
 				inputFormat: 'time',
-				required: false }"  />
+				required: false,
+				value: reservationEndTime1,
+				constraint: 'BentoReservationTime'
+				}"  />
+
 			</span>
 			<div class="break-line"></div>
 
@@ -99,7 +110,7 @@
 			<span class="label" data-bind="text: $i18n('KMR001_73')"></span>
 
 			<!--B20_3-->
-			<!--<input data-bind="ntsTextEditor: {value: true}" />-->
+			<input data-bind="ntsTextEditor: {value: reservationFrameName2, constraint: 'BentoReservationTimeName'}" />
 
 			<!--B20_4-->
 			<span class="label" data-bind="text: $i18n('KMR001_74')"></span>
@@ -109,7 +120,11 @@
 				<input class="kmr-time-editor" data-bind="ntsTimeEditor: {
 				mode: 'time',
 				inputFormat: 'time',
-				required: false }"  />
+				required: false,
+				value: reservationStartTime2,
+				constraint: 'BentoReservationTime'
+				}"  />
+
 			</span>
 
 			<!--B20_6-->
@@ -120,7 +135,12 @@
 				<input class="kmr-time-editor" data-bind="ntsTimeEditor: {
 				mode: 'time',
 				inputFormat: 'time',
-				required: false }"  />
+				required: false,
+				value: reservationEndTime2,
+				constraint: 'BentoReservationTime'
+				}"  />
+
+				<!---->
 			</span>
 
 			<div class="break-line"></div>
@@ -135,10 +155,10 @@
 			<div id="combo-box" tabindex="1" data-bind="ntsComboBox: {
 							width: '150px',
 							name:'#[KMR001_22]',
-							options: itemsReservationChange,
+							options: vm.itemsReservationChange,
 							optionsValue: 'appId',
 							visibleItemsCount: 5,
-							value: model.reservationChange,
+							value: contentChangeDeadline,
 							optionsText: 'appName',
 							editable: false,
 							enable: true,
@@ -151,10 +171,10 @@
 			<div style = "display: inline-block;"
 				 tabindex="7"  data-bind="ntsComboBox: {
 				 	name:'#[KMR001_23]',
-					options: itemsTimePeriod,
+					options: vm.itemsReservationChangeDay,
 					optionsValue: 'appId',
 					optionsText: 'appValue',
-					value: model.timePeriod,
+					value: contentChangeDeadlineDay,
 					enable: true,
 					columns: [{ prop: 'appValue'}]}">
 			</div>
@@ -168,13 +188,13 @@
 			<!--B21_2-->
 			<div data-bind="ntsRadioBoxGroup: {
 					options: ([
-						{id : 1, name : $i18n('KMR001_78')},
-						{id : 2, name : $i18n('KMR001_79')}
+						{id : 0, name : $i18n('KMR001_78')},
+						{id : 1, name : $i18n('KMR001_79')}
             		]),
 					optionsValue: 'id',
 					optionsText: 'name',
-					value: model.selectedId,
-					enable: enable}"></div>
+					value: orderedData,
+					enable: true}"></div>
 			<div class="break-line"></div>
 			<!--B21_3-->
 			<!--B21_4-->
@@ -185,13 +205,13 @@
 			<!--B14_2-->
 			<div data-bind="ntsRadioBoxGroup: {
 					options: ([
-						{id : 1, name : $i18n('KMR001_28')},
-						{id : 2, name : $i18n('KMR001_29')}
+						{id : 0, name : $i18n('KMR001_28')},
+						{id : 1, name : $i18n('KMR001_29')}
 					]),
 					optionsValue: 'id',
 					optionsText: 'name',
-					value: model.selectedId,
-					enable: enable}"></div>
+					value: orderDeadline,
+					enable: true}"></div>
 			<div class="break-line"></div>
 			<!--B14_3-->
 			<!--B14_4-->
@@ -207,13 +227,13 @@
 			<!--B17_2-->
 			<div data-bind="ntsRadioBoxGroup: {
 					options: ([
-						{id : 1, name : $i18n('KMR001_33')},
-						{id : 2, name : $i18n('KMR001_34')}
+						{id : 0, name : $i18n('KMR001_33')},
+						{id : 1, name : $i18n('KMR001_34')}
             		]),
 					optionsValue: 'id',
 					optionsText: 'name',
-					value: model.selectedId,
-					enable: enable}"></div>
+					value: monthlyResults,
+					enable: true}"></div>
 			<!--B17_3-->
 			<!--B17_4-->
 			<div class="break-line"></div>
@@ -223,13 +243,13 @@
 			<!--B18_2-->
 			<div data-bind="ntsRadioBoxGroup: {
 					options: ([
-						{id : 1, name : $i18n('KMR001_33')},
-						{id : 2, name : $i18n('KMR001_34')}
+						{id : 0, name : $i18n('KMR001_33')},
+						{id : 1, name : $i18n('KMR001_34')}
             		]),
 					optionsValue: 'id',
 					optionsText: 'name',
-					value: model.selectedId,
-					enable: enable}"></div>
+					value: dailyResults,
+					enable: true}"></div>
 			<div class="break-line"></div>
 			<!--B18_3-->
 			<!--B18_4-->
