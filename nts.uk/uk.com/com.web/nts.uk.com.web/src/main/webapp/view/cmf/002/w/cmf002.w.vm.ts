@@ -10,8 +10,16 @@ module nts.uk.com.view.cmf002.w {
     // W2
     listStartDateSegment: KnockoutObservableArray<any> = ko.observableArray([]);
     selectedStartDateSegment: KnockoutObservable<any> = ko.observable(null);
+    // W3
     // W4
     startDateAdjustment: KnockoutObservable<any> = ko.observable(null);
+    // W5
+    listEndDateSegment: KnockoutObservableArray<any> = ko.observableArray([]);
+    selectedEndDateSegment: KnockoutObservable<any> = ko.observable(null);
+    // W6
+    // W7
+    listBaseDateSegment: KnockoutObservableArray<any> = ko.observableArray([]);
+    selectedBaseDateSegment: KnockoutObservable<any> = ko.observable(null);
     // W8
     baseDateSpecified: KnockoutObservable<any> = ko.observable(null);
 
@@ -22,6 +30,28 @@ module nts.uk.com.view.cmf002.w {
         { code: '1', name: nts.uk.resource.getText("CMF002_275") },
         { code: '2', name: nts.uk.resource.getText("CMF002_276") },
       ]);
+      vm.listStartDateSegment([
+        { code: StartDateClassificationCode.DEADLINE_START, name: '締め期間の開始日' },
+        { code: StartDateClassificationCode.DEADLINE_END, name: '締め期間の終了日' },
+        { code: StartDateClassificationCode.DEADLINE_PROCESSING, name: '締め期間の処理年月' },
+        { code: StartDateClassificationCode.SYSTEM_DATE, name: 'システム日付' },
+        { code: StartDateClassificationCode.DATE_SPECIFICATION, name: '日付指定' },
+      ]);
+      vm.listEndDateSegment([
+        { code: EndDateClassificationCode.DEADLINE_START, name: '締め期間の開始日' },
+        { code: EndDateClassificationCode.DEADLINE_END, name: '締め期間の終了日' },
+        { code: EndDateClassificationCode.DEADLINE_PROCESSING, name: '締め期間の処理年月' },
+        { code: EndDateClassificationCode.SYSTEM_DATE, name: 'システム日付' },
+        { code: EndDateClassificationCode.DATE_SPECIFICATION, name: '日付指定' },
+      ]);
+      vm.listBaseDateSegment([
+        { code: BaseDateClassificationCode.DEADLINE_START, name: '締め開始日' },
+        { code: BaseDateClassificationCode.DEADLINE_END, name: '締め終了日' },
+        { code: BaseDateClassificationCode.SYSTEM_DATE, name: 'システム日付' },
+        { code: BaseDateClassificationCode.OUTPUT_PERIOD_START, name: '出力期間の開始日' },
+        { code: BaseDateClassificationCode.OUTPUT_PERIOD_END, name: '出力期間の終了日' },
+        { code: BaseDateClassificationCode.DATE_SPECIFICATION, name: '日付指定' },
+      ]);
     }
 
     mounted() {
@@ -31,40 +61,51 @@ module nts.uk.com.view.cmf002.w {
     }
 
     /**
+     * キャンセルボタン押下時処理
      * Close dialog
      */
-    closeDialog() {
+    public closeDialog() {
       const vm = this;
-      vm.$window.close();
+      // 閉じるの確認メッセージ => キャンセルの確認メッセージ
+      vm.$dialog.confirm({ messageId: "Msg_19" }).then((result: 'no' | 'yes' | 'cancel') => {
+        if (result === 'no') {
+          //「閉じる処理をキャンセル」を選択した場合
+          return;
+        } else if (result === 'yes') {
+          //「閉じる処理を実行」を選択した場合
+          // 画面を閉じる
+          vm.$window.close();
+        }
+      });
     }
 
   }
 
-  // export class ListType {
-  //   static EMPLOYMENT = 1;
-  //   static Classification = 2;
-  //   static JOB_TITLE = 3;
-  //   static EMPLOYEE = 4;
-  // }
+  // 開始日区分
+  export class StartDateClassificationCode {
+    static DEADLINE_START = 1;
+    static DEADLINE_END = 2;
+    static DEADLINE_PROCESSING = 3;
+    static SYSTEM_DATE = 4;
+    static DATE_SPECIFICATION = 5;
+  }
 
-  // export class SelectType {
-  //   static SELECT_BY_SELECTED_CODE = 1;
-  //   static SELECT_ALL = 2;
-  //   static SELECT_FIRST_ITEM = 3;
-  //   static NO_SELECT = 4;
-  // }
+  // 終了日区分
+  export class EndDateClassificationCode {
+    static DEADLINE_START = 1;
+    static DEADLINE_END = 2;
+    static DEADLINE_PROCESSING = 3;
+    static SYSTEM_DATE = 4;
+    static DATE_SPECIFICATION = 5;
+  }
 
-  // class KDL017TableModel {
-  //   expirationDate: string;
-  //   digestionNumber: string;
-  //   digestionDate: string;
-  //   digestionHour: string;
-  //   occurrenceNumber: string;
-  //   occurrenceDate: string;
-  //   occurrenceHour: string;
-
-  //   constructor(init?: Partial<KDL017TableModel>) {
-  //     (<any>Object).assign(this, init);
-  //   }
-  // }
+  // 基準日区分
+  export class BaseDateClassificationCode {
+    static DEADLINE_START = 1;
+    static DEADLINE_END = 2;
+    static SYSTEM_DATE = 3;
+    static OUTPUT_PERIOD_START = 4;
+    static OUTPUT_PERIOD_END = 5;
+    static DATE_SPECIFICATION = 6;
+  }
 }

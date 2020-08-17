@@ -40,12 +40,12 @@ public class OutputPeriodSetting {
 	/*
 	 * 終了日調整
 	 */
-	private Optional<Integer> endDateAdjustment;
+	private Optional<DateAdjustment> endDateAdjustment;
 	
 	/*
 	 * 締め日区分
 	 */
-	private Optional<String> deadlineClassification;
+	private Optional<DateAdjustment> deadlineClassification;
 	
 	/*
 	 * 開始日区分
@@ -69,7 +69,7 @@ public class OutputPeriodSetting {
 			EndDateClassificationCode endDateClassification, 
 			GeneralDate endDateSpecify,
 			Integer endDateAdjustment, 
-			String deadlineClassification, 
+			Integer deadlineClassification, 
 			StartDateClassificationCode startDateClassification,
 			GeneralDate startDateSpecify, 
 			Integer startDateAdjustment) {
@@ -79,8 +79,8 @@ public class OutputPeriodSetting {
 		this.baseDateSpecify = Optional.ofNullable(baseDateSpecify);
 		this.endDateClassification = Optional.ofNullable(endDateClassification);
 		this.endDateSpecify = Optional.ofNullable(endDateSpecify);
-		this.endDateAdjustment = Optional.ofNullable(endDateAdjustment);
-		this.deadlineClassification = Optional.ofNullable(deadlineClassification);
+		this.endDateAdjustment = Optional.ofNullable(new DateAdjustment(endDateAdjustment));
+		this.deadlineClassification = Optional.ofNullable(new DateAdjustment(deadlineClassification));
 		this.startDateClassification = Optional.ofNullable(startDateClassification);
 		this.startDateSpecify = Optional.ofNullable(startDateSpecify);
 		this.startDateAdjustment = Optional.ofNullable(startDateAdjustment);

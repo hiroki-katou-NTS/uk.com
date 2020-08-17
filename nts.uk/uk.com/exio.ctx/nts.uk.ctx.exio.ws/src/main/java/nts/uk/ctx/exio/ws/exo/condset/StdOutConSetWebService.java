@@ -111,5 +111,11 @@ public class StdOutConSetWebService extends WebService {
 	        @PathParam("standType") int standType) {
 		return stdOutputCondSetFinder.getOutItem(cndSetCd, standType);
 	}
+	
+	@POST
+	@Path("saveOutputPeriodSetting")
+	public void saveOutputPeriodSetting(StdOutputCondSetCommand command) {
+//		return stdOutputCondSetFinder.getOutItem(cndSetCd, standType);
+	}
 
 }

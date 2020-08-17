@@ -1,4 +1,3 @@
-
 module nts.uk.com.view.cmf002.w.service {
   // var paths: any = {
   //   getEmployee : 'at/request/dialog/employmentsystem/getEmployee',
@@ -23,4 +22,6 @@ module nts.uk.com.view.cmf002.w.service {
   //   employeeIds: Array<string>,
   //   baseDate: string
   // }
+
+
 }
