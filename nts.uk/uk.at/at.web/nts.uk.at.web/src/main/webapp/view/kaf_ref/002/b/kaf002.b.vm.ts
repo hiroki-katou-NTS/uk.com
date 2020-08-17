@@ -1,4 +1,6 @@
 module nts.uk.at.view.kaf002_ref.b.viewmodel {
+    import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
+    import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
     import Kaf000AViewModel = nts.uk.at.view.kaf000_ref.a.viewmodel.Kaf000AViewModel;
     @bean()
     class Kaf002BViewModel extends Kaf000AViewModel {
@@ -7,7 +9,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
         selectedCode: KnockoutObservable<string>;
         selectedCodeReason: KnockoutObservable<string>;
         time: KnockoutObservable<number>;
-        
+        application: KnockoutObservable<Application>;
         
         created() {
             
@@ -29,6 +31,18 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
             
             // initial time 
             self.time = ko.observable(null);
+            
+            self.application = ko.observable(new Application(AppType.STAMP_APPLICATION));
+
+            self.loadData([], [], AppType.STAMP_APPLICATION)
+            .then((loadDataFlag: any) => {
+                if(loadDataFlag) {
+                    let ApplicantEmployeeID: null,
+                        ApplicantList: null,
+                        appDispInfoStartupOutput = ko.toJS(self.appDispInfoStartupOutput),
+                        command = { ApplicantEmployeeID, ApplicantList, appDispInfoStartupOutput };
+                }
+            })
             
         }
         
