@@ -4,6 +4,8 @@
 package nts.uk.screen.at.app.ksu001.extracttargetemployees;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,9 +43,6 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Regula
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupAdapter;
 import nts.uk.ctx.sys.auth.dom.algorithm.AcquireUserIDFromEmpIDService;
-import nts.uk.ctx.sys.auth.dom.role.RoleType;
-import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
-import nts.uk.ctx.sys.auth.pub.role.RollInformationExport;
 import nts.uk.query.pub.employee.EmployeeSearchQueryDto;
 import nts.uk.query.pub.employee.RegulationInfoEmployeeExport;
 import nts.uk.query.pub.employee.RegulationInfoEmployeePub;
@@ -68,8 +67,23 @@ public class ScreenQueryExtractTargetEmployees {
 	private RegulationInfoEmployeePub regulInfoEmpPub;
 	@Inject
 	private AcquireUserIDFromEmpIDService acquireUserIDFromEmpIDService;
+	
 	@Inject
-	private RoleExportRepo roleExportRepo;
+	private  SortSettingRepository sortSettingRepo;
+	@Inject
+	private  BelongScheduleTeamRepository belongScheduleTeamRepo;
+	@Inject
+	private  EmployeeRankRepository employeeRankRepo;
+	@Inject
+	private  RankRepository rankRepo;
+	@Inject
+	private  SyJobTitleAdapter syJobTitleAdapter;
+	@Inject
+	private  SyClassificationAdapter syClassificationAdapter;
+	@Inject
+	private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHisRepo;
+	@Inject
+	private NurseClassificationRepository nurseClassificationRepo;
 	
 	final static String SPACE = " ";
 	final static String ZEZO_TIME = "00:00";
@@ -94,7 +108,7 @@ public class ScreenQueryExtractTargetEmployees {
 	public List<EmployeeInformationImport> getListEmp(ExtractTargetEmployeesParam param) {
 		
 		// step 1 get domainSv 組織を指定して参照可能な社員を取得する
-		RequireGetEmpImpl requireGetEmpImpl = new RequireGetEmpImpl(workplaceGroupAdapter, regulInfoEmployeeAdap, regulInfoEmpPub, acquireUserIDFromEmpIDService, roleExportRepo);
+		RequireGetEmpImpl requireGetEmpImpl = new RequireGetEmpImpl(workplaceGroupAdapter, regulInfoEmployeeAdap, regulInfoEmpPub, acquireUserIDFromEmpIDService);
 		String epmloyeeId = AppContexts.user().employeeId();
 		TargetOrgIdenInfor targetOrgIdenInfor = param.targetOrgIdenInfor;
 		List<String> sids = GetEmpCanReferBySpecOrganizationService.getListEmpID(requireGetEmpImpl, param.baseDate,epmloyeeId , targetOrgIdenInfor);
@@ -103,9 +117,16 @@ public class ScreenQueryExtractTargetEmployees {
 		EmployeeInformationQueryDtoImport input = new EmployeeInformationQueryDtoImport(sids, param.baseDate, false, false, false, false, false, false);
 
 		List<EmployeeInformationImport> listEmp = empInfoAdapter.getEmployeeInfo(input);
+		List<String> sids2 = listEmp.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
 		
 		// step 4 gọi domainSv 社員を並び替える.
-		
+		RequireSortEmpImpl requireSortEmpImpl = new RequireSortEmpImpl(sortSettingRepo, belongScheduleTeamRepo,
+				employeeRankRepo, rankRepo, syJobTitleAdapter, syClassificationAdapter, empMedicalWorkStyleHisRepo,
+				nurseClassificationRepo);	
+		// 並び順に基づいて社員を並び替える(Require, 年月日, List<社員ID>)
+		List<String> listSidOrder = SortEmpService.sortEmpTheirOrder(requireSortEmpImpl, param.baseDate, sids2);		
+				
+		listEmp.sort(Comparator.comparingInt(listSidOrder::indexOf));
 		
 		return listEmp;
 		
@@ -122,8 +143,6 @@ public class ScreenQueryExtractTargetEmployees {
 		private RegulationInfoEmployeePub regulInfoEmpPub;
 		@Inject
 		private AcquireUserIDFromEmpIDService acquireUserIDFromEmpIDService;
-		@Inject
-		private RoleExportRepo roleExportRepo;
 		
 		@Override
 		public List<String> getReferableEmp(GeneralDate date, String empId, String workplaceGroupID) {
