@@ -75,7 +75,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
             params.eventUpdate(vm.update.bind(vm));
         }
 
-        async createParamKAF004() {
+        createParamKAF004() {
             const vm = this;
             let command = {
                 appId: ko.toJS(vm.application().appID),

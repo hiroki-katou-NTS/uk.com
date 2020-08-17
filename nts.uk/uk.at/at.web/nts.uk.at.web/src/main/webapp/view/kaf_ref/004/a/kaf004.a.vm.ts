@@ -417,22 +417,22 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             // 取り消す初期情報.表示する
             switch (idItem) {
                 case IdItem.A6_7: {
-                    if (!ko.toJS(vm.lateOrEarlyInfo1)) {
+                    if (ko.toJS(vm.lateOrEarlyInfo1) === null) {
                         return false;
                     }
                     return ko.toJS(vm.lateOrEarlyInfo1().isIndicate);
                 } case IdItem.A6_13: {
-                    if (!ko.toJS(vm.lateOrEarlyInfo2)) {
+                    if (!ko.toJS(vm.lateOrEarlyInfo2) === null) {
                         return false;
                     }
                     return ko.toJS(vm.lateOrEarlyInfo2().isIndicate);
                 } case IdItem.A6_19: {
-                    if (!ko.toJS(vm.lateOrEarlyInfo3)) {
+                    if (!ko.toJS(vm.lateOrEarlyInfo3) === null) {
                         return false;
                     }
                     return ko.toJS(vm.lateOrEarlyInfo3().isIndicate);
                 } case IdItem.A6_25: {
-                    if (!ko.toJS(vm.lateOrEarlyInfo4)) {
+                    if (!ko.toJS(vm.lateOrEarlyInfo4) === null) {
                         return false;
                     }
                     return ko.toJS(vm.lateOrEarlyInfo4().isIndicate);
