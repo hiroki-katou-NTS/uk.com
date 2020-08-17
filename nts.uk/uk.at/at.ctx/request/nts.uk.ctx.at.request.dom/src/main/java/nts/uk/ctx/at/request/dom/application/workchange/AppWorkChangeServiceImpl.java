@@ -261,7 +261,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 
 	@Override
 	public WorkChangeCheckRegOutput checkBeforeRegister(String companyID, ErrorFlagImport errorFlag, Application application,
-			AppWorkChange appWorkChange) {
+			AppWorkChange appWorkChange, AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		WorkChangeCheckRegOutput output = new WorkChangeCheckRegOutput();
 		// 登録時チェック処理（勤務変更申請）
 		this.checkRegisterWorkChange(application, appWorkChange);
@@ -272,7 +272,6 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 					application.getEmployeeID(), 
 					new DatePeriod(application.getOpAppStartDate().get().getApplicationDate(), application.getOpAppEndDate().get().getApplicationDate()));
 		}
-		AppDispInfoStartupOutput appDispInfoStartupOutput = null;
 		// 登録時チェック処理（全申請共通）
 		List<ConfirmMsgOutput> confirmMsgLst = null;
 				newBeforeRegister.processBeforeRegister_New(
@@ -554,12 +553,12 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	
 	@Override
 	public WorkChangeCheckRegOutput checkBeforeRegister(Boolean mode, String companyId, Application application,
-			AppWorkChange appWorkChange, ErrorFlagImport opErrorFlag) {
+			AppWorkChange appWorkChange, ErrorFlagImport opErrorFlag, AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		WorkChangeCheckRegOutput workChangeCheckRegOutput = new WorkChangeCheckRegOutput();
 //		INPUT．「画面モード」をチェックする
 		if (mode ) {
 //			登録前のエラーチェック処理
-			workChangeCheckRegOutput = this.checkBeforeRegister(companyId, opErrorFlag, application, appWorkChange);
+			workChangeCheckRegOutput = this.checkBeforeRegister(companyId, opErrorFlag, application, appWorkChange, appDispInfoStartupOutput);
 		}else {
 //			更新前のエラーチェック処理
 			workChangeCheckRegOutput.setConfirmMsgLst(this.checkBeforeUpdate(companyId, application, appWorkChange, false));
