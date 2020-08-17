@@ -23,6 +23,8 @@ public class BentoReservedInfoDto {
     /** 枠番 */
     private int frameNo;
 
+    private String unit;
+
     /** 社員ごとの弁当予約情報 */
     private List<BentoReservationInfoForEmpDto> bentoReservationInfoForEmpList;
 }
