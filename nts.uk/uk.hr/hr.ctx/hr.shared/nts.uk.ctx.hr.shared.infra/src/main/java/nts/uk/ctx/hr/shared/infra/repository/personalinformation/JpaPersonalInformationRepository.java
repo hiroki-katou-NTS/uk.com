@@ -22,6 +22,23 @@ import nts.uk.ctx.hr.shared.infra.entity.personalinformation.PpedtData;
 @Stateless
 public class JpaPersonalInformationRepository extends JpaRepository implements PersonalInformationRepository {
 	private PpedtData entity = new PpedtData();
+	
+	public static final String GET_DISPATCHED_INFORMATION = "SELECT a FROM PpedtData a WHERE a.contractCd = :contractCd"
+			+ " AND a.cId = :cId" + " AND a.workId = :workId"
+			+ " AND a.startDate <= baseDate AND s.endDate >= baseDate ";
+	
+	public static final String GET_DISPATCHED_INFORMATION_BY_STR10 = "SELECT a FROM PpedtData a WHERE a.contractCd = :contractCd"
+			+ " AND a.str10 = :cId" + " AND a.workId = :workId"
+			+ " AND a.startDate <= baseDate AND s.endDate >= baseDate ";
+	
+	public static final String GET_PERSONAL_INFO_BY_CID_SID_WORKID_DATE = "SELECT a FROM PpedtData a WHERE a.cId = :cId"
+			+ " AND a.sid IN :sids" + " AND a.workId = :workId"
+			+ " AND a.startDate <= baseDate AND s.endDate >= baseDate ";
+	
+	public static final String GET_PERSONAL_INFO_BY_QUALIFICATION_ID = "SELECT a FROM PpedtData a WHERE a.cId = :cId"
+			+ " AND a.selectId01 IN :qualificationId" + " AND a.workId = :workId"
+			+ " AND a.startDate <= baseDate AND s.endDate >= baseDate ";
+	
 
 	// Insert
 	@Override
@@ -105,9 +122,6 @@ public class JpaPersonalInformationRepository extends JpaRepository implements P
 	@Override
 	public List<PersonalInformation> getDispatchedInfos(String contractCd, String cId,
 			GeneralDate baseDate) {
-		String GET_DISPATCHED_INFORMATION = "SELECT a FROM PpedtData a WHERE a.contractCd = :contractCd"
-				+ " AND a.cId = :cId" + " AND a.workId = :workId"
-				+ " AND a.startDate <= baseDate AND s.endDate >= baseDate ";
 
 		List<PpedtData> personalInformations = this.queryProxy().query(GET_DISPATCHED_INFORMATION, PpedtData.class)
 				.setParameter("contractCd", contractCd).setParameter("cId", cId).setParameter("workId", 6)
@@ -120,14 +134,30 @@ public class JpaPersonalInformationRepository extends JpaRepository implements P
 	public List<PersonalInformation> getDispatchedInfoByStr10s(String contractCd, String cId,
 			GeneralDate baseDate) {
 
-		String GET_DISPATCHED_INFORMATION = "SELECT a FROM PpedtData a WHERE a.contractCd = :contractCd"
-				+ " AND a.str10 = :cId" + " AND a.workId = :workId"
-				+ " AND a.startDate <= baseDate AND s.endDate >= baseDate ";
-
-		List<PpedtData> personalInformations = this.queryProxy().query(GET_DISPATCHED_INFORMATION, PpedtData.class)
+		List<PpedtData> personalInformations = this.queryProxy().query(GET_DISPATCHED_INFORMATION_BY_STR10, PpedtData.class)
 				.setParameter("contractCd", contractCd).setParameter("cId", cId).setParameter("workId", 6)
 				.setParameter("baseDate", baseDate).getList();
 
 		return personalInformations.stream().map(m -> m.toDomain(m)).collect(Collectors.toList());
 	}
+
+	@Override
+	public List<PersonalInformation> getLstPersonInfoByCIdSIdsWorkId(String cId, List<String> sids, int workId,
+			GeneralDate baseDate) {
+		List<PpedtData> ppedtDatas = new ArrayList<>();
+
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			ppedtDatas.addAll(this.queryProxy().query(GET_PERSONAL_INFO_BY_CID_SID_WORKID_DATE,
+					PpedtData.class)
+				.setParameter("cId", cId)
+				.setParameter("sids", subList)
+				.setParameter("workId", workId)
+				.setParameter("baseDate", baseDate).getList());
+		});
+		if (ppedtDatas.isEmpty())
+			return Collections.emptyList();
+
+		return ppedtDatas.stream().map(m -> m.toDomain(m)).collect(Collectors.toList());
+	}
+
 }

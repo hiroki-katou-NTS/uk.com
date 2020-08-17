@@ -8,7 +8,7 @@ import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformation;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.人事.shared.個人情報（人事）.個人情報.アルゴリズム.出向派遣履歴
- * .基準日から受入出向派遣情報を取得する
+ * 基準日から受入出向派遣情報を取得する
  * 
  * @author chungnt
  *

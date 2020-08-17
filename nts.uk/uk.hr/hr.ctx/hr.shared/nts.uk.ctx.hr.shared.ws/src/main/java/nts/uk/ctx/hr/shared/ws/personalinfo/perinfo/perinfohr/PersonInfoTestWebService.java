@@ -19,6 +19,9 @@ import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.GetP
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.GetPersonInfoHRInput;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.UpdatePersonInfoHR;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.UpdatePersonInfoHRInput;
+import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.HoldingQualificationApp;
+import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.HoldingQualificationDto;
+import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.HoldingQualificationInput;
 
 /**
  * 
@@ -47,6 +50,9 @@ public class PersonInfoTestWebService extends WebService {
 	
 	@Inject
 	private ReceiveInfoForBaseDateApp receiveInfo;
+	
+	@Inject
+	private HoldingQualificationApp holdingQualification;
 
 	@POST
 	@Path("addPersonInfo")
@@ -77,11 +83,16 @@ public class PersonInfoTestWebService extends WebService {
 	public List<TemporaryDispatchInformation> testGetDispatchedInformation(InputDispatchedInformation input) {
 		return getDispatched.get(input);
 	}
-	
+
 	@POST
 	@Path("getReceiveInfoForBaseDate")
 	public List<TemporaryDispatchInformation> testReceiveInfoForBaseDate(InputDispatchedInformation input) {
 		return receiveInfo.get(input);
 	}
-	
+
+	@POST
+	@Path("getHoldingQualification")
+	public List<HoldingQualificationDto> testHoldingQualification(HoldingQualificationInput input) {
+		return holdingQualification.getHoldingQualification(input);
+	}
 }
