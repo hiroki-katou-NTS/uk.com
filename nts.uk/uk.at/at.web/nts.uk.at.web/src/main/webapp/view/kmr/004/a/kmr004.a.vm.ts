@@ -14,57 +14,61 @@ module nts.uk.at.view.kmr004.a {
     @bean()
     export class KMR004AViewModel extends ko.ViewModel {
 
-        dateRangeValue: KnockoutObservable<any>;
+		// date range picker
+        dateRangeValue: KnockoutObservable<any> = ko.observable({
+            startDate: formatDate( new Date(), 'yyyy/MM/dd'),
+            endDate: formatDate( new Date(), 'yyyy/MM/dd')
+        });
 
-        roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: KnockoutObservable<number>;
+        selectedRuleCode: KnockoutObservable<number> = ko.observable(1);
 
-        multiSelectedId: KnockoutObservable<any>;
-        baseDate: KnockoutObservable<Date>;
-        alreadySettingList: KnockoutObservableArray<tree.UnitAlreadySettingModel>;
-        treeGrid: tree.TreeComponentOption;
+		// base date for KCP004, KCP012
+		baseDate: KnockoutObservable<Date> = ko.observable(new Date());
 
-        checked1: KnockoutObservable<boolean> = ko.observable(true);
-        enable1: KnockoutObservable<boolean> = ko.observable(true);
+		// selected codes
+        multiSelectedId: KnockoutObservable<any> = ko.observableArray([]);
+        
+		// tree grid properties object
+		treeGrid: tree.TreeComponentOption;
 
-        checked2: KnockoutObservable<boolean> = ko.observable(false);
-        enable2: KnockoutObservable<boolean> = ko.observable(true);
+		// total checkbox
+        totalChecked: KnockoutObservable<boolean> = ko.observable(true);
+        totalEnable: KnockoutObservable<boolean> = ko.observable(true);
 
-        tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
-        selectedTab: KnockoutObservable<string>;
+		// conditional checkbox
+        conditionalChecked: KnockoutObservable<boolean> = ko.observable(false);
+        conditionalEnable: KnockoutObservable<boolean> = ko.observable(true);
 
-        texteditorOrderTotal: any;
-        texteditorOrderStatement: any;
+		// tabs
+        tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray([]);
+        selectedTab: KnockoutObservable<string> = ko.observable('');
 
-        // radio group 1
-        totalRadioSelectedId: KnockoutObservable<number>;
-        totalRadioEnable: KnockoutObservable<boolean>;
+		// text editors
+        texteditorOrderTotal: any = ko.observableArray([]);
+        texteditorOrderStatement: any = ko.observableArray([]);
 
-        // radio group 2
-        conditionRadio: KnockoutObservableArray<any>;
-        conditionRadioSelected: KnockoutObservable<number>;
-        conditionRadioEnable: KnockoutObservable<boolean>;
+        // total radio group default selected value
+        totalRadioSelectedId: KnockoutObservable<number> = ko.observable(2); // Default selected: A8_4 注文済み
+
+        // condition radio group default selected value
+        conditionRadioSelected: KnockoutObservable<number> = ko.observable(1); // Default selected: A10_3 全件
 
         // extraction condition checkbox
-        extractionConditionChecked: KnockoutObservable<boolean>;
-        extractionConditionEnable: KnockoutObservable<boolean>;
+        extractionConditionChecked: KnockoutObservable<boolean> = ko.observable(false);
+        extractionConditionEnable: KnockoutObservable<boolean> = ko.observable(false);
 
         // extraction condition checkbox
-        separatePageCheckboxChecked: KnockoutObservable<boolean>;
-        separatePageCheckboxEnable: KnockoutObservable<boolean>;
+        separatePageCheckboxChecked: KnockoutObservable<boolean> = ko.observable(false);
+        separatePageCheckboxEnable: KnockoutObservable<boolean> = ko.observable(true);
 
-        conditionListCcb: KnockoutObservableArray<any>;
-        conditionListCcbEnable: KnockoutObservable<boolean>;
-        conditionCode: KnockoutObservable<number>;
+		// condition list checkbox
+        conditionListCcb: KnockoutObservableArray<any> = ko.observableArray([]);
+        conditionListCcbEnable: KnockoutObservable<boolean> = ko.observable(false);
+        conditionCode: KnockoutObservable<number> = ko.observable(1);
 
         constructor() {
             super();
             var self = this;
-
-            var today:string = formatDate( new Date(), 'yyyy/MM/dd');
-            self.dateRangeValue = ko.observable({startDate: today, endDate: today});
-
-            self.selectedRuleCode = ko.observable(1);
 
             self.$ajax(API.START).done((data) => {
                 console.log(data.operationDistinction);
@@ -129,9 +133,6 @@ module nts.uk.at.view.kmr004.a {
                 readonly: ko.observable(false)
             };
 
-            self.totalRadioSelectedId = ko.observable(2); // Default selected: A8_4 注文済み
-            self.extractionConditionChecked = ko.observable(false);
-            self.extractionConditionEnable = ko.observable(false);
             self.totalRadioSelectedId.subscribe((newValue) => {
                 if (newValue == 4) {
                     self.extractionConditionEnable(true);
@@ -140,11 +141,7 @@ module nts.uk.at.view.kmr004.a {
                 }
             });
 
-            self.conditionRadioSelected = ko.observable(1); // Default selected: A10_3 全件
 
-            self.separatePageCheckboxEnable = ko.observable(true);
-            self.separatePageCheckboxChecked = ko.observable(false);
-            self.conditionListCcbEnable = ko.observable(false);
             self.conditionRadioSelected.subscribe((newValue) => {
                 if (newValue == 1) {
                     self.separatePageCheckboxEnable(true);
@@ -164,7 +161,6 @@ module nts.uk.at.view.kmr004.a {
                 new ItemModel('1', '商品１'),
                 new ItemModel('2', '商品２')
             ]);
-            self.conditionCode = ko.observable(1);
         }
 
         created() {
@@ -206,8 +202,6 @@ module nts.uk.at.view.kmr004.a {
 
         initWorkplaceList() {
             const self = this;
-            self.baseDate = ko.observable(new Date());
-            self.multiSelectedId = ko.observableArray([]);
             self.treeGrid = {
                 isShowAlreadySet: false,
                 isMultipleUse: true,

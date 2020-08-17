@@ -45,7 +45,7 @@
                         <td>
                             <div id="A4_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KMR004_6')}</div>
                         </td>
-                        <td> <!--roundingRules-->
+                        <td>
                             <div id="A4_2" tabindex="6" class="cf" data-bind="ntsSwitchButton: {
 									name: 'Sample Switch',
 									options: [
@@ -69,8 +69,8 @@
                     <tr>
                         <td>
                             <div id="A5_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KMR004_11')}</div>
-                            <div id="A5_2" tabindex="8" data-bind="ntsCheckBox: {checked: checked1, enable: enable1, style: 'button'}">#{i18n.getText('KMR004_12')}</div>
-                            <div id="A5_3" tabindex="9" data-bind="ntsCheckBox: {checked: checked2, enable: enable2, style: 'button'}">#{i18n.getText('KMR004_13')}</div>
+                            <div id="A5_2" tabindex="8" data-bind="ntsCheckBox: {checked: totalChecked, enable: totalEnable, style: 'button'}">#{i18n.getText('KMR004_12')}</div>
+                            <div id="A5_3" tabindex="9" data-bind="ntsCheckBox: {checked: conditionalChecked, enable: conditionalEnable, style: 'button'}">#{i18n.getText('KMR004_13')}</div>
                         </td>
                     </tr>
                     <tr>
