@@ -3,7 +3,9 @@ package nts.uk.file.at.ws.bento;
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.*;
+import nts.uk.file.at.app.export.bento.OrderInfoExportData;
 import nts.uk.file.at.app.export.bento.OrderInfoExportPDFService;
+import nts.uk.file.at.app.export.bento.OutputExtension;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -27,22 +29,32 @@ public class OrderInfoWebService {
     @POST
     @Path("all/pdf")
     public ExportServiceResult generatePdfAll() {
-        OrderInfoDto data = fakeData();
-        return exportPDFService.start(data);
+        OrderInfoDto orderInfoDto = fakeData();
+        OrderInfoExportData exportData = new OrderInfoExportData(orderInfoDto, true, true,"昼",OutputExtension.PDF);
+        return exportPDFService.start(exportData);
     }
 
     @POST
     @Path("detail/pdf")
     public ExportServiceResult generatePdfDetail() {
-        OrderInfoDto data = fakeDetailData();
-        return exportPDFService.start(data);
+        OrderInfoDto orderInfoDto = fakeDetailData();
+        OrderInfoExportData exportData = new OrderInfoExportData(orderInfoDto, true, true, "昼", OutputExtension.PDF);
+        return exportPDFService.start(exportData);
     }
 
     @POST
     @Path("print/excel")
     public ExportServiceResult generateExcel() {
-
-        return null;
+        OrderInfoDto orderInfoDto = fakeData();
+        OrderInfoExportData exportData = new OrderInfoExportData(orderInfoDto, true, true,"昼",OutputExtension.EXCEL);
+        return exportPDFService.start(exportData);
+    }
+    @POST
+    @Path("print/excel-detail")
+    public ExportServiceResult generateExcelDetail() {
+        OrderInfoDto orderInfoDto = fakeDetailData();
+        OrderInfoExportData exportData = new OrderInfoExportData(orderInfoDto, true, true, "昼",OutputExtension.EXCEL);
+        return exportPDFService.start(exportData);
     }
 
     public OrderInfoDto fakeData() {
@@ -54,7 +66,9 @@ public class OrderInfoWebService {
         GeneralDate reservationDate = GeneralDate.ymd(2020, 8, 10);
         int totalFee = 100000;
         String closedName = "wew wew";
-        List<PlaceOfWorkInfoDto> placeOfWorkInfoDtos = Collections.EMPTY_LIST;
+        List<PlaceOfWorkInfoDto> placeOfWorkInfoDtos = new ArrayList<>();
+        placeOfWorkInfoDtos.add(new PlaceOfWorkInfoDto("12345","place 1"));
+        placeOfWorkInfoDtos.add(new PlaceOfWorkInfoDto("6789","place 2"));
         List<BentoTotalDto> bentoTotalDtos = new ArrayList<>();
         for (int i = 1; i < 41; ++i) {
             String unit = (i < 5) ? "枚" : "個";
@@ -80,7 +94,9 @@ public class OrderInfoWebService {
         GeneralDate reservationDate = GeneralDate.today();
         String reservationRegisInfo = "Card no 10000";
         String closingTimeName = "close 1";
-        List<PlaceOfWorkInfoDto> placeOfWorkInfoDtos = Collections.EMPTY_LIST;
+        List<PlaceOfWorkInfoDto> placeOfWorkInfoDtos = new ArrayList<>();
+        placeOfWorkInfoDtos.add(new PlaceOfWorkInfoDto("12345","place 1"));
+        placeOfWorkInfoDtos.add(new PlaceOfWorkInfoDto("6789","place 2"));
         List<BentoReservedInfoDto> bentoReservedInfoDtos = new ArrayList<>();
         List<BentoReservationInfoForEmpDto> bentoReservationInfoForEmpList1 =  new ArrayList<>();
         for(int i = 0; i < 16; ++i){
@@ -93,8 +109,8 @@ public class OrderInfoWebService {
                     stampCardNo, quantity, empId, empCode, empName
             ));
         }
-        for(int i = 0; i < 2; ++i)
-            bentoReservedInfoDtos.add(new BentoReservedInfoDto("item " + i, 3,bentoReservationInfoForEmpList1));
+        for(int i = 0; i < 15; ++i)
+            bentoReservedInfoDtos.add(new BentoReservedInfoDto("item " + i, 3,"枚",bentoReservationInfoForEmpList1));
 
         detailOrderInfoDtos.add(new DetailOrderInfoDto(bentoReservedInfoDtos,reservationDate,reservationRegisInfo,
                 closingTimeName,placeOfWorkInfoDtos));

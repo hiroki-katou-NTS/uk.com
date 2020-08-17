@@ -85,7 +85,7 @@ public class CreateOrderInfoFileQuery {
         Company company = companyRepository.find(AppContexts.user().companyId()).get();
         // 2. 職場又は場所情報と打刻カードを取得
         boolean isCheckedEmpInfo = detailTitle.isPresent();
-        Object[] condition = getWorkPlaceAndStampCard(workplaceId, workplaceCodes, isCheckedEmpInfo, period);
+        Object[] condition = getWorkPlaceAndStampCard(workplaceId, workplaceCodes, isCheckedEmpInfo, period, company.getCompanyId());
         Map<String, String> map = (Map<String, String>) condition[1];
         List<BentoReservationInfoForEmpDto> bentoReservationInfoForEmpDtos = (List<BentoReservationInfoForEmpDto>) condition[2];
         List<PlaceOfWorkInfoDto> placeOfWorkInfoDtos = (List<PlaceOfWorkInfoDto>) condition[3];
@@ -124,7 +124,7 @@ public class CreateOrderInfoFileQuery {
     }
 
     /** 2. 職場又は場所情報と打刻カードを取得 */
-    private Object[] getWorkPlaceAndStampCard(List<String> workplaceIds, List<String> workLocationCodes, boolean isCheckedEmpInfo, DatePeriod period) {
+    private Object[] getWorkPlaceAndStampCard(List<String> workplaceIds, List<String> workLocationCodes, boolean isCheckedEmpInfo, DatePeriod period, String companyId) {
         //List<WorkplaceInformation> result = new ArrayList<>();
         Object[] result = new Object[4];
         List<String> sIds = new ArrayList<>();
@@ -133,11 +133,11 @@ public class CreateOrderInfoFileQuery {
         List<WorkplaceInformation> workplaceInformations = new ArrayList<>();
         List<EmployeeBasicInfoExport> empBasicInfoExports;
         if (!CollectionUtil.isEmpty(workplaceIds)) {
-            workplaceInformations = getWorkplaceInfoById(workplaceIds, AppContexts.user().companyId());
+            workplaceInformations = getWorkplaceInfoById(workplaceIds, companyId);
             sIds = getListEmpIdInWorkPlace(workplaceIds, period);
             result[0] = workplaceInformations;
         } else if (!CollectionUtil.isEmpty(workLocationCodes)) {
-            workLocations = getWorkplaceInfoByCode(workLocationCodes);
+            workLocations = getWorkplaceInfoByCode(workLocationCodes, companyId);
             List<AffWorkplaceHistoryItem> affWorkplaceHistoryItems = getListWorkHisItem(period.start(), workLocationCodes);
             sIds = affWorkplaceHistoryItems.stream().map(AffWorkplaceHistoryItem::getEmployeeId).collect(Collectors.toList());
             result[0] = workLocations;
@@ -181,8 +181,8 @@ public class CreateOrderInfoFileQuery {
     }
 
     /** 勤務場所コードから勤務場所を取得 */
-    private List<WorkLocation> getWorkplaceInfoByCode(List<String> workLocationCodes){
-        return workLocationRepository.findByCodes(AppContexts.user().companyId(), workLocationCodes);
+    private List<WorkLocation> getWorkplaceInfoByCode(List<String> workLocationCodes, String companyId){
+        return workLocationRepository.findByCodes(companyId, workLocationCodes);
     }
 
     /**
@@ -232,21 +232,16 @@ public class CreateOrderInfoFileQuery {
     /** convert to DTO::職場又は場所情報 */
     private List<PlaceOfWorkInfoDto> convertToPlaceOfWorkInfoDto(List<WorkplaceInformation> workplaceInformations, List<WorkLocation> workLocations){
         List<PlaceOfWorkInfoDto> result = new ArrayList<>();
-        if(workplaceInformations == null){
-            for(WorkLocation item : workLocations){
+        if(workplaceInformations == null)
+            for(WorkLocation item : workLocations)
                 result.add(new PlaceOfWorkInfoDto(item.getWorkLocationCD().v(), item.getWorkLocationName().v()));
-            }
-        }else{
-            for(WorkplaceInformation item : workplaceInformations){
+        else
+            for(WorkplaceInformation item : workplaceInformations)
                 result.add(new PlaceOfWorkInfoDto(item.getWorkplaceCode().v(), item.getWorkplaceName().v()));
-            }
-        }
-        return result;
-    }
 
-    /** convert to 所属会社履歴（社員別） */
-    public AffCompanyHistByEmployee convertToDomainObject(){
-        return null;
+        if(result.size() > 2)
+            return new ArrayList<>(Arrays.asList(result.get(0), result.get(result.size() - 1)));
+        return result;
     }
 
     /** 3. 弁当予約を取得する */
@@ -357,7 +352,7 @@ public class CreateOrderInfoFileQuery {
             Bento bentoTemp = (Bento) me.getKey();
             List<BentoReservationInfoForEmpDto> listTemp = (List<BentoReservationInfoForEmpDto>) me.getValue();
             result.add(new BentoReservedInfoDto(
-                    bentoTemp.getName().v(),bentoTemp.getFrameNo(),listTemp
+                    bentoTemp.getName().v(),bentoTemp.getFrameNo(), bentoTemp.getUnit().v(),listTemp
             ));
         }
         return result;
