@@ -181,7 +181,7 @@ export class KdpS01CComponent extends Vue {
                 employeeId: vm.screenData.confirmResult.employeeId,
                 confirmDetails: [{
                     ymd: vm.screenData.confirmResult.date,
-                    IdentityVerificationStatus: true
+                    identityVerificationStatus: true
                 }]
             };
         vm.$mask('show');
