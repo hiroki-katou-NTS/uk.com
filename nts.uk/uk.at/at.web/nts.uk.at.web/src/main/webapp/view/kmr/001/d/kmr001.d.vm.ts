@@ -84,10 +84,9 @@ module nts.uk.at.kmr001.d {
             let self = this, dfd = $.Deferred();
             block.invisible();
             vm.$ajax(API.START).done(data => {
-                console.log(data);
                 if (data) {
                     if( !nts.uk.util.isNullOrEmpty(data.historyItems)){
-                        let rs = _.orderBy(data.historyItems, function(o)
+                        let rs =_.orderBy(data.historyItems, function(o)
                         { return new Date(o.endDate); }, ['desc']);
                         self.lstWpkHistory(_.map(rs,
                             i => new HistoryItem(i)));
@@ -111,8 +110,6 @@ module nts.uk.at.kmr001.d {
             });
             return dfd.promise();
         }
-
-
         addHistory() {
             let self = this;
             self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
@@ -150,7 +147,6 @@ module nts.uk.at.kmr001.d {
         registerConfig() {
             let self = this, data = null;
             const vm = this;
-            console.log(self.screenMode());
             $(".nts-input").trigger("validate");
             if (nts.uk.ui.errors.hasError())
                 return;
@@ -159,10 +155,7 @@ module nts.uk.at.kmr001.d {
                 endDate = moment.utc(self.selectedEndDate(), "YYYY/MM/DD");
             switch (self.screenMode()) {
                 case SCREEN_MODE.NEW:
-                    console.log(self.screenMode());
                     data = new BentoMenuHistCommand(startDate);
-                    console.log("aaa");
-                    console.log(self.screenMode());
                     vm.$ajax(API.ADDNEW, data).done((historyId) => {
                         self.created().done(() => {
                             self.selectedHistoryId(historyId);
@@ -175,11 +168,7 @@ module nts.uk.at.kmr001.d {
                     });
                     break;
                 case SCREEN_MODE.ADD:
-                    console.log(self);
-                    console.log(self.screenMode());
                     data = new BentoMenuHistCommand(startDate);
-                    console.log(data);
-                    console.log(API.ADDNEW);
                     vm.$ajax(API.ADDNEW, data).done((historyId) => {
                         self.created().done(() => {
                             self.selectedHistoryId(historyId);
@@ -211,7 +200,6 @@ module nts.uk.at.kmr001.d {
                     break;
             }
         }
-
         sendDataToParentScreen() {
             let self = this;
             let params = {
@@ -222,7 +210,6 @@ module nts.uk.at.kmr001.d {
             setShared("", params);
             nts.uk.ui.windows.close();
         }
-
         cancel() {
             let self = this;
             let preSelectHist = _.find(self.lstWpkHistory(), h => h.historyId == self.bkHistoryId);
@@ -241,7 +228,6 @@ module nts.uk.at.kmr001.d {
             }
             nts.uk.ui.windows.close();
         }
-
 
         deselectAll() {
             $('#list-box').ntsListBox('deselectAll');
