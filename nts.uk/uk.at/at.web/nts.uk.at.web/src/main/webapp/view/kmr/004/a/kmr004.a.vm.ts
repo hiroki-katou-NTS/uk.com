@@ -7,9 +7,9 @@ module nts.uk.at.view.kmr004.a {
     //     REDIRECT : '/view/ccg/008/a/index.xhtml'
     // }
 
-    import getText = nts.uk.resource.getText;
     import tree = kcp.share.tree;
     import block = nts.uk.ui.block;
+    import formatDate = nts.uk.time.formatDate;
 
     @bean()
     export class KMR004AViewModel extends ko.ViewModel {
@@ -37,7 +37,6 @@ module nts.uk.at.view.kmr004.a {
         texteditorOrderStatement: any;
 
         // radio group 1
-        totalRadio: KnockoutObservableArray<any>;
         totalRadioSelectedId: KnockoutObservable<number>;
         totalRadioEnable: KnockoutObservable<boolean>;
 
@@ -62,16 +61,15 @@ module nts.uk.at.view.kmr004.a {
             super();
             var self = this;
 
-            self.dateRangeValue = ko.observable({startDate: new Date(), endDate: new Date()});
+            var today:string = formatDate( new Date(), 'yyyy/MM/dd');
+            self.dateRangeValue = ko.observable({startDate: today, endDate: today});
 
-            self.roundingRules = ko.observableArray([
-                {code: '1', name: getText('KMR004_8')},
-                {code: '2', name: getText('KMR004_9')}
-            ]);
             self.selectedRuleCode = ko.observable(1);
 
             self.$ajax(API.START).done((data) => {
-                if(data == "BY_COMPANY"){
+                console.log(data.operationDistinction);
+                console.log(data.operationDistinction == "BY_COMPANY");
+                if(data.operationDistinction == "BY_COMPANY"){
                     self.initWorkplaceList();
                 } else {
                     self.initWorkLocationList();
@@ -82,25 +80,25 @@ module nts.uk.at.view.kmr004.a {
                 if (value == 1) {
                     // 開始:弁当予約時間、終了:弁当予約時間 6:00~10:00
                 } else {
-                    //開始:弁当予約時間、終了:弁当予約時間 12:00~15:00
+                    // 開始:弁当予約時間、終了:弁当予約時間 12:00~15:00
                 }
             });
 
             self.tabs = ko.observableArray([
                 {
                     id: 'tab-1',
-                    title: getText('KMR004_12'),
+                    title: self.$i18n('KMR004_12'),
                     content: '.tab-content-1',
                     enable: ko.observable(true),
                     visible: ko.observable(true)
                 },
                 {
                     id: 'tab-2',
-                    title: getText('KMR004_13'),
+                    title: self.$i18n('KMR004_13'),
                     content: '.tab-content-2',
                     enable: ko.observable(true),
                     visible: ko.observable(true)
-                },
+                }
             ]);
 
             self.selectedTab = ko.observable('tab-1');
@@ -110,7 +108,7 @@ module nts.uk.at.view.kmr004.a {
                 constraint: 'PrimitiveValue',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     textmode: "text",
-                    placeholder: getText('KMR004_21'),
+                    placeholder: self.$i18n('KMR004_21'),
                     width: "100px",
                     textalign: "left"
                 })),
@@ -123,7 +121,7 @@ module nts.uk.at.view.kmr004.a {
                 constraint: 'PrimitiveValue',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     textmode: "text",
-                    placeholder: getText('KMR004_22'),
+                    placeholder: self.$i18n('KMR004_22'),
                     width: "100px",
                     textalign: "left"
                 })),
@@ -131,14 +129,6 @@ module nts.uk.at.view.kmr004.a {
                 readonly: ko.observable(false)
             };
 
-            // A8-2
-            self.totalRadio = ko.observableArray([
-                new BoxModel(1, getText('KMR004_17')),
-                new BoxModel(2, getText('KMR004_18')),
-                new BoxModel(4, getText('KMR004_19'))
-            ]);
-
-            self.totalRadioEnable = ko.observable(true);
             self.totalRadioSelectedId = ko.observable(2); // Default selected: A8_4 注文済み
             self.extractionConditionChecked = ko.observable(false);
             self.extractionConditionEnable = ko.observable(false);
@@ -150,15 +140,10 @@ module nts.uk.at.view.kmr004.a {
                 }
             });
 
-            self.conditionRadio = ko.observableArray([
-                new BoxModel(1, getText('KMR004_17')),
-                new BoxModel(6, getText('KMR004_24'))
-            ]);
-
             self.conditionRadioSelected = ko.observable(1); // Default selected: A10_3 全件
+
             self.separatePageCheckboxEnable = ko.observable(true);
             self.separatePageCheckboxChecked = ko.observable(false);
-            self.conditionRadioEnable = ko.observable(true);
             self.conditionListCcbEnable = ko.observable(false);
             self.conditionRadioSelected.subscribe((newValue) => {
                 if (newValue == 1) {
@@ -174,6 +159,7 @@ module nts.uk.at.view.kmr004.a {
                 }
             });
 
+            // bento list
             self.conditionListCcb = ko.observableArray([
                 new ItemModel('1', '商品１'),
                 new ItemModel('2', '商品２')
@@ -244,6 +230,12 @@ module nts.uk.at.view.kmr004.a {
 
         initWorkLocationList() {
             $('#tree-grid').append("<div style='width: 514px; height: 365px; text-align: center; font-size: x-large'>Waiting for KCP012...</div>");
+        }
+
+        saveCharacteristic(companyId: string, userId: string, obj: any): void {
+            nts.uk.characteristics.save("OutputConditionOfEmbossing" +
+                "_companyId_" + companyId +
+                "_userId_" + userId, obj);
         }
     }
 

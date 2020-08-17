@@ -45,10 +45,13 @@
                         <td>
                             <div id="A4_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KMR004_6')}</div>
                         </td>
-                        <td>
+                        <td> <!--roundingRules-->
                             <div id="A4_2" tabindex="6" class="cf" data-bind="ntsSwitchButton: {
 									name: 'Sample Switch',
-									options: roundingRules,
+									options: [
+                                        {code: '1', name: $i18n('KMR004_8')},
+                                        {code: '2', name: $i18n('KMR004_9')}
+                                    ],
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: selectedRuleCode,
@@ -72,9 +75,8 @@
                     </tr>
                     <tr>
                         <td>
-                            <div id="A6_1" tabindex="10" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+                            <div id="A6_1" tabindex="10" data-bind="ntsTabPanel: {dataSource: tabs, active: selectedTab }">
                                 <div id="A6_4" class="tab-content-1">
-
 									<table class="table_content">
 										<colgroup>
 											<col/>
@@ -102,11 +104,15 @@
 											</td>
 											<td>
 												<div id="A8_2" tabindex="14" class="verticalRadioBoxGroup" data-bind="ntsRadioBoxGroup: {
-													options: totalRadio,
+													options: [
+													    {id: 1, name: $i18n('KMR004_17')},
+													    {id: 2, name: $i18n('KMR004_18')},
+													    {id: 4, name: $i18n('KMR004_19')}
+													],
 													optionsValue: 'id',
 													optionsText: 'name',
 													value: totalRadioSelectedId,
-													enable: totalRadioEnable}">
+													enable: true}">
 												</div> <br/>
                                                 &#160;&#160;&#160;&#160;
 												<div id="A8_6" tabindex="17" class="style-normal"
@@ -147,11 +153,14 @@
 												<table><tr>
 													<td style="padding-top: 0px;">
 														<div id="A10_2" tabindex="19" class="verticalRadioBoxGroup" data-bind="ntsRadioBoxGroup: {
-															options: conditionRadio,
+															options: [
+															    {id: 1, name: $i18n('KMR004_17')},
+															    {id: 6, name: $i18n('KMR004_24')}
+															],
 															optionsValue: 'id',
 															optionsText: 'name',
 															value: conditionRadioSelected,
-															enable: conditionRadioEnable}">
+															enable: true}">
 														</div>
 													</td>
 													<td style="padding-top: 0px;">
