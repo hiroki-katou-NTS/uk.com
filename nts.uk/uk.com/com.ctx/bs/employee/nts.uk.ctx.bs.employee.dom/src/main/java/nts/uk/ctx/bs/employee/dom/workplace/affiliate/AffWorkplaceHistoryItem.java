@@ -40,6 +40,13 @@ public class AffWorkplaceHistoryItem {
 
 	}
 
+	public static AffWorkplaceHistoryItem createFromJavaTypeNew(String histId, String employeeId, String workplaceId,
+																String normalWorkplaceId, String workLocation){
+		return new AffWorkplaceHistoryItem(histId,employeeId, workplaceId, normalWorkplaceId,
+				workLocation == null? Optional.empty(): Optional.of(new WorkLocationCD((workLocation))));
+
+	}
+
 	public AffWorkplaceHistoryItem(String historyId, String employeeId, String workplaceId, String normalWorkplaceId) {
 		this.historyId = historyId;
 		this.employeeId = employeeId;
