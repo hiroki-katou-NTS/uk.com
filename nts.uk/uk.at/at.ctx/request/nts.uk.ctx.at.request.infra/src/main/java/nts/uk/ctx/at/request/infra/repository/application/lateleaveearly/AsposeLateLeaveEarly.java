@@ -260,6 +260,9 @@ public class AsposeLateLeaveEarly {
 					cellB11.setValue(EMPTY);
 				}
 			}
+		} else {
+			cellB10.setValue(EMPTY);
+			cellB11.setValue(EMPTY);
 		}
 
 	}

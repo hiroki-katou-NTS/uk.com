@@ -51,12 +51,12 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
 
             vm.workManagement = new WorkManagement('--:--', '--:--', '--:--', '--:--', null, null, null, null);
 
-            vm.lateOrEarlyInfo1 = ko.observable(new LateOrEarlyInfo(true, 1, true, true, 0));
-            vm.lateOrEarlyInfo2 = ko.observable(new LateOrEarlyInfo(true, 1, true, true, 1));
-            vm.lateOrEarlyInfo3 = ko.observable(new LateOrEarlyInfo(false, 2, false, true, 0));
-            vm.lateOrEarlyInfo4 = ko.observable(new LateOrEarlyInfo(false, 2, true, true, 1));
+            vm.lateOrEarlyInfo1 = ko.observable(new LateOrEarlyInfo(false, 1, false, false, 0));
+            vm.lateOrEarlyInfo2 = ko.observable(new LateOrEarlyInfo(false, 1, false, false, 1));
+            vm.lateOrEarlyInfo3 = ko.observable(new LateOrEarlyInfo(false, 2, false, false, 0));
+            vm.lateOrEarlyInfo4 = ko.observable(new LateOrEarlyInfo(false, 2, false, false, 1));
             vm.lateOrEarlyInfos = ko.observableArray([]);
-            vm.managementMultipleWorkCycles = ko.observable(true);
+            vm.managementMultipleWorkCycles = ko.observable(false);
 
             // Subcribe when mode change -> clear data if mode is 'before'
             vm.application().prePostAtr.subscribe(() => {

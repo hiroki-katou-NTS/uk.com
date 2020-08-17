@@ -43,7 +43,7 @@ public class ArrivedLateLeaveEarlyRepositoryImp extends JpaRepository implements
 		KrqdtAppLateOrLeavePK_New pk = new KrqdtAppLateOrLeavePK_New(cID, application.getAppID());
 
 		// initial value for entity value
-		int lateCanAtr1 = 0, earlyCanAtr1 = 0, lateCanAtr2 = 0, earlyCanAtr2 = 0;
+		Integer lateCanAtr1 = null, earlyCanAtr1 = null, lateCanAtr2 = null, earlyCanAtr2 = null;
 		Integer lateTime1 = null, earlyTime1 = null, lateTime2 = null, earlyTime2 = null;
 
 		// get list cancel and list report time

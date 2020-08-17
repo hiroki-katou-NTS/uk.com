@@ -34,13 +34,13 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             vm.arrivedLateLeaveEarlyInfo = ko.observable(ArrivedLateLeaveEarlyInfo.initArrivedLateLeaveEarlyInfo());
             vm.appDispInfoStartupOutput = ko.observable(CommonProcess.initCommonSetting());
 
-            vm.lateOrEarlyInfo1 = ko.observable(new LateOrEarlyInfo(true, 1, true, true, 0));
-            vm.lateOrEarlyInfo2 = ko.observable(new LateOrEarlyInfo(true, 1, true, true, 1));
-            vm.lateOrEarlyInfo3 = ko.observable(new LateOrEarlyInfo(true, 2, true, true, 0));
-            vm.lateOrEarlyInfo4 = ko.observable(new LateOrEarlyInfo(true, 2, true, true, 1));
+            vm.lateOrEarlyInfo1 = ko.observable(new LateOrEarlyInfo(false, 1, false, false, 0));
+            vm.lateOrEarlyInfo2 = ko.observable(new LateOrEarlyInfo(false, 1, false, false, 1));
+            vm.lateOrEarlyInfo3 = ko.observable(new LateOrEarlyInfo(false, 2, false, false, 0));
+            vm.lateOrEarlyInfo4 = ko.observable(new LateOrEarlyInfo(false, 2, false, false, 1));
             vm.lateOrEarlyInfos = ko.observableArray([]);
-            vm.managementMultipleWorkCycles = ko.observable(true);
-            vm.isSendMail = ko.observable(true);
+            vm.managementMultipleWorkCycles = ko.observable(false);
+            vm.isSendMail = ko.observable(false);
 
             vm.application().prePostAtr.subscribe(() => {
                 if (ko.toJS(vm.application().prePostAtr) === 0) {
