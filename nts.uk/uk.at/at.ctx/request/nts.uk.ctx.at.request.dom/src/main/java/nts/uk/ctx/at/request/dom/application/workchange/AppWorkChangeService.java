@@ -80,7 +80,7 @@ public interface AppWorkChangeService {
 	 * @param appWorkChange 勤務変更申請
 	 * @return
 	 */
-	public WorkChangeCheckRegOutput checkBeforeRegister(String companyID, ErrorFlagImport errorFlag, Application application, AppWorkChange appWorkChange);
+	public WorkChangeCheckRegOutput checkBeforeRegister(String companyID, ErrorFlagImport errorFlag, Application application, AppWorkChange appWorkChange, AppDispInfoStartupOutput appDispInfoStartupOutput);
 	
 	/**
 	 * 登録時チェック処理（勤務変更申請）
@@ -167,5 +167,5 @@ public interface AppWorkChangeService {
 	 * @param opErrorFlag
 	 * @return
 	 */
-	public WorkChangeCheckRegOutput checkBeforeRegister(Boolean mode, String companyId, Application application, AppWorkChange appWorkChange, ErrorFlagImport opErrorFlag);
+	public WorkChangeCheckRegOutput checkBeforeRegister(Boolean mode, String companyId, Application application, AppWorkChange appWorkChange, ErrorFlagImport opErrorFlag, AppDispInfoStartupOutput appDispInfoStartupOutput);
 }

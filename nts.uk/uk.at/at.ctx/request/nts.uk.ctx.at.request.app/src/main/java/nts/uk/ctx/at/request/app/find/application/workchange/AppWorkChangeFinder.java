@@ -317,7 +317,7 @@ public class AppWorkChangeFinder {
 		int isError = command.getIsError();
 		WorkChangeCheckRegOutput workChangeCheckRegOutput = appWorkChangeService.checkBeforeRegister(mode, companyId,
 				application, appWorkChangeDto.toDomain(application),
-				EnumAdaptor.valueOf(isError, ErrorFlagImport.class));
+				EnumAdaptor.valueOf(isError, ErrorFlagImport.class), command.getAppDispInfoStartupDto().toDomain());
 
 		return WorkChangeCheckRegisterDto.fromDomain(workChangeCheckRegOutput);
 
