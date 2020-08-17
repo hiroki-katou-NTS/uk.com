@@ -33,7 +33,7 @@ public class AffWorkplaceHistoryItem {
 	// 通常職場コード
 	private String  normalWorkplaceId;
 
-	private Optional<String> workLocationCode;
+	private Optional<WorkLocationCD> workLocationCode;
 	
 	public static AffWorkplaceHistoryItem createFromJavaType(String histId, String employeeId, String workplaceId, String normalWorkplaceId){
 		return new AffWorkplaceHistoryItem(histId,employeeId, workplaceId, normalWorkplaceId);
