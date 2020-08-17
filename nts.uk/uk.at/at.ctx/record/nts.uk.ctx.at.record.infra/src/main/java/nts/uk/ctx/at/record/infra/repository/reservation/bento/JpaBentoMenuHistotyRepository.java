@@ -7,8 +7,10 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bento.IBentoMenuHistoryRepository;
+import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenu;
 import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenuHist;
 import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenuHistPK;
+import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenuPK;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 import javax.ejb.Stateless;
@@ -71,6 +73,7 @@ public class JpaBentoMenuHistotyRepository extends JpaRepository implements IBen
          val entity = this.queryProxy().find(new KrcmtBentoMenuHistPK(companyId,historyId),KrcmtBentoMenuHist.class);
          if(entity.isPresent()){
              this.commandProxy().remove(KrcmtBentoMenuHist.class,new KrcmtBentoMenuHistPK(companyId,historyId));
+             this.commandProxy().remove(KrcmtBentoMenu.class,new KrcmtBentoMenuPK(companyId,historyId));
          }
     }
 
