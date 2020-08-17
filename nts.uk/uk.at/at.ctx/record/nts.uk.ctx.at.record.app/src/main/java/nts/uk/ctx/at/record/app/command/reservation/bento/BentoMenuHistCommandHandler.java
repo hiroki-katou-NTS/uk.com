@@ -17,13 +17,13 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
  *  予約構成を追加する
  */
 @Stateless
-@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class BentoMenuHistCommandHandler extends CommandHandler<BentoMenuHistCommand> {
     @Inject
     private IBentoMenuHistoryRepository bentoMenuHistotyRepository;
@@ -35,6 +35,7 @@ public class BentoMenuHistCommandHandler extends CommandHandler<BentoMenuHistCom
         val companyId = AppContexts.user().companyId();
         AtomTask persist = BentoMenuHistService.register(require,
                 new DatePeriod(command.getDate(), GeneralDate.max()), companyId);
+
         transaction.execute(() -> {
             persist.run();
 
@@ -54,12 +55,12 @@ public class BentoMenuHistCommandHandler extends CommandHandler<BentoMenuHistCom
 
         @Override
         public void update(DateHistoryItem item) {
-            bentoMenuHistoryRepository.update(BentoMenuHistory.toDomain(AppContexts.user().companyId(),item));
+            bentoMenuHistoryRepository.update(BentoMenuHistory.toDomain(AppContexts.user().companyId(), Arrays.asList(item)));
         }
 
         @Override
         public void add(DateHistoryItem item) {
-            bentoMenuHistoryRepository.add(BentoMenuHistory.toDomain(AppContexts.user().companyId(),item));
+            bentoMenuHistoryRepository.add(BentoMenuHistory.toDomain(AppContexts.user().companyId(),Arrays.asList(item)));
         }
 
 

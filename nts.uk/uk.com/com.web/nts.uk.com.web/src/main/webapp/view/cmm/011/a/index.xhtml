@@ -38,12 +38,12 @@
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="fixed-flex-layout-left" style="padding-top: 10px; padding-left: 20px">
 					<div id="A2_1" data-bind="ntsPanel:{
-							width: '400px', height: '40px', 
+							width: '400px', height: '40px',
 							showIcon: false, direction: 'bottom'}">
 						<div id="A2_2" data-bind="ntsFormLabel: {}, visible: initMode == 0">#{i18n.getText('CMM011_202')}</div>
 						<div id="A2_2" data-bind="ntsFormLabel: {}, visible: initMode == 1">#{i18n.getText('CMM011_302')}</div>
 						<div data-bind="with: configuration" style="display: inline-block; width: 213px">
-							<div id="A2_3" style="width: 83px; display: inline-block;" data-bind="text: startDate"></div> 
+							<div id="A2_3" style="width: 83px; display: inline-block;" data-bind="text: startDate"></div>
 							<div id="A2_4" style="margin-left: 8px; margin-right: 8px; display: inline-block;">#{i18n.getText('CMM011_106')}</div>
 							<div id="A2_5" style="width: 83px; display: inline-block;" data-bind="text: endDate"></div>
 						</div>
@@ -60,12 +60,12 @@
 							<button id="A3_4" tabindex="10" class="small" data-bind="click: moveDown">#{i18n.getText('CMM011_111')}</button>
 						</div>
 					</div>
-					
-					<div style="width: 436px; color: #000; 
-								background-color: #CFF1A5; 
-								border: 1px solid #CCC; 
+
+					<div style="width: 436px; color: #000;
+								background-color: #CFF1A5;
+								border: 1px solid #CCC;
 								padding: 2px 2px;
-								font-size: 14px; 
+								font-size: 14px;
 								font-family: 'DroidSansMono', 'Meiryo';">#{i18n.getText('COM008_44')}</div>
 					<div id="A4_1" tabindex="11" style="margin-bottom: 20px"
 						data-bind="ntsTreeDragAndDrop:{
@@ -82,9 +82,9 @@
 							maxChildInNode: 999,
 							showCheckBox: false}">
 					</div>
-					
+
 				</div>
-				
+
 				<div class="fixed-flex-layout-right" style="padding-top: 20px;">
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: {  required: true, constraint: 'DepartmentCode' }">#{i18n.getText('CMM011_112')}</div>

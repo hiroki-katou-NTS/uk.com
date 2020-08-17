@@ -121,12 +121,28 @@ public class BentoReservationTest {
 
 		BentoReservationDetail detail = new BentoReservationDetail(2,null,false,new BentoReservationCount(1));
 
-		BentoReservation target = Helper.Reservation.DUMMY;
+
+		ReservationRegisterInfo regInfo = Helper.Reservation.RegInfo.DUMMY;
+		Optional<WorkLocationCode> workLocationCode = Helper.Reservation.WorkLocationCodeReg.DUMMY;
+		ReservationDate date = Helper.Reservation.Date.of(today());
+		List<BentoReservationDetail> bentoReservationDetails = new ArrayList<>();
+		bentoReservationDetails.add(detail);
+
+		BentoReservation target = new BentoReservation(regInfo,date,false,workLocationCode,bentoReservationDetails);
 
 		target.modifyLunch(true,detail);
 
 		assertThat(target.isOrdered()).isEqualTo(true);
 		assertThat(target.getBentoReservationDetails().size()).isEqualTo(2);
+	}
+
+	@Test
+	public void setterOrder() {
+
+		BentoReservation target = new BentoReservation(
+				null, null, true,null, Helper.Reservation.Detail.DUMMY_LIST);
+		target.setOrdered(false);
+		assertThat(target.isOrdered()).isEqualTo(false);
 	}
 
 }

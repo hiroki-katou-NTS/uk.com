@@ -6,17 +6,17 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoMenuHistory;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -50,4 +50,11 @@ public class KrcmtBentoMenuHist extends UkJpaEntity {
 		});
 		return result;
 	}
+
+	public KrcmtBentoMenuHist update(DateHistoryItem domain){
+		this.endDate = domain.end();
+		this.startDate = domain.start();
+		return this;
+	}
+
 }

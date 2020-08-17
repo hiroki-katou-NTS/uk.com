@@ -17,8 +17,8 @@ public class BentoMenuHistImp implements BentomenuAdapter {
 
     @Override
     public Optional<SWkpHistExport> findBySid(String employeeId, GeneralDate baseDate) {
-        return workplacePub.findBySid(employeeId,baseDate)
+        return workplacePub.findBySidWrkLocationCD(employeeId,baseDate)
                 .map(x -> new SWkpHistExport(x.getDateRange(), x.getEmployeeId(), x.getWorkplaceId(),
-                        x.getWorkplaceCode(), x.getWorkplaceName(), x.getWkpDisplayName()));
+                        x.getWorkplaceCode(), x.getWorkplaceName(), x.getWkpDisplayName(),x.getWorkLocationCd()));
     }
 }

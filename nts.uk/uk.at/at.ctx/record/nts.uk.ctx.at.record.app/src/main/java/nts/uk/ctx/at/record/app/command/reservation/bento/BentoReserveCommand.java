@@ -12,7 +12,9 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClo
 
 @Value
 public class BentoReserveCommand {
-	
+
+	private String workLocationCode;
+
 	private GeneralDate date;
 
 	private List<BentoReservationDetailCommand> details;

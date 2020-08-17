@@ -61,4 +61,7 @@ public interface AffWorkplaceHistoryItemRepository {
 	List<String> getHistIdLstByWorkplaceIdsAndPeriod(List<String> workplaceIds, DatePeriod period);
 
 	List<String> getSIDByListWklocationId(List<String> workLocationCDS);
+
+	//for file query : 注文情報を作る
+	List<String> getSIDByListWklocationCode(List<String> workLocationCode);
 }
