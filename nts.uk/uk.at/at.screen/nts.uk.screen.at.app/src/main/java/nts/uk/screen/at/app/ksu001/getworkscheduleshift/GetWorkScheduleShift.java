@@ -138,8 +138,11 @@ public class GetWorkScheduleShift {
 	}
 	
 	@AllArgsConstructor
-	private static class WorkScheManaStatusServiceReqIml implements WorkScheManaStatusService.Require {@Override
-		public List<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod) {
+	private static class WorkScheManaStatusServiceReqIml implements WorkScheManaStatusService.Require {
+		
+
+		@Override
+		public Optional<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod) {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -151,19 +154,20 @@ public class GetWorkScheduleShift {
 		}
 
 		@Override
-		public List<EmployeeLeaveJobPeriodImport> getByDatePeriod(List<String> lstEmpID, DatePeriod datePeriod) {
+		public Optional<EmployeeLeaveJobPeriodImport> getByDatePeriod(List<String> lstEmpID, DatePeriod datePeriod) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public List<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(List<String> lstEmpID, DatePeriod datePeriod) {
+		public Optional<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(List<String> lstEmpID,
+				DatePeriod datePeriod) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public List<EmploymentPeriodImported> getEmploymentHistory(List<String> lstEmpID, DatePeriod datePeriod) {
+		public Optional<EmploymentPeriodImported> getEmploymentHistory(List<String> lstEmpID, DatePeriod datePeriod) {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -173,8 +177,6 @@ public class GetWorkScheduleShift {
 			// TODO Auto-generated method stub
 			return null;
 		}
-		
-		
 
 	}
 }
