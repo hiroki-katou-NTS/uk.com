@@ -523,9 +523,10 @@ module nts.uk.at.view.ksm003.a {
 
             this.saveDailyPattern(detailDto).done(function (res) {
                 let MsgId = '';
+                let infosData = detailDto.infos;
                 if(res.errorStatusList.length > 0 ) {
                     res.errorStatusList.map( (error_type, i) => {
-                        console.log(error_type);
+
                         switch ( error_type ) {
                             case 'WORKTIME_WAS_DELETE':
                                 MsgId = "Msg_1609";
@@ -551,7 +552,9 @@ module nts.uk.at.view.ksm003.a {
                         }
 
                         if( !nts.uk.util.isNullOrEmpty(MsgId) ) {
-                            $('#fixed-table-list').ntsError('set', {messageId: MsgId, messageParams: [i + '行目: ']});
+                            let mgsError = nts.uk.resource.getMessage(MsgId);
+                            mgsError = (i + 1) + '行目: ' + mgsError;
+                            $('#btnVal' + infosData[i].dispOrder).ntsError('set', {messageId: MsgId, message: mgsError});
                         }
                     })
 
@@ -773,11 +776,11 @@ module nts.uk.at.view.ksm003.a {
         }
 
         public setWorkTypeName(workTypeName: string): void {
-            this.workTypeInfo(this.typeCode() + " " + workTypeName);
+            this.workTypeInfo((this.typeCode() || '') + " " + (workTypeName || ''));
         }
 
         public setWorkTimeName(workTimeName: string) {
-            this.workingInfo(this.timeCode() + " " + workTimeName);
+            this.workingInfo((this.timeCode() || '') + " " + (workTimeName || ''));
         }
 
         public toDto(): DailyPatternValDto {
