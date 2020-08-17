@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.query.MonthlyPattern;
+package nts.uk.ctx.at.schedule.app.query.MonthlyPattern;
 
 
 import lombok.val;
