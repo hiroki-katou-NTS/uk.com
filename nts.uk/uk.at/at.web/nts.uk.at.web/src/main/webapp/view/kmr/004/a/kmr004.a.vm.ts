@@ -8,7 +8,6 @@ module nts.uk.at.view.kmr004.a {
     // }
 
     import tree = kcp.share.tree;
-    import block = nts.uk.ui.block;
     import formatDate = nts.uk.time.formatDate;
 
     @bean()
@@ -66,16 +65,20 @@ module nts.uk.at.view.kmr004.a {
         conditionListCcbEnable: KnockoutObservable<boolean> = ko.observable(false);
         conditionCode: KnockoutObservable<number> = ko.observable(1);
 
+        closingTimeOptions: KnockoutObservableArray<any>;
+
         constructor() {
             super();
             var self = this;
 
-            self.$ajax(API.START).done((data) => {
-                console.log(data.operationDistinction);
-                console.log(data.operationDistinction == "BY_COMPANY");
+            var strDate: string = formatDate( self.baseDate(), 'yyyy/MM/dd');
+            var strDateForm = ko.toJS({strDate: strDate});
+            self.$ajax(API.START, strDateForm).done((data) => {
                 if(data.operationDistinction == "BY_COMPANY"){
                     self.initWorkplaceList();
                 } else {
+                    console.log(data);
+                    self.initSwitchButton(data);
                     self.initWorkLocationList();
                 }
             });
@@ -169,7 +172,6 @@ module nts.uk.at.view.kmr004.a {
         }
 
         mounted() {
-
         }
 
         printExcel(){
@@ -177,10 +179,8 @@ module nts.uk.at.view.kmr004.a {
             $("#exportTitle").trigger("validate");
             vm.$blockui("invisible");
             nts.uk.request.exportFile("at", API.EXCEL).done((data) => {
-                console.log(data);
                 vm.$blockui("clear");
             }).fail((res: any) => {
-                console.log(res);
                 vm.$dialog.error({ messageId : res.messageId }).then(function(){
                     vm.$blockui("clear");
                 });
@@ -198,6 +198,18 @@ module nts.uk.at.view.kmr004.a {
                     vm.$blockui("clear");
                 });
             });
+        }
+
+        initSwitchButton(data:any) {
+            let vm = this;
+            let closingTime1Name: string = data.closingTime1.reservationTimeName;
+            let closingTime2Name: string = data.closingTime2.reservationTimeName;
+            console.log(closingTime1Name);
+            console.log(closingTime2Name);
+            vm.closingTimeOptions = ko.observableArray([
+                new ItemModel('1', 'closingTime1Name'),
+                new ItemModel('2', 'closingTime2Name')
+            ]);
         }
 
         initWorkplaceList() {
@@ -227,9 +239,15 @@ module nts.uk.at.view.kmr004.a {
         }
 
         saveCharacteristic(companyId: string, userId: string, obj: any): void {
-            nts.uk.characteristics.save("OutputConditionOfEmbossing" +
+            nts.uk.characteristics.save("kmr004a" +
                 "_companyId_" + companyId +
                 "_userId_" + userId, obj);
+        }
+
+        restoreCharacteristic(companyId: string, userId: string): JQueryPromise<any> {
+            return nts.uk.characteristics.restore("kmr004a" +
+                "_companyId_" + companyId +
+                "_userId_" + userId);
         }
     }
 
