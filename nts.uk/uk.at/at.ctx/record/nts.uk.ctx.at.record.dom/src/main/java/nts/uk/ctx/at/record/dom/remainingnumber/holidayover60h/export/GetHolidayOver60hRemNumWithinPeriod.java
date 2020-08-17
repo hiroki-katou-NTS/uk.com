@@ -26,7 +26,7 @@ public interface GetHolidayOver60hRemNumWithinPeriod {
 	 * @param prevAnnualLeaveOpt 前回の60H超休の集計結果
 	 * @return 60H超休の集計結果
 	 */
-	Optional<AggrResultOfHolidayOver60h> algorithm(
+	AggrResultOfHolidayOver60h algorithm(
 			GetHolidayOver60hRemNumWithinPeriod.RequireM1 require, 
 			CacheCarrier cacheCarrier,
 			String companyId, 

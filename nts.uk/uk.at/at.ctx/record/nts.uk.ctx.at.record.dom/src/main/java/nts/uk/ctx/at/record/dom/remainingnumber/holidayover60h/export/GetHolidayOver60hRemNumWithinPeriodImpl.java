@@ -2,6 +2,9 @@ package nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export;
 
 import java.util.List;
 import java.util.Optional;
+
+import javax.ejb.Stateless;
+
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -9,6 +12,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemain
 import nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.param.AggrResultOfHolidayOver60h;
 import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolidayOver60hMngWork;
 
+@Stateless
 public class GetHolidayOver60hRemNumWithinPeriodImpl implements GetHolidayOver60hRemNumWithinPeriod {
 
 	/**
@@ -25,7 +29,7 @@ public class GetHolidayOver60hRemNumWithinPeriodImpl implements GetHolidayOver60
 	 * @param prevAnnualLeaveOpt 前回の60H超休の集計結果
 	 * @return 60H超休の集計結果
 	 */
-	public Optional<AggrResultOfHolidayOver60h> algorithm(
+	public AggrResultOfHolidayOver60h algorithm(
 			GetHolidayOver60hRemNumWithinPeriod.RequireM1 require, 
 			CacheCarrier cacheCarrier,
 			String companyId, 
@@ -39,7 +43,7 @@ public class GetHolidayOver60hRemNumWithinPeriodImpl implements GetHolidayOver60
 		
 		AggrResultOfHolidayOver60h result = new AggrResultOfHolidayOver60h();
 		
-		return Optional.of(result);		
+		return result;		
 	}
 	
 	/**
