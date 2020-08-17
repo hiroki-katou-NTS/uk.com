@@ -45,5 +45,6 @@ public class AffWorkplaceHistoryItem {
 		this.employeeId = employeeId;
 		this.workplaceId = workplaceId;
 		this.normalWorkplaceId = normalWorkplaceId;
+		this.workLocationCode = Optional.empty();
 	}
 }
