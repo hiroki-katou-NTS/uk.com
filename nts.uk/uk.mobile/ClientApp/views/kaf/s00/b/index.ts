@@ -7,8 +7,28 @@ import { component, Prop, Watch } from '@app/core/component';
     template: require('./index.vue'),
     resource: require('./resources.json'),
     validations: {
+        params: {
+            output: {
+                prePostAtr: {
+                    selectCheck: {
+                        test(value: number) {
+                            const vm = this;
+                            if (value == null || value < 0 || value > 1) {
+                                document.getElementById('prePostSelect').className += ' invalid';
+
+                                return false;
+                            }
+                            document.getElementById('prePostSelect').classList.remove('invalid');
+
+                            return true;
+                        },
+                        messageId: 'MsgB_30'
+                    }
+                }
+            }
+        },
         date: {
-            required: true  
+            required: true
         },
         dateRange: {
             required: true,
@@ -19,7 +39,7 @@ import { component, Prop, Watch } from '@app/core/component';
 })
 export class KafS00BComponent extends Vue {
     @Prop({ default: () => ({}) })
-    public params: { 
+    public params: {
         // KAFS00_B_起動情報
         input: {
             // 画面モード
@@ -67,6 +87,8 @@ export class KafS00BComponent extends Vue {
         };
         if (self.$input.newModeContent.appTypeSetting.displayInitialSegment != 2) {
             self.$output.prePostAtr = self.$input.newModeContent.appTypeSetting.displayInitialSegment;
+        } else {
+            self.$output.prePostAtr = null;
         }
         if (self.$input.newModeContent) {
             if (self.$input.newModeContent.initSelectMultiDay) {
@@ -79,7 +101,7 @@ export class KafS00BComponent extends Vue {
         }
         if (self.$input.detailModeContent) {
             self.$updateValidator('dateRange', { validate: false });
-            self.$updateValidator('date', { validate: false });    
+            self.$updateValidator('date', { validate: false });
         }
     }
 
@@ -119,7 +141,7 @@ export class KafS00BComponent extends Vue {
 
     get prePostAtrName() {
         const self = this;
-        
+
         return _.find(self.prePostResource, (o: any) => o.code == self.$input.detailModeContent.prePostAtr).text;
     }
 
@@ -133,21 +155,21 @@ export class KafS00BComponent extends Vue {
             self.$updateValidator('dateRange', { validate: false });
             self.$updateValidator('date', { validate: true });
         }
-    } 
+    }
 
     @Watch('date')
     public dateWatcher() {
         const self = this;
         self.$output.startDate = self.date;
         self.$output.endDate = self.date;
-    } 
+    }
 
     @Watch('dateRange')
     public dateRangeWatcher() {
         const self = this;
         self.$output.startDate = self.dateRange.start;
         self.$output.endDate = self.dateRange.end;
-    } 
+    }
 }
 
 // 画面モード
@@ -181,5 +203,5 @@ interface DetailModeContent {
     // 申請開始日
     startDate: string;
     // 申請終了日
-    endDate: string;       
+    endDate: string;
 }
