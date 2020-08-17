@@ -305,7 +305,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				output.setPrePostAtr(PrePostInitAtr.PREDICT);
 			} else  {
 				// 3.事前事後の判断処理(事前事後非表示する場合)
-				PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(appType, dateLst.get(0), opOvertimeAppAtr.get());
+				PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(appType, dateLst.get(0), opOvertimeAppAtr.get(), advanceReceptionHours);
 				output.setPrePostAtr(EnumAdaptor.valueOf(prePostAtrJudgment.value, PrePostInitAtr.class));
 			}
 		} else {
