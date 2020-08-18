@@ -825,4 +825,9 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		return Optional.of(krqdtApplicationLst.get(0));
 	}
 
+	@Override
+	public List<Application> getByAppTypeList(List<ApplicationType> appTypeLst) {
+		return Collections.emptyList();
+	}
+
 }

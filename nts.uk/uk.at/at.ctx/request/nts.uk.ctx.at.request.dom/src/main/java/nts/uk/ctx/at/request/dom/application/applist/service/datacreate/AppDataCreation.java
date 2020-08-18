@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
-import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 
 /**
@@ -30,7 +30,7 @@ public interface AppDataCreation {
 	 * @param appListExtractCondition
 	 * @return
 	 */
-	public AppListInfo createAppLstData(String companyID, List<ListOfApplication> appLst, DatePeriod period, ApplicationListAtr mode, 
+	public AppListInfo createAppLstData(String companyID, List<Application> appLst, DatePeriod period, ApplicationListAtr mode, 
 			Map<String,List<ApprovalPhaseStateImport_New>> mapApproval, int device, AppListExtractCondition appListExtractCondition, 
 			AppListInfo appListInfo);
 	

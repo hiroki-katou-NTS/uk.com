@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.applist.service.datacreate;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,12 +12,15 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
+import nts.uk.ctx.at.request.dom.application.applist.service.AppInfoMasterOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppListInitialRepository;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationStatus;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
@@ -49,7 +53,7 @@ public class AppDataCreationImpl implements AppDataCreation {
 	private static final int MOBILE = 1;
 
 	@Override
-	public AppListInfo createAppLstData(String companyID, List<ListOfApplication> appLst, DatePeriod period,
+	public AppListInfo createAppLstData(String companyID, List<Application> appLst, DatePeriod period,
 			ApplicationListAtr mode, Map<String, List<ApprovalPhaseStateImport_New>> mapApproval, int device,
 			AppListExtractCondition appListExtractCondition, AppListInfo appListInfo) {
 		// ドメインモデル「承認一覧表示設定」を取得する
@@ -65,9 +69,15 @@ public class AppDataCreationImpl implements AppDataCreation {
 			// 勤怠名称を取得 ( Lấy tên working time)
 		}
 		
-		for(ListOfApplication app : appLst) {
+		Map<String, SyEmployeeImport> mapEmpInfo = new HashMap<>();
+		for(Application app : appLst) {
 			// 申請一覧リスト取得マスタ情報 ( Thông tin master lấy applicationLisst)
-			
+			AppInfoMasterOutput appInfoMasterOutput = appListInitialRepository.getListAppMasterInfo(
+					app, 
+					period, 
+					opApprovalListDisplaySetting.get().getDisplayWorkPlaceName(), 
+					mapEmpInfo, 
+					device);
 			// 各申請データを作成 ( Tạo data tên application)
 			ListOfApplication listOfApp = null;
 			// 

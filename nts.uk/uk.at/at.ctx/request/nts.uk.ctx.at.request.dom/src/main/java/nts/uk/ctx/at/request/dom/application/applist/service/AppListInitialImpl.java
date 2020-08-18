@@ -216,7 +216,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		String companyID = AppContexts.user().companyId();
 		// アルゴリズム「申請一覧対象申請者取得」を実行する
 		ListApplicantOutput checkMySelf = this.getListApplicantForListApp(param);
-		List<ListOfApplication> appLst = new ArrayList<>();
+		List<Application> appLst = new ArrayList<>();
 		boolean condition = param.getOpListOfAppTypes().map(x -> {
 			return !x.stream().filter(y -> !y.isChoice()).findAny().isPresent();
 		}).orElse(true);
@@ -226,14 +226,14 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			for(ApplicationType appType : ApplicationType.values()) {
 				allAppTypeLst.add(appType);
 			} 
-			appLst = this.getByAppTypeList(allAppTypeLst);
+			appLst = repoApp.getByAppTypeList(allAppTypeLst);
 		} else {
 			// ドメインモデル「申請」を取得する
 			List<ApplicationType> appTypeLst = param.getOpListOfAppTypes().map(x -> {
 				return x.stream().filter(y -> y.isChoice())
 						.map(y -> y.getAppType()).collect(Collectors.toList());
 			}).orElse(Collections.emptyList());
-			appLst = this.getByAppTypeList(appTypeLst);
+			appLst = repoApp.getByAppTypeList(appTypeLst);
 		}
 		// 承認ルートの内容取得
 		Map<String,List<ApprovalPhaseStateImport_New>> mapResult = approvalRootStateAdapter.getApprovalRootContents(
@@ -2085,8 +2085,4 @@ public class AppListInitialImpl implements AppListInitialRepository{
 //		return comSet.isPresent() ? comSet.get().getListApprovalFunctionSetting() : new ArrayList<>();
 //		return Collections.emptyList();
 //	}
-	
-	private List<ListOfApplication> getByAppTypeList(List<ApplicationType> appTypeLst) {
-		return Collections.emptyList();
-	}
 }

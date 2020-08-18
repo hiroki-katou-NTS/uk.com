@@ -178,4 +178,6 @@ public interface ApplicationRepository {
 	 * @return
 	 */
 	public Optional<Application> findByID(String appID);
+	
+	public List<Application> getByAppTypeList(List<ApplicationType> appTypeLst);
 }
