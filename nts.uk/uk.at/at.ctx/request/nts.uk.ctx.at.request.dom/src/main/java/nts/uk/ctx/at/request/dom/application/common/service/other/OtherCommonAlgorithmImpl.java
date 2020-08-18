@@ -22,7 +22,6 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailContents;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
@@ -48,19 +47,17 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.C
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.BeforeAddCheckMethod;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.OTAppBeforeAccepRestric;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.Division;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReason;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -86,11 +83,6 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	
 	@Inject
 	private EmployeeRequestAdapter employeeAdaptor;
-//	@Inject
-//	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepo;
-	
-	@Inject
-	private ApplicationSettingRepository appSettingRepo;
 	
 	@Inject
 	private WorkTimeWorkplaceRepository workTimeWorkplaceRepo;
@@ -107,8 +99,6 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	private AbsenceLeaveAppRepository absRepo;
 	@Inject
 	private CompltLeaveSimMngRepository compLeaveRepo;
-	@Inject
-	private RequestSettingRepository requestSettingRepository;
 	
 	@Inject
 	private MailSender mailsender;
@@ -124,8 +114,6 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	
 	@Inject
 	private IApplicationContentService applicationContentService;
-	@Inject
-	private CollectAchievement collectAch;
 	@Inject
 	private WorkTypeIsClosedService workTypeRepo;
 	
@@ -149,15 +137,6 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	
 //	@Inject
 //	private ApplicationReasonRepository applicationReasonRepository;
-	
-	@Inject
-	private ApplicationRepository applicationRepository;
-	
-	@Inject
-	private OvertimeRepository overtimeRepository;
-	
-	@Inject
-	private OvertimeInputRepository overtimeInputRepository;
 	
 	@Inject
 	private WorkTimeSettingRepository workTimeRepository;
@@ -220,7 +199,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 
 	@Override
 	public PrePostAtr preliminaryJudgmentProcessing(ApplicationType appType, GeneralDate appDate, OvertimeAppAtr overtimeAppAtr,
-			AttendanceClock advanceReceptionHours) {
+			OTAppBeforeAccepRestric otAppBeforeAccepRestric) {
 		// 申請対象日とシステム日付を比較する
 		GeneralDate systemDate = GeneralDate.today();
 		if(appDate.after(systemDate)) {
@@ -236,14 +215,31 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			// 事前事後区分=事後
 			return PrePostAtr.POSTERIOR;
 		}
-		// INPUT.事前受付時分をチェックする
-		if(advanceReceptionHours == null) {
+		// INPUT.残業申請事前の受付制限．チェック方法をチェックする
+		if(otAppBeforeAccepRestric.getMethodCheck() == BeforeAddCheckMethod.CHECK_IN_DAY) {
 			// 事前事後区分=事後 
 			return PrePostAtr.POSTERIOR;
 		}
-		// システム日時とINPUT.事前受付時分と比較する
+		AttendanceClock compareTime = null;
+		switch(overtimeAppAtr){
+		case EARLY_OVERTIME:
+			// 受付制限日時＝　INPUT.「残業申請事前の受付制限」．時刻（早出残業）
+			compareTime = otAppBeforeAccepRestric.getOpEarlyOvertime().get();
+			break;
+		case NORMAL_OVERTIME:
+			// 受付制限日時＝　INPUT.「残業申請事前の受付制限」．時刻（通常残業）
+			compareTime = otAppBeforeAccepRestric.getOpNormalOvertime().get();
+			break;
+		case EARLY_NORMAL_OVERTIME:
+			// 受付制限日時＝　INPUT.「残業申請事前の受付制限」．時刻（早出残業・通常残業）
+			compareTime = otAppBeforeAccepRestric.getOpEarlyNormalOvertime().get();
+			break;
+		default:
+			break;
+		}
+		// システム日時と受付制限日時と比較する
 		ClockHourMinute systemTime = ClockHourMinute.now();
-		if(systemTime.v() > advanceReceptionHours.v()) {
+		if(systemTime.v() > compareTime.v()) {
 			// 事前事後区分=事後 
 			return PrePostAtr.POSTERIOR;
 		}
