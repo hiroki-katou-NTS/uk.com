@@ -54,9 +54,9 @@
     <table v-focus class="table mt-3 table-bordered uk-table-striped">
       <thead>
         <tr>
-          <th scope="col">{{ "KDPS01_61" | i18n }}</th>
-          <th scope="col">{{ "KDPS01_62" | i18n }}</th>
-          <th scope="col">{{ "KDPS01_63" | i18n }}</th>
+          <th class="text-center" scope="col">{{ "KDPS01_61" | i18n }}</th>
+          <th class="text-center" scope="col">{{ "KDPS01_62" | i18n }}</th>
+          <th class="text-center" scope="col">{{ "KDPS01_63" | i18n }}</th>
         </tr>
       </thead>
       <tbody>
