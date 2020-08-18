@@ -23,94 +23,97 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * The Class KscdtScheExeContent.
  */
+//Entity: スケジュール作成内容
+
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCDT_SCHE_EXE_CONTENT")
+@Table(name = "KSCDT_BATCH_CONTENT")
 public class KscdtScheExeContent extends UkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
-    
+
     /** The exe id. */
     @Id
     @Basic(optional = false)
     @NotNull
     @Column(name = "EXE_ID")
     private String exeId;
-    
-    /** The confirm. */
+
+    /** 排他バージョン */
+    @NotNull
+    @Column(name = "EXCLUS_VER")
+    private Integer exclusVer;
+
+    /** 契約コード */
+    @NotNull
+    @Column(name = "CONTRACT_CD")
+    private String contractCD;
+
+    /** 会社ID */
+    @NotNull
+    @Column(name = "CID")
+    private String companyId;
+
+    /** 確定済みにする */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "CONFIRM")
-    private Integer confirm;
-    
-    /** The implement atr. */
+    @Column(name = "BE_CONFIRMED")
+    private Boolean beConfirmed;
+
+    /** 作成種類 */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "IMPLEMENT_ATR")
-    private Integer implementAtr;
+    @Column(name = "CREATION_TYPE")
+    private Integer creationType;
+    
+    /** 作成方法 */
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "CREATION_METHOD")
+    private Integer creationMethod;
     
     /** The copy start ymd. */
     @Column(name = "COPY_START_YMD")
     @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate copyStartYmd;
     
-    /** The create method atr. */
-    @Column(name = "CREATE_METHOD_ATR")
-    private Integer createMethodAtr;
+    /** 作成方法参照先 */
+    @Column(name = "REFERENCE_MASTER")
+    private Integer referenceMaster;
     
-    /** The re create atr. */
-    @Column(name = "RE_CREATE_ATR")
-    private Integer reCreateAtr;
-    
-    /** The process exe atr. */
-    @Column(name = "PROCESS_EXE_ATR")
-    private Integer processExeAtr;
-    
-    /** The re target atr. */
+    /** 月間パターンコード */
+    @Column(name = "MONTHLY_PATTERN_CD")
+    private String monthlyPatternId;
+
+    /** 再作成者を限定するか */
     @Column(name = "RE_TARGET_ATR")
-    private Integer reTargetAtr;
+    private Boolean reTargetAtr;
     
-    /** The re converter. */
-    @Column(name = "RE_CONVERTER")
-    private Integer reConverter;
+    /** 異動者のみ再作成するか */
+    @Column(name = "RE_TARGET_TRANSFER")
+    private Boolean reTargetTransfer;
     
-    /** The re emp off work. */
-    @Column(name = "RE_EMP_OFF_WORK")
-    private Integer reEmpOffWork;
+    /** 休職休業者のみ再作成するか	 */
+    @Column(name = "RE_TARGET_LEAVE")
+    private Boolean reTargetLeave;
     
-    /** The re direct bouncer. */
-    @Column(name = "RE_DIRECT_BOUNCER")
-    private Integer reDirectBouncer;
+    /** 短時間勤務者のみ再作成するか */
+    @Column(name = "RE_TARGET_SHORT_WORK")
+    private Boolean reTargetShortWork;
     
-    /** The re short term emp. */
-    @Column(name = "RE_SHORT_TERM_EMP")
-    private Integer reShortTermEmp;
+    /** 労働条件変更者のみ再作成するか*/
+    @Column(name = "RE_TARGET_LABOR_CHANGE")
+    private Boolean reTargetLaborChange;
     
-    /** The re work type change. */
-    @Column(name = "RE_WORK_TYPE_CHANGE")
-    private Integer reWorkTypeChange;
+    /** 確定済みも再作成するか */
+    @Column(name = "RE_OVERWRITE_CONFIRMED")
+    private Boolean reOverwriteConfirmed;
     
-    /** The re protect hand correct. */
-    @Column(name = "RE_PROTECT_HAND_CORRECT")
-    private Integer reProtectHandCorrect;
-    
-    /** The re working hours. */
-    @Column(name = "RE_WORKING_HOURS")
-    private Integer reWorkingHours;
-    
-    /** The re start-end time. */
-    @Column(name = "RE_START_END_TIME")
-    private Integer reStartEndTime;
-    
-    /** The re master info. */
-    @Column(name = "RE_MASTER_INFO")
-    private Integer reMasterInfo;
-    
-    /** The re time assignment. */
-    @Column(name = "RE_TIME_ASSIGNMENT")
-    private Integer reTimeAssignment;
+    /** 手修正・申請反映した日も再作成するか*/
+    @Column(name = "RE_OVERWRITE_REVISED")
+    private Boolean reOverwriteRevised;
 
     /**
      * Instantiates a new kscmt sch create content.

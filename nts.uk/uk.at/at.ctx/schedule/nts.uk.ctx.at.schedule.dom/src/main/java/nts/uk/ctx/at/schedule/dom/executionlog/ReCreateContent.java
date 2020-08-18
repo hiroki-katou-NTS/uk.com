@@ -40,11 +40,12 @@ public class ReCreateContent extends DomainObject {
 	 * @return the re create content
 	 */
 	public ReCreateContent(ScheduleCreateContentGetMemento memento) {
-		this.reCreateAtr = memento.getReCreateAtr();
-		this.processExecutionAtr = memento.getProcessExecutionAtr();
-		this.resetAtr = new ResetAtr(memento);
-		this.rebuildTargetAtr = memento.getRebuildTargetAtr();
-		this.rebuildTargetDetailsAtr = new RebuildTargetDetailsAtr(memento);
+		//TODO Sua domain: スケジュール作成内容 se tiep tuc khi co tai lieu moi cua man ksc001
+//		this.reCreateAtr = memento.getReCreateAtr();
+//		this.processExecutionAtr = memento.getProcessExecutionAtr();
+//		this.resetAtr = new ResetAtr(memento);
+//		this.rebuildTargetAtr = memento.getRebuildTargetAtr();
+//		this.rebuildTargetDetailsAtr = new RebuildTargetDetailsAtr(memento);
 	}
 
 	/**
@@ -54,11 +55,12 @@ public class ReCreateContent extends DomainObject {
 	 *            the memento
 	 */
 	public void saveToMemento(ScheduleCreateContentSetMemento memento) {
-		memento.setReCreateAtr(this.reCreateAtr);
-		memento.setProcessExecutionAtr(this.processExecutionAtr);
-		this.resetAtr.saveToMemento(memento);
-		memento.setRebuildTargetAtr(this.rebuildTargetAtr);
-		this.rebuildTargetDetailsAtr.saveToMemento(memento);
+		//TODO Sua domain: スケジュール作成内容 se tiep tuc khi co tai lieu moi cua man ksc001
+//		memento.setReCreateAtr(this.reCreateAtr);
+//		memento.setProcessExecutionAtr(this.processExecutionAtr);
+//		this.resetAtr.saveToMemento(memento);
+//		memento.setRebuildTargetAtr(this.rebuildTargetAtr);
+//		this.rebuildTargetDetailsAtr.saveToMemento(memento);
 	}
 
 	public void setReCreateAtr(ReCreateAtr reCreateAtr) {

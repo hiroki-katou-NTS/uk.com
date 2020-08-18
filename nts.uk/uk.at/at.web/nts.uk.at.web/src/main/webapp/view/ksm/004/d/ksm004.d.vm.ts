@@ -12,13 +12,13 @@ module ksm004.d.viewmodel {
 
         // select day
         workdayGroup: KnockoutObservableArray<any>;
-        selectedMon: KnockoutObservable<number>;
-        selectedTue: KnockoutObservable<number>;
-        selectedWed: KnockoutObservable<number>;
-        selectedThu: KnockoutObservable<number>;
-        selectedFri: KnockoutObservable<number>;
-        selectedSat: KnockoutObservable<number>;
-        selectedSun: KnockoutObservable<number>;
+        selectedMon: KnockoutObservable<number> = ko.observable(0);
+        selectedTue: KnockoutObservable<number> = ko.observable(0);
+        selectedWed: KnockoutObservable<number> = ko.observable(0);
+        selectedThu: KnockoutObservable<number> = ko.observable(0);
+        selectedFri: KnockoutObservable<number> = ko.observable(0);
+        selectedSat: KnockoutObservable<number> = ko.observable(0);
+        selectedSun: KnockoutObservable<number> = ko.observable(0);
         //date,workingDayAtr
         date: KnockoutObservable<number>;
         workingDayAtr: KnockoutObservable<number>;
@@ -29,21 +29,22 @@ module ksm004.d.viewmodel {
         //list 
         list: KnockoutObservableArray<any>;
         //list holiday
-        listHoliday: KnockoutObservableArray<Holiday>;
-        itemHoliday: KnockoutObservable<Holiday>;
+        listHoliday: KnockoutObservableArray<model.Holiday>;
+        itemHoliday: KnockoutObservable<model.Holiday>;
         //date value
         dateValue: KnockoutObservable<any>;
+
         constructor() {
-            var self = this;
+            const self = this;
             //start and end month
             //get data Form : A
-            let param: IData = nts.uk.ui.windows.getShared('KSM004_D_PARAM') || { classification: 0, yearMonth: 20170101, workPlaceId: null, classCD: null };
-            
+            let param: model.IData = nts.uk.ui.windows.getShared('KSM004_D_PARAM') || { classification: 0, yearMonth: 20170101, workPlaceId: null, classCD: null };
+
             //date value
             self.dateValue = ko.observable({startDate: param.yearMonth.toString(), endDate: param.yearMonth.toString()});
             self.startMonth = ko.observable(self.dateValue().startDate);
             self.endMonth = ko.observable(self.dateValue().endDate);
-            
+
             //classId
             self.classId = ko.observable(param.classCD);
             //workPlaceId
@@ -64,27 +65,59 @@ module ksm004.d.viewmodel {
                 { code: 2, name: nts.uk.resource.getText('KSM004_48') }
             ]);
             // day
-            self.selectedMon = ko.observable(0);
-            self.selectedTue = ko.observable(0);
-            self.selectedWed = ko.observable(0);
-            self.selectedThu = ko.observable(0);
-            self.selectedFri = ko.observable(0);
-            self.selectedSat = ko.observable(2);
-            self.selectedSun = ko.observable(1);
+            // self.selectedMon = ko.observable(0);
+            // self.selectedTue = ko.observable(0);
+            // self.selectedWed = ko.observable(0);
+            // self.selectedThu = ko.observable(0);
+            // self.selectedFri = ko.observable(0);
+            // self.selectedSat = ko.observable(2);
+            // self.selectedSun = ko.observable(1);
 
-            //list 
+            //list
             self.list = ko.observableArray(null);
 
             //list holiday
             self.listHoliday = ko.observableArray(null);
             self.itemHoliday = ko.observable(null);
+
         }//end constructor
 
         /**
         * function startPage
         */
-        startPage() {
+        startPage(): JQueryPromise<any> {
+            const self = this;
+            var dfd = $.Deferred();
+            service.getWeeklyWorkDay().done(function(data){
+                data.workdayPatternItemDtoList.forEach(item => {
+                    switch (item.dayOfWeek) {
+                        case 1:
+                            self.selectedMon(Number(item.workdayDivision));
+                            break;
+                        case 2:
+                            self.selectedTue(item.workdayDivision);
+                            break;
+                        case 3:
+                            self.selectedWed (item.workdayDivision);
+                            break;
+                        case 4:
+                            self.selectedThu (item.workdayDivision);
+                            break;
+                        case 5:
+                            self.selectedFri(item.workdayDivision);
+                            break;
+                        case 6:
+                            self.selectedSat(item.workdayDivision);
+                            break;
+                        case 7:
+                            self.selectedSun(item.workdayDivision);
+                            break;
+                    }
+                });
+                dfd.resolve();
 
+            });
+            return dfd.promise();
         }//end startPage
 
         /**
@@ -102,7 +135,7 @@ module ksm004.d.viewmodel {
             endYM.add(1, 'M');
             
             //$('.nts-input').trigger("validate");
-            _.defer(() => {
+            _.defer(() => {月間パターン
                 if (!$('.nts-editor').ntsError("hasError")) {
                     // startYM < endYM
                         while (startYM.format("YYYYMMDD") < endYM.format("YYYYMMDD")) //value : 0-11
@@ -128,7 +161,7 @@ module ksm004.d.viewmodel {
                             // if D3_2 : workingDayAtr = 0
                             if (self.workingDayAtr() == 0 && self.checkHoliday() == true) {
                                 //get holiday by date in list
-                                let holiday = _.find(self.listHoliday(), function(item: Holiday) {
+                                let holiday = _.find(self.listHoliday(), function(item: model.Holiday) {
                                     return item.date == moment(date).format("YYYY/MM/DD");
                                 });
                                 //kt xem co chon check ngay nghỉ    
@@ -184,6 +217,19 @@ module ksm004.d.viewmodel {
                 });
             });
         }//end decition
+
+        // /**
+        //  * get weekly work day : return weekly work day
+        //  */
+        // getWeeklyWorkDay() {
+        //     var self = this;
+        //     var dfd = $.Deferred<any>();
+        //     service.getWeeklyWorkDay().done(function(data) {
+        //         console.log(data);
+        //         dfd.resolve(data);
+        //     });
+        //     return dfd.promise();
+        // }
 
         /**
          * get all holiday : return listHoliday
@@ -340,7 +386,20 @@ module ksm004.d.viewmodel {
                 this.holidayName = holidayName;
             }
         }
-        interface IData {
+
+        //interface WorkdayPatternItem
+        export interface WeeklyWorkDay {
+            companyId: string;
+            listWorkdayPatternItem: Array<WorkdayPatternItem>
+        }
+
+        //interface WorkdayPatternItem
+        interface WorkdayPatternItem {
+            dayOfWeek: number;
+            workdayDivision: number;
+        }
+
+        export interface IData {
             classification: number,
             yearMonth: number,
             workPlaceId: string,
