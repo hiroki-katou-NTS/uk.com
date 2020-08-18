@@ -1,14 +1,17 @@
 package nts.uk.ctx.hr.shared.infra.repository.personalinformation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformation;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformationRepository;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.GetPersonInfoHRInput;
@@ -36,7 +39,7 @@ public class JpaPersonalInformationRepository extends JpaRepository implements P
 			+ " AND a.startDate <= baseDate AND s.endDate >= baseDate ";
 	
 	public static final String GET_PERSONAL_INFO_BY_QUALIFICATION_ID = "SELECT a FROM PpedtData a WHERE a.cId = :cId"
-			+ " AND a.selectId01 IN :qualificationId" + " AND a.workId = :workId"
+			+ " AND a.selectId01 IN :qualificationIds" + " AND a.workId = :workId"
 			+ " AND a.startDate <= baseDate AND s.endDate >= baseDate ";
 	
 
@@ -160,4 +163,9 @@ public class JpaPersonalInformationRepository extends JpaRepository implements P
 		return ppedtDatas.stream().map(m -> m.toDomain(m)).collect(Collectors.toList());
 	}
 
+	@Override
+	public List<PersonalInformation> getLstPersonInfoByQualificationIds(String cId, List<String> qualificationIds,
+			int workId, GeneralDate baseDate) {
+		return null;
+	}
 }

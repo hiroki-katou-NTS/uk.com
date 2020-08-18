@@ -30,4 +30,6 @@ public interface PersonalInformationRepository {
 	List<PersonalInformation> getDispatchedInfoByStr10s(String contractCd, String cId, GeneralDate baseDate);
 	
 	List<PersonalInformation> getLstPersonInfoByCIdSIdsWorkId (String cId, List<String> sids, int workId, GeneralDate baseDate);
+	
+	List<PersonalInformation> getLstPersonInfoByQualificationIds(String cId, List<String> qualificationIds, int workId, GeneralDate baseDate);
 }
