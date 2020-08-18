@@ -48,7 +48,7 @@ module nts.uk.at.kmr001.b {
             vm.$blockui("invisible");
             vm.$ajax(API.GET_BENTO_RESERVATION).done((data: Reservation) => {
                 vm.$blockui("clear");
-                vm.model(new Reservation(Number(data.operationDistinction), Number(data.referenceTime), Number(data.contentChangeDeadline), Number(data.contentChangeDeadlineDay), Number(data.orderDeadline),
+                vm.model(new Reservation(Number(data.operationDistinction), Number(data.referenceTime), data.contentChangeDeadline ? Number(data.contentChangeDeadline) : 0, Number(data.contentChangeDeadlineDay), Number(data.orderDeadline),
                     Number(data.monthlyResults), Number(data.dailyResults), data.reservationFrameName1.toString(), Number(data.reservationStartTime1), Number(data.reservationEndTime1), data.reservationFrameName2.toString(), Number(data.reservationStartTime2),
                     Number(data.reservationEndTime2), Number(data.orderedData)));
             }).always(() => this.$blockui("clear"));
@@ -74,7 +74,9 @@ module nts.uk.at.kmr001.b {
                 start2 : vm.model().reservationStartTime2()
             };
             vm.$ajax(API.ADD_BENTO_RESERVATION, dataRegister).done(() => {
-                vm.$blockui("clear")
+                vm.$dialog.info({ messageId: "Msg_15" }).then(function () {
+                    vm.$blockui("clear");
+                });
             }).always(() => this.$blockui("clear"));
             
         }
