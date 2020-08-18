@@ -3,13 +3,13 @@
 module nts.uk.at.kmr001.b {
 
 	const API = {
-        GET_BENTO_RESERVATION: 'screen/at/record/reservation/bento_menu/getBentoMenu'
-
+        GET_BENTO_RESERVATION: 'screen/at/record/reservation/bento_menu/getBentoMenu',
+        ADD_BENTO_RESERVATION: 'bento/bentomenusetting/add'
     };
 
 	const PATH = {
 	    REDIRECT: '/view/ccg/008/a/index.xhtml'
-    }
+    };
 
 	@bean()
 	class ViewModel extends ko.ViewModel {
@@ -19,8 +19,8 @@ module nts.uk.at.kmr001.b {
         selectedCode: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
-        model : KnockoutObservable<Reservation> = ko.observable(new Reservation(1,100,0,0,0,0,0,0,0,0,
-            'jiji',0,0,0));
+        model : KnockoutObservable<Reservation> = ko.observable(new Reservation(1,100,0,0,0,0,0,'name1',0,0,
+            'name2',0,0,0));
 
         constructor() {
         	super();
@@ -45,21 +45,38 @@ module nts.uk.at.kmr001.b {
 		}
         mounted() {
             const vm = this;
-            this.$blockui("invisible");
+            vm.$blockui("invisible");
             vm.$ajax(API.GET_BENTO_RESERVATION).done((data: Reservation) => {
-                this.$blockui("clear");
-                const vm = this;
-                console.log(data);
+                vm.$blockui("clear");
                 vm.model(new Reservation(Number(data.operationDistinction), Number(data.referenceTime), Number(data.contentChangeDeadline), Number(data.contentChangeDeadlineDay), Number(data.orderDeadline),
                     Number(data.monthlyResults), Number(data.dailyResults), data.reservationFrameName1.toString(), Number(data.reservationStartTime1), Number(data.reservationEndTime1), data.reservationFrameName2.toString(), Number(data.reservationStartTime2),
                     Number(data.reservationEndTime2), Number(data.orderedData)));
-                console.log(vm.model)
             }).always(() => this.$blockui("clear"));
         }
 
-        registerBento() {
+        registerBentoReserveSetting() {
             const vm = this;
-            console.log(vm)
+            vm.$blockui("invisible");
+            const dataRegister = {
+                perationDistinction : vm.model().operationDistinction(),
+                referenceTime : vm.model().referenceTime(),
+                dailyResults : vm.model().dailyResults(),
+                monthlyResults : vm.model().monthlyResults(),
+                contentChangeDeadline : vm.model().contentChangeDeadline(),
+                contentChangeDeadlineDay : vm.model().contentChangeDeadlineDay(),
+                orderedData : vm.model().orderedData(),
+                orderDeadline : vm.model().orderDeadline(),
+                name1 : vm.model().reservationFrameName1(),
+                end1 : vm.model().reservationEndTime1(),
+                start1 : vm.model().reservationStartTime1(),
+                name2 : vm.model().reservationFrameName2(),
+                end2 : vm.model().reservationEndTime2(),
+                start2 : vm.model().reservationStartTime2()
+            };
+            vm.$ajax(API.ADD_BENTO_RESERVATION, dataRegister).done(() => {
+                vm.$blockui("clear")
+            }).always(() => this.$blockui("clear"));
+            
         }
 
 	}
