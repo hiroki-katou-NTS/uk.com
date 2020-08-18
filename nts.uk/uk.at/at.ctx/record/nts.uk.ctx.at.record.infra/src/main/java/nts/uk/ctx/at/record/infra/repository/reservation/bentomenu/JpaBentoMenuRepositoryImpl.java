@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.record.infra.repository.reservation.bentomenu;
 
+import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,7 +16,7 @@ import javax.ejb.TransactionAttributeType;
 
 import lombok.val;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenu;
 import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenuPK;
 import org.apache.logging.log4j.util.Strings;
@@ -97,7 +99,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		public Integer reservationEndTime2;
 		public GeneralDate startDate;
 		public GeneralDate endDate;
-		public int frameNo;
+		public Integer frameNo;
 		public String bentoName;
 		public String unitName;
 		public int price1;
@@ -107,7 +109,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		public String workLocationCode;
 
 	}
-	
+
 	@SneakyThrows
 	private List<FullJoinBentoMenu> createFullJoinBentoMenu(ResultSet rs){
 		List<FullJoinBentoMenu> listFullData = new ArrayList<>();
@@ -123,12 +125,12 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 					Strings.isBlank(rs.getString("RESERVATION_FRAME2_START_TIME")) ? null :  Integer.valueOf(rs.getString("RESERVATION_FRAME2_START_TIME")),
 					Strings.isBlank(rs.getString("RESERVATION_FRAME2_END_TIME")) ? null :  Integer.valueOf(rs.getString("RESERVATION_FRAME2_END_TIME")),
 					GeneralDate.fromString(rs.getString("START_YMD"), DATE_FORMAT),
-					GeneralDate.fromString(rs.getString("END_YMD"), DATE_FORMAT), 
-					Integer.valueOf(rs.getString("MENU_FRAME")), 
-					rs.getString("BENTO_NAME"), 
-					rs.getString("UNIT_NAME"), 
-					Integer.valueOf(rs.getString("PRICE1")), 
-					Integer.valueOf(rs.getString("PRICE2")), 
+					GeneralDate.fromString(rs.getString("END_YMD"), DATE_FORMAT),
+					Strings.isBlank(rs.getString("MENU_FRAME")) ? null : Integer.valueOf(rs.getString("MENU_FRAME")),
+					rs.getString("BENTO_NAME"),
+					rs.getString("UNIT_NAME"),
+					Integer.valueOf(rs.getString("PRICE1")),
+					Integer.valueOf(rs.getString("PRICE2")),
 					"0".equals(rs.getString("RESERVATION1_ATR")) ? false : true,
 				    "0".equals(rs.getString("RESERVATION2_ATR")) ? false : true,
 					rs.getString("WORK_LOCATION_CD")));
@@ -234,13 +236,22 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		query = query.replaceFirst("companyID", companyID);
 		query = query.replaceAll("startDate", period.start().toString());
 		query = query.replaceAll("endDate", period.end().toString());
-		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
-			ResultSet rs = stmt.executeQuery();
-			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));
-			return bentoMenuLst;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
+		return getBentoMenus(query);
+	}
+
+	@Override
+	public List<BentoMenu> getBentoMenu(String companyID, GeneralDate date, ReservationClosingTimeFrame reservationClosingTimeFrame) {
+		String query = FIND_BENTO_MENU_DATE;
+
+		if (reservationClosingTimeFrame == ReservationClosingTimeFrame.FRAME1) {
+			query += " AND a.RESERVATION_FRAME1_START_TIME IS NOT NULL ";
+		} else {
+			query += " AND a.RESERVATION_FRAME2_START_TIME IS NOT NULL ";
 		}
+
+		query = query.replaceFirst("companyID", companyID);
+		query = query.replaceAll("date", date.toString());
+		return getBentoMenus(query);
 	}
 
 	@Override
@@ -256,7 +267,16 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		String query = FIND_BENTO_MENU_BY_ENDATE;
 		query = query.replaceFirst("companyID", companyID);
 		query = query.replaceFirst("date", date.toString());
-		return getBentoMenu(query);
+        try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));
+            if(bentoMenuLst.isEmpty()){
+                return null;
+            }
+            return bentoMenuLst.get(0);
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
 	}
 
 	private BentoMenu getBentoMenu(String query) {
@@ -267,6 +287,16 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 				throw new BusinessException("Msg_1604");
 			}
 			return bentoMenuLst.get(0);
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
+	private List<BentoMenu> getBentoMenus(String query) {
+		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+			ResultSet rs = stmt.executeQuery();
+			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));
+			return bentoMenuLst;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
 		}
@@ -286,5 +316,4 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 	public void delete(String companyId, String historyId) {
 		this.commandProxy().remove(KrcmtBentoMenu.class, new KrcmtBentoMenuPK(companyId, historyId));
 	}
-
 }

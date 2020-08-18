@@ -14,34 +14,34 @@ public class BentoReserveSettingCommand {
 
     /** param : 予約の運用区別
      */
-    private int operationDistinction;
+    int operationDistinction;
 
-    private int referenceTime;
-    private int dailyResults;
-    private int monthlyResults;
+    int referenceTime;
+    int dailyResults;
+    int monthlyResults;
 
-    private int contentChangeDeadline;
-    private int contentChangeDeadlineDay;
-    private int orderedData;
-    private int orderDeadline;
+    int contentChangeDeadline;
+    int contentChangeDeadlineDay;
+    int orderedData;
+    int orderDeadline;
 
-    private String name1;
-    private int end1;
-    private int start1;
-    private String name2;
-    private int end2;
-    private int start2;
+    String name1;
+    int end1;
+    int start1;
+    String name2;
+    int end2;
+    int start2;
 
 //    /** param : 実績集計
 //     */
-//    private AchievementValueObject achievements;
+//    AchievementValueObject achievements;
 //
 //    /** param : 予約修正内容
 //     */
-//    private CorrectionContentValueObject correctionContent;
+//    CorrectionContentValueObject correctionContent;
 //
 //    /** param : 予約締め時刻
 //     */
-//    private ClosingTimeValueObject closingTime;
+//    ClosingTimeValueObject closingTime;
 
 }

@@ -3,6 +3,7 @@ package nts.uk.file.at.app.export.bento;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.BentoReservationSearchConditionDto;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.OrderInfoDto;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
@@ -23,13 +24,13 @@ public class OrderInfoExportExcelService extends ExportService<CreateOrderInfoDa
     protected void handle(ExportServiceContext<CreateOrderInfoDataSource> exportServiceContext) {
         CreateOrderInfoDataSource dataSource = exportServiceContext.getQuery();
         OrderInfoDto dataGenerator = getGeneratorData(dataSource);
-        if(dataSource.getWorkplaceCodes().isEmpty())
+        if(CollectionUtil.isEmpty(dataSource.getWorkLocationCodes()))
             isWorkLocationExport = false;
         generator.generate(exportServiceContext.getGeneratorContext(),new OrderInfoExportData(dataGenerator,
                 dataSource.isBreakPage(), isWorkLocationExport, dataSource.getReservationTimeZone(), OutputExtension.EXCEL));
     }
 
-    public OrderInfoDto getGeneratorData(CreateOrderInfoDataSource dataSource){
+    private OrderInfoDto getGeneratorData(CreateOrderInfoDataSource dataSource){
         Optional<BentoReservationSearchConditionDto> totalExtractCondition = dataSource.getTotalExtractCondition() > -1
                 ?  Optional.of(EnumAdaptor.valueOf(dataSource.getTotalExtractCondition(), BentoReservationSearchConditionDto.class)) : Optional.empty();
         Optional<BentoReservationSearchConditionDto> itemExtractCondition = dataSource.getItemExtractCondition() > -1
@@ -38,7 +39,7 @@ public class OrderInfoExportExcelService extends ExportService<CreateOrderInfoDa
         Optional<String> totalTitle = dataSource.getTotalTitle() == null ? Optional.empty() : Optional.of(dataSource.getTotalTitle());
         Optional<String> detailTitle = dataSource.getDetailTitle() == null ? Optional.empty() : Optional.of(dataSource.getDetailTitle());
         ReservationClosingTimeFrame closingTimeFrame = EnumAdaptor.valueOf(dataSource.getReservationClosingTimeFrame(), ReservationClosingTimeFrame.class);
-        OrderInfoDto result = new CreateOrderInfoFileQuery().createOrderInfoFileQuery(dataSource.getPeriod(),dataSource.getWorkplaceIds(), dataSource.getWorkplaceCodes(),
+        OrderInfoDto result = new CreateOrderInfoFileQuery().createOrderInfoFileQuery(dataSource.getPeriod(),dataSource.getWorkplaceIds(), dataSource.getWorkLocationCodes(),
                 totalExtractCondition, itemExtractCondition, frameNo, totalTitle,
                 detailTitle, closingTimeFrame);
         return result;
