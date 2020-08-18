@@ -10,7 +10,6 @@ const servicePath = {
 
 @component({
     name: 'kdpS01s',
-    route: '/kdp/s01/s',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
@@ -207,10 +206,6 @@ export class KdpS01SComponent extends Vue {
 
         return dayColor ? dayColor.color : '#000000';
 
-    }
-
-    public mounted() {
-        this.pgName = 'KDPS01_22';
     }
 }
 interface Iitem {

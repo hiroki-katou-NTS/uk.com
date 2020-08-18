@@ -1,5 +1,13 @@
 <template>
   <div>
+    <div class="modal-header rounded-0 d-block p-0">
+      <div class="uk-bg-teal p-2">
+        <h4 class="modal-title text-white">
+          <i class="fas fa-angle-left mr-1" v-on:click="$close"></i>
+          <span>{{ "KDPS01_5" | i18n }}</span>
+        </h4>
+      </div>
+    </div>
     <div class="row ml-1 title uk-text-over-time">
       <label>{{ "KDPS01_26" | i18n }}</label>
     </div>
@@ -11,7 +19,9 @@
       <label>{{ "KDPS01_27" | i18n }}</label>
     </div>
     <div class="col-12 value">
-      <label class="col-7 px-1">{{ screenData.date | date("YYYY年 MM月 DD日（ddd）") }}</label>
+      <label class="col-7 px-1">{{
+        screenData.date | date("YYYY年 MM月 DD日（ddd）")
+      }}</label>
       <label
         class="col-5 stamp-time font-weight-bold "
         style="line-height: 1rem;"
@@ -45,11 +55,11 @@
       <label>{{ screenData.localtion }}</label>
     </div>
 
-    <div class="col-12 value" v-if="params.resultDisplayTime > 0" >
+    <div class="col-12 value" v-if="params.resultDisplayTime > 0">
       <label class="cd-time font-weight-bold mr-2">{{
         params.resultDisplayTime
       }}</label>
-      <label> {{ "KDPS01_36" | i18n}}</label>
+      <label> {{ "KDPS01_36" | i18n }}</label>
     </div>
     <div>
       <button
