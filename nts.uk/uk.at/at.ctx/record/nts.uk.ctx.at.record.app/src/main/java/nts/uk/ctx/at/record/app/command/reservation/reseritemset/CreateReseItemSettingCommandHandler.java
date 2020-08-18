@@ -9,9 +9,12 @@ import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import java.util.List;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class CreateReseItemSettingCommandHandler extends CommandHandler<CreateReseItemSettingCommand> {
 
 

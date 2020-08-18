@@ -60,9 +60,7 @@ public class BentoReserveSettingCommandHandler extends CommandHandler<BentoReser
                 new BentoReservationTime(command.getEnd1()),
                 Optional.of(new BentoReservationTime(command.getStart1())));
 
-        Optional<ReservationClosingTime> closingTime2;
-
-        closingTime2 = Optional.of(new ReservationClosingTime(
+        Optional<ReservationClosingTime> closingTime2 = Optional.of(new ReservationClosingTime(
                 new BentoReservationTimeName(command.getName2()),
                 new BentoReservationTime(command.getEnd2()),
                 Optional.of(new BentoReservationTime(command.getStart2()))));
