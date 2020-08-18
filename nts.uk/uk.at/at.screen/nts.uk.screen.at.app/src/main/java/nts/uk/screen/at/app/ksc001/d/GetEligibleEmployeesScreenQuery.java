@@ -19,12 +19,12 @@ public class GetEligibleEmployeesScreenQuery {
     public List<String> getListEmployeeId(ConditionDto conditionDto){
         List<String> rs = new ArrayList<>();
         if(conditionDto!= null){
-            val check = new ConditionEmployee(conditionDto.isTransfer(),conditionDto.isLeaveOfAbsence(),
+            val checkEmployee = new ConditionEmployee(conditionDto.isTransfer(),conditionDto.isLeaveOfAbsence(),
                     conditionDto.isShortWorkingHours(),conditionDto.isChangedWorkingConditions());
             val listId = conditionDto.getListEmployeeId();
             val period = new DatePeriod(conditionDto.getStartDate(),conditionDto.getEndDate());
             listId.forEach(e ->{
-                if(check.CheckEmployeesIsEligible(require,e,period)){
+                if(checkEmployee.CheckEmployeesIsEligible(require,e,period)){
                     rs.add(e);
                 }
             });
