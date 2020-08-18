@@ -85,9 +85,9 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             }).fail((failData: any) => {
                 let param;
                 if (failData.message) {
-                    param = {message: failData.message};
+                    param = {message: failData.message, messageParams: failData.parameterIds};
                 } else {
-                    param = {messageId: failData.messageId}
+                    param = {messageId: failData.messageId, messageParams: failData.parameterIds}
                 }
                 vm.$dialog.error(param); 
                 
@@ -208,13 +208,13 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                             .fail( err => {
                                 let param;
                                 if (err.message && err.messageId) {
-                                    param = {messageId: err.messageId};
+                                    param = {messageId: err.messageId, messageParams: err.parameterIds};
                                 } else {
                                     
                                     if (err.message) {
-                                        param = {message: err.message};
+                                        param = {message: err.message, messageParams: err.parameterIds};
                                     } else {
-                                        param = {messageId: err.messageId};
+                                        param = {messageId: err.messageId, messageParams: err.parameterIds};
                                     }
                                 }
                                 vm.$dialog.error(param);
@@ -265,9 +265,9 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                     
                     let param;
                     if (res.message) {
-                        param = {message: res.message};
+                        param = {message: res.message, messageParams: res.parameterIds};
                     } else {
-                        param = {messageId: res.messageId}
+                        param = {messageId: res.messageId, messageParams: res.parameterIds}
                     }
                     vm.$dialog.error(param);
                 })
