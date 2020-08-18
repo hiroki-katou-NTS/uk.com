@@ -53,6 +53,15 @@ public class OffsetChronologicalOrderTest {
 	public void setUp() throws Exception {
 	}
 
+	/*
+	 * 　テストしたい内容
+	 *     　未相殺数を更新しない
+	 * 
+	 * 　準備するデータ
+	 * 　　「逐次発生の休暇明細」（消化）．未相殺時間数 がない
+	 * 　　　時間管理
+	 * 　　　
+	 * */
 	@Test
 	public void test() {
 
@@ -64,9 +73,9 @@ public class OffsetChronologicalOrderTest {
 				new AccuVacationBuilder(SID,
 						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 3))),
 						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554ddfk")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
-										Optional.of(new AttendanceTime(0))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
+								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
+										Optional.of(new AttendanceTime(1))))
+								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
 										Optional.of(new AttendanceTime(0))))
 								.build(),
 				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
@@ -78,84 +87,54 @@ public class OffsetChronologicalOrderTest {
 										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
 												Optional.of(new AttendanceTime(120))))
 										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(120))))
-										.build(),
-						new AttendanceTime(0), new AttendanceTime(0)),
-				new AccuVacationBuilder(SID, new CompensatoryDayoffDate(true, Optional.empty()),
-						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554cccc")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.build(),
-				new AccuVacationBuilder(SID,
-						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 4))),
-						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554dddd")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.build(),
-				new UnbalanceVacation(GeneralDate.ymd(2019, 12, 8), DigestionAtr.UNUSED,
-						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID, new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 7))),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554ddde")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(120))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(480))))
-										.build(),
-						new AttendanceTime(480), new AttendanceTime(240)),
-
-				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
-						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 10))),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554dddf")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(120))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(240))))
-										.build(),
-						new AttendanceTime(480), new AttendanceTime(240)),
-
-				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
-						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 4))),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554eaaa")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(0))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
 												Optional.of(new AttendanceTime(0))))
 										.build(),
-						new AttendanceTime(480), new AttendanceTime(240)));
+						new AttendanceTime(0), new AttendanceTime(0)));
 		TypeOffsetJudgment typeJudgment = TypeOffsetJudgment.REAMAIN;
 		lstAccAbse.sort(new AccumulationAbsenceDetailComparator());
 		Pair<Optional<DayOffError>, List<SeqVacationAssociationInfo>> resultActual = OffsetChronologicalOrder
 				.process(require, SID, lstTimeLap, lstAccAbse, typeJudgment);
 		assertThat(resultActual.getRight()).isEqualTo(new ArrayList<>());
 		assertThat(resultActual.getLeft()).isEqualTo(Optional.empty());
+		assertThat(lstAccAbse)
+		.extracting(x -> x.getManageId(), x -> x.getEmployeeId(), x -> x.getDataAtr(),
+				x -> x.getDateOccur().isUnknownDate(), x -> x.getDateOccur().getDayoffDate(),
+				x -> x.getNumberOccurren().getDay().v(), x -> x.getNumberOccurren().getTime(),
+				x -> x.getOccurrentClass(), x -> x.getUnbalanceNumber().getDay().v(),
+				x -> x.getUnbalanceNumber().getTime())
+		.containsExactly(
+				Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554ddfk", SID, MngDataStatus.RECORD, false,
+						Optional.of(GeneralDate.ymd(2019, 11, 3)), 1.0, Optional.of(new AttendanceTime(1)),
+						OccurrenceDigClass.DIGESTION, 1.0, Optional.of(new AttendanceTime(0))),
+				Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554bbbb", SID, MngDataStatus.RECORD, false,
+						Optional.of(GeneralDate.ymd(2019, 11, 4)), 1.0, Optional.of(new AttendanceTime(120)),
+						OccurrenceDigClass.OCCURRENCE, 1.0, Optional.of(new AttendanceTime(0))));
 	}
 
+	/*
+	 * 　テストしたい内容
+	 *     　未相殺数を更新しない
+	 * 
+	 * 　準備するデータ
+	 * 　　「逐次発生の休暇明細」（消化）．未相殺時間数 がない
+	 * 　　　時間管理がない
+	 * 　　　
+	 * */
 	@Test
-	public void testSubstitutionHolidayOutputNull() {
+	public void testNoMag() {
 
 		List<TimeLapseVacationSetting> lstTimeLap = Arrays.asList(
 				new TimeLapseVacationSetting(new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.ymd(2020, 1, 1)),
-						true, 30, true, Optional.of(true), Optional.of(1)));
+						true, 30, true, Optional.of(false), Optional.of(1)));
 
 		List<AccumulationAbsenceDetail> lstAccAbse = Arrays.asList(
 				new AccuVacationBuilder(SID,
 						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 3))),
-						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554ddff")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
-										Optional.of(new AttendanceTime(0))))
+						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554ddfk")
+								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
+										Optional.of(new AttendanceTime(1))))
 								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
-										Optional.of(new AttendanceTime(0))))
+										Optional.of(new AttendanceTime(10))))
 								.build(),
 				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
 						Optional.of(GeneralDate.ymd(2019, 12, 30)),
@@ -166,75 +145,41 @@ public class OffsetChronologicalOrderTest {
 										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
 												Optional.of(new AttendanceTime(120))))
 										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(120))))
-										.build(),
-						new AttendanceTime(480), new AttendanceTime(240)),
-				new AccuVacationBuilder(SID, new CompensatoryDayoffDate(true, Optional.empty()),
-						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554cccc")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.build(),
-				new AccuVacationBuilder(SID,
-						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 4))),
-						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554dddd")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.build(),
-				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
-						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 10))),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554ddde")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(120))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
 												Optional.of(new AttendanceTime(0))))
 										.build(),
-						new AttendanceTime(480), new AttendanceTime(240)),
-				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
-						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 10))),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554dddf")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(240))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(240))))
-										.build(),
-						new AttendanceTime(480), new AttendanceTime(240)),
-				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
-						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 4))),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554eaaa")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(0))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.5),
-												Optional.of(new AttendanceTime(0))))
-										.build(),
-						new AttendanceTime(480), new AttendanceTime(240)));
+						new AttendanceTime(0), new AttendanceTime(0)));
 		TypeOffsetJudgment typeJudgment = TypeOffsetJudgment.REAMAIN;
-		new Expectations() {
-			{
-
-			}
-
-		};
 		lstAccAbse.sort(new AccumulationAbsenceDetailComparator());
 		Pair<Optional<DayOffError>, List<SeqVacationAssociationInfo>> resultActual = OffsetChronologicalOrder
 				.process(require, SID, lstTimeLap, lstAccAbse, typeJudgment);
 		assertThat(resultActual.getRight()).isEqualTo(new ArrayList<>());
 		assertThat(resultActual.getLeft()).isEqualTo(Optional.empty());
+		assertThat(lstAccAbse)
+		.extracting(x -> x.getManageId(), x -> x.getEmployeeId(), x -> x.getDataAtr(),
+				x -> x.getDateOccur().isUnknownDate(), x -> x.getDateOccur().getDayoffDate(),
+				x -> x.getNumberOccurren().getDay().v(), x -> x.getNumberOccurren().getTime(),
+				x -> x.getOccurrentClass(), x -> x.getUnbalanceNumber().getDay().v(),
+				x -> x.getUnbalanceNumber().getTime())
+		.containsExactly(
+				Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554ddfk", SID, MngDataStatus.RECORD, false,
+						Optional.of(GeneralDate.ymd(2019, 11, 3)), 1.0, Optional.of(new AttendanceTime(1)),
+						OccurrenceDigClass.DIGESTION, 0.0, Optional.of(new AttendanceTime(10))),
+				Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554bbbb", SID, MngDataStatus.RECORD, false,
+						Optional.of(GeneralDate.ymd(2019, 11, 4)), 1.0, Optional.of(new AttendanceTime(120)),
+						OccurrenceDigClass.OCCURRENCE, 1.0, Optional.of(new AttendanceTime(0))));
 	}
 
+	
 	// 相殺判定の返すパラメータ
+	/*
+	 * 　テストしたい内容
+	 *     　エラーメッセージに追加がある
+	 * 
+	 * 　準備するデータ
+	 * 　　逐次発生の休暇明細（消化）.年月日 < 逐次発生の休暇明細（発生）.年月日
+	 * 　　先取りをできない
+	 * 　　　
+	 * */
 	@Test
 	public void testOffsetJudgmenteError() {
 
@@ -316,39 +261,15 @@ public class OffsetChronologicalOrderTest {
 		assertThat(resultActual.getLeft()).isEqualTo(Optional.of(DayOffError.PREFETCH_ERROR));
 	}
 
-	@Test
-	public void testManagerTimeCateNoFound() {
-
-		List<TimeLapseVacationSetting> lstTimeLap = Arrays.asList(
-				new TimeLapseVacationSetting(new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.ymd(2020, 1, 1)),
-						true, 30, false, Optional.empty(), Optional.of(1)));
-
-		List<AccumulationAbsenceDetail> lstAccAbse = Arrays.asList(new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8),
-				DigestionAtr.UNUSED, Optional.of(GeneralDate.ymd(2019, 12, 30)),
-				new AccuVacationBuilder(SID,
-						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 10))),
-						OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554dddf")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(0))))
-								.unbalanceNumber(
-										new NumberConsecuVacation(new ManagementDataRemainUnit(1.0), Optional.empty()))
-								.build(),
-				new AttendanceTime(480), new AttendanceTime(240)));
-		TypeOffsetJudgment typeJudgment = TypeOffsetJudgment.REAMAIN;
-		new Expectations() {
-			{
-
-			}
-
-		};
-		lstAccAbse.sort(new AccumulationAbsenceDetailComparator());
-		Pair<Optional<DayOffError>, List<SeqVacationAssociationInfo>> resultActual = OffsetChronologicalOrder
-				.process(require, SID, lstTimeLap, lstAccAbse, typeJudgment);
-		assertThat(resultActual.getRight()).isEqualTo(new ArrayList<>());
-		assertThat(resultActual.getLeft()).isEqualTo(Optional.empty());
-	}
-
 	// 相殺判定の返すパラメータ
+	/*
+	 * 　テストしたい内容
+	 *     　未相殺数を更新 
+	 * 
+	 * 　準備するデータ
+	 *
+	 * 　　相殺処理を行ったら、すべての逐次発生の休暇明細（発生）が0になるデータ
+	 * */
 	@Test
 	public void testUpdateUnbNumMagTimeFalse() {
 
@@ -358,17 +279,17 @@ public class OffsetChronologicalOrderTest {
 
 		List<AccumulationAbsenceDetail> lstAccAbse = Arrays.asList(
 				new AccuVacationBuilder(SID,
-						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 3))),
+						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 4))),
 						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554ddfk")
 								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
 										Optional.of(new AttendanceTime(0))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
-										Optional.of(new AttendanceTime(0))))
+								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
+										Optional.of(new AttendanceTime(120))))
 								.build(),
 				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
 						Optional.of(GeneralDate.ymd(2019, 12, 30)),
 						new AccuVacationBuilder(SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 4))),
+								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 3))),
 								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
 								"adda6a46-2cbe-48c8-85f8-c04ca554bbbb")
 										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
@@ -377,13 +298,6 @@ public class OffsetChronologicalOrderTest {
 												Optional.of(new AttendanceTime(120))))
 										.build(),
 						new AttendanceTime(0), new AttendanceTime(0)),
-				new AccuVacationBuilder(SID, new CompensatoryDayoffDate(true, Optional.empty()),
-						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554cccc")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.build(),
 				new AccuVacationBuilder(SID,
 						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 4))),
 						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554dddd")
@@ -391,43 +305,8 @@ public class OffsetChronologicalOrderTest {
 										Optional.of(new AttendanceTime(120))))
 								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
 										Optional.of(new AttendanceTime(120))))
-								.build(),
-				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
-						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 10))),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554ddde")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(120))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(60))))
-										.build(),
-						new AttendanceTime(480), new AttendanceTime(240)),
-				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
-						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 9))),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554dddf")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(240))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.5),
-												Optional.of(new AttendanceTime(240))))
-										.build(),
-						new AttendanceTime(480), new AttendanceTime(240)),
-				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
-						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 5))),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554eaaa")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(0))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.5),
-												Optional.of(new AttendanceTime(0))))
-										.build(),
-						new AttendanceTime(480), new AttendanceTime(240)));
+								.build()
+				);
 		TypeOffsetJudgment typeJudgment = TypeOffsetJudgment.REAMAIN;
 		lstAccAbse.sort(new AccumulationAbsenceDetailComparator());
 		Pair<Optional<DayOffError>, List<SeqVacationAssociationInfo>> resultActual = OffsetChronologicalOrder
@@ -437,101 +316,18 @@ public class OffsetChronologicalOrderTest {
 						x -> x.getTargetSelectionAtr())
 				.contains(
 						Tuple.tuple(GeneralDate.ymd(2019, 04, 04), new ReserveLeaveRemainingDayNumber(1.0),
-								GeneralDate.ymd(2019, 4, 9), TargetSelectionAtr.AUTOMATIC),
-						Tuple.tuple(GeneralDate.ymd(2019, 04, 04), new ReserveLeaveRemainingDayNumber(0.5),
-								GeneralDate.ymd(2019, 4, 10), TargetSelectionAtr.AUTOMATIC));
-	}
-
-	// 相殺判定の返すパラメータ
-	@Test
-	public void testUpdateUnbNumMagTimeTrue() {
-
-		List<TimeLapseVacationSetting> lstTimeLap = Arrays.asList(
-				new TimeLapseVacationSetting(new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.ymd(2020, 1, 1)),
-						true, 30, true, Optional.of(true), Optional.of(1)));
-
-		List<AccumulationAbsenceDetail> lstAccAbse = Arrays.asList(
-				new AccuVacationBuilder(SID,
-						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 3))),
-						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554ddfk")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
-										Optional.of(new AttendanceTime(0))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
-										Optional.of(new AttendanceTime(0))))
-								.build(),
-				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
-						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 4))),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554bbbb")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(120))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(120))))
-										.build(),
-						new AttendanceTime(480), new AttendanceTime(240)),
-				new AccuVacationBuilder(SID, new CompensatoryDayoffDate(true, Optional.empty()),
-						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554cccc")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.build(),
-				new AccuVacationBuilder(SID,
-						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 4))),
-						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554dddd")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.build(),
-				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
-						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 10))),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554ddde")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(120))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(60))))
-										.build(),
-						new AttendanceTime(480), new AttendanceTime(240)),
-				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
-						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 10))),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554dddf")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(240))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.5),
-												Optional.of(new AttendanceTime(240))))
-										.build(),
-						new AttendanceTime(480), new AttendanceTime(240)),
-				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
-						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 4))),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554eaaa")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(0))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.5),
-												Optional.of(new AttendanceTime(0))))
-										.build(),
-						new AttendanceTime(480), new AttendanceTime(240)));
-		TypeOffsetJudgment typeJudgment = TypeOffsetJudgment.REAMAIN;
-		lstAccAbse.sort(new AccumulationAbsenceDetailComparator());
-		Pair<Optional<DayOffError>, List<SeqVacationAssociationInfo>> resultActual = OffsetChronologicalOrder
-				.process(require, SID, lstTimeLap, lstAccAbse, typeJudgment);
-		assertThat(resultActual.getRight()).isEqualTo(new ArrayList<>());
-
+								GeneralDate.ymd(2019, 11, 3), TargetSelectionAtr.AUTOMATIC));
 	}
 
 	// test offsetJudgment
 	// 相殺判定
+	/*
+	 * 　テストしたい内容
+	 *     　未相殺数を更新しない
+	 * 
+	 * 　準備するデータ
+	 * 　　期限切れーー ngay nghi bu truoc ngay het han cua ngay lam bu
+	 * */
 	@Test
 	@SuppressWarnings("unchecked")
 	public void testCase1() throws NoSuchMethodException, SecurityException, IllegalAccessException,
@@ -575,6 +371,14 @@ public class OffsetChronologicalOrderTest {
 
 	// test offsetJudgment
 	// 相殺判定
+		/*
+		 * 　テストしたい内容
+		 *     　未相殺数を更新しない
+		 * 
+		 * 　準備するデータ
+		 * 　　逐次発生の休暇明細（発生）の未相殺数がない
+		 * 　　　→　未相殺数を更新しない
+		 * */
 	@Test
 	@SuppressWarnings("unchecked")
 	public void testCase2() throws NoSuchMethodException, SecurityException, IllegalAccessException,
@@ -619,6 +423,16 @@ public class OffsetChronologicalOrderTest {
 
 	//// 先取りをできるか
 	// 相殺判定
+	/*
+	 * 　テストしたい内容
+	 *     　未相殺数を更新しない
+	 *     　エラーメッセージに追加がある
+	 * 
+	 * 　準備するデータ
+	 * 　　先取りをできない
+	 * 　　　逐次発生の休暇明細（消化）.年月日 < 逐次発生の休暇明細（発生）.年月日
+	 * 　　　→　未相殺数を更新しない
+	 * */
 	@Test
 	@SuppressWarnings("unchecked")
 	public void testCase3() throws NoSuchMethodException, SecurityException, IllegalAccessException,
@@ -662,6 +476,13 @@ public class OffsetChronologicalOrderTest {
 	}
 
 	// 相殺判定
+	/*
+	 * 　テストしたい内容
+	 *     　未相殺数を更新
+	 *     　→　データをオフセットできます
+	 * 
+	 * 　準備するデータ
+	 * */
 	@Test
 	@SuppressWarnings("unchecked")
 	public void testCase4() throws NoSuchMethodException, SecurityException, IllegalAccessException,

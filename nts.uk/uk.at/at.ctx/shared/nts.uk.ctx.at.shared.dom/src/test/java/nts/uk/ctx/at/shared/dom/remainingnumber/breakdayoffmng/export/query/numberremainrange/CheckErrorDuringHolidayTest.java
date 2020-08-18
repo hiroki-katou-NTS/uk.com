@@ -28,6 +28,11 @@ public class CheckErrorDuringHolidayTest {
 	public void setUp() throws Exception {
 	}
 
+	 /* 　テストしたい内容
+	 * 　　残日数, 残時間 <0の場合はエラー
+	 *        残日数 <0 →日単位代休残数不足エラー
+	 *        残時間 <0→　 相殺できないエラー
+	 */
 	@Test
 	public void test() {
 

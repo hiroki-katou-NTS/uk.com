@@ -33,6 +33,15 @@ public class AccumulationAbsenceDetailComparatorTest {
 	public void setUp() throws Exception {
 	}
 
+	/*
+	 * テストしたい内容
+	 *　　「逐次発生の休暇明細」ソート
+	 * 　
+	 * 準備するデータ
+	 * 　　逐次発生の休暇明細
+	 * 　　日付不明　→　一番
+	 * 　　日が大きい　→　下に配置
+	 */
 	@Test
 	public void testCompare() {
 

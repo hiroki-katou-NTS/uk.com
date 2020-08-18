@@ -48,6 +48,14 @@ public class GetUnusedLeaveFixedTest {
 	public void setUp() throws Exception {
 	}
 
+	/*
+	 * 　テストしたい内容
+	 * 　　データを作成しない
+	 * 
+	 * 　準備するデータ
+	 * 　　確定データがない
+	 * 　　　
+	 * */
 	@Test
 	public void testUnbalanceUnusedEmpty() {
 
@@ -58,6 +66,19 @@ public class GetUnusedLeaveFixedTest {
 		assertThat(actualResult).isEqualTo(new ArrayList<>());
 	}
 
+	/*
+	 * 　テストしたい内容
+	 * 　　未使用数のデータだけが取得できるか。
+	 * 
+	 * 　準備するデータ
+	 * 　　未使用数のデータ
+	 * 　　　→紐づけがなくて残ってるやつ
+	 * 　　　→紐づけしても残ってるやつ
+	 * 　　相殺済みのデータ
+	 * 　　　→最初から残ってない
+	 * 　　　→紐づけしたら残ってない
+
+	 * */
 	@Test
 	public void testUnbalanceUnused() {
 
@@ -67,11 +88,14 @@ public class GetUnusedLeaveFixedTest {
 				GeneralDate.ymd(2019, 11, 11), GeneralDate.max(), 1.0, 240, 1.0, 240, DigestionAtr.UNUSED.value, 0, 0));
 		lstLeavMock.add(new LeaveManagementData("adda6a46-2cbe-48c8-85f8-c04ca554e133", CID, SID, false,
 				GeneralDate.ymd(2019, 11, 13), GeneralDate.max(), 1.0, 240, 1.0, 240, DigestionAtr.UNUSED.value, 0, 0));
+		lstLeavMock.add(new LeaveManagementData("adda6a46-2cbe-48c8-85f8-c04ca554e135", CID, SID, false,
+				GeneralDate.ymd(2019, 11, 14), GeneralDate.max(), 1.0, 240, 0.0, 0, DigestionAtr.UNUSED.value, 0, 0));
+		lstLeavMock.add(new LeaveManagementData("adda6a46-2cbe-48c8-85f8-c04ca554e136", CID, SID, false,
+				GeneralDate.ymd(2019, 11, 15), GeneralDate.max(), 1.0, 240, 1.0, 240, DigestionAtr.UNUSED.value, 0, 0));
 
 		new Expectations() {
 			{
-				// LeaveManaDataRepository DigestionAtr.UNUSED
-				// List<LeaveManagementData>
+
 				require.getBySidYmd(CID, SID, (GeneralDate) any, (DigestionAtr) any);
 				result = lstLeavMock;
 
@@ -100,9 +124,15 @@ public class GetUnusedLeaveFixedTest {
 						x -> x.getNumberOccurren().getDay().v(), x -> x.getNumberOccurren().getTime(),
 						x -> x.getOccurrentClass(), x -> x.getUnbalanceNumber().getDay().v(),
 						x -> x.getUnbalanceNumber().getTime())
-				.containsExactly(Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e133", SID, MngDataStatus.CONFIRMED,
+				.containsExactly(
+						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e133", SID, MngDataStatus.CONFIRMED,
 						false, Optional.of(GeneralDate.ymd(2019, 11, 13)), 1.0, Optional.of(new AttendanceTime(240)),
-						OccurrenceDigClass.OCCURRENCE, 0.5, Optional.of(new AttendanceTime(120))));
+						OccurrenceDigClass.OCCURRENCE, 0.5, Optional.of(new AttendanceTime(120))),
+						
+						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e136", SID, MngDataStatus.CONFIRMED,
+								false, Optional.of(GeneralDate.ymd(2019, 11, 15)), 1.0, Optional.of(new AttendanceTime(240)),
+								OccurrenceDigClass.OCCURRENCE, 1.0, Optional.of(new AttendanceTime(240)))
+						);
 	}
 
 }

@@ -37,6 +37,17 @@ public class CalcDigestionCateExtinctionDateTest {
 	public void setUp() throws Exception {
 	}
 
+	/*
+	 * 　テストしたい内容
+	 *          代休
+	 *     　消化区分と消滅日を計算する
+	 * 
+	 * 　準備するデータ
+	 * 　　すべての逐次発生の休暇明細（発生）が0 →　消化済
+	 *         期限が超えない→　未消化
+	 *         期限が超える→　 消滅
+	 *         
+	 * */
 	@Test
 	public void testDaikyu() {
 
@@ -105,6 +116,17 @@ public class CalcDigestionCateExtinctionDateTest {
 
 	}
 
+	/*
+	 * 　テストしたい内容
+	 *         振休
+	 *     　消化区分と消滅日を計算する
+	 * 
+	 * 　準備するデータ
+	 * 　　すべての逐次発生の休暇明細（発生）が0 →　消化済
+	 *         期限が超えない→　未消化
+	 *         期限が超える→　 消滅
+	 *         
+	 * */
 	@Test
 	public void testFurikyu() {
 		List<AccumulationAbsenceDetail> lstAccAbse = Arrays.asList(

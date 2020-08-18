@@ -71,6 +71,20 @@ public class GetUnusedLeaveTemporaryTest {
 	public void setUp() throws Exception {
 	}
 
+	/*
+	 * テストしたい内容 
+	 * 暫定データから発生データを作成する
+	 * 
+	 * 準備するデータ 
+	 * 暫定休出管理データがある 
+	 * →紐づけがなくて残ってるやつ 
+	 * →紐づけしても残ってるやつ 
+	 * 暫定休出代休紐付け管理がある 
+	 * →最初から残ってない
+	 * →紐づけしたら残ってない 
+	 * モード : 月次か
+	 * 
+	 */
 	@Test
 	public void testModeMonth() {
 
@@ -85,12 +99,17 @@ public class GetUnusedLeaveTemporaryTest {
 				new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e132", new AttendanceTime(480),
 						GeneralDate.ymd(2020, 6, 6), new OccurrenceTime(480), new OccurrenceDay(1.0),
 						new AttendanceTime(240), new UnUsedTime(480), new UnUsedDay(1.0)),
+				new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e139", new AttendanceTime(480),
+						GeneralDate.ymd(2020, 6, 6), new OccurrenceTime(480), new OccurrenceDay(1.0),
+						new AttendanceTime(240), new UnUsedTime(0), new UnUsedDay(0.0)),
 				new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e333", new AttendanceTime(480),
 						GeneralDate.ymd(2019, 6, 6), new OccurrenceTime(480), new OccurrenceDay(1.0),
 						new AttendanceTime(240), new UnUsedTime(480), new UnUsedDay(1.0)));
 
 		List<InterimRemain> interimMng = Arrays.asList(
 				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 11, 5),
+						CreateAtr.SCHEDULE, RemainType.BREAK, RemainAtr.SINGLE),
+				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e139", SID, GeneralDate.ymd(2019, 11, 8),
 						CreateAtr.SCHEDULE, RemainType.BREAK, RemainAtr.SINGLE),
 				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e333", SID, GeneralDate.ymd(2019, 11, 6),
 						CreateAtr.RECORD, RemainType.BREAK, RemainAtr.SINGLE),
@@ -114,12 +133,6 @@ public class GetUnusedLeaveTemporaryTest {
 
 		new Expectations() {
 			{
-
-//				require.getBreakDayOffMng("077a8929-3df0-4fd6-859e-29e615a921ea", anyBoolean, (DataManagementAtr) any);
-//				result = Arrays.asList(
-//						new InterimBreakDayOffMng("", DataManagementAtr.INTERIM, "077a8929-3df0-4fd6-859e-29e615a921ea",
-//								DataManagementAtr.INTERIM, new UseTime(0), new UseDay(0d), SelectedAtr.AUTOMATIC));
-
 				require.findEmploymentHistory(CID, SID, (GeneralDate) any);
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
@@ -127,6 +140,11 @@ public class GetUnusedLeaveTemporaryTest {
 				require.findComLeavEmpSet(CID, anyString);
 				result = NumberRemainVacationLeaveRangeQueryTest.createComLeav(ManageDistinct.YES, ManageDistinct.YES,
 						"02");
+				
+				require.getBreakDayOffMng("adda6a46-2cbe-48c8-85f8-c04ca554e132", anyBoolean, (DataManagementAtr) any);
+				result = Arrays.asList(
+						new InterimBreakDayOffMng("", DataManagementAtr.INTERIM, "adda6a46-2cbe-48c8-85f8-c04ca554e132",
+								DataManagementAtr.INTERIM, new UseTime(120), new UseDay(0.5), SelectedAtr.AUTOMATIC));
 
 			}
 
@@ -144,42 +162,35 @@ public class GetUnusedLeaveTemporaryTest {
 				.containsExactly(
 						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, MngDataStatus.SCHEDULE, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 5)), 1.0, Optional.of(new AttendanceTime(480)),
-								OccurrenceDigClass.OCCURRENCE, 1.0, Optional.of(new AttendanceTime(480)),
+								OccurrenceDigClass.OCCURRENCE, 0.5, Optional.of(new AttendanceTime(360)),
 								GeneralDate.ymd(2020, 02, 05)),
+						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e139", SID, MngDataStatus.SCHEDULE, false,
+								Optional.of(GeneralDate.ymd(2019, 11, 8)), 1.0, Optional.of(new AttendanceTime(480)),
+								OccurrenceDigClass.OCCURRENCE, 0.0, Optional.of(new AttendanceTime(0)),
+								GeneralDate.ymd(2020, 02, 8)),
 						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e333", SID, MngDataStatus.RECORD, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 6)), 1.0, Optional.of(new AttendanceTime(480)),
 								OccurrenceDigClass.OCCURRENCE, 1.0, Optional.of(new AttendanceTime(480)),
 								GeneralDate.ymd(2020, 02, 06)));
 	}
 
+	
+	/*
+	 * テストしたい内容 
+	 * 暫定データから発生データを作成する
+	 * 
+	 * 準備するデータ 
+	 * 暫定休出管理データがある 
+	 * →紐づけがなくて残ってるやつ 
+	 * →紐づけしても残ってるやつ 
+	 * 暫定休出代休紐付け管理がある 
+	 * →最初から残ってない
+	 * →紐づけしたら残ってない 
+	 * モード : その他か
+	 * 
+	 */
 	@Test
 	public void testModeOther() {
-
-		List<InterimDayOffMng> dayOffMng = Arrays.asList(
-				new InterimDayOffMng("876caf30-5a4d-47b7-8147-d646f74be08a", new RequiredTime(0), new RequiredDay(1.0),
-						new UnOffsetTime(0), new UnOffsetDay(1.0)),
-				new InterimDayOffMng("077a8929-3df0-4fd6-859e-29e615a921ea", new RequiredTime(480),
-						new RequiredDay(1.0), new UnOffsetTime(480), new UnOffsetDay(1.0)));
-
-		// BREAK filter
-		List<InterimBreakMng> breakMng = Arrays.asList(
-				new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e132", new AttendanceTime(480),
-						GeneralDate.ymd(2020, 6, 6), new OccurrenceTime(480), new OccurrenceDay(1.0),
-						new AttendanceTime(240), new UnUsedTime(480), new UnUsedDay(1.0)),
-				new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e333", new AttendanceTime(480),
-						GeneralDate.ymd(2019, 6, 6), new OccurrenceTime(480), new OccurrenceDay(1.0),
-						new AttendanceTime(240), new UnUsedTime(480), new UnUsedDay(1.0)));
-
-		List<InterimRemain> interimMng = Arrays.asList(
-				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 11, 5),
-						CreateAtr.SCHEDULE, RemainType.BREAK, RemainAtr.SINGLE),
-				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e333", SID, GeneralDate.ymd(2019, 11, 6),
-						CreateAtr.RECORD, RemainType.BREAK, RemainAtr.SINGLE),
-
-				new InterimRemain("876caf30-5a4d-47b7-8147-d646f74be08a", SID, GeneralDate.ymd(2019, 11, 9),
-						CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE),
-				new InterimRemain("077a8929-3df0-4fd6-859e-29e615a921ea", SID, GeneralDate.ymd(2019, 11, 10),
-						CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
 
 		Optional<SubstituteHolidayAggrResult> holidayAggrResult = Optional.of(new SubstituteHolidayAggrResult(
 				new VacationDetails(Collections.emptyList()), new ReserveLeaveRemainingDayNumber(0d),
@@ -190,8 +201,8 @@ public class GetUnusedLeaveTemporaryTest {
 
 		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(CID, SID,
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)), false,
-				GeneralDate.ymd(2019, 11, 30), false, interimMng, Optional.empty(), Optional.empty(), breakMng,
-				dayOffMng, holidayAggrResult, new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
+				GeneralDate.ymd(2019, 11, 30), false, new ArrayList<>(), Optional.empty(), Optional.empty(), new ArrayList<>(),
+				new ArrayList<>(), holidayAggrResult, new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 
 		new Expectations() {
 			{
@@ -206,6 +217,8 @@ public class GetUnusedLeaveTemporaryTest {
 				result = Arrays.asList(
 						new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 11, 5),
 								CreateAtr.SCHEDULE, RemainType.BREAK, RemainAtr.SINGLE),
+						new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e139", SID, GeneralDate.ymd(2019, 11, 8),
+								CreateAtr.SCHEDULE, RemainType.BREAK, RemainAtr.SINGLE),
 						new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e333", SID, GeneralDate.ymd(2019, 11, 6),
 								CreateAtr.RECORD, RemainType.BREAK, RemainAtr.SINGLE));
 
@@ -214,6 +227,9 @@ public class GetUnusedLeaveTemporaryTest {
 						new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e132", new AttendanceTime(480),
 								GeneralDate.ymd(2020, 6, 6), new OccurrenceTime(480), new OccurrenceDay(1.0),
 								new AttendanceTime(240), new UnUsedTime(480), new UnUsedDay(1.0)),
+						new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e139", new AttendanceTime(480),
+								GeneralDate.ymd(2020, 6, 6), new OccurrenceTime(480), new OccurrenceDay(1.0),
+								new AttendanceTime(240), new UnUsedTime(0), new UnUsedDay(0.0)),
 						new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e333", new AttendanceTime(480),
 								GeneralDate.ymd(2019, 6, 6), new OccurrenceTime(480), new OccurrenceDay(1.0),
 								new AttendanceTime(240), new UnUsedTime(480), new UnUsedDay(1.0)));
@@ -244,6 +260,10 @@ public class GetUnusedLeaveTemporaryTest {
 								Optional.of(GeneralDate.ymd(2019, 11, 5)), 1.0, Optional.of(new AttendanceTime(480)),
 								OccurrenceDigClass.OCCURRENCE, 0.5, Optional.of(new AttendanceTime(360)),
 								GeneralDate.ymd(2020, 02, 05)),
+						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e139", SID, MngDataStatus.SCHEDULE, false,
+								Optional.of(GeneralDate.ymd(2019, 11, 8)), 1.0, Optional.of(new AttendanceTime(480)),
+								OccurrenceDigClass.OCCURRENCE, 0.0, Optional.of(new AttendanceTime(0)),
+								GeneralDate.ymd(2020, 02, 8)),
 						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e333", SID, MngDataStatus.RECORD, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 6)), 1.0, Optional.of(new AttendanceTime(480)),
 								OccurrenceDigClass.OCCURRENCE, 1.0, Optional.of(new AttendanceTime(480)),

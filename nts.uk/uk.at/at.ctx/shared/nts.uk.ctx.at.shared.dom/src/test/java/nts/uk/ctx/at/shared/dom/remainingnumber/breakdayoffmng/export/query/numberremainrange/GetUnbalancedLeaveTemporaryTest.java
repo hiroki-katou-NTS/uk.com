@@ -69,11 +69,23 @@ public class GetUnbalancedLeaveTemporaryTest {
 	public void setUp() throws Exception {
 	}
 
+	/*
+	 * テストしたい内容 暫定データから消化データを作成する
+	 * 
+	 * 準備するデータ 暫定代休管理データがある 
+	 * →紐づけがなくて残ってるやつ 
+	 * →紐づけしても残ってるやつ 
+	 * 暫定休出代休紐付け管理がある 
+	 * →最初から残ってない
+	 * →紐づけしたら残ってない モード : 月次か
+	 * 
+	 */
 	@Test
-	// 3.未相殺の代休(暫定)を取得する
 	public void testModeMonth() {
 		List<InterimDayOffMng> dayOffMng = Arrays.asList(
 				new InterimDayOffMng("876caf30-5a4d-47b7-8147-d646f74be08a", new RequiredTime(0), new RequiredDay(1.0),
+						new UnOffsetTime(0), new UnOffsetDay(1.0)),
+				new InterimDayOffMng("876caf30-5a4d-47b7-8147-d646f74be08b", new RequiredTime(0), new RequiredDay(0.0),
 						new UnOffsetTime(0), new UnOffsetDay(1.0)),
 				new InterimDayOffMng("077a8929-3df0-4fd6-859e-29e615a921ea", new RequiredTime(480),
 						new RequiredDay(1.0), new UnOffsetTime(480), new UnOffsetDay(1.0)));
@@ -93,6 +105,8 @@ public class GetUnbalancedLeaveTemporaryTest {
 						CreateAtr.RECORD, RemainType.BREAK, RemainAtr.SINGLE),
 
 				new InterimRemain("876caf30-5a4d-47b7-8147-d646f74be08a", SID, GeneralDate.ymd(2019, 11, 9),
+						CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE),
+				new InterimRemain("876caf30-5a4d-47b7-8147-d646f74be08b", SID, GeneralDate.ymd(2019, 11, 12),
 						CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE),
 				new InterimRemain("077a8929-3df0-4fd6-859e-29e615a921ea", SID, GeneralDate.ymd(2019, 11, 10),
 						CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
@@ -117,9 +131,6 @@ public class GetUnbalancedLeaveTemporaryTest {
 						new InterimBreakDayOffMng("", DataManagementAtr.INTERIM, "077a8929-3df0-4fd6-859e-29e615a921ea",
 								DataManagementAtr.INTERIM, new UseTime(0), new UseDay(0d), SelectedAtr.AUTOMATIC));
 
-//				List<InterimBreakDayOffMng> lstInterimBreakDayOffMn = require
-//						.getBreakDayOffMng(interimDay.getRight().getDayOffManaId(), false, DataManagementAtr.INTERIM);
-
 			}
 
 		};
@@ -136,6 +147,10 @@ public class GetUnbalancedLeaveTemporaryTest {
 				.containsExactly(Tuple.tuple("876caf30-5a4d-47b7-8147-d646f74be08a", SID, MngDataStatus.RECORD, false,
 						Optional.of(GeneralDate.ymd(2019, 11, 9)), 1.0, Optional.of(new AttendanceTime(0)),
 						OccurrenceDigClass.DIGESTION, 1.0, Optional.of(new AttendanceTime(0)), Optional.empty()),
+						Tuple.tuple("876caf30-5a4d-47b7-8147-d646f74be08b", SID, MngDataStatus.RECORD, false,
+								Optional.of(GeneralDate.ymd(2019, 11, 12)), 0.0, Optional.of(new AttendanceTime(0)),
+								OccurrenceDigClass.DIGESTION, 0.0, Optional.of(new AttendanceTime(0)),
+								Optional.empty()),
 						Tuple.tuple("077a8929-3df0-4fd6-859e-29e615a921ea", SID, MngDataStatus.RECORD, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 10)), 1.0, Optional.of(new AttendanceTime(480)),
 								OccurrenceDigClass.DIGESTION, 1.0, Optional.of(new AttendanceTime(480)),
@@ -143,6 +158,18 @@ public class GetUnbalancedLeaveTemporaryTest {
 
 	}
 
+	/*
+	 * テストしたい内容 暫定データから消化データを作成する
+	 * 
+	 * 準備するデータ 暫定代休管理データがある 
+	 * →紐づけがなくて残ってるやつ 
+	 * →紐づけしても残ってるやつ 
+	 * 暫定休出代休紐付け管理がある 
+	 * →最初から残ってない
+	 * →紐づけしたら残ってない 
+	 * モード : その他か
+	 * 
+	 */
 	@Test
 	public void testModeOther() {
 		Optional<SubstituteHolidayAggrResult> holidayAggrResult = Optional.of(new SubstituteHolidayAggrResult(
@@ -170,6 +197,8 @@ public class GetUnbalancedLeaveTemporaryTest {
 						new InterimRemain("077a8929-3df0-4fd6-859e-29e615a921ee", SID, GeneralDate.ymd(2019, 11, 8),
 								CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE),
 						new InterimRemain("876caf30-5a4d-47b7-8147-d646f74be08a", SID, GeneralDate.ymd(2019, 11, 9),
+								CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE),
+						new InterimRemain("876caf30-5a4d-47b7-8147-d646f74be08b", SID, GeneralDate.ymd(2019, 11, 10),
 								CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
 
 				require.getDayOffBySidPeriod(anyString, (DatePeriod) any);
@@ -181,7 +210,9 @@ public class GetUnbalancedLeaveTemporaryTest {
 						new InterimDayOffMng("077a8929-3df0-4fd6-859e-29e615a921ee", new RequiredTime(480),
 								new RequiredDay(1.0), new UnOffsetTime(480), new UnOffsetDay(1.0)),
 						new InterimDayOffMng("876caf30-5a4d-47b7-8147-d646f74be08a", new RequiredTime(480),
-								new RequiredDay(1.0), new UnOffsetTime(480), new UnOffsetDay(1.0)));
+								new RequiredDay(1.0), new UnOffsetTime(480), new UnOffsetDay(1.0)),
+						new InterimDayOffMng("876caf30-5a4d-47b7-8147-d646f74be08b", new RequiredTime(0),
+								new RequiredDay(0.0), new UnOffsetTime(480), new UnOffsetDay(1.0)));
 
 				require.getBreakDayOffMng("62d542c3-4b79-4bf3-bd39-7e7f06711c34", false, DataManagementAtr.INTERIM);
 				result = Arrays.asList(
@@ -218,6 +249,11 @@ public class GetUnbalancedLeaveTemporaryTest {
 						Tuple.tuple("876caf30-5a4d-47b7-8147-d646f74be08a", SID, MngDataStatus.RECORD, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 9)), 1.0, Optional.of(new AttendanceTime(480)),
 								OccurrenceDigClass.DIGESTION, 1.0, Optional.of(new AttendanceTime(480)),
+								Optional.empty()),
+
+						Tuple.tuple("876caf30-5a4d-47b7-8147-d646f74be08b", SID, MngDataStatus.RECORD, false,
+								Optional.of(GeneralDate.ymd(2019, 11, 10)), 0.0, Optional.of(new AttendanceTime(0)),
+								OccurrenceDigClass.DIGESTION, 0.0, Optional.of(new AttendanceTime(0)),
 								Optional.empty()
 
 						));

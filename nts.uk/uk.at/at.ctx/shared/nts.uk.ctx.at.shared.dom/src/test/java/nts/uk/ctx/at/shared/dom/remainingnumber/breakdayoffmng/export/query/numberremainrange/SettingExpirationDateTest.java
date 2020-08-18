@@ -25,6 +25,14 @@ public class SettingExpirationDateTest {
 
 	}
 
+	/*
+	 * 　テストしたい内容
+	 * 　　期限がない。
+	 * 
+	 * 　準備するデータ
+	 * 　　休暇使用期限が無期限
+
+	 * */
 	@Test
 	public void testUnlimit() {
 
@@ -36,6 +44,16 @@ public class SettingExpirationDateTest {
 
 	}
 
+	/*
+	 * 　テストしたい内容
+	 * 　　期限が当月。
+	 * 
+	 * 　準備するデータ
+	 * 　　日付チェックが必要　＞　締め日　→　翌月の締日
+	 * 
+	 * 　　日付チェックが必要　＜　締め日　→　当月締め日
+
+	 * */
 	@Test
 	public void testThisMonth() {
 
@@ -53,6 +71,17 @@ public class SettingExpirationDateTest {
 
 	}
 
+
+	/*
+	 * 　テストしたい内容
+	 * 　　期限が年度末。
+	 * 
+	 * 　準備するデータ
+	 * 　　月付チェックが必要　＞＝　期首月　→　来年
+	 * 
+	 * 　　月付チェックが必要　＜　期首月　→　今年度
+
+	 * */
 	@Test
 	public void testThisYear() {
 
@@ -70,6 +99,15 @@ public class SettingExpirationDateTest {
 
 	}
 
+	/*
+	 * 　テストしたい内容
+	 * 　　期限が12か月以内。
+	 * 
+	 * 　準備するデータ
+	 * 　　今月　→　休暇使用期限の月を加える
+	 * 
+
+	 * */
 	@Test
 	public void testOther() {
 

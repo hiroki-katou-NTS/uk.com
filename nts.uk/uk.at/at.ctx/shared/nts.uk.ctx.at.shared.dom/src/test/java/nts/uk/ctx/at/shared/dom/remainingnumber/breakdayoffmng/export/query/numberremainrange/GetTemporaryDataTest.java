@@ -71,6 +71,20 @@ public class GetTemporaryDataTest {
 	public void setUp() throws Exception {
 	}
 
+	
+	/*
+	 * テストしたい内容
+	 *　　暫定データから「逐次発生の休暇明細」を作成
+	 * 準備するデータ
+	 * 　　 暫定代休管理データがある
+	 * 
+　	 *　　　暫定休出管理データがある 
+	 * 
+	 * 　　　モード : 月次か
+	 * 
+	 * 　　　代休紐付け管理データがある 
+	 * 　　　　→　相殺済みできる
+	 */
 	@Test
 	public void testProcess() {
 
@@ -125,12 +139,6 @@ public class GetTemporaryDataTest {
 				require.findEmploymentHistory(CID, SID, (GeneralDate) any);
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
-
-//				require.getClosureDataByEmployee(SID, (GeneralDate) any);
-//				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
-
-//				require.getFirstMonth(CID);
-//				result = new CompanyDto(11);
 
 				require.getBreakDayOffMng("077a8929-3df0-4fd6-859e-29e615a921ea", anyBoolean, (DataManagementAtr) any);
 				result = Arrays.asList(

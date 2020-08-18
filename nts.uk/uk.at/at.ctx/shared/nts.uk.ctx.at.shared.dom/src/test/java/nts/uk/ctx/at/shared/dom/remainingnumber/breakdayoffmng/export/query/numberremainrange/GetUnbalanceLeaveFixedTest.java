@@ -47,6 +47,14 @@ public class GetUnbalanceLeaveFixedTest {
 	public void setUp() throws Exception {
 	}
 
+	/*
+	 * 　テストしたい内容
+	 * 　　データを作成しない
+	 * 
+	 * 　準備するデータ
+	 * 　　確定データがない
+	 * 　　　
+	 * */
 	@Test
 	public void testUnbalanceUnusedEmpty() {
 
@@ -64,6 +72,19 @@ public class GetUnbalanceLeaveFixedTest {
 		assertThat(actualResult).isEqualTo(new ArrayList<>());
 	}
 
+	/*
+	 * 　テストしたい内容
+	 * 　　未相殺のデータだけが取得できるか。
+	 * 
+	 * 　準備するデータ
+	 * 　　未相殺のデータ
+	 * 　　　→紐づけがなくて残ってるやつ
+	 * 　　　→紐づけしても残ってるやつ
+	 * 　　相殺済みのデータ
+	 * 　　　→最初から残ってない
+	 * 　　　→紐づけしたら残ってない
+
+	 * */
 	@Test
 	public void testUnbalanceUnused() {
 
@@ -72,6 +93,10 @@ public class GetUnbalanceLeaveFixedTest {
 				GeneralDate.ymd(2019, 11, 10), 1.0, 240, 1.0, 240));
 		lstComMock.add(new CompensatoryDayOffManaData("adda6a46-2cbe-48c8-85f8-c04ca554e134", CID, SID, false,
 				GeneralDate.ymd(2019, 11, 12), 1.0, 240, 1.0, 240));
+		lstComMock.add(new CompensatoryDayOffManaData("adda6a46-2cbe-48c8-85f8-c04ca554e137", CID, SID, false,
+				GeneralDate.ymd(2019, 11, 13), 1.0, 240, 0.0, 0));
+		lstComMock.add(new CompensatoryDayOffManaData("adda6a46-2cbe-48c8-85f8-c04ca554e138", CID, SID, false,
+				GeneralDate.ymd(2019, 11, 14), 1.0, 240, 1.0, 240));
 
 		new Expectations() {
 			{
@@ -110,6 +135,9 @@ public class GetUnbalanceLeaveFixedTest {
 						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e133", SID, MngDataStatus.CONFIRMED, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 10)), 1.0, Optional.of(new AttendanceTime(240)),
 								OccurrenceDigClass.DIGESTION, 0.5, Optional.of(new AttendanceTime(120))),
+						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e138", SID, MngDataStatus.CONFIRMED, false,
+								Optional.of(GeneralDate.ymd(2019, 11, 14)), 1.0, Optional.of(new AttendanceTime(240)),
+								OccurrenceDigClass.DIGESTION, 1.0, Optional.of(new AttendanceTime(240))),
 						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e135", SID, MngDataStatus.CONFIRMED, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 11)), 1.0, Optional.of(new AttendanceTime(240)),
 								OccurrenceDigClass.DIGESTION, 1.0, Optional.of(new AttendanceTime(240))));

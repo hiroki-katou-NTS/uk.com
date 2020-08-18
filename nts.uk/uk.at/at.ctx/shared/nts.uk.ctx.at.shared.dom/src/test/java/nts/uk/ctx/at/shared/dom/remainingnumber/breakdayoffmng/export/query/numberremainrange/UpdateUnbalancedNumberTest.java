@@ -34,6 +34,14 @@ public class UpdateUnbalancedNumberTest {
 	public void setUp() throws Exception {
 	}
 
+	/*
+	 * 　テストしたい内容
+	 *     　未相殺数を更新しない
+	 * 
+	 * 　準備するデータ
+	 * 　　「逐次発生の休暇明細」(消化)．未相殺数> 「逐次発生の休暇明細」(発生)．未相殺数
+	 *           逐次発生休暇設定.時間管理区分 = false
+	 * */
 	@Test
 	// manager time = false, accdigest >= occur
 	public void test() {
@@ -93,6 +101,14 @@ public class UpdateUnbalancedNumberTest {
 
 	@Test
 	// manager time = false, accdigest < occur
+	/*
+	 * 　テストしたい内容
+	 *     　未相殺数を更新しない
+	 * 
+	 * 　準備するデータ
+	 * 　　「逐次発生の休暇明細」(消化)．未相殺数< 「逐次発生の休暇明細」(発生)．未相殺数
+	 *           逐次発生休暇設定.時間管理区分 = false
+	 * */
 	public void test2() {
 
 		TimeLapseVacationSetting setting = new TimeLapseVacationSetting(
@@ -150,6 +166,14 @@ public class UpdateUnbalancedNumberTest {
 
 	@Test
 	// manager time = true, accdigest >= occur
+	/*
+	 * 　テストしたい内容
+	 *     　未相殺数を更新しない
+	 * 
+	 * 　準備するデータ
+	 * 　　「逐次発生の休暇明細」(消化)．未相殺数> 「逐次発生の休暇明細」(発生)．未相殺数
+	 *           逐次発生休暇設定.時間管理区分 = true
+	 * */
 	public void test3() {
 
 		TimeLapseVacationSetting setting = new TimeLapseVacationSetting(
@@ -186,7 +210,7 @@ public class UpdateUnbalancedNumberTest {
 						OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554bbbb")
 								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
 										Optional.of(new AttendanceTime(480))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
+								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
 										Optional.of(new AttendanceTime(360))))
 								.build(),
 				new AttendanceTime(0), new AttendanceTime(0));
@@ -196,7 +220,7 @@ public class UpdateUnbalancedNumberTest {
 				"adda6a46-2cbe-48c8-85f8-c04ca554cccc")
 						.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
 								Optional.of(new AttendanceTime(480))))
-						.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
+						.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
 								Optional.of(new AttendanceTime(0))))
 						.build();
 
@@ -207,6 +231,14 @@ public class UpdateUnbalancedNumberTest {
 
 	@Test
 	// manager time = true, accdigest < occur
+	/*
+	 * 　テストしたい内容
+	 *     　未相殺数を更新しない
+	 * 
+	 * 　準備するデータ
+	 * 　　「逐次発生の休暇明細」(消化)．未相殺数< 「逐次発生の休暇明細」(発生)．未相殺数
+	 *           逐次発生休暇設定.時間管理区分 = true
+	 * */
 	public void test4() {
 
 		TimeLapseVacationSetting setting = new TimeLapseVacationSetting(
@@ -243,7 +275,7 @@ public class UpdateUnbalancedNumberTest {
 						OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554bbbb")
 								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
 										Optional.of(new AttendanceTime(480))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
+								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
 										Optional.of(new AttendanceTime(0))))
 								.build(),
 				new AttendanceTime(0), new AttendanceTime(0));
@@ -253,7 +285,7 @@ public class UpdateUnbalancedNumberTest {
 				"adda6a46-2cbe-48c8-85f8-c04ca554cccc")
 						.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
 								Optional.of(new AttendanceTime(480))))
-						.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
+						.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
 								Optional.of(new AttendanceTime(360))))
 						.build();
 
@@ -264,6 +296,15 @@ public class UpdateUnbalancedNumberTest {
 
 	@Test
 	// manager time = false, accdigest >= occur 振休
+		/*
+		 * 　テストしたい内容
+		 *         振休
+		 *     　未相殺数を更新しない
+		 * 
+		 * 　準備するデータ
+		 * 　　「逐次発生の休暇明細」(消化)．未相殺数> 「逐次発生の休暇明細」(発生)．未相殺数
+		 *           逐次発生休暇設定.時間管理区分 = false
+		 * */
 	public void test5() {
 
 		TimeLapseVacationSetting setting = new TimeLapseVacationSetting(
@@ -321,6 +362,15 @@ public class UpdateUnbalancedNumberTest {
 
 	@Test
 	// manager time = false, accdigest < occur
+	/*
+	 * 　テストしたい内容
+	 *         振休
+	 *     　未相殺数を更新しない
+	 * 
+	 * 　準備するデータ
+	 * 　　「逐次発生の休暇明細」(消化)．未相殺数< 「逐次発生の休暇明細」(発生)．未相殺数
+	 *           逐次発生休暇設定.時間管理区分 = false
+	 * */
 	public void test6() {
 
 		TimeLapseVacationSetting setting = new TimeLapseVacationSetting(

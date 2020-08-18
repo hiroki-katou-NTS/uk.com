@@ -39,6 +39,13 @@ public class CalcNumberOccurUsesTest {
 	public void setUp() throws Exception {
 	}
 
+	
+	/*
+	 * テストしたい内容
+	 *　　 逐次発生の休暇明細から「残時間 , 残日数、未消化時間、未消化日数 」を計算する
+	 * 準備するデータ
+	 * 　　  逐次発生の休暇明細がある
+	 */
 	@Test
 	public void testProcess() {
 

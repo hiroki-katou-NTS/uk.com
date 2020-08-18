@@ -45,6 +45,19 @@ public class AcquisitionRemainNumAtStartCountTest {
 	public void setUp() throws Exception {
 	}
 
+	/*
+	 * テストしたい内容
+	 *　　確定データから「逐次発生の休暇明細」を作成
+	 * 　　繰越数を計算する
+	 * 準備するデータ
+	 * 　　代休管理データがある
+	 * 　　　未相殺数がなくて作成しない
+	 * 
+　	 *　　休出管理データがある 
+	 * 　　　未使用数がなくて作成しない
+	 * 
+	 * 　　繰越数がない（代休日数　＝　休出日数）
+	 */
 	@Test
 	public void test() {
 
@@ -53,11 +66,11 @@ public class AcquisitionRemainNumAtStartCountTest {
 				require.getBySidYmd(anyString, anyString, (GeneralDate) any);
 				result = Arrays.asList(
 						new CompensatoryDayOffManaData("adda6a46-2cbe-48c8-85f8-c04ca554e133", CID, SID, false,
-								GeneralDate.ymd(2019, 11, 9), 1.0, 1, 1.0, 1),
+								GeneralDate.ymd(2019, 11, 9), 1.0, 1, 1.0, 0),
 						new CompensatoryDayOffManaData("adda6a46-2cbe-48c8-85f8-c04ca554e134", CID, SID, false,
-								GeneralDate.ymd(2019, 11, 10), 1.0, 1, 1.0, 1),
+								GeneralDate.ymd(2019, 11, 10), 1.0, 1, 1.0, 0),
 						new CompensatoryDayOffManaData("adda6a46-2cbe-48c8-85f8-c04ca554e135", CID, SID, false,
-								GeneralDate.ymd(2019, 11, 11), 1.0, 1, -1.0, -1));
+								GeneralDate.ymd(2019, 11, 11), 1.0, 1, 0.0, 0));
 
 				require.getBySidYmd(anyString, anyString, (GeneralDate) any, (DigestionAtr) any);
 				result = Arrays.asList(
@@ -68,7 +81,7 @@ public class AcquisitionRemainNumAtStartCountTest {
 								GeneralDate.ymd(2019, 11, 13), GeneralDate.max(), 1.0, 0, 1.0, 0,
 								DigestionAtr.UNUSED.value, 0, 0),
 						new LeaveManagementData("adda6a46-2cbe-48c8-85f8-c04ca554e138", CID, SID, false,
-								GeneralDate.ymd(2019, 11, 14), GeneralDate.max(), 1.0, 0, -1.0, -1,
+								GeneralDate.ymd(2019, 11, 14), GeneralDate.max(), 1.0, 0, 0.0, 0,
 								DigestionAtr.UNUSED.value, 0, 0));
 			}
 		};
@@ -78,7 +91,7 @@ public class AcquisitionRemainNumAtStartCountTest {
 				GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2019, 11, 30), true, lstAccuAbsenDetail,
 				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 		assertThat(resultActual.getCarryForwardDays()).isEqualTo(0.0);
-		assertThat(resultActual.getCarryForwardTime()).isEqualTo(-2);
+		assertThat(resultActual.getCarryForwardTime()).isEqualTo(0);
 
 		assertThat(lstAccuAbsenDetail).extracting(x -> x.getManageId(), x -> x.getEmployeeId(), x -> x.getDataAtr(),
 				x -> x.getDateOccur().isUnknownDate(), x -> x.getDateOccur().getDayoffDate(),
@@ -88,19 +101,19 @@ public class AcquisitionRemainNumAtStartCountTest {
 
 						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e133", SID, MngDataStatus.CONFIRMED, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 9)), 1.0, Optional.of(new AttendanceTime(1)),
-								OccurrenceDigClass.DIGESTION, 1.0, Optional.of(new AttendanceTime(1))),
+								OccurrenceDigClass.DIGESTION, 1.0, Optional.of(new AttendanceTime(0))),
 
 						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e134", SID, MngDataStatus.CONFIRMED, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 10)), 1.0, Optional.of(new AttendanceTime(1)),
-								OccurrenceDigClass.DIGESTION, 1.0, Optional.of(new AttendanceTime(1))),
+								OccurrenceDigClass.DIGESTION, 1.0, Optional.of(new AttendanceTime(0))),
 
 						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e136", SID, MngDataStatus.CONFIRMED, false,
-								Optional.of(GeneralDate.ymd(2019, 11, 12)), 1.0, Optional.of(new AttendanceTime(0)), OccurrenceDigClass.OCCURRENCE,
-								1.0, Optional.of(new AttendanceTime(0))),
+								Optional.of(GeneralDate.ymd(2019, 11, 12)), 1.0, Optional.of(new AttendanceTime(0)),
+								OccurrenceDigClass.OCCURRENCE, 1.0, Optional.of(new AttendanceTime(0))),
 
 						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e137", SID, MngDataStatus.CONFIRMED, false,
-								Optional.of(GeneralDate.ymd(2019, 11, 13)), 1.0, Optional.of(new AttendanceTime(0)), OccurrenceDigClass.OCCURRENCE,
-								1.0, Optional.of(new AttendanceTime(0))));
+								Optional.of(GeneralDate.ymd(2019, 11, 13)), 1.0, Optional.of(new AttendanceTime(0)),
+								OccurrenceDigClass.OCCURRENCE, 1.0, Optional.of(new AttendanceTime(0))));
 
 	}
 

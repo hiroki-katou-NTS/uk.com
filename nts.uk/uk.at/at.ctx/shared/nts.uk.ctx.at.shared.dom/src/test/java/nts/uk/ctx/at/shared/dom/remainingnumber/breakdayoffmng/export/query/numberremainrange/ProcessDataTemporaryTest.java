@@ -112,12 +112,6 @@ public class ProcessDataTemporaryTest {
 
 		// 置き換える後の「暫定代休管理データ」：2019/08/25、2019/09/05、2019/09/20、2019/10/03
 
-//		assertThat(interimMngResult).extracting(x -> x.getRemainManaID(), x -> x.getYmd()).containsExactly(
-//		Tuple.tuple("R76caf30-5a4d-47b7-8147-d646f74be08a", GeneralDate.ymd(2019, 8, 25)),
-//		Tuple.tuple("P76caf30-5a4d-47b7-8147-d646f74be08a", GeneralDate.ymd(2019, 9, 5)),
-//		Tuple.tuple("P77a8929-3df0-4fd6-859e-29e615a921ea", GeneralDate.ymd(2019, 9, 20)),
-//		Tuple.tuple("R76caf30-5a4d-47b7-8147-d646f74be08d", GeneralDate.ymd(2019, 10, 3)));
-
 		assertThat(interimMngResult).extracting(x -> x.getYmd()).containsExactly(GeneralDate.ymd(2019, 8, 25),
 				GeneralDate.ymd(2019, 10, 3), GeneralDate.ymd(2019, 9, 5), GeneralDate.ymd(2019, 9, 20));
 
