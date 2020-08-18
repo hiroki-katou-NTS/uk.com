@@ -124,15 +124,16 @@ public class ReservationModifyQuery {
             List<ClosingTimeDto> bentoClosingTimes = new ArrayList<>();
             BentoReservationClosingTime closingTime = menu.getClosingTime();
             ReservationClosingTime closingTime1 = closingTime.getClosingTime1();
+            Integer start1 = closingTime1.getStart().isPresent() ? closingTime1.getStart().get().v() : null;
+            bentoClosingTimes.add(new ClosingTimeDto(ReservationClosingTimeFrame.FRAME1.value, closingTime1.getReservationTimeName().v(), closingTime1.getFinish().v(), start1));
+
             Optional<ReservationClosingTime> closingTime2Opt = closingTime.getClosingTime2();
-            if (reservationDate.getClosingTimeFrame() == ReservationClosingTimeFrame.FRAME2 && closingTime2Opt.isPresent()) {
+            if (closingTime2Opt.isPresent()) {
                 ReservationClosingTime closingTime2 = closingTime2Opt.get();
-                Integer start = closingTime2.getStart().isPresent() ? closingTime2.getStart().get().v() : null;
-                bentoClosingTimes.add(new ClosingTimeDto(closingTime2.getReservationTimeName().v(), closingTime2.getFinish().v(), start));
-            } else {
-                Integer start = closingTime1.getStart().isPresent() ? closingTime1.getStart().get().v() : null;
-                bentoClosingTimes.add(new ClosingTimeDto(closingTime1.getReservationTimeName().v(), closingTime1.getFinish().v(), start));
+                Integer start2 = closingTime2.getStart().isPresent() ? closingTime2.getStart().get().v() : null;
+                bentoClosingTimes.add(new ClosingTimeDto(ReservationClosingTimeFrame.FRAME2.value, closingTime2.getReservationTimeName().v(), closingTime2.getFinish().v(), start2));
             }
+
             result.setBentoClosingTimes(bentoClosingTimes);
         }
 
