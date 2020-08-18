@@ -8,6 +8,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -37,23 +40,30 @@ public class CopyWorkTypeWorkTime {
 		// ドメインモデル「労働条件項目」を取得する
 		Optional<WorkingConditionItem> optWorkingConditionItem = this.workingConditionItemRepository
 				.getBySidAndStandardDate(employeeId, ymd);
-		if (!optWorkingConditionItem.isPresent()
-				|| !optWorkingConditionItem.get().getWorkCategory().getHolidayWork().getWorkTypeCode().isPresent()) {
+		if (!optWorkingConditionItem.isPresent() || optWorkingConditionItem.get().getWorkCategory().getHolidayTime() == null
+				|| !optWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode().isPresent()) {
 			listErrorMessageInfo.add(new ErrorMessageInfo(companyId, employeeId, ymd, ExecutionContent.DAILY_CREATION,
 					new ErrMessageResource("012"), new ErrMessageContent(TextResource.localize("Msg_430"))));
 			return listErrorMessageInfo;
 		}
-		WorkTypeCode workTypeCode = optWorkingConditionItem.get().getWorkCategory().getHolidayWork().getWorkTypeCode()
+		WorkTypeCode workTypeCode = optWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode()
 				.get();
-		WorkTimeCode workTimeCode = optWorkingConditionItem.get().getWorkCategory().getHolidayWork().getWorkTimeCode()
-				.isPresent() ? optWorkingConditionItem.get().getWorkCategory().getHolidayWork().getWorkTimeCode().get()
+		WorkTimeCode workTimeCode = optWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTimeCode() !=null 
+				&& optWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTimeCode()
+				.isPresent() ? optWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTimeCode().get()
 						: null;
+		WorkInformation recordInfo = new WorkInformation(workTimeCode, workTypeCode);
 		//休日の勤務種類を勤務予定に写す
-		workInformation.getScheduleInfo().setWorkTypeCode(workTypeCode);
-		workInformation.getScheduleInfo().setWorkTimeCode(workTimeCode);
+		workInformation.setScheduleInfo(recordInfo);
 		//休日の勤務種類を勤務実績に写す
-		workInformation.getRecordInfo().setWorkTypeCode(workTypeCode);
-		workInformation.getRecordInfo().setWorkTimeCode(workTimeCode);
+		workInformation.setRecordInfo(recordInfo);
+		//set default 
+		//set 計算状態
+		workInformation.setCalculationState(CalculationState.No_Calculated);
+		//set 直行区分
+		workInformation.setGoStraightAtr(NotUseAttribute.Not_use);
+		//set 直帰区分
+		workInformation.setBackStraightAtr(NotUseAttribute.Not_use);
 		
 		return listErrorMessageInfo;
 	}
