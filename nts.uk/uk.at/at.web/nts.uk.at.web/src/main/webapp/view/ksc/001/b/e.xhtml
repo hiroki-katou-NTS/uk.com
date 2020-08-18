@@ -11,6 +11,13 @@
 				<label tabindex="-1">#{i18n.getText('KSC001_28')}</label>
 			</div>
 			<div class="contentELable">
+                <div class="lableCaseAll cf" tabindex="-1">
+                    <div class="labelSelection" tabindex="-1"
+                         data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_31')}</div>
+                    <div tabindex="-1">
+                        <label data-bind="text: infoPeriodDate" tabindex="-1" />
+                    </div>
+                </div>
 				<div class="lableCaseAll cf" tabindex="-1">
 					<div class="labelSelection" tabindex="-1"
 						data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_29')}</div>
@@ -39,11 +46,14 @@
 				</div>
 			</div>
 		</div>
-		<div class="btns">
+		<div class="buttonPrevNext">
+			<div class="buttonBeginPrevious" tabindex="-1">
 			<button data-bind="click: previousPageE" class="large"
 				tabindex="1">#{i18n.getText('KSC001_102')}</button>
+			</div>
+			<div class="buttonBeginNext">	
 			<button class="proceed x-large" id="buttonFinishPageE"
-				data-bind="click: finish" tabindex="2">#{i18n.getText('KSC001_34')}</button>
+				data-bind="click: finish" tabindex="2">#{i18n.getText('KSC001_34')}</button></div>
 		</div>
 
 	</ui:composition>
