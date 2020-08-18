@@ -25,6 +25,7 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDir
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkGoBackDirectOutput;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.TargetWorkTypeByApp;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflect;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflectRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -127,40 +128,35 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 	}
 
 	@Override
-	public List<WorkType> getWorkTypes(String companyId, AppEmploymentSet appEmploymentSet) {
-		
-		List<WorkType> result = workTypeRepository.findNotDeprecated(companyId);
-		// sort 
-//		result = result.stream().sorted().collect(Collectors.toList());
-		
-		if (appEmploymentSet == null) {
+	public List<WorkType> getWorkTypes(String companyID, AppEmploymentSet appEmploymentSet) {
+		List<WorkType> result = Collections.emptyList();
+		if(appEmploymentSet == null) {
+			// ドメインモデル「勤務種類」を取得
+			result = workTypeRepository.findNotDeprecated(companyID);
+			result =  result.stream().filter(x -> x.getDeprecate() == DeprecateClassification.NotDeprecated).collect(Collectors.toList());
 			return result;
 		}
 		// INPUT．雇用別申請承認設定．申請別対象勤務種類をチェックする
-		if (CollectionUtil.isEmpty(appEmploymentSet.getTargetWorkTypeByAppLst())) {
-			if (!CollectionUtil.isEmpty(result)) {
-				result =  result.stream().filter(x -> x.getDeprecate() == DeprecateClassification.NotDeprecated).collect(Collectors.toList());
-			}
+		Optional<TargetWorkTypeByApp> opWorkTypeObj = appEmploymentSet.getTargetWorkTypeByAppLst().stream()
+				.filter(x -> x.getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION).findAny();
+		if(!opWorkTypeObj.isPresent()) {
+			// ドメインモデル「勤務種類」を取得して返す
+			result = workTypeRepository.findNotDeprecated(companyID);
+			result =  result.stream().filter(x -> x.getDeprecate() == DeprecateClassification.NotDeprecated).collect(Collectors.toList());
+			return result;
+		}
+		if(!opWorkTypeObj.get().isDisplayWorkType() || CollectionUtil.isEmpty(opWorkTypeObj.get().getWorkTypeLst())) {
+			// ドメインモデル「勤務種類」を取得して返す
+			result = workTypeRepository.findNotDeprecated(companyID);
+			result =  result.stream().filter(x -> x.getDeprecate() == DeprecateClassification.NotDeprecated).collect(Collectors.toList());
 			return result;
 		}
 		// INPUT．雇用別申請承認設定．申請別対象勤務種類．勤務種類リストを取得する
-		Optional<TargetWorkTypeByApp> tarOp = appEmploymentSet.getTargetWorkTypeByAppLst().stream().filter(y -> y.getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION).findFirst();
-		List<String> workTypeLst = Collections.emptyList();
-		if (tarOp.isPresent()) {
-			workTypeLst = tarOp.get().getWorkTypeLst();
-		}
-		final List<String> listWorkType = workTypeLst;
+		List<String> workTypeCDLst = opWorkTypeObj.get().getWorkTypeLst();
 		// ドメインモデル「勤務種類」を取得
-		// filter
-		if (CollectionUtil.isEmpty(workTypeLst)) {
-			return Collections.emptyList();
-		}else {
-			result =  result.stream().filter(x -> x.getDeprecate() == DeprecateClassification.NotDeprecated && listWorkType.contains(x.getWorkTypeCode().v())
-					 ).collect(Collectors.toList());
-			
-			return result;
-					
-		}
+		result = workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCDLst);
+		result =  result.stream().filter(x -> x.getDeprecate() == DeprecateClassification.NotDeprecated).collect(Collectors.toList());
+		return result;
 	}
 
 	@Override
