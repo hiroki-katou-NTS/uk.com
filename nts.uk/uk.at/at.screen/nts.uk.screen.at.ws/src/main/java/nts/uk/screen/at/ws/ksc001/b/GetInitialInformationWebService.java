@@ -1,4 +1,4 @@
-package nts.uk.screen.at.ws.ksc001;
+package nts.uk.screen.at.ws.ksc001.b;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.ksc001.b.GetInitialInformationScreenQuery;
