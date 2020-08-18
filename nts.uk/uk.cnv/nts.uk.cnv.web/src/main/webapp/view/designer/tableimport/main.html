@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+
+<body>
+<h1>Table Design Importer</h1>
+<table>
+	<tr>
+		<td><button id="view">表示 view</button></td>
+		<td><button id="import">取込 import</button></td>
+	</tr>
+	<tr>
+		<td class="row_label">Table Design:</td>
+		<td class="row_label">Create Table SQL:</td>
+	</tr>
+	<tr>
+		<td style="width:400px">
+			<textarea id="view" style="font-size:80%; width:100%; height:600px;" spellcheck="false"></textarea>
+		</td>
+		<td style="width:400px">
+			<textarea id="sql" style="font-size:80%; width:100%; height:600px;" spellcheck="false"></textarea>
+		</td>
+	</tr>
+</table><br />
+<br />
+<hr />
+<textarea id="result" style="font-size:80%; width:800px; height:200px;" data-bind="value: result"></textarea>
+
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+
+<script>
+var server = "http://" + location.host;
+var ajaxOption = {
+	type: "POST",
+	contentType: "application/json",
+	dataType: "json",
+	
+	build: function (path, data) {
+		return $.extend({url:server + path, data: JSON.stringify(data)}, this);
+	}
+};
+$(function () {	
+	$("#import").click(function () {
+		$.ajax(ajaxOption.build("/nts.uk.cnv.web/webapi/cnv/tabledesign/import", {
+			createTableSql: $('#sql').val()
+		})).done(function (res) {
+			console.log(res);
+		}).fail(function(rej){
+			console.log(rej);
+		});
+	});
+});
+</script>
+</body>
+</html>
