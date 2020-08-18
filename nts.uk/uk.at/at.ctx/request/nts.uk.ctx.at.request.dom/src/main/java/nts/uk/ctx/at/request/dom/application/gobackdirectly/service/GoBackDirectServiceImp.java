@@ -133,7 +133,7 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		if(appEmploymentSet == null) {
 			// ドメインモデル「勤務種類」を取得
 			result = workTypeRepository.findNotDeprecated(companyID);
-			result =  result.stream().filter(x -> x.getDeprecate() == DeprecateClassification.NotDeprecated).collect(Collectors.toList());
+			result =  result.stream().filter(x -> x.getDeprecate() == DeprecateClassification.NotDeprecated && !x.getDailyWork().isHolidayType()).collect(Collectors.toList());
 			return result;
 		}
 		// INPUT．雇用別申請承認設定．申請別対象勤務種類をチェックする
@@ -142,20 +142,20 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		if(!opWorkTypeObj.isPresent()) {
 			// ドメインモデル「勤務種類」を取得して返す
 			result = workTypeRepository.findNotDeprecated(companyID);
-			result =  result.stream().filter(x -> x.getDeprecate() == DeprecateClassification.NotDeprecated).collect(Collectors.toList());
+			result =  result.stream().filter(x -> x.getDeprecate() == DeprecateClassification.NotDeprecated && !x.getDailyWork().isHolidayType()).collect(Collectors.toList());
 			return result;
 		}
 		if(!opWorkTypeObj.get().isDisplayWorkType() || CollectionUtil.isEmpty(opWorkTypeObj.get().getWorkTypeLst())) {
 			// ドメインモデル「勤務種類」を取得して返す
 			result = workTypeRepository.findNotDeprecated(companyID);
-			result =  result.stream().filter(x -> x.getDeprecate() == DeprecateClassification.NotDeprecated).collect(Collectors.toList());
+			result =  result.stream().filter(x -> x.getDeprecate() == DeprecateClassification.NotDeprecated && !x.getDailyWork().isHolidayType()).collect(Collectors.toList());
 			return result;
 		}
 		// INPUT．雇用別申請承認設定．申請別対象勤務種類．勤務種類リストを取得する
 		List<String> workTypeCDLst = opWorkTypeObj.get().getWorkTypeLst();
 		// ドメインモデル「勤務種類」を取得
 		result = workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCDLst);
-		result =  result.stream().filter(x -> x.getDeprecate() == DeprecateClassification.NotDeprecated).collect(Collectors.toList());
+		result =  result.stream().filter(x -> x.getDeprecate() == DeprecateClassification.NotDeprecated && !x.getDailyWork().isHolidayType()).collect(Collectors.toList());
 		return result;
 	}
 
