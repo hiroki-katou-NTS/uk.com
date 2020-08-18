@@ -2,7 +2,7 @@
   <div>
     <label class="col-12 mb-3"
       >{{ "KDPS01_66" | i18n }}
-      {{ setting.error.lastDateError | date("YYYY/MM/DD（ddd）") }}
+      {{ setting.errorDate | date("YYYY/MM/DD（ddd）") }}
     </label>
 
     <label
@@ -28,6 +28,7 @@
     </div>
 
     <button
+      v-focus
       type="button"
       v-on:click="$close"
       class="col-12 btn btn-secondary btn-block mt-2"

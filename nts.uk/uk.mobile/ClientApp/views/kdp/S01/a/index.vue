@@ -28,7 +28,7 @@
     <div>
       <pre
         class="pl-4 pt-2"
-        style="min-height: 4rem;"
+        style="min-height: 4rem; white-space: break-spaces;"
         v-bind:style="{
           color: setting.stampPageComment.commentColor
         }"
