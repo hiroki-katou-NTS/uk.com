@@ -110,7 +110,6 @@ module nts.uk.com.view.cdl008.a {
             private selectedWorkplace(): void {
                 var self = this;
                 var workplaceInfor : Array <any> = [];
-                var workplaceName : any;
                 if (self.isMultipleSelect) {
                     if (!self.selectedMulWorkplace() || self.selectedMulWorkplace().length == 0) {
                         if (self.startMode == StartMode.WORKPLACE) {
@@ -149,13 +148,11 @@ module nts.uk.com.view.cdl008.a {
                     let value = _.find(listWpinfor, x => {
                         return x.id == selectedCode
                     });
-                    workplaceName = value.name;
                     workplaceInfor.push(new OutPut(selectedCode, value.code, value.name));
                 }
                 
                 setShare('outputCDL008', selectedCode);
                 setShare('baseDateCDL008', self.baseDate());
-                setShare('workplaceName', workplaceName);
                 setShare('workplaceInfor', workplaceInfor);
                 nts.uk.ui.windows.close();
             }
