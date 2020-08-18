@@ -315,7 +315,7 @@ export class KdpS01AComponent extends Vue {
                 employeeId: userInfo.employeeId,
                 employeeCode: userInfo.employeeCode
             }).then(() => {
-
+                vm.getStampToSuppress();
                 vm.$http.post('at', servicePath.getOmission, stampButton).then((result: any) => {
                     let data: model.IGetOmissionContentDto = result.data;
                     if (data && data.errorInfo && data.errorInfo.length > 0) {
@@ -333,7 +333,7 @@ export class KdpS01AComponent extends Vue {
                 attendanceItemIds: vm.setting.lstDisplayItemId
             }
             ).then(() => {
-
+                vm.getStampToSuppress();
                 vm.$http.post('at', servicePath.getOmission, stampButton).then((result: any) => {
                     let data: model.IGetOmissionContentDto = result.data;
 

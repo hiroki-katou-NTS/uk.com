@@ -51,7 +51,7 @@
       </div>
     </div>
 
-    <table class="table mt-3 table-bordered uk-table-striped">
+    <table v-focus class="table mt-3 table-bordered uk-table-striped">
       <thead>
         <tr>
           <th scope="col">{{ "KDPS01_61" | i18n }}</th>
@@ -85,7 +85,7 @@
     <button
       type="button"
       v-on:click="$close"
-      class="mt-3 col-12 btn btn-secondary btn-block"
+      class="mt-3 btn btn-secondary btn-block"
     >
       {{ "KDPS01_64" | i18n }}
     </button>

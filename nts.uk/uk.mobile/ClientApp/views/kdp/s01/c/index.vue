@@ -101,6 +101,7 @@
       </button>
     </div>
     <button
+      v-focus
       type="button"
       v-on:click="$close"
       class="col-12 btn btn-secondary btn-block"

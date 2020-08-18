@@ -62,7 +62,7 @@
       <label> {{ "KDPS01_36" | i18n }}</label>
     </div>
     <div>
-      <button
+      <button v-focus
         type="button"
         v-on:click="$close"
         class="col-12 mt-3 btn btn-secondary"
