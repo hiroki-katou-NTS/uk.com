@@ -1,10 +1,8 @@
 package nts.uk.ctx.at.record.app.command.reservation.bento;
 
-import lombok.AllArgsConstructor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoMakeOrderService;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
@@ -16,13 +14,11 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 /**
  * 注文済みにする
- * @author Hoang Anh Tuan
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -39,9 +35,7 @@ public class BentoMakeOrderCommandHandler extends CommandHandler<List<BentoMakeO
     @Override
     protected void handle(CommandHandlerContext<List<BentoMakeOrderCommand>> context) {
         OrderDeadline orderDeadlineTemp = OrderDeadline.DURING_CLOSING_PERIOD;
-        RequireImpl require = new RequireImpl(bentoReservationRepository);
         Optional<BentoReservation> temp;
-        List<BentoReservation> result = new ArrayList<>();
         List<BentoMakeOrderCommand> commands = context.getCommand();
         Optional<BentoReservationSetting> bentoReservationSetting = bentoReservationSettingRepository.findByCId(AppContexts.user().companyId());
 
@@ -52,23 +46,16 @@ public class BentoMakeOrderCommandHandler extends CommandHandler<List<BentoMakeO
             for(BentoMakeOrderCommand command :commands ){
                 temp = bentoReservationRepository.find(command.getReservationRegisterInfo(), command.getReservationDate());
                 if(temp.isPresent()){
-                    temp.get().setOrdered(ORDERED);
-                    result.add(temp.get());
-                    AtomTask persist = BentoMakeOrderService.update(require, temp.get());
+                    BentoReservation bentoReservation = temp.get();
+                    bentoReservation.setOrdered(ORDERED);
+                    AtomTask persist = AtomTask.of(() -> {
+                        bentoReservationRepository.update(bentoReservation);
+                    });
                     transaction.execute(() -> {
                         persist.run();
                     });
                 }
             }
-        }
-    }
-
-    @AllArgsConstructor
-    private class RequireImpl implements BentoMakeOrderService.Require{
-        private BentoReservationRepository repository;
-        @Override
-        public void update(BentoReservation bentoReservation){
-            this.repository.update(bentoReservation);
         }
     }
 }

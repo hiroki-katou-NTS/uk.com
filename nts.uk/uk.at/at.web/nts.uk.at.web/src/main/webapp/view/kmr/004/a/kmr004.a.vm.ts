@@ -1,219 +1,310 @@
 module nts.uk.at.view.kmr004.a {
-    import getText = nts.uk.resource.getText;
+    const API = {
+        START: "screen/at/record/reservation-conf-list/start",
+        PDF_ALL : "order/report/all/pdf",
+        PDF_DETAIL : "order/report/detail/pdf",
+        EXCEL : "order/report/print/excel",
+        EXCEL_DETAL : "order/report/print/excel-detail",
+        exportFile: "bento/report/reservation/month"
+    };
+
+    // const PATH = {
+    //     REDIRECT : '/view/ccg/008/a/index.xhtml'
+    // }
+
     import tree = kcp.share.tree;
-    import block = nts.uk.ui.block;
+    import formatDate = nts.uk.time.formatDate;
 
     @bean()
-	export class KMR004AViewModel extends ko.ViewModel {
+    export class KMR004AViewModel extends ko.ViewModel {
 
-        dateRangeValue: KnockoutObservable<any>;
+        model : OutputCondition = new OutputCondition();
+        // // date range picker
+        // dateRangeValue: KnockoutObservable<any> = ko.observable({
+        //     startDate: formatDate( new Date(), 'yyyy/MM/dd'),
+        //     endDate: formatDate( new Date(), 'yyyy/MM/dd')
+        // });
 
-        roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: KnockoutObservable<number>;
+        selectedRuleCode: KnockoutObservable<number> = ko.observable(1);
 
-        multiSelectedId: KnockoutObservable<any>;
-        baseDate: KnockoutObservable<Date>;
-        alreadySettingList: KnockoutObservableArray<tree.UnitAlreadySettingModel>;
-        treeGrid: tree.TreeComponentOption;
+		// base date for KCP004, KCP012
+		baseDate: KnockoutObservable<Date> = ko.observable(new Date());
 
-		checked1: KnockoutObservable<boolean> = ko.observable(true);
-		enable1: KnockoutObservable<boolean> = ko.observable(true);
+		// selected codes
+        multiSelectedId: KnockoutObservable<any> = ko.observableArray([]);
+        
+		// tree grid properties object
+		treeGrid: tree.TreeComponentOption;
 
-        checked2: KnockoutObservable<boolean> = ko.observable(false);
-        enable2: KnockoutObservable<boolean> = ko.observable(true);
+		// total checkbox
+        //totalChecked: KnockoutObservable<boolean> = ko.observable(true);
+        //totalEnable: KnockoutObservable<boolean> = ko.observable(true);
 
-		tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
-		selectedTab: KnockoutObservable<string>;
-		
-		texteditorOrderTotal: any;
-        texteditorOrderStatement: any;
+		// conditional checkbox
+        //conditionalChecked: KnockoutObservable<boolean> = ko.observable(false);
+        //conditionalEnable: KnockoutObservable<boolean> = ko.observable(true);
 
-		// radio group 1
-        totalRadio: KnockoutObservableArray<any>;
-        totalRadioSelectedId: KnockoutObservable<number>;
-        totalRadioEnable: KnockoutObservable<boolean>;
-		
-		// radio group 2
-        conditionRadio: KnockoutObservableArray<any>;
-        conditionRadioSelected: KnockoutObservable<number>;
-        conditionRadioEnable: KnockoutObservable<boolean>;
+		// tabs
+        tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray([]);
+        selectedTab: KnockoutObservable<string> = ko.observable('');
 
-		// extraction condition checkbox
-        extractionConditionChecked: KnockoutObservable<boolean>;
-        extractionConditionEnable: KnockoutObservable<boolean>;
+		// text editors
+        // texteditorOrderTotal: any = ko.observableArray([]);
+        // texteditorOrderStatement: any = ko.observableArray([]);
+
+        // output condition
+        outputConditionChecked: KnockoutObservable<number> = ko.observable(1);
+
+        // total radio group default selected value
+        //totalRadioSelectedId: KnockoutObservable<number> = ko.observable(2); // Default selected: A8_4 注文済み
+
+        // condition radio group default selected value
+        //conditionRadioSelected: KnockoutObservable<number> = ko.observable(1); // Default selected: A10_3 全件
 
         // extraction condition checkbox
-        separatePageCheckboxChecked: KnockoutObservable<boolean>;
-        separatePageCheckboxEnable: KnockoutObservable<boolean>;
+        extractionConditionChecked: KnockoutObservable<boolean> = ko.observable(false);
+        extractionConditionEnable: KnockoutObservable<boolean> = ko.observable(false);
 
-        conditionListCcb: KnockoutObservableArray<any>;
-		conditionListCcbEnable: KnockoutObservable<boolean>;
-        conditionCode: KnockoutObservable<number>;
+        // extraction condition checkbox
+        separatePageCheckboxChecked: KnockoutObservable<boolean> = ko.observable(false);
+        separatePageCheckboxEnable: KnockoutObservable<boolean> = ko.observable(true);
+
+		// condition list checkbox
+        conditionListCcb: KnockoutObservableArray<any> = ko.observableArray([]);
+        conditionListCcbEnable: KnockoutObservable<boolean> = ko.observable(false);
+        conditionCode: KnockoutObservable<number> = ko.observable(1);
+
+        closingTimeOptions: KnockoutObservableArray<any>;
 
         constructor() {
             super();
             var self = this;
 
-            self.dateRangeValue = ko.observable({ startDate: new Date(), endDate: new Date() });
-
-            self.roundingRules = ko.observableArray([
-                { code: '1', name: getText('KMR004_8') },
-                { code: '2', name: getText('KMR004_9') }
-            ]);
-            self.selectedRuleCode = ko.observable(1);
-			
-            // tree grid
-            self.baseDate =  ko.observable(new Date());
-            self.multiSelectedId = ko.observableArray([]);
-            //self.alreadySettingList = ko.observableArray([]);
-            self.treeGrid = {
-                isShowAlreadySet: false,
-                isMultipleUse: true,
-                isMultiSelect: true,
-                startMode: tree.StartMode.WORKPLACE,
-                selectedId: self.multiSelectedId,
-                baseDate: self.baseDate,
-                selectType: tree.SelectionType.NO_SELECT,
-                isShowSelectButton: true,
-                isDialog: false,
-                //alreadySettingList: self.alreadySettingList,
-                maxRows: 10,
-                tabindex: 3,
-                systemType: tree.SystemType.EMPLOYMENT
-            }
-
-			$('#tree-grid').ntsTreeComponent(self.treeGrid).done(()=>{
-                $('#tree-grid').getDataList();
-            });
+            var strDate: string = formatDate( self.baseDate(), 'yyyy/MM/dd');
+            // var strDateForm = ko.toJS({strDate: strDate});
+            // self.$ajax(API.START, strDateForm).done((data) => {
+            //     if(data.operationDistinction == "BY_COMPANY"){
+            //         self.initWorkplaceList();
+            //     } else {
+            //         console.log(data);
+            //         self.initClosingTimeSwitch(data);
+            //         self.initWorkLocationList();
+            //     }
+            // });
 
             self.selectedRuleCode.subscribe((value) => {
-                if(value == 1){
-                    $('#tree-grid').show();
+                if (value == 1) {
+                    // 開始:弁当予約時間、終了:弁当予約時間 6:00~10:00
                 } else {
-                    $('#tree-grid').hide();
+                    // 開始:弁当予約時間、終了:弁当予約時間 12:00~15:00
                 }
             });
 
             self.tabs = ko.observableArray([
-                {id: 'tab-1', title: getText('KMR004_12'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true)},
-                {id: 'tab-2', title: getText('KMR004_13'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true)},
+                {
+                    id: 'tab-1',
+                    title: self.$i18n('KMR004_12'),
+                    content: '.tab-content-1',
+                    enable: ko.observable(true),
+                    visible: ko.observable(true)
+                },
+                {
+                    id: 'tab-2',
+                    title: self.$i18n('KMR004_13'),
+                    content: '.tab-content-2',
+                    enable: ko.observable(true),
+                    visible: ko.observable(true)
+                }
             ]);
 
-		    self.selectedTab = ko.observable('tab-1');
+            self.selectedTab = ko.observable('tab-1');
 
-			self.texteditorOrderTotal = {
-				simpleValue: ko.observable(''),
-				constraint: 'PrimitiveValue',
-				option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-					textmode: "text",
-					placeholder: getText('KMR004_21'),
-					width: "100px",
-					textalign: "left"
-				})),
-				enable: ko.observable(true),
-				readonly: ko.observable(false)
-			};
+            // self.texteditorOrderTotal = {
+            //     simpleValue: ko.observable(''),
+            //     constraint: 'PrimitiveValue',
+            //     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+            //         textmode: "text",
+            //         placeholder: self.$i18n('KMR004_21'),
+            //         width: "100px",
+            //         textalign: "left"
+            //     })),
+            //     enable: ko.observable(true),
+            //     readonly: ko.observable(false)
+            // };
+            //
+            // self.texteditorOrderStatement = {
+            //     simpleValue: ko.observable(''),
+            //     constraint: 'PrimitiveValue',
+            //     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+            //         textmode: "text",
+            //         placeholder: self.$i18n('KMR004_22'),
+            //         width: "100px",
+            //         textalign: "left"
+            //     })),
+            //     enable: ko.observable(true),
+            //     readonly: ko.observable(false)
+            // };
 
-            self.texteditorOrderStatement = {
-                simpleValue: ko.observable(''),
-                constraint: 'PrimitiveValue',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: getText('KMR004_22'),
-                    width: "100px",
-                    textalign: "left"
-                })),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
-
-            // A8-2
-            self.totalRadio = ko.observableArray([
-                new BoxModel(1, getText('KMR004_17')),
-                new BoxModel(2, getText('KMR004_18')),
-                new BoxModel(4, getText('KMR004_19'))
-            ]);
-
-            self.totalRadioEnable = ko.observable(true);
-			self.totalRadioSelectedId = ko.observable(2); // Default selected: A8_4 注文済み
-			self.extractionConditionChecked = ko.observable(false);
-            self.extractionConditionEnable = ko.observable(false);
-            self.totalRadioSelectedId.subscribe((newValue)=>{
-                if (newValue == 4){
+            self.model.totalExtractCondition.subscribe((newValue) => {
+                if (newValue == 4) {
                     self.extractionConditionEnable(true);
                 } else {
                     self.extractionConditionEnable(false);
                 }
             });
 
-    		self.conditionRadio = ko.observableArray([
-                new BoxModel(1, getText('KMR004_17')),
-				new BoxModel(6, getText('KMR004_24'))
-            ]);
 
-            self.conditionRadioSelected = ko.observable(1); // Default selected: A10_3 全件
-            self.separatePageCheckboxEnable = ko.observable(true);
-            self.conditionRadioEnable = ko.observable(true);
-			self.conditionListCcbEnable = ko.observable(false);
-			self.conditionRadioSelected.subscribe((newValue)=>{
-                if (newValue == 1){
-					self.separatePageCheckboxEnable(true);
+            self.model.itemExtractCondition.subscribe((newValue) => {
+                if (newValue == 1) {
+                    self.separatePageCheckboxEnable(true);
                 } else {
-					self.separatePageCheckboxEnable(false);
-				}
-
-				if (newValue == 6){
-					self.conditionListCcbEnable(true);
-                } else {
-					self.conditionListCcbEnable(false);
-				}
-            });
-
-
-            self.separatePageCheckboxChecked = ko.observable(false);
-			self.separatePageCheckboxChecked.subscribe((newValue)=>{
-				if (newValue){
-                    self.conditionRadioSelected = ko.observable(0);
+                    self.separatePageCheckboxEnable(false);
                 }
-                
+
+                if (newValue == 6) {
+                    self.conditionListCcbEnable(true);
+                } else {
+                    self.conditionListCcbEnable(false);
+                }
             });
 
-			self.conditionListCcb = ko.observableArray([
+            // bento list
+            self.conditionListCcb = ko.observableArray([
                 new ItemModel('1', '商品１'),
-				new ItemModel('2', '商品２')
-			]);
-
-			self.conditionCode = ko.observable(1);
-
+                new ItemModel('2', '商品２')
+            ]);
         }
 
         created() {
             const vm = this;
-
-            _.extend(window, { vm });
+            _.extend(window, {vm});
         }
 
         mounted() {
         }
-    }
 
-    class BoxModel {
-        id: number;
-        name: string;
-        constructor(id, name){
-            var self = this;
-            self.id = id;
-            self.name = name;
+        printExcel(){
+            let vm = this;
+            $("#exportTitle").trigger("validate");
+            vm.$blockui("invisible");
+            let data = {
+                workplaceIds: ["100","900"],
+                workLocationCodes: [],
+                period: null,
+                totalExtractCondition: 1,
+                itemExtractCondition: -1,
+                frameNo: -1,
+                totalTitle: 'Total title',
+                detailTitle: '',
+                reservationClosingTimeFrame: 1,
+                isBreakPage: true,
+                reservationTimeZone: '昼'
+            };
+            nts.uk.request.exportFile("at", API.EXCEL,data).done(() => {
+                vm.$blockui("clear");
+            }).fail((res: any) => {
+                vm.$dialog.error({ messageId : res.messageId }).then(function(){
+                    vm.$blockui("clear");
+                });
+            });
+        }
+
+        printPDF(){
+            let vm = this;
+            $("#exportTitle").trigger("validate");
+            vm.$blockui("invisible");
+            nts.uk.request.exportFile("at", API.PDF_ALL).done(() => {
+                vm.$blockui("clear");
+            }).fail((res: any) => {
+                vm.$dialog.error({ messageId : res.messageId }).then(function(){
+                    vm.$blockui("clear");
+                });
+            });
+        }
+
+        initClosingTimeSwitch(data:any) {
+            let vm = this;
+            let closingTime1Name: string = data.closingTime1.reservationTimeName;
+            let closingTime2Name: string = data.closingTime2.reservationTimeName;
+            console.log(closingTime1Name);
+            console.log(closingTime2Name);
+            vm.closingTimeOptions = ko.observableArray([
+                new ItemModel('1', 'closingTime1Name'),
+                new ItemModel('2', 'closingTime2Name')
+            ]);
+        }
+
+        initWorkplaceList() {
+            const self = this;
+            self.treeGrid = {
+                isShowAlreadySet: false,
+                isMultipleUse: true,
+                isMultiSelect: true,
+                startMode: tree.StartMode.WORKPLACE,
+                selectedId: self.model.workplaceIds,
+                baseDate: self.baseDate,
+                selectType: tree.SelectionType.NO_SELECT,
+                isShowSelectButton: true,
+                isDialog: false,
+                maxRows: 10,
+                tabindex: 3,
+                systemType: tree.SystemType.EMPLOYMENT
+            }
+
+            $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
+                //$('#tree-grid').getDataList();
+            });
+        }
+
+        initWorkLocationList() {
+            $('#tree-grid').append("<div style='width: 514px; height: 365px; text-align: center; font-size: x-large'>Waiting for KCP012...</div>");
+        }
+
+        saveCharacteristic(companyId: string, userId: string, obj: any): void {
+            nts.uk.characteristics.save("kmr004a" +
+                "_companyId_" + companyId +
+                "_userId_" + userId, obj);
+        }
+
+        restoreCharacteristic(companyId: string, userId: string): JQueryPromise<any> {
+            return nts.uk.characteristics.restore("kmr004a" +
+                "_companyId_" + companyId +
+                "_userId_" + userId);
         }
     }
-	
-	class ItemModel {
-    code: string;
-    name: string;
 
-    constructor(code: string, name: string) {
-        this.code = code;
-        this.name = name;
+    class ItemModel {
+        code: string;
+        name: string;
+
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
+        }
     }
-}
+
+    class OutputCondition{
+        //workplaceIds
+        workplaceIds: KnockoutObservableArray<string> = ko.observableArray([]);
+        workLocationCodes: KnockoutObservableArray<string> = ko.observableArray([]);
+        period: KnockoutObservable<any> = ko.observable({
+            start: formatDate( new Date(), 'yyyy/MM/dd'),
+            end: formatDate( new Date(), 'yyyy/MM/dd')
+        });
+        reservationTimeZone: KnockoutObservable<number> = ko.observable(1);
+        totalTitle: KnockoutObservable<string> = ko.observable("");
+        detailTitle: KnockoutObservable<string> = ko.observable("");
+
+        // totalExtractCondition
+        totalExtractCondition: KnockoutObservable<number> = ko.observable(-1);
+
+        // itemExtractCondition
+        itemExtractCondition: KnockoutObservable<number> = ko.observable(-1);
+
+        // isBreakPage
+        isBreakPage: KnockoutObservable<boolean> = ko.observable(false);
+
+        // frameNo
+        frameNo: KnockoutObservable<number> = ko.observable(-1);
+    }
 }

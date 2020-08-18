@@ -52,4 +52,8 @@ public interface BentoReservationRepository {
 
 
 	public void update(BentoReservation bentoReservation);
+
+	List<BentoReservation> getAllReservationOfBento(int frameNo,
+			List<ReservationRegisterInfo> inforLst, DatePeriod period,ReservationClosingTimeFrame closingTimeFrame,
+			List<WorkLocationCode> workLocationCode);
 }

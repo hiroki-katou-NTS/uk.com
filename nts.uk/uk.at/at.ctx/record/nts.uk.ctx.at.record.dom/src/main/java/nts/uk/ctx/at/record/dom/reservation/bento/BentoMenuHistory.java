@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.reservation.bento;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -8,10 +9,11 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.strategic.PersistentHistory;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
+/**
+ * 弁当メニュー履歴
+ */
 public class BentoMenuHistory extends AggregateRoot implements PersistentHistory<DateHistoryItem, DatePeriod, GeneralDate> {
     /**
      * 会社ID
@@ -35,8 +37,8 @@ public class BentoMenuHistory extends AggregateRoot implements PersistentHistory
 
         this.historyItems = historyItems;
     }
-    public static BentoMenuHistory toDomain(String cid, DateHistoryItem item){
-        return new BentoMenuHistory(cid, Arrays.asList(item));
+    public static BentoMenuHistory toDomain(String cid, List<DateHistoryItem> items){
+        return new BentoMenuHistory(cid, items);
     }
 
 }
