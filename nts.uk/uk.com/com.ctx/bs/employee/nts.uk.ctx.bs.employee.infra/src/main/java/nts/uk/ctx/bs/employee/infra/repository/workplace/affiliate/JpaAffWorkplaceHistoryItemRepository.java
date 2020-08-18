@@ -71,8 +71,8 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 	 * @return
 	 */
 	private AffWorkplaceHistoryItem toDomain(BsymtAffiWorkplaceHistItem entity) {
-		return AffWorkplaceHistoryItem.createFromJavaType(entity.getHisId(), entity.getSid(), entity.getWorkPlaceId(),
-				entity.getNormalWkpId());
+		return AffWorkplaceHistoryItem.createFromJavaTypeNew(entity.getHisId(), entity.getSid(), entity.getWorkPlaceId(),
+				entity.getNormalWkpId(),entity.getWorkLocationCode());
 	}
 
 	/**

@@ -6,8 +6,10 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 
 import javax.ejb.Stateless;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -15,17 +17,28 @@ import java.util.stream.Collectors;
  */
 @Stateless
 public class ForcedReservationService {
-    public static AtomTask reserve(Require require, List<ReservationRegisterInfo> registerInfor,
+    public static AtomTask reserve(Require require, List<LunchReservationInfor> lunchReservationInfors,
                                    ReservationDate reservationDate, GeneralDateTime reservationDateTime, Optional<WorkLocationCode> workLocationCode)
     {
         //if @List<弁当予約情報>.size < 0
         //return AtomTask
-        if (registerInfor.size() <0){
+        if (lunchReservationInfors.size() <0){
             return  AtomTask.of(()->{
 
             });
         }
 
+        // 作る(弁当メニュー枠番, 弁当予約個数) 枠番, 個数 out 弁当予約明細
+        List<BentoReservation> listRegist = new ArrayList<>();
+
+        lunchReservationInfors.stream().map(i-> {
+            val details = i.getDetails().entrySet().stream()
+            .map(e -> BentoReservationDetail.createNew(e.getKey(), new BentoReservationCount(e.getValue()),reservationDateTime)).collect(Collectors.toList());
+            BentoReservation bentoReservation = BentoReservation.reserve(i.getReservationRegisterInfo(),reservationDate,workLocationCode,details);
+            return listRegist.add(bentoReservation);
+        });
+
+        // BentoReservationDetail  bentoReservationDetail= new  BentoReservationDetail();
         return AtomTask.of(()->{
             //val
         });
