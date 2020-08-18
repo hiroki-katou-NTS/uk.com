@@ -24,6 +24,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * 初期起動
+ * UKDesign.UniversalK.就業.KSU_スケジュール.KSU001_個人スケジュール修正(職場別).Q：外部予算入力.メニュー別OCD.
  * 
  * @author thanhlv
  *
@@ -43,6 +44,11 @@ public class InitialStartupScreenQuery {
 	@Inject
 	private ExternalBudgetRepository externalBudgetRepository;
 
+	/**
+	 * 初期起動
+	 * @param target
+	 * @return
+	 */
 	public InitialStartupScreenResultDto getInfomation(InitialStartupScreenRequest target) {
 		LoginUserContext context = AppContexts.user();
 		String companyId = context.companyId();
@@ -54,21 +60,21 @@ public class InitialStartupScreenQuery {
 		// 1. 組織の表示情報を取得する(Require, 年月日)
 		if (Integer.parseInt(target.getUnit()) == 1) {
 			TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(
-					TargetOrganizationUnit.valueOf(Integer.parseInt(target.getUnit())),Optional.empty(),Optional.of(target.getId()));
+					TargetOrganizationUnit.valueOf(Integer.parseInt(target.getUnit())), Optional.empty(),
+					Optional.of(target.getId()));
 			DisplayInfoOrganization infoOrganization = targetOrgIdenInfor.getDisplayInfor(require,
 					GeneralDate.fromString(target.getEndDate(), "yyyy/MM/dd"));
 			dto.setOrgName(infoOrganization.getName());
-//			dto.setOrgName("ラベル");
 
 		}
 
 		if (Integer.parseInt(target.getUnit()) == 0) {
 			TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(
-					TargetOrganizationUnit.valueOf(Integer.parseInt(target.getUnit())), Optional.of(target.getId()), Optional.empty());
+					TargetOrganizationUnit.valueOf(Integer.parseInt(target.getUnit())), Optional.of(target.getId()),
+					Optional.empty());
 			DisplayInfoOrganization infoOrganization = targetOrgIdenInfor.getDisplayInfor(require,
 					GeneralDate.fromString(target.getEndDate(), "yyyy/MM/dd"));
 			dto.setOrgName(infoOrganization.getName());
-//			dto.setOrgName("ラベル");
 		}
 
 		// 2. 取得する
@@ -102,8 +108,6 @@ public class InitialStartupScreenQuery {
 
 		@Override
 		public List<WorkplaceGroupImport> getSpecifyingWorkplaceGroupId(List<String> workplacegroupId) {
-			// TODO Auto-generated method stub
-//			return workplaceGroupAdapter.getbySpecWorkplaceGroupID(workplacegroupId);
 			return groupAdapter.getbySpecWorkplaceGroupID(workplacegroupId);
 		}
 
@@ -121,16 +125,12 @@ public class InitialStartupScreenQuery {
 							Optional.ofNullable(mapper.getHierarchyCode())))
 					.collect(Collectors.toList());
 			return workplaceInfos;
-
 		}
 
 		@Override
 		public List<String> getWKPID(String WKPGRPID) {
-			// TODO Auto-generated method stub
 			String CID = AppContexts.user().companyId();
-
 			return wplAdapter.getWKPID(CID, WKPGRPID);
 		}
-
 	}
 }

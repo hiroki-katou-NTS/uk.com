@@ -56,7 +56,7 @@ public class Ksu001LaScreenQuery {
 		GetAllEmpWhoBelongWorkplaceGroupImpl getAllEmpWhoBelongWorkplaceGroupImpl = new GetAllEmpWhoBelongWorkplaceGroupImpl(repoAffWorkplaceGroup, workplacePub);
 		GetScheduleTeamInfoImpl getScheduleTeamInfoImpl = new GetScheduleTeamInfoImpl(belongScheduleTeamRepository, teamRepository);
 
-		final List<EmployeeAffiliation> employeeAffiliations = GetAllEmpWhoBelongWorkplaceGroupService.getAllEmp(getAllEmpWhoBelongWorkplaceGroupImpl, baseDate, WKPGRID);
+		List<EmployeeAffiliation> employeeAffiliations = GetAllEmpWhoBelongWorkplaceGroupService.getAllEmp(getAllEmpWhoBelongWorkplaceGroupImpl, baseDate, WKPGRID);
 		
 		if(!CollectionUtil.isEmpty(employeeAffiliations)) {
 			lstEmpId = employeeAffiliations.stream().map(x -> x.getEmployeeID()).collect(Collectors.toList());

@@ -680,11 +680,11 @@ public class ScheduleCreatorExecutionTransaction {
 			if(checkEndProcess.get()) {
 				return;
 			}
-			
-			boolean isEndLoop = this.createScheduleBasedPersonOneDate(command, creator, domain, context, targetPeriod, dateInPeriod,
-					masterCache, listBasicSchedule, dateRegistedEmpSche);
-			if (isEndLoop)
-				return;
+// xu ly của bac Binh, nhung khong thay trong EA nen dang comment vao			
+//			boolean isEndLoop = this.createScheduleBasedPersonOneDate(command, creator, domain, context, targetPeriod, dateInPeriod,
+//					masterCache, listBasicSchedule, dateRegistedEmpSche);
+//			if (isEndLoop)
+//				return;
 			
 			// 勤務予定反映する
 			// 「パラメータ」 ・パラメータ（Temporary） ・勤務ペアリスト ・勤務種類コード ・就業時間帯コード ・年月日
