@@ -20,7 +20,7 @@
     </div>
     <div class="col-12 value">
       <label class="col-7 px-1">{{
-        screenData.date | date("YYYY年 MM月 DD日（ddd）")
+        screenData.date | date("YYYY/MM/DD")
       }}</label>
       <label
         class="col-5 stamp-time font-weight-bold "

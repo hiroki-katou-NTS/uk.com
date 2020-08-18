@@ -60,17 +60,17 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in getItems" v-bind:key="item.stampDatetime">
+        <tr v-for="item in getItems" v-bind:key="item.stampStringDatetime">
           <td
             v-bind:style="{
               color: getTextColor(item)
             }"
           >
-            {{ item.stampDatetime | date("D（ddd）") }}
+            {{ item.stampStringDatetime | date("D（ddd）") }}
           </td>
           <td>
             {{ getSymbol(item) | i18n }}
-            {{ item.stampDatetime | date("HH:mm") }}
+            {{ item.stampStringDatetime | date("HH:mm") }}
           </td>
           <td
             v-bind:style="{
