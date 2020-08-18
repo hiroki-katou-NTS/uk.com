@@ -138,6 +138,9 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		}
 		// INPUT．雇用別申請承認設定．申請別対象勤務種類をチェックする
 		if (CollectionUtil.isEmpty(appEmploymentSet.getTargetWorkTypeByAppLst())) {
+			if (!CollectionUtil.isEmpty(result)) {
+				result =  result.stream().filter(x -> x.getDeprecate() == DeprecateClassification.NotDeprecated).collect(Collectors.toList());
+			}
 			return result;
 		}
 		// INPUT．雇用別申請承認設定．申請別対象勤務種類．勤務種類リストを取得する
