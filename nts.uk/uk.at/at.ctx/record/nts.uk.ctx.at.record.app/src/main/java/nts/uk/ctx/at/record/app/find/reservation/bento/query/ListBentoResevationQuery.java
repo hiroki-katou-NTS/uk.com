@@ -27,9 +27,9 @@ public class ListBentoResevationQuery {
                                   DatePeriod period, List<ReservationRegisterInfo> reservationRegisterInfos,
                                   List<WorkLocationCode> workLocationCodes, ReservationClosingTimeFrame reservationClosingTimeFrame){
         /** 検索条件==１商品２件以上 */
-        if(searchCondition == BentoReservationSearchConditionDto.MORE_THAN_1_PRODUCT) {
+        if(searchCondition == BentoReservationSearchConditionDto.MORE_THAN_1_PRODUCT)
             return bentoReservationRepository.acquireReservationDetails(reservationRegisterInfos,period,reservationClosingTimeFrame,workLocationCodes);
-        }
+
 
         /** 検索条件 == 注文済み */
         if(searchCondition == BentoReservationSearchConditionDto.ORDERED)
@@ -40,13 +40,13 @@ public class ListBentoResevationQuery {
             return getUnOrderedBentoReservationsDetail(reservationRegisterInfos, period, reservationClosingTimeFrame, workLocationCodes);
 
         /** 検索条件 == 新規注文 */
-        if(searchCondition == BentoReservationSearchConditionDto.NEW_ORDER){
+        if(searchCondition == BentoReservationSearchConditionDto.NEW_ORDER)
             return getNewOrderDetail(period,reservationRegisterInfos,reservationClosingTimeFrame);
-        }
+
         /** 検索条件 ==　全部 */
-        if(searchCondition == BentoReservationSearchConditionDto.ALL) {
+        if(searchCondition == BentoReservationSearchConditionDto.ALL)
             return bentoReservationRepository.getAllReservationDetail(reservationRegisterInfos,period,reservationClosingTimeFrame,workLocationCodes);
-        }
+
         return Collections.EMPTY_LIST;
     }
 
