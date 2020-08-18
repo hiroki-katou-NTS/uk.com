@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,6 +19,7 @@ import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -54,7 +54,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpInfo;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkPlaceHistBySIDImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
@@ -66,9 +65,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppComp
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.primitive.ShowName;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
@@ -97,6 +94,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
  * 
  * @author hoatt
@@ -1055,101 +1053,144 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * 9 - 申請一覧リスト取得マスタ情報
 	 */
 	@Override
-	public DataMasterOutput getListAppMasterInfo(List<Application_New> lstApp, String companyId, DatePeriod period,
-			int device) {
-		if (lstApp.isEmpty()) {
-			return new DataMasterOutput(Collections.emptyList(), Collections.emptyList(), new HashMap<>());
+	public AppInfoMasterOutput getListAppMasterInfo(Application application, DatePeriod period, NotUseAtr displayWorkPlaceName, 
+			Map<String, SyEmployeeImport> mapEmpInfo, int device) {
+		SyEmployeeImport applicant = null;
+		Optional<SyEmployeeImport> opEnteredPerson = Optional.empty();
+		// 社員のキャッシュがあるかチェックする ( Check xem  cash của employee có hay không?
+		if(mapEmpInfo.containsKey(application.getEmployeeID())) {
+			// 申請一覧リスト.申請一覧リスト.社員名をキャッシュからセットする(applicationList. Set employee name from cache)
+			applicant = mapEmpInfo.get(application.getEmployeeID());
+		} else {
+			// アルゴリズム「社員IDから個人社員基本情報を取得」を実行する ( Thực hiện thuật toán 「社員IDから個人社員基本情報を取得」)
+			applicant = syEmpAdapter.getPersonInfor(application.getEmployeeID());
+			if(!application.getEmployeeID().equals(application.getEnteredPersonID())) {
+				// アルゴリズム「社員IDから個人社員基本情報を取得」を実行する ( Thực hiện thuật toán 「社員IDから個人社員基本情報を取得」
+				SyEmployeeImport enteredPerson = syEmpAdapter.getPersonInfor(application.getEnteredPersonID());
+				opEnteredPerson = Optional.of(enteredPerson);
+			}
+			// 取得したデータをキャッシュに追加 ( Thêm data đã lấy vào cache)
+			mapEmpInfo.put(application.getEmployeeID(), applicant);
+			if(opEnteredPerson.isPresent()) {
+				mapEmpInfo.put(application.getEnteredPersonID(), opEnteredPerson.get());
+			}
 		}
-		//ドメインモデル「申請一覧共通設定」を取得する-(Lấy domain Application list common settings)
-		Optional<AppCommonSet> appCommonSet = repoAppCommonSet.find();
-		ShowName displaySet = appCommonSet.get().getShowWkpNameBelong();
-		//ドメインモデル「申請表示名」より申請表示名称を取得する (Lấy Application display name)
-		List<AppDispName> appDispName = repoAppDispName.getAll();
-		Map<String, SyEmployeeImport> mapEmpInfo = new HashMap<>();
-		List<AppMasterInfo> lstAppMasterInfo = new ArrayList<>();
-		Map<String, Integer> mapWpkSet = new HashMap<>();
-		Map<String, List<WkpInfo>> mapWpkInfo = new HashMap<>();
-		List<String> lstSCD = new ArrayList<>();
-		//key - SCD, value - lstAppID
-		Map<String, List<String>> mapAppBySCD = new HashMap<>();
-		//申請一覧リスト 繰返し実行
-		for (Application_New app : lstApp) {
-			String applicantID = app.getEmployeeID();
-			String enteredPersonID = app.getEnteredPersonID();
-			//アルゴリズム「社員IDから個人社員基本情報を取得」を実行する - req #1 lay ten ng duoc lam don
-			SyEmployeeImport empInfo = this.findNamebySID(mapEmpInfo, applicantID);
-			String empName = "";
-			String empCD = "";
-			if (empInfo == null) {
-				SyEmployeeImport emp = syEmpAdapter.getPersonInfor(applicantID);
-				empName = emp.getBusinessName();
-				empCD = emp.getEmployeeCode();
-				mapEmpInfo.put(app.getEmployeeID(), emp);
-			} else {
-				empName = empInfo.getBusinessName();
-				empCD = empInfo.getEmployeeCode();
-			}
-			if (!lstSCD.contains(empCD)) {
-				lstSCD.add(empCD);
-			}
-
-			String inpEmpName = null;//khoi tao = null -> truong hop trung nhau
-			String wkpName = "";
-			Integer detailSet = 0;
-			//get Application Name
-			String appDispNameStr = this.findAppName(appDispName, app.getAppType());
-			if (device == PC) {
-				//lay ten ng tao don
-				SyEmployeeImport inpEmpInfo = applicantID.equals(enteredPersonID) ? null
-						: this.findNamebySID(mapEmpInfo, enteredPersonID);
-
-				if (!app.getEmployeeID().equals(enteredPersonID) && inpEmpInfo == null) {
-					inpEmpInfo = syEmpAdapter.getPersonInfor(enteredPersonID);
-					inpEmpName = inpEmpInfo.getBusinessName();
-					mapEmpInfo.put(enteredPersonID, inpEmpInfo);
-				}
-				if (!app.getEmployeeID().equals(enteredPersonID) && inpEmpInfo != null) {
-					inpEmpName = inpEmpInfo.getBusinessName();
-				}
-				//get work place info
-				List<WkpInfo> findExitWkp = this.findExitWkp(mapWpkInfo, applicantID);
-				if (findExitWkp == null) {//chua co trong cache
-					//社員指定期間所属職場履歴を取得 - req #168
-					WorkPlaceHistBySIDImport wkp = wkpAdapter.findWpkBySIDandPeriod(app.getEmployeeID(), period);
-					findExitWkp = wkp.getLstWkpInfo();
-					mapWpkInfo.put(applicantID, findExitWkp);
-				}
-				WkpInfo wkp = null;
-				if (!findExitWkp.isEmpty()) {
-					wkp = this.findWpk(findExitWkp, app.getAppDate());
-				}
-				String wkpID = wkp == null ? "" : wkp.getWpkID();
-
-				if (displaySet.equals(ShowName.SHOW)) {
-					wkpName = wkp == null ? "" : wkp.getWpkName();
-				}
-				if (app.isAppOverTime()) {// TH: app.isAppAbsence() tam thoi bo qua do tren spec chua su dung
-					String wpk = wkpID + app.getAppType().value;
-					detailSet = this.finSetByWpkIDAppType(mapWpkSet, wpk);
-					if (detailSet != null && detailSet == -1) {
-						detailSet = this.detailSet(companyId, wkpID, app.getAppType().value, period.end());
-						mapWpkSet.put(wpk, detailSet);
-					}
-				}
-			}
-			lstAppMasterInfo.add(new AppMasterInfo(app.getAppID(), app.getAppType().value, appDispNameStr, empName,
-					inpEmpName, wkpName, false, null, false, 0, detailSet, empCD));
+		String workplaceName = null;
+		Optional<Integer> opTimeCalcUseAtr = Optional.empty();
+		if(displayWorkPlaceName==NotUseAtr.USE && 
+				(application.isOverTimeApp() || application.isHolidayWorkApp())) {
+			
 		}
-		for (String sCD : lstSCD) {
-			List<String> lstAppID = new ArrayList<>();
-			for (AppMasterInfo master : lstAppMasterInfo) {
-				if (master.getEmpSD().equals(sCD)) {
-					lstAppID.add(master.getAppID());
-				}
-			}
-			mapAppBySCD.put(sCD, lstAppID);
-		}
-		return new DataMasterOutput(lstAppMasterInfo, lstSCD, mapAppBySCD);
+		// 申請データを作成して申請一覧に追加 ( Tạo data application và thêm vào applicationList)
+		ListOfApplication result = new ListOfApplication();
+		result.setPrePostAtr(application.getPrePostAtr().value);
+		result.setApplicantName(applicant.getBusinessName());
+		// result.setWorkplaceName(workplaceName);
+		result.setAppTye(application.getAppType());
+		result.setApplicantCD(applicant.getEmployeeCode());
+		// result.setAppReason
+		result.setInputDate(application.getInputDate());
+		result.setOpEntererName(Optional.of(opEnteredPerson.get().getBusinessName()));
+		result.setOpAppStartDate(application.getOpAppStartDate().map(x -> x.getApplicationDate()));
+		result.setOpAppEndDate(application.getOpAppEndDate().map(x -> x.getApplicationDate()));
+		result.setAppDate(application.getAppDate().getApplicationDate());
+		// result.setOpTimeCalcUseAtr();
+		
+		return new AppInfoMasterOutput(result, mapEmpInfo);
+		
+//		if (lstApp.isEmpty()) {
+//			return new DataMasterOutput(Collections.emptyList(), Collections.emptyList(), new HashMap<>());
+//		}
+//		//ドメインモデル「申請一覧共通設定」を取得する-(Lấy domain Application list common settings)
+//		Optional<AppCommonSet> appCommonSet = repoAppCommonSet.find();
+//		ShowName displaySet = appCommonSet.get().getShowWkpNameBelong();
+//		//ドメインモデル「申請表示名」より申請表示名称を取得する (Lấy Application display name)
+//		List<AppDispName> appDispName = repoAppDispName.getAll();
+//		Map<String, SyEmployeeImport> mapEmpInfo = new HashMap<>();
+//		List<AppMasterInfo> lstAppMasterInfo = new ArrayList<>();
+//		Map<String, Integer> mapWpkSet = new HashMap<>();
+//		Map<String, List<WkpInfo>> mapWpkInfo = new HashMap<>();
+//		List<String> lstSCD = new ArrayList<>();
+//		//key - SCD, value - lstAppID
+//		Map<String, List<String>> mapAppBySCD = new HashMap<>();
+//		//申請一覧リスト 繰返し実行
+//		for (Application_New app : lstApp) {
+//			String applicantID = app.getEmployeeID();
+//			String enteredPersonID = app.getEnteredPersonID();
+//			//アルゴリズム「社員IDから個人社員基本情報を取得」を実行する - req #1 lay ten ng duoc lam don
+//			SyEmployeeImport empInfo = this.findNamebySID(mapEmpInfo, applicantID);
+//			String empName = "";
+//			String empCD = "";
+//			if (empInfo == null) {
+//				SyEmployeeImport emp = syEmpAdapter.getPersonInfor(applicantID);
+//				empName = emp.getBusinessName();
+//				empCD = emp.getEmployeeCode();
+//				mapEmpInfo.put(app.getEmployeeID(), emp);
+//			} else {
+//				empName = empInfo.getBusinessName();
+//				empCD = empInfo.getEmployeeCode();
+//			}
+//			if (!lstSCD.contains(empCD)) {
+//				lstSCD.add(empCD);
+//			}
+//
+//			String inpEmpName = null;//khoi tao = null -> truong hop trung nhau
+//			String wkpName = "";
+//			Integer detailSet = 0;
+//			//get Application Name
+//			String appDispNameStr = this.findAppName(appDispName, app.getAppType());
+//			if (device == PC) {
+//				//lay ten ng tao don
+//				SyEmployeeImport inpEmpInfo = applicantID.equals(enteredPersonID) ? null
+//						: this.findNamebySID(mapEmpInfo, enteredPersonID);
+//
+//				if (!app.getEmployeeID().equals(enteredPersonID) && inpEmpInfo == null) {
+//					inpEmpInfo = syEmpAdapter.getPersonInfor(enteredPersonID);
+//					inpEmpName = inpEmpInfo.getBusinessName();
+//					mapEmpInfo.put(enteredPersonID, inpEmpInfo);
+//				}
+//				if (!app.getEmployeeID().equals(enteredPersonID) && inpEmpInfo != null) {
+//					inpEmpName = inpEmpInfo.getBusinessName();
+//				}
+//				//get work place info
+//				List<WkpInfo> findExitWkp = this.findExitWkp(mapWpkInfo, applicantID);
+//				if (findExitWkp == null) {//chua co trong cache
+//					//社員指定期間所属職場履歴を取得 - req #168
+//					WorkPlaceHistBySIDImport wkp = wkpAdapter.findWpkBySIDandPeriod(app.getEmployeeID(), period);
+//					findExitWkp = wkp.getLstWkpInfo();
+//					mapWpkInfo.put(applicantID, findExitWkp);
+//				}
+//				WkpInfo wkp = null;
+//				if (!findExitWkp.isEmpty()) {
+//					wkp = this.findWpk(findExitWkp, app.getAppDate());
+//				}
+//				String wkpID = wkp == null ? "" : wkp.getWpkID();
+//
+//				if (displaySet.equals(ShowName.SHOW)) {
+//					wkpName = wkp == null ? "" : wkp.getWpkName();
+//				}
+//				if (app.isAppOverTime()) {// TH: app.isAppAbsence() tam thoi bo qua do tren spec chua su dung
+//					String wpk = wkpID + app.getAppType().value;
+//					detailSet = this.finSetByWpkIDAppType(mapWpkSet, wpk);
+//					if (detailSet != null && detailSet == -1) {
+//						detailSet = this.detailSet(companyId, wkpID, app.getAppType().value, period.end());
+//						mapWpkSet.put(wpk, detailSet);
+//					}
+//				}
+//			}
+//			lstAppMasterInfo.add(new AppMasterInfo(app.getAppID(), app.getAppType().value, appDispNameStr, empName,
+//					inpEmpName, wkpName, false, null, false, 0, detailSet, empCD));
+//		}
+//		for (String sCD : lstSCD) {
+//			List<String> lstAppID = new ArrayList<>();
+//			for (AppMasterInfo master : lstAppMasterInfo) {
+//				if (master.getEmpSD().equals(sCD)) {
+//					lstAppID.add(master.getAppID());
+//				}
+//			}
+//			mapAppBySCD.put(sCD, lstAppID);
+//		}
+//		return new DataMasterOutput(lstAppMasterInfo, lstSCD, mapAppBySCD);
 	}
 
 	//tim xem da tung di lay thong tin wkp cua nhan vien nay chua

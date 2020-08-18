@@ -3,7 +3,9 @@ package nts.uk.ctx.at.request.dom.application.applist.service.param;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
@@ -14,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisp
  * @author Doan Duy Hung
  *
  */
+@Setter
 @Getter
 public class ListOfApplication {
 	
@@ -65,7 +68,7 @@ public class ListOfApplication {
 	/**
 	 * 入力日
 	 */
-	private GeneralDate inputDate;
+	private GeneralDateTime inputDate;
 	
 	/**
 	 * 反映状態
@@ -126,4 +129,29 @@ public class ListOfApplication {
 	 * 表示行数超
 	 */
 	private Optional<Boolean> opMoreThanDispLineNO;
+	
+	public ListOfApplication() {
+		this.prePostAtr = 0;
+		this.workplaceName = null;
+		this.appID = null;
+		this.applicantCD = null;
+		this.applicantName = null;
+		this.appTye = null;
+		this.appContent = null;
+		this.appDate = null;
+		this.inputCompanyName  = null;
+		this.inputDate  = null;
+		this.reflectionStatus = null;
+		this.opTimeCalcUseAtr = Optional.empty();
+		this.opApprovalStatusInquiry = Optional.empty();
+		this.opApprovalFrameStatus = Optional.empty();
+		this.opComplementLeaveApp = Optional.empty();
+		this.opAppStartDate = Optional.empty();
+		this.opAppTypeDisplay = Optional.empty();
+		this.opAppEndDate = Optional.empty();
+		this.opAppStandardReason = Optional.empty();
+		this.opEntererName = Optional.empty();
+		this.opBackgroundColor = Optional.empty();
+		this.opMoreThanDispLineNO = Optional.empty();
+	}
 }
