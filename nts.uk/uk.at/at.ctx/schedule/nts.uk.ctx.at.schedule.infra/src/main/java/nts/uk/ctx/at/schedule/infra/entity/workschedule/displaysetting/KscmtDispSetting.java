@@ -41,7 +41,7 @@ public class KscmtDispSetting extends ContractUkJpaEntity{
 	public int endDay;
 	
 	/** 初期表示期間の終了日.日 **/
-	@Column(name = "初期表示期間の終了日.末日とする")
+	@Column(name = "IS_LAST_DAY")
 	public boolean isLastDay;
 	
 	@Override
