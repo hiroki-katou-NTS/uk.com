@@ -71,10 +71,7 @@ public class BentoReserveSettingCommandHandler extends CommandHandler<BentoReser
         OperationDistinction operationDistinction = OperationDistinction.valueOf(command.getOperationDistinction());
         AtomTask persist = RegisterReservationLunchService.register(
                 require, operationDistinction,achievements,correctionContent,bentoReservationClosingTime);
-        transaction.execute(() -> {
-            persist.run();
-        });
-
+        transaction.execute(persist::run);
     }
 
     @AllArgsConstructor
