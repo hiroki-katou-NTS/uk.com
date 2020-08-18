@@ -34,8 +34,7 @@ module nts.uk.at.view.kaf000_ref.a.component5.viewmodel {
 			            defaultValue: false,
 			            opReasonForFixedForm: vm.$i18n('KAFS00_23'),   
 			        }];
-					_.concat(dataLst, vm.reasonTypeItemLst());
-					vm.reasonTypeItemLst(dataLst);
+					vm.reasonTypeItemLst(_.concat(dataLst, vm.reasonTypeItemLst()));
                     vm.opAppStandardReasonCD(_.head(vm.reasonTypeItemLst()).appStandardReasonCD);
                 } else {
                     vm.opAppStandardReasonCD(defaultReasonTypeItem.appStandardReasonCD);        
