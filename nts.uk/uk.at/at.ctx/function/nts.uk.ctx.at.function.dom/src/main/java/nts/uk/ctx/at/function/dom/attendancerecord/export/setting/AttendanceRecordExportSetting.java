@@ -51,6 +51,12 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 	//名称使用区分
 	private NameUseAtr nameUseAtr;
 
+	//	文字の大きさ
+	private ExportFontSize exportFontSize;
+	
+	//	月次確認済表示区分
+	private MonthlyConfirmedDisplay monthlyConfirmedDisplay;
+	
 	/**
 	 * Instantiates a new attendance record export setting.
 	 */
