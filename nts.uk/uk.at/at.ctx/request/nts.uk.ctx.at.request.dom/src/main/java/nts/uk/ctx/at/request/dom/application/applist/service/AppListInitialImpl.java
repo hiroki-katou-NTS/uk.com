@@ -221,11 +221,21 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		List<ListOfApplication> appLst = new ArrayList<>();
 		boolean condition = param.getOpListOfAppTypes().map(x -> {
 			return !x.stream().filter(y -> !y.isChoice()).findAny().isPresent();
-		}).orElse(false);
+		}).orElse(true);
 		if(condition) {
 			// ドメインモデル「申請」を取得する
+			List<ApplicationType> allAppTypeLst = new ArrayList<>();
+			for(ApplicationType appType : ApplicationType.values()) {
+				allAppTypeLst.add(appType);
+			} 
+			appLst = this.getByAppTypeList(allAppTypeLst);
 		} else {
 			// ドメインモデル「申請」を取得する
+			List<ApplicationType> appTypeLst = param.getOpListOfAppTypes().map(x -> {
+				return x.stream().filter(y -> y.isChoice())
+						.map(y -> y.getAppType()).collect(Collectors.toList());
+			}).orElse(Collections.emptyList());
+			appLst = this.getByAppTypeList(appTypeLst);
 		}
 		// 承認ルートの内容取得
 		Map<String,List<ApprovalPhaseStateImport_New>> mapResult = approvalRootStateAdapter.getApprovalRootContents(
@@ -2034,4 +2044,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 //		return comSet.isPresent() ? comSet.get().getListApprovalFunctionSetting() : new ArrayList<>();
 //		return Collections.emptyList();
 //	}
+	
+	private List<ListOfApplication> getByAppTypeList(List<ApplicationType> appTypeLst) {
+		return Collections.emptyList();
+	}
 }
