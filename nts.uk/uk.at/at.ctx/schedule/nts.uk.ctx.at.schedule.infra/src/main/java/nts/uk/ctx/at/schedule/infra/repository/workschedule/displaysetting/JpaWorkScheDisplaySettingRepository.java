@@ -23,7 +23,7 @@ public class JpaWorkScheDisplaySettingRepository extends JpaRepository implement
 	public Optional<WorkScheDisplaySetting> get(String companyID) {
 		
 		return this.queryProxy().query(SELECT_BY_KEY , KscmtDispSetting.class)
-				.setParameter("CID", "companyID")
+				.setParameter("CID", companyID)
 				.getSingle(c->c.toDomain());
 	}
 
