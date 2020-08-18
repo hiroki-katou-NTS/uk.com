@@ -53,6 +53,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReason;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.OTAppBeforeAccepRestric;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.ReceptionRestrictionSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.checkpostappaccept.PostAppAcceptLimit;
@@ -286,7 +287,8 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 				appType, 
 				applicationSetting.getAppDisplaySetting().getPrePostDisplayAtr(),
 				applicationSetting.getAppTypeSetting().getDisplayInitialSegment(), 
-				opOvertimeAppAtr);
+				opOvertimeAppAtr,
+				applicationSetting.getReceptionRestrictionSetting().getOtAppBeforeAccepRestric());
 		// INPUT．「申請種類」をチェックする
 		Optional<List<ActualContentDisplay>> opActualContentDisplayLst = Optional.empty();
 		Optional<List<PreAppContentDisplay>> opPreAppContentDisplayLst = Optional.empty();
@@ -346,7 +348,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 
 	@Override
 	public PrePostInitAtr getPrePostInitAtr(Optional<GeneralDate> opAppDate, ApplicationType appType, DisplayAtr prePostDisplayAtr,
-			PrePostInitAtr displayInitialSegment, Optional<OvertimeAppAtr> opOvertimeAppAtr) {
+			PrePostInitAtr displayInitialSegment, Optional<OvertimeAppAtr> opOvertimeAppAtr, OTAppBeforeAccepRestric otAppBeforeAccepRestric) {
 		// INPUT．事前事後区分表示をチェックする(check INPUT. hiển thị phân loại xin trước xin sau)
 		if(prePostDisplayAtr == DisplayAtr.DISPLAY) {
 			// OUTPUT．「事前事後区分」=INPUT．事前事後区分の初期表示 (OUTPUT. [phan loại xin trước xin sau]= INPUT. hiển thị khởi tạo của phân loại xin trước xin sau)
@@ -362,7 +364,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 				appType,
 				opAppDate.get(), 
 				opOvertimeAppAtr.orElse(null),
-				null);
+				otAppBeforeAccepRestric);
 		return EnumAdaptor.valueOf(prePostAtr.value, PrePostInitAtr.class);
 	}
 

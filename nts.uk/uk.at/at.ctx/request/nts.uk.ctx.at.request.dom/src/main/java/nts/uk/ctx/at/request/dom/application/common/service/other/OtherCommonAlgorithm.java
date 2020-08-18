@@ -15,11 +15,11 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodC
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.OTAppBeforeAccepRestric;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.shr.com.time.AttendanceClock;
 
 /**
  * refactor 4
@@ -40,11 +40,11 @@ public interface OtherCommonAlgorithm {
 	 * @param appType 申請種類
 	 * @param appDate 申請対象日
 	 * @param overtimeAppAtr 残業区分
-	 * @param advanceReceptionHours 事前受付時分
+	 * @param otAppBeforeAccepRestric 残業申請事前の受付制限
 	 * @return enum PrePostAtr
 	 */
-	public PrePostAtr preliminaryJudgmentProcessing(ApplicationType appType, GeneralDate appDate, OvertimeAppAtr overtimeAppAtr,
-			AttendanceClock advanceReceptionHours);
+	public PrePostAtr preliminaryJudgmentProcessing(ApplicationType appType, GeneralDate appDate, OvertimeAppAtr overtimeAppAtr, 
+			OTAppBeforeAccepRestric otAppBeforeAccepRestric);
 	/**
 	 * 4.社員の当月の期間を算出する
 	 * @param companyId 会社ID
