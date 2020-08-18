@@ -18,7 +18,7 @@ import java.util.List;
 @Getter
 public class CreateOrderInfoDataSource {
     private List<String> workplaceIds;
-    private List<String> workplaceCodes;
+    private List<String> workLocationCodes;
     private DatePeriod period;
     private int totalExtractCondition;
     private int itemExtractCondition;

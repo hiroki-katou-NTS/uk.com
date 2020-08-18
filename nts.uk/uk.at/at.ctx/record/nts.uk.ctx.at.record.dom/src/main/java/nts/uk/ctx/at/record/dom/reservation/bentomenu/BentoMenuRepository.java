@@ -6,7 +6,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 
 public interface BentoMenuRepository {
 	
@@ -17,6 +17,8 @@ public interface BentoMenuRepository {
 	public Bento getBento(String companyID, GeneralDate date, int frameNo);
 	
 	public List<BentoMenu> getBentoMenuPeriod(String companyID, DatePeriod period);
+
+	public List<BentoMenu> getBentoMenu(String companyID, GeneralDate date, ReservationClosingTimeFrame reservationClosingTimeFrame);
 
 	public BentoMenu getBentoMenuByHistId(String companyID, String histId);
 
