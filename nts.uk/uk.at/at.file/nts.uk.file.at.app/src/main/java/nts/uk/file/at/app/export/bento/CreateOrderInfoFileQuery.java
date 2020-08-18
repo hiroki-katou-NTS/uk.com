@@ -77,15 +77,17 @@ public class CreateOrderInfoFileQuery {
     BentoReservationRepository bentoReservationRepository;
 
     public OrderInfoDto createOrderInfoFileQuery(DatePeriod period, List<String> workplaceId,
-                                                 List<String> workplaceCodes, Optional<BentoReservationSearchConditionDto> totalExtractCondition,
+                                                 List<String> workLocationCodes, Optional<BentoReservationSearchConditionDto> totalExtractCondition,
                                                  Optional<BentoReservationSearchConditionDto> itemExtractCondition, Optional<Integer> frameNo, Optional<String> totalTitle,
                                                  Optional<String> detailTitle, ReservationClosingTimeFrame reservationClosingTimeFrame){
+        if(!totalTitle.isPresent() & !detailTitle.isPresent())
+            throw new BusinessException("Msg_1642");
         OrderInfoDto result = new OrderInfoDto();
         // 1. [RQ622]会社IDから会社情報を取得する
         Company company = companyRepository.find(AppContexts.user().companyId()).get();
         // 2. 職場又は場所情報と打刻カードを取得
         boolean isCheckedEmpInfo = detailTitle.isPresent();
-        Object[] condition = getWorkPlaceAndStampCard(workplaceId, workplaceCodes, isCheckedEmpInfo, period, company.getCompanyId());
+        Object[] condition = getWorkPlaceAndStampCard(workplaceId, workLocationCodes, isCheckedEmpInfo, period, company.getCompanyId());
         Map<String, String> map = (Map<String, String>) condition[1];
         List<BentoReservationInfoForEmpDto> bentoReservationInfoForEmpDtos = (List<BentoReservationInfoForEmpDto>) condition[2];
         List<PlaceOfWorkInfoDto> placeOfWorkInfoDtos = (List<PlaceOfWorkInfoDto>) condition[3];
@@ -93,16 +95,16 @@ public class CreateOrderInfoFileQuery {
         List<BentoReservation> bentoReservationsTotal = new ArrayList<>();
         List<BentoReservation> bentoReservationsDetail = new ArrayList<>();
         if(totalExtractCondition.equals(itemExtractCondition)) {
-            bentoReservationsTotal = getListBentoResevation(totalExtractCondition.get(), period, new ArrayList<>(map.values()), workplaceCodes, reservationClosingTimeFrame);
+            bentoReservationsTotal = getListBentoResevation(totalExtractCondition.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
             bentoReservationsDetail = bentoReservationsTotal;
         } else{
             if(totalExtractCondition.isPresent())
-                bentoReservationsTotal = getListBentoResevation(totalExtractCondition.get(), period, new ArrayList<>(map.values()), workplaceCodes, reservationClosingTimeFrame);
+                bentoReservationsTotal = getListBentoResevation(totalExtractCondition.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
             if(detailTitle.isPresent()){
                 if(frameNo.isPresent()){
-                    bentoReservationsDetail = getListBentoResevation(frameNo.get(), period,new ArrayList<>(map.values()), workplaceCodes, reservationClosingTimeFrame);
+                    bentoReservationsDetail = getListBentoResevation(frameNo.get(), period,new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
                 }else {
-                    bentoReservationsDetail = getListBentoResevation(itemExtractCondition.get(), period,new ArrayList<>(map.values()), workplaceCodes, reservationClosingTimeFrame);
+                    bentoReservationsDetail = getListBentoResevation(itemExtractCondition.get(), period,new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
                 }
             }
         }
@@ -249,7 +251,8 @@ public class CreateOrderInfoFileQuery {
                                                          DatePeriod period, List<String> stampCardNo,
                                                          List<String> workLocationCodes, ReservationClosingTimeFrame reservationClosingTimeFrame){
         List<ReservationRegisterInfo> reservationRegisterInfoList = stampCardNo.stream().map(x -> new ReservationRegisterInfo(x)).collect(Collectors.toList());
-        List<WorkLocationCode> workLocationCodeList = workLocationCodes.stream().map(x -> new WorkLocationCode(x)).collect(Collectors.toList());
+        List<WorkLocationCode> workLocationCodeList = CollectionUtil.isEmpty(workLocationCodes) ? Collections.EMPTY_LIST
+                : workLocationCodes.stream().map(x -> new WorkLocationCode(x)).collect(Collectors.toList());
         return new ListBentoResevationQuery().getListBentoResevationQuery(searchCondition, period, reservationRegisterInfoList, workLocationCodeList, reservationClosingTimeFrame);
     }
 
