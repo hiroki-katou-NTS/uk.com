@@ -28,7 +28,15 @@ module nts.uk.at.view.kaf000_ref.a.component5.viewmodel {
                 vm.reasonTypeItemLst(value.appDispInfoNoDateOutput.reasonTypeItemLst);
                 let defaultReasonTypeItem = _.find(value.appDispInfoNoDateOutput.reasonTypeItemLst, (o) => o.defaultValue);
                 if(_.isUndefined(defaultReasonTypeItem)) {
-                    vm.opAppStandardReasonCD(_.head(value.appDispInfoNoDateOutput.reasonTypeItemLst).appStandardReasonCD);
+					let dataLst = [{
+			            appStandardReasonCD: '',
+			            displayOrder: 0,
+			            defaultValue: false,
+			            opReasonForFixedForm: vm.$i18n('KAFS00_23'),   
+			        }];
+					_.concat(dataLst, vm.reasonTypeItemLst());
+					vm.reasonTypeItemLst(dataLst);
+                    vm.opAppStandardReasonCD(_.head(vm.reasonTypeItemLst()).appStandardReasonCD);
                 } else {
                     vm.opAppStandardReasonCD(defaultReasonTypeItem.appStandardReasonCD);        
                 }
