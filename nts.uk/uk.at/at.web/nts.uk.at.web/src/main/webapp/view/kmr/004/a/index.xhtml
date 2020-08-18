@@ -7,6 +7,9 @@
 <body>
 <ui:composition template="../../../../master/base.xhtml">
     <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.at.function.dom.reservation.BentoExportTitle
+        </com:ValidatorScript>
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
         <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
@@ -37,7 +40,7 @@
                                     required: true,
 									enable: true,
 									showNextPrevious: true,
-									value: dateRangeValue}">
+									value: model.period}">
                             </div>
                         </td>
                     </tr>
@@ -96,14 +99,15 @@
 												<div id="A7_1" data-bind="ntsFormLabel: {}, i18n: 'KMR004_14'"></div>
 											</td>
                                             <td>
-												<div id="A7_2" tabindex="13" data-bind="with: texteditorOrderTotal">
+												<div id="A7_2" tabindex="13">
 													<input data-bind="ntsTextEditor: {
-														value: simpleValue,
-														constraint: constraint,
-														option: option,
-														required: false,
-														enable: enable,
-														readonly: readonly}"/>
+														value: model.totalTitle,
+														constraint: 'BentoExportTitle',
+														option: {
+														    textmode: 'text',
+                                                            width: '100px',
+                                                            textalign: 'left'
+														}}"/>
 												</div>
 											</td>
 										</tr>
@@ -120,7 +124,7 @@
 													],
 													optionsValue: 'id',
 													optionsText: 'name',
-													value: totalRadioSelectedId,
+													value: model.totalExtractCondition,
 													enable: true}">
 												</div> <br/>
                                                 &#160;&#160;&#160;&#160;
@@ -142,14 +146,15 @@
 												<div id="A9_1" data-bind="ntsFormLabel: {}, i18n: 'KMR004_14'"></div>
 											</td>
                                             <td>
-												<div id="A9_2" tabindex="18" data-bind="with: texteditorOrderStatement">
+												<div id="A9_2" tabindex="18">
 													<input data-bind="ntsTextEditor: {
-														value: simpleValue,
-														constraint: constraint,
-														option: option,
-														required: false,
-														enable: enable,
-														readonly: readonly}"/>
+														value: model.detailTitle,
+														constraint: 'BentoExportTitle',
+														option: {
+														    textmode: 'text',
+                                                            width: '100px',
+                                                            textalign: 'left'
+														}}"/>
 												</div>
 											</td>
 										</tr>
@@ -167,13 +172,14 @@
 															],
 															optionsValue: 'id',
 															optionsText: 'name',
-															value: conditionRadioSelected,
+															value: model.itemExtractCondition,
 															enable: true}">
 														</div>
 													</td>
 													<td style="padding-top: 0px;">
 														&#160;&#160;&#160;&#160;
-														<div class="style-normal" id="A10_5" tabindex="21" style="margin-left: -82px;" data-bind="i18n: 'KMR004_25', ntsCheckBox: { checked: separatePageCheckboxChecked, enable: separatePageCheckboxEnable}"></div>
+														<div class="style-normal" id="A10_5" tabindex="21" style="margin-left: -82px;"
+                                                             data-bind="i18n: 'KMR004_25', ntsCheckBox: { checked: model.isBreakPage, enable: separatePageCheckboxEnable}"></div>
 													</td>
 												</tr></table>
 												&#160;&#160;&#160;&#160;&#160;&#160;
@@ -182,7 +188,7 @@
 													options: conditionListCcb,
 													optionsValue: 'code',
 													visibleItemsCount: 40,
-													value: conditionCode,
+													value: model.frameNo,
 													optionsText: 'name',
 													editable: false,
 													enable: conditionListCcbEnable,

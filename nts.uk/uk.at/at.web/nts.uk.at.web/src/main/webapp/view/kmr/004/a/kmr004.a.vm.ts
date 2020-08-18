@@ -1,6 +1,11 @@
 module nts.uk.at.view.kmr004.a {
     const API = {
-        START: "screen/at/record/reservation-conf-list/start"
+        START: "screen/at/record/reservation-conf-list/start",
+        PDF_ALL : "order/report/all/pdf",
+        PDF_DETAIL : "order/report/detail/pdf",
+        EXCEL : "order/report/print/excel",
+        EXCEL_DETAL : "order/report/print/excel-detail",
+        exportFile: "bento/report/reservation/month"
     };
 
     // const PATH = {
@@ -13,11 +18,12 @@ module nts.uk.at.view.kmr004.a {
     @bean()
     export class KMR004AViewModel extends ko.ViewModel {
 
-		// date range picker
-        dateRangeValue: KnockoutObservable<any> = ko.observable({
-            startDate: formatDate( new Date(), 'yyyy/MM/dd'),
-            endDate: formatDate( new Date(), 'yyyy/MM/dd')
-        });
+        model : OutputCondition = new OutputCondition();
+        // // date range picker
+        // dateRangeValue: KnockoutObservable<any> = ko.observable({
+        //     startDate: formatDate( new Date(), 'yyyy/MM/dd'),
+        //     endDate: formatDate( new Date(), 'yyyy/MM/dd')
+        // });
 
         selectedRuleCode: KnockoutObservable<number> = ko.observable(1);
 
@@ -43,17 +49,17 @@ module nts.uk.at.view.kmr004.a {
         selectedTab: KnockoutObservable<string> = ko.observable('');
 
 		// text editors
-        texteditorOrderTotal: any = ko.observableArray([]);
-        texteditorOrderStatement: any = ko.observableArray([]);
+        // texteditorOrderTotal: any = ko.observableArray([]);
+        // texteditorOrderStatement: any = ko.observableArray([]);
 
         // output condition
         outputConditionChecked: KnockoutObservable<number> = ko.observable(1);
 
         // total radio group default selected value
-        totalRadioSelectedId: KnockoutObservable<number> = ko.observable(2); // Default selected: A8_4 注文済み
+        //totalRadioSelectedId: KnockoutObservable<number> = ko.observable(2); // Default selected: A8_4 注文済み
 
         // condition radio group default selected value
-        conditionRadioSelected: KnockoutObservable<number> = ko.observable(1); // Default selected: A10_3 全件
+        //conditionRadioSelected: KnockoutObservable<number> = ko.observable(1); // Default selected: A10_3 全件
 
         // extraction condition checkbox
         extractionConditionChecked: KnockoutObservable<boolean> = ko.observable(false);
@@ -113,33 +119,33 @@ module nts.uk.at.view.kmr004.a {
 
             self.selectedTab = ko.observable('tab-1');
 
-            self.texteditorOrderTotal = {
-                simpleValue: ko.observable(''),
-                constraint: 'PrimitiveValue',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: self.$i18n('KMR004_21'),
-                    width: "100px",
-                    textalign: "left"
-                })),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
+            // self.texteditorOrderTotal = {
+            //     simpleValue: ko.observable(''),
+            //     constraint: 'PrimitiveValue',
+            //     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+            //         textmode: "text",
+            //         placeholder: self.$i18n('KMR004_21'),
+            //         width: "100px",
+            //         textalign: "left"
+            //     })),
+            //     enable: ko.observable(true),
+            //     readonly: ko.observable(false)
+            // };
+            //
+            // self.texteditorOrderStatement = {
+            //     simpleValue: ko.observable(''),
+            //     constraint: 'PrimitiveValue',
+            //     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+            //         textmode: "text",
+            //         placeholder: self.$i18n('KMR004_22'),
+            //         width: "100px",
+            //         textalign: "left"
+            //     })),
+            //     enable: ko.observable(true),
+            //     readonly: ko.observable(false)
+            // };
 
-            self.texteditorOrderStatement = {
-                simpleValue: ko.observable(''),
-                constraint: 'PrimitiveValue',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: self.$i18n('KMR004_22'),
-                    width: "100px",
-                    textalign: "left"
-                })),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
-
-            self.totalRadioSelectedId.subscribe((newValue) => {
+            self.model.totalExtractCondition.subscribe((newValue) => {
                 if (newValue == 4) {
                     self.extractionConditionEnable(true);
                 } else {
@@ -148,7 +154,7 @@ module nts.uk.at.view.kmr004.a {
             });
 
 
-            self.conditionRadioSelected.subscribe((newValue) => {
+            self.model.itemExtractCondition.subscribe((newValue) => {
                 if (newValue == 1) {
                     self.separatePageCheckboxEnable(true);
                 } else {
@@ -181,7 +187,20 @@ module nts.uk.at.view.kmr004.a {
             let vm = this;
             $("#exportTitle").trigger("validate");
             vm.$blockui("invisible");
-            nts.uk.request.exportFile("at", API.EXCEL).done((data) => {
+            let data = {
+                workplaceIds: ["100","900"],
+                workLocationCodes: [],
+                period: null,
+                totalExtractCondition: 1,
+                itemExtractCondition: -1,
+                frameNo: -1,
+                totalTitle: 'Total title',
+                detailTitle: '',
+                reservationClosingTimeFrame: 1,
+                isBreakPage: true,
+                reservationTimeZone: '昼'
+            };
+            nts.uk.request.exportFile("at", API.EXCEL,data).done(() => {
                 vm.$blockui("clear");
             }).fail((res: any) => {
                 vm.$dialog.error({ messageId : res.messageId }).then(function(){
@@ -222,7 +241,7 @@ module nts.uk.at.view.kmr004.a {
                 isMultipleUse: true,
                 isMultiSelect: true,
                 startMode: tree.StartMode.WORKPLACE,
-                selectedId: self.multiSelectedId,
+                selectedId: self.model.workplaceIds,
                 baseDate: self.baseDate,
                 selectType: tree.SelectionType.NO_SELECT,
                 isShowSelectButton: true,
@@ -254,17 +273,6 @@ module nts.uk.at.view.kmr004.a {
         }
     }
 
-    class BoxModel {
-        id: number;
-        name: string;
-
-        constructor(id, name) {
-            var self = this;
-            self.id = id;
-            self.name = name;
-        }
-    }
-
     class ItemModel {
         code: string;
         name: string;
@@ -273,5 +281,30 @@ module nts.uk.at.view.kmr004.a {
             this.code = code;
             this.name = name;
         }
+    }
+
+    class OutputCondition{
+        //workplaceIds
+        workplaceIds: KnockoutObservableArray<string> = ko.observableArray([]);
+        workLocationCodes: KnockoutObservableArray<string> = ko.observableArray([]);
+        period: KnockoutObservable<any> = ko.observable({
+            start: formatDate( new Date(), 'yyyy/MM/dd'),
+            end: formatDate( new Date(), 'yyyy/MM/dd')
+        });
+        reservationTimeZone: KnockoutObservable<number> = ko.observable(1);
+        totalTitle: KnockoutObservable<string> = ko.observable("");
+        detailTitle: KnockoutObservable<string> = ko.observable("");
+
+        // totalExtractCondition
+        totalExtractCondition: KnockoutObservable<number> = ko.observable(-1);
+
+        // itemExtractCondition
+        itemExtractCondition: KnockoutObservable<number> = ko.observable(-1);
+
+        // isBreakPage
+        isBreakPage: KnockoutObservable<boolean> = ko.observable(false);
+
+        // frameNo
+        frameNo: KnockoutObservable<number> = ko.observable(-1);
     }
 }
