@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.reservation.bento;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 
