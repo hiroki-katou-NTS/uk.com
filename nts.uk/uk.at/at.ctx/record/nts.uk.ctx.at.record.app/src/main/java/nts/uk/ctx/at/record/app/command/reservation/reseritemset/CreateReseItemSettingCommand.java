@@ -8,6 +8,9 @@ import java.math.BigDecimal;
 @Data
 public class CreateReseItemSettingCommand {
 
+    // 枠番
+    private int frameNo;
+
     // 弁当名
     private String benToName;
 
@@ -15,17 +18,17 @@ public class CreateReseItemSettingCommand {
     private String workLocationCode;
 
     // 金額１
-    private BigDecimal amount1;
+    private int amount1;
 
     // 金額２
-    private  BigDecimal amount2;
+    private  int amount2;
 
     // 単位
     private String Unit;
 
     // 締め時刻１で予約可能
-    private Bool canBookClosesingTime1;
+    private boolean canBookClosesingTime1;
 
     // 締め時刻１で予約可能
-    private Bool canBookClosesingTime2;
+    private boolean canBookClosesingTime2;
 }

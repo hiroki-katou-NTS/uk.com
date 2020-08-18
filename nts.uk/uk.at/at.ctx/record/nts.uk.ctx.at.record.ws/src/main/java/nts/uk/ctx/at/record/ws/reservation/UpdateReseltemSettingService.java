@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.record.ws.reservation;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.reservation.bento.BentoReserveSettingCommand;
-import nts.uk.ctx.at.record.app.command.reservation.bento.BentoReserveSettingCommandHandler;
 import nts.uk.ctx.at.record.app.command.reservation.reseritemset.UpdateReseItemSettingCommand;
 import nts.uk.ctx.at.record.app.command.reservation.reseritemset.UpdateReseItemSettingCommandHandler;
 
@@ -11,16 +9,16 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-@Path("bento/bentomenusetting")
+@Path("bento/updateItemSetting")
 @Produces("application/json")
-public class ReservationSettingService extends WebService{
+public class UpdateReseltemSettingService extends WebService {
 
     @Inject
-    private BentoReserveSettingCommandHandler register;
+    private UpdateReseItemSettingCommandHandler update;
 
     @POST
-    @Path("add")
-    public void save(BentoReserveSettingCommand command) {
-        this.register.handle(command);
+    @Path("update")
+    public void save(UpdateReseItemSettingCommand command) {
+        this.update.handle(command);
     }
 }
