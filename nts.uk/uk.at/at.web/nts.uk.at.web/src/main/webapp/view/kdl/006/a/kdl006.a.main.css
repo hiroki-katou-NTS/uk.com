@@ -28,3 +28,6 @@
 	height: 43px;
 	text-align: center;
 }
+.scroll tr .ntsCheckBox{
+	padding-bottom: 2.5px;
+}

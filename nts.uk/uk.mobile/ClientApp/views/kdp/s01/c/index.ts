@@ -12,7 +12,6 @@ const servicePath = {
 
 @component({
     name: 'kdpS01c',
-    route: '/kdp/s01/c',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
@@ -49,10 +48,6 @@ export class KdpS01CComponent extends Vue {
             ]
         }
     };
-
-    public mounted() {
-        this.pgName = 'KDPS01_5';
-    }
 
 
     public created() {

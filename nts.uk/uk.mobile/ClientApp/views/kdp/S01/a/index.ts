@@ -309,7 +309,7 @@ export class KdpS01AComponent extends Vue {
 
         let vm = this;
         vm.$auth.user.then((userInfo) => {
-            vm.$modal('screenB', {
+            vm.$modal(KdpS01BComponent, {
                 stampDate: date,
                 resultDisplayTime: vm.setting.displaySettingsStampScreen.resultDisplayTime,
                 employeeId: userInfo.employeeId,
@@ -329,9 +329,10 @@ export class KdpS01AComponent extends Vue {
     private openDialogC(date: Date, stampButton: model.IStampButtonCommand) {
         let vm = this;
         vm.$auth.user.then((userInfo) => {
-            vm.$modal('screenC', {
+            vm.$modal(KdpS01CComponent, {
                 attendanceItemIds: vm.setting.lstDisplayItemId
-            }).then(() => {
+            }
+            ).then(() => {
 
                 vm.$http.post('at', servicePath.getOmission, stampButton).then((result: any) => {
                     let data: model.IGetOmissionContentDto = result.data;
@@ -346,14 +347,13 @@ export class KdpS01AComponent extends Vue {
 
     public openDialogS() {
         let vm = this;
-        vm.$modal('screenS').then(() => {
-
+        vm.$modal(KdpS01SComponent, null, { title: 'KDPS01_22' }).then(() => {
         });
     }
 
     public openDialogT(data) {
         let vm = this;
-        vm.$modal('screenT', data).then(() => {
+        vm.$modal(KdpS01TComponent, data, { title: 'KDPS01_23' }).then(() => {
 
         });
     }

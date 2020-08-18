@@ -4,7 +4,6 @@ import { model } from 'views/kdp/S01/shared/index.d';
 
 @component({
     name: 'kdpS01t',
-    route: '/kdp/s01/t',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
@@ -61,10 +60,6 @@ export class KdpS01TComponent extends Vue {
 
         }
 
-    }
-
-    public mounted() {
-        this.pgName = 'KDPS01_23';
     }
 }
 

@@ -1,5 +1,13 @@
 <template>
   <div>
+    <div class="modal-header rounded-0 d-block p-0">
+      <div class="uk-bg-teal p-2">
+        <h4 class="modal-title text-white">
+          <i class="fas fa-angle-left mr-1" v-on:click="$close"></i>
+          <span>{{ "KDPS01_5" | i18n }}</span>
+        </h4>
+      </div>
+    </div>
     <div class="row ml-1 title uk-text-over-time">
       <label>{{ "KDPS01_26" | i18n }}</label>
     </div>
