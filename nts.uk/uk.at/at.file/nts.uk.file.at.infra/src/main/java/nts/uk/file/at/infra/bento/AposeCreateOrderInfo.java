@@ -21,7 +21,7 @@ import java.util.List;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements CreateOrderInfoGenerator {
 
-    private static final String TEMPLATE_TOTAL_FILE = "report/KMR004_Template_Total.xlsx";
+    private static final String TEMPLATE_TOTAL_FILE = "report/KMR004_Temp_Total.xlsx";
     private static final String TEMPLATE_DETAIL_FILE = "report/KMR004_Template_Detail.xlsx";
     private static final String FILE_NAME = "KMR004予約確認一覧_";
     private static final String TOTAL_BOOK = "合計書";
@@ -130,7 +130,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
     static {
         headerDetail1 = new Style();
         //headerDetail1.setBackgroundColor(Color.fromArgb(51,153,255));
-        headerDetail1.setForegroundColor(Color.getAliceBlue());
+        headerDetail1.setForegroundColor(Color.fromArgb(51,153,255));
         //headerDetail1.setBackgroundArgbColor();
         headerDetail1.setBorder(BorderType.TOP_BORDER, CellBorderType.MEDIUM, Color.getBlack());
         headerDetail1.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
@@ -219,7 +219,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
     public void generate(FileGeneratorContext generatorContext, OrderInfoExportData data) {
         if (!CollectionUtil.isEmpty(data.getOrderInfoDto().getTotalOrderInfoDtoList()))
             handleTotalTemplate(generatorContext, data);
-        if(!CollectionUtil.isEmpty(data.getOrderInfoDto().getDetailOrderInfoDtoList()))
+        else if(!CollectionUtil.isEmpty(data.getOrderInfoDto().getDetailOrderInfoDtoList()))
             handleDetailTemplate(generatorContext, data);
     }
 
@@ -233,7 +233,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             if(data.getOutputExt().equals(OutputExtension.PDF))
                 reportContext.saveAsPdf(this.createNewFile(generatorContext,
                     FILE_NAME + TOTAL_BOOK + GeneralDateTime.now().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION_PDF));
-            else
+            else if(data.getOutputExt().equals(OutputExtension.EXCEL))
                 reportContext.saveAsExcel(this.createNewFile(generatorContext,
                         FILE_NAME + TOTAL_BOOK + GeneralDateTime.now().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION_EXCEL));
         } catch (Exception e) {
@@ -251,7 +251,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             if(data.getOutputExt().equals(OutputExtension.PDF))
                 reportContext.saveAsPdf(this.createNewFile(generatorContext,
                         FILE_NAME + TOTAL_BOOK + GeneralDateTime.now().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION_PDF));
-            else
+            else if(data.getOutputExt().equals(OutputExtension.EXCEL))
                 reportContext.saveAsExcel(this.createNewFile(generatorContext,
                         FILE_NAME + TOTAL_BOOK + GeneralDateTime.now().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION_EXCEL));
         } catch (Exception e) {
@@ -280,7 +280,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             List<TotalOrderInfoDto> dataPrint = orderInfoDto.getTotalOrderInfoDtoList();
             for (TotalOrderInfoDto dataRow : dataPrint)
                 startIndex = handleBodyTotalFormat(worksheet, dataRow, startIndex, cells, exportData.isBreakPage());
-
+            worksheet.getVerticalPageBreaks().add(10);
         } catch (RuntimeException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -288,7 +288,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
     }
 
     private void printHeadData(Cells cells, OrderInfoExportData exportData){
-        List<PlaceOfWorkInfoDto> placeOfWorkInfoDtos = exportData.getOrderInfoDto().getDetailTittle() == null | "".equals(exportData.getOrderInfoDto().getDetailTittle())
+        List<PlaceOfWorkInfoDto> placeOfWorkInfoDtos = CollectionUtil.isEmpty(exportData.getOrderInfoDto().getDetailOrderInfoDtoList())
                 ? exportData.getOrderInfoDto().getTotalOrderInfoDtoList().get(0).getPlaceOfWorkInfoDto()
                 : exportData.getOrderInfoDto().getDetailOrderInfoDtoList().get(0).getPlaceOfWorkInfoDtos();
 
@@ -333,8 +333,10 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             cells.get(startIndex + 1, 5).setValue(TOTAL_LABEL);
             cells.get(startIndex + 1, 6).setValue(total);
             endPage = startIndex + 2;
-            if (isPageBreak)
-                worksheet.addPageBreaks("J" + (endPage + 1));
+            //page break
+            HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
+            pageBreaks.add(endPage);
+
             return startIndex;
         }
 
@@ -351,8 +353,10 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         cells.get(startIndex + dataRow.getBentoTotalDto().size(), 5).setValue(TOTAL_LABEL);
         cells.get(startIndex + dataRow.getBentoTotalDto().size(), 6).setValue(total);
         endPage += dataRow.getBentoTotalDto().size() ;
-        if(isPageBreak)
-            worksheet.addPageBreaks("J" + endPage);
+        // page break
+        HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
+        pageBreaks.add(endPage);
+
         startIndex += dataRow.getBentoTotalDto().size() - 1 + 4;
         return startIndex;
     }
@@ -407,7 +411,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             for (DetailOrderInfoDto i : orderInfoDto.getDetailOrderInfoDtoList())
                 for (BentoReservedInfoDto item : i.getBentoReservedInfoDtos())
                     startIndex = handleBodyDetailFormat(worksheet, item, startIndex, cells, orderInfoExportData.isBreakPage());
-
+            worksheet.getVerticalPageBreaks().add(12);
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
@@ -424,6 +428,10 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             cells.deleteRow(startIndex + 1);
             setFooterDataDetailFormat(cells, startIndex + 1, total,"");
             startIndex += 5;
+            if(isPageBreak){
+                HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
+                pageBreaks.add(startIndex - 3);
+            }
         }
         else {
             int row = bodyData.size() / 3;
@@ -455,8 +463,10 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             startIndex += 5;
         }
 
-        if(isPageBreak)
-            worksheet.addPageBreaks("M" + (startIndex - 2));
+        if(isPageBreak){
+            HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
+            pageBreaks.add(startIndex - 3);
+        }
         return startIndex;
     }
 

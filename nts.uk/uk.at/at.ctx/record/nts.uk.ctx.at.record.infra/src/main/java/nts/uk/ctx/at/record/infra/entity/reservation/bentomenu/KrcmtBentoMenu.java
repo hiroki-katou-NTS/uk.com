@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.reservation.bentomenu;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -82,7 +83,7 @@ public class KrcmtBentoMenu extends UkJpaEntity {
 	}
 
 	public static KrcmtBentoMenu fromDomain(BentoMenu bentoMenu) {
-		return new KrcmtBentoMenu(
+		KrcmtBentoMenu krcmtBentoMenu = new KrcmtBentoMenu(
 				new KrcmtBentoMenuPK(
 						AppContexts.user().companyId(),
 						bentoMenu.getHistoryID()
@@ -94,7 +95,10 @@ public class KrcmtBentoMenu extends UkJpaEntity {
 				bentoMenu.getClosingTime().getClosingTime2().get().getReservationTimeName().v(),
 				bentoMenu.getClosingTime().getClosingTime2().get().getStart().get().v(),
 				bentoMenu.getClosingTime().getClosingTime2().get().getFinish().v(),
-				bentoMenu.getMenu().stream().map(x -> KrcmtBento.fromDomain(x,bentoMenu.getHistoryID())).collect(Collectors.toList()));
+                Arrays.asList());
+        List<KrcmtBento> bentos = bentoMenu.getMenu().stream().map(x -> KrcmtBento.fromDomain(x,bentoMenu.getHistoryID(), krcmtBentoMenu)).collect(Collectors.toList());
+        krcmtBentoMenu.bentos = bentos;
+		return krcmtBentoMenu;
 
 	}
 	

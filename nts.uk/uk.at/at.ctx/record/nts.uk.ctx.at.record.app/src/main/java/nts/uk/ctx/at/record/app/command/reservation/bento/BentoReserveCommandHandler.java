@@ -42,19 +42,13 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 	@Inject
 	private BentoReservationRepository bentoReservationRepository;
 
-	@Inject
-	private BentoReserveCommonService bentoReserveCommonService;
-	
 	@Override
 	protected void handle(CommandHandlerContext<BentoReserveCommand> context) {
 
 		BentoReserveCommand command = context.getCommand();
 
-		// Get WorkLocationCode by Cid
-		String companyId = AppContexts.user().companyId();
-		String employeeId = AppContexts.user().employeeId();
- 		Optional<WorkLocationCode> workLocationCode = bentoReserveCommonService.getWorkLocationCode(companyId,employeeId,command.getDate());
-		// End
+ 		Optional<WorkLocationCode> workLocationCode = command.getWorkLocationCode() != null?
+				Optional.of(new WorkLocationCode(command.getWorkLocationCode())): Optional.empty();
 
 		StampCard stampCard = stampCardRepository.getLstStampCardByLstSidAndContractCd(
 				Arrays.asList(AppContexts.user().employeeId()),

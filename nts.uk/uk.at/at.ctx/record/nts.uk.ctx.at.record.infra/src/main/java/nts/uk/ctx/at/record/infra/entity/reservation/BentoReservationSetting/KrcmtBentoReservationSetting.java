@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.reservation.BentoReservationSetting;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.*;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
@@ -19,6 +20,9 @@ public class KrcmtBentoReservationSetting extends UkJpaEntity {
     @Id
     @Column(name = "CID")
     public String companyID;
+
+    @Column(name = "CONTRACT_CD")
+    public String contractCD;
 
     @Column(name = "OPE_CAT")
     public int operationDistinction;
@@ -75,6 +79,7 @@ public class KrcmtBentoReservationSetting extends UkJpaEntity {
     public static KrcmtBentoReservationSetting fromDomain(BentoReservationSetting bentoReservationSetting) {
         return new KrcmtBentoReservationSetting(
                 bentoReservationSetting.getCompanyId(),
+                AppContexts.user().contractCode(),
                 bentoReservationSetting.getOperationDistinction().value,
                 bentoReservationSetting.getAchievements().getReferenceTime().v(),
                 bentoReservationSetting.getCorrectionContent().getOrderDeadline().value,
