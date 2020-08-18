@@ -311,13 +311,9 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 	public void update(BentoMenu bentoMenu) {
 		commandProxy().update(KrcmtBentoMenu.fromDomain(bentoMenu));
 	}
-<<<<<<< HEAD
-=======
 
 	@Override
 	public void delete(String companyId, String historyId) {
 		this.commandProxy().remove(KrcmtBentoMenu.class, new KrcmtBentoMenuPK(companyId, historyId));
 	}
-
->>>>>>> pj/at/TeamG/KMR004
 }

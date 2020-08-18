@@ -84,7 +84,7 @@ public class ReservationModifyQuery {
         if (!wpHistItems.isEmpty()) {
             AffWorkplaceHistoryItem wpHistItem = wpHistItems.get(0);
             if (wpHistItem.getWorkLocationCode() != null && wpHistItem.getWorkLocationCode().isPresent()) {
-                String wkpCode = wpHistItem.getWorkLocationCode().get();
+                String wkpCode = wpHistItem.getWorkLocationCode().get().v();
                 workLocationCodeOpt = Optional.of(new WorkLocationCode(wkpCode));
             }
         }
