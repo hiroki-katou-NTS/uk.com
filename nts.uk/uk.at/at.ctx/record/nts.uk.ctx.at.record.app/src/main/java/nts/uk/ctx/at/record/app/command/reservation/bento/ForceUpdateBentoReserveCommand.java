@@ -11,29 +11,58 @@ public class ForceUpdateBentoReserveCommand {
     /**
      * 予約登録情報
      */
-    private List<ReservationInfo> reservationInfos;
+    List<BentoReserveInfoCommand> reservationInfos;
 
     /**
      * 予約対象日
      */
-    private GeneralDate date;
+    GeneralDate date;
+
+    /**
+     * 新規Flg
+     */
+    boolean isNew;
 
     /**
      * 締め時刻枠
      */
-    private int closingTimeFrame;
+    int closingTimeFrame;
 
+    /**
+     * 予約登録情報
+     */
     @Value
-    public class ReservationInfo{
+    private class BentoReserveInfoCommand{
         /**
-         * 予約登録情報
+         * カード番号
          */
-        private String reservationCardNo;
+        String reservationCardNo;
 
         /**
-         *
+         * 注文済み
          */
-        private String empployeeId;
+        boolean ordered;
+
+        /**
+         * 予約明細
+         */
+        List<BentoReserveDetailCommand> details;
+    }
+
+    /**
+     * 予約明細
+     */
+    @Value
+    private class BentoReserveDetailCommand {
+        /**
+         * 枠番
+         */
+        int frameNo;
+
+        /**
+         * 個数
+         */
+        int bentoCount;
     }
 }
 

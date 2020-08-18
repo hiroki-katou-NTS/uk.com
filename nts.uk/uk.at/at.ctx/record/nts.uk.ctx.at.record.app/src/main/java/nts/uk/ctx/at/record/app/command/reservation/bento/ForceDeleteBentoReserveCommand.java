@@ -11,29 +11,29 @@ public class ForceDeleteBentoReserveCommand {
     /**
      * 予約登録情報
      */
-    private List<ReservationInfo> reservationInfos;
+    List<ReservationInfo> reservationInfos;
 
     /**
      * 予約対象日
      */
-    private GeneralDate date;
+    GeneralDate date;
 
     /**
      * 締め時刻枠
      */
-    private int closingTimeFrame;
+    int closingTimeFrame;
 
     @Value
     public class ReservationInfo{
         /**
          * 予約登録情報
          */
-        private String reservationCardNo;
+        String reservationCardNo;
 
         /**
          *
          */
-        private String empployeeId;
+        String empployeeId;
     }
 }
 

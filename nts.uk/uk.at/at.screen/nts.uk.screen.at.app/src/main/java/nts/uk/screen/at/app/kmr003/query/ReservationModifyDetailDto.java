@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ReservationModifyDetailDto {
     /** 個数 */
-    private int number;
+    private int bentoCount;
     /** 弁当メニュー枠番 */
-    private int bentoMenuNo;
+    private int frameNo;
 }
