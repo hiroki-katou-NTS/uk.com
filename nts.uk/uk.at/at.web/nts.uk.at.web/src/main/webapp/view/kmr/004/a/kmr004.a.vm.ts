@@ -31,12 +31,12 @@ module nts.uk.at.view.kmr004.a {
 		treeGrid: tree.TreeComponentOption;
 
 		// total checkbox
-        totalChecked: KnockoutObservable<boolean> = ko.observable(true);
-        totalEnable: KnockoutObservable<boolean> = ko.observable(true);
+        //totalChecked: KnockoutObservable<boolean> = ko.observable(true);
+        //totalEnable: KnockoutObservable<boolean> = ko.observable(true);
 
 		// conditional checkbox
-        conditionalChecked: KnockoutObservable<boolean> = ko.observable(false);
-        conditionalEnable: KnockoutObservable<boolean> = ko.observable(true);
+        //conditionalChecked: KnockoutObservable<boolean> = ko.observable(false);
+        //conditionalEnable: KnockoutObservable<boolean> = ko.observable(true);
 
 		// tabs
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray([]);
@@ -45,6 +45,9 @@ module nts.uk.at.view.kmr004.a {
 		// text editors
         texteditorOrderTotal: any = ko.observableArray([]);
         texteditorOrderStatement: any = ko.observableArray([]);
+
+        // output condition
+        outputConditionChecked: KnockoutObservable<number> = ko.observable(1);
 
         // total radio group default selected value
         totalRadioSelectedId: KnockoutObservable<number> = ko.observable(2); // Default selected: A8_4 注文済み
@@ -72,16 +75,16 @@ module nts.uk.at.view.kmr004.a {
             var self = this;
 
             var strDate: string = formatDate( self.baseDate(), 'yyyy/MM/dd');
-            var strDateForm = ko.toJS({strDate: strDate});
-            self.$ajax(API.START, strDateForm).done((data) => {
-                if(data.operationDistinction == "BY_COMPANY"){
-                    self.initWorkplaceList();
-                } else {
-                    console.log(data);
-                    self.initSwitchButton(data);
-                    self.initWorkLocationList();
-                }
-            });
+            // var strDateForm = ko.toJS({strDate: strDate});
+            // self.$ajax(API.START, strDateForm).done((data) => {
+            //     if(data.operationDistinction == "BY_COMPANY"){
+            //         self.initWorkplaceList();
+            //     } else {
+            //         console.log(data);
+            //         self.initClosingTimeSwitch(data);
+            //         self.initWorkLocationList();
+            //     }
+            // });
 
             self.selectedRuleCode.subscribe((value) => {
                 if (value == 1) {
@@ -200,7 +203,7 @@ module nts.uk.at.view.kmr004.a {
             });
         }
 
-        initSwitchButton(data:any) {
+        initClosingTimeSwitch(data:any) {
             let vm = this;
             let closingTime1Name: string = data.closingTime1.reservationTimeName;
             let closingTime2Name: string = data.closingTime2.reservationTimeName;
