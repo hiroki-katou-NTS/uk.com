@@ -5,17 +5,29 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.Optional;
 
 @Stateless
 public class BentoMenuSetScreenProcessor {
 
     @Inject
-    private BentoMenuScreenRepository repo;
+    private BentoMenuScreenRepository bentoMenuScreenRepository;
 
-    public BentoMenuDto findDataBentoMenu() {
+    @Inject
+    private BentoReservationScreenRepository bentoReservationScreenRepository;
+
+    public BentoMenuJoinBentoSettingDto findDataBentoMenu() {
         String companyID = AppContexts.user().companyId();
-        GeneralDate date = GeneralDate.fromString("9999/12/31", "yyyy/MM/dd");
-        return this.repo.findDataBentoMenu(companyID,date);
+        GeneralDate generalDate = GeneralDate.max();
+        BentoMenuDto bentoMenuDto = bentoMenuScreenRepository.findDataBentoMenu(companyID,generalDate);
+
+        BentoReservationSettingDto reservationSettingDto = bentoReservationScreenRepository.findDataBentoRervation(companyID);
+
+        return BentoMenuJoinBentoSettingDto.SetData(bentoMenuDto,reservationSettingDto);
+    }
+
+    public BentoMenuDto getBentoMenuByHist() {
+        String companyID = AppContexts.user().companyId();
+        GeneralDate generalDate = GeneralDate.max();
+        return bentoMenuScreenRepository.findDataBentoMenu(companyID,generalDate);
     }
 }

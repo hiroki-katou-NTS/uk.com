@@ -8,13 +8,15 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoMenuHistory;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationTime;
 import nts.uk.ctx.at.record.dom.reservation.bento.IBentoMenuHistoryRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.RegisterReservationLunchService;
+import nts.uk.ctx.at.record.dom.reservation.bento.rules.BentoReservationTimeName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSettingRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTime;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.*;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
@@ -22,8 +24,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -44,12 +45,33 @@ public class BentoReserveSettingCommandHandler extends CommandHandler<BentoReser
         BentoReserveSettingCommand command = commandHandlerContext.getCommand();
         RequireImpl require = new RequireImpl(reservationSettingRepository,bentoMenuRepository,bentoMenuHistoryRepository);
 
-        AtomTask persist = RegisterReservationLunchService.register(
-                require,command.getOperationDistinction(),command.getAchievements(),command.getCorrectionContent(),command.getClosingTime());
-        transaction.execute(() -> {
-            persist.run();
-        });
+        Achievements achievements =  new Achievements(
+                new ReferenceTime(command.getReferenceTime()),
+                AchievementMethod.valueOf(command.getDailyResults()),
+                AchievementMethod.valueOf(command.getMonthlyResults())
+        );
+        CorrectionContent correctionContent = new CorrectionContent(
+                ContentChangeDeadline.valueOf(command.getContentChangeDeadline()),
+                ContentChangeDeadlineDay.valueOf(command.getContentChangeDeadlineDay()),
+                OrderedData.valueOf(command.getOrderedData()),
+                OrderDeadline.valueOf(command.getOrderDeadline())
+        );
+        ReservationClosingTime closingTime1 = new ReservationClosingTime(new BentoReservationTimeName(command.getName1()),
+                new BentoReservationTime(command.getEnd1()),
+                Optional.of(new BentoReservationTime(command.getStart1())));
 
+        Optional<ReservationClosingTime> closingTime2;
+
+        closingTime2 = Optional.of(new ReservationClosingTime(
+                new BentoReservationTimeName(command.getName2()),
+                new BentoReservationTime(command.getEnd2()),
+                Optional.of(new BentoReservationTime(command.getStart2()))));
+
+        BentoReservationClosingTime bentoReservationClosingTime = new BentoReservationClosingTime(closingTime1,closingTime2);
+        OperationDistinction operationDistinction = OperationDistinction.valueOf(command.getOperationDistinction());
+        AtomTask persist = RegisterReservationLunchService.register(
+                require, operationDistinction,achievements,correctionContent,bentoReservationClosingTime);
+        transaction.execute(persist::run);
     }
 
     @AllArgsConstructor
@@ -66,7 +88,7 @@ public class BentoReserveSettingCommandHandler extends CommandHandler<BentoReser
 
         @Override
         public BentoMenu getBentoMenu(String cid, GeneralDate date) {
-            return bentoMenuRepository.getBentoMenu(cid,date);
+            return bentoMenuRepository.getBentoMenuByEndDate(cid,date);
         }
 
         @Override
@@ -75,14 +97,10 @@ public class BentoReserveSettingCommandHandler extends CommandHandler<BentoReser
             String companyId = AppContexts.user().companyId();
             if (historyID == null){
                 val hist = DateHistoryItem.createNewHistory(new DatePeriod(GeneralDate.today(),GeneralDate.max()));
-                List<DateHistoryItem> dateHistoryItems = new ArrayList<>();
-                dateHistoryItems.add(hist);
-                val itemToBeAdded = new BentoMenuHistory(companyId, dateHistoryItems);
 
-                bentoMenuHistoryRepository.add(itemToBeAdded);
+                bentoMenuHistoryRepository.add(new BentoMenuHistory(companyId, new ArrayList<>(Arrays.asList(hist))));
 
-                val newBentoMenu = new BentoMenu(hist.identifier() ,new ArrayList<>(),bentoReservationClosingTime);
-                bentoMenuRepository.add(newBentoMenu);
+                bentoMenuRepository.add(new BentoMenu(hist.identifier() , Collections.EMPTY_LIST,bentoReservationClosingTime));
             }else {
                 //get bentomenu
                 BentoMenu bentoMenu = bentoMenuRepository.getBentoMenuByHistId(companyId,historyID);

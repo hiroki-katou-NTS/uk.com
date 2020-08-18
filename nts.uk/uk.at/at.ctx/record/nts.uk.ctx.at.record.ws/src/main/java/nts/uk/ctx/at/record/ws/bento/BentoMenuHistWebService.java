@@ -25,12 +25,14 @@ public class BentoMenuHistWebService extends WebService {
     @Path("add")
     @POST
     public void add(BentoMenuHistCommand command) {
+
         this.bentoMenuHistCommandHandler.handle(command);
     }
 
     @Path("update")
     @POST
     public void update(UpdateBentoMenuHistCommand command) {
+
         this.updateBentoMenuHistCommandHandler.handle(command);
     }
 

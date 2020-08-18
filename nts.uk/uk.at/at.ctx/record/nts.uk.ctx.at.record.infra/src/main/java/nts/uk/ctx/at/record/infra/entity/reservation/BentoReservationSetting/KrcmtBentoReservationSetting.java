@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.reservation.BentoReservationSetting;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.*;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
@@ -20,6 +21,9 @@ public class KrcmtBentoReservationSetting extends UkJpaEntity {
     @Column(name = "CID")
     public String companyID;
 
+    @Column(name = "CONTRACT_CD")
+    public String contractCD;
+
     @Column(name = "OPE_CAT")
     public int operationDistinction;
 
@@ -28,6 +32,9 @@ public class KrcmtBentoReservationSetting extends UkJpaEntity {
 
     @Column(name = "ORDERED_DEA")
     public int orderDeadline;
+
+    @Column(name = "ORDERED_DATA")
+    public int orderData;
 
     @Column(name = "MON_RES")
     public int monthlyResults;
@@ -51,8 +58,8 @@ public class KrcmtBentoReservationSetting extends UkJpaEntity {
         CorrectionContent correctionContent = new CorrectionContent(
                 ContentChangeDeadline.valueOf(entity.contentChangeDeadline),
                 ContentChangeDeadlineDay.valueOf(entity.contentChangeDeadlineDay),
-                OrderedData.valueOf(entity.monthlyResults),
-                OrderDeadline.valueOf(entity.dailyResults)
+                OrderedData.valueOf(entity.orderData),
+                OrderDeadline.valueOf(entity.orderDeadline)
         );
 
         Achievements achievements = new Achievements(
@@ -72,9 +79,11 @@ public class KrcmtBentoReservationSetting extends UkJpaEntity {
     public static KrcmtBentoReservationSetting fromDomain(BentoReservationSetting bentoReservationSetting) {
         return new KrcmtBentoReservationSetting(
                 bentoReservationSetting.getCompanyId(),
+                AppContexts.user().contractCode(),
                 bentoReservationSetting.getOperationDistinction().value,
                 bentoReservationSetting.getAchievements().getReferenceTime().v(),
                 bentoReservationSetting.getCorrectionContent().getOrderDeadline().value,
+                bentoReservationSetting.getCorrectionContent().getOrderedData().value,
                 bentoReservationSetting.getAchievements().getMonthlyResults().value,
                 bentoReservationSetting.getAchievements().getDailyResults().value,
                 bentoReservationSetting.getCorrectionContent().getContentChangeDeadline().value,

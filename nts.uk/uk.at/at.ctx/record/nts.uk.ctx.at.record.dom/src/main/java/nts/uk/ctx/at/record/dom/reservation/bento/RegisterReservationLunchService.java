@@ -12,6 +12,8 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 弁当予約設定を登録する
+ *
+ * @author Nguyen Huy Quang
  */
 public class RegisterReservationLunchService {
 
@@ -19,7 +21,7 @@ public class RegisterReservationLunchService {
      * 登録する
      */
     public static AtomTask register(
-            Require require, OperationDistinction operationDistinction,Achievements arAchievements,
+            Require require, OperationDistinction operationDistinction, Achievements arAchievements,
             CorrectionContent correctionContent, BentoReservationClosingTime bentoReservationClosingTime) {
 
         String companyId = AppContexts.user().companyId();
@@ -30,20 +32,16 @@ public class RegisterReservationLunchService {
 
         // 3: get(会社ID,’9999/12/31’)
         BentoMenu bentoMenu = require.getBentoMenu(companyId, date);
-        String historyID = null;
-        if (bentoMenu != null){
-            historyID = bentoMenu.getHistoryID();
-        }
-        String finalHistoryID = historyID;
+        String historyID = bentoMenu != null ? bentoMenu.getHistoryID() : null;
 
         return AtomTask.of(() -> {
-            require.registerBentoMenu(finalHistoryID,bentoReservationClosingTime);
+            require.registerBentoMenu(historyID, bentoReservationClosingTime);
+            BentoReservationSetting newSetting = new BentoReservationSetting(companyId, operationDistinction, correctionContent, arAchievements);
 
-            if (bentoReservationSetting == null){
-                BentoReservationSetting newSetting = new BentoReservationSetting(companyId,operationDistinction,correctionContent,arAchievements);
+            if (bentoReservationSetting == null) {
                 require.inSert(newSetting);
-            }else {
-                require.update(bentoReservationSetting);
+            } else {
+                require.update(newSetting);
             }
         });
     }
@@ -58,12 +56,12 @@ public class RegisterReservationLunchService {
         /**
          * 弁当メニュを取得する
          */
-        BentoMenu getBentoMenu(String cid,GeneralDate date);
+        BentoMenu getBentoMenu(String cid, GeneralDate date);
 
         /**
          * 弁当メニューを登録する
          */
-        void registerBentoMenu(String historyID,BentoReservationClosingTime bentoReservationClosingTime);
+        void registerBentoMenu(String historyID, BentoReservationClosingTime bentoReservationClosingTime);
 
         /**
          * Insert（弁当予約設定）

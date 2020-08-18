@@ -220,7 +220,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputGenerator#
-	 * generate(nts.uk.file.at.app.export.dailyschedule.
+	 * generatePdf(nts.uk.file.at.app.export.dailyschedule.
 	 * WorkScheduleOutputCondition,
 	 * nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo,
 	 * nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputQuery)
@@ -2193,7 +2193,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		}
 		
 		if (condition.getTotalOutputSetting().isGrossTotal()) {
-			// Remove page break after the very last workplace, previous iterator should always generate a page break after every workplace
+			// Remove page break after the very last workplace, previous iterator should always generatePdf a page break after every workplace
 			int ridx = 0;
 			for (int pageBreakIndex = 0; pageBreakIndex < sheetInfo.getSheet().getHorizontalPageBreaks().getCount(); pageBreakIndex++) {
 				ridx = sheetInfo.getSheet().getHorizontalPageBreaks().get(pageBreakIndex).getRow();
