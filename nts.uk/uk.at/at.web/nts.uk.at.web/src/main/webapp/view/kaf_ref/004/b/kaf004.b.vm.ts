@@ -51,10 +51,14 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
 
             vm.workManagement = new WorkManagement('--:--', '--:--', '--:--', '--:--', null, null, null, null);
 
-            vm.lateOrEarlyInfo1 = ko.observable(new LateOrEarlyInfo(false, 1, false, false, 0));
-            vm.lateOrEarlyInfo2 = ko.observable(new LateOrEarlyInfo(false, 1, false, false, 1));
-            vm.lateOrEarlyInfo3 = ko.observable(new LateOrEarlyInfo(false, 2, false, false, 0));
-            vm.lateOrEarlyInfo4 = ko.observable(new LateOrEarlyInfo(false, 2, false, false, 1));
+            // vm.lateOrEarlyInfo1 = ko.observable(new LateOrEarlyInfo(false, 1, false, false, 0));
+            // vm.lateOrEarlyInfo2 = ko.observable(new LateOrEarlyInfo(false, 1, false, false, 1));
+            // vm.lateOrEarlyInfo3 = ko.observable(new LateOrEarlyInfo(false, 2, false, false, 0));
+            // vm.lateOrEarlyInfo4 = ko.observable(new LateOrEarlyInfo(false, 2, false, false, 1));
+            vm.lateOrEarlyInfo1 = ko.observable(null);
+            vm.lateOrEarlyInfo2 = ko.observable(null);
+            vm.lateOrEarlyInfo3 = ko.observable(null);
+            vm.lateOrEarlyInfo4 = ko.observable(null);
             vm.lateOrEarlyInfos = ko.observableArray([]);
             vm.managementMultipleWorkCycles = ko.observable(false);
 

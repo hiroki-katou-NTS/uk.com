@@ -28,9 +28,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             const vm = this;
 
             vm.application = ko.observable(new Application(AppType.EARLY_LEAVE_CANCEL_APPLICATION));
-            // vm.application().appDate(moment(new Date()).format("YYYY/MM/DD"));
-            // vm.workManagement = new WorkManagement('--:--', '--:--', '--:--', '--:--', null, null, null, null);
-            vm.workManagement = new WorkManagement('8:30', '17:30', '--:--', '--:--', null, null, null, null);
+            vm.workManagement = new WorkManagement('--:--', '--:--', '--:--', '--:--', null, null, null, null);
             vm.arrivedLateLeaveEarlyInfo = ko.observable(ArrivedLateLeaveEarlyInfo.initArrivedLateLeaveEarlyInfo());
             vm.appDispInfoStartupOutput = ko.observable(CommonProcess.initCommonSetting());
 
@@ -71,11 +69,11 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 
                         vm.arrivedLateLeaveEarlyInfo(successData);
                         vm.appDispInfoStartupOutput(successData.appDispInfoStartupOutput);
-                        // vm.lateOrEarlyInfos(vm.arrivedLateLeaveEarlyInfo().earlyInfos);
-                        // vm.lateOrEarlyInfo1(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 0 })));
-                        // vm.lateOrEarlyInfo2(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 1 })));
-                        // vm.lateOrEarlyInfo3(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 0 })));
-                        // vm.lateOrEarlyInfo4(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 1 })));
+                        vm.lateOrEarlyInfos(vm.arrivedLateLeaveEarlyInfo().earlyInfos);
+                        vm.lateOrEarlyInfo1(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 0 })));
+                        vm.lateOrEarlyInfo2(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 1 })));
+                        vm.lateOrEarlyInfo3(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 0 })));
+                        vm.lateOrEarlyInfo4(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 1 })));
 
                         if (!vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput
                             || !vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput
@@ -113,6 +111,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     }
                 }).fail((failData: any) => {
                     console.log(failData);
+
                 }).always(() => vm.$blockui("hide"));
 
             let ele = $("#kaf000-a-component4-singleDate");
@@ -196,6 +195,11 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 
                 }).fail((error: any) => {
                     console.log(error);
+                    const message: any = {
+                        messageId: error.messageId,
+                        messageParams: [ko.toJS(vm.application().appDate)]
+                    };
+                    vm.$dialog.error(message);
                 }).always(() => vm.$blockui("hide"));
             });
         }
@@ -329,7 +333,11 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         }).fail((fail: any) => {
                             console.log(fail);
                             if (fail) {
-                                vm.$dialog.error({ messageId: fail.messageId });
+                                const message: any = {
+                                    messageId: fail.messageId,
+                                    messageParams: [ko.toJS(vm.application().appDate)]
+                                };
+                                vm.$dialog.error(message);
                             }
                         })
                     }
@@ -365,6 +373,12 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     }
                 }).fail((fail: any) => {
                     console.log(fail);
+                    const message: any = {
+                        messageId: fail.messageId,
+                        messageParams: [ko.toJS(vm.application().appDate)]
+                    };
+                    vm.$dialog.error(message);
+
                     return;
                 })
         }

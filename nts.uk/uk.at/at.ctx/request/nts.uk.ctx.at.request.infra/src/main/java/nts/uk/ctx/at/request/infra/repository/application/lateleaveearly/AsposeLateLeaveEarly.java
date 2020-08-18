@@ -100,7 +100,7 @@ public class AsposeLateLeaveEarly {
 				? timeReportsTemp.get(0).getTimeWithDayAttr().getInDayTimeWithFormat()
 				: null;
 		// A1_4
-		String cancel1 = cancelTemp.size() > 0 ? null : I18NText.getText("KAF004_63");
+		String cancel1 = cancelTemp.size() == 0 ? null : I18NText.getText("KAF004_63");
 
 		if (cancel1 != null) {
 			cellD8.setValue(cancel1);
@@ -136,7 +136,7 @@ public class AsposeLateLeaveEarly {
 				? timeReportsTemp.get(0).getTimeWithDayAttr().getInDayTimeWithFormat()
 				: null;
 		// A2_4
-		String cancel2 = cancelTemp.size() > 0 ? null : I18NText.getText("KAF004_63");
+		String cancel2 = cancelTemp.size() == 0 ? null : I18NText.getText("KAF004_63");
 
 		if (cancel2 != null) {
 			cellD9.setValue(cancel2);
@@ -208,7 +208,7 @@ public class AsposeLateLeaveEarly {
 					? timeReportsTemp.get(0).getTimeWithDayAttr().getInDayTimeWithFormat()
 					: null;
 			// A1_4
-			String cancel3 = cancelTemp.size() > 0 ? null : I18NText.getText("KAF004_63");
+			String cancel3 = cancelTemp.size() == 0 ? null : I18NText.getText("KAF004_63");
 
 			if (cancel3 != null) {
 				cellD10.setValue(cancel3);
@@ -244,7 +244,7 @@ public class AsposeLateLeaveEarly {
 					? timeReportsTemp.get(0).getTimeWithDayAttr().getInDayTimeWithFormat()
 					: null;
 			// A1_4
-			String cancel4 = cancelTemp.size() > 0 ? null : I18NText.getText("KAF004_63");
+			String cancel4 = cancelTemp.size() == 0 ? null : I18NText.getText("KAF004_63");
 
 			if (cancel4 != null) {
 				cellD11.setValue(cancel4);
