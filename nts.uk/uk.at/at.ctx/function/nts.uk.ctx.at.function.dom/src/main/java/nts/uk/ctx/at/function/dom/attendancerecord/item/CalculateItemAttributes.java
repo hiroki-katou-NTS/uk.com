@@ -8,15 +8,18 @@ public enum CalculateItemAttributes {
 
 	/** The time. */
 	// 時間
-	TIME(16, "時間"),
+	TIME(4, "時間"),
 
 	/** The times. */
 	// 回数
-	TIMES(17, "回数"),
+	TIMES(5, "回数"),
+	
+	// 日数
+	DAYS(6, "日数"),
 
 	/** The money amount. */
 	// 金額
-	MONEY_AMOUNT(18, "金額");
+	MONEY_AMOUNT(7, "金額");
 
 	/** The value. */
 	public final int value;

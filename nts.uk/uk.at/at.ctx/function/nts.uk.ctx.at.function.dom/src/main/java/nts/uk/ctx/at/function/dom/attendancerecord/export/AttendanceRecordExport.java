@@ -26,7 +26,8 @@ public class AttendanceRecordExport extends DomainObject {
 	private int columnIndex;
 
 	/** The use atr. */
-	// 使用区分
+	// 	使用区分
+	// update 2020/04/20  使用区分は未使用である。 dont use
 	private Boolean useAtr;
 
 	/** The upper stage output. */
