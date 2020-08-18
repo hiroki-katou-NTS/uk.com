@@ -4,6 +4,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.reservation.ReservationConfirmationListDto;
 import nts.uk.screen.at.app.reservation.ReservationConfirmationListScreenQuery;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -23,7 +24,15 @@ public class ReservationConfirmationListWebService extends WebService {
     @POST
     @Path("start")
     public ReservationConfirmationListDto getReservationConfirmationListStartupInfo() {
+
         // 予約確認一覧
-        return reservationConfirmationListScreenQuery.getReservationConfirmationListStartupInfo(AppContexts.user().companyId());
+        LoginUserContext user =AppContexts.user();
+        String companyId =user.companyId();
+        String employeeId = user.employeeId();
+        ReservationConfirmationListDto dto = reservationConfirmationListScreenQuery.getReservationConfirmationListStartupInfo(companyId);
+        dto.setCompanyId(companyId);
+        dto.setEmployeeId(employeeId);
+
+        return dto;
     }
 }

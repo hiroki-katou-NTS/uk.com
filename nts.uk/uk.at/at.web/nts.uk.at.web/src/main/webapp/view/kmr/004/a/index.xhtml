@@ -5,7 +5,7 @@
       xmlns:com="http://xmlns.jcp.org/jsf/component"
       xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-<ui:composition template="../../../../master/base.xhtml">
+<ui:composition template="/master/base.xhtml">
     <ui:define name="htmlHead">
         <com:ValidatorScript>
             nts.uk.ctx.at.function.dom.reservation.BentoExportTitle
@@ -22,7 +22,7 @@
             <button id="A1_1" tabindex="1" class="proceed" data-bind="click: printExcel, i18n: 'KMR004_1'"></button>
             <button id="A1_2" tabindex="2" class="proceed" data-bind="click: printPDF, i18n: 'KMR004_2'"></button>
         </div>
-        <div id="contents-area">
+        <div id="contents-area" data-bind="with: model" >
             <div id="left-content">
                 <table class="table_content">
                     <colgroup>
@@ -40,7 +40,7 @@
                                     required: true,
 									enable: true,
 									showNextPrevious: true,
-									value: model.period}">
+									value: period}">
                             </div>
                         </td>
                     </tr>
@@ -49,14 +49,14 @@
                             <div id="A4_1" data-bind="ntsFormLabel: {}, i18n: 'KMR004_6'"></div>
                         </td>
                         <td>
-                            <!--div id="A4_2" tabindex="6" class="cf" data-bind="ntsSwitchButton: {
+                            <div id="A4_2" tabindex="6" class="cf" data-bind="ntsSwitchButton: {
 									name: 'Sample Switch',
-									options: closingTimeOptions,
+									options: vm.closingTimeOptions,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedRuleCode,
+									value: vm.selectedRuleCode,
 									required: true,
-									enable: true }"></div-->
+									enable: true }"></div>
                             <span id="A4_5" class="label" style="margin-bottom: 15px;" data-bind="i18n: 'KMR004_10'"></span>
                         </td>
                     </tr>
@@ -79,7 +79,7 @@
                                 ],
                                 optionsValue: 'id',
                                 optionsText: 'name',
-                                value: outputConditionChecked,
+                                value: vm.outputConditionChecked,
                                 enable: true}">
                             </div>
 
@@ -87,7 +87,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <div id="A6_1" tabindex="10" data-bind="ntsTabPanel: {dataSource: tabs, active: selectedTab }">
+                            <div id="A6_1" tabindex="10" data-bind="ntsTabPanel: {dataSource: vm.tabs, active: vm.selectedTab }">
                                 <div id="A6_4" class="tab-content-1">
 									<table class="table_content">
 										<colgroup>
@@ -101,7 +101,7 @@
                                             <td>
 												<div id="A7_2" tabindex="13">
 													<input data-bind="ntsTextEditor: {
-														value: model.totalTitle,
+														value: totalTitle,
 														constraint: 'BentoExportTitle',
 														option: {
 														    textmode: 'text',
@@ -124,12 +124,12 @@
 													],
 													optionsValue: 'id',
 													optionsText: 'name',
-													value: model.totalExtractCondition,
+													value: totalExtractCondition,
 													enable: true}">
 												</div> <br/>
                                                 &#160;&#160;&#160;&#160;
 												<div id="A8_6" tabindex="17" class="style-normal"
-                                                     data-bind="i18n: 'KMR004_20', ntsCheckBox: { checked: extractionConditionChecked, enable: extractionConditionEnable}"></div>
+                                                     data-bind="i18n: 'KMR004_20', ntsCheckBox: { checked: vm.extractionConditionChecked, enable: vm.extractionConditionEnable}"></div>
 											</td>
 										</tr>
 									</table>
@@ -148,7 +148,7 @@
                                             <td>
 												<div id="A9_2" tabindex="18">
 													<input data-bind="ntsTextEditor: {
-														value: model.detailTitle,
+														value: detailTitle,
 														constraint: 'BentoExportTitle',
 														option: {
 														    textmode: 'text',
@@ -172,26 +172,26 @@
 															],
 															optionsValue: 'id',
 															optionsText: 'name',
-															value: model.itemExtractCondition,
+															value: itemExtractCondition,
 															enable: true}">
 														</div>
 													</td>
 													<td style="padding-top: 0px;">
 														&#160;&#160;&#160;&#160;
 														<div class="style-normal" id="A10_5" tabindex="21" style="margin-left: -82px;"
-                                                             data-bind="i18n: 'KMR004_25', ntsCheckBox: { checked: model.isBreakPage, enable: separatePageCheckboxEnable}"></div>
+                                                             data-bind="i18n: 'KMR004_25', ntsCheckBox: { checked: isBreakPage, enable: vm.separatePageCheckboxEnable}"></div>
 													</td>
 												</tr></table>
 												&#160;&#160;&#160;&#160;&#160;&#160;
                                                 <div id="A10_6" tabindex="22" data-bind="ntsComboBox: {
                                                     name: $i18n('KMR004_26'),
-													options: conditionListCcb,
+													options: vm.conditionListCcb,
 													optionsValue: 'code',
 													visibleItemsCount: 40,
-													value: model.frameNo,
+													value: frameNo,
 													optionsText: 'name',
 													editable: false,
-													enable: conditionListCcbEnable,
+													enable: vm.conditionListCcbEnable,
 													required: false,
 													selectFirstIfNull: false,
 													columns: [

@@ -59,12 +59,13 @@ public class ReservationQuery {
         if(bentoReservationSettings.isPresent())
             checkOperation = bentoReservationSettings.get().getOperationDistinction().value;
 
-		if (checkOperation == OperationDistinction.BY_LOCATION.value)
-			if (!hisItems.isPresent()){
-			 	throw new RuntimeException("Invalid workplace history");
+		if (checkOperation == OperationDistinction.BY_LOCATION.value) {
+			if (!hisItems.isPresent()) {
+				throw new RuntimeException("Invalid workplace history");
 			}
 			workLocationCode = Optional.ofNullable(hisItems.get().getWorkLocationCd() == null ? null :
 					new WorkLocationCode(hisItems.get().getWorkLocationCd()));
+		}
 
         StampCard stampCard = stampCardRepository.getLstStampCardByLstSidAndContractCd(
 				Arrays.asList(employeeId),
