@@ -1,0 +1,24 @@
+#kmr001-c-7-2{
+    max-width: 100px;
+}
+
+#kmr001-c-8-2{
+    max-width: 100px;
+}
+
+#kmr001-c-9-2{
+    max-width: 40px;
+}
+
+#kmr001-c-10-2{
+    max-width: 40px;
+}
+
+.kmr001-c-left-content{
+    float: left;
+}
+.kmr001-c-right-content{
+    float: left;
+    width: calc(100% - 550px);
+}
+
