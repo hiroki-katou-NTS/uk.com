@@ -1,11 +1,9 @@
 module nts.uk.at.view.kmr004.a {
     const API = {
         START: "screen/at/record/reservation-conf-list/start",
-        PDF_ALL : "order/report/all/pdf",
-        PDF_DETAIL : "order/report/detail/pdf",
+        PDF : "order/report/print/pdf",
         EXCEL : "order/report/print/excel",
-        EXCEL_DETAL : "order/report/print/excel-detail",
-        exportFile: "bento/report/reservation/month"
+        DATE_FORMAT: "yyyy/MM/dd"
     };
 
     import tree = kcp.share.tree;
@@ -119,7 +117,7 @@ module nts.uk.at.view.kmr004.a {
                 totalExtractCondition: 1,
                 itemExtractCondition: -1,
                 frameNo: -1,
-                totalTitle:  vm.model.totalTitle(),
+                totalTitle:  vm.model().totalTitle(),
                 detailTitle: '',
                 reservationClosingTimeFrame: 1,
                 isBreakPage: true,
@@ -151,7 +149,7 @@ module nts.uk.at.view.kmr004.a {
             };
             $("#exportTitle").trigger("validate");
             vm.$blockui("invisible");
-            nts.uk.request.exportFile("at", API.PDF_ALL).done(() => {
+            nts.uk.request.exportFile("at", API.PDF).done(() => {
                 vm.$blockui("clear");
             }).fail((res: any) => {
                 vm.$dialog.error({ messageId : res.messageId }).then(function(){
