@@ -102,10 +102,10 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
             console.log( workTypeCodes );
             nts.uk.ui.windows.setShared( 'parentCodes', {
                 workTypeCodes: _.map( _.uniqBy( vm.dataFetch().lstWorkType(), e => e.workTypeCode ), item => item.workTypeCode ),
-                selectedWorkTypeCode: vm.model.workTypeCode,
+                selectedWorkTypeCode: vm.model.workTypeCode(),
                 workTimeCodes: _.map( vm.dataFetch().appDispInfoStartup().appDispInfoWithDateOutput.opWorkTimeLst, item => item.worktimeCode ),
-                selectedWorkTimeCode: vm.model.workTypeCode
-            }, true );
+                selectedWorkTimeCode: vm.model.workTimeCode()
+            }, true);
 
             nts.uk.ui.windows.sub.modal( '/view/kdl/003/a/index.xhtml' ).onClosed( function(): any {
                 //view all code of selected item 
@@ -115,8 +115,8 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
                     vm.model.workTypeName(childData.selectedWorkTypeName);
                     vm.model.workTimeCode(childData.selectedWorkTimeCode);
                     vm.model.workTimeName(childData.selectedWorkTimeName);
-                    //                                フォーカス制御 => 定型理由
-                    //                                                   $("#combo-box").focus();
+                    //フォーカス制御 => 定型理由
+                    //$("#combo-box").focus();
                 }
             })
         }
