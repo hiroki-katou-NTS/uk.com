@@ -72,7 +72,8 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                         appDispInfoStartup: ko.observable(res.appDispInfoStartup),
                         goBackReflect: ko.observable(res.goBackReflect),
                         lstWorkType: ko.observable(res.lstWorkType),
-                        goBackApplication: ko.observable(res.goBackApplication)
+                        goBackApplication: ko.observable(res.goBackApplication),
+                        isChangeDate: false
                     });     
                 }
             }).fail((failData: any) => {
@@ -216,9 +217,12 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
         
         changeDate() {
             const vm = this;
+            if(!_.isNull(ko.toJS(vm.dataFetch))) {
+                vm.dataFetch().isChangeDate = true;                
+            }
             let dataClone = _.clone(vm.dataFetch());
             if (!_.isNull(dataClone)) {
-                vm.dataFetch(dataClone);
+                vm.dataFetch(dataClone); 
                 return;
             }
             vm.$blockui( "show" );
@@ -235,7 +239,8 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                             appDispInfoStartup: ko.observable(res.appDispInfoStartup),
                             goBackReflect: ko.observable(res.goBackReflect),
                             lstWorkType: ko.observable(res.lstWorkType),
-                            goBackApplication: ko.observable(res.goBackApplication)
+                            goBackApplication: ko.observable(res.goBackApplication),
+                            isChangeDate: false
                         });
                     }
                 })
@@ -295,6 +300,8 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
         lstWorkType: KnockoutObservable<any>;
 
         goBackApplication: KnockoutObservable<any>;
+    
+        isChangeDate: boolean = false;
     }
 
     const API = {

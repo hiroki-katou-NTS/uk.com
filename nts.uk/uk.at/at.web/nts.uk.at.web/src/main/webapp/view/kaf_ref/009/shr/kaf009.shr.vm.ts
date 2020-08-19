@@ -18,13 +18,17 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
 
             vm.dataFetch.subscribe(value => {
                 console.log('Change dataFetch');
-                if (value) {
-                    vm.bindData();                    
+                if (ko.toJS(value)) {
+                    if (ko.toJS(value)) {
+                        vm.bindData(true);                                            
+                    }else {
+                        vm.bindData(false);
+                    }
                 }
             });
             
         }
-        bindData() {
+        bindData(isChangeDate: boolean) {
             const vm = this;
             let goBackApp = vm.dataFetch().goBackApplication();
             if ( goBackApp ) {
@@ -56,20 +60,19 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
                 
             } else {
                 let refApp = vm.dataFetch().goBackReflect().reflectApplication;
-                //           else {
-                vm.model.checkbox1( true );
-                vm.model.checkbox2( true );
-                //           }
-                if ( refApp == 3) {
-                    vm.model.checkbox3( true );
-                } else if ( refApp ==2 ) {
-                    vm.model.checkbox3( false );
-                }else {
-                    vm.model.checkbox3( null );
+                if (!vm.dataFetch().isChangeDate) {
+                    vm.model.checkbox1( true );
+                    vm.model.checkbox2( true );
+                    if ( refApp == 3) {
+                        vm.model.checkbox3( true );
+                    } else if ( refApp ==2 ) {
+                        vm.model.checkbox3( false );
+                    }else {
+                        vm.model.checkbox3( null );
+                    }
                 }
                 
- 
-                //            this.model.checkbox3(this.dataFetch().goBackReflect().reflectApplication == 3);
+
                 if (!_.isEmpty(ko.toJS(vm.dataFetch().workType))) {
                     let codeWorkType = vm.dataFetch().workType();
                     vm.model.workTypeCode(codeWorkType);
