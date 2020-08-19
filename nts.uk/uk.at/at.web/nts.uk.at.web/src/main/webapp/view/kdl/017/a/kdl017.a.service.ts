@@ -2,7 +2,7 @@
 module nts.uk.at.view.kdl017.a.service {
   var paths: any = {
     getEmployee : 'at/request/dialog/employmentsystem/getEmployee',
-    get60hOvertimeDisplayInfoDetail : 'at/request/dialog/get60hOvertimeDisplayInfoDetail/{0}/{1}',
+    get60hOvertimeDisplayInfoDetail : 'at/record/dialog/sixtyhour/get60hOvertimeDisplayInfoDetail/{0}/{1}',
   }
 
   export function getEmployee(param: EmployeeParam): JQueryPromise<Array<EmployeeBasicInfoDto>> {

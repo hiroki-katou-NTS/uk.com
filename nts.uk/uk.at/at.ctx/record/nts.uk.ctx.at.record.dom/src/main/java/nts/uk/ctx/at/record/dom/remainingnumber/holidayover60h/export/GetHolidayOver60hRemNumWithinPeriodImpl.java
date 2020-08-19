@@ -51,7 +51,7 @@ public class GetHolidayOver60hRemNumWithinPeriodImpl implements GetHolidayOver60
 	 * @author masaaki_jinno
 	 *
 	 */
-	public class GetHolidayOver60hRemNumWithinPeriodRequireM1 implements GetHolidayOver60hRemNumWithinPeriod.RequireM1 {
+	public static class GetHolidayOver60hRemNumWithinPeriodRequireM1 implements GetHolidayOver60hRemNumWithinPeriod.RequireM1 {
 		public GetHolidayOver60hRemNumWithinPeriodRequireM1(){
 		}
 	}

@@ -2,8 +2,8 @@ package nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.param;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
+import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
 
 /**
@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
  * @author masaaki_jinno
  *
  */
+@Getter
 public class AggrResultOfHolidayOver60h {
 
 	/** 使用回数 */
@@ -22,7 +23,7 @@ public class AggrResultOfHolidayOver60h {
 	/** 60H超休情報（期間終了日の翌日開始時点） */
 	private HolidayOver60hInfo asOfStartNextDayOfPeriodEnd;
 	/** 60H超休情報（消滅） */
-	private Optional<List<HolidayOver60hInfo>> lapsed;
+	private HolidayOver60hInfo lapsed;
 	
 	/**
 	 * コンストラクタ
@@ -32,7 +33,7 @@ public class AggrResultOfHolidayOver60h {
 		this.holidayOver60hErrors = new ArrayList<HolidayOver60hError>();
 		this.asOfPeriodEnd = new HolidayOver60hInfo();
 		this.asOfStartNextDayOfPeriodEnd = new HolidayOver60hInfo();
-		this.lapsed = Optional.empty();
+		this.lapsed = new HolidayOver60hInfo();
 	}
 	
 	/**
@@ -47,7 +48,7 @@ public class AggrResultOfHolidayOver60h {
 			UsedTimes usedTimes,
 			HolidayOver60hInfo asOfPeriodEnd,
 			HolidayOver60hInfo asOfStartNextDayOfPeriodEnd,
-			Optional<List<HolidayOver60hInfo>> lapsed,
+			HolidayOver60hInfo lapsed,
 			List<HolidayOver60hError> holidayOver60hErrors){
 		
 		AggrResultOfHolidayOver60h domain = new AggrResultOfHolidayOver60h();
