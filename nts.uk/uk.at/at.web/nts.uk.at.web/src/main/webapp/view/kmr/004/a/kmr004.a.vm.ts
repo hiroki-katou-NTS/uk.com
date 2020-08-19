@@ -18,11 +18,12 @@ module nts.uk.at.view.kmr004.a {
     @bean()
     export class KMR004AViewModel extends ko.ViewModel {
 
-        model : OutputCondition = new OutputCondition();
+        model : KnockoutObservable<OutputCondition> = ko.observable(new OutputCondition());
+
         // // date range picker
         // dateRangeValue: KnockoutObservable<any> = ko.observable({
-        //     startDate: formatDate( new Date(), 'yyyy/MM/dd'),
-        //     endDate: formatDate( new Date(), 'yyyy/MM/dd')
+        //      startDate: formatDate( new Date(), 'yyyy/MM/dd'),
+        //      endDate: formatDate( new Date(), 'yyyy/MM/dd')
         // });
 
         selectedRuleCode: KnockoutObservable<number> = ko.observable(1);
@@ -55,12 +56,6 @@ module nts.uk.at.view.kmr004.a {
         // output condition
         outputConditionChecked: KnockoutObservable<number> = ko.observable(1);
 
-        // total radio group default selected value
-        //totalRadioSelectedId: KnockoutObservable<number> = ko.observable(2); // Default selected: A8_4 注文済み
-
-        // condition radio group default selected value
-        //conditionRadioSelected: KnockoutObservable<number> = ko.observable(1); // Default selected: A10_3 全件
-
         // extraction condition checkbox
         extractionConditionChecked: KnockoutObservable<boolean> = ko.observable(false);
         extractionConditionEnable: KnockoutObservable<boolean> = ko.observable(false);
@@ -80,17 +75,16 @@ module nts.uk.at.view.kmr004.a {
             super();
             var self = this;
 
-            var strDate: string = formatDate( self.baseDate(), 'yyyy/MM/dd');
-            // var strDateForm = ko.toJS({strDate: strDate});
-            // self.$ajax(API.START, strDateForm).done((data) => {
-            //     if(data.operationDistinction == "BY_COMPANY"){
-            //         self.initWorkplaceList();
-            //     } else {
-            //         console.log(data);
-            //         self.initClosingTimeSwitch(data);
-            //         self.initWorkLocationList();
-            //     }
-            // });
+            self.$ajax(API.START).done((data) => {
+                // console.log(data);
+                self.initClosingTimeSwitch(data);
+                if(data.operationDistinction == "BY_COMPANY"){
+                     self.initWorkplaceList();
+                // } else {
+                //     console.log(data);
+                //     self.initWorkLocationList();
+                }
+            });
 
             self.selectedRuleCode.subscribe((value) => {
                 if (value == 1) {
@@ -145,7 +139,7 @@ module nts.uk.at.view.kmr004.a {
             //     readonly: ko.observable(false)
             // };
 
-            self.model.totalExtractCondition.subscribe((newValue) => {
+            self.model().totalExtractCondition.subscribe((newValue) => {
                 if (newValue == 4) {
                     self.extractionConditionEnable(true);
                 } else {
@@ -154,7 +148,7 @@ module nts.uk.at.view.kmr004.a {
             });
 
 
-            self.model.itemExtractCondition.subscribe((newValue) => {
+            self.model().itemExtractCondition.subscribe((newValue) => {
                 if (newValue == 1) {
                     self.separatePageCheckboxEnable(true);
                 } else {
@@ -224,14 +218,12 @@ module nts.uk.at.view.kmr004.a {
 
         initClosingTimeSwitch(data:any) {
             let vm = this;
-            let closingTime1Name: string = data.closingTime1.reservationTimeName;
-            let closingTime2Name: string = data.closingTime2.reservationTimeName;
-            console.log(closingTime1Name);
-            console.log(closingTime2Name);
             vm.closingTimeOptions = ko.observableArray([
-                new ItemModel('1', 'closingTime1Name'),
-                new ItemModel('2', 'closingTime2Name')
+                new ItemModel('1', data.closingTime.reservationFrameName1),
+                new ItemModel('2', data.closingTime.reservationFrameName2)
             ]);
+
+            $('#A4_2').ntsSwitchButton(vm.closingTimeOptions);
         }
 
         initWorkplaceList() {
@@ -241,7 +233,7 @@ module nts.uk.at.view.kmr004.a {
                 isMultipleUse: true,
                 isMultiSelect: true,
                 startMode: tree.StartMode.WORKPLACE,
-                selectedId: self.model.workplaceIds,
+                selectedId: self.model().workplaceIds,
                 baseDate: self.baseDate,
                 selectType: tree.SelectionType.NO_SELECT,
                 isShowSelectButton: true,
@@ -284,27 +276,31 @@ module nts.uk.at.view.kmr004.a {
     }
 
     class OutputCondition{
-        //workplaceIds
-        workplaceIds: KnockoutObservableArray<string> = ko.observableArray([]);
-        workLocationCodes: KnockoutObservableArray<string> = ko.observableArray([]);
-        period: KnockoutObservable<any> = ko.observable({
-            start: formatDate( new Date(), 'yyyy/MM/dd'),
-            end: formatDate( new Date(), 'yyyy/MM/dd')
-        });
-        reservationTimeZone: KnockoutObservable<number> = ko.observable(1);
-        totalTitle: KnockoutObservable<string> = ko.observable("");
-        detailTitle: KnockoutObservable<string> = ko.observable("");
+        workplaceIds: KnockoutObservableArray<string>;
+        workLocationCodes: KnockoutObservableArray<string>;
+        period: KnockoutObservable<any>;
+        reservationTimeZone: KnockoutObservable<number>;
+        totalTitle: KnockoutObservable<string>;
+        detailTitle: KnockoutObservable<string>;
+        totalExtractCondition: KnockoutObservable<number>;
+        itemExtractCondition: KnockoutObservable<number>;
+        isBreakPage: KnockoutObservable<boolean>;
+        frameNo: KnockoutObservable<number>;
 
-        // totalExtractCondition
-        totalExtractCondition: KnockoutObservable<number> = ko.observable(-1);
-
-        // itemExtractCondition
-        itemExtractCondition: KnockoutObservable<number> = ko.observable(-1);
-
-        // isBreakPage
-        isBreakPage: KnockoutObservable<boolean> = ko.observable(false);
-
-        // frameNo
-        frameNo: KnockoutObservable<number> = ko.observable(-1);
+        constructor(){
+            this.workplaceIds = ko.observableArray([]);
+            this.workLocationCodes = ko.observableArray([]);
+            this.period = ko.observable({
+                 startDate: formatDate( new Date(), 'yyyy/MM/dd'),
+                 endDate: formatDate( new Date(), 'yyyy/MM/dd')
+            });
+            this.reservationTimeZone = ko.observable(1);
+            this.totalTitle = ko.observable("");
+            this.detailTitle = ko.observable("");
+            this.totalExtractCondition = ko.observable(2); // Default selected: A8_4 注文済み
+            this.itemExtractCondition = ko.observable(1); // Default selected: A10_3 全件
+            this.isBreakPage = ko.observable(false);
+            this.frameNo = ko.observable(-1);
+        };
     }
 }
