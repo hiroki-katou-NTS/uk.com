@@ -52,10 +52,10 @@ public class AnnualLeaveGrantRemainingData extends LeaveGrantRemainingData {
 //	 */
 //	private GrantRemainRegisterType registerType;
 
-	/**
-	 * 明細
-	 */
-	private AnnualLeaveNumberInfo details;
+//	/**
+//	 * 明細
+//	 */
+//	private AnnualLeaveNumberInfo details;
 
 	/**
 	 * 年休付与条件情報

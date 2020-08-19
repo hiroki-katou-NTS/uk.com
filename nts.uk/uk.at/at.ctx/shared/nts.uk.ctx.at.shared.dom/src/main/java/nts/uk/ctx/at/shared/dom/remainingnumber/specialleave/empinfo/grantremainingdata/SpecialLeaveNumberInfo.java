@@ -14,8 +14,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
+
 //特別休暇数情報
 public class SpecialLeaveNumberInfo extends LeaveNumberInfo implements Serializable {
 

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +44,13 @@ public class SpecialLeaveRemainingNumber {
 
 	public static SpecialLeaveRemainingNumber createFromJavaType(Double days, Integer minutes) {
 		return new SpecialLeaveRemainingNumber(days, minutes);
+	}
+	
+	/**
+	 * 明細をクリア（要素数を０にする）
+	 */
+	public void clearDetails(){
+		details = new ArrayList<SpecialLeaveRemainingDetail>();
 	}
 
 }

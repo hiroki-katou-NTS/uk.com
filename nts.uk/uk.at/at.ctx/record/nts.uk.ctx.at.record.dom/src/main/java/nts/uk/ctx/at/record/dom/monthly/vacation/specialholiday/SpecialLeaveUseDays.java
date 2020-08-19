@@ -11,7 +11,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUsedDays
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 
 /**
- * 特別休暇使用日数  未使用　神野
+ * 特別休暇使用日数
  * @author do_dt
  *
  */

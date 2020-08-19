@@ -116,5 +116,16 @@ public class SpecialLeaveRemainingNumberInfo implements Cloneable {
 		remainingNumberAfterGrantOpt = Optional.of(remainingNumber.clone());
 	}
 	
+	/**
+	 * 明細をクリア。（要素数を０にする）
+	 */
+	public void clearDetails(){
+		remainingNumber.clearDetails();
+		remainingNumberBeforeGrant.clearDetails();
+		if ( remainingNumberAfterGrantOpt.isPresent() ){
+			remainingNumberAfterGrantOpt.get().clearDetails();
+		}
+	}
+	
 }
 

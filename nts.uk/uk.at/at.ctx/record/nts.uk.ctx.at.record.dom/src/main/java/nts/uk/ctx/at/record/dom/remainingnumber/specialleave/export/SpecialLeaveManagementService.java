@@ -115,6 +115,8 @@ public class SpecialLeaveManagementService {
 				
 				
 				
+				
+				
 		
 		
 		//管理データを取得する
@@ -214,6 +216,12 @@ public class SpecialLeaveManagementService {
 			return createInfoFromRemainingData(prevSpecialLeaveInfo.getGrantRemainingList(), 
 						Optional.of(prevSpecialLeaveInfo.getMaxData()), aggrPeriod);
 		}
+		
+		
+		
+		
+		
+		
 		
 		
 		
@@ -339,8 +347,8 @@ public class SpecialLeaveManagementService {
 //		returnInfo.setYmd(aggrPeriod.start());
 		returnInfo.setYmd(ymd);
 		
-		// 残数．特別休暇(マイナスあり)をクリア
-		returnInfo.getRemainingNumber().getSpecialLeaveWithMinus().clear();
+		// 残数．特別休暇(マイナスあり)をクリア。（Listの要素数を０にする）
+		returnInfo.getRemainingNumber().getSpecialLeaveWithMinus().getRemainingNumberInfo().clearDetails();
 		
 		// 特休情報．特休付与情報　←　パラメータ「付与残数データ」
 		List<SpecialLeaveGrantRemaining> targetDatas = new ArrayList<>();
@@ -351,6 +359,9 @@ public class SpecialLeaveManagementService {
 		}
 		targetDatas.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
 		returnInfo.setGrantRemainingList(targetDatas);
+		
+		
+		
 		
 //		// 特休情報．上限データ　←　パラメータ「上限データ」
 //		if (!maxDataOpt.isPresent()) {
