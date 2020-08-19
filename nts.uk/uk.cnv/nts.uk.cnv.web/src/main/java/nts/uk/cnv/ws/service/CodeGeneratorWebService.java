@@ -1,17 +1,18 @@
-package nts.uk.cnv.ws;
+package nts.uk.cnv.ws.service;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.ws.WebService;
 import nts.uk.cnv.app.service.CodeGenerator;
 import nts.uk.cnv.dom.databasetype.DatabaseType;
 import nts.uk.cnv.dom.service.ConversionInfo;
 
 @Path("cnv/codegenerator")
 @Produces("application/json")
-public class CodeGeneratorWebService {
+public class CodeGeneratorWebService extends WebService{
 
 	@Inject
 	private CodeGenerator codeGeneratorService;

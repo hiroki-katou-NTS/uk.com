@@ -8,6 +8,7 @@ import net.sf.jsqlparser.JSQLParserException;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.task.tran.AtomTask;
 import nts.uk.cnv.dom.service.TableDesignImportService;
 import nts.uk.cnv.dom.tabledesign.TableDesign;
 import nts.uk.cnv.dom.tabledesign.TableDesignRepository;
@@ -26,12 +27,14 @@ public class TableDesignImportCommandHandler extends CommandHandler<TableDesignI
 		RequireImpl require = new RequireImpl(tableDesignRepository);
 
 		transaction.execute(() -> {
+			AtomTask at;
 			try {
-				TableDesignImportService.regist(require, command.getCreateTableSql());
+				at = TableDesignImportService.regist(require, command.getCreateTableSql(), command.getCreateIndexSql());
 			} catch (JSQLParserException e) {
 				throw BusinessException.takeFrom(e)
 					.orElse(new BusinessException("SQL文解析に失敗しました"));
 			}
+			at.run();
 		});
 	}
 

@@ -21,7 +21,4 @@ public interface DataBaseSpec {
 	
 	public String newUuid();
 
-	public DataType parseDataType(String dataType);
-
-
 }

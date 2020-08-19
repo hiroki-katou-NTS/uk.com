@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Embeddable
-public class ScvmtIndexDesignPk implements Serializable {
+public class ScvmtIndexColumnsPk implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -22,4 +22,8 @@ public class ScvmtIndexDesignPk implements Serializable {
 	
 	@Column(name = "NAME")
 	private String name;
+	
+	@Column(name = "COLUMN_NAME")
+	private String columnName;
+
 }

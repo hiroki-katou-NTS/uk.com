@@ -10,19 +10,28 @@ import java.util.TreeMap;
 import lombok.val;
 
 public class ConversionSQLHelper {
-	public static class ConversionSql {
-		public static ConversionSQL create() {
-			return new ConversionSQL(
-					Insert.DUMMY,
-					Select.DUMMY,
-					From.DUMMY,
-					Collections.emptyList()
-				);
-		}
+	public static ConversionSQL create_emptyDummy() {
+
+		return new ConversionSQL(
+				Insert.createDummy(),
+				Select.createDummy(),
+				From.createDummy(),
+				Collections.emptyList()
+			);
+	}
+	
+	public static ConversionSQL create() {
+		return new ConversionSQL(
+				Insert.createDummy(),
+				Select.createDummy(),
+				From.createDummy(),
+				Collections.emptyList()
+			);
 	}
 
 	public static class Insert {
-		public static InsertSentence DUMMY = new InsertSentence(
+		public static InsertSentence createDummy() {
+			return new InsertSentence(
 					new TableName("TEST", "dbo", "BSYMT_EMP_DTA_MNG_INFO", "T"),
 					Arrays.asList(
 							new ColumnExpression(Optional.empty(), "INS_DATE"),
@@ -43,11 +52,10 @@ public class ConversionSQLHelper {
 							new ColumnExpression(Optional.empty(), "REMV_REASON"),
 							new ColumnExpression(Optional.empty(), "EXT_CD"))
 				);
+		}
 	}
 	
-	public static class Select {
-		public static List<SelectSentence> DUMMY = createDummy();
-				
+	public static class Select {				
 		public static SelectSentence CASE_DUMMY = new SelectSentence(
 				new ColumnExpression(Optional.of("SOURCE_ALIAS"), "SOURCE_COL2"),
 				caseDummy()
@@ -143,22 +151,34 @@ public class ConversionSQLHelper {
 	
 	public static class From {
 
-		public static Join DUMMY_VIEW = new Join(
+		public static Join createDummyView() {
+			List<OnSentence> list = new ArrayList<>();
+			list.add(new OnSentence(new ColumnName("CIDVIEW", "会社CD"), new ColumnName("TARGET_ALIAS", "会社CD")));
+			return new Join(
 				new TableName("TEST", "dbo", "CONVERT_VIEW_CID", "CIDVIEW"),
 				JoinAtr.InnerJoin,
-				Arrays.asList(new OnSentence(new ColumnName("CIDVIEW", "会社CD"), new ColumnName("TARGET_ALIAS", "会社CD")))
+				list
 			);
+		}
 
-		public static Join DUMMY_CONVERSION_MAP = new Join(
+		public static Join createDummyConversionMap() {
+			List<OnSentence> list = new ArrayList<>();
+			list.add(new OnSentence(new ColumnName("MAP", "IN"), new ColumnName("SOURCE_ALIAS", "申請反映状態")));
+			return new Join(
 				new TableName("TARGET_DB_NAME", "dbo", "CONVERSION_MAP", "MAP"),
 				JoinAtr.OuterJoin,
-				Arrays.asList(new OnSentence(new ColumnName("MAP", "IN"), new ColumnName("SOURCE_ALIAS", "申請反映状態")))
+				list
 			);
+		}
 		
-		public static FromSentence DUMMY = new FromSentence(
+		public static FromSentence createDummy() {
+			List<Join> list = new ArrayList<>();
+			list.add(createDummyView());
+			return new FromSentence(
 				Optional.of(new TableName("KINJIROU", "dbo", "jm_kihon", "SOURCE")),
-				Arrays.asList(From.DUMMY_VIEW)
+				list
 			);
+		}
 	}
 	
 	public static class Where {

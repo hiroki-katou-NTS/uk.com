@@ -1,5 +1,6 @@
 package nts.uk.cnv.infra.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,6 +11,8 @@ import nts.uk.cnv.dom.tabledesign.TableDesign;
 import nts.uk.cnv.dom.tabledesign.TableDesignRepository;
 import nts.uk.cnv.infra.entity.ScvmtColumnDesign;
 import nts.uk.cnv.infra.entity.ScvmtColumnDesignPk;
+import nts.uk.cnv.infra.entity.ScvmtIndexColumns;
+import nts.uk.cnv.infra.entity.ScvmtIndexColumnsPk;
 import nts.uk.cnv.infra.entity.ScvmtIndexDesign;
 import nts.uk.cnv.infra.entity.ScvmtIndexDesignPk;
 import nts.uk.cnv.infra.entity.ScvmtTableDesign;
@@ -33,7 +36,7 @@ public class JpaTableDesignRepository extends JpaRepository implements TableDesi
 
 	@Override
 	public boolean exists(String tableName) {
-		String sql = "SELECT td FROM ScvmtTableDesign td WHERE td.NAME = :name";
+		String sql = "SELECT td FROM ScvmtTableDesign td WHERE td.name = :name";
 		Optional<ScvmtTableDesign> result = this.queryProxy().query(sql, ScvmtTableDesign.class)
 				.setParameter("name", tableName)
 				.getSingle();
@@ -51,8 +54,21 @@ public class JpaTableDesignRepository extends JpaRepository implements TableDesi
 				.collect(Collectors.toList());
 		
 		List<ScvmtIndexDesign> indexes = tableDesign.getIndexes().stream()
-			.flatMap(idx -> idx.getColmns().stream().map(col -> new ScvmtIndexDesign(
-					new ScvmtIndexDesignPk(tableDesign.getId(), idx.getName(), col), null)))
+			.flatMap(idx -> idx.getColmns().stream().map(col -> {
+				List<ScvmtIndexColumns> indexcolumns = new ArrayList<>();
+				indexcolumns.add(
+					new ScvmtIndexColumns(
+							new ScvmtIndexColumnsPk(tableDesign.getId(), idx.getName(), col),
+							null)
+				);
+				return new ScvmtIndexDesign(
+					new ScvmtIndexDesignPk(tableDesign.getId(), idx.getName()),
+					idx.getConstraintType(),
+					String.join(",", idx.getParams()),
+					indexcolumns,
+					null
+				);
+			}))
 			.collect(Collectors.toList());
 		
 		return new ScvmtTableDesign(
@@ -78,5 +94,19 @@ public class JpaTableDesignRepository extends JpaRepository implements TableDesi
 					columnDesign.getUniqueKeySeq(),
 					columnDesign.getDefaultValue(), null
 				);
+	}
+
+	@Override
+	public Optional<TableDesign> find(String tablename) {
+		String sql = "SELECT td FROM ScvmtTableDesign td WHERE td.name = :name";
+		Optional<ScvmtTableDesign> parent = this.queryProxy().query(sql, ScvmtTableDesign.class)
+				.setParameter("name", tablename)
+				.getSingle();
+		if(!parent.isPresent()) return Optional.empty();
+		
+		Optional<ScvmtTableDesign> result = this.queryProxy().find(parent.get().getTableId(), ScvmtTableDesign.class);
+		if(!parent.isPresent()) return Optional.empty();
+
+		return Optional.of(result.get().toDomain());
 	}
 }

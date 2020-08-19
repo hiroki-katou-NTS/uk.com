@@ -1,6 +1,7 @@
 package nts.uk.cnv.infra.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,21 +61,23 @@ public class ScvmtTableDesign extends JpaEntity implements Serializable {
 		List<ColumnDesign> cols = columns.stream()
 				.map(col -> col.toDomain())
 				.collect(Collectors.toList());
-		List<String> names = indexes.stream()
-				.map(idx -> idx.pk.getName())
-				.distinct()
+
+		List<Indexes> idxs = new ArrayList<>();
+		for (ScvmtIndexDesign index :indexes) {
+			 List<String> colmns = index.columns.stream()
+				.map(col -> col.pk.getColumnName())
 				.collect(Collectors.toList());
-		
-		List<Indexes> idxs = names.stream()
-				.map(name -> 
-					new Indexes(
-							name,
-							indexes.stream()
-								.filter(idx -> idx.pk.getName().equals(name))
-								.map(idx -> idx.pk.getColumnName())
-								.collect(Collectors.toList())
-					))
-				.collect(Collectors.toList());
+			 List<String> params = new ArrayList<>();
+			 for (String p : index.params.split(",")) {
+				 params.add(p);
+			 }
+			 idxs.add(new Indexes(
+					 index.pk.getName(),
+					 index.type,
+					 colmns,
+					 params
+			));
+		}
 				
 		return new TableDesign(tableId, name, createDate, updateDate, cols, idxs);
 	}

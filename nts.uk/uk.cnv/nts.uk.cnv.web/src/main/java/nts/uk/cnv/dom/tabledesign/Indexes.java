@@ -9,5 +9,7 @@ import lombok.Getter;
 @Getter
 public class Indexes {
 	private String name;
+	private String constraintType;
 	private List<String> colmns;
+	private List<String> params;
 }

@@ -1,7 +1,8 @@
 package nts.uk.cnv.dom.databasetype;
 
 public enum DatabaseType {
-	sqlserver(new SqlServerSpec());
+	sqlserver(new SqlServerSpec()),
+	postgres(new PostgresSpec());
 	
 	private final DataBaseSpec spec;
 

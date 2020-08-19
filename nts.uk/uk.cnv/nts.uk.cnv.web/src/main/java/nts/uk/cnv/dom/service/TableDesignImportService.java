@@ -6,11 +6,13 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.create.index.CreateIndex;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.sf.jsqlparser.statement.create.table.Index;
@@ -29,27 +31,32 @@ public class TableDesignImportService {
 	 * @param createIndex テーブルに所属するcreate index文を指定する.
 	 * @throws JSQLParserException
 	 */
-	public static AtomTask regist(Require require, String createTable) throws JSQLParserException {
-		TableDesign tableDesign = ddlToDomain(createTable);
+	public static AtomTask regist(Require require, String createTable, String createIndexes) throws JSQLParserException {
+		TableDesign tableDesign = ddlToDomain(createTable, createIndexes);
 
 		return AtomTask.of(() -> {
 			require.regist(tableDesign);
 		});
 	}
 	
-	private static TableDesign ddlToDomain(String createTable) throws JSQLParserException {
+	private static TableDesign ddlToDomain(String createTable, String createIndexes) throws JSQLParserException {
 		CCJSqlParserManager pm = new CCJSqlParserManager();
 		Statement createTableSt = pm.parse(new StringReader(createTable.toUpperCase()));
 		
+		List<CreateIndex> indexes = new ArrayList<>();
+		for (String ci : createIndexes.split(";")) {
+			indexes.add( (CreateIndex) pm.parse(new StringReader(ci.toUpperCase())));
+		}
+		
 		if (createTableSt instanceof CreateTable) {
-			return toDomain( (CreateTable) createTableSt);
+			return toDomain( (CreateTable) createTableSt, indexes);
 		}
 		
 		throw new JSQLParserException();
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static TableDesign toDomain(CreateTable statement) {
+	private static TableDesign toDomain(CreateTable statement, List<CreateIndex> createIndex) {
 		GeneralDateTime now = GeneralDateTime.now();
 		
 		List<Indexes> indexes = new ArrayList<>();
@@ -58,13 +65,24 @@ public class TableDesignImportService {
 		if (statement.getIndexes() != null) {
 			analyzeIndex(statement, indexes, pk, uk);
 		}
+		if (!createIndex.isEmpty()) {
+			indexes.addAll(
+					createIndex.stream()
+						.map(idx -> new Indexes(
+								idx.getIndex().getName(),
+								idx.getIndex().getType(),
+								idx.getIndex().getColumnsNames(),
+								idx.getTailParameters()
+						)).collect(Collectors.toList())
+			);
+		}
 		
 		List<ColumnDesign> columns = new ArrayList<>();
 		int id = 1;
 		for (Iterator<ColumnDefinition> colmnDef =  statement.getColumnDefinitions().iterator(); colmnDef.hasNext();) {
 			ColumnDefinition col = colmnDef.next();
 			DataType type = DataType.valueOf(col.getColDataType().getDataType());
-			List<String> specs = col.getColumnSpecStrings();
+			List<String> specs = col.getColumnSpecs();
 
 			List<String> args = col.getColDataType().getArgumentsStringList();
 			
@@ -113,8 +131,7 @@ public class TableDesignImportService {
 	}
  
 	@SuppressWarnings("unchecked")
-	private static void analyzeIndex(CreateTable statement, List<Indexes> indexes,
-			Map<String, Integer> pk, Map<String, Integer> uk) {
+	private static void analyzeIndex(CreateTable statement, List<Indexes> indexes, Map<String, Integer> pk, Map<String, Integer> uk) {
 		for (Iterator<Index> indexDef =  statement.getIndexes().iterator(); indexDef.hasNext();) {
 			Index index = (Index) indexDef.next();
 			if(index.getType().equals("PRIMARY KEY")) {
@@ -123,7 +140,6 @@ public class TableDesignImportService {
 					pk.put((String)colName, seq);
 					seq++;
 				}
-				continue;
 			}
 			else if(index.getType().equals("UNIQUE")) {
 				int seq = 1;
@@ -131,11 +147,13 @@ public class TableDesignImportService {
 					uk.put((String)colName, seq);
 					seq++;
 				}
-				continue;
 			}
+
 			Indexes idx = new Indexes(
 					index.getName(),
-					index.getColumnsNames()
+					index.getType(),
+					index.getColumnsNames(),
+					null
 			);
 			indexes.add(idx);
 		}

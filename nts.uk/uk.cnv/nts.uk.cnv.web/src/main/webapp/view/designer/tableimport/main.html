@@ -9,23 +9,38 @@
 <h1>Table Design Importer</h1>
 <table>
 	<tr>
-		<td><button id="view">表示 view</button></td>
-		<td><button id="import">取込 import</button></td>
+		<td colspan=3><div>Table Name:</div></td>
 	</tr>
 	<tr>
-		<td class="row_label">Table Design:</td>
-		<td class="row_label">Create Table SQL:</td>
+		<td>
+			<input type="text" id="tablename" style="font-size:80%; width:400px;" />
+		</td>
+		<td />
+		<td>
+			<button id="view">view</button>
+			<button id="import">import</button>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<input type="radio" id="mssql" name="type" value="mssql" checked="checked" style="font-size:80%">MsSQL
+			<input type="radio" id="pg" name="type" value="pg" style="font-size:80%">Postgres
+		</td>
 	</tr>
 	<tr>
 		<td style="width:400px">
-			<textarea id="view" style="font-size:80%; width:100%; height:600px;" spellcheck="false"></textarea>
+			<div>Table Design:</div>
+			<textarea id="view" style="font-size:80%; width:100%; height:485px;" spellcheck="false" readonly></textarea>
 		</td>
+		<td></td>
 		<td style="width:400px">
-			<textarea id="sql" style="font-size:80%; width:100%; height:600px;" spellcheck="false"></textarea>
+			<div>Create Table SQL:</div>
+			<textarea id="createtablesql" style="font-size:80%; width:100%; height:359px;" spellcheck="false"></textarea>
+			<div>Create Index SQL:</div>
+			<textarea id="createindexsql" style="font-size:80%; width:100%; height:100px;" spellcheck="false"></textarea>
 		</td>
 	</tr>
-</table><br />
-<br />
+</table>
 <hr />
 <textarea id="result" style="font-size:80%; width:800px; height:200px;" data-bind="value: result"></textarea>
 
@@ -48,11 +63,28 @@ var ajaxOption = {
 $(function () {	
 	$("#import").click(function () {
 		$.ajax(ajaxOption.build("/nts.uk.cnv.web/webapi/cnv/tabledesign/import", {
-			createTableSql: $('#sql').val()
+			createTableSql: $('#createtablesql').val(),
+			createIndexSql: $('#createindexsql').val()
 		})).done(function (res) {
 			console.log(res);
+			$('#result').prop('text', res);
 		}).fail(function(rej){
 			console.log(rej);
+			$('#result').prop('text', rej);
+		});
+	});
+});
+$(function () {	
+	$("#view").click(function () {
+		$.ajax(ajaxOption.build("/nts.uk.cnv.web/webapi/cnv/tabledesign/exportddl", {
+			tableName: $('#tablename').val(),
+			type: $('[name="type"]:checked').val()
+		})).done(function (res) {
+			console.log(res);
+			$('#result').prop('text', res);
+		}).fail(function(rej){
+			console.log(rej);
+			$('#result').prop('text', rej);
 		});
 	});
 });

@@ -15,7 +15,7 @@ public class ConversionSQLTest {
 	
 	@Test
 	public void test_sql() {
-		ConversionSQL target = ConversionSQLHelper.ConversionSql.create();
+		ConversionSQL target = ConversionSQLHelper.create();
 
 		String result = target.build();
         

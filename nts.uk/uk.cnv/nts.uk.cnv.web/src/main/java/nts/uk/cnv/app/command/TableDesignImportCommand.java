@@ -6,4 +6,5 @@ import lombok.Value;
 public class TableDesignImportCommand {
 
 	private String createTableSql;
+	private String createIndexSql;
 }

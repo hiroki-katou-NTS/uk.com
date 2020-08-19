@@ -1,4 +1,4 @@
-package nts.sample.impls;
+package nts.uk.cnv.infra.impls;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

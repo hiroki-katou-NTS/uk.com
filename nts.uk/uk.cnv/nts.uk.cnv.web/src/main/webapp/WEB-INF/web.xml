@@ -41,7 +41,7 @@
     </filter-mapping>
     
     <servlet>
-    	<servlet-name>nts.sample.web.WebApiSetting</servlet-name>
+    	<servlet-name>nts.uk.cnv.ws.service.WebApiSetting</servlet-name>
     </servlet>
     
     <listener>
