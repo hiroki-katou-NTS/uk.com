@@ -102,14 +102,24 @@ module nts.uk.at.view.kmr004.a {
             let vm = this;
             $("#exportTitle").trigger("validate");
             vm.$blockui("invisible");
+            vm.model().totalTitle = ko.observable('TITjhdfkjdsh')
+            vm.model().workplaceIds = ko.observableArray([]);
+            let startDate = new Date();
+            startDate.setFullYear(2018); startDate.setMonth(0);startDate.setDate(1);
+            let endDate = new Date();
+            endDate.setFullYear(9999); endDate.setMonth(11);endDate.setDate(31);
+            vm.model().period = ko.observable({
+                start: formatDate(startDate, API.DATE_FORMAT),
+                end: formatDate( endDate, API.DATE_FORMAT)
+            });
             let data = {
-                workplaceIds: ["100","900"],
+                workplaceIds: vm.model().workplaceIds(),
                 workLocationCodes: [],
-                period: null,
+                period: vm.model().period.peek(),
                 totalExtractCondition: 1,
                 itemExtractCondition: -1,
                 frameNo: -1,
-                totalTitle: 'Total title',
+                totalTitle:  vm.model.totalTitle(),
                 detailTitle: '',
                 reservationClosingTimeFrame: 1,
                 isBreakPage: true,
@@ -126,6 +136,19 @@ module nts.uk.at.view.kmr004.a {
 
         printPDF(){
             let vm = this;
+            let data = {
+                workplaceIds: vm.model().workplaceIds(),
+                workLocationCodes: vm.model().workLocationCodes(),
+                period: vm.model().period.peek(),
+                totalExtractCondition: vm.model().totalExtractCondition.peek(),
+                itemExtractCondition: vm.model().itemExtractCondition.peek(),
+                frameNo: vm.model().frameNo.peek(),
+                totalTitle:  vm.model().totalTitle.peek(),
+                detailTitle: vm.model().detailTitle.peek(),
+                reservationClosingTimeFrame: 1,
+                isBreakPage: true,
+                reservationTimeZone: vm.model().reservationTimeZone.peek()
+            };
             $("#exportTitle").trigger("validate");
             vm.$blockui("invisible");
             nts.uk.request.exportFile("at", API.PDF_ALL).done(() => {

@@ -81,6 +81,8 @@ public class CreateOrderInfoFileQuery {
                                                  Optional<String> detailTitle, ReservationClosingTimeFrame reservationClosingTimeFrame){
         if (!totalTitle.isPresent() & !detailTitle.isPresent())
             throw new BusinessException("Msg_1642");
+        if(CollectionUtil.isEmpty(workplaceId) & CollectionUtil.isEmpty(workLocationCodes))
+            throw new BusinessException("Msg_1642");
         OrderInfoDto result = new OrderInfoDto();
         // 1. [RQ622]会社IDから会社情報を取得する
         String companyId = AppContexts.user().companyId();
@@ -95,20 +97,19 @@ public class CreateOrderInfoFileQuery {
         // 3. 弁当予約を取得する
         List<BentoReservation> bentoReservationsTotal = new ArrayList<>();
         List<BentoReservation> bentoReservationsDetail = new ArrayList<>();
-        if (totalExtractCondition.equals(itemExtractCondition)) {
+//        if (totalExtractCondition.equals(itemExtractCondition)) {
+//            bentoReservationsTotal = getListBentoResevation(totalExtractCondition.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
+//            bentoReservationsDetail = bentoReservationsTotal;
+//        } else {
+        if (totalExtractCondition.isPresent())
             bentoReservationsTotal = getListBentoResevation(totalExtractCondition.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
-            bentoReservationsDetail = bentoReservationsTotal;
-        } else {
-            if (totalExtractCondition.isPresent())
-                bentoReservationsTotal = getListBentoResevation(totalExtractCondition.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
-            if (detailTitle.isPresent()) {
-                if (frameNo.isPresent()) {
-                    bentoReservationsDetail = getListBentoResevation(frameNo.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
-                } else {
-                    bentoReservationsDetail = getListBentoResevation(itemExtractCondition.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
-                }
-            }
+        if (detailTitle.isPresent()) {
+            if (frameNo.isPresent())
+                bentoReservationsDetail = getListBentoResevation(frameNo.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
+            else
+                bentoReservationsDetail = getListBentoResevation(itemExtractCondition.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
         }
+        //}
         if (CollectionUtil.isEmpty(bentoReservationsTotal) & CollectionUtil.isEmpty(bentoReservationsTotal))
             throw new BusinessException("Msg_1617");
         //4.
