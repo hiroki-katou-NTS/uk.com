@@ -18,25 +18,23 @@
                         <label data-bind="text: infoPeriodDate" tabindex="-1" />
                     </div>
                 </div>
-				<div class="lableCaseAll cf" tabindex="-1">
+				<div class="lableCaseAll cf label-list" tabindex="-1">
 					<div class="labelSelection" tabindex="-1"
 						data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_29')}</div>
 					<div class="labelContents" tabindex="-1"
-						data-bind="foreach: lstLabelInfomation">
+						data-bind="foreach: lstLabelInfomationB">
 						<label data-bind="text: $data" tabindex="-1" />
 					</div>
 				</div>
-				<div class="lableCaseAll cf" tabindex="-1">
+				<div class="lableCaseAll cf  label-list" tabindex="-1">
 					<div class="labelSelection" tabindex="-1"
 						data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_30')}</div>
-					<label class="labelCenter" tabindex="-1"
-						data-bind="text: infoCreateMethod"></label>
-				</div>
-				<div class="lableCaseAll cf" tabindex="-1">
-					<div class="labelSelection" tabindex="-1"
-						data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_31')}</div>
-					<label class="labelCenter" tabindex="-1"
-						data-bind="text: infoPeriodDate"></label>
+                    <div class="labelContents" tabindex="-1"
+                         data-bind="foreach: lstLabelInfomationC">
+                        <label data-bind="text: $data" tabindex="-1" />
+                    </div>
+					<!--<label class="labelCenter" tabindex="-1"
+						data-bind="text: infoCreateMethod"></label>-->
 				</div>
 				<div class="lableCaseAll cf" tabindex="-1">
 					<div class="labelSelection" tabindex="-1"

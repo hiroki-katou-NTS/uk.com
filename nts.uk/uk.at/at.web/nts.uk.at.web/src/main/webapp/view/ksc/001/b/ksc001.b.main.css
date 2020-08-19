@@ -103,7 +103,9 @@ button.nts-switch-button {
 	align-items: center;
 	margin: 5px 0;
 }
-
+.lableCaseAll.label-list {
+	align-items: flex-start;
+}
 .contentELable {
 	margin-left: 20px;
 }
@@ -184,12 +186,14 @@ button.nts-switch-button {
 
 .labelContents {
 	background-color: #eaeaea;
-	width: 350px;
-	white-space: pre-line;
-	padding: 5px;
-	max-height: 195px;
+	width: 100%;
+	padding: 10px;
 	overflow-y: scroll;
 	position: relative;
+}
+.labelContents label {
+	margin: 0 0 5px;
+	display: block;
 }
 
 .labelCenter {
@@ -220,10 +224,6 @@ button.nts-switch-button {
 	padding: 0px !important;
 	width: 100% !important;
 	max-width: 100% !important;
-}
-.labelContents label {
-	display: block;
-	margin: -15px 0px;
 }
 
 .contentE {

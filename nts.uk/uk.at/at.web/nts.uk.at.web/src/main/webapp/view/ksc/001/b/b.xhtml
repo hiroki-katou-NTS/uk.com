@@ -43,7 +43,7 @@
 						}"></div>
 					<!-- B4_6 -->
                     <div class="switchButtonGroup">
-						<div class="SwitchButton">
+						<div class="SwitchButton"><!-- B4_7, B4_8 -->
 							<div id="inputRebuildAtr" tabindex="5" class="radioboxRebuildAtr b46SwitchButton"
 								data-bind="ntsSwitchButton: {
 								options: selectRebuildAtr,
@@ -69,10 +69,10 @@
                                         data-bind="ntsCheckBox: { checked: recreateEmployeeOffWork,
                                         enable: isRebuildTargetOnly }">#{i18n.getText('KSC001_92')}</div>
                                     <div class="checkboxOne" tabindex="8"
-                                        data-bind="ntsCheckBox: { checked: recreateDirectBouncer,
+                                        data-bind="ntsCheckBox: { checked: recreateShortTimeWorkers,
                                         enable: isRebuildTargetOnly }">#{i18n.getText('KSC001_93')}</div>
                                     <div class="checkboxOne" tabindex="9"
-                                         data-bind="ntsCheckBox: { checked: recreateShortTimeWorkers,
+                                         data-bind="ntsCheckBox: { checked: recreateDirectBouncer,
                                         enable: isRebuildTargetOnly }">#{i18n.getText('KSC001_94')}</div>
                                 </div>
 							</div>
@@ -96,7 +96,7 @@
 			<div class="buttonPrevNext">			
 				<div class="buttonBeginNext" tabindex="-1">
 					<button tabindex="12" class="proceed x-large"
-						data-bind="click: nextPageC">#{i18n.getText('KSC001_20')}</button>
+						data-bind="click: nextPageB">#{i18n.getText('KSC001_20')}</button>
 				</div>
 			</div>
 		</div>

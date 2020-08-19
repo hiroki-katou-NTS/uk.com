@@ -55,7 +55,8 @@ module nts.uk.at.view.ksc001.b {
             startDateString: KnockoutObservable<string> = ko.observable("");
             endDateString: KnockoutObservable<string> = ko.observable("");
 
-            lstLabelInfomation: KnockoutObservableArray<string> = ko.observableArray([]);
+            lstLabelInfomationB: KnockoutObservableArray<string> = ko.observableArray([]);
+            lstLabelInfomationC: KnockoutObservableArray<string> = ko.observableArray([]);
             infoCreateMethod: KnockoutObservable<string> = ko.observable('');
             infoPeriodDate: KnockoutObservable<string> = ko.observable('');
             lengthEmployeeSelected: KnockoutObservable<string> = ko.observable('');
@@ -91,10 +92,13 @@ module nts.uk.at.view.ksc001.b {
             isMonthlyPatternRq: KnockoutObservable<boolean>;
             monthlyPatternCode: KnockoutObservable<number> = ko.observable();
             creationMethodCode: KnockoutObservable<number> = ko.observable();
-            monthlyPatternOpts: KnockoutObservableArray<any>;
-            creationMethodOpts: KnockoutObservableArray<any>;
+            monthlyPatternOpts: KnockoutObservableArray<any> = ko.observable([]);
+            creationMethodOpts: KnockoutObservableArray<any> = ko.observable([]);
             isMonthlyPatternCreateMethod: KnockoutObservable<boolean>;
             isEnableNextPageE: KnockoutObservable<boolean> = ko.observable(true);
+            isConfirmedCreation: KnockoutObservable<boolean> = ko.observable(false);
+
+            fullSizeSpace: string = "　　";
 
             constructor() {
                 let self = this;
@@ -194,20 +198,26 @@ module nts.uk.at.view.ksc001.b {
                     }
                 })
 
-                self.creationMethodOpts = [
+                self.creationMethodOpts([
                     {code: null, name: ''},
                     {code: 1, name: '会社カレンダー'},
                     {code: 2, name: '職場カレンダー'},
                     {code: 3, name: '分類カレンダー'},
                     {code: 4, name: '月間パターン'},
-                ];
+                ]);
 
-                self.monthlyPatternOpts = [
+                self.monthlyPatternOpts([
                     {code: null, name: ''},
-                    {code: 1, name: '基本給'},
-                    {code: 2, name: '役職手当'},
-                    {code: 3, name: '基本給ながい文字列な'},
-                ];
+                    {code: 1, name: '月間パターンコード'},
+                    {code: 2, name: '月間パターン名称'}
+                ]);
+
+                //get monthlyPattern
+                //self.getMonthlyPatterns();
+                let user: any = __viewContext.user;
+                self.findPersonalScheduleByEmployeeId(user.employeeId).done(( data) => {
+                    console.log(data);
+                });
             }
 
             /**
@@ -378,7 +388,7 @@ module nts.uk.at.view.ksc001.b {
                     listSelectedEmpCode.push(employeeSearch.employeeCode);
                 });
 
-                // update employee list by ccg001 search 
+                // update employee list by ccg001 search
                 self.employeeList(employeeSearchs);
                 self.selectedEmployeeCode(listSelectedEmpCode);
 
@@ -411,7 +421,7 @@ module nts.uk.at.view.ksc001.b {
                 if ($('.nts-input').ntsError('hasError')) {
                     return;
                 }
-                // check selection employee 
+                // check selection employee
                 if (self.selectedEmployeeCode && self.selectedEmployee() && self.selectedEmployeeCode().length > 0) {
                     var user: any = __viewContext.user;
                     self.findPersonalScheduleByEmployeeId(user.employeeId).done(function (data) {
@@ -484,7 +494,7 @@ module nts.uk.at.view.ksc001.b {
             /**
              * function next page by selection employee goto next page
              */
-            private nextPageC(): void {
+            private nextPageB(): void {
                 var self = this;
 
                 self.builDataForScreenC();
@@ -504,7 +514,7 @@ module nts.uk.at.view.ksc001.b {
                         .ifYes(() => {
                             //goto screen C
                             self.next().done(function () {
-                                $('#inputCreateMethodAtr').focus();
+                                //$('#inputCreateMethodAtr').focus();
                             });
                         }).ifNo(() => {
                         return;
@@ -512,7 +522,7 @@ module nts.uk.at.view.ksc001.b {
                 } else {
                     //goto screen C
                     self.next().done(function () {
-                        $('#inputCreateMethodAtr').focus();
+                        //$('#inputCreateMethodAtr').focus();
                     });
                 }
 
@@ -526,7 +536,6 @@ module nts.uk.at.view.ksc001.b {
                     });
                 }
                 else {
-
                     self.next().done(function() {
                         $('#inputCreateMethodAtr').focus();
                     });
@@ -535,10 +544,76 @@ module nts.uk.at.view.ksc001.b {
 
             private builDataForScreenC() {
                 let self = this;
+                let lstLabelInfomation: Array<string> = [];
+
                 //{0}　～　{1} -> KSC001_46
                 self.infoPeriodDate(getText("KSC001_46", [self.periodDate().startDate, self.periodDate().endDate]));
+
+                //build from B for E
+                //B4_4 -> #KSC001_74, B4_5 -> #KSC001_75
+                if(self.selectedImplementAtrCode() == ImplementAtr.GENERALLY_CREATED)
+                    lstLabelInfomation.push(getText("KSC001_74"));
+                else {
+                    lstLabelInfomation.push(getText("KSC001_75"));
+
+                    //B4_7 -> #KSC001_37 + #KSC001_89, B4_8 -> #KSC001_37 + #KSC001_90
+                    if (self.selectRebuildAtrCode() == ReBuildAtr.REBUILD_ALL)
+                        lstLabelInfomation.push(getText("KSC001_37") + getText("KSC001_89"));
+                    else {
+                        lstLabelInfomation.push(getText("KSC001_37") + getText("KSC001_90"));
+
+                        //B5_2 -> 「▲」:fullSizeSpace +  #KSC001_38 + #KSC001_91
+                        if (self.recreateConverter())
+                            lstLabelInfomation.push(self.fullSizeSpace + getText("KSC001_38") + getText("KSC001_91"));
+                        //B5_3 -> 「▲」:fullSizeSpace +  #KSC001_38 + #KSC001_92
+                        if (self.recreateEmployeeOffWork())
+                            lstLabelInfomation.push(self.fullSizeSpace + getText("KSC001_38") + getText("KSC001_92"));
+                        //B5_4 -> 「▲」:fullSizeSpace +  #KSC001_38 + #KSC001_93
+                        if (self.recreateShortTimeWorkers())
+                            lstLabelInfomation.push(self.fullSizeSpace + getText("KSC001_38") + getText("KSC001_93"));
+                        //B5_5 -> 「▲」:fullSizeSpace +  #KSC001_38 + #KSC001_94
+                        if (self.recreateDirectBouncer())
+                            lstLabelInfomation.push(self.fullSizeSpace + getText("KSC001_38") + getText("KSC001_94"));
+                    }
+
+                    //B6_3 Or B6_4: [#KSC001_37 + #KSC001_104] or [#KSC001_37 + #KSC001_105]
+                    if (self.recreateShortTermEmployee()) {
+                        lstLabelInfomation.push(getText("KSC001_37") + getText("KSC001_104"));
+                    } else if (self.recreateWorkTypeChange())
+                        lstLabelInfomation.push(getText("KSC001_37") + getText("KSC001_105"));
+                    //B6_3
+                    if (self.recreateShortTermEmployee())
+                        lstLabelInfomation.push(self.fullSizeSpace + getText("KSC001_38") + getText("KSC001_105"));
+                    //B6_4
+                    if (self.recreateWorkTypeChange())
+                        lstLabelInfomation.push(self.fullSizeSpace + getText("KSC001_38") + getText("KSC001_106"));
+                }
+
+                //apply from B -> E1_6
+                self.lstLabelInfomationB(lstLabelInfomation);
+
                 //screen E
-                //self.lengthEmployeeSelected(getText("KSC001_47", [self.selectedEmployeeCode().length]));
+                self.lengthEmployeeSelected(getText("KSC001_47", [self.selectedEmployeeCode().length]));
+            }
+
+
+            /**
+             * function previous page by selection employee goto page (B)
+             */
+            private previousPageC(): void {
+                var self = this;
+                self.previous();
+            }
+            /**
+             * function previous page by selection employee goto page (D)
+             */
+            private nextPageC(): void {
+                var self = this;
+
+                self.buildString();
+
+                self.next().done(function () {
+                });
             }
 
             /**
@@ -572,14 +647,9 @@ module nts.uk.at.view.ksc001.b {
                     return;
                 }
 
-                //create string for page E
-                self.buildString();
-
                 // check D1_4 is checked
                 if (self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PATTERN_SCHEDULE) {
-
                     if (self.responeReflectionSetting()) {
-
                         // next page E by pattern code of self
                         self.findByPatternCodeAndOpenPageE(self.responeReflectionSetting().selectedPatternCd);
                     }
@@ -596,7 +666,6 @@ module nts.uk.at.view.ksc001.b {
                 } else {
                     self.openDialogPageE();
                 }
-
             }
 
             /**
@@ -644,7 +713,7 @@ module nts.uk.at.view.ksc001.b {
              */
             private openDialogPageE(): void {
                 var self = this;
-                self.buildString();
+                //self.buildString();
                 self.next().done(function () {
                     $('#buttonFinishPageE').focus();
                 });
@@ -694,40 +763,47 @@ module nts.uk.at.view.ksc001.b {
             private buildString() {
                 var self = this;
                 var lstLabelInfomation: string[] = [];
-                console.log(self.creationMethodCode());
-                console.log(self.checkCreateMethodAtrPersonalInfo());
+
                 if (self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PERSONAL_INFO) {
-                    lstLabelInfomation.push(getText("KSC001_22"));
+                    lstLabelInfomation.push(getText("KSC001_22")); //#KSC001_22
                 } else if (self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.COPY_PAST_SCHEDULE) {
                     lstLabelInfomation.push(getText("KSC001_24"));
-                    lstLabelInfomation.push(getText("KSC001_24") + getText("KSC001_37") + getText("KSC001_26") + getText("KSC001_114") + self.copyStartDate());
+                    //#KSC001_37+#KSC001_26+#KSC001_114+「C2_15」
+                    let copyStartDate = moment(self.copyStartDate()).format('YYYY/MM/DD');
+                    lstLabelInfomation.push(getText("KSC001_37") + getText("KSC001_26") + getText("KSC001_114") + copyStartDate);
                 } else {
-
+                    lstLabelInfomation.push(getText("KSC001_23"));
                     switch (self.creationMethodCode()) {
                         case 1:
-                            console.log(1);
                             //#KSC001_37+#KSC001_113+#KSC001_114+#KSC001_108
                             lstLabelInfomation.push(getText("KSC001_37") + getText("KSC001_113") + getText("KSC001_114") + getText("KSC001_108"));
                             break
                         case 2:
-                            console.log(2);
                             //#KSC001_37+#KSC001_113+#KSC001_114+#KSC001_109
                             lstLabelInfomation.push(getText("KSC001_37") + getText("KSC001_113") + getText("KSC001_114") + getText("KSC001_109"));
                             break;
                         case 3:
-                            console.log(3);
                             //#KSC001_37+#KSC001_113+#KSC001_114+#KSC001_109
                             lstLabelInfomation.push(getText("KSC001_37") + getText("KSC001_113") + getText("KSC001_114") + getText("KSC001_110"));
                             break;
                         case 4:
-                            console.log(4);
                             //#KSC001_37+#KSC001_113+#KSC001_114+#KSC001_111
                             lstLabelInfomation.push(getText("KSC001_37") + getText("KSC001_113") + getText("KSC001_114") + getText("KSC001_111"));
                             //#KSC001_37+#KSC001_111+#KSC001_114+「C2_12」+「▲」+「C2_13」
-                            lstLabelInfomation.push(getText("KSC001_37") + getText("KSC001_111") + getText("KSC001_114") + getText("KSC001_111") + self.monthlyPatternCode());
+                            let monthlyPattern = self.monthlyPatternOpts().find(element => element.code == self.monthlyPatternCode());
+                            let monthlyPatternText = self.monthlyPatternCode() + self.fullSizeSpace + monthlyPattern.name;
+                            lstLabelInfomation.push(getText("KSC001_37") + getText("KSC001_111") + getText("KSC001_114") + monthlyPatternText);
                             break;
                     }
                 }
+
+                //C3_2
+                if (self.isConfirmedCreation()) {
+                    lstLabelInfomation.push(getText("KSC001_17")); //#KSC001_17
+                }
+                //apply from C -> E1_9
+                self.lstLabelInfomationC(lstLabelInfomation);
+
                 //NO1
                 /*if (self.selectedImplementAtrCode() == ImplementAtr.GENERALLY_CREATED) {
                     lstLabelInfomation.push(getText("KSC001_35"));
@@ -836,13 +912,10 @@ module nts.uk.at.view.ksc001.b {
                 }
                 */
                 // set to view info
-                self.infoPeriodDate(getText("KSC001_46",
-                    [self.periodDate().startDate, self.periodDate().endDate]));
+               /* self.infoPeriodDate(getText("KSC001_46",
+                    [self.periodDate().startDate, self.periodDate().endDate]));*/
 
-                self.lengthEmployeeSelected(getText("KSC001_47",
-                    [self.selectedEmployeeCode().length]));
-
-                console.log(self.lstLabelInfomation());
+                self.lengthEmployeeSelected(getText("KSC001_47", [self.selectedEmployeeCode().length]));
             }
 
             /**
