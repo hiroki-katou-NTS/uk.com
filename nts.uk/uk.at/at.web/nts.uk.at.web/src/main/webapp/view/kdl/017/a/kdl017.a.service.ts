@@ -16,7 +16,7 @@ module nts.uk.at.view.kdl017.a.service {
    * @param baseDate the base date
    */
   export function get60hOvertimeDisplayInfoDetail(employeeId: string, baseDate: string)
-                                  : JQueryPromise<OverTimeIndicationInformationDetails> {
+                                  : JQueryPromise<any> {
     const path = nts.uk.text.format(paths.get60hOvertimeDisplayInfoDetail, employeeId, baseDate);
     return nts.uk.request.ajax(path);
   }
