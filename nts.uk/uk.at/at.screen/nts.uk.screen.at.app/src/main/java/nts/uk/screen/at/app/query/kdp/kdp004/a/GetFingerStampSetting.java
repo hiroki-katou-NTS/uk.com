@@ -26,7 +26,8 @@ public class GetFingerStampSetting {
 	private StampResultDisplayRepository stampResulRepo;
 
 	public GetFingerStampSettingDto getFingerStampSetting() {
-		return getFingerStampSetting(AppContexts.user().companyId());
+		String companyId = AppContexts.user().companyId();
+		return getFingerStampSetting(companyId);
 	}
 
 	/**

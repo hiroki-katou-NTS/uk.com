@@ -12,9 +12,9 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.StampAttenDisplay;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplay;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplayRepository;
-import nts.uk.ctx.at.record.infra.entity.stamp.application.KrccpStampFunction;
 import nts.uk.ctx.at.record.infra.entity.stamp.application.KrccpStampRecordDis;
 import nts.uk.ctx.at.record.infra.entity.stamp.application.KrccpStampRecordDisPk;
+import nts.uk.ctx.at.record.infra.entity.stamp.application.KrcmtStampFunction;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -26,9 +26,6 @@ import nts.uk.shr.com.context.AppContexts;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaStampResultDisplayRepository extends JpaRepository implements StampResultDisplayRepository {
 
-	private static final String SELECT_ALL_PAGE = "SELECT c FROM KrccpStampFunction c ";
-	private static final String SELECT_BY_CID_PAGE = SELECT_ALL_PAGE + " WHERE c.pk.companyId = :companyId";
-
 	private static final String SELECT_ALL_ATEN = "SELECT c FROM KrccpStampRecordDis c ";
 	private static final String SELECT_ALL_ATEN_CID = SELECT_ALL_ATEN + " WHERE c.pk.companyId = :companyId";
 
@@ -37,7 +34,7 @@ public class JpaStampResultDisplayRepository extends JpaRepository implements St
 	 */
 	@Override
 	public void insert(StampResultDisplay application) {
-		commandProxy().insert(KrccpStampFunction.toEntity(application));
+		commandProxy().insert(this.toEntity(application));
 	}
 
 	/**
@@ -46,10 +43,9 @@ public class JpaStampResultDisplayRepository extends JpaRepository implements St
 	@Override
 	public void update(StampResultDisplay application) {
 		String companyId = AppContexts.user().companyId();
-		Optional<KrccpStampFunction> oldData = this.queryProxy().query(SELECT_BY_CID_PAGE, KrccpStampFunction.class)
-				.setParameter("companyId", companyId).getSingle();
+		Optional<KrcmtStampFunction> oldData = this.queryProxy().query(companyId, KrcmtStampFunction.class).getSingle();
 		if (oldData.isPresent()) {
-			KrccpStampFunction newData = KrccpStampFunction.toEntity(application);
+			KrcmtStampFunction newData = this.toEntity(application);
 			oldData.get().recordDisplayArt = newData.recordDisplayArt;
 			newData.lstRecordDis.forEach(x -> {
 				Optional<StampAttenDisplay> optional2 = application.getLstDisplayItemId().stream()
@@ -77,8 +73,11 @@ public class JpaStampResultDisplayRepository extends JpaRepository implements St
 	 */
 	@Override
 	public Optional<StampResultDisplay> getStampSet(String companyId) {
-		return this.queryProxy().query(SELECT_BY_CID_PAGE, KrccpStampFunction.class)
-				.setParameter("companyId", companyId).getSingle(c -> c.toDomain());
+		Optional<KrcmtStampFunction> c = this.queryProxy().find(companyId, KrcmtStampFunction.class);
+		if(c.isPresent()) {
+			return Optional.of(c.get().toDomain());
+		}
+		return Optional.empty();
 	}
 
 	/**
@@ -89,5 +88,19 @@ public class JpaStampResultDisplayRepository extends JpaRepository implements St
 		return this.queryProxy().query(SELECT_ALL_ATEN_CID, KrccpStampRecordDis.class)
 				.setParameter("companyId", companyId).getList(c -> c.toDomain());
 	}
+	
+	private Optional<KrcmtStampFunction> getEntity(String cId){
+		return this.queryProxy().query(cId, KrcmtStampFunction.class).getSingle();
+	}
 
+	public KrcmtStampFunction toEntity(StampResultDisplay domain){
+		Optional<KrcmtStampFunction> oldEntity = this.getEntity(domain.getCompanyId());
+		return new KrcmtStampFunction(
+				domain.getCompanyId(), 
+				domain.getUsrAtr().value, 
+				oldEntity.isPresent() ? oldEntity.get().googleMapUseArt: 0,
+				oldEntity.isPresent() ? oldEntity.get().mapAddress : null,
+				domain.getLstDisplayItemId().stream().map(mapper -> KrccpStampRecordDis.toEntity(mapper)).collect(Collectors.toList()));
+	}
+	
 }
