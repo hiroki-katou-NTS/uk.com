@@ -2058,7 +2058,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			WorkInfoOfDailyAttendance workInfoOfDailyPerformanceUpdate,
 			AffiliationInforOfDailyAttd affiliationInforOfDailyPerfor, PeriodInMasterList periodInMasterList) {
 		Optional<BonusPaySetting> bonusPaySetting = Optional.empty();
-
 		if (periodInMasterList == null) {
 			// reqList496
 			// 職場IDと基準日から上位職場を取得する
@@ -2086,7 +2085,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					Optional<WorkingTimesheetBonusPaySetting> workingTimesheetBonusPaySetting = this.wTBonusPaySettingRepository
 							.getWTBPSetting(companyId, new WorkingTimesheetCode(
 									workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v()));
-					if (workingTimesheetBonusPaySetting.isPresent()) {
+					if (workingTimesheetBonusPaySetting.isPresent()) {	
 						Optional<BonusPaySetting> bonusPay = bPSettingRepository.getBonusPaySetting(companyId,
 								workingTimesheetBonusPaySetting.get().getBonusPaySettingCode());
 						if (!bonusPay.isPresent()) {

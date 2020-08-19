@@ -63,7 +63,7 @@ public class GetEmpCanReferBySpecifyWorkgroupServiceTest {
 			public Map<String, ScopeReferWorkplaceGroup> getWorkplaceGroup(GetWorkplaceGroupsAndEmpService.Require require, GeneralDate baseDate,
 					String empId) {
 				Map<String, ScopeReferWorkplaceGroup> ressult = new HashMap<>();
-				ressult.put("workplaceGroupId", ScopeReferWorkplaceGroup.ONLY_ME);
+				ressult.put(workplaceGroupId, ScopeReferWorkplaceGroup.ONLY_ME);
 				return ressult;
 				
 			}
@@ -71,7 +71,7 @@ public class GetEmpCanReferBySpecifyWorkgroupServiceTest {
 		List<String> data = GetEmpCanReferBySpecifyWorkgroupService.getEmpCanRefer(require, date, empId, workplaceGroupId);
 		assertThat(data)
 		.extracting(d->d)
-		.containsExactly("empId");
+		.containsExactly(empId);
 	}
 	
 	/**
@@ -89,7 +89,7 @@ public class GetEmpCanReferBySpecifyWorkgroupServiceTest {
 			public Map<String, ScopeReferWorkplaceGroup> getWorkplaceGroup(GetWorkplaceGroupsAndEmpService.Require require, GeneralDate baseDate,
 					String empId) {
 				Map<String, ScopeReferWorkplaceGroup> ressult = new HashMap<>();
-				ressult.put("workplaceGroupId", ScopeReferWorkplaceGroup.ALL_EMPLOYEE);
+				ressult.put(workplaceGroupId, ScopeReferWorkplaceGroup.ALL_EMPLOYEE);
 				return ressult;
 				
 			}
@@ -119,12 +119,12 @@ public class GetEmpCanReferBySpecifyWorkgroupServiceTest {
 			public Map<String, ScopeReferWorkplaceGroup> getWorkplaceGroup(GetWorkplaceGroupsAndEmpService.Require require, GeneralDate baseDate,
 					String empId) {
 				Map<String, ScopeReferWorkplaceGroup> ressult = new HashMap<>();
-				ressult.put("workplaceGroupId", ScopeReferWorkplaceGroup.ALL_EMPLOYEE);
+				ressult.put(workplaceGroupId, ScopeReferWorkplaceGroup.ALL_EMPLOYEE);
 				return ressult;
 				
 			}
 		};
-		List<EmployeeAffiliation> listEmployeeAffiliation = Arrays.asList(new EmployeeAffiliation("employeeID", Optional.empty(), Optional.empty(), "workplaceID", Optional.empty()));
+		List<EmployeeAffiliation> listEmployeeAffiliation = Arrays.asList(new EmployeeAffiliation(empId, Optional.empty(), Optional.empty(), "workplaceID", Optional.empty()));
 		new MockUp<GetAllEmpWhoBelongWorkplaceGroupService>() {
 			@Mock
 			public  List<EmployeeAffiliation> getAllEmp(GetAllEmpWhoBelongWorkplaceGroupService.Require require ,GeneralDate baseDate , String workplaceGroupId ){
@@ -134,7 +134,7 @@ public class GetEmpCanReferBySpecifyWorkgroupServiceTest {
 		List<String> data = GetEmpCanReferBySpecifyWorkgroupService.getEmpCanRefer(require, date, empId, workplaceGroupId);
 		assertThat(data)
 		.extracting(d->d)
-		.containsExactly("employeeID");
+		.containsExactly(empId);
 	}
 
 }

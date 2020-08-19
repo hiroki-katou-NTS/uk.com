@@ -15,11 +15,11 @@ public class AttendanceTimeOfDailyPerformCommand extends DailyWorkCommonCommand 
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		AttendanceTimeOfDailyPerformance attendanceTimeOfDailyPerformance = new AttendanceTimeOfDailyPerformance(
+		AttendanceTimeOfDailyPerformance attendanceTimeOfDailyPerformance = (item !=null ? new AttendanceTimeOfDailyPerformance(
 				getEmployeeId(), getWorkDate(),
-				((AttendanceTimeDailyPerformDto) item).toDomain(getEmployeeId(), getWorkDate()));
+				((AttendanceTimeDailyPerformDto) item).toDomain(getEmployeeId(), getWorkDate())):null);
 		this.data = item == null || !item.isHaveData() ? Optional.empty() 
-				: Optional.of(attendanceTimeOfDailyPerformance);
+				: Optional.ofNullable(attendanceTimeOfDailyPerformance);
 	}
 
 	@Override

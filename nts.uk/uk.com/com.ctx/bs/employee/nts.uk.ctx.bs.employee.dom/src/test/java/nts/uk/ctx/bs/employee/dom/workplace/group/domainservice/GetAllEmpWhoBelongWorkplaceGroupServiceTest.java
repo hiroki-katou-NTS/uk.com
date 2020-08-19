@@ -47,8 +47,8 @@ public class GetAllEmpWhoBelongWorkplaceGroupServiceTest {
 	@Test
 	public void testGetAllEmp_1() {
 		GeneralDate baseDate = GeneralDate.today();
-		String workplaceGroupId =  "workplaceGroupId";
-		List<String> listWpkId = Arrays.asList("workplaceId");
+		String workplaceGroupId =  "workplaceGroupId1";
+		List<String> listWpkId = Arrays.asList("workplaceId1","workplaceId2","workplaceId3");
 		new Expectations() {
 			{
 				require.getWorkplaceBelongsWorkplaceGroup(workplaceGroupId);
@@ -84,7 +84,7 @@ public class GetAllEmpWhoBelongWorkplaceGroupServiceTest {
 		List<EmployeeAffiliation> datas =  GetAllEmpWhoBelongWorkplaceGroupService.getAllEmp(require, baseDate, workplaceGroupId);
 		assertThat(datas).extracting(d -> d.getEmployeeID(), d -> d.getEmployeeCode().get().v(),
 				d -> d.getBusinessName().get(), d -> d.getWorkplaceID(), d -> d.getWorkplaceGroupID().get())
-				.containsExactly(tuple("empId","empCd","empName","workplaceId","workplaceGroupId"));
+				.containsExactly(tuple(listEmployeeInfoData.get(0).getEmpId(),listEmployeeInfoData.get(0).getEmpCd(),listEmployeeInfoData.get(0).getEmpName(),listWpkId.get(0),workplaceGroupId));
 	}
 
 }
