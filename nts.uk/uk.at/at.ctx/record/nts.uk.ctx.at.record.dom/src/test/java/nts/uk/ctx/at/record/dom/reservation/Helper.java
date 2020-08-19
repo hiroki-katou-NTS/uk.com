@@ -7,12 +7,7 @@ import java.util.Optional;
 import nts.arc.time.clock.ClockHourMinute;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationTime;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
+import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bento.rules.BentoReservationTimeName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoAmount;
@@ -21,6 +16,7 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoReservationUnitName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTime;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.*;
 
 import static nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame.*;
 
@@ -31,7 +27,33 @@ public class Helper {
 		public static class RegInfo {
 			public static ReservationRegisterInfo DUMMY = new ReservationRegisterInfo("cardNo");
 		}
-		
+
+		public static class WorkLocationCodeReg {
+			public static Optional<WorkLocationCode> DUMMY = Optional.of(new WorkLocationCode(""));
+
+		}
+
+		public static class operationDistinction {
+			public static OperationDistinction DUMMY = OperationDistinction.valueOf(1);
+		}
+
+		public static class achievements {
+			public static Achievements DUMMY = new Achievements(
+					new ReferenceTime(1),
+					AchievementMethod.valueOf(1),
+					AchievementMethod.valueOf(1)
+			);
+		}
+
+		public static class correctionContent {
+			public static CorrectionContent DUMMY = new CorrectionContent(
+					ContentChangeDeadline.valueOf(1),
+					ContentChangeDeadlineDay.valueOf(1),
+					OrderedData.valueOf(1),
+					OrderDeadline.valueOf(1)
+			);
+		}
+
 		public static class Date {
 			public static ReservationDate DUMMY = new ReservationDate(
 					GeneralDate.ymd(2000, 1, 1), FRAME1);
@@ -46,9 +68,10 @@ public class Helper {
 					RegInfo.DUMMY,
 					reservationDate,
 					false,
+					WorkLocationCodeReg.DUMMY,
 					Arrays.asList(detail));
 		}
-		
+
 		public static class Detail {
 			
 			public static BentoReservationDetail DUMMY = new BentoReservationDetail(
@@ -61,6 +84,14 @@ public class Helper {
 			}
 			
 		}
+
+
+		public static final BentoReservation DUMMY = new BentoReservation(
+				RegInfo.DUMMY,
+				null,
+				false,
+				WorkLocationCodeReg.DUMMY,
+                Detail.DUMMY_LIST);
 	}
 	
 	public static BentoReservationCount count(int value) {
@@ -100,8 +131,12 @@ public class Helper {
 		
 		public static class Item {
 			public static final Bento DUMMY = bentoReserveFrame(1, true, true);
-			
+
+			public static class WorkLocationCodeReg {
+				public static Optional<WorkLocationCode> DUMMY = Optional.empty();
+			}
 			public static Bento bentoAmount(int frameNo, Integer amount1, Integer amount2) {
+
 				return new Bento(
 						frameNo,
 						name("name" + frameNo),
@@ -109,7 +144,8 @@ public class Helper {
 						amount(amount2 != null ? amount2 : 0),
 						unit("unit"),
 						true,
-						true);
+						true,
+						WorkLocationCodeReg.DUMMY);
 			}
 			
 			public static Bento bentoReserveFrame(int frameNo, boolean reserveFrame1, boolean reserveFrame2) {
@@ -120,7 +156,8 @@ public class Helper {
 						amount(0),
 						unit("unit"),
 						reserveFrame1,
-						reserveFrame2);
+						reserveFrame2,
+						WorkLocationCodeReg.DUMMY);
 			}
 			
 			public static BentoAmount amount(int value) {
