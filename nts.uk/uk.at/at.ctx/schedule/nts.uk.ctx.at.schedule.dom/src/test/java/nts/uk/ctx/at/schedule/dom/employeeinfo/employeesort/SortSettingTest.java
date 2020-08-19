@@ -22,8 +22,8 @@ public class SortSettingTest {
 
 	@Test
 	public void testGetSortSet_Throw_1612() {
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.SORT_ASC, SortOrder.CLASSIFY),
-				new OrderedList(SortType.SORT_ASC, SortOrder.CLASSIFY));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.CLASSIFY),
+				new OrderedList(SortOrder.SORT_ASC, SortType.CLASSIFY));
 		NtsAssert.businessException("Msg_1612",
 				() -> SortSetting.getSortSet("cid",listOrderedList));
 	}
@@ -43,12 +43,12 @@ public class SortSettingTest {
 	 */
 	@Test
 	public void testGetSortSet_Throw_1613_1() {
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.SORT_ASC, SortOrder.CLASSIFY),
-				new OrderedList(SortType.SORT_ASC, SortOrder.POSITION),
-				new OrderedList(SortType.SORT_ASC, SortOrder.LISENCE_ATR),
-				new OrderedList(SortType.SORT_ASC, SortOrder.RANK),
-				new OrderedList(SortType.SORT_ASC, SortOrder.SCHEDULE_TEAM),
-				new OrderedList(SortType.SORT_DESC, SortOrder.SCHEDULE_TEAM)
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.CLASSIFY),
+				new OrderedList(SortOrder.SORT_ASC, SortType.POSITION),
+				new OrderedList(SortOrder.SORT_ASC, SortType.LISENCE_ATR),
+				new OrderedList(SortOrder.SORT_ASC, SortType.RANK),
+				new OrderedList(SortOrder.SORT_ASC, SortType.SCHEDULE_TEAM),
+				new OrderedList(SortOrder.SORT_DESC, SortType.SCHEDULE_TEAM)
 				);
 		NtsAssert.businessException("Msg_1613",
 				() -> SortSetting.getSortSet("cid",listOrderedList));
@@ -57,7 +57,7 @@ public class SortSettingTest {
 	@Test
 	public void testGetSortSet() {
 		String companyId = "cid";
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.SORT_ASC, SortOrder.CLASSIFY));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.CLASSIFY));
 		SortSetting sortSettingNew = SortSetting.getSortSet(companyId,listOrderedList);
 		
 		assertSame(companyId, sortSettingNew.getCompanyID());
@@ -66,7 +66,7 @@ public class SortSettingTest {
 		
 		assertThat(listOrderedList)
 		.extracting(d->d.getType(),d -> d.getSortOrder())
-		.containsExactly(tuple(SortType.SORT_ASC,SortOrder.CLASSIFY));
+		.containsExactly(tuple(SortOrder.SORT_ASC,SortType.CLASSIFY));
 		
 	}
 	
