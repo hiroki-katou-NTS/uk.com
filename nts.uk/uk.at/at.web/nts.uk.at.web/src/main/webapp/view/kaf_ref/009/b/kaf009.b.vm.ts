@@ -96,7 +96,18 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                     });
                 }
             }).fail(err => {
-                vm.$dialog.error({messageId: err.msgId});
+                let param;
+                if (err.message && err.messageId) {
+                    param = {messageId: err.messageId, messageParams: err.parameterIds};
+                } else {
+                    
+                    if (err.message) {
+                        param = {message: err.message, messageParams: err.parameterIds};
+                    } else {
+                        param = {messageId: err.messageId, messageParams: err.parameterIds};
+                    }
+                }
+                vm.$dialog.error(param);
             }).always(() => vm.$blockui('hide'));
         }
     
@@ -162,8 +173,18 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                     
                 })
                 .fail(err => {
-                    console.log(err);
-                    vm.$dialog.error({messageId: err.msgId});
+                    let param;
+                    if (err.message && err.messageId) {
+                        param = {messageId: err.messageId, messageParams: err.parameterIds};
+                    } else {
+                        
+                        if (err.message) {
+                            param = {message: err.message, messageParams: err.parameterIds};
+                        } else {
+                            param = {messageId: err.messageId, messageParams: err.parameterIds};
+                        }
+                    }
+                    vm.$dialog.error(param);
                 })
                 .always(() => vm.$blockui("hide"))
              
@@ -203,10 +224,19 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                         location.reload();
                     } );
                 })
-            .fail(errRegister => {
-                console.log(errRegister);
-                
-                vm.$dialog.error({messageId: errRegister.msgId});
+            .fail(err => {
+                let param;
+                if (err.message && err.messageId) {
+                    param = {messageId: err.messageId, messageParams: err.parameterIds};
+                } else {
+                    
+                    if (err.message) {
+                        param = {message: err.message, messageParams: err.parameterIds};
+                    } else {
+                        param = {messageId: err.messageId, messageParams: err.parameterIds};
+                    }
+                }
+                vm.$dialog.error(param);
                 
             });
         }
