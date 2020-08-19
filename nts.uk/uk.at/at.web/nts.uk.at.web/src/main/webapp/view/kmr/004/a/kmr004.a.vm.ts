@@ -1,11 +1,9 @@
 module nts.uk.at.view.kmr004.a {
     const API = {
         START: "screen/at/record/reservation-conf-list/start",
-        PDF_ALL : "order/report/all/pdf",
-        PDF_DETAIL : "order/report/detail/pdf",
+        PDF : "order/report/print/pdf",
         EXCEL : "order/report/print/excel",
-        EXCEL_DETAL : "order/report/print/excel-detail",
-        exportFile: "bento/report/reservation/month"
+        DATE_FORMAT: "yyyy/MM/dd"
     };
 
     // const PATH = {
@@ -164,8 +162,8 @@ module nts.uk.at.view.kmr004.a {
 
             // bento list
             self.conditionListCcb = ko.observableArray([
-                new ItemModel('1', '商品１'),
-                new ItemModel('2', '商品２')
+                new ItemModel(1, '商品１'),
+                new ItemModel(1, '商品２')
             ]);
         }
 
@@ -177,24 +175,34 @@ module nts.uk.at.view.kmr004.a {
         mounted() {
         }
 
-        printExcel(){
+        printPDF(){
             let vm = this;
             $("#exportTitle").trigger("validate");
             vm.$blockui("invisible");
+            vm.model.totalTitle = ko.observable('TITjhdfkjdsh')
+            vm.model.workplaceIds = ko.observableArray([]);
+            let startDate = new Date();
+            startDate.setFullYear(2018); startDate.setMonth(0);startDate.setDate(1);
+            let endDate = new Date();
+            endDate.setFullYear(9999); endDate.setMonth(11);endDate.setDate(31);
+            vm.model.period = ko.observable({
+                start: formatDate(startDate, API.DATE_FORMAT),
+                end: formatDate( endDate, API.DATE_FORMAT)
+            });
             let data = {
-                workplaceIds: ["100","900"],
+                workplaceIds: vm.model.workplaceIds(),
                 workLocationCodes: [],
-                period: null,
+                period: vm.model.period.peek(),
                 totalExtractCondition: 1,
                 itemExtractCondition: -1,
                 frameNo: -1,
-                totalTitle: 'Total title',
+                totalTitle:  vm.model.totalTitle(),
                 detailTitle: '',
                 reservationClosingTimeFrame: 1,
                 isBreakPage: true,
                 reservationTimeZone: '昼'
             };
-            nts.uk.request.exportFile("at", API.EXCEL,data).done(() => {
+            nts.uk.request.exportFile("at", API.PDF,data).done(() => {
                 vm.$blockui("clear");
             }).fail((res: any) => {
                 vm.$dialog.error({ messageId : res.messageId }).then(function(){
@@ -203,11 +211,24 @@ module nts.uk.at.view.kmr004.a {
             });
         }
 
-        printPDF(){
+        printExcel(){
             let vm = this;
+            let data = {
+                workplaceIds: vm.model.workplaceIds(),
+                workLocationCodes: vm.model.workLocationCodes(),
+                period: vm.model.period.peek(),
+                totalExtractCondition: vm.model.totalExtractCondition.peek(),
+                itemExtractCondition: vm.model.itemExtractCondition.peek(),
+                frameNo: vm.model.frameNo.peek(),
+                totalTitle:  vm.model.totalTitle.peek(),
+                detailTitle: vm.model.detailTitle.peek(),
+                reservationClosingTimeFrame: 1,
+                isBreakPage: true,
+                reservationTimeZone: vm.model.reservationTimeZone.peek()
+            };
             $("#exportTitle").trigger("validate");
             vm.$blockui("invisible");
-            nts.uk.request.exportFile("at", API.PDF_ALL).done(() => {
+            nts.uk.request.exportFile("at", API.EXCEL, data).done(() => {
                 vm.$blockui("clear");
             }).fail((res: any) => {
                 vm.$dialog.error({ messageId : res.messageId }).then(function(){
@@ -266,10 +287,10 @@ module nts.uk.at.view.kmr004.a {
     }
 
     class ItemModel {
-        code: string;
+        code: number;
         name: string;
 
-        constructor(code: string, name: string) {
+        constructor(code: number, name: string) {
             this.code = code;
             this.name = name;
         }
