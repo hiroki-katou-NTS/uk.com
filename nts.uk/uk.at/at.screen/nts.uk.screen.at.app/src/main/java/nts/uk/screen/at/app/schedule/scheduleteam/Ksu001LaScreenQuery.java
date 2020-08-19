@@ -56,26 +56,21 @@ public class Ksu001LaScreenQuery {
 		GetAllEmpWhoBelongWorkplaceGroupImpl getAllEmpWhoBelongWorkplaceGroupImpl = new GetAllEmpWhoBelongWorkplaceGroupImpl(repoAffWorkplaceGroup, workplacePub);
 		GetScheduleTeamInfoImpl getScheduleTeamInfoImpl = new GetScheduleTeamInfoImpl(belongScheduleTeamRepository, teamRepository);
 
+		/** 1. 取得する(Require, 年月日, 職場グループID): Map<社員ID、社員コード>**/
 		List<EmployeeAffiliation> employeeAffiliations = GetAllEmpWhoBelongWorkplaceGroupService.getAllEmp(getAllEmpWhoBelongWorkplaceGroupImpl, baseDate, WKPGRID);
 		
 		if(!CollectionUtil.isEmpty(employeeAffiliations)) {
 			lstEmpId = employeeAffiliations.stream().map(x -> x.getEmployeeID()).collect(Collectors.toList());
-		}	
-		if(!CollectionUtil.isEmpty(lstEmpId)) {					
+		} else {	
+			return null;
+		}
+		if(!CollectionUtil.isEmpty(lstEmpId)) {		
+			/** 2. 取得する(Require, List<社員ID>): List<社員所属チーム情報> **/
 			empTeamInfors = GetScheduleTeamInfoService.get(getScheduleTeamInfoImpl, lstEmpId);			
 		}	
-		
+				
 		List<EmployeeOrganizationInfoDto> teamDetailDtos = employeeAffiliations.stream().map(x -> new EmployeeOrganizationInfoDto(
 				x.getEmployeeID(), x.getEmployeeCode().get().v(), x.getBusinessName().get().toString(), "", "")).collect(Collectors.toList());
-
-//		List<EmployeeOrganizationInfoDto> teamDetailDtos = employeeAffiliations.stream().map(x -> {
-//			EmpTeamInfor empTeamInfor = empTeamInfors.stream().filter(y -> y.getEmployeeID()== x.getEmployeeID()).findFirst().orElse(null);
-//			
-//			return new EmployeeOrganizationInfoDto(x.getEmployeeID(), x.getEmployeeCode().get().v(), x.getBusinessName().get().toString(), empTeamInfor.getOptScheduleTeamCd().get().v()
-//					, empTeamInfor.getOptScheduleTeamName().get().v());
-//			
-//		}).collect(Collectors.toList());
-		
 		for (int i = 0; i< empTeamInfors.size(); i++) {
 			EmpTeamInfor empTeamInfor = empTeamInfors.get(i);			
 			for(int j = 0; j< teamDetailDtos.size(); j ++) {				

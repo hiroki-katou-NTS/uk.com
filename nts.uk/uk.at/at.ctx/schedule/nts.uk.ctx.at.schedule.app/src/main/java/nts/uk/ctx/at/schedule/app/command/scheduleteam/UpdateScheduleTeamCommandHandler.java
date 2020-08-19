@@ -1,15 +1,16 @@
 package nts.uk.ctx.at.schedule.app.command.scheduleteam;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeamRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeam;
@@ -26,6 +27,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author quytb
  *
  */
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class UpdateScheduleTeamCommandHandler extends CommandHandler<ScheduleTeamSaveCommand> {
 	@Inject
@@ -55,27 +57,31 @@ public class UpdateScheduleTeamCommandHandler extends CommandHandler<ScheduleTea
 		
 		/** 3: 入れ替える(Require, スケジュールチーム, List<社員ID>)*/		
 		SwapEmpOnScheduleTeamImpl scheduleTeamImpl = new SwapEmpOnScheduleTeamImpl(belongScheduleTeamRepository);
-		SwapEmpOnScheduleTeamService.replace(scheduleTeamImpl, scheduleTeam, command.getEmployeeIds());
-			
+		AtomTask update = SwapEmpOnScheduleTeamService.replace(scheduleTeamImpl, scheduleTeam, command.getEmployeeIds());
+		transaction.execute(() -> {
+			update.run();
+		});
+		
 		/** 4.1: persist() */
 		scheduleTeamRepository.update(scheduleTeam);
 	}
-	
+
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@AllArgsConstructor
-	private static class SwapEmpOnScheduleTeamImpl implements SwapEmpOnScheduleTeamService.Require{
+	private static class SwapEmpOnScheduleTeamImpl implements SwapEmpOnScheduleTeamService.Require {
 		@Inject
 		private BelongScheduleTeamRepository belongScheduleTeamRepository;
-		
+
 		@Override
 		public void deleteSpecifyTeamAndScheduleTeam(String WKPGRPID, String scheduleTeamCd) {
 			String companyID = AppContexts.user().companyId();
-			belongScheduleTeamRepository.delete(companyID, WKPGRPID, scheduleTeamCd);			
+			belongScheduleTeamRepository.delete(companyID, WKPGRPID, scheduleTeamCd);
 		}
 
 		@Override
 		public boolean empBelongTeam(String empID) {
 			String companyID = AppContexts.user().companyId();
-			return belongScheduleTeamRepository.exists(companyID, empID);			
+			return belongScheduleTeamRepository.exists(companyID, empID);
 		}
 
 		@Override
@@ -86,7 +92,7 @@ public class UpdateScheduleTeamCommandHandler extends CommandHandler<ScheduleTea
 
 		@Override
 		public void insert(BelongScheduleTeam belongScheduleTeam) {
-			belongScheduleTeamRepository.insert(belongScheduleTeam);		
-		}		
+			belongScheduleTeamRepository.insert(belongScheduleTeam);
+		}
 	}
 }
