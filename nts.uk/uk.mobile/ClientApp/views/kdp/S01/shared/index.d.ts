@@ -69,6 +69,8 @@ export module model {
 
         /** 背景色 */
         backGroundColor: string;
+
+        displayBackGroundColor:string;
     }
 
     export interface IButtonNameSetDto {
