@@ -43,7 +43,7 @@ public class JpaStampResultDisplayRepository extends JpaRepository implements St
 	@Override
 	public void update(StampResultDisplay application) {
 		String companyId = AppContexts.user().companyId();
-		Optional<KrcmtStampFunction> oldData = this.queryProxy().query(companyId, KrcmtStampFunction.class).getSingle();
+		Optional<KrcmtStampFunction> oldData = this.queryProxy().find(companyId, KrcmtStampFunction.class);
 		if (oldData.isPresent()) {
 			KrcmtStampFunction newData = this.toEntity(application);
 			oldData.get().recordDisplayArt = newData.recordDisplayArt;
@@ -90,7 +90,7 @@ public class JpaStampResultDisplayRepository extends JpaRepository implements St
 	}
 	
 	private Optional<KrcmtStampFunction> getEntity(String cId){
-		return this.queryProxy().query(cId, KrcmtStampFunction.class).getSingle();
+		return this.queryProxy().find(cId, KrcmtStampFunction.class);
 	}
 
 	public KrcmtStampFunction toEntity(StampResultDisplay domain){
