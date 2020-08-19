@@ -301,7 +301,7 @@ module nts.uk.at.view.ksm003.a {
                 dailyPatternVals = [];
             }
 
-            vm.selectedCheckAll(false);
+            //vm.selectedCheckAll(false);
             dailyPatternVals.push(dailyPatternValModel);
             vm.dailyPatternValModel(dailyPatternVals);
             vm.mainModel().dailyPatternVals(dailyPatternVals);
