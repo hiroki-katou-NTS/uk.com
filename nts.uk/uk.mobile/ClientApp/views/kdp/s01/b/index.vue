@@ -18,13 +18,15 @@
     <div class="row ml-1 title uk-text-over-time">
       <label>{{ "KDPS01_27" | i18n }}</label>
     </div>
-    <div class="col-12 value">
-      <label class="col-7 px-1">{{
+    <div class="row  value">
+      <label class="col-7"
+        style="padding-left:30px"
+      >{{
         screenData.date | date("YYYY/MM/DD")
       }}</label>
       <label
-        class="col-5 stamp-time font-weight-bold "
-        style="line-height: 1rem;"
+        class="col-5 px-0 stamp-time font-weight-bold "
+        style="line-height: 1.5rem;"
         >{{ screenData.date | date("HH:mm") }}</label
       >
     </div>
@@ -32,15 +34,14 @@
     <div class="row ml-1 title uk-text-over-time">
       <label>{{ "KDPS01_28" | i18n }}</label>
     </div>
-    <div class="col-12 value">
-      <div class="col-7 d-inline-block"></div>
+    <div class="row">
+       <div class="col-7 d-inline-block"></div>
       <label
-        class=" col-5 stamp-text font-weight-bold"
-        style="line-height: 1rem; color:#0033cc;"
+        class="col-5 px-0 stamp-text font-weight-bold"
+        style="line-height: 1.5rem; color:#0033cc;"
         >{{ screenData.stampAtr }}</label
       >
     </div>
-
     <div class="row ml-1 title uk-text-over-time">
       <label>{{ "KDPS01_29" | i18n }}</label>
     </div>
@@ -62,7 +63,8 @@
       <label> {{ "KDPS01_36" | i18n }}</label>
     </div>
     <div>
-      <button v-focus
+      <button
+        v-focus
         type="button"
         v-on:click="$close"
         class="btn-block mt-3 btn btn-secondary"
