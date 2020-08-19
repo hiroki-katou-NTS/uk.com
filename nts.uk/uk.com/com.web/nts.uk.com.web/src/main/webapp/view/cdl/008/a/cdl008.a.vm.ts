@@ -90,7 +90,8 @@ module nts.uk.com.view.cdl008.a {
                     tabindex: 1,
                     systemType: self.selectedSystemType,
                     restrictionOfReferenceRange: self.restrictionOfReferenceRange,
-                    isShowNoSelectRow: self.isDisplayUnselect()
+                    isShowNoSelectRow: self.isDisplayUnselect(),
+                    listDataDisplay: [],
                 };
                 if (self.isMultipleSelect) {
                     self.workplaces.selectedId = self.selectedMulWorkplace;
@@ -139,7 +140,10 @@ module nts.uk.com.view.cdl008.a {
                     let value = _.find(listWpinfor, x => {
                         return x.id == self.selectedMulWorkplace()[i];
                     });
-                    workplaceInfor.push(new OutPut(self.selectedMulWorkplace()[i], value.code, value.name));
+                    workplaceInfor.push(new OutPut(self.selectedMulWorkplace()[i], value.code, value.name, 
+                                                    value.hierarchyCode,
+                                                    value.genericName,
+                                                    value.displayName));
                 }
                 
                 // only one
@@ -148,7 +152,9 @@ module nts.uk.com.view.cdl008.a {
                     let value = _.find(listWpinfor, x => {
                         return x.id == selectedCode
                     });
-                    workplaceInfor.push(new OutPut(selectedCode, value.code, value.name));
+                    workplaceInfor.push(new OutPut(selectedCode, value.code, value.name, 
+                                                    value.hierarchyCode, value.genericName, 
+                                                    value.displayName));
                 }
                 
                 setShare('outputCDL008', selectedCode);
@@ -162,7 +168,9 @@ module nts.uk.com.view.cdl008.a {
                 var self = this;
                 for (let i = 0; i < listWp.length; i++) {
 
-                    self.listResult.push(new WP(listWp[i].id, listWp[i].code, listWp[i].name, listWp[i].hierarchyCode));
+                    self.listResult.push(new OutPut(listWp[i].id, listWp[i].code, listWp[i].name, 
+                                                    listWp[i].hierarchyCode, listWp[i].workplaceGeneric, 
+                                                    listWp[i].workplaceDisplayName));
 
                     if (listWp[i].children.length > 0) {
                         parent.getListWpinfo(listWp[i].children, parent);
@@ -180,27 +188,24 @@ module nts.uk.com.view.cdl008.a {
             }
         }
         
-        export class WP {
+        export class OutPut{
             id: string;
             code: string;
+            // 職場名称
             name: string;
+            // 階層コード
             hierarchyCode: string;
-            constructor(id: string, code: string, name: string, hierarchyCode: string) {
+            // 職場総称
+            genericName: string;
+            // 職場表示名
+            displayName: string;
+            constructor(id: string, code: string, name: string, hierarchyCode: string, genericName: string, displayName: string) {
                 this.id = id;
                 this.code = code;
                 this.name = name;
                 this.hierarchyCode = hierarchyCode;
-            }
-        }
-        
-        export class OutPut{
-            id: string;
-            code: string;
-            name: string;
-            constructor(id: string, code: string, name: string) {
-                this.id = id;
-                this.code = code;
-                this.name = name;
+                this.genericName = genericName;
+                this.displayName = displayName;
             }
         }
     }

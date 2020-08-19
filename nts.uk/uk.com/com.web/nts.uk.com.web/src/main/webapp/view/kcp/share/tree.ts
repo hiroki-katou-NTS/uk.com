@@ -117,7 +117,7 @@ module kcp.share.tree {
          */
         isFullView?: boolean;
         width?: number;
-        listDataDisplay: [];
+        listDataDisplay: Array<any>;
     }
 
     /**
