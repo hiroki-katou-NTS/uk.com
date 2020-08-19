@@ -47,8 +47,27 @@ module nts.uk.com.view.kwr002.a {
             alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
 
             comboboxName: string;
-            
+
             closureId: KnockoutObservable<number>;
+
+            // radio button group A7_2
+            electedCodeA8_5: KnockoutObservable<number> = ko.observable(0);
+
+            // switch button A9_3 A9_4
+            dataZeroDisplayType: KnockoutObservableArray<any> = ko.observableArray([
+                { code: 0, name: nts.uk.resource.getText("KWR002_23") },
+                { code: 1, name: nts.uk.resource.getText("KWR002_24") }
+            ]);
+            selectedDataZeroDisplayType: KnockoutObservable<number> = ko.observable(0);
+
+            selectedDataDisplayItemType: KnockoutObservable<number> = ko.observable(0);
+            itemListTypePageBrake: KnockoutObservableArray<ItemModel>;
+
+            enableA8_3: KnockoutObservable<boolean> = ko.observable(false);
+            enableA8_8: KnockoutObservable<boolean> = ko.observable(false);
+
+            dataTranferScreenB: KnockoutObservable<DataScreenB> = ko.observable();
+
 
             constructor() {
                 let self = this;
@@ -138,7 +157,7 @@ module nts.uk.com.view.kwr002.a {
                     showClassification: true, // 分類条件
                     showJobTitle: true, // 職位条件
                     showWorktype: false, // 勤種条件
-                    isMutipleCheck: true, // 選択モード                   
+                    isMutipleCheck: true, // 選択モード
 
                     /** Return data */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
@@ -149,7 +168,7 @@ module nts.uk.com.view.kwr002.a {
                         //                        self.selectedEmployee(data.listEmployee);
                         self.applyKCP005ContentSearch(data.listEmployee);
                         self.listEmployee(data.listEmployee);
-                        self.closureId(data.closureId); 
+                        self.closureId(data.closureId);
                     }
                 }
 
@@ -161,8 +180,13 @@ module nts.uk.com.view.kwr002.a {
                 //         self.selectedEmployee.push(employee);
                 //     }
                 // });
-                
+
                 self.closureId = ko.observable(0);
+                self.enableA8_3(true);
+                self.electedCodeA8_5.subscribe((value) => {
+                    self.enableA8_3(value === 0);
+                    self.enableA8_8(value === 1);
+                })
 
             }
 
@@ -193,7 +217,7 @@ module nts.uk.com.view.kwr002.a {
                         self.permission(false);
                     }
                 });
-                service.getAllAttendanceRecExpSet().done(function(listAttendance: Array<AttendanceRecordExportSettingDto>) {
+                service.getAllAttendanceRecExpSet().done((listAttendance: Array<AttendanceRecordExportSettingDto>) => {
                     if (listAttendance === undefined || listAttendance.length == 0) {
                         self.attendanceRecordList();
                         self.enableSave(false);
@@ -265,7 +289,7 @@ module nts.uk.com.view.kwr002.a {
                     isShowSelectAllButton: false,
                     isSelectAllAfterReload: true,
                     maxWidth: 480,
-                    maxRows: 12
+                    maxRows: 21
                 };
             }
 
@@ -446,6 +470,7 @@ module nts.uk.com.view.kwr002.a {
                 var self = this;
                 var dfd = $.Deferred();
                 blockUI.invisible();
+
                 setShared("currentARESSelectCode",self.selectedCode());
                 nts.uk.ui.windows.sub.modal("/view/kwr/002/b/index.xhtml").onClosed(function() {
 
@@ -471,7 +496,6 @@ module nts.uk.com.view.kwr002.a {
                             }
                             self.enableSave(true)
                         }
-                        // console.log(self.attendanceRecordList());
 
                         dfd.resolve();
 
@@ -585,6 +609,32 @@ module nts.uk.com.view.kwr002.a {
                 this.layout = layout;
                 this.mode = mode;
                 this.closureId = closureId;
+            }
+        }
+
+        class ItemModel {
+            code: string;
+            name: string;
+
+            constructor(code: string, name: string) {
+                this.code = code;
+                this.name = name;
+            }
+        }
+
+        class DataScreenB {
+            settingCategory: string; //設定区分（自由設定）
+            companyId: string; //会社ID
+            employeeId: string; //社員ID
+            selectedOutputLayoutId: string; //選択出力レイアウトID
+            selectedCode: string;// 選択コード
+
+            constructor(settingCategory: string, companyId: string,employeeId: string,selectedOutputLayoutId: string,selectedCode: string) {
+                this.settingCategory = settingCategory;
+                this.companyId = companyId;
+                this.employeeId = employeeId;
+                this.selectedOutputLayoutId = selectedOutputLayoutId;
+                this.selectedCode = selectedCode;
             }
         }
     }

@@ -26,84 +26,163 @@
 			<div id="functions-area">
 				<!-- A1_2 -->
 				<button tabindex="1" class="proceed group-button-1"
-					data-bind="click: exportExcel, enable: enableSave">#{i18n.getText('KWR002_10')}</button>		
+					data-bind="click: exportExcel, enable: enableSave">#{i18n.getText('KWR002_10')}</button>
 				<!-- A1_1 -->
 				<button  id="print" tabindex="2"
 					class="proceed group-button-1" data-bind="click: print, enable: enableSave">#{i18n.getText('KWR002_9')}</button>
 			</div>
+			<!-- A7_0 -->
 			<div id="contents-area" class="fixed-flex-layout">
 				<!--The component container-->
 				<div id="ccgcomponent" ></div>
-				
+
 				<div style="min-width: 1250px">
-				<div class="drag-panel" style="margin-left: 75px; margin-top: 30px; height: 420px;">
-					<div style="margin-bottom: 10px; display: none">
-						<label>#{i18n.getText('KWR002_11')}</label>
-					</div>
-
-					<div class="selectionEmployee" >
-						<div id="employeeSearch"></div>
-					</div>
-
-					<!--<table tabindex="4" id="multi-list"-->
-						<!--data-bind="ntsGridList: {								-->
-							<!--height: 312, -->
-							<!--options: employeeList,-->
-							<!--optionsValue: 'id',-->
-							<!--columns: columns,-->
-							<!--multiple: true,-->
-							<!--value: currentCodeList}">-->
-					<!--</table>-->
-
-				</div>
-				<div class="drag-panel" style="margin-left: 30px; margin-top: 30px">
-					<div class="table valign-center control-group">
-						<div class="cell cell1">
-							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KWR002_17')}</div>
-						</div>
-						<div class="cell valign-bottom">
-							<div id="daterangepicker" tabindex="4"
-								data-bind="ntsDateRangePicker: { required: true, enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneYear', type: 'yearmonth'}" />
-						</div>
-					</div>
-					<div style="margin: 0px 0px 10px -10px; display: none">
-						<label>#{i18n.getText('KWR002_26')}</label>
-					</div>
-
-
-					<div class="table valign-center control-group">
-						<div class="cell cell1">
-							<div style="float: left"
-								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KWR002_18')}</div>
-						</div>
-						<div class="cell valign-bottom">
-							<div id="combo-box" tabindex="5"
-								data-bind="ntsComboBox: {
-									name: comboboxName,
-									options: attendanceRecordList,
-									optionsValue: 'code',
-									visibleItemsCount: 10,
-									value: selectedCode,
-									optionsText: 'name',
-									editable:  false,
-									enable: true,
-									required: true,
-									columns: [
-										{ prop: 'code', length: 4 },
-										{ prop: 'name', length: 10 }]}">
+					<div class="layout-list-date">
+						<div class="drag-panel min-width-layout-1" style="margin-left: 75px; margin-top: 30px; height: 70px;">
+							<div class="layout-date">
+								<!-- A7_2 -->
+								<div class="w-label-date">
+									<div data-bind="ntsFormLabel: { }">#{i18n.getText('KWR002_17')}</div>
+								</div>
+								<!-- A7_3 -->
+								<div class="va-bottom">
+									<div id="daterangepicker" tabindex="3"
+										data-bind="ntsDateRangePicker: { required: true, enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneYear', type: 'yearmonth'}" />
+								</div>
 							</div>
 						</div>
-						<div class="cell" style="padding-left: 20px">
-							<button id="openBDialog" tabindex="6" class="group-button-1"
-								data-bind="click: openBDialog, disable: permission">#{i18n.getText('KWR002_20')}</button>
+						<!-- A3_1 -->
+						<div class="drag-panel min-width-layout-1" style="margin-left: 75px; margin-top: 10px; height: 620px;">
+							<div style="margin-bottom: 10px; display: none">
+								<label>#{i18n.getText('KWR002_11')}</label>
+							</div>
+
+							<div class="selectionEmployee" tabindex="4">
+								<div id="employeeSearch"></div>
+							</div>
 						</div>
 					</div>
+					<div class="drag-panel min-width-layout-2" style="margin-left: 30px; margin-top: 30px; height: 700px;">
+						<div class="row">
+							<!-- A7_1 -->
+							<table>
+								<colgroup>
+									<col width="145px" />
+									<col width="150px" />
+									<col width="210px" />
+									<col width="70px" />
+								</colgroup>
+								<tr>
+									<!-- A8_2 -->
+									<td>
+										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR002_18')}</div>
+									</td>
+									<td class="pt-7">
+										<!-- A8_5 -->
+										<span class="ntsControl">
+											<label class="ntsRadioBox" tabindex="5">
+												<input
+													type="radio"
+													name="textRadioA7_18"
+													data-bind="checkedValue: 0,
+															checked: electedCodeA8_5,
+															enable: true,
+															attr: {tabindex:5}" />
+												<span class="box"></span>
+												<!-- A8_6 -->
+												<span class="label">#{i18n.getText('KWR002_19')}</span>
+											</label>
+										</span>
+									</td>
+									<td class="pt-7">
+											<!-- A8_3 -->
+											<div id="combo-box" tabindex="6"
+												data-bind="ntsComboBox: {
+												name: comboboxName,
+												options: attendanceRecordList,
+												optionsValue: 'code',
+												visibleItemsCount: 10,
+												value: selectedCode,
+												optionsText: 'name',
+												editable:  false,
+												enable: enableA8_3,
+												required: true,
+												columns: [
+													{ prop: 'code', length: 4 },
+													{ prop: 'name', length: 10 }]}">
+											</div>
+									</td>
+									<td class="pt-7">
+										<!-- A8_4 -->
+										<button id="openBDialog" tabindex="7" class="group-button-1"
+											data-bind="click: openBDialog, disable: permission() || !enableA8_3()">#{i18n.getText('KWR002_20')}</button>
+									</td>
+								</tr>
 
-
-				</div>
+								<tr>
+									<td></td>
+									<td>
+										<!-- A8_5 -->
+										<span class="ntsControl">
+											<label class="ntsRadioBox" tabindex="5">
+												<input
+													type="radio"
+													name="textRadioA7_18"
+													data-bind="checkedValue: 1,
+															checked: electedCodeA8_5,
+															enable: true,
+															attr: {tabindex:5}" />
+												<span class="box"></span>
+												<!-- A8_7-->
+												<!-- Free setting -->
+												<span class="label">#{i18n.getText('KWR002_27')}</span>
+											</label>
+										</span>
+										</td>
+										<td>
+											<!-- A8_8 -->
+											<div id="combo-box" tabindex="8"
+												data-bind="ntsComboBox: {
+												name: comboboxName,
+												options: attendanceRecordList,
+												optionsValue: 'code',
+												visibleItemsCount: 10,
+												value: selectedCode,
+												optionsText: 'name',
+												editable:  false,
+												enable: enableA8_8,
+												required: true,
+												columns: [
+													{ prop: 'code', length: 4 },
+													{ prop: 'name', length: 10 }]}">
+											</div>
+										</td>
+										<td>
+											<!-- A8_9-->
+											<button id="openBDialog" tabindex="9" class="group-button-1"
+												data-bind="click: openBDialog, disable: permission() || !enableA8_8()">#{i18n.getText('KWR002_20')}</button>
+										</td>
+								</tr>
+							</table>
+						</div>
+						<div class="row" style="margin-top: 10px;">
+							<!-- A9_1 -->
+							<div data-bind="ntsFormLabel: {}" >#{i18n.getText('KWR002_21')}</div>
+							<!-- A9_2 -->
+							<div tabindex="10" class="type-page-brake switch-btn switch-ml" data-bind="ntsSwitchButton: {
+								name: '#[KWR002_22]',
+								options: dataZeroDisplayType,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedDataZeroDisplayType,
+								required: true,
+								enable: true }">
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
-			
+
 		</ui:define>
 	</ui:composition>
 </body>

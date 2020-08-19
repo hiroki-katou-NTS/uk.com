@@ -21,6 +21,8 @@ module nts.uk.com.view.kwr002.c.viewmodel {
         attendanceRecExpMonthly: KnockoutObservableArray<viewmodel.model.AttendanceRecExp>;
         attendanceRecItemList: KnockoutObservableArray<viewmodel.model.AttendanceRecItem>;
 
+        confirmMarkC18_1: KnockoutObservableArray<any>;
+        confirmMarkValue: KnockoutObservable<any>;
         columns: KnockoutObservableArray<any>;
 
         tabs: KnockoutObservableArray<any>;
@@ -69,6 +71,12 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             self.useSeal = ko.observableArray([
                 { code: true, name: nts.uk.resource.getText("KWR002_63") },
                 { code: false, name: nts.uk.resource.getText("KWR002_64") }
+            ]);
+            self.confirmMarkValue = ko.observable(true);
+
+            self.confirmMarkC18_1 = ko.observableArray([
+                { code: true, name: nts.uk.resource.getText("KWR002_195") },
+                { code: false, name: nts.uk.resource.getText("KWR002_196") }
             ]);
             self.tabs = ko.observableArray([
                 { id: 'tab-1', title: nts.uk.resource.getText("KWR002_88"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
@@ -309,7 +317,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                     var columnIndex: number = item.columnIndex;
                     self.attendanceRecExpDaily()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition + "", item.lowwerPosition + "");
                 });
-                
+
                 for (var i: number = 1; i <= 9; i++) {
                         if (!self.attendanceRecExpDaily()[i]) {
                             self.attendanceRecExpDaily()[i] = new viewmodel.model.AttendanceRecExp(1, i, false, "", "");
@@ -321,7 +329,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                     self.attendanceRecExpMonthly()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition + "", item.lowwerPosition + "");
 
                 });
-                
+
                  for (var i: number = 1; i <= 12; i++) {
                         if (!self.attendanceRecExpMonthly()[i]) {
                             self.attendanceRecExpMonthly()[i] = new viewmodel.model.AttendanceRecExp(2, i, false, "", "");
@@ -375,7 +383,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                            self.sealName6(sealStampList[5]);
 
                        }
-                       
+
                        dfd.resolve();
                 })
 
@@ -408,7 +416,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             //                    self.attendanceItemList(self.attendanceItemListDaily());
             //                }
             //
-            //                
+            //
             //            })
 
 

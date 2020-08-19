@@ -20,6 +20,7 @@ module nts.uk.com.view.kwr002.b {
         indexOfDelete: KnockoutObservable<any>;
         sealUseAtrSwitchs: KnockoutObservableArray<SealUseAtrSwitch>;
         newMode: KnockoutObservable<boolean>;
+        fontSizeSwitch: KnockoutObservableArray<SealUseAtrSwitch>;
 
         constructor() {
             let self = this;
@@ -33,6 +34,12 @@ module nts.uk.com.view.kwr002.b {
             self.sealUseAtrSwitchs = ko.observableArray([
                 new SealUseAtrSwitch(1, getText("KWR002_45")),
                 new SealUseAtrSwitch(2, getText("KWR002_46"))
+            ]);
+
+            self.fontSizeSwitch = ko.observableArray([
+                new SealUseAtrSwitch(1, getText("KWR002_50")),
+                new SealUseAtrSwitch(2, getText("KWR002_51")),
+                new SealUseAtrSwitch(3, getText("KWR002_52")),
             ]);
 
             self.newMode = ko.observable(false);
@@ -139,7 +146,8 @@ module nts.uk.com.view.kwr002.b {
                 code: "",
                 name: "",
                 sealUseAtr: false,
-                nameUseAtr: 1
+                nameUseAtr: 1,
+                fontSizeAtr: 1,
             };
             self.currentARES(new AttendanceRecordExportSetting(params));
             self.currentARESCode("");
@@ -236,6 +244,7 @@ module nts.uk.com.view.kwr002.b {
                 sealUseAtr: rcdExport.useSeal,
                 sealStamp: rcdExport.sealStamp,
                 nameUseAtr: currentData.nameUseAtr(),
+                fontSizeAtr: currentData.fontSizeAtr(),
             };
 
             let itemCmd = {
@@ -271,6 +280,18 @@ module nts.uk.com.view.kwr002.b {
 
             return data;
         };
+
+        openKDL002F() {
+            let self = this;
+            block.grayout();
+            // setShared('inputDialogD',
+            //     { repeatMonthDateList: self.curExecSetting().repeatMonthDateList()
+            //     });
+            modal("/view/kbt/002/d/index.xhtml").onClosed(function(){
+
+                block.clear();
+            });
+        }
 
         start() {
             block.invisible();
@@ -362,6 +383,7 @@ module nts.uk.com.view.kwr002.b {
         name: string;
         sealUseAtr: boolean;
         nameUseAtr: number;
+        fontSizeAtr: number;
     }
 
     export class AttendanceRecordExportSetting {
@@ -369,6 +391,7 @@ module nts.uk.com.view.kwr002.b {
         name: KnockoutObservable<string>;
         sealUseAtr: KnockoutObservable<boolean>;
         nameUseAtr: KnockoutObservable<number>;
+        fontSizeAtr: KnockoutObservable<number>;
 
         constructor(param: IARES) {
             let self = this;
@@ -376,6 +399,7 @@ module nts.uk.com.view.kwr002.b {
             self.name = ko.observable(param.name);
             self.sealUseAtr = ko.observable(param.sealUseAtr);
             self.nameUseAtr = ko.observable(param.nameUseAtr);
+            self.fontSizeAtr = ko.observable(param.fontSizeAtr);
         };
 
 

@@ -10,8 +10,9 @@
 	width: 570px;
 	padding: 25px;
 	box-sizing: border-box;
-	min-width: 570px;
+
 }
+
 table tr td {
     white-space: nowrap;
 }
@@ -23,4 +24,50 @@ table tr td {
 }
 body {
 	-ms-overflow-x: hidden;
+}
+
+.layout-date {
+	display: flex;
+	margin-top: -10px;
+}
+
+.va-bottom {
+	vertical-align: bottom;
+	margin: 1px;
+}
+
+.layout-list-date {
+	display: inline-flex;
+	flex-direction: column;
+}
+
+.pt-7 {
+	padding-top: 7px !important;
+}
+
+.zero-display-type {
+	margin-left: 44px;
+}
+
+.display-type {
+	margin-left: 67px;
+}
+
+.min-width-layout-1 {
+	min-width: 570px;
+}
+.min-width-layout-2 {
+	min-width: 600px;
+}
+
+.switch-btn>button {
+    width: 80px;
+}
+
+.switch-ml {
+	margin-left: 61px;
+}
+
+.w-label-date {
+	width: 60px;
 }
