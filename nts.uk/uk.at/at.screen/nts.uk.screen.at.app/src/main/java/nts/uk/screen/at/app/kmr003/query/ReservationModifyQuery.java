@@ -1,14 +1,19 @@
 package nts.uk.screen.at.app.kmr003.query;
 
 import lombok.AllArgsConstructor;
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.*;
 import nts.uk.ctx.at.record.app.find.reservation.bento.query.ListBentoResevationQuery;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationStateService;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentomenuAdapter;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.SWkpHistExport;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTime;
@@ -23,6 +28,8 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.pub.employee.export.PersonEmpBasicInfoPub;
 import nts.uk.ctx.bs.employee.pub.employee.export.dto.PersonEmpBasicInfoDto;
+import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistWrkLocationExport;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -48,16 +55,16 @@ public class ReservationModifyQuery {
     private PersonEmpBasicInfoPub personEmpBasicInfoPub;
 
     @Inject
-    private AffWorkplaceHistoryItemRepository affWorkplaceHistoryItemRepo;
-
-    @Inject
     private BentoMenuRepository bentoMenuRepo;
 
     @Inject
     private ListBentoResevationQuery listBentoResevationQuery;
 
     @Inject
-    private GetClosureStartForEmployee getClosureStartForEmployee;
+    private WorkplacePub workplacePub;
+
+    @Inject
+    private RecordDomRequireService requireService;
 
     /**
      * 修正する予約を抽出する
@@ -75,16 +82,13 @@ public class ReservationModifyQuery {
 
         // 2:勤務場所を取得
         String empId = AppContexts.user().employeeId();
-        List<String> userIds = new ArrayList<>();
-        userIds.add(empId);
-        // 社員と基準日から所属職場履歴項目を取得する
-        List<AffWorkplaceHistoryItem> wpHistItems = affWorkplaceHistoryItemRepo
-                .getAffWrkplaHistItemByListEmpIdAndDateV2(reservationDate.getDate(), userIds);
         Optional<WorkLocationCode> workLocationCodeOpt = Optional.empty();
-        if (!wpHistItems.isEmpty()) {
-            AffWorkplaceHistoryItem wpHistItem = wpHistItems.get(0);
-            if (wpHistItem.getWorkLocationCode() != null && wpHistItem.getWorkLocationCode().isPresent()) {
-                String wkpCode = wpHistItem.getWorkLocationCode().get().v();
+        // 社員と基準日から所属職場履歴項目を取得する
+        Optional<SWkpHistWrkLocationExport> sWkpHistWrkLocationOpt = workplacePub.findBySidWrkLocationCD(empId, reservationDate.getDate());
+        if (sWkpHistWrkLocationOpt.isPresent()) {
+            String wkpCode = sWkpHistWrkLocationOpt.get().getWorkLocationCd();
+            System.out.println(wkpCode);
+            if (wkpCode != null){
                 workLocationCodeOpt = Optional.of(new WorkLocationCode(wkpCode));
             }
         }
@@ -185,7 +189,7 @@ public class ReservationModifyQuery {
         }
 
         for (PersonEmpBasicInfoDto empBasicInfo : empBasicInfos) {
-            RequireImpl require = new RequireImpl(getClosureStartForEmployee);
+            RequireImpl require = new RequireImpl(requireService);
             boolean canModify = BentoReservationStateService.check(require, empBasicInfo.getEmployeeId(),
                     reservationDate.getDate());
             if (!canModify) {
@@ -209,12 +213,14 @@ public class ReservationModifyQuery {
 
     @AllArgsConstructor
     private class RequireImpl implements BentoReservationStateService.Require {
-        private GetClosureStartForEmployee getClosureStartForEmployee;
+        private RecordDomRequireService requireService;
 
         @Override
         public Optional<GeneralDate> getClosureStart(String employeeId) {
+            val require = requireService.createRequire();
+            val cacheCarrier = new CacheCarrier();
             // 社員に対応する締め開始日を取得する
-            return getClosureStartForEmployee.algorithm(employeeId);
+            return GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
         }
     }
 }

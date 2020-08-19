@@ -318,7 +318,7 @@ module nts.uk.at.kmr003.a {
                 empIds: empIds,
                 date: self.dateData(),
                 closingTimeFrame: 1,
-                searchCondition: 1
+                searchCondition: 3
             };
             return param;
         }
