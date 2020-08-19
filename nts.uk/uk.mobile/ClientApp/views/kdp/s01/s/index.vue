@@ -69,8 +69,14 @@
             {{ item.stampStringDatetime | date("D（ddd）") }}
           </td>
           <td>
-            {{ getSymbol(item) | i18n }}
-            {{ item.stampStringDatetime | date("HH:mm") }}
+            <div class="row m-0">
+              <div class="col-3 px-0">
+                {{ getSymbol(item) | i18n }}
+              </div>
+              <div class="col-9">
+                {{ item.stampStringDatetime | date("HH:mm") }}
+              </div>
+            </div>
           </td>
           <td
             v-bind:style="{
