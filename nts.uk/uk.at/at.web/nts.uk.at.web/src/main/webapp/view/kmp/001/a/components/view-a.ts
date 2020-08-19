@@ -99,7 +99,7 @@ module nts.uk.at.view.kmp001.a {
 
 			vm.$errors('clear');
 
-			if (!!vm.$user.role.attendance) {
+			if (vm.$user.role.isInCharge.attendance) {
 				vm.attendance(true);
 			} else {
 				vm.attendance(false);
