@@ -89,7 +89,8 @@ public class BreakTimeOfDailyService {
 			return deleteBreakTime(working, directToDB, CorrectEventConts.BREAK_TIME_ITEMS, breakTimeRecord, converter, beforeCorrectItemValues);
 		}
 
-		BreakTimeOfDailyPerformance breakTime = getUpdateBreakTime(Optional.ofNullable(new TimeLeavingOfDailyPerformance(working.getEmployeeId(), working.getYmd(),working.getAttendanceLeave().get())), 
+		BreakTimeOfDailyPerformance breakTime = getUpdateBreakTime(working.getAttendanceLeave().isPresent()?Optional.of(
+				new TimeLeavingOfDailyPerformance(working.getEmployeeId(), working.getYmd(),working.getAttendanceLeave().get())):Optional.empty(), 
 				breakTimeRecord, wi, companyId, working.getEditState().stream().map(mapper-> new EditStateOfDailyPerformance(working.getEmployeeId(), working.getYmd(), mapper)).collect(Collectors.toList()));
 		if (breakTime != null) {
 			return updateBreakTime(working, directToDB, converter, beforeCorrectItemValues, breakTime);

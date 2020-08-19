@@ -117,8 +117,7 @@ public class CreateDailyResults {
 				companyId, employeeId, ymd, employeeGeneralInfoImport);
 		// エラーあるかを確認する
 		if (!affiliationInforState.getErrorNotExecLogID().isEmpty()) {
-			listErrorMessageInfo.add(new ErrorMessageInfo(companyId, employeeId, ymd, ExecutionContent.DAILY_CREATION,
-					new ErrMessageResource("005"), new ErrMessageContent(TextResource.localize("Msg_427"))));
+			listErrorMessageInfo.addAll(affiliationInforState.getErrorNotExecLogID());
 			return listErrorMessageInfo;
 		}
 		if(affiliationInforState.getAffiliationInforOfDailyPerfor().isPresent()) {
@@ -129,7 +128,7 @@ public class CreateDailyResults {
 				.getBySidAndStandardDate(employeeId, ymd);
 		if (!optWorkingConditionItem.isPresent()) {
 			listErrorMessageInfo.add(new ErrorMessageInfo(companyId, employeeId, ymd, ExecutionContent.DAILY_CREATION,
-					new ErrMessageResource("005"), new ErrMessageContent(TextResource.localize("Msg_427"))));
+					new ErrMessageResource("005"), new ErrMessageContent(TextResource.localize("Msg_430"))));
 			return listErrorMessageInfo;
 		}
 		if (optWorkingConditionItem.get().getScheduleManagementAtr() == ManageAtr.USE) {

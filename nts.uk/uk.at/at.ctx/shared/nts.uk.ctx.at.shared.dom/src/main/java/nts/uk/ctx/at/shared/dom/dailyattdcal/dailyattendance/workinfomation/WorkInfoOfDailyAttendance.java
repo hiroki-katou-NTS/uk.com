@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +40,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	// 曜日
 	private DayOfWeek dayOfWeek;
 	// 勤務予定時間帯
-	private List<ScheduleTimeSheet> scheduleTimeSheets;
+	private List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
 	public WorkInfoOfDailyAttendance(WorkInformation recordInfo, WorkInformation scheduleInfo,
 			CalculationState calculationState, NotUseAttribute goStraightAtr, NotUseAttribute backStraightAtr,
 			DayOfWeek dayOfWeek, List<ScheduleTimeSheet> scheduleTimeSheets) {
