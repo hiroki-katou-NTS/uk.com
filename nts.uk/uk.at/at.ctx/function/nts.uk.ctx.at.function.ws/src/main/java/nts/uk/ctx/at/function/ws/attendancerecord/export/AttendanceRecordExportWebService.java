@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.ws.attendancerecord.export;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -13,6 +14,8 @@ import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceIdItemD
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceIdItemFinder;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceRecordExportDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceRecordExportFinder;
+import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
+import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -29,6 +32,10 @@ public class AttendanceRecordExportWebService {
 	/** The attendance item finder. */
 	@Inject
 	AttendanceIdItemFinder attendanceItemFinder;
+	
+	/** The approval processing use setting repository */
+	@Inject
+	private ApprovalProcessingUseSettingRepository approvalProcessingUseSettingRepo;
 
 	/**
 	 * Gets the all attendance record export daily.
@@ -91,4 +98,25 @@ public class AttendanceRecordExportWebService {
 		return attendanceItemFinder.getAttendanceItem(screenUse, attendanceType);
 
 	}
+	
+	/**
+	 * #3803 アルゴリズム「承認処理の利用設定を取得する」
+	 *
+	 * @return 「承認処理の利用設定」
+	 */
+	@POST
+	@Path("getApprovalProcessingUseSetting")
+	public Optional<ApprovalProcessingUseSetting> getApprovalProcessingUseSetting() {
+		String companyId = AppContexts.user().companyId();
+		//アルゴリズム「承認処理の利用設定を取得する」を実行する
+		return this.approvalProcessingUseSettingRepo.findByCompanyId(companyId);
+	}
+	
+//	@POST
+//	@Path("getDailyAttendanceTtems")
+//	public List<String> getDailyAttendanceTtems() {
+//		String companyId = AppContexts.user().companyId();
+//		//アルゴリズム「承認処理の利用設定を取得する」を実行する
+//		return this.attendanceItemFinder.getDailyAttendanceItemAtrs(companyId, 2, 1);
+//	}
 }

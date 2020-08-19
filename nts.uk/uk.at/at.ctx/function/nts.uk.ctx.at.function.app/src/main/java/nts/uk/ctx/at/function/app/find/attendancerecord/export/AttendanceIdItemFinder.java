@@ -5,11 +5,16 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.Collections;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BundledBusinessException;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.auth.dom.adapter.role.RoleAdaptor;
+import nts.uk.ctx.at.auth.dom.adapter.role.RoleInformationImport;
+import nts.uk.ctx.at.auth.dom.employmentrole.RoleType;
 import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
@@ -18,10 +23,13 @@ import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemAuthority;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttdItemAuthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthority;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -50,6 +58,15 @@ public class AttendanceIdItemFinder {
 
 	@Inject
 	private MonthlyAttendanceItemRepository monthlyAtRepo;
+	
+	@Inject
+	private CompanyDailyItemService companyDailyItemService;
+	
+	@Inject
+	private CompanyMonthlyItemService companyMonthlyItemService;
+	
+	@Inject
+	private RoleAdaptor roleAdaptor;
 
 	private static final int DAILY = 1;
 	private static final int USE = 1;
@@ -170,4 +187,64 @@ public class AttendanceIdItemFinder {
 			// .collect(Collectors.toList());
 		}
 	}
+	
+	
+	
+	public AttributeOfAttendanceItemDto getDailyAttendanceItemAtrs(String cid, int reportId, int attendanceType) {
+		AttributeOfAttendanceItemDto result = new AttributeOfAttendanceItemDto();
+		// 画面で使用可能な日次勤怠項目を取得する - pending, dang mock de xu ly cac giai thuat sau
+		List<Integer> attendanceIdList = new ArrayList<Integer>();
+
+		result.setAttendanceItemIds(attendanceIdList);
+		// 日次勤怠項目に対応する名称、属性を取得する
+		//		日次の勤怠項目を取得する
+		List<DailyAttendanceItem> dailyAttendanceItemList = dailyAtRepo.getListById(cid, attendanceIdList);
+		//		取得した勤怠項目の件数をチェックする
+		if (dailyAttendanceItemList.size() > 0) {
+			// ログインユーザの就業のロールID
+			Optional<String> roldId = getRoleId(cid);
+			// アルゴリズム「会社の日次を取得する」を実行する
+			List<AttItemName> dailyItems = companyDailyItemService.getDailyItems(cid, roldId, attendanceIdList, Collections.emptyList());
+			result.setAttendanceItemNames(dailyItems);
+		}
+		return result;
+	}
+	
+	// ログインユーザの就業のロールID
+	public Optional<String> getRoleId(String cid) {
+		String userId = AppContexts.user().userId();
+		RoleInformationImport roleInfo =  roleAdaptor.getRoleIncludCategoryFromUserID(userId, RoleType.EMPLOYMENT.value, GeneralDate.today(), AppContexts.user().companyId());
+		return roleInfo.getRoleId() == null ? Optional.empty() : Optional.ofNullable(roleInfo.getRoleId());
+	}
+	
+	/**
+	 * .画面で使用可能な月次勤怠項目を取得する
+	 */
+	public void getMonthlyAttendanceItemAtrs() {
+		String cid = AppContexts.user().companyId();
+		
+	}
+	
+	/**
+	 * Get the name and attribute corresponding to the monthly attendance item
+	 * (月次勤怠項目に対応する名称、属性を取得する)
+	 * 
+	 * @param cid
+	 * 			the company id
+	 * @param attendanceIds
+	 * 			the attendanceId list
+	 * @return AttItemName>
+	 */
+	public List<AttItemName> getMonthlyAttendanceItemAtrs(String cid, List<Integer> attendanceIds) {
+		List<MonthlyAttendanceItem> monthlyAttItems = monthlyAtRepo.findByAttendanceItemId(cid, attendanceIds);
+		if (monthlyAttItems.size() > 1) {
+			// ログインユーザの就業のロールID
+			Optional<String> roldId = getRoleId(cid);
+			List<AttItemName> monthlyItems = companyMonthlyItemService.getMonthlyItems(cid, roldId, attendanceIds, Collections.emptyList());
+			return monthlyItems;
+		}
+		return null;
+	}
+	
+	
 }
