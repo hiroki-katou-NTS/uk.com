@@ -7,15 +7,16 @@ package nts.uk.ctx.at.shared.app.find.statutory.worktime.employmentNew;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.MonthlyUnitDto;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSetting;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet;
 
 /**
  * The Class EmpNormalSettingDto.
  */
 @Data
+@AllArgsConstructor
 public class EmpNormalSettingDto {
 	
 	/** The employment code. */
@@ -30,22 +31,11 @@ public class EmpNormalSettingDto {
 	/** The statutory setting. */
 	private List<MonthlyUnitDto> statutorySetting;
 
-	/**
-	 * From domain.
-	 *
-	 * @param domain the domain
-	 * @return the emp normal setting dto
-	 */
-	public static EmpNormalSettingDto fromDomain(EmpNormalSetting domain) {
-		EmpNormalSettingDto dto = new EmpNormalSettingDto();
-		dto.setYear(domain.getYear().v());
-		dto.setCompanyId(AppContexts.user().companyId());
-		dto.setEmploymentCode(domain.getEmploymentCode().v());
+	public static <T extends MonthlyWorkTimeSet> EmpNormalSettingDto with (String cid, String employmentCode,
+			int year, List<T> workTime) {
 		
-		List<MonthlyUnitDto> monthlyUnitdtos = domain.getStatutorySetting().stream().map(monthly -> {
-			return new MonthlyUnitDto(monthly.getMonth().v(), monthly.getMonthlyTime().v());
-		}).collect(Collectors.toList());
-		dto.setStatutorySetting(monthlyUnitdtos);
-		return dto;
+		return new EmpNormalSettingDto(employmentCode, year, cid, workTime.stream()
+				.map(c -> new MonthlyUnitDto(c.getYm().month(), c.getLaborTime().getLegalLaborTime().v()))
+				.collect(Collectors.toList()));
 	}
 }

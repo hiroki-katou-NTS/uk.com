@@ -1,13 +1,12 @@
 package nts.uk.ctx.at.record.dom.reservation.bento;
 
-import lombok.val;
 import nts.arc.task.tran.AtomTask;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 弁当を更新する
@@ -18,24 +17,27 @@ public class BentoUpdateService {
     /**
      * 更新する
      */
-    public static AtomTask update(Require require, List<Bento> bentoList) {
-        val workLocationList = bentoList.stream().filter(i->i.getWorkLocationCode().isPresent())
-                .map(w-> w.getWorkLocationCode().get()).collect(Collectors.toList());
-        val listFarme = bentoList.stream().map(w-> w.getFrameNo()).collect(Collectors.toList());
+    public static AtomTask update(Require require, Bento bento) {
 
-        List<BentoMenu> bentoMenuList = require.getBentoMenu(workLocationList,listFarme);
+        String cid = AppContexts.user().companyId();
+        GeneralDate date = GeneralDate.max();
 
+        BentoMenu bentoMenu = require.getBentoMenu(cid, date);
+
+        bentoMenu.getMenu().stream()
+                .filter(x -> x.getFrameNo() == bento.getFrameNo())
+                .forEach( b -> b = bento);
         return AtomTask.of(() -> {
-            require.register(bentoMenuList);
+            require.register(bentoMenu);
         });
     }
 
     public static interface Require {
         // 弁当メニューを取得する
-        List<BentoMenu> getBentoMenu(List<WorkLocationCode> workLocationCodeList, List<Integer> frameNos);
+        BentoMenu getBentoMenu(String cid, GeneralDate date);
 
         // 弁当を追加する
-        void register(List<BentoMenu> bentoMenus);
+        void register(BentoMenu bentoMenu);
     }
 
 }

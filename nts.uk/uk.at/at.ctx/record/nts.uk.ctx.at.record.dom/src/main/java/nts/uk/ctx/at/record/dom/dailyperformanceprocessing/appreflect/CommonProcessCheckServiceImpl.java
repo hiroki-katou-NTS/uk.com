@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.service.event.breaktime.BreakTimeOfDailyService;
 import nts.uk.ctx.at.record.dom.service.event.common.CorrectEventConts;
 import nts.uk.ctx.at.record.dom.service.event.overtime.OvertimeOfDailyService;
@@ -50,8 +51,6 @@ import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
-	@Inject
-	private WorkTimeIsFluidWork workTimeisFluidWork;
 	@Inject
 	private WorkUpdateService workTimeUpdate;
 	@Inject
@@ -86,6 +85,8 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 	private WorkTimeOfDailyService workTimeDailyService;
 	@Inject
 	private DailyRecordAdUpService dailyService;
+	@Inject 
+	private RecordDomRequireService requireService;
 	@Override
 	public boolean commonProcessCheck(CommonCheckParameter para) {
 		ReflectedStateRecord state = ReflectedStateRecord.CANCELED;
@@ -126,7 +127,7 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 		//INPUT．予定と実績を同じに変更する区分をチェックする
 		if(commonPara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.AUTO_CHANGE_ONLY_WORK) {
 			//流動勤務かどうかの判断処理
-			return workTimeisFluidWork.checkWorkTimeIsFluidWork(workTimeCode);
+			return WorkTimeIsFluidWork.checkWorkTimeIsFluidWork(requireService.createRequire(), workTimeCode);
 		}
 		
 		return false;

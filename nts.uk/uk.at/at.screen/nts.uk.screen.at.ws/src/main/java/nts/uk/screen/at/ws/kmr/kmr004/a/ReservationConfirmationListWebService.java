@@ -1,14 +1,15 @@
 package nts.uk.screen.at.ws.kmr.kmr004.a;
 
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.GeneralDate;
 import nts.uk.screen.at.app.reservation.ReservationConfirmationListDto;
 import nts.uk.screen.at.app.reservation.ReservationConfirmationListScreenQuery;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 
 /**
  * @author 3si - Dang Huu Khai
@@ -21,14 +22,17 @@ public class ReservationConfirmationListWebService extends WebService {
     private ReservationConfirmationListScreenQuery reservationConfirmationListScreenQuery;
 
     @POST
-    @Path("start/{strDate}")
-    public ReservationConfirmationListDto getReservationConfirmationListStartupInfo(@FormParam("strDate") String strDate) {
-        LoginUserContext user = AppContexts.user();
-        // GeneralDate date = GeneralDate.fromString(strDate, "yyyy/MM/dd");
-        String employeeId = user.employeeId();
-        String companyId = user.companyId();
+    @Path("start")
+    public ReservationConfirmationListDto getReservationConfirmationListStartupInfo() {
 
         // 予約確認一覧
-        return reservationConfirmationListScreenQuery.getReservationConfirmationListStartupInfo(companyId, employeeId, GeneralDate.today());
+        LoginUserContext user =AppContexts.user();
+        String companyId =user.companyId();
+        String employeeId = user.employeeId();
+        ReservationConfirmationListDto dto = reservationConfirmationListScreenQuery.getReservationConfirmationListStartupInfo(companyId);
+        dto.setCompanyId(companyId);
+        dto.setEmployeeId(employeeId);
+
+        return dto;
     }
 }

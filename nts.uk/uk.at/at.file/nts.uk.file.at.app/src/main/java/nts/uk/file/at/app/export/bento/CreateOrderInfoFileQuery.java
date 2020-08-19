@@ -17,7 +17,6 @@ import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
-import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
@@ -80,44 +79,47 @@ public class CreateOrderInfoFileQuery {
                                                  List<String> workLocationCodes, Optional<BentoReservationSearchConditionDto> totalExtractCondition,
                                                  Optional<BentoReservationSearchConditionDto> itemExtractCondition, Optional<Integer> frameNo, Optional<String> totalTitle,
                                                  Optional<String> detailTitle, ReservationClosingTimeFrame reservationClosingTimeFrame){
-        if(!totalTitle.isPresent() & !detailTitle.isPresent())
+        if (!totalTitle.isPresent() & !detailTitle.isPresent())
+            throw new BusinessException("Msg_1642");
+        if(CollectionUtil.isEmpty(workplaceId) & CollectionUtil.isEmpty(workLocationCodes))
             throw new BusinessException("Msg_1642");
         OrderInfoDto result = new OrderInfoDto();
         // 1. [RQ622]会社IDから会社情報を取得する
-        Company company = companyRepository.find(AppContexts.user().companyId()).get();
+        String companyId = AppContexts.user().companyId();
+        Optional<Company> company = companyRepository.find(companyId);
+        String companyName = company.isPresent() ? company.get().getCompanyName().v() : "";
         // 2. 職場又は場所情報と打刻カードを取得
         boolean isCheckedEmpInfo = detailTitle.isPresent();
-        Object[] condition = getWorkPlaceAndStampCard(workplaceId, workLocationCodes, isCheckedEmpInfo, period, company.getCompanyId());
+        Object[] condition = getWorkPlaceAndStampCard(workplaceId, workLocationCodes, isCheckedEmpInfo, period, companyId);
         Map<String, String> map = (Map<String, String>) condition[1];
         List<BentoReservationInfoForEmpDto> bentoReservationInfoForEmpDtos = (List<BentoReservationInfoForEmpDto>) condition[2];
         List<PlaceOfWorkInfoDto> placeOfWorkInfoDtos = (List<PlaceOfWorkInfoDto>) condition[3];
         // 3. 弁当予約を取得する
         List<BentoReservation> bentoReservationsTotal = new ArrayList<>();
         List<BentoReservation> bentoReservationsDetail = new ArrayList<>();
-        if(totalExtractCondition.equals(itemExtractCondition)) {
+//        if (totalExtractCondition.equals(itemExtractCondition)) {
+//            bentoReservationsTotal = getListBentoResevation(totalExtractCondition.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
+//            bentoReservationsDetail = bentoReservationsTotal;
+//        } else {
+        if (totalExtractCondition.isPresent())
             bentoReservationsTotal = getListBentoResevation(totalExtractCondition.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
-            bentoReservationsDetail = bentoReservationsTotal;
-        } else{
-            if(totalExtractCondition.isPresent())
-                bentoReservationsTotal = getListBentoResevation(totalExtractCondition.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
-            if(detailTitle.isPresent()){
-                if(frameNo.isPresent()){
-                    bentoReservationsDetail = getListBentoResevation(frameNo.get(), period,new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
-                }else {
-                    bentoReservationsDetail = getListBentoResevation(itemExtractCondition.get(), period,new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
-                }
-            }
+        if (detailTitle.isPresent()) {
+            if (frameNo.isPresent())
+                bentoReservationsDetail = getListBentoResevation(frameNo.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
+            else
+                bentoReservationsDetail = getListBentoResevation(itemExtractCondition.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
         }
-        if(CollectionUtil.isEmpty(bentoReservationsTotal) & CollectionUtil.isEmpty(bentoReservationsTotal))
+        //}
+        if (CollectionUtil.isEmpty(bentoReservationsTotal) & CollectionUtil.isEmpty(bentoReservationsTotal))
             throw new BusinessException("Msg_1617");
         //4.
-        List<BentoMenu> bentoMenuList = getAllBentoMenu(company.getCompanyId(), period);
-        if(CollectionUtil.isEmpty(bentoMenuList))
+        List<BentoMenu> bentoMenuList = getAllBentoMenu(companyId, period);
+        if (CollectionUtil.isEmpty(bentoMenuList))
             throw new BusinessException("Msg_1640");
         //5.
-        List<TotalOrderInfoDto> totalOrderInfoDtos = exportTotalOrderInfo(company.getCompanyId(), bentoReservationsTotal, placeOfWorkInfoDtos, frameNo);
-        List<DetailOrderInfoDto> detailOrderInfoDtos = exportDetailOrderInfo(bentoReservationsDetail,company.getCompanyId(),placeOfWorkInfoDtos,bentoReservationInfoForEmpDtos, frameNo);
-        result.setCompanyName(company.getCompanyName().v());
+        List<TotalOrderInfoDto> totalOrderInfoDtos = exportTotalOrderInfo(companyId, bentoReservationsTotal, placeOfWorkInfoDtos, frameNo);
+        List<DetailOrderInfoDto> detailOrderInfoDtos = exportDetailOrderInfo(bentoReservationsDetail, companyId, placeOfWorkInfoDtos, bentoReservationInfoForEmpDtos, frameNo);
+        result.setCompanyName(companyName);
         result.setDetailOrderInfoDtoList(detailOrderInfoDtos);
         result.setDetailTittle(isCheckedEmpInfo ? detailTitle.get() : "");
         result.setTotalOrderInfoDtoList(totalOrderInfoDtos);

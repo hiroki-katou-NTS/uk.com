@@ -27,12 +27,12 @@ module nts.uk.at.view.ksm015.c.service {
         return nts.uk.request.ajax("at", paths.delete, data);
     }
 
-    export function startPage(): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.startPage);
+    export function startPage(unit : number): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.startPage+ '/' +unit);
     }
 
-    export function getAlreadyConfigOrg(): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getAlreadyConfigOrg);
+    export function getAlreadyConfigOrg(unit : number): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getAlreadyConfigOrg+ '/' +unit);
     }
 
     /**

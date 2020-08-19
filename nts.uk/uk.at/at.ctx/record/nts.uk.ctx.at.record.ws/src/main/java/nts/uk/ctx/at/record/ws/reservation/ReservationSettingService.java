@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.ws.reservation;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.reservation.bento.BentoReserveSettingCommand;
 import nts.uk.ctx.at.record.app.command.reservation.bento.BentoReserveSettingCommandHandler;
+import nts.uk.ctx.at.record.app.command.reservation.reseritemset.UpdateReseItemSettingCommand;
+import nts.uk.ctx.at.record.app.command.reservation.reseritemset.UpdateReseItemSettingCommandHandler;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

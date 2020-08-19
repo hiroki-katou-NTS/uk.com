@@ -2,17 +2,16 @@ package nts.uk.ctx.at.record.dom.byperiod;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 期間別の月の計算
@@ -84,20 +83,18 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 	 * @param workingSystem 労働制
 	 * @param calcDailys 月の計算中の日別実績データ
 	 * @param companySets 月別集計で必要な会社別設定
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void calculation(
+	public void calculation(RequireM1 require, 
 			DatePeriod period,
 			WorkingSystem workingSystem,
 			MonthlyCalculatingDailys calcDailys,
-			MonAggrCompanySettings companySets,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			MonAggrCompanySettings companySets){
 
 		// 総労働時間の集計
-		this.aggregateTime.aggregate(period,
+		this.aggregateTime.aggregate(require, period,
 				calcDailys.getAttendanceTimeOfDailyMap(),
 				calcDailys.getWorkInfoOfDailyMap(),
-				companySets, repositories);
+				companySets);
 
 		// フレックス時間の集計
 		this.flexTime.aggregate(period, calcDailys.getAttendanceTimeOfDailyMap());
@@ -282,5 +279,9 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 		}
 		
 		return notExistTime;
+	}
+	
+	public static interface RequireM1 extends TotalWorkingTimeByPeriod.RequireM1 {
+		
 	}
 }

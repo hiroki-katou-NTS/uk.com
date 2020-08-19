@@ -1,25 +1,39 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.export;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class RemainManagementExportImpl implements RemainManagementExport{
+	
 	@Inject
-	private ClosureService closureService;
+	private ClosureRepository closureRepo;
+	@Inject
+	private ClosureEmploymentRepository closureEmpRepo;
+	@Inject
+	private ShareEmploymentAdapter shrEmpAdapter;
+	
 	@Override
 	public ClosureRemainPeriodOutputData getClosureRemainPeriod(String employeeId, GeneralDate baseDate, YearMonth startMonth, YearMonth endMonth) {
 		ClosureRemainPeriodOutputData outputData = new ClosureRemainPeriodOutputData(null, null, null);
+		CacheCarrier cacheCarrier = new CacheCarrier();
 		// アルゴリズム「社員に対応する処理締めを取得する」を実行する
-		Closure closureData = closureService.getClosureDataByEmployee(employeeId, baseDate);
+		Closure closureData = ClosureService.getClosureDataByEmployee(createRequireM3(), cacheCarrier, employeeId, baseDate);
 		if(closureData == null) {
 			return null;
 		}
@@ -56,7 +70,9 @@ public class RemainManagementExportImpl implements RemainManagementExport{
 	}
 	@Override
 	public DatePeriod periodCovered(String sid, GeneralDate baseDate) {
-		DatePeriod closureBySid = closureService.findClosurePeriod(sid, baseDate);
+		CacheCarrier cacheCarrier = new CacheCarrier();
+		
+		DatePeriod closureBySid = ClosureService.findClosurePeriod(createRequireM3(), cacheCarrier, sid, baseDate);
 		if(closureBySid == null) {
 			return null;
 		}
@@ -65,4 +81,25 @@ public class RemainManagementExportImpl implements RemainManagementExport{
 		return adjustDate;
 	}
 
+	private ClosureService.RequireM3 createRequireM3 () {
+		
+		return new ClosureService.RequireM3() {
+			
+			@Override
+			public Optional<Closure> closure(String companyId, int closureId) {
+				return closureRepo.findById(companyId, closureId);
+			}
+			
+			@Override
+			public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
+				return closureEmpRepo.findByEmploymentCD(companyID, employmentCD);
+			}
+			
+			@Override
+			public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
+					String employeeId, GeneralDate baseDate) {
+				return shrEmpAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
+			}
+		};
+	}
 }

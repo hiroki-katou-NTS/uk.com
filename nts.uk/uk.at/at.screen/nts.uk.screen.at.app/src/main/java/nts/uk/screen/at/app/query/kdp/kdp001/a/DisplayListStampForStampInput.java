@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.EmployeeStampDatasFinder;
+import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampDataOfEmployeesDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -24,10 +25,11 @@ public class DisplayListStampForStampInput {
 	@Inject
 	private EmployeeStampDatasFinder finder;
 
-	public List<EmployeeStampInfoDto> getEmployeeStampData() {
+	public List<StampDataOfEmployeesDto> getEmployeeStampData() {
 		DatePeriod period = new DatePeriod(GeneralDate.today().addDays(-3), GeneralDate.today());
 		String employeeId = AppContexts.user().employeeId();
-		return finder.getEmployeeStampData(period, employeeId).stream().map(x -> EmployeeStampInfoDto.fromDomain(x))
+		
+		return finder.getEmployeeStampData(period, employeeId).stream().map(x ->  new StampDataOfEmployeesDto(x))
 				.collect(Collectors.toList());
 
 	}
