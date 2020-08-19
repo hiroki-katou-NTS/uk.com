@@ -3,7 +3,10 @@ package nts.uk.screen.at.app.reservation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
+import nts.uk.screen.at.app.worktype.WorkTypeSetDto;
 
+import javax.persistence.Column;
 import java.util.List;
 
 @Data
