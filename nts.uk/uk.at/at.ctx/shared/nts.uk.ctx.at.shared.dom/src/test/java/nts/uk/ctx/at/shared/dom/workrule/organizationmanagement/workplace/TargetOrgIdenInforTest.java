@@ -31,22 +31,20 @@ public class TargetOrgIdenInforTest {
 	@Test
 	public void testTargetOrgIdenInfor_1() {
 		TargetOrganizationUnit unit = TargetOrganizationUnit.WORKPLACE;// dummy
-		String workplaceId = null;
-		String workplaceGroupId = null;
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, Optional.ofNullable(workplaceId), Optional.ofNullable(workplaceGroupId));
+		String workplaceId = "id";
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace(workplaceId);
 		assertThat(targetOrgIdenInfor.getUnit()).isEqualTo(unit);
-		assertThat(targetOrgIdenInfor.getWorkplaceId().isPresent()).isFalse();
+		assertThat(targetOrgIdenInfor.getWorkplaceId().isPresent()).isTrue();
 		assertThat(targetOrgIdenInfor.getWorkplaceGroupId().isPresent()).isFalse();
 	}
 
 	@Test
 	public void testTargetOrgIdenInfor_2() {
-		TargetOrganizationUnit unit = TargetOrganizationUnit.WORKPLACE;// dummy
-		String workplaceId = "workplaceId";
+		TargetOrganizationUnit unit = TargetOrganizationUnit.WORKPLACE_GROUP;// dummy
 		String workplaceGroupId = "workplaceGroupId";
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit,  Optional.ofNullable(workplaceId), Optional.ofNullable(workplaceGroupId));
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(workplaceGroupId);
 		assertThat(targetOrgIdenInfor.getUnit()).isEqualTo(unit);
-		assertThat(targetOrgIdenInfor.getWorkplaceId().isPresent()).isTrue();
+		assertThat(targetOrgIdenInfor.getWorkplaceId().isPresent()).isFalse();
 		assertThat(targetOrgIdenInfor.getWorkplaceGroupId().isPresent()).isTrue();
 	}
 

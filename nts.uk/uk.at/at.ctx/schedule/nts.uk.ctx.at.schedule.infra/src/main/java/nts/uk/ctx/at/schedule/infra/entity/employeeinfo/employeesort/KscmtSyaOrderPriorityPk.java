@@ -20,13 +20,14 @@ public class KscmtSyaOrderPriorityPk implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	
 	/** 会社ID */
 	@Column(name = "CID")
 	public String companyId;
-	
-	/** 並び替え設定 **/
+
+	/**
+	 * 並び替えの優先順 OrderedListの順
+	 */
 	@Column(name = "PRIORITY")
-	public int priority; 
+	public int priority;
 
 }

@@ -96,17 +96,24 @@ public class GetScheduleTeamInfoServiceTest {
 	 */
 	@Test
 	public void testGet_2() {
-		List<String> lstEmpId = Arrays.asList("emp1","emp2");
-		List<String> listWorkplaceGroupID = Arrays.asList("wkp1","wkp2");
+		List<String> lstEmpId = Arrays.asList("emp1","emp2", "emp3","emp4","emp5", "emp6");
+		List<String> listWorkplaceGroupID = Arrays.asList("wkp1","wkp2","wkp3","wkp4","wkp5","wkp6");
 		List<BelongScheduleTeam> listBelongScheduleTeam = Arrays.asList(
 				new BelongScheduleTeam("emp1", "wkp1",new ScheduleTeamCd("ScheduleTeamCd1")),
-				new BelongScheduleTeam("emp2", "wkp2",new ScheduleTeamCd("ScheduleTeamCd2"))
+				new BelongScheduleTeam("emp2", "wkp2",new ScheduleTeamCd("ScheduleTeamCd2")),
+				new BelongScheduleTeam("emp3", "wkp3",new ScheduleTeamCd("ScheduleTeamCd3")),
+				new BelongScheduleTeam("emp4", "wkp4",new ScheduleTeamCd("ScheduleTeamCd4")),
+				new BelongScheduleTeam("emp5", "wkp5",new ScheduleTeamCd("ScheduleTeamCd5")),
+				new BelongScheduleTeam("emp6", "wkp6",new ScheduleTeamCd("ScheduleTeamCd6"))
 				);
 		
 		List<ScheduleTeam> listScheduleTeam = Arrays.asList(
 				new ScheduleTeam("wkp1", new ScheduleTeamCd("ScheduleTeamCd1"),new ScheduleTeamName("ScheduleTeamName1"), Optional.empty()),
 				new ScheduleTeam("wkp2", new ScheduleTeamCd("ScheduleTeamCd2"),new ScheduleTeamName("ScheduleTeamName2"), Optional.empty()),
-				new ScheduleTeam("wkp3", new ScheduleTeamCd("ScheduleTeamCd3"),new ScheduleTeamName("ScheduleTeamName3"), Optional.empty())
+				new ScheduleTeam("wkp3", new ScheduleTeamCd("ScheduleTeamCd3"),new ScheduleTeamName("ScheduleTeamName3"), Optional.empty()),
+				new ScheduleTeam("wkp4", new ScheduleTeamCd("ScheduleTeamCd4"),new ScheduleTeamName("ScheduleTeamName4"), Optional.empty()),
+				new ScheduleTeam("wkp5", new ScheduleTeamCd("ScheduleTeamCd5"),new ScheduleTeamName("ScheduleTeamName5"), Optional.empty()),
+				new ScheduleTeam("wkp6", new ScheduleTeamCd("ScheduleTeamCd6"),new ScheduleTeamName("ScheduleTeamName6"), Optional.empty())
 				);
 		new Expectations() {
 			{
@@ -126,7 +133,11 @@ public class GetScheduleTeamInfoServiceTest {
 		.extracting(d->d.getEmployeeID(),d->d.getOptScheduleTeamCd(),d->d.getOptScheduleTeamName())
 		.containsExactly(
 				tuple("emp1",Optional.of(new ScheduleTeamCd("ScheduleTeamCd1")),Optional.of(new ScheduleTeamName("ScheduleTeamName1"))),
-				tuple("emp2",Optional.of(new ScheduleTeamCd("ScheduleTeamCd2")),Optional.of(new ScheduleTeamName("ScheduleTeamName2"))));
+				tuple("emp2",Optional.of(new ScheduleTeamCd("ScheduleTeamCd2")),Optional.of(new ScheduleTeamName("ScheduleTeamName2"))),
+				tuple("emp3",Optional.of(new ScheduleTeamCd("ScheduleTeamCd3")),Optional.of(new ScheduleTeamName("ScheduleTeamName3"))),
+				tuple("emp4",Optional.of(new ScheduleTeamCd("ScheduleTeamCd4")),Optional.of(new ScheduleTeamName("ScheduleTeamName4"))),
+				tuple("emp5",Optional.of(new ScheduleTeamCd("ScheduleTeamCd5")),Optional.of(new ScheduleTeamName("ScheduleTeamName5"))),
+				tuple("emp6",Optional.of(new ScheduleTeamCd("ScheduleTeamCd6")),Optional.of(new ScheduleTeamName("ScheduleTeamName6"))));
 		
 	}
 
