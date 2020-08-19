@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.holidayover60h;
 
 import java.io.Serializable;
+
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedTime;
 
@@ -9,6 +12,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
  * @author masaaki_jinno
  *
  */
+@Getter
+@Setter
 public class HolidayOver60h implements Cloneable, Serializable {
 
 	/**

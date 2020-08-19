@@ -2,6 +2,9 @@ package nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.param;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -9,6 +12,8 @@ import nts.arc.time.GeneralDate;
  * @author masaaki_jinno
  *
  */
+@Getter
+@Setter
 public class HolidayOver60hInfo implements Cloneable {
 
 	/** 年月日 */

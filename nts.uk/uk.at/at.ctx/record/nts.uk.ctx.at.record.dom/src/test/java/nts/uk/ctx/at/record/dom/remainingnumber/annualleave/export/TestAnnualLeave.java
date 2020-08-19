@@ -57,42 +57,6 @@ public class TestAnnualLeave {
 	private List<AnnualleaveTestCase> caseList;
 	
 	
-	
-	
-	
-//	GetHolidayOver60hRemNumWithinPeriod.RequireM1 require
-//		= new GetHolidayOver60hRemNumWithinPeriodImpl.GetHolidayOver60hRemNumWithinPeriodRequireM1();
-//	
-//	CacheCarrier cacheCarrier1 = new CacheCarrier();
-//	String companyId1 = "XXX";
-//	String employeeId1 = "";
-//	DatePeriod aggrPeriod1;
-//	InterimRemainMngMode mode1;
-//	GeneralDate criteriaDate;
-//		
-//	GetHolidayOver60hRemNumWithinPeriod a 
-//		= new GetHolidayOver60hRemNumWithinPeriodImpl();
-//	
-//	AggrResultOfHolidayOver60h aggrResultOfHolidayOver60h
-//		= a.algorithm(
-//			require, 
-//			cacheCarrier1,
-//			companyId1, 
-//			employeeId1, 
-//			aggrPeriod1, 
-//			mode1,
-//			criteriaDate, 
-//			Optional.empty(),
-//			Optional.empty(),
-//			Optional.empty()
-//			);
-	
-	
-		
-		
-		
-	
-	
 	/*検証用のドメイン取得処理*/
 	@Before
 	public void initialize(){

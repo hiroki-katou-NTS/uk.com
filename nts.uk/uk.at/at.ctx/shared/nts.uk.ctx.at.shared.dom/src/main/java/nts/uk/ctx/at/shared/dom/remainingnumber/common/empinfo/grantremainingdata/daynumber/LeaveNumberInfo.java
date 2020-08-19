@@ -1,19 +1,21 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * 明細   （休暇数情報）
+ * 休暇数情報（明細）
  * @author masaaki_jinno
  *
  */
 @Getter
 @AllArgsConstructor
-public abstract class LeaveNumberInfo {
+public class LeaveNumberInfo {
 
 	/**
 	 * 付与数
@@ -36,6 +38,16 @@ public abstract class LeaveNumberInfo {
 	 * 使用率
 	 */
 	protected LeaveUsedPercent usedPercent;
+	
+	/**
+	 * コンストラクタ
+	 */
+	public LeaveNumberInfo(){
+		grantNumber = new LeaveGrantNumber();
+		usedNumber = new LeaveUsedNumber();
+		remainingNumber = new LeaveRemainingNumber();
+		usedPercent = new LeaveUsedPercent(new BigDecimal(0.0));
+	}
 	
 	/**
 	 * すべて使用する
@@ -81,12 +93,12 @@ public abstract class LeaveNumberInfo {
 		}
 	}
 
-	public LeaveNumberInfo(){
+//	public LeaveNumberInfo(){
 //		this.grantNumber = LeaveGrantNumber.createFromJavaType(0.0, null);
 //		this.usedNumber = LeaveUsedNumber.createFromJavaType(0.0, null, null);
 //		this.remainingNumber = LeaveRemainingNumber.createFromJavaType(0.0, null);
 //		this.usedPercent = new LeaveUsedPercent(new BigDecimal(0));
-	}
+//	}
 	
 	public LeaveNumberInfo(double grantDays, Integer grantMinutes, double usedDays, Integer usedMinutes,
 			Double stowageDays, double remainDays, Integer remainMinutes, double usedPercent) {

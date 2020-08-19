@@ -12,7 +12,7 @@ import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
 
 /**
- * 特休使用情報
+ * 特別休暇使用情報
  * @author masaaki_jinno
  *
  */

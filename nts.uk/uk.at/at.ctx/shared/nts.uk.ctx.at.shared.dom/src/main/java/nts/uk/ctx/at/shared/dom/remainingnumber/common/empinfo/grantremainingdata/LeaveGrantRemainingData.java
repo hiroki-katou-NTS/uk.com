@@ -9,6 +9,8 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.RemNumShiftListWork;
@@ -20,14 +22,15 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
  *
  */
 @Getter
+@Setter
 @NoArgsConstructor 
 @AllArgsConstructor
-public abstract class LeaveGrantRemainingData extends AggregateRoot {
+public class LeaveGrantRemainingData extends AggregateRoot {
 
 	protected String annLeavID;
 	
 	protected String cid;
-	
+
 	/**
 	 * 社員ID
 	 */
@@ -46,7 +49,6 @@ public abstract class LeaveGrantRemainingData extends AggregateRoot {
 	/**
 	 * 期限切れ状態
 	 */
-	@Setter
 	protected LeaveExpirationStatus expirationStatus;
 
 	/**
