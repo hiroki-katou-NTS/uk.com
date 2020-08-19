@@ -136,12 +136,14 @@ export class KdpS01AComponent extends Vue {
 
     private InitCountTime() {
 
-        let vm = this;
+        let vm = this,
+            interval = _.get(vm, 'setting.displaySettingsStampScreen.serverCorrectionInterval', 1) as number * 60000;
+
+        vm.$dt.interval(interval);
 
         setInterval(() => {
-
             vm.getStampToSuppress();
-        }, vm.setting.displaySettingsStampScreen.serverCorrectionInterval * 1000);
+        }, interval);
     }
 
     private getStampToSuppress() {
@@ -179,7 +181,7 @@ export class KdpS01AComponent extends Vue {
                             buttonName: ''
                         },
                         backGroundColor: '',
-                        displayBackGroundColor:''
+                        displayBackGroundColor: ''
                     },
                     usrArt: 1
                 };
