@@ -27,7 +27,7 @@ public class AggrResultOfHolidayOver60h {
 	/** 60H超休情報（期間終了日の翌日開始時点） */
 	private HolidayOver60hInfo asOfStartNextDayOfPeriodEnd;
 	/** 60H超休情報（消滅） */
-	private Optional<List<HolidayOver60hInfo>> lapsed;
+	private Optional<HolidayOver60hInfo> lapsed;
 	
 	/**
 	 * コンストラクタ
@@ -52,7 +52,7 @@ public class AggrResultOfHolidayOver60h {
 			UsedTimes usedTimes,
 			HolidayOver60hInfo asOfPeriodEnd,
 			HolidayOver60hInfo asOfStartNextDayOfPeriodEnd,
-			Optional<List<HolidayOver60hInfo>> lapsed,
+			Optional<HolidayOver60hInfo> lapsed,
 			List<HolidayOver60hError> holidayOver60hErrors){
 		
 		AggrResultOfHolidayOver60h domain = new AggrResultOfHolidayOver60h();

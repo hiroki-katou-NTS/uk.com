@@ -92,9 +92,7 @@ public class GetHolidayOver60hRemNumWithinPeriodImpl implements GetHolidayOver60
 		
 		//　消滅時点
 		HolidayOver60hInfo holidayOver60hInfo_3 = createHolidayOver60hInfo_3();
-		ArrayList<HolidayOver60hInfo> list = new ArrayList<HolidayOver60hInfo>();
-		list.add(holidayOver60hInfo_3);
-		result.setLapsed(Optional.of(list));
+		result.setLapsed(Optional.of(holidayOver60hInfo_3));
 		
 		return result;
 	}
