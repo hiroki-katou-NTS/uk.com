@@ -1123,22 +1123,15 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         openKDL017() {
             let self = this;
             let lstid = [
-                'CB8AD9E3-4F96-47BE-9EFE-E6CA247657EB'
-                , '1C98AF8F-52BB-44F2-B6A8-F55E71AA3809'
-                , '773C18B2-BD6D-4678-BC0C-EC1BF8562221'
-                , '938AC281-EEAB-43FE-A3B3-E915ECCC31DF'
-                , '84F41FAF-5C78-4483-9CEC-9FEDAF041AEF'
-                , '55F24D75-A260-4E5C-9802-E899E1347FC1'
-                , 'A4BF5B97-DD02-4053-9F6D-38EDC3AC79CE'
-                , '362455D3-09BF-4923-A4F9-E10A105F22C1'
-                , '54775E44-C8F4-4F3C-AB1C-37A94ED6544F'
-                , '28F9FDAE-32A2-4615-A44F-B5D6E4E67E70'
-                , 'B30DDB85-E9E2-4874-9FE7-850E00DD4AB5'
-                , '62976D3B-D392-4A95-BA69-02E667D7C426'
-                , '7D0F4F5E-AA93-401D-B016-A29718A4A4E8'
-                , '0ACE3A2B-31FD-49D7-8EAB-52D3AA2FBA08'
-                , 'B511BE99-161C-4D80-A899-BB24A861C393'
-                , '2663C2F8-836F-4CC3-97A9-E1496B922636'
+                'a9822333-49ea-4302-aba2-5adc10ae7618',
+                '546ed947-58b7-4c0a-bf2f-862b007fe689',
+                '1D75CF02-6843-4918-BB52-20B28E4B6374',
+                '441E74A5-A43D-4377-A869-0EE10FE45E48',
+                '4420a05e-2aef-4b93-889d-f98f4bb53517',
+                '90056534-0687-49c4-934b-da6ddbdbce6b',
+                '484c4aad-46f7-4439-8305-040e4f8eb3cf',
+                'd26b5cab-f788-47a6-bd5d-6cb4be9d1e8d',
+                'd2de28c4-1ef7-4a72-adfb-8e2c87f12336',
             ];
             _.each(self.employeeList(), function(emp){
                 lstid.push(emp.id);

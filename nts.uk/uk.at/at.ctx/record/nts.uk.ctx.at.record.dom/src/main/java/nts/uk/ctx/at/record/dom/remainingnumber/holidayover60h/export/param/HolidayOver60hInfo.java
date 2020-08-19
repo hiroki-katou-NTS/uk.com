@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -12,6 +13,7 @@ import nts.arc.time.GeneralDate;
  *
  */
 @Getter
+@Setter
 public class HolidayOver60hInfo implements Cloneable {
 
 	/** 年月日 */

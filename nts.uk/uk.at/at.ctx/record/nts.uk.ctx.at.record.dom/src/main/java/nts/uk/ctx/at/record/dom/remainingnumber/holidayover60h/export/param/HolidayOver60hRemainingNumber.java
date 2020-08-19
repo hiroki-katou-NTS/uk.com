@@ -1,6 +1,10 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.param;
 
+import java.util.List;
+
 import lombok.Getter;
+import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.vacation.holidayover60h.HolidayOver60h;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
 
@@ -10,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
  *
  */
 @Getter
+@Setter
 public class HolidayOver60hRemainingNumber implements Cloneable {
 
 		/** 60H超休（マイナスあり） */

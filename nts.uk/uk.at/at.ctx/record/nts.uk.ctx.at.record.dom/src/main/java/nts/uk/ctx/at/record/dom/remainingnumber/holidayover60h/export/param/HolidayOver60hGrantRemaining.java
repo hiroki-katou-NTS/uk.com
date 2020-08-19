@@ -1,6 +1,10 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.param;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.empinfo.grantremainingdata.HolidayOver60hGrantRemainingData;
 
 /**
@@ -8,6 +12,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.empinfo.grantrema
  * @author masaaki_jinno
  *
  */
+@Getter
+@Setter
+@NoArgsConstructor
 public class HolidayOver60hGrantRemaining extends HolidayOver60hGrantRemainingData{
 
 	/** 60H超休不足ダミーフラグ */

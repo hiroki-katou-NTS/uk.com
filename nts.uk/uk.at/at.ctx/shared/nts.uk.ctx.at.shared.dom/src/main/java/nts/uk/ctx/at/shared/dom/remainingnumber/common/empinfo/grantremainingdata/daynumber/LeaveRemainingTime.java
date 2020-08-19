@@ -6,7 +6,7 @@ import nts.arc.primitive.constraint.TimeRange;
 @TimeRange(min = "-999:59", max="999:59")
 
 /**
- * 休暇残数（時間）     
+ * 休暇残時間     
  * @author masaaki_jinno
  *
  */

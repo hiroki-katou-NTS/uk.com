@@ -19,4 +19,5 @@ public class LeaveUsedPercent extends DecimalPrimitiveValue<LeaveUsedPercent>{
 	public LeaveUsedPercent(BigDecimal rawValue) {
 		super(rawValue);
 	}
+	
 }

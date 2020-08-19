@@ -8,7 +8,6 @@ import nts.arc.primitive.constraint.HalfIntegerRange;
  * @author masaaki_jinno
  *
  */
-//public class LeaveUndigestDayNumber {
 @HalfIntegerRange(min = -999.5 , max = 999.5)
 public class LeaveUndigestDayNumber extends HalfIntegerPrimitiveValue<LeaveRemainingDayNumber>{
 
