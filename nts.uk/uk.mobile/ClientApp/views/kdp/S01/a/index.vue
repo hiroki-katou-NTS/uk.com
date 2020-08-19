@@ -1,6 +1,7 @@
 <template>
-  <div>
+  <div class="row">
     <div
+      class="col-12 pr-0"
       id="clock"
       v-bind:style="{
         'background-color':
@@ -9,7 +10,7 @@
         color: setting.displaySettingsStampScreen.settingDateTimeColor.textColor
       }"
     >
-      <div class="col-12 pr-1 pt-2 font-weight-bold clearfix">
+      <div class=" pt-2 font-weight-bold clearfix">
         <span id="date">
           {{ $dt.now | date("YYYY年 MM月 DD日（ddd）") }}
         </span>
@@ -21,14 +22,14 @@
           {{ "KDPS01_25" | i18n }}
         </button>
       </div>
-      <div class="col-12 px-5 font-weight-bold">
+      <div class="px-5 font-weight-bold">
         <span id="time">{{ $dt.now | date("HH:mm") }}</span>
       </div>
     </div>
     <div>
       <pre
-        class="pl-4 pt-2"
-        style="min-height: 4rem;"
+        class="col-12 pt-2"
+        style="min-height: 4rem; white-space: break-spaces;"
         v-bind:style="{
           color: setting.stampPageComment.commentColor
         }"

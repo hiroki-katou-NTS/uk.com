@@ -51,26 +51,26 @@
       </div>
     </div>
 
-    <table class="table mt-3 table-bordered uk-table-striped">
+    <table v-focus class="table mt-3 table-bordered uk-table-striped">
       <thead>
         <tr>
-          <th scope="col">{{ "KDPS01_61" | i18n }}</th>
-          <th scope="col">{{ "KDPS01_62" | i18n }}</th>
-          <th scope="col">{{ "KDPS01_63" | i18n }}</th>
+          <th class="text-center" scope="col">{{ "KDPS01_61" | i18n }}</th>
+          <th class="text-center" scope="col">{{ "KDPS01_62" | i18n }}</th>
+          <th class="text-center" scope="col">{{ "KDPS01_63" | i18n }}</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in getItems" v-bind:key="item.stampDatetime">
+        <tr v-for="item in getItems" v-bind:key="item.stampStringDatetime">
           <td
             v-bind:style="{
               color: getTextColor(item)
             }"
           >
-            {{ item.stampDatetime | date("D（ddd）") }}
+            {{ item.stampStringDatetime | date("D（ddd）") }}
           </td>
           <td>
             {{ getSymbol(item) | i18n }}
-            {{ item.stampDatetime | date("HH:mm") }}
+            {{ item.stampStringDatetime | date("HH:mm") }}
           </td>
           <td
             v-bind:style="{
@@ -85,7 +85,7 @@
     <button
       type="button"
       v-on:click="$close"
-      class="mt-3 col-12 btn btn-secondary btn-block"
+      class="mt-3 btn btn-secondary btn-block"
     >
       {{ "KDPS01_64" | i18n }}
     </button>

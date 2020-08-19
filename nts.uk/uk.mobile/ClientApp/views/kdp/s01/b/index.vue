@@ -20,7 +20,7 @@
     </div>
     <div class="col-12 value">
       <label class="col-7 px-1">{{
-        screenData.date | date("YYYY年 MM月 DD日（ddd）")
+        screenData.date | date("YYYY/MM/DD")
       }}</label>
       <label
         class="col-5 stamp-time font-weight-bold "
@@ -62,7 +62,7 @@
       <label> {{ "KDPS01_36" | i18n }}</label>
     </div>
     <div>
-      <button
+      <button v-focus
         type="button"
         v-on:click="$close"
         class="col-12 mt-3 btn btn-secondary"
