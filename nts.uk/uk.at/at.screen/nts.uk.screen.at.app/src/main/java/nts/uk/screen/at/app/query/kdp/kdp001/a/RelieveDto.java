@@ -10,10 +10,10 @@ public class RelieveDto {
 	 * 打刻手段
 	 */
 	@Getter
-	private final String stampMeans;
+	private final Integer stampMeans;
 
 	public static RelieveDto fromDomain(Relieve relieve) {
-		return new RelieveDto(relieve.getStampMeans() != null ? relieve.getStampMeans().name : null);
+		return new RelieveDto(relieve.getStampMeans() != null ? relieve.getStampMeans().value : null);
 	}
 
 }

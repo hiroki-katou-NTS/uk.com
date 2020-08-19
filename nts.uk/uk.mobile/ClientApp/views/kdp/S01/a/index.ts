@@ -361,26 +361,32 @@ export class KdpS01AComponent extends Vue {
     private setBtnColor(buttonSetting: model.ButtonSettingsDto, stampToSuppress: model.IStampToSuppress) {
 
         const DEFAULT_GRAY = '#E8E9EB';
+        let valueType = DEFAULT_GRAY,
+            backGroundColor = _.get(buttonSetting, 'buttonDisSet.backGroundColor', DEFAULT_GRAY);
 
-        if (buttonSetting.buttonValueType === ButtonType.GOING_TO_WORK) {
-            // 出勤
-            buttonSetting.buttonDisSet.backGroundColor = !stampToSuppress.goingToWork ? buttonSetting.buttonDisSet.backGroundColor : DEFAULT_GRAY;
+        switch (buttonSetting.buttonValueType) {
+            case ButtonType.GOING_TO_WORK:
+                valueType = !stampToSuppress.goingToWork ? backGroundColor : DEFAULT_GRAY;
+                break;
+
+            case ButtonType.WORKING_OUT:
+                valueType = !stampToSuppress.departure ? backGroundColor : DEFAULT_GRAY;
+                break;
+
+            case ButtonType.GO_OUT:
+                valueType = !stampToSuppress.goOut ? backGroundColor : DEFAULT_GRAY;
+                break;
+
+            case ButtonType.RETURN:
+                valueType = !stampToSuppress.turnBack ? backGroundColor : DEFAULT_GRAY;
+                break;
+                
+            default:
+                valueType = DEFAULT_GRAY ;
+                break;
         }
 
-        if (buttonSetting.buttonValueType === ButtonType.WORKING_OUT) {
-            // 退勤
-            buttonSetting.buttonDisSet.backGroundColor = !stampToSuppress.departure ? buttonSetting.buttonDisSet.backGroundColor : DEFAULT_GRAY;
-        }
-
-        if (buttonSetting.buttonValueType === ButtonType.GO_OUT) {
-            // 外出
-            buttonSetting.buttonDisSet.backGroundColor = !stampToSuppress.goOut ? buttonSetting.buttonDisSet.backGroundColor : DEFAULT_GRAY;
-        }
-
-        if (buttonSetting.buttonValueType === ButtonType.RETURN) {
-            // 戻り
-            buttonSetting.buttonDisSet.backGroundColor = !stampToSuppress.turnBack ? buttonSetting.buttonDisSet.backGroundColor : DEFAULT_GRAY;
-        }
+        buttonSetting.buttonDisSet.backGroundColor = valueType;
     }
 
 
