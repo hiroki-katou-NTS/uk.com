@@ -9,16 +9,6 @@ const requestUrl = {
 	getStampToSuppress: 'at/record/stamp/employment_system/get_stamp_to_suppress'
 }
 
-const stampTypes = [
-	{ text: "KDP002_120", name: "氏名選択" },
-	{ text: "KDP002_120", name: "指認証打刻" },
-	{ text: "KDP002_120", name: "ICカード打刻" },
-	{ text: "KDP002_120", name: "個人打刻" },
-	{ text: "KDP002_120", name: "ポータル打刻" },
-	{ text: "KDP002_121", name: "スマホ打刻" },
-	{ text: "KDP002_122", name: "タイムレコーダー打刻" }
-]
-
 const notUseMessage = [
 	{ text: "Msg_1644", value: 1 },
 	{ text: "Msg_1645", value: 2 },

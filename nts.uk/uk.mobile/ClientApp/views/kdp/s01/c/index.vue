@@ -20,7 +20,7 @@
     </div>
     <div class="col-12 value">
       <label class="col-7 px-1">{{
-        screenData.date | date("YYYY年 MM月 DD日（ddd）")
+        screenData.date | date("YYYY/MM/DD")
       }}</label>
       <label
         class="col-5 stamp-time font-weight-bold"
@@ -32,11 +32,11 @@
     <div class="row ml-1 title uk-text-over-time">
       <label>{{ "KDPS01_28" | i18n }}</label>
     </div>
-    <div class="col-12 value uk-text-blue">
+    <div class="col-12 value">
       <div class="col-7 d-inline-block"></div>
       <label
         class=" col-5 stamp-text font-weight-bold"
-        style="line-height: 1rem;"
+        style="line-height: 1rem; color:#0033cc;"
         >{{ screenData.stampAtr }}</label
       >
     </div>
@@ -101,6 +101,7 @@
       </button>
     </div>
     <button
+      v-focus
       type="button"
       v-on:click="$close"
       class="col-12 btn btn-secondary btn-block"
