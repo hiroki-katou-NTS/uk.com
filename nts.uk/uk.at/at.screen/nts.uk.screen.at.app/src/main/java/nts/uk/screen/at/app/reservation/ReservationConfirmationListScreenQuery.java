@@ -6,7 +6,7 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.GetEmployeeReferenceRangeService;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSettingRepository;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
 
 import javax.ejb.Stateless;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class ReservationConfirmationListScreenQuery {
 
     @Inject
-    private GetEmployeeReferenceRangeService domainService;
+    private BentoReservationSettingRepository bentoReservationSettingRepository;
 
     @Inject
     private BentoMenuRepository bentoMenuRepo;
@@ -33,14 +33,13 @@ public class ReservationConfirmationListScreenQuery {
     public ReservationConfirmationListDto getReservationConfirmationListStartupInfo(String companyId) {
         ReservationConfirmationListDto dto = new ReservationConfirmationListDto();
 
-        Optional<BentoReservationSetting> optBentoReservationSetting = domainService.getBentoReservationSetting(companyId);
+        Optional<BentoReservationSetting> optBentoReservationSetting = bentoReservationSettingRepository.findByCId(companyId);
         if (optBentoReservationSetting.isPresent()) {
             BentoReservationSetting bentoReservationSetting = optBentoReservationSetting.get();
             dto.setOperationDistinction(bentoReservationSetting.getOperationDistinction());
         }
 
         BentoMenu bentoMenuByEndDate = bentoMenuRepo.getBentoMenuByEndDate(companyId, GeneralDate.max());
-
         List<Bento> bentoList = bentoMenuByEndDate.getMenu();
         List<List<Bento>> partitions = new ArrayList<>(
                 bentoList.stream()
@@ -49,7 +48,8 @@ public class ReservationConfirmationListScreenQuery {
         );
 
         List<Bento> bentoMenu;
-        if (dto.getOperationDistinction() == OperationDistinction.BY_COMPANY) {
+        OperationDistinction operationDistinction = dto.getOperationDistinction();
+        if (operationDistinction == OperationDistinction.BY_COMPANY) {
             bentoMenu = partitions.get(1);
         } else {
             bentoMenu = partitions.get(0);

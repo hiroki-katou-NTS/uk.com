@@ -5,7 +5,7 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="/master/dialog.xhtml">
+	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="./kmr001.c.style.css" />
@@ -13,38 +13,52 @@
 			<com:scriptfile path="./kmr001.c.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="contents-area">
+			<div id="functions-area">
 				<!--C1_1-->
-				<a class="hyperlink" href="../a/index.xhtml" data-bind="text: $vm.$i18n('KMR001_2')"></a>
+				<a class="goback" tabindex="1" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }, text: $i18n('KMR001_2')"></a>
 				<!--C1_2-->
-				<button class="proceed sidebar-button" data-bind="text: $vm.$i18n('KMR001_4')"></button>
+				<button class="proceed sidebar-button" data-bind="text: $i18n('KMR001_4')"></button>
 				<!--C1_3-->
-				<button class="danger" data-bind="text: $vm.$i18n('KMR001_7')"></button>
-				<hr/>
-
+				<button class="danger" data-bind="text: $i18n('KMR001_7')"></button>
+			</div>
+			<div class="kmr001-c" id="contents-area">
 				<div class="kmr001-c-left-content">
 					<div data-bind="ntsPanel:{width: '400px', height: '35px', direction: 'bottom', showIcon: false, visible: true}">
 						<!--C3_2-->
-						<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true, text: $vm.$i18n('KMR001_38')}"></div>
+						<div data-bind="ntsFormLabel: { inline: true, required: true, enable: true, text: $i18n('KMR001_38')}"></div>
 						<!--C3_3-->
 						<span>項目移送</span>
 						<!--C3_4-->
-						<div style="display: inline-block">
-							<button id ="C3_4" data-bind="click: openConfigHisDialog,
-							disable: false, text: $vm.$i18n('KMR001_39')"></button>
+						<div class="btn-content" style="display: inline-block">
+							<button class="small" id ="C3_4" data-bind="click: openConfigHisDialog,
+							disable: false, text: $i18n('KMR001_39')"></button>
 						</div>
 					</div>
 
 					<!--C4_1-->
 					<div data-bind="ntsPanel:{width: '400px', height: '400px', direction: 'right', showIcon: true, visible: true}">
+						<!--search box-->
+						<div class="search-box" tabindex="2"
+							 data-bind="ntsSearchBox: {
+							 searchMode: 'filter',
+							 targetKey:  'id',
+							 comId: 'approver-job-list',
+							 items: items,
+							 mode: 'igGrid',
+							 selected: currentCode,
+							 selectedKey: 'id',
+							 fields: ['id', 'name' ],
+							 mode: 'igGrid'
+							 }"
+						/>
 						<!--C4_2-->
 						<table id="approver-job-list" data-bind="ntsGridList: {
 							height: 350,
 							dataSource: items,
 							primaryKey: 'id',
 							columns: ([
-								{ headerText: $i18n('KMR001_41'), key: 'id', width: 50 },
-								{ headerText: $i18n('KMR001_42'), key: 'name', width: 250 }
+								{ headerText: $i18n('KMR001_41'), prop: 'id', width: 50 },
+								{ headerText: $i18n('KMR001_42'), prop: 'name', width: 325 }
 							]),
 							value: currentCode
 						}"></table>
@@ -52,70 +66,112 @@
 
 				</div>
 
-				<div class="kmr001-c-right-content panel panel-frame">
-					<!--C5_2-->
-					<span class="label" data-bind="text: $vm.$i18n('KMR001_43')" ></span>
+				<div class="kmr001-c-right-content1 panel panel-frame">
+					<table>
+						<tr>
+							<th>
+								<!--C5_2-->
+								<span class="label" data-bind="text: $i18n('KMR001_43')" ></span>
+							</th>
+						</tr>
+						<tr>
+							<td>
+								<!--C6_1-->
+								<div data-bind="ntsFormLabel: { inline: true, required: true, enable: true, text: $i18n('KMR001_5')}"></div>
+							</td>
+							<td>
+								<!--C6_2-->
+								<input class="data-control" data-bind="ntsTextEditor: {value: model.lunchBox}" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<!--C11_1-->
+								<div data-bind="ntsFormLabel: { inline: true, required: true, enable: true, text: $i18n('KMR001_46')}"></div>
+							</td>
+							<td>
+								<!--C11_2-->
+								<div class="data-control" data-bind="ntsCheckBox: { checked: false, enable: false, text: '項目移送' }"></div>
 
-					<div class="break-line"></div>
+								<!--C11_3-->
+								<span class="label">6:00 ~ 10:00</span>
+								<!--C11_6-->
+							</td>
+						</tr>
+						<tr>
+							<td/>
+							<td>
+								<!--C11_4-->
+								<div class="data-control" data-bind="ntsCheckBox: { checked: false, enable: false, text: '項目移送' }"></div>
 
-					<!--C6_1-->
-					<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true, text: $vm.$i18n('KMR001_5')}"></div>
-
-					<!--C6_2-->
-					<input data-bind="ntsTextEditor: {value: model.lunchBox}" />
-
-					<div class="break-line"></div>
-
-					<!--C11_1-->
-					<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true, text: $vm.$i18n('KMR001_46')}"></div>
-
-					<!--C11_2-->
-					<div data-bind="ntsCheckBox: { checked: false, enable: false, text: '項目移送' }"></div>
-
-					<!--C11_3-->
-					<span class="label">6:00 ~ 10:00</span>
-
-					<!--C11_6-->
-					<button data-bind="text: $vm.$i18n('KMR001_47')"></button>
-
-					<br/>
-					<!--C11_4-->
-					<div data-bind="ntsCheckBox: { checked: false, enable: false, text: '項目移送' }"></div>
-
-					<!--C11_5-->
-					<span class="label">12:00 ~ 15:00</span>
-
-					<div class="break-line"></div>
-
-					<!--C9_1-->
-					<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true, text: $vm.$i18n('KMR001_45')}"></div>
-
-					<!--C9_2-->
-					<input id="kmr001-c-9-2" data-bind="ntsTextEditor: {value: model.unit}" />
-					<div class="break-line"></div>
-
-					<!--C7_1-->
-					<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true, text: $vm.$i18n('KMR001_43')}"></div>
-
-					<!--C7_2-->
-					<input id="kmr001-c-7-2" data-bind="ntsNumberEditor: { value: model.amount1, enable: true,
+								<!--C11_5-->
+								<span class="label">12:00 ~ 15:00</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<!--C9_1-->
+								<div data-bind="ntsFormLabel: {  inline: true, required: true, enable: true, text: $i18n('KMR001_45')}"></div>
+							</td>
+							<td>
+								<!--C9_2-->
+								<input class="data-control" id="kmr001-c-9-2" data-bind="ntsTextEditor: {value: model.unit}" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<!--C7_1-->
+								<div data-bind="ntsFormLabel: {  inline: true, required: true, enable: true, text: $i18n('KMR001_43')}"></div>
+							</td>
+							<td>
+								<!--C7_2-->
+								<input id="kmr001-c-7-2" data-bind="ntsNumberEditor: { value: model.amount1, enable: true,
 						required: true,option: {decimallength: 4 }}" />
-					<div class="break-line"></div>
-
-					<!--C8_1-->
-					<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true, text: $vm.$i18n('KMR001_44')}"></div>
-
-					<!--C8_2-->
-					<input id="kmr001-c-8-2" data-bind="ntsNumberEditor: { value: model.amount2, enable: true,
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<!--C8_1-->
+								<div data-bind="ntsFormLabel: { inline: true, enable: true, text: $i18n('KMR001_44')}"></div>
+							</td>
+							<td>
+								<!--C8_2-->
+								<input class="data-control" id="kmr001-c-8-2" data-bind="ntsNumberEditor: { value: model.amount2, enable: true,
 						required: true,option: {decimallength: 4 }}" />
-					<div class="break-line"></div>
-
-					<!--C10_1-->
-					<div data-bind="ntsFormLabel: { constraint: true, inline: true, required: true, enable: true, text: $vm.$i18n('KMR001_24')}"></div>
-
-					<!--C10_2-->
-					<input id="kmr001-c-10-2" data-bind="ntsNumberEditor: { value: model.maxNumberOfReservations, enable: true,
-					 	required: true,option: {decimallength: 2 }}"/>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="kmr001-c-right-content2 panel panel-frame">
+					<table>
+						<tr>
+							<th>
+								<!--C5_2-->
+								<span class="label" data-bind="text: $i18n('KMR001_51')" ></span>
+							</th>
+						</tr>
+						<tr>
+							<td>
+								<!--C15_1-->
+								<div data-bind="ntsFormLabel: { inline: true, required: true, enable: true, text: $i18n('KMR001_50')}"></div>
+							</td>
+							<td>
+								<!--C15_2-->
+								<div id="combo-box" data-bind="ntsComboBox: {
+									name: 'KMR001_50',
+									options: vm.workPlaceList,
+									optionsValue: 'code',
+									visibleItemsCount: 5,
+									value: vm.workPlaceCode,
+									optionsText: 'name',
+									columns: [
+										{ prop: 'code', length: 4 },
+										{ prop: 'name', length: 10 },
+									]
+								} " />
+							</td>
+						</tr>
+					</table>
 				</div>
 			</div>
 		</ui:define>

@@ -17,8 +17,23 @@
 .kmr001-c-left-content{
     float: left;
 }
-.kmr001-c-right-content{
+.kmr001-c-right-content1{
     float: left;
     width: calc(100% - 550px);
+}
+.kmr001-c-right-content2{
+    float: left;
+    width: calc(100% - 550px);
+    margin-top: 20px;
+}
+.kmr001-c .btn-content {
+    float: right;
+}
+
+.kmr001-c tr td {
+    padding-top: 25px;
+}
+.kmr001-c .panel.ntsPanel.direction-bottom {
+    margin-bottom: 25px;
 }
 

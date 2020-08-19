@@ -17,37 +17,92 @@ module nts.uk.at.view.kdp.share {
         <span id="stamp-time-text" data-bind="date: time, format: 'HH:mm'"></span>
     </div>
 	<div class="button-group" data-bind="if: !!events">
-		<div data-bind="if: !!events.setting">
-			<button class="btn-setting" data-bind="icon: 5, attr: { title: $component.$i18n('KDP003_3') }, click: events.setting"></button>
+		<div data-bind="if: !!ko.unwrap(events.setting.show)">
+			<button class="btn-setting" data-bind="icon: 5, click: events.setting.click"></button>
 		</div>
-		<div data-bind="if: !!events.company">
-			<button class="btn-company proceed small" data-bind="i18n: 'KDP003_2', click: events.company"></button>
+		<div data-bind="if: !!ko.unwrap(events.company.show)">
+			<button class="btn-company proceed small" data-bind="i18n: 'KDP003_2', click: events.company.click"></button>
 		</div>
 	</div>
 `;
+	const COMPONENT_NAME = 'stamp-clock';
+
+	@handler({
+		bindingName: COMPONENT_NAME,
+		validatable: true,
+		virtual: false
+	})
+	export class EmployeeComponentBindingHandler implements KnockoutBindingHandler {
+		init(element: HTMLElement, valueAccessor: () => any, __ab: KnockoutAllBindingsAccessor, ___vm: ComponentViewModel, bindingContext: KnockoutBindingContext) {
+			const name = COMPONENT_NAME;
+			const params = valueAccessor();
+
+			ko.applyBindingsToNode(element, { component: { name, params } }, bindingContext);
+
+			return { controlsDescendantBindings: true };
+		}
+	}
 
 	@component({
-		name: 'stamp-clock',
+		name: COMPONENT_NAME,
 		template
 	})
 	export class StampClock extends ko.ViewModel {
 		time: KnockoutObservable<Date> = ko.observable(new Date());
-		settings: KnockoutObservable<StampColor> = ko.observable({
-			textColor: 'rgb(255, 255, 255)',
-			backGroundColor: 'rgb(0, 51, 204)'
-		});
 
 		events!: ClickEvent;
+		settings!: KnockoutComputed<StampColor>;
 
 		created(params?: StampClocParam) {
 			const vm = this;
 
 			if (params) {
-				const { setting, events } = ko.toJS(params);
-				const { textColor, backGroundColor } = setting || { textColor: 'rgb(255, 255, 255)', backGroundColor: 'rgb(0, 51, 204)' };
-				
-				vm.events = events;
-				vm.settings({ textColor, backGroundColor });
+				const { setting, events } = params;
+
+				if (events) {
+					// convert setting event to binding object
+					if (_.isFunction(events.setting)) {
+						const click = events.setting;
+
+						events.setting = {
+							click,
+							show: true
+						} as any;
+					}
+
+					// convert company event to binding object
+					if (_.isFunction(events.company)) {
+						const click = events.company;
+
+						events.company = {
+							click,
+							show: true
+						} as any;
+					}
+
+					vm.events = events;
+				} else {
+					vm.events = {
+						company: {
+							show: false,
+							click: () => { }
+						} as any,
+						setting: {
+							show: false,
+							click: () => { }
+						} as any
+					};
+				}
+
+				vm.settings = ko.computed(() => {
+					const { textColor, backGroundColor } = ko.toJS(setting || {});
+
+					if (textColor && backGroundColor) {
+						return { textColor, backGroundColor };
+					} else {
+						return { textColor: 'rgb(255, 255, 255)', backGroundColor: 'rgb(0, 51, 204)' };
+					}
+				});
 			}
 
 			setInterval(() => vm.time(vm.$date.now()), 100);
@@ -66,8 +121,14 @@ module nts.uk.at.view.kdp.share {
 	}
 
 	export interface ClickEvent {
-		setting: () => void;
-		company:  () =>void;
+		setting: () => void | {
+			show: KnockoutObservable<boolean>;
+			click: () => void;
+		};
+		company: () => void | {
+			show: KnockoutObservable<boolean>;
+			click: () => void;
+		};
 	}
 
 	export interface StampColor {

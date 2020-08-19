@@ -6,9 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.reservation.bento.BentoReserveCommand;
-import nts.uk.ctx.at.record.app.command.reservation.bento.BentoReserveCommandHandler;
-import nts.uk.ctx.at.record.app.command.reservation.bento.BentoReserveMofidyCommandHandler;
+import nts.uk.ctx.at.record.app.command.reservation.bento.*;
 import nts.uk.ctx.at.record.app.query.reservation.ReservationDateParam;
 import nts.uk.ctx.at.record.app.query.reservation.ReservationDto;
 import nts.uk.ctx.at.record.app.query.reservation.ReservationQuery;
@@ -25,6 +23,12 @@ public class ReservationService extends WebService{
 	
 	@Inject
 	private BentoReserveMofidyCommandHandler updade;
+
+	@Inject
+	private ForceDeleteBentoReserveCommandHandler forceDelete;
+
+	@Inject
+	private ForceUpdateBentoReserveCommandHandler forceUpdate;
 	
 	@POST
 	@Path("find")
@@ -43,4 +47,14 @@ public class ReservationService extends WebService{
 	public void update(BentoReserveCommand command) {
 		this.updade.handle(command);
 	}
+
+	@POST
+	@Path("force-delete")
+	public void update(ForceDeleteBentoReserveCommand command) {
+		this.forceDelete.handle(command);
+	}
+
+	@POST
+	@Path("force-update")
+	public void update(ForceUpdateBentoReserveCommand command) { this.forceUpdate.handle(command); }
 }

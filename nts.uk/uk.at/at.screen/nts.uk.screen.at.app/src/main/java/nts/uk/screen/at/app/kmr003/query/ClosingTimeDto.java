@@ -12,6 +12,8 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 public class ClosingTimeDto {
+    /** 締め時刻枠 */
+    private int closingTimeFrame;
     /** 名前 */
     private String name;
     /** 終了時刻 */

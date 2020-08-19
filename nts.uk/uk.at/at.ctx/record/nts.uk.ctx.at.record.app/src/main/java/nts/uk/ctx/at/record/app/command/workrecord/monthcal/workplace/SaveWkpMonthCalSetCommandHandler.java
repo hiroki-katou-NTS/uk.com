@@ -11,12 +11,12 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpDeforLaborMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpFlexMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpFlexMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpRegulaMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpRegulaMonthActCalSetRepository;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.wkp.WkpFlexMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.wkp.WkpFlexMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.wkp.WkpDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.wkp.WkpDeforLaborMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.wkp.WkpRegulaMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.wkp.WkpRegulaMonthActCalSetRepo;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -27,15 +27,15 @@ public class SaveWkpMonthCalSetCommandHandler extends CommandHandler<SaveWkpMont
 
 	/** The defor labor month act cal set repo. */
 	@Inject
-	private WkpDeforLaborMonthActCalSetRepository deforLaborMonthActCalSetRepo;
+	private WkpDeforLaborMonthActCalSetRepo deforLaborMonthActCalSetRepo;
 
 	/** The flex month act cal set repo. */
 	@Inject
-	private WkpFlexMonthActCalSetRepository flexMonthActCalSetRepo;
+	private WkpFlexMonthActCalSetRepo flexMonthActCalSetRepo;
 
 	/** The regula month act cal set repo. */
 	@Inject
-	private WkpRegulaMonthActCalSetRepository regulaMonthActCalSetRepo;
+	private WkpRegulaMonthActCalSetRepo regulaMonthActCalSetRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -52,11 +52,11 @@ public class SaveWkpMonthCalSetCommandHandler extends CommandHandler<SaveWkpMont
 
 		// get workplace id
 		SaveWkpMonthCalSetCommand command = context.getCommand();
-		String wkpId = command.getWkpId();
+		String wkpId = command.getWorkplaceId();
 
-		WkpDeforLaborMonthActCalSet wkpDeforLaborMonthActCalSet = new WkpDeforLaborMonthActCalSet(context.getCommand());
-		WkpFlexMonthActCalSet wkpFlexMonthActCalSet = new WkpFlexMonthActCalSet(context.getCommand());
-		WkpRegulaMonthActCalSet wkpRegulaMonthActCalSet = new WkpRegulaMonthActCalSet(context.getCommand());
+		WkpDeforLaborMonthActCalSet wkpDeforLaborMonthActCalSet = context.getCommand().defor(cid);
+		WkpFlexMonthActCalSet wkpFlexMonthActCalSet = context.getCommand().flex(cid);
+		WkpRegulaMonthActCalSet wkpRegulaMonthActCalSet = context.getCommand().regular(cid);
 
 		Optional<WkpDeforLaborMonthActCalSet> optWkpDeforLaborMonthActCalSet = deforLaborMonthActCalSetRepo.find(cid,
 				wkpId);

@@ -7,8 +7,7 @@ module nts.uk.at.kmr003.a {
     import validation = nts.uk.ui.validation;
 
     const API = {
-        SETTING: 'at/record/stamp/management/personal/startPage',
-        HIGHTLIGHT: 'at/record/stamp/management/personal/stamp/getHighlightSetting'
+        BENTO_RESERVATTIONS: 'screen/at/record/reservation/bento_modify/getReservations'
     };
 
     @bean()
@@ -28,17 +27,19 @@ module nts.uk.at.kmr003.a {
         ccg001ComponentOption: GroupOption = null;
 
         fixedColumns = [
-            {headerText: "ID", key: 'sid', dataType: 'string', hidden: true},
-            {headerText: getText("KMR003_21"), key: 'employeeCode', dataType: 'string', width: '150px', height: '', ntsControl: "Label"},
-            {headerText: getText("KMR003_22"), key: 'employeeName', dataType: 'string', width: '150px', ntsControl: "Label"},
-            {headerText: getText("KMR003_23"), group: [
-                    {headerText: '', key: 'isDel', dataType: 'boolean', width: '100px', checkbox: true, ntsControl: "isDelCheckBox"}
+            { headerText: "ID", key: 'sid', dataType: 'string', hidden: true },
+            { headerText: getText("KMR003_21"), key: 'employeeCode', dataType: 'string', width: '150px', height: '', ntsControl: "Label" },
+            { headerText: getText("KMR003_22"), key: 'employeeName', dataType: 'string', width: '150px', ntsControl: "Label" },
+            {
+                headerText: getText("KMR003_23"), group: [
+                    { headerText: '', key: 'isDel', dataType: 'boolean', width: '100px', checkbox: true, ntsControl: "isDelCheckBox" }
                 ]
             },
-            {headerText: getText("KMR003_24"), key: 'timeOrder', dataType: 'string', width: '100px', ntsControl: "Label"},
-            {headerText: getText("KMR003_25"),
+            { headerText: getText("KMR003_24"), key: 'timeOrder', dataType: 'string', width: '100px', ntsControl: "Label" },
+            {
+                headerText: getText("KMR003_25"),
                 group: [
-                    {headerText: '', key: 'isOrder', dataType: 'boolean', width: '100px', checkbox: true, ntsControl: "isOrderCheckBox"}
+                    { headerText: '', key: 'isOrder', dataType: 'boolean', width: '100px', checkbox: true, ntsControl: "isOrderCheckBox" }
                 ]
             },
         ];
@@ -49,48 +50,54 @@ module nts.uk.at.kmr003.a {
         datas: Array<BookingModify> = [
             {
                 id: 1, employeeCode: "A001", employeeName: "emp 1", timeOrder: "8:30", lstStatus: [
-                    {bentoID: 1, amount: 1},
-                    {bentoID: 3, amount: 1},
-                    {bentoID: 4, amount: 1},
-                    {bentoID: 5, amount: 1},
-                    {bentoID: 6, amount: 1},
-                    {bentoID: 13, amount: 1},
-                    {bentoID: 19, amount: 1},
-                    {bentoID: 29, amount: 1}
+                    { bentoID: 1, amount: 1 },
+                    { bentoID: 3, amount: 1 },
+                    { bentoID: 4, amount: 1 },
+                    { bentoID: 5, amount: 1 },
+                    { bentoID: 6, amount: 1 },
+                    { bentoID: 13, amount: 1 },
+                    { bentoID: 19, amount: 1 },
+                    { bentoID: 29, amount: 1 }
                 ]
             },
             {
                 id: 2, employeeCode: "A002", employeeName: "emp 2", timeOrder: "8:30", lstStatus: [
-                    {bentoID: 2, amount: 1},
-                    {bentoID: 5, amount: 1},
-                    {bentoID: 6, amount: 1},
-                    {bentoID: 9, amount: 1},
-                    {bentoID: 11, amount: 1},
-                    {bentoID: 18, amount: 1},
-                    {bentoID: 25, amount: 1},
-                    {bentoID: 37, amount: 1}
+                    { bentoID: 2, amount: 1 },
+                    { bentoID: 5, amount: 1 },
+                    { bentoID: 6, amount: 1 },
+                    { bentoID: 9, amount: 1 },
+                    { bentoID: 11, amount: 1 },
+                    { bentoID: 18, amount: 1 },
+                    { bentoID: 25, amount: 1 },
+                    { bentoID: 37, amount: 1 }
                 ]
             },
             {
                 id: 3, employeeCode: "A003", employeeName: "emp 2", timeOrder: "8:30", lstStatus: [
-                    {bentoID: 3, amount: 1},
-                    {bentoID: 6, amount: 1},
-                    {bentoID: 9, amount: 1},
-                    {bentoID: 12, amount: 1},
-                    {bentoID: 15, amount: 1},
-                    {bentoID: 19, amount: 1},
-                    {bentoID: 22, amount: 1},
-                    {bentoID: 33, amount: 1}
+                    { bentoID: 3, amount: 1 },
+                    { bentoID: 6, amount: 1 },
+                    { bentoID: 9, amount: 1 },
+                    { bentoID: 12, amount: 1 },
+                    { bentoID: 15, amount: 1 },
+                    { bentoID: 19, amount: 1 },
+                    { bentoID: 22, amount: 1 },
+                    { bentoID: 33, amount: 1 }
                 ]
             }
         ];
         dataConverted = [
-            {id: 1, employeeCode: "A001", employeeName: "emp 1", timeOrder: "8:30", bento1: 1, bento3: 1, bento4: 1, bento5: 1,
-                bento6: 1, bento13: 1, bento19: 1, bento29: 1},
-            {id: 2, employeeCode: "A002", employeeName: "emp 2", timeOrder: "8:30", bento2: 1, bento5: 1, bento6: 1,
-                bento9: 1, bento11: 1, bento18: 1, bento25: 1, bento37: 1},
-            {id: 3, employeeCode: "A003", employeeName: "emp 2", timeOrder: "8:30", bento3: 1, bento6: 1, bento9: 1,
-                bento12: 1, bento15: 1, bento19: 1, bento22: 1, bento33: 1}
+            {
+                id: 1, employeeCode: "A001", employeeName: "emp 1", timeOrder: "8:30", bento1: 1, bento3: 1, bento4: 1, bento5: 1,
+                bento6: 1, bento13: 1, bento19: 1, bento29: 1
+            },
+            {
+                id: 2, employeeCode: "A002", employeeName: "emp 2", timeOrder: "8:30", bento2: 1, bento5: 1, bento6: 1,
+                bento9: 1, bento11: 1, bento18: 1, bento25: 1, bento37: 1
+            },
+            {
+                id: 3, employeeCode: "A003", employeeName: "emp 2", timeOrder: "8:30", bento3: 1, bento6: 1, bento9: 1,
+                bento12: 1, bento15: 1, bento19: 1, bento22: 1, bento33: 1
+            }
         ];
         listBento = [];
         //KnockoutObservableArray<BentoDto>;
@@ -111,8 +118,8 @@ module nts.uk.at.kmr003.a {
 
             //add A2_8 A2_9
             vm.roundingRules = ko.observableArray([
-                {code: '1', name: '昼'},
-                {code: '2', name: '夜'}
+                { code: '1', name: '昼' },
+                { code: '2', name: '夜' }
             ]);
             vm.selectedRuleCode = ko.observable(1);
 
@@ -148,14 +155,14 @@ module nts.uk.at.kmr003.a {
 
             vm.ccg001ComponentOption = <GroupOption>{
                 /** Common properties */
-                systemType: 3,
+                systemType: 2,
                 showEmployeeSelection: true,
-                showQuickSearchTab: false,
+                showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
                 showBaseDate: true,
-                showClosure: null,
-                showAllClosure: null,
-                showPeriod: null,
+                showClosure: false,
+                showAllClosure: false,
+                showPeriod: false,
                 periodFormatYM: null,
 
                 /** Required parameter */
@@ -165,22 +172,22 @@ module nts.uk.at.kmr003.a {
                 inService: true,
                 leaveOfAbsence: true,
                 closed: true,
-                retirement: true,
+                retirement: false,
 
                 /** Quick search tab options */
-                showAllReferableEmployee: null,
-                showOnlyMe: null,
-                showSameWorkplace: null,
-                showSameWorkplaceAndChild: null,
+                showAllReferableEmployee: true,
+                showOnlyMe: true,
+                showSameWorkplace: true,
+                showSameWorkplaceAndChild: true,
 
                 /** Advanced search properties */
                 showEmployment: true,
-                showDepartment: true,
-                showWorkplace: false,
+                showDepartment: false,
+                showWorkplace: true,
                 showClassification: true,
                 showJobTitle: true,
                 showWorktype: true,
-                isMutipleCheck: true,
+                isMutipleCheck: null,
                 tabindex: 6,
                 showOnStart: true,
 
@@ -199,8 +206,8 @@ module nts.uk.at.kmr003.a {
             const vm = this;
 
             vm.$blockui('show')
-            //.then(() => vm.$ajax('at', API.SETTING))
-            //.then($('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption))
+                //.then(() => vm.$ajax('at', API.SETTING))
+                //.then($('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption))
                 .then((data: any) => {
                     if (data) {
                         if (data.stampSetting) {
@@ -212,13 +219,13 @@ module nts.uk.at.kmr003.a {
                     }
                 })
                 .fail((res) => {
-                    vm.$dialog.error({messageId: res.messageId})
+                    vm.$dialog.error({ messageId: res.messageId })
                         .then(() => vm.$jump("com", "/view/ccg/008/a/index.xhtml"));
                 })
                 .always(() => vm.$blockui('clear'));
             $('#com-ccg001').ntsGroupComponent(vm.ccg001ComponentOption);
             vm.loadMGrid();
-            _.extend(window, {vm});
+            _.extend(window, { vm });
         }
 
         loadMGrid() {
@@ -244,11 +251,11 @@ module nts.uk.at.kmr003.a {
                 columns: this.fixedColumns.concat(this.dynamicColumns),
                 ntsControls: [
                     {
-                        name: 'isDelCheckBox', options: {value: 1, text: ''}, optionsValue: 'value',
+                        name: 'isDelCheckBox', options: { value: 1, text: '' }, optionsValue: 'value',
                         optionsText: 'text', controlType: 'CheckBox', enable: false,
                     },
                     {
-                        name: 'isOrderCheckBox', options: {value: 1, text: ''}, optionsValue: 'value',
+                        name: 'isOrderCheckBox', options: { value: 1, text: '' }, optionsValue: 'value',
                         optionsText: 'text', controlType: 'CheckBox', enable: true,
                     }
                 ],
@@ -287,7 +294,9 @@ module nts.uk.at.kmr003.a {
             }
             let param = self.createParamGet();
             let gridData = [];
-
+            self.$ajax(API.BENTO_RESERVATTIONS, param).done(res => {
+                console.log(res)
+            })
             $.when(gridData).done((depts, amounts) => {
                 self.datas = gridData;
                 $("#grid").mGrid("destroy");
@@ -302,11 +311,14 @@ module nts.uk.at.kmr003.a {
 
         createParamGet() {
             let self = this;
-            let listSId = _.map(self.empSearchItems, (item: EmployeeSearchDto) => {
+            let empIds = _.map(self.empSearchItems, (item: EmployeeSearchDto) => {
                 return item.employeeId;
             });
             let param = {
-                listSId: listSId
+                empIds: empIds,
+                date: self.dateData(),
+                closingTimeFrame: 1,
+                searchCondition: 3
             };
             return param;
         }
@@ -376,8 +388,9 @@ module nts.uk.at.kmr003.a {
         employeeId: string;
         employeeCode: string;
         employeeName: string;
-        hourBooking: string;
-        lstBooking: Array<listBooking>;
+        affiliationCode: string;
+        affiliationId: string;
+        affiliationName: string;
     }
 
     interface listBooking {
