@@ -57,9 +57,9 @@ public class SortEmpService {
 		List<List<String>> listEmpIDs = new ArrayList<List<String>>();
 		listEmpIDs.add(lstEmpId);
 
-		List<SortOrder> litsOrderedList = sortSetting.getOrderedList().stream().map(c -> c.getSortOrder())
+		List<SortType> litsOrderedList = sortSetting.getOrderedList().stream().map(c -> c.getType())
 				.collect(Collectors.toList());
-		for (SortOrder item : litsOrderedList) {
+		for (SortType item : litsOrderedList) {
 			switch (item) {
 			case SCHEDULE_TEAM: {
 				/*

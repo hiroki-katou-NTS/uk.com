@@ -63,7 +63,7 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_team1() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.SORT_ASC, SortOrder.SCHEDULE_TEAM));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.SCHEDULE_TEAM));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 		new Expectations() {
 			{
@@ -87,7 +87,7 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_team2() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3", "emp4");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.SORT_ASC, SortOrder.SCHEDULE_TEAM));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.SCHEDULE_TEAM));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 		List<BelongScheduleTeam> listBelongScheduleTeam = Arrays.asList(
 				new BelongScheduleTeam("emp1", "wkp1", new ScheduleTeamCd("S2")),
@@ -117,7 +117,7 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_rank1() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.SORT_ASC, SortOrder.RANK));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.RANK));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 
 		new Expectations() {
@@ -143,7 +143,7 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_rank2() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.SORT_ASC, SortOrder.RANK));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.RANK));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 		RankPriority rankPriority = new RankPriority("000000000000-0001", // dummy
 				new ArrayList<RankCode>(Arrays.asList(new RankCode("R1"), new RankCode("R2"), new RankCode("R3"))));
@@ -173,7 +173,7 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_rank3() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.SORT_ASC, SortOrder.RANK));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.RANK));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 		RankPriority rankPriority = new RankPriority("000000000000-0001", // dummy
 				new ArrayList<RankCode>(Arrays.asList(new RankCode("R1"), new RankCode("R2"), new RankCode("R3"))));
@@ -208,7 +208,7 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_category1() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.SORT_ASC, SortOrder.LISENCE_ATR));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.LISENCE_ATR));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 		new Expectations() {
 			{
@@ -237,7 +237,7 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_category2() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.SORT_ASC, SortOrder.LISENCE_ATR));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.LISENCE_ATR));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 		new Expectations() {
 			{
@@ -270,7 +270,7 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_position1() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.SORT_ASC, SortOrder.POSITION));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.POSITION));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 		new Expectations() {
 			{
@@ -297,7 +297,7 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_position2() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.SORT_ASC, SortOrder.POSITION));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.POSITION));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 		List<EmployeePosition> listEmployeePosition = Arrays.asList(new EmployeePosition("emp1", "job2"),
 				new EmployeePosition("emp2", "job1"), new EmployeePosition("emp3", "job3"));
@@ -327,7 +327,7 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_position3() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.SORT_ASC, SortOrder.POSITION));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.POSITION));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 
 		List<PositionImport> listPositionImport = Arrays.asList(
@@ -360,7 +360,7 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_position4() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3", "emp4");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.SORT_ASC, SortOrder.POSITION));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.POSITION));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 		List<EmployeePosition> listEmployeePosition = Arrays.asList(new EmployeePosition("emp3", "job2"),
 				new EmployeePosition("emp2", "job1"), new EmployeePosition("emp1", "job3"));
@@ -395,7 +395,7 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_classification1() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.SORT_ASC, SortOrder.CLASSIFY));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.CLASSIFY));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 
 		new Expectations() {
@@ -420,7 +420,7 @@ public class SortEmpServiceTest {
 	public void testSortEmpTheirOrder_classification2() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.SORT_ASC, SortOrder.CLASSIFY));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.CLASSIFY));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 		List<EmpClassifiImport> listEmpClassifiImport = Arrays.asList(new EmpClassifiImport("emp3", "class1"),
 				new EmpClassifiImport("emp2", "class2"), new EmpClassifiImport("emp1", "class3"));
@@ -446,7 +446,7 @@ public class SortEmpServiceTest {
 	public void testSortBySpecSortingOrder_team3() {
 		GeneralDate ymd = GeneralDate.today();
 		List<String> lstEmpId = Arrays.asList("emp1", "emp2", "emp3");
-		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortType.SORT_ASC, SortOrder.RANK));
+		List<OrderedList> listOrderedList = Arrays.asList(new OrderedList(SortOrder.SORT_ASC, SortType.RANK));
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 		new Expectations() {
 			{

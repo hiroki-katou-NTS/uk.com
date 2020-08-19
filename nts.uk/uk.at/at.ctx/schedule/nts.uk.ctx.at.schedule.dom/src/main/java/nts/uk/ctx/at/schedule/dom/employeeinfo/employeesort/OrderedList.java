@@ -13,10 +13,10 @@ import nts.arc.layer.dom.objecttype.DomainValue;
 public class OrderedList implements DomainValue{
 	
 	/**	並び順 **/
-	private final SortType type;
-	/** 並び替え種類**/
 	private final SortOrder sortOrder;
-	public OrderedList(SortType type, SortOrder sortOrder) {
+	/** 並び替え種類**/
+	private final SortType type;
+	public OrderedList(SortOrder sortOrder, SortType type) {
 		super();
 		this.type = type;
 		this.sortOrder = sortOrder;

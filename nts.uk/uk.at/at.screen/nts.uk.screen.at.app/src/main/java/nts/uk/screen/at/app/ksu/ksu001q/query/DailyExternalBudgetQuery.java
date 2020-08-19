@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 
 /**
  * 期間中の外部予算日次を取得する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.予算管理.App.
  * 
  * @author thanhlv
  *
@@ -29,7 +30,7 @@ public class DailyExternalBudgetQuery {
 	private ExtBudgetDailyRepository extBudgetDailyRepository;
 
 	/**
-	 * 期間中の外部予算日次を取得する
+	 * 期間の日次の外部予算実績を取得する
 	 * 
 	 * @param dailyExternal
 	 * @return
@@ -48,8 +49,8 @@ public class DailyExternalBudgetQuery {
 		}
 
 		TargetOrgIdenInfor targetOrg = new TargetOrgIdenInfor(
-				TargetOrganizationUnit.valueOf(Integer.parseInt(dailyExternal.getUnit())), Optional.ofNullable(workplaceId),
-				Optional.ofNullable(workplaceGroupId));
+				TargetOrganizationUnit.valueOf(Integer.parseInt(dailyExternal.getUnit())),
+				Optional.ofNullable(workplaceId), Optional.ofNullable(workplaceGroupId));
 
 		DatePeriod datePeriod = new DatePeriod(GeneralDate.fromString(dailyExternal.getStartDate(), "yyyy/MM/dd"),
 				GeneralDate.fromString(dailyExternal.getEndDate(), "yyyy/MM/dd"));
@@ -61,7 +62,6 @@ public class DailyExternalBudgetQuery {
 		// 値（項目）
 		return extBudgetDailies.stream().map(x -> {
 			DailyExternalBudgetDto budgetDto = new DailyExternalBudgetDto();
-			// TODO: interface ExtBudgetActualValue chua viet nen chua lam tiep duoc
 			budgetDto.setValue(x.getActualValue().toString());
 			budgetDto.setDate(x.getYmd().toString());
 			return budgetDto;
