@@ -1,16 +1,19 @@
 package nts.uk.ctx.at.schedule.infra.repository.employeeinfo.employeesort;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.OrderedList;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSetting;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSettingRepository;
 import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.employeesort.KscmtSyaOrderPriority;
-import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.employeesort.KscmtSyaOrderPriorityPk;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortOrder;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortType;
 
 /**
  * 
@@ -18,42 +21,50 @@ import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.employeesort.KscmtSyaOrd
  *
  */
 @Stateless
-public class JpaSortSettingRepository extends JpaRepository implements SortSettingRepository{
+public class JpaSortSettingRepository extends JpaRepository implements SortSettingRepository {
+
+	private static final String GET_ALL = "Select a From KscmtSyaOrderPriority a "
+			+ " Where a.pk.companyId = :companyId Order by a.pk.priority asc";
+
+	private static final String DELETE = "DELETE FROM KSCMT_SYA_ORDER_PRIORITY WHERE CID = ?";
 
 	@Override
-	public void insert(SortSetting SortSetting) {
-		// TODO Auto-generated method stub
-		
+	public void insert(SortSetting domain) {
+		this.commandProxy().insertAll(KscmtSyaOrderPriority.toEntity(domain));
+
 	}
 
 	@Override
-	public void update(SortSetting SortSetting) {
-		// TODO Auto-generated method stub
-		
+	public void update(SortSetting domain) {
+		List<KscmtSyaOrderPriority> results = this.queryProxy().query(GET_ALL, KscmtSyaOrderPriority.class)
+				.setParameter("companyId", domain.getCompanyID()).getList();
+		for (int i = 0; i < domain.getOrderedList().size(); i++) {
+			results.get(i).itemType = domain.getOrderedList().get(i).getType().value;
+			results.get(i).orderDirection = domain.getOrderedList().get(i).getSortOrder().value;
+		}
+
 	}
 
+	@SneakyThrows
 	@Override
 	public void delete(String companyID) {
-		// TODO Auto-generated method stub
-		
+		PreparedStatement ps1 = this.connection().prepareStatement(DELETE);
+		ps1.setString(1, companyID);
+		ps1.executeUpdate();
+
 	}
 
 	@Override
 	public Optional<SortSetting> get(String companyID) {
-		// TODO Auto-generated method stub
-		return null;
+		List<KscmtSyaOrderPriority> results = this.queryProxy().query(GET_ALL, KscmtSyaOrderPriority.class)
+				.setParameter("companyId", companyID).getList();
+		if (results.isEmpty()) {
+			return Optional.empty();
+		}
+		List<OrderedList> orderedList = results.stream()
+				.map(i -> new OrderedList(SortOrder.valueOf(i.orderDirection), SortType.valueOf(i.itemType)))
+				.collect(Collectors.toList());
+		return Optional.of(SortSetting.getSortSet(companyID, orderedList));
 	}
 
-	private static List<KscmtSyaOrderPriority> toEntity(SortSetting domain){
-	/*	KscmtSyaOrderPriorityPk pk = new KscmtSyaOrderPriorityPk(domain.getCompanyID(), domain.getLstOrderedList().size());
-		
-		// Đang để tạm PRIORITY là 1 vì ko biết lấy ở đâu
-		List<KscmtSyaOrderPriority> entity = domain.getLstOrderedList().stream().map(mapper-> new KscmtSyaOrderPriority(
-				new KscmtSyaOrderPriorityPk(domain.getCompanyID(), 1)
-				, mapper.getSortOrder().value, mapper.getType().value)).collect(Collectors.toList());
-		*/
-		return null;
-		
-	}
-	
 }

@@ -10,22 +10,15 @@ public class SortOrderTest {
 
 	@Test
 	public void getters() {
-		SortOrder sortOrder = SortOrder.CLASSIFY;
-		NtsAssert.invokeGetters(sortOrder);
+		SortOrder type = SortOrder.SORT_ASC;
+		NtsAssert.invokeGetters(type);
 	}
 
 	@Test
 	public void test() {
-		SortOrder sortOrder = SortOrder.valueOf(0);
-		assertThat(sortOrder).isEqualTo(SortOrder.SCHEDULE_TEAM);
-		sortOrder = SortOrder.valueOf(1);
-		assertThat(sortOrder).isEqualTo(SortOrder.RANK);
-		sortOrder = SortOrder.valueOf(2);
-		assertThat(sortOrder).isEqualTo(SortOrder.LISENCE_ATR);
-		sortOrder = SortOrder.valueOf(3);
-		assertThat(sortOrder).isEqualTo(SortOrder.POSITION);
-		sortOrder = SortOrder.valueOf(4);
-		assertThat(sortOrder).isEqualTo(SortOrder.CLASSIFY);
+		SortOrder type = SortOrder.valueOf(0);
+		assertThat(type).isEqualTo(SortOrder.SORT_ASC);
+		type = SortOrder.valueOf(1);
+		assertThat(type).isEqualTo(SortOrder.SORT_DESC);
 	}
-
 }
