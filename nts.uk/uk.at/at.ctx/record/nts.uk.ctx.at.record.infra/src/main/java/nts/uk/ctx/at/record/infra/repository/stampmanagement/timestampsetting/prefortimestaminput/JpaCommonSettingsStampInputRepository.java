@@ -48,9 +48,9 @@ public class JpaCommonSettingsStampInputRepository extends JpaRepository impleme
 		
 		KrcmtStampFunction entity =  entityOpt.get();
 		
-		Optional<StampResultDisplay> display = this.queryProxy().query(domain.getCompanyId(), KrcmtStampFunction.class).getSingle(c -> c.toDomain());
+		Optional<KrcmtStampFunction> display = this.queryProxy().find(domain.getCompanyId(), KrcmtStampFunction.class);
 		
-		entity.update(domain, display);
+		entity.update(domain, display.isPresent()? Optional.of(display.get().toDomain()): Optional.empty());
 		this.commandProxy().update(entity);
 	}
 
@@ -76,7 +76,7 @@ public class JpaCommonSettingsStampInputRepository extends JpaRepository impleme
 	}
 	
 	private Optional<KrcmtStampFunction> getEntity(String cId){
-		return this.queryProxy().query(cId, KrcmtStampFunction.class).getSingle();
+		return this.queryProxy().find(cId, KrcmtStampFunction.class);
 	}
 	
 	public KrcmtStampFunction toEntity(CommonSettingsStampInput domain){
