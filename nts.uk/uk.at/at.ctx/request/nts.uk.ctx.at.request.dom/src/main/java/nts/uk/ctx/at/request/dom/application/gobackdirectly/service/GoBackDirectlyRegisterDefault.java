@@ -55,6 +55,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 直行直帰登録
@@ -235,6 +236,11 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	 */
 	public List<ConfirmMsgOutput> checkBeforRegisterNew(String companyId, boolean agentAtr, Application application,
 			GoBackDirectly goBackDirectly, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput, boolean mode) {
+		// #110892
+		if (goBackDirectly.getStraightDistinction() == NotUseAtr.NOT_USE && goBackDirectly.getStraightLine() == NotUseAtr.NOT_USE) {
+			throw new BusinessException("Msg_1808");
+		}
+		
 		// 確認メッセージリスト＝Empty
 		List<ConfirmMsgOutput> lstConfirm = new ArrayList<ConfirmMsgOutput>();
 		// mode new

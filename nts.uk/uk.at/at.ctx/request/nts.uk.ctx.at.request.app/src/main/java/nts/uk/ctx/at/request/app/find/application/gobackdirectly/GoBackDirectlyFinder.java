@@ -35,7 +35,6 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmpl
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 @Transactional
@@ -314,10 +313,6 @@ public class GoBackDirectlyFinder {
 			application.setAppID(param.getInforGoBackCommonDirectDto().getAppDispInfoStartup().getAppDetailScreenInfo().getApplication().getAppID());
 		}
 		GoBackDirectly goBackDirectly = param.getGoBackDirectlyDto().toDomain();
-		// #110892
-		if (goBackDirectly.getStraightDistinction() == NotUseAtr.NOT_USE && goBackDirectly.getStraightLine() == NotUseAtr.NOT_USE) {
-			throw new BusinessException("Msg_1808");
-		}
 		goBackDirectly.setAppID(application.getAppID());
 		return goBackDirectlyRegisterService.checkBeforRegisterNew(
 				param.getCompanyId(),
