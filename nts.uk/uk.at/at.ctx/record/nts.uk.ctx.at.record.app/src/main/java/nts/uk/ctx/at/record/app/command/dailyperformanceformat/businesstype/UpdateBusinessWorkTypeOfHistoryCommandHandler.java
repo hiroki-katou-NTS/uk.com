@@ -66,7 +66,7 @@ public class UpdateBusinessWorkTypeOfHistoryCommandHandler
 	
 				throw new BusinessException("invalid TypeOfEmployeeHistory!");
 			}
-			bEmployeeHistory.changeSpan(optionalHisItem.get(), new DatePeriod(startDate, endDate));
+
 			typeOfHistoryGeneralRepos.updateBusinessTypeEmpOfHistory(bEmployeeHistory, optionalHisItem.get());
 		}
 		// update typeof employee

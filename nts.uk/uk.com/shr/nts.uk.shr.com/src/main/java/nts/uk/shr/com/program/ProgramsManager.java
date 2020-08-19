@@ -1370,6 +1370,9 @@ public class ProgramsManager {
 
     public static final Program KCP005 = new Program(WebAppId.COM, ProgramIdConsts.KCP005, null,
             "/view/kcp/005/index.xhtml");
+    
+    public static final Program KCP012 = new Program(WebAppId.COM, ProgramIdConsts.KCP012, null,
+            "/view/kcp/012/index.xhtml");
 
     /**
      * KDW007A
@@ -2241,6 +2244,14 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "/view/kmw/006/e/index.xhtml");
     public static final Program KMW006F = new Program(WebAppId.AT, ProgramIdConsts.KMW006F, "KMW006_46",
             "/view/kmw/006/f/index.xhtml");
+
+    /**
+     * KMR001
+     */
+    public static final Program KMR001B = new Program(WebAppId.AT, ProgramIdConsts.KMR001B, "KMR001_1",
+            "/view/kmr/001/b/index.xhtml");
+    public static final Program KMR001D = new Program(WebAppId.AT, ProgramIdConsts.KMR001D, "KMR001_38",
+            "/view/kmr/001/d/index.xhtml");
 
     /**
      * KWR002
