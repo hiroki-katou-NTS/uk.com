@@ -12,9 +12,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
 
 /**
- * 
  * @author chungnt
- *
  */
 
 @AllArgsConstructor
@@ -22,9 +20,6 @@ import nts.arc.time.GeneralDateTime;
 @EqualsAndHashCode
 @Embeddable
 public class KrcdtTopAlMgrStampPk implements Serializable{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	/**
