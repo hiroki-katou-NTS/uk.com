@@ -31,7 +31,7 @@ public class ForceDeleteBentoReserveCommand {
         String reservationCardNo;
 
         /**
-         *
+         * 社員ID
          */
         String empployeeId;
     }
