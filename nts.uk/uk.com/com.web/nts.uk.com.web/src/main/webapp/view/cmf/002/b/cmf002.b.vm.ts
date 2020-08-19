@@ -308,11 +308,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         public openWscreen() {
             const vm = this;
             setShared('CMF002_W_PARAMS', {
-                // TODO
-                categoryName: vm.categoryName(),
-                categoryId: vm.conditionSetData().categoryId(),
-                cndSetCd: vm.conditionSetData().conditionSetCode(),
-                cndSetName: vm.conditionSetData().conditionSetName(),
+                conditionSetCode: vm.conditionSetData().conditionSetCode(),
             });
             modal("/view/cmf/002/w/index.xhtml").onClosed(() => {
                 // TODO

@@ -1,27 +1,16 @@
 module nts.uk.com.view.cmf002.w.service {
-  // var paths: any = {
-  //   getEmployee : 'at/request/dialog/employmentsystem/getEmployee',
-  // }
+  const paths = {
+    findAllClosureHistory: "ctx/at/shared/workrule/closure/history/findAll",
+    findOutputPeriodSetting: "exio/exo/condset/findOutputPeriodSetting",
+    saveOutputPeriodSetting: "exio/exo/condset/saveOutputPeriodSetting",
+  }
 
-  // export function getEmployee(param: EmployeeParam): JQueryPromise<Array<EmployeeBasicInfoDto>> {
-  //   return nts.uk.request.ajax(paths.getEmployee, param);
-  // }
+  export function findAllClosureHistory(): JQueryPromise<ClosureHistoryFindDto[]> {
+    return nts.uk.request.ajax("at", paths.findAllClosureHistory);
+  }
 
-  // export interface EmployeeBasicInfoDto {
-  //   personId: string,
-  //   employeeId: string,
-  //   businessName: string,
-  //   gender: number,
-  //   birthday: string,
-  //   employeeCode: string,
-  //   jobEntryDate: string,
-  //   retirementDate: string
-  // }
-
-  // export interface EmployeeParam {
-  //   employeeIds: Array<string>,
-  //   baseDate: string
-  // }
-
+  export function findOutputPeriodSetting(conditionSetCode: string): JQueryPromise<any> {
+    return nts.uk.request.ajax("com", `${paths.findOutputPeriodSetting}/${conditionSetCode}`);
+  }
 
 }

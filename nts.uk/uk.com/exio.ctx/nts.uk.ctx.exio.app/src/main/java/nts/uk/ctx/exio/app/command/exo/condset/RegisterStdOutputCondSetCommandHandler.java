@@ -38,7 +38,7 @@ public class RegisterStdOutputCondSetCommandHandler extends CommandHandler<StdOu
 		StdOutputCondSet stdOutputCondSet = new StdOutputCondSet(cId, command.getConditionSetCd(),
 				command.getCategoryId(), command.getDelimiter(), command.getItemOutputName(),
 				command.getAutoExecution(), command.getConditionSetName(), command.getConditionOutputName(),
-				command.getStringFormat(), null);
+				command.getStringFormat());
 		List<StandardOutputItemOrder> listStandardOutputItemOrder = command.getListStandardOutputItem().stream().map(item -> {
             return new StandardOutputItemOrder(cId ,item.getOutItemCd(), item.getCondSetCd(), item.getOrder());
         }).collect(Collectors.toList());

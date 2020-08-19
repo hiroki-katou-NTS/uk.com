@@ -1,6 +1,6 @@
 package nts.uk.ctx.exio.dom.exo.condset;
 
-/*
+/**
  * 基準日区分コード
  */
 public enum BaseDateClassificationCode {

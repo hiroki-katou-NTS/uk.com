@@ -48,15 +48,15 @@
             <!-- W2_2 -->
             <div id="W2_2" tabindex="2" data-bind="ntsComboBox: {
               width: 200,
-              value: selectedStartDateSegment,
-              options: listStartDateSegment,
-              optionsValue: 'code',
+              value: selectedDeadlineClassification,
+              options: listDeadlineClassification,
+              optionsValue: 'id',
               optionsText: 'name',
               visibleItemsCount: 5,
               required: true,
               selectFirstIfNull: true,
               columns: [
-                { prop: 'code', length: 2 },
+                { prop: 'id', length: 2 },
                 { prop: 'name', length: 10 },
               ]}"></div>
           </div>
@@ -90,6 +90,14 @@
               value: startDateAdjustment
             }" />
           </div>
+          <div class="div-line">
+            <!-- W4-3 -->
+            <div id="W4_3" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_536')}</div>
+            <!-- W4_4 -->
+            <div id="W4_4" tabindex="4" data-bind="ntsDatePicker: {
+              value: startDateSpecified
+            }"></div>
+          </div>
 
           <!-- W5 -->
           <div class="div-line">
@@ -120,7 +128,14 @@
               value: startDateAdjustment
             }" />
           </div>
-
+          <div class="div-line">
+            <!-- W6-3 -->
+            <div id="W6_3" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_536')}</div>
+            <!-- W6_4 -->
+            <div id="W6_4" tabindex="7" data-bind="ntsDatePicker: {
+              value: endDateSpecified
+            }"></div>
+          </div>
 
           <!-- W7 -->
           <div class="div-line">
@@ -147,7 +162,9 @@
             <!-- W8-1 -->
             <div id="W8_1" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_541')}</div>
             <!-- W8_2 -->
-            <div id="W8_2" tabindex="9" data-bind="ntsDatePicker: { value: baseDateSpecified }"></div>
+            <div id="W8_2" tabindex="9" data-bind="ntsDatePicker: {
+              value: baseDateSpecified
+            }"></div>
           </div>
         </div>
       </div>

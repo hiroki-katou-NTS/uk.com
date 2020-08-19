@@ -12,6 +12,8 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.exio.app.command.exo.condset.CopyOutCondSet;
 import nts.uk.ctx.exio.app.command.exo.condset.CopyOutputCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.ExcuteCopyOutCondSetCommandHandler;
+import nts.uk.ctx.exio.app.command.exo.condset.OutputPeriodSettingDto;
+import nts.uk.ctx.exio.app.command.exo.condset.OutputPeriodSettingFinder;
 import nts.uk.ctx.exio.app.command.exo.condset.RegisterStdOutputCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.RemoveStdOutputCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.StdOutputCondSetCommand;
@@ -46,6 +48,9 @@ public class StdOutConSetWebService extends WebService {
 	
 	@Inject
 	private CopyOutputCondSetCommandHandler copyOutputCondSetCommandHandler;
+	
+	@Inject
+	private OutputPeriodSettingFinder outputPeriodSettingFinder;
 	
 
 	@POST
@@ -110,6 +115,12 @@ public class StdOutConSetWebService extends WebService {
 	public List<StdOutItemDto> outSetContent(@PathParam("cndSetCd") String cndSetCd,
 	        @PathParam("standType") int standType) {
 		return stdOutputCondSetFinder.getOutItem(cndSetCd, standType);
+	}
+
+	@POST
+	@Path("findOutputPeriodSetting/{conditionSetCode}")
+	public OutputPeriodSettingDto findOutputPeriodSetting(@PathParam("conditionSetCode") String conditionSetCode) {
+		return this.outputPeriodSettingFinder.findByConditionSetCode(conditionSetCode);
 	}
 	
 	@POST

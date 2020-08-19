@@ -8,15 +8,20 @@ module nts.uk.com.view.cmf002.w {
     listPeriodSetting: KnockoutObservableArray<any> = ko.observableArray([]);
     selectedPeriodSetting: KnockoutObservable<any> = ko.observable(null);
     // W2
+    listDeadlineClassification: KnockoutObservableArray<any> = ko.observableArray([]);
+    selectedDeadlineClassification: KnockoutObservable<any> = ko.observable(null);
+    // W3
     listStartDateSegment: KnockoutObservableArray<any> = ko.observableArray([]);
     selectedStartDateSegment: KnockoutObservable<any> = ko.observable(null);
-    // W3
     // W4
     startDateAdjustment: KnockoutObservable<any> = ko.observable(null);
+    startDateSpecified: KnockoutObservable<any> = ko.observable(null);
     // W5
     listEndDateSegment: KnockoutObservableArray<any> = ko.observableArray([]);
     selectedEndDateSegment: KnockoutObservable<any> = ko.observable(null);
     // W6
+    endDateAdjustment: KnockoutObservable<any> = ko.observable(null);
+    endDateSpecified: KnockoutObservable<any> = ko.observable(null);
     // W7
     listBaseDateSegment: KnockoutObservableArray<any> = ko.observableArray([]);
     selectedBaseDateSegment: KnockoutObservable<any> = ko.observable(null);
@@ -31,26 +36,26 @@ module nts.uk.com.view.cmf002.w {
         { code: '2', name: nts.uk.resource.getText("CMF002_276") },
       ]);
       vm.listStartDateSegment([
-        { code: StartDateClassificationCode.DEADLINE_START, name: '締め期間の開始日' },
-        { code: StartDateClassificationCode.DEADLINE_END, name: '締め期間の終了日' },
-        { code: StartDateClassificationCode.DEADLINE_PROCESSING, name: '締め期間の処理年月' },
-        { code: StartDateClassificationCode.SYSTEM_DATE, name: 'システム日付' },
-        { code: StartDateClassificationCode.DATE_SPECIFICATION, name: '日付指定' },
+        { code: StartDateClassificationCode.DEADLINE_START, name: nts.uk.resource.getText('CMF002_542') },
+        { code: StartDateClassificationCode.DEADLINE_END, name: nts.uk.resource.getText('CMF002_543') },
+        { code: StartDateClassificationCode.DEADLINE_PROCESSING, name: nts.uk.resource.getText('CMF002_544') },
+        { code: StartDateClassificationCode.SYSTEM_DATE, name: nts.uk.resource.getText('CMF002_545') },
+        { code: StartDateClassificationCode.DATE_SPECIFICATION, name: nts.uk.resource.getText('CMF002_546') },
       ]);
       vm.listEndDateSegment([
-        { code: EndDateClassificationCode.DEADLINE_START, name: '締め期間の開始日' },
-        { code: EndDateClassificationCode.DEADLINE_END, name: '締め期間の終了日' },
-        { code: EndDateClassificationCode.DEADLINE_PROCESSING, name: '締め期間の処理年月' },
-        { code: EndDateClassificationCode.SYSTEM_DATE, name: 'システム日付' },
-        { code: EndDateClassificationCode.DATE_SPECIFICATION, name: '日付指定' },
+        { code: EndDateClassificationCode.DEADLINE_START, name: nts.uk.resource.getText('CMF002_542') },
+        { code: EndDateClassificationCode.DEADLINE_END, name: nts.uk.resource.getText('CMF002_543') },
+        { code: EndDateClassificationCode.DEADLINE_PROCESSING, name: nts.uk.resource.getText('CMF002_544') },
+        { code: EndDateClassificationCode.SYSTEM_DATE, name: nts.uk.resource.getText('CMF002_545') },
+        { code: EndDateClassificationCode.DATE_SPECIFICATION, name: nts.uk.resource.getText('CMF002_546') },
       ]);
       vm.listBaseDateSegment([
-        { code: BaseDateClassificationCode.DEADLINE_START, name: '締め開始日' },
-        { code: BaseDateClassificationCode.DEADLINE_END, name: '締め終了日' },
-        { code: BaseDateClassificationCode.SYSTEM_DATE, name: 'システム日付' },
-        { code: BaseDateClassificationCode.OUTPUT_PERIOD_START, name: '出力期間の開始日' },
-        { code: BaseDateClassificationCode.OUTPUT_PERIOD_END, name: '出力期間の終了日' },
-        { code: BaseDateClassificationCode.DATE_SPECIFICATION, name: '日付指定' },
+        { code: BaseDateClassificationCode.DEADLINE_START, name: nts.uk.resource.getText('CMF002_547') },
+        { code: BaseDateClassificationCode.DEADLINE_END, name: nts.uk.resource.getText('CMF002_548') },
+        { code: BaseDateClassificationCode.SYSTEM_DATE, name: nts.uk.resource.getText('CMF002_545') },
+        { code: BaseDateClassificationCode.OUTPUT_PERIOD_START, name: nts.uk.resource.getText('CMF002_549') },
+        { code: BaseDateClassificationCode.OUTPUT_PERIOD_END, name: nts.uk.resource.getText('CMF002_550') },
+        { code: BaseDateClassificationCode.DATE_SPECIFICATION, name: nts.uk.resource.getText('CMF002_546') },
       ]);
     }
 
@@ -58,6 +63,40 @@ module nts.uk.com.view.cmf002.w {
       const params = nts.uk.ui.windows.getShared('CMF002_W_PARAMS');
       const vm = this;
       vm.selectedPeriodSetting('1');
+      vm.$blockui('grayout');
+      // ドメインモデル「就業締め日」を取得する
+      service.findAllClosureHistory()
+        // 全ての取得した締め日名称をJ10_2「締め日区分ドロップダウンリスト」に表示する
+        .done((response: ClosureHistoryFindDto[]) => vm.setListClosureHistory(response))
+        // ドメインモデル「出力条件設定」を取得する
+        .done(() => service.findOutputPeriodSetting(params.conditionSetCode))
+        //「出力期間設定」の情報を画面に表示する
+        .done((response: any) => vm.setOutputPeriodSetting(response))
+        .always(() => vm.$blockui('clear'));
+    }
+
+    /**
+     * 全ての取得した締め日名称をJ10_2「締め日区分ドロップダウンリスト」に表示する
+     * Set ClosureHistory
+     */
+    private setListClosureHistory(response: ClosureHistoryFindDto[]): JQueryPromise<any> {
+      const dfd = $.Deferred();
+      const vm = this;
+      vm.listDeadlineClassification(response);
+      dfd.done();
+      return dfd;
+    }
+
+    /**
+     * 「出力期間設定」の情報を画面に表示する
+     * Set OutputPeriodSetting
+     */
+    private setOutputPeriodSetting(response: any): JQueryPromise<any> {
+      const dfd = $.Deferred();
+      const vm = this;
+      // TODO
+      dfd.done();
+      return dfd;
     }
 
     /**
@@ -107,5 +146,12 @@ module nts.uk.com.view.cmf002.w {
     static OUTPUT_PERIOD_START = 4;
     static OUTPUT_PERIOD_END = 5;
     static DATE_SPECIFICATION = 6;
+  }
+
+  export interface ClosureHistoryFindDto {
+    /** The id. */
+    id: number;
+    /** The name. */
+    name: string;
   }
 }
