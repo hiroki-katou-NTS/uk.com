@@ -4,14 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.eligibleemployees.SyWorkplaceAdapter;
-import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.ConditionEmployee;
-import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.LeaveHolidayPeriod;
-import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.LeavePeriod;
-import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.WorkPlaceHist;
+import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.*;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistoryRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -30,10 +28,10 @@ public class GetEligibleEmployeesScreenQuery {
     @Inject
     private WorkingConditionItemRepository workingConditionItemRepository;
     @Inject
-    private SyWorkplaceAdapter adapter;
+    private SyWorkplaceAdapter syWorkplaceAdapter;
     public List<String> getListEmployeeId(ConditionDto conditionDto){
         List<String> rs = new ArrayList<>();
-        ImplRequire require = new ImplRequire(sWorkTimeHistoryRepository,workingConditionItemRepository,adapter);
+        ImplRequire require = new ImplRequire(sWorkTimeHistoryRepository,workingConditionItemRepository,syWorkplaceAdapter);
         if(conditionDto!= null){
             val checkEmployee = new ConditionEmployee(conditionDto.isTransfer(),conditionDto.isLeaveOfAbsence(),
                     conditionDto.isShortWorkingHours(),conditionDto.isChangedWorkingConditions());
@@ -51,7 +49,7 @@ public class GetEligibleEmployeesScreenQuery {
     private static class ImplRequire implements ConditionEmployee.Require{
         private SWorkTimeHistoryRepository sWorkTimeHistoryRepository;
         private WorkingConditionItemRepository workingConditionItemRepository;
-        private SyWorkplaceAdapter adapter;
+        private SyWorkplaceAdapter syWorkplaceAdapter;
         //[R-1]
         @Override
         public Optional<ShortWorkTimeHistory> GetShortWorkHistory(String sid, DatePeriod datePeriod) {
@@ -77,10 +75,10 @@ public class GetEligibleEmployeesScreenQuery {
         public List<LeaveHolidayPeriod> GetLeaveHolidayPeriod(List<String> sids, DatePeriod datePeriod) {
             return null;
         }
-        //[R-5]-[RQL-189]-SyWorkplacePub
+        //[R-5]-[RQL-189]-SyWorkplacePub=>WorkplacePub
         @Override
         public List<WorkPlaceHist> GetWorkHistory(List<String> sids, DatePeriod datePeriod) {
-            return null;
+            return syWorkplaceAdapter.GetWorkHistory(sids,datePeriod);
         }
     }
 }
