@@ -1994,9 +1994,9 @@ public class CalculationSettingExportImpl implements MasterListData {
 			data1.put(column1Sheet6, TextResource.localize("KMK013_306"));
 			data1.put(column2Sheet6, TextResource.localize("KMK013_307"));
 			if (!Objects.isNull(deformLaborOTDto.getLegalOtCalc())) {
-				if (deformLaborOTDto.getLegalOtCalc().intValue() == 1) {
+				if (deformLaborOTDto.getLegalOtCalc().equals(NotUseAtr.USE)) {
 					data1.put(column3Sheet6, TextResource.localize("KMK013_209"));
-				} else if (deformLaborOTDto.getLegalOtCalc().intValue() == 0) {
+				} else if (deformLaborOTDto.getLegalOtCalc().equals(NotUseAtr.NOT_USE)) {
 					data1.put(column3Sheet6, TextResource.localize("KMK013_210"));
 				} else {
 					data1.put(column3Sheet6, "");

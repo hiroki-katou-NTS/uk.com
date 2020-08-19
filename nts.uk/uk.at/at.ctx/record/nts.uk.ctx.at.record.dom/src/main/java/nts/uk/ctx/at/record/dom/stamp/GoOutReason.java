@@ -25,4 +25,15 @@ public enum GoOutReason {
 		}
 		return Optional.empty();
 	}
+	
+	/**
+	 * @param goOutReasons 外出理由
+	 * @return true：一致している  false：一致していない
+	 */
+	public boolean anyMatch(GoOutReason... goOutReasons) {
+		for(GoOutReason reason : goOutReasons) {
+			if(reason.equals(this)) return true;
+		}
+		return false;
+	}
 }

@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
+
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -13,7 +15,8 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 // 流動勤務の平日出勤用勤務時間帯
 @Getter
-public class FlowHalfDayWorkTimezone extends WorkTimeDomainObject {
+@NoArgsConstructor
+public class FlowHalfDayWorkTimezone extends WorkTimeDomainObject implements Cloneable{
 
 	/** The work time zone. */
 	// 勤務時間帯
@@ -72,5 +75,18 @@ public class FlowHalfDayWorkTimezone extends WorkTimeDomainObject {
 	 */
 	public void correctDefaultData() {
 		this.workTimeZone.correctDefaultData();
+	}
+	
+	@Override
+	public FlowHalfDayWorkTimezone clone() {
+		FlowHalfDayWorkTimezone cloned = new FlowHalfDayWorkTimezone();
+		try {
+			cloned.workTimeZone = this.workTimeZone.clone();
+			cloned.restTimezone = this.restTimezone.clone();
+		}
+		catch (Exception e){
+			throw new RuntimeException("FlowHalfDayWorkTimezone clone error.");
+		}
+		return cloned;
 	}
 }

@@ -5,8 +5,10 @@
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -15,7 +17,8 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 // 流動勤務の休日出勤用勤務時間帯
 @Getter
-public class FlowOffdayWorkTimezone extends WorkTimeDomainObject {
+@NoArgsConstructor
+public class FlowOffdayWorkTimezone extends WorkTimeDomainObject implements Cloneable{
 
 	/** The rest time zone. */
 	// 休憩時間帯
@@ -67,5 +70,18 @@ public class FlowOffdayWorkTimezone extends WorkTimeDomainObject {
 	 */
 	public void correctDefaultData(ScreenMode screenMode) {
 		this.restTimeZone.correctDefaultData(screenMode);
+	}
+	
+	@Override
+	public FlowOffdayWorkTimezone clone() {
+		FlowOffdayWorkTimezone cloned = new FlowOffdayWorkTimezone();
+		try {
+			cloned.restTimeZone = this.restTimeZone.clone();
+			cloned.lstWorkTimezone = this.lstWorkTimezone.stream().map(c -> c.clone()).collect(Collectors.toList());
+		}
+		catch (Exception e){
+			throw new RuntimeException("FlowOffdayWorkTimezone clone error.");
+		}
+		return cloned;
 	}
 }

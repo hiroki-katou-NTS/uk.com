@@ -44,7 +44,7 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 				int beforeCorrectSize = originCopyList.size();
 				//比較対象の時間帯の位置
 				for(int nextNumber = number + 1; nextNumber < originCopyList.size(); nextNumber++) {
-					if(originCopyList.get(number).calcrange.checkDuplication(originCopyList.get(nextNumber).calcrange).isDuplicated()){
+					if(originCopyList.get(number).timeSheet.checkDuplication(originCopyList.get(nextNumber).timeSheet).isDuplicated()){
 						originCopyList = convertFromDeductionItemToList(originCopyList,number,nextNumber, setMethod, clockManage,workTimeDailyAtr);
 						if(originCopyList.size()>beforeCorrectSize)
 							break;
@@ -85,6 +85,6 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 		nowList.remove(number);
 		nowList.remove(nextNumber-1);
 		nowList.addAll(newItems);
-		return nowList.stream().sorted((first,second) -> first.calcrange.getStart().compareTo(second.calcrange.getStart())).collect(Collectors.toList());
+		return nowList.stream().sorted((first,second) -> first.timeSheet.getStart().compareTo(second.timeSheet.getStart())).collect(Collectors.toList());
 	}
 }

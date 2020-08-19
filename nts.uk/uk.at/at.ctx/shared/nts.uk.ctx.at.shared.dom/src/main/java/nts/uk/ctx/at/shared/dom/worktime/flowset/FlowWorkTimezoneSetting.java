@@ -10,7 +10,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
@@ -19,7 +21,8 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
  */
 // 流動勤務時間帯設定
 @Getter
-public class FlowWorkTimezoneSetting extends WorkTimeDomainObject {
+@NoArgsConstructor
+public class FlowWorkTimezoneSetting extends WorkTimeDomainObject implements Cloneable{
 
 	/** The work time rounding. */
 	// 就業時間丸め
@@ -82,16 +85,39 @@ public class FlowWorkTimezoneSetting extends WorkTimeDomainObject {
 		if(timeSheet.size()>1) {
 			throw new RuntimeException("Exist duplicate overTimeFrameNo : " + overTimeFrameNo);
 		}
-//		else if(timeSheet==null) {
-//			return Optional.empty();
-//		}
+		if(timeSheet.isEmpty()) {
+			return Optional.empty();
+		}
 		return Optional.of(timeSheet.get(0));
 	}
-
+	
 	/**
 	 * Correct default data.
 	 */
 	public void correctDefaultData() { 
 		this.lstOTTimezone.forEach(item -> item.correctDefaultData());
+	}
+	
+	@Override
+	public FlowWorkTimezoneSetting clone() {
+		FlowWorkTimezoneSetting cloned = new FlowWorkTimezoneSetting();
+		try {
+			cloned.workTimeRounding = this.workTimeRounding.clone();
+			cloned.lstOTTimezone = this.lstOTTimezone.stream().map(c -> c.clone()).collect(Collectors.toList());
+		}
+		catch (Exception e){
+			throw new RuntimeException("FlowWorkTimezoneSetting clone error.");
+		}
+		return cloned;
+	}
+	
+	/**
+	 * 残業時間帯を変動させる
+	 * @param fluctuationTime 変動させる時間
+	 */
+	public void fluctuationElapsedTimeInLstOTTimezone(AttendanceTimeOfExistMinus fluctuationTime) {
+		for(int i=0; i<this.lstOTTimezone.size(); i++) {
+			this.lstOTTimezone.get(i).getFlowTimeSetting().fluctuationElapsedTimeNegativeToZero(fluctuationTime);
+		}
 	}
 }

@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
@@ -17,11 +18,14 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.FlexSetRepository;
+import nts.uk.ctx.at.shared.dom.calculation.setting.DeformLaborOTRepository;
 import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTimeRepository;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 計算に必要なパラメータを取得する
@@ -69,6 +73,12 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 	//労働時間と日数の設定の利用単位の設定
 	private UsageUnitSettingRepository usageUnitSettingRepository;
 	
+	@Inject
+	private FlexSetRepository flexSetRepository;
+	
+	@Inject
+	private DeformLaborOTRepository deformLaborOTRepository;
+	
 //	@Inject
 //	private EmployeeWtSettingRepository employeeWtSettingRepository;
 	
@@ -84,7 +94,7 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 		
 		val optionalItems = optionalItemRepository.findAll(companyId);
 		val usageSetting = usageUnitSettingRepository.findByCompany(companyId);
-		return new ManagePerCompanySet(holidayAddtionRepository.findByCompanyId(companyId),
+		return new ManagePerCompanySet(
 									  holidayAddtionRepository.findByCId(companyId),
 									  specificWorkRuleRepository.findCalcMethodByCid(companyId),
 									  compensLeaveComSetRepository.find(companyId),
@@ -97,6 +107,10 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 									  empConditionRepository.findAll(companyId, optionalItems.stream().map(oi -> oi.getOptionalItemNo().v()).collect(Collectors.toList())),
 									  zeroTimeRepository.findByCId(companyId),
 									  specificWorkRuleRepository.findUpperLimitWkHourByCid(companyId),
-									  usageSetting);
+									  usageSetting,
+									// 深夜時間帯(2019.3.31時点ではNotマスタ参照で動作している)
+									new MidNightTimeSheet(companyId, new TimeWithDayAttr(1320),new TimeWithDayAttr(1740)),
+									flexSetRepository.findByCId(companyId).get(),
+									deformLaborOTRepository.findByCId(companyId).get());
 	}
 }

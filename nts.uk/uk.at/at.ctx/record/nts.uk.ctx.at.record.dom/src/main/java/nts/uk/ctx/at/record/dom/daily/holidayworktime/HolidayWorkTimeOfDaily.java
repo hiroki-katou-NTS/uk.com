@@ -64,35 +64,42 @@ public class HolidayWorkTimeOfDaily {
 
 	/**
 	 * メンバー変数の時間計算を指示するクラス
-	 * @param integrationOfDaily 
-	 * @param holidayTimeSheet
-	 * @return
+	 * アルゴリズム：日別実績の休出時間
+	 * @param holidayWorkTimeSheet 休日出勤時間帯
+	 * @param holidayAutoCalcSetting 自動計算設定（休出時間）
+	 * @param workType 勤務種類
+	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
+	 * @param eachCompanyTimeSet 会社別代休時間設定
+	 * @param integrationOfDaily 日別実績(Work)
+	 * @param beforeApplicationTime 事前深夜時間
+	 * @param holidayLateNightAutoCalSetting 自動計算設定（休出深夜時間）
+	 * @return 日別実績の休出時間
 	 */
-	public static HolidayWorkTimeOfDaily calculationTime(HolidayWorkTimeSheet holidayWorkTimeSheet,
-														 AutoCalSetting holidayAutoCalcSetting,
-														 WorkType workType,
-														 Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-														 Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
-														 IntegrationOfDaily integrationOfDaily,
-														 AttendanceTime beforeApplicationTime,
-														 AutoCalSetting holidayLateNightAutoCalSetting) {
-		//時間帯
+	public static HolidayWorkTimeOfDaily calculationTime(
+			HolidayWorkTimeSheet holidayWorkTimeSheet,
+			AutoCalSetting holidayAutoCalcSetting,
+			WorkType workType,
+			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
+			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
+			IntegrationOfDaily integrationOfDaily,
+			AttendanceTime beforeApplicationTime,
+			AutoCalSetting holidayLateNightAutoCalSetting) {
+		
+		//休出枠時間帯の作成
 		val holidayWorkFrameTimeSheet = holidayWorkTimeSheet.changeHolidayWorkTimeFrameTimeSheet();
-		//枠時間
-		val holidayWorkFrameTime = holidayWorkTimeSheet.collectHolidayWorkTime(holidayAutoCalcSetting,
-				 															   workType,
-				 															   eachWorkTimeSet,
-				 															   eachCompanyTimeSet,
-				 															   integrationOfDaily);
-		//深夜
-		//holMidNightTime.add(new HolidayWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork));
+		//休出時間の計算
+		val holidayWorkFrameTime = holidayWorkTimeSheet.collectHolidayWorkTime(
+				holidayAutoCalcSetting,
+				workType,
+				eachWorkTimeSet,
+				eachCompanyTimeSet,
+				integrationOfDaily);
+		
+		//休日出勤深夜時間の計算
 		val holidayMidnightWork = Finally.of(calcMidNightTimeIncludeHolidayWorkTime(holidayWorkTimeSheet,beforeApplicationTime,holidayLateNightAutoCalSetting));
 		//使用時間
 		val holidayTimeSpentTime = new AttendanceTime(0);
-		return new HolidayWorkTimeOfDaily(holidayWorkFrameTimeSheet,
-										  holidayWorkFrameTime,
-										  holidayMidnightWork,
-										  holidayTimeSpentTime);
+		return new HolidayWorkTimeOfDaily(holidayWorkFrameTimeSheet, holidayWorkFrameTime, holidayMidnightWork, holidayTimeSpentTime);
 	}
 	
 	/**
@@ -118,17 +125,25 @@ public class HolidayWorkTimeOfDaily {
 //		}
 		return bonusPayList;
 	}
+	
 	/**
 	 * 休出時間が含んでいる深夜時間の算出
-	 * @return
+	 * アルゴリズム：休日出勤深夜時間の計算（事前申請制御後）
+	 * アルゴリズム：深夜時間の計算
+	 * @param holidayWorkTimeSheet 休日出勤時間帯
+	 * @param beforeApplicationTime 事前深夜時間
+	 * @param holidayLateNightAutoCalSetting 自動計算設定
+	 * @return 休出深夜
 	 */
-	public static HolidayMidnightWork calcMidNightTimeIncludeHolidayWorkTime(HolidayWorkTimeSheet holidayWorkTimeSheet,
-																			 AttendanceTime beforeApplicationTime,
-																			 AutoCalSetting holidayLateNightAutoCalSetting) {
+	public static HolidayMidnightWork calcMidNightTimeIncludeHolidayWorkTime(
+			HolidayWorkTimeSheet holidayWorkTimeSheet,
+			AttendanceTime beforeApplicationTime,
+			AutoCalSetting holidayLateNightAutoCalSetting) {
+		
 		EachStatutoryHolidayWorkTime eachTime = new EachStatutoryHolidayWorkTime();
 		for(HolidayWorkFrameTimeSheetForCalc  frameTime : holidayWorkTimeSheet.getWorkHolidayTime()) {
 			if(frameTime.getMidNightTimeSheet().isPresent()) {
-				eachTime.addTime(frameTime.getStatutoryAtr().get(), holidayLateNightAutoCalSetting.getCalAtr().isCalculateEmbossing()?frameTime.getMidNightTimeSheet().get().calcTotalTime(DeductionAtr.Appropriate):new AttendanceTime(0));
+				eachTime.addTime(frameTime.getStatutoryAtr().get(), holidayLateNightAutoCalSetting.getCalAtr().isCalculateEmbossing()?frameTime.getMidNightTimeSheet().get().calcTotalTime():new AttendanceTime(0));
 			}
 		}
 		List<HolidayWorkMidNightTime> holidayWorkList = new ArrayList<>();
@@ -145,7 +160,7 @@ public class HolidayWorkTimeOfDaily {
 					holidayWorkMidNightTime.reCreate(time);
 				}
 			}
-		}	
+		}
 		return new HolidayMidnightWork(holidayWorkList);
 	}
 	

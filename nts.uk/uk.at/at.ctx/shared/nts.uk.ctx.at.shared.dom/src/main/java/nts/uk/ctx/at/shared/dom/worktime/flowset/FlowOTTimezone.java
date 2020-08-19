@@ -4,9 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
+
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
-//import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
@@ -15,7 +16,8 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
  */
 // 流動残業時間帯
 @Getter
-public class FlowOTTimezone extends WorkTimeDomainObject {
+@NoArgsConstructor
+public class FlowOTTimezone extends WorkTimeDomainObject implements Cloneable{
 
 	/** The worktime no. */
 	// 就業時間帯NO
@@ -85,5 +87,22 @@ public class FlowOTTimezone extends WorkTimeDomainObject {
 	public void correctDefaultData() {
 		this.settlementOrder = null;
 		this.inLegalOTFrameNo = null;
+	}
+	
+	@Override
+	public FlowOTTimezone clone() {
+		FlowOTTimezone cloned = new FlowOTTimezone();
+		try {
+			cloned.worktimeNo = this.worktimeNo;
+			cloned.restrictTime = this.restrictTime ? true : false;
+			cloned.oTFrameNo = new OvertimeWorkFrameNo(this.oTFrameNo.v());
+			cloned.flowTimeSetting = this.flowTimeSetting.clone();
+			cloned.inLegalOTFrameNo = new OvertimeWorkFrameNo(this.inLegalOTFrameNo.v());
+			cloned.settlementOrder = new SettlementOrder(this.settlementOrder.v());
+		}
+		catch (Exception e){
+			throw new RuntimeException("FlowOTTimezone clone error.");
+		}
+		return cloned;
 	}
 }

@@ -10,7 +10,7 @@ import lombok.val;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.RaisingSalaryTimeItemNo;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -30,13 +30,11 @@ public class BonusPayTimeSheetForCalc extends CalculationTimeSheet{
 	/**
 	 *  Constructor
 	 */ 
-	public BonusPayTimeSheetForCalc(TimeZoneRounding timeSheet, TimeSpanForCalc calcrange,
+	public BonusPayTimeSheetForCalc(TimeSpanForDailyCalc timeSheet, TimeRoundingSetting rounding,
 			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
-			List<TimeSheetOfDeductionItem> deductionTimeSheets, List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
-			List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet, Optional<MidNightTimeSheetForCalc> midNighttimeSheet,
+			List<TimeSheetOfDeductionItem> deductionTimeSheets,
 			RaisingSalaryTimeItemNo raiseSalaryTimeItemNo) {
-		super(timeSheet, calcrange, recorddeductionTimeSheets, deductionTimeSheets, bonusPayTimeSheet,
-				specifiedBonusPayTimeSheet, midNighttimeSheet);
+		super(timeSheet, rounding, recorddeductionTimeSheets, deductionTimeSheets);
 		this.raiseSalaryTimeItemNo = raiseSalaryTimeItemNo;
 	}
 	
@@ -45,16 +43,11 @@ public class BonusPayTimeSheetForCalc extends CalculationTimeSheet{
 	 * @return　計算用加給時間帯
 	 */
 	public static BonusPayTimeSheetForCalc convertForCalc(BonusPayTimesheet bonusPayTimeSheet) {
-		return new BonusPayTimeSheetForCalc(new TimeZoneRounding(new TimeWithDayAttr(bonusPayTimeSheet.getStartTime().valueAsMinutes()),
-																 new TimeWithDayAttr(bonusPayTimeSheet.getEndTime().valueAsMinutes()), 
-																 new TimeRoundingSetting(bonusPayTimeSheet.getRoundingTimeAtr().value,bonusPayTimeSheet.getRoundingAtr().value)),
-											new TimeSpanForCalc(new TimeWithDayAttr(bonusPayTimeSheet.getStartTime().valueAsMinutes()),
-													 			new TimeWithDayAttr(bonusPayTimeSheet.getEndTime().valueAsMinutes())),
+		return new BonusPayTimeSheetForCalc(new TimeSpanForDailyCalc(new TimeWithDayAttr(bonusPayTimeSheet.getStartTime().valueAsMinutes()),
+											new TimeWithDayAttr(bonusPayTimeSheet.getEndTime().valueAsMinutes())),
+											new TimeRoundingSetting(bonusPayTimeSheet.getRoundingTimeAtr().value,bonusPayTimeSheet.getRoundingAtr().value),
 											Collections.emptyList(),
 											Collections.emptyList(),
-											Collections.emptyList(),
-											Collections.emptyList(),
-											Optional.empty(),
 											new RaisingSalaryTimeItemNo(BigDecimal.valueOf((long)bonusPayTimeSheet.getTimeItemId())));
 	}
 	
@@ -62,22 +55,17 @@ public class BonusPayTimeSheetForCalc extends CalculationTimeSheet{
 	 * 受け取った計算範囲に補正しつつ加給時間帯を計算用加給時間帯に変換する
 	 * @return　計算用加給時間帯
 	 */
-	public BonusPayTimeSheetForCalc convertForCalcCorrectRange(TimeSpanForCalc timeSpan) {
-		return new BonusPayTimeSheetForCalc(new TimeZoneRounding(timeSpan.getStart(),
-																 timeSpan.getEnd(), 
-																 this.getTimeSheet().getRounding()),
-											timeSpan,
+	public BonusPayTimeSheetForCalc convertForCalcCorrectRange(TimeSpanForDailyCalc timeSpan) {
+		return new BonusPayTimeSheetForCalc(timeSpan,
+											this.getRounding(),
 											Collections.emptyList(),
 											Collections.emptyList(),
-											Collections.emptyList(),
-											Collections.emptyList(),
-											Optional.empty(),
 											this.raiseSalaryTimeItemNo);
 	}
 
-	public Optional<BonusPayTimeSheetForCalc> createDuplicateRange(TimeSpanForCalc timeSpan) {
+	public Optional<BonusPayTimeSheetForCalc> createDuplicateRange(TimeSpanForDailyCalc timeSpan) {
 		//重複範囲取得
-		val duplicateSpan = timeSpan.getDuplicatedWith(this.calcrange);
+		val duplicateSpan = timeSpan.getDuplicatedWith(this.timeSheet);
 		//重複有
 		if(duplicateSpan.isPresent())
 			return Optional.of(this.replaceTimeSpan(duplicateSpan));
@@ -91,28 +79,22 @@ public class BonusPayTimeSheetForCalc extends CalculationTimeSheet{
 	 * @param timeSpan　時間帯
 	 * @return　控除項目の時間帯
 	 */
-	public BonusPayTimeSheetForCalc replaceTimeSpan(Optional<TimeSpanForCalc> timeSpan) {
+	public BonusPayTimeSheetForCalc replaceTimeSpan(Optional<TimeSpanForDailyCalc> timeSpan) {
 		if(timeSpan.isPresent()) {
 			return new BonusPayTimeSheetForCalc(
-											new TimeZoneRounding(timeSpan.get().getStart(), timeSpan.get().getEnd(), this.timeSheet.getRounding()),
 											timeSpan.get(),
+											this.rounding,
 											this.recordedTimeSheet,
 											this.deductionTimeSheet,
-											this.bonusPayTimeSheet,
-											this.specBonusPayTimesheet,
-											this.midNightTimeSheet,
 											this.getRaiseSalaryTimeItemNo()
 											);
 		}
 		else {
 			return new BonusPayTimeSheetForCalc(
-					new TimeZoneRounding(this.getTimeSheet().getStart(), this.getTimeSheet().getStart(), this.timeSheet.getRounding()),
-					new TimeSpanForCalc(this.getTimeSheet().getStart(), this.getTimeSheet().getStart()),
+					this.timeSheet,
+					this.rounding,
 					this.recordedTimeSheet,
 					this.deductionTimeSheet,
-					this.bonusPayTimeSheet,
-					this.specBonusPayTimesheet,
-					this.midNightTimeSheet,
 					this.getRaiseSalaryTimeItemNo()
 					);
 		}

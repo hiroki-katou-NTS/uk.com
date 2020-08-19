@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.affiliationinformation;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -60,7 +61,7 @@ public class KrcdtDaiAffiliationInf extends UkJpaEntity implements Serializable 
 				this.workplaceID,
 				this.krcdtDaiAffiliationInfPK.ymd,
 				new ClassificationCode(this.classificationCode),
-				this.bonusPayCode == null ? null : new BonusPaySettingCode(this.bonusPayCode));
+				this.bonusPayCode == null ? Optional.empty() : Optional.of(new BonusPaySettingCode(this.bonusPayCode)));
 		return domain;
 	}
 	
@@ -71,7 +72,7 @@ public class KrcdtDaiAffiliationInf extends UkJpaEntity implements Serializable 
 				affiliationInforOfDailyPerfor.getJobTitleID(),
 				affiliationInforOfDailyPerfor.getClsCode().v(),
 				affiliationInforOfDailyPerfor.getWplID(),
-				affiliationInforOfDailyPerfor.getBonusPaySettingCode() == null 
-					? null : affiliationInforOfDailyPerfor.getBonusPaySettingCode().v());
+				!affiliationInforOfDailyPerfor.getBonusPaySettingCode().isPresent()
+					? null : affiliationInforOfDailyPerfor.getBonusPaySettingCode().get().v());
 	}
 }

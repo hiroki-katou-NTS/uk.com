@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.dom.worktime.service;
 
 import lombok.AllArgsConstructor;
 /**
- * 流動勤務かどうかの判断処理
+ * 就業時間帯の勤務形態
  * @author do_dt
  *
  */
@@ -20,4 +20,20 @@ public enum WorkTimeForm {
 	public final Integer value;
 	
 	public final String name;
+	
+	public boolean isFixed() {
+		return FIXED.equals(this);
+	}
+	
+	public boolean isFlex() {
+		return FLEX.equals(this);
+	}
+	
+	public boolean isFlow() {
+		return FLOW.equals(this);
+	}
+	
+	public boolean isTimedifference() {
+		return TIMEDIFFERENCE.equals(this);
+	}
 }

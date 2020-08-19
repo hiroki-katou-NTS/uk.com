@@ -4,12 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.shr.com.primitive.Memo;
 
 //就業時間帯勤務区分
@@ -40,7 +43,31 @@ public class WorkTimeDivision extends WorkTimeDomainObject implements Cloneable{
 	public boolean isFlow() {
 		return workTimeDailyAtr.isRegular() && workTimeMethodSet.isFluidWork();
 	}
+	
+	public boolean isFlex() {
+		return workTimeDailyAtr.isFlex();
+	}
 
+	public boolean isFixed() {
+		return workTimeMethodSet.isFixedWork();
+	}
+	
+	/**
+	 * 勤務形態を取得する
+	 * @return 就業時間帯の勤務形態（固定勤務、フレックス勤務、流動勤務、時差勤務)
+	 */
+	public WorkTimeForm getWorkTimeForm() {
+		if(this.isFlex())
+			return WorkTimeForm.FLEX;
+		
+		switch(this.getWorkTimeMethodSet()) {
+			case FIXED_WORK:		return WorkTimeForm.FIXED;
+			case DIFFTIME_WORK:		return WorkTimeForm.TIMEDIFFERENCE;
+			case FLOW_WORK:			return WorkTimeForm.FLOW;
+			default:				throw new RuntimeException("Non-conformity No WorkTimeForm");
+		}
+	}
+	
 	/**
 	 * Instantiates a new work time division.
 	 *

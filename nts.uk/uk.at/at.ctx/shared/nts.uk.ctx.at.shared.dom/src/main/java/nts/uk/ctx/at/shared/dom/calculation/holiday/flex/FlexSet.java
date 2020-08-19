@@ -10,6 +10,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
+ * フレックス勤務の日別計算設定
  * The Class FlexSet.
  */
 @AllArgsConstructor

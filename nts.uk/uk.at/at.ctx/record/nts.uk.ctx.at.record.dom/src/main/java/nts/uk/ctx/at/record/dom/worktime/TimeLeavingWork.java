@@ -19,25 +19,29 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * 出退勤
  *
  */
-@Getter
 @NoArgsConstructor
 public class TimeLeavingWork extends DomainObject{
 	
 	/*
 	 * 勤務NO
 	 */
+	@Getter
 	private WorkNo workNo;
 	
 	//出勤
+	@Getter
 	private Optional<TimeActualStamp> attendanceStamp;
 	
 	//退勤
+	@Getter
 	private Optional<TimeActualStamp> leaveStamp;
 	
 	private TimeSpanForCalc timespan;
 	
-
-
+	
+	public TimeSpanForCalc getTimespan() {
+		return this.craeteTimeSpan();
+	}
 	
 	public TimeLeavingWork(WorkNo workNo, TimeActualStamp attendanceStamp, TimeActualStamp leaveStamp) {
 		super();
@@ -160,4 +164,41 @@ public class TimeLeavingWork extends DomainObject{
 		return false;
 	}
 	
+	/**
+	 * 打刻（出勤）を取得する
+	 * @return 出勤
+	 */
+	public Optional<WorkStamp> getStampOfAttendanceStamp() {
+		if(!this.attendanceStamp.isPresent()) return Optional.empty();
+		if(!this.attendanceStamp.get().getStamp().isPresent()) return Optional.empty();
+		return Optional.of(this.attendanceStamp.get().getStamp().get());
+	}
+	
+	/**
+	 * 打刻（退勤）を取得する
+	 * @return 退勤
+	 */
+	public Optional<WorkStamp> getStampOfleaveStamp() {
+		if(!this.leaveStamp.isPresent()) return Optional.empty();
+		if(!this.leaveStamp.get().getStamp().isPresent()) return Optional.empty();
+		return Optional.of(this.leaveStamp.get().getStamp().get());
+	}
+	
+	/**
+	 * 出勤時刻（丸め無し）を取得する
+	 * @return 出勤時刻（丸め無し）
+	 */
+	public Optional<TimeWithDayAttr> getAttendanceStampTimeWithDay() {
+		if(!this.getStampOfAttendanceStamp().isPresent()) return Optional.empty();
+		return Optional.of(this.getStampOfAttendanceStamp().get().getTimeWithDay());
+	}
+	
+	/**
+	 * 退勤時刻（丸め無し）を取得する
+	 * @return 退勤時刻（丸め無し）
+	 */
+	public Optional<TimeWithDayAttr> getleaveStampTimeWithDay() {
+		if(!this.getStampOfleaveStamp().isPresent()) return Optional.empty();
+		return Optional.of(this.getStampOfleaveStamp().get().getTimeWithDay());
+	}
 }

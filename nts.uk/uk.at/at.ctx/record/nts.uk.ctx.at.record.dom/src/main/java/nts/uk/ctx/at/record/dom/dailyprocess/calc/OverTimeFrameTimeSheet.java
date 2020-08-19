@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 
 /**
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.
 public class OverTimeFrameTimeSheet {
 
 	//時間帯
-	private TimeSpanForCalc timeSpan;
+	private TimeSpanForDailyCalc timeSpan;
 	
 	//残業枠No
 	private OverTimeFrameNo frameNo;

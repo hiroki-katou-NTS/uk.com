@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
  * 実績計算を呼び出す用のサービス
@@ -30,7 +31,7 @@ public interface CalculateDailyRecordServiceCenter{//
 	public ManageProcessAndCalcStateResult calculateForManageState(List<IntegrationOfDaily> integrationOfDaily,List<ClosureStatusManagement> closureList,ExecutionType reCalcAtr, String empCalAndSumExecLogID);
 	
 	//エラーチェック
-	public List<IntegrationOfDaily> errorCheck(List<IntegrationOfDaily> integrationList);
+	public List<IntegrationOfDaily> errorCheck(CompanyId companyId, List<IntegrationOfDaily> integrationList);
 
 	//計算(更新処理自動実行用)
 	public ManageProcessAndCalcStateResult calculateForclosure(List<IntegrationOfDaily> integrationOfDaily,ManagePerCompanySet companySet, List<ClosureStatusManagement> closureList,String executeLogId);

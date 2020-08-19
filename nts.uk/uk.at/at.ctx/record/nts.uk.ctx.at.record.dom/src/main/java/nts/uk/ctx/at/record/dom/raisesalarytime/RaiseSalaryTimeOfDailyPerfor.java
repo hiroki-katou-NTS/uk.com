@@ -34,8 +34,19 @@ public class RaiseSalaryTimeOfDailyPerfor {
 	//特定日加給時間
 	private List<BonusPayTime> autoCalRaisingSalarySettings;
 	
-	public static RaiseSalaryTimeOfDailyPerfor calcBonusPayTime(CalculationRangeOfOneDay oneDayRange,AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,
-			   											CalAttrOfDailyPerformance calcAtrOfDaily) {
+	/**
+	 * 日別実績の加給時間
+	 * @param oneDayRange 1日の計算範囲
+	 * @param raisingAutoCalcSet 加給の自動計算設定
+	 * @param bonusPayAutoCalcSet 加給自動計算設定
+	 * @param calcAtrOfDaily 日別実績の計算区分
+	 * @return 日別実績の加給時間
+	 */
+	public static RaiseSalaryTimeOfDailyPerfor calcBonusPayTime(
+			CalculationRangeOfOneDay oneDayRange,
+			AutoCalRaisingSalarySetting raisingAutoCalcSet,
+			BonusPayAutoCalcSet bonusPayAutoCalcSet,
+			CalAttrOfDailyPerformance calcAtrOfDaily) {
 		if(oneDayRange == null) return new RaiseSalaryTimeOfDailyPerfor(Collections.emptyList(), Collections.emptyList());
 		val bonusPay = oneDayRange.calcBonusPayTime(raisingAutoCalcSet, bonusPayAutoCalcSet, calcAtrOfDaily,BonusPayAtr.BonusPay);
 		val specBonusPay = oneDayRange.calcSpecBonusPayTime(raisingAutoCalcSet, bonusPayAutoCalcSet, calcAtrOfDaily, BonusPayAtr.SpecifiedBonusPay);

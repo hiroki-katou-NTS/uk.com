@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 
 /**
  * Implement RangeOfDayTimeZoneService
@@ -26,7 +27,6 @@ public class RangeOfDayTimeZoneServiceImpl implements RangeOfDayTimeZoneService 
 
 	@Override
 	public TimeSpanForCalc getRangeofOneDay(String siftCode) {
-		TimeSpanForCalc timeSpanForCalc = new TimeSpanForCalc();
 		String companyId = AppContexts.user().companyId();
 		Optional<PredetemineTimeSetting> optional = preTimeSetRepo.findByWorkTimeCode(companyId, siftCode);
 		if (!optional.isPresent()) {
@@ -36,21 +36,19 @@ public class RangeOfDayTimeZoneServiceImpl implements RangeOfDayTimeZoneService 
 		TimeWithDayAttr startTime = prSetting.getStartDateClock();
 		AttendanceTime rangeTimeDay = prSetting.getRangeTimeDay();
 		TimeWithDayAttr endTime = startTime.forwardByMinutes(rangeTimeDay.valueAsMinutes());
-		timeSpanForCalc.setEnd(endTime);
-		timeSpanForCalc.setStart(startTime);
-		return timeSpanForCalc;
+		return new TimeSpanForCalc(startTime, endTime);
 	}
 
 	@Override
 	public DuplicateStateAtr checkPeriodDuplication(TimeSpanForCalc destination, TimeSpanForCalc source) {
 		/** 基準となる時間帯の開始時刻 */
-		int s1 = destination.start.valueAsMinutes();
+		int s1 = destination.getStart().valueAsMinutes();
 		/** e1=基準となる時間帯の終了時刻 */
-		int e1 = destination.end.valueAsMinutes();
+		int e1 = destination.getEnd().valueAsMinutes();
 		/** s2=比較したい時間帯の開始時刻 */
-		int s2 = source.start.valueAsMinutes();
+		int s2 = source.getStart().valueAsMinutes();
 		/** e2=比較したい時間帯の終了時刻 */
-		int e2 = source.end.valueAsMinutes();
+		int e2 = source.getEnd().valueAsMinutes();
 		if (s1 == s2 && e1 == e2) {
 			return DuplicateStateAtr.valueOf(0);
 		}
@@ -124,16 +122,16 @@ public class RangeOfDayTimeZoneServiceImpl implements RangeOfDayTimeZoneService 
 	@Override
 	public void checkWithinRangeOfOneDay(DuplicationStatusOfTimeZone dStatusOfTimeZone, TimeSpanForCalc destination) {
 		if (dStatusOfTimeZone.value == 1) {
-			throw new BusinessException("Msg_440", "KSU001_73", destination.start.getInDayTimeWithFormat(),
-					destination.end.getInDayTimeWithFormat());
+			throw new BusinessException("Msg_440", "KSU001_73", destination.getStart().getInDayTimeWithFormat(),
+					destination.getEnd().getInDayTimeWithFormat());
 		}
 		if (dStatusOfTimeZone.value == 2) {
-			throw new BusinessException("Msg_440", "KSU001_74", destination.start.getInDayTimeWithFormat(),
-					destination.end.getInDayTimeWithFormat());
+			throw new BusinessException("Msg_440", "KSU001_74", destination.getStart().getInDayTimeWithFormat(),
+					destination.getEnd().getInDayTimeWithFormat());
 		}
 		if (dStatusOfTimeZone.value == 3 || dStatusOfTimeZone.value == 4) {
-			throw new BusinessException("Msg_440", "KSU001_73", "KSU001_74", destination.start.getInDayTimeWithFormat(),
-					destination.end.getInDayTimeWithFormat());
+			throw new BusinessException("Msg_440", "KSU001_73", "KSU001_74", destination.getStart().getInDayTimeWithFormat(),
+					destination.getEnd().getInDayTimeWithFormat());
 		}
 
 	}

@@ -103,6 +103,18 @@ public class DailyRecordCreateErrorAlarmServiceImpl implements DailyRecordCreate
 		return returnList;
 	}
 	
+	@Override
+	//打刻漏れ
+	public List<EmployeeDailyPerError> lackOfTimeLeavingStampingOnlyAttendance(IntegrationOfDaily integrationOfDaily) {
+		List<EmployeeDailyPerError> returnList = new ArrayList<>();
+		String companyId = AppContexts.user().companyId();
+		String empId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
+		GeneralDate targetDate = integrationOfDaily.getAffiliationInfor().getYmd();
+		// 出勤系打刻漏れをチェックする
+		returnList.add(this.lackOfStamping.lackOfStamping(companyId, empId, targetDate, integrationOfDaily.getWorkInformation(),
+				integrationOfDaily.getAttendanceLeave().orElse(null)));
+		return returnList;
+	}
 	
 	@Override
 	//入退門打刻漏れ

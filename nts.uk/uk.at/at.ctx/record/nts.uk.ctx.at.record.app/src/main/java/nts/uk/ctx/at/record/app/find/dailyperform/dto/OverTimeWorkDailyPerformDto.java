@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -103,7 +104,7 @@ public class OverTimeWorkDailyPerformDto implements ItemConst {
 	public OverTimeOfDaily toDomain() {
 		return new OverTimeOfDaily(
 				ConvertHelper.mapTo(overTimeFrameTimeSheet,
-						(c) -> new OverTimeFrameTimeSheet(createTimeSheet(c.getTimeSheet()),
+						(c) -> new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(createTimeSheet(c.getTimeSheet())),
 								new OverTimeFrameNo(c.getOvertimeFrameNo()))),
 				ConvertHelper.mapTo(overTimeFrameTime,
 						(c) -> new OverTimeFrameTime(new OverTimeFrameNo(c.getNo()),

@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.List;
 
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSpanForDailyCalc;
 
 /**
  * 非勤務時間帯
@@ -12,16 +12,16 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 public class NonWorkingTimeSheet {
 
 	//所定内休憩時間帯
-	List<TimeSpanForCalc> whithinBreakTimeSheet;
+	List<TimeSpanForDailyCalc> whithinBreakTimeSheet;
 	//所定外休憩時間帯
-	List<TimeSpanForCalc> excessBreakTimeSheet;
+	List<TimeSpanForDailyCalc> excessBreakTimeSheet;
 	
 	
 	/**
 	 * Constructor 
 	 */
-	public NonWorkingTimeSheet(List<TimeSpanForCalc> whithinBreakTimeSheet,
-			List<TimeSpanForCalc> excessBreakTimeSheet) {
+	public NonWorkingTimeSheet(List<TimeSpanForDailyCalc> whithinBreakTimeSheet,
+			List<TimeSpanForDailyCalc> excessBreakTimeSheet) {
 		super();
 		this.whithinBreakTimeSheet = whithinBreakTimeSheet;
 		this.excessBreakTimeSheet = excessBreakTimeSheet;
