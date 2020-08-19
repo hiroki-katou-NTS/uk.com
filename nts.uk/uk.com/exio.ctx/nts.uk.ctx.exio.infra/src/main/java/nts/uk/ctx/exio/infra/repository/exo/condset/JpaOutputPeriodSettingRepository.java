@@ -16,12 +16,14 @@ public class JpaOutputPeriodSettingRepository extends JpaRepository implements O
 	private static final String QUERY_SELECT_ALL = "SELECT f FROM OiomtOutputPeriodSet f";
 	// Select one
 	private static final String QUERY_SELECT_BY_ID = QUERY_SELECT_ALL
-			+ " WHERE f.pk.cid = :cid AND  f.pk.conditionSetCd = :conditionSetCd ";
+			+ " WHERE f.pk.cId = :cId AND f.pk.conditionSetCd = :conditionSetCd";
 	
 	@Override
 	public Optional<OutputPeriodSetting> findById(String cid, String conditionSetCd) {
 		return this.queryProxy()
 				.query(QUERY_SELECT_BY_ID, OiomtOutputPeriodSet.class)
+				.setParameter("cId", cid)
+				.setParameter("conditionSetCd", conditionSetCd)
 				.getSingle(OiomtOutputPeriodSet::toDomain);
 	}
 
