@@ -130,9 +130,10 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		GeneralDateTime end = GeneralDateTime.ymdhms(period.end().year(), period.end().month(), period.end().day(), 23,
 				59, 59);
 
-		return this.queryProxy().query(GET_NOT_STAMP_NUMBER, KrcdtStamp.class)
+		List<Stamp> list = this.queryProxy().query(GET_NOT_STAMP_NUMBER, KrcdtStamp.class)
 				.setParameter("contractCode", contractCode).setParameter("startStampDate", start)
 				.setParameter("endStampDate", end).getList(x -> toDomain(x));
+		return list;
 	}
 
 	private KrcdtStamp toEntity(Stamp stamp) {

@@ -35,6 +35,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimePrintDesti
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeZoneOutput;
 import nts.uk.ctx.at.record.dom.goout.OutingManagement;
 import nts.uk.ctx.at.record.dom.goout.repository.OutingManagementRepository;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
@@ -80,6 +81,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	private StampReflectionManagementRepository stampRepo;
 	@Inject
 	private WorkInformationRepository workInforRepo;
+	@Inject 
+	private RecordDomRequireService requireService;
 //	@Inject
 //	private WorkTypeRepository WorkRepo;
 	@Inject
@@ -94,8 +97,6 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	private AttendanceLeavingGateOfDailyRepo attendanceLeavingGateOfDailyRepo;
 	@Inject
 	private PCLogOnInfoOfDailyRepo PCLogOnInfoOfDailyRepo;
-	@Inject
-	private GetCommonSet getCommonSet;
 	@Inject
 	private OutingManagementRepository outingManagementRepo;
 //	@Inject
@@ -3035,7 +3036,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 	// làm tròn thời gian
 	private RoundingSet getRoudingTime(String companyId, String workTimeCode, Superiority superiority) {
-		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = this.getCommonSet.get(companyId, workTimeCode);
+		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = GetCommonSet.workTimezoneCommonSet(requireService.createRequire(), companyId, workTimeCode);
 		if (workTimezoneCommonSet.isPresent()) {
 			WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
 			return stampSet.getRoundingSets().stream().filter(item -> item.getSection() == superiority).findFirst().isPresent() ?
@@ -3045,7 +3046,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	}
 
 	private PrioritySetting getPrioritySetting(String companyId, String workTimeCode, StampPiorityAtr stampPiorityAtr) {
-		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = this.getCommonSet.get(companyId, workTimeCode);
+		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = GetCommonSet.workTimezoneCommonSet(requireService.createRequire(), companyId, workTimeCode);
 		if (workTimezoneCommonSet.isPresent()) {
 			WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
 			if (stampSet.getPrioritySets().stream().filter(item -> item.getStampAtr() == stampPiorityAtr)

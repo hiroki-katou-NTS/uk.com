@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.totaltimes;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,28 +8,20 @@ import java.util.Optional;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
-import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.attdstatus.AttendanceStatusList;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.workinfo.WorkInfoList;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesResult;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 日別実績から回数集計結果を取得する
@@ -53,7 +44,7 @@ public class TotalTimesFromDailyRecord {
 	/** 勤務種類リスト */
 	private Map<String, WorkType> workTypeMap;
 	/** 勤務種類リポジトリ */
-	private WorkTypeRepository workTypeRepo;
+//	private WorkTypeRepository workTypeRepo;
 	/** 任意項目リスト */
 	private Map<Integer, OptionalItem> optionalItemMap;
 
@@ -62,44 +53,34 @@ public class TotalTimesFromDailyRecord {
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param dailysPeriod 日別実績の期間
-	 * @param attendanceTimeOfDailyRepo 日別実績の勤怠時間リポジトリ
-	 * @param anyItemValueOfDailyRepo 日別実績の任意項目リポジトリ
-	 * @param timeLeavingOfDailyRepo 日別実績の出退勤リポジトリ
-	 * @param workInfoOfDailyRepo 日別実績の勤務情報リポジトリ
-	 * @param workTypeOfDailyRepo 日別実績の勤務種別リポジトリ
-	 * @param workTypeRepo 勤務種類リポジトリ
-	 * @param optionalItemRepo 任意項目リポジトリ
 	 */
-	public TotalTimesFromDailyRecord(
-			String companyId,
-			String employeeId,
-			DatePeriod dailysPeriod,
-			AttendanceTimeRepository attendanceTimeOfDailyRepo,
-			AnyItemValueOfDailyRepo anyItemValueOfDailyRepo,
-			TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyRepo,
-			WorkInformationRepository workInfoOfDailyRepo,
-			WorkTypeOfDailyPerforRepository workTypeOfDailyRepo,
-			WorkTypeRepository workTypeRepo,
-			OptionalItemRepository optionalItemRepo){
+	public TotalTimesFromDailyRecord(RequireM1 require, String companyId,
+			String employeeId, DatePeriod dailysPeriod){
 
 		this.companyId = companyId;
-		this.attendanceStatusList = new AttendanceStatusList(
-				employeeId, dailysPeriod, attendanceTimeOfDailyRepo, timeLeavingOfDailyRepo);
-		this.workInfoList = new WorkInfoList(employeeId, dailysPeriod, workInfoOfDailyRepo);
+		this.attendanceStatusList = new AttendanceStatusList(require, employeeId, dailysPeriod);
+		this.workInfoList = new WorkInfoList(require, employeeId, dailysPeriod);
 		this.workTypeOfDailyMap = new HashMap<>();
 		this.workTypeMap = new HashMap<>();
 		this.optionalItemMap = new HashMap<>();
-		val optionalItemList = optionalItemRepo.findAll(companyId);
+		val optionalItemList = require.optionalItems(companyId);
 		for (val optionalItem : optionalItemList){
 			this.optionalItemMap.putIfAbsent(optionalItem.getOptionalItemNo().v(), optionalItem);
 		}
 		List<String> employeeIds = new ArrayList<>();
 		employeeIds.add(employeeId);
-		this.setData(
-				attendanceTimeOfDailyRepo.findByPeriodOrderByYmd(employeeId, dailysPeriod),
-				anyItemValueOfDailyRepo.finds(Arrays.asList(employeeId), dailysPeriod),
-				workTypeOfDailyRepo.finds(employeeIds, dailysPeriod),
-				workTypeRepo);
+		this.setData(require.dailyAttendanceTime(employeeId, dailysPeriod),
+						require.dailyAnyItemValues(employeeIds, dailysPeriod),
+						require.dailyWorkTypes(employeeIds, dailysPeriod));
+	}
+	
+	public static interface RequireM1 extends AttendanceStatusList.RequireM1, WorkInfoList.RequireM1 {
+		
+		List<OptionalItem> optionalItems(String companyId);
+		
+		List<AnyItemValueOfDaily> dailyAnyItemValues(List<String> employeeId, DatePeriod baseDate);
+		
+		List<WorkTypeOfDailyPerformance> dailyWorkTypes(List<String> employeeId, DatePeriod baseDate);
 	}
 
 	/**
@@ -112,7 +93,6 @@ public class TotalTimesFromDailyRecord {
 	 * @param workInfoOfDailys 日別実績の勤務情報リスト
 	 * @param workTypeOfDailys 日別実績の勤務種別リスト
 	 * @param workTypeMap 勤務種類リスト
-	 * @param workTypeRepo 勤務種類リポジトリ
 	 * @param optionalItemMap 任意項目リスト
 	 */
 	public TotalTimesFromDailyRecord(
@@ -124,7 +104,6 @@ public class TotalTimesFromDailyRecord {
 			List<WorkInfoOfDailyPerformance> workInfoOfDailys,
 			List<WorkTypeOfDailyPerformance> workTypeOfDailys,
 			Map<String, WorkType> workTypeMap,
-			WorkTypeRepository workTypeRepo,
 			Map<Integer, OptionalItem> optionalItemMap){
 		
 		this.companyId = companyId;
@@ -132,7 +111,7 @@ public class TotalTimesFromDailyRecord {
 		this.workInfoList = new WorkInfoList(workInfoOfDailys);
 		this.workTypeMap = workTypeMap;
 		this.optionalItemMap = optionalItemMap;
-		this.setData(attendanceTimeOfDailys, anyItemValueOfDailyList, workTypeOfDailys, workTypeRepo);
+		this.setData(attendanceTimeOfDailys, anyItemValueOfDailyList, workTypeOfDailys);
 	}
 	
 	/**
@@ -145,8 +124,7 @@ public class TotalTimesFromDailyRecord {
 	private void setData(
 			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys,
 			List<AnyItemValueOfDaily> anyItemValueOfDailyList,
-			List<WorkTypeOfDailyPerformance> workTypeOfDailyList,
-			WorkTypeRepository workTypeRepo){
+			List<WorkTypeOfDailyPerformance> workTypeOfDailyList){
 		
 		this.attendanceTimeOfDailyMap = new HashMap<>();
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
@@ -163,7 +141,7 @@ public class TotalTimesFromDailyRecord {
 			val ymd = workTypeOfDaily.getDate();
 			this.workTypeOfDailyMap.putIfAbsent(ymd, workTypeOfDaily);
 		}
-		this.workTypeRepo = workTypeRepo;
+//		this.workTypeRepo = workTypeRepo;
 	}
 
 	/**
@@ -171,11 +149,11 @@ public class TotalTimesFromDailyRecord {
 	 * @param workTypeCode 勤務種類コード
 	 * @return 勤務種類
 	 */
-	private WorkType getWorkType(String workTypeCode){
+	private WorkType getWorkType(RequireM2 require, String workTypeCode){
 		
 		if (this.workTypeMap.containsKey(workTypeCode)) return this.workTypeMap.get(workTypeCode);
 		
-		val workTypeOpt = this.workTypeRepo.findByPK(this.companyId, workTypeCode);
+		val workTypeOpt = require.workType(this.companyId, workTypeCode);
 		if (workTypeOpt.isPresent()){
 			this.workTypeMap.put(workTypeCode, workTypeOpt.get());
 		}
@@ -185,6 +163,13 @@ public class TotalTimesFromDailyRecord {
 		return this.workTypeMap.get(workTypeCode);
 	}
 	
+	public static interface RequireM2 {
+		
+		Optional<WorkType> workType(String companyId, String workTypeCd);
+		
+		DailyRecordToAttendanceItemConverter createDailyConverter(Map<Integer, OptionalItem> optionalItems);
+	}
+	
 	/**
 	 * 回数集計結果情報を取得する
 	 * @param totalTimesList 回数集計
@@ -192,17 +177,17 @@ public class TotalTimesFromDailyRecord {
 	 * @param attendanceItemConverter 勤怠項目値変換
 	 * @return 回数集計結果情報
 	 */
-	public Optional<TotalTimesResult> getResult(TotalTimes totalTimes, DatePeriod period,
-			AttendanceItemConvertFactory attendanceItemConverter) {
-		
-		List<TotalTimes> totalTimesList = new ArrayList<>();
-		totalTimesList.add(totalTimes);
-		
-		val results = this.getResults(totalTimesList, period, attendanceItemConverter);
-		val totalCountNo = totalTimes.getTotalCountNo();
-		if (!results.containsKey(totalCountNo)) return Optional.empty();
-		return Optional.of(results.get(totalCountNo));
-	}
+//	public Optional<TotalTimesResult> getResult(TotalTimes totalTimes, DatePeriod period,
+//			AttendanceItemConvertFactory attendanceItemConverter) {
+//		
+//		List<TotalTimes> totalTimesList = new ArrayList<>();
+//		totalTimesList.add(totalTimes);
+//		
+//		val results = this.getResults(totalTimesList, period, attendanceItemConverter);
+//		val totalCountNo = totalTimes.getTotalCountNo();
+//		if (!results.containsKey(totalCountNo)) return Optional.empty();
+//		return Optional.of(results.get(totalCountNo));
+//	}
 	
 	/**
 	 * 回数集計結果情報を取得する
@@ -211,8 +196,7 @@ public class TotalTimesFromDailyRecord {
 	 * @param attendanceItemConverter 勤怠項目値変換
 	 * @return 回数集計結果情報マップ（回数集計NO別）
 	 */
-	public Map<Integer, TotalTimesResult> getResults(List<TotalTimes> totalTimesList, DatePeriod period,
-			AttendanceItemConvertFactory attendanceItemConverter) {
+	public Map<Integer, TotalTimesResult> getResults(RequireM2 require, List<TotalTimes> totalTimesList, DatePeriod period) {
 		
 		Map<Integer, TotalTimesResult> results = new HashMap<>();
 
@@ -223,7 +207,7 @@ public class TotalTimesFromDailyRecord {
 			results.put(totalCountNo, new TotalTimesResult());
 		}
 		
-		val dailyConverter = attendanceItemConverter.createDailyConverter(this.optionalItemMap);
+		val dailyConverter = require.createDailyConverter(this.optionalItemMap);
 		
 		// 「期間」を取得
 		GeneralDate procDate = period.start();
@@ -237,7 +221,7 @@ public class TotalTimesFromDailyRecord {
 			// 勤務種類が取得できない日は、集計しない
 			if (workInfo.getWorkTypeCode() == null) continue;
 			String workTypeCd = workInfo.getWorkTypeCode().v();
-			val workType = this.getWorkType(workTypeCd);
+			val workType = this.getWorkType(require, workTypeCd);
 			if (workType == null) continue;
 
 			// 就業時間帯を確認する

@@ -6,47 +6,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.val;
+import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleAdapter;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleSidDto;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.GetVacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 処理：暫定年休管理データを作成する
  * @author shuichu_ishida
  */
 public class CreateTempAnnLeaMngProc {
-
-	/** 日別実績の勤務情報 */
-	private WorkInformationRepository workInformationRepo;
-	/** 勤務予定基本情報 */
-	private BasicScheduleAdapter basicScheduleAdapter;
-	/** 暫定年休管理データ */
-	private InterimRemainRepository tempAnnualLeaveMngRepo;
-	/** 勤務情報の取得 */
-	private WorkTypeRepository workTypeRepo;
-	/** 休暇加算設定の取得 */
-	private GetVacationAddSet getVacationAddSet;
-	/** 月別実績の勤怠時間 */
-	private AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepo;
 	
 	/** 会社ID */
 	private String companyId;
@@ -75,20 +61,7 @@ public class CreateTempAnnLeaMngProc {
 	/** 休暇加算設定 */
 	private VacationAddSet vacationAddSet;
 	
-	public CreateTempAnnLeaMngProc(
-			WorkInformationRepository workInformationRepo,
-			BasicScheduleAdapter basicScheduleAdapter,
-			InterimRemainRepository tempAnnualLeaveMngRepo,
-			WorkTypeRepository workTypeRepo,
-			GetVacationAddSet getVacationAddSet,
-			AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepo) {
-		
-		this.workInformationRepo = workInformationRepo;
-		this.basicScheduleAdapter = basicScheduleAdapter;
-		this.tempAnnualLeaveMngRepo = tempAnnualLeaveMngRepo;
-		this.workTypeRepo = workTypeRepo;
-		this.getVacationAddSet = getVacationAddSet;
-		this.attendanceTimeOfMonthlyRepo = attendanceTimeOfMonthlyRepo;
+	public CreateTempAnnLeaMngProc() {
 		
 		this.workInfoOfDailys = new HashMap<>();
 		this.basicSchedules = new HashMap<>();
@@ -101,11 +74,11 @@ public class CreateTempAnnLeaMngProc {
 	 * @param workTypeCode 勤務種類コード
 	 * @return 勤務種類
 	 */
-	private WorkType getWorkType(String workTypeCode){
+	private WorkType getWorkType(RequireM4 require, String workTypeCode){
 		
 		if (this.workTypeMap.containsKey(workTypeCode)) return this.workTypeMap.get(workTypeCode);
 		
-		val workTypeOpt = this.workTypeRepo.findByPK(this.companyId, workTypeCode);
+		val workTypeOpt = require.workType(this.companyId, workTypeCode);
 		if (workTypeOpt.isPresent()){
 			this.workTypeMap.put(workTypeCode, workTypeOpt.get());
 		}
@@ -123,13 +96,11 @@ public class CreateTempAnnLeaMngProc {
 	 * @param mode モード
 	 * @return 暫定年休管理データリスト
 	 */
-	public List<InterimRemain> algorithm(
-			String companyId,
-			String employeeId,
-			DatePeriod period,
-			InterimRemainMngMode mode) {
+	public AlgorithmResult algorithm(RequireM3 require,
+			String companyId, String employeeId, DatePeriod period, InterimRemainMngMode mode) {
 
-		return this.algorithm(companyId, employeeId, period, mode, Optional.empty(), Optional.empty());
+		return this.algorithm(require, companyId, employeeId, period, mode, 
+				Optional.empty(), Optional.empty());
 	}
 	
 	/**
@@ -142,12 +113,9 @@ public class CreateTempAnnLeaMngProc {
 	 * @param monthlyCalcDailys 月の計算中の日別実績データ
 	 * @return 暫定年休管理データリスト
 	 */
-	public List<InterimRemain> algorithm(
-			String companyId,
-			String employeeId,
-			DatePeriod period,
-			InterimRemainMngMode mode,
-			Optional<MonAggrCompanySettings> companySets,
+	public AlgorithmResult algorithm(RequireM3 require,
+			String companyId, String employeeId, DatePeriod period,
+			InterimRemainMngMode mode, Optional<MonAggrCompanySettings> companySets,
 			Optional<MonthlyCalculatingDailys> monthlyCalcDailys) {
 		
 		this.companyId = companyId;
@@ -171,27 +139,28 @@ public class CreateTempAnnLeaMngProc {
 		else {
 			
 			// 休暇加算設定　取得
-			this.vacationAddSet = this.getVacationAddSet.get(companyId);
+			this.vacationAddSet = GetVacationAddSet.get(require, companyId);
 
 			// 勤務種類　取得
 			this.workTypeMap = new HashMap<>();
 		}
 		
 		// 暫定データ作成用の勤務予定・勤務実績・申請を取得
-		this.getSourceDataForCreate();
+		this.getSourceDataForCreate(require);
 		
 		// 暫定管理データを作成する
-		this.createTempManagementData();
+		this.createTempManagementData(require);
 		
+		List<AtomTask> atomTask = new ArrayList<>();
 		//　「モード」をチェック
 		if (mode == InterimRemainMngMode.OTHER){
 
 			// 「暫定年休管理データ」をDELETEする
-			this.tempAnnualLeaveMngRepo.removeByPeriod(employeeId, period);
+			atomTask.add(AtomTask.of(() -> require.removeInterimRemain(employeeId, period)));
 			
 			// 「暫定年休管理データ」をINSERTする
-			for (val tempAnnualLeaveMng : this.tempAnnualLeaveMngs){
-				this.tempAnnualLeaveMngRepo.persistAndUpdateInterimRemain(tempAnnualLeaveMng);
+			for (val tempAnnualLeaveMng : this.tempAnnualLeaveMngs) {
+				atomTask.add(AtomTask.of(() -> require.persistAndUpdateInterimRemain(tempAnnualLeaveMng)));
 			}
 			
 			// 「個人残数更新フラグ管理．更新状況」を「更新済み」にUpdateする
@@ -199,23 +168,23 @@ public class CreateTempAnnLeaMngProc {
 		}
 		
 		// 年休フレックス補填分を暫定年休管理データに反映する
-		this.reflecttempManagementDataFromCompFlex();
+		this.reflecttempManagementDataFromCompFlex(require);
 		
 		// 作成した暫定年休管理データを返す
-		return this.tempAnnualLeaveMngs;
+		return new AlgorithmResult(this.tempAnnualLeaveMngs, AtomTask.bundle(atomTask));
 	}
 	
 	/**
 	 * 暫定データ作成用の勤務予定・勤務実績・申請を取得
 	 */
-	private void getSourceDataForCreate(){
+	private void getSourceDataForCreate(RequireM2 require){
 	
 		// 「日別実績の勤務情報」を取得する　→　取得した「日別実績の勤務情報」を返す
 		if (this.monthlyCalculatingDailys != null) {
 			this.workInfoOfDailys = this.monthlyCalculatingDailys.getWorkInfoOfDailyMap();
 		}
 		else {
-			val acquiredWorkInfos = this.workInformationRepo.findByPeriodOrderByYmd(this.employeeId, this.period);
+			val acquiredWorkInfos = require.dailyWorkInfos(this.employeeId, this.period);
 			for (val acquiredWorkInfo : acquiredWorkInfos){
 				val ymd = acquiredWorkInfo.getYmd();
 				this.workInfoOfDailys.putIfAbsent(ymd, acquiredWorkInfo);
@@ -232,7 +201,7 @@ public class CreateTempAnnLeaMngProc {
 			//*****（未）　RequestList#141の完成待ち。仮に、今ある他の機能で代替。
 			GeneralDate procDate = this.period.start();
 			while (procDate.beforeOrEquals(this.period.end())){
-				val basicScheduleSidOpt = this.basicScheduleAdapter.findAllBasicSchedule(
+				val basicScheduleSidOpt = require.basicScheduleSid(
 						this.employeeId, procDate);
 				if (basicScheduleSidOpt.isPresent()){
 					val basicScheduleSid = basicScheduleSidOpt.get();
@@ -247,7 +216,7 @@ public class CreateTempAnnLeaMngProc {
 	/**
 	 * 暫定管理データを作成する
 	 */
-	private void createTempManagementData(){
+	private void createTempManagementData(RequireM4 require){
 		
 		// 期間開始日～終了日まで1日づつループする
 		for (GeneralDate procDate = this.period.start();
@@ -257,7 +226,7 @@ public class CreateTempAnnLeaMngProc {
 			if (this.workInfoOfDailys.containsKey(procDate)){
 				
 				// 日別実績から暫定年休管理データを作成する
-				this.createTempManagementDataFromDailyRecord(this.workInfoOfDailys.get(procDate));
+				this.createTempManagementDataFromDailyRecord(require, this.workInfoOfDailys.get(procDate));
 				continue;
 			}
 			
@@ -265,7 +234,7 @@ public class CreateTempAnnLeaMngProc {
 			if (this.basicSchedules.containsKey(procDate)){
 				
 				// 勤務予定から暫定年休管理データを作成する
-				this.createTempManagementDataFromWorkSchedule(this.basicSchedules.get(procDate));
+				this.createTempManagementDataFromWorkSchedule(require, this.basicSchedules.get(procDate));
 				continue;
 			}
 		}
@@ -275,12 +244,12 @@ public class CreateTempAnnLeaMngProc {
 	 * 日別実績から暫定年休管理データを作成する
 	 * @param workInfo 日別実績の勤務情報
 	 */
-	private void createTempManagementDataFromDailyRecord(WorkInfoOfDailyPerformance workInfo){
+	private void createTempManagementDataFromDailyRecord(RequireM4 require, WorkInfoOfDailyPerformance workInfo){
 	
 		// 勤務種類から年休の日数を取得
 		val workTypeCode = workInfo.getRecordInfo().getWorkTypeCode();
 		if (workTypeCode == null) return;
-		val workType = this.getWorkType(workTypeCode.v());
+		val workType = this.getWorkType(require, workTypeCode.v());
 		if (workType == null) return;
 		val workTypeDaysCountTable = new WorkTypeDaysCountTable(workType, this.vacationAddSet, Optional.empty());
 		
@@ -306,11 +275,11 @@ public class CreateTempAnnLeaMngProc {
 	 * 勤務予定から暫定年休管理データを作成する
 	 * @param basicSchedule 勤務予定基本情報
 	 */
-	private void createTempManagementDataFromWorkSchedule(BasicScheduleSidDto basicSchedule){
+	private void createTempManagementDataFromWorkSchedule(RequireM4 require, BasicScheduleSidDto basicSchedule){
 		
 		// 勤務種類から年休の日数を取得
 		val workTypeCode = new WorkTypeCode(basicSchedule.getWorkTypeCode());
-		val workType = this.getWorkType(workTypeCode.v());
+		val workType = this.getWorkType(require, workTypeCode.v());
 		if (workType == null) return;
 		val workTypeDaysCountTable = new WorkTypeDaysCountTable(workType, this.vacationAddSet, Optional.empty());
 		
@@ -336,11 +305,11 @@ public class CreateTempAnnLeaMngProc {
 	/**
 	 * 年休フレックス補填分を暫定年休管理データに反映する
 	 */
-	private void reflecttempManagementDataFromCompFlex(){
+	private void reflecttempManagementDataFromCompFlex(RequireM1 require){
 
 		// 「月別実績の勤怠時間」を取得
 		val attendanceTimeOfMonthlys =
-				this.attendanceTimeOfMonthlyRepo.findByDate(this.employeeId, this.period.end());
+				require.attendanceTimeOfMonthly(this.employeeId, this.period.end());
 		for (val attendanceTimeOfMonthly : attendanceTimeOfMonthlys){
 			val monthlyCalc = attendanceTimeOfMonthly.getMonthlyCalculation();
 			
@@ -358,5 +327,41 @@ public class CreateTempAnnLeaMngProc {
 			this.tempAnnualLeaveMngs.add(tempAnnualLeaveMng2);
 			this.holidayMngs.add(annualHolidayMng);
 		}
+	}
+	
+	@AllArgsConstructor
+	@Getter
+	public class AlgorithmResult {
+		
+		private List<InterimRemain> tempAnnualLeaveMngs;
+		
+		private AtomTask atomTask;
+	}
+	
+	public static interface RequireM3 extends RequireM4, RequireM2, RequireM1,
+		GetVacationAddSet.RequireM1 {
+		
+		void persistAndUpdateInterimRemain(InterimRemain domain);
+		
+		void removeInterimRemain(String sId, DatePeriod period);
+	}
+	
+	private static interface RequireM4 {
+		
+		Optional<WorkType> workType(String companyId, String workTypeCd);
+	}
+	
+	private static interface RequireM2 {
+		
+		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, GeneralDate criteriaDate);
+		
+		List<WorkInfoOfDailyPerformance> dailyWorkInfos(String employeeId, DatePeriod datePeriod);
+		
+		Optional<BasicScheduleSidDto> basicScheduleSid(String employeeId, GeneralDate baseDate);
+	}
+	
+	private static interface RequireM1 {
+		
+		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, GeneralDate criteriaDate);
 	}
 }

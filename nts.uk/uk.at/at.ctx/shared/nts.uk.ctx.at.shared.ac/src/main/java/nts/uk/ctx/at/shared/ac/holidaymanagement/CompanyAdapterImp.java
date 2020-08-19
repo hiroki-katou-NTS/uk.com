@@ -5,6 +5,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.AddInforImport;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
@@ -33,6 +35,11 @@ public class CompanyAdapterImp implements CompanyAdapter {
 	 */
 	@Override
 	public CompanyDto getFirstMonth(String companyId) {
+		val cacheCarrier = new CacheCarrier();
+		return getFirstMonthRequire(cacheCarrier, companyId);
+	}
+	@Override
+	public CompanyDto getFirstMonthRequire(CacheCarrier cacheCarrier,String companyId) {
 		BeginOfMonthExport beginOfMonthExport = companyPub.getBeginOfMonth(companyId);
 		CompanyDto companyDto = new CompanyDto();
 		companyDto.setStartMonth(beginOfMonthExport.getStartMonth());
@@ -41,9 +48,9 @@ public class CompanyAdapterImp implements CompanyAdapter {
 
 	/** 暦上の年月を渡して、年度に沿った年月を取得する */
 	@Override
-	public YearMonth getYearMonthFromCalenderYM(String companyId, YearMonth yearMonth) {
-
-		// 「会社情報」を取得する → 期首月
+	public YearMonth getYearMonthFromCalenderYM(CacheCarrier cacheCarrier, String companyId, YearMonth yearMonth) {
+		
+		// 「会社情報」を取得する　→　期首月
 		CompanyDto companyDto = this.getFirstMonth(companyId);
 		int startMonth = companyDto.getStartMonth();
 
