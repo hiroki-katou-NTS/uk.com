@@ -211,13 +211,6 @@ module nts.uk.at.view.ksc001.b {
                     {code: 1, name: '月間パターンコード'},
                     {code: 2, name: '月間パターン名称'}
                 ]);
-
-                //get monthlyPattern
-                //self.getMonthlyPatterns();
-                let user: any = __viewContext.user;
-                self.findPersonalScheduleByEmployeeId(user.employeeId).done(( data) => {
-                    console.log(data);
-                });
             }
 
             /**
@@ -367,6 +360,10 @@ module nts.uk.at.view.ksc001.b {
                     self.reloadCcg001();
                     dfd.resolve(self);
                 });
+
+                //init Schedule for personal
+                self.getMonthlyPatterns();
+
                 return dfd.promise();
             }
 
@@ -1088,6 +1085,46 @@ module nts.uk.at.view.ksc001.b {
                 return data;
             }
 
+            //get monthlyPattern
+            private getMonthlyPatterns() {
+                let self = this;
+                let user: any = __viewContext.user;
+                self.findPersonalScheduleByEmployeeId(user.employeeId).done((data) => {
+                    console.log(data);
+                    if( data ) {
+                        /*
+                        data.confirm: false
+                        data.createAfterDeleting: false
+                        data.createMethodAtr: 1
+                        data.employeeId: "aeaa869d-fe62-4eb2-ac03-2dde53322cb5"
+                        data.holidayReflect: 0
+                        data.holidayUseAtr: 0
+                        data.holidayWorkType: ""
+                        data.implementAtr: 1
+                        data.legalHolidayUseAtr: 0
+                        data.legalHolidayWorkType: ""
+                        data.overwriteConfirmedData: false
+                        data.patternCode: "02"
+                        patternStartDate: "2020-08-19T07:34:20.219Z"
+                        processExecutionAtr: 0
+                        reCreateAtr: 0
+                        rebuildTargetAtr: 1
+                        recreateConverter: true
+                        recreateDirectBouncer: true
+                        recreateEmployeeOffWork: true
+                        recreateShortTermEmployee: true
+                        recreateShortTimeWorkers: true
+                        recreateWorkTypeChange: false
+                        resetMasterInfo: false
+                        resetStartEndTime: false
+                        resetTimeAssignment: false
+                        resetWorkingHours: false
+                        statutoryHolidayUseAtr: 0
+                        statutoryHolidayWorkType: ""
+                        */
+                    }
+                });
+            }
         }
 
         // 実施区分
