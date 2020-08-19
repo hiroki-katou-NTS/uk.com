@@ -1,95 +1,51 @@
 module nts.uk.at.view.kmr004.a {
     const API = {
         START: "screen/at/record/reservation-conf-list/start",
-        PDF : "order/report/print/pdf",
+        PDF_ALL : "order/report/all/pdf",
+        PDF_DETAIL : "order/report/detail/pdf",
         EXCEL : "order/report/print/excel",
-        DATE_FORMAT: "yyyy/MM/dd"
+        EXCEL_DETAL : "order/report/print/excel-detail",
+        exportFile: "bento/report/reservation/month"
     };
-
-    // const PATH = {
-    //     REDIRECT : '/view/ccg/008/a/index.xhtml'
-    // }
 
     import tree = kcp.share.tree;
     import formatDate = nts.uk.time.formatDate;
+    import parseTime = nts.uk.time.parseTime;
 
     @bean()
     export class KMR004AViewModel extends ko.ViewModel {
-
         model : KnockoutObservable<OutputCondition> = ko.observable(new OutputCondition());
-
-        // // date range picker
-        // dateRangeValue: KnockoutObservable<any> = ko.observable({
-        //      startDate: formatDate( new Date(), 'yyyy/MM/dd'),
-        //      endDate: formatDate( new Date(), 'yyyy/MM/dd')
-        // });
-
-        selectedRuleCode: KnockoutObservable<number> = ko.observable(1);
-
-		// base date for KCP004, KCP012
-		baseDate: KnockoutObservable<Date> = ko.observable(new Date());
-
-		// selected codes
-        multiSelectedId: KnockoutObservable<any> = ko.observableArray([]);
-        
-		// tree grid properties object
-		treeGrid: tree.TreeComponentOption;
-
-		// total checkbox
-        //totalChecked: KnockoutObservable<boolean> = ko.observable(true);
-        //totalEnable: KnockoutObservable<boolean> = ko.observable(true);
-
-		// conditional checkbox
-        //conditionalChecked: KnockoutObservable<boolean> = ko.observable(false);
-        //conditionalEnable: KnockoutObservable<boolean> = ko.observable(true);
-
-		// tabs
+        selectedRuleCode: KnockoutObservable<string> = ko.observable('1');
+		baseDate: KnockoutObservable<Date> = ko.observable(new Date()); // base date for KCP004, KCP012
+		treeGrid: tree.TreeComponentOption; // tree grid properties object
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray([]);
         selectedTab: KnockoutObservable<string> = ko.observable('');
-
-		// text editors
-        // texteditorOrderTotal: any = ko.observableArray([]);
-        // texteditorOrderStatement: any = ko.observableArray([]);
-
-        // output condition
-        outputConditionChecked: KnockoutObservable<number> = ko.observable(1);
-
-        // extraction condition checkbox
+        outputConditionChecked: KnockoutObservable<number> = ko.observable(1); // output condition
         extractionConditionChecked: KnockoutObservable<boolean> = ko.observable(false);
         extractionConditionEnable: KnockoutObservable<boolean> = ko.observable(false);
-
-        // extraction condition checkbox
-        separatePageCheckboxChecked: KnockoutObservable<boolean> = ko.observable(false);
         separatePageCheckboxEnable: KnockoutObservable<boolean> = ko.observable(true);
-
-		// condition list checkbox
         conditionListCcb: KnockoutObservableArray<any> = ko.observableArray([]);
         conditionListCcbEnable: KnockoutObservable<boolean> = ko.observable(false);
-        conditionCode: KnockoutObservable<number> = ko.observable(1);
-
-        closingTimeOptions: KnockoutObservableArray<any>;
+        closingTimeOptions: KnockoutObservableArray<any> = ko.observableArray([]);
+        reservationTimeRange1: string = '';
+        reservationTimeRange2: string = '';
+        reservationTimeRange: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
             super();
             var self = this;
 
             self.$ajax(API.START).done((data) => {
-                // console.log(data);
+                self.$blockui("invisible");
+                self.initClosingTimeLable(data);
                 self.initClosingTimeSwitch(data);
                 if(data.operationDistinction == "BY_COMPANY"){
-                     self.initWorkplaceList();
-                // } else {
-                //     console.log(data);
-                //     self.initWorkLocationList();
-                }
-            });
-
-            self.selectedRuleCode.subscribe((value) => {
-                if (value == 1) {
-                    // 開始:弁当予約時間、終了:弁当予約時間 6:00~10:00
+                    self.initWorkplaceList();
                 } else {
-                    // 開始:弁当予約時間、終了:弁当予約時間 12:00~15:00
+                    self.initWorkLocationList();
                 }
+                self.$blockui("clear");
+                self.initConditionListComboBox(data);
             });
 
             self.tabs = ko.observableArray([
@@ -111,32 +67,6 @@ module nts.uk.at.view.kmr004.a {
 
             self.selectedTab = ko.observable('tab-1');
 
-            // self.texteditorOrderTotal = {
-            //     simpleValue: ko.observable(''),
-            //     constraint: 'PrimitiveValue',
-            //     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-            //         textmode: "text",
-            //         placeholder: self.$i18n('KMR004_21'),
-            //         width: "100px",
-            //         textalign: "left"
-            //     })),
-            //     enable: ko.observable(true),
-            //     readonly: ko.observable(false)
-            // };
-            //
-            // self.texteditorOrderStatement = {
-            //     simpleValue: ko.observable(''),
-            //     constraint: 'PrimitiveValue',
-            //     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-            //         textmode: "text",
-            //         placeholder: self.$i18n('KMR004_22'),
-            //         width: "100px",
-            //         textalign: "left"
-            //     })),
-            //     enable: ko.observable(true),
-            //     readonly: ko.observable(false)
-            // };
-
             self.model().totalExtractCondition.subscribe((newValue) => {
                 if (newValue == 4) {
                     self.extractionConditionEnable(true);
@@ -144,7 +74,6 @@ module nts.uk.at.view.kmr004.a {
                     self.extractionConditionEnable(false);
                 }
             });
-
 
             self.model().itemExtractCondition.subscribe((newValue) => {
                 if (newValue == 1) {
@@ -159,12 +88,6 @@ module nts.uk.at.view.kmr004.a {
                     self.conditionListCcbEnable(false);
                 }
             });
-
-            // bento list
-            self.conditionListCcb = ko.observableArray([
-                new ItemModel(1, '商品１'),
-                new ItemModel(1, '商品２')
-            ]);
         }
 
         created() {
@@ -175,34 +98,24 @@ module nts.uk.at.view.kmr004.a {
         mounted() {
         }
 
-        printPDF(){
+        printExcel(){
             let vm = this;
             $("#exportTitle").trigger("validate");
             vm.$blockui("invisible");
-            vm.model.totalTitle = ko.observable('TITjhdfkjdsh')
-            vm.model.workplaceIds = ko.observableArray([]);
-            let startDate = new Date();
-            startDate.setFullYear(2018); startDate.setMonth(0);startDate.setDate(1);
-            let endDate = new Date();
-            endDate.setFullYear(9999); endDate.setMonth(11);endDate.setDate(31);
-            vm.model.period = ko.observable({
-                start: formatDate(startDate, API.DATE_FORMAT),
-                end: formatDate( endDate, API.DATE_FORMAT)
-            });
             let data = {
-                workplaceIds: vm.model.workplaceIds(),
+                workplaceIds: ["100","900"],
                 workLocationCodes: [],
-                period: vm.model.period.peek(),
+                period: null,
                 totalExtractCondition: 1,
                 itemExtractCondition: -1,
                 frameNo: -1,
-                totalTitle:  vm.model.totalTitle(),
+                totalTitle: 'Total title',
                 detailTitle: '',
                 reservationClosingTimeFrame: 1,
                 isBreakPage: true,
                 reservationTimeZone: '昼'
             };
-            nts.uk.request.exportFile("at", API.PDF,data).done(() => {
+            nts.uk.request.exportFile("at", API.EXCEL,data).done(() => {
                 vm.$blockui("clear");
             }).fail((res: any) => {
                 vm.$dialog.error({ messageId : res.messageId }).then(function(){
@@ -211,24 +124,11 @@ module nts.uk.at.view.kmr004.a {
             });
         }
 
-        printExcel(){
+        printPDF(){
             let vm = this;
-            let data = {
-                workplaceIds: vm.model.workplaceIds(),
-                workLocationCodes: vm.model.workLocationCodes(),
-                period: vm.model.period.peek(),
-                totalExtractCondition: vm.model.totalExtractCondition.peek(),
-                itemExtractCondition: vm.model.itemExtractCondition.peek(),
-                frameNo: vm.model.frameNo.peek(),
-                totalTitle:  vm.model.totalTitle.peek(),
-                detailTitle: vm.model.detailTitle.peek(),
-                reservationClosingTimeFrame: 1,
-                isBreakPage: true,
-                reservationTimeZone: vm.model.reservationTimeZone.peek()
-            };
             $("#exportTitle").trigger("validate");
             vm.$blockui("invisible");
-            nts.uk.request.exportFile("at", API.EXCEL, data).done(() => {
+            nts.uk.request.exportFile("at", API.PDF_ALL).done(() => {
                 vm.$blockui("clear");
             }).fail((res: any) => {
                 vm.$dialog.error({ messageId : res.messageId }).then(function(){
@@ -239,12 +139,31 @@ module nts.uk.at.view.kmr004.a {
 
         initClosingTimeSwitch(data:any) {
             let vm = this;
-            vm.closingTimeOptions = ko.observableArray([
+            vm.closingTimeOptions([
                 new ItemModel('1', data.closingTime.reservationFrameName1),
                 new ItemModel('2', data.closingTime.reservationFrameName2)
             ]);
+        }
 
-            $('#A4_2').ntsSwitchButton(vm.closingTimeOptions);
+        initClosingTimeLable(data:any) {
+            const vm = this;
+            let start1 = data.closingTime.reservationStartTime1;
+            let end1 = data.closingTime.reservationEndTime1;
+            let start2 = data.closingTime.reservationStartTime2;
+            let end2 = data.closingTime.reservationEndTime2;
+            vm.reservationTimeRange1 = parseTime(start1, true).format()
+                + "～" + parseTime(end1, true).format();
+            vm.reservationTimeRange2 = parseTime(start2, true).format()
+                + "～" + parseTime(end2, true).format();
+
+            vm.reservationTimeRange(vm.reservationTimeRange1);
+            vm.selectedRuleCode.subscribe((value) => {
+                if (value == '1') {
+                    vm.reservationTimeRange(vm.reservationTimeRange1);
+                } else {
+                    vm.reservationTimeRange(vm.reservationTimeRange2);
+                }
+            });
         }
 
         initWorkplaceList() {
@@ -265,12 +184,23 @@ module nts.uk.at.view.kmr004.a {
             }
 
             $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
-                //$('#tree-grid').getDataList();
+                $('#tree-grid').getDataList();
             });
         }
 
         initWorkLocationList() {
             $('#tree-grid').append("<div style='width: 514px; height: 365px; text-align: center; font-size: x-large'>Waiting for KCP012...</div>");
+        }
+
+        initConditionListComboBox(data: any) {
+            const vm = this;
+            // bento list
+            vm.conditionListCcb(data.menu.map((item) => {
+                return {
+                    code: (new Number(item.code)).toString(),
+                    name: item.name
+                }
+            }));
         }
 
         saveCharacteristic(companyId: string, userId: string, obj: any): void {
@@ -287,10 +217,10 @@ module nts.uk.at.view.kmr004.a {
     }
 
     class ItemModel {
-        code: number;
+        code: string;
         name: string;
 
-        constructor(code: number, name: string) {
+        constructor(code: string, name: string) {
             this.code = code;
             this.name = name;
         }

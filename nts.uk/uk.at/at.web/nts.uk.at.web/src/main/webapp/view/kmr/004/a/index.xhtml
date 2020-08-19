@@ -31,7 +31,7 @@
                     </colgroup>
                     <tr>
                         <td>
-                            <div id="A3_1" data-bind="ntsFormLabel: {}, i18n: 'KMR004_3'"></div>
+                            <div id="A3_1" data-bind="ntsFormLabel: {text: $i18n('KMR004_3')}"></div>
                         </td>
                         <td>
                             <!--A3_2 A3_3-->
@@ -46,7 +46,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <div id="A4_1" data-bind="ntsFormLabel: {}, i18n: 'KMR004_6'"></div>
+                            <div id="A4_1" data-bind="ntsFormLabel: {text: $i18n('KMR004_6')}"></div>
                         </td>
                         <td>
                             <div id="A4_2" tabindex="6" class="cf" data-bind="ntsSwitchButton: {
@@ -57,7 +57,7 @@
 									value: vm.selectedRuleCode,
 									required: true,
 									enable: true }"></div>
-                            <span id="A4_5" class="label" style="margin-bottom: 15px;" data-bind="i18n: 'KMR004_10'"></span>
+                            <span id="A4_5" class="label" style="margin-bottom: 15px;" data-bind="text: vm.reservationTimeRange"></span>
                         </td>
                     </tr>
                 </table>
@@ -68,7 +68,7 @@
                 <table class="table_content">
                     <tr>
                         <td>
-                            <div id="A5_1" data-bind="ntsFormLabel: {}, i18n: 'KMR004_11'"></div>
+                            <div id="A5_1" data-bind="ntsFormLabel: {text: $i18n('KMR004_11')}"></div>
                             <!--div id="A5_2" tabindex="8" data-bind="ntsCheckBox: {checked: totalChecked, enable: totalEnable, style: 'button'}, i18n: 'KMR004_12'"></div-->
                             <!--div id="A5_3" tabindex="9" data-bind="ntsCheckBox: {checked: conditionalChecked, enable: conditionalEnable, style: 'button'}, i18n: 'KMR004_13'"></div-->
 
@@ -96,7 +96,7 @@
 										</colgroup>
 										<tr>
                                             <td>
-												<div id="A7_1" data-bind="ntsFormLabel: {}, i18n: 'KMR004_14'"></div>
+												<div id="A7_1" data-bind="ntsFormLabel: {text: $i18n('KMR004_14')}"></div>
 											</td>
                                             <td>
 												<div id="A7_2" tabindex="13">
@@ -113,7 +113,7 @@
 										</tr>
 										<tr>
 											<td class="align-top">
-												<div id="A8_1" data-bind="ntsFormLabel: {}, i18n: 'KMR004_15'"></div>
+												<div id="A8_1" data-bind="ntsFormLabel: {text: $i18n('KMR004_15')}"></div>
 											</td>
 											<td>
 												<div id="A8_2" tabindex="14" class="verticalRadioBoxGroup" data-bind="ntsRadioBoxGroup: {
@@ -143,7 +143,7 @@
 										</colgroup>
 										<tr>
                                             <td>
-												<div id="A9_1" data-bind="ntsFormLabel: {}, i18n: 'KMR004_14'"></div>
+												<div id="A9_1" data-bind="ntsFormLabel: {text: $i18n('KMR004_14')}"></div>
 											</td>
                                             <td>
 												<div id="A9_2" tabindex="18">
@@ -160,7 +160,7 @@
 										</tr>
 										<tr>
 											<td class="align-top">
-												<div id="A10_1" data-bind="ntsFormLabel: {}, i18n: 'KMR004_15'"></div>
+												<div id="A10_1" data-bind="ntsFormLabel: {text: $i18n('KMR004_15')}"></div>
 											</td>
 											<td>
 												<table><tr>
