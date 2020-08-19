@@ -3,6 +3,8 @@ package nts.uk.screen.at.app.ksc001.d;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.adapter.eligibleemployees.LeaveHolidayAdapter;
+import nts.uk.ctx.at.record.dom.adapter.eligibleemployees.LeavePeriodAdapter;
 import nts.uk.ctx.at.record.dom.adapter.eligibleemployees.SyWorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.*;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistoryRepository;
@@ -29,9 +31,14 @@ public class GetEligibleEmployeesScreenQuery {
     private WorkingConditionItemRepository workingConditionItemRepository;
     @Inject
     private SyWorkplaceAdapter syWorkplaceAdapter;
+    @Inject
+    private LeaveHolidayAdapter leaveHolidayAdapter;
+    @Inject
+    private LeavePeriodAdapter leavePeriodAdapter;
     public List<String> getListEmployeeId(ConditionDto conditionDto){
         List<String> rs = new ArrayList<>();
-        ImplRequire require = new ImplRequire(sWorkTimeHistoryRepository,workingConditionItemRepository,syWorkplaceAdapter);
+        ImplRequire require = new ImplRequire(sWorkTimeHistoryRepository,workingConditionItemRepository,syWorkplaceAdapter
+                ,leaveHolidayAdapter,leavePeriodAdapter);
         if(conditionDto!= null){
             val checkEmployee = new ConditionEmployee(conditionDto.isTransfer(),conditionDto.isLeaveOfAbsence(),
                     conditionDto.isShortWorkingHours(),conditionDto.isChangedWorkingConditions());
@@ -50,6 +57,8 @@ public class GetEligibleEmployeesScreenQuery {
         private SWorkTimeHistoryRepository sWorkTimeHistoryRepository;
         private WorkingConditionItemRepository workingConditionItemRepository;
         private SyWorkplaceAdapter syWorkplaceAdapter;
+        private LeaveHolidayAdapter leaveHolidayAdapter;
+        private LeavePeriodAdapter leavePeriodAdapter;
         //[R-1]
         @Override
         public Optional<ShortWorkTimeHistory> GetShortWorkHistory(String sid, DatePeriod datePeriod) {
@@ -68,12 +77,13 @@ public class GetEligibleEmployeesScreenQuery {
         //[R-3]
         @Override
         public List<LeavePeriod> GetLeavePeriod(List<String> sids, DatePeriod datePeriod) {
-            return null;
+            return leavePeriodAdapter.GetLeavePeriod(sids,datePeriod);
         }
         //[R-4]
         @Override
         public List<LeaveHolidayPeriod> GetLeaveHolidayPeriod(List<String> sids, DatePeriod datePeriod) {
-            return null;
+
+            return leaveHolidayAdapter.GetLeaveHolidayPeriod(sids,datePeriod);
         }
         //[R-5]-[RQL-189]-SyWorkplacePub=>WorkplacePub
         @Override
