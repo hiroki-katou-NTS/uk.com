@@ -117,6 +117,12 @@ interface ComponentViewModel {
 			readonly basicLanguageId: string;
 			readonly personNameLanguageId: string;
 		};
+		readonly isInCharge: {
+			readonly attendance: boolean;
+			readonly payroll: boolean;
+			readonly personalInfo: boolean;
+			readonly personnel: boolean;
+		};
 		readonly role: {
 			readonly attendance: string | null;
 			readonly companyAdmin: string | null;

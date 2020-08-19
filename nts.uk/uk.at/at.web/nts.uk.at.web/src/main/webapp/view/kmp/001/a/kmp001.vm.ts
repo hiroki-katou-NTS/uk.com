@@ -9,7 +9,7 @@ module nts.uk.at.view.kmp001 {
 			mounted() {
 				const vm = this;
 
-				if (!!vm.$user.role.attendance) {
+				if (vm.$user.role.isInCharge.attendance) {
 					vm.tabs(['KMP001_1', 'KMP001_2', 'KMP001_3']);
 				} else {
 					vm.tabs(['KMP001_1']);
