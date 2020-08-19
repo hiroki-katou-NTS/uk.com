@@ -42,13 +42,13 @@
         >
           <button
             type="button"
-            v-if="button.buttonDisSet.displayBackGroundColor !== ''"
+            v-if="button.buttonDisSet.backGroundColor !== ''"
             v-bind:style="{
               color: button.buttonDisSet.buttonNameSet.textColor,
               'background-color': button.buttonDisSet.displayBackGroundColor
             }"
             v-click:500="() => stampClick(button)"
-            class="col-12 btn-stamp btn btn-secondary "
+            class="btn-block btn-stamp btn btn-secondary "
           >
             {{ button.buttonDisSet.buttonNameSet.buttonName }}
           </button>

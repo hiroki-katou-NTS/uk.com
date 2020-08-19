@@ -65,7 +65,7 @@
       <button v-focus
         type="button"
         v-on:click="$close"
-        class="col-12 mt-3 btn btn-secondary"
+        class="btn-block mt-3 btn btn-secondary"
       >
         {{ "KDPS01_37" | i18n }}
       </button>
