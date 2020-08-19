@@ -3,6 +3,7 @@
 /// <reference path="../generic/jqueryui/jqueryui.d.ts" />
 /// <reference path="../generic/momentjs/moment.d.ts" />
 /// <reference path="../generic/knockoutjs/knockout.d.ts" />
+/// <reference path="./nts.uk.device.d.ts" />
 /// <reference path="./nts.uk.com.web.nittsu.bundles.d.ts" />
 
 /** Decorator for load ViewModel of main View*/
