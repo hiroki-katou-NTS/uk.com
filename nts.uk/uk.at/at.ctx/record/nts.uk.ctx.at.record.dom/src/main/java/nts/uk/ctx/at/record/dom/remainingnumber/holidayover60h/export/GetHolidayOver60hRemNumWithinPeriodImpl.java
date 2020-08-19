@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolidayOver60hMngWork;
+import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolidayOver60hMng;
 
 @Stateless
 public class GetHolidayOver60hRemNumWithinPeriodImpl implements GetHolidayOver60hRemNumWithinPeriod {
@@ -52,7 +52,7 @@ public class GetHolidayOver60hRemNumWithinPeriodImpl implements GetHolidayOver60
 			InterimRemainMngMode mode,
 			GeneralDate criteriaDate, 
 			Optional<Boolean> isOverWriteOpt, 
-			Optional<List<TmpHolidayOver60hMngWork>> forOverWriteList,
+			Optional<List<TmpHolidayOver60hMng>> forOverWriteList,
 			Optional<AggrResultOfHolidayOver60h> prevHolidayOver60h) {
 		
 		AggrResultOfHolidayOver60h result = this.createSampleData();
