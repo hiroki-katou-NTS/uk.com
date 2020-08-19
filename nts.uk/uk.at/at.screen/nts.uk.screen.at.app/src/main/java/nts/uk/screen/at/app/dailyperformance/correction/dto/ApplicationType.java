@@ -27,7 +27,7 @@ public enum ApplicationType {
 	GO_RETURN_DIRECTLY_APPLICATION(6, "直行直帰申請","KAF009","A",null),
 	
 	/** 休出時間申請 */
-	BREAK_TIME_APPLICATION(7, "休出時間申請","KAF0010","A",null),
+	BREAK_TIME_APPLICATION(7, "休出時間申請","KAF010","A",null),
 	
 	/** 打刻申請（外出許可） */
 	STAMP_APPLICATION(8, "打刻申請（外出許可）","KAF002","A",null),

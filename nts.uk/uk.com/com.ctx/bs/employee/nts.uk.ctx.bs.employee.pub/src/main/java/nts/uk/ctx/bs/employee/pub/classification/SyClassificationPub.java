@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -36,6 +37,7 @@ public interface SyClassificationPub {
 	 */
 	// RequestList32-3
 	List<SClsHistExport> findSClsHistBySid(String companyId, List<String> employeeIds, DatePeriod datePeriod);
+	List<SClsHistExport> findSClsHistBySidRequire(CacheCarrier cacheCarrier, String companyId, List<String> employeeIds,DatePeriod datePeriod); 
 	
 	/**
 	 * Gets the classification map.

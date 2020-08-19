@@ -2,9 +2,10 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.work.service;
 
 import java.util.List;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
 
 public interface RemainCreateInforByRecordData {
 	/**
@@ -14,7 +15,7 @@ public interface RemainCreateInforByRecordData {
 	 * @param dateData 期間
 	 * @return
 	 */
-	public List<RecordRemainCreateInfor> lstRecordRemainData(String cid, String sid, DatePeriod dateData);
+	public List<RecordRemainCreateInfor> lstRecordRemainData(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod dateData);
 	/**
 	 * 残数作成元の勤務実績を取得する
 	 * @param cid
@@ -22,6 +23,6 @@ public interface RemainCreateInforByRecordData {
 	 * @param dateData リスト
 	 * @return
 	 */
-	public List<RecordRemainCreateInfor> lstRecordRemainData(String cid, String sid, List<GeneralDate> dateData);
+	public List<RecordRemainCreateInfor> lstRecordRemainData(CacheCarrier cacheCarrier, String cid, String sid, List<GeneralDate> dateData);
 	
 }
