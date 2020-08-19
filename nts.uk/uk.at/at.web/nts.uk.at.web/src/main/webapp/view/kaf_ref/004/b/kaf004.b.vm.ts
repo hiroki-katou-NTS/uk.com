@@ -24,13 +24,15 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
         lateOrEarlyInfo4: KnockoutObservable<LateOrEarlyInfo>;
         isSendMail: KnockoutObservable<Boolean>;
         printContentOfEachAppDto: KnockoutObservable<PrintContentOfEachAppDto>;
+		approvalReason: KnockoutObservable<string>;
 
         created(
             params: {
-                application: any,
-                appDispInfoStartupOutput: any,
-                printContentOfEachAppDto: PrintContentOfEachAppDto,
-                eventUpdate: (evt: () => void) => void
+				application: any,
+				printContentOfEachAppDto: PrintContentOfEachAppDto,
+            	approvalReason: any,
+                appDispInfoStartupOutput: any, 
+                eventUpdate: (evt: () => void ) => void
             }) {
             const vm = this;
             vm.isSendMail = ko.observable(true);
@@ -72,7 +74,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
 
             vm.createParamKAF004();
             // params.printContentOfEachAppDto.opArrivedLateLeaveEarlyInfo = ko.toJS(vm.arrivedLateLeaveEarlyInfo);
-
+			vm.approvalReason = params.approvalReason;
             // gui event con ra viewmodel cha
             // nhớ dùng bind(vm) để ngữ cảnh lúc thực thi
             // luôn là component

@@ -15,6 +15,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
         model: Model;
         dataFetch: KnockoutObservable<ModelDto> = ko.observable(null);
         mode: string = 'edit';
+		approvalReason: KnockoutObservable<string>;
         applicationTest: any = {
             version: 1,
             // appID: '939a963d-2923-4387-a067-4ca9ee8808zz',
@@ -57,6 +58,9 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
     
         created(
             params: { 
+				application: any,
+				printContentOfEachAppDto: PrintContentOfEachAppDto,
+            	approvalReason: any,
                 appDispInfoStartupOutput: any, 
                 eventUpdate: (evt: () => void ) => void
             }
@@ -71,7 +75,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             vm.createParamKAF009();
             
             vm.applicationTest = vm.appDispInfoStartupOutput().appDetailScreenInfo.application;
-            
+            vm.approvalReason = params.approvalReason;
             // gui event con ra viewmodel cha
             // nhớ dùng bind(vm) để ngữ cảnh lúc thực thi
             // luôn là component
