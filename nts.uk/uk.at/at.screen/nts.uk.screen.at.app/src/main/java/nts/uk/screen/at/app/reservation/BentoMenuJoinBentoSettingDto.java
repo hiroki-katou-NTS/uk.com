@@ -47,7 +47,7 @@ public class BentoMenuJoinBentoSettingDto {
     public int reservationEndTime2;
 
 
-    public static BentoMenuJoinBentoSettingDto SetData(BentoMenuDto bentoMenuDto, BentoReservationSettingDto bentoReservationSettingDto){
+    public static BentoMenuJoinBentoSettingDto setData(BentoMenuDto bentoMenuDto, BentoReservationSettingDto bentoReservationSettingDto){
 
         if (bentoMenuDto == null){
             return null;

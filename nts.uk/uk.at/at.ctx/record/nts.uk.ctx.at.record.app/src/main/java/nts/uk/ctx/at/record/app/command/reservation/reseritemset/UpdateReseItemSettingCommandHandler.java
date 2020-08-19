@@ -25,6 +25,7 @@ public class UpdateReseItemSettingCommandHandler extends CommandHandler<UpdateRe
 
     @Override
     protected void handle(CommandHandlerContext<UpdateReseItemSettingCommand> commandHandlerContext) {
+
         val command = commandHandlerContext.getCommand();
         RequireImpl require = new RequireImpl(bentoMenuRepository);
 
@@ -53,10 +54,8 @@ public class UpdateReseItemSettingCommandHandler extends CommandHandler<UpdateRe
         }
 
         @Override
-        public void register(BentoMenu bentoMenu, Bento bento) {
-            bentoMenu.getMenu().stream()
-                    .filter(x -> x.getFrameNo() == bento.getFrameNo())
-                    .forEach( b -> b = bento);
+        public void register(BentoMenu bentoMenu) {
+
             bentoMenuRepository.update(bentoMenu);
         }
     }
