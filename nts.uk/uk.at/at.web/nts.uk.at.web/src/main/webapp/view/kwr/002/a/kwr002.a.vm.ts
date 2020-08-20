@@ -51,7 +51,7 @@ module nts.uk.com.view.kwr002.a {
             closureId: KnockoutObservable<number>;
 
             // radio button group A7_2
-            electedCodeA8_5: KnockoutObservable<number> = ko.observable(0);
+            selectedCodeA8_5: KnockoutObservable<number> = ko.observable(0);
 
             // switch button A9_3 A9_4
             dataZeroDisplayType: KnockoutObservableArray<any> = ko.observableArray([
@@ -65,8 +65,9 @@ module nts.uk.com.view.kwr002.a {
 
             enableA8_3: KnockoutObservable<boolean> = ko.observable(false);
             enableA8_8: KnockoutObservable<boolean> = ko.observable(false);
-
-            dataTranferScreenB: KnockoutObservable<DataScreenB> = ko.observable();
+            // authority for work performance
+            enableAuthority: KnockoutObservable<boolean> = ko.observable(true);
+            dataTranferScreenB: DataScreenB;
 
 
             constructor() {
@@ -183,7 +184,7 @@ module nts.uk.com.view.kwr002.a {
 
                 self.closureId = ko.observable(0);
                 self.enableA8_3(true);
-                self.electedCodeA8_5.subscribe((value) => {
+                self.selectedCodeA8_5.subscribe((value) => {
                     self.enableA8_3(value === 0);
                     self.enableA8_8(value === 1);
                 })
@@ -193,15 +194,15 @@ module nts.uk.com.view.kwr002.a {
             public start_page(): JQueryPromise<any> {
 
                 blockUI.invisible();
-                let self = this;
+                const vm = this;
                 let dfd = $.Deferred();
 
                 // Start component
-                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
-                    self.employeeList = ko.observableArray<UnitModel>([]);
-                    self.applyKCP005ContentSearch([]);
+                $('#ccgcomponent').ntsGroupComponent(vm.ccgcomponent).done(() => {
+                    vm.employeeList = ko.observableArray<UnitModel>([]);
+                    vm.applyKCP005ContentSearch([]);
                     // Load employee list component
-                    $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption).done(function() {
+                    $('#employeeSearch').ntsListComponent(vm.lstPersonComponentOption).done(function() {
                         $(".icon.icon-searchbox").remove();
                         $(".caret-right.caret-background.bg-green").removeClass();
 
@@ -214,38 +215,45 @@ module nts.uk.com.view.kwr002.a {
                 });
                 service.getPermission().done((result) => {
                     if (result == true) {
-                        self.permission(false);
+                        vm.permission(false);
                     }
                 });
                 service.getAllAttendanceRecExpSet().done((listAttendance: Array<AttendanceRecordExportSettingDto>) => {
                     if (listAttendance === undefined || listAttendance.length == 0) {
-                        self.attendanceRecordList();
-                        self.enableSave(false);
+                        vm.attendanceRecordList();
+                        vm.enableSave(false);
                         // $('#print').attr("disabled", "disabled")
                         // $('#exportExcel').attr("disabled", "disabled")
                     } else {
-                        self.enableSave(true);
+                        vm.enableSave(true);
                         var sortArray = _.orderBy(listAttendance, [e => Number(e.code)], ['asc']);
                         _.map(sortArray, (item) => {
                             item.code = _.padStart(item.code, 2, '0');
                         });
-                        self.attendanceRecordList(sortArray);
-                        self.selectedCode(sortArray[0].code);
+                        vm.attendanceRecordList(sortArray);
+                        vm.selectedCode(sortArray[0].code);
                     }
 
                     dfd.resolve();
                 });
-                service.getClosureMonth().done(function(dto) {
+                service.getClosureMonth().done((dto) => {
                     const startMonth = dto.currentMonth;
                     const endMonth = dto.currentMonth;
                     const parsedStart = startMonth.slice(0, 4) + '/' + startMonth.slice(4);
                     const parsedEnd = endMonth.slice(0, 4) + '/' + endMonth.slice(4);
-                    self.dateValue({
+                    vm.dateValue({
                         startDate : parsedStart,
                         endDate : parsedEnd
                     })
-                    self.dateValue.valueHasMutated();
+                    vm.dateValue.valueHasMutated();
                 });
+
+                //   ログイン社員の就業帳票の権限を取得する (Get the authority of work report of logged in employee)
+                service.getAuthorityOfWorkPerformance().done((dto: any) => {
+                    if(_.isEmpty(dto)) {
+                        vm.enableAuthority(false);
+                    }
+                })
 
                 blockUI.clear();
                 return dfd.promise();
@@ -380,7 +388,7 @@ module nts.uk.com.view.kwr002.a {
                 }
                 nts.uk.ui.block.grayout();
                 self.exportDto(new ExportDto(self.findEmployeeIdsByCodes(self.selectedEmployeeCode()), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 1, self.closureId()));
-                service.exportService(self.exportDto()).done((response) => {
+                service.exportService(self.exportDto()).done((response: any) => {
                     if (response.taskDatas.length > 0) {
                         nts.uk.ui.dialog.error({ messageId: "Msg_1269", messageParams: [response.taskDatas[0].valueAsString] });
                     }
@@ -410,7 +418,7 @@ module nts.uk.com.view.kwr002.a {
                 }
                 nts.uk.ui.block.grayout();
                 self.exportDto(new ExportDto(self.findEmployeeIdsByCodes(self.selectedEmployeeCode()), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 2, self.closureId()));
-                service.exportService(self.exportDto()).done((response) => {
+                service.exportService(self.exportDto()).done((response: any) => {
                     if (response.taskDatas.length > 0) {
                         nts.uk.ui.dialog.error({ messageId: "Msg_1269", messageParams: [response.taskDatas[0].valueAsString] });
                     }
@@ -467,18 +475,20 @@ module nts.uk.com.view.kwr002.a {
             }
 
             public openBDialog(): JQueryPromise<any> {
-                var self = this;
+                const vm = this;
                 var dfd = $.Deferred();
                 blockUI.invisible();
 
-                setShared("currentARESSelectCode",self.selectedCode());
+
+                vm.dataTranferScreenB = new DataScreenB(vm.selectedCodeA8_5(),vm.selectedCode(),vm.selectedCode(),vm.selectedCode(),vm.selectedCode());
+                setShared("currentARESSelectCode",vm.selectedCode());
                 nts.uk.ui.windows.sub.modal("/view/kwr/002/b/index.xhtml").onClosed(function() {
 
                     service.getAllAttendanceRecExpSet().done(function(listAttendance: Array<AttendanceRecordExportSettingDto>) {
                         if (listAttendance === undefined || listAttendance.length == 0) {
-                            self.attendanceRecordList(null);
-                            self.selectedCode(null);
-                            self.enableSave(false)
+                            vm.attendanceRecordList(null);
+                            vm.selectedCode(null);
+                            vm.enableSave(false)
                             // $('#print').attr("disabled", "disabled")
                             // $('#exportExcel').attr("disabled", "disabled")
                         } else {
@@ -487,14 +497,14 @@ module nts.uk.com.view.kwr002.a {
                             _.map(sortArray, (item) => {
                                 item.code = _.padStart(item.code, 2, '0');
                             });
-                            self.attendanceRecordList(sortArray);
+                            vm.attendanceRecordList(sortArray);
                             if (ARESCode === undefined) {
-                                self.selectedCode(sortArray[0].code);
+                                vm.selectedCode(sortArray[0].code);
                             }
                             else {
-                                self.selectedCode(ARESCode);
+                                vm.selectedCode(ARESCode);
                             }
-                            self.enableSave(true)
+                            vm.enableSave(true)
                         }
 
                         dfd.resolve();
@@ -623,13 +633,13 @@ module nts.uk.com.view.kwr002.a {
         }
 
         class DataScreenB {
-            settingCategory: string; //設定区分（自由設定）
+            settingCategory: number; //設定区分（自由設定）
             companyId: string; //会社ID
             employeeId: string; //社員ID
             selectedOutputLayoutId: string; //選択出力レイアウトID
             selectedCode: string;// 選択コード
 
-            constructor(settingCategory: string, companyId: string,employeeId: string,selectedOutputLayoutId: string,selectedCode: string) {
+            constructor(settingCategory: number, companyId: string,employeeId: string,selectedOutputLayoutId: string,selectedCode: string) {
                 this.settingCategory = settingCategory;
                 this.companyId = companyId;
                 this.employeeId = employeeId;

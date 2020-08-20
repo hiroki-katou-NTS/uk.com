@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.app.find.attendancerecord.export.setting;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,6 +16,8 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceReco
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
 //import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
+import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformAuthorRepo;
+import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceAuthority;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -38,6 +42,10 @@ public class AttendanceRecordExportSettingFinder {
 	/** Get Closure Month. */
 	@Inject
 	WorkScheduleOutputConditionFinder workScheduleOutputConditionFinder;
+	
+	@Inject
+	private DailyPerformAuthorRepo dailyPerAuthRepo;
+	
 	/**
 	 * Gets the all attendance record export setting.
 	 *
@@ -120,5 +128,24 @@ public class AttendanceRecordExportSettingFinder {
 		Optional<Closure> closureMonth = workScheduleOutputConditionFinder.getDomClosure(AppContexts.user().employeeId(), GeneralDate.today());
 		Closure optCls = closureMonth.get();
 		return new AttendaceMonthDto(optCls.getClosureMonth().getProcessingYm().toString());
+	}
+	
+	public List<AttendaceAuthorityOfWorkPerform> getAuthorityOfWorkPerformance() {
+		String roleId = AppContexts.user().roles().forAttendance();
+		String companyId = AppContexts.user().companyId();
+		int functionNo51 = 51;
+		List<DailyPerformanceAuthority> daiPerAuthors = dailyPerAuthRepo.get(roleId);
+		List<AttendaceAuthorityOfWorkPerform> results =  daiPerAuthors.stream().filter(i -> {
+			return i.getFunctionNo().v().equals(BigDecimal.valueOf(functionNo51)) && i.getRoleID().equals(roleId) && i.isAvailability() == true;})
+		.map(i -> {
+			AttendaceAuthorityOfWorkPerform attendaceAuthorityOfWorkPerform = new AttendaceAuthorityOfWorkPerform();
+			attendaceAuthorityOfWorkPerform.setAvailability(i.isAvailability());
+			attendaceAuthorityOfWorkPerform.setCompanyId(companyId);
+			attendaceAuthorityOfWorkPerform.setRoleId(roleId);
+			attendaceAuthorityOfWorkPerform.setFunctionNo(i.getFunctionNo().v().intValue());
+			
+			return attendaceAuthorityOfWorkPerform;
+		}).collect(Collectors.toList());
+		return results;
 	}
 }

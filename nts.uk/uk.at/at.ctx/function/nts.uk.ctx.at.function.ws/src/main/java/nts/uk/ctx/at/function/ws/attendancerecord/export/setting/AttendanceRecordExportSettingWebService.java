@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.function.ws.attendancerecord.export.setting;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -9,9 +12,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.*;
+import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendaceAuthorityOfWorkPerform;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendaceMonthDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceRecordExportSettingDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceRecordExportSettingFinder;
+import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformAuthorRepo;
+import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceAuthority;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -38,6 +44,7 @@ public class AttendanceRecordExportSettingWebService {
 
 	@Inject
 	DeleteAttendanceRecordExportSettingCommandHandler delHandler;
+	
 
 	/**
 	 * Gets the all attendance rec out set.
@@ -129,5 +136,11 @@ public class AttendanceRecordExportSettingWebService {
 	@Path("getClosureMonth")
 	public AttendaceMonthDto getClosureMonth() {
 		return attendanceEcExpSetFinder.getClosureMonth();
+	}
+	
+	@POST
+	@Path("getAuthorityOfWorkPerformance")
+	public List<AttendaceAuthorityOfWorkPerform> getAuthorityOfWorkPerformance() {
+		return attendanceEcExpSetFinder.getAuthorityOfWorkPerformance();
 	}
 }
