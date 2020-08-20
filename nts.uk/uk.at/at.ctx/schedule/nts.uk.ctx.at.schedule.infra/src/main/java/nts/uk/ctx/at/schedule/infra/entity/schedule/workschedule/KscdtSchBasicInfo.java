@@ -139,7 +139,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 
 		GeneralDate yMD = workSchedule.getYmd();
 
-		// 勤務予定.勤務情報
+		// 勤務予定.所属情報
 		AffiliationInforOfDailyAttd workInfo = workSchedule.getAffInfo();
 
 		// 勤務予定.勤務情報

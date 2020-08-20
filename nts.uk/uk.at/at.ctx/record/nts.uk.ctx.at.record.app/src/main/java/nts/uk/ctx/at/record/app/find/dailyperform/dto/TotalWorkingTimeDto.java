@@ -124,7 +124,7 @@ public class TotalWorkingTimeDto implements ItemConst {
 								.fromWithinStatutoryTimeDailyPerform(domain.getWithinStatutoryTimeOfDaily()),
 						ExcessOfStatutoryTimeDailyPerformDto
 								.fromExcessOfStatutoryTimeDailyPerform(domain.getExcessOfStatutoryTimeOfDaily()),
-						domain.getTemporaryTime().getTemporaryTime() == null ? new ArrayList<>()
+								domain.getTemporaryTime() == null ? new ArrayList<>() : domain.getTemporaryTime().getTemporaryTime() == null ? new ArrayList<>()
 								: ConvertHelper.mapTo(domain.getTemporaryTime().getTemporaryTime(),
 										(c) -> new TemporaryTimeFrameDto(c.getWorkNo().v(),
 												getAttendanceTime(c.getTemporaryLateNightTime()),
