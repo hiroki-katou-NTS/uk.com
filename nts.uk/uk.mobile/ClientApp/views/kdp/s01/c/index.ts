@@ -12,7 +12,6 @@ const servicePath = {
 
 @component({
     name: 'kdpS01c',
-    route: '/kdp/s01/c',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
@@ -49,10 +48,6 @@ export class KdpS01CComponent extends Vue {
             ]
         }
     };
-
-    public mounted() {
-        this.pgName = 'KDPS01_5';
-    }
 
 
     public created() {
@@ -105,19 +100,17 @@ export class KdpS01CComponent extends Vue {
             _.remove(data.lstItemDisplayed, function (item) {
                 return [28, 29, 31, 34].indexOf(item.attendanceItemId) != -1;
             });
-            vm.screenData.attendanceItem.timeItems = [];
 
             let isNoItemHasData = !_.find(data.itemValues, (item) => item.value);
-
+            let timeData = [];
             if (!isNoItemHasData) {
                 _.forEach(_.orderBy(data.lstItemDisplayed, 'attendanceItemId'), function (item) {
                     let value = vm.toValue(item, _.find(data.itemValues, ['itemId', item.attendanceItemId]));
-
-                    if (value) {
-                        vm.screenData.attendanceItem.timeItems.push({ itemId: item.attendanceItemId, title: item.attendanceName, value });
-                    }
+                    timeData.push({ itemId: item.attendanceItemId, title: item.attendanceName, value });
                 });
             }
+
+            vm.screenData.attendanceItem.timeItems = timeData;
 
         }).catch((res: any) => {
             vm.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
@@ -181,7 +174,7 @@ export class KdpS01CComponent extends Vue {
                 employeeId: vm.screenData.confirmResult.employeeId,
                 confirmDetails: [{
                     ymd: vm.screenData.confirmResult.date,
-                    IdentityVerificationStatus: true
+                    identityVerificationStatus: true
                 }]
             };
         vm.$mask('show');

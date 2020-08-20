@@ -69,6 +69,8 @@ export module model {
 
         /** 背景色 */
         backGroundColor: string;
+
+        displayBackGroundColor:string;
     }
 
     export interface IButtonNameSetDto {
@@ -380,7 +382,7 @@ export module model {
         /**
          * 本人確認状況
          */
-        IdentityVerificationStatus: Boolean;
+        identityVerificationStatus: Boolean;
     }
 
     export interface IStampButtonCommand {

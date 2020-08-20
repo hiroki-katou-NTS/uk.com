@@ -10,7 +10,6 @@ const servicePath = {
 
 @component({
     name: 'kdpS01b',
-    route: '/kdp/s01/b',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
@@ -54,10 +53,8 @@ export class KdpS01BComponent extends Vue {
                 if (item) {
                     vm.screenData.date = item.stampStringDatetime;
                     vm.screenData.stampAtr = item.stampAtr;
-                    if (item.stamp.length) {
-                        let stamp = item.stamp[0];
-                        vm.screenData.stampCard = stamp.cardNumber;
-                    }
+                    vm.screenData.stampCard = _.get(item, 'stamp.refActualResult.cardNumberSupport', null);
+
                 }
 
             } else {
@@ -89,10 +86,6 @@ export class KdpS01BComponent extends Vue {
             }, 1000);
         }
 
-    }
-
-    public mounted() {
-        this.pgName = 'KDPS01_5';
     }
 }
 

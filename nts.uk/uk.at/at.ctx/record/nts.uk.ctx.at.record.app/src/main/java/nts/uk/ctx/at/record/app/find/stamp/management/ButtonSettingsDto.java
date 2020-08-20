@@ -43,7 +43,7 @@ public class ButtonSettingsDto {
 	public static int toButtonValueType(StampTypeDto stampType) {
 
 		if (stampType == null) {
-			return -1;
+			return ButtonType.RESERVATION_SYSTEM.value;
 		}
 		int correctTimeStampValue = StampRecordDto.getCorrectTimeStampValue(stampType.getChangeHalfDay(),
 				stampType.getGoOutArt(), stampType.getSetPreClockArt(), stampType.getChangeClockArt(),

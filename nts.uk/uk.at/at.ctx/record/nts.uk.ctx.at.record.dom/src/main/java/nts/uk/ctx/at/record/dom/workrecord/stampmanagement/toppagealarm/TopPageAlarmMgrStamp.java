@@ -17,7 +17,7 @@ import nts.arc.time.GeneralDateTime;
  */
 @Getter
 @AllArgsConstructor
-public class TopPageAlarm extends ValueObject {
+public class TopPageAlarmMgrStamp extends ValueObject {
 
 	/**
 	 * 	会社ID
@@ -50,7 +50,7 @@ public class TopPageAlarm extends ValueObject {
 	 * @param error		エラーの有無	
 	 * @param lstsid	
 	 */
-	public TopPageAlarm(String companyId, ExistenceError error , List<String> lstsid) {
+	public TopPageAlarmMgrStamp(String companyId, ExistenceError error , List<String> lstsid) {
 		super();
 		
 		this.cid = companyId;

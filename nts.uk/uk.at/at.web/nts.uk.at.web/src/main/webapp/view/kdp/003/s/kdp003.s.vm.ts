@@ -43,57 +43,17 @@ module nts.uk.at.kdp003.s {
 						.each((item: StampData) => {
 							const d = moment(item.stampDate, 'YYYY/MM/DD');
 							const day = d.clone().locale('en').format('dddd');
-							const {
-								WORK,
-								WORK_STRAIGHT,
-								WORK_EARLY,
-								WORK_BREAK,
-								DEPARTURE,
-								DEPARTURE_BOUNCE,
-								DEPARTURE_OVERTIME,
-								GETTING_STARTED,
-								DEPAR,
-								TEMPORARY_WORK,
-								TEMPORARY_LEAVING,
-								START_SUPPORT,
-								END_SUPPORT,
-								WORK_SUPPORT,
-								START_SUPPORT_EARLY_APPEARANCE,
-								START_SUPPORT_BREAK,
-								RESERVATION,
-								CANCEL_RESERVATION
-							} = ContentsStampType;
-
-							// bad algorithm :/
-							const LEFT_ALIGNS = [
-								WORK,
-								WORK_STRAIGHT,
-								WORK_EARLY,
-								WORK_BREAK,
-								GETTING_STARTED,
-								TEMPORARY_WORK,
-								START_SUPPORT,
-								WORK_SUPPORT,
-								START_SUPPORT_EARLY_APPEARANCE,
-								START_SUPPORT_BREAK,
-								RESERVATION,
-								CANCEL_RESERVATION
-							];
-							const RIGHT_ALIGNS = [
-								DEPARTURE,
-								DEPARTURE_BOUNCE,
-								DEPARTURE_OVERTIME,
-								DEPAR,
-								TEMPORARY_LEAVING,
-								END_SUPPORT
-							];
+							
+							let value = item.buttonValueType;
 
 							const pushable = {
 								id: randomId(),
 								time: `${item.stampHow} ${item.stampTime}`,
 								date: `<div class="color-schedule-${day.toLowerCase()}">${d.format('YYYY/MM/DD(dd)')}</div>`,
-								name: `<div style="text-align: ${LEFT_ALIGNS.indexOf(item.correctTimeStampValue) > -1 ? 'left' :
-									RIGHT_ALIGNS.indexOf(item.correctTimeStampValue) > -1 ? 'right' : 'center'};">${item.stampArt}</div>`
+								name: `<div style="text-align: 
+								${(ButtonType.GOING_TO_WORK == value || ButtonType.RESERVATION_SYSTEM == value) ? 'left' :
+								ButtonType.WORKING_OUT == value ? 'right' 
+								: 'center'};">${item.stampArt}</div>`
 							};
 
 							// S1 bussiness logic
@@ -157,6 +117,24 @@ module nts.uk.at.kdp003.s {
 	}
 
 	export type ENGRAVING = '1' | '2' | '3' | '4';
+	
+	export enum ButtonType {
+		// 系
+
+		GOING_TO_WORK = 1,
+		// 系
+
+		WORKING_OUT = 2,
+		// "外出系"
+
+		GO_OUT = 3,
+		// 戻り系
+
+		RETURN = 4,
+		// 予約系
+
+		RESERVATION_SYSTEM = 5
+	}
 
 	export enum ChangeClockArt {
 		/** 0. 出勤 */
@@ -301,6 +279,7 @@ module nts.uk.at.kdp003.s {
 		changeHalfDay: boolean;
 		corectTtimeStampType: string;
 		correctTimeStampValue: ContentsStampType;
+		buttonValueType:number;
 		empInfoTerCode: string;
 		goOutArt: string;
 		latitude: number;

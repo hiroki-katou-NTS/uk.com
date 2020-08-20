@@ -10,7 +10,6 @@ const servicePath = {
 
 @component({
     name: 'kdpS01s',
-    route: '/kdp/s01/s',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
@@ -154,16 +153,17 @@ export class KdpS01SComponent extends Vue {
         let value = item.stamp.relieve.stampMeans;
 
         const stampTypes = [
-            { text: 'KDP002_120', name: '氏名選択' },
-            { text: 'KDP002_120', name: '指認証打刻' },
-            { text: 'KDP002_120', name: 'ICカード打刻' },
-            { text: 'KDP002_120', name: '個人打刻' },
-            { text: 'KDP002_120', name: 'ポータル打刻' },
-            { text: 'KDP002_121', name: 'スマホ打刻' },
-            { text: 'KDP002_122', name: 'タイムレコーダー打刻' }
+            { text: 'KDP002_120', value: 0 },
+            { text: 'KDP002_120', value: 1 },
+            { text: 'KDP002_120', value: 2 },
+            { text: 'KDP002_120', value: 3 },
+            { text: 'KDP002_120', value: 4 },
+            { text: 'KDP002_121', value: 5 },
+            { text: 'KDP002_122', value: 6 },
+            { text: 'KDP002_120', value: 8 }
         ];
 
-        let data = _.find(stampTypes, ['name', value]);
+        let data = _.find(stampTypes, ['value', value]);
 
         if (data) {
             return data.text;
@@ -207,10 +207,6 @@ export class KdpS01SComponent extends Vue {
 
         return dayColor ? dayColor.color : '#000000';
 
-    }
-
-    public mounted() {
-        this.pgName = 'KDPS01_22';
     }
 }
 interface Iitem {
