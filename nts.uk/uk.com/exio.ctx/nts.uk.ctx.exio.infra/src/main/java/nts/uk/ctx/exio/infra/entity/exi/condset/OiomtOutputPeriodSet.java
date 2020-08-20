@@ -56,7 +56,7 @@ public class OiomtOutputPeriodSet extends UkJpaEntity implements Serializable {
 	// column 期間設定
 	@Basic(optional = false)
 	@Column(name = "PERIOD_SET")
-	private Boolean periodSet;
+	private int periodSet;
 	
 	// column 締め日区分
 	@Basic(optional = true)
@@ -111,7 +111,7 @@ public class OiomtOutputPeriodSet extends UkJpaEntity implements Serializable {
 	public OutputPeriodSetting toDomain() {
 		return OutputPeriodSetting.builder()
 				.cid(this.pk.cId)
-				.periodSetting(this.periodSet ? NotUseAtr.USE : NotUseAtr.NOT_USE)
+				.periodSetting(EnumAdaptor.valueOf(this.periodSet, NotUseAtr.class))
 				.conditionSetCode(new ExternalOutputConditionCode(this.pk.conditionSetCd))
 				.deadlineClassification(Optional.ofNullable(this.closuredayAtr))
 				.baseDateClassification(this.baseDateAtr != null 
@@ -123,14 +123,14 @@ public class OiomtOutputPeriodSet extends UkJpaEntity implements Serializable {
 						: Optional.empty())
 				.startDateSpecify(Optional.ofNullable(this.specifyStartDate))
 				.startDateAdjustment(this.startDateAdjust != null 
-						? Optional.of(EnumAdaptor.valueOf(this.startDateAdjust, DateAdjustment.class))
+						? Optional.of(new DateAdjustment(this.startDateAdjust)) 
 						: Optional.empty())
 				.endDateClassification(this.endDateCdAtr != null 
 						? Optional.of(EnumAdaptor.valueOf(this.endDateCdAtr, EndDateClassificationCode.class))
 						: Optional.empty())
 				.endDateSpecify(Optional.ofNullable(this.specifyEndDate))
 				.endDateAdjustment(this.endDateAdjust != null 
-						? Optional.of(EnumAdaptor.valueOf(this.endDateAdjust, DateAdjustment.class))
+						? Optional.of(new DateAdjustment(this.endDateAdjust)) 
 						: Optional.empty())
 				.build();
 	}

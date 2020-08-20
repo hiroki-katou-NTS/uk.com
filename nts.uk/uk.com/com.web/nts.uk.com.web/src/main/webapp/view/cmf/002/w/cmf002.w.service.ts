@@ -9,8 +9,12 @@ module nts.uk.com.view.cmf002.w.service {
     return nts.uk.request.ajax("at", paths.findAllClosureHistory);
   }
 
-  export function findOutputPeriodSetting(conditionSetCode: string): JQueryPromise<any> {
+  export function findOutputPeriodSetting(conditionSetCode: string): JQueryPromise<OutputPeriodSetDto> {
     return nts.uk.request.ajax("com", `${paths.findOutputPeriodSetting}/${conditionSetCode}`);
+  }
+
+  export function saveOutputPeriodSetting(command: SaveOutputPeriodSetCommand): JQueryPromise<any> {
+    return nts.uk.request.ajax("com", paths.saveOutputPeriodSetting, command);
   }
 
 }

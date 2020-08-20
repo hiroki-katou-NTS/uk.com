@@ -39,8 +39,19 @@ public class JpaOutputPeriodSettingRepository extends JpaRepository implements O
 	public void update(OutputPeriodSetting domain) {
 		// Convert data to entity
 		OiomtOutputPeriodSet entity = JpaOutputPeriodSettingRepository.toEntity(domain);
+		OiomtOutputPeriodSet oldEntity = this.queryProxy().find(entity.getPk(), OiomtOutputPeriodSet.class).get();
+		oldEntity.setPeriodSet(entity.getPeriodSet());
+		oldEntity.setClosuredayAtr(entity.getClosuredayAtr());
+		oldEntity.setStartDateCdAtr(entity.getStartDateCdAtr());
+		oldEntity.setEndDateCdAtr(entity.getEndDateCdAtr());
+		oldEntity.setBaseDateAtr(entity.getBaseDateAtr());
+		oldEntity.setStartDateAdjust(entity.getStartDateAdjust());
+		oldEntity.setEndDateAdjust(entity.getEndDateAdjust());
+		oldEntity.setSpecifyStartDate(entity.getSpecifyStartDate());
+		oldEntity.setSpecifyEndDate(entity.getSpecifyEndDate());
+		oldEntity.setSpecifyBaseDate(entity.getSpecifyBaseDate());
 		// Update entity
-		this.commandProxy().update(entity);
+		this.commandProxy().update(oldEntity);
 	}
 	
 	private static OiomtOutputPeriodSet toEntity(OutputPeriodSetting domain) {
@@ -50,7 +61,7 @@ public class JpaOutputPeriodSettingRepository extends JpaRepository implements O
 				.build();
 		return OiomtOutputPeriodSet.builder()
 				.pk(pk)
-				.periodSet(domain.getPeriodSetting().value == 1)
+				.periodSet(domain.getPeriodSetting().value)
 				.baseDateAtr(domain.getBaseDateClassification()
 						.map(v -> v.value)
 						.orElse(null))

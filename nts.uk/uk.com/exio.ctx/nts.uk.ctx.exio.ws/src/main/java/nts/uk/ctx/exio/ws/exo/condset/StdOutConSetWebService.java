@@ -16,6 +16,8 @@ import nts.uk.ctx.exio.app.command.exo.condset.OutputPeriodSettingDto;
 import nts.uk.ctx.exio.app.command.exo.condset.OutputPeriodSettingFinder;
 import nts.uk.ctx.exio.app.command.exo.condset.RegisterStdOutputCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.RemoveStdOutputCondSetCommandHandler;
+import nts.uk.ctx.exio.app.command.exo.condset.SaveOutputPeriodSetCommand;
+import nts.uk.ctx.exio.app.command.exo.condset.SaveOutputPeriodSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.StdOutputCondSetCommand;
 import nts.uk.ctx.exio.app.find.exo.category.ExOutCtgDto;
 import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataDto;
@@ -52,6 +54,8 @@ public class StdOutConSetWebService extends WebService {
 	@Inject
 	private OutputPeriodSettingFinder outputPeriodSettingFinder;
 	
+	@Inject
+	private SaveOutputPeriodSetCommandHandler saveOutputPeriodSettingCommandHandler;
 
 	@POST
 	@Path("excuteCopy")
@@ -125,8 +129,8 @@ public class StdOutConSetWebService extends WebService {
 	
 	@POST
 	@Path("saveOutputPeriodSetting")
-	public void saveOutputPeriodSetting(StdOutputCondSetCommand command) {
-//		return stdOutputCondSetFinder.getOutItem(cndSetCd, standType);
+	public void saveOutputPeriodSetting(SaveOutputPeriodSetCommand command) {
+		this.saveOutputPeriodSettingCommandHandler.handle(command);
 	}
 
 }
