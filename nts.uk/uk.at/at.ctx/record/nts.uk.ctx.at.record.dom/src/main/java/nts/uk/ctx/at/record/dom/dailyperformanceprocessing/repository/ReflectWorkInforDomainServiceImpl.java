@@ -2058,7 +2058,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			WorkInfoOfDailyAttendance workInfoOfDailyPerformanceUpdate,
 			AffiliationInforOfDailyAttd affiliationInforOfDailyPerfor, PeriodInMasterList periodInMasterList) {
 		Optional<BonusPaySetting> bonusPaySetting = Optional.empty();
-		if (periodInMasterList == null) {
+		Optional<MasterList> newMaster = Optional.empty();
+		if(periodInMasterList !=null) {
+			newMaster = periodInMasterList.getMasterLists().stream()
+				.filter(item -> item.getDatePeriod().contains(day)).findFirst();
+		}
+		if (periodInMasterList == null || !newMaster.isPresent() || !newMaster.get().getBonusPaySettingOpt().isPresent()) {
 			// reqList496
 			// 職場IDと基準日から上位職場を取得する
 			List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyId,

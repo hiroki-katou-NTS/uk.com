@@ -16,6 +16,7 @@ public class RecSpecificDateSettingAdapterImpl implements RecSpecificDateSetting
 	
 	@Inject
 	private WpSpecificDateSettingPub wpSpecificDateSettingPub;
+	
 
 	@Override
 	public RecSpecificDateSettingImport specificDateSettingService(String companyID, String workPlaceID,
@@ -27,7 +28,9 @@ public class RecSpecificDateSettingAdapterImpl implements RecSpecificDateSetting
 	@Override
 	public RecSpecificDateSettingImport specificDateSettingServiceByListWpl(String companyID, List<String> workPlaceID,
 			GeneralDate date) {
-		// TODO Auto-generated method stub
+		for (String wPId : workPlaceID) {
+			return this.specificDateSettingService(companyID, wPId, date);
+		}
 		return null;
 	}
 
