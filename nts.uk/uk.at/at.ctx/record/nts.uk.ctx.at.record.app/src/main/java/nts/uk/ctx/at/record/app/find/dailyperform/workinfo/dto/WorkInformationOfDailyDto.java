@@ -140,7 +140,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 						(c) -> new ScheduleTimeSheet(c.getNo(), c.getWorking(), c.getLeave()),
 						(c) -> c.getLeave() != null && c.getWorking() != null));
 		domain.setVersion(this.version);
-		
+		domain.getWorkInformation().setVer(this.version);
 		return domain.getWorkInformation();
 	}
 	
