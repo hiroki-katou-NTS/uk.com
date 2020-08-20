@@ -94,8 +94,11 @@ public class CreateOrderInfoFileQuery {
         // 2. 職場又は場所情報と打刻カードを取得
         boolean isCheckedEmpInfo = detailTitle.isPresent();
         Object[] condition = getWorkPlaceAndStampCard(workplaceId, workLocationCodes, isCheckedEmpInfo, period, companyId);
+        @SuppressWarnings("unchecked")
         Map<String, String> map = (Map<String, String>) condition[1];
+        @SuppressWarnings("unchecked")
         List<BentoReservationInfoForEmpDto> bentoReservationInfoForEmpDtos = (List<BentoReservationInfoForEmpDto>) condition[2];
+        @SuppressWarnings("unchecked")
         List<PlaceOfWorkInfoDto> placeOfWorkInfoDtos = (List<PlaceOfWorkInfoDto>) condition[3];
         // 3. 弁当予約を取得する
         List<BentoReservation> bentoReservationsTotal = new ArrayList<>();
@@ -109,7 +112,7 @@ public class CreateOrderInfoFileQuery {
         if (detailTitle.isPresent()) {
             if (frameNo.isPresent())
                 bentoReservationsDetail = getListBentoResevation(frameNo.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
-            else
+            else if(itemExtractCondition.isPresent())
                 bentoReservationsDetail = getListBentoResevation(itemExtractCondition.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
         }
         //}
@@ -126,13 +129,12 @@ public class CreateOrderInfoFileQuery {
         result.setDetailOrderInfoDtoList(detailOrderInfoDtos);
         result.setDetailTittle(isCheckedEmpInfo ? detailTitle.get() : "");
         result.setTotalOrderInfoDtoList(totalOrderInfoDtos);
-        result.setTotalTittle(totalTitle.isPresent() ? totalTitle.get() : "");
+        result.setTotalTittle(totalTitle.orElse(""));
         return result;
     }
 
     /** 2. 職場又は場所情報と打刻カードを取得 */
     private Object[] getWorkPlaceAndStampCard(List<String> workplaceIds, List<String> workLocationCodes, boolean isCheckedEmpInfo, DatePeriod period, String companyId) {
-        //List<WorkplaceInformation> result = new ArrayList<>();
         Object[] result = new Object[4];
         List<String> sIds = new ArrayList<>();
         List<BentoReservationInfoForEmpDto> bentoReservationInfoForEmpDtos = new ArrayList<>();
@@ -153,12 +155,12 @@ public class CreateOrderInfoFileQuery {
         result[1] = mapStampCardInfo;
         if (isCheckedEmpInfo) {
             empBasicInfoExports = getBasicInfo(sIds);
-            for (int i = 0; i < empBasicInfoExports.size(); ++i) {
-                String stampCardNo = mapStampCardInfo.get(empBasicInfoExports.get(i).getEmployeeId());
+            for (EmployeeBasicInfoExport empBasicInfoExport : empBasicInfoExports) {
+                String stampCardNo = mapStampCardInfo.get(empBasicInfoExport.getEmployeeId());
                 if (stampCardNo == null | "".equals(stampCardNo))
                     continue;
-                bentoReservationInfoForEmpDtos.add(createBentoReservationInfoForEmpDto(empBasicInfoExports.get(i).getEmployeeId(),
-                        stampCardNo, empBasicInfoExports.get(i)));
+                bentoReservationInfoForEmpDtos.add(createBentoReservationInfoForEmpDto(empBasicInfoExport.getEmployeeId(),
+                        stampCardNo, empBasicInfoExport));
             }
         }
         result[2] = bentoReservationInfoForEmpDtos;
@@ -183,8 +185,7 @@ public class CreateOrderInfoFileQuery {
 
         //社員IDの重複は除く
         // ドメインモデル「所属会社履歴（社員別）」をすべて取得する
-        List<String> sIdResult =  affCompanyHistRepository.getLstSidByLstSidAndPeriod( new ArrayList<>(sIdFromAffWorkplaceHistorySet), period);
-        return sIdResult;
+        return  affCompanyHistRepository.getLstSidByLstSidAndPeriod( new ArrayList<>(sIdFromAffWorkplaceHistorySet), period);
     }
 
     /** 勤務場所コードから勤務場所を取得 */
@@ -214,7 +215,7 @@ public class CreateOrderInfoFileQuery {
     private Map<String, String> getStampCardFromSID(List<String> sIds){
         return stampCardRepository.getLstStampCardByLstSid(sIds).stream()
                                                     .sorted(Comparator.comparing(StampCard::getRegisterDate).reversed())
-                                                    .collect(Collectors.toMap(item -> item.getEmployeeId(), item -> item.getStampNumber().v()));
+                                                    .collect(Collectors.toMap(StampCard::getEmployeeId, item -> item.getStampNumber().v()));
     }
 
     /** 社員ID(List)から個人社員基本情報を取得 */
@@ -233,7 +234,7 @@ public class CreateOrderInfoFileQuery {
             return syEmployeePub.findBySIds(employeeDataMngInfos.stream()
                     .map(EmployeeDataMngInfo::getEmployeeId).collect(Collectors.toList()));
         }
-        return Collections.EMPTY_LIST;
+        return  Collections.emptyList();
     }
 
     /** convert to DTO::職場又は場所情報 */
@@ -255,17 +256,17 @@ public class CreateOrderInfoFileQuery {
     private List<BentoReservation> getListBentoResevation(BentoReservationSearchConditionDto searchCondition,
                                                          DatePeriod period, List<String> stampCardNo,
                                                          List<String> workLocationCodes, ReservationClosingTimeFrame reservationClosingTimeFrame){
-        List<ReservationRegisterInfo> reservationRegisterInfoList = stampCardNo.stream().map(x -> new ReservationRegisterInfo(x)).collect(Collectors.toList());
+        List<ReservationRegisterInfo> reservationRegisterInfoList = stampCardNo.stream().map(ReservationRegisterInfo::new).collect(Collectors.toList());
         List<WorkLocationCode> workLocationCodeList = CollectionUtil.isEmpty(workLocationCodes) ? Collections.EMPTY_LIST
-                : workLocationCodes.stream().map(x -> new WorkLocationCode(x)).collect(Collectors.toList());
+                : workLocationCodes.stream().map(WorkLocationCode::new).collect(Collectors.toList());
         return query.getListBentoResevationQuery(searchCondition, period, reservationRegisterInfoList, workLocationCodeList, reservationClosingTimeFrame);
     }
 
     private List<BentoReservation> getListBentoResevation(int frameNo,
                                                           DatePeriod period, List<String> stampCardNo,
                                                           List<String> workLocationCodes, ReservationClosingTimeFrame reservationClosingTimeFrame){
-        List<ReservationRegisterInfo> reservationRegisterInfoList = stampCardNo.stream().map(x -> new ReservationRegisterInfo(x)).collect(Collectors.toList());
-        List<WorkLocationCode> workLocationCodeList = workLocationCodes.stream().map(x -> new WorkLocationCode(x)).collect(Collectors.toList());
+        List<ReservationRegisterInfo> reservationRegisterInfoList = stampCardNo.stream().map(ReservationRegisterInfo::new).collect(Collectors.toList());
+        List<WorkLocationCode> workLocationCodeList = workLocationCodes.stream().map(WorkLocationCode::new).collect(Collectors.toList());
         return bentoReservationRepository.getAllReservationOfBento(frameNo, reservationRegisterInfoList, period, reservationClosingTimeFrame, workLocationCodeList);
     }
 
@@ -276,6 +277,7 @@ public class CreateOrderInfoFileQuery {
 
     /** 5. 注文情報を取得する */
     /** 5.2 */
+
     private List<DetailOrderInfoDto> exportDetailOrderInfo(List<BentoReservation> reservations, String companyID ,List<PlaceOfWorkInfoDto> placeOfWorkInfoDtos,
                                                           List<BentoReservationInfoForEmpDto> bentoReservationInfoForEmpDtos, Optional<Integer> frameNo){
         List<DetailOrderInfoDto> result = new ArrayList<>();
@@ -302,10 +304,16 @@ public class CreateOrderInfoFileQuery {
         );
         for(Map.Entry me : map.entrySet()){
             ReservationDate reservationDate = (ReservationDate) me.getKey();
+            @SuppressWarnings("unchecked")
             Map<ReservationRegisterInfo ,List<BentoReservation>> reservationMap = (Map<ReservationRegisterInfo ,List<BentoReservation>>) me.getValue();
             for(Map.Entry mapEntry : reservationMap.entrySet()){
                 ReservationRegisterInfo registerInfo = (ReservationRegisterInfo) mapEntry.getKey();
-                List<BentoReservation> bentoReservations = (List<BentoReservation>) mapEntry.getValue();
+                List<BentoReservation> bentoReservations = new ArrayList<>();
+                if(mapEntry.getValue() instanceof ArrayList<?>){
+                    for(Object o : (ArrayList<?>)mapEntry.getValue()){
+                        bentoReservations.add(BentoReservation.class.cast(o));
+                    }
+                }
                 List<BentoReservedInfoDto> bentoReservedInfoDtos = createBentoReservedInfoDto(bentoReservationInfoForEmpDtos,bentoReservations, companyID);
                 result.add(new DetailOrderInfoDto(bentoReservedInfoDtos,reservationDate.getDate(),registerInfo.getReservationCardNo(),
                         reservationDate.getClosingTimeFrame().name,placeOfWorkInfoDtos));
@@ -320,6 +328,7 @@ public class CreateOrderInfoFileQuery {
      * @param reservations
      * @param companyID
      * @return
+     *
      */
     private List<BentoReservedInfoDto> createBentoReservedInfoDto(List<BentoReservationInfoForEmpDto> bentoReservationInfoForEmpDtos, List<BentoReservation> reservations,
                                                                  String companyID){
@@ -334,7 +343,7 @@ public class CreateOrderInfoFileQuery {
             Iterator it = reservations.iterator();
             while (it.hasNext()){
                 BentoReservation temp = (BentoReservation) it.next();
-                if(temp.getRegisterInfor().equals(item.getStampCardNo())){
+                if(temp.getRegisterInfor().getReservationCardNo().equals(item.getStampCardNo())){
                     handlerReservation.add(temp);
                     it.remove();
                 }
@@ -343,7 +352,7 @@ public class CreateOrderInfoFileQuery {
                 for(BentoReservationDetail detail : reservation.getBentoReservationDetails()){
                     Bento bento = bentoMenuRepository.getBento(companyID, reservation.getReservationDate().getDate(), detail.getFrameNo());
                     if(map.get(bento) == null)
-                        map.put(bento,new ArrayList<>(Arrays.asList(item)));
+                        map.put(bento,new ArrayList<BentoReservationInfoForEmpDto>(){{add(item);}});
                     else{
                         List<BentoReservationInfoForEmpDto> temp = map.get(bento);
                         temp.add(item);
@@ -358,7 +367,12 @@ public class CreateOrderInfoFileQuery {
         }
         for(Map.Entry me : map.entrySet()){
             Bento bentoTemp = (Bento) me.getKey();
-            List<BentoReservationInfoForEmpDto> listTemp = (List<BentoReservationInfoForEmpDto>) me.getValue();
+            List<BentoReservationInfoForEmpDto> listTemp = new ArrayList<>();
+            if(me.getValue() instanceof ArrayList<?>){
+                for(Object o : (ArrayList<?>)me.getValue()){
+                    listTemp.add(BentoReservationInfoForEmpDto.class.cast(o));
+                }
+            }
             result.add(new BentoReservedInfoDto(
                     bentoTemp.getName().v(),bentoTemp.getFrameNo(), bentoTemp.getUnit().v(),listTemp
             ));
@@ -428,5 +442,6 @@ public class CreateOrderInfoFileQuery {
 
     /** 6. 注文合計書を作成 */
     /** 7. 注文明細書を作成 */
+    // Handle in export service
 
 }

@@ -40,7 +40,8 @@
                                     required: true,
 									enable: true,
 									showNextPrevious: true,
-									value: period}">
+									value: period,
+									maxRange: 'oneYear'}">
                             </div>
                         </td>
                     </tr>
@@ -69,8 +70,6 @@
                     <tr>
                         <td>
                             <div id="A5_1" data-bind="ntsFormLabel: {text: $i18n('KMR004_11')}"></div>
-                            <!--div id="A5_2" tabindex="8" data-bind="ntsCheckBox: {checked: totalChecked, enable: totalEnable, style: 'button'}, i18n: 'KMR004_12'"></div-->
-                            <!--div id="A5_3" tabindex="9" data-bind="ntsCheckBox: {checked: conditionalChecked, enable: conditionalEnable, style: 'button'}, i18n: 'KMR004_13'"></div-->
 
                             <div id="A5_2" tabindex="8" data-bind="ntsRadioBoxGroup: {
                                 options: [
