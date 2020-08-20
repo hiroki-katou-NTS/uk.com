@@ -1,5 +1,13 @@
 <template>
   <div class="cmms45componentsapp4">
+    <div class="card card-label">
+      <div class="card-header uk-bg-accordion headerDiv">
+        <span class="textPosition">{{'KAFS07_2' | i18n}}</span>
+      </div>
+    </div>
+    <div v-if="isCondition1" class="paddingSpan">
+      <span v-if="dataOutput.goBackApplication.isChangedWork == 1">変更する</span>
+    </div>
     <!-- B1_1 -->
 
     <div class="card card-label">
