@@ -465,6 +465,8 @@ public class ProgramIdConsts {
 
 	public static final String KCP005 = "KCP005";
 	
+	public static final String KCP012 = "KCP012";
+	
 	public static final String KDP010A = "KDP010A";
 	
 	public static final String KDP010B = "KDP010B";

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.stampmanagement.timestampsetting.prefortimestaminput;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,8 +14,7 @@ import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInput;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInputRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.MapAddress;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplay;
-import nts.uk.ctx.at.record.infra.entity.stamp.application.KrccpStampFunction;
-import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtStampFunction;
+import nts.uk.ctx.at.record.infra.entity.stamp.application.KrcmtStampFunction;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtStampWkpSelectRole;
 
 /**
@@ -31,8 +31,6 @@ public class JpaCommonSettingsStampInputRepository extends JpaRepository impleme
 	
 	private static final String SELECT_ALL_ROLES = "SELECT r FROM KrcmtStampWkpSelectRole r WHERE r.pk.companyId = :companyId";
 	
-	private static final String SELECT_BY_CID_PAGE = "SELECT c FROM KrccpStampFunction c WHERE c.pk.companyId = :companyId";
-
 	@Override
 	public void insert(CommonSettingsStampInput domain) {
 		this.commandProxy().insert(toEntity(domain));
@@ -50,11 +48,9 @@ public class JpaCommonSettingsStampInputRepository extends JpaRepository impleme
 		
 		KrcmtStampFunction entity =  entityOpt.get();
 		
-		Optional<StampResultDisplay> display = this.queryProxy().query(SELECT_BY_CID_PAGE,KrccpStampFunction.class)
-				.setParameter("companyId", domain.getCompanyId())
-				.getSingle(c -> c.toDomain());
+		Optional<KrcmtStampFunction> display = this.queryProxy().find(domain.getCompanyId(), KrcmtStampFunction.class);
 		
-		entity.update(domain, display);
+		entity.update(domain, display.isPresent()? Optional.of(display.get().toDomain()): Optional.empty());
 		this.commandProxy().update(entity);
 	}
 
@@ -75,25 +71,22 @@ public class JpaCommonSettingsStampInputRepository extends JpaRepository impleme
 		return Optional.of(domain);
 	}
 
-	public KrcmtStampFunction toEntity(CommonSettingsStampInput domain) {
-		KrcmtStampFunction entity = new KrcmtStampFunction();
-		
-		entity.cid = domain.getCompanyId();
-		entity.googleMapUseArt = domain.isGooglemap() ? 1 : 0;
-		
-		Optional<StampResultDisplay> display = this.queryProxy().query(SELECT_BY_CID_PAGE,KrccpStampFunction.class)
-				.setParameter("companyId", domain.getCompanyId())
-				.getSingle(c -> c.toDomain());
-		
-		entity.recordDisplayArt = display.isPresent() ? display.get().getUsrAtr().value : 0;
-		if(domain.getMapAddres().isPresent()) {
-			entity.mapAddress = domain.getMapAddres().get().v();
-		}
-		return entity;
-	}
-	
 	public CommonSettingsStampInput toDomain(KrcmtStampFunction entity, List<String> roles) {
 		return new CommonSettingsStampInput(entity.cid, roles, entity.googleMapUseArt == 1, entity.mapAddress == null ? Optional.empty():Optional.of(new MapAddress(entity.mapAddress)));
+	}
+	
+	private Optional<KrcmtStampFunction> getEntity(String cId){
+		return this.queryProxy().find(cId, KrcmtStampFunction.class);
+	}
+	
+	public KrcmtStampFunction toEntity(CommonSettingsStampInput domain){
+		Optional<KrcmtStampFunction> oldEntity = this.getEntity(domain.getCompanyId());
+		return new KrcmtStampFunction(
+				domain.getCompanyId(), 
+				oldEntity.isPresent()? oldEntity.get().recordDisplayArt : 0, 
+				domain.isGooglemap() ? 1 : 0,
+				domain.getMapAddres().isPresent() ? domain.getMapAddres().get().v() : null,
+				oldEntity.isPresent()? oldEntity.get().lstRecordDis : new ArrayList<>());
 	}
 
 }

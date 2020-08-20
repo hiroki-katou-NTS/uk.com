@@ -51,80 +51,19 @@ export class KdpS01AComponent extends Vue {
             commentColor: '#fabf8f'
         },
         buttons: [
-            {
-                buttonValueType: -1,
-                buttonPositionNo: 1,
-                buttonDisSet: {
-                    buttonNameSet: {
-                        textColor: '',
-                        buttonName: ''
-                    },
-                    backGroundColor: ''
-                },
-                usrArt: 1
-            },
-            {
-                buttonValueType: -1,
-                buttonPositionNo: 2,
-                buttonDisSet: {
-                    buttonNameSet: {
-                        textColor: '',
-                        buttonName: ''
-                    },
-                    backGroundColor: ''
-                },
-                usrArt: 1
-            },
-            {
-                buttonValueType: -1,
-                buttonPositionNo: 3,
-                buttonDisSet: {
-                    buttonNameSet: {
-                        textColor: '',
-                        buttonName: ''
-                    },
-                    backGroundColor: ''
-                },
-                usrArt: 1
-            },
-            {
-                buttonValueType: -1,
-                buttonPositionNo: 4,
-                buttonDisSet: {
-                    buttonNameSet: {
-                        textColor: '',
-                        buttonName: ''
-                    },
-                    backGroundColor: ''
-                },
-                usrArt: 1
-            },
-            {
-                buttonValueType: -1,
-                buttonPositionNo: 5,
-                buttonDisSet: {
-                    buttonNameSet: {
-                        textColor: '',
-                        buttonName: ''
-                    },
-                    backGroundColor: ''
-                },
-                usrArt: 1
-            },
-            {
-                buttonValueType: -1,
-                buttonPositionNo: 6,
-                buttonDisSet: {
-                    buttonNameSet: {
-                        textColor: '',
-                        buttonName: ''
-                    },
-                    backGroundColor: ''
-                },
-                usrArt: 1
-            }
         ]
     };
+
+    public get textComment() {
+        const vm = this;
+        const { setting } = vm;
+
+        if (setting) {
+            return _.escape(_.get(setting, 'stampPageComment.pageComment', '')).replace(/\n/g, '<br />');
+        }
+
+        return '';
+    }
 
     public created() {
         let vm = this;
@@ -197,12 +136,14 @@ export class KdpS01AComponent extends Vue {
 
     private InitCountTime() {
 
-        let vm = this;
+        let vm = this,
+            interval = _.get(vm, 'setting.displaySettingsStampScreen.serverCorrectionInterval', 1) as number * 60000;
+
+        vm.$dt.interval(interval);
 
         setInterval(() => {
-
             vm.getStampToSuppress();
-        }, vm.setting.displaySettingsStampScreen.serverCorrectionInterval * 1000);
+        }, interval);
     }
 
     private getStampToSuppress() {
@@ -239,7 +180,8 @@ export class KdpS01AComponent extends Vue {
                             textColor: '',
                             buttonName: ''
                         },
-                        backGroundColor: ''
+                        backGroundColor: '',
+                        displayBackGroundColor: ''
                     },
                     usrArt: 1
                 };
@@ -380,13 +322,13 @@ export class KdpS01AComponent extends Vue {
             case ButtonType.RETURN:
                 valueType = !stampToSuppress.turnBack ? backGroundColor : DEFAULT_GRAY;
                 break;
-                
+
             default:
-                valueType = DEFAULT_GRAY ;
+                valueType = DEFAULT_GRAY;
                 break;
         }
-
-        buttonSetting.buttonDisSet.backGroundColor = valueType;
+        buttonSetting.buttonDisSet.backGroundColor = backGroundColor;
+        buttonSetting.buttonDisSet.displayBackGroundColor = valueType;
     }
 
 
