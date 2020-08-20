@@ -1,54 +1,63 @@
 module nts.uk.at.view.kdp005.h {
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
+    import device = nts.uk.devices;
     
 	export module viewmodel {
-        enum StatusDevice {
-            PreparingToRead = 1 /**読み込み準備中*/,
-            Readable = 2  /**読み込み可能*/,
-            Unreadable = 3  /**読み込み不可*/,
-            DeviceDoesNotExist = 4/**機器が存在しない*/
-        }
-        
 		export class ScreenModel {
             value = ko.observable('');
-            notify = ko.observable(getText('KDP005_7'));
+            notify = ko.observable(getText('KDP005_21'));
             color = ko.observable('');
             inforAuthent = ko.observable('');
-            statusDevice = ko.observable(StatusDevice.PreparingToRead);
+            diplayBtnConnect = ko.observable(true);
 			constructor() {
 				let self = this;
-                self.statusDevice.subscribe(function(newValue) {
-                    if(newValue == StatusDevice.PreparingToRead) {
-                        self.color('');    
-                        self.notify(getText('KDP005_7'));
-                        self.inforAuthent('');
-                    }else if(newValue == StatusDevice.Readable) {
-                        self.color('#0033cc');    
-                        self.notify(getText('KDP005_5'));
-                        self.inforAuthent('');
-                    }else if(newValue == StatusDevice.Unreadable) {
-                        self.color('#ff0000');
-                        self.notify(getText('KDP005_6'));
-                        self.inforAuthent('');
-                    }else if(newValue == StatusDevice.DeviceDoesNotExist){
-                        self.color('#ff0000');
-                        self.notify(getText('KDP005_6'));
-                        self.inforAuthent(getText('KDP005_4'));
-                    }
-                    self.decision();
-                });
-                self.value.subscribe(function(newValue) {
-                    self.decision();
-                });
                 $(document).ready(function() {
                     $('#iCCard').focus();
                 });
+                self.connectICCard();
+            }
+            
+            public connectICCard(){
+                let self = this;
+                device.felica((command: device.COMMAND, readyRead: boolean, cardNo: string) => {
+                    self.value();
+                    if(command === 'open' || command === 'disconnect' || (command === 'status' && readyRead == false)){
+                        self.color('#ff0000');
+                        self.notify(getText('KDP005_6'));
+                        self.inforAuthent('');
+                        self.diplayBtnConnect(true);
+                    }else if(command === 'status'){
+                        if(readyRead){
+                            self.color('#0033cc');
+                            self.notify(getText('KDP005_5'));
+                            self.inforAuthent('');
+                            self.diplayBtnConnect(false);
+                        }
+                    }else if(command === 'close'){
+                        self.color('#ff0000');
+                        self.notify(getText('KDP005_21'));
+                        self.inforAuthent('');
+                        self.diplayBtnConnect(true);
+                    }else if(command === 'connect'){
+                        self.color('#0033cc');
+                        self.notify(getText('KDP005_5'));
+                        self.inforAuthent('');
+                        self.diplayBtnConnect(false);
+                    }else if(command === 'read'){
+                        self.color('#0033cc');
+                        self.notify(getText('KDP005_5'));
+                        self.inforAuthent('');
+                        self.diplayBtnConnect(false);
+                        self.value(cardNo);
+                        self.decision();
+                    }
+                });    
             }
             
             private decision(){
                 let self = this; 
-                if(!nts.uk.ui.errors.hasError() && self.value() != '' && self.statusDevice() == StatusDevice.Readable){
+                if(!nts.uk.ui.errors.hasError() && self.value() != ''){
                      setShared('ICCard', self.value());
                      self.closeDialog();  
                 }
