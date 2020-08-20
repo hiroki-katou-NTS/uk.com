@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.reservation;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
@@ -38,27 +39,37 @@ public class ReservationConfirmationListScreenQuery {
         if (optBentoReservationSetting.isPresent()) {
             BentoReservationSetting bentoReservationSetting = optBentoReservationSetting.get();
             dto.setOperationDistinction(bentoReservationSetting.getOperationDistinction());
+        } else {
+        	throw new BusinessException("Msg_1847");
         }
 
-        BentoMenu bentoMenuByEndDate = bentoMenuRepo.getBentoMenuByEndDate(companyId, GeneralDate.max());
-        List<Bento> bentoList = bentoMenuByEndDate.getMenu();
+        BentoMenu bentoMenu = bentoMenuRepo.getBentoMenuByEndDate(companyId, GeneralDate.max());
+		if (bentoMenu == null) {
+        	throw new BusinessException("Msg_1848");
+        }
+
+        List<Bento> menu = bentoMenu.getMenu();
+        if (menu == null || menu.size() <= 0) {
+        	throw new BusinessException("Msg_1848");
+        }
+
         List<List<Bento>> partitions = new ArrayList<>(
-                bentoList.stream()
+                menu.stream()
                         .collect(Collectors.partitioningBy(item -> item.getWorkLocationCode().isPresent()))
                         .values()
         );
 
-        List<Bento> bentoMenu;
+        List<Bento> menuByOperationType;
         OperationDistinction operationDistinction = dto.getOperationDistinction();
         if (operationDistinction == OperationDistinction.BY_COMPANY) {
-            bentoMenu = partitions.get(1);
+            menuByOperationType = partitions.get(1);
         } else {
-            bentoMenu = partitions.get(0);
+            menuByOperationType = partitions.get(0);
         }
-        List<BentoItemDto> bentoItemList = copyBentoItemList(bentoMenu);
+        List<BentoItemDto> bentoItemList = copyBentoItemList(menuByOperationType);
         dto.setMenu(bentoItemList);
 
-        BentoReservationClosingTime closingTime = bentoMenuByEndDate.getClosingTime();
+        BentoReservationClosingTime closingTime = bentoMenu.getClosingTime();
         String reservationFrameName1 = closingTime.getClosingTime1().getReservationTimeName().v();
         int reservationStartTime1 = closingTime.getClosingTime1().getStart().get().v();
         int reservationEndTime1 = closingTime.getClosingTime1().getFinish().v();
