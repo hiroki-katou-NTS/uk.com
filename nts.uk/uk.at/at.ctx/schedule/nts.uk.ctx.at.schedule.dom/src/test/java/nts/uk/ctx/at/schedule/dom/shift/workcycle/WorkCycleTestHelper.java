@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.schedule.dom.shift.workcycle;
 
+import nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay.DayOfWeek;
 import nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay.WeeklyWorkDayPattern;
 import nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay.WorkdayPatternItem;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.work.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 import java.util.ArrayList;
