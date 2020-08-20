@@ -30,10 +30,16 @@ export class CmmS45ComponentsApp2Component extends Vue {
 
         return this.appWorkChange;
     }
+    public user: any;
     public created() {
         const self = this;
         self.params.appDetail = {};
-        this.fetchData(self.params);
+        self.$auth.user.then((usr: any) => {
+            self.user = usr;
+        }).then((res: any) => {
+            this.fetchData(self.params);
+        });
+        
     }
 
 
@@ -41,8 +47,9 @@ export class CmmS45ComponentsApp2Component extends Vue {
 
     }
     public fetchData(getParams: any) {
+        const self = this;
         this.$http.post('at', API.start, {
-            companyId: '000000000000-0117',
+            companyId: self.user.companyId,
             appId: this.params.appDispInfoStartupOutput.appDetailScreenInfo.application.appID,
             appDispInfoStartupDto: this.params.appDispInfoStartupOutput
         })
