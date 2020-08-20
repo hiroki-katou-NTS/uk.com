@@ -7,6 +7,7 @@ module nts.uk.at.view.kmr004.a {
     };
 
     import tree = kcp.share.tree;
+	import list = kcp.share.list;
     import formatDate = nts.uk.time.formatDate;
     import parseTime = nts.uk.time.parseTime;
 
@@ -16,6 +17,7 @@ module nts.uk.at.view.kmr004.a {
         selectedRuleCode: KnockoutObservable<string> = ko.observable('1');
 		baseDate: KnockoutObservable<Date> = ko.observable(new Date()); // base date for KCP004, KCP012
 		treeGrid: tree.TreeComponentOption; // tree grid properties object
+		listComponentOption: list.ComponentOption;
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray([]);
         selectedTab: KnockoutObservable<string> = ko.observable('');
         outputConditionChecked: KnockoutObservable<number> = ko.observable(1); // output condition
@@ -28,6 +30,7 @@ module nts.uk.at.view.kmr004.a {
         reservationTimeRange1: string = '';
         reservationTimeRange2: string = '';
         reservationTimeRange: KnockoutObservable<string> = ko.observable('');
+		selectedWorkLocationCode: KnockoutObservableArray<string> = ko.observableArray([]); // KCP012 selected codes
 
         constructor() {
             super();
@@ -160,10 +163,11 @@ module nts.uk.at.view.kmr004.a {
 
         initClosingTimeSwitch(data:any) {
             let vm = this;
-            vm.closingTimeOptions([
-                new ItemModel('1', data.closingTime.reservationFrameName1),
-                new ItemModel('2', data.closingTime.reservationFrameName2)
-            ]);
+            var switchButtons: ItemModel[] = [new ItemModel('1', data.closingTime.reservationFrameName1)]
+			if (data.closingTime.reservationFrameName2.length > 0) {
+				switchButtons.push(new ItemModel('2', data.closingTime.reservationFrameName2));
+			}
+            vm.closingTimeOptions(switchButtons);
         }
 
         initClosingTimeLable(data:any) {
@@ -210,7 +214,22 @@ module nts.uk.at.view.kmr004.a {
         }
 
         initWorkLocationList() {
-            $('#tree-grid').append("<div style='width: 514px; height: 365px; text-align: center; font-size: x-large'>Waiting for KCP012...</div>");
+			const vm = this;
+			vm.listComponentOption = {
+				isShowAlreadySet: false,
+				isMultiSelect: false,
+				isMultipleUse: true,
+				listType: list.ListType.WORKPLACE,
+				selectType: list.SelectType.NO_SELECT,
+				selectedCode: vm.selectedWorkLocationCode,
+				isDialog: false,
+				isShowNoSelectRow: false,
+				maxRows: 10
+			}
+
+			$('#tree-grid').ntsListComponent(vm.listComponentOption).done(() => {
+                $('#tree-grid').getDataList();
+            });
         }
 
         initConditionListComboBox(data: any) {
