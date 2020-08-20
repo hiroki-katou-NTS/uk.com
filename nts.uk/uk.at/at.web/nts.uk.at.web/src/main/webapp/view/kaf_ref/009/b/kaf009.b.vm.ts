@@ -114,12 +114,15 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                 model.checkbox2 ? 1 : 0,
             );
             // is change can be null
-            goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;
-            let dw = new DataWork( model.workTypeCode );
-            if ( model.workTimeCode ) {
-                dw.workTime = model.workTimeCode
+            if (!_.isNull(model.checkbox3)) {
+                goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;
+                let dw = new DataWork( model.workTypeCode );
+                if ( model.workTimeCode ) {
+                    dw.workTime = model.workTimeCode
+                }
+                goBackApp.dataWork = dw;
+                
             }
-            goBackApp.dataWork = dw;
             console.log( goBackApp );
             
             
