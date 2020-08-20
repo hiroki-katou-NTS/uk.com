@@ -119,12 +119,15 @@ export class KdpS01CComponent extends Vue {
     }
 
     get isHasImplementation() {
-        let vm = this;
-        if (isNaN(_.get(vm, 'screenData.confirmResult.permissionCheck'))) {
+        let vm = this,
+            permissionCheck = _.get(vm, 'screenData.confirmResult.permissionCheck');
+
+
+        if (_.isNil(permissionCheck)) {
             return State.SETTING_NULL;
         }
 
-        if (vm.screenData.confirmResult.permissionCheck === ReleasedAtr.IMPLEMENT && vm.screenData.attendanceItem.timeItems.length > 0) {
+        if (permissionCheck === ReleasedAtr.IMPLEMENT && vm.screenData.attendanceItem.timeItems.length > 0) {
             return State.IMPLEMENT;
         } else {
             return State.CAN_NOT_IMPLEMENT;
