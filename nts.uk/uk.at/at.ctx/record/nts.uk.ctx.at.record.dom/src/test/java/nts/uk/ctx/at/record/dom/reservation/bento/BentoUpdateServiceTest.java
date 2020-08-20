@@ -21,7 +21,8 @@ import org.junit.runner.RunWith;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static nts.arc.time.ClockHourMinute.now;
+import static nts.arc.time.clock.ClockHourMinute.now;
+
 
 @RunWith(JMockit.class)
 public class BentoUpdateServiceTest {
