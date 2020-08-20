@@ -5,10 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.app.command.reservation.bento.BentoMakeOrderCommand;
+import nts.uk.ctx.at.record.app.command.reservation.bento.BentoMakeOrderCommandHandler;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.BentoReservationSearchConditionDto;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.OrderInfoDto;
+import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
+import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,8 +36,9 @@ public class CreateOrderInfoDataSource {
     private String detailTitle;
     private int reservationClosingTimeFrame;
     private boolean isBreakPage;
+    private boolean extractionConditionChecked;
 
-    public OrderInfoDto getGeneratorData(CreateOrderInfoFileQuery createOrderInfoFileQuery){
+    public OrderInfoDto getGeneratorData(CreateOrderInfoFileQuery createOrderInfoFileQuery, BentoMakeOrderCommandHandler commandHandler){
         Optional<BentoReservationSearchConditionDto> totalExtractCondition = this.getTotalExtractCondition() > -1
                 ?  Optional.of(EnumAdaptor.valueOf(this.getTotalExtractCondition(), BentoReservationSearchConditionDto.class)) : Optional.empty();
         Optional<BentoReservationSearchConditionDto> itemExtractCondition = this.getItemExtractCondition() > -1
@@ -47,6 +53,13 @@ public class CreateOrderInfoDataSource {
         OrderInfoDto result = createOrderInfoFileQuery.createOrderInfoFileQuery(this.getPeriod().convertToDate("yyyy/MM/dd"),this.getWorkplaceIds(), this.getWorkLocationCodes(),
                 totalExtractCondition, itemExtractCondition, frameNo, totalTitle,
                 detailTitle, closingTimeFrame);
+        if(this.extractionConditionChecked){
+            List<BentoMakeOrderCommand> commands = new ArrayList<>();
+            result.getTotalOrderInfoDtoList().forEach(item -> commands.add(new BentoMakeOrderCommand(
+                    new ReservationDate(item.getReservationDate(),closingTimeFrame), new ReservationRegisterInfo(item.getReservationRegisInfo())
+            )));
+            commandHandler.handle(commands);
+        }
         return result;
     }
 }

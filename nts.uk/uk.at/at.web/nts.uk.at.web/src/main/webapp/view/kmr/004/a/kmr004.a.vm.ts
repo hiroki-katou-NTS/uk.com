@@ -19,7 +19,7 @@ module nts.uk.at.view.kmr004.a {
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray([]);
         selectedTab: KnockoutObservable<string> = ko.observable('');
         outputConditionChecked: KnockoutObservable<number> = ko.observable(1); // output condition
-        extractionConditionChecked: KnockoutObservable<boolean> = ko.observable(false);
+
         extractionConditionEnable: KnockoutObservable<boolean> = ko.observable(false);
         separatePageCheckboxEnable: KnockoutObservable<boolean> = ko.observable(true);
         conditionListCcb: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -106,6 +106,7 @@ module nts.uk.at.view.kmr004.a {
             }else{
                 vm.model().totalExtractCondition = ko.observable(-1);
                 vm.model().totalTitle = ko.observable('');
+                vm.model().extractionConditionChecked = ko.observable(false);
                 if(vm.model().itemExtractCondition === ko.observable(1)){
                     vm.model().frameNo = ko.observable(-1);
                 }
@@ -120,7 +121,8 @@ module nts.uk.at.view.kmr004.a {
                 totalTitle:  vm.model().totalTitle.peek(),
                 detailTitle: vm.model().detailTitle.peek(),
                 isBreakPage: true,
-                reservationClosingTimeFrame: vm.model().reservationClosingTimeFrame.peek()
+                reservationClosingTimeFrame: vm.model().reservationClosingTimeFrame.peek(),
+                extractionConditionChecked: vm.model().extractionConditionChecked.peek()
             };
             return data;
         }
@@ -251,6 +253,7 @@ module nts.uk.at.view.kmr004.a {
         itemExtractCondition: KnockoutObservable<number>;
         isBreakPage: KnockoutObservable<boolean>;
         frameNo: KnockoutObservable<number>;
+        extractionConditionChecked: KnockoutObservable<boolean>;
 
         constructor(){
             this.workplaceIds = ko.observableArray([]);
@@ -266,6 +269,7 @@ module nts.uk.at.view.kmr004.a {
             this.itemExtractCondition = ko.observable(1); // Default selected: A10_3 全件
             this.isBreakPage = ko.observable(false);
             this.frameNo = ko.observable(-1);
+            this.extractionConditionChecked = ko.observable(false);
         };
     }
 }
