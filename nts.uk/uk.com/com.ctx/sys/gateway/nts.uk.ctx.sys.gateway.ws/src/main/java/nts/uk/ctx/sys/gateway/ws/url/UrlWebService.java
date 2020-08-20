@@ -219,7 +219,7 @@ public class UrlWebService {
 							urlAccApprovalOutput.getEmployeeInfoDtoImport().getEmployeeId(), 
 							urlAccApprovalOutput.getEmployeeInfoDtoImport().getEmployeeCode()), 
 					companyCD);
-			submitLoginFormTwoCommandHandler.setRoleId(urlAccApprovalOutput.getUserImport().getUserId());
+			submitLoginFormTwoCommandHandler.setRoleInfo(urlAccApprovalOutput.getUserImport().getUserId());
 		}
 		
 		// アルゴリズム「システム利用停止の確認」を実行する

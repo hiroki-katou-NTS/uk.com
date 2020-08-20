@@ -45,6 +45,8 @@ module nts.uk.at.view.kmr002.a.model {
         startDinner: KnockoutObservable<number> = ko.observable(0);
         finishDinner: KnockoutObservable<number> = ko.observable(0);
 
+        workLocationCode: KnockoutObservable<string> = ko.observable(null);
+
         constructor() {
             let self = this;
         }
@@ -114,6 +116,7 @@ module nts.uk.at.view.kmr002.a.model {
 
         public initData(data: any): void {
             let self = this;
+            self.workLocationCode(data.workLocationCode);
             self.startLunch(data.bentoMenuByClosingTimeDto.closingTime1.start);
             self.finishLunch(data.bentoMenuByClosingTimeDto.closingTime1.finish);
             self.startDinner(data.bentoMenuByClosingTimeDto.closingTime2.start);
@@ -437,7 +440,7 @@ module nts.uk.at.view.kmr002.a.model {
 
         public register(detailLst: any): void {
 
-            let self = this, command = { date: self.date(), details: detailLst };
+            let self = this, command = { workLocationCode: self.workLocationCode(), date: self.date(), details: detailLst };
             nts.uk.ui.block.invisible();
             if (self.isUpdate() && self.date()) {
                 service.update(command).done((data) => {

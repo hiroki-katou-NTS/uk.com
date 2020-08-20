@@ -7,16 +7,17 @@ package nts.uk.ctx.at.shared.app.find.statutory.worktime.workplaceNew;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.MonthlyUnitDto;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborSetting;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet;
 
 
 /**
  * The Class WkpDeforLaborSettingDto.
  */
 @Data
+@AllArgsConstructor
 public class WkpDeforLaborSettingDto {
 
 	/** The company id. */
@@ -35,22 +36,11 @@ public class WkpDeforLaborSettingDto {
 	/** 法定時間. */
 	private List<MonthlyUnitDto> statutorySetting;
 
-	/**
-	 * From domain.
-	 *
-	 * @param domain the domain
-	 * @return the wkp defor labor setting dto
-	 */
-	public static WkpDeforLaborSettingDto fromDomain(WkpDeforLaborSetting domain) {
-		WkpDeforLaborSettingDto dto = new WkpDeforLaborSettingDto();
-		dto.setYear(domain.getYear().v());
-		dto.setCompanyId(AppContexts.user().companyId());
-		dto.setWkpId(domain.getWorkplaceId().v());
+	public static <T extends MonthlyWorkTimeSet> WkpDeforLaborSettingDto with (
+			int year, String companyId, String wkpid, List<T> workTime) {
 		
-		List<MonthlyUnitDto> monthlyUnitdtos = domain.getStatutorySetting().stream().map(monthly -> {
-			return new MonthlyUnitDto(monthly.getMonth().v(), monthly.getMonthlyTime().v());
-		}).collect(Collectors.toList());
-		dto.setStatutorySetting(monthlyUnitdtos);
-		return dto;
+		return new WkpDeforLaborSettingDto(companyId, wkpid, year, workTime.stream()
+				.map(c -> new MonthlyUnitDto(c.getYm().month(), c.getLaborTime().getLegalLaborTime().v()))
+				.collect(Collectors.toList()));
 	}
 }

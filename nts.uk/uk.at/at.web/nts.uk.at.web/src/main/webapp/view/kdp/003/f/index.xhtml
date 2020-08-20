@@ -8,7 +8,7 @@
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
-				var dialogSize = { width: 480, height: 270 };
+				var dialogSize = { width: 500, height: 270 };
 			</script>
 			
 			<com:ValidatorScript>
@@ -27,10 +27,10 @@
 			<div id="contents-area" class="kdp-003-f">
 				<table class="layout">
 					<com:ko-if bind="ko.toJS(mode) === 'admin'">
-						<tbody data-bind="component: { name: 'kdp-003-f-admin-mode', params: { model, params} }"></tbody>
+						<tbody data-bind="component: { name: 'kdp-003-f-admin-mode', params: { model: model, params: params, listCompany: listCompany } }"></tbody>
 					</com:ko-if>
 					<com:ko-if bind="['employee', 'fingerVein'].indexOf(ko.toJS(mode)) &gt; -1">
-						<tbody data-bind="component: { name: 'kdp-003-f-finger-vein-mode', params: { model, params} }"></tbody>
+						<tbody data-bind="component: { name: 'kdp-003-f-finger-vein-mode', params: { model: model, params: params } }"></tbody>
 					</com:ko-if>
 				</table>
 			</div>

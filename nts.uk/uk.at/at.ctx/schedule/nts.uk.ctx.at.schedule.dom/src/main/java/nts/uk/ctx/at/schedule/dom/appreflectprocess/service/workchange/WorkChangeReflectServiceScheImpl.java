@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.appreflectprocess.service.workchange;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -23,6 +24,8 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -33,7 +36,7 @@ public class WorkChangeReflectServiceScheImpl implements WorkChangeReflectServic
 	@Inject
 	private BasicScheduleRepository scheRepo;
 	@Inject
-	private WorkTypeIsClosedService workTypeRepo;
+	private WorkTypeRepository workTypeRepo;
 	@Inject
 	private WorkScheduleStateRepository workScheReposi;
 	@Inject
@@ -50,7 +53,7 @@ public class WorkChangeReflectServiceScheImpl implements WorkChangeReflectServic
 		//1日休日の判断
 		if(scheData.getWorkTypeCode() != null
 				&& workchangeParam.getExcludeHolidayAtr() == 1
-				&& workTypeRepo.checkHoliday(scheData.getWorkTypeCode())) {
+				&& WorkTypeIsClosedService.checkHoliday(createRequireM1(), scheData.getWorkTypeCode())) {
 			return;
 		}
 		//勤務種類、就業時間帯を反映
@@ -96,6 +99,16 @@ public class WorkChangeReflectServiceScheImpl implements WorkChangeReflectServic
 		}
 		scheRepo.update(scheData);
 		workScheReposi.updateOrInsert(lstState);
+	}
+	
+	private WorkTypeIsClosedService.RequireM1 createRequireM1(){
+		return new WorkTypeIsClosedService.RequireM1() {
+			
+			@Override
+			public Optional<WorkType> workType(String companyId, String workTypeCd) {
+				return workTypeRepo.findByPK(companyId, workTypeCd);
+			}
+		};
 	}
 
 }

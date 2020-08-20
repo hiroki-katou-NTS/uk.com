@@ -35,5 +35,5 @@ public class AffWorkplaceHistoryItemImport {
 		return new AffWorkplaceHistoryItemImport(histId,employeeId, workplaceId, normalWorkplaceId);
 
 	}
-	
+
 }

@@ -1,12 +1,12 @@
 /// <reference path='../../../../../lib/nittsu/viewcontext.d.ts' />
 
-module nts.uk.kdp003.f {
+module nts.uk.at.kdp003.f {
 	const fingerVeinModeTemplate = `
 <!-- ko with: data -->
 <tr>
 	<td data-bind="i18n: 'KDP003_3'"></td>
 	<td>
-		<div data-bind="text: ko.toJS(model.companyCode) + ' ' + ko.toJS(model.companyName)"></div>
+		<div data-bind="text: $component.companyText"></div>
 	</td>
 </tr>
 <tr>
@@ -17,15 +17,16 @@ module nts.uk.kdp003.f {
 			data-bind="ntsTextEditor: {
 				name: $component.$i18n('KDP003_4'),
 				constraint: 'EmployeeCode',
+				required: true,
 				value: model.employeeCode,
 				option: {
-					width: '200px',
+					width: '220px',
 					textmode: 'text'
 				}
 			}" />
 		<!-- /ko -->
 		<!-- ko if: !!ko.unwrap(model.employeeName) -->
-		<div data-bind="text: ko.toJS(model.employeeCode) + ' ' + ko.toJS(model.employeeName)"></div>
+		<div data-bind="text: $component.employeeText"></div>
 		<!-- /ko -->
 	</td>
 </tr>
@@ -37,8 +38,9 @@ module nts.uk.kdp003.f {
 			data-bind="ntsTextEditor: {
 				name: $vm.$i18n('KDP003_5'),
 				value: model.password,
+				required: true,
 				option: {										
-					width: '330px',
+					width: '350px',
 					textmode: 'password'
 				}
 			}" />
@@ -52,17 +54,40 @@ module nts.uk.kdp003.f {
 		name: 'kdp-003-f-finger-vein-mode',
 		template: fingerVeinModeTemplate
 	})
-	export class Kdp003FLoginWithFingerVeinModeCoponent extends ko.ViewModel {
-		constructor(public data: { model: Kdp003FModel; params: Kdp003FEmployeeModeParam | Kdp003FFingerVeinModeParam; }) {
+	export class LoginWithFingerVeinModeCoponent extends ko.ViewModel {
+		companyText!: KnockoutComputed<string>;
+		employeeText!: KnockoutComputed<string>;
+
+		constructor(public data: { model: Model; params: EmployeeModeParam | FingerVeinModeParam; }) {
 			super();
 		}
 
 		created() {
 			const vm = this;
-		}
+			const { data } = vm;
+			const { model } = data;
 
-		mounted() {
-			const vm = this;
+			vm.companyText = ko.computed(() => {
+				const companyCode = ko.unwrap(model.companyCode);
+				const companyName = ko.unwrap(model.companyName);
+
+				if (companyCode && companyName) {
+					return `${companyCode} ${companyName}`;
+				}
+
+				return '未登録';
+			});
+			
+			vm.employeeText = ko.computed(() => {
+				const employeeCode = ko.unwrap(model.employeeCode);
+				const employeeName = ko.unwrap(model.employeeName);
+
+				if (employeeCode && employeeName) {
+					return `${employeeCode} ${employeeName}`;
+				}
+
+				return '未登録';				
+			});
 		}
 	}
 }

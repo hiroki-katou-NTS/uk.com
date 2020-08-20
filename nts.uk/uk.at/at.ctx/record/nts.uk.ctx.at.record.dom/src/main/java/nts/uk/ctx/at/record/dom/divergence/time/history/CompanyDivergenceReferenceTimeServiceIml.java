@@ -117,7 +117,7 @@ public class CompanyDivergenceReferenceTimeServiceIml implements CompanyDivergen
 									.get();
 						}
 						// check reference Time
-						if (referenceTime.greaterThan(DivergenceTimeOccurred) || referenceTime.equals(zeroTime)) {
+						if (referenceTime.greaterThan(DivergenceTimeOccurred.v()) || referenceTime.equals(zeroTime)) {
 							// set judgment result
 							result = JudgmentResult.NORMAL;
 						} else { // set determineRefTime.Threshold
@@ -205,7 +205,7 @@ public class CompanyDivergenceReferenceTimeServiceIml implements CompanyDivergen
 						.getErrorTime().get();
 			}
 			// check reference Time
-			if (referenceTime.greaterThan(DivergenceTimeOccurred) || referenceTime.equals(zeroTime)) {
+			if (referenceTime.greaterThan(DivergenceTimeOccurred.v()) || referenceTime.equals(zeroTime)) {
 				// set judgment result
 				result = JudgmentResult.NORMAL;
 			} else { // set determineRefTime.Threshold

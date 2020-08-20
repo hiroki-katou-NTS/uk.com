@@ -13,6 +13,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQuery;
@@ -23,6 +24,7 @@ import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateLog;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateLogRepository;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdatePersonLog;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdatePersonLogRepository;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -30,7 +32,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureInfor;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -48,9 +49,6 @@ public class CheckMonthlyClosureCommandHandler extends CommandHandlerWithResult<
 	private RegulationInfoEmployeeQueryAdapter employeeSearch;
 
 	@Inject
-	private ClosureService closureService;
-
-	@Inject
 	private ClosureRepository closureRepo;
 
 	@Inject
@@ -58,6 +56,9 @@ public class CheckMonthlyClosureCommandHandler extends CommandHandlerWithResult<
 	
 	@Inject
 	private UpdateStatus updateStatus;
+	
+	@Inject
+	private RecordDomRequireService requireService;
 
 	@Override
 	protected MonthlyClosureResponse handle(CommandHandlerContext<CheckCommand> context) {
@@ -81,8 +82,8 @@ public class CheckMonthlyClosureCommandHandler extends CommandHandlerWithResult<
 		Optional<Closure> optClosure = closureRepo.findById(companyId, closureId);
 		Closure closure = optClosure.get();
 		ClosureDate closureDate = closure.getClosureHistories().get(0).getClosureDate();
-		DatePeriod closurePeriod = closureService.getClosurePeriod(closureId,
-				closure.getClosureMonth().getProcessingYm());
+		DatePeriod closurePeriod = ClosureService.getClosurePeriod(closureId,
+				closure.getClosureMonth().getProcessingYm(), optClosure);
 
 		List<String> listEmpId = employeeSearch.search(createQueryToFilterEmployees(closurePeriod, closureId)).stream()
 				.map(item -> item.getEmployeeId()).collect(Collectors.toList());
@@ -162,7 +163,7 @@ public class CheckMonthlyClosureCommandHandler extends CommandHandlerWithResult<
 
 	// 実行可能な締めかチェックする
 	private boolean checkExecutableClosure(int closureId) {
-		List<ClosureInfor> listClosureInfor = closureService.getClosureInfo();
+		List<ClosureInfor> listClosureInfor = ClosureService.getClosureInfo(requireService.createRequire());
 		ClosureInfor result = listClosureInfor.get(0);
 		for (ClosureInfor infor : listClosureInfor) {
 			if (infor.getPeriod().end().before(result.getPeriod().end())) {

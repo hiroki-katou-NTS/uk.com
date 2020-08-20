@@ -1,0 +1,216 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="/master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.at.function.dom.reservation.BentoExportTitle
+        </com:ValidatorScript>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <com:stylefile path="kmr004.a.style.css"/>
+        <com:scriptfile path="kmr004.a.vm.js"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area" class="divHeader">
+            <button id="A1_1" tabindex="1" class="proceed" data-bind="click: printExcel, i18n: 'KMR004_1'"></button>
+            <button id="A1_2" tabindex="2" class="proceed" data-bind="click: printPDF, i18n: 'KMR004_2'"></button>
+        </div>
+        <div id="contents-area" data-bind="with: model" >
+            <div id="left-content">
+                <table class="table_content">
+                    <colgroup>
+                        <col/>
+                        <col/>
+                    </colgroup>
+                    <tr>
+                        <td>
+                            <div id="A3_1" data-bind="ntsFormLabel: {text: $i18n('KMR004_3')}"></div>
+                        </td>
+                        <td>
+                            <!--A3_2 A3_3-->
+                            <div id="date-range-picker" tabindex="4"
+                                 data-bind="ntsDateRangePicker: {
+                                    required: true,
+									enable: true,
+									showNextPrevious: true,
+									value: period}">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div id="A4_1" data-bind="ntsFormLabel: {text: $i18n('KMR004_6')}"></div>
+                        </td>
+                        <td>
+                            <div id="A4_2" tabindex="6" class="cf" data-bind="ntsSwitchButton: {
+									name: 'Sample Switch',
+									options: vm.closingTimeOptions,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: vm.selectedRuleCode,
+									required: true,
+									enable: true }"></div>
+                            <span id="A4_5" class="label" style="margin-bottom: 15px;" data-bind="text: vm.reservationTimeRange"></span>
+                        </td>
+                    </tr>
+                </table>
+                <!-- A2_1, A11_1 -->
+                <div id="tree-grid" tabindex="3"></div>
+            </div>
+            <div id="right-content">
+                <table class="table_content">
+                    <tr>
+                        <td>
+                            <div id="A5_1" data-bind="ntsFormLabel: {text: $i18n('KMR004_11')}"></div>
+                            <!--div id="A5_2" tabindex="8" data-bind="ntsCheckBox: {checked: totalChecked, enable: totalEnable, style: 'button'}, i18n: 'KMR004_12'"></div-->
+                            <!--div id="A5_3" tabindex="9" data-bind="ntsCheckBox: {checked: conditionalChecked, enable: conditionalEnable, style: 'button'}, i18n: 'KMR004_13'"></div-->
+
+                            <div id="A5_2" tabindex="8" data-bind="ntsRadioBoxGroup: {
+                                options: [
+                                    {id: 1, name: $i18n('KMR004_12')},
+                                    {id: 2, name: $i18n('KMR004_13')},
+                                ],
+                                optionsValue: 'id',
+                                optionsText: 'name',
+                                value: vm.outputConditionChecked,
+                                enable: true}">
+                            </div>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div id="A6_1" tabindex="10" data-bind="ntsTabPanel: {dataSource: vm.tabs, active: vm.selectedTab }">
+                                <div id="A6_4" class="tab-content-1">
+									<table class="table_content">
+										<colgroup>
+											<col/>
+											<col/>
+										</colgroup>
+										<tr>
+                                            <td>
+												<div id="A7_1" data-bind="ntsFormLabel: {text: $i18n('KMR004_14')}"></div>
+											</td>
+                                            <td>
+												<div id="A7_2" tabindex="13">
+													<input data-bind="ntsTextEditor: {
+														value: totalTitle,
+														constraint: 'BentoExportTitle',
+														option: {
+														    textmode: 'text',
+                                                            width: '100px',
+                                                            textalign: 'left'
+														}}"/>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="align-top">
+												<div id="A8_1" data-bind="ntsFormLabel: {text: $i18n('KMR004_15')}"></div>
+											</td>
+											<td>
+												<div id="A8_2" tabindex="14" class="verticalRadioBoxGroup" data-bind="ntsRadioBoxGroup: {
+													options: [
+													    {id: 1, name: $i18n('KMR004_17')},
+													    {id: 2, name: $i18n('KMR004_18')},
+													    {id: 4, name: $i18n('KMR004_19')}
+													],
+													optionsValue: 'id',
+													optionsText: 'name',
+													value: totalExtractCondition,
+													enable: true}">
+												</div> <br/>
+                                                &#160;&#160;&#160;&#160;
+												<div id="A8_6" tabindex="17" class="style-normal"
+                                                     data-bind="i18n: 'KMR004_20', ntsCheckBox: { checked: vm.extractionConditionChecked, enable: vm.extractionConditionEnable}"></div>
+											</td>
+										</tr>
+									</table>
+								<br/>
+                                </div>
+                                <div id="A6_5" tabindex="11" class="tab-content-2">
+									<table class="table_content">
+										<colgroup>
+											<col/>
+											<col/>
+										</colgroup>
+										<tr>
+                                            <td>
+												<div id="A9_1" data-bind="ntsFormLabel: {text: $i18n('KMR004_14')}"></div>
+											</td>
+                                            <td>
+												<div id="A9_2" tabindex="18">
+													<input data-bind="ntsTextEditor: {
+														value: detailTitle,
+														constraint: 'BentoExportTitle',
+														option: {
+														    textmode: 'text',
+                                                            width: '100px',
+                                                            textalign: 'left'
+														}}"/>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="align-top">
+												<div id="A10_1" data-bind="ntsFormLabel: {text: $i18n('KMR004_15')}"></div>
+											</td>
+											<td>
+												<table><tr>
+													<td style="padding-top: 0px;">
+														<div id="A10_2" tabindex="19" class="verticalRadioBoxGroup" data-bind="ntsRadioBoxGroup: {
+															options: [
+															    {id: 1, name: $i18n('KMR004_17')},
+															    {id: 6, name: $i18n('KMR004_24')}
+															],
+															optionsValue: 'id',
+															optionsText: 'name',
+															value: itemExtractCondition,
+															enable: true}">
+														</div>
+													</td>
+													<td style="padding-top: 0px;">
+														&#160;&#160;&#160;&#160;
+														<div class="style-normal" id="A10_5" tabindex="21" style="margin-left: -82px;"
+                                                             data-bind="i18n: 'KMR004_25', ntsCheckBox: { checked: isBreakPage, enable: vm.separatePageCheckboxEnable}"></div>
+													</td>
+												</tr></table>
+												&#160;&#160;&#160;&#160;&#160;&#160;
+                                                <div id="A10_6" tabindex="22" data-bind="ntsComboBox: {
+                                                    name: $i18n('KMR004_26'),
+													options: vm.conditionListCcb,
+													optionsValue: 'code',
+													visibleItemsCount: 40,
+													value: frameNo,
+													optionsText: 'name',
+													editable: false,
+													enable: vm.conditionListCcbEnable,
+													required: false,
+													selectFirstIfNull: false,
+													columns: [
+														{ prop: 'code', length: 4 },
+														{ prop: 'name', length: 10 },
+													]}">
+												</div>
+											</td>
+										</tr>
+									</table>
+								<br/>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

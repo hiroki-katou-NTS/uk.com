@@ -47,5 +47,4 @@ public class EmploymentHistory extends AggregateRoot
 	public List<String> getHistoryIds() {
 		return historyItems.stream().map( item -> item.identifier()).collect(Collectors.toList());
 	}
-
 }

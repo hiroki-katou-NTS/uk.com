@@ -6,23 +6,18 @@ import static nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.Reserva
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import lombok.val;
+import nts.uk.ctx.at.record.dom.reservation.bento.*;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoItemByClosingTime;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
-import nts.arc.time.ClockHourMinute;
+import nts.arc.time.clock.ClockHourMinute;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.reservation.Helper;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
 
 public class BentoMenuTest {
@@ -58,12 +53,13 @@ public class BentoMenuTest {
 
 		BentoMenu target = Helper.Menu.DUMMY;
 		ReservationDate pastDay = Helper.Reservation.Date.of(today().addDays(-1));
-		
+		Optional<WorkLocationCode> workLocationCode = Helper.Reservation.WorkLocationCodeReg.DUMMY;
 		NtsAssert.businessException("Msg_1584", () -> {
 			target.reserve(
 					Helper.Reservation.RegInfo.DUMMY,
 					pastDay,
 					now(), // dummy
+					workLocationCode,
 					DUMMY_DETAILS);
 		});
 	}
@@ -85,6 +81,7 @@ public class BentoMenuTest {
 					Helper.Reservation.RegInfo.DUMMY,
 					Helper.Reservation.Date.of(today()),
 					now(), // dummy
+					Helper.Reservation.WorkLocationCodeReg.DUMMY,
 					details);
 		});
 	}
@@ -111,6 +108,7 @@ public class BentoMenuTest {
 				registerInfor,
 				reservationDate,
 				now,
+				Helper.Reservation.WorkLocationCodeReg.DUMMY,
 				details);
 		
 		assertThat(result.getRegisterInfor()).isEqualTo(registerInfor);
@@ -198,5 +196,211 @@ public class BentoMenuTest {
 				Helper.ClosingTime.UNLIMITED);
 		
 		NtsAssert.invokeGetters(target);
+	}
+
+	/**
+	 * isReservationTime1Atr = false
+	 * isReservationTime2Atr = false
+	 */
+	@Test
+	public void getByClosingTime_Time1Atr_False() {
+
+		// reservationTime1Atr is false
+		Bento bento = new Bento(1,new BentoName("name"),null,null,
+				new BentoReservationUnitName("unit"),false,false,Optional.of(new WorkLocationCode("WORK01")));
+
+		BentoMenu target = new BentoMenu(
+				"historyID",
+				Arrays.asList(bento),
+				Helper.ClosingTime.UNLIMITED);
+
+		BentoMenuByClosingTime actual  = target.getByClosingTime(Optional.of(new WorkLocationCode("WORK01")));
+
+		assertThat(actual.getMenu1().size()).isEqualTo(0);
+		assertThat(actual.getMenu2().size()).isEqualTo(0);
+		assertThat(actual.getClosingTime().value).isEqualTo(target.getClosingTime().value);
+	}
+
+	/**
+	 * isReservationTime1Atr = true
+	 * isReservationTime2Atr = false
+	 * WorkLocationCode == input.WorkLocationCode
+	 */
+	@Test
+	public void getByClosingTime_Time1Atr_True() {
+
+		// reservationTime1Atr is true
+		Bento bento = new Bento(1,new BentoName("name"),null,null,
+				new BentoReservationUnitName("unit"),true,false,Optional.of(new WorkLocationCode("WORK01")));
+
+		BentoMenu target = new BentoMenu(
+				"historyID",
+				Arrays.asList(bento),
+				Helper.ClosingTime.UNLIMITED);
+
+		BentoMenuByClosingTime actual  = target.getByClosingTime(Optional.of(new WorkLocationCode("WORK01")));
+
+
+		assertThat(actual.getMenu1().size()).isEqualTo(1);
+		assertThat(actual.getMenu2().size()).isEqualTo(0);
+		assertThat(actual.getClosingTime().value).isEqualTo(target.getClosingTime().value);
+	}
+
+	/**
+	 * isReservationTime1Atr = true
+	 * isReservationTime2Atr = false
+	 * WorkLocationCode != input.WorkLocationCode
+	 */
+	@Test
+	public void getByClosingTime_Work_not_equals() {
+
+		// reservationTime1Atr is false
+		Bento bento = new Bento(1,new BentoName("name"),null,null,
+				new BentoReservationUnitName("unit"),true,false,Optional.of(new WorkLocationCode("WORK01")));
+
+		BentoMenu target = new BentoMenu(
+				"historyID",
+				Arrays.asList(bento),
+				Helper.ClosingTime.UNLIMITED);
+
+		BentoMenuByClosingTime actual  = target.getByClosingTime(Optional.of(new WorkLocationCode("WORK02")));
+
+
+		assertThat(actual.getMenu1().size()).isEqualTo(0);
+		assertThat(actual.getMenu2().size()).isEqualTo(0);
+		assertThat(actual.getClosingTime().value).isEqualTo(target.getClosingTime().value);
+	}
+
+	/**
+	 * isReservationTime1Atr = true
+	 * isReservationTime2Atr = true
+	 * WorkLocationCode == input.WorkLocationCode
+	 */
+	@Test
+	public void getByClosingTime_Time2Atr_True() {
+
+		// reservationTime1Atr is false
+		Bento bento = new Bento(1,new BentoName("name"),null,null,
+				new BentoReservationUnitName("unit"),true,true,Optional.of(new WorkLocationCode("WORK01")));
+
+		BentoMenu target = new BentoMenu(
+				"historyID",
+				Arrays.asList(bento),
+				Helper.ClosingTime.UNLIMITED);
+
+		BentoMenuByClosingTime actual  = target.getByClosingTime(Optional.of(new WorkLocationCode("WORK01")));
+
+		assertThat(actual.getMenu1().size()).isEqualTo(1);
+		assertThat(actual.getMenu2().size()).isEqualTo(1);
+		assertThat(actual.getClosingTime().value).isEqualTo(target.getClosingTime().value);
+	}
+
+	/**
+	 * isReservationTime1Atr = true
+	 * isReservationTime2Atr = true
+	 * WorkLocationCode != input.WorkLocationCode
+	 */
+	@Test
+	public void getByClosingTime_Work_not_equals_1() {
+
+		// reservationTime1Atr is false
+		Bento bento = new Bento(1,new BentoName("name"),null,null,
+				new BentoReservationUnitName("unit"),true,true,Optional.of(new WorkLocationCode("WORK01")));
+
+		BentoMenu target = new BentoMenu(
+				"historyID",
+				Arrays.asList(bento),
+				Helper.ClosingTime.UNLIMITED);
+
+		BentoMenuByClosingTime actual  = target.getByClosingTime(Optional.of(new WorkLocationCode("WORK02")));
+
+		assertThat(actual.getMenu1().size()).isEqualTo(0);
+		assertThat(actual.getMenu2().size()).isEqualTo(0);
+		assertThat(actual.getClosingTime().value).isEqualTo(target.getClosingTime().value);
+	}
+
+	@Test
+	public void getByClosingTime_Work_optional_empty() {
+
+		Bento bento = new Bento(1,new BentoName("name"),null,null,
+				new BentoReservationUnitName("unit"),true,true,Optional.empty());
+
+		BentoMenu target = new BentoMenu(
+				"historyID",
+				Arrays.asList(bento),
+				Helper.ClosingTime.UNLIMITED);
+
+		BentoMenuByClosingTime actual  = target.getByClosingTime(Optional.empty());
+
+		assertThat(actual.getMenu1().size()).isEqualTo(1);
+		assertThat(actual.getMenu2().size()).isEqualTo(1);
+		assertThat(actual.getClosingTime().value).isEqualTo(target.getClosingTime().value);
+	}
+
+	/**
+	 * isReservationTime1Atr = false
+	 * isReservationTime2Atr = true
+	 * WorkLocationCode == input.WorkLocationCode
+	 */
+	@Test
+	public void getByClosingTime_Time2Atr_True_2() {
+
+		// reservationTime1Atr is true
+		Bento bento = new Bento(1,new BentoName("name"),null,null,
+				new BentoReservationUnitName("unit"),false,true,Optional.of(new WorkLocationCode("WORK01")));
+
+		BentoMenu target = new BentoMenu(
+				"historyID",
+				Arrays.asList(bento),
+				Helper.ClosingTime.UNLIMITED);
+
+		BentoMenuByClosingTime actual  = target.getByClosingTime(Optional.of(new WorkLocationCode("WORK01")));
+
+
+		assertThat(actual.getMenu1().size()).isEqualTo(0);
+		assertThat(actual.getMenu2().size()).isEqualTo(1);
+		assertThat(actual.getClosingTime().value).isEqualTo(target.getClosingTime().value);
+	}
+
+	/**
+	 * isReservationTime1Atr = false
+	 * isReservationTime2Atr = true
+	 * WorkLocationCode != input.WorkLocationCode
+	 */
+	@Test
+	public void getByClosingTime_Time2Atr_True_3() {
+
+		// reservationTime1Atr is false
+		Bento bento = new Bento(1,new BentoName("name"),null,null,
+				new BentoReservationUnitName("unit"),false,true,Optional.of(new WorkLocationCode("WORK01")));
+
+		BentoMenu target = new BentoMenu(
+				"historyID",
+				Arrays.asList(bento),
+				Helper.ClosingTime.UNLIMITED);
+
+		BentoMenuByClosingTime actual  = target.getByClosingTime(Optional.of(new WorkLocationCode("WORK02")));
+
+
+		assertThat(actual.getMenu1().size()).isEqualTo(0);
+		assertThat(actual.getMenu2().size()).isEqualTo(0);
+		assertThat(actual.getClosingTime().value).isEqualTo(target.getClosingTime().value);
+	}
+
+	@Test
+	public void closingtimeSetter() {
+
+		Bento bento = new Bento(1,new BentoName("name"),null,null,
+				new BentoReservationUnitName("unit"),false,true,Optional.of(new WorkLocationCode("WORK01")));
+
+		BentoMenu target = new BentoMenu(
+				"historyID",
+				Arrays.asList(bento),
+				Helper.ClosingTime.UNLIMITED);
+		val closing = Helper.ClosingTime.UNLIMITED;
+		target.setClosingTime(closing);
+
+
+		assertThat(target.getClosingTime()).isEqualToComparingFieldByField(closing);
 	}
 }

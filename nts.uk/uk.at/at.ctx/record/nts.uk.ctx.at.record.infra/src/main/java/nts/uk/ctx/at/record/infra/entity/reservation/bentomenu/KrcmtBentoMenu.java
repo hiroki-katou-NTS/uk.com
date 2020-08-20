@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.reservation.bentomenu;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,11 +15,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationTime;
 import nts.uk.ctx.at.record.dom.reservation.bento.rules.BentoReservationTimeName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTime;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -77,6 +80,26 @@ public class KrcmtBentoMenu extends UkJpaEntity {
 								new BentoReservationTime(reservationEndTime1), 
 								reservationStartTime1==null ? Optional.empty() : Optional.of(new BentoReservationTime(reservationStartTime1))), 
 						closingTime2));
+	}
+
+	public static KrcmtBentoMenu fromDomain(BentoMenu bentoMenu) {
+		KrcmtBentoMenu krcmtBentoMenu = new KrcmtBentoMenu(
+				new KrcmtBentoMenuPK(
+						AppContexts.user().companyId(),
+						bentoMenu.getHistoryID()
+				),
+				AppContexts.user().contractCode(),
+				bentoMenu.getClosingTime().getClosingTime1().getReservationTimeName().v(),
+				bentoMenu.getClosingTime().getClosingTime1().getStart().get().v(),
+				bentoMenu.getClosingTime().getClosingTime1().getFinish().v(),
+				bentoMenu.getClosingTime().getClosingTime2().get().getReservationTimeName().v(),
+				bentoMenu.getClosingTime().getClosingTime2().get().getStart().get().v(),
+				bentoMenu.getClosingTime().getClosingTime2().get().getFinish().v(),
+                Arrays.asList());
+        List<KrcmtBento> bentos = bentoMenu.getMenu().stream().map(x -> KrcmtBento.fromDomain(x,bentoMenu.getHistoryID(), krcmtBentoMenu)).collect(Collectors.toList());
+        krcmtBentoMenu.bentos = bentos;
+		return krcmtBentoMenu;
+
 	}
 	
 }

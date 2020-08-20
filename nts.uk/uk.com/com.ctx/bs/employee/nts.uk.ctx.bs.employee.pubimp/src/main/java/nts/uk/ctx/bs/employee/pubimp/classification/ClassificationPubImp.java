@@ -13,8 +13,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.task.parallel.ParallelExceptions.Item;
+import lombok.RequiredArgsConstructor;
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.app.find.affiliatedcompanyhistory.AffCompanyHistItemDto;
 import nts.uk.ctx.bs.employee.app.find.affiliatedcompanyhistory.AffiliatedCompanyHistoryFinder;
 import nts.uk.ctx.bs.employee.dom.classification.Classification;
@@ -28,7 +31,6 @@ import nts.uk.ctx.bs.employee.pub.classification.ClassificationExport;
 import nts.uk.ctx.bs.employee.pub.classification.SClsHistExport;
 import nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class ClassificationPubImp.
@@ -106,8 +108,16 @@ public class ClassificationPubImp implements SyClassificationPub {
 	public List<SClsHistExport> findSClsHistBySid(String companyId, List<String> employeeIds,
 			DatePeriod datePeriod) {
 		
-		List<AffClassHistory> dateHistoryItem = affClassHistoryRepository
-				.getByEmployeeListWithPeriod(employeeIds, datePeriod);
+		val cacheCarrier = new CacheCarrier();
+		return findSClsHistBySidRequire(cacheCarrier, companyId, employeeIds, datePeriod);
+	}
+	@Override
+	public List<SClsHistExport> findSClsHistBySidRequire(CacheCarrier cacheCarrier, String companyId, List<String> employeeIds,
+			DatePeriod datePeriod) {
+
+		val require = new RequireImpl(cacheCarrier);
+		
+		List<AffClassHistory> dateHistoryItem = require.getByEmployeeListWithPeriod(employeeIds, datePeriod);
 
 		Map<String, DatePeriod> histPeriodMap = dateHistoryItem.stream()
 				.map(AffClassHistory::getPeriods).flatMap(listContainer -> listContainer.stream())
@@ -117,15 +127,13 @@ public class ClassificationPubImp implements SyClassificationPub {
 				.flatMap(listContainer -> listContainer.stream()).map(DateHistoryItem::identifier)
 				.collect(Collectors.toList());
 
-		List<AffClassHistItem> affClassHistItems = affClassHistItemRepository
-				.getByHistoryIds(histIds);
+		List<AffClassHistItem> affClassHistItems = require.getByHistoryIds(histIds);
 
 		List<String> clsCds = affClassHistItems.stream()
 				.map(item -> item.getClassificationCode().v()).collect(Collectors.toList());
 
 		// Find emp by empCd
-		List<Classification> lstClassification = classificationRepository
-				.getClassificationByCodes(companyId, clsCds);
+		List<Classification> lstClassification = require.getClassificationByCodes(companyId, clsCds);
 
 		Map<String, String> mapCls = lstClassification.stream()
 				.collect(Collectors.toMap(item -> item.getClassificationCode().v(),
@@ -185,4 +193,34 @@ public class ClassificationPubImp implements SyClassificationPub {
 		return result;
 	}
 
+	@RequiredArgsConstructor
+	class RequireImpl implements ClassificationPubImp.Require{
+
+		private final CacheCarrier cacheCarrier;
+		@Override
+		public List<AffClassHistory> getByEmployeeListWithPeriod(List<String> employeeIds, DatePeriod period) {
+//			return
+			return affClassHistoryRepository.getByEmployeeListWithPeriod(employeeIds, period);
+		}
+		@Override
+		public List<AffClassHistItem> getByHistoryIds(List<String> historyIds) {
+//			AffClassHistItemCache cache = cacheCarrier.get( AffClassHistItemCache.DOMAIN_NAME);
+//			return cache.get();
+			return affClassHistItemRepository.getByHistoryIds(historyIds);
+		}
+		@Override
+		public List<Classification> getClassificationByCodes(String companyId, List<String> codes) {
+//			ClassificationCache cache = cacheCarrier.get(ClassificationCache.DOMAIN_NAME);
+//			return cache.get();
+			return classificationRepository.getClassificationByCodes(companyId, codes);
+		}
+	}
+	public static interface Require{
+//		affClassHistoryRepository.getByEmployeeListWithPeriod(employeeIds, datePeriod);
+		List<AffClassHistory> getByEmployeeListWithPeriod(List<String> employeeIds, DatePeriod period);
+//		affClassHistItemRepository.getByHistoryIds(histIds);
+		List<AffClassHistItem> getByHistoryIds(List<String> historyIds);
+//		classificationRepository.getClassificationByCodes(companyId, clsCds);
+		List<Classification> getClassificationByCodes(String companyId, List<String> codes);
+	}
 }

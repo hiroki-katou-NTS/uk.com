@@ -4,24 +4,20 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.statutory.worktime.employeenew;
 
-import java.util.Optional;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetSha;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeShaRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeShaRepo;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -31,25 +27,16 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class SaveShainStatWorkTimeSetCommandHandler extends CommandHandler<SaveShainStatWorkTimeSetCommand> {
 
-	/** The shain normal setting repository. */
+	/** The trans labor time repository. */
 	@Inject
-	private ShainNormalSettingRepository shainNormalSettingRepository;
-	
-	/** The shain flex setting repository. */
+	private DeforLaborTimeShaRepo transLaborTimeRepository;
+
+	/** The regular labor time repository. */
 	@Inject
-	private ShainFlexSettingRepository shainFlexSettingRepository;
-	
-	/** The shain defor labor setting repository. */
+	private RegularLaborTimeShaRepo regularLaborTimeRepository;
+
 	@Inject
-	private ShainDeforLaborSettingRepository shainDeforLaborSettingRepository;
-	
-	/** The shain regular work time repository. */
-	@Inject
-	private ShainRegularWorkTimeRepository shainRegularWorkTimeRepository;
-	
-	/** The shain spe defor labor time repository. */
-	@Inject
-	private ShainTransLaborTimeRepository shainSpeDeforLaborTimeRepository;
+	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
 
 	/* 
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -62,52 +49,45 @@ public class SaveShainStatWorkTimeSetCommandHandler extends CommandHandler<SaveS
 		String employeeId = command.getEmployeeId();
 		String companyId = AppContexts.user().companyId();
 
-		ShainNormalSetting shainNormalSetting = command.getNormalSetting().toShainDomain(year, employeeId);
-		ShainFlexSetting shainFlexSetting = command.getFlexSetting().toShainDomain(year, employeeId);
-		ShainDeforLaborSetting shainDeforLaborSetting = command.getDeforLaborSetting().toShainDomain(year, employeeId);
-		ShainRegularLaborTime shainRegularLaborTime = command.getRegularLaborTime().toShainRegularTimeDomain(employeeId);
-		ShainTransLaborTime shainTransLaborTime = command.getTransLaborTime().toShainSpeTimeDomain(employeeId);
+		val normalSetting = command.regular(companyId);
+		val flexSetting = command.flex(companyId);
+		val deforLaborSetting = command.defor(companyId);
+		val regularLaborTime = command.regurlarLabor(companyId);
+		val deforLaborTime = command.deforLabor(companyId);
 		
-		Optional<ShainNormalSetting> optComNormalSet = this.shainNormalSettingRepository.find(companyId, employeeId, year);
-		// Check info ShainNormalSetting if exist -> update into db / not exist -> insert into DB
-		if(optComNormalSet.isPresent()){
-			this.shainNormalSettingRepository.update(shainNormalSetting);
+		val regulars = monthlyWorkTimeSetRepo.findEmployee(companyId, employeeId, LaborWorkTypeAttr.REGULAR_LABOR, year);
+		addOrUpdate(normalSetting, regulars);
+
+		val flex = monthlyWorkTimeSetRepo.findEmployee(companyId, employeeId, LaborWorkTypeAttr.FLEX, year);
+		addOrUpdate(flexSetting, flex);
+
+		val defor = monthlyWorkTimeSetRepo.findEmployee(companyId, employeeId, LaborWorkTypeAttr.DEFOR_LABOR, year);
+		addOrUpdate(deforLaborSetting, defor);
+
+		val optRegularTime = regularLaborTimeRepository.find(companyId, employeeId);
+		if (optRegularTime.isPresent()) {
+			regularLaborTimeRepository.update(regularLaborTime);
 		} else {
-			this.shainNormalSettingRepository.add(shainNormalSetting);
-		}
-		
-		Optional<ShainFlexSetting> optComFlexSet = this.shainFlexSettingRepository.find(companyId, employeeId, year);
-		// Check info ShainFlexSetting if exist -> update into db / not exist -> insert into DB
-		if(optComFlexSet.isPresent()) {
-			this.shainFlexSettingRepository.update(shainFlexSetting);
-		} else {
-			this.shainFlexSettingRepository.add(shainFlexSetting);
-		}
-		
-		Optional<ShainDeforLaborSetting> optComDeforSet = this.shainDeforLaborSettingRepository.find(companyId, employeeId, year);
-		// Check info ShainDeforLaborSetting if exist -> update into db / not exist -> insert into DB
-		if(optComDeforSet.isPresent()) {
-			this.shainDeforLaborSettingRepository.update(shainDeforLaborSetting);
-		} else {
-			this.shainDeforLaborSettingRepository.add(shainDeforLaborSetting);
-		}
-		
-		Optional<ShainRegularLaborTime> optComRegularSet = this.shainRegularWorkTimeRepository.find(companyId, employeeId);
-		// Check info ShainRegularLaborTime if exist -> update into db / not exist -> insert into DB
-		if(optComRegularSet.isPresent()){
-			this.shainRegularWorkTimeRepository.update(shainRegularLaborTime);
-		} else {
-			this.shainRegularWorkTimeRepository.add(shainRegularLaborTime);
-		}
-		
-		Optional<ShainTransLaborTime> optComTransSet = this.shainSpeDeforLaborTimeRepository.find(companyId, employeeId);
-		// Check info ShainTransLaborTime if exist -> update into db / not exist -> insert into DB
-		if(optComTransSet.isPresent()) {
-			this.shainSpeDeforLaborTimeRepository.update(shainTransLaborTime);
-		} else {
-			this.shainSpeDeforLaborTimeRepository.add(shainTransLaborTime);
+			regularLaborTimeRepository.add(regularLaborTime);
 		}
 
+		val optDeforTime = transLaborTimeRepository.find(companyId, employeeId);
+		if (optDeforTime.isPresent()) {
+			transLaborTimeRepository.update(deforLaborTime);
+		} else {
+			transLaborTimeRepository.add(deforLaborTime);
+		}
+	}
+	
+	private void addOrUpdate (List<MonthlyWorkTimeSetSha> n, List<MonthlyWorkTimeSetSha> o) {
+		
+		n.stream().forEach(mwtn -> {
+			if (o.stream().filter(mwto -> mwto.getYm().equals(mwtn.getYm())).findFirst().isPresent()) {
+				monthlyWorkTimeSetRepo.update(mwtn);
+			} else {
+				monthlyWorkTimeSetRepo.add(mwtn);
+			}
+		});
 	}
 
 }

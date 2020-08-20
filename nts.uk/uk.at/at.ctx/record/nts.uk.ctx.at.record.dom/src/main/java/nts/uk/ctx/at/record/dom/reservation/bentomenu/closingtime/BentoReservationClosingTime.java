@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
 import lombok.Getter;
-import nts.arc.time.ClockHourMinute;
+import nts.arc.time.clock.ClockHourMinute;
 
 /**
  * 弁当の予約締め時刻
@@ -18,13 +18,13 @@ public class BentoReservationClosingTime extends ValueObject {
 	 * 締め時刻1
 	 */
 	@Getter
-	private final ReservationClosingTime closingTime1;
+	private ReservationClosingTime closingTime1;
 	
 	/**
 	 * 締め時刻2
 	 */
 	@Getter
-	private final Optional<ReservationClosingTime> closingTime2;
+	private Optional<ReservationClosingTime> closingTime2;
 	
 	public BentoReservationClosingTime(ReservationClosingTime closingTime1, Optional<ReservationClosingTime> closingTime2) {
 		this.closingTime1 = closingTime1;
