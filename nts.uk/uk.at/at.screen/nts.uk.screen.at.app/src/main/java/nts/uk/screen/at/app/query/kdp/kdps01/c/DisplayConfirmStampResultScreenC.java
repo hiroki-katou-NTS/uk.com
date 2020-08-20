@@ -168,7 +168,7 @@ public class DisplayConfirmStampResultScreenC {
 		// 7 <call>
 
 		List<ItemDisplayedDto> attendanceItems = this.DailyAttendanceItemRepo.getListById(companyId, attendanceItemIds)
-				.stream().map(x -> ItemDisplayedDto.fromDomain(x)).collect(Collectors.toList());
+				.stream().map(x -> ItemDisplayedDto.fromDomain(x, dailyItems)).collect(Collectors.toList());
 
 		result.setLstItemDisplayed(attendanceItems);
 

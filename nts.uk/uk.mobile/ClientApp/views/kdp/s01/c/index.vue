@@ -93,6 +93,7 @@
     <div>
       <button
         v-bind:disabled="isHasImplementation === 2"
+        v-show="isHasImplementation !== 0"
         type="button"
         v-click:500="regDailyResult"
         class="mb-3 col-12 btn btn-success btn-block btn-lg"
