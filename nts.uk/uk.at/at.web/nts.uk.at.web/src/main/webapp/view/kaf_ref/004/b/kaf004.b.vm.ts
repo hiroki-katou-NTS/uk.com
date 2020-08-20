@@ -109,10 +109,10 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
             vm.printContentOfEachAppDto().opArrivedLateLeaveEarlyInfo = params;
 
             vm.lateOrEarlyInfos(vm.arrivedLateLeaveEarlyInfo().earlyInfos);
-            vm.lateOrEarlyInfo1(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 0 })));
-            vm.lateOrEarlyInfo2(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 1 })));
-            vm.lateOrEarlyInfo3(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 0 })));
-            vm.lateOrEarlyInfo4(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 1 })));
+            vm.lateOrEarlyInfo1(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 0 }))[0]);
+            vm.lateOrEarlyInfo2(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 1 }))[0]);
+            vm.lateOrEarlyInfo3(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 0 }))[0]);
+            vm.lateOrEarlyInfo4(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 1 }))[0]);
 
             if (ko.toJS(_.filter(vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateOrLeaveEarlies, { 'workNo': 1, 'lateOrEarlyClassification': 0 })).length > 0) {
                 vm.workManagement.workTime(ko.toJS(_.filter(vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateOrLeaveEarlies, { 'workNo': 1, 'lateOrEarlyClassification': 0 }))[0].timeWithDayAttr);
@@ -278,22 +278,22 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                     if (ko.toJS(vm.lateOrEarlyInfo1) === null) {
                         return false;
                     }
-                    return ko.toJS(vm.lateOrEarlyInfo1().isIndicate);
+                    return ko.toJS(vm.lateOrEarlyInfo1().isIndicated);
                 } case IdItem.B6_13: {
                     if (ko.toJS(vm.lateOrEarlyInfo2) === null) {
                         return false;
                     }
-                    return ko.toJS(vm.lateOrEarlyInfo2().isIndicate);
+                    return ko.toJS(vm.lateOrEarlyInfo2().isIndicated);
                 } case IdItem.B6_19: {
                     if (ko.toJS(vm.lateOrEarlyInfo3) === null) {
                         return false;
                     }
-                    return ko.toJS(vm.lateOrEarlyInfo3().isIndicate);
+                    return ko.toJS(vm.lateOrEarlyInfo3().isIndicated);
                 } case IdItem.B6_25: {
                     if (ko.toJS(vm.lateOrEarlyInfo4) === null) {
                         return false;
                     }
-                    return ko.toJS(vm.lateOrEarlyInfo4().isIndicate);
+                    return ko.toJS(vm.lateOrEarlyInfo4().isIndicated);
                 } default: {
                     return true;
                 }
