@@ -7,6 +7,10 @@
 <body>
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoAmount
+				nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoReservationUnitName
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="./kmr001.c.style.css" />
 			<com:stylefile path="../kmr001.common.styles.css" />
@@ -27,9 +31,9 @@
 						<!--C3_2-->
 						<div data-bind="ntsFormLabel: { inline: true, required: true, enable: true, text: $i18n('KMR001_38')}"></div>
 						<!--C3_3-->
-						<span class="label" data-bind="model.startDate"></span>
+						<span class="label" data-bind="text: model().startDate "></span>
 						<span style="padding: 0 10px" class="label">~</span>
-						<span class="label" data-bind="model.endDate"></span>
+						<span class="label" data-bind="text: model().endDate"></span>
 						<!--C3_4-->
 						<div class="btn-content" style="display: inline-block">
 							<button class="small" id ="C3_4" data-bind="click: openConfigHisDialog,
@@ -58,10 +62,7 @@
 							height: 350,
 							dataSource: items,
 							primaryKey: 'id',
-							columns: ([
-								{ headerText: $i18n('KMR001_41'), prop: 'id', width: 50 },
-								{ headerText: $i18n('KMR001_42'), prop: 'name', width: 325 }
-							]),
+							columns: columnBento,
 							value: currentCode
 						}"></table>
 					</div>
@@ -69,7 +70,7 @@
 				</div>
 
 				<div class="kmr001-c-right-content1 panel panel-frame">
-					<table>
+					<table data-bind="with: model">
 						<tr>
 							<th>
 								<!--C5_2-->
@@ -83,7 +84,7 @@
 							</td>
 							<td>
 								<!--C6_2-->
-								<input class="data-control" data-bind="ntsTextEditor: {value: model.bentoName}" />
+								<input class="data-control" data-bind="ntsTextEditor: {value: bentoName}" />
 							</td>
 						</tr>
 						<tr>
@@ -93,21 +94,28 @@
 							</td>
 							<td>
 								<!--C11_2-->
-								<div class="data-control" data-bind="ntsCheckBox: { checked: false, enable: false, text: '項目移送' }"></div>
+								<div class="data-control" data-bind="ntsCheckBox: { checked: reservationAtr1, enable: false, text: '項目移送' }"></div>
 
 								<!--C11_3-->
-								<span class="label">6:00 ~ 10:00</span>
+								<span class="label" data-bind="text: reservationStartTime1 "></span>
 								<!--C11_6-->
+								<span class="label" style="padding: 0 10px">~</span>
+								<span class="label" data-bind="text: reservationEndTime1 "></span>
+
 							</td>
 						</tr>
 						<tr>
 							<td/>
 							<td>
 								<!--C11_4-->
-								<div class="data-control" data-bind="ntsCheckBox: { checked: false, enable: false, text: '項目移送' }"></div>
+								<div class="data-control" data-bind="ntsCheckBox: { checked: reservationAtr2, enable: false, text: '項目移送' }"></div>
 
 								<!--C11_5-->
-								<span class="label">12:00 ~ 15:00</span>
+								<span class="label" data-bind="text: reservationStartTime2 "></span>
+								<span class="label" style="padding: 0 10px">~</span>
+								<span class="label" data-bind="text: reservationEndTime2 "></span>
+
+
 							</td>
 						</tr>
 						<tr>
@@ -117,7 +125,7 @@
 							</td>
 							<td>
 								<!--C9_2-->
-								<input class="data-control" id="kmr001-c-9-2" data-bind="ntsTextEditor: {value: model.unitName}" />
+								<input class="data-control" id="kmr001-c-9-2" data-bind="ntsTextEditor: {name: 'KMR001_46', value: unitName, constraint: 'BentoReservationUnitName'}" />
 							</td>
 						</tr>
 						<tr>
@@ -127,8 +135,8 @@
 							</td>
 							<td>
 								<!--C7_2-->
-								<input id="kmr001-c-7-2" data-bind="ntsNumberEditor: { value: model.price1, enable: true,
-						required: true,option: {decimallength: 4 }}" />
+								<input id="kmr001-c-7-2" data-bind="ntsNumberEditor: {name: 'KMR001_44', constraint: 'BentoAmount', value: price1, enable: true,
+						required: true,option: {decimallength: 5, currencyformat: 'JPY' }}" />
 							</td>
 						</tr>
 						<tr>
@@ -138,8 +146,8 @@
 							</td>
 							<td>
 								<!--C8_2-->
-								<input class="data-control" id="kmr001-c-8-2" data-bind="ntsNumberEditor: { value: model.price2, enable: true,
-						required: true,option: {decimallength: 4 }}" />
+								<input class="data-control" id="kmr001-c-8-2" data-bind="ntsNumberEditor: { constraint: 'BentoAmount', value: price2, enable: true,
+						required: true, option: {decimallength: 5, currencyformat: 'JPY' }, name: 'KMR001_45'}" />
 							</td>
 						</tr>
 					</table>

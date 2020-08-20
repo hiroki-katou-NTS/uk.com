@@ -957,6 +957,7 @@ public class ProgramIdConsts {
 
 	//KMR001
 	public static final String KMR001B = "KMR001B";
+	public static final String KMR001C = "KMR001C";
 	public static final String KMR001D = "KMR001D";
 
 	//KDM001
