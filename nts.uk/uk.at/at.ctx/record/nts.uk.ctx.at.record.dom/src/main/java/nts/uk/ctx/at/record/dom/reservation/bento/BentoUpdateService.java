@@ -24,8 +24,11 @@ public class BentoUpdateService {
 
         BentoMenu bentoMenu = require.getBentoMenu(cid, date);
 
+        bentoMenu.getMenu().stream()
+                .filter(x -> x.getFrameNo() == bento.getFrameNo())
+                .forEach( b -> b = bento);
         return AtomTask.of(() -> {
-            require.register(bentoMenu,bento);
+            require.register(bentoMenu);
         });
     }
 
@@ -34,7 +37,7 @@ public class BentoUpdateService {
         BentoMenu getBentoMenu(String cid, GeneralDate date);
 
         // 弁当を追加する
-        void register(BentoMenu bentoMenu,Bento bento);
+        void register(BentoMenu bentoMenu);
     }
 
 }

@@ -58,7 +58,7 @@ module nts.uk.at.kmr001.b {
             const vm = this;
             vm.$blockui("invisible");
             const dataRegister = {
-                perationDistinction : vm.model().operationDistinction(),
+                operationDistinction : vm.model().operationDistinction(),
                 referenceTime : vm.model().referenceTime(),
                 dailyResults : vm.model().dailyResults(),
                 monthlyResults : vm.model().monthlyResults(),

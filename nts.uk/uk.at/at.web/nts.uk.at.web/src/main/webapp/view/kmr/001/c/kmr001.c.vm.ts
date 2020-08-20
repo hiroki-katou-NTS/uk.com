@@ -14,19 +14,35 @@ module nts.uk.at.kmr001.c {
     }
 
     @bean()
-    export class Kmr001CVmViewModel extends ko.ViewModel {
+    export class ViewModel extends ko.ViewModel {
 
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-        currentCode: KnockoutObservable<any> = ko.observable();
+        currentCode: KnockoutObservable<string> = ko.observable('');
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
-        model: BentoMenuSetting = new BentoMenuSetting(ko.observable(""),ko.observable(""),ko.observable(""),
-            ko.observable(""),ko.observable(""));
+        workPlaceList: KnockoutObservableArray<ReservedItemDto> = ko.observableArray([]);
+        model: BentoMenuSetting = new BentoMenuSetting(ko.observable(""),ko.observable(""),
+            ko.observable(false), ko.observable(false),
+            ko.observable(0), ko.observable(0),
+            ko.observable(0), ko.observable(0),
+            ko.observable(0), ko.observable(0),
+            ko.observable(""), ko.observable(""),
+            ko.observable(""));
+        workPlaceCode: KnockoutObservable<string> = ko.observable();
         constructor() {
             super();
-            var vm = this;
+            const vm = this;
             for(let i = 1; i < 41; ++i){
-                vm.items.push(new ItemModel(i, 'data ' + i));
+                vm.items.push(new ItemModel(i.toString(), 'data ' + i));
             }
+            vm.workPlaceList([
+                {
+                    id: '1',
+                    name: 'test'
+                }
+            ]);
+            vm.currentCode.subscribe(data => {
+                console.log(data)
+            })
         }
 
         deselectAll() {
@@ -71,33 +87,56 @@ module nts.uk.at.kmr001.c {
     }
 
     class ItemModel {
-        id: number;
+        id: string;
         name: string;
 
-        constructor(id: number, name: string) {
+        constructor(id: string, name: string) {
             this.id = id;
             this.name = name;
         }
     }
 
     interface ReservedItemDto {
-        id: number;
+        id: string;
         name: string;
     }
 
     class BentoMenuSetting{
-        lunchBox: KnockoutObservable<string> = ko.observable("");
-        amount1: KnockoutObservable<string> = ko.observable("");
-        amount2: KnockoutObservable<string> = ko.observable("");
-        unit: KnockoutObservable<string> = ko.observable("");
-        maxNumberOfReservations: KnockoutObservable<string> = ko.observable("");
-        constructor(lunchBox: KnockoutObservable<string>, amount1: KnockoutObservable<string>,
-                    amount2: KnockoutObservable<string>, unit: KnockoutObservable<string>, maxNumberOfReservations: KnockoutObservable<string>){
-            this.lunchBox = lunchBox;
-            this.amount1 = amount1;
-            this.amount2 = amount2;
-            this.unit = unit;
-            this.maxNumberOfReservations = maxNumberOfReservations;
+        bentoName: KnockoutObservable<string>;
+        reservationAtr1: KnockoutObservable<boolean>;
+        reservationAtr2: KnockoutObservable<boolean>;
+        reservationStartTime1: KnockoutObservable<number>;
+        reservationEndTime1: KnockoutObservable<number>;
+        reservationStartTime2: KnockoutObservable<number>;
+        reservationEndTime2: KnockoutObservable<number>;
+        unitName: KnockoutObservable<string>;
+        price1: KnockoutObservable<number>;
+        price2: KnockoutObservable<number>;
+
+        startDate: KnockoutObservable<string>;
+        endDate: KnockoutObservable<string>;
+        workLocationCode: KnockoutObservable<string>;
+        constructor(bentoName: KnockoutObservable<string>, unitName: KnockoutObservable<string>,
+                    reservationAtr1: KnockoutObservable<boolean>, reservationAtr2: KnockoutObservable<boolean>,
+                    reservationStartTime1: KnockoutObservable<number>, reservationEndTime1: KnockoutObservable<number>,
+                    reservationStartTime2: KnockoutObservable<number>, reservationEndTime2: KnockoutObservable<number>,
+                    price1: KnockoutObservable<number>, price2: KnockoutObservable<number>,
+                    startDate: KnockoutObservable<string>, endDate: KnockoutObservable<string>,
+                    workLocationCode: KnockoutObservable<string>){
+            this.bentoName = bentoName;
+            this.reservationAtr1 = reservationAtr1;
+            this.reservationAtr2 = reservationAtr2;
+            this.reservationStartTime1 = reservationStartTime1 ;
+            this.reservationEndTime1 = reservationEndTime1 ;
+            this.reservationStartTime2 = reservationStartTime2 ;
+            this.reservationEndTime2 =  reservationEndTime2;
+            this.unitName = unitName ;
+            this.price1 = price1;
+            this.price2 = price2;
+
+            this.startDate = startDate;
+            this.endDate = endDate;
+            this.workLocationCode = workLocationCode;
         }
     }
 

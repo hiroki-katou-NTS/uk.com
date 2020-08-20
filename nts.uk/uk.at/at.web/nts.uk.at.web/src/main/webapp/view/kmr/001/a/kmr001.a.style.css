@@ -6,7 +6,10 @@
 	width: 0;
 	height: 0;
 	left: 200px;
-	border-top: 60px solid transparent;
-	border-bottom: 60px solid transparent;
-	border-left: 60px solid green;
+	border-top: 25px solid transparent;
+	border-bottom: 25px solid transparent;
+	border-left: 35px solid green;
+}
+button.x-large {
+	width: 130px;
 }

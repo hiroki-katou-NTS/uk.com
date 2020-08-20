@@ -219,7 +219,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
     public void generate(FileGeneratorContext generatorContext, OrderInfoExportData data) {
         if (!CollectionUtil.isEmpty(data.getOrderInfoDto().getTotalOrderInfoDtoList()))
             handleTotalTemplate(generatorContext, data);
-        else if(!CollectionUtil.isEmpty(data.getOrderInfoDto().getDetailOrderInfoDtoList()))
+        if(!CollectionUtil.isEmpty(data.getOrderInfoDto().getDetailOrderInfoDtoList()))
             handleDetailTemplate(generatorContext, data);
     }
 
@@ -334,8 +334,12 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             cells.get(startIndex + 1, 6).setValue(total);
             endPage = startIndex + 2;
             //page break
-            HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
-            pageBreaks.add(endPage);
+            if(isPageBreak){
+                HorizontalPageBreakCollection pageBreaksH = worksheet.getHorizontalPageBreaks();
+                pageBreaksH.add("J" + (endPage+1));
+                VerticalPageBreakCollection pageBreaksV = worksheet.getVerticalPageBreaks();
+                pageBreaksV.add("J" + (endPage+1));
+            }
 
             return startIndex;
         }
@@ -354,8 +358,12 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         cells.get(startIndex + dataRow.getBentoTotalDto().size(), 6).setValue(total);
         endPage += dataRow.getBentoTotalDto().size() ;
         // page break
-        HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
-        pageBreaks.add(endPage);
+        if(isPageBreak){
+            HorizontalPageBreakCollection pageBreaksH = worksheet.getHorizontalPageBreaks();
+            pageBreaksH.add("J" + (endPage+1));
+            VerticalPageBreakCollection pageBreaksV = worksheet.getVerticalPageBreaks();
+            pageBreaksV.add("J" + (endPage+1));
+        }
 
         startIndex += dataRow.getBentoTotalDto().size() - 1 + 4;
         return startIndex;
@@ -429,8 +437,10 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             setFooterDataDetailFormat(cells, startIndex + 1, total,"");
             startIndex += 5;
             if(isPageBreak){
-                HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
-                pageBreaks.add(startIndex - 3);
+                HorizontalPageBreakCollection pageBreaksH = worksheet.getHorizontalPageBreaks();
+                pageBreaksH.add("M" + (startIndex - 2));
+                VerticalPageBreakCollection pageBreaksV = worksheet.getVerticalPageBreaks();
+                pageBreaksV.add("M" + (startIndex - 2));
             }
         }
         else {
@@ -464,8 +474,10 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         }
 
         if(isPageBreak){
-            HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
-            pageBreaks.add(startIndex - 3);
+            HorizontalPageBreakCollection pageBreaksH = worksheet.getHorizontalPageBreaks();
+            pageBreaksH.add("M" + (startIndex - 2));
+            VerticalPageBreakCollection pageBreaksV = worksheet.getVerticalPageBreaks();
+            pageBreaksV.add("M" + (startIndex - 2));
         }
         return startIndex;
     }
