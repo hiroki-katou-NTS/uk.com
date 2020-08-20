@@ -164,6 +164,8 @@ button.nts-switch-button {
 .nts-wizard.vertical>.content {
 	margin: 0 0 0 0;
 	background: none;
+	width: 100%;
+	max-width: 800px;
 }
 
 .nts-wizard>.content>.body {

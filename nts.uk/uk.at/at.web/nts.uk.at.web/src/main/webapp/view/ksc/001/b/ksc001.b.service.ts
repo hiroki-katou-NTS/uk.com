@@ -5,7 +5,10 @@ module nts.uk.at.view.ksc001.b {
             checkThreeMonth: "ctx/at/shared/workrule/closure/checkThreeMonth",
             checkMonthMax: "ctx/at/shared/workrule/closure/checkMonthMax",
             addScheduleExecutionLog: "at/schedule/exelog/add",
-            findDailyPatternSetting: "ctx/at/schedule/shift/pattern/daily"
+            findDailyPatternSetting: "ctx/at/schedule/shift/pattern/daily",
+            getMonthlyPattern: 'monthly/get/all',
+            getInitialDate: 'get/initial/information',
+            getEmployeeListAfterFilter: 'get/employee/listemployid'
         }
 
         /**
@@ -34,6 +37,28 @@ module nts.uk.at.view.ksc001.b {
         export function addScheduleExecutionLog(command: model.ScheduleExecutionLogSaveDto)
             : JQueryPromise<model.ScheduleExecutionLogSaveRespone> {
             return nts.uk.request.ajax('at', paths.addScheduleExecutionLog, command);
+        }
+
+
+        /**
+         * call service to get start & end date
+         */
+        export function getInitialDate(): JQueryPromise<model.PeriodDto> {
+            return nts.uk.request.ajax('at', paths.getInitialDate);
+        }
+
+        /**
+         * call service to get the monthly patterns list
+         */
+        export function getMonthlyPattern(): JQueryPromise<model.PeriodDto> {
+            return nts.uk.request.ajax('at', paths.getMonthlyPattern);
+        }
+
+        /**
+         * call service to get the monthly patterns list
+         */
+        export function getEmployeeListAfterFilter( data: model.ListEmployeeIds ): JQueryPromise<model.PeriodDto> {
+            return nts.uk.request.ajax('at', paths.getEmployeeListAfterFilter, data);
         }
 
         export module model {
@@ -77,6 +102,21 @@ module nts.uk.at.view.ksc001.b {
             export interface ScheduleExecutionLogSaveRespone {
                 employeeId: string;
                 executionId: string;
+            }
+
+            export interface ListEmployeeIds {
+
+                listEmployeeId: Array<string>;
+                /** 異動者. */
+                transfer: boolean;
+                /** 休職休業者. */
+                leaveOfAbsence: boolean;
+                /** 短時間勤務者. */
+                shortWorkingHours: boolean;
+                /** 労働条件変更者. */
+                changedWorkingConditions: boolean;
+                startDate : string; //YYYY/MM/DD
+                endDate : string; //YYYY/MM/DD
             }
         }
     }

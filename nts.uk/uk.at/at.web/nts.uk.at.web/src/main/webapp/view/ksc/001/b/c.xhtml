@@ -43,14 +43,15 @@
 									<div class="item">#{i18n.getText('KSC001_113')}</div>
 									<div tabindex="2"  data-bind="ntsComboBox: {
 									name: $i18n('KSC001_107'),
-									options: creationMethodOpts,
+									options: creationMethodReference,
 									optionsValue: 'code',
 									value: creationMethodCode,
 									optionsText: 'name',
 									editable: false,
-									enable:  isMonthlyPatternCreateMethod,
+									enable:  isCreationMethod,
 									required: false,
-									selectFirstIfNull: true
+									selectFirstIfNull: true,
+									visibleItemsCount: 4
 									}"></div>
 								</div>
 								<div class="comboBoxItem">
@@ -62,14 +63,10 @@
 									value: monthlyPatternCode,
 									optionsText: 'name',
 									editable: false,
-									enable:  isMonthlyPatternCreateMethod,
+									enable:  isMonthlyPattern,
 									required: isMonthlyPatternRq,
 									selectFirstIfNull: true,
-									visibleItemsCount: 5,
-									columns: [
-                                        { prop: 'code', length: 4 },
-                                        { prop: 'name', length: 10 },
-                                    ]
+									visibleItemsCount: 5
 									}"></div>
 								</div>
 							</div>
@@ -88,43 +85,15 @@
                                         <div tabindex="4" id="copy-start-date"
                                              data-bind="ntsDatePicker: {value: copyStartDate,
                                                         dateFormat: 'YYYY/MM/DD', required: true,
-                                                        name: '#[KSC001_26]',enable:false}"></div>
+                                                        name: '#[KSC001_26]', enable: isCopyStartDate}"></div>
 									</div>
 								</div>
 							</div>
-
-						<!-- set tam cho dot giao hang sap toi, sau nay se bi delete -->
-						<!--<div tabindex="-1" class="radioboxCase">
-							<div tabindex="1"
-								data-bind="ntsRadioButton: {
-								checked: checkCreateMethodAtrPersonalInfo,
-								option: lstCreateMethod()[1],
-								name: '#[KSC001_30]',
-								optionValue: 'value',
-								optionText: 'name',
-								group: 'KSC001_30'}" />
-							<button tabindex="2" class="buttonCase"
-								data-bind="click: showDialogKDL023,
-								enable: false">#{i18n.getText('KSC001_25')}</button>
-						</div>
-						<div tabindex="-1" class="radioboxCase">
-							<div tabindex="1"
-								data-bind="ntsRadioButton: { enable: false, checked: checkCreateMethodAtrPersonalInfo, option: lstCreateMethod()[2], name: '#[KSC001_30]', optionValue: 'value', optionText: 'name', group: 'KSC001_30'}" />
-						</div>-->
-						<!-- end -->
 					</div>
-					<!-- <div style="margin-left: 80px; margin-top: 15px;" tabindex="-1">
-						<label tabindex="-1">#{i18n.getText('KSC001_26')}</label>
-						<div tabindex="3" id="copy-start-date"
-							data-bind="ntsDatePicker: {value: copyStartDate,
-							dateFormat: 'YYYY/MM/DD', required: true,
-							name: '#[KSC001_26]',enable:ko.computed(function(){ return checkCreateMethodAtrPersonalInfo()==2; })}"></div>
-					</div> -->
-
 				</div>
 				<div tabindex="-1" data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_101')}</div>
 				<div class="radioButtonGroup comboBoxLists">
-                    <!-- C3_4 -->
+                    <!-- C3_2 -->
 					<div class="checkBoxItem">
 						<div data-bind="ntsCheckBox: { checked: isConfirmedCreation, text: $i18n('KSC001_17') }"></div>
 					</div>
