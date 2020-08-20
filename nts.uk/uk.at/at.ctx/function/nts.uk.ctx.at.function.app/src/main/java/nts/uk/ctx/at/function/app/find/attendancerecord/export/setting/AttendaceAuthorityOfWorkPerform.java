@@ -11,24 +11,29 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AttendaceAuthorityOfWorkPerform {
 	/**
-	 * 日別実績の機能NO
+	 * 	日別実績の機能NO
 	 */
 	private int functionNo;
 
 	/**
-	 * 日別実績の機能名
+	 *	 会社ID
 	 */
 	private String companyId;
 
 	/**
-	 * 利用区分
+	 *	 利用区分
 	 */
 	private boolean availability;
 
 	/**
-	 * 日別実績の機能説明文
+	 * 	ロールID
 	 */
 	private String roleId;
+	
+	/**
+	 * 	社員ID
+	 */
+	private String employeeId;
 
 	public AttendaceAuthorityOfWorkPerform(int functionNo, String companyId,
 			String roleId) {

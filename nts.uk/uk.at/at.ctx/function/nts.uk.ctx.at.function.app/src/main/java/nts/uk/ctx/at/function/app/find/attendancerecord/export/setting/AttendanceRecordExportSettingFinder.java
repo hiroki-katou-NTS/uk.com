@@ -133,6 +133,7 @@ public class AttendanceRecordExportSettingFinder {
 	public List<AttendaceAuthorityOfWorkPerform> getAuthorityOfWorkPerformance() {
 		String roleId = AppContexts.user().roles().forAttendance();
 		String companyId = AppContexts.user().companyId();
+		String employeeID = AppContexts.user().employeeId();
 		int functionNo51 = 51;
 		List<DailyPerformanceAuthority> daiPerAuthors = dailyPerAuthRepo.get(roleId);
 		List<AttendaceAuthorityOfWorkPerform> results =  daiPerAuthors.stream().filter(i -> {
@@ -143,7 +144,7 @@ public class AttendanceRecordExportSettingFinder {
 			attendaceAuthorityOfWorkPerform.setCompanyId(companyId);
 			attendaceAuthorityOfWorkPerform.setRoleId(roleId);
 			attendaceAuthorityOfWorkPerform.setFunctionNo(i.getFunctionNo().v().intValue());
-			
+			attendaceAuthorityOfWorkPerform.setEmployeeId(employeeID);
 			return attendaceAuthorityOfWorkPerform;
 		}).collect(Collectors.toList());
 		return results;
