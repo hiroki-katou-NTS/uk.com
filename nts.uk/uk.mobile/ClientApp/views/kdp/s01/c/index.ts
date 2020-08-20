@@ -45,13 +45,14 @@ export class KdpS01CComponent extends Vue {
 
 
     public created() {
-        let vm = this;
-        vm.params.attendanceItemIds.push(28, 29, 31, 34);
+        let vm = this,
+            parameterIds = [].concat(vm.params.attendanceItemIds);
+        parameterIds.push(28, 29, 31, 34);
 
         let command = {
             startDate: moment(vm.params.stampDate ? vm.params.stampDate : vm.$dt.now).format('YYYY/MM/DD'),
             endDate: moment(vm.params.stampDate ? vm.params.stampDate : vm.$dt.now).format('YYYY/MM/DD'),
-            attendanceItemIds: vm.params.attendanceItemIds,
+            attendanceItemIds: parameterIds,
             baseDate: moment(vm.params.stampDate ? vm.params.stampDate : vm.$dt.now).format('YYYY/MM/DD')
         };
 
@@ -90,14 +91,12 @@ export class KdpS01CComponent extends Vue {
                 vm.screenData.employeeName = data.empInfo ? data.empInfo.pname : '';
             });
 
-            // _.remove(data.lstItemDisplayed, function (item) {
-            //     return [28, 29, 31, 34].indexOf(item.attendanceItemId) != -1;
-            // });
-            _.forEach([28, 29, 31, 34], (id) => {
+
+            let items = [];
+            _.forEach(vm.params.attendanceItemIds, (id) => {
                 let item = _.find(data.lstItemDisplayed, ['attendanceItemId', id]);
                 if (item) {
-                    let index = data.lstItemDisplayed.indexOf(item);
-                    data.lstItemDisplayed.splice(index,1);
+                    items.push(item);
                 }
             });
 
@@ -105,7 +104,7 @@ export class KdpS01CComponent extends Vue {
             let isNoItemHasData = !_.find(data.itemValues, (item) => item.value);
             let timeData = [];
             if (!isNoItemHasData) {
-                _.forEach(_.orderBy(data.lstItemDisplayed, 'attendanceItemId'), function (item) {
+                _.forEach(_.orderBy(items, 'attendanceItemId'), function (item) {
                     let value = vm.toValue(item, _.find(data.itemValues, ['itemId', item.attendanceItemId]));
                     timeData.push({ itemId: item.attendanceItemId, title: item.attendanceName, value });
                 });
@@ -121,7 +120,7 @@ export class KdpS01CComponent extends Vue {
 
     get isHasImplementation() {
         let vm = this;
-        if (! _.get(vm,'screenData.confirmResult.permissionCheck')) {
+        if (!_.get(vm, 'screenData.confirmResult.permissionCheck')) {
             return State.SETTING_NULL;
         }
 
