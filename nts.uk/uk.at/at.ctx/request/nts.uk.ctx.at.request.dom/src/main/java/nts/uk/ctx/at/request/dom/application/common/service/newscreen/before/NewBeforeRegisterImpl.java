@@ -214,7 +214,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 			return;
 		}
 		// INPUT．申請する開始日からINPUT．申請する終了日までループする
-		for(GeneralDate loopAppDate = appStartDate; loopAppDate.afterOrEquals(appEndDate); loopAppDate = loopAppDate.addDays(1)) {
+		for(GeneralDate loopAppDate = appStartDate; loopAppDate.beforeOrEquals(appEndDate); loopAppDate = loopAppDate.addDays(1)) {
 			// 対象日が申請可能かを判定する
 			boolean errorFlg = receptionRestrictionSetting.applyPossibleCheck(
 					appType, 

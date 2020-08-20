@@ -71,10 +71,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 	}
 
 	private void printEachAppContent(Worksheet worksheet, PrintContentOfApp printContentOfApp, ApplicationType appType) {
-		Cell comboReasonLabel;
-		Cell textReasonLabel;
-		Cell comboReasonContent;
-		Cell textReasonContent;
+		Cell reasonLabel;
+		Cell remarkLabel;
+		Cell reasonContent;
 
 		switch (appType) {
 		case OVER_TIME_APPLICATION:
@@ -83,11 +82,10 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			break;
 		case WORK_CHANGE_APPLICATION:
 			asposeWorkChange.printWorkChangeContent(worksheet, printContentOfApp);
-			comboReasonLabel = worksheet.getCells().get("B15");
-			textReasonLabel = worksheet.getCells().get("B18");
-			comboReasonContent = worksheet.getCells().get("D15");
-			textReasonContent = worksheet.getCells().get("D18");
-			printBottomKAF000(comboReasonLabel, textReasonLabel, comboReasonContent, textReasonContent, printContentOfApp);
+			reasonLabel = worksheet.getCells().get("B15");
+			remarkLabel = worksheet.getCells().get("B18");
+			reasonContent = worksheet.getCells().get("D15");
+			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case BUSINESS_TRIP_APPLICATION:
 			break;
@@ -98,22 +96,19 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case STAMP_APPLICATION:
 			
 			asposeAppStamp.printAppStampContent(worksheet, printContentOfApp);
-			comboReasonLabel = worksheet.getCells().get("B15");
-			textReasonLabel = worksheet.getCells().get("B18");
-			comboReasonContent = worksheet.getCells().get("D15");
-			textReasonContent = worksheet.getCells().get("D18");
-			printBottomKAF000(comboReasonLabel, textReasonLabel, comboReasonContent, textReasonContent, printContentOfApp);
+			reasonLabel = worksheet.getCells().get("B15");
+			remarkLabel = worksheet.getCells().get("B18");
+			reasonContent = worksheet.getCells().get("D15");
+			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case ANNUAL_HOLIDAY_APPLICATION:
 			break;
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			asposeLateLeaveEarly.printLateEarlyContent(worksheet, printContentOfApp);
-			comboReasonLabel = worksheet.getCells().get("B13");
-			textReasonLabel = worksheet.getCells().get("B16");
-			comboReasonContent = worksheet.getCells().get("D13");
-			textReasonContent = worksheet.getCells().get("D16");
-			printBottomKAF000(comboReasonLabel, textReasonLabel, comboReasonContent, textReasonContent,
-					printContentOfApp);
+			reasonLabel = worksheet.getCells().get("B13");
+			remarkLabel = worksheet.getCells().get("B16");
+			reasonContent = worksheet.getCells().get("D13");
+			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			asposeLateLeaveEarly.deleteEmptyRow(worksheet);
 			break;
 		case COMPLEMENT_LEAVE_APPLICATION:
@@ -282,17 +277,13 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		cellD7.setValue(printContentOfApp.getPrePostAtr().name);
 	}
 
-	private void printBottomKAF000(Cell comboReasonLabel, Cell textReasonLabel, Cell comboReasonContent, Cell textReasonContent,
-			PrintContentOfApp printContentOfApp) {
-		comboReasonLabel.setValue(I18NText.getText("KAF000_52"));
-		textReasonLabel.setValue(I18NText.getText("KAF000_59"));
-		if(printContentOfApp.getAppReasonStandard() != null) {
-			comboReasonContent.setValue(printContentOfApp.getAppReasonStandard().getReasonTypeItemLst().stream().findFirst()
-					.map(x -> x.getOpReasonForFixedForm().map(y -> y.v()).orElse(null)).orElse(null));
-		}
-		if(printContentOfApp.getOpAppReason() != null) {
-			textReasonContent.setValue(printContentOfApp.getOpAppReason().v());
-		}
+	private void printBottomKAF000(Cell reasonLabel, Cell remarkLabel, Cell reasonContent, PrintContentOfApp printContentOfApp) {
+		reasonLabel.setValue(I18NText.getText("KAF000_52"));
+		remarkLabel.setValue(I18NText.getText("KAF000_59"));
+		String appReasonStandard = printContentOfApp.getAppReasonStandard().getReasonTypeItemLst().stream().findFirst()
+				.map(x -> x.getOpReasonForFixedForm().map(y -> y.v()).orElse(null)).orElse(null);
+		String appReason = printContentOfApp.getOpAppReason().v();
+		reasonContent.setValue(appReasonStandard + "\n" + appReason);
 	}
 
 }

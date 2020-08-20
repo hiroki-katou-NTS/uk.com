@@ -11,7 +11,7 @@ public interface ApplicationRepository {
 	
 	// public Optional<Application_New> findByID(String companyID, String appID);
 	
-	public List<Application_New> findByListID(String companyID, List<String> listAppID);
+	public List<Application> findByListID(String companyID, List<String> listAppID);
 	
 	public List<Application_New> getApplicationIdByDate(String companyId, GeneralDate startDate, GeneralDate endDate);
 	
@@ -22,7 +22,7 @@ public interface ApplicationRepository {
 	 * @param endDate
 	 * @return
 	 */
-	public List<Application_New> getApplicationBySIDs(List<String> employeeID,GeneralDate startDate, GeneralDate endDate);
+	public List<Application> getApplicationBySIDs(List<String> employeeID,GeneralDate startDate, GeneralDate endDate);
 	
 	public List<Application_New> getApp(String applicantSID, GeneralDate appDate, int prePostAtr, int appType);
 	
@@ -85,7 +85,7 @@ public interface ApplicationRepository {
 	 */
 	public List<Application_New> getListApp(String sID, GeneralDate startDate, GeneralDate endDate);
 	
-	public List<Application_New> getByListRefStatus(String companyID, String employeeID ,GeneralDate startDate, GeneralDate endDate , List<Integer> listReflecInfor  );
+	public List<Application> getByListRefStatus(String companyID, String employeeID ,GeneralDate startDate, GeneralDate endDate , List<Integer> listReflecInfor  );
 	
 	public List<Application_New> getListLateOrLeaveEarly(String companyID, String employeeID, GeneralDate startDate, GeneralDate endDate);
 	/**
@@ -96,7 +96,7 @@ public interface ApplicationRepository {
 	 * @param appType　申請種類
 	 * @return
 	 */
-	public List<Application_New> getByPeriodReflectType(String sid, DatePeriod dateData, List<Integer> reflect, List<Integer> appType);
+	public List<Application> getByPeriodReflectType(String sid, DatePeriod dateData, List<Integer> reflect, List<Integer> appType);
 	/**
 	 * @author hoatt
 	 * 申請者ID＝社員ID（リスト）　　または　入力者ID＝社員ID（リスト）
@@ -130,7 +130,7 @@ public interface ApplicationRepository {
 	 * @param lstRef: 実績反映状態＝未承認 or 反映待ち
 	 * @return
 	 */
-	public List<Application_New> getListAppByType(String companyId, String sID, GeneralDate startDate, GeneralDate endDate, 
+	public List<Application> getListAppByType(String companyId, String sID, GeneralDate startDate, GeneralDate endDate, 
 			int prePostAtr, int appType, List<Integer> lstRef);
 	
 	/**
@@ -142,7 +142,7 @@ public interface ApplicationRepository {
 	 * @param appType 申請種類
 	 * @return
 	 */
-	public List<Application_New> getAppForReflect(String sid, DatePeriod dateData, List<Integer> recordStatus,
+	public List<Application> getAppForReflect(String sid, DatePeriod dateData, List<Integer> recordStatus,
 			List<Integer> scheStatus, List<Integer> appType);
 	/**
 	 * 検索
@@ -152,7 +152,7 @@ public interface ApplicationRepository {
 	 * @param appType　申請種類
 	 * @return
 	 */
-	public List<Application_New> getByListDateReflectType(String sid, List<GeneralDate> dateData, List<Integer> reflect, List<Integer> appType);
+	public List<Application> getByListDateReflectType(String sid, List<GeneralDate> dateData, List<Integer> reflect, List<Integer> appType);
 	/**
 	 * 
 	 * @param companyId

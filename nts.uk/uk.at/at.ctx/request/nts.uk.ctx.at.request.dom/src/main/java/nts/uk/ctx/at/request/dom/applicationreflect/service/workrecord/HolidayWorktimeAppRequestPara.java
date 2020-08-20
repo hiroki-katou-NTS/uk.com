@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 @AllArgsConstructor
 @Getter
 @Setter
@@ -30,7 +30,7 @@ public class HolidayWorktimeAppRequestPara {
 	/**
 	 * 反映状態
 	 */
-	private ReflectedState_New reflectedState;
+	private ReflectedState reflectedState;
 	/**
 	 * 反映不可理由
 	 */

@@ -66,10 +66,11 @@ module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
                     }  
                 }).then((successData: any) => {
                     if(successData) {
-						let prePostAtr = vm.application().prePostAtr();
+						let applicationJS = ko.toJS(vm.application);
                         vm.appDispInfoStartupOutput().appDispInfoWithDateOutput = successData;
                         vm.appDispInfoStartupOutput.valueHasMutated();
-						vm.application().prePostAtr(prePostAtr);
+						vm.application().prePostAtr(applicationJS.prePostAtr);
+						vm.application().opAppStandardReasonCD(applicationJS.opAppStandardReasonCD);
                         vm.dateValue().startDate = appDate;
                         vm.dateValue().endDate = appDate;
                         vm.dateValue.valueHasMutated();
@@ -104,10 +105,11 @@ module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
                 	}
                 }).then((successData: any) => {
                     if(successData) {
-						let prePostAtr = vm.application().prePostAtr();
+						let applicationJS = ko.toJS(vm.application);
                         vm.appDispInfoStartupOutput().appDispInfoWithDateOutput = successData;
                         vm.appDispInfoStartupOutput.valueHasMutated();
-						vm.application().prePostAtr(prePostAtr);
+						vm.application().prePostAtr(applicationJS.prePostAtr);
+						vm.application().opAppStandardReasonCD(applicationJS.opAppStandardReasonCD);
                         vm.appDate(startDate);
                         vm.application().appDate(startDate);
                         vm.application().opAppStartDate(startDate);

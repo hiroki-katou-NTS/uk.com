@@ -23,8 +23,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -82,13 +82,13 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	private static final String SELECT_BY_LIST_APPLICANT = SELECT_FROM_APPLICATION + " AND a.employeeID IN :lstSID"
 			+ " AND a.endDate >= :startDate AND a.startDate <= :endDate and a.appType IN :lstType";
 
-	private static final String SELECT_APP_BY_SIDS = "SELECT a FROM KrqdtApplication_New a"
+	private static final String SELECT_APP_BY_SIDS = "SELECT a FROM KrqdtApplication a"
 			+ " WHERE a.employeeID IN :employeeID" + " AND a.appDate >= :startDate AND a.appDate <= :endDate";
 	private static final String SELECT_APPLICATION_BY_ID = "SELECT a FROM KrqdtApplication_New a"
 			+ " WHERE a.krqdpApplicationPK.appID = :appID AND a.krqdpApplicationPK.companyID = :companyID";
 
-	private static final String SELECT_APP_BY_LIST_ID = "SELECT a FROM KrqdtApplication_New a"
-			+ " WHERE a.krqdpApplicationPK.appID IN :listAppID AND a.krqdpApplicationPK.companyID = :companyID"
+	private static final String SELECT_APP_BY_LIST_ID = "SELECT a FROM KrqdtApplication a"
+			+ " WHERE a.pk.appID IN :listAppID AND a.pk.companyID = :companyID"
 			+ " ORDER BY a.appDate";
 
 	private static final String SELECT_APP_BY_CONDS = "SELECT a FROM KrqdtApplication_New a WHERE a.employeeID = :employeeID AND a.appDate >= :startDate AND a.appDate <= :endDate"
@@ -101,10 +101,10 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			+ " WHERE c.employeeID = :employeeID" + " AND c.appDate >= :startDate" + " AND c.appDate <= :endDate"
 			+ " AND c.stateReflectionReal IN :stateReflectionReals" + " AND c.appType IN :appTypes";
 	// hoatt
-	private static final String FIND_BY_REF_PERIOD_TYPE = "SELECT c FROM KrqdtApplication_New c"
-			+ " WHERE c.krqdpApplicationPK.companyID = :companyID" + " AND c.employeeID = :employeeID"
+	private static final String FIND_BY_REF_PERIOD_TYPE = "SELECT app FROM KrqdtApplication app"
+			+ " WHERE c.pk.companyID = :companyID" + " AND c.employeeID = :employeeID"
 			+ " AND c.appDate >= :startDate" + " AND c.appDate <= :endDate" + " AND c.prePostAtr = :prePostAtr"
-			+ " AND c.appType = :appType" + " AND c.stateReflectionReal IN :lstRef"
+			+ " AND c.appType = :appType" + " AND c.krqdtAppReflectStateLst.actualReflectStatus IN :lstRef"
 			+ " ORDER BY c.appType ASC, c.inputDate DESC";
 	
 	/*
@@ -330,11 +330,11 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
-	public List<Application_New> getApplicationBySIDs(List<String> employeeID, GeneralDate startDate,
+	public List<Application> getApplicationBySIDs(List<String> employeeID, GeneralDate startDate,
 			GeneralDate endDate) {
-		List<Application_New> data = new ArrayList<>();
+		List<Application> data = new ArrayList<>();
 		CollectionUtil.split(employeeID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			data.addAll(this.queryProxy().query(SELECT_APP_BY_SIDS, KrqdtApplication_New.class)
+			data.addAll(this.queryProxy().query(SELECT_APP_BY_SIDS, KrqdtApplication.class)
 					.setParameter("employeeID", subList).setParameter("startDate", startDate)
 					.setParameter("endDate", endDate).getList(c -> c.toDomain()));
 		});
@@ -358,42 +358,41 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	 * 「未承認」または「差戻し」 RequestList 234 param 反映状態 ＝ 「否認」 RequestList 235 param
 	 * 反映状態 ＝ 「差戻し」
 	 */
-	private static final String SELECT_LIST_REFSTATUS = "SELECT a FROM KrqdtApplication_New a"
-			+ " WHERE a.krqdpApplicationPK.companyID =:companyID" + " AND a.employeeID = :employeeID "
+	private static final String SELECT_LIST_REFSTATUS = "SELECT a FROM KrqdtApplication a"
+			+ " WHERE a.pk.companyID =:companyID" + " AND a.employeeID = :employeeID "
 			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate"
-			+ " AND a.stateReflectionReal IN :listReflecInfor" + " ORDER BY a.appDate ASC," + " a.prePostAtr DESC";
+			+ " AND a.krqdtAppReflectStateLst.actualReflectStatus IN :listReflecInfor" + " ORDER BY a.appDate ASC," + " a.prePostAtr DESC";
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public List<Application_New> getByListRefStatus(String companyID, String employeeID, GeneralDate startDate,
+	public List<Application> getByListRefStatus(String companyID, String employeeID, GeneralDate startDate,
 			GeneralDate endDate, List<Integer> listReflecInfor) {
 		// TODO Auto-generated method stub
 		if (listReflecInfor.size() == 0) {
 			return Collections.emptyList();
 		}
-		List<Application_New> resultList = new ArrayList<>();
+		List<Application> resultList = new ArrayList<>();
 		CollectionUtil.split(listReflecInfor, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(SELECT_LIST_REFSTATUS, KrqdtApplication_New.class)
+			resultList.addAll(this.queryProxy().query(SELECT_LIST_REFSTATUS, KrqdtApplication.class)
 					.setParameter("companyID", companyID).setParameter("employeeID", employeeID)
 					.setParameter("startDate", startDate).setParameter("endDate", endDate)
 					.setParameter("listReflecInfor", subList).getList(x -> x.toDomain()));
 		});
-		resultList.sort(Comparator.comparing(Application_New::getPrePostAtr));
+		resultList.sort(Comparator.comparing(Application::getPrePostAtr));
 		return resultList;
 	}
 
 	@Override
-	public List<Application_New> findByListID(String companyID, List<String> listAppID) {
+	public List<Application> findByListID(String companyID, List<String> listAppID) {
 		if (CollectionUtil.isEmpty(listAppID)) {
 			return Collections.emptyList();
 		}
-		List<Application_New> resultList = new ArrayList<>();
+		List<Application> resultList = new ArrayList<>();
 		CollectionUtil.split(listAppID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(SELECT_APP_BY_LIST_ID, KrqdtApplication_New.class)
+			resultList.addAll(this.queryProxy().query(SELECT_APP_BY_LIST_ID, KrqdtApplication.class)
 					.setParameter("listAppID", subList).setParameter("companyID", companyID)
 					.getList(x -> x.toDomain()));
 		});
-		resultList.sort(Comparator.comparing(Application_New::getAppDate));
 		return resultList;
 	}
 
@@ -407,41 +406,25 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	}
 
 	@Override
-	public List<Application_New> getByPeriodReflectType(String sid, DatePeriod dateData, List<Integer> reflect,
+	public List<Application> getByPeriodReflectType(String sid, DatePeriod dateData, List<Integer> reflect,
 			List<Integer> appType) {
-		List<Application_New> resultList = new ArrayList<>();
-		/*CollectionUtil.split(reflect, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstReflect -> {最大２
-			CollectionUtil.split(appType, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstAppType -> {最大１５*/
-		String subIn1 = NtsStatement.In.createParamsString(appType);
-		String subIn2 = NtsStatement.In.createParamsString(reflect);
-		String sql = "SELECT * FROM KRQDT_APPLICATION "
-				+ "WHERE APPLICANTS_SID = ? "
-				+ " AND APP_START_DATE <= ? "
-				+ " AND APP_END_DATE >= ? "
-				+ " AND APP_TYPE IN (" + subIn1 + ") "
-				+ " AND REFLECT_PER_STATE IN (" + subIn2 + ") "
-				+ " ORDER BY INPUT_DATE ASC";
-		try(val stmt = this.connection().prepareStatement(sql)){
-			
-			stmt.setString(1, sid);
-			stmt.setDate(2, Date.valueOf(dateData.end().localDate()));
-			stmt.setDate(3, Date.valueOf(dateData.start().localDate()));
-			int inCount = 3;
-			for (int i = 0; i < appType.size(); i++) {
-				stmt.setInt(inCount + i + 1, appType.get(i));
-			}
-			inCount +=  appType.size();
-			for (int i = 0; i < reflect.size(); i++) {
-				stmt.setInt(inCount + i + 1, reflect.get(i));
-			}
-			List<Application_New> resultListTmp = entityToDomain(stmt);
-			resultList.addAll(resultListTmp);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-			/*});
-		});*/
-		return resultList;
+		
+		String sql = "SELECT * FROM KRQDT_APPLICATION app" 
+				+ " join KRQDT_APP_REFLECT_STATE ref"
+				+ "  on app.APP_ID = ref.APP_ID and  app.CID = ref.CID"
+				+ " WHERE  app.APPLICANTS_SID =  @sid "
+				+ " AND app.APP_START_DATE <= @strData " + " AND app.APP_END_DATE >= @endData " + " AND app.APP_TYPE IN (@appType) " 
+				+ " AND ref.REFLECT_PER_STATE IN (@recordStatus)" + " ORDER BY app.INPUT_DATE ASC";
+		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
+				.paramString("sid", sid)
+				.paramDate("strData", dateData.start())
+				.paramDate("endData", dateData.end())
+				.paramInt("recordStatus", reflect)
+				.paramInt("appType", appType)
+				.getList(rec -> toObject(rec));
+		List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
+		return krqdtApplicationLst.stream().map(c -> c.toDomain()).collect(Collectors.toList());
+		
 	}
 
 	/**
@@ -493,14 +476,14 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public List<Application_New> getListAppByType(String companyId, String employeeID, GeneralDate startDate,
+	public List<Application> getListAppByType(String companyId, String employeeID, GeneralDate startDate,
 			GeneralDate endDate, int prePostAtr, int appType, List<Integer> lstRef) {
 		if (lstRef.isEmpty()) {
 			return new ArrayList<>();
 		}
-		List<Application_New> resultList = new ArrayList<>();
+		List<Application> resultList = new ArrayList<>();
 		CollectionUtil.split(lstRef, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(FIND_BY_REF_PERIOD_TYPE, KrqdtApplication_New.class)
+			resultList.addAll(this.queryProxy().query(FIND_BY_REF_PERIOD_TYPE, KrqdtApplication.class)
 					.setParameter("companyID", companyId).setParameter("employeeID", employeeID)
 					.setParameter("prePostAtr", prePostAtr).setParameter("startDate", startDate)
 					.setParameter("endDate", endDate).setParameter("appType", appType).setParameter("lstRef", subList)
@@ -517,82 +500,50 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 
 	@Override
 	@SneakyThrows
-	public List<Application_New> getAppForReflect(String sid, DatePeriod dateData, List<Integer> recordStatus,
+	public List<Application> getAppForReflect(String sid, DatePeriod dateData, List<Integer> recordStatus,
 			List<Integer> scheStatus, List<Integer> appType) {
-		List<Application_New> resultList = new ArrayList<>();
-		CollectionUtil.split(recordStatus, SPLIT_650, lstRefReal -> {
-			String subIn1 = NtsStatement.In.createParamsString(lstRefReal);
-			CollectionUtil.split(scheStatus, SPLIT_650, lstRef -> {
-				String subIn2 = NtsStatement.In.createParamsString(lstRef);
-				CollectionUtil.split(appType, SPLIT_650, lstAppType -> {
-					String subIn3 = NtsStatement.In.createParamsString(lstAppType);
-					String sql = "SELECT * FROM KRQDT_APPLICATION " + "WHERE  APPLICANTS_SID = ? "
-							+ " AND APP_START_DATE <= ? " + " AND APP_END_DATE >= ? " + " AND APP_TYPE IN (" + subIn3
-							+ ") " + " AND (REFLECT_PLAN_STATE IN (" + subIn1 + ") " + " OR REFLECT_PER_STATE IN ("
-							+ subIn2 + "))" + " ORDER BY INPUT_DATE ASC";
-					try (val stmt = this.connection().prepareStatement(sql)) {
-						stmt.setString(1, sid);
-						stmt.setDate(2, Date.valueOf(dateData.end().localDate()));
-						stmt.setDate(3, Date.valueOf(dateData.start().localDate()));
-						int inCount = 3;
-						for (int i = 0; i < lstAppType.size(); i++) {
-							stmt.setInt(inCount + i + 1, lstAppType.get(i));
-						}
-						inCount += lstAppType.size();
-						for (int i = 0; i < lstRefReal.size(); i++) {
-							stmt.setInt(inCount + i + 1, lstRefReal.get(i));
-						}
-						inCount += lstRefReal.size();
-						for (int i = 0; i < lstRef.size(); i++) {
-							stmt.setInt(inCount + i + 1, lstRef.get(i));
-						}
-						List<Application_New> resultListTmp = entityToDomain(stmt);
-						resultList.addAll(resultListTmp);
-					} catch (SQLException e) {
-						throw new RuntimeException(e);
-					}
-				});
-			});
-		});
-		return resultList;
+		
+		String sql = "SELECT * FROM KRQDT_APPLICATION app" 
+				+ " join KRQDT_APP_REFLECT_STATE ref"
+				+ "  on app.APP_ID = ref.APP_ID and  app.CID = ref.CID"
+				+ " WHERE  app.APPLICANTS_SID =  @sid "
+				+ " AND app.APP_START_DATE <= @strData " + " AND app.APP_END_DATE >= @endData " + " AND app.APP_TYPE IN (@appType) " 
+				+ " AND (ref.REFLECT_PLAN_STATE IN ( @scheStatus) " 
+				+ " OR ref.REFLECT_PER_STATE IN (@recordStatus))" + " ORDER BY app.INPUT_DATE ASC";
+		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
+				.paramString("sid", sid)
+				.paramDate("strData", dateData.start())
+				.paramDate("endData", dateData.end())
+				.paramInt("recordStatus", recordStatus)
+				.paramInt("scheStatus", scheStatus)
+				.paramInt("appType", appType)
+				.getList(rec -> toObject(rec));
+		List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
+		return krqdtApplicationLst.stream().map(c -> c.toDomain()).collect(Collectors.toList());
+		
 	}
 
 	@Override
 	@SneakyThrows
-	public List<Application_New> getByListDateReflectType(String sid, List<GeneralDate> dateData, List<Integer> reflect,
+	public List<Application> getByListDateReflectType(String sid, List<GeneralDate> dateData, List<Integer> reflect,
 			List<Integer> appType) {
-		List<Application_New> resultList = new ArrayList<>();
-		CollectionUtil.split(dateData, SPLIT_650, lstDate -> {
-			String subIn1 = NtsStatement.In.createParamsString(lstDate);
-			CollectionUtil.split(reflect, SPLIT_650, lstRef -> {
-				String subIn2 = NtsStatement.In.createParamsString(lstRef);
-				CollectionUtil.split(appType, SPLIT_650, lstApp -> {
-					String subIn3 = NtsStatement.In.createParamsString(lstApp);
-					String sql = "SELECT * FROM KRQDT_APPLICATION " + "WHERE APPLICANTS_SID = ?" + " AND APP_DATE IN ("
-							+ subIn1 + ") " + " AND REFLECT_PER_STATE IN (" + subIn2 + ")" + " AND APP_TYPE IN ("
-							+ subIn3 + ") ";
-					try (val stmt = this.connection().prepareStatement(sql)) {
-						stmt.setString(1, sid);
-						for (int i = 0; i < lstDate.size(); i++) {
-							stmt.setDate(i + 2, Date.valueOf(lstDate.get(i).localDate()));
-						}
-						for (int i = 0; i < lstRef.size(); i++) {
-							stmt.setInt(lstDate.size() + i + 2, lstRef.get(i));
-						}
-						int inCount = lstDate.size() + lstRef.size() + 1;
-						for (int i = 0; i < lstApp.size(); i++) {
-							stmt.setInt(inCount + i + 1, lstApp.get(i));
-						}
-
-						List<Application_New> resultListTmp = entityToDomain(stmt);
-						resultList.addAll(resultListTmp);
-					} catch (SQLException e) {
-						throw new RuntimeException(e);
-					}
-				});
-			});
-		});
-		return resultList;
+		
+		String sql = "SELECT * FROM KRQDT_APPLICATION app" 
+				+ " join KRQDT_APP_REFLECT_STATE ref"
+				+ "  on app.APP_ID = ref.APP_ID and  app.CID = ref.CID"
+				+ " WHERE  app.APPLICANTS_SID =  @sid "
+				+ " AND app.APP_DATE IN (@dateData) " + " AND app.APP_TYPE IN (@appType) " 
+				+ " AND (ref.REFLECT_PLAN_STATE IN ( @scheStatus) " 
+				+ " OR ref.REFLECT_PER_STATE IN (@recordStatus))" + " ORDER BY app.INPUT_DATE ASC";
+		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
+				.paramString("sid", sid)
+				.paramDate("dateData", dateData)
+				.paramInt("recordStatus", reflect)
+				.paramInt("appType", appType)
+				.getList(rec -> toObject(rec));
+		List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
+		return krqdtApplicationLst.stream().map(c -> c.toDomain()).collect(Collectors.toList());
+		
 	}
 
 	private List<Application_New> entityToDomain(java.sql.PreparedStatement stmt) throws SQLException {
