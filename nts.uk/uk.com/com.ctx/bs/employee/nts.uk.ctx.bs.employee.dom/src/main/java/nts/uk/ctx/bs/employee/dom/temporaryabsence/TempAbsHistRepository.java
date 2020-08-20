@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrameNo;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -133,4 +134,33 @@ public interface TempAbsHistRepository {
 	List<DateHistoryItem> getListByListSidsNoWithPeriod(String cid, List<String> sids);
 	
 	List<TempAbsenceHistory> getHistoryBySidAndCidAndBaseDate(String cid, List<String> sids, GeneralDate standardDate);
+	
+	/** [0] insert ( 休職休業履歴, 休職休業履歴項目 ) **/
+	void insert (TempAbsenceHistory tempAbsenceHistory ,TempAbsenceHisItem tempAbsenceHisItem);
+	/** [1] update ( 休職休業履歴, 休職休業履歴項目 )**/
+	void update (TempAbsenceHistory tempAbsenceHistory ,TempAbsenceHisItem tempAbsenceHisItem);
+	/** [2-1] delete ( 会社ID, 社員ID, 履歴ID )**/
+	void delete(String companyID , String empID , String historyID);
+	/** [2-2] delete ( 会社ID, 社員ID )	**/
+	void delete(String companyID , String empID );
+	/** [3-1] 社員IDを指定して履歴を取得する ( 会社ID, 社員ID )**/
+	Optional<TempAbsenceHistory> specifyEmpIDGetHistory(String companyID , String employeeId);
+	/**[3-2] *社員IDを指定して履歴を取得する ( 会社ID, List<社員ID> )**/
+	List<TempAbsenceHistory> getHistoryByListEmp(String companyId , List<String> lstEmpId);
+	/** [4] 履歴IDを指定して履歴項目を取得する**/
+	Optional<TempAbsenceHisItem> getHistoryItemBySpecifyingHistoryID(String hisID);
+	/** [5] 履歴IDと枠NOを指定して履歴項目を取得する	 **/													
+	List<TempAbsenceHisItem> specifyHisAndFrameNotGetHisItem(List<String> lstHisId, List<TempAbsenceFrameNo> tempAbsenceFrNo);
+	/**[6] 年月日時点の履歴項目を取得する **/
+	List<TempAbsenceHisItem> getHisItemsAsOfDate(String companyId , GeneralDate date);
+	/** [7-1] 社員を指定して年月日時点の履歴項目を取得する ( 会社ID, 年月日, 社員ID ) **/
+	Optional<TempAbsenceHisItem> getEmpAndHistoryItem(String companyId,String empID ,GeneralDate ymd ); 
+	/** [7-2] *社員を指定して年月日時点の履歴項目を取得する ( 会社ID, 年月日, List<社員ID> ) **/
+	List<TempAbsenceHisItem> getListEmpAndHistoryItem(String companyId,List<String> empIDs ,GeneralDate ymd ); 
+	/** [8-1] 期間付き履歴項目を取得する **/
+	List<TimeoffLeaveRecordWithPeriod> getHistoryItemWithPeriod (String companyID, List<String> lstEmpId , DatePeriod datePeriod , List<TempAbsenceFrameNo> lstTempAbsenceFrameNo);
+	/** [8-2] 期間付き休職履歴項目を取得する**/
+	List<TimeoffLeaveRecordWithPeriod> getLeaveHistoryItemsWithPeriod (String companyID , List<String> lstEmpId,DatePeriod datePeriod );
+	/** [8-3] 期間付き休業履歴項目を取得する **/
+	List<TimeoffLeaveRecordWithPeriod> getAbsenceHistoryItemPeriod (String companyId , List<String> lstEmpId ,DatePeriod datePeriod);
 }
