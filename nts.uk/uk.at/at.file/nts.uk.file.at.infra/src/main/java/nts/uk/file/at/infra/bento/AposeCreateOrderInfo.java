@@ -1,6 +1,7 @@
 package nts.uk.file.at.infra.bento;
 
 import com.aspose.cells.*;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
@@ -217,6 +218,8 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
 
     @Override
     public void generate(FileGeneratorContext generatorContext, OrderInfoExportData data) {
+        if(data.getOutputExt() == null)
+            throw new BusinessException("Msg_1641");
         if (!CollectionUtil.isEmpty(data.getOrderInfoDto().getTotalOrderInfoDtoList()))
             handleTotalTemplate(generatorContext, data);
         if(!CollectionUtil.isEmpty(data.getOrderInfoDto().getDetailOrderInfoDtoList()))

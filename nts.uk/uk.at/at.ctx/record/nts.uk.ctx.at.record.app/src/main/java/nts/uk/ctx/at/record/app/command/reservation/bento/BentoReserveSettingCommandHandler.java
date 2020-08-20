@@ -7,13 +7,9 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoMenuHistory;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationTime;
-import nts.uk.ctx.at.record.dom.reservation.bento.IBentoMenuHistoryRepository;
-import nts.uk.ctx.at.record.dom.reservation.bento.RegisterReservationLunchService;
+import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bento.rules.BentoReservationTimeName;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.*;
@@ -38,6 +34,9 @@ public class BentoReserveSettingCommandHandler extends CommandHandler<BentoReser
 
     @Inject
     private IBentoMenuHistoryRepository bentoMenuHistoryRepository;
+
+    @Inject
+    private  BentomenuAdapter bentomenuAdapter;
 
     @Override
     protected void handle(CommandHandlerContext<BentoReserveSettingCommand> commandHandlerContext) {
@@ -81,7 +80,8 @@ public class BentoReserveSettingCommandHandler extends CommandHandler<BentoReser
 
         @Override
         public BentoReservationSetting getReservationSettings(String cid) {
-            return reservationSettingRepository.findByCId(cid).get();
+            Optional<BentoReservationSetting> opt = reservationSettingRepository.findByCId(cid);
+            return opt.orElse(null);
         }
 
         @Override
@@ -90,7 +90,7 @@ public class BentoReserveSettingCommandHandler extends CommandHandler<BentoReser
         }
 
         @Override
-        public void registerBentoMenu(String historyID, BentoReservationClosingTime bentoReservationClosingTime) {
+        public void registerBentoMenu(String historyID, BentoReservationClosingTime bentoReservationClosingTime,OperationDistinction OperationDistinction) {
 
             String companyId = AppContexts.user().companyId();
             if (historyID == null){
@@ -98,7 +98,17 @@ public class BentoReserveSettingCommandHandler extends CommandHandler<BentoReser
 
                 bentoMenuHistoryRepository.add(new BentoMenuHistory(companyId, new ArrayList<>(Arrays.asList(hist))));
 
-                bentoMenuRepository.add(new BentoMenu(hist.identifier() , Collections.EMPTY_LIST,bentoReservationClosingTime));
+                String workLocation = null;
+                if (OperationDistinction.value == 1){
+                    val data = bentomenuAdapter.findBySid(AppContexts.user().employeeId(),GeneralDate.today());
+                    workLocation = data.isPresent() ? data.get().getWorkLocationCd() : null;
+                }
+                Optional<WorkLocationCode> workLocationCode = workLocation == null ? Optional.empty() : Optional.of(new WorkLocationCode(workLocation));
+                Bento bento = new Bento(1,new BentoName("弁当１"),new BentoAmount(1000),
+                        new BentoAmount(0),new BentoReservationUnitName("円"),
+                        true,false,workLocationCode);
+
+                bentoMenuRepository.add(new BentoMenu(hist.identifier() , Arrays.asList(bento),bentoReservationClosingTime));
             }else {
                 //get bentomenu
                 BentoMenu bentoMenu = bentoMenuRepository.getBentoMenuByHistId(companyId,historyID);
