@@ -30,6 +30,8 @@ public class ReservationModifyEmployeeDto {
     private GeneralDateTime reservationTime;
     /** 活性 */
     private boolean activity = true;
+    /** 注文済み */
+    private boolean ordered;
     /** 締め時刻枠 */
     private int closingTimeFrame;
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.reservation.bento;
 
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,11 @@ public class ForceUpdateBentoReservationService {
     public static AtomTask forceUpdate(ForceUpdateBentoReservationService.Require require,
                                        ReservationDate reservationDate,
                                        List<BentoReservationInfoTemp> bentoReservationInfos) {
+        if (CollectionUtil.isEmpty(bentoReservationInfos)) {
+            return AtomTask.of(() -> {
+            });
+        }
+
         return AtomTask.of(() -> {
             if (bentoReservationInfos == null || reservationDate == null) return;
             for (BentoReservationInfoTemp item : bentoReservationInfos) {
@@ -42,9 +48,9 @@ public class ForceUpdateBentoReservationService {
                         BentoReservationDetail detail = detailOpt.get();
                         detail.setBentoCount(mapItem.getValue());
                     } else {
-                        GeneralDateTime datetime = GeneralDateTime.now();
-                        BentoReservationDetail detail = BentoReservationDetail.createNew(mapItem.getKey(), mapItem.getValue(), datetime);
-                        bentoReservation.getBentoReservationDetails().add(detail);
+                        //GeneralDateTime datetime = GeneralDateTime.now();
+                        //BentoReservationDetail detail = BentoReservationDetail.createNew(mapItem.getKey(), mapItem.getValue(), datetime);
+                        //bentoReservation.getBentoReservationDetails().add(detail);
                     }
                 }
 

@@ -80,19 +80,19 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		builderString = new StringBuilder();
 		builderString.append(SELECT);
 		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD >= 'startDate' AND a.RESERVATION_YMD <= 'endDate'" +
-				" AND a.ORDERED IN (ordered) AND a.RESERVATION_FRAME = 'closingTimeFrame' ");
+				" AND a.ORDERED IN (ordered) AND a.RESERVATION_FRAME = closingTimeFrame ");
         GET_RESERVATION_DETAIL_FROM_ORDER = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append(SELECT);
 		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD >= 'startDate' AND a.RESERVATION_YMD <= 'endDate'" +
-				" AND a.RESERVATION_FRAME = 'closingTimeFrame' ");
+				" AND a.RESERVATION_FRAME = closingTimeFrame ");
 		FIND_ALL_RESERVATION_DETAIL = builderString.toString();
 
         builderString = new StringBuilder();
 		builderString.append(SELECT);
 		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD >= 'startDate' AND a.RESERVATION_YMD <= 'endDate'" +
-				" AND a.RESERVATION_FRAME = 'closingTimeFrame' AND b.QUANTITY >= 2 ");
+				" AND a.RESERVATION_FRAME = closingTimeFrame AND b.QUANTITY >= 2 ");
         ACQUIRED_RESERVATION_DETAIL = builderString.toString();
 
         builderString = new StringBuilder();
@@ -108,7 +108,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		builderString = new StringBuilder();
 		builderString.append(SELECT);
 		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD >= 'startDate' AND a.RESERVATION_YMD <= 'endDate'" +
-				" AND a.RESERVATION_FRAME = 'closingTimeFrame' AND b.pk.frameNo = frameNo ");
+				" AND a.RESERVATION_FRAME = closingTimeFrame AND b.pk.frameNo = frameNo ");
 		FIND_ALL_RESERVATION_OF_A_BENTO = builderString.toString();
 	}
 	
@@ -269,7 +269,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		query = query.replaceFirst("startDate", period.start().toString());
 		query = query.replaceFirst("endDate", period.end().toString());
 		query = query.replaceFirst("ordered", orderedParam);
-		query = query.replaceFirst("closingTimeFrame", String.valueOf(closingTimeFrame));
+		query = query.replaceFirst("closingTimeFrame", String.valueOf(closingTimeFrame.value));
 		return getBentoReservations(query);
 	}
 
@@ -294,17 +294,17 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		query = query.replaceFirst("cardLst", cardLstStr);
 		query = query.replaceFirst("startDate", period.start().toString());
 		query = query.replaceFirst("endDate", period.end().toString());
-		query = query.replaceFirst("closingTimeFrame", String.valueOf(closingTimeFrame));
+		query = query.replaceFirst("closingTimeFrame", String.valueOf(closingTimeFrame.value));
 		return getBentoReservations(query);
 	}
 
 	private String handleQueryForWkLocationCD(List<WorkLocationCode> workLocationCodes, String query){
-		if (CollectionUtil.isEmpty(workLocationCodes)) query += " AND a.WORK_LOCATION_CD = NULL ";
+		if (CollectionUtil.isEmpty(workLocationCodes)) query += " AND a.WORK_LOCATION_CD IS NULL ";
 		else{
 			List<String> workLst = workLocationCodes.stream().map(x -> x.v()).collect(Collectors.toList());
 			String workLstStr = getStringWork(workLocationCodes, workLst);
 			query += " AND a.WORK_LOCATION_CD IN (workLstStr) ";
-			query = query.replaceFirst("workLocationCode", workLstStr);
+			query = query.replaceFirst("workLstStr", workLstStr);
 		}
 		return query;
 	}
@@ -371,7 +371,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		query = query.replaceFirst("cardLst", cardLstStr);
 		query = query.replaceFirst("startDate", period.start().toString());
 		query = query.replaceFirst("endDate", period.end().toString());
-		query = query.replaceFirst("closingTimeFrame", String.valueOf(closingTimeFrame));
+		query = query.replaceFirst("closingTimeFrame", String.valueOf(closingTimeFrame.value));
 		return getBentoReservations(query);
 	}
 
