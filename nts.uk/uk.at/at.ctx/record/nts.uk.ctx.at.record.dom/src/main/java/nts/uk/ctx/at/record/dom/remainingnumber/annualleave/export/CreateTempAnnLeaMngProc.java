@@ -347,12 +347,12 @@ public class CreateTempAnnLeaMngProc {
 		void removeInterimRemain(String sId, DatePeriod period);
 	}
 	
-	private static interface RequireM4 {
+	public static interface RequireM4 {
 		
 		Optional<WorkType> workType(String companyId, String workTypeCd);
 	}
 	
-	private static interface RequireM2 {
+	public static interface RequireM2 {
 		
 		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, GeneralDate criteriaDate);
 		
@@ -361,7 +361,7 @@ public class CreateTempAnnLeaMngProc {
 		Optional<BasicScheduleSidDto> basicScheduleSid(String employeeId, GeneralDate baseDate);
 	}
 	
-	private static interface RequireM1 {
+	public static interface RequireM1 {
 		
 		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, GeneralDate criteriaDate);
 	}

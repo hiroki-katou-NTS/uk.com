@@ -17,12 +17,13 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceAmountMonth;
 import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.timesetting.AgreementOneMonth;
 import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
 import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
 import nts.uk.ctx.at.shared.dom.monthly.excessoutside.ExcessOutsideWork;
@@ -173,9 +174,17 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 				new AttendanceTimeMonth(3110 + randomVal),
 				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0));
 		val aggrBonusPayTime02 = AggregateBonusPayTime.of(1,
 				new AttendanceTimeMonth(3120 + randomVal),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0));
@@ -201,9 +210,11 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 				new AttendanceTimesMonth(10 + randomVal),
 				TimeMonthWithCalculation.ofSameTime(0),
 				TimeMonthWithCalculation.ofSameTime(0),
+				TimeMonthWithCalculation.ofSameTime(0),
 				TimeMonthWithCalculation.ofSameTime(0));
 		val aggrGoOut02 = AggregateGoOut.of(GoingOutReason.PUBLIC,
 				new AttendanceTimesMonth(20 + randomVal),
+				TimeMonthWithCalculation.ofSameTime(0),
 				TimeMonthWithCalculation.ofSameTime(0),
 				TimeMonthWithCalculation.ofSameTime(0),
 				TimeMonthWithCalculation.ofSameTime(0));
@@ -211,8 +222,8 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 		if (randomVal >= 6) vGoOuts.put(GoingOutReason.PUBLIC, aggrGoOut02);
 		val vPremiumTime = vWorkTime.getPremiumTime();
 		val vPremiumTimeMap = vPremiumTime.getPremiumTime();
-		val aggrPremiumTime01 = AggregatePremiumTime.of(1, new AttendanceTimeMonth(3410 + randomVal));
-		val aggrPremiumTime02 = AggregatePremiumTime.of(2, new AttendanceTimeMonth(3420 + randomVal));
+		val aggrPremiumTime01 = AggregatePremiumTime.of(1, new AttendanceTimeMonth(3410 + randomVal), new AttendanceAmountMonth(0));
+		val aggrPremiumTime02 = AggregatePremiumTime.of(2, new AttendanceTimeMonth(3420 + randomVal), new AttendanceAmountMonth(0));
 		vPremiumTimeMap.put(1, aggrPremiumTime01);
 		if (randomVal >= 6) vPremiumTimeMap.put(2, aggrPremiumTime02);
 		val medicalTime = vWorkTime.getMedicalTime();

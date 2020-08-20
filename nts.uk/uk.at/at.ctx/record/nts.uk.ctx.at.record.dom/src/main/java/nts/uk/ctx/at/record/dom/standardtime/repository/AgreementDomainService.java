@@ -294,7 +294,7 @@ public class AgreementDomainService {
 		List<AgreementTimeOfCompany> agreementTimeOfCompany(String companyId);
 	}
 	
-	private static interface RequireM1 {
+	public static interface RequireM1 {
 		
 		List<BasicAgreementSetting> basicAgreementSetting(List<String> basicSettingId);
 	}

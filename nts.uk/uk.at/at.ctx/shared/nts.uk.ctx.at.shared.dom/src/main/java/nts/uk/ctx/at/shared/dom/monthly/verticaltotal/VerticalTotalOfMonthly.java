@@ -183,9 +183,6 @@ public class VerticalTotalOfMonthly implements Serializable{
 			// 出退勤を確認する
 			val timeLeavingOfDaily = monthlyCalcDailys.getTimeLeaveOfDailyMap().get(procYmd);
 			
-			// 臨時出退勤を確認する
-			val temporaryTimeOfDaily = monthlyCalcDailys.getTemporaryTimeOfDailyMap().get(procYmd);
-			
 			// 特定日区分を確認する
 			val specificDateAttrOfDaily = monthlyCalcDailys.getSpecificDateAttrOfDailyMap().get(procYmd);
 			
@@ -200,13 +197,12 @@ public class VerticalTotalOfMonthly implements Serializable{
 			Optional<AnyItemValueOfDailyAttd> anyItemValueOpt = Optional.ofNullable(anyItemValueOfDailyMap.get(procYmd));
 		
 			// 勤務日数集計
-			this.workDays.aggregate(workingSystem, workType, attendanceTimeOfDaily, temporaryTimeOfDaily,
-					specificDateAttrOfDaily,
-					workTypeDaysCountTable, companySets.getPayItemCount(), predetermineTimeSet,
-					isAttendanceDay, isTwoTimesStampExists, predTimeSetOnWeekday);
+			this.workDays.aggregate(require, workingSystem, workType, attendanceTimeOfDaily,
+					specificDateAttrOfDaily, workTypeDaysCountTable, workInfoOfDaily, 
+					predetermineTimeSet, isAttendanceDay, isTwoTimesStampExists, predTimeSetOnWeekday);
 			
 			// 勤務時間集計
-			this.workTime.aggregate(workType, attendanceTimeOfDaily);
+			this.workTime.aggregate(require, workType, attendanceTimeOfDaily);
 			
 			// 勤務時刻集計
 			this.workClock.aggregate(workType, pcLogonInfoOpt, attendanceTimeOfDaily, timeLeavingOfDaily,
@@ -227,7 +223,10 @@ public class VerticalTotalOfMonthly implements Serializable{
 		this.workClock.sum(target.workClock);
 	}
 	
-	public static interface RequireM1 extends MonAggrCompanySettings.RequireM4, MonAggrCompanySettings.RequireM2 {
+	public static interface RequireM1 extends MonAggrCompanySettings.RequireM4, 
+												MonAggrCompanySettings.RequireM2, 
+												WorkDaysOfMonthly.RequireM1,
+												WorkTimeOfMonthlyVT.RequireM1 {
 
 	}
 }

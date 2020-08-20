@@ -7,7 +7,6 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 
 /**
@@ -22,16 +21,6 @@ public class PremiumTimeOfMonthly implements Serializable{
 
 	/** 割増時間 */
 	private Map<Integer, AggregatePremiumTime> premiumTime;
-	/** 深夜時間 */
-	private AttendanceTimeMonth midnightTime;
-	/** 法定内時間外時間 */
-	private AttendanceTimeMonth legalOutsideWorkTime;
-	/** 法定内休出時間 */
-	private AttendanceTimeMonth legalHolidayWorkTime;
-	/** 法定外時間外時間 */
-	private AttendanceTimeMonth illegalOutsideWorkTime;
-	/** 法定外休出時間 */
-	private AttendanceTimeMonth illegalHolidayWorkTime;
 	
 	/**
 	 * コンストラクタ
@@ -39,11 +28,6 @@ public class PremiumTimeOfMonthly implements Serializable{
 	public PremiumTimeOfMonthly(){
 		
 		this.premiumTime = new HashMap<>();
-		this.midnightTime = new AttendanceTimeMonth(0);
-		this.legalOutsideWorkTime = new AttendanceTimeMonth(0);
-		this.legalHolidayWorkTime = new AttendanceTimeMonth(0);
-		this.illegalOutsideWorkTime = new AttendanceTimeMonth(0);
-		this.illegalHolidayWorkTime = new AttendanceTimeMonth(0);
 	}
 	
 	/**
@@ -56,24 +40,13 @@ public class PremiumTimeOfMonthly implements Serializable{
 	 * @param illegalHolidayWorkTime 法定外休出時間
 	 * @return 月別実績の割増時間
 	 */
-	public static PremiumTimeOfMonthly of(
-			List<AggregatePremiumTime> premiumTimes,
-			AttendanceTimeMonth midnightTime,
-			AttendanceTimeMonth legalOutsideWorkTime,
-			AttendanceTimeMonth legalHolidayWorkTime,
-			AttendanceTimeMonth illegalOutsideWorkTime,
-			AttendanceTimeMonth illegalHolidayWorkTime){
+	public static PremiumTimeOfMonthly of(List<AggregatePremiumTime> premiumTimes){
 		
 		val domain = new PremiumTimeOfMonthly();
 		for (val premiumTime : premiumTimes){
 			val premiumTimeItemNo = Integer.valueOf(premiumTime.getPremiumTimeItemNo());
 			domain.premiumTime.putIfAbsent(premiumTimeItemNo, premiumTime);
 		}
-		domain.midnightTime = midnightTime;
-		domain.legalOutsideWorkTime = legalOutsideWorkTime;
-		domain.legalHolidayWorkTime = legalHolidayWorkTime;
-		domain.illegalOutsideWorkTime = illegalOutsideWorkTime;
-		domain.illegalHolidayWorkTime = illegalHolidayWorkTime;
 		return domain;
 	}
 	
@@ -106,16 +79,12 @@ public class PremiumTimeOfMonthly implements Serializable{
 			val itemNo = premiumValue.getPremiumTimeItemNo();
 			if (target.premiumTime.containsKey(itemNo)){
 				premiumValue.addMinutesToTime(target.premiumTime.get(itemNo).getTime().v());
+				premiumValue.addAmount(target.premiumTime.get(itemNo).getAmount().v());
 			}
 		}
 		for (val targetPremiumValue : target.premiumTime.values()){
 			val itemNo = targetPremiumValue.getPremiumTimeItemNo();
 			this.premiumTime.putIfAbsent(itemNo, targetPremiumValue);
 		}
-		this.midnightTime = this.midnightTime.addMinutes(target.midnightTime.v());
-		this.legalOutsideWorkTime = this.legalOutsideWorkTime.addMinutes(target.legalOutsideWorkTime.v());
-		this.legalHolidayWorkTime = this.legalHolidayWorkTime.addMinutes(target.legalHolidayWorkTime.v());
-		this.illegalOutsideWorkTime = this.illegalOutsideWorkTime.addMinutes(target.illegalOutsideWorkTime.v());
-		this.illegalHolidayWorkTime = this.illegalHolidayWorkTime.addMinutes(target.illegalHolidayWorkTime.v());
 	}
 }

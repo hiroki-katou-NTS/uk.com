@@ -33,6 +33,16 @@ public class GoOutForChildCareDto implements ItemConst {
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_C, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private int time;
 	
+	/** 所定内時間: 勤怠月間回数 */
+	@AttendanceItemValue(type = ValueType.TIME)
+	@AttendanceItemLayout(jpPropertyName = WITHIN_STATUTORY, layout = LAYOUT_D, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
+	private int withinTime;
+	
+	/** 所定外時間: 勤怠月間時間 */
+	@AttendanceItemValue(type = ValueType.TIME)
+	@AttendanceItemLayout(jpPropertyName = EXCESS_STATUTORY, layout = LAYOUT_E, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
+	private int excessTime;
+	
 	public String enumText(){
 		switch (this.attr) {
 		case 0:
@@ -49,14 +59,16 @@ public class GoOutForChildCareDto implements ItemConst {
 			dto.setAttr(domain.getChildCareAtr() == null ? 0 : domain.getChildCareAtr().value);
 			dto.setTime(domain.getTime() == null ? 0 : domain.getTime().valueAsMinutes());
 			dto.setTimes(domain.getTimes() == null ? 0 : domain.getTimes().v());
+			dto.setWithinTime(domain.getWithinTime() == null ? 0 : domain.getWithinTime().valueAsMinutes());
+			dto.setExcessTime(domain.getExcessTime() == null ? 0 : domain.getExcessTime().valueAsMinutes());
 		}
 		return dto;
 	}
 	
 	public GoOutForChildCare toDomain(){
 		return GoOutForChildCare.of(attr == ChildCareAtr.CARE.value ? ChildCareAtr.CARE : ChildCareAtr.CHILD_CARE, 
-				new AttendanceTimesMonth(times), 
-						new AttendanceTimeMonth(time));
+						new AttendanceTimesMonth(times), new AttendanceTimeMonth(time), 
+						new AttendanceTimeMonth(withinTime), new AttendanceTimeMonth(excessTime));
 	}
 	
 }

@@ -24,6 +24,7 @@ import nts.gul.reflection.FieldReflection;
 import nts.gul.text.StringUtil;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.interval.IntervalTimeOfDaily;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayOutingTime;
 import nts.uk.ctx.at.record.infra.entity.daily.latetime.KrcdtDayLateTime;
 import nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime.KrcdtDayLeaveEarlyTime;
@@ -86,6 +87,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezon
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -1276,6 +1278,14 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 	@Column(name = "SP_RAISESALARY_OUT_TIME10")
 	public int spRaiseSalaryOutTime10;
 	
+	/** インターバル出勤時刻 */
+	@Column(name = "INTERVAL_ATTENDANCE_CLOCK")
+	public int intervalAttendance;
+	
+	/** インターバル時間 */
+	@Column(name = "INTERVAL_TIME")
+	public int intervalTime;
+	
 	/*----------------------日別実績の加給時間------------------------------*/
 	
 	@Override
@@ -1330,7 +1340,17 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 			/* 勤務回数 */
 			this.workTimes = totalWork.getWorkTimes() == null ? 0 : totalWork.getWorkTimes().v();
 			/*休暇加算時間*/
-			this.vactnAddTime = totalWork.getVacationAddTime() == null ? 0 : totalWork.getVacationAddTime().valueAsMinutes();		
+			this.vactnAddTime = totalWork.getVacationAddTime() == null ? 0 : totalWork.getVacationAddTime().valueAsMinutes();
+			
+			if (totalWork.getIntervalTime() != null) {
+				this.intervalAttendance = totalWork.getIntervalTime().getIntervalAttendance() == null ? 
+						0 : totalWork.getIntervalTime().getIntervalAttendance().valueAsMinutes();
+				this.intervalTime = totalWork.getIntervalTime().getIntervalTime() == null ? 
+						0 : totalWork.getIntervalTime().getIntervalTime().valueAsMinutes();
+			} else {
+				this.intervalAttendance = 0;
+				this.intervalTime = 0;
+			}
 		}
 		if(constraintTime != null){
 			/* 総拘束時間 */
@@ -2638,8 +2658,10 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 				new RaiseSalaryTimeOfDailyPerfor(bonusPayTime, specBonusPayTime),
 				new WorkTimes(this.workTimes), new TemporaryTimeOfDaily(),
 				test.get(0),
-				vacation
-				);
+				vacation,
+				IntervalTimeOfDaily.of(
+						new AttendanceClock(this.intervalAttendance), 
+						new AttendanceTime(this.intervalTime)));
 
 		// 日別実績の勤務実績時間
 		ActualWorkingTimeOfDaily actual = ActualWorkingTimeOfDaily.of(totalTime, this.midnBindTime, this.totalBindTime,
@@ -3039,8 +3061,10 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 														  new WorkTimes(entity.workTimes),
 														  new TemporaryTimeOfDaily(),
 														  test.get(0),
-														  vacation
-														  );
+														  vacation,
+														  IntervalTimeOfDaily.of(
+																  new AttendanceClock(entity.intervalAttendance), 
+																  new AttendanceTime(entity.intervalTime)));
 		totalTime.setVacationAddTime(new AttendanceTime(entity.vactnAddTime));
 		
 		

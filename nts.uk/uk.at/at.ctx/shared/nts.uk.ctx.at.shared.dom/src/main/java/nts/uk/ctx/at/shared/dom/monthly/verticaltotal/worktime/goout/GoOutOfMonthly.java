@@ -133,6 +133,8 @@ public class GoOutOfMonthly implements Serializable{
 						targetGoOut.getIllegalTime().getTime().v(), targetGoOut.getIllegalTime().getCalcTime().v());
 				goOut.addMinutesToTotalTime(
 						targetGoOut.getTotalTime().getTime().v(), targetGoOut.getTotalTime().getCalcTime().v());
+				goOut.addMinutesToCoreOutTime(
+						targetGoOut.getCoreOutTime().getTime().v(), targetGoOut.getCoreOutTime().getCalcTime().v());
 			}
 		}
 		for (val targetGoOut : target.goOuts.values()){
@@ -146,6 +148,8 @@ public class GoOutOfMonthly implements Serializable{
 				val targetChildCare = target.goOutForChildCares.get(childCareAtr);
 				childCare.addTimes(targetChildCare.getTimes().v());
 				childCare.addMinutesToTime(targetChildCare.getTime().v());
+				childCare.addMinutesToWithinTime(targetChildCare.getWithinTime().v());
+				childCare.addMinutesToExcessTime(targetChildCare.getExcessTime().v());
 			}
 		}
 		for (val targetChildCare : target.goOutForChildCares.values()){

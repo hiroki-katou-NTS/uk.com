@@ -529,7 +529,7 @@ public class GetAgreTimeByPeriod {
 		Optional<AgreementTimeOfManagePeriod> agreementTimeOfManagePeriod(String employeeId, YearMonth yearMonth);
 	}
 	
-	private static interface RequireM6 extends AgreementDomainService.RequireM3 {
+	public static interface RequireM6 extends AgreementDomainService.RequireM3 {
 	}
 	
 	public static interface RequireM4 extends RequireM6, RequireM0 {
@@ -537,7 +537,7 @@ public class GetAgreTimeByPeriod {
 		Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate);
 	}
 	
-	private static interface RequireM0 {
+	public static interface RequireM0 {
 		
 		List<AgreementTimeOfManagePeriod> agreementTimeOfManagePeriod(List<String> employeeIds, List<YearMonth> yearMonths);
 	}
@@ -547,12 +547,12 @@ public class GetAgreTimeByPeriod {
 		Optional<AgreementOperationSetting> agreementOperationSetting(String companyId);
 	}
 	
-	private static interface RequireM2 {
+	public static interface RequireM2 {
 		
 		Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate);
 	}
 	
-	private static interface RequireM1 extends AgreementDomainService.RequireM3 {
+	public static interface RequireM1 extends AgreementDomainService.RequireM3 {
 	}
 
 }

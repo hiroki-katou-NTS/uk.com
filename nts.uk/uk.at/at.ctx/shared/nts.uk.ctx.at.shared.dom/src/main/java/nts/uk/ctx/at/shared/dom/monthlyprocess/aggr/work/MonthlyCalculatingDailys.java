@@ -13,6 +13,7 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.interval.IntervalTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
@@ -303,7 +304,8 @@ public class MonthlyCalculatingDailys {
 														new SpecialHolidayOfDaily(new AttendanceTime(0), 
 																beforeActualWork.getTotalWorkingTime().getHolidayOfDaily().getSpecialHoliday().getDigestionUseTime()), 
 														new AnnualOfDaily(new AttendanceTime(0), 
-																beforeActualWork.getTotalWorkingTime().getHolidayOfDaily().getAnnual().getDigestionUseTime()))),
+																beforeActualWork.getTotalWorkingTime().getHolidayOfDaily().getAnnual().getDigestionUseTime())),
+												IntervalTimeOfDaily.empty()),
 										beforeActualWork.getDivTime(),
 										beforeActualWork.getPremiumTimeOfDailyPerformance());
 			

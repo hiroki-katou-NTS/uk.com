@@ -5,7 +5,6 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.monthly.TimeMonthWithCalculation;
@@ -31,6 +30,8 @@ public class AggregateGoOut implements Serializable{
 	private TimeMonthWithCalculation illegalTime;
 	/** 合計時間 */
 	private TimeMonthWithCalculation totalTime;
+	/** コアタイム外時間 */
+	private TimeMonthWithCalculation coreOutTime;
 
 	/**
 	 * コンストラクタ
@@ -42,6 +43,7 @@ public class AggregateGoOut implements Serializable{
 		this.legalTime = TimeMonthWithCalculation.ofSameTime(0);
 		this.illegalTime = TimeMonthWithCalculation.ofSameTime(0);
 		this.totalTime = TimeMonthWithCalculation.ofSameTime(0);
+		this.coreOutTime = TimeMonthWithCalculation.ofSameTime(0);
 	}
 
 	/**
@@ -51,6 +53,7 @@ public class AggregateGoOut implements Serializable{
 	 * @param legalTime 法定内時間
 	 * @param illegalTime 法定外時間
 	 * @param totalTime 合計時間
+	 * @param coreOutTime コアタイム外時間
 	 * @return 集計外出
 	 */
 	public static AggregateGoOut of(
@@ -58,35 +61,15 @@ public class AggregateGoOut implements Serializable{
 			AttendanceTimesMonth times,
 			TimeMonthWithCalculation legalTime,
 			TimeMonthWithCalculation illegalTime,
-			TimeMonthWithCalculation totalTime){
+			TimeMonthWithCalculation totalTime,
+			TimeMonthWithCalculation coreOutTime){
 		
 		val domain = new AggregateGoOut(goOutReason);
 		domain.times = times;
 		domain.legalTime = legalTime;
 		domain.illegalTime = illegalTime;
 		domain.totalTime = totalTime;
-		return domain;
-	}
-	/**
-	 * for use merger table KrcdtMonMerge
-	 * @author lanlt
-	 * @param times
-	 * @param legalTime
-	 * @param illegalTime
-	 * @param totalTime
-	 * @return
-	 */
-	public static AggregateGoOut of(
-			AttendanceTimesMonth times,
-			TimeMonthWithCalculation legalTime,
-			TimeMonthWithCalculation illegalTime,
-			TimeMonthWithCalculation totalTime){
-		
-		val domain = new AggregateGoOut();
-		domain.times = times;
-		domain.legalTime = legalTime;
-		domain.illegalTime = illegalTime;
-		domain.totalTime = totalTime;
+		domain.coreOutTime = coreOutTime;
 		return domain;
 	}
 	
@@ -124,10 +107,12 @@ public class AggregateGoOut implements Serializable{
 	public void addMinutesToTotalTime(int minutes, int calcMinutes){
 		this.totalTime = this.totalTime.addMinutes(minutes, calcMinutes);
 	}
-
-	public static AggregateGoOut of(AttendanceTimeMonth attendanceTimeMonth, TimeMonthWithCalculation legalTime2,
-			TimeMonthWithCalculation illegalTime2, TimeMonthWithCalculation totalTime2) {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * コアタイム外時間に分を加算する
+	 * @param minutes 分
+	 * @param calcMinutes 分(計算用)
+	 */
+	public void addMinutesToCoreOutTime(int minutes, int calcMinutes){
+		this.coreOutTime = this.coreOutTime.addMinutes(minutes, calcMinutes);
 	}
 }

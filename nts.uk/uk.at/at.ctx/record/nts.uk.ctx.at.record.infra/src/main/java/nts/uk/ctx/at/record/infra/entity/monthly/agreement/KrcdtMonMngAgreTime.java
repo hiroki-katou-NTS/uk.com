@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeManage;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.timesetting.AgreementOneMonth;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

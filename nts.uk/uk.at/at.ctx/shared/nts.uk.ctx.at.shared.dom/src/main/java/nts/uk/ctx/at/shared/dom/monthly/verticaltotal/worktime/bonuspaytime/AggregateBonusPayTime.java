@@ -3,7 +3,6 @@ package nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.bonuspaytime;
 import java.io.Serializable;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
@@ -12,7 +11,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
  * @author shuichi_ishida
  */
 @Getter
-@NoArgsConstructor
 public class AggregateBonusPayTime implements Serializable{
 
 	/** Serializable */
@@ -28,6 +26,14 @@ public class AggregateBonusPayTime implements Serializable{
 	private AttendanceTimeMonth holidayWorkBonusPayTime;
 	/** 休出特定加給時間 */
 	private AttendanceTimeMonth holidayWorkSpecificBonusPayTime;
+	/** 所定内加給時間 */
+	private AttendanceTimeMonth within;
+	/** 所定内特定加給時間 */
+	private AttendanceTimeMonth withinSpecific;
+	/** 所定外加給時間 */
+	private AttendanceTimeMonth excess;
+	/** 所定外特定加給時間 */
+	private AttendanceTimeMonth excessSpecific;
 	
 	/**
 	 * コンストラクタ
@@ -39,6 +45,10 @@ public class AggregateBonusPayTime implements Serializable{
 		this.specificBonusPayTime = new AttendanceTimeMonth(0);
 		this.holidayWorkBonusPayTime = new AttendanceTimeMonth(0);
 		this.holidayWorkSpecificBonusPayTime = new AttendanceTimeMonth(0);
+		this.within = new AttendanceTimeMonth(0);
+		this.withinSpecific = new AttendanceTimeMonth(0);
+		this.excess = new AttendanceTimeMonth(0);
+		this.excessSpecific = new AttendanceTimeMonth(0);
 	}
 	
 	/**
@@ -48,6 +58,10 @@ public class AggregateBonusPayTime implements Serializable{
 	 * @param specificBonusPayTime 特定加給時間
 	 * @param holidayWorkBonusPayTime 休出加給時間
 	 * @param holidayWorkSpecificBonusPayTime 休出特定加給時間
+	 * @param within 所定内加給時間
+	 * @param withinSpecific 所定内特定加給時間
+	 * @param excess 所定外加給時間
+	 * @param excessSpecific 所定外特定加給時間
 	 * @return 集計加給時間
 	 */
 	public static AggregateBonusPayTime of(
@@ -55,37 +69,24 @@ public class AggregateBonusPayTime implements Serializable{
 			AttendanceTimeMonth bonusPayTime,
 			AttendanceTimeMonth specificBonusPayTime,
 			AttendanceTimeMonth holidayWorkBonusPayTime,
-			AttendanceTimeMonth holidayWorkSpecificBonusPayTime){
+			AttendanceTimeMonth holidayWorkSpecificBonusPayTime,
+			AttendanceTimeMonth within,
+			AttendanceTimeMonth withinSpecific,
+			AttendanceTimeMonth excess,
+			AttendanceTimeMonth excessSpecific){
 		
 		val domain = new AggregateBonusPayTime(bonusPayFrameNo);
 		domain.bonusPayTime = bonusPayTime;
 		domain.specificBonusPayTime = specificBonusPayTime;
 		domain.holidayWorkBonusPayTime = holidayWorkBonusPayTime;
 		domain.holidayWorkSpecificBonusPayTime = holidayWorkSpecificBonusPayTime;
+		domain.within = within;
+		domain.withinSpecific = withinSpecific;
+		domain.excess = excess;
+		domain.excessSpecific = excessSpecific;
 		return domain;
 	}
 	
-	/**
-	 * for using table KRCDT_MON_MERGE
-	 * @author lanlt
-	 * @param bonusPayTime
-	 * @param specificBonusPayTime
-	 * @param holidayWorkBonusPayTime
-	 * @param holidayWorkSpecificBonusPayTime
-	 * @return
-	 */
-	public static AggregateBonusPayTime of(
-			AttendanceTimeMonth bonusPayTime,
-			AttendanceTimeMonth specificBonusPayTime,
-			AttendanceTimeMonth holidayWorkBonusPayTime,
-			AttendanceTimeMonth holidayWorkSpecificBonusPayTime){
-		val domain = new AggregateBonusPayTime();
-		domain.bonusPayTime = bonusPayTime;
-		domain.specificBonusPayTime = specificBonusPayTime;
-		domain.holidayWorkBonusPayTime = holidayWorkBonusPayTime;
-		domain.holidayWorkSpecificBonusPayTime = holidayWorkSpecificBonusPayTime;
-		return domain;
-	}
 	/**
 	 * 加給時間に分を加算する
 	 * @param minutes 分
@@ -116,5 +117,37 @@ public class AggregateBonusPayTime implements Serializable{
 	 */
 	public void addMinutesToHolidayWorkSpecificBonusPayTime(int minutes){
 		this.holidayWorkSpecificBonusPayTime = this.holidayWorkSpecificBonusPayTime.addMinutes(minutes);
+	}
+	
+	/**
+	 * 所定内加給時間に分を加算する
+	 * @param minutes 分
+	 */
+	public void addMinutesToWithinBonusPayTime(int minutes){
+		this.within = this.within.addMinutes(minutes);
+	}
+
+	/**
+	 * 所定内特定加給時間に分を加算する
+	 * @param minutes 分
+	 */
+	public void addMinutesToWithinSpecificBonusPayTime(int minutes){
+		this.withinSpecific = this.withinSpecific.addMinutes(minutes);
+	}
+
+	/**
+	 * 所定外加給時間に分を加算する
+	 * @param minutes 分
+	 */
+	public void addMinutesToWxcessBonusPayTime(int minutes){
+		this.excess = this.excess.addMinutes(minutes);
+	}
+
+	/**
+	 * 所定外特定加給時間に分を加算する
+	 * @param minutes 分
+	 */
+	public void addMinutesToWxcessSpecificBonusPayTime(int minutes){
+		this.excessSpecific = this.excessSpecific.addMinutes(minutes);
 	}
 }

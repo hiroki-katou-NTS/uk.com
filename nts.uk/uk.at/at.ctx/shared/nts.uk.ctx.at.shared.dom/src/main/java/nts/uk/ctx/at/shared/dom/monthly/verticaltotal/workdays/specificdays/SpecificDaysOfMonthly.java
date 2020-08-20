@@ -4,14 +4,20 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateAttr;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
+import nts.uk.ctx.at.shared.dom.monthly.WorkTypeDaysCountTable;
+import nts.uk.ctx.at.shared.dom.monthly.vtotalmethod.SpecCountNotCalcSubject;
+import nts.uk.ctx.at.shared.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 月別実績の特定日数
@@ -57,57 +63,58 @@ public class SpecificDaysOfMonthly implements Serializable{
 	 * @param isAttendanceDay 出勤しているかどうか
 	 */
 	public void aggregate(
+			RequireM1 require,
 			WorkingSystem workingSystem,
 			WorkType workType,
 			SpecificDateAttrOfDailyAttd specificDateAttrOfDaily,
+			WorkTypeDaysCountTable workTypeDaysCountTable,
 			boolean isAttendanceDay){
 
 		if (workType == null) return;
 		if (specificDateAttrOfDaily == null) return;
 		
-		// 勤務種類の判断
-		//*****（未）　月別実績の縦計方法の設計が完了したら、親処理で読み込んで、ここまで渡してくる。その設定で、カウントする勤務種類か判断する。
-		boolean isCount = false;
+		val verticalTotalMethod = require.verticalTotalMethodOfMonthly(AppContexts.user().companyId());
+
+		/** 勤務種類の判断 */
+		boolean isCount = verticalTotalMethod
+				.map(vtm -> vtm.isCalcThisWorkTypeAsSpecDays(workingSystem, workType, workTypeDaysCountTable))
+				.orElse(false);
+		
 		if (!isCount) return;
 
-		// 労働制を取得
-		boolean isAdd = false;
-		if (workingSystem == WorkingSystem.EXCLUDED_WORKING_CALCULATE){
-
-			// 計算対象外の時、無条件で加算する
-			isAdd = true;
-		}
-		else {
+		if (workingSystem != WorkingSystem.EXCLUDED_WORKING_CALCULATE
+				|| (workingSystem == WorkingSystem.EXCLUDED_WORKING_CALCULATE 
+				&& verticalTotalMethod.get().getSpecTotalCountMonthly().getSpecCount() == SpecCountNotCalcSubject.workDayOnly)) {
 			
-			// その他労働制の時、出勤している日なら、加算する
-			if (isAttendanceDay){
-				isAdd = true;
+			/** ○出勤状態を判断する */
+			if (!isAttendanceDay) {
+				return;
 			}
 		}
 
-		// 休出かどうか判断
-		boolean isHolidayWork = workType.getDailyWork().isHolidayWork();
-		
-		if (isAdd) {
+		specificDateAttrOfDaily.getSpecificDateAttrSheets().stream().forEach(spe -> {
+			val dailySpecNo = specificDays.values().stream()
+					.filter(dspe -> dspe.getSpecificDayItemNo().equals(spe.getSpecificDateItemNo())).findFirst();
 			
-			// 特定日日数を取得
-			for (val specificDateAttrSheet : specificDateAttrOfDaily.getSpecificDateAttrSheets()){
-	
-				// 特定日とする＝NOT_USE　の時、その枠はカウントしない
-				if (specificDateAttrSheet.getSpecificDateAttr() == SpecificDateAttr.NOT_USE) continue;
-				
-				// 該当枠に1日を加算する
-				val specificDateItemNo = specificDateAttrSheet.getSpecificDateItemNo();
-				this.specificDays.putIfAbsent(specificDateItemNo, new AggregateSpecificDays(specificDateItemNo));
-				val targetSpecificDays = this.specificDays.get(specificDateItemNo);
-				if (isHolidayWork){
-					targetSpecificDays.addDaysToHolidayWorkSpecificDays(1.0);
-				}
-				else {
-					targetSpecificDays.addDaysToSpecificDays(1.0);
-				}
+			val specDays = spe.getSpecificDateAttr() == SpecificDateAttr.USE ? 1d : 0;
+
+			AggregateSpecificDays aggrSpecDays;
+			if (dailySpecNo.isPresent()) {
+				aggrSpecDays = dailySpecNo.get(); 
+
+			} else {
+				aggrSpecDays = new AggregateSpecificDays(spe.getSpecificDateItemNo());
 			}
-		}
+			
+			/** ○休出かどうかの判断 */
+			if (workType.getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay 
+					&& workType.getDailyWork().getOneDay().isHolidayWork()) {
+				aggrSpecDays.addDaysToHolidayWorkSpecificDays(specDays);
+
+			} else {
+				aggrSpecDays.addDaysToSpecificDays(specDays);
+			}
+		});
 	}
 
 	/**
@@ -127,5 +134,10 @@ public class SpecificDaysOfMonthly implements Serializable{
 			val itemNo = targetSpecificDay.getSpecificDayItemNo();
 			this.specificDays.putIfAbsent(itemNo, targetSpecificDay);
 		}
+	}
+	
+	public static interface RequireM1 {
+
+		Optional<VerticalTotalMethodOfMonthly> verticalTotalMethodOfMonthly(String cid);
 	}
 }

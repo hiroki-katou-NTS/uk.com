@@ -171,7 +171,7 @@ public class MonthlyStatutoryWorkingHours {
 												RequireM0 {
 	}
 	
-	private static interface RequireM0 {
+	public static interface RequireM0 {
 		
 		Optional<UsageUnitSetting> usageUnitSetting(String companyId);
 	}

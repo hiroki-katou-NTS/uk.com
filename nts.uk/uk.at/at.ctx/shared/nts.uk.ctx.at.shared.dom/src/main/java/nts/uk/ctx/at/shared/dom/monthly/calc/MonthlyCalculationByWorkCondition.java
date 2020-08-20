@@ -52,30 +52,17 @@ public class MonthlyCalculationByWorkCondition {
 		workConditions.stream().forEach(wc -> {
 			
 			/** ○処理期間を計算 */
-			val calcPeriod = calcPeriod(wc, period);
+			val calcPeriod = MonthlyCalculation.confirmProcPeriod(wc.getDatePeriod(), period);
 			
 			/** ○処理中の労働制を確認する */
 			if (wc.getWorkingConditionItem().getLaborSystem() == WorkingSystem.FLEX_TIME_WORK) {
 				
-				
+				MonthlyCalculation monthCalc = new MonthlyCalculation();
+				monthCalc.aggregate(require, cacheCarrier, aggrPeriod, aggrAtr, annualLeaveDeductDays, absenceDeductTime, flexSettleTime);
 			}
 		});
 		
 		return null;
-	}
-	
-	/** ○処理期間を計算 */
-	private static DatePeriod calcPeriod(WorkingConditionItemWithPeriod workCondition, DatePeriod period) {
-		
-		if (workCondition.getDatePeriod().contains(period)) {
-			return period;
-		}
-		
-		if (workCondition.getDatePeriod().contains(period.start())) {
-			return period.cutOffWithNewEnd(workCondition.getDatePeriod().end());
-		}
-		
-		return period.cutOffWithNewStart(workCondition.getDatePeriod().start());
 	}
 	
 	@Getter

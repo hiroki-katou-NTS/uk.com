@@ -56,6 +56,10 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTime;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.CreateTempAnnLeaMngProc;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
+import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
@@ -140,6 +144,7 @@ import nts.uk.ctx.at.shared.dom.monthly.vacation.specialholiday.monthremaindata.
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.vtotalmethod.PayItemCountOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.vtotalmethod.PayItemCountOfMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.workform.flex.MonthlyAggrSetOfFlex;
 import nts.uk.ctx.at.shared.dom.monthly.workform.flex.MonthlyAggrSetOfFlexRepository;
 import nts.uk.ctx.at.shared.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
@@ -2278,6 +2283,31 @@ public class RecordDomRequireService {
 		@Override
 		public List<RoleOfOpenPeriod> roleOfOpenPeriod(String cid) {
 			return roleOfOpenPeriodRepo.findByCID(cid);
+		}
+		
+
+		public Optional<VerticalTotalMethodOfMonthly> verticalTotalMethodOfMonthly(String cid) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<StampCard> stampCard(String empId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<BentoReservation> bentoReservation(List<ReservationRegisterInfo> inforLst, GeneralDate date,
+				boolean ordered) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Bento bento(String companyID, GeneralDate date, int frameNo) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 }

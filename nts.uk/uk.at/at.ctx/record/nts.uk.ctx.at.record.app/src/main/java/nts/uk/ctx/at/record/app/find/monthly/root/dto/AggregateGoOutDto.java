@@ -40,6 +40,10 @@ public class AggregateGoOutDto implements ItemConst {
 	@AttendanceItemLayout(jpPropertyName = LEGAL, layout = LAYOUT_E, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private TimeMonthWithCalculationDto legalTime;
 
+	/** コアタイム外時間: 計算付き月間時間 */
+	@AttendanceItemLayout(jpPropertyName = CORE_OUT, layout = LAYOUT_F, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
+	private TimeMonthWithCalculationDto coreOutTime;
+
 	public String enumText() {
 		switch (this.attr) {
 		case 0:
@@ -62,6 +66,7 @@ public class AggregateGoOutDto implements ItemConst {
 			dto.setLegalTime(TimeMonthWithCalculationDto.from(domain.getLegalTime()));
 			dto.setTimes(domain.getTimes() == null ? 0 : domain.getTimes().v());
 			dto.setTotalTime(TimeMonthWithCalculationDto.from(domain.getTotalTime()));
+			dto.setCoreOutTime(TimeMonthWithCalculationDto.from(domain.getTotalTime()));
 		}
 		return dto;
 	}
@@ -71,7 +76,8 @@ public class AggregateGoOutDto implements ItemConst {
 					new AttendanceTimesMonth(times), 
 					legalTime == null ? new TimeMonthWithCalculation() : legalTime.toDomain(), 
 					illegalTime == null ? new TimeMonthWithCalculation() : illegalTime.toDomain(), 
-					totalTime == null ? new TimeMonthWithCalculation() : totalTime.toDomain());
+					totalTime == null ? new TimeMonthWithCalculation() : totalTime.toDomain(), 
+					coreOutTime == null ? new TimeMonthWithCalculation() : coreOutTime.toDomain());
 	}
 	
 	public GoingOutReason reason() {

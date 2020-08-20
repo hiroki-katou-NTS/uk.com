@@ -24,6 +24,10 @@ public class GoOutForChildCare implements Serializable{
 	private AttendanceTimesMonth times;
 	/** 時間 */
 	private AttendanceTimeMonth time;
+	/** 所定内時間 */
+	private AttendanceTimeMonth withinTime;
+	/** 所定外時間 */
+	private AttendanceTimeMonth excessTime;
 	
 	/**
 	 * コンストラクタ
@@ -33,6 +37,8 @@ public class GoOutForChildCare implements Serializable{
 		this.childCareAtr = childCareAtr;
 		this.times = new AttendanceTimesMonth(0);
 		this.time = new AttendanceTimeMonth(0);
+		this.withinTime = new AttendanceTimeMonth(0);
+		this.excessTime = new AttendanceTimeMonth(0);
 	}
 
 	/**
@@ -40,16 +46,22 @@ public class GoOutForChildCare implements Serializable{
 	 * @param childCareAtr 育児介護区分
 	 * @param times 回数
 	 * @param time 時間
+	 * @param withinTime 所定内時間
+	 * @param excessTime 所定外時間
 	 * @return 育児外出
 	 */
 	public static GoOutForChildCare of(
 			ChildCareAtr childCareAtr,
 			AttendanceTimesMonth times,
-			AttendanceTimeMonth time){
-		
+			AttendanceTimeMonth time,
+			AttendanceTimeMonth withinTime,
+			AttendanceTimeMonth excessTime){
+
 		val domain = new GoOutForChildCare(childCareAtr);
 		domain.times = times;
 		domain.time = time;
+		domain.withinTime = withinTime;
+		domain.excessTime = excessTime;
 		return domain;
 	}
 	
@@ -67,5 +79,21 @@ public class GoOutForChildCare implements Serializable{
 	 */
 	public void addMinutesToTime(int minutes){
 		this.time = this.time.addMinutes(minutes);
+	}
+	
+	/**
+	 * 所定内時間に分を加算する
+	 * @param minutes 分
+	 */
+	public void addMinutesToWithinTime(int minutes){
+		this.withinTime = this.withinTime.addMinutes(minutes);
+	}
+
+	/**
+	 * 所定外時間に分を加算する
+	 * @param minutes 分
+	 */
+	public void addMinutesToExcessTime(int minutes){
+		this.excessTime = this.excessTime.addMinutes(minutes);
 	}
 }

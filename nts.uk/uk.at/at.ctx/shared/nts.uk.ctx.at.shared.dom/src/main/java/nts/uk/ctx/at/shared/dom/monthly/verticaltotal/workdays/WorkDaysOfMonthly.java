@@ -4,12 +4,11 @@ import java.io.Serializable;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.monthly.WorkTypeDaysCountTable;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.leave.LeaveOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.paydays.PayDaysOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.specificdays.SpecificDaysOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.AbsenceDaysOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.AttendanceDaysOfMonthly;
@@ -22,7 +21,6 @@ import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.Temporar
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.TwoTimesWorkTimesOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.WorkDaysDetailOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.WorkTimesOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.vtotalmethod.PayItemCountOfMonthly;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -39,32 +37,34 @@ public class WorkDaysOfMonthly implements Serializable{
 
 	/** 出勤日数 */
 	private AttendanceDaysOfMonthly attendanceDays;
-	/** 欠勤日数 */
-	private AbsenceDaysOfMonthly absenceDays;
-	/** 所定日数 */
-	private PredeterminedDaysOfMonthly predetermineDays;
 	/** 勤務日数 */
 	private WorkDaysDetailOfMonthly workDays;
-	/** 休日日数 */
-	private HolidayDaysOfMonthly holidayDays;
-	/** 特定日数 */
-	private SpecificDaysOfMonthly specificDays;
-	/** 休出日数 */
-	private HolidayWorkDaysOfMonthly holidayWorkDays;
-	/** 給与用日数 */
-	private PayDaysOfMonthly payDays;
 	/** 勤務回数 */
 	private WorkTimesOfMonthly workTimes;
 	/** 二回勤務回数 */
 	private TwoTimesWorkTimesOfMonthly twoTimesWorkTimes;
 	/** 臨時勤務回数 */
 	private TemporaryWorkTimesOfMonthly temporaryWorkTimes;
-	/** 休業 */
-	private LeaveOfMonthly leave;
+	/** 休出日数 */
+	private HolidayWorkDaysOfMonthly holidayWorkDays;
 	/** 振出日数 */
 	private RecruitmentDaysOfMonthly recruitmentDays;
+	/** 休日日数 */
+	private HolidayDaysOfMonthly holidayDays;
+	/** 所定日数 */
+	private PredeterminedDaysOfMonthly predetermineDays;
+	/** 特定日数 */
+	private SpecificDaysOfMonthly specificDays;
+	/** 欠勤日数 */
+	private AbsenceDaysOfMonthly absenceDays;
 	/** 特別休暇日数 */
 	private SpcVacationDaysOfMonthly specialVacationDays;
+	/** 休業 */
+	private LeaveOfMonthly leave;
+	/** 直行直帰日数 */
+	private StgGoStgBackDaysOfMonthly straightDays;
+	/** 時間消化休暇日数 */
+	private TimeConsumpVacationDaysOfMonthly timeConsumpDays;
 	
 	/**
 	 * コンストラクタ
@@ -78,13 +78,14 @@ public class WorkDaysOfMonthly implements Serializable{
 		this.holidayDays = new HolidayDaysOfMonthly();
 		this.specificDays = new SpecificDaysOfMonthly();
 		this.holidayWorkDays = new HolidayWorkDaysOfMonthly();
-		this.payDays = new PayDaysOfMonthly();
+		this.straightDays = new StgGoStgBackDaysOfMonthly();
 		this.workTimes = new WorkTimesOfMonthly();
 		this.twoTimesWorkTimes = new TwoTimesWorkTimesOfMonthly();
 		this.temporaryWorkTimes = new TemporaryWorkTimesOfMonthly();
 		this.leave = new LeaveOfMonthly();
 		this.recruitmentDays = new RecruitmentDaysOfMonthly();
 		this.specialVacationDays = new SpcVacationDaysOfMonthly();
+		this.timeConsumpDays = new TimeConsumpVacationDaysOfMonthly();
 	}
 
 	/**
@@ -96,13 +97,14 @@ public class WorkDaysOfMonthly implements Serializable{
 	 * @param holidayDays 休日日数
 	 * @param specficDays 特定日数
 	 * @param holidayWorkDays 休出日数
-	 * @param payDays 給与用日数
+	 * @param straightDays 直行直帰日数
 	 * @param workTimes 勤務回数
 	 * @param twoTimesWorkTimes 二回勤務回数
 	 * @param temporaryWorkTimes 臨時勤務回数
 	 * @param leave 休業
 	 * @param recruitmentDays 振出日数
 	 * @param specialVacationDays 特別休暇日数
+	 * @param timeConsump 時間消化休暇
 	 * @return 月別実績の勤務日数
 	 */
 	public static WorkDaysOfMonthly of(
@@ -113,13 +115,14 @@ public class WorkDaysOfMonthly implements Serializable{
 			HolidayDaysOfMonthly holidayDays,
 			SpecificDaysOfMonthly specficDays,
 			HolidayWorkDaysOfMonthly holidayWorkDays,
-			PayDaysOfMonthly payDays,
+			StgGoStgBackDaysOfMonthly straightDays,
 			WorkTimesOfMonthly workTimes,
 			TwoTimesWorkTimesOfMonthly twoTimesWorkTimes,
 			TemporaryWorkTimesOfMonthly temporaryWorkTimes,
 			LeaveOfMonthly leave,
 			RecruitmentDaysOfMonthly recruitmentDays,
-			SpcVacationDaysOfMonthly specialVacationDays){
+			SpcVacationDaysOfMonthly specialVacationDays,
+			TimeConsumpVacationDaysOfMonthly timeConsump){
 		
 		val domain = new WorkDaysOfMonthly();
 		domain.attendanceDays = attendanceDays;
@@ -129,13 +132,14 @@ public class WorkDaysOfMonthly implements Serializable{
 		domain.holidayDays = holidayDays;
 		domain.specificDays = specficDays;
 		domain.holidayWorkDays = holidayWorkDays;
-		domain.payDays = payDays;
+		domain.straightDays = straightDays;
 		domain.workTimes = workTimes;
 		domain.twoTimesWorkTimes = twoTimesWorkTimes;
 		domain.temporaryWorkTimes = temporaryWorkTimes;
 		domain.leave = leave;
 		domain.recruitmentDays = recruitmentDays;
 		domain.specialVacationDays = specialVacationDays;
+		domain.timeConsumpDays = timeConsump;
 		return domain;
 	}
 	
@@ -154,13 +158,13 @@ public class WorkDaysOfMonthly implements Serializable{
 	 * @param predTimeSetOnWeekday 所定時間設定（平日時）
 	 */
 	public void aggregate(
+			RequireM1 require,
 			WorkingSystem workingSystem,
 			WorkType workType,
 			AttendanceTimeOfDailyAttendance attendanceTimeOfDaily,
-			TemporaryTimeOfDailyAttd temporaryTimeOfDaily,
 			SpecificDateAttrOfDailyAttd specificDateAttrOfDaily,
 			WorkTypeDaysCountTable workTypeDaysCountTable,
-			PayItemCountOfMonthly payItemCount,
+			WorkInfoOfDailyAttendance workInfo,
 			PredetemineTimeSetting predetermineTimeSet,
 			boolean isAttendanceDay,
 			boolean isTwoTimesStampExists,
@@ -183,14 +187,14 @@ public class WorkDaysOfMonthly implements Serializable{
 		this.holidayDays.aggregate(workTypeDaysCountTable);
 		
 		// 特定日日数の集計
-		//*****（未）　月別実績の縦計方法の設計待ち。特定日集計に該当する勤務種類かを、方法から判定する必要がある。
-		this.specificDays.aggregate(workingSystem, workType, specificDateAttrOfDaily, isAttendanceDay);
+		this.specificDays.aggregate(require, workingSystem, workType, 
+				specificDateAttrOfDaily, workTypeDaysCountTable, isAttendanceDay);
 		
 		// 休出日数の集計
 		this.holidayWorkDays.aggregate(workingSystem, workTypeDaysCountTable, isAttendanceDay);
 		
-		// 給与支払い基礎日数の集計
-		this.payDays.aggregate(workType, payItemCount);
+		// 直行直帰日数の集計
+		this.straightDays.aggregate(workInfo);
 		
 		// 勤務回数の集計
 		this.workTimes.aggregate(attendanceTimeOfDaily);
@@ -198,9 +202,8 @@ public class WorkDaysOfMonthly implements Serializable{
 		// 二回勤務回数の集計
 		this.twoTimesWorkTimes.aggregate(predetermineTimeSet, isTwoTimesStampExists);
 		
-		// 臨時勤務回数の集計
-		//*****（未）　回数計算が独自に必要か、回数参照だけで良いか確認要。
-		this.temporaryWorkTimes.aggregate(temporaryTimeOfDaily);
+		// 臨時回数・時間の集計
+		this.temporaryWorkTimes.aggregate(attendanceTimeOfDaily);
 		
 		// 休業日数の集計
 		this.leave.aggregate(workTypeDaysCountTable);
@@ -211,6 +214,9 @@ public class WorkDaysOfMonthly implements Serializable{
 		// 特別休暇日数の集計
 		this.specialVacationDays.aggregate(workingSystem, workType, workTypeDaysCountTable, isAttendanceDay,
 				predetermineTimeSet, predTimeSetOnWeekday);
+		
+		// 時間消化休暇の集計
+		this.timeConsumpDays.aggregate(workType, attendanceTimeOfDaily);
 	}
 	
 	/**
@@ -226,12 +232,17 @@ public class WorkDaysOfMonthly implements Serializable{
 		this.holidayDays.sum(target.holidayDays);
 		this.specificDays.sum(target.specificDays);
 		this.holidayWorkDays.sum(target.holidayWorkDays);
-		this.payDays.sum(target.payDays);
+		this.straightDays.sum(target.straightDays);
 		this.workTimes.sum(target.workTimes);
 		this.twoTimesWorkTimes.sum(target.twoTimesWorkTimes);
 		this.temporaryWorkTimes.sum(target.temporaryWorkTimes);
 		this.leave.sum(target.leave);
 		this.recruitmentDays.sum(target.recruitmentDays);
 		this.specialVacationDays.sum(target.specialVacationDays);
+		this.timeConsumpDays.sum(target.timeConsumpDays);
+	}
+	
+	public static interface RequireM1 extends SpecificDaysOfMonthly.RequireM1{
+
 	}
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.secondorder.medical.MedicalCareTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
@@ -16,12 +17,14 @@ import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.bonuspaytime.Bonu
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.breaktime.BreakTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.divergencetime.DivergenceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.goout.GoOutOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.holidaytime.HolidayTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.interval.IntervalTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.lateleaveearly.LateLeaveEarlyOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.medicaltime.MedicalTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.midnighttime.MidnightTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.premiumtime.PremiumTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.reservation.ReservationOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.timevarience.BudgetTimeVarienceOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.toppage.TopPageDisplayOfMonthly;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -35,30 +38,34 @@ public class WorkTimeOfMonthlyVT implements Serializable{
 	/** Serializable */
 	private static final long serialVersionUID = 1L;
 
-	/** 加給時間 */
-	private BonusPayTimeOfMonthly bonusPayTime;
-	/** 外出 */
-	private GoOutOfMonthly goOut;
-	/** 割増時間 */
-	private PremiumTimeOfMonthly premiumTime;
-	/** 休憩時間 */
-	private BreakTimeOfMonthly breakTime;
-	/** 休日時間 */
-	private HolidayTimeOfMonthly holidayTime;
-	/** 深夜時間 */
-	private MidnightTimeOfMonthly midnightTime;
 	/** 遅刻早退 */
 	private LateLeaveEarlyOfMonthly lateLeaveEarly;
+	/** 深夜時間 */
+	private MidnightTimeOfMonthly midnightTime;
+	/** 休憩時間 */
+	private BreakTimeOfMonthly breakTime;
+	/** 加給時間 */
+	private BonusPayTimeOfMonthly bonusPayTime;
 	/** 入退門時間 */
 	private AttendanceLeaveGateTimeOfMonthly attendanceLeaveGateTime;
+	/** 予約 */
+	private ReservationOfMonthly reservation;
+	/** 割増時間 */
+	private PremiumTimeOfMonthly premiumTime;
 	/** 予実差異時間 */
 	private BudgetTimeVarienceOfMonthly budgetTimeVarience;
 	/** 乖離時間 */
 	private DivergenceTimeOfMonthly divergenceTime;
+	/** 外出 */
+	private GoOutOfMonthly goOut;
+	/** 休日時間 -> 廃止 */
+//	private HolidayTimeOfMonthly holidayTime;
+	/** トップページ表示用時間 */
+	private TopPageDisplayOfMonthly topPage;
 	/** 医療時間 */
 	private Map<WorkTimeNightShift, MedicalTimeOfMonthly> medicalTime;
-	/** 予約 */
-	//reservation
+	/** インターバル時間 */
+	private IntervalTimeOfMonthly interval;
 	
 	/**
 	 * コンストラクタ
@@ -69,13 +76,15 @@ public class WorkTimeOfMonthlyVT implements Serializable{
 		this.goOut = new GoOutOfMonthly();
 		this.premiumTime = new PremiumTimeOfMonthly();
 		this.breakTime = new BreakTimeOfMonthly();
-		this.holidayTime = new HolidayTimeOfMonthly();
+		this.reservation = ReservationOfMonthly.empty();
 		this.midnightTime = new MidnightTimeOfMonthly();
 		this.lateLeaveEarly = new LateLeaveEarlyOfMonthly();
 		this.attendanceLeaveGateTime = new AttendanceLeaveGateTimeOfMonthly();
 		this.budgetTimeVarience = new BudgetTimeVarienceOfMonthly();
 		this.divergenceTime = new DivergenceTimeOfMonthly();
 		this.medicalTime = new HashMap<>();
+		this.topPage = TopPageDisplayOfMonthly.empty();
+		this.interval = IntervalTimeOfMonthly.empty();
 	}
 
 	/**
@@ -84,7 +93,7 @@ public class WorkTimeOfMonthlyVT implements Serializable{
 	 * @param goOut 外出
 	 * @param premiumTime 割増時間
 	 * @param breakTime 休憩時間
-	 * @param holidayTime 休日時間
+	 * @param reservation 予約
 	 * @param midnightTime 深夜時間
 	 * @param lateLeaveEarly 遅刻早退
 	 * @param attendanceLeaveGateTime 入退門時間
@@ -98,20 +107,22 @@ public class WorkTimeOfMonthlyVT implements Serializable{
 			GoOutOfMonthly goOut,
 			PremiumTimeOfMonthly premiumTime,
 			BreakTimeOfMonthly breakTime,
-			HolidayTimeOfMonthly holidayTime,
+			ReservationOfMonthly reservation,
 			MidnightTimeOfMonthly midnightTime,
 			LateLeaveEarlyOfMonthly lateLeaveEarly,
 			AttendanceLeaveGateTimeOfMonthly attendanceLeaveGateTime,
 			BudgetTimeVarienceOfMonthly budgetTimeVarience,
 			DivergenceTimeOfMonthly divergenceTime,
-			List<MedicalTimeOfMonthly> medicalTimeList){
+			List<MedicalTimeOfMonthly> medicalTimeList,
+			TopPageDisplayOfMonthly topPage,
+			IntervalTimeOfMonthly interval){
 		
 		val domain = new WorkTimeOfMonthlyVT();
 		domain.bonusPayTime = bonusPayTime;
 		domain.goOut = goOut;
 		domain.premiumTime = premiumTime;
 		domain.breakTime = breakTime;
-		domain.holidayTime = holidayTime;
+		domain.reservation = reservation;
 		domain.midnightTime = midnightTime;
 		domain.lateLeaveEarly = lateLeaveEarly;
 		domain.attendanceLeaveGateTime = attendanceLeaveGateTime;
@@ -121,51 +132,61 @@ public class WorkTimeOfMonthlyVT implements Serializable{
 			val dayNightAtr = medicalTime.getDayNightAtr();
 			domain.medicalTime.putIfAbsent(dayNightAtr, medicalTime);
 		}
+		domain.topPage = topPage;
+		domain.interval = interval;
 		return domain;
 	}
 	
 	/**
 	 * 集計
 	 * @param workType 勤務種類
-	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
+	 * @param attendanceTime 日別実績の勤怠時間
 	 */
-	public void aggregate(
-			WorkType workType,
-			AttendanceTimeOfDailyAttendance attendanceTimeOfDaily){
+	public void aggregate(RequireM1 require, String sid, GeneralDate ymd, 
+			WorkType workType, AttendanceTimeOfDailyAttendance attendanceTime){
 		
-		// 加給時間の集計
-		this.bonusPayTime.aggregate(workType, attendanceTimeOfDaily);
-		
-		// 外出時間の集計（回数・時間）
-		this.goOut.aggregate(attendanceTimeOfDaily);
-		
-		// 割増時間の集計
-		this.premiumTime.aggregate(attendanceTimeOfDaily);
-		
-		// 休憩時間の集計
-		this.breakTime.aggregate(attendanceTimeOfDaily);
-		
-		// 深夜時間の集計
-		this.midnightTime.aggregate(attendanceTimeOfDaily);
+		if (attendanceTime == null) {
+			return;
+		}
 		
 		// 遅刻早退の集計（回数・時間）
-		this.lateLeaveEarly.aggregate(attendanceTimeOfDaily);
+		this.lateLeaveEarly.aggregate(attendanceTime);
+		
+		// 深夜時間の集計
+		this.midnightTime.aggregate(attendanceTime);
+		
+		// 休憩時間の集計
+		this.breakTime.aggregate(attendanceTime);
+		
+		// 加給時間の集計
+		this.bonusPayTime.aggregate(workType, attendanceTime);
 		
 		// 入退門関連の項目集計
-		this.attendanceLeaveGateTime.aggregate(attendanceTimeOfDaily);
+		this.attendanceLeaveGateTime.aggregate(attendanceTime);
+
+		// ○予約注文の項目集計
+		this.reservation.aggregate(require, sid, ymd);
+
+		// 割増時間の集計
+		this.premiumTime.aggregate(attendanceTime);
 		
 		// 差異時間の集計
-		this.budgetTimeVarience.aggregate(attendanceTimeOfDaily);
+		this.budgetTimeVarience.aggregate(attendanceTime);
 		
 		// 乖離時間の集計
-		this.divergenceTime.aggregate(attendanceTimeOfDaily);
+		this.divergenceTime.aggregate(attendanceTime);
+
+		// 外出時間の集計（回数・時間）
+		this.goOut.aggregate(attendanceTime);
+
+		// ○トップページ表示用時間の集計
+		this.topPage.aggregate(attendanceTime);
 		
 		// 医療項目の集計
-		//*****（未）　日別実績の医療時間が、リスト化実装された後、処理の調整要。
-		this.aggregateMedicalTime(attendanceTimeOfDaily);
-		
-		// 予約データの集計
-		
+		this.aggregateMedicalTime(attendanceTime);
+
+		// ○インターバル時間の集計
+		this.interval.aggregate(attendanceTime);
 	}
 	
 	/**
@@ -204,16 +225,17 @@ public class WorkTimeOfMonthlyVT implements Serializable{
 	 */
 	public void sum(WorkTimeOfMonthlyVT target){
 		
-		this.bonusPayTime.sum(target.bonusPayTime);
-		this.goOut.sum(target.goOut);
-		this.premiumTime.sum(target.premiumTime);
-		this.breakTime.sum(target.breakTime);
-		this.holidayTime.sum(target.holidayTime);
-		this.midnightTime.sum(target.midnightTime);
 		this.lateLeaveEarly.sum(target.lateLeaveEarly);
+		this.midnightTime.sum(target.midnightTime);
+		this.breakTime.sum(target.breakTime);
+		this.bonusPayTime.sum(target.bonusPayTime);
 		this.attendanceLeaveGateTime.sum(target.attendanceLeaveGateTime);
+		this.reservation.sum(target.reservation);
+		this.premiumTime.sum(target.premiumTime);
 		this.budgetTimeVarience.sum(target.budgetTimeVarience);
 		this.divergenceTime.sum(target.divergenceTime);
+		this.goOut.sum(target.goOut);
+		this.topPage.sum(target.topPage);
 		
 		for (val medicalValue : this.medicalTime.values()){
 			val dayNightAtr = medicalValue.getDayNightAtr();
@@ -228,5 +250,9 @@ public class WorkTimeOfMonthlyVT implements Serializable{
 			val dayNightAtr = targetMedicalValue.getDayNightAtr();
 			this.medicalTime.putIfAbsent(dayNightAtr, targetMedicalValue);
 		}
+
+		this.interval.sum(target.interval);
 	}
+
+	public static interface RequireM1 extends ReservationOfMonthly.RequireM1 {}
 }

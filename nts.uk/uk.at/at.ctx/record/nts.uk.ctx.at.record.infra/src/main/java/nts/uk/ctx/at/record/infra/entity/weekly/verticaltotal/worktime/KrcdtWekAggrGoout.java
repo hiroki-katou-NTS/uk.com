@@ -59,6 +59,12 @@ public class KrcdtWekAggrGoout extends UkJpaEntity implements Serializable {
 	/** 計算合計時間 */
 	@Column(name = "CALC_TOTAL_TIME")
 	public int calcTotalTime;
+	/** コアタイム外時間 */
+	@Column(name = "CORE_OUT_TIME")
+	public int coreOutTime;
+	/** 計算コアタイム外時間 */
+	@Column(name = "CALC_CORE_OUT_TIME")
+	public int calcCoreOutTime;
 
 	/** マッチング：週別実績の勤怠時間 */
 	@ManyToOne
@@ -97,7 +103,10 @@ public class KrcdtWekAggrGoout extends UkJpaEntity implements Serializable {
 						new AttendanceTimeMonth(this.calcIllegalTime)),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.totalTime),
-						new AttendanceTimeMonth(this.calcTotalTime)));
+						new AttendanceTimeMonth(this.calcTotalTime)),
+				new TimeMonthWithCalculation(
+						new AttendanceTimeMonth(this.coreOutTime),
+						new AttendanceTimeMonth(this.calcCoreOutTime)));
 	}
 	
 	/**
@@ -131,5 +140,7 @@ public class KrcdtWekAggrGoout extends UkJpaEntity implements Serializable {
 		this.calcIllegalTime = domain.getIllegalTime().getCalcTime().v();
 		this.totalTime = domain.getTotalTime().getTime().v();
 		this.calcTotalTime = domain.getTotalTime().getCalcTime().v();
+		this.coreOutTime = domain.getCoreOutTime().getTime().v();
+		this.calcCoreOutTime = domain.getCoreOutTime().getCalcTime().v();
 	}
 }

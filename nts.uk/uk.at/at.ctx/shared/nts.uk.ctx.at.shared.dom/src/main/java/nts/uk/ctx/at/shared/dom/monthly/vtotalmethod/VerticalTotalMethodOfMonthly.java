@@ -3,8 +3,10 @@ package nts.uk.ctx.at.shared.dom.monthly.vtotalmethod;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.monthly.WorkTypeDaysCountTable;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
  * 月別実績の縦計方法
@@ -19,8 +21,8 @@ public class VerticalTotalMethodOfMonthly extends AggregateRoot {
 	private String companyId;
 	/** 振出日数 */
 	private TADaysCountOfMonthlyAggr transferAttendanceDays;
-//	/** 特定日 */
-//	private SpecTotalCountMonthly specTotalCountMonthly;
+	/** 特定日 */
+	private SpecTotalCountMonthly specTotalCountMonthly;
 	
 	/**
 	 * コンストラクタ
@@ -31,6 +33,7 @@ public class VerticalTotalMethodOfMonthly extends AggregateRoot {
 		super();
 		this.companyId = companyId;
 		this.transferAttendanceDays = new TADaysCountOfMonthlyAggr();
+		this.specTotalCountMonthly = new SpecTotalCountMonthly();
 	}
 	
 	/**
@@ -40,16 +43,47 @@ public class VerticalTotalMethodOfMonthly extends AggregateRoot {
 	 * @return 月別実績の縦計方法
 	 */
 	public static VerticalTotalMethodOfMonthly of(String companyId,
-			TADaysCountOfMonthlyAggr transferAttendanceDays){
+			TADaysCountOfMonthlyAggr transferAttendanceDays,
+			SpecTotalCountMonthly specTotalCountMonthly){
 
 		VerticalTotalMethodOfMonthly domain = new VerticalTotalMethodOfMonthly(companyId);
 		domain.transferAttendanceDays = transferAttendanceDays;
+		domain.specTotalCountMonthly = specTotalCountMonthly;
 		return domain;
 	}
 	
-	public static VerticalTotalMethodOfMonthly createFromJavaType(String companyId, int taAttendance) {
-//		return new VerticalTotalMethodOfMonthly(companyId, TADaysCountOfMonthlyAggr.of(EnumAdaptor.valueOf(taAttendance, TADaysCountCondOfMonthlyAggr.class)),
-//				SpecTotalCountMonthly.createFromJavaType(specDayOfTotalMonCon, specCount));
-		return new VerticalTotalMethodOfMonthly(companyId, TADaysCountOfMonthlyAggr.of(EnumAdaptor.valueOf(taAttendance, TADaysCountCondOfMonthlyAggr.class)));
+	/** 特定日を計算する勤務種類かどうか判断 */
+	public boolean isCalcThisWorkTypeAsSpecDays(WorkingSystem workingSystem, WorkType workType,
+			WorkTypeDaysCountTable workTypeDaysCountTable) {
+		
+		/** パラメータ「労働制」を判断 */
+		if (workingSystem == WorkingSystem.EXCLUDED_WORKING_CALCULATE) {
+			if (this.specTotalCountMonthly.getSpecCount() == SpecCountNotCalcSubject.NoUncondition) {
+				return false;
+			}
+			
+			return true;
+			
+		} else {
+			/** パラメータ「勤務種類」を取得 -> 連続勤務のチェック */
+			if (workType.getDailyWork().isContinueWork()) {
+				/** 属性「連続勤務の日でもカウントする」を取得 */
+				return this.specTotalCountMonthly.isContinuousCount();
+				
+			} else {
+				/** 属性「勤務日ではない日でもカウントする」を取得 */
+				if (this.specTotalCountMonthly.isNotWorkCount()) {
+					return true;
+					
+				} else {
+					/** 「勤務日数」のカウント方法を判断 */
+					if (workTypeDaysCountTable.getWorkDays().v() > 0) {
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
 	}
 }
