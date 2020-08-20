@@ -1,68 +1,77 @@
 package nts.uk.ctx.at.record.app.command.reservation.bento;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 
 import java.util.List;
 
-@Value
+@AllArgsConstructor
+@Data
+@NoArgsConstructor
 public class ForceUpdateBentoReserveCommand {
 
     /**
      * 予約登録情報
      */
-    List<BentoReserveInfoCommand> reservationInfos;
+    private List<BentoReserveInfoCommand> reservationInfos;
 
     /**
      * 予約対象日
      */
-    GeneralDate date;
+    private GeneralDate date;
 
     /**
      * 新規Flg
      */
-    boolean isNew;
+    private boolean isNew;
 
     /**
      * 締め時刻枠
      */
-    int closingTimeFrame;
+    private int closingTimeFrame;
 
     /**
      * 予約登録情報
      */
-    @Value
-    private class BentoReserveInfoCommand{
+    @AllArgsConstructor
+    @Data
+    @NoArgsConstructor
+    public class BentoReserveInfoCommand{
         /**
          * カード番号
          */
-        String reservationCardNo;
+        private String reservationCardNo;
 
         /**
          * 注文済み
          */
-        boolean ordered;
+        private boolean ordered;
 
         /**
          * 予約明細
          */
-        List<BentoReserveDetailCommand> details;
+        private List<BentoReserveDetailCommand> details;
     }
 
     /**
      * 予約明細
      */
-    @Value
-    private class BentoReserveDetailCommand {
+    @AllArgsConstructor
+    @Data
+    @NoArgsConstructor
+    public class BentoReserveDetailCommand {
         /**
          * 枠番
          */
-        int frameNo;
+        private int frameNo;
 
         /**
          * 個数
          */
-        int bentoCount;
+        private int bentoCount;
     }
 }
 

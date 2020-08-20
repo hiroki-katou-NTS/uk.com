@@ -27,7 +27,7 @@ public class ReservationModifyEmployeeDto {
     /** 注文日 */
     private GeneralDate reservationDate;
     /** 注文時刻 */
-    private GeneralDateTime reservationTime;
+    private String reservationTime;
     /** 活性 */
     private boolean activity = true;
     /** 注文済み */
