@@ -27,7 +27,9 @@
 						<!--C3_2-->
 						<div data-bind="ntsFormLabel: { inline: true, required: true, enable: true, text: $i18n('KMR001_38')}"></div>
 						<!--C3_3-->
-						<span>項目移送</span>
+						<span class="label" data-bind="model.startDate"></span>
+						<span style="padding: 0 10px" class="label">~</span>
+						<span class="label" data-bind="model.endDate"></span>
 						<!--C3_4-->
 						<div class="btn-content" style="display: inline-block">
 							<button class="small" id ="C3_4" data-bind="click: openConfigHisDialog,
@@ -81,7 +83,7 @@
 							</td>
 							<td>
 								<!--C6_2-->
-								<input class="data-control" data-bind="ntsTextEditor: {value: model.lunchBox}" />
+								<input class="data-control" data-bind="ntsTextEditor: {value: model.bentoName}" />
 							</td>
 						</tr>
 						<tr>
@@ -115,7 +117,7 @@
 							</td>
 							<td>
 								<!--C9_2-->
-								<input class="data-control" id="kmr001-c-9-2" data-bind="ntsTextEditor: {value: model.unit}" />
+								<input class="data-control" id="kmr001-c-9-2" data-bind="ntsTextEditor: {value: model.unitName}" />
 							</td>
 						</tr>
 						<tr>
@@ -125,7 +127,7 @@
 							</td>
 							<td>
 								<!--C7_2-->
-								<input id="kmr001-c-7-2" data-bind="ntsNumberEditor: { value: model.amount1, enable: true,
+								<input id="kmr001-c-7-2" data-bind="ntsNumberEditor: { value: model.price1, enable: true,
 						required: true,option: {decimallength: 4 }}" />
 							</td>
 						</tr>
@@ -136,7 +138,7 @@
 							</td>
 							<td>
 								<!--C8_2-->
-								<input class="data-control" id="kmr001-c-8-2" data-bind="ntsNumberEditor: { value: model.amount2, enable: true,
+								<input class="data-control" id="kmr001-c-8-2" data-bind="ntsNumberEditor: { value: model.price2, enable: true,
 						required: true,option: {decimallength: 4 }}" />
 							</td>
 						</tr>

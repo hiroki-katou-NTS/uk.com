@@ -5,7 +5,7 @@ module nts.uk.at.kmr001.c {
     const API = {
         SETTING: 'at/record/stamp/management/personal/startPage',
         HIGHTLIGHT: 'at/record/stamp/management/personal/stamp/getHighlightSetting',
-        GET_ALL : 'ctx/at/schedule/shift/pattern/daily/getall'
+        GET_ALL : 'screen/at/record/reservation/bento_menu/getBentoMenuByHist/00000000-0000-0000-0001-000000000002'
     };
 
     const PATH = {
@@ -56,19 +56,10 @@ module nts.uk.at.kmr001.c {
 
         created() {
             const vm = this;
-            _.extend(window, { vm });
-        }
-
-        getListWorkingCycle() {
-            let vm = this;
-            vm.$ajax(API.GET_ALL).done((dataRes: Array<ReservedItemDto>) => {
-                if (dataRes === undefined || dataRes.length == 0) {
-                    vm.items([]);
-                    // vm.switchNewMode();
-                } else {
-                    vm.items(dataRes);
-                }
+            vm.$ajax(API.GET_ALL).done(dataRes => {
+                console.log(dataRes)
             });
+            _.extend(window, { vm });
         }
 
         openConfigHisDialog() {
