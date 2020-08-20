@@ -123,13 +123,20 @@ module nts.uk.at.view.ksu001.la {
                 });
             }
             public registerOrUpdate(): void {
-                let self = this;
+                let self = this;                
+                let employeeIds = [];                 
+                    _.each(self.itemsRight(), (item) =>{
+                        employeeIds.push(item.employeeId);
+                    });
+
+                self.scheduleTeamModel().employeeIds(employeeIds);
+                self.scheduleTeamModel().workplaceGroupId(self.workplaceGroupId());
                 if (self.validateAll()) {
                     return;
                 }
                 blockUI.invisible();
                 if (!self.isEditing()) {                    
-                    //register
+                    //register                    
                     service.register(ko.toJSON(self.scheduleTeamModel)).done(() => {
                         service.findAll(self.workplaceGroupId()).done((listScheduleTeam: Array<ScheduleTeam>) => {
                             self.listScheduleTeam(listScheduleTeam);
@@ -147,10 +154,9 @@ module nts.uk.at.view.ksu001.la {
                     });
                 } else {
                     //update
-                    let employeeIds = _.map(self.itemsRight(), item => {
-                        return item.employeeId;
-                    });
-                    self.scheduleTeamModel().employeeIds(employeeIds);
+                    // let employeeIds = _.map(self.itemsRight(), item => {
+                    //     return item.employeeId;
+                    // });                   
                     service.update(ko.toJSON(self.scheduleTeamModel)).done(()=>{
                         self.listScheduleTeam(_.map(self.listScheduleTeam(), function(el: ScheduleTeam){
                             if(el.code == self.scheduleTeamModel().code()){
@@ -167,23 +173,14 @@ module nts.uk.at.view.ksu001.la {
             }
 
             public remove(): void {
-                let self = this;
+                let self = this;               
                 nts.uk.ui.dialog.confirm({messageId: "Msg_18"}).ifYes(function(){
                     let command: any = {};
                     command.code = self.scheduleTeamModel().code();
                     command.workplaceGroupId = self.workplaceGroupId();
                     blockUI.invisible();
                     service.remove(command).done(function(){
-                        nts.uk.ui.dialog.info({messageId: "Msg_16"}).then(function(){
-                            // _.each(self.itemsRight(), item =>{
-                            //    item.teamCd = "";
-                            // });
-
-                            // _.each(self.itemsLeft(), item =>{
-                            //     if(item.teamCd === self.selectedCode())
-                            //         item.teamCd = "";
-                            //  });
-
+                        nts.uk.ui.dialog.info({messageId: "Msg_16"}).then(function(){  
                             if(self.listScheduleTeam().length == 1){
                                 self.listScheduleTeam([]);
                                 self.selectedCode("");
@@ -253,7 +250,12 @@ module nts.uk.at.view.ksu001.la {
                 self.enableDelete(false);
                 self.isEditing(false);
                 self.scheduleTeamModel().resetData(); 
-                self.clearError();          
+                let temp = _.union(self.itemsLeft(), self.itemsRight());
+                self.itemsLeft(temp);
+                
+                self.itemsRight([]); 
+                self.clearError(); 
+                // self.getEmpOrgInfo();
                 $('#scheduleTeamCd').focus();              
             }
 
@@ -295,6 +297,7 @@ module nts.uk.at.view.ksu001.la {
                 self.code("");
                 self.name("");
                 self.note("");
+                self.employeeIds(null);
                 self.isEnableCode(true);                
             }
             public updateData(scheduleTeamDto: any) {

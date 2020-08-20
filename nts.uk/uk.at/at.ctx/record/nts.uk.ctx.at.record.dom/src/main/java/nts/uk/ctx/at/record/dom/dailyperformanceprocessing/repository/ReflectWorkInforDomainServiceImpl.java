@@ -2058,8 +2058,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			WorkInfoOfDailyAttendance workInfoOfDailyPerformanceUpdate,
 			AffiliationInforOfDailyAttd affiliationInforOfDailyPerfor, PeriodInMasterList periodInMasterList) {
 		Optional<BonusPaySetting> bonusPaySetting = Optional.empty();
-
-		if (periodInMasterList == null) {
+		Optional<MasterList> newMaster = Optional.empty();
+		if(periodInMasterList !=null) {
+			newMaster = periodInMasterList.getMasterLists().stream()
+				.filter(item -> item.getDatePeriod().contains(day)).findFirst();
+		}
+		if (periodInMasterList == null || !newMaster.isPresent() || !newMaster.get().getBonusPaySettingOpt().isPresent()) {
 			// reqList496
 			// 職場IDと基準日から上位職場を取得する
 			List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyId,
@@ -2086,7 +2090,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					Optional<WorkingTimesheetBonusPaySetting> workingTimesheetBonusPaySetting = this.wTBonusPaySettingRepository
 							.getWTBPSetting(companyId, new WorkingTimesheetCode(
 									workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v()));
-					if (workingTimesheetBonusPaySetting.isPresent()) {
+					if (workingTimesheetBonusPaySetting.isPresent()) {	
 						Optional<BonusPaySetting> bonusPay = bPSettingRepository.getBonusPaySetting(companyId,
 								workingTimesheetBonusPaySetting.get().getBonusPaySettingCode());
 						if (!bonusPay.isPresent()) {

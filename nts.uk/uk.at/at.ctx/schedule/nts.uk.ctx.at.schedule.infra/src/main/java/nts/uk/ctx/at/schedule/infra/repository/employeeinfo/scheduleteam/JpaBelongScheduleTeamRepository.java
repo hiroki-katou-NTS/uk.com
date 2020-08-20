@@ -92,7 +92,6 @@ public class JpaBelongScheduleTeamRepository extends JpaRepository implements Be
 	}
 
 	@SneakyThrows
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	@Override
 	public void delete(String companyID, String empID) {
 		String delete = "DELETE FROM KSCMT_AFF_SCHEDULE_TEAM WHERE CID = ? AND SID = ?";

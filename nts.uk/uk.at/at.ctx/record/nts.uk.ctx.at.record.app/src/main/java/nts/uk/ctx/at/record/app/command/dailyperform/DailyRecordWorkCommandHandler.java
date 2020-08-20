@@ -559,7 +559,9 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	private void updateWorkInfoAfterCalc(List<IntegrationOfDaily> calced) {
 		calced.stream().forEach(c -> {
 			WorkInformationOfDailyPerformCommand wic = new WorkInformationOfDailyPerformCommand();
-			wic.updateData(c.getWorkInformation());
+			wic.updateDataByAtt(c.getWorkInformation());
+			wic.getData().setEmployeeId(c.getEmployeeId());
+			wic.getData().setYmd(c.getYmd());
 			wic.forEmployee(c.getEmployeeId());
 			wic.withDate(c.getYmd());
 			this.workInfoUpdateHandler.handle(wic);

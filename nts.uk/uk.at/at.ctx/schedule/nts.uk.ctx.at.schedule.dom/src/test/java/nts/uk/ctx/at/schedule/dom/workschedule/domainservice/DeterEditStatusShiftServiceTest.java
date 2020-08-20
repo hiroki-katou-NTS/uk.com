@@ -225,6 +225,7 @@ public class DeterEditStatusShiftServiceTest {
 	 *  勤務予定.編集状態：find $.勤怠項目ID == 28 is empty
 	 *  勤務予定.編集状態：find $.勤怠項目ID == 29 not empty
 	 *  就業時間帯状態 !=EditStateSetting.IMPRINT && 就業時間帯状態 not empty  
+	 *  就業時間帯状態 == EditStateSetting.REFLECT_APPLICATION
 	 */
 	@Test
 	public void testToDecide_10() {
@@ -242,9 +243,52 @@ public class DeterEditStatusShiftServiceTest {
 	
 	/**
 	 *  勤務予定.編集状態.is not Empty 
+	 *  勤務予定.編集状態：find $.勤怠項目ID == 28 is empty
+	 *  勤務予定.編集状態：find $.勤怠項目ID == 29 not empty
+	 *  就業時間帯状態 !=EditStateSetting.IMPRINT && 就業時間帯状態 not empty  
+	 *  就業時間帯状態 == EditStateSetting.HAND_CORRECTION_MYSELF
+	 */
+	@Test
+	public void testToDecide_10_1() {
+		
+		List<EditStateOfDailyAttd> lstEditState = Arrays.asList(new EditStateOfDailyAttd(29, EditStateSetting.HAND_CORRECTION_MYSELF));
+		WorkSchedule workSchedule = new WorkSchedule("employeeID",
+				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new ArrayList<>(),
+				lstEditState, Optional.empty(), Optional.empty(), Optional.empty());
+		
+		ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
+		assertThat(shiftEditState.getEmployeeID().equals("employeeID")).isTrue();
+		assertThat(shiftEditState.getDate()).isEqualTo(GeneralDate.today());
+		assertThat(shiftEditState.getOptEditStateOfDailyAttd().get().equals(EditStateSetting.HAND_CORRECTION_MYSELF)).isTrue();
+	}
+	
+	/**
+	 *  勤務予定.編集状態.is not Empty 
+	 *  勤務予定.編集状態：find $.勤怠項目ID == 28 is empty
+	 *  勤務予定.編集状態：find $.勤怠項目ID == 29 not empty
+	 *  就業時間帯状態 !=EditStateSetting.IMPRINT && 就業時間帯状態 not empty  
+	 *  就業時間帯状態 == EditStateSetting.HAND_CORRECTION_OTHER
+	 */
+	@Test
+	public void testToDecide_10_2() {
+		
+		List<EditStateOfDailyAttd> lstEditState = Arrays.asList(new EditStateOfDailyAttd(29, EditStateSetting.HAND_CORRECTION_OTHER));
+		WorkSchedule workSchedule = new WorkSchedule("employeeID",
+				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new ArrayList<>(),
+				lstEditState, Optional.empty(), Optional.empty(), Optional.empty());
+		
+		ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
+		assertThat(shiftEditState.getEmployeeID().equals("employeeID")).isTrue();
+		assertThat(shiftEditState.getDate()).isEqualTo(GeneralDate.today());
+		assertThat(shiftEditState.getOptEditStateOfDailyAttd().get().equals(EditStateSetting.HAND_CORRECTION_OTHER)).isTrue();
+	}
+	
+	/**
+	 *  勤務予定.編集状態.is not Empty 
 	 *  勤務予定.編集状態：find $.勤怠項目ID == 28 not empty
 	 *  勤務予定.編集状態：find $.勤怠項目ID == 29 is empty
 	 *  勤務種類状態 !=EditStateSetting.IMPRINT && 就業時間帯状態 not empty  
+	 *  勤務種類状態 == EditStateSetting.REFLECT_APPLICATION
 	 */
 	@Test
 	public void testToDecide_11() {
@@ -258,6 +302,48 @@ public class DeterEditStatusShiftServiceTest {
 		assertThat(shiftEditState.getEmployeeID().equals("employeeID")).isTrue();
 		assertThat(shiftEditState.getDate()).isEqualTo(GeneralDate.today());
 		assertThat(shiftEditState.getOptEditStateOfDailyAttd().get().equals(EditStateSetting.REFLECT_APPLICATION)).isTrue();
+	}
+	
+	/**
+	 *  勤務予定.編集状態.is not Empty 
+	 *  勤務予定.編集状態：find $.勤怠項目ID == 28 not empty
+	 *  勤務予定.編集状態：find $.勤怠項目ID == 29 is empty
+	 *  勤務種類状態 !=EditStateSetting.IMPRINT && 就業時間帯状態 not empty  
+	 *  勤務種類状態 == EditStateSetting.HAND_CORRECTION_MYSELF
+	 */
+	@Test
+	public void testToDecide_11_1() {
+		
+		List<EditStateOfDailyAttd> lstEditState = Arrays.asList(new EditStateOfDailyAttd(28, EditStateSetting.HAND_CORRECTION_MYSELF));
+		WorkSchedule workSchedule = new WorkSchedule("employeeID",
+				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new ArrayList<>(),
+				lstEditState, Optional.empty(), Optional.empty(), Optional.empty());
+		
+		ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
+		assertThat(shiftEditState.getEmployeeID().equals("employeeID")).isTrue();
+		assertThat(shiftEditState.getDate()).isEqualTo(GeneralDate.today());
+		assertThat(shiftEditState.getOptEditStateOfDailyAttd().get().equals(EditStateSetting.HAND_CORRECTION_MYSELF)).isTrue();
+	}
+	
+	/**
+	 *  勤務予定.編集状態.is not Empty 
+	 *  勤務予定.編集状態：find $.勤怠項目ID == 28 not empty
+	 *  勤務予定.編集状態：find $.勤怠項目ID == 29 is empty
+	 *  勤務種類状態 !=EditStateSetting.IMPRINT && 就業時間帯状態 not empty  
+	 *  勤務種類状態 == EditStateSetting.HAND_CORRECTION_OTHER
+	 */
+	@Test
+	public void testToDecide_11_2() {
+		
+		List<EditStateOfDailyAttd> lstEditState = Arrays.asList(new EditStateOfDailyAttd(28, EditStateSetting.HAND_CORRECTION_OTHER));
+		WorkSchedule workSchedule = new WorkSchedule("employeeID",
+				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new ArrayList<>(),
+				lstEditState, Optional.empty(), Optional.empty(), Optional.empty());
+		
+		ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
+		assertThat(shiftEditState.getEmployeeID().equals("employeeID")).isTrue();
+		assertThat(shiftEditState.getDate()).isEqualTo(GeneralDate.today());
+		assertThat(shiftEditState.getOptEditStateOfDailyAttd().get().equals(EditStateSetting.HAND_CORRECTION_OTHER)).isTrue();
 	}
 
 }

@@ -15,10 +15,10 @@ public class OptionalItemOfDailyPerformCommand extends DailyWorkCommonCommand {
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		AnyItemValueOfDaily anyItemValueOfDaily = new AnyItemValueOfDaily(getEmployeeId(), getWorkDate(),
-				((OptionalItemOfDailyPerformDto) item).toDomain(getEmployeeId(), getWorkDate()));
+		AnyItemValueOfDaily anyItemValueOfDaily = item != null? new AnyItemValueOfDaily(getEmployeeId(), getWorkDate(),
+				((OptionalItemOfDailyPerformDto) item).toDomain(getEmployeeId(), getWorkDate())):null;
 		this.data = item == null || !item.isHaveData() ? Optional.empty() 
-				: Optional.of(anyItemValueOfDaily);
+				: Optional.ofNullable(anyItemValueOfDaily);
 	}
 
 	@Override

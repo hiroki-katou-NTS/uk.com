@@ -12,7 +12,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @NoArgsConstructor
-@Table(name = "KSCMT_AFF_SCHEDULE_TEAM_OLD")
+@Table(name = "KSCMT_AFF_SCHEDULE_TEAM")
 public class KscmtAffScheduleTeam extends  ContractUkJpaEntity{
 
 	@EmbeddedId
@@ -42,7 +42,7 @@ public class KscmtAffScheduleTeam extends  ContractUkJpaEntity{
 		return new KscmtAffScheduleTeam(
 				new KscmtAffScheduleTeamPk(AppContexts.user().companyId(), belongScheduleTeam.getEmployeeID()),
 				belongScheduleTeam.getWKPGRPID(),
-				belongScheduleTeam.getScheduleTeamCd().v().substring(1));
+				belongScheduleTeam.getScheduleTeamCd().v());
 	} 
 	
 	public BelongScheduleTeam toDomain(){
