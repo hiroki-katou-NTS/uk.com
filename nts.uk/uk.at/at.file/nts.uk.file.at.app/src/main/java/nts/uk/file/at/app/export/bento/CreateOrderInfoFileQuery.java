@@ -75,6 +75,9 @@ public class CreateOrderInfoFileQuery {
     @Inject
     BentoReservationRepository bentoReservationRepository;
 
+    @Inject
+    ListBentoResevationQuery query;
+
     public OrderInfoDto createOrderInfoFileQuery(DatePeriod period, List<String> workplaceId,
                                                  List<String> workLocationCodes, Optional<BentoReservationSearchConditionDto> totalExtractCondition,
                                                  Optional<BentoReservationSearchConditionDto> itemExtractCondition, Optional<Integer> frameNo, Optional<String> totalTitle,
@@ -110,7 +113,7 @@ public class CreateOrderInfoFileQuery {
                 bentoReservationsDetail = getListBentoResevation(itemExtractCondition.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
         }
         //}
-        if (CollectionUtil.isEmpty(bentoReservationsTotal) & CollectionUtil.isEmpty(bentoReservationsTotal))
+        if (CollectionUtil.isEmpty(bentoReservationsTotal) & CollectionUtil.isEmpty(bentoReservationsDetail))
             throw new BusinessException("Msg_1617");
         //4.
         List<BentoMenu> bentoMenuList = getAllBentoMenu(companyId, period);
@@ -255,7 +258,7 @@ public class CreateOrderInfoFileQuery {
         List<ReservationRegisterInfo> reservationRegisterInfoList = stampCardNo.stream().map(x -> new ReservationRegisterInfo(x)).collect(Collectors.toList());
         List<WorkLocationCode> workLocationCodeList = CollectionUtil.isEmpty(workLocationCodes) ? Collections.EMPTY_LIST
                 : workLocationCodes.stream().map(x -> new WorkLocationCode(x)).collect(Collectors.toList());
-        return new ListBentoResevationQuery().getListBentoResevationQuery(searchCondition, period, reservationRegisterInfoList, workLocationCodeList, reservationClosingTimeFrame);
+        return query.getListBentoResevationQuery(searchCondition, period, reservationRegisterInfoList, workLocationCodeList, reservationClosingTimeFrame);
     }
 
     private List<BentoReservation> getListBentoResevation(int frameNo,
