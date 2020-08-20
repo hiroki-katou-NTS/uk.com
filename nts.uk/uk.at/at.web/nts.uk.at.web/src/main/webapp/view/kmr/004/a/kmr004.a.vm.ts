@@ -21,7 +21,7 @@ module nts.uk.at.view.kmr004.a {
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray([]);
         selectedTab: KnockoutObservable<string> = ko.observable('');
         outputConditionChecked: KnockoutObservable<number> = ko.observable(1); // output condition
-        extractionConditionChecked: KnockoutObservable<boolean> = ko.observable(false);
+
         extractionConditionEnable: KnockoutObservable<boolean> = ko.observable(false);
         separatePageCheckboxEnable: KnockoutObservable<boolean> = ko.observable(true);
         conditionListCcb: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -99,33 +99,40 @@ module nts.uk.at.view.kmr004.a {
         mounted() {
         }
 
-        printExcel(){
+        prepareData():any{
             let vm = this;
-            $("#exportTitle").trigger("validate");
-            vm.$blockui("invisible");
-            vm.model().totalTitle = ko.observable('TITjhdfkjdsh')
-            vm.model().workplaceIds = ko.observableArray([]);
-            let startDate = new Date();
-            startDate.setFullYear(2018); startDate.setMonth(0);startDate.setDate(1);
-            let endDate = new Date();
-            endDate.setFullYear(9999); endDate.setMonth(11);endDate.setDate(31);
-            vm.model().period = ko.observable({
-                start: formatDate(startDate, API.DATE_FORMAT),
-                end: formatDate( endDate, API.DATE_FORMAT)
-            });
+            if(vm.outputConditionChecked === ko.observable(1)){
+                vm.model().frameNo = ko.observable(-1);
+                vm.model().itemExtractCondition = ko.observable(-1);
+                vm.model().detailTitle = ko.observable('');
+                vm.model().isBreakPage = ko.observable(false);
+            }else{
+                vm.model().totalExtractCondition = ko.observable(-1);
+                vm.model().totalTitle = ko.observable('');
+                vm.model().extractionConditionChecked = ko.observable(false);
+                if(vm.model().itemExtractCondition === ko.observable(1)){
+                    vm.model().frameNo = ko.observable(-1);
+                }
+            }
             let data = {
                 workplaceIds: vm.model().workplaceIds(),
-                workLocationCodes: [],
+                workLocationCodes: vm.model().workLocationCodes(),
                 period: vm.model().period.peek(),
-                totalExtractCondition: 1,
-                itemExtractCondition: -1,
-                frameNo: -1,
-                totalTitle:  vm.model().totalTitle(),
-                detailTitle: '',
-                reservationClosingTimeFrame: 1,
+                totalExtractCondition: vm.model().totalExtractCondition.peek(),
+                itemExtractCondition: vm.model().itemExtractCondition.peek(),
+                frameNo: vm.model().frameNo.peek(),
+                totalTitle:  vm.model().totalTitle.peek(),
+                detailTitle: vm.model().detailTitle.peek(),
                 isBreakPage: true,
-                reservationTimeZone: '昼'
+                reservationClosingTimeFrame: vm.model().reservationClosingTimeFrame.peek(),
+                extractionConditionChecked: vm.model().extractionConditionChecked.peek()
             };
+            return data;
+        }
+
+        printExcel(){
+            let vm = this;
+            let data = vm.prepareData();
             nts.uk.request.exportFile("at", API.EXCEL,data).done(() => {
                 vm.$blockui("clear");
             }).fail((res: any) => {
@@ -137,22 +144,10 @@ module nts.uk.at.view.kmr004.a {
 
         printPDF(){
             let vm = this;
-            let data = {
-                workplaceIds: vm.model().workplaceIds(),
-                workLocationCodes: vm.model().workLocationCodes(),
-                period: vm.model().period.peek(),
-                totalExtractCondition: vm.model().totalExtractCondition.peek(),
-                itemExtractCondition: vm.model().itemExtractCondition.peek(),
-                frameNo: vm.model().frameNo.peek(),
-                totalTitle:  vm.model().totalTitle.peek(),
-                detailTitle: vm.model().detailTitle.peek(),
-                reservationClosingTimeFrame: 1,
-                isBreakPage: true,
-                reservationTimeZone: vm.model().reservationTimeZone.peek()
-            };
+            let data = vm.prepareData();
             $("#exportTitle").trigger("validate");
             vm.$blockui("invisible");
-            nts.uk.request.exportFile("at", API.PDF).done(() => {
+            nts.uk.request.exportFile("at", API.PDF, data).done(() => {
                 vm.$blockui("clear");
             }).fail((res: any) => {
                 vm.$dialog.error({ messageId : res.messageId }).then(function(){
@@ -270,28 +265,30 @@ module nts.uk.at.view.kmr004.a {
         workplaceIds: KnockoutObservableArray<string>;
         workLocationCodes: KnockoutObservableArray<string>;
         period: KnockoutObservable<any>;
-        reservationTimeZone: KnockoutObservable<number>;
+        reservationClosingTimeFrame: KnockoutObservable<number>;
         totalTitle: KnockoutObservable<string>;
         detailTitle: KnockoutObservable<string>;
         totalExtractCondition: KnockoutObservable<number>;
         itemExtractCondition: KnockoutObservable<number>;
         isBreakPage: KnockoutObservable<boolean>;
         frameNo: KnockoutObservable<number>;
+        extractionConditionChecked: KnockoutObservable<boolean>;
 
         constructor(){
             this.workplaceIds = ko.observableArray([]);
             this.workLocationCodes = ko.observableArray([]);
             this.period = ko.observable({
                  startDate: formatDate( new Date(), 'yyyy/MM/dd'),
-                 endDate: formatDate( new Date(), 'yyyy/MM/dd')
+                endDate: formatDate( new Date(), 'yyyy/MM/dd')
             });
-            this.reservationTimeZone = ko.observable(1);
+            this.reservationClosingTimeFrame = ko.observable(1);
             this.totalTitle = ko.observable("");
             this.detailTitle = ko.observable("");
             this.totalExtractCondition = ko.observable(2); // Default selected: A8_4 注文済み
             this.itemExtractCondition = ko.observable(1); // Default selected: A10_3 全件
             this.isBreakPage = ko.observable(false);
             this.frameNo = ko.observable(-1);
+            this.extractionConditionChecked = ko.observable(false);
         };
     }
 }

@@ -50,7 +50,7 @@ public class BentoJoinReservationSetting {
 
     public String workLocationCode;
 
-
+    public String workLocationName;
 
     public static List<BentoJoinReservationSetting> setData(List<BentoDto> bentoDtos, BentoReservationSettingDto bentoReservationSettingDto){
         if (bentoDtos == null) return null;
@@ -73,7 +73,8 @@ public class BentoJoinReservationSetting {
                     x.getPrice2(),
                     x.isReservationAtr1(),
                     x.isReservationAtr2(),
-                    x.getWorkLocationCode()
+                    x.getWorkLocationCode(),
+                    x.getWorkLocationName()
             ));
         }
         return listFullJoin;

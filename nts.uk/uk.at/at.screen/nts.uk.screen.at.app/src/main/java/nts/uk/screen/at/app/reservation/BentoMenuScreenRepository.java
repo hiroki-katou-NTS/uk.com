@@ -14,5 +14,7 @@ public interface BentoMenuScreenRepository {
      */
     BentoMenuDto findDataBentoMenu(String companyId, GeneralDate date);
 
-    List<BentoDto> findDataBento(String companyId, GeneralDate date,String histId);
+    List<BentoDto> findDataBento(String companyId, GeneralDate date,BentoRequest request);
+
+    List<WorkLocationDto> findDataWorkLocation(String companyId);
 }
