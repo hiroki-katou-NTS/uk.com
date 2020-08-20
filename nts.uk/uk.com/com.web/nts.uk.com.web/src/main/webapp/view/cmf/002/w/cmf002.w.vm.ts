@@ -7,59 +7,50 @@ module nts.uk.com.view.cmf002.w {
     isNew: boolean = true;
     conditionSetCode: string = null;
     // W1
-    listPeriodSetting: KnockoutObservableArray<any> = ko.observableArray([]);
+    listPeriodSetting: KnockoutObservableArray<any> = ko.observableArray([
+      { code: 1, name: nts.uk.resource.getText("CMF002_275") },
+      { code: 0, name: nts.uk.resource.getText("CMF002_276") },
+    ]);
     selectedPeriodSetting: KnockoutObservable<any> = ko.observable(null);
     // W2
     listDeadlineClassification: KnockoutObservableArray<any> = ko.observableArray([]);
     selectedDeadlineClassification: KnockoutObservable<any> = ko.observable(null);
     // W3
-    listStartDateSegment: KnockoutObservableArray<any> = ko.observableArray([]);
+    listStartDateSegment: KnockoutObservableArray<any> = ko.observableArray([
+      { code: StartDateClassificationCode.DEADLINE_START, name: nts.uk.resource.getText('CMF002_542') },
+      { code: StartDateClassificationCode.DEADLINE_END, name: nts.uk.resource.getText('CMF002_543') },
+      { code: StartDateClassificationCode.DEADLINE_PROCESSING, name: nts.uk.resource.getText('CMF002_544') },
+      { code: StartDateClassificationCode.SYSTEM_DATE, name: nts.uk.resource.getText('CMF002_545') },
+      { code: StartDateClassificationCode.DATE_SPECIFICATION, name: nts.uk.resource.getText('CMF002_546') },
+    ]);
     selectedStartDateSegment: KnockoutObservable<any> = ko.observable(null);
     // W4
     startDateAdjustment: KnockoutObservable<any> = ko.observable(null);
     startDateSpecified: KnockoutObservable<any> = ko.observable(null);
     // W5
-    listEndDateSegment: KnockoutObservableArray<any> = ko.observableArray([]);
+    listEndDateSegment: KnockoutObservableArray<any> = ko.observableArray([
+      { code: EndDateClassificationCode.DEADLINE_START, name: nts.uk.resource.getText('CMF002_542') },
+      { code: EndDateClassificationCode.DEADLINE_END, name: nts.uk.resource.getText('CMF002_543') },
+      { code: EndDateClassificationCode.DEADLINE_PROCESSING, name: nts.uk.resource.getText('CMF002_544') },
+      { code: EndDateClassificationCode.SYSTEM_DATE, name: nts.uk.resource.getText('CMF002_545') },
+      { code: EndDateClassificationCode.DATE_SPECIFICATION, name: nts.uk.resource.getText('CMF002_546') },
+    ]);
     selectedEndDateSegment: KnockoutObservable<any> = ko.observable(null);
     // W6
     endDateAdjustment: KnockoutObservable<any> = ko.observable(null);
     endDateSpecified: KnockoutObservable<any> = ko.observable(null);
     // W7
-    listBaseDateSegment: KnockoutObservableArray<any> = ko.observableArray([]);
+    listBaseDateSegment: KnockoutObservableArray<any> = ko.observableArray([
+      { code: BaseDateClassificationCode.DEADLINE_START, name: nts.uk.resource.getText('CMF002_547') },
+      { code: BaseDateClassificationCode.DEADLINE_END, name: nts.uk.resource.getText('CMF002_548') },
+      { code: BaseDateClassificationCode.SYSTEM_DATE, name: nts.uk.resource.getText('CMF002_545') },
+      { code: BaseDateClassificationCode.OUTPUT_PERIOD_START, name: nts.uk.resource.getText('CMF002_549') },
+      { code: BaseDateClassificationCode.OUTPUT_PERIOD_END, name: nts.uk.resource.getText('CMF002_550') },
+      { code: BaseDateClassificationCode.DATE_SPECIFICATION, name: nts.uk.resource.getText('CMF002_546') },
+    ]);
     selectedBaseDateSegment: KnockoutObservable<any> = ko.observable(null);
     // W8
     baseDateSpecified: KnockoutObservable<any> = ko.observable(null);
-
-    constructor() {
-      super();
-      const vm = this;
-      vm.listPeriodSetting = ko.observableArray([
-        { code: 1, name: nts.uk.resource.getText("CMF002_275") },
-        { code: 0, name: nts.uk.resource.getText("CMF002_276") },
-      ]);
-      vm.listStartDateSegment([
-        { code: StartDateClassificationCode.DEADLINE_START, name: nts.uk.resource.getText('CMF002_542') },
-        { code: StartDateClassificationCode.DEADLINE_END, name: nts.uk.resource.getText('CMF002_543') },
-        { code: StartDateClassificationCode.DEADLINE_PROCESSING, name: nts.uk.resource.getText('CMF002_544') },
-        { code: StartDateClassificationCode.SYSTEM_DATE, name: nts.uk.resource.getText('CMF002_545') },
-        { code: StartDateClassificationCode.DATE_SPECIFICATION, name: nts.uk.resource.getText('CMF002_546') },
-      ]);
-      vm.listEndDateSegment([
-        { code: EndDateClassificationCode.DEADLINE_START, name: nts.uk.resource.getText('CMF002_542') },
-        { code: EndDateClassificationCode.DEADLINE_END, name: nts.uk.resource.getText('CMF002_543') },
-        { code: EndDateClassificationCode.DEADLINE_PROCESSING, name: nts.uk.resource.getText('CMF002_544') },
-        { code: EndDateClassificationCode.SYSTEM_DATE, name: nts.uk.resource.getText('CMF002_545') },
-        { code: EndDateClassificationCode.DATE_SPECIFICATION, name: nts.uk.resource.getText('CMF002_546') },
-      ]);
-      vm.listBaseDateSegment([
-        { code: BaseDateClassificationCode.DEADLINE_START, name: nts.uk.resource.getText('CMF002_547') },
-        { code: BaseDateClassificationCode.DEADLINE_END, name: nts.uk.resource.getText('CMF002_548') },
-        { code: BaseDateClassificationCode.SYSTEM_DATE, name: nts.uk.resource.getText('CMF002_545') },
-        { code: BaseDateClassificationCode.OUTPUT_PERIOD_START, name: nts.uk.resource.getText('CMF002_549') },
-        { code: BaseDateClassificationCode.OUTPUT_PERIOD_END, name: nts.uk.resource.getText('CMF002_550') },
-        { code: BaseDateClassificationCode.DATE_SPECIFICATION, name: nts.uk.resource.getText('CMF002_546') },
-      ]);
-    }
 
     mounted() {
       const vm = this;
@@ -169,7 +160,6 @@ module nts.uk.com.view.cmf002.w {
           }
         });
     }
-
   }
 
   // 開始日区分
