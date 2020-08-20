@@ -120,7 +120,7 @@ export class KdpS01CComponent extends Vue {
 
     get isHasImplementation() {
         let vm = this;
-        if (isNaN(_.get(vm, 'screenData.confirmResult.permissionCheck'))) {
+        if (!!!_.get(vm, 'screenData.confirmResult.permissionCheck')) {
             return State.SETTING_NULL;
         }
 
