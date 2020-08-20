@@ -1,10 +1,7 @@
 package nts.uk.screen.at.ws.krm.krm001.b;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.screen.at.app.reservation.BentoJoinReservationSetting;
-import nts.uk.screen.at.app.reservation.BentoMenuDto;
-import nts.uk.screen.at.app.reservation.BentoMenuJoinBentoSettingDto;
-import nts.uk.screen.at.app.reservation.BentoMenuSetScreenProcessor;
+import nts.uk.screen.at.app.reservation.*;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -28,8 +25,8 @@ public class BentoMenuWebService extends WebService{
     }
 
     @POST
-    @Path("getBentoMenuByHist/{histId}")
-    public List<BentoJoinReservationSetting> getBentoMenu(@PathParam("histId") String histId) {
-        return this.bentoMenuSetScreenProcessor.getBentoMenuByHist(histId);
+    @Path("getBentoMenuByHist")
+    public List<BentoJoinReservationSetting> getBentoMenu(BentoRequest request) {
+        return this.bentoMenuSetScreenProcessor.getBentoMenuByHist(request);
     }
 }
