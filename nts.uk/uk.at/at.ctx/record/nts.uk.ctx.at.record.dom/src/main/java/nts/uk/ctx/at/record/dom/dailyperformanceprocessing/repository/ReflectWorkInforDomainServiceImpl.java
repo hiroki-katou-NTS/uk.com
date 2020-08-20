@@ -1703,7 +1703,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
 			if (workInfoOfDailyPerformanceUpdate.getRecordInfo() != null) {
 
-				if (workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode() != null && workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode()
+				if (workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode() != null && workInfoOfDailyPerformanceUpdate.getScheduleInfo().getWorkTypeCode() != null && workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode()
 						.equals(workInfoOfDailyPerformanceUpdate.getScheduleInfo().getWorkTimeCode())
 						&& workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode()
 								.equals(workInfoOfDailyPerformanceUpdate.getScheduleInfo().getWorkTypeCode())) {

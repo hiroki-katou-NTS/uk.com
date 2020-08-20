@@ -561,7 +561,7 @@ public class ScheduleCreatorExecutionTransaction {
 		ScheManaStatuTempo employmentInfo = optEmploymentInfo.get();
 		// note 
 		// note if 入社前OR出向中
-		// note status employment equal BEFORE_JOINING (入社前) or equal ON_LOAN (出向中)
+		// note status employment equal BEFORE_JOINING (入社前) or equal ON_LOAN (出向中) (thay đổi enum)
 		if (employmentInfo.getScheManaStatus() == ScheManaStatus.INVALID_DATA
 				|| employmentInfo.getScheManaStatus() == ScheManaStatus.DO_NOT_MANAGE_SCHEDULE) {
 
@@ -848,7 +848,7 @@ public class ScheduleCreatorExecutionTransaction {
 
 			// note Outputを確認する
 			if (prepareWorkOutput.getExecutionLog().isPresent()) {
-				// note 「勤務予定」、「エラー」を返す」、「処理状態
+				// note 「勤務予定」、「エラー」を返す」、「処理状態」
 				createScheduleOneDate = new OutputCreateScheduleOneDate(null, prepareWorkOutput.getExecutionLog().get(),
 						ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY_WITH_ERROR.value));
 			} else {
@@ -994,22 +994,26 @@ public class ScheduleCreatorExecutionTransaction {
 			switch (checkErrorCondition.value) {
 			// note 勤務情報のエラー状態.勤務種類が削除された
 			case 4: {
-				errorLog = new ScheduleErrorLog("Msg_590", null, dateInPeriod, command.getEmployeeId());
+				String errorContent = this.internationalization.localize("Msg_590", "#Msg_590").get();
+				errorLog = new ScheduleErrorLog(errorContent, null, dateInPeriod, command.getEmployeeId());
 				break;
 			}
 			// note 就業時間帯が不要なのに設定されている
 			case 3: {
-				errorLog = new ScheduleErrorLog("Msg_434", null, dateInPeriod, command.getEmployeeId());
+				String errorContent = this.internationalization.localize("Msg_434", "#Msg_434").get();
+				errorLog = new ScheduleErrorLog(errorContent, null, dateInPeriod, command.getEmployeeId());
 				break;
 			}
 			// note 就業時間帯が必須なのに設定されていない
 			case 2: {
-				errorLog = new ScheduleErrorLog("Msg_435", null, dateInPeriod, command.getEmployeeId());
+				String errorContent = this.internationalization.localize("Msg_435", "#Msg_435").get();
+				errorLog = new ScheduleErrorLog(errorContent, null, dateInPeriod, command.getEmployeeId());
 				break;
 			}
 			// note 就業時間帯が削除された
 			case 5: {
-				errorLog = new ScheduleErrorLog("Msg_591", null, dateInPeriod, command.getEmployeeId());
+				String errorContent = this.internationalization.localize("Msg_591", "#Msg_591").get();
+				errorLog = new ScheduleErrorLog(errorContent, null, dateInPeriod, command.getEmployeeId());
 				break;
 			}
 			}
@@ -1078,7 +1082,8 @@ public class ScheduleCreatorExecutionTransaction {
 							.filter(y -> y.getWorkAtr().value == WorkAtr.OneDay.value).collect(Collectors.toList())))
 					.collect(Collectors.toList());
 			if (lstWorkType.isEmpty()) {
-				ScheduleErrorLog scheExeLog = new ScheduleErrorLog("Msg_601", command.getExecutionId(), dateInPeriod,
+				String errorContent = this.internationalization.localize("Msg_601", "#Msg_601").get();
+				ScheduleErrorLog scheExeLog = new ScheduleErrorLog(errorContent, command.getExecutionId(), dateInPeriod,
 						command.getEmployeeId());
 				// note ドメインモデル「スケジュール作成エラーログ」を返す
 				return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheExeLog));
@@ -1108,7 +1113,8 @@ public class ScheduleCreatorExecutionTransaction {
 					.collect(Collectors.toList());
 
 			if (lstWorkType.isEmpty()) {
-				ScheduleErrorLog scheExeLog = new ScheduleErrorLog("Msg_601", command.getExecutionId(), dateInPeriod,
+				String errorContent = this.internationalization.localize("Msg_601", "#Msg_601").get();
+				ScheduleErrorLog scheExeLog = new ScheduleErrorLog(errorContent, command.getExecutionId(), dateInPeriod,
 						command.getEmployeeId());
 				// note ドメインモデル「スケジュール作成エラーログ」を返す
 				return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheExeLog));
@@ -1187,7 +1193,8 @@ public class ScheduleCreatorExecutionTransaction {
 			// note 就業時間帯コード＜＞Null AND就業時間帯を取得できない
 			if (workTimeCode != null && !workTime.isPresent()) {
 				// note スケジュール作成ログを作成して返す
-				ScheduleErrorLog scheExeLog = new ScheduleErrorLog("Msg_591", null, dateInPeriod,
+				String errorContent = this.internationalization.localize("Msg_591", "#Msg_591").get();
+				ScheduleErrorLog scheExeLog = new ScheduleErrorLog(errorContent, null, dateInPeriod,
 						command.getEmployeeId());
 				return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheExeLog));
 			}
@@ -1197,7 +1204,8 @@ public class ScheduleCreatorExecutionTransaction {
 
 		}
 		// note スケジュール作成ログを作成して返す
-		ScheduleErrorLog scheExeLog = new ScheduleErrorLog("Msg_590", null, dateInPeriod, command.getEmployeeId());
+		String errorContent = this.internationalization.localize("Msg_590", "#Msg_590").get();
+		ScheduleErrorLog scheExeLog = new ScheduleErrorLog(errorContent, null, dateInPeriod, command.getEmployeeId());
 		return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheExeLog));
 	}
 	
@@ -1338,7 +1346,8 @@ public class ScheduleCreatorExecutionTransaction {
 				}
 				// note Null の場合 - if !itemDto.get().getMonthlyPattern().isPresent()
 				// note 存在しない場合 - if (!monthlySetting.isPresent())
-				ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog("Msg_604", command.getExecutionId(),
+				String errorContent = this.internationalization.localize("Msg_604", "#Msg_604").get();
+				ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(),
 						dateInPeriod, command.getEmployeeId());
 				return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheduleErrorLog));
 			}
@@ -1355,7 +1364,8 @@ public class ScheduleCreatorExecutionTransaction {
 				if (itemDto.get().getWorkDayOfWeek() == null || !this.checkDayOfWeek(itemDto.get().getWorkDayOfWeek(), dateInPeriod)) {
 					
 					// note ドメインモデル「スケジュール作成エラーログ」を返す
-					ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog("Msg_594", null,
+					String errorContent = this.internationalization.localize("Msg_594", "#Msg_594").get();
+					ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, null,
 							dateInPeriod, command.getEmployeeId());
 					return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheduleErrorLog));
 				} else {

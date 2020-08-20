@@ -38,18 +38,20 @@ public class DailyResultAccordScheduleStatusServiceTest {
 		List<String> lstEmployeeID = Arrays.asList("emp1");
 		DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		
-		new MockUp<ScheManaStatus>() {
-			@Mock
-			public boolean  needCreateWorkSchedule(){
-				return false;
-			}
-		};
+
 		ScheManaStatuTempo scheManaStatuTempo = new ScheManaStatuTempo("emp1", GeneralDate.today(),
 				ScheManaStatus.CLOSED, Optional.empty(), Optional.empty());
 		new MockUp<ScheManaStatuTempo>() {
 			@Mock
 			public ScheManaStatuTempo create(ScheManaStatuTempo.Require require, String employeeID, GeneralDate date) {
 				return scheManaStatuTempo;
+			}
+		};
+		
+		new MockUp<ScheManaStatus>() {
+			@Mock
+			public boolean  needCreateWorkSchedule(){
+				return false;
 			}
 		};
 		Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> data = DailyResultAccordScheduleStatusService.get(require,
@@ -67,6 +69,16 @@ public class DailyResultAccordScheduleStatusServiceTest {
 		List<String> lstEmployeeID = Arrays.asList("emp1");
 		DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		
+		
+		ScheManaStatuTempo scheManaStatuTempo = new ScheManaStatuTempo("emp1", GeneralDate.today(),
+				ScheManaStatus.SCHEDULE_MANAGEMENT, Optional.empty(), Optional.empty());
+		new MockUp<ScheManaStatuTempo>() {
+			@Mock
+			public ScheManaStatuTempo create(ScheManaStatuTempo.Require require, String employeeID, GeneralDate date) {
+				return scheManaStatuTempo;
+			}
+		};
+		
 		new Expectations() {
 			{
 				require.getDailyResults(anyString, GeneralDate.today());
@@ -77,14 +89,6 @@ public class DailyResultAccordScheduleStatusServiceTest {
 			@Mock
 			public boolean  needCreateWorkSchedule(){
 				return true;
-			}
-		};
-		ScheManaStatuTempo scheManaStatuTempo = new ScheManaStatuTempo("emp1", GeneralDate.today(),
-				ScheManaStatus.CLOSED, Optional.empty(), Optional.empty());
-		new MockUp<ScheManaStatuTempo>() {
-			@Mock
-			public ScheManaStatuTempo create(ScheManaStatuTempo.Require require, String employeeID, GeneralDate date) {
-				return scheManaStatuTempo;
 			}
 		};
 		Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> data = DailyResultAccordScheduleStatusService.get(require,
@@ -104,6 +108,16 @@ public class DailyResultAccordScheduleStatusServiceTest {
 		IntegrationOfDaily integrationOfDaily = new IntegrationOfDaily(null, null, null, Optional.empty(), new ArrayList<>(), Optional.empty(), new ArrayList<>(),
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), 
 				Optional.empty(), new ArrayList<>(), Optional.empty(), new ArrayList<>()) ;
+		
+		ScheManaStatuTempo scheManaStatuTempo = new ScheManaStatuTempo("emp1", GeneralDate.today(),
+				ScheManaStatus.DO_NOT_MANAGE_SCHEDULE, Optional.empty(), Optional.empty());
+		new MockUp<ScheManaStatuTempo>() {
+			@Mock
+			public ScheManaStatuTempo create(ScheManaStatuTempo.Require require, String employeeID, GeneralDate date) {
+				return scheManaStatuTempo;
+			}
+		};
+		
 		new Expectations() {
 			{
 				require.getDailyResults(anyString, GeneralDate.today());
@@ -115,14 +129,6 @@ public class DailyResultAccordScheduleStatusServiceTest {
 			@Mock
 			public boolean  needCreateWorkSchedule(){
 				return true;
-			}
-		};
-		ScheManaStatuTempo scheManaStatuTempo = new ScheManaStatuTempo("emp1", GeneralDate.today(),
-				ScheManaStatus.CLOSED, Optional.empty(), Optional.empty());
-		new MockUp<ScheManaStatuTempo>() {
-			@Mock
-			public ScheManaStatuTempo create(ScheManaStatuTempo.Require require, String employeeID, GeneralDate date) {
-				return scheManaStatuTempo;
 			}
 		};
 		Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> data = DailyResultAccordScheduleStatusService.get(require,
