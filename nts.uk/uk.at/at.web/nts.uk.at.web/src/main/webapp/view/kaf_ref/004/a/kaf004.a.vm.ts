@@ -70,10 +70,10 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         vm.arrivedLateLeaveEarlyInfo(successData);
                         vm.appDispInfoStartupOutput(successData.appDispInfoStartupOutput);
                         vm.lateOrEarlyInfos(vm.arrivedLateLeaveEarlyInfo().earlyInfos);
-                        vm.lateOrEarlyInfo1(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 0 })));
-                        vm.lateOrEarlyInfo2(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 1 })));
-                        vm.lateOrEarlyInfo3(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 0 })));
-                        vm.lateOrEarlyInfo4(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 1 })));
+                        vm.lateOrEarlyInfo1(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 0 }))[0]);
+                        vm.lateOrEarlyInfo2(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 1 }))[0]);
+                        vm.lateOrEarlyInfo3(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 0 }))[0]);
+                        vm.lateOrEarlyInfo4(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 1 }))[0]);
 
                         if (!vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput
                             || !vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput
@@ -164,10 +164,10 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     } else {
                         vm.appDispInfoStartupOutput().appDispInfoWithDateOutput = success.appDispInfoWithDateOutput;
                         vm.lateOrEarlyInfos(success.lateOrEarlyInfoLst);
-                        vm.lateOrEarlyInfo1(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 0 })));
-                        vm.lateOrEarlyInfo2(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 1 })));
-                        vm.lateOrEarlyInfo3(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 0 })));
-                        vm.lateOrEarlyInfo4(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 1 })));
+                        vm.lateOrEarlyInfo1(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 0 }))[0]);
+                        vm.lateOrEarlyInfo2(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 1 }))[0]);
+                        vm.lateOrEarlyInfo3(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 0 }))[0]);
+                        vm.lateOrEarlyInfo4(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 1 }))[0]);
 
                         vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput = success.appDispInfoWithDateOutput;
                         // if (!vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput
@@ -434,22 +434,23 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     if (ko.toJS(vm.lateOrEarlyInfo1) === null) {
                         return false;
                     }
-                    return ko.toJS(vm.lateOrEarlyInfo1().isIndicate);
+                    return ko.toJS(vm.lateOrEarlyInfo1().isIndicated);
                 } case IdItem.A6_13: {
                     if (!ko.toJS(vm.lateOrEarlyInfo2) === null) {
                         return false;
                     }
-                    return ko.toJS(vm.lateOrEarlyInfo2().isIndicate);
+                    return ko.toJS(vm.lateOrEarlyInfo2().isIndicated);
                 } case IdItem.A6_19: {
                     if (!ko.toJS(vm.lateOrEarlyInfo3) === null) {
                         return false;
                     }
-                    return ko.toJS(vm.lateOrEarlyInfo3().isIndicate);
+                    return ko.toJS(vm.lateOrEarlyInfo3().isIndicated);
                 } case IdItem.A6_25: {
                     if (!ko.toJS(vm.lateOrEarlyInfo4) === null) {
                         return false;
                     }
-                    return ko.toJS(vm.lateOrEarlyInfo4().isIndicate);
+                    return ko.toJS(vm.lateOrEarlyInfo4().isIndicated
+                    );
                 } default: {
                     return true;
                 }

@@ -42,6 +42,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSetRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * @author anhnm
@@ -170,6 +171,17 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		Optional<List<ActualContentDisplay>> actualContentDisplay = appDisplayInfo.getAppDispInfoWithDateOutput()
 				.getOpActualContentDisplayLst();
 
+		// AnhNM Mock data: START
+		AchievementEarly mockAchiveEarly = new AchievementEarly(new TimeWithDayAttr(510), new TimeWithDayAttr(990),
+				new TimeWithDayAttr(900), new TimeWithDayAttr(1320));
+		AchievementDetail mockAchive = new AchievementDetail(null, null, null, null, null, null, mockAchiveEarly,
+				Optional.of(1320), Optional.empty(), Optional.empty(), Optional.of(510), Optional.of(900),
+				Optional.empty(), Optional.of(960), Optional.empty(), Optional.empty(), Optional.empty(),
+				Optional.empty(), Optional.empty());
+		ActualContentDisplay mockDisplay = new ActualContentDisplay(GeneralDate.fromString("2020/09/03", DATE_FORMAT),
+				Optional.of(mockAchive));
+		// AnhNM Mock data: END
+
 		List<LateOrEarlyInfo> lateOrEarlyInfos = new ArrayList<>();
 		if (actualContentDisplay.isPresent()) {
 			// 取り消す初期情報
@@ -182,6 +194,9 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 						appDisplayInfo.getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles());
 			}
 		}
+
+		lateOrEarlyInfos = this.initialInfo(listAppSet, Optional.of(mockAchive),
+				appDisplayInfo.getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles());
 
 		displayInfo.setAppDispInfoStartupOutput(appDisplayInfo);
 		displayInfo.setLateEarlyCancelAppSet(listAppSet);
@@ -241,7 +256,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			LateOrEarlyInfo attend1 = this.checkDataStatus(
 					Optional.of(opAchievementDetail.get().getAchievementEarly().getScheAttendanceTime1().rawHour()),
 					Optional.of(opAchievementDetail.get().getOpWorkTime().get()), listAppSet.getCancelAtr(),
-					new LateOrEarlyInfo(false, 1, false, false, LateOrEarlyAtr.LATE));
+					new LateOrEarlyInfo(false, 1, false, true, LateOrEarlyAtr.LATE));
 
 			// 「OUTPUT.取り消す初期情報＜List＞」に取得した「取り消す初期情報」を追加する （出勤１）
 			infoLst.add(attend1);
@@ -252,7 +267,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			LateOrEarlyInfo leave1 = this.checkDataStatus(
 					Optional.of(opAchievementDetail.get().getAchievementEarly().getScheDepartureTime1().rawHour()),
 					Optional.of(opAchievementDetail.get().getOpLeaveTime().get()), listAppSet.getCancelAtr(),
-					new LateOrEarlyInfo(false, 1, false, false, LateOrEarlyAtr.EARLY));
+					new LateOrEarlyInfo(false, 1, false, true, LateOrEarlyAtr.EARLY));
 
 			// 「OUTPUT.取り消す初期情報＜List＞」に取得した「取り消す初期情報」を追加する（退勤１）
 			infoLst.add(leave1);
@@ -264,7 +279,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 				LateOrEarlyInfo attend2 = this.checkDataStatus(
 						Optional.of(opAchievementDetail.get().getAchievementEarly().getScheAttendanceTime2().rawHour()),
 						Optional.of(opAchievementDetail.get().getOpWorkTime2().get()), listAppSet.getCancelAtr(),
-						new LateOrEarlyInfo(false, 2, false, false, LateOrEarlyAtr.LATE));
+						new LateOrEarlyInfo(false, 2, false, true, LateOrEarlyAtr.LATE));
 
 				// 「OUTPUT.取り消す初期情報＜List＞」に取得した「取り消す初期情報」を追加する （出勤２）
 				infoLst.add(attend2);
@@ -275,7 +290,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 				LateOrEarlyInfo leave2 = this.checkDataStatus(
 						Optional.of(opAchievementDetail.get().getAchievementEarly().getScheDepartureTime2().rawHour()),
 						Optional.of(opAchievementDetail.get().getOpDepartureTime2().get()), listAppSet.getCancelAtr(),
-						new LateOrEarlyInfo(false, 2, false, false, LateOrEarlyAtr.EARLY));
+						new LateOrEarlyInfo(false, 2, false, true, LateOrEarlyAtr.EARLY));
 
 				// 「OUTPUT.取り消す初期情報＜List＞」に取得した「取り消す初期情報」を追加する （退勤２）
 				infoLst.add(leave2);
@@ -296,8 +311,10 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 	 */
 	private LateOrEarlyInfo checkDataStatus(Optional<Integer> scheTime, Optional<Integer> actualTime,
 			CancelAtr cancelAtr, LateOrEarlyInfo info) {
-		if (scheTime.isPresent() && actualTime.isPresent() && actualTime.get() > scheTime.get()
-				&& cancelAtr.value == 2) {
+		if (scheTime.isPresent() && actualTime.isPresent() && actualTime.get() > scheTime.get()) {
+			info.setIsActive(true);
+		}
+		if (cancelAtr.value == 2) {
 			info.setIsCheck(true);
 		}
 
