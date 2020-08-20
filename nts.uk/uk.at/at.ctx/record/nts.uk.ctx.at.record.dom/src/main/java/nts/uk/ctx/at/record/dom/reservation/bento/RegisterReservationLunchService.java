@@ -35,7 +35,7 @@ public class RegisterReservationLunchService {
         String historyID = bentoMenu != null ? bentoMenu.getHistoryID() : null;
 
         return AtomTask.of(() -> {
-            require.registerBentoMenu(historyID, bentoReservationClosingTime,bentoReservationSetting.getOperationDistinction());
+            require.registerBentoMenu(historyID, bentoReservationClosingTime,operationDistinction);
             BentoReservationSetting newSetting = new BentoReservationSetting(companyId, operationDistinction, correctionContent, arAchievements);
 
             if (bentoReservationSetting == null) {
