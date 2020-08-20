@@ -33,4 +33,9 @@ public class BentoMenuSetScreenProcessor {
         BentoReservationSettingDto reservationSettingDto = bentoReservationScreenRepository.findDataBentoRervation(companyID);
         return BentoJoinReservationSetting.setData(bentoDtos,reservationSettingDto);
     }
+
+    public List<WorkLocationDto> getWorkLocationByCid() {
+        String companyID = AppContexts.user().companyId();
+        return bentoMenuScreenRepository.findDataWorkLocation(companyID);
+    }
 }

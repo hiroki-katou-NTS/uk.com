@@ -28,4 +28,10 @@ public class BentoMenuWebService extends WebService{
     public List<BentoJoinReservationSetting> getBentoMenu(BentoRequest request) {
         return this.bentoMenuSetScreenProcessor.getBentoMenuByHist(request);
     }
+
+    @POST
+    @Path("getWorkLocation")
+    public List<WorkLocationDto> getWorklocation() {
+        return this.bentoMenuSetScreenProcessor.getWorkLocationByCid();
+    }
 }
