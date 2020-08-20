@@ -6,6 +6,8 @@ import lombok.Data;
 
 @Data
 public class ReservationDto {
+	private String workLocationCode;
+
 	private List<BentoReservationDto> listOrder;	
 	
 	private BentoMenuByClosingTimeDto bentoMenuByClosingTimeDto;
@@ -14,10 +16,11 @@ public class ReservationDto {
 		super();
 	}
 
-	public ReservationDto(List<BentoReservationDto> listOrder, BentoMenuByClosingTimeDto bentoMenuByClosingTimeDto) {
+	public ReservationDto(List<BentoReservationDto> listOrder, BentoMenuByClosingTimeDto bentoMenuByClosingTimeDto, String workLocationCode) {
 		super();
 		this.listOrder = listOrder;
 		this.bentoMenuByClosingTimeDto = bentoMenuByClosingTimeDto;
+		this.workLocationCode = workLocationCode;
 	}
 	
 }

@@ -17,6 +17,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
+import nts.uk.ctx.bs.employee.pub.workplace.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.util.Strings;
 
@@ -42,19 +43,6 @@ import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepositor
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceInforParam;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
-import nts.uk.ctx.bs.employee.pub.workplace.AffAtWorkplaceExport;
-import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceExport;
-import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryExport;
-import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport;
-import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport2;
-import nts.uk.ctx.bs.employee.pub.workplace.ResultRequest597Export;
-import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
-import nts.uk.ctx.bs.employee.pub.workplace.WkpByEmpExport;
-import nts.uk.ctx.bs.employee.pub.workplace.WkpCdNameExport;
-import nts.uk.ctx.bs.employee.pub.workplace.WkpConfigAtTimeExport;
-import nts.uk.ctx.bs.employee.pub.workplace.WkpInfoExport;
-import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceHistExport;
-import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceIdAndPeriod;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplaceInforExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.shr.com.context.AppContexts;
@@ -828,4 +816,40 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 		return result;
 	}
 
+
+	@Override
+	public Optional<SWkpHistWrkLocationExport> findBySidWrkLocationCD(String employeeId, GeneralDate baseDate) {
+		// get AffWorkplaceHistory
+		Optional<AffWorkplaceHistory> affWrkPlc = affWkpHistRepo.getByEmpIdAndStandDate(employeeId,
+				baseDate);
+		if (!affWrkPlc.isPresent())
+			return Optional.empty();
+
+		// get AffWorkplaceHistoryItem
+		String historyId = affWrkPlc.get().getHistoryItems().get(0).identifier();
+		Optional<AffWorkplaceHistoryItem> affWrkPlcItem = affWkpHistItemRepo.getByHistId(historyId);
+		if (!affWrkPlcItem.isPresent())
+			return Optional.empty();
+
+		// Get workplace info.
+		String companyId = AppContexts.user().companyId();
+		String workplaceId = affWrkPlcItem.get().getWorkplaceId();
+		List<WorkplaceInforParam> lstWkpInfo = wkpExpService.getWorkplaceInforFromWkpIds(companyId, Arrays.asList(workplaceId), baseDate);
+
+		// Check exist
+		if (lstWkpInfo.isEmpty()) {
+			return Optional.empty();
+		}
+
+		// Return workplace id
+		WorkplaceInforParam param = lstWkpInfo.get(0);
+
+		return Optional.of(SWkpHistWrkLocationExport.builder().dateRange(affWrkPlc.get().getHistoryItems().get(0).span())
+				.employeeId(affWrkPlc.get().getEmployeeId()).workplaceId(param.getWorkplaceId())
+				.workplaceCode(param.getWorkplaceCode()).workplaceName(param.getWorkplaceName())
+				.wkpDisplayName(param.getDisplayName())
+				.workLocationCd(affWrkPlcItem.get().getWorkLocationCode().isPresent()?
+						affWrkPlcItem.get().getWorkLocationCode().get().v() : null )
+				.build());
+	}
 }
