@@ -32,10 +32,14 @@ public class WorkScheManaStatusService {
 			map [prv-1] 社員別に取得する( require, $, 期間 )																
 			flatMap		*/												
 		Map<ScheManaStatuTempo, Optional<WorkSchedule>> map = new HashMap<>();
+		for (int i = 0; i < lstEmployeeID.size(); i++) {
+			long startTime = System.nanoTime();
+			map.putAll(WorkScheManaStatusService.getByEmployee(require,lstEmployeeID.get(i), period));
+			long endTime = System.nanoTime();
+			long duration = (endTime - startTime) / 1000000; // ms;
+			System.out.println("Time of employee: " + i +1 + " : "+ duration);
+		}
 		
-		for(String sid : lstEmployeeID){
-			map.putAll(WorkScheManaStatusService.getByEmployee(require,sid, period));
-		};
 		return  map;
 	}
 

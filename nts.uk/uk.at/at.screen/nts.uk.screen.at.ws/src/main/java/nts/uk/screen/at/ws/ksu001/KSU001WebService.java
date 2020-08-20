@@ -41,6 +41,13 @@ public class KSU001WebService extends WebService{
 	@POST
 	@Path("start")
 	public StartKSU001Dto getDataStartScreen(StartKSU001Param param){
+		StartKSU001Dto data = startKSU001.getData(param);
+		return data;
+	}
+	
+	@POST
+	@Path("start-test")
+	public StartKSU001Dto test(StartKSU001Param param){
 		StartKSU001Dto data = startKSU001.getDataStartScreen(param);
 		return data;
 	}
@@ -48,21 +55,21 @@ public class KSU001WebService extends WebService{
 	@POST
 	@Path("shift")
 	public StartKSU001Dto getDataShiftMode(StartKSU001Param param){
-		StartKSU001Dto data = startKSU001.getDataStartScreen(param);
+		StartKSU001Dto data = startKSU001.getData(param);
 		return data;
 	}
 	
 	@POST
 	@Path("shortname")
 	public StartKSU001Dto getDataShortNameMode(StartKSU001Param param){
-		StartKSU001Dto data = startKSU001.getDataStartScreen(param);
+		StartKSU001Dto data = startKSU001.getData(param);
 		return data;
 	}
 	
 	@POST
 	@Path("time")
 	public StartKSU001Dto getDataTimeMode(StartKSU001Param param){
-		StartKSU001Dto data = startKSU001.getDataStartScreen(param);
+		StartKSU001Dto data = startKSU001.getData(param);
 		return data;
 	}
 	

@@ -66,23 +66,27 @@ public class StartKSU001 {
 		DataScreenQueryGetInforDto resultStep1 = getInforOfInitStartup.getData();
 		
 		// step 2 start
-		String workplaceId = resultStep1.targetOrgIdenInfor.workplaceId == null ? null : resultStep1.targetOrgIdenInfor.workplaceId;
-		String workplaceGroupId = resultStep1.targetOrgIdenInfor.workplaceGroupId == null ? null : resultStep1.targetOrgIdenInfor.workplaceGroupId;
 		GeneralDate startDate = param.startDate == null || param.startDate == "" ? resultStep1.startDate : GeneralDate.fromString(param.startDate, DATE_FORMAT);
 		GeneralDate endDate = param.endDate == null || param.endDate == "" ? resultStep1.endDate : GeneralDate.fromString(param.endDate, DATE_FORMAT);
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(
-				workplaceGroupId == null ? TargetOrganizationUnit.WORKPLACE : TargetOrganizationUnit.WORKPLACE_GROUP,
-				workplaceId == null ? Optional.empty() : Optional.of(workplaceId),
-				workplaceGroupId == null ? Optional.empty() : Optional.of(workplaceGroupId));
+		TargetOrgIdenInfor targetOrgIdenInfor = null;
+		if (resultStep1.targetOrgIdenInfor.unit == TargetOrganizationUnit.WORKPLACE.value) {
+			targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,
+					Optional.of(resultStep1.targetOrgIdenInfor.workplaceId),
+					Optional.empty());
+		}else{
+			targetOrgIdenInfor = new TargetOrgIdenInfor(
+					TargetOrganizationUnit.WORKPLACE_GROUP,
+					Optional.empty(),
+					Optional.of(resultStep1.targetOrgIdenInfor.workplaceGroupId));
+		}
 
 		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(endDate, targetOrgIdenInfor);
-		List<EmployeeInformationImport> resultStep2 = extractTargetEmployees.dataSample(param2);
+		List<EmployeeInformationImport> resultStep2 = extractTargetEmployees.getListEmp(param2);
 		// step 2 end
 		
 		// step 3 start
 		List<String> listSid = resultStep2.stream().map(mapper -> mapper.getEmployeeId()).collect(Collectors.toList());
-		EventInfoAndPerCondPeriodParam param3 = new EventInfoAndPerCondPeriodParam(startDate, endDate, workplaceId,
-				workplaceGroupId, listSid);
+		EventInfoAndPerCondPeriodParam param3 = new EventInfoAndPerCondPeriodParam(startDate, endDate,listSid, targetOrgIdenInfor);
 		DataSpecDateAndHolidayDto resultStep3 = eventInfoAndPersonalCondPeriod.getData(param3);
 		// step 3 end
 		
@@ -97,21 +101,24 @@ public class StartKSU001 {
 		// data cua Grid
 		List<WorkScheduleShiftDto> listWorkScheduleShift = new ArrayList<>();
 		
-		if (param.viewMode == "time" || param.viewMode == "shortName") {
+		if (param.viewMode.equals("time") || param.viewMode.equals("shortName")) {
 			// step 4 || 5.2 start
 			DisplayInWorkInfoParam param4 = new DisplayInWorkInfoParam(listSid, startDate, endDate, param.getActualData);
 			DisplayInWorkInfoResult  resultStep4 = new DisplayInWorkInfoResult();
-			resultStep4 = displayInWorkInfo.getData(param4);
+			resultStep4 = displayInWorkInfo.getDataWorkInfo(param4);
 			listWorkTypeInfo = resultStep4.listWorkTypeInfo;
 			listWorkScheduleWorkInfor = resultStep4.listWorkScheduleWorkInfor;
 			
-		} else if (param.viewMode == "shift") {
+		} else if (param.viewMode.equals("shift")) {
 			// step 5.1 start
 			
 			
 		}
 		
-		return null;
+		StartKSU001Dto result = convertData(resultStep1, resultStep2, resultStep3,
+				listWorkTypeInfo, listWorkScheduleWorkInfor, 
+				listPageInfo,targetShiftPalette,shiftMasterWithWorkStyleLst,listWorkScheduleShift);
+		return result;
 	}
 	
 	public StartKSU001Dto getDataStartScreen(StartKSU001Param param) {
@@ -136,8 +143,7 @@ public class StartKSU001 {
 		
 		// step 3 start
 		List<String> listSid = resultStep2.stream().map(mapper -> mapper.getEmployeeId()).collect(Collectors.toList());
-		EventInfoAndPerCondPeriodParam param3 = new EventInfoAndPerCondPeriodParam(startDate, endDate, workplaceId,
-				workplaceGroupId, listSid);
+		EventInfoAndPerCondPeriodParam param3 = new EventInfoAndPerCondPeriodParam(startDate, endDate,listSid , targetOrgIdenInfor);
 		DataSpecDateAndHolidayDto resultStep3 = eventInfoAndPersonalCondPeriod.dataSample(param3);
 		// step 3 end
 
