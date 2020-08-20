@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.ac.eligibleemployees;
 
 import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.adapter.eligibleemployees.SyWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.adapter.eligibleemployees.WorkPlaceHistAdapter;
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.AffiliationPeriodAndWorkplace;
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.WorkPlaceHist;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class SyWorkplaceAdapterImpl implements SyWorkplaceAdapter {
+public class WorkPlaceHistAdapterImpl implements WorkPlaceHistAdapter {
     @Inject
     private WorkplacePub workplacePub;
     @Override

@@ -5,13 +5,12 @@ import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.eligibleemployees.LeaveHolidayAdapter;
 import nts.uk.ctx.at.record.dom.adapter.eligibleemployees.LeavePeriodAdapter;
-import nts.uk.ctx.at.record.dom.adapter.eligibleemployees.SyWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.adapter.eligibleemployees.WorkPlaceHistAdapter;
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.*;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistoryRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
-import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -30,7 +29,7 @@ public class GetEligibleEmployeesScreenQuery {
     @Inject
     private WorkingConditionItemRepository workingConditionItemRepository;
     @Inject
-    private SyWorkplaceAdapter syWorkplaceAdapter;
+    private WorkPlaceHistAdapter syWorkplaceAdapter;
     @Inject
     private LeaveHolidayAdapter leaveHolidayAdapter;
     @Inject
@@ -56,7 +55,7 @@ public class GetEligibleEmployeesScreenQuery {
     private static class ImplRequire implements ConditionEmployee.Require{
         private SWorkTimeHistoryRepository sWorkTimeHistoryRepository;
         private WorkingConditionItemRepository workingConditionItemRepository;
-        private SyWorkplaceAdapter syWorkplaceAdapter;
+        private WorkPlaceHistAdapter workPlaceHistAdapter;
         private LeaveHolidayAdapter leaveHolidayAdapter;
         private LeavePeriodAdapter leavePeriodAdapter;
         //[R-1]
@@ -88,7 +87,7 @@ public class GetEligibleEmployeesScreenQuery {
         //[R-5]-[RQL-189]-SyWorkplacePub=>WorkplacePub
         @Override
         public List<WorkPlaceHist> GetWorkHistory(List<String> sids, DatePeriod datePeriod) {
-            return syWorkplaceAdapter.GetWorkHistory(sids,datePeriod);
+            return workPlaceHistAdapter.GetWorkHistory(sids,datePeriod);
         }
     }
 }

@@ -5,6 +5,6 @@ import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.WorkPlace
 
 import java.util.List;
 
-public interface SyWorkplaceAdapter {
+public interface WorkPlaceHistAdapter {
     List<WorkPlaceHist> GetWorkHistory(List<String> sids, DatePeriod datePeriod);
 }
