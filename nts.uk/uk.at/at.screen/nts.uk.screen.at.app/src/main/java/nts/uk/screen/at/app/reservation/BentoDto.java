@@ -44,4 +44,6 @@ public class BentoDto {
 
     public String workLocationCode;
 
+    public String workLocationName;
+
 }

@@ -31,7 +31,6 @@ public class CreateOrderInfoDataSource {
     private String detailTitle;
     private int reservationClosingTimeFrame;
     private boolean isBreakPage;
-    private String reservationTimeZone;
 
     public OrderInfoDto getGeneratorData(CreateOrderInfoFileQuery createOrderInfoFileQuery){
         Optional<BentoReservationSearchConditionDto> totalExtractCondition = this.getTotalExtractCondition() > -1
@@ -39,8 +38,10 @@ public class CreateOrderInfoDataSource {
         Optional<BentoReservationSearchConditionDto> itemExtractCondition = this.getItemExtractCondition() > -1
                 ?  Optional.of(EnumAdaptor.valueOf(this.getTotalExtractCondition(), BentoReservationSearchConditionDto.class)) : Optional.empty();
         Optional<Integer> frameNo = this.getFrameNo() > -1 ? Optional.of(this.getFrameNo()) : Optional.empty();
-        Optional<String> totalTitle = this.getTotalTitle() == null ? Optional.empty() : Optional.of(this.getTotalTitle());
-        Optional<String> detailTitle = this.getDetailTitle() == null ? Optional.empty() : Optional.of(this.getDetailTitle());
+        Optional<String> totalTitle = this.getTotalTitle() == null | "".equals(this.getTotalTitle())
+                ? Optional.empty() : Optional.of(this.getTotalTitle());
+        Optional<String> detailTitle = this.getDetailTitle() == null | "".equals(this.getDetailTitle())
+                ? Optional.empty() : Optional.of(this.getDetailTitle());
         ReservationClosingTimeFrame closingTimeFrame = EnumAdaptor.valueOf(this.getReservationClosingTimeFrame(), ReservationClosingTimeFrame.class);
 
         OrderInfoDto result = createOrderInfoFileQuery.createOrderInfoFileQuery(this.getPeriod().convertToDate("yyyy/MM/dd"),this.getWorkplaceIds(), this.getWorkLocationCodes(),

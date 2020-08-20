@@ -1,19 +1,15 @@
-package nts.uk.screen.at.ws.krm.krm001.b;
+package nts.uk.screen.at.ws.kmr.kmr001.b;
 
-import lombok.val;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.reservation.bento.BentoMenuHistCommandHandler;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoMenuHistory;
 import nts.uk.screen.at.app.reservation.BentoMenuHistDto;
 import nts.uk.screen.at.app.reservation.BentoMenuHistScreenQuery;
-import nts.uk.screen.at.app.reservation.BentoReservationSettingDto;
 import nts.uk.screen.at.app.reservation.DateHistoryItemDto;
-import nts.uk.shr.com.history.DateHistoryItem;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.ws.rs.*;
-import java.util.Optional;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 
 @Path("bento/bentomenuhist")
 @Produces("application/json")
