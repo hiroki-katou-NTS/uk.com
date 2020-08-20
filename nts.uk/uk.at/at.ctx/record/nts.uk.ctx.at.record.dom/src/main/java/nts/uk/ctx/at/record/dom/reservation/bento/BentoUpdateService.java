@@ -7,6 +7,11 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * 弁当を更新する
@@ -18,17 +23,21 @@ public class BentoUpdateService {
      * 更新する
      */
     public static AtomTask update(Require require, Bento bento) {
-
         String cid = AppContexts.user().companyId();
         GeneralDate date = GeneralDate.max();
-
         BentoMenu bentoMenu = require.getBentoMenu(cid, date);
-
-        bentoMenu.getMenu().stream()
+        Bento[] bentoList = new Bento[bentoMenu.getMenu().size()];
+        bentoMenu.getMenu().toArray(bentoList);
+        Optional<Bento> optionalBento = Arrays.stream(bentoList)
                 .filter(x -> x.getFrameNo() == bento.getFrameNo())
-                .forEach( b -> b = bento);
+                .findFirst();
+        if(optionalBento.isPresent()){
+            int i = Arrays.asList(bentoList).indexOf(optionalBento.get());
+            bentoList[i] = bento;
+        }
+        BentoMenu result = new BentoMenu(bentoMenu.getHistoryID(),Arrays.asList(bentoList),bentoMenu.getClosingTime());
         return AtomTask.of(() -> {
-            require.register(bentoMenu);
+            require.register(result);
         });
     }
 
