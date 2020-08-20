@@ -286,7 +286,8 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 				application.getPrePostAtr(),
 				application.getVersion(),
 				null,
-				null);
+				null,
+				appStampOutput.getAppDispInfoStartupOutput());
 		
 		return listConfirmMs;
 	}

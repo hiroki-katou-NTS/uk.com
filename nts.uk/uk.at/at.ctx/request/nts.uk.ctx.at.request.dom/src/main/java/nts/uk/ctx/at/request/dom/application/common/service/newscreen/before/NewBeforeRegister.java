@@ -20,7 +20,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
  *
  */
 public interface NewBeforeRegister {
-    /*public void processBeforeRegister(Application_New application, OverTimeAtr overTimeAtr, boolean checkOver1Year, List<GeneralDate> lstDateHd);*/
 	/**
 	 * 1.入社前退職チェック
 	 * @param companyID 会社ID
@@ -57,16 +56,18 @@ public interface NewBeforeRegister {
 	 * @param companyID 会社ID
 	 * @param employeeID 社員ID（申請本人の社員ID）
 	 * @param appDate 申請対象日
+	 * @param appDispInfoStartupOutput 申請表示情報
 	 */
-	public void confirmationCheck(String companyID, String employeeID, GeneralDate appDate);
+	public void confirmationCheck(String companyID, String employeeID, GeneralDate appDate, AppDispInfoStartupOutput appDispInfoStartupOutput);
 	
 	/**
 	 * 6.確定チェック（事前残業申請用）
 	 * @param companyID 会社ID 
 	 * @param employeeID 社員ID（申請本人の社員ID）
 	 * @param appDate 申請対象日
+	 * @param appDispInfoStartupOutput 申請表示情報
 	 */
-	public void confirmCheckOvertime(String companyID, String employeeID, GeneralDate appDate);
+	public void confirmCheckOvertime(String companyID, String employeeID, GeneralDate appDate, AppDispInfoStartupOutput appDispInfoStartupOutput);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.2-1.新規画面登録前の処理(beforeRegister).2-1.新規画面登録前の処理

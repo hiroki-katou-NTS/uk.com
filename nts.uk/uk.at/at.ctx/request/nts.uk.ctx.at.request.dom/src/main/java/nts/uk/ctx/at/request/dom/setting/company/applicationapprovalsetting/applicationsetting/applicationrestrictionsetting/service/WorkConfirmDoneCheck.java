@@ -1,15 +1,17 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service;
 
-import java.util.Optional;
-
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.applimitset.AppLimitSetting;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 
 /**
- * 就業確定済みかのチェック
+ * refactor 4
+ * @author Doan Duy Hung
  *
  */
 public interface WorkConfirmDoneCheck {
-	public boolean check(AppLimitSetting appLimitSetting, String companyID, String employeeID, GeneralDate appDate, Optional<ClosureEmployment> closureEmployment);
+	/**
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.申請承認.設定.会社別.申請承認設定.申請設定.申請制限設定.アルゴリズム.就業確定済みかチェックする.就業確定済みかチェックする
+	 * @param canAppFinishWork 就業確定済の場合申請できない
+	 * @return
+	 */
+	public boolean check(boolean canAppFinishWork, String companyID, String employeeID, GeneralDate appDate);
 }

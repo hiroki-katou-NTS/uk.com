@@ -549,7 +549,8 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			// 4-1.詳細画面登録前の処理
 			this.updateService.processBeforeDetailScreenRegistration(companyID, application.getEmployeeID(),
 					application.getAppDate().getApplicationDate(), EmploymentRootAtr.APPLICATION.value,
-					application.getAppID(), application.getPrePostAtr(), application.getVersion(), null, null);
+					application.getAppID(), application.getPrePostAtr(), application.getVersion(), null, null, 
+					infoOutput.getAppDispInfoStartupOutput());
 		}
 
 		return listMsg;

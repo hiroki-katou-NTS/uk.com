@@ -124,7 +124,7 @@ public interface AppWorkChangeService {
 	 * @return
 	 */
 	public List<ConfirmMsgOutput> checkBeforeUpdate(String companyID, Application application, 
-			AppWorkChange appWorkChange, boolean agentAtr);
+			AppWorkChange appWorkChange, boolean agentAtr, AppDispInfoStartupOutput appDispInfoStartupOutput);
 	/**
 	 * 勤務変更申請の起動処理
 	 * Refactor4

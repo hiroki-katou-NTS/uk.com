@@ -16,9 +16,6 @@ import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.actuallock.ActualLockAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.actuallock.ActualLockImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
@@ -26,19 +23,13 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodC
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.AppLimitSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service.ActualLockingCheck;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service.DayActualConfirmDoneCheck;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service.MonthActualConfirmDoneCheck;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service.WorkConfirmDoneCheck;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.ReceptionRestrictionSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.applimitset.AppLimitSetting;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
@@ -53,14 +44,6 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 	private OtherCommonAlgorithm otherCommonAlgorithmService;
 	
 	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepository;
-	
-	@Inject
-	private RequestSettingRepository requestSettingRepository;
-	@Inject
-	private ActualLockAdapter actualLockAdapter;
-	
-	@Inject
 	private DayActualConfirmDoneCheck dayActualConfirmDoneCheck;
 
 	@Inject
@@ -71,90 +54,6 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 
 	@Inject
 	private ActualLockingCheck actualLockingCheck;
-	
-    public void processBeforeRegister(Application application, OverTimeAtr overTimeAtr, boolean checkOver1Year, List<GeneralDate> lstDateHd){
-//		// アルゴリズム「未入社前チェック」を実施する
-//		retirementCheckBeforeJoinCompany(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
-//		
-//		// アルゴリズム「社員の当月の期間を算出する」を実行する
-//		PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
-//		
-//		GeneralDate startDate = application.getAppDate();
-//		GeneralDate endDate = application.getAppDate();
-//		if (application.getStartDate().isPresent() && application.getEndDate().isPresent()) {
-//			startDate = application.getStartDate().get();
-//			endDate = application.getEndDate().get();
-//			
-//			// 登録する期間のチェック
-//			//((TimeSpan)(申請する終了日 - 申請する開始日)).Days > 31がtrue
-//			if((ChronoUnit.DAYS.between(startDate.localDate(), endDate.localDate()) + 1)  > 31){
-//				throw new BusinessException("Msg_277");
-//			}
-//			// 登録可能期間のチェック(１年以内)
-//			//EA修正履歴 No.3210
-//			//hoatt 2019.03.22
-//			if(periodCurrentMonth.getStartDate().addYears(1).beforeOrEquals(endDate) && checkOver1Year) {
-//				//締め期間．開始年月日.AddYears(1) <= 申請する終了日がtrue
-//				//確認メッセージ（Msg_1518）を表示する
-//				throw new BusinessException("Msg_1518", periodCurrentMonth.getStartDate().addYears(1).toString(DATE_FORMAT));
-//			}
-//			
-//			// 過去月のチェック
-//			if(startDate.before(periodCurrentMonth.getStartDate())) {
-//				throw new BusinessException("Msg_236");			
-//			}
-//		}		
-//		
-//		// キャッシュから承認ルートを取得する(Lấy comfirm root từ cache)	
-//		ApprovalRootContentImport_New approvalRootContentImport = approvalRootPatternService.getApprovalRootPatternService(
-//				application.getCompanyID(), 
-//				application.getEmployeeID(), 
-//				EmploymentRootAtr.APPLICATION, 
-//				application.getAppType(), 
-//				application.getAppDate(),
-//				application.getAppID(),
-//				true).getApprovalRootContentImport();
-//		startupErrorCheckService.startupErrorCheck(application.getAppDate(), application.getAppType().value, approvalRootContentImport);
-//		switch (approvalRootContentImport.getErrorFlag()) {
-//		case NO_CONFIRM_PERSON:
-//			throw new BusinessException("Msg_238");
-//		case APPROVER_UP_10:
-//			throw new BusinessException("Msg_237");
-//		case NO_APPROVER:
-//			throw new BusinessException("Msg_324");
-//		default:
-//			break;
-//		}
-//		
-//		// アルゴリズム「申請の締め切り期限をチェック」を実施する
-//		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
-//		if(empHistImport==null || empHistImport.getEmploymentCode()==null){
-//			throw new BusinessException("Msg_426");
-//		}
-//		String employmentCD = empHistImport.getEmploymentCode();
-//		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(application.getCompanyID(), employmentCD);
-//		if(!closureEmployment.isPresent()){
-//			throw new RuntimeException("Not found ClosureEmployment in table KCLMT_CLOSURE_EMPLOYMENT, employment =" + employmentCD);
-//		}
-//		deadlineApplicationCheck(application.getCompanyID(), closureEmployment.get().getClosureId(), application.getEmployeeID(),
-//				periodCurrentMonth.getStartDate(), periodCurrentMonth.getEndDate(), startDate, endDate);
-//		
-//		// アルゴリズム「申請の受付制限をチェック」を実施する
-//		// applicationAcceptanceRestrictionsCheck(application.getCompanyID(), application.getAppType(), application.getPrePostAtr(), startDate, endDate, overTimeAtr);
-//		// 申請する開始日～申請する終了日までループする
-//		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
-//            //hoatt 2019/10/14 #109087を対応
-//            if(lstDateHd != null && lstDateHd.contains(loopDate)){
-//                continue;
-//            }
-//			if(loopDate.equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr.PREDICT) && application.isAppOverTime()){
-//				confirmCheckOvertime(application.getCompanyID(), application.getEmployeeID(), loopDate);
-//			}else{
-//				// アルゴリズム「確定チェック」を実施する
-//				confirmationCheck(application.getCompanyID(), application.getEmployeeID(), loopDate);
-//			}
-//		}
-	}
 	
 	// moi nguoi chi co the o mot cty vao mot thoi diem
 	// check xem nguoi xin con trong cty k
@@ -229,82 +128,49 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 		}
 	}
 	
-	public void confirmationCheck(String companyID, String employeeID, GeneralDate appDate){
-		// アルゴリズム「申請の締め切り期限をチェック」を実施する
-		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID,
-				employeeID, appDate);
-		if (empHistImport == null || empHistImport.getEmploymentCode() == null) {
-			throw new BusinessException("Msg_426");
-		}
-		String employmentCD = empHistImport.getEmploymentCode();
-		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository
-				.findByEmploymentCD(companyID, employmentCD);
-		if (!closureEmployment.isPresent()) {
-			throw new RuntimeException(
-					"Not found ClosureEmployment in table KCLMT_CLOSURE_EMPLOYMENT, employment =" + employmentCD);
-		}
-		
-		Optional<ActualLockImport> actualLockImport = this.actualLockAdapter.findByID(companyID,
-				closureEmployment.get().getClosureId());
-		
-		Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
-		if (!requestSetting.isPresent()) {
-			return;
-		}
-		ApplicationSetting applicationSetting = requestSetting.get().getApplicationSetting();
-		AppLimitSetting appLimitSetting = applicationSetting.getAppLimitSetting();
+	public void confirmationCheck(String companyID, String employeeID, GeneralDate appDate, AppDispInfoStartupOutput appDispInfoStartupOutput){
+		AppLimitSetting appLimitSetting = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppLimitSetting();
 		// ドメインモデル「申請制限設定」．日別実績が確認済なら申請できないをチェックする(check domain 「申請制限設定」．日別実績が確認済なら申請できない)
 		boolean hasError = false;
-		hasError = dayActualConfirmDoneCheck.check(appLimitSetting, companyID, employeeID, appDate);
+		hasError = dayActualConfirmDoneCheck.check(appLimitSetting.isCanAppAchievementConfirm(), companyID, employeeID, appDate);
 		if (hasError == true) {
 			throw new BusinessException("Msg_448");
 		}
-
-		confirmCheck(appLimitSetting,actualLockImport,appDate,companyID,employeeID,closureEmployment);
-	}
-	public void confirmCheckOvertime(String companyID, String employeeID, GeneralDate appDate){
-		// アルゴリズム「申請の締め切り期限をチェック」を実施する
-		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID,
-				employeeID, appDate);
-		if (empHistImport == null || empHistImport.getEmploymentCode() == null) {
-			throw new BusinessException("Msg_426");
-		}
-		String employmentCD = empHistImport.getEmploymentCode();
-		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository
-				.findByEmploymentCD(companyID, employmentCD);
-		if (!closureEmployment.isPresent()) {
-			throw new RuntimeException(
-					"Not found ClosureEmployment in table KCLMT_CLOSURE_EMPLOYMENT, employment =" + employmentCD);
-		}
-		Optional<ActualLockImport> actualLockImport = this.actualLockAdapter.findByID(companyID,
-				closureEmployment.get().getClosureId());
-		
-		
-		Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
-		if (!requestSetting.isPresent()) {
-			return;
-		}
-		ApplicationSetting applicationSetting = requestSetting.get().getApplicationSetting();
-		AppLimitSetting appLimitSetting = applicationSetting.getAppLimitSetting();
-		confirmCheck(appLimitSetting,actualLockImport,appDate,companyID,employeeID,closureEmployment);
-	}
-	private void confirmCheck(AppLimitSetting appLimitSetting, Optional<ActualLockImport> actualLockImport,
-			GeneralDate appDate, String companyID, String employeeID,Optional<ClosureEmployment> closureEmployment) {
-		boolean hasError = false;
 		// ドメインモデル「申請制限設定」．月別実績が確認済なら申請できないをチェックする
-		hasError = monthActualConfirmDoneCheck.check(appLimitSetting, companyID, employeeID, appDate);
+		hasError = monthActualConfirmDoneCheck.check(false, appLimitSetting.isCanAppAchievementMonthConfirm(), companyID, employeeID, appDate);
 		if (hasError == true) {
 			throw new BusinessException("Msg_449");
 		}
 		
 		// ドメインモデル「申請制限設定」．就業確定済の場合申請できないをチェックする
-		hasError = workConfirmDoneCheck.check(appLimitSetting, companyID, employeeID, appDate, closureEmployment);
+		hasError = workConfirmDoneCheck.check(appLimitSetting.isCanAppFinishWork(), companyID, employeeID, appDate);
 		if (hasError == true) {
 			throw new BusinessException("Msg_450");
 		}
 
 		// ドメインモデル「申請制限設定」．実績修正がロック状態なら申請できないをチェックする
-		hasError = actualLockingCheck.check(appLimitSetting, companyID, employeeID, appDate, actualLockImport);
+		hasError = actualLockingCheck.check(appLimitSetting.isCanAppAchievementLock(), companyID, employeeID, appDate);
+		if (hasError == true) {
+			throw new BusinessException("Msg_451");
+		}
+	}
+	public void confirmCheckOvertime(String companyID, String employeeID, GeneralDate appDate, AppDispInfoStartupOutput appDispInfoStartupOutput){
+		AppLimitSetting appLimitSetting = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppLimitSetting();
+		boolean hasError = false;
+		// ドメインモデル「申請制限設定」．月別実績が確認済なら申請できないをチェックする
+		hasError = monthActualConfirmDoneCheck.check(true, appLimitSetting.isCanAppAchievementMonthConfirm(), companyID, employeeID, appDate);
+		if (hasError == true) {
+			throw new BusinessException("Msg_449");
+		}
+		
+		// ドメインモデル「申請制限設定」．就業確定済の場合申請できないをチェックする
+		hasError = workConfirmDoneCheck.check(appLimitSetting.isCanAppFinishWork(), companyID, employeeID, appDate);
+		if (hasError == true) {
+			throw new BusinessException("Msg_450");
+		}
+
+		// ドメインモデル「申請制限設定」．実績修正がロック状態なら申請できないをチェックする
+		hasError = actualLockingCheck.check(appLimitSetting.isCanAppAchievementLock(), companyID, employeeID, appDate);
 		if (hasError == true) {
 			throw new BusinessException("Msg_451");
 		}
@@ -374,10 +240,10 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 			if(loopDate.equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr.PREDICT) && 
 					application.getAppType() == ApplicationType.OVER_TIME_APPLICATION){
 				// アルゴリズム「6.確定チェック（事前残業申請用）」を実施する
-				confirmCheckOvertime(companyID, application.getEmployeeID(), loopDate);
+				confirmCheckOvertime(companyID, application.getEmployeeID(), loopDate, appDispInfoStartupOutput);
 			}else{
 				// アルゴリズム「確定チェック」を実施する
-				confirmationCheck(companyID, application.getEmployeeID(), loopDate);
+				confirmationCheck(companyID, application.getEmployeeID(), loopDate, appDispInfoStartupOutput);
 			}
 		}
 		return result;
