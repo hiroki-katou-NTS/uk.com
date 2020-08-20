@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component"
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+    <ui:composition template="/master/base.xhtml">
+        <ui:define name="htmlHead">
+            <com:scriptfile set="IGNITE" />
+
+            <com:scriptfile path="kdl017.test.start.js" />
+            <com:scriptfile path="kdl017.test.service.js" />
+            <com:scriptfile path="kdl017.test.vm.js" />
+        </ui:define>
+
+        <ui:define name="content">
+            <div id="functions-area"></div>
+            <div id="contents-area" class="cf">
+                <div class="div_line">
+                    <button style="clear: both;" data-bind="click: openKDL020Dialog">Open
+                        KDL 017</button>
+                </div>
+                <div style="display: inline-block;">
+                    <div style="margin-top: 20px; font-weight: bold;">EmployeeIDs:</div>
+                    <div style="margin-top: 20px;">
+                        <textarea class="inputValue" rows="10" cols="40"
+                            data-bind="ntsMultilineEditor: { value: selectedCodeList }" />
+                    </div>
+                </div>
+				
+                <div style="display: inline-block; vertical-align: top;">
+                    <div style="margin-top: 20px; font-weight: bold;">Date:</div>
+                    <div style="margin-top: 20px;"
+                        data-bind="ntsDatePicker: {value:baseDate, dateFormat: 'YYYY/MM/DD'}"></div>
+
+
+                </div>
+                
+                <div style="margin-top: 20px; font-weight: bold;">例えば:</div>
+                <div style="margin-top: 20px">c7cb93ce-d23b-4283-875e-a0bbb21b9d36,　fe3b1f44-dbc8-44c0-ab32-f617f01f00a5,　96c1e494-5cde-402c-8629-81b0dec7ac92</div>
+            </div>
+
+
+        </ui:define>
+    </ui:composition>
+</body>
+</html>
