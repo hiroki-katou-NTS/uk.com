@@ -5,6 +5,7 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSettingRepository;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
@@ -61,9 +62,11 @@ public class ReservationConfirmationListScreenQuery {
         String reservationFrameName1 = closingTime.getClosingTime1().getReservationTimeName().v();
         int reservationStartTime1 = closingTime.getClosingTime1().getStart().get().v();
         int reservationEndTime1 = closingTime.getClosingTime1().getFinish().v();
-        String reservationFrameName2 = closingTime.getClosingTime2().get().getReservationTimeName().v();
-        int reservationStartTime2 = closingTime.getClosingTime2().get().getStart().get().v();
-        int reservationEndTime2 = closingTime.getClosingTime2().get().getFinish().v();
+        Optional<ReservationClosingTime> closingTime2 = closingTime.getClosingTime2();
+        String reservationFrameName2 = closingTime2.isPresent()? closingTime2.get().getReservationTimeName().v(): "";
+        int reservationStartTime2 = closingTime2.isPresent()? closingTime2.get().getStart().get().v(): 0;
+        int reservationEndTime2 = closingTime2.isPresent()? closingTime2.get().getFinish().v(): 0;
+
         BentoMenuDto bentoMenuDtoClosingTime = new BentoMenuDto(
                 reservationFrameName1,
                 reservationStartTime1,

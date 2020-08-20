@@ -7,6 +7,7 @@ module nts.uk.at.view.kmr004.a {
     };
 
     import tree = kcp.share.tree;
+	import list = kcp.share.list;
     import formatDate = nts.uk.time.formatDate;
     import parseTime = nts.uk.time.parseTime;
 
@@ -16,10 +17,11 @@ module nts.uk.at.view.kmr004.a {
         selectedRuleCode: KnockoutObservable<string> = ko.observable('1');
 		baseDate: KnockoutObservable<Date> = ko.observable(new Date()); // base date for KCP004, KCP012
 		treeGrid: tree.TreeComponentOption; // tree grid properties object
+		listComponentOption: list.ComponentOption;
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray([]);
         selectedTab: KnockoutObservable<string> = ko.observable('');
         outputConditionChecked: KnockoutObservable<number> = ko.observable(1); // output condition
-        extractionConditionChecked: KnockoutObservable<boolean> = ko.observable(false);
+
         extractionConditionEnable: KnockoutObservable<boolean> = ko.observable(false);
         separatePageCheckboxEnable: KnockoutObservable<boolean> = ko.observable(true);
         conditionListCcb: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -28,6 +30,7 @@ module nts.uk.at.view.kmr004.a {
         reservationTimeRange1: string = '';
         reservationTimeRange2: string = '';
         reservationTimeRange: KnockoutObservable<string> = ko.observable('');
+		selectedWorkLocationCode: KnockoutObservableArray<string> = ko.observableArray([]); // KCP012 selected codes
 
         constructor() {
             super();
@@ -80,7 +83,7 @@ module nts.uk.at.view.kmr004.a {
                     self.separatePageCheckboxEnable(false);
                 }
 
-                if (newValue == 6) {
+                if (newValue == -1) {
                     self.conditionListCcbEnable(true);
                 } else {
                     self.conditionListCcbEnable(false);
@@ -106,6 +109,7 @@ module nts.uk.at.view.kmr004.a {
             }else{
                 vm.model().totalExtractCondition = ko.observable(-1);
                 vm.model().totalTitle = ko.observable('');
+                vm.model().extractionConditionChecked = ko.observable(false);
                 if(vm.model().itemExtractCondition === ko.observable(1)){
                     vm.model().frameNo = ko.observable(-1);
                 }
@@ -120,7 +124,8 @@ module nts.uk.at.view.kmr004.a {
                 totalTitle:  vm.model().totalTitle.peek(),
                 detailTitle: vm.model().detailTitle.peek(),
                 isBreakPage: true,
-                reservationClosingTimeFrame: vm.model().reservationClosingTimeFrame.peek()
+                reservationClosingTimeFrame: vm.model().reservationClosingTimeFrame.peek(),
+                extractionConditionChecked: vm.model().extractionConditionChecked.peek()
             };
             return data;
         }
@@ -153,10 +158,11 @@ module nts.uk.at.view.kmr004.a {
 
         initClosingTimeSwitch(data:any) {
             let vm = this;
-            vm.closingTimeOptions([
-                new ItemModel('1', data.closingTime.reservationFrameName1),
-                new ItemModel('2', data.closingTime.reservationFrameName2)
-            ]);
+            var switchButtons: ItemModel[] = [new ItemModel('1', data.closingTime.reservationFrameName1)]
+			if (data.closingTime.reservationFrameName2.length > 0) {
+				switchButtons.push(new ItemModel('2', data.closingTime.reservationFrameName2));
+			}
+            vm.closingTimeOptions(switchButtons);
         }
 
         initClosingTimeLable(data:any) {
@@ -203,7 +209,22 @@ module nts.uk.at.view.kmr004.a {
         }
 
         initWorkLocationList() {
-            $('#tree-grid').append("<div style='width: 514px; height: 365px; text-align: center; font-size: x-large'>Waiting for KCP012...</div>");
+			const vm = this;
+			vm.listComponentOption = {
+				isShowAlreadySet: false,
+				isMultiSelect: false,
+				isMultipleUse: true,
+				listType: list.ListType.WORKPLACE,
+				selectType: list.SelectType.NO_SELECT,
+				selectedCode: vm.selectedWorkLocationCode,
+				isDialog: false,
+				isShowNoSelectRow: false,
+				maxRows: 10
+			}
+
+			$('#tree-grid').ntsListComponent(vm.listComponentOption).done(() => {
+                $('#tree-grid').getDataList();
+            });
         }
 
         initConditionListComboBox(data: any) {
@@ -251,6 +272,7 @@ module nts.uk.at.view.kmr004.a {
         itemExtractCondition: KnockoutObservable<number>;
         isBreakPage: KnockoutObservable<boolean>;
         frameNo: KnockoutObservable<number>;
+        extractionConditionChecked: KnockoutObservable<boolean>;
 
         constructor(){
             this.workplaceIds = ko.observableArray([]);
@@ -266,6 +288,7 @@ module nts.uk.at.view.kmr004.a {
             this.itemExtractCondition = ko.observable(1); // Default selected: A10_3 全件
             this.isBreakPage = ko.observable(false);
             this.frameNo = ko.observable(-1);
+            this.extractionConditionChecked = ko.observable(false);
         };
     }
 }

@@ -2,10 +2,7 @@ package nts.uk.screen.at.infra.reservation;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.screen.at.app.reservation.BentoDto;
-import nts.uk.screen.at.app.reservation.BentoMenuDto;
-import nts.uk.screen.at.app.reservation.BentoMenuScreenRepository;
-import nts.uk.screen.at.app.reservation.BentoRequest;
+import nts.uk.screen.at.app.reservation.*;
 
 import javax.ejb.Stateless;
 import java.util.List;
@@ -22,6 +19,8 @@ public class JpaBentoMenuScreenRepository extends JpaRepository implements Bento
     private static final String FIND_BENTO_BY_HIS;
 
     private static final String FIND_BENTO_BY_MAXDATE;
+
+    private static final String SELECT_WORKLOCATION;
 
     static {
         StringBuilder builderString = new StringBuilder();
@@ -58,6 +57,13 @@ public class JpaBentoMenuScreenRepository extends JpaRepository implements Bento
         builderString.append(" WHERE b.pk.companyID = :companyID AND b.pk.histID = :histId ");
         FIND_BENTO_BY_MAXDATE = builderString.toString();
 
+        builderString = new StringBuilder();
+        builderString.append(" SELECT NEW " + WorkLocationDto.class.getName());
+        builderString.append(
+                "( a.kwlmtWorkLocationPK.workLocationCD, a.workLocationName )");
+        builderString.append(" FROM KwlmtWorkLocation a ");
+        builderString.append(" WHERE a.kwlmtWorkLocationPK.companyID = :companyID ");
+        SELECT_WORKLOCATION = builderString.toString();
     }
 
     @Override
@@ -74,5 +80,11 @@ public class JpaBentoMenuScreenRepository extends JpaRepository implements Bento
         }
         return this.queryProxy().query(FIND_BENTO_BY_HIS, BentoDto.class)
                 .setParameter("companyID", companyId).setParameter("date", date).getList();
+    }
+
+    @Override
+    public List<WorkLocationDto> findDataWorkLocation(String companyId) {
+        return this.queryProxy().query(SELECT_WORKLOCATION, WorkLocationDto.class)
+                .setParameter("companyID", companyId).getList();
     }
 }

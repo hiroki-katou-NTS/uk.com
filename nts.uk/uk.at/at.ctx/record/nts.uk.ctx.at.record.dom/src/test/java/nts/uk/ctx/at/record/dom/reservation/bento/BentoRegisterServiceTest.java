@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 @RunWith(JMockit.class)
-public class BentoRigisterServiceTest {
+public class BentoRegisterServiceTest {
     @Injectable
     BentoRegisterService.Require require;
 
