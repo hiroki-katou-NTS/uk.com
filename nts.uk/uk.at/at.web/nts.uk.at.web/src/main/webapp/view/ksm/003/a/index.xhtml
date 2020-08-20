@@ -92,7 +92,7 @@
 									<thead>
 									<tr>
 										<th class="ui-widget-header" style="text-align: center;">
-                                            <div class="chkboxListAll" data-bind="ntsCheckBox: { checked: selectedCheckAll, name: '#[KSM003_23]' }"></div>
+                                            <div tabindex="-1" class="chkboxListAll" data-bind="ntsCheckBox: { checked: selectedCheckAll, name: '#[KSM003_23]' }"></div>
                                         </th>
 										<th class="ui-widget-header"></th>
 										<th class="ui-widget-header">#{i18n.getText('KSM003_30')}</th>
@@ -102,11 +102,11 @@
 									</thead>
 									<tbody data-bind="foreach: dailyPatternValModel">
 									<tr data-bind="attr: {id: 'row-' + dispOrder}">
-										<td><div class="chkbox-list" data-bind="ntsCheckBox: { checked: isChecked }"></div></td>
-										<td><button class="button buttonEvent" data-bind="attr: {id: 'btnVal' + dispOrder}, click: openDialogWorkDays">#{i18n.getText('KSM003_34')}</button></td>
+										<td><div tabindex="-1" class="chkbox-list" data-bind="ntsCheckBox: { checked: isChecked }"></div></td>
+										<td><button tabindex="-1" class="button buttonEvent" data-bind="attr: {id: 'btnVal' + dispOrder}, click: openDialogWorkDays">#{i18n.getText('KSM003_34')}</button></td>
 										<td><span data-bind="text: workTypeInfo"></span></td>
 										<td><span data-bind="text: workingInfo"></span></td>
-										<td><input class="nts-editor" data-bind="attr: {id: 'days' + dispOrder}, ntsNumberEditor: {value: days, constraint: 'Days', required: $parent.dayIsRequired(), name: '#[KSM003_3]' }" style="width: 20px; text-align: center;" /> #{i18n.getText('KSM003_33')}</td>
+										<td><input tabindex="-1" class="nts-editor" data-bind="attr: {id: 'days' + dispOrder}, ntsNumberEditor: {value: days, constraint: 'Days', required: $parent.dayIsRequired(), name: '#[KSM003_3]' }" style="width: 20px; text-align: center;" /> #{i18n.getText('KSM003_33')}</td>
 									</tr>
 									</tbody>
 								</table>
