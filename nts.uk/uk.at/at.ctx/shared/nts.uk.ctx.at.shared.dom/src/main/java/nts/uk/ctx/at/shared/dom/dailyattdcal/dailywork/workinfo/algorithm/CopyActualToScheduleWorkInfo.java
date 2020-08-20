@@ -20,7 +20,7 @@ public class CopyActualToScheduleWorkInfo {
 		// 勤務情報の値をコピー
 		if (workInformation.getScheduleInfo() == null) {
 			workInformation.setScheduleInfo(new WorkInformation(workInformation.getRecordInfo().getWorkTypeCode().v(),
-					workInformation.getRecordInfo().getWorkTimeCode().v()));
+					workInformation.getRecordInfo().getWorkTimeCode() == null ? null :workInformation.getRecordInfo().getWorkTimeCode().v()));
 		} else {
 			workInformation.getScheduleInfo().setWorkTypeCode(workInformation.getRecordInfo().getWorkTypeCode());
 			workInformation.getScheduleInfo().setWorkTimeCode(workInformation.getRecordInfo().getWorkTimeCode());

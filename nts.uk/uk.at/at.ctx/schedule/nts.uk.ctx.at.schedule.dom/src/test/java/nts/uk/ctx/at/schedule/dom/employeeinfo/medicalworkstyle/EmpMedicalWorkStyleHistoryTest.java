@@ -28,7 +28,7 @@ public class EmpMedicalWorkStyleHistoryTest {
 	}
 
 	@Test
-	public void test_Buss() {
+	public void test_SystemError() {
 		NtsAssert.systemError(() -> {
 			EmpMedicalWorkStyleHistory.get("11", // dummy
 					Collections.emptyList());});
@@ -55,7 +55,7 @@ public class EmpMedicalWorkStyleHistoryTest {
 	}
 
 	@Test
-	public void test_items() {
+	public void test_ReturnListDateHistoryItem() {
 		List<DateHistoryItem> result = new ArrayList<DateHistoryItem>();
 		
 		DatePeriod date1 = new DatePeriod(GeneralDate.ymd(2020, 1, 1), GeneralDate.ymd(2020, 1, 2));		
@@ -71,8 +71,7 @@ public class EmpMedicalWorkStyleHistoryTest {
 				result);
 		List<DateHistoryItem> actual = history.items();
 		
-		assertThat(actual).extracting(x -> x.span(), x -> x.identifier())
-				.containsExactly(tuple(date1, "historyId01"), tuple(date2,"historyId02"));
+		assertThat(actual.equals(result)).isTrue();
 	}
 
 }
