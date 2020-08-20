@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
@@ -40,10 +41,13 @@ public class ForceUpdateBentoReserveCommandHandler extends CommandHandler<ForceU
         Optional<WorkLocationCode> workLocationCode = Optional.empty();
         if (command.isNew()) {
             RequireForceAddImpl require = new RequireForceAddImpl(bentoReservationRepository);
-            ForceAddBentoReservationService.forceAdd(require, bentoReservationInfos, reservationDate, dateTime, workLocationCode);
+            AtomTask persist = ForceAddBentoReservationService.forceAdd(require, bentoReservationInfos, reservationDate,
+                    dateTime, workLocationCode);
+            transaction.execute(persist::run);
         } else {
             RequireForceUpdateImpl require = new RequireForceUpdateImpl(bentoReservationRepository);
-            ForceUpdateBentoReservationService.forceUpdate(require, reservationDate, bentoReservationInfos);
+            AtomTask persist = ForceUpdateBentoReservationService.forceUpdate(require, reservationDate, bentoReservationInfos);
+            transaction.execute(persist::run);
         }
 
     }

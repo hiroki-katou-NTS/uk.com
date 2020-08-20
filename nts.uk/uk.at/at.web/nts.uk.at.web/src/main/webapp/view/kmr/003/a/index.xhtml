@@ -36,7 +36,7 @@
                         <div id="filter-condition">
                             <!--A2_3-->
                             <div data-bind="ntsDatePicker: {
-                                value: dateData,
+                                value: date,
                                 showJumpButtons: true
                             }"></div>
 
@@ -44,10 +44,10 @@
                             <div id="combo-box" class="content-option" tabindex="1" data-bind="ntsComboBox: {
                                 width: '150px',
                                 name:'#[KMR003_13]',
-                                options: itemsConditionClassification,
+                                options: searchConditions,
                                 optionsValue: 'id',
                                 visibleItemsCount: 5,
-                                value: conditionClassification,
+                                value: searchConditionValue,
                                 optionsText: 'name',
                                 editable: false,
                                 enable: true,
@@ -59,10 +59,10 @@
                             <!--A2_7-->
                             <div class="content-option cf" data-bind="ntsSwitchButton: {
                                 name: 'Sample Switch',
-                                options: roundingRules,
-                                optionsValue: 'code',
+                                options: closingTimeFrames,
+                                optionsValue: 'id',
                                 optionsText: 'name',
-                                value: selectedRuleCode,
+                                value: closingTimeFrameValue,
                                 required: true,
                                 enable: true }"></div>
 
