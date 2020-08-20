@@ -83,7 +83,7 @@ module nts.uk.at.view.kmr004.a {
                     self.separatePageCheckboxEnable(false);
                 }
 
-                if (newValue == 6) {
+                if (newValue == -1) {
                     self.conditionListCcbEnable(true);
                 } else {
                     self.conditionListCcbEnable(false);
