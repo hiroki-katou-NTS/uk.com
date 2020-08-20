@@ -772,10 +772,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // set dataSource
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
-                        let workTypeName = (cell.workTypeCode != null && cell.workTypeName == null) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName  == null ? undefined : cell.workTypeName;
-                        let workTimeName = (cell.workTimeCode != null && cell.workTimeName == null) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName  == null ? undefined : cell.workTimeName;
-                        let startTime = cell.startTime == null ? undefined : formatById("Clock_Short_HM", cell.startTime);
-                        let endTime   = cell.endTime   == null ? undefined : formatById("Clock_Short_HM", cell.endTime);
+                        let workTypeName = (cell.workTypeCode != null && cell.workTypeName == null) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName  == null ? null : cell.workTypeName;
+                        let workTimeName = (cell.workTimeCode != null && cell.workTimeName == null) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName  == null ? null : cell.workTimeName;
+                        let startTime = cell.startTime == null ? null : formatById("Clock_Short_HM", cell.startTime);
+                        let endTime   = cell.endTime   == null ? null : formatById("Clock_Short_HM", cell.endTime);
                         let workTypeCode = cell.workTypeCode;
                         let workTimeCode = cell.workTimeCode;
                         objDetailContentDs['_' + ymd] = new ExCell(workTypeCode, workTypeName, workTimeCode, workTimeName, startTime, endTime);

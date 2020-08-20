@@ -192,7 +192,7 @@ public class GetScheduleOfWorkInfo {
 					}
 				}
 				
-				Integer startTime = null;
+				Integer startTime = 0;
 				if (workSchedule.getOptTimeLeaving().isPresent()) {
 					Optional<TimeLeavingWork> timeLeavingWork = workSchedule.getOptTimeLeaving().get().getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
 					if (timeLeavingWork.isPresent()) {
@@ -208,7 +208,7 @@ public class GetScheduleOfWorkInfo {
 					}
 				}
 				
-				Integer endtTime = null;
+				Integer endtTime = 0;
 				if (workSchedule.getOptTimeLeaving().isPresent()) {
 					Optional<TimeLeavingWork> timeLeavingWork = workSchedule.getOptTimeLeaving().get().getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
 					if (timeLeavingWork.isPresent()) {
