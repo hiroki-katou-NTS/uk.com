@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeamRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamCd;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamRepository;
@@ -32,7 +33,10 @@ public class DeleteScheduleTeamCommandHandler extends CommandHandler<ScheduleTea
 		
 		/** 1: 削除する(Require, 職場グループID, スケジュールチームコード)  */
 		ScheduleTeamDeleteImpl scheduleTeamDeleteImpl = new ScheduleTeamDeleteImpl(scheduleTeamRepository, belongScheduleTeamRepository);
-		DeleteScheduleTeamService.delete(scheduleTeamDeleteImpl, command.getWorkplaceGroupId(), new ScheduleTeamCd(command.getCode()));
+		AtomTask delete = DeleteScheduleTeamService.delete(scheduleTeamDeleteImpl, command.getWorkplaceGroupId(), new ScheduleTeamCd(command.getCode()));
+		transaction.execute(() ->{
+			delete.run();
+		});
 	}
 	
 	@AllArgsConstructor

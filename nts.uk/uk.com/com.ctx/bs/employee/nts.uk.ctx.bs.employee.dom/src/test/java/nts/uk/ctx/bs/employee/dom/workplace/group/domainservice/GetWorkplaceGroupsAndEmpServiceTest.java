@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,7 +66,7 @@ public class GetWorkplaceGroupsAndEmpServiceTest {
 		GeneralDate baseDate = GeneralDate.today();
 		String empId = "empId";
 		List<WorkplaceGroup> lstWorkplaceGroup = Arrays
-				.asList(new WorkplaceGroup("cID", "wKPGRPID1", new WorkplaceGroupCode("wKPGRPCode1"),
+				.asList(WorkplaceGroup.getWpg("cID", new WorkplaceGroupCode("wKPGRPCode1"),
 						new WorkplaceGroupName("wKPGRPName"), WorkplaceGroupType.NORMAL));
 		new Expectations() {
 			{
@@ -78,10 +79,11 @@ public class GetWorkplaceGroupsAndEmpServiceTest {
 		};
 		Map<String, ScopeReferWorkplaceGroup> result = GetWorkplaceGroupsAndEmpService.getWorkplaceGroup(require,
 				baseDate, empId);
-		assertThat(result.entrySet())
-		.extracting(d->d.getKey(),d->d.getValue())
-		.containsExactly(
-				tuple( "wKPGRPID1",ScopeReferWorkplaceGroup.ALL_EMPLOYEE));
+		assertThat(result.entrySet().stream().map(c -> c.getKey()).collect(Collectors.toList())).containsOnlyElementsOf(
+				lstWorkplaceGroup.stream().map(c -> c.getWKPGRPID()).collect(Collectors.toList()));
+		assertThat(result.entrySet().stream().map(c -> c.getValue()).collect(Collectors.toList())).containsOnly(
+				ScopeReferWorkplaceGroup.ALL_EMPLOYEE);
+		
 	}
 	
 	/**
@@ -113,6 +115,7 @@ public class GetWorkplaceGroupsAndEmpServiceTest {
 		assertThat(result.isEmpty()).isTrue();
 	}
 	
+	
 	/**
 	 * require.担当者かどうか( 社員ID ) == false 
 	 * require.指定社員の管理職場をすべて取得する( 社員ID, 基準日 ) not empty
@@ -123,7 +126,7 @@ public class GetWorkplaceGroupsAndEmpServiceTest {
 	public void testGetWorkplaceGroup_3() {
 		GeneralDate baseDate = GeneralDate.today();
 		String empId = "empId";
-		List<String> listWkpId = Arrays.asList("workplaceID");
+		List<String> listWkpId = Arrays.asList("workplaceID1","workplaceID2","workplaceID3");
 		new Expectations() {
 			{
 				require.whetherThePersonInCharge(empId);
@@ -138,7 +141,11 @@ public class GetWorkplaceGroupsAndEmpServiceTest {
 		new MockUp<WorkplaceGroupGettingService>() {
 			@Mock
 			public List<EmployeeAffiliation> get(WorkplaceGroupGettingService.Require require, GeneralDate date, List<String> employeeIDs) {
-				return Arrays.asList(new EmployeeAffiliation(empId, Optional.empty(),  Optional.empty(), "workplaceID",  Optional.empty()));
+				return Arrays.asList(
+						new EmployeeAffiliation(empId, Optional.empty(),  Optional.empty(), "workplaceID2",  Optional.empty()),
+						new EmployeeAffiliation(empId, Optional.empty(),  Optional.empty(), "workplaceID1",  Optional.empty())
+						
+						);
 			}
 		};
 		Map<String, ScopeReferWorkplaceGroup> result = GetWorkplaceGroupsAndEmpService.getWorkplaceGroup(require,
@@ -152,12 +159,47 @@ public class GetWorkplaceGroupsAndEmpServiceTest {
 	 * $所属組織.職場グループID is empty
 	 * require.指定職場の職場グループ所属情報を取得する( $管理職場IDリスト ) is empty
 	 */
+//	@Test
+//	public void testGetWorkplaceGroup_3_1() {
+//		GeneralDate baseDate = GeneralDate.today();
+//		String empId = "empId";
+//		List<String> listWkpId = Arrays.asList("workplaceID");
+//		new Expectations() {
+//			{
+//				require.whetherThePersonInCharge(empId);
+//				result = false;
+//				
+//				require.getAllManagedWorkplaces(empId, baseDate);
+//				result = listWkpId;
+//
+//			}
+//		};
+//		new MockUp<WorkplaceGroupGettingService>() {
+//			@Mock
+//			public List<EmployeeAffiliation> get(WorkplaceGroupGettingService.Require require, GeneralDate date, List<String> employeeIDs) {
+//				return Arrays.asList(new EmployeeAffiliation(empId, Optional.empty(),  Optional.empty(), "workplaceID",  Optional.empty()));
+//			}
+//		};
+//		Map<String, ScopeReferWorkplaceGroup> result = GetWorkplaceGroupsAndEmpService.getWorkplaceGroup(require,
+//				baseDate, empId);
+//		assertThat(result.isEmpty()).isTrue();
+//	}
+	
+	/**
+	 * require.担当者かどうか( 社員ID ) == false 
+	 * require.指定社員の管理職場をすべて取得する( 社員ID, 基準日 ) not empty
+	 * $所属組織.職場グループID is empty
+	 * require.指定職場の職場グループ所属情報を取得する( $管理職場IDリスト ) not empty
+	 */
 	@Test
 	public void testGetWorkplaceGroup_4() {
 		GeneralDate baseDate = GeneralDate.today();
 		String empId = "empId";
-		List<String> listWkpId = Arrays.asList("workplaceID");
-		List<AffWorkplaceGroup> listAffWorkplaceGroup = Arrays.asList(new AffWorkplaceGroup("workplaceGroupID", "workplaceID"));
+		List<String> listWkpId = Arrays.asList("workplaceID1","workplaceID2","workplaceID3");
+		List<AffWorkplaceGroup> listAffWorkplaceGroup = Arrays.asList(
+				new AffWorkplaceGroup("workplaceGroupID3", "workplaceID3"),
+				new AffWorkplaceGroup("workplaceGroupID1", "workplaceID1")
+				);
 		new Expectations() {
 			{
 				require.whetherThePersonInCharge(empId);
@@ -173,7 +215,11 @@ public class GetWorkplaceGroupsAndEmpServiceTest {
 		new MockUp<WorkplaceGroupGettingService>() {
 			@Mock
 			public List<EmployeeAffiliation> get(WorkplaceGroupGettingService.Require require, GeneralDate date, List<String> employeeIDs) {
-				return Arrays.asList(new EmployeeAffiliation(empId, Optional.empty(),  Optional.empty(), "workplaceID",  Optional.empty()));
+				return Arrays.asList(
+						new EmployeeAffiliation(empId, Optional.empty(),  Optional.empty(), "workplaceID1",  Optional.empty()),
+						new EmployeeAffiliation(empId, Optional.empty(),  Optional.empty(), "workplaceID3",  Optional.empty())
+						
+						);
 			}
 		};
 		Map<String, ScopeReferWorkplaceGroup> result = GetWorkplaceGroupsAndEmpService.getWorkplaceGroup(require,
@@ -181,7 +227,8 @@ public class GetWorkplaceGroupsAndEmpServiceTest {
 		assertThat(result.entrySet())
 		.extracting(d->d.getKey(),d->d.getValue())
 		.containsExactly(
-				tuple( "workplaceGroupID",ScopeReferWorkplaceGroup.ALL_EMPLOYEE));
+				tuple( "workplaceGroupID1",ScopeReferWorkplaceGroup.ALL_EMPLOYEE),
+				tuple( "workplaceGroupID3",ScopeReferWorkplaceGroup.ALL_EMPLOYEE));
 	}
 	/**
 	 * require.担当者かどうか( 社員ID ) == false 
@@ -193,8 +240,11 @@ public class GetWorkplaceGroupsAndEmpServiceTest {
 	public void testGetWorkplaceGroup_5() {
 		GeneralDate baseDate = GeneralDate.today();
 		String empId = "empId";
-		List<String> listWkpId = Arrays.asList("workplaceID");
-		List<AffWorkplaceGroup> listAffWorkplaceGroup = Arrays.asList(new AffWorkplaceGroup("workplaceGroupID", "workplaceID"));
+		List<String> listWkpId = Arrays.asList("workplaceID1","workplaceID2","workplaceID3");
+		List<AffWorkplaceGroup> listAffWorkplaceGroup = Arrays.asList(
+				new AffWorkplaceGroup("workplaceGroupID3", "workplaceID3"),
+				new AffWorkplaceGroup("workplaceGroupID1", "workplaceID1")
+				);
 		new Expectations() {
 			{
 				require.whetherThePersonInCharge(empId);
@@ -210,7 +260,10 @@ public class GetWorkplaceGroupsAndEmpServiceTest {
 		new MockUp<WorkplaceGroupGettingService>() {
 			@Mock
 			public List<EmployeeAffiliation> get(WorkplaceGroupGettingService.Require require, GeneralDate date, List<String> employeeIDs) {
-				return Arrays.asList(new EmployeeAffiliation(empId, Optional.empty(),  Optional.empty(), "workplaceID",  Optional.of("workplaceGroupID")));
+				return Arrays.asList(
+						new EmployeeAffiliation(empId, Optional.empty(),  Optional.empty(), "workplaceID3",  Optional.of("workplaceGroupID3")),
+						new EmployeeAffiliation(empId, Optional.empty(),  Optional.empty(), "workplaceID1",  Optional.empty())
+						);
 			}
 		};
 		Map<String, ScopeReferWorkplaceGroup> result = GetWorkplaceGroupsAndEmpService.getWorkplaceGroup(require,
@@ -218,7 +271,7 @@ public class GetWorkplaceGroupsAndEmpServiceTest {
 		assertThat(result.entrySet())
 		.extracting(d->d.getKey(),d->d.getValue())
 		.containsExactly(
-				tuple( "workplaceGroupID",ScopeReferWorkplaceGroup.ALL_EMPLOYEE));
+				tuple( "workplaceGroupID1",ScopeReferWorkplaceGroup.ALL_EMPLOYEE),tuple( "workplaceGroupID3",ScopeReferWorkplaceGroup.ALL_EMPLOYEE));
 	}
 	
 	/**
@@ -233,8 +286,8 @@ public class GetWorkplaceGroupsAndEmpServiceTest {
 	public void testGetWorkplaceGroup_6() {
 		GeneralDate baseDate = GeneralDate.today();
 		String empId = "empId";
-		List<String> listWkpId = Arrays.asList("workplaceID");
-		List<AffWorkplaceGroup> listAffWorkplaceGroup = Arrays.asList(new AffWorkplaceGroup("workplaceGroupID", "workplaceID"));
+		List<String> listWkpId = Arrays.asList("workplaceID1","workplaceID2","workplaceID3");
+		List<AffWorkplaceGroup> listAffWorkplaceGroup = Arrays.asList(new AffWorkplaceGroup("workplaceGroupID2", "workplaceID2"));
 		new Expectations() {
 			{
 				require.whetherThePersonInCharge(empId);
@@ -254,7 +307,7 @@ public class GetWorkplaceGroupsAndEmpServiceTest {
 		new MockUp<WorkplaceGroupGettingService>() {
 			@Mock
 			public List<EmployeeAffiliation> get(WorkplaceGroupGettingService.Require require, GeneralDate date, List<String> employeeIDs) {
-				return Arrays.asList(new EmployeeAffiliation(empId, Optional.empty(),  Optional.empty(), "workplaceID",  Optional.of("workplaceGroupID44")));
+				return Arrays.asList(new EmployeeAffiliation(empId, Optional.empty(),  Optional.empty(), "workplaceID2",  Optional.of("workplaceGroupID44")));
 			}
 		};
 		Map<String, ScopeReferWorkplaceGroup> result = GetWorkplaceGroupsAndEmpService.getWorkplaceGroup(require,
@@ -263,7 +316,7 @@ public class GetWorkplaceGroupsAndEmpServiceTest {
 		.extracting(d->d.getKey(),d->d.getValue())
 		.containsExactly(
 				tuple( "workplaceGroupID44",ScopeReferWorkplaceGroup.ONLY_ME),
-				tuple( "workplaceGroupID",ScopeReferWorkplaceGroup.ALL_EMPLOYEE));
+				tuple( "workplaceGroupID2",ScopeReferWorkplaceGroup.ALL_EMPLOYEE));
 	}
 	
 	/**
@@ -278,8 +331,11 @@ public class GetWorkplaceGroupsAndEmpServiceTest {
 	public void testGetWorkplaceGroup_7() {
 		GeneralDate baseDate = GeneralDate.today();
 		String empId = "empId";
-		List<String> listWkpId = Arrays.asList("workplaceID");
-		List<AffWorkplaceGroup> listAffWorkplaceGroup = Arrays.asList(new AffWorkplaceGroup("workplaceGroupID", "workplaceID"));
+		List<String> listWkpId = Arrays.asList("workplaceID1","workplaceID2","workplaceID3");
+		List<AffWorkplaceGroup> listAffWorkplaceGroup = Arrays.asList(
+				new AffWorkplaceGroup("workplaceGroupID3", "workplaceID3"),
+				new AffWorkplaceGroup("workplaceGroupID2", "workplaceID2")
+				);
 		new Expectations() {
 			{
 				require.whetherThePersonInCharge(empId);
@@ -298,7 +354,11 @@ public class GetWorkplaceGroupsAndEmpServiceTest {
 		new MockUp<WorkplaceGroupGettingService>() {
 			@Mock
 			public List<EmployeeAffiliation> get(WorkplaceGroupGettingService.Require require, GeneralDate date, List<String> employeeIDs) {
-				return Arrays.asList(new EmployeeAffiliation(empId, Optional.empty(),  Optional.empty(), "workplaceID",  Optional.of("workplaceGroupID44")));
+				return Arrays.asList(
+						new EmployeeAffiliation(empId, Optional.empty(),  Optional.empty(), "workplaceID3",  Optional.of("workplaceGroupID43")),
+						new EmployeeAffiliation(empId, Optional.empty(),  Optional.empty(), "workplaceID2",  Optional.of("workplaceGroupID42"))
+						
+						);
 			}
 		};
 		Map<String, ScopeReferWorkplaceGroup> result = GetWorkplaceGroupsAndEmpService.getWorkplaceGroup(require,
@@ -306,8 +366,9 @@ public class GetWorkplaceGroupsAndEmpServiceTest {
 		assertThat(result.entrySet())
 		.extracting(d->d.getKey(),d->d.getValue())
 		.containsExactly(
-				tuple( "workplaceGroupID44",ScopeReferWorkplaceGroup.ALL_EMPLOYEE),
-				tuple( "workplaceGroupID",ScopeReferWorkplaceGroup.ALL_EMPLOYEE)
+				tuple( "workplaceGroupID43",ScopeReferWorkplaceGroup.ALL_EMPLOYEE),
+				tuple( "workplaceGroupID3",ScopeReferWorkplaceGroup.ALL_EMPLOYEE),
+				tuple( "workplaceGroupID2",ScopeReferWorkplaceGroup.ALL_EMPLOYEE)
 				);
 	}
 	
