@@ -1,9 +1,12 @@
 package nts.uk.screen.at.app.query.kdp.kdps01.c;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 
 /**
  * 
@@ -34,9 +37,16 @@ public class ItemDisplayedDto {
 	 */
 	private Integer primitiveValue;
 
-	public static ItemDisplayedDto fromDomain(DailyAttendanceItem domain) {
-
-		return new ItemDisplayedDto(domain.getAttendanceItemId(), domain.getAttendanceName().v(),
-				domain.getDailyAttendanceAtr().value, domain.getPrimitiveValue().map(x -> x.value).orElse(null));
+	public static ItemDisplayedDto fromDomain(DailyAttendanceItem domain, List<AttItemName> dailyItems) {
+		//vì thằng DailyAttendanceItem set tên không chuẩn nên phải lấy name của thằng AttItemName
+		ItemDisplayedDto result = new ItemDisplayedDto();
+		dailyItems.stream().filter(x -> x.getAttendanceItemId() == domain.getAttendanceItemId()).findFirst()
+				.ifPresent(item -> {
+					result.setAttendanceItemId(domain.getAttendanceItemId());
+					result.setAttendanceName(item.getAttendanceItemName());
+					result.setDailyAttendanceAtr(domain.getDailyAttendanceAtr().value);
+					result.setPrimitiveValue(domain.getPrimitiveValue().map(x -> x.value).orElse(null));
+				});
+		return result;
 	}
 }

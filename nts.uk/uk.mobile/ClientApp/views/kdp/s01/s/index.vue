@@ -38,7 +38,7 @@
       <div class="col-6 px-0">
         <nts-label>{{ "KDPS01_55" | i18n }}</nts-label>
       </div>
-      <div class="col-6 px-0">
+      <div  v-focus class="col-6 px-0">
         <nts-dropdown showTitle="false" v-model="selectedValue">
           <option
             v-for="(item, k) in dropdownList"
@@ -51,7 +51,7 @@
       </div>
     </div>
 
-    <table v-focus class="table mt-3 table-bordered uk-table-striped">
+    <table class="table mt-3 table-bordered uk-table-striped">
       <thead>
         <tr>
           <th class="text-center" scope="col">{{ "KDPS01_61" | i18n }}</th>

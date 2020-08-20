@@ -23,13 +23,7 @@ export class KdpS01CComponent extends Vue {
     @Prop({ default: () => ({}) })
     public params!: any;
     public screenData: IScreenData = {
-        confirmResult: {
-            employeeId: '',
-            date: new Date(),
-            status: false,
-            permissionCheck: 0,
-            permissionRelease: 0
-        },
+        confirmResult: null,
         employeeCode: '000001',
         employeeName: '日通　太郎',
         date: new Date(),
@@ -96,10 +90,17 @@ export class KdpS01CComponent extends Vue {
                 vm.screenData.employeeName = data.empInfo ? data.empInfo.pname : '';
             });
 
-
-            _.remove(data.lstItemDisplayed, function (item) {
-                return [28, 29, 31, 34].indexOf(item.attendanceItemId) != -1;
+            // _.remove(data.lstItemDisplayed, function (item) {
+            //     return [28, 29, 31, 34].indexOf(item.attendanceItemId) != -1;
+            // });
+            _.forEach([28, 29, 31, 34], (id) => {
+                let item = _.find(data.lstItemDisplayed, ['attendanceItemId', id]);
+                if (item) {
+                    let index = data.lstItemDisplayed.indexOf(item);
+                    data.lstItemDisplayed.splice(index,1);
+                }
             });
+
 
             let isNoItemHasData = !_.find(data.itemValues, (item) => item.value);
             let timeData = [];
@@ -120,7 +121,7 @@ export class KdpS01CComponent extends Vue {
 
     get isHasImplementation() {
         let vm = this;
-        if (!vm.screenData.confirmResult) {
+        if (! _.get(vm,'screenData.confirmResult.permissionCheck')) {
             return State.SETTING_NULL;
         }
 

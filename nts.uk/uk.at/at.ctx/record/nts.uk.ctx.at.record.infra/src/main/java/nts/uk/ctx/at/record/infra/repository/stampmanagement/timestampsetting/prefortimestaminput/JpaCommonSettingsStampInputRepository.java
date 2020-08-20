@@ -13,7 +13,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInput;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInputRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.MapAddress;
-import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplay;
 import nts.uk.ctx.at.record.infra.entity.stamp.application.KrcmtStampFunction;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtStampWkpSelectRole;
 
