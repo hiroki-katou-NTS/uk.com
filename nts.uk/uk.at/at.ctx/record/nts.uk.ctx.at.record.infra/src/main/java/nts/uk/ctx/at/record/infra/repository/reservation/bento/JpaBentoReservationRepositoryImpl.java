@@ -299,12 +299,12 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 	}
 
 	private String handleQueryForWkLocationCD(List<WorkLocationCode> workLocationCodes, String query){
-		if (CollectionUtil.isEmpty(workLocationCodes)) query += " AND a.WORK_LOCATION_CD = NULL ";
+		if (CollectionUtil.isEmpty(workLocationCodes)) query += " AND a.WORK_LOCATION_CD IS NULL ";
 		else{
 			List<String> workLst = workLocationCodes.stream().map(x -> x.v()).collect(Collectors.toList());
 			String workLstStr = getStringWork(workLocationCodes, workLst);
-			query += " AND a.WORK_LOCATION_CD IN (workLocationCode) ";
-			query = query.replaceFirst("workLocationCode", workLstStr);
+			query += " AND a.WORK_LOCATION_CD IN (workLstStr) ";
+			query = query.replaceFirst("workLstStr", workLstStr);
 		}
 		return query;
 	}

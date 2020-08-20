@@ -81,7 +81,8 @@ public class BentoReserveSettingCommandHandler extends CommandHandler<BentoReser
 
         @Override
         public BentoReservationSetting getReservationSettings(String cid) {
-            return reservationSettingRepository.findByCId(cid).get();
+            Optional<BentoReservationSetting> opt = reservationSettingRepository.findByCId(cid);
+            return opt.orElse(null);
         }
 
         @Override
