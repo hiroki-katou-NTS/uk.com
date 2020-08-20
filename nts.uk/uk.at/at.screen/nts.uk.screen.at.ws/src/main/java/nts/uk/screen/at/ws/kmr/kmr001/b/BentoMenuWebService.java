@@ -1,4 +1,4 @@
-package nts.uk.screen.at.ws.krm.krm001.b;
+package nts.uk.screen.at.ws.kmr.kmr001.b;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.reservation.*;
@@ -6,7 +6,6 @@ import nts.uk.screen.at.app.reservation.*;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
