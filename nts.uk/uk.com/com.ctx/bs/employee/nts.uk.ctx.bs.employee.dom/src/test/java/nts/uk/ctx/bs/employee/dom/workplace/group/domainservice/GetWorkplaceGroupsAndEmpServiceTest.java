@@ -448,11 +448,9 @@ public class GetWorkplaceGroupsAndEmpServiceTest {
 		};
 		Map<String, ScopeReferWorkplaceGroup> result = GetWorkplaceGroupsAndEmpService.getWorkplaceGroup(require,
 				baseDate, empId);
-		assertThat(result.entrySet())
-		.extracting(d->d.getKey(),d->d.getValue())
-		.containsExactly(
-				tuple( "workplaceGroupID43",ScopeReferWorkplaceGroup.ALL_EMPLOYEE)
-				);
+		assertThat(result.size()).isEqualTo(1);
+		assertThat(result.entrySet().stream().findFirst().get().getKey()).isEqualTo("workplaceGroupID43");
+		assertThat(result.entrySet().stream().findFirst().get().getValue()).isEqualTo(ScopeReferWorkplaceGroup.ALL_EMPLOYEE);
 	}
 	
 	
