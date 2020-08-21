@@ -17,20 +17,32 @@ import { CpComponent } from './child';
 })
 export class KafS08BComponent extends Vue {
     public title: string = 'KafS08B';
+    public date: string = '1/1/2020';
 
     @Prop({ default: () => ({ id: 0, name: ''})})
     public readonly params!: ParamData;
+    public params1!: IDate;
 
     public onChangeTitle(str: string)  {
         const vm = this;
 
         vm.title = str;
 
-        vm.params.id
+        console.log(vm.params.name);
+    }
+
+    public changeDateSetting(dates: string) {
+        const vm = this;
+        vm.date = dates;
     }
 }
 
 interface ParamData {
     id: number; 
     name: string;
+}
+
+interface IDate {
+    id: number;
+    date: string;
 }

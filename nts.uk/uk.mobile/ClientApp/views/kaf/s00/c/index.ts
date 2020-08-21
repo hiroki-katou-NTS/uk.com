@@ -97,6 +97,7 @@ export class KafS00CComponent extends Vue {
 
         return self.displayFixedReason || self.displayAppReason;
     }
+
 }
 
 interface ReasonTypeItemDto {
