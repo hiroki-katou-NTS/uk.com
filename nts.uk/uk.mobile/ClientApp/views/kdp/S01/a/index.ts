@@ -237,6 +237,7 @@ export class KdpS01AComponent extends Vue {
                                 break;
                             }
                             default:
+                                vm.openDialogB(command.stampButton);
                                 break;
                         }
 
