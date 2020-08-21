@@ -50,10 +50,10 @@ export class KdpS01CComponent extends Vue {
         parameterIds.push(28, 29, 31, 34);
 
         let command = {
-            startDate: moment(vm.params.stampDate ? vm.params.stampDate : vm.$dt.now).format('YYYY/MM/DD'),
-            endDate: moment(vm.params.stampDate ? vm.params.stampDate : vm.$dt.now).format('YYYY/MM/DD'),
+            startDate: moment(vm.$dt.now).format('YYYY/MM/DD'),
+            endDate: moment(vm.$dt.now).format('YYYY/MM/DD'),
             attendanceItemIds: parameterIds,
-            baseDate: moment(vm.params.stampDate ? vm.params.stampDate : vm.$dt.now).format('YYYY/MM/DD')
+            baseDate: moment(vm.$dt.now).format('YYYY/MM/DD')
         };
 
         vm.$mask('show');
@@ -157,7 +157,7 @@ export class KdpS01CComponent extends Vue {
 
         if (attendanceItem.dailyAttendanceAtr == DailyAttendanceAtr.AmountOfMoney) {
 
-            result = item.value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
+            result = item.value.toFixed(1).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
         }
 
         return result;
