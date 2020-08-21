@@ -18,36 +18,40 @@
 
                 <com:scriptfile path="./kmr003.a.vm.js"/>
                 <!--<com:scriptfile path="./kmr003.a.start.js" />-->
+
+                <com:ValidatorScript>
+					nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount
+				</com:ValidatorScript>
             </ui:define>
 
             <ui:define name="content">
                 <div id="functions-area">
                     <!--A1_2-->
-                    <button class="proceed">#{i18n.getText('KMR003_2')}</button>
+                    <button tabindex="1" class="proceed" data-bind="click: updateReservation">#{i18n.getText('KMR003_2')}</button>
                     <!--A1_3-->
-                    <button>#{i18n.getText('KMR003_3')}</button>
+                    <button tabindex="2" data-bind="click: deleteReservation">#{i18n.getText('KMR003_3')}</button>
                 </div>
                 <div id="contents-area">
                     <div class="kmr003-left-content">
                         <!--A2_1-->
-                        <div id="com-ccg001"/>
+                        <div id="com-ccg001"></div>
                     </div>
                     <div class="kmr003-right-content">
                         <div id="filter-condition">
                             <!--A2_3-->
-                            <div data-bind="ntsDatePicker: {
-                                value: dateData,
+                            <div id="A2_3" tabindex="3" data-bind="ntsDatePicker: {
+                                value: date,
                                 showJumpButtons: true
                             }"></div>
 
                             <!--A2_5-->
-                            <div id="combo-box" class="content-option" tabindex="1" data-bind="ntsComboBox: {
+                            <div id="combo-box" class="content-option" tabindex="4" data-bind="ntsComboBox: {
                                 width: '150px',
                                 name:'#[KMR003_13]',
-                                options: itemsConditionClassification,
+                                options: searchConditions,
                                 optionsValue: 'id',
                                 visibleItemsCount: 5,
-                                value: conditionClassification,
+                                value: searchConditionValue,
                                 optionsText: 'name',
                                 editable: false,
                                 enable: true,
@@ -57,17 +61,17 @@
                                 ]}"></div>
 
                             <!--A2_7-->
-                            <div class="content-option cf" data-bind="ntsSwitchButton: {
+                            <div class="content-option cf" tabindex="5" data-bind="ntsSwitchButton: {
                                 name: 'Sample Switch',
-                                options: roundingRules,
-                                optionsValue: 'code',
+                                options: closingTimeFrames,
+                                optionsValue: 'id',
                                 optionsText: 'name',
-                                value: selectedRuleCode,
+                                value: closingTimeFrameValue,
                                 required: true,
                                 enable: true }"></div>
 
                             <!--A2_10-->
-                            <span class="content-option label">#{i18n.getText('KMR003_2')}</span>
+                            <span id="A2_10" class="content-option label" data-bind="text: closingTimeTime"></span>
                         </div>
                         <!--A3_1-->
                         <div class="form-group">

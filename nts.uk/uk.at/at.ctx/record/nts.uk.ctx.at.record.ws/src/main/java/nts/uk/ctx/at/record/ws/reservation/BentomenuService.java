@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.ws.reservation;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.reservation.bento.DeleteBentoMenuCommand;
-import nts.uk.ctx.at.record.app.command.reservation.bento.DeleteBentoMenuCommandHandler;
+import nts.uk.ctx.at.record.app.command.reservation.reseritemset.DeleteBentoCommand;
+import nts.uk.ctx.at.record.app.command.reservation.reseritemset.DeleteBentoCommandHandler;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -14,11 +14,11 @@ import javax.ws.rs.Produces;
 public class BentomenuService extends WebService {
 
     @Inject
-    private DeleteBentoMenuCommandHandler delete;
+    private DeleteBentoCommandHandler delete;
 
     @POST
     @Path("delete")
-    public void update(DeleteBentoMenuCommand command) {
+    public void update(DeleteBentoCommand command) {
         this.delete.handle(command);
     }
 }

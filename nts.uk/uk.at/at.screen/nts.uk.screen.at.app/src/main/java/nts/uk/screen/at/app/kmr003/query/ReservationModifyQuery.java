@@ -87,7 +87,6 @@ public class ReservationModifyQuery {
         Optional<SWkpHistWrkLocationExport> sWkpHistWrkLocationOpt = workplacePub.findBySidWrkLocationCD(empId, reservationDate.getDate());
         if (sWkpHistWrkLocationOpt.isPresent()) {
             String wkpCode = sWkpHistWrkLocationOpt.get().getWorkLocationCd();
-            System.out.println(wkpCode);
             if (wkpCode != null){
                 workLocationCodeOpt = Optional.of(new WorkLocationCode(wkpCode));
             }
@@ -177,8 +176,9 @@ public class ReservationModifyQuery {
             reservationModifyEmp.setReservationDate(bentoReservation.getReservationDate().getDate());
 
             Optional<BentoReservationDetail> detailOpt = bentoReservation.getBentoReservationDetails().stream().findFirst();
-            detailOpt.ifPresent(bentoReservationDetail -> reservationModifyEmp.setReservationTime(bentoReservationDetail.getDateTime()));
+            detailOpt.ifPresent(bentoReservationDetail -> reservationModifyEmp.setReservationTime(bentoReservationDetail.getDateTime().toString("hh:mm")));
 
+            reservationModifyEmp.setOrdered(bentoReservation.isOrdered());
             reservationModifyEmp.setClosingTimeFrame(bentoReservation.getReservationDate().getClosingTimeFrame().value);
             List<ReservationModifyDetailDto> reservationDetails = bentoReservation.getBentoReservationDetails()
                     .stream().map(x -> new ReservationModifyDetailDto(x.getBentoCount().v(), x.getFrameNo()))

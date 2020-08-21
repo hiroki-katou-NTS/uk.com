@@ -1,5 +1,4 @@
 package nts.uk.ctx.at.record.dom.reservation.reservationsetting;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;

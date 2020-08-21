@@ -5,153 +5,83 @@ module nts.uk.at.kmr003.a {
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
     import validation = nts.uk.ui.validation;
+    import parseTime = nts.uk.time.parseTime;
 
     const API = {
-        BENTO_RESERVATTIONS: 'screen/at/record/reservation/bento_modify/getReservations'
+        BENTO_RESERVATTIONS: 'screen/at/record/reservation/bento_modify/getReservations',
+        BENTO_UPDATE: 'at/record/reservation/bento/force-update',
+        BENTO_DELETE: 'at/record/reservation/bento/force-delete'
     };
 
-    @bean()
+    // Grid cell errors
+    const dialogOptions: any = {
+        forGrid: true,
+        headers: [
+            new nts.uk.ui.errors.ErrorHeader("rowId", "Row ID", "auto", true),
+            new nts.uk.ui.errors.ErrorHeader("columnKey", "Column Key", "auto", true),
+            new nts.uk.ui.errors.ErrorHeader("message", "Message", "auto", true)
+        ]
+    };
+
+    @bean(dialogOptions)
     export class KMR003AViewModel extends ko.ViewModel {
         tabs: KnockoutObservableArray<any> = ko.observableArray([]);
         stampToSuppress: KnockoutObservable<any> = ko.observable({});
-        dateData: KnockoutObservable<string>;
+        date: KnockoutObservable<Date> = ko.observable(moment(new Date()).toDate());
 
         //A2_5 A2_6
-        itemsConditionClassification: KnockoutObservableArray<ExtractConditionClassfication>;
-        conditionClassification: KnockoutObservable<ExtractConditionClassfication> = ko.observable();
+        searchConditions: KnockoutObservableArray<SearchCondition> = ko.observableArray();
+        searchConditionValue: KnockoutObservable<number> = ko.observable(4);
 
         //A2_7 A2_8
-        roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: any;
+        closingTimeFrames: KnockoutObservableArray<ClosingTimeFrame> = ko.observableArray();
+        closingTimeFrameValue: KnockoutObservable<number> = ko.observable(1);
+        closingTimeTime: KnockoutObservable<any> = ko.observable();
 
         ccg001ComponentOption: GroupOption = null;
 
         fixedColumns = [
-            { headerText: "ID", key: 'sid', dataType: 'string', hidden: true },
-            { headerText: getText("KMR003_21"), key: 'employeeCode', dataType: 'string', width: '150px', height: '', ntsControl: "Label" },
-            { headerText: getText("KMR003_22"), key: 'employeeName', dataType: 'string', width: '150px', ntsControl: "Label" },
+            { headerText: "reservationCardNo", key: 'reservationCardNo', dataType: 'string', hidden: true },
+            //{ headerText: getText("KMR003_21"), key: 'reservationMemberCode', dataType: 'string', width: '150px', height: '', ntsControl: "Label" },
             {
-                headerText: getText("KMR003_23"), group: [
-                    { headerText: '', key: 'isDel', dataType: 'boolean', width: '100px', checkbox: true, ntsControl: "isDelCheckBox" }
+                headerText: getText("KMR003_21"), key: 'reservationMemberCode', dataType: 'number', width: '150px', height: '', constraint: {
+                    primitiveValue: 'BentoReservationCount',
+                    required: true
+                }
+            },
+            { headerText: getText("KMR003_22"), key: 'reservationMemberName', dataType: 'string', width: '150px', ntsControl: "Label" },
+            {
+                headerText: getText("KMR003_23"),
+                group: [
+                    { headerText: '', key: 'isDelete', dataType: 'boolean', width: '100px', checkbox: true, ntsControl: "isDelCheckBox" }
                 ]
             },
-            { headerText: getText("KMR003_24"), key: 'timeOrder', dataType: 'string', width: '100px', ntsControl: "Label" },
+            { headerText: getText("KMR003_24"), key: 'reservationTime', dataType: 'string', width: '100px', ntsControl: "Label" },
             {
                 headerText: getText("KMR003_25"),
                 group: [
-                    { headerText: '', key: 'isOrder', dataType: 'boolean', width: '100px', checkbox: true, ntsControl: "isOrderCheckBox" }
+                    { headerText: '', key: 'ordered', dataType: 'boolean', width: '100px', checkbox: true, ntsControl: "isOrderCheckBox" }
                 ]
             },
         ];
 
         dynamicColumns = [];
         flag: KnockoutObservable<boolean>;
-
-        datas: Array<BookingModify> = [
-            {
-                id: 1, employeeCode: "A001", employeeName: "emp 1", timeOrder: "8:30", lstStatus: [
-                    { bentoID: 1, amount: 1 },
-                    { bentoID: 3, amount: 1 },
-                    { bentoID: 4, amount: 1 },
-                    { bentoID: 5, amount: 1 },
-                    { bentoID: 6, amount: 1 },
-                    { bentoID: 13, amount: 1 },
-                    { bentoID: 19, amount: 1 },
-                    { bentoID: 29, amount: 1 }
-                ]
-            },
-            {
-                id: 2, employeeCode: "A002", employeeName: "emp 2", timeOrder: "8:30", lstStatus: [
-                    { bentoID: 2, amount: 1 },
-                    { bentoID: 5, amount: 1 },
-                    { bentoID: 6, amount: 1 },
-                    { bentoID: 9, amount: 1 },
-                    { bentoID: 11, amount: 1 },
-                    { bentoID: 18, amount: 1 },
-                    { bentoID: 25, amount: 1 },
-                    { bentoID: 37, amount: 1 }
-                ]
-            },
-            {
-                id: 3, employeeCode: "A003", employeeName: "emp 2", timeOrder: "8:30", lstStatus: [
-                    { bentoID: 3, amount: 1 },
-                    { bentoID: 6, amount: 1 },
-                    { bentoID: 9, amount: 1 },
-                    { bentoID: 12, amount: 1 },
-                    { bentoID: 15, amount: 1 },
-                    { bentoID: 19, amount: 1 },
-                    { bentoID: 22, amount: 1 },
-                    { bentoID: 33, amount: 1 }
-                ]
-            }
-        ];
-        dataConverted = [
-            {
-                id: 1, employeeCode: "A001", employeeName: "emp 1", timeOrder: "8:30", bento1: 1, bento3: 1, bento4: 1, bento5: 1,
-                bento6: 1, bento13: 1, bento19: 1, bento29: 1
-            },
-            {
-                id: 2, employeeCode: "A002", employeeName: "emp 2", timeOrder: "8:30", bento2: 1, bento5: 1, bento6: 1,
-                bento9: 1, bento11: 1, bento18: 1, bento25: 1, bento37: 1
-            },
-            {
-                id: 3, employeeCode: "A003", employeeName: "emp 2", timeOrder: "8:30", bento3: 1, bento6: 1, bento9: 1,
-                bento12: 1, bento15: 1, bento19: 1, bento22: 1, bento33: 1
-            }
-        ];
+        datas: Array<ReservationModifyEmployeeDto> = [];
         listBento = [];
-        //KnockoutObservableArray<BentoDto>;
-
-        empSearchItems: Array<EmployeeSearchDto>;
+        headerInfos: Array<HeaderInfoDto> = [];
+        empSearchItems: Array<EmployeeSearchDto> = [];
         employIdLogin: any;
 
         constructor() {
             super();
             let vm = this;
-            vm.dateData = ko.observable('20000101');
 
-            vm.itemsConditionClassification = ko.observableArray([
-                new ExtractConditionClassfication(1, 'option 1'),
-                new ExtractConditionClassfication(2, 'option 2'),
-                new ExtractConditionClassfication(3, 'option 3')
-            ]);
-
-            //add A2_8 A2_9
-            vm.roundingRules = ko.observableArray([
-                { code: '1', name: '昼' },
-                { code: '2', name: '夜' }
-            ]);
-            vm.selectedRuleCode = ko.observable(1);
-
-            // bentos: Array<BentoDto>
-            for (let i = 1; i < 41; ++i) {
-                this.listBento = this.listBento.concat([new BentoDto(i, "bento " + i)]);
-            }
-
-            // this.listBento.forEach(function(x){
-            //     this.dynamicColumns = this.dynamicColumns.concat(
-            //         [{headerText: x.bentoName, key: "bento"+String(x.bentoID), dataType: 'string', width: '100px', ntsControl: "Label"}]
-            //     );
-            // })
-            for (let x of this.listBento) {
-                this.dynamicColumns = this.dynamicColumns.concat(
-                    [{
-                        headerText: x.bentoName,
-                        key: "bento" + String(x.bentoID),
-                        dataType: 'string',
-                        width: '100px',
-                        ntsControl: "Label"
-                    }]
-                );
-            }
-
-            // for(let x of this.datas){
-            //     var ans = {};
-            //     x.lstStatus.forEach(function (item) {
-            //         ans = $.extend(true, ans, new BentoTransfer("bento"+String(item.bentoID), item.amount))
-            //     })
-            //     this.dataConverted = this.dataConverted.concat([ans]);
-            // }
+            vm.searchConditions.push(new SearchCondition(4, '全部'));
+            vm.searchConditions.push(new SearchCondition(0, '１商品２件以上'));
+            vm.searchConditions.push(new SearchCondition(1, '注文済み'));
+            vm.searchConditions.push(new SearchCondition(2, '未注文'));
+            vm.searchConditions.push(new SearchCondition(3, '新規注文'));
 
             vm.ccg001ComponentOption = <GroupOption>{
                 /** Common properties */
@@ -200,46 +130,44 @@ module nts.uk.at.kmr003.a {
                     vm.initData();
                 }
             }
+
+            vm.closingTimeFrameValue.subscribe(value => {
+                vm.setClosingTimeTime(value);
+            })
         }
 
         created() {
             const vm = this;
-
-            vm.$blockui('show')
-                //.then(() => vm.$ajax('at', API.SETTING))
-                //.then($('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption))
-                .then((data: any) => {
-                    if (data) {
-                        if (data.stampSetting) {
-                            vm.tabs(data.stampSetting.pageLayouts);
-                        }
-                        if (data.stampToSuppress) {
-                            vm.stampToSuppress(data.stampToSuppress);
-                        }
-                    }
-                })
-                .fail((res) => {
-                    vm.$dialog.error({ messageId: res.messageId })
-                        .then(() => vm.$jump("com", "/view/ccg/008/a/index.xhtml"));
-                })
-                .always(() => vm.$blockui('clear'));
             $('#com-ccg001').ntsGroupComponent(vm.ccg001ComponentOption);
             vm.loadMGrid();
-            _.extend(window, { vm });
+            vm.initData();
+            //_.extend(window, { vm });
+
+
+
+            //const kvmc : any = nts.uk.ui.KibanViewModel;
+            //const kvm = new kvmc(dialogOptions);
+            //nts.uk.ui._viewModel.kiban = kvm;
+            //__viewContext.bind(vm, dialogOptions)
+        }
+
+        mounted() {
+
         }
 
         loadMGrid() {
             let self = this;
             let height = $(window).height() - 90 - 290;
             let width = $(window).width() + 20 - 1170;
+
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
                 width: "1170px",
                 height: "200px",
                 subWidth: width + "px",
                 subHeight: height + "px",
                 headerHeight: '60px',
-                dataSource: self.dataConverted,
-                primaryKey: 'sid',
+                dataSource: self.datas,
+                primaryKey: 'reservationCardNo',
                 primaryKeyDataType: 'string',
                 rowVirtualization: true,
                 virtualization: true,
@@ -247,8 +175,9 @@ module nts.uk.at.kmr003.a {
                 enter: 'right',
                 autoFitWindow: false,
                 hidePrimaryKey: true,
-                errorsOnPage: false,
-                columns: this.fixedColumns.concat(this.dynamicColumns),
+                // errorColumns: [ "ruleCode" ],
+                errorsOnPage: true,
+                columns: self.fixedColumns.concat(self.dynamicColumns),
                 ntsControls: [
                     {
                         name: 'isDelCheckBox', options: { value: 1, text: '' }, optionsValue: 'value',
@@ -266,11 +195,23 @@ module nts.uk.at.kmr003.a {
                         fixingDirection: 'left',
                         columnSettings: [
                             {
-                                columnKey: "employeeCode",
+                                columnKey: "reservationMemberCode",
                                 isFixed: true
                             },
                             {
-                                columnKey: "employeeName",
+                                columnKey: "reservationMemberName",
+                                isFixed: true
+                            },
+                            {
+                                columnKey: "isDelete",
+                                isFixed: true
+                            },
+                            {
+                                columnKey: "reservationTime",
+                                isFixed: true
+                            },
+                            {
+                                columnKey: "ordered",
                                 isFixed: true
                             }
                         ]
@@ -284,25 +225,42 @@ module nts.uk.at.kmr003.a {
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
-            //$("#A2_3").ntsError('check');
-            if (nts.uk.ui.errors.hasError()) {
-                $("#grid").mGrid("destroy");
-                self.datas = [];
-                self.loadMGrid();
-                block.clear();
-                return;
-            }
             let param = self.createParamGet();
-            let gridData = [];
-            self.$ajax(API.BENTO_RESERVATTIONS, param).done(res => {
-                console.log(res)
-            })
-            $.when(gridData).done((depts, amounts) => {
-                self.datas = gridData;
+            self.$ajax(API.BENTO_RESERVATTIONS, param).done((res: IReservationModifyDto) => {
+                self.closingTimeFrames.removeAll();
+                _.forEach(res.bentoClosingTimes, (item: IClosingTimeDto) => {
+                    //add A2_8 A2_9 A2_10
+                    self.closingTimeFrames.push(new ClosingTimeFrame(item));
+                })
+                self.setClosingTimeTime(self.closingTimeFrameValue());
+                self.dynamicColumns = [];
+                self.headerInfos = _.map(res.bentos, (item: IHeaderInfoDto) => { return new HeaderInfoDto(item); });
+                _.forEach(self.headerInfos, (item: HeaderInfoDto) => {
+                    self.dynamicColumns.push({
+                        headerText: item.bentoName,
+                        group: [
+                            {
+                                headerText: item.unit,
+                                key: item.key,
+                                dataType: 'number',
+                                width: '100px',
+                                columnCssClass: 'halign-right',
+                                constraint: {
+                                    primitiveValue: 'BentoReservationCount',
+                                    required: true
+                                }
+                            }
+                        ]
+                    });
+                })
+                self.datas = _.map(res.reservationModifyEmps, (item: IReservationModifyEmployeeDto) => {
+                    let dto = new ReservationModifyEmployeeDto(item);
+                    dto.convertData(self.headerInfos);
+                    return dto;
+                });
                 $("#grid").mGrid("destroy");
                 self.loadMGrid();
             }).always(() => {
-                //$("#A2_3").focus();.
                 block.clear();
                 dfd.resolve();
             })
@@ -316,22 +274,46 @@ module nts.uk.at.kmr003.a {
             });
             let param = {
                 empIds: empIds,
-                date: self.dateData(),
-                closingTimeFrame: 1,
-                searchCondition: 3
+                date: self.date(),
+                closingTimeFrame: self.closingTimeFrameValue(),
+                searchCondition: self.searchConditionValue()
             };
             return param;
         }
 
-    }
+        setClosingTimeTime(frameId: number) {
+            let self = this;
+            let frame = _.find(self.closingTimeFrames(), (item: ClosingTimeFrame) => { return item.id == frameId });
+            if (frame) {
+                self.closingTimeTime(parseTime(frame.startTime, true).format() + "～" + parseTime(frame.endTime, true).format())
+            } else {
+                self.closingTimeTime("");
+            }
+        }
 
-    class ExtractConditionClassfication {
-        id: number;
-        name: string;
+        updateReservation() {
+            let self = this;
+            self.$blockui("invisible");
+            let reservations: Array<ReservationModifyEmployeeDto> = $("#grid").mGrid("dataSource", true);
 
-        constructor(id: number, name: string) {
-            this.id = id;
-            this.name = name;
+            if (self.searchConditionValue() == 3){
+
+            }else{
+                let commandUpdate = new ForceUpdateBentoReserveCommand(self.date().toISOString(), false, self.closingTimeFrameValue());
+                commandUpdate.setReservationInfos(reservations, self.headerInfos);
+                console.log(commandUpdate)
+                self.$ajax(API.BENTO_UPDATE, commandUpdate).done(() => {
+                    self.$dialog.info({ messageId: "Msg_15" }).then(function () {
+                        self.$blockui("clear");
+                    });
+                }).always(() => self.$blockui("clear"));
+            }
+            
+            
+        }
+
+        deleteReservation() {
+            let self = this;
         }
     }
 
@@ -393,58 +375,196 @@ module nts.uk.at.kmr003.a {
         affiliationName: string;
     }
 
-    interface listBooking {
-        bentoID: number
-        amount: number;
+    class SearchCondition {
+        id: number;
+        name: string;
+
+        constructor(id: number, name: string) {
+            this.id = id;
+            this.name = name;
+        }
     }
 
-    class BookingModify {
+    class ClosingTimeFrame {
         id: number;
+        name: string;
+        endTime: number;
+        startTime: number;
+
+        constructor(item: IClosingTimeDto) {
+            this.id = item.closingTimeFrame;
+            this.name = item.name;
+            this.startTime = item.startTime;
+            this.endTime = item.endTime;
+        }
+    }
+
+    // 予約の修正起動情報
+    class IReservationModifyDto {
+        bentos: Array<IHeaderInfoDto>;
+
+        bentoClosingTimes: Array<IClosingTimeDto>;
+
+        empFinishs: Array<IEmployeeInfoMonthFinishDto>;
+
+        reservationModifyEmps: Array<IReservationModifyEmployeeDto>;
+    }
+
+    // 弁当ヘッダー
+    interface IHeaderInfoDto {
+        frameNo: number;
+        bentoName: string;
+        unit: string;
+    }
+
+    class HeaderInfoDto {
+        frameNo: number;
+        bentoName: string;
+        unit: string;
+
+        key: string;
+
+        constructor(item: IHeaderInfoDto) {
+            this.frameNo = item.frameNo;
+            this.bentoName = item.bentoName;
+            this.unit = item.unit;
+
+            this.key = item.frameNo + "_" + item.bentoName;
+        }
+    }
+
+    // 弁当メニューの締め時刻
+    interface IClosingTimeDto {
+        closingTimeFrame: number;
+        name: string;
+        endTime: number;
+        startTime: number;
+    }
+
+    // 月締め処理が済んでいる社員情報
+    interface IEmployeeInfoMonthFinishDto {
         employeeCode: string;
         employeeName: string;
-        timeOrder: string;
-        lstStatus: Array<listBooking>;
+    }
 
-        constructor(id: number, employeeCode: string, employeeName: string, timeOrder: string, lstStatus: Array<listBooking>) {
-            this.id = id;
-            this.employeeCode = employeeCode;
-            this.employeeName = employeeName;
-            this.timeOrder = timeOrder;
-            this.lstStatus = lstStatus;
+    // 社員の予約情報
+    interface IReservationModifyEmployeeDto {
+        reservationDetails: Array<IReservationModifyDetailDto>;
+        reservationCardNo: string;
+        reservationMemberId: string;
+        reservationMemberCode: string;
+        reservationMemberName: string;
+        reservationDate: Date;
+        reservationTime: number;
+        activity: boolean;
+        ordered: boolean;
+        closingTimeFrame: number;
+    }
+
+    // 社員の予約情報
+    interface IReservationModifyDetailDto {
+        bentoCount: number;
+        frameNo: number;
+    }
+
+
+    // 社員の予約情報
+    class ReservationModifyEmployeeDto {
+        reservationDetails: Array<ReservationModifyDetailDto>;
+        reservationCardNo: string;
+        reservationMemberId: string;
+        reservationMemberCode: string;
+        reservationMemberName: string;
+        reservationDate: Date;
+        reservationTime: number;
+        activity: boolean;
+        ordered: boolean;
+        closingTimeFrame: number;
+
+        isDelete: boolean;
+
+        constructor(item: IReservationModifyEmployeeDto) {
+            this.reservationDetails = _.map(item.reservationDetails, (x: IReservationModifyDetailDto) => {
+                return new ReservationModifyDetailDto(x);
+            })
+
+            this.reservationCardNo = item.reservationCardNo;
+            this.reservationMemberId = item.reservationMemberId;
+            this.reservationMemberCode = item.reservationMemberCode;
+            this.reservationMemberName = item.reservationMemberName;
+            this.reservationDate = item.reservationDate;
+            this.reservationTime = item.reservationTime;
+            this.activity = item.activity;
+            this.ordered = item.ordered;
+            this.closingTimeFrame = item.closingTimeFrame;
+
+            this.isDelete = false;
+        }
+
+        convertData(headerInfos: Array<HeaderInfoDto>) {
+            let self = this;
+            _.forEach(this.reservationDetails, (item: ReservationModifyDetailDto) => {
+                let header = _.find(headerInfos, (x: HeaderInfoDto) => { return x.frameNo == item.frameNo; });
+                self[header.key] = item.bentoCount;
+            })
         }
     }
 
-    class BentoDto {
-        bentoID: number;
-        bentoName: string;
-
-        constructor(bentoID: number, bentoName: string) {
-            this.bentoID = bentoID;
-            this.bentoName = bentoName;
+    // 社員の予約情報
+    class ReservationModifyDetailDto {
+        bentoCount: number;
+        frameNo: number;
+        constructor(item: IReservationModifyDetailDto) {
+            this.bentoCount = item.bentoCount;
+            this.frameNo = item.frameNo;
         }
     }
 
-    class BentoTransfer {
-        bentoKey: string;
-        bentoValue: number;
+    class ForceUpdateBentoReserveCommand {
+        reservationInfos: Array<BentoReserveInfoCommand>;
+        date: any;
+        isNew: boolean;
+        closingTimeFrame: number;
 
-        constructor(bentoKey: string, bentoValue: number) {
-            this.bentoKey = bentoKey;
-            this.bentoValue = bentoValue;
+        constructor(date: any, isNew: boolean, closingTimeFrame: number) {
+            this.reservationInfos = [];
+            this.date = date;
+            this.isNew = isNew;
+            this.closingTimeFrame = closingTimeFrame;
+        }
+
+        setReservationInfos(reservations: Array<ReservationModifyEmployeeDto>, bentos: Array<HeaderInfoDto>) {
+            this.reservationInfos = _.map(reservations, (reservation: ReservationModifyEmployeeDto) => {
+                return new BentoReserveInfoCommand(reservation, bentos);
+            });
         }
     }
 
-
-    /**
-     * 住民税入力区分
-     */
-    enum ResidentTaxInputAtr {
-        ALL_MONTH = 1,
-        NOT_ALL_MONTH = 0
+    class BentoReserveInfoCommand {
+        reservationCardNo: String;
+        ordered: boolean;
+        details: Array<BentoReserveDetailCommand>
+        constructor(reservation: ReservationModifyEmployeeDto, bentos: Array<HeaderInfoDto>) {
+            let self = this;
+            self.reservationCardNo = reservation.reservationCardNo;
+            self.ordered = reservation.ordered;
+            self.details = [];
+            _.forEach(bentos, (bento: HeaderInfoDto) => {
+                let bentoCount = reservation[bento.key];
+                if (!isNaN(bentoCount)) {
+                    self.details.push(new BentoReserveDetailCommand(bento.frameNo, bentoCount));
+                }
+            })
+        }
     }
 
-    declare interface ObjectConstructor {
-        assign(...objects: Object[]): Object;
-    }
+    class BentoReserveDetailCommand {
+        frameNo: number;
+        bentoCount: number;
 
+        constructor(frameNo: number, bentoCount: number) {
+            this.frameNo = frameNo;
+            this.bentoCount = bentoCount;
+        }
+    }
 }

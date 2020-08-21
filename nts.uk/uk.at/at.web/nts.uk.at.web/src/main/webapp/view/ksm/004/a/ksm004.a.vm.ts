@@ -1182,8 +1182,8 @@ module nts.uk.at.view.ksm004.a {
         
         export enum WorkingDayAtr {
             WorkingDayAtr_Company = '稼働日',
-            WorkingDayAtr_WorkPlace = '非稼働日\n（法内）',
-            WorkingDayAtr_Class = '非稼働日\n（法外）'
+            WorkingDayAtr_WorkPlace = '法定休日',
+            WorkingDayAtr_Class = '法定外休日'
         }
     }
 }

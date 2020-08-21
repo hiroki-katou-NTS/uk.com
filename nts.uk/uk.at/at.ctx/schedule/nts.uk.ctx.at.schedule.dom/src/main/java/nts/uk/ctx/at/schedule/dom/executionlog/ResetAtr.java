@@ -37,11 +37,10 @@ public class ResetAtr extends DomainObject {
 	 * @return the reset atr
 	 */
 	public ResetAtr(ScheduleCreateContentGetMemento memento) {
-		//TODO Sua domain: スケジュール作成内容 se tiep tuc khi co tai lieu moi cua man ksc001
-//		this.resetMasterInfo = memento.getResetMasterInfo();
-//		this.resetWorkingHours = memento.getResetWorkingHours();
-//		this.resetStartEndTime = memento.getResetStartEndTime();
-//		this.resetTimeAssignment = memento.getResetTimeAssignment();
+		this.resetMasterInfo = memento.getResetMasterInfo();
+		this.resetWorkingHours = memento.getResetWorkingHours();
+		this.resetStartEndTime = memento.getResetStartEndTime();
+		this.resetTimeAssignment = memento.getResetTimeAssignment();
 	}
 
 	/**
@@ -51,11 +50,10 @@ public class ResetAtr extends DomainObject {
 	 *            the memento
 	 */
 	public void saveToMemento(ScheduleCreateContentSetMemento memento) {
-		//TODO Sua domain: スケジュール作成内容 se tiep tuc khi co tai lieu moi cua man ksc001
-//		memento.setResetMasterInfo(this.resetMasterInfo);
-//		memento.setResetWorkingHours(this.resetWorkingHours);
-//		memento.setResetTimeAssignment(this.resetTimeAssignment);
-//		memento.setResetStartEndTime(this.resetStartEndTime);
+		memento.setResetMasterInfo(this.resetMasterInfo);
+		memento.setResetWorkingHours(this.resetWorkingHours);
+		memento.setResetTimeAssignment(this.resetTimeAssignment);
+		memento.setResetStartEndTime(this.resetStartEndTime);
 	}
 
 	public void setResetWorkingHours(Boolean resetWorkingHours) {

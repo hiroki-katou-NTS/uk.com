@@ -20,12 +20,10 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * The Class KscdtScheExeTarget.
  */
-// Entity: スケジュール作成対象者
-
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCDT_BATCH_TARGET_SYA")
+@Table(name = "KSCDT_SCHE_EXE_TARGET")
 public class KscdtScheExeTarget extends UkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */

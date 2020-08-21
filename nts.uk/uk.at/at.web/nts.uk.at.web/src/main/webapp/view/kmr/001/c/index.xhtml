@@ -7,6 +7,11 @@
 <body>
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoAmount
+				nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoReservationUnitName
+				nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoName
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="./kmr001.c.style.css" />
 			<com:stylefile path="../kmr001.common.styles.css" />
@@ -25,9 +30,14 @@
 				<div class="kmr001-c-left-content">
 					<div data-bind="ntsPanel:{width: '400px', height: '35px', direction: 'bottom', showIcon: false, visible: true}">
 						<!--C3_2-->
-						<div data-bind="ntsFormLabel: { inline: true, required: true, enable: true, text: $i18n('KMR001_38')}"></div>
+						<div data-bind="ntsFormLabel: {
+						 required: true,
+						 text: $i18n('KMR001_38')}"
+						/>
 						<!--C3_3-->
-						<span>項目移送</span>
+						<span class="label" data-bind="text: start "></span>
+						<span style="padding: 0 10px" class="label">~</span>
+						<span class="label" data-bind="text: end"></span>
 						<!--C3_4-->
 						<div class="btn-content" style="display: inline-block">
 							<button class="small" id ="C3_4" data-bind="click: openConfigHisDialog,
@@ -43,31 +53,31 @@
 							 searchMode: 'filter',
 							 targetKey:  'id',
 							 comId: 'approver-job-list',
-							 items: items,
+							 items: itemsBento,
 							 mode: 'igGrid',
-							 selected: currentCode,
+							 selected: selectedBentoSetting,
 							 selectedKey: 'id',
 							 fields: ['id', 'name' ],
 							 mode: 'igGrid'
 							 }"
 						/>
 						<!--C4_2-->
-						<table id="approver-job-list" data-bind="ntsGridList: {
+						<div data-bind="if: !!ko.unwrap(columnBento).length">
+							<table id="approver-job-list" data-bind="ntsGridList: {
 							height: 350,
-							dataSource: items,
+							dataSource: itemsBento,
 							primaryKey: 'id',
-							columns: ([
-								{ headerText: $i18n('KMR001_41'), prop: 'id', width: 50 },
-								{ headerText: $i18n('KMR001_42'), prop: 'name', width: 325 }
-							]),
-							value: currentCode
+							columns: columnBento,
+							value: selectedBentoSetting
 						}"></table>
+						</div>
+
 					</div>
 
 				</div>
 
 				<div class="kmr001-c-right-content1 panel panel-frame">
-					<table>
+					<table data-bind="with: model">
 						<tr>
 							<th>
 								<!--C5_2-->
@@ -77,11 +87,19 @@
 						<tr>
 							<td>
 								<!--C6_1-->
-								<div data-bind="ntsFormLabel: { inline: true, required: true, enable: true, text: $i18n('KMR001_5')}"></div>
+								<div data-bind="ntsFormLabel: {
+									required: true,
+									text: $i18n('KMR001_42')
+									}"
+								/>
 							</td>
 							<td>
 								<!--C6_2-->
-								<input class="data-control" data-bind="ntsTextEditor: {value: model.lunchBox}" />
+								<input class="data-control kmr001_42" data-bind="ntsTextEditor: {
+								value: bentoName,
+								name: 'KMR001_42',
+								required: true,
+								constraint: 'BentoName'}" />
 							</td>
 						</tr>
 						<tr>
@@ -91,53 +109,101 @@
 							</td>
 							<td>
 								<!--C11_2-->
-								<div class="data-control" data-bind="ntsCheckBox: { checked: false, enable: false, text: '項目移送' }"></div>
+								<div class="data-control" data-bind="ntsCheckBox: {
+										checked: reservationAtr1,
+										text: reservationFrameName1
+									}"
+								/>
 
 								<!--C11_3-->
-								<span class="label">6:00 ~ 10:00</span>
+								<span class="label" data-bind="text: reservationStartTime1 "></span>
 								<!--C11_6-->
+								<span class="label" style="padding: 0 10px">~</span>
+								<span class="label" data-bind="text: reservationEndTime1 "></span>
+
 							</td>
 						</tr>
 						<tr>
 							<td/>
 							<td>
 								<!--C11_4-->
-								<div class="data-control" data-bind="ntsCheckBox: { checked: false, enable: false, text: '項目移送' }"></div>
+								<div class="data-control" data-bind="ntsCheckBox: {
+										checked: reservationAtr2,
+										text: reservationFrameName2
+									}"
+								/>
 
 								<!--C11_5-->
-								<span class="label">12:00 ~ 15:00</span>
+								<span class="label" data-bind="text: reservationStartTime2 "></span>
+								<span class="label" style="padding: 0 10px">~</span>
+								<span class="label" data-bind="text: reservationEndTime2 "></span>
+
+
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<!--C9_1-->
-								<div data-bind="ntsFormLabel: {  inline: true, required: true, enable: true, text: $i18n('KMR001_45')}"></div>
+								<div data-bind="ntsFormLabel: {
+								inline: true,
+								required: true,
+								constraint: 'BentoReservationUnitName',
+								text: $i18n('KMR001_45')
+								}"></div>
 							</td>
-							<td>
+							<td style="width: 0">
 								<!--C9_2-->
-								<input class="data-control" id="kmr001-c-9-2" data-bind="ntsTextEditor: {value: model.unit}" />
+								<input class="data-control" id="kmr001-c-9-2" data-bind="ntsTextEditor: {
+									name: 'KMR001_46',
+									value: unitName,
+									constraint: 'BentoReservationUnitName'
+								}" />
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<!--C7_1-->
-								<div data-bind="ntsFormLabel: {  inline: true, required: true, enable: true, text: $i18n('KMR001_43')}"></div>
+								<div data-bind="ntsFormLabel: {
+								required: true,
+								text: $i18n('KMR001_43'),
+								constraint: 'BentoAmount'
+								}"></div>
 							</td>
-							<td>
+							<td class="kmr001_44">
 								<!--C7_2-->
-								<input id="kmr001-c-7-2" data-bind="ntsNumberEditor: { value: model.amount1, enable: true,
-						required: true,option: {decimallength: 4 }}" />
+								<input id="kmr001-c-7-2" data-bind="ntsNumberEditor: {
+								name: 'KMR001_44',
+								constraint: 'BentoAmount',
+								value: price1,
+								required: true,
+								option: {
+									decimallength: 2,
+									currencyformat: 'JPY'
+								 		}
+								 }" />
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<!--C8_1-->
-								<div data-bind="ntsFormLabel: { inline: true, enable: true, text: $i18n('KMR001_44')}"></div>
+								<div data-bind="ntsFormLabel: {
+								inline: true,
+								text: $i18n('KMR001_44'),
+								constraint: 'BentoAmount'
+								}"></div>
 							</td>
-							<td>
+							<td class="kmr001_44">
 								<!--C8_2-->
-								<input class="data-control" id="kmr001-c-8-2" data-bind="ntsNumberEditor: { value: model.amount2, enable: true,
-						required: true,option: {decimallength: 4 }}" />
+								<input class="data-control" id="kmr001-c-8-2" data-bind="ntsNumberEditor: {
+									constraint: 'BentoAmount',
+									value: price2,
+									required: true,
+									option: {
+											decimallength: 2,
+											currencyformat: 'JPY'
+										},
+									name: 'KMR001_45'
+								}" />
 							</td>
 						</tr>
 					</table>
@@ -157,16 +223,17 @@
 							</td>
 							<td>
 								<!--C15_2-->
-								<div id="combo-box" data-bind="ntsComboBox: {
+								<div class="kmr001_50" id="combo-box" data-bind="ntsComboBox: {
+									width: '200px',
 									name: 'KMR001_50',
-									options: vm.workPlaceList,
-									optionsValue: 'code',
+									options: vm.workLocationList,
 									visibleItemsCount: 5,
-									value: vm.workPlaceCode,
+									value: vm.model().workLocationCode,
+									optionsValue: 'id',
 									optionsText: 'name',
 									columns: [
-										{ prop: 'code', length: 4 },
-										{ prop: 'name', length: 10 },
+										{ prop: 'id', length: 10 },
+										{ prop: 'name', length: 10}
 									]
 								} " />
 							</td>

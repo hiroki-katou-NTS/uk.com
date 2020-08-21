@@ -7,6 +7,7 @@ module nts.uk.at.view.kmr004.a {
     };
 
     import tree = kcp.share.tree;
+	import list = kcp.share.list;
     import formatDate = nts.uk.time.formatDate;
     import parseTime = nts.uk.time.parseTime;
 
@@ -16,10 +17,11 @@ module nts.uk.at.view.kmr004.a {
         selectedRuleCode: KnockoutObservable<string> = ko.observable('1');
 		baseDate: KnockoutObservable<Date> = ko.observable(new Date()); // base date for KCP004, KCP012
 		treeGrid: tree.TreeComponentOption; // tree grid properties object
+		listComponentOption: list.ComponentOption;
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray([]);
         selectedTab: KnockoutObservable<string> = ko.observable('');
         outputConditionChecked: KnockoutObservable<number> = ko.observable(1); // output condition
-        extractionConditionChecked: KnockoutObservable<boolean> = ko.observable(false);
+
         extractionConditionEnable: KnockoutObservable<boolean> = ko.observable(false);
         separatePageCheckboxEnable: KnockoutObservable<boolean> = ko.observable(true);
         conditionListCcb: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -28,13 +30,15 @@ module nts.uk.at.view.kmr004.a {
         reservationTimeRange1: string = '';
         reservationTimeRange2: string = '';
         reservationTimeRange: KnockoutObservable<string> = ko.observable('');
+		selectedWorkLocationCode: KnockoutObservableArray<string> = ko.observableArray([]); // KCP012 selected codes
 
         constructor() {
             super();
             var self = this;
 
             self.$ajax(API.START).done((data) => {
-                self.$blockui("invisible");
+                // self.$blockui("invisible");
+                nts.uk.ui.block.grayout();
                 self.initClosingTimeLable(data);
                 self.initClosingTimeSwitch(data);
                 if(data.operationDistinction == "BY_COMPANY"){
@@ -44,6 +48,20 @@ module nts.uk.at.view.kmr004.a {
                 }
                 self.$blockui("clear");
                 self.initConditionListComboBox(data);
+            }).fail(function(res) {
+                //Return Dialog Error
+                if (!res.businessException) {
+                    return;
+                }
+
+                // show error message
+                if (Array.isArray(res.errors)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
+
+                self.$blockui("clear");
             });
 
             self.tabs = ko.observableArray([
@@ -80,7 +98,7 @@ module nts.uk.at.view.kmr004.a {
                     self.separatePageCheckboxEnable(false);
                 }
 
-                if (newValue == 6) {
+                if (newValue == -1) {
                     self.conditionListCcbEnable(true);
                 } else {
                     self.conditionListCcbEnable(false);
@@ -96,33 +114,40 @@ module nts.uk.at.view.kmr004.a {
         mounted() {
         }
 
-        printExcel(){
+        prepareData():any{
             let vm = this;
-            $("#exportTitle").trigger("validate");
-            vm.$blockui("invisible");
-            vm.model().totalTitle = ko.observable('TITjhdfkjdsh')
-            vm.model().workplaceIds = ko.observableArray([]);
-            let startDate = new Date();
-            startDate.setFullYear(2018); startDate.setMonth(0);startDate.setDate(1);
-            let endDate = new Date();
-            endDate.setFullYear(9999); endDate.setMonth(11);endDate.setDate(31);
-            vm.model().period = ko.observable({
-                start: formatDate(startDate, API.DATE_FORMAT),
-                end: formatDate( endDate, API.DATE_FORMAT)
-            });
+            if(vm.outputConditionChecked === ko.observable(1)){
+                vm.model().frameNo = ko.observable(-1);
+                vm.model().itemExtractCondition = ko.observable(-1);
+                vm.model().detailTitle = ko.observable('');
+                vm.model().isBreakPage = ko.observable(false);
+            }else{
+                vm.model().totalExtractCondition = ko.observable(-1);
+                vm.model().totalTitle = ko.observable('');
+                vm.model().extractionConditionChecked = ko.observable(false);
+                if(vm.model().itemExtractCondition === ko.observable(1)){
+                    vm.model().frameNo = ko.observable(-1);
+                }
+            }
             let data = {
                 workplaceIds: vm.model().workplaceIds(),
-                workLocationCodes: [],
+                workLocationCodes: vm.model().workLocationCodes(),
                 period: vm.model().period.peek(),
-                totalExtractCondition: 1,
-                itemExtractCondition: -1,
-                frameNo: -1,
-                totalTitle:  vm.model().totalTitle(),
-                detailTitle: '',
-                reservationClosingTimeFrame: 1,
+                totalExtractCondition: vm.model().totalExtractCondition.peek(),
+                itemExtractCondition: vm.model().itemExtractCondition.peek(),
+                frameNo: vm.model().frameNo.peek(),
+                totalTitle:  vm.model().totalTitle.peek(),
+                detailTitle: vm.model().detailTitle.peek(),
                 isBreakPage: true,
-                reservationTimeZone: '昼'
+                reservationClosingTimeFrame: vm.model().reservationClosingTimeFrame.peek(),
+                extractionConditionChecked: vm.model().extractionConditionChecked.peek()
             };
+            return data;
+        }
+
+        printExcel(){
+            let vm = this;
+            let data = vm.prepareData();
             nts.uk.request.exportFile("at", API.EXCEL,data).done(() => {
                 vm.$blockui("clear");
             }).fail((res: any) => {
@@ -134,22 +159,10 @@ module nts.uk.at.view.kmr004.a {
 
         printPDF(){
             let vm = this;
-            let data = {
-                workplaceIds: vm.model().workplaceIds(),
-                workLocationCodes: vm.model().workLocationCodes(),
-                period: vm.model().period.peek(),
-                totalExtractCondition: vm.model().totalExtractCondition.peek(),
-                itemExtractCondition: vm.model().itemExtractCondition.peek(),
-                frameNo: vm.model().frameNo.peek(),
-                totalTitle:  vm.model().totalTitle.peek(),
-                detailTitle: vm.model().detailTitle.peek(),
-                reservationClosingTimeFrame: 1,
-                isBreakPage: true,
-                reservationTimeZone: vm.model().reservationTimeZone.peek()
-            };
+            let data = vm.prepareData();
             $("#exportTitle").trigger("validate");
             vm.$blockui("invisible");
-            nts.uk.request.exportFile("at", API.PDF).done(() => {
+            nts.uk.request.exportFile("at", API.PDF, data).done(() => {
                 vm.$blockui("clear");
             }).fail((res: any) => {
                 vm.$dialog.error({ messageId : res.messageId }).then(function(){
@@ -160,10 +173,11 @@ module nts.uk.at.view.kmr004.a {
 
         initClosingTimeSwitch(data:any) {
             let vm = this;
-            vm.closingTimeOptions([
-                new ItemModel('1', data.closingTime.reservationFrameName1),
-                new ItemModel('2', data.closingTime.reservationFrameName2)
-            ]);
+            var switchButtons: ItemModel[] = [new ItemModel('1', data.closingTime.reservationFrameName1)]
+			if (data.closingTime.reservationFrameName2.length > 0) {
+				switchButtons.push(new ItemModel('2', data.closingTime.reservationFrameName2));
+			}
+            vm.closingTimeOptions(switchButtons);
         }
 
         initClosingTimeLable(data:any) {
@@ -210,7 +224,22 @@ module nts.uk.at.view.kmr004.a {
         }
 
         initWorkLocationList() {
-            $('#tree-grid').append("<div style='width: 514px; height: 365px; text-align: center; font-size: x-large'>Waiting for KCP012...</div>");
+			const vm = this;
+			vm.listComponentOption = {
+				isShowAlreadySet: false,
+				isMultiSelect: false,
+				isMultipleUse: true,
+				listType: list.ListType.WORKPLACE,
+				selectType: list.SelectType.NO_SELECT,
+				selectedCode: vm.selectedWorkLocationCode,
+				isDialog: false,
+				isShowNoSelectRow: false,
+				maxRows: 10
+			}
+
+			$('#tree-grid').ntsListComponent(vm.listComponentOption).done(() => {
+                $('#tree-grid').getDataList();
+            });
         }
 
         initConditionListComboBox(data: any) {
@@ -251,28 +280,30 @@ module nts.uk.at.view.kmr004.a {
         workplaceIds: KnockoutObservableArray<string>;
         workLocationCodes: KnockoutObservableArray<string>;
         period: KnockoutObservable<any>;
-        reservationTimeZone: KnockoutObservable<number>;
+        reservationClosingTimeFrame: KnockoutObservable<number>;
         totalTitle: KnockoutObservable<string>;
         detailTitle: KnockoutObservable<string>;
         totalExtractCondition: KnockoutObservable<number>;
         itemExtractCondition: KnockoutObservable<number>;
         isBreakPage: KnockoutObservable<boolean>;
         frameNo: KnockoutObservable<number>;
+        extractionConditionChecked: KnockoutObservable<boolean>;
 
         constructor(){
             this.workplaceIds = ko.observableArray([]);
             this.workLocationCodes = ko.observableArray([]);
             this.period = ko.observable({
                  startDate: formatDate( new Date(), 'yyyy/MM/dd'),
-                 endDate: formatDate( new Date(), 'yyyy/MM/dd')
+                endDate: formatDate( new Date(), 'yyyy/MM/dd')
             });
-            this.reservationTimeZone = ko.observable(1);
+            this.reservationClosingTimeFrame = ko.observable(1);
             this.totalTitle = ko.observable("");
             this.detailTitle = ko.observable("");
             this.totalExtractCondition = ko.observable(2); // Default selected: A8_4 注文済み
             this.itemExtractCondition = ko.observable(1); // Default selected: A10_3 全件
             this.isBreakPage = ko.observable(false);
             this.frameNo = ko.observable(-1);
+            this.extractionConditionChecked = ko.observable(false);
         };
     }
 }
