@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
+import nts.uk.ctx.at.request.app.find.application.applicationlist.ListOfAppTypesDto;
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.AppContentService;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.AppTypeMapProgramID;
@@ -37,7 +38,7 @@ public class ApplicationScreenFinder {
 	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.申請一覧の申請名称を取得する.申請一覧の申請名称を取得する
 	 * @return
 	 */
-	public List<ListOfAppTypes> getAppNameInAppList() {
+	public List<ListOfAppTypesDto> getAppNameInAppList() {
 		String companyID = AppContexts.user().companyId();
 		List<ListOfAppTypes> result = new ArrayList<>();
 		// アルゴリズム「申請一覧申請種類のプログラムID」を実行する
@@ -70,6 +71,6 @@ public class ApplicationScreenFinder {
 				item.setAppName(opStandardMenuNameExport.get().getDisplayName());
 			}
 		}
-		return result;
+		return result.stream().map(x -> ListOfAppTypesDto.fromDomain(x)).collect(Collectors.toList());
 	}
 }

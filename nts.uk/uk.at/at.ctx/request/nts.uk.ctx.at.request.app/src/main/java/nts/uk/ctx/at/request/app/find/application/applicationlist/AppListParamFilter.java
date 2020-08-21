@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
-import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
 
 @Getter
 @NoArgsConstructor
@@ -35,7 +34,7 @@ public class AppListParamFilter {
 	/**
 	 * 申請種類リスト情報(LIST)(Optional)
 	 */
-	private List<ListOfAppTypes> listOfAppTypes;
+	private List<ListOfAppTypesDto> listOfAppTypes;
 	
 	/**
 	 * SPR連携用パラメータ(Optional）

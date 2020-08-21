@@ -197,7 +197,17 @@ module cmm045.a.viewmodel {
                     _.each(data1, function(obj) {
                         self.roundingRules.push(new vmbase.ApplicationDisplayAtr(obj.value, obj.localizedName));
                     });
-                    service.getApplicationList(param).done(function(data) {
+					service.getAppNameInAppList().then((data) => {
+						let newParam = {
+							mode: 0,
+							startDate: moment(new Date()).format("YYYY/MM/DD"),
+							endDate: moment(new Date()).format("YYYY/MM/DD"),
+							device: 0,
+							listOfAppTypes: data
+						};
+					
+					
+                    service.getApplicationList(newParam).done(function(data) {
                         self.lstContentApp(data.lstContentApp);
                         let isHidden = data.isDisPreP == 1 ? false : true;
                         self.isHidden(isHidden);
@@ -267,6 +277,7 @@ module cmm045.a.viewmodel {
                         block.clear();
                         dfd.resolve();
                     });
+					});
                 }).fail(()=>{
                     block.clear();    
                 });

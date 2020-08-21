@@ -113,7 +113,7 @@ public class ApplicationListFinder {
 		appListExtractCondition.setAppListAtr(EnumAdaptor.valueOf(param.getMode(), ApplicationListAtr.class));
 		//・申請一覧抽出条件.申請種類リスト　＝Input.申請種類リスト情報
 		List<ListOfAppTypes> listOfAppTypesLst = new ArrayList<>();
-		for(ListOfAppTypes listOfAppTypes : param.getListOfAppTypes()) {
+		for(ListOfAppTypes listOfAppTypes : param.getListOfAppTypes().stream().map(x -> x.toDomain()).collect(Collectors.toList())) {
 			listOfAppTypesLst.add(new ListOfAppTypes(
 					listOfAppTypes.getAppType(), 
 					listOfAppTypes.getAppName(), 
@@ -134,7 +134,7 @@ public class ApplicationListFinder {
 			}
 		} else {
 			// パラメタ「抽出対象」をチェックする
-			if(param.getSprParam().getExtractionTarget()==1) {
+			if(param.getSprParam() != null && param.getSprParam().getExtractionTarget() == 1) {
 				// 申請種類＝残業申請の「申請一覧抽出条件.申請種類リスト.選択にTrueをセットする
 				appListExtractCondition.getOpListOfAppTypes().ifPresent(x -> {
 					x.stream().filter(y -> y.getAppType() == ApplicationType.OVER_TIME_APPLICATION).findAny().ifPresent(y -> {

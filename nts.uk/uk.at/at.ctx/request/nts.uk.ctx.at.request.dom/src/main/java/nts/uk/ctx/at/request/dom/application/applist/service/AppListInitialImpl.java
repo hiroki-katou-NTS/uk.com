@@ -243,7 +243,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		appListInfo = appDataCreation.createAppLstData(
 				companyID, 
 				appLst, 
-				new DatePeriod(appListInfo.getDisplaySet().getStartDateDisp(), appListInfo.getDisplaySet().getEndDateDisp()), 
+				new DatePeriod(param.getPeriodStartDate(), param.getPeriodEndDate()), 
 				ApplicationListAtr.APPLICATION, 
 				mapResult, 
 				device, 
