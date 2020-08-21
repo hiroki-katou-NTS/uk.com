@@ -42,7 +42,7 @@ public class CreateOrderInfoDataSource {
         Optional<BentoReservationSearchConditionDto> totalExtractCondition = this.getTotalExtractCondition() > -1
                 ?  Optional.of(EnumAdaptor.valueOf(this.getTotalExtractCondition(), BentoReservationSearchConditionDto.class)) : Optional.empty();
         Optional<BentoReservationSearchConditionDto> itemExtractCondition = this.getItemExtractCondition() > -1
-                ?  Optional.of(EnumAdaptor.valueOf(this.getTotalExtractCondition(), BentoReservationSearchConditionDto.class)) : Optional.empty();
+                ?  Optional.of(EnumAdaptor.valueOf(this.getItemExtractCondition(), BentoReservationSearchConditionDto.class)) : Optional.empty();
         Optional<Integer> frameNo = this.getFrameNo() > -1 ? Optional.of(this.getFrameNo()) : Optional.empty();
         Optional<String> totalTitle = this.getTotalTitle() == null | "".equals(this.getTotalTitle())
                 ? Optional.empty() : Optional.of(this.getTotalTitle());
