@@ -51,7 +51,7 @@ public class ApproveImpl implements ApproveService {
 	
 	//承認する
 	@Override
-	public Integer doApprove(String rootStateID, String employeeID) {
+	public Integer doApprove(String rootStateID, String employeeID, String memo) {
 		String companyID = AppContexts.user().companyId();
 		Integer approvalPhaseNumber = 0;
 		//ドメインモデル「承認ルートインスタンス」を取得する
@@ -90,7 +90,7 @@ public class ApproveImpl implements ApproveService {
 								approverInfor.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
 								approverInfor.setAgentID(employeeID);
 								approverInfor.setApprovalDate(GeneralDate.today());
-								// approverInfor.setApprovalReason(memo);
+								approverInfor.setApprovalReason(memo);
 								breakLoop = true;
 							} else {
 								continue;
@@ -101,7 +101,7 @@ public class ApproveImpl implements ApproveService {
 							approverInfor.setApproverID(employeeID);
 							approverInfor.setAgentID("");
 							approverInfor.setApprovalDate(GeneralDate.today());
-							// approverInfor.setApprovalReason(memo);
+							approverInfor.setApprovalReason(memo);
 							breakLoop = true;
 						}
 					} else {
@@ -115,7 +115,7 @@ public class ApproveImpl implements ApproveService {
 							approverInfor.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
 							approverInfor.setAgentID(employeeID);
 							approverInfor.setApprovalDate(GeneralDate.today());
-							// approverInfor.setApprovalReason(memo);
+							approverInfor.setApprovalReason(memo);
 							breakLoop = true;
 						}
 						if(approverInfor.getApproverID().equals(employeeID)) {
@@ -123,7 +123,7 @@ public class ApproveImpl implements ApproveService {
 							approverInfor.setApproverID(employeeID);
 							approverInfor.setAgentID("");
 							approverInfor.setApprovalDate(GeneralDate.today());
-							// approverInfor.setApprovalReason(memo);
+							approverInfor.setApprovalReason(memo);
 							breakLoop = true;
 						}
 					}

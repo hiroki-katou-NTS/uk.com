@@ -68,7 +68,7 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
                     vm.model.checkbox3( null );
                 }
                 
-                vm.model.checkbox3( true );
+ 
                 //            this.model.checkbox3(this.dataFetch().goBackReflect().reflectApplication == 3);
                 if (!_.isEmpty(ko.toJS(vm.dataFetch().workType))) {
                     let codeWorkType = vm.dataFetch().workType();

@@ -8,6 +8,7 @@ package nts.uk.ctx.at.request.dom.application.workchange;
 import java.util.Optional;
 
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.AppWorkChangeSet;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 
 public interface AppWorkChangeSetRepository {
 	
@@ -18,4 +19,6 @@ public interface AppWorkChangeSetRepository {
 	void update(AppWorkChangeSet domain);
 	
 	void remove(String companyId);
+	
+	Optional<ReflectWorkChangeApp> findByCompanyIdReflect(String companyId);
 }

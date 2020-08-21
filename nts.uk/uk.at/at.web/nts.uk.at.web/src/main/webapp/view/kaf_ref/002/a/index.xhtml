@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+
+			<com:scriptfile set="IGNITE" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.request.dom.application.AppReason
+			</com:ValidatorScript>
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.sample.SampleTimeDuration
+   				</com:ValidatorScript>
+			<com:stylefile
+				path="/view/kaf_ref/000/a/component1/kaf000.a.component1.css" />
+			<com:stylefile
+				path="/view/kaf_ref/000/a/component2/kaf000.a.component2.css" />
+			<com:stylefile
+				path="/view/kaf_ref/000/a/component3/kaf000.a.component3.css" />
+			<com:stylefile
+				path="/view/kaf_ref/000/a/component4/kaf000.a.component4.css" />
+			<com:stylefile
+				path="/view/kaf_ref/000/a/component5/kaf000.a.component5.css" />
+			<com:stylefile
+				path="/view/kaf_ref/000/a/component6/kaf000.a.component6.css" />
+
+			<com:scriptfile path="/view/kaf_ref/000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile
+				path="/view/kaf_ref/000/a/component1/kaf000.a.component1.js" />
+			<com:scriptfile
+				path="/view/kaf_ref/000/a/component2/kaf000.a.component2.js" />
+			<com:scriptfile
+				path="/view/kaf_ref/000/a/component3/kaf000.a.component3.js" />
+			<com:scriptfile
+				path="/view/kaf_ref/000/a/component4/kaf000.a.component4.js" />
+			<com:scriptfile
+				path="/view/kaf_ref/000/a/component5/kaf000.a.component5.js" />
+			<com:scriptfile
+				path="/view/kaf_ref/000/a/component6/kaf000.a.component6.js" />
+			<com:scriptfile
+				path="/view/kaf_ref/000/a/component7/kaf000.a.component7.js" />
+
+			<com:stylefile path="/view/kaf_ref/002/a/kaf002.a.main.css" />
+			<com:scriptfile path="/view/kaf_ref/000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/kaf000.a.vm.js" />
+			<com:scriptfile path="/view/kaf_ref/002/a/kaf002.a.vm.js" />
+
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button class="proceed" data-bind="text:this.$i18n('KAF009_3')"></button>
+				<div
+					data-bind="component: { name: 'kaf000-a-component7', 
+											params: {
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"
+					style="display: inline-block;"></div>
+
+			</div>
+			<div id="contents-area">
+
+				<div
+					data-bind="component: { name: 'kaf000-a-component1', 
+											params: {
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div
+					data-bind="component: { name: 'kaf000-a-component2', 
+											params: {
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div
+					data-bind="component: { name: 'kaf000-a-component3', 
+											params: {
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div
+					data-bind="component: { name: 'kaf000-a-component4', 
+											params: {
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+											
+				<div class="label" style="margin: 10px" >1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 </div>
+				<div style =" display: inline-block;">
+					<!-- A7_2 -->
+					<div style="float: left" data-bind="ntsFormLabel: {}">レイアウトコード</div>
+					
+					
+					<!-- M -->
+					<div id="tab-panel" style="width: 50%; margin-left: 100px;"
+						data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+					<div style="padding-bottom: 20px" class="tab-content-1">
+						<table id="grid1"></table>
+
+					</div>
+					<div style="padding-bottom: 20px" class="tab-content-2">
+						<table id="grid2"></table>
+
+					</div>
+					<div style="padding-bottom: 20px" class="tab-content-3">
+						<table id="grid3"></table>
+
+					</div>
+					<div style="padding-bottom: 20px" class="tab-content-4">
+						<table id="grid4"></table>
+
+					</div>
+					<div style="padding-bottom: 20px" class="tab-content-5">
+						<table id="grid5"></table>
+
+					</div>
+					<div style="padding-bottom: 20px" class="tab-content-6">
+						<table id="grid6"></table>
+
+					</div>
+
+				</div>
+				</div>
+											
+				
+				
+				<div class="label" style="margin: 10px">1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 </div>	
+				<div
+					data-bind="component: { name: 'kaf000-a-component5', 
+											params: {
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div
+					data-bind="component: { name: 'kaf000-a-component6', 
+											params: {
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+
+
+
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

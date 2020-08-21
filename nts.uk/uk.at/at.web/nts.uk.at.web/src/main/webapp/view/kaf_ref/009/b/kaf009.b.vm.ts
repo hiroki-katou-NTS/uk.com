@@ -64,7 +64,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             const vm = this;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.application = ko.observable(new Application(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.appID, 1, [], 2, "", "", 0));
-            vm.model = new Model(true, true, true, '001', 'WorkType', '001', 'WorkTime');
+            vm.model = new Model(true, true, true, '', '', '', '');
             if (ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo) {
                 vm.mode = ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo.outputMode == 1 ? 'edit' : 'view';    
             }

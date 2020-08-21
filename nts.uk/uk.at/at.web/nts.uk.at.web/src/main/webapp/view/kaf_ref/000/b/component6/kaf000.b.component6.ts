@@ -13,6 +13,9 @@ module nts.uk.at.view.kaf000_ref.b.component6.viewmodel {
             vm.appDateString = ko.observable("appDateString");
             
             vm.appDateString(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.appDate);
+            params.application().appDate(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.appDate);
+            params.application().opAppStartDate(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppStartDate);
+		    params.application().opAppEndDate(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppEndDate);
         }
     
         mounted() {

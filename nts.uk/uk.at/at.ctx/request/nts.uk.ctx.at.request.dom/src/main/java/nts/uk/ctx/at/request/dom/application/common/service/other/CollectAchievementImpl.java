@@ -202,7 +202,7 @@ public class CollectAchievementImpl implements CollectAchievement {
 		// INPUT．申請対象日リストを先頭から最後へループする
 		for(GeneralDate loopDate : dateLst) {
 			// INPUT．申請種類をチェックする
-			if(appType==ApplicationType.OVER_TIME_APPLICATION || appType==ApplicationType.LEAVE_TIME_APPLICATION) {
+			if(appType==ApplicationType.OVER_TIME_APPLICATION || appType==ApplicationType.HOLIDAY_WORK_APPLICATION) {
 				continue;
 			}
 			// 実績の取得

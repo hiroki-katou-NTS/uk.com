@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 
 /**
  * 
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 public class LateOrLeaveEarly extends AggregateRoot {
 
 	@Setter
-	private Application_New application;
+	private Application application;
 
 	/** 実績取消区分 */
 	@Setter

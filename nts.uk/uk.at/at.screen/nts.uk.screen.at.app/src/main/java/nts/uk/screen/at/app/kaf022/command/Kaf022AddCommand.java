@@ -26,7 +26,6 @@ import nts.uk.ctx.at.request.app.command.setting.company.otrestappcommon.Overtim
 import nts.uk.ctx.at.request.app.command.setting.company.request.apptypesetting.UpdateDisplayReasonCmd;
 import nts.uk.ctx.at.request.app.command.setting.company.request.stamp.StampRequestSettingCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.vacationapplicationsetting.HdAppSetCommand;
-import nts.uk.ctx.at.request.app.command.setting.request.ApplicationDeadlineCommand;
 import nts.uk.ctx.at.request.app.command.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.ApprovalSettingCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.JobAssignSettingCommand;
@@ -36,7 +35,7 @@ import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.JobtitleSearc
 @AllArgsConstructor
 @NoArgsConstructor
 public class Kaf022AddCommand {
-	private List<ApplicationDeadlineCommand> appDead;
+	// private List<ApplicationDeadlineCommand> appDead;
 //	private ApprovalSetCommand appSet; 
 	private AppCommonSetCommand appCommon;
 	private ProxyAppSetCommand proxy;

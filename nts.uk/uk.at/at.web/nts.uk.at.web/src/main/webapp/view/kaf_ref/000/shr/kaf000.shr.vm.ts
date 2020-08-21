@@ -15,12 +15,12 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
             this.prePostAtr = ko.observable(null);
             this.employeeIDLst = ko.observableArray([]);
             this.appType = appType;
-            this.appDate = ko.observable(null);
+            this.appDate = ko.observable("");
             this.opAppReason = ko.observable(null);
             this.opAppStandardReasonCD = ko.observable(null);
             this.opReversionReason = ko.observable(null);
-            this.opAppStartDate = ko.observable(null);
-            this.opAppEndDate = ko.observable(null);
+            this.opAppStartDate = ko.observable("");
+            this.opAppEndDate = ko.observable("");
         }        
     }       
     
@@ -32,6 +32,36 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
             this.appType = appType;
         }      
     }
+
+	export interface PrintContentOfEachAppDto {
+		/**
+		 * 休暇申請の印刷内容
+		 */
+		
+		/**
+		 * 勤務変更申請の印刷内容
+		 */
+		opPrintContentOfWorkChange: any;
+		
+		/**
+		 * 時間休暇申請の印刷内容
+		 */
+		
+		/**
+		 * 打刻申請の印刷内容
+		 */
+		opAppStampOutput: any;
+		
+		/**
+		 * 遅刻早退取消申請の印刷内容
+		 */
+		opArrivedLateLeaveEarlyInfo: any;
+	
+		/**
+		 * 直行直帰申請の印刷内容
+		 */
+		opInforGoBackCommonDirectOutput: any;
+	}
     
     export module model {
         // loại người đăng nhập
@@ -141,9 +171,15 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
                 }             
             }
             // {2}事後受付日
-            let postPart = vm.$i18n('KAF000_39', [moment(vm.$date.today()).format("YYYY/MM/DD")]);
+            let postPart = "";
+			if(allowFutureDay) {
+				postPart = vm.$i18n('KAF000_39', [moment(vm.$date.today()).format("YYYY/MM/DD")]);	
+			}
             // {3}締め切り期限日
-            let deadlinePart = vm.$i18n('KAF000_40', [value.appDispInfoWithDateOutput.opAppDeadline]);
+            let deadlinePart = "";
+			if(appDeadlineUseCategory) {
+				deadlinePart = vm.$i18n('KAF000_40', [value.appDispInfoWithDateOutput.opAppDeadline]);	
+			}
             vm.deadline(prePart + postPart + deadlinePart);    
         }
         
@@ -163,24 +199,11 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
                 vm.$errors(element, "Msg_323");
                 vm.$dialog.error({ messageId: "Msg_323" }).then(() => {
                     if(recordDate == 0) {
-                        vm.$jump("com", "view/ccg/008/a/index.xhtml");    
+                        vm.$jump("com", "/view/ccg/008/a/index.xhtml");    
                     }
                 });   
                 return false;
             }
-            
-            if(empHistImport==null) {
-                vm.$errors(element, "Msg_426");
-                vm.$dialog.error({ messageId: "Msg_426" }).then(() => {
-                    if(mode) {
-                        vm.$jump("com", "view/ccg/008/a/index.xhtml");    
-                    } else {
-                        vm.$jump("com", "view/cmm/045/a/index.xhtml");    
-                    }
-                });
-                return false; 
-            }
-            
             
             if(_.isNull(opErrorFlag)) {
                 return true;    
@@ -204,7 +227,7 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
             vm.$errors(element, msgID);
             vm.$dialog.error({ messageId: msgID }).then(() => {
                 if(recordDate == 0) {
-                    vm.$jump("com", "view/ccg/008/a/index.xhtml");    
+                    vm.$jump("com", "/view/ccg/008/a/index.xhtml");    
                 }    
             });
         }

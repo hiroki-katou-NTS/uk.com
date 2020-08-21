@@ -18,8 +18,10 @@ public interface DetailAfterDeny {
 	 * @param appID 申請ID
 	 * @param application 申請データの内容
 	 * @param appDispInfoStartupOutput 申請表示情報
+	 * @param memo 承認コメント
 	 * @return
 	 */
-	public ProcessResult doDeny(String companyID, String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput);
+	public ProcessResult doDeny(String companyID, String appID, Application application, 
+			AppDispInfoStartupOutput appDispInfoStartupOutput, String memo);
 
 }

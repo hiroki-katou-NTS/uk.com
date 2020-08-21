@@ -1,32 +1,12 @@
 package nts.uk.ctx.at.request.app.command.application.gobackdirectly;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.app.find.application.gobackdirectly.InforGoBackCommonDirectDto;
-import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
-import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyRegisterService;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.InforGoBackCommonDirectOutput_Old;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.InforWorkTime;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.InforWorkType;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -39,13 +19,13 @@ public class CheckInsertGoBackCommandHandler extends CommandHandler<InsertApplic
 		String companyId = AppContexts.user().companyId();
 		InsertApplicationGoBackDirectlyCommand command = context.getCommand();		
 		//get new Application Item
-		Application_New newApp = Application_New.firstCreate(
-				companyId, 
-				EnumAdaptor.valueOf(command.appCommand.getPrePostAtr(), PrePostAtr_Old.class),  
-				GeneralDate.fromString(command.appCommand.getAppDate(), "yyyy/MM/dd"),
-				EnumAdaptor.valueOf(command.appCommand.getAppType(), ApplicationType_Old.class), 
-				command.appCommand.getEmployeeIDLst().get(0),
-				new AppReason(command.appCommand.getOpAppReason()));
+//		Application_New newApp = Application_New.firstCreate(
+//				companyId, 
+//				EnumAdaptor.valueOf(command.appCommand.getPrePostAtr(), PrePostAtr.class),  
+//				GeneralDate.fromString(command.appCommand.getAppDate(), "yyyy/MM/dd"),
+//				EnumAdaptor.valueOf(command.appCommand.getAppType(), ApplicationType.class), 
+//				command.appCommand.getEmployeeIDLst().get(0),
+//				new AppReason(command.appCommand.getOpAppReason()));
 		// get new GoBack Direct Item
 //		GoBackDirectly newGoBack = new GoBackDirectly(
 //				companyId, 

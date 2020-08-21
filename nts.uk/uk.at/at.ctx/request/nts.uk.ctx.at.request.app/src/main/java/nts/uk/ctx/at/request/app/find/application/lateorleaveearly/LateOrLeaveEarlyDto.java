@@ -56,21 +56,22 @@ public class LateOrLeaveEarlyDto {
 		private String appReason;
 				
 		public static LateOrLeaveEarlyDto fromDomain(LateOrLeaveEarly domain, Long version){
-			return new LateOrLeaveEarlyDto(
-					domain.getApplication().getCompanyID(),
-					domain.getApplication().getAppID(),
-					version,
-					domain.getApplication().getPrePostAtr().value,
-					domain.getApplication().getAppDate(),
-					domain.getActualCancelAtr(),
-					domain.getEarly1().value,
-					domain.getEarlyTime1AsMinutes(),
-					domain.getLate1().value,
-			    	domain.getLateTime1AsMinutes(),			    
-			     	domain.getEarly2().value,
-					domain.getEarlyTime2AsMinutes(),
-			    	domain.getLate2().value,
-			    	domain.getLateTime2AsMinutes(),
-			    	domain.getApplication().getAppReason().v());
+//			return new LateOrLeaveEarlyDto(
+//					domain.getApplication().getCompanyID(),
+//					domain.getApplication().getAppID(),
+//					version,
+//					domain.getApplication().getPrePostAtr().value,
+//					domain.getApplication().getAppDate(),
+//					domain.getActualCancelAtr(),
+//					domain.getEarly1().value,
+//					domain.getEarlyTime1AsMinutes(),
+//					domain.getLate1().value,
+//			    	domain.getLateTime1AsMinutes(),			    
+//			     	domain.getEarly2().value,
+//					domain.getEarlyTime2AsMinutes(),
+//			    	domain.getLate2().value,
+//			    	domain.getLateTime2AsMinutes(),
+//			    	domain.getApplication().getAppReason().v());
+			return null;
 		}
 }

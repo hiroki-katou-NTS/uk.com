@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.application.applist.service;
 
 import java.util.List;
 
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSet;
 
 public interface AppListApprovalRepository {
@@ -15,7 +15,7 @@ public interface AppListApprovalRepository {
 	 * @param workOperation
 	 * @return
 	 */
-	public boolean checkResAppvListApp(AppCommonSet appCommonSet, PrePostAtr_Old prePostAtr, String achievement, String workOperation);
+	public boolean checkResAppvListApp(AppCommonSet appCommonSet, PrePostAtr prePostAtr, String achievement, String workOperation);
 	/**
 	 * 16 - 申請一覧承認登録実行
 	 * @param lstApp

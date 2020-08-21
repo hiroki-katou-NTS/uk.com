@@ -19,7 +19,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
@@ -46,7 +46,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	private AppStampReflectRepository appStampReflectRepo;
 	
 	@Inject
-	private NewBeforeRegister_New registerBefore;
+	private NewBeforeRegister registerBefore;
 	
 	@Inject
 	private AppStampRepository appStampRepo;
@@ -137,41 +137,77 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	public List<ErrorStampInfo> getErrorStampList(StampRecordOutput stampRecordOutput) {
 //		「打刻エラー情報」＝Empty
 		List<ErrorStampInfo> errorStampInfos = new ArrayList<ErrorStampInfo>();
+		
+		// create dummy data
+		
+		stampRecordOutput =  new StampRecordOutput(
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList());
+		
 		/**
 		 * 介護時間帯
 		 */
-		List<TimePlaceOutput> nursing = stampRecordOutput.getNursingTime();
 		
+		List<TimePlaceOutput> nursing = Collections.emptyList();
+		
+		if (!CollectionUtil.isEmpty(stampRecordOutput.getNursingTime())) {
+			nursing = stampRecordOutput.getNursingTime();
+		}
 		/**
 		 * 休憩時間帯
 		 */
-		List<TimePlaceOutput> breakTime = stampRecordOutput.getBreakTime();
+		List<TimePlaceOutput> breakTime = Collections.emptyList();
+		if(!CollectionUtil.isEmpty(stampRecordOutput.getBreakTime())) {
+			breakTime = stampRecordOutput.getBreakTime();
+		}
 		
 		/**
 		 * 勤務時間帯
 		 */
-		List<TimePlaceOutput> workingTime = stampRecordOutput.getWorkingTime();
-		
+		List<TimePlaceOutput> workingTime = Collections.emptyList();
+		if(!CollectionUtil.isEmpty(stampRecordOutput.getWorkingTime())) {
+			breakTime = stampRecordOutput.getWorkingTime();
+		}
 		
 		/**
 		 * 育児時間帯
-		 */
-		List<TimePlaceOutput> parentingTime = stampRecordOutput.getParentingTime();
+		 */		
+		List<TimePlaceOutput> parentingTime = Collections.emptyList();
+		if(!CollectionUtil.isEmpty(stampRecordOutput.getParentingTime())) {
+			breakTime = stampRecordOutput.getParentingTime();
+		}
 		/**
 		 * 外出時間帯
 		 */
-		List<TimePlaceOutput> outingTime = stampRecordOutput.getOutingTime();
+		
+		List<TimePlaceOutput> outingTime = Collections.emptyList();
+		if(!CollectionUtil.isEmpty(stampRecordOutput.getOutingTime())) {
+			breakTime = stampRecordOutput.getOutingTime();
+		}
 		
 		/**
 		 * 応援時間帯
 		 */
-		List<TimePlaceOutput> supportTime = stampRecordOutput.getSupportTime();
+		
+		List<TimePlaceOutput> supportTime = Collections.emptyList();
+		if(!CollectionUtil.isEmpty(stampRecordOutput.getSupportTime())) {
+			breakTime = stampRecordOutput.getSupportTime();
+		}
 
 		
 		/**
 		 * 臨時時間帯
 		 */
-		List<TimePlaceOutput> extraordinaryTime = stampRecordOutput.getExtraordinaryTime();
+		
+		List<TimePlaceOutput> extraordinaryTime = Collections.emptyList();
+		if(!CollectionUtil.isEmpty(stampRecordOutput.getExtraordinaryTime())) {
+			breakTime = stampRecordOutput.getExtraordinaryTime();
+		}
 		
 		this.addErros(errorStampInfos, StampAtrOther.NURSE, nursing);
 		this.addErros(errorStampInfos, StampAtrOther.BREAK, breakTime);
@@ -214,8 +250,8 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	public List<ConfirmMsgOutput> checkBeforeRegister(String companyId, Boolean agentAtr,
 			Application application, AppStampOutput appStampOutput) {
 		List<ConfirmMsgOutput> listConfirmMs = new ArrayList<ConfirmMsgOutput>();
-
-//		this.checkRegisterAndUpdate();
+//		check
+		this.checkRegisterAndUpdate((AppStamp)application);
 		
 //		2-1.新規画面登録前の処理
 		registerBefore.processBeforeRegister_New(

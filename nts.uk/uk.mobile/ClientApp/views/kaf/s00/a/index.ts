@@ -45,17 +45,18 @@ export class KafS00AComponent extends Vue {
             self.appMsg = data.data.applicationUseSetting.memo;
             self.appMsgForCurrentMonth = data.data.deadlineLimitCurrentMonth.opAppDeadline;
             if (data.data.preAppAcceptLimit.opAvailableTime) {
-                self.preAppPeriod = self.$i18n('KAFS00_22', data.data.preAppAcceptLimit.opAvailableTime);    
+                self.preAppPeriod = self.$i18n('KAFS00_22', self.$dt.timedr(data.data.preAppAcceptLimit.opAvailableTime));    
             } else {
-                self.preAppPeriod = self.$i18n('KAFS00_5', data.data.preAppAcceptLimit.opAcceptableDate);
+                self.preAppPeriod = self.$i18n('KAFS00_5', self.$dt(data.data.preAppAcceptLimit.opAcceptableDate, 'MM月DD日'));
             }
-            self.postAppPeriod = data.data.postAppAcceptLimit.opAcceptableDate;   
+            self.postAppPeriod = self.$i18n('KAFS00_6', data.data.postAppAcceptLimit.opAcceptableDate);   
             
             self.displayAppMsg = data.data.applicationUseSetting.useDivision && data.data.applicationUseSetting.memo;
             self.displayAppMsgForCurrentMonth = data.data.deadlineLimitCurrentMonth.useAtr;
             self.displayPreAppPeriod = data.data.preAppAcceptLimit.useReceptionRestriction;
             self.displayPostAppPeriod = data.data.postAppAcceptLimit.useReceptionRestriction;
             self.displayAppPeriod = self.displayPreAppPeriod || self.displayPostAppPeriod;
+            self.$mask('hide');
         }).catch((res: any) => {
             self.$mask('hide');
             self.$modal.error(res.messageId);

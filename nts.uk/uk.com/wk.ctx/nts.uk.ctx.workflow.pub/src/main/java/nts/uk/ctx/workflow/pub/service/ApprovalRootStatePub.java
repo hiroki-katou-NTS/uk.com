@@ -124,9 +124,10 @@ public interface ApprovalRootStatePub {
 	 * 承認する
 	 * @param rootStateID インスタンスID
 	 * @param employeeID 社員ID
+	 * @param memo 承認コメン
 	 * @return 承認フェーズ枠番
 	 */
-	public Integer doApprove(String rootStateID, String employeeID);
+	public Integer doApprove(String rootStateID, String employeeID, String memo);
 	
 	/**
 	 * 2.承認全体が完了したか
@@ -181,11 +182,12 @@ public interface ApprovalRootStatePub {
 	 * 否認する
 	 * @param rootStateID インスタンスID
 	 * @param employeeID 社員ID
+	 * @param memo 承認コメント
 	 * @return 否認を実行したかフラグ(true, false)
 				true：否認を実行した
 				false：否認を実行しなかった
 	 */
-	public Boolean doDeny(String rootStateID, String employeeID);
+	public Boolean doDeny(String rootStateID, String employeeID, String memo);
 	
 	/**
 	 * 1.指定した社員が承認者であるかの判断

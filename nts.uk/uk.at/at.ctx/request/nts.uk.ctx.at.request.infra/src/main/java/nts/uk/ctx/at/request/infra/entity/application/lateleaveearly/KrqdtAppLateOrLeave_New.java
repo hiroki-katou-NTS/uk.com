@@ -16,9 +16,9 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarly;
+import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateCancelation;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrEarlyClassification;
+import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrEarlyAtr;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeReport;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -56,16 +56,16 @@ public class KrqdtAppLateOrLeave_New extends ContractUkJpaEntity implements Seri
 	public int earlyCancelAtr2;
 	
 	@Column(name = "LATE_TIME1")
-	public int lateTime1;
+	public Integer lateTime1;
 	
 	@Column(name = "EARLY_TIME1")
-	public int earlyTime1;
+	public Integer earlyTime1;
 	
 	@Column(name = "LATE_TIME2")
-	public int lateTime2;
+	public Integer lateTime2;
 	
 	@Column(name = "EARLY_TIME2")
-	public int earlyTime2;
+	public Integer earlyTime2;
 
 	@Override
 	protected KrqdtAppLateOrLeavePK_New getKey() {
@@ -79,15 +79,23 @@ public class KrqdtAppLateOrLeave_New extends ContractUkJpaEntity implements Seri
 		
 		List<TimeReport> lateOrLeaveEarlies = new ArrayList<>();
 		
-		lateCancelation.add(new LateCancelation(1, EnumAdaptor.valueOf(this.lateCancelAtr1, LateOrEarlyClassification.class)));
-		lateCancelation.add(new LateCancelation(2, EnumAdaptor.valueOf(this.lateCancelAtr2, LateOrEarlyClassification.class)));
-		lateCancelation.add(new LateCancelation(1, EnumAdaptor.valueOf(this.earlyCancelAtr1, LateOrEarlyClassification.class)));
-		lateCancelation.add(new LateCancelation(2, EnumAdaptor.valueOf(this.earlyCancelAtr2, LateOrEarlyClassification.class)));
+		lateCancelation.add(new LateCancelation(1, EnumAdaptor.valueOf(this.lateCancelAtr1, LateOrEarlyAtr.class)));
+		lateCancelation.add(new LateCancelation(2, EnumAdaptor.valueOf(this.lateCancelAtr2, LateOrEarlyAtr.class)));
+		lateCancelation.add(new LateCancelation(1, EnumAdaptor.valueOf(this.earlyCancelAtr1, LateOrEarlyAtr.class)));
+		lateCancelation.add(new LateCancelation(2, EnumAdaptor.valueOf(this.earlyCancelAtr2, LateOrEarlyAtr.class)));
 		
-		lateOrLeaveEarlies.add(new TimeReport(1, LateOrEarlyClassification.LATE, new TimeWithDayAttr(this.lateTime1)));
-		lateOrLeaveEarlies.add(new TimeReport(2, LateOrEarlyClassification.EARLY, new TimeWithDayAttr(this.earlyTime1)));
-		lateOrLeaveEarlies.add(new TimeReport(1, LateOrEarlyClassification.LATE, new TimeWithDayAttr(this.lateTime2)));
-		lateOrLeaveEarlies.add(new TimeReport(2, LateOrEarlyClassification.EARLY, new TimeWithDayAttr(this.earlyTime2)));
+		if(lateTime1 != null) {
+			lateOrLeaveEarlies.add(new TimeReport(1, LateOrEarlyAtr.LATE, new TimeWithDayAttr(this.lateTime1)));
+		}
+		if(earlyTime1 != null) {
+			lateOrLeaveEarlies.add(new TimeReport(1, LateOrEarlyAtr.EARLY, new TimeWithDayAttr(this.earlyTime1)));
+		}
+		if(lateTime2 != null) {
+			lateOrLeaveEarlies.add(new TimeReport(2, LateOrEarlyAtr.LATE, new TimeWithDayAttr(this.lateTime2)));
+		}
+		if(earlyTime2 != null) {
+			lateOrLeaveEarlies.add(new TimeReport(2, LateOrEarlyAtr.EARLY, new TimeWithDayAttr(this.earlyTime2)));
+		}
 		
 		ArrivedLateLeaveEarly output = new ArrivedLateLeaveEarly(application);
 		output.setLateCancelation(lateCancelation);

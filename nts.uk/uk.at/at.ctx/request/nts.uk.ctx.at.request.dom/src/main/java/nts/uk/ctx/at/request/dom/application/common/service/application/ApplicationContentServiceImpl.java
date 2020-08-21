@@ -68,7 +68,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 				/** 直行直帰申請*/
 				return contentDtail.getContentGoBack(null, companyID, appID, appReasonDisAtr, appReason, ScreenAtr.KDL030.value);
 			}
-			case LEAVE_TIME_APPLICATION: {
+			case HOLIDAY_WORK_APPLICATION: {
 				/** 休出時間申請*/
 				return contentDtail.getContentHdWorkBf(null, companyID, appID, appReasonDisAtr, appReason, ScreenAtr.KDL030.value, Collections.emptyList(), Collections.emptyList());
 			}

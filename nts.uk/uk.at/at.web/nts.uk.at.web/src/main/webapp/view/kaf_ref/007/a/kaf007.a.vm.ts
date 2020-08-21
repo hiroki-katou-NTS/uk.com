@@ -22,7 +22,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
                     let empLst = [],
                         dateLst = [],
                         appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
-                        command = { empLst, dateLst, appType, appDispInfoStartupOutput };
+                        command = { empLst, dateLst, appDispInfoStartupOutput };
                     return vm.$ajax(API.startNew, command);
                 }
             }).then((successData: any) => {

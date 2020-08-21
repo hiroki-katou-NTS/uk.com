@@ -4,7 +4,6 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -21,7 +20,7 @@ public interface GoBackDirectlyRegisterService {
 	 * @param application
 	 * @param goBackDirectly
 	 */
-	public ProcessResult register(GoBackDirectly_Old goBackDirectly, Application_New application);
+	public ProcessResult register(GoBackDirectly_Old goBackDirectly, Application application);
 	
 	/**
 	 * 
@@ -30,7 +29,7 @@ public interface GoBackDirectlyRegisterService {
 	 * @param appApprovalPhases
 	 * @return 
 	 */
-	public List<ConfirmMsgOutput> checkBeforRegister(GoBackDirectly_Old goBackDirectly, Application_New application, boolean checkOver1Year);
+	public List<ConfirmMsgOutput> checkBeforRegister(GoBackDirectly_Old goBackDirectly, Application application, boolean checkOver1Year);
 
 	/**
 	 * アルゴリズム「直行直帰するチェック」を実行する
@@ -46,7 +45,7 @@ public interface GoBackDirectlyRegisterService {
 	 * @param goBackDirectly
 	 * @return
 	 */
-	public GoBackDirectLateEarlyOuput goBackDirectLateEarlyCheck(GoBackDirectly_Old goBackDirectly, Application_New application);
+	public GoBackDirectLateEarlyOuput goBackDirectLateEarlyCheck(GoBackDirectly_Old goBackDirectly, Application application);
 
 	/**
 	 * Check Validity
@@ -84,7 +83,7 @@ public interface GoBackDirectlyRegisterService {
 	 * @param inforGoBackCommonDirectOutput 直行直帰申請起動時の表示情報
 	 * @return メール送信の結果
 	 */
-	public ProcessResult registerNew(String companyId, Application_New application_New, GoBackDirectly_Old goBackDirectly, InforGoBackCommonDirectOutput_Old inforGoBackCommonDirectOutput);
+	public ProcessResult registerNew(String companyId, Application application_New, GoBackDirectly_Old goBackDirectly, InforGoBackCommonDirectOutput_Old inforGoBackCommonDirectOutput);
 	/**
 	 * Refactor4 
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF009_直行直帰の申請.A:直行直帰の申請（新規）.アルゴリズム.直行直帰するチェック

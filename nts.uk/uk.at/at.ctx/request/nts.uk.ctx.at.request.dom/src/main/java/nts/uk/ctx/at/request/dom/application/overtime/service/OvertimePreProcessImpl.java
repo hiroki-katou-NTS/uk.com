@@ -14,7 +14,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
@@ -95,37 +95,37 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	public OvertimeInstructInfomation getOvertimeInstruct(AppCommonSettingOutput appCommonSettingOutput, String appDate,
 			String employeeID) {
 		OvertimeInstructInfomation overtimeInstructInformation = new OvertimeInstructInfomation();
-		if (appCommonSettingOutput != null) {
-			if(appCommonSettingOutput.approvalFunctionSetting != null){
-				int useAtr = appCommonSettingOutput.approvalFunctionSetting.getInstructionUseSetting().getInstructionUseDivision().value;
-				if (useAtr == UseAtr.USE.value) {
-					if (appDate != null) {
-						overtimeInstructInformation.setDisplayOvertimeInstructInforFlg(true);
-						OverTimeInstruct overtimeInstruct = overtimeInstructRepository
-								.getOvertimeInstruct(GeneralDate.fromString(appDate, DATE_FORMAT), employeeID);
-						if (overtimeInstruct != null) {
-							TimeWithDayAttr startTime = new TimeWithDayAttr(
-									overtimeInstruct.getStartClock() == null ? -1 : overtimeInstruct.getStartClock().v());
-							TimeWithDayAttr endTime = new TimeWithDayAttr(
-									overtimeInstruct.getEndClock() == null ? -1 : overtimeInstruct.getEndClock().v());
-							overtimeInstructInformation
-									.setOvertimeInstructInfomation(overtimeInstruct.getInstructDate().toString() + " "
-											+ startTime.getDayDivision().description + " "
-											+ convert(overtimeInstruct.getStartClock().v()) + "~"
-											+ endTime.getDayDivision().description + " "
-											+ convert(overtimeInstruct.getEndClock().v()) + " "
-											+ employeeAdapter.getEmployeeName(overtimeInstruct.getTargetPerson()) + " ("
-											+ employeeAdapter.getEmployeeName(overtimeInstruct.getInstructor()) + ")");
-						} else {
-							overtimeInstructInformation.setOvertimeInstructInfomation(
-									GeneralDate.fromString(appDate, DATE_FORMAT) + "の残業指示はありません。");
-						}
-					}
-				} else {
-					overtimeInstructInformation.setDisplayOvertimeInstructInforFlg(false);
-				}
-			}
-		}
+//		if (appCommonSettingOutput != null) {
+//			if(appCommonSettingOutput.approvalFunctionSetting != null){
+//				int useAtr = appCommonSettingOutput.approvalFunctionSetting.getInstructionUseSetting().getInstructionUseDivision().value;
+//				if (useAtr == UseAtr.USE.value) {
+//					if (appDate != null) {
+//						overtimeInstructInformation.setDisplayOvertimeInstructInforFlg(true);
+//						OverTimeInstruct overtimeInstruct = overtimeInstructRepository
+//								.getOvertimeInstruct(GeneralDate.fromString(appDate, DATE_FORMAT), employeeID);
+//						if (overtimeInstruct != null) {
+//							TimeWithDayAttr startTime = new TimeWithDayAttr(
+//									overtimeInstruct.getStartClock() == null ? -1 : overtimeInstruct.getStartClock().v());
+//							TimeWithDayAttr endTime = new TimeWithDayAttr(
+//									overtimeInstruct.getEndClock() == null ? -1 : overtimeInstruct.getEndClock().v());
+//							overtimeInstructInformation
+//									.setOvertimeInstructInfomation(overtimeInstruct.getInstructDate().toString() + " "
+//											+ startTime.getDayDivision().description + " "
+//											+ convert(overtimeInstruct.getStartClock().v()) + "~"
+//											+ endTime.getDayDivision().description + " "
+//											+ convert(overtimeInstruct.getEndClock().v()) + " "
+//											+ employeeAdapter.getEmployeeName(overtimeInstruct.getTargetPerson()) + " ("
+//											+ employeeAdapter.getEmployeeName(overtimeInstruct.getInstructor()) + ")");
+//						} else {
+//							overtimeInstructInformation.setOvertimeInstructInfomation(
+//									GeneralDate.fromString(appDate, DATE_FORMAT) + "の残業指示はありません。");
+//						}
+//					}
+//				} else {
+//					overtimeInstructInformation.setDisplayOvertimeInstructInforFlg(false);
+//				}
+//			}
+//		}
 		return overtimeInstructInformation;
 	}
 
@@ -149,7 +149,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	public AppOvertimeReference getResultContentActual(int prePostAtr, String workType, String siftCode, String companyID, String employeeID, String appDate) {
 		AppOvertimeReference result = null;
 		// Input．事前事後区分をチェック
-		if(PrePostAtr_Old.PREDICT.value == prePostAtr) {
+		if(PrePostAtr.PREDICT.value == prePostAtr) {
 			return result;
 		}
 		// 日付入力したかチェックする

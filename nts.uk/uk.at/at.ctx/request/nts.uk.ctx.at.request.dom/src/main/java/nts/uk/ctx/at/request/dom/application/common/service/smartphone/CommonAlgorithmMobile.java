@@ -43,14 +43,13 @@ public interface CommonAlgorithmMobile {
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAFS00_申請部品（スマホ）.スマホ申請共通アルゴリズム.申請共通設定情報を取得する.申請共通設定情報を取得する
-	 * @param mode 起動モード（編集モード・表示モード） 編集モード: true, 表示モード: false
 	 * @param companyID 会社ID
 	 * @param employeeID 社員ID
 	 * @param appType 申請種類
 	 * @param opHolidayAppType 休暇申請の種類<Optional>
 	 * @return 申請表示情報(基準日関係なし)
 	 */
-	public AppDispInfoNoDateOutput getAppCommonSetInfo(boolean mode, String companyID, String employeeID,
+	public AppDispInfoNoDateOutput getAppCommonSetInfo(String companyID, String employeeID,
 			ApplicationType appType, Optional<HolidayAppType> opHolidayAppType );
 	
 	/**

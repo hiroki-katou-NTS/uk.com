@@ -18,6 +18,7 @@
             <com:scriptfile path="/view/kaf_ref/000/a/component4/kaf000.a.component4.js" />
             <com:scriptfile path="/view/kaf_ref/000/a/component5/kaf000.a.component5.js" />
             <com:scriptfile path="/view/kaf_ref/000/a/component6/kaf000.a.component6.js" />
+            <com:scriptfile path="/view/kaf_ref/000/a/component7/kaf000.a.component7.js" />
             <com:scriptfile path="/view/kaf_ref/004/shr/common/kaf004.shr.vm.js" />
             <com:scriptfile path="/view/kaf_ref/004/shr/a/kaf004.shr.vm.js" />
             <com:scriptfile path="/view/kaf_ref/004/a/kaf004.a.vm.js" />
@@ -28,6 +29,12 @@
                 <!-- A1_1 -->
                 <button class="proceed"
                     data-bind="enable: $root.errors.isEmpty, click: $vm.register">#{i18n.getText('KAF004_8')}</button>
+
+                    <span data-bind="component: { name: 'kaf000-a-component7',
+											params: {
+												application: $vm.application,
+												appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
+                                            } }"></span>
             </div>
             <div id="contents-area">
                 <div class="fixed-flex-layout">

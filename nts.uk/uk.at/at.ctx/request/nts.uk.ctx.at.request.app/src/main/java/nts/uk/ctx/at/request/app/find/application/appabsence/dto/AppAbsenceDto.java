@@ -1,13 +1,11 @@
 package nts.uk.ctx.at.request.app.find.application.appabsence.dto;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
@@ -30,7 +28,7 @@ public class AppAbsenceDto {
 	/**
 	 * application
 	 */
-	private ApplicationDto_New application;
+	private ApplicationDto application;
 	/**
 	 * 会社ID
 	 */
@@ -201,50 +199,51 @@ public class AppAbsenceDto {
 	private int dayDispSet;
 		
 	public static AppAbsenceDto fromDomain(AppAbsence app){
-		return new AppAbsenceDto(app.getVersion(),
-								ApplicationDto_New.fromDomain(app.getApplication()),
-								app.getCompanyID(),
-								app.getAppID(),
-								app.getApplication().getEmployeeID(),
-								"",
-								null,
-								app.getHolidayAppType().value,
-								app.getWorkTypeCode() == null ? null : app.getWorkTypeCode().toString(),
-								"",
-								app.getWorkTimeCode() == null ? null : app.getWorkTimeCode().toString(),
-								"",
-								app.isHalfDayFlg(),
-								app.isChangeWorkHour(),
-								app.getAllDayHalfDayLeaveAtr().value,
-								app.getStartTime1() == null ? null :app.getStartTime1().v(),
-								app.getEndTime1() == null ? null :app.getEndTime1().v(),
-								app.getStartTime2() == null ? null :app.getStartTime2().v(),
-								app.getEndTime2() == null ? null :app.getEndTime2().v(),
-								null,
-								null,
-								app.getAppForSpecLeave() == null ? null : new AppForSpecLeaveDto(app.getAppForSpecLeave().getAppID(), app.getAppForSpecLeave().isMournerFlag(), app.getAppForSpecLeave().getRelationshipCD().v(), app.getAppForSpecLeave().getRelationshipReason().v()),
-								null,
-								false,
-								null,
-								true,
-								null,
-								null,
-								null,
-								0,
-								false,
-								false,null,true, false, false, null, null, false,
-								new ArrayList<>(),
-								null,
-								null,
-								null,
-								Collections.emptyList(),
-								false,
-								null,
-								null,
-								false,
-								Collections.emptyList(),
-								1,
-								0);
+//		return new AppAbsenceDto(app.getVersion(),
+//								ApplicationDto_New.fromDomain(app.getApplication()),
+//								app.getCompanyID(),
+//								app.getAppID(),
+//								app.getApplication().getEmployeeID(),
+//								"",
+//								null,
+//								app.getHolidayAppType().value,
+//								app.getWorkTypeCode() == null ? null : app.getWorkTypeCode().toString(),
+//								"",
+//								app.getWorkTimeCode() == null ? null : app.getWorkTimeCode().toString(),
+//								"",
+//								app.isHalfDayFlg(),
+//								app.isChangeWorkHour(),
+//								app.getAllDayHalfDayLeaveAtr().value,
+//								app.getStartTime1() == null ? null :app.getStartTime1().v(),
+//								app.getEndTime1() == null ? null :app.getEndTime1().v(),
+//								app.getStartTime2() == null ? null :app.getStartTime2().v(),
+//								app.getEndTime2() == null ? null :app.getEndTime2().v(),
+//								null,
+//								null,
+//								app.getAppForSpecLeave() == null ? null : new AppForSpecLeaveDto(app.getAppForSpecLeave().getAppID(), app.getAppForSpecLeave().isMournerFlag(), app.getAppForSpecLeave().getRelationshipCD().v(), app.getAppForSpecLeave().getRelationshipReason().v()),
+//								null,
+//								false,
+//								null,
+//								true,
+//								null,
+//								null,
+//								null,
+//								0,
+//								false,
+//								false,null,true, false, false, null, null, false,
+//								new ArrayList<>(),
+//								null,
+//								null,
+//								null,
+//								Collections.emptyList(),
+//								false,
+//								null,
+//								null,
+//								false,
+//								Collections.emptyList(),
+//								1,
+//								0);
+		return null;
 	}
 }
 

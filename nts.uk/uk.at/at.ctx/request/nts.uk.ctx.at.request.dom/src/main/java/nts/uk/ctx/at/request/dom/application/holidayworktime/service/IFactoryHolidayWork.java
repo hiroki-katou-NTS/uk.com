@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 
 public interface IFactoryHolidayWork {
 	// 申請
-		Application_New buildApplication(String appID, GeneralDate applicationDate, int prePostAtr, String appReasonID,
+		Application buildApplication(String appID, GeneralDate applicationDate, int prePostAtr, String appReasonID,
 				String applicationReason,String employeeID);
 
 		// 残業申請

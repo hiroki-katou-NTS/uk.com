@@ -25,12 +25,13 @@ public class DenyAppHandler extends CommandHandlerWithResult<AppDetailBehaviorCm
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<AppDetailBehaviorCmd> context) {
 		String companyID = AppContexts.user().companyId();
+		String memo = context.getCommand().getMemo();
 		AppDispInfoStartupOutput appDispInfoStartupOutput = context.getCommand().getAppDispInfoStartupOutput().toDomain();
 		Application application = appDispInfoStartupOutput.getAppDetailScreenInfo().get().getApplication();
 		// 9-1.詳細画面否認前の処理 Xử lý trước khi disapprove màn hình chi tiết 
 		beforeRegisterRepo.exclusiveCheck(companyID, application.getAppID(), application.getVersion());
 		// 9-2.詳細画面否認後の処理Xử lý sau khi disapprove màn hình chi tiết 
-		return detailAfterDeny.doDeny(companyID, application.getAppID(), application, appDispInfoStartupOutput);
+		return detailAfterDeny.doDeny(companyID, application.getAppID(), application, appDispInfoStartupOutput, memo);
 	}
 
 }
