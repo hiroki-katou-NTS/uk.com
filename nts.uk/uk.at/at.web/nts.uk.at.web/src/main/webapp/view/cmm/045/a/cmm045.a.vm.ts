@@ -197,6 +197,12 @@ module cmm045.a.viewmodel {
                     _.each(data1, function(obj) {
                         self.roundingRules.push(new vmbase.ApplicationDisplayAtr(obj.value, obj.localizedName));
                     });
+                    
+                    // -PhuongDV- for test
+                    service.getScheduleList().done(function(data){
+                        let x = data;
+                    });
+                    
                     service.getApplicationList(param).done(function(data) {
                         self.lstContentApp(data.lstContentApp);
                         let isHidden = data.isDisPreP == 1 ? false : true;
@@ -260,10 +266,6 @@ module cmm045.a.viewmodel {
                         if(self.mode() == 0){
                             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
                         }
-
-
-
-
                         block.clear();
                         dfd.resolve();
                     });

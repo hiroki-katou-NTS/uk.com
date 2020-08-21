@@ -1,5 +1,7 @@
 module cmm045.a.service {
      var paths = {
+         // -PhuongDV- for test
+         getSchedulePubTest: "at/schedule/employeeinfo/rank/getListSchedule",
          getApplicationList: "at/request/application/applist/getapplist",
          getApplicationDisplayAtr: "at/request/application/applist/get/appdisplayatr",
          approvalListApp: "at/request/application/applist/approval",
@@ -19,6 +21,13 @@ module cmm045.a.service {
      */
     export function getApplicationDisplayAtr(): JQueryPromise<Array<any>>{
         return nts.uk.request.ajax("at", paths.getApplicationDisplayAtr);
+    }
+    
+    /**
+     * -PhuongDV- for test
+     */
+    export function getScheduleList(): JQueryPromise<Array<any>>{
+        return nts.uk.schedule.ajax("at", paths.getApplicationDisplayAtr);
     }
     /**
      * approval list Application

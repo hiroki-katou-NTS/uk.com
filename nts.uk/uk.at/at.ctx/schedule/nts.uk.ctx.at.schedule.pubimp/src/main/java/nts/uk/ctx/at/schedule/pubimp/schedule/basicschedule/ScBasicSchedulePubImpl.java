@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.pubimp.schedule.basicschedule;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -12,6 +14,10 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
@@ -44,6 +50,31 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 	@Override
 	public Optional<ScBasicScheduleExport> findById(String employeeId, GeneralDate baseDate) {
 		return this.repository.find(employeeId, baseDate).map(domain -> this.convertExport(domain));
+	}
+	
+	/*
+	 * -PhuongDV- for test
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicSchedulePub#findById(java.lang.String, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public String findByIdTest(String employeeId, GeneralDate baseDate) {
+		// return file here
+		try {
+			String currentPath = Paths.get(".").toAbsolutePath().normalize().toString();
+			File fXmlFile = new File(currentPath + "\\datatest\\staff.xml");
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(fXmlFile);
+			
+			doc.getDocumentElement().normalize();
+			
+			String testXml = doc.getDocumentElement().getNodeName();
+			
+			return "";
+		}catch(Exception e) {
+			return "";
+		}
 	}
 	
 	@Override

@@ -26,6 +26,12 @@ public interface ScBasicSchedulePub {
 	 */
 	public Optional<ScBasicScheduleExport> findById(String employeeId, GeneralDate baseDate);
 	
+	/*
+	 * -PhuongDV- for test
+	 * RequestList4 - Fake data for test
+	 */
+	public String findByIdTest(String employeeId, GeneralDate baseDate);
+	
 	public List<ScBasicScheduleExport> findById(List<String> employeeID, DatePeriod date);
 
 	/**
