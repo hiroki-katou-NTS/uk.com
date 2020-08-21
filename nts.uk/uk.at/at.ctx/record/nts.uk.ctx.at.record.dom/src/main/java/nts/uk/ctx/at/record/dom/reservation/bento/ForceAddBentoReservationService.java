@@ -2,11 +2,10 @@ package nts.uk.ctx.at.record.dom.reservation.bento;
 
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import javax.ejb.Stateless;
+import java.util.*;
 
 /**
  * 弁当予約を強制予約する
@@ -30,6 +29,11 @@ public class ForceAddBentoReservationService {
                                     ReservationDate reservationDate,
                                     GeneralDateTime dateTime,
                                     Optional<WorkLocationCode> workLocationCode) {
+        if (CollectionUtil.isEmpty(bentoReservationInfos)) {
+            return AtomTask.of(() -> {
+            });
+        }
+
         return AtomTask.of(() -> {
             for (BentoReservationInfoTemp item : bentoReservationInfos) {
 

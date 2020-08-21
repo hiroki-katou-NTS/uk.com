@@ -37,7 +37,8 @@ module nts.uk.at.view.kmr004.a {
             var self = this;
 
             self.$ajax(API.START).done((data) => {
-                self.$blockui("invisible");
+                // self.$blockui("invisible");
+                nts.uk.ui.block.grayout();
                 self.initClosingTimeLable(data);
                 self.initClosingTimeSwitch(data);
                 if(data.operationDistinction == "BY_COMPANY"){
@@ -47,6 +48,20 @@ module nts.uk.at.view.kmr004.a {
                 }
                 self.$blockui("clear");
                 self.initConditionListComboBox(data);
+            }).fail(function(res) {
+                //Return Dialog Error
+                if (!res.businessException) {
+                    return;
+                }
+
+                // show error message
+                if (Array.isArray(res.errors)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
+
+                self.$blockui("clear");
             });
 
             self.tabs = ko.observableArray([
