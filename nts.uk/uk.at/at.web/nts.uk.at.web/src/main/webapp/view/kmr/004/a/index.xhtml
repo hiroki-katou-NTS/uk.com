@@ -40,7 +40,8 @@
                                     required: true,
 									enable: true,
 									showNextPrevious: true,
-									value: period}">
+									value: period,
+									maxRange: 'oneYear'}">
                             </div>
                         </td>
                     </tr>
@@ -69,8 +70,6 @@
                     <tr>
                         <td>
                             <div id="A5_1" data-bind="ntsFormLabel: {text: $i18n('KMR004_11')}"></div>
-                            <!--div id="A5_2" tabindex="8" data-bind="ntsCheckBox: {checked: totalChecked, enable: totalEnable, style: 'button'}, i18n: 'KMR004_12'"></div-->
-                            <!--div id="A5_3" tabindex="9" data-bind="ntsCheckBox: {checked: conditionalChecked, enable: conditionalEnable, style: 'button'}, i18n: 'KMR004_13'"></div-->
 
                             <div id="A5_2" tabindex="8" data-bind="ntsRadioBoxGroup: {
                                 options: [
@@ -129,7 +128,7 @@
 												</div> <br/>
                                                 &#160;&#160;&#160;&#160;
 												<div id="A8_6" tabindex="17" class="style-normal"
-                                                     data-bind="i18n: 'KMR004_20', ntsCheckBox: { checked: vm.extractionConditionChecked, enable: vm.extractionConditionEnable}"></div>
+                                                     data-bind="i18n: 'KMR004_20', ntsCheckBox: { checked: extractionConditionChecked, enable: vm.extractionConditionEnable}"></div>
 											</td>
 										</tr>
 									</table>
@@ -168,7 +167,7 @@
 														<div id="A10_2" tabindex="19" class="verticalRadioBoxGroup" data-bind="ntsRadioBoxGroup: {
 															options: [
 															    {id: 1, name: $i18n('KMR004_17')},
-															    {id: 6, name: $i18n('KMR004_24')}
+															    {id: -1, name: $i18n('KMR004_24')}
 															],
 															optionsValue: 'id',
 															optionsText: 'name',
