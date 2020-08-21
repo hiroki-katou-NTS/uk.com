@@ -85,7 +85,7 @@ public class CreateOrderInfoFileQuery {
         if (!totalTitle.isPresent() & !detailTitle.isPresent())
             throw new BusinessException("Msg_1642");
         if(CollectionUtil.isEmpty(workplaceId) & CollectionUtil.isEmpty(workLocationCodes))
-            throw new BusinessException("Msg_1642");
+            throw new BusinessException("Msg_1856");
         OrderInfoDto result = new OrderInfoDto();
         // 1. [RQ622]会社IDから会社情報を取得する
         String companyId = AppContexts.user().companyId();
