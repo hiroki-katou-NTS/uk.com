@@ -64,13 +64,6 @@ public interface AppContentService {
 	
 	/**
 	 * refactor 4
-	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.申請一覧の申請名称を取得する.申請一覧の申請名称を取得する
-	 * @return
-	 */
-	public List<ListOfAppTypes> getAppNameInAppList();
-	
-	/**
-	 * refactor 4
 	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.申請一覧の申請名称を取得する.申請一覧申請種類のプログラムID.申請一覧申請種類のプログラムID
 	 * @return
 	 */

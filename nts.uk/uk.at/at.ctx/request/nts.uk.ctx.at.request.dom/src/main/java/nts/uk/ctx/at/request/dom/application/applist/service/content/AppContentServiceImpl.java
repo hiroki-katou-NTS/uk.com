@@ -141,23 +141,6 @@ public class AppContentServiceImpl implements AppContentService {
 	}
 
 	@Override
-	public List<ListOfAppTypes> getAppNameInAppList() {
-		List<ListOfAppTypes> result = new ArrayList<>();
-		// アルゴリズム「申請一覧申請種類のプログラムID」を実行する
-		List<AppTypeMapProgramID> appTypeMapProgramIDLst = this.getListProgramIDOfAppType();
-		for(AppTypeMapProgramID item : appTypeMapProgramIDLst) {
-			result.add(new ListOfAppTypes(
-					item.getAppType(), 
-					Strings.EMPTY, 
-					false, 
-					Optional.of(item.getProgramID()), 
-					item.getApplicationTypeDisplay() == null ? Optional.empty() : Optional.of(item.getApplicationTypeDisplay()), 
-					Optional.of("A")));
-		}
-		return result;
-	}
-
-	@Override
 	public List<AppTypeMapProgramID> getListProgramIDOfAppType() {
 		List<AppTypeMapProgramID> result = new ArrayList<>();
 		// 残業申請＝KAF005、0
