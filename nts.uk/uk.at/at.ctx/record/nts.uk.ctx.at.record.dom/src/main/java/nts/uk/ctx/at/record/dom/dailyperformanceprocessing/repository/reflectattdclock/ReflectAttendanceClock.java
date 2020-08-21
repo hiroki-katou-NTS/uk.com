@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectattdclock;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +14,9 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.PriorityTimeReflectAtr;
@@ -22,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.Ti
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimePriority;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimePriorityRepository;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -33,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.PrioritySetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampPiorityAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.Superiority;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
@@ -70,18 +75,16 @@ public class ReflectAttendanceClock {
 		//反映先を取得する
 		TimePrintDestinationOutput timePrintDestinationOutput = getDestination(attendanceAtr, actualStampAtr, workNo, integrationOfDaily);
 		ReflectStampOuput reflectStampOuput = ReflectStampOuput.NOT_REFLECT;
-		if(timePrintDestinationOutput != null) {
-			//通常打刻の出退勤の反映条件を判断する
-			reflectStampOuput = reflectAttd(stamp, attendanceAtr, timePrintDestinationOutput,
-					actualStampAtr, integrationOfDaily,workNo);
+		//通常打刻の出退勤の反映条件を判断する
+		reflectStampOuput = reflectAttd(stamp, attendanceAtr, timePrintDestinationOutput,
+				actualStampAtr, integrationOfDaily,workNo);
+		if(reflectStampOuput == ReflectStampOuput.REFLECT ) {
+			//休日打刻時に勤務種類を変更する
+			reflectStampOuput = checkHolidayChange(new WorkInfoOfDailyPerformance(integrationOfDaily.getEmployeeId(),
+					integrationOfDaily.getYmd(), integrationOfDaily.getWorkInformation()), companyId);
 			if(reflectStampOuput == ReflectStampOuput.REFLECT ) {
-				//休日打刻時に勤務種類を変更する
-				reflectStampOuput = checkHolidayChange(new WorkInfoOfDailyPerformance(integrationOfDaily.getEmployeeId(),
-						integrationOfDaily.getYmd(), integrationOfDaily.getWorkInformation()), companyId);
-				if(reflectStampOuput == ReflectStampOuput.REFLECT ) {
-					//打刻を反映する 
-					reflectStampOuput =  reflectStamping(actualStampAtr, stamp, integrationOfDaily, attendanceAtr, workNo);
-				}
+				//打刻を反映する 
+				reflectStampOuput =  reflectStamping(actualStampAtr, stamp, integrationOfDaily, attendanceAtr, workNo);
 			}
 		}
 		TimeLeavingWork timeLeavingWork = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream()
@@ -311,34 +314,87 @@ public class ReflectAttendanceClock {
 				: null);
 		//打刻反映先の「時刻変更理由」を入れる
 		timePrintDestinationOutput.setStampSourceInfo(TimeChangeMeans.REAL_STAMP);
-		
-		
-		//打刻反映先に求めた時刻（日区分付き）を入れる
-		TimeLeavingWork timeLeavingWork = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream()
-				.filter(c -> c.getWorkNo().v().intValue() == workNo).findFirst().get();
-		TimeActualStamp timeActualStamp = null;
-		if(attendanceAtr == AttendanceAtr.GOING_TO_WORK) {
-			timeActualStamp = timeLeavingWork.getAttendanceStamp().get();
+		if(integrationOfDaily.getAttendanceLeave().isPresent() &&
+			integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream()
+				.filter(c -> c.getWorkNo().v().intValue() == workNo).findFirst().isPresent()) {
+			//打刻反映先に求めた時刻（日区分付き）を入れる
+			TimeLeavingWork timeLeavingWork = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream()
+					.filter(c -> c.getWorkNo().v().intValue() == workNo).findFirst().get();
+			TimeActualStamp timeActualStamp = null;
+			if(attendanceAtr == AttendanceAtr.GOING_TO_WORK) {
+				timeActualStamp = timeLeavingWork.getAttendanceStamp().get();
+			}else {
+				timeActualStamp = timeLeavingWork.getLeaveStamp().get();
+			}
+			Optional<WorkStamp> workStamp = Optional.empty();
+			if(actualStampAtr == ActualStampAtr.STAMP ) {
+				workStamp = timeActualStamp.getStamp();
+			}else if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
+				workStamp = timeActualStamp.getActualStamp();
+			}
+			if(workStamp.isPresent()) {
+				workStamp.get().getTimeDay().setTimeWithDay(Optional.of(timeWithDayAttr));
+				workStamp.get().getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.REAL_STAMP);
+				workStamp.get().getTimeDay().getReasonTimeChange().setEngravingMethod(Optional.of(EngravingMethod.TIME_RECORD_ID_INPUT));
+			}else {
+				WorkStamp workStampNew = new WorkStamp();
+				WorkTimeInformation timeDay = new WorkTimeInformation(
+						new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, EngravingMethod.TIME_RECORD_ID_INPUT),
+						timeWithDayAttr);
+				workStampNew.setTimeDay(timeDay);
+				workStampNew.setLocationCode(Optional.empty());
+				workStampNew.setAfterRoundingTime(timeWithDayAttr);
+				workStamp = Optional.of(workStampNew);
+			}
+			//打刻を丸める (làm tròn 打刻)
+			this.roundStamp(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v(), workStamp.get(),
+					attendanceAtr, actualStampAtr);
+			//パラメータの実打刻区分をチェックする
+			if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
+				//申告時刻を反映する
+				timeActualStamp.setOvertimeDeclaration(stamp.getRefActualResults().getOvertimeDeclaration());
+			}
 		}else {
-			timeActualStamp = timeLeavingWork.getLeaveStamp().get();
+			TimeActualStamp timeActualStamp = new TimeActualStamp();
+			WorkStamp workStamp = new WorkStamp();
+			WorkTimeInformation timeDay = new WorkTimeInformation(
+					new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, EngravingMethod.TIME_RECORD_ID_INPUT),
+					timeWithDayAttr);
+			workStamp.setTimeDay(timeDay);
+			workStamp.setLocationCode(Optional.empty());
+			workStamp.setAfterRoundingTime(timeWithDayAttr);
+			if(actualStampAtr == ActualStampAtr.STAMP ) {
+				timeActualStamp.setStamp(Optional.of(workStamp));
+			}else if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
+				timeActualStamp.setActualStamp(Optional.of(workStamp));
+			}
+			
+			this.roundStamp(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v(), workStamp,
+					attendanceAtr, actualStampAtr);
+			//パラメータの実打刻区分をチェックする
+			if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
+				//申告時刻を反映する
+				timeActualStamp.setOvertimeDeclaration(stamp.getRefActualResults().getOvertimeDeclaration());
+			}
+			
+			List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
+			TimeLeavingWork timeLeavingWork = null;
+			if(attendanceAtr == AttendanceAtr.GOING_TO_WORK) {
+				timeLeavingWork = new TimeLeavingWork(new WorkNo(workNo), timeActualStamp, null);  //attendanceStamp
+			}else {
+				timeLeavingWork = new TimeLeavingWork(new WorkNo(workNo), null, timeActualStamp); //leaveStamp
+			}
+			timeLeavingWorks.add(timeLeavingWork);
+			
+			if(!integrationOfDaily.getAttendanceLeave().isPresent()) {
+				TimeLeavingOfDailyAttd attendanceLeave = new TimeLeavingOfDailyAttd(timeLeavingWorks, new WorkTimes(0));
+				integrationOfDaily.setAttendanceLeave(Optional.of(attendanceLeave));
+			}else {
+				integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().add(timeLeavingWork);
+			}
+			
 		}
-		WorkStamp workStamp = null;
-		if(actualStampAtr == ActualStampAtr.STAMP ) {
-			workStamp = timeActualStamp.getStamp().get();
-		}else if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
-			workStamp = timeActualStamp.getActualStamp().get();
-		}
-		workStamp.getTimeDay().setTimeWithDay(Optional.of(timeWithDayAttr));
-		workStamp.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.REAL_STAMP);
-		workStamp.getTimeDay().getReasonTimeChange().setEngravingMethod(Optional.of(EngravingMethod.TIME_RECORD_ID_INPUT));
-		//打刻を丸める (làm tròn 打刻)
-		this.roundStamp(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v(), workStamp,
-				attendanceAtr, actualStampAtr);
-		//パラメータの実打刻区分をチェックする
-		if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
-			//申告時刻を反映する
-			timeActualStamp.setOvertimeDeclaration(stamp.getRefActualResults().getOvertimeDeclaration());
-		}
+		
 		//反映済み区分をtrueにする (反映済み区分 = true)
 		stamp.setReflectedCategory(true);
 		return ReflectStampOuput.REFLECT;

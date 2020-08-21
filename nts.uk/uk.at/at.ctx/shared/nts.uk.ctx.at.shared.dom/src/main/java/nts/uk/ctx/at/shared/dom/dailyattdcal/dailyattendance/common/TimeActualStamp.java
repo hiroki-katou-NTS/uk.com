@@ -22,7 +22,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 public class TimeActualStamp {
 	//実打刻
-	private Optional<WorkStamp> actualStamp;
+	@Setter
+	private Optional<WorkStamp> actualStamp = Optional.empty();
 	//打刻
 	@Setter
 	private Optional<WorkStamp> stamp = Optional.empty();
@@ -32,11 +33,11 @@ public class TimeActualStamp {
 	
 	//時間外の申告
 	@Setter
-	private Optional<OvertimeDeclaration> overtimeDeclaration;
+	private Optional<OvertimeDeclaration> overtimeDeclaration = Optional.empty();
 	
 	//時間休暇時間帯
 	@Setter
-	private Optional<TimeZone> timeVacation;
+	private Optional<TimeZone> timeVacation = Optional.empty();
 	
 	/**
 	 * 打刻時間を指定時間分経過させた勤怠打刻を返す
