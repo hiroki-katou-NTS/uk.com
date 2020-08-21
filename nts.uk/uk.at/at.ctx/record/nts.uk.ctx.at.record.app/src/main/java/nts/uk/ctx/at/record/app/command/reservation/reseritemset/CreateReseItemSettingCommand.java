@@ -1,12 +1,11 @@
 package nts.uk.ctx.at.record.app.command.reservation.reseritemset;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.Data;
-
-import java.math.BigDecimal;
 
 @Data
 public class CreateReseItemSettingCommand {
+
+    private String histId;
 
     // 枠番
     private int frameNo;
