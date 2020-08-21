@@ -7,7 +7,7 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import java.util.Optional;
 
 /**
- * カレンダー情報を取得する
+ * 月間パターンの勤務情報を登録する
  * @author datnk
  *
  */
