@@ -5,6 +5,9 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationDisplayOrder;
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
@@ -13,9 +16,21 @@ import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
  * @author hoatt
  *
  */
+@Setter
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class AppListExtractCondition {
+	
+	/**
+	 * 期間開始日
+	 */
+	private GeneralDate periodStartDate;
+	
+	/**
+	 * 期間終了日
+	 */
+	private GeneralDate periodEndDate;
 	/**
 	 * 事後出力
 	 */
