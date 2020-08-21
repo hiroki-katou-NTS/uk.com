@@ -60,3 +60,5 @@ new (RootApp.extend({
             });
     }
 }))().$mount(document.querySelector('body>#app_uk_mobile'));
+
+Object.assign(window, { Vue });

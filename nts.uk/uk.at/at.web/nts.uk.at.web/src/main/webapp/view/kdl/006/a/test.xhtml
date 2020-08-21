@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<script type="text/javascript">
+				var ScreenModel = (function () {
+	                function ScreenModel() {
+		                this.closureId = ko.observable(1);
+		                this.closureList = ko.observableArray([]);
+	                }
+	                ScreenModel.prototype.start = function (){
+		                var self = this;
+	                	return nts.uk.request.ajax("at", "screen/at/kdl006/startpage").done(function (data){
+								self.closureList(data);
+		                	});
+		            }
+	                ScreenModel.prototype.openDailog = function () {
+	 				   	nts.uk.ui.windows.setShared('KDL006-CLOSUREID', this.closureId());
+	 				   	nts.uk.ui.windows.sub.modal('/view/kdl/006/a/index.xhtml');
+	                } 
+	                return ScreenModel;
+				}());
+				__viewContext.ready(function() {
+					var a = new ScreenModel();
+					a.start().done(function() {
+						__viewContext.bind(a);
+					});
+			    });
+			</script>
+		</ui:define>
+
+		<ui:define name="content">
+			<div>
+				<div id="combo-box" tabindex="1" data-bind="ntsComboBox: {
+					width: '160',
+					name: '#[KDL006_14]',
+					options: closureList,
+					optionsValue: 'closureId',
+					value: closureId,
+					columns: [
+						{ prop: 'closureId', length: 4 },
+						{ prop: 'closureName', length: 15 },
+						]}"></div>
+			</div>
+			<button data-bind="click: openDailog">open Dialog</button>
+		</ui:define>
+	</ui:composition>
+</body>
+
+</html>

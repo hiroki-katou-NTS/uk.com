@@ -58,7 +58,7 @@ public class GetOmissionContentsFinder {
 
 	@Inject
 	private StampSetPerRepository stampSetPerRepo;
-	
+
 	@Inject
 	private StandardMenuPub menuPub;
 	
@@ -80,10 +80,8 @@ public class GetOmissionContentsFinder {
 
 		// アルゴリズム「メニューの表示名を取得する」を実行する
 
-		
-
 		List<AppDispNameExp> appDispNames = new ArrayList<AppDispNameExp>();
-		
+
 		if (errorInfo.size() > 0) {
 			List<ApplicationType> appTypes = errorInfo.get(0).getListRequired().stream().sorted()
 					.map(x -> EnumAdaptor.valueOf(x, ApplicationType.class)).collect(Collectors.toList());
@@ -100,7 +98,8 @@ public class GetOmissionContentsFinder {
 									+ "/index.xhtml"
 									+ (item.getQueryString() != null ? "?" + item.getQueryString() : "");
 
-							return new AppDispNameExp(companyId, x.value, item.getDisplayName(), url);
+							return new AppDispNameExp(companyId, x.value, item.getDisplayName(), screen, screenCd,
+									item.getScreenId(), item.getQueryString(), url);
 						}).collect(Collectors.toList());
 				appDispNames.addAll(appNames);
 			});

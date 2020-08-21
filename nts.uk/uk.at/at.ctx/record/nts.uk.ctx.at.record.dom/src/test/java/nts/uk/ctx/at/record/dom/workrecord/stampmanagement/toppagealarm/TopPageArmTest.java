@@ -11,7 +11,7 @@ public class TopPageArmTest {
 
 	@Test
 	public void getters() {
-		TopPageAlarm topPageAlarm = new TopPageAlarm("DUMMY",GeneralDateTime.now(), ExistenceError.HAVE_ERROR,IsCancelled.NOT_CANCELLED, new ArrayList<>());
+		TopPageAlarmMgrStamp topPageAlarm = new TopPageAlarmMgrStamp("DUMMY",GeneralDateTime.now(), ExistenceError.HAVE_ERROR,IsCancelled.NOT_CANCELLED, new ArrayList<>());
 		NtsAssert.invokeGetters(topPageAlarm);
 	}
 }

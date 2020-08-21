@@ -22,9 +22,6 @@ import nts.arc.time.GeneralDateTime;
 @NoArgsConstructor
 @Embeddable
 public class KrcdtTopAlStampPk implements Serializable {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	/**

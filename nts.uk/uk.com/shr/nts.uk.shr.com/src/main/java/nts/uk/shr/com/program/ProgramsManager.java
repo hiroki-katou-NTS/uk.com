@@ -1364,6 +1364,9 @@ public class ProgramsManager {
 
     public static final Program KCP005 = new Program(WebAppId.COM, ProgramIdConsts.KCP005, null,
             "/view/kcp/005/index.xhtml");
+    
+    public static final Program KCP012 = new Program(WebAppId.COM, ProgramIdConsts.KCP012, null,
+            "/view/kcp/012/index.xhtml");
 
     /**
      * KDW007A
@@ -2601,6 +2604,17 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "/ccg/033/a");
     public static final Program KDWS03A = new Program(WebAppId.MOBI, ProgramIdConsts.KDWS03A, "",
             "/kdw/s03/a");
+    
+    public static final Program KDPS01A = new Program(WebAppId.MOBI, ProgramIdConsts.KDPS01A, "KDPS01_1",
+            "/kdp/s01/a");
+    public static final Program KDPS01B = new Program(WebAppId.MOBI, ProgramIdConsts.KDPS01B, "KDPS01_5",
+            "/kdp/s01/b");
+    public static final Program KDPS01C = new Program(WebAppId.MOBI, ProgramIdConsts.KDPS01C, "KDPS01_5",
+            "/kdp/s01/c");
+    public static final Program KDPS01S = new Program(WebAppId.MOBI, ProgramIdConsts.KDPS01S, "KDPS01_22",
+            "/kdp/s01/s");
+    public static final Program KDPS01T = new Program(WebAppId.MOBI, ProgramIdConsts.KDPS01T, "KDPS01_23",
+            "/kdp/s01/t");
 
     /**
      * CPS013

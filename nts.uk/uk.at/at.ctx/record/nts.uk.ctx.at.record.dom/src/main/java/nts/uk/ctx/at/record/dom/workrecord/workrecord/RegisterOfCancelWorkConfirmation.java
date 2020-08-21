@@ -39,7 +39,7 @@ public class RegisterOfCancelWorkConfirmation {
 	 *            解除するか
 	 * @return
 	 */
-	public Optional<AtomTask> get(Require require, CompanyId companyId, WorkplaceId workplaceId, ClosureId closureId,
+	public static Optional<AtomTask> get(Require require, CompanyId companyId, WorkplaceId workplaceId, ClosureId closureId,
 			YearMonth processYM, Optional<String> employeeId, Optional<GeneralDateTime> date, Boolean whetherToCancel) {
 
 		if (whetherToCancel) {

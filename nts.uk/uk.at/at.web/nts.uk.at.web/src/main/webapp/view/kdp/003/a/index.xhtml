@@ -29,16 +29,16 @@
 				<div class="control-panel" data-bind="
 							if: ko.unwrap($vm.message) !== undefined,
 							css: {
-								'has-time-sheet': ko.unwrap($vm.employeeData.employeeAuthcUseArt) === true
+								'has-time-sheet': ko.unwrap($vm.employeeData.nameSelectArt) === true
 							}">
-					<div class="time-sheet" data-bind="if: ko.toJS($vm.message) === null &amp;&amp; ko.unwrap($vm.employeeData.employeeAuthcUseArt) === true">
+					<div class="time-sheet" data-bind="if: ko.toJS($vm.message) === null &amp;&amp; ko.unwrap($vm.employeeData.nameSelectArt) === true">
 						<div data-bind="stamp-employee-selection: employeeData"></div>
 					</div>
-					<div id="stamp-input" class="time-stamp">
+					<div id="stamp-input" class="time-stamp" data-bind="let: { fss: ko.unwrap(fingerStampSetting) }">
 						<div data-bind="stamp-clock: {
 								setting: {
-									textColor: '#fff',
-									backGroundColor: '#0033cc'
+									textColor: (fss.stampSetting || {}).textColor || '#000',
+									backGroundColor: (fss.stampSetting || {}).backGroundColor || '#fff'
 								},
 								events: {
 									setting: {
@@ -55,7 +55,8 @@
 							<div tabindex="2" data-bind="kdp-tab-button-panel: { 
 										tabs: $vm.buttonPage.tabs,
 										stampToSuppress: $vm.buttonPage.stampToSuppress,
-										click: function(btn, layout) { $vm.stampButtonClick.apply($vm, [btn, layout]); }
+										click: function(btn, layout) { $vm.stampButtonClick.apply($vm, [btn, layout]); },
+										marginBottom: 0
 									}"></div>
 						</com:ko-if>
 						<com:ko-if bind="!!ko.unwrap($vm.message)">
