@@ -178,6 +178,11 @@ module nts.uk.at.view.kmp001.c {
 					if (c != '') {
 						vm.$ajax(KMP001C_API.GET_INFO_EMPLOYEE + ko.toJS(c))
 							.then((data: IEmployeeVIewC[]) => {
+								
+								if(data.retiredDate = "9999/12/31"){
+									data.retiredDate = null;
+								}
+								
 								vm.employee.update(ko.toJS(data));
 							})
 					}
