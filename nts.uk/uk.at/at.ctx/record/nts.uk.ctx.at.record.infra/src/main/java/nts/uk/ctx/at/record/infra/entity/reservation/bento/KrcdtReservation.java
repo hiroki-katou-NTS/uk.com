@@ -107,6 +107,15 @@ public class KrcdtReservation extends UkJpaEntity {
 		}
 
 		this.reservationDetails.removeAll(reservationDetailRemove);
+
+		for (BentoReservationDetail domain : bentoReservation.getBentoReservationDetails()){
+			Optional<KrcdtReservationDetail> entityOpt = this.reservationDetails.stream()
+					.filter(x -> x.pk.frameNo == domain.getFrameNo()).findFirst();
+			if (!entityOpt.isPresent()){
+				this.reservationDetails.add(KrcdtReservationDetail.fromDomain(domain, this.pk.reservationID));
+			}
+		}
+
 		return this;
 	}
 }

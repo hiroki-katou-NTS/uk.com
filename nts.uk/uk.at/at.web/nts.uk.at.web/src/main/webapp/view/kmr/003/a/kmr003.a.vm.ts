@@ -130,10 +130,6 @@ module nts.uk.at.kmr003.a {
                     vm.initData();
                 }
             }
-
-            vm.closingTimeFrameValue.subscribe(value => {
-                vm.setClosingTimeTime(value);
-            })
         }
 
         created() {
@@ -149,6 +145,17 @@ module nts.uk.at.kmr003.a {
             //const kvm = new kvmc(dialogOptions);
             //nts.uk.ui._viewModel.kiban = kvm;
             //__viewContext.bind(vm, dialogOptions)
+
+            vm.date.subscribe(() => {
+                vm.initData();
+            })
+            vm.searchConditionValue.subscribe(() => {
+                vm.initData();
+            })
+            vm.closingTimeFrameValue.subscribe(value => {
+                vm.setClosingTimeTime(value);
+                vm.initData();
+            })
         }
 
         mounted() {
@@ -307,6 +314,7 @@ module nts.uk.at.kmr003.a {
             self.$ajax(API.BENTO_UPDATE, commandUpdate).done(() => {
                 self.$dialog.info({ messageId: "Msg_15" }).then(function () {
                     block.clear();
+                    initData();
                 });
             }).always(() => block.clear());
         }
@@ -323,6 +331,7 @@ module nts.uk.at.kmr003.a {
             self.$ajax(API.BENTO_DELETE, commandDelete).done(() => {
                 self.$dialog.info({ messageId: "Msg_16" }).then(function () {
                     block.clear();
+                    initData();
                 });
             }).always(() => block.clear());
         }

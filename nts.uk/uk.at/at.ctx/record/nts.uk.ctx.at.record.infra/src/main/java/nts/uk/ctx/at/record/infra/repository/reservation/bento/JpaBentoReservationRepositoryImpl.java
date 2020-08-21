@@ -102,7 +102,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 
         builderString = new StringBuilder();
         builderString.append(SELECT);
-        builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD = 'date' ");
+        builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD = 'date' AND a.RESERVATION_FRAME = closingTimeFrame ");
         FIND_RESERVATION_INFOMATION = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -334,6 +334,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		String cardLstStr = getString(inforLst, cardLst);
 		query = query.replaceFirst("cardLst", cardLstStr);
 		query = query.replaceFirst("date", reservationDate.getDate().toString());
+		query = query.replaceFirst("closingTimeFrame", String.valueOf(reservationDate.getClosingTimeFrame().value));
 		return getBentoReservations(query);
     }
 
@@ -355,10 +356,8 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 
 	@Override
 	public void update(BentoReservation bentoReservation) {
-		//this.delete(bentoReservation);
-		//this.add(bentoReservation);
 		//commandProxy().update(KrcdtReservation.fromDomain(bentoReservation));
-		String query = FIND_ALL_BY_DATE;
+		String query = FIND_BY_ID_DATE;
 		query = query.replaceFirst("cardNo", bentoReservation.getRegisterInfor().getReservationCardNo());
 		query = query.replaceFirst("date", bentoReservation.getReservationDate().getDate().toString());
 		query = query.replaceFirst("frameAtr", String.valueOf(bentoReservation.getReservationDate().getClosingTimeFrame().value));
@@ -368,9 +367,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 			List<KrcdtReservation> bentoReservationLst = toEntity(createFullJoinBentoReservation(rs));
 			if(!CollectionUtil.isEmpty(bentoReservationLst)) {
 				KrcdtReservation entity = bentoReservationLst.get(0);
-				List<Object> detailRemove = new ArrayList<>();
 				commandProxy().update(entity.updateFromDomain(bentoReservation));
-				//commandProxy().removeAll(detailRemove);
 			}
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);

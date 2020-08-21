@@ -32,14 +32,19 @@ public class ForceUpdateBentoReservationService {
             });
         }
 
-        GeneralDateTime datetime = GeneralDateTime.now();
         return AtomTask.of(() -> {
             if (bentoReservationInfos == null || reservationDate == null) return;
+            GeneralDateTime datetime = GeneralDateTime.now();
             for (BentoReservationInfoTemp item : bentoReservationInfos) {
                 // 1: get(予約登録情報, 予約対象日)
                 BentoReservation bentoReservation = require.get(item.getRegisterInfo(), reservationDate);
                 List<BentoReservationDetail> bentoReservationDetails = new ArrayList<>();
                 if (bentoReservation == null) continue;
+
+                Optional< BentoReservationDetail> firstDetail =  bentoReservation.getBentoReservationDetails().stream().findFirst();
+                if(firstDetail.isPresent()){
+                    datetime = firstDetail.get().getDateTime();
+                }
 
                 // 2: 作る(弁当予約情報):弁当予約明細
                 for (Map.Entry<Integer, BentoReservationCount> mapItem : item.getBentoDetails().entrySet()) {
