@@ -12,4 +12,9 @@ public class WorkInfoOfDailyAttendanceHelper {
 				DayOfWeek.FRIDAY, new ArrayList<>());
 		return workInfoOfDailyAttendance;
 	}
+	
+	public static WorkInfoOfDailyAttendance getData(WorkInformation recordInfo) {
+		return new WorkInfoOfDailyAttendance(recordInfo, null, null, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
+				DayOfWeek.FRIDAY, new ArrayList<>());
+	}
 }

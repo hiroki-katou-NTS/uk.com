@@ -12,6 +12,8 @@ import org.junit.Test;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import static org.assertj.core.api.Assertions.tuple;
 
 public class GetListWorkInforUsedDailyAttendanceRecordTest {
 
@@ -22,30 +24,24 @@ public class GetListWorkInforUsedDailyAttendanceRecordTest {
 		WorkInformation recordInfo3 = new WorkInformation(null, "ty3");
 		WorkInformation recordInfo4 = new WorkInformation("ti3", "ty2");
 		WorkInformation recordInfo5 = new WorkInformation("ti2", "ty2");
+		WorkInformation recordInfo6 = new WorkInformation("ti2", "ty3");
 		List<WorkInfoOfDailyAttendance> lstWorkInfoOfDailyAttendance = Arrays.asList(
-				new WorkInfoOfDailyAttendance(recordInfo1, null, null, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
-						DayOfWeek.FRIDAY, new ArrayList<>()),
-				new WorkInfoOfDailyAttendance(recordInfo2, null, null, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
-						DayOfWeek.FRIDAY, new ArrayList<>()),
-				new WorkInfoOfDailyAttendance(recordInfo3, null, null, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
-						DayOfWeek.FRIDAY, new ArrayList<>()),
-				new WorkInfoOfDailyAttendance(recordInfo4, null, null, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
-						DayOfWeek.FRIDAY, new ArrayList<>()),
-				new WorkInfoOfDailyAttendance(recordInfo5, null, null, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
-						DayOfWeek.FRIDAY, new ArrayList<>()));
+				WorkInfoOfDailyAttendanceHelper.getData(recordInfo1),
+				WorkInfoOfDailyAttendanceHelper.getData(recordInfo2),
+				WorkInfoOfDailyAttendanceHelper.getData(recordInfo3),
+				WorkInfoOfDailyAttendanceHelper.getData(recordInfo4),
+				WorkInfoOfDailyAttendanceHelper.getData(recordInfo5),
+				WorkInfoOfDailyAttendanceHelper.getData(recordInfo6));
 		
 		List<WorkInformation> listWorkInformation= GetWorkInforUsedDailyAttenRecordService.getListWorkInfo(lstWorkInfoOfDailyAttendance);
-		assertThat(
-				listWorkInformation.stream().sorted(
-						(x, y) -> x.getWorkTypeCode().v().compareTo(y.getWorkTypeCode().v())).collect(Collectors.toList()))
-				.extracting(d->d.getWorkTypeCode().v())
-				.containsExactly("ty1", "ty2","ty2","ty3");
+		assertThat(listWorkInformation).extracting(d->d.getWorkTimeCode(), d->d.getWorkTypeCode())
+				.containsExactly(
+						tuple( new WorkTimeCode("ti1"), new WorkTypeCode("ty1")),
+						tuple( new WorkTimeCode("ti2"), new WorkTypeCode("ty2")),
+						tuple( null, new WorkTypeCode("ty3")),
+						tuple( new WorkTimeCode("ti3"), new WorkTypeCode("ty2")),
+						tuple( new WorkTimeCode("ti2"), new WorkTypeCode("ty3")));
 
-		assertThat(
-				listWorkInformation.stream().sorted(
-						(x, y) -> x.getWorkTypeCode().v().compareTo(y.getWorkTypeCode().v())).collect(Collectors.toList()))
-				.extracting(d->d.getWorkTimeCode())
-				.containsExactly(new WorkTimeCode("ti1") ,new WorkTimeCode("ti2"),new WorkTimeCode("ti3"),null);
 	}
 	
 }
