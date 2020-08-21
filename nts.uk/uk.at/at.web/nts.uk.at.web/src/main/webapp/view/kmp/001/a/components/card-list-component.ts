@@ -13,7 +13,7 @@ module nts.uk.at.view.kmp001.a {
 			</div>
 			<input id="card-input" class="ip-stamp-card"
 				data-bind="ntsTextEditor: {
-					value: ko.observable(''),
+					value: textInput,
 					constraint: $component.constraint,
 					enabled: true,
 					width: 200
@@ -52,6 +52,7 @@ module nts.uk.at.view.kmp001.a {
 	export class CardListComponent extends ko.ViewModel {
 		model!: share.Model;
 		maxLength: KnockoutObservable<string>;
+		textInput: KnockoutObservable<string>;
 
 		public constraint: KnockoutObservable<string> = ko.observable('StampNumber');
 
@@ -60,6 +61,7 @@ module nts.uk.at.view.kmp001.a {
 
 			vm.model = params.model;
 			vm.maxLength = params.maxLength;
+			vm.textInput = params.textInput;
 
 			vm.reloadSetting();
 
