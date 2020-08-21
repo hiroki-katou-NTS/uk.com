@@ -11,10 +11,17 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.i18n.I18NText;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -26,7 +33,10 @@ import nts.uk.ctx.at.request.dom.application.applist.service.AppListOutPut;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppMasterInfo;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationFullOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.CheckColorTime;
+import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
 import nts.uk.ctx.at.request.dom.application.applist.service.PhaseStatus;
+import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.appdispset.AppDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
@@ -353,4 +363,72 @@ public class ApplicationListFinder {
                 return "-";
         }
     }
+    
+    
+    public OutputDto startCMMS45() {
+//    	アルゴリズム「申請一覧の申請名称を取得する」を実行する
+//    	CMM045 not handle
+    	List<ListOfAppTypes> listOfAppTypes = Collections.emptyList();
+//    	アルゴリズム「起動時処理」を実行する
+    	OutputDto output = this.getOutput(listOfAppTypes);	
+    	return output;
+    }
+
+    /**
+     *  アルゴリズム「起動時処理」を実行する
+     * @param listOfAppTypes 申請種類リスト情報(List)
+     * @return
+     */
+    public OutputDto getOutput(List<ListOfAppTypes> listOfAppTypes) {
+//    	裏パラメータ取得
+    	// watting to handle
+    	
+//    	申請一覧初期処理 CMM045 not handle
+    	OutputDto outputDto = new OutputDto();
+    	return outputDto;
+    }
+    
+    
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    @NoArgsConstructor
+//    output of 申請一覧初期処理 
+    public class Output {
+//    	開始日付
+    	private GeneralDate startDate;
+//    	終了日付
+    	private GeneralDate endDate;
+//    	ドメインモデル「申請表示設定」．事前事後区分表示
+    	private DisplayAtr displayAtr;
+    	//Optional
+//    	ドメインモデル「申請」（List）
+    	private Optional<List<Application>> applicationListOp = Optional.empty();
+//    	ドメインモデル「申請表示名」．申請表示名称（List）
+    	private Optional<List<String>> nameListOp = Optional.empty();
+    }
+    
+    public class OutputDto {
+//    	開始日付
+    	private String startDate;
+//    	終了日付
+    	private String endDate;
+//    	ドメインモデル「申請表示設定」．事前事後区分表示
+    	private Integer displayAtr;
+    	//Optional
+//    	ドメインモデル「申請」（List）
+    	private List<ApplicationDto> applicationListOp;
+//    	ドメインモデル「申請表示名」．申請表示名称（List）
+    	private List<String> nameListOp;
+    	
+    	public OutputDto() {
+    		this.startDate = "2020/01/01";
+    		this.endDate = "2020/08/19";
+    		this.displayAtr = 1;
+    		this.applicationListOp = Collections.emptyList();
+    		this.nameListOp = Collections.emptyList();
+    	}
+    }
+    
 }
+
