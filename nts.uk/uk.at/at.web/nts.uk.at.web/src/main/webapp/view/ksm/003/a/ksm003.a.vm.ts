@@ -563,7 +563,7 @@ module nts.uk.at.view.ksm003.a {
 
                 //register / update i ok
                 nts.uk.ui.dialog.info({messageId: "Msg_15"});
-
+                vm.selectedCheckAll(false);
                 let patternCode = vm.mainModel().patternCode();
                 vm.selectedCode(patternCode);
 
