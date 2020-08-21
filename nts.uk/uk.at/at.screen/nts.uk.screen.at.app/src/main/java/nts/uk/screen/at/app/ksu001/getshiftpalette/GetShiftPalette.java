@@ -54,7 +54,6 @@ public class GetShiftPalette {
 	private ShiftPalletsComRepository shiftPalletsComRepository;
 	@Inject
 	private ShiftPalletsOrgRepository shiftPalletsOrgRepository;
-	
 	@Inject
 	private BasicScheduleService basicScheduleService;
 	@Inject
@@ -63,12 +62,10 @@ public class GetShiftPalette {
 	private WorkTimeSettingRepository workTimeSettingRepository;
 	@Inject
 	private WorkTimeSettingService workTimeSettingService;
-	
 	@Inject
 	private ShiftMasterRepository shiftMasterRepo;
 	
-	
-	public GetShiftPaletteResult dataSample(GetShiftPaletteParam param) {
+	public GetShiftPaletteResult getDataShiftPallet(GetShiftPaletteParam param) {
 		
 		GetShiftPaletteResult result = new GetShiftPaletteResult();
 		if (param.shiftPaletteWantGet.shiftPalletUnit == ShiftPalletUnit.COMPANY.value) {

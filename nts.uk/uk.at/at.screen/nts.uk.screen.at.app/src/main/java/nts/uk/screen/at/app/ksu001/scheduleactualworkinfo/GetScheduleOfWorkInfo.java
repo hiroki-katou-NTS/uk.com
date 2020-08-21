@@ -94,10 +94,12 @@ public class GetScheduleOfWorkInfo {
 		
 		// 管理状態と勤務予定Map
 		long start = System.nanoTime();
+		
 		Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMap =  WorkScheManaStatusService.getScheduleManagement(RequireImpl, param.listSid, period);
+		
 		long end = System.nanoTime();
 		long duration = (end - start) / 1000000; // ms;
-		System.out.println("SumTimeOf "+ param.listSid.size() + " employee: " + duration);	
+		System.out.println("thoi gian get data Schedule cua "+ param.listSid.size() + " employee: " + duration + "ms");	
 		
 		List<WorkInfoOfDailyAttendance>  listWorkInfo = new ArrayList<WorkInfoOfDailyAttendance>();
 		

@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
-import nts.uk.screen.at.app.ksu001.getworkscheduleshift.WorkScheduleShiftDto;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
 
 /**
  * @author laitv
@@ -22,7 +22,7 @@ import nts.uk.screen.at.app.ksu001.getworkscheduleshift.WorkScheduleShiftDto;
 @Setter
 public class SchedulesbyShiftDataResult {
 	
-	public List<WorkScheduleShiftDto> listWorkScheduleShift;  // List<勤務予定（シフト）dto>
+	public List<ScheduleOfShiftDto> listWorkScheduleShift;  // List<勤務予定（シフト）dto>
 	public List<ShiftMasterMapWithWorkStyle> listOfPageShift; // 取得したシフト一覧：List<シフトマスタ, Optional<出勤休日区分>>
 
 }

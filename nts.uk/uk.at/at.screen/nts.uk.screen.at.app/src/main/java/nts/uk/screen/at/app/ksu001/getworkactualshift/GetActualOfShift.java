@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.screen.at.app.ksu001.scheduleactualworkinfo;
+package nts.uk.screen.at.app.ksu001.getworkactualshift;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +24,9 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeave
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmployeeLeaveJobPeriodImport;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.GetListWtypeWtimeUseDailyAttendRecordService;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.GetWorkInforUsedDailyAttenRecordService;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkTypeWorkTimeUseDailyAttendanceRecord;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -38,25 +36,29 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.GetCombinationrAndWorkHolidayAtrService;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoParam;
-import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkScheduleWorkInforDto;
+import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftParam;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftResult;
 import nts.uk.screen.at.app.ksu001.start.SupportCategory;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author laitv
- * ScreenQuery : 勤務実績（勤務情報）を取得する
+ * 勤務実績（シフト）を取得する
  */
 @Stateless
-public class GetWorkActualOfWorkInfo {
-	
+public class GetActualOfShift {
+
 	@Inject
 	private EmpComHisAdapter empComHisAdapter;
 	@Inject
@@ -73,12 +75,16 @@ public class GetWorkActualOfWorkInfo {
 	private WorkTypeRepository workTypeRepo;
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepo;
+	@Inject
+	private BasicScheduleService basicScheduleService;
+	@Inject
+	private WorkTimeSettingService workTimeSettingService;
+	@Inject
+	private ShiftMasterRepository shiftMasterRepo;
 	
-	
-	public List<WorkScheduleWorkInforDto> getDataActualOfWorkInfo(DisplayInWorkInfoParam param) {
+	public ScheduleOfShiftResult getActualOfShift(ScheduleOfShiftParam param) {
 		
-		String companyId = AppContexts.user().companyId();
-		// step 1 start
+		// step 1
 		// call 予定管理状態に応じて日別実績を取得する
 		RequireDailyImpl requireDailyImpl = new RequireDailyImpl(dailyRecordWorkFinder , empComHisAdapter, workCondRepo, empLeaveHisAdapter,
 				empLeaveWorkHisAdapter, employmentHisScheduleAdapter);
@@ -86,149 +92,127 @@ public class GetWorkActualOfWorkInfo {
 		
 		long start = System.nanoTime();
 		
-		Map<ScheManaStatuTempo , Optional<IntegrationOfDaily>> map = DailyResultAccordScheduleStatusService.get(requireDailyImpl, param.listSid, period);
+		Map<ScheManaStatuTempo , Optional<IntegrationOfDaily>> mapDataDaily = DailyResultAccordScheduleStatusService.get(requireDailyImpl, param.listSid, period);
 		
-		List<WorkInfoOfDailyAttendance> listWorkInfo = new ArrayList<WorkInfoOfDailyAttendance>();
-
 		long end = System.nanoTime();
 		long duration = (end - start) / 1000000; // ms;
 		System.out.println("thoi gian get data Daily cua "+ param.listSid.size() + " employee: " + duration + "ms");	
 		
-		map.forEach((k, v) -> {
+		List<WorkInfoOfDailyAttendance> workInfoOfDailyAttendances = new ArrayList<WorkInfoOfDailyAttendance>();
+
+		mapDataDaily.forEach((k, v) -> {
 			if (v.isPresent()) {
 				WorkInfoOfDailyAttendance workInfo = v.get().getWorkInformation();
 				if (workInfo != null) {
-					listWorkInfo.add(workInfo);
+					workInfoOfDailyAttendances.add(workInfo);
 				}
 			}
 		});
 		// step 1 end 
 		
 		// step 2
-		// call 日別勤怠の実績で利用する勤務種類と就業時間帯のリストを取得する
-		WorkTypeWorkTimeUseDailyAttendanceRecord wTypeWTimeUseDailyAttendRecord = GetListWtypeWtimeUseDailyAttendRecordService.getdata(listWorkInfo);
+		// call 日別勤怠の実績で利用する勤務情報のリストを取得する
+		List<WorkInformation> lstWorkInfo = GetWorkInforUsedDailyAttenRecordService.getListWorkInfo(workInfoOfDailyAttendances);
 		
 		// step 3
-		List<String> lstWorkTypeCode = wTypeWTimeUseDailyAttendRecord.getLstWorkTypeCode().stream().map(i -> i.toString()).collect(Collectors.toList());
-		//<<Public>> 指定した勤務種類をすべて取得する
-		List<WorkTypeInfor> lstWorkTypeInfor = this.workTypeRepo.getPossibleWorkTypeAndOrder(companyId, lstWorkTypeCode);
+		// call シフトマスタと出勤休日区分の組み合わせを取得する
+		GetCombinationrAndWorkHolidayAtrService.Require requireImpl2 = new RequireCombiAndWorkHolidayImpl(shiftMasterRepo, basicScheduleService, workTypeRepo,workTimeSettingRepo,workTimeSettingService, basicScheduleService);
+		Map<ShiftMaster,Optional<WorkStyle>> mapShiftMasterWithWorkStyle = GetCombinationrAndWorkHolidayAtrService.getbyWorkInfo(requireImpl2,AppContexts.user().companyId(), lstWorkInfo);
+		
+		List<ShiftMasterMapWithWorkStyle> listShiftMaster = param.listShiftMasterNotNeedGetNew;
+		List<String> listShiftMasterCodeNotNeedGetNew = param.listShiftMasterNotNeedGetNew.stream().map(mapper -> mapper.getShiftMasterCode()).collect(Collectors.toList()); // ko cần get mới
 
+		for (Map.Entry<ShiftMaster, Optional<WorkStyle>> entry : mapShiftMasterWithWorkStyle.entrySet()) {
+			String shiftMasterCd = entry.getKey().getShiftMasterCode().toString();
+			if(listShiftMasterCodeNotNeedGetNew.contains(shiftMasterCd)){
+				// remove di, roi add lai
+				ShiftMasterMapWithWorkStyle obj = listShiftMaster.stream().filter(shiftLocal -> shiftLocal.shiftMasterCode.equals(shiftMasterCd)).findFirst().get();
+				listShiftMaster.remove(obj);
+			}
+			ShiftMasterMapWithWorkStyle shift = new ShiftMasterMapWithWorkStyle(entry.getKey(), entry.getValue().isPresent() ? entry.getValue().get().value + "" : null);
+			listShiftMaster.add(shift);
+		}
+		
 		// step 4
-		List<String> lstWorkTimeCode = wTypeWTimeUseDailyAttendRecord.getLstWorkTimeCode().stream().map(i -> i.toString()).collect(Collectors.toList());
-		List<WorkTimeSetting> lstWorkTimeSetting = workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, lstWorkTimeCode);
-
-		// step 5
-		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = new ArrayList<>();
-		map.forEach((k, v) -> {
+		// loop：日別実績 in 管理状態と勤務実績Map.values()
+		List<ScheduleOfShiftDto> listWorkScheduleShift = new ArrayList<>();
+		mapDataDaily.forEach((k, v) -> {
 			ScheManaStatuTempo key = k;
 			Optional<IntegrationOfDaily> value = v;
 
-			// step 5.1
+			// step 4.1
 			boolean needToWork = key.getScheManaStatus().needCreateWorkSchedule();
+			// 4.2
+			Optional<ShiftMasterMapWithWorkStyle> shiftMaster = Optional.empty();
 			if (value.isPresent()) {
-				// step 5.2
 				IntegrationOfDaily daily = value.get();
-				if (daily.getWorkInformation() != null) {
+				if(daily.getWorkInformation() != null){
 					WorkInformation workInformation = daily.getWorkInformation().getRecordInfo();
 
-					String workTypeCode = workInformation.getWorkTypeCode() == null ? null : workInformation.getWorkTypeCode().toString();
-					String workTypeName = null;
-					Optional<WorkTypeInfor> workTypeInfor = lstWorkTypeInfor.stream().filter(i -> i.getWorkTypeCode().equals(workTypeCode)).findFirst();
-					if (workTypeInfor.isPresent()) {
-						workTypeName = workTypeInfor.get().getName();
-					}
-					String workTimeCode = workInformation.getWorkTimeCode() == null ? null: workInformation.getWorkTimeCode().toString();
-					Optional<WorkTimeSetting> workTimeSetting = lstWorkTimeSetting.stream().filter(i -> i.getWorktimeCode().toString().equals(workTimeCode)).findFirst();
-					String workTimeName = null;
-					if (workTimeSetting.isPresent()) {
-						if (workTimeSetting.get().getWorkTimeDisplayName() != null && workTimeSetting.get().getWorkTimeDisplayName().getWorkTimeAbName() != null) {
-							workTimeName = workTimeSetting.get().getWorkTimeDisplayName().getWorkTimeAbName().toString();
-						}
-					}
+					String workTypeCode = workInformation.getWorkTimeCode() == null ? null : workInformation.getWorkTimeCode().toString();
+					String workTimeCode = workInformation.getWorkTimeCode() == null ? null : workInformation.getWorkTimeCode().toString();
 
-					Integer startTime = null;
-					if (daily.getAttendanceLeave().isPresent()) {
-						Optional<TimeLeavingWork> timeLeavingWork = daily.getAttendanceLeave().get().getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
-						if (timeLeavingWork.isPresent()) {
-							if (timeLeavingWork.get().getAttendanceStamp().isPresent()) {
-								if (timeLeavingWork.get().getAttendanceStamp().get().getStamp().isPresent()) {
-									if (timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay() != null) {
-										if (timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
-											startTime = timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
-										}
-									}
-								}
-							}
-						}
-					}
-
-					Integer endtTime = null;
-					if (daily.getAttendanceLeave().isPresent()) {
-						Optional<TimeLeavingWork> timeLeavingWork = daily.getAttendanceLeave().get().getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
-						if (timeLeavingWork.isPresent()) {
-							if (timeLeavingWork.get().getLeaveStamp().isPresent()) {
-								if (timeLeavingWork.get().getLeaveStamp().get().getStamp().isPresent()) {
-									if (timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay() != null) {
-										if (timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
-											endtTime = timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
-										}
-									}
-								}
-							}
-						}
-					}
-
-					WorkScheduleWorkInforDto dto = WorkScheduleWorkInforDto.builder().employeeId(
-							key.getEmployeeID())
+					shiftMaster = listShiftMaster.stream().filter(shiftLocal -> {
+						if (shiftLocal.workTypeCode.equals(workTypeCode) && shiftLocal.workTimeCode.equals(workTimeCode))
+							return true;
+						return false;
+					}).findFirst();
+					
+					ScheduleOfShiftDto dto = ScheduleOfShiftDto.builder()
+							.employeeId(key.getEmployeeID())
 							.date(key.getDate())
 							.haveData(true)
 							.achievements(true)
 							.confirmed(true)
 							.needToWork(needToWork)
 							.supportCategory(SupportCategory.NotCheering.value)
-							.workTypeCode(workTypeCode)
-							.workTypeName(workTypeName)
-							.workTypeEditStatus(null)
-							.workTimeCode(workTimeCode)
-							.workTimeName(workTimeName)
-							.workTimeEditStatus(null)
-							.startTime(startTime)
-							.startTimeEditState(null)
-							.endTime(endtTime)
-							.endTimeEditState(null)
+							.shiftCode(shiftMaster.isPresent() ? shiftMaster.get().shiftMasterCode : null)
+							.shiftName(shiftMaster.isPresent() ? shiftMaster.get().shiftMasterName : null)
+							.shiftEditState(null)
 							.workHolidayCls(null)
-							.isEdit(false) //
-							.isActive(false) //
+							.isEdit(false)
+							.isActive(false)
 							.build();
-
-					listWorkScheduleWorkInfor.add(dto);
+					listWorkScheduleShift.add(dto);
 				}
 			}
 		});
-
-		return listWorkScheduleWorkInfor;
+		return new ScheduleOfShiftResult(listWorkScheduleShift, listShiftMaster);
 	}
-
+	
 	@AllArgsConstructor
-	private static class RequireWorkInforImpl implements WorkInformation.Require {
+	private static class RequireCombiAndWorkHolidayImpl implements GetCombinationrAndWorkHolidayAtrService.Require {
 		
 		private final String companyId = AppContexts.user().companyId();
 		
 		@Inject
+		private ShiftMasterRepository shiftMasterRepo;
+		@Inject
+		private BasicScheduleService service;
+		@Inject
 		private WorkTypeRepository workTypeRepo;
-		
 		@Inject
 		private WorkTimeSettingRepository workTimeSettingRepository;
-		
 		@Inject
 		private WorkTimeSettingService workTimeSettingService;
-		
 		@Inject
 		private BasicScheduleService basicScheduleService;
+		
+		@Override
+		public List<ShiftMaster> getByListEmp(String companyID, List<String> lstShiftMasterCd) {
+			List<ShiftMaster> data = shiftMasterRepo.getByListShiftMaterCd2(companyId, lstShiftMasterCd);
+			return data;
+		}
+
+		@Override
+		public List<ShiftMaster> getByListWorkInfo(String companyId, List<WorkInformation> lstWorkInformation) {
+			List<ShiftMaster> data = shiftMasterRepo.get(companyId, lstWorkInformation);
+			return data;
+		}
 
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
-			 return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
+			 return service.checkNeededOfWorkTimeSetting(workTypeCode);
 		}
 
 		@Override
@@ -242,8 +226,7 @@ public class GetWorkActualOfWorkInfo {
 		}
 
 		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd,
-				String workTypeCd, Integer workNo) {
+		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd, Integer workNo) {
 			return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
 		}
 
@@ -252,7 +235,8 @@ public class GetWorkActualOfWorkInfo {
 			return basicScheduleService.checkWorkDay(workTypeCode);
 		}
 	}
-
+	
+	
 	@AllArgsConstructor
 	private static class RequireDailyImpl implements DailyResultAccordScheduleStatusService.Require {
 

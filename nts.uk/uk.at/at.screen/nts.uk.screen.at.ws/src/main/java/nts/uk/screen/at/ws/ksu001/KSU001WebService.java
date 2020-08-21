@@ -46,13 +46,6 @@ public class KSU001WebService extends WebService{
 	}
 	
 	@POST
-	@Path("start-test")
-	public StartKSU001Dto test(StartKSU001Param param){
-		StartKSU001Dto data = startKSU001.getDataStartScreen(param);
-		return data;
-	}
-	
-	@POST
 	@Path("shift")
 	public StartKSU001Dto getDataShiftMode(StartKSU001Param param){
 		StartKSU001Dto data = startKSU001.getData(param);
@@ -91,7 +84,7 @@ public class KSU001WebService extends WebService{
 	@POST
 	@Path("getShiftPallets") // get cho cả 2 trường hợp company và workPlace , goi sau khi đ
 	public GetShiftPaletteResult getShiftPallets(GetShiftPaletteParam param) {
-		return getShiftPalette.dataSample(param);
+		return getShiftPalette.getDataShiftPallet(param);
 	}
 	
 	@POST

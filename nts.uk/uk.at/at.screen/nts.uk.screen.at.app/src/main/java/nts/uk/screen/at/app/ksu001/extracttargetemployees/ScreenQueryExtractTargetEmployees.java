@@ -4,8 +4,6 @@
 package nts.uk.screen.at.app.ksu001.extracttargetemployees;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -90,22 +88,6 @@ public class ScreenQueryExtractTargetEmployees {
 	final static String ZEZO_TIME = "00:00";
 	final static String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm";
 	
-	public List<EmployeeInformationImport> dataSample(ExtractTargetEmployeesParam param) {
-		List<String> sids = Arrays.asList("fc4304be-8121-4bad-913f-3e48f4e2a752",
-				"338c26ac-9b80-4bab-aa11-485f3c624186", "89ea1474-d7d8-4694-9e9b-416ea1d6381c",
-				"ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570", "8f9edce4-e135-4a1e-8dca-ad96abe405d6",
-				"9787c06b-3c71-4508-8e06-c70ad41f042a", "62785783-4213-4a05-942b-c32a5ffc1d63",
-				"4859993b-8065-4789-90d6-735e3b65626b", "aeaa869d-fe62-4eb2-ac03-2dde53322cb5",
-				"70c48cfa-7e8d-4577-b4f6-7b715c091f24", "c141daf2-70a4-4f4b-a488-847f4686e848");
-		// step 2, 3
-		EmployeeInformationQueryDtoImport input = new EmployeeInformationQueryDtoImport(sids, param.baseDate, false,
-				false, false, false, false, false);
-		List<EmployeeInformationImport> listEmp = empInfoAdapter.getEmployeeInfo(input);
-		// step 4 gọi domainSv 社員を並び替える.
-		return listEmp;
-	}
-	
-	
 	public List<EmployeeInformationImport> getListEmp(ExtractTargetEmployeesParam param) {
 		
 		// step 1 get domainSv 組織を指定して参照可能な社員を取得する
@@ -178,7 +160,6 @@ public class ScreenQueryExtractTargetEmployees {
 					.systemType(q.getSystemType())
 					.filterByWorkplace(q.getFilterByWorkplace())
 					.workplaceCodes(q.getWorkplaceIds())
-					
 					.filterByEmployment(false)
 					.employmentCodes(new ArrayList<String>())
 					.filterByDepartment(false)
@@ -191,7 +172,6 @@ public class ScreenQueryExtractTargetEmployees {
 					.worktypeCodes(new ArrayList<String>())
 					.filterByClosure(false)
 					.closureIds(new ArrayList<Integer>())
-					
 					.periodStart(GeneralDateTime.now())
 					.periodEnd(GeneralDateTime.now())
 					.includeIncumbents(true)

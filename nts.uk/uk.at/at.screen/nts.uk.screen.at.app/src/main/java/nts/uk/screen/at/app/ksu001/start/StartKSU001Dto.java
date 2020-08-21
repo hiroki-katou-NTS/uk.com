@@ -18,7 +18,7 @@ import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.PersonalCondition
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.EmployeeInformationDto;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.PageInfo;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.TargetShiftPalette;
-import nts.uk.screen.at.app.ksu001.getworkscheduleshift.WorkScheduleShiftDto;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
 
 /**
  * @author laitv
@@ -49,6 +49,6 @@ public class StartKSU001Dto {
 	public List<PageInfo> listPageInfo; // List<ページ, 名称>
 	public TargetShiftPalette targetShiftPalette; // 対象のシフトパレッ
 	public List<ShiftMasterMapWithWorkStyle> shiftMasterWithWorkStyleLst;
-	public List<WorkScheduleShiftDto> listWorkScheduleShift; // ・List<勤務予定（シフト）dto>
+	public List<ScheduleOfShiftDto> listWorkScheduleShift; // ・List<勤務予定（シフト）dto>
 	
 }

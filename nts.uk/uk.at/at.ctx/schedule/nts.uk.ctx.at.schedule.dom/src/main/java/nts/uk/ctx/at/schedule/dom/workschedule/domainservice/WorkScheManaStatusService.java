@@ -34,10 +34,12 @@ public class WorkScheManaStatusService {
 		Map<ScheManaStatuTempo, Optional<WorkSchedule>> map = new HashMap<>();
 		for (int i = 0; i < lstEmployeeID.size(); i++) {
 			long startTime = System.nanoTime();
+			
 			map.putAll(WorkScheManaStatusService.getByEmployee(require,lstEmployeeID.get(i), period));
+			
 			long endTime = System.nanoTime();
 			long duration = (endTime - startTime) / 1000000; // ms;
-			System.out.println("Time of employee: " + i +1 + " : "+ duration);
+			System.out.println("employee: " + duration + "ms");
 		}
 		
 		return  map;
