@@ -67,7 +67,7 @@ export class KdpS01CComponent extends Vue {
                 let item = _.head(_.orderBy(items, ['stampTimeWithSec'], ['desc']));
 
                 if (item) {
-                    vm.screenData.date = item.stampDatetime;
+                    vm.screenData.date = item.stampTimeWithSec;
                     vm.screenData.stampAtr = item.stampArtName;
                     vm.screenData.localtion = [item.workLocationCD, item.workLocationName].join(' ');
                 }
