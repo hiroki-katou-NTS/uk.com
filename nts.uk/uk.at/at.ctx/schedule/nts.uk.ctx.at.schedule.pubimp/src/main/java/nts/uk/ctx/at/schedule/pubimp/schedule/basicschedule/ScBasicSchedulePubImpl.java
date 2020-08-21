@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.pubimp.schedule.basicschedule;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,6 +19,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
@@ -26,8 +30,13 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.Wo
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicScheduleExport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicSchedulePub;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScWorkBreakTimeExport;
+import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScWorkScheduleExport;
+import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScheduleTimeSheetExport;
+import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ShortWorkingTimeSheetExport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.WorkScheduleTimeZoneExport;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 
 /**
  * The Class ScBasicSchedulePubImpl.
@@ -52,14 +61,9 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 		return this.repository.find(employeeId, baseDate).map(domain -> this.convertExport(domain));
 	}
 	
-	/*
-	 * -PhuongDV- for test
-	 * (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicSchedulePub#findById(java.lang.String, nts.arc.time.GeneralDate)
-	 */
 	@Override
-	public String findByIdTest(String employeeId, GeneralDate baseDate) {
-		// return file here
+	public Optional<ScWorkScheduleExport> findByIdNew(String employeeId, GeneralDate baseDate) {
+	// return file here
 		try {
 			String currentPath = Paths.get(".").toAbsolutePath().normalize().toString();
 			File fXmlFile = new File(currentPath + "\\datatest\\staff.xml");
@@ -70,11 +74,72 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 			doc.getDocumentElement().normalize();
 			
 			String testXml = doc.getDocumentElement().getNodeName();
+			String sId = "";
+			GeneralDate date = GeneralDate.today();
+			Element eElement = (Element) doc.getElementsByTagName("data").item(0);
+			String sid = eElement.getElementsByTagName("EmployeeId").item(0).getTextContent();
+			String dateXml = eElement.getElementsByTagName("Date").item(0).getTextContent();
+			String workType = eElement.getElementsByTagName("WorkType").item(0).getTextContent();
+			String workTime = eElement.getElementsByTagName("WorkTime").item(0).getTextContent();
+			List<ScheduleTimeSheetExport> scheduleTimeSheetExports = new ArrayList<ScheduleTimeSheetExport>(); 
+			NodeList nodeScheduleTimeSheetExport = eElement.getElementsByTagName("ScheduleTimeSheetExport");
+			for (int itr = 0; itr < nodeScheduleTimeSheetExport.getLength(); itr++) {
+				Node node = nodeScheduleTimeSheetExport.item(itr); 
+				if (node.getNodeType() == Node.ELEMENT_NODE) {
+					Element e = (Element) node; 
+					Integer workNo = Integer.parseInt(e.getElementsByTagName("WorkNo").item(0).getTextContent());
+					Integer attendance = Integer.parseInt(e.getElementsByTagName("Attendance").item(0).getTextContent());
+					Integer leaveWork = Integer.parseInt(e.getElementsByTagName("LeaveWork").item(0).getTextContent());
+					ScheduleTimeSheetExport scheduleTimeSheetExport = new ScheduleTimeSheetExport(workNo, new TimeWithDayAttr(attendance), new TimeWithDayAttr(leaveWork));
+					
+					scheduleTimeSheetExports.add(scheduleTimeSheetExport);
+				}
+			}
+			List<ShortWorkingTimeSheetExport> shortWorkingTimeSheetExports = new ArrayList<ShortWorkingTimeSheetExport>(); 
+			NodeList nodeShortWorkingTimeSheetExports = eElement.getElementsByTagName("ShortWorkingTimeSheetExport");
+			for (int itr = 0; itr < nodeShortWorkingTimeSheetExports.getLength(); itr++) {
+				Node node = nodeShortWorkingTimeSheetExports.item(itr); 
+				if (node.getNodeType() == Node.ELEMENT_NODE) {
+					Element e = (Element) node; 
+					Integer shortWorkTimeFrameNo = Integer.parseInt(e.getElementsByTagName("ShortWorkTimeFrameNo").item(0).getTextContent());
+					Integer childCareAttr = Integer.parseInt(e.getElementsByTagName("ChildCareAttr").item(0).getTextContent());
+					Integer startTime = Integer.parseInt(e.getElementsByTagName("StartTime").item(0).getTextContent());
+					Integer endTime = Integer.parseInt(e.getElementsByTagName("EndTime").item(0).getTextContent());
+					Integer deductionTime = Integer.parseInt(e.getElementsByTagName("DeductionTime").item(0).getTextContent());
+					Integer shortTime = Integer.parseInt(e.getElementsByTagName("ShortTime").item(0).getTextContent());
+					
+					ShortWorkingTimeSheetExport shortWorkingTimeSheetExport = new ShortWorkingTimeSheetExport(
+							shortWorkTimeFrameNo,
+							childCareAttr,
+							startTime,
+							endTime,
+							deductionTime,
+							shortTime);
+					shortWorkingTimeSheetExports.add(shortWorkingTimeSheetExport);
+				}
+			}
+			ScWorkScheduleExport scheduleExport = new ScWorkScheduleExport(
+					sid,
+					date,
+					workType,
+					workTime,
+					scheduleTimeSheetExports,
+					shortWorkingTimeSheetExports);
+			return Optional.of(scheduleExport);
 			
-			return "";
+			
 		}catch(Exception e) {
-			return "";
+			return Optional.empty();
 		}
+	}
+	/*
+	 * -PhuongDV- for test
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicSchedulePub#findById(java.lang.String, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public String findByIdTest(String employeeId, GeneralDate baseDate) {
+		return "";
 	}
 	
 	@Override
