@@ -219,7 +219,6 @@ export module model {
     }
 
     export interface IScreenBParam {
-        stampDate: Date;
         resultDisplayTime: number;
         employeeId: string;
         employeeCode: string;
