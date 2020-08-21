@@ -8,7 +8,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.exo.condset.OutputPeriodSetting;
 import nts.uk.ctx.exio.dom.exo.condset.OutputPeriodSettingRepository;
 import nts.uk.ctx.exio.infra.entity.exi.condset.OiomtOutputPeriodSet;
-import nts.uk.ctx.exio.infra.entity.exi.condset.OiomtOutputPeriodSetPk;
 
 @Stateless
 public class JpaOutputPeriodSettingRepository extends JpaRepository implements OutputPeriodSettingRepository {
@@ -24,7 +23,7 @@ public class JpaOutputPeriodSettingRepository extends JpaRepository implements O
 				.query(QUERY_SELECT_BY_ID, OiomtOutputPeriodSet.class)
 				.setParameter("cId", cid)
 				.setParameter("conditionSetCd", conditionSetCd)
-				.getSingle(OiomtOutputPeriodSet::toDomain);
+				.getSingle(OutputPeriodSetting::createFromMemento);
 	}
 
 	@Override
@@ -40,48 +39,24 @@ public class JpaOutputPeriodSettingRepository extends JpaRepository implements O
 		// Convert data to entity
 		OiomtOutputPeriodSet entity = JpaOutputPeriodSettingRepository.toEntity(domain);
 		OiomtOutputPeriodSet oldEntity = this.queryProxy().find(entity.getPk(), OiomtOutputPeriodSet.class).get();
-		oldEntity.setPeriodSet(entity.getPeriodSet());
-		oldEntity.setClosuredayAtr(entity.getClosuredayAtr());
-		oldEntity.setStartDateCdAtr(entity.getStartDateCdAtr());
-		oldEntity.setEndDateCdAtr(entity.getEndDateCdAtr());
-		oldEntity.setBaseDateAtr(entity.getBaseDateAtr());
-		oldEntity.setStartDateAdjust(entity.getStartDateAdjust());
-		oldEntity.setEndDateAdjust(entity.getEndDateAdjust());
-		oldEntity.setSpecifyStartDate(entity.getSpecifyStartDate());
-		oldEntity.setSpecifyEndDate(entity.getSpecifyEndDate());
-		oldEntity.setSpecifyBaseDate(entity.getSpecifyBaseDate());
+		oldEntity.setPeriodSetting(entity.getPeriodSetting());
+		oldEntity.setClosureDayAtr(entity.getClosureDayAtr());
+		oldEntity.setBaseDateClassification(entity.getBaseDateClassification());
+		oldEntity.setBaseDateSpecify(entity.getBaseDateSpecify());
+		oldEntity.setStartDateClassification(entity.getStartDateClassification());
+		oldEntity.setStartDateSpecify(entity.getStartDateSpecify());
+		oldEntity.setStartDateAdjustment(entity.getStartDateAdjustment());
+		oldEntity.setEndDateClassification(entity.getEndDateClassification());
+		oldEntity.setEndDateSpecify(entity.getEndDateSpecify());
+		oldEntity.setEndDateAdjustment(entity.getEndDateAdjustment());
 		// Update entity
 		this.commandProxy().update(oldEntity);
 	}
 	
 	private static OiomtOutputPeriodSet toEntity(OutputPeriodSetting domain) {
-		OiomtOutputPeriodSetPk pk = OiomtOutputPeriodSetPk.builder()
-				.cId(domain.getCid())
-				.conditionSetCd(domain.getConditionSetCode().v())
-				.build();
-		return OiomtOutputPeriodSet.builder()
-				.pk(pk)
-				.periodSet(domain.getPeriodSetting().value)
-				.baseDateAtr(domain.getBaseDateClassification()
-						.map(v -> v.value)
-						.orElse(null))
-				.specifyBaseDate(domain.getBaseDateSpecify().orElse(null))
-				.startDateCdAtr(domain.getStartDateClassification()
-						.map(v -> v.value)
-						.orElse(null))
-				.specifyStartDate(domain.getStartDateSpecify().orElse(null))
-				.startDateAdjust(domain.getStartDateAdjustment()
-						.map(v -> v.v())
-						.orElse(null))
-				.endDateCdAtr(domain.getEndDateClassification()
-						.map(v -> v.value)
-						.orElse(null))
-				.specifyEndDate(domain.getEndDateSpecify().orElse(null))
-				.endDateAdjust(domain.getEndDateAdjustment()
-						.map(v -> v.v())
-						.orElse(null))
-				.closuredayAtr(domain.getDeadlineClassification().orElse(null))
-				.build();
+		OiomtOutputPeriodSet entity = new OiomtOutputPeriodSet();
+		domain.setMemento(entity);
+		return entity;
 	}
 
 }

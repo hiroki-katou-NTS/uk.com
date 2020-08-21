@@ -25,30 +25,9 @@ public class OutputPeriodSettingFinder {
 	}
 
 	private OutputPeriodSettingDto toDto(OutputPeriodSetting domain) {
-		return OutputPeriodSettingDto.builder()
-				.cid(domain.getCid())
-				.periodSetting(domain.getPeriodSetting().value)
-				.conditionSetCode(domain.getConditionSetCode().v())
-				.baseDateClassification(domain.getBaseDateClassification()
-						.map(v -> v.value)
-						.orElse(null))
-				.baseDateSpecify(domain.getBaseDateSpecify().orElse(null))
-				.startDateClassification(domain.getStartDateClassification()
-						.map(v -> v.value)
-						.orElse(null))
-				.startDateSpecify(domain.getStartDateSpecify().orElse(null))
-				.startDateAdjustment(domain.getStartDateAdjustment()
-						.map(v -> v.v())
-						.orElse(null))
-				.endDateClassification(domain.getEndDateClassification()
-						.map(v -> v.value)
-						.orElse(null))
-				.endDateSpecify(domain.getEndDateSpecify().orElse(null))
-				.endDateAdjustment(domain.getEndDateAdjustment()
-						.map(v -> v.v())
-						.orElse(null))
-				.deadlineClassification(domain.getDeadlineClassification().orElse(null))
-				.build();
+		OutputPeriodSettingDto dto = new OutputPeriodSettingDto();
+		domain.setMemento(dto);
+		return dto;
 	}
 
 }

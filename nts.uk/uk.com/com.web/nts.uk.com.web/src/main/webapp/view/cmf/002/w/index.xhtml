@@ -59,8 +59,8 @@
             <div id="W2_2" tabindex="2" data-bind="ntsComboBox: {
               name: '#[CMF002_533]',
               width: 200,
-              value: selectedDeadlineClassification,
-              options: listDeadlineClassification,
+              value: selectedClosureDayAtr,
+              options: listClosureDayAtr,
               optionsValue: 'id',
               optionsText: 'name',
               visibleItemsCount: 5,
@@ -94,25 +94,29 @@
           </div>
 
           <!-- W4 -->
-          <div class="div-line">
-            <!-- W4-1 -->
-            <div id="W4_1" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_535')}</div>
-            <!-- W4_2 -->
-            <input id="W4_2" tabindex="3" class="cmf002-w-input" data-bind="ntsNumberEditor: {
+          <com:ko tag="ifnot" bind="isStartDateAdjustment">
+            <div class="div-line">
+              <!-- W4-1 -->
+              <div id="W4_1" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_535')}</div>
+              <!-- W4_2 -->
+              <input id="W4_2" tabindex="3" class="cmf002-w-input" data-bind="ntsNumberEditor: {
               name: '#[CMF002_535]',
               value: startDateAdjustment,
               constraint: ['DateAdjustment']
             }" />
-          </div>
-          <div class="div-line">
-            <!-- W4-3 -->
-            <div id="W4_3" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_536')}</div>
-            <!-- W4_4 -->
-            <div id="W4_4" tabindex="4" data-bind="ntsDatePicker: {
+            </div>
+          </com:ko>
+          <com:ko tag="if" bind="isStartDateAdjustment">
+            <div class="div-line">
+              <!-- W4-3 -->
+              <div id="W4_3" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_536')}</div>
+              <!-- W4_4 -->
+              <div id="W4_4" tabindex="4" data-bind="ntsDatePicker: {
               name: '#[CMF002_536]',
               value: startDateSpecified,
             }"></div>
-          </div>
+            </div>
+          </com:ko>
 
           <!-- W5 -->
           <div class="div-line">
@@ -136,25 +140,29 @@
           </div>
 
           <!-- W6 -->
-          <div class="div-line">
-            <!-- W6-1 -->
-            <div id="W6_1" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_539')}</div>
-            <!-- W6_2 -->
-            <input id="W6_2" tabindex="6" class="cmf002-w-input" data-bind="ntsNumberEditor: {
+          <com:ko tag="ifnot" bind="isEndDateAdjustment">
+            <div class="div-line">
+              <!-- W6-1 -->
+              <div id="W6_1" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_539')}</div>
+              <!-- W6_2 -->
+              <input id="W6_2" tabindex="6" class="cmf002-w-input" data-bind="ntsNumberEditor: {
               name: '#[CMF002_538]',
               value: endDateAdjustment,
               constraint: ['DateAdjustment']
             }" />
-          </div>
-          <div class="div-line">
-            <!-- W6-3 -->
-            <div id="W6_3" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_536')}</div>
-            <!-- W6_4 -->
-            <div id="W6_4" tabindex="7" data-bind="ntsDatePicker: {
+            </div>
+          </com:ko>
+          <com:ko tag="if" bind="isEndDateAdjustment">
+            <div class="div-line">
+              <!-- W6-3 -->
+              <div id="W6_3" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_536')}</div>
+              <!-- W6_4 -->
+              <div id="W6_4" tabindex="7" data-bind="ntsDatePicker: {
               name: '#[CMF002_539]',
               value: endDateSpecified,
             }"></div>
-          </div>
+            </div>
+          </com:ko>
 
           <!-- W7 -->
           <div class="div-line">

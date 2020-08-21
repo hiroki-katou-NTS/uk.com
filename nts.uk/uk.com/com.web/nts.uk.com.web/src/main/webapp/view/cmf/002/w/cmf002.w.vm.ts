@@ -13,8 +13,8 @@ module nts.uk.com.view.cmf002.w {
     ]);
     selectedPeriodSetting: KnockoutObservable<any> = ko.observable(null);
     // W2
-    listDeadlineClassification: KnockoutObservableArray<any> = ko.observableArray([]);
-    selectedDeadlineClassification: KnockoutObservable<any> = ko.observable(null);
+    listClosureDayAtr: KnockoutObservableArray<any> = ko.observableArray([]);
+    selectedClosureDayAtr: KnockoutObservable<any> = ko.observable(null);
     // W3
     listStartDateSegment: KnockoutObservableArray<any> = ko.observableArray([
       { code: StartDateClassificationCode.DEADLINE_START, name: nts.uk.resource.getText('CMF002_542') },
@@ -25,6 +25,7 @@ module nts.uk.com.view.cmf002.w {
     ]);
     selectedStartDateSegment: KnockoutObservable<any> = ko.observable(null);
     // W4
+    isStartDateAdjustment: KnockoutObservable<boolean> = ko.observable(null);
     startDateAdjustment: KnockoutObservable<any> = ko.observable(null);
     startDateSpecified: KnockoutObservable<any> = ko.observable(null);
     // W5
@@ -37,6 +38,7 @@ module nts.uk.com.view.cmf002.w {
     ]);
     selectedEndDateSegment: KnockoutObservable<any> = ko.observable(null);
     // W6
+    isEndDateAdjustment: KnockoutObservable<boolean> = ko.observable(null);
     endDateAdjustment: KnockoutObservable<any> = ko.observable(null);
     endDateSpecified: KnockoutObservable<any> = ko.observable(null);
     // W7
@@ -57,6 +59,15 @@ module nts.uk.com.view.cmf002.w {
       const params = nts.uk.ui.windows.getShared('CMF002_W_PARAMS');
       vm.conditionSetCode = params.conditionSetCode;
       vm.selectedPeriodSetting(1);
+      // ※W3_2「開始日区分ドロップダウンリスト」が「05 日付指定」の場合、開始日調整を開始日指定する項目に変更。
+      vm.selectedStartDateSegment.subscribe(function(value) {
+        vm.isStartDateAdjustment(value === StartDateClassificationCode.DATE_SPECIFICATION);
+      });
+      // ※W5_2「開始日区分ドロップダウンリスト」が「05 日付指定」の場合、開始日調整を開始日指定する項目に変更。
+      vm.selectedEndDateSegment.subscribe(function(value) {
+        vm.isEndDateAdjustment(value === EndDateClassificationCode.DATE_SPECIFICATION);
+      });
+
       vm.$blockui('grayout');
       // ドメインモデル「就業締め日」を取得する
       service.findAllClosureHistory()
@@ -76,7 +87,7 @@ module nts.uk.com.view.cmf002.w {
     private setListClosureHistory(response: ClosureHistoryFindDto[]): JQueryPromise<any> {
       const dfd = $.Deferred();
       const vm = this;
-      vm.listDeadlineClassification(response);
+      vm.listClosureDayAtr(response);
       return dfd.resolve();
     }
 
@@ -90,7 +101,7 @@ module nts.uk.com.view.cmf002.w {
       if (response) {
         vm.isNew = false;
         vm.selectedPeriodSetting(response.periodSetting);
-        vm.selectedDeadlineClassification(response.deadlineClassification);
+        vm.selectedClosureDayAtr(response.closureDayAtr);
         vm.selectedBaseDateSegment(response.baseDateClassification);
         vm.baseDateSpecified(response.baseDateSpecify);
         vm.selectedEndDateSegment(response.endDateClassification);
@@ -115,7 +126,7 @@ module nts.uk.com.view.cmf002.w {
         isNew: vm.isNew,
         periodSetting: vm.selectedPeriodSetting(),
         conditionSetCode: vm.conditionSetCode,
-        deadlineClassification: vm.selectedDeadlineClassification(),
+        closureDayAtr: vm.selectedClosureDayAtr(),
         baseDateClassification: vm.selectedBaseDateSegment(),
         baseDateSpecify: vm.baseDateSpecified() ? moment.utc(vm.baseDateSpecified(), 'YYYY/MM/DD').toISOString() : null,
         endDateClassification: vm.selectedEndDateSegment(),
@@ -201,30 +212,30 @@ module nts.uk.com.view.cmf002.w {
     cid: string;
     conditionSetCode: string;
     periodSetting: number;
-    deadlineClassification: number;
+    closureDayAtr: number;
     baseDateClassification: number;
     baseDateSpecify: string;
-    endDateClassification: number;
-    endDateSpecify: string;
-    endDateAdjustment: number;
     startDateClassification: number;
     startDateSpecify: string;
     startDateAdjustment: number;
+    endDateClassification: number;
+    endDateSpecify: string;
+    endDateAdjustment: number;
   }
 
   export class SaveOutputPeriodSetCommand {
     isNew: boolean;
     periodSetting: number;
     conditionSetCode: string;
-    deadlineClassification: number;
+    closureDayAtr: number;
     baseDateClassification: number;
     baseDateSpecify: string;
-    endDateClassification: number;
-    endDateSpecify: string;
-    endDateAdjustment: number;
     startDateClassification: number;
     startDateSpecify: string;
     startDateAdjustment: number;
+    endDateClassification: number;
+    endDateSpecify: string;
+    endDateAdjustment: number;
 
     constructor(init?: Partial<SaveOutputPeriodSetCommand>) {
       $.extend(this, init);

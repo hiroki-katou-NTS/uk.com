@@ -1,24 +1,16 @@
 package nts.uk.ctx.exio.app.command.exo.condset;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.exio.dom.exo.condset.BaseDateClassificationCode;
-import nts.uk.ctx.exio.dom.exo.condset.DateAdjustment;
-import nts.uk.ctx.exio.dom.exo.condset.EndDateClassificationCode;
-import nts.uk.ctx.exio.dom.exo.condset.ExternalOutputConditionCode;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.exo.condset.OutputPeriodSetting;
 import nts.uk.ctx.exio.dom.exo.condset.OutputPeriodSettingRepository;
-import nts.uk.ctx.exio.dom.exo.condset.StartDateClassificationCode;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 「出力期間設定」に更新登録する
@@ -34,35 +26,76 @@ public class SaveOutputPeriodSetCommandHandler extends CommandHandler<SaveOutput
 	protected void handle(CommandHandlerContext<SaveOutputPeriodSetCommand> context) {
 		SaveOutputPeriodSetCommand command = context.getCommand();
 		String cId = AppContexts.user().companyId();
-		OutputPeriodSetting domain = OutputPeriodSetting.builder()
-				.cid(cId)
-				.periodSetting(EnumAdaptor.valueOf(command.getPeriodSetting(), NotUseAtr.class))
-				.conditionSetCode(new ExternalOutputConditionCode(command.getConditionSetCode()))
-				.deadlineClassification(Optional.ofNullable(command.getDeadlineClassification()))
-				.baseDateClassification(command.getBaseDateClassification() != null 
-						? Optional.of(EnumAdaptor.valueOf(command.getBaseDateClassification(), BaseDateClassificationCode.class))
-						: Optional.empty())
-				.baseDateSpecify(Optional.ofNullable(command.getBaseDateSpecify()))
-				.startDateClassification(command.getStartDateClassification() != null 
-						? Optional.of(EnumAdaptor.valueOf(command.getStartDateClassification(), StartDateClassificationCode.class))
-						: Optional.empty())
-				.startDateSpecify(Optional.ofNullable(command.getStartDateSpecify()))
-				.startDateAdjustment(command.getStartDateAdjustment() != null 
-						? Optional.of(new DateAdjustment(command.getStartDateAdjustment()))
-						: Optional.empty())
-				.endDateClassification(command.getEndDateClassification() != null 
-						? Optional.of(EnumAdaptor.valueOf(command.getEndDateClassification(), EndDateClassificationCode.class))
-						: Optional.empty())
-				.endDateSpecify(Optional.ofNullable(command.getEndDateSpecify()))
-				.endDateAdjustment(command.getEndDateAdjustment() != null 
-						? Optional.of(new DateAdjustment(command.getEndDateAdjustment()))
-						: Optional.empty())
-				.build();
+		OutputPeriodSetting domain = this.toDomain(cId, command);
 		if (command.getIsNew()) {
 			this.repo.add(domain);
 		} else {
 			this.repo.update(domain);
 		}
+	}
+
+	private OutputPeriodSetting toDomain(String cId, SaveOutputPeriodSetCommand command) {
+		return OutputPeriodSetting.createFromMemento(new OutputPeriodSetting.MementoGetter() {
+			@Override
+			public String getCid() {
+				return cId;
+			}
+			
+			@Override
+			public int getPeriodSetting() {
+				return command.getPeriodSetting();
+			}
+			
+			@Override
+			public String getConditionSetCode() {
+				return command.getConditionSetCode();
+			}
+			
+			@Override
+			public Integer getClosureDayAtr() {
+				return command.getClosureDayAtr();
+			}
+			
+			@Override
+			public GeneralDate getBaseDateSpecify() {
+				return command.getBaseDateSpecify();
+			}
+			
+			@Override
+			public Integer getBaseDateClassification() {
+				return command.getBaseDateClassification();
+			}
+			
+			@Override
+			public GeneralDate getStartDateSpecify() {
+				return command.getStartDateSpecify();
+			}
+			
+			@Override
+			public Integer getStartDateClassification() {
+				return command.getStartDateClassification();
+			}
+			
+			@Override
+			public Integer getStartDateAdjustment() {
+				return command.getStartDateAdjustment();
+			}
+			
+			@Override
+			public GeneralDate getEndDateSpecify() {
+				return command.getEndDateSpecify();
+			}
+			
+			@Override
+			public Integer getEndDateClassification() {
+				return command.getEndDateClassification();
+			}
+			
+			@Override
+			public Integer getEndDateAdjustment() {
+				return command.getEndDateAdjustment();
+			}
+		});
 	}
 
 }
