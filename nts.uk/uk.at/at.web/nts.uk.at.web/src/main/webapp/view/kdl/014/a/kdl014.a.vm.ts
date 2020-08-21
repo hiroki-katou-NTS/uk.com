@@ -195,18 +195,18 @@ module nts.uk.at.view.kdl014.a {
             self.workLocationName = param.workLocationName;
             
             if (_.includes([0,1,2,3,4,8], param.stampMeans)) {
-                self.time = "<span>" + getText("KDP002_120") + "   " + param.time + "</span>";
+                self.time = "<span>" + getText("KDP002_120") + "</span><span class='time'>" + param.time + "</span>";
             
                 // 5:スマホ打刻
             } else if (param.stampMeans == 5) {
-                self.time = "<span>" + getText("KDP002_121") + "   " + param.time + "</span>";
+                self.time = "<span>" + getText("KDP002_121") + "</span><span class='time'>" + param.time + "</span>";
 
                 // 6:タイムレコーダー打刻
             } else if (param.stampMeans == 6) {
-                self.time = "<span>" + getText("KDP002_122") + "   " + param.time + "</span>";
+                self.time = "<span>" + getText("KDP002_122") + "</span><span class='time'>" + param.time + "</span>";
 
             } else {
-                self.time = "<span>     " + param.time + "</span>";
+                self.time = "<span class='time'>" + param.time + "</span>";
             }
             
             let date = moment(param.stampDateTime).format("YYYY/MM/DD");
