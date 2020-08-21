@@ -50,23 +50,23 @@
         <table class="table table-striped">
           <thead>
             <tr>
-              <th class="px-1" scope="col">ID</th>
-              <th class="px-1" scope="col">First</th>
-              <th class="px-1" scope="col">Last</th>
-              <th class="px-1" scope="col">Handle</th>
-              <th class="px-1 border-right-0" scope="col">Test 5</th>
+              <th class="px-1" scope="col">{{"KAFS08_34" | i18n}}</th>
+              <th class="px-1" scope="col">{{"KAFS08_35" | i18n}}</th>
+              <th class="px-1" scope="col">{{"KAFS08_36" | i18n}}</th>
+              <th class="px-1" scope="col">{{"KAFS08_37" | i18n}}</th>
+              <th class="px-1 border-right-0" scope="col">{{"KAFS08_38" | i18n}}</th>
               <th class="border-left-0"></th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td class="px-1">03/12/2020</td>
+              <td class="px-1">{{"KAFS08_39" | i18n}}</td>
               <td class="px-1">Mark</td>
               <td class="px-1">Otto</td>
               <td class="px-1">@mdo</td>
               <td class="border-right-0 px-1">@kfc</td>
               <td class="text-center px-0 border-left-0">
-                <fa-font size="1" icon="angle-right" />
+                <fa-font v-bind:size="'1'" icon="angle-right" />
               </td>
             </tr>
             <tr>
