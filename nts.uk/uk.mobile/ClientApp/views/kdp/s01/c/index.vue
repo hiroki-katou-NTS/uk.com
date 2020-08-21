@@ -19,9 +19,13 @@
       <label>{{ "KDPS01_27" | i18n }}</label>
     </div>
     <div class="col-12 value">
-      <label class="col-7 px-1">{{
-        screenData.date | date("YYYY/MM/DD")
-      }}</label>
+      <label
+        v-bind:style="{
+          color: getTextColor(screenData.date)
+        }"
+        class="col-7 px-1"
+        >{{ screenData.date | date("YYYY/MM/DD") }}</label
+      >
       <label
         class="col-5 stamp-time font-weight-bold"
         style="line-height: 1rem;"

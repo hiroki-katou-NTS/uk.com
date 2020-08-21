@@ -67,7 +67,7 @@ export class KdpS01CComponent extends Vue {
                 let item = _.head(_.orderBy(items, ['stampTimeWithSec'], ['desc']));
 
                 if (item) {
-                    vm.screenData.date = item.stampDatetime;
+                    vm.screenData.date = item.stampTimeWithSec;
                     vm.screenData.stampAtr = item.stampArtName;
                     vm.screenData.localtion = [item.workLocationCD, item.workLocationName].join(' ');
                 }
@@ -161,6 +161,21 @@ export class KdpS01CComponent extends Vue {
         }
 
         return result;
+    }
+
+    public getTextColor(date) {
+
+        const daysColor = [
+            { day: 0, color: '#FF0000' },
+            { day: 6, color: '#0000FF' }
+        ];
+
+        let day = moment.utc(date).day(),
+
+            dayColor = _.find(daysColor, ['day', day]);
+
+        return dayColor ? dayColor.color : '#000000';
+
     }
 
 
