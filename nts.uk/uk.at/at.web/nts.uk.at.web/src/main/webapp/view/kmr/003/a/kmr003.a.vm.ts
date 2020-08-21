@@ -240,14 +240,14 @@ module nts.uk.at.kmr003.a {
                         headerText: item.bentoName,
                         group: [
                             {
-                                headerText: item.unit,
+                                headerText: item.unitLabel,
                                 key: item.key,
                                 dataType: 'number',
                                 width: '100px',
                                 columnCssClass: 'halign-right',
                                 constraint: {
                                     primitiveValue: 'BentoReservationCount',
-                                    required: true
+                                    required: false
                                 }
                             }
                         ]
@@ -293,27 +293,38 @@ module nts.uk.at.kmr003.a {
 
         updateReservation() {
             let self = this;
-            self.$blockui("invisible");
+            block.invisible();
             let reservations: Array<ReservationModifyEmployeeDto> = $("#grid").mGrid("dataSource", true);
 
-            if (self.searchConditionValue() == 3){
+            let isNew = false;
+            if (self.searchConditionValue() == 3) {
+                isNew = true;
+            } 
 
-            }else{
-                let commandUpdate = new ForceUpdateBentoReserveCommand(self.date().toISOString(), false, self.closingTimeFrameValue());
-                commandUpdate.setReservationInfos(reservations, self.headerInfos);
-                console.log(commandUpdate)
-                self.$ajax(API.BENTO_UPDATE, commandUpdate).done(() => {
-                    self.$dialog.info({ messageId: "Msg_15" }).then(function () {
-                        self.$blockui("clear");
-                    });
-                }).always(() => self.$blockui("clear"));
-            }
-            
-            
+            let commandUpdate = new ForceUpdateBentoReserveCommand(self.date().toISOString(), isNew, self.closingTimeFrameValue());
+            commandUpdate.setReservationInfos(reservations, self.headerInfos);
+            console.log(commandUpdate)
+            self.$ajax(API.BENTO_UPDATE, commandUpdate).done(() => {
+                self.$dialog.info({ messageId: "Msg_15" }).then(function () {
+                    block.clear();
+                });
+            }).always(() => block.clear());
         }
 
         deleteReservation() {
             let self = this;
+            block.invisible();
+            let reservations: Array<ReservationModifyEmployeeDto> = $("#grid").mGrid("dataSource", true);
+            let reservationDeletes = _.filter(reservations, (reservation: ReservationModifyEmployeeDto) => { return reservation.isDelete; });
+
+            let commandDelete = new ForceDeleteBentoReserveCommand(self.date().toISOString(), self.closingTimeFrameValue());
+            commandDelete.setReservationInfos(reservationDeletes);
+            console.log(commandDelete)
+            self.$ajax(API.BENTO_DELETE, commandDelete).done(() => {
+                self.$dialog.info({ messageId: "Msg_16" }).then(function () {
+                    block.clear();
+                });
+            }).always(() => block.clear());
         }
     }
 
@@ -423,13 +434,14 @@ module nts.uk.at.kmr003.a {
         unit: string;
 
         key: string;
-
+        unitLabel: string;
         constructor(item: IHeaderInfoDto) {
             this.frameNo = item.frameNo;
             this.bentoName = item.bentoName;
             this.unit = item.unit;
 
             this.key = item.frameNo + "_" + item.bentoName;
+            this.unitLabel = "(" + item.unit + ")";
         }
     }
 
@@ -551,7 +563,7 @@ module nts.uk.at.kmr003.a {
             self.details = [];
             _.forEach(bentos, (bento: HeaderInfoDto) => {
                 let bentoCount = reservation[bento.key];
-                if (!isNaN(bentoCount)) {
+                if (!isNaN(bentoCount) && bentoCount != null) {
                     self.details.push(new BentoReserveDetailCommand(bento.frameNo, bentoCount));
                 }
             })
@@ -565,6 +577,33 @@ module nts.uk.at.kmr003.a {
         constructor(frameNo: number, bentoCount: number) {
             this.frameNo = frameNo;
             this.bentoCount = bentoCount;
+        }
+    }
+
+    class ForceDeleteBentoReserveCommand {
+        reservationInfos: Array<ReservationInfoCommand>;
+        date: any;
+        closingTimeFrame: number;
+
+        constructor(date: any, closingTimeFrame: number) {
+            this.date = date;
+            this.closingTimeFrame = closingTimeFrame;
+        }
+
+        setReservationInfos(reservations: Array<ReservationModifyEmployeeDto>) {
+            this.reservationInfos = _.map(reservations, (reservation: ReservationModifyEmployeeDto) => {
+                return new ReservationInfoCommand(reservation.reservationCardNo, reservation.reservationMemberId);
+            });
+        }
+    }
+
+    class ReservationInfoCommand {
+        reservationCardNo: String;
+        empployeeId: String;
+
+        constructor(reservationCardNo: String, empployeeId: String) {
+            this.reservationCardNo = reservationCardNo;
+            this.empployeeId = empployeeId;
         }
     }
 }

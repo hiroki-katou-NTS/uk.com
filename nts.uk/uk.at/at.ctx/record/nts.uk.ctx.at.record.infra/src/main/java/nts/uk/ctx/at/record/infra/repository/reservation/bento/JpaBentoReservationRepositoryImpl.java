@@ -355,7 +355,26 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 
 	@Override
 	public void update(BentoReservation bentoReservation) {
-		commandProxy().update(KrcdtReservation.fromDomain(bentoReservation));
+		//this.delete(bentoReservation);
+		//this.add(bentoReservation);
+		//commandProxy().update(KrcdtReservation.fromDomain(bentoReservation));
+		String query = FIND_ALL_BY_DATE;
+		query = query.replaceFirst("cardNo", bentoReservation.getRegisterInfor().getReservationCardNo());
+		query = query.replaceFirst("date", bentoReservation.getReservationDate().getDate().toString());
+		query = query.replaceFirst("frameAtr", String.valueOf(bentoReservation.getReservationDate().getClosingTimeFrame().value));
+
+		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+			ResultSet rs = stmt.executeQuery();
+			List<KrcdtReservation> bentoReservationLst = toEntity(createFullJoinBentoReservation(rs));
+			if(!CollectionUtil.isEmpty(bentoReservationLst)) {
+				KrcdtReservation entity = bentoReservationLst.get(0);
+				List<Object> detailRemove = new ArrayList<>();
+				commandProxy().update(entity.updateFromDomain(bentoReservation));
+				//commandProxy().removeAll(detailRemove);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 
 	@Override

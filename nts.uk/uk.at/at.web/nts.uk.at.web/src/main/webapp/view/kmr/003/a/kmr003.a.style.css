@@ -34,3 +34,7 @@
 #grid .mgrid-fixed.mgrid-header .mgrid-fixed-table tbody tr:first-child{
     height: 29px;
 }
+
+#grid .mgrid-fixed .mgrid-fixed-table tbody tr td:nth-child(3), #grid .mgrid-fixed .mgrid-fixed-table tbody tr td:nth-child(5)  {
+    text-align: center;
+}
