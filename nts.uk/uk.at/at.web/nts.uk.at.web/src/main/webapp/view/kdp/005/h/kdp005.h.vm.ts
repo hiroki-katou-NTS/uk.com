@@ -7,7 +7,7 @@ module nts.uk.at.view.kdp005.h {
 		export class ScreenModel {
             value = ko.observable('');
             notify = ko.observable(getText('KDP005_21'));
-            color = ko.observable('');
+            color = ko.observable('#ff0000');
             inforAuthent = ko.observable('');
             diplayBtnConnect = ko.observable(true);
 			constructor() {
@@ -25,7 +25,7 @@ module nts.uk.at.view.kdp005.h {
                     if(command === 'open' || command === 'disconnect' || (command === 'status' && readyRead == false)){
                         self.color('#ff0000');
                         self.notify(getText('KDP005_6'));
-                        self.inforAuthent('');
+                        self.inforAuthent(getText('KDP005_4'));
                         self.diplayBtnConnect(true);
                     }else if(command === 'status'){
                         if(readyRead){
