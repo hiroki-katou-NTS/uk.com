@@ -4,7 +4,6 @@
 package nts.uk.screen.at.app.ksu001.getworkscheduleshift;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -72,8 +71,6 @@ public class GetScheduleOfShift {
 	private EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter;
 	@Inject
 	private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
-	
-	
 	@Inject
 	private BasicScheduleService basicScheduleService;
 	@Inject
