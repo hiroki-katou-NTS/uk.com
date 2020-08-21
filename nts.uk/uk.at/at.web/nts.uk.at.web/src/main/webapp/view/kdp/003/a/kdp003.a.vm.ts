@@ -542,6 +542,11 @@ module nts.uk.at.kdp003.a {
 											.then(() => storage('infoEmpToScreenB', employeeInfo))
 											.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
 									}
+								})
+								.fail((message: BussinessException) => {
+									const { messageId, parameterIds } = message;
+									
+									vm.$dialog.error({ messageId, messageParams: parameterIds });
 								});
 							}
 						}
@@ -681,6 +686,13 @@ module nts.uk.at.kdp003.a {
 		ENGTAVING_FUNCTION_CANNOT_USED = 2,
 		// 3 打刻カード未登録
 		UNREGISTERED_STAMP_CARD = 3
+	}
+	
+	interface BussinessException {
+		atTime: string;
+		businessException: boolean;
+		messageId: string;
+		parameterIds: string[];
 	}
 
 	const DEFAULT_SETTING: FingerStampSetting = {
