@@ -34,11 +34,11 @@
 //				.query(FINDBYCLOSURE, KrqstAppDeadline.class)
 //				.setParameter("companyId", companyId)
 //				.setParameter("closureId", closureId)
-//				.getSingle(c -> toDomain(c));
+//				.getSingle(c -> toOvertimeAppSetDomain(c));
 //
 //		return data;
 //	}
-//	private ApplicationDeadline toDomain(KrqstAppDeadline c) {
+//	private ApplicationDeadline toOvertimeAppSetDomain(KrqstAppDeadline c) {
 //		return ApplicationDeadline.createSimpleFromJavaType(c.krqstAppDeadlinePK.companyId,
 //				c.krqstAppDeadlinePK.closureId, 
 //				c.useAtr, 
@@ -53,7 +53,7 @@
 //		List<ApplicationDeadline> data = this.queryProxy()
 //				.query(FINDBYCOMPANY, KrqstAppDeadline.class)
 //				.setParameter("companyId", companyId)
-//				.getList(c -> toDomain(c));
+//				.getList(c -> toOvertimeAppSetDomain(c));
 //
 //		return data;
 //	}

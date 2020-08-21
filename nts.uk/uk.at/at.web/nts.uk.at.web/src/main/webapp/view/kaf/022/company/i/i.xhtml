@@ -1,0 +1,70 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:com="http://xmlns.jcp.org/jsf/component"
+				xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<table id="fixed-table-i">
+		<colgroup>
+			<col width="250px" />
+			<col width="650px" />
+		</colgroup>
+		<thead>
+			<tr>
+				<th class="ui-widget-header" colspan="2">#{i18n.getText('KAF022_259')}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_669')}</td>
+				<td class="two-radio">
+					<div tabindex="2" data-bind="ntsRadioBoxGroup: {
+								options: itemListI1_2,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedI12,
+								enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="color-header">#{i18n.getText('KAF022_670')}</td>
+				<td>
+					<div tabindex="4">
+						<div class="ntsControl blockrow">
+							<label  class="ntsRadioBox" >
+								<input type="radio" name="textRadioF" data-bind="
+											checkedValue: 0,
+											checked: selectedI13,
+											enable: true
+										" />
+								<span class="box"/>
+								<span class="label">#{i18n.getText('KAF022_671')}</span>
+							</label>
+						</div>
+						<div class="ntsControl blockrow">
+							<label  class="ntsRadioBox">
+								<input type="radio" name="textRadioF" data-bind="
+											checkedValue: 1,
+											checked: selectedI13,
+											enable: true
+										" />
+								<span class="box"/>
+								<span class="label">#{i18n.getText('KAF022_672')}</span>
+							</label>
+						</div>
+						<div class="ntsControl blockrow">
+							<label class="ntsRadioBox">
+								<input type="radio" name="textRadioF" data-bind="
+											  checkedValue: 2,
+											  checked: selectedI13,
+											  enable: true
+										  " />
+								<span class="box"/>
+								<span class="label">#{i18n.getText('KAF022_673')}</span>
+							</label>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</ui:composition>

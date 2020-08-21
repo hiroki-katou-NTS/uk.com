@@ -1,13 +1,9 @@
 module nts.uk.at.view.kmf022.a.viewmodel {
-    import service = nts.uk.at.view.kmf022.company.service;
     import getText = nts.uk.resource.getText;
+    import modal = nts.uk.ui.windows.sub.modal;
     let __viewContext: any = window["__viewContext"] || {};
 
     export class ScreenModelA {
-        companyId: KnockoutObservable<string>;
-        isEnable: KnockoutObservable<boolean>;
-        isEditable: KnockoutObservable<boolean>;
-
         /*A4 - Deadline Settings Table*/
         dataDeadlineSettings: KnockoutObservableArray<DeadlineSetting>;
         itemListA4_7: KnockoutObservableArray<ItemModel>;
@@ -30,6 +26,7 @@ module nts.uk.at.view.kmf022.a.viewmodel {
         /* A19 HolidatOvertimeWorkApplicationReflect Table*/
         itemListA11_12: KnockoutObservableArray<ItemModel>;
         nightOvertimeReflect: KnockoutObservable<number>;
+
         /*A12 Table*/
         prePostDisplayAtr: KnockoutObservable<number>;
         itemListA12_5: KnockoutObservableArray<ItemModel>;
@@ -47,9 +44,6 @@ module nts.uk.at.view.kmf022.a.viewmodel {
 
         constructor() {
             const self = this;
-            self.companyId = ko.observable("");
-            self.isEnable = ko.observable(true);
-            self.isEditable = ko.observable(false);
 
             // A4
             self.dataDeadlineSettings = ko.observableArray([]);
@@ -178,8 +172,8 @@ module nts.uk.at.view.kmf022.a.viewmodel {
             self.initDataA7(allData);
             self.initDataA11(allData);
             self.initDataA17(allData);
-            self.nightOvertimeReflect(allData.nightOvertimeReflectAtr);
-            self.prePostDisplayAtr(allData.applicationSetting.appDisplaySetting.prePostDisplayAtr);
+            self.nightOvertimeReflect(allData.nightOvertimeReflectAtr || 0);
+            self.prePostDisplayAtr(allData.applicationSetting ? allData.applicationSetting.appDisplaySetting.prePostDisplayAtr : 0);
             self.initDataA22(allData);
             self.initDataA8(allData);
             self.initDataA21(allData);
@@ -191,7 +185,7 @@ module nts.uk.at.view.kmf022.a.viewmodel {
             self.dataDeadlineSettings([]);
             for (let i = 1; i <= 5; i++) {
                 const data: Array<Closure> = allData.allClosure || [];
-                const appDeadlineSetLst: Array<any> = allData.applicationSetting.appDeadlineSetLst || [];
+                const appDeadlineSetLst: Array<any> = allData.applicationSetting ? allData.applicationSetting.appDeadlineSetLst : [];
                 const closure = _.find(data, ['id', i]);
                 const deadline: any = _.find(appDeadlineSetLst, ['closureId', i]);
                 self.dataDeadlineSettings.push(new DeadlineSetting(
@@ -208,27 +202,26 @@ module nts.uk.at.view.kmf022.a.viewmodel {
             let self = this;
             let listAppType = __viewContext.enums.ApplicationType;
             self.dataReceptionRestrictionSettings([]);
-            let data: Array<any> = allData.applicationSetting.receptionRestrictionSetting;
+            let data: Array<any> = allData.applicationSetting ? allData.applicationSetting.receptionRestrictionSetting : [];
             if (data) {
                 _.forEach(listAppType, (appType: any) => {
                     let obj: any = _.find(data, ['appType', appType.value]);
                     if (obj) {
                         self.dataReceptionRestrictionSettings.push(
                             new ReceptionRestrictionSetting(
-                                self.companyId(),
                                 appType.name,
                                 appType.value,
-                                appType.value != 0 ? obj.beforehandRestriction.toUse : obj.otAppBeforeAccepRestric.toUse,
-                                obj.otAppBeforeAccepRestric.methodCheck,
-                                appType.value != 0 ? obj.beforehandRestriction.dateBeforehandRestrictions : obj.otAppBeforeAccepRestric.dateBeforehandRestrictions,
-                                obj.otAppBeforeAccepRestric.opEarlyOvertime,
-                                obj.otAppBeforeAccepRestric.opNormalOvertime,
-                                obj.otAppBeforeAccepRestric.opEarlyNormalOvertime,
-                                obj.afterhandRestriction.allowFutureDay
+                                obj.useAtr,
+                                obj.dateBeforehandRestrictions,
+                                obj.methodCheck,
+                                obj.earlyOvertime,
+                                obj.normalOvertime,
+                                obj.earlyNormalOvertime,
+                                obj.allowFutureDay
                             )
                         );
                     } else {
-                        self.dataReceptionRestrictionSettings.push(new ReceptionRestrictionSetting(self.companyId(), appType.name, appType.value, 0, 1, 0, 0, 0, 0, 0));
+                        self.dataReceptionRestrictionSettings.push(new ReceptionRestrictionSetting(appType.name, appType.value, 0, 0, 0, 0, 0, 0, 0));
                     }
                 });
             }
@@ -236,19 +229,19 @@ module nts.uk.at.view.kmf022.a.viewmodel {
 
         initDataA11(allData: any): void {
             const self = this;
-            self.appLimitSetting(new AppLimitSetting(allData.appLimitSetting));
+            self.appLimitSetting(new AppLimitSetting(allData.applicationSetting ? allData.applicationSetting.appLimitSetting : null));
         }
 
         initDataA17(allData: any): void {
             let self = this;
-            self.approvalSetting(new ItemA17(allData.applicationSetting.recordDate, allData.approvalSettingDto.prinFlg, allData.jobAssign.isConcurrently));
+            self.approvalSetting(new ItemA17(allData.applicationSetting ? allData.applicationSetting.recordDate : 0, allData.approvalSettingDto.prinFlg, allData.jobAssign.isConcurrently));
         }
 
         initDataA22(allData: any): void {
             const self = this;
             let listAppType = __viewContext.enums.ApplicationType;
             self.appTypeSettings([]);
-            let data: Array<any> = allData.applicationSetting.appTypeSetting;
+            let data: Array<any> = allData.applicationSetting ? allData.applicationSetting.appTypeSetting : [];
             if (data) {
                 _.forEach(listAppType, (appType: any) => {
                     let obj: any = _.find(data, ['appType', appType.value]);
@@ -273,24 +266,28 @@ module nts.uk.at.view.kmf022.a.viewmodel {
             let listAppType = __viewContext.enums.ApplicationType;
             let listHdType = __viewContext.enums.HolidayAppType;
             self.listDataA8([]);
-            let data: Array<any> = allData.displayReason;
+            let data: Array<any> = allData.reasonDisplaySettings || [];
             if (data) {
                 _.forEach(listAppType, (appType: any) => {
-                    let obj1: any = _.find(data, ['appType', appType.value]);
-                    if (obj1) {
-                        self.listDataA8.push(new DisplayReasonSetting(appType.value, appType.name, obj1.displayFixedReason, obj1.displayAppReason, 0));
-                    } else {
-                        self.listDataA8.push(new DisplayReasonSetting(appType.value, appType.name,0, 0, 0));
-                    }
                     if (appType.value == 1) {
+                        self.listDataA8.push(new DisplayReasonSetting(appType.value, appType.name, null, null, null));
                         _.forEach(listHdType, (hdType: any)=>{
-                            let obj2: any = _.find(data, ['holidayAppType', hdType.value]);
-                            if (obj2) {
-                                self.listDataA8.push(new DisplayReasonSetting(hdType.value, hdType.name, obj2.displayFixedReason, obj2.displayAppReason, 1));
-                            } else {
-                                self.listDataA8.push(new DisplayReasonSetting(hdType.value, hdType.name,0, 0, 1));
+                            if (hdType.value < 7) {
+                                let obj2: any = _.find(data, ['holidayAppType', hdType.value]);
+                                if (obj2) {
+                                    self.listDataA8.push(new DisplayReasonSetting(appType.value, hdType.name, obj2.displayFixedReason, obj2.displayAppReason, hdType.value));
+                                } else {
+                                    self.listDataA8.push(new DisplayReasonSetting(appType.value, hdType.name,0, 0, hdType.value));
+                                }
                             }
                         });
+                    } else {
+                        let obj1: any = _.find(data, ['appType', appType.value]);
+                        if (obj1) {
+                            self.listDataA8.push(new DisplayReasonSetting(appType.value, appType.name, obj1.displayFixedReason, obj1.displayAppReason, null));
+                        } else {
+                            self.listDataA8.push(new DisplayReasonSetting(appType.value, appType.name,0, 0, null));
+                        }
                     }
                 });
             }
@@ -301,8 +298,41 @@ module nts.uk.at.view.kmf022.a.viewmodel {
             self.appReflectCondition(new AppReflectExeCondition(allData.appReflectCondition));
         }
 
+        collectData(): any {
+            const self = this;
+            return {
+                appDeadlineSettings: ko.toJS(self.dataDeadlineSettings),
+                receptionRestrictionSettings: ko.toJS(self.dataReceptionRestrictionSettings),
+                appLimitSetting: ko.toJS(self.appLimitSetting),
+                appTypeSettings: ko.toJS(self.appTypeSettings),
+                appDisplaySetting: {
+                    prePostDisplayAtr: self.prePostDisplayAtr(),
+                    manualSendMailAtr: 0
+                },
+                recordDate: self.approvalSetting().baseDateAtr(),
+                approvalByPersonAtr: self.approvalSetting().approvalByPersonAtr(),
+                includeConcurrentPersonel: self.approvalSetting().includeConcurrentPersonel(),
+
+                nightOvertimeReflectAtr: self.nightOvertimeReflect(),
+
+                reasonDisplaySettings: ko.toJS(self.listDataA8).filter(r => r.appType != 1 || r.holidayAppType != null).map(r => ({
+                    appType: r.appType,
+                    displayAppReason: r.displayAppReason ? 1 : 0,
+                    displayFixedReason: r.displayFixedReason ? 1 : 0,
+                    holidayAppType: r.holidayAppType
+                })),
+
+                appReflectCondition: ko.toJS(self.appReflectCondition)
+            };
+        }
+
         openScreenS(): void {
-            alert("not implemented yet!");
+            let self = this;
+            // nts.uk.ui.block.grayout();
+            modal('/view/kaf/022/s/index.xhtml')
+                // .onClosed(function(): any {
+                //     nts.uk.ui.block.clear();
+                // })
         }
     }
 
@@ -317,13 +347,13 @@ module nts.uk.at.view.kmf022.a.viewmodel {
     }
 
     class DeadlineSetting {
-        index: number;
+        closureId: number;
         closureName: string;
         useAtr: KnockoutObservable<boolean>;
         deadlineCriteria: KnockoutObservable<number>;
         deadline: KnockoutObservable<number>;
         constructor(index: number, closureName: string, useAtr: number, deadlineCriteria: number, deadline: number) {
-            this.index = index;
+            this.closureId = index;
             this.closureName = closureName;
             this.useAtr = ko.observable(useAtr == 1);
             this.deadlineCriteria = ko.observable(deadlineCriteria);
@@ -339,28 +369,30 @@ module nts.uk.at.view.kmf022.a.viewmodel {
     class ReceptionRestrictionSetting {
         appType: number;
         appTypeName: string;
-        retrictPreMethodFlg: KnockoutObservable<number>;
-        retrictPreUseFlg: KnockoutObservable<boolean>;
-        retrictPreDay: KnockoutObservable<number>;
-        retrictPreTimeDay: KnockoutObservable<number>;
-        retrictPostAllowFutureFlg: KnockoutObservable<boolean>;
+        dateBeforehandRestrictions: KnockoutObservable<number>;
+        useAtr: KnockoutObservable<boolean>;
+        allowFutureDay: KnockoutObservable<boolean>;
 
-        preOtTime: KnockoutObservable<number>;
-        normalOtTime: KnockoutObservable<number>;
+        methodCheck: KnockoutObservable<number>;
+        earlyOvertime: KnockoutObservable<number>;
+        normalOvertime: KnockoutObservable<number>;
+        earlyNormalOvertime: KnockoutObservable<number>;
         requiredA7_23: KnockoutObservable<boolean>;
-        constructor(companyId: string, appTypeName: string, appType: number, retrictPreUseFlg: number, retrictPreMethodFlg: number,
-                    retrictPreDay: number, preOtTime: number, normalOtTime: number, retrictPreTimeDay: number, retrictPostAllowFutureFlg: number) {
+        constructor(appTypeName: string, appType: number, useAtr: number, dateBeforehandRestrictions: number,
+                    methodCheck: number, earlyOvertime: number, normalOvertime: number, earlyNormalOvertime: number, allowFutureDay: number) {
             this.appTypeName = appTypeName;
             this.appType = appType;
-            this.retrictPreMethodFlg = ko.observable(retrictPreMethodFlg);
-            this.retrictPreUseFlg = ko.observable(retrictPreUseFlg == 1);
-            this.retrictPreDay = ko.observable(retrictPreDay);
-            this.retrictPreTimeDay = ko.observable(retrictPreTimeDay);
-            this.retrictPostAllowFutureFlg = ko.observable(retrictPostAllowFutureFlg == 1);
-            this.preOtTime = ko.observable(preOtTime);
-            this.normalOtTime = ko.observable(normalOtTime);
-            this.requiredA7_23 = ko.observable(retrictPreMethodFlg == 1);
-            this.retrictPreMethodFlg.subscribe((value) => {
+            this.useAtr = ko.observable(useAtr == 1);
+            this.dateBeforehandRestrictions = ko.observable(dateBeforehandRestrictions);
+            this.methodCheck = ko.observable(methodCheck);
+            this.earlyOvertime = ko.observable(earlyOvertime);
+            this.normalOvertime = ko.observable(normalOvertime);
+            this.earlyNormalOvertime = ko.observable(earlyNormalOvertime);
+            this.allowFutureDay = ko.observable(allowFutureDay == 1);
+
+            this.requiredA7_23 = ko.observable(methodCheck == 1);
+
+            this.methodCheck.subscribe((value) => {
                 if (value == 1) {
                     nts.uk.ui.errors.clearAll();
                     this.requiredA7_23(false);
@@ -372,19 +404,19 @@ module nts.uk.at.view.kmf022.a.viewmodel {
                     $('#a7_23_3').trigger("validate");
                 }
             });
-            this.preOtTime.subscribe((value) => {
+            this.earlyOvertime.subscribe((value) => {
                 if (value) {
                     $('#a7_23').ntsError('clear');
                     this.requiredA7_23.valueHasMutated();
                 }
             });
-            this.normalOtTime.subscribe((value) => {
+            this.normalOvertime.subscribe((value) => {
                 if (value) {
                     $('#a7_23_2').ntsError('clear');
                     this.requiredA7_23.valueHasMutated();
                 }
             });
-            this.retrictPreTimeDay.subscribe((value) => {
+            this.earlyNormalOvertime.subscribe((value) => {
                 if (value) {
                     $('#a7_23_3').ntsError('clear');
                     this.requiredA7_23.valueHasMutated();
@@ -418,7 +450,7 @@ module nts.uk.at.view.kmf022.a.viewmodel {
         constructor(baseDateAtr: number, approvalByPersonAtr: number, includeConcurrentPersonel: number) {
             this.baseDateAtr = ko.observable(baseDateAtr);
             this.approvalByPersonAtr = ko.observable(approvalByPersonAtr);
-            this.includeConcurrentPersonel = ko.observable(includeConcurrentPersonel);
+            this.includeConcurrentPersonel = ko.observable(includeConcurrentPersonel ? 1 : 0);
         }
     }
 
@@ -442,16 +474,13 @@ module nts.uk.at.view.kmf022.a.viewmodel {
         displayFixedReason: KnockoutObservable<boolean>;
         displayAppReason: KnockoutObservable<boolean>;
         appTypeName: KnockoutObservable<string>;
-        // 1: is domain DisplayReason
-        flg: KnockoutObservable<number>;
-        // disable or enable
-        // disableA8: KnockoutObservable<boolean> = ko.observable(true);
-        constructor(appType: number, appTypeName: string, displayFixedReason: number, displayAppReason: number, flg: number) {
+        holidayAppType: number;
+        constructor(appType: number, appTypeName: string, displayFixedReason: number, displayAppReason: number, holidayAppType: number) {
             this.appType = appType;
-            this.displayFixedReason = ko.observable(displayFixedReason == 1 ? true : false);
-            this.displayAppReason = ko.observable(displayAppReason == 1 ? true : false);
+            this.displayFixedReason = ko.observable(displayFixedReason == 1);
+            this.displayAppReason = ko.observable(displayAppReason == 1);
             this.appTypeName = ko.observable(appTypeName);
-            this.flg = ko.observable(flg);
+            this.holidayAppType = holidayAppType;
         }
     }
 

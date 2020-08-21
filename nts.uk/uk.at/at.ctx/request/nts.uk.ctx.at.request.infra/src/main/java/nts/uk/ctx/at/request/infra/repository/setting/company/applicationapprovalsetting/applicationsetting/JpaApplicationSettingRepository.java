@@ -4,7 +4,8 @@ import java.util.*;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.applicationsetting.KrqstApplicationSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReason;
+import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.applicationsetting.KrqmtApplicationSet;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
@@ -51,12 +52,38 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 
 	@Override
 	public Optional<ApplicationSetting> findByCompanyId(String companyId) {
-		return this.queryProxy().find(companyId, KrqstApplicationSet.class).map(KrqstApplicationSet::toDomainApplicationSetting);
+		return this.queryProxy().find(companyId, KrqmtApplicationSet.class).map(KrqmtApplicationSet::toDomainApplicationSetting);
 	}
 
 	@Override
 	public Integer getNightOvertimeReflectAtr(String companyId) {
-		return this.queryProxy().find(companyId, KrqstApplicationSet.class).map(KrqstApplicationSet::getTimeNightReflectAtr).orElse(null);
+		return this.queryProxy().find(companyId, KrqmtApplicationSet.class).map(KrqmtApplicationSet::getTimeNightReflectAtr).orElse(null);
+	}
+
+	@Override
+	public void save(ApplicationSetting domain, List<DisplayReason> reasonDisplaySettings, int nightOvertimeReflectAtr) {
+		Optional<KrqmtApplicationSet> optEntity = this.queryProxy().find(domain.getCompanyID(), KrqmtApplicationSet.class);
+		if (optEntity.isPresent()) {
+			KrqmtApplicationSet oldEntity = optEntity.get();
+			KrqmtApplicationSet newEntity = KrqmtApplicationSet.create(domain, reasonDisplaySettings, nightOvertimeReflectAtr);
+			newEntity.setContractCd(oldEntity.getContractCd());
+//			newEntity.setInsDate(oldEntity.getInsDate());
+//			newEntity.setInsCcd(oldEntity.getInsCcd());
+//			newEntity.setInsScd(oldEntity.getInsScd());
+//			newEntity.setInsPg(oldEntity.getInsPg());
+			newEntity.getAppDeadlineSetings().forEach(ads -> {
+			    ads.setContractCd(oldEntity.getContractCd());
+            });
+			newEntity.getAppProxySettings().forEach(aps -> {
+			    aps.setContractCd(oldEntity.getContractCd());
+            });
+			newEntity.getAppTypeSettings().forEach(ats -> {
+			    ats.setContractCd(oldEntity.getContractCd());
+            });
+			this.commandProxy().update(newEntity);
+		} else {
+			this.commandProxy().insert(KrqmtApplicationSet.create(domain, reasonDisplaySettings, nightOvertimeReflectAtr));
+		}
 	}
 
 	private Map<String, Object> toObject(NtsResultRecord rec) {

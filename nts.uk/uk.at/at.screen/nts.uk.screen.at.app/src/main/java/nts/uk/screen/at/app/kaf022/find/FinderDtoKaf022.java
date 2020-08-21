@@ -39,6 +39,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
 import nts.uk.ctx.at.shared.app.find.ot.frame.OvertimeWorkFrameFindDto;
 import nts.uk.ctx.at.shared.app.find.ot.frame.OvertimeWorkFrameFinder;
+import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.overtimeworkapplycation.OvertimeWorkApplicationReflectDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.ClosureHistoryFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryFindDto;
 import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuNameExport;
@@ -163,11 +164,12 @@ public class FinderDtoKaf022 {
 		// TODO: get Application Settings
 		ApplicationSettingDto applicationSetting = appSettingRepo.findByCompanyId(companyId).map(ApplicationSettingDto::fromDomain).orElse(null);
 		List<DisplayReasonDto> displayReasons = displayReasonRepo.findByCompanyId(companyId).stream().map(DisplayReasonDto::fromDomain).collect(Collectors.toList());
-		OvertimeAppSetDto overTimeAppSetting = overtimeAppSetRepo.findByCompanyId(companyId).map(OvertimeAppSetDto::fromDomain).orElse(null);
+		OvertimeAppSetDto overTimeAppSetting = overtimeAppSetRepo.findSettingByCompanyId(companyId).map(OvertimeAppSetDto::fromDomain).orElse(null);
 		List<OvertimeWorkFrameFindDto> overtimeFrames = overtimeFrameFinder.findAll();
 
 		// TODO: get Reflection Settings
         AppReflectExeConditionDto appReflectCondition = appReflectConditionRepo.findByCompanyId(companyId).map(AppReflectExeConditionDto::fromDomain).orElse(null);
+        OvertimeWorkApplicationReflectDto overtimeAppReflect = overtimeAppSetRepo.findReflectByCompanyId(companyId).map(OvertimeWorkApplicationReflectDto::fromDomain).orElse(null);
 
 		// TODO: get menu
 		List<StandardMenuNameQuery> queries = new ArrayList<>();
@@ -225,17 +227,17 @@ public class FinderDtoKaf022 {
 		// refactor 4
 		// A
 		result.setApplicationSetting(applicationSetting);
-		result.setDisplayReason(displayReasons);
-		result.setOvertimeAppSetting(overTimeAppSetting);
+		result.setReasonDisplaySettings(displayReasons);
 		result.setMenus(menuList);
 		result.setAppReflectCondition(appReflectCondition);
-		result.setOvertimeWorkFrames(overtimeFrames);
+//		result.setOvertimeWorkFrames(overtimeFrames);
 		result.setNightOvertimeReflectAtr(appSettingRepo.getNightOvertimeReflectAtr(companyId));
 		result.jobAssign = jobFinder.findApp();
 		result.approvalSettingDto = approvalSettingFinder.findApproSet();
 
 		// B
-		result.otRestAppCom = otRestAppComFinder.findByAppType();
+        result.setOvertimeAppSetting(overTimeAppSetting);
+        result.setOvertimeAppReflect(overtimeAppReflect);
 
 		return result;
 	}

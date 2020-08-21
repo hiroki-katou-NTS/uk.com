@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.ApplicationDetailSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AtWorkAtr;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import org.apache.commons.lang3.BooleanUtils;
 
 @Data
 @AllArgsConstructor
@@ -14,7 +15,7 @@ public class ApplicationDetailSettingDto {
     /**
      * 指示が必須
      */
-    private Boolean requiredInstruction;
+    private int requiredInstruction;
 
     /**
      * 事前必須設定
@@ -39,16 +40,16 @@ public class ApplicationDetailSettingDto {
     /**
      * 退勤時刻がない時システム時刻を表示するか
      */
-    private boolean dispSystemTimeWhenNoWorkTime;
+    private int dispSystemTimeWhenNoWorkTime;
 
     public static ApplicationDetailSettingDto fromDomain(ApplicationDetailSetting domain) {
         return new ApplicationDetailSettingDto(
-                domain.getRequiredInstruction(),
+                BooleanUtils.toInteger(domain.getRequiredInstruction()),
                 domain.getPreRequireSet().value,
                 domain.getTimeInputUse().value,
                 domain.getTimeCalUse().value,
                 domain.getAtworkTimeBeginDisp().value,
-                domain.isDispSystemTimeWhenNoWorkTime()
+                BooleanUtils.toInteger(domain.isDispSystemTimeWhenNoWorkTime())
         );
     }
 }

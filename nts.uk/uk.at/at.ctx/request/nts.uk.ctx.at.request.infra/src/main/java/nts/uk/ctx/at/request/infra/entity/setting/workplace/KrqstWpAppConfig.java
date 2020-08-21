@@ -64,7 +64,7 @@
 //		return krqstWpAppConfigPK;
 //	}
 //	
-//	public RequestOfEachWorkplace toDomain(){
+//	public RequestOfEachWorkplace toOvertimeAppSetDomain(){
 //		return new RequestOfEachWorkplace(
 //				this.krqstWpAppConfigPK.companyId, 
 //				this.krqstWpAppConfigPK.workplaceId,

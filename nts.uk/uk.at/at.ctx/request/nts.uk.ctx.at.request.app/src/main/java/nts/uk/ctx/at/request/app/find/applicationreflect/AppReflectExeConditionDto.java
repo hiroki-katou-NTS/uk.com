@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.request.app.find.applicationreflect;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.AppReflectExecutionCondition;
+import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExecutionCondition;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppReflectExeConditionDto {

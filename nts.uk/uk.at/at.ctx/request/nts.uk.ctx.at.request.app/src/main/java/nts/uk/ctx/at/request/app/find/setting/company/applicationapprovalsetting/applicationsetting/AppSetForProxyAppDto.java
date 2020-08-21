@@ -30,12 +30,12 @@ public class AppSetForProxyAppDto {
 	/**
 	 * 残業区分
 	 */
-	private Integer opOvertimeAppAtr;
+	private Integer overtimeAppAtr;
 	
 	/**
 	 * 打刻申請モード
 	 */
-	private Integer opStampRequestMode;
+	private Integer stampRequestMode;
 	
 	public static AppSetForProxyAppDto fromDomain(AppSetForProxyApp appSetForProxyApp) {
 		if (appSetForProxyApp == null) return null;
@@ -48,7 +48,7 @@ public class AppSetForProxyAppDto {
 	public AppSetForProxyApp toDomain() {
 		return new AppSetForProxyApp(
 				EnumAdaptor.valueOf(appType, ApplicationType.class),
-				opOvertimeAppAtr == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(opOvertimeAppAtr, OvertimeAppAtr.class)),
-				opStampRequestMode == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(opStampRequestMode, StampRequestMode.class)));
+				overtimeAppAtr == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(overtimeAppAtr, OvertimeAppAtr.class)),
+				stampRequestMode == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(stampRequestMode, StampRequestMode.class)));
 	}
 }

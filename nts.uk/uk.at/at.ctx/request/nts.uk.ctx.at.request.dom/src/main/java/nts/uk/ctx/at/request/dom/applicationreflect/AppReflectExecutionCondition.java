@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.applicationreflect.service;
+package nts.uk.ctx.at.request.dom.applicationreflect;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

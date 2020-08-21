@@ -11,6 +11,7 @@ import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationSet
 import nts.uk.ctx.at.request.app.command.application.triprequestsetting.UpdateTripRequestSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.workchange.InsertAppWorkChangeSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.applatearrival.UpdateLateEarReqHandler;
+import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.appovertime.UpdateAppOvertimeSettingCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.hdappset.UpdateTimeHdAppSetHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.hdworkappset.UpdateWDAppSetCommandHandler;
@@ -28,9 +29,23 @@ import nts.uk.ctx.at.request.app.command.setting.company.request.apptypesetting.
 import nts.uk.ctx.at.request.app.command.setting.company.request.stamp.UpdateStampRequestSettingCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.vacationapplicationsetting.UpdateHdAppSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.request.gobackdirectlycommon.UpdateGoBackDirectlyCommonSettingCommandHandler;
+import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExeConditionRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReason;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.overtimeworkapplycation.OvertimeWorkApplicationReflect;
+import nts.uk.ctx.workflow.app.command.approvermanagement.setting.ApprovalSettingCommand;
+import nts.uk.ctx.workflow.app.command.approvermanagement.setting.JobAssignSettingCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.UpdateApprovalSettingCommandHandler;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.UpdateJobAssignSettingCommandHandler;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateJobtitleSearchSetCommandHandler;
+import nts.uk.shr.com.context.AppContexts;
+import org.apache.commons.lang3.BooleanUtils;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 @Transactional
@@ -113,66 +128,93 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 	// 申請理由表示
 	@Inject
 	private UpdateDisplayReasonCmdHandler updateDplReason;
+
+	@Inject
+	private ApplicationSettingRepository applicationSettingRepo;
+
+	@Inject
+	private DisplayReasonRepository displayReasonRepo;
+
+	@Inject
+	private AppReflectExeConditionRepository appReflectConditionRepo;
+
+	@Inject
+    private OvertimeAppSetRepository overtimeAppSetRepo;
 	
 	@Override
 	protected void handle(CommandHandlerContext<Kaf022AddCommand> context) {
+		String companyId = AppContexts.user().companyId();
+		Kaf022AddCommand kaf022 = context.getCommand();
+		ApplicationSetting applicationSetting = kaf022.getApplicationSetting().toDomain(companyId);
+		List<DisplayReason> reasonDisplaySettings = kaf022.getReasonDisplaySettings().stream().map(r -> r.toDomain(companyId)).collect(Collectors.toList());
+		applicationSettingRepo.save(applicationSetting, reasonDisplaySettings, kaf022.getNightOvertimeReflectAtr());
+		displayReasonRepo.saveHolidayAppReason(companyId, reasonDisplaySettings);
+
+		updateJobAssign.handle(new JobAssignSettingCommand(BooleanUtils.toBoolean(kaf022.getIncludeConcurrentPersonel())));
+		updateAppro.handle(new ApprovalSettingCommand(kaf022.getApprovalByPersonAtr()));
+		appReflectConditionRepo.save(kaf022.getAppReflectCondition().toDomain(companyId));
+
+		overtimeAppSetRepo.saveOvertimeAppSet(kaf022.getOvertimeApplicationSetting().toDomain(companyId), kaf022.getOvertimeApplicationReflect().toDomain());
+	}
+
+	private void oldmethod (CommandHandlerContext<Kaf022AddCommand> context) {
 		Kaf022AddCommand kaf022 = context.getCommand();
 		// update list command object
 		// this.updateApp.handle(kaf022.getAppDead());
-		
+
 //		this.updateAppSet.handle(kaf022.getAppSet());
-		
-		this.updateAppCom.handle(kaf022.getAppCommon());
-		
-		this.updatePro.handle(kaf022.getProxy());
-		
-		this.updateMailHd.handle(kaf022.getMailHd());
-		
-		this.updateMailOt.handle(kaf022.getMailOt());
-		
-		this.updateAppTemp.handle(kaf022.getAppTemp());
-		
-		// update list command object
-		this.updateAppDisp.handle(kaf022.getAppName());
-		// update list command object
-//		this.updateHdApp.handle(kaf022.getHdDisp());
-		
-		this.updateStamp.handle(kaf022.getStampReq());
-		
-		this.updateGoBack.handle(kaf022.getGoBack());
-		
-		this.updateAppOver.handle(kaf022.getAppOt());
-		
-		this.updateHd.handle(kaf022.getHdSet());
-		
-		this.updateAppWork.handle(kaf022.getAppChange());
-		
-		this.updateTrip.handle(kaf022.getTripReq());
-		
-		this.updateWd.handle(kaf022.getWdApp());
-		
-		this.updateTime.handle(kaf022.getTimeHd());
-		
-		this.updateWdReq.handle(kaf022.getWdReq());
-		
-		this.updateLateEar.handle(kaf022.getLateEarly());
-		
-		this.updateBf.handle(kaf022.getAppBf());
-		// update list for A15_4
-		this.updateJobSearch.handle(kaf022.getJobSearch());
-		// A14
-		this.updateJobAssign.handle(kaf022.getJobAssign());
-		this.updateAppro.handle(kaf022.getApprovalSet());
-		
-		this.updateAppliSet.handle(kaf022.getAppliSet());
-		this.updateOtRest.handle(kaf022.getOtRest());
-		// G
-		this.updateOtRest.handle(kaf022.getOtRestApp7());
-		// A16_14, A16_15
-		this.updateMail.handle(kaf022.getContentMail());
-		
-		this.updateurl.handle(kaf022.getUrl());
-		// A8_36 -> A8_43
-		this.updateDplReason.handle(kaf022.getDplReasonCmd());
+
+//		this.updateAppCom.handle(kaf022.getAppCommon());
+//
+//		this.updatePro.handle(kaf022.getProxy());
+//
+//		this.updateMailHd.handle(kaf022.getMailHd());
+//
+//		this.updateMailOt.handle(kaf022.getMailOt());
+//
+//		this.updateAppTemp.handle(kaf022.getAppTemp());
+//
+//		// update list command object
+//		this.updateAppDisp.handle(kaf022.getAppName());
+//		// update list command object
+////		this.updateHdApp.handle(kaf022.getHdDisp());
+//
+//		this.updateStamp.handle(kaf022.getStampReq());
+//
+//		this.updateGoBack.handle(kaf022.getGoBack());
+//
+//		this.updateAppOver.handle(kaf022.getAppOt());
+//
+//		this.updateHd.handle(kaf022.getHdSet());
+//
+//		this.updateAppWork.handle(kaf022.getAppChange());
+//
+//		this.updateTrip.handle(kaf022.getTripReq());
+//
+//		this.updateWd.handle(kaf022.getWdApp());
+//
+//		this.updateTime.handle(kaf022.getTimeHd());
+//
+//		this.updateWdReq.handle(kaf022.getWdReq());
+//
+//		this.updateLateEar.handle(kaf022.getLateEarly());
+//
+//		this.updateBf.handle(kaf022.getAppBf());
+//		// update list for A15_4
+//		this.updateJobSearch.handle(kaf022.getJobSearch());
+//		// A14
+//		this.updateJobAssign.handle(kaf022.getJobAssign());
+//		this.updateAppro.handle(kaf022.getApprovalSet());
+//
+////		this.updateAppliSet.handle(kaf022.getAppliSet());
+//		this.updateOtRest.handle(kaf022.getOtRest());
+//		// G
+//		this.updateOtRest.handle(kaf022.getOtRestApp7());
+//		// A16_14, A16_15
+//		this.updateMail.handle(kaf022.getContentMail());
+//
+//		this.updateurl.handle(kaf022.getUrl());
+//		// A8_36 -> A8_43
+//		this.updateDplReason.handle(kaf022.getDplReasonCmd());
 	}
 }

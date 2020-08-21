@@ -1,7 +1,17 @@
 module nts.uk.at.view.kmf022.company.viewmodel {
     import getText = nts.uk.resource.getText;
+    import alert = nts.uk.ui.dialog.alert;
+
     import ScreenModelA = nts.uk.at.view.kmf022.a.viewmodel.ScreenModelA;
     import ScreenModelB = nts.uk.at.view.kmf022.b.viewmodel.ScreenModelB;
+    import ScreenModelC = nts.uk.at.view.kmf022.c.viewmodel.ScreenModelC;
+    import ScreenModelD = nts.uk.at.view.kmf022.d.viewmodel.ScreenModelD;
+    import ScreenModelE = nts.uk.at.view.kmf022.e.viewmodel.ScreenModelE;
+    import ScreenModelF = nts.uk.at.view.kmf022.f.viewmodel.ScreenModelF;
+    import ScreenModelG = nts.uk.at.view.kmf022.g.viewmodel.ScreenModelG;
+    import ScreenModelH = nts.uk.at.view.kmf022.h.viewmodel.ScreenModelH;
+    import ScreenModelI = nts.uk.at.view.kmf022.i.viewmodel.ScreenModelI;
+    import ScreenModelJ = nts.uk.at.view.kmf022.j.viewmodel.ScreenModelJ;
     import ScreenModelV = nts.uk.at.view.kmf022.v.viewmodel.ScreenModelV;
 
     export class ScreenModel {
@@ -9,10 +19,18 @@ module nts.uk.at.view.kmf022.company.viewmodel {
         selectedTab: KnockoutObservable<string>;
         viewmodelA: ScreenModelA;
         viewmodelB: ScreenModelB;
+        viewmodelC: ScreenModelC;
+        viewmodelD: ScreenModelD;
+        viewmodelE: ScreenModelE;
+        viewmodelF: ScreenModelF;
+        viewmodelG: ScreenModelG;
+        viewmodelH: ScreenModelH;
+        viewmodelI: ScreenModelI;
+        viewmodelJ: ScreenModelJ;
         viewmodelV: ScreenModelV;
 
         constructor() {
-            var self = this;
+            const self = this;
             self.tabs = ko.observableArray([
                 { id: 'tab-01', title: getText('KAF022_2'), content: '.tab-content-01', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-02', title: getText('KAF022_748'), content: '.tab-content-02', enable: ko.observable(true), visible: ko.observable(true) },
@@ -34,25 +52,38 @@ module nts.uk.at.view.kmf022.company.viewmodel {
 
             self.viewmodelA = new ScreenModelA();
             self.viewmodelB = new ScreenModelB();
+            self.viewmodelC = new ScreenModelC();
+            self.viewmodelD = new ScreenModelD();
+            self.viewmodelE = new ScreenModelE();
+            self.viewmodelF = new ScreenModelF();
+            self.viewmodelG = new ScreenModelG();
+            self.viewmodelH = new ScreenModelH();
+            self.viewmodelI = new ScreenModelI();
+            self.viewmodelJ = new ScreenModelJ();
             self.viewmodelV = new ScreenModelV();
         }
 
         start(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            dfd.resolve();
-            self.loadData();
-            return dfd.promise();
+            const self = this;
+            return self.loadData();
         }
 
-        loadData(): void {
+        loadData(): JQueryPromise<any> {
+            const dfd = $.Deferred();
             let self = this,
                 position: number = $('.tab-content-1').scrollTop();
             nts.uk.ui.block.grayout();
             service.findAllData().done((data: any) => {
                 self.viewmodelA.initData(data);
                 self.viewmodelB.initData(data);
+                self.viewmodelD.initData(data);
+                self.viewmodelE.initData(data);
+                self.viewmodelF.initData(data);
                 self.viewmodelV.initData(data);
+                dfd.resolve();
+            }).fail(error => {
+                dfd.reject();
+                alert(error);
             }).always(() => {
                 nts.uk.ui.errors.clearAll();
                 nts.uk.ui.block.clear();
@@ -60,10 +91,8 @@ module nts.uk.at.view.kmf022.company.viewmodel {
                 setTimeout(function() {
                     $('.tab-content-1').scrollTop(position);
                 }, 1500);
-
-
             });
-
+            return dfd.promise();
         }
 
         saveDataAt(): void {
@@ -73,6 +102,27 @@ module nts.uk.at.view.kmf022.company.viewmodel {
             $('#a7_23_2').trigger("validate");
             $('#a7_23_3').trigger("validate");
             if (nts.uk.ui.errors.hasError()) { return; }
+            const self = this, postion: number = $('.tab-content-1').scrollTop();;
+            const dataA = self.viewmodelA.collectData();
+            const dataV = self.viewmodelV.collectData();
+            const dataB = self.viewmodelB.collectData();
+            const data: any = {};
+            data["applicationSetting"] = {
+                appLimitSetting: dataA.appLimitSetting,
+                appTypeSettings: dataA.appTypeSettings,
+                appSetForProxyApps: dataV,
+                appDeadlineSettings: dataA.appDeadlineSettings,
+                appDisplaySetting: dataA.appDisplaySetting,
+                receptionRestrictionSettings: dataA.receptionRestrictionSettings,
+                recordDate: dataA.recordDate
+            };
+            data["reasonDisplaySettings"] = dataA.reasonDisplaySettings;
+            data["nightOvertimeReflectAtr"] = dataA.nightOvertimeReflectAtr;
+            data["includeConcurrentPersonel"] = dataA.includeConcurrentPersonel;
+            data["approvalByPersonAtr"] = dataA.approvalByPersonAtr;
+            data["appReflectCondition"] = dataA.appReflectCondition;
+            data["overtimeApplicationSetting"] = dataB.overtimeApplicationSetting;
+            data["overtimeApplicationReflect"] = dataB.overtimeApplicationReflect;
             // let self = this,
             //     data: any = {},
             //     dataA4 = [],
@@ -419,16 +469,16 @@ module nts.uk.at.view.kmf022.company.viewmodel {
             // }
             //
             // if (nts.uk.ui.errors.hasError() === false) {
-            //     nts.uk.ui.block.grayout();
-            //     service.update(data).done(() => {
-            //         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-            //             //Load data setting
-            //             self.loadData();
-            //         });
-            //     }).always(() => {
-            //         nts.uk.ui.block.clear();
-            //     });
-            //     $('.tab-content-1').scrollTop(postion);
+                nts.uk.ui.block.grayout();
+                service.update(data).done(() => {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        //Load data setting
+                        self.loadData();
+                    });
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
+                $('.tab-content-1').scrollTop(postion);
             // }
         }
     }
@@ -440,4 +490,5 @@ module nts.uk.at.view.kmf022.company.viewmodel {
         enable: KnockoutObservable<boolean>;
         visible: KnockoutObservable<boolean>;
     }
+
 }

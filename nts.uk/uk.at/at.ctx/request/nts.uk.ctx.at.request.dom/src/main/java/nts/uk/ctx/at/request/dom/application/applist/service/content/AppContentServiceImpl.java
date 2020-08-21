@@ -88,7 +88,7 @@ public class AppContentServiceImpl implements AppContentService {
 		List<ReasonTypeItem> reasonTypeItemLst = opAppReasonStandard.get().getReasonTypeItemLst();
 		Optional<ReasonTypeItem> opReasonTypeItem = reasonTypeItemLst.stream().filter(x -> x.getAppStandardReasonCD().equals(appStandardReasonCD)).findAny();
 		if(opReasonTypeItem.isPresent()) {
-			return opReasonTypeItem.get().getOpReasonForFixedForm().orElse(null);
+			return opReasonTypeItem.get().getReasonForFixedForm();
 		}
 		return null;
 	}

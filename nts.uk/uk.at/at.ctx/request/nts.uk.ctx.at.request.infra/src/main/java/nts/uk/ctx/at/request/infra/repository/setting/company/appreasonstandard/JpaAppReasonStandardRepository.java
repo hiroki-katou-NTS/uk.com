@@ -1,10 +1,16 @@
 package nts.uk.ctx.at.request.infra.repository.setting.company.appreasonstandard;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.primitive.PrimitiveValue;
+import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.applicationstandardreason.KrcmtAppReason;
+import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.applicationstandardreason.KrcmtAppReasonPk;
 import org.apache.commons.lang3.BooleanUtils;
 
 import nts.arc.layer.infra.data.JpaRepository;
@@ -52,6 +58,44 @@ public class JpaAppReasonStandardRepository extends JpaRepository implements App
 	@Override
 	public Optional<AppReasonStandard> findByCD(ApplicationType appType, AppStandardReasonCode appStandardReasonCode) {
 		return Optional.empty();
+	}
+
+	@Override
+	public List<AppReasonStandard> findByCompanyId(String companyID) {
+		List<AppReasonStandard> result = new ArrayList<>();
+		List<KrcmtAppReason> entities = this.queryProxy().query("select a from KrcmtAppReason a where a.pk.companyId = :companyId", KrcmtAppReason.class)
+				.setParameter("companyId", companyID)
+				.getList();
+		Map<Integer, List<KrcmtAppReason>> mapEntities = entities.stream().collect(Collectors.groupingBy(KrcmtAppReason::getAppType));
+		mapEntities.forEach((appType, items) -> {
+			result.add(KrcmtAppReason.toDomain(items));
+		});
+		return result;
+	}
+
+	@Override
+	public void saveReasonTypeItem(String companyId, int appType, ReasonTypeItem reasonItem) {
+		KrcmtAppReasonPk pk = new KrcmtAppReasonPk(companyId, appType, reasonItem.getAppStandardReasonCD().v());
+		Optional<KrcmtAppReason> optEntity = this.queryProxy().find(pk, KrcmtAppReason.class);
+		if (optEntity.isPresent()) {
+			KrcmtAppReason entity = optEntity.get();
+			entity.setDisplayOrder(reasonItem.getDisplayOrder());
+			entity.setReasonTemp(reasonItem.getReasonForFixedForm().v());
+			entity.setDefaultAtr(BooleanUtils.toInteger(reasonItem.isDefaultValue()));
+			this.commandProxy().update(entity);
+		} else {
+			KrcmtAppReason entity = new KrcmtAppReason(
+					pk, reasonItem.getDisplayOrder(),
+					reasonItem.getReasonForFixedForm().v(),
+					BooleanUtils.toInteger(reasonItem.isDefaultValue())
+			);
+			this.commandProxy().insert(entity);
+		}
+	}
+
+	@Override
+	public void deleteReasonTypeItem(String companyId, int appType, int reasonCode) {
+		this.commandProxy().remove(KrcmtAppReason.class, new KrcmtAppReasonPk(companyId, appType, reasonCode));
 	}
 
 }

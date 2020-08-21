@@ -15,13 +15,9 @@ import java.util.stream.Collectors;
 public class OvertimeQuotaSetUseDto {
     private Integer overtimeAtr;
     private Integer flexAtr;
-    private List<Integer> overTimeFrames;
+    private Integer overTimeFrame;
 
-    public OvertimeQuotaSetUse toDomain() {
-        return OvertimeQuotaSetUse.create(overtimeAtr, flexAtr, overTimeFrames);
-    }
-
-    public static OvertimeQuotaSetUseDto fromDomain(OvertimeQuotaSetUse domain) {
-        return new OvertimeQuotaSetUseDto(domain.getOvertimeAppAtr().value, domain.getFlexWorkAtr().value, domain.getTargetOvertimeLimit().stream().map(PrimitiveValueBase::v).collect(Collectors.toList()));
+    public static List<OvertimeQuotaSetUseDto> fromDomain(OvertimeQuotaSetUse domain) {
+        return domain.getTargetOvertimeLimit().stream().map(f -> new OvertimeQuotaSetUseDto(domain.getOvertimeAppAtr().value, domain.getFlexWorkAtr().value, f.v())).collect(Collectors.toList());
     }
 }

@@ -3,9 +3,11 @@ package nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.apprefl
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.BreakApplication;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.OthersReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.overtimeworkapplycation.AfterOvertimeWorkAppReflect;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -30,4 +32,16 @@ public class AfterHolidayWorkAppReflect extends DomainObject {
      * 出退勤を反映する
      */
     private NotUseAtr workReflect;
+
+    public static AfterHolidayWorkAppReflect create(int workReflect, int reflectPaytime, int reflectOptional, int reflectDivergence, int reflectBreakOuting) {
+        return new AfterHolidayWorkAppReflect(
+                new OthersReflect(
+                        EnumAdaptor.valueOf(reflectDivergence, NotUseAtr.class),
+                        EnumAdaptor.valueOf(reflectOptional, NotUseAtr.class),
+                        EnumAdaptor.valueOf(reflectPaytime, NotUseAtr.class)
+                ),
+                new BreakApplication(EnumAdaptor.valueOf(reflectBreakOuting, NotUseAtr.class)),
+                EnumAdaptor.valueOf(workReflect, NotUseAtr.class)
+        );
+    }
 }

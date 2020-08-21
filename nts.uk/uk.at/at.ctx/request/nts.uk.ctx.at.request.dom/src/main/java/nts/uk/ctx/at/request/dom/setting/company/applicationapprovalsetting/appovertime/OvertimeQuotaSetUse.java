@@ -39,7 +39,7 @@ public class OvertimeQuotaSetUse {
 	public static OvertimeQuotaSetUse create(int overtimeAppAtr, int flexWorkAtr, List<Integer> targetOvertimeLimit) {
 		return new OvertimeQuotaSetUse(
 				EnumAdaptor.valueOf(overtimeAppAtr, OvertimeAppAtr.class),
-				EnumAdaptor.valueOf(overtimeAppAtr, FlexWorkAtr.class),
+				EnumAdaptor.valueOf(flexWorkAtr, FlexWorkAtr.class),
 				targetOvertimeLimit.stream().map(OverTimeFrameNo::new).collect(Collectors.toList())
 		);
 	}

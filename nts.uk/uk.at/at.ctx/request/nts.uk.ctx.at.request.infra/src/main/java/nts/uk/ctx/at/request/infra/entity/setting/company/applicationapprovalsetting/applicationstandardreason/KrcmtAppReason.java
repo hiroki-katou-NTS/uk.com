@@ -1,14 +1,13 @@
 package nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.applicationstandardreason;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReason;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonTypeItem;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -26,12 +25,13 @@ import java.util.stream.Collectors;
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.設定.会社別.申請定型理由.申請定型理由
  */
 
-@Builder
+@Setter
+@Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "KRCMT_APP_REASON")
-public class KrcmtAppReason extends UkJpaEntity {
+public class KrcmtAppReason extends ContractUkJpaEntity {
     @EmbeddedId
     private KrcmtAppReasonPk pk;
 
@@ -65,7 +65,7 @@ public class KrcmtAppReason extends UkJpaEntity {
         return this.pk.companyId;
     }
 
-    private int getAppType() {
+    public int getAppType() {
         return this.pk.applicationType;
     }
 }

@@ -14,7 +14,7 @@ module nts.uk.at.view.kmf022.v.viewmodel {
             const self = this;
             const menus: Array<StandardMenuNameExport> = allData.menus;
             if (menus) {
-                const appSetForProxyApp: Array<any> = allData.applicationSetting.appSetForProxyApp;
+                const appSetForProxyApp: Array<any> = allData.applicationSetting ? allData.applicationSetting.appSetForProxyApp : [];
                 const data = menus.map(m => {
                     return new MenuModel(
                         m.programId + m.screenId + (m.queryString ? m.queryString.substr(m.queryString.length - 1) : ""),
@@ -62,36 +62,36 @@ module nts.uk.at.view.kmf022.v.viewmodel {
             return data.filter(o => o.checked)
                 .map(o => {
                     switch (o.id) {
-                        case "KAF005Aoverworkatr=0":
-                            return {appType: 0, overtimeAtr: 0, stampMode: null};
-                        case "KAF005Aoverworkatr=1":
-                            return {appType: 0, overtimeAtr: 1, stampMode: null};
-                        case "KAF005Aoverworkatr=2":
-                            return {appType: 0, overtimeAtr: 2, stampMode: null};
+                        case "KAF005A0":
+                            return {appType: 0, overtimeAppAtr: 0, stampRequestMode: null};
+                        case "KAF005A1":
+                            return {appType: 0, overtimeAppAtr: 1, stampRequestMode: null};
+                        case "KAF005A2":
+                            return {appType: 0, overtimeAppAtr: 2, stampRequestMode: null};
                         case "KAF006A":
-                            return {appType: 1, overtimeAtr: null, stampMode: null};
+                            return {appType: 1, overtimeAppAtr: null, stampRequestMode: null};
                         case "KAF007A":
-                            return {appType: 2, overtimeAtr: null, stampMode: null};
+                            return {appType: 2, overtimeAppAtr: null, stampRequestMode: null};
                         case "KAF008A":
-                            return {appType: 3, overtimeAtr: null, stampMode: null};
+                            return {appType: 3, overtimeAppAtr: null, stampRequestMode: null};
                         case "KAF009A":
-                            return {appType: 4, overtimeAtr: null, stampMode: null};
+                            return {appType: 4, overtimeAppAtr: null, stampRequestMode: null};
                         case "KAF010A":
-                            return {appType: 6, overtimeAtr: null, stampMode: null};
+                            return {appType: 6, overtimeAppAtr: null, stampRequestMode: null};
                         case "KAF012A":
-                            return {appType: 8, overtimeAtr: null, stampMode: null};
+                            return {appType: 8, overtimeAppAtr: null, stampRequestMode: null};
                         case "KAF004A":
-                            return {appType: 9, overtimeAtr: null, stampMode: null};
+                            return {appType: 9, overtimeAppAtr: null, stampRequestMode: null};
                         case "KAF002A":
-                            return {appType: 7, overtimeAtr: null, stampMode: 0};
+                            return {appType: 7, overtimeAppAtr: null, stampRequestMode: 0};
                         case "KAF002C":
-                            return {appType: 7, overtimeAtr: null, stampMode: 1};
+                            return {appType: 7, overtimeAppAtr: null, stampRequestMode: 1};
                         case "KAF011A":
-                            return {appType: 10, overtimeAtr: null, stampMode: null};
+                            return {appType: 10, overtimeAppAtr: null, stampRequestMode: null};
                         case "KAF020A":
-                            return {appType: 15, overtimeAtr: null, stampMode: null};
+                            return {appType: 15, overtimeAppAtr: null, stampRequestMode: null};
                         default:
-                            return {};
+                            return null;
                     }
                 });
         }

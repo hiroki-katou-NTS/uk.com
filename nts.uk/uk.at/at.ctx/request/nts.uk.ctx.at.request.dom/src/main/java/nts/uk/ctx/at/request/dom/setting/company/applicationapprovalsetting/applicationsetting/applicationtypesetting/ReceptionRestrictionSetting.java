@@ -22,7 +22,7 @@ public class ReceptionRestrictionSetting {
 	/**
 	 * 残業申請事前の受付制限
 	 */
-	private OTAppBeforeAccepRestric otAppBeforeAccepRestric;
+	private Optional<OTAppBeforeAccepRestric> otAppBeforeAccepRestric;
 	
 	/**
 	 * 事後の受付制限
@@ -32,7 +32,7 @@ public class ReceptionRestrictionSetting {
 	/**
 	 * 事前の受付制限
 	 */
-	private BeforehandRestriction beforehandRestriction;
+	private Optional<BeforehandRestriction> beforehandRestriction;
 	
 	/**
 	 * 申請種類
@@ -41,9 +41,9 @@ public class ReceptionRestrictionSetting {
 	
 	public ReceptionRestrictionSetting(OTAppBeforeAccepRestric otAppBeforeAccepRestric,
 			AfterhandRestriction afterhandRestriction, BeforehandRestriction beforehandRestriction, ApplicationType appType) {
-		this.otAppBeforeAccepRestric = otAppBeforeAccepRestric;
+		this.otAppBeforeAccepRestric = Optional.ofNullable(otAppBeforeAccepRestric);
 		this.afterhandRestriction = afterhandRestriction;
-		this.beforehandRestriction = beforehandRestriction;
+		this.beforehandRestriction = Optional.ofNullable(beforehandRestriction);
 		this.appType = appType;
 	}
 	
@@ -56,23 +56,23 @@ public class ReceptionRestrictionSetting {
 		// 「＠申請種類」をチェックする
 		if(appType != ApplicationType.OVER_TIME_APPLICATION) {
 			// 事前申請の受付制限．受付制限利用する = @事前の受付制限．利用する
-			PreAppAcceptLimit preAppAcceptLimit = new PreAppAcceptLimit(beforehandRestriction.isToUse());
+			PreAppAcceptLimit preAppAcceptLimit = new PreAppAcceptLimit(beforehandRestriction.get().isToUse());
 			// @事前の受付制限．利用する = true の場合
-			if(beforehandRestriction.isToUse()) {
+			if(beforehandRestriction.get().isToUse()) {
 				// 事前申請の受付制限．受付可能年月日 = システム日付 + @事前の受付制限．日数
-				preAppAcceptLimit.setOpAcceptableDate(Optional.of(GeneralDate.today().addDays(beforehandRestriction.getDateBeforehandRestrictions().value)));
+				preAppAcceptLimit.setOpAcceptableDate(Optional.of(GeneralDate.today().addDays(beforehandRestriction.get().getDateBeforehandRestrictions().value)));
 			}
 			// OUTPUTにセットして返す
 			return preAppAcceptLimit;
 		}
 		// 「＠残業申請事前の受付制限．チェック方法」をチェックする
-		if(otAppBeforeAccepRestric.getMethodCheck() == BeforeAddCheckMethod.CHECK_IN_DAY) {
+		if(otAppBeforeAccepRestric.get().getMethodCheck() == BeforeAddCheckMethod.CHECK_IN_DAY) {
 			// 事前申請の受付制限．受付制限利用する = @残業申請事前の受付制限．利用する
-			PreAppAcceptLimit preAppAcceptLimit = new PreAppAcceptLimit(otAppBeforeAccepRestric.isToUse());
+			PreAppAcceptLimit preAppAcceptLimit = new PreAppAcceptLimit(otAppBeforeAccepRestric.get().isToUse());
 			// @残業申請事前の受付制限．利用する = true の場合
-			if(otAppBeforeAccepRestric.isToUse()) {
+			if(otAppBeforeAccepRestric.get().isToUse()) {
 				// 事前申請の受付制限．受付可能年月日 = システム日付 + @残業申請事前の受付制限．日数
-				preAppAcceptLimit.setOpAcceptableDate(Optional.of(GeneralDate.today().addDays(otAppBeforeAccepRestric.getDateBeforehandRestrictions().value)));
+				preAppAcceptLimit.setOpAcceptableDate(Optional.of(GeneralDate.today().addDays(otAppBeforeAccepRestric.get().getDateBeforehandRestrictions().value)));
 			}
 			// OUTPUTにセットして返す
 			return preAppAcceptLimit;
@@ -81,37 +81,37 @@ public class ReceptionRestrictionSetting {
 		switch (opOvertimeAppAtr.get()) {
 		case EARLY_OVERTIME:
 			// 事前申請の受付制限．受付制限利用する = @残業申請事前の受付制限．利用する
-			PreAppAcceptLimit preAppAcceptLimit1 = new PreAppAcceptLimit(otAppBeforeAccepRestric.isToUse());
+			PreAppAcceptLimit preAppAcceptLimit1 = new PreAppAcceptLimit(otAppBeforeAccepRestric.get().isToUse());
 			// @残業申請事前の受付制限．利用する = true の場合
-			if(otAppBeforeAccepRestric.isToUse()) {
+			if(otAppBeforeAccepRestric.get().isToUse()) {
 				// 事前申請の受付制限．受付可能年月日 = システム日付
 				preAppAcceptLimit1.setOpAcceptableDate(Optional.of(GeneralDate.today()));
 				// 事前申請の受付制限．受付可能時刻 = @残業申請事前の受付制限．時刻（早出残業）
-				preAppAcceptLimit1.setOpAvailableTime(otAppBeforeAccepRestric.getOpEarlyOvertime());
+				preAppAcceptLimit1.setOpAvailableTime(otAppBeforeAccepRestric.get().getOpEarlyOvertime());
 			}
 			// OUTPUTにセットして返す
 			return preAppAcceptLimit1;
 		case NORMAL_OVERTIME:
 			// 事前申請の受付制限．受付制限利用する = @残業申請事前の受付制限．利用する
-			PreAppAcceptLimit preAppAcceptLimit2 = new PreAppAcceptLimit(otAppBeforeAccepRestric.isToUse());
+			PreAppAcceptLimit preAppAcceptLimit2 = new PreAppAcceptLimit(otAppBeforeAccepRestric.get().isToUse());
 			// @残業申請事前の受付制限．利用する = true の場合
-			if(otAppBeforeAccepRestric.isToUse()) {
+			if(otAppBeforeAccepRestric.get().isToUse()) {
 				// 事前申請の受付制限．受付可能年月日 = システム日付
 				preAppAcceptLimit2.setOpAcceptableDate(Optional.of(GeneralDate.today()));
 				// 事前申請の受付制限．受付可能時刻 = @残業申請事前の受付制限．時刻（通常残業）
-				preAppAcceptLimit2.setOpAvailableTime(otAppBeforeAccepRestric.getOpNormalOvertime());
+				preAppAcceptLimit2.setOpAvailableTime(otAppBeforeAccepRestric.get().getOpNormalOvertime());
 			}
 			// OUTPUTにセットして返す
 			return preAppAcceptLimit2;
 		default:
 			// 事前申請の受付制限．受付制限利用する = @残業申請事前の受付制限．利用する
-			PreAppAcceptLimit preAppAcceptLimit3 = new PreAppAcceptLimit(otAppBeforeAccepRestric.isToUse());
+			PreAppAcceptLimit preAppAcceptLimit3 = new PreAppAcceptLimit(otAppBeforeAccepRestric.get().isToUse());
 			// @残業申請事前の受付制限．利用する = true の場合
-			if(otAppBeforeAccepRestric.isToUse()) {
+			if(otAppBeforeAccepRestric.get().isToUse()) {
 				// 事前申請の受付制限．受付可能年月日 = システム日付
 				preAppAcceptLimit3.setOpAcceptableDate(Optional.of(GeneralDate.today()));
 				// 事前申請の受付制限．受付可能時刻 = @残業申請事前の受付制限．時刻（早出残業・通常残業）
-				preAppAcceptLimit3.setOpAvailableTime(otAppBeforeAccepRestric.getOpEarlyNormalOvertime());
+				preAppAcceptLimit3.setOpAvailableTime(otAppBeforeAccepRestric.get().getOpEarlyNormalOvertime());
 			}
 			// OUTPUTにセットして返す
 			return preAppAcceptLimit3;

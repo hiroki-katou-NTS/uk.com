@@ -276,7 +276,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		textReasonLabel.setValue(I18NText.getText("KAF000_59"));
 		if(printContentOfApp.getAppReasonStandard() != null) {
 			comboReasonContent.setValue(printContentOfApp.getAppReasonStandard().getReasonTypeItemLst().stream().findFirst()
-					.map(x -> x.getOpReasonForFixedForm().map(y -> y.v()).orElse(null)).orElse(null));
+					.map(x -> x.getReasonForFixedForm().v()).orElse(null));
 		}
 		if(printContentOfApp.getOpAppReason() != null) {
 			textReasonContent.setValue(printContentOfApp.getOpAppReason().v());

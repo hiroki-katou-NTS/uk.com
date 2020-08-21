@@ -7,6 +7,7 @@ import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSetDto;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,12 +17,17 @@ import java.util.stream.Collectors;
 public class OvertimeAppSetDto {
     private OvertimeLeaveAppCommonSetDto overtimeLeaveAppCommonSetting;
     private ApplicationDetailSettingDto applicationDetailSetting;
-    private List<OvertimeQuotaSetUseDto> overTimeQuotaSetting;
+    private List<OvertimeQuotaSetUseDto> overTimeQuotaSettings;
+
     public static OvertimeAppSetDto fromDomain(OvertimeAppSet domain) {
+        List<OvertimeQuotaSetUseDto> overTimeQuotaSettings = new ArrayList<>();
+        domain.getOvertimeQuotaSet().forEach(f -> {
+            overTimeQuotaSettings.addAll(OvertimeQuotaSetUseDto.fromDomain(f));
+        });
         return new OvertimeAppSetDto(
                 OvertimeLeaveAppCommonSetDto.fromDomain(domain.getOvertimeLeaveAppCommonSet()),
                 ApplicationDetailSettingDto.fromDomain(domain.getApplicationDetailSetting()),
-                domain.getOvertimeQuotaSet().stream().map(OvertimeQuotaSetUseDto::fromDomain).collect(Collectors.toList())
+                overTimeQuotaSettings
         );
     }
 }

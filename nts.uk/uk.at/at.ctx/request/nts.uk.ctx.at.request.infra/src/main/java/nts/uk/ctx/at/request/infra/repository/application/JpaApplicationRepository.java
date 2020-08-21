@@ -111,7 +111,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
 		return this.queryProxy().query(SELECT_APPLICATION_BY_ID, KrqdtApplication_New.class)
-				.setParameter("appID", appID).setParameter("companyID", companyID).getSingle(x -> x.toDomain());
+				.setParameter("appID", appID).setParameter("companyID", companyID).getSingle(x -> x.toOvertimeAppSetDomain());
 	}
 	*/
 
