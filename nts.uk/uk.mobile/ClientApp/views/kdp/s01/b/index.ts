@@ -36,8 +36,8 @@ export class KdpS01BComponent extends Vue {
     public created() {
         let vm = this,
             command = {
-                startDate: moment(vm.params.stampDate ? vm.params.stampDate : vm.$dt.now).format('YYYY/MM/DD'),
-                endDate: moment(vm.params.stampDate ? vm.params.stampDate : vm.$dt.now).format('YYYY/MM/DD')
+                startDate: moment(vm.$dt.now).format('YYYY/MM/DD'),
+                endDate: moment(vm.$dt.now).format('YYYY/MM/DD')
             };
 
         vm.$mask('show');

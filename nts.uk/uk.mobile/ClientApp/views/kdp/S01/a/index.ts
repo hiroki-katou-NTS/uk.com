@@ -225,14 +225,14 @@ export class KdpS01AComponent extends Vue {
                             case 1:
                             case 3:
                             case 4:
-                                vm.openDialogB(result, command.stampButton);
+                                vm.openDialogB(command.stampButton);
                                 break;
 
                             case 2: {
                                 if (vm.setting.usrAtrValue === 1) {
-                                    vm.openDialogC(result, command.stampButton);
+                                    vm.openDialogC(command.stampButton);
                                 } else {
-                                    vm.openDialogB(result, command.stampButton);
+                                    vm.openDialogB(command.stampButton);
                                 }
                                 break;
                             }
@@ -247,12 +247,11 @@ export class KdpS01AComponent extends Vue {
         });
     }
 
-    private openDialogB(date: Date, stampButton: model.IStampButtonCommand) {
+    private openDialogB(stampButton: model.IStampButtonCommand) {
 
         let vm = this;
         vm.$auth.user.then((userInfo) => {
             vm.$modal(KdpS01BComponent, {
-                stampDate: date,
                 resultDisplayTime: vm.setting.displaySettingsStampScreen.resultDisplayTime,
                 employeeId: userInfo.employeeId,
                 employeeCode: userInfo.employeeCode
@@ -268,7 +267,7 @@ export class KdpS01AComponent extends Vue {
         });
     }
 
-    private openDialogC(date: Date, stampButton: model.IStampButtonCommand) {
+    private openDialogC(stampButton: model.IStampButtonCommand) {
         let vm = this;
         vm.$auth.user.then((userInfo) => {
             vm.$modal(KdpS01CComponent, {
