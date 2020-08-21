@@ -29,7 +29,7 @@
 								optionValue: 'value', optionText: 'name', group: 'KSC001_30'}" />
 						</div>
 						<div tabindex="-1" class="radioboxCase">
-                            <!-- C2_4 -->
+                            <!-- C2_4 --> <!-- checkCreateMethodAtrPersonalInfo -->
 							<div tabindex="1"
 								data-bind="ntsRadioButton: {
 								checked: checkCreateMethodAtrPersonalInfo,
@@ -60,8 +60,8 @@
 									name: $i18n('KSC001_111'),
 									options: monthlyPatternOpts,
 									optionsValue: 'code',
-									value: monthlyPatternCode,
 									optionsText: 'name',
+									value: monthlyPatternCode,
 									editable: false,
 									enable:  isMonthlyPattern,
 									required: isMonthlyPatternRq,
@@ -106,7 +106,7 @@
 				</div>
 				<div class="buttonBeginNext">
 					<button tabindex="5" class="proceed x-large"
-						data-bind="click: nextPageC, enable: $root.errors.isEmpty() &amp; isEnableNextPageE() ">#{i18n.getText('KSC001_20')}</button>
+						data-bind="click: nextPageC, enable: $root.errors.isEmpty() &amp; isEnableNextPageC() ">#{i18n.getText('KSC001_20')}</button>
 				</div>
 			</div>
 		</div>

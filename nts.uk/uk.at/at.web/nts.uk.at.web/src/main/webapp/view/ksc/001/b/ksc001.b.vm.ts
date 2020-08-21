@@ -15,8 +15,6 @@ module nts.uk.at.view.ksc001.b {
 
     export module viewmodel {
 
-        import clearAll = nts.uk.ui.errors.clearAll;
-
         export class ScreenModel {
 
             // step setup
@@ -100,7 +98,8 @@ module nts.uk.at.view.ksc001.b {
             creationMethodReference: KnockoutObservableArray<any> = ko.observable();
             isMonthlyPattern: KnockoutObservable<boolean>;
             isCreationMethod: KnockoutObservable<boolean>;
-            isEnableNextPageE: KnockoutObservable<boolean> = ko.observable(true);
+            isEnableNextPageC: KnockoutObservable<boolean> = ko.observable(true);
+            isEnableNextPageD: KnockoutObservable<boolean> = ko.observable(true);
             isConfirmedCreation: KnockoutObservable<boolean> = ko.observable(false);
             isCopyStartDate: KnockoutObservable<boolean> = ko.observable(false);
 
@@ -208,7 +207,7 @@ module nts.uk.at.view.ksc001.b {
                         $('.monthly-pattern-code').focus();
                     }
                 })
-                self.isEnableNextPageE = ko.computed(() => {
+                self.isEnableNextPageC = ko.computed(() => {
 
                     if( self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PATTERN_SCHEDULE
                         && self.creationMethodCode() == CreationMethodRef.MONTHLY_PATTERN
@@ -218,9 +217,39 @@ module nts.uk.at.view.ksc001.b {
                         return true;
                 });
 
+                self.isEnableNextPageD = ko.computed( () => {
+                    return self.selectedEmployeeCode().length > 0;
+                });
+
                 self.creationMethodCode.subscribe(( value) => {
-                    if( nts.uk.util.isNullOrEmpty(value))
-                        self.monthlyPatternCode(null);
+                    if( self.creationMethodCode() != CreationMethodRef.MONTHLY_PATTERN ) {
+                        nts.uk.ui.errors.clearAll();
+                        //self.monthlyPatternCode(null);
+                    } else {
+                        //self.monthlyPatternCode(null);
+                        $('.monthly-pattern-code').focus();
+                    }
+                });
+
+                self.checkCreateMethodAtrPersonalInfo.subscribe(( value ) => {
+                    if( value === CreateMethodAtr.COPY_PAST_SCHEDULE
+                        && nts.uk.util.isNullOrEmpty(self.copyStartDate())) {
+                        $('#copy-start-date').focus();
+                        if(self.isInValidCopyPasteSchedule()) return;
+                    } else {
+                        if( value === CreateMethodAtr.PATTERN_SCHEDULE
+                            && self.creationMethodCode() == CreationMethodRef.MONTHLY_PATTERN
+                            && self.monthlyPatternOpts().length <= 0 ) {
+                            let msgError = nts.uk.resource.getText('KSC001_111');
+                            $('.monthly-pattern-code')
+                            .ntsError('clear')
+                            .ntsError('set',{ messageId:'MsgB_2', messageParams: [ msgError ] });
+                        }
+
+                        nts.uk.ui.errors.clearAll();
+                        let copyStartDate = moment(self.periodStartDate()).format('YYYY/MM/DD');
+                        self.copyStartDate(copyStartDate);
+                    }
                 });
 
                 self.creationMethodReference([
@@ -231,11 +260,12 @@ module nts.uk.at.view.ksc001.b {
                     {code: 3, name: '月間パターン'},
                 ]);
 
-                self.monthlyPatternOpts([
-                    {code: null, name: ''},
-                    {code: 1, name: '月間パターンコード'},
-                    {code: 2, name: '月間パターン名称'}
-                ]);
+                self.monthlyPatternOpts([]);
+                //get monthly pattern
+                self.getMonthlyPattern();
+                /*{code: null, name: ''},
+                {code: 1, name: '月間パターンコード'},
+                {code: 2, name: '月間パターン名称'}*/
             }
 
             /**
@@ -362,6 +392,7 @@ module nts.uk.at.view.ksc001.b {
                         self.employeeList(mappedEmployeeList);
                         self.selectedEmployee(data.listEmployee);
                         self.applyKCP005ContentSearch(data.listEmployee);
+                        //console.log(mappedEmployeeList);
                     }
                 }
             }
@@ -395,9 +426,6 @@ module nts.uk.at.view.ksc001.b {
                     self.reloadCcg001();
                     dfd.resolve(self);
                 });
-
-                //get monthly pattern
-                self.getMonthlyPattern();
 
                 //init Schedule for personal
                 self.displayPersonalInfor();
@@ -445,7 +473,6 @@ module nts.uk.at.view.ksc001.b {
                     maxRows: 10,
                     tabindex: 5
                 };
-
             }
 
             /**
@@ -540,7 +567,7 @@ module nts.uk.at.view.ksc001.b {
                 var self = this;
 
                 self.builDataForScreenC();
-
+                
                 if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
                     && self.selectRebuildAtrCode() == ReBuildAtr.REBUILD_TARGET_ONLY) {
                     if (!self.recreateConverter() && !self.recreateEmployeeOffWork()
@@ -634,8 +661,6 @@ module nts.uk.at.view.ksc001.b {
                 //apply from B -> E1_6
                 self.lstLabelInfomationB(lstLabelInfomation);
 
-                //screen E
-                self.lengthEmployeeSelected(getText("KSC001_47", [self.selectedEmployeeCode().length]));
             }
 
 
@@ -651,6 +676,10 @@ module nts.uk.at.view.ksc001.b {
              */
             private nextPageC(): void {
                 var self = this;
+
+                if (self.isInValidCopyPasteSchedule()) {
+                    return;
+                }
 
                 self.buildString();
 
@@ -685,10 +714,17 @@ module nts.uk.at.view.ksc001.b {
              */
             private nextPageD(): void {
                 var self = this;
-                if (self.isInValidCopyPasteSchedule()) {
+
+                if( self.selectedEmployeeCode().length <= 0 ) {
+                    nts.uk.ui.dialog.error({ messageId: "Msg_758" });
+                    return;
+                } else {
+                    self.lengthEmployeeSelected(getText("KSC001_47", [self.selectedEmployeeCode().length]));
+                    self.openDialogPageE();
+                }
+                /*if (self.isInValidCopyPasteSchedule()) {
                     return;
                 }
-
                 // check D1_4 is checked
                 if (self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PATTERN_SCHEDULE) {
                     if (self.responeReflectionSetting()) {
@@ -707,7 +743,7 @@ module nts.uk.at.view.ksc001.b {
                     }
                 } else {
                     self.openDialogPageE();
-                }
+                }*/
             }
 
             /**
@@ -843,121 +879,9 @@ module nts.uk.at.view.ksc001.b {
                 if (self.isConfirmedCreation()) {
                     lstLabelInfomation.push(getText("KSC001_17")); //#KSC001_17
                 }
+
                 //apply from C -> E1_9
                 self.lstLabelInfomationC(lstLabelInfomation);
-
-                //NO1
-                /*if (self.selectedImplementAtrCode() == ImplementAtr.GENERALLY_CREATED) {
-                    lstLabelInfomation.push(getText("KSC001_35"));
-                } else {
-                    lstLabelInfomation.push(getText("KSC001_36"));
-
-                    //NO3
-                    if (self.checkProcessExecutionAtrRebuild() == 0) {
-                        lstLabelInfomation.push(getText("KSC001_37")
-                            + getText("KSC001_7"));
-
-                        if (self.selectRebuildAtrCode() == 0) {
-                            lstLabelInfomation.push("　" + getText("KSC001_38")
-                                + getText("KSC001_89"));
-                        } else {
-                            lstLabelInfomation.push("　" + getText("KSC001_38")
-                                + getText("KSC001_90"));
-
-                            if (self.recreateConverter()) {
-                                lstLabelInfomation.push("　　" + getText("KSC001_38")
-                                    + getText("KSC001_91"));
-                            }
-
-                            if (self.recreateEmployeeOffWork()) {
-                                lstLabelInfomation.push("　　" + getText("KSC001_38")
-                                    + getText("KSC001_92"));
-                            }
-
-                            if (self.recreateDirectBouncer()) {
-                                lstLabelInfomation.push("　　" + getText("KSC001_38")
-                                    + getText("KSC001_93"));
-                            }
-
-                            if (self.recreateShortTermEmployee()) {
-                                lstLabelInfomation.push("　　" + getText("KSC001_38")
-                                    + getText("KSC001_94"));
-                            }
-
-                            if (self.recreateWorkTypeChange()) {
-                                lstLabelInfomation.push("　　" + getText("KSC001_38")
-                                    + getText("KSC001_95"));
-                            }
-                        }
-                    } else {
-                        lstLabelInfomation.push(getText("KSC001_37")
-                            + getText("KSC001_8"));
-
-                        if (self.resetWorkingHours()) {
-                            lstLabelInfomation.push("　" + getText("KSC001_38")
-                                + getText("KSC001_96"));
-                        }
-
-                        if (self.resetMasterInfo()) {
-                            lstLabelInfomation.push("　" + getText("KSC001_38")
-                                + getText("KSC001_97"));
-                        }
-
-                        if (self.resetStartEndTime()) {
-                            lstLabelInfomation.push("　" + getText("KSC001_38")
-                                + getText("KSC001_98"));
-                        }
-
-                        if (self.resetTimeAssignment()) {
-                            lstLabelInfomation.push("　" + getText("KSC001_38")
-                                + getText("KSC001_99"));
-                        }
-                    }
-
-                    //NO2
-                    if (self.checkReCreateAtrAllCase() == ReCreateAtr.ALLCASE) {
-                        lstLabelInfomation.push(getText("KSC001_37")
-                            + getText("KSC001_4"));
-                    }
-                    if (self.checkReCreateAtrAllCase() == ReCreateAtr.ONLYUNCONFIRM) {
-                        lstLabelInfomation.push(getText("KSC001_37")
-                            + getText("KSC001_5"));
-                    }
-
-                }
-
-                if (self.confirm()) {
-                    lstLabelInfomation.push(getText("KSC001_17"));
-                }
-                self.lstLabelInfomation(lstLabelInfomation);
-
-                //reset infoCreateMethod !important
-                self.infoCreateMethod('');
-                //check select recreate and select resetting
-                if (!((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
-                    && self.checkProcessExecutionAtrRebuild() == ProcessExecutionAtr.RECONFIG)) {
-
-                    // set to view
-                    if (self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PERSONAL_INFO) {
-                        self.infoCreateMethod(getText("KSC001_22"));
-                    }
-
-                    // set to view
-                    if (self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PATTERN_SCHEDULE) {
-                        self.infoCreateMethod(getText("KSC001_23"));
-                    }
-                    // set to view
-                    if (self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.COPY_PAST_SCHEDULE) {
-                        self.infoCreateMethod(getText("KSC001_39",
-                            [moment(self.copyStartDate()).format('YYYY/MM/DD')]));
-                    }
-                }
-                */
-                // set to view info
-               /* self.infoPeriodDate(getText("KSC001_46",
-                    [self.periodDate().startDate, self.periodDate().endDate]));*/
-
-                self.lengthEmployeeSelected(getText("KSC001_47", [self.selectedEmployeeCode().length]));
             }
 
             /**
@@ -1150,45 +1074,52 @@ module nts.uk.at.view.ksc001.b {
                         self.selectedImplementAtrCode(data.selectedImplementAtrCode);
                         self.selectRebuildAtrCode(data.selectRebuildAtrCode);
 
-                        /*
-                        data.confirm: false
-                        data.createMethodAtr: 1
-                        data.employeeId: "aeaa869d-fe62-4eb2-ac03-2dde53322cb5"
-                        data.holidayReflect: 0
-                        data.holidayUseAtr: 0
-                        data.holidayWorkType: ""
-                        data.implementAtr: 1
-                        data.legalHolidayUseAtr: 0
-                        data.legalHolidayWorkType: ""
-                        data.patternCode: "02"
-                        data.patternStartDate: "2020-08-19T07:34:20.219Z"
-                        processExecutionAtr: 0
-                        reCreateAtr: 0
-                        rebuildTargetAtr: 1
-                        resetMasterInfo: false
-                        resetStartEndTime: false
-                        resetTimeAssignment: false
-                        resetWorkingHours: false
-                        statutoryHolidayUseAtr: 0
-                        statutoryHolidayWorkType: ""
-                        */
+                        self.isConfirmedCreation(data.isConfirmedCreation);
+                        self.monthlyPatternCode(data.monthlyPatternCode);
+                        self.creationMethodCode(data.creationMethodCode);
+                        self.confirm(data.confirm);
+                        // self.createMethodAtr(data.createMethodAtr);
+                        // self.employeeId(data.employeeId);
+                        // self.holidayReflect(data.holidayReflect);
+                        // self.holidayUseAtr(data.holidayUseAtr);
+                        // self.holidayWorkType(data.holidayWorkType);
+                        // self.implementAtr(data.implementAtr);
+                        // self.legalHolidayUseAtr(data.legalHolidayUseAtr);
+                        // self.legalHolidayWorkType(data.legalHolidayWorkType);
+                        // self.patternCode(data.patternCode);
+                        //self.patternStartDate(data.patternStartDate);
+                        // self.processExecutionAtr(data.processExecutionAtr);
+                        // self.reCreateAtr(data.reCreateAtr);
+                        self.resetMasterInfo(data.resetMasterInfo);
+                        self.resetStartEndTime(data.resetStartEndTime);
+                        self.resetTimeAssignment(data.resetTimeAssignment);
+                        self.resetWorkingHours(data.resetWorkingHours);
+                        //self.statutoryHolidayUseAtr(data.statutoryHolidayUseAtr);
+                        //self.statutoryHolidayWorkType(data.statutoryHolidayWorkType);
                     }
                 });
             }
 
             private  getMonthlyPattern() {
-                /*let self = this;
+                let self = this;
                 service.getMonthlyPattern()
                 .done( ( response ) => {
-                    if( typeof response !== 'undefined' && response ) {
-                        self.monthlyPatternOpts(response);
-                    } else {
-                        //Eror or empty
-                        //self.monthlyPatternOpts([]);
+                    if( typeof response !== 'undefined' && response.listMonthlyPattern.length > 0 ) {
+                        let monthlyOptions = [];
+                        monthlyOptions.push( new MonthlyPatternModel());
+                        response.listMonthlyPattern.map( ( item, i) => {
+                            monthlyOptions.push( new MonthlyPatternModel(
+                                item.monthlyPatternCode, item.monthlyPatternName, item.companyId
+                            ));
+                        });
+
+                        self.monthlyPatternOpts(monthlyOptions);
                     }
                 })
                 .always()
-                .fail();*/
+                .fail((error) => {
+                    console.log(error);
+                });
             }
         }
 
@@ -1390,6 +1321,18 @@ module nts.uk.at.view.ksc001.b {
                 self.creationMethodCode = 0;
                 self.monthlyPatternCode = 0;
                 self.isConfirmedCreation = false;
+            }
+        }
+
+        export class MonthlyPatternModel {
+            code: string;
+            name: string;
+            company: string;
+
+            constructor(code: string = null, name: string = null, company: string = null) {
+                this.code = code;
+                this.name = ( code !== null) ? code + "　　" + name :  name;
+                this.company = company;
             }
         }
 
