@@ -16,9 +16,9 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
  *
  */
 @Data
-public class WorkScheduleShiftResult {
+public class ScheduleOfShiftResult {
 
 
-	public List<WorkScheduleShiftDto> listWorkScheduleShift;    // List<勤務予定（シフト）dto>
+	public List<ScheduleOfShiftDto> listWorkScheduleShift;    // List<勤務予定（シフト）dto>
 	public Map<ShiftMaster,Optional<WorkStyle>> shiftMasterMap; // Map<シフトマスタ, Optional<出勤休日区分>>
 }

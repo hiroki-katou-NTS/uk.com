@@ -8,7 +8,7 @@ import java.util.List;
 import lombok.Value;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.PageInfo;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.TargetShiftPalette;
-import nts.uk.screen.at.app.ksu001.getworkscheduleshift.WorkScheduleShiftDto;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
 
 /**
  * @author laitv
@@ -23,6 +23,6 @@ public class DisplayInShiftResult {
 	public List<ShiftMasterMapWithWorkStyle> shiftMasterWithWorkStyleLst;  // 取得したシフト一覧： List<シフトマスタ, 出勤休日区分> ==> thằng này sẽ lưu vào localStorage
 	 
 	// data cua Grid 
-	public List<WorkScheduleShiftDto> listWorkScheduleShift;  // List<勤務予定（シフト）dto> ==> data hiển thị trên grid
+	public List<ScheduleOfShiftDto> listWorkScheduleShift;  // List<勤務予定（シフト）dto> ==> data hiển thị trên grid
 	
 }

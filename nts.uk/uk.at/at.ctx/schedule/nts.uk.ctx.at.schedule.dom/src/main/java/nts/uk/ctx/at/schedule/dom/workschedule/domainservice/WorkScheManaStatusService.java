@@ -37,7 +37,7 @@ public class WorkScheManaStatusService {
 			map.putAll(WorkScheManaStatusService.getByEmployee(require,lstEmployeeID.get(i), period));
 			long endTime = System.nanoTime();
 			long duration = (endTime - startTime) / 1000000; // ms;
-			System.out.println("Time of employee: " + i +1 + " : "+ duration);
+			System.out.println("Time of employee: " + (i+1) + " : "+ duration);
 		}
 		
 		return  map;

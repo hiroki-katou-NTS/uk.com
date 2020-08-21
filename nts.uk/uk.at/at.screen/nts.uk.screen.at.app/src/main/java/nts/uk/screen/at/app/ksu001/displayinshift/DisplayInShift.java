@@ -3,23 +3,15 @@
  */
 package nts.uk.screen.at.app.ksu001.displayinshift;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.screen.at.app.ksu001.getschedulesbyshift.GetScheduleActualOfShift;
+import nts.uk.screen.at.app.ksu001.getschedulesbyshift.SchedulesbyShiftDataResult;
 import nts.uk.screen.at.app.ksu001.getschedulesbyshift.SchedulesbyShiftParam;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.GetShiftPalette;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.GetShiftPaletteParam;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.GetShiftPaletteResult;
-import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
-import nts.uk.screen.at.app.ksu001.getworkscheduleshift.GetWorkScheduleShift;
-import nts.uk.screen.at.app.ksu001.getworkscheduleshift.GetWorkScheduleShiftParam;
-import nts.uk.screen.at.app.ksu001.getworkscheduleshift.WorkScheduleShiftDto;
-import nts.uk.screen.at.app.ksu001.getworkscheduleshift.WorkScheduleShiftResult;
-import nts.uk.screen.at.app.ksu001.getschedulesbyshift.GetSchedulesAndAchievementsByShift;
-import nts.uk.screen.at.app.ksu001.getschedulesbyshift.SchedulesbyShiftDataResult;
 
 /**
  * @author laitv 
@@ -41,7 +33,7 @@ public class DisplayInShift {
 	@Inject
 	private GetShiftPalette getShiftPalette; 
 	@Inject
-	private GetSchedulesAndAchievementsByShift getSchedulesAndAchievementsByShift;
+	private GetScheduleActualOfShift getSchedulesAndAchievementsByShift;
 	
 
 	public DisplayInShiftResult dataSample(DisplayInShiftParam param) {
@@ -51,7 +43,7 @@ public class DisplayInShift {
 		GetShiftPaletteParam paramStep1 = new GetShiftPaletteParam(param.listShiftMasterNotNeedGetNew,
 				param.shiftPaletteWantGet, param.workplaceId, param.workplaceGroupId);
 		// call ScreenQuery シフトパレットを取得する
-		GetShiftPaletteResult resultStep1 = getShiftPalette.dataSample(paramStep1);
+		GetShiftPaletteResult resultStep1 = getShiftPalette.getDataShiftPallet(paramStep1);
 
 		// Step 2 call ScreenQuery 予定・実績をシフトで取得する
 		SchedulesbyShiftParam paramStep2 = new SchedulesbyShiftParam(param.listShiftMasterNotNeedGetNew, param.listSid,

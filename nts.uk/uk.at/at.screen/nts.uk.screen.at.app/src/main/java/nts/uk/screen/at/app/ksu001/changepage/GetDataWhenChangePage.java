@@ -15,9 +15,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import nts.arc.task.parallel.ParallelExceptions.Item;
-import nts.uk.ctx.at.schedule.app.find.schedule.shiftmanagement.shiftwork.GetShiftPalettebyComAndSpePage;
-import nts.uk.ctx.at.schedule.app.find.schedule.shiftmanagement.shiftwork.GetShiftPalettebyOrgAndSpePage;
 import nts.uk.ctx.at.schedule.app.find.shift.shiftpalletsorg.ShiftPalletsOrgDto;
 import nts.uk.ctx.at.schedule.app.find.shift.shijtpalletcom.ComPatternScreenDto;
 import nts.uk.ctx.at.schedule.app.find.shift.shijtpalletcom.PatternItemScreenDto;
@@ -43,7 +40,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.PageInfo;
-import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftPalletUnit;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.TargetShiftPalette;
 import nts.uk.shr.com.context.AppContexts;
@@ -54,11 +50,6 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class GetDataWhenChangePage {
-	
-	@Inject
-	private GetShiftPalettebyComAndSpePage getShiftPalettebyComAndSpePage;
-	@Inject
-	private GetShiftPalettebyOrgAndSpePage getShiftPalettebyOrgAndSpePage;
 	
 	@Inject
 	private BasicScheduleService basicScheduleService;
@@ -101,10 +92,13 @@ public class GetDataWhenChangePage {
 
 		for (Map.Entry<ShiftMaster, Optional<WorkStyle>> entry : sMap.entrySet()) {
 			String shiftMasterCd = entry.getKey().getShiftMasterCode().toString();
-			if(!listShiftMasterCodeFromUI.contains(shiftMasterCd)){
-				ShiftMasterMapWithWorkStyle shift = new ShiftMasterMapWithWorkStyle(entry.getKey(), entry.getValue().isPresent() ? entry.getValue().get().value + "" : null);
-				listShiftMaster.add(shift);
+			if(listShiftMasterCodeFromUI.contains(shiftMasterCd)){
+				// remove di, roi add lai
+				ShiftMasterMapWithWorkStyle obj = listShiftMaster.stream().filter(shiftLocal -> shiftLocal.shiftMasterCode.equals(shiftMasterCd)).findFirst().get();
+				listShiftMaster.remove(obj);
 			}
+			ShiftMasterMapWithWorkStyle shift = new ShiftMasterMapWithWorkStyle(entry.getKey(), entry.getValue().isPresent() ? entry.getValue().get().value + "" : null);
+			listShiftMaster.add(shift);
 		}
 		result.setListShiftMaster(listShiftMaster);
 		return result;

@@ -73,10 +73,6 @@ public class GetWorkActualOfWorkInfo {
 	private WorkTypeRepository workTypeRepo;
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepo;
-	@Inject
-	private WorkTimeSettingService workTimeSettingService;
-	@Inject
-	private BasicScheduleService basicScheduleService;
 	
 	
 	public List<WorkScheduleWorkInforDto> GetDataActualOfWorkInfo(DisplayInWorkInfoParam param) {

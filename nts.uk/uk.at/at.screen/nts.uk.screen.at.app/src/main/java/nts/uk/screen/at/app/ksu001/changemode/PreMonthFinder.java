@@ -32,10 +32,10 @@ import nts.uk.screen.at.app.ksu001.extracttargetemployees.ScreenQueryExtractTarg
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforDto;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScreenQueryGetInforOfInitStartup;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.TargetOrgIdenInforDto;
-import nts.uk.screen.at.app.ksu001.getworkscheduleshift.GetWorkScheduleShift;
-import nts.uk.screen.at.app.ksu001.getworkscheduleshift.GetWorkScheduleShiftParam;
-import nts.uk.screen.at.app.ksu001.getworkscheduleshift.WorkScheduleShiftDto;
-import nts.uk.screen.at.app.ksu001.getworkscheduleshift.WorkScheduleShiftResult;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.GetScheduleOfShift;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftParam;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftResult;
 import nts.uk.screen.at.app.ksu001.start.DataBasicDto;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001Dto;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001Param;
@@ -57,7 +57,7 @@ public class PreMonthFinder {
 	@Inject
 	private DisplayInWorkInformation displayInWorkInfo;
 	@Inject
-	private GetWorkScheduleShift getWorkScheduleShift;
+	private GetScheduleOfShift getWorkScheduleShift;
 
 	public StartKSU001Dto getDataStartScreen(StartKSU001Param param) {
 		return null;
@@ -67,7 +67,7 @@ public class PreMonthFinder {
 	private StartKSU001Dto convertData(DataScreenQueryGetInforDto resultStep1,
 			List<EmployeeInformationImport> resultStep2, DataSpecDateAndHolidayDto resultStep3,
 			List<WorkTypeInfomation> listWorkTypeInfo, List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor,
-			List<WorkScheduleShiftDto> listWorkScheduleShift) {
+			List<ScheduleOfShiftDto> listWorkScheduleShift) {
 		StartKSU001Dto result = new StartKSU001Dto();
 
 		// data tra ve cua step1

@@ -37,7 +37,7 @@ import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforD
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScreenQueryGetInforOfInitStartup;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.PageInfo;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.TargetShiftPalette;
-import nts.uk.screen.at.app.ksu001.getworkscheduleshift.WorkScheduleShiftDto;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
 
 /**
  * @author laitv 初期起動 path:
@@ -99,7 +99,7 @@ public class StartKSU001 {
 		TargetShiftPalette targetShiftPalette = null;
 		List<ShiftMasterMapWithWorkStyle> shiftMasterWithWorkStyleLst = new ArrayList<>();
 		// data cua Grid
-		List<WorkScheduleShiftDto> listWorkScheduleShift = new ArrayList<>();
+		List<ScheduleOfShiftDto> listWorkScheduleShift = new ArrayList<>();
 		
 		if (param.viewMode.equals("time") || param.viewMode.equals("shortName")) {
 			// step 4 || 5.2 start
@@ -156,7 +156,7 @@ public class StartKSU001 {
 		TargetShiftPalette targetShiftPalette = null;
 		List<ShiftMasterMapWithWorkStyle> shiftMasterWithWorkStyleLst = new ArrayList<>();
 		// data cua Grid
-		List<WorkScheduleShiftDto> listWorkScheduleShift = new ArrayList<>();
+		List<ScheduleOfShiftDto> listWorkScheduleShift = new ArrayList<>();
 		
 		if (param.viewMode.equals("shift")) {
 			// step5.1
@@ -195,7 +195,7 @@ public class StartKSU001 {
 	private StartKSU001Dto convertData(DataScreenQueryGetInforDto resultStep1,List<EmployeeInformationImport> resultStep2, 
 			DataSpecDateAndHolidayDto resultStep3, List<WorkTypeInfomation> listWorkTypeInfo, 
 			List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor,
-			List<PageInfo> listPageInfo, TargetShiftPalette targetShiftPalette, List<ShiftMasterMapWithWorkStyle> shiftMasterWithWorkStyleLst, List<WorkScheduleShiftDto> listWorkScheduleShift) {
+			List<PageInfo> listPageInfo, TargetShiftPalette targetShiftPalette, List<ShiftMasterMapWithWorkStyle> shiftMasterWithWorkStyleLst, List<ScheduleOfShiftDto> listWorkScheduleShift) {
 		StartKSU001Dto result = new StartKSU001Dto();
 		
 		//	data tra ve cua step1	

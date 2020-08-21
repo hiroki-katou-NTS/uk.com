@@ -68,7 +68,7 @@ public class GetShiftPalette {
 	private ShiftMasterRepository shiftMasterRepo;
 	
 	
-	public GetShiftPaletteResult dataSample(GetShiftPaletteParam param) {
+	public GetShiftPaletteResult getDataShiftPallet(GetShiftPaletteParam param) {
 		
 		GetShiftPaletteResult result = new GetShiftPaletteResult();
 		if (param.shiftPaletteWantGet.shiftPalletUnit == ShiftPalletUnit.COMPANY.value) {

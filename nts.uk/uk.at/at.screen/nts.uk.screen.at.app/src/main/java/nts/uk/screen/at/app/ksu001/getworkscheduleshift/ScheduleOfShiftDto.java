@@ -1,20 +1,18 @@
 package nts.uk.screen.at.app.ksu001.getworkscheduleshift;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
 import nts.arc.time.GeneralDate;
 
 /**
  * @author laitv
  * 	勤務予定（シフト）dto
  */
-@NoArgsConstructor
+@Data
+@Builder
 @AllArgsConstructor
-@Getter
-@Setter
-public class WorkScheduleShiftDto {
+public class ScheduleOfShiftDto {
 	
 	// 社員ID
 	public String employeeId;
