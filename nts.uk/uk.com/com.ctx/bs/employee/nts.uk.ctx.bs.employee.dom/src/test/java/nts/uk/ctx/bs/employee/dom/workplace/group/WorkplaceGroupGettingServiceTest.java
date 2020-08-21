@@ -28,12 +28,12 @@ public class WorkplaceGroupGettingServiceTest {
 	@Test
 	public void testGet() {
 		GeneralDate date = GeneralDate.today();
-		List<String> employeeIDs = Arrays.asList("emp1");
+		List<String> employeeIDs = Arrays.asList("emp1","emp2","emp3");
 		String wkp = "wkp1";
 		new Expectations() {
 			{
 				require.getAffWkpHistItemByEmpDate(anyString, date);
-				result = Arrays.asList(wkp,wkp);
+				result = wkp;
 				
 				require.getWGInfo(Arrays.asList(wkp));
 			}
@@ -43,7 +43,9 @@ public class WorkplaceGroupGettingServiceTest {
 		assertThat(datas)
 		.extracting(d->d.getEmployeeID(),d->d.getEmployeeCode(),d->d.getBusinessName(),d->d.getWorkplaceID(),d->d.getWorkplaceGroupID())
 		.containsExactly(
-				tuple("emp1",Optional.empty(),Optional.empty(),wkp,Optional.empty())
+				tuple(employeeIDs.get(0),Optional.empty(),Optional.empty(),wkp,Optional.empty()),
+				tuple(employeeIDs.get(1),Optional.empty(),Optional.empty(),wkp,Optional.empty()),
+				tuple(employeeIDs.get(2),Optional.empty(),Optional.empty(),wkp,Optional.empty())
 				);
 	}
 	
@@ -53,9 +55,14 @@ public class WorkplaceGroupGettingServiceTest {
 	@Test
 	public void testGet_1() {
 		GeneralDate date = GeneralDate.today();
-		List<String> employeeIDs = Arrays.asList("emp1");
-		List<AffWorkplaceGroup> listAffWorkplaceGroup = Arrays.asList(new AffWorkplaceGroup("wKPGRPID1", "wkp1") );
+		List<String> employeeIDs = Arrays.asList("emp1","emp2","emp3");
 		String wkp = "wkp1";
+		String wkpGroup = "wKPGRPID";
+		List<AffWorkplaceGroup> listAffWorkplaceGroup = Arrays.asList(
+				new AffWorkplaceGroup(wkpGroup, wkp) 
+				
+				);
+		
 		new Expectations() {
 			{
 				require.getAffWkpHistItemByEmpDate(anyString, date);
@@ -70,7 +77,9 @@ public class WorkplaceGroupGettingServiceTest {
 		assertThat(datas)
 		.extracting(d->d.getEmployeeID(),d->d.getEmployeeCode(),d->d.getBusinessName(),d->d.getWorkplaceID(),d->d.getWorkplaceGroupID())
 		.containsExactly(
-				tuple("emp1",Optional.empty(),Optional.empty(),wkp,Optional.of("wKPGRPID1"))
+				tuple(employeeIDs.get(0),Optional.empty(),Optional.empty(),wkp,Optional.of(wkpGroup)),
+				tuple(employeeIDs.get(1),Optional.empty(),Optional.empty(),wkp,Optional.of(wkpGroup)),
+				tuple(employeeIDs.get(2),Optional.empty(),Optional.empty(),wkp,Optional.of(wkpGroup))
 				);
 	}
 

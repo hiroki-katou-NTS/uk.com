@@ -101,6 +101,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordConverter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
@@ -115,6 +116,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeek;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
@@ -187,7 +189,7 @@ public class ScheduleCreatorExecutionTransaction {
 	@Inject
 	private ReflectWorkInforDomainService inforDomainService; 
 	
-	// 日別のコンバーターを作成する
+	// note 日別のコンバーターを作成する
 	@Inject
 	private DailyRecordConverter converter;
 	
@@ -247,23 +249,23 @@ public class ScheduleCreatorExecutionTransaction {
 		ScheduleCreateContent content = command.getContent();
 
 		if (masterCache.getListWorkingConItem().size() > 1) {
-			// 労働条件が途中で変化するなら、計算キャッシュは利用しない
-			// do not cache result of calculation if working condition of the employee is
-			// changed in the period
+			// note 労働条件が途中で変化するなら、計算キャッシュは利用しない
+			// note do not cache result of calculation if working condition of the employee is
+			// note changed in the period
 			CalculationCache.clear();
 		} else {
 			CalculationCache.initialize();
 		}
 		try {
-			//実行区分をチェックする
+			// note実行区分をチェックする
 			if(command.getContent().getImplementAtr() == ImplementAtr.DELETE_WORK_SCHEDULE) {
-				//勤務予定削除する
+				// note勤務予定削除する
 				this.deleteSchedule(scheduleCreator.getEmployeeId(),period);
 			}else {
-				//勤務予定作成する  ↓
+				// note勤務予定作成する  ↓
 				this.createSchedule(command, scheduleExecutionLog, context, period, masterCache, listBasicSchedule,
 					companySetting, scheduleCreator, registrationListDateSchedule, content, carrier);
-				// ----------↑
+				// note ----------↑
 			}
 		} finally {
 			CalculationCache.clear();
@@ -272,12 +274,12 @@ public class ScheduleCreatorExecutionTransaction {
 		scheduleCreator.updateToCreated();
 		this.scheduleCreatorRepository.update(scheduleCreator);
 
-		// Đang không cần thiết vì trong mỗi xử lý đã thực hiện việc này
-		// 暫定データを作成する (Tạo data tạm)
-//		registrationListDateSchedule.getRegistrationListDateSchedule().forEach(x -> {
-//			// アルゴリズム「暫定データの登録」を実行する(Thực hiện thuật toán [đăng ký data tạm]) 
-//			this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, x.getEmployeeId(), x.getListDate());
-//		});
+		// note Đang không cần thiết vì trong mỗi xử lý đã thực hiện việc này
+		// note 暫定データを作成する (Tạo data tạm)
+// note		registrationListDateSchedule.getRegistrationListDateSchedule().forEach(x -> {
+// note			// note アルゴリズム「暫定データの登録」を実行する(Thực hiện thuật toán [đăng ký data tạm]) 
+// note			this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, x.getEmployeeId(), x.getListDate());
+// note		});
 		
 	}
 
@@ -287,43 +289,43 @@ public class ScheduleCreatorExecutionTransaction {
 			ScheduleCreator scheduleCreator, RegistrationListDateSchedule registrationListDateSchedule,
 			ScheduleCreateContent content, CacheCarrier carrier) {
 		String companyId = AppContexts.user().companyId();
-		// 実施区分を判断, 処理実行区分を判断
-		// EA No2115
-		// 中断フラグを確認する
-		// if 中断
+		// note 実施区分を判断, 処理実行区分を判断
+		// note EA No2115
+		// note 中断フラグを確認する
+		// note if 中断
 		if (content.getImplementAtr() == ImplementAtr.CREATE_WORK_SCHEDULE
 				&& content.getReCreateContent().getProcessExecutionAtr() == ProcessExecutionAtr.RECONFIG) {
 			BasicScheduleResetCommand commandReset = BasicScheduleResetCommand.create(command, companySetting,
 					scheduleCreator, content);
-//			// スケジュールを再設定する (Thiết lập lại schedule)
-//			// ドメインモデル「スケジュール作成実行ログ」を更新する ở trong xử lý này
+// note			// note スケジュールを再設定する (Thiết lập lại schedule)
+// note			// note ドメインモデル「スケジュール作成実行ログ」を更新する ở trong xử lý này
 			this.resetScheduleWithMultiThread(commandReset, context, period, masterCache.getEmpGeneralInfo(),
 					masterCache.getListBusTypeOfEmpHis(), listBasicSchedule, registrationListDateSchedule);
 		} else {
-			// else 中断じゃない
-			// 入力パラメータ「作成方法区分」を判断-check parameter
-			// CreateMethodAtr
+			// note else 中断じゃない
+			// note 入力パラメータ「作成方法区分」を判断-check parameter
+			// note CreateMethodAtr
 			if (content.getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO) {
 		command.setCompanySetting(companySetting);
-		// 勤務予定を作成する - return : ・勤務予定一覧 ・エラー一覧
+		// note 勤務予定を作成する - return : ・勤務予定一覧 ・エラー一覧
 		OutputCreateSchedule result = this.createScheduleBasedPersonWithMultiThread(command, scheduleCreator, scheduleExecutionLog, context,
 				period, masterCache, listBasicSchedule, registrationListDateSchedule, carrier);
 		
-		// Outputの勤務種類一覧を繰り返す
+		// note Outputの勤務種類一覧を繰り返す
 		this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
 				result.getListWorkSchedule(), ws -> {
-					// 勤務予定を登録する
+					// note 勤務予定を登録する
 					this.workScheduleRepository.insert(ws);
 					
-					// 暫定データの登録
+					// note 暫定データの登録
 					this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(),
 							Arrays.asList(ws.getYmd()));
 				});
 
-		// エラー一覧を繰り返す
+		// note エラー一覧を繰り返す
 		this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
 				result.getListError(), error -> {
-					// エラーを登録する
+					// note エラーを登録する
 					error.setExecutionId(command.getExecutionId());
 					this.scheduleErrorLogRepository.addByTransaction(error);
 				});
@@ -332,21 +334,21 @@ public class ScheduleCreatorExecutionTransaction {
 		}
 	}
 	
-	// ドメインモデル「スケジュール作成実行ログ」を更新する
+	// note ドメインモデル「スケジュール作成実行ログ」を更新する
 	private void updateStatusScheduleExecutionLog(ScheduleExecutionLog domain, CompletionStatus completionStatus) {
-		// check exist data schedule error log
+		// note check exist data schedule error log
 		domain.setCompletionStatus(completionStatus);
 		domain.updateExecutionTimeEndToNow();
 		this.scheduleExecutionLogRepository.update(domain);
 	}
 	
-	// 勤務予定削除
+	// note 勤務予定削除
 	private void deleteSchedule(String employeeId,DatePeriod period) {
 		String companyId = AppContexts.user().companyId();
-		//勤務予定ドメインを削除する (TKT-TQP)
-		//TODO: đang đợi Hiểu làm đề gọi vào
+		// note勤務予定ドメインを削除する (TKT-TQP)
+		// noteTODO: đang đợi Hiểu làm đề gọi vào
 		workScheduleRepository.delete(employeeId, period);
-		//暫定データの登録
+		// note暫定データの登録
 		this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, period.datesBetween());
 		
 	}
@@ -361,39 +363,39 @@ public class ScheduleCreatorExecutionTransaction {
 	 * @param domain
 	 *            the domain
 	 */
-	// スケジュールを再設定する
+	// note スケジュールを再設定する
 	private void resetScheduleWithMultiThread(BasicScheduleResetCommand command,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, DatePeriod targetPeriod,
 			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
 			List<BasicSchedule> listBasicSchedule, RegistrationListDateSchedule registrationListDateSchedule) {
 
-		// get info by context
+		// note get info by context
 		val asyncTask = context.asAsync();
 
 		DateRegistedEmpSche dateRegistedEmpSche = new DateRegistedEmpSche(command.getEmployeeId(), new ArrayList<>());
-		// loop start period date => end period date
+		// note loop start period date => end period date
 		for (val toDate : targetPeriod.datesBetween()) {
-			// 中断フラグを判断
+			// note 中断フラグを判断
 			if (asyncTask.hasBeenRequestedToCancel()) {
-				// ドメインモデル「スケジュール作成実行ログ」を更新する (update)
+				// note ドメインモデル「スケジュール作成実行ログ」を更新する (update)
 				this.updateStatusScheduleExecutionLog(context.getCommand().getScheduleExecutionLog(),CompletionStatus.INTERRUPTION);
 				
 				asyncTask.finishedAsCancelled();
 				break;
 			}
-			// ドメインモデル「勤務予定基本情報」を取得する
-			// fix for response
+			// note ドメインモデル「勤務予定基本情報」を取得する
+			// note fix for response
 			Optional<BasicSchedule> optionalBasicSchedule = listBasicSchedule.stream().filter(
 					x -> (x.getEmployeeId().equals(command.getEmployeeId()) && x.getDate().compareTo(toDate) == 0))
 					.findFirst();
 			if (optionalBasicSchedule.isPresent()) {
 				command.setWorkingCode(optionalBasicSchedule.get().getWorkTimeCode());
 				command.setWorkTypeCode(optionalBasicSchedule.get().getWorkTypeCode());
-				// 入力パラメータ「再作成区分」を判断
-				// 取得したドメインモデル「勤務予定基本情報」の「予定確定区分」を判断
+				// note 入力パラメータ「再作成区分」を判断
+				// note 取得したドメインモデル「勤務予定基本情報」の「予定確定区分」を判断
 				if (command.getReCreateAtr() == ReCreateAtr.ALL_CASE.value
 						|| optionalBasicSchedule.get().getConfirmedAtr() == ConfirmedAtr.UNSETTLED) {
-					// 再設定する情報を取得する
+					// note 再設定する情報を取得する
 					this.scheCreExeBasicScheduleHandler.resetAllDataToCommandSave(command, toDate, empGeneralInfo,
 							listBusTypeOfEmpHis, listBasicSchedule, dateRegistedEmpSche);
 				}
@@ -428,19 +430,19 @@ public class ScheduleCreatorExecutionTransaction {
 			DatePeriod targetPeriod, GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
 			DateRegistedEmpSche dateRegistedEmpSche) {
 
-		// 「社員の在職状態」から該当社員、該当日の在職状態を取得する
-		// EA修正履歴 No2716
+		// note 「社員の在職状態」から該当社員、該当日の在職状態を取得する
+		// note EA修正履歴 No2716
 		List<EmploymentInfoImported> listEmploymentInfo = masterCache.getMapEmploymentStatus()
 				.get(creator.getEmployeeId());
 		Optional<EmploymentInfoImported> optEmploymentInfo = Optional.empty();
-		// Đoạn này không biết có cần dùng hay không
+		// note Đoạn này không biết có cần dùng hay không
 		if (listEmploymentInfo != null) {
 			optEmploymentInfo = listEmploymentInfo.stream()
 					.filter(employmentInfo -> employmentInfo.getStandardDate().equals(dateInPeriod)).findFirst();
 		}
-		// データ（処理状態付き）を生成して返す
-		// if 退職、取得できない
-		// status employment equal RETIREMENT (退職)
+		// note データ（処理状態付き）を生成して返す
+		// note if 退職、取得できない
+		// note status employment equal RETIREMENT (退職)
 		if (!optEmploymentInfo.isPresent()
 				|| optEmploymentInfo.get().getEmploymentState() == ScheduleCreatorExecutionCommandHandler.RETIREMENT) {
 			/**
@@ -450,9 +452,9 @@ public class ScheduleCreatorExecutionTransaction {
 			return true;
 		}
 		EmploymentInfoImported employmentInfo = optEmploymentInfo.get();
-		// データ（処理状態付き）を生成して返す
-		// if 入社前OR出向中
-		// status employment equal BEFORE_JOINING (入社前) or equal ON_LOAN (出向中)
+		// note データ（処理状態付き）を生成して返す
+		// note if 入社前OR出向中
+		// note status employment equal BEFORE_JOINING (入社前) or equal ON_LOAN (出向中)
 		if (employmentInfo.getEmploymentState() == ScheduleCreatorExecutionCommandHandler.BEFORE_JOINING
 				|| employmentInfo.getEmploymentState() == ScheduleCreatorExecutionCommandHandler.ON_LOAN) {
 			/**
@@ -461,14 +463,14 @@ public class ScheduleCreatorExecutionTransaction {
 			return false;
 		}
 
-		// if 以外
-		// 労働条件情報からパラメータ.社員ID、ループ中の対象日から該当する労働条件項目を取得する
-		// EA修正履歴 No1830
+		// note if 以外
+		// note 労働条件情報からパラメータ.社員ID、ループ中の対象日から該当する労働条件項目を取得する
+		// note EA修正履歴 No1830
 		Optional<WorkCondItemDto> _workingConditionItem = masterCache.getListWorkingConItem().stream().filter(
 				x -> x.getDatePeriod().contains(dateInPeriod) && creator.getEmployeeId().equals(x.getEmployeeId()))
 				.findFirst();
-		// if 取得失敗
-		// データ（処理状態付き）を生成して返す (chưa làm)
+		// note if 取得失敗
+		// note データ（処理状態付き）を生成して返す (chưa làm)
 		/**
 		 * return 社員の当日在職状態＝Null 社員の当日労働条件＝Null エラー＝エラー内容 勤務予定＝Null 処理状態＝次の日へ（エラーあり）
 		 * 実行ID = Null
@@ -477,18 +479,18 @@ public class ScheduleCreatorExecutionTransaction {
 		 */
 		if (!_workingConditionItem.isPresent()) {
 			String errorContent = this.internationalization.localize("Msg_602", "#KSC001_87").get();
-			// ドメインモデル「スケジュール作成エラーログ」を登録する
+			// note ドメインモデル「スケジュール作成エラーログ」を登録する
 			ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(),
 					dateInPeriod, creator.getEmployeeId());
 			this.scheduleErrorLogRepository.add(scheduleErrorLog);
 			return false;
 		}
 
-		// if 取得できた
+		// note if 取得できた
 		WorkCondItemDto workingConditionItem = _workingConditionItem.get();
-		// 「労働条件項目. 予定管理区分」を確認する
+		// note 「労働条件項目. 予定管理区分」を確認する
 		if (workingConditionItem.getScheduleManagementAtr() == ManageAtr.NOTUSE) {
-			// データ（処理状態付き）を生成して返す (chưa làm)
+			// note データ（処理状態付き）を生成して返す (chưa làm)
 			/**
 			 * return 社員の当日在職状態＝Null 社員の当日労働条件＝Null エラー＝エラー内容 勤務予定＝Null 処理状態＝次の日へ
 			 */
@@ -498,25 +500,25 @@ public class ScheduleCreatorExecutionTransaction {
 		if (!workingConditionItem.getScheduleMethod().isPresent()) {
 			return false;
 		}
-		// ドメイン「勤務予定」を取得する 
+		// note ドメイン「勤務予定」を取得する 
 		WorkScheduleBasicCreMethod basicCreateMethod = workingConditionItem.getScheduleMethod().get()
 				.getBasicCreateMethod();
 		switch (basicCreateMethod) {
 		case BUSINESS_DAY_CALENDAR:
-			// アルゴリズム「営業日カレンダーで勤務予定を作成する」を実行する
+			// note アルゴリズム「営業日カレンダーで勤務予定を作成する」を実行する
 			this.createWorkScheduleByBusinessDayCalenda(command, dateInPeriod, workingConditionItem, masterCache,
 					listBasicSchedule, dateRegistedEmpSche, employmentInfo);
 			return false;
 		case MONTHLY_PATTERN:
-			// アルゴリズム「月間パターンで勤務予定を作成する」を実行する
-			// create schedule by monthly pattern
+			// note アルゴリズム「月間パターンで勤務予定を作成する」を実行する
+			// note create schedule by monthly pattern
 			this.scheCreExeMonthlyPatternHandler.createScheduleWithMonthlyPattern(command, dateInPeriod,
 					workingConditionItem, masterCache, listBasicSchedule, dateRegistedEmpSche, employmentInfo);
 			return false;
 		case PERSONAL_DAY_OF_WEEK:
-			// アルゴリズム「個人曜日別で勤務予定を作成する」を実行する
-			// TODO
-			// 対象外
+			// note アルゴリズム「個人曜日別で勤務予定を作成する」を実行する
+			// note TODO
+			// note 対象外
 			return false;
 		default:
 			return false;
@@ -537,8 +539,8 @@ public class ScheduleCreatorExecutionTransaction {
 
 		String CID = AppContexts.user().companyId();
 
-		// 「社員の在職状態」から該当社員、該当日の在職状態を取得する
-		// EA修正履歴 No2716
+		// note 「社員の在職状態」から該当社員、該当日の在職状態を取得する
+		// note EA修正履歴 No2716
 		List<ScheManaStatuTempo> listEmploymentInfo = masterCache.getListManaStatuTempo();
 		Optional<ScheManaStatuTempo> optEmploymentInfo = Optional.empty();
 
@@ -546,40 +548,40 @@ public class ScheduleCreatorExecutionTransaction {
 			optEmploymentInfo = listEmploymentInfo.stream()
 					.filter(employmentInfo -> employmentInfo.getDate().equals(dateInPeriod)).findFirst();
 		}
-		// データ（処理状態付き）を生成して返す
-		// if 退職、取得できない
-		// status employment equal RETIREMENT (退職)
+		// note データ（処理状態付き）を生成して返す
+		// note if 退職、取得できない
+		// note status employment equal RETIREMENT (退職)
 		if (!optEmploymentInfo.isPresent()
 				|| optEmploymentInfo.get().getScheManaStatus().value == ScheManaStatus.NOT_ENROLLED.value) {
 
-			// return 社員の当日在職状態＝Null, 社員の当日労働条件＝Null, エラー＝Null, 勤務予定＝Null, 処理状態＝処理終了する
+			// note return 社員の当日在職状態＝Null, 社員の当日労働条件＝Null, エラー＝Null, 勤務予定＝Null, 処理状態＝処理終了する
 			DataProcessingStatusResult result = new DataProcessingStatusResult(null, null,
 					ProcessingStatus.valueOf(ProcessingStatus.END_PROCESS.value), null, null, null);
 			return result;
 		}
 		ScheManaStatuTempo employmentInfo = optEmploymentInfo.get();
-		// 
-		// if 入社前OR出向中
-		// status employment equal BEFORE_JOINING (入社前) or equal ON_LOAN (出向中)
+		// note 
+		// note if 入社前OR出向中
+		// note status employment equal BEFORE_JOINING (入社前) or equal ON_LOAN (出向中) (thay đổi enum)
 		if (employmentInfo.getScheManaStatus() == ScheManaStatus.INVALID_DATA
 				|| employmentInfo.getScheManaStatus() == ScheManaStatus.DO_NOT_MANAGE_SCHEDULE) {
 
-			// return 社員の当日在職状態＝Null 社員の当日労働条件＝Null エラー＝Null 勤務予定＝Null 処理状態＝次の日へ
+			// note return 社員の当日在職状態＝Null 社員の当日労働条件＝Null エラー＝Null 勤務予定＝Null 処理状態＝次の日へ
 			DataProcessingStatusResult result = new DataProcessingStatusResult(null, null,
 					ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY.value), null, null, null);
 			return result;
 		}
 
-		// if 以外
-		// 労働条件情報からパラメータ.社員ID、ループ中の対象日から該当する労働条件項目を取得する
-		// EA修正履歴 No1830
+		// note if 以外
+		// note 労働条件情報からパラメータ.社員ID、ループ中の対象日から該当する労働条件項目を取得する
+		// note EA修正履歴 No1830
 		Optional<WorkCondItemDto> _workingConditionItem = masterCache.getListWorkingConItem().stream().filter(
 				x -> x.getDatePeriod().contains(dateInPeriod) && creator.getEmployeeId().equals(x.getEmployeeId()))
 				.findFirst();
-		// if 取得失敗
+		// note if 取得失敗
 		if (!_workingConditionItem.isPresent()) {
 			String errorContent = this.internationalization.localize("Msg_602", "#KSC001_87").get();
-			// ドメインモデル「スケジュール作成エラーログ」を登録する
+			// note ドメインモデル「スケジュール作成エラーログ」を登録する
 			ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, null, dateInPeriod,
 					creator.getEmployeeId());
 			this.scheduleErrorLogRepository.add(scheduleErrorLog);
@@ -588,46 +590,46 @@ public class ScheduleCreatorExecutionTransaction {
 			return result;
 		}
 
-		// if 取得できた
+		// note if 取得できた
 		WorkCondItemDto workingConditionItem = _workingConditionItem.get();
-		// 「労働条件項目. 予定管理区分」を確認する
-		// if 予定管理しない
+		// note 「労働条件項目. 予定管理区分」を確認する
+		// note if 予定管理しない
 		if (workingConditionItem.getScheduleManagementAtr() == ManageAtr.NOTUSE) {
 
 			String errorContent = this.internationalization.localize("Msg_602", "#KSC001_87").get();
-			// ドメインモデル「スケジュール作成エラーログ」を登録する
+			// note ドメインモデル「スケジュール作成エラーログ」を登録する
 			ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, null, dateInPeriod,
 					creator.getEmployeeId());
-			// return 社員の当日在職状態＝Null, 社員の当日労働条件＝Null, エラー＝エラー内容, 勤務予定＝Null, 処理状態＝次の日へ
+			// note return 社員の当日在職状態＝Null, 社員の当日労働条件＝Null, エラー＝エラー内容, 勤務予定＝Null, 処理状態＝次の日へ
 			DataProcessingStatusResult result = new DataProcessingStatusResult(CID, scheduleErrorLog,
 					ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY.value), null, null, null);
 			return result;
 		}
 
-		// ドメイン「勤務予定」を取得する
+		// note ドメイン「勤務予定」を取得する
 		Optional<WorkSchedule> workSchedule = workScheduleRepository.get(command.getEmployeeId(), dateInPeriod);
 
-		// if 取得できる
+		// note if 取得できる
 		if (workSchedule.isPresent()) {
-			// 勤務予定作成する
+			// note 勤務予定作成する
 			if (command.getContent().getImplementAtr().value == ImplementAtr.CREATE_WORK_SCHEDULE.value) {
-				// 
+				// note 
 				return new DataProcessingStatusResult(CID, null,
 						ProcessingStatus.valueOf(ProcessingStatus.NORMAL_PROCESS.value), workSchedule.get(),
 						workingConditionItem, employmentInfo);
 			}
 
-			// 新規のみ作成する
+			// note 新規のみ作成する
 			if (command.getContent().getImplementAtr().value == ImplementAtr.CREATE_NEW_ONLY.value) {
-				// 
+				// note 
 				return new DataProcessingStatusResult(CID, null,
 						ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY.value), null, null, null);
 			}
 		}
 
-		// else 取得できない
-		// 空の勤務予定を作成する
-		// データ（処理状態付き）を生成して返す
+		// note else 取得できない
+		// note 空の勤務予定を作成する
+		// note データ（処理状態付き）を生成して返す
 		return new DataProcessingStatusResult(CID, null,
 				ProcessingStatus.valueOf(ProcessingStatus.NORMAL_PROCESS.value), 
 				new WorkSchedule(command.getEmployeeId(), dateInPeriod, ConfirmedATR.UNSETTLED, 
@@ -667,48 +669,48 @@ public class ScheduleCreatorExecutionTransaction {
 			CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
 			RegistrationListDateSchedule registrationListDateSchedule, CacheCarrier carrier) {
 		
-		// 空の勤務予定一覧を作成する 
+		// note 空の勤務予定一覧を作成する 
 		List<WorkSchedule> listWorkSchedule = new ArrayList<>();
-		// 空のエラー一覧を作成する
+		// note 空のエラー一覧を作成する
 		List<ScheduleErrorLog> listError = new ArrayList<>();
 		
 		DateRegistedEmpSche dateRegistedEmpSche = new DateRegistedEmpSche(creator.getEmployeeId(), new ArrayList<>());
-		// 入力パラメータ「対象開始日」から「対象終了日」をループ処理する
+		// note 入力パラメータ「対象開始日」から「対象終了日」をループ処理する
 		AtomicBoolean checkEndProcess = new AtomicBoolean(false);
-		// 対象期間を繰り返す
+		// note 対象期間を繰り返す
 		targetPeriod.datesBetween().forEach(dateInPeriod -> {
 			if(checkEndProcess.get()) {
 				return;
 			}
-// xu ly của bac Binh, nhung khong thay trong EA nen dang comment vao			
-//			boolean isEndLoop = this.createScheduleBasedPersonOneDate(command, creator, domain, context, targetPeriod, dateInPeriod,
-//					masterCache, listBasicSchedule, dateRegistedEmpSche);
-//			if (isEndLoop)
-//				return;
+// note 		xu ly của bac Binh, nhung khong thay trong EA nen dang comment vao			
+// note			boolean isEndLoop = this.createScheduleBasedPersonOneDate(command, creator, domain, context, targetPeriod, dateInPeriod,
+// note					masterCache, listBasicSchedule, dateRegistedEmpSche);
+// note			if (isEndLoop)
+// note				return;
 			
-			// 勤務予定反映する
-			// 「パラメータ」 ・パラメータ（Temporary） ・勤務ペアリスト ・勤務種類コード ・就業時間帯コード ・年月日
-			// ・勤務サイクルコード・スタート勤務サイクル ・勤務サイクルスタート位置 ・休日優先方法 ・個人スケジュール休日パターン設定
-			// 「Output」 ・勤務予定 ・エラー ・処理状態/
+			// note 勤務予定反映する
+			// note 「パラメータ」 ・パラメータ（Temporary） ・勤務ペアリスト ・勤務種類コード ・就業時間帯コード ・年月日
+			// note ・勤務サイクルコード・スタート勤務サイクル ・勤務サイクルスタート位置 ・休日優先方法 ・個人スケジュール休日パターン設定
+			// note 「Output」 ・勤務予定 ・エラー ・処理状態/
 			
-			// Output。処理状態を確認する (call to method 処理状態を確認する)
+			// note Output。処理状態を確認する (call to method 処理状態を確認する)
 			OutputCreateScheduleOneDate createScheduleOneDate = this.reflectWorkSchedule(command, creator, domain,
 					context,targetPeriod, dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche, carrier);
 			switch(createScheduleOneDate.getProcessingStatus()) {
-			case NEXT_DAY:// 次の日へ
+			case NEXT_DAY:// note 次の日へ
 				break;
-			case END_PROCESS:// 処理終了する
+			case END_PROCESS:// note 処理終了する
 				checkEndProcess.set(true);
 				break;
-			case NEXT_DAY_WITH_ERROR:// 次の日へ（エラーあり）
+			case NEXT_DAY_WITH_ERROR:// note 次の日へ（エラーあり）
 				listError.add(createScheduleOneDate.getScheduleErrorLog());
 				break;
-			default:// 処理正常
-				// 勤務予定を補正する - call 勤務予定を補正する
+			default:// note 処理正常
+				// note 勤務予定を補正する - call 勤務予定を補正する
 				WorkSchedule workSchedule = correctWorkSchedule.correctWorkSchedule(
 						createScheduleOneDate.getWorkSchedule(), creator.getEmployeeId(), dateInPeriod);
 
-				// 補正済みの勤務予定を勤務予定一覧に入れる
+				// note 補正済みの勤務予定を勤務予定一覧に入れる
 				listWorkSchedule.add(workSchedule);
 				break;
 			}
@@ -718,7 +720,7 @@ public class ScheduleCreatorExecutionTransaction {
 		if (dateRegistedEmpSche.getListDate().size() > 0) {
 			registrationListDateSchedule.getRegistrationListDateSchedule().add(dateRegistedEmpSche);
 		}
-		//勤務予定一覧、エラー一覧を返す
+		// note勤務予定一覧、エラー一覧を返す
 		return new OutputCreateSchedule(listWorkSchedule, listError);
 
 	}
@@ -739,8 +741,8 @@ public class ScheduleCreatorExecutionTransaction {
 			List<BasicSchedule> listBasicSchedule, DateRegistedEmpSche dateRegistedEmpSche,
 			EmploymentInfoImported employmentInfo) {
 
-		// ドメインモデル「勤務予定基本情報」を取得する(lấy dữ liệu domain 「勤務予定基本情報」)
-		// fix for response
+		// note ドメインモデル「勤務予定基本情報」を取得する(lấy dữ liệu domain 「勤務予定基本情報」)
+		// note fix for response
 		Optional<BasicSchedule> optionalBasicSchedule = listBasicSchedule.stream()
 				.filter(x -> (x.getEmployeeId().equals(workingConditionItem.getEmployeeId())
 						&& x.getDate().compareTo(dateInPeriod) == 0))
@@ -748,17 +750,17 @@ public class ScheduleCreatorExecutionTransaction {
 
 		if (optionalBasicSchedule.isPresent()) {
 			BasicSchedule basicSchedule = optionalBasicSchedule.get();
-			// checked2018
-			// 登録前削除区分をTrue（削除する）とする
-			// command.setIsDeleteBeforInsert(true); // FIX BUG #87113
-			// check parameter implementAtr recreate (入力パラメータ「実施区分」を判断)
-			// 入力パラメータ「実施区分」を判断(kiểm tra parameter 「実施区分」)
+			// note checked2018
+			// note 登録前削除区分をTrue（削除する）とする
+			// note command.setIsDeleteBeforInsert(true); // note FIX BUG #87113
+			// note check parameter implementAtr recreate (入力パラメータ「実施区分」を判断)
+			// note 入力パラメータ「実施区分」を判断(kiểm tra parameter 「実施区分」)
 			if (command.getContent().getImplementAtr().value == ImplementAtr.CREATE_WORK_SCHEDULE.value) {
 				this.createWorkScheduleByRecreate(command, dateInPeriod, basicSchedule, workingConditionItem,
 						employmentInfo, masterCache, listBasicSchedule, dateRegistedEmpSche);
 			}
 		} else {
-			// EA No1841
+			// note EA No1841
 			ScheMasterInfo scheMasterInfo = new ScheMasterInfo(null);
 			BasicSchedule basicSche = new BasicSchedule(null, scheMasterInfo);
 			if (ImplementAtr.CREATE_WORK_SCHEDULE == command.getContent().getImplementAtr()
@@ -767,11 +769,11 @@ public class ScheduleCreatorExecutionTransaction {
 				return;
 			}
 
-			// 登録前削除区分をTrue（削除する）とする
-			// checked2018
-			// command.setIsDeleteBeforInsert(false); // FIX BUG #87113
+			// note 登録前削除区分をTrue（削除する）とする
+			// note checked2018
+			// note command.setIsDeleteBeforInsert(false); // note FIX BUG #87113
 
-			// not exist data basic schedule
+			// note not exist data basic schedule
 			this.scheCreExeWorkTypeHandler.createWorkSchedule(command, dateInPeriod, workingConditionItem, masterCache,
 					listBasicSchedule, dateRegistedEmpSche);
 		}
@@ -791,24 +793,25 @@ public class ScheduleCreatorExecutionTransaction {
 
 		OutputCreateScheduleOneDate createScheduleOneDate = new OutputCreateScheduleOneDate();
 		IntegrationOfDaily integrationOfDaily = null;
-		// 日のデータを用意する
+		// note 日のデータを用意する
 		DataProcessingStatusResult result = this.createScheduleBasedPersonOneDate_New(command, creator, domain, context,
 				dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche);
-		// Output。処理状態を確認する
-		// if 以外
+		// note Output。処理状態を確認する
+		// note if 以外
 		if (result.getProcessingStatus().value != ProcessingStatus.NORMAL_PROCESS.value) {
-			// 「処理状態」、「勤務予定」、「エラー」を返す
+			// note 「処理状態」、「勤務予定」、「エラー」を返す
 			createScheduleOneDate = new OutputCreateScheduleOneDate(null, result.getErrorLog(),
 					ProcessingStatus.valueOf(result.getProcessingStatus().value));
+			return createScheduleOneDate;
 		} else {
-			// 日別のコンバーターを作成する
+			// note 日別のコンバーターを作成する
 			integrationOfDaily = new IntegrationOfDaily(result.getWorkSchedule().getEmployeeID(), result.getWorkSchedule().getYmd(),result.getWorkSchedule().getWorkInfo(), null,
 					result.getWorkSchedule().getAffInfo(), Optional.empty(), new ArrayList<>(), Optional.empty(),
 					result.getWorkSchedule().getLstBreakTime(), result.getWorkSchedule().getOptAttendanceTime(),
 					result.getWorkSchedule().getOptTimeLeaving(), result.getWorkSchedule().getOptSortTimeWork(),
 					Optional.empty(), Optional.empty(), Optional.empty(), result.getWorkSchedule().getLstEditState(),
 					Optional.empty(), new ArrayList<>());
-			// // 勤務予定。編集状態一覧から項目IDを取得する - TQP
+			// note // note 勤務予定。編集状態一覧から項目IDを取得する - TQP
 			List<Integer> attendanceItemIdList = integrationOfDaily.getEditState().stream()
 					.map(editState -> editState.getAttendanceItemId()).distinct().collect(Collectors.toList());
 
@@ -816,18 +819,18 @@ public class ScheduleCreatorExecutionTransaction {
 					.setData(integrationOfDaily).completed();
 			List<ItemValue> listItemValue = itemConverter.convert(attendanceItemIdList);
 
-			// 勤務予定のデータをコンバーターに入れる
-			// convert data from CreateScheduleMasterCache to EmployeeGeneralInfoImport
+			// note 勤務予定のデータをコンバーターに入れる
+			// note convert data from CreateScheduleMasterCache to EmployeeGeneralInfoImport
 			EmployeeGeneralInfoImport generalInfoImport = this.convertEmployeeGeneral(masterCache);
 
-			// 所属情報を反映する
+			// note 所属情報を反映する
 			AffiliationInforState inforState = inforDomainService.createAffiliationInforState(command.getCompanyId(),
 					command.getEmployeeId(), dateInPeriod, generalInfoImport);
 			
-			// Outputを確認する
-			// if エラーあり
+			// note Outputを確認する
+			// note if エラーあり
 			if (!inforState.getErrorNotExecLogID().isEmpty()) {
-				// 「処理状態、「エラー」を返す」、「勤務予定」 
+				// note 「処理状態、「エラー」を返す」、「勤務予定」 
 				ErrorMessageInfo errorMessageInfo = inforState.getErrorNotExecLogID().get(0);
 				ScheduleErrorLog errorLog = new ScheduleErrorLog(errorMessageInfo.getMessageError().v(), null,
 						errorMessageInfo.getProcessDate(), errorMessageInfo.getEmployeeID());
@@ -839,65 +842,87 @@ public class ScheduleCreatorExecutionTransaction {
 				integrationOfDaily.setAffiliationInfor(inforState.getAffiliationInforOfDailyPerfor().get());
 			}
 
-			// 勤務情報・勤務時間を用意する ↓
-			// 勤務情報を取得する ↓
+			// note 勤務情報・勤務時間を用意する ↓
 			Map<GeneralDate, WorkInformation> results = new HashMap<>();
-			PrepareWorkOutput output = this.getWorkInfo(command, creator, domain, context, targetPeriod, dateInPeriod,
+			PrepareWorkOutput prepareWorkOutput = this.getListTimeZone(command, creator, domain, context, targetPeriod, dateInPeriod,
 					masterCache, listBasicSchedule, dateRegistedEmpSche, results, carrier);
 
-			// Outputを確認する
-			List<TimezoneUse> lstTimeZone = new ArrayList<>();
-			if(output == null) {
-				lstTimeZone = new ArrayList<>();
-			} else {
-				if (output.getExecutionLog().isPresent()) {
-					// エラーあり
-					createScheduleOneDate = new OutputCreateScheduleOneDate(null, output.getExecutionLog().get(),
-							ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY_WITH_ERROR.value));
-							return createScheduleOneDate;
-					//throw new BusinessException(output.getExecutionLog().get().getErrorContent());
-				} else {
-					// Nullの場合
-					// 勤務予定時間帯を取得する
-					if (output.getInformation().getWorkTimeCode() == null) {
-						// 勤務予定時間帯を返す
-						lstTimeZone = new ArrayList<>();
-					} else {
-						// Nullではない場合
-						// 所定時間帯を取得する
-						PredetermineTimeSetForCalc getTimezone = workTimeService.getPredeterminedTimezone(
-								AppContexts.user().companyId(), output.getInformation().getWorkTimeCode().v(),
-								output.getInformation().getWorkTypeCode().v(), null);
-						// 取得できた所定時間帯Listを絞り込みする
-						// 勤務予定時間帯を返す
-						lstTimeZone = getTimezone.getTimezones().stream().filter(x -> x.getUseAtr() == UseSetting.USE)
-								.collect(Collectors.toList());
-					}
-				} 
-			}
-			
-			// -----------↑
-			// 「パラメータ（Temporary）。社員の短時間勤務一覧」から該当の短時間勤務を取得する
-			// 勤務情報、勤務予定時間帯、社員の短時間勤務を返す
-			PrepareWorkOutput prepareWorkOutput = new PrepareWorkOutput(output == null ? null : output.getInformation(), lstTimeZone,
-					masterCache.getListShortWorkTimeDto(),
-					output == null ?  Optional.empty() : output.getExecutionLog() != null && output.getExecutionLog().isPresent() ? output.getExecutionLog() : Optional.empty(),
-					output == null ?  Optional.empty() : output.getWorkType() != null && output.getWorkType().isPresent() ? output.getWorkType() : Optional.empty());
-
-			// Outputを確認する
+			// note Outputを確認する
 			if (prepareWorkOutput.getExecutionLog().isPresent()) {
-				// 「勤務予定」、「エラー」を返す」、「処理状態
+				// note 「勤務予定」、「エラー」を返す」、「処理状態」
 				createScheduleOneDate = new OutputCreateScheduleOneDate(null, prepareWorkOutput.getExecutionLog().get(),
 						ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY_WITH_ERROR.value));
 			} else {
 				WorkInformation information = new WorkInformation(prepareWorkOutput.getInformation().getWorkTimeCode(), prepareWorkOutput.getInformation().getWorkTypeCode());
 
-				// 勤務情報が正常な状態かをチェックする - xử lý tiếp theo call đến method ở dưới
+				// note 勤務情報が正常な状態かをチェックする - xử lý tiếp theo call đến method ở dưới
 				createScheduleOneDate = this.putDataWorkschedule(information, prepareWorkOutput, integrationOfDaily, command, dateInPeriod,
-						lstTimeZone, attendanceItemIdList, itemConverter, listItemValue);
+						prepareWorkOutput.getScheduleTimeZone(), attendanceItemIdList, itemConverter, listItemValue);
 			}
 		}
 		return createScheduleOneDate;
+	}
+	
+	/**
+	 * 勤務情報・勤務時間を用意する
+	 * @param command
+	 * @param creator
+	 * @param domain
+	 * @param context
+	 * @param targetPeriod
+	 * @param dateInPeriod
+	 * @param masterCache
+	 * @param listBasicSchedule
+	 * @param dateRegistedEmpSche
+	 * @param results
+	 * @param carrier
+	 * @return
+	 */
+	public PrepareWorkOutput getListTimeZone(ScheduleCreatorExecutionCommand command,
+			ScheduleCreator creator, ScheduleExecutionLog domain,
+			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, DatePeriod targetPeriod,
+			GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
+			DateRegistedEmpSche dateRegistedEmpSche,Map<GeneralDate, WorkInformation> results, CacheCarrier carrier) {
+		// note 勤務情報を取得する ↓
+					PrepareWorkOutput output = this.getWorkInfo(command, creator, domain, context, targetPeriod, dateInPeriod,
+							masterCache, listBasicSchedule, dateRegistedEmpSche, results, carrier);
+
+					// note Outputを確認する
+					PrepareWorkOutput prepareWorkOutput = new PrepareWorkOutput(null, null, null, Optional.empty());
+						if (output.getExecutionLog().isPresent()) {
+							// note エラーあり
+							prepareWorkOutput = new PrepareWorkOutput(null, null, new ArrayList<ShortWorkTimeDto>(), output.getExecutionLog());
+									return prepareWorkOutput;
+							// notethrow new BusinessException(output.getExecutionLog().get().getErrorContent());
+						} else {
+							
+							// note Nullの場合
+							// note 勤務予定時間帯を取得する
+							List<TimezoneUse> lstTimeZone = new ArrayList<>();
+							if (output.getInformation().getWorkTimeCode() == null) {
+								// note 勤務予定時間帯を返す
+								lstTimeZone = new ArrayList<>();
+							} else {
+								// note Nullではない場合
+								// note 所定時間帯を取得する
+								PredetermineTimeSetForCalc getTimezone = workTimeService.getPredeterminedTimezone(
+										AppContexts.user().companyId(), output.getInformation().getWorkTimeCode().v(),
+										output.getInformation().getWorkTypeCode().v(), null);
+								// note 取得できた所定時間帯Listを絞り込みする
+								// note 勤務予定時間帯を返す
+								lstTimeZone = getTimezone.getTimezones().stream().filter(x -> x.getUseAtr() == UseSetting.USE)
+										.collect(Collectors.toList());
+							}
+							
+							// note -----------↑
+							// note 「パラメータ（Temporary）。社員の短時間勤務一覧」から該当の短時間勤務を取得する
+							// note 勤務情報、勤務予定時間帯、社員の短時間勤務を返す
+							 prepareWorkOutput = new PrepareWorkOutput(output == null ? null : output.getInformation(), lstTimeZone,
+									masterCache.getListShortWorkTimeDto(),
+									output == null ?  Optional.empty() : output.getExecutionLog() != null && output.getExecutionLog().isPresent() ? output.getExecutionLog() : Optional.empty(),
+									output == null ?  Optional.empty() : output.getWorkType() != null && output.getWorkType().isPresent() ? output.getWorkType() : Optional.empty());
+						}
+						return prepareWorkOutput;
 	}
 
 	
@@ -906,86 +931,92 @@ public class ScheduleCreatorExecutionTransaction {
 			ScheduleCreatorExecutionCommand command, GeneralDate dateInPeriod, List<TimezoneUse> lstTimeZone,
 			List<Integer> attendanceItemIdList, DailyRecordToAttendanceItemConverter itemConverter,
 			List<ItemValue> listItemValue) {
-		// 勤務情報が正常な状態かをチェックする
+		// note 勤務情報が正常な状態かをチェックする
 		
 		WorkInformation.Require require = new WorkInformationImpl(workTypeRepo, workTimeSettingRepository, workTimeSettingService, basicScheduleService);
 		ErrorStatusWorkInfo checkErrorCondition = information.checkErrorCondition(require);
 
-		// 正常の場合
+		// note 正常の場合
 		if (checkErrorCondition.value == ErrorStatusWorkInfo.NORMAL.value) {
-			// 取得した情報をもとに「勤務予定」を入れる (TKT-TQP)
+			// note 取得した情報をもとに「勤務予定」を入れる (TKT-TQP)
 			Optional<WorkTypeSet> workTypeSet = prepareWorkOutput.getWorkType().isPresent() ? prepareWorkOutput.getWorkType().get().getWorkTypeSetList().stream()
 					.filter(x -> x.getCompanyId().equals(command.getCompanyId())
 							&& x.getWorkTypeCd().equals(prepareWorkOutput.getInformation().getWorkTypeCode()))
 					.findFirst() : Optional.empty();
-			// 勤務情報。勤務実績の勤務情報。勤務種類 = 処理中の勤務種類コード & 勤務情報。勤務実績の勤務情報。就業時間帯 =処理中の 就業時間帯コード
+			// note 勤務情報。勤務実績の勤務情報。勤務種類 = 処理中の勤務種類コード & 勤務情報。勤務実績の勤務情報。就業時間帯 =処理中の 就業時間帯コード
 			integrationOfDaily.getWorkInformation().setRecordInfo(new WorkInformation(prepareWorkOutput.getInformation().getWorkTimeCode(), prepareWorkOutput.getInformation().getWorkTypeCode()));
-			// 出勤打刻自動セット ~ 出勤時刻を直行とする
+			// note 出勤打刻自動セット ~ 出勤時刻を直行とする
 			integrationOfDaily.getWorkInformation().setGoStraightAtr(
 					EnumAdaptor.valueOf(workTypeSet.isPresent() ? workTypeSet.get().getAttendanceTime().value : 0, NotUseAttribute.class));
-			// 退勤打刻自動セット ~ 退勤打刻自動セット
+			// note 退勤打刻自動セット ~ 退勤打刻自動セット
 			integrationOfDaily.getWorkInformation().setBackStraightAtr(
 					EnumAdaptor.valueOf(workTypeSet.isPresent() ? workTypeSet.get().getTimeLeaveWork().value : 0, NotUseAttribute.class));
-			// 勤務情報。勤務予定時間帯。勤務No = 取得した所定時間帯. 勤務NO
-			// 勤務情報。勤務予定時間帯。出勤 = 取得した所定時間帯. 開始
-			// 勤務情報。勤務予定時間帯。退勤 = 取得した所定時間帯. 終了
+			// note 勤務情報。勤務予定時間帯。勤務No = 取得した所定時間帯. 勤務NO
+			// note 勤務情報。勤務予定時間帯。出勤 = 取得した所定時間帯. 開始
+			// note 勤務情報。勤務予定時間帯。退勤 = 取得した所定時間帯. 終了
 			integrationOfDaily.getWorkInformation().setScheduleTimeSheets(lstTimeZone.stream().map(
 					mapper -> new ScheduleTimeSheet(mapper.getWorkNo(), mapper.getStart().v(), mapper.getEnd().v()))
 					.collect(Collectors.toList()));
-			// 短時間勤務。時間帯。育児介護区分 = 取得した短時間勤務. 育児介護区分
+			// note 短時間勤務。時間帯。育児介護区分 = 取得した短時間勤務. 育児介護区分
 			for (ShortWorkTimeDto shortWork : prepareWorkOutput.getLstWorkTimeDto()) {
 				for (ShortChildCareFrameDto shortChild : shortWork.getLstTimeSlot()) {
-					integrationOfDaily.getShortTime().get().setShortWorkingTimeSheets(integrationOfDaily.getShortTime()
-							.get().getShortWorkingTimeSheets().stream()
-							.map(mapper -> new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(shortChild.getTimeSlot()),
-									EnumAdaptor.valueOf(shortWork.getChildCareAtr().value, ChildCareAttribute.class),
-									shortChild.getStartTime(), shortChild.getEndTime()))
-							.collect(Collectors.toList()));
+					ShortWorkingTimeSheet timeSheet = new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(shortChild.getTimeSlot()),
+							EnumAdaptor.valueOf(shortWork.getChildCareAtr().value, ChildCareAttribute.class),
+							shortChild.getStartTime(), shortChild.getEndTime());
+					List<ShortWorkingTimeSheet> lstSheets = new ArrayList<>();
+					lstSheets.add(timeSheet);
+					ShortTimeOfDailyAttd shortTime = new ShortTimeOfDailyAttd(lstSheets);
+					integrationOfDaily.setShortTime(Optional.ofNullable(shortTime));
+					
 				}
 			}
 			;
 
-			// 勤務予定から日別勤怠（Work）に変換する - TQP - đã thực hiện convert từ phía trên
-			// 編集状態あり
+			// note 勤務予定から日別勤怠（Work）に変換する - TQP - đã thực hiện convert từ phía trên
+			// note 編集状態あり
 			if (!attendanceItemIdList.isEmpty()) {
-				// 手修正項目のデータを元に戻す - TQP
-				// 取得できた日別勤怠（Work）から勤務予定に変換する - TQP
+				// note 手修正項目のデータを元に戻す - TQP
+				// note 取得できた日別勤怠（Work）から勤務予定に変換する - TQP
 				integrationOfDaily = this.restoreData(itemConverter, integrationOfDaily, listItemValue);
 			}
-			// Đang để tạm 1 phần tử trong DailyRecordToAttendanceItemConverter nên Tín bảo
-			// để tạm là UNSETTLED
+			// note Đang để tạm 1 phần tử trong DailyRecordToAttendanceItemConverter nên Tín bảo
+			// note để tạm là UNSETTLED
 			WorkSchedule workSchedule = new WorkSchedule(integrationOfDaily.getEmployeeId(),
 					integrationOfDaily.getYmd(), ConfirmedATR.UNSETTLED, integrationOfDaily.getWorkInformation(),
 					integrationOfDaily.getAffiliationInfor(), integrationOfDaily.getBreakTime(),
 					integrationOfDaily.getEditState(), integrationOfDaily.getAttendanceLeave(),
 					integrationOfDaily.getAttendanceTimeOfDailyPerformance(), integrationOfDaily.getShortTime());
 
-			// 「処理状態」、「勤務予定」、「エラー」を返す - TQP
-			// // 編集状態なし
+			// note 「処理状態」、「勤務予定」、「エラー」を返す - TQP
+			// note // note 編集状態なし
 			return new OutputCreateScheduleOneDate(workSchedule, null, ProcessingStatus.NORMAL_PROCESS);
 
 		} else {
-			// 正常以外
+			// note 正常以外
 			ScheduleErrorLog errorLog = null;
 			switch (checkErrorCondition.value) {
-			// 勤務情報のエラー状態.勤務種類が削除された
+			// note 勤務情報のエラー状態.勤務種類が削除された
 			case 4: {
-				errorLog = new ScheduleErrorLog("Msg_590", null, dateInPeriod, command.getEmployeeId());
+				String errorContent = this.internationalization.localize("Msg_590", "#Msg_590").get();
+				errorLog = new ScheduleErrorLog(errorContent, null, dateInPeriod, command.getEmployeeId());
 				break;
 			}
-			// 就業時間帯が不要なのに設定されている
+			// note 就業時間帯が不要なのに設定されている
 			case 3: {
-				errorLog = new ScheduleErrorLog("Msg_434", null, dateInPeriod, command.getEmployeeId());
+				String errorContent = this.internationalization.localize("Msg_434", "#Msg_434").get();
+				errorLog = new ScheduleErrorLog(errorContent, null, dateInPeriod, command.getEmployeeId());
 				break;
 			}
-			// 就業時間帯が必須なのに設定されていない
+			// note 就業時間帯が必須なのに設定されていない
 			case 2: {
-				errorLog = new ScheduleErrorLog("Msg_435", null, dateInPeriod, command.getEmployeeId());
+				String errorContent = this.internationalization.localize("Msg_435", "#Msg_435").get();
+				errorLog = new ScheduleErrorLog(errorContent, null, dateInPeriod, command.getEmployeeId());
 				break;
 			}
-			// 就業時間帯が削除された
+			// note 就業時間帯が削除された
 			case 5: {
-				errorLog = new ScheduleErrorLog("Msg_591", null, dateInPeriod, command.getEmployeeId());
+				String errorContent = this.internationalization.localize("Msg_591", "#Msg_591").get();
+				errorLog = new ScheduleErrorLog(errorContent, null, dateInPeriod, command.getEmployeeId());
 				break;
 			}
 			}
@@ -1028,54 +1059,55 @@ public class ScheduleCreatorExecutionTransaction {
 			Map<GeneralDate, WorkInformation> results, CacheCarrier carrier) {
 		String cid = command.getCompanyId();
 		PrepareWorkOutput prepareWorkOutput = null;
-		// パラメータの勤務Mapを確認する
-		// データあり
+		// note パラメータの勤務Mapを確認する
+		// note データあり
 		if (results.get(dateInPeriod) != null) {
 			return new PrepareWorkOutput(results.get(dateInPeriod), null, null, Optional.empty());
 		};
 		Optional<ScheManaStatuTempo> optEmploymentInfo = Optional.empty();
-		if (!masterCache.getListManaStatuTempo().isEmpty()) { // lấy dữ liệu theo ngày
+		if (!masterCache.getListManaStatuTempo().isEmpty()) { // note lấy dữ liệu theo ngày
 			optEmploymentInfo = masterCache.getListManaStatuTempo().stream()
 					.filter(employmentInfo -> employmentInfo.getDate().equals(dateInPeriod)).findFirst();
 		}
-		// データなし
-		// 社員の在職状態を確認する 
-		// if 休職中、休業中
-		// if 休職中
+		// note データなし
+		// note 社員の在職状態を確認する 
+		// note if 休職中、休業中
+		// note if 休職中
 		if (optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.ON_LEAVE) {
-			// 休業区分の勤務種類コードを取得する(lấy dữ liệu worktype của 休業区分)
-			// Input 会社ID, 廃止区分=廃止しない, 勤務種類の分類＝休職, 勤務の単位 = 1日
+			// note 休業区分の勤務種類コードを取得する(lấy dữ liệu worktype của 休業区分)
+			// note Input 会社ID, 廃止区分=廃止しない, 勤務種類の分類＝休職, 勤務の単位 = 1日
 			List<WorkType> lstWorkType = workTypeRepository.findWorkOneDay(cid,
 					DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,
 					WorkTypeClassification.LeaveOfAbsence.value);
-			// Filter by 勤務の単位 = 1日
+			// note Filter by 勤務の単位 = 1日
 			lstWorkType = lstWorkType.stream()
 					.map(x -> new WorkType(cid, x.getWorkTypeCode(), x.getWorkTypeSetList().stream()
 							.filter(y -> y.getWorkAtr().value == WorkAtr.OneDay.value).collect(Collectors.toList())))
 					.collect(Collectors.toList());
 			if (lstWorkType.isEmpty()) {
-				ScheduleErrorLog scheExeLog = new ScheduleErrorLog("Msg_601", command.getExecutionId(), dateInPeriod,
+				String errorContent = this.internationalization.localize("Msg_601", "#Msg_601").get();
+				ScheduleErrorLog scheExeLog = new ScheduleErrorLog(errorContent, command.getExecutionId(), dateInPeriod,
 						command.getEmployeeId());
-				// ドメインモデル「スケジュール作成エラーログ」を返す
+				// note ドメインモデル「スケジュール作成エラーログ」を返す
 				return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheExeLog));
 			} else {
-				// 勤務情報を返す
-				// ・勤務種類コード＝取得した勤務種類コード
-				// ・就業時間帯コード＝Null
+				// note 勤務情報を返す
+				// note ・勤務種類コード＝取得した勤務種類コード
+				// note ・就業時間帯コード＝Null
 				WorkInformation workInformation = new WorkInformation(null, lstWorkType.get(0).getWorkTypeCode());
 				return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
 			}
 
 		}
 
-		// if 休業中
+		// note if 休業中
 		if (optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.CLOSED) {
-			// 休業区分の勤務種類コードを取得する(lấy dữ liệu worktype của 休業区分)
-			// Input 会社ID, 廃止区分=廃止しない, 勤務種類の分類＝休業, 勤務の単位 = 1日
+			// note 休業区分の勤務種類コードを取得する(lấy dữ liệu worktype của 休業区分)
+			// note Input 会社ID, 廃止区分=廃止しない, 勤務種類の分類＝休業, 勤務の単位 = 1日
 			List<WorkType> lstWorkType = workTypeRepository.findWorkOneDay(command.getCompanyId(),
 					DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,
 					WorkTypeClassification.Closure.value);
-			// Filter by 勤務の単位 = 1日
+			// note Filter by 勤務の単位 = 1日
 			lstWorkType = lstWorkType.stream()
 					.map(x -> new WorkType(cid, x.getWorkTypeCode(), x.getWorkTypeSetList().stream()
 							.filter(y -> y.getCloseAtr().value == CloseAtr.PRENATAL.value
@@ -1084,79 +1116,99 @@ public class ScheduleCreatorExecutionTransaction {
 					.collect(Collectors.toList());
 
 			if (lstWorkType.isEmpty()) {
-				ScheduleErrorLog scheExeLog = new ScheduleErrorLog("Msg_601", command.getExecutionId(), dateInPeriod,
+				String errorContent = this.internationalization.localize("Msg_601", "#Msg_601").get();
+				ScheduleErrorLog scheExeLog = new ScheduleErrorLog(errorContent, command.getExecutionId(), dateInPeriod,
 						command.getEmployeeId());
-				// ドメインモデル「スケジュール作成エラーログ」を返す
+				// note ドメインモデル「スケジュール作成エラーログ」を返す
 				return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheExeLog));
 			} else {
-				// 勤務情報を返す
-				// ・勤務種類コード＝取得した勤務種類コード
-				// ・就業時間帯コード＝Null
+				// note 勤務情報を返す
+				// note ・勤務種類コード＝取得した勤務種類コード
+				// note ・就業時間帯コード＝Null
 				WorkInformation workInformation = new WorkInformation(null, lstWorkType.get(0).getWorkTypeCode());
 				return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
 			}
 		}
 
-		// if 予定管理する
-		PrepareWorkOutput workOutput = null;
+		// note if 予定管理する
+		PrepareWorkOutput workOutput = new PrepareWorkOutput(null, null, null, Optional.empty());
 		if (optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.SCHEDULE_MANAGEMENT) {
+		// note 入力パラメータ「作成方法区分」を確認する	
 		workOutput = this.personalScheduleCopy(command, carrier, targetPeriod, dateInPeriod, masterCache, prepareWorkOutput);
 		}
 		return workOutput;
 	}
 	
+	/**
+	 * 入力パラメータ「作成方法区分」を確認する (tiếp tục xử lý 勤務情報を取得する nhưng dài quá nên tách ra)
+	 * @param command
+	 * @param carrier
+	 * @param targetPeriod
+	 * @param dateInPeriod
+	 * @param masterCache
+	 * @param prepareWorkOutput
+	 * @return
+	 */
 	private PrepareWorkOutput personalScheduleCopy(ScheduleCreatorExecutionCommand command, CacheCarrier carrier,
 			DatePeriod targetPeriod, GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache,
 			PrepareWorkOutput prepareWorkOutput) {
-		// 入力パラメータ「作成方法区分」を確認する
-		// đang để tạm
-		// if 個人スケジュールコピー
+		// note 入力パラメータ「作成方法区分」を確認する
+		// note đang để tạm
+		// note if 個人スケジュールコピー
 		if (command.getContent().getCreateMethodAtr().value == CreationMethodClassification.COPY_PAST_SCHEDULE.value) {
 			this.copyPastSchedule(command, carrier, targetPeriod, dateInPeriod, masterCache, prepareWorkOutput);
 		}
 
-		// đang để tạm chưa phải làm
-		// if 作成方法（参照先）
-//					if(command.getClassification() == CreationMethodClassification.CREATE_METHOD_SPEC) {
-//						// パラメータ。作成参照先を確認する TQP
-//						masterCache.getListWorkingConItem();
-//					}
+		// note đang để tạm chưa phải làm
+		// note if 作成方法（参照先）
+		// note	if(command.getClassification() == CreationMethodClassification.CREATE_METHOD_SPEC) {
+		// note	パラメータ。作成参照先を確認する TQP
+		// note	masterCache.getListWorkingConItem();
+		// note	}
 
-		// đang để tạm
-		// if 個人情報
+		// note đang để tạm
+		// note if 個人情報
 		if (command.getContent().getCreateMethodAtr().value == CreationMethodClassification.PERSONAL_INFO.value) {
-			// 「労働条件。予定作成方法。 基本作成方法」を確認する
+			// note 「労働条件。予定作成方法。 基本作成方法」を確認する
 			Optional<WorkCondItemDto> itemDto = masterCache.getListWorkingConItem().stream()
 					.filter(x -> x.getDatePeriod().contains(dateInPeriod)).findFirst();
-			// call
+			// note call 営業日カレンダーで勤務予定作成する, 月間パターンで勤務予定を作成する, 個人曜日別で勤務予定作成する
 			prepareWorkOutput = this.getPersonalInfo(itemDto, command, dateInPeriod, masterCache);
 		}
-		WorkTypeCode worktypeCode = prepareWorkOutput.getInformation().getWorkTypeCode();
-		WorkTimeCode workTimeCode = prepareWorkOutput.getInformation().getWorkTimeCode();
+		
+		if(prepareWorkOutput.getExecutionLog().isPresent()) {
+			return new PrepareWorkOutput(null, null, null, prepareWorkOutput.getExecutionLog());
+		}
+		WorkTypeCode worktypeCode = prepareWorkOutput.getInformation() == null ? null : prepareWorkOutput.getInformation().getWorkTypeCode();
+		WorkTimeCode workTimeCode = prepareWorkOutput.getInformation() == null ? null : prepareWorkOutput.getInformation().getWorkTimeCode();
 
-		// 勤務種類一覧から変換した勤務種類コードと一致する情報を取得する
+		// note 勤務種類一覧から変換した勤務種類コードと一致する情報を取得する
 		List<WorkType> workTypes = masterCache.getListWorkType().stream().sorted(Comparator.comparing(WorkType::getWorkTypeCode)).collect(Collectors.toList());
-		Optional<WorkType> workType = workTypes.stream()
+		Optional<WorkType> workType = Optional.empty();
+		if(worktypeCode != null) {
+			workType = workTypes.stream()
 				.filter(x -> x.getWorkTypeCode().v().equals(worktypeCode.v())).findFirst();
-
+		}
 		if (workType.isPresent()) {
-			// 就業時間帯一覧から変換した就業時間帯コードと一致する情報を取得する
+			// note 就業時間帯一覧から変換した就業時間帯コードと一致する情報を取得する
 			Optional<WorkTimeSetting> workTime = workTimeCode != null ? masterCache.getListWorkTimeSetting().stream()
 					.filter(x -> x.getWorktimeCode().v().equals(workTimeCode.v())).findFirst() : Optional.empty();
-			// 就業時間帯コード＜＞Null AND就業時間帯を取得できない
+			// note 就業時間帯コード＜＞Null AND就業時間帯を取得できない
 			if (workTimeCode != null && !workTime.isPresent()) {
-				// スケジュール作成ログを作成して返す
-				ScheduleErrorLog scheExeLog = new ScheduleErrorLog("Msg_591", null, dateInPeriod,
+				// note スケジュール作成ログを作成して返す
+				String errorContent = this.internationalization.localize("Msg_591", "#Msg_591").get();
+				ScheduleErrorLog scheExeLog = new ScheduleErrorLog(errorContent, null, dateInPeriod,
 						command.getEmployeeId());
 				return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheExeLog));
 			}
-			// 勤務情報を返す
+			// note 勤務情報を返す
 			WorkInformation workInformation = new WorkInformation(workTimeCode, worktypeCode);
 			return new PrepareWorkOutput(workInformation, null, null, Optional.empty(), workType);
 
 		}
-		// スケジュール作成ログを作成して返す
-		ScheduleErrorLog scheExeLog = new ScheduleErrorLog("Msg_590", null, dateInPeriod, command.getEmployeeId());
+		// note スケジュール作成ログを作成して返す
+		String errorContent = this.internationalization.localize("Msg_590", "#Msg_590").get();
+		ScheduleErrorLog scheExeLog = new ScheduleErrorLog(errorContent, null, dateInPeriod, command.getEmployeeId());
 		return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheExeLog));
 	}
 	
@@ -1176,16 +1228,16 @@ public class ScheduleCreatorExecutionTransaction {
 
 		List<WorkSchedule> workScheduleRepo = new ArrayList<>();
 		List<WorkSchedule> workSchedules = carrier.get("勤務予定", () -> new ArrayList<WorkSchedule>());
-		// 勤務予定をコピーして作成する
-		// コピー元勤務予定一覧キャッシュを確認する
+		// note 勤務予定をコピーして作成する
+		// note コピー元勤務予定一覧キャッシュを確認する
 
-		// データなし
+		// note データなし
 		if (workSchedules.isEmpty()) {
 
 			int daysToAdd = targetPeriod.datesBetween().size() - 1;
 
-			// 勤務予定一覧を取得する
-			// コピー日数は、「入力パラメータ. 対象開始日、対象終了日」から求める
+			// note 勤務予定一覧を取得する
+			// note コピー日数は、「入力パラメータ. 対象開始日、対象終了日」から求める
 			DatePeriod dateCopy = new DatePeriod(command.getContent().getCopyStartDate(),
 					command.getContent().getCopyStartDate().addDays(daysToAdd));
 			for (GeneralDate date : dateCopy.datesBetween()) {
@@ -1196,18 +1248,18 @@ public class ScheduleCreatorExecutionTransaction {
 			}
 
 			if (workScheduleRepo.isEmpty()) {
-				// ドメインモデル「スケジュール作成エラーログ」を作成する
+				// note ドメインモデル「スケジュール作成エラーログ」を作成する
 				String errorContent = this.internationalization.localize("Msg_602", "#KSC001_87").get();
 				ScheduleErrorLog scheExeLog = new ScheduleErrorLog(errorContent, command.getExecutionId(), dateInPeriod,
 						command.getEmployeeId());
 				return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheExeLog));
 			} else {
 
-				// 取得した勤務予定一覧をメモリにキャッシュする chưa làm
+				// note 取得した勤務予定一覧をメモリにキャッシュする chưa làm
 				workSchedules = carrier.get("勤務予定", () -> workScheduleRepo);
 			}
 		}
-		// コピー元対象日を計算する
+		// note コピー元対象日を計算する
 		DatePeriod targetPeriodCopy = new DatePeriod(dateInPeriod, targetPeriod.start());
 		GeneralDate dateTargetCopy = command.getContent().getCopyStartDate()
 				.addDays(targetPeriodCopy.datesBetween().size() - 1);
@@ -1215,7 +1267,7 @@ public class ScheduleCreatorExecutionTransaction {
 				.collect(Collectors.toList());
 
 		if (workSchedules.isEmpty()) {
-			// ドメインモデル「スケジュール作成エラーログ」を作成する
+			// note ドメインモデル「スケジュール作成エラーログ」を作成する
 			String errorContent = this.internationalization.localize("Msg_602", "#KSC001_87").get();
 			ScheduleErrorLog scheExeLog = new ScheduleErrorLog(errorContent, command.getExecutionId(), dateInPeriod,
 					command.getEmployeeId());
@@ -1239,94 +1291,97 @@ public class ScheduleCreatorExecutionTransaction {
 	private PrepareWorkOutput getPersonalInfo(Optional<WorkCondItemDto> itemDto, ScheduleCreatorExecutionCommand command, GeneralDate dateInPeriod,
 			CreateScheduleMasterCache masterCache) {
 		if (itemDto.isPresent() && itemDto.get().getScheduleMethod().isPresent()) {
-			// 営業日カレンダー
+			// note 営業日カレンダー
 			if(itemDto.get().getScheduleMethod().get().getBasicCreateMethod() == WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR) {
-				// 営業日カレンダーで勤務予定作成する TQP
-				// パラメータ。作成参照先を確認する
-				// Emptyの場合
-				//if(masterCache.getListWorkingConItem().isEmpty()) {
+				// note 営業日カレンダーで勤務予定作成する TQP
+				// note パラメータ。作成参照先を確認する
+				// note Emptyの場合
+				// noteif(masterCache.getListWorkingConItem().isEmpty()) {
 					
-					// 「基本勤務設定」を取得する(lấy thông tin 「基本勤務設定」)
-					Optional<BasicWorkSetting> basicWorkSetting = this.getBasicWorkSetting(command, masterCache, itemDto, dateInPeriod, masterCache.getEmpGeneralInfo().getClassificationDto(), masterCache.getEmpGeneralInfo().getWorkplaceDto());
+					// note  xử lý 「基本勤務設定」を取得する(lấy thông tin 「基本勤務設定」)
+					Optional<BasicWorkSetting> basicWorkSetting = this.getBasicWorkSetting(command, masterCache, itemDto, dateInPeriod, 
+							masterCache.getEmpGeneralInfo().getClassificationDto(), masterCache.getEmpGeneralInfo().getWorkplaceDto());
 					
-					// 勤務種類一覧から勤務種類を取得する
+					// note 勤務種類一覧から勤務種類を取得する
 					List<WorkType> lstWorkTypes = masterCache.getListWorkType();
-					WorkType workType = lstWorkTypes.stream().filter(x-> x.getWorkTypeCode().v().equals(basicWorkSetting.get().getWorktypeCode().v())).findFirst().get();
+					Optional<WorkType> workType = lstWorkTypes.stream().filter(x-> x.getWorkTypeCode().v().equals(basicWorkSetting.get().getWorktypeCode().v())).findFirst();
 					
-					// 「就業時間帯コード」を取得する
-					WorkingCode workTimeCode = this.getWorkingCode(command,masterCache, itemDto, basicWorkSetting.isPresent() ? basicWorkSetting.get().getWorkingCode() : null, workType, dateInPeriod);
+					// note 「就業時間帯コード」を取得する
+					WorkingCode workTimeCode = this.getWorkingCode(command,masterCache, itemDto, basicWorkSetting.isPresent() ? basicWorkSetting.get().getWorkingCode() : null, workType.isPresent() ? workType.get() : null, dateInPeriod);
 					
-					// 「勤務種類コード」、「就業時間帯コード」を返す
-					WorkInformation workInformation =  new WorkInformation(workTimeCode == null ? null : workTimeCode.v(), workType.getWorkTypeCode().v());
+					// note 「勤務種類コード」、「就業時間帯コード」を返す
+					WorkInformation workInformation =  new WorkInformation(workTimeCode == null ? null : workTimeCode.v(), workType.isPresent() ? workType.get().getWorkTypeCode().v() : null);
 					return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
 					
-				//} 
-//				else {
-//					// Emptyじゃない場合 - phần này lần này chưa phải làm
-//					// 基本勤務設定を取得する
-//				}
+				// note} 
+// note				else {
+// note					// note Emptyじゃない場合 - phần này lần này chưa phải làm
+// note					// note 基本勤務設定を取得する
+// note				}
 			}
 			
-			// 月間パターン
+			// note 月間パターン
 			if(itemDto.get().getScheduleMethod().get().getBasicCreateMethod() == WorkScheduleBasicCreMethod.MONTHLY_PATTERN) {
-				// 月間パターンで勤務予定を作成する TQP
-				// 「労働条件項目．月間パターン」をチェックする
-				// Nullでない　場合
+				// note 月間パターンで勤務予定を作成する TQP
+				// note 「労働条件項目．月間パターン」をチェックする
+				// note Nullでない　場合
 				if (itemDto.get().getMonthlyPattern().isPresent()) {
 
-					// ドメインモデル「月間勤務就業設定」を取得する
+					// note ドメインモデル「月間勤務就業設定」を取得する
 					Optional<WorkMonthlySetting> monthlySetting = workMonthlySettingRepository.findById(
 							command.getCompanyId(), itemDto.get().getMonthlyPattern().get().v(), dateInPeriod);
 					
-					// 対象日の「月間勤務就業設定」があるかチェックする
-					// 存在する場合
+					// note 対象日の「月間勤務就業設定」があるかチェックする
+					// note 存在する場合
 					if (monthlySetting.isPresent()) {
 						
-						// 勤務種類一覧から勤務種類を取得する
+						// note 勤務種類一覧から勤務種類を取得する
 						List<WorkType> lstWorkTypes = masterCache.getListWorkType();
 						lstWorkTypes = lstWorkTypes.stream().filter(x-> x.getWorkTypeCode().v().equals(monthlySetting.get().getWorkTypeCode().v())).collect(Collectors.toList());
 						WorkType workType = lstWorkTypes.stream().filter(x-> x.getWorkTypeCode().v().equals(monthlySetting.get().getWorkTypeCode().v())).findFirst().get();
 						
-						// 「就業時間帯コード」を取得する
+						// note 「就業時間帯コード」を取得する
 						WorkingCode workTimeCode = this.getWorkingCode(command, masterCache, itemDto, new WorkingCode(monthlySetting.get().getWorkingCode().v()), workType, dateInPeriod);
 						
 						WorkInformation workInformation =  new WorkInformation(workTimeCode != null ? workTimeCode.v() : null, workType.getWorkTypeCode().v());
 						return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
 					}
 				}
-				// Null の場合 - if !itemDto.get().getMonthlyPattern().isPresent()
-				// 存在しない場合 - if (!monthlySetting.isPresent())
-				ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog("Msg_604", command.getExecutionId(),
+				// note Null の場合 - if !itemDto.get().getMonthlyPattern().isPresent()
+				// note 存在しない場合 - if (!monthlySetting.isPresent())
+				String errorContent = this.internationalization.localize("Msg_604", "#Msg_604").get();
+				ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(),
 						dateInPeriod, command.getEmployeeId());
 				return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheduleErrorLog));
 			}
 
-			// 個人曜日別 
+			// note 個人曜日別 
 			if(itemDto.get().getScheduleMethod().get().getBasicCreateMethod() == WorkScheduleBasicCreMethod.PERSONAL_DAY_OF_WEEK) {
 				
-				// 個人曜日別で勤務予定作成する TQP
-				// 入力パラメータの「年月日」から「曜日」を求める
+				// note 個人曜日別で勤務予定作成する TQP
+				// note 入力パラメータの「年月日」から「曜日」を求める
 				DayOfWeek dayOfWeek = dateInPeriod.dayOfWeekEnum();
 				
-				// 「労働条件。曜日別勤務」を確認する
-				// if 取得できない
-				if (itemDto.get().getWorkDayOfWeek() == null) {
+				// note 「労働条件。曜日別勤務」を確認する
+				// note if 取得できない
+				if (itemDto.get().getWorkDayOfWeek() == null || !this.checkDayOfWeek(itemDto.get().getWorkDayOfWeek(), dateInPeriod)) {
 					
-					// ドメインモデル「スケジュール作成エラーログ」を返す
-					ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog("Msg_594", null,
+					// note ドメインモデル「スケジュール作成エラーログ」を返す
+					String errorContent = this.internationalization.localize("Msg_594", "#Msg_594").get();
+					ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, null,
 							dateInPeriod, command.getEmployeeId());
 					return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheduleErrorLog));
 				} else {
 					
 					WorkInformation workInformation = null;
-					// 「労働条件。曜日別勤務」から「単一日勤務予定」を取得する
+					// note 「労働条件。曜日別勤務」から「単一日勤務予定」を取得する
 					Optional<SingleDaySchedule> daySchedule = this.getDaySchedule(itemDto, dayOfWeek);
-				     // データある
+				     // note データある
 				    if (daySchedule.isPresent()) {
 				    	workInformation =  new WorkInformation(daySchedule.get().getWorkTimeCode().get(), daySchedule.get().getWorkTypeCode().get());
 				    } else {
-				    	// データがない
-				    	// 「個人勤務日区分別勤務」。休日時を取得する
+				    	// note データがない
+				    	// note 「個人勤務日区分別勤務」。休日時を取得する
 				    	workInformation =  new WorkInformation(itemDto.get().getWorkCategory().getHolidayTime().getWorkTimeCode().isPresent() ? itemDto.get().getWorkCategory().getHolidayTime().getWorkTimeCode().get() : null, 
 				    			itemDto.get().getWorkCategory().getHolidayTime().getWorkTypeCode().get());
 				    }
@@ -1335,6 +1390,22 @@ public class ScheduleCreatorExecutionTransaction {
 			}
 		}
 		return null;
+	}
+	
+	public boolean checkDayOfWeek(PersonalDayOfWeek workDayOfWeek, GeneralDate date) {
+		List<Optional<SingleDaySchedule>> schedules = new ArrayList<>();
+		schedules.add(0, workDayOfWeek.getMonday());
+		schedules.add(1, workDayOfWeek.getTuesday());
+		schedules.add(2, workDayOfWeek.getWednesday());
+		schedules.add(3, workDayOfWeek.getThursday());
+		schedules.add(4, workDayOfWeek.getFriday());
+		schedules.add(5, workDayOfWeek.getSaturday());
+		schedules.add(6, workDayOfWeek.getSunday());
+		
+		if(schedules.get(date.dayOfWeek() - 1).isPresent()) {
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -1392,35 +1463,35 @@ public class ScheduleCreatorExecutionTransaction {
 	private WorkingCode getWorkingCode(ScheduleCreatorExecutionCommand command,
 			CreateScheduleMasterCache masterCache,Optional<WorkCondItemDto> itemDto, WorkingCode workingCode, WorkType workType, GeneralDate dateInPeriod) {
 		WorkingCode workTimeCode = null;
-		// 入力パラメータ「就業時間帯の参照先」を判断(kiểm tra parameter 就業時間帯の参照先」)
+		// note 入力パラメータ「就業時間帯の参照先」を判断(kiểm tra parameter 就業時間帯の参照先」)
 		TimeZoneScheduledMasterAtr workplaceHistItem = itemDto.get().getScheduleMethod().get()
 				.getWorkScheduleBusCal().get().getReferenceWorkingHours();
 			
-			// if 個人勤務日別
+			// note if 個人勤務日別
 			if(workplaceHistItem.value == TimeZoneScheduledMasterAtr.PERSONAL_WORK_DAILY.value) {
 				
-				// 個人勤務日別をもとに「就業時間帯コード」を変換する - chưa tìm được thuật toán này
+				// note 個人勤務日別をもとに「就業時間帯コード」を変換する - chưa tìm được thuật toán này
 				TimeZoneScheduledMasterAtr referenceWorkingHours = itemDto.get().getScheduleMethod().get()
 				.getWorkScheduleBusCal().get().getReferenceWorkingHours();
 				ScheduleErrorLogGeterCommand logGeterCommand = new ScheduleErrorLogGeterCommand(command.getExecutionId(), command.getCompanyId(), dateInPeriod);
-				WorkTimeConvertCommand timeConvertCommand = new WorkTimeConvertCommand(command.getEmployeeId(), logGeterCommand, referenceWorkingHours.value, workType.getWorkTypeCode().v(),workingCode == null ? null : workingCode.v());
+				WorkTimeConvertCommand timeConvertCommand = new WorkTimeConvertCommand(command.getEmployeeId(), logGeterCommand, referenceWorkingHours.value, workType == null ? null : workType.getWorkTypeCode().v(),workingCode == null ? null : workingCode.v());
 				workTimeCode = new WorkingCode(workTimeHandler.getWorkTimeZoneCodeInOffice(timeConvertCommand, masterCache.getListWorkingConItem()));
 				return workTimeCode;
 			}
 			
-			// if 個人曜日別
+			// note if 個人曜日別
 			if(workplaceHistItem.value == TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK.value) {
-				// 個人曜日別をもとに就業時間帯コードを変換する - chưa tìm được thuật toán này
+				// note 個人曜日別をもとに就業時間帯コードを変換する - chưa tìm được thuật toán này
 				TimeZoneScheduledMasterAtr referenceWorkingHours = itemDto.get().getScheduleMethod().get()
 						.getWorkScheduleBusCal().get().getReferenceWorkingHours();
 						ScheduleErrorLogGeterCommand logGeterCommand = new ScheduleErrorLogGeterCommand(command.getExecutionId(), command.getCompanyId(), dateInPeriod);
-						WorkTimeConvertCommand timeConvertCommand = new WorkTimeConvertCommand(command.getEmployeeId(), logGeterCommand, referenceWorkingHours.value, workType.getWorkTypeCode().v(), workingCode == null ? null : workingCode.v());
+						WorkTimeConvertCommand timeConvertCommand = new WorkTimeConvertCommand(command.getEmployeeId(), logGeterCommand, referenceWorkingHours.value, workType == null ? null : workType.getWorkTypeCode().v(), workingCode == null ? null : workingCode.v());
 						workTimeCode = new WorkingCode(workTimeHandler.getWorkTimeZoneCodeInOfficeDayOfWeek(timeConvertCommand, masterCache.getListWorkingConItem()));
 						return workTimeCode;
 			}
 			
-		// if マスタ参照区分に従う
-		// 入力パラメータ.就業時間帯コードを使う
+		// note if マスタ参照区分に従う
+		// note 入力パラメータ.就業時間帯コードを使う
 			workTimeCode = workingCode;
 		return workTimeCode;
 	}
@@ -1443,18 +1514,18 @@ public class ScheduleCreatorExecutionTransaction {
 				.getWorkScheduleBusCal().get().getReferenceBusinessDayCalendar();
 		ScheduleErrorLogGeterCommand geterCommand = new ScheduleErrorLogGeterCommand(command.getExecutionId(),
 				command.getCompanyId(), dateInPeriod);
-		// 会社の場合 - Đang để tạm ntn vì enum 営業日カレンダーの参照先 chưa được update
+		// note điều kiện 会社の場合 - Đang để tạm ntn vì enum 営業日カレンダーの参照先 chưa được update
 		if(workplaceHistItem.value != WorkScheduleMasterReferenceAtr.WORK_PLACE.value && 
 				workplaceHistItem.value != WorkScheduleMasterReferenceAtr.CLASSIFICATION.value) {
-			// ドメインモデル「会社営業日カレンダー日次」を取得する(lấy dữ liệu domain 「会社営業日カレンダー日次」)
+			// note xử lý ドメインモデル「会社営業日カレンダー日次」を取得する(lấy dữ liệu domain 「会社営業日カレンダー日次」)
 			Optional<CalendarCompany> optionalCalendarCompany = this.calendarCompanyRepository
 					.findCalendarCompanyByDate(command.getCompanyId(), dateInPeriod);
 			
-			// ドメインモデル「全社基本勤務設定」を取得する
+			// note xử lý ドメインモデル「全社基本勤務設定」を取得する
 			Optional<CompanyBasicWork> optionalCompanyBasicWork = this.companyBasicWorkRepository
 					.findById(command.getCompanyId(), optionalCalendarCompany.get().getWorkingDayAtr().value);
 			
-			// if 取得できない
+			// note if 取得できない
 			if(!optionalCompanyBasicWork.isPresent()) {
 				this.scheCreExeErrorLogHandler.addError(geterCommand, command.getEmployeeId(), "Msg_589");
 				return Optional.empty();
@@ -1468,53 +1539,53 @@ public class ScheduleCreatorExecutionTransaction {
 			return Optional.ofNullable(setting);
 			
 		} else {
-		// check 基本勤務の参照先 is 職場 (referenceBusinessDayCalendar is WORKPLACE)
+		// note check 基本勤務の参照先 is 職場 (referenceBusinessDayCalendar is WORKPLACE)
 		if (workplaceHistItem.value == WorkScheduleMasterReferenceAtr.WORK_PLACE.value) {
 
-			// EA No1683
+			// note EA No1683
 			if (mapWorkplaceHist != null) {
-				// 「特定期間の社員情報。職場履歴一覧」から該当社員、該当日の職場情報を取得する
+				// note 「特定期間の社員情報。職場履歴一覧」から該当社員、該当日の職場情報を取得する
 				List<ExWorkPlaceHistoryImported> lstWorkplaceHistItem = mapWorkplaceHist.stream().filter(predicate-> predicate.getEmployeeId().equals(command.getEmployeeId())).collect(Collectors.toList());
 				
 				List<ExWorkplaceHistItemImported> lstItem =	lstWorkplaceHistItem.get(0).getWorkplaceItems().stream().filter(x-> x.getPeriod().contains(dateInPeriod)).collect(Collectors.toList());
 				ExWorkPlaceHistoryImported optWorkplaceHistItem = new ExWorkPlaceHistoryImported(command.getEmployeeId(),lstItem);
 				if (optWorkplaceHistItem != null) {
 
-					// [No.571]職場の上位職場を基準職場を含めて取得する
+					// note [No.571]職場の上位職場を基準職場を含めて取得する
 					List<String> workplaceIds = this.scWorkplaceAdapter.getWorkplaceIdAndUpper(command.getCompanyId(),
 							dateInPeriod, optWorkplaceHistItem.getWorkplaceItems().get(0).getWorkplaceId());
 
-					// 職場の稼働日区分を取得する
+					// note 職場の稼働日区分を取得する
 					WorkdayAttrByWorkplaceGeterCommand workdayDivisions = new WorkdayAttrByWorkplaceGeterCommand(
 							command.getEmployeeId(), new ScheduleErrorLogGeterCommand(command.getExecutionId(),
 									command.getCompanyId(), dateInPeriod),
 							workplaceIds);
 
 					workdayDivisions.setWorkplaceIds(workplaceIds);
-					// return basic work setting
+					// note return basic work setting
 					Optional<Integer> workdayDivision = basicWorkSettingHandler
 							.getWorkdayDivisionByWkp(workdayDivisions);
 					
-					// 職場の基本勤務設定を取得する
+					// note xử lý 職場の基本勤務設定を取得する
 					BasicWorkSettingByWorkplaceGetterCommand commandGetter = new BasicWorkSettingByWorkplaceGetterCommand(
 							command.getEmployeeId(), geterCommand, workplaceIds, workdayDivision.get());
 					Optional<BasicWorkSetting> basicWorkSetting = basicWorkSettingHandler
 							.getBasicWorkSettingByWorkplace(commandGetter);
 
-					// 取得した「基本勤務設定」を返す
+					// note 取得した「基本勤務設定」を返す
 					return basicWorkSetting;
 				}
 			}
-			// add log error employee => 602
-			// 取得できない
+			// note add log error employee => 602
+			// note 取得できない
 			this.scheCreExeErrorLogHandler.addError(geterCommand, command.getEmployeeId(), "Msg_602", "#Com_Workplace");
 
 		} else {
-			// 分類の場合
-			// 営業日カレンダーの参照先 is 分類
-			// referenceBusinessDayCalendar is CLASSIFICATION
+			// note if 分類の場合
+			// note xử lý 営業日カレンダーの参照先 is 分類
+			// note referenceBusinessDayCalendar is CLASSIFICATION
 			if (mapClassificationHist != null) {
-				// 「特定期間の社員情報。雇用履歴一覧」から該当社員、該当日の分類情報を取得する
+				// note xử lý 「特定期間の社員情報。雇用履歴一覧」から該当社員、該当日の分類情報を取得する
 				Optional<ExClassificationHistoryImported> optClassificationHistItem = mapClassificationHist.stream()
 						.filter(predicate-> predicate.getEmployeeId().equals(command.getEmployeeId()))
 						.map(x -> new ExClassificationHistoryImported(command.getEmployeeId(),
@@ -1522,33 +1593,33 @@ public class ScheduleCreatorExecutionTransaction {
 										y -> y.getPeriod().contains(dateInPeriod))
 										.collect(Collectors.toList())))
 						.findFirst();
-				// 取得できる
+				// note if 取得できる
 				if (optClassificationHistItem.isPresent()) {
-					// 分類の稼働日区分を取得する
+					// note xử lý 分類の稼働日区分を取得する
 					WorkdayAttrByClassGetterCommand baseGetter = new WorkdayAttrByClassGetterCommand(
 							command.getEmployeeId(), geterCommand,
 							optClassificationHistItem.get().getClassificationItems().get(0).getClassificationCode());
 					Optional<Integer> workdayDivision = basicWorkSettingHandler.getWorkdayDivisionByClass(baseGetter);
-					// ドメインモデル「分類基本勤務設定」を取得する
+					// note gọi đến ドメインモデル「分類基本勤務設定」を取得する
 					Optional<ClassificationBasicWork> optionalClassificationBasicWork = this.classificationBasicWorkRepository
 							.findById(command.getCompanyId(), baseGetter.getClassificationCode(),
 									workdayDivision.get());
 
-					// 取得できない
+					// note if 取得できない
 					if (!optionalClassificationBasicWork.isPresent()) {
-						// ドメインモデル「全社基本勤務設定」を取得する
+						// note xử lý ドメインモデル「全社基本勤務設定」を取得する
 						Optional<CompanyBasicWork> optionalCompanyBasicWork = this.companyBasicWorkRepository
 								.findById(command.getCompanyId(), workdayDivision.get());
 
-						// 取得できない
+						// note if 取得できない
 						if (!optionalCompanyBasicWork.isPresent()) {
 							this.scheCreExeErrorLogHandler.addError(geterCommand, command.getEmployeeId(), "Msg_589");
 							return Optional.empty();
 						}
 					}
 
-					// 取得できる
-					// 取得した「基本勤務設定」を返す
+					// note 取得できる
+					// note 取得した「基本勤務設定」を返す
 					BasicWorkSettingByClassificationGetterCommand settingByClassification = new BasicWorkSettingByClassificationGetterCommand(
 							command.getEmployeeId(), geterCommand, baseGetter.getClassificationCode(),
 							workdayDivision.get());
@@ -1557,11 +1628,11 @@ public class ScheduleCreatorExecutionTransaction {
 					return basicWorkSetting;
 				}
 			}
-			// add log error employee => 602
-			// 取得できない
+			// note add log error employee => 602
+			// note 取得できない
 			this.scheCreExeErrorLogHandler.addError(geterCommand, command.getEmployeeId(), "Msg_602", "#Com_Class");
 		}}
-		// return default optional
+		// note return default optional
 		return Optional.empty();
 	}
 
@@ -1580,12 +1651,12 @@ public class ScheduleCreatorExecutionTransaction {
 			BasicSchedule basicSchedule, WorkCondItemDto workingConditionItem, EmploymentInfoImported employmentInfo,
 			CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
 			DateRegistedEmpSche dateRegistedEmpSche) {
-		// 入力パラメータ「再作成区分」を判断 - check parameter ReCreateAtr onlyUnconfirm
-		// 取得したドメインモデル「勤務予定基本情報」の「予定確定区分」を判断
-		// (kiểm tra thông tin 「予定確定区分」 của domain 「勤務予定基本情報」)
+		// note 入力パラメータ「再作成区分」を判断 - check parameter ReCreateAtr onlyUnconfirm
+		// note 取得したドメインモデル「勤務予定基本情報」の「予定確定区分」を判断
+		// note (kiểm tra thông tin 「予定確定区分」 của domain 「勤務予定基本情報」)
 		if (command.getContent().getReCreateContent().getReCreateAtr() == ReCreateAtr.ALL_CASE
 				|| basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)) {
-			// アルゴリズム「スケジュール作成判定処理」を実行する
+			// note アルゴリズム「スケジュール作成判定処理」を実行する
 			if (this.scheCreExeMonthlyPatternHandler.scheduleCreationDeterminationProcess(command, dateInPeriod,
 					basicSchedule, employmentInfo, workingConditionItem, masterCache)) {
 				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, dateInPeriod, workingConditionItem,

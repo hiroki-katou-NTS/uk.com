@@ -40,12 +40,6 @@ public class WorkScheManaStatusServiceTest {
 		List<String> lstEmployeeID = Arrays.asList("emp1");
 		DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		
-		new MockUp<ScheManaStatus>() {
-			@Mock
-			public boolean  needCreateWorkSchedule(){
-				return false;
-			}
-		};
 		ScheManaStatuTempo scheManaStatuTempo = new ScheManaStatuTempo("emp1", GeneralDate.today(),
 				ScheManaStatus.CLOSED, Optional.empty(), Optional.empty());
 		new MockUp<ScheManaStatuTempo>() {
@@ -54,6 +48,14 @@ public class WorkScheManaStatusServiceTest {
 				return scheManaStatuTempo;
 			}
 		};
+		
+		new MockUp<ScheManaStatus>() {
+			@Mock
+			public boolean  needCreateWorkSchedule(){
+				return false;
+			}
+		};
+		
 		Map<ScheManaStatuTempo, Optional<WorkSchedule>> data = WorkScheManaStatusService.getScheduleManagement(require,
 				lstEmployeeID, period);
 		assertThat(data.entrySet()).extracting(d -> d.getKey(), d -> d.getValue())
@@ -70,6 +72,16 @@ public class WorkScheManaStatusServiceTest {
 	public void testGetScheduleManagement_1() {
 		List<String> lstEmployeeID = Arrays.asList("emp1");
 		DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
+		
+		ScheManaStatuTempo scheManaStatuTempo = new ScheManaStatuTempo("emp1", GeneralDate.today(),
+				ScheManaStatus.SCHEDULE_MANAGEMENT, Optional.empty(), Optional.empty());
+		new MockUp<ScheManaStatuTempo>() {
+			@Mock
+			public ScheManaStatuTempo create(ScheManaStatuTempo.Require require, String employeeID, GeneralDate date) {
+				return scheManaStatuTempo;
+			}
+		};
+		
 		new Expectations() {
 			{
 				require.get(anyString, GeneralDate.today());
@@ -79,14 +91,6 @@ public class WorkScheManaStatusServiceTest {
 			@Mock
 			public boolean  needCreateWorkSchedule(){
 				return true;
-			}
-		};
-		ScheManaStatuTempo scheManaStatuTempo = new ScheManaStatuTempo("emp1", GeneralDate.today(),
-				ScheManaStatus.CLOSED, Optional.empty(), Optional.empty());
-		new MockUp<ScheManaStatuTempo>() {
-			@Mock
-			public ScheManaStatuTempo create(ScheManaStatuTempo.Require require, String employeeID, GeneralDate date) {
-				return scheManaStatuTempo;
 			}
 		};
 		Map<ScheManaStatuTempo, Optional<WorkSchedule>> data = WorkScheManaStatusService.getScheduleManagement(require,
@@ -109,6 +113,16 @@ public class WorkScheManaStatusServiceTest {
 		WorkSchedule workSchedule = new WorkSchedule("employeeID",
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new ArrayList<>(),
 				new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
+
+		ScheManaStatuTempo scheManaStatuTempo = new ScheManaStatuTempo("emp1", GeneralDate.today(),
+				ScheManaStatus.ON_LEAVE, Optional.empty(), Optional.empty());
+		new MockUp<ScheManaStatuTempo>() {
+			@Mock
+			public ScheManaStatuTempo create(ScheManaStatuTempo.Require require, String employeeID, GeneralDate date) {
+				return scheManaStatuTempo;
+			}
+		};
+		
 		new Expectations() {
 			{
 				require.get(anyString, GeneralDate.today());
@@ -121,14 +135,7 @@ public class WorkScheManaStatusServiceTest {
 				return true;
 			}
 		};
-		ScheManaStatuTempo scheManaStatuTempo = new ScheManaStatuTempo("emp1", GeneralDate.today(),
-				ScheManaStatus.CLOSED, Optional.empty(), Optional.empty());
-		new MockUp<ScheManaStatuTempo>() {
-			@Mock
-			public ScheManaStatuTempo create(ScheManaStatuTempo.Require require, String employeeID, GeneralDate date) {
-				return scheManaStatuTempo;
-			}
-		};
+		
 		Map<ScheManaStatuTempo, Optional<WorkSchedule>> data = WorkScheManaStatusService.getScheduleManagement(require,
 				lstEmployeeID, period);
 		assertThat(data.entrySet()).extracting(d -> d.getKey(), d -> d.getValue())

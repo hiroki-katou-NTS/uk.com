@@ -41,6 +41,10 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	private DayOfWeek dayOfWeek;
 	// 勤務予定時間帯
 	private List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
+	//Ver
+	@Setter
+	@Getter
+	private long ver;
 	public WorkInfoOfDailyAttendance(WorkInformation recordInfo, WorkInformation scheduleInfo,
 			CalculationState calculationState, NotUseAttribute goStraightAtr, NotUseAttribute backStraightAtr,
 			DayOfWeek dayOfWeek, List<ScheduleTimeSheet> scheduleTimeSheets) {

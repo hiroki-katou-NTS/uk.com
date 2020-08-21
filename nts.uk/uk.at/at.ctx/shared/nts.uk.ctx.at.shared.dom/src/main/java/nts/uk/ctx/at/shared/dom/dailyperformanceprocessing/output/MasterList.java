@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -29,5 +31,5 @@ public class MasterList {
 	private Optional<BonusPaySetting> bonusPaySettingOpt;
 	
 	/** 特定日設定 **/
-	private Optional<RecSpecificDateSettingImport> specificDateSettingImport;
+	private List<RecSpecificDateSettingImport> specificDateSettingImport = new ArrayList<>();
 }

@@ -1335,17 +1335,19 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			newMasterLists = masterLists.stream().filter(item -> item.getDatePeriod().contains(day)).findFirst();
 		}
 
-		RecSpecificDateSettingImport specificDateSettingImport = new RecSpecificDateSettingImport();
-		if (newMasterLists.isPresent() && newMasterLists.get().getSpecificDateSettingImport().isPresent()) {
-			specificDateSettingImport = newMasterLists.get().getSpecificDateSettingImport().get();
+		Optional<RecSpecificDateSettingImport> specificDateSettingImport = newMasterLists.get()
+				.getSpecificDateSettingImport().stream().filter(c -> c.getDate().equals(day)).findFirst();
+		RecSpecificDateSettingImport data = new RecSpecificDateSettingImport();
+		if (newMasterLists.isPresent() && specificDateSettingImport.isPresent()) {
+			data = specificDateSettingImport.get();
 		} else {
-			specificDateSettingImport = this.recSpecificDateSettingAdapter.specificDateSettingService(companyId,
+			data = this.recSpecificDateSettingAdapter.specificDateSettingService(companyId,
 					workPlaceID, day);
 		}
 
 		List<SpecificDateAttrSheet> specificDateAttrSheets = new ArrayList<>();
 		for (int i = 1; i < 11; i++) {
-			if (specificDateSettingImport.getNumberList().contains(i)) {
+			if (data.getNumberList().contains(i)) {
 				SpecificDateAttrSheet specificDateAttrSheet = new SpecificDateAttrSheet(new SpecificDateItemNo(i),
 						SpecificDateAttr.USE);
 				specificDateAttrSheets.add(specificDateAttrSheet);
@@ -1702,8 +1704,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			List<TimeLeavingWorkOutput> timeLeavingWorkTemps = new ArrayList<>();
 			List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
 			if (workInfoOfDailyPerformanceUpdate.getRecordInfo() != null) {
-
-				if (workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode() != null && workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode()
+				if(workInfoOfDailyPerformanceUpdate.getScheduleInfo() != null) {
+				if (workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode() != null  && workInfoOfDailyPerformanceUpdate.getScheduleInfo().getWorkTypeCode() != null && workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode()
 						.equals(workInfoOfDailyPerformanceUpdate.getScheduleInfo().getWorkTimeCode())
 						&& workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode()
 								.equals(workInfoOfDailyPerformanceUpdate.getScheduleInfo().getWorkTypeCode())) {
@@ -1863,6 +1865,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					
 				}
 			}
+		}
 			timeLeavingWorks = timeLeavingWorkTemps.stream().map(item -> {
 				TimeActualStamp attendanceStamp = null;
 				if (item.getAttendanceStamp() != null) {
@@ -2058,8 +2061,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			WorkInfoOfDailyAttendance workInfoOfDailyPerformanceUpdate,
 			AffiliationInforOfDailyAttd affiliationInforOfDailyPerfor, PeriodInMasterList periodInMasterList) {
 		Optional<BonusPaySetting> bonusPaySetting = Optional.empty();
-
-		if (periodInMasterList == null) {
+		Optional<MasterList> newMaster = Optional.empty();
+		if(periodInMasterList !=null) {
+			newMaster = periodInMasterList.getMasterLists().stream()
+				.filter(item -> item.getDatePeriod().contains(day)).findFirst();
+		}
+		if (periodInMasterList == null || !newMaster.isPresent() || !newMaster.get().getBonusPaySettingOpt().isPresent()) {
 			// reqList496
 			// 職場IDと基準日から上位職場を取得する
 			List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyId,
@@ -2086,7 +2093,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					Optional<WorkingTimesheetBonusPaySetting> workingTimesheetBonusPaySetting = this.wTBonusPaySettingRepository
 							.getWTBPSetting(companyId, new WorkingTimesheetCode(
 									workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v()));
-					if (workingTimesheetBonusPaySetting.isPresent()) {
+					if (workingTimesheetBonusPaySetting.isPresent()) {	
 						Optional<BonusPaySetting> bonusPay = bPSettingRepository.getBonusPaySetting(companyId,
 								workingTimesheetBonusPaySetting.get().getBonusPaySettingCode());
 						if (!bonusPay.isPresent()) {

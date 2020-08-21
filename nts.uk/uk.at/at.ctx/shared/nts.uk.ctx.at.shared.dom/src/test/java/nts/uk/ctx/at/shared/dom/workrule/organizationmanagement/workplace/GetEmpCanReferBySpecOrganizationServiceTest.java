@@ -51,20 +51,21 @@ public class GetEmpCanReferBySpecOrganizationServiceTest {
 		GeneralDate referenceDate = GeneralDate.today();
 		String epmloyeeId = "epmloyeeId";
 		TargetOrgIdenInfor targetOrgIdenInfor =TargetOrgIdenInfor.creatIdentifiWorkplaceGroup("workplaceGroupId");
-		List<String> listEmpId = Arrays.asList("emp1","emp2");
+		List<String> listEmpIdByGetReferableEmp = Arrays.asList("emp1","emp2","emp9","emp3","emp2","emp5","emp6","emp8","emp10");
+		List<String> listSortEmployee = Arrays.asList("emp3","emp1","emp6","emp8","emp9","emp10");
 		new Expectations() {
 			{
 				require.getReferableEmp(referenceDate, epmloyeeId, targetOrgIdenInfor.getWorkplaceGroupId().get());
-				result = listEmpId;
+				result = listEmpIdByGetReferableEmp;
 				
-				require.sortEmployee(listEmpId, 0, null, referenceDate, null);
-				result = listEmpId;
+				require.sortEmployee(listEmpIdByGetReferableEmp, 0, null, referenceDate, null);
+				result = listSortEmployee;
 			}
 		};
 		List<String> listData = GetEmpCanReferBySpecOrganizationService.getListEmpID(require, referenceDate, epmloyeeId, targetOrgIdenInfor);
-		assertThat(listData.stream().sorted((x,y)->x.compareTo(y)).collect(Collectors.toList()))
+		assertThat(listData)
 		.extracting(d->d)
-		.containsExactly("emp1","emp2");
+		.containsExactly("emp3","emp1","emp6","emp8","emp9","emp10");
 	}
 	
 	/**
@@ -88,9 +89,9 @@ public class GetEmpCanReferBySpecOrganizationServiceTest {
 			}
 		};
 		List<String> listData = GetEmpCanReferBySpecOrganizationService.getListEmpID(require, referenceDate, epmloyeeId, targetOrgIdenInfor);
-		assertThat(listData.stream().sorted((x,y)->x.compareTo(y)).collect(Collectors.toList()))
-		.extracting(d->d)
-		.containsExactly("emp1","emp2");
+		assertThat( listData ).containsExactlyElementsOf( listEmpId );
+		assertThat( listData ).containsExactlyInAnyOrderElementsOf( listEmpId );
+
 	}
 
 }

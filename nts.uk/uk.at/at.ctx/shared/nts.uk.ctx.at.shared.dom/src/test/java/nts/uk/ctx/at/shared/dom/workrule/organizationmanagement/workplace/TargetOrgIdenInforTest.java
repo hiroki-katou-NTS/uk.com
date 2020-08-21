@@ -28,25 +28,24 @@ public class TargetOrgIdenInforTest {
 	@Injectable
 	private Require require;
 
+	/**
+	 * if WORKPLACE
+	 */
 	@Test
 	public void testTargetOrgIdenInfor_1() {
-		TargetOrganizationUnit unit = TargetOrganizationUnit.WORKPLACE;// dummy
-		String workplaceId = null;
-		String workplaceGroupId = null;
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, Optional.ofNullable(workplaceId), Optional.ofNullable(workplaceGroupId));
-		assertThat(targetOrgIdenInfor.getUnit()).isEqualTo(unit);
-		assertThat(targetOrgIdenInfor.getWorkplaceId().isPresent()).isFalse();
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId");
+		assertThat(targetOrgIdenInfor.getUnit()).isEqualTo(TargetOrganizationUnit.WORKPLACE);
+		assertThat(targetOrgIdenInfor.getWorkplaceId().isPresent()).isTrue();
 		assertThat(targetOrgIdenInfor.getWorkplaceGroupId().isPresent()).isFalse();
 	}
-
+	/**
+	 * if WORKPLACE_GROUP
+	 */
 	@Test
 	public void testTargetOrgIdenInfor_2() {
-		TargetOrganizationUnit unit = TargetOrganizationUnit.WORKPLACE;// dummy
-		String workplaceId = "workplaceId";
-		String workplaceGroupId = "workplaceGroupId";
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit,  Optional.ofNullable(workplaceId), Optional.ofNullable(workplaceGroupId));
-		assertThat(targetOrgIdenInfor.getUnit()).isEqualTo(unit);
-		assertThat(targetOrgIdenInfor.getWorkplaceId().isPresent()).isTrue();
+		TargetOrgIdenInfor targetOrgIdenInfor =TargetOrgIdenInfor.creatIdentifiWorkplaceGroup("workplaceGroupId");
+		assertThat(targetOrgIdenInfor.getUnit()).isEqualTo(TargetOrganizationUnit.WORKPLACE_GROUP);
+		assertThat(targetOrgIdenInfor.getWorkplaceId().isPresent()).isFalse();
 		assertThat(targetOrgIdenInfor.getWorkplaceGroupId().isPresent()).isTrue();
 	}
 
@@ -80,9 +79,8 @@ public class TargetOrgIdenInforTest {
 	 */
 	@Test
 	public void testGetDisplayInfor() {
-		TargetOrganizationUnit unit = TargetOrganizationUnit.WORKPLACE_GROUP;
 		String workplaceGroupId = "workplaceGroupId";
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, Optional.empty(), Optional.of(workplaceGroupId));
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(workplaceGroupId);
 		GeneralDate referenceDate = GeneralDate.today();
 		
 		new Expectations() {
@@ -102,9 +100,8 @@ public class TargetOrgIdenInforTest {
 	 */
 	@Test
 	public void testGetDisplayInfor_1() {
-		TargetOrganizationUnit unit = TargetOrganizationUnit.WORKPLACE_GROUP;
 		String workplaceGroupId = "workplaceGroupId";
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, Optional.empty(),Optional.of( workplaceGroupId));
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(workplaceGroupId);
 		GeneralDate referenceDate = GeneralDate.today();
 		WorkplaceGroupImport workplaceGroupImport = new WorkplaceGroupImport(workplaceGroupId, "workplaceGroupCode", "workplaceGroupName", 1);
 		
@@ -115,7 +112,6 @@ public class TargetOrgIdenInforTest {
 				
 			}
 		};
-		String getTextCom_WorkplaceGroup = "Com_WorkplaceGroup";
 		new MockUp<I18NText>() {
 			@Mock
 			public String getText(String resourceId, String... params) {
@@ -123,7 +119,7 @@ public class TargetOrgIdenInforTest {
 			}
 		};
 		DisplayInfoOrganization displayInfoOrganization = targetOrgIdenInfor.getDisplayInfor(require, referenceDate);
-		assertThat(displayInfoOrganization.getDesignation()).isEqualTo(getTextCom_WorkplaceGroup);
+		assertThat(displayInfoOrganization.getDesignation()).isEqualTo("Com_WorkplaceGroup");
 		assertThat(displayInfoOrganization.getCode()).isEqualTo(workplaceGroupImport.getWorkplaceGroupCode());
 		assertThat(displayInfoOrganization.getName()).isEqualTo(workplaceGroupImport.getWorkplaceGroupName());
 		assertThat(displayInfoOrganization.getDisplayName()).isEqualTo(workplaceGroupImport.getWorkplaceGroupName());
@@ -136,9 +132,8 @@ public class TargetOrgIdenInforTest {
 	 */
 	@Test
 	public void testGetDisplayInfor_2() {
-		TargetOrganizationUnit unit = TargetOrganizationUnit.WORKPLACE;
 		String workplaceId = "workplaceId";
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, Optional.of(workplaceId), Optional.empty());
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace(workplaceId);
 		GeneralDate referenceDate = GeneralDate.today();
 		
 		new Expectations() {
@@ -157,9 +152,8 @@ public class TargetOrgIdenInforTest {
 	 */
 	@Test
 	public void testGetDisplayInfor_3() {
-		TargetOrganizationUnit unit = TargetOrganizationUnit.WORKPLACE;
 		String workplaceId = "workplaceId";
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, Optional.of(workplaceId), Optional.empty());
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace(workplaceId);
 		GeneralDate referenceDate = GeneralDate.today();
 		WorkplaceInfo workplaceInfo = new WorkplaceInfo(workplaceId, Optional.of("workplaceCd"),
 				Optional.of("workplaceName"), Optional.of("outsideWkpCd"), Optional.of("wkpGenericName"),
@@ -172,7 +166,6 @@ public class TargetOrgIdenInforTest {
 				
 			}
 		};
-		String getTextCom_Workplace = "Com_Workplace";
 		new MockUp<I18NText>() {
 			@Mock
 			public String getText(String resourceId, String... params) {
@@ -180,7 +173,7 @@ public class TargetOrgIdenInforTest {
 			}
 		};
 		DisplayInfoOrganization displayInfoOrganization = targetOrgIdenInfor.getDisplayInfor(require, referenceDate);
-		assertThat(displayInfoOrganization.getDesignation()).isEqualTo(getTextCom_Workplace);
+		assertThat(displayInfoOrganization.getDesignation()).isEqualTo("Com_Workplace");
 		assertThat(displayInfoOrganization.getCode()).isEqualTo(workplaceInfo.getWorkplaceCd().get());
 		assertThat(displayInfoOrganization.getName()).isEqualTo(workplaceInfo.getWorkplaceName().get());
 		assertThat(displayInfoOrganization.getDisplayName()).isEqualTo(workplaceInfo.getWkpDisplayName().get());
@@ -192,9 +185,8 @@ public class TargetOrgIdenInforTest {
 	 */
 	@Test
 	public void testGetWorkplaceBelongsOrganization() {
-		TargetOrganizationUnit unit = TargetOrganizationUnit.WORKPLACE;
 		String workplaceId = "workplaceId";
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit,Optional.of(workplaceId), Optional.empty());
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace(workplaceId);
 		
 		List<String> listData = targetOrgIdenInfor.getWorkplaceBelongsOrganization(require);
 		assertThat(listData)
@@ -239,9 +231,8 @@ public class TargetOrgIdenInforTest {
 			}
 		};
 		List<String> listData = targetOrgIdenInfor.getWorkplaceBelongsOrganization(require);
-		assertThat(listData.stream().sorted((x,y)->x.compareTo(y)).collect(Collectors.toList()))
-		.extracting(d->d)
-		.containsExactly( "wpk1","wpk2");
+		assertThat( listData ).containsExactlyElementsOf( listResult );
+		assertThat( listData ).containsExactlyInAnyOrderElementsOf( listResult );
 		
 	}
 	

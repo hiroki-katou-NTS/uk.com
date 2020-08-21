@@ -431,6 +431,8 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	@Override
 	public IntegrationOfDaily toDomain(String employeeId, GeneralDate date) {
 		return new IntegrationOfDaily(
+				employeeId,
+				date,
 				this.workInfo == null ? null : this.workInfo.toDomain(employeeId, date), 
 				this.calcAttr == null ? null : this.calcAttr.toDomain(employeeId, date), 
 				this.affiliationInfo == null ? null : this.affiliationInfo.toDomain(employeeId, date),
@@ -440,7 +442,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.breakTime.stream().map(bt -> bt.toDomain(employeeId, date)).collect(Collectors.toList()),
 				this.attendanceTime.map(at -> at.toDomain(employeeId, date)),
 //				this.attendanceTimeByWork.map(atb -> atb.toDomain(employeeId, date)),
-				this.timeLeaving.map(tl -> tl.toDomain(employeeId, date)),
+				this.timeLeaving.map(tl -> tl.toDomain(employeeId, date)), 
 				this.shortWorkTime.map(swt -> swt.toDomain(employeeId, date)),
 				this.specificDateAttr.map(sda -> sda.toDomain(employeeId, date)),
 				this.attendanceLeavingGate.map(alg -> alg.toDomain(employeeId, date)),

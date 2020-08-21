@@ -351,7 +351,10 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		Optional<TemporaryTimeOfDailyAttd> temporaryTimeOfDailyAttd = temporaryTimeOfDailyPerformance.isPresent()
 				? Optional.of(temporaryTimeOfDailyPerformance.get().getAttendance())
 				: Optional.empty();
-		return new IntegrationOfDaily(this.getWorkInfo().toDomain().getWorkInformation(), 
+		return new IntegrationOfDaily(
+										this.getAffiliationInfo().getEmployeeId(),
+										this.getAffiliationInfo().getWorkDate(),
+										this.getWorkInfo().toDomain().getWorkInformation(), 
 										this.getCalcAttr().toDomain().getCalcategory(), 
 										this.getAffiliationInfo().toDomain().getAffiliationInfor(),
 //										this.getBusinessType().toDomain(), 
