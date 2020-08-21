@@ -167,4 +167,10 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 		return result;
 	}
 
+	@Override
+	public ApplicationSetting findByCID(String companyID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

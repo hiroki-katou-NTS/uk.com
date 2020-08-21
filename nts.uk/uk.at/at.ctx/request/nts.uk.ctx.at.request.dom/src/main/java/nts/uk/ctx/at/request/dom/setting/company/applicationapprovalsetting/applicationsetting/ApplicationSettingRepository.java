@@ -17,4 +17,6 @@ public interface ApplicationSettingRepository {
 	 */
 	public ApplicationSetting findByAppType(String companyID, ApplicationType appType);
 	
+	public ApplicationSetting findByCID(String companyID);
+	
 }
