@@ -66,7 +66,10 @@ module nts.uk.at.view.kmp001.a {
 					if (current) {
 						vm.$ajax(KMP001A_API.GET_INFOMAITON_EMPLOYEE + "/" + ko.toJS(current.employeeId) + "/" + ko.toJS(current.affiliationId) + "/" + ko.toJS(vm.baseDate))
 							.then((data: IModel) => {
-								if(data.retiredDate = new Date("9999/12/31")){
+								
+								vm.endDate = moment(data.retiredDate).format(DATE_FORMAT);
+								
+								if(vm.endDate === "9999/12/31"){
 									data.retiredDate = null;
 								}
 								
