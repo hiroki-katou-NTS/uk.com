@@ -9,5 +9,5 @@ import java.util.List;
 @Getter
 @Setter
 public class MonthlyPatternDto {
-   public List<MonthlyPattern> listMonthlyPattern;
+   public List<PatternDto> listMonthlyPattern;
 }

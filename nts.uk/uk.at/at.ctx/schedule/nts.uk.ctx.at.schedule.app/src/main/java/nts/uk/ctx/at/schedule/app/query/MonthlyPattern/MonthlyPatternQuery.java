@@ -7,6 +7,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
 
 /**
  * Query: 月間パターン一覧を取得する
@@ -21,7 +22,10 @@ public class MonthlyPatternQuery {
         val listMonthly = repository.findAll(cid);
         val rs = new MonthlyPatternDto();
         if(listMonthly!=null){
-            rs.listMonthlyPattern = listMonthly;
+            val listPatternDto = new ArrayList<PatternDto>();
+            listMonthly.forEach(e->listPatternDto.add(new PatternDto(e.getCompanyId().toString(),
+                    e.getMonthlyPatternCode().toString(),e.getMonthlyPatternName().toString())));
+            rs.listMonthlyPattern = listPatternDto;
         }
         return rs;
     }
