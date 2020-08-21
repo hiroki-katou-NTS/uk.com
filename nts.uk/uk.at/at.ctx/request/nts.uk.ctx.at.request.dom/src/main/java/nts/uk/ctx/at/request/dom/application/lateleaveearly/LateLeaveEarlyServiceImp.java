@@ -195,8 +195,10 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			}
 		}
 
+		// AnhNM Mock data: START
 		lateOrEarlyInfos = this.initialInfo(listAppSet, Optional.of(mockAchive),
 				appDisplayInfo.getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles());
+		// AnhNM Mock data: END
 
 		displayInfo.setAppDispInfoStartupOutput(appDisplayInfo);
 		displayInfo.setLateEarlyCancelAppSet(listAppSet);

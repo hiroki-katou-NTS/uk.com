@@ -31,7 +31,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
 				application: any,
 				printContentOfEachAppDto: PrintContentOfEachAppDto,
             	approvalReason: any,
-                appDispInfoStartupOutput: any, 
+                appDispInfoStartupOutput: any,
                 eventUpdate: (evt: () => void ) => void
             }) {
             const vm = this;
@@ -111,10 +111,12 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
             vm.printContentOfEachAppDto().opArrivedLateLeaveEarlyInfo = params;
 
             vm.lateOrEarlyInfos(vm.arrivedLateLeaveEarlyInfo().earlyInfos);
-            vm.lateOrEarlyInfo1(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 0 }))[0]);
-            vm.lateOrEarlyInfo2(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 1 }))[0]);
-            vm.lateOrEarlyInfo3(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 0 }))[0]);
-            vm.lateOrEarlyInfo4(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 1 }))[0]);
+            if(this.lateOrEarlyInfos().length > 0){
+                vm.lateOrEarlyInfo1(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 0 }))[0]);
+                vm.lateOrEarlyInfo2(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 1, 'category': 1 }))[0]);
+                vm.lateOrEarlyInfo3(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 0 }))[0]);
+                vm.lateOrEarlyInfo4(ko.toJS(_.filter(vm.lateOrEarlyInfos, { 'workNo': 2, 'category': 1 }))[0]);
+            }
 
             if (ko.toJS(_.filter(vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateOrLeaveEarlies, { 'workNo': 1, 'lateOrEarlyClassification': 0 })).length > 0) {
                 vm.workManagement.workTime(ko.toJS(_.filter(vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateOrLeaveEarlies, { 'workNo': 1, 'lateOrEarlyClassification': 0 }))[0].timeWithDayAttr);

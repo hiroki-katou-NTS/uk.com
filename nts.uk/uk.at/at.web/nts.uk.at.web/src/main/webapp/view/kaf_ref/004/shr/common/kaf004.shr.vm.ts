@@ -63,16 +63,16 @@ module nts.uk.at.view.kaf004_ref.shr.common.viewmodel {
         isCheck: KnockoutObservable<Boolean>;
         workNo: KnockoutObservable<Number>;
         isActive: KnockoutObservable<Boolean>;
-        isIndicate: KnockoutObservable<Boolean>;
+        isIndicated: KnockoutObservable<Boolean>;
         category: KnockoutObservable<Number>;
 
-        constructor(isCheck: boolean, workNo: number, isActive: boolean, isIndicate: boolean, category: number) {
+        constructor(isCheck: boolean, workNo: number, isActive: boolean, isIndicated: boolean, category: number) {
             const self = this;
 
             self.isCheck = ko.observable(isCheck);
             self.workNo = ko.observable(workNo);
             self.isActive = ko.observable(isActive);
-            self.isIndicate = ko.observable(isIndicate);
+            self.isIndicated = ko.observable(isIndicated);
             self.category = ko.observable(category);
         }
     }
