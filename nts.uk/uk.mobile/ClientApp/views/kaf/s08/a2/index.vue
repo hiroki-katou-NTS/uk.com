@@ -66,7 +66,7 @@
               <td class="px-1">@mdo</td>
               <td class="border-right-0 px-1">@kfc</td>
               <td class="text-center px-0 border-left-0">
-                <fa-font v-bind:size="'1'" icon="angle-right" />
+                <fa-font size="1" icon="angle-right" />
               </td>
             </tr>
             <tr>
