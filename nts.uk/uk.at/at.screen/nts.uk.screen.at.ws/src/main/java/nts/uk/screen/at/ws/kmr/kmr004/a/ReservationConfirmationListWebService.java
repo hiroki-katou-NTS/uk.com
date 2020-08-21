@@ -10,12 +10,13 @@ import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 /**
  * @author 3si - Dang Huu Khai
  */
 @Path("screen/at/record/reservation-conf-list")
-@Produces("application/json")
+@Produces(MediaType.APPLICATION_JSON)
 public class ReservationConfirmationListWebService extends WebService {
 
    @Inject
@@ -26,8 +27,8 @@ public class ReservationConfirmationListWebService extends WebService {
     public ReservationConfirmationListDto getReservationConfirmationListStartupInfo() {
 
         // 予約確認一覧
-        LoginUserContext user =AppContexts.user();
-        String companyId =user.companyId();
+        LoginUserContext user = AppContexts.user();
+        String companyId = user.companyId();
         String employeeId = user.employeeId();
         ReservationConfirmationListDto dto = reservationConfirmationListScreenQuery.getReservationConfirmationListStartupInfo(companyId);
         dto.setCompanyId(companyId);
