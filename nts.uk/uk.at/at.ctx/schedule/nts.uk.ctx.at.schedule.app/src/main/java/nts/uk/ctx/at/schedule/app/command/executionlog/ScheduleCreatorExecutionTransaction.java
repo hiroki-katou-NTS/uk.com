@@ -261,7 +261,7 @@ public class ScheduleCreatorExecutionTransaction {
 			if(command.getContent().getImplementAtr() == ImplementAtr.DELETE_WORK_SCHEDULE) {
 				// note勤務予定削除する
 				this.deleteSchedule(scheduleCreator.getEmployeeId(),period);
-			}else {
+			} else {
 				// note勤務予定作成する  ↓
 				this.createSchedule(command, scheduleExecutionLog, context, period, masterCache, listBasicSchedule,
 					companySetting, scheduleCreator, registrationListDateSchedule, content, carrier);
@@ -315,8 +315,13 @@ public class ScheduleCreatorExecutionTransaction {
 		this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
 				result.getListWorkSchedule(), ws -> {
 					// note 勤務予定を登録する
-					this.workScheduleRepository.insert(ws);
-					
+					boolean checkUpdate = this.workScheduleRepository.checkExits(ws.getEmployeeID(), ws.getYmd());
+					if (checkUpdate) {
+						this.workScheduleRepository.update(ws);
+					} else {
+						this.workScheduleRepository.insert(ws);
+					}
+					;
 					// note 暫定データの登録
 					this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(),
 							Arrays.asList(ws.getYmd()));
@@ -348,8 +353,8 @@ public class ScheduleCreatorExecutionTransaction {
 		// note勤務予定ドメインを削除する (TKT-TQP)
 		// noteTODO: đang đợi Hiểu làm đề gọi vào
 		workScheduleRepository.delete(employeeId, period);
-		// note暫定データの登録
-		this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, period.datesBetween());
+//		// note暫定データの登録
+//		this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, period.datesBetween());
 		
 	}
 
@@ -1338,12 +1343,12 @@ public class ScheduleCreatorExecutionTransaction {
 						// note 勤務種類一覧から勤務種類を取得する
 						List<WorkType> lstWorkTypes = masterCache.getListWorkType();
 						lstWorkTypes = lstWorkTypes.stream().filter(x-> x.getWorkTypeCode().v().equals(monthlySetting.get().getWorkTypeCode().v())).collect(Collectors.toList());
-						WorkType workType = lstWorkTypes.stream().filter(x-> x.getWorkTypeCode().v().equals(monthlySetting.get().getWorkTypeCode().v())).findFirst().get();
+						Optional<WorkType> workType = lstWorkTypes.stream().filter(x-> x.getWorkTypeCode().v().equals(monthlySetting.get().getWorkTypeCode().v())).findFirst();
 						
 						// note 「就業時間帯コード」を取得する
-						WorkingCode workTimeCode = this.getWorkingCode(command, masterCache, itemDto, new WorkingCode(monthlySetting.get().getWorkingCode().v()), workType, dateInPeriod);
+						WorkingCode workTimeCode = this.getWorkingCode(command, masterCache, itemDto, new WorkingCode(monthlySetting.get().getWorkingCode().v()), workType.isPresent() ? workType.get() : null, dateInPeriod);
 						
-						WorkInformation workInformation =  new WorkInformation(workTimeCode != null ? workTimeCode.v() : null, workType.getWorkTypeCode().v());
+						WorkInformation workInformation =  new WorkInformation(workTimeCode != null ? workTimeCode.v() : null, workType.isPresent() ? workType.get().getWorkTypeCode().v() : null);
 						return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
 					}
 				}
