@@ -20,18 +20,20 @@ import java.util.List;
 public class OrderInfoExportExcelService extends ExportService<CreateOrderInfoDataSource> {
 
     @Inject
-    CreateOrderInfoGenerator generator;
+    private CreateOrderInfoGenerator generator;
 
     @Inject
-    CreateOrderInfoFileQuery createOrderInfoFileQuery;
+    private CreateOrderInfoFileQuery createOrderInfoFileQuery;
 
     @Inject
-    BentoMakeOrderCommandHandler commandHandler;
+    private BentoMakeOrderCommandHandler commandHandler;
 
     private boolean isWorkLocationExport = true;
 
+    private final OutputExtension OUT_PUT_EXT = OutputExtension.EXCEL;
+
     @Override
-    protected void handle(ExportServiceContext<CreateOrderInfoDataSource> exportServiceContext) {
+    protected void handle(ExportServiceContext<CreateOrderInfoDataSource> exportServiceContext){
         CreateOrderInfoDataSource dataSource = exportServiceContext.getQuery();
         OrderInfoDto dataGenerator = dataSource.getGeneratorData(createOrderInfoFileQuery, commandHandler);
         if(CollectionUtil.isEmpty(dataSource.getWorkLocationCodes()))
@@ -39,6 +41,6 @@ public class OrderInfoExportExcelService extends ExportService<CreateOrderInfoDa
         ReservationClosingTimeFrame closingTimeFrame = EnumAdaptor.valueOf(dataSource.getReservationClosingTimeFrame(),
                 ReservationClosingTimeFrame.class);
         generator.generate(exportServiceContext.getGeneratorContext(),new OrderInfoExportData(dataGenerator,
-                dataSource.isBreakPage(), isWorkLocationExport, closingTimeFrame.name, OutputExtension.EXCEL));
+                dataSource.isBreakPage(), isWorkLocationExport, closingTimeFrame.name, OUT_PUT_EXT));
     }
 }

@@ -19,10 +19,10 @@ import java.util.List;
 public class OrderInfoWebService {
 
     @Inject
-    OrderInfoExportPDFService exportPDFService;
+    private OrderInfoExportPDFService exportPDFService;
 
     @Inject
-    OrderInfoExportExcelService exportExcelService;
+    private OrderInfoExportExcelService exportExcelService;
 
     @POST
     @Path("print/pdf")
