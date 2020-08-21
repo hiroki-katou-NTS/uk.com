@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.applist.service.param;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -7,8 +8,8 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 
 /**
  * refactor 4
@@ -73,12 +74,17 @@ public class ListOfApplication {
 	/**
 	 * 反映状態
 	 */
-	private ReflectedState reflectionStatus;
+	private String reflectionStatus;
 	
 	/**
 	 * 時刻計算利用区分
 	 */
 	private Optional<Integer> opTimeCalcUseAtr;
+	
+	/**
+	 * 承認フェーズインスタンス
+	 */
+	private Optional<List<ApprovalPhaseStateImport_New>> opApprovalPhaseLst;
 	
 	/**
 	 * 承認状況照会
@@ -143,6 +149,7 @@ public class ListOfApplication {
 		this.inputDate  = null;
 		this.reflectionStatus = null;
 		this.opTimeCalcUseAtr = Optional.empty();
+		this.opApprovalPhaseLst = Optional.empty();
 		this.opApprovalStatusInquiry = Optional.empty();
 		this.opApprovalFrameStatus = Optional.empty();
 		this.opComplementLeaveApp = Optional.empty();

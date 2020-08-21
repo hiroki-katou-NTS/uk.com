@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.applist.service.param;
 
+import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
@@ -35,5 +36,12 @@ public class AppListInfo {
 	 * 表示設定
 	 */
 	private AppLstApprovalLstDispSet displaySet;
+	
+	public AppListInfo() {
+		this.appLst = Collections.emptyList();
+		this.numberOfApp = null;
+		this.moreThanDispLineNO = false;
+		this.displaySet = null;
+	}
 	
 }

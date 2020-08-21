@@ -21,13 +21,14 @@ public interface AppDataCreation {
 	/**
 	 * refactor 4
 	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.申請一覧リストのデータを作成.申請一覧リストのデータを作成
-	 * @param companyID
-	 * @param appLst
-	 * @param period
-	 * @param mode
-	 * @param mapApproval
-	 * @param device
-	 * @param appListExtractCondition
+	 * @param companyID 会社ID
+	 * @param appLst 申請一覧リスト
+	 * @param period 対象期間
+	 * @param mode モード：　申請一覧か承認一覧
+	 * @param mapApproval Map＜ルートインスタンスID、承認フェーズList＞
+	 * @param device デバイス：PC or スマートフォン
+	 * @param appListExtractCondition 申請一覧抽出条件
+	 * @param appListInfo 申請一覧情報
 	 * @return
 	 */
 	public AppListInfo createAppLstData(String companyID, List<Application> appLst, DatePeriod period, ApplicationListAtr mode, 

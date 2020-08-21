@@ -24,6 +24,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
@@ -68,14 +69,13 @@ import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
-import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbyworkplace.RequestByWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
@@ -203,7 +203,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			appListInfo = this.getApplicationListByApp(param, device, appListInfo);
 		} else {//承認
 				//アルゴリズム「申請一覧リスト取得承認」を実行する - 3
-			// appFull = this.getAppListByApproval(param, displaySet, device, lstAppType);
+			// appListInfo = this.getAppListByApproval(param, displaySet, device, lstAppType);
 		}
 		return appListInfo;
 	}
@@ -226,14 +226,14 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			for(ApplicationType appType : ApplicationType.values()) {
 				allAppTypeLst.add(appType);
 			} 
-			appLst = repoApp.getByAppTypeList(allAppTypeLst);
+			appLst = repoApp.getByAppTypeList(checkMySelf.getLstSID(), param.getPeriodStartDate(), param.getPeriodEndDate(), allAppTypeLst);
 		} else {
 			// ドメインモデル「申請」を取得する
 			List<ApplicationType> appTypeLst = param.getOpListOfAppTypes().map(x -> {
 				return x.stream().filter(y -> y.isChoice())
 						.map(y -> y.getAppType()).collect(Collectors.toList());
 			}).orElse(Collections.emptyList());
-			appLst = repoApp.getByAppTypeList(appTypeLst);
+			appLst = repoApp.getByAppTypeList(checkMySelf.getLstSID(), param.getPeriodStartDate(), param.getPeriodEndDate(), appTypeLst);
 		}
 		// 承認ルートの内容取得
 		Map<String,List<ApprovalPhaseStateImport_New>> mapResult = approvalRootStateAdapter.getApprovalRootContents(
@@ -437,8 +437,15 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * 3 - 申請一覧リスト取得承認
 	 */
 	@Override
-	public AppListOutPut getAppListByApproval(AppListExtractCondition param, ApprovalListDisplaySetting displaySet,
-			int device, List<Integer> lstAppType) {
+	public AppListInfo getAppListByApproval(AppListExtractCondition param, ApprovalListDisplaySetting approvalListDisplaySetting,
+			int device, List<ApprovalBehaviorAtrImport_New> approvalAtrLst, List<String> appIDLst, AppListInfo appListInfo) {
+		// 申請一覧抽出条件.申請表示対象が「事前通知」または「検討指示」が指定
+
+		// 承認区分から承認ルートを取得
+		
+		
+		
+		
 //		String companyId = AppContexts.user().companyId();
 //		String sID = AppContexts.user().employeeId();
 //		GeneralDate sysDate = GeneralDate.today();
@@ -664,33 +671,34 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			if(appFull.getAppTye() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION && appFull.getOpComplementLeaveApp().isPresent()) {
 				add = 2;
 			}
-			switch (appFull.getReflectionStatus()) {
-			case DENIAL://承認状況＝否
-					//否認件数に＋１する
+			//承認状況＝否
+			if(appFull.getReflectionStatus().equals(ReflectedState.DENIAL.name)) {
+				//否認件数に＋１する
 				appStatus.setDenialNumber(appStatus.getDenialNumber() + add);
-				break;
-			case REMAND://承認状況＝差戻
-					//差戻件数に＋１する
+			}
+			//承認状況＝差戻
+			if(appFull.getReflectionStatus().equals(ReflectedState.REMAND.name)) {
+				//差戻件数に＋１する
 				appStatus.setRemandNumner(appStatus.getRemandNumner() + add);
-				break;
-			case CANCELED://承認状況＝取消
-					//取消件数に＋１する
+			}
+			//承認状況＝取消
+			if(appFull.getReflectionStatus().equals(ReflectedState.CANCELED.name)) {
+				//取消件数に＋１する
 				appStatus.setCancelNumber(appStatus.getCancelNumber() + add);
-				break;
-			case REFLECTED://承認状況＝承認済み/反映済み
+			}
+			//承認状況＝承認済み/反映済み
+			if(appFull.getReflectionStatus().equals(ReflectedState.REFLECTED.name)) {
 //				if (StringUtil.isNullOrEmpty(appFull.getAgentId(), true) || appFull.getAgentId().equals(sID)) {
 //					//代行者＝未登録  または  代行者＝ログインID
 //					appStatus.setApprovalNumber(appStatus.getApprovalNumber() + add);
 //				} else {// 代行者≠ログインID
 //					appStatus.setApprovalAgentNumber(appStatus.getApprovalAgentNumber() + add);
 //				}
-				break;
-			case NOTREFLECTED://承認状況＝未
-					//未承認件数に＋１する
+			}
+			//承認状況＝未
+			if(appFull.getReflectionStatus().equals(ReflectedState.NOTREFLECTED.name)) {
+				//未承認件数に＋１する
 				appStatus.setUnApprovalNumber(appStatus.getUnApprovalNumber() + add);
-				break;
-			default:
-				break;
 			}
 		}
 		return appStatus;
@@ -741,70 +749,70 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			CheckColorTime checkColor = null;
 			AppOverTimeInfoFull appPre = null;
 			String reasonAppPre = "";
-			if (displaySet.getOtAdvanceDisAtr().equals(DisplayAtr.DISPLAY)) {// 表示する
-				//ドメインモデル「申請」を取得する
-				//※2018/04/17
-				//複数存在する場合は、最後に新規登録された内容を対象とする
-				List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr.PREDICT.value,
-						ApplicationType.OVER_TIME_APPLICATION.value);
-				if (lstAppPre.isEmpty()) {
-					checkColor = new CheckColorTime(appID, 1);
-				} else {
-					appPre = repoAppDetail.getAppOverTimeInfo(companyId, lstAppPre.get(0).getAppID());
-					reasonAppPre = lstAppPre.get(0).getAppReason().v();
-					if (lstAppPre.get(0).getReflectionInformation().getStateReflectionReal()
-							.equals(ReflectedState_New.DENIAL)) {
-						checkColor = new CheckColorTime(appID, 1);
-					} else {
-						boolean checkPrePostColor = this.checkPrePostColor(appPre.getLstFrame(),
-								appOtPost.getLstFrame());
-						if (checkPrePostColor) {
-							checkColor = new CheckColorTime(appID, 1);
-						}
-					}
-				}
-				if (!lstAppPre.isEmpty()) {
-					group = new AppPrePostGroup(false, lstAppPre.get(0).getAppID(), appID, null, "", "", "", "", appPre,
-							reasonAppPre, null, null, null, "", "");
-				}
-			}
-			// 承認一覧表示設定.残業の実績
-			if (displaySet.getOtActualDisAtr().equals(DisplayAtr.DISPLAY)) {// 表示する
-				// アルゴリズム「申請一覧リスト取得実績残業申請」を実行する-(5.2)
-				List<OverTimeFrame> time = appOtPost.getLstFrame();
-				List<OverTimeFrame> lstFrameRestTime = this.findRestTime(time);
-				List<Integer> lstRestStart = new ArrayList<>();
-				List<Integer> lstRestEnd = new ArrayList<>();
-				for (OverTimeFrame restTime : lstFrameRestTime) {
-					lstRestStart.add(restTime.getStartTime());
-					lstRestEnd.add(restTime.getEndTime());
-				}
-				WkTypeWkTime wkT = this.findWkTOt(lstAppOt, appID);
-				TimeResultOutput result = this.getDataActual(sID, appDate, time, ApplicationType.OVER_TIME_APPLICATION,
-						wkT.getWkTypeCd(), wkT.getWkTimeCd(), lstWkType, lstWkTime);
-				if (result.isCheckColor()) {
-					if (this.checkExistColor(lstColorTime, appID)) {
-						checkColor.setColorAtr(2);
-					} else {
-						checkColor = new CheckColorTime(appID, 2);
-					}
-				}
-				if (group != null) {
-					group.setDisplayRes(true);
-					group.setTime(result.getLstFrameResult());
-					group.setStrTime1(result.getStrTime1());
-					group.setEndTime1(result.getEndTime1());
-					group.setStrTime2(result.getStrTime2());
-					group.setEndTime2(result.getEndTime2());
-					group.setShiftNightTime(result.getShiftNightTime());
-					group.setFlexTime(result.getFlexTime());
-					// NOTE
-				} else {
-					group = new AppPrePostGroup(true, "", appID, result.getLstFrameResult(), result.getStrTime1(),
-							result.getEndTime1(), result.getStrTime2(), result.getEndTime2(), appPre, reasonAppPre,
-							null, result.getShiftNightTime(), result.getFlexTime(), "", "");
-				}
-			}
+//			if (displaySet.getOtAdvanceDisAtr().equals(DisplayAtr.DISPLAY)) {// 表示する
+//				//ドメインモデル「申請」を取得する
+//				//※2018/04/17
+//				//複数存在する場合は、最後に新規登録された内容を対象とする
+//				List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr.PREDICT.value,
+//						ApplicationType.OVER_TIME_APPLICATION.value);
+//				if (lstAppPre.isEmpty()) {
+//					checkColor = new CheckColorTime(appID, 1);
+//				} else {
+//					appPre = repoAppDetail.getAppOverTimeInfo(companyId, lstAppPre.get(0).getAppID());
+//					reasonAppPre = lstAppPre.get(0).getAppReason().v();
+//					if (lstAppPre.get(0).getReflectionInformation().getStateReflectionReal()
+//							.equals(ReflectedState_New.DENIAL)) {
+//						checkColor = new CheckColorTime(appID, 1);
+//					} else {
+//						boolean checkPrePostColor = this.checkPrePostColor(appPre.getLstFrame(),
+//								appOtPost.getLstFrame());
+//						if (checkPrePostColor) {
+//							checkColor = new CheckColorTime(appID, 1);
+//						}
+//					}
+//				}
+//				if (!lstAppPre.isEmpty()) {
+//					group = new AppPrePostGroup(false, lstAppPre.get(0).getAppID(), appID, null, "", "", "", "", appPre,
+//							reasonAppPre, null, null, null, "", "");
+//				}
+//			}
+//			// 承認一覧表示設定.残業の実績
+//			if (displaySet.getOtActualDisAtr().equals(DisplayAtr.DISPLAY)) {// 表示する
+//				// アルゴリズム「申請一覧リスト取得実績残業申請」を実行する-(5.2)
+//				List<OverTimeFrame> time = appOtPost.getLstFrame();
+//				List<OverTimeFrame> lstFrameRestTime = this.findRestTime(time);
+//				List<Integer> lstRestStart = new ArrayList<>();
+//				List<Integer> lstRestEnd = new ArrayList<>();
+//				for (OverTimeFrame restTime : lstFrameRestTime) {
+//					lstRestStart.add(restTime.getStartTime());
+//					lstRestEnd.add(restTime.getEndTime());
+//				}
+//				WkTypeWkTime wkT = this.findWkTOt(lstAppOt, appID);
+//				TimeResultOutput result = this.getDataActual(sID, appDate, time, ApplicationType.OVER_TIME_APPLICATION,
+//						wkT.getWkTypeCd(), wkT.getWkTimeCd(), lstWkType, lstWkTime);
+//				if (result.isCheckColor()) {
+//					if (this.checkExistColor(lstColorTime, appID)) {
+//						checkColor.setColorAtr(2);
+//					} else {
+//						checkColor = new CheckColorTime(appID, 2);
+//					}
+//				}
+//				if (group != null) {
+//					group.setDisplayRes(true);
+//					group.setTime(result.getLstFrameResult());
+//					group.setStrTime1(result.getStrTime1());
+//					group.setEndTime1(result.getEndTime1());
+//					group.setStrTime2(result.getStrTime2());
+//					group.setEndTime2(result.getEndTime2());
+//					group.setShiftNightTime(result.getShiftNightTime());
+//					group.setFlexTime(result.getFlexTime());
+//					// NOTE
+//				} else {
+//					group = new AppPrePostGroup(true, "", appID, result.getLstFrameResult(), result.getStrTime1(),
+//							result.getEndTime1(), result.getStrTime2(), result.getEndTime2(), appPre, reasonAppPre,
+//							null, result.getShiftNightTime(), result.getFlexTime(), "", "");
+//				}
+//			}
 			if (group != null) {
 				lstAppGroup.add(group);
 			}
@@ -823,67 +831,67 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			AppHolidayWorkFull appPre = null;
 			String reasonAppPre = "";
 			//承認一覧表示設定.休出の事前申請
-			if (displaySet.getHwAdvanceDisAtr().equals(DisplayAtr.DISPLAY)) {// 表示する
-				//ドメインモデル「申請」を取得する
-				List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr.PREDICT.value,
-						ApplicationType.HOLIDAY_WORK_APPLICATION.value);
-				if (lstAppPre.isEmpty()) {
-					checkColor = new CheckColorTime(appID, 1);
-				} else {
-					appPre = repoAppDetail.getAppHolidayWorkInfo(companyId, lstAppPre.get(0).getAppID(), lstWkType,
-							lstWkTime);
-					reasonAppPre = lstAppPre.get(0).getAppReason().v();
-					if (lstAppPre.get(0).getReflectionInformation().getStateReflectionReal()
-							.equals(ReflectedState_New.DENIAL)) {
-						checkColor = new CheckColorTime(appID, 1);
-					} else {
-						boolean checkPrePostColor = this.checkPrePostColor(appPre.getLstFrame(),
-								appHdPost.getLstFrame());
-						if (checkPrePostColor) {
-							checkColor = new CheckColorTime(appID, 1);
-						}
-					}
-				}
-				if (!lstAppPre.isEmpty()) {
-					group = new AppPrePostGroup(false, lstAppPre.get(0).getAppID(), appID, null, "", "", "", "", null,
-							reasonAppPre, appPre, null, null, "", "");
-				}
-			}
-			//承認一覧表示設定.休出の実績
-			if (displaySet.getHwActualDisAtr().equals(DisplayAtr.DISPLAY)) {//表示する
-				//アルゴリズム「申請一覧リスト取得実績残業申請」を実行する-(5.2)
-				List<OverTimeFrame> time = appHdPost.getLstFrame();
-				WkTypeWkTime wkT = this.findWkTHd(lstAppHdWork, appID);
-				TimeResultOutput result = this.getDataActual(sID, appDate, time, ApplicationType.HOLIDAY_WORK_APPLICATION,
-						wkT.getWkTypeCd(), wkT.getWkTimeCd(), lstWkType, lstWkTime);
-				if (result.isCheckColor()) {
-					if (this.checkExistColor(lstColorTime, appID)) {
-						checkColor.setColorAtr(2);
-					} else {
-						checkColor = new CheckColorTime(appID, 2);
-					}
-				}
-				if (group != null) {
-					group.setDisplayRes(true);
-					group.setTime(result.getLstFrameResult());
-					group.setStrTime1(result.getStrTime1());
-					group.setEndTime1(result.getEndTime1());
-					group.setStrTime2(result.getStrTime2());
-					group.setEndTime2(result.getEndTime2());
-					group.setWorkTypeName(result.getWorkTypeName());
-					group.setWorkTimeName(result.getWorkTimeName());
-				} else {
-					group = new AppPrePostGroup(true, "", appID, result.getLstFrameResult(), result.getStrTime1(),
-							result.getEndTime1(), result.getStrTime2(), result.getEndTime2(), null, reasonAppPre,
-							appPre, null, null, result.getWorkTypeName(), result.getWorkTimeName());
-				}
-			}
-			if (group != null) {
-				lstAppGroup.add(group);
-			}
-			if (checkColor != null) {
-				lstColorTime.add(checkColor);
-			}
+//			if (displaySet.getHwAdvanceDisAtr().equals(DisplayAtr.DISPLAY)) {// 表示する
+//				//ドメインモデル「申請」を取得する
+//				List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr.PREDICT.value,
+//						ApplicationType.HOLIDAY_WORK_APPLICATION.value);
+//				if (lstAppPre.isEmpty()) {
+//					checkColor = new CheckColorTime(appID, 1);
+//				} else {
+//					appPre = repoAppDetail.getAppHolidayWorkInfo(companyId, lstAppPre.get(0).getAppID(), lstWkType,
+//							lstWkTime);
+//					reasonAppPre = lstAppPre.get(0).getAppReason().v();
+//					if (lstAppPre.get(0).getReflectionInformation().getStateReflectionReal()
+//							.equals(ReflectedState_New.DENIAL)) {
+//						checkColor = new CheckColorTime(appID, 1);
+//					} else {
+//						boolean checkPrePostColor = this.checkPrePostColor(appPre.getLstFrame(),
+//								appHdPost.getLstFrame());
+//						if (checkPrePostColor) {
+//							checkColor = new CheckColorTime(appID, 1);
+//						}
+//					}
+//				}
+//				if (!lstAppPre.isEmpty()) {
+//					group = new AppPrePostGroup(false, lstAppPre.get(0).getAppID(), appID, null, "", "", "", "", null,
+//							reasonAppPre, appPre, null, null, "", "");
+//				}
+//			}
+//			//承認一覧表示設定.休出の実績
+//			if (displaySet.getHwActualDisAtr().equals(DisplayAtr.DISPLAY)) {//表示する
+//				//アルゴリズム「申請一覧リスト取得実績残業申請」を実行する-(5.2)
+//				List<OverTimeFrame> time = appHdPost.getLstFrame();
+//				WkTypeWkTime wkT = this.findWkTHd(lstAppHdWork, appID);
+//				TimeResultOutput result = this.getDataActual(sID, appDate, time, ApplicationType.HOLIDAY_WORK_APPLICATION,
+//						wkT.getWkTypeCd(), wkT.getWkTimeCd(), lstWkType, lstWkTime);
+//				if (result.isCheckColor()) {
+//					if (this.checkExistColor(lstColorTime, appID)) {
+//						checkColor.setColorAtr(2);
+//					} else {
+//						checkColor = new CheckColorTime(appID, 2);
+//					}
+//				}
+//				if (group != null) {
+//					group.setDisplayRes(true);
+//					group.setTime(result.getLstFrameResult());
+//					group.setStrTime1(result.getStrTime1());
+//					group.setEndTime1(result.getEndTime1());
+//					group.setStrTime2(result.getStrTime2());
+//					group.setEndTime2(result.getEndTime2());
+//					group.setWorkTypeName(result.getWorkTypeName());
+//					group.setWorkTimeName(result.getWorkTimeName());
+//				} else {
+//					group = new AppPrePostGroup(true, "", appID, result.getLstFrameResult(), result.getStrTime1(),
+//							result.getEndTime1(), result.getStrTime2(), result.getEndTime2(), null, reasonAppPre,
+//							appPre, null, null, result.getWorkTypeName(), result.getWorkTimeName());
+//				}
+//			}
+//			if (group != null) {
+//				lstAppGroup.add(group);
+//			}
+//			if (checkColor != null) {
+//				lstColorTime.add(checkColor);
+//			}
 		}
 		return new AppListAtrOutput(appStatus.getLstAppFull(), appStatus.getCount(), lstColorTime, lstAppGroup);
 	}
