@@ -52,7 +52,6 @@
           v-bind:show-title="false"
         />
       </div>
-      /dđsđsdsd
       <!-- A_20 -->
       <div>
         <kafs00-c
