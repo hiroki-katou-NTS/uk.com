@@ -265,7 +265,6 @@ public class EventInfoAndPersonalConditionsPeriod {
 
 	}
 
-	private TargetOrgIdenInfor targetOrgIdenInfor;
 	public DataSpecDateAndHolidayDto getData(EventInfoAndPerCondPeriodParam param) {
 
 		// step 1
@@ -276,19 +275,9 @@ public class EventInfoAndPersonalConditionsPeriod {
 				companyEventRepo, publicHolidayRepo, specificDateItemRepo);
 		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
 		
-		boolean isWorkPlace = param.workplaceId == null || param.workplaceId == "" ? false : true;
-		targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, Optional.empty(), Optional.empty());
-		if (isWorkPlace) {
-			targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, Optional.of(param.workplaceId), Optional.empty());
-
-		} else {
-			targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, Optional.empty(), Optional.of(param.workplaceGroupId));
-
-		}
-
 		period.datesBetween().stream().forEach(date -> {
 			DateInformation dateInformation = null;
-			dateInformation = DateInformation.create(require, date, targetOrgIdenInfor);
+			dateInformation = DateInformation.create(require, date, param.targetOrgIdenInfor);
 			listDateInfo.add(dateInformation);
 		});
 

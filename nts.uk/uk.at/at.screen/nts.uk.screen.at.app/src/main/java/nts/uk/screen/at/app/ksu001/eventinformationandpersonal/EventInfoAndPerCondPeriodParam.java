@@ -7,6 +7,7 @@ import java.util.List;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
 /**
  * @author laitv
@@ -16,7 +17,6 @@ import nts.arc.time.GeneralDate;
 public class EventInfoAndPerCondPeriodParam {
 	public GeneralDate startDate;
 	public GeneralDate endDate;
-	public String workplaceId;
-	public String workplaceGroupId;
 	public List<String> listSid;
+	public TargetOrgIdenInfor targetOrgIdenInfor;
 }

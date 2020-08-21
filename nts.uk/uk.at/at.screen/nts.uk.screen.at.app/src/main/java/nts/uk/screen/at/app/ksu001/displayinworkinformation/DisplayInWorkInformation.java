@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.JudgeHdSystemOneDayService;
+import nts.uk.screen.at.app.ksu001.scheduleactualworkinfo.GetScheduleActualOfWorkInfo;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -29,6 +30,8 @@ public class DisplayInWorkInformation {
 	private BasicScheduleService basicScheduleService;
 	@Inject
 	private JudgeHdSystemOneDayService judgeHdSystemOneDayService;
+	@Inject
+	private GetScheduleActualOfWorkInfo getScheduleActualOfWorkInfo;
 	
 	public DisplayInWorkInfoResult getDataWorkInfo(DisplayInWorkInfoParam param) {
 
@@ -64,37 +67,13 @@ public class DisplayInWorkInformation {
 		
 		// Lấy data Schedule
 		// Get schedule/actual results with work information
-		
-		
-		
-
-		// fix tam data đoạn này
-		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = new ArrayList<>();
-		List<String> sids = Arrays.asList("fc4304be-8121-4bad-913f-3e48f4e2a752",
-				"338c26ac-9b80-4bab-aa11-485f3c624186", "89ea1474-d7d8-4694-9e9b-416ea1d6381c",
-				"ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570", "8f9edce4-e135-4a1e-8dca-ad96abe405d6",
-				"9787c06b-3c71-4508-8e06-c70ad41f042a", "62785783-4213-4a05-942b-c32a5ffc1d63",
-				"4859993b-8065-4789-90d6-735e3b65626b", "aeaa869d-fe62-4eb2-ac03-2dde53322cb5",
-				"70c48cfa-7e8d-4577-b4f6-7b715c091f24", "c141daf2-70a4-4f4b-a488-847f4686e848");
-
-		for (String sid : sids) {
-			for (int i = 1; i < 32; i++) {
-				boolean isEdit = true;
-				boolean isActive = true;
-				isActive = i % 2 == 0 ? true : false;
-				isEdit = isActive;
-				WorkScheduleWorkInforDto w1 = new WorkScheduleWorkInforDto(sid, GeneralDate.ymd(2020, 7, i), false,
-						false, false, false, 1, "001 ", "出勤出 ", new EditStateOfDailyAttdDto(1, 0), "001 ", "テスト",
-						new EditStateOfDailyAttdDto(1, 0), 480, new EditStateOfDailyAttdDto(1, 0), 1020,
-						new EditStateOfDailyAttdDto(1, 0), 1, isEdit, isActive);
-				listWorkScheduleWorkInfor.add(w1);
-			}
-		}
+		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = getScheduleActualOfWorkInfo.getDataScheduleAndAactualOfWorkInfo(param);
 
 		result.setListWorkScheduleWorkInfor(listWorkScheduleWorkInfor);
 		return result;
 	}
 
+	// data Sample
 	public DisplayInWorkInfoResult getData(DisplayInWorkInfoParam param) {
 
 		DisplayInWorkInfoResult result = new DisplayInWorkInfoResult();
