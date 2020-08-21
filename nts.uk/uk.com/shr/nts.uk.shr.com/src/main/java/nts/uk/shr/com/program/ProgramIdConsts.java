@@ -907,6 +907,7 @@ public class ProgramIdConsts {
 	public static final String CMF002X = "CMF002X";
 	public static final String CMF002Y = "CMF002Y";
 	public static final String CMF002V2 = "CMF002V2";
+	public static final String CMF002W = "CMF002W";
  
 	public static final String CMF004A = "CMF004A";
 	public static final String CMF004B = "CMF004B";

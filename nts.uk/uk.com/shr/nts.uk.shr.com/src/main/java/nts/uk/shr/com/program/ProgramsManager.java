@@ -2166,6 +2166,8 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "/view/cmf/002/y/index.xhtml");
     public static final Program CMF002V2 = new Program(WebAppId.COM, ProgramIdConsts.CMF002V2, "CMF002_21",
             "/view/cmf/002/v2/index.xhtml");
+    public static final Program CMF002W = new Program(WebAppId.COM, ProgramIdConsts.CMF002W, "CMF002_529",
+            "/view/cmf/002/w/index.xhtml");
 
     /**
      * CMF003
