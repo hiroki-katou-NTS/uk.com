@@ -44,7 +44,7 @@ public class GetListEmployeeHaveBeenStamped {
 		GetFingerStampSettingDto fingerStampSetting = stampSetting.getFingerStampSetting(companyId);
 		
 		// note: 共有打刻の打刻設定.氏名選択利用する＝false
-		if(!fingerStampSetting.getStampSetting().isNameSelectArt()) {
+		if (fingerStampSetting.getStampSetting() == null || !fingerStampSetting.getStampSetting().isNameSelectArt()) {
 			return new ArrayList<EmployeeStampData>();
 		}
 		
