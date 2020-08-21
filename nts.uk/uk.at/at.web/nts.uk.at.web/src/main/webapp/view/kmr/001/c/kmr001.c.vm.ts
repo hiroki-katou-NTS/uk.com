@@ -5,7 +5,9 @@ module nts.uk.at.kmr001.c {
 
     const API = {
         GET_LIST_WORK_LOCATION: 'screen/at/record/reservation/bento_menu/getWorkLocation',
-        GET_ALL : 'screen/at/record/reservation/bento_menu/getBentoMenuByHist'
+        GET_ALL : 'screen/at/record/reservation/bento_menu/getBentoMenuByHist',
+        CREATE_BENTO_MENU: 'bento/updateItemSetting/add',
+        UPDATE_BENTO_MENU: 'bento/updateItemSetting/update',
     };
 
     const PATH = {
@@ -40,7 +42,8 @@ module nts.uk.at.kmr001.c {
 
         workLocationList: KnockoutObservableArray<WorkLocation> = ko.observableArray([]);
 
-        listData = [];
+        listData: Array<any> = [];
+        listIdBentoMenu: Array<any> = [];
         constructor() {
             super();
             const vm = this;
@@ -87,6 +90,7 @@ module nts.uk.at.kmr001.c {
                             ))
                         );
                         dataRes.forEach(item => {
+                                vm.listIdBentoMenu.push(item.frameNo);
                                 array.forEach((rc, index) => {
                                     if(item.frameNo == rc.id) {
                                         array[index].locationName = item.workLocationName;
@@ -165,6 +169,14 @@ module nts.uk.at.kmr001.c {
         created() {
             const vm = this;
             _.extend(window, { vm });
+        }
+
+        registerBentoMenu() {
+            const vm = this;
+            console.log(vm.listIdBentoMenu)
+            if(vm.listIdBentoMenu.indexOf(Number(vm.selectedBentoSetting())) >= 0 ) {
+                // console.log(new paramsRegister(vm.model().))
+            }
         }
 
         openConfigHisDialog() {
@@ -247,6 +259,30 @@ module nts.uk.at.kmr001.c {
         constructor(id: string, name: string) {
             this.id =id;
             this.name = name;
+        }
+    }
+
+    class paramsRegister{
+        histId: any;
+        frameNo: any;
+        benToName: any;
+        workLocationCode: any;
+        amount1: any;
+        amount2: any;
+        Unit: any;
+        canBookClosesingTime1: any;
+        canBookClosesingTime2: any;
+        constructor(histId, frameNo, benToName, workLocationCode, amount1, amount2, Unit,
+                    canBookClosesingTime1, canBookClosesingTime2) {
+            this.histId = histId;
+            this.frameNo = frameNo;
+            this.benToName = benToName;
+            this.workLocationCode = workLocationCode;
+            this.amount1 = amount1;
+            this.amount2 = amount2;
+            this.Unit = Unit;
+            this.canBookClosesingTime1 = canBookClosesingTime1;
+            this.canBookClosesingTime2 = canBookClosesingTime2;
         }
     }
 
