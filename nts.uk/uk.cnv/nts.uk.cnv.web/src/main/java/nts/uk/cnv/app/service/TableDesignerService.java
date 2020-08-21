@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.RequiredArgsConstructor;
+import nts.uk.cnv.app.dto.TableDesignExportDto;
 import nts.uk.cnv.dom.service.ExportDdlService;
 import nts.uk.cnv.dom.tabledesign.TableDesign;
 import nts.uk.cnv.dom.tabledesign.TableDesignRepository;
@@ -19,9 +20,9 @@ public class TableDesignerService {
 	@Inject
 	ExportDdlService exportDdlService;
 
-	public String exportDdl(String tableName, String type) {
+	public String exportDdl(TableDesignExportDto params) {
 		RequireImpl require = new RequireImpl(tableDesignRepository);
-		return exportDdlService.exportDdl(require, tableName, type);
+		return exportDdlService.exportDdl(require, params.getTableName(), params.getType());
 	}
 
 	@RequiredArgsConstructor

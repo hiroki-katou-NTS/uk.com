@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import net.sf.jsqlparser.JSQLParserException;
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
@@ -31,8 +32,7 @@ public class TableDesignImportCommandHandler extends CommandHandler<TableDesignI
 			try {
 				at = TableDesignImportService.regist(require, command.getCreateTableSql(), command.getCreateIndexSql());
 			} catch (JSQLParserException e) {
-				throw BusinessException.takeFrom(e)
-					.orElse(new BusinessException("SQL文解析に失敗しました"));
+				throw new BusinessException(new RawErrorMessage("SQL文解析に失敗しました：" + e.getCause().toString()));
 			}
 			at.run();
 		});

@@ -44,8 +44,10 @@ public class TableDesignImportService {
 		Statement createTableSt = pm.parse(new StringReader(createTable.toUpperCase()));
 		
 		List<CreateIndex> indexes = new ArrayList<>();
-		for (String ci : createIndexes.split(";")) {
-			indexes.add( (CreateIndex) pm.parse(new StringReader(ci.toUpperCase())));
+		if(createIndexes != null && !createIndexes.isEmpty()) {
+			for (String ci : createIndexes.split(";")) {
+				indexes.add( (CreateIndex) pm.parse(new StringReader(ci.toUpperCase())));
+			}
 		}
 		
 		if (createTableSt instanceof CreateTable) {
@@ -70,9 +72,9 @@ public class TableDesignImportService {
 					createIndex.stream()
 						.map(idx -> new Indexes(
 								idx.getIndex().getName(),
-								idx.getIndex().getType(),
+								"INDEX",
 								idx.getIndex().getColumnsNames(),
-								idx.getTailParameters()
+								(idx.getTailParameters() == null ? new ArrayList<>() : idx.getTailParameters())
 						)).collect(Collectors.toList())
 			);
 		}
@@ -153,7 +155,7 @@ public class TableDesignImportService {
 					index.getName(),
 					index.getType(),
 					index.getColumnsNames(),
-					null
+					new ArrayList<>()
 			);
 			indexes.add(idx);
 		}

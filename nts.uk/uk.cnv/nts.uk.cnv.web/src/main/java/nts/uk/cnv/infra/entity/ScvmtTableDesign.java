@@ -12,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -44,6 +45,7 @@ public class ScvmtTableDesign extends JpaEntity implements Serializable {
 	@Column(name = "UPDATE_DATE")
 	public GeneralDateTime updateDate;
 
+	@OrderBy(value = "scvmtColumnDesignPk.id asc")
 	@OneToMany(targetEntity = ScvmtColumnDesign.class, mappedBy = "tabledesign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "SCVMT_COLUMN_DESIGN")
 	private List<ScvmtColumnDesign> columns;

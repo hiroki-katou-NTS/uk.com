@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
@@ -36,6 +37,7 @@ public class ScvmtIndexDesign extends JpaEntity implements Serializable {
 	@Column(name = "PARAMS")
 	public String params;
 	
+	@OrderBy(value = "pk.id asc")
 	@OneToMany(targetEntity = ScvmtIndexColumns.class, mappedBy = "indexdesign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "SCVMT_COLUMN_DESIGN")
 	public List<ScvmtIndexColumns> columns;

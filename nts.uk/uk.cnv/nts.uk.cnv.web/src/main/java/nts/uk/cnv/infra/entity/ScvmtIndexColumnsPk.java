@@ -22,6 +22,9 @@ public class ScvmtIndexColumnsPk implements Serializable {
 	
 	@Column(name = "NAME")
 	private String name;
+
+	@Column(name = "ID")
+	private int id;
 	
 	@Column(name = "COLUMN_NAME")
 	private String columnName;

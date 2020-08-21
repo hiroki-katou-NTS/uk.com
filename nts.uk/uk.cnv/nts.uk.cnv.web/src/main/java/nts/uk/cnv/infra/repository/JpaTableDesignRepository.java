@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.cnv.dom.tabledesign.ColumnDesign;
+import nts.uk.cnv.dom.tabledesign.Indexes;
 import nts.uk.cnv.dom.tabledesign.TableDesign;
 import nts.uk.cnv.dom.tabledesign.TableDesignRepository;
 import nts.uk.cnv.infra.entity.ScvmtColumnDesign;
@@ -53,23 +54,23 @@ public class JpaTableDesignRepository extends JpaRepository implements TableDesi
 				.map(cd -> toEntity(tableDesign.getId(), cd))
 				.collect(Collectors.toList());
 		
-		List<ScvmtIndexDesign> indexes = tableDesign.getIndexes().stream()
-			.flatMap(idx -> idx.getColmns().stream().map(col -> {
-				List<ScvmtIndexColumns> indexcolumns = new ArrayList<>();
-				indexcolumns.add(
-					new ScvmtIndexColumns(
-							new ScvmtIndexColumnsPk(tableDesign.getId(), idx.getName(), col),
-							null)
-				);
-				return new ScvmtIndexDesign(
+		List<ScvmtIndexDesign> indexes = new ArrayList<>();
+		for (Indexes idx: tableDesign.getIndexes()) {
+			List<ScvmtIndexColumns> indexcolumns = idx.getColmns().stream()
+				.map(col -> new ScvmtIndexColumns(
+						new ScvmtIndexColumnsPk(tableDesign.getId(), idx.getName(), idx.getColmns().indexOf(col), col),
+						null)
+					)
+				.collect(Collectors.toList());
+
+			indexes.add(new ScvmtIndexDesign(
 					new ScvmtIndexDesignPk(tableDesign.getId(), idx.getName()),
 					idx.getConstraintType(),
 					String.join(",", idx.getParams()),
 					indexcolumns,
 					null
-				);
-			}))
-			.collect(Collectors.toList());
+			));
+		}
 		
 		return new ScvmtTableDesign(
 				tableDesign.getId(),

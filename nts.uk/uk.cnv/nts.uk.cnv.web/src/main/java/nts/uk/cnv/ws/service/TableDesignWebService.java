@@ -8,6 +8,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.cnv.app.command.TableDesignImportCommand;
 import nts.uk.cnv.app.command.TableDesignImportCommandHandler;
+import nts.uk.cnv.app.dto.TableDesignExportDto;
 import nts.uk.cnv.app.service.TableDesignerService;
 
 @Path("cnv/tabledesign")
@@ -28,7 +29,7 @@ public class TableDesignWebService extends WebService{
 	
 	@POST
 	@Path("exportddl")
-	public void importTable(String tableName, String type) {
-		tdService.exportDdl(tableName, type);
+	public String export(TableDesignExportDto params) {
+		return tdService.exportDdl(params);
 	}
 }

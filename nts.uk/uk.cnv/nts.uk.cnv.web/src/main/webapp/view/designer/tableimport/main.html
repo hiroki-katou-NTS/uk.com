@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="main.css">
 </head>
 
 <body>
@@ -13,24 +14,25 @@
 	</tr>
 	<tr>
 		<td>
-			<input type="text" id="tablename" style="font-size:80%; width:400px;" />
+			<input type="text" id="tablename" style="font-size:80%; width:340px;" />
+			<button id="view">view</button>
 		</td>
 		<td />
-		<td>
-			<button id="view">view</button>
-			<button id="import">import</button>
+		<td style="text-align:center">
+			<button id="import" style="width:100px;">import</button>
 		</td>
 	</tr>
 	<tr>
 		<td>
-			<input type="radio" id="mssql" name="type" value="mssql" checked="checked" style="font-size:80%">MsSQL
-			<input type="radio" id="pg" name="type" value="pg" style="font-size:80%">Postgres
+			DBMS:
+			<input type="radio" id="mssql" name="type" value="sqlserver" checked="checked" style="font-size:80%">SqlServer
+			<input type="radio" id="pg" name="type" value="postgres" style="font-size:80%">Postgres
 		</td>
 	</tr>
 	<tr>
 		<td style="width:400px">
 			<div>Table Design:</div>
-			<textarea id="view" style="font-size:80%; width:100%; height:485px;" spellcheck="false" readonly></textarea>
+			<textarea id="tabledesign" style="font-size:80%; width:100%; height:485px;" spellcheck="false" readonly></textarea>
 		</td>
 		<td></td>
 		<td style="width:400px">
@@ -42,7 +44,7 @@
 	</tr>
 </table>
 <hr />
-<textarea id="result" style="font-size:80%; width:800px; height:200px;" data-bind="value: result"></textarea>
+<textarea id="result" style="font-size:80%; width:800px; height:200px;" disabled></textarea>
 
 <script
   src="https://code.jquery.com/jquery-3.3.1.min.js"
@@ -57,6 +59,11 @@ var ajaxOption = {
 	dataType: "json",
 	
 	build: function (path, data) {
+		this.dataType = "json";
+		return $.extend({url:server + path, data: JSON.stringify(data)}, this);
+	},
+	build: function (path, dataType, data) {
+		this.dataType = dataType;
 		return $.extend({url:server + path, data: JSON.stringify(data)}, this);
 	}
 };
@@ -67,24 +74,36 @@ $(function () {
 			createIndexSql: $('#createindexsql').val()
 		})).done(function (res) {
 			console.log(res);
-			$('#result').prop('text', res);
+			$('#result').val('処理が完了しました。' + res.message);
 		}).fail(function(rej){
 			console.log(rej);
-			$('#result').prop('text', rej);
+			$('#result').val('処理は異常終了しました。' + rej.responseStatus + rej.stackTrace);
 		});
 	});
 });
 $(function () {	
 	$("#view").click(function () {
-		$.ajax(ajaxOption.build("/nts.uk.cnv.web/webapi/cnv/tabledesign/exportddl", {
+		$('#tabledesign').val('');
+		$.ajax(ajaxOption.build("/nts.uk.cnv.web/webapi/cnv/tabledesign/exportddl", "text", {
 			tableName: $('#tablename').val(),
 			type: $('[name="type"]:checked').val()
 		})).done(function (res) {
 			console.log(res);
-			$('#result').prop('text', res);
+			$('#tabledesign').val(res);
+			if (typeof res.message === "undefined") {
+				$('#result').val('処理が完了しました。');
+			}
+			else {
+				$('#result').val('処理が完了しました。' + res.message);
+			}
 		}).fail(function(rej){
 			console.log(rej);
-			$('#result').prop('text', rej);
+			if (typeof rej.responseStatus === "undefined" || typeof rej.stackTrace === "undefined") {
+				$('#result').val('処理は異常終了しました。');
+			}
+			else {
+				$('#result').val('処理は異常終了しました。' + rej.responseStatus + rej.stackTrace);
+			}
 		});
 	});
 });
