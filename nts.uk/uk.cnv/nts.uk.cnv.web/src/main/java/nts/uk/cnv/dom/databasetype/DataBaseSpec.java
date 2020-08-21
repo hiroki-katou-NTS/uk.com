@@ -1,10 +1,7 @@
 package nts.uk.cnv.dom.databasetype;
 
-public interface DataBaseSpec {
+public interface DataBaseSpec extends DataTypeDefine {
 
-	// 型
-	public String dataType(DataType type, Integer... length);
-	
 	// 変数定義
 	public String param(String expression);
 	public String declaration(String pramName, DataType type, Integer... length);
@@ -20,5 +17,4 @@ public interface DataBaseSpec {
 	public String cast(String expression, DataType type, Integer... length);
 	
 	public String newUuid();
-
 }

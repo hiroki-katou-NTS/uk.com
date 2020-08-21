@@ -19,6 +19,9 @@ import net.sf.jsqlparser.statement.create.table.Index;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.databasetype.DataType;
+import nts.uk.cnv.dom.databasetype.DataTypeDefine;
+import nts.uk.cnv.dom.databasetype.DatabaseType;
+import nts.uk.cnv.dom.databasetype.UkDataType;
 import nts.uk.cnv.dom.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.tabledesign.Indexes;
 import nts.uk.cnv.dom.tabledesign.TableDesign;
@@ -29,17 +32,25 @@ public class TableDesignImportService {
 	 * @param require
 	 * @param createTable create table文を指定する. 列のデータ型はDB設計規約の「Name for layout」を参照すること
 	 * @param createIndex テーブルに所属するcreate index文を指定する.
+	 * @param type SQL文がどのRDBMSかを指定する
 	 * @throws JSQLParserException
 	 */
-	public static AtomTask regist(Require require, String createTable, String createIndexes) throws JSQLParserException {
-		TableDesign tableDesign = ddlToDomain(createTable, createIndexes);
+	public static AtomTask regist(Require require, String createTable, String createIndexes, String type) throws JSQLParserException {
+		DataTypeDefine typeDefine;
+		if("uk".equals(type)) {
+			typeDefine = new UkDataType();
+		}
+		else {
+			typeDefine = DatabaseType.valueOf(type).spec();
+		}
+		TableDesign tableDesign = ddlToDomain(createTable, createIndexes, typeDefine);
 
 		return AtomTask.of(() -> {
 			require.regist(tableDesign);
 		});
 	}
 	
-	private static TableDesign ddlToDomain(String createTable, String createIndexes) throws JSQLParserException {
+	private static TableDesign ddlToDomain(String createTable, String createIndexes, DataTypeDefine typeDefine) throws JSQLParserException {
 		CCJSqlParserManager pm = new CCJSqlParserManager();
 		Statement createTableSt = pm.parse(new StringReader(createTable.toUpperCase()));
 		
@@ -51,14 +62,14 @@ public class TableDesignImportService {
 		}
 		
 		if (createTableSt instanceof CreateTable) {
-			return toDomain( (CreateTable) createTableSt, indexes);
+			return toDomain( (CreateTable) createTableSt, indexes, typeDefine);
 		}
 		
 		throw new JSQLParserException();
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static TableDesign toDomain(CreateTable statement, List<CreateIndex> createIndex) {
+	private static TableDesign toDomain(CreateTable statement, List<CreateIndex> createIndex, DataTypeDefine typeDefine) {
 		GeneralDateTime now = GeneralDateTime.now();
 		
 		List<Indexes> indexes = new ArrayList<>();
@@ -83,10 +94,19 @@ public class TableDesignImportService {
 		int id = 1;
 		for (Iterator<ColumnDefinition> colmnDef =  statement.getColumnDefinitions().iterator(); colmnDef.hasNext();) {
 			ColumnDefinition col = colmnDef.next();
-			DataType type = DataType.valueOf(col.getColDataType().getDataType());
 			List<String> specs = col.getColumnSpecs();
-
-			List<String> args = col.getColDataType().getArgumentsStringList();
+			List<Integer> args;
+			if (col.getColDataType().getArgumentsStringList() != null && col.getColDataType().getArgumentsStringList().size() > 0) {
+				args = col.getColDataType().getArgumentsStringList().stream()
+						.map(arg ->  Integer.parseInt(arg))
+						.collect(Collectors.toList());
+			}
+			else {
+				args = new ArrayList<>();
+			}
+			
+			Integer[] argsArray = new Integer[args.size()];
+			DataType type = typeDefine.parse(col.getColDataType().getDataType(), args.toArray(argsArray));
 			
 			boolean nullable = !specs.stream().anyMatch(arg -> arg.equals("NOT"));
 			String defaultValue = 

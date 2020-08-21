@@ -30,7 +30,8 @@ public class TableDesignImportCommandHandler extends CommandHandler<TableDesignI
 		transaction.execute(() -> {
 			AtomTask at;
 			try {
-				at = TableDesignImportService.regist(require, command.getCreateTableSql(), command.getCreateIndexSql());
+				at = TableDesignImportService.regist(
+						require, command.getCreateTableSql(), command.getCreateIndexSql(), command.getType());
 			} catch (JSQLParserException e) {
 				throw new BusinessException(new RawErrorMessage("SQL文解析に失敗しました：" + e.getCause().toString()));
 			}

@@ -10,13 +10,16 @@ import nts.uk.cnv.dom.tabledesign.TableDesign;
 public class ExportDdlService {
 
 	public String exportDdl(Require require, String tablename, String type) {
-		DatabaseType dbtype = DatabaseType.valueOf(type);
 		Optional<TableDesign> td = require.find(tablename);
 		if(!td.isPresent()) {
 			throw new BusinessException(new RawErrorMessage("定義が見つかりません：" + tablename));
 		}
 
-		return td.get().createDdl(dbtype);
+		if("uk".equals(type))
+			return td.get().createDdl();
+		
+		DatabaseType dbtype = DatabaseType.valueOf(type);
+		return td.get().createDdl(dbtype.spec());
 	}
 	
 	public interface Require {

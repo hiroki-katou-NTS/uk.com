@@ -67,4 +67,34 @@ public class PostgresSpec implements DataBaseSpec{
 		return String.format("RIGHT(%s,%d)", expression, length);
 	}
 
+	@Override
+	public DataType parse(String type, Integer... length) {
+		if(type == null)
+			throw new IllegalArgumentException();
+		
+		if (type.equals("NUMERIC") && length[0] == 1) {
+			return DataType.BOOL;
+		}
+		else if(type.equals("NUMERIC") && length.length == 1) {
+			return DataType.INT;
+		}
+		else if(type.equals("NUMERIC") && length.length == 2) {
+			return DataType.REAL;
+		}
+		else if(type.equals("VARCHAR")) {
+			return DataType.NVARCHAR;
+		}
+		else if(type.equals("CHAR")) {
+			return DataType.NCHAR;
+		}
+		else if(type.equals("DATE")) {
+			return DataType.DATE;
+		}
+		else if(type.equals("TIMESTAMP")) {
+			return DataType.DATETIME;
+		}
+		
+		throw new IllegalArgumentException();
+	}
+
 }

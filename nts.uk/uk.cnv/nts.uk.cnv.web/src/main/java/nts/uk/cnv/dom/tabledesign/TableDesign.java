@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.cnv.dom.databasetype.DataBaseSpec;
-import nts.uk.cnv.dom.databasetype.DatabaseType;
+import nts.uk.cnv.dom.databasetype.DataTypeDefine;
+import nts.uk.cnv.dom.databasetype.UkDataType;
 
 @AllArgsConstructor
 @Getter
@@ -19,8 +19,12 @@ public class TableDesign {
 	
 	private List<ColumnDesign> columns;
 	private List<Indexes> indexes;
+
+	public String createDdl() {
+		return this.createDdl(new UkDataType());
+	}
 	
-	public String createDdl(DatabaseType dbtype) {
+	public String createDdl(DataTypeDefine datatypedefine) {
 		String index = "";
 		List<Indexes> indexList = indexes.stream().filter(idx -> idx.getConstraintType().equals("INDEX")).collect(Collectors.toList());
 		if(!indexList.isEmpty())
@@ -33,14 +37,14 @@ public class TableDesign {
 		}
 		
 		return "CREATE TABLE " + this.name + "(\r\n" +
-						columnContaint(dbtype.spec()) +
+						columnContaint(datatypedefine) +
 						",\r\n"+
-						tableContaint(dbtype.spec()) +
+						tableContaint() +
 					");\r\n\r\n" +
 					index + ";";
 	}
 
-	private String tableContaint(DataBaseSpec spec) {
+	private String tableContaint() {
 		return String.join(
 					",\r\n",
 					indexes.stream()
@@ -51,13 +55,14 @@ public class TableDesign {
 				) + "\r\n";
 	}
 
-	private String columnContaint(DataBaseSpec spec) {
+	private String columnContaint(DataTypeDefine datatypedefine) {
 		return String.join(
 						",\r\n",
 						columns.stream()
 							.map(col -> "\t" + col.getName() + " " +
-								spec.dataType(col.getType(), col.getMaxLength(), col.getScale()) +
-								(col.isNullable() ? " NULL " : " NOT NULL "))
+									datatypedefine.dataType(col.getType(), col.getMaxLength(), col.getScale()) +
+								(col.isNullable() ? " NULL " : " NOT NULL") +
+								(col.getDefaultValue() != null && !col.getDefaultValue().isEmpty() ? " DEFAULT " + col.getDefaultValue() : "") )
 							.collect(Collectors.toList())
 					);
 	}

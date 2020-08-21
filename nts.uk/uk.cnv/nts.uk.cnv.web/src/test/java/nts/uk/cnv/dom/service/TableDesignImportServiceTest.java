@@ -54,7 +54,7 @@ public class TableDesignImportServiceTest {
 		String createIndex = "CREATE INDEX BCMMI_COMPANY ON BCMMT_COMPANY (CONTRACT_CD, CCD)";
 		
 		try {
-			AtomTask task = TableDesignImportService.regist(require, ddl, createIndex);
+			AtomTask task = TableDesignImportService.regist(require, ddl, createIndex, "uk");
 			task.run();
 		} catch (JSQLParserException e) {
 			fail();

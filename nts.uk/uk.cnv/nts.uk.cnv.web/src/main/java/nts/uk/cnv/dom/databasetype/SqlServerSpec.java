@@ -67,4 +67,40 @@ public class SqlServerSpec implements DataBaseSpec{
 		return String.format("RIGHT(%s,%d)", expression, length);
 	}
 
+	@Override
+	public DataType parse(String type, Integer... length) {
+		if(type == null)
+			throw new IllegalArgumentException();
+		
+		if (type.equals("DECIMAL") && length[0] == 1) {
+			return DataType.BOOL;
+		}
+		else if(type.equals("DECIMAL") && length.length == 1) {
+			return DataType.INT;
+		}
+		else if(type.equals("DECIMAL") && length.length == 2) {
+			return DataType.REAL;
+		}
+		else if(type.equals("NVARCHAR")) {
+			return DataType.NVARCHAR;
+		}
+		else if(type.equals("NCHAR")) {
+			return DataType.NCHAR;
+		}
+		else if(type.equals("VARCHAR")) {
+			return DataType.VARCHAR;
+		}
+		else if(type.equals("CHAR")) {
+			return DataType.CHAR;
+		}
+		else if(type.equals("DATE")) {
+			return DataType.DATE;
+		}
+		else if(type.equals("DATETIME2")) {
+			return DataType.DATETIME;
+		}
+		
+		throw new IllegalArgumentException();
+	}
+
 }

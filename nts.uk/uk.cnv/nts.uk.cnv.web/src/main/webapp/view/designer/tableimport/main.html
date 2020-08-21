@@ -24,15 +24,23 @@
 	</tr>
 	<tr>
 		<td>
-			DBMS:
-			<input type="radio" id="mssql" name="type" value="sqlserver" checked="checked" style="font-size:80%">SqlServer
-			<input type="radio" id="pg" name="type" value="postgres" style="font-size:80%">Postgres
+			RDBMS:
+			<input type="radio" id="uk" name="tabledesign_type" value="uk" checked="checked" style="font-size:80%">UK
+			<input type="radio" id="mssql" name="tabledesign_type" value="sqlserver" style="font-size:80%">SqlServer
+			<input type="radio" id="pg" name="tabledesign_type" value="postgres" style="font-size:80%">Postgres
+		</td>
+		<td />
+		<td>
+			RDBMS:
+			<input type="radio" id="uk" name="ddl_type" value="uk" checked="checked" style="font-size:80%">UK
+			<input type="radio" id="mssql" name="ddl_type" value="sqlserver" style="font-size:80%">SqlServer
+			<input type="radio" id="pg" name="ddl_type" value="postgres" style="font-size:80%">Postgres
 		</td>
 	</tr>
 	<tr>
 		<td style="width:400px">
 			<div>Table Design:</div>
-			<textarea id="tabledesign" style="font-size:80%; width:100%; height:485px;" spellcheck="false" readonly></textarea>
+			<textarea id="tabledesign" style="font-size:80%; width:100%; height:496px;" spellcheck="false" disabled></textarea>
 		</td>
 		<td></td>
 		<td style="width:400px">
@@ -62,31 +70,44 @@ var ajaxOption = {
 		this.dataType = "json";
 		return $.extend({url:server + path, data: JSON.stringify(data)}, this);
 	},
-	build: function (path, dataType, data) {
+	buildWithDataType: function (path, dataType, data) {
 		this.dataType = dataType;
 		return $.extend({url:server + path, data: JSON.stringify(data)}, this);
 	}
 };
 $(function () {	
 	$("#import").click(function () {
+		$('#result').val('');
 		$.ajax(ajaxOption.build("/nts.uk.cnv.web/webapi/cnv/tabledesign/import", {
 			createTableSql: $('#createtablesql').val(),
-			createIndexSql: $('#createindexsql').val()
+			createIndexSql: $('#createindexsql').val(),
+			type: $('[name="ddl_type"]:checked').val()
 		})).done(function (res) {
 			console.log(res);
-			$('#result').val('処理が完了しました。' + res.message);
+			if (typeof res.message === "undefined") {
+				$('#result').val('処理が完了しました。');
+			}
+			else {
+				$('#result').val('処理が完了しました。' + res.message);
+			}
 		}).fail(function(rej){
 			console.log(rej);
-			$('#result').val('処理は異常終了しました。' + rej.responseStatus + rej.stackTrace);
+			if (typeof rej.responseStatus === "undefined" || typeof rej.stackTrace === "undefined") {
+				$('#result').val('処理は異常終了しました。');
+			}
+			else {
+				$('#result').val('処理は異常終了しました。' + rej.responseStatus + rej.stackTrace);
+			}
 		});
 	});
 });
 $(function () {	
 	$("#view").click(function () {
 		$('#tabledesign').val('');
-		$.ajax(ajaxOption.build("/nts.uk.cnv.web/webapi/cnv/tabledesign/exportddl", "text", {
+		$('#result').val('');
+		$.ajax(ajaxOption.buildWithDataType("/nts.uk.cnv.web/webapi/cnv/tabledesign/exportddl", "text", {
 			tableName: $('#tablename').val(),
-			type: $('[name="type"]:checked').val()
+			type: $('[name="tabledesign_type"]:checked').val()
 		})).done(function (res) {
 			console.log(res);
 			$('#tabledesign').val(res);
