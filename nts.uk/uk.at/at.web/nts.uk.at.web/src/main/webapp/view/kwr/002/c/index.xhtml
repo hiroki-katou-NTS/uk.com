@@ -286,22 +286,17 @@
 									</div>
 									<!-- update screen KWR002 C  -->
 									<!-- C9_10 -->
-									<div class="column" data-bind="visible: condition2">
+									<div class="column" data-bind="visible: isSmallOrMedium">
 										<span>#{i18n.getText('KWR002_122')}</span>
-										<!-- C10_10 -->
 										<div class="panel panel-frame cell">
-											<!-- C11_10_1 -->
 											<div tabindex="29" class="panel panel-gray-bg sub top"
 												data-bind="text: attendanceRecExpDaily()[10].upperPosition(), visible: attendanceRecExpDaily()[10].upperShow()"></div>
-											<!-- C12_10_1 -->
 											<div tabindex="29" class="panel panel-gray-bg sub bot"
 												data-bind="visible: !attendanceRecExpDaily()[10].upperShow()">
 												<div class="addSign"></div>
 											</div>
-											<!-- C11_10_2 -->
 											<div tabindex="30" class="panel panel-gray-bg sub bot"
 												data-bind="text: attendanceRecExpDaily()[10].lowwerPosition(), visible: attendanceRecExpDaily()[10].lowerShow()"></div>
-											<!-- C12_10_2 -->
 											<div tabindex="30" class="panel panel-gray-bg sub bot"
 												data-bind="visible: !attendanceRecExpDaily()[10].lowerShow()">
 												<div class="addSign"></div>
@@ -309,22 +304,17 @@
 										</div>
 									</div>
 									<!-- C9_11 -->
-									<div class="column" data-bind="visible: condition3">
+									<div class="column" data-bind="visible: isSmallOrMedium">
 										<span>#{i18n.getText('KWR002_123')}</span>
-										<!-- C10_11 -->
 										<div class="panel panel-frame cell">
-											<!-- C11_11_1 -->
 											<div tabindex="31" class="panel panel-gray-bg sub top"
 												data-bind="text: attendanceRecExpDaily()[11].upperPosition(), visible: attendanceRecExpDaily()[11].upperShow()"></div>
-											<!-- C12_11_1 -->
 											<div tabindex="31" class="panel panel-gray-bg sub bot"
 												data-bind="visible: !attendanceRecExpDaily()[11].upperShow()">
 												<div class="addSign"></div>
 											</div>
-											<!-- C11_11_2 -->
 											<div tabindex="32" class="panel panel-gray-bg sub bot"
 												data-bind="text: attendanceRecExpDaily()[11].lowwerPosition(), visible: attendanceRecExpDaily()[11].lowerShow()"></div>
-											<!-- C11_12_2 -->
 											<div tabindex="32" class="panel panel-gray-bg sub bot"
 												data-bind="visible: !attendanceRecExpDaily()[11].lowerShow()">
 												<div class="addSign"></div>
@@ -332,22 +322,17 @@
 										</div>
 									</div>
 									<!-- C9_12 -->
-									<div class="column" data-bind="visible: condition3">
+									<div class="column" data-bind="visible: isSmall">
 										<span>#{i18n.getText('KWR002_124')}</span>
-										<!-- C10_12 -->
 										<div class="panel panel-frame cell">
-											<!-- C11_12_1 -->
 											<div tabindex="33" class="panel panel-gray-bg sub top"
 												data-bind="text: attendanceRecExpDaily()[12].upperPosition(), visible: attendanceRecExpDaily()[12].upperShow()"></div>
-											<!-- C12_12_1 -->
 											<div tabindex="33" class="panel panel-gray-bg sub bot"
 												data-bind="visible: !attendanceRecExpDaily()[12].upperShow()">
 												<div class="addSign"></div>
 											</div>
-											<!-- C11_12_2 -->
 											<div tabindex="34" class="panel panel-gray-bg sub bot"
 												data-bind="text: attendanceRecExpDaily()[12].lowwerPosition(), visible: attendanceRecExpDaily()[12].lowerShow()"></div>
-											<!-- C12_12_2 -->
 											<div tabindex="34" class="panel panel-gray-bg sub bot"
 												data-bind="visible: !attendanceRecExpDaily()[12].lowerShow()">
 												<div class="addSign"></div>
@@ -355,22 +340,17 @@
 										</div>
 									</div>
 									<!-- C9_13 -->
-									<div class="column" data-bind="visible: condition2">
+									<div class="column" data-bind="visible: isSmall">
 										<span>#{i18n.getText('KWR002_125')}</span>
-										<!-- C10_13 -->
 										<div class="panel panel-frame cell">
-											<!-- C11_13_1 -->
 											<div tabindex="35" class="panel panel-gray-bg sub top"
 												data-bind="text: attendanceRecExpDaily()[13].upperPosition(), visible: attendanceRecExpDaily()[13].upperShow()"></div>
-											<!-- C12_13_1 -->
 											<div tabindex="35" class="panel panel-gray-bg sub bot"
 												data-bind="visible: !attendanceRecExpDaily()[13].upperShow()">
 												<div class="addSign"></div>
 											</div>
-											<!-- C11_13_2 -->
 											<div tabindex="36" class="panel panel-gray-bg sub bot"
 												data-bind="text: attendanceRecExpDaily()[13].lowwerPosition(), visible: attendanceRecExpDaily()[13].lowerShow()"></div>
-											<!-- C12_13_2 -->
 											<div tabindex="36" class="panel panel-gray-bg sub bot"
 												data-bind="visible: !attendanceRecExpDaily()[13].lowerShow()">
 												<div class="addSign"></div>
@@ -383,7 +363,7 @@
 							</div>
 							<div class="tab-content-2" id="monthly-tab"
 								tabindex="10">
-								<div class="row-inline" data-bind="visible: condition4">
+								<div class="row-inline" data-bind="visible: useMonthApproverConfirm">
 									<!-- C18_1 -->
 									<div class="form-label"	data-bind="ntsFormLabel: {}">#{i18n.getText('KWR002_194')}</div>
 									<!-- C18_2 -->
@@ -606,102 +586,82 @@
 										</div>
 									</div>
 								</div>
+								<!-- update screen KWR002C ver25 -->
 								<div class="row-inline">
-									<!-- update screen KWR002C # -->
-								<!-- C13_13 -->
-								<div class="column">
-									<span>#{i18n.getText('KWR002_113')}</span>
-									<!-- C14_13 -->
-									<div class="panel panel-frame cell">
-										<!-- C15_13_1 -->
-										<div tabindex="71" class="panel panel-gray-bg sub top"
-											data-bind="text: attendanceRecExpMonthly()[13].upperPosition(), visible: attendanceRecExpMonthly()[13].upperShow()"></div>
-										<!-- C16_13_1 -->
-										<div tabindex="71" class="panel panel-gray-bg sub bot"
-											data-bind="visible: !attendanceRecExpMonthly()[13].upperShow()">
-											<div class="addSign"></div>
-										</div>
-										<!-- C15_13_2 -->
-										<div tabindex="72" class="panel panel-gray-bg sub bot"
-											data-bind="text: attendanceRecExpMonthly()[13].lowwerPosition(), visible: attendanceRecExpMonthly()[13].lowerShow()"></div>
-										<!-- C16_13_2 -->
-										<div tabindex="72" class="panel panel-gray-bg sub bot"
-											data-bind="visible: !attendanceRecExpMonthly()[13].lowerShow()">
-											<div class="addSign"></div>
+									<!-- C13_13 -->
+									<div class="column" data-bind="visible: isSmallOrMedium">
+										<span>#{i18n.getText('KWR002_113')}</span>
+										<div class="panel panel-frame cell">
+											<div tabindex="71" class="panel panel-gray-bg sub top"
+												data-bind="text: attendanceRecExpMonthly()[13].upperPosition(), visible: attendanceRecExpMonthly()[13].upperShow()"></div>
+											<div tabindex="71" class="panel panel-gray-bg sub bot"
+												data-bind="visible: !attendanceRecExpMonthly()[13].upperShow()">
+												<div class="addSign"></div>
+											</div>
+											<div tabindex="72" class="panel panel-gray-bg sub bot"
+												data-bind="text: attendanceRecExpMonthly()[13].lowwerPosition(), visible: attendanceRecExpMonthly()[13].lowerShow()"></div>
+											<div tabindex="72" class="panel panel-gray-bg sub bot"
+												data-bind="visible: !attendanceRecExpMonthly()[13].lowerShow()">
+												<div class="addSign"></div>
+											</div>
 										</div>
 									</div>
-								</div>
-								<!-- C13_14 -->
-								<div class="column">
-									<span>#{i18n.getText('KWR002_114')}</span>
-									<!-- C14_14 -->
-									<div class="panel panel-frame cell">
-										<!-- C15_14_1 -->
-										<div tabindex="73" class="panel panel-gray-bg sub top"
-											data-bind="text: attendanceRecExpMonthly()[14].upperPosition(), visible: attendanceRecExpMonthly()[14].upperShow()"></div>
-										<!-- C16_14_1 -->
-										<div tabindex="73" class="panel panel-gray-bg sub bot"
-											data-bind="visible: !attendanceRecExpMonthly()[14].upperShow()">
-											<div class="addSign"></div>
-										</div>
-										<!-- C15_14_2 -->
-										<div tabindex="74" class="panel panel-gray-bg sub bot"
-											data-bind="text: attendanceRecExpMonthly()[14].lowwerPosition(), visible: attendanceRecExpMonthly()[14].lowerShow()"></div>
-										<!-- C16_14_1 -->
-										<div tabindex="74" class="panel panel-gray-bg sub bot"
-											data-bind="visible: !attendanceRecExpMonthly()[14].lowerShow()">
-											<div class="addSign"></div>
+									<!-- C13_14 -->
+									<div class="column" data-bind="visible: isSmallOrMedium">
+										<span>#{i18n.getText('KWR002_114')}</span>
+										<div class="panel panel-frame cell">
+											<div tabindex="73" class="panel panel-gray-bg sub top"
+												data-bind="text: attendanceRecExpMonthly()[14].upperPosition(), visible: attendanceRecExpMonthly()[14].upperShow()"></div>
+											<div tabindex="73" class="panel panel-gray-bg sub bot"
+												data-bind="visible: !attendanceRecExpMonthly()[14].upperShow()">
+												<div class="addSign"></div>
+											</div>
+											<div tabindex="74" class="panel panel-gray-bg sub bot"
+												data-bind="text: attendanceRecExpMonthly()[14].lowwerPosition(), visible: attendanceRecExpMonthly()[14].lowerShow()"></div>
+											<div tabindex="74" class="panel panel-gray-bg sub bot"
+												data-bind="visible: !attendanceRecExpMonthly()[14].lowerShow()">
+												<div class="addSign"></div>
+											</div>
 										</div>
 									</div>
-								</div>
-								<!-- C13_15 -->
-								<div class="column">
-									<span>#{i18n.getText('KWR002_115')}</span>
-									<!-- C14_15 -->
-									<div class="panel panel-frame cell">
-										<!-- C15_15_1 -->
-										<div tabindex="75" class="panel panel-gray-bg sub top"
-											data-bind="text: attendanceRecExpMonthly()[15].upperPosition(), visible: attendanceRecExpMonthly()[15].upperShow()"></div>
-										<!-- C16_15_1 -->
-										<div tabindex="75" class="panel panel-gray-bg sub bot"
-											data-bind="visible: !attendanceRecExpMonthly()[15].upperShow()">
-											<div class="addSign"></div>
-										</div>
-										<!-- C15_15_2 -->
-										<div tabindex="76" class="panel panel-gray-bg sub bot"
-											data-bind="text: attendanceRecExpMonthly()[15].lowwerPosition(), visible: attendanceRecExpMonthly()[15].lowerShow()"></div>
-										<!-- C16_15_2 -->
-										<div tabindex="76" class="panel panel-gray-bg sub bot"
-											data-bind="visible: !attendanceRecExpMonthly()[15].lowerShow()">
-											<div class="addSign"></div>
+									<!-- C13_15 -->
+									<div class="column" data-bind="visible: isSmall">
+										<span>#{i18n.getText('KWR002_115')}</span>
+										<div class="panel panel-frame cell">
+											<div tabindex="75" class="panel panel-gray-bg sub top"
+												data-bind="text: attendanceRecExpMonthly()[15].upperPosition(), visible: attendanceRecExpMonthly()[15].upperShow()"></div>
+											<div tabindex="75" class="panel panel-gray-bg sub bot"
+												data-bind="visible: !attendanceRecExpMonthly()[15].upperShow()">
+												<div class="addSign"></div>
+											</div>
+											<div tabindex="76" class="panel panel-gray-bg sub bot"
+												data-bind="text: attendanceRecExpMonthly()[15].lowwerPosition(), visible: attendanceRecExpMonthly()[15].lowerShow()"></div>
+											<div tabindex="76" class="panel panel-gray-bg sub bot"
+												data-bind="visible: !attendanceRecExpMonthly()[15].lowerShow()">
+												<div class="addSign"></div>
+											</div>
 										</div>
 									</div>
-								</div>
-								<!-- C13_16 -->
-								<div class="column">
-									<span>#{i18n.getText('KWR002_116')}</span>
-									<!-- C14_16 -->
-									<div class="panel panel-frame cell">
-										<!-- C15_16_1 -->
-										<div tabindex="77" class="panel panel-gray-bg sub top"
-											data-bind="text: attendanceRecExpMonthly()[16].upperPosition(), visible: attendanceRecExpMonthly()[16].upperShow()"></div>
-										<!-- C16_16_1 -->
-										<div tabindex="77" class="panel panel-gray-bg sub bot"
-											data-bind="visible: !attendanceRecExpMonthly()[16].upperShow()">
-											<div class="addSign"></div>
-										</div>
-										<!-- C15_16_2 -->
-										<div tabindex="78" class="panel panel-gray-bg sub bot"
-											data-bind="text: attendanceRecExpMonthly()[16].lowwerPosition(), visible: attendanceRecExpMonthly()[16].lowerShow()"></div>
-										<!-- C16_16_1 -->
-										<div tabindex="78" class="panel panel-gray-bg sub bot"
-											data-bind="visible: !attendanceRecExpMonthly()[16].lowerShow()">
-											<div class="addSign"></div>
+									<!-- C13_16 -->
+									<div class="column" data-bind="visible: isSmall">
+										<span>#{i18n.getText('KWR002_116')}</span>
+										<div class="panel panel-frame cell">
+											<div tabindex="77" class="panel panel-gray-bg sub top"
+												data-bind="text: attendanceRecExpMonthly()[16].upperPosition(), visible: attendanceRecExpMonthly()[16].upperShow()"></div>
+											<div tabindex="77" class="panel panel-gray-bg sub bot"
+												data-bind="visible: !attendanceRecExpMonthly()[16].upperShow()">
+												<div class="addSign"></div>
+											</div>
+											<div tabindex="78" class="panel panel-gray-bg sub bot"
+												data-bind="text: attendanceRecExpMonthly()[16].lowwerPosition(), visible: attendanceRecExpMonthly()[16].lowerShow()"></div>
+											<div tabindex="78" class="panel panel-gray-bg sub bot"
+												data-bind="visible: !attendanceRecExpMonthly()[16].lowerShow()">
+												<div class="addSign"></div>
+											</div>
 										</div>
 									</div>
 								</div>
 								<!-- end update screen KWR002C  -->
-								</div>
 							</div>
 						</div>
 					</div>

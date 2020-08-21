@@ -35,11 +35,14 @@ module nts.uk.com.view.kwr002.c.viewmodel {
         sealName6: KnockoutObservable<String>;
         currentCode: KnockoutObservable<number>;
 
-        // Condition Ver25
-        condition2: KnockoutObservable<boolean>;
-        condition3: KnockoutObservable<boolean>;
-        condition4: KnockoutObservable<boolean>;
-        condition5: KnockoutObservable<boolean>;
+        // Update Ver25
+        isSmallOrMedium: KnockoutObservable<boolean>;
+        isSmall: KnockoutObservable<boolean>;
+        useMonthApproverConfirm: KnockoutObservable<boolean>;
+
+        attendanceRecordExportSettings: KnockoutObservable<model.AttendanceRecordExportSetting>;
+
+        // End update v25
 
         constructor() {
             var self = this;
@@ -60,10 +63,9 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             self.sealName5 = ko.observable('');
             self.sealName6 = ko.observable('');
             self.currentCode = ko.observable(0);
-            self.condition2 = ko.observable(false);
-            self.condition3 = ko.observable(false);
-            self.condition4 = ko.observable(false);
-            self.condition5 = ko.observable(false);
+            self.isSmallOrMedium = ko.observable(false);
+            self.isSmall = ko.observable(false);
+            self.useMonthApproverConfirm = ko.observable(false);
 
             //            console.log(self.attendanceCode());
 
@@ -131,9 +133,6 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                     position = 1;
                 }
                 else position = 2;
-
-                // Set param to share with dialog kdl047
-                const shareParam: model.SharedParams = new model.SharedParams();
                 if (self.selectedTab() == "tab-1") {
                     exportAtr = 1;
                     if (position == 1)
@@ -144,27 +143,6 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         else attendanceItemName = self.attendanceRecExpDaily()[columnIndex].lowwerPosition();
 
                     attItem = self.attendanceRecExpDaily()[columnIndex];
-
-                    // Set param to share with dialog kdl047
-                    shareParam.titleLine.displayFlag = true;
-                    shareParam.titleLine.layoutCode = self.attendanceCode();
-                    shareParam.titleLine.layoutName = self.attendanceName();
-                    const positionText = position == 1 ? "上" : "下";
-                    shareParam.titleLine.directText = getText('KWR002_131')+ columnIndex + getText('KWR002_132') + positionText + getText('KWR002_133');
-                    shareParam.itemNameLine.displayFlag = true;
-                    shareParam.itemNameLine.displayInputCategory = 2;
-                    shareParam.itemNameLine.name = attendanceItemName;
-                    shareParam.attribute.selectionCategory = 2;
-                    shareParam.attribute.attributeList = [
-                        new model.AttendaceType(1, getText('KWR002_141')),
-                        new model.AttendaceType(2, getText('KWR002_142')),
-                        new model.AttendaceType(3, getText('KWR002_143'))
-                    ]
-                    shareParam.attribute.selected = attItem.exportAtr;
-                    shareParam.diligenceProjectList = [
-
-                    ]
-                    shareParam.selectedTime = 3;
                 } else {
                     exportAtr = 2;
                     if (position == 1)
@@ -174,53 +152,14 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         if (!self.attendanceRecExpMonthly()[columnIndex].lowwerPosition()) attendanceItemName = "";
                         else attendanceItemName = self.attendanceRecExpMonthly()[columnIndex].lowwerPosition();
                     attItem = self.attendanceRecExpMonthly()[columnIndex];
-
-                    // Set param to share with dialog kdl048
-                    shareParam.titleLine.displayFlag = true;
-                    shareParam.titleLine.layoutCode = self.attendanceCode();
-                    shareParam.titleLine.layoutName = self.attendanceName();
-                    const positionText = position == 1 ? "上" : "下";
-                    shareParam.titleLine.directText = getText('KWR002_131')+ columnIndex + getText('KWR002_132') + positionText + getText('KWR002_133');
-                    shareParam.itemNameLine.displayFlag = true;
-                    shareParam.itemNameLine.displayInputCategory = 2;
-                    shareParam.itemNameLine.name = attendanceItemName;
-                    shareParam.attribute.selectionCategory = 2;
-                    shareParam.attribute.attributeList = [
-                        new model.AttendaceType(4, getText('KWR002_171')),
-                        new model.AttendaceType(5, getText('KWR002_172')),
-                        new model.AttendaceType(7, getText('KWR002_173'))
-                    ]
-                    shareParam.attribute.selected = attItem.exportAtr;
-                    shareParam.diligenceProjectList = [
-                        new model.DiligenceProject(27, '予定時間', '予定時間', 27),
-                        new model.DiligenceProject(216, '残業１', '残業１', 216),
-                        new model.DiligenceProject(461, '勤務回数', '勤務回数', 461),
-                        new model.DiligenceProject(534, '休憩回数', '休憩回数', 534),
-                        new model.DiligenceProject(641, 'aaaaaaaaa', 'aaaaaaaaa', 641),
-                        new model.DiligenceProject(642, 'tukijikan', 'tukijikan', 642),
-                        new model.DiligenceProject(643, 'tukikin', 'tukikin', 643),
-                        new model.DiligenceProject(644, '出有ｵﾝ無ｵﾌ有ｶｳﾝﾄ（日次ﾄﾘｶﾞ）ｄ', '出有ｵﾝ無ｵﾌ有ｶｳﾝﾄ（日次ﾄﾘｶﾞ）ｄ', 644),
-                        new model.DiligenceProject(645, '出有ｵﾝ有ｵﾌ無ｶｳﾝﾄ（日次ﾄﾘｶﾞ）（bb）', '出有ｵﾝ有ｵﾌ無ｶｳﾝﾄ（日次ﾄﾘｶﾞ）（bb）', 645),
-                        new model.DiligenceProject(680, '任意項目４０', '任意項目４０', 680),
-                        new model.DiligenceProject(681, '任意項目４１', '任意項目４１', 681),
-                        new model.DiligenceProject(682, '任意項目４２月別', '任意項目４２月別', 682),
-                        new model.DiligenceProject(683, '任意項目４３', '任意項目４３', 683),
-                        new model.DiligenceProject(267, '振替休日１', '振替休日１', 267),
-                        new model.DiligenceProject(268, '計算休日出勤１', '計算休日出勤１', 268),
-                        new model.DiligenceProject(269, '計算振替休日１', '計算振替休日１', 269),
-                        new model.DiligenceProject(270, '事前休日出勤１', '事前休日出勤１', 270)
-                    ]
-                    shareParam.selectedTime = 3;
                 }
-                // End set param
-
 
                 var attendanceItemTemp: model.AttendanceRecItem = new model.AttendanceRecItem("", 0, "", columnIndex, position, exportAtr, null, 0);
 
                 var index: number = self.findAttendanceRecItem(attendanceItemTemp);
                 setShared('attendanceItem', shareParam, true);
                 var link: string;
-                if (exportAtr == 1 && columnIndex <= 9) link = '/view/kwr/002/d/index.xhtml';
+                if (exportAtr == 1 && columnIndex <= 6) link = '/view/kdl/047/a/index.xhtml';
                 else link = '/view/kdl/048/index.xhtml';
                 blockUI.grayout();
 
@@ -312,11 +251,6 @@ module nts.uk.com.view.kwr002.c.viewmodel {
         }
 
         cancel(): void {
-            // setShared('attendanceRecExpDaily', null, true);
-            // setShared('attendanceRecExpMonthly', null, true);
-            // setShared('attendanceRecItemList', null, true);
-            // setShared('sealStamp', null, true);
-            // setShared('useSeal', null, true);
             nts.uk.ui.windows.close();
         }
 
@@ -341,154 +275,66 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             else self.attendanceRecItemList()[index] = attendanceRecItem;
 
         }
+
         start_page(): JQueryPromise<any> {
             blockUI.invisible();
-            var self = this;
-            var dfd = $.Deferred();
-
-            let attendanceRecExpDaily = getShared('attendanceRecExpDaily');
-            let attendanceRecExpMonthly = getShared('attendanceRecExpMonthly');
-            let attendanceRecItemList = getShared('attendanceRecItemList');
+            const vm  = this;
+            const dfd = $.Deferred();
             let attendanceRecExpSetCode: any = getShared('attendanceRecExpSetCode');
             let attendanceRecExpSetName: any = getShared('attendanceRecExpSetName');
-            let sealStamp: any = getShared('sealStamp');
-            let useSeal: any = getShared('useSeal');
-
+            let attendanceRecordExportSettings = getShared('attendanceRecordExportSettings');
+            vm.attendanceRecordExportSettings = ko.observable(attendanceRecordExportSettings);
+            // Setting C1_2 and C1_3
             if (!attendanceRecExpSetCode) {
-                self.attendanceCode('1');
-                self.attendanceName('デフォルト名');
+                vm.attendanceCode('1');
+                vm.attendanceName('デフォルト名');
             }
             else {
-                self.attendanceCode(attendanceRecExpSetCode);
-                self.attendanceName(attendanceRecExpSetName);
+                vm.attendanceCode(attendanceRecExpSetCode);
+                vm.attendanceName(attendanceRecExpSetName);
             }
-
-            // Ver25: Add display item control
-            const fontSize = getShared('fontSize');
-            self.condition2(fontSize === 'small' || fontSize === 'medium');
-            self.condition3(fontSize === 'small');
-
-            service.getApprovalProcessingUseSetting().done(response => {
-                self.condition4(response.useMonthApproverConfirm)
-                self.condition5(response.useMonthApproverConfirm)
+            // C2_2
+            vm.useSealValue(vm.attendanceRecordExportSettings.sealUseAtr);
+            // C12_1 ~ 13
+            _.each(attendanceRecordExportSettings.dailyExportItem, (item: model.AttendanceRecordExport) => {
+                const columnIndex: number = item.columnIndex;
+                vm.attendanceRecExpDaily()[columnIndex] = new model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.useAtr, item.upperPosition, item.lowerPosition);
             })
-            // End Ver25: Add display item control
+            for (let i = 1; i <= 13; i++) {
+                if (!vm.attendanceRecExpDaily()[i]) {
+                    vm.attendanceRecExpDaily()[i] = new model.AttendanceRecExp(1, i, false, '', '');
+                }
+            }
+            // C16_1 ~ 16
+            _.each(attendanceRecordExportSettings.monthlyExportItem, item => {
+                const columnIndex: number = item.columnIndex;
+                vm.attendanceRecExpMonthly()[columnIndex] = new model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.useAtr, item.upperPosition, item.lowerPosition);
+            })
+            for (let i = 1; i <= 13; i++) {
+                if (!vm.attendanceRecExpMonthly()[i]) {
+                    vm.attendanceRecExpMonthly()[i] = new model.AttendanceRecExp(1, i, false, '', '');
+                }
+            }
+            // C18_2
+            vm.confirmMarkValue(vm.attendanceRecordExportSettings.monthlyConfirmedDisplay)
+            // C3_1 ~ 6
+            vm.sealName1(vm.attendanceRecordExportSettings.sealStamp[0]);
+            vm.sealName2(vm.attendanceRecordExportSettings.sealStamp[1]);
+            vm.sealName3(vm.attendanceRecordExportSettings.sealStamp[2]);
+            vm.sealName4(vm.attendanceRecordExportSettings.sealStamp[3]);
+            vm.sealName5(vm.attendanceRecordExportSettings.sealStamp[4]);
+            vm.sealName6(vm.attendanceRecordExportSettings.sealStamp[5]);
 
-            if (self.condition5()) {
+            vm.isSmallOrMedium(vm.attendanceRecordExportSettings().exportFontSize === 0 || vm.attendanceRecordExportSettings().exportFontSize === 1);
+            vm.isSmall(vm.attendanceRecordExportSettings().exportFontSize === 0);
+            service.getApprovalProcessingUseSetting().done(response => {
+                vm.useMonthApproverConfirm(response.useMonthApproverConfirm);
+            })
+            if (vm.useMonthApproverConfirm()) {
                 $('#switch-button').focusComponent();
-            }
-
-            if (attendanceRecExpDaily != null || attendanceRecExpMonthly != null || attendanceRecItemList != null) {
-                self.useSealValue(useSeal);
-                attendanceRecExpDaily.forEach((item: any) => {
-                    var columnIndex: number = item.columnIndex;
-                    self.attendanceRecExpDaily()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition + "", item.lowwerPosition + "");
-                });
-
-                for (var i: number = 1; i <= 13; i++) {
-                        if (!self.attendanceRecExpDaily()[i]) {
-                            self.attendanceRecExpDaily()[i] = new viewmodel.model.AttendanceRecExp(1, i, false, "", "");
-                        }
-                    }
-
-                attendanceRecExpMonthly.forEach((item: any) => {
-                    var columnIndex: number = item.columnIndex;
-                    self.attendanceRecExpMonthly()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition + "", item.lowwerPosition + "");
-
-                });
-
-                 for (var i: number = 1; i <= 16; i++) {
-                        if (!self.attendanceRecExpMonthly()[i]) {
-                            self.attendanceRecExpMonthly()[i] = new viewmodel.model.AttendanceRecExp(2, i, false, "", "");
-                        }
-                    }
-
-                self.attendanceRecItemList(attendanceRecItemList);
-                self.sealName1(sealStamp[0]);
-                self.sealName2(sealStamp[1]);
-                self.sealName3(sealStamp[2]);
-                self.sealName4(sealStamp[3]);
-                self.sealName5(sealStamp[4]);
-                self.sealName6(sealStamp[5]);
-
-                dfd.resolve();
-            }
-            else {
-                self.useSealValue(useSeal)
-                var code: number = Number(self.attendanceCode());
-                   $.when(service.findAllAttendanceRecExportDaily(code), service.findAllAttendanceRecExportMonthly(code), service.getSealStamp(code)).done((listattendanceRecExpDailyList: Array<model.AttendanceRecExp>, listattendanceRecExpMonthlyList: Array<model.AttendanceRecExp>,sealStampList: Array<String>) => {
-                       if (listattendanceRecExpDailyList.length > 0) {
-                           listattendanceRecExpDailyList.forEach(item => {
-                               var columnIndex: number = item.columnIndex;
-                               self.attendanceRecExpDaily()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition + "", item.lowwerPosition + "");
-                           })
-                       }
-                       for (var i: number = 1; i <= 13; i++) {
-                           if (!self.attendanceRecExpDaily()[i]) {
-                               self.attendanceRecExpDaily()[i] = new viewmodel.model.AttendanceRecExp(1, i, false, "", "");
-                           }
-                       }
-
-                       if (listattendanceRecExpMonthlyList.length > 0) {
-                           listattendanceRecExpMonthlyList.forEach(item => {
-                               var columnIndex: number = item.columnIndex;
-                               self.attendanceRecExpMonthly()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition + "", item.lowwerPosition + "");
-                           })
-                       }
-                       for (var i: number = 1; i <= 16; i++) {
-                           if (!self.attendanceRecExpMonthly()[i]) {
-                               self.attendanceRecExpMonthly()[i] = new viewmodel.model.AttendanceRecExp(2, i, false, "", "");
-                           }
-                       }
-
-                       if (sealStampList.length > 0) {
-                           self.sealName1(sealStampList[0]);
-                           self.sealName2(sealStampList[1]);
-                           self.sealName3(sealStampList[2]);
-                           self.sealName4(sealStampList[3]);
-                           self.sealName5(sealStampList[4]);
-                           self.sealName6(sealStampList[5]);
-
-                       }
-
-                       dfd.resolve();
-                })
-
             }
             blockUI.clear();
             return dfd.promise();
-            //***
-            //            service.getAttendanceSingleList().done(function(listAttendanceItem: Array<model.AttendanceItem>) {
-            //                if (listAttendanceItem.length != 0) {
-            //                    self.attendanceItemListDaily(listAttendanceItem);
-            //                    self.currentCode(1);
-            //                }
-            //
-            //            });
-            //
-            //            service.getAttendanceCalculateList(2).done(function(listAttendanceItem: Array<model.AttendanceItem>) {
-            //                if (listAttendanceItem.length > 0) {
-            //                    self.attendanceItemListMonthly( _.orderBy(listAttendanceItem, [e => Number(e.attendanceItemId)], ['asc']));
-            //                }
-            //            });
-            //
-            //            service.getAttendanceCalculateList(1).done(function(listAttendanceItem: Array<model.AttendanceItem>) {
-            //                if (listAttendanceItem.length > 0) {
-            //
-            //                    listAttendanceItem.forEach(item => {
-            //                        self.attendanceItemListDaily.push(item);
-            //                    })
-            //
-            //                    self.attendanceItemListDaily(_.orderBy(self.attendanceItemListDaily(), [e => Number(e.attendanceItemId)], ['asc']));
-            //                    self.attendanceItemList(self.attendanceItemListDaily());
-            //                }
-            //
-            //
-            //            })
-
-
-
-
         }
 
         setSharedParams(columnIndex: string, position: number): any {
@@ -701,6 +547,36 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 this.indicatesNumber = indicatesNumber;
             }
         }
+            
+        // 出勤簿の出力項目設定 Ver25
+        export class AttendanceRecordExportSetting {
+            companyId: string;
+            dailyExportItem: Array<AttendanceRecordExport>;
+            monthlyExportItem: Array<AttendanceRecordExport>;
+            sealUseAtr: boolean;
+            code: any;
+            name: any;
+            sealStamp: Array<String>;
+            nameUseAtr: any;
+            exportFontSize: any;
+            monthlyConfirmedDisplay: any;
+
+            constructor(init?: Partial<AttendanceRecordExportSetting>) {
+                $.extend(this, init);
             }
+        }
+
+        export class AttendanceRecordExport {
+            exportAtr: any;
+            columnIndex: number;
+            useAtr: boolean;
+            upperPosition: any;
+            lowerPosition: any;
+
+            constructor(init?: Partial<AttendanceRecordExport>) {
+                $.extend(this, init);
+            }
+        }
+    }
 
 }
