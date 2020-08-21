@@ -1335,17 +1335,19 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			newMasterLists = masterLists.stream().filter(item -> item.getDatePeriod().contains(day)).findFirst();
 		}
 
-		RecSpecificDateSettingImport specificDateSettingImport = new RecSpecificDateSettingImport();
-		if (newMasterLists.isPresent() && newMasterLists.get().getSpecificDateSettingImport().isPresent()) {
-			specificDateSettingImport = newMasterLists.get().getSpecificDateSettingImport().get();
+		Optional<RecSpecificDateSettingImport> specificDateSettingImport = newMasterLists.get()
+				.getSpecificDateSettingImport().stream().filter(c -> c.getDate().equals(day)).findFirst();
+		RecSpecificDateSettingImport data = new RecSpecificDateSettingImport();
+		if (newMasterLists.isPresent() && specificDateSettingImport.isPresent()) {
+			data = specificDateSettingImport.get();
 		} else {
-			specificDateSettingImport = this.recSpecificDateSettingAdapter.specificDateSettingService(companyId,
+			data = this.recSpecificDateSettingAdapter.specificDateSettingService(companyId,
 					workPlaceID, day);
 		}
 
 		List<SpecificDateAttrSheet> specificDateAttrSheets = new ArrayList<>();
 		for (int i = 1; i < 11; i++) {
-			if (specificDateSettingImport.getNumberList().contains(i)) {
+			if (data.getNumberList().contains(i)) {
 				SpecificDateAttrSheet specificDateAttrSheet = new SpecificDateAttrSheet(new SpecificDateItemNo(i),
 						SpecificDateAttr.USE);
 				specificDateAttrSheets.add(specificDateAttrSheet);
