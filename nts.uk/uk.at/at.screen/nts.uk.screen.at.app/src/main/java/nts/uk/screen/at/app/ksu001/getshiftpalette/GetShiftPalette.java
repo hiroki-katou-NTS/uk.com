@@ -149,7 +149,7 @@ public class GetShiftPalette {
 	public GetShiftPaletteResult getShiftPalletWkp(GetShiftPaletteParam param) {
 		// 0 = work place
 		// step 1.2
-		List<ShiftPalletsOrg> listShiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceId(0, param.getWorkplaceId());
+		List<ShiftPalletsOrg> listShiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceIdUse(0, param.getWorkplaceId());
 		
 		List<PageInfo> listPageInfo = new ArrayList<>(); // List<ページ, 名称>
 		TargetShiftPalette targetShiftPalette = null; // 対象のシフトパレット： Optional<ページ, シフトパレット>

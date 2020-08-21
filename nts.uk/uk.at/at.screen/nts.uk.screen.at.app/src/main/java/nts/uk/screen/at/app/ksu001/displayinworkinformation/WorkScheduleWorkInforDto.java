@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.ksu001.displayinworkinformation;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 
@@ -9,6 +10,7 @@ import nts.arc.time.GeneralDate;
  * 勤務予定（勤務情報）dto
  */
 @Data
+@Builder
 @AllArgsConstructor
 public class WorkScheduleWorkInforDto {
 	

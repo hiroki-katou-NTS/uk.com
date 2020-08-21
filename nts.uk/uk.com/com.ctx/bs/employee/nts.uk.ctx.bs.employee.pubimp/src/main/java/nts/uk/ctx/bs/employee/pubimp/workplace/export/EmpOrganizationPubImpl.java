@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode;
 import nts.uk.ctx.bs.employee.dom.workplace.EmployeeAffiliation;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroupRespository;
@@ -35,15 +36,17 @@ public class EmpOrganizationPubImpl implements EmpOrganizationPub {
 	
 	@Override
 	public List<EmpOrganizationExport> getEmpOrganiztion(GeneralDate baseDate, List<String> lstEmpId) {
-		RequireWorkplaceGroupGettingService require = new RequireWorkplaceGroupGettingService(repo,wkplacePub);
-		//$社員の所属組織リスト = 社員が所属する職場グループを取得する#取得する( require, 基準日, 社員IDリスト )
+		RequireWorkplaceGroupGettingService require = new RequireWorkplaceGroupGettingService(repo, wkplacePub);
+		// $社員の所属組織リスト = 社員が所属する職場グループを取得する#取得する( require, 基準日, 社員IDリスト )
 		List<EmployeeAffiliation> data = WorkplaceGroupGettingService.get(require, baseDate, lstEmpId);
-		List<EmpOrganizationExport> result = data.stream().map(c -> new EmpOrganizationExport
-				(c.getEmployeeID(),
-				Optional.ofNullable(c.getEmployeeCode().get().v()) ,
-				 c.getBusinessName(),
-				 c.getWorkplaceID(),
-				 c.getWorkplaceGroupID())).collect(Collectors.toList());
+		List<EmpOrganizationExport> result = data.stream()
+				.map(c -> new EmpOrganizationExport(
+						c.getEmployeeID(),
+						c.getEmployeeCode().isPresent() ? Optional.of(c.getEmployeeCode().get().v()) : Optional.empty(),
+						c.getBusinessName(), 
+						c.getWorkplaceID(), 
+						c.getWorkplaceGroupID()))
+				.collect(Collectors.toList());
 		return result;
 	}
 

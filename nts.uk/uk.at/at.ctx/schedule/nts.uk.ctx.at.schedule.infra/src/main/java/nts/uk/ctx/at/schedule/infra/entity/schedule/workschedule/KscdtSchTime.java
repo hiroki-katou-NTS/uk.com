@@ -315,28 +315,37 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		Integer timePubhd = 0;
 		if (statutoryTimeOfDaily.getWorkHolidayTime().isPresent()) {
 			if (statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().isPresent()) {
-				String check = statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().get()
-						.getHolidayWorkMidNightTime().get(0).getStatutoryAtr().name();
+				if (!statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().get()
+						.getHolidayWorkMidNightTime().isEmpty()) {
+					String check = statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().get()
+							.getHolidayWorkMidNightTime().get(0).getStatutoryAtr().name();
 
-				if (check.equals(StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork.name()) && statutoryTimeOfDaily.getWorkHolidayTime().isPresent() 
-						&& statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().isPresent()
-						&& !statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().get().getHolidayWorkMidNightTime().isEmpty()) {
-					timeLghd = statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().get()
-							.getHolidayWorkMidNightTime().get(0).getTime().getTime().v();
-				}
+					if (check.equals(StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork.name())
+							&& statutoryTimeOfDaily.getWorkHolidayTime().isPresent()
+							&& statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().isPresent()
+							&& !statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().get()
+									.getHolidayWorkMidNightTime().isEmpty()) {
+						timeLghd = statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().get()
+								.getHolidayWorkMidNightTime().get(0).getTime().getTime().v();
+					}
 
-				if (check.equals(StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork.name()) && statutoryTimeOfDaily.getWorkHolidayTime().isPresent() 
-						&& statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().isPresent()
-						&& !statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().get().getHolidayWorkMidNightTime().isEmpty()) {
-					timeIlghd = statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().get()
-							.getHolidayWorkMidNightTime().get(0).getTime().getTime().v();
-				}
+					if (check.equals(StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork.name())
+							&& statutoryTimeOfDaily.getWorkHolidayTime().isPresent()
+							&& statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().isPresent()
+							&& !statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().get()
+									.getHolidayWorkMidNightTime().isEmpty()) {
+						timeIlghd = statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().get()
+								.getHolidayWorkMidNightTime().get(0).getTime().getTime().v();
+					}
 
-				if (check.equals(StaturoryAtrOfHolidayWork.PublicHolidayWork.name()) && statutoryTimeOfDaily.getWorkHolidayTime().isPresent() 
-						&& statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().isPresent()
-						&& !statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().get().getHolidayWorkMidNightTime().isEmpty()) {
-					timePubhd = statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().get()
-							.getHolidayWorkMidNightTime().get(0).getTime().getTime().v();
+					if (check.equals(StaturoryAtrOfHolidayWork.PublicHolidayWork.name())
+							&& statutoryTimeOfDaily.getWorkHolidayTime().isPresent()
+							&& statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().isPresent()
+							&& !statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().get()
+									.getHolidayWorkMidNightTime().isEmpty()) {
+						timePubhd = statutoryTimeOfDaily.getWorkHolidayTime().get().getHolidayMidNightWork().get()
+								.getHolidayWorkMidNightTime().get(0).getTime().getTime().v();
+					}
 				}
 			}
 		}

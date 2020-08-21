@@ -101,6 +101,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordConverter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
@@ -959,12 +960,14 @@ public class ScheduleCreatorExecutionTransaction {
 			// note 短時間勤務。時間帯。育児介護区分 = 取得した短時間勤務. 育児介護区分
 			for (ShortWorkTimeDto shortWork : prepareWorkOutput.getLstWorkTimeDto()) {
 				for (ShortChildCareFrameDto shortChild : shortWork.getLstTimeSlot()) {
-					integrationOfDaily.getShortTime().get().setShortWorkingTimeSheets(integrationOfDaily.getShortTime()
-							.get().getShortWorkingTimeSheets().stream()
-							.map(mapper -> new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(shortChild.getTimeSlot()),
-									EnumAdaptor.valueOf(shortWork.getChildCareAtr().value, ChildCareAttribute.class),
-									shortChild.getStartTime(), shortChild.getEndTime()))
-							.collect(Collectors.toList()));
+					ShortWorkingTimeSheet timeSheet = new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(shortChild.getTimeSlot()),
+							EnumAdaptor.valueOf(shortWork.getChildCareAtr().value, ChildCareAttribute.class),
+							shortChild.getStartTime(), shortChild.getEndTime());
+					List<ShortWorkingTimeSheet> lstSheets = new ArrayList<>();
+					lstSheets.add(timeSheet);
+					ShortTimeOfDailyAttd shortTime = new ShortTimeOfDailyAttd(lstSheets);
+					integrationOfDaily.setShortTime(Optional.ofNullable(shortTime));
+					
 				}
 			}
 			;

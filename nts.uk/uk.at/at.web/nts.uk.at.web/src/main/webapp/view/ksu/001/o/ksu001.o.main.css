@@ -1,0 +1,65 @@
+#oViewModel #label, #oViewModel  #combo-box1, #oViewModel  #group-button,
+	#oViewModel  #set-work-type, #oViewModel #set-work-time {
+	float: left;
+}
+
+#oViewModel  #set-work-type, #oViewModel #set-work-time {
+	position: absolute;
+}
+
+#oViewModel #set-work-time {
+	top: 29px;
+}
+
+#oViewModel #time-edit1 {
+	text-align: center !important;
+	width: 43px !important;
+	margin-left: 16px
+}
+
+#oViewModel #time-edit2 {
+	text-align: center !important;
+	width: 43px !important;
+}
+
+#oViewModel .reserved {
+	margin-left: 10px;
+}
+
+#oViewModel #switch-o {
+	margin-left: 10px;
+}
+
+#oViewModel #combo-box2 {
+	margin-left: 16px;
+	min-width: 520px !important;
+}
+
+#oViewModel #combo-box1 {
+	margin-left: 31px;
+}
+
+#oViewModel #group-button {
+	margin-left: 170px;
+}
+
+#oViewModel #image100 {
+	margin-left: 280px;
+	vertical-align: middle;
+	background: url(../image/image100.png) no-repeat center;
+	background-size: 20px 20px;
+	height: 24px;
+	width: 24px;
+}
+
+.ui-igcombo-wrapper {
+	height: 27px;
+}
+
+#oViewModel div.form-label {
+	height: 27px
+}
+
+#oViewModel label {
+	line-height: 27px;
+}

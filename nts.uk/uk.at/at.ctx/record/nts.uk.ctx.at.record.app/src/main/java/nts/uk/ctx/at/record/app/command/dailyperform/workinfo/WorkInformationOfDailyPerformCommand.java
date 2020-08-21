@@ -33,9 +33,10 @@ public class WorkInformationOfDailyPerformCommand extends DailyWorkCommonCommand
 	}
 	
 	public void updateDataByAtt(Object data) {
-		if(data == null){ return; }
+		if(data == null){ return; }//set ver doan nay a
 		WorkInfoOfDailyPerformance workInfoOfDailyPerformance = new WorkInfoOfDailyPerformance(getEmployeeId(),
 				getWorkDate(), (WorkInfoOfDailyAttendance) data);
+		workInfoOfDailyPerformance.setVersion(((WorkInfoOfDailyAttendance) data).getVer());
 		this.data = workInfoOfDailyPerformance;
 	}
 

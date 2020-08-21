@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.record.ac.specificdatesetting;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.specificdatesetting.RecSpecificDateSettingAdapter;
 import nts.uk.ctx.at.schedule.pub.shift.businesscalendar.specificdate.WpSpecificDateSettingExport;
 import nts.uk.ctx.at.schedule.pub.shift.businesscalendar.specificdate.WpSpecificDateSettingPub;
@@ -32,6 +34,19 @@ public class RecSpecificDateSettingAdapterImpl implements RecSpecificDateSetting
 			return this.specificDateSettingService(companyID, wPId, date);
 		}
 		return null;
+	}
+
+	@Override
+	public List<RecSpecificDateSettingImport> getList(String companyID, List<String> workPlaceID,
+			DatePeriod datePeriod) {
+		List<RecSpecificDateSettingImport> data = new ArrayList<>();
+		for(GeneralDate date : datePeriod.datesBetween() ) {
+			RecSpecificDateSettingImport recSpecificDateSettingImport = specificDateSettingServiceByListWpl(companyID, workPlaceID, date);
+			if(recSpecificDateSettingImport!=null) {
+				data.add(recSpecificDateSettingImport);
+			}
+		}
+		return data;
 	}
 
 }

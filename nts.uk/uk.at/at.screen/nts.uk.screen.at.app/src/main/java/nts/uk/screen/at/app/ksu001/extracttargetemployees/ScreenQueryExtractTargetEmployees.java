@@ -3,6 +3,7 @@
  */
 package nts.uk.screen.at.app.ksu001.extracttargetemployees;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -174,33 +175,36 @@ public class ScreenQueryExtractTargetEmployees {
 			EmployeeSearchQueryDto query = EmployeeSearchQueryDto.builder()
 					.baseDate(GeneralDateTime.fromString(q.getBaseDate().toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT))
 					.referenceRange(q.getReferenceRange())
-					.filterByEmployment(q.getFilterByEmployment())
-					.employmentCodes(q.getEmploymentCodes())
-					.filterByDepartment(q.getFilterByDepartment())
-					.departmentCodes(q.getDepartmentCodes())
+					.systemType(q.getSystemType())
 					.filterByWorkplace(q.getFilterByWorkplace())
 					.workplaceCodes(q.getWorkplaceIds())
-					.filterByClassification(q.getFilterByClassification())
-					.classificationCodes(q.getClassificationCodes())
-					.filterByJobTitle(q.getFilterByJobTitle())
-					.jobTitleCodes(q.getJobTitleCodes())
-					.filterByWorktype(q.getFilterByWorktype())
-					.worktypeCodes(q.getWorktypeCodes())
-					.filterByClosure(q.getFilterByClosure())
-					.closureIds(q.getClosureIds())
-					.periodStart(GeneralDateTime.fromString(q.getPeriodStart().toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT))
-					.periodEnd(GeneralDateTime.fromString(q.getPeriodEnd().toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT))
-					.includeIncumbents(q.getIncludeIncumbents())
-					.includeWorkersOnLeave(q.getIncludeWorkersOnLeave())
-					.includeOccupancy(q.getIncludeOccupancy())
-					.includeRetirees(q.getIncludeRetirees())
-					.includeAreOnLoan(q.getIncludeAreOnLoan())
-					.includeGoingOnLoan(q.getIncludeGoingOnLoan())
-					.retireStart(GeneralDateTime.fromString(q.getRetireStart().toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT))
-					.retireEnd(GeneralDateTime.fromString(q.getRetireEnd().toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT))
-					.sortOrderNo(q.getSortOrderNo())
-					.nameType(q.getNameType())
-					.systemType(q.getSystemType())
+					
+					.filterByEmployment(false)
+					.employmentCodes(new ArrayList<String>())
+					.filterByDepartment(false)
+					.departmentCodes(new ArrayList<String>())
+					.filterByClassification(false)
+					.classificationCodes(new ArrayList<String>())
+					.filterByJobTitle(false)
+					.jobTitleCodes(new ArrayList<String>())
+					.filterByWorktype(false)
+					.worktypeCodes(new ArrayList<String>())
+					.filterByClosure(false)
+					.closureIds(new ArrayList<Integer>())
+					
+					.periodStart(GeneralDateTime.now())
+					.periodEnd(GeneralDateTime.now())
+					.includeIncumbents(true)
+					.includeWorkersOnLeave(true)
+					.includeOccupancy(true)
+					.includeRetirees(false)
+					.includeAreOnLoan(false)
+					.includeGoingOnLoan(false)
+					.retireStart(GeneralDateTime.now())
+					.retireEnd(GeneralDateTime.now())
+					.sortOrderNo(null)
+					.nameType(null)
+					
 					.build();
 			List<RegulationInfoEmployeeExport> data = regulInfoEmpPub.find(query);
 			List<String> resultList = data.stream().map(item -> item.getEmployeeId())

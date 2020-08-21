@@ -6,20 +6,10 @@ package nts.uk.screen.at.app.ksu001.getworkscheduleshift;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
-import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.WorkScheManaStatusService;
-import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
-import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmployeeLeaveJobPeriodImport;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 
 /**
  * @author laitv
@@ -137,46 +127,5 @@ public class GetWorkScheduleShift {
 		return result;
 	}
 	
-	@AllArgsConstructor
-	private static class WorkScheManaStatusServiceReqIml implements WorkScheManaStatusService.Require {
-		
-
-		@Override
-		public Optional<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Optional<EmployeeLeaveJobPeriodImport> getByDatePeriod(List<String> lstEmpID, DatePeriod datePeriod) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Optional<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(List<String> lstEmpID,
-				DatePeriod datePeriod) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Optional<EmploymentPeriodImported> getEmploymentHistory(List<String> lstEmpID, DatePeriod datePeriod) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Optional<WorkSchedule> get(String employeeID, GeneralDate ymd) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-	}
+	
 }
