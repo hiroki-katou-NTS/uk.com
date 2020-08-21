@@ -38,7 +38,7 @@ public class CheckErrorDuringHolidayTest {
 
 		List<DayOffError> lstError = new ArrayList<>();
 		SubstituteHolidayAggrResult param = new SubstituteHolidayAggrResult(new VacationDetails(new ArrayList<>()),
-				new ReserveLeaveRemainingDayNumber(-1.0), new RemainingMinutes(-480),
+				new ReserveLeaveRemainingDayNumber(-1.0), new RemainingMinutes(-480),//残日数, 残時間
 				new ReserveLeaveRemainingDayNumber(1.0), new RemainingMinutes(480),
 				new ReserveLeaveRemainingDayNumber(4.0), new RemainingMinutes(960),
 				new ReserveLeaveRemainingDayNumber(1.0), new RemainingMinutes(0),

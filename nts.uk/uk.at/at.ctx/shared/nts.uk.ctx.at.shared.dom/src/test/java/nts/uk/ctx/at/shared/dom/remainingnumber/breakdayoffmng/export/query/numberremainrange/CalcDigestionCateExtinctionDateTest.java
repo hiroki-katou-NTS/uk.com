@@ -12,22 +12,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.NumberConsecuVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 
 public class CalcDigestionCateExtinctionDateTest {
-
-	private static String SID = "292ae91c-508c-4c6e-8fe8-3e72277dec16";
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -38,155 +29,117 @@ public class CalcDigestionCateExtinctionDateTest {
 	}
 
 	/*
-	 * 　テストしたい内容
-	 *          代休
-	 *     　消化区分と消滅日を計算する
+	 * テストしたい内容
 	 * 
-	 * 　準備するデータ
-	 * 　　すべての逐次発生の休暇明細（発生）が0 →　消化済
-	 *         期限が超えない→　未消化
-	 *         期限が超える→　 消滅
-	 *         
-	 * */
+	 * 代休 消滅日を計算する
+	 * 
+	 * 準備するデータ
+	 * 
+	 * すべての逐次発生の休暇明細（発生）が0
+	 * 
+	 * → 消化済 期限が超えない→ 未消化 期限が超える→ 消滅
+	 * 
+	 */
 	@Test
 	public void testDaikyu() {
 
-		List<AccumulationAbsenceDetail> lstAccAbse = Arrays.asList(
-				new UnbalanceVacation(GeneralDate.ymd(2019, 12, 8), DigestionAtr.UNUSED,
-						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 4))),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554bbbb")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(480))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0d),
-												Optional.of(new AttendanceTime(0))))
-										.build(),
-						new AttendanceTime(480), new AttendanceTime(240)),
-				new UnbalanceVacation(GeneralDate.ymd(2019, 12, 8), DigestionAtr.UNUSED,
-						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID, new CompensatoryDayoffDate(true, Optional.empty()),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554ddde")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(480))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(480))))
-										.build(),
-						new AttendanceTime(480), new AttendanceTime(240)),
-				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
-						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 10))),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554dddf")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(480))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(240))))
-										.build(),
-						new AttendanceTime(480), new AttendanceTime(240)),
-				new AccuVacationBuilder(SID,
-						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 4))),
-						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554eaaa")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(480))))
-								.unbalanceNumber(
-										new NumberConsecuVacation(new ManagementDataRemainUnit(0.5), Optional.empty()))
-								.build());
+		List<AccumulationAbsenceDetail> lstAccDetail = Arrays.asList(DaikyuFurikyuHelper.createDetailDefault(true, // 代休
+				OccurrenceDigClass.OCCURRENCE, // 発生
+				Optional.of(GeneralDate.ymd(2019, 12, 30)), // 年月日
+				"k1", // 残数管理データID
+				DigestionAtr.UNUSED, // 消化区分
+				GeneralDate.ymd(2019, 12, 30), // 期限日
+				0.0, 0// 未相殺
+		), DaikyuFurikyuHelper.createDetailDefault(true, // 代休
+				OccurrenceDigClass.OCCURRENCE, // 発生
+				Optional.empty(), // 年月日
+				"k2", // 残数管理データID
+				DigestionAtr.UNUSED, // 消化区分
+				GeneralDate.ymd(2019, 12, 30), // 期限日
+				1.0, 0// 未相殺
+		), DaikyuFurikyuHelper.createDetailDefault(true, // 代休
+				OccurrenceDigClass.OCCURRENCE, // 発生
+				Optional.of(GeneralDate.ymd(2019, 04, 10)), // 年月日
+				"k3", // 残数管理データID
+				DigestionAtr.UNUSED, // 消化区分
+				GeneralDate.ymd(2019, 10, 30), // 期限日
+				1.0, 10// 未相殺
+		), DaikyuFurikyuHelper.createDetailDefault(true, // 代休
+				OccurrenceDigClass.DIGESTION, // 消化
+				Optional.of(GeneralDate.ymd(2019, 11, 4)), // 年月日
+				"d1", // 残数管理データID
+				DigestionAtr.UNUSED, // 消化区分
+				null, // 期限日
+				1.0, 0// 未相殺
+		));
 
-		CalcDigestionCateExtinctionDate.calc(lstAccAbse, GeneralDate.ymd(2019, 11, 3), TypeOffsetJudgment.REAMAIN);
+		CalcDigestionCateExtinctionDate.calc(lstAccDetail, GeneralDate.ymd(2019, 11, 3), TypeOffsetJudgment.REAMAIN);
 
-		assertThat(lstAccAbse)
-				.extracting(x -> x.getManageId(), x -> x.getEmployeeId(), x -> x.getOccurrentClass(),
+		assertThat(lstAccDetail)
+				.extracting(x -> x.getManageId(), x -> x.getOccurrentClass(),
 						x -> x.getOccurrentClass() == OccurrenceDigClass.DIGESTION ? Optional.empty()
-								: ((UnbalanceVacation) x).getDigestionCate(),
-						x -> x.getOccurrentClass() == OccurrenceDigClass.DIGESTION ? Optional.empty()
-								: ((UnbalanceVacation) x).getExtinctionDate())
-				.containsExactly(
-						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554bbbb", SID, OccurrenceDigClass.OCCURRENCE,
-								DigestionAtr.USED, Optional.of(GeneralDate.ymd(2019, 12, 30))),
-						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554ddde", SID, OccurrenceDigClass.OCCURRENCE,
-								DigestionAtr.UNUSED, Optional.of(GeneralDate.ymd(2019, 12, 30))),
-						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554dddf", SID, OccurrenceDigClass.OCCURRENCE,
-								DigestionAtr.EXPIRED, Optional.of(GeneralDate.ymd(2019, 6, 8))),
-						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554eaaa", SID, OccurrenceDigClass.DIGESTION,
-								Optional.empty(), Optional.empty()));
+								: ((UnbalanceVacation) x).getDigestionCate())
+				.containsExactly(Tuple.tuple("k1", OccurrenceDigClass.OCCURRENCE, DigestionAtr.USED),
+						Tuple.tuple("k2", OccurrenceDigClass.OCCURRENCE, DigestionAtr.UNUSED),
+						Tuple.tuple("k3", OccurrenceDigClass.OCCURRENCE, DigestionAtr.EXPIRED),
+						Tuple.tuple("d1", OccurrenceDigClass.DIGESTION, Optional.empty()));
 
 	}
 
 	/*
-	 * 　テストしたい内容
-	 *         振休
-	 *     　消化区分と消滅日を計算する
+	 * テストしたい内容
 	 * 
-	 * 　準備するデータ
-	 * 　　すべての逐次発生の休暇明細（発生）が0 →　消化済
-	 *         期限が超えない→　未消化
-	 *         期限が超える→　 消滅
-	 *         
-	 * */
+	 * 振休 消化区分と消滅日を計算する
+	 * 
+	 * 準備するデータ
+	 * 
+	 * すべての逐次発生の休暇明細（発生）が0
+	 * 
+	 * → 消化済 期限が超えない→ 未消化 期限が超える→ 消滅
+	 * 
+	 */
 	@Test
 	public void testFurikyu() {
-		List<AccumulationAbsenceDetail> lstAccAbse = Arrays.asList(
-				new UnbalanceCompensation(new AccuVacationBuilder(SID,
-						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 4))),
-						OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554bbbb")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(480))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0d),
-										Optional.of(new AttendanceTime(0))))
-								.build(),
-						GeneralDate.ymd(2019, 12, 8), DigestionAtr.UNUSED, Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						StatutoryAtr.PUBLIC),
-				new UnbalanceCompensation(
-						new AccuVacationBuilder(SID, new CompensatoryDayoffDate(true, Optional.empty()),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554ddde")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(480))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(480))))
-										.build(),
-						GeneralDate.ymd(2019, 12, 8), DigestionAtr.UNUSED, Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						StatutoryAtr.PUBLIC),
-				new UnbalanceCompensation(new AccuVacationBuilder(SID,
-						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 10))),
-						OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554dddf")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(480))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(240))))
-								.build(),
-						GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED, Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						StatutoryAtr.PUBLIC),
-				new AccuVacationBuilder(SID,
-						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 4))),
-						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554eaaa")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(480))))
-								.unbalanceNumber(
-										new NumberConsecuVacation(new ManagementDataRemainUnit(0.5), Optional.empty()))
-								.build());
+		List<AccumulationAbsenceDetail> lstAccDetail = Arrays.asList(DaikyuFurikyuHelper.createDetailDefault(false, // 振休
+				OccurrenceDigClass.OCCURRENCE, // 発生
+				Optional.of(GeneralDate.ymd(2019, 12, 30)), // 年月日
+				"k1", // 残数管理データID
+				DigestionAtr.UNUSED, // 消化区分
+				GeneralDate.ymd(2019, 12, 30), // 期限日
+				0.0, 0// 未相殺
+		), DaikyuFurikyuHelper.createDetailDefault(false, // 振休
+				OccurrenceDigClass.OCCURRENCE, // 発生
+				Optional.empty(), // 年月日
+				"k2", // 残数管理データID
+				DigestionAtr.UNUSED, // 消化区分
+				GeneralDate.ymd(2019, 12, 30), // 期限日
+				1.0, 0// 未相殺
+		), DaikyuFurikyuHelper.createDetailDefault(false, // 振休
+				OccurrenceDigClass.OCCURRENCE, // 発生
+				Optional.of(GeneralDate.ymd(2019, 04, 10)), // 年月日
+				"k3", // 残数管理データID
+				DigestionAtr.UNUSED, // 消化区分
+				GeneralDate.ymd(2019, 10, 30), // 期限日
+				1.0, 10// 未相殺
+		), DaikyuFurikyuHelper.createDetailDefault(false, // 振休
+				OccurrenceDigClass.DIGESTION, // 消化
+				Optional.of(GeneralDate.ymd(2019, 11, 4)), // 年月日
+				"d1", // 残数管理データID
+				DigestionAtr.UNUSED, // 消化区分
+				null, // 期限日
+				1.0, 0// 未相殺
+		));
 
-		CalcDigestionCateExtinctionDate.calc(lstAccAbse, GeneralDate.ymd(2019, 11, 3), TypeOffsetJudgment.ABSENCE);
+		CalcDigestionCateExtinctionDate.calc(lstAccDetail, GeneralDate.ymd(2019, 11, 3), TypeOffsetJudgment.ABSENCE);
 
-		assertThat(lstAccAbse)
-				.extracting(x -> x.getManageId(), x -> x.getEmployeeId(), x -> x.getOccurrentClass(),
+		assertThat(lstAccDetail)
+				.extracting(x -> x.getManageId(), x -> x.getOccurrentClass(),
 						x -> x.getOccurrentClass() == OccurrenceDigClass.DIGESTION ? Optional.empty()
-								: ((UnbalanceCompensation) x).getDigestionCate(),
-						x -> x.getOccurrentClass() == OccurrenceDigClass.DIGESTION ? Optional.empty()
-								: ((UnbalanceCompensation) x).getExtinctionDate())
-				.containsExactly(
-						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554bbbb", SID, OccurrenceDigClass.OCCURRENCE,
-								DigestionAtr.USED, Optional.of(GeneralDate.ymd(2019, 12, 30))),
-						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554ddde", SID, OccurrenceDigClass.OCCURRENCE,
-								DigestionAtr.UNUSED, Optional.of(GeneralDate.ymd(2019, 12, 30))),
-						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554dddf", SID, OccurrenceDigClass.OCCURRENCE,
-								DigestionAtr.EXPIRED, Optional.of(GeneralDate.ymd(2019, 6, 8))),
-						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554eaaa", SID, OccurrenceDigClass.DIGESTION,
-								Optional.empty(), Optional.empty()));
+								: ((UnbalanceCompensation) x).getDigestionCate())
+				.containsExactly(Tuple.tuple("k1", OccurrenceDigClass.OCCURRENCE, DigestionAtr.USED),
+						Tuple.tuple("k2", OccurrenceDigClass.OCCURRENCE, DigestionAtr.UNUSED),
+						Tuple.tuple("k3", OccurrenceDigClass.OCCURRENCE, DigestionAtr.EXPIRED),
+						Tuple.tuple("d1", OccurrenceDigClass.DIGESTION, Optional.empty()));
 	}
 
 }

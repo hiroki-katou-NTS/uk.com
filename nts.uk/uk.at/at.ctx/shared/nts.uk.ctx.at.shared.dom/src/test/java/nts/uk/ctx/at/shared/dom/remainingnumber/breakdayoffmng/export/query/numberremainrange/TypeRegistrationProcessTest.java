@@ -26,11 +26,17 @@ public class TypeRegistrationProcessTest {
 	public void setUp() throws Exception {
 	}
 
+	/*
+	 * 　テストしたい内容
+	 * 　　「逐次休暇の紐付け情報」データを作成するかどうかを確認する
+	 * 
+	 * 　準備するデータ
+	 * 　　　代休
+	 * 　　　時間管理者がある
+	 * */
 	@Test
 	public void testDaikyuManagerTime() {
-		TimeLapseVacationSetting setting = new TimeLapseVacationSetting(
-				new DatePeriod(GeneralDate.ymd(2019, 4, 1), GeneralDate.ymd(2019, 4, 30)), true, 2, true,
-				Optional.of(true), Optional.of(5));
+		TimeLapseVacationSetting setting = create(true, TypeOffsetJudgment.REAMAIN);//時間管理区分,代休
 		Optional<SeqVacationAssociationInfo> actualResult = TypeRegistrationProcess.process(setting,
 				GeneralDate.ymd(2019, 4, 2), GeneralDate.ymd(2019, 5, 30), new ManagementDataRemainUnit(1.0),
 				TypeOffsetJudgment.REAMAIN);
@@ -38,11 +44,17 @@ public class TypeRegistrationProcessTest {
 
 	}
 
+	/*
+	 * 　テストしたい内容
+	 * 　　「逐次休暇の紐付け情報」データを作成するかどうかを確認する
+	 * 
+	 * 　準備するデータ
+	 * 　　　代休
+	 * 　　　時間管理者がない
+	 * */
 	@Test
 	public void testDaikyuNoManagerTime() {
-		TimeLapseVacationSetting setting = new TimeLapseVacationSetting(
-				new DatePeriod(GeneralDate.ymd(2019, 4, 1), GeneralDate.ymd(2019, 4, 30)), true, 2, true,
-				Optional.of(false), Optional.of(5));
+		TimeLapseVacationSetting setting = create(false, TypeOffsetJudgment.REAMAIN);//時間管理区分,代休
 		Optional<SeqVacationAssociationInfo> actualResult = TypeRegistrationProcess.process(setting,
 				GeneralDate.ymd(2019, 4, 2), GeneralDate.ymd(2019, 5, 30), new ManagementDataRemainUnit(1.0),
 				TypeOffsetJudgment.REAMAIN);
@@ -53,11 +65,16 @@ public class TypeRegistrationProcessTest {
 
 	}
 
+	/*
+	 * 　テストしたい内容
+	 * 　　「逐次休暇の紐付け情報」データを作成するかどうかを確認する
+	 * 
+	 * 　準備するデータ
+	 * 　　　振休
+	 * */
 	@Test
 	public void testFurikyu() {
-		TimeLapseVacationSetting setting = new TimeLapseVacationSetting(
-				new DatePeriod(GeneralDate.ymd(2019, 4, 1), GeneralDate.ymd(2019, 4, 30)), true, 2, true,
-				Optional.of(false), Optional.of(5));
+		TimeLapseVacationSetting setting = create(false, TypeOffsetJudgment.REAMAIN);//時間管理区分,振休
 		Optional<SeqVacationAssociationInfo> actualResult = TypeRegistrationProcess.process(setting,
 				GeneralDate.ymd(2019, 4, 2), GeneralDate.ymd(2019, 5, 30), new ManagementDataRemainUnit(1.0),
 				TypeOffsetJudgment.ABSENCE);
@@ -67,4 +84,9 @@ public class TypeRegistrationProcessTest {
 		assertThat(actualResult.get().getTargetSelectionAtr()).isEqualTo(TargetSelectionAtr.AUTOMATIC);
 	}
 
+	private  TimeLapseVacationSetting create(boolean magTime, TypeOffsetJudgment type) {
+		return  new TimeLapseVacationSetting(
+					new DatePeriod(GeneralDate.ymd(2019, 4, 11), GeneralDate.ymd(2019, 4, 20)), true, 2, true,
+					Optional.of(magTime), Optional.of(5));
+	}
 }

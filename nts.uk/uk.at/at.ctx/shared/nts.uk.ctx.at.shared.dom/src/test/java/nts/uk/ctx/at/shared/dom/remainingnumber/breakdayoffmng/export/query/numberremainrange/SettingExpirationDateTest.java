@@ -36,10 +36,12 @@ public class SettingExpirationDateTest {
 	@Test
 	public void testUnlimit() {
 
-		GeneralDate actualResult = SettingExpirationDate.settingExp(ExpirationTime.UNLIMITED,
-				Optional.of(new GetTightSettingResult(11, new ClosureDate(1, false),
-						new DatePeriod(GeneralDate.ymd(2019, 11, 1), GeneralDate.ymd(2019, 11, 30)))),
-				GeneralDate.ymd(2019, 11, 1));
+		GeneralDate actualResult = SettingExpirationDate.settingExp(
+				ExpirationTime.UNLIMITED,
+				Optional.of(new GetTightSettingResult(11, new ClosureDate(1, false),//// 期首月
+						new DatePeriod(GeneralDate.ymd(2019, 11, 1),//日付
+								GeneralDate.ymd(2019, 11, 30)))),//期間
+				GeneralDate.ymd(2019, 11, 1));//年月日
 		assertThat(actualResult).isEqualTo(GeneralDate.max());
 
 	}
@@ -57,10 +59,13 @@ public class SettingExpirationDateTest {
 	@Test
 	public void testThisMonth() {
 
-		GeneralDate actualResult = SettingExpirationDate.settingExp(ExpirationTime.THIS_MONTH,
-				Optional.of(new GetTightSettingResult(11, new ClosureDate(15, false),
-						new DatePeriod(GeneralDate.ymd(2019, 11, 1), GeneralDate.ymd(2019, 11, 30)))),
-				GeneralDate.ymd(2019, 11, 15));
+		GeneralDate actualResult = SettingExpirationDate.settingExp(
+				ExpirationTime.THIS_MONTH,
+				Optional.of(new GetTightSettingResult(11, new ClosureDate(15, false),//// 期首月
+						new DatePeriod(GeneralDate.ymd(2019, 11, 1),//日付
+								GeneralDate.ymd(2019, 11, 30)))),//期間
+				GeneralDate.ymd(2019, 11, 15));//年月日
+		
 		assertThat(actualResult).isEqualTo(GeneralDate.ymd(2019, 11, 15));
 
 		GeneralDate actualResult2 = SettingExpirationDate.settingExp(ExpirationTime.THIS_MONTH,
@@ -85,10 +90,13 @@ public class SettingExpirationDateTest {
 	@Test
 	public void testThisYear() {
 
-		GeneralDate actualResult = SettingExpirationDate.settingExp(ExpirationTime.END_OF_YEAR,
-				Optional.of(new GetTightSettingResult(11, new ClosureDate(15, false),
-						new DatePeriod(GeneralDate.ymd(2019, 11, 1), GeneralDate.ymd(2019, 11, 30)))),
-				GeneralDate.ymd(2019, 11, 15));
+		GeneralDate actualResult = SettingExpirationDate.settingExp(
+				ExpirationTime.END_OF_YEAR,
+				Optional.of(new GetTightSettingResult(11, new ClosureDate(15, false),//// 期首月
+						new DatePeriod(GeneralDate.ymd(2019, 11, 1),//日付
+								GeneralDate.ymd(2019, 11, 30)))),//期間
+				GeneralDate.ymd(2019, 11, 15));//年月日
+		
 		assertThat(actualResult).isEqualTo(GeneralDate.ymd(2020, 10, 30));
 
 		GeneralDate actualResult2 = SettingExpirationDate.settingExp(ExpirationTime.END_OF_YEAR,
@@ -111,10 +119,13 @@ public class SettingExpirationDateTest {
 	@Test
 	public void testOther() {
 
-		GeneralDate actualResult = SettingExpirationDate.settingExp(ExpirationTime.SEVEN_MONTH,
-				Optional.of(new GetTightSettingResult(11, new ClosureDate(15, false),
-						new DatePeriod(GeneralDate.ymd(2019, 11, 1), GeneralDate.ymd(2019, 11, 30)))),
-				GeneralDate.ymd(2019, 11, 15));
+		GeneralDate actualResult = SettingExpirationDate.settingExp(
+				ExpirationTime.SEVEN_MONTH,
+				Optional.of(new GetTightSettingResult(11, new ClosureDate(15, false),//// 期首月
+						new DatePeriod(GeneralDate.ymd(2019, 11, 1),//日付
+								GeneralDate.ymd(2019, 11, 30)))),//期間
+				GeneralDate.ymd(2019, 11, 15));//年月日
+		
 		assertThat(actualResult).isEqualTo(GeneralDate.ymd(2020, 6, 15));
 
 	}

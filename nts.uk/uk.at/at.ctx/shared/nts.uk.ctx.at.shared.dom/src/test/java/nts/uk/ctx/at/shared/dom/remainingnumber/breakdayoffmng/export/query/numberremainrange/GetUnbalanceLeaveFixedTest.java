@@ -67,8 +67,9 @@ public class GetUnbalanceLeaveFixedTest {
 		};
 
 		List<AccumulationAbsenceDetail> actualResult = GetUnbalanceLeaveFixed.getUnbalanceUnused(require, CID, SID,
-				GeneralDate.ymd(2019, 4, 1), GeneralDate.ymd(2019, 4, 30),
+				GeneralDate.ymd(2019, 4, 1), GeneralDate.ymd(2019, 4, 30),//集計開始日, 集計終了日
 				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
+		
 		assertThat(actualResult).isEqualTo(new ArrayList<>());
 	}
 
@@ -88,14 +89,15 @@ public class GetUnbalanceLeaveFixedTest {
 	@Test
 	public void testUnbalanceUnused() {
 
+		//代休管理データ
 		List<CompensatoryDayOffManaData> lstComMock = new ArrayList<>();
-		lstComMock.add(new CompensatoryDayOffManaData("adda6a46-2cbe-48c8-85f8-c04ca554e133", CID, SID, false,
+		lstComMock.add(new CompensatoryDayOffManaData("d1", CID, SID, false,
 				GeneralDate.ymd(2019, 11, 10), 1.0, 240, 1.0, 240));
-		lstComMock.add(new CompensatoryDayOffManaData("adda6a46-2cbe-48c8-85f8-c04ca554e134", CID, SID, false,
+		lstComMock.add(new CompensatoryDayOffManaData("d2", CID, SID, false,
 				GeneralDate.ymd(2019, 11, 12), 1.0, 240, 1.0, 240));
-		lstComMock.add(new CompensatoryDayOffManaData("adda6a46-2cbe-48c8-85f8-c04ca554e137", CID, SID, false,
+		lstComMock.add(new CompensatoryDayOffManaData("d3", CID, SID, false,
 				GeneralDate.ymd(2019, 11, 13), 1.0, 240, 0.0, 0));
-		lstComMock.add(new CompensatoryDayOffManaData("adda6a46-2cbe-48c8-85f8-c04ca554e138", CID, SID, false,
+		lstComMock.add(new CompensatoryDayOffManaData("d4", CID, SID, false,
 				GeneralDate.ymd(2019, 11, 14), 1.0, 240, 1.0, 240));
 
 		new Expectations() {
@@ -103,43 +105,47 @@ public class GetUnbalanceLeaveFixedTest {
 				require.getBySidYmd(anyString, anyString, (GeneralDate) any);
 				result = lstComMock;
 
+				//暫定休出代休紐付け管理
 				require.getDayOffByIdAndDataAtr(DataManagementAtr.INTERIM, DataManagementAtr.CONFIRM,
-						"adda6a46-2cbe-48c8-85f8-c04ca554e134");
+						"d2");
 				result = Arrays.asList(
-						new InterimBreakDayOffMng("", DataManagementAtr.INTERIM, "adda6a46-2cbe-48c8-85f8-c04ca554e134",
+						new InterimBreakDayOffMng("", DataManagementAtr.INTERIM, "d2",
 								DataManagementAtr.CONFIRM, new UseTime(240), new UseDay(1.0), SelectedAtr.AUTOMATIC));
 
+				//暫定休出代休紐付け管理
 				require.getDayOffByIdAndDataAtr(DataManagementAtr.INTERIM, DataManagementAtr.CONFIRM,
-						"adda6a46-2cbe-48c8-85f8-c04ca554e133");
+						"d1");
 				result = Arrays.asList(
-						new InterimBreakDayOffMng("", DataManagementAtr.INTERIM, "adda6a46-2cbe-48c8-85f8-c04ca554e133",
+						new InterimBreakDayOffMng("", DataManagementAtr.INTERIM, "d1",
 								DataManagementAtr.CONFIRM, new UseTime(120), new UseDay(0.5), SelectedAtr.AUTOMATIC));
 
 			}
 		};
 
 		List<AccumulationAbsenceDetail> actualResult = GetUnbalanceLeaveFixed
-				.getUnbalanceUnused(require, CID, SID, GeneralDate.ymd(2019, 4, 1), GeneralDate.ymd(2019, 4, 30),
-						new FixedManagementDataMonth(
-								Arrays.asList(new CompensatoryDayOffManaData("adda6a46-2cbe-48c8-85f8-c04ca554e135",
-										CID, SID, false, GeneralDate.ymd(2019, 11, 11), 1.0, 240, 1.0, 240)),
+				.getUnbalanceUnused(require, CID, SID, 
+						GeneralDate.ymd(2019, 4, 1), GeneralDate.ymd(2019, 4, 30),//集計開始日, 集計終了日
+						new FixedManagementDataMonth(//月別確定管理データ
+								Arrays.asList(new CompensatoryDayOffManaData("d5",
+										CID, SID, true, null, 1.0, 240, 1.0, 240)),//代休管理データ
 								new ArrayList<>()));
 
 		assertThat(actualResult)
-				.extracting(x -> x.getManageId(), x -> x.getEmployeeId(), x -> x.getDataAtr(),
-						x -> x.getDateOccur().isUnknownDate(), x -> x.getDateOccur().getDayoffDate(),
-						x -> x.getNumberOccurren().getDay().v(), x -> x.getNumberOccurren().getTime(),
-						x -> x.getOccurrentClass(), x -> x.getUnbalanceNumber().getDay().v(),
-						x -> x.getUnbalanceNumber().getTime())
+				.extracting(x -> x.getManageId(), 
+						x -> x.getDataAtr(),//状態
+						x -> x.getDateOccur().isUnknownDate(), x -> x.getDateOccur().getDayoffDate(),//年月日
+						x -> x.getNumberOccurren().getDay().v(), x -> x.getNumberOccurren().getTime(),//発生数
+						x -> x.getOccurrentClass(), //発生消化区分
+						x -> x.getUnbalanceNumber().getDay().v(), x -> x.getUnbalanceNumber().getTime())//未相殺数
 				.containsExactly(
-						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e133", SID, MngDataStatus.CONFIRMED, false,
+						Tuple.tuple("d1", MngDataStatus.CONFIRMED, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 10)), 1.0, Optional.of(new AttendanceTime(240)),
 								OccurrenceDigClass.DIGESTION, 0.5, Optional.of(new AttendanceTime(120))),
-						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e138", SID, MngDataStatus.CONFIRMED, false,
+						Tuple.tuple("d4", MngDataStatus.CONFIRMED, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 14)), 1.0, Optional.of(new AttendanceTime(240)),
 								OccurrenceDigClass.DIGESTION, 1.0, Optional.of(new AttendanceTime(240))),
-						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e135", SID, MngDataStatus.CONFIRMED, false,
-								Optional.of(GeneralDate.ymd(2019, 11, 11)), 1.0, Optional.of(new AttendanceTime(240)),
+						Tuple.tuple("d5", MngDataStatus.CONFIRMED, true,
+								Optional.empty(), 1.0, Optional.of(new AttendanceTime(240)),
 								OccurrenceDigClass.DIGESTION, 1.0, Optional.of(new AttendanceTime(240))));
 	}
 

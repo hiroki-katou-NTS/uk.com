@@ -24,16 +24,10 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.DayOffError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.NumberConsecuVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SeqVacationAssociationInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.vacation.algorithm.TimeLapseVacationSetting;
 
@@ -55,7 +49,7 @@ public class OffsetChronologicalOrderTest {
 
 	/*
 	 * 　テストしたい内容
-	 *     　未相殺数を更新しない
+	 *     　INPUTとOUTPUTが同じであること
 	 * 
 	 * 　準備するデータ
 	 * 　　「逐次発生の休暇明細」（消化）．未相殺時間数 がない
@@ -66,49 +60,48 @@ public class OffsetChronologicalOrderTest {
 	public void test() {
 
 		List<TimeLapseVacationSetting> lstTimeLap = Arrays.asList(
-				new TimeLapseVacationSetting(new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.ymd(2020, 1, 1)),
-						true, 30, true, Optional.of(true), Optional.of(1)));
+				new TimeLapseVacationSetting(
+						new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.ymd(2020, 1, 1)),// 期間
+						true, //管理区分
+						30, //使用期限
+						true, // 先取り許可
+						Optional.of(true), //時間管理区分
+						Optional.of(1)));// 時間消化単位
 
 		List<AccumulationAbsenceDetail> lstAccAbse = Arrays.asList(
-				new AccuVacationBuilder(SID,
-						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 3))),
-						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554ddfk")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(1))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(0))))
-								.build(),
-				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
-						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 4))),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554bbbb")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(120))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(0))))
-										.build(),
-						new AttendanceTime(0), new AttendanceTime(0)));
+				DaikyuFurikyuHelper.createDetailDefaultUnba(true, //代休
+						OccurrenceDigClass.DIGESTION,//発生消化区分
+						Optional.of(GeneralDate.ymd(2019, 11, 3)), //年月日
+						"a1", 
+						1.0, 0),//未相殺数
+
+				DaikyuFurikyuHelper.createDetailDefaultUnba(true, //代休
+						OccurrenceDigClass.OCCURRENCE,//発生消化区分
+						Optional.of(GeneralDate.ymd(2019, 11, 4)),//年月日
+						"a2", 
+						1.0, 0)//未相殺数
+
+		);
+		
+		
 		TypeOffsetJudgment typeJudgment = TypeOffsetJudgment.REAMAIN;
 		lstAccAbse.sort(new AccumulationAbsenceDetailComparator());
 		Pair<Optional<DayOffError>, List<SeqVacationAssociationInfo>> resultActual = OffsetChronologicalOrder
 				.process(require, SID, lstTimeLap, lstAccAbse, typeJudgment);
+		
 		assertThat(resultActual.getRight()).isEqualTo(new ArrayList<>());
 		assertThat(resultActual.getLeft()).isEqualTo(Optional.empty());
+		
 		assertThat(lstAccAbse)
-		.extracting(x -> x.getManageId(), x -> x.getEmployeeId(), x -> x.getDataAtr(),
-				x -> x.getDateOccur().isUnknownDate(), x -> x.getDateOccur().getDayoffDate(),
-				x -> x.getNumberOccurren().getDay().v(), x -> x.getNumberOccurren().getTime(),
-				x -> x.getOccurrentClass(), x -> x.getUnbalanceNumber().getDay().v(),
-				x -> x.getUnbalanceNumber().getTime())
-		.containsExactly(
-				Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554ddfk", SID, MngDataStatus.RECORD, false,
-						Optional.of(GeneralDate.ymd(2019, 11, 3)), 1.0, Optional.of(new AttendanceTime(1)),
-						OccurrenceDigClass.DIGESTION, 1.0, Optional.of(new AttendanceTime(0))),
-				Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554bbbb", SID, MngDataStatus.RECORD, false,
-						Optional.of(GeneralDate.ymd(2019, 11, 4)), 1.0, Optional.of(new AttendanceTime(120)),
-						OccurrenceDigClass.OCCURRENCE, 1.0, Optional.of(new AttendanceTime(0))));
+		.extracting(x -> x.getManageId(),
+				x -> x.getDateOccur().isUnknownDate(), x -> x.getDateOccur().getDayoffDate(),// 年月日
+				x -> x.getOccurrentClass(), //発生消化区分
+				x -> x.getUnbalanceNumber().getDay().v(), x -> x.getUnbalanceNumber().getTime())//未相殺数
+				.containsExactly(
+						Tuple.tuple("a1", false, Optional.of(GeneralDate.ymd(2019, 11, 3)),
+								OccurrenceDigClass.DIGESTION, 1.0, Optional.of(new AttendanceTime(0))),
+						Tuple.tuple("a2", false, Optional.of(GeneralDate.ymd(2019, 11, 4)),
+								OccurrenceDigClass.OCCURRENCE, 1.0, Optional.of(new AttendanceTime(0))));
 	}
 
 	/*
@@ -124,30 +117,27 @@ public class OffsetChronologicalOrderTest {
 	public void testNoMag() {
 
 		List<TimeLapseVacationSetting> lstTimeLap = Arrays.asList(
-				new TimeLapseVacationSetting(new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.ymd(2020, 1, 1)),
-						true, 30, true, Optional.of(false), Optional.of(1)));
+				new TimeLapseVacationSetting(
+						new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.ymd(2020, 1, 1)),//期間
+						true, //管理区分
+						30, // 使用期限
+						true, // 先取り許可
+						Optional.of(false), // 時間管理区分
+						Optional.of(1)));// 時間消化単位
 
 		List<AccumulationAbsenceDetail> lstAccAbse = Arrays.asList(
-				new AccuVacationBuilder(SID,
-						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 3))),
-						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554ddfk")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(1))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
-										Optional.of(new AttendanceTime(10))))
-								.build(),
-				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
-						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 4))),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554bbbb")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(120))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(0))))
-										.build(),
-						new AttendanceTime(0), new AttendanceTime(0)));
+				DaikyuFurikyuHelper.createDetailDefaultUnba(true,  //代休
+						OccurrenceDigClass.DIGESTION,//発生消化区分
+						Optional.of(GeneralDate.ymd(2019, 11, 3)), //年月日
+						"a1", 
+						0.0, 10),//未相殺数
+
+				DaikyuFurikyuHelper.createDetailDefaultUnba(true, //代休
+						OccurrenceDigClass.OCCURRENCE,//発生消化区分
+						Optional.of(GeneralDate.ymd(2019, 11, 4)),//年月日
+						"a2",
+						1.0, 0));//未相殺数
+				
 		TypeOffsetJudgment typeJudgment = TypeOffsetJudgment.REAMAIN;
 		lstAccAbse.sort(new AccumulationAbsenceDetailComparator());
 		Pair<Optional<DayOffError>, List<SeqVacationAssociationInfo>> resultActual = OffsetChronologicalOrder
@@ -155,17 +145,17 @@ public class OffsetChronologicalOrderTest {
 		assertThat(resultActual.getRight()).isEqualTo(new ArrayList<>());
 		assertThat(resultActual.getLeft()).isEqualTo(Optional.empty());
 		assertThat(lstAccAbse)
-		.extracting(x -> x.getManageId(), x -> x.getEmployeeId(), x -> x.getDataAtr(),
+		.extracting(x -> x.getManageId(), x -> x.getDataAtr(),
 				x -> x.getDateOccur().isUnknownDate(), x -> x.getDateOccur().getDayoffDate(),
-				x -> x.getNumberOccurren().getDay().v(), x -> x.getNumberOccurren().getTime(),
-				x -> x.getOccurrentClass(), x -> x.getUnbalanceNumber().getDay().v(),
+				x -> x.getOccurrentClass(),
+				x -> x.getUnbalanceNumber().getDay().v(),
 				x -> x.getUnbalanceNumber().getTime())
 		.containsExactly(
-				Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554ddfk", SID, MngDataStatus.RECORD, false,
-						Optional.of(GeneralDate.ymd(2019, 11, 3)), 1.0, Optional.of(new AttendanceTime(1)),
+				Tuple.tuple("a1", MngDataStatus.RECORD, false,
+						Optional.of(GeneralDate.ymd(2019, 11, 3)), 
 						OccurrenceDigClass.DIGESTION, 0.0, Optional.of(new AttendanceTime(10))),
-				Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554bbbb", SID, MngDataStatus.RECORD, false,
-						Optional.of(GeneralDate.ymd(2019, 11, 4)), 1.0, Optional.of(new AttendanceTime(120)),
+				Tuple.tuple("a2", MngDataStatus.RECORD, false,
+						Optional.of(GeneralDate.ymd(2019, 11, 4)),
 						OccurrenceDigClass.OCCURRENCE, 1.0, Optional.of(new AttendanceTime(0))));
 	}
 
@@ -184,68 +174,46 @@ public class OffsetChronologicalOrderTest {
 	public void testOffsetJudgmenteError() {
 
 		List<TimeLapseVacationSetting> lstTimeLap = Arrays.asList(
-				new TimeLapseVacationSetting(new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.ymd(2020, 1, 1)),
-						true, 30, false, Optional.of(true), Optional.of(1)));
+				new TimeLapseVacationSetting(
+						new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.ymd(2020, 1, 1)),//期間
+						true, //管理区分
+						30, // 使用期限
+						false, // 先取り許可
+						Optional.of(true), // 時間管理区分
+						Optional.of(1)));// 時間消化単位
 
-		List<AccumulationAbsenceDetail> lstAccAbse = Arrays.asList(
-				new AccuVacationBuilder(SID,
-						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 3))),
-						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554ddff")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
-										Optional.of(new AttendanceTime(0))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
-										Optional.of(new AttendanceTime(0))))
-								.build(),
-				new UnbalanceVacation(GeneralDate.ymd(2019, 12, 8), DigestionAtr.UNUSED,
-						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 4))),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554bbbb")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(120))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(120))))
-										.build(),
-						new AttendanceTime(480), new AttendanceTime(240)),
-				new AccuVacationBuilder(SID, new CompensatoryDayoffDate(true, Optional.empty()),
-						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554cccc")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.build(),
-				new AccuVacationBuilder(SID,
-						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 4))),
-						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554dddd")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.build(),
-				new UnbalanceVacation(GeneralDate.ymd(2019, 12, 8), DigestionAtr.UNUSED,
-						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID, new CompensatoryDayoffDate(false,  Optional.of(GeneralDate.ymd(2019, 04, 8))),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554ddde")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(0))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
-												Optional.of(new AttendanceTime(0))))
-										.build(),
-						new AttendanceTime(480), new AttendanceTime(240)),
-				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
-						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 10))),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554dddf")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(0))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(240))))
-										.build(),
-						new AttendanceTime(480), new AttendanceTime(240)));
+		List<AccumulationAbsenceDetail> lstAccAbse = Arrays.asList(DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
+				OccurrenceDigClass.DIGESTION, // 発生消化区分
+				Optional.of(GeneralDate.ymd(2019, 11, 3)), // 年月日
+				"a3", 0.0, 0), // 未相殺数
+
+				DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
+						OccurrenceDigClass.OCCURRENCE, // 発生消化区分
+						Optional.of(GeneralDate.ymd(2019, 11, 4)), // 年月日
+						"a2", 1.0, 120), // 未相殺数
+
+				DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
+						OccurrenceDigClass.DIGESTION, // 発生消化区分
+						Optional.empty(), // 年月日
+						"a4", 1.0, 120), // 未相殺数
+
+				DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
+						OccurrenceDigClass.DIGESTION, // 発生消化区分
+						Optional.of(GeneralDate.ymd(2019, 4, 4)), // 年月日
+						"a5", 1.0, 120), // 未相殺数
+
+				DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
+						OccurrenceDigClass.OCCURRENCE, // 発生消化区分
+						Optional.of(GeneralDate.ymd(2019, 4, 8)), // 年月日
+						"a6", 0.0, 0), // 未相殺数
+
+				DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
+						OccurrenceDigClass.OCCURRENCE, // 発生消化区分
+						Optional.of(GeneralDate.ymd(2019, 4, 10)), // 年月日
+						"a9", 1.0, 480)// 未相殺数
+
+		);
+		
 		TypeOffsetJudgment typeJudgment = TypeOffsetJudgment.REAMAIN;
 		new Expectations() {
 			{
@@ -268,45 +236,92 @@ public class OffsetChronologicalOrderTest {
 	 * 
 	 * 　準備するデータ
 	 *
+	 * 　　相殺判定後、次の「逐次発生の休暇明細」(発生)チェック
+	 * */
+	@Test
+	public void testUpdateContinue() {
+
+		List<TimeLapseVacationSetting> lstTimeLap = Arrays.asList(
+				new TimeLapseVacationSetting(
+						new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.ymd(2020, 1, 1)),//期間
+						true, //管理区分
+						30, // 使用期限
+						true, // 先取り許可
+						Optional.of(false), // 時間管理区分
+						Optional.of(1)));// 時間消化単位
+		
+		List<AccumulationAbsenceDetail> lstAccAbse = Arrays.asList(DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
+				OccurrenceDigClass.DIGESTION, // 発生消化区分
+				Optional.of(GeneralDate.ymd(2019, 11, 4)), // 年月日
+				"a3", 1.0, 120), // 未相殺数
+
+				DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
+						OccurrenceDigClass.OCCURRENCE, // 発生消化区分
+						Optional.of(GeneralDate.ymd(2019, 11, 3)), // 年月日
+						"a2", 0.5, 120), // 未相殺数
+
+				DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
+						OccurrenceDigClass.OCCURRENCE, // 発生消化区分
+						Optional.of(GeneralDate.ymd(2019, 10, 3)), // 年月日
+						"a10", 0.5, 120), // 未相殺数
+
+				DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
+						OccurrenceDigClass.DIGESTION, // 発生消化区分
+						Optional.of(GeneralDate.ymd(2019, 4, 4)), // 年月日
+						"a5", 1.0, 120)// 未相殺数
+		);
+		
+		TypeOffsetJudgment typeJudgment = TypeOffsetJudgment.REAMAIN;
+		lstAccAbse.sort(new AccumulationAbsenceDetailComparator());
+		Pair<Optional<DayOffError>, List<SeqVacationAssociationInfo>> resultActual = OffsetChronologicalOrder
+				.process(require, SID, lstTimeLap, lstAccAbse, typeJudgment);
+		assertThat(resultActual.getRight())
+				.extracting(x -> x.getDateOfUse(), x -> x.getDayNumberUsed(), x -> x.getOutbreakDay(),
+						x -> x.getTargetSelectionAtr())
+				.contains(
+						Tuple.tuple(GeneralDate.ymd(2019, 04, 04), new ReserveLeaveRemainingDayNumber(1.0),
+								GeneralDate.ymd(2019, 10, 3), TargetSelectionAtr.AUTOMATIC),
+						Tuple.tuple(GeneralDate.ymd(2019, 04, 04), new ReserveLeaveRemainingDayNumber(0.5),
+								GeneralDate.ymd(2019, 11, 3), TargetSelectionAtr.AUTOMATIC));
+	}
+	
+	// 相殺判定の返すパラメータ
+	/*
+	 * 　テストしたい内容
+	 *     　未相殺数を更新 
+	 * 
+	 * 　準備するデータ
+	 *
 	 * 　　相殺処理を行ったら、すべての逐次発生の休暇明細（発生）が0になるデータ
 	 * */
 	@Test
 	public void testUpdateUnbNumMagTimeFalse() {
 
 		List<TimeLapseVacationSetting> lstTimeLap = Arrays.asList(
-				new TimeLapseVacationSetting(new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.ymd(2020, 1, 1)),
-						true, 30, true, Optional.of(false), Optional.of(1)));
+				new TimeLapseVacationSetting(
+						new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.ymd(2020, 1, 1)),//期間
+						true, //管理区分
+						30, // 使用期限
+						true, // 先取り許可
+						Optional.of(false), // 時間管理区分
+						Optional.of(1)));// 時間消化単位
 
-		List<AccumulationAbsenceDetail> lstAccAbse = Arrays.asList(
-				new AccuVacationBuilder(SID,
-						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 4))),
-						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554ddfk")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
-										Optional.of(new AttendanceTime(0))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.build(),
-				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
-						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 3))),
-								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
-								"adda6a46-2cbe-48c8-85f8-c04ca554bbbb")
-										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(120))))
-										.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-												Optional.of(new AttendanceTime(120))))
-										.build(),
-						new AttendanceTime(0), new AttendanceTime(0)),
-				new AccuVacationBuilder(SID,
-						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 4))),
-						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554dddd")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.build()
-				);
+		List<AccumulationAbsenceDetail> lstAccAbse = Arrays.asList(DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
+				OccurrenceDigClass.DIGESTION, // 発生消化区分
+				Optional.of(GeneralDate.ymd(2019, 11, 4)), // 年月日
+				"a1", 1.0, 120), // 未相殺数
+
+				DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
+						OccurrenceDigClass.OCCURRENCE, // 発生消化区分
+						Optional.of(GeneralDate.ymd(2019, 11, 3)), // 年月日
+						"a2", 0.5, 120), // 未相殺数
+
+				DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
+						OccurrenceDigClass.DIGESTION, // 発生消化区分
+						Optional.of(GeneralDate.ymd(2019, 4, 4)), // 年月日
+						"a5", 1.0, 120)// 未相殺数
+		);
+		
 		TypeOffsetJudgment typeJudgment = TypeOffsetJudgment.REAMAIN;
 		lstAccAbse.sort(new AccumulationAbsenceDetailComparator());
 		Pair<Optional<DayOffError>, List<SeqVacationAssociationInfo>> resultActual = OffsetChronologicalOrder
@@ -317,6 +332,7 @@ public class OffsetChronologicalOrderTest {
 				.contains(
 						Tuple.tuple(GeneralDate.ymd(2019, 04, 04), new ReserveLeaveRemainingDayNumber(1.0),
 								GeneralDate.ymd(2019, 11, 3), TargetSelectionAtr.AUTOMATIC));
+		//TODO: thieu check du lieu khi sd het
 	}
 
 	// test offsetJudgment
@@ -339,33 +355,29 @@ public class OffsetChronologicalOrderTest {
 		privateMethod.setAccessible(true);
 
 		TimeLapseVacationSetting setting = new TimeLapseVacationSetting(
-				new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.ymd(2020, 1, 1)), true, 30, true,
-				Optional.of(true), Optional.of(1));
+				new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.ymd(2020, 1, 1)), // 期間
+				true, // 管理区分
+				30, // 使用期限
+				true, // 先取り許可
+				Optional.of(true), // 時間管理区分
+				Optional.of(1));// 時間消化単位
 
-		AccumulationAbsenceDetail dig = new AccuVacationBuilder(SID,
-				new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 11))),
-				OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554dddd")
-						.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-								Optional.of(new AttendanceTime(0))))
-						.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-								Optional.of(new AttendanceTime(0))))
-						.build();
+		AccumulationAbsenceDetail dig = DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
+				OccurrenceDigClass.DIGESTION, // 発生消化区分
+				Optional.of(GeneralDate.ymd(2019, 11, 11)), // 年月日
+				"a2", 1.0, 0);// 未相殺数
 
-		AccumulationAbsenceDetail occ = new UnbalanceVacation(GeneralDate.ymd(2019, 10, 8), DigestionAtr.UNUSED,
-				Optional.of(GeneralDate.ymd(2019, 12, 30)),
-				new AccuVacationBuilder(SID,
-						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 15))),
-						OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554ddde")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(0))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(480))))
-								.build(),
-				new AttendanceTime(480), new AttendanceTime(240));
+		AccumulationAbsenceDetail occ = DaikyuFurikyuHelper.createDetailDefault(true, // 代休
+				OccurrenceDigClass.OCCURRENCE, // 発生消化区分
+				Optional.of(GeneralDate.ymd(2019, 1, 15)), // 年月日
+				"a2", GeneralDate.ymd(2019, 10, 8), //期限日
+				1.0, 480);// 未相殺数
+				
 		Pair<OffsetJudgment, Optional<SeqVacationAssociationInfo>> returnValue = (Pair<OffsetJudgment, Optional<SeqVacationAssociationInfo>>) privateMethod
 				.invoke(OffsetChronologicalOrder.class, setting, dig, occ, TypeOffsetJudgment.REAMAIN);
 
 		assertThat(returnValue.getLeft()).isEqualTo(OffsetJudgment.SUCCESS);
+		//check het han
 
 	}
 
@@ -390,30 +402,25 @@ public class OffsetChronologicalOrderTest {
 		privateMethod.setAccessible(true);
 
 		TimeLapseVacationSetting setting = new TimeLapseVacationSetting(
-				new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.ymd(2020, 1, 1)), true, 30, true,
-				Optional.of(true), Optional.of(1));
+				new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.ymd(2020, 1, 1)), // 期間
+				true, // 管理区分
+				30, // 使用期限
+				true, // 先取り許可
+				Optional.of(true), // 時間管理区分
+				Optional.of(1));// 時間消化単位
 
-		AccumulationAbsenceDetail dig = new AccuVacationBuilder(SID,
-				new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 11))),
-				OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554dddd")
-						.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-								Optional.of(new AttendanceTime(0))))
-						.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-								Optional.of(new AttendanceTime(0))))
-						.build();
 
-		AccumulationAbsenceDetail occ = new UnbalanceVacation(GeneralDate.ymd(2019, 12, 8), DigestionAtr.UNUSED,
-				Optional.of(GeneralDate.ymd(2019, 12, 30)),
-				new AccuVacationBuilder(SID,
-						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 15))),
-						OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554ddde")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(0))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
-										Optional.of(new AttendanceTime(0))))
-								.build(),
-				new AttendanceTime(480), new AttendanceTime(240));
+		AccumulationAbsenceDetail dig = DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
+				OccurrenceDigClass.DIGESTION, // 発生消化区分
+				Optional.of(GeneralDate.ymd(2019, 11, 11)), // 年月日
+				"a5", 1.0, 0);// 未相殺数
 
+		AccumulationAbsenceDetail occ = DaikyuFurikyuHelper.createDetailDefault(true, // 代休
+				OccurrenceDigClass.OCCURRENCE, // 発生消化区分
+				Optional.of(GeneralDate.ymd(2019, 11, 15)), // 年月日
+				"a6", GeneralDate.ymd(2019, 12, 8), //期限日
+				0.0, 0);// 未相殺数
+		
 		Pair<OffsetJudgment, Optional<SeqVacationAssociationInfo>> returnValue = (Pair<OffsetJudgment, Optional<SeqVacationAssociationInfo>>) privateMethod
 				.invoke(OffsetChronologicalOrder.class, setting, dig, occ, TypeOffsetJudgment.REAMAIN);
 
@@ -442,32 +449,27 @@ public class OffsetChronologicalOrderTest {
 				TimeLapseVacationSetting.class, AccumulationAbsenceDetail.class, AccumulationAbsenceDetail.class,
 				TypeOffsetJudgment.class);
 		privateMethod.setAccessible(true);
-
+		
 		TimeLapseVacationSetting setting = new TimeLapseVacationSetting(
-				new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.ymd(2020, 1, 1)), true, 30, false,
-				Optional.of(true), Optional.of(1));
+				new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.ymd(2020, 1, 1)), // 期間
+				true, // 管理区分
+				30, // 使用期限
+				false, // 先取り許可
+				Optional.of(true), // 時間管理区分
+				Optional.of(1));// 時間消化単位
 
-		AccumulationAbsenceDetail dig = new AccuVacationBuilder(SID,
-				new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 11))),
-				OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554dddd")
-						.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-								Optional.of(new AttendanceTime(0))))
-						.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-								Optional.of(new AttendanceTime(0))))
-						.build();
 
-		AccumulationAbsenceDetail occ = new UnbalanceVacation(GeneralDate.ymd(2019, 12, 8), DigestionAtr.UNUSED,
-				Optional.of(GeneralDate.ymd(2019, 12, 30)),
-				new AccuVacationBuilder(SID,
-						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 12, 15))),
-						OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554ddde")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
-										Optional.of(new AttendanceTime(120))))
-								.build(),
-				new AttendanceTime(480), new AttendanceTime(240));
+		AccumulationAbsenceDetail dig = DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
+				OccurrenceDigClass.DIGESTION, // 発生消化区分
+				Optional.of(GeneralDate.ymd(2019, 11, 11)), // 年月日
+				"a5", 1.0, 0);// 未相殺数
 
+		AccumulationAbsenceDetail occ = DaikyuFurikyuHelper.createDetailDefault(true, // 代休
+				OccurrenceDigClass.OCCURRENCE, // 発生消化区分
+				Optional.of(GeneralDate.ymd(2019, 11, 15)), // 年月日
+				"a6", GeneralDate.ymd(2019, 12, 8), //期限日
+				0.0, 120);// 未相殺数
+		
 		Pair<OffsetJudgment, Optional<SeqVacationAssociationInfo>> returnValue = (Pair<OffsetJudgment, Optional<SeqVacationAssociationInfo>>) privateMethod
 				.invoke(OffsetChronologicalOrder.class, setting, dig, occ, TypeOffsetJudgment.REAMAIN);
 
@@ -494,34 +496,29 @@ public class OffsetChronologicalOrderTest {
 		privateMethod.setAccessible(true);
 
 		TimeLapseVacationSetting setting = new TimeLapseVacationSetting(
-				new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.ymd(2020, 1, 1)), true, 30, false,
-				Optional.of(true), Optional.of(1));
+				new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.ymd(2020, 1, 1)), // 期間
+				true, // 管理区分
+				30, // 使用期限
+				false, // 先取り許可
+				Optional.of(true), // 時間管理区分
+				Optional.of(1));// 時間消化単位
 
-		AccumulationAbsenceDetail dig = new AccuVacationBuilder(SID,
-				new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 11))),
-				OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554dddd")
-						.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-								Optional.of(new AttendanceTime(0))))
-						.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-								Optional.of(new AttendanceTime(0))))
-						.build();
+		AccumulationAbsenceDetail dig = DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
+				OccurrenceDigClass.DIGESTION, // 発生消化区分
+				Optional.of(GeneralDate.ymd(2019, 11, 11)), // 年月日
+				"a5", 1.0, 0);// 未相殺数
 
-		AccumulationAbsenceDetail occ = new UnbalanceVacation(GeneralDate.ymd(2019, 12, 8), DigestionAtr.UNUSED,
-				Optional.of(GeneralDate.ymd(2019, 12, 30)),
-				new AccuVacationBuilder(SID,
-						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 10, 15))),
-						OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554ddde")
-								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
-										Optional.of(new AttendanceTime(120))))
-								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
-										Optional.of(new AttendanceTime(120))))
-								.build(),
-				new AttendanceTime(480), new AttendanceTime(240));
-
+		AccumulationAbsenceDetail occ = DaikyuFurikyuHelper.createDetailDefault(true, // 代休
+				OccurrenceDigClass.OCCURRENCE, // 発生消化区分
+				Optional.of(GeneralDate.ymd(2019, 10, 15)), // 年月日
+				"a6", GeneralDate.ymd(2019, 12, 30), //期限日
+				0.0, 120);// 未相殺数
+		
 		Pair<OffsetJudgment, Optional<SeqVacationAssociationInfo>> returnValue = (Pair<OffsetJudgment, Optional<SeqVacationAssociationInfo>>) privateMethod
 				.invoke(OffsetChronologicalOrder.class, setting, dig, occ, TypeOffsetJudgment.REAMAIN);
 
 		assertThat(returnValue.getLeft()).isEqualTo(OffsetJudgment.SUCCESS);
+		// check update
 
 	}
 

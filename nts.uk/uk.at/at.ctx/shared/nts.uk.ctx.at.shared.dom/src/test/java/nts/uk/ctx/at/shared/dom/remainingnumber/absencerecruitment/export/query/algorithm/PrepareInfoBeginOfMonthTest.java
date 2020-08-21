@@ -45,6 +45,17 @@ public class PrepareInfoBeginOfMonthTest {
 	public void setUp() throws Exception {
 	}
 
+	/*
+	 * テストしたい内容
+	 *　　確定データから「逐次発生の休暇明細」を作成
+	 * 　　繰越数を計算する
+	 * 準備するデータ
+	 * 　　振休管理データがある
+	 * 
+　	 *　　振出管理データがある
+	 * 
+	 * 
+	 */
 	@Test
 	public void test() {
 
@@ -55,29 +66,29 @@ public class PrepareInfoBeginOfMonthTest {
 
 				require.getByYmdUnOffset(CID, SID, (GeneralDate) any, anyDouble);
 				result = Arrays.asList(
-						new SubstitutionOfHDManagementData("adda6a46-2cbe-48c8-85f8-c04ca554e133", CID, SID,
+						new SubstitutionOfHDManagementData("a1", CID, SID,
 								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 30))),
 								new ManagementDataDaysAtr(1.0), new ManagementDataRemainUnit(1.0)),
-						new SubstitutionOfHDManagementData("adda6a46-2cbe-48c8-85f8-c04ca554e134", CID, SID,
+						new SubstitutionOfHDManagementData("a2", CID, SID,
 								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 29))),
 								new ManagementDataDaysAtr(1.0), new ManagementDataRemainUnit(1.0)),
-						new SubstitutionOfHDManagementData("adda6a46-2cbe-48c8-85f8-c04ca554e135", CID, SID,
+						new SubstitutionOfHDManagementData("a3", CID, SID,
 								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 20))),
 								new ManagementDataDaysAtr(1.0), new ManagementDataRemainUnit(1.0)));
 
 				require.getByUnUseState(CID, SID, (GeneralDate) any, 0, DigestionAtr.UNUSED);
-				result = Arrays.asList(new PayoutManagementData("62d542c3-4b79-4bf3-bd39-7e7f06711ccc", CID, SID, false,
+				result = Arrays.asList(new PayoutManagementData("a4", CID, SID, false,
 						GeneralDate.ymd(2019, 10, 28), GeneralDate.max(), HolidayAtr.PUBLIC_HOLIDAY.value, 1.0, 1.0, 0),
-						new PayoutManagementData("62d542c3-4b79-4bf3-bd39-7e7f06711ccb", CID, SID, false,
+						new PayoutManagementData("a5", CID, SID, false,
 								GeneralDate.ymd(2019, 10, 25), GeneralDate.max(), HolidayAtr.PUBLIC_HOLIDAY.value, 1.0,
 								1.0, 0),
-						new PayoutManagementData("62d542c3-4b79-4bf3-bd39-7e7f06711aaa", CID, SID, false,
+						new PayoutManagementData("a6", CID, SID, false,
 								GeneralDate.ymd(2019, 10, 27), GeneralDate.max(), HolidayAtr.PUBLIC_HOLIDAY.value, 1.0,
 								1.0, 0),
-						new PayoutManagementData("62d542c3-4b79-4bf3-bd39-7e7f06711aaa", CID, SID, false,
+						new PayoutManagementData("a7", CID, SID, false,
 								GeneralDate.ymd(2019, 12, 27), GeneralDate.max(), HolidayAtr.PUBLIC_HOLIDAY.value, 1.0,
 								1.0, 0),
-						new PayoutManagementData("62d542c3-4b79-4bf3-bd39-7e7f06711aaa", CID, SID, false,
+						new PayoutManagementData("a8", CID, SID, false,
 								GeneralDate.ymd(2019, 10, 25), GeneralDate.max(), HolidayAtr.PUBLIC_HOLIDAY.value, 1.0,
 								1.0, 0));
 
@@ -88,9 +99,11 @@ public class PrepareInfoBeginOfMonthTest {
 				GeneralDate.ymd(2019, 11, 30), false, lstAccDetail,
 				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 
+		//残日数
 		assertThat(resultActual.getRemainDays()).isEqualTo(2.0);
 
-		assertThat(resultActual.getRemainDays()).isEqualTo(2.0);
+		//未消化日数
+		assertThat(resultActual.getUnDigestedDays()).isEqualTo(0.0);
 
 	}
 
