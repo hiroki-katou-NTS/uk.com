@@ -52,7 +52,7 @@ public class GetPersonInfoHR {
 		personInfoHROutput.setReleaseDate(domain.getReleaseDate().map(m -> m).orElse(null));
 		personInfoHROutput.setRequestFlg(domain.getRequestFlg());
 		personInfoHROutput.setRptLayoutId(domain.getRptLayoutId());
-		personInfoHROutput.setRptId(domain.getRptId());
+		personInfoHROutput.setRptId(domain.getRptId().map(m -> m).orElse(null));
 		personInfoHROutput.setRptNumber(domain.getRptNumber().map(m -> m).orElse(null));
 		
 		personInfoHROutput.setStr01(domain.getStr01().map(m -> m).orElse(null));

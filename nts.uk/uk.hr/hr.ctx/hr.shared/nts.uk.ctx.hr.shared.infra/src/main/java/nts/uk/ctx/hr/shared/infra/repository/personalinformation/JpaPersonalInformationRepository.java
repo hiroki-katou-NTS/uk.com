@@ -74,52 +74,52 @@ public class JpaPersonalInformationRepository extends JpaRepository implements P
 	@Override
 	public List<PersonalInformation> get(GetPersonInfoHRInput input) {
 		String GET_PERSONALINFO = "SELECT a FROM PpedtData a WHERE a.cId = :cId AND a.workId = :workId";
-		List<PpedtData> personalInformations = new ArrayList<>();
+//		List<PpedtData> personalInformations = new ArrayList<>();
 
-		if (!input.getColumnName().isEmpty() && !input.getTypeSort().isEmpty()) {
+//		if (!input.getColumnName().isEmpty() && !input.getTypeSort().isEmpty()) {
+//
+//			if (input.getTypeSort().toUpperCase().equals("ASC") || input.getTypeSort().toUpperCase().equals("DESC")) {
+//				GET_PERSONALINFO = GET_PERSONALINFO
+//						.concat(" ORDER BY a." + input.getColumnName() + " " + input.getTypeSort());
+//			}
+//		}
 
-			if (input.getTypeSort().toUpperCase().equals("ASC") || input.getTypeSort().toUpperCase().equals("DESC")) {
-				GET_PERSONALINFO = GET_PERSONALINFO
-						.concat(" ORDER BY a." + input.getColumnName() + " " + input.getTypeSort());
-			}
-		}
+		List<PpedtData> personalInformations = this.queryProxy().query(GET_PERSONALINFO, PpedtData.class)
+				.setParameter("cId", input.getCompanyId()).setParameter("workId", 6).getList();
 
-		personalInformations = this.queryProxy().query(GET_PERSONALINFO, PpedtData.class)
-				.setParameter("cId", input.getCompanyId()).setParameter("workId", input.getBusinessId()).getList();
+//		if (!input.getEmployeeId().isEmpty()) {
+//			List<PpedtData> ppdetData = new ArrayList<>();
+//
+//			for (int i = 0; i < input.getEmployeeId().size(); i++) {
+//
+//				for (int j = 0; j < personalInformations.size(); j++) {
+//
+//					if (input.getEmployeeId().get(i).equals(personalInformations.get(j).getSid())) {
+//						ppdetData.add(personalInformations.get(j));
+//					}
+//				}
+//			}
+//
+//			personalInformations = ppdetData;
+//		}
 
-		if (!input.getEmployeeId().isEmpty()) {
-			List<PpedtData> ppdetData = new ArrayList<>();
+//		if (!input.getPersonalId().isEmpty()) {
+//			List<PpedtData> ppdetData = new ArrayList<>();
+//
+//			for (int i = 0; i < input.getPersonalId().size(); i++) {
+//
+//				for (int j = 0; j < personalInformations.size(); j++) {
+//
+//					if (input.getPersonalId().get(i).equals(personalInformations.get(j).getPersonName())) {
+//						ppdetData.add(personalInformations.get(j));
+//					}
+//				}
+//			}
+//
+//			personalInformations = ppdetData;
+//		}
 
-			for (int i = 0; i < input.getEmployeeId().size(); i++) {
-
-				for (int j = 0; j < personalInformations.size(); j++) {
-
-					if (input.getEmployeeId().get(i).equals(personalInformations.get(j).getSid())) {
-						ppdetData.add(personalInformations.get(j));
-					}
-				}
-			}
-
-			personalInformations = ppdetData;
-		}
-
-		if (!input.getPersonalId().isEmpty()) {
-			List<PpedtData> ppdetData = new ArrayList<>();
-
-			for (int i = 0; i < input.getPersonalId().size(); i++) {
-
-				for (int j = 0; j < personalInformations.size(); j++) {
-
-					if (input.getPersonalId().get(i).equals(personalInformations.get(j).getPersonName())) {
-						ppdetData.add(personalInformations.get(j));
-					}
-				}
-			}
-
-			personalInformations = ppdetData;
-		}
-
-		return personalInformations.stream().map(m -> m.toDomain(m)).collect(Collectors.toList());
+		return personalInformations.stream().map(m -> m.toDomain()).collect(Collectors.toList());
 	}
 
 	@Override
@@ -130,7 +130,7 @@ public class JpaPersonalInformationRepository extends JpaRepository implements P
 				.setParameter("contractCd", contractCd).setParameter("cId", cId).setParameter("workId", 6)
 				.setParameter("baseDate", baseDate).getList();
 
-		return personalInformations.stream().map(m -> m.toDomain(m)).collect(Collectors.toList());
+		return personalInformations.stream().map(m -> m.toDomain()).collect(Collectors.toList());
 	}
 
 	@Override
@@ -141,7 +141,7 @@ public class JpaPersonalInformationRepository extends JpaRepository implements P
 				.setParameter("contractCd", contractCd).setParameter("cId", cId).setParameter("workId", 6)
 				.setParameter("baseDate", baseDate).getList();
 
-		return personalInformations.stream().map(m -> m.toDomain(m)).collect(Collectors.toList());
+		return personalInformations.stream().map(m -> m.toDomain()).collect(Collectors.toList());
 	}
 
 	@Override
@@ -160,7 +160,7 @@ public class JpaPersonalInformationRepository extends JpaRepository implements P
 		if (ppedtDatas.isEmpty())
 			return Collections.emptyList();
 
-		return ppedtDatas.stream().map(m -> m.toDomain(m)).collect(Collectors.toList());
+		return ppedtDatas.stream().map(m -> m.toDomain()).collect(Collectors.toList());
 	}
 
 	@Override

@@ -883,7 +883,7 @@ public class PpedtData extends ContractUkJpaEntity implements Serializable {
 		entity.releaseDate = domain.getReleaseDate().map(m -> m).orElse(null);
 		entity.requestFlg = domain.getRequestFlg();
 		entity.rptLayoutId = domain.getRptLayoutId();
-		entity.rptId = BigInteger.valueOf(domain.getRptId());
+		entity.rptId = BigInteger.valueOf(domain.getRptId().map(m -> m).orElse(null));
 		entity.rptNumber = domain.getRptNumber().map(m -> m).orElse(null);
 
 		entity.str01 = domain.getStr01().map(m -> m).orElse(null);
@@ -1084,7 +1084,7 @@ public class PpedtData extends ContractUkJpaEntity implements Serializable {
 		return entity;
 	}
 
-	public PersonalInformation toDomain(PpedtData entity) {
+	public PersonalInformation toDomain() {
 		PersonalInformation domain = new PersonalInformation();
 
 		domain.setHistId(this.hisId);
@@ -1102,8 +1102,8 @@ public class PpedtData extends ContractUkJpaEntity implements Serializable {
 		domain.setReleaseDate(Optional.of(this.releaseDate));
 		domain.setRequestFlg(this.requestFlg);
 		domain.setRptLayoutId(this.rptLayoutId);
-		domain.setRptId(this.rptId.longValue());
-		domain.setRptNumber(Optional.of(this.rptNumber));
+//		domain.setRptId(Optional.of(this.rptId != null ? this.rptId.longValue() : null));
+//		domain.setRptNumber(Optional.of(this.rptNumber));
 
 		domain.setStr01(Optional.of(this.str01));
 		domain.setStr02(Optional.of(this.str02));

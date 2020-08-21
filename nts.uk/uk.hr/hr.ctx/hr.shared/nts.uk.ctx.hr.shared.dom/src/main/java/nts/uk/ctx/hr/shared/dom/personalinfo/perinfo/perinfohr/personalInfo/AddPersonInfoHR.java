@@ -112,7 +112,7 @@ public class AddPersonInfoHR {
 						m.getRequestFlg(),
 						m.getRptLayoutId(),
 						Optional.of(m.getRptNumber()),
-						m.getRptId(), 
+						Optional.of(m.getRptId()), 
 						Optional.of(m.getScd()),
 						Optional.of(m.getSelectCode01()),
 						Optional.of(m.getSelectCode02()),
@@ -241,8 +241,10 @@ public class AddPersonInfoHR {
 				return perInfo;
 			}).collect(Collectors.toList());
 			
-			for (PersonalInformation personalInformation : perInfos) {
-				repo.insert(personalInformation);
+			if (!perInfos.isEmpty()) {
+				for (PersonalInformation personalInformation : perInfos) {
+					repo.insert(personalInformation);
+				}
 			}
 		}
 	}

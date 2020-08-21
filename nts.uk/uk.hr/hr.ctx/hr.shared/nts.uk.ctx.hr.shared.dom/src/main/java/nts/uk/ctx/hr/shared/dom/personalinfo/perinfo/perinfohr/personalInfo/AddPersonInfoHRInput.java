@@ -1,7 +1,5 @@
 package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

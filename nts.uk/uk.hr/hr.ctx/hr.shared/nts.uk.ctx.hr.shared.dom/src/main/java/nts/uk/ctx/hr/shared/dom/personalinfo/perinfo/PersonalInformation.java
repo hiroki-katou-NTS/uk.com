@@ -274,7 +274,7 @@ public class PersonalInformation implements DomainAggregate {
 	private Optional<String> rptNumber;
 	
 	// 届出ID
-	private Long rptId;
+	private Optional<Long> rptId;
 	
 	// 社員コード
 	private Optional<String> scd;

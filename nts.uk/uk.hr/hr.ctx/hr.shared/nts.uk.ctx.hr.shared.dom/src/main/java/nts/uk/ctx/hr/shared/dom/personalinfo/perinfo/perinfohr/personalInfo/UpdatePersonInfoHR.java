@@ -110,7 +110,7 @@ public class UpdatePersonInfoHR {
 						m.getRequestFlg(),
 						m.getRptLayoutId(),
 						Optional.of(m.getRptNumber()),
-						m.getRptId(), 
+						Optional.of(m.getRptId()), 
 						Optional.of(m.getScd()),
 						Optional.of(m.getSelectCode01()),
 						Optional.of(m.getSelectCode02()),
