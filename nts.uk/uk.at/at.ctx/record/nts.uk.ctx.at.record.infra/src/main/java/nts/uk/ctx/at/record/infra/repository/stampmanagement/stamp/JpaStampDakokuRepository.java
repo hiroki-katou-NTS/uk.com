@@ -101,8 +101,8 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		if(!entity.isPresent()) {
 			return;
 		}
-		KrcdtStamp entityUpdate = toEntity(stamp);
-		this.commandProxy().update(entityUpdate.toEntityUpdate(stamp));
+//		KrcdtStamp entityUpdate = toEntity(stamp);
+		this.commandProxy().update(entity.get().toEntityUpdate(stamp));
 	}
 
 	// [4] 取得する
@@ -213,7 +213,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 								: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
 										new AttendanceTime(entity.lateNightOverTime))),
 				entity.reflectedAtr,
-				Optional.ofNullable(entity.outsideAreaArt == null ? null
+				Optional.ofNullable(entity.outsideAreaArt == null || ( entity.locationLat == null && entity.locationLon == null) ? null
 						: new StampLocationInfor(
 								new GeoCoordinate(entity.locationLat.doubleValue(), entity.locationLon.doubleValue()),
 								entity.outsideAreaArt)), Optional.empty())
@@ -242,7 +242,8 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 											new AttendanceTime(entity.lateNightOverTime))),
 
 					entity.reflectedAtr,
-					Optional.ofNullable(entity.outsideAreaArt == null ? null : new StampLocationInfor(new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue()),entity.outsideAreaArt)),
+					Optional.ofNullable(entity.outsideAreaArt == null || ( entity.locationLat == null && entity.locationLon == null) ? null :
+						new StampLocationInfor(new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue()),entity.outsideAreaArt)),
 					Optional.empty()
 			);
 		return stamp;

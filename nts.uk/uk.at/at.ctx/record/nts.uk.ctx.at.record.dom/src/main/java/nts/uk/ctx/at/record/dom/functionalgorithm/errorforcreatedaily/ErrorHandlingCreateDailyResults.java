@@ -40,11 +40,9 @@ public class ErrorHandlingCreateDailyResults {
 			ErrMessageContent messageError) {
 		// エラー処理
 		if(empCalAndSumExeLogId != null) {
-			List<ErrMessageInfo> errMesInfos = new ArrayList<>();
 			ErrMessageInfo errMessageInfo = new ErrMessageInfo(employeeId, empCalAndSumExeLogId, resourceID,
 					executionContent, disposalDay, messageError);
-			errMesInfos.add(errMessageInfo);
-			this.errMessageInfoRepository.addList(errMesInfos);
+			this.errMessageInfoRepository.add(errMessageInfo);
 		}
 
 		// 社員の日別実績のエラーを作成する	

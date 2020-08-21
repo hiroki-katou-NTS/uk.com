@@ -1118,14 +1118,6 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		integrationOfDaily = createDailyResults.restoreData(converter, integrationOfDaily, listItemValue);
 		// エラーチェック
 		integrationOfDaily = calculationErrorCheckService.errorCheck(companyID, employeeID, processingDate, integrationOfDaily, true);
-		List<EmployeeDailyPerError> employeeErrors = integrationOfDaily.getEmployeeError();
-		List<ErrorMessageInfo> listError = employeeErrors.stream()
-				.map(c -> new ErrorMessageInfo(c.getCompanyID(), c.getEmployeeID(), c.getDate(),
-						ExecutionContent.DAILY_CREATION, new ErrMessageResource(""),
-						new ErrMessageContent(
-								c.getErrorAlarmMessage().isPresent() ? c.getErrorAlarmMessage().get().v() : "")))
-				.collect(Collectors.toList());
-		listErrorMessageInfo.addAll(listError);
 		return new OutputAcquireReflectEmbossingNew( listErrorMessageInfo,lstStamp);
 	}
 	
