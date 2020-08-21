@@ -36,11 +36,11 @@
     <div class="row ml-1 title uk-text-over-time">
       <label>{{ "KDPS01_28" | i18n }}</label>
     </div>
-    <div class="col-12 value">
+    <div class="row">
       <div class="col-7 d-inline-block"></div>
       <label
-        class=" col-5 stamp-text font-weight-bold"
-        style="line-height: 1rem; color:#0033cc;"
+        class="col-5 px-0 stamp-text font-weight-bold"
+        style="line-height: 1.5rem; color:#0033cc;"
         >{{ screenData.stampAtr }}</label
       >
     </div>
