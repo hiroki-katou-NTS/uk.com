@@ -6,7 +6,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppPrePostGroup;
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -148,7 +148,7 @@ public interface AppContentDetailCMM045 {
 	 * @param listOfAppTypes 申請種類リスト
 	 * @return
 	 */
-	public String createAppStampData(Application application, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, String companyID, ListOfAppTypes listOfAppTypes);
+	public AppStampDataOutput createAppStampData(Application application, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, String companyID, ListOfAppTypes listOfAppTypes);
 	
 	/**
 	 * refactor 4

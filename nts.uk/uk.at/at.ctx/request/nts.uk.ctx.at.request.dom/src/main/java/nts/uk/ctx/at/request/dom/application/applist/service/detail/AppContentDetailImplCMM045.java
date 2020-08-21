@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppPrePostGroup;
+import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
 import nts.uk.ctx.at.request.dom.application.applist.service.OverTimeFrame;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.AppContentService;
@@ -51,7 +52,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.TimeStampApp;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeStampAppEnum;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeStampAppOther;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeZoneStampClassification;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
@@ -791,7 +792,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
     }
     
     @Override
-	public String createAppStampData(Application application, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr,
+	public AppStampDataOutput createAppStampData(Application application, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr,
 			String companyID, ListOfAppTypes listOfAppTypes) {
 		// 申請.打刻申請モード
 		if(application.getOpStampRequestMode().get()==StampRequestMode.STAMP_ONLINE_RECORD) {
@@ -815,7 +816,9 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 					application.getAppType(), 
 					Optional.empty());
 			result += appReasonContent;
-			return result;
+			return new AppStampDataOutput(
+					result, 
+					Optional.of(ApplicationTypeDisplay.STAMP_ONLINE_RECORD));
 		}
 		// ドメインモデル「打刻申請」を取得する
 		AppStamp appStamp = appStampRepository.findByAppID(companyID, application.getAppID()).get();
@@ -900,13 +903,16 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 			}
 		}
 		// アルゴリズム「申請内容（打刻申請）」を実行する
-		return appContentService.getAppStampContent(
+		String content = appContentService.getAppStampContent(
 				appReasonDisAtr, 
 				application.getOpAppReason().orElse(null), 
 				screenAtr, 
 				listTmp, 
 				application.getAppType(), 
 				application.getOpAppStandardReasonCD().orElse(null));
+		return new AppStampDataOutput(
+				content, 
+				Optional.of(ApplicationTypeDisplay.STAMP_ADDITIONAL));
 	}
 
 	@Override
