@@ -36,7 +36,7 @@ public class DisplayInShift {
 	private GetScheduleActualOfShift getSchedulesAndAchievementsByShift;
 	
 
-	public DisplayInShiftResult dataSample(DisplayInShiftParam param) {
+	public DisplayInShiftResult getData(DisplayInShiftParam param) {
 
 		// Step 1
 		// khởi tạo param để truyền vào ScreenQuery シフトパレットを取得する
@@ -48,13 +48,9 @@ public class DisplayInShift {
 		// Step 2 call ScreenQuery 予定・実績をシフトで取得する
 		SchedulesbyShiftParam paramStep2 = new SchedulesbyShiftParam(param.listShiftMasterNotNeedGetNew, param.listSid,
 				param.startDate, param.endDate, param.getActualData);
-		SchedulesbyShiftDataResult resultStep2 = getSchedulesAndAchievementsByShift.dataSample(paramStep2);
+		SchedulesbyShiftDataResult resultStep2 = getSchedulesAndAchievementsByShift.getData(paramStep2);
 
 		return new DisplayInShiftResult(resultStep1.listPageInfo, resultStep1.targetShiftPalette,
 				resultStep1.listShiftMaster, resultStep2.listWorkScheduleShift);
-	}
-
-	public DisplayInShiftResult getData(DisplayInShiftParam param) {
-		return null;
 	}
 }

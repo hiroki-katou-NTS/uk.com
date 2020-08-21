@@ -75,7 +75,7 @@ public class GetWorkActualOfWorkInfo {
 	private WorkTimeSettingRepository workTimeSettingRepo;
 	
 	
-	public List<WorkScheduleWorkInforDto> GetDataActualOfWorkInfo(DisplayInWorkInfoParam param) {
+	public List<WorkScheduleWorkInforDto> getDataActualOfWorkInfo(DisplayInWorkInfoParam param) {
 		
 		String companyId = AppContexts.user().companyId();
 		// step 1 start
