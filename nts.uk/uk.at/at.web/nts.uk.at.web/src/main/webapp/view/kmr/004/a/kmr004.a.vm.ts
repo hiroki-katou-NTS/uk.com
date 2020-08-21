@@ -219,7 +219,9 @@ module nts.uk.at.view.kmr004.a {
             }
 
             $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
-                $('#tree-grid').getDataList();
+               if ( $('#tree-grid').getDataList().length <= 0) {
+                   self.showDialogForEmptyData();
+               }
             });
         }
 
@@ -238,9 +240,17 @@ module nts.uk.at.view.kmr004.a {
 			}
 
 			$('#tree-grid').ntsListComponent(vm.listComponentOption).done(() => {
-                $('#tree-grid').getDataList();
+                $('#tree-grid').getDataList().done(() => {
+                    if ( $('#tree-grid').getDataList().length <= 0) {
+                        vm.showDialogForEmptyData();
+                    }
+                });
             });
         }
+
+        showDialogForEmptyData(){
+            nts.uk.ui.dialog.info({ messageId: "Msg_177" });
+        };
 
         initConditionListComboBox(data: any) {
             const vm = this;

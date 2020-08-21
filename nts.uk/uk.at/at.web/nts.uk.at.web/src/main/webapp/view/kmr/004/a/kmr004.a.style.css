@@ -6,7 +6,7 @@
 
 #right-content {
 	margin-left: 20px;
-	width: 445px;
+	width: 457px;
 	float: left;
 	padding: 7px;
 	border: 2px solid #B1B1B1;
@@ -28,12 +28,12 @@
 }
 
 #A6_4, #A6_5 {
-	width: 375px;
+	min-width: 390px;
 	height: 190px;
 }
 
 .table_content td {
-	padding-top: 15px;
+	padding:5px
 }
 
 #tree-grid {
@@ -44,8 +44,20 @@
 	vertical-align:top;
 }
 
+#A8_2, #A10_2 {
+	padding-top: 7px;
+}
+#A8_6 label {
+	padding-left: 23px;
+	display: inline block;
+}
+
 #A10_2 {
 	align:left;
+}
+
+#A6_5 table.table_content tbody tr td table tbody tr td {
+	padding: 0px;
 }
 
 .label {
@@ -81,4 +93,15 @@
 
 #A10_2 label:first-child {
 	padding-bottom: 22px;
+}
+
+#A10_5 {
+	padding-left: 23px;
+	padding-top: 10px;
+	display: inline block;
+}
+
+#A10_6 {
+	padding-left: 26px;
+	padding-top: 4px;
 }
