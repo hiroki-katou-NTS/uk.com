@@ -100,15 +100,12 @@ export class KdpS01CComponent extends Vue {
                 }
             });
 
-
-            let isNoItemHasData = !_.find(data.itemValues, (item) => item.value);
             let timeData = [];
-            if (!isNoItemHasData) {
-                _.forEach(_.orderBy(items, 'attendanceItemId'), function (item) {
-                    let value = vm.toValue(item, _.find(data.itemValues, ['itemId', item.attendanceItemId]));
-                    timeData.push({ itemId: item.attendanceItemId, title: item.attendanceName, value });
-                });
-            }
+
+            _.forEach(_.orderBy(items, 'attendanceItemId'), function (item) {
+                let value = vm.toValue(item, _.find(data.itemValues, ['itemId', item.attendanceItemId]));
+                timeData.push({ itemId: item.attendanceItemId, title: item.attendanceName, value });
+            });
 
             vm.screenData.attendanceItem.timeItems = timeData;
 
