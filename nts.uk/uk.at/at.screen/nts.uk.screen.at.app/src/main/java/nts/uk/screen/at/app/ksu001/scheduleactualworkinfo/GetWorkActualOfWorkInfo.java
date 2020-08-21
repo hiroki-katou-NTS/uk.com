@@ -84,10 +84,16 @@ public class GetWorkActualOfWorkInfo {
 				empLeaveWorkHisAdapter, employmentHisScheduleAdapter);
 		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
 		
+		long start = System.nanoTime();
+		
 		Map<ScheManaStatuTempo , Optional<IntegrationOfDaily>> map = DailyResultAccordScheduleStatusService.get(requireDailyImpl, param.listSid, period);
 		
 		List<WorkInfoOfDailyAttendance> listWorkInfo = new ArrayList<WorkInfoOfDailyAttendance>();
 
+		long end = System.nanoTime();
+		long duration = (end - start) / 1000000; // ms;
+		System.out.println("thoi gian get data Daily cua "+ param.listSid.size() + " employee: " + duration + "ms");	
+		
 		map.forEach((k, v) -> {
 			if (v.isPresent()) {
 				WorkInfoOfDailyAttendance workInfo = v.get().getWorkInformation();

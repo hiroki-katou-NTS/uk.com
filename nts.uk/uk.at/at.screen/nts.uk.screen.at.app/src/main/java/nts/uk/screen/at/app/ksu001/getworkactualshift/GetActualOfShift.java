@@ -90,7 +90,13 @@ public class GetActualOfShift {
 				empLeaveWorkHisAdapter, employmentHisScheduleAdapter);
 		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
 		
+		long start = System.nanoTime();
+		
 		Map<ScheManaStatuTempo , Optional<IntegrationOfDaily>> mapDataDaily = DailyResultAccordScheduleStatusService.get(requireDailyImpl, param.listSid, period);
+		
+		long end = System.nanoTime();
+		long duration = (end - start) / 1000000; // ms;
+		System.out.println("thoi gian get data Daily cua "+ param.listSid.size() + " employee: " + duration + "ms");	
 		
 		List<WorkInfoOfDailyAttendance> workInfoOfDailyAttendances = new ArrayList<WorkInfoOfDailyAttendance>();
 

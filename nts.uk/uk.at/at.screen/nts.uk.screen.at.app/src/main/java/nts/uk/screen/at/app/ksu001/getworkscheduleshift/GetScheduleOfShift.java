@@ -92,10 +92,12 @@ public class GetScheduleOfShift {
 		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
 		// 管理状態と勤務予定Map
 		long start = System.nanoTime();
+		
 		Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMap =  WorkScheManaStatusService.getScheduleManagement(requireImpl1, param.listSid, period);
+		
 		long end = System.nanoTime();
 		long duration = (end - start) / 1000000; // ms;
-		System.out.println("SumTimeOf "+ param.listSid.size() + " employee: " + duration);	
+		System.out.println("thoi gian get data Schedule cua "+ param.listSid.size() + " employee: " + duration + "ms");	
 		
 		List<WorkInfoOfDailyAttendance>  workInfoOfDailyAttendances = new ArrayList<WorkInfoOfDailyAttendance>();
 		
