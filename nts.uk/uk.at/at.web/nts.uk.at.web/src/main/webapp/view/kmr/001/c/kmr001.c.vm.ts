@@ -2,14 +2,12 @@
 
 module nts.uk.at.kmr001.c {
     import parseTime = nts.uk.time.parseTime;
-    import getShare = nts.uk.ui.windows.getShared;
-    import setShare = nts.uk.ui.windows.setShared;
 
     const API = {
         GET_LIST_WORK_LOCATION: 'screen/at/record/reservation/bento-menu/getworklocation',
         GET_ALL : 'screen/at/record/reservation/bento-menu/getbentomenubyhist',
-        CREATE_BENTO_MENU: 'bento/updateItemSetting/add',
-        UPDATE_BENTO_MENU: 'bento/updateItemSetting/update',
+        CREATE_BENTO_MENU: 'bento/updateitemietting/add',
+        UPDATE_BENTO_MENU: 'bento/updateitemietting/update',
     };
 
     const PATH = {
@@ -67,9 +65,11 @@ module nts.uk.at.kmr001.c {
 
             vm.$ajax(API.GET_ALL, {histId : null}).done(dataRes => {
                 vm.$blockui('invisible');
-                if(dataRes.length > 0) {
-                    dataRes = _.orderBy(dataRes, ['frameNo', 'asc']);
-                    if(dataRes[0].operationDistinction == 1) {
+                if(dataRes.bentoDtos.length > 0) {
+                    let bentoDtos = dataRes.bentoDtos;
+                    bentoDtos = _.orderBy(bentoDtos, ['frameNo', 'asc']);
+
+                    if(dataRes.operationDistinction == 1) {
 
                         vm.columnBento([
                             { headerText: vm.$i18n('KMR001_41'), key: 'id', width: 50 },
@@ -85,7 +85,7 @@ module nts.uk.at.kmr001.c {
                                 "",
                             ))
                         );
-                        dataRes.forEach(item => {
+                        bentoDtos.forEach(item => {
                                 vm.listIdBentoMenu.push(item.frameNo);
                                 array.forEach((rc, index) => {
                                     if(item.frameNo == rc.id) {
@@ -96,48 +96,54 @@ module nts.uk.at.kmr001.c {
                             }
                         );
                         vm.itemsBento(array);
-                    } else {
-                        dataRes.forEach(item => {
-                            vm.itemsBento().map(rc => {
-                                if(rc.id == item.frameNo) {
-                                    return new ItemBentoByCompany(
-                                        item.frameNo,
-                                        item.bentoName,
+                        vm.selectedBentoSetting(bentoDtos[0].frameNo);
+                        vm.selectedWorkLocationCode(bentoDtos[0].workLocationCode);
 
-                                    )
-                                }
-                            });
-                        });
+                    } else {
                         vm.columnBento([
                             { headerText: vm.$i18n('KMR001_41'), key: 'id', width: 50 },
                             { headerText: vm.$i18n('KMR001_42'), key: 'name', width: 325 },
                         ]);
+                        let array: Array<any> = [];
+                        _.range(1, 41).forEach(item =>
+                            array.push(new ItemBentoByCompany(
+                                item.toString(),
+                                "",
+                            ))
+                        );
+                        bentoDtos.forEach(item => {
+                                vm.listIdBentoMenu.push(item.frameNo);
+                                array.forEach((rc, index) => {
+                                    if(item.frameNo == rc.id) {
+                                        array[index].name = item.bentoName;
+                                    }
+                                })
+                            }
+                        );
+
+                        vm.selectedWorkLocationCode(vm.workLocationList()[0].id);
                     }
-                    vm.start(dataRes[0].startDate);
-                    vm.end(dataRes[0].endDate);
-
-                    vm.selectedBentoSetting(dataRes[0].frameNo);
-
-                    vm.selectedWorkLocationCode(dataRes[0].workLocationCode);
 
                     vm.model( new BentoMenuSetting(
-                        dataRes[0].reservationFrameName1, dataRes[0].reservationFrameName2,
-                        dataRes[0].bentoName,  dataRes[0].unitName,
-                        dataRes[0].reservationAtr1,  dataRes[0].reservationAtr2,
-                        parseTime(dataRes[0].reservationStartTime1, true).format(),  parseTime(dataRes[0].reservationEndTime1,true).format(),
-                        parseTime(dataRes[0].reservationStartTime2, true).format(),  parseTime(dataRes[0].reservationEndTime2, true).format(),
-                        Number(dataRes[0].price1),  Number(dataRes[0].price2),
-                        dataRes[0].workLocationCode
+                        bentoDtos[0].reservationFrameName1, bentoDtos[0].reservationFrameName2,
+                        bentoDtos[0].bentoName,  bentoDtos[0].unitName,
+                        bentoDtos[0].reservationAtr1,  bentoDtos[0].reservationAtr2,
+                        parseTime(bentoDtos[0].reservationStartTime1, true).format(),  parseTime(bentoDtos[0].reservationEndTime1,true).format(),
+                        parseTime(bentoDtos[0].reservationStartTime2, true).format(),  parseTime(bentoDtos[0].reservationEndTime2, true).format(),
+                        Number(bentoDtos[0].price1),  Number(bentoDtos[0].price2),
+                        bentoDtos[0].workLocationCode
                     ));
-                    vm.listData = [...dataRes];
+                    vm.start(dataRes.startDate);
+                    vm.end(dataRes.endDate);
 
+                    vm.listData = [...bentoDtos];
                 }
                 vm.$blockui('clear');
             }).then(() => {
                 vm.selectedBentoSetting.subscribe(data => {
                     vm.$blockui('invisible');
                     const bento = vm.listData.filter(item => data == item.frameNo);
-                    if(bento.length) {
+                    if(bento.length > 0) {
                         vm.model( new BentoMenuSetting(
                             bento[0].reservationFrameName1, bento[0].reservationFrameName2,
                             bento[0].bentoName,  bento[0].unitName,
@@ -215,7 +221,7 @@ module nts.uk.at.kmr001.c {
         openConfigHisDialog() {
             let vm = this;
             vm.$blockui('invisible');
-            vm.$window.modal('at', PATH.KMR001_D, vm)
+            vm.$window.modal('at', PATH.KMR001_D, vm.history && vm.history.params.historyId ? vm.history.params.historyId : null)
                 .then((result: any) => {
                     console.log(result);
                     vm.history = result;

@@ -32,7 +32,7 @@ public class ReseltemSettingService extends WebService {
     public void save(UpdateReseItemSettingCommand command) {
         this.update.handle(command);
     }
- 
+
     @POST
     @Path("delete")
     public void update(DeleteBentoCommand command) {
