@@ -24,7 +24,7 @@
 				<!--C1_2-->
 				<button class="proceed sidebar-button" data-bind="click: registerBentoMenu,text: $i18n('KMR001_4')"></button>
 				<!--C1_3-->
-				<button class="danger" data-bind="text: $i18n('KMR001_7')"></button>
+				<button class="danger" data-bind="click: deleteBento, text: $i18n('KMR001_7')"></button>
 			</div>
 			<div class="kmr001-c" id="contents-area">
 				<div class="kmr001-c-left-content">
@@ -209,22 +209,23 @@
 						</tr>
 					</table>
 				</div>
-				<div class="kmr001-c-right-content2 panel panel-frame">
-					<table>
-						<tr>
-							<th>
-								<!--C5_2-->
-								<span class="label" data-bind="text: $i18n('KMR001_51')" ></span>
-							</th>
-						</tr>
-						<tr>
-							<td>
-								<!--C15_1-->
-								<div data-bind="ntsFormLabel: { inline: true, required: true, enable: true, text: $i18n('KMR001_50')}"></div>
-							</td>
-							<td>
-								<!--C15_2-->
-								<div class="kmr001_50" id="combo-box" data-bind="ntsComboBox: {
+				<div data-bind="if: vm.operationDistinction() == 1" >
+					<div class="kmr001-c-right-content2 panel panel-frame">
+						<table>
+							<tr>
+								<th>
+									<!--C5_2-->
+									<span class="label" data-bind="text: $i18n('KMR001_51')" ></span>
+								</th>
+							</tr>
+							<tr>
+								<td>
+									<!--C15_1-->
+									<div data-bind="ntsFormLabel: { inline: true, required: true, enable: true, text: $i18n('KMR001_50')}"></div>
+								</td>
+								<td>
+									<!--C15_2-->
+									<div class="kmr001_50" id="combo-box" data-bind="ntsComboBox: {
 									width: '200px',
 									name: 'KMR001_50',
 									options: vm.workLocationList,
@@ -237,9 +238,10 @@
 										{ prop: 'name', length: 10}
 									]
 								} " />
-							</td>
-						</tr>
-					</table>
+								</td>
+							</tr>
+						</table>
+					</div>
 				</div>
 			</div>
 		</ui:define>
