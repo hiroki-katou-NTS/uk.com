@@ -23,6 +23,9 @@ module nts.uk.at.kdp003.a {
 		</div>
 	`;
 
+
+	const ROW_HEIGHT = 45;
+	const MIN_HEIGHT = ROW_HEIGHT * 7;
 	const COMPONENT_NAME = 'stamp-employee-selection';
 
 	enum CHARACTER {
@@ -43,7 +46,7 @@ module nts.uk.at.kdp003.a {
 		A: ['ア', 'イ', 'ウ', 'エ', 'オ', 'ァ', 'ィ', 'ゥ', 'ェ', 'ォ', 'ヴ'],
 		KA: ['カ', 'キ', 'ク', 'ケ', 'コ', 'ガ', 'ギ', 'グ', 'ゲ', 'ゴ', 'ヵ', 'ヶ'],
 		SA: ['サ', 'シ', 'ス', 'セ', 'ソ', 'ザ', 'ジ', 'ズ', 'ゼ', 'ゾ'],
-		TA: ['タ', 'チ', 'ツ', 'テ', 'ト', 'ダ', 'ヂ', 'ヅ', 'デ', 'ド', '	ッ'],
+		TA: ['タ', 'チ', 'ツ', 'テ', 'ト', 'ダ', 'ヂ', 'ヅ', 'デ', 'ド', 'ッ'],
 		NA: ['ナ', 'ニ', 'ヌ', 'ネ', 'ノ'],
 		HA: ['ハ', 'ヒ', 'フ', 'ヘ', 'ホ', 'バ', 'ビ', 'ブ', 'ベ', 'ボ', 'パ', 'ピ', 'プ', 'ペ', 'ポ'],
 		MA: ['マ', 'ミ', 'ム', 'メ', 'モ'],
@@ -88,7 +91,7 @@ module nts.uk.at.kdp003.a {
 				vm.options = {
 					employees: ko.observableArray([]),
 					selectedId: ko.observable(undefined),
-					employeeAuthcUseArt: ko.observable(true),
+					nameSelectArt: ko.observable(true),
 					baseDate: ko.observable(new Date())
 				};
 			} else {
@@ -99,7 +102,7 @@ module nts.uk.at.kdp003.a {
 				if (!_.has(vm.options, 'selectedId')) {
 					vm.options.selectedId = ko.observable(undefined);
 				}
-				
+
 				if (!_.has(vm.options, 'baseDate')) {
 					vm.options.baseDate = ko.observable(new Date());
 				}
@@ -134,7 +137,7 @@ module nts.uk.at.kdp003.a {
 
 					const filtereds: Employee[] = [];
 					const doFilter = (codes: string[]) => {
-						return _.filter(dataSource, (record: Employee) => codes.indexOf(record.employeeName[0]) > -1);
+						return _.filter(dataSource, (record: Employee) => codes.indexOf(record.employeeNameKana[0]) > -1);
 					};
 
 					if ($grid && $grid.data('igGrid')) {
@@ -200,6 +203,17 @@ module nts.uk.at.kdp003.a {
 					],
 					features: [
 						{
+							name: "Tooltips",
+							columnSettings: [
+								{ columnKey: "employeeId", allowTooltips: false },
+								{ columnKey: "employeeCode", allowTooltips: false },
+								{ columnKey: "employeeName", allowTooltips: true }
+							],
+							visibility: "always",
+							showDelay: 1000,
+							hideDelay: 500
+						},
+						{
 							name: "Selection",
 							mode: "row",
 							rowSelectionChanged: function(__: any, ui: any) {
@@ -219,7 +233,7 @@ module nts.uk.at.kdp003.a {
 						}
 					],
 					width: "240px",
-					height: `${65 * 7}px`,
+					height: `${MIN_HEIGHT}px`,
 					dataSource: vm.orderedData(ko.toJS(vm.options.employees))
 				});
 
@@ -232,10 +246,9 @@ module nts.uk.at.kdp003.a {
 
 					if (grid && $grid.data('igGrid')) {
 						const top = grid.getBoundingClientRect().top;
-						const minHeight = 65 * 3;
-						const maxHeight = Math.floor((window.innerHeight - top - 20) / 65) * 65;
+						const maxHeight = window.innerHeight - top - 25;
 
-						$grid.igGrid('option', 'height', `${Math.max(minHeight, maxHeight)}px`);
+						$grid.igGrid('option', 'height', `${Math.max(MIN_HEIGHT, maxHeight)}px`);
 					}
 				})
 				.trigger('resize');
@@ -262,6 +275,7 @@ module nts.uk.at.kdp003.a {
 		employeeId: string;
 		employeeCode: string;
 		employeeName: string;
+		employeeNameKana: string;
 	}
 
 	export interface EmployeeListData {
@@ -273,14 +287,14 @@ module nts.uk.at.kdp003.a {
 		* undefined: not select
 		*/
 		selectedId: string | null | undefined;
-		employeeAuthcUseArt: boolean;
+		nameSelectArt: boolean;
 		baseDate: Date;
 	}
 
 	export interface EmployeeListParam {
 		employees: KnockoutObservableArray<Employee>;
 		selectedId: KnockoutObservable<string | null | undefined>;
-		employeeAuthcUseArt: KnockoutObservable<boolean>;
+		nameSelectArt: KnockoutObservable<boolean>;
 		baseDate: KnockoutObservable<Date>;
 	}
 }

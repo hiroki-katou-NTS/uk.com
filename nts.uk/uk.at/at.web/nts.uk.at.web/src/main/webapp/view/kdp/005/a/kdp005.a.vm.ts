@@ -389,7 +389,7 @@ module nts.uk.at.view.kdp005.a {
                     dfd.reject();
                 }).always(() => {
                     block.clear();
-                });;    
+                });
                 return dfd.promise();
             }
 

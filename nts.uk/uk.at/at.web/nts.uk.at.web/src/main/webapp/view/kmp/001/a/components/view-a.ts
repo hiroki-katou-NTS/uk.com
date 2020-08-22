@@ -66,6 +66,13 @@ module nts.uk.at.view.kmp001.a {
 					if (current) {
 						vm.$ajax(KMP001A_API.GET_INFOMAITON_EMPLOYEE + "/" + ko.toJS(current.employeeId) + "/" + ko.toJS(current.affiliationId) + "/" + ko.toJS(vm.baseDate))
 							.then((data: IModel) => {
+								
+								vm.endDate = moment(data.retiredDate).format(DATE_FORMAT);
+								
+								if(vm.endDate === "9999/12/31"){
+									data.retiredDate = null;
+								}
+								
 								if (data.stampCardDto.length > 0) {
 									data.stampCardDto[0].checked = true;
 								}
@@ -99,7 +106,7 @@ module nts.uk.at.view.kmp001.a {
 
 			vm.$errors('clear');
 
-			if (!!vm.$user.role.attendance) {
+			if (vm.$user.role.isInCharge.attendance) {
 				vm.attendance(true);
 			} else {
 				vm.attendance(false);
