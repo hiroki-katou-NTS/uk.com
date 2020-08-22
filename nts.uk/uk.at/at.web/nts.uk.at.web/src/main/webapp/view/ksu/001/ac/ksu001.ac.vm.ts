@@ -67,6 +67,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 if (self.flag == false)
                     return;
                 if (newValue) {
+                    $("#extable").exTable("stickData", []);
                     uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                         let userInfor = JSON.parse(data);
                         userInfor.shiftPalletUnit = newValue;
