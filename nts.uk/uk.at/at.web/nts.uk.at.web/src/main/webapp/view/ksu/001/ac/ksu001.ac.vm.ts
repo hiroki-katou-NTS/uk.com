@@ -120,16 +120,16 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                              *  1日出勤系 ONE_DAY_WORK(3)
                              */
                             let workStyle = workInfo[0].workStyle;
-                            if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
+                            if (workStyle == AttendanceHolidayAttr.FULL_TIME + '') {
                                 return { textColor: "#0000ff" }; // color-attendance
                             }
-                            if (workStyle == AttendanceHolidayAttr.MORNING) {
+                            if (workStyle == AttendanceHolidayAttr.MORNING+ '') {
                                 return { textColor: "#FF7F27" };// color-half-day-work
                             }
-                            if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
+                            if (workStyle == AttendanceHolidayAttr.AFTERNOON+ '') {
                                 return { textColor: "#FF7F27" };// color-half-day-work
                             }
-                            if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
+                            if (workStyle == AttendanceHolidayAttr.HOLIDAY+ '') {
                                 return { textColor: "#ff0000" };// color-holiday
                             }
                             if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
@@ -191,16 +191,16 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                              *  1日出勤系 ONE_DAY_WORK(3)
                              */
                             let workStyle = workInfo[0].workStyle;
-                            if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
+                            if (workStyle == AttendanceHolidayAttr.FULL_TIME + '') {
                                 return { textColor: "#0000ff" }; // color-attendance
                             }
-                            if (workStyle == AttendanceHolidayAttr.MORNING) {
+                            if (workStyle == AttendanceHolidayAttr.MORNING + '') {
                                 return { textColor: "#FF7F27" };// color-half-day-work
                             }
-                            if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
+                            if (workStyle == AttendanceHolidayAttr.AFTERNOON + '') {
                                 return { textColor: "#FF7F27" };// color-half-day-work
                             }
-                            if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
+                            if (workStyle == AttendanceHolidayAttr.HOLIDAY + '') {
                                 return { textColor: "#ff0000" };// color-holiday
                             }
                             if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
@@ -429,6 +429,8 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             let self = this,
                 source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
                 indexBtn: number = indexLinkBtn();
+            if (self.listPageInfo.length == 0)
+                return;
             nts.uk.ui.block.grayout();
             let pageNumberSelected = self.listPageInfo[indexBtn].pageNumber;
             let dataLocal = uk.localStorage.getItem(self.KEY);
