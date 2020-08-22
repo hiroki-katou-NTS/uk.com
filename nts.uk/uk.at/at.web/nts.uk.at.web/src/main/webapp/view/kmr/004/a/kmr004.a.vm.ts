@@ -147,6 +147,7 @@ module nts.uk.at.view.kmr004.a {
 
         printExcel(){
             let vm = this;
+            vm.$blockui("invisible");
             let data = vm.prepareData();
             nts.uk.request.exportFile("at", API.EXCEL,data).done(() => {
                 vm.$blockui("clear");
@@ -159,6 +160,7 @@ module nts.uk.at.view.kmr004.a {
 
         printPDF(){
             let vm = this;
+            vm.$blockui("invisible");
             let data = vm.prepareData();
             $("#exportTitle").trigger("validate");
             vm.$blockui("invisible");
