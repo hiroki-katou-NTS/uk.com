@@ -128,7 +128,7 @@ public class EmploymentSystemFinder {
 		}
 		
 		// 	アルゴリズム「休出代休発生消化履歴の取得」を実行する
-		Optional<BreakDayOffOutputHisData> data = breakDayOffManagementQuery.getBreakDayOffData(companyId, employeeId, inputDate);
+		Optional<BreakDayOffOutputHisData> data = this.breakDayOffManagementQuery.getBreakDayOffData(companyId, employeeId, inputDate);
 		
 		// #110215 アルゴリズム「社員に対応する締め期間を取得する」を実行する
 		DatePeriod closingPeriod = ClosureService.findClosurePeriod(require, cacheCarrier, employeeId, inputDate);
@@ -139,7 +139,7 @@ public class EmploymentSystemFinder {
 				employeeId,
 				getDatePeroid(closingPeriod.start()), 
 				false, 
-				inputDate, 
+				GeneralDate.today(), 
 				false, 
 				Collections.emptyList(),
 				Optional.empty(), 
@@ -155,16 +155,15 @@ public class EmploymentSystemFinder {
 					RemainNumberDetailDto itemDto = new RemainNumberDetailDto();
 					itemDto.setExpiredInCurrentMonth(false);
 					if (item.getOccurrentClass().equals(OccurrenceDigClass.OCCURRENCE)) {
-						// ・逐次発生の休暇明細．発生消化区分 ＝＝ 発生 －＞発生日 ＝ 逐次発生の休暇明細．年月日
+						// 	逐次発生の休暇明細．発生消化区分 ＝＝ 発生 －＞発生日 ＝ 逐次発生の休暇明細．年月日
 						if (item.getDateOccur().getDayoffDate().isPresent()) {
 							GeneralDate occurrenceDate = item.getDateOccur().getDayoffDate().get();
 							itemDto.setOccurrenceDate(occurrenceDate);
-							// condition 取得した期間．開始日＜＝発生日＜＝取得した期間．終了日 －＞・当月で期限切れ ＝ True ELSE －＞・当月で期限切れ ＝
-							// False
+							// condition 取得した期間．開始日＜＝発生日＜＝取得した期間．終了日 －＞・当月で期限切れ ＝ True ELSE －＞・当月で期限切れ ＝ False
 							itemDto.setExpiredInCurrentMonth(closingPeriod.contains(occurrenceDate));
 						}
 					} else if (item.getOccurrentClass().equals(OccurrenceDigClass.DIGESTION)) {
-						// ・逐次発生の休暇明細．発生消化区分 ＝＝ 消化 －＞消化日 ＝ 逐次発生の休暇明細．年月日
+						// 	逐次発生の休暇明細．発生消化区分 ＝＝ 消化 －＞消化日 ＝ 逐次発生の休暇明細．年月日
 						itemDto.setDigestionDate(item.getDateOccur().getDayoffDate().orElse(null));
 					}
 					// field ・発生数 ＝ 取得した逐次発生の休暇明細．発生数．日数
@@ -183,10 +182,10 @@ public class EmploymentSystemFinder {
 					if (oOccurrenceHour.isPresent()) {
 						itemDto.setOccurrenceHour(oOccurrenceHour.get().v());
 					}
-					// field ・消化時間 ＝ 取得した逐次発生の休暇明細．未相殺数．時間
+					// field ・消化時間　＝　取得した逐次発生の休暇明細．未相殺数．時間
 					Optional<AttendanceTime> oDigestionHour = item.getUnbalanceNumber().getTime();
 					if (oDigestionHour.isPresent()) {
-						itemDto.setDigestionHour(oDigestionHour.get().v());
+						itemDto.setDigestionHour(oDigestionHour.get().v());				
 					}
 					return itemDto;
 				}).collect(Collectors.toList());

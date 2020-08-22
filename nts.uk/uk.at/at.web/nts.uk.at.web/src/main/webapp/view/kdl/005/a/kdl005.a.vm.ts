@@ -45,7 +45,6 @@ module nts.uk.at.view.kdl005.a {
                         { labelText: nts.uk.resource.getText("KDL005_22") }
                     ]
                 };
-
                 service.getEmployeeList(vm.kdl005Data).done((data: any) => {
                     if (data.employeeBasicInfo.length > 1) {
                         vm.selectedCode.subscribe((value) => {
