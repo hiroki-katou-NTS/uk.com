@@ -44,13 +44,14 @@ public class BreakHistoryData {
 	private Double unUseDays;
 	/**
 	 * #110215 update KDL005
-	 * 使用時間数
-	 */
-	private Double numberOfHoursUsed;
-	/**
-	 * #110215 update KDL005
 	 * 発生時間数
 	 */
-	private Double numberOfHours;
+	private Double occurrenceHours;
+	/**
+	 * #110215 update KDL005
+	 * 使用時間数
+	 */
+	private Double unUseHours;
+	
 	
 }

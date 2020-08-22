@@ -301,11 +301,14 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 			//確定代休に紐付いた暫定休出代休紐付け管理を抽出する
 			List<InterimBreakDayOffMng> breakDayMng = breakDayOffRepo.getBreakDayOffMng(a.getComDayOffID(), false, DataManagementAtr.CONFIRM);
 			double useDay = 0;
+			double useHour = 0;
 			for (InterimBreakDayOffMng typingInterimData : breakDayMng) {
 				useDay += typingInterimData.getUseDays().v();
+				useHour += typingInterimData.getUseTimes().v();
 			}
 			//振休履歴.未相殺日数：代休管理データ.未相殺日数－暫定代休使用日数
 			dayOffData.setUnOffsetDays(dayOffData.getUnOffsetDays() - useDay);
+			dayOffData.setUnOffsetHours(dayOffData.getUnOffsetHours() - useHour);
 			outPutData.add(dayOffData);
 		});
 		
@@ -417,7 +420,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 				.collect(Collectors.toList());
 		breakHisRecord.stream().forEach(y -> {
 			outputData.setRecordOccurrenceDays(outputData.getRecordOccurrenceDays() + y.getOccurrenceDays());
-			outputData.setScheHours(outputData.getScheHours() + y.getNumberOfHours());
+			outputData.setScheHours(outputData.getScheHours() + y.getOccurrenceHours());
 		});
 		//	予定使用日数を算出する
 		List<DayOffHistoryData> dayOffHisSche = lstDayOffHis.stream()
@@ -436,7 +439,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 				.collect(Collectors.toList());
 		breakHisSche.stream().forEach(y -> {
 			outputData.setScheOccurrenceDays(outputData.getScheOccurrenceDays() + y.getOccurrenceDays());
-			outputData.setScheHours(outputData.getScheHours() + y.getNumberOfHours());
+			outputData.setScheHours(outputData.getScheHours() + y.getOccurrenceHours());
 		});
 		//	繰越数を算出する
 		//	確定済の休出履歴を抽出する
@@ -447,7 +450,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		double carryHours = 0;
 		for (BreakHistoryData breakHistoryData : breakHisCarry) {
 			carryDays += breakHistoryData.getUnUseDays();
-			carryHours += breakHistoryData.getNumberOfHoursUsed();
+			carryHours += breakHistoryData.getUnUseHours();
 		}
 		List<DayOffHistoryData> dayOffHisCarry = lstDayOffHis.stream()
 				.filter(x -> x.getCreateAtr() == MngHistDataAtr.CONFIRMED)
