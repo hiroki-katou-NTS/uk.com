@@ -49,7 +49,7 @@ module nts.uk.at.view.kdl009.a {
                 const vm = this;
                 vm.$blockui('grayout');
                 service.getEmployee(vm.kdl009Data)
-                    .done((data: any) => {
+                    .then((data: any) => {
                         if (data.employeeBasicInfo.length > 1) {
                             vm.selectedCode.subscribe((value) => {
                                 const itemSelected: any = _.find(data.employeeBasicInfo, ['employeeCode', value]);
@@ -84,8 +84,9 @@ module nts.uk.at.view.kdl009.a {
                 const vm = this;
                 vm.employeeInfo(nts.uk.resource.getText("KDL009_25", [employeeCode, employeeName]));
                 vm.$blockui('grayout');
+                // アルゴリズム「振休残数情報の取得」を実行する(thực hiện thuật toán 「振休残数情報の取得」)
                 service.getAcquisitionNumberRestDays(employeeId, baseDate)
-                    .done((data) => {
+                    .then((data) => {
                         vm.expirationDateText(ExpirationDate[data.expiredDay]);
                         vm.bindTimeData(data);
                         vm.bindSummaryData(data);
@@ -343,7 +344,7 @@ module nts.uk.at.view.kdl009.a {
             isAlreadySetting: boolean;
         }
 
-        class RemainNumberDetailModel {
+        export class RemainNumberDetailModel {
             expirationDate: string;
             expirationDateText: string;
             digestionNumber: number;
@@ -360,11 +361,11 @@ module nts.uk.at.view.kdl009.a {
             occurrenceHourText: string;
 
             constructor(init?: Partial<RemainNumberDetailModel>) {
-                (<any>Object).assign(this, init);
+                $.extend(this, init);
             }
         }
 
-        class DataItems {
+        export class DataItems {
             isMultiOccurrence: boolean;
             isMultiDigestion: boolean;
             listOccurrence: RemainNumberDetailModel[];
@@ -372,7 +373,7 @@ module nts.uk.at.view.kdl009.a {
             singleRowDetail: RemainNumberDetailModel;
 
             constructor(init?: Partial<DataItems>) {
-                (<any>Object).assign(this, init);
+                $.extend(this, init);
             }
 
             public isSingleRow() {
