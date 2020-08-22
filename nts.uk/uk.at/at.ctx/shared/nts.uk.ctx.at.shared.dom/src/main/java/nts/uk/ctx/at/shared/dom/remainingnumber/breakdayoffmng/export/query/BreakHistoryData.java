@@ -46,12 +46,12 @@ public class BreakHistoryData {
 	 * #110215 update KDL005
 	 * 発生時間数
 	 */
-	private Double occurrenceHours;
+	private double occurrenceHours;
 	/**
 	 * #110215 update KDL005
 	 * 使用時間数
 	 */
-	private Double unUseHours;
+	private double unUseHours;
 	
 	
 }

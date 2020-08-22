@@ -139,7 +139,7 @@ public class EmploymentSystemFinder {
 				employeeId,
 				getDatePeroid(closingPeriod.start()), 
 				false, 
-				GeneralDate.today(), 
+				inputDate, 
 				false, 
 				Collections.emptyList(),
 				Optional.empty(), 
