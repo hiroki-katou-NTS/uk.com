@@ -53,12 +53,7 @@ public class BentoMenuHistCommandHandler extends CommandHandler<BentoMenuHistCom
                 new BentoReservationTime(120),
                 Optional.of(new BentoReservationTime(0)));
 
-        Optional<ReservationClosingTime> closingTime2 = Optional.of(new ReservationClosingTime(
-                new BentoReservationTimeName("夕食"),
-                new BentoReservationTime(240),
-                Optional.of(new BentoReservationTime(180))));
-
-        BentoReservationClosingTime bentoReservationClosingTime = new BentoReservationClosingTime(closingTime1,closingTime2);
+        BentoReservationClosingTime bentoReservationClosingTime = new BentoReservationClosingTime(closingTime1,Optional.empty());
         AtomTask persist = BentoMenuHistService.register(require,
                 new DatePeriod(command.getDate(), GeneralDate.max()), companyId,bentoReservationClosingTime);
 
