@@ -1,3 +1,14 @@
 .kmr-time-editor{
     width: 60px;
 }
+.kmr001b table {
+    margin: 10px;
+}
+.kmr001b tr td {
+    padding: 10px 0;
+}
+
+.kmr001b tr td:nth-child(2) {
+    padding-left: 20px;
+}
+

@@ -5,6 +5,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.List;
 
 @Stateless
 public class BentoMenuSetScreenProcessor {
@@ -22,12 +23,19 @@ public class BentoMenuSetScreenProcessor {
 
         BentoReservationSettingDto reservationSettingDto = bentoReservationScreenRepository.findDataBentoRervation(companyID);
 
-        return BentoMenuJoinBentoSettingDto.SetData(bentoMenuDto,reservationSettingDto);
+        return BentoMenuJoinBentoSettingDto.setData(bentoMenuDto,reservationSettingDto);
     }
 
-    public BentoMenuDto getBentoMenuByHist() {
+    public BentoJoinReservationSetting getBentoMenuByHist(BentoRequest request) {
         String companyID = AppContexts.user().companyId();
         GeneralDate generalDate = GeneralDate.max();
-        return bentoMenuScreenRepository.findDataBentoMenu(companyID,generalDate);
+        List<BentomenuJoinBentoDto> bentomenuJoinBentoDtos =  bentoMenuScreenRepository.findDataBento(companyID,generalDate,request);
+        BentoReservationSettingDto reservationSettingDto = bentoReservationScreenRepository.findDataBentoRervation(companyID);
+        return BentoJoinReservationSetting.setData(bentomenuJoinBentoDtos,reservationSettingDto);
+    }
+
+    public List<WorkLocationDto> getWorkLocationByCid() {
+        String companyID = AppContexts.user().companyId();
+        return bentoMenuScreenRepository.findDataWorkLocation(companyID);
     }
 }

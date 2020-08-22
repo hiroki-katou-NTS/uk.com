@@ -1,40 +1,49 @@
 package nts.uk.ctx.at.record.app.command.reservation.reseritemset;
 
-import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoRegisterService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.*;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import java.util.List;
+import javax.inject.Inject;
+import java.util.Optional;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class CreateReseItemSettingCommandHandler extends CommandHandler<CreateReseItemSettingCommand> {
 
-
+    @Inject
+    private BentoMenuRepository bentoMenuRepository;
 
     @Override
     protected void handle(CommandHandlerContext<CreateReseItemSettingCommand> commandHandlerContext) {
+
         val command = commandHandlerContext.getCommand();
-    }
 
-    @AllArgsConstructor
-    private static class RequireImpl implements BentoRegisterService.Require{
+        Bento bento = new Bento(command.getFrameNo(),
+                new BentoName(command.getBenToName()),
+                new BentoAmount(command.getAmount1()),
+                command.getAmount2() == null ? null : new BentoAmount(command.getAmount2()),
+                new BentoReservationUnitName(command.getUnit()),
+                command.isCanBookClosesingTime1(),
+                command.isCanBookClosesingTime2(),
+                command.getWorkLocationCode() != null?
+                        Optional.of(new WorkLocationCode(command.getWorkLocationCode())): Optional.empty()
+        );
+        String cid = AppContexts.user().companyId();
+        GeneralDate date = GeneralDate.max();
 
-        @Override
-        public List<BentoMenu> getBentoMenu(List<WorkLocationCode> workLocationCodeList, List<Integer> frameNos) {
-            return null;
-        }
+        BentoMenu bentoMenu = command.getHistId() == null ?
+                bentoMenuRepository.getBentoMenuByEndDate(cid,date) :
+                bentoMenuRepository.getBentoMenuByHistId(cid,command.getHistId());
+        bentoMenu.getMenu().add(bento);
 
-        @Override
-        public void register(List<BentoMenu> bentoMenus) {
-
-        }
+        bentoMenuRepository.update(bentoMenu);
     }
 }

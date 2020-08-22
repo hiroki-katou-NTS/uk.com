@@ -37,62 +37,8 @@ public class RegisterReservationLunchServiceTest {
     @Before
     public void init(){
         new Expectations() {{
-            AppContexts.user();
-            result = new LoginUserContext() {
-                public boolean hasLoggedIn() {
-                    return false;
-                }
-
-                @Override
-                public boolean isEmployee() {
-                    return false;
-                }
-
-                @Override
-                public String userId() {
-                    return null;
-                }
-
-                @Override
-                public String personId() {
-                    return null;
-                }
-
-                @Override
-                public String contractCode() {
-                    return null;
-                }
-
-                @Override
-                public String companyId() {
-                    return "CID";
-                }
-
-                @Override
-                public String companyCode() {
-                    return null;
-                }
-
-                @Override
-                public String employeeId() {
-                    return null;
-                }
-
-                @Override
-                public String employeeCode() {
-                    return null;
-                }
-
-                @Override
-                public LoginUserRoles roles() {
-                    return null;
-                }
-
-                @Override
-                public SelectedLanguage language() {
-                    return null;
-                }
-            };
+            AppContexts.user().companyId();
+            result = "CID";
         }};
     }
 
@@ -121,7 +67,7 @@ public class RegisterReservationLunchServiceTest {
         NtsAssert.atomTask(
                 () -> RegisterReservationLunchService.register(
                         require, operationDistinction, achievements, correctionContent, null),
-                any -> require.registerBentoMenu(any.get(),any.get()),
+                any -> require.registerBentoMenu(any.get(),any.get(),any.get()),
                 any -> require.inSert(any.get())
                 );
     }
@@ -154,7 +100,7 @@ public class RegisterReservationLunchServiceTest {
         NtsAssert.atomTask(
                 () -> RegisterReservationLunchService.register(
                         require, operationDistinction, achievements, correctionContent, null),
-                any -> require.registerBentoMenu(any.get(),any.get()),
+                any -> require.registerBentoMenu(any.get(),any.get(),any.get()),
                 any -> require.update(any.get())
         );
     }
@@ -191,7 +137,7 @@ public class RegisterReservationLunchServiceTest {
         NtsAssert.atomTask(
                 () -> RegisterReservationLunchService.register(
                         require, operationDistinction, achievements, correctionContent, null),
-                any -> require.registerBentoMenu(any.get(),any.get()),
+                any -> require.registerBentoMenu(any.get(),any.get(),any.get()),
                 any -> require.update(any.get())
         );
     }
@@ -225,7 +171,7 @@ public class RegisterReservationLunchServiceTest {
         NtsAssert.atomTask(
                 () -> RegisterReservationLunchService.register(
                         require, operationDistinction, achievements, correctionContent, null),
-                any -> require.registerBentoMenu(any.get(),any.get()),
+                any -> require.registerBentoMenu(any.get(),any.get(),any.get()),
                 any -> require.inSert(any.get())
         );
     }

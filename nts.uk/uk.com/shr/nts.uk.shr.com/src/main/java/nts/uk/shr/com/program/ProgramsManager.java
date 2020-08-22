@@ -2242,8 +2242,12 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
     /**
      * KMR001
      */
+    public static final Program KMR001A = new Program(WebAppId.AT, ProgramIdConsts.KMR001A, "KMR001_78",
+            "/view/kmr/001/a/index.xhtml");
     public static final Program KMR001B = new Program(WebAppId.AT, ProgramIdConsts.KMR001B, "KMR001_1",
             "/view/kmr/001/b/index.xhtml");
+    public static final Program KMR001C = new Program(WebAppId.AT, ProgramIdConsts.KMR001C, "KMR001_2",
+            "/view/kmr/001/c/index.xhtml");
     public static final Program KMR001D = new Program(WebAppId.AT, ProgramIdConsts.KMR001D, "KMR001_38",
             "/view/kmr/001/d/index.xhtml");
 

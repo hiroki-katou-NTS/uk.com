@@ -1,24 +1,48 @@
-#kmr001-c-7-2{
+.kmr001-c {
+    padding: 10px 25px !important;
+}
+ .kmr001-c #kmr001-c-7-2{
     max-width: 100px;
 }
 
-#kmr001-c-8-2{
+.kmr001-c #kmr001-c-8-2{
     max-width: 100px;
 }
 
-#kmr001-c-9-2{
+.kmr001-c #kmr001-c-9-2{
     max-width: 40px;
 }
 
-#kmr001-c-10-2{
+.kmr001-c #kmr001-c-10-2{
     max-width: 40px;
 }
 
-.kmr001-c-left-content{
+.kmr001-c .kmr001-c-left-content{
     float: left;
 }
-.kmr001-c-right-content{
+.kmr001-c .kmr001-c-right-content1{
     float: left;
     width: calc(100% - 550px);
 }
+.kmr001-c .kmr001-c-right-content2{
+    float: left;
+    width: calc(100% - 550px);
+    margin-top: 20px;
+}
+.kmr001-c .btn-content {
+    float: right;
+}
 
+.kmr001-c tr td {
+    padding-top: 25px;
+}
+.kmr001-c .panel.ntsPanel.direction-bottom {
+    margin-bottom: 25px;
+}
+
+.kmr001-c .kmr001_42 {
+    width: 160px !important;
+}
+.kmr001-c .kmr001_44 span{
+    width: auto !important;
+}

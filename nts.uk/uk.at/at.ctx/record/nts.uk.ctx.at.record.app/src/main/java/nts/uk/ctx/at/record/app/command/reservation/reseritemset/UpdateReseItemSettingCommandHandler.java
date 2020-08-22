@@ -1,14 +1,12 @@
 package nts.uk.ctx.at.record.app.command.reservation.reseritemset;
 
-import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoUpdateService;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.*;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -25,39 +23,31 @@ public class UpdateReseItemSettingCommandHandler extends CommandHandler<UpdateRe
 
     @Override
     protected void handle(CommandHandlerContext<UpdateReseItemSettingCommand> commandHandlerContext) {
+
         val command = commandHandlerContext.getCommand();
-        RequireImpl require = new RequireImpl(bentoMenuRepository);
 
         Bento bento = new Bento(command.getFrameNo(),
                 new BentoName(command.getBenToName()),
                 new BentoAmount(command.getAmount1()),
-                new BentoAmount(command.getAmount2()),
+                command.getAmount2() == null ? null : new BentoAmount(command.getAmount2()),
                 new BentoReservationUnitName(command.getUnit()),
                 command.isCanBookClosesingTime1(),
                 command.isCanBookClosesingTime2(),
-                Optional.of(new WorkLocationCode(command.getWorkLocationCode()))
+                command.getWorkLocationCode() != null?
+                        Optional.of(new WorkLocationCode(command.getWorkLocationCode())): Optional.empty()
         );
 
-        AtomTask persist = BentoUpdateService.update(require, bento);
-        transaction.execute(persist::run);
+        String cid = AppContexts.user().companyId();
+        GeneralDate date = GeneralDate.max();
+
+        BentoMenu bentoMenu = command.getHistId() == null ?
+                bentoMenuRepository.getBentoMenuByEndDate(cid,date) :
+                bentoMenuRepository.getBentoMenuByHistId(cid,command.getHistId());
+
+        Optional<Bento> optionalBento = bentoMenu.getMenu() .stream().filter(x -> x.getFrameNo() == bento.getFrameNo()) .findFirst();
+        optionalBento.ifPresent(bento1 -> bentoMenu.getMenu().set(bentoMenu.getMenu().indexOf(bento1), bento));
+
+        bentoMenuRepository.update(bentoMenu);
     }
 
-    @AllArgsConstructor
-    private static class RequireImpl implements BentoUpdateService.Require{
-
-        private BentoMenuRepository bentoMenuRepository;
-
-        @Override
-        public BentoMenu getBentoMenu(String cid, GeneralDate date) {
-            return bentoMenuRepository.getBentoMenuByEndDate(cid,date);
-        }
-
-        @Override
-        public void register(BentoMenu bentoMenu, Bento bento) {
-            bentoMenu.getMenu().stream()
-                    .filter(x -> x.getFrameNo() == bento.getFrameNo())
-                    .forEach( b -> b = bento);
-            bentoMenuRepository.update(bentoMenu);
-        }
-    }
 }

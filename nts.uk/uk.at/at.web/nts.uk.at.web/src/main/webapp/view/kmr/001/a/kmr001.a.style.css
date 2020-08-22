@@ -1,12 +1,7 @@
-.krm001-a-button-link {
-	min-width: 200px;
-}
 
-.arrow-right {
-	width: 0;
-	height: 0;
-	left: 200px;
-	border-top: 60px solid transparent;
-	border-bottom: 60px solid transparent;
-	border-left: 60px solid green;
+button.x-large {
+	width: 250px;
+}
+button.caret-right:after {
+	color: #97D155;
 }

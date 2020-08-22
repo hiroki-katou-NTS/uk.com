@@ -43,7 +43,7 @@ module nts.uk.at.kmr001.d {
 
             super();
             var vm = this;
-            let self = this, params = getShared("");
+            let self = this, params = getShared("paramsKMR004C");
             console.log(self.screenMode());
             self.lstWpkHistory = ko.observableArray([]);
             self.selectedHistoryId = ko.observable(null);
@@ -126,8 +126,6 @@ module nts.uk.at.kmr001.d {
         deleteHistory() {
             const vm = this;
             let self = this;
-            console.log(self.selectedHistoryId());
-
             confirm({messageId: "Msg_18"}).ifYes(() => {
                 block.invisible();
                 let data = new CommandDelete(self.selectedHistoryId());
@@ -135,6 +133,7 @@ module nts.uk.at.kmr001.d {
                     self.created().done(() => {
                         self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
                     });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                 }).fail(error => {
                     alertError(error);
                 }).always(() => {
@@ -143,7 +142,6 @@ module nts.uk.at.kmr001.d {
             }).ifNo(() => {
             });
         }
-
         registerConfig() {
             let self = this, data = null;
             const vm = this;
@@ -160,6 +158,7 @@ module nts.uk.at.kmr001.d {
                         self.created().done(() => {
                             self.selectedHistoryId(historyId);
                             self.sendDataToParentScreen();
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         });
                     }).fail((error) => {
                         alertError(error);
@@ -173,6 +172,7 @@ module nts.uk.at.kmr001.d {
                         self.created().done(() => {
                             self.selectedHistoryId(historyId);
                             self.sendDataToParentScreen();
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         });
                     }).fail((error) => {
                         alertError(error);
@@ -186,6 +186,7 @@ module nts.uk.at.kmr001.d {
                         self.created().done(() => {
                             self.selectedHistoryId.valueHasMutated();
                             self.sendDataToParentScreen();
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         });
                     }).fail((error) => {
                         alertError(error);
@@ -197,6 +198,7 @@ module nts.uk.at.kmr001.d {
                     block.clear();
                     if (self.selectedHistoryId())
                         self.sendDataToParentScreen();
+                    nts.uk.ui.windows.close();
                     break;
             }
         }
@@ -207,20 +209,20 @@ module nts.uk.at.kmr001.d {
                 startDate: self.selectedStartDateText(),
                 endDate: self.selectedEndDate()
             };
-            setShared("", params);
-            nts.uk.ui.windows.close();
+            setShared("paramsKMR004D", params);
+            //nts.uk.ui.windows.close();
         }
         cancel() {
             let self = this;
             let preSelectHist = _.find(self.lstWpkHistory(), h => h.historyId == self.bkHistoryId);
             if (preSelectHist && (preSelectHist.startDate != self.bkStartDate || preSelectHist.endDate != self.bkEndDate)) {
-                setShared("", {
+                setShared("paramsKMR004D", {
                     historyId: preSelectHist.historyId,
                     startDate: preSelectHist.startDate,
                     endDate: preSelectHist.endDate
                 });
             } else if (preSelectHist == null) {
-                setShared("", {
+                setShared("paramsKMR004D", {
                     historyId: self.lstWpkHistory()[0].historyId,
                     startDate: self.lstWpkHistory()[0].startDate,
                     endDate: self.lstWpkHistory()[0].endDate

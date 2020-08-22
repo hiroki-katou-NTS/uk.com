@@ -2,12 +2,15 @@ package nts.uk.screen.at.app.reservation;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 
 @Data
 @AllArgsConstructor
 public class BentoDto {
 
-    public String contractCD;
+    //bento
+
+    public int frameNo;
 
     public String bentoName;
 
@@ -22,5 +25,7 @@ public class BentoDto {
     public boolean reservationAtr2;
 
     public String workLocationCode;
+
+    public String workLocationName;
 
 }

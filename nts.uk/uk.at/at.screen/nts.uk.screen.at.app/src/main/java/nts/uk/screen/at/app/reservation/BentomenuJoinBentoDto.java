@@ -3,17 +3,12 @@ package nts.uk.screen.at.app.reservation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
-import nts.uk.screen.at.app.worktype.WorkTypeSetDto;
 
 import javax.persistence.Column;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class BentoMenuDto {
-
-    //BentoMenu
+public class BentomenuJoinBentoDto {
 
     public String reservationFrameName1;
 
@@ -27,5 +22,28 @@ public class BentoMenuDto {
 
     public int reservationEndTime2;
 
-}
+    //Bento
 
+    public GeneralDate startDate;
+
+    public GeneralDate endDate;
+
+    public int frameNo;
+
+    public String bentoName;
+
+    public String unitName;
+
+    public int price1;
+
+    public int price2;
+
+    public boolean reservationAtr1;
+
+    public boolean reservationAtr2;
+
+    public String workLocationCode;
+
+    public String workLocationName;
+
+}
