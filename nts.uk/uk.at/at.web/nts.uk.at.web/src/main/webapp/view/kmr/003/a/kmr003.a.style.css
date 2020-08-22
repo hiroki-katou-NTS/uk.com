@@ -23,14 +23,18 @@
     margin-top: 6px;
 }
 
-.right-align {
-    text-align: right;
-}
-
 .center-align {
-    text-align: center !important;
+    text-align: center;
 }
 
 #grid .mgrid-fixed.mgrid-header .mgrid-fixed-table tbody tr:first-child{
     height: 29px;
+}
+
+#grid .mgrid-fixed .mgrid-fixed-table tbody tr td:nth-child(3), #grid .mgrid-fixed .mgrid-fixed-table tbody tr td:nth-child(5)  {
+    /* text-align: center; */
+}
+
+button.nts-switch-button{
+    min-width: 100px;
 }

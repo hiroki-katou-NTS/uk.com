@@ -63,7 +63,7 @@ public class ListBentoResevationQuery {
     public List<BentoReservation> handleData(List<BentoReservation> bentoReservations,
                                              ReservationClosingTimeFrame reservationClosingTimeFrame, List<WorkLocationCode> workLocationCodes){
         return bentoReservations.stream()
-                                .filter(item -> workLocationCodes.contains(item.getWorkLocationCode().get()))
+                                .filter(item -> workLocationCodes.contains(item.getWorkLocationCode().orElse(null)))
                                 .filter(item -> reservationClosingTimeFrame == item.getReservationDate().getClosingTimeFrame())
                                 .collect(Collectors.toList());
     }

@@ -1,16 +1,11 @@
 package nts.uk.ctx.at.record.app.command.reservation.bento;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Value;
+import lombok.*;
 import nts.arc.time.GeneralDate;
 
 import java.util.List;
 
-@AllArgsConstructor
-@Data
-@NoArgsConstructor
+@Value
 public class ForceUpdateBentoReserveCommand {
 
     /**
@@ -36,13 +31,12 @@ public class ForceUpdateBentoReserveCommand {
     /**
      * 予約登録情報
      */
-    @AllArgsConstructor
-    @Data
-    @NoArgsConstructor
-    public class BentoReserveInfoCommand{
+    @Value
+    public static class BentoReserveInfoCommand{
         /**
          * カード番号
          */
+
         private String reservationCardNo;
 
         /**
@@ -59,10 +53,8 @@ public class ForceUpdateBentoReserveCommand {
     /**
      * 予約明細
      */
-    @AllArgsConstructor
-    @Data
-    @NoArgsConstructor
-    public class BentoReserveDetailCommand {
+    @Value
+    public static class BentoReserveDetailCommand {
         /**
          * 枠番
          */
