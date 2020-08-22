@@ -10,6 +10,8 @@ import nts.uk.ctx.exio.dom.exo.condset.OutputPeriodSetting;
 @Data
 public class OutputPeriodSettingDto implements OutputPeriodSetting.MementoSetter {
 
+	private long version;
+	
 	/**
 	 * 会社ID
 	 */

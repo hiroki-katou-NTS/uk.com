@@ -2,14 +2,22 @@ package nts.uk.ctx.exio.app.command.exo.condset;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.exio.dom.exo.condset.OutputPeriodSetting;
 
 /**
  * Command 出力期間設定
  */
 @Data
-public class SaveOutputPeriodSetCommand {
+public class SaveOutputPeriodSetCommand implements OutputPeriodSetting.MementoGetter {
 	
 	private Boolean isNew;
+
+	private long version;
+	
+	/**
+	 * 会社ID
+	 */
+	private String cid;
 	
 	/**
 	 * 期間設定

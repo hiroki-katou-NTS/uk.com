@@ -3,13 +3,14 @@ package nts.uk.ctx.exio.dom.exo.condset;
 import java.util.Optional;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.外部入出力.外部出力.出力条件設定.出力条件設定.出力期間設定
  */
-public class OutputPeriodSetting {
+public class OutputPeriodSetting extends AggregateRoot {
 
 	/**
 	 * 会社ID
@@ -99,6 +100,7 @@ public class OutputPeriodSetting {
 	 *                lấy các primitive value từ command hoặc entity
 	 */
 	public void getMemento(MementoGetter memento) {
+		this.setVersion(memento.getVersion());
 		this.cid = memento.getCid();
 		this.periodSetting = NotUseAtr.valueOf(memento.getPeriodSetting());
 		this.conditionSetCode = new ExternalOutputConditionCode(memento.getConditionSetCode());
@@ -127,6 +129,7 @@ public class OutputPeriodSetting {
 	 *                thể xảy ra trong domain đều được quản lý bởi domain
 	 */
 	public void setMemento(MementoSetter memento) {
+		memento.setVersion(this.getVersion());
 		memento.setCid(cid);
 		if (this.periodSetting != null) {
 			memento.setPeriodSetting(this.periodSetting.value);
@@ -158,6 +161,7 @@ public class OutputPeriodSetting {
 	 *
 	 */
 	public static interface MementoSetter {
+		void setVersion(long version);
 		void setCid(String cid);
 		void setPeriodSetting(int periodSetting);
 		void setConditionSetCode(String conditionSetCode);
@@ -184,6 +188,7 @@ public class OutputPeriodSetting {
 	 *
 	 */
 	public static interface MementoGetter {
+		long getVersion();
 		String getCid();
 		int getPeriodSetting();
 		String getConditionSetCode();

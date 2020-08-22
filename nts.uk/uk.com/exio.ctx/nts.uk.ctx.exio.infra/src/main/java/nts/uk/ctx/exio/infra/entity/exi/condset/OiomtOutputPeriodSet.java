@@ -28,7 +28,7 @@ public class OiomtOutputPeriodSet extends UkJpaEntity implements OutputPeriodSet
 	// column 排他バージョン
 	@Version
 	@Column(name = "EXCLUS_VER")
-	private Long version;
+	private long version;
 	
 	// Embedded primary key 会社ID + 条件設定コード
 	@EmbeddedId
