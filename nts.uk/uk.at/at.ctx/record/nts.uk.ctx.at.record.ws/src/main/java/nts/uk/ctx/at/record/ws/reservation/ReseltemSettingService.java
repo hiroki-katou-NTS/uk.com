@@ -11,7 +11,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-@Path("bento/updateItemSetting")
+@Path("bento/updateitemsetting")
 @Produces("application/json")
 public class ReseltemSettingService extends WebService {
 

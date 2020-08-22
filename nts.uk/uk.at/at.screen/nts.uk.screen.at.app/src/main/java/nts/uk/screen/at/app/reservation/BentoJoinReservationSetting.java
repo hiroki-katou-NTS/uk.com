@@ -17,6 +17,11 @@ public class BentoJoinReservationSetting {
     public int operationDistinction;
 
     //bentomenu
+
+    public GeneralDate startDate;
+
+    public GeneralDate endDate;
+
     public String reservationFrameName1;
 
     public int reservationStartTime1;
@@ -37,8 +42,6 @@ public class BentoJoinReservationSetting {
 
         for(BentomenuJoinBentoDto x : bentomenuJoinBentoDtos){
             bentoDtos.add(new BentoDto(
-                    x.getStartDate(),
-                    x.getEndDate(),
                     x.getFrameNo(),
                     x.getBentoName(),
                     x.getUnitName(),
@@ -54,6 +57,8 @@ public class BentoJoinReservationSetting {
         val dto = bentomenuJoinBentoDtos.get(0);
         return new BentoJoinReservationSetting(
                 bentoReservationSettingDto.getOperationDistinction(),
+                dto.getStartDate(),
+                dto.getEndDate(),
                 dto.getReservationFrameName1(),
                 dto.getReservationStartTime1(),
                 dto.getReservationEndTime1(),
