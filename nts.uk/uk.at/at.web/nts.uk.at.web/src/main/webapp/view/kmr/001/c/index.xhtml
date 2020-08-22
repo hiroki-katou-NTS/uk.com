@@ -156,6 +156,7 @@
 								<input class="data-control" id="kmr001-c-9-2" data-bind="ntsTextEditor: {
 									name: 'KMR001_46',
 									value: unitName,
+									required: true,
 									constraint: 'BentoReservationUnitName'
 								}" />
 							</td>
@@ -228,7 +229,7 @@
 									name: 'KMR001_50',
 									options: vm.workLocationList,
 									visibleItemsCount: 5,
-									value: vm.model().workLocationCode,
+									value: vm.selectedWorkLocationCode,
 									optionsValue: 'id',
 									optionsText: 'name',
 									columns: [

@@ -2,10 +2,12 @@
 
 module nts.uk.at.kmr001.c {
     import parseTime = nts.uk.time.parseTime;
+    import getShare = nts.uk.ui.windows.getShared;
+    import setShare = nts.uk.ui.windows.setShared;
 
     const API = {
-        GET_LIST_WORK_LOCATION: 'screen/at/record/reservation/bento_menu/getWorkLocation',
-        GET_ALL : 'screen/at/record/reservation/bento_menu/getBentoMenuByHist',
+        GET_LIST_WORK_LOCATION: 'screen/at/record/reservation/bento-menu/getworklocation',
+        GET_ALL : 'screen/at/record/reservation/bento-menu/getbentomenubyhist',
         CREATE_BENTO_MENU: 'bento/updateItemSetting/add',
         UPDATE_BENTO_MENU: 'bento/updateItemSetting/update',
     };
@@ -27,6 +29,8 @@ module nts.uk.at.kmr001.c {
         columnBento: KnockoutObservableArray<any> = ko.observableArray([]);
         itemsBento: KnockoutObservableArray<any> = ko.observableArray([]);
 
+
+        selectedWorkLocationCode: KnockoutObservable<string> = ko.observable('')
         // columnBentoByLocation: KnockoutObservableArray<any> = ko.observableArray([]);
         // itemsBentoByLocation: KnockoutObservableArray<ItemBentoByLocation> = ko.observableArray();
 
@@ -37,40 +41,32 @@ module nts.uk.at.kmr001.c {
             false, false,
             "", "",
             "", "",
-            0, 0,
+            null, null,
             ""));
 
         workLocationList: KnockoutObservableArray<WorkLocation> = ko.observableArray([]);
 
         listData: Array<any> = [];
         listIdBentoMenu: Array<any> = [];
+
+        history: any = null;
         constructor() {
             super();
             const vm = this;
-
-            // vm.columnBento([
-            //     { headerText: vm.$i18n('KMR001_41'), key: 'id', width: 50 },
-            //     { headerText: vm.$i18n('KMR001_42'), key: 'name', width: 225 },
-            //     { headerText: vm.$i18n('KMR001_42'), key: 'frameNo', width: 0, hidden: true },
-            // ]);
-            // vm.columnBento([
-            //     { headerText: vm.$i18n('KMR001_41'), key: 'id', width: 50 },
-            //     { headerText: vm.$i18n('KMR001_42'), key: 'name', width: 225 },
-            //     { headerText: vm.$i18n('KMR001_50'), key: 'locationName', width: 100 },
-            //     { headerText: vm.$i18n('KMR001_42'), key: 'frameNo', width: 0, hidden: true },
-            // ]);
-
             vm.$ajax(API.GET_LIST_WORK_LOCATION).done(data => {
-                data.forEach(item =>{
-                    vm.workLocationList.push(
-                        new WorkLocation(item.workLocationCD, item.workLocationName)
-                    )}
-
-                );
+                vm.$blockui('invisible');
+                if(data) {
+                    data.forEach(item =>{
+                        vm.workLocationList.push(
+                            new WorkLocation(item.workLocationCD, item.workLocationName)
+                        )});
+                    vm.$blockui('clear');
+                }
             });
 
 
             vm.$ajax(API.GET_ALL, {histId : null}).done(dataRes => {
+                vm.$blockui('invisible');
                 if(dataRes.length > 0) {
                     dataRes = _.orderBy(dataRes, ['frameNo', 'asc']);
                     if(dataRes[0].operationDistinction == 1) {
@@ -121,7 +117,9 @@ module nts.uk.at.kmr001.c {
                     vm.end(dataRes[0].endDate);
 
                     vm.selectedBentoSetting(dataRes[0].frameNo);
-                    
+
+                    vm.selectedWorkLocationCode(dataRes[0].workLocationCode);
+
                     vm.model( new BentoMenuSetting(
                         dataRes[0].reservationFrameName1, dataRes[0].reservationFrameName2,
                         dataRes[0].bentoName,  dataRes[0].unitName,
@@ -134,10 +132,10 @@ module nts.uk.at.kmr001.c {
                     vm.listData = [...dataRes];
 
                 }
+                vm.$blockui('clear');
             }).then(() => {
                 vm.selectedBentoSetting.subscribe(data => {
-                    console.log(data);
-                    console.log(vm.listData.filter(item => data == item.frameNo));
+                    vm.$blockui('invisible');
                     const bento = vm.listData.filter(item => data == item.frameNo);
                     if(bento.length) {
                         vm.model( new BentoMenuSetting(
@@ -148,19 +146,25 @@ module nts.uk.at.kmr001.c {
                             parseTime(bento[0].reservationStartTime2, true).format(),  parseTime(bento[0].reservationEndTime2, true).format(),
                             Number(bento[0].price1),  Number(bento[0].price2),
                             bento[0].workLocationCode
-                        ))
-                    }else {
+                        ));
+                        vm.selectedWorkLocationCode(bento[0].workLocationCode);
+                        vm.$blockui('clear');
+                    } else {
                         vm.model( new BentoMenuSetting(
                             '', '',
-                            '',  '',
+                            '',  null,
                             false,  false,
-                            '0',  '0',
-                            '0',  '0',
-                            0,  0,
+                            parseTime(360, true).format(),  parseTime(600, true).format(),
+                            parseTime(720, true).format(),  parseTime(900, true).format(),
+                            null,  null,
                             vm.workLocationList()[0].id
                         ));
+                        vm.selectedWorkLocationCode(vm.workLocationList()[0].id);
+                        vm.$blockui('clear');
                     }
-
+                });
+                vm.selectedWorkLocationCode.subscribe((data) => {
+                    vm.model().workLocationCode(data);
                 })
             } );
 
@@ -172,17 +176,50 @@ module nts.uk.at.kmr001.c {
         }
 
         registerBentoMenu() {
-            const vm = this;
-            console.log(vm.listIdBentoMenu)
+            const vm = this,
+            model = this.model();
             if(vm.listIdBentoMenu.indexOf(Number(vm.selectedBentoSetting())) >= 0 ) {
                 // console.log(new paramsRegister(vm.model().))
+                const param = {
+                    histId: vm.history && vm.history.params.historyId ? vm.history.params.historyId : null,
+                    frameNo: vm.selectedBentoSetting(),
+                    benToName: model.bentoName(),
+                    workLocationCode: model.workLocationCode(),
+                    amount1: model.price1(),
+                    amount2: model.price2(),
+                    Unit: model.unitName(),
+                    canBookClosesingTime1: model.reservationAtr1(),
+                    canBookClosesingTime2: model.reservationAtr2()
+                };
+                vm.$ajax(API.UPDATE_BENTO_MENU, param).done(() => {
+                    console.log('done!!!')
+                })
+            } else {
+                const param = {
+                    histId: vm.history && vm.history.params.historyId ? vm.history.params.historyId : null,
+                    frameNo: vm.selectedBentoSetting(),
+                    benToName: model.bentoName(),
+                    workLocationCode: model.workLocationCode(),
+                    amount1: model.price1(),
+                    amount2: model.price2(),
+                    Unit: model.unitName(),
+                    canBookClosesingTime1: model.reservationAtr1(),
+                    canBookClosesingTime2: model.reservationAtr2()
+                };
+                vm.$ajax(API.CREATE_BENTO_MENU, param).done(() => {
+                    console.log('done!!!')
+                })
             }
         }
 
         openConfigHisDialog() {
             let vm = this;
             vm.$blockui('invisible');
-            vm.$window.modal('at', PATH.KMR001_D, {});
+            vm.$window.modal('at', PATH.KMR001_D, vm)
+                .then((result: any) => {
+                    console.log(result);
+                    vm.history = result;
+                });
             vm.$blockui('clear');
             //block.invisible();
             //block.invisible();
