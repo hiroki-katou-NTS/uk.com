@@ -8,8 +8,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
@@ -17,6 +19,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumb
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaManagerImport;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
@@ -30,9 +33,7 @@ public class EmploymentReserveLeaveInforFinder {
 	@Inject
 	private HdAppSetRepository repoHdAppSet;
 	@Inject
-	private AbsenceTenProcess absenceTenProcess;
-	@Inject
-	private ClosureService closureService;
+	private RemainNumberTempRequireService requireService;
 	/**
 	 * 1.積休ダイアログ作成（起動用）
 	 * @param param
@@ -70,6 +71,8 @@ public class EmploymentReserveLeaveInforFinder {
 	
 	public EmpRsvLeaveInforDto getByEmloyee(ParamEmpRsvLeave param) {
 		RsvLeaManagerImport rsvLeaManaImp = null;
+		val require = requireService.createRequire();
+        val cacheCarrier = new CacheCarrier();
 		// 積立年休管理区分
 		boolean isRetentionManage = false;
 		if(param.getInputDate() != null) {
@@ -77,7 +80,7 @@ public class EmploymentReserveLeaveInforFinder {
 			String cId = AppContexts.user().companyId();
 			String sId = param.getListSID().get(0);
 			//10-4.積立年休の設定を取得する
-			isRetentionManage = absenceTenProcess.getSetForYearlyReserved(cId, sId, referDate);
+			isRetentionManage = AbsenceTenProcess.getSetForYearlyReserved(require, cacheCarrier, cId, sId, referDate);
 			if (isRetentionManage) {
 				//3.積立年休取得日一覧の作成, 4.当月以降積休使用状況作成
 				Optional<RsvLeaManagerImport> rsvLeaManaImport = rsvLeaManaApdater.getRsvLeaveManager(param.getListSID().get(0), referDate);
@@ -85,7 +88,7 @@ public class EmploymentReserveLeaveInforFinder {
 					rsvLeaManaImp = rsvLeaManaImport.get();
 				}
 				// 社員に対応する締め期間を取得する
-				DatePeriod closingPeriod = this.closureService.findClosurePeriod(sId, referDate);
+				DatePeriod closingPeriod = ClosureService.findClosurePeriod(require, cacheCarrier, sId, referDate);
 				rsvLeaManaImp.getGrantRemainingList().stream().map(item-> {
 					GeneralDate deadLine = GeneralDate.fromString(item.getDeadline(), "yyyy/MM/dd");
 					return new RsvLeaGrantRemainingImportDto(
