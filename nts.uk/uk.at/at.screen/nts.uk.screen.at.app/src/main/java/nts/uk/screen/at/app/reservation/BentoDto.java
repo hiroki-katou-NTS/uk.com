@@ -10,10 +10,6 @@ public class BentoDto {
 
     //bento
 
-    public GeneralDate startDate;
-
-    public GeneralDate endDate;
-
     public int frameNo;
 
     public String bentoName;

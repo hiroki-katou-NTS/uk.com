@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.clock.ClockHourMinute;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
