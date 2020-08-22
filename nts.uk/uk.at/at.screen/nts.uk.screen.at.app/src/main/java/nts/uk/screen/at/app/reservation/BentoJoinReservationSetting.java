@@ -29,41 +29,14 @@ public class BentoJoinReservationSetting {
 
     public int reservationEndTime2;
 
-    //bento
-    public GeneralDate startDate;
+    public List<BentoDto> bentoDtos;
 
-    public GeneralDate endDate;
+    public static BentoJoinReservationSetting setData(List<BentomenuJoinBentoDto> bentomenuJoinBentoDtos, BentoReservationSettingDto bentoReservationSettingDto){
+        if (bentomenuJoinBentoDtos == null) return null;
+        List<BentoDto> bentoDtos = new ArrayList<>();
 
-    public int frameNo;
-
-    public String bentoName;
-
-    public String unitName;
-
-    public int price1;
-
-    public int price2;
-
-    public boolean reservationAtr1;
-
-    public boolean reservationAtr2;
-
-    public String workLocationCode;
-
-    public String workLocationName;
-
-    public static List<BentoJoinReservationSetting> setData(List<BentoDto> bentoDtos, BentoReservationSettingDto bentoReservationSettingDto){
-        if (bentoDtos == null) return null;
-        List<BentoJoinReservationSetting> listFullJoin = new ArrayList<>();
-        for(BentoDto x : bentoDtos){
-            listFullJoin.add(new BentoJoinReservationSetting(
-                    bentoReservationSettingDto.getOperationDistinction(),
-                    x.getReservationFrameName1(),
-                    x.getReservationStartTime1(),
-                    x.getReservationEndTime1(),
-                    x.getReservationFrameName2(),
-                    x.getReservationStartTime2(),
-                    x.getReservationEndTime2(),
+        for(BentomenuJoinBentoDto x : bentomenuJoinBentoDtos){
+            bentoDtos.add(new BentoDto(
                     x.getStartDate(),
                     x.getEndDate(),
                     x.getFrameNo(),
@@ -77,6 +50,17 @@ public class BentoJoinReservationSetting {
                     x.getWorkLocationName()
             ));
         }
-        return listFullJoin;
+
+        val dto = bentomenuJoinBentoDtos.get(0);
+        return new BentoJoinReservationSetting(
+                bentoReservationSettingDto.getOperationDistinction(),
+                dto.getReservationFrameName1(),
+                dto.getReservationStartTime1(),
+                dto.getReservationEndTime1(),
+                dto.getReservationFrameName2(),
+                dto.getReservationStartTime2(),
+                dto.getReservationEndTime2(),
+                bentoDtos
+        );
     }
 }
