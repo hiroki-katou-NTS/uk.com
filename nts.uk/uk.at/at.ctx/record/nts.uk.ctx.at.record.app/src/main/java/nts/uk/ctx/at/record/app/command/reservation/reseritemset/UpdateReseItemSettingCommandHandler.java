@@ -12,7 +12,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.Arrays;
 import java.util.Optional;
 
 @Stateless
@@ -30,11 +29,12 @@ public class UpdateReseItemSettingCommandHandler extends CommandHandler<UpdateRe
         Bento bento = new Bento(command.getFrameNo(),
                 new BentoName(command.getBenToName()),
                 new BentoAmount(command.getAmount1()),
-                new BentoAmount(command.getAmount2()),
+                command.getAmount2() == null ? null : new BentoAmount(command.getAmount2()),
                 new BentoReservationUnitName(command.getUnit()),
                 command.isCanBookClosesingTime1(),
                 command.isCanBookClosesingTime2(),
-                Optional.of(new WorkLocationCode(command.getWorkLocationCode()))
+                command.getWorkLocationCode() != null?
+                        Optional.of(new WorkLocationCode(command.getWorkLocationCode())): Optional.empty()
         );
 
         String cid = AppContexts.user().companyId();
@@ -44,18 +44,10 @@ public class UpdateReseItemSettingCommandHandler extends CommandHandler<UpdateRe
                 bentoMenuRepository.getBentoMenuByEndDate(cid,date) :
                 bentoMenuRepository.getBentoMenuByHistId(cid,command.getHistId());
 
-        Bento[] bentoList = new Bento[bentoMenu.getMenu().size()];
-        bentoMenu.getMenu().toArray(bentoList);
-        Optional<Bento> optionalBento = Arrays.stream(bentoList)
-                .filter(x -> x.getFrameNo() == bento.getFrameNo())
-                .findFirst();
-        if(optionalBento.isPresent()){
-            int i = Arrays.asList(bentoList).indexOf(optionalBento.get());
-            bentoList[i] = bento;
-        }
-        BentoMenu result = new BentoMenu(bentoMenu.getHistoryID(),Arrays.asList(bentoList),bentoMenu.getClosingTime());
+        Optional<Bento> optionalBento = bentoMenu.getMenu() .stream().filter(x -> x.getFrameNo() == bento.getFrameNo()) .findFirst();
+        optionalBento.ifPresent(bento1 -> bentoMenu.getMenu().set(bentoMenu.getMenu().indexOf(bento1), bento));
 
-        bentoMenuRepository.update(result);
+        bentoMenuRepository.update(bentoMenu);
     }
 
 }

@@ -116,7 +116,7 @@ module nts.uk.at.view.kmr004.a {
 
         prepareData():any{
             let vm = this;
-            if(vm.outputConditionChecked === ko.observable(1)){
+            if(vm.outputConditionChecked() === 1){
                 vm.model().frameNo = ko.observable(-1);
                 vm.model().itemExtractCondition = ko.observable(-1);
                 vm.model().detailTitle = ko.observable('');
@@ -147,6 +147,7 @@ module nts.uk.at.view.kmr004.a {
 
         printExcel(){
             let vm = this;
+            vm.$blockui("invisible");
             let data = vm.prepareData();
             nts.uk.request.exportFile("at", API.EXCEL,data).done(() => {
                 vm.$blockui("clear");
@@ -159,9 +160,9 @@ module nts.uk.at.view.kmr004.a {
 
         printPDF(){
             let vm = this;
+            vm.$blockui("invisible");
             let data = vm.prepareData();
             $("#exportTitle").trigger("validate");
-            vm.$blockui("invisible");
             nts.uk.request.exportFile("at", API.PDF, data).done(() => {
                 vm.$blockui("clear");
             }).fail((res: any) => {
@@ -233,7 +234,7 @@ module nts.uk.at.view.kmr004.a {
 				isMultipleUse: true,
 				listType: list.ListType.WORKPLACE,
 				selectType: list.SelectType.NO_SELECT,
-				selectedCode: vm.selectedWorkLocationCode,
+				selectedCode: vm.model().workLocationCodes,
 				isDialog: false,
 				isShowNoSelectRow: false,
 				maxRows: 10

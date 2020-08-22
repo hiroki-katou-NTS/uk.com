@@ -26,12 +26,12 @@ public class BentoMenuSetScreenProcessor {
         return BentoMenuJoinBentoSettingDto.setData(bentoMenuDto,reservationSettingDto);
     }
 
-    public List<BentoJoinReservationSetting> getBentoMenuByHist(BentoRequest request) {
+    public BentoJoinReservationSetting getBentoMenuByHist(BentoRequest request) {
         String companyID = AppContexts.user().companyId();
         GeneralDate generalDate = GeneralDate.max();
-        List<BentoDto> bentoDtos =  bentoMenuScreenRepository.findDataBento(companyID,generalDate,request);
+        List<BentomenuJoinBentoDto> bentomenuJoinBentoDtos =  bentoMenuScreenRepository.findDataBento(companyID,generalDate,request);
         BentoReservationSettingDto reservationSettingDto = bentoReservationScreenRepository.findDataBentoRervation(companyID);
-        return BentoJoinReservationSetting.setData(bentoDtos,reservationSettingDto);
+        return BentoJoinReservationSetting.setData(bentomenuJoinBentoDtos,reservationSettingDto);
     }
 
     public List<WorkLocationDto> getWorkLocationByCid() {

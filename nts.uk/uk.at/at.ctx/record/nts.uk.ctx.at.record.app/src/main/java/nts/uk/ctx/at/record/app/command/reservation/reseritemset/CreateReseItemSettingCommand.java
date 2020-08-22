@@ -20,7 +20,7 @@ public class CreateReseItemSettingCommand {
     private int amount1;
 
     // 金額２
-    private  int amount2;
+    private Integer amount2;
 
     // 単位
     private String Unit;

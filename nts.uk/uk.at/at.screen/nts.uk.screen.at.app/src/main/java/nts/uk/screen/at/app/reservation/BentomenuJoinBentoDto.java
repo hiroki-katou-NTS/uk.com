@@ -4,11 +4,29 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 
+import javax.persistence.Column;
+
 @Data
 @AllArgsConstructor
-public class BentoDto {
+public class BentomenuJoinBentoDto {
 
-    //bento
+    public String reservationFrameName1;
+
+    public int reservationStartTime1;
+
+    public int reservationEndTime1;
+
+    public String reservationFrameName2;
+
+    public int reservationStartTime2;
+
+    public int reservationEndTime2;
+
+    //Bento
+
+    public GeneralDate startDate;
+
+    public GeneralDate endDate;
 
     public int frameNo;
 

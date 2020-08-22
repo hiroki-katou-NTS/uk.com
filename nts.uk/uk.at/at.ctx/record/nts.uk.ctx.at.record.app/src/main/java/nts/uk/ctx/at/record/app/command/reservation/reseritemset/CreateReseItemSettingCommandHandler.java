@@ -29,11 +29,12 @@ public class CreateReseItemSettingCommandHandler extends CommandHandler<CreateRe
         Bento bento = new Bento(command.getFrameNo(),
                 new BentoName(command.getBenToName()),
                 new BentoAmount(command.getAmount1()),
-                new BentoAmount(command.getAmount2()),
+                command.getAmount2() == null ? null : new BentoAmount(command.getAmount2()),
                 new BentoReservationUnitName(command.getUnit()),
                 command.isCanBookClosesingTime1(),
                 command.isCanBookClosesingTime2(),
-                Optional.of(new WorkLocationCode(command.getWorkLocationCode()))
+                command.getWorkLocationCode() != null?
+                        Optional.of(new WorkLocationCode(command.getWorkLocationCode())): Optional.empty()
         );
         String cid = AppContexts.user().companyId();
         GeneralDate date = GeneralDate.max();
