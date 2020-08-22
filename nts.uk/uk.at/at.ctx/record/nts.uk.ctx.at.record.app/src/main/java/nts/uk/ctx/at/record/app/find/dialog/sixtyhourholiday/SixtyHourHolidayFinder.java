@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dialog.sixtyhourholiday;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,6 +20,9 @@ import nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.GetHoliday
 import nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.GetHolidayOver60hRemNumWithinPeriodImpl;
 import nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.param.AggrResultOfHolidayOver60h;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolidayOver60hMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolidayOver60hMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcessCommon;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SixtyHourSettingOutput;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -43,6 +47,9 @@ public class SixtyHourHolidayFinder {
 	/** The get holiday over 60 h rem num within period. */
 	@Inject
 	private GetHolidayOver60hRemNumWithinPeriod getHolidayOver60hRemNumWithinPeriod;
+	
+	@Inject
+	private TmpHolidayOver60hMngRepository tmpHolidayOver60hMngRepository;
 
 	/**
 	 * KDL017
@@ -91,15 +98,20 @@ public class SixtyHourHolidayFinder {
 				, Optional.empty()
 				, Optional.empty());
 
-		// TODO
-		
+		// ドメインモデル「暫定60H超休管理データ」を取得
+		Optional<TmpHolidayOver60hMng> optTmpHolidayOver60hMng = this.tmpHolidayOver60hMngRepository
+				.getByEmployeeIdAndDatePeriodAndRemainType(employeeId
+						, closingPeriod
+						, RemainType.SIXTY_OVER_BREAK.value);
+
 		// Step. 60超過時間表示情報詳細を作成
 		List<RemainNumberDetailDto> remainNumberDetailDtos = aggrResultOfHolidayOver60h.getAsOfPeriodEnd().getGrantRemainingList().stream()
 			.map(item -> {
 				RemainNumberDetailDto remainNumberDetailDto = new RemainNumberDetailDto();
 				// 残数情報．発生月　＝　取得した60H超休の集計結果．60H超休情報(期間終了日時点)．付与残数データ．60H超休付与残数データ．付与日の年月
-				remainNumberDetailDto.setOccurrenceMonth(YearMonth.of(item.getGrantDate().localDate().getMonthValue()
-						, item.getGrantDate().localDate().getYear()));
+				if (item.getGrantDate() != null) {
+					remainNumberDetailDto.setOccurrenceMonth(item.getGrantDate().yearMonth().v());
+				}
 
 				// 残数情報．期限日　＝　取得した60H超休の集計結果．60H超休情報(期間終了日時点)．付与残数データ．60H超休付与残数データ．期限日
 				remainNumberDetailDto.setDeadline(item.getDeadline());
@@ -109,19 +121,22 @@ public class SixtyHourHolidayFinder {
 					remainNumberDetailDto.setOccurrenceTime(item.getDetails().getGrantNumber().getMinutes().get().v());
 				}
 
-				// 残数情報．使用日　＝　取得した60H超休の集計結果．60H超休情報(消滅)．年月日
-				remainNumberDetailDto.setUsageDate(aggrResultOfHolidayOver60h.getLapsed().getYmd());
+				if (optTmpHolidayOver60hMng.isPresent()) {
+					// 残数情報．使用日　＝　取得した暫定60H超休管理データ．対象日
+					remainNumberDetailDto.setUsageDate(optTmpHolidayOver60hMng.get().getYmd());
 
-				// 残数情報．使用時間　＝　取得した60H超休の集計結果．60H超休情報(消滅)．残数．60H超休(マイナスなし)．使用時間
-				remainNumberDetailDto.setUsageTime(aggrResultOfHolidayOver60h.getLapsed()
-												.getRemainingNumber()
-												.getHolidayOver60hNoMinus()
-												.getUsedTime().valueAsMinutes());
-				// 残数情報．作成区分　＝　’実績’
+					// 残数情報．使用時間　＝　取得した暫定60H超休管理データ．使用時間
+					if (optTmpHolidayOver60hMng.get().getUseTime().isPresent()) {
+						remainNumberDetailDto.setUsageTime(optTmpHolidayOver60hMng.get().getUseTime().get().v());
+					}
+					// 残数情報．作成区分　＝　取得した暫定60H超休管理データ．作成元区分
+					remainNumberDetailDto.setCreationCategory(optTmpHolidayOver60hMng.get().getCreatorAtr().value);
+				}
 
 				return remainNumberDetailDto;
 			}).collect(Collectors.toList());
 
+		result.setRemainNumberDetailDtos(remainNumberDetailDtos);
 
 		// 繰越数　＝　60H超休．残数．繰越数
 		result.setCarryoverNumber(aggrResultOfHolidayOver60h.getAsOfPeriodEnd().getRemainingNumber().getCarryForwardTimes().v());
@@ -137,12 +152,50 @@ public class SixtyHourHolidayFinder {
 									.getRemainingNumber()
 									.getHolidayOver60hWithMinus()
 									.getRemainingTime().v());
-
-		result.setRemainNumberDetailDtos(remainNumberDetailDtos);
 		
+		// 締め期間　＝　取得した期間
+		result.setStartPeriod(closingPeriod.start());
+		result.setEndPeriod(closingPeriod.end());
+
 		// 紐付け管理を作成
 		List<PegManagementDto> pegManagementDtos = new ArrayList<>();
-		
+
+		// 作成した残数情報をループする
+		remainNumberDetailDtos.stream().forEach(t -> {
+
+			// 紐付け管理を作成
+			PegManagementDto pegManagementDto = new PegManagementDto();
+			if (t.getOccurrenceMonth() != null) {
+				// ループ中の発生月の取得した期間．開始日の日
+				LocalDate startDate = LocalDate.of(YearMonth.of(t.getOccurrenceMonth()).year()
+						, YearMonth.of(t.getOccurrenceMonth()).month()
+						, closingPeriod.start().day());
+
+				// ループ中の発生月+1月の取得した期間．開始日の日-1日
+				LocalDate endDate = startDate.plusMonths(1).minusDays(1);
+
+				remainNumberDetailDtos.stream().forEach(item -> {
+
+					// ループ中の発生月の取得した期間．開始日の日　＜＝　ループ中の残数情報．使用日　＜＝　ループ中の発生月+1月の取得した期間．開始日の日-1日
+					if (item.getUsageDate() != null
+					 && (item.getUsageDate().localDate().isAfter(startDate) || item.getUsageDate().localDate().isEqual(startDate))
+					 && (item.getUsageDate().localDate().isBefore(endDate) || item.getUsageDate().localDate().isEqual(endDate))) {
+						List<RemainNumberDetailDto> childRemainNumber = new ArrayList<>();
+						childRemainNumber.add(item);
+						t.setChildRemainNumberDetailDtos(childRemainNumber);
+
+						// ・発生年月　＝　ループ中の発生月
+						pegManagementDto.setOccurrenceMonth(t.getOccurrenceMonth());
+						// ・使用日　＝　ループ中の使用日
+						pegManagementDto.setUsageDate(item.getUsageDate());
+						// ・使用日　＝　ループ中の使用日
+						pegManagementDto.setUsageNumber(t.getUsageTime());
+						pegManagementDtos.add(pegManagementDto);
+					}
+				});
+			}
+		});
+
 		result.setPegManagementDtos(pegManagementDtos);
 
 		// return 作成した60超過時間表示情報詳細を返す

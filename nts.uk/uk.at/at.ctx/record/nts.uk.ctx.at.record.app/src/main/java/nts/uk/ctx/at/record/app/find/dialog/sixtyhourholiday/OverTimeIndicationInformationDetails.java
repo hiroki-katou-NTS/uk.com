@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.app.find.dialog.sixtyhourholiday;
 import java.util.List;
 
 import lombok.Data;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.GeneralDate;
 
 /**
  * 60超過時間表示情報パラメータ - 60超過時間表示情報詳細
@@ -24,7 +24,8 @@ public class OverTimeIndicationInformationDetails {
 	private Integer usageNumber;
 
 	/** 締め期間 */
-	private DatePeriod deadline;
+	private GeneralDate startPeriod;
+	private GeneralDate endPeriod;
 
 	/** 残数 */
 	private Integer residual;

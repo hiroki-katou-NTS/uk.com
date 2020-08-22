@@ -79,7 +79,7 @@ module nts.uk.at.view.kdl017.a {
       var dfd = $.Deferred();
       dfd.resolve();
       return dfd.promise();
-  }
+    }
 
     // init KCP005 component
     loadKcp005Lst(data: any) {
@@ -135,7 +135,6 @@ module nts.uk.at.view.kdl017.a {
     onSelectEmployee(baseDate: any, employeeId: string, employeeCode: string, employeeName: string) {
       const vm = this;
       vm.employeeInfo(employeeCode + '　' + employeeName);
-      debugger
       // Load data 
       this.loadExcessHoliday(employeeId, baseDate);
     }
@@ -156,12 +155,34 @@ module nts.uk.at.view.kdl017.a {
 
     loadExcessHoliday(employeeId: string, baseDate: string) {
       const vm = this;
+      vm.dataItems([]);
       service.get60hOvertimeDisplayInfoDetail(employeeId, baseDate)
         .done((data: any) => {
-          vm.dataItems(data.remainNumberDetailDtos);
-          vm.carryoverNumber(data.carryoverNumber);
-          vm.usageNumber(data.usageNumber);
-          vm.residual(data.residual);
+          data.remainNumberDetailDtos.forEach(item => {
+            let kdl017Model = new KDL017TableModel();
+            kdl017Model.creationCategory = item.creationCategory;
+            // <!-- A3_6_1 -->
+            if (moment.utc(data.deadline, 'YYYY/MM/DD').isSameOrAfter(moment.utc(item.startPeriod, 'YYYY/MM/DD'))
+              && moment.utc(data.deadline, 'YYYY/MM/DD').isSameOrBefore(moment.utc(item.endPeriod, 'YYYY/MM/DD'))) {
+              kdl017Model.deadline = nts.uk.resource.getText("KDL005_38", [item.deadline]);
+            } else {
+              kdl017Model.deadline = nts.uk.resource.getText("KDL005_37", [item.deadline]);
+            }
+            // <!-- A3_2_1 -->
+            kdl017Model.occurrenceMonth = item.occurrenceMonth ? moment.utc(item.occurrenceMonth, 'YYYYMM').format('YYYY/MM') : '';
+            // <!-- A3_2_2 -->
+            kdl017Model.occurrenceTime = item.occurrenceTime ? (nts.uk.time as any).format.byId("Time_Short_HM", [item.occurrenceTime]) : '';
+            // <!-- A3_3_1 -->
+            kdl017Model.usageDate = (item.creationCategory === CreateAtr["申請(事前)"] || item.creationCategory === CreateAtr["申請(事後)"])
+                                   ? nts.uk.resource.getText("KDL005_36", [item.usageDate]) : item.usageDate;
+            // <!-- A3_3_2 -->
+            kdl017Model.usageTime = item.usageTime ? (nts.uk.time as any).format.byId("Time_Short_HM", [item.usageTime]) : '';
+
+            vm.dataItems.push(kdl017Model);
+          });
+          vm.carryoverNumber(data.carryoverNumber ? (nts.uk.time as any).format.byId("Time_Short_HM", [data.carryoverNumber]) : '');
+          vm.usageNumber(data.usageNumber ? (nts.uk.time as any).format.byId("Time_Short_HM", [data.usageNumber]) : '');
+          vm.residual(data.residual ? (nts.uk.time as any).format.byId("Time_Short_HM", [data.residual]) : '');
         }).fail((err) => vm.onError(err));
     }
   }
@@ -181,16 +202,24 @@ module nts.uk.at.view.kdl017.a {
   }
 
   class KDL017TableModel {
-    expirationDate: string;
-    digestionNumber: string;
-    digestionDate: string;
-    digestionHour: string;
-    occurrenceNumber: string;
-    occurrenceDate: string;
-    occurrenceHour: string;
+    occurrenceMonth: string;
+    usageDate: string;
+    occurrenceTime: number;
+    usageTime: number;
+    deadline: string;
+    creationCategory: string;
+    kdl017TableModels: KDL017TableModel[];
 
     constructor(init?: Partial<KDL017TableModel>) {
       (<any>Object).assign(this, init);
     }
+  }
+
+  export enum CreateAtr {
+    "予定",//0
+    "実績",//1
+    "申請(事前)",//2
+    "申請(事後)",//3
+    "フレックス補填",//4
   }
 }

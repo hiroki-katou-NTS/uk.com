@@ -57,7 +57,7 @@
           <!-- A4_1 -  繰越数 -->
           <div class="mt-3 table-fixed">
             <div id="date-fixed-table">
-              <table>
+              <table class="table-60h-detail">
                 <colgroup>
                   <col width="30px" />
                   <col width="258px" />
@@ -81,14 +81,14 @@
                 <tbody>
                   <com:ko-foreach bind="dataItems">
                     <tr>
-                      <td>
-                        <span class="ui-widget-header" data-bind="text: $index"></span>
+                      <td class="ui-widget-index">
+                        <span data-bind="text: ($index() + 1)"></span>
                       </td>
                       <td>
                         <!-- A3_2_1 -->
                         <span data-bind="text: occurrenceMonth"></span>
                         <!-- A3_2_2 -->
-                        <span data-bind="text: occurrenceTime"></span>
+                        <span class="ml-3" data-bind="text: occurrenceTime"></span>
                         <!-- A3_6_1 -->
                         <span data-bind="text: deadline"></span>
                       </td>

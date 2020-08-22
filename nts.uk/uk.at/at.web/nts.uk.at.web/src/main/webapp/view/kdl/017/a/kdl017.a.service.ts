@@ -16,7 +16,7 @@ module nts.uk.at.view.kdl017.a.service {
    * @param baseDate the base date
    */
   export function get60hOvertimeDisplayInfoDetail(employeeId: string, baseDate: string)
-                                  : JQueryPromise<any> {
+                                  : JQueryPromise<OverTimeIndicationInformationDetails> {
     const path = nts.uk.text.format(paths.get60hOvertimeDisplayInfoDetail, employeeId, baseDate);
     return nts.uk.request.ajax(path);
   }
@@ -52,7 +52,8 @@ module nts.uk.at.view.kdl017.a.service {
     usageNumber: number;
 
     /** 締め期間 */
-    deadline: any;
+    startPeriod: string;
+    endPeriod: string;
 
     /** 残数 */
     residual: number;
@@ -64,7 +65,7 @@ module nts.uk.at.view.kdl017.a.service {
   // 残数詳細
   export interface RemainNumberDetailDto {
     /** 発生月 */
-    occurrenceMonth: string;
+    occurrenceMonth: number;
 
     /** 使用日 */
     usageDate: string;
@@ -80,12 +81,14 @@ module nts.uk.at.view.kdl017.a.service {
 
     /** 作成区分 */
     creationCategory: number;
+
+    childRemainNumberDetailDtos: RemainNumberDetailDto[];
   }
 
   // 紐付け管理
   export interface PegManagementDto {
     /** 発生月 */
-    occurrenceMonth: string;
+    occurrenceMonth: number;
       
     /** 使用日 */
     usageDate: string;

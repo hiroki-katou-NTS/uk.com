@@ -74,3 +74,16 @@ table.summary-table td:first-child {
 table.summary-table td:last-child {
   border-left: none;
 }
+
+.ui-widget-index {
+  background-color: #CFF1A5;
+  text-align: right;
+}
+
+table.table-60h-detail tr td {
+  padding: 5px !important;
+}
+
+.ml-3 {
+  margin-left: 3rem;
+}
