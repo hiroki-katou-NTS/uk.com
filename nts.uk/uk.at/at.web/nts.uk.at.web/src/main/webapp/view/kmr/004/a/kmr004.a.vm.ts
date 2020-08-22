@@ -163,7 +163,6 @@ module nts.uk.at.view.kmr004.a {
             vm.$blockui("invisible");
             let data = vm.prepareData();
             $("#exportTitle").trigger("validate");
-            vm.$blockui("invisible");
             nts.uk.request.exportFile("at", API.PDF, data).done(() => {
                 vm.$blockui("clear");
             }).fail((res: any) => {

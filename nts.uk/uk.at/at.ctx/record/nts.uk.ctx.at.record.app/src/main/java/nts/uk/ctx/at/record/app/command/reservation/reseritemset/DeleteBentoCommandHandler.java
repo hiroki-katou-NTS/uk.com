@@ -13,15 +13,12 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.Arrays;
 import java.util.Optional;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class DeleteBentoCommandHandler extends CommandHandler<DeleteBentoCommand> {
 
-    @Inject
-    private BentoMenuRepository bentoMenuHistoryRepository;
 
     @Inject
     private BentoMenuRepository bentoMenuRepository;
@@ -36,15 +33,10 @@ public class DeleteBentoCommandHandler extends CommandHandler<DeleteBentoCommand
                 bentoMenuRepository.getBentoMenuByEndDate(cid,date) :
                 bentoMenuRepository.getBentoMenuByHistId(cid,command.getHistId());
         if (bentoMenu != null){
-            Bento[] bentoList = new Bento[bentoMenu.getMenu().size()];
-            bentoMenu.getMenu().toArray(bentoList);
-            Optional<Bento> optionalBento = Arrays.stream(bentoList)
+            Optional<Bento> optionalBento = bentoMenu.getMenu().stream()
                     .filter(x -> x.getFrameNo() == command.getFrameNo())
                     .findFirst();
-            if(optionalBento.isPresent()){
-                int i = Arrays.asList(bentoList).indexOf(optionalBento.get());
-                bentoMenu.getMenu().remove(i);
-            }
+            optionalBento.ifPresent(bento -> bentoMenu.getMenu().remove(bentoMenu.getMenu().indexOf(bento)));
             bentoMenuRepository.update(bentoMenu);
         }
     }

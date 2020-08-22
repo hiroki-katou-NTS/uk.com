@@ -16,7 +16,6 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClo
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.*;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.i18n.TextResource;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -61,10 +60,13 @@ public class BentoReserveSettingCommandHandler extends CommandHandler<BentoReser
                 new BentoReservationTime(command.getEnd1()),
                 Optional.ofNullable(command.getStart1() == null? null :new BentoReservationTime(command.getStart1())));
 
-        Optional<ReservationClosingTime> closingTime2 = Optional.of(new ReservationClosingTime(
-                new BentoReservationTimeName(command.getName2()),
-                new BentoReservationTime(command.getEnd2()),
-                Optional.ofNullable(command.getStart2() == null? null :new BentoReservationTime(command.getStart2()))));
+        Optional<ReservationClosingTime> closingTime2 = Optional.empty();
+        if (command.getName2() != null && command.getEnd2() != null){
+            closingTime2 = Optional.of(new ReservationClosingTime(
+                    new BentoReservationTimeName(command.getName2()),
+                    new BentoReservationTime(command.getEnd2()),
+                    Optional.ofNullable(command.getStart2() == null? null :new BentoReservationTime(command.getStart2()))));
+        }
 
         BentoReservationClosingTime bentoReservationClosingTime = new BentoReservationClosingTime(closingTime1,closingTime2);
         OperationDistinction operationDistinction = OperationDistinction.valueOf(command.getOperationDistinction());
