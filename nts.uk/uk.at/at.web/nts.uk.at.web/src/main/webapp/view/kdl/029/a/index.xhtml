@@ -9,7 +9,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 560 , height: 560};</script>
+			<script>var dialogSize = { width: 560 , height: 690 };</script>
 			<!-- kcp005 -->
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
@@ -24,8 +24,8 @@
 			<div id="contents-area">
 				<div id="content-left" data-bind = "visible: displayKCP005">
 					<!-- A1 -->
-					<div style = "margin-left: 20px; margin-top: 10px;">
-						<label>#{i18n.getText('KDL029_2')}</label>
+					<div style = "margin-top: 10px; margin-bottom: 20px;">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL029_2')}</div>
 					</div>
 					<!-- A2 -->
 					<!-- KCP005 -->
@@ -33,51 +33,73 @@
 				</div>
 				<div id="content-right" style = "margin-left: 20px; float: left">
 					<div id="content_right_top">
-						<div class="div_line">
+						<div class="div_line line1">
+								<!-- A3_3 -->
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL029_24')}</div>
 								<!-- A3_1 -->
 								<label data-bind ="text: employeeCode"></label>
 								<!-- A3_2 -->
 								<label class ="margin-left-employee" data-bind ="text: employeeName"> </label>
 						</div>
-						<div class="table_dta">
-							<!-- A4 -->
-							<table id="table_Hd_Grant"
-								data-bind="ntsGridList: {
+						<div class="div_line">
+							<!-- A7_1 -->
+							<label>#{i18n.getText('KDL029_25')}</label>
+							<!-- A7_2 -->
+							<label>#{i18n.getText('KDL029_26')}</label>
+						</div>
+						<com:ko-if bind="isRetentionManage">
+							<div class="table_dta">
+								<!-- A4 -->
+								<table id="table_Hd_Grant"
+									data-bind="ntsGridList: {
 										name: '#{i18n.getText('KDL029_8')}',
-										dataSource: dataHolidayGrantInfo ,
+										dataSource: dataHolidayGrantInfo,
 										primaryKey: 'code',
-										columns: columnHolidayGrantInfos ,
+										columns: columnHolidayGrantInfos,
 										multiple: false,
 										value: value,
 										rows: 4
-									}"></table>
-							<div class = "total_css">
-								<div style = "display: inline-block; margin-left: 5px;">#{i18n.getText('KDL029_21')}</div>
-								<div style = "display: inline-block; margin-left: 250px;" data-bind = "text: totalRemain"></div>
+										}">
+								</table>
+								<div class = "total_css">
+									<!-- A4_9_1 -->
+									<div style = "display: inline-block; margin-left: 5px;">#{i18n.getText('KDL029_21')}</div>
+									<!-- A4_9_6, A4_9_7-->
+									<div class="totalRemain" data-bind = "text: totalRemain"></div>
+								</div>
+							</div>
+						</com:ko-if>
+					</div>
+					<com:ko-if bind="isRetentionManage">
+						<div id="content_right_bottom">
+							<div id="content_right_bottom_left">
+								<div class="div_line padding-top-10">
+									<!-- A5_1 -->
+									<div data-bind="ntsFormLabel: {text: title2}"></div>
+								</div>
+								<div class="div_line">
+									<!-- A6 -->
+									<table id="table_tmp"
+										data-bind="ntsGridList: {
+											name: '#{i18n.getText('KDL029_16')}',
+											dataSource: dataSteadyUseInfor,
+											primaryKey: 'id',
+											columns: columnSteadyUseInfors,
+											multiple: false,
+											value: value,
+											rows: 8
+										}">
+									</table>
+								</div>
 							</div>
 						</div>
+					</com:ko-if>
+					<com:ko-if bind="!isRetentionManage()">
+						<div class="div_line line-width-535">
+							<!-- A11 -->
+							<label class="margin-top-20 font-size-2rem">#{i18n.getText('KDL029_27')}</label>
 					</div>
-					<div id="content_right_bottom">
-						<div id="content_right_bottom_left">
-							<div class="div_line">
-								<!-- A5_1 -->
-								<label data-bind = "text: title2"></label>
-							</div>
-							<div class="div_line">
-								<!-- A6 -->
-								<table id="table_tmp"
-									data-bind="ntsGridList: {
-										name: '#{i18n.getText('KDL029_16')}',
-										dataSource: dataSteadyUseInfor,
-										primaryKey: 'id',
-										columns: columnSteadyUseInfors ,
-										multiple: false,
-										value: value,
-										rows: 8
-									}"></table>
-							</div>
-						</div>
-					</div>
+					</com:ko-if>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
@@ -88,7 +110,6 @@
 		</ui:define>
 
 	</ui:composition>
-
 
 </body>
 </html>

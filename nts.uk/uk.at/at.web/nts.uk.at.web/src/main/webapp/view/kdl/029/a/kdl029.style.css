@@ -13,14 +13,17 @@
 #table_Hd_Grant td {
 	padding-left: 5px !important; 
 }
+
 #table_tmp td {
 	padding-left: 5px !important; 
 }
-.total_css{
+
+.total_css {
 	border-bottom: 1px solid #CCC;
 	border-left: 1px solid #CCC;
 	border-right: 1px solid #CCC;
 }
+
 .float-right {
 	float: right !important;
 }
@@ -34,11 +37,13 @@
 	float: left;
 	clear: both;
 }
-.table_dta{
+
+.table_dta {
 	margin-top: 20px;
 	float: left;
 	clear: both;
 }
+
 hr {
 	clear: both;
 }
@@ -52,5 +57,33 @@ hr {
 }
 
 .bold {
+	font-weight: bold;
+}
+
+.line1 {
+	border-bottom: solid 1px #b1b1b1;
+	padding-bottom: 10px;
+	width: 535px;
+}
+
+.margin-top-20 {
+	margin-top: 20px;
+}
+
+.padding-top-10 {
+	padding-top: 10px;
+}
+
+.totalRemain {
+	float: right;
+	padding-right: 50px;
+}
+
+.line-width-535 {
+	max-width: 535px;
+}
+
+.font-size-2rem {
+	font-size: 2rem;
 	font-weight: bold;
 }
