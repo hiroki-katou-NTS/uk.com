@@ -163,6 +163,21 @@ export class KdpS01CComponent extends Vue {
         return result;
     }
 
+    public getTextColor(date) {
+
+        const daysColor = [
+            { day: 0, color: '#FF0000' },
+            { day: 6, color: '#0000FF' }
+        ];
+
+        let day = moment.utc(date).day(),
+
+            dayColor = _.find(daysColor, ['day', day]);
+
+        return dayColor ? dayColor.color : '#000000';
+
+    }
+
 
     private getValue(lstItemDisplayed, itemId) {
         return _.find(lstItemDisplayed, ['itemId', itemId]);
