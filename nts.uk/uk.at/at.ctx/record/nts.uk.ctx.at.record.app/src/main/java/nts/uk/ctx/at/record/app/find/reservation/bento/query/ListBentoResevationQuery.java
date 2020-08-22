@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.reservation.bento.query;
 
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.BentoReservationSearchConditionDto;
 import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
@@ -62,6 +63,12 @@ public class ListBentoResevationQuery {
 
     public List<BentoReservation> handleData(List<BentoReservation> bentoReservations,
                                              ReservationClosingTimeFrame reservationClosingTimeFrame, List<WorkLocationCode> workLocationCodes){
+        if(CollectionUtil.isEmpty(workLocationCodes))
+            return bentoReservations.stream()
+                    .filter(item -> !item.getWorkLocationCode().isPresent())
+                    .filter(item -> reservationClosingTimeFrame == item.getReservationDate().getClosingTimeFrame())
+                    .collect(Collectors.toList());
+
         return bentoReservations.stream()
                                 .filter(item -> workLocationCodes.contains(item.getWorkLocationCode().get()))
                                 .filter(item -> reservationClosingTimeFrame == item.getReservationDate().getClosingTimeFrame())
