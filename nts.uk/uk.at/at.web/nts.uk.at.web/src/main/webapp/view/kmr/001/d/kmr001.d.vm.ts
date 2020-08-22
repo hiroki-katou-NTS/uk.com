@@ -43,7 +43,7 @@ module nts.uk.at.kmr001.d {
 
             super();
             var vm = this;
-            let self = this, params = getShared("paramsKMR004C");
+            let self = this;
             console.log(self.screenMode());
             self.lstWpkHistory = ko.observableArray([]);
             self.selectedHistoryId = ko.observable(null);
@@ -51,11 +51,7 @@ module nts.uk.at.kmr001.d {
             self.selectedStartDateText = ko.observable(null);
             self.selectedEndDate = ko.observable(DEFAULT_END);
             self.copyPreviousConfig = ko.observable(false);
-            if (params) {
-                self.initMode(params.initMode);
-                self.selectedHistoryId(params.historyId);
-                self.bkHistoryId = params.historyId;
-            }
+
             if (self.initMode() == INIT_MODE.DEPARTMENT) {
                 let currentScreen = nts.uk.ui.windows.getSelf();
                 currentScreen.setTitle(getText(""));
@@ -79,10 +75,15 @@ module nts.uk.at.kmr001.d {
             }, this);
         }
 
-        created() {
+        created(params: any) {
             const vm = this;
             let self = this, dfd = $.Deferred();
             block.invisible();
+            if (params) {
+                self.initMode(params.initMode);
+                self.selectedHistoryId(params.historyId);
+                self.bkHistoryId = params.historyId;
+            }
             vm.$ajax(API.START).done(data => {
                 if (data) {
                     if( !nts.uk.util.isNullOrEmpty(data.historyItems)){
@@ -209,7 +210,9 @@ module nts.uk.at.kmr001.d {
                 startDate: self.selectedStartDateText(),
                 endDate: self.selectedEndDate()
             };
-            setShared("paramsKMR004D", params);
+            self.$window.close({
+                params
+            });
             //nts.uk.ui.windows.close();
         }
         cancel() {

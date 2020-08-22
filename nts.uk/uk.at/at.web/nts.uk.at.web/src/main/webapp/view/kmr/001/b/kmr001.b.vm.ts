@@ -3,7 +3,7 @@
 module nts.uk.at.kmr001.b {
 
 	const API = {
-        GET_BENTO_RESERVATION: 'screen/at/record/reservation/bento_menu/getBentoMenu',
+        GET_BENTO_RESERVATION: 'screen/at/record/reservation/bento-menu/getbentomenu',
         ADD_BENTO_RESERVATION: 'bento/bentomenusetting/add'
     };
 
@@ -58,7 +58,7 @@ module nts.uk.at.kmr001.b {
             const vm = this;
             vm.$blockui("invisible");
             const dataRegister = {
-                operationDistinction : vm.model().operationDistinction(),
+                perationDistinction : vm.model().operationDistinction(),
                 referenceTime : vm.model().referenceTime(),
                 dailyResults : vm.model().dailyResults(),
                 monthlyResults : vm.model().monthlyResults(),
