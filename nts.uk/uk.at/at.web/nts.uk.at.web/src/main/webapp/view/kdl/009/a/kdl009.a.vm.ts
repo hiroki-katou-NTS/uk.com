@@ -73,7 +73,6 @@ module nts.uk.at.view.kdl009.a {
                             vm.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_918" });
                         }
-                        $("#date-fixed-table").ntsFixedTable({ height: 150 });
                     })
                     .fail(vm.onError)
                     .always(() => vm.$blockui('clear'));
@@ -88,9 +87,12 @@ module nts.uk.at.view.kdl009.a {
                 service.getAcquisitionNumberRestDays(employeeId, baseDate)
                     .then((data) => {
                         vm.expirationDateText(ExpirationDate[data.expiredDay]);
+                        console.table(data.listPegManagement);
+                        console.table(data.listRemainNumberDetail);
                         vm.bindTimeData(data);
                         vm.bindSummaryData(data);
                         vm.isManagementSection(data.isManagementSection);
+                        $("#date-fixed-table").ntsFixedTable({ height: 150 });
                     })
                     .fail(vm.onError)
                     .always(() => vm.$blockui('clear'));
@@ -147,114 +149,107 @@ module nts.uk.at.view.kdl009.a {
                 vm.dataItems.removeAll();
                 // Convert to list item
                 ko.utils.arrayPushAll(vm.dataItems, vm.convertDetailToItem(data.listRemainNumberDetail, data.listPegManagement));
+                console.table(vm.convertDetailToItem(data.listRemainNumberDetail, data.listPegManagement));
             }
 
             private convertDetailToItem(listDetail: RemainNumberDetailDto[], listPeg: PegManagementDto[]): DataItems[] {
                 const vm = this;
-                const listItem: DataItems[] = [];
-                const mapOccurenceDate: Map<String, any[]> = {};
-                const mapUsageDate: Map<String, any[]> = {};
-                for (const itemPeg of listPeg) {
-                    let listOccurenceDate = mapOccurenceDate[itemPeg.occurrenceDate];
-                    if (listOccurenceDate) {
-                        listOccurenceDate.push(itemPeg);
+                let listItem: DataItems[] = [];
+                let itemId: number = 0;
+                const mapAddedOccurrenceDate = {};
+                const mapAddedDigestionDate = {};
+
+                // Convert listPeg to mutiple row item in final list
+                for (const peg of listPeg) {
+                    const existedItem = _.find(listItem, (item) => {
+                        return _.findIndex(item.listOccurrence, (itemOccurrence) => itemOccurrence.occurrenceDate === peg.occurrenceDate) > -1
+                            || _.findIndex(item.listDigestion, (itemDigestion) => itemDigestion.digestionDate === peg.usageDate) > -1;
+                    });
+                    if (existedItem) {
+                        // Add to existed mutiple row item
+                        // Check if adding to listOccurrence or listDigestion
+                        if (!_.find(existedItem.listOccurrence, (item) => item.occurrenceDate === peg.occurrenceDate)) {
+                            const itemOccurrenceDto: RemainNumberDetailDto = _.find(listDetail, (item) => item.occurrenceDate === peg.occurrenceDate);
+                            if (!itemOccurrenceDto) {
+                                continue;
+                            }
+                            mapAddedOccurrenceDate[peg.occurrenceDate] = itemOccurrenceDto;
+                            const newlistOccurrence: RemainNumberDetailModel[] = existedItem.listOccurrence;
+                            newlistOccurrence.push(vm.convertDetailDtoToModel(itemOccurrenceDto));
+                            existedItem.isMultiOccurrence = true;
+                            existedItem.listOccurrence = newlistOccurrence;
+                            listItem = _.map(listItem, (item) => item.itemId === existedItem.itemId ? existedItem : item);
+                        } else if (!_.find(existedItem.listDigestion, (item) => item.digestionDate === peg.usageDate)) {
+                            const itemDigestionDto: RemainNumberDetailDto = _.find(listDetail, (item) => item.digestionDate === peg.usageDate);
+                            if (!itemDigestionDto) {
+                                continue;
+                            }
+                            mapAddedDigestionDate[peg.usageDate] = itemDigestionDto;
+                            const newlistDigestion: RemainNumberDetailModel[] = existedItem.listDigestion;
+                            newlistDigestion.push(vm.convertDetailDtoToModel(itemDigestionDto));
+                            existedItem.isMultiDigestion = true;
+                            existedItem.listDigestion = newlistDigestion;
+                            listItem = _.map(listItem, (item) => item.itemId === existedItem.itemId ? existedItem : item);
+                        }
                     } else {
-                        listOccurenceDate = [itemPeg];
+                        const itemOccurrenceDto: RemainNumberDetailDto = _.find(listDetail, (item) => item.occurrenceDate === peg.occurrenceDate);
+                        const itemDigestionDto: RemainNumberDetailDto = _.find(listDetail, (item) => item.digestionDate === peg.usageDate);
+                        if (!itemOccurrenceDto || !itemDigestionDto) {
+                            continue;
+                        }
+                        mapAddedOccurrenceDate[peg.occurrenceDate] = itemOccurrenceDto;
+                        mapAddedDigestionDate[peg.usageDate] = itemDigestionDto;
+                        // Create new mutiple row item
+                        const itemOccurrence = vm.convertDetailDtoToModel(itemOccurrenceDto);
+                        const itemDigestion = vm.convertDetailDtoToModel(itemDigestionDto);
+                        listItem.push(new DataItems({
+                            itemId: itemId,
+                            isMultiOccurrence: false,
+                            isMultiDigestion: false,
+                            listOccurrence: [itemOccurrence],
+                            listDigestion: [itemDigestion],
+                        }));
+                        // Increase id
+                        itemId++;
                     }
-                    mapOccurenceDate[itemPeg.occurrenceDate] = listOccurenceDate;
-                    let listUsageDate = mapUsageDate[itemPeg.usageDate];
-                    if (listUsageDate) {
-                        listUsageDate.push(itemPeg);
-                    } else {
-                        listUsageDate = [itemPeg];
-                    }
-                    mapUsageDate[itemPeg.usageDate] = listUsageDate;
                 }
 
-                // Mapping from list detail + list peg to list combined item
-                let item: DataItems = undefined;
-                for (const itemDetail of listDetail) {
-                    if (itemDetail.occurrenceDate) {
-                        let listOccurenceDate: any[] = mapOccurenceDate[itemDetail.occurrenceDate];
-                        if (listOccurenceDate) {
-                            // Combined records
-                            if (item) {
-                                item.listOccurrence.push(vm.convertDetailDtoToModel(itemDetail));
-                            } else {
-                                item = new DataItems({
-                                    isMultiOccurrence: false,
-                                    isMultiDigestion: false,
-                                    listOccurrence: [vm.convertDetailDtoToModel(itemDetail)],
-                                    listDigestion: [],
-                                    singleRowDetail: vm.convertDetailDtoToModel(itemDetail),
-                                });
-                            }
-                        } else {
-                            // Single record
-                            listItem.push(new DataItems({
-                                isMultiOccurrence: false,
-                                isMultiDigestion: false,
-                                singleRowDetail: vm.convertDetailDtoToModel(itemDetail),
-                            }));
+                // Convert listDetail to single row item in final list
+                for (const detail of listDetail) {
+                    if (detail.occurrenceDate) {
+                        // Check if added
+                        if (mapAddedOccurrenceDate[detail.occurrenceDate]) {
+                            // Added them skip
+                            continue;
                         }
-                    } else if (itemDetail.digestionDate) {
-                        let listDigestionDate: any[] = mapUsageDate[itemDetail.digestionDate];
-                        if (listDigestionDate) {
-                            // Combined records
-                            if (item) {
-                                item.listDigestion.push(vm.convertDetailDtoToModel(itemDetail));
-                            } else {
-                                item = new DataItems({
-                                    isMultiOccurrence: false,
-                                    isMultiDigestion: false,
-                                    listOccurrence: [],
-                                    listDigestion: [vm.convertDetailDtoToModel(itemDetail)],
-                                    singleRowDetail: vm.convertDetailDtoToModel(itemDetail),
-                                });
-                            }
-                        } else {
-                            // Single record
-                            listItem.push(new DataItems({
-                                isMultiOccurrence: false,
-                                isMultiDigestion: false,
-                                singleRowDetail: vm.convertDetailDtoToModel(itemDetail),
-                            }));
+                        mapAddedOccurrenceDate[detail.occurrenceDate] = detail;
+                        // Create new mutiple row item
+                        const itemOccurrence = vm.convertDetailDtoToModel(detail);
+                        listItem.push(new DataItems({
+                            itemId: itemId,
+                            isMultiOccurrence: false,
+                            isMultiDigestion: false,
+                            singleRowDetail: itemOccurrence,
+                        }));
+                        // Increase id
+                        itemId++;
+                    } else if (detail.digestionDate) {
+                        // Check if added
+                        if (mapAddedDigestionDate[detail.digestionDate]) {
+                            // Added them skip
+                            continue;
                         }
-                    }
-                    // Check if item is complete
-                    if (item) {
-                        if ((item.listOccurrence.length === 1 && item.listDigestion.length === 2)
-                            || (item.listOccurrence.length === 2 && item.listDigestion.length === 1)) {
-                            item.isMultiDigestion = (item.listDigestion.length === 2);
-                            item.isMultiOccurrence = (item.listOccurrence.length === 2);
-                            listItem.push(item);
-                            item = undefined;
-                        } else if (item.listDigestion.length === 1 && item.listOccurrence.length === 1) {
-                            const occurrenceDate = item.listOccurrence[0];
-                            const digestionDate = item.listDigestion[0];
-                            let listOccurenceDate: any[] = mapOccurenceDate[occurrenceDate.occurrenceDate];
-                            let listDigestionDate: any[] = mapUsageDate[digestionDate.digestionDate];
-                            if (listOccurenceDate && listOccurenceDate.length === 1 && listDigestionDate && listDigestionDate.length === 1) {
-                                (<any>Object).assign(item.singleRowDetail, {
-                                    expirationDate: occurrenceDate.expirationDate,
-                                    expirationDateText: occurrenceDate.expirationDateText,
-                                    occurrenceNumber: occurrenceDate.occurrenceNumber,
-                                    occurrenceDate: occurrenceDate.occurrenceDate,
-                                    occurrenceHour: occurrenceDate.occurrenceHour,
-                                    occurrenceDateText: occurrenceDate.occurrenceDateText,
-                                    occurrenceHourText: occurrenceDate.occurrenceHourText,
-                                    occurrenceNumberText: occurrenceDate.occurrenceNumberText,
-                                    digestionNumber: digestionDate.digestionNumber,
-                                    digestionDate: digestionDate.digestionDate,
-                                    digestionHour: digestionDate.digestionHour,
-                                    digestionDateText: digestionDate.digestionDateText,
-                                    digestionHourText: digestionDate.digestionHourText,
-                                    digestionNumberText: digestionDate.digestionNumberText,
-                                });
-                                listItem.push(item);
-                                item = undefined;
-                            }
-                        }
+                        mapAddedDigestionDate[detail.digestionDate] = detail;
+                        // Create new mutiple row item
+                        const itemDigestion = vm.convertDetailDtoToModel(detail);
+                        listItem.push(new DataItems({
+                            itemId: itemId,
+                            isMultiOccurrence: false,
+                            isMultiDigestion: false,
+                            singleRowDetail: itemDigestion,
+                        }));
+                        // Increase id
+                        itemId++;
                     }
                 }
                 return listItem;
@@ -366,6 +361,7 @@ module nts.uk.at.view.kdl009.a {
         }
 
         export class DataItems {
+            itemId: number;
             isMultiOccurrence: boolean;
             isMultiDigestion: boolean;
             listOccurrence: RemainNumberDetailModel[];
@@ -378,6 +374,14 @@ module nts.uk.at.view.kdl009.a {
 
             public isSingleRow() {
                 return !this.isMultiOccurrence && !this.isMultiDigestion;
+            }
+
+            public isListOccurrenceExisted() {
+                return this.listOccurrence && this.listOccurrence.length;
+            }
+
+            public isListDigestionExisted() {
+                return this.listDigestion && this.listDigestion.length;
             }
         }
 

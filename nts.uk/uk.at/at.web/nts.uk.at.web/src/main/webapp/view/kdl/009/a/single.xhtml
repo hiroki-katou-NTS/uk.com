@@ -29,9 +29,8 @@
 
 				<hr />
 
-				<button tabindex="1" class="inline" data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KDL009_16')}</button>
-
-				<com:ko-if bind="isManagementSection">
+				<com:ko tag="if" bind="isManagementSection">
+					<button tabindex="1" class="inline" data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KDL009_16')}</button>
 					<div class="date-fixed-table">
 						<table id="date-fixed-table">
 							<colgroup>
@@ -51,7 +50,7 @@
 							</thead>
 							<tbody>
 								<com:ko-foreach bind="dataItems">
-									<!-- Case 1 -->
+									<!-- Case 1: listDigestion have 2 item -->
 									<com:ko-if bind="isMultiDigestion">
 										<tr>
 											<td rowspan="2">
@@ -71,7 +70,7 @@
 											</td>
 										</tr>
 									</com:ko-if>
-									<!-- Case 2 -->
+									<!-- Case 2: listOccurrence have 2 item -->
 									<com:ko-if bind="isMultiOccurrence">
 										<tr>
 											<td class="border-dotted">
@@ -96,13 +95,26 @@
 									<com:ko-if bind="isSingleRow()">
 										<tr>
 											<td>
-												<span data-bind="text: singleRowDetail.occurrenceDateText"></span>
-												<span data-bind="text: singleRowDetail.expirationDateText"></span>
-												<span data-bind="text: singleRowDetail.occurrenceNumberText" class="float-right margin-right-20"></span>
+												<com:ko tag="if" bind="isListOccurrenceExisted()">
+													<span data-bind="text: listOccurrence[0].occurrenceDateText"></span>
+													<span data-bind="text: listOccurrence[0].expirationDateText"></span>
+													<span data-bind="text: listOccurrence[0].occurrenceNumberText" class="float-right margin-right-20"></span>
+												</com:ko>
+												<com:ko tag="ifnot" bind="isListOccurrenceExisted()">
+													<span data-bind="text: singleRowDetail.occurrenceDateText"></span>
+													<span data-bind="text: singleRowDetail.expirationDateText"></span>
+													<span data-bind="text: singleRowDetail.occurrenceNumberText" class="float-right margin-right-20"></span>
+												</com:ko>
 											</td>
 											<td>
-												<span data-bind="text: singleRowDetail.digestionDateText"></span>
-												<span data-bind="text: singleRowDetail.digestionNumberText" class="margin-left-20"></span>
+												<com:ko tag="if" bind="isListDigestionExisted()">
+													<span data-bind="text: listDigestion[0].digestionDateText"></span>
+													<span data-bind="text: listDigestion[0].digestionNumberText" class="margin-left-20"></span>
+												</com:ko>
+												<com:ko tag="ifnot" bind="isListDigestionExisted()">
+													<span data-bind="text: singleRowDetail.digestionDateText"></span>
+													<span data-bind="text: singleRowDetail.digestionNumberText" class="margin-left-20"></span>
+												</com:ko>
 											</td>
 										</tr>
 									</com:ko-if>
@@ -144,11 +156,11 @@
 							</tr>
 						</table>
 					</div>
-				</com:ko-if>
+				</com:ko>
 
-				<com:ko-if bind="!isManagementSection">
+				<com:ko tag="ifnot" bind="isManagementSection">
 					<p class="margin-top-20 big-text">#{i18n.getText('KDL009_31')}</p>
-				</com:ko-if>
+				</com:ko>
 			</div>
 
 			<div id="functions-area-bottom">
