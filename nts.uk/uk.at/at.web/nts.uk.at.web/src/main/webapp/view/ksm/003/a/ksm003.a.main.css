@@ -101,6 +101,9 @@
 .tbl-monthly .ntsControl {
 	width: 50px !important;
 }
+.fixed-table thead tr th {
+	height: 29px;
+}
 #fixedTable tbody tr td button {
 	margin: 5px 0;
 }
