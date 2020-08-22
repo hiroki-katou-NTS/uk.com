@@ -16,7 +16,6 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClo
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.*;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.i18n.TextResource;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
