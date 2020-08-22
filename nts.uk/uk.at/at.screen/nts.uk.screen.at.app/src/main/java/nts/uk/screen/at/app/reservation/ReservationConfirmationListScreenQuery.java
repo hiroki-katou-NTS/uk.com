@@ -49,10 +49,6 @@ public class ReservationConfirmationListScreenQuery {
         }
 
         List<Bento> menu = bentoMenu.getMenu();
-        if (menu == null || menu.size() <= 0) {
-        	throw new BusinessException("Msg_1848");
-        }
-
         List<List<Bento>> partitions = new ArrayList<>(
                 menu.stream()
                         .collect(Collectors.partitioningBy(item -> item.getWorkLocationCode().isPresent()))

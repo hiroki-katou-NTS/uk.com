@@ -116,7 +116,7 @@ module nts.uk.at.view.kmr004.a {
 
         prepareData():any{
             let vm = this;
-            if(vm.outputConditionChecked === ko.observable(1)){
+            if(vm.outputConditionChecked() === 1){
                 vm.model().frameNo = ko.observable(-1);
                 vm.model().itemExtractCondition = ko.observable(-1);
                 vm.model().detailTitle = ko.observable('');
@@ -219,7 +219,9 @@ module nts.uk.at.view.kmr004.a {
             }
 
             $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
-                $('#tree-grid').getDataList();
+               if ( $('#tree-grid').getDataList().length <= 0) {
+                   self.showDialogForEmptyData();
+               }
             });
         }
 
@@ -231,16 +233,24 @@ module nts.uk.at.view.kmr004.a {
 				isMultipleUse: true,
 				listType: list.ListType.WORKPLACE,
 				selectType: list.SelectType.NO_SELECT,
-				selectedCode: vm.selectedWorkLocationCode,
+				selectedCode: vm.model().workLocationCodes,
 				isDialog: false,
 				isShowNoSelectRow: false,
 				maxRows: 10
 			}
 
 			$('#tree-grid').ntsListComponent(vm.listComponentOption).done(() => {
-                $('#tree-grid').getDataList();
+                $('#tree-grid').getDataList().done(() => {
+                    if ( $('#tree-grid').getDataList().length <= 0) {
+                        vm.showDialogForEmptyData();
+                    }
+                });
             });
         }
+
+        showDialogForEmptyData(){
+            nts.uk.ui.dialog.info({ messageId: "Msg_177" });
+        };
 
         initConditionListComboBox(data: any) {
             const vm = this;
