@@ -19,6 +19,10 @@ public class EmpRsvLeaveInforDto {
 	private String employeeCode;
 	
 	private String employeeName;
+	
 	//積立年休名称
 	private String yearResigName;
+	
+	// 積立年休管理区分
+	private boolean retentionManage;
 }
