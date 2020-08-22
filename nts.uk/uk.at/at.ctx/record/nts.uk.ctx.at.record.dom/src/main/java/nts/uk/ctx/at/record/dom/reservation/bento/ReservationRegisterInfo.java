@@ -4,6 +4,7 @@ import org.eclipse.persistence.internal.xr.ValueObject;
 
 import lombok.Getter;
 
+import java.util.Collections;
 import java.util.Optional;
 
 /**
@@ -24,6 +25,6 @@ public class ReservationRegisterInfo extends ValueObject {
 	}
 
 	public BentoReservation convertToBentoReservation(ReservationRegisterInfo reservationRegisterInfo,ReservationDate reservationDate){
-		return new BentoReservation(reservationRegisterInfo,reservationDate,false, Optional.empty(),null);
+		return new BentoReservation(reservationRegisterInfo,reservationDate,false, Optional.empty(), Collections.emptyList());
 	}
 }
