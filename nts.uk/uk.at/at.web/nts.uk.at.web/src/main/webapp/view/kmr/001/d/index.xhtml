@@ -9,30 +9,27 @@
     <ui:define name="htmlHead">
         <script>
             var dialogSize = {
-                width : 680,
-                height : 450
+                width : 620,
+                height : 350
             };
         </script>
 
         <com:scriptfile set="IGNITE" />
-        <com:stylefile path="./kmr001.d.style.css" />
-        <com:stylefile path="../kmr001.common.styles.css"/>
         <com:scriptfile path="./kmr001.d.vm.js" />
     </ui:define>
 
     <!-- PAGE CONTENT -->
     <ui:define name="content">
-        <div id="contents-area" class="fixed-flex-layout kmr001-d">
-            <div id="left-content" style="float: left"
-                 class="bg-green caret-right caret-background">
-                <div style="float: left; margin: 20px">
-                    <div class="valign-center control-group" style="padding-top: 20px">
+        <div id="contents-area" class="fixed-flex-layout">
+
+                <div class="fixed-flex-layout-left">
+                    <div class="valign-center control-group" style="padding-top: 20px" >
                         <!--KMR001_52-->
-                        <button tabindex="1" data-bind="enable: screenMode() == 0 || screenMode() == 3, click: addHistory">#{i18n.getText('CMM011_117')}</button>
+                        <button tabindex="1" data-bind="enable: screenMode() == 0 || screenMode() == 3, click: addHistory">#{i18n.getText('KMR001_52')}</button>
                         <!--KMR001_53-->
-                        <button tabindex="2" data-bind="enable: screenMode() == 0 &amp;&amp; isLatestHistory(), click: updateHistory">#{i18n.getText('CMM011_118')}</button>
+                        <button tabindex="2" data-bind="enable: screenMode() == 0 &amp;&amp; isLatestHistory(), click: updateHistory">#{i18n.getText('KMR001_53')}</button>
                         <!--KMR001_54-->
-                        <button tabindex="3" class="danger" data-bind="enable: (screenMode() == 0 &amp;&amp; isLatestHistory()) || screenMode() == 3, click: deleteHistory">#{i18n.getText('CMM011_119')}</button>
+                        <button tabindex="3" class="danger" data-bind="enable: (screenMode() == 0 &amp;&amp; isLatestHistory()) || screenMode() == 3, click: deleteHistory">#{i18n.getText('KMR001_54')}</button>
                     </div>
 
                     <div tabindex="4" id="B1_4"
@@ -50,14 +47,14 @@
 						]}">
                     </div>
                 </div>
-            </div>
-            <div  id="right-content" style="float: left;">
-                <div class="valign-center control-group" style="width: 323px; padding-top: 20px;margin-bottom: 33px">
+
+            <div class="fixed-flex-layout-right">
+                <div class="valign-center control-group" style="width: 323px; padding-top: 20px">
                     <span class="label" data-bind="visible: screenMode() == 0">#{i18n.getText('CMM011_121')}</span>
                     <span class="label" data-bind="visible: screenMode() == 1 || screenMode() == 2">#{i18n.getText('CMM011_122')}</span>
                     <span class="label" data-bind="visible: screenMode() == 3">#{i18n.getText('CMM011_123')}</span>
                 </div>
-                <div class="valign-center control-group" style="width: 323px;">
+                <div class="valign-center control-group">
                     <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMR001_56')}</div>
                     <div tabindex="5" id="B3_5" data-bind="ntsDatePicker: {
 							name: '#[KMR001_57]',

@@ -63,7 +63,7 @@ module nts.uk.at.kmr003.a {
         //     }
         // ];
         listBento = [];
-        //KnockoutObservableArray<BentoDto>;
+        //KnockoutObservableArray<BentomenuJoinBentoDto>;
 
         empSearchItems: Array<EmployeeSearchDto> = [];
         employIdLogin: any;
@@ -82,9 +82,9 @@ module nts.uk.at.kmr003.a {
 
             //vm.closingTimeFrame = ko.observable(1);
 
-            // bentos: Array<BentoDto>
+            // bentos: Array<BentomenuJoinBentoDto>
             for (let i = 1; i < 41; ++i) {
-                //this.listBento = this.listBento.concat([new BentoDto(i, "bento " + i)]);
+                //this.listBento = this.listBento.concat([new BentomenuJoinBentoDto(i, "bento " + i)]);
             }
 
             // this.listBento.forEach(function(x){
