@@ -29,6 +29,8 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
         flag: boolean = true;
         dataToStick: any = null;
         listPageInfo : any;
+        isFirstCom: boolean = true;
+        isFirstOrg: boolean = true;
 
         btnSelectedCom = {};
         btnSelectedOrg = {};
@@ -79,6 +81,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             });
 
             self.selectedButtonTableCompany.subscribe((value) => {
+                console.log(value);
                 let indexBtnSelected = value.column + value.row * 10;
                 let arrDataToStick = [];
 
@@ -151,6 +154,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             });
 
             self.selectedButtonTableWorkplace.subscribe((value) => {
+                console.log(value);
                 let indexBtnSelected = value.column + value.row * 10;
                 let arrDataToStickWkp = [];
                 // get listShiftMaster luu trong localStorage
@@ -471,21 +475,34 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     self.selectedLinkButtonCom(indexBtn);
                     
                     // select button Table
-                    let indexBtnSelected = shiftPalletPositionNumberCom.column + shiftPalletPositionNumberCom.row*10;
-                    let dataSourceOfBtnSelect = self.sourceCompany()[indexBtnSelected];
-                    if (dataSourceOfBtnSelect.hasOwnProperty('data')) {
-                        // trường hợp 
-                        shiftPalletPositionNumberCom.data = dataSourceOfBtnSelect;
-                        self.selectedButtonTableCompany(shiftPalletPositionNumberCom);
+                    if (self.isFirstCom) {
+                        let indexBtnSelected = shiftPalletPositionNumberCom.column + shiftPalletPositionNumberCom.row * 10;
+                        let dataSourceOfBtnSelect = self.sourceCompany()[indexBtnSelected];
+                        if (dataSourceOfBtnSelect.hasOwnProperty('data')) {
+                            // trường hợp 
+                            shiftPalletPositionNumberCom.data = dataSourceOfBtnSelect;
+                            self.selectedButtonTableCompany(shiftPalletPositionNumberCom);
+                        } else {
+                            // trường hợp  
+                            let x = _.filter(self.sourceCompany(), function(o) { return o.hasOwnProperty('data') });
+                            if (x.length > 0) {
+                                let indexc = _.indexOf(self.sourceCompany(), x[0]);
+                                let obj = self.getRowColumnIndex(indexc);
+                                shiftPalletPositionNumberCom.row = obj.row;
+                                shiftPalletPositionNumberCom.column = obj.column;
+                                shiftPalletPositionNumberCom.data = x[0];
+                                self.selectedButtonTableCompany(shiftPalletPositionNumberCom);
+                            }
+                        }
+                        self.isFirstCom = false;
                     } else {
-                        // trường hợp  
                         let x = _.filter(self.sourceCompany(), function(o) { return o.hasOwnProperty('data') });
                         if (x.length > 0) {
                             let indexc = _.indexOf(self.sourceCompany(), x[0]);
                             let obj = self.getRowColumnIndex(indexc);
-                            shiftPalletPositionNumberCom.row    = obj.row;
+                            shiftPalletPositionNumberCom.row = obj.row;
                             shiftPalletPositionNumberCom.column = obj.column;
-                            shiftPalletPositionNumberCom.data   = x[0];
+                            shiftPalletPositionNumberCom.data = x[0];
                             self.selectedButtonTableCompany(shiftPalletPositionNumberCom);
                         }
                     }
@@ -513,25 +530,45 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     self.updateDataSourceWorkplace(listPattern, data.listShiftMaster);
                     self.sourceWorkplace(self.dataSourceWorkplace()[pageNumberSelected - 1] || source);
                     self.selectedLinkButtonWkp(indexBtn);
-                    
+
                     // select button Table
                     let indexBtnSelectedOrg = shiftPalletPositionNumberOrg.column + shiftPalletPositionNumberOrg.row * 10;
-                    let dataSourceOfBtnSelect = self.sourceWorkplace()[indexBtnSelectedOrg];
-                    if (dataSourceOfBtnSelect.hasOwnProperty('data')) {
-                        // trường hợp 
-                        shiftPalletPositionNumberOrg.data = dataSourceOfBtnSelect;
-                        self.selectedButtonTableWorkplace(shiftPalletPositionNumberOrg);
-
+                    if (self.isFirstOrg) {
+                        let dataSourceOfBtnSelect = self.sourceWorkplace()[indexBtnSelectedOrg];
+                        if (dataSourceOfBtnSelect.hasOwnProperty('data')) {
+                            // trường hợp 
+                            shiftPalletPositionNumberOrg.data = dataSourceOfBtnSelect;
+                            self.selectedButtonTableWorkplace(shiftPalletPositionNumberOrg);
+                        } else {
+                            // trường hợp 
+                            let x = _.filter(self.sourceWorkplace(), function(o) { return o.hasOwnProperty('data') });
+                            if (x.length > 0) {
+                                let indexc = _.indexOf(self.sourceWorkplace(), x[0]);
+                                let obj = self.getRowColumnIndex(indexc);
+                                shiftPalletPositionNumberOrg.row = obj.row;
+                                shiftPalletPositionNumberOrg.column = obj.column;
+                                shiftPalletPositionNumberOrg.data = x[0];
+                                self.selectedButtonTableWorkplace(shiftPalletPositionNumberOrg);
+                                _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
+                                    $($('.ntsButtonTableButton')[index]).removeClass('ntsButtonCellSelected');
+                                });
+                                $($('.ntsButtonTableButton')[indexc]).addClass('ntsButtonCellSelected');
+                            }
+                        }
+                        self.isFirstOrg = false;
                     } else {
-                        // trường hợp 
                         let x = _.filter(self.sourceWorkplace(), function(o) { return o.hasOwnProperty('data') });
                         if (x.length > 0) {
                             let indexc = _.indexOf(self.sourceWorkplace(), x[0]);
                             let obj = self.getRowColumnIndex(indexc);
-                            shiftPalletPositionNumberOrg.row    = obj.row;
+                            shiftPalletPositionNumberOrg.row = obj.row;
                             shiftPalletPositionNumberOrg.column = obj.column;
-                            shiftPalletPositionNumberOrg.data   = x[0];
+                            shiftPalletPositionNumberOrg.data = x[0];
                             self.selectedButtonTableWorkplace(shiftPalletPositionNumberOrg);
+                            _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
+                                $($('.ntsButtonTableButton')[index]).removeClass('ntsButtonCellSelected');
+                            });
+                            $($('.ntsButtonTableButton')[indexc]).addClass('ntsButtonCellSelected');
                         }
                     }
                 }
