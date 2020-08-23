@@ -31,8 +31,6 @@ public class ReservationConfirmationListWebService extends WebService {
         String companyId = user.companyId();
         String employeeId = user.employeeId();
         ReservationConfirmationListDto dto = reservationConfirmationListScreenQuery.getReservationConfirmationListStartupInfo(companyId);
-        dto.setCompanyId(companyId);
-        dto.setEmployeeId(employeeId);
 
         return dto;
     }
