@@ -94,14 +94,12 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     $("#extable").exTable("stickData", arrDataToStick);
                 } else {
                     let isMasterNotReg = false;
+                    let mami = nts.uk.resource.getText('KSU001_94');
                     for (let i = 0; i < value.data.data.length; i++) {
                         let obj = value.data.data[i];
                         let shiftMasterName = obj.value.toString();
                         let shiftMasterCode = obj.shiftMasterCode;
-                        let removeFirstChar = shiftMasterName.slice(1);  // xoa dau [ ở đầu
-                        let removeEndChar = removeFirstChar.slice(0, removeFirstChar.length - 1);// xoa dau ] ở cuối
-                        shiftMasterName = removeEndChar;
-                        if (shiftMasterName.includes('マスタ未登録')) {
+                        if (shiftMasterName == mami) {
                             isMasterNotReg = true;
                         } else {
                             arrDataToStick.push(new ExCell('', '', '', '', '', '', shiftMasterName, '',obj.shiftMasterCode)); 
@@ -161,6 +159,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 let itemLocal = uk.localStorage.getItem(self.KEY);
                 let userInfor = JSON.parse(itemLocal.get());
                 let listShiftMasterSaveLocal = userInfor.shiftMasterWithWorkStyleLst;
+                let mami = nts.uk.resource.getText('KSU001_94');
 
                 if (value.column == -1 || value.row == -1) {
                     $("#extable").exTable("stickData", arrDataToStickWkp);
@@ -170,10 +169,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         let obj = value.data.data[i];
                         let shiftMasterName = obj.value.toString();
                         let shiftMasterCode = obj.shiftMasterCode;
-                        let removeFirstChar = shiftMasterName.slice(1);  // xoa dau [ ở đầu
-                        let removeEndChar = removeFirstChar.slice(0, removeFirstChar.length - 1);// xoa dau ] ở cuối
-                        shiftMasterName = removeEndChar;
-                        if (shiftMasterName.includes('マスタ未登録')) {
+                        if (shiftMasterName == mami) {
                             isMasterNotReg = true;
                         } else {
                             arrDataToStickWkp.push(new ExCell('', '', '', '', '', '', shiftMasterName, '',obj.shiftMasterCode)); 
@@ -298,6 +294,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             let self = this;
             for (let i = 0; i < listShiftPalletCom.length; i++) {
                 let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+                let mami = nts.uk.resource.getText('KSU001_94');
                 //set data for dataSource
                 _.each(listShiftPalletCom[i].patternItem, (pattItem) => {
                     let text = pattItem.patternName;
@@ -307,11 +304,11 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         let matchShiftWork = _.find(listShiftMasterSaveLocal, ["shiftMasterCode", wPSet.shiftCode != null ? wPSet.shiftCode : wPSet.workTypeCode]);
                         let value = "";
                         if (self.selectedpalletUnit() === 1) {
-                            let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.shiftCode + 'マスタ未登録]';
+                            let shortName = (matchShiftWork != null) ?  matchShiftWork.shiftMasterName : mami;
                             value = shortName;
                             arrPairShortName.push(shortName);
                         } else {
-                            let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.workTypeCode + 'マスタ未登録]';
+                            let shortName = (matchShiftWork != null) ? matchShiftWork.shiftMasterName  : mami;
                             value = shortName;
                             arrPairShortName.push(shortName);
                         }
@@ -381,6 +378,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             let self = this;
             for (let i = 0; i < listShiftPalletWorkPlace.length; i++) {
                 let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+                let mami = nts.uk.resource.getText('KSU001_94');
                 //set data for dataSource
                 _.each(listShiftPalletWorkPlace[i].patternItem, (pattItem) => {
                     let text = pattItem.patternName;
@@ -390,11 +388,11 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         let matchShiftWork = _.find(listShiftMasterSaveLocal, ["shiftMasterCode", wPSet.shiftCode != null ? wPSet.shiftCode : wPSet.workTypeCode]);
                         let value = "";
                         if (self.selectedpalletUnit() === 1) {
-                            let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.shiftCode + 'マスタ未登録]';
+                            let shortName = (matchShiftWork != null) ? matchShiftWork.shiftMasterName  :  mami;
                             value = shortName;
                             arrPairShortName.push(shortName);
                         } else {
-                            let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.workTypeCode + 'マスタ未登録]';
+                            let shortName = (matchShiftWork != null) ? matchShiftWork.shiftMasterName  : mami;
                             value = shortName;
                             arrPairShortName.push(shortName);
                         }
