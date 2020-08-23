@@ -490,6 +490,10 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                                 shiftPalletPositionNumberCom.column = obj.column;
                                 shiftPalletPositionNumberCom.data = x[0];
                                 self.selectedButtonTableCompany(shiftPalletPositionNumberCom);
+                                _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
+                                    $($('.ntsButtonTableButton')[index]).removeClass('ntsButtonCellSelected');
+                                });
+                                $($('.ntsButtonTableButton')[indexc]).addClass('ntsButtonCellSelected');
                             }
                         }
                         self.isFirstCom = false;
@@ -502,6 +506,10 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                             shiftPalletPositionNumberCom.column = obj.column;
                             shiftPalletPositionNumberCom.data = x[0];
                             self.selectedButtonTableCompany(shiftPalletPositionNumberCom);
+                            _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
+                                $($('.ntsButtonTableButton')[index]).removeClass('ntsButtonCellSelected');
+                            });
+                            $($('.ntsButtonTableButton')[indexc]).addClass('ntsButtonCellSelected');
                         }
                     }
                     nts.uk.ui.block.clear();
