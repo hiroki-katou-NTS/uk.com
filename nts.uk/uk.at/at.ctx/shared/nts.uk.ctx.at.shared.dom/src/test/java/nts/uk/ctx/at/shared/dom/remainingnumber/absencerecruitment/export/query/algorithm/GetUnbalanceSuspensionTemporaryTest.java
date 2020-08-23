@@ -24,27 +24,19 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.DaikyuFurikyuHelper;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.SelectedAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetDay;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 
 @RunWith(JMockit.class)
 public class GetUnbalanceSuspensionTemporaryTest {
 
-	private static String CID = "000000000000-0117";
-
-	private static String SID = "292ae91c-508c-4c6e-8fe8-3e72277dec16";
+	private static String SID = "s1";
 
 	@Injectable
 	private GetUnbalanceSuspensionTemporary.Require require;
@@ -57,37 +49,66 @@ public class GetUnbalanceSuspensionTemporaryTest {
 	public void setUp() throws Exception {
 	}
 
+	/*
+	 * テストしたい内容 
+	 * 暫定データから消化データを作成する
+	 * 
+	 * 準備するデータ 
+	 * 　暫定振休管理データがある 
+	 * →紐づけがなくて残ってるやつ 
+	 * →紐づけしても残ってるやつ 
+	 * 　暫定振出振休紐付け管理がある 
+	 * →最初から残ってない
+	 * →紐づけしたら残ってない 
+	 * モード : 月次か
+	 * 
+	 */
 	@SuppressWarnings("unchecked")
 	@Test
 	public void test() {
 
 		List<InterimAbsMng> useAbsMng = Arrays.asList(
-				new InterimAbsMng("adda6a46-2cbe-48c8-85f8-c04ca554e132", new RequiredDay(1.0), new UnOffsetDay(1.0)),
-				new InterimAbsMng("adda6a46-2cbe-48c8-85f8-c04ca554e136", new RequiredDay(1.0), new UnOffsetDay(1.0)));
+				DaikyuFurikyuHelper.createAbsMng("a1", 1.0),//必要日数
+				DaikyuFurikyuHelper.createAbsMng("a3", 1.0),//必要日数
+				DaikyuFurikyuHelper.createAbsMng("a4", 0.0));//必要日数
 
-		List<InterimRecMng> useRecMng = Arrays.asList(new InterimRecMng("adda6a46-2cbe-48c8-85f8-c04ca554e333",
-				GeneralDate.max(), new OccurrenceDay(1.0), StatutoryAtr.PUBLIC, new UnUsedDay(1.0)));
+		List<InterimRecMng> useRecMng = Arrays
+				.asList(DaikyuFurikyuHelper.createRecUseMng("a5", 
+						GeneralDate.max(), //使用期限日
+						1.0));//未使用日数
 
 		List<InterimRemain> interimMng = Arrays.asList(
-				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 11, 4),
-						CreateAtr.SCHEDULE, RemainType.PAUSE, RemainAtr.SINGLE),
-				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e136", SID, GeneralDate.ymd(2019, 11, 7),
-						CreateAtr.RECORD, RemainType.PAUSE, RemainAtr.SINGLE),
+				DaikyuFurikyuHelper.createRemain("a1",
+						GeneralDate.ymd(2019, 11, 4),//対象日
+						CreateAtr.SCHEDULE, //作成元区分
+						RemainType.PAUSE),//残数種類
+				DaikyuFurikyuHelper.createRemain("a3", 
+						GeneralDate.ymd(2019, 11, 7),//対象日
+						CreateAtr.RECORD, //作成元区分
+						RemainType.PAUSE),//残数種類
+				DaikyuFurikyuHelper.createRemain("a4", 
+						GeneralDate.ymd(2019, 11, 8),//対象日
+						CreateAtr.RECORD,  //作成元区分
+						RemainType.PAUSE),//残数種類
 
-				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e333", SID, GeneralDate.ymd(2019, 11, 5),
-						CreateAtr.SCHEDULE, RemainType.PICKINGUP, RemainAtr.SINGLE));
+				DaikyuFurikyuHelper.createRemain("a5",
+						GeneralDate.ymd(2019, 11, 5),//対象日
+						CreateAtr.SCHEDULE,  //作成元区分
+						RemainType.PICKINGUP));//残数種類
 
-		AbsRecMngInPeriodRefactParamInput inputParam = new AbsRecMngInPeriodRefactParamInput(CID, SID,
-				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)),
-				GeneralDate.ymd(2019, 11, 30), true, false, useAbsMng, interimMng, useRecMng, Optional.empty(),
-				Optional.empty(), Optional.empty(), new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
+		AbsRecMngInPeriodRefactParamInput inputParam = DaikyuFurikyuHelper.createAbsRecInput(
+				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)),//集計開始日, 集計終了日 
+				GeneralDate.ymd(2019, 11, 30), //画面表示日
+				true, //モード 
+				false, // 上書きフラグ
+				useAbsMng, interimMng, useRecMng);//暫定管理データ
 		new Expectations() {
 			{
 
 				require.getRecOrAbsMngs((List<String>) any, false, DataManagementAtr.INTERIM);
 
-				result = Arrays.asList(new InterimRecAbsMng("adda6a46-2cbe-48c8-85f8-c04ca554e132",
-						DataManagementAtr.INTERIM, "", DataManagementAtr.INTERIM, new UseDay(1.0), SelectedAtr.MANUAL));
+				result = Arrays.asList(createRecAbs("a1", 1.0), //使用日数
+						createRecAbs("aa9", 1.0));//使用日数
 
 			}
 
@@ -96,46 +117,69 @@ public class GetUnbalanceSuspensionTemporaryTest {
 		List<AccumulationAbsenceDetail> actualResult = GetUnbalanceSuspensionTemporary.process(require, inputParam);
 
 		assertThat(actualResult)
-				.extracting(x -> x.getManageId(), x -> x.getEmployeeId(), x -> x.getDataAtr(),
-						x -> x.getDateOccur().isUnknownDate(), x -> x.getDateOccur().getDayoffDate(),
-						x -> x.getNumberOccurren().getDay().v(), x -> x.getOccurrentClass(),
+				.extracting(x -> x.getManageId(), x -> x.getDateOccur().isUnknownDate(),
+						x -> x.getDateOccur().getDayoffDate(), x -> x.getOccurrentClass(),
 						x -> x.getUnbalanceNumber().getDay().v())
 				.containsExactly(
-						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, MngDataStatus.SCHEDULE, false,
-								Optional.of(GeneralDate.ymd(2019, 11, 4)), 1.0, OccurrenceDigClass.DIGESTION, 0.0),
-						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e136", SID, MngDataStatus.RECORD, false,
-								Optional.of(GeneralDate.ymd(2019, 11, 7)), 1.0, OccurrenceDigClass.DIGESTION, 1.0));
+						Tuple.tuple("a1", false, Optional.of(GeneralDate.ymd(2019, 11, 4)), 
+								OccurrenceDigClass.DIGESTION, 0.0),
+						Tuple.tuple("a3", false, Optional.of(GeneralDate.ymd(2019, 11, 7)), 
+								OccurrenceDigClass.DIGESTION, 1.0),
+						Tuple.tuple("a4", false, Optional.of(GeneralDate.ymd(2019, 11, 8)), 
+								OccurrenceDigClass.DIGESTION, 0.0));
 
 	}
 
+	/*
+	 * テストしたい内容 
+	 * 暫定データから消化データを作成する
+	 * 
+	 * 準備するデータ 
+	 * 　暫定振休管理データがある 
+	 * →紐づけがなくて残ってるやつ 
+	 * →紐づけしても残ってるやつ 
+	 * 　暫定振出振休紐付け管理がある 
+	 * →最初から残ってない
+	 * →紐づけしたら残ってない 
+	 * モード : その他
+	 * 
+	 */
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testOther() {
 
-		AbsRecMngInPeriodRefactParamInput inputParam = new AbsRecMngInPeriodRefactParamInput(CID, SID,
-				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)),
-				GeneralDate.ymd(2019, 11, 30), false, false, new ArrayList<>(),  new ArrayList<>(),  new ArrayList<>(), Optional.empty(),
-				Optional.empty(), Optional.empty(), new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
+		AbsRecMngInPeriodRefactParamInput inputParam = DaikyuFurikyuHelper.createAbsRecInput(
+				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)),//集計開始日, 集計終了日 
+				GeneralDate.ymd(2019, 11, 30), //画面表示日
+				false, //モード 
+				false, // 上書きフラグ
+				new ArrayList<>(),  new ArrayList<>(),  new ArrayList<>());//暫定管理データ
 		new Expectations() {
 			{
-
+				
 				require.getRemainBySidPriod(SID, (DatePeriod) any, RemainType.PAUSE);
 				result = Arrays.asList(
-						new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 11, 4),
-								CreateAtr.SCHEDULE, RemainType.PAUSE, RemainAtr.SINGLE),
-						new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e136", SID, GeneralDate.ymd(2019, 11, 7),
-								CreateAtr.RECORD, RemainType.PAUSE, RemainAtr.SINGLE));
+						DaikyuFurikyuHelper.createRemain("a1", 
+								GeneralDate.ymd(2019, 11, 4),//対象日
+								CreateAtr.SCHEDULE, //作成元区分
+								RemainType.PAUSE),//残数種類
+						DaikyuFurikyuHelper.createRemain("a3", 
+								GeneralDate.ymd(2019, 11, 7),//対象日
+								CreateAtr.RECORD, //作成元区分
+								RemainType.PAUSE),//残数種類
+						DaikyuFurikyuHelper.createRemain("a4", 
+								GeneralDate.ymd(2019, 11, 8),//対象日
+								CreateAtr.RECORD, //作成元区分
+								RemainType.PAUSE));//残数種類
 
 				require.getAbsBySidDatePeriod(SID, (DatePeriod) any);
-				result = Arrays.asList(
-						new InterimAbsMng("adda6a46-2cbe-48c8-85f8-c04ca554e132", new RequiredDay(1.0),
-								new UnOffsetDay(1.0)),
-						new InterimAbsMng("adda6a46-2cbe-48c8-85f8-c04ca554e136", new RequiredDay(1.0),
-								new UnOffsetDay(1.0)));
+				result = Arrays.asList(DaikyuFurikyuHelper.createAbsMng("a1", 1.0),//必要日数
+						DaikyuFurikyuHelper.createAbsMng("a3", 1.0), //必要日数
+						DaikyuFurikyuHelper.createAbsMng("a4", 0.0));//必要日数
 
 				require.getRecOrAbsMngs((List<String>) any, false, DataManagementAtr.INTERIM);
-				result = Arrays.asList(new InterimRecAbsMng("adda6a46-2cbe-48c8-85f8-c04ca554e132",
-						DataManagementAtr.INTERIM, "", DataManagementAtr.INTERIM, new UseDay(1.0), SelectedAtr.MANUAL));
+				result = Arrays.asList(createRecAbs("a1", 1.0), //使用日数
+						createRecAbs("88", 1.0));//使用日数
 
 			}
 
@@ -144,16 +188,18 @@ public class GetUnbalanceSuspensionTemporaryTest {
 		List<AccumulationAbsenceDetail> actualResult = GetUnbalanceSuspensionTemporary.process(require, inputParam);
 
 		assertThat(actualResult)
-				.extracting(x -> x.getManageId(), x -> x.getEmployeeId(), x -> x.getDataAtr(),
-						x -> x.getDateOccur().isUnknownDate(), x -> x.getDateOccur().getDayoffDate(),
-						x -> x.getNumberOccurren().getDay().v(), x -> x.getOccurrentClass(),
-						x -> x.getUnbalanceNumber().getDay().v())
+				.extracting(x -> x.getManageId(), x -> x.getDataAtr(), x -> x.getDateOccur().isUnknownDate(),
+						x -> x.getDateOccur().getDayoffDate(), x -> x.getUnbalanceNumber().getDay().v())
 				.containsExactly(
-						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, MngDataStatus.SCHEDULE, false,
-								Optional.of(GeneralDate.ymd(2019, 11, 4)), 1.0, OccurrenceDigClass.DIGESTION, 0.0),
-						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e136", SID, MngDataStatus.RECORD, false,
-								Optional.of(GeneralDate.ymd(2019, 11, 7)), 1.0, OccurrenceDigClass.DIGESTION, 1.0));
+						Tuple.tuple("a1", MngDataStatus.SCHEDULE, false, Optional.of(GeneralDate.ymd(2019, 11, 4)),
+								0.0),
+						Tuple.tuple("a3", MngDataStatus.RECORD, false, Optional.of(GeneralDate.ymd(2019, 11, 7)), 1.0),
+						Tuple.tuple("a4", MngDataStatus.RECORD, false, Optional.of(GeneralDate.ymd(2019, 11, 8)), 0.0));
 
 	}
 
+	private InterimRecAbsMng createRecAbs(String id, Double useDay) {
+		return new InterimRecAbsMng(id,
+				DataManagementAtr.INTERIM, "", DataManagementAtr.INTERIM, new UseDay(useDay), SelectedAtr.MANUAL);
+	}
 }

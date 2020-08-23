@@ -58,10 +58,10 @@ public class TypeRegistrationProcessTest {
 		Optional<SeqVacationAssociationInfo> actualResult = TypeRegistrationProcess.process(setting,
 				GeneralDate.ymd(2019, 4, 2), GeneralDate.ymd(2019, 5, 30), new ManagementDataRemainUnit(1.0),
 				TypeOffsetJudgment.REAMAIN);
-		assertThat(actualResult.get().getOutbreakDay()).isEqualTo(GeneralDate.ymd(2019, 4, 2));
-		assertThat(actualResult.get().getDateOfUse()).isEqualTo(GeneralDate.ymd(2019, 5, 30));
-		assertThat(actualResult.get().getDayNumberUsed()).isEqualTo(new ReserveLeaveRemainingDayNumber(1.0));
-		assertThat(actualResult.get().getTargetSelectionAtr()).isEqualTo(TargetSelectionAtr.AUTOMATIC);
+		assertThat(actualResult.get().getOutbreakDay()).isEqualTo(GeneralDate.ymd(2019, 4, 2));// 発生日
+		assertThat(actualResult.get().getDateOfUse()).isEqualTo(GeneralDate.ymd(2019, 5, 30));// 使用日
+		assertThat(actualResult.get().getDayNumberUsed()).isEqualTo(new ReserveLeaveRemainingDayNumber(1.0));// 使用日数
+		assertThat(actualResult.get().getTargetSelectionAtr()).isEqualTo(TargetSelectionAtr.AUTOMATIC);// 対象選択区分
 
 	}
 
@@ -78,10 +78,10 @@ public class TypeRegistrationProcessTest {
 		Optional<SeqVacationAssociationInfo> actualResult = TypeRegistrationProcess.process(setting,
 				GeneralDate.ymd(2019, 4, 2), GeneralDate.ymd(2019, 5, 30), new ManagementDataRemainUnit(1.0),
 				TypeOffsetJudgment.ABSENCE);
-		assertThat(actualResult.get().getOutbreakDay()).isEqualTo(GeneralDate.ymd(2019, 4, 2));
-		assertThat(actualResult.get().getDateOfUse()).isEqualTo(GeneralDate.ymd(2019, 5, 30));
-		assertThat(actualResult.get().getDayNumberUsed()).isEqualTo(new ReserveLeaveRemainingDayNumber(1.0));
-		assertThat(actualResult.get().getTargetSelectionAtr()).isEqualTo(TargetSelectionAtr.AUTOMATIC);
+		assertThat(actualResult.get().getOutbreakDay()).isEqualTo(GeneralDate.ymd(2019, 4, 2));// 発生日
+		assertThat(actualResult.get().getDateOfUse()).isEqualTo(GeneralDate.ymd(2019, 5, 30));// 使用日
+		assertThat(actualResult.get().getDayNumberUsed()).isEqualTo(new ReserveLeaveRemainingDayNumber(1.0));// 使用日数
+		assertThat(actualResult.get().getTargetSelectionAtr()).isEqualTo(TargetSelectionAtr.AUTOMATIC);// 対象選択区分
 	}
 
 	private  TimeLapseVacationSetting create(boolean magTime, TypeOffsetJudgment type) {

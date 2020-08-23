@@ -64,33 +64,35 @@ public class PrepareInfoBeginOfMonthTest {
 		new Expectations() {
 			{
 
+				//振休管理データ
 				require.getByYmdUnOffset(CID, SID, (GeneralDate) any, anyDouble);
 				result = Arrays.asList(
-						new SubstitutionOfHDManagementData("a1", CID, SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 30))),
-								new ManagementDataDaysAtr(1.0), new ManagementDataRemainUnit(1.0)),
-						new SubstitutionOfHDManagementData("a2", CID, SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 29))),
-								new ManagementDataDaysAtr(1.0), new ManagementDataRemainUnit(1.0)),
-						new SubstitutionOfHDManagementData("a3", CID, SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 20))),
-								new ManagementDataDaysAtr(1.0), new ManagementDataRemainUnit(1.0)));
+						createSubMagData("a1", 
+								GeneralDate.ymd(2019, 11, 30), //振休日
+								1.0),//未相殺日数
+						createSubMagData("a2",
+								GeneralDate.ymd(2019, 11, 29),//振休日
+								1.0),//未相殺日数
+						createSubMagData("a3",
+								GeneralDate.ymd(2019, 11, 20),//振休日
+								1.0));//未相殺日
 
 				require.getByUnUseState(CID, SID, (GeneralDate) any, 0, DigestionAtr.UNUSED);
-				result = Arrays.asList(new PayoutManagementData("a4", CID, SID, false,
-						GeneralDate.ymd(2019, 10, 28), GeneralDate.max(), HolidayAtr.PUBLIC_HOLIDAY.value, 1.0, 1.0, 0),
-						new PayoutManagementData("a5", CID, SID, false,
-								GeneralDate.ymd(2019, 10, 25), GeneralDate.max(), HolidayAtr.PUBLIC_HOLIDAY.value, 1.0,
-								1.0, 0),
-						new PayoutManagementData("a6", CID, SID, false,
-								GeneralDate.ymd(2019, 10, 27), GeneralDate.max(), HolidayAtr.PUBLIC_HOLIDAY.value, 1.0,
-								1.0, 0),
-						new PayoutManagementData("a7", CID, SID, false,
-								GeneralDate.ymd(2019, 12, 27), GeneralDate.max(), HolidayAtr.PUBLIC_HOLIDAY.value, 1.0,
-								1.0, 0),
-						new PayoutManagementData("a8", CID, SID, false,
-								GeneralDate.ymd(2019, 10, 25), GeneralDate.max(), HolidayAtr.PUBLIC_HOLIDAY.value, 1.0,
-								1.0, 0));
+				result = Arrays.asList(createPayout("a4", 
+						GeneralDate.ymd(2019, 10, 28), //振出日
+						1.0),// 未使用日数	
+						createPayout("a5", 
+								GeneralDate.ymd(2019, 10, 25), //振出日
+								1.0),// 未使用日数	
+						createPayout("a6",
+								GeneralDate.ymd(2019, 10, 27),//振出日
+								1.0),// 未使用日数	
+						createPayout("a7", 
+								GeneralDate.ymd(2019, 12, 27), //振出日
+								1.0),// 未使用日数	
+						createPayout("a8", 
+								GeneralDate.ymd(2019, 10, 25), //振出日
+								1.0));// 未使用日数	
 
 			}
 		};
@@ -106,5 +108,16 @@ public class PrepareInfoBeginOfMonthTest {
 		assertThat(resultActual.getUnDigestedDays()).isEqualTo(0.0);
 
 	}
+	
+	private SubstitutionOfHDManagementData createSubMagData(String id, GeneralDate date, Double remainDay) {
+		return new SubstitutionOfHDManagementData(id, CID, SID,
+				new CompensatoryDayoffDate(date == null, Optional.ofNullable(date)),
+				new ManagementDataDaysAtr(1.0), new ManagementDataRemainUnit(1.0));
+	}
 
+	private  PayoutManagementData createPayout(String id, GeneralDate date, Double unUseDay) {
+		return new PayoutManagementData(id, CID, SID, date == null,
+				date, GeneralDate.max(), HolidayAtr.PUBLIC_HOLIDAY.value, 1.0,
+				unUseDay, 0);
+	}
 }

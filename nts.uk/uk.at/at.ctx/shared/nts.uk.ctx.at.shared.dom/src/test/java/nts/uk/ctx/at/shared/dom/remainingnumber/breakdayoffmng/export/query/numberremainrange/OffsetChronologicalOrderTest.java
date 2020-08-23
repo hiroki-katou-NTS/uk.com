@@ -332,7 +332,19 @@ public class OffsetChronologicalOrderTest {
 				.contains(
 						Tuple.tuple(GeneralDate.ymd(2019, 04, 04), new ReserveLeaveRemainingDayNumber(1.0),
 								GeneralDate.ymd(2019, 11, 3), TargetSelectionAtr.AUTOMATIC));
-		//TODO: thieu check du lieu khi sd het
+		
+		assertThat(lstAccAbse).extracting(x -> x.getManageId(), // 残数管理データID
+				x -> x.getDateOccur().getDayoffDate(), // 年月日
+				x -> x.getOccurrentClass(), // 発生-消化
+				x -> x.getUnbalanceNumber().getDay().v(), x -> x.getUnbalanceNumber().getTime())// 未相殺
+				.containsExactly(
+						Tuple.tuple("a5", Optional.of(GeneralDate.ymd(2019, 4, 4)), OccurrenceDigClass.DIGESTION, 0.5,
+								Optional.of(new AttendanceTime(0))),
+						Tuple.tuple("a2", Optional.of(GeneralDate.ymd(2019, 11, 3)), OccurrenceDigClass.OCCURRENCE, 0.0,
+								Optional.of(new AttendanceTime(0))),
+						Tuple.tuple("a1", Optional.of(GeneralDate.ymd(2019, 11, 4)), OccurrenceDigClass.DIGESTION,
+								1.0, Optional.of(new AttendanceTime(120))));
+
 	}
 
 	// test offsetJudgment
@@ -377,7 +389,12 @@ public class OffsetChronologicalOrderTest {
 				.invoke(OffsetChronologicalOrder.class, setting, dig, occ, TypeOffsetJudgment.REAMAIN);
 
 		assertThat(returnValue.getLeft()).isEqualTo(OffsetJudgment.SUCCESS);
-		//check het han
+		
+		assertThat(dig.getUnbalanceNumber().getDay().v()).isEqualTo(1.0);
+		assertThat(dig.getUnbalanceNumber().getTime().get().v()).isEqualTo(0);
+		
+		assertThat(occ.getUnbalanceNumber().getDay().v()).isEqualTo(1.0);
+		assertThat(occ.getUnbalanceNumber().getTime().get().v()).isEqualTo(480);
 
 	}
 
@@ -425,6 +442,12 @@ public class OffsetChronologicalOrderTest {
 				.invoke(OffsetChronologicalOrder.class, setting, dig, occ, TypeOffsetJudgment.REAMAIN);
 
 		assertThat(returnValue.getLeft()).isEqualTo(OffsetJudgment.SUCCESS);
+		
+		assertThat(dig.getUnbalanceNumber().getDay().v()).isEqualTo(1.0);
+		assertThat(dig.getUnbalanceNumber().getTime().get().v()).isEqualTo(0);
+		
+		assertThat(occ.getUnbalanceNumber().getDay().v()).isEqualTo(0.0);
+		assertThat(occ.getUnbalanceNumber().getTime().get().v()).isEqualTo(0);
 
 	}
 
@@ -474,8 +497,69 @@ public class OffsetChronologicalOrderTest {
 				.invoke(OffsetChronologicalOrder.class, setting, dig, occ, TypeOffsetJudgment.REAMAIN);
 
 		assertThat(returnValue.getLeft()).isEqualTo(OffsetJudgment.ERROR);
+		
+		assertThat(dig.getUnbalanceNumber().getDay().v()).isEqualTo(1.0);
+		assertThat(dig.getUnbalanceNumber().getTime().get().v()).isEqualTo(0);
+		
+		assertThat(occ.getUnbalanceNumber().getDay().v()).isEqualTo(0.0);
+		assertThat(occ.getUnbalanceNumber().getTime().get().v()).isEqualTo(120);
 
 	}
+	
+	// 相殺判定
+	/*
+	 * 　テストしたい内容
+	 *     　未相殺数を更新しない
+	 *     　エラーメッセージに追加がある
+	 * 
+	 * 　準備するデータ
+	 * 　　先取りをできる
+	 * 　　　逐次発生の休暇明細（消化）.年月日 < 逐次発生の休暇明細（発生）.年月日
+	 * 　　　→　未相殺数を更新しない
+	 * */
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testCase31() throws NoSuchMethodException, SecurityException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
+
+		Method privateMethod = OffsetChronologicalOrder.class.getDeclaredMethod("offsetJudgment",
+				TimeLapseVacationSetting.class, AccumulationAbsenceDetail.class, AccumulationAbsenceDetail.class,
+				TypeOffsetJudgment.class);
+		privateMethod.setAccessible(true);
+		
+		TimeLapseVacationSetting setting = new TimeLapseVacationSetting(
+				new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.ymd(2020, 1, 1)), // 期間
+				true, // 管理区分
+				30, // 使用期限
+				true, // 先取り許可
+				Optional.of(true), // 時間管理区分
+				Optional.of(1));// 時間消化単位
+
+
+		AccumulationAbsenceDetail dig = DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
+				OccurrenceDigClass.DIGESTION, // 発生消化区分
+				Optional.of(GeneralDate.ymd(2019, 11, 11)), // 年月日
+				"a5", 1.0, 0);// 未相殺数
+
+		AccumulationAbsenceDetail occ = DaikyuFurikyuHelper.createDetailDefault(true, // 代休
+				OccurrenceDigClass.OCCURRENCE, // 発生消化区分
+				Optional.of(GeneralDate.ymd(2019, 11, 15)), // 年月日
+				"a6", GeneralDate.ymd(2019, 12, 8), //期限日
+				0.0, 120);// 未相殺数
+		
+		Pair<OffsetJudgment, Optional<SeqVacationAssociationInfo>> returnValue = (Pair<OffsetJudgment, Optional<SeqVacationAssociationInfo>>) privateMethod
+				.invoke(OffsetChronologicalOrder.class, setting, dig, occ, TypeOffsetJudgment.REAMAIN);
+
+		assertThat(returnValue.getLeft()).isEqualTo(OffsetJudgment.SUCCESS);
+		
+		assertThat(dig.getUnbalanceNumber().getDay().v()).isEqualTo(1.0);
+		assertThat(dig.getUnbalanceNumber().getTime().get().v()).isEqualTo(0);
+		
+		assertThat(occ.getUnbalanceNumber().getDay().v()).isEqualTo(0.0);
+		assertThat(occ.getUnbalanceNumber().getTime().get().v()).isEqualTo(120);
+
+	}
+
 
 	// 相殺判定
 	/*
@@ -506,19 +590,24 @@ public class OffsetChronologicalOrderTest {
 		AccumulationAbsenceDetail dig = DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
 				OccurrenceDigClass.DIGESTION, // 発生消化区分
 				Optional.of(GeneralDate.ymd(2019, 11, 11)), // 年月日
-				"a5", 1.0, 0);// 未相殺数
+				"a5", 1.0, 120);// 未相殺数
 
 		AccumulationAbsenceDetail occ = DaikyuFurikyuHelper.createDetailDefault(true, // 代休
 				OccurrenceDigClass.OCCURRENCE, // 発生消化区分
 				Optional.of(GeneralDate.ymd(2019, 10, 15)), // 年月日
 				"a6", GeneralDate.ymd(2019, 12, 30), //期限日
-				0.0, 120);// 未相殺数
+				1.0, 120);// 未相殺数
 		
 		Pair<OffsetJudgment, Optional<SeqVacationAssociationInfo>> returnValue = (Pair<OffsetJudgment, Optional<SeqVacationAssociationInfo>>) privateMethod
 				.invoke(OffsetChronologicalOrder.class, setting, dig, occ, TypeOffsetJudgment.REAMAIN);
 
 		assertThat(returnValue.getLeft()).isEqualTo(OffsetJudgment.SUCCESS);
-		// check update
+		
+		assertThat(dig.getUnbalanceNumber().getDay().v()).isEqualTo(1.0);
+		assertThat(dig.getUnbalanceNumber().getTime().get().v()).isEqualTo(0);
+		
+		assertThat(occ.getUnbalanceNumber().getDay().v()).isEqualTo(1.0);
+		assertThat(occ.getUnbalanceNumber().getTime().get().v()).isEqualTo(0);
 
 	}
 

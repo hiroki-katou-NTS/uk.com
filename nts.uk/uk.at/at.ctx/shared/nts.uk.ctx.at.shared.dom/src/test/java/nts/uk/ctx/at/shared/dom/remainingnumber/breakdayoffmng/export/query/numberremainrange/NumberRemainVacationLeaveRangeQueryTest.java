@@ -94,11 +94,16 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 		List<InterimDayOffMng> dayOffMng = new ArrayList<InterimDayOffMng>();
 		List<InterimBreakMng> breakMng = new ArrayList<>();
 		List<InterimRemain> interimMng = new ArrayList<>();
+		
+		// 代休の集計結果
+		Optional<SubstituteHolidayAggrResult> holidayAggrResult = Optional
+				.of(DaikyuFurikyuHelper.createDefaultResult(new ArrayList<>(), 12.0, // 休出代休明細
+						GeneralDate.ymd(2019, 10, 01)));// 前回集計期間の翌日
 
 		BreakDayOffRemainMngRefactParam inputParam = DaikyuFurikyuHelper.inputParamDaikyu(
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)), false,
-				GeneralDate.ymd(2019, 11, 30), false, interimMng, null, null, breakMng, dayOffMng, Optional.empty(),
-				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
+				GeneralDate.ymd(2019, 11, 30), false, interimMng, null, null, breakMng, dayOffMng,
+				holidayAggrResult, new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 
 		new Expectations() {
 			{
@@ -151,6 +156,7 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 				GeneralDate.ymd(2020, 11, 01));// 前回集計期間の翌日
 
 		assertData(resultActual, resultExpected);
+		assertThat(resultActual.getCarryoverDay().v()).isEqualTo(0.0);
 		assertThat(resultActual.getVacationDetails().getLstAcctAbsenDetail()).extracting(x -> x.getManageId(), // 残数管理データID
 				x -> x.getDateOccur().getDayoffDate(), // 年月日
 				x -> x.getNumberOccurren().getDay().v(), x -> x.getNumberOccurren().getTime(), // 発生
@@ -210,10 +216,11 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 		// 代休の集計結果
 		Optional<SubstituteHolidayAggrResult> holidayAggrResult = Optional
 				.of(DaikyuFurikyuHelper.createDefaultResult(lstAccDetail, // 休出代休明細
+						12.0,//繰越日数
 						GeneralDate.ymd(2019, 11, 01)));// 前回集計期間の翌日
 
 		BreakDayOffRemainMngRefactParam inputParam = DaikyuFurikyuHelper.inputParamDaikyu(
-				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)), // 集計開始日, 集計終了日
+				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2019, 11, 30)), // 集計開始日, 集計終了日
 				false,//モード : True: 月次か, False: その他か
 				GeneralDate.ymd(2019, 11, 30), //画面表示日 
 				false, ///** 上書きフラグ: True: 上書き, False: 未上書き */
@@ -230,12 +237,13 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 				0.5, 0, // 残日時間
 				1.0, 480, // 使用
 				1.0, 480, // 発生
-				0.0, 0, // 繰越
+				12.0, 0, // 繰越
 				0d, 0, // 未消化
 				Collections.emptyList(), // エラー情報
-				GeneralDate.ymd(2020, 11, 01));// 前回集計期間の翌日
+				GeneralDate.ymd(2019, 12, 01));// 前回集計期間の翌日
 
 		assertData(resultActual, resultExpected);
+		assertThat(resultActual.getCarryoverDay().v()).isEqualTo(12.0);
 	}
 
 	public static void assertData(SubstituteHolidayAggrResult resultActual,

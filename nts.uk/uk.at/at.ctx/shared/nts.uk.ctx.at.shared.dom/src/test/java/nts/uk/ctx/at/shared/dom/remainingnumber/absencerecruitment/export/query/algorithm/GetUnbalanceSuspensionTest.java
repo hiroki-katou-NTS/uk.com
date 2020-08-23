@@ -29,7 +29,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataMana
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.SelectedAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 
 @RunWith(JMockit.class)
 public class GetUnbalanceSuspensionTest {
@@ -49,6 +48,14 @@ public class GetUnbalanceSuspensionTest {
 	public void setUp() throws Exception {
 	}
 
+	/*
+	 * 　テストしたい内容
+	 * 　　逐次発生の休暇明細データを作成しない
+	 * 
+	 * 　準備するデータ
+	 * 　　確定データがない
+	 * 　　　
+	 * */
 	@Test
 	public void testEmpty() {
 		List<AccumulationAbsenceDetail> actualResult = GetUnbalanceSuspension.process(require, CID, SID,
@@ -57,51 +64,75 @@ public class GetUnbalanceSuspensionTest {
 		assertThat(actualResult).isEqualTo(new ArrayList<>());
 	}
 
+	/*
+	 * 　テストしたい内容
+	 * 　　未相殺のデータだけが取得できるか。
+	 * 
+	 * 　準備するデータ
+	 * 　　未相殺のデータ
+	 * 　　　→紐づけがなくて残ってるやつ
+	 * 　　　→紐づけしても残ってるやつ
+	 * 　　相殺済みのデータ
+	 * 　　　→最初から残ってない
+	 * 　　　→紐づけしたら残ってない
+
+	 * */
 	@Test
 	public void testUnbalanceUnused() {
-
-		List<CompensatoryDayOffManaData> lstComMock = new ArrayList<>();
-		lstComMock.add(new CompensatoryDayOffManaData("adda6a46-2cbe-48c8-85f8-c04ca554e133", CID, SID, false,
-				GeneralDate.ymd(2019, 11, 10), 1.0, 240, 1.0, 240));
-		lstComMock.add(new CompensatoryDayOffManaData("adda6a46-2cbe-48c8-85f8-c04ca554e134", CID, SID, false,
-				GeneralDate.ymd(2019, 11, 12), 1.0, 240, 1.0, 240));
 
 		new Expectations() {
 			{
 
 				require.getByYmdUnOffset(CID, SID, (GeneralDate) any, 0);
-				result = Arrays.asList(
-						new SubstitutionOfHDManagementData("adda6a46-2cbe-48c8-85f8-c04ca554e133", CID, SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 30))),
-								new ManagementDataDaysAtr(1.0), new ManagementDataRemainUnit(1.0)),
-						new SubstitutionOfHDManagementData("adda6a46-2cbe-48c8-85f8-c04ca554e134", CID, SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 20))),
-								new ManagementDataDaysAtr(1.0), new ManagementDataRemainUnit(1.0)));
+				result = Arrays.asList(createSubOfHD("a1", 
+						GeneralDate.ymd(2019, 11, 30), // 振休日
+						1.0),// 未相殺日数
+						createSubOfHD("a1", 
+								GeneralDate.ymd(2019, 11, 10), // 振休日
+								0.0),// 未相殺日数
+						createSubOfHD("a2", 
+								GeneralDate.ymd(2019, 11, 20), // 振休日
+								1.0));// 未相殺日数
 
 				require.getBySidMng(DataManagementAtr.INTERIM, DataManagementAtr.CONFIRM,
-						"adda6a46-2cbe-48c8-85f8-c04ca554e133");
+						"a1");
 				result = Arrays.asList(
-						new InterimRecAbsMng("", DataManagementAtr.INTERIM, "adda6a46-2cbe-48c8-85f8-c04ca554e133",
-								DataManagementAtr.CONFIRM, new UseDay(1.0), SelectedAtr.MANUAL));
+						createRecAbs("a1",1.0));//使用日数
 
 				require.getBySidMng(DataManagementAtr.INTERIM, DataManagementAtr.CONFIRM,
-						"adda6a46-2cbe-48c8-85f8-c04ca554e134");
+						"a2");
 				result = Arrays.asList(
-						new InterimRecAbsMng("", DataManagementAtr.INTERIM, "adda6a46-2cbe-48c8-85f8-c04ca554e134",
-								DataManagementAtr.CONFIRM, new UseDay(0.5), SelectedAtr.MANUAL));
+						createRecAbs("a2",0.5));//使用日数
 
 			}
 		};
 
+		List<SubstitutionOfHDManagementData> subOfHd = new ArrayList<>();
+		subOfHd.add(createSubOfHD("a4", null, 1.0));
 		List<AccumulationAbsenceDetail> actualResult = GetUnbalanceSuspension.process(require, CID, SID,
-				GeneralDate.ymd(2019, 11, 1), new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
+				GeneralDate.ymd(2019, 11, 1),
+				new FixedManagementDataMonth(new ArrayList<>(), subOfHd));
 
-		assertThat(actualResult)
-				.extracting(x -> x.getManageId(), x -> x.getEmployeeId(), x -> x.getDataAtr(),
-						x -> x.getDateOccur().isUnknownDate(), x -> x.getDateOccur().getDayoffDate(),
-						x -> x.getNumberOccurren().getDay().v(), x -> x.getOccurrentClass(),
-						x -> x.getUnbalanceNumber().getDay().v())
-				.containsExactly(Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e134", SID, MngDataStatus.CONFIRMED,
-						false, Optional.of(GeneralDate.ymd(2019, 11, 20)), 1.0, OccurrenceDigClass.DIGESTION, 0.5));
+		assertThat(actualResult).extracting(x -> x.getManageId(), x -> x.getDataAtr(), // 状態
+				x -> x.getDateOccur().isUnknownDate(), x -> x.getDateOccur().getDayoffDate(), // 年月日
+				x -> x.getOccurrentClass(), // 発生消化区分
+				x -> x.getUnbalanceNumber().getDay().v())// 未相殺数
+				.containsExactly(
+						Tuple.tuple("a2", MngDataStatus.CONFIRMED, false, Optional.of(GeneralDate.ymd(2019, 11, 20)),
+								OccurrenceDigClass.DIGESTION, 0.5),
+						Tuple.tuple("a4", MngDataStatus.CONFIRMED, true, Optional.empty(), OccurrenceDigClass.DIGESTION,
+								1.0));
+	}
+	
+	private SubstitutionOfHDManagementData createSubOfHD(String id, GeneralDate date, Double remainDay) {
+		
+		return new SubstitutionOfHDManagementData(id, CID, SID,
+				new CompensatoryDayoffDate(date == null, Optional.ofNullable(date)),
+				new ManagementDataDaysAtr(1.0), new ManagementDataRemainUnit(remainDay));
+	}
+	
+	private InterimRecAbsMng createRecAbs(String id, Double useDay) {
+		return new InterimRecAbsMng(id,
+				DataManagementAtr.INTERIM, "", DataManagementAtr.INTERIM, new UseDay(useDay), SelectedAtr.MANUAL);
 	}
 }

@@ -11,6 +11,8 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
@@ -188,11 +190,16 @@ public class DaikyuFurikyuHelper {
 
 	public static SubstituteHolidayAggrResult createDefaultResult(List<AccumulationAbsenceDetail> lstAccDetail,
 			GeneralDate nextDay) {
+		return createDefaultResult(lstAccDetail, 0.0, nextDay);
+	}
+	
+	public static SubstituteHolidayAggrResult createDefaultResult(List<AccumulationAbsenceDetail> lstAccDetail, Double carryDay,
+			GeneralDate nextDay) {
 		return new SubstituteHolidayAggrResult(new VacationDetails(lstAccDetail),
 				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0),
 				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0),
 				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0),
+				new ReserveLeaveRemainingDayNumber(carryDay), new RemainingMinutes(0),
 				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0), new ArrayList<>(),
 				Finally.of(nextDay), Collections.emptyList());
 	}
@@ -237,5 +244,23 @@ public class DaikyuFurikyuHelper {
 	public static InterimRecMng createRecMng(String id, GeneralDate deadline, double occDay) {
 		return new InterimRecMng(id, deadline, new OccurrenceDay(occDay), StatutoryAtr.PUBLIC, new UnUsedDay(1.0));
 	}
+	
+	public static InterimRecMng createRecUseMng(String id, GeneralDate deadline, double unuse) {
+		return new InterimRecMng(id, deadline, new OccurrenceDay(1.0), StatutoryAtr.PUBLIC, new UnUsedDay(unuse));
+	}
 
+	public static AbsRecMngInPeriodRefactParamInput createAbsRecInput(DatePeriod period, GeneralDate dateRefer,
+			boolean mode, boolean replaceChk, List<InterimAbsMng> useAbsMng, List<InterimRemain> interimMng,
+			List<InterimRecMng> useRecMng) {
+		return new AbsRecMngInPeriodRefactParamInput(CID, SID, period, dateRefer, mode, replaceChk, useAbsMng,
+				interimMng, useRecMng, Optional.empty(), Optional.empty(), Optional.empty(),
+				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
+	}
+	
+	public static AbsRecMngInPeriodRefactParamInput createAbsRecInput(DatePeriod period, GeneralDate dateRefer,
+			boolean mode, boolean replaceChk, Optional<CompenLeaveAggrResult> optBeforeResult) {
+		return new AbsRecMngInPeriodRefactParamInput(CID, SID, period, dateRefer, mode, replaceChk, new ArrayList<>(),
+				new ArrayList<>(), new ArrayList<>(), optBeforeResult, Optional.empty(), Optional.empty(),
+				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
+	}
 }
