@@ -9,5 +9,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class BentoItemDto {
     private int code;
+	private String locationCode;
     private String name;
 }

@@ -34,14 +34,14 @@
 							<div id="A3_1" data-bind="ntsFormLabel: {text: $i18n('KMR004_3')}"></div>
 						</td>
 						<td>
-							<!--A3_2 A3_3-->
-							<div id="date-range-picker" tabindex="4"
-								 data-bind="ntsDateRangePicker: {
-									required: true,
-									enable: true,
-									showNextPrevious: true,
-									value: model().period,
-									maxRange: 'oneYear'}">
+							<!--A3_4-->
+							<div id="date-range-picker" tabindex="4" data-bind="ntsDateRangePicker: {
+							    name: $i18n('KMR004_3'),
+							    required: true,
+							    enable: true,
+							    showNextPrevious: true,
+							    value: model().period,
+							    maxRange: 'oneYear'}">
 							</div>
 						</td>
 					</tr>
@@ -51,7 +51,7 @@
 						</td>
 						<td>
 							<div id="A4_2" tabindex="6" class="cf" data-bind="ntsSwitchButton: {
-									name: 'Sample Switch',
+									name: $i18n('KMR004_7'),
 									options: closingTimeOptions,
 									optionsValue: 'code',
 									optionsText: 'name',
@@ -97,6 +97,7 @@
 											<td>
 												<div id="A7_2" tabindex="13">
 													<input data-bind="ntsTextEditor: {
+													    name: $i18n('KMR004_21'),
 														value: model().totalTitle,
 														constraint: 'BentoExportTitle',
 														option: {
@@ -113,14 +114,14 @@
 											</td>
 											<td>
 												<div id="A8_2" tabindex="14" class="verticalRadioBoxGroup" data-bind="ntsRadioBoxGroup: {
+												    name: $i18n('KMR004_16'),
 													options: totalExtractConditionOptions,
 													optionsValue: 'id',
 													optionsText: 'name',
 													value: model().totalExtractCondition,
 													enable: true}">
 												</div> <br/>
-												<div id="A8_6" tabindex="17" class="style-normal"
-													 data-bind="i18n: 'KMR004_20', ntsCheckBox: { checked: model().extractionConditionChecked, enable: extractionConditionEnable}"></div>
+												<div id="A8_6" tabindex="17" class="style-normal" data-bind="i18n: 'KMR004_20', ntsCheckBox: { checked: model().extractionConditionChecked, enable: extractionConditionEnable}"></div>
 											</td>
 										</tr>
 									</table>
@@ -139,6 +140,7 @@
 											<td>
 												<div id="A9_2" tabindex="18">
 													<input data-bind="ntsTextEditor: {
+													    name: $i18n('KMR004_22'),
 														value: model().detailTitle,
 														constraint: 'BentoExportTitle',
 														option: {
@@ -157,6 +159,7 @@
 												<table><tr>
 													<td style="padding-top: 0px;">
 														<div id="A10_2" tabindex="19" class="verticalRadioBoxGroup" data-bind="ntsRadioBoxGroup: {
+														    name: $i18n('KMR004_23'),
 															options: itemExtractConditionOptions,
 															optionsValue: 'id',
 															optionsText: 'name',
