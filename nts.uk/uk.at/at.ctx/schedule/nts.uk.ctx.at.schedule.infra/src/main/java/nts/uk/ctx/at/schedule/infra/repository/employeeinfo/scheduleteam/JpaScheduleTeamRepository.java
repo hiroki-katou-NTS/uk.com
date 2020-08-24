@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.infra.repository.employeeinfo.scheduleteam;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,6 +66,8 @@ public class JpaScheduleTeamRepository extends JpaRepository implements Schedule
 
 	@Override
 	public List<ScheduleTeam> getAllSchedule(String companyID, List<String> listWKPGRPID) {
+		if(listWKPGRPID.isEmpty())
+			return new ArrayList<ScheduleTeam>();
 		return this.queryProxy().query(SELECT_ALL, KscmtScheduleTeam.class).setParameter("CID", companyID)
 				.setParameter("listWKPGRPID", listWKPGRPID).getList(c -> c.toDomain());
 	}
