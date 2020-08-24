@@ -23,7 +23,6 @@ module nts.uk.at.kmr001.d {
     @bean()
     export class KMR001DViewModel extends ko.ViewModel {
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-        initMode: KnockoutObservable<number> = ko.observable(INIT_MODE.WORKPLACE);
         screenMode: KnockoutObservable<number> = ko.observable(SCREEN_MODE.NEW);
         lstWpkHistory: KnockoutObservableArray<HistoryItem>;
         selectedHistoryId: KnockoutObservable<string>;
@@ -56,10 +55,6 @@ module nts.uk.at.kmr001.d {
                 self.selectedHistoryId(params.historyId);
                 self.bkHistoryId = params.historyId;
             }
-            if (self.initMode() == INIT_MODE.DEPARTMENT) {
-                let currentScreen = nts.uk.ui.windows.getSelf();
-                currentScreen.setTitle(getText(""));
-            }
             vm.$blockui('clear');
             self.selectedHistoryId.subscribe(value => {
                 if (value) {
@@ -83,7 +78,6 @@ module nts.uk.at.kmr001.d {
             let self = this, dfd = $.Deferred();
             block.invisible();
             if (params) {
-                self.initMode(params.initMode);
                 self.selectedHistoryId(params.historyId);
                 self.bkHistoryId = params.historyId;
             }
@@ -230,7 +224,6 @@ module nts.uk.at.kmr001.d {
                             params
                         });
                     }
-                    ;
                     break;
             }
         }
@@ -323,23 +316,6 @@ module nts.uk.at.kmr001.d {
             this.to = to;
             this.historyId = historyId;
         }
-    }
-
-    class Param {
-        historyId: string;
-        startDate: string;
-        endDate: string;
-
-        constructor(historyId: string, startDate: string, endDate: string,) {
-            this.startDate = startDate;
-            this.endDate = endDate;
-            this.historyId = historyId;
-        }
-    }
-
-    enum INIT_MODE {
-        WORKPLACE = 0,
-        DEPARTMENT = 1
     }
 
     enum SCREEN_MODE {

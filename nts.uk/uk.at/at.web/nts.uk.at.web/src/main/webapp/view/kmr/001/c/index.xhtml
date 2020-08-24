@@ -22,7 +22,7 @@
 				<!--C1_1-->
 				<a class="goback" tabindex="1" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }, text: $i18n('KMR001_2')"></a>
 				<!--C1_2-->
-				<button class="proceed sidebar-button" data-bind="click: registerBentoMenu,text: $i18n('KMR001_4')"></button>
+				<button class="proceed sidebar-button" data-bind="click: registerBentoMenu,text: $i18n('KMR001_4'), enable: $root.errors.isEmpty"></button>
 				<!--C1_3-->
 				<button class="danger" data-bind="click: deleteBento, text: $i18n('KMR001_7')"></button>
 			</div>
@@ -111,15 +111,15 @@
 								<!--C11_2-->
 								<div class="data-control" data-bind="ntsCheckBox: {
 										checked: reservationAtr1,
-										text: reservationFrameName1
+										text: vm.reservationFrameName1()
 									}"
 								/>
 
 								<!--C11_3-->
-								<span class="label" data-bind="text: reservationStartTime1 "></span>
+								<span class="label" data-bind="text: vm.reservationStartTime1 "></span>
 								<!--C11_6-->
 								<span class="label" style="padding: 0 10px">~</span>
-								<span class="label" data-bind="text: reservationEndTime1 "></span>
+								<span class="label" data-bind="text: vm.reservationEndTime1 "></span>
 
 							</td>
 						</tr>
@@ -129,14 +129,14 @@
 								<!--C11_4-->
 								<div class="data-control" data-bind="ntsCheckBox: {
 										checked: reservationAtr2,
-										text: reservationFrameName2
+										text: vm.reservationFrameName2()
 									}"
 								/>
 
 								<!--C11_5-->
-								<span class="label" data-bind="text: reservationStartTime2 "></span>
+								<span class="label" data-bind="text: vm.reservationStartTime2 "></span>
 								<span class="label" style="padding: 0 10px">~</span>
-								<span class="label" data-bind="text: reservationEndTime2 "></span>
+								<span class="label" data-bind="text: vm.reservationEndTime2 "></span>
 
 
 							</td>
