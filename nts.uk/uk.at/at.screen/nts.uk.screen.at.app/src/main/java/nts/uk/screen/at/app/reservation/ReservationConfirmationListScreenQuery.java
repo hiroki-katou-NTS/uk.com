@@ -51,16 +51,16 @@ public class ReservationConfirmationListScreenQuery {
         List<Bento> menu = bentoMenu.getMenu();
         List<List<Bento>> partitions = new ArrayList<>(
                 menu.stream()
-                        .collect(Collectors.partitioningBy(item -> item.getWorkLocationCode().isPresent()))
+                        .collect(Collectors.partitioningBy(item -> !item.getWorkLocationCode().isPresent()))
                         .values()
         );
 
         List<Bento> menuByOperationType;
         OperationDistinction operationDistinction = dto.getOperationDistinction();
         if (operationDistinction == OperationDistinction.BY_COMPANY) {
-            menuByOperationType = partitions.get(1);
-        } else {
             menuByOperationType = partitions.get(0);
+        } else {
+            menuByOperationType = partitions.get(1);
         }
         List<BentoItemDto> bentoItemList = copyBentoItemList(menuByOperationType);
         dto.setMenu(bentoItemList);
@@ -71,10 +71,10 @@ public class ReservationConfirmationListScreenQuery {
         int reservationEndTime1 = closingTime.getClosingTime1().getFinish().v();
         Optional<ReservationClosingTime> closingTime2 = closingTime.getClosingTime2();
         String reservationFrameName2 = closingTime2.isPresent()? closingTime2.get().getReservationTimeName().v(): "";
-        int reservationStartTime2 = closingTime2.isPresent()? closingTime2.get().getStart().get().v(): 0;
-        int reservationEndTime2 = closingTime2.isPresent()? closingTime2.get().getFinish().v(): 0;
+        int reservationStartTime2 = closingTime2.isPresent()? new Integer(closingTime2.get().getStart().get().v()): null;
+        int reservationEndTime2 = closingTime2.isPresent()? new Integer(closingTime2.get().getFinish().v()): null;
 
-        BentoMenuDto bentoMenuDtoClosingTime = new BentoMenuDto(
+		ReservationClosingTimeDto timeFrame = new ReservationClosingTimeDto(
                 reservationFrameName1,
                 reservationStartTime1,
                 reservationEndTime1,
@@ -82,7 +82,7 @@ public class ReservationConfirmationListScreenQuery {
                 reservationStartTime2,
                 reservationEndTime2
         );
-        dto.setClosingTime(bentoMenuDtoClosingTime);
+        dto.setClosingTime(timeFrame);
 
         return dto;
     }

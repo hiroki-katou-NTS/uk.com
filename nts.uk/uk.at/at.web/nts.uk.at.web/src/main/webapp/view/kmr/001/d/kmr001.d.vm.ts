@@ -8,10 +8,7 @@ module nts.uk.at.kmr001.d {
         ADDNEW: 'bento/bentomenuhist/add',
         UPDATE: 'bento/bentomenuhist/update',
         DELETE: 'bento/bentomenuhist/delete'
-
-
     };
-
     const PATH = {
         REDIRECT: '/view/ccg/008/a/index.xhtml'
     }
@@ -38,24 +35,32 @@ module nts.uk.at.kmr001.d {
         selectedEndDate: KnockoutObservable<string>;
         copyPreviousConfig: KnockoutObservable<boolean>;
         isLatestHistory: KnockoutObservable<boolean>;
+        params: {
+            historyId: string,
+            startDate: string,
+            endDate: string
+        };
 
-        constructor() {
-
+        constructor(params: any) {
             super();
             var vm = this;
             let self = this;
-            console.log(self.screenMode());
+            console.log("paramKMR001C",params);
             self.lstWpkHistory = ko.observableArray([]);
             self.selectedHistoryId = ko.observable(null);
             self.selectedStartDateInput = ko.observable(null);
             self.selectedStartDateText = ko.observable(null);
             self.selectedEndDate = ko.observable(DEFAULT_END);
             self.copyPreviousConfig = ko.observable(false);
-
+            if (params) {
+                self.selectedHistoryId(params.historyId);
+                self.bkHistoryId = params.historyId;
+            }
             if (self.initMode() == INIT_MODE.DEPARTMENT) {
                 let currentScreen = nts.uk.ui.windows.getSelf();
                 currentScreen.setTitle(getText(""));
             }
+            vm.$blockui('clear');
             self.selectedHistoryId.subscribe(value => {
                 if (value) {
                     let history: HistoryItem = _.find(self.lstWpkHistory(), i => i.historyId == value);
@@ -66,8 +71,6 @@ module nts.uk.at.kmr001.d {
                     }
                     self.screenMode(SCREEN_MODE.SELECT);
                 } else {
-//                    if (self.screenMode() == SCREEN_MODE.NEW || self.screenMode() == SCREEN_MODE.ADD)
-//                        self.selectedEndDate(DEFAULT_END);
                 }
             });
             self.isLatestHistory = ko.computed(() => {
@@ -86,9 +89,10 @@ module nts.uk.at.kmr001.d {
             }
             vm.$ajax(API.START).done(data => {
                 if (data) {
-                    if( !nts.uk.util.isNullOrEmpty(data.historyItems)){
-                        let rs =_.orderBy(data.historyItems, function(o)
-                        { return new Date(o.endDate); }, ['desc']);
+                    if (!nts.uk.util.isNullOrEmpty(data.historyItems)) {
+                        let rs = _.orderBy(data.historyItems, function (o) {
+                            return new Date(o.endDate);
+                        }, ['desc']);
                         self.lstWpkHistory(_.map(rs,
                             i => new HistoryItem(i)));
                         let selectedHist = _.find(data, h => h.historyId == self.bkHistoryId);
@@ -111,6 +115,7 @@ module nts.uk.at.kmr001.d {
             });
             return dfd.promise();
         }
+
         addHistory() {
             let self = this;
             self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
@@ -127,14 +132,19 @@ module nts.uk.at.kmr001.d {
         deleteHistory() {
             const vm = this;
             let self = this;
+            self.params = {
+                historyId: self.selectedHistoryId(),
+                startDate: self.selectedStartDateText(),
+                endDate: self.selectedEndDate()
+            };
             confirm({messageId: "Msg_18"}).ifYes(() => {
                 block.invisible();
                 let data = new CommandDelete(self.selectedHistoryId());
                 vm.$ajax(API.DELETE, data).done(() => {
-                    self.created().done(() => {
+                    self.created(self.params).done(() => {
                         self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
                     });
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    nts.uk.ui.dialog.info({messageId: "Msg_16"});
                 }).fail(error => {
                     alertError(error);
                 }).always(() => {
@@ -143,6 +153,7 @@ module nts.uk.at.kmr001.d {
             }).ifNo(() => {
             });
         }
+
         registerConfig() {
             let self = this, data = null;
             const vm = this;
@@ -150,16 +161,20 @@ module nts.uk.at.kmr001.d {
             if (nts.uk.ui.errors.hasError())
                 return;
             block.invisible();
+            self.params = {
+                historyId: self.selectedHistoryId(),
+                startDate: self.selectedStartDateText(),
+                endDate: self.selectedEndDate()
+            };
             let startDate = moment.utc(self.selectedStartDateInput(), "YYYY/MM/DD"),
                 endDate = moment.utc(self.selectedEndDate(), "YYYY/MM/DD");
             switch (self.screenMode()) {
                 case SCREEN_MODE.NEW:
                     data = new BentoMenuHistCommand(startDate);
                     vm.$ajax(API.ADDNEW, data).done((historyId) => {
-                        self.created().done(() => {
+                        self.created(self.params).done(() => {
                             self.selectedHistoryId(historyId);
-                            self.sendDataToParentScreen();
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            nts.uk.ui.dialog.info({messageId: "Msg_15"});
                         });
                     }).fail((error) => {
                         alertError(error);
@@ -170,10 +185,9 @@ module nts.uk.at.kmr001.d {
                 case SCREEN_MODE.ADD:
                     data = new BentoMenuHistCommand(startDate);
                     vm.$ajax(API.ADDNEW, data).done((historyId) => {
-                        self.created().done(() => {
+                        self.created(self.params).done(() => {
                             self.selectedHistoryId(historyId);
-                            self.sendDataToParentScreen();
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            nts.uk.ui.dialog.info({messageId: "Msg_15"});
                         });
                     }).fail((error) => {
                         alertError(error);
@@ -182,12 +196,11 @@ module nts.uk.at.kmr001.d {
                     });
                     break;
                 case SCREEN_MODE.UPDATE:
-                    data = new CommandUpdate(startDate.toISOString(),endDate.toISOString(),self.selectedHistoryId());
-                    vm.$ajax(API.UPDATE,data).done(() => {
-                        self.created().done(() => {
+                    data = new CommandUpdate(startDate.toISOString(), endDate.toISOString(), self.selectedHistoryId());
+                    vm.$ajax(API.UPDATE, data).done(() => {
+                        self.created(self.params).done(() => {
                             self.selectedHistoryId.valueHasMutated();
-                            self.sendDataToParentScreen();
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            nts.uk.ui.dialog.info({messageId: "Msg_15"});
                         });
                     }).fail((error) => {
                         alertError(error);
@@ -197,38 +210,52 @@ module nts.uk.at.kmr001.d {
                     break;
                 default:
                     block.clear();
-                    if (self.selectedHistoryId())
-                        self.sendDataToParentScreen();
-                    nts.uk.ui.windows.close();
+                    if (self.selectedHistoryId()) {
+                        let preSelectHist = _.find(self.lstWpkHistory(), h => h.historyId == self.selectedHistoryId());
+                        let params = {
+                            historyId: preSelectHist.historyId,
+                            startDate: preSelectHist.startDate,
+                            endDate: preSelectHist.endDate
+                        };
+                        self.$window.close({
+                            params
+                        });
+                    } else {
+                        let params = {
+                            historyId: self.lstWpkHistory()[0].historyId,
+                            startDate: self.lstWpkHistory()[0].startDate,
+                            endDate: self.lstWpkHistory()[0].endDate
+                        };
+                        self.$window.close({
+                            params
+                        });
+                    }
+                    ;
                     break;
             }
         }
-        sendDataToParentScreen() {
-            let self = this;
-            let params = {
-                historyId: self.selectedHistoryId(),
-                startDate: self.selectedStartDateText(),
-                endDate: self.selectedEndDate()
-            };
-            self.$window.close({
-                params
-            });
-            //nts.uk.ui.windows.close();
-        }
+
         cancel() {
             let self = this;
             let preSelectHist = _.find(self.lstWpkHistory(), h => h.historyId == self.bkHistoryId);
             if (preSelectHist && (preSelectHist.startDate != self.bkStartDate || preSelectHist.endDate != self.bkEndDate)) {
-                setShared("paramsKMR004D", {
+                let params = {
                     historyId: preSelectHist.historyId,
                     startDate: preSelectHist.startDate,
                     endDate: preSelectHist.endDate
+                };
+                self.$window.close({
+                    params
                 });
+
             } else if (preSelectHist == null) {
-                setShared("paramsKMR004D", {
+                let params = {
                     historyId: self.lstWpkHistory()[0].historyId,
                     startDate: self.lstWpkHistory()[0].startDate,
                     endDate: self.lstWpkHistory()[0].endDate
+                };
+                self.$window.close({
+                    params
                 });
             }
             nts.uk.ui.windows.close();
@@ -265,13 +292,16 @@ module nts.uk.at.kmr001.d {
         startDate: Date;
         endDate: Date;
     }
-    class CommandDelete{
-        historyId : string;
-        constructor(historyId:string){
+
+    class CommandDelete {
+        historyId: string;
+
+        constructor(historyId: string) {
             this.historyId = historyId;
         }
     }
-    class CommandUpdate{
+
+    class CommandUpdate {
         startDatePerio: string;
         endDatePerio: string;
         historyId: string;
@@ -282,6 +312,7 @@ module nts.uk.at.kmr001.d {
             this.historyId = historyId;
         }
     }
+
     class ItemModel {
         from: string;
         to: string;
@@ -290,6 +321,18 @@ module nts.uk.at.kmr001.d {
         constructor(from: string, to: string, historyId: string) {
             this.from = from;
             this.to = to;
+            this.historyId = historyId;
+        }
+    }
+
+    class Param {
+        historyId: string;
+        startDate: string;
+        endDate: string;
+
+        constructor(historyId: string, startDate: string, endDate: string,) {
+            this.startDate = startDate;
+            this.endDate = endDate;
             this.historyId = historyId;
         }
     }
