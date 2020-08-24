@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 720, height:600 };</script>
+			<script>var dialogSize = { width: 720, height:680 };</script>
 			<!--<com:scriptfile path="ksm004.e.start.js" />-->
 			<!--<com:scriptfile path="ksm004.e.service.js" />-->
 			<com:scriptfile set="IGNITE" />
@@ -25,7 +25,14 @@
 					<tr>
 						<td>
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM004_106')}</div>
-							<div tabindex="5" data-bind="ntsDatePicker: { value: baseDate, dateFormat: 'YYYY/MM', valueFormat: 'YYYY/MM', showJumpButtons: false, required: true }"></div>
+							<div tabindex="5" data-bind="ntsDatePicker: {
+								value: baseDate,
+								dateFormat: 'YYYY/MM',
+								valueFormat: 'YYYY/MM',
+								showJumpButtons: false,
+								required: true,
+								name: $i18n('KSM004_107')
+							}"></div>
 						</td>
 						<td>
                             <div id="day-off">
@@ -39,7 +46,7 @@
 			<div class="ksm004-f" id="contents-area">
 				<!--<button data-bind="click: getSixMonthsCalendar" >Click Hire</button>-->
 				<div data-bind="foreach: _.chunk(ko.unwrap(months), 3)">
-					<div data-bind="foreach: $data">
+					<div style="margin: 5px 0;" data-bind="foreach: $data">
 						<div data-bind="component: { name: 'calendar', params: $data }"></div>
 					</div>
 				</div>
