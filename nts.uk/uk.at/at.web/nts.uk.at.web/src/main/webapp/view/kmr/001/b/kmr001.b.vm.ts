@@ -56,6 +56,10 @@ module nts.uk.at.kmr001.b {
 
         registerBentoReserveSetting() {
             const vm = this;
+            $(".nts-input").trigger("validate");
+            if (nts.uk.ui.errors.hasError()){
+                return;
+            }
             vm.$blockui("invisible");
             const dataRegister = {
                 perationDistinction : vm.model().operationDistinction(),

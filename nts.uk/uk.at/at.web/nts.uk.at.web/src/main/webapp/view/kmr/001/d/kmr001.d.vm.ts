@@ -41,16 +41,21 @@ module nts.uk.at.kmr001.d {
             endDate: string
         };
 
-        constructor() {
+        constructor(params: any) {
             super();
             var vm = this;
             let self = this;
+            console.log("paramKMR001C",params);
             self.lstWpkHistory = ko.observableArray([]);
             self.selectedHistoryId = ko.observable(null);
             self.selectedStartDateInput = ko.observable(null);
             self.selectedStartDateText = ko.observable(null);
             self.selectedEndDate = ko.observable(DEFAULT_END);
             self.copyPreviousConfig = ko.observable(false);
+            if (params) {
+                self.selectedHistoryId(params.historyId);
+                self.bkHistoryId = params.historyId;
+            }
             if (self.initMode() == INIT_MODE.DEPARTMENT) {
                 let currentScreen = nts.uk.ui.windows.getSelf();
                 currentScreen.setTitle(getText(""));
