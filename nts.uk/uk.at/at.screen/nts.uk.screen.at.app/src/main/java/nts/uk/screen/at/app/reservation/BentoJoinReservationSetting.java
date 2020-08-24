@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class BentoJoinReservationSetting {
     public List<BentoDto> bentoDtos;
 
     public static BentoJoinReservationSetting setData(List<BentomenuJoinBentoDto> bentomenuJoinBentoDtos, BentoReservationSettingDto bentoReservationSettingDto){
-        if (bentomenuJoinBentoDtos == null) return null;
+        if (bentomenuJoinBentoDtos == null || CollectionUtil.isEmpty(bentomenuJoinBentoDtos)) return null;
         List<BentoDto> bentoDtos = new ArrayList<>();
 
         for(BentomenuJoinBentoDto x : bentomenuJoinBentoDtos){
