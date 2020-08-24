@@ -179,5 +179,5 @@ public interface ApplicationRepository {
 	 */
 	public Optional<Application> findByID(String appID);
 	
-	public List<Application> getByAppTypeList(List<ApplicationType> appTypeLst);
+	public List<Application> getByAppTypeList(List<String> employeeLst, GeneralDate startDate, GeneralDate endDate, List<ApplicationType> appTypeLst);
 }

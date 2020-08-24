@@ -222,7 +222,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 				application.getPrePostAtr(),
 				application.getVersion(),
 				goBackDirectly.getDataWork().isPresent() ? goBackDirectly.getDataWork().get().getWorkTypeCode().v() : null,
-				goBackDirectly.getDataWork().isPresent() ? (goBackDirectly.getDataWork().get().getWorkTimeCode() != null ? goBackDirectly.getDataWork().get().getWorkTimeCode().v() : null) : null);
+				goBackDirectly.getDataWork().isPresent() ? (goBackDirectly.getDataWork().get().getWorkTimeCode() != null ? goBackDirectly.getDataWork().get().getWorkTimeCode().v() : null) : null,
+				inforGoBackCommonDirectOutput.getAppDispInfoStartup());
 	}
 	/**
 	 * 共通登録前のエラーチェック処理

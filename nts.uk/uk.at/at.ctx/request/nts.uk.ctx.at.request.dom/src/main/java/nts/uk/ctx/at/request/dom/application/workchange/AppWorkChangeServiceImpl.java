@@ -419,7 +419,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 
 	@Override
 	public List<ConfirmMsgOutput> checkBeforeUpdate(String companyID, Application application,
-			AppWorkChange appWorkChange, boolean agentAtr) {
+			AppWorkChange appWorkChange, boolean agentAtr, AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		// 詳細画面の登録時チェック処理（全申請共通）
 		detailBeforeUpdate.processBeforeDetailScreenRegistration(
@@ -431,7 +431,8 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 				application.getPrePostAtr(), 
 				application.getVersion(), 
 				appWorkChange.getOpWorkTypeCD().isPresent() ? appWorkChange.getOpWorkTypeCD().get().v() : null , 
-				appWorkChange.getOpWorkTimeCD().isPresent() ? appWorkChange.getOpWorkTimeCD().get().v(): null );
+				appWorkChange.getOpWorkTimeCD().isPresent() ? appWorkChange.getOpWorkTimeCD().get().v(): null,
+				appDispInfoStartupOutput);
 		// 登録時チェック処理（勤務変更申請）
 		this.checkRegisterWorkChange(application, appWorkChange);
 		return result;
@@ -561,7 +562,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 			workChangeCheckRegOutput = this.checkBeforeRegister(companyId, opErrorFlag, application, appWorkChange, appDispInfoStartupOutput);
 		}else {
 //			更新前のエラーチェック処理
-			workChangeCheckRegOutput.setConfirmMsgLst(this.checkBeforeUpdate(companyId, application, appWorkChange, false));
+			workChangeCheckRegOutput.setConfirmMsgLst(this.checkBeforeUpdate(companyId, application, appWorkChange, false, appDispInfoStartupOutput));
 		}
 
 		return workChangeCheckRegOutput;

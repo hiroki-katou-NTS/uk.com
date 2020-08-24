@@ -331,6 +331,30 @@ public class GoBackDirectlyFinder {
 		return InforGoBackCommonDirectDto.fromDomain(goBackDirectService.getDataDetailAlgorithm(param.getCompanyId(), param.getApplicationId(), appDispInfoStartupOutput));		
 	}
 	
+	// Refactor5  mobile
+	public InforGoBackCommonDirectDto getStartKAFS09(ParamStartMobile paramStart) {
+		String companyId = AppContexts.user().companyId();
+		Optional<String> employeeId = Optional.ofNullable(null);
+		if (paramStart.getEmployeeId() != null) {
+			employeeId = Optional.of(paramStart.getEmployeeId());
+		}
+		
+		AppDispInfoStartupOutput appDispInfoStartupOutput = paramStart.getAppDispInfoStartupDto().toDomain();
+		
+		if (paramStart.getMode()) {
+//			new
+			return InforGoBackCommonDirectDto.fromDomain(goBackDirectService.getDataAlgorithm(companyId, Optional.ofNullable(null), employeeId, appDispInfoStartupOutput));
+		}else {
+			
+			String appId = "";
+			if (appDispInfoStartupOutput.getAppDetailScreenInfo().isPresent()) {
+				appId = appDispInfoStartupOutput.getAppDetailScreenInfo().get().getApplication().getAppID();
+			}
+//			edit
+			return InforGoBackCommonDirectDto.fromDomain(goBackDirectService.getDataDetailAlgorithm(paramStart.getCompanyId(), appId, appDispInfoStartupOutput));
+		}
+	}
+	
 	
 
 }

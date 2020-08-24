@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.app
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.arc.time.ClockHourMinute;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
@@ -148,6 +149,32 @@ public class ReceptionRestrictionSetting {
 	 */
 	public boolean applyPossibleCheck(ApplicationType appType, GeneralDate date, OvertimeAppAtr overtimeAppAtr, 
 			GeneralDate advanceReceptionDate, AttendanceClock advanceReceptionHours) {
+		// Input「対象申請」をチェックする
+		if(appType != ApplicationType.OVER_TIME_APPLICATION) {
+			// INPUT．対象日とINPUT．事前受付日を比較する
+			if(date.before(advanceReceptionDate)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		// INPUT．事前受付時分をチェックする
+		if(advanceReceptionHours==null) {
+			// INPUT．対象日とINPUT．事前受付日を比較する
+			if(date.before(advanceReceptionDate)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		// INPUT．対象日とシステム日付を比較
+		if(date.after(GeneralDate.today())) {
+			return false;
+		}
+		// システム日時とINPUT．INPUT．事前受付時分を比較する
+		if(ClockHourMinute.now().v() > advanceReceptionHours.v()) {
+			return true;
+		}
 		return false;
 	}
 	

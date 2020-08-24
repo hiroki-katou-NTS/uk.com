@@ -777,7 +777,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	}
 
 	@Override
-	public List<Application> getByAppTypeList(List<ApplicationType> appTypeLst) {
+	public List<Application> getByAppTypeList(List<String> employeeLst, GeneralDate startDate, GeneralDate endDate, List<ApplicationType> appTypeLst) {
 		return Collections.emptyList();
 	}
 

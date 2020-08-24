@@ -1,18 +1,28 @@
 package nts.uk.ctx.at.request.dom.application.applist.service.content;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
-import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
+import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
+import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.datacreate.StampAppOutputTmp;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
+import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
+import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonForFixedForm;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
+import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -64,13 +74,6 @@ public interface AppContentService {
 	
 	/**
 	 * refactor 4
-	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.申請一覧の申請名称を取得する.申請一覧の申請名称を取得する
-	 * @return
-	 */
-	public List<ListOfAppTypes> getAppNameInAppList();
-	
-	/**
-	 * refactor 4
 	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.申請一覧の申請名称を取得する.申請一覧申請種類のプログラムID.申請一覧申請種類のプログラムID
 	 * @return
 	 */
@@ -110,4 +113,39 @@ public interface AppContentService {
 	public String getWorkChangeGoBackContent(ApplicationType appType, String workTypeName, String workTimeName, NotUseAtr goWorkAtr1, TimeWithDayAttr workTimeStart1, 
 			NotUseAtr goBackAtr1, TimeWithDayAttr workTimeEnd1, TimeWithDayAttr breakTimeStart1, TimeWithDayAttr breakTimeEnd1, DisplayAtr appReasonDisAtr,
 			AppReason appReason, Application application);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.各申請データを作成.各申請データを作成
+	 * @param application 申請
+	 * @param companyID 会社ID
+	 * @param lstWkTime 就業時間帯リスト
+	 * @param lstWkType 勤務種類リスト
+	 * @param attendanceItemLst 勤怠項目リスト
+	 * @param mode モード
+	 * @param approvalListDisplaySetting 承認一覧表示設定
+	 * @param appLst 申請一覧リスト
+	 * @param mapApproval Map＜ルートインスタンスID、承認フェーズList＞
+	 * @param device デバイス：PC or スマートフォン
+	 * @param appListExtractCondition 申請一覧抽出条件
+	 * @return
+	 */
+	public ListOfApplication createEachAppData(Application application, String companyID, List<WorkTimeSetting> lstWkTime, List<WorkType> lstWkType, 
+			List<AttendanceItem> attendanceItemLst, ApplicationListAtr mode, ApprovalListDisplaySetting approvalListDisplaySetting, List<ListOfApplication> appLst, 
+			Map<String,List<ApprovalPhaseStateImport_New>> mapApproval, int device, AppListExtractCondition appListExtractCondition);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.各申請データを作成.承認状況照会内容.承認状況照会内容
+	 * @param approvalPhaseLst 承認フェーズList 
+	 * @return
+	 */
+	public String getApprovalStatusInquiryContent(List<ApprovalPhaseStateImport_New> approvalPhaseLst);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.各申請データを作成.反映状態（承認一覧モード）.反映状態（承認一覧モード）
+	 * @param reflectedState 申請の実績反映状態
+	 * @param phaseAtr 承認フェーズの承認区分
+	 * @param frameAtr 承認枠の承認区分
+	 * @return
+	 */
+	public String getReflectStatusApprovalListMode(ReflectedState reflectedState, ApprovalBehaviorAtrImport_New phaseAtr, ApprovalBehaviorAtrImport_New frameAtr);
 }

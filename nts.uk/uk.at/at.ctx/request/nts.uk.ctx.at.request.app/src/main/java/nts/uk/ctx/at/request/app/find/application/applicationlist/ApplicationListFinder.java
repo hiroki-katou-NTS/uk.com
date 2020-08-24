@@ -11,31 +11,39 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.text.StringUtil;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
-import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppListInitialRepository;
-import nts.uk.ctx.at.request.dom.application.applist.service.AppListOutPut;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppMasterInfo;
-import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationFullOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.CheckColorTime;
+import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
 import nts.uk.ctx.at.request.dom.application.applist.service.PhaseStatus;
+import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
+import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * 11 - 申請一覧初期処理
- * @author hoatt
+ * refactor 4
+ * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.申請一覧初期処理.申請一覧初期処理
+ * @author Doan Duy Hung
  *
  */
 @Stateless
@@ -44,104 +52,212 @@ public class ApplicationListFinder {
 	@Inject
 	private AppListInitialRepository repoAppListInit;
 	@Inject
-	private RequestSettingRepository repoRequestSet;
-	@Inject
 	private AppDispNameRepository repoAppDispName;
+	
 	@Inject
-	private ApplicationRepository repoApplication;
+	private ApprovalListDispSetRepository approvalListDispSetRepository;
+	
 	private static final int MOBILE = 1;
-
-	public ApplicationListDto getAppList(AppListParamFilter param){
-		AppListExtractConditionDto condition = param.getCondition();
-		int device = param.getDevice();
-		String companyId = AppContexts.user().companyId();
-		Integer appAllNumber = null;
-		Integer appPerNumber = null;
-		if(device == MOBILE){
-			//・設定の名前：SMART_PHONE
-			//・機能の名前：APP_ALL_NUMBER、APP_PER_NUMBER
-			String[] subName = {"APP_ALL_NUMBER","APP_PER_NUMBER"};
-			Map<String, Integer> mapParam = repoApplication.getParamCMMS45(companyId, "SMART_PHONE", Arrays.asList(subName));
-			if(mapParam.isEmpty()){
-				mapParam = repoApplication.getParamCMMS45(AppContexts.user().contractCode()+ "-0000", "SMART_PHONE", Arrays.asList(subName));
-			}
-			if(!mapParam.isEmpty()){
-				appAllNumber = mapParam.get("APP_ALL_NUMBER");
-				appPerNumber = mapParam.get("APP_PER_NUMBER");
-			}
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
+	
+	public AppListInfo getAppList(AppListParamFilter param){
+		String companyID = AppContexts.user().companyId();
+		AppListInfo result = new AppListInfo();
+		// ドメインモデル「承認一覧表示設定」を取得する
+		Optional<ApprovalListDisplaySetting> opApprovalListDisplaySetting = approvalListDispSetRepository.findByCID(companyID);
+		if(opApprovalListDisplaySetting.isPresent()) {
+			result.getDisplaySet().setWorkplaceNameDisp(opApprovalListDisplaySetting.get().getDisplayWorkPlaceName().value);
+			result.getDisplaySet().setAppDateWarningDisp(opApprovalListDisplaySetting.get().getWarningDateDisAtr().v());
 		}
-
-		//対象申請種類List
-		List<Integer> lstType = param.getLstAppType();
-		//ドメインモデル「承認一覧表示設定」を取得する-(Lấy domain Approval List display Setting)
-		Optional<RequestSetting> requestSet = repoRequestSet.findByCompany(companyId);
-		ApprovalListDisplaySetting appDisplaySet = null;
-		Integer isDisPreP = null;
-		if(requestSet.isPresent()){
-			appDisplaySet = requestSet.get().getApprovalListDisplaySetting();
-			isDisPreP = requestSet.get().getApplicationSetting().getAppDisplaySetting().getPrePostAtrDisp().value;
-		}
-		//URパラメータが存在する-(Check param)
-		if(StringUtil.isNullOrEmpty(condition.getStartDate(), false) || StringUtil.isNullOrEmpty(condition.getEndDate(), false)){
-			//アルゴリズム「申請一覧初期日付期間」を実行する-(Thực hiện thuật toán lấy ngày　－12)
-			DatePeriod date = null;
-			if(condition.getAppListAtr().equals(ApplicationListAtr.APPROVER.value)){
-				date = repoAppListInit.getInitialPeriod(companyId);
-			}else{
-				date = repoAppListInit.getInitPeriodApp(companyId);
+		GeneralDate startDate = null;
+		GeneralDate endDate = null;
+		// 「SPR連携用のパラメータ」をチェックする
+		if(param.getSprParam() != null) {
+			// 開始日付＝パラメタの期間（開始日）、終了日付＝パラメタの期間（終了日）とする
+			startDate = GeneralDate.fromString(param.getStartDate(), DATE_FORMAT); 
+			endDate = GeneralDate.fromString(param.getEndDate(), DATE_FORMAT);
+		} else {
+			// メニューより起動か、申請画面からの戻りかチェックする(Kiểm tra xem bắt đầu từ menu hay là  trở về từ màn hình application)
+			if(param.getAppListExtractCondition() != null) {
+				// ドメインモデル「申請一覧抽出条件」を取得する
+				AppListExtractCondition appListExtractCondition = param.getAppListExtractCondition();
+				// アルゴリズム「申請一覧リスト取得」を実行する
+				AppListInfo appListInfo = repoAppListInit.getApplicationList(appListExtractCondition, param.getDevice(), result);
+				result.setAppLst(appListInfo.getAppLst());
+				return result;
 			}
-			condition.setStartDate(date.start().toString());
-			condition.setEndDate(date.end().toString());
-		}
-		//ドメインモデル「申請一覧共通設定フォーマット.表の列幅」を取得-(Lấy 表の列幅)//xu ly o ui
-		//アルゴリズム「申請一覧リスト取得」を実行する-(Thực hiện thuật toán Application List get): 1-申請一覧リスト取得
-		AppListExtractCondition appListExCon = condition.convertDtotoDomain(condition);
-		// AppListOutPut lstAppData = repoAppListInit.getApplicationList(appListExCon, appDisplaySet, device, lstType);
-		AppListOutPut lstAppData = null;
-		List<ApplicationDto_New> lstAppDto = new ArrayList<>();
-		for (Application_New app : lstAppData.getLstApp()) {
-            lstAppDto.add(ApplicationDto_New.fromDomainCMM045(app));
-		}
-		List<AppStatusApproval> lstStatusApproval = new ArrayList<>();
-		List<ApproveAgent> lstAgent = new ArrayList<>();
-		if(condition.getAppListAtr() == 1){//mode approval
-			List<ApplicationFullOutput> lstFil = lstAppData.getLstAppFull().stream().filter(c -> c.getStatus() != null).collect(Collectors.toList());
-			for (ApplicationFullOutput app : lstFil) {
-				lstAgent.add(new ApproveAgent(app.getApplication().getAppID(), app.getAgentId()));
-				lstStatusApproval.add(new AppStatusApproval(app.getApplication().getAppID(), app.getStatus()));
-			}
-			for (ApplicationDto_New appDto : lstAppDto) {
-				appDto.setReflectPerState(this.findStatusAppv(lstStatusApproval, appDto.getApplicationID()));
-			}
-			for (AppMasterInfo master : lstAppData.getDataMaster().getLstAppMasterInfo()) {
-				master.setStatusFrameAtr(this.findStatusFrame(lstAppData.getLstFramStatus(), master.getAppID()));
-				master.setPhaseStatus(this.findStatusPhase(lstAppData.getLstPhaseStatus(), master.getAppID()));
-				master.setCheckTimecolor(this.findColorAtr(lstAppData.getLstTimeColor(), master.getAppID()));
+			// 期間（開始日、終了日）が存する場合
+			if(Strings.isNotBlank(param.getStartDate()) && Strings.isNotBlank(param.getEndDate())) {
+				// 開始日付＝期間（開始日）、終了日付＝期間（終了日）とする
+				startDate = GeneralDate.fromString(param.getStartDate(), DATE_FORMAT); 
+				endDate = GeneralDate.fromString(param.getEndDate(), DATE_FORMAT);
+			} else {
+				// URLパラメータをチェック/Check URL Parameters
+				if(param.getMode() == ApplicationListAtr.APPROVER.value){
+					// 申請一覧初期日付期間(Period date intial application list)
+					DatePeriod period = repoAppListInit.getInitialPeriod(companyID);
+					result.getDisplaySet().setStartDateDisp(period.start());
+					result.getDisplaySet().setEndDateDisp(period.end());
+				}else{
+					// 申請一覧初期日付期間_申請 (Period date intial application list _Application)
+					DatePeriod period = repoAppListInit.getInitPeriodApp(companyID);
+					result.getDisplaySet().setStartDateDisp(period.start());
+					result.getDisplaySet().setEndDateDisp(period.end());
+				}
 			}
 		}
-		List<AppInfor> lstAppType = this.findListApp(lstAppData.getDataMaster().getLstAppMasterInfo(), param.isSpr(), param.getExtractCondition(), device);
-		List<ApplicationDto_New> lstAppSort = appListExCon.equals(ApplicationListAtr.APPROVER) ?
-				this.sortByIdModeApproval(lstAppDto, lstAppData.getDataMaster().getLstAppMasterInfo()) :
-				this.sortByIdModeApp(lstAppDto, lstAppData.getDataMaster().getMapAppBySCD(), lstAppData.getDataMaster().getLstSCD());
-        List<ApplicationDto_New> lstAppSortConvert = lstAppSort.stream().map(c -> c.convertInputDate(c)).collect(Collectors.toList());
-
-		List<ApplicationDataOutput> lstAppCommon= new ArrayList<>();
-		for(ApplicationDto_New app : lstAppSortConvert){
-			lstAppCommon.add(ApplicationDataOutput.convert(app, appListExCon.getAppListAtr().equals(ApplicationListAtr.APPROVER) ?
-					this.convertStatusAppv(app.getReflectPerState(), device) : this.convertStatus(app.getReflectPerState(), device)));
+		// ユーザー固有情報「申請一覧抽出条件」を初期し、初期情報で更新する
+		AppListExtractCondition appListExtractCondition = new AppListExtractCondition();
+		appListExtractCondition.setPeriodStartDate(startDate);
+		appListExtractCondition.setPeriodEndDate(endDate);
+		appListExtractCondition.setAppListAtr(EnumAdaptor.valueOf(param.getMode(), ApplicationListAtr.class));
+		//・申請一覧抽出条件.申請種類リスト　＝Input.申請種類リスト情報
+		List<ListOfAppTypes> listOfAppTypesLst = new ArrayList<>();
+		for(ListOfAppTypes listOfAppTypes : param.getListOfAppTypes().stream().map(x -> x.toDomain()).collect(Collectors.toList())) {
+			listOfAppTypesLst.add(new ListOfAppTypes(
+					listOfAppTypes.getAppType(), 
+					listOfAppTypes.getAppName(), 
+					false, 
+					listOfAppTypes.getOpProgramID(), 
+					listOfAppTypes.getOpApplicationTypeDisplay(), 
+					Optional.of("A")));
 		}
-		List<AppAbsRecSyncData> lstSyncData = new ArrayList<>();
-		for(AppCompltLeaveSync sync: lstAppData.getLstAppCompltLeaveSync()){
-			if(sync.isSync()){
-				lstSyncData.add(new AppAbsRecSyncData(sync.getTypeApp(), sync.getAppMain().getAppID(), sync.getAppSub().getAppID(), sync.getAppDateSub()));
+		appListExtractCondition.setOpListOfAppTypes(Optional.of(listOfAppTypesLst));
+		// INPUT「対象申請種類List」が存在する
+		if(!CollectionUtil.isEmpty(param.getLstAppType())) {
+			for(Integer appType : param.getLstAppType()) {
+				appListExtractCondition.getOpListOfAppTypes().ifPresent(x -> {
+					x.stream().filter(y -> y.getAppType().value == appType).findAny().ifPresent(y -> {
+						y.setChoice(true);
+					});
+				});
+			}
+		} else {
+			// パラメタ「抽出対象」をチェックする
+			if(param.getSprParam() != null && param.getSprParam().getExtractionTarget() == 1) {
+				// 申請種類＝残業申請の「申請一覧抽出条件.申請種類リスト.選択にTrueをセットする
+				appListExtractCondition.getOpListOfAppTypes().ifPresent(x -> {
+					x.stream().filter(y -> y.getAppType() == ApplicationType.OVER_TIME_APPLICATION).findAny().ifPresent(y -> {
+						y.setChoice(true);
+					});
+				});
+			} else {
+				if(!CollectionUtil.isEmpty(param.getLstAppType())) {
+					for(Integer appType : param.getLstAppType()) {
+						appListExtractCondition.getOpListOfAppTypes().ifPresent(x -> {
+							x.stream().filter(y -> y.getAppType().value == appType).findAny().ifPresent(y -> {
+								y.setChoice(true);
+							});
+						});
+					}
+				} else {
+					appListExtractCondition.getOpListOfAppTypes().ifPresent(x -> {
+						x.stream().map(y -> {
+							y.setChoice(true);
+							return y;
+						}).collect(Collectors.toList());
+					});
+				}
 			}
 		}
-		Collections.sort(lstAppData.getDataMaster().getLstSCD());
-		return new ApplicationListDto(isDisPreP, condition.getStartDate(), condition.getEndDate(),
-				lstAppData.getDataMaster().getLstAppMasterInfo(), lstAppCommon, lstAppData.getAppStatusCount(), lstAgent, lstAppType,
-				lstAppData.getLstContentApp(), lstSyncData, lstAppData.getDataMaster().getLstSCD(), appAllNumber, appPerNumber);
+		// パラメータ社員ID ( Parameter employeeID)
+		if(Strings.isNotBlank(param.getEmployeeID())) {
+			appListExtractCondition.setOpListEmployeeID(Optional.of(Arrays.asList(param.getEmployeeID())));
+		}
+		// アルゴリズム「申請一覧リスト取得」を実行する
+		AppListInfo appListInfo = repoAppListInit.getApplicationList(appListExtractCondition, param.getDevice(), result);
+		result.setAppLst(appListInfo.getAppLst());
+		return result;
+//		AppListExtractConditionDto condition = param.getCondition();
+//		int device = param.getDevice();
+//		String companyId = AppContexts.user().companyId();
+//		Integer appAllNumber = null;
+//		Integer appPerNumber = null;
+//		if(device == MOBILE){
+//			//・設定の名前：SMART_PHONE
+//			//・機能の名前：APP_ALL_NUMBER、APP_PER_NUMBER
+//			String[] subName = {"APP_ALL_NUMBER","APP_PER_NUMBER"};
+//			Map<String, Integer> mapParam = repoApplication.getParamCMMS45(companyId, "SMART_PHONE", Arrays.asList(subName));
+//			if(mapParam.isEmpty()){
+//				mapParam = repoApplication.getParamCMMS45(AppContexts.user().contractCode()+ "-0000", "SMART_PHONE", Arrays.asList(subName));
+//			}
+//			if(!mapParam.isEmpty()){
+//				appAllNumber = mapParam.get("APP_ALL_NUMBER");
+//				appPerNumber = mapParam.get("APP_PER_NUMBER");
+//			}
+//		}
+//
+//		//対象申請種類List
+//		List<Integer> lstType = param.getLstAppType();
+//		//ドメインモデル「承認一覧表示設定」を取得する-(Lấy domain Approval List display Setting)
+//		Optional<RequestSetting> requestSet = repoRequestSet.findByCompany(companyId);
+//		ApprovalListDisplaySetting appDisplaySet = null;
+//		Integer isDisPreP = null;
+//		if(requestSet.isPresent()){
+//			appDisplaySet = requestSet.get().getApprovalListDisplaySetting();
+//			isDisPreP = requestSet.get().getApplicationSetting().getAppDisplaySetting().getPrePostAtrDisp().value;
+//		}
+//		//URパラメータが存在する-(Check param)
+//		if(StringUtil.isNullOrEmpty(condition.getStartDate(), false) || StringUtil.isNullOrEmpty(condition.getEndDate(), false)){
+//			//アルゴリズム「申請一覧初期日付期間」を実行する-(Thực hiện thuật toán lấy ngày　－12)
+//			DatePeriod date = null;
+//			if(condition.getAppListAtr().equals(ApplicationListAtr.APPROVER.value)){
+//				date = repoAppListInit.getInitialPeriod(companyId);
+//			}else{
+//				date = repoAppListInit.getInitPeriodApp(companyId);
+//			}
+//			condition.setStartDate(date.start().toString());
+//			condition.setEndDate(date.end().toString());
+//		}
+//		//ドメインモデル「申請一覧共通設定フォーマット.表の列幅」を取得-(Lấy 表の列幅)//xu ly o ui
+//		//アルゴリズム「申請一覧リスト取得」を実行する-(Thực hiện thuật toán Application List get): 1-申請一覧リスト取得
+//		AppListExtractCondition appListExCon = condition.convertDtotoDomain(condition);
+//		// AppListOutPut lstAppData = repoAppListInit.getApplicationList(appListExCon, appDisplaySet, device, lstType);
+//		AppListOutPut lstAppData = null;
+//		List<ApplicationDto_New> lstAppDto = new ArrayList<>();
+//		for (Application_New app : lstAppData.getLstApp()) {
+//            lstAppDto.add(ApplicationDto_New.fromDomainCMM045(app));
+//		}
+//		List<AppStatusApproval> lstStatusApproval = new ArrayList<>();
+//		List<ApproveAgent> lstAgent = new ArrayList<>();
+//		if(condition.getAppListAtr() == 1){//mode approval
+//			List<ApplicationFullOutput> lstFil = lstAppData.getLstAppFull().stream().filter(c -> c.getStatus() != null).collect(Collectors.toList());
+//			for (ApplicationFullOutput app : lstFil) {
+//				lstAgent.add(new ApproveAgent(app.getApplication().getAppID(), app.getAgentId()));
+//				lstStatusApproval.add(new AppStatusApproval(app.getApplication().getAppID(), app.getStatus()));
+//			}
+//			for (ApplicationDto_New appDto : lstAppDto) {
+//				appDto.setReflectPerState(this.findStatusAppv(lstStatusApproval, appDto.getApplicationID()));
+//			}
+//			for (AppMasterInfo master : lstAppData.getDataMaster().getLstAppMasterInfo()) {
+//				master.setStatusFrameAtr(this.findStatusFrame(lstAppData.getLstFramStatus(), master.getAppID()));
+//				master.setPhaseStatus(this.findStatusPhase(lstAppData.getLstPhaseStatus(), master.getAppID()));
+//				master.setCheckTimecolor(this.findColorAtr(lstAppData.getLstTimeColor(), master.getAppID()));
+//			}
+//		}
+//		List<AppInfor> lstAppType = this.findListApp(lstAppData.getDataMaster().getLstAppMasterInfo(), param.isSpr(), param.getExtractCondition(), device);
+//		List<ApplicationDto_New> lstAppSort = appListExCon.equals(ApplicationListAtr.APPROVER) ?
+//				this.sortByIdModeApproval(lstAppDto, lstAppData.getDataMaster().getLstAppMasterInfo()) : 
+//				this.sortByIdModeApp(lstAppDto, lstAppData.getDataMaster().getMapAppBySCD(), lstAppData.getDataMaster().getLstSCD());
+//        List<ApplicationDto_New> lstAppSortConvert = lstAppSort.stream().map(c -> c.convertInputDate(c)).collect(Collectors.toList());
+//
+//		List<ApplicationDataOutput> lstAppCommon= new ArrayList<>();
+//		for(ApplicationDto_New app : lstAppSortConvert){
+//			lstAppCommon.add(ApplicationDataOutput.convert(app, appListExCon.getAppListAtr().equals(ApplicationListAtr.APPROVER) ? 
+//					this.convertStatusAppv(app.getReflectPerState(), device) : this.convertStatus(app.getReflectPerState(), device)));
+//		}
+//		List<AppAbsRecSyncData> lstSyncData = new ArrayList<>();
+//		for(AppCompltLeaveSync sync: lstAppData.getLstAppCompltLeaveSync()){
+//			if(sync.isSync()){
+//				lstSyncData.add(new AppAbsRecSyncData(sync.getTypeApp(), sync.getAppMain().getAppID(), sync.getAppSub().getAppID(), sync.getAppDateSub()));
+//			}
+//		}
+//		Collections.sort(lstAppData.getDataMaster().getLstSCD());
+//		return new ApplicationListDto(isDisPreP, condition.getStartDate(), condition.getEndDate(),
+//				lstAppData.getDataMaster().getLstAppMasterInfo(), lstAppCommon, lstAppData.getAppStatusCount(), lstAgent, lstAppType,
+//				lstAppData.getLstContentApp(), lstSyncData, lstAppData.getDataMaster().getLstSCD(), appAllNumber, appPerNumber);
 	}
-
+	
 	/**
 	 * find status approval
 	 * @param lstStatusApproval
@@ -264,7 +380,7 @@ public class ApplicationListFinder {
 		java.util.Collections.sort(lstSCD);
 		for (String sCD : lstSCD) {
             lstResult.addAll(this.sortByDateTypePrePost(this.findBylstID(lstApp, mapAppBySCD.get(sCD))));
-
+			
 		}
 		return lstResult;
 	}
@@ -353,5 +469,72 @@ public class ApplicationListFinder {
                 return "-";
         }
     }
+    
+    
+    public OutputDto startCMMS45() {
+//    	アルゴリズム「申請一覧の申請名称を取得する」を実行する
+//    	CMM045 not handle
+    	List<ListOfAppTypes> listOfAppTypes = Collections.emptyList();
+//    	アルゴリズム「起動時処理」を実行する
+    	OutputDto output = this.getOutput(listOfAppTypes);	
+    	return output;
+    }
 
+    /**
+     *  アルゴリズム「起動時処理」を実行する
+     * @param listOfAppTypes 申請種類リスト情報(List)
+     * @return
+     */
+    public OutputDto getOutput(List<ListOfAppTypes> listOfAppTypes) {
+//    	裏パラメータ取得
+    	// watting to handle
+    	
+//    	申請一覧初期処理 CMM045 not handle
+    	OutputDto outputDto = new OutputDto();
+    	return outputDto;
+    }
+    
+    
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    @NoArgsConstructor
+//    output of 申請一覧初期処理 
+    public class Output {
+//    	開始日付
+    	private GeneralDate startDate;
+//    	終了日付
+    	private GeneralDate endDate;
+//    	ドメインモデル「申請表示設定」．事前事後区分表示
+    	private DisplayAtr displayAtr;
+    	//Optional
+//    	ドメインモデル「申請」（List）
+    	private Optional<List<Application>> applicationListOp = Optional.empty();
+//    	ドメインモデル「申請表示名」．申請表示名称（List）
+    	private Optional<List<String>> nameListOp = Optional.empty();
+    }
+    
+    public class OutputDto {
+//    	開始日付
+    	private String startDate;
+//    	終了日付
+    	private String endDate;
+//    	ドメインモデル「申請表示設定」．事前事後区分表示
+    	private Integer displayAtr;
+    	//Optional
+//    	ドメインモデル「申請」（List）
+    	private List<ApplicationDto> applicationListOp;
+//    	ドメインモデル「申請表示名」．申請表示名称（List）
+    	private List<String> nameListOp;
+    	
+    	public OutputDto() {
+    		this.startDate = "2020/01/01";
+    		this.endDate = "2020/08/19";
+    		this.displayAtr = 1;
+    		this.applicationListOp = Collections.emptyList();
+    		this.nameListOp = Collections.emptyList();
+    	}
+    }
+    
 }
+

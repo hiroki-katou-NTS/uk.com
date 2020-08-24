@@ -98,10 +98,16 @@ export class KafS00BComponent extends Vue {
                 self.$updateValidator('dateRange', { validate: false });
                 self.$updateValidator('date', { validate: true });
             }
+            if (self.displayPrePost) {
+                self.$updateValidator('params.output.prePostAtr', { validate: true });
+            } else {
+                self.$updateValidator('params.output.prePostAtr', { validate: false });
+            }
         }
         if (self.$input.detailModeContent) {
             self.$updateValidator('dateRange', { validate: false });
             self.$updateValidator('date', { validate: false });
+            self.$updateValidator('params.output.prePostAtr', { validate: false });
         }
     }
 

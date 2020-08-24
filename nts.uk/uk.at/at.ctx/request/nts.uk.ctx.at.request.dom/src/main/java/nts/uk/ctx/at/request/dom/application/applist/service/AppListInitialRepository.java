@@ -14,8 +14,9 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOverTimeI
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
-import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -35,20 +36,19 @@ public interface AppListInitialRepository {
 	public Boolean checkAppPredictRequire(int appType, String wkpID, String companyId);
 	
 	/**
-	 * 1- 申請一覧リスト取得
-	 * @param 抽出条件　param
-	 * @param displaySet
-	 * @param デバイス　device
-	 * @param 申請種類リスト　lstAppType
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.申請一覧リスト取得.申請一覧リスト取得
+	 * @param param ドメイン：申請一覧抽出条件
+	 * @param device デバイス：PC or スマートフォン
+	 * @param appListInfo ドメイン：申請一覧情報
 	 * @return
 	 */
 	public AppListInfo getApplicationList(AppListExtractCondition param, int device, AppListInfo appListInfo);
+
 	/**
-	 * 2 - 申請一覧リスト取得申請
-	 * @param param
-	 * @param appReasonDisAtr
-	 * @param デバイス　device
-	 * @param lstAppType
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.申請一覧リスト取得申請.申請一覧リスト取得申請
+	 * @param param ドメイン：申請一覧抽出条件
+	 * @param device デバイス：PC or スマートフォン
+	 * @param appListInfo ドメイン：申請一覧情報
 	 * @return
 	 */
 	public AppListInfo getApplicationListByApp(AppListExtractCondition param, int device, AppListInfo appListInfo);
@@ -66,8 +66,8 @@ public interface AppListInitialRepository {
 	 * @param 申請種類リスト　lstAppType
 	 * @return
 	 */
-	public AppListOutPut getAppListByApproval(AppListExtractCondition param, ApprovalListDisplaySetting displaySet,
-			int device, List<Integer> lstAppType);
+	public AppListInfo getAppListByApproval(AppListExtractCondition param, ApprovalListDisplaySetting approvalListDisplaySetting,
+			int device, List<ApprovalBehaviorAtrImport_New> approvalAtrLst, List<String> appIDLst, AppListInfo appListInfo);
 
 	/**
 	 * refactor 4

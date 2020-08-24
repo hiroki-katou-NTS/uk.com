@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.applist.service.content;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -14,17 +15,28 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
+import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
-import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
 import nts.uk.ctx.at.request.dom.application.applist.service.datacreate.StampAppOutputTmp;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppContentDetailCMM045;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppStampDataOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
+import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
+import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandardRepository;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonForFixedForm;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonTypeItem;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
+import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -37,8 +49,14 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class AppContentServiceImpl implements AppContentService {
 	
+	private static final int PC = 0;
+	private static final int MOBILE = 1;
+	
 	@Inject
 	private AppReasonStandardRepository appReasonStandardRepository;
+	
+	@Inject
+	private AppContentDetailCMM045 appContentDetailCMM045;
 
 	@Override
 	public String getArrivedLateLeaveEarlyContent(AppReason appReason, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, List<ArrivedLateLeaveEarlyItemContent> itemContentLst,
@@ -136,23 +154,6 @@ public class AppContentServiceImpl implements AppContentService {
 				// 申請理由内容　+＝　Input．申請理由
 				result += appReason.v();
 			}
-		}
-		return result;
-	}
-
-	@Override
-	public List<ListOfAppTypes> getAppNameInAppList() {
-		List<ListOfAppTypes> result = new ArrayList<>();
-		// アルゴリズム「申請一覧申請種類のプログラムID」を実行する
-		List<AppTypeMapProgramID> appTypeMapProgramIDLst = this.getListProgramIDOfAppType();
-		for(AppTypeMapProgramID item : appTypeMapProgramIDLst) {
-			result.add(new ListOfAppTypes(
-					item.getAppType(), 
-					Strings.EMPTY, 
-					false, 
-					Optional.of(item.getProgramID()), 
-					item.getApplicationTypeDisplay() == null ? Optional.empty() : Optional.of(item.getApplicationTypeDisplay()), 
-					Optional.of("A")));
 		}
 		return result;
 	}
@@ -289,6 +290,119 @@ public class AppContentServiceImpl implements AppContentService {
 			result += appReasonContent;
 		}
 		return result;
+	}
+
+	@Override
+	public ListOfApplication createEachAppData(Application application, String companyID, List<WorkTimeSetting> lstWkTime,
+			List<WorkType> lstWkType, List<AttendanceItem> attendanceItemLst, ApplicationListAtr mode, ApprovalListDisplaySetting approvalListDisplaySetting,
+			List<ListOfApplication> appLst, Map<String, List<ApprovalPhaseStateImport_New>> mapApproval, int device,
+			AppListExtractCondition appListExtractCondition) {
+		ListOfApplication result = new ListOfApplication();
+		if(device == PC) {
+			// ドメインモデル「申請」．申請種類をチェック (Check Domain「Application.ApplicationType
+			switch (application.getAppType()) {
+			case GO_RETURN_DIRECTLY_APPLICATION:
+				// 直行直帰申請データを作成 ( Tạo dữ liệu đơn xin đi làm, về nhà thẳng)
+				String contentGoBack = appContentDetailCMM045.getContentGoBack(
+						application, 
+						approvalListDisplaySetting.getAppReasonDisAtr(), 
+						lstWkTime, 
+						lstWkType, 
+						ScreenAtr.CMM045);
+				result.setAppContent(contentGoBack);
+				break;
+			case STAMP_APPLICATION:
+				// 打刻申請データを作成(tạo data của打刻申請 )
+				AppStampDataOutput appStampDataOutput = appContentDetailCMM045.createAppStampData(
+						application, 
+						approvalListDisplaySetting.getAppReasonDisAtr(), 
+						ScreenAtr.CMM045, 
+						companyID, 
+						null);
+				result.setAppContent(appStampDataOutput.getAppContent());
+				// 申請一覧.申請種類表示＝取得した申請種類表示(ApplicationList.AppTypeDisplay= AppTypeDisplay đã get)
+				result.setOpAppTypeDisplay(appStampDataOutput.getOpAppTypeDisplay());
+				break;
+			case EARLY_LEAVE_CANCEL_APPLICATION:
+				// 遅刻早退取消申請データを作成(tạo data của 遅刻早退取消申請)
+				String contentArrivedLateLeaveEarly = appContentDetailCMM045.createArrivedLateLeaveEarlyData(
+						application, 
+						approvalListDisplaySetting.getAppReasonDisAtr(), 
+						ScreenAtr.CMM045, 
+						companyID);
+				result.setAppContent(contentArrivedLateLeaveEarly);
+				break;
+			default:
+				result.setAppContent("-1");
+				break;
+			}
+		}
+		// 承認フェーズList　＝　Input．Map＜ルートインスタンスID、承認フェーズList＞を取得(ApprovalPhaseList= Input．Map＜get RootInstanceID, ApprovalPhaseList>)
+		result.setOpApprovalPhaseLst(Optional.of(mapApproval.get(application.getAppID())));
+		// 申請一覧．承認状況照会　＝　承認状況照会内容(AppList.ApproveStatusRefer =ApproveStatusReferContents )
+		result.setOpApprovalStatusInquiry(Optional.of(this.getApprovalStatusInquiryContent(result.getOpApprovalPhaseLst().get())));
+		// アルゴリズム「反映状態を取得する」を実行する(Thực hiện thuật toán [lấy trạng thái phản ánh])
+		ReflectedState reflectedState = application.getAppReflectedState();
+		
+		ApprovalBehaviorAtrImport_New phaseAtr = ApprovalBehaviorAtrImport_New.UNAPPROVED;
+		ApprovalBehaviorAtrImport_New frameAtr = ApprovalBehaviorAtrImport_New.UNAPPROVED;
+		if(mode == ApplicationListAtr.APPROVER) {
+//			String loginID = AppContexts.user().employeeId();
+//			Optional<ApprovalPhaseStateImport_New> phaseLogin = result.getOpApprovalPhaseLst().get()
+//					.stream().filter(x -> {
+//						List<ApprovalFrameImport_New> x.getListApprovalFrame().stream().filter(y -> { 
+//							return y.getApproverID().equals(loginID);
+//						}).findAny();
+//					}).findAny();
+//			
+//			
+//			
+//			for(ApprovalPhaseStateImport_New phase : result.getOpApprovalPhaseLst().get()) {
+//				for(ApprovalFrameImport_New frame : phase.getListApprovalFrame()) {
+//					
+//					
+//					
+//					for(ApproverStateImport_New approver : frame.getListApprover()) {
+//						// 承認枠　＝　ロープの承認枠(ApprovalFrame= ApproveFrame dang loop)
+//						// 承認フェーズ　＝　ロープの承認フェーズ(ApprovalPhase = ApprovalPhase dang loop)
+//						// 承認枠の承認状態　＝　承認枠．承認区分(ApprovalStatus của ApprovalFrame = ApprovalFrame. ApprovalAtr)
+//						phaseAtr = phase.getApprovalAtr();
+//						frameAtr = approver
+//					}
+//				}
+//			}
+		}
+		// 申請一覧．反映状態　＝　申請の反映状態(ApplicationList. trạng thái phản ánh = trạng thái phản ánh của đơn xin)
+		result.setReflectionStatus(reflectedState.name);
+		return result;
+	}
+
+	@Override
+	public String getApprovalStatusInquiryContent(List<ApprovalPhaseStateImport_New> approvalPhaseLst) {
+		// 承認状況照会　＝　String.Empty (tham khảo tình trạng approval)
+		String result = Strings.EMPTY;
+		for(ApprovalPhaseStateImport_New phase : approvalPhaseLst) {
+			if(phase.getApprovalAtr() == ApprovalBehaviorAtrImport_New.UNAPPROVED || phase.getApprovalAtr() == ApprovalBehaviorAtrImport_New.REMAND) {
+				// 承認状況照会　+＝　”－”  // (tham khảo tình trạng approval)
+				result += "－";
+			}
+			if(phase.getApprovalAtr() == ApprovalBehaviorAtrImport_New.APPROVED) {
+				// 承認状況照会　+＝　”〇” // (tham khảo tình trạng approval)
+				result += "〇";
+			}
+			if(phase.getApprovalAtr() == ApprovalBehaviorAtrImport_New.DENIAL) {
+				// 承認状況照会　+＝　”×” // (tham khảo tình trạng approval)
+				result += "×";
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public String getReflectStatusApprovalListMode(ReflectedState reflectedState,
+			ApprovalBehaviorAtrImport_New phaseAtr, ApprovalBehaviorAtrImport_New frameAtr) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

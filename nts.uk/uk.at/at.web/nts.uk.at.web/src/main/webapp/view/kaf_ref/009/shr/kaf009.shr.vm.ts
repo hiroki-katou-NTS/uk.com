@@ -76,15 +76,22 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
                 if (!_.isEmpty(ko.toJS(vm.dataFetch().workType))) {
                     let codeWorkType = vm.dataFetch().workType();
                     vm.model.workTypeCode(codeWorkType);
-                    let nameWorkType = _.find(ko.toJS(vm.dataFetch().lstWorkType), item => item.workTypeCode == codeWorkType).abbreviationName;
-                    vm.model.workTypeName(nameWorkType);
+                    let wt = _.find(ko.toJS(vm.dataFetch().lstWorkType), item => item.workTypeCode == codeWorkType);
+                    if (!_.isNull(wt)) {
+                        let nameWorkType = wt.abbreviationName;
+                        vm.model.workTypeName(nameWorkType);       
+                    }
     
                 }
                 if (!_.isEmpty(ko.toJS(vm.dataFetch().workTime))) {
                     let codeWorkTime = vm.dataFetch().workTime(); 
                     vm.model.workTimeCode(codeWorkTime);
-                    let nameWorkTime = _.find(ko.toJS(vm.dataFetch().appDispInfoStartup).appDispInfoWithDateOutput.opWorkTimeLst, item => item.worktimeCode == codeWorkTime).workTimeDisplayName.workTimeName;
-                    vm.model.workTimeName(nameWorkTime);
+                    let wt = _.find(ko.toJS(vm.dataFetch().appDispInfoStartup).appDispInfoWithDateOutput.opWorkTimeLst, item => item.worktimeCode == codeWorkTime);
+                    if (!_.isNull(wt)) {
+                        let nameWorkTime = wt.workTimeDisplayName.workTimeName;
+                        vm.model.workTimeName(nameWorkTime);
+                        
+                    }
     
                 }
             }

@@ -18,7 +18,6 @@ import nts.uk.ctx.at.request.app.command.application.applicationlist.UpdateAppTy
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListParamFilter;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfFinder;
-import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListFinder;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationDisplayAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
@@ -54,7 +53,7 @@ public class ApplicationListWebservice extends WebService{
 	 * @return
 	 */
 	@Path("getapplist")
-	public ApplicationListDto getApplicationList(AppListParamFilter param) {
+	public AppListInfo getApplicationList(AppListParamFilter param) {
 		return this.appListFinder.getAppList(param);
 	}
 

@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 
 /**
@@ -24,11 +25,13 @@ public class ListOfAppTypes {
 	/**
 	 * 申請名称
 	 */
+	@Setter
 	private String appName;
 	
 	/**
 	 * 選択
 	 */
+	@Setter
 	private boolean choice;
 	
 	/**
