@@ -15,7 +15,7 @@
 			</com:ValidatorScript>
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 440,
+					width : 460,
 					height : 490
 				};
 			</script>
@@ -24,7 +24,6 @@
 			<com:scriptfile path="ksu001.q.service.js" />
 			<com:scriptfile path="ksu001.q.vm.js" />
 			<com:scriptfile path="ksu001.q.start.js" />
-
 			<com:scriptfile path="../common/ksu001.js" />
 
 		</ui:define>
@@ -34,15 +33,14 @@
 				<button id="close" tabindex="2" style="margin-left: 270px;"
 					data-bind="click: closeDialog">#{i18n.getText('KSU001_3703')}</button>
 			</div>
-			<div id="content-area">
+			<div id="content-area" style="width: 430px">
 				<div id="left-content">
 					<div>
 						<div data-bind=""></div>
 					</div>
 					<div>
 						<div>
-							<div style="margin-left: 30px; margin-top: 10px"
-								data-bind="ntsFormLabel: {}">
+							<div class="label" style="margin-left: 30px; margin-top: 10px">
 								<span data-bind="text: organizationName"></span>
 							</div>
 						</div>
@@ -76,7 +74,7 @@
 								<table id="wrapper" style="width: 265px;">
 									<thead>
 										<tr>
-											<th>#{i18n.getText('KSU001_3706')}</th>
+											<th><pre>#{i18n.getText('KSU001_3706')}</pre></th>
 											<th data-bind="text: labelQ32"></th>
 										</tr>
 									</thead>
@@ -101,8 +99,8 @@
 													constraint: 'ExtBudgetMoney',
 													option: option,
 													required: false,
-													enable: false,
-													readonly: true}" /></td>
+													enable: true,
+													readonly: false}" /></td>
 											<td
 												data-bind="visible: $parent.check2, with: $parent.numbereditor"><input
 												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 118px; height: 20px;"
@@ -111,8 +109,8 @@
 													constraint: 'ExtBudgetNumberPerson',
 													option: option,
 													required: false,
-													enable: false,
-													readonly: true}" /></td>
+													enable: true,
+													readonly: false}" /></td>
 											<td
 												data-bind="visible: $parent.check3, with: $parent.numbereditor"><input
 												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 118px; height: 20px;"
@@ -121,8 +119,8 @@
 													constraint: 'ExtBudgetNumericalVal',
 													option: option,
 													required: false,
-													enable: false,
-													readonly: true}" /></td>
+													enable: true,
+													readonly: false}" /></td>
 										</tr>
 									</tbody>
 								</table>
