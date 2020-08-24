@@ -602,7 +602,7 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 					} else {
 						TimeActualStamp timeActualStamp = new TimeActualStamp();
 						
-						Element eActualStamp = (Element) eTimeActualStamp.getElementsByTagName("actualStamp").item(0);
+						Element eActualStamp = (Element) eTimeActualStamp1.getElementsByTagName("actualStamp").item(0);
 						Optional<WorkStamp> actualStamp = Optional.empty();
 						if (eActualStamp != null) {
 							Element eWorkStamp = (Element) eActualStamp.getElementsByTagName("WorkStamp").item(0);
@@ -623,7 +623,7 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 						
 						
 						
-						Element eStamp = (Element) eTimeActualStamp.getElementsByTagName("stamp").item(0);
+						Element eStamp = (Element) eTimeActualStamp1.getElementsByTagName("stamp").item(0);
 						Optional<WorkStamp> stamp = Optional.empty();
 						if (eStamp != null) {
 							Element eWorkStamp = (Element) eStamp.getElementsByTagName("WorkStamp").item(0);
