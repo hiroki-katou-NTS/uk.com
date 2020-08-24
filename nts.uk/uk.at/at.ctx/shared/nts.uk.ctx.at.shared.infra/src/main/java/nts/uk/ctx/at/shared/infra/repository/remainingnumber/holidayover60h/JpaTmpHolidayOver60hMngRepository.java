@@ -11,8 +11,11 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import org.assertj.core.util.Arrays;
+
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -92,7 +95,7 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 	 * @return the by employee id and date period and remain type
 	 */
 	@Override
-	public Optional<TmpHolidayOver60hMng> getByEmployeeIdAndDatePeriodAndRemainType(String employeeId
+	public List<TmpHolidayOver60hMng> getByEmployeeIdAndDatePeriodAndRemainType(String employeeId
 																				  , DatePeriod period
 																				  , int remainType) {
 		// TODO change to 60h table
@@ -110,19 +113,42 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 			sql.setDate(3, Date.valueOf(period.start().localDate()));
 			sql.setDate(4, Date.valueOf(period.end().localDate()));
 
-//			return new NtsResultSet(sql.executeQuery()).getSingle(x -> toDomain(x));
+//			return new NtsResultSet(sql.executeQuery()).getList(x -> toDomain(x));
 			// TODO fake data for test
-			TmpHolidayOver60hMng tmpHolidayOver60hMng = new TmpHolidayOver60hMng("ca294040-910f-4a42-8d90-2bd02772697c"
+			TmpHolidayOver60hMng tmpHolidayOver60hMng = new TmpHolidayOver60hMng(
+					"ca294040-910f-4a42-8d90-2bd02772697c"
 					, GeneralDate.ymd(2020, 5, 10)
 					, "remainTypeId");
 			tmpHolidayOver60hMng.setUseTime(Optional.of(new UseTime(12)));
 			tmpHolidayOver60hMng.setCreatorAtr(CreateAtr.APPBEFORE);
-			return Optional.of(tmpHolidayOver60hMng);
+			
+			
+			TmpHolidayOver60hMng tmpHolidayOver60hMng1 = new TmpHolidayOver60hMng(
+					"ca294040-910f-4a42-8d90-2bd02772697c"
+					, GeneralDate.ymd(2020, 8, 10)
+					, "remainTypeId");
+			tmpHolidayOver60hMng.setUseTime(Optional.of(new UseTime(12)));
+			tmpHolidayOver60hMng.setCreatorAtr(CreateAtr.RECORD);
+			
+			
+			TmpHolidayOver60hMng tmpHolidayOver60hMng2 = new TmpHolidayOver60hMng(
+					"ca294040-910f-4a42-8d90-2bd02772697c"
+					, GeneralDate.ymd(2020, 7, 11)
+					, "remainTypeId");
+			tmpHolidayOver60hMng.setUseTime(Optional.of(new UseTime(22)));
+			tmpHolidayOver60hMng.setCreatorAtr(CreateAtr.FLEXCOMPEN);
+			
+			List<TmpHolidayOver60hMng> result = new ArrayList<TmpHolidayOver60hMng>();
+			result.add(tmpHolidayOver60hMng);
+			result.add(tmpHolidayOver60hMng1);
+			result.add(tmpHolidayOver60hMng2);
+
+			return result;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		 return Optional.empty();
+		 return new ArrayList<>();
 	}
 	
 	private TmpHolidayOver60hMng toDomain(NtsResultRecord x) {

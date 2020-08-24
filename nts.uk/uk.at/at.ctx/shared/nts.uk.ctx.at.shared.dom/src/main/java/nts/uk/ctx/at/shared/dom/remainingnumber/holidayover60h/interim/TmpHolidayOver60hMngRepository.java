@@ -43,5 +43,5 @@ public interface TmpHolidayOver60hMngRepository {
 	 * @param remainType the remain type
 	 * @return the by employee id and date and remain type
 	 */
-	public Optional<TmpHolidayOver60hMng> getByEmployeeIdAndDatePeriodAndRemainType(String employee, DatePeriod period, int remainType);
+	public List<TmpHolidayOver60hMng> getByEmployeeIdAndDatePeriodAndRemainType(String employee, DatePeriod period, int remainType);
 }

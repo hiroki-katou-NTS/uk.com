@@ -174,7 +174,7 @@ module nts.uk.at.view.kdl017.a {
             kdl017Model.occurrenceTime = item.occurrenceTime ? (nts.uk.time as any).format.byId("Time_Short_HM", [item.occurrenceTime]) : '';
             // <!-- A3_3_1 -->
             kdl017Model.usageDate = (item.creationCategory === CreateAtr["申請(事前)"] || item.creationCategory === CreateAtr["申請(事後)"])
-                                   ? nts.uk.resource.getText("KDL005_36", [item.usageDate]) : item.usageDate;
+                                   ? nts.uk.resource.getText("KDL005_36", [item.usageDate + '']) : item.usageDate;
             // <!-- A3_3_2 -->
             kdl017Model.usageTime = item.usageTime ? (nts.uk.time as any).format.byId("Time_Short_HM", [item.usageTime]) : '';
 
