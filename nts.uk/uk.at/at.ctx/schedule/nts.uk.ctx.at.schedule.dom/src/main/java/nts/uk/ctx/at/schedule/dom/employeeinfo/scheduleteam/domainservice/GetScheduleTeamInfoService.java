@@ -29,6 +29,9 @@ public class GetScheduleTeamInfoService {
 		// $社員たちの職場グループIDリスト = $所属スケジュールチームリスト: map $.職場グループID distinct
 		List<String> listWorkplaceGroupID = lstBelongScheduleTeam.stream().map(c -> c.getWKPGRPID()).distinct()
 				.collect(Collectors.toList());
+		if (listWorkplaceGroupID.isEmpty()) {
+			return result;
+		}
 		// $スケジュールチームリスト = require.スケジュールチームを取得する($社員たちの職場グループIDリスト)
 		List<ScheduleTeam> lstScheduleTeam = require.getAllSchedule(listWorkplaceGroupID);
 
