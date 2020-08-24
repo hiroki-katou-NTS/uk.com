@@ -56,26 +56,21 @@
                 </div>
                 <div class="valign-center control-group">
                     <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMR001_56')}</div>
-                    <div tabindex="5" id="B3_5" data-bind="ntsDatePicker: {
+                    <div  id="B3_5" data-bind="ntsDatePicker: {
 							name: '#[KMR001_57]',
 							required: true,
 							value: selectedStartDateInput,
 							dateFormat: 'YYYY/MM/DD',
 							enable: true}, visible: screenMode() == 1 || screenMode() == 2 || screenMode() == 3"></div>
                     <span class="label" data-bind="text: selectedStartDateText, visible: screenMode() == 0"></span>
-                    <span class="label">#{i18n.getText('CMM011_125')}</span>
+                    <span class="label">#{i18n.getText('KMR001_58')}</span>
                     <span class="label" data-bind="text: selectedEndDate"></span>
-                </div>
-                <div class="valign-center control-group" data-bind="visible: screenMode() == 2"  style="width: 323px;">
-                    <div tabindex="6" data-bind="ntsCheckBox: { checked: copyPreviousConfig }, visible: initMode() == 0">#{i18n.getText('CMM011_206')}</div>
-                    <div tabindex="6" data-bind="ntsCheckBox: { checked: copyPreviousConfig }, visible: initMode() == 1">#{i18n.getText('CMM011_306')}</div>
-                    <button data-bind="visible: false, ntsHelpButton: {textId: 'Help Button Text', position: 'right center' }">？</button>
                 </div>
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button class="x-large proceed" tabindex="7" data-bind="click: registerConfig,">#{i18n.getText('KMR001_59')}</button>
-            <button class="large" tabindex="8" data-bind="click: cancel">#{i18n.getText('KMR001_60')}</button>
+            <button class="x-large proceed" tabindex="5" data-bind="click: registerConfig,">#{i18n.getText('KMR001_59')}</button>
+            <button class="large" tabindex="6" data-bind="click: cancel">#{i18n.getText('KMR001_60')}</button>
         </div> enable: $root.errors.isEmpty &amp;&amp; !(lstWpkHistory().length > 0 &amp;&amp; !selectedHistoryId())
     </ui:define>
 </ui:composition>

@@ -71,8 +71,8 @@ public class ReservationConfirmationListScreenQuery {
         int reservationEndTime1 = closingTime.getClosingTime1().getFinish().v();
         Optional<ReservationClosingTime> closingTime2 = closingTime.getClosingTime2();
         String reservationFrameName2 = closingTime2.isPresent()? closingTime2.get().getReservationTimeName().v(): "";
-        int reservationStartTime2 = closingTime2.isPresent()? new Integer(closingTime2.get().getStart().get().v()): null;
-        int reservationEndTime2 = closingTime2.isPresent()? new Integer(closingTime2.get().getFinish().v()): null;
+		Integer reservationStartTime2 = closingTime2.isPresent()? new Integer(closingTime2.get().getStart().get().v()): null;
+		Integer reservationEndTime2 = closingTime2.isPresent()? new Integer(closingTime2.get().getFinish().v()): null;
 
 		ReservationClosingTimeDto timeFrame = new ReservationClosingTimeDto(
                 reservationFrameName1,
