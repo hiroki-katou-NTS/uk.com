@@ -31,10 +31,6 @@
     height: 29px;
 }
 
-#grid .mgrid-fixed .mgrid-fixed-table tbody tr td:nth-child(3), #grid .mgrid-fixed .mgrid-fixed-table tbody tr td:nth-child(5)  {
-    /* text-align: center; */
-}
-
 button.nts-switch-button{
     min-width: 100px;
 }
