@@ -212,8 +212,8 @@ module nts.uk.at.view.kmp001.c {
 						_.each(data, (d) => {
 							d.stampDatetime = moment(d.stampDatetime).format('YYYY/MM/DD hh:mm')
 						});
-
-						vm.items(data);
+					
+						vm.items(_.orderBy(data, ['stampNumber'], ['asc']));
 
 						if (selectedIndex >= 0) {
 							const record = data[selectedIndex || 0];
