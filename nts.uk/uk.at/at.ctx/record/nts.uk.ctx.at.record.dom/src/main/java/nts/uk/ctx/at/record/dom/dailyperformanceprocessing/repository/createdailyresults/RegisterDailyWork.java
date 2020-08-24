@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
@@ -24,6 +26,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepo
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -132,6 +135,15 @@ public class RegisterDailyWork {
 				this.stampDakokuRepository.update(stampItem);
 				
 			});
+		}
+		
+		//ドメインモデル「社員の日別実績エラー一覧」を更新する
+		if (integrationOfDaily.getEmployeeError() != null && !integrationOfDaily.getEmployeeError().isEmpty()) {
+			List<EmployeeDailyPerError> errors = integrationOfDaily.getEmployeeError().stream()
+					.filter(x -> x != null).collect(Collectors.toList());
+			dailyRecordAdUpService.adUpEmpError(integrationOfDaily.getEmployeeError(),
+					errors.stream().map(x -> Pair.of(x.getEmployeeID(), x.getDate())).collect(Collectors.toList()),
+					true);
 		}
 	}
 

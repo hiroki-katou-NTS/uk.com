@@ -39,7 +39,7 @@ public class TemporaryDoubleStampChecking {
 
 					if (timeLeavingWork.getAttendanceStamp() != null
 							&& timeLeavingWork.getAttendanceStamp().isPresent()) {
-						if (timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp() >= 2) {
+						if (timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp() != null && timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp() >= 2) {
 							if (timeLeavingWork.getWorkNo().equals(new WorkNo((1)))) {
 								attendanceItemIDList.add(51);
 							} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((2)))) {
@@ -50,7 +50,7 @@ public class TemporaryDoubleStampChecking {
 						}
 					}
 					if (timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent()) {
-						if (timeLeavingWork.getLeaveStamp().get().getNumberOfReflectionStamp() >= 2) {
+						if (timeLeavingWork.getLeaveStamp().get().getNumberOfReflectionStamp()!= null && timeLeavingWork.getLeaveStamp().get().getNumberOfReflectionStamp() >= 2) {
 							if (timeLeavingWork.getWorkNo().equals(new WorkNo((1)))) {
 								attendanceItemIDList.add(53);
 							} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((2)))) {
