@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 650, height: 250 };</script>
+			<script>var dialogSize = { width: 650, height: 260 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletName
 			</com:ValidatorScript>
@@ -45,7 +45,7 @@
 									name: '#{i18n.getText('KSU001_156')}',
 									options: itemList,
 									optionsValue: 'page',
-									visibleItemsCount: 7,
+									visibleItemsCount: 5,
 									value: selectedCode,
 									optionsText: 'name',
 									columns: [
@@ -59,7 +59,7 @@
 					</tr>
 				</table>
 			</div>
-			<div id="functions-area-bottom" style="height: 90px;">
+			<div id="functions-area-bottom" style="height: 100px;">
 				<div tabindex="3" 
 					data-bind="ntsCheckBox: { checked: checked, enable: true, style: 'warnpanel', text: '#{i18n.getText('KSU001_157')}' }"></div>
 				<div style="margin-top:10px;">
