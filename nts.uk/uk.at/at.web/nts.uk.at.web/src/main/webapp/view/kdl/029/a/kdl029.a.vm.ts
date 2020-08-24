@@ -1,11 +1,7 @@
 module nts.uk.at.view.kdl029.a.screenModel {
     import getText = nts.uk.resource.getText;
-    import dialog = nts.uk.ui.dialog.info;
     import text = nts.uk.resource.getText;
-    import formatDate = nts.uk.time.formatDate;
     import block = nts.uk.ui.block;
-    import jump = nts.uk.request.jump;
-    import alError = nts.uk.ui.dialog.alertError;
     import service = nts.uk.at.view.kdl029.a.service;
     import EmpRsvLeaveInforDto = nts.uk.at.view.kdl029.a.service.EmpRsvLeaveInforDto;
     export class ViewModel {
@@ -44,6 +40,7 @@ module nts.uk.at.view.kdl029.a.screenModel {
         constructor() {
             let vm = this;
             let param = nts.uk.ui.windows.getShared('KDL029_PARAM');
+            vm.isRetentionManage(true)
             vm.employeeIDList(param.employeeIds);
             vm.multiSelect(false);
             vm.inputDate(param.baseDate);
@@ -94,8 +91,6 @@ module nts.uk.at.view.kdl029.a.screenModel {
                 let yearRes = getText('KDL029_15') + data.yearResigName + getText('KDL029_23'); 
                 vm.title2(yearRes);
                 vm.employeeName(data.employeeName);
-                //bind data -> 2 table
-                vm.getDataForTable(data);
                 //create list emp -> kcp005
                 _.each(data.employeeInfors, emp => {
                     vm.lstEmpFull().push({id: emp.sid, code: emp.scd, name: emp.bussinessName});
@@ -117,7 +112,7 @@ module nts.uk.at.view.kdl029.a.screenModel {
                         block.invisible();
                         service.findByEmployee({
                             mode: vm.multiSelect(),
-                            employeeID:  nts.uk.util.isNullOrEmpty(vm.inputDate()) ? null : moment(vm.inputDate()).format("YYYY/MM/DD"),
+                            inputDate:  nts.uk.util.isNullOrEmpty(vm.inputDate()) ? null : moment(vm.inputDate()).format("YYYY/MM/DD"),
                             listSID: employeeIDs,
 
                         }).done(data => {

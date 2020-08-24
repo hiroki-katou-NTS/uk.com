@@ -18,6 +18,6 @@ public class RsvLeaGrantRemainingImportDto {
 	private Double usedNumber;
 	/** 残日数4 */
 	private Double remainingNumber;
-	
+	/** 使用期限 */
 	private boolean expiredInCurrentMonth;
 }

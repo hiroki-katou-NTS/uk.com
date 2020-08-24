@@ -1101,6 +1101,41 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             setShared('KDL029_PARAM', param);
             modal("/view/kdl/029/a/index.xhtml");
         }
+
+        openKDL029Multi() {
+            let self = this;
+            let lstid = [
+                '6b292589-a526-4c4a-9e10-d55aa8b5ba4f',
+                'd3191da9-b6ad-475b-b219-3d961fb86e13',
+                'ba4d5d23-6ac6-4c88-ae4a-758b479d3206',
+                '67107229-64e2-4335-9d1a-94ad48cd0476',
+                '62688cef-ed10-42bb-b63f-2c5a0adfe68c',
+                'f0cbaa71-5af6-44e2-9f37-cd71b3fd07da',
+                '184c5ba0-2840-47de-9421-2f5dd62ce991',
+                '2e2d0f5c-82d7-4da4-87c8-52afd63b0338',
+                'f2a989d8-cc68-4b77-a13a-54217e3b85e3',
+                'da830ec1-c347-4cdc-8aaf-74dd14c66f74',
+                '09b8c28d-31c0-4fc2-a66a-e337172449d4',
+                '335f20c9-9740-43c3-87f2-80e5fa6aa7d5',
+                '8e5e1421-88c7-4ff4-b10f-9ff95cbbaa2f',
+                '1ea599bd-04b1-4973-8e85-ca609c1e8443',
+                '2270eaf5-ff29-4253-bf6a-4c761b8c6fd4',
+                '4f0b31c3-9ac3-4cce-a68c-41f524a7619b',
+                '3e2d7518-5519-4acb-9787-e10a829356dc',
+                '5364eedf-c423-4b52-865b-acb4e3e8ae08',
+                '8fb90bfe-5965-494b-bf28-7583792d2949',
+                '86b54db7-826d-4084-b4c3-3bb4200fd19f',
+                '401d0028-b735-4f86-8714-7374a98e97c5',
+                'e4eb5553-ae49-45f8-90bb-bb4f7372a9c4',
+                '973b68a2-ef37-4c71-8bba-9ea204c7cbd6',
+                '1febc8f1-ac4e-4407-8b5b-344c0c9ae24c',
+                '2f4dd263-dad0-439d-95ac-7f8175fd457b',
+            ];
+            let param = {employeeIds: lstid.length > 0 ? lstid : [self.employeeID()],
+                        baseDate: moment(new Date()).format("YYYY/MM/DD")}
+            setShared('KDL029_PARAM', param);
+            modal("/view/kdl/029/a/index.xhtml");
+        }
         /**
          * when click button A1_3: 代休参照ボタン
          */

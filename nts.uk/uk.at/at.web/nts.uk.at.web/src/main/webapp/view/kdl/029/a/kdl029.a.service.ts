@@ -6,11 +6,11 @@ module nts.uk.at.view.kdl029.a.service {
     }
     
     export function findAllEmploymentSystem(param: any): JQueryPromise<EmpRsvLeaveInforDto> {
-        return nts.uk.request.ajax(paths.findAllEmploymentSystem, param);
+        return nts.uk.request.ajax('at', paths.findAllEmploymentSystem, param);
     }
 
     export function findByEmployee(param: any): JQueryPromise<EmpRsvLeaveInforDto> {
-        return nts.uk.request.ajax(paths.findByEmployee, param);
+        return nts.uk.request.ajax('at', paths.findByEmployee, param);
     }
 
     export interface EmpRsvLeaveInforDto {
