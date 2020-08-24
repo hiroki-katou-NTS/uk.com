@@ -25,7 +25,7 @@ public class BentomenuJoinBentoDto {
     public Integer reservationEndTime2;
 
     //Bento
-    
+
     public GeneralDate startDate;
 
     public GeneralDate endDate;
