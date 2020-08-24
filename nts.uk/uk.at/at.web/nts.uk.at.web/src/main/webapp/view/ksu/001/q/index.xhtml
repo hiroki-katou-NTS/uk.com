@@ -15,7 +15,7 @@
 			</com:ValidatorScript>
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 440,
+					width : 460,
 					height : 490
 				};
 			</script>
@@ -24,7 +24,6 @@
 			<com:scriptfile path="ksu001.q.service.js" />
 			<com:scriptfile path="ksu001.q.vm.js" />
 			<com:scriptfile path="ksu001.q.start.js" />
-
 			<com:scriptfile path="../common/ksu001.js" />
 
 		</ui:define>
@@ -34,7 +33,7 @@
 				<button id="close" tabindex="2" style="margin-left: 270px;"
 					data-bind="click: closeDialog">#{i18n.getText('KSU001_3703')}</button>
 			</div>
-			<div id="content-area">
+			<div id="content-area" style="width: 430px">
 				<div id="left-content">
 					<div>
 						<div data-bind=""></div>
@@ -59,7 +58,7 @@
 										editable: false,
 										required: true,
 										width: 265,
-										visibleItemsCount: 4,
+										visibleItemsCount: 10,
 										columns: [
 											{ prop: 'code', length: 1 },
 											{ prop: 'name', length: 1 },
@@ -75,7 +74,7 @@
 								<table id="wrapper" style="width: 265px;">
 									<thead>
 										<tr>
-											<th>#{i18n.getText('KSU001_3706')}</th>
+											<th><pre>#{i18n.getText('KSU001_3706')}</pre></th>
 											<th data-bind="text: labelQ32"></th>
 										</tr>
 									</thead>

@@ -83,20 +83,21 @@ module nts.uk.at.view.ksu001.la {
                 self.baseDate(baseDate);
                 blockUI.invisible();
                 let dateRequest: any = {baseDate: self.baseDate()};                
-                service.findWorkplaceGroup(dateRequest).done((x: WorkplaceGroup) => {
-                    let workplaceGroup = ko.toJS(x);
-                    self.workplaceGroupName(workplaceGroup.workplaceGroupName);
-                    self.workplaceGroupId(workplaceGroup.workplaceGroupId);
-                    service.findAll(workplaceGroup.workplaceGroupId).done((listScheduleTeam: Array<ScheduleTeam>) => {
-                        if (!_.isEmpty(listScheduleTeam) && !_.isNull(listScheduleTeam)) {                           
-                            self.listScheduleTeam(listScheduleTeam);
-                            self.selectedCode(listScheduleTeam[0].code);
-                            self.getEmpOrgInfo();
-                        } else {
-                            self.isEditing(false);
-                        }
-                    });
-                    
+                service.findWorkplaceGroup(dateRequest).done((data: WorkplaceGroup) => {
+                    if(data){
+                        let workplaceGroup = ko.toJS(data);
+                        self.workplaceGroupName(workplaceGroup.workplaceGroupName);
+                        self.workplaceGroupId(workplaceGroup.workplaceGroupId);
+                        service.findAll(workplaceGroup.workplaceGroupId).done((listScheduleTeam: Array<ScheduleTeam>) => {
+                            if (!_.isEmpty(listScheduleTeam) && !_.isNull(listScheduleTeam)) {                           
+                                self.listScheduleTeam(listScheduleTeam);
+                                self.selectedCode(listScheduleTeam[0].code);
+                                self.getEmpOrgInfo();
+                            } else {
+                                self.isEditing(false);
+                            }
+                        });
+                    }
                     blockUI.clear();
                     dfd.resolve();
                 });
