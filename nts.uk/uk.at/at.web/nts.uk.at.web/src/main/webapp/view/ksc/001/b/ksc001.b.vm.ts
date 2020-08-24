@@ -599,45 +599,29 @@ module nts.uk.at.view.ksc001.b {
                 
                 if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
                     && self.selectRebuildAtrCode() == ReBuildAtr.REBUILD_TARGET_ONLY) {
+
                     if (!self.recreateConverter() && !self.recreateEmployeeOffWork()
                         && !self.recreateDirectBouncer() && !self.recreateShortTimeWorkers()) {
                         nts.uk.ui.dialog.error({messageId: "Msg_1734"});
                         $('#checkBoxGroup').focus();
                         return;
                     }
-                }
 
-                if (self.createAfterDeleting()) {
-                    nts.uk.ui.dialog.confirmDanger({messageId: "Msg_1735"})
-                        .ifYes(() => {
-                            //goto screen C
-                            self.next().done(function () {
-                                //$('#inputCreateMethodAtr').focus();
-                            });
-                        }).ifNo(() => {
-                        return;
-                    });
+                    if (self.createAfterDeleting()) {
+                        nts.uk.ui.dialog.confirmDanger({messageId: "Msg_1735"})
+                            .ifYes(() => {
+                                //goto screen C
+                                self.next().done(function () {
+                                });
+                            }).ifNo(() => {
+                            return;
+                        });
+                    }
                 } else {
                     //goto screen C
                     self.next().done(function () {
-                        //$('#inputCreateMethodAtr').focus();
                     });
                 }
-
-                /*if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
-                    && self.checkProcessExecutionAtrRebuild() == ProcessExecutionAtr.RECONFIG) {
-                    //build string for Screen E
-                    self.buildString();
-                    //goto screen E
-                    self.nextTwo().done(function () {
-                        $('#buttonFinishPageE').focus();
-                    });
-                }
-                else {
-                    self.next().done(function() {
-                        $('#inputCreateMethodAtr').focus();
-                    });
-                }*/
             }
 
             private builDataForScreenC() {
