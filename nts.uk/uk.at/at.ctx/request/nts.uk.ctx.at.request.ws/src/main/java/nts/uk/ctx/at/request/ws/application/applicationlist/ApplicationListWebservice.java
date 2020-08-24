@@ -21,9 +21,10 @@ import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfFinde
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListFinder;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationDisplayAtr;
+import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 
 /**
- * 
+ *
  * @author hoatt
  *
  */
@@ -33,19 +34,19 @@ public class ApplicationListWebservice extends WebService{
 
 	@Inject
 	private ApplicationListFinder appListFinder;
-	
+
 	@Inject
 	private AppTypeBfFinder bfreqFinder;
-	
+
 	@Inject
 	private UpdateAppTypeBfCommandHandler update;
-	
+
 	@Inject
 	private ApprovalListAppCommandHandler approvalListApp;
-	
+
 	@Inject
 	private ReflectAfterApproveAsyncCmdHandler reflect;
-	
+
 	@POST
 	/**
 	 * get all list application
@@ -56,7 +57,16 @@ public class ApplicationListWebservice extends WebService{
 	public ApplicationListDto getApplicationList(AppListParamFilter param) {
 		return this.appListFinder.getAppList(param);
 	}
-	
+
+	/*
+	 * -PhuongDV- Test CMM045
+	 */
+	@POST
+	@Path("getapplisttest")
+	public AppListInfo getAppListTest(AppListParamFilter param) {
+		return new AppListInfo();
+	}
+
 	/**
 	 * get before After Restriction
 	 * @return
@@ -77,7 +87,7 @@ public class ApplicationListWebservice extends WebService{
 	public void update(AppTypeBfCommand cm) {
 		this.update.handle(cm);
 	}
-	
+
 	/**
 	 * Enum 申請表示区分.
 	 *
@@ -97,10 +107,11 @@ public class ApplicationListWebservice extends WebService{
 	public List<String> approvalListApp(List<ApprovalListAppCommand> command){
 		return approvalListApp.handle(command);
 	}
-	
+
 	@POST
 	@Path("reflect-list")
 	public void reflectAfterApprove(List<String> command){
 		reflect.handle(command);
 	}
+
 }

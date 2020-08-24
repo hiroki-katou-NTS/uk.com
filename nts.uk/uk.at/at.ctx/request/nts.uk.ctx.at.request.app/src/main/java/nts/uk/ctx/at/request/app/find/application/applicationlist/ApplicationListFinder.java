@@ -49,8 +49,8 @@ public class ApplicationListFinder {
 	private AppDispNameRepository repoAppDispName;
 	@Inject
 	private ApplicationRepository repoApplication;
-	private static final int MOBILE = 1; 
-	
+	private static final int MOBILE = 1;
+
 	public ApplicationListDto getAppList(AppListParamFilter param){
 		AppListExtractConditionDto condition = param.getCondition();
 		int device = param.getDevice();
@@ -121,13 +121,13 @@ public class ApplicationListFinder {
 		}
 		List<AppInfor> lstAppType = this.findListApp(lstAppData.getDataMaster().getLstAppMasterInfo(), param.isSpr(), param.getExtractCondition(), device);
 		List<ApplicationDto_New> lstAppSort = appListExCon.equals(ApplicationListAtr.APPROVER) ?
-				this.sortByIdModeApproval(lstAppDto, lstAppData.getDataMaster().getLstAppMasterInfo()) : 
+				this.sortByIdModeApproval(lstAppDto, lstAppData.getDataMaster().getLstAppMasterInfo()) :
 				this.sortByIdModeApp(lstAppDto, lstAppData.getDataMaster().getMapAppBySCD(), lstAppData.getDataMaster().getLstSCD());
         List<ApplicationDto_New> lstAppSortConvert = lstAppSort.stream().map(c -> c.convertInputDate(c)).collect(Collectors.toList());
 
 		List<ApplicationDataOutput> lstAppCommon= new ArrayList<>();
 		for(ApplicationDto_New app : lstAppSortConvert){
-			lstAppCommon.add(ApplicationDataOutput.convert(app, appListExCon.getAppListAtr().equals(ApplicationListAtr.APPROVER) ? 
+			lstAppCommon.add(ApplicationDataOutput.convert(app, appListExCon.getAppListAtr().equals(ApplicationListAtr.APPROVER) ?
 					this.convertStatusAppv(app.getReflectPerState(), device) : this.convertStatus(app.getReflectPerState(), device)));
 		}
 		List<AppAbsRecSyncData> lstSyncData = new ArrayList<>();
@@ -141,7 +141,7 @@ public class ApplicationListFinder {
 				lstAppData.getDataMaster().getLstAppMasterInfo(), lstAppCommon, lstAppData.getAppStatusCount(), lstAgent, lstAppType,
 				lstAppData.getLstContentApp(), lstSyncData, lstAppData.getDataMaster().getLstSCD(), appAllNumber, appPerNumber);
 	}
-	
+
 	/**
 	 * find status approval
 	 * @param lstStatusApproval
@@ -264,7 +264,7 @@ public class ApplicationListFinder {
 		java.util.Collections.sort(lstSCD);
 		for (String sCD : lstSCD) {
             lstResult.addAll(this.sortByDateTypePrePost(this.findBylstID(lstApp, mapAppBySCD.get(sCD))));
-			
+
 		}
 		return lstResult;
 	}
@@ -353,4 +353,5 @@ public class ApplicationListFinder {
                 return "-";
         }
     }
+
 }

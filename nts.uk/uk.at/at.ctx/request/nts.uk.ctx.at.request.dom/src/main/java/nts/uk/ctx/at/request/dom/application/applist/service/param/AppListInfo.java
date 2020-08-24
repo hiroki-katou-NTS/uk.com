@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.request.dom.application.applist.service.param;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationStatus;
 
 /**
@@ -36,4 +38,15 @@ public class AppListInfo {
 	 */
 	private AppLstApprovalLstDispSet displaySet;
 	
+	/*
+	* -PhuongDV- Test Data CMM045
+	*/
+	public AppListInfo() {
+	// List đơn xin
+	appLst = new ArrayList<>();
+	appLst.add(new ListOfApplication(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION));
+	this.numberOfApp = new ApplicationStatus();
+	this.moreThanDispLineNO = false;
+	this.displaySet = new AppLstApprovalLstDispSet();
+	}
 }

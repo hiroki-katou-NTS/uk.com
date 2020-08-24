@@ -17,7 +17,7 @@ module cmm045.a.viewmodel {
         lstAppMaster: KnockoutObservableArray<vmbase.AppMasterInfo> = ko.observableArray([]);
         lstListAgent: KnockoutObservableArray<vmbase.ApproveAgent> = ko.observableArray([]);
         lstAppCompltSync: KnockoutObservableArray<vmbase.AppAbsRecSyncData> = ko.observableArray([]);
-        
+
         approvalMode: KnockoutObservable<boolean> = ko.observable(false);
         approvalCount: KnockoutObservable<vmbase.ApplicationStatus> = ko.observable(new vmbase.ApplicationStatus(0, 0, 0, 0, 0, 0));
         itemList: KnockoutObservableArray<any>;
@@ -28,7 +28,7 @@ module cmm045.a.viewmodel {
         mode: KnockoutObservable<number> = ko.observable(1);
         startDateString: KnockoutObservable<string> = ko.observable("");
         endDateString: KnockoutObservable<string> = ko.observable("");
-        
+
         //spr
         isSpr: KnockoutObservable<boolean> = ko.observable(false);
         extractCondition: KnockoutObservable<number> = ko.observable(0);
@@ -44,8 +44,43 @@ module cmm045.a.viewmodel {
         //ver35
         lstSidFilter: KnockoutObservableArray<string> = ko.observableArray([]);
         lstContentApp: KnockoutObservableArray<any> = ko.observableArray([]);
+
+        //ver60
+        //Grid list item
+        apptypeGridColumns: KnockoutObservable<NtsGridListColumn>;
+        selectedAppId: KnockoutObservable<number> = ko.observable(-1);
+
         constructor() {
             let self = this;
+
+            //ver60
+            self.itemApplication = ko.observable([
+                { appID: 0, appName: "残業申請" },
+                { appID: 2, appName: "休暇申請" },
+                { appID: 3, appName: "勤務変更申請" },
+                { appID: 4, appName: "出張申請" },
+                { appID: 6, appName: "休出時間申請" },
+                { appID: 7, appName: "打刻申請" },
+                { appID: 8, appName: "時間休暇申請" },
+                { appID: 9, appName: "遅刻早退取消申請" }
+            ]);
+            self.apptypeGridColumns = ko.observable([
+                // { headerText: getText('CMM045_94'), key: 'applicant', width: 100 }
+                { headerText: 'appId', key: 'appId', width: 50, hidden: true},
+                { headerText: '申請種類選択', key: 'appName', width: 125 }
+            ])
+
+            $(".popup-panel").ntsPopup({
+                trigger: '.hyperlink',
+                position: {
+                    my: "left top",
+                    at: "left bottom",
+                    of: ".hyperlink"
+                },
+                showOnStart: false,
+                dismissible: true
+            });
+
             self.itemList = ko.observableArray([
                 { id: 1, name: getText('CMM045_20') },
                 { id: 2, name: getText('CMM045_21') },
@@ -54,16 +89,16 @@ module cmm045.a.viewmodel {
                 { id: 5, name: getText('CMM045_24') },
                 { id: 6, name: getText('CMM045_25') }
             ]);
-            
+
             self.selectedCode.subscribe(function(codeChanged) {
                 self.filterByAppType(codeChanged);
             });
-            
+
             //_____CCG001________
             self.selectedEmployee = ko.observableArray([]);
             self.showinfoSelectedEmployee = ko.observable(false);
             self.ccgcomponent = {
-           
+
             showEmployeeSelection: false, // 検索タイプ
             systemType: 2, // システム区分 - 就業
             showQuickSearchTab: true, // クイック検索
@@ -78,7 +113,7 @@ module cmm045.a.viewmodel {
             baseDate: moment.utc().toISOString(), // 基準日
             inService: true, // 在職区分
             leaveOfAbsence: true, // 休職区分
-            closed: true, // 休業区 
+            closed: true, // 休業区
             retirement: true, // 退職区分
 
             /** Quick search tab options */
@@ -94,7 +129,7 @@ module cmm045.a.viewmodel {
             showJobTitle: true, // 職位条件
             showWorktype: true, // 勤種条件
             isMutipleCheck: true,
-            /**  
+            /**
             * @param dataList: list employee returned from component.
             * Define how to use this list employee by yourself in the function's body.
             */
@@ -115,7 +150,7 @@ module cmm045.a.viewmodel {
                     $("#grid1").igGrid("option", "height", window.innerHeight - 350  + "px");
                 }
                 if($('#grid2').length){//application
-                    $("#grid2").igGrid("option", "height", window.innerHeight - 270  + "px");  
+                    $("#grid2").igGrid("option", "height", window.innerHeight - 270  + "px");
                 }
             }
         }
@@ -133,7 +168,7 @@ module cmm045.a.viewmodel {
                 character.save('AppListExtractCondition', null);
             }
             //get param spr
-            let paramSprCmm045: vmbase.IntefaceSPR = __viewContext.transferred.value == null ? 
+            let paramSprCmm045: vmbase.IntefaceSPR = __viewContext.transferred.value == null ?
                     null : __viewContext.transferred.value.PARAM_SPR_CMM045;
             //spr call
             if(paramSprCmm045 !== undefined && paramSprCmm045 !== null){
@@ -175,13 +210,13 @@ module cmm045.a.viewmodel {
                 }
                 if (urlParam === undefined && !self.isSpr()) {
                     self.mode(characterData.appListAtr);
-                } 
+                }
                 if(urlParam !== undefined && !self.isSpr()){
                     self.mode(urlParam);
                 }
                 //write log
                 let paramLog = {programId: 'CMM045',
-                                screenId: 'A', 
+                                screenId: 'A',
                                 queryString: 'a='+self.mode()};
                 service.writeLog(paramLog);
                 let condition: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
@@ -224,7 +259,7 @@ module cmm045.a.viewmodel {
                         });
                         self.itemApplication([]);
                         _.each(data.lstAppInfor, function(appInfo){
-                            self.itemApplication.push(new vmbase.ChoseApplicationList(appInfo.appType, appInfo.appName));                          
+                            self.itemApplication.push(new vmbase.ChoseApplicationList(appInfo.appType, appInfo.appName));
                         });
                         self.lstListAgent([]);
                         _.each(data.lstAgent, function(agent){
@@ -232,7 +267,7 @@ module cmm045.a.viewmodel {
                         });
                         _.each(data.lstSyncData, function(complt){
                             self.lstAppCompltSync.push(new vmbase.AppAbsRecSyncData(complt.typeApp, complt.appMainID, complt.appSubID, complt.appDateSub));
-                        });  
+                        });
                         let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), self.lstAppCompltSync());
                         self.lstApp(lstData);
                         self.items(lstData);
@@ -255,7 +290,7 @@ module cmm045.a.viewmodel {
                         }
                         if(self.isSpr()){
                             let selectedType = paramSprCmm045.extractCondition == 0 ? -1 : 0;
-                            self.selectedCode(selectedType);    
+                            self.selectedCode(selectedType);
                         }
                         if(self.mode() == 0){
                             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
@@ -268,7 +303,7 @@ module cmm045.a.viewmodel {
                         dfd.resolve();
                     });
                 }).fail(()=>{
-                    block.clear();    
+                    block.clear();
                 });
             });
             return dfd.promise();
@@ -309,7 +344,7 @@ module cmm045.a.viewmodel {
 
                     let $th = $("<th/>")
                         .addClass("ui-widget-header");
-                    
+
                     // batch check
                     if (column.checkbox !== undefined) {
                         let items = this.items();
@@ -336,7 +371,7 @@ module cmm045.a.viewmodel {
                     else {
                         $th.text(column.headerText);
                     }
-                    
+
                     $th.appendTo($trHead);
                 });
                 let $thead = $("<thead/>")
@@ -344,7 +379,7 @@ module cmm045.a.viewmodel {
 
                 // body
                 let $tbody = $("<tbody/>");
-                
+
 
                 // build grid
                 let $appGrid = $("<table/>")
@@ -381,15 +416,15 @@ module cmm045.a.viewmodel {
                         });
                     }
                 });
-                
+
                 $container.append($appGrid).show();
-                
+
                 let size = $appGrid.data("size");
                 fixedTable.init($appGrid, {
                     height: size.height,
                     width: size.width
                 });
-                
+
                 dragResize(
                     $container.find(".nts-fixed-header-container table"),
                     $container.find(".nts-fixed-body-container table"));
@@ -413,7 +448,7 @@ module cmm045.a.viewmodel {
             let $container = $("#app-grid-container");
             let $tbody = $container.find(".nts-fixed-body-wrapper tbody");
             $tbody.empty();
-            
+
             this.items().forEach(item => {
                 let $tr = $("<tr/>");
                 columns.forEach(column => {
@@ -461,7 +496,8 @@ module cmm045.a.viewmodel {
         reloadGridApplicaion(colorBackGr: any, isHidden: boolean) {
 
             var self = this;
-            let widthAuto = isHidden == false ? 1110 : 1045;
+            let widthAuto = isHidden == false ? 1175 : 1110;
+            // let widthAuto = isHidden == false ? 1250 : 1185;
             widthAuto = screen.width - 100 >= widthAuto ? widthAuto : screen.width - 100;
 
             let columns = [
@@ -480,7 +516,8 @@ module cmm045.a.viewmodel {
                 { headerText: getText('CMM045_54'), key: 'appDate', width: '157px'},
                 { headerText: getText('CMM045_55'), key: 'appContent', width: '408px'},
                 { headerText: getText('CMM045_56'), key: 'inputDate', width: '120px'},
-                { headerText: getText('CMM045_57'), key: 'appStatus', width: '75px', extraClassProperty: "appStatusName"}
+                { headerText: getText('CMM045_57'), key: 'appStatus', width: '75px', extraClassProperty: "appStatusName"},
+                { headerText: getText('CMM045_58'), key: 'displayAppStatus', width: '95px' }
             ];
             let heightAuto = screen.height - 360 >= 500 ? 500 : screen.height - 360;
             this.setupGrid({
@@ -489,7 +526,7 @@ module cmm045.a.viewmodel {
                 height: heightAuto,
                 columns: columns.filter(c => c.hidden !== true)
             });
-            
+
 /*
             $("#grid2").ntsGrid({
                 width: widthAuto,
@@ -653,7 +690,7 @@ module cmm045.a.viewmodel {
                 if (color == '土') {//土
                     result.push(new vmbase.TextColor(item.appId,'appDate','saturdayCell'));
                 }
-                if (color == '日') {//日 
+                if (color == '日') {//日
                     result.push(new vmbase.TextColor(item.appId,'appDate','sundayCell'));
                 }
                 //fill color text input date
@@ -663,7 +700,7 @@ module cmm045.a.viewmodel {
                 }
                 if (colorIn == '日') {//日
                     result.push(new vmbase.TextColor(item.appId,'inputDate','sundayCell'));
-                } 
+                }
              });
             return result;
         }
@@ -715,7 +752,7 @@ module cmm045.a.viewmodel {
                 rows: 8,
                 virtualizationMode: 'continuous',
                 columns: [
-                    { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: '35px', 
+                    { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: '35px',
                             showHeaderCheckbox: lstHidden.length < self.items().length, ntsControl: 'Checkbox',  hiddenRows: lstHidden},
                     { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '55px', unbound: false, ntsControl: 'Button' },
                     { headerText: getText('CMM045_51'), key: 'applicant', dataType: 'string', width: '120px' },
@@ -816,7 +853,7 @@ module cmm045.a.viewmodel {
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''), 
+                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''),
                 self.findContent(app.applicationID).content, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
                 app.reflectStatus, masterInfo.phaseStatus, masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor,
                 null, app.reflectPerState);
@@ -834,7 +871,7 @@ module cmm045.a.viewmodel {
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''), 
+                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''),
                 self.findContent(app.applicationID).content, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
                 app.reflectStatus, masterInfo.phaseStatus, masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor,
                 null, app.reflectPerState);
@@ -902,18 +939,18 @@ module cmm045.a.viewmodel {
             let self = this;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
-            
+
             //振出 rec typeApp = 1
             //振休 abs typeApp = 0
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let appDate = self.appDateColor(self.convertDateMDW(app.applicationDate), '','');
             let inputDate = self.inputDateColor(self.convertDateTime(app.inputDate), '');
-            
+
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                 masterInfo.dispName, prePost, appDate, self.findContent(app.applicationID).content, inputDate,
                 app.reflectStatus, masterInfo.phaseStatus, masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor,
                 null, app.reflectPerState);
-            return a; 
+            return a;
         }
         /**
          * 振休振出申請
@@ -924,9 +961,9 @@ module cmm045.a.viewmodel {
             let self = this;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
-            
+
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
-            
+
             let appDateAbs = '';
             let appDateRec = '';
             let inputDateAbs = '';
@@ -985,7 +1022,7 @@ module cmm045.a.viewmodel {
             if (color == '土') {//土
                 appDate = '<div class = "saturdayCell  ' + classApp + '" >' + date + priod +'</div>';
             }
-            if (color == '日') {//日 
+            if (color == '日') {//日
                 appDate = '<div class = "sundayCell  ' + classApp + '" >' + date + priod + '</div>';
             }
             return appDate;
@@ -1001,14 +1038,14 @@ module cmm045.a.viewmodel {
             if (color1 == '土') {//土
                 sDate = '<div class = "saturdayCell  dateRange" >' + startDate +  '</div>';
             }
-            if (color1 == '日') {//日 
+            if (color1 == '日') {//日
                 sDate = '<div class = "sundayCell  dateRange" >' + startDate + '</div>';
             }
             let color2 = b.substring(0,1);
             if (color2 == '土') {//土
                 eDate = '<div class = "saturdayCell  dateRange" >' + endDate + '</div>';
             }
-            if (color2 == '日') {//日 
+            if (color2 == '日') {//日
                 eDate = '<div class = "sundayCell  dateRange" >' + endDate +  '</div>';
             }
             return sDate + '<div class = "dateRange" >' + '－' +  '</div>' +  eDate;
@@ -1196,7 +1233,7 @@ module cmm045.a.viewmodel {
                 });
                 self.itemApplication([]);
                 _.each(data.lstAppInfor, function(appInfo){
-                    self.itemApplication.push(new vmbase.ChoseApplicationList(appInfo.appType, appInfo.appName));                          
+                    self.itemApplication.push(new vmbase.ChoseApplicationList(appInfo.appType, appInfo.appName));
                 });
                 self.lstListAgent([]);
                 _.each(data.lstAgent, function(agent){
@@ -1222,7 +1259,7 @@ module cmm045.a.viewmodel {
                             data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner,
                             data.appStatusCount.denialNumber));
                     }
-                    
+
                     if (self.mode() == 1) {
                         $("#grid1").ntsGrid("destroy");
                         let colorBackGr = self.fillColorbackGrAppr();
@@ -1380,7 +1417,7 @@ module cmm045.a.viewmodel {
         }
         findAgent(appId: string): any{
             return _.find(this.lstListAgent(), function(agent){
-                return agent.appID == appId;    
+                return agent.appID == appId;
             });
         }
         convertTime_Short_HM(time: number): string {
@@ -1400,6 +1437,10 @@ module cmm045.a.viewmodel {
             return _.find(self.lstContentApp(), function(app) {
                 return app.appId == appId;
             });
+        }
+
+        approveAll() {
+            console.log("Approve all");
         }
     }
 }

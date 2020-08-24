@@ -37,4 +37,13 @@ public class ApplicationStatus {
 	 * 否認件数
 	 */
 	private int denialNumber;
+	
+	public ApplicationStatus() {
+		this.unApprovalNumber = 1;
+		this.approvalNumber = 2;
+		this.approvalAgentNumber = 3;
+		this.cancelNumber = 4;
+		this.remandNumner = 5;
+		this.denialNumber = 7;
+	}
 }

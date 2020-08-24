@@ -223,7 +223,10 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 
 
 
-            this.isEnable1(this.condition13(1));
+            this.isEnable1 = ko.computed(() => {
+                return this.condition13(1);
+            }, this);
+
             this.isEnable2(this.condition13(2));
             this.isEnable3(this.condition13(3));
             this.isEnable4(this.condition13(4));

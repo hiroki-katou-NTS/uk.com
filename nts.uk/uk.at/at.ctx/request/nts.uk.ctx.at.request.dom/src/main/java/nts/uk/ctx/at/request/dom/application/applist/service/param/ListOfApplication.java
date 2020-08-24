@@ -154,4 +154,24 @@ public class ListOfApplication {
 		this.opBackgroundColor = Optional.empty();
 		this.opMoreThanDispLineNO = Optional.empty();
 	}
+	
+	/*
+	* -PhuongDV- Test CMM045
+	*/
+	public ListOfApplication(ApplicationType inAppType) {
+	this.prePostAtr = 1;
+	this.workplaceName = "職場名";
+	this.appID = "appid";
+	this.applicantCD = "申請者CD-CodeNguoiXin";
+	this.applicantName = "申請者名-TenNguoiXin";
+	this.appTye = inAppType;
+	this.appContent = "申請内容-NoiDungDonXin";
+	this.appDate = GeneralDate.today();
+	this.inputCompanyName = "入力社名-NguoiTaoDon";
+	this.inputDate = GeneralDateTime.now();
+	this.reflectionStatus = ReflectedState.NOTREFLECTED;
+	this.opTimeCalcUseAtr = Optional.of(400);
+	this.opApprovalStatusInquiry = Optional.of("承認状況照会");
+	this.opApprovalFrameStatus = Optional.of(1);
+	}
 }
