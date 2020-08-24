@@ -179,7 +179,7 @@ module nts.uk.at.view.kmp001.c {
 						vm.$ajax(KMP001C_API.GET_INFO_EMPLOYEE + ko.toJS(c))
 							.then((data: IEmployeeVIewC[]) => {
 								
-								if(data.retiredDate = "9999/12/31"){
+								if(moment(data.retiredDate).format(DATE_FORMAT) === "9999/12/31"){
 									data.retiredDate = null;
 								}
 								

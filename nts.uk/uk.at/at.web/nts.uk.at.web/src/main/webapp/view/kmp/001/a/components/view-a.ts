@@ -52,7 +52,6 @@ module nts.uk.at.view.kmp001.a {
 		public currentCodes: KnockoutObservableArray<string> = ko.observableArray([]);
 		public mode: KnockoutObservable<MODE> = ko.observable('new');
 		public maxLength: KnockoutObservable<string> = ko.observable('');
-		public endDate: String = '';
 		public textInput: KnockoutObservable<string> = ko.observable('');
 
 		created() {
@@ -71,9 +70,7 @@ module nts.uk.at.view.kmp001.a {
 						vm.$ajax(KMP001A_API.GET_INFOMAITON_EMPLOYEE + "/" + ko.toJS(current.employeeId) + "/" + ko.toJS(current.affiliationId) + "/" + ko.toJS(vm.baseDate))
 							.then((data: IModel) => {
 
-								vm.endDate = moment(data.retiredDate).format(DATE_FORMAT);
-
-								if (vm.endDate === "9999/12/31"  {
+								if (moment(data.retiredDate).format(DATE_FORMAT) === "9999/12/31")  {
 									data.retiredDate = null;
 								}
 
