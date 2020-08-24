@@ -53,7 +53,6 @@ module nts.uk.at.kmr001.d {
             self.selectedEndDate = ko.observable(DEFAULT_END);
             self.copyPreviousConfig = ko.observable(false);
             if (params) {
-                self.initMode(params.initMode);
                 self.selectedHistoryId(params.historyId);
                 self.bkHistoryId = params.historyId;
             }
