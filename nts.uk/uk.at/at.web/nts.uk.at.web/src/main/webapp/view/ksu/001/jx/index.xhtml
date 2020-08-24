@@ -17,28 +17,37 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class="control-group">
-					<div class="label"><span>Title</span></div>
+				<div class="control-group cf">
+					<div class="label"><span>Title</span></div>					
 				</div>
-				<div class="control-group">
-					<div id="pasteShiftNameLabel" class="mw-90" data-bind="ntsFormLabel: {required: true}">Paste Shift</div>
-					<input id="pasteShiftNameInput" data-bind="ntsTextEditor: {value: shiftName, required: true, constraint: ''" />
+				<div class="control-group cf">
+					<div class="left-column">
+						<div id="pasteShiftNameLabel" class="mw-90" data-bind="ntsFormLabel: {required: true}">Paste Shift</div>
+					</div>
+					<input id="pasteShiftNameInput" data-bind="ntsTextEditor: {value: shiftName, required: true}" />
 				</div>
-				<div class="control-group">
-					<div id="pasteShiftLabel" class="mw-90" data-bind="ntsFormLabel: {required: true}">Shift</div>
-					<div id="combo-box" data-bind="ntsComboBox: {
-						name: 'Sample List',
-						options: listShiftComboBox,
-						optionsValue: 'code',
-						value: selectedShift,
-						optionsText: 'name',
-						required: true,
-						columns: [
-							{ prop: 'code', length: 4 },
-							{ prop: 'name', length: 10 },
-						]}"></div>
+				<div class="control-group cf">
+					<div class="left-column">
+						<div id="pasteShiftLabel" class="mw-90" data-bind="ntsFormLabel: {required: true}">Shift</div>
+					</div>
+					<div class="mw-90" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_116')}</div>
+					<div id="combo-box1"
+						data-bind="ntsComboBox: {
+								options: listShiftComboBox,
+								optionsValue: 'shiftMasterCode',
+								visibleItemsCount: 15,
+								value: selectedShift,
+								editable:  false,
+								enable: true,
+								width: 430,
+								columns: [
+									{ prop: 'shiftMasterCode', length: 3 },
+									{ prop: 'shiftMasterName', length: 5 },
+									{ prop: 'workTime1', length: 12 },
+									{ prop: 'remark', length: 10 }]}">
+					</div>
 				</div>
-				<div class="control-group">
+				<div class="control-group cf">
 					<div id="pasteShiftLabel" class="mw-90" data-bind="ntsFormLabel: {required: true}">Table</div>
 				</div>
 				<div class="table-calendar">
@@ -51,8 +60,8 @@
 							</div>
 						</div>
 					</com:ko-foreach>
-					<div class="day-arrow"></div>
-					<button class="button-add-day" data-bind="click: addDay">+</button>
+					<div class="day-arrow" data-bind="visible: !isListShiftFull()"></div>
+					<button class="button-add-day" data-bind="visible: !isListShiftFull(), click: addDay">+</button>
 				</div>
 				<div style='clear: both'></div>
 			</div>
