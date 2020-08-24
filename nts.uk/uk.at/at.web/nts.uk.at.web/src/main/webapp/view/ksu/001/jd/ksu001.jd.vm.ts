@@ -151,6 +151,7 @@ module nts.uk.at.view.ksu001.jd {
                 if ( self.target() == 2 ) {
                     service.getShiftPaletteByCompany().done(( data ) => {
                         self.createitemList( data );
+                        self.selectedCode(getText( 'KSU001_110' ) + self.originalPage() + getText( 'KSU001_161' ));
                         dfd.resolve();
                     } ).fail( function( error ) {
                         alertError( { messageId: error.messageId } );
@@ -163,6 +164,7 @@ module nts.uk.at.view.ksu001.jd {
                 else if ( self.target() == 0 ) {
                     service.getShiftPaletteByWP( self.targetID() ).done(( data ) => {
                         self.createitemList( data );
+                        self.selectedCode(getText( 'KSU001_110' ) + self.originalPage() + getText( 'KSU001_161' ));
                         dfd.resolve();
                     } ).fail( function( error ) {
                         alertError( { messageId: error.messageId } );
@@ -175,6 +177,7 @@ module nts.uk.at.view.ksu001.jd {
                 else if ( self.target() == 1 ) {
                     service.getShiftPaletteByWPG( self.targetID() ).done(( data ) => {
                         self.createitemList( data );
+                        self.selectedCode(getText( 'KSU001_110' ) + self.originalPage() + getText( 'KSU001_161' ));
                         dfd.resolve();
                     } ).fail( function( error ) {
                         alertError( { messageId: error.messageId } );

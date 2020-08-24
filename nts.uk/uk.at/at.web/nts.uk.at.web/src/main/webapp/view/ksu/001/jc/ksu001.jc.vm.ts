@@ -18,69 +18,60 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
 
         source: KnockoutObservableArray<any> = ko.observableArray(getShared('dataForJC').data || []);
         dataSource: KnockoutObservableArray<any> = ko.observableArray([]);
-        textDecision: KnockoutObservable<string> = ko.observable(getShared('dataForJC').textDecision);
         listCheckNeededOfWorkTime: any[] = getShared('dataForJC').listCheckNeededOfWorkTime;
         nashi: string = getText("KSU001_98");
 
+        // List display Shift
+        listShift: KnockoutObservableArray<any> = ko.observableArray([]);
+        isListShiftFull: KnockoutObservable<boolean> = ko.observable(false);
+
         constructor() {
             let self = this;
-
+            // Combo box selected
             self.selectedShiftMasterCode.subscribe((newValue) => {
                 let shiftMaster = _.find(self.listWorkType(), ['shiftMasterCode', newValue]);
                 self.selectedShiftMaster(shiftMaster);
             });
 
-            // Binding Screen B Data to Table
-            let indexDitMeMay = 0;
-            _.forEach(self.source(), (item) => {
-                $($("#table-date td")[indexDitMeMay]).html(item.value.replace("[",'').replace("]",''));
-                self.dataSource().push({ index: item.index, value: item.value.replace("[",'').replace("]",''), data: { shiftMasterCode: item.shiftMasterCode } });
-                indexDitMeMay++;
-            })
+            this.initDataFromBScreen();
 
-            /**
-             * handle when click/ctr+click cell table
-             * get workTypeName/workTimeName paste to cell
-             * push data to dataSource
-             */
-            $("#table-date td").on('click', function(event) {
-                let nameWTypeWTime: string = self.selectedShiftMaster().shiftMasterName;
-                if (nameWTypeWTime == "なし")
-                    nameWTypeWTime = "";
-                // Ấn phím Ctrl
-                if (event.ctrlKey) {
-                    $(this.parentElement.children).html(nameWTypeWTime);
-                    let arrDate = _.map($(this.parentElement).prev().children(), (x) => { return +x.innerHTML });
-                    _.each(arrDate, (date) => {
-                        _.remove(self.dataSource(), { index: date });
-                        //  self.dataSource().push({ index: date, value: nameWTypeWTime, data: self.selectedShiftMaster() });
-                        // Không phải là なし thì mới thêm vào datasource
-                        if (nameWTypeWTime != "")
-                            self.dataSource().push({ index: date, value: nameWTypeWTime, data: self.selectedShiftMaster() });
-                    });
-                } else {
-                    $(this).html(nameWTypeWTime);
-                    let index = +$(this).parent().prev().children()[$(this).index()].innerHTML;
-                    _.remove(self.dataSource(), { index: index });
-                    //  self.dataSource().push({ index: index, value: nameWTypeWTime, data: self.selectedShiftMaster() });
-                    if (nameWTypeWTime != "")
-                        self.dataSource().push({ index: index, value: nameWTypeWTime, data: self.selectedShiftMaster() });
-                }
+            // Datasource thay đổi theo listShift
+            this.dataSource = ko.computed(function() {
+                let tempArr = _.map(self.listShift(), (item, index) => {
+                    return { index: index, value: item.shiftMasterName, data: item };
+                });
+                return tempArr;
+            });
+            this.isListShiftFull = ko.computed(function() {
+                return self.listShift().length >= 31;
             });
         }
 
-        /**
-         * Clear data in table
-         */
         clearData(): void {
             let self = this;
             $("#table-date td").html('');
             self.dataSource([]);
         }
+        addDay(): void {
+            if (!this.isListShiftFull())
+                this.listShift.push(this.selectedShiftMaster());
+        }
 
-        /**
-         * decision
-         */
+        cellClick(e, d): void {
+            this.listShift()[e()] = this.selectedShiftMaster();
+            this.listShift.valueHasMutated();
+//            let id = "#cell" + e();
+//            $(id).text(this.selectedShiftMaster().shiftMasterName);
+        }
+
+        /** Delete by index */
+        deleteDay(indexObs): void {
+            var index = indexObs();
+            var newArray = this.listShift.slice(0, index).concat(this.listShift.slice(index + 1));
+            this.listShift(newArray);
+        }
+
+        /** Decision */
         decision(): void {
             let self = this;
             $("#test2").trigger("validate");
@@ -93,9 +84,10 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
             }
 
             // sort dataSoucre (tooltip) ASC
-            let dataSourceOrder = _.orderBy(self.dataSource(), ['index'], ['asc']);
+            let dataSourceOrder = _.orderBy(_.remove(self.dataSource(),function(item) { return item.value != 'なし'; }), ['index'], ['asc']);
             let arrTooltip = _.map(dataSourceOrder, (data) => {
-                return '[' + data.value + ']';
+                //return '[' + data.value + ']';
+                return data.value;
             });
             let arrTooltipClone = _.clone(arrTooltip);
 
@@ -118,6 +110,7 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
                 };
             });
 
+            console.log(arrData);
             setShared("dataFromJB", {
                 text: self.textName(),
                 tooltip: tooltip,
@@ -127,9 +120,7 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
             nts.uk.ui.windows.close();
         }
 
-        /**
-         * Close dialog
-         */
+        /** Close dialog */
         closeDialog(): void {
             nts.uk.ui.windows.close();
         }
@@ -164,9 +155,22 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
                     }
                 }
                 self.listWorkType(_.sortBy(data, ['shiftMasterCode']));
+                self.initDataFromBScreen();
             }).fail((res: any) => {
                 nts.uk.ui.dialog.alert({ messageId: res.messageId });
             });
+        }
+
+        /** listShift init data từ màn B */
+        initDataFromBScreen() {
+            var self = this;
+            console.log(self.source());
+            _.forEach(self.source(), (item) => {
+                let code = item.shiftMasterCode ? item.shiftMasterCode : item.data.shiftMasterCode;
+                let matchShift = _.find(self.listWorkType(), ['shiftMasterCode', code]);
+                if (matchShift)
+                    self.listShift.push(matchShift);
+            })
         }
 
     }
