@@ -389,10 +389,10 @@ module nts.uk.at.view.ksc001.b {
                                 affiliationName: employeeSearch.affiliationName
                             }
                         });
+
                         self.employeeList(mappedEmployeeList);
                         self.selectedEmployee(data.listEmployee);
                         self.applyKCP005ContentSearch(data.listEmployee);
-                        //console.log(mappedEmployeeList);
                     }
                 }
             }
@@ -442,19 +442,48 @@ module nts.uk.at.view.ksc001.b {
                     listSelectedEmpCode: any = [];
                 self.employeeList([]);
                 self.selectedEmployeeCode([]);
+
                 _.each(dataList, (employeeSearch) => {
                     employeeSearchs.push({
                         code: employeeSearch.employeeCode,
                         name: employeeSearch.employeeName,
                         affiliationName: employeeSearch.affiliationName
                     });
-                    listSelectedEmpCode.push(employeeSearch.employeeCode);
+                    listSelectedEmpCode.push(employeeSearch.employeeCode.trim());
                 });
 
                 // update employee list by ccg001 search
                 self.employeeList(employeeSearchs);
                 self.selectedEmployeeCode(listSelectedEmpCode);
+                let employeeIds =  self.findEmployeeIdsByCode(self.selectedEmployeeCode());
+                //filter personal with new conditions
+                let startDate = moment.utc(self.periodStartDate(), "YYYY/MM/DD");
+                let endDate = moment.utc(self.periodEndDate(), "YYYY/MM/DD");
+                let listEmployeeFilter: ListEmployeeIds = new ListEmployeeIds(
+                    employeeIds,
+                    self.recreateConverter(),
+                    self.recreateEmployeeOffWork(),
+                    self.recreateShortTimeWorkers(),
+                    self.recreateDirectBouncer(),
+                    startDate, endDate
+                );
 
+                let newListEmployees = self.listEmployeeFilter(listEmployeeFilter);
+
+                console.log(newListEmployees);
+                //reset
+                employeeSearchs = [];
+                listSelectedEmpCode = [];
+                newListEmployees && newListEmployees.map((employeeSearch) => {
+                    employeeSearchs.push({
+                        code: employeeSearch.employeeCode,
+                        name: employeeSearch.employeeName,
+                        affiliationName: employeeSearch.affiliationName
+                    });
+                    listSelectedEmpCode.push(employeeSearch.employeeCode.trim());
+                });
+
+                //end
                 // update kc005
                 self.lstPersonComponentOption = {
                     isShowAlreadySet: false, //設定済表示
@@ -537,14 +566,14 @@ module nts.uk.at.view.ksc001.b {
                 data.resetStartEndTime = self.resetStartEndTime();
                 data.resetMasterInfo = self.resetMasterInfo();
                 data.resetTimeAssignment = self.resetTimeAssignment();
-                data.confirm = self.confirm();
+                data.confirm = self.isConfirmedCreation();//self.confirm();
                 data.createMethodAtr = self.checkCreateMethodAtrPersonalInfo();
 
                 data.overwriteConfirmedData = self.overwriteConfirmedData();
                 data.createAfterDeleting = self.createAfterDeleting();
-                data.selectedImplementAtrCode = self.selectedImplementAtrCode();
-                data.selectRebuildAtrCode = self.selectRebuildAtrCode();
-                data.checkCreateMethodAtrPersonalInfo = self.checkCreateMethodAtrPersonalInfo();
+                //data.selectedImplementAtrCode = self.selectedImplementAtrCode();
+                //data.selectRebuildAtrCode = self.selectRebuildAtrCode();
+                //data.checkCreateMethodAtrPersonalInfo = self.checkCreateMethodAtrPersonalInfo();
                 data.creationMethodCode = self.creationMethodCode();
                 data.monthlyPatternCode = self.monthlyPatternCode();
                 data.isConfirmedCreation = self.isConfirmedCreation();
@@ -716,7 +745,7 @@ module nts.uk.at.view.ksc001.b {
                 var self = this;
 
                 if( self.selectedEmployeeCode().length <= 0 ) {
-                    nts.uk.ui.dialog.error({ messageId: "Msg_758" });
+                    nts.uk.ui.dialog.error({ messageId: "Msg_206" }); //Msg_758
                     return;
                 } else {
                     self.lengthEmployeeSelected(getText("KSC001_47", [self.selectedEmployeeCode().length]));
@@ -804,7 +833,7 @@ module nts.uk.at.view.ksc001.b {
                 var self = this;
 
                 if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
-                    && self.checkProcessExecutionAtrRebuild() == ProcessExecutionAtr.RECONFIG) {
+                    && self.checkCreateMethodAtrPersonalInfo() ==  CreateMethodAtr.PATTERN_SCHEDULE) { //checkProcessExecutionAtrRebuild == ProcessExecutionAtr.RECONFIG
                     //back screen C
                     self.previousTwo();
                 } else {
@@ -912,7 +941,7 @@ module nts.uk.at.view.ksc001.b {
             private createPersonalSchedule(): void {
                 let self = this;
                 nts.uk.ui.dialog.confirm({messageId: 'Msg_569'}).ifYes(function () {
-                    // C1_5 is check
+                    // C1_5 is check -> B4_5 is checked
                     if (self.selectedImplementAtrCode() == ImplementAtr.RECREATE) {
                         nts.uk.ui.dialog.confirm({messageId: 'Msg_570'}).ifYes(function () {
                             self.savePersonalScheduleData();
@@ -935,6 +964,7 @@ module nts.uk.at.view.ksc001.b {
             private savePersonalScheduleData(): void {
                 let self = this;
                 self.savePersonalSchedule(self.toPersonalScheduleData());
+                console.log(self.collectionData());
                 service.addScheduleExecutionLog(self.collectionData()).done(function (data) {
                     nts.uk.ui.block.clear();
                     nts.uk.ui.windows.setShared('inputData', data);
@@ -1059,7 +1089,7 @@ module nts.uk.at.view.ksc001.b {
                 let self = this;
                 let user: any = __viewContext.user;
                 self.findPersonalScheduleByEmployeeId(user.employeeId).done((data) => {
-                    console.log(data);
+
                     if( typeof data !=='undefined' && data ) {
                         self.recreateConverter(data.recreateConverter);//異動者
                         self.recreateDirectBouncer(data.recreateDirectBouncer); //休職休業者
@@ -1068,7 +1098,7 @@ module nts.uk.at.view.ksc001.b {
 
                         self.recreateEmployeeOffWork(data.recreateEmployeeOffWork);
                         self.recreateShortTermEmployee(data.recreateShortTermEmployee);
-
+                        //Page B
                         self.createAfterDeleting(data.createAfterDeleting);
                         self.overwriteConfirmedData(data.overwriteConfirmedData);
                         self.selectedImplementAtrCode(data.selectedImplementAtrCode);
@@ -1121,7 +1151,24 @@ module nts.uk.at.view.ksc001.b {
                     console.log(error);
                 });
             }
+
+            private listEmployeeFilter( data: ListEmployeeIds){
+                //getEmployeeListAfterFilter
+                let results : Array<string> = [];
+
+                let self = this;
+                service.getEmployeeListAfterFilter( data )
+                .done( ( response ) => {
+                    results = response.listEmployeeId;
+                })
+                .fail((error) => {
+                    results = error;
+                });
+
+                return results;
+            }
         }
+
 
         // 実施区分
         export enum ImplementAtr {
@@ -1415,6 +1462,34 @@ module nts.uk.at.view.ksc001.b {
             onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
 
             onApplyEmployee: (data: EmployeeSearchDto[]) => void;
+        }
+
+        export class ListEmployeeIds {
+
+            listEmployeeId: Array<string>;
+            /** 異動者. */
+            transfer: boolean;
+            /** 休職休業者. */
+            leaveOfAbsence: boolean;
+            /** 短時間勤務者. */
+            shortWorkingHours: boolean;
+            /** 労働条件変更者. */
+            changedWorkingConditions: boolean;
+            startDate : string; //YYYY/MM/DD UTC
+            endDate : string; //YYYY/MM/DD UTC
+
+            constructor(employeeIds: Array<string>, transfer: boolean,
+                        leaveOfAbsence: boolean, shortWorkingHours: boolean,
+                        changedWorkingConditions: boolean, startDate : string, endDate : string) {
+                this.listEmployeeId = employeeIds;
+                this.transfer = transfer;
+                this.leaveOfAbsence = leaveOfAbsence;
+                this.shortWorkingHours = shortWorkingHours;
+                this.changedWorkingConditions = changedWorkingConditions;
+                this.startDate = startDate;
+                this.endDate = endDate;
+
+            }
         }
     }
 }
