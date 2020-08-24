@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.applist.service.datacreate;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -10,29 +11,19 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
-import nts.arc.i18n.I18NText;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
-import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
-import nts.uk.ctx.at.request.dom.application.applist.service.content.AppContentService;
-import nts.uk.ctx.at.request.dom.application.applist.service.content.ArrivedLateLeaveEarlyItemContent;
+import nts.uk.ctx.at.request.dom.application.applist.service.AppInfoMasterOutput;
+import nts.uk.ctx.at.request.dom.application.applist.service.AppListInitialRepository;
+import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationStatus;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
-import nts.uk.ctx.at.request.dom.application.applist.service.param.AppLstApprovalLstDispSet;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
-import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
-import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateCancelation;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrEarlyAtr;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeReport;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -47,12 +38,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 public class AppDataCreationImpl implements AppDataCreation {
 	
 	@Inject
-	private ArrivedLateLeaveEarlyRepository arrivedLateLeaveEarlyRepository;
-	
-	@Inject
-	private AppContentService appContentService;
-	
-	@Inject
 	private ApprovalListDispSetRepository approvalListDispSetRepository;
 
 	@Inject
@@ -61,78 +46,20 @@ public class AppDataCreationImpl implements AppDataCreation {
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
 	
+	@Inject
+	private AppListInitialRepository appListInitialRepository;
+	
 	private static final int PC = 0;
 	private static final int MOBILE = 1;
-	
-	@Override
-	public void createAppStampData(Application application, DisplayAtr appReasonDisAtr, String screenID,
-			String companyID, ListOfAppTypes listOfAppTypes) {
-		// TODO Auto-generated method stub
-		if(application.getOpStampRequestMode().get()==StampRequestMode.STAMP_ONLINE_RECORD) {
-			
-		}
-	}
 
 	@Override
-	public String createArrivedLateLeaveEarlyData(Application application, DisplayAtr appReasonDisAtr, String screenID,
-			String companyID) {
-		// ドメインモデル「遅刻早退取消申請」
-		ArrivedLateLeaveEarly arrivedLateLeaveEarly = arrivedLateLeaveEarlyRepository.getLateEarlyApp(companyID, application.getAppID(), application);
-		List<ArrivedLateLeaveEarlyItemContent> itemContentLst = new ArrayList<>();
-		// 「遅刻早退取消申請.時刻報告」
-		for(TimeReport timeReport : arrivedLateLeaveEarly.getLateOrLeaveEarlies()) {
-			String itemName = Strings.EMPTY;
-			if(timeReport.getLateOrEarlyClassification() == LateOrEarlyAtr.LATE) {
-				itemName = I18NText.getText("CMM045_236");
-			} else if(timeReport.getLateOrEarlyClassification() == LateOrEarlyAtr.EARLY) {
-				itemName = I18NText.getText("CMM045_238");
-			}
-			itemContentLst.add(new ArrivedLateLeaveEarlyItemContent(
-					itemName, 
-					timeReport.getWorkNo(), 
-					timeReport.getLateOrEarlyClassification(), 
-					Optional.of(timeReport.getTimeWithDayAttr()), 
-					false));
-		}
-		// 「遅刻早退取消申請.取消」
-		for(LateCancelation lateCancelation : arrivedLateLeaveEarly.getLateCancelation()) {
-			String itemName = Strings.EMPTY;
-			if(lateCancelation.getLateOrEarlyClassification() == LateOrEarlyAtr.LATE) {
-				itemName = I18NText.getText("CMM045_236");
-			} else if(lateCancelation.getLateOrEarlyClassification() == LateOrEarlyAtr.EARLY) {
-				itemName = I18NText.getText("CMM045_238");
-			}
-			itemContentLst.add(new ArrivedLateLeaveEarlyItemContent(
-					itemName, 
-					lateCancelation.getWorkNo(), 
-					lateCancelation.getLateOrEarlyClassification(), 
-					Optional.empty(), 
-					true));
-		}
-		// <List>を勤務NO+区分（遅刻、早退の順）で並べる
-		itemContentLst.sort(Comparator.comparing((ArrivedLateLeaveEarlyItemContent x) -> {
-			return String.valueOf(x.getWorkNo()) + String.valueOf(x.getLateOrEarlyAtr().value);
-		}));
-		// アルゴリズム「申請内容（遅刻早退取消）」を実行する
-		return appContentService.getArrivedLateLeaveEarlyContent(
-				application.getOpAppReason().orElse(null), 
-				appReasonDisAtr, 
-				screenID, 
-				itemContentLst, 
-				application.getAppType(), 
-				application.getOpAppStandardReasonCD().orElse(null));
-	}
-
-	@Override
-	public ListOfApplication createAppLstData(String companyID, List<Application> appLst, DatePeriod period,
-			boolean mode, Map<String, List<ApprovalPhaseStateImport_New>> mapApproval, int device,
-			AppListExtractCondition appListExtractCondition) {
-		AppListInfo appListInfo = new AppListInfo();
-		AppLstApprovalLstDispSet appLstApprovalLstDispSet = new AppLstApprovalLstDispSet();
+	public AppListInfo createAppLstData(String companyID, List<Application> appLst, DatePeriod period,
+			ApplicationListAtr mode, Map<String, List<ApprovalPhaseStateImport_New>> mapApproval, int device,
+			AppListExtractCondition appListExtractCondition, AppListInfo appListInfo) {
 		// ドメインモデル「承認一覧表示設定」を取得する
 		Optional<ApprovalListDisplaySetting> opApprovalListDisplaySetting = approvalListDispSetRepository.findByCID(companyID);
 		if(opApprovalListDisplaySetting.isPresent()) {
-			appLstApprovalLstDispSet.setWorkplaceNameDisp(opApprovalListDisplaySetting.get().getDisplayWorkPlaceName().value);
+			appListInfo.getDisplaySet().setWorkplaceNameDisp(opApprovalListDisplaySetting.get().getDisplayWorkPlaceName().value);
 		}
 		if(device==PC) {
 			// ドメインモデル「就業時間帯」を取得
@@ -142,23 +69,33 @@ public class AppDataCreationImpl implements AppDataCreation {
 			// 勤怠名称を取得 ( Lấy tên working time)
 		}
 		
+		Map<String, SyEmployeeImport> mapEmpInfo = new HashMap<>();
 		for(Application app : appLst) {
 			// 申請一覧リスト取得マスタ情報 ( Thông tin master lấy applicationLisst)
-			
+			AppInfoMasterOutput appInfoMasterOutput = appListInitialRepository.getListAppMasterInfo(
+					app, 
+					period, 
+					opApprovalListDisplaySetting.get().getDisplayWorkPlaceName(), 
+					mapEmpInfo, 
+					device);
 			// 各申請データを作成 ( Tạo data tên application)
 			ListOfApplication listOfApp = null;
 			// 
-			if(listOfApp.getAppContent()=="-1") {
-				
+			if(listOfApp.getAppContent()!="-1") {
+				// 
+				appListInfo.getAppLst().remove(listOfApp);
 			} else {
-				// appListInfo.setAppLst(listOfApp);
+				appListInfo.getAppLst().add(listOfApp);
 			}
 		}
-		
-		
-		
-		
-		return null;
+		// アルゴリズム「申請一覧の並び順を変更する」を実行する
+		appListInfo = this.changeOrderOfAppLst(appListInfo, appListExtractCondition, device);
+		if(mode == ApplicationListAtr.APPROVER && device == PC) {
+			// アルゴリズム「申請一覧リスト取得承認件数」を実行する(Thực hiện thuật toán [so luong approve lấy list danh sách đơn xin])
+			ApplicationStatus applicationStatus = appListInitialRepository.countAppListApproval(appListInfo.getAppLst(), appListInfo.getNumberOfApp());
+			appListInfo.setNumberOfApp(applicationStatus);
+		}
+		return appListInfo;
 	}
 
 	@Override

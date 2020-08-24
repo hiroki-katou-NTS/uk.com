@@ -42,7 +42,7 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 		}
 		applicationRepository.update(application);
 		// 反映対象なのかチェックする(check xem có phải đối tượng phản ánh hay k?)
-		if((application.isPreApp() && (application.isOverTimeApp() || application.isLeaveTimeApp()))
+		if((application.isPreApp() && (application.isOverTimeApp() || application.isHolidayWorkApp()))
 				|| application.isWorkChangeApp()
 				|| application.isGoReturnDirectlyApp()){
 			InformationSettingOfEachApp reflectSetting = appSetting.getSettingOfEachApp();

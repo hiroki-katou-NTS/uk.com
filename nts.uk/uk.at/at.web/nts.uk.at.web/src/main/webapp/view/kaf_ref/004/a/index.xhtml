@@ -10,6 +10,12 @@
 				nts.uk.ctx.at.request.dom.application.AppReason
 			</com:ValidatorScript>
             <com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/kaf_ref/000/a/component1/kaf000.a.component1.css" />
+			<com:stylefile path="/view/kaf_ref/000/a/component2/kaf000.a.component2.css" />
+			<com:stylefile path="/view/kaf_ref/000/a/component3/kaf000.a.component3.css" />
+			<com:stylefile path="/view/kaf_ref/000/a/component4/kaf000.a.component4.css" />
+			<com:stylefile path="/view/kaf_ref/000/a/component5/kaf000.a.component5.css" />
+			<com:stylefile path="/view/kaf_ref/000/a/component6/kaf000.a.component6.css" />
             <com:scriptfile path="/view/kaf_ref/000/shr/kaf000.shr.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/000/a/kaf000.a.vm.js" />
             <com:scriptfile path="/view/kaf_ref/000/a/component1/kaf000.a.component1.js" />
@@ -37,33 +43,36 @@
                                             } }"></span>
             </div>
             <div id="contents-area">
-                <div class="fixed-flex-layout">
-                    <div class="fixed-flex-layout-left" style="padding-left: 20px;">
-                        <div class="fixed-flex-layout" data-bind="component: { name: 'kaf000-a-component2',
+                    <div class="fixed-flex-layout-left">
+                        <div data-bind="component: { name: 'kaf000-a-component1',
+											params: {
+												appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
+											} }"></div>
+                        <div data-bind="component: { name: 'kaf000-a-component2',
 											params: {
 												application: $vm.application,
 												appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
                                             } }"></div>
-                        <div class="fixed-flex-layout" data-bind="component: { name: 'kaf000-a-component3',
+                        <div data-bind="component: { name: 'kaf000-a-component3',
 											params: {
 												application: $vm.application,
 												appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
 											} }"></div>
-                        <div class="fixed-flex-layout" data-bind="component: { name: 'kaf000-a-component4',
+                        <div data-bind="component: { name: 'kaf000-a-component4',
 											params: {
 												application: $vm.application,
 												appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
 											} }"></div>
 
-                        <div class="fixed-flex-layout" data-bind="component: {name: 'kaf004_share'}"></div>
+                        <div class="fixed-flex-layout" style="margin-left: -10px;" data-bind="component: {name: 'kaf004_share'}"></div>
 
                         <!-- <div class="fixed-flex-layout" style="border: 1px solid #ff0000">KAF000 component</div> -->
-                        <div class="fixed-flex-layout" data-bind="component: { name: 'kaf000-a-component5',
+                        <div data-bind="component: { name: 'kaf000-a-component5',
 											params: {
 												application: application,
 												appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
 											} }"></div>
-                        <div class="fixed-flex-layout" data-bind="component: { name: 'kaf000-a-component6',
+                        <div data-bind="component: { name: 'kaf000-a-component6',
 											params: {
 												application: application,
 												appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
@@ -71,11 +80,9 @@
                     </div>
 
                     <div class="fixed-flex-layout-right">
-                        <div style="height: 50px; width: 100px; border: 1px solid #ff0000; float: right;">KAF000
-                            component</div>
+                        <!-- <div style="height: 50px; width: 100px; border: 1px solid #ff0000; float: right;">KAF000
+                            component</div> -->
                     </div>
-
-                </div>
             </div>
         </ui:define>
     </ui:composition>

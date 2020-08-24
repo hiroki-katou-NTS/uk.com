@@ -144,3 +144,15 @@ div.form-label.broken {
 	text-align:left;
 	margin-left:0
 }
+.centerCheckBox {
+	display: block;
+}
+.centerCheckBox .title {
+	display: inline-block;
+}
+.centerCheckBox .firstCheckBox {
+	display: inline-block; margin-left: 4px
+}
+.centerCheckBox .secondCheckBox {
+	display: inline-block; margin-left: 27px
+}

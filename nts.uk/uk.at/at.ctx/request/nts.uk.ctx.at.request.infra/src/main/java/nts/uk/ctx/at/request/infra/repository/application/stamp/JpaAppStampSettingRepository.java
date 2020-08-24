@@ -28,7 +28,7 @@ import nts.uk.shr.com.color.ColorCode;
 public class JpaAppStampSettingRepository extends JpaRepository implements AppStampSettingRepository{
 
 	public static final String FIND_BY_ID = "SELECT *\r\n" + 
-			"  FROM KRQST_APP_STAMP WHERE CID = @cid";
+			"  FROM KRQMT_APP_STAMP WHERE CID = @cid";
 	@Override
 	public Optional<AppStampSetting> findByAppID(String companyID) {
 		

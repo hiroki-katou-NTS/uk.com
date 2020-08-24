@@ -17,7 +17,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Stateless
 public class JpaAppWorkChangeSetRepository extends JpaRepository implements AppWorkChangeSetRepository {
 
-	public static final String FIND_BY_ID = "SELECT \r\n" + "  * FROM KRQST_APP_WORK_CHANGE WHERE CID = @companyId";
+	public static final String FIND_BY_ID = "SELECT \r\n" + "  * FROM KRQMT_APP_WORK_CHANGE WHERE CID = @companyId";
 
 	@Override
 	public Optional<AppWorkChangeSet> findByCompanyId(String companyId) {

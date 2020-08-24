@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.request.dom.application.applist.service.param;
 
+import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationStatus;
 
 /**
  * refactor 4
@@ -23,7 +25,7 @@ public class AppListInfo {
 	/**
 	 * 申請件数
 	 */
-	private int numberOfApp;
+	private ApplicationStatus numberOfApp;
 	
 	/**
 	 * 表示行数超
@@ -34,5 +36,12 @@ public class AppListInfo {
 	 * 表示設定
 	 */
 	private AppLstApprovalLstDispSet displaySet;
+	
+	public AppListInfo() {
+		this.appLst = Collections.emptyList();
+		this.numberOfApp = null;
+		this.moreThanDispLineNO = false;
+		this.displaySet = null;
+	}
 	
 }

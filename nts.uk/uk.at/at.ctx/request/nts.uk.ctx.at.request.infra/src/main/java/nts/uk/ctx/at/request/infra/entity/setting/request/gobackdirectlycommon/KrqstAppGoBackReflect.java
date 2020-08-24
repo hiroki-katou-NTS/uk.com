@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KRQST_APP_GOBACK_DIRECTLY")
+@Table(name = "KRQMT_APP_GOBACK_DIRECTLY")
 public class KrqstAppGoBackReflect extends UkJpaEntity{
 	@EmbeddedId
 	private KrqstAppGoBackDirectlyPK appGoBackDirectlyPK;

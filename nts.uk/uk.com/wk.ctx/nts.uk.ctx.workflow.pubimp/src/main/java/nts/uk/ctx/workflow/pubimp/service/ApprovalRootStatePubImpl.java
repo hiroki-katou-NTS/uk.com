@@ -236,6 +236,10 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		}
 		ApprovalRootContentExport result = new ApprovalRootContentExport(
 				new ApprovalRootStateExport(
+					approvalRootContentOutput.getApprovalRootState().getRootStateID(),
+					approvalRootContentOutput.getApprovalRootState().getRootType().value,
+					approvalRootContentOutput.getApprovalRootState().getApprovalRecordDate(),
+					approvalRootContentOutput.getApprovalRootState().getEmployeeID(),
 					approvalRootContentOutput.getApprovalRootState().getListApprovalPhaseState()
 					.stream()
 					.sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
@@ -998,6 +1002,10 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 				Optional.empty());
 		return new ApprovalRootContentExport(
 				new ApprovalRootStateExport(
+					approvalRootContentOutput.getApprovalRootState().getRootStateID(),
+					approvalRootContentOutput.getApprovalRootState().getRootType().value,
+					approvalRootContentOutput.getApprovalRootState().getApprovalRecordDate(),
+					approvalRootContentOutput.getApprovalRootState().getEmployeeID(),
 					approvalRootContentOutput.getApprovalRootState().getListApprovalPhaseState()
 					.stream()
 					.sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))

@@ -32,7 +32,7 @@ public class JpaAppEmploymentSetRepository extends JpaRepository implements AppE
 					"a.HOLIDAY_OR_PAUSE_TYPE as aHOLIDAY_OR_PAUSE_TYPE, a.HOLIDAY_TYPE_USE_FLG as aHOLIDAY_TYPE_USE_FLG, a.DISPLAY_FLAG as aDISPLAY_FLAG, " +
 					"b.CID as bCID, b.EMPLOYMENT_CODE as bEMPLOYMENT_CODE, b.APP_TYPE as bAPP_TYPE, " +
 					"b.HOLIDAY_OR_PAUSE_TYPE as bHOLIDAY_OR_PAUSE_TYPE, b.WORK_TYPE_CODE as bWORK_TYPE_CODE " +
-					"from KRQST_APP_APV_EMP a left join KRQST_APP_WORKTYPE_EMP b " +
+					"from KRQMT_APP_APV_EMP a left join KRQMT_APP_WORKTYPE_EMP b " +
 					"on a.CID = b.CID and a.EMPLOYMENT_CODE = b.EMPLOYMENT_CODE and a.APP_TYPE = b.APP_TYPE " +
 					"where a.CID = @companyID and a.EMPLOYMENT_CODE = @employmentCD";
 		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
@@ -48,14 +48,14 @@ public class JpaAppEmploymentSetRepository extends JpaRepository implements AppE
 	
 	private Map<String, Object> toObject(NtsResultRecord rec) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		// KRQST_APP_APV_EMP
+		// KRQMT_APP_APV_EMP
 		map.put("aCID", rec.getString("aCID"));
 		map.put("aEMPLOYMENT_CODE", rec.getString("aEMPLOYMENT_CODE"));
 		map.put("aAPP_TYPE", rec.getInt("aAPP_TYPE"));
 		map.put("aHOLIDAY_OR_PAUSE_TYPE", rec.getInt("aHOLIDAY_OR_PAUSE_TYPE"));
 		map.put("aHOLIDAY_TYPE_USE_FLG", rec.getInt("aHOLIDAY_TYPE_USE_FLG"));
 		map.put("aDISPLAY_FLAG", rec.getInt("aDISPLAY_FLAG"));
-		// KRQST_APP_WORKTYPE_EMP
+		// KRQMT_APP_WORKTYPE_EMP
 		map.put("bCID", rec.getString("bCID"));
 		map.put("bEMPLOYMENT_CODE", rec.getString("bEMPLOYMENT_CODE"));
 		map.put("bAPP_TYPE", rec.getInt("bAPP_TYPE"));

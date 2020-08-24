@@ -82,15 +82,19 @@ export class KafS00CComponent extends Vue {
             self.$output.opAppReason = self.$input.opAppReason;
         }
 
-        if (self.$input.appLimitSetting.standardReasonRequired) {
-            self.$updateValidator('params.output.opAppStandardReasonCD', { 
-                required: true
-            });    
+        if (self.displayFixedReason) {
+            if (self.$input.appLimitSetting.standardReasonRequired) {
+                self.$updateValidator('params.output.opAppStandardReasonCD', { 
+                    required: true
+                });    
+            }
         }
-        if (self.$input.appLimitSetting.requiredAppReason) {
-            self.$updateValidator('params.output.opAppReason', { 
-                required: true
-            });
+        if (self.displayAppReason) {
+            if (self.$input.appLimitSetting.requiredAppReason) {
+                self.$updateValidator('params.output.opAppReason', { 
+                    required: true
+                });
+            }
         }
     }
 
