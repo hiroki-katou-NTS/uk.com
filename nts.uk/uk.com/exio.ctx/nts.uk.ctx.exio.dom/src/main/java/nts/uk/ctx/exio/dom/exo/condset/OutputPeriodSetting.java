@@ -100,7 +100,6 @@ public class OutputPeriodSetting extends AggregateRoot {
 	 *                lấy các primitive value từ command hoặc entity
 	 */
 	public void getMemento(MementoGetter memento) {
-		this.setVersion(memento.getVersion());
 		this.cid = memento.getCid();
 		this.periodSetting = NotUseAtr.valueOf(memento.getPeriodSetting());
 		this.conditionSetCode = new ExternalOutputConditionCode(memento.getConditionSetCode());
@@ -129,7 +128,6 @@ public class OutputPeriodSetting extends AggregateRoot {
 	 *                thể xảy ra trong domain đều được quản lý bởi domain
 	 */
 	public void setMemento(MementoSetter memento) {
-		memento.setVersion(this.getVersion());
 		memento.setCid(cid);
 		if (this.periodSetting != null) {
 			memento.setPeriodSetting(this.periodSetting.value);
@@ -161,7 +159,6 @@ public class OutputPeriodSetting extends AggregateRoot {
 	 *
 	 */
 	public static interface MementoSetter {
-		void setVersion(long version);
 		void setCid(String cid);
 		void setPeriodSetting(int periodSetting);
 		void setConditionSetCode(String conditionSetCode);
@@ -188,7 +185,6 @@ public class OutputPeriodSetting extends AggregateRoot {
 	 *
 	 */
 	public static interface MementoGetter {
-		long getVersion();
 		String getCid();
 		int getPeriodSetting();
 		String getConditionSetCode();

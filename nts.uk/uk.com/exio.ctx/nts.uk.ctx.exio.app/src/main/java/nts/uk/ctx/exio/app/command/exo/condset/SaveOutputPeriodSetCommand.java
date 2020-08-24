@@ -11,8 +11,6 @@ import nts.uk.ctx.exio.dom.exo.condset.OutputPeriodSetting;
 public class SaveOutputPeriodSetCommand implements OutputPeriodSetting.MementoGetter {
 	
 	private Boolean isNew;
-
-	private long version;
 	
 	/**
 	 * 会社ID

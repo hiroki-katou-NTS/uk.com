@@ -5,7 +5,6 @@ module nts.uk.com.view.cmf002.w {
   @bean()
   export class CMF002WViewModel extends ko.ViewModel {
     isNew: boolean = true;
-    version: number = 0;
     conditionSetCode: string = null;
     // W1
     listPeriodSetting: KnockoutObservableArray<any> = ko.observableArray([
@@ -101,7 +100,6 @@ module nts.uk.com.view.cmf002.w {
       const vm = this;
       if (response) {
         vm.isNew = false;
-        vm.version = response.version;
         vm.selectedPeriodSetting(response.periodSetting);
         vm.selectedClosureDayAtr(response.closureDayAtr);
         vm.selectedBaseDateSegment(response.baseDateClassification);
@@ -125,7 +123,6 @@ module nts.uk.com.view.cmf002.w {
     public save() {
       const vm = this;
       const command: SaveOutputPeriodSetCommand = new SaveOutputPeriodSetCommand({
-        version: vm.version,
         isNew: vm.isNew,
         periodSetting: vm.selectedPeriodSetting(),
         conditionSetCode: vm.conditionSetCode,
@@ -212,7 +209,6 @@ module nts.uk.com.view.cmf002.w {
   }
 
   export interface OutputPeriodSetDto {
-    version: number;
     cid: string;
     conditionSetCode: string;
     periodSetting: number;
@@ -228,7 +224,6 @@ module nts.uk.com.view.cmf002.w {
   }
 
   export class SaveOutputPeriodSetCommand {
-    version: number;
     isNew: boolean;
     periodSetting: number;
     conditionSetCode: string;
