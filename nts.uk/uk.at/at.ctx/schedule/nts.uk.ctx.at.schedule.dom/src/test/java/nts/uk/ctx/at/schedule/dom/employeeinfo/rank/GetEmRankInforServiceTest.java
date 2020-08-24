@@ -25,7 +25,6 @@ public class GetEmRankInforServiceTest {
 	@Test
 	public void testEmployeeRankNull() {
 		List<String> listEmpId = Arrays.asList("003","004");
-		List<String> listIdNull = Arrays.asList("001","002");
 		List<EmployeeRank> listEmpRank = new ArrayList<EmployeeRank>();
 
 		EmployeeRank rank1 = new EmployeeRank("001", new RankCode("001"));
@@ -43,7 +42,8 @@ public class GetEmRankInforServiceTest {
 		
 		
 		List<Rank> lstRank = new ArrayList<Rank>();
-		lstRank.addAll(listIdNull.stream().map(mapper-> new Rank(mapper, new RankCode(mapper), new RankSymbol(mapper))).collect(Collectors.toList()));
+		lstRank.add(new Rank("001", new RankCode("001"), new RankSymbol("001")));
+		lstRank.add(new Rank("002", new RankCode("002"), new RankSymbol("002")));
 		new Expectations() {
 			{
 				require.getListRank();// dummy
@@ -78,7 +78,8 @@ public class GetEmRankInforServiceTest {
 		
 		
 		List<Rank> lstRank = new ArrayList<Rank>();
-		lstRank.addAll(listEmpId.stream().map(mapper-> new Rank(mapper, new RankCode(mapper), new RankSymbol(mapper))).collect(Collectors.toList()));
+		lstRank.add(new Rank("11", new RankCode("11"), new RankSymbol("11")));
+		lstRank.add(new Rank("12", new RankCode("12"), new RankSymbol("12")));
 		new Expectations() {
 			{
 				require.getListRank();// dummy
@@ -95,7 +96,6 @@ public class GetEmRankInforServiceTest {
 	@Test
 	public void testEmployeeRankNotNull_RankNull() {
 		List<String> listEmpId = Arrays.asList("001","002");
-		List<String> listIdNull = Arrays.asList("0011","0012");
 		
 		EmployeeRank rank1 = new EmployeeRank("001", new RankCode("001"));
 		EmployeeRank rank2 = new EmployeeRank("002", new RankCode("002"));
@@ -114,7 +114,8 @@ public class GetEmRankInforServiceTest {
 		
 		
 		List<Rank> lstRank = new ArrayList<Rank>();
-		lstRank.addAll(listIdNull.stream().map(mapper-> new Rank(mapper, new RankCode(mapper), new RankSymbol(mapper))).collect(Collectors.toList()));
+		lstRank.add(new Rank("0011", new RankCode("0011"), new RankSymbol("0011")));
+		lstRank.add(new Rank("0012", new RankCode("0012"), new RankSymbol("0012")));
 		new Expectations() {
 			{
 				require.getListRank();// dummy

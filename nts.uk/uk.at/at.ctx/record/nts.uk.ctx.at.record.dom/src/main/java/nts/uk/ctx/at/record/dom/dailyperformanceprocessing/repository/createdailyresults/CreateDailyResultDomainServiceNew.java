@@ -796,8 +796,8 @@ public class CreateDailyResultDomainServiceNew {
 
 					// 特定日設定を取得する
 					// Reqlist 490
-					RecSpecificDateSettingImport specificDateSettingImport = this.recSpecificDateSettingAdapter
-							.specificDateSettingServiceByListWpl(companyId, workPlaceIdList, strDate);
+					List<RecSpecificDateSettingImport> specificDateSettingImport = this.recSpecificDateSettingAdapter
+							.getList(companyId, workPlaceIdList, period);;
 
 					// 会社職場個人の加給設定を取得する
 					Optional<BonusPaySetting> bonusPaySettingOpt = this.reflectBonusSetting(companyId, employeeId,
@@ -814,7 +814,7 @@ public class CreateDailyResultDomainServiceNew {
 					masterList.setBaseAutoCalSetting(baseAutoCalSetting);
 					masterList.setBonusPaySettingOpt(bonusPaySettingOpt);
 					masterList.setDatePeriod(datePeriod);
-					masterList.setSpecificDateSettingImport(Optional.ofNullable(specificDateSettingImport));
+					masterList.setSpecificDateSettingImport(specificDateSettingImport);
 
 					masterLists.add(masterList);
 				}

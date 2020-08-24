@@ -473,11 +473,11 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		query.append("WHERE a.krcdtDaiOutingTimePK.employeeId IN :employeeId ");
 		query.append("AND a.krcdtDaiOutingTimePK.ymd IN :date");
 		TypedQueryWrapper<KrcdtDaiOutingTime> tQuery = queryProxy().query(query.toString(), KrcdtDaiOutingTime.class);
-		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
-			result.addAll(tQuery.setParameter("employeeId", p.keySet())
-					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
+//		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			result.addAll(tQuery.setParameter("employeeId", param.keySet())
+					.setParameter("date", param.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
 					.getList().stream()
-					.filter(c -> p.get(c.krcdtDaiOutingTimePK.employeeId).contains(c.krcdtDaiOutingTimePK.ymd))
+					.filter(c -> param.get(c.krcdtDaiOutingTimePK.employeeId).contains(c.krcdtDaiOutingTimePK.ymd))
 					.collect(Collectors
 							.groupingBy(c -> c.krcdtDaiOutingTimePK.employeeId + c.krcdtDaiOutingTimePK.ymd.toString()))
 					.entrySet().stream()
@@ -485,7 +485,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 							c.getValue().get(0).krcdtDaiOutingTimePK.ymd,
 							c.getValue().stream().map(x -> toDtomain(x)).collect(Collectors.toList())))
 					.collect(Collectors.toList()));
-		});
+//		});
 		return result;
 	}
 }

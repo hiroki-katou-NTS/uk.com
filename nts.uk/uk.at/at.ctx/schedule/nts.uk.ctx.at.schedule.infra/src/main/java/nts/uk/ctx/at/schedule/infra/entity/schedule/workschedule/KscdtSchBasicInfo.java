@@ -139,7 +139,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 
 		GeneralDate yMD = workSchedule.getYmd();
 
-		// 勤務予定.勤務情報
+		// 勤務予定.所属情報
 		AffiliationInforOfDailyAttd workInfo = workSchedule.getAffInfo();
 
 		// 勤務予定.勤務情報
@@ -234,7 +234,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		List<ShortWorkingTimeSheet> shortWorkingTimeSheets = new ArrayList<>();
 		schShortTimeTs.stream().forEach(x->{
 			ShortWorkingTimeSheet shortWorkingTimeSheet = new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(x.getPk().getFrameNo()), EnumAdaptor.valueOf(x.getPk().getChildCareAtr(), ChildCareAttribute.class), 
-					EnumAdaptor.valueOf(x.getShortTimeTsStart(), TimeWithDayAttr.class), EnumAdaptor.valueOf(x.getShortTimeTsEnd(), TimeWithDayAttr.class));
+					new TimeWithDayAttr(x.getShortTimeTsStart()), new TimeWithDayAttr(x.getShortTimeTsEnd()));
 			shortWorkingTimeSheets.add(shortWorkingTimeSheet);
 		});
 		

@@ -68,8 +68,8 @@ public class OverTimeWorkDailyPerformDto implements ItemConst {
 												getAttendanceTime(c.getOrderTime()), c.getOverWorkFrameNo().v())),
 						ConvertHelper.mapTo(domain.getOverTimeWorkFrameTimeSheet(),
 										c -> new OverTimeFrameTimeSheetDto(
-												new TimeSpanForCalcDto(getAttendanceTime(c.getTimeSpan().getStart()),
-														getAttendanceTime(c.getTimeSpan().getEnd())),
+												new TimeSpanForCalcDto(getAttendanceTime(c.getTimeSpan() == null ? null : c.getTimeSpan().getStart()),
+														getAttendanceTime(c.getTimeSpan() == null ? null : c.getTimeSpan().getEnd())),
 												c.getFrameNo().v())),
 						ExcessOverTimeWorkMidNightTimeDto
 								.fromOverTimeWorkDailyPerform(domain.getExcessOverTimeWorkMidNightTime().isPresent()

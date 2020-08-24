@@ -13,7 +13,6 @@ import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.PublicManagementSh
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.PublicManagementShiftTableRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.WorkplaceInfo;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupImport;
@@ -58,8 +57,9 @@ public class Ksu001uScreenQuery {
 		
 		/** 2. 組織の表示情報を取得する(Require, 年月日) **/
 		DisplayInfoOrganization displayInfoOrganization = targetOrgIdenInfor.getDisplayInfor(require, date);
-		dto.setDisplayName(displayInfoOrganization.getDisplayName());
-		
+		if(displayInfoOrganization != null) {
+			dto.setDisplayName(displayInfoOrganization.getDisplayName());
+		}	
 		if(shiftTable.isPresent()) {			
 			dto.setPublicDate(shiftTable.get().getEndDatePublicationPeriod().toString());
 			
