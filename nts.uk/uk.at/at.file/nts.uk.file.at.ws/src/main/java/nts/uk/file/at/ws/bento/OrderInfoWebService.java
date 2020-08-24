@@ -26,7 +26,7 @@ public class OrderInfoWebService {
 
     @POST
     @Path("print/pdf")
-    public ExportServiceResult generatePdfDetail(CreateOrderInfoDataSource data) {
+    public ExportServiceResult generatePdf(CreateOrderInfoDataSource data) {
         return exportPDFService.start(data);
     }
 
