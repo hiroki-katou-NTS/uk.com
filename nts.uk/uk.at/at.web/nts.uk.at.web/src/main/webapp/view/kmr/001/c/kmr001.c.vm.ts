@@ -55,6 +55,8 @@ module nts.uk.at.kmr001.c {
         reservationStartTime2: KnockoutObservable<string> = ko.observable(null);
 
         operationDistinction: KnockoutObservable<number> = ko.observable(null);
+
+        isLasted: KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             super();
             const vm = this;
@@ -207,6 +209,7 @@ module nts.uk.at.kmr001.c {
                     if(vm.history && vm.history.params.historyId == result.params.historyId) {
                         return
                     }
+                    vm.isLasted(!!(result.params.endDate == '9999/12/31' || null));
                     vm.getBentoMenu(result.params.historyId );
                     vm.history = result;
                 });
