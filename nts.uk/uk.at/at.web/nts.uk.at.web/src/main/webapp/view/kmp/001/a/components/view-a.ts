@@ -160,8 +160,8 @@ module nts.uk.at.view.kmp001.a {
 					/** Quick search tab options */
 					showAllReferableEmployee: true, //参照可能な社員すべて
 					showOnlyMe: true, //自分だけ
-					showSameDepartment: true,
-					showSameDepartmentAndChild: true,
+					showSameDepartment: false,
+					showSameDepartmentAndChild: false,
 					showSameWorkplace: true, //同じ職場の社員
 					showSameWorkplaceAndChild: true, //同じ職場とその配下の社員
 
