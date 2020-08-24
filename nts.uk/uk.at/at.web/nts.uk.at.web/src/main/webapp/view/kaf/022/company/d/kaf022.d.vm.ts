@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmf022.d.viewmodel {
+module nts.uk.at.view.kaf022.d.viewmodel {
     import text = nts.uk.resource.getText;
 
     export class ScreenModelD {
@@ -40,15 +40,32 @@ module nts.uk.at.view.kmf022.d.viewmodel {
         initData(allData: any): void {
             const self = this;
             let data = allData.appChange;
+            let workTimeReflectAtr = allData.workTimeReflectAtr;
             if (data) {
-                self.selectedIdD15(data.initDisplayWorktime);
-                self.selectedIdD13(data.workChangeTimeAtr);
-                self.texteditorD9(data.commentContent1);
-                self.valueD10(data.commentFontColor1);
-                self.enableD11(data.commentFontWeight1);
-                self.texteditorD12(data.commentContent2);
-                self.valueD10_1(data.commentFontColor2);
-                self.enableD11_1(data.commentFontWeight2);
+                self.selectedIdD15(data.initDisplayWorktimeAtr);
+                self.selectedIdD13(workTimeReflectAtr);
+                self.texteditorD9(data.comment1.comment);
+                self.valueD10(data.comment1.colorCode);
+                self.enableD11(data.comment1.bold);
+                self.texteditorD12(data.comment2.comment);
+                self.valueD10_1(data.comment2.colorCode);
+                self.enableD11_1(data.comment2.bold);
+            }
+        }
+
+        collectData(): any {
+            const self = this;
+            return {
+                initDisplayWorktime: self.selectedIdD15(),
+                workTimeReflectAtr: self.selectedIdD13(),
+
+                commentContent1: self.texteditorD9(),
+                commentFontWeight1: self.enableD11() ? 1 : 0,
+                commentFontColor1: self.valueD10(),
+
+                commentContent2: self.texteditorD12(),
+                commentFontWeight2: self.enableD11_1() ? 1 : 0,
+                commentFontColor2: self.valueD10_1()
             }
         }
 

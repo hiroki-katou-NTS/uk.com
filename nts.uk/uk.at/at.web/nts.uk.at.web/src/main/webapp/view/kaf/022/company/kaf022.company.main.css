@@ -72,3 +72,9 @@ td .form-label {
     width: 195px;
     white-space: normal;
 }
+
+.vertical-radio .ntsRadioBox {
+    display: block;
+    padding: 5px 0;
+    width: 100%;
+}

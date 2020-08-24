@@ -55,52 +55,13 @@
             </tr>
             <tr data-bind="with: appDetailSetting">
                 <td class="color-header" id="f6">#{i18n.getText('KAF022_714')}</td>
-                <td>
-                    <div tabindex="4">
-                        <div class="ntsControl blockrow">
-                            <label  class="ntsRadioBox" >
-                                <input type="radio" name="textRadioF" data-bind="
-											checkedValue: 0,
-											checked: atWorkTimeBeginDisplay,
-											enable: true
-										" />
-                                <span class="box"/>
-                                <span class="label">#{i18n.getText('KAF022_37')}</span>
-                            </label>
-                        </div>
-                        <div class="ntsControl blockrow">
-                            <label  class="ntsRadioBox">
-                                <input type="radio" name="textRadioF" data-bind="
-											checkedValue: 1,
-											checked: atWorkTimeBeginDisplay,
-											enable: true
-										" />
-                                <span class="box"/>
-                                <span class="label">#{i18n.getText('KAF022_301')}</span>
-                            </label>
-                        </div>
-                        <div class="ntsControl blockrow">
-                            <label class="ntsRadioBox">
-                                <input type="radio" name="textRadioF" data-bind="
-											  checkedValue: 2,
-											  checked: atWorkTimeBeginDisplay,
-											  enable: true
-										  " />
-                                <span class="box"/>
-                                <span class="label">#{i18n.getText('KAF022_302')}</span>
-                            </label>
-                        </div>
-                        <div class="ntsControl blockrow">
-                            <label class="ntsRadioBox">
-                                <input type="radio" name="textRadioF" data-bind="
-											   checkedValue: 3,
-											   checked: atWorkTimeBeginDisplay,
-											   enable: true
-											" />
-                                <span class="box"/>
-                                <span class="label">#{i18n.getText('KAF022_303')}</span>
-                            </label>
-                        </div>
+                <td class="vertical-radio">
+                    <div tabindex="4" data-bind="ntsRadioBoxGroup: {
+                            options: $parent.itemListWorkTimeBeginDisplay,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: atworkTimeBeginDisp,
+                            enable: true}">
                     </div>
                 </td>
             </tr>
@@ -147,7 +108,7 @@
                             options: $parent.itemListB242,
                             optionsValue: 'code',
                             optionsText: 'name',
-                            value: preRequiredSet,
+                            value: preRequireSet,
                             enable: true }">
                     </div>
                 </td>

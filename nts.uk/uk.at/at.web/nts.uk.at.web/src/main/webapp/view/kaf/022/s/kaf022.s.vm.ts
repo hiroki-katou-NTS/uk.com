@@ -255,13 +255,9 @@ module nts.uk.at.view.kaf022.s.viewmodel {
     }
 
     function makeIcon(value) {
-        if (value == true) {
+        if (value == "true") {
             return '<i class="icon icon-dot"></i>';
         }
         return '';
     }
 }
-
-
-
-

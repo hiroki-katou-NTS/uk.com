@@ -20,7 +20,7 @@
 								options: itemListD15,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: selectedIdD15,
+								value: cancelAtr,
 								enable: true}">
 					</div>
 				</td>
@@ -92,7 +92,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td style="border-bottom: none" class="color-header" id="d4">
+				<td style="border-bottom: none" class="color-header">
 					<div data-bind="ntsFormLabel: {
 										constraint: 'Comment',
 										inline: true
@@ -100,7 +100,7 @@
 				</td>
 				<td>
 					<div class="control-group valign-center">
-						<input tabindex="2" id="d12_1" data-bind="ntsTextEditor: {
+						<input tabindex="2" data-bind="ntsTextEditor: {
 										name: '#[KAF022_183]',
 										value: texteditorD12,
 										constraint: 'Comment',
@@ -108,13 +108,13 @@
 										enable: true,
 										readonly: false
 									}" />
-						<div tabindex="3" id="colorpicker" data-bind="ntsColorPicker: {
+						<div tabindex="3" data-bind="ntsColorPicker: {
 										value: valueD10_1,
 										name: '#[KAF022_184]',
 										enable: true,
 										width: 40
 									}"/>
-						<div tabindex="4" id="d12_3" data-bind="ntsCheckBox: {
+						<div tabindex="4" data-bind="ntsCheckBox: {
 										checked: enableD11_1
 									}">#{i18n.getText('KAF022_185')}</div>
 					</div>
@@ -664,4 +664,102 @@
 			</tr>
 		</tbody>
 	</table>
+	<div data-bind="foreach: stampTypeSettings">
+		<table id="fixed-table-j22">
+			<colgroup>
+				<col width="270px"/>
+				<col width="650px"/>
+			</colgroup>
+			<thead>
+			<tr>
+				<th class="ui-widget-header" colspan="2" data-bind="text: headerText"/>
+			</tr>
+			</thead>
+			<tbody>
+			<tr class="inline-radio">
+				<td class="color-header" data-bind="text: reflectText"/>
+				<td class="two-radio">
+					<div tabindex="1" data-bind="ntsRadioBoxGroup: {
+									options: $parent.itemListD15,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: reflectAtr,
+									enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr class="inline-radio">
+				<td class="color-header" data-bind="text: reflectText"/>
+				<td class="two-radio">
+					<div tabindex="2" data-bind="ntsRadioBoxGroup: {
+									options: $parent.itemListD13,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: reflectAtr,
+									enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td style="border-bottom: none" class="color-header">
+					<div data-bind="ntsFormLabel: {
+										constraint: 'Comment',
+										inline: true,
+										text: comment1Text
+									}"/>
+				</td>
+				<td>
+					<div class="control-group valign-center">
+						<input tabindex="2" data-bind="ntsTextEditor: {
+										name: '#[KAF022_183]',
+										value: comment1Content,
+										constraint: 'Comment',
+										required: false,
+										enable: true,
+										readonly: false
+									}" />
+						<div tabindex="3" data-bind="ntsColorPicker: {
+										value: comment1Color,
+										enable: true,
+										width: 40
+									}"/>
+						<div tabindex="4" data-bind="ntsCheckBox: {
+										checked: comment1FontWeight
+									}">#{i18n.getText('KAF022_185')}</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td style="border-bottom: none" class="color-header">
+					<div data-bind="ntsFormLabel: {
+										constraint: 'Comment',
+										inline: true,
+										text: comment2Text
+									}"/>
+				</td>
+				<td>
+					<div class="control-group valign-center">
+						<input tabindex="2" data-bind="ntsTextEditor: {
+										name: '#[KAF022_183]',
+										value: comment2Content,
+										constraint: 'Comment',
+										required: false,
+										enable: true,
+										readonly: false
+									}" />
+						<div tabindex="3" data-bind="ntsColorPicker: {
+										value: comment2Color,
+										name: '#[KAF022_184]',
+										enable: true,
+										width: 40
+									}"/>
+						<div tabindex="4" data-bind="ntsCheckBox: {
+										checked: comment2FontWeight
+									}">#{i18n.getText('KAF022_185')}</div>
+					</div>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
 </ui:composition>

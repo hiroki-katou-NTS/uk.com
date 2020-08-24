@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.UpdateAppTypeBfCommandHandler;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsett
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.hdappset.UpdateTimeHdAppSetHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.hdworkappset.UpdateWDAppSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.withdrawalrequestset.UpdateWithDrawalReqSetHandler;
+import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.workchange.SaveAppWorkChangeSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationcommonsetting.UpdateAppCommonSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationsetting.UpdateProxyAppSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.displayname.UpdateAppDispNameCommandHandler;
@@ -30,11 +32,17 @@ import nts.uk.ctx.at.request.app.command.setting.company.request.stamp.UpdateSta
 import nts.uk.ctx.at.request.app.command.setting.company.vacationapplicationsetting.UpdateHdAppSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.request.gobackdirectlycommon.UpdateGoBackDirectlyCommonSettingCommandHandler;
 import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExeConditionRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.CancelAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReason;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflect;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflectRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.overtimeworkapplycation.OvertimeWorkApplicationReflect;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.ApprovalSettingCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.JobAssignSettingCommand;
@@ -140,7 +148,16 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 
 	@Inject
     private OvertimeAppSetRepository overtimeAppSetRepo;
-	
+
+	@Inject
+	private SaveAppWorkChangeSetCommandHandler saveAppWorkChangeSetCommandHandler;
+
+	@Inject
+	private GoBackReflectRepository goBackReflectRepo;
+
+	@Inject
+	private LateEarlyCancelAppSetRepository lateEarlyCancelRepo;
+
 	@Override
 	protected void handle(CommandHandlerContext<Kaf022AddCommand> context) {
 		String companyId = AppContexts.user().companyId();
@@ -155,6 +172,20 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 		appReflectConditionRepo.save(kaf022.getAppReflectCondition().toDomain(companyId));
 
 		overtimeAppSetRepo.saveOvertimeAppSet(kaf022.getOvertimeApplicationSetting().toDomain(companyId), kaf022.getOvertimeApplicationReflect().toDomain());
+
+		saveAppWorkChangeSetCommandHandler.handle(kaf022.getAppWorkChangeSetting());
+
+		if (goBackReflectRepo.findByCompany(companyId).isPresent()) {
+			goBackReflectRepo.update(GoBackReflect.create(companyId, kaf022.getGoBackReflectAtr()));
+		} else {
+			goBackReflectRepo.add(GoBackReflect.create(companyId, kaf022.getGoBackReflectAtr()));
+		}
+
+		lateEarlyCancelRepo.save(
+				companyId,
+				new LateEarlyCancelAppSet(companyId, EnumAdaptor.valueOf(kaf022.getLateEarlyCancelAtr(), CancelAtr.class)),
+				new LateEarlyCancelReflect(companyId, BooleanUtils.toBoolean(kaf022.getLateEarlyClearAlarmAtr()))
+		);
 	}
 
 	private void oldmethod (CommandHandlerContext<Kaf022AddCommand> context) {

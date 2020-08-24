@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
 @EqualsAndHashCode(callSuper=false)
@@ -19,5 +20,9 @@ public class GoBackReflect extends AggregateRoot{
 	
 	public String getContent() {
 		return null;
+	}
+
+	public static GoBackReflect create(String companyId, int reflectAtr) {
+		return new GoBackReflect(companyId, EnumAdaptor.valueOf(reflectAtr, ApplicationStatus.class));
 	}
 }

@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmf022.company.service {
+module nts.uk.at.view.kaf022.company.service {
     import ajax = nts.uk.request.ajax;
     import exportFile = nts.uk.request.exportFile;
 

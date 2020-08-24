@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmf022.a.viewmodel {
+module nts.uk.at.view.kaf022.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import modal = nts.uk.ui.windows.sub.modal;
     let __viewContext: any = window["__viewContext"] || {};

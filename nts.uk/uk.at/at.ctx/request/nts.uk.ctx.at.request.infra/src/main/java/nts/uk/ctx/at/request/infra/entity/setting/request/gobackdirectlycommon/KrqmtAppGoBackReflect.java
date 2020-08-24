@@ -11,16 +11,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "KRQST_APP_GOBACK_DIRECTLY")
-public class KrqstAppGoBackReflect extends UkJpaEntity{
+@Table(name = "KRQMT_APP_GOBACK_DIRECTLY")
+public class KrqmtAppGoBackReflect extends ContractUkJpaEntity {
 	@EmbeddedId
-	private KrqstAppGoBackDirectlyPK appGoBackDirectlyPK;
+	private KrqmtAppGoBackDirectlyPK appGoBackDirectlyPK;
 	@Column(name = "WORK_REFLECT_ATR")
 	private int reflectApp;
 	@Override

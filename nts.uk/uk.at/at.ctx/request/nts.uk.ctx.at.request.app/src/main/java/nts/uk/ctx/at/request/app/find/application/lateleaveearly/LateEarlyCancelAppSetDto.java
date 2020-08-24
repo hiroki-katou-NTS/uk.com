@@ -14,15 +14,15 @@ public class LateEarlyCancelAppSetDto {
 
 	private int cancelAtr;
 
-	private int lateAlClearAtr;
+//	private int lateAlClearAtr;
 
 	public static LateEarlyCancelAppSetDto fromDomain(LateEarlyCancelAppSet lateEarlyCancelAppSet) {
-		return (lateEarlyCancelAppSet == null) ? null : new LateEarlyCancelAppSetDto(lateEarlyCancelAppSet.getCompanyID(),
-				lateEarlyCancelAppSet.getCancelAtr().value, lateEarlyCancelAppSet.getLateAlClearAtr());
+		return (lateEarlyCancelAppSet == null) ? null
+				: new LateEarlyCancelAppSetDto(lateEarlyCancelAppSet.getCompanyID(),
+				lateEarlyCancelAppSet.getCancelAtr().value);
 	}
 
 	public LateEarlyCancelAppSet toDomain() {
-		return new LateEarlyCancelAppSet(this.companyId, EnumAdaptor.valueOf(this.getCancelAtr(), CancelAtr.class),
-				this.lateAlClearAtr);
+		return new LateEarlyCancelAppSet(this.companyId, EnumAdaptor.valueOf(this.getCancelAtr(), CancelAtr.class));
 	}
 }

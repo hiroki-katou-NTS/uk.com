@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmf022.e.viewmodel {
+module nts.uk.at.view.kaf022.e.viewmodel {
     import text = nts.uk.resource.getText;
 
     export class ScreenModelE {

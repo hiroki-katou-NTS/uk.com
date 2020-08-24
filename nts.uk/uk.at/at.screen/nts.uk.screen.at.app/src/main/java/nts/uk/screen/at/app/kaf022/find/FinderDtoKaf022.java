@@ -6,9 +6,12 @@ import javax.inject.Inject;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfFinder;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationSettingFinder;
+import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackReflectDto;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
+import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampSettingDto;
 import nts.uk.ctx.at.request.app.find.application.triprequestsetting.TripRequestSetFinder;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeFinder;
+import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto;
 import nts.uk.ctx.at.request.app.find.applicationreflect.AppReflectExeConditionDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.appovertime.AppOvertimeSettingFinder;
 import nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.hdapplicationsetting.TimeHdAppSetFinder;
@@ -32,22 +35,30 @@ import nts.uk.ctx.at.request.app.find.setting.company.request.stamp.StampRequest
 import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetFinder;
 import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
 import nts.uk.ctx.at.request.app.find.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingFinder;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeSetRepository;
 import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExeConditionRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.AppStampSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflectRepository;
 import nts.uk.ctx.at.shared.app.find.ot.frame.OvertimeWorkFrameFindDto;
 import nts.uk.ctx.at.shared.app.find.ot.frame.OvertimeWorkFrameFinder;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.overtimeworkapplycation.OvertimeWorkApplicationReflectDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.ClosureHistoryFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryFindDto;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuNameExport;
 import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuNameQuery;
 import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuPub;
 import nts.uk.ctx.workflow.app.find.approvermanagement.setting.ApprovalSettingFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.setting.JobAssignSettingFinder;
 import nts.uk.shr.com.context.AppContexts;
+import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -95,9 +106,9 @@ public class FinderDtoKaf022 {
 	private AppOvertimeSettingFinder overTimeFinder;
 	@Inject
 	private HdAppSetFinder hdAppFinder;
-	
-	@Inject
-	AppWorkChangeFinder appWorkFinder;
+
+    @Inject
+    private AppWorkChangeSetRepository appWorkChangeSetRepo;
 	
 	@Inject
 	private TripRequestSetFinder tripFinder;
@@ -158,18 +169,32 @@ public class FinderDtoKaf022 {
 
 	@Inject
     private AppReflectExeConditionRepository appReflectConditionRepo;
-	
+
+	@Inject
+	private GoBackReflectRepository goBackReflectRepo;
+
+	@Inject
+    private LateEarlyCancelAppSetRepository lateEarlyCancelRepo;
+
+	@Inject
+    private AppStampSettingRepository appStampSettingRepo;
+
 	public DtoKaf022 findDtoKaf022() {
 		String companyId = AppContexts.user().companyId();
 		// TODO: get Application Settings
 		ApplicationSettingDto applicationSetting = appSettingRepo.findByCompanyId(companyId).map(ApplicationSettingDto::fromDomain).orElse(null);
 		List<DisplayReasonDto> displayReasons = displayReasonRepo.findByCompanyId(companyId).stream().map(DisplayReasonDto::fromDomain).collect(Collectors.toList());
 		OvertimeAppSetDto overTimeAppSetting = overtimeAppSetRepo.findSettingByCompanyId(companyId).map(OvertimeAppSetDto::fromDomain).orElse(null);
-		List<OvertimeWorkFrameFindDto> overtimeFrames = overtimeFrameFinder.findAll();
+        AppWorkChangeSetDto appWorkChangeSetDto = appWorkChangeSetRepo.findByCompanyId(companyId).map(AppWorkChangeSetDto::fromDomain).orElse(null);
+        LateEarlyCancelAppSet lateEarlyCancelAppSet = lateEarlyCancelRepo.getByCId(companyId);
+        AppStampSettingDto appStampSetting = appStampSettingRepo.findByCompanyId(companyId).map(AppStampSettingDto::fromDomain).orElse(null);
 
 		// TODO: get Reflection Settings
         AppReflectExeConditionDto appReflectCondition = appReflectConditionRepo.findByCompanyId(companyId).map(AppReflectExeConditionDto::fromDomain).orElse(null);
         OvertimeWorkApplicationReflectDto overtimeAppReflect = overtimeAppSetRepo.findReflectByCompanyId(companyId).map(OvertimeWorkApplicationReflectDto::fromDomain).orElse(null);
+        ReflectWorkChangeApp reflectWorkChangeApp = appWorkChangeSetRepo.findByCompanyIdReflect(companyId).orElse(null);
+		GoBackReflectDto goBackReflect = goBackReflectRepo.findByCompany(companyId).map(GoBackReflectDto::fromDomain).orElse(null);
+        LateEarlyCancelReflect lateEarlyCancelReflect = lateEarlyCancelRepo.getByCompanyId(companyId);
 
 		// TODO: get menu
 		List<StandardMenuNameQuery> queries = new ArrayList<>();
@@ -199,16 +224,15 @@ public class FinderDtoKaf022 {
 //		result.appTemp = tempFinder.findByComId();
 //		result.appliSet = appSetFind.finder();
 //		result.appName = dispFinder.findByCom();
-		result.stampReq = stampRequestSettingFinder.findByCompanyID();
-		result.goBack = goBackSettingFinder.findGoBackDirectlyCommonSettingbyAppID();
-		result.appOt = overTimeFinder.findByCom();
-		result.hdSet = hdAppFinder.findByApp();
-		result.appChange = appWorkFinder.findByCompany();
-		result.tripReq = tripFinder.findByCid();
-		result.wdApp = withFinder.findByCid();
-		result.timeHd = timeFinder.findByCid();
-		result.wdReq = withDrawalReqSetFinder.findByCompanyID();
-		result.lateEarly = lateEarlyRequestFinder.findByCompanyID();
+//		result.stampReq = stampRequestSettingFinder.findByCompanyID();
+
+//		result.hdSet = hdAppFinder.findByApp();
+
+//		result.tripReq = tripFinder.findByCid();
+//		result.wdApp = withFinder.findByCid();
+//		result.timeHd = timeFinder.findByCid();
+//		result.wdReq = withDrawalReqSetFinder.findByCompanyID();
+//		result.lateEarly = lateEarlyRequestFinder.findByCompanyID();
 		// a7, 8
 //		result.appBf = bfreqFinder.findByCom();
 		// A14
@@ -216,7 +240,7 @@ public class FinderDtoKaf022 {
 		
 		// B8 -> B26
 
-		result.otRestApp7 = otRestAppComFinder.findByApp7();
+//		result.otRestApp7 = otRestAppComFinder.findByApp7();
 		// A16_14, A16_15
 //		result.contentMail = contentMailFinder.findByCom();
 		// A16_17
@@ -230,7 +254,6 @@ public class FinderDtoKaf022 {
 		result.setReasonDisplaySettings(displayReasons);
 		result.setMenus(menuList);
 		result.setAppReflectCondition(appReflectCondition);
-//		result.setOvertimeWorkFrames(overtimeFrames);
 		result.setNightOvertimeReflectAtr(appSettingRepo.getNightOvertimeReflectAtr(companyId));
 		result.jobAssign = jobFinder.findApp();
 		result.approvalSettingDto = approvalSettingFinder.findApproSet();
@@ -238,6 +261,20 @@ public class FinderDtoKaf022 {
 		// B
         result.setOvertimeAppSetting(overTimeAppSetting);
         result.setOvertimeAppReflect(overtimeAppReflect);
+
+        // D
+        result.appChange = appWorkChangeSetDto;
+        result.workTimeReflectAtr = reflectWorkChangeApp != null ? reflectWorkChangeApp.getWhetherReflectAttendance().value : 0;
+
+        // F
+		result.goBackReflect = goBackReflect;
+
+		// I
+        result.lateEarlyCancelAtr = lateEarlyCancelAppSet != null ? lateEarlyCancelAppSet.getCancelAtr().value : 0;
+        result.lateEarlyClearAlarmAtr = lateEarlyCancelReflect != null ? BooleanUtils.toInteger(lateEarlyCancelReflect.isClearLateReportWarning()) : 0;
+
+        // J
+        result.appStampSetting = appStampSetting;
 
 		return result;
 	}

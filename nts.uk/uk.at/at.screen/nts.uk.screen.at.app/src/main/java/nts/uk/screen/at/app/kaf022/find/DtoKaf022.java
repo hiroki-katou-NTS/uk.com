@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackReflectDto;
+import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampSettingDto;
 import nts.uk.ctx.at.request.app.find.application.triprequestsetting.TripRequestSetDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto;
 import nts.uk.ctx.at.request.app.find.applicationreflect.AppReflectExeConditionDto;
@@ -35,32 +37,41 @@ import nts.uk.ctx.workflow.app.find.approvermanagement.setting.JobAssignSettingD
 public class DtoKaf022 {
 	public List<ClosureHistoryFindDto> allClosure;
 
-	public StampRequestSettingDto stampReq;
-	public GoBackDirectlyCommonSettingDto goBack;
-	public AppOvertimeSettingDto appOt;
-	public HdAppSetDto hdSet;
-	public AppWorkChangeSetDto appChange;
-	public TripRequestSetDto tripReq;
-	public WithdrawalAppSetDto wdApp;
-	public TimeHdAppSetDto timeHd;
-	public WithDrawalReqSetDto wdReq;
-	public LateEarlyRequestDto lateEarly;
-
-	// A14
-	public ApprovalSettingDto approvalSettingDto;
-	// B8 -> B26
-	public OvertimeRestAppCommonSetDto otRestAppCom;
-	// G10 -> G23
-	public OvertimeRestAppCommonSetDto otRestApp7;
+//	public StampRequestSettingDto stampReq;
+//	public HdAppSetDto hdSet;
+//
+//	public TripRequestSetDto tripReq;
+//	public WithdrawalAppSetDto wdApp;
+//	public TimeHdAppSetDto timeHd;
+//	public WithDrawalReqSetDto wdReq;
+//	public LateEarlyRequestDto lateEarly;
+//
+//	// A14
+//
+//	// B8 -> B26
+//	public OvertimeRestAppCommonSetDto otRestAppCom;
+//	// G10 -> G23
+//	public OvertimeRestAppCommonSetDto otRestApp7;
 
 	// refactor 4
 	public ApplicationSettingDto applicationSetting;
 	public List<DisplayReasonDto> reasonDisplaySettings;
 	public List<StandardMenuNameExport> menus;
 	public JobAssignSettingDto jobAssign;
+	public ApprovalSettingDto approvalSettingDto;
 	public AppReflectExeConditionDto appReflectCondition;
 	public Integer nightOvertimeReflectAtr;
-//	public List<OvertimeWorkFrameFindDto> overtimeWorkFrames;
+
 	public OvertimeAppSetDto overtimeAppSetting;
 	public OvertimeWorkApplicationReflectDto overtimeAppReflect;
+
+	public AppWorkChangeSetDto appChange;
+	public Integer workTimeReflectAtr;
+
+	public GoBackReflectDto goBackReflect;
+
+	public int lateEarlyCancelAtr;
+	public int lateEarlyClearAlarmAtr;
+
+	public AppStampSettingDto appStampSetting;
 }

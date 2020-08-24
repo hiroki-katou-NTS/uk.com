@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppCommentSet;
@@ -13,6 +15,8 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppC
  */
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AppWorkChangeSet implements DomainAggregate {
 	
 	/**

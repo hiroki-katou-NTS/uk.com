@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmf022.x {
+module nts.uk.at.view.kaf022.x {
     export module viewmodel {
         export class ScreenModel {
             constructor() {

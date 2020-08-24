@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmf022.b.viewmodel {
+module nts.uk.at.view.kaf022.b.viewmodel {
     import getText = nts.uk.resource.getText;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
@@ -54,6 +54,13 @@ module nts.uk.at.view.kmf022.b.viewmodel {
         itemListB5: KnockoutObservableArray<ItemModel> = ko.observableArray([
             {code: 0, name: getText('KAF022_44')},
             {code: 1, name: getText('KAF022_396')},
+        ]);
+
+        itemListWorkTimeBeginDisplay: KnockoutObservableArray<ItemModel> = ko.observableArray([
+            new ItemModel(0, getText("KAF022_37")),
+            new ItemModel(1, getText("KAF022_301")),
+            new ItemModel(2, getText("KAF022_302")),
+            new ItemModel(3, getText("KAF022_303"))
         ]);
 
         overtimeLeaveAppCommonSetting: KnockoutObservable<OvertimeLeaveAppCommonSetting>;
@@ -135,18 +142,18 @@ module nts.uk.at.view.kmf022.b.viewmodel {
 
     class AppDetailSetting {
         requiredInstruction: KnockoutObservable<number>;
-        preRequiredSet: KnockoutObservable<number>;
+        preRequireSet: KnockoutObservable<number>;
         timeInputUse: KnockoutObservable<number>;
         timeCalUse: KnockoutObservable<number>;
-        atWorkTimeBeginDisplay: KnockoutObservable<number>;
+        atworkTimeBeginDisp: KnockoutObservable<number>;
         dispSystemTimeWhenNoWorkTime: KnockoutObservable<number>;
 
         constructor(appDetailSetting?: any) {
             this.requiredInstruction = ko.observable(appDetailSetting ? appDetailSetting.requiredInstruction : 0);
-            this.preRequiredSet = ko.observable(appDetailSetting ? appDetailSetting.preRequireSet : 0);
+            this.preRequireSet = ko.observable(appDetailSetting ? appDetailSetting.preRequireSet : 0);
             this.timeInputUse = ko.observable(appDetailSetting ? appDetailSetting.timeInputUse : 0);
             this.timeCalUse = ko.observable(appDetailSetting ? appDetailSetting.timeCalUse : 0);
-            this.atWorkTimeBeginDisplay = ko.observable(appDetailSetting ? appDetailSetting.atworkTimeBeginDisp : 0);
+            this.atworkTimeBeginDisp = ko.observable(appDetailSetting ? appDetailSetting.atworkTimeBeginDisp : 0);
             this.dispSystemTimeWhenNoWorkTime = ko.observable(appDetailSetting ? appDetailSetting.dispSystemTimeWhenNoWorkTime : 0);
         }
     }
