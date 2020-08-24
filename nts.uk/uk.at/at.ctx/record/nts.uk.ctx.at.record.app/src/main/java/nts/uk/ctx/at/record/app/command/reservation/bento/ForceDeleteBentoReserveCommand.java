@@ -11,7 +11,7 @@ public class ForceDeleteBentoReserveCommand {
     /**
      * 予約登録情報
      */
-    List<ReservationInfo> reservationInfos;
+    List<ReservationInfoCommand> reservationInfos;
 
     /**
      * 予約対象日
@@ -24,7 +24,7 @@ public class ForceDeleteBentoReserveCommand {
     int closingTimeFrame;
 
     @Value
-    public class ReservationInfo{
+    public static class ReservationInfoCommand{
         /**
          * 予約登録情報
          */
