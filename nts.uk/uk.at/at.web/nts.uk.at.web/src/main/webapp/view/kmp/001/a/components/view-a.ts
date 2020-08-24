@@ -22,7 +22,7 @@ module nts.uk.at.view.kmp001.a {
 			<div class="float-left model-component" 
 				data-bind="component: { 
 					name: 'editor-area', 
-					params: { model: model, maxLength: maxLength, textInput: textInput}}"></div>
+					params: { model: model, stampCardEdit: stampCardEdit, textInput: textInput}}"></div>
 		<div>
 `;
 
@@ -51,7 +51,7 @@ module nts.uk.at.view.kmp001.a {
 		public baseDate: KnockoutObservable<string> = ko.observable('');
 		public currentCodes: KnockoutObservableArray<string> = ko.observableArray([]);
 		public mode: KnockoutObservable<MODE> = ko.observable('new');
-		public maxLength: KnockoutObservable<string> = ko.observable('');
+		public stampCardEdit: share.StampCardEdit = new share.StampCardEdit();
 		public textInput: KnockoutObservable<string> = ko.observable('');
 
 		created() {
@@ -70,7 +70,7 @@ module nts.uk.at.view.kmp001.a {
 						vm.$ajax(KMP001A_API.GET_INFOMAITON_EMPLOYEE + "/" + ko.toJS(current.employeeId) + "/" + ko.toJS(current.affiliationId) + "/" + ko.toJS(vm.baseDate))
 							.then((data: IModel) => {
 
-								if (moment(data.retiredDate).format(DATE_FORMAT) === "9999/12/31")  {
+								if (moment(data.retiredDate).format(DATE_FORMAT) === "9999/12/31") {
 									data.retiredDate = null;
 								}
 
@@ -208,8 +208,8 @@ module nts.uk.at.view.kmp001.a {
 
 			vm.$window
 				.modal('/view/kmp/001/d/index.xhtml')
-				.then((data: any) => {
-					vm.maxLength(data.length);
+				.then((data: IStampCardEdit) => {
+					vm.stampCardEdit.update(data);
 				});
 		}
 
@@ -235,7 +235,8 @@ module nts.uk.at.view.kmp001.a {
 				nts.uk.ui.dialog
 					.confirm({ messageId: "Msg_18" })
 					.ifYes(() => {
-						vm.$ajax(KMP001A_API.DELETE, command)
+						vm.$blockui("invisible")
+							.then(() => vm.$ajax(KMP001A_API.DELETE, command))
 							.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 							.then(() => vm.reloadData(index))
 							.then(() => vm.model.code.valueHasMutated())
@@ -252,13 +253,12 @@ module nts.uk.at.view.kmp001.a {
 			const vm = this,
 				model: IModel = ko.toJS(vm.model),
 				index = _.map(ko.unwrap(vm.employees), m => m.code).indexOf(model.code);;
-			
+
 			var stampInput = "";
-			
 
 			if (ko.unwrap(vm.model.code) != '') {
-				
-				if (ko.toJS(vm.model.stampCardDto).length > 0){
+
+				if (ko.toJS(vm.model.stampCardDto).length > 0) {
 					const stamp: share.IStampCard = ko.toJS(model.stampCardDto[0]);
 					stampInput = stamp.stampNumber;
 				} else {
@@ -271,11 +271,38 @@ module nts.uk.at.view.kmp001.a {
 					vm.validate()
 						.then((valid: boolean) => {
 							if (valid) {
-								vm.$blockui("invisible");
-								const commandNew = { employeeId: ko.toJS(model.employeeId), cardNumber: stampInput };
+								var s = (ko.toJS(vm.stampCardEdit.stampCardDigitNumber) - stampInput.length);
 
+								if (s > 0) {
+									switch (ko.toJS(vm.stampCardEdit.stampCardEditMethod)) {
+										case 1:
+											for (var i = 0; i < s; i++) {
+												stampInput = "0" + stampInput;
+											}
+											break;
+										case 2:
+											for (var i = 0; i < s; i++) {
+												stampInput = stampInput + "0";
+											}
+											break;
+										case 3:
+											for (var i = 0; i < s; i++) {
+												stampInput = " " + stampInput;
+											}
+											break;
+										case 4:
+											for (var i = 0; i < s; i++) {
+												stampInput = stampInput + " ";
+											}
+											break;
+									}
+								}
+
+								const commandNew = { employeeId: ko.toJS(model.employeeId), cardNumber: stampInput };
+								
 								vm.$ajax(KMP001A_API.ADD, commandNew)
 									.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+									.then(() => vm.$blockui("invisible"))
 									.then(() => vm.textInput(''))
 									.then(() => vm.reloadData(index))
 									.then(() => vm.model.code.valueHasMutated())

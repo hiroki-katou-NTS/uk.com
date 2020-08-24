@@ -43,7 +43,7 @@ module nts.uk.at.view.kmp001.a {
 <div>
 	<div>
 		<div class="list-card" 
-			data-bind="component: { name: 'card-list-component', params: { model: model, maxLength: maxLength, textInput: textInput}}"></div>
+			data-bind="component: { name: 'card-list-component', params: { model: model, stampCardEdit: stampCardEdit, textInput: textInput}}"></div>
 	</div>
 </div>
 `
@@ -54,13 +54,13 @@ module nts.uk.at.view.kmp001.a {
 	})
 	class RightPanelComponent extends ko.ViewModel {
 		model!: Model;
-		maxLength: KnockoutObservable<string>;
+		stampCardEdit!: StampCardEdit;
 		textInput: KnockoutObservable<string>;
 		created(params: any) {
 			const vm = this;
 
 			vm.model = params.model;
-			vm.maxLength = params.maxLength;
+			vm.stampCardEdit = params.stampCardEdit;
 			vm.textInput = params.textInput;
 		}
 

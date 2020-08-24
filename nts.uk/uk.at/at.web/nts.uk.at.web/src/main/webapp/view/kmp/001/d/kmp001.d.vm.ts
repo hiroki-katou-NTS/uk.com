@@ -7,8 +7,8 @@ module nts.uk.at.view.kmp001.d {
 	};
 
 	export interface ReturnData {
-		maxLength: number;
-		paddingType: StampCardEditMethod;
+		stampCardDigitNumber: number;
+		stampCardEditMethod: StampCardEditMethod;
 	}
 
 	@bean()
@@ -84,12 +84,12 @@ module nts.uk.at.view.kmp001.d {
 
 		addSetting() {
 			const vm = this;
-			const length = ko.unwrap(vm.selectedLength);
-			const paddingType = ko.unwrap(vm.paddingType);
-			const command = { digitsNumber: length, stampMethod: paddingType };
+			const stampCardDigitNumber = ko.unwrap(vm.selectedLength);
+			const stampCardEditMethod = ko.unwrap(vm.paddingType);
+			const command = { digitsNumber: stampCardDigitNumber, stampMethod: stampCardEditMethod };
 
 			vm.$ajax(KMP001D_API.UPDATE_EDITTING, command);
-			vm.$window.close({ length, paddingType });
+			vm.$window.close({ stampCardDigitNumber, stampCardEditMethod });
 
 		}
 	}
