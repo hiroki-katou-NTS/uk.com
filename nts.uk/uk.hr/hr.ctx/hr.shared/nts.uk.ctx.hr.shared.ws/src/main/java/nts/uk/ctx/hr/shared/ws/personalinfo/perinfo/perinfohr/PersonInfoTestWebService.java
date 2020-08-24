@@ -17,6 +17,7 @@ import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.AddP
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.DeletePersonInfoHR;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.GetPersonInfoHR;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.GetPersonInfoHRInput;
+import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.GetPersonInfoHROutput;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.UpdatePersonInfoHR;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.UpdatePersonInfoHRInput;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.HistoryGetDegreeApp;
@@ -80,8 +81,8 @@ public class PersonInfoTestWebService extends WebService {
 	
 	@POST
 	@Path("get")
-	public void testGetPersonHR(GetPersonInfoHRInput input) {
-		getPerson.getPersonInfo(input);
+	public List<GetPersonInfoHROutput> testGetPersonHR(GetPersonInfoHRInput input) {
+		return getPerson.getPersonInfo(input);
 	}
 	
 	@POST
