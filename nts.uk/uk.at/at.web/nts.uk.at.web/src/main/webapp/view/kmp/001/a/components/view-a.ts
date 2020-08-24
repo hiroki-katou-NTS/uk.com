@@ -279,6 +279,7 @@ module nts.uk.at.view.kmp001.a {
 
 								vm.$ajax(KMP001A_API.ADD, commandNew)
 									.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+									.then(() => vm.textInput(''))
 									.then(() => vm.reloadData(index))
 									.then(() => vm.model.code.valueHasMutated())
 									.fail((err: any) => {

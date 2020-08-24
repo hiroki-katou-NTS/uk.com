@@ -290,7 +290,7 @@ module nts.uk.at.view.kmp001.b {
 						vm.$ajax(KMP001B_API.DELETE_STAMP, command)
 							.done(() => vm.$dialog.info({ messageId: "Msg_16" }))
 							.then(() => vm.model.clear())
-							.then(() => vm.reloadAllStampCard(0));
+							.then(() => vm.reloadAllStampCard(newIndex));
 					})
 			}
 			vm.$blockui("clear");

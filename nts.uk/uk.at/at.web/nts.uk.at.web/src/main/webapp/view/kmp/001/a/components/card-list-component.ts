@@ -82,7 +82,7 @@ module nts.uk.at.view.kmp001.a {
 						{ headerText: vm.$i18n('KMP001_31'), key: "stampCardId", dataType: "string", width: 1, hidden: true },
 						{ headerText: vm.$i18n('KMP001_22'), key: "stampNumber", dataType: "string", width: 200, hidden: false }
 					],
-					height: `${30 + (23 * row)}px`,
+					height: `${30 + (23.5 * row)}px`,
 					dataSource: [],
 					features: [{
 						name: "Selection",
