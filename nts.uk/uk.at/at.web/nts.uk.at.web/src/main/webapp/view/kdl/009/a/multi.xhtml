@@ -66,13 +66,13 @@
 												</td>
 												<td class="border-dotted">
 													<span data-bind="text: listDigestion[0].digestionDateText"></span>
-													<span data-bind="text: listDigestion[0].digestionNumberText" class="margin-left-20"></span>
+													<span data-bind="text: listDigestion[0].digestionNumberText" class="float-right margin-right-40"></span>
 												</td>
 											</tr>
 											<tr>
 												<td>
 													<span data-bind="text: listDigestion[1].digestionDateText"></span>
-													<span data-bind="text: listDigestion[1].digestionNumberText" class="margin-left-20"></span>
+													<span data-bind="text: listDigestion[1].digestionNumberText" class="float-right margin-right-40"></span>
 												</td>
 											</tr>
 										</com:ko-if>
@@ -86,7 +86,7 @@
 												</td>
 												<td rowspan="2">
 													<span data-bind="text: listDigestion[0].digestionDateText"></span>
-													<span data-bind="text: listDigestion[0].digestionNumberText" class="margin-left-20"></span>
+													<span data-bind="text: listDigestion[0].digestionNumberText" class="float-right margin-right-40"></span>
 												</td>
 											</tr>
 											<tr>
@@ -115,11 +115,11 @@
 												<td>
 													<com:ko tag="if" bind="isListDigestionExisted()">
 														<span data-bind="text: listDigestion[0].digestionDateText"></span>
-														<span data-bind="text: listDigestion[0].digestionNumberText" class="margin-left-20"></span>
+														<span data-bind="text: listDigestion[0].digestionNumberText" class="float-right margin-right-40"></span>
 													</com:ko>
 													<com:ko tag="ifnot" bind="isListDigestionExisted()">
 														<span data-bind="text: singleRowDetail.digestionDateText"></span>
-														<span data-bind="text: singleRowDetail.digestionNumberText" class="margin-left-20"></span>
+														<span data-bind="text: singleRowDetail.digestionNumberText" class="float-right margin-right-40"></span>
 													</com:ko>
 												</td>
 											</tr>
@@ -143,21 +143,21 @@
 									<td>#{i18n.getText('KDL009_8')}</td>
 									<td>
 										<span data-bind="text: value02"></span>
-										<span data-bind="text: hint02" class="margin-left-20"></span>
+										<span data-bind="text: hint02" class="margin-right-40"></span>
 									</td>
 								</tr>
 								<tr>
 									<td>#{i18n.getText('KDL009_9')}</td>
 									<td>
 										<span data-bind="text: value03"></span>
-										<span data-bind="text: hint03" class="margin-left-20"></span>
+										<span data-bind="text: hint03" class="margin-right-40"></span>
 									</td>
 								</tr>
 								<tr>
 									<td>#{i18n.getText('KDL009_10')}</td>
 									<td>
 										<span data-bind="text: value04"></span>
-										<span data-bind="text: hint04" class="margin-left-20"></span>
+										<span data-bind="text: hint04" class="margin-right-40"></span>
 									</td>
 								</tr>
 							</table>
