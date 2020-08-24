@@ -133,6 +133,7 @@ module nts.uk.at.view.kmr004.a {
 			_.extend(window, {vm});
 		}
 
+
 		mounted() {
 		}
 
@@ -164,36 +165,43 @@ module nts.uk.at.view.kmr004.a {
 			vm.conditionListCcb(vm.conditionListCcbAll);
 		}
 
-		prepareData():any{
-			let vm = this;
-			if(vm.outputConditionChecked() === OUTPUT_CONDITION.TOTAL){
-				vm.model().frameNo(-1);
-				vm.model().itemExtractCondition(EXTRACT_CONDITION.UNSPECIFIED);
-				vm.model().detailTitle = ko.observable('');
-				vm.model().isBreakPage = ko.observable(false);
-			}else{
-				vm.model().totalExtractCondition(EXTRACT_CONDITION.UNSPECIFIED);
-				vm.model().totalTitle = ko.observable('');
-				vm.model().extractionConditionChecked = ko.observable(false);
-				if(vm.model().itemExtractCondition() === EXTRACT_CONDITION.ALL){
-					vm.model().frameNo = ko.observable(-1);
-				}
-			}
-			let data = {
-				workplaceIds: vm.model().workplaceIds(),
-				workLocationCodes: vm.model().workLocationCodes(),
-				period: vm.model().period.peek(),
-				totalExtractCondition: vm.model().totalExtractCondition.peek(),
-				itemExtractCondition: vm.model().itemExtractCondition.peek(),
-				frameNo: vm.model().frameNo.peek(),
-				totalTitle:  vm.model().totalTitle.peek(),
-				detailTitle: vm.model().detailTitle.peek(),
-				isBreakPage: true,
-				reservationClosingTimeFrame: vm.model().reservationClosingTimeFrame.peek(),
-				extractionConditionChecked: vm.model().extractionConditionChecked.peek()
-			};
-			return data;
-		}
+        prepareData():any{
+            let vm = this;
+            let frameNo = -1;
+            let totalTitle = '';
+            let detailTitle = '';
+            let isBreakPage = false;
+            let totalExtractCondition = -1;
+            let itemExtractCondition = -1;
+            let extractionConditionChecked = false;
+
+            if(vm.outputConditionChecked() === 1){
+                totalTitle = vm.model().totalTitle();
+                totalExtractCondition = vm.model().totalExtractCondition();
+                extractionConditionChecked = vm.model().extractionConditionChecked();
+            }else{
+                if(vm.model().itemExtractCondition() === 4){
+                    isBreakPage = vm.model().isBreakPage();
+                    itemExtractCondition = vm.model().itemExtractCondition();
+                }else{
+                    frameNo = vm.model().frameNo();
+                }
+            }
+            let data = {
+                workplaceIds: vm.model().workplaceIds(),
+                workLocationCodes: vm.model().workLocationCodes(),
+                period: vm.model().period.peek(),
+                totalExtractCondition: totalExtractCondition,
+                itemExtractCondition: itemExtractCondition,
+                frameNo: frameNo,
+                totalTitle:  totalTitle,
+                detailTitle: detailTitle,
+                isBreakPage: isBreakPage,
+                reservationClosingTimeFrame: vm.model().reservationClosingTimeFrame.peek(),
+                extractionConditionChecked: extractionConditionChecked
+            };
+            return data;
+        }
 
 		printExcel(){
 			let vm = this;
@@ -398,69 +406,70 @@ module nts.uk.at.view.kmr004.a {
 		itemExtractCondition: number; // A10_3, A10_4  <-> model().itemExtractCondition
 		isBreakPage: boolean; // A10_5  <-> model().isBreakPage
 	}
-	
-	// define OUTPUT_FORMAT
-	enum OUTPUT_CONDITION {
-		TOTAL = <number> 1,
-		STATEMENT = <number> 2,
-	}
 
-	// define EXTRACT_CONDITION
-	enum EXTRACT_CONDITION {
-		UNSPECIFIED = <number> -1,
-		ALL = <number> 4,
-		ORDERED = <number> 1,
-		UN_ORDERED = <number> 2
-	}
+    // define OUTPUT_FORMAT
+    enum OUTPUT_CONDITION {
+        TOTAL = <number> 1,
+        STATEMENT = <number> 2,
+    }
 
-	class OptionModel {
-		id: number;
-		name: string;
+    // define EXTRACT_CONDITION
+    enum EXTRACT_CONDITION {
+        UNSPECIFIED = <number> -1,
+        ALL = <number> 4,
+        ORDERED = <number> 1,
+        UN_ORDERED = <number> 2
+    }
 
-		constructor(id: number, name: string) {
-			this.id = id;
-			this.name = name;
-		}
-	}
+    class OptionModel {
+        id: number;
+        name: string;
 
-	class ItemModel {
-		code: number;
-		name: string;
+        constructor(id: number, name: string) {
+            this.id = id;
+            this.name = name;
+        }
+    }
 
-		constructor(code: number, name: string) {
-			this.code = code;
-			this.name = name;
-		}
-	}
+    class ItemModel {
+        code: number;
+        name: string;
 
-	class OutputCondition{
-		workplaceIds: KnockoutObservableArray<string>;
-		workLocationCodes: KnockoutObservableArray<string>;
-		period: KnockoutObservable<any>;
-		reservationClosingTimeFrame: KnockoutObservable<number>;
-		totalTitle: KnockoutObservable<string>;
-		detailTitle: KnockoutObservable<string>;
-		totalExtractCondition: KnockoutObservable<number>;
-		itemExtractCondition: KnockoutObservable<number>;
-		isBreakPage: KnockoutObservable<boolean>;
-		frameNo: KnockoutObservable<number>;
-		extractionConditionChecked: KnockoutObservable<boolean>;
+        constructor(code: number, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
 
-		constructor(){
-			this.workplaceIds = ko.observableArray([]);
-			this.workLocationCodes = ko.observableArray([]);
-			this.period = ko.observable({
-				 startDate: formatDate( new Date(), 'yyyy/MM/dd'),
-				endDate: formatDate( new Date(), 'yyyy/MM/dd')
-			});
-			this.reservationClosingTimeFrame = ko.observable(1); // A4_3, A4_4
-			this.totalTitle = ko.observable(""); // A5_2
-			this.detailTitle = ko.observable(""); // A5_3
-			this.totalExtractCondition = ko.observable(EXTRACT_CONDITION.ORDERED);
-			this.itemExtractCondition = ko.observable(EXTRACT_CONDITION.ALL);
-			this.isBreakPage = ko.observable(false);
-			this.frameNo = ko.observable(-1);
-			this.extractionConditionChecked = ko.observable(false);
-		};
-	}
+    class OutputCondition{
+        workplaceIds: KnockoutObservableArray<string>;
+        workLocationCodes: KnockoutObservableArray<string>;
+        period: KnockoutObservable<any>;
+        reservationClosingTimeFrame: KnockoutObservable<number>;
+        totalTitle: KnockoutObservable<string>;
+        detailTitle: KnockoutObservable<string>;
+        totalExtractCondition: KnockoutObservable<number>;
+        itemExtractCondition: KnockoutObservable<number>;
+        isBreakPage: KnockoutObservable<boolean>;
+        frameNo: KnockoutObservable<number>;
+        extractionConditionChecked: KnockoutObservable<boolean>;
+
+        constructor(){
+            this.workplaceIds = ko.observableArray([]);
+            this.workLocationCodes = ko.observableArray([]);
+            this.period = ko.observable({
+                startDate: formatDate( new Date(), 'yyyy/MM/dd'),
+                endDate: formatDate( new Date(), 'yyyy/MM/dd')
+            });
+            this.reservationClosingTimeFrame = ko.observable(1); // A4_3, A4_4
+            this.totalTitle = ko.observable(""); // A5_2
+            this.detailTitle = ko.observable(""); // A5_3
+            this.totalExtractCondition = ko.observable(EXTRACT_CONDITION.ORDERED);
+            this.itemExtractCondition = ko.observable(EXTRACT_CONDITION.ALL);
+            this.isBreakPage = ko.observable(false);
+            this.frameNo = ko.observable(-1);
+            this.extractionConditionChecked = ko.observable(false);
+        };
+    }
+
 }

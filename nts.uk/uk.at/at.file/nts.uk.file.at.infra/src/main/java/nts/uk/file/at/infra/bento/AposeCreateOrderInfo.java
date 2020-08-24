@@ -16,14 +16,17 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements CreateOrderInfoGenerator {
 
-    private static final String TEMPLATE_TOTAL_FILE = "report/KMR004_Temp_Total.xlsx";
-    private static final String TEMPLATE_DETAIL_FILE = "report/KMR004_Template_Detail.xlsx";
+    private static final String TEMPLATE_TOTAL_FILE = "report/KMR004_Total.xlsx";
+    private static final String TEMPLATE_DETAIL_FILE = "report/KMR004_Detail.xlsx";
     private static final String FILE_NAME = "KMR004予約確認一覧_";
     private static final String TOTAL_BOOK = "合計書";
     private static final String STATEMENT_SLIP = "明細票";
@@ -55,13 +58,11 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
     private static final String WOKR_PLACE_LABEL = TextResource.localize("KMR004_38");
     ////Work Location
     private static final String WOKR_LOCATION_LABEL = TextResource.localize("KMR004_38");
-//    private static final String EMP_CODE = "社員コード";
-//    private static final String EMP_NAME = "社員名";
-//    private static final String QUANTITY = "数量";
-//    private static final String IS_CHECK = "チェック";
     private static final String NUMBER_FORMAT = "\"¥\"#,##0;[RED]\"¥\"-#,##0";
-
     private static final String FONT_NAME = "ＭＳ ゴシック";
+
+    private static final int ROW_PER_PAGE_TOTAL = 40;
+    private static final int ROW_PER_PAGE_DETAIL = 55;
 
     private static Style headerTotal;
     private static Style bodyTotal1;
@@ -74,48 +75,72 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
 
     static {
         headerTotal = new Style();
-        headerTotal.setBackgroundColor(Color.getBlue());
         headerTotal.setBorder(BorderType.TOP_BORDER, CellBorderType.MEDIUM, Color.getBlack());
         headerTotal.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
         headerTotal.setForegroundColor(Color.getBlue());
         headerTotal.setHorizontalAlignment(TextAlignmentType.CENTER);
         headerTotal.setVerticalAlignment(TextAlignmentType.CENTER);
+        Font headerTotalFont = headerTotal.getFont();
+        headerTotalFont.setSize(9);
+        headerTotalFont.setName(FONT_NAME);
+        headerTotal.update();
         //headerTotal.set
 
         bodyTotal1 = new Style();
-        bodyTotal1.setBackgroundColor(Color.getAliceBlue());
         bodyTotal1.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+        Font bodyTotalFont1 = bodyTotal1.getFont();
+        bodyTotalFont1.setSize(9);
+        bodyTotalFont1.setName(FONT_NAME);
+        bodyTotal1.update();
 
         bodyTotal2 = new Style();
-        bodyTotal2.setBackgroundColor(Color.getWhite());
         bodyTotal2.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+        Font bodyTotalFont2 = bodyTotal2.getFont();
+        bodyTotalFont2.setSize(9);
+        bodyTotalFont2.setName(FONT_NAME);
+        bodyTotal2.update();
 
         bodyTotalNumber1 = new Style();
-        bodyTotalNumber1.setBackgroundColor(Color.getAliceBlue());
         bodyTotalNumber1.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
         bodyTotalNumber1.setCustom(NUMBER_FORMAT);
+        Font bodyTotalNumberFont1 = bodyTotalNumber1.getFont();
+        bodyTotalNumberFont1.setSize(9);
+        bodyTotalNumberFont1.setName(FONT_NAME);
+        bodyTotalNumber1.update();
 
         bodyTotalNumber2 = new Style();
-        bodyTotalNumber2.setBackgroundColor(Color.getWhite());
         bodyTotalNumber2.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
         bodyTotalNumber2.setCustom(NUMBER_FORMAT);
+        Font bodyTotalNumberFont2 = bodyTotalNumber2.getFont();
+        bodyTotalNumberFont2.setSize(9);
+        bodyTotalNumberFont2.setName(FONT_NAME);
+        bodyTotalNumber2.update();
 
         footer = new Style();
-        footer.setBackgroundColor(Color.getLightBlue());
         footer.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
         footer.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
+        Font footerFont = footer.getFont();
+        footerFont.setSize(9);
+        footerFont.setName(FONT_NAME);
+        footer.update();
 
         footerNumber = new Style();
-        footerNumber.setBackgroundColor(Color.getLightBlue());
         footerNumber.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
         footerNumber.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
         footerNumber.setCustom(NUMBER_FORMAT);
+        Font footerNumberFont = footerNumber.getFont();
+        footerNumberFont.setSize(9);
+        footerNumberFont.setName(FONT_NAME);
+        footerNumber.update();
 
         footerLabel = new Style();
-        footerLabel.setBackgroundColor(Color.getLightBlue());
         footerLabel.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
         footerLabel.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
         footerLabel.setHorizontalAlignment(TextAlignmentType.RIGHT);
+        Font footerLabelFont = footerLabel.getFont();
+        footerLabelFont.setSize(9);
+        footerLabelFont.setName(FONT_NAME);
+        footerLabel.update();
     }
 
     private static Style headerDetail1;
@@ -130,9 +155,6 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
 
     static {
         headerDetail1 = new Style();
-        //headerDetail1.setBackgroundColor(Color.fromArgb(51,153,255));
-        headerDetail1.setForegroundColor(Color.fromArgb(51,153,255));
-        //headerDetail1.setBackgroundArgbColor();
         headerDetail1.setBorder(BorderType.TOP_BORDER, CellBorderType.MEDIUM, Color.getBlack());
         headerDetail1.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
         Font headerDetail1Font1 = headerDetail1.getFont();
@@ -141,7 +163,6 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         headerDetail1.update();
 
         headerDetail2 = new Style();
-        headerDetail2.setBackgroundColor(Color.getBlue());
         headerDetail2.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
         headerDetail2.setBorder(BorderType.RIGHT_BORDER, CellBorderType.HAIR, Color.getBlack());
         Font headerDetail1Font2 = headerDetail2.getFont();
@@ -150,7 +171,6 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         headerDetail2.update();
 
         headerDetailCheck2 = new Style();
-        headerDetailCheck2.setBackgroundColor(Color.getBlue());
         headerDetailCheck2.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
         headerDetailCheck2.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
         Font headerDetailCheckFont2 = headerDetailCheck2.getFont();
@@ -159,7 +179,6 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         headerDetailCheck2.update();
 
         bodyDetailEmp1 = new Style();
-        bodyDetailEmp1.setBackgroundColor(Color.getAliceBlue());
         bodyDetailEmp1.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
         bodyDetailEmp1.setBorder(BorderType.RIGHT_BORDER, CellBorderType.HAIR, Color.getBlack());
         Font bodyDetailEmpFont1 = bodyDetailEmp1.getFont();
@@ -168,7 +187,6 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         bodyDetailEmp1.update();
 
         bodyDetailQuantity1 = new Style();
-        bodyDetailQuantity1.setBackgroundColor(Color.getAliceBlue());
         bodyDetailQuantity1.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
         bodyDetailQuantity1.setBorder(BorderType.RIGHT_BORDER, CellBorderType.HAIR, Color.getBlack());
         bodyDetailQuantity1.setHorizontalAlignment(TextAlignmentType.RIGHT);
@@ -178,7 +196,6 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         bodyDetailQuantity1.update();
 
         bodyDetailCheck1 = new Style();
-        bodyDetailCheck1.setBackgroundColor(Color.getAliceBlue());
         bodyDetailCheck1.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
         bodyDetailCheck1.setBorder(BorderType.RIGHT_BORDER, CellBorderType.MEDIUM, Color.getBlack());
         Font bodyDetailCheckFont1 = bodyDetailCheck1.getFont();
@@ -187,7 +204,6 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         bodyDetailCheck1.update();
 
         bodyDetailEmp2 = new Style();
-        bodyDetailEmp2.setBackgroundColor(Color.getWhite());
         bodyDetailEmp2.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
         bodyDetailEmp2.setBorder(BorderType.RIGHT_BORDER, CellBorderType.HAIR, Color.getBlack());
         Font bodyDetailEmpFont2 = bodyDetailEmp2.getFont();
@@ -196,7 +212,6 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         bodyDetailEmp2.update();
 
         bodyDetailQuantity2 = new Style();
-        bodyDetailQuantity2.setBackgroundColor(Color.getWhite());
         bodyDetailQuantity2.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
         bodyDetailQuantity2.setBorder(BorderType.RIGHT_BORDER, CellBorderType.HAIR, Color.getBlack());
         bodyDetailQuantity2.setHorizontalAlignment(TextAlignmentType.RIGHT);
@@ -206,7 +221,6 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         bodyDetailQuantity2.update();
 
         bodyDetailCheck2 = new Style();
-        bodyDetailCheck2.setBackgroundColor(Color.getWhite());
         bodyDetailCheck2.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
         bodyDetailCheck2.setBorder(BorderType.RIGHT_BORDER, CellBorderType.MEDIUM, Color.getBlack());
         Font bodyDetailCheckFont2 = bodyDetailCheck2.getFont();
@@ -268,7 +282,10 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         pageSetup.setOrientation(PageOrientationType.PORTRAIT);
         pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&10 " + companyName);
         pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&16 " + Tittle);
-        pageSetup.setFitToPagesTall(1);
+        DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm:ss", Locale.JAPAN);
+        String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
+        pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + currentFormattedDate+"\npage&P");
+        pageSetup.setFitToPagesTall(0);
         pageSetup.setFitToPagesWide(1);
     }
 
@@ -276,14 +293,20 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         try {
             OrderInfoDto orderInfoDto = exportData.getOrderInfoDto();
             Worksheet worksheet = worksheets.get(0);
+            Worksheet tempSheet = worksheets.get(1);
             settingPage(worksheet, orderInfoDto.getCompanyName(), TOTAL_BOOK);
             Cells cells = worksheet.getCells();
+            StringBuilder printArea = new StringBuilder();
+            printArea.append("A0:");
             int startIndex = 5;
             printHeadData(cells, exportData);
             List<TotalOrderInfoDto> dataPrint = orderInfoDto.getTotalOrderInfoDtoList();
             for (TotalOrderInfoDto dataRow : dataPrint)
-                startIndex = handleBodyTotalFormat(worksheet, dataRow, startIndex, cells, exportData.isBreakPage());
+                startIndex = handleBodyTotalFormat(worksheet, dataRow, startIndex, cells, tempSheet);
+
             worksheet.getVerticalPageBreaks().add(10);
+            printArea.append("J"+(startIndex - 2));
+            worksheets.removeAt(1);
         } catch (RuntimeException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -291,92 +314,77 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
     }
 
     private void printHeadData(Cells cells, OrderInfoExportData exportData){
+        if(!CollectionUtil.isEmpty(exportData.getOrderInfoDto().getTotalOrderInfoDtoList())){
+            printOutputExt(cells, exportData, 0,2,5);
+        }else if(!CollectionUtil.isEmpty(exportData.getOrderInfoDto().getDetailOrderInfoDtoList())){
+            printOutputExt(cells, exportData, 0,1,3);
+        }
+    }
+
+    private void printOutputExt(Cells cells, OrderInfoExportData exportData,
+                                int labelRow, int startDataRow, int endDataRow){
         List<PlaceOfWorkInfoDto> placeOfWorkInfoDtos = CollectionUtil.isEmpty(exportData.getOrderInfoDto().getDetailOrderInfoDtoList())
                 ? exportData.getOrderInfoDto().getTotalOrderInfoDtoList().get(0).getPlaceOfWorkInfoDto()
                 : exportData.getOrderInfoDto().getDetailOrderInfoDtoList().get(0).getPlaceOfWorkInfoDtos();
-
         if (exportData.isWorkLocationExport()) {
-            cells.get(0, 0).setValue(WOKR_LOCATION_LABEL);
-            cells.get(0, 2).setValue(placeOfWorkInfoDtos.get(0).getPlaceCode());
-            cells.get(0, 5).setValue(placeOfWorkInfoDtos.get(0).getPlaceName());
+            cells.get(0, labelRow).setValue(WOKR_LOCATION_LABEL);
+            cells.get(0, startDataRow).setValue(placeOfWorkInfoDtos.get(0).getPlaceCode());
+            cells.get(0, endDataRow).setValue(placeOfWorkInfoDtos.get(0).getPlaceName());
         } else {
-            cells.get(0, 0).setValue(WOKR_PLACE_LABEL);
-            cells.get(0, 2).setValue(placeOfWorkInfoDtos.get(0).getPlaceCode() + placeOfWorkInfoDtos.get(0).getPlaceName());
-            cells.get(1, 2).setValue(placeOfWorkInfoDtos.get(placeOfWorkInfoDtos.size()-1).getPlaceCode() + placeOfWorkInfoDtos.get(0).getPlaceName());
+            cells.get(0, labelRow).setValue(WOKR_PLACE_LABEL);
+            cells.get(0, startDataRow).setValue(placeOfWorkInfoDtos.get(0).getPlaceCode());
+            cells.get(0, endDataRow).setValue(placeOfWorkInfoDtos.get(0).getPlaceName());
+            cells.get(1, startDataRow).setValue(placeOfWorkInfoDtos.get(placeOfWorkInfoDtos.size()-1).getPlaceCode());
+            cells.get(1, endDataRow).setValue(placeOfWorkInfoDtos.get(placeOfWorkInfoDtos.size()-1).getPlaceName());
         }
-        cells.get(0, 2).setValue(PERIOD_LABEL);
-        cells.get(0, 4).setValue(exportData.getReservationTimeZone());
+        cells.get(2, labelRow).setValue(PERIOD_LABEL);
+        cells.get(2, startDataRow).setValue(exportData.getReservationTimeZone());
     }
 
-    private int handleBodyTotalFormat(Worksheet worksheet, TotalOrderInfoDto dataRow, int startIndex, Cells cells, boolean isPageBreak) {
-        int total = 0, endPage = startIndex + 2;
+    private int handleBodyTotalFormat(Worksheet worksheet, TotalOrderInfoDto dataRow, int startIndex, Cells cells,
+                                      Worksheet template) {
+        int total = 0;
         double height = cells.getRowHeight(0);
+
+        //copy Header
+        copyRowFromTemplateSheet(cells,template,0,startIndex - 1);
+
         cells.get(startIndex - 1, 3).setValue(TOTAL_ORDINAL);
         cells.get(startIndex - 1, 5).setValue(TOTAL_BENTO_NAME);
         cells.get(startIndex - 1, 6).setValue(TOTAL_AMOUNT);
         cells.get(startIndex - 1, 7).setValue(TOTAL_QUANTITY);
-        setHeaderStyleTotalFormat(cells, startIndex - 1, height);
 
         if (dataRow.getBentoTotalDto().size() == 0){
-            cells.deleteRow(startIndex + 1);
-            setFooterStyleTotalFormat(cells,startIndex + 1, height);
+            //copy Footer
+            copyRowFromTemplateSheet(cells,template,0,startIndex + 1);
+
             cells.get(startIndex + dataRow.getBentoTotalDto().size(), 5).setValue(TOTAL_LABEL);
             startIndex += 4;
+            breakPage("J", startIndex - 1, worksheet);
             return startIndex;
         }
 
-        if (dataRow.getBentoTotalDto().size() < 2) {
-            BentoTotalDto bentoTotalDto = dataRow.getBentoTotalDto().get(0);
-            total += setBodyDataTotalFormat(cells, startIndex, 0, bentoTotalDto, height);
-            cells.deleteRow(startIndex + 1);
-            for (int i = 3; i < 9; ++i)
-                cells.get(startIndex + 1, i).setStyle(footer);
-
-            cells.get(startIndex + 1, 6).setStyle(footerNumber);
-            cells.get(startIndex + 1, 5).setValue(TOTAL_LABEL);
-            cells.get(startIndex + 1, 6).setValue(total);
-            endPage = startIndex + 2;
-            //page break
-            if(isPageBreak){
-                HorizontalPageBreakCollection pageBreaksH = worksheet.getHorizontalPageBreaks();
-                pageBreaksH.add("J" + (endPage+1));
-                VerticalPageBreakCollection pageBreaksV = worksheet.getVerticalPageBreaks();
-                pageBreaksV.add("J" + (endPage+1));
-            }
-
-            return startIndex;
-        }
-
-        for (int i = 0; i < 2; ++i) {
+        for (int i = 0; i < dataRow.getBentoTotalDto().size(); ++i) {
             BentoTotalDto bentoTotalDto = dataRow.getBentoTotalDto().get(i);
-            total += setBodyDataTotalFormat(cells, startIndex, i, bentoTotalDto, height);
+            total += setBodyDataTotalFormat(cells, startIndex, i, bentoTotalDto, height, template);
         }
-
-        for (int i = 2; i < dataRow.getBentoTotalDto().size(); ++i) {
-            BentoTotalDto bentoTotalDto = dataRow.getBentoTotalDto().get(i);
-            total += setBodyDataTotalFormat(cells, startIndex, i, bentoTotalDto, height);
-        }
-        setFooterStyleTotalFormat(cells,startIndex + dataRow.getBentoTotalDto().size(),height);
-        cells.get(startIndex + dataRow.getBentoTotalDto().size(), 5).setValue(TOTAL_LABEL);
-        cells.get(startIndex + dataRow.getBentoTotalDto().size(), 6).setValue(total);
-        endPage += dataRow.getBentoTotalDto().size() ;
+        startIndex += dataRow.getBentoTotalDto().size();
+        copyRowFromTemplateSheet(cells, template, 3, startIndex);
+        cells.get(startIndex, 5).setValue(TOTAL_LABEL);
+        cells.get(startIndex, 6).setValue(total);
+        startIndex += 4 - 1 ;
         // page break
-        if(isPageBreak){
-            HorizontalPageBreakCollection pageBreaksH = worksheet.getHorizontalPageBreaks();
-            pageBreaksH.add("J" + (endPage+1));
-            VerticalPageBreakCollection pageBreaksV = worksheet.getVerticalPageBreaks();
-            pageBreaksV.add("J" + (endPage+1));
-        }
-
-        startIndex += dataRow.getBentoTotalDto().size() - 1 + 4;
+        breakPage("J", startIndex - 1, worksheet);
         return startIndex;
     }
 
-    private int setBodyDataTotalFormat(Cells cells, int startIndex, int index, BentoTotalDto bentoTotalDto, double height) {
-        if (index % 2 == 0)
-            setBodyStyleTotalFormat(cells, startIndex + index, bodyTotal2, bodyTotalNumber2, height);
-        else
-            setBodyStyleTotalFormat(cells, startIndex + index, bodyTotal1, bodyTotalNumber1, height);
+    private int setBodyDataTotalFormat(Cells cells, int startIndex, int index, BentoTotalDto bentoTotalDto, double height, Worksheet template) {
+        if (index % 2 == 0){
+            copyRowFromTemplateSheet(cells,template, 2, startIndex + index);
+        }
+        else{
+            copyRowFromTemplateSheet(cells,template, 1, startIndex + index);
+        }
 
         int amount = bentoTotalDto.getAmount() * bentoTotalDto.getQuantity();
         cells.get(startIndex + index, 3).setValue(index + 1);
@@ -388,123 +396,96 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         return amount;
     }
 
-    private void setHeaderStyleTotalFormat(Cells cells, int row, double height){
-        for(int i = 3; i < 9; ++i)
-            cells.get(row, i).setStyle(headerTotal);
-        cells.setRowHeight(row, height);
-    }
-
-    private void setBodyStyleTotalFormat(Cells cells, int row, Style style, Style bodyNumber, double height) {
-        for(int i = 3; (i < 9); ++i)
-            cells.get(row, i).setStyle(style);
-        cells.get(row, 6).setStyle(bodyNumber);
-        cells.setRowHeight(row, height);
-    }
-
-    private void setFooterStyleTotalFormat(Cells cells, int row, double height) {
-        for(int i = 3; i < 9; ++i)
-            cells.get(row, i).setStyle(footer);
-        cells.get(row, 5).setStyle(footerLabel);
-        cells.get(row, 6).setStyle(footerNumber);
-        cells.setRowHeight(row, height);
-    }
-
     private void printDataDetailFormat(WorksheetCollection worksheets, OrderInfoExportData orderInfoExportData) {
         try {
             OrderInfoDto orderInfoDto = orderInfoExportData.getOrderInfoDto();
             Worksheet worksheet = worksheets.get(0);
+            Worksheet tempSheet = worksheets.get(1);
             settingPage(worksheet, orderInfoDto.getCompanyName(), STATEMENT_SLIP);
             Cells cells = worksheet.getCells();
-            int startIndex = 5;
-
+            int startIndex = 6;
+            StringBuilder printArea = new StringBuilder();
+            printArea.append("A0:");
             printHeadData(cells, orderInfoExportData);
-
             for (DetailOrderInfoDto i : orderInfoDto.getDetailOrderInfoDtoList())
                 for (BentoReservedInfoDto item : i.getBentoReservedInfoDtos())
-                    startIndex = handleBodyDetailFormat(worksheet, item, startIndex, cells, orderInfoExportData.isBreakPage());
+                    startIndex = handleBodyDetailFormat(worksheet, item, startIndex, cells, orderInfoExportData.isBreakPage(), tempSheet, orderInfoExportData.getOutputExt());
+            printArea.append("M"+(startIndex-1));
             worksheet.getVerticalPageBreaks().add(12);
+            worksheets.removeAt(1);
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private int handleBodyDetailFormat(Worksheet worksheet, BentoReservedInfoDto bentoReservedInfoDto, int startIndex, Cells cells, boolean isPageBreak) {
-        setHeaderDetail(cells, startIndex,bentoReservedInfoDto.getBentoName());
+    private int handleBodyDetailFormat(Worksheet worksheet, BentoReservedInfoDto bentoReservedInfoDto, int startIndex,
+                                       Cells cells, boolean isPageBreak, Worksheet tempSheet, OutputExtension outputExtension) {
+        setHeaderDetail(cells, startIndex, bentoReservedInfoDto.getBentoName(), tempSheet);
         List<BentoReservationInfoForEmpDto> bodyData = bentoReservedInfoDto.getBentoReservationInfoForEmpList();
         int total = 0;
         if(CollectionUtil.isEmpty(bodyData)){
-            for(int i = 0; i < bodyData.size(); ++i)
-                setBodyStyleDetailFormat(cells, startIndex,i*4,bodyDetailEmp2, bodyDetailQuantity2, bodyDetailCheck2);
-
+            copyRowFromTemplateSheet(cells, tempSheet, 3, startIndex);
             cells.deleteRow(startIndex + 1);
-            setFooterDataDetailFormat(cells, startIndex + 1, total,"");
+            setFooterDataDetailFormat(cells,tempSheet, startIndex + 1, total,"");
             startIndex += 5;
-            if(isPageBreak){
-                HorizontalPageBreakCollection pageBreaksH = worksheet.getHorizontalPageBreaks();
-                pageBreaksH.add("M" + (startIndex - 2));
-                VerticalPageBreakCollection pageBreaksV = worksheet.getVerticalPageBreaks();
-                pageBreaksV.add("M" + (startIndex - 2));
-            }
+            if(isPageBreak)
+                breakPage("M", startIndex - 2, worksheet);
         }
         else {
             int row = bodyData.size() / 3;
             int mod = bodyData.size() % 3;
-
-            for (int i = 0; i < row; ++i) {
+            for (int i = 0; i < row; i++) {
                 if (i % 2 == 0)
-                    for (int j = 0; j < 3; ++j)
-                        setBodyStyleDetailFormat(cells, startIndex + i, j * 4, bodyDetailEmp2, bodyDetailQuantity2, bodyDetailCheck2);
+                    copyRowFromTemplateSheet(cells, tempSheet, 3, startIndex + i);
                 else
-                    for (int j = 0; j < 3; ++j)
-                        setBodyStyleDetailFormat(cells, startIndex + i, j * 4, bodyDetailEmp1, bodyDetailQuantity1, bodyDetailCheck1);
+                    copyRowFromTemplateSheet(cells, tempSheet, 4, startIndex + i);
                 for (int j = 0; j < 3; ++j)
                     total += setBodyDataDetailFormat(cells, startIndex + i, j * 4, bodyData.get(i * 3 + j));
+                if(i % ROW_PER_PAGE_DETAIL == 0 & i > 0){
+                    breakPage("M", startIndex + i + 1, worksheet);
+                    if(OutputExtension.PDF.equals(outputExtension)){
+                        copyRowFromTemplateSheet(cells, tempSheet, 9,startIndex + i);
+                        copyRowFromTemplateSheet(cells, worksheet, startIndex - 2, startIndex + i + 1);
+                        copyRowFromTemplateSheet(cells, worksheet, startIndex - 1, startIndex + i + 2);
+                        startIndex += 2;
+                    }
+                }
             }
             int modIndex = row * 3;
             startIndex += row ;
-            for (int i = 0; i < mod; ++i) {
-                if (modIndex % 2 == 1)
-                    setBodyStyleDetailFormat(cells, startIndex, i * 4, bodyDetailEmp2, bodyDetailQuantity2, bodyDetailCheck2);
+            if(mod > 0){
+                if (modIndex % 2 == 0)
+                    copyRowFromTemplateSheet(cells, tempSheet, 3, startIndex);
                 else
-                    setBodyStyleDetailFormat(cells, startIndex, i * 4, bodyDetailEmp1, bodyDetailQuantity1, bodyDetailCheck1);
-
-                total += setBodyDataDetailFormat(cells, startIndex, i * 4, bodyData.get(modIndex + i));
-            }
-            if(mod > 0)
+                    copyRowFromTemplateSheet(cells, tempSheet, 4, startIndex);
+                for (int i = 0; i < mod; ++i) {
+                    total += setBodyDataDetailFormat(cells, startIndex + i, i * 4, bodyData.get(modIndex + i));
+                }
                 startIndex += 1;
-            setFooterDataDetailFormat(cells, startIndex, total, bentoReservedInfoDto.getUnit());
+            }
+
+            setFooterDataDetailFormat(cells,tempSheet, startIndex, total, bentoReservedInfoDto.getUnit());
             startIndex += 5;
         }
 
-        if(isPageBreak){
-            HorizontalPageBreakCollection pageBreaksH = worksheet.getHorizontalPageBreaks();
-            pageBreaksH.add("M" + (startIndex - 2));
-            VerticalPageBreakCollection pageBreaksV = worksheet.getVerticalPageBreaks();
-            pageBreaksV.add("M" + (startIndex - 2));
-        }
+        if(isPageBreak)
+            breakPage("M", startIndex - 2, worksheet);
+
         return startIndex;
     }
 
-    private void setHeaderDetail(Cells cells, int startIndex, String bentoName){
+    private void setHeaderDetail(Cells cells, int startIndex, String bentoName, Worksheet tempSheet){
+        //head line 1
+        copyRowFromTemplateSheet(cells, tempSheet, 1, startIndex - 2);
         cells.get(startIndex - 2, 0).setValue(bentoName);
+        //head line 2
+        copyRowFromTemplateSheet(cells, tempSheet, 2, startIndex - 1);
         for (int j = 0; j < 3; ++j) {
             //head line 1
-            cells.get(startIndex - 2, 0 + j * 4).setStyle(headerDetail1);
-            cells.get(startIndex - 2, 1 + j * 4).setStyle(headerDetail1);
-            cells.get(startIndex - 2, 2 + j * 4).setStyle(headerDetail1);
-            cells.get(startIndex - 2, 3 + j * 4).setStyle(headerDetail1);
-
-            //head line 2
             cells.get(startIndex - 1, 0 + j * 4).setValue(EMP_CODE);
             cells.get(startIndex - 1, 1 + j * 4).setValue(EMP_NAME);
             cells.get(startIndex - 1, 2 + j * 4).setValue(QUANTITY);
             cells.get(startIndex - 1, 3 + j * 4).setValue(IS_CHECK);
-
-            cells.get(startIndex - 1, 0 + j * 4).setStyle(headerDetail2);
-            cells.get(startIndex - 1, 1 + j * 4).setStyle(headerDetail2);
-            cells.get(startIndex - 1, 2 + j * 4).setStyle(headerDetail2);
-            cells.get(startIndex - 1, 3 + j * 4).setStyle(headerDetailCheck2);
-
         }
     }
 
@@ -515,78 +496,26 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         return data.getQuantity();
     }
 
-    private void setBodyStyleDetailFormat(Cells cells, int row,int colStart, Style empStyle, Style quantityStyle, Style checkStyle) {
-        cells.get(row,colStart).setStyle(empStyle);
-        cells.get(row,colStart+1).setStyle(empStyle);
-        cells.get(row,colStart+2).setStyle(quantityStyle);
-        cells.get(row,colStart+3).setStyle(checkStyle);
-    }
-
-    private void setFooterStyleDetailFormat(Cells cells, int row) {
-        for(int i = 0; i < 12 ; ++i)
-            cells.get(row,i).setStyle(footer);
-        cells.get(row,9).setStyle(footerLabel);
-    }
-
-    private void setFooterDataDetailFormat(Cells cells, int row, int total, String unit){
+    private void setFooterDataDetailFormat(Cells cells,Worksheet template, int row, int total, String unit){
         //style
-        setFooterStyleDetailFormat(cells,row);
+        copyRowFromTemplateSheet(cells, template, 5,row);
+        copyRowFromTemplateSheet(cells, template, 6,row+1);
         //data
         cells.get(row,9).setValue(TOTAL_LABEL);
         cells.get(row,10).setValue(total);
         cells.get(row,11).setValue(unit);
     }
 
-    private void setBackgroundWhite(Cell cell){
-        Style style = cell.getStyle();
-        style.setBackgroundColor(Color.getWhite());
-        cell.setStyle(style);
-    }
-    private void setBackgroundBlue(Cell cell){
-        Style style = cell.getStyle();
-        style.setBackgroundColor(Color.getBlue());
-        cell.setStyle(style);
-    }
-    private void setBackgroundAliceBlue(Cell cell){
-        Style style = cell.getStyle();
-        style.setBackgroundColor(Color.getAliceBlue());
-        cell.setStyle(style);
-    }
-    private void setBorderTopMedium(Cell cell){
-        Style style = cell.getStyle();
-        style.setBorder(BorderType.TOP_BORDER, CellBorderType.MEDIUM, Color.getBlack());
-        cell.setStyle(style);
-    }
-    private void setBorderBotMedium(Cell cell){
-        Style style = cell.getStyle();
-        style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
-        cell.setStyle(style);
-    }
-    private void setBorderTopThin(Cell cell){
-        Style style = cell.getStyle();
-        style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
-        cell.setStyle(style);
-    }
-    private void setBorderBotThin(Cell cell){
-        Style style = cell.getStyle();
-        style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
-        cell.setStyle(style);
-    }
-    private void setBorderVertHair(Cell cell){
-        Style style = cell.getStyle();
-        style.setBorder(BorderType.VERTICAL, CellBorderType.HAIR, Color.getBlack());
-        cell.setStyle(style);
-    }
-    private void setTextAlignRight(Cell cell){
-        Style style = cell.getStyle();
-        style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-        cell.setStyle(style);
-    }
-    private void setNumberCustome(Cell cell){
-        Style style = cell.getStyle();
-        style.setCustom(NUMBER_FORMAT);
-        footerLabel.setHorizontalAlignment(TextAlignmentType.RIGHT);
-        cell.setStyle(style);
+    private void breakPage(String col, int row, Worksheet worksheet){
+        HorizontalPageBreakCollection pageBreaksH = worksheet.getHorizontalPageBreaks();
+        pageBreaksH.add(col + row);
     }
 
+    private void copyRowFromTemplateSheet(Cells cells, Worksheet template, int from, int to){
+        try {
+            cells.copyRow(template.getCells(),from,to);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
