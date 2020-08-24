@@ -74,9 +74,6 @@ module nts.uk.at.view.kdl014.a {
                             }
                             tg.push(new EmpInfomation(item));
                         });
-                        if (_.every(self.dataServer, ['locationInfo', null])) {
-                            self.display = false;
-                        }
                         self.empInfomationList(tg);
                     }
                     self.bindingGrid();
@@ -165,7 +162,7 @@ module nts.uk.at.view.kdl014.a {
         stampMeans: string;
         stampAtr: string;
         workLocationName: string;
-        locationInfo: GeoCoordinateDto;
+        locationInfo: string;
         time: string;
         date: string;
         color: number;
@@ -250,10 +247,6 @@ module nts.uk.at.view.kdl014.a {
         affiliationName: string;
     }
     
-     interface GeoCoordinateDto {
-        latitude: string;
-        longitude: string
-    }
 }
 
 function gotoMap(latitude: string, longitude: string): any {
