@@ -87,8 +87,6 @@ module nts.uk.at.view.kdl009.a {
                 service.getAcquisitionNumberRestDays(employeeId, baseDate)
                     .then((data) => {
                         vm.expirationDateText(ExpirationDate[data.expiredDay]);
-                        console.table(data.listPegManagement);
-                        console.table(data.listRemainNumberDetail);
                         vm.bindTimeData(data);
                         vm.bindSummaryData(data);
                         vm.isManagementSection(data.isManagementSection);
@@ -149,7 +147,6 @@ module nts.uk.at.view.kdl009.a {
                 vm.dataItems.removeAll();
                 // Convert to list item
                 ko.utils.arrayPushAll(vm.dataItems, vm.convertDetailToItem(data.listRemainNumberDetail, data.listPegManagement));
-                console.table(vm.convertDetailToItem(data.listRemainNumberDetail, data.listPegManagement));
             }
 
             private convertDetailToItem(listDetail: RemainNumberDetailDto[], listPeg: PegManagementDto[]): DataItems[] {
