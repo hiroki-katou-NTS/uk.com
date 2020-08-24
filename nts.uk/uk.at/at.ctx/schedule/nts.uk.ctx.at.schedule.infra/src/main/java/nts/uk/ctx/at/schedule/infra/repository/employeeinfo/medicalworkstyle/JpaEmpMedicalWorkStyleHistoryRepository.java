@@ -45,7 +45,7 @@ public class JpaEmpMedicalWorkStyleHistoryRepository extends JpaRepository imple
 	@Override
 	public List<EmpMedicalWorkFormHisItem> get(List<String> listEmpId, GeneralDate referenceDate) {
 		List<EmpMedicalWorkFormHisItem> data = this.queryProxy().query(GET_BY_EMPIDS_AND_DATE, KscmtMedicalWorkStyle.class)
-																.setParameter("sid", listEmpId)
+																.setParameter("listEmpId", listEmpId)
 																.setParameter("referenceDate", referenceDate)
 																.getList( c -> c.toDomainHisItem()); 
 		return data;
