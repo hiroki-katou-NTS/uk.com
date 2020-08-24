@@ -1,9 +1,8 @@
 package nts.uk.ctx.at.record.app.find.dialog.sixtyhourholiday;
 
-import java.util.List;
-
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 
 /**
  * 60超過時間表示情報パラメータ - 残数詳細
@@ -12,7 +11,7 @@ import nts.arc.time.GeneralDate;
 public class RemainNumberDetailDto {
 
 	/** 発生月 */
-	private Integer occurrenceMonth;
+	private YearMonth occurrenceMonth;
 
 	/** 使用日 */
 	private GeneralDate usageDate;
@@ -28,7 +27,5 @@ public class RemainNumberDetailDto {
 
 	/** 作成区分 */
 	private Integer creationCategory;
-	
-	private List<RemainNumberDetailDto> childRemainNumberDetailDtos;
 
 }

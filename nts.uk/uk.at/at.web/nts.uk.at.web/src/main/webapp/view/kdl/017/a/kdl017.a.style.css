@@ -87,3 +87,10 @@ table.table-60h-detail tr td {
 .ml-3 {
   margin-left: 3rem;
 }
+
+.float-right {
+  float: right;
+}
+.margin-right-2 {
+  margin-right: 2px;
+}

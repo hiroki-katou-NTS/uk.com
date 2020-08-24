@@ -16,7 +16,7 @@ module nts.uk.at.view.kdl017.a.service {
    * @param baseDate the base date
    */
   export function get60hOvertimeDisplayInfoDetail(employeeId: string, baseDate: string)
-                                  : JQueryPromise<OverTimeIndicationInformationDetails> {
+                                  : JQueryPromise<SixtyHourHolidayDto> {
     const path = nts.uk.text.format(paths.get60hOvertimeDisplayInfoDetail, employeeId, baseDate);
     return nts.uk.request.ajax(path);
   }
@@ -38,12 +38,12 @@ module nts.uk.at.view.kdl017.a.service {
   }
 
   // 60超過時間表示情報詳細
-  export interface OverTimeIndicationInformationDetails {
+  export interface SixtyHourHolidayDto {
     /** 60H超休管理区分 */
     departmentOvertime60H: boolean;
 
     /** 残数情報 */
-    remainNumberDetailDtos: RemainNumberDetailDto[];
+    remainHourDetailDtos: RemainHourDetailDto[];
 
     /** 繰越数 */
     carryoverNumber: number;
@@ -57,32 +57,31 @@ module nts.uk.at.view.kdl017.a.service {
 
     /** 残数 */
     residual: number;
-
-    /** 紐付け管理 */
-    pegManagementDtos: PegManagementDto[];
   }
 
   // 残数詳細
-  export interface RemainNumberDetailDto {
+  export interface RemainHourDetailDto {
     /** 発生月 */
     occurrenceMonth: number;
-
-    /** 使用日 */
-    usageDate: string;
 
     /** 発生時間 */
     occurrenceTime: number;
 
-    /** 使用時間 */
-    usageTime: number;
-
     /** 期限日 */
     deadline: string;
 
+    usageDateDtos: UsageDateDto[];
+  }
+
+  export class UsageDateDto {
+    /** 使用日 */
+    usageDate: string;
+
+    /** 使用時間 */
+    usageTime: number;
+
     /** 作成区分 */
     creationCategory: number;
-
-    childRemainNumberDetailDtos: RemainNumberDetailDto[];
   }
 
   // 紐付け管理

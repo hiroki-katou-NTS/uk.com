@@ -13,7 +13,7 @@
     <ui:define name="htmlHead">
       <script>
         var dialogSize = {
-          width : 890,
+          width : 900,
           height : 620
         };
       </script>
@@ -70,7 +70,7 @@
                   <colgroup>
                     <col width="30px" />
                     <col width="258px" />
-                    <col width="170px" />
+                    <col width="180px" />
                   </colgroup>
                   <thead>
                     <tr>
@@ -91,7 +91,7 @@
                     <com:ko-foreach bind="dataItems">
                       <tr>
                         <td class="ui-widget-index">
-                          <span data-bind="text: $index"></span>
+                          <span data-bind="text: ($index() + 1)"></span>
                         </td>
                         <td>
                           <!-- A3_2_1 -->
@@ -102,10 +102,12 @@
                           <span data-bind="text: deadline"></span>
                         </td>
                         <td>
-                          <!-- A3_3_1 -->
-                          <span data-bind="text: usageDate"></span>
-                          <!-- A3_3_2 -->
-                          <span data-bind="text: usageTime"></span>
+                          <com:ko tag="foreach" bind="usageDateDtos">
+                            <!-- A3_3_1 -->
+                            <span data-bind="text: usageDate"></span>
+                            <!-- A3_3_2 -->
+                            <span data-bind="text: usageTime" class="float-right margin-right-2"></span>
+                          </com:ko>
                         </td>
                       </tr>
                     </com:ko-foreach>

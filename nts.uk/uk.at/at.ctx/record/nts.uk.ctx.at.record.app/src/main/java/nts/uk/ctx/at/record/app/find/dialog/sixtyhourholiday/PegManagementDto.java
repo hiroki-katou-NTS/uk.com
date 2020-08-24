@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.dialog.sixtyhourholiday;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 
 /**
  * 紐付け管理
@@ -10,7 +11,7 @@ import nts.arc.time.GeneralDate;
 public class PegManagementDto {
 	
 	/** 発生月 */
-	private Integer occurrenceMonth;
+	private YearMonth occurrenceMonth;
 	
 	/** 使用日 */
 	private GeneralDate usageDate;

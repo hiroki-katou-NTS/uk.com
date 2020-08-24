@@ -216,7 +216,8 @@ public class GetHolidayOver60hRemNumWithinPeriodImpl implements GetHolidayOver60
 				HolidayOver60hGrantRemaining holidayOver60hGrantRemaining
 					= new HolidayOver60hGrantRemaining();
 				holidayOver60hGrantRemaining.setEmployeeId("ca294040-910f-4a42-8d90-2bd02772697c");
-				holidayOver60hGrantRemaining.setDeadline(GeneralDate.ymd(2020, 8, 1));
+				holidayOver60hGrantRemaining.setGrantDate(GeneralDate.ymd(2020, 1, 1));
+				holidayOver60hGrantRemaining.setDeadline(GeneralDate.ymd(2020, 2, 1));
 				holidayOver60hGrantRemaining.setExpirationStatus(LeaveExpirationStatus.AVAILABLE);
 				holidayOver60hGrantRemaining.setRegisterType(GrantRemainRegisterType.MONTH_CLOSE);
 	

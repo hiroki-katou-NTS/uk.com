@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.GetHolidayOver60hRemNumWithinPeriod;
@@ -110,7 +109,7 @@ public class SixtyHourHolidayFinder {
 				RemainNumberDetailDto remainNumberDetailDto = new RemainNumberDetailDto();
 				// 残数情報．発生月　＝　取得した60H超休の集計結果．60H超休情報(期間終了日時点)．付与残数データ．60H超休付与残数データ．付与日の年月
 				if (item.getGrantDate() != null) {
-					remainNumberDetailDto.setOccurrenceMonth(item.getGrantDate().yearMonth().v());
+					remainNumberDetailDto.setOccurrenceMonth(item.getGrantDate().yearMonth());
 				}
 
 				// 残数情報．期限日　＝　取得した60H超休の集計結果．60H超休情報(期間終了日時点)．付与残数データ．60H超休付与残数データ．期限日
@@ -120,21 +119,22 @@ public class SixtyHourHolidayFinder {
 				if (item.getDetails().getGrantNumber().getMinutes().isPresent()) {
 					remainNumberDetailDto.setOccurrenceTime(item.getDetails().getGrantNumber().getMinutes().get().v());
 				}
-
-//				if (optTmpHolidayOver60hMng.isPresent()) {
-//					// 残数情報．使用日　＝　取得した暫定60H超休管理データ．対象日
-//					remainNumberDetailDto.setUsageDate(optTmpHolidayOver60hMng.get().getYmd());
-//
-//					// 残数情報．使用時間　＝　取得した暫定60H超休管理データ．使用時間
-//					if (optTmpHolidayOver60hMng.get().getUseTime().isPresent()) {
-//						remainNumberDetailDto.setUsageTime(optTmpHolidayOver60hMng.get().getUseTime().get().v());
-//					}
-//					// 残数情報．作成区分　＝　取得した暫定60H超休管理データ．作成元区分
-//					remainNumberDetailDto.setCreationCategory(optTmpHolidayOver60hMng.get().getCreatorAtr().value);
-//				}
-
 				return remainNumberDetailDto;
 			}).collect(Collectors.toList());
+
+		remainNumberDetailDtos.addAll(lstHolidayOver60hMngs.stream().map(item -> {
+			RemainNumberDetailDto mapResult = new RemainNumberDetailDto();
+			// 残数情報．使用日　＝　取得した暫定60H超休管理データ．対象日
+			mapResult.setUsageDate(item.getYmd());
+	
+			// 残数情報．使用時間　＝　取得した暫定60H超休管理データ．使用時間
+			if (item.getUseTime().isPresent()) {
+				mapResult.setUsageTime(item.getUseTime().get().v());
+			}
+			// 残数情報．作成区分　＝　取得した暫定60H超休管理データ．作成元区分
+			mapResult.setCreationCategory(item.getCreatorAtr().value);
+			return mapResult;
+		}).collect(Collectors.toList()));
 
 		result.setRemainNumberDetailDtos(remainNumberDetailDtos);
 
@@ -154,8 +154,7 @@ public class SixtyHourHolidayFinder {
 									.getRemainingTime().v());
 		
 		// 締め期間　＝　取得した期間
-		result.setStartPeriod(closingPeriod.start());
-		result.setEndPeriod(closingPeriod.end());
+		result.setDeadline(closingPeriod);
 
 		// 紐付け管理を作成
 		List<PegManagementDto> pegManagementDtos = new ArrayList<>();
@@ -167,8 +166,8 @@ public class SixtyHourHolidayFinder {
 			PegManagementDto pegManagementDto = new PegManagementDto();
 			if (t.getOccurrenceMonth() != null) {
 				// ループ中の発生月の取得した期間．開始日の日
-				LocalDate startDate = LocalDate.of(YearMonth.of(t.getOccurrenceMonth()).year()
-						, YearMonth.of(t.getOccurrenceMonth()).month()
+				LocalDate startDate = LocalDate.of(t.getOccurrenceMonth().year()
+						, t.getOccurrenceMonth().month()
 						, closingPeriod.start().day());
 
 				// ループ中の発生月+1月の取得した期間．開始日の日-1日
@@ -180,9 +179,6 @@ public class SixtyHourHolidayFinder {
 					if (item.getUsageDate() != null
 					 && (item.getUsageDate().localDate().isAfter(startDate) || item.getUsageDate().localDate().isEqual(startDate))
 					 && (item.getUsageDate().localDate().isBefore(endDate) || item.getUsageDate().localDate().isEqual(endDate))) {
-						List<RemainNumberDetailDto> childRemainNumber = new ArrayList<>();
-						childRemainNumber.add(item);
-						t.setChildRemainNumberDetailDtos(childRemainNumber);
 
 						// ・発生年月　＝　ループ中の発生月
 						pegManagementDto.setOccurrenceMonth(t.getOccurrenceMonth());

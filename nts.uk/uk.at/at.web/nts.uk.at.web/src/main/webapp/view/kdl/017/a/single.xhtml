@@ -13,7 +13,7 @@
     <ui:define name="htmlHead">
       <script>
         var dialogSize = {
-          width : 500,
+          width : 510,
           height : 620
         };
       </script>
@@ -61,7 +61,7 @@
                 <colgroup>
                   <col width="30px" />
                   <col width="258px" />
-                  <col width="170px" />
+                  <col width="180px" />
                 </colgroup>
                 <thead>
                   <tr>
@@ -88,15 +88,17 @@
                         <!-- A3_2_1 -->
                         <span data-bind="text: occurrenceMonth"></span>
                         <!-- A3_2_2 -->
-                        <span class="ml-3" data-bind="text: occurrenceTime"></span>
+                        <span class="ml-2" data-bind="text: occurrenceTime"></span>
                         <!-- A3_6_1 -->
                         <span data-bind="text: deadline"></span>
                       </td>
                       <td>
-                        <!-- A3_3_1 -->
-                        <span data-bind="text: usageDate"></span>
-                        <!-- A3_3_2 -->
-                        <span data-bind="text: usageTime"></span>
+                        <com:ko tag="foreach" bind="usageDateDtos">
+                          <!-- A3_3_1 -->
+                          <span data-bind="text: usageDate"></span>
+                          <!-- A3_3_2 -->
+                          <span data-bind="text: usageTime" class="float-right margin-right-2"></span>
+                        </com:ko>
                       </td>
                     </tr>
                   </com:ko-foreach>
