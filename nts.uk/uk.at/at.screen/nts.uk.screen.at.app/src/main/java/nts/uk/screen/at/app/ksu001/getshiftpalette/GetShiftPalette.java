@@ -4,6 +4,7 @@
 package nts.uk.screen.at.app.ksu001.getshiftpalette;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +86,11 @@ public class GetShiftPalette {
 		GetCombinationrAndWorkHolidayAtrService.Require require = new RequireImpl(shiftMasterRepo, basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
 		
 		// listShiftMasterCode này chỉ bao gồm những Code chưa được lưu ở localStorage.
-		Map<ShiftMaster,Optional<WorkStyle>> sMap = GetCombinationrAndWorkHolidayAtrService.getCode(require,AppContexts.user().companyId(), listShiftMasterCodeOfPageSelectd);
+		Map<ShiftMaster,Optional<WorkStyle>> sMap = new HashMap<>();
+		if(!listShiftMasterCodeOfPageSelectd.isEmpty()){
+			sMap = GetCombinationrAndWorkHolidayAtrService.getCode(require,AppContexts.user().companyId(), listShiftMasterCodeOfPageSelectd);
+		}
+		
 		List<String> listShiftMasterCodeFromUI = param.listShiftMasterNotNeedGetNew.stream().map(mapper -> mapper.getShiftMasterCode()).collect(Collectors.toList()); // ko cần get mới
 
 		for (Map.Entry<ShiftMaster, Optional<WorkStyle>> entry : sMap.entrySet()) {
@@ -106,7 +111,7 @@ public class GetShiftPalette {
 		List<ShiftPalletsCom> listShiftPalletsCom = shiftPalletsComRepository.findShiftPalletUse(companyId);
 		
 		List<PageInfo> listPageInfo = new ArrayList<>(); // List<ページ, 名称>
-		TargetShiftPalette targetShiftPalette = null; // 対象のシフトパレット： Optional<ページ, シフトパレット>
+		TargetShiftPalette targetShiftPalette = new TargetShiftPalette(param.shiftPaletteWantGet.getPageNumberCom(), new ArrayList<>(), new ArrayList<>()); // 対象のシフトパレット： Optional<ページ, シフトパレット>
 		
 		if (listShiftPalletsCom.isEmpty()) {
 			return new GetShiftPaletteResult(listPageInfo, targetShiftPalette, new ArrayList<>(), new ArrayList<>());
@@ -149,7 +154,7 @@ public class GetShiftPalette {
 		List<ShiftPalletsOrg> listShiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceIdUse(0, param.getWorkplaceId());
 		
 		List<PageInfo> listPageInfo = new ArrayList<>(); // List<ページ, 名称>
-		TargetShiftPalette targetShiftPalette = null; // 対象のシフトパレット： Optional<ページ, シフトパレット>
+		TargetShiftPalette targetShiftPalette = new TargetShiftPalette(param.shiftPaletteWantGet.getPageNumberOrg(), new ArrayList<>(), new ArrayList<>());; // 対象のシフトパレット： Optional<ページ, シフトパレット>
 		
 		if (listShiftPalletsOrg.isEmpty()) {
 			return new GetShiftPaletteResult(listPageInfo, targetShiftPalette, new ArrayList<>(), new ArrayList<>());

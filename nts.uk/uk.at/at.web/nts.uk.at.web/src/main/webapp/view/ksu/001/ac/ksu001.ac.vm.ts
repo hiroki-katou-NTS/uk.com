@@ -29,6 +29,8 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
         flag: boolean = true;
         dataToStick: any = null;
         listPageInfo : any;
+        isFirstCom: boolean = true;
+        isFirstOrg: boolean = true;
 
         btnSelectedCom = {};
         btnSelectedOrg = {};
@@ -67,6 +69,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 if (self.flag == false)
                     return;
                 if (newValue) {
+                    $("#extable").exTable("stickData", []);
                     uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                         let userInfor = JSON.parse(data);
                         userInfor.shiftPalletUnit = newValue;
@@ -78,6 +81,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             });
 
             self.selectedButtonTableCompany.subscribe((value) => {
+                console.log(value);
                 let indexBtnSelected = value.column + value.row * 10;
                 let arrDataToStick = [];
 
@@ -90,14 +94,12 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     $("#extable").exTable("stickData", arrDataToStick);
                 } else {
                     let isMasterNotReg = false;
+                    let mami = nts.uk.resource.getText('KSU001_94');
                     for (let i = 0; i < value.data.data.length; i++) {
                         let obj = value.data.data[i];
                         let shiftMasterName = obj.value.toString();
                         let shiftMasterCode = obj.shiftMasterCode;
-                        let removeFirstChar = shiftMasterName.slice(1);  // xoa dau [ ở đầu
-                        let removeEndChar = removeFirstChar.slice(0, removeFirstChar.length - 1);// xoa dau ] ở cuối
-                        shiftMasterName = removeEndChar;
-                        if (shiftMasterName.includes('マスタ未登録')) {
+                        if (shiftMasterName == mami) {
                             isMasterNotReg = true;
                         } else {
                             arrDataToStick.push(new ExCell('', '', '', '', '', '', shiftMasterName, '',obj.shiftMasterCode)); 
@@ -120,16 +122,16 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                              *  1日出勤系 ONE_DAY_WORK(3)
                              */
                             let workStyle = workInfo[0].workStyle;
-                            if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
+                            if (workStyle == AttendanceHolidayAttr.FULL_TIME + '') {
                                 return { textColor: "#0000ff" }; // color-attendance
                             }
-                            if (workStyle == AttendanceHolidayAttr.MORNING) {
+                            if (workStyle == AttendanceHolidayAttr.MORNING+ '') {
                                 return { textColor: "#FF7F27" };// color-half-day-work
                             }
-                            if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
+                            if (workStyle == AttendanceHolidayAttr.AFTERNOON+ '') {
                                 return { textColor: "#FF7F27" };// color-half-day-work
                             }
-                            if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
+                            if (workStyle == AttendanceHolidayAttr.HOLIDAY+ '') {
                                 return { textColor: "#ff0000" };// color-holiday
                             }
                             if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
@@ -150,12 +152,14 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             });
 
             self.selectedButtonTableWorkplace.subscribe((value) => {
+                console.log(value);
                 let indexBtnSelected = value.column + value.row * 10;
                 let arrDataToStickWkp = [];
                 // get listShiftMaster luu trong localStorage
                 let itemLocal = uk.localStorage.getItem(self.KEY);
                 let userInfor = JSON.parse(itemLocal.get());
                 let listShiftMasterSaveLocal = userInfor.shiftMasterWithWorkStyleLst;
+                let mami = nts.uk.resource.getText('KSU001_94');
 
                 if (value.column == -1 || value.row == -1) {
                     $("#extable").exTable("stickData", arrDataToStickWkp);
@@ -165,10 +169,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         let obj = value.data.data[i];
                         let shiftMasterName = obj.value.toString();
                         let shiftMasterCode = obj.shiftMasterCode;
-                        let removeFirstChar = shiftMasterName.slice(1);  // xoa dau [ ở đầu
-                        let removeEndChar = removeFirstChar.slice(0, removeFirstChar.length - 1);// xoa dau ] ở cuối
-                        shiftMasterName = removeEndChar;
-                        if (shiftMasterName.includes('マスタ未登録')) {
+                        if (shiftMasterName == mami) {
                             isMasterNotReg = true;
                         } else {
                             arrDataToStickWkp.push(new ExCell('', '', '', '', '', '', shiftMasterName, '',obj.shiftMasterCode)); 
@@ -191,16 +192,16 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                              *  1日出勤系 ONE_DAY_WORK(3)
                              */
                             let workStyle = workInfo[0].workStyle;
-                            if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
+                            if (workStyle == AttendanceHolidayAttr.FULL_TIME + '') {
                                 return { textColor: "#0000ff" }; // color-attendance
                             }
-                            if (workStyle == AttendanceHolidayAttr.MORNING) {
+                            if (workStyle == AttendanceHolidayAttr.MORNING + '') {
                                 return { textColor: "#FF7F27" };// color-half-day-work
                             }
-                            if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
+                            if (workStyle == AttendanceHolidayAttr.AFTERNOON + '') {
                                 return { textColor: "#FF7F27" };// color-half-day-work
                             }
-                            if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
+                            if (workStyle == AttendanceHolidayAttr.HOLIDAY + '') {
                                 return { textColor: "#ff0000" };// color-holiday
                             }
                             if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
@@ -293,6 +294,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             let self = this;
             for (let i = 0; i < listShiftPalletCom.length; i++) {
                 let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+                let mami = nts.uk.resource.getText('KSU001_94');
                 //set data for dataSource
                 _.each(listShiftPalletCom[i].patternItem, (pattItem) => {
                     let text = pattItem.patternName;
@@ -302,11 +304,11 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         let matchShiftWork = _.find(listShiftMasterSaveLocal, ["shiftMasterCode", wPSet.shiftCode != null ? wPSet.shiftCode : wPSet.workTypeCode]);
                         let value = "";
                         if (self.selectedpalletUnit() === 1) {
-                            let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.shiftCode + 'マスタ未登録]';
+                            let shortName = (matchShiftWork != null) ?  matchShiftWork.shiftMasterName : mami;
                             value = shortName;
                             arrPairShortName.push(shortName);
                         } else {
-                            let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.workTypeCode + 'マスタ未登録]';
+                            let shortName = (matchShiftWork != null) ? matchShiftWork.shiftMasterName  : mami;
                             value = shortName;
                             arrPairShortName.push(shortName);
                         }
@@ -376,6 +378,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             let self = this;
             for (let i = 0; i < listShiftPalletWorkPlace.length; i++) {
                 let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+                let mami = nts.uk.resource.getText('KSU001_94');
                 //set data for dataSource
                 _.each(listShiftPalletWorkPlace[i].patternItem, (pattItem) => {
                     let text = pattItem.patternName;
@@ -385,11 +388,11 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         let matchShiftWork = _.find(listShiftMasterSaveLocal, ["shiftMasterCode", wPSet.shiftCode != null ? wPSet.shiftCode : wPSet.workTypeCode]);
                         let value = "";
                         if (self.selectedpalletUnit() === 1) {
-                            let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.shiftCode + 'マスタ未登録]';
+                            let shortName = (matchShiftWork != null) ? matchShiftWork.shiftMasterName  :  mami;
                             value = shortName;
                             arrPairShortName.push(shortName);
                         } else {
-                            let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.workTypeCode + 'マスタ未登録]';
+                            let shortName = (matchShiftWork != null) ? matchShiftWork.shiftMasterName  : mami;
                             value = shortName;
                             arrPairShortName.push(shortName);
                         }
@@ -429,6 +432,8 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             let self = this,
                 source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
                 indexBtn: number = indexLinkBtn();
+            if (self.listPageInfo.length == 0)
+                return;
             nts.uk.ui.block.grayout();
             let pageNumberSelected = self.listPageInfo[indexBtn].pageNumber;
             let dataLocal = uk.localStorage.getItem(self.KEY);
@@ -468,22 +473,43 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     self.selectedLinkButtonCom(indexBtn);
                     
                     // select button Table
-                    let indexBtnSelected = shiftPalletPositionNumberCom.column + shiftPalletPositionNumberCom.row*10;
-                    let dataSourceOfBtnSelect = self.sourceCompany()[indexBtnSelected];
-                    if (dataSourceOfBtnSelect.hasOwnProperty('data')) {
-                        // trường hợp 
-                        shiftPalletPositionNumberCom.data = dataSourceOfBtnSelect;
-                        self.selectedButtonTableCompany(shiftPalletPositionNumberCom);
+                    if (self.isFirstCom) {
+                        let indexBtnSelected = shiftPalletPositionNumberCom.column + shiftPalletPositionNumberCom.row * 10;
+                        let dataSourceOfBtnSelect = self.sourceCompany()[indexBtnSelected];
+                        if (dataSourceOfBtnSelect.hasOwnProperty('data')) {
+                            // trường hợp 
+                            shiftPalletPositionNumberCom.data = dataSourceOfBtnSelect;
+                            self.selectedButtonTableCompany(shiftPalletPositionNumberCom);
+                        } else {
+                            // trường hợp  
+                            let x = _.filter(self.sourceCompany(), function(o) { return o.hasOwnProperty('data') });
+                            if (x.length > 0) {
+                                let indexc = _.indexOf(self.sourceCompany(), x[0]);
+                                let obj = self.getRowColumnIndex(indexc);
+                                shiftPalletPositionNumberCom.row = obj.row;
+                                shiftPalletPositionNumberCom.column = obj.column;
+                                shiftPalletPositionNumberCom.data = x[0];
+                                self.selectedButtonTableCompany(shiftPalletPositionNumberCom);
+                                _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
+                                    $($('.ntsButtonTableButton')[index]).removeClass('ntsButtonCellSelected');
+                                });
+                                $($('.ntsButtonTableButton')[indexc]).addClass('ntsButtonCellSelected');
+                            }
+                        }
+                        self.isFirstCom = false;
                     } else {
-                        // trường hợp  
                         let x = _.filter(self.sourceCompany(), function(o) { return o.hasOwnProperty('data') });
                         if (x.length > 0) {
                             let indexc = _.indexOf(self.sourceCompany(), x[0]);
                             let obj = self.getRowColumnIndex(indexc);
-                            shiftPalletPositionNumberCom.row    = obj.row;
+                            shiftPalletPositionNumberCom.row = obj.row;
                             shiftPalletPositionNumberCom.column = obj.column;
-                            shiftPalletPositionNumberCom.data   = x[0];
+                            shiftPalletPositionNumberCom.data = x[0];
                             self.selectedButtonTableCompany(shiftPalletPositionNumberCom);
+                            _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
+                                $($('.ntsButtonTableButton')[index]).removeClass('ntsButtonCellSelected');
+                            });
+                            $($('.ntsButtonTableButton')[indexc]).addClass('ntsButtonCellSelected');
                         }
                     }
                     nts.uk.ui.block.clear();
@@ -510,25 +536,45 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     self.updateDataSourceWorkplace(listPattern, data.listShiftMaster);
                     self.sourceWorkplace(self.dataSourceWorkplace()[pageNumberSelected - 1] || source);
                     self.selectedLinkButtonWkp(indexBtn);
-                    
+
                     // select button Table
                     let indexBtnSelectedOrg = shiftPalletPositionNumberOrg.column + shiftPalletPositionNumberOrg.row * 10;
-                    let dataSourceOfBtnSelect = self.sourceWorkplace()[indexBtnSelectedOrg];
-                    if (dataSourceOfBtnSelect.hasOwnProperty('data')) {
-                        // trường hợp 
-                        shiftPalletPositionNumberOrg.data = dataSourceOfBtnSelect;
-                        self.selectedButtonTableWorkplace(shiftPalletPositionNumberOrg);
-
+                    if (self.isFirstOrg) {
+                        let dataSourceOfBtnSelect = self.sourceWorkplace()[indexBtnSelectedOrg];
+                        if (dataSourceOfBtnSelect.hasOwnProperty('data')) {
+                            // trường hợp 
+                            shiftPalletPositionNumberOrg.data = dataSourceOfBtnSelect;
+                            self.selectedButtonTableWorkplace(shiftPalletPositionNumberOrg);
+                        } else {
+                            // trường hợp 
+                            let x = _.filter(self.sourceWorkplace(), function(o) { return o.hasOwnProperty('data') });
+                            if (x.length > 0) {
+                                let indexc = _.indexOf(self.sourceWorkplace(), x[0]);
+                                let obj = self.getRowColumnIndex(indexc);
+                                shiftPalletPositionNumberOrg.row = obj.row;
+                                shiftPalletPositionNumberOrg.column = obj.column;
+                                shiftPalletPositionNumberOrg.data = x[0];
+                                self.selectedButtonTableWorkplace(shiftPalletPositionNumberOrg);
+                                _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
+                                    $($('.ntsButtonTableButton')[index]).removeClass('ntsButtonCellSelected');
+                                });
+                                $($('.ntsButtonTableButton')[indexc]).addClass('ntsButtonCellSelected');
+                            }
+                        }
+                        self.isFirstOrg = false;
                     } else {
-                        // trường hợp 
                         let x = _.filter(self.sourceWorkplace(), function(o) { return o.hasOwnProperty('data') });
                         if (x.length > 0) {
                             let indexc = _.indexOf(self.sourceWorkplace(), x[0]);
                             let obj = self.getRowColumnIndex(indexc);
-                            shiftPalletPositionNumberOrg.row    = obj.row;
+                            shiftPalletPositionNumberOrg.row = obj.row;
                             shiftPalletPositionNumberOrg.column = obj.column;
-                            shiftPalletPositionNumberOrg.data   = x[0];
+                            shiftPalletPositionNumberOrg.data = x[0];
                             self.selectedButtonTableWorkplace(shiftPalletPositionNumberOrg);
+                            _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
+                                $($('.ntsButtonTableButton')[index]).removeClass('ntsButtonCellSelected');
+                            });
+                            $($('.ntsButtonTableButton')[indexc]).addClass('ntsButtonCellSelected');
                         }
                     }
                 }
