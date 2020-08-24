@@ -267,7 +267,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		String cardLstStr = getString(inforLst, cardLst);
 		String orderedParam;
 		if(ordered) orderedParam = "1";
-		else orderedParam = "0,1";
+		else orderedParam = "0";
 
 		query = handleQueryForWkLocationCD(workLocationCode, query);
 
