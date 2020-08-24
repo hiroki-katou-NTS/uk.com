@@ -26,11 +26,11 @@ public class JpaEmpMedicalWorkStyleHistoryRepository extends JpaRepository imple
 	
 	 private static final String GET_BY_LSTHISID = " SELECT c FROM KscmtMedicalWorkStyle c WHERE c.pk.sid = empId AND c.pk.histId IN : listHisId ";
 	 
-	 private static final String GET_BY_EMPID_AND_DATE = " SELECT c FROM KscmtMedicalWorkStyle WHERE c.pk.sid = :empId "
+	 private static final String GET_BY_EMPID_AND_DATE = " SELECT c FROM KscmtMedicalWorkStyle c WHERE c.pk.sid = :empId "
 			                                             + " AND c.endDate >= :referenceDate "
 			                                             + " AND c.startDate <= :referenceDate ";
 	 
-	 private static final String GET_BY_EMPIDS_AND_DATE = " SELECT c FROM KscmtMedicalWorkStyle WHERE c.pk.sid IN :listEmpId "
+	 private static final String GET_BY_EMPIDS_AND_DATE = " SELECT c FROM KscmtMedicalWorkStyle c WHERE c.pk.sid IN :listEmpId "
 			 											 + " AND c.endDate >= :referenceDate "
                                                          + " AND c.startDate <= :referenceDate "; 
 	@Override
