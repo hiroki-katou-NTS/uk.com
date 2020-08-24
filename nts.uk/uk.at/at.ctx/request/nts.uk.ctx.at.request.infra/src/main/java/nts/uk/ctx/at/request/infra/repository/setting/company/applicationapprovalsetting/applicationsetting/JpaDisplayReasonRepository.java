@@ -21,7 +21,7 @@ public class JpaDisplayReasonRepository extends JpaRepository implements Display
 
 	@Override
 	public Optional<DisplayReason> findByAppType(String companyID, ApplicationType appType) {
-		String sql = "select FIXED_REASON_DISP_ATR, REASON_DISP_ATR from KRQST_APP_TYPE where CID = @companyID and APP_TYPE = @appType";
+		String sql = "select FIXED_REASON_DISP_ATR, REASON_DISP_ATR from KRQMT_APP_TYPE where CID = @companyID and APP_TYPE = @appType";
 		return new NtsStatement(sql, this.jdbcProxy())
 				.paramString("companyID", companyID)
 				.paramInt("appType", appType.value)
@@ -36,7 +36,7 @@ public class JpaDisplayReasonRepository extends JpaRepository implements Display
 
 	@Override
 	public Optional<DisplayReason> findByHolidayAppType(String companyID, HolidayAppType holidayAppType) {
-		String sql = "select * from KRQST_APP_HD_REASON where CID = @companyID and HOLIDAY_APP_TYPE = @holidayAppType";
+		String sql = "select * from KRQMT_APP_HD_REASON where CID = @companyID and HOLIDAY_APP_TYPE = @holidayAppType";
 		return new NtsStatement(sql, this.jdbcProxy())
 				.paramString("companyID", companyID)
 				.paramInt("holidayAppType", holidayAppType.value)

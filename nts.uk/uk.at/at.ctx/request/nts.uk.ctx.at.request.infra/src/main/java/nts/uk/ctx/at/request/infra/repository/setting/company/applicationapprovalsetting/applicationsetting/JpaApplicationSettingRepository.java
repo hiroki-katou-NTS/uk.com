@@ -52,9 +52,9 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 					"b.PRE_OT_AFT_WORK_TIME as bPRE_OT_AFT_WORK_TIME, b.PRE_OT_BEF_AFT_WORK_TIME as bPRE_OT_BEF_AFT_WORK_TIME, " +
 					"c.CID as cCID, c.CLOSURE_ID as cCLOSURE_ID, c.MCLOSE_CRITERIA_ATR as cMCLOSE_CRITERIA_ATR, c.MCLOSE_DAYS as cMCLOSE_DAYS, c.USE_ATR as cUSE_ATR, " + 
 					"d.CID as dCID, d.APP_TYPE as dAPP_TYPE, d.OPTION_ATR as dOPTION_ATR " +
-					"from KRQST_APPLICATION a left join KRQST_APP_TYPE b on a.CID =  b.CID " +
-					"left join KRQST_APP_MCLOSE c on a.CID = c.CID " +
-					"left join KRQST_REPRESENT_APP d on b.CID = d.CID and b.APP_TYPE = d.APP_TYPE " +
+					"from KRQMT_APPLICATION a left join KRQMT_APP_TYPE b on a.CID =  b.CID " +
+					"left join KRQMT_APP_MCLOSE c on a.CID = c.CID " +
+					"left join KRQMT_REPRESENT_APP d on b.CID = d.CID and b.APP_TYPE = d.APP_TYPE " +
 					"where b.CID = @companyID and b.APP_TYPE = @appType";
 		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("companyID", companyID)
@@ -69,7 +69,7 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 	
 	private Map<String, Object> toObject(NtsResultRecord rec) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		// KRQST_APPLICATION
+		// KRQMT_APPLICATION
 		map.put("aCID", rec.getString("aCID"));
 		map.put("aBASE_DATE_SET", rec.getInt("aBASE_DATE_SET"));
 		map.put("aMON_ATD_CONFIRM_ATR", rec.getInt("aMON_ATD_CONFIRM_ATR"));
@@ -81,7 +81,7 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 		map.put("aPRE_POST_DISPLAY_ATR", rec.getInt("aPRE_POST_DISPLAY_ATR"));
 		map.put("aSEND_MAIL_INI_ATR", rec.getInt("aSEND_MAIL_INI_ATR"));
 		map.put("aTIME_NIGHT_REFLECT_ATR", rec.getInt("aTIME_NIGHT_REFLECT_ATR"));
-		// KRQST_APP_TYPE
+		// KRQMT_APP_TYPE
 		map.put("bCID", rec.getString("bCID"));
 		map.put("bAPP_TYPE", rec.getInt("bAPP_TYPE"));
 		map.put("bPRE_POST_INIT_ATR", rec.getInt("bPRE_POST_INIT_ATR"));
@@ -95,13 +95,13 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 		map.put("bPRE_OT_BEF_WORK_TIME", rec.getInt("bPRE_OT_BEF_WORK_TIME"));
 		map.put("bPRE_OT_AFT_WORK_TIME", rec.getInt("bPRE_OT_AFT_WORK_TIME"));
 		map.put("bPRE_OT_BEF_AFT_WORK_TIME", rec.getInt("bPRE_OT_BEF_AFT_WORK_TIME"));
-		// KRQST_APP_MCLOSE
+		// KRQMT_APP_MCLOSE
 		map.put("cCID", rec.getString("cCID"));
 		map.put("cCLOSURE_ID", rec.getInt("cCLOSURE_ID"));
 		map.put("cMCLOSE_CRITERIA_ATR", rec.getInt("cMCLOSE_CRITERIA_ATR"));
 		map.put("cMCLOSE_DAYS", rec.getInt("cMCLOSE_DAYS"));
 		map.put("cUSE_ATR", rec.getInt("cUSE_ATR"));
-		// KRQST_REPRESENT_APP
+		// KRQMT_REPRESENT_APP
 		map.put("dCID", rec.getString("dCID"));
 		map.put("dAPP_TYPE", rec.getInt("dAPP_TYPE"));
 		map.put("dOPTION_ATR", rec.getInt("dOPTION_ATR"));

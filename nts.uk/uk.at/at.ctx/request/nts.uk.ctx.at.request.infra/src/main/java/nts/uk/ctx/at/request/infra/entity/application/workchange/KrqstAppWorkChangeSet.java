@@ -22,7 +22,7 @@ import nts.arc.enums.EnumAdaptor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRQST_APP_WORK_CHANGE")
+@Table(name = "KRQMT_APP_WORK_CHANGE")
 public class KrqstAppWorkChangeSet extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

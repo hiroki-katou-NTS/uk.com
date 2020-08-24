@@ -16,7 +16,7 @@ import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalset
  */
 @Stateless
 public class LateEarlyCancelAppSetRepositoryImp extends JpaRepository implements LateEarlyCancelAppSetRepository {
-	private final String SELECT_ALL = "SELECT * FROM KRQST_APP_LATE_OR_LEAVE WHERE CID = @companyId";
+	private final String SELECT_ALL = "SELECT * FROM KRQMT_APP_LATE_OR_LEAVE WHERE CID = @companyId";
 
 	@Override
 	public LateEarlyCancelAppSet getByCId(String companyId) {
