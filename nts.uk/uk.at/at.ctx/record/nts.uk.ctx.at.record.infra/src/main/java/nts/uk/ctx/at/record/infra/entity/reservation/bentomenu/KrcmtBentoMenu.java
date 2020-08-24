@@ -95,9 +95,10 @@ public class KrcmtBentoMenu extends UkJpaEntity {
 				bentoMenu.getClosingTime().getClosingTime1().getFinish().v(),
 				bentoMenu.getClosingTime().getClosingTime2().isPresent()?
 						bentoMenu.getClosingTime().getClosingTime2().get().getReservationTimeName().v():null,
-				(bentoMenu.getClosingTime().getClosingTime2().isPresent()?
-						bentoMenu.getClosingTime().getClosingTime2().get():null)!=null? bentoMenu.getClosingTime().getClosingTime2()
-                        .get().getStart().get().v():null,
+                ((bentoMenu.getClosingTime().getClosingTime2().isPresent()?
+						bentoMenu.getClosingTime().getClosingTime2().get():null)
+                        !=null? bentoMenu.getClosingTime().getClosingTime2().get().getStart().isPresent()?
+                        bentoMenu.getClosingTime().getClosingTime2().get().getStart().get().v():null:null),
 				bentoMenu.getClosingTime().getClosingTime2().isPresent()? bentoMenu.getClosingTime().getClosingTime2()
                         .get().getFinish().v():null,
                 Arrays.asList());
