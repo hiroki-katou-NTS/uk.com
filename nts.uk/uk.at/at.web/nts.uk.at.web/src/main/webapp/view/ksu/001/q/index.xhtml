@@ -41,8 +41,7 @@
 					</div>
 					<div>
 						<div>
-							<div style="margin-left: 30px; margin-top: 10px"
-								data-bind="ntsFormLabel: {}">
+							<div class="label" style="margin-left: 30px; margin-top: 10px">
 								<span data-bind="text: organizationName"></span>
 							</div>
 						</div>
@@ -60,7 +59,7 @@
 										editable: false,
 										required: true,
 										width: 265,
-										visibleItemsCount: 10,
+										visibleItemsCount: 4,
 										columns: [
 											{ prop: 'code', length: 1 },
 											{ prop: 'name', length: 1 },
@@ -101,8 +100,8 @@
 													constraint: 'ExtBudgetMoney',
 													option: option,
 													required: false,
-													enable: false,
-													readonly: true}" /></td>
+													enable: true,
+													readonly: false}" /></td>
 											<td
 												data-bind="visible: $parent.check2, with: $parent.numbereditor"><input
 												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 118px; height: 20px;"
@@ -111,8 +110,8 @@
 													constraint: 'ExtBudgetNumberPerson',
 													option: option,
 													required: false,
-													enable: false,
-													readonly: true}" /></td>
+													enable: true,
+													readonly: false}" /></td>
 											<td
 												data-bind="visible: $parent.check3, with: $parent.numbereditor"><input
 												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 118px; height: 20px;"
@@ -121,8 +120,8 @@
 													constraint: 'ExtBudgetNumericalVal',
 													option: option,
 													required: false,
-													enable: false,
-													readonly: true}" /></td>
+													enable: true,
+													readonly: false}" /></td>
 										</tr>
 									</tbody>
 								</table>
