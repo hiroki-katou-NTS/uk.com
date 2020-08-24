@@ -12,9 +12,7 @@ module nts.uk.at.view.kdl014.a {
         selectedItem = ko.observable( '' );
         listComponentOption: any;
         employeeInputList = ko.observableArray([]);
-        
         dataServer = [];
-        
         paramFromParent: ParamFromParent;
         display: boolean;
         height: number;
@@ -55,7 +53,6 @@ module nts.uk.at.view.kdl014.a {
                     listEmp: self.paramFromParent.listEmp
                 };
                 service.getInfo(param).done(function(data) {
-                    _.orderBy(data, ['name', 'stampDateTime'], ['asc', 'asc']);
                     console.log(data);
                     self.dataServer = data.listEmps;
                     self.display = data.display;
@@ -146,7 +143,7 @@ module nts.uk.at.view.kdl014.a {
                     tg.push(new EmpInfomation(item));
                 }
             });
-            self.empInfomationList(tg);
+            self.empInfomationList(_.orderBy(tg, ['code'], ['asc']));
         }
         
         cancel_Dialog(): any {
