@@ -405,6 +405,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 userInfor.shiftPalletPositionNumberOrg = { column : 0 , row : 0 };
                 userInfor.gridHeightSelection = 1;
                 userInfor.heightGridSetting = '';
+                userInfor.unit = dataBasic.unit;
                 userInfor.workplaceId= dataBasic.workplaceId;
                 userInfor.workPlaceName= dataBasic.targetOrganizationName;
                 userInfor.workType = {}; 
@@ -1606,6 +1607,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         */
         nextMonth(): void {
             let self = this;
+            return;
+            
             if (self.selectedModeDisplay() == 1 || self.selectedModeDisplay() == 2)
                 return;
 
@@ -1647,6 +1650,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         */
         backMonth(): void {
             let self = this;
+            return;
             if (self.selectedModeDisplay() == 1 || self.selectedModeDisplay() == 2)
                 return;
             
@@ -1870,23 +1874,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         /**
           * open dialog D
          */
-        openDialogD(): void {
+        openDialogU(): void {
             let self = this;
             let item = uk.localStorage.getItem(self.KEY);
+            let userInfor : IUserInfor = JSON.parse(item.get());
 
-            setShared('dataForScreenD', {
-                dataSource: self.dataSource(),
-                empItems: self.empItems(),
-                // in phare 2, permissionHandCorrection allow false
-                permissionHandCorrection: false,
-                listColorOfHeader: self.listColorOfHeader(),
-                startDate: moment(self.dtPrev()).format('YYYY/MM/DD'),
-                endDate: moment(self.dtAft()).format('YYYY/MM/DD'),
-                workPlaceId: item.isPresent() ? item.get().workplaceId : '',
-                workPlaceName: item.isPresent() ? item.get().workPlaceName : '',
+            setShared('dataShareDialogU', {
+                baseDate: moment(self.dtAft()).format('YYYY/MM/DD'),
+                unit: userInfor.unit,
+                workplaceId: userInfor.workplaceId,
+                workplaceGroupId: userInfor.workplaceGroupId,
             });
 
-            nts.uk.ui.windows.sub.modal("/view/ksu/001/d/index.xhtml").onClosed(() => {
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/u/index.xhtml").onClosed(() => {
                 if (getShared("dataFromScreenD") && !getShared("dataFromScreenD").clickCloseDialog) {
                     // to do
                 }
@@ -1898,8 +1898,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
 
             let empIds = self.listSid();
-            let today = new Date();
-            let baseDate = today.getFullYear() + '' + today.getMonth() + '' + today.getDay() + '';
+            let baseDate = moment().format('YYYYMMDD');
             let param: IEmployeeParam = {
                 employeeIds: empIds,
                 baseDate: baseDate
@@ -1919,8 +1918,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
 
             let empIds = self.listSid();
-            let today = new Date();
-            let baseDate = today.getFullYear() + '' + today.getMonth() + '' + today.getDay() + '';
+            let baseDate = moment().format('YYYYMMDD');
             var param: IEmployeeParam = {
                 employeeIds: empIds,
                 baseDate: baseDate
@@ -1965,13 +1963,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     endDate: self.dateTimeAfter()
                 };
             let item = uk.localStorage.getItem(self.KEY);
-            let param = {
-                period: period,
-                workPlaceId: item.isPresent() ? item.get().workplaceId : '',
-                workPlaceName: item.isPresent() ? item.get().workPlaceName : '',
-
-            };
-            setShared("CDL027Params", param);
+            let userInfor : IUserInfor = JSON.parse(item.get());
+            
+            setShared('target', {
+                unit: userInfor.unit,
+                id: userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId
+            });
+            
+            setShared('period', {
+                startDate: self.dateTimePrev(),
+                endDate: self.dateTimeAfter()
+            });
+            
             $('#A1_12_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modal("/view/ksu/001/q/index.xhtml").onClosed(() => {
             });
@@ -1981,11 +1984,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         openLDialog(): void {
             let self = this;
             //hiện giờ truyền sang workplaceId va tất cả emmployee . Sau này sửa truyền list employee theo workplace id
-            setShared("dataForScreenL", {
-                endDate: self.dateTimeAfter()
-            });
+            setShared("baseDate", ko.observable(self.dateTimeAfter()));
             $('#A1_12_1').ntsPopup('hide');
-            nts.uk.ui.windows.sub.modal("/view/ksu/001/l/index.xhtml");
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/la/index.xhtml");
         }
         
         // A1_12_20
@@ -2285,6 +2286,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         shiftPalletPositionNumberOrg: {};
         gridHeightSelection: number;
         heightGridSetting: number;
+        unit: number;
         workplaceId: string;
         workplaceGroupId: string;
         workPlaceName: string;
