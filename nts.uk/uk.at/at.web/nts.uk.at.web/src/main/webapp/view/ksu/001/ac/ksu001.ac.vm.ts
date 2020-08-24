@@ -292,6 +292,10 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
         
         updateDataSourceCompany(listShiftPalletCom, listShiftMasterSaveLocal) {
             let self = this;
+            if(listShiftPalletCom.length == 0) {
+                let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+                self.sourceCompany(source);
+            }
             for (let i = 0; i < listShiftPalletCom.length; i++) {
                 let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
                 let mami = nts.uk.resource.getText('KSU001_94');
@@ -376,6 +380,10 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
         
         updateDataSourceWorkplace(listShiftPalletWorkPlace, listShiftMasterSaveLocal) {
             let self = this;
+            if(listShiftPalletWorkPlace.length == 0){
+                let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+                self.sourceWorkplace(source);    
+            }
             for (let i = 0; i < listShiftPalletWorkPlace.length; i++) {
                 let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
                 let mami = nts.uk.resource.getText('KSU001_94');
