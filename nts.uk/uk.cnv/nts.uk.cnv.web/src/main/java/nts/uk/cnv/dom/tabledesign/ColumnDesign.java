@@ -19,6 +19,7 @@ public class ColumnDesign {
 	private int primaryKeySeq;
 	private boolean uniqueKey;
 	private int uniqueKeySeq;
-	
+
 	private String defaultValue;
+	private String comment;
 }

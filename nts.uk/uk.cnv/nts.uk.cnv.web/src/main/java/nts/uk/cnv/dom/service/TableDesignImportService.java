@@ -141,14 +141,15 @@ public class TableDesignImportService {
 					pk.containsKey(col.getColumnName()) ? pk.get(col.getColumnName()) : 0,
 					uk.containsKey(col.getColumnName()),
 					uk.containsKey(col.getColumnName()) ? uk.get(col.getColumnName()) : 0,
-					defaultValue
+					defaultValue,
+					""
 			);
 			columns.add(newItem);
 			id++;
 		}
 		
 		Table table = statement.getTable();
-		TableDesign result = new TableDesign(table.getName(), table.getName(), now, now, columns, indexes);
+		TableDesign result = new TableDesign(table.getName(), table.getName(), "",now, now, columns, indexes);
 		return result;
 	}
  

@@ -59,6 +59,9 @@ public class ScvmtColumnDesign extends JpaEntity implements Serializable {
 	@Column(name = "DEFAULT_VALUE")
 	private String defaultValue;
 
+	@Column(name = "COMMENT")
+	private String comment;
+
 	@ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "TABLE_ID", referencedColumnName = "TABLE_ID")
@@ -82,7 +85,8 @@ public class ScvmtColumnDesign extends JpaEntity implements Serializable {
 				primaryKeySeq,
 				(uniqueKey == 1),
 				uniqueKeySeq,
-				defaultValue);
+				defaultValue,
+				comment);
 	}
 
 }

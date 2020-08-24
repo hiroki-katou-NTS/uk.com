@@ -75,6 +75,7 @@ public class JpaTableDesignRepository extends JpaRepository implements TableDesi
 		return new ScvmtTableDesign(
 				tableDesign.getId(),
 				tableDesign.getName(),
+				tableDesign.getComment(),
 				tableDesign.getCreateDate(),
 				tableDesign.getUpdateDate(),
 				columns,
@@ -93,7 +94,9 @@ public class JpaTableDesignRepository extends JpaRepository implements TableDesi
 					columnDesign.getPrimaryKeySeq(),
 					(columnDesign.isUniqueKey() ? 1 : 0),
 					columnDesign.getUniqueKeySeq(),
-					columnDesign.getDefaultValue(), null
+					columnDesign.getDefaultValue(),
+					columnDesign.getComment(),
+					null
 				);
 	}
 

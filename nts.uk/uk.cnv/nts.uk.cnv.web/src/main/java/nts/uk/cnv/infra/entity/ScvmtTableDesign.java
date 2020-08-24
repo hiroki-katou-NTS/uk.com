@@ -39,6 +39,9 @@ public class ScvmtTableDesign extends JpaEntity implements Serializable {
 	@Column(name = "NAME")
 	private String name;
 
+	@Column(name = "COMMENT")
+	private String comment;
+
 	@Column(name = "CREATE_DATE")
 	private GeneralDateTime createDate;
 
@@ -81,6 +84,6 @@ public class ScvmtTableDesign extends JpaEntity implements Serializable {
 			));
 		}
 				
-		return new TableDesign(tableId, name, createDate, updateDate, cols, idxs);
+		return new TableDesign(tableId, name, comment, createDate, updateDate, cols, idxs);
 	}
 }

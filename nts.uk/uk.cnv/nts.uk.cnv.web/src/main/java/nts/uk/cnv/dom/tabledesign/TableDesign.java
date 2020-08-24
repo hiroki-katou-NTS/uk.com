@@ -14,6 +14,7 @@ import nts.uk.cnv.dom.databasetype.UkDataType;
 public class TableDesign {
 	private String name;
 	private String id;
+	private String comment;
 	private GeneralDateTime createDate;
 	private GeneralDateTime updateDate;
 	
