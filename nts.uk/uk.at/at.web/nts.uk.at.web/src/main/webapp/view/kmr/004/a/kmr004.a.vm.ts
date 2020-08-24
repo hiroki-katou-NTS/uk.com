@@ -15,20 +15,18 @@ module nts.uk.at.view.kmr004.a {
 	@bean()
 	export class KMR004AViewModel extends ko.ViewModel {
 		model : KnockoutObservable<OutputCondition> = ko.observable(new OutputCondition());
-		cacheData:KnockoutObservable<any> = ko.observable();
-		selectedRuleCode: KnockoutObservable<string> = ko.observable('1');
 		baseDate: KnockoutObservable<Date> = ko.observable(new Date()); // base date for KCP004, KCP012
 		treeGrid: tree.TreeComponentOption; // tree grid properties object
 		listComponentOption: list.ComponentOption;
 		tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray([]);
 		selectedTab: KnockoutObservable<string> = ko.observable('');
 		outputConditionChecked: KnockoutObservable<number> = ko.observable(OUTPUT_CONDITION.TOTAL); // output condition
-
 		extractionConditionEnable: KnockoutObservable<boolean> = ko.observable(false);
 		separatePageCheckboxEnable: KnockoutObservable<boolean> = ko.observable(true);
 		conditionListCcb: KnockoutObservableArray<any> = ko.observableArray([]);
 		conditionListCcbEnable: KnockoutObservable<boolean> = ko.observable(false);
 		closingTimeOptions: KnockoutObservableArray<any> = ko.observableArray([]);
+		selectedClosingTime: KnockoutObservable<number> = ko.observable(1);
 		reservationTimeRange1: string = '';
 		reservationTimeRange2: string = '';
 		reservationTimeRange: KnockoutObservable<string> = ko.observable('');
@@ -36,11 +34,14 @@ module nts.uk.at.view.kmr004.a {
 		totalExtractConditionOptions: KnockoutObservableArray<OptionModel> = ko.observableArray([]);
 		itemExtractConditionOptions: KnockoutObservableArray<OptionModel> = ko.observableArray([]);
 		outputConditionOptions: KnockoutObservableArray<OptionModel> = ko.observableArray([]);
+		cacheKey:string;
 
 		constructor() {
 			super();
 			var self = this;
-			
+
+			self.cacheKey = "kmr004aCache_" + __viewContext.user.companyId + "_" + __viewContext.user.employeeId;
+
 			// Init radios options
 			self.totalExtractConditionOptions([
 				{id: EXTRACT_CONDITION.ALL, name: getText('KMR004_17')},
@@ -57,26 +58,17 @@ module nts.uk.at.view.kmr004.a {
 			]);
 
 			nts.uk.ui.block.grayout();
-			var companyId: string = __viewContext.user.companyId;
-			var employeeId: string = __viewContext.user.employeeId;
-			var cacheKey:string =  "kmr004aCache_" + companyId + "_" + employeeId;
-
-			nts.uk.characteristics.restore(cacheKey).done((cacheData: any) => {
-				if (cacheData != undefined) {
-					self.startKMR004aScreen(cacheData);
-				} else {
-					// Call init API
-					self.$ajax(API.START).done((newData) => {
-						nts.uk.characteristics.save(cacheKey, newData);
-						self.startKMR004aScreen(newData);
-					}).fail(function(res) {
-						self.showErrorMessage(res);
-					}).always(() => {
-						nts.uk.ui.block.clear();
-					});
-				}
+			// Call init API
+			self.$ajax(API.START).done((data) => {
+				self.startKMR004aScreen(data);
+			}).fail(function(res) {
+				self.showErrorMessage(res);
 			}).always(() => {
 				nts.uk.ui.block.clear();
+			});
+
+			nts.uk.characteristics.restore(self.cacheKey).done((c13sData: any) => {
+				self.restoreScreenState(c13sData);
 			});
 
 			self.tabs = ko.observableArray([
@@ -175,6 +167,7 @@ module nts.uk.at.view.kmr004.a {
 		printExcel(){
 			let vm = this;
 			vm.$blockui("invisible");
+			vm.saveCharacteristics();
 			let data = vm.prepareData();
 			nts.uk.request.exportFile("at", API.EXCEL,data).done(() => {
 				vm.$blockui("clear");
@@ -188,6 +181,7 @@ module nts.uk.at.view.kmr004.a {
 		printPDF(){
 			let vm = this;
 			vm.$blockui("invisible");
+			vm.saveCharacteristics();
 			let data = vm.prepareData();
 			$("#exportTitle").trigger("validate");
 			nts.uk.request.exportFile("at", API.PDF, data).done(() => {
@@ -206,6 +200,9 @@ module nts.uk.at.view.kmr004.a {
 				switchButtons.push(new ItemModel('2', data.closingTime.reservationFrameName2));
 			}
 			vm.closingTimeOptions(switchButtons);
+			if (data.closingTime.selectedClosingTime != undefined){
+				vm.selectedClosingTime(data.closingTime.selectedClosingTime);
+			}
 		}
 
 		initClosingTimeLable(data:any) {
@@ -220,8 +217,8 @@ module nts.uk.at.view.kmr004.a {
 				+ "～" + parseTime(end2, true).format();
 
 			vm.reservationTimeRange(vm.reservationTimeRange1);
-			vm.selectedRuleCode.subscribe((value) => {
-				if (value == '1') {
+			vm.selectedClosingTime.subscribe((value) => {
+				if (value == 1) {
 					vm.reservationTimeRange(vm.reservationTimeRange1);
 				} else {
 					vm.reservationTimeRange(vm.reservationTimeRange2);
@@ -299,6 +296,51 @@ module nts.uk.at.view.kmr004.a {
 				}
 			}));
 		}
+
+		saveCharacteristics(){
+			const vm = this;
+			var c13sData:Characteristics = new Characteristics();
+			c13sData.selectedClosingTime = vm.selectedClosingTime();
+			c13sData.outputConditionChecked = vm.outputConditionChecked();
+			c13sData.selectedTab = vm.selectedTab();
+			c13sData.totalTitle = vm.model().totalTitle();
+			c13sData.totalExtractCondition = vm.model().totalExtractCondition();
+			c13sData.extractionConditionChecked = vm.model().extractionConditionChecked();
+			c13sData.detailTitle = vm.model().detailTitle();
+			c13sData.itemExtractCondition = vm.model().itemExtractCondition();
+			c13sData.isBreakPage = vm.model().isBreakPage();
+
+			nts.uk.characteristics.save(vm.cacheKey, c13sData);
+		}
+
+		restoreScreenState(c13sData){
+			if (c13sData == undefined) {
+				return;
+			}
+
+			const vm = this;
+			vm.selectedClosingTime(c13sData.selectedClosingTime);
+			vm.outputConditionChecked(c13sData.outputConditionChecked);
+			vm.selectedTab(c13sData.selectedTab);
+			vm.model().totalTitle(c13sData.totalTitle);
+			vm.model().totalExtractCondition(c13sData.totalExtractCondition);
+			vm.model().extractionConditionChecked(c13sData.extractionConditionChecked);
+			vm.model().detailTitle(c13sData.detailTitle);
+			vm.model().itemExtractCondition(c13sData.itemExtractCondition);
+			vm.model().isBreakPage(c13sData.isBreakPage);
+		}
+	}
+
+	class Characteristics {
+		selectedClosingTime: number; // A4_3, A4_4
+		outputConditionChecked: number; // A5_2, A5_3
+		selectedTab: string; // A6_2, A6_3
+		totalTitle: string; // A7_2 <-> model().totalTitle
+		totalExtractCondition: number; // A8_3, A8_4, A8_5  <-> model().totalExtractCondition
+		extractionConditionChecked: boolean; // A8_6  <-> model().extractionConditionChecked
+		detailTitle: string; // A9_2 <-> model().detailTitle
+		itemExtractCondition: number; // A10_3, A10_4  <-> model().itemExtractCondition
+		isBreakPage: boolean; // A10_5  <-> model().isBreakPage
 	}
 	
 	// define OUTPUT_FORMAT
@@ -356,9 +398,9 @@ module nts.uk.at.view.kmr004.a {
 				 startDate: formatDate( new Date(), 'yyyy/MM/dd'),
 				endDate: formatDate( new Date(), 'yyyy/MM/dd')
 			});
-			this.reservationClosingTimeFrame = ko.observable(1);
-			this.totalTitle = ko.observable("");
-			this.detailTitle = ko.observable("");
+			this.reservationClosingTimeFrame = ko.observable(1); // A4_3, A4_4
+			this.totalTitle = ko.observable(""); // A5_2
+			this.detailTitle = ko.observable(""); // A5_3
 			this.totalExtractCondition = ko.observable(EXTRACT_CONDITION.ORDERED);
 			this.itemExtractCondition = ko.observable(EXTRACT_CONDITION.ALL);
 			this.isBreakPage = ko.observable(false);
