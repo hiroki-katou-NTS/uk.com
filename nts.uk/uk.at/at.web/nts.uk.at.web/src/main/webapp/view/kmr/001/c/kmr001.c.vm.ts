@@ -35,11 +35,8 @@ module nts.uk.at.kmr001.c {
 
         //bento data
         model: KnockoutObservable<BentoMenuSetting> = ko.observable(new BentoMenuSetting(
-            "", "",
             "","",
             false, false,
-            "", "",
-            "", "",
             null, null,
             ""));
 
@@ -142,11 +139,8 @@ module nts.uk.at.kmr001.c {
                         vm.$dialog.info({ messageId: "Msg_16" }).then(function () {
                             vm.reloadPage();
                             vm.model( new BentoMenuSetting(
-                                vm.reservationFrameName1(), vm.reservationFrameName2(),
                                 '',  null,
                                 false,  false,
-                                parseTime(vm.reservationStartTime1(), true).format(),  parseTime(vm.reservationEndTime1(),true).format(),
-                                parseTime(vm.reservationStartTime2(), true).format(),  parseTime(vm.reservationEndTime2(), true).format(),
                                 null,  null,
                                 vm.workLocationList()[0].id
                             ));
@@ -171,7 +165,7 @@ module nts.uk.at.kmr001.c {
                     histId: vm.history && vm.history.params.historyId ? vm.history.params.historyId : null,
                     frameNo: vm.selectedBentoSetting(),
                     benToName: model.bentoName(),
-                    workLocationCode: vm.operationDistinction() == 1 ?  model.workLocationCode() : null,
+                    workLocationCode: vm.operationDistinction() == 1 ? vm.selectedWorkLocationCode() : null,
                     amount1: model.price1(),
                     amount2: model.price2(),
                     unit: model.unitName(),
@@ -188,7 +182,7 @@ module nts.uk.at.kmr001.c {
                     histId: vm.history && vm.history.params.historyId ? vm.history.params.historyId : null,
                     frameNo: vm.selectedBentoSetting(),
                     benToName: model.bentoName(),
-                    workLocationCode: vm.operationDistinction() == 1 ?  model.workLocationCode() : null,
+                    workLocationCode: vm.operationDistinction() == 1 ?  vm.selectedWorkLocationCode() : null,
                     amount1: model.price1(),
                     amount2: model.price2(),
                     unit: model.unitName(),
@@ -292,14 +286,17 @@ module nts.uk.at.kmr001.c {
                     }
 
                     vm.model( new BentoMenuSetting(
-                        dataRes.reservationFrameName1, dataRes.reservationFrameName2,
                         bentoDtos[0].bentoName,  bentoDtos[0].unitName,
                         bentoDtos[0].reservationAtr1,  bentoDtos[0].reservationAtr2,
-                        parseTime(dataRes.reservationStartTime1, true).format(),  parseTime(dataRes.reservationEndTime1,true).format(),
-                        parseTime(dataRes.reservationStartTime2, true).format(),  parseTime(dataRes.reservationEndTime2, true).format(),
                         Number(bentoDtos[0].price1), Number(bentoDtos[0].price2),
                         bentoDtos[0].workLocationCode
                     ));
+                    vm.reservationFrameName1(dataRes.reservationFrameName1);
+                    vm.reservationFrameName2(dataRes.reservationFrameName2);
+                    vm.reservationStartTime1(parseTime(dataRes.reservationStartTime1, true).format());
+                    vm.reservationStartTime2(parseTime(dataRes.reservationStartTime2, true).format());
+                    vm.reservationEndTime1(parseTime(dataRes.reservationEndTime1,true).format());
+                    vm.reservationEndTime2(parseTime(dataRes.reservationEndTime2, true).format());
                     vm.listData = [...bentoDtos];
                 }
                 vm.$blockui('clear');
@@ -309,11 +306,8 @@ module nts.uk.at.kmr001.c {
                     const bento = vm.listData.filter(item => data == item.frameNo);
                     if(bento.length > 0) {
                         vm.model( new BentoMenuSetting(
-                            vm.reservationFrameName1(), vm.reservationFrameName2(),
                             bento[0].bentoName,  bento[0].unitName,
                             bento[0].reservationAtr1,  bento[0].reservationAtr2,
-                            parseTime(vm.reservationStartTime1(), true).format(),  parseTime(vm.reservationEndTime1(),true).format(),
-                            parseTime(vm.reservationStartTime2(), true).format(),  parseTime(vm.reservationEndTime2(), true).format(),
                             Number(bento[0].price1),  Number(bento[0].price2),
                             bento[0].workLocationCode
                         ));
@@ -321,11 +315,8 @@ module nts.uk.at.kmr001.c {
                         vm.$blockui('clear');
                     } else {
                         vm.model( new BentoMenuSetting(
-                            vm.reservationFrameName1(), vm.reservationFrameName2(),
                             '',  null,
                             false,  false,
-                            parseTime(vm.reservationStartTime1(), true).format(),  parseTime(vm.reservationEndTime1(),true).format(),
-                            parseTime(vm.reservationStartTime2(), true).format(),  parseTime(vm.reservationEndTime2(), true).format(),
                             null,  null,
                             vm.workLocationList()[0].id
                         ));
@@ -335,6 +326,9 @@ module nts.uk.at.kmr001.c {
                 });
                 vm.selectedWorkLocationCode.subscribe((data) => {
                     vm.model().workLocationCode(data);
+                });
+                vm.end.subscribe(data => {
+                    console.log(data)
                 })
             }).always(() => this.$blockui("clear"));
         }
@@ -363,34 +357,20 @@ module nts.uk.at.kmr001.c {
     }
 
     class BentoMenuSetting{
-        reservationFrameName1: KnockoutObservable<string> = ko.observable(null);
-        reservationFrameName2: KnockoutObservable<string> = ko.observable(null);
         bentoName: KnockoutObservable<string> = ko.observable(null);
         reservationAtr1: KnockoutObservable<boolean> = ko.observable(false);
         reservationAtr2: KnockoutObservable<boolean> = ko.observable(false);
-        reservationStartTime1: KnockoutObservable<string>= ko.observable('');
-        reservationEndTime1: KnockoutObservable<string>= ko.observable('');
-        reservationStartTime2: KnockoutObservable<string>= ko.observable('');
-        reservationEndTime2: KnockoutObservable<string>= ko.observable('');
         unitName: KnockoutObservable<string>= ko.observable(null);
         price1: KnockoutObservable<number>= ko.observable(0);
         price2: KnockoutObservable<number>= ko.observable(0);
         workLocationCode: KnockoutObservable<string>= ko.observable(null);
-        constructor(reservationFrameName1: string, reservationFrameName2: string, bentoName: string, unitName: string,
+        constructor( bentoName: string, unitName: string,
                     reservationAtr1: boolean, reservationAtr2: boolean,
-                    reservationStartTime1: string, reservationEndTime1: string,
-                    reservationStartTime2: string, reservationEndTime2: string,
                     price1: number, price2: number,
                     workLocationCode: string){
-            this.reservationFrameName1(reservationFrameName1);
-            this.reservationFrameName2(reservationFrameName2);
             this.bentoName(bentoName);
             this.reservationAtr1(reservationAtr1);
             this.reservationAtr2(reservationAtr2);
-            this.reservationStartTime1(reservationStartTime1);
-            this.reservationEndTime1(reservationEndTime1);
-            this.reservationStartTime2(reservationStartTime2);
-            this.reservationEndTime2( reservationEndTime2);
             this.unitName(unitName );
             this.price1(price1);
             this.price2(price2);
