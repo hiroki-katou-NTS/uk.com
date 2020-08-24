@@ -95,7 +95,11 @@ tbody {
 hr {
 	border-color: E0FFFF;
 	margin-top: 10px;
-	width: 90%;
+	width: 390px;
 	margin-left: auto;
 	margin-right: auto;
+	
+}
+body {
+  overflow-y: hidden; /* Hide scrollbars */
 }
