@@ -38,6 +38,8 @@ public interface WorkScheduleRepository {
 	void delete(String sid , GeneralDate ymd);
 
 	void delete(String sid, DatePeriod datePeriod);
+
+	boolean checkExits(String employeeID, GeneralDate ymd);
 	
 }
 

@@ -17,6 +17,8 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaWorkScheduleRepository extends JpaRepository implements WorkScheduleRepository {
 
 	private static final String SELECT_BY_KEY = "SELECT c FROM KscdtSchBasicInfo c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd";
+	
+	private static final String SELECT_CHECK_UPDATE = "SELECT count (c) FROM KscdtSchBasicInfo c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd";
 
 	@Override
 	public Optional<WorkSchedule> get(String employeeID, GeneralDate ymd) {
@@ -24,6 +26,13 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				.setParameter("employeeID", employeeID).setParameter("ymd", ymd)
 				.getSingle(c -> c.toDomain(employeeID, ymd));
 		return workSchedule;
+	}
+	
+	@Override
+	public boolean checkExits(String employeeID, GeneralDate ymd) {
+		return this.queryProxy().query(SELECT_CHECK_UPDATE, Long.class)
+				.setParameter("employeeID", employeeID).setParameter("ymd", ymd)
+				.getSingle().get() > 0;
 	}
 
 	@Override
@@ -181,7 +190,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	public void delete(String sid, GeneralDate ymd) {
 		Optional<WorkSchedule> optWorkSchedule = this.get(sid, ymd);
 		if(optWorkSchedule.isPresent()){
-			this.commandProxy().remove(KscdtSchBasicInfo.class, new KscdtSchBasicInfoPK(sid, ymd));
+			KscdtSchBasicInfoPK pk = new KscdtSchBasicInfoPK(optWorkSchedule.get().getEmployeeID(), optWorkSchedule.get().getYmd());
+			this.commandProxy().remove(KscdtSchBasicInfo.class, pk);
 		}	
 	}
 	
@@ -190,7 +200,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		datePeriod.forEach(ymd->{
 			Optional<WorkSchedule> optWorkSchedule = this.get(sid, ymd);
 			if(optWorkSchedule.isPresent()){
-				this.commandProxy().remove(KscdtSchBasicInfo.class, new KscdtSchBasicInfoPK(sid, ymd));
+				KscdtSchBasicInfoPK pk = new KscdtSchBasicInfoPK(optWorkSchedule.get().getEmployeeID(), optWorkSchedule.get().getYmd());
+				this.commandProxy().remove(KscdtSchBasicInfo.class, pk);
 			}
 		});
 	}

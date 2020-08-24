@@ -42,25 +42,29 @@ public class RegisterScheduleTeamCommandHandler extends CommandHandler<ScheduleT
 		ScheduleTeamSaveCommand command = context.getCommand();		
 		String companyId = AppContexts.user().companyId();
 		
-		/** check scheduleteam exist**/
+		/** 1: 指定されたスケジュールチームが存在するか (ログイン会社ID,職場グループID,スケジュールチームコード) : boolean**/
 		Optional<ScheduleTeam> optionalSt = scheduleTeamRepository.getScheduleTeam(companyId,
 				command.getWorkplaceGroupId(), command.getCode());
-		
+		/**5:  存在するか == true **/
 		if (optionalSt.isPresent()) {
 			throw new BusinessException("Msg_3");
 		}
-		/** 1: create()**/
+		/** 2: create()**/
 		ScheduleTeam scheduleTeam = new ScheduleTeam(command.getWorkplaceGroupId(),
 														new ScheduleTeamCd(command.getCode()),
 														new ScheduleTeamName(command.getName()),
 														Optional.of(new ScheduleTeamRemarks(command.getNote())));
-		/** 2:入れ替える(Require, スケジュールチーム, List<社員ID>): Atom Task**/ 
+		/** 3: 入れ替える(Require, スケジュールチーム, List<社員ID>): Atom Task**/ 
 		SwapEmpOnScheduleTeamImpl swapEmpOnScheduleTeamImpl = new SwapEmpOnScheduleTeamImpl(belongScheduleTeamRepository);
+		
+		/** 2.1: <call>() **/
 		AtomTask register = SwapEmpOnScheduleTeamService.replace(swapEmpOnScheduleTeamImpl, scheduleTeam, command.getEmployeeIds());
+		
+		/** 4:<call>() **/
 		transaction.execute(() -> {
 			register.run();
 		});
-		/** 3.1: persist() **/
+		/** 4.1: persist() **/
 		scheduleTeamRepository.insert(scheduleTeam);
 	}
 
