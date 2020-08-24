@@ -90,11 +90,16 @@ public class KrcmtBentoMenu extends UkJpaEntity {
 				),
 				AppContexts.user().contractCode(),
 				bentoMenu.getClosingTime().getClosingTime1().getReservationTimeName().v(),
-				bentoMenu.getClosingTime().getClosingTime1().getStart().get().v(),
+				bentoMenu.getClosingTime().getClosingTime1().getStart().isPresent()?
+						bentoMenu.getClosingTime().getClosingTime1().getStart().get().v():null,
 				bentoMenu.getClosingTime().getClosingTime1().getFinish().v(),
-				bentoMenu.getClosingTime().getClosingTime2().get().getReservationTimeName().v(),
-				bentoMenu.getClosingTime().getClosingTime2().get().getStart().get().v(),
-				bentoMenu.getClosingTime().getClosingTime2().get().getFinish().v(),
+				bentoMenu.getClosingTime().getClosingTime2().isPresent()?
+						bentoMenu.getClosingTime().getClosingTime2().get().getReservationTimeName().v():null,
+				(bentoMenu.getClosingTime().getClosingTime2().isPresent()?
+						bentoMenu.getClosingTime().getClosingTime2().get():null)!=null? bentoMenu.getClosingTime().getClosingTime2()
+                        .get().getStart().get().v():null,
+				bentoMenu.getClosingTime().getClosingTime2().isPresent()? bentoMenu.getClosingTime().getClosingTime2()
+                        .get().getFinish().v():null,
                 Arrays.asList());
         List<KrcmtBento> bentos = bentoMenu.getMenu().stream().map(x -> KrcmtBento.fromDomain(x,bentoMenu.getHistoryID(), krcmtBentoMenu)).collect(Collectors.toList());
         krcmtBentoMenu.bentos = bentos;
