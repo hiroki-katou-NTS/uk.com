@@ -223,8 +223,10 @@ module nts.uk.at.view.kmp001.b {
 								stampCardList.push(data);
 							}
 						});
-
-						vm.items(stampCardList);
+						
+						const dataSort: IStampCard[] = _.orderBy(stampCardList, ['stampNumber'], ['asc']);
+						
+						vm.items(dataSort);
 						const record = stampCardList[selectedIndex];
 
 						if (record) {
