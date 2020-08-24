@@ -78,15 +78,11 @@ public class ProcessCompenSuspensionAllTest {
 				//暫定振出振休紐付け管理
 				require.getRecOrAbsMngs((List<String>) (any), anyBoolean, DataManagementAtr.INTERIM);
 				result = Arrays.asList(
-						new InterimRecAbsMng("a1", DataManagementAtr.INTERIM, "",
-								DataManagementAtr.INTERIM, new UseDay(1.0), SelectedAtr.MANUAL),
+						createRecAbs("a1", 1.0),//使用日数 
 
-						new InterimRecAbsMng("", DataManagementAtr.INTERIM, "a4",
-								DataManagementAtr.INTERIM, new UseDay(1.0), SelectedAtr.MANUAL),
-						new InterimRecAbsMng("", DataManagementAtr.INTERIM, "a5",
-								DataManagementAtr.INTERIM, new UseDay(1.0), SelectedAtr.MANUAL),
-						new InterimRecAbsMng("", DataManagementAtr.INTERIM, "a6",
-								DataManagementAtr.INTERIM, new UseDay(1.0), SelectedAtr.MANUAL));
+						createRecAbs("a4", 1.0), //使用日数 
+						createRecAbs("a5", 1.0), //使用日数 
+						createRecAbs("a6", 1.0));//使用日数 
 
 				require.findEmploymentHistory(CID, SID, (GeneralDate) any);
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
@@ -99,8 +95,10 @@ public class ProcessCompenSuspensionAllTest {
 				result = new CompanyDto(11);
 
 				require.findEmpById(anyString, anyString);
-				result = Optional.of(new EmpSubstVacation(CID, "00", new SubstVacationSetting(ManageDistinct.YES,
-						ExpirationTime.THIS_MONTH, ApplyPermission.ALLOW)));
+				result = Optional.of(new EmpSubstVacation(CID, "00", 
+						new SubstVacationSetting(ManageDistinct.YES,
+						ExpirationTime.THIS_MONTH, 
+						ApplyPermission.ALLOW)));
 
 			}
 		};
@@ -188,5 +186,11 @@ public class ProcessCompenSuspensionAllTest {
 								Optional.of(GeneralDate.ymd(2019, 11, 16)),
 								OccurrenceDigClass.OCCURRENCE, 1.0, Optional.empty()));
 	}
+	
+	private InterimRecAbsMng createRecAbs(String id, Double useDay) {
+		return new InterimRecAbsMng(id,
+				DataManagementAtr.INTERIM, id, DataManagementAtr.INTERIM, new UseDay(useDay), SelectedAtr.MANUAL);
+	}
+	
 
 }
