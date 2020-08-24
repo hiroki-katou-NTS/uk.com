@@ -43,7 +43,7 @@ public class ForceDeleteBentoReserveCommandHandler extends CommandHandler<ForceD
         val closingTimeFrame = EnumAdaptor.valueOf(command.getClosingTimeFrame(), ReservationClosingTimeFrame.class);
         val reservationDate = new ReservationDate(command.getDate(), closingTimeFrame);
         List<ReservationRegisterInfo> reservationRegisterInfos = new ArrayList<>();
-        for (ForceDeleteBentoReserveCommand.ReservationInfo item : command.getReservationInfos()) {
+        for (ForceDeleteBentoReserveCommand.ReservationInfoCommand item : command.getReservationInfos()) {
             RequireImpl require = new RequireImpl(requireService);
             boolean canModify = BentoReservationStateService.check(require, item.getEmpployeeId(), command.getDate());
 

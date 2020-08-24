@@ -47761,7 +47761,7 @@ var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.
     }
 };
 /** Create new ViewModel and automatic binding to __viewContext */
-function bean() {
+function bean(dialogOption) {
     return function (ctor) {
         __viewContext.ready(function () {
             $storage().then(function ($params) {
@@ -47778,7 +47778,7 @@ function bean() {
                         $mounted.apply($viewModel, []);
                     }
                 });
-                __viewContext.bind($viewModel);
+                __viewContext.bind($viewModel, dialogOption);
             });
         });
     };
