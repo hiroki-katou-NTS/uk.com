@@ -2,9 +2,11 @@ package nts.uk.screen.at.app.kmr003.query;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.*;
 import nts.uk.ctx.at.record.app.find.reservation.bento.query.ListBentoResevationQuery;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
@@ -81,14 +83,16 @@ public class ReservationModifyQuery {
         BentoReservationSetting bentoReservationSetting = bentoReservationSettingOpt.get();
 
         // 2:勤務場所を取得
-        String empId = AppContexts.user().employeeId();
         Optional<WorkLocationCode> workLocationCodeOpt = Optional.empty();
-        // 社員と基準日から所属職場履歴項目を取得する
-        Optional<SWkpHistWrkLocationExport> sWkpHistWrkLocationOpt = workplacePub.findBySidWrkLocationCD(empId, reservationDate.getDate());
-        if (sWkpHistWrkLocationOpt.isPresent()) {
-            String wkpCode = sWkpHistWrkLocationOpt.get().getWorkLocationCd();
-            if (wkpCode != null){
-                workLocationCodeOpt = Optional.of(new WorkLocationCode(wkpCode));
+        if (bentoReservationSetting.getOperationDistinction() == OperationDistinction.BY_LOCATION){
+            String empId = AppContexts.user().employeeId();
+            // 社員と基準日から所属職場履歴項目を取得する
+            Optional<SWkpHistWrkLocationExport> sWkpHistWrkLocationOpt = workplacePub.findBySidWrkLocationCD(empId, reservationDate.getDate());
+            if (sWkpHistWrkLocationOpt.isPresent()) {
+                String wkpCode = sWkpHistWrkLocationOpt.get().getWorkLocationCd();
+                if (wkpCode != null){
+                    workLocationCodeOpt = Optional.of(new WorkLocationCode(wkpCode));
+                }
             }
         }
 
@@ -106,7 +110,7 @@ public class ReservationModifyQuery {
         // 弁当メニュー
         List<BentoMenu> bentoMenus = bentoMenuRepo.getBentoMenu(cid, reservationDate.getDate(),
                 reservationDate.getClosingTimeFrame());
-        if (!bentoMenus.isEmpty()) {
+        if (!CollectionUtil.isEmpty(bentoMenus)) {
             BentoMenu bentoMenu = bentoMenus.get(0);
 
             // 5.1: ヘッダー情報を作る
@@ -140,7 +144,11 @@ public class ReservationModifyQuery {
             result.setBentoClosingTimes(bentoClosingTimes);
         }
 
-        // 6:
+        if (CollectionUtil.isEmpty(result.getBentoClosingTimes())){
+            //throw new BusinessException("Msg_1604");
+        }
+
+            // 6:
         List<BentoReservation> bentoReservations = new ArrayList<>();
         if (!reservationRegisterInfos.isEmpty()) {
             DatePeriod datePeriod = new DatePeriod(reservationDate.getDate(), reservationDate.getDate());
