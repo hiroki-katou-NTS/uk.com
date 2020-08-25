@@ -10,11 +10,11 @@ import nts.arc.time.calendar.period.DatePeriod;
 public interface ApplicationRepository {
 	
 	// public Optional<Application_New> findByID(String companyID, String appID);
-	
+
 	public List<Application_New> findByListID(String companyID, List<String> listAppID);
-	
+
 	public List<Application_New> getApplicationIdByDate(String companyId, GeneralDate startDate, GeneralDate endDate);
-	
+
 	/**
 	 * getApplicationBySIDs
 	 * @param employeeID
@@ -23,9 +23,9 @@ public interface ApplicationRepository {
 	 * @return
 	 */
 	public List<Application_New> getApplicationBySIDs(List<String> employeeID,GeneralDate startDate, GeneralDate endDate);
-	
+
 	public List<Application_New> getApp(String applicantSID, GeneralDate appDate, int prePostAtr, int appType);
-	
+
 	/**
 	 * 事前申請を取得したい
 	 * @param companyId: 社員ID
@@ -36,13 +36,13 @@ public interface ApplicationRepository {
 	 * @return
 	 */
 	public List<Application_New>  getBeforeApplication(String companyId, String employeeID, GeneralDate appDate, int appType, int prePostAtr);
-	
+
 	public void insert(Application_New application);
-	
+
 	public void update(Application_New application);
-	
+
 	public void updateWithVersion(Application_New application);
-	
+
 	public void delete(String companyID, String appID);
 	/**
 	 * get list application by sID
@@ -63,7 +63,7 @@ public interface ApplicationRepository {
 	 * @return
 	 */
 	public List<Application_New> getListAppModeApprCMM045(String companyId, DatePeriod period, List<String> lstAppId,
-			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, 
+			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus,
 			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus, List<Integer> lstType);
 
 	/**
@@ -75,7 +75,7 @@ public interface ApplicationRepository {
 	 * @return
 	 */
 	public List<Application_New> getListAppPre(String companyId, String sID, GeneralDate appDate, int prePostAtr);
-	
+
 	/**
 	 * Request list No.236
 	 * @param sID
@@ -84,9 +84,9 @@ public interface ApplicationRepository {
 	 * @return
 	 */
 	public List<Application_New> getListApp(String sID, GeneralDate startDate, GeneralDate endDate);
-	
+
 	public List<Application_New> getByListRefStatus(String companyID, String employeeID ,GeneralDate startDate, GeneralDate endDate , List<Integer> listReflecInfor  );
-	
+
 	public List<Application_New> getListLateOrLeaveEarly(String companyID, String employeeID, GeneralDate startDate, GeneralDate endDate);
 	/**
 	 * 検索
@@ -130,9 +130,9 @@ public interface ApplicationRepository {
 	 * @param lstRef: 実績反映状態＝未承認 or 反映待ち
 	 * @return
 	 */
-	public List<Application_New> getListAppByType(String companyId, String sID, GeneralDate startDate, GeneralDate endDate, 
+	public List<Application_New> getListAppByType(String companyId, String sID, GeneralDate startDate, GeneralDate endDate,
 			int prePostAtr, int appType, List<Integer> lstRef);
-	
+
 	/**
 	 * 反映の申請
 	 * @param sid 社員ID
@@ -154,16 +154,16 @@ public interface ApplicationRepository {
 	 */
 	public List<Application_New> getByListDateReflectType(String sid, List<GeneralDate> dateData, List<Integer> reflect, List<Integer> appType);
 	/**
-	 * 
+	 *
 	 * @param companyId
 	 * @param configName
 	 * @param subName
 	 * @return
 	 */
 	public Map<String, Integer> getParamCMMS45(String companyId, String configName, List<String> subName);
-	
+
 	// refactor 4
-	
+
 	public Optional<Application> findByID(String companyID, String appID);
 	
 	public void insert(Application application);
@@ -178,4 +178,7 @@ public interface ApplicationRepository {
 	 * @return
 	 */
 	public Optional<Application> findByID(String appID);
+
+	public List<Application> getAppForKAF008(String sID, GeneralDate startDate, GeneralDate endDate);
+
 }
