@@ -253,11 +253,12 @@ module nts.uk.at.view.kdl009.a {
             }
 
             private convertDetailDtoToModel(item: RemainNumberDetailDto): RemainNumberDetailModel {
-                let digestionDateText: string = item.digestionDate ? (nts.uk.time as any).applyFormat("Short_YMDW", [item.digestionDate]) : '';
                 let occurrenceDateText: string = item.occurrenceDate ? (nts.uk.time as any).applyFormat("Short_YMDW", [item.occurrenceDate]) : '';
+                let digestionDateText: string = item.digestionDate ? (nts.uk.time as any).applyFormat("Short_YMDW", [item.digestionDate]) : '';
                 // 代休残数.休出代休残数詳細.管理データ状態区分をチェック
                 if ([2, 3].indexOf(item.managementDataStatus) !== -1) {
                     occurrenceDateText = occurrenceDateText ? nts.uk.resource.getText("KDL005_36", [occurrenceDateText]) : '';
+                    digestionDateText = digestionDateText ? nts.uk.resource.getText("KDL005_36", [digestionDateText]) : '';
                 }
                 let expirationDateText: string = item.expirationDate ? (nts.uk.time as any).applyFormat("Short_YMDW", [item.expirationDate]) : '';
                 // 代休残数.休出代休残数詳細.当月で期限切れをチェック
@@ -267,13 +268,13 @@ module nts.uk.at.view.kdl009.a {
                     expirationDateText = expirationDateText ? nts.uk.resource.getText("KDL005_37", [expirationDateText]) : '';
                 }
                 // 「日数」の場合
-                let digestionNumberText = '';
-                if (item.digestionNumber === 0.5) {
-                    digestionNumberText = nts.uk.resource.getText("KDL005_27", [item.digestionNumber]);
-                }
                 let occurrenceNumberText = '';
                 if (item.occurrenceNumber === 0.5) {
                     occurrenceNumberText = nts.uk.resource.getText("KDL005_27", [item.occurrenceNumber]);
+                }
+                let digestionNumberText = '';
+                if (item.digestionNumber === 0.5) {
+                    digestionNumberText = nts.uk.resource.getText("KDL005_27", [item.digestionNumber]);
                 }
                 return new RemainNumberDetailModel({
                     expirationDate: item.expirationDate,

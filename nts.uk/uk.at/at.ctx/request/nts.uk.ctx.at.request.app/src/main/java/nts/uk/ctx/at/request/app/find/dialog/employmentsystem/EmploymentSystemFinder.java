@@ -373,8 +373,6 @@ public class EmploymentSystemFinder {
 						if (item.getDateOccur().getDayoffDate().isPresent()) {
 							GeneralDate occurrenceDate = item.getDateOccur().getDayoffDate().get();
 							itemDto.setOccurrenceDate(occurrenceDate);
-							// condition 取得した期間．開始日＜＝発生日＜＝取得した期間．終了日　－＞・当月で期限切れ　＝　True　ELSE　－＞・当月で期限切れ　＝　False
-							itemDto.setExpiredInCurrentMonth(closingPeriod.contains(occurrenceDate));
 						}
 					} else if (item.getOccurrentClass().equals(OccurrenceDigClass.DIGESTION)) {
 						// 	・逐次発生の休暇明細．発生消化区分　＝＝　消化　－＞消化日　＝　逐次発生の休暇明細．年月日
@@ -388,6 +386,8 @@ public class EmploymentSystemFinder {
 					Optional<UnbalanceCompensation> oUnbalanceCompensation = item.getUnbalanceCompensation();
 					if (oUnbalanceCompensation.isPresent()) {
 						itemDto.setExpirationDate(oUnbalanceCompensation.get().getDeadline());
+						// condition 取得した期間．開始日＜＝期限日＜＝取得した期間．終了日　－＞・当月で期限切れ　＝　True　ELSE　－＞・当月で期限切れ　＝　False
+						itemDto.setExpiredInCurrentMonth(closingPeriod.contains(oUnbalanceCompensation.get().getDeadline()));
 					}
 					// field 管理データ状態区分　＝　取得した逐次発生の休暇明細．状態
 					itemDto.setManagementDataStatus(item.getDataAtr().value);
