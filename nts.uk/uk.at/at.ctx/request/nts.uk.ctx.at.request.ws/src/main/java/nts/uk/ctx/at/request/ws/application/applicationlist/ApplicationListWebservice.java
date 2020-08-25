@@ -19,7 +19,10 @@ import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListInfoDto
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListParamFilter;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfFinder;
+import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListFinder;
+import nts.uk.ctx.at.request.app.find.application.applicationlist.ListOfAppTypesDto;
+import nts.uk.ctx.at.request.app.find.application.applicationlist.StartMobileParam;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationDisplayAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 
@@ -65,6 +68,12 @@ public class ApplicationListWebservice extends WebService{
 	@Path("getapplisttest")
 	public AppListInfo getAppListTest(AppListParamFilter param) {
 		return new AppListInfo();
+	}
+	
+	@POST
+	@Path("getapplistMobile")
+	public ApplicationListDto getAppListTest(StartMobileParam param) {
+		return this.appListFinder.getList(param.getParam(), param.getAppListExtractConditionDto());
 	}
 
 	/**

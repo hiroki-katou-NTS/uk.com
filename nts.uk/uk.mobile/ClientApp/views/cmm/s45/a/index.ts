@@ -200,6 +200,7 @@ export class CmmS45AComponent extends Vue {
     }
 }
 const servicePath = {
-    getApplicationList: 'at/request/application/applist/getapplist'
+    getApplicationList: 'at/request/application/applist/getapplist',
+    getAppNameInAppList: 'at/request/application/screen/applist/getAppNameInAppList'
 };
 

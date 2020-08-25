@@ -25,6 +25,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
@@ -37,7 +38,10 @@ import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
+import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -470,70 +474,94 @@ public class ApplicationListFinder {
         }
     }
     
-    
-    public OutputDto startCMMS45() {
-//    	アルゴリズム「申請一覧の申請名称を取得する」を実行する
-//    	CMM045 not handle
-    	List<ListOfAppTypes> listOfAppTypes = Collections.emptyList();
-//    	アルゴリズム「起動時処理」を実行する
-    	OutputDto output = this.getOutput(listOfAppTypes);	
-    	return output;
-    }
 
-    /**
-     *  アルゴリズム「起動時処理」を実行する
-     * @param listOfAppTypes 申請種類リスト情報(List)
-     * @return
-     */
-    public OutputDto getOutput(List<ListOfAppTypes> listOfAppTypes) {
+    
+    public AppListInfo startCMMS45(List<ListOfAppTypesDto> listAppType) {
+    	return null;
+    }
+    
+    @Inject
+    private ApplicationRepository repoApplication;
+    
+    @Inject
+    private RequestSettingRepository repoRequestSet;
+    
+//	UKDesign.UniversalK.就業.KAF_申請.CMMS45_申請一覧・承認一覧（スマホ）.A：申請一覧.アルゴリズム.起動時処理
+//  アルゴリズム「起動時処理」を実行する
+    public ApplicationListDto getList(List<ListOfAppTypesDto> listAppType, AppListExtractConditionDto appListExtractConditionDto){
+    	ApplicationListDto applicationListDto = new ApplicationListDto();
 //    	裏パラメータ取得
-    	// watting to handle
-    	
-//    	申請一覧初期処理 CMM045 not handle
-    	OutputDto outputDto = new OutputDto();
-    	return outputDto;
-    }
-    
-    
-    @AllArgsConstructor
-    @Setter
-    @Getter
-    @NoArgsConstructor
-//    output of 申請一覧初期処理 
-    public class Output {
-//    	開始日付
-    	private GeneralDate startDate;
-//    	終了日付
-    	private GeneralDate endDate;
-//    	ドメインモデル「申請表示設定」．事前事後区分表示
-    	private DisplayAtr displayAtr;
-    	//Optional
-//    	ドメインモデル「申請」（List）
-    	private Optional<List<Application>> applicationListOp = Optional.empty();
-//    	ドメインモデル「申請表示名」．申請表示名称（List）
-    	private Optional<List<String>> nameListOp = Optional.empty();
-    }
-    
-    public class OutputDto {
-//    	開始日付
-    	private String startDate;
-//    	終了日付
-    	private String endDate;
-//    	ドメインモデル「申請表示設定」．事前事後区分表示
-    	private Integer displayAtr;
-    	//Optional
-//    	ドメインモデル「申請」（List）
-    	private List<ApplicationDto> applicationListOp;
-//    	ドメインモデル「申請表示名」．申請表示名称（List）
-    	private List<String> nameListOp;
-    	
-    	public OutputDto() {
-    		this.startDate = "2020/01/01";
-    		this.endDate = "2020/08/19";
-    		this.displayAtr = 1;
-    		this.applicationListOp = Collections.emptyList();
-    		this.nameListOp = Collections.emptyList();
+    	int device = MOBILE;
+		String companyId = AppContexts.user().companyId();
+		Integer appAllNumber = null;
+		Integer appPerNumber = null;
+		if(device == MOBILE){
+			//・設定の名前：SMART_PHONE
+			//・機能の名前：APP_ALL_NUMBER、APP_PER_NUMBER
+			String[] subName = {"APP_ALL_NUMBER","APP_PER_NUMBER"};
+			Map<String, Integer> mapParam = repoApplication.getParamCMMS45(companyId, "SMART_PHONE", Arrays.asList(subName));
+			if(mapParam.isEmpty()){
+				mapParam = repoApplication.getParamCMMS45(AppContexts.user().contractCode()+ "-0000", "SMART_PHONE", Arrays.asList(subName));
+			}
+			if(!mapParam.isEmpty()){
+				appAllNumber = mapParam.get("APP_ALL_NUMBER");
+				appPerNumber = mapParam.get("APP_PER_NUMBER");
+			}
+		}
+		// set param
+		AppListParamFilter param = new AppListParamFilter();
+		param.setDevice(MOBILE);
+    	param.setMode(0);
+    	param.setLstAppType(Collections.emptyList());
+    	if (appListExtractConditionDto != null) {
+	    	param.setStartDate(appListExtractConditionDto.getStartDate());
+	    	param.setEndDate(appListExtractConditionDto.getEndDate());
+    		
     	}
+    	
+//    	申請一覧初期処理
+    	AppListInfo appListInfo = new AppListInfo();
+//    			AppListInfoDto.fromDomain(this.getAppList(param));
+    	
+//    	・ドメインモデル「申請表示設定」．事前事後区分表示
+    	Optional<RequestSetting> requestSet = repoRequestSet.findByCompany(companyId);
+		Integer isDisPreP = null;
+		if (requestSet.isPresent()) {
+			isDisPreP = requestSet.get().getApplicationSetting().getAppDisplaySetting().getPrePostAtrDisp().value;
+		}
+		applicationListDto.setIsDisPreP(isDisPreP);
+		applicationListDto.setStartDate(appListInfo.getDisplaySet().getStartDateDisp().toString(DATE_FORMAT));
+		applicationListDto.setEndDate(appListInfo.getDisplaySet().getEndDateDisp().toString(DATE_FORMAT));
+		if (!CollectionUtil.isEmpty(appListInfo.getAppLst())) {
+			List<ApplicationDataOutput> lstApp = appListInfo.getAppLst().stream().map(
+					item -> new ApplicationDataOutput(
+							new Long(0),
+							item.getAppID(),
+							item.getPrePostAtr(),
+							item.getInputDate().toString(DATE_FORMAT),
+							item.getOpEntererName().isPresent() ? item.getOpEntererName().get() : null,
+									item.getAppDate().toString(DATE_FORMAT),
+									item.getAppTye().value,
+									item.getApplicantCD(),
+									item.getReflectionStatus(),
+									item.getOpAppStartDate().isPresent() ? item.getOpAppStartDate().get().toString(DATE_FORMAT) : null ,
+											item.getOpAppEndDate().isPresent() ? item.getOpAppEndDate().get().toString(DATE_FORMAT) : null,
+													null)).collect(Collectors.toList());
+			applicationListDto.setLstApp(lstApp);
+			
+		}
+		applicationListDto.setAppAllNumber(appAllNumber);
+		applicationListDto.setAppPerNumber(appPerNumber);
+		
+//		・ドメインモデル「申請表示名」．申請表示名称（List）
+		List<AppDispName> appDispName = repoAppDispName.getAll();
+		if (!CollectionUtil.isEmpty(appDispName)) {
+			List<AppInfor> lstAppInfor = appDispName.stream().map(item -> new AppInfor(item.getAppType().value, item.getDispName().v())).collect(Collectors.toList());
+			applicationListDto.setLstAppInfor(lstAppInfor);
+		}
+//		applicationListDto.setLstApp(appListInfo.get);
+		
+		return applicationListDto;
     }
     
 }

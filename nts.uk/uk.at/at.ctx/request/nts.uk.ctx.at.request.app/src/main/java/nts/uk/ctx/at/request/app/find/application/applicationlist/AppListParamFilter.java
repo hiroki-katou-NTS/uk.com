@@ -3,11 +3,11 @@ package nts.uk.ctx.at.request.app.find.application.applicationlist;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppListParamFilter {
