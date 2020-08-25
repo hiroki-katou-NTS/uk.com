@@ -60,7 +60,7 @@ public class ApplicationListFinder {
 	private static final int MOBILE = 1;
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
-	public AppListInfo getAppList(AppListParamFilter param){
+	public AppListInfoDto getAppList(AppListParamFilter param){
 		String companyID = AppContexts.user().companyId();
 		AppListInfo result = new AppListInfo();
 		// ドメインモデル「承認一覧表示設定」を取得する
@@ -84,7 +84,7 @@ public class ApplicationListFinder {
 				// アルゴリズム「申請一覧リスト取得」を実行する
 				AppListInfo appListInfo = repoAppListInit.getApplicationList(appListExtractCondition, param.getDevice(), result);
 				result.setAppLst(appListInfo.getAppLst());
-				return result;
+				return AppListInfoDto.fromDomain(result);
 			}
 			// 期間（開始日、終了日）が存する場合
 			if(Strings.isNotBlank(param.getStartDate()) && Strings.isNotBlank(param.getEndDate())) {
@@ -167,7 +167,7 @@ public class ApplicationListFinder {
 		// アルゴリズム「申請一覧リスト取得」を実行する
 		AppListInfo appListInfo = repoAppListInit.getApplicationList(appListExtractCondition, param.getDevice(), result);
 		result.setAppLst(appListInfo.getAppLst());
-		return result;
+		return AppListInfoDto.fromDomain(result);
 //		AppListExtractConditionDto condition = param.getCondition();
 //		int device = param.getDevice();
 //		String companyId = AppContexts.user().companyId();
