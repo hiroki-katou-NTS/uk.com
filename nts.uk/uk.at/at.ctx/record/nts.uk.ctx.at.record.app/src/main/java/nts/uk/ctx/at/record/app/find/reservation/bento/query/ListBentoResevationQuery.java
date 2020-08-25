@@ -41,8 +41,8 @@ public class ListBentoResevationQuery {
             return getUnOrderedBentoReservationsDetail(reservationRegisterInfos, period, reservationClosingTimeFrame, workLocationCodes);
 
         /** 検索条件 == 新規注文 */
-        if(searchCondition == BentoReservationSearchConditionDto.NEW_ORDER)
-            return getNewOrderDetail(period,reservationRegisterInfos,reservationClosingTimeFrame);
+        //if(searchCondition == BentoReservationSearchConditionDto.NEW_ORDER)
+            //return getNewOrderDetail(period,reservationRegisterInfos,reservationClosingTimeFrame);
 
         /** 検索条件 ==　全部 */
         if(searchCondition == BentoReservationSearchConditionDto.ALL)
@@ -75,14 +75,17 @@ public class ListBentoResevationQuery {
                                 .collect(Collectors.toList());
     }
 
-    public List<BentoReservation> getNewOrderDetail(DatePeriod period, List<ReservationRegisterInfo> reservationRegisterInfos, ReservationClosingTimeFrame reservationClosingTimeFrame){
-        Set<BentoReservation> reservations = new HashSet<>();
+    /**
+     * 検索条件 == 新規注文
+     */
+    public List<ReservationRegisterInfo> getNewOrderDetail(DatePeriod period, List<ReservationRegisterInfo> reservationRegisterInfos, ReservationClosingTimeFrame reservationClosingTimeFrame){
+        Set<ReservationRegisterInfo> results = new HashSet<>();
         period.stream().forEach( date ->{
-            reservations.addAll(bentoReservationRepository.getEmployeeNotOrder(reservationRegisterInfos,
-                    new ReservationDate(date,reservationClosingTimeFrame )));
+            results.addAll(bentoReservationRepository.getEmployeeNotOrder(reservationRegisterInfos,
+                    new ReservationDate(date, reservationClosingTimeFrame )));
                 }
         );
-        return new ArrayList<>(reservations);
+        return new ArrayList<>(results);
     }
 
 }
