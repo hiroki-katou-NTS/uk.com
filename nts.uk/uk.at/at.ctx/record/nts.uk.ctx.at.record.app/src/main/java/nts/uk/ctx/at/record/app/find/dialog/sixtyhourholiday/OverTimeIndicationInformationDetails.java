@@ -6,7 +6,9 @@ import lombok.Data;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
- * 60超過時間表示情報パラメータ - 60超過時間表示情報詳細
+ * UKDesign.UniversalK.就業.KDL_ダイアログ.KDL017_60H超休ダイアログ.A：60H超休参照.アルゴリズム.60超過時間表示情報パラメータ.60超過時間表示情報詳細
+ * 
+ * @author LienPTK
  */
 @Data
 public class OverTimeIndicationInformationDetails {

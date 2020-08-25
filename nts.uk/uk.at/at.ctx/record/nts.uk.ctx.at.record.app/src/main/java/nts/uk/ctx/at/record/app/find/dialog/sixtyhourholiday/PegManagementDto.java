@@ -5,7 +5,9 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 
 /**
- * 紐付け管理
+ * UKDesign.UniversalK.就業.KDL_ダイアログ.KDL017_60H超休ダイアログ.A：60H超休参照.アルゴリズム.60超過時間表示情報パラメータ.紐付け管理
+ * 
+ * @author LienPTK
  */
 @Data
 public class PegManagementDto {

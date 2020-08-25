@@ -44,7 +44,7 @@ module nts.uk.at.view.kdl017.a {
 
       // 社員ID(List)から個人社員基本情報を取得
       if (params && params.employeeIds && params.employeeIds.length > 0) {
-
+        nts.uk.ui.block.grayout();
         // Load employee lst by KDL017_PARAM 
         service.getEmployee(params)
           .done((data: any) => {
@@ -69,7 +69,8 @@ module nts.uk.at.view.kdl017.a {
             } else {
               vm.employeeInfo('');
             }
-        }).fail(vm.onError);
+        }).fail(vm.onError)
+        .always(() => nts.uk.ui.block.clear());
         // init table
         $('#date-fixed-table').ntsFixedTable({ height: 250 });
       }
@@ -156,6 +157,7 @@ module nts.uk.at.view.kdl017.a {
     loadExcessHoliday(employeeId: string, baseDate: string) {
       const vm = this;
       vm.dataItems([]);
+      nts.uk.ui.block.grayout();
       service.get60hOvertimeDisplayInfoDetail(employeeId, baseDate)
         .done((data: any) => {
           if (data.remainHourDetailDtos !== null) {
@@ -198,7 +200,9 @@ module nts.uk.at.view.kdl017.a {
           vm.carryoverNumber(data.carryoverNumber ? (nts.uk.time as any).format.byId("Time_Short_HM", [data.carryoverNumber]) : '');
           vm.usageNumber(data.usageNumber ? (nts.uk.time as any).format.byId("Time_Short_HM", [data.usageNumber]) : '');
           vm.residual(data.residual ? (nts.uk.time as any).format.byId("Time_Short_HM", [data.residual]) : '');
-        }).fail((err) => vm.onError(err));
+        })
+        .fail((err) => vm.onError(err))
+        .always(() => nts.uk.ui.block.clear());
     }
   }
 
