@@ -168,7 +168,9 @@ module nts.uk.at.kmr001.d {
                     vm.$ajax(API.ADDNEW, data).done((historyId) => {
                         self.created(self.params).done(() => {
                             self.selectedHistoryId(historyId);
-                            nts.uk.ui.dialog.info({messageId: "Msg_15"});
+                            nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(()=>{
+                                self.focusUi(data);
+                            });
                         });
                     }).fail((error) => {
                         alertError(error);
@@ -181,7 +183,9 @@ module nts.uk.at.kmr001.d {
                     vm.$ajax(API.ADDNEW, data).done((historyId) => {
                         self.created(self.params).done(() => {
                             self.selectedHistoryId(historyId);
-                            nts.uk.ui.dialog.info({messageId: "Msg_15"});
+                            nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(()=>{
+                                self.focusUi(data);
+                            });
                         });
                     }).fail((error) => {
                         alertError(error);
@@ -194,7 +198,10 @@ module nts.uk.at.kmr001.d {
                     vm.$ajax(API.UPDATE, data).done(() => {
                         self.created(self.params).done(() => {
                             self.selectedHistoryId.valueHasMutated();
-                            nts.uk.ui.dialog.info({messageId: "Msg_15"});
+                            nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(()=>
+                            {
+                                self.focusUi(data);
+                            });
                         });
                     }).fail((error) => {
                         alertError(error);
@@ -253,7 +260,18 @@ module nts.uk.at.kmr001.d {
             }
             nts.uk.ui.windows.close();
         }
-
+        focusUi(data:any){
+            let self = this;
+            let selectedHist = _.find(data, h => h.historyId == self.bkHistoryId);
+            if (selectedHist && self.bkStartDate == null && self.bkEndDate == null) {
+                self.bkStartDate = selectedHist.startDate;
+                self.bkEndDate = selectedHist.endDate;
+            }
+            if (self.selectedHistoryId() != null)
+                self.selectedHistoryId.valueHasMutated();
+            else
+                self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
+        }
         deselectAll() {
             $('#list-box').ntsListBox('deselectAll');
         }

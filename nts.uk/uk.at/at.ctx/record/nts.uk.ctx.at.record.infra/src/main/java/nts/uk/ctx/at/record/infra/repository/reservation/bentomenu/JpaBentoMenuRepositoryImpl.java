@@ -267,16 +267,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		String query = FIND_BENTO_MENU_BY_ENDATE;
 		query = query.replaceFirst("companyID", companyID);
 		query = query.replaceFirst("date", date.toString());
-        try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
-            ResultSet rs = stmt.executeQuery();
-            List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));
-            if(bentoMenuLst.isEmpty()){
-                return null;
-            }
-            return bentoMenuLst.get(0);
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        }
+		return getBentoMenu(query);
 	}
 
 	private BentoMenu getBentoMenu(String query) {
@@ -284,7 +275,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 			ResultSet rs = stmt.executeQuery();
 			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));
 			if(bentoMenuLst.isEmpty()){
-				throw new BusinessException("Msg_1604");
+				return null;
 			}
 			return bentoMenuLst.get(0);
 		} catch (SQLException ex) {
