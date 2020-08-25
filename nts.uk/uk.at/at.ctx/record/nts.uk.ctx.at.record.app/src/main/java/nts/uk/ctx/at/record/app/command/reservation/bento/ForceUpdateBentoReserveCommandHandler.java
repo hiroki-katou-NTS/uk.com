@@ -10,6 +10,9 @@ import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentomenuAdapter;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.SWkpHistExport;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSettingRepository;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -32,6 +35,9 @@ public class ForceUpdateBentoReserveCommandHandler extends CommandHandler<ForceU
     @Inject
     private BentomenuAdapter bentomenuAdapter;
 
+    @Inject
+    private BentoReservationSettingRepository bentoReservationSettingRepo;
+
     @Override
     protected void handle(CommandHandlerContext<ForceUpdateBentoReserveCommand> context) {
         String companyId = AppContexts.user().companyId();
@@ -52,15 +58,22 @@ public class ForceUpdateBentoReserveCommandHandler extends CommandHandler<ForceU
             bentoReservationInfos.add(reservation);
         }
 
-        GeneralDateTime dateTime = GeneralDateTime.now();
-        Optional<SWkpHistExport> sWkpHistOpt = bentomenuAdapter.findBySid(employeeId ,reservationDate.getDate());
+        Optional<BentoReservationSetting> bentoReservationSettingOpt = bentoReservationSettingRepo.findByCId(companyId);
+        if (!bentoReservationSettingOpt.isPresent()) return;
+        BentoReservationSetting bentoReservationSetting = bentoReservationSettingOpt.get();
+
         Optional<WorkLocationCode> workLocationCode = Optional.empty();
-        if (sWkpHistOpt.isPresent()){
-            String code = sWkpHistOpt.get().getWorkLocationCd();
-            if (code != null){
-                workLocationCode = Optional.of(new WorkLocationCode(code));
+        GeneralDateTime dateTime = GeneralDateTime.now();
+        if (bentoReservationSetting.getOperationDistinction() == OperationDistinction.BY_LOCATION){
+            Optional<SWkpHistExport> sWkpHistOpt = bentomenuAdapter.findBySid(employeeId ,reservationDate.getDate());
+            if (sWkpHistOpt.isPresent()){
+                String code = sWkpHistOpt.get().getWorkLocationCd();
+                if (code != null){
+                    workLocationCode = Optional.of(new WorkLocationCode(code));
+                }
             }
         }
+
 
         if (command.isNew()) {
             RequireForceAddImpl require = new RequireForceAddImpl(bentoReservationRepository);
