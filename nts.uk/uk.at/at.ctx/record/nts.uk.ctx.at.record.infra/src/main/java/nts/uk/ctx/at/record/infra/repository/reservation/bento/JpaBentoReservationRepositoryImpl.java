@@ -1,17 +1,5 @@
 package nts.uk.ctx.at.record.infra.repository.reservation.bento;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -26,6 +14,17 @@ import nts.uk.ctx.at.record.infra.entity.reservation.bento.KrcdtReservation;
 import nts.uk.ctx.at.record.infra.entity.reservation.bento.KrcdtReservationDetail;
 import nts.uk.ctx.at.record.infra.entity.reservation.bento.KrcdtReservationDetailPK;
 import nts.uk.ctx.at.record.infra.entity.reservation.bento.KrcdtReservationPK;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -97,12 +96,13 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 
         builderString = new StringBuilder();
 		builderString.append(SELECT);
-		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD = 'date' ");
+		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD = 'date' AND a.RESERVATION_FRAME = closingTimeFrame " +
+				" AND a.ORDERED = ordered ");
 		GET_EMPLOYEE_NOT_ORDER = builderString.toString();
 
         builderString = new StringBuilder();
         builderString.append(SELECT);
-        builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD = 'date' ");
+        builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD = 'date' AND a.RESERVATION_FRAME = closingTimeFrame ");
         FIND_RESERVATION_INFOMATION = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -123,16 +123,20 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		public String cardNo;
 		public boolean ordered;
 		public String workLocationCode;
-		public int frameNo;
+		public Integer frameNo;
 		public GeneralDateTime registerDate;
-		public int quantity;
-		public boolean autoReservation;
+		public Integer quantity;
+		public Boolean autoReservation;
 	}
 	
 	@SneakyThrows
 	private List<FullJoinBentoReservation> createFullJoinBentoReservation(ResultSet rs){
 		List<FullJoinBentoReservation> listFullData = new ArrayList<>();
 		while (rs.next()) {
+			String frameNo = rs.getString("MANU_FRAME");
+			String registerDate = rs.getString("REGIST_DATETIME");
+			String quantity = rs.getString("QUANTITY");
+			String autoReservation = rs.getString("AUTO_RESERVATION_ATR");
 			listFullData.add(new FullJoinBentoReservation(
 					rs.getString("CID"), 
 					rs.getString("RESERVATION_ID"), 
@@ -142,10 +146,10 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 					rs.getString("CARD_NO"),
 					Integer.valueOf(rs.getString("ORDERED")) == 1 ? true : false,
 					rs.getString("WORK_LOCATION_CD"),
-					Integer.valueOf(rs.getString("MANU_FRAME")),
-					GeneralDateTime.fromString(rs.getString("REGIST_DATETIME"), DATE_TIME_FORMAT), 
-					Integer.valueOf(rs.getString("QUANTITY")), 
-					Boolean.valueOf(rs.getString("AUTO_RESERVATION_ATR"))));
+					frameNo == null ? null : Integer.valueOf(frameNo),
+					registerDate == null ? null : GeneralDateTime.fromString(registerDate, DATE_TIME_FORMAT),
+					quantity == null ? null : Integer.valueOf(quantity),
+					autoReservation == null ? null : Boolean.valueOf(autoReservation)));
 		}
 		return listFullData;
 	}
@@ -164,6 +168,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 					boolean ordered= first.isOrdered();
 					String workLocationCode = first.getWorkLocationCode();
 					List<KrcdtReservationDetail> reservationDetails = x.getValue().stream()
+							.filter(y -> y.getFrameNo() != null)
 							.collect(Collectors.groupingBy(FullJoinBentoReservation::getFrameNo))
 							.entrySet().stream().map(y -> {
 								KrcdtReservationDetailPK detailPk = new KrcdtReservationDetailPK(
@@ -172,7 +177,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 										y.getValue().get(0).getFrameNo(), 
 										y.getValue().get(0).getRegisterDate());
 								int quantity = y.getValue().get(0).getQuantity();
-								boolean autoReservation = y.getValue().get(0).isAutoReservation();
+								boolean autoReservation = y.getValue().get(0).getAutoReservation();
 								return new KrcdtReservationDetail(detailPk, contractCD, quantity, autoReservation ? 1 : 0, null);
 							}).collect(Collectors.toList());
 					return new KrcdtReservation(pk, contractCD, date, frameAtr, cardNo, ordered ? 1 : 0,workLocationCode, reservationDetails);
@@ -261,7 +266,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		String cardLstStr = getString(inforLst, cardLst);
 		String orderedParam;
 		if(ordered) orderedParam = "1";
-		else orderedParam = "0,1";
+		else orderedParam = "0";
 
 		query = handleQueryForWkLocationCD(workLocationCode, query);
 
@@ -317,12 +322,15 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 
 		query = query.replaceFirst("cardLst", cardLstStr);
 		query = query.replaceFirst("date", reservationDate.getDate().toString());
+		query = query.replaceFirst("closingTimeFrame", String.valueOf(reservationDate.getClosingTimeFrame().value));
+		query = query.replaceFirst("ordered", String.valueOf(0));
 		List<BentoReservation> bentoReservations = getBentoReservations(query);
 
 		if (bentoReservations.size() <= 0)
 			return inforLst.stream().map(x -> x.convertToBentoReservation(x,reservationDate)).collect(Collectors.toList());
 
-		List<ReservationRegisterInfo> reservationRegisterInfos = inforLst.stream().filter(x -> bentoReservations.contains(x.getReservationCardNo())).collect(Collectors.toList());
+        List<String> cardNoLst = bentoReservations.stream().map(x -> x.getRegisterInfor().getReservationCardNo()).collect(Collectors.toList());
+		List<ReservationRegisterInfo> reservationRegisterInfos = inforLst.stream().filter(x -> !cardNoLst.contains(x.getReservationCardNo())).collect(Collectors.toList());
 
         return reservationRegisterInfos.stream().map(x -> x.convertToBentoReservation(x,reservationDate)).collect(Collectors.toList());
     }
@@ -334,6 +342,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		String cardLstStr = getString(inforLst, cardLst);
 		query = query.replaceFirst("cardLst", cardLstStr);
 		query = query.replaceFirst("date", reservationDate.getDate().toString());
+		query = query.replaceFirst("closingTimeFrame", String.valueOf(reservationDate.getClosingTimeFrame().value));
 		return getBentoReservations(query);
     }
 
@@ -355,7 +364,22 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 
 	@Override
 	public void update(BentoReservation bentoReservation) {
-		commandProxy().update(KrcdtReservation.fromDomain(bentoReservation));
+		//commandProxy().update(KrcdtReservation.fromDomain(bentoReservation));
+		String query = FIND_BY_ID_DATE;
+		query = query.replaceFirst("cardNo", bentoReservation.getRegisterInfor().getReservationCardNo());
+		query = query.replaceFirst("date", bentoReservation.getReservationDate().getDate().toString());
+		query = query.replaceFirst("frameAtr", String.valueOf(bentoReservation.getReservationDate().getClosingTimeFrame().value));
+
+		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+			ResultSet rs = stmt.executeQuery();
+			List<KrcdtReservation> bentoReservationLst = toEntity(createFullJoinBentoReservation(rs));
+			if(!CollectionUtil.isEmpty(bentoReservationLst)) {
+				KrcdtReservation entity = bentoReservationLst.get(0);
+				commandProxy().update(entity.updateFromDomain(bentoReservation));
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 
 	@Override

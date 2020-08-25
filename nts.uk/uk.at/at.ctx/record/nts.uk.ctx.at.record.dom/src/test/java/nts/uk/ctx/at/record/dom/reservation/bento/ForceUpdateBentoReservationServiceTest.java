@@ -45,6 +45,7 @@ public class ForceUpdateBentoReservationServiceTest {
         Map<Integer, BentoReservationCount> map1 = new HashMap<Integer, BentoReservationCount>(){{
             put(1, new BentoReservationCount(2));
             put(2, new BentoReservationCount(3));
+            put(3, new BentoReservationCount(2));
         }};
         item1.setBentoDetails(map1);
         bentoReservationInfos.add(item1);

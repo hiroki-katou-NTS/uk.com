@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.reservation.bento;
 
-import lombok.Setter;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
 import lombok.Getter;
@@ -35,8 +34,7 @@ public class BentoReservationDetail extends ValueObject {
 	 * 個数
 	 */
 	@Getter
-	@Setter
-	private BentoReservationCount bentoCount;
+	private final BentoReservationCount bentoCount;
 	
 	public BentoReservationDetail(int frameNo, GeneralDateTime dateTime, boolean autoReservation, BentoReservationCount bentoCount) {
 		this.frameNo = frameNo;

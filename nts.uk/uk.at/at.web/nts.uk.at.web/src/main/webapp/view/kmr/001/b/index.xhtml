@@ -66,7 +66,7 @@
 							required: true,
 							constraint: 'AttendanceTimeMonth',
 							value: referenceTime,
-							name: 'KMR001_9'
+							name: $i18n('KMR001_9')
 							}"  />
 						</span>
 						<!--B5_3-->
@@ -86,7 +86,7 @@
 							required: true,
 							value: reservationFrameName1,
 							constraint: 'BentoReservationTimeName',
-							name: 'KMR001_69'
+							name: $i18n('KMR001_69')
 						}"
 						/>
 
@@ -101,7 +101,7 @@
 								required: true ,
 								value: reservationStartTime1,
 								constraint: 'BentoReservationTime',
-								name: 'KMR001_71'
+								name: $i18n('KMR001_71')
 								}"
 							/>
 						</span>
@@ -117,7 +117,7 @@
 								required: true,
 								value: reservationEndTime1,
 								constraint: 'BentoReservationTime',
-								name: 'KMR001_72'
+								name: $i18n('KMR001_72')
 								}"
 							/>
 						</span>
@@ -134,10 +134,9 @@
 
 						<!--B20_3-->
 						<input tabindex="8" data-bind="ntsTextEditor: {
-							required: true,
 							value: reservationFrameName2,
 							constraint: 'BentoReservationTimeName',
-							name: 'KMR001_73'
+							name: $i18n('KMR001_73')
 							}"
 						/>
 
@@ -149,10 +148,9 @@
 							<input tabindex="9" class="kmr-time-editor" data-bind="ntsTimeEditor: {
 								mode: 'time',
 								inputFormat: 'time',
-								required: true,
 								value: reservationStartTime2,
 								constraint: 'BentoReservationTime',
-								name: 'KMR001_75'
+								name: $i18n('KMR001_75')
 								}"
 							/>
 
@@ -165,7 +163,6 @@
 							<input tabindex="10" class="kmr-time-editor" data-bind="ntsTimeEditor: {
 								mode: 'time',
 								inputFormat: 'time',
-								required: true,
 								value: reservationEndTime2,
 								constraint: 'BentoReservationTime',
 								name: 'KMR001_76'

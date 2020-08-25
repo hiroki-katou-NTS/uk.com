@@ -3,7 +3,7 @@
 module nts.uk.at.kmr001.b {
 
 	const API = {
-        GET_BENTO_RESERVATION: 'screen/at/record/reservation/bento_menu/getBentoMenu',
+        GET_BENTO_RESERVATION: 'screen/at/record/reservation/bento-menu/getbentomenu',
         ADD_BENTO_RESERVATION: 'bento/bentomenusetting/add'
     };
 
@@ -19,8 +19,8 @@ module nts.uk.at.kmr001.b {
         selectedCode: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
-        model : KnockoutObservable<Reservation> = ko.observable(new Reservation(1,100,0,0,0,0,0,'name1',0,0,
-            'name2',0,0,0));
+        model : KnockoutObservable<Reservation> = ko.observable(new Reservation(0,0,0,0,0,0,0,'',0,0,
+            '',0,0,0));
 
         constructor() {
         	super();
@@ -56,6 +56,10 @@ module nts.uk.at.kmr001.b {
 
         registerBentoReserveSetting() {
             const vm = this;
+            $(".nts-input").trigger("validate");
+            if (nts.uk.ui.errors.hasError()){
+                return;
+            }
             vm.$blockui("invisible");
             const dataRegister = {
                 operationDistinction : vm.model().operationDistinction(),
@@ -147,9 +151,9 @@ module nts.uk.at.kmr001.b {
         };
     }
 
-    class BentoReservation{
+    class BentoReservation {
 
-	    //予約の運用区別
+        //予約の運用区別
         operationClassification: KnockoutObservable<number>;
 
         //基準時間
@@ -185,13 +189,13 @@ module nts.uk.at.kmr001.b {
 
         reservationEndTime2: KnockoutObservable<number> = ko.observable(-1);
 
-        constructor(operationClassification: KnockoutObservable<number>,referenceTime: KnockoutObservable<number>,
-                    changeDeadlineContents: KnockoutObservable<number>,changeDeadlineDays: KnockoutObservable<number>,
-                    orderDeadline: KnockoutObservable<number>,monthlyResults: KnockoutObservable<number>,
-                    dailyResults: KnockoutObservable<number>,orderedData: KnockoutObservable<number>,
-                    reservationFrameName1: KnockoutObservable<string>,reservationStartTime1: KnockoutObservable<number>,
-                    reservationEndTime1: KnockoutObservable<number>,reservationFrameName2: KnockoutObservable<string>,
-                    reservationStartTime2: KnockoutObservable<number>,reservationEndTime2: KnockoutObservable<number>,){
+        constructor(operationClassification: KnockoutObservable<number>, referenceTime: KnockoutObservable<number>,
+                    changeDeadlineContents: KnockoutObservable<number>, changeDeadlineDays: KnockoutObservable<number>,
+                    orderDeadline: KnockoutObservable<number>, monthlyResults: KnockoutObservable<number>,
+                    dailyResults: KnockoutObservable<number>, orderedData: KnockoutObservable<number>,
+                    reservationFrameName1: KnockoutObservable<string>, reservationStartTime1: KnockoutObservable<number>,
+                    reservationEndTime1: KnockoutObservable<number>, reservationFrameName2: KnockoutObservable<string>,
+                    reservationStartTime2: KnockoutObservable<number>, reservationEndTime2: KnockoutObservable<number>,) {
             this.operationClassification = operationClassification;
             this.referenceTime = referenceTime;
             this.changeDeadlineContents = changeDeadlineContents;
@@ -209,43 +213,5 @@ module nts.uk.at.kmr001.b {
 
         }
     }
-
-    // export class classmap{
-    //     contentChangeDeadline: number;
-    //     contentChangeDeadlineDay: number;
-    //     dailyResults: number;
-    //     monthlyResults: number;
-    //     operationDistinction: number;
-    //     orderDeadline: number;
-    //     orderedData: number;
-    //     referenceTime: number;
-    //     reservationEndTime1: number;
-    //     reservationEndTime2:number;
-    //     reservationFrameName1: string;
-    //     reservationFrameName2: string;
-    //     reservationStartTime1: number;
-    //     reservationStartTime2: number;
-    //
-    //     constructor(contentChangeDeadline: number, contentChangeDeadlineDay: number, dailyResults: number,
-    //                 monthlyResults: number,operationDistinction: number,orderDeadline: number,orderedData: number,
-    //                 referenceTime: number,reservationEndTime1: number,reservationEndTime2:number, reservationFrameName1: string,
-    //                 reservationFrameName2: string,reservationStartTime1: number,reservationStartTime2: number) {
-    //         this.contentChangeDeadline = contentChangeDeadline;
-    //         this.contentChangeDeadlineDay = contentChangeDeadlineDay;
-    //         this.dailyResults = dailyResults;
-    //         this.monthlyResults = monthlyResults;
-    //         this.operationDistinction = operationDistinction;
-    //         this.orderDeadline = orderDeadline;
-    //         this.orderedData = orderedData;
-    //         this.referenceTime = referenceTime;
-    //         this.reservationEndTime1 = reservationEndTime1;
-    //         this.reservationEndTime2 = reservationEndTime2;
-    //         this.reservationFrameName1 = reservationFrameName1;
-    //         this.reservationFrameName2 = reservationFrameName2;
-    //         this.reservationStartTime1 = reservationStartTime1;
-    //         this.reservationStartTime2 = reservationStartTime2;
-    //
-    //     }
-    // }
 
 }

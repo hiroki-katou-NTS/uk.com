@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 
 /**
  * domain : 会社営業日カレンダー日次
@@ -19,18 +20,18 @@ public class CalendarCompany {
 	
 	private GeneralDate date;
 	
-	private UseSet workingDayAtr;
+	private WorkdayDivision WorkDayDivision;
 
-	public CalendarCompany(String companyId, GeneralDate date, UseSet workingDayAtr) {
+	public CalendarCompany(String companyId, GeneralDate date, WorkdayDivision WorkDayDivision) {
 		super();
 		this.companyId = companyId;
 		this.date = date;
-		this.workingDayAtr = workingDayAtr;
+		this.WorkDayDivision = WorkDayDivision;
 	}
 	
 	
-	public static CalendarCompany createFromJavaType(String companyId, GeneralDate date, int workingDayAtr){
-		return new CalendarCompany(companyId, date, EnumAdaptor.valueOf(workingDayAtr, UseSet.class));
+	public static CalendarCompany createFromJavaType(String companyId, GeneralDate date, int WorkDayDivision){
+		return new CalendarCompany(companyId, date, EnumAdaptor.valueOf(WorkDayDivision, WorkdayDivision.class));
 	}
 	
 	

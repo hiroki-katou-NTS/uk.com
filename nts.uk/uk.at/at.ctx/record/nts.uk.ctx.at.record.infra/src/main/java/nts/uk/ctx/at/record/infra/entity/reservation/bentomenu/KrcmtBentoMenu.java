@@ -13,6 +13,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.gul.text.IdentifierUtil;
@@ -65,7 +67,7 @@ public class KrcmtBentoMenu extends UkJpaEntity {
 	
 	public BentoMenu toDomain() {
 		Optional<ReservationClosingTime> closingTime2 = Optional.empty();
-		if(reservationStartTime2!=null) {
+		if(Strings.isNotBlank(reservationFrameName2) && reservationEndTime2 != null) {
 			closingTime2 = Optional.of(new ReservationClosingTime(
 					new BentoReservationTimeName(reservationFrameName2), 
 					new BentoReservationTime(reservationEndTime2), 
@@ -90,11 +92,17 @@ public class KrcmtBentoMenu extends UkJpaEntity {
 				),
 				AppContexts.user().contractCode(),
 				bentoMenu.getClosingTime().getClosingTime1().getReservationTimeName().v(),
-				bentoMenu.getClosingTime().getClosingTime1().getStart().get().v(),
+				bentoMenu.getClosingTime().getClosingTime1().getStart().isPresent()?
+						bentoMenu.getClosingTime().getClosingTime1().getStart().get().v():null,
 				bentoMenu.getClosingTime().getClosingTime1().getFinish().v(),
-				bentoMenu.getClosingTime().getClosingTime2().get().getReservationTimeName().v(),
-				bentoMenu.getClosingTime().getClosingTime2().get().getStart().get().v(),
-				bentoMenu.getClosingTime().getClosingTime2().get().getFinish().v(),
+				bentoMenu.getClosingTime().getClosingTime2().isPresent()?
+						bentoMenu.getClosingTime().getClosingTime2().get().getReservationTimeName().v():null,
+                ((bentoMenu.getClosingTime().getClosingTime2().isPresent()?
+						bentoMenu.getClosingTime().getClosingTime2().get():null)
+                        !=null? bentoMenu.getClosingTime().getClosingTime2().get().getStart().isPresent()?
+                        bentoMenu.getClosingTime().getClosingTime2().get().getStart().get().v():null:null),
+				bentoMenu.getClosingTime().getClosingTime2().isPresent()? bentoMenu.getClosingTime().getClosingTime2()
+                        .get().getFinish().v():null,
                 Arrays.asList());
         List<KrcmtBento> bentos = bentoMenu.getMenu().stream().map(x -> KrcmtBento.fromDomain(x,bentoMenu.getHistoryID(), krcmtBentoMenu)).collect(Collectors.toList());
         krcmtBentoMenu.bentos = bentos;
