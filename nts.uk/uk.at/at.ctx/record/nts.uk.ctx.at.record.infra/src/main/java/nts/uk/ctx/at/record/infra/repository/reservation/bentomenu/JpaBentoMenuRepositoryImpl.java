@@ -199,6 +199,9 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
 			ResultSet rs = stmt.executeQuery();
 			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));
+			if (bentoMenuLst.isEmpty()) {
+				return new ArrayList<>();
+			}
 			return bentoMenuLst.get(0).getMenu();
 		}
 	}
