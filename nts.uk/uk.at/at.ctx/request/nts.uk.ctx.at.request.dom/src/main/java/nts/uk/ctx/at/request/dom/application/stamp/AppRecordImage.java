@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakout.GoOutReasonAtr;
 /**
  * Refactor4
  * @author hoangnd
@@ -17,10 +18,9 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 //レコーダイメージ申請
 public class AppRecordImage extends Application{
 //	打刻区分
-	private AppStampCombinationAtr appStampCombinationAtr;
-	
+	private EngraveAtr appStampCombinationAtr;	
 //	申請時刻
 	private AttendanceTime attendanceTime;
 //	外出理由
-	private Optional<AppStampGoOutAtr> appStampGoOutAtr; 
+	private Optional<GoOutReasonAtr> appStampGoOutAtr; 
 }

@@ -44,16 +44,16 @@ public class KrqdtAppLateOrLeave_New extends ContractUkJpaEntity implements Seri
 	public KrqdtAppLateOrLeavePK_New krqdtAppLateOrLeavePK;
 	
 	@Column(name = "LATE_CANCEL_ATR1")
-	public int lateCancelAtr1;
+	public Integer lateCancelAtr1;
 	
 	@Column(name = "EARLY_CANCEL_ATR1")
-	public int earlyCancelAtr1;
+	public Integer earlyCancelAtr1;
 	
 	@Column(name = "LATE_CANCEL_ATR2")
-	public int lateCancelAtr2;
+	public Integer lateCancelAtr2;
 	
 	@Column(name = "EARLY_CANCEL_ATR2")
-	public int earlyCancelAtr2;
+	public Integer earlyCancelAtr2;
 	
 	@Column(name = "LATE_TIME1")
 	public Integer lateTime1;
@@ -79,10 +79,18 @@ public class KrqdtAppLateOrLeave_New extends ContractUkJpaEntity implements Seri
 		
 		List<TimeReport> lateOrLeaveEarlies = new ArrayList<>();
 		
-		lateCancelation.add(new LateCancelation(1, EnumAdaptor.valueOf(this.lateCancelAtr1, LateOrEarlyAtr.class)));
-		lateCancelation.add(new LateCancelation(2, EnumAdaptor.valueOf(this.lateCancelAtr2, LateOrEarlyAtr.class)));
-		lateCancelation.add(new LateCancelation(1, EnumAdaptor.valueOf(this.earlyCancelAtr1, LateOrEarlyAtr.class)));
-		lateCancelation.add(new LateCancelation(2, EnumAdaptor.valueOf(this.earlyCancelAtr2, LateOrEarlyAtr.class)));
+		if(this.lateCancelAtr1 != null) {
+			lateCancelation.add(new LateCancelation(1, EnumAdaptor.valueOf(this.lateCancelAtr1, LateOrEarlyAtr.class)));			
+		}
+		if(this.lateCancelAtr2 != null) {
+			lateCancelation.add(new LateCancelation(2, EnumAdaptor.valueOf(this.lateCancelAtr2, LateOrEarlyAtr.class)));
+		}
+		if(this.earlyCancelAtr1 != null) {
+			lateCancelation.add(new LateCancelation(1, EnumAdaptor.valueOf(this.earlyCancelAtr1, LateOrEarlyAtr.class)));
+		}
+		if(this.earlyCancelAtr2 != null) {
+			lateCancelation.add(new LateCancelation(2, EnumAdaptor.valueOf(this.earlyCancelAtr2, LateOrEarlyAtr.class)));
+		}
 		
 		if(lateTime1 != null) {
 			lateOrLeaveEarlies.add(new TimeReport(1, LateOrEarlyAtr.LATE, new TimeWithDayAttr(this.lateTime1)));

@@ -9,12 +9,10 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 
 @Stateless
 public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
@@ -22,8 +20,7 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 	@Inject
 	private ApplicationRepository appRepository;
 	
-	@Inject
-	private ApplicationApprovalService app;
+
 	
 	@Inject
 	private DetailAfterUpdate detailAfterUpdate;
@@ -31,8 +28,7 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 	@Inject
 	private AppWorkChangeRepository workChangeRepository;
 
-	@Inject
-	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlg;
 

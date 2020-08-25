@@ -1,19 +1,25 @@
 package nts.uk.ctx.at.request.dom.application.applist.service;
 
 import java.util.List;
+import java.util.Map;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWorkFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOverTimeInfoFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
+import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
-import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
  * 
  * @author hoatt
@@ -30,21 +36,19 @@ public interface AppListInitialRepository {
 	public Boolean checkAppPredictRequire(int appType, String wkpID, String companyId);
 	
 	/**
-	 * 1- 申請一覧リスト取得
-	 * @param 抽出条件　param
-	 * @param displaySet
-	 * @param デバイス　device
-	 * @param 申請種類リスト　lstAppType
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.申請一覧リスト取得.申請一覧リスト取得
+	 * @param param ドメイン：申請一覧抽出条件
+	 * @param device デバイス：PC or スマートフォン
+	 * @param appListInfo ドメイン：申請一覧情報
 	 * @return
 	 */
-	public AppListOutPut getApplicationList(AppListExtractCondition param, ApprovalListDisplaySetting displaySet,
-			int device, List<Integer> lstAppType);
+	public AppListInfo getApplicationList(AppListExtractCondition param, int device, AppListInfo appListInfo);
+
 	/**
-	 * 2 - 申請一覧リスト取得申請
-	 * @param param
-	 * @param appReasonDisAtr
-	 * @param デバイス　device
-	 * @param lstAppType
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.申請一覧リスト取得申請.申請一覧リスト取得申請
+	 * @param param ドメイン：申請一覧抽出条件
+	 * @param device デバイス：PC or スマートフォン
+	 * @param appListInfo ドメイン：申請一覧情報
 	 * @return
 	 */
 	public AppListInfo getApplicationListByApp(AppListExtractCondition param, int device, AppListInfo appListInfo);
@@ -62,16 +66,17 @@ public interface AppListInitialRepository {
 	 * @param 申請種類リスト　lstAppType
 	 * @return
 	 */
-	public AppListOutPut getAppListByApproval(AppListExtractCondition param, ApprovalListDisplaySetting displaySet,
-			int device, List<Integer> lstAppType);
+	public AppListInfo getAppListByApproval(AppListExtractCondition param, ApprovalListDisplaySetting approvalListDisplaySetting,
+			int device, List<ApprovalBehaviorAtrImport_New> approvalAtrLst, List<String> appIDLst, AppListInfo appListInfo);
+
 	/**
-	 * 4 - 申請一覧リスト取得承認件数
-	 * @param 申請一覧　lstApp
-	 * @param 社員ID　sID
-	 * @param lstSync
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.申請一覧リスト取得承認件数.申請一覧リスト取得承認件数
+	 * @param listApp 申請一覧(LIST）
+	 * @param appStatus 申請件数
 	 * @return
 	 */
-	public AppInfoStatus countAppListApproval(List<ApplicationFullOutput> lstApp, String sID, List<AppCompltLeaveSync> lstSync);
+	public ApplicationStatus countAppListApproval(List<ListOfApplication> listApp, ApplicationStatus appStatus);
 	/**
 	 * 5 - 申請一覧リスト取得実績
 	 * @param 申請一覧　lstApp
@@ -117,15 +122,17 @@ public interface AppListInitialRepository {
 	 * @return
 	 */
 	public List<Application_New> getListAppAbsence(Application_New application, String companyID);
+
 	/**
-	 * 9 - 申請一覧リスト取得マスタ情報
-	 * @param 申請一覧　lstApp
-	 * @param 会社ID　companyId
-	 * @param 期間　period
-	 * @param デバイス　device
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.申請一覧リスト取得マスタ情報.申請一覧リスト取得マスタ情報
+	 * @param application 申請
+	 * @param period 対象期間
+	 * @param displayWorkPlaceName 所属職場名表示
+	 * @param mapEmpInfo Map<社員ID, 個人社員基本情報>
+	 * @param device デバイス：PC or スマートフォン
 	 * @return
 	 */
-	public DataMasterOutput getListAppMasterInfo(List<Application_New> lstApp, String companyId, DatePeriod period, int device);
+	public AppInfoMasterOutput getListAppMasterInfo(Application application, DatePeriod period, NotUseAtr displayWorkPlaceName, Map<String, SyEmployeeImport> mapEmpInfo, int device);
 	/**
 	 * 12 - 申請一覧初期日付期間
 	 * @param 会社ID　companyId

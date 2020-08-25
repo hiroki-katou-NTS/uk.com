@@ -16,6 +16,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalStatusForEmployeeImport;
@@ -51,7 +52,6 @@ import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExportNew;
 import nts.uk.ctx.workflow.pub.service.export.ApproverStateExport;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung
@@ -378,6 +378,18 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 						.collect(Collectors.toList())
 				)).collect(Collectors.toList());
 		approvalRootStatePub.insertApp(appID, appDate, employeeID, approvalPhaseStateExportLst);
+	}
+
+	@Override
+	public Map<String, List<ApprovalPhaseStateImport_New>> getApprovalPhaseByID(List<String> appIDLst) {
+		Map<String,List<ApprovalPhaseStateImport_New>> approvalPhaseImport_NewMap = new LinkedHashMap<>();
+		Map<String,List<ApprovalPhaseStateExport>> approvalRootContentExports = approvalRootStatePub.getApprovalPhaseByID(appIDLst);
+		for(Map.Entry<String,List<ApprovalPhaseStateExport>> approvalRootContentExport : approvalRootContentExports.entrySet()){
+					
+			List<ApprovalPhaseStateImport_New> appRootContentImport_News = fromExport(approvalRootContentExport.getValue(), Optional.empty());
+			approvalPhaseImport_NewMap.put(approvalRootContentExport.getKey(), appRootContentImport_News);
+		}
+		return approvalPhaseImport_NewMap;
 	}
 
 }

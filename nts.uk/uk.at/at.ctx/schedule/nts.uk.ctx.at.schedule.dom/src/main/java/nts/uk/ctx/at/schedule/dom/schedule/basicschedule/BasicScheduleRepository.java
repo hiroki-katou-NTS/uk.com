@@ -31,6 +31,8 @@ public interface BasicScheduleRepository {
 	List<BasicSchedule> findSomePropertyWithJDBC(List<String> listSid, DatePeriod datePeriod);
 	
 	List<BasicSchedule> findSomeChildWithJDBC(List<BasicSchedule> listBasicSchedule);
+	
+	String findTest(String sId, GeneralDate date);
 
 	/**
 	 * Check exists BasicSchedule by primary key

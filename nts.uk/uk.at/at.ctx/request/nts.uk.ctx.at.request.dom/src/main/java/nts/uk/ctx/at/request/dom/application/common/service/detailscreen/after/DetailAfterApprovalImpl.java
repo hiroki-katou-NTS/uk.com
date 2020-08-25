@@ -56,7 +56,7 @@ public class DetailAfterApprovalImpl implements DetailAfterApproval {
 			// applicationRepository.update(application);
 			reflectAppId = application.getAppID();
 			// 反映対象なのかチェックする(check xem có phải đối tượng phản ánh hay k?)
-			if((application.isPreApp() && (application.isOverTimeApp() || application.isLeaveTimeApp()))
+			if((application.isPreApp() && (application.isOverTimeApp() || application.isHolidayWorkApp()))
 				|| application.isWorkChangeApp()
 				|| application.isGoReturnDirectlyApp()){
 				// 社員の申請を反映(phản ánh employee application)

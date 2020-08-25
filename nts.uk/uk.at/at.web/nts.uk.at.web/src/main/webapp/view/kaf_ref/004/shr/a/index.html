@@ -1,7 +1,7 @@
 <div class="fixed-flex-layout-left">
     <!-- A6_1 -->
     <div data-bind="ntsFormLabel: {
-            required: false,
+            required: true,
             text: $i18n('KAF004_13')
         }"></div>
 </div>
@@ -21,8 +21,9 @@
                     <input data-bind="ntsTimeWithDayEditor: {
                     name: $i18n('KAF004_42'),
                     value: $vm.workManagement.workTime,
-                    option: {timeWithDay: false, width: '50'}
-                }, enable: $vm.condition13(1)" />
+                    option: {timeWithDay: false, width: '50'},
+                    enable: !$vm.isEnable1()
+                }" />
                 </span>
 
                 <!-- A6_5 -->
@@ -54,8 +55,9 @@
                     <input data-bind="ntsTimeWithDayEditor: {
                     name: $i18n('KAF004_42'),
                     value: $vm.workManagement.leaveTime,
-                    option: {timeWithDay: false, width: '50'}
-                }, enable: $vm.condition13(2)" />
+                    option: {timeWithDay: false, width: '50'},
+                    enable: !$vm.isEnable2()
+                }" />
                 </span>
 
                 <!-- A6_11 -->
@@ -73,7 +75,7 @@
                     }, visible: $vm.condition8_10(2)"></span>
             </td>
         </tr>
-        <tr>
+        <tr data-bind="visible: $vm.condition2()">
             <td class="padding-5">
                 <!-- A6_14 -->
                 <span class="label" data-bind="text: $i18n('KAF004_21')"></span>
@@ -87,8 +89,9 @@
                     <input data-bind="ntsTimeWithDayEditor: {
                     name: $i18n('KAF004_42'),
                     value: $vm.workManagement.workTime2,
-                    option: {timeWithDay: false, width: '50'}
-                }, enable: $vm.condition13(3)" />
+                    option: {timeWithDay: false, width: '50'},
+                    enable: !$vm.isEnable3()
+                }" />
                 </span>
 
                 <!-- A6_17 -->
@@ -106,7 +109,7 @@
                     }, visible: $vm.condition2_8_10(3)"></span>
             </td>
         </tr>
-        <tr>
+        <tr data-bind="visible: $vm.condition2()">
             <td class="padding-5">
                 <!-- A6_20 -->
                 <span class="label" data-bind="text: $i18n('KAF004_21')"></span>
@@ -120,8 +123,9 @@
                     <input data-bind="ntsTimeWithDayEditor: {
                     name: $i18n('KAF004_42'),
                     value: $vm.workManagement.leaveTime2,
-                    option: {timeWithDay: false, width: '50'}
-                }, enable: $vm.condition13(4)" />
+                    option: {timeWithDay: false, width: '50'},
+                    enable: !$vm.isEnable4()
+                }" />
                 </span>
 
                 <!-- A6_23 -->

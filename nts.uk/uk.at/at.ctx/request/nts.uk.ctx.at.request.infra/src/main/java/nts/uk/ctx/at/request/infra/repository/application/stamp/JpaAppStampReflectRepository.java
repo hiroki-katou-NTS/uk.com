@@ -15,7 +15,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Stateless
 public class JpaAppStampReflectRepository extends JpaRepository implements AppStampReflectRepository {
 	public static final String FIND_BY_ID = "SELECT *\r\n" + 
-			"  FROM KRQST_APP_STAMP WHERE CID = @cid";
+			"  FROM KRQMT_APP_STAMP WHERE CID = @cid";
 	@Override
 	public Optional<AppStampReflect> findByAppID(String companyID) {
 		

@@ -6,11 +6,9 @@ import java.util.Map;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
-import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
+import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
-import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 
 /**
  * refactor 4
@@ -22,40 +20,20 @@ public interface AppDataCreation {
 	
 	/**
 	 * refactor 4
-	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.申請データ作成ver4.打刻申請データを作成.打刻申請データを作成
-	 * @param application 申請
-	 * @param appReasonDisAtr 申請理由表示区分
-	 * @param screenID ScreenID
-	 * @param companyID 会社ID
-	 * @param listOfAppTypes 申請種類リスト
-	 */
-	public void createAppStampData(Application application, DisplayAtr appReasonDisAtr, String screenID, String companyID, ListOfAppTypes listOfAppTypes);
-	
-	/**
-	 * refactor 4
-	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.申請データ作成ver4.遅刻早退取消申請データを作成.遅刻早退取消申請データを作成
-	 * @param application
-	 * @param appReasonDisAtr
-	 * @param screenID
-	 * @param companyID
-	 * @return
-	 */
-	public String createArrivedLateLeaveEarlyData(Application application, DisplayAtr appReasonDisAtr, String screenID, String companyID);
-	
-	/**
-	 * refactor 4
 	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.申請一覧リストのデータを作成.申請一覧リストのデータを作成
-	 * @param companyID
-	 * @param appLst
-	 * @param period
-	 * @param mode
-	 * @param mapApproval
-	 * @param device
-	 * @param appListExtractCondition
+	 * @param companyID 会社ID
+	 * @param appLst 申請一覧リスト
+	 * @param period 対象期間
+	 * @param mode モード：　申請一覧か承認一覧
+	 * @param mapApproval Map＜ルートインスタンスID、承認フェーズList＞
+	 * @param device デバイス：PC or スマートフォン
+	 * @param appListExtractCondition 申請一覧抽出条件
+	 * @param appListInfo 申請一覧情報
 	 * @return
 	 */
-	public ListOfApplication createAppLstData(String companyID, List<Application> appLst, DatePeriod period, boolean mode, 
-			Map<String,List<ApprovalPhaseStateImport_New>> mapApproval, int device, AppListExtractCondition appListExtractCondition);
+	public AppListInfo createAppLstData(String companyID, List<Application> appLst, DatePeriod period, ApplicationListAtr mode, 
+			Map<String,List<ApprovalPhaseStateImport_New>> mapApproval, int device, AppListExtractCondition appListExtractCondition, 
+			AppListInfo appListInfo);
 	
 	/**
 	 * refactor 4

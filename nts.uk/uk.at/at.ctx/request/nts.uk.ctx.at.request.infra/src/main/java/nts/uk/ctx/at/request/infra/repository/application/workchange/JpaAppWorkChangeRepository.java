@@ -16,7 +16,6 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationDate;
@@ -112,22 +111,25 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements AppWork
 				timeZoneWithWorkNo2 == null ? null : timeZoneWithWorkNo2.getTimeZone().getEndTime().v());
 	}
 	public AppWorkChange toDomain(NtsResultRecord res) {
-		Application application = new Application();
 		String pattern = "yyyy/MM/dd HH:mm:ss";
 		String pattern2 = "yyyy/MM/dd";
 		DateFormat df = new SimpleDateFormat(pattern);
 		DateFormat df2 = new SimpleDateFormat(pattern2);
-		application.setAppID(res.getString("APP_ID"));
-		application.setVersion(res.getInt("EXCLUS_VER"));
-		application.setPrePostAtr(EnumAdaptor.valueOf(res.getInt("PRE_POST_ATR"), PrePostAtr.class));
-		application.setInputDate(GeneralDateTime.fromString(df.format(res.getDate("INPUT_DATE")), pattern));
-		application.setEnteredPersonID(res.getString("ENTERED_PERSON_SID"));
+		String appID = res.getString("APP_ID");
+		Integer version = res.getInt("EXCLUS_VER");
+		PrePostAtr prePostAtr = EnumAdaptor.valueOf(res.getInt("PRE_POST_ATR"), PrePostAtr.class);
+		String enteredPerson = res.getString("ENTERED_PERSON_SID");
+		GeneralDateTime inputDate = GeneralDateTime.fromString(df.format(res.getDate("INPUT_DATE")), pattern);
+		ApplicationDate appDate = new ApplicationDate(GeneralDate.fromString(df2.format(res.getDate("APP_DATE")), pattern2));
+		ApplicationType appType = EnumAdaptor.valueOf(res.getInt("APP_TYPE"), ApplicationType.class);
+		String employeeID = res.getString("APPLICANTS_SID");
+		Application application = new Application(version, appID, prePostAtr, employeeID, appType, appDate, enteredPerson, inputDate, null);
 		if (res.getString("REASON_REVERSION") == null) {
 			application.setOpReversionReason(Optional.ofNullable(null));
 		}else {
 			application.setOpReversionReason(Optional.ofNullable(new ReasonForReversion(res.getString("REASON_REVERSION"))));			
 		}
-		application.setAppDate(new ApplicationDate(GeneralDate.fromString(df2.format(res.getDate("APP_DATE")), pattern2)));
+//		application.setAppDate(new ApplicationDate(GeneralDate.fromString(df2.format(res.getDate("APP_DATE")), pattern2)));
 		if (res.getInt("FIXED_REASON") == null) {
 			application.setOpAppStandardReasonCD(Optional.ofNullable(null));
 		}else {
@@ -138,8 +140,8 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements AppWork
 		}else {
 			application.setOpAppReason(Optional.ofNullable(new AppReason(res.getString("APP_REASON"))));			
 		}
-		application.setAppType(EnumAdaptor.valueOf(res.getInt("APP_TYPE"), ApplicationType.class));
-		application.setEmployeeID(res.getString("APPLICANTS_SID"));
+//		application.setAppType(EnumAdaptor.valueOf(res.getInt("APP_TYPE"), ApplicationType.class));
+//		application.setEmployeeID(res.getString("APPLICANTS_SID"));
 		if (res.getDate("APP_START_DATE") == null) {
 			application.setOpAppStartDate(Optional.ofNullable(null));
 		}else {

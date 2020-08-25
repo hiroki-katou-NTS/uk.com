@@ -14,8 +14,8 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.C
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
@@ -66,19 +66,19 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	public List<AppRemainCreateInfor> lstRemainDataFromApp(String cid, String sid, DatePeriod dateData) {
 		
 		List<Integer> lstReflect = new ArrayList<>();
-		lstReflect.add(ReflectedState_New.NOTREFLECTED.value);
-		lstReflect.add(ReflectedState_New.WAITREFLECTION.value);
+		lstReflect.add(ReflectedState.NOTREFLECTED.value);
+		lstReflect.add(ReflectedState.WAITREFLECTION.value);
 		List<Integer> lstAppType = this.lstAppType();
-		List<Application_New> lstAppData = appRepository.getByPeriodReflectType(sid, dateData, lstReflect, lstAppType);
+		List<Application> lstAppData = appRepository.getByPeriodReflectType(sid, dateData, lstReflect, lstAppType);
 		return this.lstResult(cid, sid, lstAppData);
 	}
 	@Override
 	public List<AppRemainCreateInfor> lstRemainDataFromApp(String cid, String sid, List<GeneralDate> dates) {
 		List<Integer> lstReflect = new ArrayList<>();
-		lstReflect.add(ReflectedState_New.NOTREFLECTED.value);
-		lstReflect.add(ReflectedState_New.WAITREFLECTION.value);
+		lstReflect.add(ReflectedState.NOTREFLECTED.value);
+		lstReflect.add(ReflectedState.WAITREFLECTION.value);
 		List<Integer> lstAppType = this.lstAppType();
-		List<Application_New> lstAppData = appRepository.getByListDateReflectType(sid, dates, lstReflect, lstAppType);
+		List<Application> lstAppData = appRepository.getByListDateReflectType(sid, dates, lstReflect, lstAppType);
 		return this.lstResult(cid, sid, lstAppData);
 	}
 
@@ -94,20 +94,20 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		lstAppType.add(ApplicationType.BREAK_TIME_APPLICATION.value);
 		return lstAppType;
 	}
-	private List<AppRemainCreateInfor> lstResult(String cid, String sid, List<Application_New> lstAppData){
+	private List<AppRemainCreateInfor> lstResult(String cid, String sid, List<Application> lstAppData){
 		List<AppRemainCreateInfor> lstOutputData = new ArrayList<>();
 		lstAppData.stream().forEach(appData -> {
 			AppRemainCreateInfor outData = new AppRemainCreateInfor();
 			outData.setSid(sid);
-			outData.setAppDate(appData.getAppDate());
+			outData.setAppDate(appData.getAppDate().getApplicationDate());
 			outData.setAppId(appData.getAppID());			
 			outData.setAppType(EnumAdaptor.valueOf(appData.getAppType().value, ApplicationType.class));
 			outData.setPrePosAtr(EnumAdaptor.valueOf(appData.getPrePostAtr().value, PrePostAtr.class));
 			outData.setInputDate(appData.getInputDate());
 			outData.setWorkTimeCode(Optional.empty());
 			outData.setWorkTypeCode(Optional.empty());
-			outData.setStartDate(appData.getStartDate());
-			outData.setEndDate(appData.getEndDate());
+			outData.setStartDate(appData.getOpAppStartDate().isPresent() ? Optional.of(appData.getOpAppStartDate().get().getApplicationDate()) : Optional.empty());
+			outData.setEndDate(appData.getOpAppEndDate().isPresent() ? Optional.of(appData.getOpAppEndDate().get().getApplicationDate()) : Optional.empty());
 			switch(outData.getAppType()) {
 			case WORK_CHANGE_APPLICATION:
 				Optional<AppWorkChange_Old> workChange = workChangeService.getAppworkChangeById(cid, appData.getAppID());
