@@ -601,43 +601,47 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             const vm = this;
 
             return ko.computed(() => {
-                // 取り消す初期情報.活性する
-                switch (idItem) {
-                    case IdItem.A6_7: {
-                        if (ko.toJS(vm.lateOrEarlyInfo1) == null) {
-                            return false;
+                if(vm.application().prePostAtr() === 1) {
+                    // 取り消す初期情報.活性する
+                    switch (idItem) {
+                        case IdItem.A6_7: {
+                            if (ko.toJS(vm.lateOrEarlyInfo1) == null) {
+                                return false;
+                            }
+                            if (vm.workManagement.workTime() == null || vm.workManagement.workTime() === "") {
+                                return false;
+                            }
+                            return ko.toJS(vm.lateOrEarlyInfo1().isActive);
+                        } case IdItem.A6_13: {
+                            if (ko.toJS(vm.lateOrEarlyInfo2) == null) {
+                                return false;
+                            }
+                            if (vm.workManagement.leaveTime() == null || vm.workManagement.leaveTime() === "") {
+                                return false;
+                            }
+                            return ko.toJS(vm.lateOrEarlyInfo2().isActive);
+                        } case IdItem.A6_19: {
+                            if (ko.toJS(vm.lateOrEarlyInfo3) == null) {
+                                return false;
+                            }
+                            if (vm.workManagement.workTime2() == null || vm.workManagement.workTime2() === "") {
+                                return false;
+                            }
+                            return ko.toJS(vm.lateOrEarlyInfo3().isActive);
+                        } case IdItem.A6_25: {
+                            if (ko.toJS(vm.lateOrEarlyInfo4) == null) {
+                                return false;
+                            }
+                            if (vm.workManagement.leaveTime2() == null || vm.workManagement.leaveTime2() === "") {
+                                return false;
+                            }
+                            return ko.toJS(vm.lateOrEarlyInfo4().isActive);
+                        } default: {
+                            return true;
                         }
-                        if (vm.workManagement.workTime() == null || vm.workManagement.workTime() === "") {
-                            return false;
-                        }
-                        return ko.toJS(vm.lateOrEarlyInfo1().isActive);
-                    } case IdItem.A6_13: {
-                        if (ko.toJS(vm.lateOrEarlyInfo2) == null) {
-                            return false;
-                        }
-                        if (vm.workManagement.leaveTime() == null || vm.workManagement.leaveTime() === "") {
-                            return false;
-                        }
-                        return ko.toJS(vm.lateOrEarlyInfo2().isActive);
-                    } case IdItem.A6_19: {
-                        if (ko.toJS(vm.lateOrEarlyInfo3) == null) {
-                            return false;
-                        }
-                        if (vm.workManagement.workTime2() == null || vm.workManagement.workTime2() === "") {
-                            return false;
-                        }
-                        return ko.toJS(vm.lateOrEarlyInfo3().isActive);
-                    } case IdItem.A6_25: {
-                        if (ko.toJS(vm.lateOrEarlyInfo4) == null) {
-                            return false;
-                        }
-                        if (vm.workManagement.leaveTime2() == null || vm.workManagement.leaveTime2() === "") {
-                            return false;
-                        }
-                        return ko.toJS(vm.lateOrEarlyInfo4().isActive);
-                    } default: {
-                        return true;
                     }
+                } else {
+                    return false;
                 }
             }, vm);
 
