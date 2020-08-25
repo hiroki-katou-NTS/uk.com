@@ -175,12 +175,12 @@ module nts.uk.at.view.kmr004.a {
             let itemExtractCondition = -1;
             let extractionConditionChecked = false;
 
-            if(vm.outputConditionChecked() === 1){
+            if(vm.outputConditionChecked() === OUTPUT_CONDITION.TOTAL){
                 totalTitle = vm.model().totalTitle();
                 totalExtractCondition = vm.model().totalExtractCondition();
                 extractionConditionChecked = vm.model().extractionConditionChecked();
             }else{
-                if(vm.model().itemExtractCondition() === 4){
+                if(vm.model().itemExtractCondition() === EXTRACT_CONDITION.ALL){
                     isBreakPage = vm.model().isBreakPage();
                     itemExtractCondition = vm.model().itemExtractCondition();
                 }else{
