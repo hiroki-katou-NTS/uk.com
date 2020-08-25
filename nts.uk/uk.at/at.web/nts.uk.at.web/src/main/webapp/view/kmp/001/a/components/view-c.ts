@@ -210,7 +210,7 @@ module nts.uk.at.view.kmp001.c {
 					.then((data: IStampCardC[]) => {
 						// convert string to date format
 						_.each(data, (d) => {
-							d.stampDatetime = moment(d.stampDatetime).format('YYYY/MM/DD hh:mm')
+							d.stampDatetime = d.stampDatetime.replace(/T/, ' ').replace(/Z/, '');
 						});
 					
 						vm.items(_.orderBy(data, ['stampNumber'], ['asc']));
