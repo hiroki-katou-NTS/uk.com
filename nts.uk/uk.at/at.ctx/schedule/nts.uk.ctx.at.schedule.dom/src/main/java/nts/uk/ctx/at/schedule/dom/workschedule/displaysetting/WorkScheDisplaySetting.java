@@ -35,7 +35,7 @@ public class WorkScheDisplaySetting implements DomainAggregate {
 		// 	if @初期表示期間の月 == 翌月																						
 		if (this.initDispMonth == InitDispMonth.NEXT_MONTH) {
 			//$基準日 = $基準日.月を足す(1)
-			baseDate.addMonths(1);
+			baseDate = baseDate.addMonths(1);
 		}
 		// return @初期表示期間の終了日.年月日に対応する期間($基準日)
 		return this.endDay.periodOf(baseDate);

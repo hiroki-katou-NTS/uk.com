@@ -109,6 +109,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         arrListCellLock = [];
         detailContentDeco = [];
         detailColumns = [];
+        dataBindGrid : any;
+       
 
         constructor() {
             let self = this;
@@ -159,7 +161,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let item = uk.localStorage.getItem(self.KEY);
                 uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                     let userInfor = JSON.parse(data);
-                    userInfor.achievementDisplaySelected = newValue == 1 ? true : false;
+                    userInfor.achievementDisplaySelected = (newValue == 1) ? true : false;
                     uk.localStorage.setItemAsJson(self.KEY, userInfor);
                 });
             });
@@ -345,7 +347,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 shiftPalletUnit: item.isPresent() ? userInfor.shiftPalletUnit : 1, // 1: company , 2 : workPlace 
                 pageNumberCom: item.isPresent() ? userInfor.shiftPalettePageNumberCom : 1,
                 pageNumberOrg: item.isPresent() ? userInfor.shiftPalettePageNumberOrg : 1,
-                getActualData: false, // lay du lieu thuc te (1 : co lay, 2 la khong lay) || param (Hiển thi  theo "shift")
+                getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false,
                 listShiftMasterNotNeedGetNew: item.isPresent() ? userInfor.shiftMasterWithWorkStyleLst : [], // List of shifts không cần lấy mới
                 listSid: self.listSid()
             }
@@ -397,7 +399,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let userInfor: IUserInfor = {};
                 userInfor.disPlayFormat = self.selectedModeDisplayInBody();
                 userInfor.backgroundColor = 0; // 0 : 通常; 1: シフト   // mau nền default của shiftMode
-                userInfor.achievementDisplaySelected = 2;
+                userInfor.achievementDisplaySelected = false;
                 userInfor.shiftPalletUnit = 1;
                 userInfor.shiftPalettePageNumberCom = 1;
                 userInfor.shiftPalletPositionNumberCom = { column : 0 , row : 0 };
@@ -428,7 +430,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 shiftPalletUnit : userInfor.shiftPalletUnit, // 1: company , 2 : workPlace 
                 pageNumberCom   : userInfor.shiftPalettePageNumberCom,
                 pageNumberOrg   : userInfor.shiftPalettePageNumberOrg,
-                getActualData   : false, // lay du lieu thuc te (1 : co lay, 2 la khong lay) || param (Hiển thi  theo "shift")
+                getActualData   : item.isPresent() ? userInfor.achievementDisplaySelected : false, 
                 listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst, // List of shifts không cần lấy mới
                 listSid: self.listSid()
             };
@@ -476,6 +478,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     viewMode: 'shortName',
                     startDate: self.dateTimePrev,
                     endDate: self.dateTimeAfter,
+                    getActualData   : item.isPresent() ? userInfor.achievementDisplaySelected : false
                 };
             self.saveModeGridToLocalStorege('shortName');
             self.visibleShiftPalette(false);
@@ -503,6 +506,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     viewMode: 'time',
                     startDate: self.dateTimePrev,
                     endDate: self.dateTimeAfter,
+                    getActualData   : item.isPresent() ? userInfor.achievementDisplaySelected : false
                 };
             self.saveModeGridToLocalStorege('time');
             self.visibleShiftPalette(false);
@@ -915,9 +919,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-weekdays"));
                 }
 
-                if (dateInfo.isSpecificDay || dateInfo.optCompanyEventName != null || dateInfo.optWorkplaceEventName != null) {
+                if (dateInfo.isSpecificDay || dateInfo.optCompanyEventName != '' || dateInfo.optWorkplaceEventName != '') {
                     objDetailHeaderDs['_' + ymd] = "<div class='header-image-event'></div>";
-                    let heightToolTip = 22 + 22 + 22 * dateInfo.listSpecDayNameCompany.length + 22 * dateInfo.listSpecDayNameWorkplace.length + 5; //22 là chiều cao 1 row của table trong tooltip
+                    let heightToolTip = 22 + 22 + (dateInfo.listSpecDayNameCompany.length == 0 ? 22 : 22 *dateInfo.listSpecDayNameCompany.length) + (dateInfo.listSpecDayNameWorkplace.length == 0 ? 22 : 22 *dateInfo.listSpecDayNameWorkplace.length) + 5; //22 là chiều cao 1 row của table trong tooltip
                     htmlToolTip.push(new HtmlToolTip('_' + ymd, dateInfo.htmlTooltip, heightToolTip));
                 } else {
                     objDetailHeaderDs['_' + ymd] = "<div class='header-image-no-event'></div>";
@@ -946,6 +950,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else {
                 self.key = 0;
             }
+            self.dataBindGrid = result;
             return result;
         }
 
@@ -967,7 +972,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let userInfor: IUserInfor = JSON.parse(data);
 
                 // A4_7
-                self.achievementDisplaySelected(userInfor.achievementDisplaySelected);
+                self.achievementDisplaySelected(userInfor.achievementDisplaySelected == false ? 2 : 1);
                 // A4_12 背景色の初期選択   (Chọn default màu nền)
                 self.backgroundColorSelected(userInfor.backgroundColor);
 
@@ -1721,8 +1726,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // set color button
             $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
             $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
-            $("#group-bt").css({ 'border-right': '2px solid #ccc' });
-
 
             self.removeClass();
 
@@ -1751,7 +1754,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // set color button
             $(".confirmMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
             $(".editMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
-            $("#group-bt").css({ 'border-right': '0px solid #ccc' });
 
             self.removeClass();
 
@@ -1986,7 +1988,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             //hiện giờ truyền sang workplaceId va tất cả emmployee . Sau này sửa truyền list employee theo workplace id
             setShared("baseDate", ko.observable(self.dateTimeAfter()));
             $('#A1_12_1').ntsPopup('hide');
-            nts.uk.ui.windows.sub.modal("/view/ksu/001/la/index.xhtml");
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/la/index.xhtml").onClosed(() => {
+                
+                
+            });
         }
         
         // A1_12_20
@@ -1996,10 +2001,48 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 listEmpData: self.listEmpData
             });
             $('#A1_12_1').ntsPopup('hide');
-            nts.uk.ui.windows.sub.modal("/view/ksu/001/l/index.xhtml");
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/m/index.xhtml").onClosed(() => {
+                self.stopRequest(false);
+                self.getListEmpIdSorted().done(() => {
+
+                    self.stopRequest(true);
+                });
+            });
         }
         
+        getListEmpIdSorted(): JQueryPromise<any> {
+            let self = this, dfd  = $.Deferred();
+            let leftmostDs        = [];
+            let middleDs          = [];
+            let detailColumns     = [];
+            let objDetailHeaderDs = {};
+            let detailHeaderDeco  = [];
+            let detailContentDs   = [];
+            let detailContentDeco = [];
+            let dataBindGrid      = self.dataBindGrid;
+            
+            let param = {
+                endDate: self.dateTimeAfter(),
+                sids: self.listSid()
+            }
+            service.getListEmpIdSorted(param).done((data) => {
+                // update lai grid
+                if(data.length > 0){
+                    
+                
+                
+                }
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
         
+        updateGridAfterOrderEmp(){
+            
+        
+        }
 
         compareArrByRowIndexAndColumnKey(a: any, b: any): any {
             return a.rowIndex == b.rowIndex && a.comlumnKey == b.comlumnKey;
@@ -2278,7 +2321,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
     interface IUserInfor {
         disPlayFormat: string;
         backgroundColor: number; // 背景色
-        achievementDisplaySelected: number;
+        achievementDisplaySelected: boolean;
         shiftPalletUnit: number;
         shiftPalettePageNumberCom: number;
         shiftPalletPositionNumberCom: {};
