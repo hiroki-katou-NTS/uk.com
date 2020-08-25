@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
@@ -16,7 +17,7 @@ import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
  *
  */
 @Getter
-public class DisplayReason implements DomainAggregate {
+public class DisplayReason extends AggregateRoot {
 	
 	/**
 	 * 会社ID

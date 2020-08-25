@@ -1,0 +1,80 @@
+.a4_8 {
+    width: 85px;
+    margin: 5px;
+}
+
+.time-input {
+    width: 42px;
+}
+
+td .control-group {
+    margin-bottom: 0;
+}
+
+.color-header {
+    background-color: #CFF1A5;
+    white-space: normal !important;
+    padding-left: 10px !important;
+}
+
+.nts-fixed-table.cf {
+    padding: 10px 0;
+}
+
+.panel-frame {
+    margin: 10px 0;
+}
+
+.inline-radio {
+    height: 30px
+}
+
+.hdtype {
+    padding-left: 20px;
+}
+
+.two-radio  .ntsRadioBox:first-child {
+    width: 200px;
+}
+
+.three-radio  .ntsRadioBox:first-child{
+    width: 200px;
+}
+
+.three-radio  .ntsRadioBox:nth-child(2){
+    width: 200px;
+}
+
+td .form-label {
+    border: none;
+    padding: 0;
+}
+
+.ui-widget-header {
+    height: 30px !important;
+}
+
+.blockrow {
+    display: block;
+    margin-left: 10px;
+    height: 30px;
+}
+
+.blockrow:first-child {
+    padding-top: 5px;
+}
+
+.radio-wrapper {
+    margin-left: 10px;
+}
+
+#b30 .label:nth-child(3) {
+    width: 195px;
+    white-space: normal;
+}
+
+.vertical-radio .ntsRadioBox {
+    display: block;
+    padding: 5px 0;
+    width: 100%;
+}

@@ -49,7 +49,7 @@ public class JpaStampRequestSettingRepository extends JpaRepository implements S
 		entity.topCommentFontWeight = domain.getTopComment().getFontWeight() == true ? 1 : 0;
 		return entity;
 	}
-//	private StampRequestSetting toDomain(KrqstStampRequestSetting entity){
+//	private StampRequestSetting toDomainApplicationSetting(KrqstStampRequestSetting entity){
 //		StampRequestSetting stamp = StampRequestSetting.createFromJavaType(entity.companyID, entity.topComment, entity.topCommentFontColor, 
 //																entity.topCommentFontWeight == 1 ? true : false, entity.bottomComment, 
 //																entity.bottomCommentFontColor, 

@@ -6,7 +6,7 @@
 }
 
 #app-type{
-	width: 140px;
+	width: 180px;
 }
 
 #disp-order{
@@ -33,6 +33,10 @@
 }
 
 #grid-test-single > tbody > tr> td:nth-child(1){
+	text-align: right !important;
+}
+
+#grid-test-single > tbody > tr> td:nth-child(3){
 	text-align: center !important;
 }
 

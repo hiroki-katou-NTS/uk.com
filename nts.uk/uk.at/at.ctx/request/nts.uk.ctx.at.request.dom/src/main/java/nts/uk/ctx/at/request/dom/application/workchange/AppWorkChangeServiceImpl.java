@@ -19,9 +19,11 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
@@ -39,6 +41,7 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmpl
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.TargetWorkTypeByApp;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSettingOutput;
+import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -57,7 +60,12 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class AppWorkChangeServiceImpl implements AppWorkChangeService {
-
+	
+	@Inject
+	private CommonAlgorithm commonAlgorithm;
+	
+	@Inject
+	private IAppWorkChangeSetRepository appWorkChangeSetRepository;
 	
 	@Inject
 	private WorkTypeRepository workTypeRepository;
@@ -77,6 +85,11 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	@Inject
 	private NewBeforeRegister newBeforeRegister;
 	
+	@Inject
+	private DetailAppCommonSetService detailAppCommonSetService;
+	
+	@Inject
+	private IAppWorkChangeRepository appWorkChangeRepository;
 	
 	@Inject
 	private AppWorkChangeRepository appWorkChangeRepositoryNew;
@@ -84,6 +97,8 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	@Inject
 	private DetailBeforeUpdate detailBeforeUpdate;
 	
+	@Inject
+	private IAppWorkChangeSetRepository iAppWorkChangeSetRepository;
 	
 	@Inject
 	private CommonAlgorithmMobile algorithmMobile;
@@ -261,7 +276,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 
 	@Override
 	public WorkChangeCheckRegOutput checkBeforeRegister(String companyID, ErrorFlagImport errorFlag, Application application,
-			AppWorkChange appWorkChange, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+			AppWorkChange appWorkChange) {
 		WorkChangeCheckRegOutput output = new WorkChangeCheckRegOutput();
 		// 登録時チェック処理（勤務変更申請）
 		this.checkRegisterWorkChange(application, appWorkChange);
@@ -272,6 +287,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 					application.getEmployeeID(), 
 					new DatePeriod(application.getOpAppStartDate().get().getApplicationDate(), application.getOpAppEndDate().get().getApplicationDate()));
 		}
+	
 		// 登録時チェック処理（全申請共通）
 		List<ConfirmMsgOutput> confirmMsgLst = null;
 				newBeforeRegister.processBeforeRegister_New(
@@ -281,8 +297,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 				application, 
 				null, 
 				errorFlag, 
-				lstDateHd,
-				appDispInfoStartupOutput);
+				lstDateHd);
 		// 「確認メッセージリスト」を全てと取得した「休日の申請日<List>」を返す
 		output.setConfirmMsgLst(confirmMsgLst);
 		output.setHolidayDateLst(lstDateHd);
@@ -372,7 +387,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		result = otherCommonAlgorithm.lstDateIsHoliday(companyID, employeeID, period);
 
 		if (result.size() == period.datesBetween().size()) {
-			// 日付一覧(output)の件数 > 0
+			//日付一覧(output)の件数 > 0
 			String dateListString = "";
 
 			for (int i = 0; i < result.size(); i++) {
@@ -393,9 +408,11 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		
 		// ドメインモデル「勤務変更申請」より取得する (Lấy từ domain 「勤務変更申請」)
 		AppWorkChange appWorkChange = appWorkChangeRepositoryNew.findbyID(companyID, appID).get();
-
 		
-		// 勤務変更申請設定を取得する
+//		// ドメインモデル「勤務変更申請設定」より取得する 
+//		AppWorkChangeSet appWorkChangeSet = appWorkChangeSetRepoNew.findSettingByCompanyId(companyID).get();
+		
+//		勤務変更申請設定を取得する
 		AppWorkChangeSettingOutput appWorkChangeSettingOutput = this.getAppWorkChangeSettingOutput(companyID);
 		
 		// 勤務種類を取得する
@@ -419,7 +436,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 
 	@Override
 	public List<ConfirmMsgOutput> checkBeforeUpdate(String companyID, Application application,
-			AppWorkChange appWorkChange, boolean agentAtr, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+			AppWorkChange appWorkChange, boolean agentAtr) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		// 詳細画面の登録時チェック処理（全申請共通）
 		detailBeforeUpdate.processBeforeDetailScreenRegistration(
@@ -431,8 +448,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 				application.getPrePostAtr(), 
 				application.getVersion(), 
 				appWorkChange.getOpWorkTypeCD().isPresent() ? appWorkChange.getOpWorkTypeCD().get().v() : null , 
-				appWorkChange.getOpWorkTimeCD().isPresent() ? appWorkChange.getOpWorkTimeCD().get().v(): null,
-				appDispInfoStartupOutput);
+				appWorkChange.getOpWorkTimeCD().isPresent() ? appWorkChange.getOpWorkTimeCD().get().v(): null );
 		// 登録時チェック処理（勤務変更申請）
 		this.checkRegisterWorkChange(application, appWorkChange);
 		return result;
@@ -445,7 +461,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		AppWorkChangeOutput appWorkChangeOutput = new AppWorkChangeOutput();	
 		// new mode
 		if (mode) {
-			// 申請共通起動処理
+//			申請共通起動処理
 			AppDispInfoStartupOutput appDispInfoStartupOutput = algorithmMobile.appCommonStartProcess(
 					mode, 
 					companyId, 
@@ -454,7 +470,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 					Optional.ofNullable(null), 
 					dates.isPresent() ? dates.get(): null, 
 					Optional.ofNullable(null));
-			// 勤務変更申請画面初期（新規）
+//			勤務変更申請画面初期（新規）
 			AppWorkChangeDispInfo appWorkChangeDisp = this.getAppWorkChangeDisInfo(
 					companyId, 
 					employeeId.isPresent() ? employeeId.get() : null, 
@@ -478,16 +494,16 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 			AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		AppWorkChangeDispInfo appWorkChangeDispInfo = new AppWorkChangeDispInfo();
 		
-		// 勤務変更申請設定を取得する
+//		勤務変更申請設定を取得する
 		AppWorkChangeSettingOutput appWorkChangeSettingOutput = this.getAppWorkChangeSettingOutput(companyId);
 		
-		// 勤務種類を取得する
+	// 勤務種類を取得する
 		Optional<AppEmploymentSet> appEmploymentSetting = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet();
 		List<WorkType> workTypes = this.getWorkTypeLst(appEmploymentSetting.isPresent() ? appEmploymentSetting.get() : null);
 		
 		
 		
-		// 勤務種類・就業時間帯の初期選択項目を取得する
+//		勤務種類・就業時間帯の初期選択項目を取得する
 		WorkTypeWorkTimeSelect woSelect = this.initWorkTypeWorkTime(
 				companyId,
 				employeeId,
@@ -495,7 +511,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 				workTypes,
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent() ? appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get() : null);
 		
-		// 勤務種類・就業時間帯を変更する時
+//		勤務種類・就業時間帯を変更する時
 		Optional<String> workTimeOp = Optional.empty();
 		if (woSelect != null) {
 			if (woSelect.getWorkTime() != null) {
@@ -524,7 +540,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		appWorkChangeDispInfo.setWorkTypeCD(Optional.ofNullable(woSelect.getWorkType().getWorkTypeCode().v()));
 		appWorkChangeDispInfo.setWorkTimeCD(workTimeOp);
 		
-		// 勤務変更申請の表示情報．勤務変更申請の反映 = 取得した「勤務変更申請の反映」
+//		勤務変更申請の表示情報．勤務変更申請の反映 = 取得した「勤務変更申請の反映」
 		appWorkChangeDispInfo.setReflectWorkChangeApp(appWorkChangeSettingOutput.getAppWorkChangeReflect());
 		
 		return appWorkChangeDispInfo;
@@ -534,9 +550,9 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	public AppWorkChangeSettingOutput getAppWorkChangeSettingOutput(String companyId) {
 		AppWorkChangeSettingOutput appWorkChangeSettingOutput = new AppWorkChangeSettingOutput();
 		
-		// ドメインモデル「勤務変更申請設定」を取得する
+//		ドメインモデル「勤務変更申請設定」を取得する
 		Optional<AppWorkChangeSet> appWorkChangeSet = appWorkChangeSetRepoNew.findByCompanyId(companyId);
-		// ドメインモデル「勤務変更申請の反映」を取得する
+//		ドメインモデル「勤務変更申請の反映」を取得する
 		// table is not existed
 		ReflectWorkChangeApp appWorkChangeReflect = new ReflectWorkChangeApp();
 		appWorkChangeReflect.setCompanyID(companyId);
@@ -551,18 +567,24 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		return appWorkChangeSettingOutput;
 	}
 
+	@Override
+	public AppWorkChangeOutput getAppWorkChangeUpdateOutput(String companyId, String appId,
+			AppWorkChangeDispInfo appWorkChangeDispInfo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	@Override
 	public WorkChangeCheckRegOutput checkBeforeRegister(Boolean mode, String companyId, Application application,
-			AppWorkChange appWorkChange, ErrorFlagImport opErrorFlag, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+			AppWorkChange appWorkChange, ErrorFlagImport opErrorFlag) {
 		WorkChangeCheckRegOutput workChangeCheckRegOutput = new WorkChangeCheckRegOutput();
 //		INPUT．「画面モード」をチェックする
 		if (mode ) {
 //			登録前のエラーチェック処理
-			workChangeCheckRegOutput = this.checkBeforeRegister(companyId, opErrorFlag, application, appWorkChange, appDispInfoStartupOutput);
+			workChangeCheckRegOutput = this.checkBeforeRegister(companyId, opErrorFlag, application, appWorkChange);
 		}else {
 //			更新前のエラーチェック処理
-			workChangeCheckRegOutput.setConfirmMsgLst(this.checkBeforeUpdate(companyId, application, appWorkChange, false, appDispInfoStartupOutput));
+			workChangeCheckRegOutput.setConfirmMsgLst(this.checkBeforeUpdate(companyId, application, appWorkChange, false));
 		}
 
 		return workChangeCheckRegOutput;

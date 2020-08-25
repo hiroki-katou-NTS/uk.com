@@ -1,8 +1,12 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 
@@ -13,6 +17,8 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.
  *
  */
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class OvertimeQuotaSetUse {
 	
 	/**
@@ -29,5 +35,13 @@ public class OvertimeQuotaSetUse {
 	 * 対象残業枠
 	 */
 	private List<OverTimeFrameNo> targetOvertimeLimit;
+
+	public static OvertimeQuotaSetUse create(int overtimeAppAtr, int flexWorkAtr, List<Integer> targetOvertimeLimit) {
+		return new OvertimeQuotaSetUse(
+				EnumAdaptor.valueOf(overtimeAppAtr, OvertimeAppAtr.class),
+				EnumAdaptor.valueOf(flexWorkAtr, FlexWorkAtr.class),
+				targetOvertimeLimit.stream().map(OverTimeFrameNo::new).collect(Collectors.toList())
+		);
+	}
 
 }

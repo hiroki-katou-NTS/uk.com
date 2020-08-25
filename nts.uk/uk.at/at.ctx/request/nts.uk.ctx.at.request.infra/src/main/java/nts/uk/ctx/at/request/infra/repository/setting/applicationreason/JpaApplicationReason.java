@@ -47,11 +47,11 @@
 //		List<ApplicationReason> data = this.queryProxy()
 //				.query(FINDBYCOMPANYID, KrqstAppReason.class)
 //				.setParameter("companyId", companyId)
-//				.getList(c ->toDomain(c));
+//				.getList(c ->toOvertimeAppSetDomain(c));
 //		return data;
 //	}
 //
-//	private ApplicationReason toDomain(KrqstAppReason c) {
+//	private ApplicationReason toOvertimeAppSetDomain(KrqstAppReason c) {
 //		return ApplicationReason.createSimpleFromJavaType(c.krqstAppReasonPK.companyId,
 //				c.krqstAppReasonPK.appType,
 //				c.krqstAppReasonPK.reasonID,
@@ -77,7 +77,7 @@
 //				.query(FINDBYAPPTYPE, KrqstAppReason.class)
 //				.setParameter("companyId", companyId)
 //				.setParameter("appType", appType)
-//				.getList(c ->toDomain(c));
+//				.getList(c ->toOvertimeAppSetDomain(c));
 //		List<ApplicationReason> dataTmp = data.stream().filter(x -> x.getDefaultFlg() == DefaultFlg.DEFAULT).collect(Collectors.toList());
 //		ApplicationReason firstData = new ApplicationReason(companyId, EnumAdaptor.valueOf(appType, ApplicationType.class), "", 0, new ReasonTemp("選択してください"), DefaultFlg.NOTDEFAULT);
 //		if(CollectionUtil.isEmpty(dataTmp)) {
@@ -97,7 +97,7 @@
 //				.query(FINDBYREASONID,KrqstAppReason.class)
 //				.setParameter("companyId", companyId)
 //				.setParameter("reasonID", reasonID)
-//				.getSingle(c->toDomain(c));
+//				.getSingle(c->toOvertimeAppSetDomain(c));
 //	}
 //	
 //	/**
@@ -109,7 +109,7 @@
 //		return this.queryProxy().query(FINDBYAPPTYPE,KrqstAppReason.class)
 //				.setParameter("companyId", companyId)
 //				.setParameter("appType", appType)
-//				.getList(c->toDomain(c));
+//				.getList(c->toOvertimeAppSetDomain(c));
 //	}
 //	
 //	/**

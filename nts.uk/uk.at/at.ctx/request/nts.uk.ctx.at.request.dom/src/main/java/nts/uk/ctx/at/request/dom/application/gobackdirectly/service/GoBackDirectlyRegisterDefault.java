@@ -618,9 +618,10 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		
 		if (inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet()) {
 			// アルゴリズム「2-3.新規画面登録後の処理」を実行する
+			// TODO: 申請設定 domain has changed!
 			return newAfterRegister.processAfterRegister(
 					application.getAppID(), 
-					inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSetting(),
+					inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().get(0),
 					inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet());
 		}
 		return null;

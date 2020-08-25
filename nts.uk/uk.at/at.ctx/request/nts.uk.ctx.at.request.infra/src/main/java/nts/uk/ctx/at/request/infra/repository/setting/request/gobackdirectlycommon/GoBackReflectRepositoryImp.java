@@ -10,11 +10,11 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.ApplicationStatus;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflect;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflectRepository;
-import nts.uk.ctx.at.request.infra.entity.setting.request.gobackdirectlycommon.KrqstAppGoBackReflect;
-import nts.uk.ctx.at.request.infra.entity.setting.request.gobackdirectlycommon.KrqstAppGoBackDirectlyPK;
+import nts.uk.ctx.at.request.infra.entity.setting.request.gobackdirectlycommon.KrqmtAppGoBackReflect;
+import nts.uk.ctx.at.request.infra.entity.setting.request.gobackdirectlycommon.KrqmtAppGoBackDirectlyPK;
 @Stateless
 public class GoBackReflectRepositoryImp extends JpaRepository implements GoBackReflectRepository {
-	// KRQMT_APP_GOBACK_DIRECTLY
+
 	public static final String FIND_BY_COMPANY = "SELECT *\r\n" + "  FROM KRQMT_APP_GOBACK_DIRECTLY WHERE CID = @ID";
 	
 	@Override
@@ -26,9 +26,9 @@ public class GoBackReflectRepositoryImp extends JpaRepository implements GoBackR
 
 	}
 	
-	public KrqstAppGoBackReflect toEntity(GoBackReflect goBackReflect) {
-		KrqstAppGoBackReflect entity = new KrqstAppGoBackReflect();
-		entity.getAppGoBackDirectlyPK().setCompanyID(goBackReflect.getCompanyId());
+	public KrqmtAppGoBackReflect toEntity(GoBackReflect goBackReflect) {
+		KrqmtAppGoBackReflect entity = new KrqmtAppGoBackReflect();
+		entity.setAppGoBackDirectlyPK(new KrqmtAppGoBackDirectlyPK(goBackReflect.getCompanyId()));
 		entity.setReflectApp(goBackReflect.getReflectApplication().value);
 		return entity;
 	}
@@ -41,10 +41,10 @@ public class GoBackReflectRepositoryImp extends JpaRepository implements GoBackR
 
 	@Override
 	public void update(GoBackReflect domain) {
-		KrqstAppGoBackReflect krqstAppGoBackDirectly = toEntity(domain);
-		Optional<KrqstAppGoBackReflect> update = this.queryProxy().find(
+		KrqmtAppGoBackReflect krqstAppGoBackDirectly = toEntity(domain);
+		Optional<KrqmtAppGoBackReflect> update = this.queryProxy().find(
 				krqstAppGoBackDirectly.getAppGoBackDirectlyPK(), 
-				KrqstAppGoBackReflect.class);
+				KrqmtAppGoBackReflect.class);
 		if (!update.isPresent()) return;
 		update.get().setReflectApp(domain.getReflectApplication().value);
 		this.commandProxy().update(update.get());
@@ -53,8 +53,8 @@ public class GoBackReflectRepositoryImp extends JpaRepository implements GoBackR
 	@Override
 	public void remove(GoBackReflect domain) {
 		this.commandProxy().remove(
-				KrqstAppGoBackReflect.class, 
-				new KrqstAppGoBackDirectlyPK(domain.getCompanyId()));;
+				KrqmtAppGoBackReflect.class,
+				new KrqmtAppGoBackDirectlyPK(domain.getCompanyId()));;
 		
 	}
 

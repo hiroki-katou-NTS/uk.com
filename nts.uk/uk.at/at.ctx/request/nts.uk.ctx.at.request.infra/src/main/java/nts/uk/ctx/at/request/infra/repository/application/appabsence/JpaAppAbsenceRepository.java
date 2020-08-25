@@ -94,17 +94,17 @@ public class JpaAppAbsenceRepository extends JpaRepository implements AppAbsence
 	public Optional<AppAbsence> getAbsenceByAppId(String companyID, String appID) {
 //		Optional<KrqdtAppForLeave> opKrqdtAppForLeave = this.queryProxy().find(new KrqdtAppForLeavePK(companyID, appID), KrqdtAppForLeave.class);
 //		Optional<KrqdtApplication_New> opKafdtApplication = this.queryProxy().find(new KrqdpApplicationPK_New(companyID, appID), KrqdtApplication_New.class);
-//		Optional<AppForSpecLeave> appforSpecLeave = this.queryProxy().find(new KrqdtAppForSpecLeavePK(companyID, appID), KrqdtAppForSpecLeave.class).map(c->toDomain(c));
+//		Optional<AppForSpecLeave> appforSpecLeave = this.queryProxy().find(new KrqdtAppForSpecLeavePK(companyID, appID), KrqdtAppForSpecLeave.class).map(c->toOvertimeAppSetDomain(c));
 //		if(!opKrqdtAppForLeave.isPresent() || !opKafdtApplication.isPresent()){
 //			return Optional.ofNullable(null);
 //		}
 //		KrqdtAppForLeave krqdtAppAbsence = opKrqdtAppForLeave.get();
 //		KrqdtApplication_New kafdtApplication = opKafdtApplication.get();
-//		AppAbsence appAbsence = krqdtAppAbsence.toDomain();
+//		AppAbsence appAbsence = krqdtAppAbsence.toOvertimeAppSetDomain();
 //		if(appforSpecLeave.isPresent()) {
 //			appAbsence.setAppForSpecLeave(appforSpecLeave.get());
 //		}
-//		appAbsence.setApplication(kafdtApplication.toDomain());
+//		appAbsence.setApplication(kafdtApplication.toOvertimeAppSetDomain());
 //		return Optional.of(appAbsence);
 		return Optional.empty();
 	}

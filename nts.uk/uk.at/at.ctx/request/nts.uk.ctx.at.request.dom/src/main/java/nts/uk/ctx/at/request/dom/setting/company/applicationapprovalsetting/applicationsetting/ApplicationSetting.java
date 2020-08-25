@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.appdeadlineset.AppDeadlineSetting;
@@ -34,12 +36,12 @@ public class ApplicationSetting implements DomainAggregate {
 	/**
 	 * 種類別設定
 	 */
-	private AppTypeSetting appTypeSetting;
+	private List<AppTypeSetting> appTypeSettings;
 	
 	/**
 	 * 代行申請で利用できる申請設定
 	 */
-	private AppSetForProxyApp appSetForProxyApp;
+	private List<AppSetForProxyApp> appSetForProxyApps;
 	
 	/**
 	 * 締切設定
@@ -54,7 +56,7 @@ public class ApplicationSetting implements DomainAggregate {
 	/**
 	 * 受付制限設定
 	 */
-	private ReceptionRestrictionSetting receptionRestrictionSetting;
+	private List<ReceptionRestrictionSetting> receptionRestrictionSettings;
 	
 	/**
 	 * 承認ルートの基準日
@@ -62,16 +64,16 @@ public class ApplicationSetting implements DomainAggregate {
 	private RecordDate recordDate;
 	
 	public ApplicationSetting(String companyID, AppLimitSetting appLimitSetting,
-			AppTypeSetting appTypeSetting, AppSetForProxyApp appSetForProxyApp,
-			List<AppDeadlineSetting> appDeadlineSetLst, AppDisplaySetting appDisplaySetting,
-			ReceptionRestrictionSetting receptionRestrictionSetting, RecordDate recordDate) {
+							  List<AppTypeSetting> appTypeSettings, List<AppSetForProxyApp> appSetForProxyApp,
+							  List<AppDeadlineSetting> appDeadlineSetLst, AppDisplaySetting appDisplaySetting,
+							  List<ReceptionRestrictionSetting> receptionRestrictionSettings, RecordDate recordDate) {
 		this.companyID = companyID;
 		this.appLimitSetting = appLimitSetting;
-		this.appTypeSetting = appTypeSetting;
-		this.appSetForProxyApp = appSetForProxyApp;
+		this.appTypeSettings = appTypeSettings;
+		this.appSetForProxyApps = appSetForProxyApp;
 		this.appDeadlineSetLst = appDeadlineSetLst;
 		this.appDisplaySetting = appDisplaySetting;
-		this.receptionRestrictionSetting = receptionRestrictionSetting;
+		this.receptionRestrictionSettings = receptionRestrictionSettings;
 		this.recordDate = recordDate;
 	}
 	
