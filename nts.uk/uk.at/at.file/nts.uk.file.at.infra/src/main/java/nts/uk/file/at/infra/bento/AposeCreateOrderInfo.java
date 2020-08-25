@@ -267,10 +267,10 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             reportContext.processDesigner();
             if(data.getOutputExt().equals(OutputExtension.PDF))
                 reportContext.saveAsPdf(this.createNewFile(generatorContext,
-                        FILE_NAME + TOTAL_BOOK + GeneralDateTime.now().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION_PDF));
+                        FILE_NAME + STATEMENT_SLIP + GeneralDateTime.now().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION_PDF));
             else if(data.getOutputExt().equals(OutputExtension.EXCEL))
                 reportContext.saveAsExcel(this.createNewFile(generatorContext,
-                        FILE_NAME + TOTAL_BOOK + GeneralDateTime.now().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION_EXCEL));
+                        FILE_NAME + STATEMENT_SLIP + GeneralDateTime.now().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION_EXCEL));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
