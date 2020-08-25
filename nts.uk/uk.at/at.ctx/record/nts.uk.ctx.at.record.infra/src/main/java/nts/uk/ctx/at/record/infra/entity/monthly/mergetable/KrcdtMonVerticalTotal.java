@@ -59,6 +59,8 @@ import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.TwoTimes
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.WorkDaysDetailOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.WorkTimesOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthlyVT;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.actual.HolidayUsageOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.actual.LaborTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.attendanceleave.AttendanceLeaveGateTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.bonuspaytime.AggregateBonusPayTime;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.bonuspaytime.BonusPayTimeOfMonthly;
@@ -1482,6 +1484,21 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 	/** 弁当メニュー枠番４０注文数 */
 	@Column(name = "BENTOU_ORDER_NUMBER_40")
 	public int bentouOrderNumber40;
+	/** 振休使用時間 */
+	@Column(name = "HOL_TRANSFER_USE_TIME")
+	public int holTransferTime;
+	/** 欠勤使用時間 */
+	@Column(name = "HOL_ABSENCE_USE_TIME")
+	public int holAbsenceTime;
+	/** 実働時間 */
+	@Column(name = "LABOR_ACTUAL_TIME")
+	public int laborActualTime;
+	/** 総計算時間 */
+	@Column(name = "LABOR_TOTAL_CALC_TIME")
+	public int laborTotalCalcTime;
+	/** 計算差異時間 */
+	@Column(name = "LABOR_CALC_DIFF_TIME")
+	public int laborCalcDiffTime;
 
 	@Override
 	protected Object getKey() {
@@ -1583,6 +1600,15 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 		/** インターバル時間 */
 		this.intervalTime = workTime.getInterval().getTime().valueAsMinutes();
 		this.intervalDeductTime = workTime.getInterval().getExemptionTime().valueAsMinutes();
+		
+		/** 休暇使用時間 */
+		this.holAbsenceTime = workTime.getHolidayUseTime().getAbsence().valueAsMinutes();
+		this.holTransferTime = workTime.getHolidayUseTime().getTransferHoliday().valueAsMinutes();
+		
+		/** 労働時間 */
+		this.laborActualTime = workTime.getLaborTime().getActualWorkTime().valueAsMinutes();
+		this.laborCalcDiffTime = workTime.getLaborTime().getCalcDiffTime().valueAsMinutes();
+		this.laborTotalCalcTime = workTime.getLaborTime().getTotalCalcTime().valueAsMinutes();
 	}
 
 	private void bonusPay(Map<Integer, AggregateBonusPayTime> bonusPayTime) {
@@ -2127,7 +2153,14 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 						new AttendanceTimeMonth(this.topPageFlexTime)), 
 				IntervalTimeOfMonthly.of(
 						new AttendanceTimeMonth(this.intervalTime),
-						new AttendanceTimeMonth(this.intervalDeductTime)));
+						new AttendanceTimeMonth(this.intervalDeductTime)),
+				HolidayUsageOfMonthly.of(
+						new AttendanceTimeMonth(this.holTransferTime), 
+						new AttendanceTimeMonth(this.holAbsenceTime)),
+				LaborTimeOfMonthly.of(
+						new AttendanceTimeMonth(this.laborActualTime), 
+						new AttendanceTimeMonth(this.laborTotalCalcTime), 
+						new AttendanceTimeMonth(this.laborCalcDiffTime)));
 	}
 	
 	private List<MedicalTimeOfMonthly> medicalTime() {

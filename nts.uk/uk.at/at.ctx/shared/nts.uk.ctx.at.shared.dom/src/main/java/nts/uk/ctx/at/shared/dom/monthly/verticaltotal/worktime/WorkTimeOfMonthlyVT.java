@@ -12,6 +12,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.secondorder.medical.MedicalCareTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.actual.HolidayUsageOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.actual.LaborTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.attendanceleave.AttendanceLeaveGateTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.bonuspaytime.BonusPayTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.breaktime.BreakTimeOfMonthly;
@@ -66,6 +68,10 @@ public class WorkTimeOfMonthlyVT implements Serializable{
 	private Map<WorkTimeNightShift, MedicalTimeOfMonthly> medicalTime;
 	/** インターバル時間 */
 	private IntervalTimeOfMonthly interval;
+	/** 休暇使用時間 */
+	private HolidayUsageOfMonthly holidayUseTime;
+	/** 労働時間 */
+	private LaborTimeOfMonthly laborTime;
 	
 	/**
 	 * コンストラクタ
@@ -85,6 +91,8 @@ public class WorkTimeOfMonthlyVT implements Serializable{
 		this.medicalTime = new HashMap<>();
 		this.topPage = TopPageDisplayOfMonthly.empty();
 		this.interval = IntervalTimeOfMonthly.empty();
+		this.laborTime = LaborTimeOfMonthly.empty();
+		this.holidayUseTime = HolidayUsageOfMonthly.empty();
 	}
 
 	/**
@@ -100,6 +108,10 @@ public class WorkTimeOfMonthlyVT implements Serializable{
 	 * @param budgetTimeVarience 予実差異時間
 	 * @param divergenceTime 乖離時間
 	 * @param medicalTimeList 医療時間リスト
+	 * @param topPage トップページ表示用時間
+	 * @param interval インターバル時間
+	 * @param holidayUseTime 休暇使用時間
+	 * @param laborTime 労働時間
 	 * @return 月別実績の勤務時間
 	 */
 	public static WorkTimeOfMonthlyVT of(
@@ -115,7 +127,9 @@ public class WorkTimeOfMonthlyVT implements Serializable{
 			DivergenceTimeOfMonthly divergenceTime,
 			List<MedicalTimeOfMonthly> medicalTimeList,
 			TopPageDisplayOfMonthly topPage,
-			IntervalTimeOfMonthly interval){
+			IntervalTimeOfMonthly interval,
+			HolidayUsageOfMonthly holidayUseTime,
+			LaborTimeOfMonthly laborTime){
 		
 		val domain = new WorkTimeOfMonthlyVT();
 		domain.bonusPayTime = bonusPayTime;
@@ -134,6 +148,8 @@ public class WorkTimeOfMonthlyVT implements Serializable{
 		}
 		domain.topPage = topPage;
 		domain.interval = interval;
+		domain.laborTime = laborTime;
+		domain.holidayUseTime = holidayUseTime;
 		return domain;
 	}
 	
@@ -187,6 +203,12 @@ public class WorkTimeOfMonthlyVT implements Serializable{
 
 		// ○インターバル時間の集計
 		this.interval.aggregate(attendanceTime);
+		
+		/** ○休暇使用時間 */
+		this.holidayUseTime.aggregate(attendanceTime);
+
+		/** ○労働時間 */
+		this.laborTime.aggregate(attendanceTime);
 	}
 	
 	/**
@@ -252,6 +274,8 @@ public class WorkTimeOfMonthlyVT implements Serializable{
 		}
 
 		this.interval.sum(target.interval);
+		this.holidayUseTime.sum(target.holidayUseTime);
+		this.laborTime.sum(target.laborTime);
 	}
 
 	public static interface RequireM1 extends ReservationOfMonthly.RequireM1 {}

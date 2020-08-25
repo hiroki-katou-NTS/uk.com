@@ -6,8 +6,6 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthlyVT;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.goout.GoOutOfMonthly;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -15,10 +13,14 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthlyVT;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.actual.HolidayUsageOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.actual.LaborTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.attendanceleave.AttendanceLeaveGateTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.bonuspaytime.BonusPayTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.breaktime.BreakTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.divergencetime.DivergenceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.goout.GoOutOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.interval.IntervalTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.lateleaveearly.LateLeaveEarlyOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.midnighttime.MidnightTimeOfMonthly;
@@ -91,6 +93,14 @@ public class WorkTimeOfMonthlyDto implements ItemConst {
 	@AttendanceItemLayout(jpPropertyName = TOPPAGE, layout = LAYOUT_H)
 	private TopPageDisplayTimeOfMonthlyDto topPage;
 
+	/** 休暇使用時間 */
+	@AttendanceItemLayout(jpPropertyName = HOLIDAY + USAGE, layout = LAYOUT_I)
+	private HolidayUseMonthlyDto holidayUse;
+
+	/** 労働時間 */
+	@AttendanceItemLayout(jpPropertyName = LABOR, layout = LAYOUT_J)
+	private LaborTimeMonthlyDto laborTime;
+
 	public static WorkTimeOfMonthlyDto from(WorkTimeOfMonthlyVT domain) {
 		WorkTimeOfMonthlyDto dto = new WorkTimeOfMonthlyDto();
 		if (domain != null) {
@@ -114,6 +124,8 @@ public class WorkTimeOfMonthlyDto implements ItemConst {
 			dto.setIntervalExemptionTime(domain.getInterval().getExemptionTime().valueAsMinutes());
 			dto.setIntervalTime(domain.getInterval().getTime().valueAsMinutes());
 			dto.setTopPage(TopPageDisplayTimeOfMonthlyDto.from(domain.getTopPage()));
+			dto.setLaborTime(LaborTimeMonthlyDto.from(domain.getLaborTime()));
+			dto.setHolidayUse(HolidayUseMonthlyDto.from(domain.getHolidayUseTime()));
 		}
 		return dto;
 	}
@@ -130,7 +142,9 @@ public class WorkTimeOfMonthlyDto implements ItemConst {
 				DivergenceTimeOfMonthly.of(ConvertHelper.mapTo(divergenceTimes, c -> c.toDomain())),
 				ConvertHelper.mapTo(medical, c -> c.toDomain()),
 				topPage == null ? TopPageDisplayOfMonthly.empty() : topPage.toDomain(),
-				IntervalTimeOfMonthly.of(new AttendanceTimeMonth(intervalTime), new AttendanceTimeMonth(intervalExemptionTime)));
+				IntervalTimeOfMonthly.of(new AttendanceTimeMonth(intervalTime), new AttendanceTimeMonth(intervalExemptionTime)),
+				holidayUse == null ? HolidayUsageOfMonthly.empty() : holidayUse.toDomain(),
+				laborTime == null ? LaborTimeOfMonthly.empty() : laborTime.toDomain());
 	}
 
 	private AttendanceTimeMonthWithMinus toAttendanceTimeMonthWithMinus(Integer time) {

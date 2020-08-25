@@ -26,7 +26,7 @@ public class AggregatePremiumTimeDto implements ItemConst {
 	private int time;
 
 	/** 金額: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.AMOUNT)
+	@AttendanceItemValue(type = ValueType.AMOUNT_NUM)
 	@AttendanceItemLayout(jpPropertyName = AMOUNT, layout = LAYOUT_B)
 	private int amount;
 	

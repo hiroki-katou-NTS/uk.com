@@ -19,13 +19,13 @@ import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.reservation.Reser
 /** 月別実績の予約 */
 public class ReservationOfMonthlyDto implements ItemConst {
 
-	@AttendanceItemLayout(jpPropertyName = AMOUNT + NUMBER_1, layout = LAYOUT_A)
-	@AttendanceItemValue(type = ValueType.AMOUNT)
+	@AttendanceItemLayout(jpPropertyName = AMOUNT + LAYOUT_A, layout = LAYOUT_A)
+	@AttendanceItemValue(type = ValueType.AMOUNT_NUM)
 	/** 注文金額1 */
 	private int amount1;
 
-	@AttendanceItemLayout(jpPropertyName = NUMBER + NUMBER_2, layout = LAYOUT_B)
-	@AttendanceItemValue(type = ValueType.AMOUNT)
+	@AttendanceItemLayout(jpPropertyName = AMOUNT + LAYOUT_B, layout = LAYOUT_B)
+	@AttendanceItemValue(type = ValueType.AMOUNT_NUM)
 	/** 注文金額2 */
 	private int amount2;
 	

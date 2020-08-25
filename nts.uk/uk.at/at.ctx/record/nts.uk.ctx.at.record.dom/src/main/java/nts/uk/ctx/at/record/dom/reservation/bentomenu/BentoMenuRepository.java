@@ -11,6 +11,8 @@ public interface BentoMenuRepository {
 	
 	public Bento getBento(String companyID, GeneralDate date, int frameNo);
 	
+	public List<Bento> getBento(String companyID, GeneralDate date);
+	
 	public List<BentoMenu> getBentoMenuPeriod(String companyID, DatePeriod period);
 	
 }

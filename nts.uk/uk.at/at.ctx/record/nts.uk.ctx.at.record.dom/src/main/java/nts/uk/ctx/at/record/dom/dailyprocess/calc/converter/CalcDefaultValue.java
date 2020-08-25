@@ -8,6 +8,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.v
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.SpecialHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.SubstituteHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.TimeDigestOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.TransferHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.YearlyReservedOfDaily;
 
@@ -21,5 +22,6 @@ public class CalcDefaultValue {
 			new SubstituteHolidayOfDaily(DEFAULT_TIME, DEFAULT_TIME),
 			new OverSalaryOfDaily(DEFAULT_TIME, DEFAULT_TIME),
 			new SpecialHolidayOfDaily(DEFAULT_TIME, DEFAULT_TIME),
-			new AnnualOfDaily(DEFAULT_TIME, DEFAULT_TIME)));;
+			new AnnualOfDaily(DEFAULT_TIME, DEFAULT_TIME),
+			new TransferHolidayOfDaily(DEFAULT_TIME)));;
 }

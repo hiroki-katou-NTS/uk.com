@@ -74,6 +74,8 @@ import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.TwoTimes
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.WorkDaysDetailOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.WorkTimesOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthlyVT;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.actual.HolidayUsageOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.actual.LaborTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.attendanceleave.AttendanceLeaveGateTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.bonuspaytime.BonusPayTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.breaktime.BreakTimeOfMonthly;
@@ -612,6 +614,21 @@ public class KrcdtWekAttendanceTime extends UkJpaEntity implements Serializable 
 	/** 弁当メニュー枠番４０注文数 */
 	@Column(name = "BENTOU_ORDER_NUMBER_40")
 	public int bentouOrderNumber40;
+	/** 振休使用時間 */
+	@Column(name = "HOL_TRANSFER_USE_TIME")
+	public int holTransferTime;
+	/** 欠勤使用時間 */
+	@Column(name = "HOL_ABSENCE_USE_TIME")
+	public int holAbsenceTime;
+	/** 実働時間 */
+	@Column(name = "LABOR_ACTUAL_TIME")
+	public int laborActualTime;
+	/** 総計算時間 */
+	@Column(name = "LABOR_TOTAL_CALC_TIME")
+	public int laborTotalCalcTime;
+	/** 計算差異時間 */
+	@Column(name = "LABOR_CALC_DIFF_TIME")
+	public int laborCalcDiffTime;
 
 	/** 総労働時間：残業時間：集計残業時間 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtWekAttendanceTime", orphanRemoval = true)
@@ -899,7 +916,14 @@ public class KrcdtWekAttendanceTime extends UkJpaEntity implements Serializable 
 						new AttendanceTimeMonth(this.topPageFlexTime)), 
 				IntervalTimeOfMonthly.of(
 						new AttendanceTimeMonth(this.intervalTime),
-						new AttendanceTimeMonth(this.intervalDeductTime)));
+						new AttendanceTimeMonth(this.intervalDeductTime)),
+				HolidayUsageOfMonthly.of(
+						new AttendanceTimeMonth(this.holTransferTime), 
+						new AttendanceTimeMonth(this.holAbsenceTime)),
+				LaborTimeOfMonthly.of(
+						new AttendanceTimeMonth(this.laborActualTime), 
+						new AttendanceTimeMonth(this.laborTotalCalcTime), 
+						new AttendanceTimeMonth(this.laborCalcDiffTime)));
 
 		// 月別実績の勤務時刻
 		val vtWorkClock = WorkClockOfMonthly.of(
@@ -1163,6 +1187,15 @@ public class KrcdtWekAttendanceTime extends UkJpaEntity implements Serializable 
 		
 		this.intervalTime = vtWorkTime.getInterval().getTime().valueAsMinutes();
 		this.intervalDeductTime = vtWorkTime.getInterval().getExemptionTime().valueAsMinutes();
+		
+		/** 休暇使用時間 */
+		this.holAbsenceTime = vtWorkTime.getHolidayUseTime().getAbsence().valueAsMinutes();
+		this.holTransferTime = vtWorkTime.getHolidayUseTime().getTransferHoliday().valueAsMinutes();
+		
+		/** 労働時間 */
+		this.laborActualTime = vtWorkTime.getLaborTime().getActualWorkTime().valueAsMinutes();
+		this.laborCalcDiffTime = vtWorkTime.getLaborTime().getCalcDiffTime().valueAsMinutes();
+		this.laborTotalCalcTime = vtWorkTime.getLaborTime().getTotalCalcTime().valueAsMinutes();
 
 		val vtWorkClock = verticalTotal.getWorkClock();
 		val endClock = vtWorkClock.getEndClock();

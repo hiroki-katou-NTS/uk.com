@@ -110,6 +110,11 @@ public class TotalWorkingTimeDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_Q, jpPropertyName = INTERVAL + ATTENDANCE)
 	@AttendanceItemValue(type = ValueType.TIME)
 	private int intervalAttendanceClock;
+
+	/** 計算差異時間 */
+	@AttendanceItemLayout(layout = LAYOUT_R, jpPropertyName = CALC + DIFF)
+	@AttendanceItemValue(type = ValueType.TIME)
+	private int calcDiffTime;
 	
 	@Override
 	public TotalWorkingTimeDto clone() {
@@ -127,7 +132,8 @@ public class TotalWorkingTimeDto implements ItemConst {
 										workTimes,
 										vacationAddTime,
 										intervalTime,
-										intervalAttendanceClock);
+										intervalAttendanceClock,
+										calcDiffTime);
 	}
 	
 	public static TotalWorkingTimeDto fromTotalWorkingTime(TotalWorkingTime domain) {
@@ -162,7 +168,8 @@ public class TotalWorkingTimeDto implements ItemConst {
 						domain.getWorkTimes() == null ? null : domain.getWorkTimes().v(),
 						domain.getVacationAddTime() == null ? null : domain.getVacationAddTime().valueAsMinutes(),
 						domain.getIntervalTime().getIntervalTime().v(),
-						domain.getIntervalTime().getIntervalAttendance().v());
+						domain.getIntervalTime().getIntervalAttendance().v(),
+						domain.getCalcDiffTime().v());
 	}
 
 	private static ValicationUseDto getValicationUseDto(TimevacationUseTimeOfDaily c) {
@@ -206,6 +213,7 @@ public class TotalWorkingTimeDto implements ItemConst {
 		if(vacationAddTime != null) {
 			total.setVacationAddTime(new AttendanceTime(vacationAddTime));
 		}
+		total.setCalcDiffTime(new AttendanceTime(calcDiffTime));
 		return total;
 	}
 

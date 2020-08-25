@@ -33,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.v
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.HolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.SpecialHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.SubstituteHolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.TransferHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.shared.dom.monthly.remain.AnnualLeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.monthly.remain.ReserveLeaveGrantRemaining;
@@ -304,7 +305,8 @@ public class MonthlyCalculatingDailys {
 														new SpecialHolidayOfDaily(new AttendanceTime(0), 
 																beforeActualWork.getTotalWorkingTime().getHolidayOfDaily().getSpecialHoliday().getDigestionUseTime()), 
 														new AnnualOfDaily(new AttendanceTime(0), 
-																beforeActualWork.getTotalWorkingTime().getHolidayOfDaily().getAnnual().getDigestionUseTime())),
+																beforeActualWork.getTotalWorkingTime().getHolidayOfDaily().getAnnual().getDigestionUseTime()),
+														new TransferHolidayOfDaily(beforeActualWork.getTotalWorkingTime().getHolidayOfDaily().getTransferHoliday().getUseTime())),
 												IntervalTimeOfDaily.empty()),
 										beforeActualWork.getDivTime(),
 										beforeActualWork.getPremiumTimeOfDailyPerformance());

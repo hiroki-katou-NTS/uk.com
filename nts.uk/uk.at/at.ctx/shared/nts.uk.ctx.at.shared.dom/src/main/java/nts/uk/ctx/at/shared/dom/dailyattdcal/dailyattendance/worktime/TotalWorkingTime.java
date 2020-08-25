@@ -127,6 +127,10 @@ public class TotalWorkingTime {
 	//実働時間
 	private AttendanceTime actualTime;
 	
+	/** 計算差異時間 */
+	@Setter
+	private AttendanceTime calcDiffTime = new AttendanceTime(0);
+	
 	//日別実績の所定内時間 - 所定内時間 (new)
 	private WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily;
 	 
@@ -267,7 +271,8 @@ public class TotalWorkingTime {
 													   new SubstituteHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
 													   new OverSalaryOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
 													   new SpecialHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
-													   new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0))),
+													   new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
+													   new TransferHolidayOfDaily(new AttendanceTime(0))),
 									IntervalTimeOfDaily.empty());
 	}
 	
