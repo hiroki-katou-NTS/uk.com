@@ -75,6 +75,7 @@ module nts.uk.at.kmr001.c {
             });
             vm.getBentoMenu(null);
 
+
         }
 
         created() {
@@ -162,6 +163,10 @@ module nts.uk.at.kmr001.c {
             model = this.model();
             $(".nts-input").trigger("validate");
             if (nts.uk.ui.errors.hasError()){
+                return;
+            }
+            if(!vm.model().reservationAtr2() && !vm.model().reservationAtr1()) {
+                $('.reservationAtr').ntsError('set', {messageId:'MsgB_1',messageParams:[vm.$i18n('KMR001_47')]});
                 return;
             }
             vm.$blockui("invisible");
@@ -396,7 +401,18 @@ module nts.uk.at.kmr001.c {
             this.price1(price1);
             this.price2(price2);
             this.workLocationCode(workLocationCode);
+            this.reservationAtr1.subscribe(data => {
+                if(data) {
+                    $('.reservationAtr').ntsError('clear');
+                }
+            });
+            this.reservationAtr2.subscribe(data => {
+                if(data) {
+                    $('.reservationAtr').ntsError('clear');
+                }
+            })
         }
+
     }
 
     class WorkLocation{
