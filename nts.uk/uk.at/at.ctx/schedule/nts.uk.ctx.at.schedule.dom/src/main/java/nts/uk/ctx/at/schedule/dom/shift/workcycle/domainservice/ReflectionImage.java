@@ -7,12 +7,12 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Getter
-@Setter
-@AllArgsConstructor
 /**
  * 	反映イメージ
  */
+@Getter
+@Setter
+@AllArgsConstructor
 public class ReflectionImage {
 
     private HashMap<GeneralDate, RefImageEachDay> day;
