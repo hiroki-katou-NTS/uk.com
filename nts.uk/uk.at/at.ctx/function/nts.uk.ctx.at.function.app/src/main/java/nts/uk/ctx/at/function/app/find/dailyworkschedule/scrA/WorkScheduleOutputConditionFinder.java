@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.app.find.dailyworkschedule.scrA;
 
+import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataInforReturnDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.scrB.ErrorAlarmCodeDto;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
@@ -20,6 +22,8 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleR
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.RoleExportRepoAdapter;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.SEmpHistExportAdapter;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.SEmpHistExportImported;
+import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformAuthorRepo;
+import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceFunctionNo;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -28,7 +32,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class WorkScheduleOutputConditionFinder.
@@ -60,6 +63,9 @@ public class WorkScheduleOutputConditionFinder {
 	@Inject
 	private RoleExportRepoAdapter roleExportRepoAdapter;
 	
+	@Inject
+	private DailyPerformAuthorRepo dailyPerformAuthorRepo;
+	
 	/** The Constant STRING_EMPTY. */
 	private static final String STRING_EMPTY = "";
 	
@@ -78,6 +84,7 @@ public class WorkScheduleOutputConditionFinder {
 		String companyId = AppContexts.user().companyId();
 		GeneralDate systemDate = GeneralDate.today();
 		String employeeId = AppContexts.user().employeeId();
+		String roleId = AppContexts.user().roles().forPersonalInfo();
 		
 		//「ログイン者が担当者か判断する」で就業担当者かチェックする
 		// 出力項目の設定ボタン(A7_6)の活性制御を行う
@@ -86,7 +93,17 @@ public class WorkScheduleOutputConditionFinder {
 		} else {
 			dto.setEmployeeCharge(false);
 		}
-		
+
+		// ログイン社員の就業帳票の権限を取得する
+		// ・ロールID：ログイン社員の就業ロールID
+		// ・機能NO：51(自由設定区分)
+		// ・利用できる：TRUE
+		boolean isFreeSetting = this.dailyPerformAuthorRepo.getAuthorityOfEmployee(roleId,
+				new DailyPerformanceFunctionNo(BigDecimal.valueOf(51l)), true);
+
+		// 自由設定(A7_7～A7_12)の活性制御を行う
+		dto.setFreeSetting(isFreeSetting);
+
 		// アルゴリズム「社員に対応する締め期間を取得する」を実行する(Execute the algorithm "Acquire closing period corresponding to employee")
 		Optional<Closure> optClosure = getDomClosure(employeeId, systemDate);
 		

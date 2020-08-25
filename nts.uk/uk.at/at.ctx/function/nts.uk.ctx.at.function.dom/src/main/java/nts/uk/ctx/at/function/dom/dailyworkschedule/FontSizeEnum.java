@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.dailyworkschedule;
+
 /**
- * 文字の大きさ
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.日別勤務表.文字の大きさ
  * @author LienPTK
  *
  */

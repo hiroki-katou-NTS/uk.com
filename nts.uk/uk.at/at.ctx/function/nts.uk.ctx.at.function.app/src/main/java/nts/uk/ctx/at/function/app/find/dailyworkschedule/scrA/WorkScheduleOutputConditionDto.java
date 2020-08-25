@@ -40,6 +40,8 @@ public class WorkScheduleOutputConditionDto {
 	private boolean employeeCharge;
 	
 	private String msgErrClosingPeriod;
+	
+	private boolean isFreeSetting;
 
 	/**
 	 * Instantiates a new work schedule output condition dto.

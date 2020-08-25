@@ -15,4 +15,13 @@ public interface DailyPerformAuthorRepo {
 
 	public void save(DailyPerformanceAuthority daiPerAuthority);
 
+	/**
+	 * ログイン社員の就業帳票の権限を取得する
+	 * 
+	 * @param roleId ロールID
+	 * @param functionNo: 機能NO
+	 * @param available: 利用できる
+	 * @return
+	 */
+	public boolean getAuthorityOfEmployee(String roleId, DailyPerformanceFunctionNo functionNo, boolean available);
 }
