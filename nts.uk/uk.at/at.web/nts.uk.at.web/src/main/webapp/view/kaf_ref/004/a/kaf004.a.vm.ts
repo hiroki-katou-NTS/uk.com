@@ -133,6 +133,19 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         if (!vm.workManagement.scheWorkTime2) {
                             vm.workManagement.scheWorkTime2("--:--");
                         }
+
+                        if(_.isEmpty(vm.workManagement.workTime())) {
+                            vm.lateOrEarlyInfo1().isActive(false);
+                        }
+                        if(_.isEmpty(vm.workManagement.leaveTime())) {
+                            vm.lateOrEarlyInfo2().isActive(false);
+                        }
+                        if(_.isEmpty(vm.workManagement.workTime2())) {
+                            vm.lateOrEarlyInfo3().isActive(false);
+                        }
+                        if(_.isEmpty(vm.workManagement.leaveTime2())) {
+                            vm.lateOrEarlyInfo4().isActive(false);
+                        }
                     }
                 }).fail((failData: any) => {
                     console.log(failData);
@@ -168,17 +181,40 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         vm.workManagement.leaveTime(1030);
                         vm.workManagement.workTime2(1110);
                         vm.workManagement.leaveTime2(1200);
+
+                        if(vm.workManagement.workTime() === null || vm.workManagement.workTime() === "") {
+                            vm.lateOrEarlyInfo1().isActive(false);
+                        } else {
+                            vm.lateOrEarlyInfo1().isActive(true);
+                        }
+                        if(vm.workManagement.leaveTime() === null || vm.workManagement.leaveTime() === "") {
+                            vm.lateOrEarlyInfo2().isActive(false);
+                        } else {
+                            vm.lateOrEarlyInfo2().isActive(true);
+                        }
+                        if(vm.workManagement.workTime2() === null || vm.workManagement.workTime2() === "") {
+                            vm.lateOrEarlyInfo3().isActive(false);
+                        } else {
+                            vm.lateOrEarlyInfo3().isActive(true);
+                        }
+                        if(vm.workManagement.leaveTime2() === null || vm.workManagement.leaveTime2() === "") {
+                            vm.lateOrEarlyInfo4().isActive(false);
+                        } else {
+                            vm.lateOrEarlyInfo4().isActive(true);
+                        }
                         return;
                     }
                     // Test data
 
-                    if (success.errorInfo && vm.application().prePostAtr() === 1) {
-                        const message: any = {
-                            messageId: success.errorInfo,
-                            messageParams: [ko.toJS(vm.application().appDate)]
-                        };
+                    if (success.errorInfo) {
+                        if(vm.application().prePostAtr() === 1) {
+                            const message: any = {
+                                messageId: success.errorInfo,
+                                messageParams: [ko.toJS(vm.application().appDate)]
+                            };
+                            vm.$errors("#kaf000-a-component4-singleDate", message);
+                        }
                         vm.arrivedLateLeaveEarlyInfo().info = success.errorInfo;
-                        vm.$errors("#kaf000-a-component4-singleDate", message);
                     } else {
                         vm.appDispInfoStartupOutput().appDispInfoWithDateOutput = success.appDispInfoWithDateOutput;
                         vm.lateOrEarlyInfos(success.lateOrEarlyInfoLst);
@@ -209,6 +245,27 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         }
 
                         vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput = success.appDispInfoWithDateOutput;
+                    }
+
+                    if(vm.workManagement.workTime() === null || vm.workManagement.workTime() === "") {
+                        vm.lateOrEarlyInfo1().isActive(false);
+                    } else {
+                        vm.lateOrEarlyInfo1().isActive(true);
+                    }
+                    if(vm.workManagement.leaveTime() === null || vm.workManagement.leaveTime() === "") {
+                        vm.lateOrEarlyInfo2().isActive(false);
+                    } else {
+                        vm.lateOrEarlyInfo2().isActive(true);
+                    }
+                    if(vm.workManagement.workTime2() === null || vm.workManagement.workTime2() === "") {
+                        vm.lateOrEarlyInfo3().isActive(false);
+                    } else {
+                        vm.lateOrEarlyInfo3().isActive(true);
+                    }
+                    if(vm.workManagement.leaveTime2() === null || vm.workManagement.leaveTime2() === "") {
+                        vm.lateOrEarlyInfo4().isActive(false);
+                    } else {
+                        vm.lateOrEarlyInfo4().isActive(true);
                     }
 
                 }).fail((error: any) => {
@@ -605,36 +662,36 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     // 取り消す初期情報.活性する
                     switch (idItem) {
                         case IdItem.A6_7: {
-                            if (ko.toJS(vm.lateOrEarlyInfo1) == null) {
-                                return false;
-                            }
-                            if (vm.workManagement.workTime() == null || vm.workManagement.workTime() === "") {
-                                return false;
-                            }
+                            // if (ko.toJS(vm.lateOrEarlyInfo1) == null) {
+                            //     return false;
+                            // }
+                            // if (vm.workManagement.workTime() == null || vm.workManagement.workTime() === "") {
+                            //     return false;
+                            // }
                             return ko.toJS(vm.lateOrEarlyInfo1().isActive);
                         } case IdItem.A6_13: {
-                            if (ko.toJS(vm.lateOrEarlyInfo2) == null) {
-                                return false;
-                            }
-                            if (vm.workManagement.leaveTime() == null || vm.workManagement.leaveTime() === "") {
-                                return false;
-                            }
+                            // if (ko.toJS(vm.lateOrEarlyInfo2) == null) {
+                            //     return false;
+                            // }
+                            // if (vm.workManagement.leaveTime() == null || vm.workManagement.leaveTime() === "") {
+                            //     return false;
+                            // }
                             return ko.toJS(vm.lateOrEarlyInfo2().isActive);
                         } case IdItem.A6_19: {
-                            if (ko.toJS(vm.lateOrEarlyInfo3) == null) {
-                                return false;
-                            }
-                            if (vm.workManagement.workTime2() == null || vm.workManagement.workTime2() === "") {
-                                return false;
-                            }
+                            // if (ko.toJS(vm.lateOrEarlyInfo3) == null) {
+                            //     return false;
+                            // }
+                            // if (vm.workManagement.workTime2() == null || vm.workManagement.workTime2() === "") {
+                            //     return false;
+                            // }
                             return ko.toJS(vm.lateOrEarlyInfo3().isActive);
                         } case IdItem.A6_25: {
-                            if (ko.toJS(vm.lateOrEarlyInfo4) == null) {
-                                return false;
-                            }
-                            if (vm.workManagement.leaveTime2() == null || vm.workManagement.leaveTime2() === "") {
-                                return false;
-                            }
+                            // if (ko.toJS(vm.lateOrEarlyInfo4) == null) {
+                            //     return false;
+                            // }
+                            // if (vm.workManagement.leaveTime2() == null || vm.workManagement.leaveTime2() === "") {
+                            //     return false;
+                            // }
                             return ko.toJS(vm.lateOrEarlyInfo4().isActive);
                         } default: {
                             return true;

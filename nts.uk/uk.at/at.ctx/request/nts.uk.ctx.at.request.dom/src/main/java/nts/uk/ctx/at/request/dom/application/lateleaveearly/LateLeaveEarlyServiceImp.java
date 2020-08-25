@@ -425,10 +425,10 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		List<ConfirmMsgOutput> listMsg = new ArrayList<>();
 		List<TimeReport> timeReportsTemp;
 		List<LateCancelation> cancelTemp;
-		int attendTime = 0;
-		int leaveTime = 0;
-		int attendTime2 = 0;
-		int leaveTime2 = 0;
+		Integer attendTime = null;
+		Integer leaveTime = null;
+		Integer attendTime2 = null;
+		Integer leaveTime2 = null;
 		LateCancelation cancelAttend = null;
 		LateCancelation cancelLeave = null;
 		LateCancelation cancelAttend2 = null;
@@ -444,7 +444,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 				return null;
 			}).filter(m -> (m != null)).collect(Collectors.toList());
 
-			attendTime = timeReportsTemp.isEmpty() ? 0 : timeReportsTemp.get(0).getTimeWithDayAttr().v();
+		attendTime = timeReportsTemp.isEmpty() ? null : timeReportsTemp.get(0).getTimeWithDayAttr().v();
 
 			// Get leave time by workno = 1 && classification = 1
 			timeReportsTemp = infoOutput.getArrivedLateLeaveEarly().get().getLateOrLeaveEarlies().stream().map(x -> {
@@ -454,7 +454,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 				return null;
 			}).filter(m -> (m != null)).collect(Collectors.toList());
 
-			leaveTime = timeReportsTemp.isEmpty() ? 0 : timeReportsTemp.get(0).getTimeWithDayAttr().v();
+		leaveTime = timeReportsTemp.isEmpty() ? null : timeReportsTemp.get(0).getTimeWithDayAttr().v();
 
 			// Get attend time 2 by workno = 2 && classification = 0
 			timeReportsTemp = infoOutput.getArrivedLateLeaveEarly().get().getLateOrLeaveEarlies().stream().map(x -> {
@@ -464,7 +464,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 				return null;
 			}).filter(m -> (m != null)).collect(Collectors.toList());
 
-			attendTime2 = timeReportsTemp.isEmpty() ? 0 : timeReportsTemp.get(0).getTimeWithDayAttr().v();
+		attendTime2 = timeReportsTemp.isEmpty() ? null : timeReportsTemp.get(0).getTimeWithDayAttr().v();
 
 			// Get attend time 2 by workno = 2 && classification = 1
 			timeReportsTemp = infoOutput.getArrivedLateLeaveEarly().get().getLateOrLeaveEarlies().stream().map(x -> {
@@ -474,7 +474,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 				return null;
 			}).filter(m -> (m != null)).collect(Collectors.toList());
 
-			leaveTime2 = timeReportsTemp.isEmpty() ? 0 : timeReportsTemp.get(0).getTimeWithDayAttr().v();
+		leaveTime2 = timeReportsTemp.isEmpty() ? null : timeReportsTemp.get(0).getTimeWithDayAttr().v();
 
 			// Get attend time by workno = 1 && classification = 0
 			cancelTemp = infoOutput.getArrivedLateLeaveEarly().get().getLateCancelation().stream().map(x -> {
@@ -516,24 +516,33 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 
 			cancelLeave = cancelTemp.isEmpty() ? null : cancelTemp.get(0);
 
-			if (attendTime != 0 && leaveTime != 0) {
-				if (attendTime > leaveTime) {
-					throw new BusinessException("Msg_1677");
-				}
-				if (attendTime2 != 0 && attendTime > attendTime2) {
-					throw new BusinessException("Msg_1677");
-				}
-			}
-			if (attendTime2 != 0 && leaveTime2 != 0 && attendTime2 > leaveTime2) {
+		// if (attendTime != null && leaveTime != null) {
+		// if (attendTime > leaveTime) {
+		// throw new BusinessException("Msg_1677");
+		// }
+		// if (attendTime2 != 0 && attendTime > attendTime2) {
+		// throw new BusinessException("Msg_1677");
+		// }
+		// }
+		if (attendTime != null && leaveTime != null && attendTime > leaveTime) {
+			throw new BusinessException("Msg_1677");
+		}
+
+		if (leaveTime != null && attendTime2 != null && leaveTime > attendTime2) {
+			throw new BusinessException("Msg_1677");
+		}
+
+		if (attendTime2 != null && leaveTime2 != null && attendTime2 > leaveTime2) {
 				throw new BusinessException("Msg_1677");
 			}
 
 		if (application.getPrePostAtr().value == 0) {
-			if (attendTime == 0 && attendTime2 == 0 && leaveTime == 0 && leaveTime2 == 0) {
+			if (attendTime == null && attendTime2 == null && leaveTime == null && leaveTime2 == null) {
 				throw new BusinessException("Msg_1681");
 			}
 		} else {
-			if (attendTime == 0 && attendTime2 == 0 && leaveTime == 0 && leaveTime2 == 0 && cancelAttend == null
+			if (attendTime == null && attendTime2 == null && leaveTime == null && leaveTime2 == null
+					&& cancelAttend == null
 					&& cancelAttend2 == null && cancelLeave == null && cancelLeave2 == null) {
 				throw new BusinessException("Msg_1681");
 			}
@@ -551,7 +560,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			// 4-1.詳細画面登録前の処理
 			this.updateService.processBeforeDetailScreenRegistration(companyID, application.getEmployeeID(),
 					application.getAppDate().getApplicationDate(), EmploymentRootAtr.APPLICATION.value,
-					application.getAppID(), application.getPrePostAtr(), application.getVersion(), null, null, 
+					application.getAppID(), application.getPrePostAtr(), application.getVersion(), null, null,
 					infoOutput.getAppDispInfoStartupOutput());
 		}
 
