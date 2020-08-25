@@ -24,6 +24,7 @@ module nts.uk.at.view.kmr004.a {
 		extractionConditionEnable: KnockoutObservable<boolean> = ko.observable(false);
 		separatePageCheckboxEnable: KnockoutObservable<boolean> = ko.observable(true);
 		conditionListCcb: KnockoutObservableArray<any> = ko.observableArray([]);
+		conditionListCcbAll: any[];
 		conditionListCcbEnable: KnockoutObservable<boolean> = ko.observable(false);
 		closingTimeOptions: KnockoutObservableArray<any> = ko.observableArray([]);
 		selectedClosingTime: KnockoutObservable<number> = ko.observable(1);
@@ -35,10 +36,11 @@ module nts.uk.at.view.kmr004.a {
 		itemExtractConditionOptions: KnockoutObservableArray<OptionModel> = ko.observableArray([]);
 		outputConditionOptions: KnockoutObservableArray<OptionModel> = ko.observableArray([]);
 		cacheKey:string;
+		displayingWorkplaceList:number = 0;
 
 		constructor() {
 			super();
-			var self = this;
+			const self = this;
 
 			self.cacheKey = "kmr004aCache_" + __viewContext.user.companyId + "_" + __viewContext.user.employeeId;
 
@@ -111,12 +113,26 @@ module nts.uk.at.view.kmr004.a {
 					self.conditionListCcbEnable(false);
 				}
 			});
+
+			self.model().workLocationCodes.subscribe((selectedWorkLocationCode) => {
+				if (selectedWorkLocationCode == null) {
+					self.conditionListCcb(self.conditionListCcbAll);
+				} else {
+					let filtered = self.conditionListCcbAll.filter((item) => {
+						if (selectedWorkLocationCode == item.locationCode) {
+							return item;
+						}
+					});
+					self.conditionListCcb(filtered);
+				}
+			});
 		}
 
 		created() {
 			const vm = this;
 			_.extend(window, {vm});
 		}
+
 
 		mounted() {
 		}
@@ -125,83 +141,143 @@ module nts.uk.at.view.kmr004.a {
 			const vm = this;
 			vm.initClosingTimeLable(data);
 			vm.initClosingTimeSwitch(data);
+
 			if(data.operationDistinction == "BY_COMPANY"){
 				vm.initWorkplaceList();
+				vm. displayingWorkplaceList = 1;
 			} else {
 				vm.initWorkLocationList();
+				vm. displayingWorkplaceList = 2;
 			}
 			vm.initConditionListComboBox(data);
 		}
 
-		prepareData():any{
-			let vm = this;
-			if(vm.outputConditionChecked() === OUTPUT_CONDITION.TOTAL){
-				vm.model().frameNo(-1);
-				vm.model().itemExtractCondition(EXTRACT_CONDITION.UNSPECIFIED);
-				vm.model().detailTitle = ko.observable('');
-				vm.model().isBreakPage = ko.observable(false);
-			}else{
-				vm.model().totalExtractCondition(EXTRACT_CONDITION.UNSPECIFIED);
-				vm.model().totalTitle = ko.observable('');
-				vm.model().extractionConditionChecked = ko.observable(false);
-				if(vm.model().itemExtractCondition() === EXTRACT_CONDITION.ALL){
-					vm.model().frameNo = ko.observable(-1);
+		initConditionListComboBox(data: any) {
+			const vm = this;
+			// bento list
+			vm.conditionListCcbAll = data.menu.map((item) => {
+				return {
+					code: item.code,
+					locationCode: item.locationCode,
+					name: item.name
 				}
-			}
-			let data = {
-				workplaceIds: vm.model().workplaceIds(),
-				workLocationCodes: vm.model().workLocationCodes(),
-				period: vm.model().period.peek(),
-				totalExtractCondition: vm.model().totalExtractCondition.peek(),
-				itemExtractCondition: vm.model().itemExtractCondition.peek(),
-				frameNo: vm.model().frameNo.peek(),
-				totalTitle:  vm.model().totalTitle.peek(),
-				detailTitle: vm.model().detailTitle.peek(),
-				isBreakPage: true,
-				reservationClosingTimeFrame: vm.model().reservationClosingTimeFrame.peek(),
-				extractionConditionChecked: vm.model().extractionConditionChecked.peek()
-			};
-			return data;
+			})
+			vm.conditionListCcb(vm.conditionListCcbAll);
 		}
+
+        prepareData():any{
+            let vm = this;
+            let frameNo = -1;
+            let totalTitle = '';
+            let detailTitle = '';
+            let isBreakPage = false;
+            let totalExtractCondition = -1;
+            let itemExtractCondition = -1;
+            let extractionConditionChecked = false;
+
+            if(vm.outputConditionChecked() === OUTPUT_CONDITION.TOTAL){
+                totalTitle = vm.model().totalTitle();
+                totalExtractCondition = vm.model().totalExtractCondition();
+                extractionConditionChecked = vm.model().extractionConditionChecked();
+            }else{
+                if(vm.model().itemExtractCondition() === EXTRACT_CONDITION.ALL){
+                    isBreakPage = vm.model().isBreakPage();
+                    itemExtractCondition = vm.model().itemExtractCondition();
+                }else{
+                    frameNo = vm.model().frameNo();
+                }
+            }
+            let data = {
+                workplaceIds: vm.model().workplaceIds(),
+                workLocationCodes: vm.model().workLocationCodes(),
+                period: vm.model().period.peek(),
+                totalExtractCondition: totalExtractCondition,
+                itemExtractCondition: itemExtractCondition,
+                frameNo: frameNo,
+                totalTitle:  totalTitle,
+                detailTitle: detailTitle,
+                isBreakPage: isBreakPage,
+                reservationClosingTimeFrame: vm.model().reservationClosingTimeFrame.peek(),
+                extractionConditionChecked: extractionConditionChecked
+            };
+            return data;
+        }
 
 		printExcel(){
 			let vm = this;
-			vm.$blockui("invisible");
 			vm.saveCharacteristics();
 			let data = vm.prepareData();
-			nts.uk.request.exportFile("at", API.EXCEL,data).done(() => {
-				vm.$blockui("clear");
-			}).fail((res: any) => {
-				vm.$dialog.error({ messageId : res.messageId }).then(function(){
+
+			let checkResult = vm.checkBeforeExtract(data);
+			if (!checkResult) {
+				vm.showCheckEmptyListSubmitMessage();
+			} else {
+				vm.$blockui("invisible");
+				nts.uk.request.exportFile("at", API.EXCEL, data).done(() => {
 					vm.$blockui("clear");
+				}).fail((res: any) => {
+					vm.$dialog.error({messageId: res.messageId}).then(function () {
+						vm.$blockui("clear");
+					});
 				});
-			});
+			}
 		}
 
 		printPDF(){
 			let vm = this;
-			vm.$blockui("invisible");
 			vm.saveCharacteristics();
 			let data = vm.prepareData();
 			$("#exportTitle").trigger("validate");
-			nts.uk.request.exportFile("at", API.PDF, data).done(() => {
-				vm.$blockui("clear");
-			}).fail((res: any) => {
-				vm.$dialog.error({ messageId : res.messageId }).then(function(){
+			let checkResult = vm.checkBeforeExtract(data);
+			if (!checkResult) {
+				vm.showCheckEmptyListSubmitMessage();
+			} else {
+				vm.$blockui("invisible");
+				nts.uk.request.exportFile("at", API.PDF, data).done(() => {
 					vm.$blockui("clear");
+				}).fail((res: any) => {
+					vm.$dialog.error({messageId: res.messageId}).then(function () {
+						vm.$blockui("clear");
+					});
 				});
-			});
+			}
+		}
+
+		checkBeforeExtract(data:any): boolean{
+			if ((data.workplaceIds.length < 1) && (data.workLocationCodes.length < 1)) {
+				return false;
+			}
+			return true;
+		}
+
+		showCheckEmptyListSubmitMessage(){
+			let vm = this;
+			let msgParam :string;
+			if (vm.displayingWorkplaceList == 1) {
+				msgParam = getText('Com_Workplace');
+			} else if (vm.displayingWorkplaceList == 2) {
+				msgParam = getText('KMR004_41');
+			}
+			nts.uk.ui.dialog.info({ messageId: "Msg_1856", messageParams: [msgParam]});
 		}
 
 		initClosingTimeSwitch(data:any) {
 			let vm = this;
-			var switchButtons: ItemModel[] = [new ItemModel('1', data.closingTime.reservationFrameName1)]
+			let closingTime2Exists:boolean = false;
+
+			// Init options
+			let switchButtons: ItemModel[] = [new ItemModel(1, data.closingTime.reservationFrameName1)]
 			if (data.closingTime.reservationFrameName2.length > 0) {
-				switchButtons.push(new ItemModel('2', data.closingTime.reservationFrameName2));
+				switchButtons.push(new ItemModel(2, data.closingTime.reservationFrameName2));
+				closingTime2Exists = true;
 			}
 			vm.closingTimeOptions(switchButtons);
-			if (data.closingTime.selectedClosingTime != undefined){
-				vm.selectedClosingTime(data.closingTime.selectedClosingTime);
+
+			// init selected
+			if (data.closingTime.selectedClosingTime == 2 && closingTime2Exists){
+				vm.selectedClosingTime(2);
+			} else {
+				vm.selectedClosingTime(1);
 			}
 		}
 
@@ -241,7 +317,7 @@ module nts.uk.at.view.kmr004.a {
 				maxRows: 10,
 				tabindex: 3,
 				systemType: tree.SystemType.EMPLOYMENT
-			}
+			};
 
 			$('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
 			   if ($('#tree-grid').getDataList().length <= 0) {
@@ -276,7 +352,6 @@ module nts.uk.at.view.kmr004.a {
 		};
 		
 		showErrorMessage(res: any) {
-			let dfd = $.Deferred<void>();
 			//Return Dialog Error
 			if (!res.businessException) {
 				return;
@@ -286,20 +361,9 @@ module nts.uk.at.view.kmr004.a {
 			nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
 		}
 
-		initConditionListComboBox(data: any) {
+   		saveCharacteristics(){
 			const vm = this;
-			// bento list
-			vm.conditionListCcb(data.menu.map((item) => {
-				return {
-					code: (new Number(item.code)).toString(),
-					name: item.name
-				}
-			}));
-		}
-
-		saveCharacteristics(){
-			const vm = this;
-			var c13sData:Characteristics = new Characteristics();
+			let c13sData:Characteristics = new Characteristics();
 			c13sData.selectedClosingTime = vm.selectedClosingTime();
 			c13sData.outputConditionChecked = vm.outputConditionChecked();
 			c13sData.selectedTab = vm.selectedTab();
@@ -342,70 +406,70 @@ module nts.uk.at.view.kmr004.a {
 		itemExtractCondition: number; // A10_3, A10_4  <-> model().itemExtractCondition
 		isBreakPage: boolean; // A10_5  <-> model().isBreakPage
 	}
-	
-	// define OUTPUT_FORMAT
-	enum OUTPUT_CONDITION {
-		TOTAL = <number> 1,
-		STATEMENT = <number> 2,
-	}
 
-	// define EXTRACT_CONDITION
-	enum EXTRACT_CONDITION {
-		UNSPECIFIED = <number> -1,
-		MORE_THAN_1_PRODUCT = <number> 0,
-		ALL = <number> 4,
-		ORDERED = <number> 1,
-		UN_ORDERED = <number> 2
-	}
+    // define OUTPUT_FORMAT
+    enum OUTPUT_CONDITION {
+        TOTAL = <number> 1,
+        STATEMENT = <number> 2,
+    }
 
-	class OptionModel {
-		id: number;
-		name: string;
+    // define EXTRACT_CONDITION
+    enum EXTRACT_CONDITION {
+        UNSPECIFIED = <number> -1,
+        ALL = <number> 4,
+        ORDERED = <number> 1,
+        UN_ORDERED = <number> 2
+    }
 
-		constructor(id: number, name: string) {
-			this.id = id;
-			this.name = name;
-		}
-	}
+    class OptionModel {
+        id: number;
+        name: string;
 
-	class ItemModel {
-		code: string;
-		name: string;
+        constructor(id: number, name: string) {
+            this.id = id;
+            this.name = name;
+        }
+    }
 
-		constructor(code: string, name: string) {
-			this.code = code;
-			this.name = name;
-		}
-	}
+    class ItemModel {
+        code: number;
+        name: string;
 
-	class OutputCondition{
-		workplaceIds: KnockoutObservableArray<string>;
-		workLocationCodes: KnockoutObservableArray<string>;
-		period: KnockoutObservable<any>;
-		reservationClosingTimeFrame: KnockoutObservable<number>;
-		totalTitle: KnockoutObservable<string>;
-		detailTitle: KnockoutObservable<string>;
-		totalExtractCondition: KnockoutObservable<number>;
-		itemExtractCondition: KnockoutObservable<number>;
-		isBreakPage: KnockoutObservable<boolean>;
-		frameNo: KnockoutObservable<number>;
-		extractionConditionChecked: KnockoutObservable<boolean>;
+        constructor(code: number, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
 
-		constructor(){
-			this.workplaceIds = ko.observableArray([]);
-			this.workLocationCodes = ko.observableArray([]);
-			this.period = ko.observable({
-				 startDate: formatDate( new Date(), 'yyyy/MM/dd'),
-				endDate: formatDate( new Date(), 'yyyy/MM/dd')
-			});
-			this.reservationClosingTimeFrame = ko.observable(1); // A4_3, A4_4
-			this.totalTitle = ko.observable(""); // A5_2
-			this.detailTitle = ko.observable(""); // A5_3
-			this.totalExtractCondition = ko.observable(EXTRACT_CONDITION.ORDERED);
-			this.itemExtractCondition = ko.observable(EXTRACT_CONDITION.ALL);
-			this.isBreakPage = ko.observable(false);
-			this.frameNo = ko.observable(-1);
-			this.extractionConditionChecked = ko.observable(false);
-		};
-	}
+    class OutputCondition{
+        workplaceIds: KnockoutObservableArray<string>;
+        workLocationCodes: KnockoutObservableArray<string>;
+        period: KnockoutObservable<any>;
+        reservationClosingTimeFrame: KnockoutObservable<number>;
+        totalTitle: KnockoutObservable<string>;
+        detailTitle: KnockoutObservable<string>;
+        totalExtractCondition: KnockoutObservable<number>;
+        itemExtractCondition: KnockoutObservable<number>;
+        isBreakPage: KnockoutObservable<boolean>;
+        frameNo: KnockoutObservable<number>;
+        extractionConditionChecked: KnockoutObservable<boolean>;
+
+        constructor(){
+            this.workplaceIds = ko.observableArray([]);
+            this.workLocationCodes = ko.observableArray([]);
+            this.period = ko.observable({
+                startDate: formatDate( new Date(), 'yyyy/MM/dd'),
+                endDate: formatDate( new Date(), 'yyyy/MM/dd')
+            });
+            this.reservationClosingTimeFrame = ko.observable(1); // A4_3, A4_4
+            this.totalTitle = ko.observable(""); // A5_2
+            this.detailTitle = ko.observable(""); // A5_3
+            this.totalExtractCondition = ko.observable(EXTRACT_CONDITION.ORDERED);
+            this.itemExtractCondition = ko.observable(EXTRACT_CONDITION.ALL);
+            this.isBreakPage = ko.observable(false);
+            this.frameNo = ko.observable(-1);
+            this.extractionConditionChecked = ko.observable(false);
+        };
+    }
+
 }

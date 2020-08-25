@@ -91,6 +91,11 @@ public class ReservationConfirmationListScreenQuery {
         return bentoList.stream().map(item -> {
             BentoItemDto bentoItemDto = new BentoItemDto();
             bentoItemDto.setCode(item.getFrameNo());
+			if (item.getWorkLocationCode().isPresent()) {
+				bentoItemDto.setLocationCode(item.getWorkLocationCode().get().v());
+			} else {
+				bentoItemDto.setLocationCode(null);
+			}
             bentoItemDto.setName(item.getName().v());
             return bentoItemDto;
         }).collect(Collectors.toList());
