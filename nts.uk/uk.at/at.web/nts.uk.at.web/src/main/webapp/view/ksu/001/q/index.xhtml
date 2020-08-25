@@ -84,13 +84,13 @@
 											<td
 												data-bind="visible: $parent.check, with: $parent.yearmontheditor"><input
 												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 118px; height: 20px;"
-												data-bind="ntsNumberEditor: {
+												data-bind="ntsTimeEditor: {
 													value: $parent.value,
 													constraint: 'ExtBudgetTime',
 													option: option,
 													required: false,
-													enable: false,
-													readonly: true}" /></td>
+													enable: true,
+													readonly: false}" /></td>
 											<td
 												data-bind="visible: $parent.check1, with: $parent.currencyeditor"><input
 												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 118px; height: 20px;"

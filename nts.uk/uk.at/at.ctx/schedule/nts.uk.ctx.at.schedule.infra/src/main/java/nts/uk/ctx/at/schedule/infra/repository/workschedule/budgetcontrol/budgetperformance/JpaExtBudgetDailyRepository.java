@@ -115,7 +115,7 @@ public class JpaExtBudgetDailyRepository extends JpaRepository implements ExtBud
 		}
 		this.getEntityManager().createQuery(DELETE)
 						.setParameter("targetID", targetID)
-						.setParameter("itemCd", itemCode)
+						.setParameter("itemCd", itemCode.v())
 						.setParameter("ymd", ymd)
 						.executeUpdate();
 	}
