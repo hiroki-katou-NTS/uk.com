@@ -77,9 +77,6 @@ module nts.uk.at.view.kdl020.a.screenModel {
                     self.selectedName(_.find(self.employeeList(), ['code', newCode]).name);
                     block.invisible();
                     service.changeID(changeIDParam).done((data) => {
-                      data.reNumAnnLeave= (new ReNumAnnLeaReferenceDate(
-                        
-                        ),null,null);
                         self.changeData(data);
                     }).fail((error) => {
                         dialog({ messageId: error.messageId });
@@ -104,18 +101,6 @@ module nts.uk.at.view.kdl020.a.screenModel {
                 baseDate: self.baseDate(),
                 employeeIds: data.employeeIds
             }
-            // mock data
-            startParam.employeeIds = [
-              'ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570',
-              '546ed947-58b7-4c0a-bf2f-862b007fe689',
-              '1D75CF02-6843-4918-BB52-20B28E4B6374',
-              '441E74A5-A43D-4377-A869-0EE10FE45E48',
-              '4420a05e-2aef-4b93-889d-f98f4bb53517',
-              '90056534-0687-49c4-934b-da6ddbdbce6b',
-              '484c4aad-46f7-4439-8305-040e4f8eb3cf',
-              'd26b5cab-f788-47a6-bd5d-6cb4be9d1e8d',
-              'd2de28c4-1ef7-4a72-adfb-8e2c87f12336'
-            ];
             block.invisible();
             service.startPage(startParam).done((data: IAnnualHoliday) => {
                 if (data) {
@@ -222,31 +207,6 @@ module nts.uk.at.view.kdl020.a.screenModel {
         }
       
         changeData(data: IAnnualHoliday) {
-        let mockData = {
-            "annualLeaveRemainNumberExport": null,
-            "annualLeaveGrantExports": [{
-            "grantDate":'25/02/2020',
-            "grantNumber":20,
-            "daysUsedNo":15,
-            "usedMinutes":40,
-            "remainDays":2,
-            "remainMinutes":120,
-            "deadline":'25/07/2020',
-            "expiredInCurrentMonthFg":true
-          },
-          {"grantDate":'25/02/2020',
-          "grantNumber":20,
-          "daysUsedNo":15,
-          "usedMinutes":40,
-          "remainDays":2,
-          "remainMinutes":120,
-          "deadline":'25/07/2020',
-          "expiredInCurrentMonthFg":false
-          },
-        ],
-            "annualLeaveManageInforExports": []
-          }
-          data.reNumAnnLeave = mockData;
             let self = this;
             self.reNumAnnLeave(new ReNumAnnLeaReferenceDate(data.reNumAnnLeave));
             self.displayAnnualLeaveGrant(new DisplayAnnualLeaveGrant(data.annualLeaveGrant[0]));
