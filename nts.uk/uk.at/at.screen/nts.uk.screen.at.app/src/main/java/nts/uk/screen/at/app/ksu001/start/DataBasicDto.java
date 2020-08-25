@@ -1,13 +1,19 @@
 package nts.uk.screen.at.app.ksu001.start;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforDto;
 
 /**
  * @author laitv
  */
-@Value
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class DataBasicDto {
 	public GeneralDate startDate; // ・期間 A3_1_2
 	public GeneralDate endDate;   // ・期間 A3_1_4
@@ -25,6 +31,4 @@ public class DataBasicDto {
 		this.designation = resultStep1.displayInforOrganization.getDesignation();
 		this.targetOrganizationName = resultStep1.displayInforOrganization.getDisplayName();
 	}
-	
-	
 }
