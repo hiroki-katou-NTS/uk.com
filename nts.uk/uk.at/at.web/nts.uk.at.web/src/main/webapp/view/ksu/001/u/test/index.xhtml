@@ -1,28 +1,19 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
-    <ui:composition template="../../../../../master/base.xhtml">
-    <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 1200, height: 700 };</script>     
-        <com:scriptfile path="vm.js" />         
-    </ui:define>
-    <ui:define name="content">
-        <div id="contents-area" class="fixed-flex-layout">
-            <div style="margin: 0 auto;">
-                <button  class="proceed" tabindex="2" data-bind="click: openModal">Click me
-                    !</button>
-            </div>
-        </div>
-
-    </ui:define>
-    
-</ui:composition>
-   
-
+	<ui:composition template="../../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />		
+			<script>var dialogSize = { width: 1200, height: 700 };</script>
+			<com:scriptfile path="vm.js" />
+		</ui:define>
+		<ui:define name="content">			
+			<div id="functions-area">
+				<button class="proceed" tabindex="2" data-bind="click: openDialogLA">Open
+					U !</button>			
+				</div>
+		</ui:define>
+	</ui:composition>
 </body>
-
-
 </html>

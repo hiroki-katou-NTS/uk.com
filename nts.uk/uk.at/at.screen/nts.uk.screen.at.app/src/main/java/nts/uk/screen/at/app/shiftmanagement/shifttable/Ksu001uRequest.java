@@ -1,4 +1,4 @@
-package nts.uk.screen.at.ws.shiftmanagement.shifttable;
+package nts.uk.screen.at.app.shiftmanagement.shifttable;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

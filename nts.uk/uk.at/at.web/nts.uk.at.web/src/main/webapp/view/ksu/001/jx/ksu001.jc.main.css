@@ -1,4 +1,5 @@
 #contents-area { margin-left: 25px; }
+#contents-area .left-column { float: left; width: 250px; }
 
 .table-calendar {
 	display: flex;
@@ -49,7 +50,8 @@
 .table-calendar .button-add-day {
 	position: relative;
 	width: 75px;
-	margin-top: 11px;
+	margin-top: 23px;
+	margin-bottom: 25px;
 }
 .table-calendar .day-arrow {
 	content: '';

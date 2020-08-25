@@ -10,6 +10,7 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
         listShiftComboBox: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedShift: KnockoutObservable<string> = ko.observable('');
         listShift: KnockoutObservableArray<any> = ko.observableArray([]);
+        isListShiftFull: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             let self = this;
@@ -17,24 +18,23 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
                 { 'code': 'Code1', 'name': 'Code 1' },
                 { 'code': 'Code2', 'name': 'Code 2' },
             ]);
+            this.isListShiftFull = ko.computed(function() {
+                return self.listShift().length >= 31;
+            }); 
         }
         
         addDay(): void {
-            this.listShift.push({ content: this.selectedShift()
-            
-            
-            });
+            if (!this.isListShiftFull())
+                this.listShift.push({ content: this.selectedShift() });
         }
         
         deleteDay(item): void {
-            console.log("Deteled");
             this.listShift.remove(item);
         }
 
         /** Clear data in table */
         clearData(): void {
-            let self = this;
-            self.dataSource([]);
+            this.dataSource([]);
         }
 
         /** Decision */
@@ -46,6 +46,5 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
         closeDialog(): void {
             nts.uk.ui.windows.close();
         }
-
     }
 }
