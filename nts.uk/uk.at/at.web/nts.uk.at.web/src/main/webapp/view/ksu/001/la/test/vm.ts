@@ -15,6 +15,7 @@ module test {
                 return dfd.promise();
             }
 
+
             public openDialogLA(): void {
                 let self = this;
                 nts.uk.ui.windows.setShared("baseDate", moment(self.date()).format('YYYY/MM/DD'));
