@@ -13,6 +13,7 @@ module nts.uk.at.view.kmp001.a {
 			</div>
 			<input id="card-input" class="ip-stamp-card"
 				data-bind="ntsTextEditor: {
+					name:'#[KMP001_30]',
 					value: textInput,
 					constraint: $component.constraint,
 					enabled: true,
@@ -30,6 +31,7 @@ module nts.uk.at.view.kmp001.a {
 				</div>
 				<input id="card-input" class="ip-stamp-card"
 					data-bind="ntsTextEditor: {
+						name:'#[KMP001_30]',
 						value: stampNumber,
 						constraint: $component.constraint,
 						enabled: true,
