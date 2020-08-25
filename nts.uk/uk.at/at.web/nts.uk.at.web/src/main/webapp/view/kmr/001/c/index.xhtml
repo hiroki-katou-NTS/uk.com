@@ -20,11 +20,11 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!--C1_1-->
-				<a class="goback" tabindex="1" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }, text: $i18n('KMR001_2')"></a>
+				<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }, text: $i18n('KMR001_2')"></a>
 				<!--C1_2-->
-				<button class="proceed sidebar-button" data-bind="click: registerBentoMenu,text: $i18n('KMR001_4'),  enable: $root.errors.isEmpty &amp;&amp; vm.isLasted()"></button>
+				<button tabindex="1" class="proceed sidebar-button" data-bind="click: registerBentoMenu,text: $i18n('KMR001_4'),  enable: $root.errors.isEmpty &amp;&amp; vm.isLasted()"></button>
 				<!--C1_3-->
-				<button class="danger" data-bind="click: deleteBento, text: $i18n('KMR001_7'), enable: vm.isLasted()"></button>
+				<button class="danger" tabindex="2" data-bind="click: deleteBento, text: $i18n('KMR001_7'), enable: vm.isLasted()"></button>
 			</div>
 			<div class="kmr001-c" id="contents-area">
 				<div class="kmr001-c-left-content">
@@ -40,7 +40,7 @@
 						<span class="label" data-bind="text: end"></span>
 						<!--C3_4-->
 						<div class="btn-content" style="display: inline-block">
-							<button class="small" id ="C3_4" data-bind="click: openConfigHisDialog,
+							<button tabindex="3" class="small" id ="C3_4" data-bind="click: openConfigHisDialog,
 							disable: false, text: $i18n('KMR001_39')"></button>
 						</div>
 					</div>
@@ -48,7 +48,7 @@
 					<!--C4_1-->
 					<div data-bind="ntsPanel:{width: '400px', height: '400px', direction: 'right', showIcon: true, visible: true}">
 						<!--search box-->
-						<div class="search-box" tabindex="2"
+						<div class="search-box" tabindex="-1"
 							 data-bind="ntsSearchBox: {
 							 searchMode: 'filter',
 							 targetKey:  'id',
@@ -62,7 +62,7 @@
 							 }"
 						/>
 						<!--C4_2-->
-						<div data-bind="if: !!ko.unwrap(columnBento).length">
+						<div tabindex="4" data-bind="if: !!ko.unwrap(columnBento).length">
 							<table id="approver-job-list" data-bind="ntsGridList: {
 							height: 350,
 							dataSource: itemsBento,
@@ -95,9 +95,9 @@
 							</td>
 							<td>
 								<!--C6_2-->
-								<input class="data-control kmr001_42" data-bind="ntsTextEditor: {
+								<input tabindex="5" class="data-control kmr001_42" data-bind="ntsTextEditor: {
 								value: bentoName,
-								name: 'KMR001_42',
+								name: $i18n('KMR001_42'),
 								required: true,
 								constraint: 'BentoName',
 								enable: vm.isLasted()
@@ -111,10 +111,11 @@
 							</td>
 							<td>
 								<!--C11_2-->
-								<div class="data-control" data-bind="ntsCheckBox: {
+								<div tabindex="6" class="data-control" data-bind="ntsCheckBox: {
 										checked: reservationAtr1,
 										text: vm.reservationFrameName1(),
-										enable: vm.isLasted()
+										enable: vm.isLasted(),
+										readonly: vm.readOnly1()
 									}"
 								/>
 
@@ -130,10 +131,11 @@
 							<td/>
 							<td>
 								<!--C11_4-->
-								<div class="data-control" data-bind="ntsCheckBox: {
+								<div tabindex="7" class="data-control" data-bind="ntsCheckBox: {
 										checked: reservationAtr2,
 										text: vm.reservationFrameName2(),
-										enable: vm.isLasted()
+										enable: vm.isLasted(),
+										readonly: vm.readOnly2()
 									}"
 								/>
 
@@ -157,12 +159,12 @@
 							</td>
 							<td style="width: 0">
 								<!--C9_2-->
-								<input class="data-control" id="kmr001-c-9-2" data-bind="ntsTextEditor: {
-									name: 'KMR001_46',
+								<input tabindex="8" class="data-control" id="kmr001-c-9-2" data-bind="ntsTextEditor: {
+									name: $i18n('KMR001_46'),
 									value: unitName,
 									required: true,
 									constraint: 'BentoReservationUnitName',
-									enable: vm.isLasted()
+									enable: vm.isLasted(),
 								}" />
 							</td>
 						</tr>
@@ -177,8 +179,8 @@
 							</td>
 							<td class="kmr001_44">
 								<!--C7_2-->
-								<input id="kmr001-c-7-2" data-bind="ntsNumberEditor: {
-								name: 'KMR001_44',
+								<input tabindex="9" id="kmr001-c-7-2" data-bind="ntsNumberEditor: {
+								name: $i18n('KMR001_44'),
 								constraint: 'BentoAmount',
 								value: price1,
 								required: true,
@@ -201,15 +203,14 @@
 							</td>
 							<td class="kmr001_44">
 								<!--C8_2-->
-								<input class="data-control" id="kmr001-c-8-2" data-bind="ntsNumberEditor: {
+								<input tabindex="10" class="data-control" id="kmr001-c-8-2" data-bind="ntsNumberEditor: {
 									constraint: 'BentoAmount',
 									value: price2,
-									required: true,
 									option: {
 											decimallength: 2,
 											currencyformat: 'JPY'
 										},
-									name: 'KMR001_45',
+									name: $i18n('KMR001_45'),
 									enable: vm.isLasted()
 								}" />
 							</td>
@@ -232,7 +233,7 @@
 								</td>
 								<td>
 									<!--C15_2-->
-									<div class="kmr001_50" id="combo-box" data-bind="ntsComboBox: {
+									<div tabindex="11" class="kmr001_50" id="combo-box" data-bind="ntsComboBox: {
 									width: '200px',
 									name: 'KMR001_50',
 									options: vm.workLocationList,

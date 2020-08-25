@@ -57,6 +57,9 @@ module nts.uk.at.kmr001.c {
         operationDistinction: KnockoutObservable<number> = ko.observable(null);
 
         isLasted: KnockoutObservable<boolean> = ko.observable(true);
+
+        readOnly1: KnockoutObservable<boolean> = ko.observable(false);
+        readOnly2: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             super();
             const vm = this;
@@ -326,13 +329,28 @@ module nts.uk.at.kmr001.c {
                         vm.selectedWorkLocationCode(vm.workLocationList()[0].id);
                         vm.$blockui('clear');
                     }
+                    // vm.model().reservationAtr1.subscribe(data => {
+                    //     if( !data && !vm.model().reservationAtr2()) {
+                    //         vm.readOnly1(true);
+                    //         vm.model().reservationAtr1(true);
+                    //         return;
+                    //     }
+                    //     vm.readOnly1(false);
+                    //     vm.readOnly2(false);
+                    // });
+                    // vm.model().reservationAtr2.subscribe(data => {
+                    //     if( !data && !vm.model().reservationAtr1() ) {
+                    //         vm.readOnly2(true);
+                    //         vm.model().reservationAtr2(true);
+                    //         return;
+                    //     }
+                    //     vm.readOnly1(false);
+                    //     vm.readOnly2(false);
+                    // })
                 });
                 vm.selectedWorkLocationCode.subscribe((data) => {
                     vm.model().workLocationCode(data);
                 });
-                vm.end.subscribe(data => {
-                    console.log(data)
-                })
             }).always(() => this.$blockui("clear"));
         }
     }
