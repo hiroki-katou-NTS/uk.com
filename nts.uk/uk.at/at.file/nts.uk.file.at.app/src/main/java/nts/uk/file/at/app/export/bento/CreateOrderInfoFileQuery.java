@@ -326,7 +326,7 @@ public class CreateOrderInfoFileQuery {
                         closedName,placeOfWorkInfoDtos));
             }
         }
-        return result;
+        return result.stream().sorted(Comparator.comparing(DetailOrderInfoDto::getReservationDate)).collect(Collectors.toList());
     }
 
     /**
@@ -384,7 +384,7 @@ public class CreateOrderInfoFileQuery {
                     bentoTemp.getName().v(),bentoTemp.getFrameNo(), bentoTemp.getUnit().v(),listTemp
             ));
         }
-        return result;
+        return result.stream().sorted(Comparator.comparing(BentoReservedInfoDto::getFrameNo)).collect(Collectors.toList());
     }
 
     private BentoReservationInfoForEmpDto createBentoReservationInfoForEmpDto(String sid, String stampCardNo, EmployeeBasicInfoExport employeeBasicInfoExport){
@@ -424,13 +424,16 @@ public class CreateOrderInfoFileQuery {
                     bentoTotalDtoLst.add(bentoTotalDto);
                     totalFee += bentoTotalDto.getAmount() * bentoTotalDto.getQuantity();
                 }
+                bentoTotalDtoLst = bentoTotalDtoLst.stream()
+                        .sorted(Comparator.comparing(BentoTotalDto::getFrameNo))
+                        .collect(Collectors.toList());
                 result.add(new TotalOrderInfoDto(
                         item.getReservationDate().getDate(), item.getRegisterInfor().getReservationCardNo(), totalFee,
                         bentoTotalDtoLst,closedName,workInfoDtos
                 ));
             }
         }
-        return result;
+        return result.stream().sorted(Comparator.comparing(TotalOrderInfoDto::getReservationDate)).collect(Collectors.toList());
     }
 
     private BentoTotalDto createBentoTotalDto(Bento bento, List<BentoReservationDetail> reservation){

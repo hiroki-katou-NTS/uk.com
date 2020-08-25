@@ -57,6 +57,9 @@ module nts.uk.at.kmr001.c {
         operationDistinction: KnockoutObservable<number> = ko.observable(null);
 
         isLasted: KnockoutObservable<boolean> = ko.observable(true);
+
+        readOnly1: KnockoutObservable<boolean> = ko.observable(false);
+        readOnly2: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             super();
             const vm = this;
@@ -71,6 +74,7 @@ module nts.uk.at.kmr001.c {
                 }
             });
             vm.getBentoMenu(null);
+
 
         }
 
@@ -159,6 +163,10 @@ module nts.uk.at.kmr001.c {
             model = this.model();
             $(".nts-input").trigger("validate");
             if (nts.uk.ui.errors.hasError()){
+                return;
+            }
+            if(!vm.model().reservationAtr2() && !vm.model().reservationAtr1()) {
+                $('.reservationAtr').ntsError('set', {messageId:'MsgB_1',messageParams:[vm.$i18n('KMR001_47')]});
                 return;
             }
             vm.$blockui("invisible");
@@ -326,13 +334,28 @@ module nts.uk.at.kmr001.c {
                         vm.selectedWorkLocationCode(vm.workLocationList()[0].id);
                         vm.$blockui('clear');
                     }
+                    // vm.model().reservationAtr1.subscribe(data => {
+                    //     if( !data && !vm.model().reservationAtr2()) {
+                    //         vm.readOnly1(true);
+                    //         vm.model().reservationAtr1(true);
+                    //         return;
+                    //     }
+                    //     vm.readOnly1(false);
+                    //     vm.readOnly2(false);
+                    // });
+                    // vm.model().reservationAtr2.subscribe(data => {
+                    //     if( !data && !vm.model().reservationAtr1() ) {
+                    //         vm.readOnly2(true);
+                    //         vm.model().reservationAtr2(true);
+                    //         return;
+                    //     }
+                    //     vm.readOnly1(false);
+                    //     vm.readOnly2(false);
+                    // })
                 });
                 vm.selectedWorkLocationCode.subscribe((data) => {
                     vm.model().workLocationCode(data);
                 });
-                vm.end.subscribe(data => {
-                    console.log(data)
-                })
             }).always(() => this.$blockui("clear"));
         }
     }
@@ -378,7 +401,18 @@ module nts.uk.at.kmr001.c {
             this.price1(price1);
             this.price2(price2);
             this.workLocationCode(workLocationCode);
+            this.reservationAtr1.subscribe(data => {
+                if(data) {
+                    $('.reservationAtr').ntsError('clear');
+                }
+            });
+            this.reservationAtr2.subscribe(data => {
+                if(data) {
+                    $('.reservationAtr').ntsError('clear');
+                }
+            })
         }
+
     }
 
     class WorkLocation{

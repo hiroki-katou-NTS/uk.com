@@ -356,7 +356,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
 
         if (dataRow.getBentoTotalDto().size() == 0){
             //copy Footer
-            copyRowFromTemplateSheet(cells,template,0,startIndex + 1);
+            copyRowFromTemplateSheet(cells,template,3,startIndex + 1);
 
             cells.get(startIndex + dataRow.getBentoTotalDto().size(), 5).setValue(TOTAL_LABEL);
             startIndex += 4;
@@ -371,7 +371,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         startIndex += dataRow.getBentoTotalDto().size();
         copyRowFromTemplateSheet(cells, template, 3, startIndex);
         cells.get(startIndex, 5).setValue(TOTAL_LABEL);
-        cells.get(startIndex, 6).setValue(total);
+        cells.get(startIndex, 6).setValue(dataRow.getTotalFee());
         startIndex += 4 - 1 ;
         // page break
         breakPage("J", startIndex - 1, worksheet);
@@ -380,14 +380,14 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
 
     private int setBodyDataTotalFormat(Cells cells, int startIndex, int index, BentoTotalDto bentoTotalDto, double height, Worksheet template) {
         if (index % 2 == 0){
-            copyRowFromTemplateSheet(cells,template, 2, startIndex + index);
+            copyRowFromTemplateSheet(cells,template, 1, startIndex + index);
         }
         else{
-            copyRowFromTemplateSheet(cells,template, 1, startIndex + index);
+            copyRowFromTemplateSheet(cells,template, 2, startIndex + index);
         }
 
         int amount = bentoTotalDto.getAmount() * bentoTotalDto.getQuantity();
-        cells.get(startIndex + index, 3).setValue(index + 1);
+        cells.get(startIndex + index, 3).setValue(bentoTotalDto.getFrameNo());
         cells.get(startIndex + index, 5).setValue(bentoTotalDto.getName());
         cells.get(startIndex + index, 6).setValue(amount);
         cells.get(startIndex + index, 7).setValue(bentoTotalDto.getQuantity());
@@ -458,9 +458,9 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
                     copyRowFromTemplateSheet(cells, tempSheet, 3, startIndex);
                 else
                     copyRowFromTemplateSheet(cells, tempSheet, 4, startIndex);
-                for (int i = 0; i < mod; ++i) {
+                for (int i = 0; i < mod; ++i)
                     total += setBodyDataDetailFormat(cells, startIndex + i, i * 4, bodyData.get(modIndex + i));
-                }
+
                 startIndex += 1;
             }
 
