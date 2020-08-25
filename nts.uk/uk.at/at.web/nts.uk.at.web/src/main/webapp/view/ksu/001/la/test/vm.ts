@@ -17,7 +17,7 @@ module test {
 
             public openDialogLA(): void {
                 let self = this;
-                nts.uk.ui.windows.setShared("baseDate", self.date);
+                nts.uk.ui.windows.setShared("baseDate", moment(self.date()).format('YYYY/MM/DD'));
                 self.currentScreen = nts.uk.ui.windows.sub.modal("/view/ksu/001/la/index.xhtml");
             }   
             // public openDialogU(): void {
