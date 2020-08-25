@@ -581,6 +581,14 @@ module nts.uk.at.view.ksm005.a {
 			        }
 		        });
 	        }
+
+	        private showDialogKDL023(): void {
+		        let self = this;
+                nts.uk.ui.windows.sub.modal('/view/kdl/023/b/index.xhtml').onClosed(() => {
+                    let dto = nts.uk.ui.windows.getShared('returnedData');
+                    console.log(dto);
+                });
+	        }
         }
         
         export class MonthlyPatternModel{
