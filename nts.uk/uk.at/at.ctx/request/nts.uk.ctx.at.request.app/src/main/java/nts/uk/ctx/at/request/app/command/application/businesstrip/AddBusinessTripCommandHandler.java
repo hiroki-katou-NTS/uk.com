@@ -11,6 +11,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewA
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfoOutput;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -18,6 +19,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Stateless
@@ -92,12 +94,20 @@ public class AddBusinessTripCommandHandler extends CommandHandlerWithResult<AddB
 //                application.getEmployeeID(),
 //                dates
 //        );
-
-        // 2-3.新規画面登録後の処理
-        return this.newAfterRegister.processAfterRegister(
-                application.getAppID(),
-                businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSetting(),
-                businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet());
+        Optional<AppTypeSetting> appTypeSet = businessTripInfoOutput
+                .getAppDispInfoStartup()
+                .getAppDispInfoNoDateOutput()
+                .getApplicationSetting()
+                .getAppTypeSettings().stream().filter(i -> i.getAppType()== ApplicationType.BUSINESS_TRIP_APPLICATION)
+                .findFirst();
+        if (appTypeSet.isPresent()) {
+            // 2-3.新規画面登録後の処理
+            return this.newAfterRegister.processAfterRegister(
+                    application.getAppID(),
+                    appTypeSet.get(),
+                    businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet());
+        }
+        return null;
     }
 
 }

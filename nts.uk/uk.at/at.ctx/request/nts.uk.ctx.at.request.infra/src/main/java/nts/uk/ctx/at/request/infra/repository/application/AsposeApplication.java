@@ -23,6 +23,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.service.print.ApplicationGenerator;
 import nts.uk.ctx.at.request.dom.application.common.service.print.ApproverPrintDetails;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfApp;
+import nts.uk.ctx.at.request.infra.repository.application.businesstrip.AposeBusinessTrip;
 import nts.uk.ctx.at.request.infra.repository.application.lateleaveearly.AsposeLateLeaveEarly;
 import nts.uk.ctx.at.request.infra.repository.application.workchange.AsposeWorkChange;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
@@ -41,6 +42,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 
 	@Inject
 	private AsposeLateLeaveEarly asposeLateLeaveEarly;
+
+	@Inject
+	private AposeBusinessTrip aposeBusinessTrip;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, PrintContentOfApp printContentOfApp, ApplicationType appType) {
@@ -86,6 +90,12 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			printBottomKAF000(comboReasonLabel, textReasonLabel, comboReasonContent, textReasonContent, printContentOfApp);
 			break;
 		case BUSINESS_TRIP_APPLICATION:
+			aposeBusinessTrip.printWorkChangeContent(worksheet, printContentOfApp);
+			comboReasonLabel = worksheet.getCells().get("B15");
+			textReasonLabel = worksheet.getCells().get("B18");
+			comboReasonContent = worksheet.getCells().get("D15");
+			textReasonContent = worksheet.getCells().get("D18");
+			printBottomKAF000(comboReasonLabel, textReasonLabel, comboReasonContent, textReasonContent, printContentOfApp);
 			break;
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			break;
@@ -122,7 +132,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case WORK_CHANGE_APPLICATION:
 			return "application/KAF007_template.xlsx";
 		case BUSINESS_TRIP_APPLICATION:
-			return "";
+			return "application/KAF008_template.xlsx";
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			return "";
 		case HOLIDAY_WORK_APPLICATION:
@@ -151,7 +161,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case WORK_CHANGE_APPLICATION:
 			return "KAF007_template.xlsx";
 		case BUSINESS_TRIP_APPLICATION:
-			return "";
+			return "KAF008_template.xlsx";
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			return "";
 		case HOLIDAY_WORK_APPLICATION:
