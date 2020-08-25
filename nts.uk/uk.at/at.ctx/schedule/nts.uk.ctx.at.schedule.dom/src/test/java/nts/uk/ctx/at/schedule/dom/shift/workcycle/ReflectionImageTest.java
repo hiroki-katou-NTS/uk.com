@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(JMockit.class)
 public class ReflectionImageTest {
@@ -22,6 +23,16 @@ public class ReflectionImageTest {
 
         ReflectionImage target = new ReflectionImage(new HashMap<>());
         NtsAssert.invokeGetters(target);
+    }
+
+    @Test
+    public void seters() {
+        ReflectionImage target = new ReflectionImage();
+        RefImageEachDay refImageEachDay = new RefImageEachDay();
+        HashMap<GeneralDate, RefImageEachDay> mapTest = new HashMap<>();
+        mapTest.put(GeneralDate.today(), refImageEachDay);
+        target.setDay(mapTest);
+        assertThat(mapTest.equals(target.getDay()));
     }
 
     @Test
@@ -40,6 +51,7 @@ public class ReflectionImageTest {
         ReflectionImage target = new ReflectionImage();
         target.getDay().put(GeneralDate.today(),refImageEachDay);
         target.addByWeeklyWorking(GeneralDate.today(),workInformation);
+        assertThat(target.getDay()).isNotEmpty();
     }
 
     @Test
@@ -58,6 +70,7 @@ public class ReflectionImageTest {
         ReflectionImage target = new ReflectionImage();
         target.getDay().put(GeneralDate.today(),refImageEachDay);
         target.addHolidays(GeneralDate.today(),workInformation);
+        assertThat(target.getDay()).isNotEmpty();
     }
 
     @Test
@@ -85,7 +98,6 @@ public class ReflectionImageTest {
         RefImageEachDay refImageEachDay = new RefImageEachDay();
         ReflectionImage target = new ReflectionImage();
         target.getDay().put(GeneralDate.max(),refImageEachDay);
-
         assertThat(target.getListRefOrdByDate().size()).isEqualTo(1);
     }
 
