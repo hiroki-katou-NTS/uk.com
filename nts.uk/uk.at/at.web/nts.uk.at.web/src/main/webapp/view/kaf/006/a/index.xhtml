@@ -36,7 +36,8 @@
 				<!-- A1_8: 積休参照ボタン  -->
 				<button data-bind = "click: openKDL029">#{i18n.getText('KAF006_68')}</button>
 				<!-- A1_3: 代休参照ボタン  -->
-				<button data-bind = "click: openKDL005">#{i18n.getText('KAF006_3')}</button>
+        <button data-bind = "click: openKDL005">#{i18n.getText('KAF006_3')}</button>
+        <button data-bind = "click: openKDL020Mutil">KDL020Mutil</button>
 				<!--A1_4 登録時にメールを送信する--> 
 				<div class="btnSendMail"
 					data-bind="ntsCheckBox: { checked: checkBoxValue, enable: enableSendMail, text: '#{i18n.getText('KAF006_6')}' },visible: enableSendMail"></div>
