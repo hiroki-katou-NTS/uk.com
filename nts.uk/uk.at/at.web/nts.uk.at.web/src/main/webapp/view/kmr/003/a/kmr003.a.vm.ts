@@ -251,17 +251,27 @@ module nts.uk.at.kmr003.a {
             let self = this;
             let data = $("#grid").mGrid("dataSource");
             _.each(data, (item: ReservationModifyEmployeeDto) => {
-                if (self.isNewMode()) {
+                if (!item.activity) {
+                    self.disableControl(item.key, "reservationMemberCode", true);
+                    self.disableControl(item.key, "reservationMemberName", true);
+                    self.disableControl(item.key, "isDelete", true);
+                    self.disableControl(item.key, "reservationTime", true);
                     self.disableControl(item.key, "ordered", true);
+
+                    self.setBentoInput(item.key, true);
+                } else {
+                    if (self.isNewMode()) {
+                        self.disableControl(item.key, "ordered", true);
+                    }
+                    self.setBentoInput(item.key, item.ordered);
                 }
-                self.setBentoInput(item.key, item.ordered);
             })
         }
 
-        setBentoInput(rowId: any, value: any) {
+        setBentoInput(rowId: any, isDisable: any) {
             let self = this;
             _.forEach(self.headerInfos, (bento: HeaderInfoDto) => {
-                self.disableControl(rowId, bento.key, value);
+                self.disableControl(rowId, bento.key, isDisable);
             })
         }
 
@@ -278,14 +288,16 @@ module nts.uk.at.kmr003.a {
                 dfd = $.Deferred();
             self.$blockui("invisible");
             let param = self.createParamGet();
+            self.datas = [];
             self.$ajax(API.BENTO_RESERVATTIONS, param).done((res: IReservationModifyDto) => {
+                self.dynamicColumns = [];
                 self.closingTimeFrames.removeAll();
+
                 _.forEach(res.bentoClosingTimes, (item: IClosingTimeDto) => {
                     //add A2_8 A2_9 A2_10
                     self.closingTimeFrames.push(new ClosingTimeFrame(item));
                 })
                 self.setClosingTimeTime(self.closingTimeFrameValue());
-                self.dynamicColumns = [];
                 self.headerInfos = _.map(res.bentos, (item: IHeaderInfoDto) => { return new HeaderInfoDto(item); });
                 _.forEach(self.headerInfos, (item: HeaderInfoDto) => {
                     self.dynamicColumns.push({
@@ -312,14 +324,25 @@ module nts.uk.at.kmr003.a {
                     return dto;
                 });
                 self.datas = _.sortBy(self.datas, [(o: ReservationModifyEmployeeDto) => { return o.reservationMemberCode; }]);
+
+                if (!_.isEmpty(res.errors)){
+                    let errors = [];
+                    _.forEach(res.errors, error => {
+                        errors.push({
+                            message: error.message,
+                            messageId: error.messageId,
+                            supplements: {}
+                        })
+                    });
+                    nts.uk.ui.dialog.bundledErrors({ errors: errors }) 
+                }
+            })
+            .fail(err => {
+                self.$dialog.error(err);
+            })
+            .always(() => {
                 $("#grid").mGrid("destroy");
                 self.loadMGrid();
-
-                // UI処理[11]
-                if (_.isEmpty(self.headerInfos)) {
-                    self.$dialog.error({ messageId: "Msg_1604" });
-                }
-            }).always(() => {
                 self.$blockui("clear");;
                 dfd.resolve();
             })
@@ -490,6 +513,8 @@ module nts.uk.at.kmr003.a {
         empFinishs: Array<IEmployeeInfoMonthFinishDto>;
 
         reservationModifyEmps: Array<IReservationModifyEmployeeDto>;
+
+        errors: Array<any>;
     }
 
     // 弁当ヘッダー
@@ -590,7 +615,9 @@ module nts.uk.at.kmr003.a {
             let self = this;
             _.forEach(this.reservationDetails, (item: ReservationModifyDetailDto) => {
                 let header = _.find(headerInfos, (x: HeaderInfoDto) => { return x.frameNo == item.frameNo; });
-                self[header.key] = item.bentoCount;
+                if (header){
+                    self[header.key] = item.bentoCount;
+                }
             })
         }
     }
