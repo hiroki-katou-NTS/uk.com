@@ -2,31 +2,25 @@ package nts.uk.screen.at.app.shift.workcycle;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.function.dom.processexecution.personalschedule.CreationPeriod;
 import nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay.WeeklyWorkDayPattern;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleCode;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.CreateWorkCycleAppImage;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.RefImageEachDay;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.WorkCycleRefSetting;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.algorithm.HolidayWorkTypeService;
 import nts.uk.screen.at.app.ksm003.find.GetWorkCycle;
 import nts.uk.screen.at.app.ksm003.find.WorkCycleDto;
-import nts.uk.screen.at.app.ksm003.find.WorkCyleInfoDto;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
-import nts.uk.ctx.at.shared.dom.worktype.algorithm.HolidayWorkTypeService;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.CreateWorkCycleAppImage;
-import nts.uk.ctx.at.shared.dom.WorkInformation;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,12 +46,13 @@ public class WorkCycleReflectionDialog {
 		String workCycleCode2 = workCycleList.get(0).getCode();
 
 		// 2. 休日系の勤務種類を取得する [Get holiday type of work]
-		List<WorkType> workType = holidayWorkTypeService.acquiredHolidayWorkType();
+		List<WorkType> workTypes = holidayWorkTypeService.acquiredHolidayWorkType();
 
 		// 3. 作成する(Require, 期間, 勤務サイクルの反映設定)
 		// [Create (Require, period, work cycle reflection setting)]
 		// param:require, 作成期間, 設定 [require, creation period, setting]
 		// return: List<一日分の反映イメージ> [List <Image of one day's reflection>]
+		// TODO Where to get data?
 		WorkCycleRefSetting config = new WorkCycleRefSetting(
 				workCycleCode.get(),
 				null,
@@ -73,13 +68,20 @@ public class WorkCycleReflectionDialog {
 		// 4. 出勤・休日系の判定(Require)
 		// paran Require
 		// return: Optional<出勤休日区分>
-		WorkInformationRequire wiRequire = new WorkInformationRequire();
-		workInformation.getWorkStyle(wiRequire);
+		WorkInformationRequireImpl wiRequire = new WorkInformationRequireImpl();
+		Optional<WorkStyle> optWorkStyle = workInformation.getWorkStyle(wiRequire);
 
+		WorkCycleReflectionDto dto = new WorkCycleReflectionDto();
+		dto.setWorkTypes(workTypes);
+		dto.setRefImageEachDayList(refImageEachDayList);
+		dto.setWorkStyle(optWorkStyle.get());
+		dto.setWorkCycleList(workCycleList);
 		return new WorkCycleReflectionDto();
 	}
 
-	private static class WorkInformationRequire implements WorkInformation.Require {
+	private static class WorkInformationRequireImpl implements WorkInformation.Require {
+		@Inject private BasicScheduleService basicScheduleService;
+
 		@Override
 		public Optional<WorkType> findByPK(String workTypeCd) {
 			return Optional.empty();
@@ -102,22 +104,7 @@ public class WorkCycleReflectionDialog {
 
 		@Override
 		public WorkStyle checkWorkDay(String workTypeCode) {
-			return null;
+			return basicScheduleService.checkWorkDay(workTypeCode);
 		}
-	}
-
-	private static class Require implements CreateWorkCycleAppImage.Require {
-
-		public Optional<WeeklyWorkDayPattern> getWeeklyWorkSetting(String cid) {
-			return null;
-		}
-
-		public List<PublicHoliday> getpHolidayWhileDate(String companyId, GeneralDate strDate, GeneralDate endDate){
-			return null;
-		};
-
-		public Optional<WorkCycle> getWorkCycle(String cid, String code){
-			return null;
-		};
 	}
 }
