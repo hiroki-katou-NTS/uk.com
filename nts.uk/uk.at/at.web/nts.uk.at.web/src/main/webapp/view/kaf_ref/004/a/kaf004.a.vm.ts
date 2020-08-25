@@ -174,10 +174,10 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 
                     if (success.errorInfo) {
                         const message: any = {
-                            messageId: "Msg_1707",
+                            messageId: success.errorInfo,
                             messageParams: [ko.toJS(vm.application().appDate)]
                         };
-
+                        vm.arrivedLateLeaveEarlyInfo().info = success.errorInfo;
                         vm.$errors("#kaf000-a-component4-singleDate", message);
                     } else {
                         vm.appDispInfoStartupOutput().appDispInfoWithDateOutput = success.appDispInfoWithDateOutput;
@@ -217,6 +217,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         messageId: error.messageId,
                         messageParams: [ko.toJS(vm.application().appDate)]
                     };
+                    vm.arrivedLateLeaveEarlyInfo().info = error.messageId;
                     vm.$dialog.error(message);
                 }).always(() => vm.$blockui("hide"));
             });
@@ -324,6 +325,16 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 
         register() {
             const vm = this;
+
+            if(vm.arrivedLateLeaveEarlyInfo().info && vm.arrivedLateLeaveEarlyInfo().info === "Msg_1707") {
+                const message: any = {
+                    messageId: vm.arrivedLateLeaveEarlyInfo().info,
+                    messageParams: [ko.toJS(vm.application().appDate)]
+                };
+                vm.$errors("#kaf000-a-component4-singleDate", message);
+
+                return;
+            }
 
             console.log(ko.toJS(vm.application()));
             console.log(vm.workManagement);
