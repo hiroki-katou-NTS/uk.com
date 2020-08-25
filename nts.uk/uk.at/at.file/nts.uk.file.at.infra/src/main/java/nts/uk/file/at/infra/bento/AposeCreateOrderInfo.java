@@ -371,7 +371,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         startIndex += dataRow.getBentoTotalDto().size();
         copyRowFromTemplateSheet(cells, template, 3, startIndex);
         cells.get(startIndex, 5).setValue(TOTAL_LABEL);
-        cells.get(startIndex, 6).setValue(total);
+        cells.get(startIndex, 6).setValue(dataRow.getTotalFee());
         startIndex += 4 - 1 ;
         // page break
         breakPage("J", startIndex - 1, worksheet);
@@ -387,7 +387,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         }
 
         int amount = bentoTotalDto.getAmount() * bentoTotalDto.getQuantity();
-        cells.get(startIndex + index, 3).setValue(index + 1);
+        cells.get(startIndex + index, 3).setValue(bentoTotalDto.getFrameNo());
         cells.get(startIndex + index, 5).setValue(bentoTotalDto.getName());
         cells.get(startIndex + index, 6).setValue(amount);
         cells.get(startIndex + index, 7).setValue(bentoTotalDto.getQuantity());
