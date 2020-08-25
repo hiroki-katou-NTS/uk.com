@@ -101,13 +101,21 @@
                           <!-- A3_6_1 -->
                           <span data-bind="text: deadline"></span>
                         </td>
-                        <td>
-                          <com:ko tag="foreach" bind="usageDateDtos">
-                            <!-- A3_3_1 -->
-                            <span data-bind="text: usageDate"></span>
-                            <!-- A3_3_2 -->
-                            <span data-bind="text: usageTime" class="float-right margin-right-2"></span>
-                          </com:ko>
+                        <td class="none-padding">
+                          <table class="usage-date-table">
+                            <tbody>
+                              <com:ko tag="foreach" bind="usageDateDtos">
+                                <tr>
+                                  <td data-bind="css: (($parent.usageDateDtos().length - 1) !== $index()) ? 'bd-bottom' : 'none-bd-left-right-top'">
+                                    <!-- A3_3_1 -->
+                                    <span data-bind="text: usageDate"></span>
+                                    <!-- A3_3_2 -->
+                                    <span data-bind="text: usageTime" class="float-right margin-right-2"></span>
+                                  </td>
+                                </tr>
+                              </com:ko>
+                            </tbody>
+                          </table>
                         </td>
                       </tr>
                     </com:ko-foreach>

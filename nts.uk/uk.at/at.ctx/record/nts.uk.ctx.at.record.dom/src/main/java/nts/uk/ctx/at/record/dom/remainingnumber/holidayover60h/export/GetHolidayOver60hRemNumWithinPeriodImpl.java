@@ -115,7 +115,7 @@ public class GetHolidayOver60hRemNumWithinPeriodImpl implements GetHolidayOver60
 		{
 			HolidayOver60h holidayOver60h = new HolidayOver60h();
 			holidayOver60h.setUsedTime(new AnnualLeaveUsedTime(180));
-			holidayOver60h.setRemainingTime(new AnnualLeaveRemainingTime(300));
+			holidayOver60h.setRemainingTime(new AnnualLeaveRemainingTime(120));
 			
 			ｈolidayOver60hRemainingNumber.setHolidayOver60hWithMinus(holidayOver60h);
 		}
@@ -123,7 +123,7 @@ public class GetHolidayOver60hRemNumWithinPeriodImpl implements GetHolidayOver60
 		{
 			HolidayOver60h holidayOver60h = new HolidayOver60h();
 			holidayOver60h.setUsedTime(new AnnualLeaveUsedTime(180));
-			holidayOver60h.setRemainingTime(new AnnualLeaveRemainingTime(300));
+			holidayOver60h.setRemainingTime(new AnnualLeaveRemainingTime(120));
 			
 			ｈolidayOver60hRemainingNumber.setHolidayOver60hNoMinus(holidayOver60h);
 		}

@@ -115,14 +115,14 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 					"ca294040-910f-4a42-8d90-2bd02772697c"
 					, GeneralDate.ymd(2020, 5, 10)
 					, "remainTypeId");
-			tmpHolidayOver60hMng.setUseTime(Optional.of(new UseTime(12)));
+			tmpHolidayOver60hMng.setUseTime(Optional.of(new UseTime(40)));
 			tmpHolidayOver60hMng.setCreatorAtr(CreateAtr.APPBEFORE);
 			
 			TmpHolidayOver60hMng tmpHolidayOver60hMng3 = new TmpHolidayOver60hMng(
 					"ca294040-910f-4a42-8d90-2bd02772697c"
 					, GeneralDate.ymd(2020, 5, 14)
 					, "remainTypeId");
-			tmpHolidayOver60hMng3.setUseTime(Optional.of(new UseTime(12)));
+			tmpHolidayOver60hMng3.setUseTime(Optional.of(new UseTime(30)));
 			tmpHolidayOver60hMng3.setCreatorAtr(CreateAtr.APPBEFORE);
 			
 			
@@ -130,7 +130,7 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 					"ca294040-910f-4a42-8d90-2bd02772697c"
 					, GeneralDate.ymd(2020, 8, 10)
 					, "remainTypeId");
-			tmpHolidayOver60hMng1.setUseTime(Optional.of(new UseTime(12)));
+			tmpHolidayOver60hMng1.setUseTime(Optional.of(new UseTime(60)));
 			tmpHolidayOver60hMng1.setCreatorAtr(CreateAtr.RECORD);
 			
 			
@@ -138,7 +138,7 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 					"ca294040-910f-4a42-8d90-2bd02772697c"
 					, GeneralDate.ymd(2020, 7, 11)
 					, "remainTypeId");
-			tmpHolidayOver60hMng2.setUseTime(Optional.of(new UseTime(22)));
+			tmpHolidayOver60hMng2.setUseTime(Optional.of(new UseTime(50)));
 			tmpHolidayOver60hMng2.setCreatorAtr(CreateAtr.FLEXCOMPEN);
 			
 			List<TmpHolidayOver60hMng> result = new ArrayList<TmpHolidayOver60hMng>();

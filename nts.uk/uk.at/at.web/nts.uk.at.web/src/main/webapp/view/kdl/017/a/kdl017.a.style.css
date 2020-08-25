@@ -83,6 +83,9 @@ table.summary-table td:last-child {
 table.table-60h-detail tr td {
   padding: 5px !important;
 }
+table.table-60h-detail tr td.none-padding {
+  padding: 0px !important;
+}
 
 .ml-3 {
   margin-left: 3rem;
@@ -93,4 +96,13 @@ table.table-60h-detail tr td {
 }
 .margin-right-2 {
   margin-right: 2px;
+}
+.usage-date-table {
+  width: 100%;
+}
+table.usage-date-table tr td {
+  border: none;
+}
+.bd-bottom {
+  border-bottom: 1px dotted #CCC !important;
 }

@@ -162,8 +162,6 @@ public class SixtyHourHolidayFinder {
 		// 作成した残数情報をループする
 		remainNumberDetailDtos.stream().forEach(t -> {
 
-			// 紐付け管理を作成
-			PegManagementDto pegManagementDto = new PegManagementDto();
 			if (t.getOccurrenceMonth() != null) {
 				// ループ中の発生月の取得した期間．開始日の日
 				LocalDate startDate = LocalDate.of(t.getOccurrenceMonth().year()
@@ -179,6 +177,8 @@ public class SixtyHourHolidayFinder {
 					if (item.getUsageDate() != null
 					 && (item.getUsageDate().localDate().isAfter(startDate) || item.getUsageDate().localDate().isEqual(startDate))
 					 && (item.getUsageDate().localDate().isBefore(endDate) || item.getUsageDate().localDate().isEqual(endDate))) {
+						// 紐付け管理を作成
+						PegManagementDto pegManagementDto = new PegManagementDto();
 
 						// ・発生年月　＝　ループ中の発生月
 						pegManagementDto.setOccurrenceMonth(t.getOccurrenceMonth());
