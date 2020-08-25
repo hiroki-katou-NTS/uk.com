@@ -18,6 +18,32 @@ module nts.uk.at.view.kmp001 {
 		}
 	}
 
+	export interface IStampCardEdit {
+		stampCardDigitNumber: number;
+		stampCardEditMethod: number;
+	}
+	
+	export class StampCardEdit {
+		stampCardDigitNumber: KnockoutObservable<number> = ko.observable(0);
+		stampCardEditMethod: KnockoutObservable<number> = ko.observable(0);
+		
+		public create(params?: IStampCardEdit) {
+			const self = this;
+
+			if (params) {
+				self.update(params);
+			}
+		}
+
+		public update(params?: IStampCardEdit) {
+			const self = this;
+
+			if (params) {
+				self.stampCardDigitNumber(params.stampCardDigitNumber);
+				self.stampCardEditMethod(params.stampCardEditMethod);
+			}
+		}
+	}
 
 	export interface IModel {
 		code: string;
