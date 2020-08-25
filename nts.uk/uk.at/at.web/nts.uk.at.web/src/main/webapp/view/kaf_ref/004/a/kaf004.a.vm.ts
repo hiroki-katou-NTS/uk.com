@@ -172,7 +172,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     }
                     // Test data
 
-                    if (success.errorInfo) {
+                    if (success.errorInfo && vm.application().prePostAtr() === 1) {
                         const message: any = {
                             messageId: success.errorInfo,
                             messageParams: [ko.toJS(vm.application().appDate)]
@@ -267,6 +267,15 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     vm.isEnable2(false);
                     vm.isEnable3(false);
                     vm.isEnable4(false);
+                    vm.$errors("clear", ["#kaf000-a-component4-singleDate"]);
+                } else {
+                    if(vm.arrivedLateLeaveEarlyInfo().info && vm.arrivedLateLeaveEarlyInfo().info === "Msg_1707") {
+                        const message: any = {
+                            messageId: vm.arrivedLateLeaveEarlyInfo().info,
+                            messageParams: [ko.toJS(vm.application().appDate)]
+                        };
+                        vm.$errors("#kaf000-a-component4-singleDate", message);
+                    }
                 }
             });
 
@@ -326,7 +335,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         register() {
             const vm = this;
 
-            if(vm.arrivedLateLeaveEarlyInfo().info && vm.arrivedLateLeaveEarlyInfo().info === "Msg_1707") {
+            if(vm.application().prePostAtr() === 1 && vm.arrivedLateLeaveEarlyInfo().info && vm.arrivedLateLeaveEarlyInfo().info === "Msg_1707") {
                 const message: any = {
                     messageId: vm.arrivedLateLeaveEarlyInfo().info,
                     messageParams: [ko.toJS(vm.application().appDate)]
