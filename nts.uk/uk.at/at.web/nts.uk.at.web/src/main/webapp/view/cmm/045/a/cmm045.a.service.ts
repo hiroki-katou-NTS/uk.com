@@ -1,7 +1,7 @@
 module cmm045.a.service {
      var paths = {
-        //  getApplicationList: "at/request/application/applist/getapplist",
-         getApplicationList: "at/request/application/applist/getapplisttest",
+       	 getApplicationList: "at/request/application/applist/getapplist",
+         // getApplicationList: "at/request/application/applist/getapplisttest",
 
          getApplicationDisplayAtr: "at/request/application/applist/get/appdisplayatr",
          approvalListApp: "at/request/application/applist/approval",

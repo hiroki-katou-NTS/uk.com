@@ -301,4 +301,12 @@ public interface ApprovalRootStatePub {
      * @param listApprovalPhaseState
      */
     public void insertApp(String appID, GeneralDate appDate, String employeeID, List<ApprovalPhaseStateExport> listApprovalPhaseState);
+    
+    /**
+     * refactor 4
+     * UKDesign.ドメインモデル.NittsuSystem.UniversalK.ワークフロー.Export.[RQ681]申請IDの承認フェーズを取得する.[RQ681]申請IDの承認フェーズを取得する
+     * @param appIDLst 申請ID(List)
+     * @return Map＜ルートインスタンスID、承認フェーズList＞
+     */
+    public Map<String,List<ApprovalPhaseStateExport>> getApprovalPhaseByID(List<String> appIDLst); 
 }

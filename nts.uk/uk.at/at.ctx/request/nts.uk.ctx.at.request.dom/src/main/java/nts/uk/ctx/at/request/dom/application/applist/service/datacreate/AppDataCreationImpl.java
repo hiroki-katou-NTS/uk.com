@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.applist.service.datacreate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import nts.uk.ctx.at.request.dom.application.applist.extractcondition.Applicatio
 import nts.uk.ctx.at.request.dom.application.applist.service.AppInfoMasterOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppListInitialRepository;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationStatus;
+import nts.uk.ctx.at.request.dom.application.applist.service.content.AppContentService;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
@@ -49,6 +51,9 @@ public class AppDataCreationImpl implements AppDataCreation {
 	@Inject
 	private AppListInitialRepository appListInitialRepository;
 	
+	@Inject
+	private AppContentService appContentService;
+	
 	private static final int PC = 0;
 	private static final int MOBILE = 1;
 
@@ -78,13 +83,26 @@ public class AppDataCreationImpl implements AppDataCreation {
 					opApprovalListDisplaySetting.get().getDisplayWorkPlaceName(), 
 					mapEmpInfo, 
 					device);
+			mapEmpInfo.putAll(appInfoMasterOutput.getMapEmpInfo());
 			// 各申請データを作成 ( Tạo data tên application)
-			ListOfApplication listOfApp = null;
-			// 
-			if(listOfApp.getAppContent()!="-1") {
-				// 
+			ListOfApplication listOfApp = appContentService.createEachAppData(
+					app, 
+					companyID, 
+					Collections.emptyList(), 
+					Collections.emptyList(), 
+					Collections.emptyList(), 
+					mode, 
+					opApprovalListDisplaySetting.get(), 
+					appInfoMasterOutput.getListOfApplication(), 
+					mapApproval, 
+					device, 
+					appListExtractCondition);
+			// 申請内容＝-1(Nội dung đơn xin＝-1 )
+			if(listOfApp.getAppContent()=="-1") {
+				// パラメータ：申請一覧情報.申請一覧から削除する(xóa từ list đơn xin)
 				appListInfo.getAppLst().remove(listOfApp);
 			} else {
+				// 取得した申請一覧を申請一覧情報．申請リストにセット(Set AppList đã lấy thành AppListInformation.AppList)
 				appListInfo.getAppLst().add(listOfApp);
 			}
 		}

@@ -236,9 +236,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			appLst = repoApp.getByAppTypeList(checkMySelf.getLstSID(), param.getPeriodStartDate(), param.getPeriodEndDate(), appTypeLst);
 		}
 		// 承認ルートの内容取得
-		Map<String,List<ApprovalPhaseStateImport_New>> mapResult = approvalRootStateAdapter.getApprovalRootContents(
-				appLst.stream().map(x -> x.getAppID()).collect(Collectors.toList()), 
-				companyID);
+		Map<String,List<ApprovalPhaseStateImport_New>> mapResult = approvalRootStateAdapter
+				.getApprovalPhaseByID(appLst.stream().map(x -> x.getAppID()).collect(Collectors.toList()));
 		// 申請一覧リストのデータを作成
 		appListInfo = appDataCreation.createAppLstData(
 				companyID, 
@@ -1098,7 +1097,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		result.setApplicantCD(applicant.getEmployeeCode());
 		// result.setAppReason
 		result.setInputDate(application.getInputDate());
-		result.setOpEntererName(Optional.of(opEnteredPerson.get().getBusinessName()));
+		result.setOpEntererName(opEnteredPerson.map(x -> x.getBusinessName()));
 		result.setOpAppStartDate(application.getOpAppStartDate().map(x -> x.getApplicationDate()));
 		result.setOpAppEndDate(application.getOpAppEndDate().map(x -> x.getApplicationDate()));
 		result.setAppDate(application.getAppDate().getApplicationDate());

@@ -79,8 +79,16 @@ module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
                         vm.application().opAppEndDate(appDate);
                         CommonProcess.checkUsage(true, element, vm);
                     }
-                }).fail((failData: any) => {
-                    
+                }).fail((res: any) => {
+                 	if (res.messageId == "Msg_426") {
+	                    vm.$dialog.error({ messageId: "Msg_426" }).then(() => {
+	                        vm.$jump("com", "/view/ccg/008/a/index.xhtml"); 
+	                    });    
+	                } else {
+	                    vm.$dialog.error(res.message).then(() => {
+	                        vm.$jump("com", "/view/ccg/008/a/index.xhtml"); 
+	                    }); 
+	                }   
                 }).always(() => vm.$blockui("hide"));
                                   
             });
@@ -116,8 +124,16 @@ module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
                         vm.application().opAppEndDate(endDate);
                         CommonProcess.checkUsage(true, element, vm);
                     }
-                }).fail((failData: any) => {
-                    
+                }).fail((res: any) => {
+                	if (res.messageId == "Msg_426") {
+	                    vm.$dialog.error({ messageId: "Msg_426" }).then(() => {
+	                        vm.$jump("com", "/view/ccg/008/a/index.xhtml"); 
+	                    });    
+	                } else {
+	                    vm.$dialog.error(res.message).then(() => {
+	                        vm.$jump("com", "/view/ccg/008/a/index.xhtml"); 
+	                    }); 
+	                }       
                 }).always(() => vm.$blockui("hide"));
             });
         }

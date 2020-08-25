@@ -32,12 +32,12 @@ public class AppListExtractCondition {
 	/**
 	 * 事後出力
 	 */
-	private boolean subsequentOutput;
+	private boolean postOutput;
 	
 	/**
 	 * 事前出力
 	 */
-	private boolean advanceOutput;
+	private boolean preOutput;
 	
 	/**
 	 * 申請一覧区分
@@ -102,8 +102,8 @@ public class AppListExtractCondition {
 	public AppListExtractCondition() {
 		periodStartDate = null;
 		periodEndDate = null;
-		subsequentOutput = false;
-		advanceOutput = false;
+		postOutput = false;
+		preOutput = false;
 		appListAtr = null;
 		appDisplayOrder = ApplicationDisplayOrder.APPLICANT_ORDER;
 		tableWidthRegis = false;

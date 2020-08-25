@@ -32,7 +32,7 @@ public class JpaApprovalListDispSetImpl extends JpaRepository implements Approva
 								EnumAdaptor.valueOf(rec.getInt("REASON_DISP_ATR"), DisplayAtr.class), 
 								EnumAdaptor.valueOf(rec.getInt("PRE_EXCESS_ATR"), DisplayAtr.class), 
 								EnumAdaptor.valueOf(rec.getInt("ATD_EXCESS_ATR"), DisplayAtr.class), 
-								EnumAdaptor.valueOf(rec.getInt("WARNING_DAYS"), WeekNumberDays.class), 
+								new WeekNumberDays(rec.getInt("WARNING_DAYS")), 
 								EnumAdaptor.valueOf(rec.getInt("WKP_DISP_ATR"), NotUseAtr.class));
 				});
 	}
