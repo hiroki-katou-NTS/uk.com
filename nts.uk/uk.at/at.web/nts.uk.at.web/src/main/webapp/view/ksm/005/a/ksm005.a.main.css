@@ -1,0 +1,65 @@
+@CHARSET "UTF-8";
+
+.contents {
+	margin-top: 20px;
+	margin-left: 20px;
+	height: calc(100vh - 181px);
+	overflow: auto;
+}
+
+.monthlyPatternContents {
+	padding: 20px;
+	width: 270px;
+}
+
+.monthlyPatternDetail {
+	margin-left: 50px;
+}
+
+.ksm005a .wrapper-monthy {
+	display: flex;
+	align-items: flex-end;
+	margin-bottom: 10px;
+}
+.ksm005a .wrapper-monthy .monthly-pattern {
+	flex: 1;
+}
+.ksm005a .wrapper-monthy .monthly-button {
+	text-align: right;
+	padding: 0 0 0 15px;
+}
+.ksm005a .panel {
+	margin-top: 10px;
+}
+.ksm005a .panel .panel-header {
+	background: #C5E0B4;
+	padding: 5px 10px;
+	margin: -10px -10px 0 -10px;
+	border-radius: 5px 5px 0 0;
+}
+.ksm005a .panel .panel-body {
+	display: flex;
+	align-items: center;
+	padding-top: 10px;
+}
+.ksm005a .panel .panel-body .button {
+	flex: 0;
+	padding: 0 10px;
+}
+.ksm005a .panel .panel-body .calendar {
+	flex: 1;
+	padding: 0 10px;
+}
+.ksm005a .panel .panel-body .row-flex {
+	display: flex;
+	align-items: center;
+}
+.ksm005a .panel .panel-body .row-flex:first-child {
+	margin-bottom: 5px;
+}
+.ksm005a .panel .panel-body .row-flex div:not(:last-child) {
+	margin-right: 10px;
+}
+.ksm005a .panel .panel-body .row-flex .label {
+	width: 85px
+}

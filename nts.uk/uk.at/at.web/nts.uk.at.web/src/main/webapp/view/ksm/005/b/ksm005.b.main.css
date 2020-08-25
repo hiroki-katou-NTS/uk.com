@@ -11,16 +11,21 @@
 
 .employee_labels {
 	margin-top: 20px;
+	display: flex;
+	align-items: center;
+	border-bottom: solid 1px #b1b1b1;
+	padding-bottom: 10px;
 }
 
 .workday_labels {
 	width: 385px;
 	margin-left: 20px;
-	margin-top: 20px;
+	margin-top: 15px;
 }
 
 .lableData {
 	width: 135px;
+	min-height: 37px;
 }
 
 .contentDetail {
@@ -35,4 +40,10 @@
 #checkOverWriteSetting {
 	height: 30px;
 	display: block;
+}
+.workday_labels .hr {
+	width: 100%;
+	padding: 10px 0 0;
+	clear: left;
+	border-bottom: solid 1px #b1b1b1;
 }

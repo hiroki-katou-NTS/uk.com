@@ -8,7 +8,7 @@
 		<ui:composition template="../../../../master/base.xhtml">
 			<ui:define name="htmlHead">
 				<script>var dialogSize = { width: 1280, height: 780 };</script>
-				<com:stylefile path="ksm005.b.main.css" />
+				<com:stylefile path="ksm005.a.main.css" />
 				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/nts-calendar.css" of="/nts.uk.at.web"/>
 				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.css" of="/nts.uk.at.web"/>
@@ -16,9 +16,9 @@
 				<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.js" of="/nts.uk.at.web"/>
 				<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/calendar-ko-ext.js" of="/nts.uk.at.web"/>
 				<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/locale-all.js" of="/nts.uk.at.web"/>
-				<com:scriptfile path="ksm005.b.start.js" />
-				<com:scriptfile path="ksm005.b.service.js" />
-				<com:scriptfile path="ksm005.b.vm.js" />
+				<com:scriptfile path="ksm005.a.start.js" />
+				<com:scriptfile path="ksm005.a.service.js" />
+				<com:scriptfile path="ksm005.a.vm.js" />
 				<com:ValidatorScript>
 					nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode
 					nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternName
@@ -26,16 +26,16 @@
 			</ui:define>
 			<ui:define name="content">
 				<div id="functions-area">
-					<a tabindex="-1" class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KSM005_7')}</a>
-					
+					<!--<a tabindex="-1" class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KSM005_7')}</a>-->
 					<button tabindex="1" data-bind="click: resetData">#{i18n.getText('KSM005_8')}</button>
 					<button tabindex="2" class="proceed" data-bind="click: saveDataMonthlyPattern">#{i18n.getText('KSM005_9')}</button>
-					<button tabindex="3" data-bind="click: openBatchSettingDialog">#{i18n.getText('KSM005_10')}</button>
+					<button tabindex="3" data-bind="click: openBatchSettingDialog, enable: enableUpdate">#{i18n.getText('KSM005_10')}</button>
+					<button tabindex="4" data-bind="click: openBatchSettingDialog, enable: enableUpdate">#{i18n.getText('KSM005_94')}</button>
 					<button tabindex="5" class="danger" data-bind="enable: enableDelete, click: deleteMonthlyPattern">#{i18n.getText('KSM005_12')}</button>
 				</div>
-				<div class="contents">
+				<div class="contents ksm005a">
 					<div tabindex="-1" class="pull-left monthlyPatternContents caret-right caret-background bg-green">
-						<table tabindex="-1" id="lstMonthlyPattern" 
+						<table tabindex="6" id="lstMonthlyPattern"
 							data-bind="ntsGridList: {								
 							height: 350,
 							dataSource: lstMonthlyPattern,
@@ -43,39 +43,66 @@
 							columns: columnMonthlyPatterns,
 							multiple: false,
 							value: selectMonthlyPattern,
-							rows: 10
-						}"></table>	
+							rows: 10,
+							name: '#[KSM005_15]'
+							}"></table>
 					</div>
 					<div class="pull-left monthlyPatternDetail">
-						<div data-bind="with: monthlyPatternModel">
-							<div class="lableData" 
-								data-name="#{i18n.getText('KSM005_16')}" 
-								data-bind="ntsFormLabel: {required: true, constraint:['MonthlyPatternCode','MonthlyPatternName']}">
-								<label>#{i18n.getText('KSM005_16')}</label>
+						<div class="wrapper-monthy">
+							<div class="monthly-pattern">
+								<div data-bind="with: monthlyPatternModel">
+									<div class="lableData"
+										data-name="#{i18n.getText('KSM005_16')}"
+										data-bind="ntsFormLabel: {required: true, constraint:['MonthlyPatternCode','MonthlyPatternName']}">
+										<label>#{i18n.getText('KSM005_16')}</label>
+									</div>
+									<input tabindex="7" id="inp_monthlyPatternCode"
+										class="nts-input"
+										data-bind="ntsTextEditor: {
+										value: code,
+										constraint: 'MonthlyPatternCode',
+										option: textEditorOption,
+										required: true,
+										name:'#[KSM005_17]',
+										enable: enableMonthlyPatternCode}" />
+
+									<input tabindex="8" id="inp_monthlyPatternName"
+										class="nts-input"
+										data-bind="ntsTextEditor: {
+										value: name,
+										constraint: 'MonthlyPatternName',
+										option: textEditorOptionName,
+										required: true,
+										name:'#[KSM005_18]',
+										enable: true,
+										immediate: false}" />
+								</div>
+								<div class="panel panel-frame">
+									<div class="panel-header">#{i18n.getText('KSM005_19')}</div>
+									<div class="panel-body">
+										<div class="button">
+											<button tabindex="9" data-bind="click: openDialogKDL03">#{i18n.getText('KSM005_23')}</button>
+										</div>
+										<div class="calendar">
+											<div class="row-1 row-flex">
+												<!--Type of work -->
+												<div class="a37 label">#{i18n.getText('KSM005_86')}</div>
+												<div class="a3839" data-bind="text: typeOfWorkInfo"></div>
+											</div>
+											<div class="row-2 row-flex">
+												<!-- Working hours -->
+												<div class="a310 label">#{i18n.getText('KSM005_87')}</div>
+												<div class="a311312" data-bind="text: workingHoursInfo"></div>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
-							<input tabindex="6" id="inp_monthlyPatternCode" 
-								class="nts-input"
-								data-bind="ntsTextEditor: {
-								value: code,
-								constraint: 'MonthlyPatternCode',
-								option: textEditorOption,
-								required: true,
-								name:'#[KSM005_17]', 
-								enable: enableMonthlyPatternCode}" />
-								
-							<input tabindex="7" id="inp_monthlyPatternName" 
-								class="nts-input" 
-								data-bind="ntsTextEditor: {
-								value: name,
-								constraint: 'MonthlyPatternName',
-								option: textEditorOptionName,
-								required: true,
-								name:'#[KSM005_18]', 
-								enable: true,
-								immediate: false}" />
+							<div class="monthly-button">
+								<button tabindex="11" data-bind="click: resetData">#{i18n.getText('KSM005_88')}</button>
+							</div>
 						</div>
-						<br/>
-						<div tabindex="9" class="nts-calendar-container">
+						<div tabindex="10" class="nts-calendar-container">
 							<div class="nts-calendar-header">
 								<div id="yMPicker" data-bind="ntsDatePicker: {
 								name: '#[KCP006_1]',

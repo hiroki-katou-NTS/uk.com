@@ -1,4 +1,4 @@
-module nts.uk.at.view.ksm005.e {
+module nts.uk.at.view.ksm005.b {
     
     export module service {
         

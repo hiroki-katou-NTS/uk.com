@@ -8,11 +8,11 @@
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
 				<script>var dialogSize = { width: 450, height: 570 };</script>
-				<com:stylefile path="ksm005.e.main.css" />
+				<com:stylefile path="ksm005.b.main.css" />
 				<com:scriptfile set="IGNITE" />
-				<com:scriptfile path="ksm005.e.start.js" />
-				<com:scriptfile path="ksm005.e.service.js" />
-				<com:scriptfile path="ksm005.e.vm.js" />
+				<com:scriptfile path="ksm005.b.start.js" />
+				<com:scriptfile path="ksm005.b.service.js" />
+				<com:scriptfile path="ksm005.b.vm.js" />
 			</ui:define>
 			<ui:define name="content">
 				<div class="contents">
@@ -28,6 +28,7 @@
 						<div data-bind="ntsFormLabel: {}">
 							<label>#{i18n.getText('KSM005_28')}</label>
 						</div>
+						<div><button tabindex="3" data-bind="">#{i18n.getText('KSM005_89')}</button></div>
 						<hr/>
 					</div>
 					
@@ -36,7 +37,7 @@
 							data-bind="ntsFormLabel: {required: true}">
 							<label>#{i18n.getText('KSM005_29')}</label>
 						</div>
-						<button tabindex="3" data-bind="click: openDialogWorkDays" class="pull-left large">#{i18n.getText('KSM005_23')}</button>
+						<button tabindex="4" data-bind="click: openDialogWorkDays" class="pull-left large">#{i18n.getText('KSM005_23')}</button>
 						<div class="pull-left contentDetail">
 							<label data-bind="text: worktypeInfoWorkDays()"></label>
 							<br/>
@@ -44,15 +45,30 @@
 						</div>
 					</div>
 					<div class="pull-left workday_labels">
-						<div class="pull-left lableData"
-							data-bind="ntsFormLabel: {required: true}">
-							<label>#{i18n.getText('KSM005_30')}</label>
+						<div class="pull-left">
+							<div tabindex="5" data-bind="ntsCheckBox: { checked: overwirte }">#{i18n.getText('KSM005_85')}</div>
 						</div>
-						<button tabindex="4" class="pull-left large" data-bind="click: openDialogStatutoryHolidays">#{i18n.getText('KSM005_23')}</button>
+					</div>
+					<div class="pull-left workday_labels">
+						<div class="pull-left lableData"></div>
+						<button tabindex="6" class="pull-left large" data-bind="click: openDialogStatutoryHolidays">#{i18n.getText('KSM005_23')}</button>
 						<div class="pull-left contentDetail">
 							<label data-bind="text: worktypeInfoStatutoryHolidays()"></label>
 							<br/>
 							<label data-bind="text: worktimeInfoStatutoryHolidays()"></label>
+						</div>
+						<div class="hr"></div>
+					</div>
+					<div class="pull-left workday_labels">
+						<div class="pull-left lableData"
+							 data-bind="ntsFormLabel: {required: true}">
+							<label>#{i18n.getText('KSM005_30')}</label>
+						</div>
+						<button tabindex="8" class="pull-left large" data-bind="click: openDialogPublicHolidays">#{i18n.getText('KSM005_23')}</button>
+						<div class="pull-left contentDetail">
+							<label data-bind="text: worktypeInfoPublicHolidays()"></label>
+							<br/>
+							<label data-bind="text: worktimeInfoPublicHolidays()"></label>
 						</div>
 					</div>
 					<div class="pull-left workday_labels">
@@ -60,31 +76,19 @@
 							data-bind="ntsFormLabel: {required: true}">
 							<label>#{i18n.getText('KSM005_31')}</label>
 						</div>
-						<button tabindex="5" class="pull-left large" data-bind="click: openDialogNoneStatutoryHolidays">#{i18n.getText('KSM005_23')}</button>
+						<button tabindex="7" class="pull-left large" data-bind="click: openDialogNoneStatutoryHolidays">#{i18n.getText('KSM005_23')}</button>
 						<div class="pull-left contentDetail">
 							<label data-bind="text: worktypeInfoNoneStatutoryHolidays()"></label>
 							<br/>
 							<label data-bind="text: worktimeInfoNoneStatutoryHolidays()"></label>
 						</div>
 					</div>
-					<div class="pull-left workday_labels">
-						<div class="pull-left lableData"
-							data-bind="ntsFormLabel: {required: true}">
-							<label>#{i18n.getText('KSM005_32')}</label>
-						</div>
-						<button tabindex="6" class="pull-left large" data-bind="click: openDialogPublicHolidays">#{i18n.getText('KSM005_23')}</button>
-						<div class="pull-left contentDetail">
-							<label data-bind="text: worktypeInfoPublicHolidays()"></label>
-							<br/>
-							<label data-bind="text: worktimeInfoPublicHolidays()"></label>
-						</div>
-					</div>
 				</div>
 				
 				<div id="functions-area-bottom">
-					<div id="checkOverWriteSetting" tabindex="7" data-bind="ntsCheckBox: { checked: overwirte }">#{i18n.getText('KSM005_33')}</div>
-					<button tabindex="8" class="proceed x-large" data-bind="click: saveMonthlyPatternSettingBatch">#{i18n.getText('KSM005_34')}</button>
-					<button tabindex="9" class="large" data-bind="click: cancelSaveMonthlyPatternSetting">#{i18n.getText('KSM005_26')}</button>
+					<div id="checkOverWriteSetting" tabindex="9" data-bind="ntsCheckBox: { checked: overwirte }">#{i18n.getText('KSM005_33')}</div>
+					<button tabindex="10" class="proceed x-large" data-bind="click: saveMonthlyPatternSettingBatch">#{i18n.getText('KSM005_34')}</button>
+					<button tabindex="11" class="large" data-bind="click: cancelSaveMonthlyPatternSetting">#{i18n.getText('KSM005_26')}</button>
 				</div>
 			</ui:define>
 		</ui:composition>

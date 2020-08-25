@@ -1,4 +1,4 @@
-module nts.uk.at.view.ksm005.b {
+module nts.uk.at.view.ksm005.a {
 
     import MonthlyPatternDto = service.model.MonthlyPatternDto;
     import WorkMonthlySettingDto = service.model.WorkMonthlySettingDto;
@@ -8,7 +8,7 @@ module nts.uk.at.view.ksm005.b {
     export module viewmodel {
 
         export class ScreenModel {
-            columnMonthlyPatterns: KnockoutObservableArray<NtsGridListColumn>;
+            columnMonthlyPatterns: KnockoutObservableArray<NtsGridListColumn>; //nts.uk.ui.NtsGridListColumn
             lstMonthlyPattern: KnockoutObservableArray<MonthlyPatternDto>;
             selectMonthlyPattern: KnockoutObservable<string>;
             modeMonthlyPattern: KnockoutObservable<number>;
@@ -31,6 +31,15 @@ module nts.uk.at.view.ksm005.b {
             holidayDisplay: KnockoutObservable<boolean>;
             cellButtonDisplay: KnockoutObservable<boolean>;
             workplaceName: KnockoutObservable<string>;
+
+	        typeOfWorkCode: KnockoutObservable<string>;
+	        typeOfWorkName: KnockoutObservable<string>;
+	        typeOfWorkInfo: KnockoutObservable<string>;
+	        workingHoursCode: KnockoutObservable<string>;
+	        workingHoursName: KnockoutObservable<string>;
+	        workingHoursInfo: KnockoutObservable<string>;
+
+	        enableUpdate: KnockoutObservable<boolean>;
 
 
             constructor() {
@@ -59,10 +68,12 @@ module nts.uk.at.view.ksm005.b {
                         self.yearMonthPicked(self.getMonth());
                         self.detailMonthlyPattern(monthlyPatternCode, self.yearMonthPicked());
                         self.enableDelete(true);
+	                    self.enableUpdate(true);
                     }
                     else {
                         self.resetData();
                         self.enableDelete(false);
+	                    self.enableUpdate(false);
                     }
                 });
                 
@@ -106,8 +117,17 @@ module nts.uk.at.view.ksm005.b {
                 self.eventDisplay = ko.observable(true);
                 self.eventUpdatable = ko.observable(true);
                 self.holidayDisplay = ko.observable(true);
-                self.cellButtonDisplay = ko.observable(true);
-                
+                self.cellButtonDisplay = ko.observable(false);
+
+                self.typeOfWorkCode = ko.observable(null);
+	            self.typeOfWorkName = ko.observable(null);
+	            self.typeOfWorkInfo = ko.observable(null);
+	            self.workingHoursCode = ko.observable(null);
+	            self.workingHoursName = ko.observable(null);
+	            self.workingHoursInfo = ko.observable(null);
+
+	            self.enableUpdate  = ko.observable(false);
+
                 var self = this;
                 service.getItemOfMonth(self.selectMonthlyPattern(), self.getMonth()).done(function(data) {
                     self.updateWorkMothlySetting(data);
@@ -129,7 +149,6 @@ module nts.uk.at.view.ksm005.b {
                 if (self.validateClient()) {
                     return;
                 }
-                
                 // mode ADD
                 if(self.modeMonthlyPattern() == ModeMonthlyPattern.ADD){
                     service.findByIdMonthlyPattern(nts.uk.text.padLeft(self.monthlyPatternModel().code(), '0', 3)).done(function(data){
@@ -154,7 +173,7 @@ module nts.uk.at.view.ksm005.b {
                 nts.uk.ui.windows.setShared("monthlyPatternCode", nts.uk.text.padLeft(self.monthlyPatternModel().code(), '0', 3));
                 nts.uk.ui.windows.setShared("monthlyPatternName", self.monthlyPatternModel().name());
                 nts.uk.ui.windows.setShared("yearmonth", self.yearMonthPicked());
-                nts.uk.ui.windows.sub.modal("/view/ksm/005/e/index.xhtml").onClosed(function() {
+                nts.uk.ui.windows.sub.modal("/view/ksm/005/b/index.xhtml").onClosed(function() {
                     var isCancelSave: boolean = nts.uk.ui.windows.getShared("isCancelSave");
                     if (isCancelSave != null && isCancelSave != undefined && !isCancelSave) {
                         self.reloadPage(nts.uk.text.padLeft(self.monthlyPatternModel().code(), '0', 3), false);
@@ -356,6 +375,8 @@ module nts.uk.at.view.ksm005.b {
                 self.selectMonthlyPattern('');
                 self.updateWorkMothlySetting(dataUpdate);
                 self.enableDelete(false);
+	            self.enableUpdate(false);
+
                 // focus on code
                 $('#inp_monthlyPatternCode').focus();
             }
@@ -460,7 +481,7 @@ module nts.uk.at.view.ksm005.b {
              /**
              * clear validate client
              */
-           public clearValiate() {
+            public clearValiate() {
                 $('#inp_monthlyPatternCode').ntsError('clear');
                 $('#inp_monthlyPatternName').ntsError('clear');
             }
@@ -531,6 +552,35 @@ module nts.uk.at.view.ksm005.b {
                 })    
             }
 
+
+	        /**
+	         * open dialog KDL003 by Work Days
+	         */
+	        public openDialogKDL03(): void {
+		        let self = this;
+		        nts.uk.ui.windows.setShared('parentCodes', {
+			        selectedWorkTypeCode: self.typeOfWorkCode(),
+			        selectedWorkTimeCode: self.workingHoursCode()
+		        }, true);
+
+		        nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function(){
+			        let childData = nts.uk.ui.windows.getShared('childData');
+			        if (childData) {
+				        self.typeOfWorkCode = childData.selectedWorkTypeCode;
+				        if (childData.selectedWorkTypeCode) {
+					        self.typeOfWorkInfo(childData.selectedWorkTypeCode + ' ' + childData.selectedWorkTypeName);
+				        } else
+					        self.typeOfWorkInfo('');
+
+				        self.workingHoursCode = childData.selectedWorkTimeCode;
+				        if (childData.selectedWorkTimeCode) {
+					        self.workingHoursInfo(childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName);
+				        } else {
+					        self.workingHoursInfo('');
+				        }
+			        }
+		        });
+	        }
         }
         
         export class MonthlyPatternModel{

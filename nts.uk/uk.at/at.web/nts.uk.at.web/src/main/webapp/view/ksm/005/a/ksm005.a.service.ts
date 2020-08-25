@@ -1,4 +1,4 @@
-module nts.uk.at.view.ksm005.b {
+module nts.uk.at.view.ksm005.a {
     export module service {
         var paths = {
             findAllMonthlyPattern : "ctx/at/schedule/pattern/monthly/findAll",
