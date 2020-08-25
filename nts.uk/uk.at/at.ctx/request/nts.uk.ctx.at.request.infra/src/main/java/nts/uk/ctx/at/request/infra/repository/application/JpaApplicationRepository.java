@@ -50,7 +50,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * 
+ *
  * @author Doan Duy Hung
  *
  */
@@ -106,7 +106,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			+ " AND c.appDate >= :startDate" + " AND c.appDate <= :endDate" + " AND c.prePostAtr = :prePostAtr"
 			+ " AND c.appType = :appType" + " AND c.stateReflectionReal IN :lstRef"
 			+ " ORDER BY c.appType ASC, c.inputDate DESC";
-	
+
 	/*
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
@@ -422,7 +422,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				+ " AND REFLECT_PER_STATE IN (" + subIn2 + ") "
 				+ " ORDER BY INPUT_DATE ASC";
 		try(val stmt = this.connection().prepareStatement(sql)){
-			
+
 			stmt.setString(1, sid);
 			stmt.setDate(2, Date.valueOf(dateData.end().localDate()));
 			stmt.setDate(3, Date.valueOf(dateData.start().localDate()));
@@ -645,9 +645,9 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		}
 		return mapResult;
 	}
-	
+
 	// refactor 4
-	
+
 	@Override
 	public Optional<Application> findByID(String companyID, String appID) {
 		return this.findByID(appID);
@@ -823,6 +823,45 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			return Optional.empty();
 		}
 		return Optional.of(krqdtApplicationLst.get(0));
+	}
+
+	private static final String SELECT_APP_FOR_KAF008 = "SELECT a FROM KrqdtApplication a WHERE"
+			+ " a.employeeID = :applicantSID"
+			+ " AND a.startDate <= :opAppEndDate AND a.opAppStartDate >= :startDate and a.appType IN (1,2,3,4,6,10)"
+			+ " ORDER BY a.inputDate DESC";
+
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF008_出張申請.A:出張の申請（新規）.アルゴリズム.出張申請未承認申請を取得.ドメインモデル「申請」を取得する
+	 * @param sID
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	@Override
+	public List<Application> getAppForKAF008(String sID, GeneralDate startDate, GeneralDate endDate) {
+		String sql = "select a.EXCLUS_VER as aEXCLUS_VER, a.CONTRACT_CD as aCONTRACT_CD, a.CID as aCID, a.APP_ID as aAPP_ID, a.PRE_POST_ATR as aPRE_POST_ATR, " +
+				"a.INPUT_DATE as aINPUT_DATE, a.ENTERED_PERSON_SID as aENTERED_PERSON_SID, " +
+				"a.REASON_REVERSION as aREASON_REVERSION, a.APP_DATE as aAPP_DATE, a.FIXED_REASON as aFIXED_REASON, a.APP_REASON as aAPP_REASON, a.APP_TYPE as aAPP_TYPE, " +
+				"a.APPLICANTS_SID as aAPPLICANTS_SID, a.APP_START_DATE as aAPP_START_DATE, a.APP_END_DATE as aAPP_END_DATE, a.STAMP_OPTION_ATR as aSTAMP_OPTION_ATR, " +
+				"b.CONTRACT_CD as bCONTRACT_CD, b.CID as bCID, b.APP_ID as bAPP_ID, b.APP_DATE as bAPP_DATE, b.REFLECT_PLAN_STATE as bREFLECT_PLAN_STATE, b.REFLECT_PER_STATE as bREFLECT_PER_STATE, " +
+				"b.REFLECT_PLAN_SCHE_REASON as bREFLECT_PLAN_SCHE_REASON, b.REFLECT_PLAN_TIME as bREFLECT_PLAN_TIME, " +
+				"b.REFLECT_PER_SCHE_REASON as bREFLECT_PER_SCHE_REASON, b.REFLECT_PER_TIME as bREFLECT_PER_TIME, " +
+				"b.CANCEL_PLAN_SCHE_REASON as bCANCEL_PLAN_SCHE_REASON, b.CANCEL_PLAN_TIME as bCANCEL_PLAN_TIME, " +
+				"b.CANCEL_PER_SCHE_REASON as bCANCEL_PER_SCHE_REASON, b.CANCEL_PER_TIME as bCANCEL_PER_TIME " +
+				"from KRQDT_APPLICATION a left join KRQDT_APP_REFLECT_STATE b " +
+				"on a.CID = b.CID and a.APP_ID = b.APP_ID " +
+				"where a.APPLICANTS_SID = @sid and a.APP_START_DATE <= @endDate and a.APP_END_DATE >= @startDate " +
+				"order by a.INPUT_DATE DESC";
+		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
+				.paramString("sid", sID)
+				.paramDate("startDate", startDate)
+				.paramDate("endDate", endDate)
+				.getList(rec -> toObject(rec));
+		List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
+		if(CollectionUtil.isEmpty(krqdtApplicationLst)) {
+			return Collections.emptyList();
+		}
+		return krqdtApplicationLst.stream().map(i -> i.toDomain()).collect(Collectors.toList());
 	}
 
 }
