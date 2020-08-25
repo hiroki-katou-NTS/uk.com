@@ -192,7 +192,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 	public WorkSchedule toDomain(String sID, GeneralDate yMD) {
 		
 		// create WorkInfoOfDailyAttendance
-		WorkInformation recordInfo = new WorkInformation(new WorkTimeCode(wktmCd),new WorkTypeCode(wktpCd));
+		WorkInformation recordInfo = new WorkInformation(wktmCd == null ? null : new WorkTimeCode(wktmCd),new WorkTypeCode(wktpCd));
 		WorkInfoOfDailyAttendance workInfo = new WorkInfoOfDailyAttendance(recordInfo, null, CalculationState.No_Calculated, EnumAdaptor.valueOf(goStraightAtr ? 1 : 0, NotUseAttribute.class), 
 				EnumAdaptor.valueOf(backStraightAtr ? 1 : 0, NotUseAttribute.class), EnumAdaptor.valueOf(GeneralDate.today().dayOfWeek(), DayOfWeek.class), new ArrayList<>());
 		
