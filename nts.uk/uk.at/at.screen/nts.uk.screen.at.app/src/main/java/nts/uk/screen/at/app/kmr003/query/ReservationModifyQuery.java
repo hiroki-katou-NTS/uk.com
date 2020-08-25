@@ -80,23 +80,11 @@ public class ReservationModifyQuery {
 
         // 1:運用区分を取得
         String cid = AppContexts.user().companyId();
-        Optional<BentoReservationSetting> bentoReservationSettingOpt = bentoReservationSettingRepo.findByCId(cid);
-        if (!bentoReservationSettingOpt.isPresent()) return null;
-        BentoReservationSetting bentoReservationSetting = bentoReservationSettingOpt.get();
+        BentoReservationSetting bentoReservationSetting = getBentoReservationSetting(cid);
+        if (bentoReservationSetting == null) return null;
 
         // 2:勤務場所を取得
-        Optional<WorkLocationCode> workLocationCodeOpt = Optional.empty();
-        if (bentoReservationSetting.getOperationDistinction() == OperationDistinction.BY_LOCATION){
-            String empId = AppContexts.user().employeeId();
-            // 社員と基準日から所属職場履歴項目を取得する
-            Optional<SWkpHistWrkLocationExport> sWkpHistWrkLocationOpt = workplacePub.findBySidWrkLocationCD(empId, reservationDate.getDate());
-            if (sWkpHistWrkLocationOpt.isPresent()) {
-                String wkpCode = sWkpHistWrkLocationOpt.get().getWorkLocationCd();
-                if (wkpCode != null){
-                    workLocationCodeOpt = Optional.of(new WorkLocationCode(wkpCode));
-                }
-            }
-        }
+        Optional<WorkLocationCode> workLocationCodeOpt = getWorkLocationCode(bentoReservationSetting, reservationDate);
 
         // 5:
         // List<社員ID＞から打刻カードを全て取得する
@@ -109,20 +97,20 @@ public class ReservationModifyQuery {
         List<PersonEmpBasicInfoDto> empBasicInfos = personEmpBasicInfoPub.getPerEmpBasicInfo(empIds);
 
         // UI処理[16]
-        if (searchCondition == BentoReservationSearchConditionDto.NEW_ORDER){
-            for (String empId : empIds){
-                Optional<StampCard>  stampCardOpt = stampCards.stream().filter(x -> x.getEmployeeId().equals(empId)).findFirst();
-                if (stampCardOpt.isPresent()){
+        if (searchCondition == BentoReservationSearchConditionDto.NEW_ORDER) {
+            for (String empId : empIds) {
+                Optional<StampCard> stampCardOpt = stampCards.stream().filter(x -> x.getEmployeeId().equals(empId)).findFirst();
+                if (stampCardOpt.isPresent()) {
                     continue;
                 }
 
                 Optional<PersonEmpBasicInfoDto> empBasicInfoOpt = empBasicInfos.stream().filter(x -> x.getEmployeeId().equals(empId)).findFirst();
-                if (!empBasicInfoOpt.isPresent()){
+                if (!empBasicInfoOpt.isPresent()) {
                     continue;
                 }
-                PersonEmpBasicInfoDto empBasicInfo =  empBasicInfoOpt.get();
+                PersonEmpBasicInfoDto empBasicInfo = empBasicInfoOpt.get();
                 //新規注文の場合誰か一人が打刻カードがない場合
-                errors.add(new ReservationModifyError("Msg_1634", TextResource.localize("Msg_1634", empBasicInfo.getEmployeeCode(), empBasicInfo.getBusinessName())));
+                errors.add(new ReservationModifyError("Msg_1634", TextResource.localize("Msg_1634", empBasicInfo.getEmployeeCode())));
             }
         }
 
@@ -165,13 +153,69 @@ public class ReservationModifyQuery {
         }
 
         // UI処理[11]
-        if (CollectionUtil.isEmpty(result.getBentoClosingTimes())){
+        if (CollectionUtil.isEmpty(result.getBentoClosingTimes())) {
             errors.add(new ReservationModifyError("Msg_1604", TextResource.localize("Msg_1604")));
         }
 
-        // 6:
+        List<ReservationModifyEmployeeDto> reservationModifyEmps = new ArrayList<>();
+        if (searchCondition != BentoReservationSearchConditionDto.NEW_ORDER) {
+            // 6: 一覧弁当予約を取得する(検索条件, 期間, List<予約登録情報>, 勤務場所コード, 予約締め時刻枠)
+            reservationModifyEmps = getReservationModifyEmps(reservationRegisterInfos, reservationDate,
+                    workLocationCodeOpt, searchCondition, stampCards, empBasicInfos);
+        } else {
+            // 7: 注文してない社員IDを取得する(取得したList＜打刻カード＞,Input．予約対象日)
+            reservationModifyEmps = getNewOrderReservationModifyEmps(reservationRegisterInfos, reservationDate, stampCards, empBasicInfos);
+        }
+
+        // 8: 弁当予約が修正できる状態を取得する(予約社員ID,予約対象日.年月日)
+        List<EmployeeInfoMonthFinishDto> empFinishs = getEmpFinishs(empBasicInfos, reservationDate, searchCondition, reservationModifyEmps);
+
+        result.setEmpFinishs(empFinishs);
+        result.setReservationModifyEmps(reservationModifyEmps);
+        result.setErrors(errors);
+        // 9: 予約の修正起動情報
+        return result;
+    }
+
+    /**
+     * 運用区分を取得
+     */
+    private BentoReservationSetting getBentoReservationSetting(String cid) {
+        Optional<BentoReservationSetting> bentoReservationSettingOpt = bentoReservationSettingRepo.findByCId(cid);
+        return bentoReservationSettingOpt.orElse(null);
+    }
+
+    /**
+     * 勤務場所を取得
+     */
+    private Optional<WorkLocationCode> getWorkLocationCode(BentoReservationSetting bentoReservationSetting, ReservationDate reservationDate) {
+        Optional<WorkLocationCode> workLocationCodeOpt = Optional.empty();
+        if (bentoReservationSetting.getOperationDistinction() == OperationDistinction.BY_LOCATION) {
+            String empId = AppContexts.user().employeeId();
+            // 社員と基準日から所属職場履歴項目を取得する
+            Optional<SWkpHistWrkLocationExport> sWkpHistWrkLocationOpt = workplacePub.findBySidWrkLocationCD(empId, reservationDate.getDate());
+            if (sWkpHistWrkLocationOpt.isPresent()) {
+                String wkpCode = sWkpHistWrkLocationOpt.get().getWorkLocationCd();
+                if (wkpCode != null) {
+                    workLocationCodeOpt = Optional.of(new WorkLocationCode(wkpCode));
+                }
+            }
+        }
+        return workLocationCodeOpt;
+    }
+
+    /**
+     * 一覧弁当予約を取得する
+     */
+    private List<ReservationModifyEmployeeDto> getReservationModifyEmps(List<ReservationRegisterInfo> reservationRegisterInfos,
+                                                                        ReservationDate reservationDate,
+                                                                        Optional<WorkLocationCode> workLocationCodeOpt,
+                                                                        BentoReservationSearchConditionDto searchCondition,
+                                                                        List<StampCard> stampCards,
+                                                                        List<PersonEmpBasicInfoDto> empBasicInfos) {
+        // List<予約登録情報>.size > 0 AND Input．検索条件!=新規条件
         List<BentoReservation> bentoReservations = new ArrayList<>();
-        if (!reservationRegisterInfos.isEmpty()) {
+        if (!CollectionUtil.isEmpty(reservationRegisterInfos)) {
             DatePeriod datePeriod = new DatePeriod(reservationDate.getDate(), reservationDate.getDate());
             List<WorkLocationCode> workLocationCodes = new ArrayList<>();
             workLocationCodeOpt.ifPresent(workLocationCodes::add);
@@ -179,15 +223,12 @@ public class ReservationModifyQuery {
             bentoReservations = listBentoResevationQuery.getListBentoResevationQuery(searchCondition, datePeriod,
                     reservationRegisterInfos, workLocationCodes, reservationDate.getClosingTimeFrame());
         }
-
-        // 7: 弁当予約が強制修正できる状態を取得する
-        List<EmployeeInfoMonthFinishDto> empFinishs = new ArrayList<>();
         List<ReservationModifyEmployeeDto> reservationModifyEmps = new ArrayList<>();
         for (BentoReservation bentoReservation : bentoReservations) {
             Optional<StampCard> stampCardOpt = stampCards.stream()
                     .filter(x -> x.getStampNumber().v().equals(bentoReservation.getRegisterInfor().getReservationCardNo()))
                     .findFirst();
-            if (!stampCardOpt.isPresent()){
+            if (!stampCardOpt.isPresent()) {
                 // 新規注文の場合誰か一人が打刻カードがない場合
                 // ※注文行を作らない
                 continue;
@@ -202,7 +243,7 @@ public class ReservationModifyQuery {
 
             // 6.1: 社員の予約情報を作る
             ReservationModifyEmployeeDto reservationModifyEmp = new ReservationModifyEmployeeDto();
-            reservationModifyEmp.setReservationCardNo(stampCard.getStampNumber().v());
+            reservationModifyEmp.setReservationCardNo(bentoReservation.getRegisterInfor().getReservationCardNo());
             reservationModifyEmp.setReservationMemberId(empBasicInfo.getEmployeeId());
             reservationModifyEmp.setReservationMemberCode(empBasicInfo.getEmployeeCode());
             reservationModifyEmp.setReservationMemberName(empBasicInfo.getBusinessName());
@@ -220,28 +261,79 @@ public class ReservationModifyQuery {
 
             reservationModifyEmps.add(reservationModifyEmp);
         }
+        return reservationModifyEmps;
+    }
 
+    private List<ReservationModifyEmployeeDto> getNewOrderReservationModifyEmps(List<ReservationRegisterInfo> reservationRegisterInfos,
+                                                                                ReservationDate reservationDate,
+                                                                                List<StampCard> stampCards,
+                                                                                List<PersonEmpBasicInfoDto> empBasicInfos){
+        List<ReservationRegisterInfo> newOrderInfos = new ArrayList<>();
+        if (!CollectionUtil.isEmpty(reservationRegisterInfos)) {
+            DatePeriod datePeriod = new DatePeriod(reservationDate.getDate(), reservationDate.getDate());
+            newOrderInfos = listBentoResevationQuery.getNewOrderDetail(datePeriod, reservationRegisterInfos,
+                    reservationDate.getClosingTimeFrame());
+        }
+
+        List<ReservationModifyEmployeeDto> reservationModifyEmps = new ArrayList<>();
+        for (ReservationRegisterInfo cardInfo : newOrderInfos) {
+            Optional<StampCard> stampCardOpt = stampCards.stream()
+                    .filter(x -> x.getStampNumber().v().equals(cardInfo.getReservationCardNo()))
+                    .findFirst();
+            if (!stampCardOpt.isPresent()) {
+                // 新規注文の場合誰か一人が打刻カードがない場合
+                // ※注文行を作らない
+                continue;
+            }
+            StampCard stampCard = stampCardOpt.get();
+
+            Optional<PersonEmpBasicInfoDto> empBasicInfoOpt = empBasicInfos.stream()
+                    .filter(x -> x.getEmployeeId().equals(stampCard.getEmployeeId()))
+                    .findFirst();
+            if (!empBasicInfoOpt.isPresent()) continue;
+            PersonEmpBasicInfoDto empBasicInfo = empBasicInfoOpt.get();
+
+            // 6.1: 社員の予約情報を作る
+            ReservationModifyEmployeeDto reservationModifyEmp = new ReservationModifyEmployeeDto();
+            reservationModifyEmp.setReservationCardNo(cardInfo.getReservationCardNo());
+            reservationModifyEmp.setReservationMemberId(empBasicInfo.getEmployeeId());
+            reservationModifyEmp.setReservationMemberCode(empBasicInfo.getEmployeeCode());
+            reservationModifyEmp.setReservationMemberName(empBasicInfo.getBusinessName());
+            reservationModifyEmp.setReservationDate(reservationDate.getDate());
+            reservationModifyEmp.setClosingTimeFrame(reservationDate.getClosingTimeFrame().value);
+            reservationModifyEmp.setReservationDetails(new ArrayList<>());
+
+            reservationModifyEmps.add(reservationModifyEmp);
+        }
+        return reservationModifyEmps;
+    }
+
+    /**
+     * 弁当予約が修正できる状態を取得する
+     */
+    private List<EmployeeInfoMonthFinishDto> getEmpFinishs(List<PersonEmpBasicInfoDto> empBasicInfos,
+                                                           ReservationDate reservationDate,
+                                                           BentoReservationSearchConditionDto searchCondition,
+                                                           List<ReservationModifyEmployeeDto> reservationModifyEmps) {
+        List<EmployeeInfoMonthFinishDto> empFinishs = new ArrayList<>();
         for (PersonEmpBasicInfoDto empBasicInfo : empBasicInfos) {
             RequireImpl require = new RequireImpl(requireService);
+            // 弁当予約が強制修正できる状態を取得する
             boolean canModify = BentoReservationStateService.check(require, empBasicInfo.getEmployeeId(),
                     reservationDate.getDate());
             if (!canModify) {
-                // 6.2: 月締め処理が済んでいる社員情報を作る
+                // 8.2: 月締め処理が済んでいる社員情報を作る
                 if (searchCondition == BentoReservationSearchConditionDto.NEW_ORDER) {
                     empFinishs.add(new EmployeeInfoMonthFinishDto(empBasicInfo.getEmployeeCode(),
                             empBasicInfo.getBusinessName()));
                 }
-                // 6.3 生活値を更新
+                // 8.1 生活値を更新
                 Optional<ReservationModifyEmployeeDto> reservationInfoForEmpOp = reservationModifyEmps.stream()
                         .filter(x -> x.getReservationMemberId().equals(empBasicInfo.getEmployeeId())).findFirst();
                 reservationInfoForEmpOp.ifPresent(x -> x.setActivity(false));
             }
         }
-        result.setEmpFinishs(empFinishs);
-        result.setReservationModifyEmps(reservationModifyEmps);
-        result.setErrors(errors);
-        // 8: 予約の修正起動情報
-        return result;
+        return empFinishs;
     }
 
     @AllArgsConstructor

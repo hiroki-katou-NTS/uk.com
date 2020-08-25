@@ -48,8 +48,6 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 
 	private static final String ACQUIRED_RESERVATION_DETAIL;
 
-	private static final String GET_EMPLOYEE_NOT_ORDER;
-
 	private static final String FIND_RESERVATION_INFOMATION;
 
 	private static final String FIND_ALL_RESERVATION_OF_A_BENTO;
@@ -93,12 +91,6 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD >= 'startDate' AND a.RESERVATION_YMD <= 'endDate'" +
 				" AND a.RESERVATION_FRAME = closingTimeFrame AND b.QUANTITY >= 2 ");
         ACQUIRED_RESERVATION_DETAIL = builderString.toString();
-
-        builderString = new StringBuilder();
-		builderString.append(SELECT);
-		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD = 'date' AND a.RESERVATION_FRAME = closingTimeFrame " +
-				" AND a.ORDERED = ordered ");
-		GET_EMPLOYEE_NOT_ORDER = builderString.toString();
 
         builderString = new StringBuilder();
         builderString.append(SELECT);
@@ -315,24 +307,10 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 	}
 
     @Override
-    public List<BentoReservation> getEmployeeNotOrder(List<ReservationRegisterInfo> inforLst, ReservationDate reservationDate) {
-		String query = GET_EMPLOYEE_NOT_ORDER;
-		List<String> cardLst = inforLst.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList());
-		String cardLstStr = getString(inforLst, cardLst);
-
-		query = query.replaceFirst("cardLst", cardLstStr);
-		query = query.replaceFirst("date", reservationDate.getDate().toString());
-		query = query.replaceFirst("closingTimeFrame", String.valueOf(reservationDate.getClosingTimeFrame().value));
-		query = query.replaceFirst("ordered", String.valueOf(0));
-		List<BentoReservation> bentoReservations = getBentoReservations(query);
-
-		if (bentoReservations.size() <= 0)
-			return inforLst.stream().map(x -> x.convertToBentoReservation(x,reservationDate)).collect(Collectors.toList());
-
+    public List<ReservationRegisterInfo> getEmployeeNotOrder(List<ReservationRegisterInfo> inforLst, ReservationDate reservationDate) {
+		List<BentoReservation> bentoReservations = getReservationInformation(inforLst, reservationDate);
         List<String> cardNoLst = bentoReservations.stream().map(x -> x.getRegisterInfor().getReservationCardNo()).collect(Collectors.toList());
-		List<ReservationRegisterInfo> reservationRegisterInfos = inforLst.stream().filter(x -> !cardNoLst.contains(x.getReservationCardNo())).collect(Collectors.toList());
-
-        return reservationRegisterInfos.stream().map(x -> x.convertToBentoReservation(x,reservationDate)).collect(Collectors.toList());
+		return inforLst.stream().filter(x -> !cardNoLst.contains(x.getReservationCardNo())).collect(Collectors.toList());
     }
 
     @Override
