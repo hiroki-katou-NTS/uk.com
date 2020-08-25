@@ -5,7 +5,7 @@ import nts.arc.task.data.TaskDataSetter;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.SetInforReflAprResultImport;*/
 
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.ProcessStateReflect;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
@@ -37,7 +37,7 @@ public interface AppReflectManagerFromRecord {
 	 * @param exeType 実行種別
 	 * @return
 	 */
-	List<Application_New> getApps(String sid, DatePeriod datePeriod, ExecutionTypeExImport exeType);
+	List<Application> getApps(String sid, DatePeriod datePeriod, ExecutionTypeExImport exeType);
 	/**
 	 * 社員の申請を反映
 	 * @param workId

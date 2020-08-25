@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.dom.approverstatemanagement;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -125,5 +126,14 @@ public interface ApprovalRootStateRepository {
 	public boolean resultKTG002(GeneralDate startDate, GeneralDate endDate, String approverID, Integer rootType,
 			String companyID);
 	
+	/**
+	 * refactor 4
+	 * @param approvalRootState
+	 */
 	public void insertApp(ApprovalRootState approvalRootState);
+	
+	/**
+	 * refactor 4
+	 */
+	public Map<String, List<ApprovalPhaseState>> getApprovalPhaseByID(List<String> appIDLst);
 }

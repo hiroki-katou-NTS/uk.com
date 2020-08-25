@@ -10,7 +10,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@Table(name = "KRQST_APP_LATE_OR_LEAVE")
+@Table(name = "KRQMT_APP_LATE_OR_LEAVE")
 public class KrqstAppLateOrEarly extends UkJpaEntity {
 
 	@Id

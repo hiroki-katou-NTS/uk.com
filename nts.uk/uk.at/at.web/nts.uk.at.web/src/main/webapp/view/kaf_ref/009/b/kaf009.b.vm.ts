@@ -1,7 +1,5 @@
 module nts.uk.at.view.kaf009_ref.b.viewmodel {
-  //import Kaf000BViewModel = nts.uk.at.view.kaf000_ref.b.viewmodel.Kaf000BViewModel;
     import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
-    import AppWorkChange = nts.uk.at.view.kaf007_ref.shr.viewmodel.AppWorkChange; 
     import Model = nts.uk.at.view.kaf009_ref.shr.viewmodel.Model;
     
     @component({
@@ -15,41 +13,18 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
         model: Model;
         dataFetch: KnockoutObservable<ModelDto> = ko.observable(null);
         mode: string = 'edit';
+		approvalReason: KnockoutObservable<string>;
         applicationTest: any = {
-            version: 1,
-            // appID: '939a963d-2923-4387-a067-4ca9ee8808zz',
-            prePostAtr: 1,
             employeeID: this.$user.employeeId,
-            appType: 4,
             appDate: moment(new Date()).format('YYYY/MM/DD'),
-            enteredPerson: '1',
+            enteredPerson: '',
             inputDate: moment(new Date()).format('YYYY/MM/DD HH:mm:ss'),
-            reflectionStatus: {
-                listReflectionStatusOfDay: [{
-                    actualReflectStatus: 1,
-                    scheReflectStatus: 1,
-                    targetDate: '2020/01/07',
-                    opUpdateStatusAppReflect: {
-                        opActualReflectDateTime: '2020/01/07 20:11:11',
-                        opScheReflectDateTime: '2020/01/07 20:11:11',
-                        opReasonActualCantReflect: 1,
-                        opReasonScheCantReflect: 0
-
-                    },
-                    opUpdateStatusAppCancel: {
-                        opActualReflectDateTime: '2020/01/07 20:11:11',
-                        opScheReflectDateTime: '2020/01/07 20:11:11',
-                        opReasonActualCantReflect: 1,
-                        opReasonScheCantReflect: 0
-                    }
-                }]
-            },
             opStampRequestMode: 1,
             opReversionReason: '1',
-             opAppStartDate: '2020/08/07',
-             opAppEndDate: '2020/08/08',
-             opAppReason: 'jdjadja',
-             opAppStandardReasonCD: 1
+            opAppStartDate: '2020/08/07',
+            opAppEndDate: '2020/08/08',
+            opAppReason: 'jdjadja',
+            opAppStandardReasonCD: 1
 
 
         };
@@ -57,6 +32,9 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
     
         created(
             params: { 
+				application: any,
+				printContentOfEachAppDto: PrintContentOfEachAppDto,
+            	approvalReason: any,
                 appDispInfoStartupOutput: any, 
                 eventUpdate: (evt: () => void ) => void
             }
@@ -71,7 +49,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             vm.createParamKAF009();
             
             vm.applicationTest = vm.appDispInfoStartupOutput().appDetailScreenInfo.application;
-            
+            vm.approvalReason = params.approvalReason;
             // gui event con ra viewmodel cha
             // nhớ dùng bind(vm) để ngữ cảnh lúc thực thi
             // luôn là component
@@ -96,9 +74,22 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                     });
                 }
             }).fail(err => {
-                vm.$dialog.error({messageId: err.msgId});
+                let param;
+                if (err.message && err.messageId) {
+                    param = {messageId: err.messageId, messageParams: err.parameterIds};
+                } else {
+                    
+                    if (err.message) {
+                        param = {message: err.message, messageParams: err.parameterIds};
+                    } else {
+                        param = {messageId: err.messageId, messageParams: err.parameterIds};
+                    }
+                }
+                vm.$dialog.error(param);
             }).always(() => vm.$blockui('hide'));
         }
+        
+ 
     
         mounted() {
             const vm = this;
@@ -107,27 +98,31 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
         // event update cần gọi lại ở button của view cha
         update() {
             const vm = this;
+            if (!vm.appDispInfoStartupOutput().appDetailScreenInfo) {
+                return;
+            }
             let application = ko.toJS(vm.application);
-
+            vm.applicationTest = vm.appDispInfoStartupOutput().appDetailScreenInfo.application;
+            
             vm.applicationTest.prePostAtr = application.prePostAtr;
-//            vm.applicationTest.opAppStartDate = application.opAppStartDate;
-//            vm.applicationTest.opAppEndDate = application.opAppEndDate;
             vm.applicationTest.opAppReason = application.opAppReason;
             vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;    
             vm.applicationTest.opReversionReason = application.opReversionReason;
-            
             let model = ko.toJS( vm.model );
             let goBackApp = new GoBackApplication(
                 model.checkbox1 ? 1 : 0,
                 model.checkbox2 ? 1 : 0,
             );
             // is change can be null
-            goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;
-            let dw = new DataWork( model.workTypeCode );
-            if ( model.workTimeCode ) {
-                dw.workTime = model.workTimeCode
+            if (!_.isNull(model.checkbox3)) {
+                goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;
+                let dw = new DataWork( model.workTypeCode );
+                if ( model.workTimeCode ) {
+                    dw.workTime = model.workTimeCode
+                }
+                goBackApp.dataWork = dw;
+                
             }
-            goBackApp.dataWork = dw;
             console.log( goBackApp );
             
             
@@ -162,8 +157,18 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                     
                 })
                 .fail(err => {
-                    console.log(err);
-                    vm.$dialog.error({messageId: err.msgId});
+                    let param;
+                    if (err.message && err.messageId) {
+                        param = {messageId: err.messageId, messageParams: err.parameterIds};
+                    } else {
+                        
+                        if (err.message) {
+                            param = {message: err.message, messageParams: err.parameterIds};
+                        } else {
+                            param = {messageId: err.messageId, messageParams: err.parameterIds};
+                        }
+                    }
+                    vm.$dialog.error(param);
                 })
                 .always(() => vm.$blockui("hide"))
              
@@ -203,10 +208,19 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                         location.reload();
                     } );
                 })
-            .fail(errRegister => {
-                console.log(errRegister);
-                
-                vm.$dialog.error({messageId: errRegister.msgId});
+            .fail(err => {
+                let param;
+                if (err.message && err.messageId) {
+                    param = {messageId: err.messageId, messageParams: err.parameterIds};
+                } else {
+                    
+                    if (err.message) {
+                        param = {message: err.message, messageParams: err.parameterIds};
+                    } else {
+                        param = {messageId: err.messageId, messageParams: err.parameterIds};
+                    }
+                }
+                vm.$dialog.error(param);
                 
             });
         }

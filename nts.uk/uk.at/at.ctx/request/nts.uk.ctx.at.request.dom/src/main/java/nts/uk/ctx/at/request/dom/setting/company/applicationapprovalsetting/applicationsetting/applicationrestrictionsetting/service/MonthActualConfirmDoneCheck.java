@@ -1,12 +1,24 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.applimitset.AppLimitSetting;
 
 /**
  * 月別確認済みかのチェックする
  *
  */
+/**
+ * refactor 4
+ * @author Doan Duy Hung
+ *
+ */
 public interface MonthActualConfirmDoneCheck {
-	public boolean check(AppLimitSetting appLimitSetting, String companyID, String employeeID, GeneralDate appDate);
+	/**
+	 * 
+	 * @param canAppAchievementMonthConfirm
+	 * @param companyID
+	 * @param employeeID
+	 * @param appDate
+	 * @return
+	 */
+	public boolean check(boolean overtimeCheck, boolean canAppAchievementMonthConfirm, String companyID, String employeeID, GeneralDate appDate);
 }

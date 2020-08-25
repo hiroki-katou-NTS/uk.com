@@ -76,7 +76,7 @@ public class AppDeadlineSettingGetImpl implements AppDeadlineSettingGet {
 			// 申請締め切り日 = 締め終了日.AddDays(ドメインモデル「申請締切設定」．締切日数)
 			deadline = Optional.of(presentClosingPeriodImport.getClosureEndDate().addDays(appDeadlineSetting.getDeadline().v()));
 		}
-		DeadlineLimitCurrentMonth deadlineLimitCurrentMonth = new DeadlineLimitCurrentMonth(false);
+		DeadlineLimitCurrentMonth deadlineLimitCurrentMonth = new DeadlineLimitCurrentMonth(true);
 		deadlineLimitCurrentMonth.setOpAppDeadline(deadline);
 		return deadlineLimitCurrentMonth;
 	}

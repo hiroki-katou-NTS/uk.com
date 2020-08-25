@@ -92,20 +92,13 @@ public class AppWorkChangeDto extends ApplicationDto{
 		appWorkChange_NewDto.setAppID(appWorkChange.getAppID());
 		return appWorkChange_NewDto;
 	}
-	public AppWorkChange toDomain() {
-		return new AppWorkChange(
-				NotUseAtr.valueOf(this.straightGo),
-				NotUseAtr.valueOf(this.straightBack),
-				Optional.ofNullable(new WorkTypeCode(this.opWorkTypeCD)),
-				StringUtils.isBlank(this.opWorkTimeCD) ? Optional.ofNullable(new WorkTimeCode(this.opWorkTimeCD)) : Optional.empty(),
-				CollectionUtil.isEmpty(timeZoneWithWorkNoLst) ? Collections.emptyList() : timeZoneWithWorkNoLst.stream().map(item -> item.toDomain()).collect(Collectors.toList()));
-	}
+
 	public AppWorkChange toDomain(Application app) {
 		return new AppWorkChange(
 				NotUseAtr.valueOf(this.straightGo),
 				NotUseAtr.valueOf(this.straightBack),
 				StringUtils.isBlank(this.opWorkTypeCD) ? Optional.empty() : Optional.ofNullable(new WorkTypeCode(this.opWorkTypeCD)),
-				StringUtils.isBlank(this.opWorkTimeCD) ? Optional.empty() : Optional.ofNullable(new WorkTimeCode(this.opWorkTimeCD)),
+				StringUtils.isBlank(this.opWorkTimeCD) ? Optional.empty() : Optional.ofNullable(new WorkTimeCode(this.opWorkTimeCD)) ,
 				CollectionUtil.isEmpty(timeZoneWithWorkNoLst) ? Collections.emptyList() : timeZoneWithWorkNoLst.stream().map(item -> item.toDomain()).collect(Collectors.toList()),
 				app);
 	}

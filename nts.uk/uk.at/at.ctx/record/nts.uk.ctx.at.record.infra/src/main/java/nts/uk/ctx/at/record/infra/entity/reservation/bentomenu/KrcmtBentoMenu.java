@@ -12,6 +12,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationTime;
@@ -62,7 +64,7 @@ public class KrcmtBentoMenu extends UkJpaEntity {
 	
 	public BentoMenu toDomain() {
 		Optional<ReservationClosingTime> closingTime2 = Optional.empty();
-		if(reservationStartTime2!=null) {
+		if(Strings.isNotBlank(reservationFrameName2) && reservationEndTime2 != null) {
 			closingTime2 = Optional.of(new ReservationClosingTime(
 					new BentoReservationTimeName(reservationFrameName2), 
 					new BentoReservationTime(reservationEndTime2), 

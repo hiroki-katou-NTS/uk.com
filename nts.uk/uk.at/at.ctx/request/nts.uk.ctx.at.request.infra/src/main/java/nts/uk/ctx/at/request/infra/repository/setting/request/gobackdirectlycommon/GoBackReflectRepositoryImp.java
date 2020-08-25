@@ -14,8 +14,8 @@ import nts.uk.ctx.at.request.infra.entity.setting.request.gobackdirectlycommon.K
 import nts.uk.ctx.at.request.infra.entity.setting.request.gobackdirectlycommon.KrqstAppGoBackDirectlyPK;
 @Stateless
 public class GoBackReflectRepositoryImp extends JpaRepository implements GoBackReflectRepository {
-	// KRQST_APP_GOBACK_DIRECTLY
-	public static final String FIND_BY_COMPANY = "SELECT *\r\n" + "  FROM KRQST_APP_GOBACK_DIRECTLY WHERE CID = @ID";
+	// KRQMT_APP_GOBACK_DIRECTLY
+	public static final String FIND_BY_COMPANY = "SELECT *\r\n" + "  FROM KRQMT_APP_GOBACK_DIRECTLY WHERE CID = @ID";
 	
 	@Override
 	public Optional<GoBackReflect> findByCompany(String id) {

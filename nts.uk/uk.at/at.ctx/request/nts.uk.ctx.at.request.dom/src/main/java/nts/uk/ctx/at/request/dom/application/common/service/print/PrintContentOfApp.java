@@ -132,5 +132,6 @@ public class PrintContentOfApp {
 		this.employeeInfoLst = Collections.emptyList();
 		this.opPrintContentOfWorkChange = Optional.empty();
 		this.opArrivedLateLeaveEarlyInfo = Optional.empty();
+		this.opAppStampOutput = Optional.empty();
 	}
 }

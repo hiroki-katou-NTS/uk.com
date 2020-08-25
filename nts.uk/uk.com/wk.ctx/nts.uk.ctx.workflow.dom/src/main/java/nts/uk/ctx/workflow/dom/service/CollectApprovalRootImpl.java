@@ -119,6 +119,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				}
 			} else {
 				approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate, levelOutput);
+				approvalRootState.setRootType(RootType.EMPLOYMENT_APPLICATION);
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
@@ -146,6 +147,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				}
 			} else {
 				approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate, levelOutput);
+				approvalRootState.setRootType(RootType.EMPLOYMENT_APPLICATION);
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
@@ -176,6 +178,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 					}
 				} else {
 					approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate, levelOutput);
+					approvalRootState.setRootType(RootType.EMPLOYMENT_APPLICATION);
 				}
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
@@ -203,6 +206,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 					}
 				} else {
 					approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate, levelOutput);
+					approvalRootState.setRootType(RootType.EMPLOYMENT_APPLICATION);
 				}
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
@@ -231,6 +235,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				}
 			} else {
 				approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate, levelOutput);
+				approvalRootState.setRootType(RootType.EMPLOYMENT_APPLICATION);
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
@@ -258,11 +263,19 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				}
 			} else {
 				approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate, levelOutput);
+				approvalRootState.setRootType(RootType.EMPLOYMENT_APPLICATION);
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
+		if(rootAtr==EmploymentRootAtr.CONFIRMATION) {
+			return new ApprovalRootContentOutput(
+					ApprovalRootState.builder().listApprovalPhaseState(Collections.emptyList())
+					.rootType(EnumAdaptor.valueOf(Integer.valueOf(targetType)+1, RootType.class)).build(), 
+					ErrorFlag.NO_APPROVER);
+		}
 		return new ApprovalRootContentOutput(
-				ApprovalRootState.builder().listApprovalPhaseState(Collections.emptyList()).build(), 
+				ApprovalRootState.builder().listApprovalPhaseState(Collections.emptyList())
+				.rootType(RootType.EMPLOYMENT_APPLICATION).build(), 
 				ErrorFlag.NO_APPROVER);
 	}
 	

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.infra.repository.setting.company.appreasonstandard;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStan
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandardRepository;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonTypeItem;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * refactor 4
@@ -51,6 +53,20 @@ public class JpaAppReasonStandardRepository extends JpaRepository implements App
 
 	@Override
 	public Optional<AppReasonStandard> findByCD(ApplicationType appType, AppStandardReasonCode appStandardReasonCode) {
+		String companyID = AppContexts.user().companyId();
+		Optional<AppReasonStandard> opAppReasonStandard = this.findByAppType(companyID, appType);
+		if(!opAppReasonStandard.isPresent()) {
+			return Optional.empty();
+		}
+		List<ReasonTypeItem> reasonTypeItemLst = opAppReasonStandard.get().getReasonTypeItemLst();
+		Optional<ReasonTypeItem> opReasonTypeItem = reasonTypeItemLst.stream().filter(x -> x.getAppStandardReasonCD().equals(appStandardReasonCode)).findAny();
+		if(opReasonTypeItem.isPresent()) {
+			return Optional.of(new AppReasonStandard(
+								companyID, 
+								opAppReasonStandard.get().getApplicationType(), 
+								Arrays.asList(opReasonTypeItem.get()), 
+								opAppReasonStandard.get().getOpHolidayAppType()));
+		}
 		return Optional.empty();
 	}
 
