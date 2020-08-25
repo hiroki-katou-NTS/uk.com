@@ -8,10 +8,11 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionT
 
 
 /**
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.出勤簿.出勤簿の出力項目定型設定
+ * 
  * @author nws-ducnt
  *
  */
-//	出勤簿の出力項目定型設定
 public class AttendanceRecordStandardSetting extends AggregateRoot{
 
 	/**

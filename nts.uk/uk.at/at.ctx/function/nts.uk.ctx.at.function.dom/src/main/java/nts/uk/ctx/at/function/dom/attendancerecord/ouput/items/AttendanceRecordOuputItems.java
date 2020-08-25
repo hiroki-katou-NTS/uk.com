@@ -6,12 +6,14 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
 
+
 /**
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.出勤簿.出勤簿の出力項目自由設定
+ * 
  * @author nws-ducnt
  *
  */
-//	出勤簿の出力項目自由設定
-public class AttendanceRecordOuputItems extends AggregateRoot{
+public class AttendanceRecordOuputItems extends AggregateRoot {
 
 	/**
 	 * 会社ID
@@ -64,7 +66,7 @@ public class AttendanceRecordOuputItems extends AggregateRoot{
 		this.cid = memento.getCid();
 		this.attendanceRecordExportSettings = memento.getAttendanceRecordExportSettings();
 		this.employeeId = memento.getEmployeeId();
-		this.itemSelectionType = ItemSelectionType.valueOf(memento.getiItemSelectionType());
+		this.itemSelectionType = ItemSelectionType.valueOf(memento.getItemSelectionType());
 		
 	}
 	/**
@@ -119,7 +121,7 @@ public class AttendanceRecordOuputItems extends AggregateRoot{
 		
 		String getEmployeeId();
 		
-		int getiItemSelectionType();
+		int getItemSelectionType();
 	}
 	
 }
