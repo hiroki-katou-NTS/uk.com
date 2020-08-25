@@ -56,6 +56,20 @@ module nts.uk.at.view.ksu001.u {
             self.startDate = 1;
             self.endDate = 31;            
             self.params = params;
+
+            // self.yearMonthPicked.subscribe(function(value) {
+            //     self.getDataToOneMonth(value);
+            //     // let arrOptionaDates: Array<OptionalDate> = [];
+            //     // self.getDataToOneMonth(value).done(function(arrOptionaDates) {
+            //     //     if (arrOptionaDates.length > 0) {
+            //     //         self.optionDates(arrOptionaDates);
+            //     //         self.optionDates.valueHasMutated();
+            //     //         self.isNew(false);
+            //     //     } else {
+            //     //         self.isNew(true);
+            //     //     }
+            //     // })
+            // })
         }
 
         created(){
@@ -64,10 +78,29 @@ module nts.uk.at.view.ksu001.u {
             self.clickCalendar();
         }
 
+        getDataToOneMonth(yearMonth : number): void {
+            let self = this;
+            let year = parseInt(yearMonth.toString().slice(0,3));
+            let month = parseInt(yearMonth.toString().slice(4,6));
+            if(self.publicDate()){
+                let publicDateSplit = self.publicDate().split('-');
+                if(year == parseInt(publicDateSplit[0])){
+                    if(month < parseInt(publicDateSplit[1])){
+
+                    }
+                } else if(year < parseInt(publicDateSplit[0])){
+
+                } else {
+
+                }
+            }
+
+        }
+
         loadPubDateInfo(): void {
             const self = this;
-            let request1 = nts.uk.ui.windows.getShared('dataShareDialogU');
-            self.$ajax(Paths.GET_PUBLIC_INFO_ORG, request1).then((data: IPublicInfoOrg) => {
+            let request = nts.uk.ui.windows.getShared('dataShareDialogU');
+            self.$ajax(Paths.GET_PUBLIC_INFO_ORG, request).then((data: IPublicInfoOrg) => {
                 self.unit(data.unit);
                 self.workplaceId(data.workplaceId);
                 self.workplaceGroupId(data.workplaceGroupId);
@@ -128,7 +161,14 @@ module nts.uk.at.view.ksu001.u {
                 self.optionDates(a); 
                 self.yearMonthPicked(parseInt(year +""+ month ));
                 $('#prev-btn').focus();
+            }).fail((res) => {
+                self.$dialog.error({ messageId: res.messageId });
+                // nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+            }).always(()=>{
+                self.$blockui('clear');
+                // nts.uk.ui.block.clear();
             });
+            
         }
 
         public clickCalendar(): void {
@@ -265,105 +305,6 @@ module nts.uk.at.view.ksu001.u {
                 }
             });
         }
-        // public clickCalendar(): void {
-        //     const self = this;
-            
-        //     $("#calendar").ntsCalendar("init", {
-        //         cellClick: function (dateClick) {
-        //             // let basePubDate = self.publicDate();
-        //             let dates = self.optionDates();
-        //             let baseEditDate = self.editDate();
-        //             let baseEditDateSplit =[];                    
-
-        //             let publicDate = self.newPublicDate();
-        //             let publicDateSplit = publicDate.split('-');
-        //             let editDate = self.newEditDate();
-        //             let editDateSplit = [];
-        //             let dateClickSplit = dateClick.split('-');
-        //             let offset = 0;
-        //             if (self.publicDate() == self.editDate()) {
-        //                 offset = 1;
-        //             }
-        //             editDateSplit = editDate.split('-');
-        //             // check cell date click is inner or outer period public date
-        //             let existDate = self.checkExistDate(dateClick);
-        //             // if date click on between period of public date
-        //             if (editDate) {
-        //                 baseEditDateSplit = baseEditDate.split('-');                        
-        //                 if (existDate) {
-        //                     // set new edit date is date click cell calendar
-        //                     self.newEditDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]))));
-        //                     // check cell date is public or edit
-        //                     if (existDate.textColor === Ksu001u.TEXT_COLOR_PUB && existDate.backgroundColor === Ksu001u.BG_COLOR_PUB) {
-        //                         for (let i = 0; i <= parseInt(publicDateSplit[2]) - parseInt(dateClickSplit[2]); i++) {
-        //                             let date = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(dateClickSplit[2]) + i));
-        //                             if (self.checkExistDate(date)) {
-        //                                 self.removeExistDate(self.checkExistDate(date));                                        
-        //                             }
-        //                             dates.push(new CalendarItem(date,Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.EDIT]));                                    
-        //                         }
-        //                     } else if (existDate.textColor === Ksu001u.TEXT_COLOR_EDIT) {
-        //                         self.newEditDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) + 1)));
-        //                         for (let i = 0; i <= parseInt(dateClickSplit[2]) - parseInt(editDateSplit[2]); i++) {
-        //                             let date = self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) - i));
-        //                             if (self.checkExistDate(date)) {
-        //                                 self.removeExistDate(self.checkExistDate(date));
-        //                             }
-        //                             dates.push(new CalendarItem(date,Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.PUBLIC]));                                  
-        //                         }
-        //                     }
-        //                 } else {
-        //                     let periodPub = parseInt(dateClickSplit[2]) - parseInt(publicDateSplit[2]);
-        //                     let periodEdit = 0;
-        //                     if (self.editDate() != "") {
-        //                         periodEdit = parseInt(dateClickSplit[2]) - parseInt(editDateSplit[2])
-        //                     }
-        //                     if (periodPub <= periodEdit) {
-        //                         self.newEditDate("");
-        //                     }
-
-        //                     self.newPublicDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]))));
-        //                     for (let i = 0; i <= (periodPub > periodEdit ? periodPub : periodEdit) + offset; i++) {
-        //                         let date = self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) - i));
-        //                         if (self.checkExistDate(date)) {
-        //                             self.removeExistDate(self.checkExistDate(date));
-        //                         }
-        //                         dates.push(new CalendarItem(date,Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.PUBLIC]));
-        //                     }
-        //                 }
-
-        //             } else {
-        //                 if (existDate) {
-        //                     // set new edit date is date click cell calendar
-        //                     self.newEditDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]))));
-
-        //                     for (let i = 0; i <= parseInt(publicDateSplit[2]) - parseInt(dateClickSplit[2]); i++) {
-        //                         let date = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]) - i));
-        //                         if (self.checkExistDate(date)) {
-        //                             self.removeExistDate(self.checkExistDate(date));
-        //                         }
-        //                         dates.push(new CalendarItem(date,Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.EDIT])); 
-        //                     }
-
-        //                 } else {
-        //                     let periodPub = parseInt(dateClickSplit[2]) - parseInt(publicDateSplit[2]);
-        //                     self.newPublicDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]))));
-        //                     for (let i = 0; i < periodPub; i++) {
-        //                         let date = self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]), parseInt(dateClickSplit[2]) - i));
-        //                         if (self.checkExistDate(date)) {
-        //                             self.removeExistDate(self.checkExistDate(date));
-        //                         }
-        //                         dates.push(new CalendarItem(date,Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.PUBLIC])); 
-        //                     }
-        //                 }
-        //             }
-        //             self.optionDates(dates);
-        //             self.yearMonthPicked(parseInt(dateClickSplit[0] + dateClickSplit[1]));                     
-        //         }    
-        //     });
-        // }
-
-
         public Prev(): void {
             const self = this;
 
@@ -377,8 +318,6 @@ module nts.uk.at.view.ksu001.u {
 
         public Forward(): void {
             const self = this;
-
-            let tmp = self.stepSelected();
             if (self.stepSelected() == "0") {
                 self.weekForward();
             } else {
@@ -874,11 +813,18 @@ module nts.uk.at.view.ksu001.u {
             self.$blockui("invisible");
             self.$ajax(Paths.REGISTER, command).done(() => {
                 _.remove(self.optionDates());
-                self.loadPubDateInfo();
+                self.$blockui("clear");  
                 self.$dialog.info({ messageId: "Msg_15" });
+                self.loadPubDateInfo();                               
+            }).fail((res) => {
+                self.$dialog.error({ messageId: res.messageId });
+            }).always(() => {
                 self.$blockui("clear");
+                $('#prev-btn').focus();		
             });
+            	
         }
+        
 
         public clearBtn(): void {
             const self = this;

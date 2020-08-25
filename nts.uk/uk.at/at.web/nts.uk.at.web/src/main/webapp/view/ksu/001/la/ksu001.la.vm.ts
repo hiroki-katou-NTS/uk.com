@@ -76,10 +76,8 @@ module nts.uk.at.view.ksu001.la {
 
             public startPage(): JQueryPromise<any> {
                 let self = this;
-                var dfd = $.Deferred();
-                let baseDateTemp = nts.uk.ui.windows.getShared("baseDate").split('T');  
-                let temp = baseDateTemp[0].split('-');
-                let baseDate = temp[0]+'/'+temp[1]+'/'+temp[2];
+                var dfd = $.Deferred();               
+                let baseDate = nts.uk.ui.windows.getShared("baseDate");
                 self.baseDate(baseDate);
                 blockUI.invisible();
                 let dateRequest: any = {baseDate: self.baseDate()};                
@@ -96,10 +94,18 @@ module nts.uk.at.view.ksu001.la {
                             } else {
                                 self.isEditing(false);
                             }
+                        }).fail((res) => {
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                            dfd.reject(res);
                         });
                     }
                     blockUI.clear();
                     dfd.resolve();
+                }).fail((res) =>{
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                    dfd.reject(res);
+                }).always(() =>{
+                    blockUI.clear();
                 });
                 return dfd.promise();
             }
@@ -121,6 +127,8 @@ module nts.uk.at.view.ksu001.la {
                     });
                         self.itemsLeft(itemLeft);
                         self.itemsRight(_.difference(dataAll, itemLeft));
+                }).fail((res) => {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                 });
             }
             public registerOrUpdate(): void {
@@ -169,6 +177,10 @@ module nts.uk.at.view.ksu001.la {
                         blockUI.clear();
                         nts.uk.ui.dialog.info({messageId: "Msg_15"});
                         $('#scheduleTeamName').focus();
+                    }).fail((res) => {
+                        nts.uk.ui.dialog.alertError({messageId: res.messageId});                        
+                    }).always (()=>{
+                        blockUI.clear();
                     });
                 }
             }
