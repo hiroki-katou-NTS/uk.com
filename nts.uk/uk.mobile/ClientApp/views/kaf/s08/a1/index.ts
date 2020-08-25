@@ -28,7 +28,7 @@ export class KAFS08A1ViewModel extends KafS00ShrComponent {
     public params?: any;
 
     public user: any;
-    public step = 'step_1';
+    public step = 'KAFS08_10';
     public title: String = 'KafS08A1';
     public mode: Boolean = true;
     public data: any = 'data';
@@ -43,6 +43,12 @@ export class KAFS08A1ViewModel extends KafS00ShrComponent {
         }
 
         self.fetchStart();
+    }
+
+    public nextToScreenA2() {
+        const vm = this;
+        //vm.$goto("kafs08a2",{});
+        vm.step = 'KAFS08_11';
     }
 
     public fetchStart() {

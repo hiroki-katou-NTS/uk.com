@@ -20,5 +20,5 @@ import { FixTableComponent } from '@app/components/fix-table';
 
 export class KafS08A2Component extends Vue {
     public title: string = 'KafS08A2';
-    public step = 'step_1';
+    public step = 'KAFS08_11';
 }

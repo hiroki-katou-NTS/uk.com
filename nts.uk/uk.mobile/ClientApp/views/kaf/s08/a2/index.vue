@@ -1,11 +1,17 @@
 <template>
   <div class="kafs08a2">
     <div class="step-wizard">
-      <step-wizard v-bind:items="['step_1', 'step_2', 'step_3']" v-bind:selected="step" />
+      <step-wizard v-bind:items="['KAFS08_10', 'KAFS08_11', 'KAFS08_12']" v-bind:selected="step" />
     </div>
     <br />
     <!-- A2_1 -->
-    <div class="alert error">
+    <div class="card bg-danger top-alert uk-text-danger topError">
+              <button class="btn btn-link uk-text-danger">
+                <i class="fa fa-exclamation-circle" aria-hidden="true" ></i>
+                {{ 'KAFS08_13' | i18n }}
+              </button>
+    </div>
+    <!-- <div class="alert error">
       <img
         class="iconWarn"
         src="https://www.iconsdb.com/icons/preview/red/warning-xxl.png"
@@ -13,7 +19,7 @@
         height="16"
       />
       <div class="contentError">{{'KAFS08_13'| i18n}}</div>
-    </div>
+    </div> -->
     <!-- A7 -->
     <div class="field-set">
       <!-- A7_1 -->
