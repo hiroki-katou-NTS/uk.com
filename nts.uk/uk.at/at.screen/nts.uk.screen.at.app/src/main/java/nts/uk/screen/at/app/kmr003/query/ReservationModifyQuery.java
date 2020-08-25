@@ -33,6 +33,7 @@ import nts.uk.ctx.bs.employee.pub.employee.export.dto.PersonEmpBasicInfoDto;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistWrkLocationExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -75,6 +76,7 @@ public class ReservationModifyQuery {
                                                 ReservationDate reservationDate,
                                                 BentoReservationSearchConditionDto searchCondition) {
         ReservationModifyDto result = new ReservationModifyDto();
+        List<ReservationModifyError> errors = new ArrayList<>();
 
         // 1:運用区分を取得
         String cid = AppContexts.user().companyId();
@@ -105,6 +107,24 @@ public class ReservationModifyQuery {
         // 3:
         // 社員ID(List)から個人社員基本情報を取得
         List<PersonEmpBasicInfoDto> empBasicInfos = personEmpBasicInfoPub.getPerEmpBasicInfo(empIds);
+
+        // UI処理[16]
+        if (searchCondition == BentoReservationSearchConditionDto.NEW_ORDER){
+            for (String empId : empIds){
+                Optional<StampCard>  stampCardOpt = stampCards.stream().filter(x -> x.getEmployeeId().equals(empId)).findFirst();
+                if (stampCardOpt.isPresent()){
+                    continue;
+                }
+
+                Optional<PersonEmpBasicInfoDto> empBasicInfoOpt = empBasicInfos.stream().filter(x -> x.getEmployeeId().equals(empId)).findFirst();
+                if (!empBasicInfoOpt.isPresent()){
+                    continue;
+                }
+                PersonEmpBasicInfoDto empBasicInfo =  empBasicInfoOpt.get();
+                //新規注文の場合誰か一人が打刻カードがない場合
+                errors.add(new ReservationModifyError("Msg_1634", TextResource.localize("Msg_1634", empBasicInfo.getEmployeeCode(), empBasicInfo.getBusinessName())));
+            }
+        }
 
         // 4: 取得する
         // 弁当メニュー
@@ -144,11 +164,12 @@ public class ReservationModifyQuery {
             result.setBentoClosingTimes(bentoClosingTimes);
         }
 
+        // UI処理[11]
         if (CollectionUtil.isEmpty(result.getBentoClosingTimes())){
-            //throw new BusinessException("Msg_1604");
+            errors.add(new ReservationModifyError("Msg_1604", TextResource.localize("Msg_1604")));
         }
 
-            // 6:
+        // 6:
         List<BentoReservation> bentoReservations = new ArrayList<>();
         if (!reservationRegisterInfos.isEmpty()) {
             DatePeriod datePeriod = new DatePeriod(reservationDate.getDate(), reservationDate.getDate());
@@ -166,7 +187,11 @@ public class ReservationModifyQuery {
             Optional<StampCard> stampCardOpt = stampCards.stream()
                     .filter(x -> x.getStampNumber().v().equals(bentoReservation.getRegisterInfor().getReservationCardNo()))
                     .findFirst();
-            if (!stampCardOpt.isPresent()) continue;
+            if (!stampCardOpt.isPresent()){
+                // 新規注文の場合誰か一人が打刻カードがない場合
+                // ※注文行を作らない
+                continue;
+            }
             StampCard stampCard = stampCardOpt.get();
 
             Optional<PersonEmpBasicInfoDto> empBasicInfoOpt = empBasicInfos.stream()
@@ -214,7 +239,7 @@ public class ReservationModifyQuery {
         }
         result.setEmpFinishs(empFinishs);
         result.setReservationModifyEmps(reservationModifyEmps);
-
+        result.setErrors(errors);
         // 8: 予約の修正起動情報
         return result;
     }

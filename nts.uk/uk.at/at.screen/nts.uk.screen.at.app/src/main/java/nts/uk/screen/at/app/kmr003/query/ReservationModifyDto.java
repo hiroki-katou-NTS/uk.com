@@ -20,4 +20,6 @@ public class ReservationModifyDto {
     private List<EmployeeInfoMonthFinishDto> empFinishs;
     /** 社員の予約情報 */
     private List<ReservationModifyEmployeeDto> reservationModifyEmps;
+
+    private List<ReservationModifyError> errors;
 }
