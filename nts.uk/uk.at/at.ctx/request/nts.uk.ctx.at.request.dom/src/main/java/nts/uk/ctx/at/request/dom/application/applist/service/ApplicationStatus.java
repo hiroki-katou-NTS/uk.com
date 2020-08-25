@@ -39,11 +39,11 @@ public class ApplicationStatus {
 	private int denialNumber;
 	
 	public ApplicationStatus() {
-		this.unApprovalNumber = 1;
-		this.approvalNumber = 2;
-		this.approvalAgentNumber = 3;
-		this.cancelNumber = 4;
-		this.remandNumner = 5;
-		this.denialNumber = 7;
+		this.unApprovalNumber = 0;
+		this.approvalNumber = 0;
+		this.approvalAgentNumber = 0;
+		this.cancelNumber = 0;
+		this.remandNumner = 0;
+		this.denialNumber = 0;
 	}
 }

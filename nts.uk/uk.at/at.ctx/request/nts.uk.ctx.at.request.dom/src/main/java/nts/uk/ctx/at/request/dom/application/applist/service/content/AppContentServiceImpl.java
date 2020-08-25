@@ -295,9 +295,8 @@ public class AppContentServiceImpl implements AppContentService {
 	@Override
 	public ListOfApplication createEachAppData(Application application, String companyID, List<WorkTimeSetting> lstWkTime,
 			List<WorkType> lstWkType, List<AttendanceItem> attendanceItemLst, ApplicationListAtr mode, ApprovalListDisplaySetting approvalListDisplaySetting,
-			List<ListOfApplication> appLst, Map<String, List<ApprovalPhaseStateImport_New>> mapApproval, int device,
+			ListOfApplication listOfApp, Map<String, List<ApprovalPhaseStateImport_New>> mapApproval, int device,
 			AppListExtractCondition appListExtractCondition) {
-		ListOfApplication result = new ListOfApplication();
 		if(device == PC) {
 			// ドメインモデル「申請」．申請種類をチェック (Check Domain「Application.ApplicationType
 			switch (application.getAppType()) {
@@ -309,7 +308,7 @@ public class AppContentServiceImpl implements AppContentService {
 						lstWkTime, 
 						lstWkType, 
 						ScreenAtr.CMM045);
-				result.setAppContent(contentGoBack);
+				listOfApp.setAppContent(contentGoBack);
 				break;
 			case STAMP_APPLICATION:
 				// 打刻申請データを作成(tạo data của打刻申請 )
@@ -319,9 +318,9 @@ public class AppContentServiceImpl implements AppContentService {
 						ScreenAtr.CMM045, 
 						companyID, 
 						null);
-				result.setAppContent(appStampDataOutput.getAppContent());
+				listOfApp.setAppContent(appStampDataOutput.getAppContent());
 				// 申請一覧.申請種類表示＝取得した申請種類表示(ApplicationList.AppTypeDisplay= AppTypeDisplay đã get)
-				result.setOpAppTypeDisplay(appStampDataOutput.getOpAppTypeDisplay());
+				listOfApp.setOpAppTypeDisplay(appStampDataOutput.getOpAppTypeDisplay());
 				break;
 			case EARLY_LEAVE_CANCEL_APPLICATION:
 				// 遅刻早退取消申請データを作成(tạo data của 遅刻早退取消申請)
@@ -330,17 +329,17 @@ public class AppContentServiceImpl implements AppContentService {
 						approvalListDisplaySetting.getAppReasonDisAtr(), 
 						ScreenAtr.CMM045, 
 						companyID);
-				result.setAppContent(contentArrivedLateLeaveEarly);
+				listOfApp.setAppContent(contentArrivedLateLeaveEarly);
 				break;
 			default:
-				result.setAppContent("-1");
+				listOfApp.setAppContent("-1");
 				break;
 			}
 		}
 		// 承認フェーズList　＝　Input．Map＜ルートインスタンスID、承認フェーズList＞を取得(ApprovalPhaseList= Input．Map＜get RootInstanceID, ApprovalPhaseList>)
-		result.setOpApprovalPhaseLst(Optional.of(mapApproval.get(application.getAppID())));
+		listOfApp.setOpApprovalPhaseLst(Optional.of(mapApproval.get(application.getAppID())));
 		// 申請一覧．承認状況照会　＝　承認状況照会内容(AppList.ApproveStatusRefer =ApproveStatusReferContents )
-		result.setOpApprovalStatusInquiry(Optional.of(this.getApprovalStatusInquiryContent(result.getOpApprovalPhaseLst().get())));
+		listOfApp.setOpApprovalStatusInquiry(Optional.of(this.getApprovalStatusInquiryContent(listOfApp.getOpApprovalPhaseLst().get())));
 		// アルゴリズム「反映状態を取得する」を実行する(Thực hiện thuật toán [lấy trạng thái phản ánh])
 		ReflectedState reflectedState = application.getAppReflectedState();
 		
@@ -373,8 +372,8 @@ public class AppContentServiceImpl implements AppContentService {
 //			}
 		}
 		// 申請一覧．反映状態　＝　申請の反映状態(ApplicationList. trạng thái phản ánh = trạng thái phản ánh của đơn xin)
-		result.setReflectionStatus(reflectedState.name);
-		return result;
+		listOfApp.setReflectionStatus(reflectedState.name);
+		return listOfApp;
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.applist.service.param;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,10 +39,10 @@ public class AppListInfo {
 	private AppLstApprovalLstDispSet displaySet;
 	
 	public AppListInfo() {
-		this.appLst = Collections.emptyList();
-		this.numberOfApp = null;
+		this.appLst = new ArrayList<>();
+		this.numberOfApp = new ApplicationStatus();
 		this.moreThanDispLineNO = false;
-		this.displaySet = null;
+		this.displaySet = new AppLstApprovalLstDispSet();
 	}
 	
 }
