@@ -22,11 +22,13 @@ public class AchievementDetail {
 	/**
 	 * 1勤務種類コード
 	 */
+	@Setter
 	private String workTypeCD;
 	
 	/**
 	 * 3就業時間帯コード
 	 */
+	@Setter
 	private String workTimeCD;
 	
 	/**
