@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfo;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfoOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
@@ -45,11 +47,17 @@ public class PrintContentOfEachApp {
 	 * 直行直帰申請の印刷内容
 	 */
 	private Optional<InforGoBackCommonDirectOutput> opInforGoBackCommonDirectOutput;
+
+	/*
+	 * 出張申請の印刷内容
+	 */
+	private Optional<BusinessTripInfoOutput> opBusinessTrip;
 	
 	public PrintContentOfEachApp() {
 		this.opPrintContentOfWorkChange = Optional.empty();
 		this.opAppStampOutput = Optional.empty();
 		this.opArrivedLateLeaveEarlyInfo = Optional.empty();
 		this.opInforGoBackCommonDirectOutput = Optional.empty();
+		this.opBusinessTrip = Optional.empty();
 	}
 }

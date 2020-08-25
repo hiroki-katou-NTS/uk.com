@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -13,6 +15,8 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ReflectWorkChangeApp implements DomainAggregate {
 	
 	/**

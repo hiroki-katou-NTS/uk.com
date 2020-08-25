@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -12,8 +13,11 @@ import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
  */
 public interface DisplayReasonRepository {
 	
-	public Optional<DisplayReason> findByAppType(String companyID, ApplicationType appType);
+	Optional<DisplayReason> findByAppType(String companyID, ApplicationType appType);
 	
-	public Optional<DisplayReason> findByHolidayAppType(String companyID, HolidayAppType holidayAppType);
-	
+	Optional<DisplayReason> findByHolidayAppType(String companyID, HolidayAppType holidayAppType);
+
+	List<DisplayReason> findByCompanyId(String companyId);
+
+	void saveHolidayAppReason(String companyId, List<DisplayReason> domains);
 }

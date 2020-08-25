@@ -67,9 +67,10 @@ public class AppCommonDomainServiceRegisterImp implements AppCommonDomainService
 			
 		}
 //		2-3.新規画面登録後の処理
+		// TODO: 申請設定 domain has changed!
 		return newAfterRegister.processAfterRegister(
 				application.getAppID(),
-				appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSetting(),
+				appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().get(0),
 				appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet());
 
 	}

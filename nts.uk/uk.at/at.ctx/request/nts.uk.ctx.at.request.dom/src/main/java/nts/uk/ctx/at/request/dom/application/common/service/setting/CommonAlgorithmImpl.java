@@ -52,7 +52,6 @@ import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.OTAppBeforeAccepRestric;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.checkpreappaccept.PreAppAcceptLimit;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.service.AppDeadlineSettingGet;
@@ -63,7 +62,6 @@ import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCom
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbyworkplace.RequestByWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
-import nts.uk.ctx.at.shared.dom.workmanagementmultiple.UseATR;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -152,7 +150,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		// 複数回勤務を取得
 		Optional<WorkManagementMultiple> opWorkManagementMultiple = workManagementMultipleRepository.findByCode(companyID);
 		// 事前申請がいつから受付可能か確認する
-		PreAppAcceptLimit preAppAcceptLimit = applicationSetting.getReceptionRestrictionSetting().checkWhenPreAppCanBeAccepted(opOvertimeAppAtr);
+		// TODO: 申請設定 domain has changed!
+		PreAppAcceptLimit preAppAcceptLimit = applicationSetting.getReceptionRestrictionSettings().get(0).checkWhenPreAppCanBeAccepted(opOvertimeAppAtr);
 		// OUTPUT「申請表示情報(基準日関係なし)」にセットする(Set vào  OUTPUT "application display information (kg liên quan base date)")
 		AppDispInfoNoDateOutput appDispInfoNoDateOutput = new AppDispInfoNoDateOutput(
 				mailServerSetImport.isMailServerSet(), 
@@ -163,7 +162,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				appReasonOutput.getDisplayAppReason(), 
 				appReasonOutput.getDisplayStandardReason(), 
 				appReasonOutput.getReasonTypeItemLst(), 
-				opWorkManagementMultiple.map(x -> x.getUseATR()==UseATR.use).orElse(false));
+				opWorkManagementMultiple.isPresent());
 		if(preAppAcceptLimit.isUseReceptionRestriction()) {
 			appDispInfoNoDateOutput.setOpAdvanceReceptionDate(preAppAcceptLimit.getOpAcceptableDate());
 			appDispInfoNoDateOutput.setOpAdvanceReceptionHours(preAppAcceptLimit.getOpAvailableTime());
@@ -238,15 +237,15 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			opErrorFlag = Optional.of(approvalRootContentImport.getErrorFlag());
 		}
 		// 申請表示情報(申請対象日関係あり)を取得する
+		// TODO: 申請設定 domain has changed!
 		AppDispInfoRelatedDateOutput appDispInfoRelatedDateOutput = this.getAppDispInfoRelatedDate(
 				companyID, 
 				employeeID, 
 				dateLst, 
 				appType, 
 				appDispInfoNoDateOutput.getApplicationSetting().getAppDisplaySetting().getPrePostDisplayAtr(), 
-				appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSetting().getDisplayInitialSegment(),
-				opOvertimeAppAtr,
-				appDispInfoNoDateOutput.getApplicationSetting().getReceptionRestrictionSetting().getOtAppBeforeAccepRestric());
+				appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSettings().get(0).getDisplayInitialSegment(),
+				opOvertimeAppAtr);
 		// 雇用に紐づく締めを取得する
 		int closureID = closureService.getClosureIDByEmploymentCD(empHistImport.getEmploymentCode());
 		// 申請締切設定を取得する
@@ -297,8 +296,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 
 	@Override
 	public AppDispInfoRelatedDateOutput getAppDispInfoRelatedDate(String companyID, String employeeID, List<GeneralDate> dateLst, 
-			ApplicationType appType, DisplayAtr prePostAtrDisp, PrePostInitAtr initValueAtr, Optional<OvertimeAppAtr> opOvertimeAppAtr,
-			OTAppBeforeAccepRestric otAppBeforeAccepRestric) {
+			ApplicationType appType, DisplayAtr prePostAtrDisp, PrePostInitAtr initValueAtr, Optional<OvertimeAppAtr> opOvertimeAppAtr) {
 		AppDispInfoRelatedDateOutput output = new AppDispInfoRelatedDateOutput();
 		// INPUT．事前事後区分表示をチェックする
 		if(prePostAtrDisp == DisplayAtr.NOT_DISPLAY) {
@@ -308,7 +306,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				output.setPrePostAtr(PrePostInitAtr.PREDICT);
 			} else  {
 				// 3.事前事後の判断処理(事前事後非表示する場合)
-				PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(appType, dateLst.get(0), opOvertimeAppAtr.orElse(null), otAppBeforeAccepRestric);
+				PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(appType, dateLst.get(0), opOvertimeAppAtr.get());
 				output.setPrePostAtr(EnumAdaptor.valueOf(prePostAtrJudgment.value, PrePostInitAtr.class));
 			}
 		} else {
@@ -345,14 +343,14 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		// INPUT．「申請表示情報(基準日関係なし) ．申請承認設定．申請設定」．承認ルートの基準日をチェックする
 		if(appDispInfoNoDateOutput.getApplicationSetting().getRecordDate() == RecordDate.SYSTEM_DATE) {
 			// 申請表示情報(申請対象日関係あり)を取得する
+			// TODO: 申請設定 domain has changed!
 			AppDispInfoRelatedDateOutput result = this.getAppDispInfoRelatedDate(
 					companyID, appDispInfoNoDateOutput.getEmployeeInfoLst().stream().findFirst().get().getSid(), 
 					dateLst, 
 					appType, 
 					appDispInfoNoDateOutput.getApplicationSetting().getAppDisplaySetting().getPrePostDisplayAtr(), 
-					appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSetting().getDisplayInitialSegment(),
-					opOvertimeAppAtr,
-					appDispInfoNoDateOutput.getApplicationSetting().getReceptionRestrictionSetting().getOtAppBeforeAccepRestric());
+					appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSettings().get(0).getDisplayInitialSegment(),
+					opOvertimeAppAtr);
 			appDispInfoWithDateOutput.setPrePostAtr(result.getPrePostAtr());
 			appDispInfoWithDateOutput.setOpActualContentDisplayLst(
 					CollectionUtil.isEmpty(result.getActualContentDisplayLst()) ? Optional.empty() : Optional.of(result.getActualContentDisplayLst()));

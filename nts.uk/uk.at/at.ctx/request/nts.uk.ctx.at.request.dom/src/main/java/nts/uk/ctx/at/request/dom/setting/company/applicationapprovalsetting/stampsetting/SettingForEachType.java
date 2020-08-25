@@ -19,18 +19,18 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppC
 public class SettingForEachType {
 	
 	/**
-	 * 下部コメント
+	 * 打刻分類
 	 */
-	private AppCommentSet bottomComment;
-	
+	private StampAtr stampAtr;
+
 	/**
 	 * 上部コメント
 	 */
 	private AppCommentSet topComment;
-	
+
 	/**
-	 * 打刻分類
+	 * 下部コメント
 	 */
-	private StampAtr stampAtr;
+	private AppCommentSet bottomComment;
 	
 }

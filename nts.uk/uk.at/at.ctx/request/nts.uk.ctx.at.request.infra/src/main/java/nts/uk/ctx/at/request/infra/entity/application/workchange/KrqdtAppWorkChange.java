@@ -84,7 +84,7 @@ public class KrqdtAppWorkChange extends UkJpaEntity implements Serializable {
 //	public static final JpaEntityMapper<KrqdtAppWorkChange> MAPPER = new JpaEntityMapper<>(KrqdtAppWorkChange.class);
 
 	
-//	public AppWorkChange toDomain() {
+//	public AppWorkChange toDomainApplicationSetting() {
 //		List<TimeZoneWithWorkNo> timeZoneWithWorkNoLst = new ArrayList<TimeZoneWithWorkNo>();
 //		TimeZoneWithWorkNo timeZoneWithWorkNo1 = new TimeZoneWithWorkNo(1, workTimeStart1, workTimeEnd1);
 //		TimeZoneWithWorkNo timeZoneWithWorkNo2 = new TimeZoneWithWorkNo(2, workTimeStart2, workTimeEnd2);

@@ -72,17 +72,19 @@ public class DetailAfterApprovalImpl implements DetailAfterApproval {
 			}
 		}
 		isAutoSendMail = true;
-		// アルゴリズム「承認処理後にメールを自動送信するか判定」を実行する ( Thực hiện thuật toán「Xác định có tự động gửi thư sau khi xử lý phê duyệt hay không」 
+		// アルゴリズム「承認処理後にメールを自動送信するか判定」を実行する ( Thực hiện thuật toán「Xác định có tự động gửi thư sau khi xử lý phê duyệt hay không」
+		// TODO: 申請設定 domain has changed!
 		ProcessResult processResult1 = approvalMailSendCheck.sendMail(
-				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSetting(), 
+				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().get(0),
 				application, 
 				allApprovalFlg);
 		autoSuccessMail.addAll(processResult1.getAutoSuccessMail());
 		autoFailMail.addAll(processResult1.getAutoFailMail());
 		autoFailServer.addAll(processResult1.getAutoFailServer());
 		// アルゴリズム「新規登録時のメール送信判定」を実行する ( Thực hiện thuật toán 「 Xác định gửi mail khi đăng ký mới」
+		// TODO: 申請設定 domain has changed!
 		ProcessResult processResult2 = newRegisterMailSendCheck.sendMail(
-				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSetting(), 
+				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().get(0),
 				application, 
 				phaseNumber);
 		autoSuccessMail.addAll(processResult2.getAutoSuccessMail());

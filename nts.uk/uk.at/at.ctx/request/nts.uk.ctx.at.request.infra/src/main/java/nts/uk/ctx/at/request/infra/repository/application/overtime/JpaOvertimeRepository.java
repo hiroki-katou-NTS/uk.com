@@ -83,8 +83,8 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 //		}
 //		KrqdtAppOvertime krqdtAppOvertime = opKrqdtAppOvertime.get();
 //		KrqdtApplication_New kafdtApplication = opKafdtApplication.get();
-//		AppOverTime appOverTime = krqdtAppOvertime.toDomain();
-//		appOverTime.setApplication(kafdtApplication.toDomain());
+//		AppOverTime appOverTime = krqdtAppOvertime.toOvertimeAppSetDomain();
+//		appOverTime.setApplication(kafdtApplication.toOvertimeAppSetDomain());
 //		return Optional.of(appOverTime);
 		return Optional.empty();
 	}

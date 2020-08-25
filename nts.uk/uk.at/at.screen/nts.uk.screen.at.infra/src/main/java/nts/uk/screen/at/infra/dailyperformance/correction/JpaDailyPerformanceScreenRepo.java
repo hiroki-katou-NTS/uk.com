@@ -278,7 +278,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	private static final String SELECT_BY_LISTSID_NAME;
 
-	private final static String FIND_APPLICATION_CALL = "SELECT a FROM KfnmtApplicationCall a WHERE a.kfnmtApplicationCallPK.companyId = :companyId ORDER BY a.kfnmtApplicationCallPK.applicationType";
+	private final static String FIND_APPLICATION_CALL = "SELECT a FROM KfnmtApplicationCall a WHERE a.kfnmtApplicationCallPK.companyId = :companyId ORDER BY a.kfnmtApplicationCallPK.closureId";
 
 	private final static String FIND_PERIOD_ORDER_BY_STR_D_FOR_MULTI = "SELECT wi FROM KshmtWorkingCond wi "
 			+ "WHERE wi.kshmtWorkingCondPK.sid = :employeeId " + "AND wi.strD <= :endDate "
