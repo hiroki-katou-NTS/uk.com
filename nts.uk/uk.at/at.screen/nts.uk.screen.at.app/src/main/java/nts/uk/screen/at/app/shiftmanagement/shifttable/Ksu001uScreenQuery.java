@@ -13,6 +13,7 @@ import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.PublicManagementSh
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.PublicManagementShiftTableRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.WorkplaceInfo;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupImport;
@@ -41,7 +42,10 @@ public class Ksu001uScreenQuery {
 	private WorkplaceExportServiceAdapter serviceAdapter;
 	
 	/** 取得する: 組織の表示情報、シフト表の公開管理*/
-	public PublicInfoOganizationDto getPublicInfoOganization(TargetOrgIdenInfor targetOrgIdenInfor, GeneralDate date) {
+	public PublicInfoOganizationDto getPublicInfoOganization(Ksu001uRequest request) {
+		TargetOrganizationUnit unit = TargetOrganizationUnit.valueOf(request.getUnit());
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(unit, Optional.ofNullable(request.getWorkplaceId()),
+				Optional.ofNullable(request.getWorkplaceGroupId()));
 		PublicInfoOganizationDto dto = new PublicInfoOganizationDto();
 		dto.setUnit(targetOrgIdenInfor.getUnit().value);
 		if(targetOrgIdenInfor.getWorkplaceId().isPresent()) {
@@ -56,7 +60,7 @@ public class Ksu001uScreenQuery {
 		TargetOrgIdenInforImpl require = new TargetOrgIdenInforImpl(affWorkplaceGroupRespository, groupAdapter, serviceAdapter);
 		
 		/** 2. 組織の表示情報を取得する(Require, 年月日) **/
-		DisplayInfoOrganization displayInfoOrganization = targetOrgIdenInfor.getDisplayInfor(require, date);
+		DisplayInfoOrganization displayInfoOrganization = targetOrgIdenInfor.getDisplayInfor(require, request.toDate());
 		if(displayInfoOrganization != null) {
 			dto.setDisplayName(displayInfoOrganization.getDisplayName());
 		}	
