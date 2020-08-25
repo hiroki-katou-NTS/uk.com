@@ -243,6 +243,7 @@ module cmm045.a.viewmodel {
 					
 					
                     service.getApplicationList(newParam).done(function(data) {
+
                         self.lstContentApp(data.lstContentApp);
                         let isHidden = data.isDisPreP == 1 ? false : true;
                         self.isHidden(isHidden);
@@ -305,10 +306,6 @@ module cmm045.a.viewmodel {
                         if(self.mode() == 0){
                             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
                         }
-
-
-
-
                         block.clear();
                         dfd.resolve();
                     });

@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPub;
-import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPubExport;
+import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPubExport_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.CommonTimeSheetImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
@@ -24,7 +24,7 @@ public class RecordWorkInfoImpl implements RecordWorkInfoAdapter {
 	
 	@Override
 	public RecordWorkInfoImport getRecordWorkInfo(String employeeId, GeneralDate ymd) {
-		RecordWorkInfoPubExport recordWorkInfo = recordWorkInfoPub.getRecordWorkInfo(employeeId, ymd);
+		RecordWorkInfoPubExport_Old recordWorkInfo = recordWorkInfoPub.getRecordWorkInfo(employeeId, ymd);
 		return new RecordWorkInfoImport(
 				recordWorkInfo.getWorkTypeCode(), 
 				recordWorkInfo.getWorkTimeCode(), 
