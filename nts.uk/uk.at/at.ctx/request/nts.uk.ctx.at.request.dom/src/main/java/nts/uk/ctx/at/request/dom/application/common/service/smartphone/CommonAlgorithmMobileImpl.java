@@ -286,7 +286,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 				appDateLst.stream().findFirst(), 
 				appType, 
 				applicationSetting.getAppDisplaySetting().getPrePostDisplayAtr(),
-				applicationSetting.getAppTypeSettings().get(0).getDisplayInitialSegment(),
+				applicationSetting.getAppTypeSettings().get(0).getDisplayInitialSegment().orElse(null),
 				opOvertimeAppAtr);
 		// INPUT．「申請種類」をチェックする
 		Optional<List<ActualContentDisplay>> opActualContentDisplayLst = Optional.empty();

@@ -244,7 +244,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				dateLst, 
 				appType, 
 				appDispInfoNoDateOutput.getApplicationSetting().getAppDisplaySetting().getPrePostDisplayAtr(), 
-				appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSettings().get(0).getDisplayInitialSegment(),
+				appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSettings().get(0).getDisplayInitialSegment().orElse(null),
 				opOvertimeAppAtr);
 		// 雇用に紐づく締めを取得する
 		int closureID = closureService.getClosureIDByEmploymentCD(empHistImport.getEmploymentCode());
@@ -349,7 +349,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 					dateLst, 
 					appType, 
 					appDispInfoNoDateOutput.getApplicationSetting().getAppDisplaySetting().getPrePostDisplayAtr(), 
-					appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSettings().get(0).getDisplayInitialSegment(),
+					appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSettings().get(0).getDisplayInitialSegment().orElse(null),
 					opOvertimeAppAtr);
 			appDispInfoWithDateOutput.setPrePostAtr(result.getPrePostAtr());
 			appDispInfoWithDateOutput.setOpActualContentDisplayLst(
