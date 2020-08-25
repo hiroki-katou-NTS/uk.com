@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
@@ -22,8 +21,13 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplication;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplicationRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CheckAttdErrorAfterStampService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.DailyAttdErrorInfo;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
 import nts.uk.ctx.at.request.app.find.setting.company.displayname.AppDispNameDto;
@@ -71,17 +75,23 @@ public class GetOmissionContent {
 
 	@Inject
 	private StampSetPerRepository stampSetPerRepo;
+	
+	@Inject
+	private SettingsSmartphoneStampRepository settingSmartPhone;
+	
+	@Inject
+	private PortalStampSettingsRepository settingPotal;
 
 	public GetOmissionContentDto getOmission(StampButtonCommand query) {
 
 		GetOmissionContentDto result = new GetOmissionContentDto();
 
-		CheckAttdErrorAfterStampRequiredImpl require = new CheckAttdErrorAfterStampRequiredImpl(stamPromptAppRepo,
-				erAlApplicationRepo, employeeDailyPerErrorRepo, stampSetPerRepo);
+		CheckAttdErrorAfterStampRequiredImpl require = new CheckAttdErrorAfterStampRequiredImpl();
 
 		// 1.require, 社員ID, 打刻手段, 打刻ボタン
 		List<DailyAttdErrorInfo> errorInfo = CheckAttdErrorAfterStampService.get(require,
-				AppContexts.user().employeeId(), query.toDomainValue());
+				AppContexts.user().employeeId(), EnumAdaptor.valueOf(query.getStampMeans(), StampMeans.class),
+				query.toDomainValue());
 
 		result.setErrorInfo(
 				errorInfo.stream().map(x -> DailyOmissionAttdErrorInfoDto.fromDomain(x)).collect(Collectors.toList()));
@@ -126,20 +136,8 @@ public class GetOmissionContent {
 
 	}
 
-	@AllArgsConstructor
+	
 	private class CheckAttdErrorAfterStampRequiredImpl implements CheckAttdErrorAfterStampService.Require {
-
-		@Inject
-		private StampPromptAppRepository stamPromptAppRepo;
-
-		@Inject
-		private ErAlApplicationRepository erAlApplicationRepo;
-
-		@Inject
-		private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepo;
-
-		@Inject
-		private StampSetPerRepository stampSetPerRepo;
 
 		@Override
 		public Optional<StampPromptApplication> getStampSet() {
@@ -177,6 +175,16 @@ public class GetOmissionContent {
 		@Override
 		public Optional<StampSettingPerson> getStampSetPer() {
 			return stampSetPerRepo.getStampSetting(AppContexts.user().companyId());
+		}
+
+		@Override
+		public Optional<SettingsSmartphoneStamp> getSettingSmartPhone() {
+			return settingSmartPhone.get(AppContexts.user().companyId());
+		}
+
+		@Override
+		public Optional<PortalStampSettings> getSettingPortal() {
+			return settingPotal.get(AppContexts.user().companyId());
 		}
 
 	}

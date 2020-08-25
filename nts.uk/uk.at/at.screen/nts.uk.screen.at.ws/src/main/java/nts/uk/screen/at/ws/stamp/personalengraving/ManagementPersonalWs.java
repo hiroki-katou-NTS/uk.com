@@ -56,9 +56,9 @@ public class ManagementPersonalWs {
 	}
 	
 	@POST
-	@Path("getDailyError/{pageNo}/{buttonDisNo}")
-	public DailyAttdErrorInfoDto getDailyError(@PathParam("pageNo") Integer pageNo, @PathParam("buttonDisNo") Integer buttonDisNo) {
-		return this.omissionContentsFinder.getOmissionContents(pageNo, buttonDisNo);
+	@Path("getDailyError/{pageNo}/{buttonDisNo}/{stampMeans}")
+	public DailyAttdErrorInfoDto getDailyError(@PathParam("pageNo") Integer pageNo, @PathParam("buttonDisNo") Integer buttonDisNo, @PathParam("stampMeans") Integer stampMeans) {
+		return this.omissionContentsFinder.getOmissionContents(pageNo, buttonDisNo, stampMeans);
 	}
 	
 	@POST
