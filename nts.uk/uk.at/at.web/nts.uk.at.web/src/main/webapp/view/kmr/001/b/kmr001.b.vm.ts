@@ -21,7 +21,7 @@ module nts.uk.at.kmr001.b {
         isEditable: KnockoutObservable<boolean>;
         model : KnockoutObservable<Reservation> = ko.observable(new Reservation(0,0,0,0,0,0,0,'',0,0,
             '',0,0,0));
-
+        visibleContentChangeDeadline: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
         	super();
             const vm = this;
@@ -47,14 +47,20 @@ module nts.uk.at.kmr001.b {
             const vm = this;
             vm.$blockui("invisible");
             vm.$ajax(API.GET_BENTO_RESERVATION).done((data: Reservation) => {
-                vm.$blockui("clear");
-                vm.model(new Reservation(Number(data.operationDistinction), Number(data.referenceTime),
-                    data.contentChangeDeadline ? Number(data.contentChangeDeadline) : 0,
-                    Number(data.contentChangeDeadlineDay), Number(data.orderDeadline),
-                    Number(data.monthlyResults), Number(data.dailyResults), data.reservationFrameName1.toString(),
-                    Number(data.reservationStartTime1), Number(data.reservationEndTime1), data.reservationFrameName2 ? data.reservationFrameName2.toString() : "",
-                    data.reservationStartTime2 ? Number(data.reservationStartTime2) : null, data.reservationEndTime2 ? Number(data.reservationEndTime2) : null, Number(data.orderedData))
-                );
+                if(data) {
+                    vm.$blockui("clear");
+                    vm.model(new Reservation(Number(data.operationDistinction), Number(data.referenceTime),
+                        data.contentChangeDeadline ? Number(data.contentChangeDeadline) : 0,
+                        Number(data.contentChangeDeadlineDay), Number(data.orderDeadline),
+                        Number(data.monthlyResults), Number(data.dailyResults), data.reservationFrameName1.toString(),
+                        Number(data.reservationStartTime1), Number(data.reservationEndTime1), data.reservationFrameName2 ? data.reservationFrameName2.toString() : "",
+                        data.reservationStartTime2 ? Number(data.reservationStartTime2) : null, data.reservationEndTime2 ? Number(data.reservationEndTime2) : null, Number(data.orderedData))
+                    );
+                    if(Number(data.contentChangeDeadline) == 1) {
+                        vm.visibleContentChangeDeadline(true);
+                    }
+                }
+
             }).always(() => this.$blockui("clear"));
         }
 
@@ -151,7 +157,14 @@ module nts.uk.at.kmr001.b {
             this.reservationFrameName2 = ko.observable(reservationFrameName2),
             this.reservationStartTime2 = ko.observable(reservationStartTime2),
             this.reservationEndTime2 = ko.observable(reservationEndTime2),
-            this.orderedData = ko.observable(orderedData)
+            this.orderedData = ko.observable(orderedData),
+            this.contentChangeDeadline.subscribe(data => {
+                if(data == 1) {
+                    nts.uk.ui._viewModel.content.visibleContentChangeDeadline(true);
+                    return;
+                }
+                nts.uk.ui._viewModel.content.visibleContentChangeDeadline(false);
+            })
         };
     }
 

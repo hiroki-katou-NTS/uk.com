@@ -8,7 +8,7 @@
 <ui:composition template="/master/base.xhtml">
 	<ui:define name="htmlHead">
 		<com:ValidatorScript>
-			nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth
+			nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReferenceTime
 			nts.uk.ctx.at.record.dom.reservation.bento.rules.BentoReservationTimeName
 			nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationTime
 		</com:ValidatorScript>
@@ -23,7 +23,7 @@
 			<!--B1_1-->
 			<a class="goback" tabindex="1" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }, text: $i18n('KMR001_3')"></a>
 			<!--B1_2-->
-			<button class="proceed" tabindex="1" data-bind="click: registerBentoReserveSetting, text: $i18n('KMR001_4'), enable: $root.errors.isEmpty"></button>
+			<button class="proceed" tabindex="2" data-bind="click: registerBentoReserveSetting, text: $i18n('KMR001_4'), enable: $root.errors.isEmpty"></button>
 			<hr/>
 			<div class="break-line"></div>
 		</div>
@@ -64,7 +64,7 @@
 							enable: true,
 							readonly: false,
 							required: true,
-							constraint: 'AttendanceTimeMonth',
+							constraint: 'ReferenceTime',
 							value: referenceTime,
 							name: $i18n('KMR001_9')
 							}"  />
@@ -80,7 +80,7 @@
 					</td>
 					<td>
 						<!--B19_2-->
-						<span class="label" data-bind="text: $i18n('KMR001_69')"></span>
+						<span class="label reservation" data-bind="text: $i18n('KMR001_69')"></span>
 						<!--B19_3-->
 						<input tabindex="5" data-bind="ntsTextEditor: {
 							required: true,
@@ -89,9 +89,10 @@
 							name: $i18n('KMR001_69')
 						}"
 						/>
-
+					</td>
+					<td>
 						<!--B19_4-->
-						<span class="label" data-bind="text: $i18n('KMR001_70')"></span>
+						<span class="label label reservation" data-bind="text: $i18n('KMR001_70')"></span>
 
 						<!--B19_5-->
 						<span>
@@ -130,7 +131,7 @@
 					</td>
 					<td>
 						<!--B20_2-->
-						<span class="label" data-bind="text: $i18n('KMR001_73')"></span>
+						<span class="label reservation" data-bind="text: $i18n('KMR001_73')"></span>
 
 						<!--B20_3-->
 						<input tabindex="8" data-bind="ntsTextEditor: {
@@ -139,9 +140,10 @@
 							name: $i18n('KMR001_73')
 							}"
 						/>
-
+					</td>
+					<td>
 						<!--B20_4-->
-						<span class="label" data-bind="text: $i18n('KMR001_74')"></span>
+						<span class="label reservation" data-bind="text: $i18n('KMR001_74')"></span>
 
 						<!--B20_5-->
 						<span>
@@ -198,7 +200,8 @@
 						/>
 
 						<!--B10_3-->
-						<div tabindex="-1" style="width: 90px; top: 10px; padding: 0 10px" data-bind="ntsComboBox: {
+						<div style="display: inline;" data-bind="if: vm.visibleContentChangeDeadline() ">
+							<div tabindex="-1" style="width: 90px; top: 10px; padding: 0 10px" data-bind="ntsComboBox: {
 							name:$i18n('KMR001_23'),
 							options: vm.itemsReservationChangeDay,
 							optionsValue: 'appId',
@@ -206,10 +209,12 @@
 							value: contentChangeDeadlineDay,
 							enable: true,
 							columns: [{ prop: 'appValue'}]}"
-						/>
+							/>
 
-						<!--B10_4-->
-						<span>日間まで</span>
+							<!--B10_4-->
+							<span>日間まで</span>
+						</div>
+
 					</td>
 				</tr>
 				<tr>
