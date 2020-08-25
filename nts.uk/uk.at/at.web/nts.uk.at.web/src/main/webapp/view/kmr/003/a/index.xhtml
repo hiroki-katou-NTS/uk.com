@@ -27,9 +27,9 @@
             <ui:define name="content">
                 <div id="functions-area">
                     <!--A1_2-->
-                    <button tabindex="1" class="proceed" data-bind="click: updateReservation">#{i18n.getText('KMR003_2')}</button>
+                    <button tabindex="1" class="proceed" data-bind="click: updateReservation, enable: $root.errors.isEmpty">#{i18n.getText('KMR003_2')}</button>
                     <!--A1_3-->
-                    <button tabindex="2" class="danger" data-bind="click: deleteReservation, enable: searchConditionValue() != 3">#{i18n.getText('KMR003_3')}</button>
+                    <button tabindex="2" class="danger" data-bind="click: deleteReservation, enable: searchConditionValue() != 3 &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KMR003_3')}</button>
                 </div>
                 <div id="contents-area">
                     <div class="kmr003-left-content">
