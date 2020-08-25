@@ -3,10 +3,12 @@
 /// <reference path="../generic/jqueryui/jqueryui.d.ts" />
 /// <reference path="../generic/momentjs/moment.d.ts" />
 /// <reference path="../generic/knockoutjs/knockout.d.ts" />
+/// <reference path="./nts.uk.device.d.ts" />
 /// <reference path="./nts.uk.com.web.nittsu.bundles.d.ts" />
 
 /** Decorator for load ViewModel of main View*/
 declare function bean(): any;
+declare function bean(dialogOptions: DialogOption): any;
 
 /** Decorator for auto create binding handler */
 declare function handler(params: BindingOption): any;
@@ -28,6 +30,18 @@ declare const __viewContext: ViewContext;
 
 declare type WEB_APP = 'at' | 'com' | 'hr' | 'pr';
 
+interface DialogOption {
+	forGrid: boolean;
+	headers: ErrorHandler[];
+}
+
+interface ErrorHandler {
+	name: string;
+	text: string;
+	width: number | string;
+	visible: boolean;
+}
+
 interface ViewContext {
 	readonly noHeader: boolean;
 
@@ -43,7 +57,11 @@ interface ViewContext {
 	readonly title: string;
 	readonly transferred: nts.uk.util.optional.Optional<any>;
 
-	readonly bind: (viewModel: any) => void;
+	readonly bind: {
+		(viewModel: any): void;
+		(viewModel: any, dialogOptions: DialogOption): void;
+	};
+	
 	readonly ready: (callback: () => void) => void;
 }
 
@@ -126,6 +144,12 @@ interface ComponentViewModel {
 			readonly personalInfo: string | null;
 			readonly personnel: string | null;
 			readonly systemAdmin: string | null;
+			readonly isInCharge: {
+				readonly attendance: boolean;
+				readonly payroll: boolean;
+				readonly personalInfo: boolean;
+				readonly personnel: boolean;
+			};
 		};
 	};
 	readonly $program: {
@@ -141,6 +165,9 @@ interface ComponentViewModel {
 		};
 		readonly today: {
 			(): Date;
+		};
+		readonly interval: {
+			(intv: number): void;
 		};
 	};
 	readonly $i18n: {

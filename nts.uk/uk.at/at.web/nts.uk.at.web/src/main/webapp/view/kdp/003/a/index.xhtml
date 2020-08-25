@@ -55,7 +55,8 @@
 							<div tabindex="2" data-bind="kdp-tab-button-panel: { 
 										tabs: $vm.buttonPage.tabs,
 										stampToSuppress: $vm.buttonPage.stampToSuppress,
-										click: function(btn, layout) { $vm.stampButtonClick.apply($vm, [btn, layout]); }
+										click: function(btn, layout) { $vm.stampButtonClick.apply($vm, [btn, layout]); },
+										marginBottom: 0
 									}"></div>
 						</com:ko-if>
 						<com:ko-if bind="!!ko.unwrap($vm.message)">

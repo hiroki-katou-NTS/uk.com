@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.stamp.application;
 
+import java.io.Serializable;
+
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,9 +16,14 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
-@Table(name="KRCCT_STAMP_RECORD_DIS")
-public class KrccpStampRecordDis  extends ContractUkJpaEntity{
+@Table(name="KRCMT_STAMP_RECORD_DIS")
+public class KrccpStampRecordDis  extends ContractUkJpaEntity implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@EmbeddedId
     public KrccpStampRecordDisPk pk;
 	
@@ -24,7 +31,7 @@ public class KrccpStampRecordDis  extends ContractUkJpaEntity{
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID")
     })
-	public KrccpStampFunction krccpStampFunction;
+	public KrcmtStampFunction krccpStampFunction;
 	
 	public static  KrccpStampRecordDis toEntity(StampAttenDisplay x){
 		return new KrccpStampRecordDis(new KrccpStampRecordDisPk(x.getCompanyId(), x.getDisplayItemId()));

@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.at.record.app.find.worklocation.Kcp012WorkplaceListDto;
 import nts.uk.ctx.at.record.app.find.worklocation.WorkLocationDto;
 import nts.uk.ctx.at.record.app.find.worklocation.WorkLocationFinder;
 
@@ -29,6 +30,12 @@ public class WorkPlaceWebservice {
 	public void getByCode(@PathParam("workLocationCD") String workLocationCD){
 		this.workPlaceFinder.getWorkPlace(workLocationCD);
 		
+	}
+	
+	@POST
+	@Path("kcp012")
+	public List<Kcp012WorkplaceListDto> findAllWorkplace() {
+		return this.workPlaceFinder.findWorkplaceList();
 	}
 
 	

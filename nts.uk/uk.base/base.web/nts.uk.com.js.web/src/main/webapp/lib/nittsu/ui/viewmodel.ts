@@ -48,7 +48,7 @@ const prefix = 'nts.uk.storage'
 	};
 
 /** Create new ViewModel and automatic binding to __viewContext */
-function bean(): any {
+function bean(dialogOption?: DialogOption): any {
 	return function (ctor: any): any {
 		__viewContext.ready(() => {
 			$storage().then(($params: any) => {
@@ -71,10 +71,10 @@ function bean(): any {
 					}
 				});
 
-				__viewContext.bind($viewModel);
+				__viewContext.bind($viewModel, dialogOption);
 			});
 		});
-	}
+	};
 }
 
 function component(options: { name: string; template: string; }): any {
@@ -127,7 +127,6 @@ function component(options: { name: string; template: string; }): any {
 }
 
 function handler(params: { virtual?: boolean; bindingName: string; validatable?: boolean; }) {
-
 	return function (constructor: { new(): KnockoutBindingHandler; }) {
 		ko.bindingHandlers[params.bindingName] = new constructor();
 		ko.virtualElements.allowedBindings[params.bindingName] = !!params.virtual;
@@ -136,7 +135,7 @@ function handler(params: { virtual?: boolean; bindingName: string; validatable?:
 		if (params.validatable) {
 			ko.utils.extend(ko.expressionRewriting.bindingRewriteValidators, { [params.bindingName]: false });
 		}
-	}
+	};
 }
 
 // create base viewmodel for all implement
@@ -181,6 +180,7 @@ BaseViewModel.prototype.$program = __viewContext['program'];
 
 const $date = {
 	diff: 0,
+	tick: -1,
 	now() {
 		return Date.now()
 	},
@@ -189,11 +189,16 @@ const $date = {
 	}
 };
 
-request.ajax('/server/time/now').then((time: string) => {
-	Object.defineProperty($date, 'diff', {
-		value: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
+const getTime = () => {
+	request.ajax('/server/time/now').then((time: string) => {
+		_.extend($date, {
+			diff: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
+		});
 	});
-})
+};
+
+// get date time now
+getTime();
 
 BaseViewModel.prototype.$date = Object.defineProperties($date, {
 	now: {
@@ -204,6 +209,15 @@ BaseViewModel.prototype.$date = Object.defineProperties($date, {
 	today: {
 		value: function $today() {
 			return moment($date.now()).startOf('day').toDate();
+		}
+	},
+	interval: {
+		value: function $interval(interval: number) {
+			// clear default intervale
+			clearInterval($date.tick);
+
+			// set new interface
+			$date.tick = setInterval(getTime, interval);
 		}
 	}
 });

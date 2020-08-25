@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.query.kdp.kdp003.a;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,7 +44,7 @@ public class GetListEmployeeHaveBeenStamped {
 		GetFingerStampSettingDto fingerStampSetting = stampSetting.getFingerStampSetting(companyId);
 		
 		// note: 共有打刻の打刻設定.氏名選択利用する＝false
-		if(!fingerStampSetting.getStampSetting().isNameSelectArt()) {
+		if (fingerStampSetting.getStampSetting() == null || !fingerStampSetting.getStampSetting().isNameSelectArt()) {
 			return new ArrayList<EmployeeStampData>();
 		}
 		
@@ -67,13 +68,14 @@ public class GetListEmployeeHaveBeenStamped {
 		// note: アルゴリズム「<<Public>> 社員の情報を取得する」を実行する
 		List<EmployeeInformation> export = empInfoRepo.find(query);
 		
-		return employeeIds.stream().map(empid -> {
+		return new HashSet<>(employeeIds).stream().map(empid -> {
 			Optional<EmployeeInformation> emb = export.stream().filter(f -> f.getEmployeeId().equals(empid))
 					.findFirst();
 
 			return EmployeeStampData.builder()
 					.employeeId(empid).employeeCode(emb.map(m -> m.getEmployeeCode()).orElse(""))
-					.employeeName(emb.map(m -> m.getBusinessNameKana().isEmpty() ? m.getBusinessName() : m.getBusinessNameKana()).orElse(""))
+					.employeeName(emb.map(m -> m.getBusinessName()).orElse(""))
+					.employeeNameKana(emb.map(m -> m.getBusinessNameKana()).orElse(""))
 					.build();
 		}).collect(Collectors.toList());
 	}
