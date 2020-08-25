@@ -8,10 +8,11 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppMasterInfo;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationStatus;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.ContentApp;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ApplicationListDto {
+public class ApplicationListDtoMobile {
 	private Integer isDisPreP;
 	private String startDate;
 	private String endDate;
