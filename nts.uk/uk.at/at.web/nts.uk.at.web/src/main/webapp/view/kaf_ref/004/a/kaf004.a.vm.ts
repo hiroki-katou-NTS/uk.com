@@ -23,10 +23,10 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         lateOrEarlyInfo4: KnockoutObservable<LateOrEarlyInfo>;
         managementMultipleWorkCycles: KnockoutObservable<Boolean>;
         isSendMail: KnockoutObservable<Boolean>;
-        isEnable1: KnockoutObservable<Boolean> = ko.observable(true);
-        isEnable2: KnockoutObservable<Boolean> = ko.observable(true);
-        isEnable3: KnockoutObservable<Boolean> = ko.observable(true);
-        isEnable4: KnockoutObservable<Boolean> = ko.observable(true);
+        isEnable1: KnockoutObservable<Boolean> = ko.observable(false);
+        isEnable2: KnockoutObservable<Boolean> = ko.observable(false);
+        isEnable3: KnockoutObservable<Boolean> = ko.observable(false);
+        isEnable4: KnockoutObservable<Boolean> = ko.observable(false);
 
         created(params: any) {
             const vm = this;
@@ -44,11 +44,11 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             vm.managementMultipleWorkCycles = ko.observable(false);
             vm.isSendMail = ko.observable(false);
 
-            vm.application().prePostAtr.subscribe(() => {
-                if (ko.toJS(vm.application().prePostAtr) === 0) {
-                    vm.workManagement.clearData();
-                }
-            });
+            // vm.application().prePostAtr.subscribe(() => {
+            //     if (ko.toJS(vm.application().prePostAtr) === 0) {
+            //         vm.workManagement.clearData();
+            //     }
+            // });
 
             vm.$blockui('show');
             let dates: string[] = [];
@@ -221,44 +221,105 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                 }).always(() => vm.$blockui("hide"));
             });
 
-
-
-            this.isEnable1 = ko.computed(() => {
-                return this.condition13(1);
-            }, this);
-
-            this.isEnable2(this.condition13(2));
-            this.isEnable3(this.condition13(3));
-            this.isEnable4(this.condition13(4));
+            vm.isEnable1(ko.toJS(vm.condition13(1)));
+            vm.isEnable2(ko.toJS(vm.condition13(2)));
+            vm.isEnable3(ko.toJS(vm.condition13(3)));
+            vm.isEnable4(ko.toJS(vm.condition13(4)));
 
         }
 
         mounted() {
             const vm = this;
 
-            if(vm.workManagement.workTime() === null) {
+            if (vm.workManagement.workTime() === null) {
                 vm.lateOrEarlyInfo1().isActive(false);
             } else {
                 vm.lateOrEarlyInfo1().isActive(true);
             }
 
-            if(vm.workManagement.leaveTime() === null) {
+            if (vm.workManagement.leaveTime() === null) {
                 vm.lateOrEarlyInfo2().isActive(false);
             } else {
                 vm.lateOrEarlyInfo2().isActive(true);
             }
 
-            if(vm.workManagement.workTime2() === null) {
+            if (vm.workManagement.workTime2() === null) {
                 vm.lateOrEarlyInfo3().isActive(false);
             } else {
                 vm.lateOrEarlyInfo3().isActive(true);
             }
 
-            if(vm.workManagement.leaveTime2() === null) {
+            if (vm.workManagement.leaveTime2() === null) {
                 vm.lateOrEarlyInfo4().isActive(false);
             } else {
                 vm.lateOrEarlyInfo4().isActive(true);
             }
+
+            // vm.workManagement.workTime.subscribe(() => {
+            //     if(vm.lateOrEarlyInfo1().isIndicated() && vm.lateOrEarlyInfo1().isActive() && vm.lateOrEarlyInfo1().isCheck()) {
+            //         vm.isEnable1(true);
+            //     }
+            // });
+            vm.application().prePostAtr.subscribe(() => {
+                if(vm.application().prePostAtr() === 0) {
+                    vm.isEnable1(false);
+                    vm.isEnable2(false);
+                    vm.isEnable3(false);
+                    vm.isEnable4(false);
+                }
+            });
+
+            vm.lateOrEarlyInfo1().isCheck.subscribe(() => {
+                if(vm.lateOrEarlyInfo1().isIndicated() && ko.toJS(vm.condition10Activation(1)) && vm.lateOrEarlyInfo1().isCheck()) {
+                    vm.isEnable1(true);
+                } else {
+                    vm.isEnable1(false);
+                }
+            });
+            vm.condition10Activation(1).subscribe(() => {
+                if(vm.lateOrEarlyInfo1().isIndicated() && ko.toJS(vm.condition10Activation(1)) && vm.lateOrEarlyInfo1().isCheck()) {
+                    vm.isEnable1(true);
+                }
+            });
+
+            vm.lateOrEarlyInfo2().isCheck.subscribe(() => {
+                if(vm.lateOrEarlyInfo2().isIndicated() && ko.toJS(vm.condition10Activation(2)) && vm.lateOrEarlyInfo2().isCheck()) {
+                    vm.isEnable2(true);
+                } else {
+                    vm.isEnable2(false);
+                }
+            });
+            vm.condition10Activation(2).subscribe(() => {
+                if(vm.lateOrEarlyInfo2().isIndicated() && ko.toJS(vm.condition10Activation(2)) && vm.lateOrEarlyInfo2().isCheck()) {
+                    vm.isEnable2(true);
+                }
+            });
+
+            vm.lateOrEarlyInfo3().isCheck.subscribe(() => {
+                if(vm.lateOrEarlyInfo3().isIndicated() && ko.toJS(vm.condition10Activation(3)) && vm.lateOrEarlyInfo3().isCheck()) {
+                    vm.isEnable3(true);
+                } else {
+                    vm.isEnable3(false);
+                }
+            });
+            vm.condition10Activation(3).subscribe(() => {
+                if(vm.lateOrEarlyInfo3().isIndicated() && ko.toJS(vm.condition10Activation(3)) && vm.lateOrEarlyInfo3().isCheck()) {
+                    vm.isEnable3(true);
+                }
+            });
+
+            vm.lateOrEarlyInfo4().isCheck.subscribe(() => {
+                if(vm.lateOrEarlyInfo4().isIndicated() && ko.toJS(vm.condition10Activation(4)) && vm.lateOrEarlyInfo4().isCheck()) {
+                    vm.isEnable4(true);
+                } else {
+                    vm.isEnable4(false);
+                }
+            });
+            vm.condition10Activation(4).subscribe(() => {
+                if(vm.lateOrEarlyInfo4().isIndicated() && ko.toJS(vm.condition10Activation(4)) && vm.lateOrEarlyInfo4().isCheck()) {
+                    vm.isEnable4(true);
+                }
+            });
         }
 
         register() {
@@ -454,27 +515,29 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         // ※13
         public condition13(idItem: number) {
             const vm = this;
-            if(vm.application().prePostAtr() === 1) {
-                switch (idItem) {
-                    case IdItem.A6_7: {
-                        return this.workManagement.workTime() !== null || vm.lateOrEarlyInfo1().isCheck();
-                        // return _.isEmpty(ko.toJS(this.workManagement.workTime));
-                    } case IdItem.A6_13: {
-                        return this.workManagement.leaveTime() !== null || vm.lateOrEarlyInfo2().isCheck();
-                        // return _.isEmpty(ko.toJS(this.workManagement.leaveTime));
-                    } case IdItem.A6_19: {
-                        return this.workManagement.workTime2() !== null || vm.lateOrEarlyInfo3().isCheck();
-                        // return _.isEmpty(ko.toJS(this.workManagement.workTime2));
-                    } case IdItem.A6_25: {
-                        return this.workManagement.leaveTime2() !== null || vm.lateOrEarlyInfo4().isCheck();
-                        // return _.isEmpty(ko.toJS(this.workManagement.leaveTime2));
-                    } default: {
-                        return false;
+            return ko.computed(() => {
+                if (vm.application().prePostAtr() === 1) {
+                    switch (idItem) {
+                        case IdItem.A6_7: {
+                            return vm.workManagement.workTime() !== null && vm.lateOrEarlyInfo1().isIndicated() && vm.lateOrEarlyInfo1().isActive() && vm.lateOrEarlyInfo1().isCheck();
+                            // return _.isEmpty(ko.toJS(this.workManagement.workTime));
+                        } case IdItem.A6_13: {
+                            return vm.workManagement.leaveTime() !== null && vm.lateOrEarlyInfo2().isIndicated() && vm.lateOrEarlyInfo2().isActive() && vm.lateOrEarlyInfo2().isCheck();
+                            // return _.isEmpty(ko.toJS(this.workManagement.leaveTime));
+                        } case IdItem.A6_19: {
+                            return vm.workManagement.workTime2() !== null && vm.lateOrEarlyInfo3().isIndicated() && vm.lateOrEarlyInfo3().isActive() && vm.lateOrEarlyInfo3().isCheck();
+                            // return _.isEmpty(ko.toJS(this.workManagement.workTime2));
+                        } case IdItem.A6_25: {
+                            return vm.workManagement.leaveTime2() !== null && vm.lateOrEarlyInfo4().isIndicated() && vm.lateOrEarlyInfo4().isActive() && vm.lateOrEarlyInfo4().isCheck();
+                            // return _.isEmpty(ko.toJS(this.workManagement.leaveTime2));
+                        } default: {
+                            return false;
+                        }
                     }
                 }
-            }
 
-            return false;
+                return false;
+            });
         }
 
         // ※10 display
@@ -517,40 +580,46 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         public condition10Activation(idItem: number) {
             const vm = this;
 
-            // 取り消す初期情報.活性する
-            switch (idItem) {
-                case IdItem.A6_7: {
-                    ko.computed(() => {
+            return ko.computed(() => {
+                // 取り消す初期情報.活性する
+                switch (idItem) {
+                    case IdItem.A6_7: {
                         if (ko.toJS(vm.lateOrEarlyInfo1) == null) {
                             return false;
                         }
+                        if (vm.workManagement.workTime() == null || vm.workManagement.workTime() === "") {
+                            return false;
+                        }
                         return ko.toJS(vm.lateOrEarlyInfo1().isActive);
-                    }, vm);
-                } case IdItem.A6_13: {
-                    ko.computed(() => {
+                    } case IdItem.A6_13: {
                         if (ko.toJS(vm.lateOrEarlyInfo2) == null) {
                             return false;
                         }
+                        if (vm.workManagement.leaveTime() == null || vm.workManagement.leaveTime() === "") {
+                            return false;
+                        }
                         return ko.toJS(vm.lateOrEarlyInfo2().isActive);
-                    }, vm);
-                } case IdItem.A6_19: {
-                    ko.computed(() => {
+                    } case IdItem.A6_19: {
                         if (ko.toJS(vm.lateOrEarlyInfo3) == null) {
                             return false;
                         }
-                        return ko.toJS(vm.lateOrEarlyInfo3().isActive) ;
-                    }, vm);
-                } case IdItem.A6_25: {
-                    ko.computed(() => {
+                        if (vm.workManagement.workTime2() == null || vm.workManagement.workTime2() === "") {
+                            return false;
+                        }
+                        return ko.toJS(vm.lateOrEarlyInfo3().isActive);
+                    } case IdItem.A6_25: {
                         if (ko.toJS(vm.lateOrEarlyInfo4) == null) {
                             return false;
                         }
+                        if (vm.workManagement.leaveTime2() == null || vm.workManagement.leaveTime2() === "") {
+                            return false;
+                        }
                         return ko.toJS(vm.lateOrEarlyInfo4().isActive);
-                    }, vm);
-                } default: {
-                    return true;
+                    } default: {
+                        return true;
+                    }
                 }
-            }
+            }, vm);
 
             // 取り消す初期情報.活性する
             // return true;
