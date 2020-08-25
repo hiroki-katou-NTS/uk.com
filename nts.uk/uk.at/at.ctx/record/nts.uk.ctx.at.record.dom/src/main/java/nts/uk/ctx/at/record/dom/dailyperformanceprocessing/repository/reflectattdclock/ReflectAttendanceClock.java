@@ -320,17 +320,21 @@ public class ReflectAttendanceClock {
 			//打刻反映先に求めた時刻（日区分付き）を入れる
 			TimeLeavingWork timeLeavingWork = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream()
 					.filter(c -> c.getWorkNo().v().intValue() == workNo).findFirst().get();
-			TimeActualStamp timeActualStamp = null;
+			Optional<TimeActualStamp> timeActualStamp = Optional.empty();
 			if(attendanceAtr == AttendanceAtr.GOING_TO_WORK) {
-				timeActualStamp = timeLeavingWork.getAttendanceStamp().get();
+				timeActualStamp = timeLeavingWork.getAttendanceStamp();
 			}else {
-				timeActualStamp = timeLeavingWork.getLeaveStamp().get();
+				timeActualStamp = timeLeavingWork.getLeaveStamp();
+			}
+			if (!timeActualStamp.isPresent()) {
+				timeActualStamp = Optional.of(new TimeActualStamp());
 			}
 			Optional<WorkStamp> workStamp = Optional.empty();
+			
 			if(actualStampAtr == ActualStampAtr.STAMP ) {
-				workStamp = timeActualStamp.getStamp();
+				workStamp = timeActualStamp.get().getStamp();
 			}else if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
-				workStamp = timeActualStamp.getActualStamp();
+				workStamp = timeActualStamp.get().getActualStamp();
 			}
 			if(workStamp.isPresent()) {
 				workStamp.get().getTimeDay().setTimeWithDay(Optional.of(timeWithDayAttr));

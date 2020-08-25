@@ -146,8 +146,8 @@ module nts.uk.at.view.ksu001.q {
 						items.forEach(item => {
 							// self.listperiods.push(item);
 							self.listperiodsTemp.map((x) => {
-								if (x.date.slice(0, 10) == item.date) {
-									return x.value = item.value.toString();
+								if (x.date().slice(0, 10) == item.date) {
+									return x.value(item.value.toString());
 								}
 							})
 						});
@@ -188,8 +188,19 @@ module nts.uk.at.view.ksu001.q {
 				command.unit = self.targetData.unit;
 				command.id = self.targetData.id;
 				command.itemCode = self.selectItemCode();
-				command.dateAndValues = self.listBudgetDaily;
+				var dateValues = [];
+				self.listperiods().forEach((x) => {
+					if (x.value() != "") {
+						dateValues.push({
+							date: x.date().slice(0, 10),
+							value: x.value()
+						});
+					}
+				});
+				command.dateAndValues = dateValues;
 				command.type = self.labelQ32();
+
+
 				service.register(command).done(() => {
 					blockUI.invisible();
 					nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -216,11 +227,11 @@ module nts.uk.at.view.ksu001.q {
 			}
 		}
 		export class ItemModel {
-			date: string;
-			value: string;
+			date: KnockoutObservable<string> = ko.observable('');
+			value: KnockoutObservable<string> = ko.observable('');
 			constructor(date: string, value: string) {
-				this.date = date;
-				this.value = value;
+				this.date(date);
+				this.value(value);
 
 			}
 		}
