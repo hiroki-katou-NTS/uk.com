@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<com:stylefile path="ksm005.a.main.css" />
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="ksm005.a.start.js" />
+				<com:scriptfile path="ksm005.a.service.js" />
+				<com:scriptfile path="ksm005.a.vm.js" />
+				
+			</ui:define>
+	
+			<ui:define name="content">
+				<div tabindex="-1" id="functions-area">
+					<button id="print-button_1" data-bind="click: opencdl028Dialog">#{i18n.getText('KSM005_81')}</button>
+				</div>
+				
+				<div tabindex="-1" id="contents-area">
+					<div tabindex="-1" class="master_setting caret-inline">
+						<div tabindex="-1" class="master_title_left">
+							<label tabindex="-1" class="label_master">#{i18n.getText('KSM005_1')}</label>
+						</div>
+						<label tabindex="-1" class="label_tips">#{i18n.getText('KSM005_2')}</label>
+						
+						<button tabindex="-1" class="large btnconfig caret-right" data-bind="click: openMasterSettingDialog">#{i18n.getText('KSM005_3')}</button>
+					</div>
+					<span tabindex="-1" class="master_setting_caret caret-right"></span>
+					
+					<div tabindex="-1" class="master_setting caret-inline">
+						<div tabindex="-1" class="master_title_right">
+							<label tabindex="-1" class="label_master">#{i18n.getText('KSM005_4')}</label>
+						</div>
+						<label tabindex="-1" class="label_tips">#{i18n.getText('KSM005_5')}</label>
+						
+						<button tabindex="-1" class="large btnconfig caret-right" data-bind="click: openAssignmentSettingDialog">#{i18n.getText('KSM005_6')}</button>
+					</div>
+				</div>
+				
+			</ui:define>
+		</ui:composition>
+	</body>
+</html>
