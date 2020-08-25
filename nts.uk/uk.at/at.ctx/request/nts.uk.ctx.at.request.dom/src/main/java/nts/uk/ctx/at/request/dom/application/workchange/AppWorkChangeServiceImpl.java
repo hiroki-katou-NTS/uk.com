@@ -410,7 +410,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		AppWorkChange appWorkChange = appWorkChangeRepositoryNew.findbyID(companyID, appID).get();
 		
 //		// ドメインモデル「勤務変更申請設定」より取得する 
-//		AppWorkChangeSet appWorkChangeSet = appWorkChangeSetRepoNew.findByCompanyId(companyID).get();
+//		AppWorkChangeSet appWorkChangeSet = appWorkChangeSetRepoNew.findSettingByCompanyId(companyID).get();
 		
 //		勤務変更申請設定を取得する
 		AppWorkChangeSettingOutput appWorkChangeSettingOutput = this.getAppWorkChangeSettingOutput(companyID);

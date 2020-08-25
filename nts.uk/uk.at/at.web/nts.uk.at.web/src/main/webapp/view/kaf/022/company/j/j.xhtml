@@ -46,7 +46,7 @@
 									options: itemListD15,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedIdD15,
+									value: workTimeReflectAtr,
 									enable: true}">
 					</div>
 				</td>
@@ -58,7 +58,7 @@
 									options: itemListD13,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedIdD13,
+									value: extraWorkTimeReflectAtr,
 									enable: true}">
 					</div>
 				</td>
@@ -74,19 +74,19 @@
 					<div class="control-group valign-center">
 						<input tabindex="2" data-bind="ntsTextEditor: {
 										name: '#[KAF022_183]',
-										value: texteditorD9,
+										value: workComment1Content,
 										constraint: 'Comment',
 										required: false,
 										enable: true,
 										readonly: false
 									}" />
 						<div tabindex="3" data-bind="ntsColorPicker: {
-										value: valueD10,
+										value: workComment1Color,
 										enable: true,
 										width: 40
 									}"/>
 						<div tabindex="4" id = "d11" data-bind="ntsCheckBox: {
-										checked: enableD11
+										checked: workComment1Bold
 									}">#{i18n.getText('KAF022_185')}</div>
 					</div>
 				</td>
@@ -102,20 +102,20 @@
 					<div class="control-group valign-center">
 						<input tabindex="2" data-bind="ntsTextEditor: {
 										name: '#[KAF022_183]',
-										value: texteditorD12,
+										value: workComment2Content,
 										constraint: 'Comment',
 										required: false,
 										enable: true,
 										readonly: false
 									}" />
 						<div tabindex="3" data-bind="ntsColorPicker: {
-										value: valueD10_1,
+										value: workComment2Color,
 										name: '#[KAF022_184]',
 										enable: true,
 										width: 40
 									}"/>
 						<div tabindex="4" data-bind="ntsCheckBox: {
-										checked: enableD11_1
+										checked: workComment2Bold
 									}">#{i18n.getText('KAF022_185')}</div>
 					</div>
 				</td>
@@ -141,7 +141,7 @@
 										options: itemListD15,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: selectedIdD15,
+										value: goOutTimeReflectAtr,
 										enable: true}">
 					</div>
 				</td>
@@ -157,7 +157,7 @@
 										options: itemListD15,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: selectedIdD15,
+										value: goOutPrivateDispAtr,
 										enable: true}">
 					</div>
 				</td>
@@ -169,7 +169,7 @@
 										options: itemListD13,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: selectedIdD13,
+										value: goOutOfficeDispAtr,
 										enable: true}">
 					</div>
 				</td>
@@ -181,7 +181,7 @@
 									options: itemListD15,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedIdD15,
+									value: goOutCompensationDispAtr,
 									enable: true}">
 					</div>
 				</td>
@@ -193,7 +193,7 @@
 									options: itemListD13,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedIdD13,
+									value: goOutUnionDispAtr,
 									enable: true}">
 					</div>
 				</td>
@@ -209,19 +209,19 @@
 					<div class="control-group valign-center">
 						<input tabindex="2" data-bind="ntsTextEditor: {
 										name: '#[KAF022_183]',
-										value: texteditorD9,
+										value: goOutComment1Content,
 										constraint: 'Comment',
 										required: false,
 										enable: true,
 										readonly: false
 									}" />
 						<div tabindex="3" data-bind="ntsColorPicker: {
-										value: valueD10,
+										value: goOutComment1Color,
 										enable: true,
 										width: 40
 									}"/>
 						<div tabindex="4" data-bind="ntsCheckBox: {
-										checked: enableD11
+										checked: goOutComment1Bold
 									}">#{i18n.getText('KAF022_185')}</div>
 					</div>
 				</td>
@@ -237,20 +237,20 @@
 					<div class="control-group valign-center">
 						<input tabindex="2" data-bind="ntsTextEditor: {
 										name: '#[KAF022_183]',
-										value: texteditorD12,
+										value: goOutComment2Content,
 										constraint: 'Comment',
 										required: false,
 										enable: true,
 										readonly: false
 									}" />
 						<div tabindex="3" data-bind="ntsColorPicker: {
-										value: valueD10_1,
+										value: goOutComment2Color,
 										name: '#[KAF022_184]',
 										enable: true,
 										width: 40
 									}"/>
 						<div tabindex="4" data-bind="ntsCheckBox: {
-										checked: enableD11_1
+										checked: goOutComment2Bold
 									}">#{i18n.getText('KAF022_185')}</div>
 					</div>
 				</td>
@@ -276,7 +276,7 @@
 										options: itemListD13,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: selectedIdD13,
+										value: breakTimeReflectAtr,
 										enable: true}">
 					</div>
 				</td>
@@ -292,19 +292,19 @@
 					<div class="control-group valign-center">
 						<input tabindex="2" data-bind="ntsTextEditor: {
 											name: '#[KAF022_183]',
-											value: texteditorD9,
+											value: breakComment1Content,
 											constraint: 'Comment',
 											required: false,
 											enable: true,
 											readonly: false
 										}" />
 						<div tabindex="3" data-bind="ntsColorPicker: {
-											value: valueD10,
+											value: breakComment1Color,
 											enable: true,
 											width: 40
 										}"/>
 						<div tabindex="4" data-bind="ntsCheckBox: {
-											checked: enableD11
+											checked: breakComment1Bold
 										}">#{i18n.getText('KAF022_185')}</div>
 					</div>
 				</td>
@@ -320,20 +320,20 @@
 					<div class="control-group valign-center">
 						<input tabindex="2" data-bind="ntsTextEditor: {
 											name: '#[KAF022_183]',
-											value: texteditorD12,
+											value: breakComment2Content,
 											constraint: 'Comment',
 											required: false,
 											enable: true,
 											readonly: false
 										}" />
 						<div tabindex="3" data-bind="ntsColorPicker: {
-											value: valueD10_1,
+											value: breakComment2Color,
 											name: '#[KAF022_184]',
 											enable: true,
 											width: 40
 										}"/>
 						<div tabindex="4" data-bind="ntsCheckBox: {
-											checked: enableD11_1
+											checked: breakComment2Bold
 										}">#{i18n.getText('KAF022_185')}</div>
 					</div>
 				</td>
@@ -359,7 +359,7 @@
 										options: itemListD13,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: selectedIdD13,
+										value: childCareTimeReflecAtr,
 										enable: true}">
 					</div>
 				</td>
@@ -375,19 +375,19 @@
 					<div class="control-group valign-center">
 						<input tabindex="2" data-bind="ntsTextEditor: {
 											name: '#[KAF022_183]',
-											value: texteditorD9,
+											value: childCareComment1Content,
 											constraint: 'Comment',
 											required: false,
 											enable: true,
 											readonly: false
 										}" />
 						<div tabindex="3" data-bind="ntsColorPicker: {
-											value: valueD10,
+											value: childCareComment1Color,
 											enable: true,
 											width: 40
 										}"/>
 						<div tabindex="4" data-bind="ntsCheckBox: {
-											checked: enableD11
+											checked: childCareComment1Bold
 										}">#{i18n.getText('KAF022_185')}</div>
 					</div>
 				</td>
@@ -403,20 +403,20 @@
 					<div class="control-group valign-center">
 						<input tabindex="2" id="d12_1" data-bind="ntsTextEditor: {
 											name: '#[KAF022_183]',
-											value: texteditorD12,
+											value: childCareComment2Content,
 											constraint: 'Comment',
 											required: false,
 											enable: true,
 											readonly: false
 										}" />
 						<div tabindex="3" id="colorpicker" data-bind="ntsColorPicker: {
-											value: valueD10_1,
+											value: childCareComment2Color,
 											name: '#[KAF022_184]',
 											enable: true,
 											width: 40
 										}"/>
 						<div tabindex="4" id="d12_3" data-bind="ntsCheckBox: {
-											checked: enableD11_1
+											checked: childCareComment2Bold
 										}">#{i18n.getText('KAF022_185')}</div>
 					</div>
 				</td>
@@ -442,7 +442,7 @@
 										options: itemListD13,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: selectedIdD13,
+										value: careTimeReflectAtr,
 										enable: true}">
 				</div>
 			</td>
@@ -458,19 +458,19 @@
 				<div class="control-group valign-center">
 					<input tabindex="2" data-bind="ntsTextEditor: {
 											name: '#[KAF022_183]',
-											value: texteditorD9,
+											value: careComment1Content,
 											constraint: 'Comment',
 											required: false,
 											enable: true,
 											readonly: false
 										}" />
 					<div tabindex="3" data-bind="ntsColorPicker: {
-											value: valueD10,
+											value: careComment1Color,
 											enable: true,
 											width: 40
 										}"/>
 					<div tabindex="4" data-bind="ntsCheckBox: {
-											checked: enableD11
+											checked: careComment1Bold
 										}">#{i18n.getText('KAF022_185')}</div>
 				</div>
 			</td>
@@ -486,20 +486,20 @@
 				<div class="control-group valign-center">
 					<input tabindex="2" data-bind="ntsTextEditor: {
 											name: '#[KAF022_183]',
-											value: texteditorD12,
+											value: careComment2Content,
 											constraint: 'Comment',
 											required: false,
 											enable: true,
 											readonly: false
 										}" />
 					<div tabindex="3" data-bind="ntsColorPicker: {
-											value: valueD10_1,
+											value: careComment2Color,
 											name: '#[KAF022_184]',
 											enable: true,
 											width: 40
 										}"/>
 					<div tabindex="4" data-bind="ntsCheckBox: {
-											checked: enableD11_1
+											checked: careComment2Bold
 										}">#{i18n.getText('KAF022_185')}</div>
 				</div>
 			</td>
@@ -525,14 +525,25 @@
 											options: itemListD13,
 											optionsValue: 'code',
 											optionsText: 'name',
-											value: selectedIdD13,
+											value: supportTimeReflecAtr,
 											enable: true}">
 					</div>
 				</td>
 			</tr>
 			<tr class="inline-radio">
 				<td class="color-header">#{i18n.getText('KAF022_243')}</td>
-				<td />
+				<td>
+					<div class="a4_8"
+						 data-bind="ntsComboBox: {
+                            options: supportFrames,
+                            optionsValue: 'code',
+                            visibleItemsCount: 5,
+                            value: supportFrameDispNO,
+                            optionsText: 'name',
+                            columns: [
+                                { prop: 'name', length: 8 }
+                            ]}" />
+				</td>
 			</tr>
 			<tr>
 				<td style="border-bottom: none" class="color-header">
@@ -545,19 +556,19 @@
 					<div class="control-group valign-center">
 						<input tabindex="2" data-bind="ntsTextEditor: {
 												name: '#[KAF022_183]',
-												value: texteditorD9,
+												value: supportComment1Content,
 												constraint: 'Comment',
 												required: false,
 												enable: true,
 												readonly: false
 											}" />
 						<div tabindex="3" data-bind="ntsColorPicker: {
-												value: valueD10,
+												value: supportComment1Color,
 												enable: true,
 												width: 40
 											}"/>
 						<div tabindex="4" data-bind="ntsCheckBox: {
-												checked: enableD11
+												checked: supportComment1Bold
 											}">#{i18n.getText('KAF022_185')}</div>
 					</div>
 				</td>
@@ -573,20 +584,20 @@
 					<div class="control-group valign-center">
 						<input tabindex="2" data-bind="ntsTextEditor: {
 												name: '#[KAF022_183]',
-												value: texteditorD12,
+												value: supportComment2Content,
 												constraint: 'Comment',
 												required: false,
 												enable: true,
 												readonly: false
 											}" />
 						<div tabindex="3" data-bind="ntsColorPicker: {
-												value: valueD10_1,
+												value: supportComment2Color,
 												name: '#[KAF022_184]',
 												enable: true,
 												width: 40
 											}"/>
 						<div tabindex="4" data-bind="ntsCheckBox: {
-												checked: enableD11_1
+												checked: supportComment2Bold
 											}">#{i18n.getText('KAF022_185')}</div>
 					</div>
 				</td>
@@ -616,19 +627,19 @@
 					<div class="control-group valign-center">
 						<input tabindex="2" data-bind="ntsTextEditor: {
 												name: '#[KAF022_183]',
-												value: texteditorD9,
+												value: imageRecordComment1Content,
 												constraint: 'Comment',
 												required: false,
 												enable: true,
 												readonly: false
 											}" />
 						<div tabindex="3" data-bind="ntsColorPicker: {
-												value: valueD10,
+												value: imageRecordComment1Color,
 												enable: true,
 												width: 40
 											}"/>
 						<div tabindex="4" data-bind="ntsCheckBox: {
-												checked: enableD11
+												checked: imageRecordComment1Bold
 											}">#{i18n.getText('KAF022_185')}</div>
 					</div>
 				</td>
@@ -644,122 +655,24 @@
 					<div class="control-group valign-center">
 						<input tabindex="2" data-bind="ntsTextEditor: {
 												name: '#[KAF022_183]',
-												value: texteditorD12,
+												value: imageRecordComment2Content,
 												constraint: 'Comment',
 												required: false,
 												enable: true,
 												readonly: false
 											}" />
 						<div tabindex="3" data-bind="ntsColorPicker: {
-												value: valueD10_1,
+												value: imageRecordComment2Color,
 												name: '#[KAF022_184]',
 												enable: true,
 												width: 40
 											}"/>
 						<div tabindex="4" data-bind="ntsCheckBox: {
-												checked: enableD11_1
+												checked: imageRecordComment1Bold
 											}">#{i18n.getText('KAF022_185')}</div>
 					</div>
 				</td>
 			</tr>
 		</tbody>
 	</table>
-	<div data-bind="foreach: stampTypeSettings">
-		<table id="fixed-table-j22">
-			<colgroup>
-				<col width="270px"/>
-				<col width="650px"/>
-			</colgroup>
-			<thead>
-			<tr>
-				<th class="ui-widget-header" colspan="2" data-bind="text: headerText"/>
-			</tr>
-			</thead>
-			<tbody>
-			<tr class="inline-radio">
-				<td class="color-header" data-bind="text: reflectText"/>
-				<td class="two-radio">
-					<div tabindex="1" data-bind="ntsRadioBoxGroup: {
-									options: $parent.itemListD15,
-									optionsValue: 'code',
-									optionsText: 'name',
-									value: reflectAtr,
-									enable: true}">
-					</div>
-				</td>
-			</tr>
-			<tr class="inline-radio">
-				<td class="color-header" data-bind="text: reflectText"/>
-				<td class="two-radio">
-					<div tabindex="2" data-bind="ntsRadioBoxGroup: {
-									options: $parent.itemListD13,
-									optionsValue: 'code',
-									optionsText: 'name',
-									value: reflectAtr,
-									enable: true}">
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td style="border-bottom: none" class="color-header">
-					<div data-bind="ntsFormLabel: {
-										constraint: 'Comment',
-										inline: true,
-										text: comment1Text
-									}"/>
-				</td>
-				<td>
-					<div class="control-group valign-center">
-						<input tabindex="2" data-bind="ntsTextEditor: {
-										name: '#[KAF022_183]',
-										value: comment1Content,
-										constraint: 'Comment',
-										required: false,
-										enable: true,
-										readonly: false
-									}" />
-						<div tabindex="3" data-bind="ntsColorPicker: {
-										value: comment1Color,
-										enable: true,
-										width: 40
-									}"/>
-						<div tabindex="4" data-bind="ntsCheckBox: {
-										checked: comment1FontWeight
-									}">#{i18n.getText('KAF022_185')}</div>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td style="border-bottom: none" class="color-header">
-					<div data-bind="ntsFormLabel: {
-										constraint: 'Comment',
-										inline: true,
-										text: comment2Text
-									}"/>
-				</td>
-				<td>
-					<div class="control-group valign-center">
-						<input tabindex="2" data-bind="ntsTextEditor: {
-										name: '#[KAF022_183]',
-										value: comment2Content,
-										constraint: 'Comment',
-										required: false,
-										enable: true,
-										readonly: false
-									}" />
-						<div tabindex="3" data-bind="ntsColorPicker: {
-										value: comment2Color,
-										name: '#[KAF022_184]',
-										enable: true,
-										width: 40
-									}"/>
-						<div tabindex="4" data-bind="ntsCheckBox: {
-										checked: comment2FontWeight
-									}">#{i18n.getText('KAF022_185')}</div>
-					</div>
-				</td>
-			</tr>
-			</tbody>
-		</table>
-	</div>
 </ui:composition>

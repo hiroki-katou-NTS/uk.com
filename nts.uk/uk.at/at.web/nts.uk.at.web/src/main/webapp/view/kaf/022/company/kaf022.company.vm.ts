@@ -12,6 +12,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
     import ScreenModelH = nts.uk.at.view.kaf022.h.viewmodel.ScreenModelH;
     import ScreenModelI = nts.uk.at.view.kaf022.i.viewmodel.ScreenModelI;
     import ScreenModelJ = nts.uk.at.view.kaf022.j.viewmodel.ScreenModelJ;
+    import ScreenModelQ = nts.uk.at.view.kaf022.q.viewmodel.ScreenModelQ;
     import ScreenModelV = nts.uk.at.view.kaf022.v.viewmodel.ScreenModelV;
 
     export class ScreenModel {
@@ -27,6 +28,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
         viewmodelH: ScreenModelH;
         viewmodelI: ScreenModelI;
         viewmodelJ: ScreenModelJ;
+        viewmodelQ: ScreenModelQ;
         viewmodelV: ScreenModelV;
 
         constructor() {
@@ -60,6 +62,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             self.viewmodelH = new ScreenModelH();
             self.viewmodelI = new ScreenModelI();
             self.viewmodelJ = new ScreenModelJ();
+            self.viewmodelQ = new ScreenModelQ();
             self.viewmodelV = new ScreenModelV();
         }
 
@@ -80,6 +83,8 @@ module nts.uk.at.view.kaf022.company.viewmodel {
                 self.viewmodelE.initData(data);
                 self.viewmodelF.initData(data);
                 self.viewmodelI.initData(data);
+                self.viewmodelJ.initData(data);
+                self.viewmodelQ.initData(data);
                 self.viewmodelV.initData(data);
                 dfd.resolve();
             }).fail(error => {
@@ -108,6 +113,8 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             const dataV = self.viewmodelV.collectData();
             const dataB = self.viewmodelB.collectData();
             const dataD = self.viewmodelD.collectData();
+            const dataJ = self.viewmodelJ.collectData();
+            const dataQ = self.viewmodelQ.collectData();
             const data: any = {};
             data["applicationSetting"] = {
                 appLimitSetting: dataA.appLimitSetting,
@@ -129,6 +136,9 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             data["goBackReflectAtr"] = self.viewmodelF.selectedValueF13();
             data["lateEarlyCancelAtr"] = self.viewmodelI.lateEarlyCancelAtr();
             data["lateEarlyClearAlarmAtr"] = self.viewmodelI.lateEarlyClearAlarmAtr();
+            data["appStampSetting"] = dataJ.appStampSetting;
+            data["appStampReflect"] = dataJ.appStampReflect;
+            data["approvalListDisplaySetting"] = dataQ;
 
             nts.uk.ui.block.grayout();
             service.update(data).done(() => {

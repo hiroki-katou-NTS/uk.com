@@ -5,10 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.UseDivision;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppCommentSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.*;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.shr.com.color.ColorCode;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import org.apache.commons.lang3.BooleanUtils;
@@ -200,7 +202,7 @@ public class KrqmtAppStamp extends ContractUkJpaEntity {
 
     @Override
     protected Object getKey() {
-        return null;
+        return companyId;
     }
 
     public AppStampSetting toSettingDomain() {
@@ -239,7 +241,7 @@ public class KrqmtAppStamp extends ContractUkJpaEntity {
                                 new AppCommentSet(new Comment(breakCmtContent1), BooleanUtils.toBoolean(breakCmtFontWeight1), new ColorCode(breakCmtFontColor1)),
                                 new AppCommentSet(new Comment(breakCmtContent2), BooleanUtils.toBoolean(breakCmtFontWeight2), new ColorCode(breakCmtFontColor2))
                         )
-                        ,new SettingForEachType(
+                        , new SettingForEachType(
                                 StampAtr.RECORDER_IMAGE,
                                 new AppCommentSet(new Comment(nrCmtContent1), BooleanUtils.toBoolean(nrCmtFontWeight1), new ColorCode(nrCmtFontColor1)),
                                 new AppCommentSet(new Comment(nrCmtContent2), BooleanUtils.toBoolean(nrCmtFontWeight2), new ColorCode(nrCmtFontColor2))
@@ -251,18 +253,221 @@ public class KrqmtAppStamp extends ContractUkJpaEntity {
                                 GoOutType.PRIVATE
                         ),
                         new GoOutTypeDispControl(
-                                EnumAdaptor.valueOf(stampOutPriDispAtr, DisplayAtr.class),
-                                GoOutType.PRIVATE
+                                EnumAdaptor.valueOf(stampOutPubDispAtr, DisplayAtr.class),
+                                GoOutType.OFFICE
                         ),
                         new GoOutTypeDispControl(
-                                EnumAdaptor.valueOf(stampOutPriDispAtr, DisplayAtr.class),
-                                GoOutType.PRIVATE
+                                EnumAdaptor.valueOf(stampOutCompDispAtr, DisplayAtr.class),
+                                GoOutType.COMPENSATION
                         ),
                         new GoOutTypeDispControl(
-                                EnumAdaptor.valueOf(stampOutPriDispAtr, DisplayAtr.class),
-                                GoOutType.PRIVATE
+                                EnumAdaptor.valueOf(stampOutUnionDispAtr, DisplayAtr.class),
+                                GoOutType.UNION
                         )
                 )
         );
+    }
+
+    public StampAppReflect toReflectDomain() {
+        return StampAppReflect.create(
+                companyId,
+                workTimeReflectAtr,
+                extraWorkTimeReflectAtr,
+                goOutTimeReflectAtr,
+                childCareTimeReflectAtr,
+                supTimeReflectAtr,
+                careTimeReflectAtr,
+                breakTimeReflectAtr
+        );
+    }
+
+    public static KrqmtAppStamp create(String companyId, AppStampSetting setting, StampAppReflect reflect) {
+        KrqmtAppStamp entity = new KrqmtAppStamp();
+        entity.companyId = companyId;
+        entity.cancelDispAtr = setting.getUseCancelFunction().value;
+        entity.supDispCnt = setting.getSupportFrameDispNO().v();
+        for (GoOutTypeDispControl t : setting.getGoOutTypeDispControl()) {
+            switch (t.getGoOutType()) {
+                case PRIVATE:
+                    entity.stampOutPriDispAtr = t.getDisplay().value;
+                    break;
+                case OFFICE:
+                    entity.stampOutPubDispAtr = t.getDisplay().value;
+                    break;
+                case COMPENSATION:
+                    entity.stampOutCompDispAtr = t.getDisplay().value;
+                    break;
+                case UNION:
+                    entity.stampOutUnionDispAtr = t.getDisplay().value;
+                    break;
+                default:
+                    break;
+            }
+        }
+        for (SettingForEachType t : setting.getSettingForEachTypeLst()) {
+            switch (t.getStampAtr()) {
+                case ATTENDANCE_RETIREMENT:
+                    entity.workCmtContent1 = t.getTopComment().getComment().v();
+                    entity.workCmtFontColor1 = t.getTopComment().getColorCode().v();
+                    entity.workCmtFontWeight1 = BooleanUtils.toInteger(t.getTopComment().isBold());
+                    entity.workCmtContent2 = t.getBottomComment().getComment().v();
+                    entity.workCmtFontColor2 = t.getBottomComment().getColorCode().v();
+                    entity.workCmtFontWeight2 = BooleanUtils.toInteger(t.getBottomComment().isBold());
+                    break;
+                case GOING_OUT_RETURNING:
+                    entity.goOutCmtContent1 = t.getTopComment().getComment().v();
+                    entity.goOutCmtFontColor1 = t.getTopComment().getColorCode().v();
+                    entity.goOutCmtFontWeight1 = BooleanUtils.toInteger(t.getTopComment().isBold());
+                    entity.goOutCmtContent2 = t.getBottomComment().getComment().v();
+                    entity.goOutCmtFontColor2 = t.getBottomComment().getColorCode().v();
+                    entity.goOutCmtFontWeight2 = BooleanUtils.toInteger(t.getBottomComment().isBold());
+                    break;
+                case CHILDCARE_OUT_RETURN:
+                    entity.childCareCmtContent1 = t.getTopComment().getComment().v();
+                    entity.childCareCmtFontColor1 = t.getTopComment().getColorCode().v();
+                    entity.childCareCmtFontWeight1 = BooleanUtils.toInteger(t.getTopComment().isBold());
+                    entity.childCareCmtContent2 = t.getBottomComment().getComment().v();
+                    entity.childCareCmtFontColor2 = t.getBottomComment().getColorCode().v();
+                    entity.childCareCmtFontWeight2 = BooleanUtils.toInteger(t.getBottomComment().isBold());
+                    break;
+                case SUPPORT_IN_SUPPORT_OUT:
+                    entity.supCmtContent1 = t.getTopComment().getComment().v();
+                    entity.supCmtFontColor1 = t.getTopComment().getColorCode().v();
+                    entity.supCmtFontWeight1 = BooleanUtils.toInteger(t.getTopComment().isBold());
+                    entity.supCmtContent2 = t.getBottomComment().getComment().v();
+                    entity.supCmtFontColor2 = t.getBottomComment().getColorCode().v();
+                    entity.supCmtFontWeight2 = BooleanUtils.toInteger(t.getBottomComment().isBold());
+                    break;
+                case OUT_OF_CARE_RETURN_OF_CARE:
+                    entity.careCmtContent1 = t.getTopComment().getComment().v();
+                    entity.careCmtFontColor1 = t.getTopComment().getColorCode().v();
+                    entity.careCmtFontWeight1 = BooleanUtils.toInteger(t.getTopComment().isBold());
+                    entity.careCmtContent2 = t.getBottomComment().getComment().v();
+                    entity.careCmtFontColor2 = t.getBottomComment().getColorCode().v();
+                    entity.careCmtFontWeight2 = BooleanUtils.toInteger(t.getBottomComment().isBold());
+                    break;
+                case BREAK:
+                    entity.breakCmtContent1 = t.getTopComment().getComment().v();
+                    entity.breakCmtFontColor1 = t.getTopComment().getColorCode().v();
+                    entity.breakCmtFontWeight1 = BooleanUtils.toInteger(t.getTopComment().isBold());
+                    entity.breakCmtContent2 = t.getBottomComment().getComment().v();
+                    entity.breakCmtFontColor2 = t.getBottomComment().getColorCode().v();
+                    entity.breakCmtFontWeight2 = BooleanUtils.toInteger(t.getBottomComment().isBold());
+                    break;
+                case RECORDER_IMAGE:
+                    entity.nrCmtContent1 = t.getTopComment().getComment().v();
+                    entity.nrCmtFontColor1 = t.getTopComment().getColorCode().v();
+                    entity.nrCmtFontWeight1 = BooleanUtils.toInteger(t.getTopComment().isBold());
+                    entity.nrCmtContent2 = t.getBottomComment().getComment().v();
+                    entity.nrCmtFontColor2 = t.getBottomComment().getColorCode().v();
+                    entity.nrCmtFontWeight2 = BooleanUtils.toInteger(t.getBottomComment().isBold());
+                    break;
+                default:
+                    break;
+            }
+        }
+        entity.workTimeReflectAtr = reflect.getWorkReflectAtr().value;
+        entity.extraWorkTimeReflectAtr = reflect.getExtraWorkReflectAtr().value;
+        entity.childCareTimeReflectAtr = reflect.getChildCareReflectAtr().value;
+        entity.supTimeReflectAtr = reflect.getSupportReflectAtr().value;
+        entity.careTimeReflectAtr = reflect.getCareReflectAtr().value;
+        entity.goOutTimeReflectAtr = reflect.getGoOutReflectAtr().value;
+        entity.breakTimeReflectAtr = reflect.getBreakReflectAtr().value;
+        return entity;
+    }
+
+    public void updateSetting(AppStampSetting setting) {
+        cancelDispAtr = setting.getUseCancelFunction().value;
+        supDispCnt = setting.getSupportFrameDispNO().v();
+        for (GoOutTypeDispControl t : setting.getGoOutTypeDispControl()) {
+            switch (t.getGoOutType()) {
+                case PRIVATE:
+                    stampOutPriDispAtr = t.getDisplay().value;
+                    break;
+                case OFFICE:
+                    stampOutPubDispAtr = t.getDisplay().value;
+                    break;
+                case COMPENSATION:
+                    stampOutCompDispAtr = t.getDisplay().value;
+                    break;
+                case UNION:
+                    stampOutUnionDispAtr = t.getDisplay().value;
+                    break;
+                default:
+                    break;
+            }
+        }
+        for (SettingForEachType t : setting.getSettingForEachTypeLst()) {
+            switch (t.getStampAtr()) {
+                case ATTENDANCE_RETIREMENT:
+                    workCmtContent1 = t.getTopComment().getComment().v();
+                    workCmtFontColor1 = t.getTopComment().getColorCode().v();
+                    workCmtFontWeight1 = BooleanUtils.toInteger(t.getTopComment().isBold());
+                    workCmtContent2 = t.getBottomComment().getComment().v();
+                    workCmtFontColor2 = t.getBottomComment().getColorCode().v();
+                    workCmtFontWeight2 = BooleanUtils.toInteger(t.getBottomComment().isBold());
+                    break;
+                case GOING_OUT_RETURNING:
+                    goOutCmtContent1 = t.getTopComment().getComment().v();
+                    goOutCmtFontColor1 = t.getTopComment().getColorCode().v();
+                    goOutCmtFontWeight1 = BooleanUtils.toInteger(t.getTopComment().isBold());
+                    goOutCmtContent2 = t.getBottomComment().getComment().v();
+                    goOutCmtFontColor2 = t.getBottomComment().getColorCode().v();
+                    goOutCmtFontWeight2 = BooleanUtils.toInteger(t.getBottomComment().isBold());
+                    break;
+                case CHILDCARE_OUT_RETURN:
+                    childCareCmtContent1 = t.getTopComment().getComment().v();
+                    childCareCmtFontColor1 = t.getTopComment().getColorCode().v();
+                    childCareCmtFontWeight1 = BooleanUtils.toInteger(t.getTopComment().isBold());
+                    childCareCmtContent2 = t.getBottomComment().getComment().v();
+                    childCareCmtFontColor2 = t.getBottomComment().getColorCode().v();
+                    childCareCmtFontWeight2 = BooleanUtils.toInteger(t.getBottomComment().isBold());
+                    break;
+                case SUPPORT_IN_SUPPORT_OUT:
+                    supCmtContent1 = t.getTopComment().getComment().v();
+                    supCmtFontColor1 = t.getTopComment().getColorCode().v();
+                    supCmtFontWeight1 = BooleanUtils.toInteger(t.getTopComment().isBold());
+                    supCmtContent2 = t.getBottomComment().getComment().v();
+                    supCmtFontColor2 = t.getBottomComment().getColorCode().v();
+                    supCmtFontWeight2 = BooleanUtils.toInteger(t.getBottomComment().isBold());
+                    break;
+                case OUT_OF_CARE_RETURN_OF_CARE:
+                    careCmtContent1 = t.getTopComment().getComment().v();
+                    careCmtFontColor1 = t.getTopComment().getColorCode().v();
+                    careCmtFontWeight1 = BooleanUtils.toInteger(t.getTopComment().isBold());
+                    careCmtContent2 = t.getBottomComment().getComment().v();
+                    careCmtFontColor2 = t.getBottomComment().getColorCode().v();
+                    careCmtFontWeight2 = BooleanUtils.toInteger(t.getBottomComment().isBold());
+                    break;
+                case BREAK:
+                    breakCmtContent1 = t.getTopComment().getComment().v();
+                    breakCmtFontColor1 = t.getTopComment().getColorCode().v();
+                    breakCmtFontWeight1 = BooleanUtils.toInteger(t.getTopComment().isBold());
+                    breakCmtContent2 = t.getBottomComment().getComment().v();
+                    breakCmtFontColor2 = t.getBottomComment().getColorCode().v();
+                    breakCmtFontWeight2 = BooleanUtils.toInteger(t.getBottomComment().isBold());
+                    break;
+                case RECORDER_IMAGE:
+                    nrCmtContent1 = t.getTopComment().getComment().v();
+                    nrCmtFontColor1 = t.getTopComment().getColorCode().v();
+                    nrCmtFontWeight1 = BooleanUtils.toInteger(t.getTopComment().isBold());
+                    nrCmtContent2 = t.getBottomComment().getComment().v();
+                    nrCmtFontColor2 = t.getBottomComment().getColorCode().v();
+                    nrCmtFontWeight2 = BooleanUtils.toInteger(t.getBottomComment().isBold());
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    public void updateReflect(StampAppReflect reflect) {
+        workTimeReflectAtr = reflect.getWorkReflectAtr().value;
+        extraWorkTimeReflectAtr = reflect.getExtraWorkReflectAtr().value;
+        childCareTimeReflectAtr = reflect.getChildCareReflectAtr().value;
+        supTimeReflectAtr = reflect.getSupportReflectAtr().value;
+        careTimeReflectAtr = reflect.getCareReflectAtr().value;
+        goOutTimeReflectAtr = reflect.getGoOutReflectAtr().value;
+        breakTimeReflectAtr = reflect.getBreakReflectAtr().value;
     }
 }

@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.AppTypeBfCommand;
 import nts.uk.ctx.at.request.app.command.application.triprequestsetting.TripRequestSetCommand;
+import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSettingCommand;
+import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.stampsetting.AppStampSettingCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.workchange.AppWorkChangeSetCommand;
 import nts.uk.ctx.at.request.app.command.applicationreflect.AppReflectExeConditionCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.applatearrival.LateEarlyRequestCommand;
@@ -31,6 +33,7 @@ import nts.uk.ctx.at.request.app.command.setting.company.request.stamp.StampRequ
 import nts.uk.ctx.at.request.app.command.setting.company.vacationapplicationsetting.HdAppSetCommand;
 import nts.uk.ctx.at.request.app.command.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingCommand;
 import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.overtimeworkapplycation.OvertimeWorkApplicationReflectCommand;
+import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.ApprovalSettingCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.JobAssignSettingCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.JobtitleSearchSetCommand;
@@ -58,4 +61,9 @@ public class Kaf022AddCommand {
 
 	private int lateEarlyCancelAtr;
 	private int lateEarlyClearAlarmAtr;
+
+	private AppStampSettingCommand appStampSetting;
+	private StampAppReflectCommand appStampReflect;
+
+	private ApprovalListDispSettingCommand approvalListDisplaySetting;
 }

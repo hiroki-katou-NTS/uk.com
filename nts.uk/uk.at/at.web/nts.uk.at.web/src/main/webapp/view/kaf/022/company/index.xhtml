@@ -22,6 +22,7 @@
         <com:scriptfile path="h/kaf022.h.vm.js" />
         <com:scriptfile path="i/kaf022.i.vm.js" />
         <com:scriptfile path="j/kaf022.j.vm.js" />
+        <com:scriptfile path="q/kaf022.q.vm.js" />
         <com:scriptfile path="v/kaf022.v.vm.js" />
 
         <com:scriptfile path="kaf022.company.vm.js" />
@@ -91,8 +92,8 @@
                 <div class="tab-content-13">
                     <span>Tab Content N</span><br/>
                 </div>
-                <div class="tab-content-14">
-                    <span>Tab Content Q</span><br/>
+                <div class="tab-content-14" data-bind="with: viewmodelQ">
+                    <ui:include src="./q/q.xhtml" />
                 </div>
                 <div class="tab-content-15">
                     <span>Tab Content Y</span><br/>

@@ -3,60 +3,62 @@ module nts.uk.at.view.kaf022.q.viewmodel {
 
     export class ScreenModelQ {
         itemListD15: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            {code: 0, name: text('KAF022_391')},
-            {code: 1, name: text('KAF022_392')}
+            {code: 1, name: text('KAF022_75')},
+            {code: 0, name: text('KAF022_82')}
         ]);
         itemListD13: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            {code: 1, name: text('KAF022_389')},
-            {code: 0, name: text('KAF022_390')}
+            {code: 1, name: text('KAF022_36')},
+            {code: 0, name: text('KAF022_37')}
         ]);
-        selectedIdD15: KnockoutObservable<number>;
-        selectedIdD13: KnockoutObservable<number>;
+        itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([
+            {code: 0, name: "0"},
+            {code: 1, name: "1"},
+            {code: 2, name: "2"},
+            {code: 3, name: "3"},
+            {code: 4, name: "4"},
+            {code: 5, name: "5"},
+            {code: 6, name: "6"},
+        ]);
 
-        texteditorD9: KnockoutObservable<string>;
-        valueD10: KnockoutObservable<string>;
-        enableD11: KnockoutObservable<boolean>;
-
-        texteditorD12: KnockoutObservable<string>;
-        valueD10_1: KnockoutObservable<string>;
-        enableD11_1: KnockoutObservable<boolean>;
+        appReasonDispAtr: KnockoutObservable<number>;
+        preExcessAtr: KnockoutObservable<number>;
+        atdExcessAtr: KnockoutObservable<number>;
+        warningDays: KnockoutObservable<number>;
+        dispWorkplaceNameAtr: KnockoutObservable<number>;
 
         constructor() {
             const self = this;
-            self.selectedIdD15 = ko.observable(0);
-            self.selectedIdD13 = ko.observable(0);
+            self.appReasonDispAtr = ko.observable(0);
+            self.preExcessAtr = ko.observable(0);
+            self.atdExcessAtr = ko.observable(0);
+            self.warningDays = ko.observable(0);
+            self.dispWorkplaceNameAtr = ko.observable(0);
 
-            self.texteditorD9 = ko.observable(null);
-            self.valueD10 = ko.observable(null);
-            self.enableD11 = ko.observable(false);
-
-            self.texteditorD12 = ko.observable(null);
-            self.valueD10_1 = ko.observable(null);
-            self.enableD11_1 = ko.observable(false);
-
-            $("#fixed-table-j1").ntsFixedTable({});
-            $("#fixed-table-j2").ntsFixedTable({});
-            $("#fixed-table-j3").ntsFixedTable({});
-            $("#fixed-table-j4").ntsFixedTable({});
-            $("#fixed-table-j5").ntsFixedTable({});
-            $("#fixed-table-j6").ntsFixedTable({});
-            $("#fixed-table-j7").ntsFixedTable({});
-            $("#fixed-table-j8").ntsFixedTable({});
+            $("#fixed-table-q1").ntsFixedTable({});
+            $("#fixed-table-q2").ntsFixedTable({});
         }
 
         initData(allData: any): void {
             const self = this;
-            let data = allData.appChange;
+            let data = allData.approvalListDisplaySetting;
             if (data) {
-                self.selectedIdD15(data.initDisplayWorktime);
-                self.selectedIdD13(data.workChangeTimeAtr);
-                self.texteditorD9(data.commentContent1);
-                self.valueD10(data.commentFontColor1);
-                self.enableD11(data.commentFontWeight1);
-                self.texteditorD12(data.commentContent2);
-                self.valueD10_1(data.commentFontColor2);
-                self.enableD11_1(data.commentFontWeight2);
+                self.appReasonDispAtr(data.appReasonDispAtr || 0);
+                self.preExcessAtr(data.preExcessAtr || 0);
+                self.atdExcessAtr(data.atdExcessAtr || 0);
+                self.warningDays(data.warningDays || 0);
+                self.dispWorkplaceNameAtr(data.dispWorkplaceNameAtr || 0);
             }
+        }
+
+        collectData(): any {
+            const self = this;
+            return {
+                appReasonDispAtr: self.appReasonDispAtr(),
+                preExcessAtr: self.preExcessAtr(),
+                atdExcessAtr: self.atdExcessAtr(),
+                warningDays: self.warningDays(),
+                dispWorkplaceNameAtr: self.dispWorkplaceNameAtr()
+            };
         }
 
     }

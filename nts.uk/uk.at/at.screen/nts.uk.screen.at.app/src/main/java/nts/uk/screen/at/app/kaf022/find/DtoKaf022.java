@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.hdappli
 import nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyRequestDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetDto;
+import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.company.otrestappcommon.OvertimeRestAppCommonSetDto;
@@ -25,6 +26,7 @@ import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting
 import nts.uk.ctx.at.request.app.find.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingDto;
 import nts.uk.ctx.at.shared.app.find.ot.frame.OvertimeWorkFrameFindDto;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.overtimeworkapplycation.OvertimeWorkApplicationReflectDto;
+import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryFindDto;
 import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuNameExport;
 import nts.uk.ctx.workflow.app.find.approvermanagement.setting.ApprovalSettingDto;
@@ -74,4 +76,7 @@ public class DtoKaf022 {
 	public int lateEarlyClearAlarmAtr;
 
 	public AppStampSettingDto appStampSetting;
+	public StampAppReflectDto appStampReflect;
+
+	public ApprovalListDispSettingDto approvalListDisplaySetting;
 }
