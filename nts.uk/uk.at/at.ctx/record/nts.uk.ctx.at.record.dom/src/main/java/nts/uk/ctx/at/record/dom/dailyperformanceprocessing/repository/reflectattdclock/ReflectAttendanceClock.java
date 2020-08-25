@@ -349,6 +349,7 @@ public class ReflectAttendanceClock {
 				workStampNew.setLocationCode(Optional.empty());
 				workStampNew.setAfterRoundingTime(timeWithDayAttr);
 				workStamp = Optional.of(workStampNew);
+				timeActualStamp.get().setStamp(workStamp);
 			}
 			//打刻を丸める (làm tròn 打刻)
 			this.roundStamp(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v(), workStamp.get(),
@@ -356,7 +357,13 @@ public class ReflectAttendanceClock {
 			//パラメータの実打刻区分をチェックする
 			if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
 				//申告時刻を反映する
-				timeActualStamp.setOvertimeDeclaration(stamp.getRefActualResults().getOvertimeDeclaration());
+				timeActualStamp.get().setOvertimeDeclaration(stamp.getRefActualResults().getOvertimeDeclaration());
+			}
+			
+			if(attendanceAtr == AttendanceAtr.GOING_TO_WORK) {
+				timeLeavingWork.setAttendanceStamp(timeActualStamp);
+			}else {
+				timeLeavingWork.setLeaveStamp(timeActualStamp);
 			}
 		}else {
 			TimeActualStamp timeActualStamp = new TimeActualStamp();
