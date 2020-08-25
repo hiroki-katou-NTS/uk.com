@@ -35,19 +35,20 @@ public class AppTypeSettingCommand {
 	/**
 	 * 事前事後区分の初期表示
 	 */
-	private int displayInitialSegment;
+	private Integer displayInitialSegment;
 	
 	/**
 	 * 事前事後区分を変更できる
 	 */
-	private boolean canClassificationChange;
+	private Boolean canClassificationChange;
 
 	public AppTypeSetting toDomain() {
 		return new AppTypeSetting(
 				EnumAdaptor.valueOf(appType, ApplicationType.class),
 				sendMailWhenRegister == null ? false : sendMailWhenRegister,
 				sendMailWhenRegister == null ? false : sendMailWhenRegister,
-				EnumAdaptor.valueOf(displayInitialSegment, PrePostInitAtr.class),
-				canClassificationChange);
+				displayInitialSegment == null ? null : EnumAdaptor.valueOf(displayInitialSegment, PrePostInitAtr.class),
+				canClassificationChange
+		);
 	}
 }

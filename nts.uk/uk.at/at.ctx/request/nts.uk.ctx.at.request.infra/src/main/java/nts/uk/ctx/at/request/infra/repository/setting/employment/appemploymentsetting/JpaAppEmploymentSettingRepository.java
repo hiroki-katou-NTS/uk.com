@@ -1,10 +1,6 @@
 package nts.uk.ctx.at.request.infra.repository.setting.employment.appemploymentsetting;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -165,6 +161,7 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 			} 
 		}
 	}
+
 	public void updateWorkType(AppEmploymentSetting domain) {
 		List<KrqdtAppEmployWorktype> list = new ArrayList<>();
 		deleteAllWorkType(domain.getCompanyID(),domain.getEmploymentCode());
@@ -219,7 +216,8 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 	
 	private List<AppEmploymentSetting> toDomain(List<KrqstAppEmploymentSet> list, String companyId){
 		Map<String, Map<String,List<WorkTypeObjAppHoliday>>> maps = new HashMap<>();
-		list.stream().forEach(x -> {
+		List<Integer> lstAppType = Arrays.asList(ApplicationType.values()).stream().map(a -> a.value).collect(Collectors.toList());
+		list.stream().filter(x -> lstAppType.contains(x.getKrqstAppEmploymentSetPK().getAppType())).forEach(x -> {
 			String cid = x.getKrqstAppEmploymentSetPK().getCid();
 			String empCode = x.getKrqstAppEmploymentSetPK().getEmploymentCode();
 			WorkTypeObjAppHoliday i = new WorkTypeObjAppHoliday();
