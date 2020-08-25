@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.app.command.exo.condset;
+package nts.uk.ctx.exio.app.find.exo.condset;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
