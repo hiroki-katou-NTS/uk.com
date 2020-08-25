@@ -57,19 +57,9 @@ module nts.uk.at.view.ksu001.u {
             self.endDate = 31;            
             self.params = params;
 
-            // self.yearMonthPicked.subscribe(function(value) {
-            //     self.getDataToOneMonth(value);
-            //     // let arrOptionaDates: Array<OptionalDate> = [];
-            //     // self.getDataToOneMonth(value).done(function(arrOptionaDates) {
-            //     //     if (arrOptionaDates.length > 0) {
-            //     //         self.optionDates(arrOptionaDates);
-            //     //         self.optionDates.valueHasMutated();
-            //     //         self.isNew(false);
-            //     //     } else {
-            //     //         self.isNew(true);
-            //     //     }
-            //     // })
-            // })
+            self.yearMonthPicked.subscribe(function(value) {
+                self.getDataToOneMonth(value);                
+            })
         }
 
         created(){
@@ -80,19 +70,37 @@ module nts.uk.at.view.ksu001.u {
 
         getDataToOneMonth(yearMonth : number): void {
             let self = this;
-            let year = parseInt(yearMonth.toString().slice(0,3));
-            let month = parseInt(yearMonth.toString().slice(4,6));
+            let dates = self.optionDates();
+            let year = parseInt(yearMonth.toString().substr(0,4));
+            let month = parseInt(yearMonth.toString().substr(5,2));
             if(self.publicDate()){
                 let publicDateSplit = self.publicDate().split('-');
                 if(year == parseInt(publicDateSplit[0])){
                     if(month < parseInt(publicDateSplit[1])){
-
+                        let numberDayOfMonth = self.getNumberOfDays(year, month);
+                        for(let i = 1; i<= numberDayOfMonth; i ++){
+                            let date = self.formatDate(new Date(year, month - 1, i));
+                            let existDate = self.checkExistDate(date);
+                            if (existDate) {
+                                self.removeExistDate(existDate);
+                            }
+                            dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));             
+                        }
                     }
                 } else if(year < parseInt(publicDateSplit[0])){
-
+                    let numberDayOfMonth = self.getNumberOfDays(year, month);
+                        for(let i = 1; i<= numberDayOfMonth; i ++){
+                            let date = self.formatDate(new Date(year, month - 1, i));
+                            let existDate = self.checkExistDate(date);
+                            if (existDate) {
+                                self.removeExistDate(existDate);
+                            }
+                            dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));             
+                        }
                 } else {
 
                 }
+                self.optionDates(dates);
             }
 
         }
@@ -122,7 +130,7 @@ module nts.uk.at.view.ksu001.u {
                     month =parseInt(publicDateSplit[1]);                   
                     self.publicDate(self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]))));
                     self.newPublicDate(self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]))));                    
-                } else {
+                } else {                   
                     let today = new Date();     
                     year = today.getFullYear();
                     month = today.getMonth() + 1; 

@@ -20,10 +20,6 @@ module test {
                 nts.uk.ui.windows.setShared("baseDate", self.date());
                 self.currentScreen = nts.uk.ui.windows.sub.modal("/view/ksu/001/la/index.xhtml");
             }   
-            // public openDialogU(): void {
-            //     let self = this;
-            //     self.currentScreen = nts.uk.ui.windows.sub.modeless("/view/ksu/001/u/index.xhtml");
-            // }   
         }
     }    
 }
