@@ -22,6 +22,7 @@ import javax.ejb.Stateless;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Stateless
 public class JpaBusinessTripRepository extends JpaRepository implements BusinessTripRepository {
@@ -32,7 +33,7 @@ public class JpaBusinessTripRepository extends JpaRepository implements Business
 
     public static final String FIND_BY_APP_ID = "SELECT *  "
             + "FROM KRQDT_APP_TRIP as a INNER JOIN KRQDT_APPLICATION as b ON a.APP_ID = b.APP_ID"
-            + " WHERE a.APP_ID = @appID AND a.CID = @companyId ORDER BY a.APP_DATE ESC";
+            + " WHERE a.APP_ID = @appID AND a.CID = @companyId ORDER BY a.APP_DATE ASC";
 
     @Override
     public Optional<BusinessTrip> findById(String companyId, String appId, GeneralDate date) {
@@ -45,10 +46,16 @@ public class JpaBusinessTripRepository extends JpaRepository implements Business
 
     @Override
     public Optional<BusinessTrip> findByAppId(String companyId, String appId) {
-        return new NtsStatement(FIND_BY_ID, this.jdbcProxy())
+        List<BusinessTrip> businessTrips = new NtsStatement(FIND_BY_APP_ID, this.jdbcProxy())
                 .paramString("appID", appId)
                 .paramString("companyId", companyId)
-                .getSingle(res -> toDomain(res));
+                .getList(res -> toDomain(res));
+        BusinessTrip result = new BusinessTrip();
+        result.setDepartureTime(businessTrips.get(0).getDepartureTime());
+        result.setReturnTime(businessTrips.get(0).getReturnTime());
+        List<BusinessTripInfo> infos = businessTrips.stream().map(i -> i.getInfos().get(0)).collect(Collectors.toList());
+        result.setInfos(infos);
+        return Optional.of(result);
     }
 
     @Override

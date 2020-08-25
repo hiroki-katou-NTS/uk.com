@@ -5,12 +5,14 @@ import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTri
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.request.infra.entity.setting.request.businesstrip.KrqstAppTripRequestSet;
 
+import javax.ejb.Stateless;
 import java.util.Optional;
 
+@Stateless
 public class JpaAppTripRequestSetRepositoryImp extends JpaRepository implements AppTripRequestSetRepository {
 
-    private static final String SELECT_ALL = "SELECT * FROM KrqstAppTripRequestSet";
-    private static final String SELECT_BY_ID = SELECT_ALL + " WHERE companyId = :cid";
+    private static final String SELECT_ALL = "SELECT c FROM KrqstAppTripRequestSet c";
+    private static final String SELECT_BY_ID = SELECT_ALL + " WHERE c.companyId = :cid";
 
     @Override
     public Optional<AppTripRequestSet> findById(String cid) {
