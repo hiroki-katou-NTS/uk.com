@@ -89,14 +89,15 @@ public class ReflectAttendanceClock {
 		}
 		TimeLeavingWork timeLeavingWork = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream()
 				.filter(c -> c.getWorkNo().v().intValue() == workNo).findFirst().get();
-		TimeActualStamp timeActualStamp = null;
+		Optional<TimeActualStamp> timeActualStamp = Optional.empty();
 		if(attendanceAtr == AttendanceAtr.GOING_TO_WORK) {
-			timeActualStamp = timeLeavingWork.getAttendanceStamp().get();
+			timeActualStamp = timeLeavingWork.getAttendanceStamp();
 		}else {
-			timeActualStamp = timeLeavingWork.getLeaveStamp().get();
+			timeActualStamp = timeLeavingWork.getLeaveStamp();
 		}
 		//打刻反映回数を更新　（Update số lần phản ánh 打刻 ） 	
-		this.updateNumberStampReflect(actualStampAtr, timeActualStamp);
+		if(timeActualStamp.isPresent())
+		this.updateNumberStampReflect(actualStampAtr, timeActualStamp.get());
 		
 		return reflectStampOuput;
 		
@@ -356,7 +357,7 @@ public class ReflectAttendanceClock {
 			//パラメータの実打刻区分をチェックする
 			if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
 				//申告時刻を反映する
-				timeActualStamp.setOvertimeDeclaration(stamp.getRefActualResults().getOvertimeDeclaration());
+				timeActualStamp.get().setOvertimeDeclaration(stamp.getRefActualResults().getOvertimeDeclaration());
 			}
 		}else {
 			TimeActualStamp timeActualStamp = new TimeActualStamp();

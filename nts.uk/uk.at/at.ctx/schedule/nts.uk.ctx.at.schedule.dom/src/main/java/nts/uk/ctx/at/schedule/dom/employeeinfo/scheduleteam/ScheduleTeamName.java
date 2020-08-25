@@ -13,7 +13,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  */
 
 @StringMaxLength(4)
-@StringCharType(CharType.ANY_HALF_WIDTH)
+@StringCharType(CharType.ALPHA_NUMERIC)
 
 public class ScheduleTeamName extends StringPrimitiveValue<ScheduleTeamName> {
 
