@@ -24,7 +24,6 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             vm.model = params.businessTripContent;
             vm.businessTripOutput.subscribe(value => {
                 if (value) {
-                    console.log(value);
                     vm.workTypeCds(value.workdays);
                     vm.holidayTypeCds(value.holidays);
                     let actualContent = _.map(value.businessTripActualContent, function (content, index) {
@@ -47,9 +46,6 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                     });
                     vm.items(actualContent);
                 }
-            })
-            vm.items.subscribe( value => {
-                console.log(value);
             })
             vm.departureTime.subscribe(value => {
                 vm.model().departureTime(value);
@@ -136,12 +132,16 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             let workTypeCodes = data.wkTypeCd();
             let workTimeCodes = data.wkTimeCd();
             let selectedIndex = _.findIndex(ko.toJS(vm.items), {date: data.date});
+            let listWorkCode = _.map(vm.workTypeCds(), function(obj) {return obj.workTypeCode});
+            let listHolidayCode = _.map(vm.holidayTypeCds(), function(obj) {return obj.holidayTypeCds});
+            let listWkTime = vm.businessTripOutput().appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst;
+            let listWkTimeCd = _.map(listWkTime, function(obj) {return obj.worktimeCode});
             let cloneOutput = _.clone(vm.businessTripOutput());
 
             vm.$window.storage('parentCodes', {
-                workTypeCodes: ['001'],
+                workTypeCodes: _.merge(listWorkCode, listHolidayCode),
                 selectedWorkTypeCode: workTypeCodes,
-                workTimeCodes: ['001'],
+                workTimeCodes: listWkTimeCd,
                 selectedWorkTimeCode: workTimeCodes
             });
 
@@ -149,7 +149,6 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 vm.$window.storage('childData').then(rs => {
                     // const startTime = nts.uk.time.format.byId("Clock_Short_HM", rs.first.start);
                     // const endTime = nts.uk.time.format.byId("Clock_Short_HM", rs.first.end);
-                    console.log(rs);
                     let currentDetail = vm.businessTripOutput().businessTripActualContent[selectedIndex].opAchievementDetail;
                     cloneOutput.businessTripActualContent[selectedIndex].opAchievementDetail.workTypeCD = rs.selectedWorkTypeCode ;
                     cloneOutput.businessTripActualContent[selectedIndex].opAchievementDetail.opWorkTypeName = rs.selectedWorkTypeName;
