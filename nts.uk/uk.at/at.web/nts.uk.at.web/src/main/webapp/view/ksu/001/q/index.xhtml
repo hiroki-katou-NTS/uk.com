@@ -29,7 +29,7 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" tabindex="1" data-bind="click: register">#{i18n.getText('KSU001_3702')}</button>
+				<button class="proceed" tabindex="1" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KSU001_3702')}</button>
 				<button id="close" tabindex="2" style="margin-left: 270px;"
 					data-bind="click: closeDialog">#{i18n.getText('KSU001_3703')}</button>
 			</div>
