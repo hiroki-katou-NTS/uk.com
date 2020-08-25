@@ -18,10 +18,3 @@
 	font-size: 14px;    
     padding-top: 20% ;    
 }
-.header-image-event {
-    background-image: url(./img/prev.png);
-    background-size: contain;
-    width: 16px;
-    margin: auto;
-    background-repeat: no-repeat;
-}
