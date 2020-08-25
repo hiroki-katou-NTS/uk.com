@@ -121,21 +121,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             self.dtPrev.subscribe((newValue) => {
                 self.dateTimePrev(moment(self.dtPrev()).format('YYYY/MM/DD'));
-                let item = uk.localStorage.getItem(self.KEY);
-                if (!item.isPresent()) {
-                    let userInfor: IUserInfor = {};
-                    userInfor.startDate = self.dateTimePrev();
-                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
-                }
             });
+            
             self.dtAft.subscribe((newValue) => {
                 self.dateTimeAfter(moment(self.dtAft()).format('YYYY/MM/DD'));
-                let item = uk.localStorage.getItem(self.KEY);
-                if (!item.isPresent()) {
-                    let userInfor: IUserInfor = {};
-                    userInfor.endDate = self.dateTimeAfter();
-                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
-                }
             });
 
             self.selectedTypeHeightExTable.subscribe((newValue) => {
@@ -371,6 +360,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, viewMode);
+                
+                self.setDataWorkType(data.listWorkTypeInfo);
+                
                 self.initExTable(dataBindGrid, viewMode, updateMode);
                 if (!self.showA9) {
                     $(".toLeft").css("display", "none");
@@ -463,6 +455,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, 'shift');
+                
+                self.setDataWorkType(data.listWorkTypeInfo);
+                
                 self.updateExTable(dataBindGrid, 'shift', true, true, true);
                 
                 dfd.resolve();
@@ -473,8 +468,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
 
         shortNameModeStart(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred(),
-                param = {
+            let self = this, dfd = $.Deferred();
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor: IUserInfor = JSON.parse(item.get());
+            let param = {
                     viewMode: 'shortName',
                     startDate: self.dateTimePrev,
                     endDate: self.dateTimeAfter,
@@ -490,6 +487,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.bindingToHeader(data);
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, 'shortName');
+                
+                self.setDataWorkType(data.listWorkTypeInfo);
 
                 self.updateExTable(dataBindGrid , 'shortName', true, true, true);
                 
@@ -501,13 +500,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
 
         timeModeStart(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred(),
-                param = {
-                    viewMode: 'time',
-                    startDate: self.dateTimePrev,
-                    endDate: self.dateTimeAfter,
-                    getActualData   : item.isPresent() ? userInfor.achievementDisplaySelected : false
-                };
+            let self = this, dfd = $.Deferred();
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor: IUserInfor = JSON.parse(item.get());
+            let param = {
+                viewMode: 'time',
+                startDate: self.dateTimePrev,
+                endDate: self.dateTimeAfter,
+                getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false
+            };
             self.saveModeGridToLocalStorege('time');
             self.visibleShiftPalette(false);
             self.visibleBtnInput(true);
@@ -518,6 +519,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.bindingToHeader(data);
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, 'time');
+                
+                self.setDataWorkType(data.listWorkTypeInfo);
 
                 self.updateExTable(dataBindGrid, 'time', true, true, true);
                 dfd.resolve();
@@ -581,6 +584,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         indexOfPageSelected(listPageInfo : any, shiftPalettePageNumber : any) {
             let index = _.findIndex(listPageInfo, function(o) { return o.pageNumber == shiftPalettePageNumber; });
             return index != -1 ? index : 0;
+        }
+        
+        private setDataWorkType(listWorkTypeInfo: any) {
+            let self = this;
+            // set data cho combobox WorkType
+            let listWorkType = [];
+            _.each(listWorkTypeInfo, (emp: IWorkTypeInfomation, i) => {
+                let workTypeDto: IWorkTypeDto = {
+                    workTypeCode: emp.workTypeDto.workTypeCode, // 勤務種類コード - コード
+                    name: emp.workTypeDto.name,         // 勤務種類名称  - 表示名
+                    memo: emp.workTypeDto.memo,
+                    workTimeSetting: emp.workTimeSetting, // 必須任意不要区分 :  必須である REQUIRED(0), 任意であるOPTIONAL(1), 不要であるNOT_REQUIRED(2)
+                    workStyle: emp.workStyle,
+                }
+                listWorkType.push(workTypeDto);
+            });
+            __viewContext.viewModel.viewAB.listWorkType(listWorkType);
         }
 
         // convert data lấy từ server để đẩy vào Grid
@@ -856,21 +876,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.arrListCellLock = arrListCellLock;
                 }
             }
-
-            // set data cho combobox WorkType
-            let listWorkType = [];
-            _.each(data.listWorkTypeInfo, (emp: IWorkTypeInfomation, i) => {
-                let workTypeDto: IWorkTypeDto = {
-                    workTypeCode: emp.workTypeDto.workTypeCode, // 勤務種類コード - コード
-                    name: emp.workTypeDto.name,         // 勤務種類名称  - 表示名
-                    memo: emp.workTypeDto.memo,
-                    workTimeSetting: emp.workTimeSetting, // 必須任意不要区分 :  必須である REQUIRED(0), 任意であるOPTIONAL(1), 不要であるNOT_REQUIRED(2)
-                    workStyle: emp.workStyle,
-                }
-                listWorkType.push(workTypeDto);
-            });
-            __viewContext.viewModel.viewAB.listWorkType(listWorkType);
-
 
             // set width cho column cho tung mode
             let widthColumn = 0;
@@ -1612,35 +1617,37 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         */
         nextMonth(): void {
             let self = this;
-            return;
-            
-            if (self.selectedModeDisplay() == 1 || self.selectedModeDisplay() == 2)
+            if(self.selectedModeDisplay() == 2)
                 return;
-
-            let dtMoment = moment(self.dtAft());
-            dtMoment.add(1, 'days');
-            self.dtPrev(dtMoment.toDate());
-            dtMoment = dtMoment.add(1, 'months');
-            dtMoment.subtract(1, 'days');
-            self.dtAft(dtMoment.toDate());
-            self.stopRequest(false);
             
-            let self = this,
-                dfd = $.Deferred(),
-                viewMode = self.selectedModeDisplayInBody();
-
+            self.stopRequest(false);
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor: IUserInfor = JSON.parse(item.get());
+            
             let param = {
-                viewMode: viewMode
+                viewMode : self.selectedModeDisplayInBody(), // time | shortName | shift
+                startDate: self.dateTimePrev,
+                endDate  : self.dateTimeAfter,
+                isNextMonth : true,
+                cycle28Day : self.selectedModeDisplay() == 2 ? true : false,
+                workplaceId     : userInfor.workplaceId,
+                workplaceGroupId: userInfor.workplaceGroupId,
+                unit:             userInfor.unit,
+                getActualData   : item.isPresent() ? userInfor.achievementDisplaySelected : false, 
+                listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst, 
+                listSid: self.listSid() 
             };
-            service.getDataNextMonth(param).done((data: IDataStartScreen) => {
-                // set hiển thị ban đầu theo data đã lưu trong localStorege
-                self.getSettingDisplayWhenStart();
-                // set data Header
-                self.bindingToHeader(data);
-                // set data Grid
-                let dataBindGrid = self.convertDataToGrid(data, viewMode);
+            
+            service.getDataChangeMonth(param).done((data: any) => {
+                self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                
+                self.dtPrev(data.dataBasicDto.startDate);
+                self.dtAft(data.dataBasicDto.endDate);
+                
+                let dataBindGrid = self.convertDataToGrid(data, self.selectedModeDisplayInBody());
 
-                self.updateExTable(dataBindGrid, viewMode, false, true, true);
+                self.updateExTable(dataBindGrid, self.selectedModeDisplayInBody(), false, true, true);
+                
                 dfd.resolve();
                 self.stopRequest(true);
             }).fail(function() {
@@ -1655,39 +1662,37 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         */
         backMonth(): void {
             let self = this;
-            return;
-            if (self.selectedModeDisplay() == 1 || self.selectedModeDisplay() == 2)
+            if (self.selectedModeDisplay() == 2)
                 return;
-            
-            let dtMoment = moment(self.dtPrev());
-            dtMoment.subtract(1, 'days');
-            self.dtAft(dtMoment.toDate());
-            if (dtMoment.date() === dtMoment.daysInMonth()) {
-                dtMoment = dtMoment.subtract(1, 'months');
-                dtMoment.endOf('months');
-            } else {
-                dtMoment = dtMoment.subtract(1, 'months');
-            }
-            dtMoment.add(1, 'days');
-            self.dtPrev(new Date(dtMoment.format('YYYY/MM/DD'))); 
-                    
+
             self.stopRequest(false);
-            let self = this,
-                dfd = $.Deferred(),
-                viewMode = self.selectedModeDisplayInBody();
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor: IUserInfor = JSON.parse(item.get());
 
             let param = {
-                viewMode: viewMode
+                viewMode: self.selectedModeDisplayInBody(), // time | shortName | shift
+                startDate: self.dateTimePrev,
+                endDate: self.dateTimeAfter,
+                isNextMonth: false,
+                cycle28Day: self.selectedModeDisplay() == 2 ? true : false,
+                workplaceId: userInfor.workplaceId,
+                workplaceGroupId: userInfor.workplaceGroupId,
+                unit: userInfor.unit,
+                getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false,
+                listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst,
+                listSid: self.listSid()
             };
-            service.getDataPreMonth(param).done((data: IDataStartScreen) => {
-                // set hiển thị ban đầu theo data đã lưu trong localStorege
-                self.getSettingDisplayWhenStart();
-                // set data Header
-                self.bindingToHeader(data);
-                // set data Grid
-                let dataBindGrid = self.convertDataToGrid(data, viewMode);
 
-                self.updateExTable(dataBindGrid, viewMode, false, true, true);
+            service.getDataChangeMonth(param).done((data: any) => {
+                self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+
+                self.dtPrev(data.dataBasicDto.startDate);
+                self.dtAft(data.dataBasicDto.endDate);
+
+                let dataBindGrid = self.convertDataToGrid(data, self.selectedModeDisplayInBody());
+
+                self.updateExTable(dataBindGrid, self.selectedModeDisplayInBody(), false, true, true);
+
                 dfd.resolve();
                 self.stopRequest(true);
             }).fail(function() {
