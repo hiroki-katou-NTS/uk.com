@@ -74,50 +74,50 @@ public class JpaPersonalInformationRepository extends JpaRepository implements P
 	@Override
 	public List<PersonalInformation> get(GetPersonInfoHRInput input) {
 		String GET_PERSONALINFO = "SELECT a FROM PpedtData a WHERE a.cId = :cId AND a.workId = :workId";
-//		List<PpedtData> personalInformations = new ArrayList<>();
+		List<PpedtData> personalInformations = new ArrayList<>();
 
-//		if (!input.getColumnName().isEmpty() && !input.getTypeSort().isEmpty()) {
-//
-//			if (input.getTypeSort().toUpperCase().equals("ASC") || input.getTypeSort().toUpperCase().equals("DESC")) {
-//				GET_PERSONALINFO = GET_PERSONALINFO
-//						.concat(" ORDER BY a." + input.getColumnName() + " " + input.getTypeSort());
-//			}
-//		}
+		if (input.getColumnName() != null && input.getTypeSort() != null) {
 
-		List<PpedtData> personalInformations = this.queryProxy().query(GET_PERSONALINFO, PpedtData.class)
-				.setParameter("cId", input.getCompanyId()).setParameter("workId", 6).getList();
+			if (input.getTypeSort().toUpperCase().equals("ASC") || input.getTypeSort().toUpperCase().equals("DESC")) {
+				GET_PERSONALINFO = GET_PERSONALINFO
+						.concat(" ORDER BY a." + input.getColumnName() + " " + input.getTypeSort());
+			}
+		}
 
-//		if (!input.getEmployeeId().isEmpty()) {
-//			List<PpedtData> ppdetData = new ArrayList<>();
-//
-//			for (int i = 0; i < input.getEmployeeId().size(); i++) {
-//
-//				for (int j = 0; j < personalInformations.size(); j++) {
-//
-//					if (input.getEmployeeId().get(i).equals(personalInformations.get(j).getSid())) {
-//						ppdetData.add(personalInformations.get(j));
-//					}
-//				}
-//			}
-//
-//			personalInformations = ppdetData;
-//		}
+		personalInformations = this.queryProxy().query(GET_PERSONALINFO, PpedtData.class)
+				.setParameter("cId", input.getCompanyId()).setParameter("workId", Integer.parseInt(input.getBusinessId())).getList();
 
-//		if (!input.getPersonalId().isEmpty()) {
-//			List<PpedtData> ppdetData = new ArrayList<>();
-//
-//			for (int i = 0; i < input.getPersonalId().size(); i++) {
-//
-//				for (int j = 0; j < personalInformations.size(); j++) {
-//
-//					if (input.getPersonalId().get(i).equals(personalInformations.get(j).getPersonName())) {
-//						ppdetData.add(personalInformations.get(j));
-//					}
-//				}
-//			}
-//
-//			personalInformations = ppdetData;
-//		}
+		if (input.getEmployeeId() != null) {
+			List<PpedtData> ppdetData = new ArrayList<>();
+
+			for (int i = 0; i < input.getEmployeeId().size(); i++) {
+
+				for (int j = 0; j < personalInformations.size(); j++) {
+
+					if (input.getEmployeeId().get(i).equals(personalInformations.get(j).getSid())) {
+						ppdetData.add(personalInformations.get(j));
+					}
+				}
+			}
+
+			personalInformations = ppdetData;
+		}
+
+		if (input.getPersonalId() != null) {
+			List<PpedtData> ppdetData = new ArrayList<>();
+
+			for (int i = 0; i < input.getPersonalId().size(); i++) {
+
+				for (int j = 0; j < personalInformations.size(); j++) {
+
+					if (input.getPersonalId().get(i).equals(personalInformations.get(j).getPersonName())) {
+						ppdetData.add(personalInformations.get(j));
+					}
+				}
+			}
+
+			personalInformations = ppdetData;
+		}
 
 		return personalInformations.stream().map(m -> m.toDomain()).collect(Collectors.toList());
 	}
