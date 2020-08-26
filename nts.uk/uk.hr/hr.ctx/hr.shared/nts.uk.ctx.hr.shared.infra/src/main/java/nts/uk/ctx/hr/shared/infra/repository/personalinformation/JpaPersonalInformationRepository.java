@@ -28,19 +28,19 @@ public class JpaPersonalInformationRepository extends JpaRepository implements P
 	
 	public static final String GET_DISPATCHED_INFORMATION = "SELECT a FROM PpedtData a WHERE a.contractCd = :contractCd"
 			+ " AND a.cId = :cId" + " AND a.workId = :workId"
-			+ " AND a.startDate <= baseDate AND s.endDate >= baseDate ";
+			+ " AND a.startDate <= :baseDate AND a.endDate >= :baseDate ";
 	
 	public static final String GET_DISPATCHED_INFORMATION_BY_STR10 = "SELECT a FROM PpedtData a WHERE a.contractCd = :contractCd"
 			+ " AND a.str10 = :cId" + " AND a.workId = :workId"
-			+ " AND a.startDate <= baseDate AND s.endDate >= baseDate ";
+			+ " AND a.startDate <= :baseDate AND a.endDate >= :baseDate ";
 	
 	public static final String GET_PERSONAL_INFO_BY_CID_SID_WORKID_DATE = "SELECT a FROM PpedtData a WHERE a.cId = :cId"
 			+ " AND a.sid IN :sids" + " AND a.workId = :workId"
-			+ " AND a.startDate <= baseDate AND s.endDate >= baseDate ";
+			+ " AND a.startDate <= :baseDate AND a.endDate >= :baseDate ";
 	
 	public static final String GET_PERSONAL_INFO_BY_QUALIFICATION_ID = "SELECT a FROM PpedtData a WHERE a.cId = :cId"
 			+ " AND a.selectId01 IN :qualificationIds" + " AND a.workId = :workId"
-			+ " AND a.startDate <= baseDate AND s.endDate >= baseDate ";
+			+ " AND a.startDate <= :baseDate AND a.endDate >= :baseDate ";
 	
 
 	// Insert
@@ -166,6 +166,19 @@ public class JpaPersonalInformationRepository extends JpaRepository implements P
 	@Override
 	public List<PersonalInformation> getLstPersonInfoByQualificationIds(String cId, List<String> qualificationIds,
 			int workId, GeneralDate baseDate) {
-		return null;
+		List<PpedtData> ppedtDatas = new ArrayList<>();
+		
+		CollectionUtil.split(qualificationIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subqualificationIds -> {
+			ppedtDatas.addAll(this.queryProxy().query(GET_PERSONAL_INFO_BY_QUALIFICATION_ID,
+					PpedtData.class)
+				.setParameter("cId", cId)
+				.setParameter("qualificationIds", subqualificationIds)
+				.setParameter("workId", workId)
+				.setParameter("baseDate", baseDate).getList());
+		});
+		if (ppedtDatas.isEmpty())
+			return Collections.emptyList();
+		
+		return ppedtDatas.stream().map(m -> m.toDomain()).collect(Collectors.toList());
 	}
 }
