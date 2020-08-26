@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.infra.repository.application.businesstrip;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
@@ -67,7 +68,16 @@ public class JpaBusinessTripRepository extends JpaRepository implements Business
     @Override
     public void update(BusinessTrip domain) {
         List<KrqdtAppTrip> entities = toEntity(domain);
-        this.commandProxy().updateAll(entities);
+        entities.stream().forEach(i ->{
+            val item = this.queryProxy().find(i.getKrqdtAppTripPK(), KrqdtAppTrip.class).get();
+            item.setWorkTypeCD(i.getWorkTypeCD());
+            item.setWorkTimeCD(i.getWorkTimeCD());
+            item.setWorkTimeStart(i.getWorkTimeStart());
+            item.setWorkTimeEnd(i.getWorkTimeEnd());
+            item.setStartTime(i.getStartTime());
+            item.setArrivalTime(i.getArrivalTime());
+            this.commandProxy().update(item);
+        });
     }
 
     @Override
@@ -126,11 +136,11 @@ public class JpaBusinessTripRepository extends JpaRepository implements Business
         Integer wkTimeEnd = res.getInt("WORK_TIME_END");
         Integer startTime = res.getInt("START_TIME");
         Integer returnTime = res.getInt("ARRIVAL_TIME");
-        String date = res.getString("APP_DATE");
+        GeneralDate date = res.getGeneralDate("APP_DATE");
         BusinessTrip businessTrip = new BusinessTrip(application);
         BusinessTripInfo businessTripInfo = new BusinessTripInfo(
                 new WorkInformation(wkTimeCd, wkTypeCd),
-                GeneralDate.fromString(date, "yyyy/MM/dd"),
+                date,
                 (wkTimeStart == null && wkTimeEnd == null) ? Optional.empty() : Optional.of(Arrays.asList(new TimeZoneWithWorkNo(1,wkTimeStart, wkTimeEnd)) )
         );
         businessTrip.setInfos(Arrays.asList(businessTripInfo));

@@ -44,7 +44,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             returnTime: ko.observable(null),
             contentDisp: ko.observableArray([])
         });
-        businessTripOutput: KnockoutObservable<BusinessTripInfoOutputDto> = ko.observable();
+        businessTripOutput: KnockoutObservable<BusinessTripInfoOutput> = ko.observable();
 
         created(params: any) {
             const vm = this;
@@ -237,7 +237,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
         paramLst: Array<string>
     }
 
-    interface TripContent {
+    export interface TripContent {
         departureTime: KnockoutObservable<number>;
         returnTime: KnockoutObservable<number>;
         contentDisp: KnockoutObservableArray<any>;

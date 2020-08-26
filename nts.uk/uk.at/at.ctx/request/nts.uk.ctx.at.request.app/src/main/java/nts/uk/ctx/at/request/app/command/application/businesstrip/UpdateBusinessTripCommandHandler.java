@@ -14,11 +14,13 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Stateless
 public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<UpdateBusinessTripCommand, ProcessResult> {
 
     @Inject
@@ -63,6 +65,7 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
 //		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, application.getEmployeeID(), listDate);
 
         // アルゴリズム「4-2.詳細画面登録後の処理」を実行する
-        return detailAfterUpdate.processAfterDetailScreenRegistration(cid, application.getAppID());
+//        return detailAfterUpdate.processAfterDetailScreenRegistration(cid, application.getAppID());
+        return null;
     }
 }

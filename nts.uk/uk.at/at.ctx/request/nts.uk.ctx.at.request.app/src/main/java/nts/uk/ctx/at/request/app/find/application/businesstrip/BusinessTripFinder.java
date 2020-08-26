@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamUpdate;
 import nts.uk.ctx.at.request.dom.application.*;
 import nts.uk.ctx.at.request.dom.application.businesstrip.*;
 import nts.uk.ctx.at.request.dom.application.businesstrip.service.BusinessTripService;
+import nts.uk.ctx.at.request.dom.application.businesstrip.service.DetailScreenB;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
@@ -475,12 +476,13 @@ public class BusinessTripFinder {
         return result;
     }
 
-    public BusinessTripInfoOutputDto getDetailKAF008(ParamUpdate param) {
+    public DetailScreenDto getDetailKAF008(ParamUpdate param) {
         //		14-1.詳細画面起動前申請共通設定を取得する
         AppDispInfoStartupOutput appDispInfoStartupOutput =
                 appCommonSetService.getCommonSetBeforeDetail(param.getCompanyId(), param.getApplicationId());
-        BusinessTripInfoOutput businessTripInfoOutput = businessTripService.getDataDetail(param.getCompanyId(), param.getApplicationId(), appDispInfoStartupOutput);
-        return BusinessTripInfoOutputDto.convertToDto(businessTripInfoOutput);
+        DetailScreenB detailScreen = businessTripService.getDataDetail(param.getCompanyId(), param.getApplicationId(), appDispInfoStartupOutput);
+        DetailScreenDto detailScreenDto = DetailScreenDto.fromDomain(detailScreen);
+        return detailScreenDto;
 
     }
 

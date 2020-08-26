@@ -26,6 +26,7 @@ public class TargetWorkTypeByApp {
 	/**
 	 * 表示する勤務種類を設定する
 	 */
+	@Setter
 	private boolean displayWorkType;
 	
 	/**

@@ -38,4 +38,20 @@ public class BusinessTripInfoDto {
         );
     }
 
+    public static BusinessTripInfoDto fromDomain(BusinessTripInfo domain) {
+        Integer begin = null;
+        Integer end = null;
+        if (domain.getWorkingHours().isPresent() && !domain.getWorkingHours().get().isEmpty()) {
+            begin = domain.getWorkingHours().get().get(0).getTimeZone().getStartTime().v();
+            end = domain.getWorkingHours().get().get(0).getTimeZone().getEndTime().v();
+        }
+        return new BusinessTripInfoDto(
+                domain.getDate().toString(),
+                domain.getWorkInformation().getWorkTypeCode().v(),
+                domain.getWorkInformation().getWorkTimeCode().v(),
+                begin,
+                end
+        );
+    }
+
 }
