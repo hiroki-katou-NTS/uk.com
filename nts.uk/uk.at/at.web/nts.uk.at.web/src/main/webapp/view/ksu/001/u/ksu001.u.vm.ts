@@ -457,14 +457,17 @@ module nts.uk.at.view.ksu001.u {
             if (self.publicDate() == self.editDate()) {
                 offset = 1;
             }                
-            let prevWeek = ""               ;
-            if(self.newPublicDate() == self.publicDate()){
-                editDateSplit = editDate.split
-                prevWeek = self.formatDate(new Date(parseInt(new[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]) - 7));  
+            let prevWeek = "";
+            let prevWeekEditDate = "";
+            if(self.newPublicDate() == self.publicDate() && self.newEditDate()){
+                editDateSplit = editDate.split("-");
+                prevWeek = self.formatDate(new Date(parseInt(editDateSplit[0]), parseInt(editDateSplit[1]) - 1, parseInt(editDateSplit[2]) - 7));  
+                prevWeekEditDate = self.formatDate(new Date(parseInt(editDateSplit[0]), parseInt(editDateSplit[1]) - 1, parseInt(editDateSplit[2]) - 6)); 
             } else {
                 prevWeek = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]) - 7));  
+                prevWeekEditDate = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]) - 6)); 
             }            
-            let prevWeekEditDate = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]) - 6)); 
+            
             let prevWeekSplit = prevWeek.split('-');
             let prevWeekPublicDate = self.formatDate(new Date(parseInt(prevWeekSplit[0]), parseInt(prevWeekSplit[1]) - 1, parseInt(prevWeekSplit[2])))
 
@@ -529,7 +532,7 @@ module nts.uk.at.view.ksu001.u {
                 }
             }
             self.optionDates(dates);
-            if(prevWeek >= self.publicDate()){
+            if(prevWeek > self.publicDate() || (prevWeek > self.publicDate()&& prevWeek >= self.editDate())){
                 self.newPublicDate(prevWeekPublicDate);
             } else {
                 self.newPublicDate(self.publicDate());
