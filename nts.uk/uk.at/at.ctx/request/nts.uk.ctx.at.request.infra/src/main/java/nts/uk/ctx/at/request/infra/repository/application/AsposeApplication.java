@@ -156,7 +156,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case ABSENCE_APPLICATION:
 			return "";
 		case WORK_CHANGE_APPLICATION:
-			return "KAF007_template.xlsx";
+			return "KAF007_template.pdf";
 		case BUSINESS_TRIP_APPLICATION:
 			return "";
 		case GO_RETURN_DIRECTLY_APPLICATION:
