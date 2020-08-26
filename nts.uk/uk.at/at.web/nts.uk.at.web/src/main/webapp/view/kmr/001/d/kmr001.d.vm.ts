@@ -256,6 +256,16 @@ module nts.uk.at.kmr001.d {
 
         cancel() {
             let self = this;
+            if(self.lstWpkHistory().length ==0){
+                let params = {
+                    historyId: null,
+                    startDate: null,
+                    endDate: null
+                };
+                self.$window.close({
+                    params
+                });
+            }
             let preSelectHist = _.find(self.lstWpkHistory(), h => h.historyId == self.bkHistoryId);
             if (preSelectHist && (preSelectHist.startDate != self.bkStartDate || preSelectHist.endDate != self.bkEndDate)) {
                 let params = {
@@ -268,7 +278,6 @@ module nts.uk.at.kmr001.d {
                 });
 
             } else if (preSelectHist == null && self.lstWpkHistory().length > 0) {
-                console.log("historyId", self.lstWpkHistory());
                 let params = {
                     historyId: self.lstWpkHistory()[0].historyId,
                     startDate: self.lstWpkHistory()[0].startDate,
