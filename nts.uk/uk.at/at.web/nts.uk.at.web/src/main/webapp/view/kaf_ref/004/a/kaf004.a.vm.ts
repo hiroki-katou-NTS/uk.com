@@ -57,13 +57,11 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             }
             vm.loadData([], [], AppType.EARLY_LEAVE_CANCEL_APPLICATION)
                 .then((loadDataFlag: any) => {
-                    if (loadDataFlag) {
                         let appType = AppType.EARLY_LEAVE_CANCEL_APPLICATION,
                             appDates = dates,
                             appDispInfoStartupDto = ko.toJS(vm.appDispInfoStartupOutput),
                             command = { appType, appDates, appDispInfoStartupDto };
                         return vm.$ajax(API.initPage, command);
-                    }
                 }).then((successData: any) => {
                     if (successData) {
                         if (successData.info) {
@@ -546,6 +544,12 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     vm.workManagement.leaveTime2(null);
                 }
             }
+
+            vm.arrivedLateLeaveEarlyInfo().earlyInfos = [];
+            vm.arrivedLateLeaveEarlyInfo().earlyInfos.push(ko.toJS(vm.lateOrEarlyInfo1));
+            vm.arrivedLateLeaveEarlyInfo().earlyInfos.push(ko.toJS(vm.lateOrEarlyInfo2));
+            vm.arrivedLateLeaveEarlyInfo().earlyInfos.push(ko.toJS(vm.lateOrEarlyInfo3));
+            vm.arrivedLateLeaveEarlyInfo().earlyInfos.push(ko.toJS(vm.lateOrEarlyInfo4));
 
             vm.$ajax(API.register,
                 {
