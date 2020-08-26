@@ -4,7 +4,7 @@ import { TotopComponent } from '@app/components/totop';
 import { storage } from '@app/utils';
 import { CmmS45CComponent } from '../c/index';
 
-import { AppInfo} from '../shr';
+import { AppInfo } from '../shr';
 import { AppListExtractConditionDto } from '../shr/index.d';
 
 @component({
@@ -29,8 +29,8 @@ import { AppListExtractConditionDto } from '../shr/index.d';
     }
 })
 export class CmmS45AComponent extends Vue {
-    @Prop({ default: () => ({ CMMS45_FromMenu: true}) })
-    public readonly params: { CMMS45_FromMenu: boolean};
+    @Prop({ default: () => ({ CMMS45_FromMenu: true }) })
+    public readonly params: { CMMS45_FromMenu: boolean };
     public prFilter: AppListExtractConditionDto = null;//抽出条件
     public dateRange: { start?: Date; end?: Date } = { start: null, end: null };//期間
     public selectedValue: string = '-1';//選択した申請種類
@@ -39,6 +39,7 @@ export class CmmS45AComponent extends Vue {
     public isDisPreP: number = 0;//申請表示設定.事前事後区分
     public displayA512: number = 0;
     public appAllNumber: number = 0;
+    public appListExtractCondition: AppListExtractCondition;
 
     public mounted() {
         this.pgName = 'cmm045a';
@@ -70,16 +71,21 @@ export class CmmS45AComponent extends Vue {
                 return [];
         }
     }
-
     //データを取る
     private getData(getCache: boolean, filter: boolean) {
         let self = this;
         self.$mask('show');
+
         // check: キャッシュを取るか？
         if (filter) {
             self.prFilter.startDate = self.$dt.date(self.dateRange.start, 'YYYY/MM/DD');
             self.prFilter.endDate = self.$dt.date(self.dateRange.end, 'YYYY/MM/DD');
             self.prFilter.appType = Number(self.selectedValue);
+            if (self.appListExtractCondition.opListOfAppTypes) {
+                _.forEach(self.appListExtractCondition.opListOfAppTypes, (i) => {
+                    _.set(i, 'appType', self.selectedValue);
+                });
+            }
         } else if (getCache && storage.local.hasItem('CMMS45_AppListExtractCondition')) {
             self.prFilter = storage.local.getItem('CMMS45_AppListExtractCondition') as AppListExtractConditionDto;
             self.selectedValue = self.prFilter.appType.toString();
@@ -99,6 +105,44 @@ export class CmmS45AComponent extends Vue {
                 listEmployeeId: [],
                 empRefineCondition: ''
             } as AppListExtractConditionDto;
+            self.appListExtractCondition = {
+                // 申請一覧区分
+                // 0: application , 1: approval
+                appListAtr: 0,
+                // 表の幅登録
+                tableWidthRegis: false,
+                // 事前出力
+                preOutput: true,
+                // 事後出力
+                postOutput: true,
+                // 申請表示順
+                appDisplayOrder: 0,
+                // 期間開始日
+                periodStartDate: self.dateRange.start == null ? '' : self.$dt.date(self.dateRange.start, 'YYYY/MM/DD'),
+                // 期間終了日
+                periodEndDate: self.dateRange.end == null ? '' : self.$dt.date(self.dateRange.end, 'YYYY/MM/DD'),
+                // 申請種類
+                opAppTypeLst: [],
+
+                // 申請種類リスト
+                opListOfAppTypes: [],
+                // 社員IDリスト
+                opListEmployeeID: null,
+                // 承認状況＿未承認
+                opUnapprovalStatus: true,
+                // 承認状況＿承認済
+                opApprovalStatus: false,
+                // 承認状況＿否認
+                opDenialStatus: false,
+                // 承認状況＿代行者承認済 false
+                opAgentApprovalStatus: false,
+                // 承認状況＿差戻
+                opRemandStatus: true,
+                // 承認状況＿取消
+                opCancelStatus: false
+
+            } as AppListExtractCondition;
+
         }
 
         let param = {
@@ -108,13 +152,41 @@ export class CmmS45AComponent extends Vue {
             device: 1,//デバイス：PC = 0 or スマートフォン = 1
             lstAppType: [0]//対象申請種類List
         };
-        
+
+        //
+        self.$http.post('at', servicePath.getAppNameInAppList).then((res: any) => {
+            self.$mask('hide');
+            if (res) {
+                let paramNew = {
+                    listAppType: res,
+                    appListExtractConditionDto: self.appListExtractCondition
+                };
+
+                return self.$http.post('at', servicePath.getApplicationList, paramNew);
+            }
+
+        }).then((res: any) => {
+            self.$mask('hide');
+            let data = res.data as ApplicationListDtoMobile;
+            self.appListExtractCondition = data.appListExtractConditionDto;
+
+            storage.local.setItem('CMMS45_AppListExtractCondition', self.appListExtractCondition);
+            self.dateRange = { start: self.$dt.fromUTCString(self.appListExtractCondition.periodStartDate, 'YYYY/MM/DD'), end: self.$dt.fromUTCString(self.appListExtractCondition.periodEndDate, 'YYYY/MM/DD') };
+            // self.isDisPreP = 
+            self.convertAppInfo(data.appListInfoDto);
+
+        }).catch(() => {
+            self.$mask('hide');
+        });
+
+
+
         // サービスを呼ぶ
         self.$http.post('at', servicePath.getApplicationList, param).then((result: { data: any }) => {
             self.$mask('hide');
             let data = result.data;
             self.prFilter.startDate = data.startDate;
-            self.prFilter.endDate = data.endDate;            
+            self.prFilter.endDate = data.endDate;
             // キャッシュを変更する
             storage.local.setItem('CMMS45_AppListExtractCondition', self.prFilter);
 
@@ -131,24 +203,35 @@ export class CmmS45AComponent extends Vue {
     private convertAppInfo(data: any) {
         let self = this;
         self.lstApp = [];
-        self.appAllNumber = data.appAllNumber;
-        if (data.lstApp.length == 0) {
-            self.displayA512 = 1;
-        } else if (data.lstApp.length > data.appAllNumber) {
-            self.displayA512 = 2;
-        } else {
-            self.displayA512 = 0;
-        }
-        
-        data.lstApp.forEach((app: any) => {
+        // self.appAllNumber = data.appAllNumber;
+        // if (data.lstApp.length == 0) {
+        //     self.displayA512 = 1;
+        // } else if (data.lstApp.length > data.appAllNumber) {
+        //     self.displayA512 = 2;
+        // } else {
+        //     self.displayA512 = 0;
+        // }
+
+        // data.lstApp.forEach((app: any) => {
+        //     self.lstApp.push(new AppInfo({
+        //         id: app.applicationID,
+        //         appDate: self.$dt.fromUTCString(app.applicationDate, 'YYYY/MM/DD'),
+        //         appType: app.applicationType,
+        //         appName: self.appTypeName(app.applicationType),
+        //         prePostAtr: app.prePostAtr,
+        //         reflectStatus: app.reflectStatus,
+        //         appStatusNo: app.reflectPerState
+        //     }));
+        // });
+        data.appLst.array.forEach((app: ListOfApplication) => {
             self.lstApp.push(new AppInfo({
-                id: app.applicationID,
-                appDate: self.$dt.fromUTCString(app.applicationDate, 'YYYY/MM/DD'),
-                appType: app.applicationType,
-                appName: self.appTypeName(app.applicationType),
+                id: app.appID,
+                appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
+                appType: app.appTye,
+                appName: self.appTypeName(app.appTye),
                 prePostAtr: app.prePostAtr,
-                reflectStatus: app.reflectStatus,
-                appStatusNo: app.reflectPerState
+                reflectStatus: app.reflectionStatus,
+                appStatusNo: null
             }));
         });
     }
@@ -162,7 +245,7 @@ export class CmmS45AComponent extends Vue {
         });
         // 「C：申請内容確認」画面へ遷移する
         self.$modal('cmms45c', { 'listAppMeta': lstAppId, 'currentApp': id }).then(() => {
-                self.getData(true, false);
+            self.getData(true, false);
         });
     }
 
@@ -177,15 +260,15 @@ export class CmmS45AComponent extends Vue {
     // crrate List AppType
     private createLstAppType(lstAppInfor: Array<any>) {
         let self = this;
-        self.lstAppType = [];
-        lstAppInfor.forEach((appType) => {
-            self.lstAppType.push({ code: appType.appType, appType: appType.appType, appName: appType.appName });
-        });
-        if (_.filter(self.lstAppType, (c) => c.appType == self.prFilter.appType).length > 0) {
-            self.selectedValue = self.prFilter.appType.toString();
-        } else {
-            self.selectedValue = '-1';
-        }
+        // self.lstAppType = [];
+        // lstAppInfor.forEach((appType) => {
+        //     self.lstAppType.push({ code: appType.appType, appType: appType.appType, appName: appType.appName });
+        // });
+        // if (_.filter(self.lstAppType, (c) => c.appType == self.prFilter.appType).length > 0) {
+        //     self.selectedValue = self.prFilter.appType.toString();
+        // } else {
+        //     self.selectedValue = '-1';
+        // }
     }
 
     // create appContent
@@ -204,3 +287,186 @@ const servicePath = {
     getAppNameInAppList: 'at/request/application/screen/applist/getAppNameInAppList'
 };
 
+// 申請一覧抽出条件
+export class AppListExtractCondition {
+    // 申請一覧区分
+    // 0: application , 1: approval
+    public appListAtr: number;
+    // 表の幅登録
+    public tableWidthRegis: boolean;
+    // 事前出力
+    public preOutput: boolean;
+    // 事後出力
+    public postOutput: boolean;
+    // 申請表示順
+    public appDisplayOrder: number;
+    // 期間開始日
+    public periodStartDate: string;
+    // 期間終了日
+    public periodEndDate: string;
+    // 申請種類
+    public opAppTypeLst: Array<ListOfAppTypes>;
+    // 申請種類リスト
+    public opListOfAppTypes: Array<ListOfAppTypes>;
+    // 社員IDリスト
+    public opListEmployeeID: Array<string>;
+    // 承認状況＿未承認
+    public opUnapprovalStatus: boolean;
+    // 承認状況＿承認済
+    public opApprovalStatus: boolean;
+    // 承認状況＿否認
+    public opDenialStatus: boolean;
+    // 承認状況＿代行者承認済
+    public opAgentApprovalStatus: boolean;
+    // 承認状況＿差戻
+    public opRemandStatus: boolean;
+    // 承認状況＿取消
+    public opCancelStatus: boolean;
+
+}
+export class ListOfAppTypes {
+
+    //  申請種類
+
+    public appType: number;
+
+
+    // 申請名称
+
+    public appName: string;
+
+
+    //  選択
+
+    public choice: boolean;
+
+
+    //  プログラムID
+
+    public opProgramID: string;
+
+
+    //  申請種類表示
+
+    public opApplicationTypeDisplay: number;
+
+    //  文字列
+
+    public opString: string;
+}
+export class ApplicationListDtoMobile {
+
+    public appAllNumber: number;
+
+    public appPerNumber: number;
+    //  申請一覧抽出条件
+    public appListExtractConditionDto: AppListExtractCondition;
+    // 申請一覧情報
+    public appListInfoDto: AppListInfo;
+}
+export class AppListInfo {
+    //  申請リスト
+    public appLst: any;
+
+    // 申請件数
+    public numberOfApp: number;
+
+    //  表示行数超
+    public moreThanDispLineNO: boolean;
+
+    //  表示設定
+    public displaySet: number;
+}
+export class ListOfApplication {
+    //  事前事後区分
+
+    public prePostAtr: number;
+
+    //  職場名
+
+    public workplaceName: string;
+
+    //  申請ID
+
+    public appID: string;
+
+    //  申請者CD
+
+    public applicantCD: string;
+
+    //  申請者名
+
+    public applicantName: string;
+
+    // 申請種類
+
+    public appTye: number;
+
+    //  申請内容
+
+    public appContent: string;
+
+    // 申請日
+
+    public appDate: string;
+
+    //  入力社名
+
+    public inputCompanyName: string;
+
+    //  入力日
+
+    public inputDate: string;
+
+    //  反映状態
+
+    public reflectionStatus: string;
+
+    //  時刻計算利用区分
+
+    public opTimeCalcUseAtr: number;
+
+    //  承認フェーズインスタンス
+
+    public opApprovalPhaseLst: any;
+
+    //  承認状況照会
+
+    public opApprovalStatusInquiry: string;
+
+    //  承認枠の承認状態
+
+    public opApprovalFrameStatus: number;
+
+    //  振休振出申請
+
+    public opComplementLeaveApp: any;
+
+    //  申請開始日
+
+    public opAppStartDate: string;
+
+    //  申請種類表示
+
+    public opAppTypeDisplay: number;
+
+    //  申請終了日
+
+    public opAppEndDate: string;
+
+    //  定型理由
+
+    public opAppStandardReason: string;
+
+    //  入力者名称
+
+    public opEntererName: string;
+
+    //  背景色
+
+    public opBackgroundColor: number;
+
+    //  表示行数超
+
+    public opMoreThanDispLineNO: boolean;
+}

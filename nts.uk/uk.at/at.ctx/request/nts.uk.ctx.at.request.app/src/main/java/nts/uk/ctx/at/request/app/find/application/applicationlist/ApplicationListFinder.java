@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.applicationlist;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -494,8 +496,8 @@ public class ApplicationListFinder {
     
 //	UKDesign.UniversalK.就業.KAF_申請.CMMS45_申請一覧・承認一覧（スマホ）.A：申請一覧.アルゴリズム.起動時処理
 //  アルゴリズム「起動時処理」を実行する
-    public ApplicationListDto getList(List<ListOfAppTypesDto> listAppType, AppListExtractConditionDto appListExtractConditionDto){
-    	ApplicationListDto applicationListDto = new ApplicationListDto();
+    public ApplicationListDtoMobile getList(List<ListOfAppTypesDto> listAppType, AppListExtractConditionDto appListExtractConditionDto){
+    	ApplicationListDtoMobile applicationListDto = new ApplicationListDtoMobile();
 //    	裏パラメータ取得
     	int device = MOBILE;
 		String companyId = AppContexts.user().companyId();
@@ -519,56 +521,80 @@ public class ApplicationListFinder {
 		param.setDevice(MOBILE);
     	param.setMode(0);
     	param.setLstAppType(Collections.emptyList());
-    	if (appListExtractConditionDto != null) {
+    	if (appListExtractConditionDto.getPeriodStartDate() != null && appListExtractConditionDto.getPeriodEndDate() != null) {
 	    	param.setStartDate(appListExtractConditionDto.getPeriodStartDate());
 	    	param.setEndDate(appListExtractConditionDto.getPeriodEndDate());
     		
     	}
     	
 //    	申請一覧初期処理
-    	AppListInfo appListInfo = new AppListInfo();
+    	AppListInitDto appListInitDto =this.getAppList(param);
+    	applicationListDto.setAppListInfoDto(appListInitDto.getAppListInfoDto());
+    	applicationListDto.setAppListExtractConditionDto(appListInitDto.getAppListExtractConditionDto());
+    	
+    	applicationListDto.setAppAllNumber(appAllNumber);
+    	applicationListDto.setAppPerNumber(appPerNumber);
+//    	AppListInfo appListInfo = new AppListInfo();
 //    			AppListInfoDto.fromDomain(this.getAppList(param));
     	
 //    	・ドメインモデル「申請表示設定」．事前事後区分表示
-    	Optional<RequestSetting> requestSet = repoRequestSet.findByCompany(companyId);
-		Integer isDisPreP = null;
-		if (requestSet.isPresent()) {
-			isDisPreP = requestSet.get().getApplicationSetting().getAppDisplaySetting().getPrePostAtrDisp().value;
-		}
-		applicationListDto.setIsDisPreP(isDisPreP);
-		applicationListDto.setStartDate(appListInfo.getDisplaySet().getStartDateDisp().toString(DATE_FORMAT));
-		applicationListDto.setEndDate(appListInfo.getDisplaySet().getEndDateDisp().toString(DATE_FORMAT));
-		if (!CollectionUtil.isEmpty(appListInfo.getAppLst())) {
-			List<ApplicationDataOutput> lstApp = appListInfo.getAppLst().stream().map(
-					item -> new ApplicationDataOutput(
-							new Long(0),
-							item.getAppID(),
-							item.getPrePostAtr(),
-							item.getInputDate().toString(DATE_FORMAT),
-							item.getOpEntererName().isPresent() ? item.getOpEntererName().get() : null,
-									item.getAppDate().toString(DATE_FORMAT),
-									item.getAppTye().value,
-									item.getApplicantCD(),
-									item.getReflectionStatus(),
-									item.getOpAppStartDate().isPresent() ? item.getOpAppStartDate().get().toString(DATE_FORMAT) : null ,
-											item.getOpAppEndDate().isPresent() ? item.getOpAppEndDate().get().toString(DATE_FORMAT) : null,
-													null)).collect(Collectors.toList());
-			applicationListDto.setLstApp(lstApp);
-			
-		}
-		applicationListDto.setAppAllNumber(appAllNumber);
-		applicationListDto.setAppPerNumber(appPerNumber);
+//    	Optional<RequestSetting> requestSet = repoRequestSet.findByCompany(companyId);
+//		Integer isDisPreP = null;
+//		if (requestSet.isPresent()) {
+//			isDisPreP = requestSet.get().getApplicationSetting().getAppDisplaySetting().getPrePostAtrDisp().value;
+//		}
+		
+//		applicationListDto.setIsDisPreP(isDisPreP);
+//		applicationListDto.setStartDate(appListInfo.getDisplaySet().getStartDateDisp().toString(DATE_FORMAT));
+//		applicationListDto.setEndDate(appListInfo.getDisplaySet().getEndDateDisp().toString(DATE_FORMAT));
+//		if (!CollectionUtil.isEmpty(appListInfo.getAppLst())) {
+//			List<ApplicationDataOutput> lstApp = appListInfo.getAppLst().stream().map(
+//					item -> new ApplicationDataOutput(
+//							new Long(0),
+//							item.getAppID(),
+//							item.getPrePostAtr(),
+//							item.getInputDate().toString(DATE_FORMAT),
+//							item.getOpEntererName().isPresent() ? item.getOpEntererName().get() : null,
+//									item.getAppDate().toString(DATE_FORMAT),
+//									item.getAppTye().value,
+//									item.getApplicantCD(),
+//									item.getReflectionStatus(),
+//									item.getOpAppStartDate().isPresent() ? item.getOpAppStartDate().get().toString(DATE_FORMAT) : null ,
+//											item.getOpAppEndDate().isPresent() ? item.getOpAppEndDate().get().toString(DATE_FORMAT) : null,
+//													null)).collect(Collectors.toList());
+//			applicationListDto.setLstApp(lstApp);
+//			
+//		}
+		
+		
 		
 //		・ドメインモデル「申請表示名」．申請表示名称（List）
-		List<AppDispName> appDispName = repoAppDispName.getAll();
-		if (!CollectionUtil.isEmpty(appDispName)) {
-			List<AppInfor> lstAppInfor = appDispName.stream().map(item -> new AppInfor(item.getAppType().value, item.getDispName().v())).collect(Collectors.toList());
-			applicationListDto.setLstAppInfor(lstAppInfor);
-		}
+//		List<AppDispName> appDispName = repoAppDispName.getAll();
+//		if (!CollectionUtil.isEmpty(appDispName)) {
+//			List<AppInfor> lstAppInfor = appDispName.stream().map(item -> new AppInfor(item.getAppType().value, item.getDispName().v())).collect(Collectors.toList());
+//			applicationListDto.setLstAppInfor(lstAppInfor);
+//		}
 //		applicationListDto.setLstApp(appListInfo.get);
 		
 		return applicationListDto;
     }
+    @Inject
+    private AppListInitialRepository appListInitialRepository;
+//    UKDesign.UniversalK.就業.KAF_申請.CMMS45_申請一覧・承認一覧（スマホ）.A：申請一覧.ユースケース
+    public ApplicationListDtoMobile getListFilter(ApplicationListDtoMobile applicationListDtoMobile) {
+    	AppListExtractCondition appListExtractCondition = null; //applicationListDtoMobile.getAppListExtractConditionDto()
+    	int device = MOBILE;
+    	AppListInfo appListInfo = null; //  applicationListDtoMobile.getAppListInfoDto();
+    	// change value of appListExtractCondition and appListInfo
+    	appListInfo = appListInitialRepository.getApplicationList(appListExtractCondition, device, appListInfo);
+    	// set value
+    	applicationListDtoMobile.setAppListInfoDto(null);
+    	applicationListDtoMobile.setAppListExtractConditionDto(null);
+//    	return this.convertApplicationListDto(appListExtractCondition, appListInfo, applicationListDtoMobile);
+    	return applicationListDtoMobile;
+    } 
+    
+    
     
 }
 

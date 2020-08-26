@@ -20,7 +20,9 @@ import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListParamFi
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfFinder;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListDto;
+import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListDtoMobile;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListFinder;
+import nts.uk.ctx.at.request.app.find.application.applicationlist.FilterMobileParam;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.StartMobileParam;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationDisplayAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
@@ -68,13 +70,22 @@ public class ApplicationListWebservice extends WebService{
 	public AppListInfo getAppListTest(AppListParamFilter param) {
 		return new AppListInfo();
 	}
+	// Refactor 4 CMMS45
 	
 	@POST
 	@Path("getapplistMobile")
-	public ApplicationListDto getAppListTest(StartMobileParam param) {
+	public ApplicationListDtoMobile getAppListTest(StartMobileParam param) {
 		return this.appListFinder.getList(param.getParam(), param.getAppListExtractConditionDto());
 	}
-
+	
+	@POST
+	@Path("getapplistFilterMobile")
+	public ApplicationListDtoMobile getAppListFilter(FilterMobileParam param) {
+		ApplicationListDtoMobile applicationListDtoMobile = param.getApplicationListDtoMobile();	
+		return this.appListFinder.getListFilter(applicationListDtoMobile);
+	}
+	
+	// Refactor 4 CMMS45
 	/**
 	 * get before After Restriction
 	 * @return
