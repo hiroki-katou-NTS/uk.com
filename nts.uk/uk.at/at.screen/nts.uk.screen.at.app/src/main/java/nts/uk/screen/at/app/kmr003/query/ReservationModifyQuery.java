@@ -38,6 +38,7 @@ import nts.uk.shr.com.i18n.TextResource;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -171,6 +172,10 @@ public class ReservationModifyQuery {
         List<EmployeeInfoMonthFinishDto> empFinishs = getEmpFinishs(empBasicInfos, reservationDate, searchCondition, reservationModifyEmps);
 
         result.setEmpFinishs(empFinishs);
+        reservationModifyEmps = reservationModifyEmps.stream()
+                .sorted(Comparator.comparing(ReservationModifyEmployeeDto::getReservationMemberCode, Comparator.naturalOrder())
+                .thenComparing(ReservationModifyEmployeeDto::getReservationCardNo, Comparator.naturalOrder()))
+                .collect(Collectors.toList());
         result.setReservationModifyEmps(reservationModifyEmps);
         result.setErrors(errors);
         // 9: 予約の修正起動情報
