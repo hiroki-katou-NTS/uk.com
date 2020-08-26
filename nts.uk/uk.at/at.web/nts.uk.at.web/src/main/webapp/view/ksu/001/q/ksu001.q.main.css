@@ -80,6 +80,7 @@ thead>tr {
 
 thead>tr>th {
 	background-color: lightgreen;
+	border-top: none;
 }
 
 input {
