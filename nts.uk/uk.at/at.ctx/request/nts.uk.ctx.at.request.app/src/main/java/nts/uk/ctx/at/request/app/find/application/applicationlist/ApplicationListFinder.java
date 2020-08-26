@@ -90,18 +90,24 @@ public class ApplicationListFinder {
 				// 開始日付＝期間（開始日）、終了日付＝期間（終了日）とする
 				startDate = GeneralDate.fromString(param.getStartDate(), DATE_FORMAT); 
 				endDate = GeneralDate.fromString(param.getEndDate(), DATE_FORMAT);
+				result.getDisplaySet().setStartDateDisp(startDate);
+				result.getDisplaySet().setEndDateDisp(endDate);
 			} else {
 				// URLパラメータをチェック/Check URL Parameters
 				if(param.getMode() == ApplicationListAtr.APPROVER.value){
 					// 申請一覧初期日付期間(Period date intial application list)
 					DatePeriod period = repoAppListInit.getInitialPeriod(companyID);
-					result.getDisplaySet().setStartDateDisp(period.start());
-					result.getDisplaySet().setEndDateDisp(period.end());
+					startDate = period.start();
+					endDate = period.end();
+					result.getDisplaySet().setStartDateDisp(startDate);
+					result.getDisplaySet().setEndDateDisp(endDate);
 				}else{
 					// 申請一覧初期日付期間_申請 (Period date intial application list _Application)
 					DatePeriod period = repoAppListInit.getInitPeriodApp(companyID);
-					result.getDisplaySet().setStartDateDisp(period.start());
-					result.getDisplaySet().setEndDateDisp(period.end());
+					startDate = period.start();
+					endDate = period.end();
+					result.getDisplaySet().setStartDateDisp(startDate);
+					result.getDisplaySet().setEndDateDisp(endDate);
 				}
 			}
 		}

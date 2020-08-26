@@ -242,7 +242,7 @@ module cmm045.a.viewmodel {
 					
 					
                     service.getApplicationList(newParam).done(function(data: any) {
-						self.dateValue({ startDate: data.displaySet.startDateDisp, endDate: data.displaySet.endDateDisp });
+						self.dateValue({ startDate: data.appListInfoDto.displaySet.startDateDisp, endDate: data.appListInfoDto.displaySet.endDateDisp });
                         self.lstContentApp(data.lstContentApp);
                         let isHidden = data.isDisPreP == 1 ? false : true;
                         self.isHidden(isHidden);
@@ -280,7 +280,7 @@ module cmm045.a.viewmodel {
                         });
                         let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), self.lstAppCompltSync());
                         self.lstApp(lstData);
-                        self.items(data.appLst);
+                        self.items(data.appListInfoDto.appLst);
                         //mode approval - count
                         if (data.appStatusCount != null) {
                             self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
