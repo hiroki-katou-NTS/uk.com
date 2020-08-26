@@ -516,14 +516,6 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 
 			cancelLeave = cancelTemp.isEmpty() ? null : cancelTemp.get(0);
 
-		// if (attendTime != null && leaveTime != null) {
-		// if (attendTime > leaveTime) {
-		// throw new BusinessException("Msg_1677");
-		// }
-		// if (attendTime2 != 0 && attendTime > attendTime2) {
-		// throw new BusinessException("Msg_1677");
-		// }
-		// }
 		if (attendTime != null && leaveTime != null && attendTime > leaveTime) {
 			throw new BusinessException("Msg_1677");
 		}
@@ -535,6 +527,18 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		if (attendTime2 != null && leaveTime2 != null && attendTime2 > leaveTime2) {
 				throw new BusinessException("Msg_1677");
 			}
+
+		if (attendTime != null && leaveTime2 != null && attendTime > leaveTime2) {
+			throw new BusinessException("Msg_1677");
+		}
+
+		if (leaveTime != null && leaveTime2 != null && leaveTime > leaveTime2) {
+			throw new BusinessException("Msg_1677");
+		}
+
+		if (attendTime != null && attendTime2 != null && attendTime > attendTime2) {
+			throw new BusinessException("Msg_1677");
+		}
 
 		if (application.getPrePostAtr().value == 0) {
 			if (attendTime == null && attendTime2 == null && leaveTime == null && leaveTime2 == null) {
