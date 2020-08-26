@@ -514,8 +514,8 @@ public class ApplicationListFinder {
     	param.setMode(0);
     	param.setLstAppType(Collections.emptyList());
     	if (appListExtractConditionDto != null) {
-	    	param.setStartDate(appListExtractConditionDto.getStartDate());
-	    	param.setEndDate(appListExtractConditionDto.getEndDate());
+	    	param.setStartDate(appListExtractConditionDto.getPeriodStartDate());
+	    	param.setEndDate(appListExtractConditionDto.getPeriodEndDate());
     		
     	}
     	
