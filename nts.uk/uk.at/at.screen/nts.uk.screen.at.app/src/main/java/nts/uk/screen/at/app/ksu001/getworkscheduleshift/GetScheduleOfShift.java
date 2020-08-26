@@ -152,7 +152,7 @@ public class GetScheduleOfShift {
 				ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 				ShiftEditStateDto shiftEditStateDto = ShiftEditStateDto.toDto(shiftEditState);
 				
-				 String workTypeCode = workInformation.getWorkTimeCode().v();
+				 String workTypeCode = workInformation.getWorkTypeCode().v();
 				 String workTimeCode = workInformation.getWorkTimeCode() == null ? null :  workInformation.getWorkTimeCode().toString();
 				 
 				 Optional<ShiftMasterMapWithWorkStyle> shiftMaster = listShiftMaster.stream().filter(shiftLocal -> {
