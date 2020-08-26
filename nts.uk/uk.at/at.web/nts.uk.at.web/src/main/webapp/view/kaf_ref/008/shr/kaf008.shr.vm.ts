@@ -1,6 +1,6 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.at.view.kaf008_ref.shr.viewmodel {
-    import BusinessTripInfoOutputDto = nts.uk.at.view.kaf008_ref.a.viewmodel.BusinessTripInfoOutputDto;
+    import BusinessTripInfoOutput = nts.uk.at.view.kaf008_ref.a.viewmodel.BusinessTripInfoOutput;
 
     @component({
         name: 'kaf008-share',
@@ -10,22 +10,30 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
         mode: string = 'edit';
         departureTime: KnockoutObservable<number> = ko.observable(null);
         returnTime: KnockoutObservable<number> = ko.observable(null);
-        comment: Comment = {comment: 'This is comment', bold: true, colorCode: '#FF0000'};
+        comment: KnockoutObservable<Comment> = ko.observable(null);
         items: KnockoutObservableArray<TripContentDisp> = ko.observableArray([]);
         model: KnockoutObservable<any>;
-        businessTripOutput: KnockoutObservable<BusinessTripInfoOutputDto>;
+        businessTripOutput: KnockoutObservable<BusinessTripInfoOutput>;
         workTypeCds: KnockoutObservableArray<string> = ko.observableArray([]);
         holidayTypeCds: KnockoutObservableArray<string> = ko.observableArray([]);
 
         created(params: any) {
             const vm = this;
-            $("#fixed-table").ntsFixedTable({ });
+
             vm.businessTripOutput = params.businessTripOutput;
             vm.model = params.businessTripContent;
+
             vm.businessTripOutput.subscribe(value => {
                 if (value) {
+                    const appSet = value.setting.appCommentSet;
                     vm.workTypeCds(value.workdays);
                     vm.holidayTypeCds(value.holidays);
+                    vm.comment({
+                        comment: appSet.comment,
+                        colorCode: appSet.colorCode,
+                        bold: appSet.bold == 1 ? true : false
+                    });
+
                     let actualContent = _.map(value.businessTripActualContent, function (content, index) {
                         let contentTrip = new TripContentDisp(
                             content.date,
@@ -44,43 +52,62 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         });
                         return contentTrip;
                     });
+
                     vm.items(actualContent);
-                }
-            })
-            vm.departureTime.subscribe(value => {
-                vm.model().departureTime(value);
-            })
-            vm.returnTime.subscribe(value => {
-                vm.model().returnTime(value);
-            })
+                };
+            });
+
+
+
         }
 
         mounted() {
             const vm = this;
 
+            $("#fixed-table").ntsFixedTable({ });
+
+            vm.departureTime.subscribe(value => {
+                vm.model().departureTime(value);
+            });
+
+            vm.returnTime.subscribe(value => {
+                vm.model().returnTime(value);
+            });
         }
 
-        changeWorkTypeCode(data: BusinessTripInfoOutputDto, date: string, wkCode: string, index: number) {
+        changeWorkTypeCode(data: BusinessTripInfoOutput, date: string, wkCode: string, index: number) {
             const vm = this;
             let businessTripInfoOutputDto = ko.toJS(data);
-            let typeCode = wkCode;
             let command = {
-                date, businessTripInfoOutputDto, typeCode
-            }
+                date, businessTripInfoOutputDto, wkCode
+            };
             let cloneOutput = _.clone(vm.businessTripOutput());
-            vm.$ajax(API.changeWorkTypeCode, command).done(data => {
-                let contentAfterChange = data;
-                vm.businessTripOutput(data);
-                let workTypeAfterChange = data.infoAfterChange;
-                let InfoChanged = _.findIndex(workTypeAfterChange, {date: date});
-                let workCodeChanged = workTypeAfterChange[InfoChanged].workTypeDto.workTypeCode;
-                let workNameChanged = workTypeAfterChange[InfoChanged].workTypeDto.name;
-                cloneOutput.businessTripActualContent[index].opAchievementDetail.workTypeCD = workCodeChanged;
-                cloneOutput.businessTripActualContent[index].opAchievementDetail.opWorkTypeName = workNameChanged;
-                vm.businessTripOutput(cloneOutput);
+            let contentChanged = cloneOutput.businessTripActualContent[index].opAchievementDetail;
+
+            vm.$validate([
+                '#kaf008-share #A10_D2',
+                '#kaf008-share #A10_D4'
+            ]).then((valid: boolean) => {
+                if(valid) {
+                    return vm.$ajax(API.changeWorkTypeCode, command);
+                }
+            }).done(data => {
+               if (data) {
+                   let contentAfterChange = data;
+                   vm.businessTripOutput(data);
+
+                   let workTypeAfterChange = data.infoAfterChange;
+                   let InfoChanged = _.findIndex(workTypeAfterChange, {date: date});
+                   let workCodeChanged = workTypeAfterChange[InfoChanged].workTypeDto.workTypeCode;
+                   let workNameChanged = workTypeAfterChange[InfoChanged].workTypeDto.name;
+
+                   contentChanged.workTypeCD = workCodeChanged;
+                   contentChanged.opWorkTypeName = workNameChanged;
+                   vm.businessTripOutput(cloneOutput);
+               }
             }).fail(err => {
-                cloneOutput.businessTripActualContent[index].opAchievementDetail.workTypeCD = typeCode;
-                cloneOutput.businessTripActualContent[index].opAchievementDetail.opWorkTypeName = "なし";
+                contentChanged.workTypeCD = "";
+                contentChanged.opWorkTypeName = "なし";
                 vm.businessTripOutput(cloneOutput);
                 let param;
                 if (err.message && err.messageId) {
@@ -96,22 +123,32 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             }).always(() => vm.$blockui("hide"));
         }
 
-        changeWorkTimeCode(data: BusinessTripInfoOutputDto, date: string, wkCode: string, timeCode: string, index: number) {
+        changeWorkTimeCode(data: BusinessTripInfoOutput, date: string, wkCode: string, timeCode: string, index: number) {
             const vm = this;
-            let inputDate = date;
             let businessTripInfoOutputDto = ko.toJS(data);
-            let typeCode = wkCode;
             let cloneOutput = _.clone(vm.businessTripOutput());
+            let contentChanged = cloneOutput.businessTripActualContent[index].opAchievementDetail;
             let command = {
-                date, businessTripInfoOutputDto, typeCode, timeCode
-            }
-            vm.$ajax(API.changWorkTimeCode, command).done(data => {
-                cloneOutput.businessTripActualContent[index].opAchievementDetail.workTimeCD = timeCode;
-                cloneOutput.businessTripActualContent[index].opAchievementDetail.opWorkTimeName = data;
+                date, businessTripInfoOutputDto, wkCode, timeCode
+            };
+            vm.$validate([
+                '#kaf008-share #A10_D2',
+                '#kaf008-share #A10_D4'
+            ]).then((valid: boolean) => {
+                if(valid) {
+                    return vm.$ajax(API.changWorkTimeCode, command);
+                }
+            }).done(data => {
+                contentChanged.workTimeCD = timeCode;
+                if (data) {
+                    contentChanged.opWorkTimeName = data.name;
+                } else {
+                    contentChanged.opWorkTimeName = "なし";
+                }
                 vm.businessTripOutput(cloneOutput);
             }).fail(err => {
-                cloneOutput.businessTripActualContent[index].opAchievementDetail.workTimeCD = timeCode;
-                cloneOutput.businessTripActualContent[index].opAchievementDetail.opWorkTimeName = "なし";
+                contentChanged.workTimeCD = timeCode;
+                contentChanged.opWorkTimeName = "なし";
                 vm.businessTripOutput(cloneOutput);
                 let param;
                 if (err.message && err.messageId) {
@@ -122,9 +159,9 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                     } else {
                         param = {messageId: err.messageId};
                     }
-                }
+                };
                 vm.$dialog.error(param);
-            }).always(() => vm.$blockui("hide"));;
+            }).always(() => vm.$blockui("hide"));
         }
 
         openDialogKdl003(data: TripContentDisp) {
@@ -149,13 +186,13 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 vm.$window.storage('childData').then(rs => {
                     // const startTime = nts.uk.time.format.byId("Clock_Short_HM", rs.first.start);
                     // const endTime = nts.uk.time.format.byId("Clock_Short_HM", rs.first.end);
-                    let currentDetail = vm.businessTripOutput().businessTripActualContent[selectedIndex].opAchievementDetail;
-                    cloneOutput.businessTripActualContent[selectedIndex].opAchievementDetail.workTypeCD = rs.selectedWorkTypeCode ;
-                    cloneOutput.businessTripActualContent[selectedIndex].opAchievementDetail.opWorkTypeName = rs.selectedWorkTypeName;
-                    cloneOutput.businessTripActualContent[selectedIndex].opAchievementDetail.workTimeCD = rs.selectedWorkTimeCode;
-                    cloneOutput.businessTripActualContent[selectedIndex].opAchievementDetail.opWorkTimeName = rs.selectedWorkTimeName;
-                    cloneOutput.businessTripActualContent[selectedIndex].opAchievementDetail.opWorkTime = rs.first.start;
-                    cloneOutput.businessTripActualContent[selectedIndex].opAchievementDetail.opLeaveTime = rs.first.end;
+                    let currentDetail = cloneOutput.businessTripActualContent[selectedIndex].opAchievementDetail;
+                    currentDetail.workTypeCD = rs.selectedWorkTypeCode ;
+                    currentDetail.opWorkTypeName = rs.selectedWorkTypeName;
+                    currentDetail.workTimeCD = rs.selectedWorkTimeCode;
+                    currentDetail.opWorkTimeName = rs.selectedWorkTimeName;
+                    currentDetail.opWorkTime = rs.first.start;
+                    currentDetail.opLeaveTime = rs.first.end;
                     vm.businessTripOutput(cloneOutput);
                 });
             });
@@ -170,11 +207,6 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
         bold: boolean;
     }
 
-    interface Data {
-        departureTime: number;
-        returnTime: number;
-    }
-
     export class TripContentDisp {
         date: string;
         dateDisp: string;
@@ -187,7 +219,8 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
         end: KnockoutObservable<number>;
         constructor(date: string, wkTypeCd: string, wkTypeName: string, wkTimeCd: string, wkTimeName: string, start:number, end: number ) {
             this.date = date;
-            this.dateDisp = moment(date, "YYYY/MM/DD").format('YYYY-MM-DD(ddd)');
+            //  moment(date, "YYYY/MM/DD").format('YYYY-MM-DD(ddd)');
+            this.dateDisp = nts.uk.time.applyFormat("Short_YMDW", [date])
             let day = moment(moment.utc(date, "YYYY/MM/DD").toISOString()).format('dddd');
             if (day == "土曜日") {
                 this.dateColor = "#0000FF";
@@ -199,31 +232,11 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             this.wkTypeName = ko.observable(wkTypeName);
             this.wkTimeCd = ko.observable(wkTimeCd);
             this.wkTimeName = ko.observable(wkTimeName);
-            var startTime = nts.uk.time.format.byId("Clock_Short_HM", start);
-            var endTime = nts.uk.time.format.byId("Clock_Short_HM", end);
+            var startTime = nts.uk.time.format.byId("ClockDay_Short_HM", start);
+            var endTime = nts.uk.time.format.byId("ClockDay_Short_HM", end);
             this.start = ko.observable(startTime);
             this.end = ko.observable(endTime);
         }
-    }
-
-    export interface BusinessTripContent {
-        date: string;
-        opAchievementDetail: TripAchivementDetail;
-    }
-
-    export interface TripAchivementDetail {
-        wkTypeCd: string;
-        wkTypeName: string;
-        wkTimeCd: string;
-        wkTimeName: string;
-        startTime: number;
-        endTime: number;
-    }
-
-    export interface BusinessTripInfo {
-        departureTime: number;
-        returnTime: number;
-        infos: Array<BusinessTripInfoDetail>
     }
 
     export interface BusinessTripInfoDetail {

@@ -6,10 +6,7 @@ import nts.uk.ctx.at.request.app.command.application.businesstrip.AddBusinessTri
 import nts.uk.ctx.at.request.app.command.application.businesstrip.AddBusinessTripCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripFinder;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.ParamStart;
-import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.BusinessTripInfoOutputDto;
-import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.ChangeWorkCodeParam;
-import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.DetailStartScreenInfoDto;
-import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.ParamChangeDate;
+import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.*;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamBeforeRegister;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
@@ -63,7 +60,7 @@ public class BusinessTripWebservice extends WebService {
 
     @POST
     @Path("changeWorkTimeCode")
-    public String changeWorkTimeCode(ChangeWorkCodeParam param) {
+    public WorkTypeNameDto changeWorkTimeCode(ChangeWorkCodeParam param) {
         return this.businessTripFinder.changeWorkTimeCode(param);
     }
 
