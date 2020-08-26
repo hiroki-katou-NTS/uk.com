@@ -59,9 +59,7 @@ module nts.uk.at.view.kmr004.a {
 				{id: OUTPUT_CONDITION.STATEMENT, name: getText('KMR004_13')},
 			]);
 
-            nts.uk.characteristics.restore(self.cacheKey).done((c13sData: any) => {
-                self.restoreScreenState(c13sData);
-            });
+
 
 			nts.uk.ui.block.grayout();
 			// Call init API
@@ -73,6 +71,12 @@ module nts.uk.at.view.kmr004.a {
 				nts.uk.ui.block.clear();
 			});
 
+            nts.uk.characteristics.restore(self.cacheKey).done((c13sData: any) => {
+            	if(c13sData.selectedClosingTime != self.selectedClosingTime()){
+                    c13sData.selectedClosingTime = self.selectedClosingTime()
+				}
+                self.restoreScreenState(c13sData);
+            });
 
 
 			self.tabs = ko.observableArray([
