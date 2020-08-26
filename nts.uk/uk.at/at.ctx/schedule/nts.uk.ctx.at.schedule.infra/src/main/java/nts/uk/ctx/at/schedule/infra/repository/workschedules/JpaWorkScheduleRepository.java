@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.infra.repository.workschedules;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -17,6 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaWorkScheduleRepository extends JpaRepository implements WorkScheduleRepository {
 
 	private static final String SELECT_BY_KEY = "SELECT c FROM KscdtSchBasicInfo c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd";
+	private static final String SELECT_BY_LIST = "SELECT c FROM KscdtSchBasicInfo c WHERE c.pk.sid IN :sids AND (c.pk.ymd >= :startDate AND c.pk.ymd <= :endDate) ";
 	
 	private static final String SELECT_CHECK_UPDATE = "SELECT count (c) FROM KscdtSchBasicInfo c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd";
 
@@ -26,6 +28,15 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				.setParameter("employeeID", employeeID).setParameter("ymd", ymd)
 				.getSingle(c -> c.toDomain(employeeID, ymd));
 		return workSchedule;
+	}
+
+	@Override
+	public List<WorkSchedule> getList(List<String> sids, DatePeriod period) {
+		List<WorkSchedule> result = this.queryProxy().query(SELECT_BY_LIST, KscdtSchBasicInfo.class)
+				.setParameter("sids", sids)
+				.setParameter("startDate", period.start())
+				.setParameter("endDate", period.end()).getList(c -> c.toDomain(c.pk.sid, c.pk.ymd));
+		return result;
 	}
 	
 	@Override
