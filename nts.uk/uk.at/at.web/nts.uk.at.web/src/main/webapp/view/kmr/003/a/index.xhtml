@@ -21,13 +21,16 @@
 
                 <com:ValidatorScript>
 					nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount
-				</com:ValidatorScript>
+                </com:ValidatorScript>
+                <com:EnumScript>
+                    nts.uk.ctx.at.record.app.find.reservation.bento.dto.BentoReservationSearchConditionDto 
+                </com:EnumScript>
             </ui:define>
 
             <ui:define name="content">
                 <div id="functions-area">
                     <!--A1_2-->
-                    <button tabindex="1" class="proceed" data-bind="click: updateReservation, enable: $root.errors.isEmpty">#{i18n.getText('KMR003_2')}</button>
+                    <button tabindex="1" id="A1_2" class="proceed" data-bind="click: updateReservation, enable: $root.errors.isEmpty">#{i18n.getText('KMR003_2')}</button>
                     <!--A1_3-->
                     <button tabindex="2" class="danger" data-bind="click: deleteReservation, enable: searchConditionValue() != 3 &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KMR003_3')}</button>
                 </div>
@@ -51,7 +54,7 @@
                                 width: '150px',
                                 name: '#{i18n.getText('KMR003_13')}',
                                 options: searchConditions,
-                                optionsValue: 'id',
+                                optionsValue: 'value',
                                 visibleItemsCount: 5,
                                 value: searchConditionValue,
                                 optionsText: 'name',

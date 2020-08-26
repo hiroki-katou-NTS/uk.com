@@ -30,7 +30,7 @@ module nts.uk.at.kmr003.a {
         date: KnockoutObservable<Date> = ko.observable(moment(new Date()).toDate());
 
         //A2_5 A2_6
-        searchConditions: KnockoutObservableArray<SearchCondition> = ko.observableArray();
+        searchConditions: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.BentoReservationSearchConditionDto);
         searchConditionValue: KnockoutObservable<number> = ko.observable(4);
 
         //A2_7 A2_8
@@ -51,13 +51,6 @@ module nts.uk.at.kmr003.a {
         constructor() {
             super();
             let vm = this;
-
-            vm.searchConditions.push(new SearchCondition(4, '全部'));
-            vm.searchConditions.push(new SearchCondition(0, '１商品２件以上'));
-            vm.searchConditions.push(new SearchCondition(1, '注文済み'));
-            vm.searchConditions.push(new SearchCondition(2, '未注文'));
-            vm.searchConditions.push(new SearchCondition(3, '新規注文'));
-
             vm.ccg001ComponentOption = <GroupOption>{
                 /** Common properties */
                 systemType: 2,
@@ -343,7 +336,14 @@ module nts.uk.at.kmr003.a {
             .always(() => {
                 $("#grid").mGrid("destroy");
                 self.loadMGrid();
-                self.$blockui("clear");;
+                self.$blockui("clear");
+
+                // check focus
+                if (_.isEmpty(self.datas)){
+                    $("#ccg001-btn-search-drawer").focus()
+                }else{
+                    $("#A1_2").focus();
+                }
                 dfd.resolve();
             })
             return dfd.promise();
@@ -477,16 +477,6 @@ module nts.uk.at.kmr003.a {
             this.rowId = rowId;
             this.columnKey = columnKey;
             this.state = state;
-        }
-    }
-
-    class SearchCondition {
-        id: number;
-        name: string;
-
-        constructor(id: number, name: string) {
-            this.id = id;
-            this.name = name;
         }
     }
 
