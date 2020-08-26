@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.reflectondomain;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
@@ -24,17 +26,19 @@ public class ReflectOnDomain {
 	 * @param stamp 打刻
 	 * @param ymd  処理中の年月日
 	 */
-	public void reflect(WorkStamp workStamp,Stamp stamp,GeneralDate ymd) {
+	public WorkStamp reflect(WorkStamp workStamp,Stamp stamp,GeneralDate ymd) {
 		//日区分付き時刻を求める
 		TimeWithDayAttr timeWithDayAttr = TimeWithDayAttr.convertToTimeWithDayAttr(ymd,
 				stamp.getStampDateTime().toDate(), stamp.getStampDateTime().clockHourMinute().v());
 		//打刻方法を打刻元情報に変換する
 		ReasonTimeChange reasonTimeChange =  new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, EngravingMethod.TIME_RECORD_ID_INPUT);
+		workStamp.getTimeDay().setTimeWithDay(Optional.ofNullable(timeWithDayAttr));
 		workStamp.getTimeDay().setReasonTimeChange(reasonTimeChange);
 		workStamp.setAfterRoundingTime(timeWithDayAttr);
 		workStamp.setLocationCode(stamp.getRefActualResults().getWorkLocationCD());
 		//「打刻．反映済み区分」をtrueにする
 		stamp.setReflectedCategory(true);
+		return workStamp;
 		
 	}
 }

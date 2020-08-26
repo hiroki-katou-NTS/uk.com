@@ -60,11 +60,24 @@ public class DailyExternalBudgetQuery {
 				datePeriod, new ExtBudgetActItemCode(dailyExternal.getItemCode()));
 
 		// 値（項目）
-		return extBudgetDailies.stream().map(x -> {
-			DailyExternalBudgetDto budgetDto = new DailyExternalBudgetDto();
-			budgetDto.setValue(x.getActualValue().toString());
-			budgetDto.setDate(x.getYmd().toString());
-			return budgetDto;
-		}).collect(Collectors.toList());
+
+		if (dailyExternal.getUnit().equals("0")) {
+			return extBudgetDailies.stream()
+					.filter(item -> dailyExternal.getId().equals(item.getTargetOrg().getWorkplaceId().get())).map(x -> {
+						DailyExternalBudgetDto budgetDto = new DailyExternalBudgetDto();
+						budgetDto.setValue(x.getActualValue().toString());
+						budgetDto.setDate(x.getYmd().toString());
+						return budgetDto;
+					}).collect(Collectors.toList());
+		}
+		
+		return extBudgetDailies.stream()
+				.filter(item -> dailyExternal.getId().equals(item.getTargetOrg().getWorkplaceGroupId().get()))
+				.map(x -> {
+					DailyExternalBudgetDto budgetDto = new DailyExternalBudgetDto();
+					budgetDto.setValue(x.getActualValue().toString());
+					budgetDto.setDate(x.getYmd().toString());
+					return budgetDto;
+				}).collect(Collectors.toList());
 	}
 }

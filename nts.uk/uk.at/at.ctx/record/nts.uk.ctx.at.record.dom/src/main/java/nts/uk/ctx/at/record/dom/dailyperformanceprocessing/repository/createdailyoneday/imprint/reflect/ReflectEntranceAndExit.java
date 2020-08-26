@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.reflect;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -8,6 +10,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdail
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.reflectone.ReflectOneEntranceAndExit;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 
 /**
  * 反映する (new_2020) for : 入退門反映する
@@ -26,18 +29,19 @@ public class ReflectEntranceAndExit {
 	 * @param stamp
 	 * @param ymd  処理中の年月日
 	 */
-	public void reflect(ReflectionInformation reflectionInformation,Stamp stamp,GeneralDate ymd) {
+	public Optional<WorkStamp> reflect(Optional<ReflectionInformation> reflectionInformation,Stamp stamp,GeneralDate ymd) {
 		//打刻区分を確認する
 		if(stamp.getType().getChangeClockArt() == ChangeClockArt.BRARK ||   //退門ORPCログオフの場合
 				   stamp.getType().getChangeClockArt() == ChangeClockArt.PC_LOG_OFF ) {
 			//片方反映する
-			reflectOneEntranceAndExit.reflect(reflectionInformation.getStart(), stamp, ymd);
+			return reflectOneEntranceAndExit.reflect(reflectionInformation.isPresent() ? reflectionInformation.get().getEnd():Optional.empty(), stamp, ymd);
 		
 		}else if(stamp.getType().getChangeClockArt() == ChangeClockArt.OVER_TIME ||  //入門ORPCログオンの場合 
 				   stamp.getType().getChangeClockArt() == ChangeClockArt.PC_LOG_ON ) {
 			//片方反映する
-			reflectOneEntranceAndExit.reflect(reflectionInformation.getEnd(), stamp, ymd);
+			return reflectOneEntranceAndExit.reflect(reflectionInformation.isPresent() ? reflectionInformation.get().getStart():Optional.empty(), stamp, ymd);
 		}
+		return Optional.empty();
 		
 	}
 }

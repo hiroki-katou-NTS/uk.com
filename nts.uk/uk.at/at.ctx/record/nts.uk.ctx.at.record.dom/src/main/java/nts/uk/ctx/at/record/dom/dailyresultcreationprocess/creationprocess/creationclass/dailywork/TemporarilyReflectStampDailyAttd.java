@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.breakouting.reflectgoingoutandreturn.ReflectGoingOutAndReturn;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.entranceandexit.EntranceAndExit;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.reflectpclogoninfo.ReflectPcLogonInfo;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectleavingwork.ReflectLeavingWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflecttemporarystartend.ReflectTemporaryStartEnd;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectwork.ReflectWork;
@@ -45,6 +46,9 @@ public class TemporarilyReflectStampDailyAttd {
 	
 	@Inject
 	private EntranceAndExit entranceAndExit;
+	
+	@Inject
+	private ReflectPcLogonInfo reflectPcLogonInfo;
 	/**
 	 * 打刻を反映する
 	 */
@@ -116,8 +120,7 @@ public class TemporarilyReflectStampDailyAttd {
 		case PC_LOG_ON: //PCログオフOrPcログオン
 		case PC_LOG_OFF:
 			//PCログオン情報反映す
-			
-			
+			reflectPcLogonInfo.reflect(stamp, stampReflectRangeOutput, integrationOfDaily);
 			if (!stamp.isReflectedCategory()) {
 				return listErrorMessageInfo;
 			}

@@ -102,7 +102,6 @@ module nts.uk.at.view.ksu001.u {
                 }
                 self.optionDates(dates);
             }
-
         }
 
         loadPubDateInfo(): void {
@@ -170,11 +169,9 @@ module nts.uk.at.view.ksu001.u {
                 self.yearMonthPicked(parseInt(year +""+ month ));
                 $('#prev-btn').focus();
             }).fail((res) => {
-                self.$dialog.error({ messageId: res.messageId });
-                // nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                self.$dialog.error({ messageId: res.messageId });               
             }).always(()=>{
-                self.$blockui('clear');
-                // nts.uk.ui.block.clear();
+                self.$blockui('clear');                
             });
             
         }
@@ -254,7 +251,7 @@ module nts.uk.at.view.ksu001.u {
                             let periodPub = parseInt(dateClickSplit[2]) - parseInt(publicDateSplit[2]);
                             let periodEdit = 0;
                             if (self.editDate() != "") {
-                                periodEdit = parseInt(dateClickSplit[2]) - parseInt(baseEditDateSplit[2])
+                                periodEdit = parseInt(dateClickSplit[2]) - (parseInt(baseEditDateSplit[2]) <= parseInt(editDateSplit[2]) ? parseInt(baseEditDateSplit[2]) :parseInt(editDateSplit[2]));
                             }
                             if (periodPub <= periodEdit) {
                                 self.newEditDate("");
@@ -453,12 +450,21 @@ module nts.uk.at.view.ksu001.u {
             let basePubDateSplit = basePubDate.split('-');
             let publicDate = self.newPublicDate();
             let publicDateSplit = publicDate.split('-');
+            let editDate = self.newEditDate();
+            let editDateSplit = [];
 
             let offset = 0;
             if (self.publicDate() == self.editDate()) {
                 offset = 1;
-            }                   
-            let prevWeek = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]) - 7));   
+            }                
+            let prevWeek = ""               ;
+            if(self.newPublicDate() == self.publicDate()){
+                editDateSplit = editDate.split
+                prevWeek = self.formatDate(new Date(parseInt(new[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]) - 7));  
+            } else {
+                prevWeek = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]) - 7));  
+            }            
+            let prevWeekEditDate = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]) - 6)); 
             let prevWeekSplit = prevWeek.split('-');
             let prevWeekPublicDate = self.formatDate(new Date(parseInt(prevWeekSplit[0]), parseInt(prevWeekSplit[1]) - 1, parseInt(prevWeekSplit[2])))
 
@@ -523,7 +529,12 @@ module nts.uk.at.view.ksu001.u {
                 }
             }
             self.optionDates(dates);
-            self.newPublicDate(prevWeekPublicDate);
+            if(prevWeek >= self.publicDate()){
+                self.newPublicDate(prevWeekPublicDate);
+            } else {
+                self.newPublicDate(self.publicDate());
+                self.newEditDate(prevWeekEditDate);
+            }            
             self.yearMonthPicked(parseInt(prevWeekSplit[0] + prevWeekSplit[1]));
         }
 
@@ -822,17 +833,16 @@ module nts.uk.at.view.ksu001.u {
             self.$ajax(Paths.REGISTER, command).done(() => {
                 _.remove(self.optionDates());
                 self.$blockui("clear");  
-                self.$dialog.info({ messageId: "Msg_15" });
+                self.$dialog.info({ messageId: "Msg_15" }).then(function() {
+                    $('#prev-btn').focus();		
+                });
                 self.loadPubDateInfo();                               
             }).fail((res) => {
                 self.$dialog.error({ messageId: res.messageId });
             }).always(() => {
                 self.$blockui("clear");
-                $('#prev-btn').focus();		
-            });
-            	
-        }
-        
+            });            	
+        }        
 
         public clearBtn(): void {
             const self = this;
