@@ -93,16 +93,16 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 workplaceId: '',
                 workplaceGroupId: ''
             }
-            if (self.selectedTab == 'company') {
+            if (self.selectedTab() == 'company') {
                 taisho.targetUnit = null;
                 taisho.workplaceId = null;
                 taisho.workplaceGroupId = null;
             }
-            if (self.selectedTab == 'workplace') {
+            if (self.selectedTab() == 'workplace') {
                 taisho.workplaceId = self.workplaceId;
                 taisho.targetUnit = 0
             }
-            if (self.selectedTab == 'groupworkplace') {
+            if (self.selectedTab() == 'groupworkplace') {
                 taisho.workplaceId = '';
             }
 
@@ -248,10 +248,10 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 return;
             }
             let targetUnit = 2;
-            if (self.selectedTab == 'workplace') {
+            if (self.selectedTab() == 'workplace') {
                 targetUnit = 0;
             }
-            if (self.selectedTab == 'groupworkplace') {
+            if (self.selectedTab() == 'workplaceGroup') {
                 targetUnit = 1;
             }
             setShared("dataForJD", {
@@ -331,11 +331,13 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 nts.uk.ui.block.clear();
             } else {
                 service.registerWorkPairPattern(obj).done(function() {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    self.isAllowCheckChanged = false;
-                    self.handleAfterChangeData();
-                    self.isDeleteEnable(true);
-                    dfd.resolve();
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        self.isAllowCheckChanged = false;
+                        self.handleAfterChangeData();
+                        self.isDeleteEnable(true);
+                        $('input#textName').focus();
+                        dfd.resolve();
+                    });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                     dfd.reject();
@@ -356,10 +358,12 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 }
 
                 service.deleteWorkPairPattern(obj).done(function() {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                    self.handleAfterChangeData();
-                    self.isDeleteEnable(false);
-                    dfd.resolve();
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                        self.handleAfterChangeData();
+                        self.isDeleteEnable(false);
+                        $('input#textName').focus();
+                        dfd.resolve();
+                    });
                 }).fail(function() {
                     dfd.reject();
                 });

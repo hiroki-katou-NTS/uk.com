@@ -5,7 +5,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -14,6 +13,7 @@ import nts.uk.ctx.at.schedule.app.command.shiftmanagement.shiftwork.shiftpalet.D
 import nts.uk.ctx.at.schedule.app.find.shift.shiftpalletsorg.ShiftPalletsOrgDto;
 import nts.uk.ctx.at.schedule.app.find.shift.shiftpalletsorg.ShiftPalletsOrgFinder;
 import nts.uk.ctx.at.schedule.app.find.shift.shiftpalletsorg.ShiftPalletsOrgFinder.PageDto;
+import nts.uk.ctx.at.schedule.app.find.shift.shiftpalletsorg.Param;
 
 @Path("at/schedule/shift/management/shiftpalletorg")
 @Produces("application/json")
@@ -32,15 +32,15 @@ public class ShiftPalletsOrgWebservice extends WebService {
 	}
 
 	@POST
-	@Path("getShiftPaletteByWP/{workplaceId}")
-	public List<PageDto> getShiftPaletteByWP(@PathParam("workplaceId") String workplaceId) {
-		return shiftPalletsOrgFinder.getShiftPaletteByWP(workplaceId);
+	@Path("getShiftPaletteByWP")
+	public List<PageDto> getShiftPaletteByWP(Param param) {
+		return shiftPalletsOrgFinder.getShiftPaletteByWP(param.getId());
 	}
 
 	@POST
-	@Path("getShiftPaletteByWPG/{WPGId}")
-	public List<PageDto> getShiftPaletteByWPG(@PathParam("WPGId") String wPGId) {
-		return shiftPalletsOrgFinder.getShiftPaletteByWP(wPGId);
+	@Path("getShiftPaletteByWPG")
+	public List<PageDto> getShiftPaletteByWPG(Param param) {
+		return shiftPalletsOrgFinder.getShiftPaletteByWP(param.getId());
 	}
 
 	@POST
