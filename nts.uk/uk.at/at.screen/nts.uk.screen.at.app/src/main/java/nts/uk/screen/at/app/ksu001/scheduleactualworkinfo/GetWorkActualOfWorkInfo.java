@@ -13,11 +13,14 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.layer.app.cache.NestedMapCache;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.DailyResultAccordScheduleStatusService;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveHistoryAdapter;
@@ -80,20 +83,17 @@ public class GetWorkActualOfWorkInfo {
 		String companyId = AppContexts.user().companyId();
 		// step 1 start
 		// call 予定管理状態に応じて日別実績を取得する
-		RequireDailyImpl requireDailyImpl = new RequireDailyImpl(dailyRecordWorkFinder , empComHisAdapter, workCondRepo, empLeaveHisAdapter,
-				empLeaveWorkHisAdapter, employmentHisScheduleAdapter);
-		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
-		
 		long start = System.nanoTime();
-		
+		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
+		RequireDailyImpl requireDailyImpl = new RequireDailyImpl(param.listSid, period, dailyRecordWorkFinder , empComHisAdapter, workCondRepo, empLeaveHisAdapter,
+				empLeaveWorkHisAdapter, employmentHisScheduleAdapter);
 		Map<ScheManaStatuTempo , Optional<IntegrationOfDaily>> map = DailyResultAccordScheduleStatusService.get(requireDailyImpl, param.listSid, period);
 		
-		List<WorkInfoOfDailyAttendance> listWorkInfo = new ArrayList<WorkInfoOfDailyAttendance>();
-
 		long end = System.nanoTime();
 		long duration = (end - start) / 1000000; // ms;
-		System.out.println("thoi gian get data Daily cua "+ param.listSid.size() + " employee: " + duration + "ms");	
+		System.out.println("thoi gian get data Daily cua "+ param.listSid.size() + " employee: " + duration + "ms");
 		
+		List<WorkInfoOfDailyAttendance> listWorkInfo = new ArrayList<WorkInfoOfDailyAttendance>();
 		map.forEach((k, v) -> {
 			if (v.isPresent()) {
 				WorkInfoOfDailyAttendance workInfo = v.get().getWorkInformation();
@@ -256,25 +256,38 @@ public class GetWorkActualOfWorkInfo {
 	@AllArgsConstructor
 	private static class RequireDailyImpl implements DailyResultAccordScheduleStatusService.Require {
 
-		@Inject
 		private DailyRecordWorkFinder dailyRecordWorkFinder;
-		
-		@Inject
 		private EmpComHisAdapter empComHisAdapter;
-		@Inject
 		private WorkingConditionRepository workCondRepo;
-		@Inject
 		private EmpLeaveHistoryAdapter empLeaveHisAdapter;
-		@Inject
 		private EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter;
-		@Inject
-		private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
+		private EmploymentHisScheduleAdapter  employmentHisScheduleAdapter ;
+		
+		private NestedMapCache<String, GeneralDate, DailyRecordDto> workScheduleCache;
+		
+		public RequireDailyImpl(List<String> empIdList, DatePeriod period, DailyRecordWorkFinder dailyRecordWorkFinder,
+				EmpComHisAdapter empComHisAdapter, WorkingConditionRepository workCondRepo,
+				EmpLeaveHistoryAdapter empLeaveHisAdapter, EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter,
+				EmploymentHisScheduleAdapter employmentHisScheduleAdapter) {
+			
+			  this.dailyRecordWorkFinder = dailyRecordWorkFinder;
+			  this.empComHisAdapter = empComHisAdapter;
+			  this.workCondRepo = workCondRepo;
+			  this.empLeaveHisAdapter = empLeaveHisAdapter;
+			  this.empLeaveWorkHisAdapter = empLeaveWorkHisAdapter;
+			  this.employmentHisScheduleAdapter = employmentHisScheduleAdapter;
+			
+			List<DailyRecordDto> sDailyRecordDtos = dailyRecordWorkFinder.find(empIdList, period);
+			workScheduleCache = NestedMapCache.preloadedAll(sDailyRecordDtos.stream(),
+					workSchedule -> workSchedule.getEmployeeId(), 
+					workSchedule -> workSchedule.getDate());
+		}
 		
 		@Override
 		public Optional<IntegrationOfDaily> getDailyResults(String empId, GeneralDate date) {
-			DailyRecordDto dailyRecordDto = dailyRecordWorkFinder.find(empId, date);
-			if (dailyRecordDto != null) {
-				IntegrationOfDaily data = dailyRecordDto.toDomain(empId, date);
+			Optional<DailyRecordDto> dailyRecordDto = workScheduleCache.get(empId, date);
+			if (!dailyRecordDto.isPresent()) {
+				IntegrationOfDaily data = dailyRecordDto.get().toDomain(empId, date);
 				return Optional.of(data);
 			}
 			return Optional.empty();

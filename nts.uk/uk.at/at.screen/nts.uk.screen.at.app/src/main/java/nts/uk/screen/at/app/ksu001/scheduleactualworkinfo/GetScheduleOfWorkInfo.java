@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.layer.app.cache.NestedMapCache;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
@@ -88,21 +89,18 @@ public class GetScheduleOfWorkInfo {
 		String companyId = AppContexts.user().companyId();
 		// step 1 start
 		// call 予定管理状態に応じて勤務予定を取得する
-		RequireImpl RequireImpl = new RequireImpl(workScheduleRepo, empComHisAdapter, workCondRepo, empLeaveHisAdapter,
-				empLeaveWorkHisAdapter, employmentHisScheduleAdapter);
+		long start = System.nanoTime();
 		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
+		RequireImpl RequireImpl = new RequireImpl(param.listSid, period, workScheduleRepo, empComHisAdapter, workCondRepo, empLeaveHisAdapter,
+				empLeaveWorkHisAdapter, employmentHisScheduleAdapter);
 		
 		// 管理状態と勤務予定Map
-		long start = System.nanoTime();
-		
 		Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMap =  WorkScheManaStatusService.getScheduleManagement(RequireImpl, param.listSid, period);
-		
 		long end = System.nanoTime();
 		long duration = (end - start) / 1000000; // ms;
 		System.out.println("thoi gian get data Schedule cua "+ param.listSid.size() + " employee: " + duration + "ms");	
 		
 		List<WorkInfoOfDailyAttendance>  listWorkInfo = new ArrayList<WorkInfoOfDailyAttendance>();
-		
 		mngStatusAndWScheMap.forEach((k,v)->{
 			if (v.isPresent()) {
 				WorkInfoOfDailyAttendance workInfo = v.get().getWorkInfo();
@@ -324,24 +322,35 @@ public class GetScheduleOfWorkInfo {
 	@AllArgsConstructor
 	private static class RequireImpl implements WorkScheManaStatusService.Require {
 		
-		@Inject
 		private WorkScheduleRepository workScheduleRepo;
-		
-		@Inject
 		private EmpComHisAdapter empComHisAdapter;
-		@Inject
 		private WorkingConditionRepository workCondRepo;
-		@Inject
 		private EmpLeaveHistoryAdapter empLeaveHisAdapter;
-		@Inject
 		private EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter;
-		@Inject
 		private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
 		
+		private NestedMapCache<String, GeneralDate, WorkSchedule> workScheduleCache;
+		
+		public RequireImpl(List<String> empIdList, DatePeriod period, WorkScheduleRepository workScheduleRepo,
+				EmpComHisAdapter empComHisAdapter, WorkingConditionRepository workCondRepo,
+				EmpLeaveHistoryAdapter empLeaveHisAdapter, EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter,
+				EmploymentHisScheduleAdapter employmentHisScheduleAdapter) {
+			
+			this.workScheduleRepo = workScheduleRepo;
+			this.empComHisAdapter = empComHisAdapter;
+			this.workCondRepo = workCondRepo;
+			this.empLeaveHisAdapter = empLeaveHisAdapter;
+			this.empLeaveWorkHisAdapter = empLeaveWorkHisAdapter;
+			this.employmentHisScheduleAdapter = employmentHisScheduleAdapter;
+			
+			workScheduleCache = NestedMapCache.preloadedAll(workScheduleRepo.getList(empIdList, period).stream(),
+					workSchedule -> workSchedule.getEmployeeID(), workSchedule -> workSchedule.getYmd());
+		}
+		
 		@Override
-		public Optional<WorkSchedule> get(String employeeID, GeneralDate ymd) {
-			Optional<WorkSchedule> data = workScheduleRepo.get(employeeID, ymd);
-			return data;
+		public Optional<WorkSchedule> get(String employeeId, GeneralDate date) {
+			Optional<WorkSchedule> result = workScheduleCache.get(employeeId, date);
+			return result;
 		}
 		
 		@Override

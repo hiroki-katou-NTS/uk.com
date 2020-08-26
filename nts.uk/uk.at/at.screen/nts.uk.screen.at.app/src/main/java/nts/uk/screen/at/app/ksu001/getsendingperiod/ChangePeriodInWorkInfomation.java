@@ -40,12 +40,8 @@ public class ChangePeriodInWorkInfomation {
 	@Inject
 	private DisplayInWorkInformation displayInWorkInfo;
 	
-	private static final String DATE_FORMAT = "yyyyMMdd";
 	
 	public ChangePeriodInWorkInfoResult getData(ChangePeriodInWorkInfoParam param) {
-		
-		GeneralDate start = GeneralDate.fromString(param.startDate, DATE_FORMAT);
-		GeneralDate end = GeneralDate.fromString(param.endDate, DATE_FORMAT);
 		
 		// step 1 va step 2 
 		TargetOrgIdenInfor targetOrgIdenInfor = null;
@@ -60,15 +56,15 @@ public class ChangePeriodInWorkInfomation {
 					Optional.of(param.workplaceGroupId));
 		}
 
-		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(end, targetOrgIdenInfor);
+		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(param.endDate, targetOrgIdenInfor);
 		List<EmployeeInformationImport> resultStep2 = extractTargetEmployees.getListEmp(param2);
 		
 		List<String> sids = resultStep2.stream().map(i -> i.getEmployeeId()).collect(Collectors.toList());
 		EventInfoAndPerCondPeriodParam param1 = new EventInfoAndPerCondPeriodParam(
-				start, end, sids, targetOrgIdenInfor);
+				param.startDate, param.endDate, sids, targetOrgIdenInfor);
 		DataSpecDateAndHolidayDto resultStep1 = eventInfoAndPersonalCondPeriod.getData(param1);
 		
-		DisplayInWorkInfoParam param4 = new DisplayInWorkInfoParam(sids, start, end, param.getActualData);
+		DisplayInWorkInfoParam param4 = new DisplayInWorkInfoParam(sids, param.startDate, param.endDate, param.getActualData);
 		DisplayInWorkInfoResult  resultStep4 = new DisplayInWorkInfoResult();
 		resultStep4 = displayInWorkInfo.getDataWorkInfo(param4);
 		

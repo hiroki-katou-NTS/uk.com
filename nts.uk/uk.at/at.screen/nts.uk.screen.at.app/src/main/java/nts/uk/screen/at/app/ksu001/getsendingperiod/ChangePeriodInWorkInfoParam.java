@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 
 /**
  * @author laitv
@@ -19,8 +20,8 @@ import lombok.Setter;
 @Getter
 public class ChangePeriodInWorkInfoParam {
 	
-	public String startDate;            	 
-	public String endDate;    	
+	public GeneralDate startDate;            	 
+	public GeneralDate endDate;    	
 	
 	public int unit;
 	public String workplaceId;     	         
