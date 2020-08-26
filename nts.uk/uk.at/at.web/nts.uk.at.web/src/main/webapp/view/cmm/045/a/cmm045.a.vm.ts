@@ -49,6 +49,7 @@ module cmm045.a.viewmodel {
         //Grid list item
         apptypeGridColumns: KnockoutObservable<NtsGridListColumn>;
         selectedAppId: KnockoutObservable<number> = ko.observable(-1);
+		orderCD: KnockoutObservable<number> = ko.observable(0);
 
         constructor() {
             let self = this;
@@ -235,15 +236,13 @@ module cmm045.a.viewmodel {
 					service.getAppNameInAppList().then((data) => {
 						let newParam = {
 							mode: 0,
-							startDate: moment(new Date()).format("YYYY/MM/DD"),
-							endDate: moment(new Date()).format("YYYY/MM/DD"),
 							device: 0,
 							listOfAppTypes: data
 						};
 					
 					
-                    service.getApplicationList(newParam).done(function(data) {
-
+                    service.getApplicationList(newParam).done(function(data: any) {
+						self.dateValue({ startDate: data.displaySet.startDateDisp, endDate: data.displaySet.endDateDisp });
                         self.lstContentApp(data.lstContentApp);
                         let isHidden = data.isDisPreP == 1 ? false : true;
                         self.isHidden(isHidden);
@@ -251,10 +250,10 @@ module cmm045.a.viewmodel {
 //                            self.filter();
 //                        });
                         //luu param
-                        if (self.dateValue().startDate == '' || self.dateValue().endDate == '') {
+                        /*if (self.dateValue().startDate == '' || self.dateValue().endDate == '') {
                             let date: vmbase.Date = { startDate: data.startDate, endDate: data.endDate }
                             self.dateValue(date);
-                        }
+                        }*/
                         let paramSave: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                             self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
                             self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
@@ -281,7 +280,7 @@ module cmm045.a.viewmodel {
                         });
                         let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), self.lstAppCompltSync());
                         self.lstApp(lstData);
-                        self.items(lstData);
+                        self.items(data.appLst);
                         //mode approval - count
                         if (data.appStatusCount != null) {
                             self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
@@ -518,14 +517,14 @@ module cmm045.a.viewmodel {
                         nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
                     }
                 } },
-                { headerText: getText('CMM045_51'), key: 'applicant', width: '120px' },
-                { headerText: getText('CMM045_52'), key: 'appName', width: '90px'},
-                { headerText: getText('CMM045_53'), key: 'appAtr', width: '65px', hidden: isHidden},
+                { headerText: getText('CMM045_51'), key: 'applicantName', width: '120px' },
+                { headerText: getText('CMM045_52'), key: 'appTye', width: '90px'},
+                { headerText: getText('CMM045_53'), key: 'prePostAtr', width: '65px', hidden: false},
                 { headerText: getText('CMM045_54'), key: 'appDate', width: '157px'},
                 { headerText: getText('CMM045_55'), key: 'appContent', width: '408px'},
                 { headerText: getText('CMM045_56'), key: 'inputDate', width: '120px'},
-                { headerText: getText('CMM045_57'), key: 'appStatus', width: '75px', extraClassProperty: "appStatusName"},
-                { headerText: getText('CMM045_58'), key: 'displayAppStatus', width: '95px' }
+                { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
+                { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' }
             ];
             let heightAuto = screen.height - 360 >= 500 ? 500 : screen.height - 360;
             this.setupGrid({
@@ -732,14 +731,14 @@ module cmm045.a.viewmodel {
                         nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
                     }
                 } },
-                { headerText: getText('CMM045_51'), key: 'applicant', width: '120px' },
-                { headerText: getText('CMM045_52'), key: 'appName', width: '90px'},
-                { headerText: getText('CMM045_53'), key: 'appAtr', width: '65px', hidden: isHidden},
+                { headerText: getText('CMM045_51'), key: 'applicantName', width: '120px' },
+                { headerText: getText('CMM045_52'), key: 'appTye', width: '90px'},
+                { headerText: getText('CMM045_53'), key: 'prePostAtr', width: '65px', hidden: isHidden},
                 { headerText: getText('CMM045_54'), key: 'appDate', width: '157px'},
                 { headerText: getText('CMM045_55'), key: 'appContent', width: '341px'},
                 { headerText: getText('CMM045_56'), key: 'inputDate', width: '120px'},
-                { headerText: getText('CMM045_57'), key: 'appStatus', width: '75px', extraClassProperty: "appStatusName"},
-                { headerText: getText('CMM045_58'), key: 'displayAppStatus', width: '95px' },
+                { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
+                { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' },
             ]
             let heightAuto = screen.height - 435 >= 530 ? 530 : screen.height - 435;
             this.setupGrid({
