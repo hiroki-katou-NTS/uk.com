@@ -17,7 +17,7 @@ module nts.uk.at.kmr003.a {
     const dialogOptions: any = {
         forGrid: true,
         headers: [
-            new nts.uk.ui.errors.ErrorHeader("rowId", "カード番号", "auto", true),
+            new nts.uk.ui.errors.ErrorHeader("rowId", getText("KMR003_21"), "auto", true),
             new nts.uk.ui.errors.ErrorHeader("columnKey", "弁当ヘッダー", "auto", true),
             new nts.uk.ui.errors.ErrorHeader("message", "エラー内容", "auto", true)
         ]
@@ -25,8 +25,6 @@ module nts.uk.at.kmr003.a {
 
     @bean(dialogOptions)
     export class KMR003AViewModel extends ko.ViewModel {
-        tabs: KnockoutObservableArray<any> = ko.observableArray([]);
-        stampToSuppress: KnockoutObservable<any> = ko.observable({});
         date: KnockoutObservable<Date> = ko.observable(moment(new Date()).toDate());
 
         //A2_5 A2_6
@@ -41,12 +39,13 @@ module nts.uk.at.kmr003.a {
         ccg001ComponentOption: GroupOption = null;
 
         dynamicColumns = [];
-        flag: KnockoutObservable<boolean>;
         datas: Array<ReservationModifyEmployeeDto> = [];
         listBento = [];
         headerInfos: Array<HeaderInfoDto> = [];
         empSearchItems: Array<EmployeeSearchDto> = [];
-        employIdLogin: any;
+
+        canDelete: KnockoutObservable<boolean> = ko.observable(false);
+        deleteItems: KnockoutObservableArray<string> = ko.observableArray([]);
 
         constructor() {
             super();
@@ -195,7 +194,10 @@ module nts.uk.at.kmr003.a {
                 ntsControls: [
                     {
                         name: 'isDelCheckBox', options: { value: 1, text: '' }, optionsValue: 'value',
-                        optionsText: 'text', controlType: 'CheckBox', enable: false
+                        optionsText: 'text', controlType: 'CheckBox', enable: true,
+                        onChange: function (rowId, columnKey, value, rowData) {
+                            self.checkDelete(rowId, value);
+                        }
                     },
                     {
                         name: 'isOrderCheckBox', options: { value: 1, text: '' }, optionsValue: 'value',
@@ -263,6 +265,20 @@ module nts.uk.at.kmr003.a {
             })
         }
 
+        checkDelete(rowId: any, check: any) {
+            let self = this;
+            if (check) {
+                self.deleteItems().push(rowId);
+            } else {
+                const index = self.deleteItems().indexOf(rowId);
+                if (index > -1) {
+                    self.deleteItems().splice(index, 1);
+                }
+            }
+
+            self.canDelete(self.deleteItems().length > 0);
+        }
+
         setBentoInput(rowId: any, isDisable: any) {
             let self = this;
             _.forEach(self.headerInfos, (bento: HeaderInfoDto) => {
@@ -284,6 +300,8 @@ module nts.uk.at.kmr003.a {
             self.$blockui("invisible");
             let param = self.createParamGet();
             self.datas = [];
+            self.deleteItems.removeAll();
+            self.canDelete(false);
             self.$ajax(API.BENTO_RESERVATTIONS, param).done((res: IReservationModifyDto) => {
                 self.dynamicColumns = [];
                 if (!_.isEmpty(res.bentoClosingTimes)) {
@@ -387,7 +405,6 @@ module nts.uk.at.kmr003.a {
 
             let commandUpdate = new ForceUpdateBentoReserveCommand(self.date().toISOString(), self.isNewMode(), self.closingTimeFrameValue());
             commandUpdate.setReservationInfos(reservations, self.headerInfos);
-            console.log(commandUpdate)
             self.$ajax(API.BENTO_UPDATE, commandUpdate).done(() => {
                 self.$dialog.info({ messageId: "Msg_15" }).then(function () {
                     self.$blockui("clear");;
@@ -406,7 +423,6 @@ module nts.uk.at.kmr003.a {
 
                     let commandDelete = new ForceDeleteBentoReserveCommand(self.date().toISOString(), self.closingTimeFrameValue());
                     commandDelete.setReservationInfos(reservationDeletes);
-                    console.log(commandDelete)
                     self.$ajax(API.BENTO_DELETE, commandDelete).done(() => {
                         self.$dialog.info({ messageId: "Msg_16" }).then(function () {
                             self.$blockui("clear");

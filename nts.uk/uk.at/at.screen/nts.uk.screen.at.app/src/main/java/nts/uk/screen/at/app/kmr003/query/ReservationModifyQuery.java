@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.*;
 import nts.uk.ctx.at.record.app.find.reservation.bento.query.ListBentoResevationQuery;
+import nts.uk.ctx.at.record.app.query.stamp.GetStampCardQuery;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationStateService;
@@ -37,10 +39,7 @@ import nts.uk.shr.com.i18n.TextResource;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -53,7 +52,7 @@ public class ReservationModifyQuery {
     private BentoReservationSettingRepository bentoReservationSettingRepo;
 
     @Inject
-    private StampCardRepository stampCardRepo;
+    private GetStampCardQuery getStampCardQuery;
 
     @Inject
     private PersonEmpBasicInfoPub personEmpBasicInfoPub;
@@ -69,6 +68,9 @@ public class ReservationModifyQuery {
 
     @Inject
     private RecordDomRequireService requireService;
+
+    @Inject
+    private ManagedParallelWithContext parallel;
 
     /**
      * 修正する予約を抽出する
@@ -89,7 +91,8 @@ public class ReservationModifyQuery {
 
         // 5:
         // List<社員ID＞から打刻カードを全て取得する
-        List<StampCard> stampCards = stampCardRepo.getLstStampCardByLstSid(empIds);
+        List<StampCard> stampCards = getStampCardQuery.getStampCardBy(empIds);
+
         List<ReservationRegisterInfo> reservationRegisterInfos = stampCards.stream()
                 .map(x -> new ReservationRegisterInfo(x.getStampNumber().v())).collect(Collectors.toList());
 
@@ -174,7 +177,7 @@ public class ReservationModifyQuery {
         result.setEmpFinishs(empFinishs);
         reservationModifyEmps = reservationModifyEmps.stream()
                 .sorted(Comparator.comparing(ReservationModifyEmployeeDto::getReservationMemberCode, Comparator.naturalOrder())
-                .thenComparing(ReservationModifyEmployeeDto::getReservationCardNo, Comparator.naturalOrder()))
+                        .thenComparing(ReservationModifyEmployeeDto::getReservationCardNo, Comparator.naturalOrder()))
                 .collect(Collectors.toList());
         result.setReservationModifyEmps(reservationModifyEmps);
         result.setErrors(errors);
@@ -272,7 +275,7 @@ public class ReservationModifyQuery {
     private List<ReservationModifyEmployeeDto> getNewOrderReservationModifyEmps(List<ReservationRegisterInfo> reservationRegisterInfos,
                                                                                 ReservationDate reservationDate,
                                                                                 List<StampCard> stampCards,
-                                                                                List<PersonEmpBasicInfoDto> empBasicInfos){
+                                                                                List<PersonEmpBasicInfoDto> empBasicInfos) {
         List<ReservationRegisterInfo> newOrderInfos = new ArrayList<>();
         if (!CollectionUtil.isEmpty(reservationRegisterInfos)) {
             DatePeriod datePeriod = new DatePeriod(reservationDate.getDate(), reservationDate.getDate());
@@ -321,23 +324,27 @@ public class ReservationModifyQuery {
                                                            BentoReservationSearchConditionDto searchCondition,
                                                            List<ReservationModifyEmployeeDto> reservationModifyEmps) {
         List<EmployeeInfoMonthFinishDto> empFinishs = new ArrayList<>();
-        for (PersonEmpBasicInfoDto empBasicInfo : empBasicInfos) {
-            RequireImpl require = new RequireImpl(requireService);
+        RequireImpl require = new RequireImpl(requireService);
+        this.parallel.forEach(reservationModifyEmps, reservationInfo -> {
             // 弁当予約が強制修正できる状態を取得する
-            boolean canModify = BentoReservationStateService.check(require, empBasicInfo.getEmployeeId(),
+            boolean canModify = BentoReservationStateService.check(require, reservationInfo.getReservationMemberId(),
                     reservationDate.getDate());
             if (!canModify) {
-                // 8.2: 月締め処理が済んでいる社員情報を作る
-                if (searchCondition == BentoReservationSearchConditionDto.NEW_ORDER) {
-                    empFinishs.add(new EmployeeInfoMonthFinishDto(empBasicInfo.getEmployeeCode(),
-                            empBasicInfo.getBusinessName()));
+                Optional<PersonEmpBasicInfoDto> empBasicInfoOpt = empBasicInfos.stream()
+                        .filter(x -> x.getEmployeeId().equals(reservationInfo.getReservationMemberId())).findFirst();
+                if (empBasicInfoOpt.isPresent()) {
+                    PersonEmpBasicInfoDto empBasicInfo = empBasicInfoOpt.get();
+
+                    // 8.2: 月締め処理が済んでいる社員情報を作る
+                    if (searchCondition == BentoReservationSearchConditionDto.NEW_ORDER) {
+                        empFinishs.add(new EmployeeInfoMonthFinishDto(empBasicInfo.getEmployeeCode(),
+                                empBasicInfo.getBusinessName()));
+                    }
+                    // 8.1 生活値を更新
+                    reservationInfo.setActivity(false);
                 }
-                // 8.1 生活値を更新
-                Optional<ReservationModifyEmployeeDto> reservationInfoForEmpOp = reservationModifyEmps.stream()
-                        .filter(x -> x.getReservationMemberId().equals(empBasicInfo.getEmployeeId())).findFirst();
-                reservationInfoForEmpOp.ifPresent(x -> x.setActivity(false));
             }
-        }
+        });
         return empFinishs;
     }
 

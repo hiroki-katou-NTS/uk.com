@@ -16,6 +16,7 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
@@ -216,7 +217,9 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 			@SuppressWarnings("unchecked")
 			List<Object[]> result = this.getEntityManager().createNativeQuery(query).getResultList();
 			result.forEach(f -> {
-				domains.add(new StampCard(f[4].toString(), f[2].toString(), f[1].toString()));
+				domains.add(new StampCard(new ContractCode(f[4].toString()), new StampNumber(f[2].toString()), f[1].toString(),
+						GeneralDate.fromString(f[3].toString(), "yyyy-MM-dd"), f[0].toString()));
+				// domains.add(new StampCard(f[4].toString(), f[2].toString(), f[1].toString()));
 			});
 		});
 
