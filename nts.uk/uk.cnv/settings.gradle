@@ -1,1 +1,2 @@
-include 'nts.uk.cnv.web'
+rootProject.name = 'uk.cnv'
+include ':nts.uk.cnv.web'
