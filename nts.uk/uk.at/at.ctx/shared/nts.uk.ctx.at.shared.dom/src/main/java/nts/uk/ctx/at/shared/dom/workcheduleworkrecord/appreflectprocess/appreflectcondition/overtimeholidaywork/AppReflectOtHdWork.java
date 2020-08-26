@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.holidayworkapplication.HolidayWorkApplicationReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.overtimeworkapplycation.OvertimeWorkApplicationReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkApplicationReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflect;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -16,7 +16,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class AppReflectOvertimeHolidayWork extends AggregateRoot {
+public class AppReflectOtHdWork extends AggregateRoot {
     /**
      * 会社ID
      */
@@ -25,12 +25,12 @@ public class AppReflectOvertimeHolidayWork extends AggregateRoot {
     /**
      * 休日出勤申請
      */
-    private HolidayWorkApplicationReflect holidayWorkAppReflect;
+    private HdWorkApplicationReflect holidayWorkAppReflect;
 
     /**
      * 残業申請
      */
-    private OvertimeWorkApplicationReflect overtimeWorkAppReflect;
+    private OtWorkAppReflect overtimeWorkAppReflect;
 
     /**
      * 時間外深夜時間を反映する

@@ -1,14 +1,14 @@
-package nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.overtimeworkapplycation;
+package nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.otworkapply;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.overtimeworkapplycation.OvertimeWorkApplicationReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflect;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OvertimeWorkApplicationReflectCommand {
+public class OtWorkAppReflectCommand {
     private int reflectActualWorkAtr;
     private int reflectWorkInfoAtr;
     private int reflectActualOvertimeHourAtr;
@@ -19,8 +19,8 @@ public class OvertimeWorkApplicationReflectCommand {
     private int reflectDivergence;
     private int reflectBreakOuting;
 
-    public OvertimeWorkApplicationReflect toDomain() {
-        return OvertimeWorkApplicationReflect.create(
+    public OtWorkAppReflect toDomain() {
+        return OtWorkAppReflect.create(
                 reflectActualWorkAtr,
                 reflectWorkInfoAtr,
                 reflectActualOvertimeHourAtr,

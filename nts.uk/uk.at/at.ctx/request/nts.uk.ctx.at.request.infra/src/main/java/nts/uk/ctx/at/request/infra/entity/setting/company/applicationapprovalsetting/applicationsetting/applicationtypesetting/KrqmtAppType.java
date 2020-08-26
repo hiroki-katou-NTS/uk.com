@@ -24,10 +24,10 @@ public class KrqmtAppType extends ContractUkJpaEntity {
     private KrqmtAppTypePk pk;
 
     @Column(name = "PRE_POST_INIT_ATR")
-    private int prePostInitAtr;
+    private Integer prePostInitAtr;
 
     @Column(name = "PRE_POST_CHANGE_ATR")
-    private int prePostChangeAtr;
+    private Integer prePostChangeAtr;
 
     @Column(name = "APV_SEND_MAIL_ATR")
     private int apvSendMailAtr;
@@ -77,7 +77,7 @@ public class KrqmtAppType extends ContractUkJpaEntity {
                 BooleanUtils.toBoolean(this.appSendMailAtr),
                 BooleanUtils.toBoolean(apvSendMailAtr),
                 this.prePostInitAtr,
-                BooleanUtils.toBoolean(this.prePostChangeAtr)
+                this.prePostChangeAtr == null ? null : BooleanUtils.toBoolean(this.prePostChangeAtr)
         );
     }
 
@@ -117,8 +117,8 @@ public class KrqmtAppType extends ContractUkJpaEntity {
                 .pk(new KrqmtAppTypePk(companyId, appTypeSetting.getAppType().value))
                 .appSendMailAtr(BooleanUtils.toInteger(appTypeSetting.isSendMailWhenRegister()))
                 .apvSendMailAtr(BooleanUtils.toInteger(appTypeSetting.isSendMailWhenApproval()))
-                .prePostInitAtr(appTypeSetting.getDisplayInitialSegment().value)
-                .prePostChangeAtr(BooleanUtils.toInteger(appTypeSetting.isCanClassificationChange()))
+                .prePostInitAtr(appTypeSetting.getDisplayInitialSegment().map(i -> i.value).orElse(null))
+                .prePostChangeAtr(appTypeSetting.getCanClassificationChange().map(x -> BooleanUtils.toInteger(x)).orElse(null))
                 .preOTCheckSet(receptionRestrictSetting.getAppType() == ApplicationType.OVER_TIME_APPLICATION ? receptionRestrictSetting.getOtAppBeforeAccepRestric().get().getMethodCheck().value : null)
                 .preEarlyDays(receptionRestrictSetting.getAppType() == ApplicationType.OVER_TIME_APPLICATION ? receptionRestrictSetting.getOtAppBeforeAccepRestric().get().getDateBeforehandRestrictions().value : receptionRestrictSetting.getBeforehandRestriction().get().getDateBeforehandRestrictions().value)
                 .useAtr(BooleanUtils.toInteger(receptionRestrictSetting.getAppType() == ApplicationType.OVER_TIME_APPLICATION ? receptionRestrictSetting.getOtAppBeforeAccepRestric().get().isToUse() : receptionRestrictSetting.getBeforehandRestriction().get().isToUse()))

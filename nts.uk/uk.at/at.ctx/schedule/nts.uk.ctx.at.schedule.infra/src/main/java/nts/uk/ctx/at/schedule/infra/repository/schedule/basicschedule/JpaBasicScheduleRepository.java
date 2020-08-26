@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -27,8 +29,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.w3c.dom.Document;
 
 import lombok.SneakyThrows;
 import lombok.val;
@@ -227,6 +232,30 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			return Optional.of(basicSchedule);
 		}
 		return Optional.empty();
+	}
+    /*
+     * -PhuongDV- for test
+     * (non-Javadoc)
+     * @see nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository#find(java.lang.String, nts.arc.time.GeneralDate)
+     */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	@Override
+	public String findTest(String sId, GeneralDate date) {
+    	try {
+			String currentPath = Paths.get(".").toAbsolutePath().normalize().toString();
+			File fXmlFile = new File(currentPath + "\\datatest\\staff.xml");
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(fXmlFile);
+			
+			doc.getDocumentElement().normalize();
+			
+			String testXml = doc.getDocumentElement().getNodeName(); 
+			
+			return "";
+		}catch(Exception e) {
+			return "";
+		}
 	}
 	
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)

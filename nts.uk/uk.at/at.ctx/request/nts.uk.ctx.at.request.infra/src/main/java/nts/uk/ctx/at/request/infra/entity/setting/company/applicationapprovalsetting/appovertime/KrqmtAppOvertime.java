@@ -8,12 +8,11 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.ApplicationDetailSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.overtimeworkapplycation.AfterOvertimeWorkAppReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.overtimeworkapplycation.BeforeOvertimeWorkAppReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.overtimeworkapplycation.OvertimeWorkApplicationReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.AfterOtWorkAppReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.BeforeOtWorkAppReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflect;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
 import org.apache.commons.lang3.BooleanUtils;
 
 import javax.persistence.*;
@@ -136,8 +135,8 @@ public class KrqmtAppOvertime extends ContractUkJpaEntity implements Serializabl
         );
     }
 
-    public AfterOvertimeWorkAppReflect toAfterOvertimeAppReflectDomain() {
-        return AfterOvertimeWorkAppReflect.create(
+    public AfterOtWorkAppReflect toAfterOvertimeAppReflectDomain() {
+        return AfterOtWorkAppReflect.create(
                 postWorkTimeReflectAtr,
                 postBpTimeReflectAtr,
                 postAnyvTimeReflectAtr,
@@ -146,14 +145,14 @@ public class KrqmtAppOvertime extends ContractUkJpaEntity implements Serializabl
         );
     }
 
-    public BeforeOvertimeWorkAppReflect toBeforeOvertimeAppReflectDomain() {
-        return BeforeOvertimeWorkAppReflect.create(preWorkReflectAtr, preInputTimeReflectAtr, preBreakTimeReflectAtr);
+    public BeforeOtWorkAppReflect toBeforeOvertimeAppReflectDomain() {
+        return BeforeOtWorkAppReflect.create(preWorkReflectAtr, preInputTimeReflectAtr, preBreakTimeReflectAtr);
     }
 
-    public OvertimeWorkApplicationReflect toOvertimeWorkAppReflect() {
-        return new OvertimeWorkApplicationReflect(
-                BeforeOvertimeWorkAppReflect.create(preWorkReflectAtr, preInputTimeReflectAtr, preBreakTimeReflectAtr),
-                AfterOvertimeWorkAppReflect.create(
+    public OtWorkAppReflect toOvertimeWorkAppReflect() {
+        return new OtWorkAppReflect(
+                BeforeOtWorkAppReflect.create(preWorkReflectAtr, preInputTimeReflectAtr, preBreakTimeReflectAtr),
+                AfterOtWorkAppReflect.create(
                         postWorkTimeReflectAtr,
                         postBpTimeReflectAtr,
                         postAnyvTimeReflectAtr,
@@ -164,7 +163,7 @@ public class KrqmtAppOvertime extends ContractUkJpaEntity implements Serializabl
         );
     }
 
-    public static KrqmtAppOvertime create(OvertimeAppSet overtimeAppSet, OvertimeWorkApplicationReflect overtimeWorkAppReflect) {
+    public static KrqmtAppOvertime create(OvertimeAppSet overtimeAppSet, OtWorkAppReflect overtimeWorkAppReflect) {
         return new KrqmtAppOvertime(
                 overtimeAppSet.getCompanyID(),
                 overtimeAppSet.getOvertimeLeaveAppCommonSet().getPreExcessDisplaySetting().value,

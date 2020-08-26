@@ -16,7 +16,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
         selectedReasonCode: KnockoutObservable<number> = ko.observable(null);
 
         // bien theo doi update mode hay new mode
-        isUpdate: KnockoutObservable<boolean> = ko.observable(true);
+        isUpdate: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             let self = this;

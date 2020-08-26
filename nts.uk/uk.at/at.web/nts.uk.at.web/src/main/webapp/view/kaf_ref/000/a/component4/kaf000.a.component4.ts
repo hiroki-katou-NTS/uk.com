@@ -29,7 +29,7 @@ module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
 
             vm.appDispInfoStartupOutput.subscribe(value => {
                 if(!vm.appType){
-                    vm.appType = value.appDispInfoNoDateOutput.applicationSetting.appTypeSetting.appType;
+                    vm.appType = value.appDispInfoNoDateOutput.applicationSetting.appTypeSetting[0].appType;
                     if (vm.appType == AppType.ABSENCE_APPLICATION || vm.appType == AppType.WORK_CHANGE_APPLICATION || vm.appType == AppType.BUSINESS_TRIP_APPLICATION) {
                         vm.dispCheckBox(true);
                         vm.dispSingleDate(true);
@@ -79,8 +79,16 @@ module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
                         vm.application().opAppEndDate(appDate);
                         CommonProcess.checkUsage(true, element, vm);
                     }
-                }).fail((failData: any) => {
-                    
+                }).fail((res: any) => {
+                 	if (res.messageId == "Msg_426") {
+	                    vm.$dialog.error({ messageId: "Msg_426" }).then(() => {
+	                        vm.$jump("com", "/view/ccg/008/a/index.xhtml"); 
+	                    });    
+	                } else {
+	                    vm.$dialog.error(res.message).then(() => {
+	                        vm.$jump("com", "/view/ccg/008/a/index.xhtml"); 
+	                    }); 
+	                }   
                 }).always(() => vm.$blockui("hide"));
                                   
             });
@@ -116,8 +124,16 @@ module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
                         vm.application().opAppEndDate(endDate);
                         CommonProcess.checkUsage(true, element, vm);
                     }
-                }).fail((failData: any) => {
-                    
+                }).fail((res: any) => {
+                	if (res.messageId == "Msg_426") {
+	                    vm.$dialog.error({ messageId: "Msg_426" }).then(() => {
+	                        vm.$jump("com", "/view/ccg/008/a/index.xhtml"); 
+	                    });    
+	                } else {
+	                    vm.$dialog.error(res.message).then(() => {
+	                        vm.$jump("com", "/view/ccg/008/a/index.xhtml"); 
+	                    }); 
+	                }       
                 }).always(() => vm.$blockui("hide"));
             });
         }

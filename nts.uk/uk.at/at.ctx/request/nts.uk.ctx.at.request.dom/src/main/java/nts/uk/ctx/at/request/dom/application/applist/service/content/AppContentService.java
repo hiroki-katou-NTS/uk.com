@@ -123,14 +123,14 @@ public interface AppContentService {
 	 * @param attendanceItemLst 勤怠項目リスト
 	 * @param mode モード
 	 * @param approvalListDisplaySetting 承認一覧表示設定
-	 * @param appLst 申請一覧リスト
+	 * @param listOfApp 申請一覧
 	 * @param mapApproval Map＜ルートインスタンスID、承認フェーズList＞
 	 * @param device デバイス：PC or スマートフォン
 	 * @param appListExtractCondition 申請一覧抽出条件
 	 * @return
 	 */
 	public ListOfApplication createEachAppData(Application application, String companyID, List<WorkTimeSetting> lstWkTime, List<WorkType> lstWkType, 
-			List<AttendanceItem> attendanceItemLst, ApplicationListAtr mode, ApprovalListDisplaySetting approvalListDisplaySetting, List<ListOfApplication> appLst, 
+			List<AttendanceItem> attendanceItemLst, ApplicationListAtr mode, ApprovalListDisplaySetting approvalListDisplaySetting, ListOfApplication listOfApp, 
 			Map<String,List<ApprovalPhaseStateImport_New>> mapApproval, int device, AppListExtractCondition appListExtractCondition);
 	
 	/**

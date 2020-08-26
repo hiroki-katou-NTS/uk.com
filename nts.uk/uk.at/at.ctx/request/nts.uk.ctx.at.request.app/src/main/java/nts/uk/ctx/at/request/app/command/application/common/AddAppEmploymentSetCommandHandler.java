@@ -26,7 +26,7 @@ public class AddAppEmploymentSetCommandHandler extends CommandHandler<AppEmploym
 		AppEmploymentSetCommand appEmploymentSetting = context.getCommand();
 		appEmploymentSetting.setCompanyID(companyId);
 		AppEmploymentSetting insertData = appEmploymentSetting.toDomain();
-		employmentSetting.update(insertData);
+		employmentSetting.insert(insertData);
 	}
 
 }

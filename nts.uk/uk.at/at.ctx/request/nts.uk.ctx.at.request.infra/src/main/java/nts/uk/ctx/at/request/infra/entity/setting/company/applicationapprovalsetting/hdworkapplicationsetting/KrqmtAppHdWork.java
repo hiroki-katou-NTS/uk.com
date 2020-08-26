@@ -9,9 +9,9 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdwo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.ApplicationDetailSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.holidayworkapplication.AfterHolidayWorkAppReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.holidayworkapplication.BeforeHolidayWorkAppReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.holidayworkapplication.HolidayWorkApplicationReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.AfterHdWorkAppReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.BeforeHdWorkAppReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkApplicationReflect;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 import org.apache.commons.lang3.BooleanUtils;
@@ -130,8 +130,8 @@ public class KrqmtAppHdWork extends UkJpaEntity implements Serializable {
         );
     }
 
-    public AfterHolidayWorkAppReflect toAfterHolidayWorkAppReflect() {
-        return AfterHolidayWorkAppReflect.create(
+    public AfterHdWorkAppReflect toAfterHolidayWorkAppReflect() {
+        return AfterHdWorkAppReflect.create(
                 postWorkTimeReflectAtr,
                 postBpTimeReflectAtr,
                 postAnyvTimeReflectAtr,
@@ -140,14 +140,14 @@ public class KrqmtAppHdWork extends UkJpaEntity implements Serializable {
         );
     }
 
-    public BeforeHolidayWorkAppReflect toBeforeHolidayWorkAppReflect() {
-        return new BeforeHolidayWorkAppReflect(EnumAdaptor.valueOf(preInputTimeReflectAtr, NotUseAtr.class));
+    public BeforeHdWorkAppReflect toBeforeHolidayWorkAppReflect() {
+        return new BeforeHdWorkAppReflect(EnumAdaptor.valueOf(preInputTimeReflectAtr, NotUseAtr.class));
     }
 
-    public HolidayWorkApplicationReflect toHolidayWorkAppReflect() {
-        return new HolidayWorkApplicationReflect(
-                new BeforeHolidayWorkAppReflect(EnumAdaptor.valueOf(preInputTimeReflectAtr, NotUseAtr.class)),
-                AfterHolidayWorkAppReflect.create(
+    public HdWorkApplicationReflect toHolidayWorkAppReflect() {
+        return new HdWorkApplicationReflect(
+                new BeforeHdWorkAppReflect(EnumAdaptor.valueOf(preInputTimeReflectAtr, NotUseAtr.class)),
+                AfterHdWorkAppReflect.create(
                         postWorkTimeReflectAtr,
                         postBpTimeReflectAtr,
                         postAnyvTimeReflectAtr,
@@ -157,7 +157,7 @@ public class KrqmtAppHdWork extends UkJpaEntity implements Serializable {
         );
     }
 
-    public static KrqmtAppHdWork create(HolidayWorkAppSet holidayWorkAppSet, HolidayWorkApplicationReflect holidayWorkAppReflect) {
+    public static KrqmtAppHdWork create(HolidayWorkAppSet holidayWorkAppSet, HdWorkApplicationReflect holidayWorkAppReflect) {
         return new KrqmtAppHdWork(
                 holidayWorkAppSet.getCompanyID(),
                 holidayWorkAppSet.getCalcStampMiss().value,

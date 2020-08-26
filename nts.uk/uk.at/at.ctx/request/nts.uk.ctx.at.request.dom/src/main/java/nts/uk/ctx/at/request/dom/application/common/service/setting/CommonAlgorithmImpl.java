@@ -52,6 +52,7 @@ import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.OTAppBeforeAccepRestric;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.checkpreappaccept.PreAppAcceptLimit;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.service.AppDeadlineSettingGet;
@@ -62,6 +63,7 @@ import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCom
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbyworkplace.RequestByWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
+import nts.uk.ctx.at.shared.dom.workmanagementmultiple.UseATR;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -162,7 +164,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				appReasonOutput.getDisplayAppReason(), 
 				appReasonOutput.getDisplayStandardReason(), 
 				appReasonOutput.getReasonTypeItemLst(), 
-				opWorkManagementMultiple.isPresent());
+				opWorkManagementMultiple.map(x -> x.getUseATR()==UseATR.use).orElse(false));
 		if(preAppAcceptLimit.isUseReceptionRestriction()) {
 			appDispInfoNoDateOutput.setOpAdvanceReceptionDate(preAppAcceptLimit.getOpAcceptableDate());
 			appDispInfoNoDateOutput.setOpAdvanceReceptionHours(preAppAcceptLimit.getOpAvailableTime());
@@ -244,8 +246,10 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				dateLst, 
 				appType, 
 				appDispInfoNoDateOutput.getApplicationSetting().getAppDisplaySetting().getPrePostDisplayAtr(), 
-				appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSettings().get(0).getDisplayInitialSegment(),
-				opOvertimeAppAtr);
+				appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSettings().get(0).getDisplayInitialSegment().get(),
+				opOvertimeAppAtr,
+				appDispInfoNoDateOutput.getApplicationSetting().getReceptionRestrictionSettings().get(0).getOtAppBeforeAccepRestric()
+                        .isPresent() ? appDispInfoNoDateOutput.getApplicationSetting().getReceptionRestrictionSettings().get(0).getOtAppBeforeAccepRestric().get() : null);
 		// 雇用に紐づく締めを取得する
 		int closureID = closureService.getClosureIDByEmploymentCD(empHistImport.getEmploymentCode());
 		// 申請締切設定を取得する
@@ -296,7 +300,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 
 	@Override
 	public AppDispInfoRelatedDateOutput getAppDispInfoRelatedDate(String companyID, String employeeID, List<GeneralDate> dateLst, 
-			ApplicationType appType, DisplayAtr prePostAtrDisp, PrePostInitAtr initValueAtr, Optional<OvertimeAppAtr> opOvertimeAppAtr) {
+			ApplicationType appType, DisplayAtr prePostAtrDisp, PrePostInitAtr initValueAtr, Optional<OvertimeAppAtr> opOvertimeAppAtr,
+			OTAppBeforeAccepRestric otAppBeforeAccepRestric) {
 		AppDispInfoRelatedDateOutput output = new AppDispInfoRelatedDateOutput();
 		// INPUT．事前事後区分表示をチェックする
 		if(prePostAtrDisp == DisplayAtr.NOT_DISPLAY) {
@@ -306,7 +311,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				output.setPrePostAtr(PrePostInitAtr.PREDICT);
 			} else  {
 				// 3.事前事後の判断処理(事前事後非表示する場合)
-				PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(appType, dateLst.get(0), opOvertimeAppAtr.get());
+				PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(appType, dateLst.get(0), opOvertimeAppAtr.orElse(null), otAppBeforeAccepRestric);
 				output.setPrePostAtr(EnumAdaptor.valueOf(prePostAtrJudgment.value, PrePostInitAtr.class));
 			}
 		} else {
@@ -349,8 +354,10 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 					dateLst, 
 					appType, 
 					appDispInfoNoDateOutput.getApplicationSetting().getAppDisplaySetting().getPrePostDisplayAtr(), 
-					appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSettings().get(0).getDisplayInitialSegment(),
-					opOvertimeAppAtr);
+					appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSettings().get(0).getDisplayInitialSegment().get(),
+					opOvertimeAppAtr,
+					appDispInfoNoDateOutput.getApplicationSetting().getReceptionRestrictionSettings().get(0).getOtAppBeforeAccepRestric()
+                            .isPresent() ? appDispInfoNoDateOutput.getApplicationSetting().getReceptionRestrictionSettings().get(0).getOtAppBeforeAccepRestric().get() : null);
 			appDispInfoWithDateOutput.setPrePostAtr(result.getPrePostAtr());
 			appDispInfoWithDateOutput.setOpActualContentDisplayLst(
 					CollectionUtil.isEmpty(result.getActualContentDisplayLst()) ? Optional.empty() : Optional.of(result.getActualContentDisplayLst()));

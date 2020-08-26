@@ -21,8 +21,9 @@
                     <input data-bind="ntsTimeWithDayEditor: {
                     name: $i18n('KAF004_42'),
                     value: $vm.workManagement.workTime,
-                    option: {timeWithDay: false, width: '50'}
-                }, disable: $vm.isEnable1" />
+                    option: {timeWithDay: false, width: '50'},
+                    enable: !$vm.isEnable1()
+                }" />
                 </span>
 
                 <!-- A6_5 -->
@@ -54,8 +55,9 @@
                     <input data-bind="ntsTimeWithDayEditor: {
                     name: $i18n('KAF004_42'),
                     value: $vm.workManagement.leaveTime,
-                    option: {timeWithDay: false, width: '50'}
-                }, disable: $vm.isEnable2" />
+                    option: {timeWithDay: false, width: '50'},
+                    enable: !$vm.isEnable2()
+                }" />
                 </span>
 
                 <!-- A6_11 -->
@@ -87,8 +89,9 @@
                     <input data-bind="ntsTimeWithDayEditor: {
                     name: $i18n('KAF004_42'),
                     value: $vm.workManagement.workTime2,
-                    option: {timeWithDay: false, width: '50'}
-                }, disable: $vm.isEnable3" />
+                    option: {timeWithDay: false, width: '50'},
+                    enable: !$vm.isEnable3()
+                }" />
                 </span>
 
                 <!-- A6_17 -->
@@ -120,8 +123,9 @@
                     <input data-bind="ntsTimeWithDayEditor: {
                     name: $i18n('KAF004_42'),
                     value: $vm.workManagement.leaveTime2,
-                    option: {timeWithDay: false, width: '50'}
-                }, disable: $vm.isEnable4" />
+                    option: {timeWithDay: false, width: '50'},
+                    enable: !$vm.isEnable4()
+                }" />
                 </span>
 
                 <!-- A6_23 -->

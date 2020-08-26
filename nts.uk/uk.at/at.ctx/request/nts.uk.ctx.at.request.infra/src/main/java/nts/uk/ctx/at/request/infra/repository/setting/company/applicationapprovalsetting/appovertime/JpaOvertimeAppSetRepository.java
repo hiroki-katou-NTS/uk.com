@@ -4,16 +4,12 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeQuotaSetUse;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.ApplicationDetailSetting;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.appovertime.KrqmtAppOvertime;
 import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.appovertime.KrqmtAppOvertimeFrame;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.overtimeworkapplycation.OvertimeWorkApplicationReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflect;
 import org.apache.commons.lang3.BooleanUtils;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,12 +22,12 @@ public class JpaOvertimeAppSetRepository extends JpaRepository implements Overti
     }
 
     @Override
-    public Optional<OvertimeWorkApplicationReflect> findReflectByCompanyId(String companyId) {
+    public Optional<OtWorkAppReflect> findReflectByCompanyId(String companyId) {
         return this.queryProxy().find(companyId, KrqmtAppOvertime.class).map(KrqmtAppOvertime::toOvertimeWorkAppReflect);
     }
 
     @Override
-    public void saveOvertimeAppSet(OvertimeAppSet overtimeAppSet, OvertimeWorkApplicationReflect overtimeWorkAppReflect) {
+    public void saveOvertimeAppSet(OvertimeAppSet overtimeAppSet, OtWorkAppReflect overtimeWorkAppReflect) {
         Optional<KrqmtAppOvertime> optEntity = this.queryProxy().find(overtimeAppSet.getCompanyID(), KrqmtAppOvertime.class);
         if (optEntity.isPresent()) {
             KrqmtAppOvertime entity = optEntity.get();

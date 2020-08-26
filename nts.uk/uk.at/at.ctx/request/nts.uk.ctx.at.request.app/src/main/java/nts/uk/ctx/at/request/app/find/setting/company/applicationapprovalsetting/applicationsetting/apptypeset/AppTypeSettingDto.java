@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.primitive.PrimitiveValue;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
@@ -36,12 +37,12 @@ public class AppTypeSettingDto {
 	/**
 	 * 事前事後区分の初期表示
 	 */
-	private int displayInitialSegment;
+	private Integer displayInitialSegment;
 	
 	/**
 	 * 事前事後区分を変更できる
 	 */
-	private boolean canClassificationChange;
+	private Boolean canClassificationChange;
 	
 	public static AppTypeSettingDto fromDomain(AppTypeSetting appTypeSetting) {
 		if (appTypeSetting == null) return null;
@@ -49,8 +50,8 @@ public class AppTypeSettingDto {
 				appTypeSetting.getAppType().value, 
 				appTypeSetting.isSendMailWhenRegister(), 
 				appTypeSetting.isSendMailWhenApproval(), 
-				appTypeSetting.getDisplayInitialSegment().value, 
-				appTypeSetting.isCanClassificationChange());
+				appTypeSetting.getDisplayInitialSegment().map(i -> i.value).orElse(null),
+				appTypeSetting.getCanClassificationChange().orElse(null));
 	}
 
 	public AppTypeSetting toDomain() {
@@ -58,7 +59,7 @@ public class AppTypeSettingDto {
 				EnumAdaptor.valueOf(appType, ApplicationType.class),
 				sendMailWhenRegister,
 				sendMailWhenApproval,
-				EnumAdaptor.valueOf(displayInitialSegment, PrePostInitAtr.class),
+				displayInitialSegment == null ? null : EnumAdaptor.valueOf(displayInitialSegment, PrePostInitAtr.class),
 				canClassificationChange);
 	}
 }
