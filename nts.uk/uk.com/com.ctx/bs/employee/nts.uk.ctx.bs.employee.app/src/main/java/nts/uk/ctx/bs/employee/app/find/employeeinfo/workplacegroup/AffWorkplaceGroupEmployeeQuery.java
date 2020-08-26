@@ -2,7 +2,6 @@ package nts.uk.ctx.bs.employee.app.find.employeeinfo.workplacegroup;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -15,7 +14,6 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroupRespository;
-import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupGettingService;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupRespository;
 import nts.uk.shr.com.context.AppContexts;
@@ -50,12 +48,16 @@ public class AffWorkplaceGroupEmployeeQuery {
 		List<EmployeeAffiliation> employeeAffiliations = WorkplaceGroupGettingService.get(require, date, employeeIds);	
 		
 		if(!CollectionUtil.isEmpty(employeeAffiliations)) {
-			String WKPGRPID = employeeAffiliations.get(0).getWorkplaceID();
-			String companyId = AppContexts.user().companyId();				
-			return workplaceGroupRespository.getById(companyId, WKPGRPID).map(x -> new AffWorkplaceGroupDto(x.getWKPGRPName().v(),
-					x.getWKPGRPID())).orElse(null);
+			if(employeeAffiliations.get(0).getWorkplaceGroupID().isPresent()) {
+				String WKPGRPID = employeeAffiliations.get(0).getWorkplaceGroupID().get();	
+				String companyId = AppContexts.user().companyId();				
+				return workplaceGroupRespository.getById(companyId, WKPGRPID).map(x -> new AffWorkplaceGroupDto(x.getWKPGRPName().v(),
+						x.getWKPGRPID())).orElse(null);
+			} else {
+				return new AffWorkplaceGroupDto();
+			}			
 		} else {
-			return null;
+			return new AffWorkplaceGroupDto();
 		}
 	}	
 	
