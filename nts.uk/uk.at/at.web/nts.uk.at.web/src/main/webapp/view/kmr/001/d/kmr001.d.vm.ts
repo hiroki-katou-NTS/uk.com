@@ -152,8 +152,8 @@ module nts.uk.at.kmr001.d {
                 if (self.lstWpkHistory().length <= 1){
                     vm.$ajax(API.DELETE, data).done(() => {
                         self.created(self.params).done(() => {
-                            self.screenMode(SCREEN_MODE.SELECT);
-                            self.selectedStartDateInput(null)
+                            self.screenMode(SCREEN_MODE.ADD);
+                            self.selectedStartDateInput(null);
                             self.selectedEndDate(DEFAULT_END);
                             self.lstWpkHistory([]);
                         });
