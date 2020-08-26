@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.overtimeworkapplycation;
+package nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +13,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class BeforeOvertimeWorkAppReflect {
+public class BeforeOtWorkAppReflect {
     private BreakApplication breakLeaveApplication;
     /**
      * 勤務情報、出退勤を反映する
@@ -25,8 +25,8 @@ public class BeforeOvertimeWorkAppReflect {
      */
     private NotUseAtr reflectActualOvertimeHourAtr;
 
-    public static BeforeOvertimeWorkAppReflect create(int reflectWorkInfo, int reflectActualOvertimeHour, int reflectBeforeBreak) {
-        return new BeforeOvertimeWorkAppReflect(
+    public static BeforeOtWorkAppReflect create(int reflectWorkInfo, int reflectActualOvertimeHour, int reflectBeforeBreak) {
+        return new BeforeOtWorkAppReflect(
                 new BreakApplication(EnumAdaptor.valueOf(reflectBeforeBreak, NotUseAtr.class)),
                 EnumAdaptor.valueOf(reflectWorkInfo, NotUseAtr.class),
                 EnumAdaptor.valueOf(reflectActualOvertimeHour, NotUseAtr.class)
