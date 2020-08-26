@@ -65,6 +65,7 @@ public class ChangeMonthFinder {
 		DataBasicDto dataBasicDto = new DataBasicDto();
 		dataBasicDto.setStartDate(datePeriod.start());
 		dataBasicDto.setEndDate(datePeriod.end());
+		result.setDataBasicDto(dataBasicDto);
 		
 		List<EmployeeInformationDto> listEmpInfo = resultShiftMode.listEmpInfo.stream().map(item -> {
 			return new EmployeeInformationDto(item.getEmployeeId(), item.getEmployeeCode(),
@@ -97,6 +98,7 @@ public class ChangeMonthFinder {
 		DataBasicDto dataBasicDto = new DataBasicDto();
 		dataBasicDto.setStartDate(datePeriod.start());
 		dataBasicDto.setEndDate(datePeriod.end());
+		result.setDataBasicDto(dataBasicDto);
 		
 		List<EmployeeInformationDto> listEmpInfo = resultOtherMode.listEmpInfo.stream().map(item -> {
 			return new EmployeeInformationDto(item.getEmployeeId(), item.getEmployeeCode(),

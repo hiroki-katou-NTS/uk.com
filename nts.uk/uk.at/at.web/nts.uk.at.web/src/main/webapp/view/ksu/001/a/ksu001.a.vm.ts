@@ -1648,13 +1648,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 self.updateExTable(dataBindGrid, self.selectedModeDisplayInBody(), false, true, true);
                 
-                dfd.resolve();
                 self.stopRequest(true);
             }).fail(function() {
-                dfd.reject();
                 self.stopRequest(true);
             });
-            return dfd.promise();
         }
 
         /**
@@ -1693,13 +1690,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 self.updateExTable(dataBindGrid, self.selectedModeDisplayInBody(), false, true, true);
 
-                dfd.resolve();
                 self.stopRequest(true);
             }).fail(function() {
-                dfd.reject();
                 self.stopRequest(true);
             });
-            return dfd.promise();
         }
 
         /**
