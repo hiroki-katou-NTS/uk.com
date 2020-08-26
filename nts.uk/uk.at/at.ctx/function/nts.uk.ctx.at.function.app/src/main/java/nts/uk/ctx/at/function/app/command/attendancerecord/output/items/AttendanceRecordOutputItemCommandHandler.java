@@ -12,14 +12,14 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class AttendanceRecordOutputItemAddCommandHandler extends CommandHandler<AttendanceRecordOutputItemAddCommand>{
+public class AttendanceRecordOutputItemCommandHandler extends CommandHandler<AttendanceRecordOutputItemCommand>{
 	
 	@Inject
 	private AttendanceRecordOuputItemsRepository attOuputItemsRepo;
 
 	@Override
-	protected void handle(CommandHandlerContext<AttendanceRecordOutputItemAddCommand> context) {
-		AttendanceRecordOutputItemAddCommand command = context.getCommand();
+	protected void handle(CommandHandlerContext<AttendanceRecordOutputItemCommand> context) {
+		AttendanceRecordOutputItemCommand command = context.getCommand();
 		String cId = AppContexts.user().companyId();
 		command.setCid(cId);
 		

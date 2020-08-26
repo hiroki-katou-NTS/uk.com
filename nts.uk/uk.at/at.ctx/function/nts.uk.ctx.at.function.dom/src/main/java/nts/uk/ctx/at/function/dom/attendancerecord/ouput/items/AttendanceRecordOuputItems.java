@@ -5,6 +5,7 @@ import java.util.List;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
+import nts.uk.shr.com.context.AppContexts;
 
 
 /**
@@ -63,10 +64,14 @@ public class AttendanceRecordOuputItems extends AggregateRoot {
 	 *                lấy các primitive value từ command hoặc entity
 	 */
 	public void getMemento(MementoGetter memento) {
-		this.cid = memento.getCid();
+		if (memento.getCid() == null) {
+			this.cid = AppContexts.user().companyId();
+		} else {
+			this.cid = memento.getCid();
+		}
 		this.attendanceRecordExportSettings = memento.getAttendanceRecordExportSettings();
 		this.employeeId = memento.getEmployeeId();
-		this.itemSelectionType = ItemSelectionType.valueOf(memento.getItemSelectionType());
+		this.itemSelectionType = memento.getItemSelectionType();
 		
 	}
 	/**
@@ -83,7 +88,7 @@ public class AttendanceRecordOuputItems extends AggregateRoot {
 		}
 		memento.setEmployeeId(employeeId);
 		if (this.itemSelectionType !=null ) {
-			memento.setItemSelectionType(this.itemSelectionType.value);
+			memento.setItemSelectionType(this.itemSelectionType);
 		}
 	}
 	
@@ -103,7 +108,7 @@ public class AttendanceRecordOuputItems extends AggregateRoot {
 		
 		void setEmployeeId(String employeeId);
 		
-		void setItemSelectionType(int itemSelectionType);
+		void setItemSelectionType(ItemSelectionType itemSelectionType);
 	}
 	
 	/**
@@ -121,7 +126,7 @@ public class AttendanceRecordOuputItems extends AggregateRoot {
 		
 		String getEmployeeId();
 		
-		int getItemSelectionType();
+		ItemSelectionType getItemSelectionType();
 	}
 	
 }

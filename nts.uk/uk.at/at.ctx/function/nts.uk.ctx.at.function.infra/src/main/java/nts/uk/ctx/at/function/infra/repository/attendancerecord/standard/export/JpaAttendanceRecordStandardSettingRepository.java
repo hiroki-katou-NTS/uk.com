@@ -21,6 +21,12 @@ public class JpaAttendanceRecordStandardSettingRepository extends JpaRepository 
 		
 	}
 	
+	@Override
+	public AttendanceRecordStandardSetting get(String compnayId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	private static AttendanceRecordStandardSetting toEntity(AttendanceRecordStandardSetting domain) {
 		AttendanceRecordStandardSetting entity = new AttendanceRecordStandardSetting();
 //		domain.setMemento(entity);

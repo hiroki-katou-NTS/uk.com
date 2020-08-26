@@ -5,6 +5,7 @@ import java.util.List;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
+import nts.uk.shr.com.context.AppContexts;
 
 
 /**
@@ -57,7 +58,11 @@ public class AttendanceRecordStandardSetting extends AggregateRoot{
 	 *                lấy các primitive value từ command hoặc entity
 	 */
 	public void getMemento(MementoGetter memento) {
-		this.cid = memento.getCid();
+		if (memento.getCid() == null) {
+			this.cid = AppContexts.user().companyId();
+		} else {
+			this.cid = memento.getCid();
+		}
 		this.attendanceRecordExportSettings = memento.getAttendanceRecordExportSettings();
 		this.itemSelectionType = ItemSelectionType.valueOf(memento.getiItemSelectionType());
 	}
