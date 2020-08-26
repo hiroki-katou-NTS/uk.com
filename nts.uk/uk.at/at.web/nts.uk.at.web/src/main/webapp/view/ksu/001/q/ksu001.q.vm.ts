@@ -25,7 +25,6 @@ module nts.uk.at.view.ksu001.q {
 			numbereditor: any = {};
 			yearmontheditor: any;
 			currencyeditor: any;
-
 			listperiodsTemp: any = [];
 			check: KnockoutObservable<boolean>;
 			check1: KnockoutObservable<boolean>;
@@ -90,7 +89,6 @@ module nts.uk.at.view.ksu001.q {
 									self.check3(true);
 									break;
 							};
-
 							$("table tbody tr td:nth-child(1)").css("background-color", "#D9D9D9");
 							$("table tbody tr td:nth-child(1):contains(土)").css("background-color", "#8bd8ff");
 							$("table tbody tr td:nth-child(1):contains(日)").css("background-color", "#fabf8f");
@@ -98,7 +96,6 @@ module nts.uk.at.view.ksu001.q {
 							$("table tbody tr td:nth-child(1):contains(土)").css("color", "#0000ff");
 							$("table tbody tr td:nth-child(1):contains(日)").css("color", "#ff0000");
 						});
-
 					}
 				});
 
@@ -108,7 +105,7 @@ module nts.uk.at.view.ksu001.q {
 					}
 					return arr;
 				};
-
+				
 				self.daylist = self.getDaysArray(new Date(period.startDate), new Date(period.endDate));
 				self.arrayDate = self.daylist.map((v) => {
 					return moment(v).format("YYYY/MM/DD") + '  (' + moment(v).format('dd') + ')';
@@ -122,9 +119,9 @@ module nts.uk.at.view.ksu001.q {
 					}),
 				}
 				self.yearmontheditor = {
-					constraint: 'LayoutCode',
+					constraint: 'ExtBudgetTime',
 					option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
-						inputFormat: 'yearmonth'
+						inputFormat: 'time'
 					})),
 				};
 				self.currencyeditor = {
@@ -200,7 +197,6 @@ module nts.uk.at.view.ksu001.q {
 				command.dateAndValues = dateValues;
 				command.type = self.labelQ32();
 
-
 				service.register(command).done(() => {
 					blockUI.invisible();
 					nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -211,7 +207,7 @@ module nts.uk.at.view.ksu001.q {
 			}
 
 		}
-
+		
 		export class ExternalBudgetModel {
 			orgName: KnockoutObservable<string>;
 			externalBudgetItems: KnockoutObservableArray<any>;
@@ -220,7 +216,6 @@ module nts.uk.at.view.ksu001.q {
 				this.orgName = ko.observable('');
 				this.externalBudgetItems = ko.observableArray([]);
 			}
-
 			updateData(dto: InitialStartupScreenResultDto) {
 				this.orgName(dto.orgName);
 				this.externalBudgetItems(dto.externalBudgetItems);
@@ -232,7 +227,6 @@ module nts.uk.at.view.ksu001.q {
 			constructor(date: string, value: string) {
 				this.date(date);
 				this.value(value);
-
 			}
 		}
 	}

@@ -62,6 +62,7 @@ table {
 	width: 100%;
 	border-style: double;
 	border-color: darkgrey;
+	border-left: none;
 }
 
 th, td {
