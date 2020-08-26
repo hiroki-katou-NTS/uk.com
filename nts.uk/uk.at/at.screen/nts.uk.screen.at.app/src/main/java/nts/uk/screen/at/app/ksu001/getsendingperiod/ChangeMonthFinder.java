@@ -33,7 +33,7 @@ public class ChangeMonthFinder {
 	private ChangePeriodInWorkInfomation changePeriodInWorkInfo;
 
 	
-	private static final String DATE_FORMAT = "yyyyMMdd";
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	public ChangeMonthDto getData(ChangeMonthParam param) {
 
@@ -42,14 +42,14 @@ public class ChangeMonthFinder {
 		DatePeriod datePeriod = getSendingPeriodScreenQuery.getSendingPeriod(currentPeriod, param.isNextMonth, false);
 
 		if (param.viewMode.equals("time") || param.viewMode.equals("shortName")) {
-			ChangePeriodInWorkInfoParam param1 = new ChangePeriodInWorkInfoParam(param.startDate, param.endDate,
+			ChangePeriodInWorkInfoParam param1 = new ChangePeriodInWorkInfoParam(datePeriod.start(), datePeriod.end(),
 					param.unit, param.workplaceId, param.workplaceGroupId, param.sids, param.getActualData);
 			ChangePeriodInWorkInfoResult resultOtherMode = changePeriodInWorkInfo.getData(param1);
 			ChangeMonthDto result = convertDataTimeShortNameMode(datePeriod, resultOtherMode);
 			return result;
 
 		} else if (param.viewMode.equals("shift")) {
-			ChangePeriodInShiftParam param2 = new ChangePeriodInShiftParam(param.startDate, param.endDate, param.unit,
+			ChangePeriodInShiftParam param2 = new ChangePeriodInShiftParam(datePeriod.start(), datePeriod.end(), param.unit,
 					param.workplaceId, param.workplaceGroupId, param.sids, param.listShiftMasterNotNeedGetNew,
 					param.getActualData);
 			ChangePeriodInShiftResult resultShiftMode = changePeriodInShift.getData(param2);
@@ -65,6 +65,7 @@ public class ChangeMonthFinder {
 		DataBasicDto dataBasicDto = new DataBasicDto();
 		dataBasicDto.setStartDate(datePeriod.start());
 		dataBasicDto.setEndDate(datePeriod.end());
+		result.setDataBasicDto(dataBasicDto);
 		
 		List<EmployeeInformationDto> listEmpInfo = resultShiftMode.listEmpInfo.stream().map(item -> {
 			return new EmployeeInformationDto(item.getEmployeeId(), item.getEmployeeCode(),
@@ -97,6 +98,7 @@ public class ChangeMonthFinder {
 		DataBasicDto dataBasicDto = new DataBasicDto();
 		dataBasicDto.setStartDate(datePeriod.start());
 		dataBasicDto.setEndDate(datePeriod.end());
+		result.setDataBasicDto(dataBasicDto);
 		
 		List<EmployeeInformationDto> listEmpInfo = resultOtherMode.listEmpInfo.stream().map(item -> {
 			return new EmployeeInformationDto(item.getEmployeeId(), item.getEmployeeCode(),

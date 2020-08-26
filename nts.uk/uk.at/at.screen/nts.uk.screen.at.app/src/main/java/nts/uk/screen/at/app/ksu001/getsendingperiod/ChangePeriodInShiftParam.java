@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 
 /**
@@ -20,8 +21,8 @@ import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 @Getter
 public class ChangePeriodInShiftParam {
 	
-	public String startDate;            	 
-	public String endDate;    	
+	public GeneralDate startDate;            	 
+	public GeneralDate endDate;    	
 	
 	public int unit;
 	public String workplaceId;     	         

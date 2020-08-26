@@ -1626,8 +1626,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             let param = {
                 viewMode : self.selectedModeDisplayInBody(), // time | shortName | shift
-                startDate: self.dateTimePrev,
-                endDate  : self.dateTimeAfter,
+                startDate: self.dateTimePrev(),
+                endDate  : self.dateTimeAfter(),
                 isNextMonth : true,
                 cycle28Day : self.selectedModeDisplay() == 2 ? true : false,
                 workplaceId     : userInfor.workplaceId,
@@ -1648,13 +1648,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 self.updateExTable(dataBindGrid, self.selectedModeDisplayInBody(), false, true, true);
                 
-                dfd.resolve();
                 self.stopRequest(true);
             }).fail(function() {
-                dfd.reject();
                 self.stopRequest(true);
             });
-            return dfd.promise();
         }
 
         /**
@@ -1671,8 +1668,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             let param = {
                 viewMode: self.selectedModeDisplayInBody(), // time | shortName | shift
-                startDate: self.dateTimePrev,
-                endDate: self.dateTimeAfter,
+                startDate: self.dateTimePrev(),
+                endDate: self.dateTimeAfter(),
                 isNextMonth: false,
                 cycle28Day: self.selectedModeDisplay() == 2 ? true : false,
                 workplaceId: userInfor.workplaceId,
@@ -1693,13 +1690,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 self.updateExTable(dataBindGrid, self.selectedModeDisplayInBody(), false, true, true);
 
-                dfd.resolve();
                 self.stopRequest(true);
             }).fail(function() {
-                dfd.reject();
                 self.stopRequest(true);
             });
-            return dfd.promise();
         }
 
         /**

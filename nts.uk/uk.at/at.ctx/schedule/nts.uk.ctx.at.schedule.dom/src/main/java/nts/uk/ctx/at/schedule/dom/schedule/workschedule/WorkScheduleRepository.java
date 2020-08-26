@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -40,6 +41,8 @@ public interface WorkScheduleRepository {
 	void delete(String sid, DatePeriod datePeriod);
 
 	boolean checkExits(String employeeID, GeneralDate ymd);
+
+	List<WorkSchedule> getList(List<String> sids, DatePeriod period);
 	
 }
 
