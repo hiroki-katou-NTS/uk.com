@@ -86,7 +86,7 @@ public interface WorkMonthlySettingRepository  {
 
 	/**
 	 * Check exist KscmtWorkMonthSet.
-	 *
+	 * exists(会社ID, 月間パターンコード, 年月日)
 	 * @param companyId the company id
 	 * @param monthlyPatternCode the monthly pattern code
 	 * @param date the ymd K
@@ -95,8 +95,8 @@ public interface WorkMonthlySettingRepository  {
 	public Boolean exists(String companyId, String monthlyPatternCode, GeneralDate date);
 
 	/**
-	 * add KscmtWorkMonthSet.
-	 *
+	 * insert KscmtWorkMonthSet.
+	 * insert（月間パターンの勤務情報）
 	 * @param workMonthlySetting
 	 * @return
 	 */
@@ -104,9 +104,17 @@ public interface WorkMonthlySettingRepository  {
 
 	/**
 	 * update KscmtWorkMonthSet.
-	 *
+	 * update（月間パターンの勤務情報）
 	 * @param workMonthlySetting
 	 * @return
 	 */
 	public void update(WorkMonthlySetting workMonthlySetting);
+
+	/**
+	 * update KscmtWorkMonthSet.
+	 * update（月間パターンの勤務情報）
+	 * @param companyId, mPatternCd, generalDate
+	 * @return
+	 */
+	public void deleteWorkMonthlySettingById(String companyId,String mPatternCd,GeneralDate date);
 }
