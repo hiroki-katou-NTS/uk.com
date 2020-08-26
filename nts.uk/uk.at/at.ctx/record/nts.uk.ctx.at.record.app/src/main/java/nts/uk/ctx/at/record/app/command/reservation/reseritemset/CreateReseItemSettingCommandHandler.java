@@ -29,7 +29,7 @@ public class CreateReseItemSettingCommandHandler extends CommandHandler<CreateRe
         Bento bento = new Bento(command.getFrameNo(),
                 new BentoName(command.getBenToName()),
                 new BentoAmount(command.getAmount1()),
-                command.getAmount2() == null ? null : new BentoAmount(command.getAmount2()),
+                command.getAmount2() == null ? new BentoAmount(0) : new BentoAmount(command.getAmount2()),
                 new BentoReservationUnitName(command.getUnit()),
                 command.isCanBookClosesingTime1(),
                 command.isCanBookClosesingTime2(),
