@@ -50,12 +50,12 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 			+ " AND w.kscmtWorkMonthSetPK.mPatternCd = :mPatternCd"
 			+ " AND w.kscmtWorkMonthSetPK.ymdM >= :startDate "
 			+ " AND w.kscmtWorkMonthSetPK.ymdM <= :endDate"
-			+ " w.kscmtWorkMonthSetPK.ymdM ASC";
+			+ " ORDER BY w.kscmtWorkMonthSetPK.ymdM ASC";
 
 	private final String SELECT_BY_YEAR = SELECT_BY_CID
 			+ " AND w.kscmtWorkMonthSetPK.mPatternCd = :mPatternCd"
-			+ " AND w.kscmtWorkMonthSetPK.ymdM LIKE :startDate "
-			+ " w.kscmtWorkMonthSetPK.ymdM ASC";
+			+ " AND  EXTRACT(Year FROM w.kscmtWorkMonthSetPK.ymdM)  = :year "
+			+ " ORDER BY w.kscmtWorkMonthSetPK.ymdM ASC";
 
 	/*
 	 * (non-Javadoc)

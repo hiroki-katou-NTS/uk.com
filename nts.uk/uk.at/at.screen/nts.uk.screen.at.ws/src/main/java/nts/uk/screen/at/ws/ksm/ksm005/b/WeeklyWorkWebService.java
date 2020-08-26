@@ -11,7 +11,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path("screen/at/record/weekly_work")
+@Path("screen/at/record/weekly-work")
 @Produces(MediaType.APPLICATION_JSON)
 public class WeeklyWorkWebService extends WebService {
 

@@ -51,7 +51,7 @@ public class MonthlyPatternScreenProcessor {
     @Inject
     private WorkTimeSettingRepository workTimeSettingRepository;
 
-    private static final String YYYYMMDD = "yyyy/MM/dd";
+    private static final String YYYYMMDD = "yyyy-MM-dd";
 
 
     public MonthlyPatternDto findDataMonthlyPattern(MonthlyPatternRequestPrams requestPrams) {

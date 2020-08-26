@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.ksm005.find;
 
 import nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay.WeeklyWorkDayPattern;
 import nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay.WeeklyWorkDayRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.pub.worktime.worktimeset.WorkTimeSettingPub;
 import nts.uk.shr.com.context.AppContexts;
@@ -32,10 +33,13 @@ public class WeeklyWorkScreenProcessor {
         Map<String, String> listWorkTypeCodeName = listWorkTypeCode.size() > 0
                 ? workTypeRepository.getCodeNameWorkType(cid, listWorkTypeCode) : new HashMap<>();
 
+        List<WorkType> workTypes = workTypeRepository.findByCompanyId(cid);
+        List<String> workTypeCodes = new ArrayList<>();
+        workTypes.stream().forEach(x ->workTypeCodes.add(x.getWorkTypeCode().v()));
         List<String> workTypeName = new ArrayList<>(listWorkTypeCodeName.values());
         String WorkTimeSettingName = workTimeSettingPub.getWorkTimeSettingName(cid, requestPrams.worktimeCode);
 
-        return new WeeklyWorkDto(weeklyWorkDayPattern.getListWorkdayPatternItem(),workTypeName,WorkTimeSettingName);
+        return new WeeklyWorkDto(weeklyWorkDayPattern.getListWorkdayPatternItem(),workTypeName,workTypeCodes,WorkTimeSettingName);
     }
 
 

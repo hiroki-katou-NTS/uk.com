@@ -14,6 +14,8 @@ public class WeeklyWorkDto {
 
     private List<String> workTypeName;
 
+    private List<String> workTypeCode;
+
     private String workTimeName;
 
 }
