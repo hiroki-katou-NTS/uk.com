@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.holidayworkapplication;
+package nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,14 +11,14 @@ import nts.arc.layer.dom.AggregateRoot;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class HolidayWorkApplicationReflect extends AggregateRoot {
+public class HdWorkApplicationReflect extends AggregateRoot {
     /**
      * 事前
      */
-    private BeforeHolidayWorkAppReflect before;
+    private BeforeHdWorkAppReflect before;
 
     /**
      * 事後
      */
-    private AfterHolidayWorkAppReflect after;
+    private AfterHdWorkAppReflect after;
 }
