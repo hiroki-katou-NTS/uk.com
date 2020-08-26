@@ -10,8 +10,10 @@ import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.auth.dom.employmentrole.dto.RollInformation;
+import nts.uk.ctx.at.auth.dom.employmentrole.dto.WorkPlaceAuthorityDto;
 import nts.uk.ctx.at.auth.dom.employmentrole.dto.WorkplaceManagerDto;
 import nts.uk.ctx.at.auth.dom.kmk013.WorkPlaceAuthority;
+//import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceAuthority;
 
 /**
  * 指定社員の基準日に就業確定できる職場一覧を取得する
@@ -81,7 +83,7 @@ public class GetListOfWorkplacesService {
 		int functionNo = 2;
 		
 		// $所属職場権限 = require.所属職場権限を取得する($ロール情報.ロールID, 会社ID, $機能NO)					
-		Optional<WorkPlaceAuthority> workPlaceAuthority = require.getWorkAuthority(rollInformation.get().getRoleId(), companyId, functionNo);
+		Optional<WorkPlaceAuthorityDto> workPlaceAuthority = require.getWorkAuthority(rollInformation.get().getRoleId(), companyId, functionNo);
 		
 		// 	if $所属職場権限.isEmpty OR (not $所属職場権限.利用できる／できない権限の設定.利用できる)				
 		//return Optional.empty	
@@ -162,7 +164,7 @@ public class GetListOfWorkplacesService {
 		 * @param functionNo
 		 * @return WorkPlaceAuthority
 		 */
-		Optional<WorkPlaceAuthority> getWorkAuthority(String roleId,  String companyId, Integer functionNo);
+		Optional<WorkPlaceAuthorityDto> getWorkAuthority(String roleId,  String companyId, Integer functionNo);
 		
 		
 		/**

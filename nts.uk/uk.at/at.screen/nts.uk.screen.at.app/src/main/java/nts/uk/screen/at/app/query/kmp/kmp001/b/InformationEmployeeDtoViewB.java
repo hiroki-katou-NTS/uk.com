@@ -15,15 +15,9 @@ import nts.arc.time.GeneralDate;
 @NoArgsConstructor
 public class InformationEmployeeDtoViewB {
 
-	private String pid;
-
 	private String businessName;
 
 	private GeneralDate entryDate;
-
-	private int gender;
-
-	private GeneralDate birthDay;
 
 	/** The employee id. */
 	private String employeeId;

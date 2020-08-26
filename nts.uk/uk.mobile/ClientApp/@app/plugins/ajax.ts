@@ -1,5 +1,5 @@
 import { $, obj, auth } from '@app/utils';
-import { Vue, VueConstructor } from '@app/provider';
+import { moment, Vue, VueConstructor } from '@app/provider';
 
 import { $dialog } from '@app/plugins/dialog';
 
@@ -180,8 +180,8 @@ const WEB_APP_NAME = {
                                     {
                                         message: xhr.response
                                     }, {
-                                        title: 'Business exception'
-                                    })
+                                    title: 'Business exception'
+                                })
                                     .then(() => {
                                         reject(xhr);
                                     });
@@ -195,6 +195,8 @@ const WEB_APP_NAME = {
                 xhr.send(opt.data);
             });
         };
+
+        Object.defineProperty(vue, 'fetch', { value: fetch });
 
         vue.mixin({
             beforeCreate() {

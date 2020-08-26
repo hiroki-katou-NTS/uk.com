@@ -1,0 +1,31 @@
+.title{
+    margin-bottom: 20px;
+    color: #FF7F27;
+    font-size: 28px;
+}
+.contents-area{
+	padding: 20px 0 0;
+}
+.row{
+	margin-left: 30px;
+}
+.row input{
+    width: 180px;
+}
+.inforAuthent{
+	height: 63px;
+	margin-top: 20px;	
+}
+
+.inforAuthent pre{
+	color: #ff0000;
+    font-size: 18px;
+    line-height: 1.5;
+}
+.divBtn{
+	margin-top: 15px;
+	text-align: center;
+}
+button.small{
+	margin-left: 5px;
+}

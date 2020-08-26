@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -11,9 +12,26 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.val;
+import nts.gul.location.GeoCoordinate;
+import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
+import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.overtimedeclaration.OvertimeDeclaration;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-
 /**
  * @author ThanhNX
  *
@@ -32,6 +50,8 @@ public class KrcdtStamp extends ContractUkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KrcdtStampPk pk;
 
+//	public static final JpaEntityMapper<KrcdtStamp> MAPPER = new JpaEntityMapper<>(KrcdtStamp.class);
+	
 	/**
 	 * 会社ID
 	 */
@@ -164,7 +184,7 @@ public class KrcdtStamp extends ContractUkJpaEntity implements Serializable {
 		this.changeClockArt = stamp.getType().getChangeClockArt().value;
 		this.changeCalArt = stamp.getType().getChangeCalArt().value;
 		this.preClockArt = stamp.getType().getSetPreClockArt().value;
-		this.changeHalfDay = stamp.getType().getChangeHalfDay();
+		this.changeHalfDay = stamp.getType().isChangeHalfDay();
 		this.goOutArt = stamp.getType().getGoOutArt().isPresent() ? stamp.getType().getGoOutArt().get().value : null;
 		this.reflectedAtr = stamp.isReflectedCategory();
 		this.suportCard = stamp.getRefActualResults().getCardNumberSupport().isPresent()
@@ -182,11 +202,45 @@ public class KrcdtStamp extends ContractUkJpaEntity implements Serializable {
 		this.lateNightOverTime = stamp.getRefActualResults().getOvertimeDeclaration().isPresent()
 				? stamp.getRefActualResults().getOvertimeDeclaration().get().getOverLateNightTime().v()
 				: null; // lateNightOverTime
-		this.locationLon = stamp.getLocationInfor().isPresent()? new BigDecimal(stamp.getLocationInfor().get().getPositionInfor().getLongitude()):null;
-		this.locationLat = stamp.getLocationInfor().isPresent()? new BigDecimal(stamp.getLocationInfor().get().getPositionInfor().getLatitude()):null;
+		this.locationLon = stamp.getLocationInfor().isPresent()? new BigDecimal(stamp.getLocationInfor().get().getPositionInfor().getLongitude()).setScale(6, BigDecimal.ROUND_HALF_DOWN) :null;
+		this.locationLat = stamp.getLocationInfor().isPresent()? new BigDecimal(stamp.getLocationInfor().get().getPositionInfor().getLatitude()).setScale(6, BigDecimal.ROUND_HALF_DOWN):null;
 		this.outsideAreaArt = stamp.getLocationInfor().isPresent() ? stamp.getLocationInfor().get().isOutsideAreaAtr()
 				: null;
 		return this;
 	}
 
+
+	public Stamp toDomain() {
+		GeoCoordinate geoLocation = null;
+		if (this.locationLat !=  null && this.locationLon != null){
+			geoLocation = new GeoCoordinate(this.locationLat.doubleValue(), this.locationLon.doubleValue()); 
+		}
+		val stampNumber = new StampNumber(this.pk.cardNumber);
+		val relieve = new Relieve(AuthcMethod.valueOf(this.autcMethod), StampMeans.valueOf(this.stampMeans));
+		val stampType = StampType.getStampType(this.changeHalfDay,
+				this.goOutArt == null ? null : GoingOutReason.valueOf(this.goOutArt),
+				SetPreClockArt.valueOf(this.preClockArt), ChangeClockArt.valueOf(this.changeClockArt),
+				ChangeCalArt.valueOf(this.changeCalArt));
+		
+		OvertimeDeclaration overtime = this.overTime == null ? null
+				: new OvertimeDeclaration(new AttendanceTime(this.overTime),
+						new AttendanceTime(this.lateNightOverTime));
+						
+		val refectActualResult = new RefectActualResult(this.suportCard,
+				this.stampPlace == null ? null : new WorkLocationCD(this.stampPlace),
+				this.workTime == null ? null : new WorkTimeCode(this.workTime),
+				overtime );
+		
+		val locationInfor = new StampLocationInfor(geoLocation,
+				this.outsideAreaArt == null ? false : this.outsideAreaArt);
+		
+		return new Stamp(new ContractCode(this.contractCd) ,
+						stampNumber, 
+						this.pk.stampDateTime,
+						relieve, stampType, refectActualResult,
+						this.reflectedAtr, Optional.ofNullable(locationInfor), Optional.empty());
+
+	}
+	
+	
 }

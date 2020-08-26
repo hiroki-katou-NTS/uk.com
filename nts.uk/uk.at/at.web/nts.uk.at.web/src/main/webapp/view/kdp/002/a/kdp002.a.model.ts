@@ -39,26 +39,19 @@ class StampClock {
     time: KnockoutObservable<Date> = ko.observable(new Date());
     displayDate: KnockoutObservable<String>;
     displayTime: KnockoutObservable<String>;
+	vm = new ko.ViewModel();
 
     constructor() {
         let self = this;
         moment.locale('ja');
         self.displayDate = ko.observable(moment(self.time()).format(DATE_FORMAT));
         self.displayTime = ko.observable(moment(self.time()).format(TIME_FORMAT));
-        setInterval(() => {
-            nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
-                self.displayTime(moment.utc(res).format(TIME_FORMAT));
-            });
-        }, 2000);
+        self.displayTime(moment.utc(self.vm.$date.now()).format(TIME_FORMAT));
     }
 
     public addCorrectionInterval(minute: number) {
         let self = this;
-        setInterval(() => {
-            nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
-                self.displayDate(moment.utc(res).format(DATE_FORMAT));
-            });
-        }, minute * 60000);
+		self.vm.$date.interval(minute * 60000);
     }
 }
 

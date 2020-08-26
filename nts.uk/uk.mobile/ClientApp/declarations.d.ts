@@ -142,14 +142,35 @@ declare module "vue/types/vue" {
             };
         };
         readonly $dt: {
+            readonly now: Date;
             (value: Date, format?: string): string;
-            date(value: Date, format?: string): string;
-            fromString(value: string, format?: string): Date;
-            fromUTCString(value: string, format: string): Date;
-            timewd(value: number): string;
-            timedr(value: number): string;
-            timept(value: number): string;
-            yearmonth(value: number, format?: string): string;
+            readonly interval: {
+                (intv: number): void;
+            };
+            readonly date: {
+                (value: Date): string;
+                (value: Date, format: string): string;
+            };
+            readonly fromString: {
+                (value: string): Date;
+                (value: string, format: string): Date;
+            };
+            readonly fromUTCString: {
+                (value: string, format: string): Date;
+            };
+            readonly timewd:{
+                (value: number): string;
+            };
+            readonly timedr: {
+                (value: number): string;
+            };
+            readonly timept: {
+                (value: number): string;
+            };
+            readonly yearmonth: {
+                (value: number): string;
+                (value: number, format: string): string;
+            };
         }
         $goto: {
             (name: string): Promise<{}>;
