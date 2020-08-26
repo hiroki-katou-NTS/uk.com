@@ -29,7 +29,8 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" tabindex="1" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KSU001_3702')}</button>
+				<button class="proceed" tabindex="1"
+					data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KSU001_3702')}</button>
 				<button id="close" tabindex="2" style="margin-left: 270px;"
 					data-bind="click: closeDialog">#{i18n.getText('KSU001_3703')}</button>
 			</div>
@@ -72,7 +73,7 @@
 							<div style="margin-left: 30px; margin-top: 20px">
 
 								<table id="wrapper" style="width: 265px;">
-									<thead>
+									<thead style="background-color: rgb(234, 230, 233);">
 										<tr>
 											<th><pre>#{i18n.getText('KSU001_3706')}</pre></th>
 											<th data-bind="text: labelQ32"></th>
@@ -83,7 +84,7 @@
 											<td data-bind="text: date"></td>
 											<td
 												data-bind="visible: $parent.check, with: $parent.yearmontheditor"><input
-												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 118px; height: 20px;"
+												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 121px; height: 20px; border-radius: 0px;"
 												data-bind="ntsTimeEditor: {
 													value: $parent.value,
 													constraint: 'ExtBudgetTime',
@@ -95,7 +96,7 @@
 													readonly: false}" /></td>
 											<td
 												data-bind="visible: $parent.check1, with: $parent.currencyeditor"><input
-												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 118px; height: 20px;"
+												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 121px; height: 20px; border-radius: 0px;"
 												data-bind="ntsNumberEditor: {
 													value: $parent.value,
 													constraint: 'ExtBudgetMoney',
@@ -105,7 +106,7 @@
 													readonly: false}" /></td>
 											<td
 												data-bind="visible: $parent.check2, with: $parent.numbereditor"><input
-												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 118px; height: 20px;"
+												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 121px; height: 20px; border-radius: 0px;"
 												data-bind="ntsNumberEditor: {
 													value: $parent.value,
 													constraint: 'ExtBudgetNumberPerson',
@@ -115,7 +116,7 @@
 													readonly: false}" /></td>
 											<td
 												data-bind="visible: $parent.check3, with: $parent.numbereditor"><input
-												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 118px; height: 20px;"
+												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 121px; height: 20px; border-radius: 0px;"
 												data-bind="ntsNumberEditor: {
 													value: $parent.value,
 													constraint: 'ExtBudgetNumericalVal',

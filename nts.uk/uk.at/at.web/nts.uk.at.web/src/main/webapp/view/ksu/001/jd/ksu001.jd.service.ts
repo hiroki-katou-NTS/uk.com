@@ -1,8 +1,8 @@
 module nts.uk.at.view.ksu001.jd.service {
     var paths: any = { 
         getShiftPaletteByCompany: "at/schedule/shift/management/getShiftPaletteByCompany",
-        getShiftPaletteByWP: "at/schedule/shift/management/shiftpalletorg/getShiftPaletteByWP/{0}",
-        getShiftPaletteByWPG: "at/schedule/shift/management/shiftpalletorg/getShiftPaletteByWPG/{0}",
+        getShiftPaletteByWP: "at/schedule/shift/management/shiftpalletorg/getShiftPaletteByWP",
+        getShiftPaletteByWPG: "at/schedule/shift/management/shiftpalletorg/getShiftPaletteByWPG",
         duplicateComShiftPalet: "at/schedule/shift/management/duplicateComShiftPalet",
         duplicateOrgShiftPalet: "at/schedule/shift/management/shiftpalletorg/duplicateOrgShiftPalet"
     }
@@ -14,12 +14,14 @@ module nts.uk.at.view.ksu001.jd.service {
 
     export function getShiftPaletteByWP(workplaceId: string): JQueryPromise<any> {
      
-        return nts.uk.request.ajax(paths.getShiftPaletteByWP, workplaceId);
+        let para = {id: workplaceId};
+        return nts.uk.request.ajax(paths.getShiftPaletteByWP, para);
     }
 
     export function getShiftPaletteByWPG(WPGId: string): JQueryPromise<any> {
      
-        return nts.uk.request.ajax(paths.getShiftPaletteByWPG, WPGId);
+        let para = {id: WPGId};
+        return nts.uk.request.ajax(paths.getShiftPaletteByWPG, para);
     }
 
     export function duplicateComShiftPalet(command: any): JQueryPromise<any> {
