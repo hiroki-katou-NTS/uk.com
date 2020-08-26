@@ -881,9 +881,18 @@ public class PpedtData extends ContractUkJpaEntity implements Serializable {
 		entity.startDate = domain.getStartDate();
 		entity.endDate = domain.getEndDate();
 		entity.releaseDate = domain.getReleaseDate().map(m -> m).orElse(null);
-		entity.requestFlg = domain.getRequestFlg();
-		entity.rptLayoutId = domain.getRptLayoutId();
-		entity.rptId = BigInteger.valueOf(domain.getRptId().map(m -> m).orElse(null));
+		
+		if (domain.getRequestFlg() != null ) {
+			entity.requestFlg = domain.getRequestFlg();
+		}
+		
+		if (domain.getRptLayoutId() != null) {
+			entity.rptLayoutId = domain.getRptLayoutId();
+		}
+		
+		if (domain.getRptId().isPresent()) {
+			entity.rptId = BigInteger.valueOf(domain.getRptId().get());
+		}
 		entity.rptNumber = domain.getRptNumber().map(m -> m).orElse(null);
 
 		entity.str01 = domain.getStr01().map(m -> m).orElse(null);
@@ -958,126 +967,307 @@ public class PpedtData extends ContractUkJpaEntity implements Serializable {
 		entity.date09 = domain.getDate09().map(m -> m).orElse(null);
 		entity.date10 = domain.getDate10().map(m -> m).orElse(null);
 
-		entity.int01 = domain.getInt01();
-		entity.int02 = domain.getInt02();
-		entity.int03 = domain.getInt03();
-		entity.int04 = domain.getInt04();
-		entity.int05 = domain.getInt05();
-		entity.int06 = domain.getInt06();
-		entity.int07 = domain.getInt07();
-		entity.int08 = domain.getInt08();
-		entity.int09 = domain.getInt09();
-		entity.int10 = domain.getInt10();
-		entity.int11 = domain.getInt11();
-		entity.int12 = domain.getInt12();
-		entity.int13 = domain.getInt13();
-		entity.int14 = domain.getInt14();
-		entity.int15 = domain.getInt15();
-		entity.int16 = domain.getInt16();
-		entity.int17 = domain.getInt17();
-		entity.int18 = domain.getInt18();
-		entity.int19 = domain.getInt19();
-		entity.int20 = domain.getInt20();
-		entity.int21 = domain.getInt21();
-		entity.int22 = domain.getInt22();
-		entity.int23 = domain.getInt23();
-		entity.int24 = domain.getInt24();
-		entity.int25 = domain.getInt25();
-		entity.int26 = domain.getInt26();
-		entity.int27 = domain.getInt27();
-		entity.int28 = domain.getInt28();
-		entity.int29 = domain.getInt29();
-		entity.int30 = domain.getInt30();
+		if (domain.getInt01() != null) {
+			entity.int01 = domain.getInt01();
+		}
+		if (domain.getInt02() != null) {
+			entity.int02 = domain.getInt02();
+		}
+		if (domain.getInt03() != null) {
+			entity.int03 = domain.getInt03();
+		}
+		if (domain.getInt04() != null) {
+			entity.int04 = domain.getInt04();
+		}
+		if (domain.getInt05() != null) {
+			entity.int05 = domain.getInt05();
+		}
+		if (domain.getInt06() != null) {
+			entity.int06 = domain.getInt06();
+		}
+		if (domain.getInt07() != null) {
+			entity.int07 = domain.getInt07();
+		}
+		if (domain.getInt08() != null) {
+			entity.int08 = domain.getInt08();
+		}
+		if (domain.getInt09() != null) {
+			entity.int09 = domain.getInt09();
+		}
+		if (domain.getInt10() != null) {
+			entity.int10 = domain.getInt10();
+		}
+		if (domain.getInt11() != null) {
+			entity.int11 = domain.getInt11();
+		}
+		if (domain.getInt12() != null) {
+			entity.int12 = domain.getInt12();
+		}
+		if (domain.getInt13() != null) {
+			entity.int13 = domain.getInt13();
+		}
+		if (domain.getInt14() != null) {
+			entity.int14 = domain.getInt14();
+		}
+		if (domain.getInt15() != null) {
+			entity.int15 = domain.getInt15();
+		}
+		if (domain.getInt16() != null) {
+			entity.int16 = domain.getInt16();
+		}
+		if (domain.getInt17() != null) {
+			entity.int17 = domain.getInt17();
+		}
+		if (domain.getInt18() != null) {
+			entity.int18 = domain.getInt18();
+		}
+		if (domain.getInt19() != null) {
+			entity.int19 = domain.getInt19();
+		}
+		if (domain.getInt20() != null) {
+			entity.int20 = domain.getInt20();
+		}
+		if (domain.getInt21() != null) {
+			entity.int21 = domain.getInt21();
+		}
+		if (domain.getInt22() != null) {
+			entity.int22 = domain.getInt22();
+		}
+		if (domain.getInt23() != null) {
+			entity.int23 = domain.getInt23();
+		}
+		if (domain.getInt24() != null) {
+			entity.int24 = domain.getInt24();
+		}
+		if (domain.getInt25() != null) {
+			entity.int25 = domain.getInt25();
+		}
+		if (domain.getInt26() != null) {
+			entity.int26 = domain.getInt26();
+		}
+		if (domain.getInt27() != null) {
+			entity.int27 = domain.getInt27();
+		}
+		if (domain.getInt28() != null) {
+			entity.int28 = domain.getInt28();
+		}
+		if (domain.getInt29() != null) {
+			entity.int29 = domain.getInt29();
+		}
+		if (domain.getInt30() != null) {
+			entity.int30 = domain.getInt30();
+		}
+		
+		
+		if (domain.getNumber01() != null) {
+			entity.number01 = BigDecimal.valueOf(domain.getNumber01());
+		}
+		if (domain.getNumber02() != null) {
+			entity.number02 = BigDecimal.valueOf(domain.getNumber02());
+		}
+		if (domain.getNumber03() != null) {
+			entity.number03 = BigDecimal.valueOf(domain.getNumber03());
+		}
+		if (domain.getNumber04() != null) {
+			entity.number04 = BigDecimal.valueOf(domain.getNumber04());
+		}
+		if (domain.getNumber05() != null) {
+			entity.number05 = BigDecimal.valueOf(domain.getNumber05());
+		}
+		if (domain.getNumber06() != null) {
+			entity.number06 = BigDecimal.valueOf(domain.getNumber06());
+		}
+		if (domain.getNumber07() != null) {
+			entity.number07 = BigDecimal.valueOf(domain.getNumber07());
+		}
+		if (domain.getNumber08() != null) {
+			entity.number08 = BigDecimal.valueOf(domain.getNumber08());
+		}
+		if (domain.getNumber09() != null) {
+			entity.number09 = BigDecimal.valueOf(domain.getNumber09());
+		}
+		if (domain.getNumber10() != null) {
+			entity.number10 = BigDecimal.valueOf(domain.getNumber10());
+		}
+		if (domain.getNumber11() != null) {
+			entity.number11 = BigDecimal.valueOf(domain.getNumber11());
+		}
+		if (domain.getNumber12() != null) {
+			entity.number12 = BigDecimal.valueOf(domain.getNumber12());
+		}
+		if (domain.getNumber13() != null) {
+			entity.number13 = BigDecimal.valueOf(domain.getNumber13());
+		}
+		if (domain.getNumber14() != null) {
+			entity.number14 = BigDecimal.valueOf(domain.getNumber14());
+		}
+		if (domain.getNumber15() != null) {
+			entity.number15 = BigDecimal.valueOf(domain.getNumber15());
+		}
+		if (domain.getNumber16() != null) {
+			entity.number16 = BigDecimal.valueOf(domain.getNumber16());
+		}
+		if (domain.getNumber17() != null) {
+			entity.number17 = BigDecimal.valueOf(domain.getNumber17());
+		}
+		if (domain.getNumber18() != null) {
+			entity.number18 = BigDecimal.valueOf(domain.getNumber18());
+		}
+		if (domain.getNumber19() != null) {
+			entity.number19 = BigDecimal.valueOf(domain.getNumber19());
+		}
+		if (domain.getNumber20() != null) {
+			entity.number20 = BigDecimal.valueOf(domain.getNumber20());
+		}
+		if (domain.getNumber21() != null) {
+			entity.number21 = BigDecimal.valueOf(domain.getNumber21());
+		}
+		if (domain.getNumber22() != null) {
+			entity.number22 = BigDecimal.valueOf(domain.getNumber22());
+		}
+		if (domain.getNumber23() != null) {
+			entity.number23 = BigDecimal.valueOf(domain.getNumber23());
+		}
+		if (domain.getNumber24() != null) {
+			entity.number24 = BigDecimal.valueOf(domain.getNumber24());
+		}
+		if (domain.getNumber25() != null) {
+			entity.number25 = BigDecimal.valueOf(domain.getNumber25());
+		}
+		if (domain.getNumber26() != null) {
+			entity.number26 = BigDecimal.valueOf(domain.getNumber26());
+		}
+		if (domain.getNumber27() != null) {
+			entity.number27 = BigDecimal.valueOf(domain.getNumber27());
+		}
+		if (domain.getNumber28() != null) {
+			entity.number28 = BigDecimal.valueOf(domain.getNumber28());
+		}
+		if (domain.getNumber29() != null) {
+			entity.number29 = BigDecimal.valueOf(domain.getNumber29());
+		}
+		if (domain.getNumber30() != null) {
+			entity.number30 = BigDecimal.valueOf(domain.getNumber30());
+		}
+		
 
-		entity.number01 = BigDecimal.valueOf(domain.getNumber01());
-		entity.number02 = BigDecimal.valueOf(domain.getNumber02());
-		entity.number03 = BigDecimal.valueOf(domain.getNumber03());
-		entity.number04 = BigDecimal.valueOf(domain.getNumber04());
-		entity.number05 = BigDecimal.valueOf(domain.getNumber05());
-		entity.number06 = BigDecimal.valueOf(domain.getNumber06());
-		entity.number07 = BigDecimal.valueOf(domain.getNumber07());
-		entity.number08 = BigDecimal.valueOf(domain.getNumber08());
-		entity.number09 = BigDecimal.valueOf(domain.getNumber09());
-		entity.number10 = BigDecimal.valueOf(domain.getNumber10());
-		entity.number11 = BigDecimal.valueOf(domain.getNumber11());
-		entity.number12 = BigDecimal.valueOf(domain.getNumber12());
-		entity.number13 = BigDecimal.valueOf(domain.getNumber13());
-		entity.number14 = BigDecimal.valueOf(domain.getNumber14());
-		entity.number15 = BigDecimal.valueOf(domain.getNumber15());
-		entity.number16 = BigDecimal.valueOf(domain.getNumber16());
-		entity.number17 = BigDecimal.valueOf(domain.getNumber17());
-		entity.number18 = BigDecimal.valueOf(domain.getNumber18());
-		entity.number19 = BigDecimal.valueOf(domain.getNumber19());
-		entity.number20 = BigDecimal.valueOf(domain.getNumber20());
-		entity.number21 = BigDecimal.valueOf(domain.getNumber21());
-		entity.number22 = BigDecimal.valueOf(domain.getNumber22());
-		entity.number23 = BigDecimal.valueOf(domain.getNumber23());
-		entity.number24 = BigDecimal.valueOf(domain.getNumber24());
-		entity.number25 = BigDecimal.valueOf(domain.getNumber25());
-		entity.number26 = BigDecimal.valueOf(domain.getNumber26());
-		entity.number27 = BigDecimal.valueOf(domain.getNumber27());
-		entity.number28 = BigDecimal.valueOf(domain.getNumber28());
-		entity.number29 = BigDecimal.valueOf(domain.getNumber29());
-		entity.number30 = BigDecimal.valueOf(domain.getNumber30());
-
-		entity.selectId01 = BigInteger.valueOf(domain.getSelectId01());
+		if (domain.getSelectId01() != null) {
+			entity.selectId01 = BigInteger.valueOf(domain.getSelectId01());
+		}
 		entity.selectCode01 = domain.getSelectCode01().map(m -> m).orElse(null);
 		entity.selectName01 = domain.getSelectName01().map(m -> m).orElse(null);
-		entity.selectId02 = BigInteger.valueOf(domain.getSelectId02());
+		
+		if (domain.getSelectId02() != null) {
+			entity.selectId02 = BigInteger.valueOf(domain.getSelectId02());
+		}
 		entity.selectCode02 = domain.getSelectCode02().map(m -> m).orElse(null);
 		entity.selectName02 = domain.getSelectName02().map(m -> m).orElse(null);
-		entity.selectId03 = BigInteger.valueOf(domain.getSelectId03());
+		
+		if (domain.getSelectId03() != null) {
+			entity.selectId03 = BigInteger.valueOf(domain.getSelectId03());
+		}
 		entity.selectCode03 = domain.getSelectCode03().map(m -> m).orElse(null);
 		entity.selectName03 = domain.getSelectName03().map(m -> m).orElse(null);
-		entity.selectId04 = BigInteger.valueOf(domain.getSelectId04());
+		
+		if (domain.getSelectId04() != null) {
+			entity.selectId04 = BigInteger.valueOf(domain.getSelectId04());
+		}
 		entity.selectCode04 = domain.getSelectCode04().map(m -> m).orElse(null);
 		entity.selectName04 = domain.getSelectName04().map(m -> m).orElse(null);
-		entity.selectId05 = BigInteger.valueOf(domain.getSelectId05());
+		
+		if (domain.getSelectId05() != null) {
+			entity.selectId05 = BigInteger.valueOf(domain.getSelectId05());
+		}
 		entity.selectCode05 = domain.getSelectCode05().map(m -> m).orElse(null);
 		entity.selectName05 = domain.getSelectName05().map(m -> m).orElse(null);
-		entity.selectId06 = BigInteger.valueOf(domain.getSelectId06());
+		
+		if (domain.getSelectId06() != null) {
+			entity.selectId06 = BigInteger.valueOf(domain.getSelectId06());
+		}
 		entity.selectCode06 = domain.getSelectCode06().map(m -> m).orElse(null);
 		entity.selectName06 = domain.getSelectName06().map(m -> m).orElse(null);
-		entity.selectId07 = BigInteger.valueOf(domain.getSelectId07());
+		
+		if (domain.getSelectId07() != null) {
+			entity.selectId07 = BigInteger.valueOf(domain.getSelectId07());
+		}
 		entity.selectCode07 = domain.getSelectCode07().map(m -> m).orElse(null);
 		entity.selectName07 = domain.getSelectName07().map(m -> m).orElse(null);
-		entity.selectId08 = BigInteger.valueOf(domain.getSelectId08());
+		
+		if (domain.getSelectId08() != null) {
+			entity.selectId08 = BigInteger.valueOf(domain.getSelectId08());
+		}
 		entity.selectCode08 = domain.getSelectCode08().map(m -> m).orElse(null);
 		entity.selectName08 = domain.getSelectName08().map(m -> m).orElse(null);
-		entity.selectId09 = BigInteger.valueOf(domain.getSelectId09());
+		
+		if (domain.getSelectId09() != null) {
+			entity.selectId09 = BigInteger.valueOf(domain.getSelectId09());
+		}
 		entity.selectCode09 = domain.getSelectCode09().map(m -> m).orElse(null);
 		entity.selectName09 = domain.getSelectName09().map(m -> m).orElse(null);
-		entity.selectId10 = BigInteger.valueOf(domain.getSelectId10());
+		
+		if (domain.getSelectId10() != null) {
+			entity.selectId10 = BigInteger.valueOf(domain.getSelectId10());
+		}
 		entity.selectCode10 = domain.getSelectCode10().map(m -> m).orElse(null);
 		entity.selectName10 = domain.getSelectName10().map(m -> m).orElse(null);
-		entity.selectId11 = BigInteger.valueOf(domain.getSelectId11());
+		
+		if (domain.getSelectId11() != null) {
+			entity.selectId11 = BigInteger.valueOf(domain.getSelectId11());
+		}
 		entity.selectCode11 = domain.getSelectCode01().map(m -> m).orElse(null);
 		entity.selectName11 = domain.getSelectName01().map(m -> m).orElse(null);
-		entity.selectId12 = BigInteger.valueOf(domain.getSelectId12());
+		
+		if (domain.getSelectId12() != null) {
+			entity.selectId12 = BigInteger.valueOf(domain.getSelectId12());
+		}
 		entity.selectCode12 = domain.getSelectCode02().map(m -> m).orElse(null);
 		entity.selectName12 = domain.getSelectName02().map(m -> m).orElse(null);
-		entity.selectId13 = BigInteger.valueOf(domain.getSelectId13());
+		
+		if (domain.getSelectId13() != null) {
+			entity.selectId13 = BigInteger.valueOf(domain.getSelectId13());
+		}
 		entity.selectCode13 = domain.getSelectCode03().map(m -> m).orElse(null);
 		entity.selectName13 = domain.getSelectName03().map(m -> m).orElse(null);
-		entity.selectId14 = BigInteger.valueOf(domain.getSelectId14());
+		
+		if (domain.getSelectId14() != null) {
+			entity.selectId14 = BigInteger.valueOf(domain.getSelectId14());
+		}
 		entity.selectCode14 = domain.getSelectCode04().map(m -> m).orElse(null);
 		entity.selectName14 = domain.getSelectName04().map(m -> m).orElse(null);
-		entity.selectId15 = BigInteger.valueOf(domain.getSelectId15());
+		
+		if (domain.getSelectId15() != null) {
+			entity.selectId15 = BigInteger.valueOf(domain.getSelectId15());
+		}
 		entity.selectCode15 = domain.getSelectCode05().map(m -> m).orElse(null);
 		entity.selectName15 = domain.getSelectName05().map(m -> m).orElse(null);
-		entity.selectId16 = BigInteger.valueOf(domain.getSelectId16());
+		
+		if (domain.getSelectId16() != null) {
+			entity.selectId16 = BigInteger.valueOf(domain.getSelectId16());
+		}
 		entity.selectCode16 = domain.getSelectCode06().map(m -> m).orElse(null);
 		entity.selectName16 = domain.getSelectName06().map(m -> m).orElse(null);
-		entity.selectId17 = BigInteger.valueOf(domain.getSelectId17());
+		
+		if (domain.getSelectId17() != null) {
+			entity.selectId17 = BigInteger.valueOf(domain.getSelectId17());
+		}
 		entity.selectCode17 = domain.getSelectCode07().map(m -> m).orElse(null);
 		entity.selectName17 = domain.getSelectName07().map(m -> m).orElse(null);
-		entity.selectId18 = BigInteger.valueOf(domain.getSelectId18());
+		
+		if (domain.getSelectId18() != null) {
+			entity.selectId18 = BigInteger.valueOf(domain.getSelectId18());
+		}
 		entity.selectCode18 = domain.getSelectCode08().map(m -> m).orElse(null);
 		entity.selectName18 = domain.getSelectName08().map(m -> m).orElse(null);
-		entity.selectId19 = BigInteger.valueOf(domain.getSelectId19());
+		
+		if (domain.getSelectId19() != null) {
+			entity.selectId19 = BigInteger.valueOf(domain.getSelectId19());
+		}
 		entity.selectCode19 = domain.getSelectCode09().map(m -> m).orElse(null);
 		entity.selectName19 = domain.getSelectName09().map(m -> m).orElse(null);
-		entity.selectId20 = BigInteger.valueOf(domain.getSelectId20());
+		
+		if (domain.getSelectId20() != null) {
+			entity.selectId20 = BigInteger.valueOf(domain.getSelectId20());
+		}
 		entity.selectCode20 = domain.getSelectCode20().map(m -> m).orElse(null);
 		entity.selectName20 = domain.getSelectName20().map(m -> m).orElse(null);
 
