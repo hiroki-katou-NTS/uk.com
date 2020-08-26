@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationDisplayOrder;
@@ -91,34 +90,54 @@ public class AppListExtractConditionDto {
 	/**
 	 * 申請種類
 	 */
-	private List<Integer> opAppTypeLst;
+	private List<ListOfAppTypesDto> opAppTypeLst;
 	
 	/**
 	 * 申請種類リスト
 	 */
 	private List<ListOfAppTypesDto> opListOfAppTypes;
 	
-	public AppListExtractCondition convertDtotoDomain(AppListExtractConditionDto dto){
+	public AppListExtractCondition convertDtotoDomain(){
 		return new AppListExtractCondition(
-				GeneralDate.fromString(dto.getPeriodStartDate(), "yyyy/MM/dd"), 
-				GeneralDate.fromString(dto.getPeriodEndDate(), "yyyy/MM/dd"), 
-				dto.isPostOutput(), 
-				dto.isPreOutput(), 
-				EnumAdaptor.valueOf(dto.appListAtr, ApplicationListAtr.class), 
-				EnumAdaptor.valueOf(dto.appDisplayOrder, ApplicationDisplayOrder.class), 
-				dto.isTableWidthRegis(), 
-				CollectionUtil.isEmpty(dto.opListEmployeeID) ? Optional.empty() : Optional.of(dto.getOpListEmployeeID()), 
-				dto.getOpRemandStatus() == null ? Optional.empty() : Optional.of(dto.getOpRemandStatus()), 
-				dto.getOpCancelStatus() == null ? Optional.empty() : Optional.of(dto.getOpCancelStatus()), 
-				dto.getOpApprovalStatus() == null ? Optional.empty() : Optional.of(dto.getOpApprovalStatus()), 
-				dto.getOpAgentApprovalStatus() == null ? Optional.empty() : Optional.of(dto.getOpAgentApprovalStatus()), 
-				dto.getOpDenialStatus() == null ? Optional.empty() : Optional.of(dto.getOpDenialStatus()), 
-				dto.getOpUnapprovalStatus() == null ? Optional.empty() : Optional.of(dto.getOpUnapprovalStatus()), 
-				CollectionUtil.isEmpty(dto.getOpAppTypeLst()) 
+				GeneralDate.fromString(this.getPeriodStartDate(), "yyyy/MM/dd"), 
+				GeneralDate.fromString(this.getPeriodEndDate(), "yyyy/MM/dd"), 
+				this.isPostOutput(), 
+				this.isPreOutput(), 
+				EnumAdaptor.valueOf(this.appListAtr, ApplicationListAtr.class), 
+				EnumAdaptor.valueOf(this.appDisplayOrder, ApplicationDisplayOrder.class), 
+				this.isTableWidthRegis(), 
+				CollectionUtil.isEmpty(this.opListEmployeeID) ? Optional.empty() : Optional.of(this.getOpListEmployeeID()), 
+				this.getOpRemandStatus() == null ? Optional.empty() : Optional.of(this.getOpRemandStatus()), 
+				this.getOpCancelStatus() == null ? Optional.empty() : Optional.of(this.getOpCancelStatus()), 
+				this.getOpApprovalStatus() == null ? Optional.empty() : Optional.of(this.getOpApprovalStatus()), 
+				this.getOpAgentApprovalStatus() == null ? Optional.empty() : Optional.of(this.getOpAgentApprovalStatus()), 
+				this.getOpDenialStatus() == null ? Optional.empty() : Optional.of(this.getOpDenialStatus()), 
+				this.getOpUnapprovalStatus() == null ? Optional.empty() : Optional.of(this.getOpUnapprovalStatus()), 
+				CollectionUtil.isEmpty(this.getOpAppTypeLst()) 
 					? Optional.empty()
-					: Optional.of(dto.getOpAppTypeLst().stream().map(x -> EnumAdaptor.valueOf(x, ApplicationType.class)).collect(Collectors.toList())), 
-				CollectionUtil.isEmpty(dto.getOpListOfAppTypes()) 
+					: Optional.of(this.getOpAppTypeLst().stream().map(x -> x.toDomain()).collect(Collectors.toList())), 
+				CollectionUtil.isEmpty(this.getOpListOfAppTypes()) 
 					? Optional.empty() 
-					: Optional.of(dto.getOpListOfAppTypes().stream().map(x -> x.toDomain()).collect(Collectors.toList())));
+					: Optional.of(this.getOpListOfAppTypes().stream().map(x -> x.toDomain()).collect(Collectors.toList())));
+	}
+	
+	public static AppListExtractConditionDto fromDomain(AppListExtractCondition appListExtractCondition) {
+		return new AppListExtractConditionDto(
+				appListExtractCondition.getPeriodStartDate().toString(), 
+				appListExtractCondition.getPeriodEndDate().toString(), 
+				appListExtractCondition.isPostOutput(), 
+				appListExtractCondition.isPreOutput(), 
+				appListExtractCondition.getAppListAtr().value, 
+				appListExtractCondition.getAppDisplayOrder().value, 
+				appListExtractCondition.isTableWidthRegis(), 
+				appListExtractCondition.getOpListEmployeeID().orElse(null), 
+				appListExtractCondition.getOpRemandStatus().orElse(null), 
+				appListExtractCondition.getOpCancelStatus().orElse(null), 
+				appListExtractCondition.getOpApprovalStatus().orElse(null), 
+				appListExtractCondition.getOpAgentApprovalStatus().orElse(null), 
+				appListExtractCondition.getOpDenialStatus().orElse(null), 
+				appListExtractCondition.getOpUnapprovalStatus().orElse(null), 
+				appListExtractCondition.getOpAppTypeLst().map(x -> x.stream().map(y -> ListOfAppTypesDto.fromDomain(y)).collect(Collectors.toList())).orElse(null), 
+				appListExtractCondition.getOpListOfAppTypes().map(x -> x.stream().map(y -> ListOfAppTypesDto.fromDomain(y)).collect(Collectors.toList())).orElse(null));
 	}
 }
