@@ -38,7 +38,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuPub;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.ApplicationType;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -83,7 +82,7 @@ public class GetOmissionContentsFinder {
 		List<AppDispNameExp> appDispNames = new ArrayList<AppDispNameExp>();
 
 		if (errorInfo.size() > 0) {
-			List<ApplicationType> appTypes = errorInfo.get(0).getListRequired().stream().sorted()
+			List<ApplicationType> appTypes = errorInfo.stream().flatMap(x -> x.getListRequired().stream()).sorted()
 					.map(x -> EnumAdaptor.valueOf(x, ApplicationType.class)).collect(Collectors.toList());
 
 			String companyId = AppContexts.user().companyId();
