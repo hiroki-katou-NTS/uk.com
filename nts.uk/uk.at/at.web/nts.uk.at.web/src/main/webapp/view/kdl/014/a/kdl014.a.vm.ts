@@ -58,9 +58,6 @@ module nts.uk.at.view.kdl014.a {
                     self.display = data.display;
             
                     if (self.paramFromParent.mode == 0) {
-                        if (_.every(self.dataServer, ['locationInfo', null])) {
-                            self.display = false;
-                        }
                         self.selectedItem(self.employeeInputList()[0].id);
                         self.bindComponent();
                     } else {
