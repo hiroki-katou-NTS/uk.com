@@ -8,15 +8,6 @@
       <template v-else />
     </div>
     <!-- A2_1 -->
-    <!-- <div class="alert error">
-      <img
-        class="iconWarn"
-        src="https://www.iconsdb.com/icons/preview/red/warning-xxl.png"
-        width="16"
-        height="16"
-      />
-      <div class="contentError">{{'KAFS08_13'| i18n}}</div>
-    </div> -->
     <div class="card bg-danger top-alert uk-text-danger topError">
               <button class="btn btn-link uk-text-danger">
                 <i class="fa fa-exclamation-circle" aria-hidden="true" ></i>
@@ -33,7 +24,7 @@
       <div class="card card-label">
         <div class="card-header uk-bg-accordion">
           <span>{{'KAFS08_27' | i18n}}</span>
-          <span class="badge badge-info">出 発</span>
+          <span class="badge badge-info">任意</span>
         </div>
       </div>
       <div class="aParent">

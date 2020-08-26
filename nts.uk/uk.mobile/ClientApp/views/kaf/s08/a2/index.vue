@@ -49,11 +49,11 @@
       <!-- A6 -->
       <div class="field-set">
         <!-- A6_1 -->
-        <label>コメント１</label>
+        <span class="a6_1">コメント１</span>
       </div>
       <!-- A_10 -->
       <div class="mx-n3">
-        <table class="table table-striped">
+        <table class="table uk-table-striped table-bordered">
           <thead>
             <tr>
               <th class="px-1" scope="col">{{"KAFS08_34" | i18n}}</th>
@@ -72,11 +72,11 @@
               <td class="px-1">@mdo</td>
               <td class="border-right-0 px-1">@kfc</td>
               <td class="text-center px-0 border-left-0">
-                <fa-font v-bind:size="'1'" icon="angle-right" />
+                <fa-font v-bind:size="'1'" icon="angle-right" v-click="showModal.bind(this, 'modal')" />
               </td>
             </tr>
             <tr>
-              <td class="px-1">03/12/2020</td>
+              <td class="px-1">03/12</td>
               <td class="px-1">Jacob</td>
               <td class="px-1">Thornton</td>
               <td class="px-1">@fat</td>
@@ -86,7 +86,7 @@
               </td>
             </tr>
             <tr>
-              <td class="px-1">03/12/2020</td>
+              <td class="px-1">03/12</td>
               <td class="px-1">Larry</td>
               <td class="px-1">The Bird</td>
               <td class="px-1">@twitter</td>
@@ -96,7 +96,7 @@
               </td>
             </tr>
             <tr>
-              <td class="px-1">03/12/2020</td>
+              <td class="px-1">03/12</td>
               <td class="px-1">Larry</td>
               <td class="px-1">The Bird</td>
               <td class="px-1">@twitter</td>
@@ -106,7 +106,7 @@
               </td>
             </tr>
             <tr>
-              <td class="px-1">03/12/2020</td>
+              <td class="px-1">03/12</td>
               <td class="px-1">Larry</td>
               <td class="px-1">The Bird</td>
               <td class="px-1">@twitter</td>
