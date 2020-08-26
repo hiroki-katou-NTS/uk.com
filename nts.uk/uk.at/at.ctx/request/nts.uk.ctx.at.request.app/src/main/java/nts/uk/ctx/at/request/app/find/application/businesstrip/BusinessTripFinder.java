@@ -214,13 +214,13 @@ public class BusinessTripFinder {
             lstDate.add(application.getAppDate().getApplicationDate());
         }
         // アルゴリズム「2-1.新規画面登録前の処理」を実行する
-        confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
-                AppContexts.user().companyId(),
-                EmploymentRootAtr.APPLICATION,
-                false,
-                application,
-                null, errorFlag, null
-        );
+//        confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
+//                AppContexts.user().companyId(),
+//                EmploymentRootAtr.APPLICATION,
+//                false,
+//                application,
+//                null, errorFlag, null,
+//        );
         if (confirmMsgOutputs.isEmpty()) {
             // アルゴリズム「出張申請個別エラーチェック」を実行する
             if (businessTripApp.getInfos().isEmpty()) {

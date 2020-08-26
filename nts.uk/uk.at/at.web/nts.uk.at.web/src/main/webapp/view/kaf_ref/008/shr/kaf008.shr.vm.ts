@@ -79,7 +79,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 cloneOutput.businessTripActualContent[index].opAchievementDetail.opWorkTypeName = workNameChanged;
                 vm.businessTripOutput(cloneOutput);
             }).fail(err => {
-                cloneOutput.businessTripActualContent[index].opAchievementDetail.workTypeCD = "";
+                cloneOutput.businessTripActualContent[index].opAchievementDetail.workTypeCD = typeCode;
                 cloneOutput.businessTripActualContent[index].opAchievementDetail.opWorkTypeName = "なし";
                 vm.businessTripOutput(cloneOutput);
                 let param;
@@ -110,8 +110,8 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 cloneOutput.businessTripActualContent[index].opAchievementDetail.opWorkTimeName = data;
                 vm.businessTripOutput(cloneOutput);
             }).fail(err => {
-                cloneOutput.businessTripActualContent[index].opAchievementDetail.workTimeCD = "";
-                cloneOutput.businessTripActualContent[index].opAchievementDetail.opWorkTimeName = "";
+                cloneOutput.businessTripActualContent[index].opAchievementDetail.workTimeCD = timeCode;
+                cloneOutput.businessTripActualContent[index].opAchievementDetail.opWorkTimeName = "なし";
                 vm.businessTripOutput(cloneOutput);
                 let param;
                 if (err.message && err.messageId) {

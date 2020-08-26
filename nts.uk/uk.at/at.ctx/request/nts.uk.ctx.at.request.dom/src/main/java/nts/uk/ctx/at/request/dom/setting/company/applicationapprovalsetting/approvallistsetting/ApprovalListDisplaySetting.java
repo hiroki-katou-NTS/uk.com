@@ -59,14 +59,4 @@ public class ApprovalListDisplaySetting {
 		);
 	}
 	
-	public ApprovalListDisplaySetting(String companyID, DisplayAtr appReasonDisAtr, DisplayAtr advanceExcessMessDisAtr,
-			DisplayAtr actualExcessMessDisAtr, WeekNumberDays warningDateDisAtr, NotUseAtr displayWorkPlaceName) {
-		this.companyID = companyID;
-		this.appReasonDisAtr = appReasonDisAtr;
-		this.advanceExcessMessDisAtr = advanceExcessMessDisAtr;
-		this.actualExcessMessDisAtr = actualExcessMessDisAtr;
-		this.warningDateDisAtr = warningDateDisAtr;
-		this.displayWorkPlaceName = displayWorkPlaceName;
-	}
-	
 }

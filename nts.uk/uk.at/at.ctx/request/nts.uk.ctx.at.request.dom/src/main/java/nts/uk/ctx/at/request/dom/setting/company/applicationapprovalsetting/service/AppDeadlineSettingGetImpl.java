@@ -48,7 +48,7 @@ public class AppDeadlineSettingGetImpl implements AppDeadlineSettingGet {
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public DeadlineLimitCurrentMonth getApplicationDeadline(String companyID, String employeeID, int closureID) {
 		// ドメインモデル「申請設定」を取得する
-		ApplicationSetting applicationSetting = applicationSettingRepository.findByAppType(companyID, ApplicationType.OVER_TIME_APPLICATION);
+		ApplicationSetting applicationSetting = applicationSettingRepository.findByCompanyId(companyID).get();
 		AppDeadlineSetting appDeadlineSetting = applicationSetting.getAppDeadlineSetLst().stream().filter(x -> x.getClosureId() == closureID).findAny().get();
 		// ドメインモデル「申請締切設定」．利用区分をチェックする(check利用区分)
 		if (appDeadlineSetting.getUseAtr() == UseDivision.NOT_USE) {

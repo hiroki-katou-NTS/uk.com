@@ -180,4 +180,6 @@ public interface ApplicationRepository {
 	public Optional<Application> findByID(String appID);
 	
 	public List<Application> getByAppTypeList(List<String> employeeLst, GeneralDate startDate, GeneralDate endDate, List<ApplicationType> appTypeLst);
+
+	public List<Application> getAppForKAF008(String sID, GeneralDate startDate, GeneralDate endDate);
 }

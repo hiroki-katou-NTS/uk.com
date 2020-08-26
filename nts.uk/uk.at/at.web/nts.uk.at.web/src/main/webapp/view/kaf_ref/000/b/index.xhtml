@@ -35,8 +35,10 @@
 			<com:scriptfile path="/view/kaf_ref/000/b/component7/kaf000.b.component7.js" />
 			<com:scriptfile path="/view/kaf_ref/000/b/component8/kaf000.b.component8.js" />
 			<com:scriptfile path="/view/kaf_ref/007/shr/kaf007.shr.vm.js" />
+			<com:scriptfile path="/view/kaf_ref/008/shr/kaf008.shr.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/009/shr/kaf009.shr.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/007/b/kaf007.b.vm.js" />
+			<com:scriptfile path="/view/kaf_ref/008/b/kaf008.b.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/009/b/kaf009.b.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/004/b/kaf004.b.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/000/b/kaf000.b.vm.js" />
@@ -157,6 +159,12 @@
 				<div data-bind="if: ko.unwrap(appType) === 2">
 					<div data-bind="component: {
 							name: 'kaf007-b',
+							params: childParam
+						}"></div>
+				</div>
+				<div data-bind="if: ko.unwrap(appType) === 3">
+					<div data-bind="component: {
+							name: 'kaf008-b',
 							params: childParam
 						}"></div>
 				</div>

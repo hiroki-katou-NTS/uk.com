@@ -246,9 +246,10 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				dateLst, 
 				appType, 
 				appDispInfoNoDateOutput.getApplicationSetting().getAppDisplaySetting().getPrePostDisplayAtr(), 
-				appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSettings().get(0).getDisplayInitialSegment(),
+				appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSettings().get(0).getDisplayInitialSegment().get(),
 				opOvertimeAppAtr,
-				appDispInfoNoDateOutput.getApplicationSetting().getReceptionRestrictionSetting().getOtAppBeforeAccepRestric());
+				appDispInfoNoDateOutput.getApplicationSetting().getReceptionRestrictionSettings().get(0).getOtAppBeforeAccepRestric()
+                        .isPresent() ? appDispInfoNoDateOutput.getApplicationSetting().getReceptionRestrictionSettings().get(0).getOtAppBeforeAccepRestric().get() : null);
 		// 雇用に紐づく締めを取得する
 		int closureID = closureService.getClosureIDByEmploymentCD(empHistImport.getEmploymentCode());
 		// 申請締切設定を取得する
@@ -353,9 +354,10 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 					dateLst, 
 					appType, 
 					appDispInfoNoDateOutput.getApplicationSetting().getAppDisplaySetting().getPrePostDisplayAtr(), 
-					appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSettings().get(0).getDisplayInitialSegment(),
+					appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSettings().get(0).getDisplayInitialSegment().get(),
 					opOvertimeAppAtr,
-					appDispInfoNoDateOutput.getApplicationSetting().getReceptionRestrictionSetting().getOtAppBeforeAccepRestric());
+					appDispInfoNoDateOutput.getApplicationSetting().getReceptionRestrictionSettings().get(0).getOtAppBeforeAccepRestric()
+                            .isPresent() ? appDispInfoNoDateOutput.getApplicationSetting().getReceptionRestrictionSettings().get(0).getOtAppBeforeAccepRestric().get() : null);
 			appDispInfoWithDateOutput.setPrePostAtr(result.getPrePostAtr());
 			appDispInfoWithDateOutput.setOpActualContentDisplayLst(
 					CollectionUtil.isEmpty(result.getActualContentDisplayLst()) ? Optional.empty() : Optional.of(result.getActualContentDisplayLst()));

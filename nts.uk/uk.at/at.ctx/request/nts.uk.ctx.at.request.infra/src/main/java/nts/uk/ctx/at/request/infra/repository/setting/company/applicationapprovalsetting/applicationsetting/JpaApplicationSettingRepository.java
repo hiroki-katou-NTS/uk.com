@@ -25,29 +25,34 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 
 	@Override
 	public ApplicationSetting findByAppType(String companyID, ApplicationType appType) {
-		String sql = "select a.CID as aCID, a.BASE_DATE_SET as aBASE_DATE_SET, a.MON_ATD_CONFIRM_ATR as aMON_ATD_CONFIRM_ATR, a.ATD_LOCK_ATR as aATD_LOCK_ATR, " +
-					"a.ATD_CONFIRM_ATR as aATD_CONFIRM_ATR, a.DAY_ATD_CONFIRM_ATR as aDAY_ATD_CONFIRM_ATR, a.REASON_REQUIRE_ATR as aREASON_REQUIRE_ATR, " +
-					"a.FIXED_REASON_REQUIRE_ATR as aFIXED_REASON_REQUIRE_ATR, a.PRE_POST_DISPLAY_ATR as aPRE_POST_DISPLAY_ATR, " +
-					"a.SEND_MAIL_INI_ATR as aSEND_MAIL_INI_ATR, a.TIME_NIGHT_REFLECT_ATR as aTIME_NIGHT_REFLECT_ATR, " +
-					"b.CID as bCID, b.APP_TYPE as bAPP_TYPE, b.PRE_POST_INIT_ATR as bPRE_POST_INIT_ATR, b.PRE_POST_CHANGE_ATR as bPRE_POST_CHANGE_ATR, " + 
-					"b.APV_SEND_MAIL_ATR as bAPV_SEND_MAIL_ATR, b.APP_SEND_MAIL_ATR as bAPP_SEND_MAIL_ATR, b.POST_FUTURE_ALLOW_ATR as bPOST_FUTURE_ALLOW_ATR, " + 
-					"b.PRE_EARLY_DAYS as bPRE_EARLY_DAYS, b.USE_ATR as bUSE_ATR, b.PRE_OT_CHECK_SET as bPRE_OT_CHECK_SET, b.PRE_OT_BEF_WORK_TIME as bPRE_OT_BEF_WORK_TIME, " + 
-					"b.PRE_OT_AFT_WORK_TIME as bPRE_OT_AFT_WORK_TIME, b.PRE_OT_BEF_AFT_WORK_TIME as bPRE_OT_BEF_AFT_WORK_TIME, " +
-					"c.CID as cCID, c.CLOSURE_ID as cCLOSURE_ID, c.MCLOSE_CRITERIA_ATR as cMCLOSE_CRITERIA_ATR, c.MCLOSE_DAYS as cMCLOSE_DAYS, c.USE_ATR as cUSE_ATR, " + 
-					"d.CID as dCID, d.APP_TYPE as dAPP_TYPE, d.OPTION_ATR as dOPTION_ATR " +
-					"from KRQMT_APPLICATION a left join KRQMT_APP_TYPE b on a.CID =  b.CID " +
-					"left join KRQMT_APP_MCLOSE c on a.CID = c.CID " +
-					"left join KRQMT_REPRESENT_APP d on b.CID = d.CID and b.APP_TYPE = d.APP_TYPE " +
-					"where b.CID = @companyID and b.APP_TYPE = @appType";
-		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
-				.paramString("companyID", companyID)
-				.paramInt("appType", appType.value)
-				.getList(rec -> toObject(rec));
-		List<ApplicationSetting> applicationSettingLst = convertToDomain(mapLst);
-		if(CollectionUtil.isEmpty(applicationSettingLst)) {
+//		String sql = "select a.CID as aCID, a.BASE_DATE_SET as aBASE_DATE_SET, a.MON_ATD_CONFIRM_ATR as aMON_ATD_CONFIRM_ATR, a.ATD_LOCK_ATR as aATD_LOCK_ATR, " +
+//					"a.ATD_CONFIRM_ATR as aATD_CONFIRM_ATR, a.DAY_ATD_CONFIRM_ATR as aDAY_ATD_CONFIRM_ATR, a.REASON_REQUIRE_ATR as aREASON_REQUIRE_ATR, " +
+//					"a.FIXED_REASON_REQUIRE_ATR as aFIXED_REASON_REQUIRE_ATR, a.PRE_POST_DISPLAY_ATR as aPRE_POST_DISPLAY_ATR, " +
+//					"a.SEND_MAIL_INI_ATR as aSEND_MAIL_INI_ATR, a.TIME_NIGHT_REFLECT_ATR as aTIME_NIGHT_REFLECT_ATR, " +
+//					"b.CID as bCID, b.APP_TYPE as bAPP_TYPE, b.PRE_POST_INIT_ATR as bPRE_POST_INIT_ATR, b.PRE_POST_CHANGE_ATR as bPRE_POST_CHANGE_ATR, " +
+//					"b.APV_SEND_MAIL_ATR as bAPV_SEND_MAIL_ATR, b.APP_SEND_MAIL_ATR as bAPP_SEND_MAIL_ATR, b.POST_FUTURE_ALLOW_ATR as bPOST_FUTURE_ALLOW_ATR, " +
+//					"b.PRE_EARLY_DAYS as bPRE_EARLY_DAYS, b.USE_ATR as bUSE_ATR, b.PRE_OT_CHECK_SET as bPRE_OT_CHECK_SET, b.PRE_OT_BEF_WORK_TIME as bPRE_OT_BEF_WORK_TIME, " +
+//					"b.PRE_OT_AFT_WORK_TIME as bPRE_OT_AFT_WORK_TIME, b.PRE_OT_BEF_AFT_WORK_TIME as bPRE_OT_BEF_AFT_WORK_TIME, " +
+//					"c.CID as cCID, c.CLOSURE_ID as cCLOSURE_ID, c.MCLOSE_CRITERIA_ATR as cMCLOSE_CRITERIA_ATR, c.MCLOSE_DAYS as cMCLOSE_DAYS, c.USE_ATR as cUSE_ATR, " +
+//					"d.CID as dCID, d.APP_TYPE as dAPP_TYPE, d.OPTION_ATR as dOPTION_ATR " +
+//					"from KRQST_APPLICATION a left join KRQST_APP_TYPE b on a.CID =  b.CID " +
+//					"left join KRQST_APP_MCLOSE c on a.CID = c.CID " +
+//					"left join KRQST_REPRESENT_APP d on b.CID = d.CID and b.APP_TYPE = d.APP_TYPE " +
+//					"where b.CID = @companyID and b.APP_TYPE = @appType";
+//		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
+//				.paramString("companyID", companyID)
+//				.paramInt("appType", appType.value)
+//				.getList(rec -> toObject(rec));
+//		List<ApplicationSetting> applicationSettingLst = convertToDomain(mapLst);
+
+		Optional<ApplicationSetting> optEntity = findByCompanyId(companyID);
+		if(!optEntity.isPresent()) {
 			throw new RuntimeException("setting master data");
 		}
-		return applicationSettingLst.get(0);
+		ApplicationSetting entity = optEntity.get();
+		entity.getAppTypeSettings().removeIf(i -> i.getAppType() != appType);
+		entity.getReceptionRestrictionSettings().removeIf(i -> i.getAppType() != appType);
+		return entity;
 	}
 
 	@Override
@@ -187,10 +192,10 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 		return new ArrayList<>();
 	}
 
-	@Override
-	public ApplicationSetting findByCID(String companyID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public ApplicationSetting findByCID(String companyID) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 }
