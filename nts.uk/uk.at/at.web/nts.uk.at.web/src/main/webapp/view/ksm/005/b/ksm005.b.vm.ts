@@ -54,6 +54,18 @@ module nts.uk.at.view.ksm005.b {
                 self.monthlyPatternCode = nts.uk.ui.windows.getShared("monthlyPatternCode");
                 self.monthlyPatternName = nts.uk.ui.windows.getShared("monthlyPatternName");
                 self.settingForHolidays = ko.observable(false);
+
+	            // Init
+	            $(".popup-b72").ntsPopup({
+		            trigger: ".showDialogB72",
+		            position: {
+			            my: "left top",
+			            at: "left bottom",
+			            of: ".showDialogB72"
+		            },
+		            showOnStart: false,
+		            dismissible: true
+	            });
             }
 
 

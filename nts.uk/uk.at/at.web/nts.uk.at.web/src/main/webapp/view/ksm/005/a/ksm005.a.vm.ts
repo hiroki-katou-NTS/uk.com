@@ -1,5 +1,7 @@
 module nts.uk.at.view.ksm005.a {
-
+	import baseService = nts.uk.at.view.kdl023.base.service;
+	import ReflectionSetting = baseService.model.ReflectionSetting;
+	import DayOffSetting = baseService.model.DayOffSetting;
     import MonthlyPatternDto = service.model.MonthlyPatternDto;
     import WorkMonthlySettingDto = service.model.WorkMonthlySettingDto;
     import WorkTypeDto = service.model.WorkTypeDto;
@@ -7,8 +9,6 @@ module nts.uk.at.view.ksm005.a {
     import blockUI = nts.uk.ui.block;
     import text = nts.uk.resource;
     import empty = nts.uk.util;
-
-	import PatternReflection = nts.uk.at.view.kdl023.base.viewmodel.ReflectionSetting;
 
     export module viewmodel {
 
@@ -47,7 +47,7 @@ module nts.uk.at.view.ksm005.a {
 	        enableUpdate: KnockoutObservable<boolean>;
 	        typeOfWorkLabel: KnockoutObservable<string>;
 	        workingHoursLabel: KnockoutObservable<string>;
-	        reflectionSetting: PatternReflection;
+	        reflectionSetting: ReflectionSetting;
 
             constructor() {
                 var self = this;
@@ -152,9 +152,6 @@ module nts.uk.at.view.ksm005.a {
 	            self.workingHoursLabel = ko.computed( ()=> {
 		            return self.workingHoursInfo() != null ? text.getText('KSM005_87') : '' ;
 	            });
-
-	            // Default pattern reflection setting
-	            self.reflectionSetting = PatternReflection.newSetting();
             }
 
             /**
@@ -608,33 +605,30 @@ module nts.uk.at.view.ksm005.a {
 	        }
 
 	        private showDialogKDL023(): void {
-		        let self = this;
-
-		        let dataMonthly = null
-
-		        nts.uk.ui.windows.setShared('reflectionSetting', ko.toJS(self.reflectionSetting));
+	            let self = this,
+                    yearMonth = self.yearMonthPicked().toString(),
+                    year: number = parseInt(yearMonth.substring(0, 4)),
+		            month: number = parseInt(yearMonth.substring(4, yearMonth.length)),
+			        startDate = moment([year, month - 1]).format("YYYY-MM-DD"),
+			        endDate = moment(startDate).endOf('month').format("YYYY-MM-DD"),
+			        dataMonthly: ReflectionSetting = {
+				        calendarStartDate: startDate,
+				        calendarEndDate: endDate,
+				        selectedPatternCd: self.selectMonthlyPattern(),
+				        patternStartDate: startDate,
+				        reflectionMethod: 1,
+				        statutorySetting: self.convertWorktypeSetting(0, ''),
+				        holidaySetting: self.convertWorktypeSetting(0, ''),
+				        nonStatutorySetting: self.convertWorktypeSetting(0, '')
+			        };
+		        nts.uk.ui.windows.setShared('reflectionSetting', ko.toJS(dataMonthly));
 		        nts.uk.ui.windows.sub.modal('/view/kdl/023/b/index.xhtml').onClosed(() => {
 			        let dto = nts.uk.ui.windows.getShared('returnedData');
-			        if (dto) {
+			        console.log(dto);
+			       /* if (dto) {
 				        self.returnedSetting.fromDto(dto);
-			        }
+			        }*/
 		        });
-	        }
-
-
-	        /**
-	         * Validate input date.
-	         */
-	        private isInvalidDate(): boolean {
-		        let self = this;
-		        let startDate = moment(self.reflectionSetting.calendarStartDate());
-		        let endDate = moment(self.reflectionSetting.calendarEndDate());
-
-		        if (startDate.isSameOrAfter(endDate)) {
-			        return true;
-		        }
-
-		        return false;
 	        }
 
 	        private clearWorkMothly() {
@@ -655,8 +649,6 @@ module nts.uk.at.view.ksm005.a {
 			        }
 			        self.lstWorkMonthlySetting(dataUpdate);
 			        self.updateWorkMothlySetting(dataUpdate);
-			        //self.enableDelete(false);
-			        //self.enableUpdate(false);
 
 		        }).ifNo(function() {
 			        return;
@@ -685,6 +677,17 @@ module nts.uk.at.view.ksm005.a {
 
 		        self.updateWorkMothlySetting(dataUpdate);
 		        self.lstWorkMonthlySetting(dataUpdate);
+	        }
+
+	        /**
+	         * convert work type setting
+	         */
+	        private convertWorktypeSetting(use: number, worktypeCode: string): DayOffSetting {
+		        let data: DayOffSetting = {
+			        useClassification: use,
+			        workTypeCode: worktypeCode
+		        };
+		        return data;
 	        }
         }
         
