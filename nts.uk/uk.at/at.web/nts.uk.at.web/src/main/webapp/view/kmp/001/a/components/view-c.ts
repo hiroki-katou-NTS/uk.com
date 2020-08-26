@@ -179,7 +179,7 @@ module nts.uk.at.view.kmp001.c {
 						vm.$ajax(KMP001C_API.GET_INFO_EMPLOYEE + ko.toJS(c))
 							.then((data: IEmployeeVIewC[]) => {
 								
-								if(data.retiredDate = "9999/12/31"){
+								if(moment(data.retiredDate).format(DATE_FORMAT) === "9999/12/31"){
 									data.retiredDate = null;
 								}
 								
@@ -210,10 +210,10 @@ module nts.uk.at.view.kmp001.c {
 					.then((data: IStampCardC[]) => {
 						// convert string to date format
 						_.each(data, (d) => {
-							d.stampDatetime = moment(d.stampDatetime).format('YYYY/MM/DD hh:mm')
+							d.stampDatetime = d.stampDatetime.replace(/T/, ' ').replace(/Z/, '');
 						});
-
-						vm.items(data);
+					
+						vm.items(_.orderBy(data, ['stampNumber'], ['asc']));
 
 						if (selectedIndex >= 0) {
 							const record = data[selectedIndex || 0];

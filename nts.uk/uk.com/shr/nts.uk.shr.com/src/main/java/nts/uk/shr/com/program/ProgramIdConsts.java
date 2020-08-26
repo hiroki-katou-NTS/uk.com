@@ -1032,7 +1032,7 @@ public class ProgramIdConsts {
 	//KDL034
 	public static final String KDL034 = "KDL034";
 	//KDL034
-	public static final String KDL044A = "KDL044A";
+	public static final String KDL044 = "KDL044";
 
 	/** CCG009 */
 	public static final String CCG009A = "CCG009A";
