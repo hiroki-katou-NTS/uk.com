@@ -75,6 +75,8 @@ table.header-content td {
 	margin-left: 20px;
 }
 
+
+
 .big-text {
 	font-size: 2rem;
 }
@@ -86,4 +88,16 @@ table.header-content td {
 table#date-fixed-table td.border-dotted {
 	padding: 6px 3px;
 	border-bottom: 1px dotted #CCC !important;
+}
+
+.margin-right-20 {
+	margin-right: 20px;
+}
+
+.margin-right-40 {
+	margin-right: 40px;
+}
+
+.float-right {
+	float: right;
 }
