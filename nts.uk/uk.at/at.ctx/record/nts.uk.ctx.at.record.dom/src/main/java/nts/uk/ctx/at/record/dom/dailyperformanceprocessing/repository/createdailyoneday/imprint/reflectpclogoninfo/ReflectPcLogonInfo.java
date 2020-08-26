@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.reflectpclogoninfo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.Wo
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.PCLogOnInfoOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.PCLogOnNo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.StampReflectRangeOutput;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -49,20 +51,16 @@ public class ReflectPcLogonInfo {
 					.collect(Collectors.toList());
 		}
 		// 枠反映する
-		reflectFrameEntranceAndExit.reflect(listReflectionInformation, stamp, stampReflectRangeOutput, integrationOfDaily);
+		listReflectionInformation = reflectFrameEntranceAndExit.reflect(listReflectionInformation, stamp, stampReflectRangeOutput, integrationOfDaily);
 		
 		// 反映済みの反映情報（Temporary）を日別実績のPCログオン情報にコピーする
-		if (pCLogOnInfoOfDailyAttd.isPresent()) {
-			for(LogOnInfo logOnInfo :pCLogOnInfoOfDailyAttd.get().getLogOnInfo()) {
-				for(ReflectionInformation ri :listReflectionInformation) {
-					if(logOnInfo.getWorkNo().v().intValue() == ri.getFrameNo()) {
-						logOnInfo.setLogOn(ri.getStart().isPresent()?ri.getStart().get().getTimeDay().getTimeWithDay():Optional.empty());
-						logOnInfo.setLogOff(ri.getEnd().isPresent()?ri.getEnd().get().getTimeDay().getTimeWithDay():Optional.empty());
-						break;
-					}
-				}
-			}
+		List<LogOnInfo> logOnInfo = new ArrayList<>();
+		for(ReflectionInformation  reflectionInfor : listReflectionInformation) {
+			logOnInfo.add(new LogOnInfo(reflectionInfor.getFrameNo(),
+					reflectionInfor.getEnd().isPresent()?reflectionInfor.getEnd().get().getTimeDay().getTimeWithDay(): Optional.empty(),
+					reflectionInfor.getStart().isPresent()? reflectionInfor.getStart().get().getTimeDay().getTimeWithDay(): Optional.empty()));
 		}
+		integrationOfDaily.setPcLogOnInfo(Optional.of(new PCLogOnInfoOfDailyAttd(logOnInfo)));
 	}
 
 	private Optional<WorkStamp> convertToTimeWithDayAttr(Optional<TimeWithDayAttr> opt) {

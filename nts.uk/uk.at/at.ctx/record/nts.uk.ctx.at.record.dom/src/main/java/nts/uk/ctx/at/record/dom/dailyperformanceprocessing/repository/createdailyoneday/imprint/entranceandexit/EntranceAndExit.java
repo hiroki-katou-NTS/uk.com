@@ -38,7 +38,7 @@ public class EntranceAndExit {
 					.collect(Collectors.toList());
 		}
 		//枠反映する
-		reflectStampOuput = reflectFrameEntranceAndExit.reflect(listReflectionInformation, stamp, stampReflectRangeOutput, integrationOfDaily);
+		listReflectionInformation = reflectFrameEntranceAndExit.reflect(listReflectionInformation, stamp, stampReflectRangeOutput, integrationOfDaily);
 		
 		//反映済みの反映情報（Temporary）を日別実績の入退門にコピーする
 		if (attendanceLeavingGate.isPresent()) {

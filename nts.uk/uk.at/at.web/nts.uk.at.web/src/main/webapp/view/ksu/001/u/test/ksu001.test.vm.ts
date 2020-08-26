@@ -66,10 +66,7 @@ module nts.uk.at.view.ksu001.u.test {
 					reloadData: ko.observable(''),
 					height: 373,
 					selectedMode: 1
-				};
-				self.currentIds.subscribe((x) => {
-					console.log(x);
-				});
+				};			
 			}
 			openDialog(): void {
 				let self = this;
