@@ -175,7 +175,6 @@ export class KAFS08A1ViewModel extends KafS00ShrComponent {
             }
         };
     }
-
     public mounted() {
         let self = this;
     }
