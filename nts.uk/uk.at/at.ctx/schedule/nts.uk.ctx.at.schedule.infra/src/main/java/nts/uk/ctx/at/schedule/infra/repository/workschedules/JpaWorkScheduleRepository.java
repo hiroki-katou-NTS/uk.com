@@ -11,6 +11,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBasicInfo;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBasicInfoPK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTimeTs;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -53,58 +54,57 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 		if (oldData.isPresent()) {
 			KscdtSchBasicInfo newData = KscdtSchBasicInfo.toEntity(workSchedule, cID);
-			KscdtSchBasicInfo dataUpdate = oldData.get();
-			dataUpdate.confirmedATR = newData.confirmedATR;
-			dataUpdate.empCd = newData.empCd;
-			dataUpdate.jobId = newData.jobId;
-			dataUpdate.wkpId = newData.wkpId;
-			dataUpdate.clsCd = newData.clsCd;
-			dataUpdate.busTypeCd = newData.busTypeCd;
-			dataUpdate.nurseLicense = newData.nurseLicense;
-			dataUpdate.wktpCd = newData.wktpCd;
-			dataUpdate.wktmCd = newData.wktmCd;
-			dataUpdate.goStraightAtr = newData.goStraightAtr;
-			dataUpdate.backStraightAtr = newData.backStraightAtr;
+			oldData.get().confirmedATR = newData.confirmedATR;
+			oldData.get().empCd = newData.empCd;
+			oldData.get().jobId = newData.jobId;
+			oldData.get().wkpId = newData.wkpId;
+			oldData.get().clsCd = newData.clsCd;
+			oldData.get().busTypeCd = newData.busTypeCd;
+			oldData.get().nurseLicense = newData.nurseLicense;
+			oldData.get().wktpCd = newData.wktpCd;
+			oldData.get().wktmCd = newData.wktmCd;
+			oldData.get().goStraightAtr = newData.goStraightAtr;
+			oldData.get().backStraightAtr = newData.backStraightAtr;
 
 			// kscdtSchTime
-			dataUpdate.kscdtSchTime.cid = newData.kscdtSchTime.cid;
-			dataUpdate.kscdtSchTime.count = newData.kscdtSchTime.count;
-			dataUpdate.kscdtSchTime.totalTime = newData.kscdtSchTime.totalTime;
-			dataUpdate.kscdtSchTime.totalTimeAct = newData.kscdtSchTime.totalTimeAct;
-			dataUpdate.kscdtSchTime.prsWorkTime = newData.kscdtSchTime.prsWorkTime;
-			dataUpdate.kscdtSchTime.prsWorkTimeAct = newData.kscdtSchTime.prsWorkTimeAct;
-			dataUpdate.kscdtSchTime.prsPrimeTime = newData.kscdtSchTime.prsPrimeTime;
-			dataUpdate.kscdtSchTime.prsMidniteTime = newData.kscdtSchTime.prsMidniteTime;
-			dataUpdate.kscdtSchTime.extBindTimeOtw = newData.kscdtSchTime.extBindTimeOtw;
-			dataUpdate.kscdtSchTime.extBindTimeHw = newData.kscdtSchTime.extBindTimeHw;
-			dataUpdate.kscdtSchTime.extVarwkOtwTimeLegal = newData.kscdtSchTime.extVarwkOtwTimeLegal;
-			dataUpdate.kscdtSchTime.extFlexTime = newData.kscdtSchTime.extFlexTime;
-			dataUpdate.kscdtSchTime.extFlexTimePreApp = newData.kscdtSchTime.extFlexTimePreApp;
-			dataUpdate.kscdtSchTime.extMidNiteOtwTime = newData.kscdtSchTime.extMidNiteOtwTime;
-			dataUpdate.kscdtSchTime.extMidNiteHdwTimeLghd = newData.kscdtSchTime.extMidNiteHdwTimeLghd;
-			dataUpdate.kscdtSchTime.extMidNiteHdwTimeIlghd = newData.kscdtSchTime.extMidNiteHdwTimeIlghd;
-			dataUpdate.kscdtSchTime.extMidNiteHdwTimePubhd = newData.kscdtSchTime.extMidNiteHdwTimePubhd;
-			dataUpdate.kscdtSchTime.extMidNiteTotal = newData.kscdtSchTime.extMidNiteTotal;
-			dataUpdate.kscdtSchTime.extMidNiteTotalPreApp = newData.kscdtSchTime.extMidNiteTotalPreApp;
-			dataUpdate.kscdtSchTime.intervalAtdClock = newData.kscdtSchTime.intervalAtdClock;
-			dataUpdate.kscdtSchTime.intervalTime = newData.kscdtSchTime.intervalTime;
-			dataUpdate.kscdtSchTime.brkTotalTime = newData.kscdtSchTime.brkTotalTime;
-			dataUpdate.kscdtSchTime.hdPaidTime = newData.kscdtSchTime.hdPaidTime;
-			dataUpdate.kscdtSchTime.hdPaidHourlyTime = newData.kscdtSchTime.hdPaidHourlyTime;
-			dataUpdate.kscdtSchTime.hdComTime = newData.kscdtSchTime.hdComTime;
-			dataUpdate.kscdtSchTime.hdComHourlyTime = newData.kscdtSchTime.hdComHourlyTime;
-			dataUpdate.kscdtSchTime.hd60hTime = newData.kscdtSchTime.hd60hTime;
-			dataUpdate.kscdtSchTime.hd60hHourlyTime = newData.kscdtSchTime.hd60hHourlyTime;
-			dataUpdate.kscdtSchTime.hdspTime = newData.kscdtSchTime.hdspTime;
-			dataUpdate.kscdtSchTime.hdspHourlyTime = newData.kscdtSchTime.hdspHourlyTime;
-			dataUpdate.kscdtSchTime.hdstkTime = newData.kscdtSchTime.hdstkTime;
-			dataUpdate.kscdtSchTime.hdHourlyTime = newData.kscdtSchTime.hdHourlyTime;
-			dataUpdate.kscdtSchTime.hdHourlyShortageTime = newData.kscdtSchTime.hdHourlyShortageTime;
-			dataUpdate.kscdtSchTime.absenceTime = newData.kscdtSchTime.absenceTime;
-			dataUpdate.kscdtSchTime.vacationAddTime = newData.kscdtSchTime.vacationAddTime;
-			dataUpdate.kscdtSchTime.staggeredWhTime = newData.kscdtSchTime.staggeredWhTime;
+			oldData.get().kscdtSchTime.cid = newData.kscdtSchTime.cid;
+			oldData.get().kscdtSchTime.count = newData.kscdtSchTime.count;
+			oldData.get().kscdtSchTime.totalTime = newData.kscdtSchTime.totalTime;
+			oldData.get().kscdtSchTime.totalTimeAct = newData.kscdtSchTime.totalTimeAct;
+			oldData.get().kscdtSchTime.prsWorkTime = newData.kscdtSchTime.prsWorkTime;
+			oldData.get().kscdtSchTime.prsWorkTimeAct = newData.kscdtSchTime.prsWorkTimeAct;
+			oldData.get().kscdtSchTime.prsPrimeTime = newData.kscdtSchTime.prsPrimeTime;
+			oldData.get().kscdtSchTime.prsMidniteTime = newData.kscdtSchTime.prsMidniteTime;
+			oldData.get().kscdtSchTime.extBindTimeOtw = newData.kscdtSchTime.extBindTimeOtw;
+			oldData.get().kscdtSchTime.extBindTimeHw = newData.kscdtSchTime.extBindTimeHw;
+			oldData.get().kscdtSchTime.extVarwkOtwTimeLegal = newData.kscdtSchTime.extVarwkOtwTimeLegal;
+			oldData.get().kscdtSchTime.extFlexTime = newData.kscdtSchTime.extFlexTime;
+			oldData.get().kscdtSchTime.extFlexTimePreApp = newData.kscdtSchTime.extFlexTimePreApp;
+			oldData.get().kscdtSchTime.extMidNiteOtwTime = newData.kscdtSchTime.extMidNiteOtwTime;
+			oldData.get().kscdtSchTime.extMidNiteHdwTimeLghd = newData.kscdtSchTime.extMidNiteHdwTimeLghd;
+			oldData.get().kscdtSchTime.extMidNiteHdwTimeIlghd = newData.kscdtSchTime.extMidNiteHdwTimeIlghd;
+			oldData.get().kscdtSchTime.extMidNiteHdwTimePubhd = newData.kscdtSchTime.extMidNiteHdwTimePubhd;
+			oldData.get().kscdtSchTime.extMidNiteTotal = newData.kscdtSchTime.extMidNiteTotal;
+			oldData.get().kscdtSchTime.extMidNiteTotalPreApp = newData.kscdtSchTime.extMidNiteTotalPreApp;
+			oldData.get().kscdtSchTime.intervalAtdClock = newData.kscdtSchTime.intervalAtdClock;
+			oldData.get().kscdtSchTime.intervalTime = newData.kscdtSchTime.intervalTime;
+			oldData.get().kscdtSchTime.brkTotalTime = newData.kscdtSchTime.brkTotalTime;
+			oldData.get().kscdtSchTime.hdPaidTime = newData.kscdtSchTime.hdPaidTime;
+			oldData.get().kscdtSchTime.hdPaidHourlyTime = newData.kscdtSchTime.hdPaidHourlyTime;
+			oldData.get().kscdtSchTime.hdComTime = newData.kscdtSchTime.hdComTime;
+			oldData.get().kscdtSchTime.hdComHourlyTime = newData.kscdtSchTime.hdComHourlyTime;
+			oldData.get().kscdtSchTime.hd60hTime = newData.kscdtSchTime.hd60hTime;
+			oldData.get().kscdtSchTime.hd60hHourlyTime = newData.kscdtSchTime.hd60hHourlyTime;
+			oldData.get().kscdtSchTime.hdspTime = newData.kscdtSchTime.hdspTime;
+			oldData.get().kscdtSchTime.hdspHourlyTime = newData.kscdtSchTime.hdspHourlyTime;
+			oldData.get().kscdtSchTime.hdstkTime = newData.kscdtSchTime.hdstkTime;
+			oldData.get().kscdtSchTime.hdHourlyTime = newData.kscdtSchTime.hdHourlyTime;
+			oldData.get().kscdtSchTime.hdHourlyShortageTime = newData.kscdtSchTime.hdHourlyShortageTime;
+			oldData.get().kscdtSchTime.absenceTime = newData.kscdtSchTime.absenceTime;
+			oldData.get().kscdtSchTime.vacationAddTime = newData.kscdtSchTime.vacationAddTime;
+			oldData.get().kscdtSchTime.staggeredWhTime = newData.kscdtSchTime.staggeredWhTime;
 			// List<KscdtSchOvertimeWork> overtimeWorks
-			dataUpdate.kscdtSchTime.overtimeWorks.stream().forEach(x -> {
+			oldData.get().kscdtSchTime.overtimeWorks.stream().forEach(x -> {
 				newData.kscdtSchTime.overtimeWorks.stream().forEach(y -> {
 					x.cid = y.cid;
 					x.overtimeWorkTime = y.overtimeWorkTime;
@@ -113,7 +113,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				});
 			});
 			// List<KscdtSchHolidayWork> holidayWorks
-			dataUpdate.kscdtSchTime.holidayWorks.stream().forEach(x -> {
+			oldData.get().kscdtSchTime.holidayWorks.stream().forEach(x -> {
 				newData.kscdtSchTime.holidayWorks.stream().forEach(y -> {
 					x.cid = y.cid;
 					x.holidayWorkTsStart = y.holidayWorkTsStart;
@@ -124,7 +124,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				});
 			});
 			// List<KscdtSchBonusPay> bonusPays
-			dataUpdate.kscdtSchTime.bonusPays.stream().forEach(x ->{
+			oldData.get().kscdtSchTime.bonusPays.stream().forEach(x ->{
 				newData.kscdtSchTime.bonusPays.stream().forEach(y -> {
 					x.cid = y.cid;
 					x.premiumTime = y.premiumTime;
@@ -133,14 +133,14 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				});
 			});
 			//List<KscdtSchPremium> premiums
-			dataUpdate.kscdtSchTime.premiums.stream().forEach(x ->{
+			oldData.get().kscdtSchTime.premiums.stream().forEach(x ->{
 				newData.kscdtSchTime.premiums.stream().forEach( y -> {
 					x.cid = y.cid;
 					x.premiumTime = y.premiumTime;
 				});
 			});
 			//List<KscdtSchShortTime> shortTimes
-			dataUpdate.kscdtSchTime.shortTimes.stream().forEach( x -> {
+			oldData.get().kscdtSchTime.shortTimes.stream().forEach( x -> {
 				newData.kscdtSchTime.shortTimes.stream().forEach( y -> {
 					x.cid = y.cid;
 					x.count = y.count;
@@ -151,14 +151,14 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			});
 			
 			//List<KscdtSchEditState> editStates;
-			dataUpdate.editStates.stream().forEach(x -> {
+			oldData.get().editStates.stream().forEach(x -> {
 					newData.editStates.stream().forEach(y ->{
 						x.cid = y.cid;
 						x.sditState = y.sditState;
 					});
 			});
 			//List<KscdtSchAtdLvwTime> atdLvwTimes;
-			dataUpdate.atdLvwTimes.stream().forEach(x ->{
+			oldData.get().atdLvwTimes.stream().forEach(x ->{
 				newData.atdLvwTimes.stream().forEach(y ->{
 					x.cid = y.cid;
 					x.atdClock = y.atdClock;
@@ -166,15 +166,17 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				});
 			});
 			//List<KscdtSchShortTimeTs> schShortTimeTs
-			dataUpdate.schShortTimeTs.stream().forEach( x ->{
-				newData.schShortTimeTs.stream().forEach(y ->{
-					x.cid = y.cid;
-					x.shortTimeTsStart = y.shortTimeTsStart;
-					x.shortTimeTsEnd = y.shortTimeTsEnd;
+			for(KscdtSchShortTimeTs ts : newData.schShortTimeTs) {
+				oldData.get().schShortTimeTs.forEach(x->{
+					if(ts.pk.frameNo == x.pk.frameNo) {
+						x.cid = ts.cid;
+						x.shortTimeTsStart = ts.shortTimeTsStart;
+						x.shortTimeTsEnd = ts.shortTimeTsEnd;
+					}
 				});
-			});
+			}
 			//List<KscdtSchBreakTs> breakTs;
-			dataUpdate.breakTs.stream().forEach(x -> {
+			oldData.get().breakTs.stream().forEach(x -> {
 				newData.breakTs.stream().forEach(y ->{
 					x.cid = y.cid;
 					x.breakTsStart = y.breakTsStart;
@@ -182,7 +184,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				});
 			});
 
-			this.commandProxy().update(dataUpdate);
+			this.commandProxy().update(oldData.get());
 		}
 	}
 
