@@ -402,8 +402,6 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                 return;
             }
 
-            console.log(ko.toJS(vm.application()));
-            console.log(vm.workManagement);
             vm.application.prototype.inputDate = ko.observable(moment(new Date()).format("yyyy/MM/dd HH:mm:ss"));
 
             let lateCancelation = [];
@@ -446,7 +444,6 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         _.remove(lateOrLeaveEarlies, (x) => {
                             return (x.workNo === 1 && x.lateOrEarlyClassification === 0);
                         });
-                    vm.workManagement.workTime(null);
                 }
                 if (ko.toJS(vm.lateOrEarlyInfo2().isCheck)) {
                     lateCancelation.push({
@@ -456,7 +453,6 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     _.remove(lateOrLeaveEarlies, (x) => {
                         return (x.workNo === 1 && x.lateOrEarlyClassification === 1);
                     });
-                    vm.workManagement.leaveTime(null);
                 }
                 if (ko.toJS(vm.lateOrEarlyInfo3().isCheck)) {
                     lateCancelation.push({
@@ -466,7 +462,6 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     _.remove(lateOrLeaveEarlies, (x) => {
                         return (x.workNo === 2 && x.lateOrEarlyClassification === 0);
                     });
-                    vm.workManagement.workTime2(null);
                 }
                 if (ko.toJS(vm.lateOrEarlyInfo4().isCheck)) {
                     lateCancelation.push({
@@ -476,7 +471,6 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     _.remove(lateOrLeaveEarlies, (x) => {
                         return (x.workNo === 2 && x.lateOrEarlyClassification === 1);
                     });
-                    vm.workManagement.leaveTime2(null);
                 }
             }
             let arrivedLateLeaveEarly = {
@@ -537,6 +531,21 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 
         private afterRegister(params?: any) {
             const vm = this;
+
+            if (ko.toJS(vm.application().prePostAtr) === 1) {
+                if (ko.toJS(vm.lateOrEarlyInfo1().isCheck)) {
+                    vm.workManagement.workTime(null);
+                }
+                if (ko.toJS(vm.lateOrEarlyInfo2().isCheck)) {
+                    vm.workManagement.leaveTime(null);
+                }
+                if (ko.toJS(vm.lateOrEarlyInfo3().isCheck)) {
+                    vm.workManagement.workTime2(null);
+                }
+                if (ko.toJS(vm.lateOrEarlyInfo4().isCheck)) {
+                    vm.workManagement.leaveTime2(null);
+                }
+            }
 
             vm.$ajax(API.register,
                 {
