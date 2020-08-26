@@ -97,7 +97,7 @@ public class AsposeLateLeaveEarly {
 				}).filter(m -> (m != null)).collect(Collectors.toList());
 		// A1_3
 		String attendTime1 = timeReportsTemp.size() > 0
-				? timeReportsTemp.get(0).getTimeWithDayAttr().getInDayTimeWithFormat()
+				? timeReportsTemp.get(0).getTimeWithDayAttr().getFullText()
 				: null;
 		// A1_4
 		String cancel1 = cancelTemp.size() == 0 ? null : I18NText.getText("KAF004_63");

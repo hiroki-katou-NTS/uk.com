@@ -681,9 +681,25 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 					.getOpAchievementDetail();
 		}
 
+		// AnhNM Mock data: START
+		AchievementEarly mockAchiveEarly = new AchievementEarly(new TimeWithDayAttr(510), new TimeWithDayAttr(990),
+				new TimeWithDayAttr(900), new TimeWithDayAttr(1320));
+		AchievementDetail mockAchive = new AchievementDetail(null, null, null, null, null, null, mockAchiveEarly,
+				Optional.of(1320), Optional.empty(), Optional.empty(), Optional.of(510), Optional.of(900),
+				Optional.empty(), Optional.of(960), Optional.empty(), Optional.empty(), Optional.empty(),
+				Optional.empty(), Optional.empty());
+		ActualContentDisplay mockDisplay = new ActualContentDisplay(GeneralDate.fromString("2020/09/03", DATE_FORMAT),
+				Optional.of(mockAchive));
+		// AnhNM Mock data: END
+
 		// 取り消す初期情報
 		List<LateOrEarlyInfo> listInfo = this.initialInfo(lateEarlyCancelAppSet, opAchieve,
 				infoStartupOutput.getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles());
+
+		// AnhNM Mock data: START
+		listInfo = this.initialInfo(lateEarlyCancelAppSet, Optional.of(mockAchive),
+				infoStartupOutput.getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles());
+		// AnhNM Mock data: END
 
 		output.setEarlyInfos(listInfo);
 		output.setArrivedLateLeaveEarly(Optional.of(arrivedLateLeaveEarly));

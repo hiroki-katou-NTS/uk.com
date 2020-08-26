@@ -24,8 +24,9 @@
                     name: $i18n('KAF004_42'),
                     value: $parent.workManagement.workTime,
                     option: {timeWithDay: true, width: '80'},
-                    constraint: 'TimeWithDayAttr'
-                }, enable: $parent.condition8(1)" />
+                    constraint: 'TimeWithDayAttr',
+                    enable: !$parent.condition8(1)
+                }" />
                     </span>
                     <!-- A6_5 -->
                     <span class="label" data-bind="text: $i18n('KAF004_54')"></span>
@@ -33,14 +34,14 @@
                 <td class="padding-5">
                     <!-- A6_6 -->
                     <span class="label"
-                        data-bind="text: $i18n('KAF004_56'), visible: $parent.condition10Display(1)"></span>
+                        data-bind="text: $i18n('KAF004_56'), visible: $parent.condition10Display(1) && $parent.condition9()"></span>
 
                     <!-- A6_7 -->
                     <span data-bind="ntsCheckBox: {
-                    checked: $parent.workManagement.workTime === null,
+                    checked: $parent.isDelete(1),
                     text: $i18n('KAF004_57'),
                     enable: $parent.condition10Activation(1)
-                    }, visible: $parent.condition10Display(1)"></span>
+                    }, visible: $parent.condition10Display(1) && $parent.condition9()"></span>
                 </td>
             </tr>
             <tr>
@@ -58,8 +59,9 @@
                     name: $i18n('KAF004_42'),
                     value: $parent.workManagement.leaveTime,
                     option: {timeWithDay: true, width: '80'},
-                    constraint: 'TimeWithDayAttr'
-                }, enable: $parent.condition8(2)" />
+                    constraint: 'TimeWithDayAttr',
+                    enable: !$parent.condition8(2)
+                }" />
                     </span>
 
                     <!-- A6_11 -->
@@ -68,14 +70,14 @@
                 <td class="padding-5">
                     <!-- A6_12 -->
                     <span class="label"
-                        data-bind="text: $i18n('KAF004_56'), visible: $parent.condition10Display(2)"></span>
+                        data-bind="text: $i18n('KAF004_56'), visible: $parent.condition10Display(2) && $parent.condition9()"></span>
 
                     <!-- A6_13 -->
                     <span data-bind="ntsCheckBox: {
-                    checked: !!ko.toJS($parent.workManagement.leaveTime),
+                    checked: $parent.isDelete(2),
                     text: $i18n('KAF004_58'),
                     enable: $parent.condition10Activation(2)
-                    }, visible: $parent.condition10Display(2)"></span>
+                    }, visible: $parent.condition10Display(2) && $parent.condition9()"></span>
                 </td>
             </tr>
             <tr data-bind="visible: $parent.condition2()">
@@ -94,8 +96,9 @@
                     name: $i18n('KAF004_42'),
                     value: $parent.workManagement.workTime2,
                     option: {timeWithDay: true, width: '80'},
-                    constraint: 'TimeWithDayAttr'
-                }, enable: $parent.condition8(3)" />
+                    constraint: 'TimeWithDayAttr',
+                    enable: !$parent.condition8(3)
+                }" />
                     </span>
 
                     <!-- A6_17 -->
@@ -108,7 +111,7 @@
 
                     <!-- A6_19 -->
                     <span data-bind="ntsCheckBox: {
-                    checked: !!ko.toJS($parent.workManagement.workTime2),
+                    checked: $parent.isDelete(3),
                     text: $i18n('KAF004_60'),
                     enable: $parent.condition10Activation(3)
                     }, visible: $parent.condition2_9_10(3)"></span>
@@ -129,8 +132,9 @@
                     name: $i18n('KAF004_42'),
                     value: $parent.workManagement.leaveTime2,
                     option: {timeWithDay: true, width: '80'},
-                    constraint: 'TimeWithDayAttr'
-                }, enable: $parent.condition8(4)" />
+                    constraint: 'TimeWithDayAttr',
+                    enable: !$parent.condition8(4)
+                }" />
                     </span>
 
                     <!-- A6_23 -->
@@ -143,7 +147,7 @@
 
                     <!-- A6_25 -->
                     <span data-bind="ntsCheckBox: {
-                    checked: !!ko.toJS($parent.workManagement.leaveTime2),
+                    checked: $parent.isDelete(4),
                     text: $i18n('KAF004_61'),
                     enable: $parent.condition10Activation(4)
                     }, visible: $parent.condition2_9_10(4)"></span>
