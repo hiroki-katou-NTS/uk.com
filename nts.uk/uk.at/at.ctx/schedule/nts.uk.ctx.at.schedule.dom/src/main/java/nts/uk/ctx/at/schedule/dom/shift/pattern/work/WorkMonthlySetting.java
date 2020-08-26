@@ -4,23 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.pattern.work;
 
-import lombok.Value;
-import lombok.val;
-import nts.arc.error.BusinessException;
-import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import org.apache.commons.lang3.StringUtils;
-
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-
-import java.util.Optional;
+import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * The Class WorkMonthlySetting.

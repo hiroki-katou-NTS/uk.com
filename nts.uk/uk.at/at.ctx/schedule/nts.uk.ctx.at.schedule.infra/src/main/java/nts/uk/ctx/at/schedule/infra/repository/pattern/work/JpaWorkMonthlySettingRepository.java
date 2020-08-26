@@ -52,6 +52,11 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 			+ " AND w.kscmtWorkMonthSetPK.ymdM <= :endDate"
 			+ " w.kscmtWorkMonthSetPK.ymdM ASC";
 
+	private final String SELECT_BY_YEAR = SELECT_BY_CID
+			+ " AND w.kscmtWorkMonthSetPK.mPatternCd = :mPatternCd"
+			+ " AND w.kscmtWorkMonthSetPK.ymdM LIKE :startDate "
+			+ " w.kscmtWorkMonthSetPK.ymdM ASC";
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -351,6 +356,15 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 	@Override
 	public void update(WorkMonthlySetting workMonthlySetting) {
 		this.commandProxy().update(toEntity(workMonthlySetting));
+	}
+
+	@Override
+	public List<WorkMonthlySetting> findByYear(String companyId, String monthlyPatternCode, int year) {
+		return this.queryProxy().query(SELECT_BY_YEAR, KscmtWorkMonthSet.class)
+				.setParameter("cid", companyId)
+				.setParameter("mPatternCd", monthlyPatternCode)
+				.setParameter("year", year)
+				.getList(x -> this.toDomain(x));
 	}
 
 	/**

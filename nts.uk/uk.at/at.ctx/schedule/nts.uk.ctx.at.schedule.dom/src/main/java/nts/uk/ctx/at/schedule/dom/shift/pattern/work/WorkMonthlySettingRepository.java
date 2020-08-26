@@ -72,17 +72,17 @@ public interface WorkMonthlySettingRepository  {
 	 * @param companyId the company id
 	 * @param monthlyPatternCode the monthly pattern code
 	 */
-	public void remove(String companyId, String monthlyPatternCode);
+	void remove(String companyId, String monthlyPatternCode);
 
 	/**
 	 * Find by start YMD - end YMD.
 	 *
 	 * @param companyId the company id
 	 * @param monthlyPatternCode the monthly pattern code
-	 * @param DatePeriod the base dates
+	 * @param datePeriod the base dates
 	 * @return the list
 	 */
-	public List<WorkMonthlySetting> findByPeriod(String companyId, String monthlyPatternCode, DatePeriod datePeriod);
+	List<WorkMonthlySetting> findByPeriod(String companyId, String monthlyPatternCode, DatePeriod datePeriod);
 
 	/**
 	 * Check exist KscmtWorkMonthSet.
@@ -92,7 +92,7 @@ public interface WorkMonthlySettingRepository  {
 	 * @param date the ymd K
 	 * @return the list
 	 */
-	public Boolean exists(String companyId, String monthlyPatternCode, GeneralDate date);
+	Boolean exists(String companyId, String monthlyPatternCode, GeneralDate date);
 
 	/**
 	 * add KscmtWorkMonthSet.
@@ -100,7 +100,7 @@ public interface WorkMonthlySettingRepository  {
 	 * @param workMonthlySetting
 	 * @return
 	 */
-	public void add(WorkMonthlySetting workMonthlySetting);
+	void add(WorkMonthlySetting workMonthlySetting);
 
 	/**
 	 * update KscmtWorkMonthSet.
@@ -108,5 +108,11 @@ public interface WorkMonthlySettingRepository  {
 	 * @param workMonthlySetting
 	 * @return
 	 */
-	public void update(WorkMonthlySetting workMonthlySetting);
+	void update(WorkMonthlySetting workMonthlySetting);
+
+	/**
+	 * Find by year.
+	 *
+	 */
+	List<WorkMonthlySetting> findByYear(String companyId, String monthlyPatternCode, int year);
 }
