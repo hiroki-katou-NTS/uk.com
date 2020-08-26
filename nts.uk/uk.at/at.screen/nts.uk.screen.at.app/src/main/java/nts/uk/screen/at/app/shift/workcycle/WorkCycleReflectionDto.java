@@ -7,7 +7,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.ReflectionImage;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.screen.at.app.ksm003.find.WorkCycleDto;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
 
 import java.util.List;
 
@@ -24,5 +24,5 @@ public class WorkCycleReflectionDto {
 	private List<WorkType> workTypes;
 	private ReflectionImage reflectionImage;
 	private WorkStyle workStyle;
-	private List<WorkCycleDto> workCycleList;
+	private List<WorkCycle> workCycleList;
 }
