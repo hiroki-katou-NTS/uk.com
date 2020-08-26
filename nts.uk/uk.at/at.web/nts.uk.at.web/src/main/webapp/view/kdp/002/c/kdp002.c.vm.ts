@@ -76,7 +76,7 @@ module nts.uk.at.view.kdp002.c {
 
 				service.startScreen(data).done((res) => {
 					console.log(res);
-					let itemIds = ["TIME", "AMOUNT", "TIME_WITH_DAY", "DAYS", "COUNT", "CLOCK"], itemsFiller = [];
+					let itemIds = ["TIME", "AMOUNT", "TIME_WITH_DAY", "DAYS", "COUNT", "CLOCK"];
 					if (res) {
 						if (_.size(res.stampRecords) > 0) {
 
@@ -115,15 +115,13 @@ module nts.uk.at.view.kdp002.c {
 									}
 								});
 							}
-
-							itemsFiller =
-								_.filter(res.itemValues, function(o) { return itemIds.indexOf(o.valueType) != -1 && o.value });
+							
 
 							self.items(res.itemValues);
 						}
 					}
 					if (res.confirmResult) {
-						self.permissionCheck(res.confirmResult.permissionCheck == 1 && itemsFiller.length ? true : false);
+						self.permissionCheck(res.confirmResult.permissionCheck == 1);
 					} else {
 						self.displayButton(false);
 					}
@@ -131,6 +129,11 @@ module nts.uk.at.view.kdp002.c {
 
 				dfd.resolve();
 				return dfd.promise();
+			}
+			
+			public isNoData(){
+				const vm = this;
+				return (vm.timeName1() == null && vm.items().length == 0) || (vm.timeName2() == null && vm.items().length == 0);
 			}
 			getEmpInfo(): JQueryPromise<any> {
 				let self = this;
