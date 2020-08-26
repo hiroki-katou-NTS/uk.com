@@ -133,7 +133,7 @@ public class AsposeLateLeaveEarly {
 				}).filter(m -> (m != null)).collect(Collectors.toList());
 		// A2_3
 		String leaveTime1 = timeReportsTemp.size() > 0
-				? timeReportsTemp.get(0).getTimeWithDayAttr().getInDayTimeWithFormat()
+				? timeReportsTemp.get(0).getTimeWithDayAttr().getFullText()
 				: null;
 		// A2_4
 		String cancel2 = cancelTemp.size() == 0 ? null : I18NText.getText("KAF004_63");
@@ -205,7 +205,7 @@ public class AsposeLateLeaveEarly {
 					}).filter(m -> (m != null)).collect(Collectors.toList());
 			// A3_3
 			attendTime2 = timeReportsTemp.size() > 0
-					? timeReportsTemp.get(0).getTimeWithDayAttr().getInDayTimeWithFormat()
+					? timeReportsTemp.get(0).getTimeWithDayAttr().getFullText()
 					: null;
 			// A1_4
 			String cancel3 = cancelTemp.size() == 0 ? null : I18NText.getText("KAF004_63");
@@ -241,7 +241,7 @@ public class AsposeLateLeaveEarly {
 					}).filter(m -> (m != null)).collect(Collectors.toList());
 			// A4_3
 			leaveTime2 = timeReportsTemp.size() > 0
-					? timeReportsTemp.get(0).getTimeWithDayAttr().getInDayTimeWithFormat()
+					? timeReportsTemp.get(0).getTimeWithDayAttr().getFullText()
 					: null;
 			// A1_4
 			String cancel4 = cancelTemp.size() == 0 ? null : I18NText.getText("KAF004_63");

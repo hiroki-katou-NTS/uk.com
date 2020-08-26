@@ -42,7 +42,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 
 	@Inject
 	private AsposeLateLeaveEarly asposeLateLeaveEarly;
-	
+
 	@Inject
 	private AsposeAppStamp asposeAppStamp;
 
@@ -62,7 +62,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 
 			//SaveOptions saveOptions = SaveOptions.;
 			//designer.saveWithOtherOption(this.createNewFile(generatorContext, this.getReportName(this.getFileName(appType))), saveOptions);
-			designer.saveAsExcel(this.createNewFile(generatorContext, this.getReportName(this.getFileName(appType))));
+			designer.saveAsPdf(this.createNewFile(generatorContext, this.getReportName(this.getFileName(appType))));
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -94,7 +94,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case HOLIDAY_WORK_APPLICATION:
 			break;
 		case STAMP_APPLICATION:
-			
+
 			asposeAppStamp.printAppStampContent(worksheet, printContentOfApp);
 			reasonLabel = worksheet.getCells().get("B15");
 			remarkLabel = worksheet.getCells().get("B18");
@@ -168,7 +168,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case ANNUAL_HOLIDAY_APPLICATION:
 			return "";
 		case EARLY_LEAVE_CANCEL_APPLICATION:
-			return "遅刻早退取消申請.xlsx";
+			return "遅刻早退取消申請.pdf";
 		case COMPLEMENT_LEAVE_APPLICATION:
 			return "";
 		case OPTIONAL_ITEM_APPLICATION:
