@@ -3,7 +3,7 @@
 module nts.uk.at.view.kdp002.c {
 	export module viewmodel {
 		import a = nts.uk.at.view.kdp002.a;
-		
+
 		// display items type (require from other screen)
 		type DISPLAY_ITEM_IDS = number[];
 
@@ -115,7 +115,7 @@ module nts.uk.at.view.kdp002.c {
 									}
 								});
 							}
-							
+
 
 							self.items(res.itemValues);
 						}
@@ -130,10 +130,10 @@ module nts.uk.at.view.kdp002.c {
 				dfd.resolve();
 				return dfd.promise();
 			}
-			
-			public isNoData(){
+
+			public isNoData() {
 				const vm = this;
-				return (vm.timeName1() == null && vm.items().length == 0) || (vm.timeName2() == null && vm.items().length == 0);
+				return !vm.timeName1() && !vm.timeName2() && !vm.items().length && !vm.workName1() && !vm.workName2();
 			}
 			getEmpInfo(): JQueryPromise<any> {
 				let self = this;
