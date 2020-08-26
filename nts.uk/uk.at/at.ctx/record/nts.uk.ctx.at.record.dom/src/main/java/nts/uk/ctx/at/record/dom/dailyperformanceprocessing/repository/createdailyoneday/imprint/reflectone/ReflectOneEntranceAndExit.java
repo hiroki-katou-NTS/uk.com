@@ -38,7 +38,7 @@ public class ReflectOneEntranceAndExit {
 	 * @param stamp
 	 * @param ymd  処理中の年月日
 	 */
-	public void reflect(Optional<WorkStamp> workStamp,Stamp stamp,GeneralDate ymd) {
+	public Optional<WorkStamp> reflect(Optional<WorkStamp> workStamp,Stamp stamp,GeneralDate ymd) {
 		String cid = AppContexts.user().companyId();
 		//データがあるかどうか確認する
 		if(!workStamp.isPresent()) {
@@ -46,15 +46,16 @@ public class ReflectOneEntranceAndExit {
 			WorkTimeInformation timeDayNew = new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, EngravingMethod.TIME_RECORD_ID_INPUT), null);
 			workStamp = Optional.of(new WorkStamp(new TimeWithDayAttr(0), timeDayNew, Optional.empty())); //丸め後の時刻 để tạm là 0
 			//ドメインに反映する
-			reflectOnDomain.reflect(workStamp.get(), stamp, ymd);
+			return Optional.of(reflectOnDomain.reflect(workStamp.get(), stamp, ymd));
 		}else {
 			ReasonTimeChange reasonTimeChangeNew = new ReasonTimeChange(TimeChangeMeans.REAL_STAMP,EngravingMethod.TIME_RECORD_ID_INPUT);
 			//時刻を変更してもいいか判断する
 			boolean check = reflectAttendanceClock.isCanChangeTime(cid, workStamp, reasonTimeChangeNew);
 			if(check) {
 				//ドメインに反映する
-				reflectOnDomain.reflect(workStamp.get(), stamp, ymd);
+				return Optional.of(reflectOnDomain.reflect(workStamp.get(), stamp, ymd));
 			}
 		}
+		return workStamp;
 	}
 }

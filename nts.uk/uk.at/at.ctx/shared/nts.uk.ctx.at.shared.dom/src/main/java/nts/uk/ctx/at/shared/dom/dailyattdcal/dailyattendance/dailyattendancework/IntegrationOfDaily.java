@@ -138,6 +138,7 @@ public class IntegrationOfDaily {
 	//日別実績のPCログオン情報 (old)
 //	private Optional<PCLogOnInfoOfDaily> pcLogOnInfo;
 	//PCログオン情報: 日別勤怠のPCログオン情報
+	@Setter 
 	private Optional<PCLogOnInfoOfDailyAttd> pcLogOnInfo;
 	
 	//日別実績の備考 (old)

@@ -12,6 +12,8 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectatt
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectwork.CheckRangeReflectAttd;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectwork.OutputCheckRangeReflectAttd;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.StampReflectRangeOutput;
 
@@ -26,9 +28,10 @@ public class ReflectFrameEntranceAndExit {
 
 	@Inject
 	private CheckRangeReflectAttd checkRangeReflectAttd;
-	
+
 	@Inject
 	private ReflectEntranceAndExit reflectEntranceAndExit;
+
 	/**
 	 * 
 	 * @param listReflectionInformation
@@ -36,35 +39,68 @@ public class ReflectFrameEntranceAndExit {
 	 * @param stampReflectRangeOutput
 	 * @param integrationOfDaily
 	 */
-	public ReflectStampOuput reflect(List<ReflectionInformation> listReflectionInformation, Stamp stamp,
+	public List<ReflectionInformation> reflect(List<ReflectionInformation> listReflectionInformation, Stamp stamp,
 			StampReflectRangeOutput stampReflectRangeOutput, IntegrationOfDaily integrationOfDaily) {
 		// 反映範囲か確認する
 		OutputCheckRangeReflectAttd outputCheckRangeReflectAttd = checkRangeReflectAttd.checkRangeReflectAttd(stamp,
 				stampReflectRangeOutput, integrationOfDaily);
-		
+
 		switch (outputCheckRangeReflectAttd) {
 		case FIRST_TIME:
-			//反映情報（Temporary）を求める
-			Optional<ReflectionInformation> reflectionInformation1 = listReflectionInformation.stream().filter(x->x.getFrameNo()== 1).findFirst();
-			if(reflectionInformation1.isPresent()) {
-				//反映する
-				reflectEntranceAndExit.reflect(reflectionInformation1.get(), stamp, integrationOfDaily.getYmd());
+			// 反映情報（Temporary）を求める
+			Optional<ReflectionInformation> reflectionInformation1 = listReflectionInformation.stream()
+					.filter(x -> x.getFrameNo() == 1).findFirst();
+			// 反映する
+			Optional<WorkStamp> wt1 = reflectEntranceAndExit.reflect(reflectionInformation1, stamp,
+					integrationOfDaily.getYmd());
+			
+			if(stamp.getType().getChangeClockArt() == ChangeClockArt.BRARK ||   //退門ORPCログオフの場合
+					   stamp.getType().getChangeClockArt() == ChangeClockArt.PC_LOG_OFF ) {
+				if (reflectionInformation1.isPresent()) {
+					reflectionInformation1.get().setEnd(wt1);
+				} else {
+					listReflectionInformation.add(new ReflectionInformation(1, Optional.empty(),wt1));
+				}
+			
+			}else if(stamp.getType().getChangeClockArt() == ChangeClockArt.OVER_TIME ||  //入門ORPCログオンの場合 
+					   stamp.getType().getChangeClockArt() == ChangeClockArt.PC_LOG_ON ) {
+				if (reflectionInformation1.isPresent()) {
+					reflectionInformation1.get().setStart(wt1);
+				} else {
+					listReflectionInformation.add(new ReflectionInformation(1, wt1, Optional.empty()));
+				}
 			}
 			break;
 
 		case SECOND_TIME:
-			//反映情報（Temporary）を求める
-			Optional<ReflectionInformation> reflectionInformation2 = listReflectionInformation.stream().filter(x->x.getFrameNo()== 2).findFirst();
-			if(reflectionInformation2.isPresent()) {
-				//反映する
-				reflectEntranceAndExit.reflect(reflectionInformation2.get(), stamp, integrationOfDaily.getYmd());
+			// 反映情報（Temporary）を求める
+			Optional<ReflectionInformation> reflectionInformation2 = listReflectionInformation.stream()
+					.filter(x -> x.getFrameNo() == 2).findFirst();
+			// 反映する
+			Optional<WorkStamp> wt2 = reflectEntranceAndExit.reflect(reflectionInformation2, stamp,
+					integrationOfDaily.getYmd());
+			if(stamp.getType().getChangeClockArt() == ChangeClockArt.BRARK ||   //退門ORPCログオフの場合
+					   stamp.getType().getChangeClockArt() == ChangeClockArt.PC_LOG_OFF ) {
+				if (reflectionInformation2.isPresent()) {
+					reflectionInformation2.get().setEnd(wt2);
+				} else {
+					listReflectionInformation.add(new ReflectionInformation(2, Optional.empty(),wt2));
+				}
+			
+			}else if(stamp.getType().getChangeClockArt() == ChangeClockArt.OVER_TIME ||  //入門ORPCログオンの場合 
+					   stamp.getType().getChangeClockArt() == ChangeClockArt.PC_LOG_ON ) {
+				if (reflectionInformation2.isPresent()) {
+					reflectionInformation2.get().setStart(wt2);
+				} else {
+					listReflectionInformation.add(new ReflectionInformation(2, wt2, Optional.empty()));
+				}
 			}
 			break;
 
 		default:// OUT_OF_RANGE
-			return ReflectStampOuput.NOT_REFLECT;
+			return listReflectionInformation;
 		}
-		return ReflectStampOuput.REFLECT;
+		return listReflectionInformation;
 	}
 
 }
