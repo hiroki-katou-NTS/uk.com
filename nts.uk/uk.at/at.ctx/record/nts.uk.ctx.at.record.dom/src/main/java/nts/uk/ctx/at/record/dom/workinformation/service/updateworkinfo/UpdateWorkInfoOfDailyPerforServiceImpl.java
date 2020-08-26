@@ -47,7 +47,7 @@ public class UpdateWorkInfoOfDailyPerforServiceImpl implements UpdateWorkInfoOfD
 			dailyRecordAdUpService.adUpWorkInfo(workInfoOfDailyPerformance);
 			
 			// domain event 
-			workInfoOfDailyPerformance.workInfoChanged();
+			//workInfoOfDailyPerformance.workInfoChanged();
 		}
 	}
 
