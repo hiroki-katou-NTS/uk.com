@@ -25,6 +25,8 @@ const daysColor = [
 	{ day: 6, color: '#0000FF' }
 ]
 
+const STAMP_MEANS_PORTAL= 4;
+
 const DEFAULT_GRAY = '#E8E9EB';
 @bean()
 class KDP001AViewModel extends ko.ViewModel {
@@ -49,60 +51,11 @@ class KDP001AViewModel extends ko.ViewModel {
 	} as IStampToSuppress);
 
 	stampResultDisplay: KnockoutObservable<IStampResultDisplay> = ko.observable({
-		companyId: "000000000000-000",
-		displayItemId: [653, 651, 652],
+		companyId: "",
+		displayItemId: [],
 		notUseAttr: 0
 	});
-	buttons: KnockoutObservableArray<IButtonSettingsDto> = ko.observableArray([
-		{
-			buttonPositionNo: 1,
-			buttonDisSet: {
-
-				buttonNameSet: {
-					textColor: '#f3f3f3',
-					buttonName: 'test'
-				},
-				/** 背景色 */
-				backGroundColor: '#3e7db6'
-			}
-		},
-		{
-			buttonPositionNo: 2,
-			buttonDisSet: {
-
-				buttonNameSet: {
-					textColor: '#f3f3f3',
-					buttonName: 'test2'
-				},
-				/** 背景色 */
-				backGroundColor: '#3e7db6'
-			}
-		},
-		{
-			buttonPositionNo: 3,
-			buttonDisSet: {
-
-				buttonNameSet: {
-					textColor: '#f3f3f3',
-					buttonName: 'test3'
-				},
-				/** 背景色 */
-				backGroundColor: '#3e7db6'
-			}
-		},
-		{
-			buttonPositionNo: 4,
-			buttonDisSet: {
-
-				buttonNameSet: {
-					textColor: '#f3f3f3',
-					buttonName: 'test4'
-				},
-				/** 背景色 */
-				backGroundColor: '#3e7db6'
-			}
-		}
-	]);
+	buttons: KnockoutObservableArray<IButtonSettingsDto> = ko.observableArray([]);
 
 	constructor() {
 		super();
@@ -252,7 +205,7 @@ class KDP001AViewModel extends ko.ViewModel {
 
 	public getStampTime(data: IStampInfoDisp) {
 
-		return data.stampHow + ' ' + moment.utc(data.stampTimeWithSec).format("HH:mm");
+		return moment.utc(data.stampTimeWithSec).format("HH:mm");
 	}
 
 	public convertToShortMDW(data: IStampInfoDisp) {
