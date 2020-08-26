@@ -90,7 +90,7 @@ public class SixtyHourHolidayFinder {
 				, cacheCarrier1
 				, companyId
 				, employeeId
-				, closingPeriod
+				, this.getDatePeroid(closingPeriod.start())
 				, InterimRemainMngMode.MONTHLY
 				, inputDate
 				, Optional.empty()
@@ -196,5 +196,9 @@ public class SixtyHourHolidayFinder {
 
 		// return 作成した60超過時間表示情報詳細を返す
 		return result;
+	}
+
+	private DatePeriod getDatePeroid(GeneralDate startDate) {
+		return new DatePeriod(startDate, startDate.addYears(1).addDays(-1));
 	}
 }

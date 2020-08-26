@@ -164,8 +164,8 @@ module nts.uk.at.view.kdl017.a {
             data.remainHourDetailDtos.forEach(item => {
               let kdl017TableDto = new KDL017TableDto();
               // <!-- A3_6_1 -->
-              if (moment.utc(data.deadline, 'YYYY/MM/DD').isSameOrAfter(moment.utc(item.startPeriod, 'YYYY/MM/DD'))
-                && moment.utc(data.deadline, 'YYYY/MM/DD').isSameOrBefore(moment.utc(item.endPeriod, 'YYYY/MM/DD'))) {
+              if (moment.utc(item.deadline, 'YYYY/MM/DD').isSameOrAfter(moment.utc(data.startDate, 'YYYY/MM/DD'))
+                && moment.utc(item.deadline, 'YYYY/MM/DD').isSameOrBefore(moment.utc(data.endDate, 'YYYY/MM/DD'))) {
                 kdl017TableDto.deadline = nts.uk.resource.getText("KDL005_38", [item.deadline]);
               } else {
                 kdl017TableDto.deadline = nts.uk.resource.getText("KDL005_37", [item.deadline]);

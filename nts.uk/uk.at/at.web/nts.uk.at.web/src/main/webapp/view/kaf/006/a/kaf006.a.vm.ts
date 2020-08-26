@@ -1145,6 +1145,22 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 modal("/view/kdl/017/a/single.xhtml");
             }
         }
+
+        openKDL017Single() {
+            let self = this;
+            let lstid = [];
+            _.each(self.employeeList(), function(emp){
+                lstid.push(emp.id);
+            });
+            let data = {employeeIds: lstid.length > 0 ? lstid : [self.employeeID()],
+                        baseDate: moment(new Date()).format("YYYYMMDD")}
+            setShared('KDL017_PARAM', data);
+            if(data.employeeIds.length > 1) {
+                modal("/view/kdl/017/a/multiple.xhtml");
+            } else {
+                modal("/view/kdl/017/a/single.xhtml");
+            }
+        }
         
         checkBeforeRegister() {
             let self = this;
