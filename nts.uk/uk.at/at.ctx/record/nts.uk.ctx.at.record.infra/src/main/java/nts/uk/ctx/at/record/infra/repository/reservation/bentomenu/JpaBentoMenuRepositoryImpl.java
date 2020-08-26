@@ -244,9 +244,9 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		String query = FIND_BENTO_MENU_DATE;
 
 		if (reservationClosingTimeFrame == ReservationClosingTimeFrame.FRAME1) {
-			query += " AND a.RESERVATION_FRAME1_START_TIME IS NOT NULL ";
+			query += " AND c.RESERVATION1_ATR = 1 ";
 		} else {
-			query += " AND a.RESERVATION_FRAME2_START_TIME IS NOT NULL ";
+			query += " AND c.RESERVATION2_ATR = 1 ";
 		}
 
 		query = query.replaceFirst("companyID", companyID);
