@@ -370,37 +370,34 @@ public class EmploymentSystemFinder {
 					itemDto.setExpiredInCurrentMonth(false);
 					if (item.getOccurrentClass().equals(OccurrenceDigClass.OCCURRENCE)) {
 						// 	・逐次発生の休暇明細．発生消化区分　＝＝　発生　－＞発生日　＝　逐次発生の休暇明細．年月日
-						if (item.getDateOccur().getDayoffDate().isPresent()) {
-							GeneralDate occurrenceDate = item.getDateOccur().getDayoffDate().get();
-							itemDto.setOccurrenceDate(occurrenceDate);
+						itemDto.setOccurrenceDate(item.getDateOccur().getDayoffDate().orElse(null));
+						// field ・発生数　＝　取得した逐次発生の休暇明細．発生数．日数
+						itemDto.setOccurrenceNumber(item.getNumberOccurren().getDay().v());
+						// field ・発生時間　＝　取得した逐次発生の休暇明細．発生数．時間
+						Optional<AttendanceTime> oOccurrenceHour = item.getNumberOccurren().getTime();
+						if (oOccurrenceHour.isPresent()) {
+							itemDto.setOccurrenceHour(oOccurrenceHour.get().v());
+						}	
+						// field ・期限日　＝　取得した逐次発生の休暇明細．休暇発生明細．期限日
+						Optional<UnbalanceCompensation> oUnbalanceCompensation = item.getUnbalanceCompensation();
+						if (oUnbalanceCompensation.isPresent()) {
+							itemDto.setExpirationDate(oUnbalanceCompensation.get().getDeadline());
+							// condition 取得した期間．開始日＜＝期限日＜＝取得した期間．終了日　－＞・当月で期限切れ　＝　True　ELSE　－＞・当月で期限切れ　＝　False
+							itemDto.setExpiredInCurrentMonth(closingPeriod.contains(oUnbalanceCompensation.get().getDeadline()));
 						}
 					} else if (item.getOccurrentClass().equals(OccurrenceDigClass.DIGESTION)) {
 						// 	・逐次発生の休暇明細．発生消化区分　＝＝　消化　－＞消化日　＝　逐次発生の休暇明細．年月日
 						itemDto.setDigestionDate(item.getDateOccur().getDayoffDate().orElse(null));
-					}
-					// field ・発生数　＝　取得した逐次発生の休暇明細．発生数．日数
-					itemDto.setOccurrenceNumber(item.getNumberOccurren().getDay().v());
-					// field ・消化数　＝　取得した逐次発生の休暇明細．未相殺数．日数
-					itemDto.setDigestionNumber(item.getUnbalanceNumber().getDay().v());
-					// field ・期限日　＝　取得した逐次発生の休暇明細．休暇発生明細．期限日
-					Optional<UnbalanceCompensation> oUnbalanceCompensation = item.getUnbalanceCompensation();
-					if (oUnbalanceCompensation.isPresent()) {
-						itemDto.setExpirationDate(oUnbalanceCompensation.get().getDeadline());
-						// condition 取得した期間．開始日＜＝期限日＜＝取得した期間．終了日　－＞・当月で期限切れ　＝　True　ELSE　－＞・当月で期限切れ　＝　False
-						itemDto.setExpiredInCurrentMonth(closingPeriod.contains(oUnbalanceCompensation.get().getDeadline()));
+						// field ・消化数　＝　取得した逐次発生の休暇明細．未相殺数．日数
+						itemDto.setDigestionNumber(item.getUnbalanceNumber().getDay().v());
+						// field ・消化時間　＝　取得した逐次発生の休暇明細．未相殺数．時間
+						Optional<AttendanceTime> oDigestionHour = item.getUnbalanceNumber().getTime();
+						if (oDigestionHour.isPresent()) {
+							itemDto.setDigestionHour(oDigestionHour.get().v());
+						}	
 					}
 					// field 管理データ状態区分　＝　取得した逐次発生の休暇明細．状態
 					itemDto.setManagementDataStatus(item.getDataAtr().value);
-					// field ・発生時間　＝　取得した逐次発生の休暇明細．発生数．時間
-					Optional<AttendanceTime> oOccurrenceHour = item.getNumberOccurren().getTime();
-					if (oOccurrenceHour.isPresent()) {
-						itemDto.setOccurrenceHour(oOccurrenceHour.get().v());				
-					}
-					// field ・消化時間　＝　取得した逐次発生の休暇明細．未相殺数．時間
-					Optional<AttendanceTime> oDigestionHour = item.getUnbalanceNumber().getTime();
-					if (oDigestionHour.isPresent()) {
-						itemDto.setDigestionHour(oDigestionHour.get().v());				
-					}
 					return itemDto;
 				})
 				.collect(Collectors.toList());

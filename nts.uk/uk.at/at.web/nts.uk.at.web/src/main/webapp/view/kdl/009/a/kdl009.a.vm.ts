@@ -86,11 +86,11 @@ module nts.uk.at.view.kdl009.a {
                 // アルゴリズム「振休残数情報の取得」を実行する(thực hiện thuật toán 「振休残数情報の取得」)
                 service.getAcquisitionNumberRestDays(employeeId, baseDate)
                     .then((data) => {
+                        vm.isManagementSection(data.isManagementSection);
                         vm.expirationDateText(ExpirationDate[data.expiredDay]);
                         vm.bindTimeData(data);
                         vm.bindSummaryData(data);
-                        vm.isManagementSection(data.isManagementSection);
-                        $("#date-fixed-table").ntsFixedTable({ height: 150 });
+                        vm.$nextTick(() => $("#date-fixed-table").ntsFixedTable({ height: 150 }));
                     })
                     .fail(vm.onError)
                     .always(() => vm.$blockui('clear'));
