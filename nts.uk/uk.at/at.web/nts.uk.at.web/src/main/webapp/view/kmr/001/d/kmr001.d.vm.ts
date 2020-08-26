@@ -44,7 +44,7 @@ module nts.uk.at.kmr001.d {
             super();
             var vm = this;
             let self = this;
-            console.log("paramKMR001C",params);
+            console.log("paramKMR001C", params);
             self.lstWpkHistory = ko.observableArray([]);
             self.selectedHistoryId = ko.observable(null);
             self.selectedStartDateInput = ko.observable(null);
@@ -112,7 +112,9 @@ module nts.uk.at.kmr001.d {
 
         addHistory() {
             let self = this;
-            self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
+            if(self.lstWpkHistory().length>0){
+                self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
+            }
             self.screenMode(SCREEN_MODE.ADD);
             self.selectedStartDateInput(null)
             self.selectedEndDate(DEFAULT_END);
@@ -134,16 +136,34 @@ module nts.uk.at.kmr001.d {
             confirm({messageId: "Msg_18"}).ifYes(() => {
                 block.invisible();
                 let data = new CommandDelete(self.selectedHistoryId());
-                vm.$ajax(API.DELETE, data).done(() => {
-                    self.created(self.params).done(() => {
-                        self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
+                if (self.lstWpkHistory().length > 1) {
+                    vm.$ajax(API.DELETE, data).done(() => {
+                        self.created(self.params).done(() => {
+                            console.log(self.lstWpkHistory());
+                            self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
+                        });
+                        nts.uk.ui.dialog.info({messageId: "Msg_16"});
+                    }).fail(error => {
+                        alertError(error);
+                    }).always(() => {
+                        block.clear();
                     });
-                    nts.uk.ui.dialog.info({messageId: "Msg_16"});
-                }).fail(error => {
-                    alertError(error);
-                }).always(() => {
-                    block.clear();
-                });
+                }
+                if (self.lstWpkHistory().length <= 1){
+                    vm.$ajax(API.DELETE, data).done(() => {
+                        self.created(self.params).done(() => {
+                            self.screenMode(SCREEN_MODE.SELECT);
+                            self.selectedStartDateInput(null)
+                            self.selectedEndDate(DEFAULT_END);
+                            self.lstWpkHistory([]);
+                        });
+                        nts.uk.ui.dialog.info({messageId: "Msg_16"});
+                    }).fail(error => {
+                        alertError(error);
+                    }).always(() => {
+                        block.clear();
+                    });
+                }
             }).ifNo(() => {
             });
         }
@@ -168,7 +188,7 @@ module nts.uk.at.kmr001.d {
                     vm.$ajax(API.ADDNEW, data).done((historyId) => {
                         self.created(self.params).done(() => {
                             self.selectedHistoryId(historyId);
-                            nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(()=>{
+                            nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
                                 self.focusUi(data);
                             });
                         });
@@ -183,7 +203,7 @@ module nts.uk.at.kmr001.d {
                     vm.$ajax(API.ADDNEW, data).done((historyId) => {
                         self.created(self.params).done(() => {
                             self.selectedHistoryId(historyId);
-                            nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(()=>{
+                            nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
                                 self.focusUi(data);
                             });
                         });
@@ -198,8 +218,7 @@ module nts.uk.at.kmr001.d {
                     vm.$ajax(API.UPDATE, data).done(() => {
                         self.created(self.params).done(() => {
                             self.selectedHistoryId.valueHasMutated();
-                            nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(()=>
-                            {
+                            nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
                                 self.focusUi(data);
                             });
                         });
@@ -248,7 +267,8 @@ module nts.uk.at.kmr001.d {
                     params
                 });
 
-            } else if (preSelectHist == null) {
+            } else if (preSelectHist == null && self.lstWpkHistory().length > 0) {
+                console.log("historyId", self.lstWpkHistory());
                 let params = {
                     historyId: self.lstWpkHistory()[0].historyId,
                     startDate: self.lstWpkHistory()[0].startDate,
@@ -260,7 +280,8 @@ module nts.uk.at.kmr001.d {
             }
             nts.uk.ui.windows.close();
         }
-        focusUi(data:any){
+
+        focusUi(data: any) {
             let self = this;
             let selectedHist = _.find(data, h => h.historyId == self.bkHistoryId);
             if (selectedHist && self.bkStartDate == null && self.bkEndDate == null) {
@@ -272,6 +293,7 @@ module nts.uk.at.kmr001.d {
             else
                 self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
         }
+
         deselectAll() {
             $('#list-box').ntsListBox('deselectAll');
         }

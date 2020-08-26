@@ -91,20 +91,19 @@ public class BentoMenuHistCommandHandler extends CommandHandler<BentoMenuHistCom
         public void addBentomenu(DateHistoryItem hist, BentoReservationClosingTime bentoReservationClosingTime) {
 
             Optional<BentoReservationSetting> bentoReservationSetting = reservationSettingRepository.findByCId(AppContexts.user().companyId());
-            if (bentoReservationSetting.isPresent()){
-                String workLocation = null;
 
-                if (bentoReservationSetting.get().getOperationDistinction().value == OperationDistinction.BY_LOCATION.value){
-                    val data = bentomenuAdapter.findBySid(AppContexts.user().employeeId(),GeneralDate.today());
-                    workLocation = data.isPresent() ? data.get().getWorkLocationCd() : null;
-                }
-                Optional<WorkLocationCode> workLocationCode = workLocation == null ? Optional.empty() : Optional.of(new WorkLocationCode(workLocation));
+            String workLocation = null;
 
-                Bento bento = new Bento(1,new BentoName("弁当１"),new BentoAmount(1000),
-                        new BentoAmount(0),new BentoReservationUnitName("円"),
-                        true,false,workLocationCode);
-                bentoMenuRepository.add(new BentoMenu(hist.identifier() , Arrays.asList(bento),bentoReservationClosingTime));
+            if (bentoReservationSetting.isPresent() && bentoReservationSetting.get().getOperationDistinction().value == OperationDistinction.BY_LOCATION.value){
+                val data = bentomenuAdapter.findBySid(AppContexts.user().employeeId(),GeneralDate.today());
+                workLocation = data.isPresent() ? data.get().getWorkLocationCd() : null;
             }
+            Optional<WorkLocationCode> workLocationCode = workLocation == null ? Optional.empty() : Optional.of(new WorkLocationCode(workLocation));
+
+            Bento bento = new Bento(1,new BentoName("弁当１"),new BentoAmount(1000),
+                    new BentoAmount(0),new BentoReservationUnitName("円"),
+                    true,false,workLocationCode);
+            bentoMenuRepository.add(new BentoMenu(hist.identifier() , Arrays.asList(bento),bentoReservationClosingTime));
         }
     }
 }
