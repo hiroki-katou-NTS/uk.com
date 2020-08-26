@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class WorkMonthlySettingServiceTest {
 
     @Injectable
-    private WorkMonthlySettingServiceImpl.Require require;
+    private WorkMonthlySettingService.Require require;
 
     @Injectable
     private WorkInformation.Require requireWorkInfo;
@@ -52,7 +52,7 @@ public class WorkMonthlySettingServiceTest {
         WorkMonthlySetting workMonthlySetting =  new WorkMonthlySetting(memento);
 
         NtsAssert.businessException("Msg_435", () ->{
-                    new WorkMonthlySettingServiceImpl()
+                    new WorkMonthlySettingService()
                             .register(requireWorkInfo,require,workMonthlySetting,IS_OVER_WRITE_TRUE);
                 }
         );
@@ -72,7 +72,7 @@ public class WorkMonthlySettingServiceTest {
             result = SetupType.REQUIRED;
         }};
         NtsAssert.businessException("Msg_435", () ->{
-                    new WorkMonthlySettingServiceImpl()
+                    new WorkMonthlySettingService()
                             .register(requireWorkInfo,require,workMonthlySetting,IS_OVER_WRITE_TRUE);
                 }
         );
@@ -91,7 +91,7 @@ public class WorkMonthlySettingServiceTest {
             result = SetupType.NOT_REQUIRED;
         }};
         NtsAssert.businessException("Msg_435", () ->{
-                    new WorkMonthlySettingServiceImpl()
+                    new WorkMonthlySettingService()
                             .register(requireWorkInfo,require,workMonthlySetting,IS_OVER_WRITE_TRUE);
                 }
         );
@@ -112,7 +112,7 @@ public class WorkMonthlySettingServiceTest {
             result = Optional.empty();
         }};
         NtsAssert.businessException("Msg_435", () ->{
-                    new WorkMonthlySettingServiceImpl()
+                    new WorkMonthlySettingService()
                             .register(requireWorkInfo,require,workMonthlySetting,IS_OVER_WRITE_FALSE);
                 }
         );
@@ -130,7 +130,7 @@ public class WorkMonthlySettingServiceTest {
 
         expectationsDataForUpdateCase(workMonthlySetting, workType, workTimeSetting);
 
-        assertThat(expected.equals(new WorkMonthlySettingServiceImpl()
+        assertThat(expected.equals(new WorkMonthlySettingService()
                 .register(requireWorkInfo,require,workMonthlySetting,IS_OVER_WRITE_FALSE)));
     }
 
@@ -144,7 +144,7 @@ public class WorkMonthlySettingServiceTest {
 
         expectationsDataForUpdateCase(workMonthlySetting, workType, workTimeSetting);
 
-        NtsAssert.atomTask(() -> new WorkMonthlySettingServiceImpl()
+        NtsAssert.atomTask(() -> new WorkMonthlySettingService()
                 .register(requireWorkInfo,require,workMonthlySetting,IS_OVER_WRITE_TRUE).get(),
                 any -> require.update(any.get())
         );
@@ -166,11 +166,11 @@ public class WorkMonthlySettingServiceTest {
             result = SetupType.REQUIRED;
             requireWorkInfo.findByCode(workMonthlySetting.getWorkInformation().getWorkTimeCode().v());
             result = Optional.of(workTimeSetting);
-            require.checkRegister(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getMonthlyPatternCode().v(), workMonthlySetting.getYmdk());
+            require.exists(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getMonthlyPatternCode().v(), workMonthlySetting.getYmdk());
             result = false;
         }};
 
-        NtsAssert.atomTask(() -> new WorkMonthlySettingServiceImpl()
+        NtsAssert.atomTask(() -> new WorkMonthlySettingService()
                         .register(requireWorkInfo,require,workMonthlySetting,IS_OVER_WRITE_TRUE).get(),
                 any -> require.add(any.get())
         );
@@ -185,7 +185,7 @@ public class WorkMonthlySettingServiceTest {
             result = SetupType.REQUIRED;
             requireWorkInfo.findByCode(workMonthlySetting.getWorkInformation().getWorkTimeCode().v());
             result = Optional.of(workTimeSetting);
-            require.checkRegister(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getMonthlyPatternCode().v(), workMonthlySetting.getYmdk());
+            require.exists(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getMonthlyPatternCode().v(), workMonthlySetting.getYmdk());
             result = true;
         }};
     }
