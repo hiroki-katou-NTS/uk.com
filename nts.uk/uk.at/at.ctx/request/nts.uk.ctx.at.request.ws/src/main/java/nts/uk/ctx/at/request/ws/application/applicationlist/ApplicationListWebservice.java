@@ -15,13 +15,12 @@ import nts.uk.ctx.at.request.app.command.application.applicationlist.ApprovalLis
 import nts.uk.ctx.at.request.app.command.application.applicationlist.ApprovalListAppCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.ReflectAfterApproveAsyncCmdHandler;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.UpdateAppTypeBfCommandHandler;
-import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListInfoDto;
+import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListInitDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListParamFilter;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfFinder;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListFinder;
-import nts.uk.ctx.at.request.app.find.application.applicationlist.ListOfAppTypesDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.StartMobileParam;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationDisplayAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
@@ -57,7 +56,7 @@ public class ApplicationListWebservice extends WebService{
 	 * @return
 	 */
 	@Path("getapplist")
-	public AppListInfoDto getApplicationList(AppListParamFilter param) {
+	public AppListInitDto getApplicationList(AppListParamFilter param) {
 		return this.appListFinder.getAppList(param);
 	}
 

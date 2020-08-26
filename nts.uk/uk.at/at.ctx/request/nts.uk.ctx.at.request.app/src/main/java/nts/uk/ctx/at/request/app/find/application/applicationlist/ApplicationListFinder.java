@@ -13,18 +13,12 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
-import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
@@ -35,7 +29,6 @@ import nts.uk.ctx.at.request.dom.application.applist.service.CheckColorTime;
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
 import nts.uk.ctx.at.request.dom.application.applist.service.PhaseStatus;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
-import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
@@ -64,7 +57,7 @@ public class ApplicationListFinder {
 	private static final int MOBILE = 1;
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
-	public AppListInfoDto getAppList(AppListParamFilter param){
+	public AppListInitDto getAppList(AppListParamFilter param){
 		String companyID = AppContexts.user().companyId();
 		AppListInfo result = new AppListInfo();
 		// ドメインモデル「承認一覧表示設定」を取得する
@@ -84,34 +77,45 @@ public class ApplicationListFinder {
 			// メニューより起動か、申請画面からの戻りかチェックする(Kiểm tra xem bắt đầu từ menu hay là  trở về từ màn hình application)
 			if(param.getAppListExtractCondition() != null) {
 				// ドメインモデル「申請一覧抽出条件」を取得する
-				AppListExtractCondition appListExtractCondition = param.getAppListExtractCondition();
+				AppListExtractCondition appListExtractCondition = param.getAppListExtractCondition().convertDtotoDomain();
 				// アルゴリズム「申請一覧リスト取得」を実行する
 				AppListInfo appListInfo = repoAppListInit.getApplicationList(appListExtractCondition, param.getDevice(), result);
 				result.setAppLst(appListInfo.getAppLst());
-				return AppListInfoDto.fromDomain(result);
+				return new AppListInitDto(
+						param.getAppListExtractCondition(),
+						AppListInfoDto.fromDomain(result));
 			}
 			// 期間（開始日、終了日）が存する場合
 			if(Strings.isNotBlank(param.getStartDate()) && Strings.isNotBlank(param.getEndDate())) {
 				// 開始日付＝期間（開始日）、終了日付＝期間（終了日）とする
 				startDate = GeneralDate.fromString(param.getStartDate(), DATE_FORMAT); 
 				endDate = GeneralDate.fromString(param.getEndDate(), DATE_FORMAT);
+				result.getDisplaySet().setStartDateDisp(startDate);
+				result.getDisplaySet().setEndDateDisp(endDate);
 			} else {
 				// URLパラメータをチェック/Check URL Parameters
 				if(param.getMode() == ApplicationListAtr.APPROVER.value){
 					// 申請一覧初期日付期間(Period date intial application list)
 					DatePeriod period = repoAppListInit.getInitialPeriod(companyID);
-					result.getDisplaySet().setStartDateDisp(period.start());
-					result.getDisplaySet().setEndDateDisp(period.end());
+					startDate = period.start();
+					endDate = period.end();
+					result.getDisplaySet().setStartDateDisp(startDate);
+					result.getDisplaySet().setEndDateDisp(endDate);
 				}else{
 					// 申請一覧初期日付期間_申請 (Period date intial application list _Application)
 					DatePeriod period = repoAppListInit.getInitPeriodApp(companyID);
-					result.getDisplaySet().setStartDateDisp(period.start());
-					result.getDisplaySet().setEndDateDisp(period.end());
+					startDate = period.start();
+					endDate = period.end();
+					result.getDisplaySet().setStartDateDisp(startDate);
+					result.getDisplaySet().setEndDateDisp(endDate);
 				}
 			}
 		}
 		// ユーザー固有情報「申請一覧抽出条件」を初期し、初期情報で更新する
 		AppListExtractCondition appListExtractCondition = new AppListExtractCondition();
+		if(param.getAppListExtractCondition() != null) {
+			appListExtractCondition = param.getAppListExtractCondition().convertDtotoDomain();
+		}
 		appListExtractCondition.setPeriodStartDate(startDate);
 		appListExtractCondition.setPeriodEndDate(endDate);
 		appListExtractCondition.setAppListAtr(EnumAdaptor.valueOf(param.getMode(), ApplicationListAtr.class));
@@ -171,7 +175,9 @@ public class ApplicationListFinder {
 		// アルゴリズム「申請一覧リスト取得」を実行する
 		AppListInfo appListInfo = repoAppListInit.getApplicationList(appListExtractCondition, param.getDevice(), result);
 		result.setAppLst(appListInfo.getAppLst());
-		return AppListInfoDto.fromDomain(result);
+		return new AppListInitDto(
+				AppListExtractConditionDto.fromDomain(appListExtractCondition), 
+				AppListInfoDto.fromDomain(result));
 //		AppListExtractConditionDto condition = param.getCondition();
 //		int device = param.getDevice();
 //		String companyId = AppContexts.user().companyId();
