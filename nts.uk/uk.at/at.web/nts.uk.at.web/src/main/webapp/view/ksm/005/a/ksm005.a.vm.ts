@@ -5,6 +5,11 @@ module nts.uk.at.view.ksm005.a {
     import WorkTypeDto = service.model.WorkTypeDto;
     import WorkTimeDto = service.model.WorkTimeDto;
     import blockUI = nts.uk.ui.block;
+    import text = nts.uk.resource;
+    import empty = nts.uk.util;
+
+	import PatternReflection = nts.uk.at.view.kdl023.base.viewmodel.ReflectionSetting;
+
     export module viewmodel {
 
         export class ScreenModel {
@@ -40,7 +45,9 @@ module nts.uk.at.view.ksm005.a {
 	        workingHoursInfo: KnockoutObservable<string>;
 
 	        enableUpdate: KnockoutObservable<boolean>;
-
+	        typeOfWorkLabel: KnockoutObservable<string>;
+	        workingHoursLabel: KnockoutObservable<string>;
+	        reflectionSetting: PatternReflection;
 
             constructor() {
                 var self = this;
@@ -101,12 +108,17 @@ module nts.uk.at.view.ksm005.a {
                         });
                     }
                 });
+
                 self.cssRangerYM = {
                 };
+
                 $("#calendar").ntsCalendar("init", {
-                    buttonClick: function(date: string) {
+	                cellClick: function(date) {
+		                nts.uk.ui._viewModel.content.setWorkingDayAtr(date);
+	                }
+                    /*buttonClick: function(date: string) {
                         self.openDialogByFindDate(moment.utc(date,"YYYY-MM-DD").format("YYYY/MM/DD"));
-                    }
+                    }*/
                 });
                 self.optionDates = ko.observableArray([]);
                 self.firstDay = 0;
@@ -133,7 +145,18 @@ module nts.uk.at.view.ksm005.a {
                     self.updateWorkMothlySetting(data);
                     self.lstWorkMonthlySetting(data);
                 });
+
+	            self.typeOfWorkLabel = ko.computed( ()=> {
+	                return self.typeOfWorkInfo() != null ? text.getText('KSM005_86') : '' ;
+	            });
+	            self.workingHoursLabel = ko.computed( ()=> {
+		            return self.workingHoursInfo() != null ? text.getText('KSM005_87') : '' ;
+	            });
+
+	            // Default pattern reflection setting
+	            self.reflectionSetting = PatternReflection.newSetting();
             }
+
             /**
              * get month now
              */
@@ -207,7 +230,7 @@ module nts.uk.at.view.ksm005.a {
              */
             public updateWorkMothlySetting(data: WorkMonthlySettingDto[]): void{
                 var self = this;
-//                nts.uk.ui.block.invisible();
+                //nts.uk.ui.block.invisible();
                 var optionDates: any[] = [];
                 for(var settings of data){
                     optionDates.push(self.toOptionDate(settings));      
@@ -566,13 +589,15 @@ module nts.uk.at.view.ksm005.a {
 		        nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function(){
 			        let childData = nts.uk.ui.windows.getShared('childData');
 			        if (childData) {
-				        self.typeOfWorkCode = childData.selectedWorkTypeCode;
+				        self.typeOfWorkCode(childData.selectedWorkTypeCode);
+				        self.typeOfWorkName(childData.selectedWorkTypeName);
 				        if (childData.selectedWorkTypeCode) {
 					        self.typeOfWorkInfo(childData.selectedWorkTypeCode + ' ' + childData.selectedWorkTypeName);
 				        } else
 					        self.typeOfWorkInfo('');
 
-				        self.workingHoursCode = childData.selectedWorkTimeCode;
+				        self.workingHoursCode(childData.selectedWorkTimeCode);
+				        self.workingHoursName(childData.selectedWorkTimeName);
 				        if (childData.selectedWorkTimeCode) {
 					        self.workingHoursInfo(childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName);
 				        } else {
@@ -584,10 +609,82 @@ module nts.uk.at.view.ksm005.a {
 
 	        private showDialogKDL023(): void {
 		        let self = this;
-                nts.uk.ui.windows.sub.modal('/view/kdl/023/b/index.xhtml').onClosed(() => {
-                    let dto = nts.uk.ui.windows.getShared('returnedData');
-                    console.log(dto);
-                });
+
+		        let dataMonthly = null
+
+		        nts.uk.ui.windows.setShared('reflectionSetting', ko.toJS(self.reflectionSetting));
+		        nts.uk.ui.windows.sub.modal('/view/kdl/023/b/index.xhtml').onClosed(() => {
+			        let dto = nts.uk.ui.windows.getShared('returnedData');
+			        if (dto) {
+				        self.returnedSetting.fromDto(dto);
+			        }
+		        });
+	        }
+
+
+	        /**
+	         * Validate input date.
+	         */
+	        private isInvalidDate(): boolean {
+		        let self = this;
+		        let startDate = moment(self.reflectionSetting.calendarStartDate());
+		        let endDate = moment(self.reflectionSetting.calendarEndDate());
+
+		        if (startDate.isSameOrAfter(endDate)) {
+			        return true;
+		        }
+
+		        return false;
+	        }
+
+	        private clearWorkMothly() {
+	            let self = this;
+
+		        nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+
+		            if (self.isBuild)  self.clearValiate();
+
+			        let dataUpdate: WorkMonthlySettingDto[] = [];
+			        for (let item of self.lstWorkMonthlySetting()) {
+				        item.workTypeCode ='';
+				        item.workTypeName = '';
+				        item.workingCode ='';
+				        item.workingName = '';
+				        item.typeColor = TypeColor.HOLIDAY;
+				        dataUpdate.push(item);
+			        }
+			        self.lstWorkMonthlySetting(dataUpdate);
+			        self.updateWorkMothlySetting(dataUpdate);
+			        //self.enableDelete(false);
+			        //self.enableUpdate(false);
+
+		        }).ifNo(function() {
+			        return;
+		        })
+	        }
+
+	        /*
+                setting date Wokring Day Atr event
+            */
+	        setWorkingDayAtr(date){
+		        let self = this;
+		        let dataUpdate: Array<WorkMonthlySettingDto> = self.lstWorkMonthlySetting();
+		        let i = dataUpdate.findIndex( item => self.convertYMD(item.ymdk) == date);
+		        if( dataUpdate && i > -1 && !empty.isNullOrEmpty(self.typeOfWorkCode()) ) {
+			        dataUpdate[i].workTypeCode = self.typeOfWorkCode();
+			        dataUpdate[i].workTypeName = self.typeOfWorkName();
+			        dataUpdate[i].workingCode  = self.workingHoursCode();
+			        dataUpdate[i].workingName  = self.workingHoursName();
+
+			        if (dataUpdate[i].workTypeCode && dataUpdate[i].workingCode) {
+				        dataUpdate[i].typeColor = TypeColor.ATTENDANCE;
+			        } else {
+				        dataUpdate[i].typeColor = TypeColor.HOLIDAY;
+			        }
+                }
+
+		        self.updateWorkMothlySetting(dataUpdate);
+		        self.lstWorkMonthlySetting(dataUpdate);
 	        }
         }
         

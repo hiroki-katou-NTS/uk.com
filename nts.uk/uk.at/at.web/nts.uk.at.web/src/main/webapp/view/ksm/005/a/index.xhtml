@@ -86,12 +86,12 @@
 										<div class="calendar">
 											<div class="row-1 row-flex">
 												<!--Type of work -->
-												<div class="a37 label">#{i18n.getText('KSM005_86')}</div>
+												<div class="a37 label" data-bind="text: typeOfWorkLabel"></div>
 												<div class="a3839" data-bind="text: typeOfWorkInfo"></div>
 											</div>
 											<div class="row-2 row-flex">
 												<!-- Working hours -->
-												<div class="a310 label">#{i18n.getText('KSM005_87')}</div>
+												<div class="a310 label" data-bind="text:  workingHoursLabel"></div>
 												<div class="a311312" data-bind="text: workingHoursInfo"></div>
 											</div>
 										</div>
@@ -99,7 +99,7 @@
 								</div>
 							</div>
 							<div class="monthly-button">
-								<button tabindex="11" data-bind="click: resetData">#{i18n.getText('KSM005_88')}</button>
+								<button tabindex="11" data-bind="click: clearWorkMothly">#{i18n.getText('KSM005_88')}</button>
 							</div>
 						</div>
 						<div tabindex="10" class="nts-calendar-container">

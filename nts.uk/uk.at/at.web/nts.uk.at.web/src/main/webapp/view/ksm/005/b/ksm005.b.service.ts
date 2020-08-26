@@ -7,7 +7,8 @@ module nts.uk.at.view.ksm005.b {
             findAllWorkTime: "at/shared/worktimesetting/findAll",
             checkPublicHoliday: "at/schedule/holiday/getHolidayByDate",
             checkWeeklyWorkSetting: "ctx/at/schedule/pattern/work/weekly/setting/checkDate",
-            batchWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthly/setting/batch"
+            batchWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthly/setting/batch",
+            getWeeklyWork: '/screen/at/record/weekly_work/get'
         }
         
         /**
@@ -63,7 +64,15 @@ module nts.uk.at.view.ksm005.b {
         export function toKey(key: model.KeyMonthlyPatternSettingBatch): string {
             return key.companyId + '_' + key.employeeId + '_' + key.businessDayClassification;
         }
-        
+
+	    /**
+	     * find data client service MonthlyPatternSettingBatch
+	     */
+	    export function getWeeklyWork(key: command): JQueryPromise<model.MonthlyPatternSettingBatch> {
+		    return nts.uk.request.ajax('at', paths.getWeeklyWork, command);
+	    }
+
+
         export module model {
 
             export interface WorkTypeDto {

@@ -32,6 +32,7 @@ module nts.uk.at.view.ksm005.b {
             worktypeInfoPublicHolidays: KnockoutObservable<string>;
             worktimeInfoPublicHolidays: KnockoutObservable<string>;
 
+	        settingForHolidays: KnockoutObservable<boolean>;
 
             constructor() {
                 var self = this;
@@ -52,6 +53,7 @@ module nts.uk.at.view.ksm005.b {
                 self.monthlyPatternSettingBatchPublicHolidays = ko.observable(new MonthlyPatternSettingBatch());
                 self.monthlyPatternCode = nts.uk.ui.windows.getShared("monthlyPatternCode");
                 self.monthlyPatternName = nts.uk.ui.windows.getShared("monthlyPatternName");
+                self.settingForHolidays = ko.observable(false);
             }
 
 
@@ -374,6 +376,29 @@ module nts.uk.at.view.ksm005.b {
                         }
                     }
                 });
+            }
+
+	        public showDialogKDL002() : void {
+		        var self = this;
+		        nts.uk.ui.windows.setShared('KDL002_SelectedItem', {
+			        selectedWorkTypeCode: self.monthlyPatternSettingBatchPublicHolidays().workTypeCode,
+			        selectedWorkTimeCode: self.monthlyPatternSettingBatchPublicHolidays().workingCode
+		        }, true);
+		        nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', width: 700 , height: 520}).onClosed(function(): any {
+			         let lst = nts.uk.ui.windows.getShared('KDL002_SelectedItem');
+			         console.log(lst);
+			         /*if (lst != undefined && lst.length > 0 && lst[0].code != "") {
+						 self.updateCodeName(self.rowId(), self.attendenceId, lst[0].name, lst[0].code, self.selectedCode());
+					 } else {
+						 self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "", self.selectedCode());
+					 }*/
+		        })
+	        }
+
+	        public showDialogB72() {
+		        var self = this;
+                //getWeeklyWork
+                alert(1232);
             }
         }
     }
