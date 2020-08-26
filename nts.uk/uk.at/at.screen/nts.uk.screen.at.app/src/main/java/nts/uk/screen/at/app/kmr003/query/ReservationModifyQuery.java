@@ -10,6 +10,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.*;
 import nts.uk.ctx.at.record.app.find.reservation.bento.query.ListBentoResevationQuery;
+import nts.uk.ctx.at.record.app.query.stamp.GetStampCardQuery;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationStateService;
@@ -38,10 +39,7 @@ import nts.uk.shr.com.i18n.TextResource;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -54,7 +52,7 @@ public class ReservationModifyQuery {
     private BentoReservationSettingRepository bentoReservationSettingRepo;
 
     @Inject
-    private StampCardRepository stampCardRepo;
+    private GetStampCardQuery getStampCardQuery;
 
     @Inject
     private PersonEmpBasicInfoPub personEmpBasicInfoPub;
@@ -93,7 +91,8 @@ public class ReservationModifyQuery {
 
         // 5:
         // List<社員ID＞から打刻カードを全て取得する
-        List<StampCard> stampCards = stampCardRepo.getLstStampCardByLstSid(empIds);
+        List<StampCard> stampCards = getStampCardQuery.getStampCardBy(empIds);
+
         List<ReservationRegisterInfo> reservationRegisterInfos = stampCards.stream()
                 .map(x -> new ReservationRegisterInfo(x.getStampNumber().v())).collect(Collectors.toList());
 
