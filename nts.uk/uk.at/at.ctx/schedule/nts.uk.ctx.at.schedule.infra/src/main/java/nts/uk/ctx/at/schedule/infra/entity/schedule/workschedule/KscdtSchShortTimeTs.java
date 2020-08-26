@@ -40,7 +40,7 @@ public class KscdtSchShortTimeTs extends ContractUkJpaEntity {
 	public int shortTimeTsEnd;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "SID", referencedColumnName = "SID"),
 			@PrimaryKeyJoinColumn(name = "YMD", referencedColumnName = "YMD") })
 	public KscdtSchBasicInfo kscdtSchBasicInfo;
 	
