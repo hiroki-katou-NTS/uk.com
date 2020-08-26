@@ -1,13 +1,7 @@
 package nts.uk.screen.at.app.shift.workcycle;
 
-import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay.WeeklyWorkDayPattern;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.CreateWorkCycleAppImage;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.RefImageEachDay;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.WorkCycleRefSetting;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.*;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -36,47 +30,59 @@ public class WorkCycleReflectionDialog {
 	@Inject private CreateWorkCycleAppImage.Require require;
 	@Inject private WorkInformation workInformation;
 
-	public WorkCycleReflectionDto getStartupInfo(String companyId, String startMode, DatePeriod creationPeriod, Optional<String> workCycleCode){
-		// 1. 勤務サイクル一覧を取得する [Get a list of work cycles]
-		List<WorkCycleDto> workCycleList = getWorkCycle.getDataStartScreen();
+ 	/**
+	 * 起動情報を取得する
+	 * @param bootMode
+	 * @param creationPeriod
+	 * @return WorkCycleReflectionDto
+	 */
+	public WorkCycleReflectionDto getStartupInfo(
+			BootMode bootMode,
+			DatePeriod creationPeriod,
+			String workCycleCode,
+			List<WorkCreateMethod> refOrder,
+			int numOfSlideDays){
 
-		// 起動モードは実行モードの場合、
-		// Query「務サイクル一覧を取得する」の戻り値から「勤務サイクルコード」はList<務サイクルコード、
-		// 勤務サイクル名称>の最初項目
-		String workCycleCode2 = workCycleList.get(0).getCode();
+		WorkCycleReflectionDto dto = new WorkCycleReflectionDto();
+
+		// 1. 勤務サイクル一覧を取得する [Get a list of work cycles]
+		if (bootMode == BootMode.EXEC_MODE){
+			List<WorkCycleDto> workCycleList = getWorkCycle.getDataStartScreen();
+			workCycleCode = workCycleList.get(0).getCode();
+			dto.setWorkCycleList(workCycleList);
+		}
 
 		// 2. 休日系の勤務種類を取得する [Get holiday type of work]
 		List<WorkType> workTypes = holidayWorkTypeService.acquiredHolidayWorkType();
 
 		// 3. 作成する(Require, 期間, 勤務サイクルの反映設定)
-		// [Create (Require, period, work cycle reflection setting)]
-		// param:require, 作成期間, 設定 [require, creation period, setting]
-		// return: List<一日分の反映イメージ> [List <Image of one day's reflection>]
-		// TODO Where to get data?
+
 		WorkCycleRefSetting config = new WorkCycleRefSetting(
-				workCycleCode.get(),
-				null,
-				1,
+				workCycleCode,
+				refOrder,
+				numOfSlideDays,
 				null,
 				null,
 				null
 		);
-		// CreateWorkCycleAppImage.Require
-		List<RefImageEachDay> refImageEachDayList = createWorkCycleAppImage.create(require,creationPeriod,config);
 
+		List<RefImageEachDay> refImageEachDayList = createWorkCycleAppImage.create(require, creationPeriod, config);
+ 		ReflectionImage reflectionImage = new ReflectionImage();
+		refImageEachDayList.stream().forEach(ref -> {
+			ref.getDate();
+			ref.getWorkInformation();
+			reflectionImage.addInWorkCycle(ref.getDate(), ref.getWorkInformation());
+		});
 
 		// 4. 出勤・休日系の判定(Require)
-		// paran Require
-		// return: Optional<出勤休日区分>
 		WorkInformationRequireImpl wiRequire = new WorkInformationRequireImpl();
 		Optional<WorkStyle> optWorkStyle = workInformation.getWorkStyle(wiRequire);
 
-		WorkCycleReflectionDto dto = new WorkCycleReflectionDto();
-		dto.setWorkTypes(workTypes);
-		dto.setRefImageEachDayList(refImageEachDayList);
-		dto.setWorkStyle(optWorkStyle.get());
-		dto.setWorkCycleList(workCycleList);
-		return new WorkCycleReflectionDto();
+		dto.setWorkTypes(workTypes); // List<勤務種類>：休日系の勤務種類
+		dto.setReflectionImage(reflectionImage); // 反映イメージ
+		dto.setWorkStyle(optWorkStyle.isPresent()? optWorkStyle.get(): null); // 出勤休日区分
+
+		return dto;
 	}
 
 	private static class WorkInformationRequireImpl implements WorkInformation.Require {
