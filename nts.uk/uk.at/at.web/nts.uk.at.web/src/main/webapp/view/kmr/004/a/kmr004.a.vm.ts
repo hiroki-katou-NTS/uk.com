@@ -59,6 +59,8 @@ module nts.uk.at.view.kmr004.a {
 				{id: OUTPUT_CONDITION.STATEMENT, name: getText('KMR004_13')},
 			]);
 
+
+
 			nts.uk.ui.block.grayout();
 			// Call init API
 			self.$ajax(API.START).done((data) => {
@@ -69,9 +71,13 @@ module nts.uk.at.view.kmr004.a {
 				nts.uk.ui.block.clear();
 			});
 
-			nts.uk.characteristics.restore(self.cacheKey).done((c13sData: any) => {
-				self.restoreScreenState(c13sData);
-			});
+            nts.uk.characteristics.restore(self.cacheKey).done((c13sData: any) => {
+            	if(c13sData.selectedClosingTime != self.selectedClosingTime()){
+                    c13sData.selectedClosingTime = self.selectedClosingTime()
+				}
+                self.restoreScreenState(c13sData);
+            });
+
 
 			self.tabs = ko.observableArray([
 				{
@@ -180,6 +186,7 @@ module nts.uk.at.view.kmr004.a {
                 totalExtractCondition = vm.model().totalExtractCondition();
                 extractionConditionChecked = vm.model().extractionConditionChecked();
             }else{
+            	detailTitle = vm.model().detailTitle();
                 if(vm.model().itemExtractCondition() === EXTRACT_CONDITION.ALL){
                     isBreakPage = vm.model().isBreakPage();
                     itemExtractCondition = vm.model().itemExtractCondition();
