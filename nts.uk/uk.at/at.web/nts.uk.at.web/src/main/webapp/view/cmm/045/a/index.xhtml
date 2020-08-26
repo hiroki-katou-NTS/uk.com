@@ -123,13 +123,17 @@
 								<label class = "grid-text-label" style = "display: inline-block;">#{i18n.getText('CMM045_81')}</label>
 								<div id="combo-box" style = "display: inline-block; margin-left: 50px;"
 									tabindex="7"  data-bind="ntsComboBox: {
+										name:'#{i18n.getText('CMM045_81')}',
 										width: 150,
-										options: itemApplication,
-										optionsValue: 'appId',
-										value: selectedCode,
-										optionsText: 'appName',
-										enable: true,
-										columns: [{ prop: 'appName'}]}"></div>
+										options: ko.observableArray([
+							                { orderCD: 0, orderName: '#{i18n.getText('CMM045_82')}' },
+							                { orderCD: 1, orderName: '#{i18n.getText('CMM045_83')}' },
+							                { orderCD: 2, orderName: '#{i18n.getText('CMM045_84')}' },
+							            ]),
+										optionsValue: 'orderCD',
+										value: orderCD,
+										optionsText: 'orderName',
+										enable: true }"></div>
 								<!-- A4_3_4: button 検索 -->
 								<div style="float: right; margin-right: 10px;"><a style="background-color: #ffff" class="hyperlink">#{i18n.getText("CMM045_87")}</a></div>
 							</td>
