@@ -6,6 +6,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentomenuAdapter;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.SWkpHistExport;
@@ -47,6 +48,9 @@ public class ForceUpdateBentoReserveCommandHandler extends CommandHandler<ForceU
         ReservationDate reservationDate = new ReservationDate(command.getDate(), EnumAdaptor.valueOf(command.getClosingTimeFrame(), ReservationClosingTimeFrame.class));
         List<BentoReservationInfoTemp> bentoReservationInfos = new ArrayList<>();
         for (ForceUpdateBentoReserveCommand.BentoReserveInfoCommand reservationInfoCmd: command.getReservationInfos()){
+            // Input．弁当予約情報．明細がEmptyの場合担当の弁当予約を登録してない
+            if (CollectionUtil.isEmpty(reservationInfoCmd.getDetails())) continue;
+
             BentoReservationInfoTemp reservation = new BentoReservationInfoTemp();
             reservation.setRegisterInfo(new ReservationRegisterInfo(reservationInfoCmd.getReservationCardNo()));
             reservation.setOrdered(reservationInfoCmd.isOrdered());
