@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentRepository;
@@ -56,6 +57,12 @@ public class JpaScheduleCreateContentRepository extends JpaRepository
 		this.commandProxy().update(this.toEntityUpdate(domain));
 
 	}
+
+	@Override
+	public void addNew(ScheduleCreateContent domain, String companyId, String employeeId, String executionId,String contractCode) {
+		this.commandProxy().insert(this.toEntityNew(domain,companyId,employeeId,executionId,contractCode));
+	}
+
 	/**
 	 * To entity.
 	 *
@@ -65,6 +72,10 @@ public class JpaScheduleCreateContentRepository extends JpaRepository
 	private KscdtScheExeContent toEntity(ScheduleCreateContent domain){
 		KscdtScheExeContent entity = new KscdtScheExeContent();
 		domain.saveToMemento(new JpaScheduleCreateContentSetMemento(entity));
+		return entity;
+	}
+	private KscdtScheExeContent toEntityNew(ScheduleCreateContent domain,String companyId, String employeeId, String executionId,String contractCode){
+		val entity = KscdtScheExeContent.toEntityNew(domain, companyId,  employeeId,  executionId,contractCode);
 		return entity;
 	}
 	/**
