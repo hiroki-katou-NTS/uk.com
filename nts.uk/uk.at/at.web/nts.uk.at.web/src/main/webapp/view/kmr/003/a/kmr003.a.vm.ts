@@ -131,7 +131,7 @@ module nts.uk.at.kmr003.a {
             var fixedColumns = [];
             fixedColumns.push({ headerText: "key", key: 'key', dataType: 'string', hidden: true });
             fixedColumns.push({
-                headerText: getText("KMR003_21"), key: 'reservationMemberCode', dataType: 'number', width: '70px', ntsControl: "Label"
+                headerText: getText("KMR003_21"), key: 'reservationMemberCode', dataType: 'number', width: '115px', ntsControl: "Label"
             });
             fixedColumns.push({ headerText: getText("KMR003_22"), key: 'reservationMemberName', dataType: 'string', width: '150px', ntsControl: "Label" });
             if (!isNewMode) {
