@@ -114,8 +114,8 @@ public class GetUnusedCompenTemporaryTest {
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
 				//締め
-				require.getClosureDataByEmployee(SID, (GeneralDate) any);
-				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
+//				require.getClosureDataByEmployee(SID, (GeneralDate) any);
+//				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
 				require.getFirstMonth(CID);
 				result = new CompanyDto(11);// 期首月
@@ -209,8 +209,8 @@ public class GetUnusedCompenTemporaryTest {
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
 				//締め
-				require.getClosureDataByEmployee(SID, (GeneralDate) any);
-				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
+//				require.getClosureDataByEmployee(SID, (GeneralDate) any);
+//				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
 				require.getFirstMonth(CID);
 				result = new CompanyDto(11);// 期首月

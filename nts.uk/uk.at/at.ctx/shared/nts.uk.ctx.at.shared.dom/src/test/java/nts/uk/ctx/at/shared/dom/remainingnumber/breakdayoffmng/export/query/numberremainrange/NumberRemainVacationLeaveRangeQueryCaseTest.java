@@ -169,8 +169,8 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
-				require.getClosureDataByEmployee(SID, (GeneralDate) any);
-				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
+//				require.getClosureDataByEmployee(SID, (GeneralDate) any);
+//				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
 				require.getFirstMonth(CID);
 				result = new CompanyDto(11);
@@ -266,8 +266,8 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
-				require.getClosureDataByEmployee(SID, (GeneralDate) any);
-				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
+//				require.getClosureDataByEmployee(SID, (GeneralDate) any);
+//				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
 				require.getFirstMonth(CID);
 				result = new CompanyDto(11);
@@ -357,8 +357,8 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
-				require.getClosureDataByEmployee(SID, (GeneralDate) any);
-				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
+//				require.getClosureDataByEmployee(SID, (GeneralDate) any);
+//				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
 				require.getFirstMonth(CID);
 				result = new CompanyDto(11);
@@ -442,8 +442,8 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
-				require.getClosureDataByEmployee(SID, (GeneralDate) any);
-				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
+//				require.getClosureDataByEmployee(SID, (GeneralDate) any);
+//				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
 				require.getFirstMonth(CID);
 				result = new CompanyDto(11);
@@ -598,8 +598,8 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
-				require.getClosureDataByEmployee(SID, (GeneralDate) any);
-				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
+//				require.getClosureDataByEmployee(SID, (GeneralDate) any);
+//				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
 				require.getFirstMonth(CID);
 				result = new CompanyDto(11);
