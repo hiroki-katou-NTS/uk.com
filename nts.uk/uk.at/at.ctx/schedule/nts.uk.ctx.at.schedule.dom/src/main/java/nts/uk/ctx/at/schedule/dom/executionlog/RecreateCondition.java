@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.dom.executionlog;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.ConditionEmployee;
 
 import java.util.Optional;
 
@@ -21,5 +22,5 @@ public class RecreateCondition {
     //手修正・申請反映も対象とする
     private final Boolean handCorrection;
 
-    private final Optional<NarrowingEmployees> narrowingEmployees;
+    private final Optional<ConditionEmployee> narrowingEmployees;
 }
