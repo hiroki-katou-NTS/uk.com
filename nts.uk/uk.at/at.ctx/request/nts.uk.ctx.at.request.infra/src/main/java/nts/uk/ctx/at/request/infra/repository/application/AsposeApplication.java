@@ -93,9 +93,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			break;
 		case BUSINESS_TRIP_APPLICATION:
 			aposeBusinessTrip.printWorkChangeContent(worksheet, printContentOfApp);
-			reasonLabel = worksheet.getCells().get("B15");
-			remarkLabel = worksheet.getCells().get("B18");
-			reasonContent = worksheet.getCells().get("D15");
+			reasonLabel = worksheet.getCells().get("B27");
+			remarkLabel = worksheet.getCells().get("B30");
+			reasonContent = worksheet.getCells().get("D27");
 			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case GO_RETURN_DIRECTLY_APPLICATION:
