@@ -111,19 +111,14 @@ public class ScheduleExecutionAddCommand {
         return new ScheduleExecutionLog(new ScheduleExecutionLogSaveGetMementoImpl(companyId, executionId, employeeId));
     }
 
-    /**
-     * Create domain not use memento pattern.
-     * @param executionId
-     * @return
-     */
     public ScheduleCreateContent toDomainContentNew(String executionId) {
         val monthly = new MonthlyPatternCode(monthlyPatternId);
         val creMethod = CreationMethod.valueOf(creationMethod);
         val copyStartD = Optional.of(copyStartYmd);
         val re = ReferenceMaster.valueOf(referenceMaster);
         val specify = new SpecifyCreation(creMethod,copyStartD, Optional.of(re),Optional.of(monthly));
-        val narrowing = new NarrowingEmployees(reTargetLeave,reTargetLaborChange,reTargetTransfer,reTargetShortWork);
-        val recreateCondition = new RecreateCondition(reTargetAtr,reOverwriteConfirmed,reOverwriteRevised,Optional.of(narrowing));
+        val narrow = new NarrowingEmployees(reTargetLeave,reTargetLaborChange,reTargetTransfer,reTargetShortWork);
+        val recreateCondition = new RecreateCondition(reTargetAtr,reOverwriteConfirmed,reOverwriteRevised,Optional.of(narrow));
         return new ScheduleCreateContent(executionId,beConfirmed,ImplementAtr.valueOf(creationType),specify,recreateCondition);
     }
 

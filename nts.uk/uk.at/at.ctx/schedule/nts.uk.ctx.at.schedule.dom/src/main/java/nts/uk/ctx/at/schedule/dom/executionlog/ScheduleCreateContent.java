@@ -39,8 +39,18 @@ public class ScheduleCreateContent extends AggregateRoot{
 	private RecreateCondition recreateCondition;
 
 	//TODO: bien tam thoi, se xoa sau khi co tai lieu moi
-
-
+	private ImplementAtr implementAtr;
+	private ReCreateContent reCreateContent;
+	private CreateMethodAtr createMethodAtr;
+	
+	public ScheduleCreateContent (String executionId,Boolean confirm,ImplementAtr creationType,
+								  SpecifyCreation specifyCreation,RecreateCondition recreateCondition){
+		this.executionId = executionId;
+		this.confirm =confirm;
+		this.creationType = creationType;
+		this.specifyCreation = specifyCreation;
+		this.recreateCondition = recreateCondition;
+	}
 	/**
 	 * To domain.
 	 *
