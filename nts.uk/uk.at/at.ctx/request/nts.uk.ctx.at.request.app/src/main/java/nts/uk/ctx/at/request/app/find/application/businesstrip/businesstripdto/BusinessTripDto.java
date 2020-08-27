@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto;
 
 import lombok.Value;
-import nts.uk.ctx.at.request.app.command.application.businesstrip.AddBusinessTripCommand;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 

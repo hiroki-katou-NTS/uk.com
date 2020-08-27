@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfFinder;
+import nts.uk.ctx.at.request.app.find.setting.request.application.businesstrip.BusinessTripSetDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationSettingFinder;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackReflectDto;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
@@ -43,6 +44,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.ApplicationStampSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflectRepository;
 import nts.uk.ctx.at.shared.app.find.ot.frame.OvertimeWorkFrameFinder;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.otworkapply.OtWorkAppReflectDto;
@@ -179,6 +181,9 @@ public class FinderDtoKaf022 {
     @Inject
     private ApprovalListDispSetRepository approvalListDispSetRepo;
 
+    @Inject
+	private AppTripRequestSetRepository appTripRequestSetRepo;
+
 	public DtoKaf022 findDtoKaf022() {
 		String companyId = AppContexts.user().companyId();
 		// TODO: get Application Settings
@@ -194,6 +199,7 @@ public class FinderDtoKaf022 {
         AppReflectExeConditionDto appReflectCondition = appReflectConditionRepo.findByCompanyId(companyId).map(AppReflectExeConditionDto::fromDomain).orElse(null);
         OtWorkAppReflectDto overtimeAppReflect = overtimeAppSetRepo.findReflectByCompanyId(companyId).map(OtWorkAppReflectDto::fromDomain).orElse(null);
         ReflectWorkChangeApp reflectWorkChangeApp = appWorkChangeSetRepo.findByCompanyIdReflect(companyId).orElse(null);
+		BusinessTripSetDto tripRequestSet = appTripRequestSetRepo.findById(companyId).map(BusinessTripSetDto::fromDomain).orElse(null);
 		GoBackReflectDto goBackReflect = goBackReflectRepo.findByCompany(companyId).map(GoBackReflectDto::fromDomain).orElse(null);
         LateEarlyCancelReflect lateEarlyCancelReflect = lateEarlyCancelRepo.getByCompanyId(companyId);
 		StampAppReflectDto stampAppReflectDto = appStampSettingRepo.findReflectByCompanyId(companyId).map(StampAppReflectDto::fromDomain).orElse(null);
@@ -267,6 +273,9 @@ public class FinderDtoKaf022 {
         // D
         result.appChange = appWorkChangeSetDto;
         result.workTimeReflectAtr = reflectWorkChangeApp != null ? reflectWorkChangeApp.getWhetherReflectAttendance().value : 0;
+
+        // E
+		result.tripRequestSetting = tripRequestSet;
 
         // F
 		result.goBackReflect = goBackReflect;

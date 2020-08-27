@@ -3,10 +3,8 @@ package nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 
-import java.util.List;
 import java.util.Optional;
 
 @Data

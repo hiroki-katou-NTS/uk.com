@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.app.command.applicationreflect.AppReflectExeConditi
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetCommand;
+import nts.uk.ctx.at.request.app.command.setting.request.application.businesstrip.BusinessTripSetCommand;
 import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.otworkapply.OtWorkAppReflectCommand;
 import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectCommand;
 
@@ -33,6 +34,8 @@ public class Kaf022AddCommand {
 	private OtWorkAppReflectCommand overtimeApplicationReflect;
 
 	private AppWorkChangeSetCommand appWorkChangeSetting;
+
+	private BusinessTripSetCommand tripRequestSetting;
 
 	private int goBackReflectAtr;
 
