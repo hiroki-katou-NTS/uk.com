@@ -139,12 +139,15 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     }
 
     @Override
-    public BusinessTripInfoOutput getDataDetail(String companyId, String appId, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+    public DetailScreenB getDataDetail(String companyId, String appId, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+        DetailScreenB result = new DetailScreenB();
         BusinessTripInfoOutput output = new BusinessTripInfoOutput();
+        // ドメインモデル「出張申請設定」を取得する
         Optional<AppTripRequestSet> tripRequestSet = appTripRequestSetRepository.findById(companyId);
         if (tripRequestSet.isPresent()) {
             output.setSetting(tripRequestSet.get());
         }
+        // ドメインモデル「出張申請」を取得する
         Optional<BusinessTrip> businessTrip = businessTripRepository.findByAppId(companyId, appId);
 
         Optional<AppEmploymentSet> opEmploymentSet = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet();
@@ -155,8 +158,11 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 new ArrayList<>(Arrays.asList(WorkTypeClassification.Attendance))
         );
 
-        Optional<TargetWorkTypeByApp> targetWorkDay = opEmploymentSet.get().getTargetWorkTypeByAppLst().stream().filter(i -> i.getOpBusinessTripAppWorkType().get().value == BusinessTripAppWorkType.WORK_DAY.value).findFirst();
+        Optional<TargetWorkTypeByApp> targetWorkDay = opEmploymentSet.get().getTargetWorkTypeByAppLst()
+                .stream()
+                .filter(i ->  i.getOpBusinessTripAppWorkType().isPresent() && i.getOpBusinessTripAppWorkType().get().value == BusinessTripAppWorkType.WORK_DAY.value).findFirst();
         if (targetWorkDay.isPresent()) {
+//            targetWorkDay.get().setDisplayWorkType(true);
             targetWorkDay.get().setWorkTypeLst(workDays.stream().map(i -> i.getWorkTypeCode().v()).collect(Collectors.toList()));
         }
 
@@ -167,8 +173,12 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 new ArrayList<>(Arrays.asList(WorkTypeClassification.Holiday, WorkTypeClassification.HolidayWork, WorkTypeClassification.Shooting))
         );
 
-        Optional<TargetWorkTypeByApp> targetHoliday = opEmploymentSet.get().getTargetWorkTypeByAppLst().stream().filter(i -> i.getOpBusinessTripAppWorkType().get().value == BusinessTripAppWorkType.WORK_DAY.value).findFirst();
+        Optional<TargetWorkTypeByApp> targetHoliday = opEmploymentSet.get()
+                .getTargetWorkTypeByAppLst()
+                .stream()
+                .filter(i -> i.getOpBusinessTripAppWorkType().isPresent() && i.getOpBusinessTripAppWorkType().get().value == BusinessTripAppWorkType.HOLIDAY.value).findFirst();
         if (targetHoliday.isPresent()) {
+//            targetWorkDay.get().setDisplayWorkType(true);
             targetWorkDay.get().setWorkTypeLst(holidayWorkType.stream().map(i -> i.getWorkTypeCode().v()).collect(Collectors.toList()));
         }
 
@@ -196,18 +206,20 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                         .distinct()
                         .collect(Collectors.toList());
                 // ドメインモデル「就業時間帯の設定」を取得する
-                List<WorkTimeSetting> mapWorkCds = wkTimeRepo.findByCodes(companyId, cds);
-                appDispInfoStartupOutput.getAppDispInfoWithDateOutput().setOpWorkTimeLst(Optional.of(workTimeSettings));
+                workTimeSettings = wkTimeRepo.findByCodes(companyId, cds);
             }
         }
-
+        appDispInfoStartupOutput.getAppDispInfoWithDateOutput().setOpWorkTimeLst(Optional.of(workTimeSettings));
         output.setAppDispInfoStartup(appDispInfoStartupOutput);
         output.setWorkTypeBeforeChange(Optional.of(businessTripWorkTypes));
         output.setWorkDayCds(Optional.of(workDays));
         output.setHolidayCds(Optional.of(holidayWorkType));
         output.setWorkTypeBeforeChange(Optional.of(businessTripWorkTypes));
         output.setWorkTypeAfterChange(Optional.empty());
-        return output;
+        output.setActualContentDisplay(Optional.empty());
+        result.setBusinessTripInfoOutput(output);
+        result.setBusinessTrip(businessTrip.isPresent() ? businessTrip.get() : null);
+        return result;
     }
 
     @Override

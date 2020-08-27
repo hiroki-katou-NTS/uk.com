@@ -113,6 +113,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             const dataV = self.viewmodelV.collectData();
             const dataB = self.viewmodelB.collectData();
             const dataD = self.viewmodelD.collectData();
+            const dataE = self.viewmodelE.collectData();
             const dataJ = self.viewmodelJ.collectData();
             const dataQ = self.viewmodelQ.collectData();
             const data: any = {};
@@ -133,6 +134,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             data["overtimeApplicationSetting"] = dataB.overtimeApplicationSetting;
             data["overtimeApplicationReflect"] = dataB.overtimeApplicationReflect;
             data["appWorkChangeSetting"] = dataD;
+            data["tripRequestSetting"] = dataE;
             data["goBackReflectAtr"] = self.viewmodelF.selectedValueF13();
             data["lateEarlyCancelAtr"] = self.viewmodelI.lateEarlyCancelAtr();
             data["lateEarlyClearAlarmAtr"] = self.viewmodelI.lateEarlyClearAlarmAtr();

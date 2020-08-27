@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.app.find.setting.request.application.businesstrip.BusinessTripSetDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackReflectDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampSettingDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto;
@@ -58,6 +59,8 @@ public class DtoKaf022 {
 
 	public AppWorkChangeSetDto appChange;
 	public Integer workTimeReflectAtr;
+
+	public BusinessTripSetDto tripRequestSetting;
 
 	public GoBackReflectDto goBackReflect;
 

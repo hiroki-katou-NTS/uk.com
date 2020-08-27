@@ -54,12 +54,13 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
 
         };
 
-        created(
-            params: {
-                appDispInfoStartupOutput: any,
-                eventUpdate: (evt: () => void ) => void
-            }
-        ) {
+        businessTripOutput: KnockoutObservable<any> = ko.observable();
+        businessTrip: KnockoutObservable<BusinessTripInfo> = ko.observable();
+
+        created(params: {
+            appDispInfoStartupOutput: any,
+            eventUpdate: (evt: () => void) => void
+        }) {
             const vm = this;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.application = ko.observable(new Application(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.appID, 3, [], 2, "", "", 0));
@@ -86,17 +87,27 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                 companyId: vm.$user.companyId,
                 applicationId: ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo.application.appID
             }).done(res => {
-                console.log(res);
-                // if (res) {
-                //     vm.dataFetch({
-                //         workType: ko.observable(res.workType),
-                //         workTime: ko.observable(res.workTime),
-                //         appDispInfoStartup: ko.observable(res.appDispInfoStartup),
-                //         goBackReflect: ko.observable(res.goBackReflect),
-                //         lstWorkType: ko.observable(res.lstWorkType),
-                //         goBackApplication: ko.observable(res.goBackApplication)
-                //     });
-                // }
+                if (res) {
+                    let businessTrip = res.businessTripDto;
+                    let eachDetail: TripInfoDetail = _.map(businessTrip.tripInfos, function (detail) {
+                        return {
+                            date: detail.date,
+                            wkTimeCd: detail.wkTimeCd,
+                            wkTimeName: null,
+                            wkTypeCd: detail.wkTypeCd,
+                            wkTypeName: null,
+                            startWorkTime: detail.startWorkTime,
+                            endWorkTime: detail.endWorkTime
+                        };
+                    });
+                    let tripInfo: BusinessTripInfo = {
+                        departureTime: businessTrip.departureTime,
+                        returnTime: businessTrip.returnTime,
+                        tripInfos: eachDetail
+                    }
+                    vm.businessTrip(tripInfo);
+                    vm.businessTripOutput(res.businessTripInfoOutputDto);
+                }
             }).fail(err => {
                 vm.$dialog.error({messageId: err.msgId});
             }).always(() => vm.$blockui('hide'));
@@ -104,7 +115,35 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
 
         // event update cần gọi lại ở button của view cha
         update() {
+            const vm = this;
+            let application = ko.toJS(vm.application);
+            vm.applicationTest = vm.appDispInfoStartupOutput().appDetailScreenInfo.application;
+            vm.applicationTest.prePostAtr = application.prePostAtr;
+            vm.applicationTest.opAppReason = application.opAppReason;
+            vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
+            vm.applicationTest.opReversionReason = application.opReversionReason;
 
+            let command = {
+                businessTripDto : ko.toJS(vm.businessTrip),
+                businessTripInfoOutputDto : ko.toJS(vm.businessTripOutput),
+                applicationDto : vm.applicationTest
+            }
+            vm.$ajax(API.updateBusinessTrip, command).done(res => {
+                console.log(res);
+            }).fail(err => {
+                let param;
+                if (err.message && err.messageId) {
+                    param = {messageId: err.messageId, messageParams: err.parameterIds};
+                } else {
+
+                    if (err.message) {
+                        param = {message: err.message, messageParams: err.parameterIds};
+                    } else {
+                        param = {messageId: err.messageId, messageParams: err.parameterIds};
+                    }
+                }
+                vm.$dialog.error(param);
+            });
         }
 
         dispose() {
@@ -112,68 +151,34 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
 
         }
 
-        // changeWorkTypeCode(data: BusinessTripInfoOutputDto, date: string, wkCode: string, index: number) {
-        //     const vm = this;
-        //     let businessTripInfoOutputDto = ko.toJS(data);
-        //     let typeCode = wkCode;
-        //     let command = {
-        //         date, businessTripInfoOutputDto, typeCode
-        //     }
-        //     let cloneOutput = _.clone(vm.businessTripOutput());
-        //     vm.$ajax(API.changeWorkTypeCode, command).done(data => {
-        //         let contentAfterChange = data;
-        //         vm.businessTripOutput(data);
-        //         let workTypeAfterChange = data.infoAfterChange;
-        //         let InfoChanged = _.findIndex(workTypeAfterChange, {date: date});
-        //         let workCodeChanged = workTypeAfterChange[InfoChanged].workTypeDto.workTypeCode;
-        //         let workNameChanged = workTypeAfterChange[InfoChanged].workTypeDto.name;
-        //         cloneOutput.businessTripActualContent[index].opAchievementDetail.workTypeCD = workCodeChanged;
-        //         cloneOutput.businessTripActualContent[index].opAchievementDetail.opWorkTypeName = workNameChanged;
-        //         vm.businessTripOutput(cloneOutput);
-        //     }).fail(err => {
-        //         cloneOutput.businessTripActualContent[index].opAchievementDetail.workTypeCD = "";
-        //         cloneOutput.businessTripActualContent[index].opAchievementDetail.opWorkTypeName = "";
-        //         vm.businessTripOutput(cloneOutput);
-        //         let param;
-        //         if (err.message && err.messageId) {
-        //             param = {messageId: err.messageId};
-        //         } else {
-        //             if (err.message) {
-        //                 param = {message: err.message};
-        //             } else {
-        //                 param = {messageId: err.messageId};
-        //             }
-        //         }
-        //         vm.$dialog.error(param);
-        //     }).always(() => vm.$blockui("hide"));;
-        // }
-        //
-        // changeWorkTimeCode(data: BusinessTripInfoOutputDto, date: string, wkCode: string, timeCode: string, index: number) {
-        //     const vm = this;
-        //     let inputDate = date;
-        //     let businessTripInfoOutputDto = ko.toJS(null);
-        //     let typeCode = wkCode;
-        //     let command = {
-        //         date, businessTripInfoOutputDto, typeCode, timeCode
-        //     }
-        //     vm.$ajax(API.changWorkTimeCode, command).done(data => {
-        //         let selectedIndex = _.findIndex(ko.toJS(vm.items), {date: inputDate});
-        //         let currentDetail = vm.businessTripOutput().businessTripActualContent[selectedIndex].opAchievementDetail;
-        //         vm.items()[selectedIndex].wkTimeName(data);
-        //         currentDetail.opWorkTimeName = data;
-        //     }).fail(err => {
-        //         let selectedIndex = _.findIndex(ko.toJS(vm.items), {date: inputDate});
-        //         let currentDetail = vm.businessTripOutput().businessTripActualContent[selectedIndex].opAchievementDetail;
-        //         vm.items()[selectedIndex].wkTimeCd("");
-        //         vm.items()[selectedIndex].wkTimeName("");
-        //         currentDetail.workTimeCD = "";
-        //         currentDetail.opWorkTimeName = "";
-        //     });
-        // }
+    }
 
+    export interface BusinessTripInfo {
+        departureTime: number;
+        returnTime: number;
+        tripInfos: TripInfoDetail;
+    }
+
+    export interface TripInfoDetail {
+        date: string;
+        wkTimeCd: string;
+        wkTimeName: string;
+        wkTypeCd: string;
+        wkTypeName: string;
+        startWorkTime: number;
+        endWorkTime: number;
+    }
+
+    interface TripInfo {
+        date: string;
+        wkTypeCd: string;
+        wkTimeCd: string;
+        startWorkTime: number;
+        endWorkTime: number;
     }
 
     const API = {
-        getDetail: "at/request/application/businesstrip/getDetailPC"
+        getDetail: "at/request/application/businesstrip/getDetailPC",
+        updateBusinessTrip: "at/request/application/businesstrip/updateBusinessTrip"
     }
 }
