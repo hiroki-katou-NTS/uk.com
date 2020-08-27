@@ -184,7 +184,9 @@ module nts.uk.at.view.kmr004.a {
             if(vm.outputConditionChecked() === OUTPUT_CONDITION.TOTAL){
                 totalTitle = vm.model().totalTitle();
                 totalExtractCondition = vm.model().totalExtractCondition();
-                extractionConditionChecked = vm.model().extractionConditionChecked();
+				if(totalExtractCondition === EXTRACT_CONDITION.UN_ORDERED){
+                    extractionConditionChecked = vm.model().extractionConditionChecked();
+				}
             }else{
             	detailTitle = vm.model().detailTitle();
                 if(vm.model().itemExtractCondition() === EXTRACT_CONDITION.ALL){
