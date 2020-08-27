@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
 /**
  * 年休使用情報
  * @author masaaki_jinno
- *
+ *　
  */
 @Getter
 @AllArgsConstructor

@@ -20,7 +20,7 @@ public class AnnualLeaveMaxData extends AggregateRoot {
 	 */
 	private String employeeId;
 
-	/**46
+	/**
 	 * 会社ID
 	 */
 	private String companyId;

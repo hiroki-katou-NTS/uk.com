@@ -95,10 +95,6 @@ public class SpecialLeave extends DomainObject implements Cloneable, Serializabl
 	public void createRemainingNumberFromGrantRemaining(
 			List<SpecialLeaveGrantRemaining> remainingDataList, boolean afterGrantAtr){
 		
-		remainingNumberInfo.createRemainingNumberFromGrantRemaining(remainingDataList, afterGrantAtr);
-		
-		
-		
 		// 特休付与残数データから残数を作成
 		this.remainingNumberInfo.createRemainingNumberFromGrantRemaining(remainingDataList);
 		

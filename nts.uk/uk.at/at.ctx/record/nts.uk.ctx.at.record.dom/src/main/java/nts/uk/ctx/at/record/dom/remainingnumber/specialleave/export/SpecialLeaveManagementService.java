@@ -15,33 +15,17 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.ConfirmLeavePeriod;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.CalcAnnLeaAttendanceRate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc.RequireM3;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveGrantRemaining;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.copy.DataAtr;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.copy.DataMngOfDeleteExpired;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.copy.InforSpecialLeaveOfEmployee;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.copy.InforSpecialLeaveOfEmployeeSevice;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.copy.InforStatus;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.copy.LimitTimeAndDays;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.copy.ManagaData;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.copy.RemainDaysOfSpecialHoliday;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.copy.SpecialHolidayDataParam;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.copy.SpecialHolidayInfor;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.copy.SpecialHolidayInterimMngData;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.copy.SpecialHolidayRemainInfor;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.copy.SpecialLeaveGrantDetails;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.copy.SpecialLeaveGrantRemainingDataTotal;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.copy.SpecialLeaveNumberInfoService;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.copy.SubtractUseDaysFromMngDataOut;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.copy.UseDaysOfPeriodSpeHoliday;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.ComplileInPeriodOfSpecialLeaveParam;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.InPeriodOfSpecialLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.SpecialLeaveError;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.SpecialLeaveGrantRemaining;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.SpecialLeaveInfo;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.adapter.employee.AffCompanyHistSharedImport;
@@ -54,20 +38,38 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainingHistory;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.AttendanceRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.SpecialVacationCD;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.CalcNextSpecialLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveGrantSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.export.NextSpecialLeaveGrant;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialHolidayInterimMngData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InforSpecialLeaveOfEmployeeSevice;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService.RequireM5;
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.残数管理.残数管理.特別休暇管理.Export
  * @author do_dt
@@ -78,8 +80,10 @@ public class SpecialLeaveManagementService {
 	 * RequestList273 期間内の特別休暇残を集計する
 	 * @return
 	 */
-	public static InPeriodOfSpecialLeaveResultInfor complileInPeriodOfSpecialLeave(RequireM5 require, 
-			CacheCarrier cacheCarrier, ComplileInPeriodOfSpecialLeaveParam param) {
+	public static InPeriodOfSpecialLeaveResultInfor complileInPeriodOfSpecialLeave(
+			nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService.RequireM5 require, 
+			CacheCarrier cacheCarrier, 
+			ComplileInPeriodOfSpecialLeaveParam param) {
 		
 		// 特別休暇の集計結果情報
 		InPeriodOfSpecialLeaveResultInfor outputData = new InPeriodOfSpecialLeaveResultInfor();
@@ -109,10 +113,120 @@ public class SpecialLeaveManagementService {
 		DatePeriod aggrPeriod = ConfirmLeavePeriod.sumPeriod(param.getComplileDate(), employee);
 				if (aggrPeriod == null) return outputData;
 		
-		// 集計開始日時点の特休情報を作成
 		
+		// 月次モード・その他モード
+		InterimRemainMngMode interimRemainMngMode;
+		if ( param.isMode() ){ 
+			interimRemainMngMode = InterimRemainMngMode.MONTHLY;
+		} else {
+			interimRemainMngMode = InterimRemainMngMode.OTHER;
+		}
+		
+		// 集計開始日時点の特休情報を作成
+		SpecialLeaveInfo specialLeaveInfo = createInfoAsOfPeriodStart(
+						require, 
+						cacheCarrier, 
+						param.getCid(), 
+						param.getSid(),
+						param.getComplileDate(),
+						interimRemainMngMode,
+						Optional.of(param.isOverwriteFlg()),
+						Optional.of(param.getRemainData()),  // 要キャスト？Optional<List<SpecialHolidayInterimMngData>>
+						param.getOptBeforeResult(),
+						param.getSpecialLeaveCode());
+
+		// 次回年休付与日を計算
+		CalcNextSpecialLeaveGrantDate calcNextSpecialLeaveGrantDate
+			= new CalcNextSpecialLeaveGrantDate();
+		List<NextSpecialLeaveGrant> list
+			= calcNextSpecialLeaveGrantDate.algorithm(
+				require, cacheCarrier, 
+				param.getCid(), 
+				param.getSid(), 
+				param.getSpecialLeaveCode(), 
+				Optional.of(param.getComplileDate()));
+		
+		
+		
+		
+		
+		// 次回年休付与日を計算
+		List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList = new ArrayList<>();
+		{
+			// 次回年休付与を計算
+			nextSpecialLeaveGrantList = CalcNextSpecialLeaveGrantDate.algorithm(
+					require, cacheCarrier,
+					companyId, employeeId, Optional.of(aggrPeriod),
+					Optional.ofNullable(employee), annualLeaveEmpBasicInfoOpt,
+					grantHdTblSetOpt, lengthServiceTblsOpt);
+			
+			// 「出勤率計算フラグ」をチェック
+			if (isCalcAttendanceRate){
+				
+				// 勤務実績によって次回年休付与を更新
+				for (val nextSpecialGrantList : nextSpecialLeaveGrantList){
+					if (!grantHdTblSetOpt.isPresent()) continue;
+					if (!lengthServiceTblsOpt.isPresent()) continue;
+					
+					// 次回年休付与の付与日数を条件によって更新する
+					{
+						// 年休出勤率を計算する
+						val resultRateOpt = CalcAnnLeaAttendanceRate.algorithm(require, cacheCarrier, 
+								companyId, employeeId,
+								nextSpecialGrantList.getGrantDate(),
+								Optional.of(nextSpecialGrantList.getTimes().v()),
+								Optional.of(annualLeaveSet), Optional.of(employee), annualLeaveEmpBasicInfoOpt,
+								grantHdTblSetOpt, lengthServiceTblsOpt, operationStartSetOpt);
+						if (resultRateOpt.isPresent()){
+							val resultRate = resultRateOpt.get();
+							nextSpecialGrantList.setAttendanceRate(Optional.of(
+									new AttendanceRate(resultRate.getAttendanceRate())));
+							nextSpecialGrantList.setPrescribedDays(Optional.of(
+									new YearDayNumber(resultRate.getPrescribedDays())));
+							nextSpecialGrantList.setWorkingDays(Optional.of(
+									new YearDayNumber(resultRate.getWorkingDays())));
+							nextSpecialGrantList.setDeductedDays(Optional.of(
+									new YearDayNumber(resultRate.getDeductedDays())));
+							
+							// 日数と出勤率から年休付与テーブルを取得する
+							val grantConditionOpt = grantHdTblSetOpt.get().getGrantCondition(
+									resultRate.getAttendanceRate(),
+									resultRate.getPrescribedDays(),
+									resultRate.getWorkingDays(),
+									resultRate.getDeductedDays());
+							
+							if (grantConditionOpt.isPresent()){
+								val grantCondition = grantConditionOpt.get();
+								val conditionNo = grantCondition.getConditionNo();
+								
+								// 付与日数を計算
+								val grantHdTblOpt = require.grantHdTbl(companyId, conditionNo,
+																	grantTableCode, nextSpecialGrantList.getTimes().v());
+								
+								if (grantHdTblOpt.isPresent()){
+									val grantHdTbl = grantHdTblOpt.get();
+									nextSpecialGrantList.setGrantDays(
+											grantHdTbl.getGrantDays());
+									nextSpecialGrantList.setHalfDaySpecialLeaveMaxTimes(
+											grantHdTbl.getLimitDayYear());
+									nextSpecialGrantList.setTimeSpecialLeaveMaxDays(
+											grantHdTbl.getLimitTimeHd());
+								}
+							}
+							else {
+								
+								// 次回年休付与．付与日数　←　0
+								nextSpecialGrantList.setGrantDays(new GrantDays(0.0));
+							}
+						}
+					}
+				}
+			}
+		}
 				
 				
+		
+		
 				
 				
 				
@@ -175,7 +289,6 @@ public class SpecialLeaveManagementService {
 	 * @param employeeId 社員ID
 	 * @param aggrPeriod 集計期間（開始日、終了日）
 	 * @param mode 実績のみ参照区分
-	 * @param ymd 基準日
 	 * @param isOverWriteOpt 上書きフラグ
 	 * @param forOverWriteListOpt　上書き用の暫定管理データ
 	 * @param inPeriodOfSpecialLeaveResultInfor 前回の特別休暇の集計結果
@@ -183,14 +296,14 @@ public class SpecialLeaveManagementService {
 	 * @return 特休情報
 	 */
 	private static SpecialLeaveInfo createInfoAsOfPeriodStart(
-			RequireM3 require, 
+			RequireM5 require, 
 			CacheCarrier cacheCarrier, 
 			String companyId, 
 			String employeeId,
 			DatePeriod aggrPeriod,
 			InterimRemainMngMode mode,
-			GeneralDate ymd, 
 			Optional<Boolean> isOverWriteOpt,
+//			Optional<List<SpecialHolidayInterimMngData>> forOverWriteListOpt,
 			Optional<List<SpecialHolidayInterimMngData>> forOverWriteListOpt,
 			Optional<InPeriodOfSpecialLeaveResultInfor> inPeriodOfSpecialLeaveResultInfor,
 			int specialLeaveCode){
@@ -213,78 +326,72 @@ public class SpecialLeaveManagementService {
 		}
 		if (isSameInfo){
 			// 「前回の特休情報」を取得　→　取得内容をもとに特休情報を作成
-			return createInfoFromRemainingData(prevSpecialLeaveInfo.getGrantRemainingList(), 
-						Optional.of(prevSpecialLeaveInfo.getMaxData()), aggrPeriod);
+			return createInfoFromRemainingData(
+					companyId,
+					employeeId,
+					aggrPeriod.start(),
+					prevSpecialLeaveInfo.getGrantRemainingList());
 		}
 		
+//		// 過去月集計モードの判断
+//		if (aggrPastMonthModeOpt.isPresent() && yearMonthOpt.isPresent()) {
+//			if (aggrPastMonthModeOpt.get() == true) {
+//				List<SpecialLeaveGrantRemaining> remainingDatas = new ArrayList<>();
+//				
+//				// 「特休付与残数履歴データ」を取得
+//				List<SpecialLeaveRemainingHistory> remainHistList = require.SpecialLeaveRemainingHistory(
+//						employeeId, yearMonthOpt.get());
+//				if (remainHistList.size() > 0) {
+//					// 付与日 ASC、期限切れ状態＝「使用可能」　を採用
+//					remainHistList.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
+//					for (SpecialLeaveRemainingHistory remainHist : remainHistList) {
+//						if (remainHist.getExpirationStatus() != LeaveExpirationStatus.AVAILABLE) continue;
+//						
+//						// 取得したドメインを特休付与残数データに変換
+//						SpecialLeaveGrantRemaining remainData = new SpecialLeaveGrantRemaining(
+//								SpecialLeaveGrantRemainingData.createFromHistory(remainHist));
+//						remainingDatas.add(remainData);
+//					}
+//				}
+//				
+//				// 特休上限データを取得
+//				val annLeaMaxDataOpt = require.SpecialLeaveMaxData(employeeId);
+//
+//				// 取得内容をもとに特休情報を作成
+//				return createInfoFromRemainingData(remainingDatas, annLeaMaxDataOpt, aggrPeriod);
+//			}
+//		}
+//		
+//		// 「集計開始日を締め開始日とする」をチェック　（締め開始日としない時、締め開始日を確認する）
+//		boolean isAfterClosureStart = false;
+//		Optional<GeneralDate> closureStartOpt = Optional.empty();
+////		if (!noCheckStartDate){
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		// 過去月集計モードの判断
-		if (aggrPastMonthModeOpt.isPresent() && yearMonthOpt.isPresent()) {
-			if (aggrPastMonthModeOpt.get() == true) {
-				List<SpecialLeaveGrantRemaining> remainingDatas = new ArrayList<>();
-				
-				// 「特休付与残数履歴データ」を取得
-				List<SpecialLeaveRemainingHistory> remainHistList = require.SpecialLeaveRemainingHistory(
-						employeeId, yearMonthOpt.get());
-				if (remainHistList.size() > 0) {
-					// 付与日 ASC、期限切れ状態＝「使用可能」　を採用
-					remainHistList.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
-					for (SpecialLeaveRemainingHistory remainHist : remainHistList) {
-						if (remainHist.getExpirationStatus() != LeaveExpirationStatus.AVAILABLE) continue;
-						
-						// 取得したドメインを特休付与残数データに変換
-						SpecialLeaveGrantRemaining remainData = new SpecialLeaveGrantRemaining(
-								SpecialLeaveGrantRemainingData.createFromHistory(remainHist));
-						remainingDatas.add(remainData);
-					}
-				}
-				
-				// 特休上限データを取得
-				val annLeaMaxDataOpt = require.SpecialLeaveMaxData(employeeId);
-
-				// 取得内容をもとに特休情報を作成
-				return createInfoFromRemainingData(remainingDatas, annLeaMaxDataOpt, aggrPeriod);
-			}
-		}
-		
-		// 「集計開始日を締め開始日とする」をチェック　（締め開始日としない時、締め開始日を確認する）
 		boolean isAfterClosureStart = false;
-		Optional<GeneralDate> closureStartOpt = Optional.empty();
-//		if (!noCheckStartDate){
 			
-			// 休暇残数を計算する締め開始日を取得する
-			GeneralDate closureStart = null;	// 締め開始日
-			{
-				// 最新の締め終了日翌日を取得する
-				Optional<ClosureStatusManagement> sttMng = require.latestClosureStatusManagement(employeeId);
-				if (sttMng.isPresent()){
-					closureStart = sttMng.get().getPeriod().end().addDays(1);
-					closureStartOpt = Optional.of(closureStart);
-				}
-				else {
-					
-					//　社員に対応する締め開始日を取得する
-					closureStartOpt = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
-					if (closureStartOpt.isPresent()) closureStart = closureStartOpt.get();
-				}
+		// 休暇残数を計算する締め開始日を取得する
+		GeneralDate closureStart = null;	// 締め開始日
+		{
+			// 最新の締め終了日翌日を取得する
+			Optional<ClosureStatusManagement> sttMng = require.latestClosureStatusManagement(employeeId);
+			if (sttMng.isPresent()){
+				closureStart = sttMng.get().getPeriod().end().addDays(1);
+				closureStartOpt = Optional.of(closureStart);
 			}
-			
-			// 取得した締め開始日と「集計開始日」を比較
-			if (closureStart != null){
+			else {
 				
-				// 締め開始日＜集計開始日　か確認する
-				if (closureStart.before(aggrPeriod.start())) isAfterClosureStart = true;
+				//　社員に対応する締め開始日を取得する
+				closureStartOpt = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
+				if (closureStartOpt.isPresent()) closureStart = closureStartOpt.get();
 			}
+		}
+		
+		// 取得した締め開始日と「集計開始日」を比較
+		if (closureStart != null){
+			
+			// 締め開始日＜集計開始日　か確認する
+			if (closureStart.before(aggrPeriod.start())) isAfterClosureStart = true;
+		}
 			
 		if (!closureStartOpt.isPresent()) closureStartOpt = Optional.of(aggrPeriod.start());
 		
@@ -361,7 +468,7 @@ public class SpecialLeaveManagementService {
 		returnInfo.setGrantRemainingList(targetDatas);
 		
 		
-		
+
 		
 //		// 特休情報．上限データ　←　パラメータ「上限データ」
 //		if (!maxDataOpt.isPresent()) {
@@ -1428,139 +1535,139 @@ public class SpecialLeaveManagementService {
 		return new DataMngOfDeleteExpired(unDisgesteDays, lstTmp, null);
 	}
 	
-	public static interface RequireM1 {
+//	public static interface RequireM1 {
+//
+//		Optional<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String specialId);
+//		
+//	}
+//	
+//	public static interface RequireM2 { 
+//
+//		List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType);
+//
+//		List<InterimSpecialHolidayMng> interimSpecialHolidayMng(String mngId);
+//	}
+//	
+//	public static interface RequireM3 extends InforSpecialLeaveOfEmployeeSevice.RequireM4 {
+//
+//		/** 特別休暇付与残数データ */
+//		List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int specialLeaveCode, 
+//				LeaveExpirationStatus expirationStatus,GeneralDate grantDate, GeneralDate deadlineDate);
+//
+//		/** 特別休暇付与残数データ */
+//		List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode, 
+//				DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus);
+//	}
+//	
+//	public static interface RequireM4 extends InforSpecialLeaveOfEmployeeSevice.RequireM4, RequireM1 {
+//		
+//	}
+//	
+//	public static interface RequireM5 extends RequireM2, RequireM3, RequireM4 {
+//
+//		/** 特別休暇基本情報 */
+//		Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UseAtr use);
+//		
+//	}
 
-		Optional<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String specialId);
-		
-	}
-	
-	public static interface RequireM2 { 
-
-		List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType);
-
-		List<InterimSpecialHolidayMng> interimSpecialHolidayMng(String mngId);
-	}
-	
-	public static interface RequireM3 extends InforSpecialLeaveOfEmployeeSevice.RequireM4 {
-
-		/** 特別休暇付与残数データ */
-		List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int specialLeaveCode, 
-				LeaveExpirationStatus expirationStatus,GeneralDate grantDate, GeneralDate deadlineDate);
-
-		/** 特別休暇付与残数データ */
-		List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode, 
-				DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus);
-	}
-	
-	public static interface RequireM4 extends InforSpecialLeaveOfEmployeeSevice.RequireM4, RequireM1 {
-		
-	}
-	
-	public static interface RequireM5 extends RequireM2, RequireM3, RequireM4 {
-
-		/** 特別休暇基本情報 */
-		Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UseAtr use);
-		
-	}
-
-	public static RequireM5 createRequireM5(SpecialLeaveGrantRepository specialLeaveGrantRepo,
-			ShareEmploymentAdapter shareEmploymentAdapter, EmpEmployeeAdapter empEmployeeAdapter,
-			GrantDateTblRepository grantDateTblRepo, AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo,
-			SpecialHolidayRepository specialHolidayRepo, InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo,
-			InterimRemainRepository interimRemainRepo, SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo) {
-		
-		return new RequireM5() {
-			
-			/** 特別休暇付与残数データ */
-			@Override
-			public Optional<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String specialId) {
-				return specialLeaveGrantRepo.getBySpecialId(specialId);
-			}
-			
-			@Override
-			public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
-					String employeeId, GeneralDate baseDate) {
-				return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
-			}
-			
-			@Override
-			public EmployeeRecordImport employeeFullInfo(CacheCarrier cacheCarrier, String empId) {
-				return empEmployeeAdapter.findByAllInforEmpId(cacheCarrier, empId);
-			}
-			
-			@Override
-			public EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId) {
-				return empEmployeeAdapter.findByEmpIdRequire(cacheCarrier, empId);
-			}
-			
-			@Override
-			public List<SClsHistImport> employeeClassificationHistoires(CacheCarrier cacheCarrier, String companyId,
-					List<String> employeeIds, DatePeriod datePeriod) {
-				return empEmployeeAdapter.lstClassByEmployeeId(cacheCarrier, companyId, employeeIds, datePeriod);
-			}
-			
-			/** 特別休暇付与テーブル */
-			@Override
-			public Optional<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode) {
-				return grantDateTblRepo.findByCodeAndIsSpecified(companyId, specialHolidayCode);
-			}
-			
-			/** 経過年数に対する付与日数 */
-			@Override
-			public List<ElapseYear> elapseYear(String companyId, int specialHolidayCode, String grantDateCode) {
-				return grantDateTblRepo.findElapseByGrantDateCd(companyId, specialHolidayCode, grantDateCode);
-			}
-			
-			/** 特休社員基本情報 */
-			@Override
-			public Optional<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String employeeId) {
-				return annLeaEmpBasicInfoRepo.get(employeeId);
-			}
-			
-			@Override
-			public List<AffCompanyHistSharedImport> employeeAffiliatedCompanyHistories(CacheCarrier cacheCarrier,
-					List<String> sids, DatePeriod datePeriod) {
-				return empEmployeeAdapter.getAffCompanyHistByEmployee(cacheCarrier, sids, datePeriod);
-			}
-			
-			/** 特別休暇 */
-			@Override
-			public Optional<SpecialHoliday> specialHoliday(String companyID, int specialHolidayCD) {
-				return specialHolidayRepo.findByCode(companyID, specialHolidayCD);
-			}
-			
-			/** 特別休暇付与残数データ */
-			@Override
-			public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode,
-					DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus) {
-				return specialLeaveGrantRepo.getByNextDate(sid, speCode, datePriod, startDate, expirationStatus);
-			}
-			
-			/** 特別休暇付与残数データ */
-			@Override
-			public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int specialLeaveCode,
-					LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
-				return specialLeaveGrantRepo.getByPeriodStatus(sid, specialLeaveCode, expirationStatus, grantDate, deadlineDate);
-			}
-			
-			/** 特別休暇暫定データ */
-			@Override
-			public List<InterimSpecialHolidayMng> interimSpecialHolidayMng(String mngId) {
-				return interimSpecialHolidayMngRepo.findById(mngId);
-			}
-			
-			/** 暫定残数管理データ */
-			@Override
-			public List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType) {
-				return interimRemainRepo.getRemainBySidPriod(employeeId, dateData, remainType);
-			}
-			
-			/** 特別休暇基本情報 */
-			@Override
-			public Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UseAtr use) {
-				return specialLeaveBasicInfoRepo.getBySidLeaveCdUser(sid, spLeaveCD, use);
-			}
-		};
-	}
+//	public static RequireM5 createRequireM5(SpecialLeaveGrantRepository specialLeaveGrantRepo,
+//			ShareEmploymentAdapter shareEmploymentAdapter, EmpEmployeeAdapter empEmployeeAdapter,
+//			GrantDateTblRepository grantDateTblRepo, AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo,
+//			SpecialHolidayRepository specialHolidayRepo, InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo,
+//			InterimRemainRepository interimRemainRepo, SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo) {
+//		
+//		return new RequireM5() {
+//			
+//			/** 特別休暇付与残数データ */
+//			@Override
+//			public Optional<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String specialId) {
+//				return specialLeaveGrantRepo.getBySpecialId(specialId);
+//			}
+//			
+//			@Override
+//			public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
+//					String employeeId, GeneralDate baseDate) {
+//				return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
+//			}
+//			
+//			@Override
+//			public EmployeeRecordImport employeeFullInfo(CacheCarrier cacheCarrier, String empId) {
+//				return empEmployeeAdapter.findByAllInforEmpId(cacheCarrier, empId);
+//			}
+//			
+//			@Override
+//			public EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId) {
+//				return empEmployeeAdapter.findByEmpIdRequire(cacheCarrier, empId);
+//			}
+//			
+//			@Override
+//			public List<SClsHistImport> employeeClassificationHistoires(CacheCarrier cacheCarrier, String companyId,
+//					List<String> employeeIds, DatePeriod datePeriod) {
+//				return empEmployeeAdapter.lstClassByEmployeeId(cacheCarrier, companyId, employeeIds, datePeriod);
+//			}
+//			
+//			/** 特別休暇付与テーブル */
+//			@Override
+//			public Optional<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode) {
+//				return grantDateTblRepo.findByCodeAndIsSpecified(companyId, specialHolidayCode);
+//			}
+//			
+//			/** 経過年数に対する付与日数 */
+//			@Override
+//			public List<ElapseYear> elapseYear(String companyId, int specialHolidayCode, String grantDateCode) {
+//				return grantDateTblRepo.findElapseByGrantDateCd(companyId, specialHolidayCode, grantDateCode);
+//			}
+//			
+//			/** 年休社員基本情報 */
+//			@Override
+//			public Optional<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String employeeId) {
+//				return annLeaEmpBasicInfoRepo.get(employeeId);
+//			}
+//			
+//			@Override
+//			public List<AffCompanyHistSharedImport> employeeAffiliatedCompanyHistories(CacheCarrier cacheCarrier,
+//					List<String> sids, DatePeriod datePeriod) {
+//				return empEmployeeAdapter.getAffCompanyHistByEmployee(cacheCarrier, sids, datePeriod);
+//			}
+//			
+//			/** 特別休暇 */
+//			@Override
+//			public Optional<SpecialHoliday> specialHoliday(String companyID, int specialHolidayCD) {
+//				return specialHolidayRepo.findByCode(companyID, specialHolidayCD);
+//			}
+//			
+//			/** 特別休暇付与残数データ */
+//			@Override
+//			public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode,
+//					DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus) {
+//				return specialLeaveGrantRepo.getByNextDate(sid, speCode, datePriod, startDate, expirationStatus);
+//			}
+//			
+//			/** 特別休暇付与残数データ */
+//			@Override
+//			public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int specialLeaveCode,
+//					LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
+//				return specialLeaveGrantRepo.getByPeriodStatus(sid, specialLeaveCode, expirationStatus, grantDate, deadlineDate);
+//			}
+//			
+//			/** 特別休暇暫定データ */
+//			@Override
+//			public List<InterimSpecialHolidayMng> interimSpecialHolidayMng(String mngId) {
+//				return interimSpecialHolidayMngRepo.findById(mngId);
+//			}
+//			
+//			/** 暫定残数管理データ */
+//			@Override
+//			public List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType) {
+//				return interimRemainRepo.getRemainBySidPriod(employeeId, dateData, remainType);
+//			}
+//			
+//			/** 特別休暇基本情報 */
+//			@Override
+//			public Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UseAtr use) {
+//				return specialLeaveBasicInfoRepo.getBySidLeaveCdUser(sid, spLeaveCD, use);
+//			}
+//		};
+//	}
 
 }

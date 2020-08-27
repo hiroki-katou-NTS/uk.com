@@ -12,11 +12,13 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
 
+/**
+ * 特別休暇残数
+ */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-// 特別休暇残数
 public class SpecialLeaveRemainingNumber {
 
 	/** 合計残日数 */

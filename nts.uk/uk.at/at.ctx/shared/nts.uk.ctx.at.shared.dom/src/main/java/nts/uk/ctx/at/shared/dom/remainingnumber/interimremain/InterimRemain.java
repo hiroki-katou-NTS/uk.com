@@ -46,6 +46,7 @@ public class InterimRemain extends AggregateRoot{
 		this.sID = sID;
 		this.ymd = ymd;
 		this.remainManaID = remainManaID;
+		
 	}
 	public InterimRemain(String employeeId, GeneralDate end) {
 		super();

@@ -5,6 +5,11 @@ import java.io.Serializable;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
 
+/**
+ * 年休使用時間
+ * @author masaaki_jinno
+ *
+ */
 @Getter
 public class AnnualLeaveUsedTime implements Cloneable, Serializable {
 

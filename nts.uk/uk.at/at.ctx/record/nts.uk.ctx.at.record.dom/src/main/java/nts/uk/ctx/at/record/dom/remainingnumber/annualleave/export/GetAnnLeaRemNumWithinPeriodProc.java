@@ -367,16 +367,38 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	
 	/**
 	 * 集計開始日時点の年休情報を作成
-	 * @param noCheckStartDate 集計開始日を締め開始日とする　（締め開始日を確認しない）
+	 * @param require
+	 * @param cacheCarrier
+	 * @param employeeId 社員ID
+	 * @param companyId　会社ID
+	 * @param noCheckStartDate 
+	 * @param prevAnnualLeaveOpt　前回の年休の集計結果
 	 * @param aggrPastMonthModeOpt 過去月集計モード
 	 * @param yearMonthOpt 年月
-	 * @return 年休情報
+	 * @param aggrPeriod 集計期間
+	 * @param grantRemainingDatas
+	 * @param mode 実績のみ参照区分
+	 * @param isGetNextMonthData
+	 * @param isCalcAttendanceRate 出勤率計算フラグ
+	 * @param isOverWriteOpt 上書きフラグ
+	 * @param forOverWriteListOpt　上書き用の暫定管理データ
+	 * @return
 	 */
-	private static AnnualLeaveInfo createInfoAsOfPeriodStart(RequireM3 require, CacheCarrier cacheCarrier, String employeeId,
-			String companyId, boolean noCheckStartDate, Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt,
-			Optional<Boolean> aggrPastMonthModeOpt, Optional<YearMonth> yearMonthOpt, DatePeriod aggrPeriod,
-			List<AnnualLeaveGrantRemaining> grantRemainingDatas, InterimRemainMngMode mode,
-			boolean isGetNextMonthData, boolean isCalcAttendanceRate, Optional<Boolean> isOverWriteOpt,
+	private static AnnualLeaveInfo createInfoAsOfPeriodStart(
+			RequireM3 require, 
+			CacheCarrier cacheCarrier, 
+			String employeeId,
+			String companyId, 
+			boolean noCheckStartDate, 
+			Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt,
+			Optional<Boolean> aggrPastMonthModeOpt, 
+			Optional<YearMonth> yearMonthOpt, 
+			DatePeriod aggrPeriod,
+			List<AnnualLeaveGrantRemaining> grantRemainingDatas, 
+			InterimRemainMngMode mode,
+			boolean isGetNextMonthData, 
+			boolean isCalcAttendanceRate, 
+			Optional<Boolean> isOverWriteOpt,
 			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt){
 	
 		AnnualLeaveInfo emptyInfo = new AnnualLeaveInfo();
@@ -428,34 +450,37 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			}
 		}
 		
-		// 「集計開始日を締め開始日とする」をチェック　（締め開始日としない時、締め開始日を確認する）
-		boolean isAfterClosureStart = false;
+//		// 「集計開始日を締め開始日とする」をチェック　（締め開始日としない時、締め開始日を確認する）
+////		if (!noCheckStartDate){
+
+		
+		
+		
+		// 休暇残数を計算する締め開始日を取得する
+		GeneralDate closureStart = null;	// 締め開始日
 		Optional<GeneralDate> closureStartOpt = Optional.empty();
-//		if (!noCheckStartDate){
+		boolean isAfterClosureStart = false;
+		
+		// 最新の締め終了日翌日を取得する
+		Optional<ClosureStatusManagement> sttMng = require.latestClosureStatusManagement(employeeId);
+		if (sttMng.isPresent()){
+			closureStart = sttMng.get().getPeriod().end().addDays(1);
+			closureStartOpt = Optional.of(closureStart);
+		}
+		else {
 			
-			// 休暇残数を計算する締め開始日を取得する
-			GeneralDate closureStart = null;	// 締め開始日
-			{
-				// 最新の締め終了日翌日を取得する
-				Optional<ClosureStatusManagement> sttMng = require.latestClosureStatusManagement(employeeId);
-				if (sttMng.isPresent()){
-					closureStart = sttMng.get().getPeriod().end().addDays(1);
-					closureStartOpt = Optional.of(closureStart);
-				}
-				else {
-					
-					//　社員に対応する締め開始日を取得する
-					closureStartOpt = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
-					if (closureStartOpt.isPresent()) closureStart = closureStartOpt.get();
-				}
-			}
+			//　社員に対応する締め開始日を取得する
+			closureStartOpt = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
+			if (closureStartOpt.isPresent()) closureStart = closureStartOpt.get();
+		}
+		
+		// 取得した締め開始日と「集計開始日」を比較
+		if (closureStart != null){
 			
-			// 取得した締め開始日と「集計開始日」を比較
-			if (closureStart != null){
-				
-				// 締め開始日＜集計開始日　か確認する
-				if (closureStart.before(aggrPeriod.start())) isAfterClosureStart = true;
-			}
+			// 締め開始日＜集計開始日　か確認する
+			if (closureStart.before(aggrPeriod.start())) isAfterClosureStart = true;
+		}
+		
 			
 		if (!closureStartOpt.isPresent()) closureStartOpt = Optional.of(aggrPeriod.start());
 		

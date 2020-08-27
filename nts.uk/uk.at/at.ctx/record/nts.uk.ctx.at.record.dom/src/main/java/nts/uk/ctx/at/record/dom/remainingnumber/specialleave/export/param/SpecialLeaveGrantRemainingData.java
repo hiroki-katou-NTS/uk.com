@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 @Getter
 @NoArgsConstructor
 //@AllArgsConstructor
-// 特休付与残数データ
+// 特休付与残数
 public class SpecialLeaveGrantRemainingData extends LeaveGrantRemainingData {
 
 //	private String annLeavID;

@@ -8,6 +8,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
+
+/**
+ * 暫定管理データ
+ * @author masaaki_jinno
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter

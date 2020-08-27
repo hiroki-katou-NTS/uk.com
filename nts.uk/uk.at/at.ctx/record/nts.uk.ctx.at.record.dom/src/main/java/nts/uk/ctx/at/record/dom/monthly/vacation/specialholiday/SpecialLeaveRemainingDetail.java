@@ -9,8 +9,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
 
 /**
- * 年休残明細
- * @author shuichu_ishida
+ * 特休残明細
  */
 @Getter
 @Setter
