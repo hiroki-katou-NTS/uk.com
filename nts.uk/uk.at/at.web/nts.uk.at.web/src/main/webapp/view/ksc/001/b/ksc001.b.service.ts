@@ -79,24 +79,36 @@ module nts.uk.at.view.ksc001.b {
             export interface ScheduleExecutionLogSaveDto {
                 periodStartDate: Date;
                 periodEndDate: Date;
-                implementAtr: number;
-                reCreateAtr: number;
-                processExecutionAtr: number;
-                reTargetAtr: number;
-                resetWorkingHours: boolean;
-                resetMasterInfo: boolean;
-                reTimeAssignment: boolean;
-                reConverter: boolean;
-                reStartEndTime: boolean;
-                reEmpOffWork: boolean;
-                reShortTermEmp: boolean;
-                reWorkTypeChange: boolean;
-                reDirectBouncer: boolean;
-                protectHandCorrect: boolean;
-                confirm: boolean;
-                createMethodAtr: number;
-                copyStartDate: Date;
+	            creationType: number;
+	            reTargetAtr: boolean;
+	            referenceMaster: number;
+	            reTargetTransfer: boolean;
+	            reTargetLeave: boolean;
+	            reTargetShortWork: boolean;
+	            reTargetLaborChange: boolean;
+	            reOverwriteConfirmed: boolean;
+	            reOverwriteRevised: boolean;
+	            monthlyPatternId: string; //monthlyPatternCode;
+	            beConfirmed: boolean; //confirm
+	            creationMethod: number; //createMethodAtr
+	            copyStartYmd: Date; //copyStartDate
                 employeeIds: string[];
+	            employeeIdLogin: string
+	            /*implementAtr: number;
+				reCreateAtr: number;
+				processExecutionAtr: number;
+				reTargetAtr: number;
+				resetWorkingHours: boolean;
+				resetMasterInfo: boolean;
+				reTimeAssignment: boolean;
+				reConverter: boolean;
+				reStartEndTime: boolean;
+				reEmpOffWork: boolean;
+				reShortTermEmp: boolean;
+				reWorkTypeChange: boolean;
+				reDirectBouncer: boolean;
+	            protectHandCorrect: boolean;
+	            */
             }
 
             export interface ScheduleExecutionLogSaveRespone {

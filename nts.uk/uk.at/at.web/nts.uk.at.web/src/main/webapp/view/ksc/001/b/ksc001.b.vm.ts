@@ -73,7 +73,7 @@ module nts.uk.at.view.ksc001.b {
             personalScheduleInfo: KnockoutObservable<PersonalSchedule> = ko.observable(new PersonalSchedule());
             responeReflectionSetting: KnockoutObservable<ReflectionSetting> = ko.observable(null);
             responeDailyPatternSetting: KnockoutObservable<DailyPatternSetting> = ko.observable(null);
-
+	        employeeId: KnockoutObservable<string> = ko.observable(null);
             //for control field
             isReCreate: KnockoutObservable<boolean>;
             isReSetting: KnockoutObservable<boolean>;
@@ -102,6 +102,9 @@ module nts.uk.at.view.ksc001.b {
             isEnableNextPageD: KnockoutObservable<boolean> = ko.observable(true);
             isConfirmedCreation: KnockoutObservable<boolean> = ko.observable(false);
             isCopyStartDate: KnockoutObservable<boolean> = ko.observable(false);
+	        implementAtr: KnockoutObservable<number> = ko.observable(0);
+	        createMethodAtr: KnockoutObservable<number> = ko.observable(0);
+	        employeeIds: KnockoutObservableArray<string> = ko.observable();
 
             fullSizeSpace: string = "　　";
 
@@ -253,19 +256,16 @@ module nts.uk.at.view.ksc001.b {
                 });
 
                 self.creationMethodReference([
-                    {code: null, name: ''},
-                    {code: 0, name: '会社カレンダー'},
-                    {code: 1, name: '職場カレンダー'},
-                    {code: 2, name: '分類カレンダー'},
-                    {code: 3, name: '月間パターン'},
+                    {code: 0, name: nts.uk.resource.getText('KSC001_108')}, //会社カレンダー
+                    {code: 1, name: nts.uk.resource.getText('KSC001_109')}, //職場カレンダー
+                    {code: 2, name: nts.uk.resource.getText('KSC001_110')}, //分類カレンダー
+                    {code: 3, name: nts.uk.resource.getText('KSC001_111')}, //月間パターン
                 ]);
 
                 self.monthlyPatternOpts([]);
+	            self.employeeIds([]);
                 //get monthly pattern
                 self.getMonthlyPattern();
-                /*{code: null, name: ''},
-                {code: 1, name: '月間パターンコード'},
-                {code: 2, name: '月間パターン名称'}*/
             }
 
             /**
@@ -439,10 +439,12 @@ module nts.uk.at.view.ksc001.b {
             public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
                 let self = this,
                     employeeSearchs: UnitModel[] = [],
-                    listSelectedEmpCode: any = [];
+                    listSelectedEmpCode: any = [],
+	                employeeIds: Array<string> = [] ;
                 self.employeeList([]);
                 self.selectedEmployeeCode([]);
 
+                console.log(dataList);
                 _.each(dataList, (employeeSearch) => {
                     employeeSearchs.push({
                         code: employeeSearch.employeeCode,
@@ -450,12 +452,13 @@ module nts.uk.at.view.ksc001.b {
                         affiliationName: employeeSearch.affiliationName
                     });
                     listSelectedEmpCode.push(employeeSearch.employeeCode.trim());
+	                employeeIds.push(employeeSearch.employeeId);
                 });
 
                 // update employee list by ccg001 search
                 self.employeeList(employeeSearchs);
                 self.selectedEmployeeCode(listSelectedEmpCode);
-                let employeeIds =  self.findEmployeeIdsByCode(self.selectedEmployeeCode());
+                self.employeeIds(employeeIds);
                 //filter personal with new conditions
                 let startDate = moment.utc(self.periodStartDate(), "YYYY/MM/DD");
                 let endDate = moment.utc(self.periodEndDate(), "YYYY/MM/DD");
@@ -468,12 +471,11 @@ module nts.uk.at.view.ksc001.b {
                     startDate, endDate
                 );
 
+                //pending
                 let newListEmployees = self.listEmployeeFilter(listEmployeeFilter);
 
-                console.log(newListEmployees);
                 //reset
-                employeeSearchs = [];
-                listSelectedEmpCode = [];
+                employeeSearchs = []; listSelectedEmpCode = [];
                 newListEmployees && newListEmployees.map((employeeSearch) => {
                     employeeSearchs.push({
                         code: employeeSearch.employeeCode,
@@ -571,9 +573,9 @@ module nts.uk.at.view.ksc001.b {
 
                 data.overwriteConfirmedData = self.overwriteConfirmedData();
                 data.createAfterDeleting = self.createAfterDeleting();
-                //data.selectedImplementAtrCode = self.selectedImplementAtrCode();
-                //data.selectRebuildAtrCode = self.selectRebuildAtrCode();
-                //data.checkCreateMethodAtrPersonalInfo = self.checkCreateMethodAtrPersonalInfo();
+                data.selectedImplementAtrCode = self.selectedImplementAtrCode();
+                data.selectRebuildAtrCode = self.selectRebuildAtrCode();
+                data.checkCreateMethodAtrPersonalInfo = self.checkCreateMethodAtrPersonalInfo();
                 data.creationMethodCode = self.creationMethodCode();
                 data.monthlyPatternCode = self.monthlyPatternCode();
                 data.isConfirmedCreation = self.isConfirmedCreation();
@@ -599,28 +601,28 @@ module nts.uk.at.view.ksc001.b {
                 
                 if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
                     && self.selectRebuildAtrCode() == ReBuildAtr.REBUILD_TARGET_ONLY) {
-
                     if (!self.recreateConverter() && !self.recreateEmployeeOffWork()
                         && !self.recreateDirectBouncer() && !self.recreateShortTimeWorkers()) {
                         nts.uk.ui.dialog.error({messageId: "Msg_1734"});
                         $('#checkBoxGroup').focus();
                         return;
                     }
+                }
 
-                    if (self.createAfterDeleting()) {
-                        nts.uk.ui.dialog.confirmDanger({messageId: "Msg_1735"})
-                            .ifYes(() => {
-                                //goto screen C
-                                self.next().done(function () {
-                                });
-                            }).ifNo(() => {
-                            return;
-                        });
-                    }
+                if (self.selectedImplementAtrCode() == ImplementAtr.RECREATE
+                    && self.createAfterDeleting()) {
+                    nts.uk.ui.dialog.confirmDanger({messageId: "Msg_1735"})
+                        .ifYes(() => {
+                            //goto screen C
+                            self.next().done(function () {
+                            });
+                        }).ifNo(() => {
+                        return;
+                    });
                 } else {
                     //goto screen C
-                    self.next().done(function () {
-                    });
+                    self.next ().done ( function () {
+                    } );
                 }
             }
 
@@ -670,13 +672,9 @@ module nts.uk.at.view.ksc001.b {
                     if (self.createAfterDeleting())
                         lstLabelInfomation.push(self.fullSizeSpace + getText("KSC001_38") + getText("KSC001_106"));
                 }
-
                 //apply from B -> E1_6
                 self.lstLabelInfomationB(lstLabelInfomation);
-
             }
-
-
             /**
              * function previous page by selection employee goto page (B)
              */
@@ -948,16 +946,14 @@ module nts.uk.at.view.ksc001.b {
             private savePersonalScheduleData(): void {
                 let self = this;
                 self.savePersonalSchedule(self.toPersonalScheduleData());
-                console.log(self.collectionData());
-                service.addScheduleExecutionLog(self.collectionData()).done(function (data) {
+                service.addScheduleExecutionLog(self.scheduleCollectionData()).done(function (data) {
+                    console.log(data);
                     nts.uk.ui.block.clear();
                     nts.uk.ui.windows.setShared('inputData', data);
                     nts.uk.ui.windows.sub.modal("/view/ksc/001/f/index.xhtml").onClosed(function () {
                     });
                 });
-
             }
-
 
             /**
              * open dialog KDL023
@@ -1028,35 +1024,63 @@ module nts.uk.at.view.ksc001.b {
             /**
              * collection data => command save
              */
-            private collectionData(): ScheduleExecutionLogSaveDto {
+            private scheduleCollectionData(): ScheduleExecutionLogSaveDto {
                 var self = this,
+                    user: any = __viewContext.user,
                     data: PersonalSchedule = self.toPersonalScheduleData(),
                     dto: ScheduleExecutionLogSaveDto = {
-                        periodStartDate: self.toDate(self.periodDate().startDate),
+	                    periodStartDate: self.toDate(self.periodDate().startDate),
                         periodEndDate: self.toDate(self.periodDate().endDate),
-                        implementAtr: data.implementAtr,
-                        reCreateAtr: data.reCreateAtr,
-                        processExecutionAtr: data.processExecutionAtr,
-                        reTargetAtr: data.rebuildTargetAtr,
-                        resetWorkingHours: data.resetWorkingHours,
-                        resetMasterInfo: data.resetMasterInfo,
-                        reTimeAssignment: data.resetTimeAssignment,
-                        reConverter: data.recreateConverter,
-                        reStartEndTime: data.resetStartEndTime,
-                        reEmpOffWork: data.recreateEmployeeOffWork,
-                        reShortTermEmp: data.recreateShortTermEmployee,
-                        reWorkTypeChange: data.recreateWorkTypeChange,
-                        reDirectBouncer: data.recreateDirectBouncer,
-                        // TODO
-                        protectHandCorrect: null,
-                        confirm: data.confirm,
-                        createMethodAtr: data.createMethodAtr,
-                        copyStartDate: self.toDate(self.copyStartDate()),
-                        employeeIds: self.findEmployeeIdsByCode(self.selectedEmployeeCode())
+                        creationType: data.selectedImplementAtrCode,
+                        reTargetAtr: data.selectRebuildAtrCode,
+                        referenceMaster: data.creationMethodCode,
+                        reTargetTransfer: data.recreateConverter,
+                        reTargetLeave: data.recreateEmployeeOffWork,
+                        reTargetShortWork: data.recreateShortTimeWorkers,
+                        reTargetLaborChange: data.recreateDirectBouncer,
+                        reOverwriteConfirmed: data.overwriteConfirmedData,
+                        reOverwriteRevised: data.createAfterDeleting,
+                        monthlyPatternId: data.monthlyPatternCode,
+                        beConfirmed: data.confirm, //confirm
+                        creationMethod: data.creationMethodCode,
+                        copyStartYmd: self.toDate(self.copyStartDate()), //copyStartDate
+                        employeeIds: self.employeeIds(),
+	                    employeeIdLogin: user.employeeIdLogin
                     };
                 return dto;
             }
 
+	        /**
+	         * collection data => command save
+	         */
+	        private collectionData(): ScheduleExecutionLogSaveDto {
+		        var self = this,
+			        data: PersonalSchedule = self.toPersonalScheduleData(),
+			        dto: ScheduleExecutionLogSaveDto = {
+				        periodStartDate: self.toDate(self.periodDate().startDate),
+				        periodEndDate: self.toDate(self.periodDate().endDate),
+				        implementAtr: data.implementAtr,
+				        reCreateAtr: data.reCreateAtr,
+				        processExecutionAtr: data.processExecutionAtr,
+				        reTargetAtr: data.rebuildTargetAtr,
+				        resetWorkingHours: data.resetWorkingHours,
+				        resetMasterInfo: data.resetMasterInfo,
+				        reTimeAssignment: data.resetTimeAssignment,
+				        reConverter: data.recreateConverter,
+				        reStartEndTime: data.resetStartEndTime,
+				        reEmpOffWork: data.recreateEmployeeOffWork,
+				        reShortTermEmp: data.recreateShortTermEmployee,
+				        reWorkTypeChange: data.recreateWorkTypeChange,
+				        reDirectBouncer: data.recreateDirectBouncer,
+				        // TODO
+				        protectHandCorrect: null,
+				        confirm: data.confirm,
+				        createMethodAtr: data.createMethodAtr,
+				        copyStartDate: self.toDate(self.copyStartDate()),
+				        employeeIds: self.findEmployeeIdsByCode(self.selectedEmployeeCode())
+			        };
+		        return dto;
+	        }
             /**
              * convert work type setting
              */
@@ -1073,7 +1097,6 @@ module nts.uk.at.view.ksc001.b {
                 let self = this;
                 let user: any = __viewContext.user;
                 self.findPersonalScheduleByEmployeeId(user.employeeId).done((data) => {
-
                     if( typeof data !=='undefined' && data ) {
                         self.recreateConverter(data.recreateConverter);//異動者
                         self.recreateDirectBouncer(data.recreateDirectBouncer); //休職休業者
@@ -1087,23 +1110,23 @@ module nts.uk.at.view.ksc001.b {
                         self.overwriteConfirmedData(data.overwriteConfirmedData);
                         self.selectedImplementAtrCode(data.selectedImplementAtrCode);
                         self.selectRebuildAtrCode(data.selectRebuildAtrCode);
-
+	                    self.checkCreateMethodAtrPersonalInfo(data.checkCreateMethodAtrPersonalInfo);
                         self.isConfirmedCreation(data.isConfirmedCreation);
                         self.monthlyPatternCode(data.monthlyPatternCode);
                         self.creationMethodCode(data.creationMethodCode);
                         self.confirm(data.confirm);
-                        // self.createMethodAtr(data.createMethodAtr);
-                        // self.employeeId(data.employeeId);
-                        // self.holidayReflect(data.holidayReflect);
-                        // self.holidayUseAtr(data.holidayUseAtr);
-                        // self.holidayWorkType(data.holidayWorkType);
-                        // self.implementAtr(data.implementAtr);
-                        // self.legalHolidayUseAtr(data.legalHolidayUseAtr);
-                        // self.legalHolidayWorkType(data.legalHolidayWorkType);
-                        // self.patternCode(data.patternCode);
+                        self.createMethodAtr(data.createMethodAtr);
+                        self.employeeId(data.employeeId);
+                        //self.holidayReflect(data.holidayReflect);
+                        ///self.holidayUseAtr(data.holidayUseAtr);
+                        //self.holidayWorkType(data.holidayWorkType);
+                        self.implementAtr(data.implementAtr);
+                        //self.legalHolidayUseAtr(data.legalHolidayUseAtr);
+                        //self.legalHolidayWorkType(data.legalHolidayWorkType);
+                        //self.patternCode(data.patternCode);
                         //self.patternStartDate(data.patternStartDate);
-                        // self.processExecutionAtr(data.processExecutionAtr);
-                        // self.reCreateAtr(data.reCreateAtr);
+                        //self.processExecutionAtr(data.processExecutionAtr);
+                        //self.reCreateAtr(data.reCreateAtr);
                         self.resetMasterInfo(data.resetMasterInfo);
                         self.resetStartEndTime(data.resetStartEndTime);
                         self.resetTimeAssignment(data.resetTimeAssignment);
