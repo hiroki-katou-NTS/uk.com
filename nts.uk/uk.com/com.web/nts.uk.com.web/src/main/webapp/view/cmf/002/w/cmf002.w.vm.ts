@@ -148,7 +148,10 @@ module nts.uk.com.view.cmf002.w {
         // 情報メッセージ（ID：Msg_15）を表示する
         .then((response) => vm.$dialog.info({ messageId: 'Msg_15' }))
         // 画面を閉じる
-        .then(() => vm.$window.close())
+        .then(() => {
+          nts.uk.ui.windows.setShared('CMF002_B_PARAMS_FROM_W', command);
+          vm.$window.close();
+        })
         .always(() => vm.$blockui('clear'));
     }
 

@@ -35,6 +35,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             itemOutputName: 0
         }));
         checkFocusWhenCopy: boolean = false;
+        isSetPeriodText: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
             block.invisible();
@@ -53,7 +54,16 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     self.getOutItem(data);
                     self.settingCurrentCondition();
                     self.setNewMode(false);
-                    block.clear();
+
+                    service.findOutputPeriodSetting(data)
+                        .then((response) => {
+                            if (response) {
+                                self.isSetPeriodText(response.periodSetting === 1 ? getText('CMF002_530') : getText('CMF002_531'));
+                            } else {
+                                self.isSetPeriodText(getText('CMF002_531'));
+                            }
+                        })
+                        .always(() => block.clear());
                 }
             });
 
@@ -100,29 +110,27 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             let conditionSetCodeParam: string = '';
             self.standType(1);
             //アルゴリズム「外部出力取得設定一覧」を実行する
-            service.getCndSet(self.roleAuthority).done((itemList: Array<IConditionSet>) =>{
-                self.conditionSettingList.removeAll();
-                if (itemList && itemList.length > 0) {
-                    self.conditionSettingList(itemList);
-                    if (conditionSetCode) {
-                        self.setCondSetCode(conditionSetCode);
-                        self.index(self.getIndex(conditionSetCode));
+            service.getCndSet(self.roleAuthority)
+                .then((itemList: Array<IConditionSet>) =>{
+                    self.conditionSettingList.removeAll();
+                    if (itemList && itemList.length > 0) {
+                        self.conditionSettingList(itemList);
+                        if (conditionSetCode) {
+                            self.setCondSetCode(conditionSetCode);
+                            self.index(self.getIndex(conditionSetCode));
+                        }
+                        let code = self.conditionSettingList()[self.index()].conditionSetCode;
+                        self.setCondSetCode(code);
+                        setTimeout(function(){
+                            $("tr[data-id='" + code + "'] ").focus();
+                            self.setNewMode(false);
+                        }, 100);
+                    } else {
+                        self.createNewCondition();
                     }
-                    let code = self.conditionSettingList()[self.index()].conditionSetCode;
-                    self.setCondSetCode(code);
-                    setTimeout(function(){
-                        $("tr[data-id='" + code + "'] ").focus();
-                        self.setNewMode(false);
-                    }, 100);
-                } else {
-                    self.createNewCondition();
-                }
-            }).always(() => {
-                block.clear();
-            });
-
+                })
+                .always(() => block.clear());
         }
-
 
         /**
          * Setting each item on screen
@@ -305,14 +313,21 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             });
         }
 
+        /**
+         * UKDesign.UniversalK.共通.CMF_補助機能.CMF002_外部出力.B:外部出力設定.B:アルゴリズム.外部出力設定期間実行.外部出力設定期間実行
+         */
         public openWscreen() {
             const vm = this;
             setShared('CMF002_W_PARAMS', {
                 conditionSetCode: vm.conditionSetData().conditionSetCode(),
             });
+            // W画面(出力期間を設定)を表示する
             modal("/view/cmf/002/w/index.xhtml").onClosed(() => {
-                // TODO
+                //「出力期間設定」の期間設定のするしない区分をチェック
                 const params = getShared('CMF002_B_PARAMS_FROM_W');
+                if (params) {
+                    vm.isSetPeriodText(params.periodSetting === 1 ? getText('CMF002_530') : getText('CMF002_531'));
+                }
             });
         }
 
@@ -334,6 +349,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().stringFormat(0);
             self.conditionSetData().itemOutputName(0);
             self.setNewMode(true);
+            self.isSetPeriodText(getText('CMF002_531'));
         }
 
 
@@ -511,4 +527,5 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.categoryName(param.categoryName || '');
         }
     }
+
  }

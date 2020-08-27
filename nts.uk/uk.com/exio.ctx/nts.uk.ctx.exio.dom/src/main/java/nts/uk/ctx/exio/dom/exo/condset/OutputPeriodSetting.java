@@ -112,12 +112,16 @@ public class OutputPeriodSetting extends AggregateRoot {
 		this.startDateClassification = Optional.ofNullable(
 				EnumAdaptor.valueOf(memento.getStartDateClassification(), StartDateClassificationCode.class));
 		this.startDateSpecify = Optional.ofNullable(memento.getStartDateSpecify());
-		this.startDateAdjustment = Optional.ofNullable(new DateAdjustment(memento.getStartDateAdjustment()));
+		this.startDateAdjustment = Optional.ofNullable(memento.getStartDateAdjustment() == null 
+				? null 
+				: new DateAdjustment(memento.getStartDateAdjustment()));
 		
 		this.endDateClassification = Optional
 				.ofNullable(EnumAdaptor.valueOf(memento.getEndDateClassification(), EndDateClassificationCode.class));
 		this.endDateSpecify = Optional.ofNullable(memento.getEndDateSpecify());
-		this.endDateAdjustment = Optional.ofNullable(new DateAdjustment(memento.getEndDateAdjustment()));
+		this.endDateAdjustment = Optional.ofNullable(memento.getEndDateAdjustment() == null 
+				? null 
+				: new DateAdjustment(memento.getEndDateAdjustment()));
 	}
 
 	/**

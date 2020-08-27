@@ -197,7 +197,7 @@
 									<!--B15_1 出力期間の設定（ボタン）-->
 									<button id="B15_1" tabindex="11" data-bind="click: function(){$vm.openWscreen()}, enable: !$parent.isNewMode()" >#{i18n.getText('CMF002_529')}</button>
 									<!--B15_2 出力期間の有無 -->
-									<label id="B15_2" class="margin-left-15">#{i18n.getText('CMF002_530')}</label>
+									<label id="B15_2" class="margin-left-15" data-bind="text: $vm.isSetPeriodText"></label>
 								</div>
 							</div>
 							<div class="pull-left">
