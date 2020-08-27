@@ -112,5 +112,13 @@ module nts.uk.at.view.kaf000_ref.b.component8.viewmodel {
             }
             return "";   
         }
+
+		getApprovalDateFormat(loopApprover) {
+			const vm = this;
+			if(_.isNull(loopApprover.approvalDate()) || _.isUndefined(loopApprover.approvalDate()) || _.isEmpty(loopApprover.approvalDate())) {
+				return '';	
+			}
+			return moment(loopApprover.approvalDate()).format('YYYY/MM/DD HH:mm');
+		}
     }
 }
