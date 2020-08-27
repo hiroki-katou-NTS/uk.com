@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClo
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.*;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.i18n.TextResource;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -38,6 +39,10 @@ public class BentoReserveSettingCommandHandler extends CommandHandler<BentoReser
 
     @Inject
     private  BentomenuAdapter bentomenuAdapter;
+
+    final String bentoName = TextResource.localize("KMR001_83");
+    final String unit = TextResource.localize("KMR001_84");
+
 
     @Override
     protected void handle(CommandHandlerContext<BentoReserveSettingCommand> commandHandlerContext) {
@@ -108,8 +113,8 @@ public class BentoReserveSettingCommandHandler extends CommandHandler<BentoReser
                     workLocation = data.isPresent() ? data.get().getWorkLocationCd() : null;
                 }
                 Optional<WorkLocationCode> workLocationCode = workLocation == null ? Optional.empty() : Optional.of(new WorkLocationCode(workLocation));
-                Bento bento = new Bento(1,new BentoName("弁当１"),new BentoAmount(1000),
-                        new BentoAmount(0),new BentoReservationUnitName("円"),
+                Bento bento = new Bento(1,new BentoName(bentoName),new BentoAmount(1000),
+                        new BentoAmount(0),new BentoReservationUnitName(unit),
                         true,false,workLocationCode);
 
                 bentoMenuRepository.add(new BentoMenu(hist.identifier() , Arrays.asList(bento),bentoReservationClosingTime));

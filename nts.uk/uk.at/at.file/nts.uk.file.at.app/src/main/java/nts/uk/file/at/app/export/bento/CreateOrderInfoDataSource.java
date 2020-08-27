@@ -27,7 +27,7 @@ import java.util.Optional;
 @Getter
 public class CreateOrderInfoDataSource {
     private List<String> workplaceIds;
-    private List<String> workLocationCodes;
+    private String workLocationCodes;
     private DatePeriodDto period;
     private int totalExtractCondition;
     private int itemExtractCondition;
@@ -49,8 +49,11 @@ public class CreateOrderInfoDataSource {
         Optional<String> detailTitle = this.getDetailTitle() == null | "".equals(this.getDetailTitle())
                 ? Optional.empty() : Optional.of(this.getDetailTitle());
         ReservationClosingTimeFrame closingTimeFrame = EnumAdaptor.valueOf(this.getReservationClosingTimeFrame(), ReservationClosingTimeFrame.class);
+        List<String> workLocationCode = new ArrayList<>();
+        if(workLocationCodes != null & !"".equals(workLocationCodes))
+            workLocationCode.add(workLocationCodes);
 
-        OrderInfoDto result = createOrderInfoFileQuery.createOrderInfoFileQuery(this.getPeriod().convertToDate("yyyy/MM/dd"),this.getWorkplaceIds(), this.getWorkLocationCodes(),
+        OrderInfoDto result = createOrderInfoFileQuery.createOrderInfoFileQuery(this.getPeriod().convertToDate("yyyy/MM/dd"),this.getWorkplaceIds(), workLocationCode,
                 totalExtractCondition, itemExtractCondition, frameNo, totalTitle,
                 detailTitle, closingTimeFrame);
         if(this.extractionConditionChecked){
