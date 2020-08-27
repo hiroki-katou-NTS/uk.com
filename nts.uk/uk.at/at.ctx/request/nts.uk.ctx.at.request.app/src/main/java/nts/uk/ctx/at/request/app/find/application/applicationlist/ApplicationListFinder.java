@@ -32,9 +32,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.PhaseStatus;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -50,18 +48,18 @@ public class ApplicationListFinder {
 	private AppListInitialRepository repoAppListInit;
 	@Inject
 	private AppDispNameRepository repoAppDispName;
-	
+
 	@Inject
 	private ApprovalListDispSetRepository approvalListDispSetRepository;
-	
-	@Inject
-	private ApprovalListService approvalListService;
-	
+
+	// @Inject
+	// private ApprovalListService approvalListService;
+
 	private static final int MOBILE = 1;
 	public static final Integer NORMAL_MODE = 0;
 	public static final Integer APPROVAL_MODE = 1;
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
-	
+
 	/**
 	 * refactor 4
 	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.申請一覧初期処理.申請一覧初期処理
@@ -82,11 +80,11 @@ public class ApplicationListFinder {
 		// 「SPR連携用のパラメータ」をチェックする
 		if(param.getSprParam() != null) {
 			// 開始日付＝パラメタの期間（開始日）、終了日付＝パラメタの期間（終了日）とする
-			startDate = GeneralDate.fromString(param.getStartDate(), DATE_FORMAT); 
+			startDate = GeneralDate.fromString(param.getStartDate(), DATE_FORMAT);
 			endDate = GeneralDate.fromString(param.getEndDate(), DATE_FORMAT);
 		} else {
 			// メニューより起動か、申請画面からの戻りかチェックする(Kiểm tra xem bắt đầu từ menu hay là  trở về từ màn hình application)
-			if(Strings.isNotBlank(param.getAppListExtractCondition().getPeriodStartDate()) && 
+			if(Strings.isNotBlank(param.getAppListExtractCondition().getPeriodStartDate()) &&
 					Strings.isNotBlank(param.getAppListExtractCondition().getPeriodEndDate())) {
 				// ドメインモデル「申請一覧抽出条件」を取得する
 				AppListExtractCondition appListExtractCondition = param.getAppListExtractCondition().convertDtotoDomain();
@@ -100,7 +98,7 @@ public class ApplicationListFinder {
 			// 期間（開始日、終了日）が存する場合
 			if(Strings.isNotBlank(param.getStartDate()) && Strings.isNotBlank(param.getEndDate())) {
 				// 開始日付＝期間（開始日）、終了日付＝期間（終了日）とする
-				startDate = GeneralDate.fromString(param.getStartDate(), DATE_FORMAT); 
+				startDate = GeneralDate.fromString(param.getStartDate(), DATE_FORMAT);
 				endDate = GeneralDate.fromString(param.getEndDate(), DATE_FORMAT);
 				result.getDisplaySet().setStartDateDisp(startDate);
 				result.getDisplaySet().setEndDateDisp(endDate);
@@ -135,11 +133,11 @@ public class ApplicationListFinder {
 		List<ListOfAppTypes> listOfAppTypesLst = new ArrayList<>();
 		for(ListOfAppTypes listOfAppTypes : param.getListOfAppTypes().stream().map(x -> x.toDomain()).collect(Collectors.toList())) {
 			listOfAppTypesLst.add(new ListOfAppTypes(
-					listOfAppTypes.getAppType(), 
-					listOfAppTypes.getAppName(), 
-					false, 
-					listOfAppTypes.getOpProgramID(), 
-					listOfAppTypes.getOpApplicationTypeDisplay(), 
+					listOfAppTypes.getAppType(),
+					listOfAppTypes.getAppName(),
+					false,
+					listOfAppTypes.getOpProgramID(),
+					listOfAppTypes.getOpApplicationTypeDisplay(),
 					Optional.of("A")));
 		}
 		appListExtractCondition.setOpListOfAppTypes(Optional.of(listOfAppTypesLst));
@@ -188,7 +186,7 @@ public class ApplicationListFinder {
 		AppListInfo appListInfo = repoAppListInit.getApplicationList(appListExtractCondition, param.getDevice(), result);
 		result.setAppLst(appListInfo.getAppLst());
 		return new AppListInitDto(
-				AppListExtractConditionDto.fromDomain(appListExtractCondition), 
+				AppListExtractConditionDto.fromDomain(appListExtractCondition),
 				AppListInfoDto.fromDomain(result));
 //		AppListExtractConditionDto condition = param.getCondition();
 //		int device = param.getDevice();
@@ -259,13 +257,13 @@ public class ApplicationListFinder {
 //		}
 //		List<AppInfor> lstAppType = this.findListApp(lstAppData.getDataMaster().getLstAppMasterInfo(), param.isSpr(), param.getExtractCondition(), device);
 //		List<ApplicationDto_New> lstAppSort = appListExCon.equals(ApplicationListAtr.APPROVER) ?
-//				this.sortByIdModeApproval(lstAppDto, lstAppData.getDataMaster().getLstAppMasterInfo()) : 
+//				this.sortByIdModeApproval(lstAppDto, lstAppData.getDataMaster().getLstAppMasterInfo()) :
 //				this.sortByIdModeApp(lstAppDto, lstAppData.getDataMaster().getMapAppBySCD(), lstAppData.getDataMaster().getLstSCD());
 //        List<ApplicationDto_New> lstAppSortConvert = lstAppSort.stream().map(c -> c.convertInputDate(c)).collect(Collectors.toList());
 //
 //		List<ApplicationDataOutput> lstAppCommon= new ArrayList<>();
 //		for(ApplicationDto_New app : lstAppSortConvert){
-//			lstAppCommon.add(ApplicationDataOutput.convert(app, appListExCon.getAppListAtr().equals(ApplicationListAtr.APPROVER) ? 
+//			lstAppCommon.add(ApplicationDataOutput.convert(app, appListExCon.getAppListAtr().equals(ApplicationListAtr.APPROVER) ?
 //					this.convertStatusAppv(app.getReflectPerState(), device) : this.convertStatus(app.getReflectPerState(), device)));
 //		}
 //		List<AppAbsRecSyncData> lstSyncData = new ArrayList<>();
@@ -279,7 +277,7 @@ public class ApplicationListFinder {
 //				lstAppData.getDataMaster().getLstAppMasterInfo(), lstAppCommon, lstAppData.getAppStatusCount(), lstAgent, lstAppType,
 //				lstAppData.getLstContentApp(), lstSyncData, lstAppData.getDataMaster().getLstSCD(), appAllNumber, appPerNumber);
 	}
-	
+
 	/**
 	 * find status approval
 	 * @param lstStatusApproval
@@ -402,7 +400,7 @@ public class ApplicationListFinder {
 		java.util.Collections.sort(lstSCD);
 		for (String sCD : lstSCD) {
             lstResult.addAll(this.sortByDateTypePrePost(this.findBylstID(lstApp, mapAppBySCD.get(sCD))));
-			
+
 		}
 		return lstResult;
 	}
@@ -491,19 +489,19 @@ public class ApplicationListFinder {
                 return "-";
         }
     }
-    
 
-    
+
+
     public AppListInfo startCMMS45(List<ListOfAppTypesDto> listAppType) {
     	return null;
     }
-    
+
     @Inject
     private ApplicationRepository repoApplication;
-    
+
     @Inject
     private RequestSettingRepository repoRequestSet;
-    
+
 //	UKDesign.UniversalK.就業.KAF_申請.CMMS45_申請一覧・承認一覧（スマホ）.A：申請一覧.アルゴリズム.起動時処理
 //  アルゴリズム「起動時処理」を実行する
     public ApplicationListDtoMobile getList(List<ListOfAppTypesDto> listAppType, AppListExtractConditionDto appListExtractConditionDto){
@@ -534,26 +532,26 @@ public class ApplicationListFinder {
     	if (appListExtractConditionDto.getPeriodStartDate() != null && appListExtractConditionDto.getPeriodEndDate() != null) {
 	    	param.setStartDate(appListExtractConditionDto.getPeriodStartDate());
 	    	param.setEndDate(appListExtractConditionDto.getPeriodEndDate());
-    		
+
     	}
-    	
+
 //    	申請一覧初期処理
     	AppListInitDto appListInitDto =this.getAppList(param);
     	applicationListDto.setAppListInfoDto(appListInitDto.getAppListInfoDto());
     	applicationListDto.setAppListExtractConditionDto(appListInitDto.getAppListExtractConditionDto());
-    	
+
     	applicationListDto.setAppAllNumber(appAllNumber);
     	applicationListDto.setAppPerNumber(appPerNumber);
 //    	AppListInfo appListInfo = new AppListInfo();
 //    			AppListInfoDto.fromDomain(this.getAppList(param));
-    	
+
 //    	・ドメインモデル「申請表示設定」．事前事後区分表示
 //    	Optional<RequestSetting> requestSet = repoRequestSet.findByCompany(companyId);
 //		Integer isDisPreP = null;
 //		if (requestSet.isPresent()) {
 //			isDisPreP = requestSet.get().getApplicationSetting().getAppDisplaySetting().getPrePostAtrDisp().value;
 //		}
-		
+
 //		applicationListDto.setIsDisPreP(isDisPreP);
 //		applicationListDto.setStartDate(appListInfo.getDisplaySet().getStartDateDisp().toString(DATE_FORMAT));
 //		applicationListDto.setEndDate(appListInfo.getDisplaySet().getEndDateDisp().toString(DATE_FORMAT));
@@ -573,11 +571,11 @@ public class ApplicationListFinder {
 //											item.getOpAppEndDate().isPresent() ? item.getOpAppEndDate().get().toString(DATE_FORMAT) : null,
 //													null)).collect(Collectors.toList());
 //			applicationListDto.setLstApp(lstApp);
-//			
+//
 //		}
-		
-		
-		
+
+
+
 //		・ドメインモデル「申請表示名」．申請表示名称（List）
 //		List<AppDispName> appDispName = repoAppDispName.getAll();
 //		if (!CollectionUtil.isEmpty(appDispName)) {
@@ -585,7 +583,7 @@ public class ApplicationListFinder {
 //			applicationListDto.setLstAppInfor(lstAppInfor);
 //		}
 //		applicationListDto.setLstApp(appListInfo.get);
-		
+
 		return applicationListDto;
     }
     @Inject
@@ -602,10 +600,10 @@ public class ApplicationListFinder {
     	applicationListDtoMobile.setAppListExtractConditionDto(null);
 //    	return this.convertApplicationListDto(appListExtractCondition, appListInfo, applicationListDtoMobile);
     	return applicationListDtoMobile;
-    } 
-    
-    
-    
-    
+    }
+
+
+
+
 }
 
