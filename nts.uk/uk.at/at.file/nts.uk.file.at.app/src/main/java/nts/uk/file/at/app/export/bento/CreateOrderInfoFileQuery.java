@@ -6,6 +6,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.*;
 import nts.uk.ctx.at.record.app.find.reservation.bento.query.ListBentoResevationQuery;
+import nts.uk.ctx.at.record.app.query.stamp.GetStampCardQuery;
 import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
@@ -77,6 +78,9 @@ public class CreateOrderInfoFileQuery {
 
     @Inject
     private ListBentoResevationQuery query;
+
+    @Inject
+    GetStampCardQuery getStampCardQuery;
 
     public OrderInfoDto createOrderInfoFileQuery(DatePeriod period, List<String> workplaceId,
                                                  List<String> workLocationCodes, Optional<BentoReservationSearchConditionDto> totalExtractCondition,
@@ -188,7 +192,6 @@ public class CreateOrderInfoFileQuery {
 
         // ドメインモデル「所属職場履歴」、「所属職場履歴項目」から、指定期間に存在する所属職場の社員IDを取得する
         sIdFromAffWorkplaceHistorySet.addAll(affWorkplaceHistoryRepository.getByLstWplIdAndPeriod(workplaceId, period.start(), period.end()));
-        sIdFromAffWorkplaceHistorySet.addAll(affWorkplaceHistoryRepository.getByLstWplIdAndPeriod(workplaceId, period.start(), period.end())) ;
 
         //社員IDの重複は除く
         // ドメインモデル「所属会社履歴（社員別）」をすべて取得する
@@ -222,7 +225,7 @@ public class CreateOrderInfoFileQuery {
     private Map<String, String> getStampCardFromSID(List<String> sIds){
         return stampCardRepository.getLstStampCardByLstSid(sIds).stream()
                                                     .sorted(Comparator.comparing(StampCard::getRegisterDate).reversed())
-                                                    .collect(Collectors.toMap(StampCard::getEmployeeId, item -> item.getStampNumber().v()));
+                                                    .collect(Collectors.toMap(StampCard::getEmployeeId, item -> item.getStampNumber().v(), (oldVal, newVal) -> oldVal));
     }
 
     /** 社員ID(List)から個人社員基本情報を取得 */
