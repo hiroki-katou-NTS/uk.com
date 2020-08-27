@@ -93,8 +93,9 @@
                     </tr>
                     <tr>
                         <td>
-                            <div id="A6_1" tabindex="10" data-bind="ntsTabPanel: {dataSource: tabs, active: selectedTab }">
-                                <div id="A6_4" class="tab-content-1">
+                            <div id="A6_1"
+                                 data-bind="ntsTabPanel: {dataSource: tabs, active: selectedTab }">
+                                <div tabindex="10" id="A6_4" class="tab-content-1">
                                     <table class="table_content">
                                         <colgroup>
                                             <col/>
@@ -212,10 +213,7 @@
 													enable: conditionListCcbEnable,
 													required: false,
 													selectFirstIfNull: false,
-													columns: [
-														{ prop: 'code', length: 4 },
-														{ prop: 'name', length: 10 },
-													]}">
+													columns: [{prop: 'name'}]}">
 												</div>
 											</td>
 										</tr>

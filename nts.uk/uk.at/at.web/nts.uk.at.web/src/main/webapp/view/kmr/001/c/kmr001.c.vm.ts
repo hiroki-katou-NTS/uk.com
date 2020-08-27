@@ -58,8 +58,7 @@ module nts.uk.at.kmr001.c {
 
         isLasted: KnockoutObservable<boolean> = ko.observable(true);
 
-        readOnly1: KnockoutObservable<boolean> = ko.observable(false);
-        readOnly2: KnockoutObservable<boolean> = ko.observable(false);
+        visibleClosing2: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             super();
             const vm = this;
@@ -85,49 +84,56 @@ module nts.uk.at.kmr001.c {
 
         reloadPage() {
             const vm = this;
+            vm.$blockui("invisible");
             vm.$ajax(API.GET_ALL, {histId : vm.history && vm.history.params.historyId ? vm.history.params.historyId : null}).done(dataRes => {
                 let bentoDtos = dataRes.bentoDtos;
-                if(vm.operationDistinction() == 1) {
-                    let array: Array<any> = [];
-                    _.range(1, 41).forEach(item =>
-                        array.push(new ItemBentoByLocation(
-                            item.toString(),
-                            "",
-                            "",
-                        ))
-                    );
-                    bentoDtos.forEach(item => {
-                            vm.listIdBentoMenu.push(item.frameNo);
-                            array.forEach((rc, index) => {
-                                if(item.frameNo == rc.id) {
-                                    array[index].locationName = item.workLocationName;
-                                    array[index].name = item.bentoName;
-                                }
-                            })
-                        }
-                    );
-                    vm.itemsBento(array);
+                if(bentoDtos.length > 0) {
+                    if(vm.operationDistinction() == 1) {
+                        let array: Array<any> = [];
+                        _.range(1, 41).forEach(item =>
+                            array.push(new ItemBentoByLocation(
+                                item.toString(),
+                                "",
+                                "",
+                            ))
+                        );
+                        bentoDtos.forEach(item => {
+                                vm.listIdBentoMenu.push(item.frameNo);
+                                array.forEach((rc, index) => {
+                                    if(item.frameNo == rc.id) {
+                                        array[index].locationName = item.workLocationName;
+                                        array[index].name = item.bentoName;
+                                    }
+                                })
+                            }
+                        );
+                        vm.itemsBento(array);
+                    } else {
+                        let array: Array<any> = [];
+                        _.range(1, 41).forEach(item =>
+                            array.push(new ItemBentoByCompany(
+                                item.toString(),
+                                "",
+                            ))
+                        );
+                        bentoDtos.forEach(item => {
+                                vm.listIdBentoMenu.push(item.frameNo);
+                                array.forEach((rc, index) => {
+                                    if(item.frameNo == rc.id) {
+                                        array[index].name = item.bentoName;
+                                    }
+                                })
+                            }
+                        );
+                        vm.itemsBento(array);
+                    }
                 } else {
-                    let array: Array<any> = [];
-                    _.range(1, 41).forEach(item =>
-                        array.push(new ItemBentoByCompany(
-                            item.toString(),
-                            "",
-                        ))
-                    );
-                    bentoDtos.forEach(item => {
-                            vm.listIdBentoMenu.push(item.frameNo);
-                            array.forEach((rc, index) => {
-                                if(item.frameNo == rc.id) {
-                                    array[index].name = item.bentoName;
-                                }
-                            })
-                        }
-                    );
-                    vm.itemsBento(array);
+                    vm.$dialog.error({ messageId: 'Msg_1849'});
                 }
                 vm.listData = [...bentoDtos];
-            })
+            }).fail(function (error) {
+                vm.$dialog.error({ messageId: error.messageId });
+            }).always(() => this.$blockui("clear"));
 
         }
 
@@ -153,6 +159,8 @@ module nts.uk.at.kmr001.c {
                             vm.selectedWorkLocationCode(vm.workLocationList()[0].id);
                             vm.$blockui("clear");
                         });
+                    }).fail(function (error) {
+                        vm.$dialog.error({ messageId: error.messageId });
                     }).always(() => vm.$blockui("clear"));
                 }
             });
@@ -228,17 +236,21 @@ module nts.uk.at.kmr001.c {
             const vm = this;
             vm.$ajax(API.GET_ALL, {histId : historyId ? historyId : null}).done(dataRes => {
                 vm.$blockui('invisible');
+                let bentoDtos = dataRes.bentoDtos;
                 vm.reservationFrameName1(dataRes.reservationFrameName1);
-                vm.reservationFrameName2(dataRes.reservationFrameName2);
-                vm.reservationEndTime1(dataRes.reservationEndTime1);
-                vm.reservationEndTime2(dataRes.reservationEndTime2);
-                vm.reservationStartTime1(dataRes.reservationStartTime1);
-                vm.reservationStartTime2(dataRes.reservationStartTime2);
+                vm.reservationStartTime1(parseTime(dataRes.reservationStartTime1, true).format());
+                vm.reservationEndTime1(parseTime(dataRes.reservationEndTime1,true).format());
                 vm.start(dataRes.startDate);
                 vm.end(dataRes.endDate);
                 vm.operationDistinction(dataRes.operationDistinction);
+                vm.listData = [...bentoDtos];
+                if(dataRes.reservationEndTime2 && dataRes.reservationStartTime2 && dataRes.reservationFrameName2) {
+                    vm.visibleClosing2(true);
+                    vm.reservationEndTime2(parseTime(dataRes.reservationEndTime2, true).format());
+                    vm.reservationStartTime2(parseTime(dataRes.reservationStartTime2, true).format());
+                    vm.reservationFrameName2(dataRes.reservationFrameName2);
+                }
                 if(dataRes.bentoDtos.length > 0) {
-                    let bentoDtos = dataRes.bentoDtos;
                     bentoDtos = _.orderBy(bentoDtos, ['frameNo', 'asc']);
 
                     if(dataRes.operationDistinction == 1) {
@@ -302,15 +314,9 @@ module nts.uk.at.kmr001.c {
                         Number(bentoDtos[0].price1), Number(bentoDtos[0].price2),
                         bentoDtos[0].workLocationCode
                     ));
-                    vm.reservationFrameName1(dataRes.reservationFrameName1);
-                    vm.reservationFrameName2(dataRes.reservationFrameName2);
-                    vm.reservationStartTime1(parseTime(dataRes.reservationStartTime1, true).format());
-                    vm.reservationStartTime2(parseTime(dataRes.reservationStartTime2, true).format());
-                    vm.reservationEndTime1(parseTime(dataRes.reservationEndTime1,true).format());
-                    vm.reservationEndTime2(parseTime(dataRes.reservationEndTime2, true).format());
-                    vm.listData = [...bentoDtos];
+                } else {
+                    vm.$dialog.error({ messageId: 'Msg_1849'});
                 }
-                vm.$blockui('clear');
             }).then(() => {
                 vm.selectedBentoSetting.subscribe(data => {
                     vm.$blockui('invisible');
@@ -334,28 +340,26 @@ module nts.uk.at.kmr001.c {
                         vm.selectedWorkLocationCode(vm.workLocationList()[0].id);
                         vm.$blockui('clear');
                     }
-                    // vm.model().reservationAtr1.subscribe(data => {
-                    //     if( !data && !vm.model().reservationAtr2()) {
-                    //         vm.readOnly1(true);
-                    //         vm.model().reservationAtr1(true);
-                    //         return;
-                    //     }
-                    //     vm.readOnly1(false);
-                    //     vm.readOnly2(false);
-                    // });
-                    // vm.model().reservationAtr2.subscribe(data => {
-                    //     if( !data && !vm.model().reservationAtr1() ) {
-                    //         vm.readOnly2(true);
-                    //         vm.model().reservationAtr2(true);
-                    //         return;
-                    //     }
-                    //     vm.readOnly1(false);
-                    //     vm.readOnly2(false);
-                    // })
+                    nts.uk.ui.errors.clearAll();
                 });
                 vm.selectedWorkLocationCode.subscribe((data) => {
                     vm.model().workLocationCode(data);
                 });
+            }).fail(function (error) {
+                vm.$dialog.error({ messageId: error.messageId });
+                vm.columnBento([
+                    { headerText: vm.$i18n('KMR001_41'), key: 'id', width: 50 },
+                    { headerText: vm.$i18n('KMR001_42'), key: 'name', width: 325 },
+                ]);
+                let array: Array<any> = [];
+                _.range(1, 41).forEach(item =>
+                    array.push(new ItemBentoByCompany(
+                        item.toString(),
+                        "",
+                    ))
+                );
+                vm.itemsBento(array);
+                vm.isLasted(false);
             }).always(() => this.$blockui("clear"));
         }
     }
@@ -410,7 +414,7 @@ module nts.uk.at.kmr001.c {
                 if(data) {
                     $('.reservationAtr').ntsError('clear');
                 }
-            })
+            });
         }
 
     }
