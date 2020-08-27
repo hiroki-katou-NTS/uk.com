@@ -1,3 +1,5 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+
 module nts.uk.at.view.kmr004.a {
 	const API = {
 		START: "screen/at/record/reservation-conf-list/start",
@@ -253,7 +255,7 @@ module nts.uk.at.view.kmr004.a {
 		}
 
 		checkBeforeExtract(data:any): boolean{
-			if ((data.workplaceIds.length < 1) && (data.workLocationCodes.length < 1)) {
+			if ((data.workplaceIds.length < 1) && (data.workLocationCodes == null)) {
 				return false;
 			}
 			return true;

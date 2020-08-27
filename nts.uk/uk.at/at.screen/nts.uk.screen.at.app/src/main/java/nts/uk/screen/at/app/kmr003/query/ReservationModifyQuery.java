@@ -27,6 +27,7 @@ import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationS
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
@@ -91,10 +92,10 @@ public class ReservationModifyQuery {
 
         // 5:
         // List<社員ID＞から打刻カードを全て取得する
-        List<StampCard> stampCards = getStampCardQuery.getStampCardBy(empIds);
+        Map<String, StampNumber> stampCards = getStampCardQuery.getStampNumberBy(empIds);
 
-        List<ReservationRegisterInfo> reservationRegisterInfos = stampCards.stream()
-                .map(x -> new ReservationRegisterInfo(x.getStampNumber().v())).collect(Collectors.toList());
+        List<ReservationRegisterInfo> reservationRegisterInfos = stampCards.entrySet().stream()
+                .map(x -> new ReservationRegisterInfo(x.getValue().v())).collect(Collectors.toList());
 
         // 3:
         // 社員ID(List)から個人社員基本情報を取得
@@ -103,8 +104,7 @@ public class ReservationModifyQuery {
         // UI処理[16]
         if (searchCondition == BentoReservationSearchConditionDto.NEW_ORDER) {
             for (String empId : empIds) {
-                Optional<StampCard> stampCardOpt = stampCards.stream().filter(x -> x.getEmployeeId().equals(empId)).findFirst();
-                if (stampCardOpt.isPresent()) {
+                if (stampCards.containsKey(empId)) {
                     continue;
                 }
 
@@ -219,7 +219,7 @@ public class ReservationModifyQuery {
                                                                         ReservationDate reservationDate,
                                                                         Optional<WorkLocationCode> workLocationCodeOpt,
                                                                         BentoReservationSearchConditionDto searchCondition,
-                                                                        List<StampCard> stampCards,
+                                                                        Map<String, StampNumber> stampCards,
                                                                         List<PersonEmpBasicInfoDto> empBasicInfos) {
         // List<予約登録情報>.size > 0 AND Input．検索条件!=新規条件
         List<BentoReservation> bentoReservations = new ArrayList<>();
@@ -233,18 +233,18 @@ public class ReservationModifyQuery {
         }
         List<ReservationModifyEmployeeDto> reservationModifyEmps = new ArrayList<>();
         for (BentoReservation bentoReservation : bentoReservations) {
-            Optional<StampCard> stampCardOpt = stampCards.stream()
-                    .filter(x -> x.getStampNumber().v().equals(bentoReservation.getRegisterInfor().getReservationCardNo()))
+            Optional<Map.Entry<String, StampNumber>> stampCardOpt = stampCards.entrySet().stream()
+                    .filter(x -> x.getValue().v().equals(bentoReservation.getRegisterInfor().getReservationCardNo()))
                     .findFirst();
             if (!stampCardOpt.isPresent()) {
                 // 新規注文の場合誰か一人が打刻カードがない場合
                 // ※注文行を作らない
                 continue;
             }
-            StampCard stampCard = stampCardOpt.get();
+            String empId = stampCardOpt.get().getKey();
 
             Optional<PersonEmpBasicInfoDto> empBasicInfoOpt = empBasicInfos.stream()
-                    .filter(x -> x.getEmployeeId().equals(stampCard.getEmployeeId()))
+                    .filter(x -> x.getEmployeeId().equals(empId))
                     .findFirst();
             if (!empBasicInfoOpt.isPresent()) continue;
             PersonEmpBasicInfoDto empBasicInfo = empBasicInfoOpt.get();
@@ -274,7 +274,7 @@ public class ReservationModifyQuery {
 
     private List<ReservationModifyEmployeeDto> getNewOrderReservationModifyEmps(List<ReservationRegisterInfo> reservationRegisterInfos,
                                                                                 ReservationDate reservationDate,
-                                                                                List<StampCard> stampCards,
+                                                                                Map<String, StampNumber> stampCards,
                                                                                 List<PersonEmpBasicInfoDto> empBasicInfos) {
         List<ReservationRegisterInfo> newOrderInfos = new ArrayList<>();
         if (!CollectionUtil.isEmpty(reservationRegisterInfos)) {
@@ -285,18 +285,18 @@ public class ReservationModifyQuery {
 
         List<ReservationModifyEmployeeDto> reservationModifyEmps = new ArrayList<>();
         for (ReservationRegisterInfo cardInfo : newOrderInfos) {
-            Optional<StampCard> stampCardOpt = stampCards.stream()
-                    .filter(x -> x.getStampNumber().v().equals(cardInfo.getReservationCardNo()))
+            Optional<Map.Entry<String, StampNumber>> stampCardOpt = stampCards.entrySet().stream()
+                    .filter(x -> x.getValue().v().equals(cardInfo.getReservationCardNo()))
                     .findFirst();
             if (!stampCardOpt.isPresent()) {
                 // 新規注文の場合誰か一人が打刻カードがない場合
                 // ※注文行を作らない
                 continue;
             }
-            StampCard stampCard = stampCardOpt.get();
+            String empId = stampCardOpt.get().getKey();
 
             Optional<PersonEmpBasicInfoDto> empBasicInfoOpt = empBasicInfos.stream()
-                    .filter(x -> x.getEmployeeId().equals(stampCard.getEmployeeId()))
+                    .filter(x -> x.getEmployeeId().equals(empId))
                     .findFirst();
             if (!empBasicInfoOpt.isPresent()) continue;
             PersonEmpBasicInfoDto empBasicInfo = empBasicInfoOpt.get();

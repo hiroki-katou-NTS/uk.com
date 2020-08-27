@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.command.reservation.reseritemset;
 
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -36,6 +37,9 @@ public class DeleteBentoCommandHandler extends CommandHandler<DeleteBentoCommand
             Optional<Bento> optionalBento = bentoMenu.getMenu().stream()
                     .filter(x -> x.getFrameNo() == command.getFrameNo())
                     .findFirst();
+            if (bentoMenu.getMenu().size() <= 1){
+                throw new BusinessException("Msg_115");
+            }
             optionalBento.ifPresent(bento -> bentoMenu.getMenu().remove(bentoMenu.getMenu().indexOf(bento)));
             bentoMenuRepository.update(bentoMenu);
         }

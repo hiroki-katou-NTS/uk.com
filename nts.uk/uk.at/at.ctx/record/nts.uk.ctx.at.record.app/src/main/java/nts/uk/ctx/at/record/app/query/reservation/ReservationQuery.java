@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.query.reservation;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.query.stamp.GetStampCardQuery;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
@@ -17,6 +18,7 @@ import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationS
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -24,6 +26,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -44,6 +47,9 @@ public class ReservationQuery {
 
 	@Inject
 	private BentoReservationSettingRepository bentoReservationSettingRepository;
+
+	@Inject
+	private GetStampCardQuery getStampCardQuery;
 
 	public ReservationDto findAll(ReservationDateParam param) {
 		GeneralDate date = GeneralDate.fromString(param.getDate(), "yyyy/MM/dd");
@@ -67,11 +73,10 @@ public class ReservationQuery {
 					new WorkLocationCode(hisItems.get().getWorkLocationCd()));
 		}
 
-        StampCard stampCard = stampCardRepository.getLstStampCardByLstSidAndContractCd(
-				Arrays.asList(employeeId),
-				AppContexts.user().contractCode()).get(0);
-		
-		ReservationRegisterInfo reservationRegisterInfo = new ReservationRegisterInfo(stampCard.getStampNumber().toString());
+		Map<String, StampNumber> stampCards = getStampCardQuery.getStampNumberBy(Arrays.asList(employeeId));
+		if (!stampCards.containsKey(employeeId)) return null;
+		StampNumber stampNumber = stampCards.get(employeeId);
+		ReservationRegisterInfo reservationRegisterInfo = new ReservationRegisterInfo(stampNumber.toString());
 		//1 get*(予約対象日,カード番号)
 		val listBento = bentoReservationRepo.findList(reservationRegisterInfo, new ReservationDate(date, EnumAdaptor.valueOf(param.getClosingTimeFrame(), ReservationClosingTimeFrame.class))) ;
 		//2 get(会社ID, 予約日)
