@@ -158,7 +158,7 @@ public class ReservationModifyQuery {
 
         // UI処理[11]
         if (CollectionUtil.isEmpty(result.getBentoClosingTimes())) {
-            errors.add(new ReservationModifyError("Msg_1604", TextResource.localize("Msg_1604")));
+            throw new BusinessException("Msg_1604");
         }
 
         List<ReservationModifyEmployeeDto> reservationModifyEmps = new ArrayList<>();

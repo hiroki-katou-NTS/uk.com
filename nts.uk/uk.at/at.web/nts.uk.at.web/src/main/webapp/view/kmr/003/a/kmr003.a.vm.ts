@@ -349,12 +349,7 @@ module nts.uk.at.kmr003.a {
                         })
                     });
 
-                    nts.uk.ui.dialog.bundledErrors({ errors: errors }).then(() => {
-                        self.$blockui("clear");
-                    })
-                }
-                else {
-                    self.$blockui("clear");
+                    nts.uk.ui.dialog.bundledErrors({ errors: errors });
                 }
             }).fail(err => {
                 self.$dialog.error(err);
@@ -362,6 +357,7 @@ module nts.uk.at.kmr003.a {
             }).always(() => {
                 $("#grid").mGrid("destroy");
                 self.loadMGrid();
+                self.$blockui("clear");
 
                 // check focus
                 if (_.isEmpty(self.datas)) {
