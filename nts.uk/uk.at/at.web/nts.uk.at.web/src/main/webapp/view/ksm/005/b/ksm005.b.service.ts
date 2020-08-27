@@ -8,7 +8,7 @@ module nts.uk.at.view.ksm005.b {
             checkPublicHoliday: "at/schedule/holiday/getHolidayByDate",
             checkWeeklyWorkSetting: "ctx/at/schedule/pattern/work/weekly/setting/checkDate",
             batchWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthly/setting/batch",
-            getWeeklyWork: '/screen/at/record/weekly_work/get'
+            getWeeklyWork: 'screen/at/record/weekly-work/get'
         }
         
         /**
