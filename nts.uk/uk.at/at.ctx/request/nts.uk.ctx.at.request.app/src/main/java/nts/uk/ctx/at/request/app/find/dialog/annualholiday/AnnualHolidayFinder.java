@@ -8,9 +8,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.uk.ctx.at.request.app.find.dialog.annualholiday.dto.AnnualHolidayDto;
 import nts.uk.ctx.at.request.app.find.dialog.annualholiday.dto.AnnualLeaveGrantDto;
 import nts.uk.ctx.at.request.app.find.dialog.annualholiday.dto.ReNumAnnLeaReferenceDateDto;
@@ -93,7 +93,7 @@ public class AnnualHolidayFinder {
 			itemDto.setGrantNumber(item.getGrantNumber());
 			itemDto.setRemainDays(item.getRemainDays());
 			itemDto.setRemainMinutes(item.getRemainMinutes());
-			itemDto.setExpiredInCurrentMonthFg(closingPeriod.contains(item.getDeadline()));
+			itemDto.setExpiredInCurrentMonthFg(closingPeriod.end().afterOrEquals(item.getDeadline()));
 			return itemDto;
 		}).collect(Collectors.toList()));
 		reNumAnnLeaveDto.setAnnualLeaveManageInforExports(reNumAnnLeave.getAnnualLeaveManageInforExports());
