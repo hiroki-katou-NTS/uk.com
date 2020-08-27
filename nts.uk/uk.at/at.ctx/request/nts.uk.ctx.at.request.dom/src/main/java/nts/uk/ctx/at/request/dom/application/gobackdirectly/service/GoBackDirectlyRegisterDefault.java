@@ -256,10 +256,11 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		}
 //		確認メッセージリスト＝取得した確認メッセージリスト 
 		GoBackDirectAtr check = goBackDirectCheckNew(goBackDirectly);
-		if (check == GoBackDirectAtr.NOT) {
-//			確認メッセージリストに（Msg_338）を追加する
-			lstConfirm.add(new ConfirmMsgOutput("Msg_338", Collections.emptyList()));
-		}
+		
+//		if (check == GoBackDirectAtr.NOT) {
+////			確認メッセージリストに（Msg_338）を追加する
+//			lstConfirm.add(new ConfirmMsgOutput("Msg_338", Collections.emptyList()));
+//		}
 		return lstConfirm;
 	}
 	
