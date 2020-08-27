@@ -375,9 +375,7 @@ public class EmploymentSystemFinder {
 						itemDto.setOccurrenceNumber(item.getNumberOccurren().getDay().v());
 						// field ・発生時間　＝　取得した逐次発生の休暇明細．発生数．時間
 						Optional<AttendanceTime> oOccurrenceHour = item.getNumberOccurren().getTime();
-						if (oOccurrenceHour.isPresent()) {
-							itemDto.setOccurrenceHour(oOccurrenceHour.get().v());
-						}	
+						itemDto.setOccurrenceHour(oOccurrenceHour.map(o -> o.v()).orElse(null));						
 						// field ・期限日　＝　取得した逐次発生の休暇明細．休暇発生明細．期限日
 						Optional<UnbalanceCompensation> oUnbalanceCompensation = item.getUnbalanceCompensation();
 						if (oUnbalanceCompensation.isPresent()) {
@@ -392,9 +390,7 @@ public class EmploymentSystemFinder {
 						itemDto.setDigestionNumber(item.getUnbalanceNumber().getDay().v());
 						// field ・消化時間　＝　取得した逐次発生の休暇明細．未相殺数．時間
 						Optional<AttendanceTime> oDigestionHour = item.getUnbalanceNumber().getTime();
-						if (oDigestionHour.isPresent()) {
-							itemDto.setDigestionHour(oDigestionHour.get().v());
-						}	
+						itemDto.setDigestionHour(oDigestionHour.map(o -> o.v()).orElse(null));
 					}
 					// field 管理データ状態区分　＝　取得した逐次発生の休暇明細．状態
 					itemDto.setManagementDataStatus(item.getDataAtr().value);

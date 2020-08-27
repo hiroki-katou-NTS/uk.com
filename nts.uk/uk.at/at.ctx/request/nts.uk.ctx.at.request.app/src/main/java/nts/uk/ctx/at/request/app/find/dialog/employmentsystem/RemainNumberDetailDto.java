@@ -14,22 +14,22 @@ public class RemainNumberDetailDto {
 	private GeneralDate expirationDate;
 	
 	// field 消化数
-	private double digestionNumber;
+	private Double digestionNumber;
 	
 	// field 消化日
 	private GeneralDate digestionDate;
 	
 	// field 消化時間
-	private int digestionHour;
+	private Integer digestionHour;
 	
 	// field 発生数
-	private double occurrenceNumber;
+	private Double occurrenceNumber;
 	
 	// field 発生日
 	private GeneralDate occurrenceDate;
 	
 	// field 発生時間
-	private int occurrenceHour;
+	private Integer occurrenceHour;
 	
 	// field 管理データ状態区分
 	private int managementDataStatus;
