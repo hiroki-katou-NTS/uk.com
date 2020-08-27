@@ -95,17 +95,17 @@
 				<div class="radioButtonGroup comboBoxLists">
                     <!-- C3_2 -->
 					<div class="checkBoxItem">
-						<div data-bind="ntsCheckBox: { checked: isConfirmedCreation, text: $i18n('KSC001_17') }"></div>
+						<div tabindex="5" data-bind="ntsCheckBox: { checked: isConfirmedCreation, text: $i18n('KSC001_17') }"></div>
 					</div>
 				</div>
 			</div>
 			
 			<div class="buttonPrevNext">
 				<div class="buttonBeginPrevious" tabindex="-1">
-					<button tabindex="4" class="large" data-bind="click: previousPageC">#{i18n.getText('KSC001_102')}</button>
+					<button tabindex="6" class="large" data-bind="click: previousPageC">#{i18n.getText('KSC001_102')}</button>
 				</div>
 				<div class="buttonBeginNext">
-					<button tabindex="5" class="proceed x-large"
+					<button tabindex="7" class="proceed x-large"
 						data-bind="click: nextPageC, enable: $root.errors.isEmpty() &amp; isEnableNextPageC() ">#{i18n.getText('KSC001_20')}</button>
 				</div>
 			</div>

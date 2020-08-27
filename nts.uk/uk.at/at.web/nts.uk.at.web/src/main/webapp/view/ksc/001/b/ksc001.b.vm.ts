@@ -441,10 +441,11 @@ module nts.uk.at.view.ksc001.b {
                     employeeSearchs: UnitModel[] = [],
                     listSelectedEmpCode: any = [],
 	                employeeIds: Array<string> = [] ;
+
                 self.employeeList([]);
                 self.selectedEmployeeCode([]);
+	            self.employeeIds([]);
 
-                console.log(dataList);
                 _.each(dataList, (employeeSearch) => {
                     employeeSearchs.push({
                         code: employeeSearch.employeeCode,
@@ -456,9 +457,10 @@ module nts.uk.at.view.ksc001.b {
                 });
 
                 // update employee list by ccg001 search
-                self.employeeList(employeeSearchs);
+	            self.employeeList(employeeSearchs);
                 self.selectedEmployeeCode(listSelectedEmpCode);
                 self.employeeIds(employeeIds);
+
                 //filter personal with new conditions
                 let startDate = moment.utc(self.periodStartDate(), "YYYY/MM/DD");
                 let endDate = moment.utc(self.periodEndDate(), "YYYY/MM/DD");
@@ -484,8 +486,8 @@ module nts.uk.at.view.ksc001.b {
                     });
                     listSelectedEmpCode.push(employeeSearch.employeeCode.trim());
                 });
-
                 //end
+
                 // update kc005
                 self.lstPersonComponentOption = {
                     isShowAlreadySet: false, //設定済表示
@@ -725,7 +727,6 @@ module nts.uk.at.view.ksc001.b {
              */
             private nextPageD(): void {
                 var self = this;
-
                 if( self.selectedEmployeeCode().length <= 0 ) {
                     nts.uk.ui.dialog.error({ messageId: "Msg_206" }); //Msg_758
                     return;
