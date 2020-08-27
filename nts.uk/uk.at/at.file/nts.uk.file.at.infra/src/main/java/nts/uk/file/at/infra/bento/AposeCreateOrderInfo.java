@@ -3,6 +3,7 @@ package nts.uk.file.at.infra.bento;
 import com.aspose.cells.*;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.*;
@@ -326,6 +327,12 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         List<PlaceOfWorkInfoDto> placeOfWorkInfoDtos = CollectionUtil.isEmpty(exportData.getOrderInfoDto().getDetailOrderInfoDtoList())
                 ? exportData.getOrderInfoDto().getTotalOrderInfoDtoList().get(0).getPlaceOfWorkInfoDto()
                 : exportData.getOrderInfoDto().getDetailOrderInfoDtoList().get(0).getPlaceOfWorkInfoDtos();
+        GeneralDate start = CollectionUtil.isEmpty(exportData.getOrderInfoDto().getDetailOrderInfoDtoList())
+                ? exportData.getOrderInfoDto().getTotalOrderInfoDtoList().get(0).getReservationDate()
+                : exportData.getOrderInfoDto().getDetailOrderInfoDtoList().get(0).getReservationDate();
+        String timezone = CollectionUtil.isEmpty(exportData.getOrderInfoDto().getDetailOrderInfoDtoList())
+                ? exportData.getOrderInfoDto().getTotalOrderInfoDtoList().get(0).getClosedName()
+                : exportData.getOrderInfoDto().getDetailOrderInfoDtoList().get(0).getClosingTimeName();
         if (exportData.isWorkLocationExport()) {
             cells.get(0, labelRow).setValue(WOKR_LOCATION_LABEL);
             cells.get(0, startDataRow).setValue(placeOfWorkInfoDtos.get(0).getPlaceCode());
@@ -338,7 +345,8 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             cells.get(1, endDataRow).setValue(placeOfWorkInfoDtos.get(placeOfWorkInfoDtos.size()-1).getPlaceName());
         }
         cells.get(2, labelRow).setValue(PERIOD_LABEL);
-        cells.get(2, startDataRow).setValue(exportData.getReservationTimeZone());
+        cells.get(2, startDataRow).setValue(start.toString() + " ~ " +
+                exportData.getReservationTimeZone() + "(" + timezone + ")");
     }
 
     private int handleBodyTotalFormat(Worksheet worksheet, TotalOrderInfoDto dataRow, int startIndex, Cells cells,
