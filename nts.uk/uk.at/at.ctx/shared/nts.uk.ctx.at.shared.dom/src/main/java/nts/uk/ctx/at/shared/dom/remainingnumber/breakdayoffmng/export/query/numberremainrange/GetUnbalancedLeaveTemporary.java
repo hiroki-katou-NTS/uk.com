@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
@@ -18,12 +19,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.NumberConsecuVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 
 /**
  * @author ThanhNX
@@ -82,16 +82,15 @@ public class GetUnbalancedLeaveTemporary {
 	public static AccumulationAbsenceDetail getNotTypeBreak(Require require,
 			Pair<InterimRemain, InterimDayOffMng> interimDay) {
 
-		// ドメインモデル「暫定休出代休紐付け管理」を取得する
-		List<InterimBreakDayOffMng> lstInterimBreakDayOffMn = require
-				.getBreakDayOffMng(interimDay.getRight().getDayOffManaId(), false, DataManagementAtr.INTERIM);
+		// ドメインモデル「休出代休紐付け管理」を取得する(get domain model 「休出代休紐付け管理」)
+		List<LeaveComDayOffManagement> interimTyingData = require.getBycomDayOffID(interimDay.getLeft().getSID(),
+				interimDay.getLeft().getYmd());
 
 		double unOffsetDays = interimDay.getRight().getRequiredDay().v();
 		Integer unOffsetTimes = interimDay.getRight().getRequiredTime().v();
 		// 未相殺日数と未相殺時間を設定する
-		for (InterimBreakDayOffMng interimMng : lstInterimBreakDayOffMn) {
-			unOffsetDays -= interimMng.getUseDays().v();
-			unOffsetTimes -= interimMng.getUseTimes().v();
+		for (LeaveComDayOffManagement interimMng : interimTyingData) {
+			unOffsetDays -= interimMng.getAssocialInfo().getDayNumberUsed().v();
 		}
 
 		MngDataStatus dataAtr = MngDataStatus.NOTREFLECTAPP;
@@ -123,9 +122,9 @@ public class GetUnbalancedLeaveTemporary {
 		// InterimBreakDayOffMngRepository
 		List<InterimDayOffMng> getDayOffBySidPeriod(String sid, DatePeriod period);
 
-		// ドメインモデル「暫定休出代休紐付け管理」を取得する
-		// InterimBreakDayOffMngRepository
-		List<InterimBreakDayOffMng> getBreakDayOffMng(String mngId, boolean breakDay, DataManagementAtr mngAtr);
+		//ドメインモデル「休出代休紐付け管理」を取得する
+		 //LeaveComDayOffManaRepository
+		List<LeaveComDayOffManagement> getBycomDayOffID(String sid,  GeneralDate digestDate);
 
 	}
 

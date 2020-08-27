@@ -12,12 +12,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.NumberConsecuVacation;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 
 /**
  * @author ThanhNX
@@ -62,19 +61,21 @@ public class GetUnbalanceLeaveFixed {
 	// 1-3.暫定休出と紐付けをしない確定代休を取得する
 	public static Optional<AccumulationAbsenceDetail> acquireTemporaryHoliday(Require require,
 			CompensatoryDayOffManaData unBalPay) {
-		// ドメインモデル「暫定休出代休紐付け管理」を取得する
-		List<InterimBreakDayOffMng> interimTyingData = require.getDayOffByIdAndDataAtr(DataManagementAtr.INTERIM,
-				DataManagementAtr.CONFIRM, unBalPay.getComDayOffID());
-
+		// ドメインモデル「休出代休紐付け管理」を取得する(get domain model 「休出代休紐付け管理」)
+		List<LeaveComDayOffManagement> interimTyingData = new ArrayList<>();
+		if (!unBalPay.getDayOffDate().isUnknownDate() && unBalPay.getDayOffDate().getDayoffDate().isPresent()) {
+			interimTyingData.addAll(
+					require.getBycomDayOffID(unBalPay.getSID(), unBalPay.getDayOffDate().getDayoffDate().get()));
+		}
+	
 		// 未相殺日数と未相殺時間を設定する
 		double unOffsetDays = unBalPay.getRemainDays().v();
 		int unOffsetTimes = unBalPay.getRemainTimes().v();
 
 		// 未相殺日数と未相殺時間を設定する
 		if (!interimTyingData.isEmpty()) {
-			for (InterimBreakDayOffMng dt : interimTyingData) {
-				unOffsetDays -= dt.getUseDays().v();
-				unOffsetTimes -= dt.getUseTimes().v();
+			for (LeaveComDayOffManagement dt : interimTyingData) {
+				unOffsetDays -= dt.getAssocialInfo().getDayNumberUsed().v();
 			}
 		}
 		// 未相殺日数と未相殺時間をチェックする
@@ -107,9 +108,8 @@ public class GetUnbalanceLeaveFixed {
 		// ComDayOffManaDataRepository;
 		public List<CompensatoryDayOffManaData> getBySidYmd(String companyId, String employeeId,
 				GeneralDate startDateAggr);
-
-		public List<InterimBreakDayOffMng> getDayOffByIdAndDataAtr(DataManagementAtr breakAtr,
-				DataManagementAtr dayOffAtr, String dayOffId);
+         //LeaveComDayOffManaRepository
+		public List<LeaveComDayOffManagement> getBycomDayOffID(String sid,  GeneralDate digestDate);
 	}
 
 }

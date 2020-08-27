@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 
 @Embeddable
 @EqualsAndHashCode
@@ -16,11 +17,15 @@ import lombok.NoArgsConstructor;
 public class KrcmtPayoutSubOfHDManaPK implements Serializable{
 	private static final long serialVersionUID = 1L;
 
-	// 振出データID
-	@Column(name = "PAYOUT_ID")
-	public String payoutId;
-	
-	// 振休データID
-	@Column(name = "SUBOFHD_ID")
-	public String subOfHDID;
+	//社員ID
+	@Column(name = "SID")
+	public String sid;
+
+	// 発生日
+	@Column(name = "OCCURRENCE_DATE")
+	public GeneralDate occDate;
+
+	// 使用日
+	@Column(name = "DIGESTION_DATE")
+	public GeneralDate digestDate;
 }

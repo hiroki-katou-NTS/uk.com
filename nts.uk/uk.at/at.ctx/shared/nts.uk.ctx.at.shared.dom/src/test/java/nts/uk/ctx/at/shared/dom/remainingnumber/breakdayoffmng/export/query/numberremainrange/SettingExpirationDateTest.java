@@ -33,14 +33,14 @@ public class SettingExpirationDateTest {
 	 * 　　休暇使用期限が無期限
 
 	 * */
+	// xu ly khong co ky han
+	
 	@Test
 	public void testUnlimit() {
 
 		GeneralDate actualResult = SettingExpirationDate.settingExp(
-				ExpirationTime.UNLIMITED,
-				Optional.of(new GetTightSettingResult(11, new ClosureDate(1, false),//// 期首月
-						new DatePeriod(GeneralDate.ymd(2019, 11, 1),//日付
-								GeneralDate.ymd(2019, 11, 30)))),//期間
+				ExpirationTime.UNLIMITED,//無期限
+				Optional.empty(),
 				GeneralDate.ymd(2019, 11, 1));//年月日
 		assertThat(actualResult).isEqualTo(GeneralDate.max());
 
@@ -64,15 +64,17 @@ public class SettingExpirationDateTest {
 				Optional.of(new GetTightSettingResult(11, new ClosureDate(15, false),//// 期首月
 						new DatePeriod(GeneralDate.ymd(2019, 11, 1),//日付
 								GeneralDate.ymd(2019, 11, 30)))),//期間
-				GeneralDate.ymd(2019, 11, 15));//年月日
+				GeneralDate.ymd(2019, 12, 14));//年月日
 		
-		assertThat(actualResult).isEqualTo(GeneralDate.ymd(2019, 11, 15));
+		// ngay kiem tra < ngay chot
+		assertThat(actualResult).isEqualTo(GeneralDate.ymd(2019, 12, 15));
 
+		//// ngay kiem tra > ngay chot -> tang 1 thang va ngay la ngay chot
 		GeneralDate actualResult2 = SettingExpirationDate.settingExp(ExpirationTime.THIS_MONTH,
 				Optional.of(new GetTightSettingResult(11, new ClosureDate(15, false),
 						new DatePeriod(GeneralDate.ymd(2019, 11, 1), GeneralDate.ymd(2019, 11, 30)))),
-				GeneralDate.ymd(2019, 11, 16));
-		assertThat(actualResult2).isEqualTo(GeneralDate.ymd(2019, 12, 15));
+				GeneralDate.ymd(2019, 12, 16));
+		assertThat(actualResult2).isEqualTo(GeneralDate.ymd(2020, 1, 15));
 
 	}
 
@@ -87,6 +89,16 @@ public class SettingExpirationDateTest {
 	 * 　　月付チェックが必要　＜　期首月　→　今年度
 
 	 * */
+	
+	/**check han trong nam
+	 *  neu thang >= thang setting thi 
+	 *  tang nam len. giam 1 thang, va lay lay ngay cuoi cung cua thang
+	 * 
+	 * neu thang < setting thi giu nguyen nam, tru
+	 * thang -1, lay ngay cuoi cung cua thang
+	 * 
+	 * */
+	
 	@Test
 	public void testThisYear() {
 
@@ -100,10 +112,10 @@ public class SettingExpirationDateTest {
 		assertThat(actualResult).isEqualTo(GeneralDate.ymd(2020, 10, 30));
 
 		GeneralDate actualResult2 = SettingExpirationDate.settingExp(ExpirationTime.END_OF_YEAR,
-				Optional.of(new GetTightSettingResult(12, new ClosureDate(15, false),
+				Optional.of(new GetTightSettingResult(11, new ClosureDate(15, false),
 						new DatePeriod(GeneralDate.ymd(2019, 11, 1), GeneralDate.ymd(2019, 11, 30)))),
-				GeneralDate.ymd(2019, 11, 15));
-		assertThat(actualResult2).isEqualTo(GeneralDate.ymd(2019, 11, 29));
+				GeneralDate.ymd(2019, 10, 15));
+		assertThat(actualResult2).isEqualTo(GeneralDate.ymd(2019, 10, 30));
 
 	}
 
@@ -116,6 +128,7 @@ public class SettingExpirationDateTest {
 	 * 
 
 	 * */
+	//cong 1 thang
 	@Test
 	public void testOther() {
 

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -14,12 +15,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.NumberConsecuVacation;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 
 /**
@@ -61,18 +61,21 @@ public class GetUnusedLeaveFixed {
 	public static Optional<AccumulationAbsenceDetail> acquireTemporaryHoliday(Require require,
 			LeaveManagementData leaveManagement) {
 
-		// ドメインモデル「暫定休出代休紐付け管理」を取得する
-		List<InterimBreakDayOffMng> interimTyingData = require.getBreakByIdAndDataAtr(DataManagementAtr.CONFIRM,
-				DataManagementAtr.INTERIM, leaveManagement.getID());
+		// ドメインモデル「休出代休紐付け管理」を取得する(get domain model 「休出代休紐付け管理」)
+		List<LeaveComDayOffManagement> interimTyingData = new ArrayList<>();
+		if (!leaveManagement.getComDayOffDate().isUnknownDate()
+				&& leaveManagement.getComDayOffDate().getDayoffDate().isPresent()) {
+			interimTyingData.addAll(require.getByLeaveID(leaveManagement.getSID(),
+					leaveManagement.getComDayOffDate().getDayoffDate().get()));
+		}
 
 		double unUseDays = leaveManagement.getUnUsedDays().v();
 		Integer unUseTimes = leaveManagement.getUnUsedTimes().v();
 
 		// 未使用日数と未使用時間を設定する
-		for (InterimBreakDayOffMng breakData : interimTyingData) {
+		for (LeaveComDayOffManagement breakData : interimTyingData) {
 			// 未使用日数と未使用時間を設定する
-			unUseDays -= breakData.getUseDays().v();
-			unUseTimes -= breakData.getUseTimes().v();
+			unUseDays -= breakData.getAssocialInfo().getDayNumberUsed().v();
 		}
 
 		// 未使用日数と未使用時間をチェックする
@@ -100,8 +103,8 @@ public class GetUnusedLeaveFixed {
 		// LeaveManaDataRepository DigestionAtr.UNUSED
 		List<LeaveManagementData> getBySidYmd(String cid, String sid, GeneralDate ymd, DigestionAtr state);
 
-		List<InterimBreakDayOffMng> getBreakByIdAndDataAtr(DataManagementAtr breakAtr, DataManagementAtr dayOffAtr,
-				String breakId);
+		//LeaveComDayOffManaRepository
+		List<LeaveComDayOffManagement> getByLeaveID(String sid, GeneralDate occDate);
 
 	}
 }

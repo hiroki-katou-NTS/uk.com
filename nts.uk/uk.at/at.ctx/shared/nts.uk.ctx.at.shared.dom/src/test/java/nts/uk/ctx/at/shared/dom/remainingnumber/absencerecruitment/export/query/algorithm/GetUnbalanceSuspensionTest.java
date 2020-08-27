@@ -19,15 +19,12 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataDaysAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.DaikyuFurikyuHelper;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.SelectedAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 
 @RunWith(JMockit.class)
@@ -87,22 +84,28 @@ public class GetUnbalanceSuspensionTest {
 				result = Arrays.asList(createSubOfHD("a1", 
 						GeneralDate.ymd(2019, 11, 30), // 振休日
 						1.0),// 未相殺日数
-						createSubOfHD("a1", 
+						createSubOfHD("a4", 
 								GeneralDate.ymd(2019, 11, 10), // 振休日
 								0.0),// 未相殺日数
 						createSubOfHD("a2", 
 								GeneralDate.ymd(2019, 11, 20), // 振休日
 								1.0));// 未相殺日数
 
-				require.getBySidMng(DataManagementAtr.INTERIM, DataManagementAtr.CONFIRM,
-						"a1");
-				result = Arrays.asList(
-						createRecAbs("a1",1.0));//使用日数
-
-				require.getBySidMng(DataManagementAtr.INTERIM, DataManagementAtr.CONFIRM,
-						"a2");
-				result = Arrays.asList(
-						createRecAbs("a2",0.5));//使用日数
+//				require.getBySidMng(DataManagementAtr.INTERIM, DataManagementAtr.CONFIRM,
+//						"a1");
+//				result = Arrays.asList(
+//						createRecAbs("a1",1.0));//使用日数
+//
+//				require.getBySidMng(DataManagementAtr.INTERIM, DataManagementAtr.CONFIRM,
+//						"a2");
+//				result = Arrays.asList(
+//						createRecAbs("a2",0.5));//使用日数
+				
+				require.getBySubId(SID, GeneralDate.ymd(2019, 11, 30));
+				result = Arrays.asList(DaikyuFurikyuHelper.createHD(GeneralDate.ymd(2019, 11, 03), GeneralDate.ymd(2019, 11, 30), 1.0));
+				
+				require.getBySubId(SID, GeneralDate.ymd(2019, 11, 20));
+				result = Arrays.asList(DaikyuFurikyuHelper.createHD(GeneralDate.ymd(2019, 11, 03), GeneralDate.ymd(2019, 11, 20), 0.5));
 
 			}
 		};
@@ -131,8 +134,4 @@ public class GetUnbalanceSuspensionTest {
 				new ManagementDataDaysAtr(1.0), new ManagementDataRemainUnit(remainDay));
 	}
 	
-	private InterimRecAbsMng createRecAbs(String id, Double useDay) {
-		return new InterimRecAbsMng(id,
-				DataManagementAtr.INTERIM, "", DataManagementAtr.INTERIM, new UseDay(useDay), SelectedAtr.MANUAL);
-	}
 }
