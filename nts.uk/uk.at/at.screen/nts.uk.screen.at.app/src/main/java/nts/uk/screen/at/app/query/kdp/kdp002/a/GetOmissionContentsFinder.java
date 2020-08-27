@@ -15,6 +15,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.function.dom.adapter.standardmenu.StandardMenuAdaptor;
 import nts.uk.ctx.at.record.dom.stamp.application.StampPromptAppRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.StampPromptApplication;
 import nts.uk.ctx.at.record.dom.stamp.card.management.personalengraving.AppDispNameExp;
@@ -42,7 +43,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuPub;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -64,7 +64,7 @@ public class GetOmissionContentsFinder {
 	private StampSetPerRepository stampSetPerRepo;
 
 	@Inject
-	private StandardMenuPub menuPub;
+	private StandardMenuAdaptor menuAdaptor;
 	
 	@Inject
 	private ClosureRepository closureRepository;
@@ -99,7 +99,7 @@ public class GetOmissionContentsFinder {
 			String companyId = AppContexts.user().companyId();
 			appTypes.forEach(x -> {
 
-				List<AppDispNameExp> appNames = this.menuPub
+				List<AppDispNameExp> appNames = this.menuAdaptor
 						.getMenuDisplayName(companyId, Arrays.asList(x.toStandardMenuNameQuery())).stream()
 						.map(item -> {
 							String screen = item.getProgramId().substring(0, 3).toLowerCase();
