@@ -13,7 +13,8 @@ module nts.uk.at.view.kmp001.a {
 			</div>
 			<input id="card-input" class="ip-stamp-card"
 				data-bind="ntsTextEditor: {
-					value: ko.observable(''),
+					name:'#[KMP001_30]',
+					value: textInput,
 					constraint: $component.constraint,
 					enabled: true,
 					width: 200
@@ -30,6 +31,7 @@ module nts.uk.at.view.kmp001.a {
 				</div>
 				<input id="card-input" class="ip-stamp-card"
 					data-bind="ntsTextEditor: {
+						name:'#[KMP001_30]',
 						value: stampNumber,
 						constraint: $component.constraint,
 						enabled: true,
@@ -51,7 +53,8 @@ module nts.uk.at.view.kmp001.a {
 	})
 	export class CardListComponent extends ko.ViewModel {
 		model!: share.Model;
-		maxLength: KnockoutObservable<string>;
+		stampCardEdit!: StampCardEdit;
+		textInput: KnockoutObservable<string>;
 
 		public constraint: KnockoutObservable<string> = ko.observable('StampNumber');
 
@@ -59,11 +62,12 @@ module nts.uk.at.view.kmp001.a {
 			const vm = this;
 
 			vm.model = params.model;
-			vm.maxLength = params.maxLength;
+			vm.stampCardEdit = params.stampCardEdit;
+			vm.textInput = params.textInput;
 
 			vm.reloadSetting();
 
-			vm.maxLength
+			vm.stampCardEdit.stampCardDigitNumber
 				.subscribe(() => {
 					vm.reloadSetting();
 				})
@@ -80,7 +84,7 @@ module nts.uk.at.view.kmp001.a {
 						{ headerText: vm.$i18n('KMP001_31'), key: "stampCardId", dataType: "string", width: 1, hidden: true },
 						{ headerText: vm.$i18n('KMP001_22'), key: "stampNumber", dataType: "string", width: 200, hidden: false }
 					],
-					height: `${30 + (23 * row)}px`,
+					height: `${30 + (23.5 * row)}px`,
 					dataSource: [],
 					features: [{
 						name: "Selection",
@@ -158,8 +162,9 @@ module nts.uk.at.view.kmp001.a {
 			const vm = this;
 
 			vm.$ajax(KMP001A_CARD_LIST.GET_STAMPCARDDIGIT)
-				.then((data: any) => {
+				.then((data: IStampCardEdit) => {
 					const ck = ko.toJS(vm.constraint);
+					vm.stampCardEdit.update(data);
 
 					vm.$validate.constraint(ck)
 						.then((constraint) => {

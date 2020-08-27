@@ -98,6 +98,8 @@ module nts.uk.at.view.kmp001.b {
 		ADD_STAMP: 'at/record/register-stamp-card/view-b/save',
 		DELETE_STAMP: 'at/record/register-stamp-card/view-b/delete'
 	};
+	
+	const DATE_FORMAT = 'YYYY/MM/DD';
 
 	@component({
 		name: 'view-b',
@@ -107,7 +109,7 @@ module nts.uk.at.view.kmp001.b {
 		public params!: Params;
 		public inputStampCard: KnockoutObservable<string> = ko.observable('');
 		public items: KnockoutObservableArray<IStampCard> = ko.observableArray([]);
-		public currentCode: KnockoutObservable<string> = ko.observable('');
+		public currentCode: KnockoutObservable<string> = ko.observable('');	
 		public model: StampCard = new StampCard();
 		public employee: EmployeeVIewB = new EmployeeVIewB();
 		public mode: KnockoutObservable<MODE> = ko.observable('all');
@@ -141,7 +143,7 @@ module nts.uk.at.view.kmp001.b {
 						vm.$ajax(KMP001B_API.GET_INFO_EMPLOYEE + ko.toJS(c))
 							.then((data: IEmployeeVIewB[]) => {
 								
-								if(data.retiredDate = "9999/12/31"){
+								if(moment(data.retiredDate).format(DATE_FORMAT) === "9999/12/31"){
 									data.retiredDate = null;
 								}
 								
@@ -221,8 +223,10 @@ module nts.uk.at.view.kmp001.b {
 								stampCardList.push(data);
 							}
 						});
-
-						vm.items(stampCardList);
+						
+						const dataSort: IStampCard[] = _.orderBy(stampCardList, ['stampNumber'], ['asc']);
+						
+						vm.items(dataSort);
 						const record = stampCardList[selectedIndex];
 
 						if (record) {
@@ -290,7 +294,7 @@ module nts.uk.at.view.kmp001.b {
 						vm.$ajax(KMP001B_API.DELETE_STAMP, command)
 							.done(() => vm.$dialog.info({ messageId: "Msg_16" }))
 							.then(() => vm.model.clear())
-							.then(() => vm.reloadAllStampCard(0));
+							.then(() => vm.reloadAllStampCard(newIndex));
 					})
 			}
 			vm.$blockui("clear");
