@@ -1085,7 +1085,11 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             });
             setShared('KDL020A_PARAM', { baseDate: moment(new Date()).toDate(), 
                                             employeeIds: lstid.length > 0 ? lstid : [self.employeeID()] } );
-            modal('/view/kdl/020/a/index.xhtml')
+            if(lstid.length > 1 ){
+              modal("/view/kdl/020/a/mutil.xhtml");
+            }else{
+                modal("/view/kdl/020/a/single.xhtml");
+            }
         }
 
         openKDL020Mutil(){
@@ -1123,7 +1127,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
           '2f4dd263-dad0-439d-95ac-7f8175fd457b'];
           setShared('KDL020A_PARAM', { baseDate: moment(new Date()).toDate(), 
                                           employeeIds: lstid.length > 0 ? lstid : [self.employeeID()] } );
-          modal('/view/kdl/020/a/index.xhtml')
+            modal("/view/kdl/020/a/mutil.xhtml");
+          
         }
         /**
          * when click button A1_8: 積休参照ボタン

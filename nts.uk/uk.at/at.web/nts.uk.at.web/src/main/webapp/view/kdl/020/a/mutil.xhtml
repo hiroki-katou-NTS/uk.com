@@ -18,13 +18,13 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.at.request.dom.application.AppReason
 			</com:ValidatorScript>
-      <script>var dialogSize = { width: 750 , height: 710};
+      <script>var dialogSize = { width: 1082 , height: 610};
       </script>
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area" class="cf">
 				<div id="content-left" >
-					<div data-bind="visible:isShowEmployeeList">
+					<div>
 						<div id="title" class="div_line">#{i18n.getText('KDL020_2')}</div>
 						<div id="component-items-list"></div>
 					</div>
@@ -35,7 +35,8 @@
               <tbody>
                 <tr>
                   <!-- A14_1 -->
-                  <td style="padding-top: 0px">
+                  <td style="padding-top: 0px;
+                              width: 107px;">
                     <div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM007_10')}</div>
                   </td>
                   <td class="thut">
@@ -53,13 +54,13 @@
                 <tr>
                   <td style="padding: 0px"></td>
                   <td style="padding: 0px">
-                    <hr style="margin: 0px"/>
+                    <hr style="width: 529px"/>
                   </td>
                 </tr>
                 <tr>
                   <td></td>
                   <!-- A13 -->
-                  <td>
+                  <td data-bind="if: annualLeaveManagementFg()">
                     <label style="margin-top: -10px;">#{i18n.getText('KDL020_39')}</label>
                     <label style="margin-top: -10px">#{i18n.getText('KDL020_40')}</label>
                   </td>
@@ -151,7 +152,7 @@
                 <tr data-bind="if: annualLeaveManagementFg()">
                   <td >
                     <!-- A14_3 -->
-                    <div style= "margin-bottom: 165px" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL020_42')}</div>
+                    <div style= "margin-bottom: 132px" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL020_42')}</div>
                   </td>
                   <td>
                     <div id="content-right_bottom">
@@ -262,8 +263,9 @@
             </table>
           </div>
           <!-- A15 -->
-          <div class="div_line"  data-bind="if: !annualLeaveManagementFg()">
-            <label>#{i18n.getText('KDL020_43')}</label>
+          <div class="div_line_er"  data-bind="if: !annualLeaveManagementFg()">
+            <label style="font-size:2rem;
+                          font-weight: bold; ">#{i18n.getText('KDL020_43')}</label>
           </div>
         </div>
       </div>

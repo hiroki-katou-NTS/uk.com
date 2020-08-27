@@ -46,7 +46,7 @@
 }
 
 #component-items-list {
-	margin-top: 0px;
+  margin-top: -7px;
 }
 
 #content-right_bottom_left, #content-right_bottom_right {
@@ -64,6 +64,10 @@
 }
 #functions-area-bottom button{
 	margin-left: 0px;
+}
+#functions-area-bottom{
+  height: 45px;
+
 }
 
 .div_line{

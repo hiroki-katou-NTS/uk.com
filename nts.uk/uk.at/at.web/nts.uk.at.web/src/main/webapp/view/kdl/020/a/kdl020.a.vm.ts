@@ -35,7 +35,6 @@ module nts.uk.at.view.kdl020.a.screenModel {
         displayAnnualLeaveGrant: KnockoutObservable<DisplayAnnualLeaveGrant> = ko.observable(new DisplayAnnualLeaveGrant());
         attendNextHoliday: KnockoutObservable<AttendRateAtNextHoliday> = ko.observable(new AttendRateAtNextHoliday());
         annualSet: KnockoutObservable<any> = ko.observable(null);
-        isShowEmployeeList: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
             self.selectedCode = ko.observable('');
@@ -88,7 +87,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
             });
 
             $("#holiday-info_table").ntsFixedTable({ height: 120, width: 526 });
-            $("#holiday-use_table").ntsFixedTable({ height: 148, width: 335 });
+            $("#holiday-use_table").ntsFixedTable({ height: 110, width: 335 });
 
         }
         start(): JQueryPromise<any> {
@@ -113,7 +112,6 @@ module nts.uk.at.view.kdl020.a.screenModel {
                     self.changeData(data);
                     self.annualSet(data.annualSet);
                     if (self.employeeList().length > 1) {
-                        self.isShowEmployeeList(true);
                         nts.uk.ui.windows.getSelf().$dialog.closest(".ui-dialog").width(1080);
                     }
                 }
