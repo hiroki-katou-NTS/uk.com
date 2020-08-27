@@ -114,7 +114,7 @@ public class ReservationModifyQuery {
                 }
                 PersonEmpBasicInfoDto empBasicInfo = empBasicInfoOpt.get();
                 //新規注文の場合誰か一人が打刻カードがない場合
-                errors.add(new ReservationModifyError("Msg_1634", TextResource.localize("Msg_1634", empBasicInfo.getEmployeeCode())));
+                errors.add(new ReservationModifyError("Msg_1634", TextResource.localize("Msg_1634", empBasicInfo.getEmployeeCode(), empBasicInfo.getBusinessName())));
             }
         }
 
