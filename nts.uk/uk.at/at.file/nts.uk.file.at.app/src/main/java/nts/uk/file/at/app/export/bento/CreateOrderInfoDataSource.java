@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +28,7 @@ import java.util.Optional;
 @Getter
 public class CreateOrderInfoDataSource {
     private List<String> workplaceIds;
-    private String workLocationCodes;
+    private List<String> workLocationCodes;
     private DatePeriodDto period;
     private int totalExtractCondition;
     private int itemExtractCondition;
@@ -49,11 +50,7 @@ public class CreateOrderInfoDataSource {
         Optional<String> detailTitle = this.getDetailTitle() == null | "".equals(this.getDetailTitle())
                 ? Optional.empty() : Optional.of(this.getDetailTitle());
         ReservationClosingTimeFrame closingTimeFrame = EnumAdaptor.valueOf(this.getReservationClosingTimeFrame(), ReservationClosingTimeFrame.class);
-        List<String> workLocationCode = new ArrayList<>();
-        if(workLocationCodes != null & !"".equals(workLocationCodes))
-            workLocationCode.add(workLocationCodes);
-
-        OrderInfoDto result = createOrderInfoFileQuery.createOrderInfoFileQuery(this.getPeriod().convertToDate("yyyy/MM/dd"),this.getWorkplaceIds(), workLocationCode,
+        OrderInfoDto result = createOrderInfoFileQuery.createOrderInfoFileQuery(this.getPeriod().convertToDate("yyyy/MM/dd"),this.getWorkplaceIds(), this.workLocationCodes,
                 totalExtractCondition, itemExtractCondition, frameNo, totalTitle,
                 detailTitle, closingTimeFrame);
         if(this.extractionConditionChecked){

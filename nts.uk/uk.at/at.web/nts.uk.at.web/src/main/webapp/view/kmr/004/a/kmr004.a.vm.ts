@@ -182,6 +182,7 @@ module nts.uk.at.view.kmr004.a {
             let totalExtractCondition = -1;
             let itemExtractCondition = -1;
             let extractionConditionChecked = false;
+            let workLocationCodes = [];
 
             if(vm.outputConditionChecked() === OUTPUT_CONDITION.TOTAL){
                 totalTitle = vm.model().totalTitle();
@@ -198,9 +199,12 @@ module nts.uk.at.view.kmr004.a {
                     frameNo = vm.model().frameNo();
                 }
             }
+            if(vm.model().workLocationCodes() !== null && vm.model().workLocationCodes().length > 0){
+                workLocationCodes.push(vm.model().workLocationCodes())
+			}
             let data = {
                 workplaceIds: vm.model().workplaceIds(),
-                workLocationCodes: vm.model().workLocationCodes(),
+                workLocationCodes: workLocationCodes,
                 period: vm.model().period.peek(),
                 totalExtractCondition: totalExtractCondition,
                 itemExtractCondition: itemExtractCondition,
