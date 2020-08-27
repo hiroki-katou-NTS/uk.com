@@ -34,7 +34,7 @@ public class ImprintReflectTimeOfDay {
 	 * @param workTimeCode 処理中の年月日の就業時間帯コード
 	 * @param ymd  処理中の年月日
 	 */
-	public void imprint(boolean isStartTime,TimeFrame timeFrame,Optional<TimeFrame> timeFrameNext,Stamp stamp,
+	public TimeActualStamp imprint(boolean isStartTime,TimeFrame timeFrame,Optional<TimeFrame> timeFrameNext,Stamp stamp,
 			Optional<TimeActualStamp> end,WorkTimeCode workTimeCode,GeneralDate ymd) {
 		if(end.isPresent()) {
 			boolean isOverWritten =  false;
@@ -66,7 +66,7 @@ public class ImprintReflectTimeOfDay {
 				}
 				if(check) {
 					//実打刻と打刻反映する
-					reflectActualStampAndStamp.reflect(end.get(), stamp, true, timeFrame, ymd, workTimeCode);
+					return reflectActualStampAndStamp.reflect(end.get(), stamp, true, timeFrame, ymd, workTimeCode);
 				}
 				
 			}else {
@@ -76,18 +76,17 @@ public class ImprintReflectTimeOfDay {
 						&& end.get().getStamp().get().getTimeDay().getTimeWithDay().get().valueAsMinutes() 
 							== stamp.getStampDateTime().clockHourMinute().valueAsMinutes()) {
 					//実打刻と打刻反映する
-					reflectActualStampAndStamp.reflect(end.get(), stamp, false, timeFrame, ymd, workTimeCode);
+					return reflectActualStampAndStamp.reflect(end.get(), stamp, false, timeFrame, ymd, workTimeCode);
 				}
 			}
 			
 			
-		}else {
+		}
 			//勤怠打刻(実打刻付き)を作成する
 			TimeActualStamp newTimeActualStamp = new TimeActualStamp(Optional.empty(), Optional.empty(), 0, Optional.empty(), Optional.empty());
 			end = Optional.of(newTimeActualStamp);
 			//実打刻と打刻反映する
-			reflectActualStampAndStamp.reflect(end.get(), stamp, true, timeFrame, ymd, workTimeCode);
-		}
+			return reflectActualStampAndStamp.reflect(end.get(), stamp, true, timeFrame, ymd, workTimeCode);
 		
 	}
 

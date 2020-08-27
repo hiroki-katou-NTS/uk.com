@@ -647,7 +647,8 @@ public class DailyPerformanceCorrectionProcessor {
 				String attendanceAtrAsString = String.valueOf(item.getAttendanceAtr());
 				Integer groupType = item.getTypeGroup();
 				String key = mergeString(itemIdAsString, "|", data.getEmployeeId(), "|" + data.getDate().toString());
-				String value = itemValueMap.get(key) != null && itemValueMap.get(key).value() != null
+				// fix tạm cho Hoa test, sau đó Thanh sẽ điều tra (TQP)
+				String value = itemValueMap.get(key) != null && itemValueMap.get(key == "" ? 0 : key).value() != null
 						? itemValueMap.get(key).value().toString() : "";
 				cellEdit = dailyRecEditSetsMap.get(mergeString(itemIdAsString, "|", data.getEmployeeId(), "|" + converDateToString(data.getDate())));
 				
