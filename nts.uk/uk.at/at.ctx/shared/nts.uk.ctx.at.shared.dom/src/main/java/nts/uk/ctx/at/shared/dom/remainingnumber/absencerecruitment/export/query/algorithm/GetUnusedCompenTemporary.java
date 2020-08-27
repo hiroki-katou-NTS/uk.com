@@ -121,7 +121,7 @@ public class GetUnusedCompenTemporary {
 		// 使用期限日を設定
 		GeneralDate dateSettingExp = SettingExpirationDate.settingExp(
 				ExpirationTime.valueOf(leaveSetOut.getExpirationOfLeave()), tightSettingResult,
-				recMng.getExpirationDate());
+				remainData.getYmd());
 
 		CompensatoryDayoffDate date = new CompensatoryDayoffDate(false, Optional.of(remainData.getYmd()));
 		MngDataStatus dataAtr = MngDataStatus.NOTREFLECTAPP;
@@ -131,18 +131,15 @@ public class GetUnusedCompenTemporary {
 			dataAtr = MngDataStatus.RECORD;
 		}
 
-		AccumulationAbsenceDetail result = new AccuVacationBuilder(remainData.getSID(), date,
+		AccumulationAbsenceDetail detail = new AccuVacationBuilder(remainData.getSID(), date,
 				OccurrenceDigClass.OCCURRENCE, dataAtr, recMng.getRecruitmentMngId())
 						.numberOccurren(new NumberConsecuVacation(
 								new ManagementDataRemainUnit(recMng.getOccurrenceDays().v()), Optional.empty()))
 						.unbalanceNumber(
 								new NumberConsecuVacation(new ManagementDataRemainUnit(unUseDays), Optional.empty()))
-						.unbalanceCompensation(new UnbalanceCompensation(dateSettingExp, DigestionAtr.USED,
-								Optional.empty(), recMng.getStatutoryAtr()))
 						.build();
-
-		return result;
-
+		return new UnbalanceCompensation(detail, dateSettingExp, DigestionAtr.USED, Optional.empty(),
+				recMng.getStatutoryAtr());
 	}
 
 	public static interface Require extends GetSettingCompensaLeave.Require, GetTightSetting.Require {

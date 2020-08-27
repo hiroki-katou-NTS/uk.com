@@ -508,6 +508,9 @@ public class ProgramsManager {
      */
     public static final Program KDL014A = new Program(WebAppId.AT, ProgramIdConsts.KDL014A, "KDL014_1",
             "/view/kdl/014/a/index.xhtml");
+    
+    public static final Program KDL044 = new Program(WebAppId.AT, ProgramIdConsts.KDL044, "KDL044_12",
+            "/view/kdl/044/a/index.xhtml");
 
     /**
      * KDL014B
