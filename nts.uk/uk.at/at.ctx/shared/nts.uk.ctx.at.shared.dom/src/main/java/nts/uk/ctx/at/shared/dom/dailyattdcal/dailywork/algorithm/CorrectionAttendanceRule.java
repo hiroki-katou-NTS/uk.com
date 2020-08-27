@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +44,7 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 
 		// 補正前の状態を保持
 		// IntegrationOfDaily beforeDomain = converter.toDomain();
-		List<ItemValue> beforeItems = converter.convert(atendanceId);
+		List<ItemValue> beforeItems = atendanceId.isEmpty() ? new ArrayList<>() : converter.convert(atendanceId);
 
 		// 勤怠変更後の補正
 		/// TODO: 設計中 waiting design map

@@ -40,6 +40,8 @@ module nts.uk.at.view.ksu001.u {
         unit: KnockoutObservable<number> = ko.observable();
         workplaceGroupId: KnockoutObservable<string> = ko.observable('');        
         params: any;
+        isBtnClick: KnockoutObservable<boolean> = ko.observable(false);
+        oldValue: number = 0;
         constructor(params: any) {
             super();
             const self = this;       
@@ -58,7 +60,21 @@ module nts.uk.at.view.ksu001.u {
             self.params = params;
 
             self.yearMonthPicked.subscribe(function(value) {
-                self.getDataToOneMonth(value);                
+                if(self.oldValue == value)
+                {
+                    return;
+                }
+                if(self.oldValue != value)
+                {
+                    self.oldValue = value;
+                }
+                if(self.isBtnClick()) {
+                    self.isBtnClick(false);
+                    return;
+                }
+                if(!self.isBtnClick()){
+                    self.getDataToOneMonth(value);
+                }                             
             })
         }
 
@@ -68,7 +84,7 @@ module nts.uk.at.view.ksu001.u {
             self.clickCalendar();
         }
 
-        getDataToOneMonth(yearMonth : number): void {
+        getDataToOneMonth(yearMonth : number): void {            
             let self = this;
             let dates = self.optionDates();
             let year = parseInt(yearMonth.toString().substr(0,4));
@@ -443,7 +459,7 @@ module nts.uk.at.view.ksu001.u {
             self.yearMonthPicked(parseInt(forwardWeekSplit[0] + forwardWeekSplit[1]));            
         }
 
-        public weekPrev(): void {
+         public weekPrev(): void {
             const self = this;
             let dates = self.optionDates();
             let basePubDate = self.publicDate();
@@ -538,9 +554,12 @@ module nts.uk.at.view.ksu001.u {
                 self.newPublicDate(self.publicDate());
                 self.newEditDate(prevWeekEditDate);
             }            
+            self.isBtnClick(true);
             self.yearMonthPicked(parseInt(prevWeekSplit[0] + prevWeekSplit[1]));
+                    
+            // self.yearMonthPicked.valueHasMutated();
         }
-
+ 
         public monthPrev(): void {
             const self = this;
             let dates = self.optionDates();
