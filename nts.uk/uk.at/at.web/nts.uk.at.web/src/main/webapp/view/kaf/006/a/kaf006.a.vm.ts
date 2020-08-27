@@ -1105,7 +1105,6 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         openKDL029Multi() {
             let self = this;
             let lstid = [
-                '0117dcfc-200b-46e8-a734-d87f1d563b82',
                 'd3191da9-b6ad-475b-b219-3d961fb86e13',
                 'ba4d5d23-6ac6-4c88-ae4a-758b479d3206',
                 '67107229-64e2-4335-9d1a-94ad48cd0476',
@@ -1131,6 +1130,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 '1febc8f1-ac4e-4407-8b5b-344c0c9ae24c',
                 '2f4dd263-dad0-439d-95ac-7f8175fd457b',
             ];
+            _.each(self.employeeList(), function(emp){
+                lstid.unshift(emp.id);
+            });
             let param = {employeeIds: lstid.length > 0 ? lstid : [self.employeeID()],
                         baseDate: moment(new Date()).format("YYYY/MM/DD")}
             setShared('KDL029_PARAM', param);

@@ -107,7 +107,7 @@ public class EmploymentReserveLeaveInforFinder {
 						item.getGrantNumber(),
 						item.getUsedNumber(),
 						item.getRemainingNumber(),
-						closingPeriod.contains(deadLine)
+						deadLine.beforeOrEquals(closingPeriod.end())
 					);
 				}).collect(Collectors.toList());
 				List<TmpRsvLeaveMngImport> tmpManageList = rsvLeaManaImport.get().getTmpManageList();
