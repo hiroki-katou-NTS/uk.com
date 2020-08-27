@@ -102,7 +102,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		builderString = new StringBuilder();
 		builderString.append(SELECT);
 		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD >= 'startDate' AND a.RESERVATION_YMD <= 'endDate'" +
-				" AND a.RESERVATION_FRAME = closingTimeFrame AND b.pk.frameNo = frameNo ");
+				" AND a.RESERVATION_FRAME = closingTimeFrame AND b.pk.frameNo = frameNoValue ");
 		FIND_ALL_RESERVATION_OF_A_BENTO = builderString.toString();
 	}
 	
@@ -371,7 +371,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		List<String> cardLst = inforLst.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList());
 		String cardLstStr = getString(inforLst, cardLst);
 		query = handleQueryForWkLocationCD(workLocationCode, query);
-		query = query.replaceFirst("frameNo", String.valueOf(frameNo));
+		query = query.replaceFirst("frameNoValue", String.valueOf(frameNo));
 		query = query.replaceFirst("cardLst", cardLstStr);
 		query = query.replaceFirst("startDate", period.start().toString());
 		query = query.replaceFirst("endDate", period.end().toString());
