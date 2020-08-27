@@ -41,6 +41,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.ApplicationStampSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflect;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
@@ -164,6 +165,9 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 	@Inject
 	private ApprovalListDispSetRepository approvalListDispSetRepo;
 
+	@Inject
+	private AppTripRequestSetRepository appTripRequestSetRepo;
+
 	@Override
 	protected void handle(CommandHandlerContext<Kaf022AddCommand> context) {
 		String companyId = AppContexts.user().companyId();
@@ -180,6 +184,12 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 		overtimeAppSetRepo.saveOvertimeAppSet(kaf022.getOvertimeApplicationSetting().toDomain(companyId), kaf022.getOvertimeApplicationReflect().toDomain());
 
 		saveAppWorkChangeSetCommandHandler.handle(kaf022.getAppWorkChangeSetting());
+
+		if (appTripRequestSetRepo.findById(companyId).isPresent()) {
+			appTripRequestSetRepo.update(kaf022.getTripRequestSetting().toDomain(companyId));
+		} else {
+			appTripRequestSetRepo.add(kaf022.getTripRequestSetting().toDomain(companyId));
+		}
 
 		if (goBackReflectRepo.findByCompany(companyId).isPresent()) {
 			goBackReflectRepo.update(GoBackReflect.create(companyId, kaf022.getGoBackReflectAtr()));
