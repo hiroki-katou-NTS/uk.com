@@ -109,6 +109,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         arrListCellLock = [];
         detailContentDeco = [];
         detailColumns = [];
+        dataBindGrid : any;
+       
 
         constructor() {
             let self = this;
@@ -119,21 +121,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             self.dtPrev.subscribe((newValue) => {
                 self.dateTimePrev(moment(self.dtPrev()).format('YYYY/MM/DD'));
-                let item = uk.localStorage.getItem(self.KEY);
-                if (!item.isPresent()) {
-                    let userInfor: IUserInfor = {};
-                    userInfor.startDate = self.dateTimePrev();
-                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
-                }
             });
+            
             self.dtAft.subscribe((newValue) => {
                 self.dateTimeAfter(moment(self.dtAft()).format('YYYY/MM/DD'));
-                let item = uk.localStorage.getItem(self.KEY);
-                if (!item.isPresent()) {
-                    let userInfor: IUserInfor = {};
-                    userInfor.endDate = self.dateTimeAfter();
-                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
-                }
             });
 
             self.selectedTypeHeightExTable.subscribe((newValue) => {
@@ -159,7 +150,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let item = uk.localStorage.getItem(self.KEY);
                 uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                     let userInfor = JSON.parse(data);
-                    userInfor.achievementDisplaySelected = newValue == 1 ? true : false;
+                    userInfor.achievementDisplaySelected = (newValue == 1) ? true : false;
                     uk.localStorage.setItemAsJson(self.KEY, userInfor);
                 });
             });
@@ -345,7 +336,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 shiftPalletUnit: item.isPresent() ? userInfor.shiftPalletUnit : 1, // 1: company , 2 : workPlace 
                 pageNumberCom: item.isPresent() ? userInfor.shiftPalettePageNumberCom : 1,
                 pageNumberOrg: item.isPresent() ? userInfor.shiftPalettePageNumberOrg : 1,
-                getActualData: false, // lay du lieu thuc te (1 : co lay, 2 la khong lay) || param (Hiển thi  theo "shift")
+                getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false,
                 listShiftMasterNotNeedGetNew: item.isPresent() ? userInfor.shiftMasterWithWorkStyleLst : [], // List of shifts không cần lấy mới
                 listSid: self.listSid()
             }
@@ -369,6 +360,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, viewMode);
+                
+                self.setDataWorkType(data.listWorkTypeInfo);
+                
                 self.initExTable(dataBindGrid, viewMode, updateMode);
                 if (!self.showA9) {
                     $(".toLeft").css("display", "none");
@@ -397,7 +391,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let userInfor: IUserInfor = {};
                 userInfor.disPlayFormat = self.selectedModeDisplayInBody();
                 userInfor.backgroundColor = 0; // 0 : 通常; 1: シフト   // mau nền default của shiftMode
-                userInfor.achievementDisplaySelected = 2;
+                userInfor.achievementDisplaySelected = false;
                 userInfor.shiftPalletUnit = 1;
                 userInfor.shiftPalettePageNumberCom = 1;
                 userInfor.shiftPalletPositionNumberCom = { column : 0 , row : 0 };
@@ -428,7 +422,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 shiftPalletUnit : userInfor.shiftPalletUnit, // 1: company , 2 : workPlace 
                 pageNumberCom   : userInfor.shiftPalettePageNumberCom,
                 pageNumberOrg   : userInfor.shiftPalettePageNumberOrg,
-                getActualData   : false, // lay du lieu thuc te (1 : co lay, 2 la khong lay) || param (Hiển thi  theo "shift")
+                getActualData   : item.isPresent() ? userInfor.achievementDisplaySelected : false, 
                 listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst, // List of shifts không cần lấy mới
                 listSid: self.listSid()
             };
@@ -461,6 +455,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, 'shift');
+                
+                self.setDataWorkType(data.listWorkTypeInfo);
+                
                 self.updateExTable(dataBindGrid, 'shift', true, true, true);
                 
                 dfd.resolve();
@@ -471,11 +468,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
 
         shortNameModeStart(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred(),
-                param = {
+            let self = this, dfd = $.Deferred();
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor: IUserInfor = JSON.parse(item.get());
+            let param = {
                     viewMode: 'shortName',
                     startDate: self.dateTimePrev,
                     endDate: self.dateTimeAfter,
+                    getActualData   : item.isPresent() ? userInfor.achievementDisplaySelected : false
                 };
             self.saveModeGridToLocalStorege('shortName');
             self.visibleShiftPalette(false);
@@ -487,6 +487,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.bindingToHeader(data);
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, 'shortName');
+                
+                self.setDataWorkType(data.listWorkTypeInfo);
 
                 self.updateExTable(dataBindGrid , 'shortName', true, true, true);
                 
@@ -498,12 +500,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
 
         timeModeStart(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred(),
-                param = {
-                    viewMode: 'time',
-                    startDate: self.dateTimePrev,
-                    endDate: self.dateTimeAfter,
-                };
+            let self = this, dfd = $.Deferred();
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor: IUserInfor = JSON.parse(item.get());
+            let param = {
+                viewMode: 'time',
+                startDate: self.dateTimePrev,
+                endDate: self.dateTimeAfter,
+                getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false
+            };
             self.saveModeGridToLocalStorege('time');
             self.visibleShiftPalette(false);
             self.visibleBtnInput(true);
@@ -514,6 +519,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.bindingToHeader(data);
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, 'time');
+                
+                self.setDataWorkType(data.listWorkTypeInfo);
 
                 self.updateExTable(dataBindGrid, 'time', true, true, true);
                 dfd.resolve();
@@ -577,6 +584,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         indexOfPageSelected(listPageInfo : any, shiftPalettePageNumber : any) {
             let index = _.findIndex(listPageInfo, function(o) { return o.pageNumber == shiftPalettePageNumber; });
             return index != -1 ? index : 0;
+        }
+        
+        private setDataWorkType(listWorkTypeInfo: any) {
+            let self = this;
+            // set data cho combobox WorkType
+            let listWorkType = [];
+            _.each(listWorkTypeInfo, (emp: IWorkTypeInfomation, i) => {
+                let workTypeDto: IWorkTypeDto = {
+                    workTypeCode: emp.workTypeDto.workTypeCode, // 勤務種類コード - コード
+                    name: emp.workTypeDto.name,         // 勤務種類名称  - 表示名
+                    memo: emp.workTypeDto.memo,
+                    workTimeSetting: emp.workTimeSetting, // 必須任意不要区分 :  必須である REQUIRED(0), 任意であるOPTIONAL(1), 不要であるNOT_REQUIRED(2)
+                    workStyle: emp.workStyle,
+                }
+                listWorkType.push(workTypeDto);
+            });
+            __viewContext.viewModel.viewAB.listWorkType(listWorkType);
         }
 
         // convert data lấy từ server để đẩy vào Grid
@@ -853,21 +877,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
             }
 
-            // set data cho combobox WorkType
-            let listWorkType = [];
-            _.each(data.listWorkTypeInfo, (emp: IWorkTypeInfomation, i) => {
-                let workTypeDto: IWorkTypeDto = {
-                    workTypeCode: emp.workTypeDto.workTypeCode, // 勤務種類コード - コード
-                    name: emp.workTypeDto.name,         // 勤務種類名称  - 表示名
-                    memo: emp.workTypeDto.memo,
-                    workTimeSetting: emp.workTimeSetting, // 必須任意不要区分 :  必須である REQUIRED(0), 任意であるOPTIONAL(1), 不要であるNOT_REQUIRED(2)
-                    workStyle: emp.workStyle,
-                }
-                listWorkType.push(workTypeDto);
-            });
-            __viewContext.viewModel.viewAB.listWorkType(listWorkType);
-
-
             // set width cho column cho tung mode
             let widthColumn = 0;
             if (viewMode == 'time') {
@@ -915,9 +924,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-weekdays"));
                 }
 
-                if (dateInfo.isSpecificDay || dateInfo.optCompanyEventName != null || dateInfo.optWorkplaceEventName != null) {
+                if (dateInfo.isSpecificDay || dateInfo.optCompanyEventName != '' || dateInfo.optWorkplaceEventName != '') {
                     objDetailHeaderDs['_' + ymd] = "<div class='header-image-event'></div>";
-                    let heightToolTip = 22 + 22 + 22 * dateInfo.listSpecDayNameCompany.length + 22 * dateInfo.listSpecDayNameWorkplace.length + 5; //22 là chiều cao 1 row của table trong tooltip
+                    let heightToolTip = 22 + 22 + (dateInfo.listSpecDayNameCompany.length == 0 ? 22 : 22 *dateInfo.listSpecDayNameCompany.length) + (dateInfo.listSpecDayNameWorkplace.length == 0 ? 22 : 22 *dateInfo.listSpecDayNameWorkplace.length) + 5; //22 là chiều cao 1 row của table trong tooltip
                     htmlToolTip.push(new HtmlToolTip('_' + ymd, dateInfo.htmlTooltip, heightToolTip));
                 } else {
                     objDetailHeaderDs['_' + ymd] = "<div class='header-image-no-event'></div>";
@@ -946,6 +955,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else {
                 self.key = 0;
             }
+            self.dataBindGrid = result;
             return result;
         }
 
@@ -967,7 +977,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let userInfor: IUserInfor = JSON.parse(data);
 
                 // A4_7
-                self.achievementDisplaySelected(userInfor.achievementDisplaySelected);
+                self.achievementDisplaySelected(userInfor.achievementDisplaySelected == false ? 2 : 1);
                 // A4_12 背景色の初期選択   (Chọn default màu nền)
                 self.backgroundColorSelected(userInfor.backgroundColor);
 
@@ -1607,42 +1617,41 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         */
         nextMonth(): void {
             let self = this;
-            return;
-            
-            if (self.selectedModeDisplay() == 1 || self.selectedModeDisplay() == 2)
+            if(self.selectedModeDisplay() == 2)
                 return;
-
-            let dtMoment = moment(self.dtAft());
-            dtMoment.add(1, 'days');
-            self.dtPrev(dtMoment.toDate());
-            dtMoment = dtMoment.add(1, 'months');
-            dtMoment.subtract(1, 'days');
-            self.dtAft(dtMoment.toDate());
-            self.stopRequest(false);
             
-            let self = this,
-                dfd = $.Deferred(),
-                viewMode = self.selectedModeDisplayInBody();
-
+            self.stopRequest(false);
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor: IUserInfor = JSON.parse(item.get());
+            
             let param = {
-                viewMode: viewMode
+                viewMode : self.selectedModeDisplayInBody(), // time | shortName | shift
+                startDate: self.dateTimePrev(),
+                endDate  : self.dateTimeAfter(),
+                isNextMonth : true,
+                cycle28Day : self.selectedModeDisplay() == 2 ? true : false,
+                workplaceId     : userInfor.workplaceId,
+                workplaceGroupId: userInfor.workplaceGroupId,
+                unit:             userInfor.unit,
+                getActualData   : item.isPresent() ? userInfor.achievementDisplaySelected : false, 
+                listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst, 
+                listSid: self.listSid() 
             };
-            service.getDataNextMonth(param).done((data: IDataStartScreen) => {
-                // set hiển thị ban đầu theo data đã lưu trong localStorege
-                self.getSettingDisplayWhenStart();
-                // set data Header
-                self.bindingToHeader(data);
-                // set data Grid
-                let dataBindGrid = self.convertDataToGrid(data, viewMode);
+            
+            service.getDataChangeMonth(param).done((data: any) => {
+                self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                
+                self.dtPrev(data.dataBasicDto.startDate);
+                self.dtAft(data.dataBasicDto.endDate);
+                
+                let dataBindGrid = self.convertDataToGrid(data, self.selectedModeDisplayInBody());
 
-                self.updateExTable(dataBindGrid, viewMode, false, true, true);
-                dfd.resolve();
+                self.updateExTable(dataBindGrid, self.selectedModeDisplayInBody(), false, true, true);
+                
                 self.stopRequest(true);
             }).fail(function() {
-                dfd.reject();
                 self.stopRequest(true);
             });
-            return dfd.promise();
         }
 
         /**
@@ -1650,46 +1659,41 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         */
         backMonth(): void {
             let self = this;
-            return;
-            if (self.selectedModeDisplay() == 1 || self.selectedModeDisplay() == 2)
+            if (self.selectedModeDisplay() == 2)
                 return;
-            
-            let dtMoment = moment(self.dtPrev());
-            dtMoment.subtract(1, 'days');
-            self.dtAft(dtMoment.toDate());
-            if (dtMoment.date() === dtMoment.daysInMonth()) {
-                dtMoment = dtMoment.subtract(1, 'months');
-                dtMoment.endOf('months');
-            } else {
-                dtMoment = dtMoment.subtract(1, 'months');
-            }
-            dtMoment.add(1, 'days');
-            self.dtPrev(new Date(dtMoment.format('YYYY/MM/DD'))); 
-                    
+
             self.stopRequest(false);
-            let self = this,
-                dfd = $.Deferred(),
-                viewMode = self.selectedModeDisplayInBody();
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor: IUserInfor = JSON.parse(item.get());
 
             let param = {
-                viewMode: viewMode
+                viewMode: self.selectedModeDisplayInBody(), // time | shortName | shift
+                startDate: self.dateTimePrev(),
+                endDate: self.dateTimeAfter(),
+                isNextMonth: false,
+                cycle28Day: self.selectedModeDisplay() == 2 ? true : false,
+                workplaceId: userInfor.workplaceId,
+                workplaceGroupId: userInfor.workplaceGroupId,
+                unit: userInfor.unit,
+                getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false,
+                listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst,
+                listSid: self.listSid()
             };
-            service.getDataPreMonth(param).done((data: IDataStartScreen) => {
-                // set hiển thị ban đầu theo data đã lưu trong localStorege
-                self.getSettingDisplayWhenStart();
-                // set data Header
-                self.bindingToHeader(data);
-                // set data Grid
-                let dataBindGrid = self.convertDataToGrid(data, viewMode);
 
-                self.updateExTable(dataBindGrid, viewMode, false, true, true);
-                dfd.resolve();
+            service.getDataChangeMonth(param).done((data: any) => {
+                self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+
+                self.dtPrev(data.dataBasicDto.startDate);
+                self.dtAft(data.dataBasicDto.endDate);
+
+                let dataBindGrid = self.convertDataToGrid(data, self.selectedModeDisplayInBody());
+
+                self.updateExTable(dataBindGrid, self.selectedModeDisplayInBody(), false, true, true);
+
                 self.stopRequest(true);
             }).fail(function() {
-                dfd.reject();
                 self.stopRequest(true);
             });
-            return dfd.promise();
         }
 
         /**
@@ -1721,8 +1725,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // set color button
             $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
             $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
-            $("#group-bt").css({ 'border-right': '2px solid #ccc' });
-
 
             self.removeClass();
 
@@ -1751,7 +1753,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // set color button
             $(".confirmMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
             $(".editMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
-            $("#group-bt").css({ 'border-right': '0px solid #ccc' });
 
             self.removeClass();
 
@@ -1986,7 +1987,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             //hiện giờ truyền sang workplaceId va tất cả emmployee . Sau này sửa truyền list employee theo workplace id
             setShared("baseDate", ko.observable(self.dateTimeAfter()));
             $('#A1_12_1').ntsPopup('hide');
-            nts.uk.ui.windows.sub.modal("/view/ksu/001/la/index.xhtml");
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/la/index.xhtml").onClosed(() => {
+                
+                
+            });
         }
         
         // A1_12_20
@@ -1996,10 +2000,48 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 listEmpData: self.listEmpData
             });
             $('#A1_12_1').ntsPopup('hide');
-            nts.uk.ui.windows.sub.modal("/view/ksu/001/l/index.xhtml");
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/m/index.xhtml").onClosed(() => {
+                self.stopRequest(false);
+                self.getListEmpIdSorted().done(() => {
+
+                    self.stopRequest(true);
+                });
+            });
         }
         
+        getListEmpIdSorted(): JQueryPromise<any> {
+            let self = this, dfd  = $.Deferred();
+            let leftmostDs        = [];
+            let middleDs          = [];
+            let detailColumns     = [];
+            let objDetailHeaderDs = {};
+            let detailHeaderDeco  = [];
+            let detailContentDs   = [];
+            let detailContentDeco = [];
+            let dataBindGrid      = self.dataBindGrid;
+            
+            let param = {
+                endDate: self.dateTimeAfter(),
+                sids: self.listSid()
+            }
+            service.getListEmpIdSorted(param).done((data) => {
+                // update lai grid
+                if(data.length > 0){
+                    
+                
+                
+                }
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
         
+        updateGridAfterOrderEmp(){
+            
+        
+        }
 
         compareArrByRowIndexAndColumnKey(a: any, b: any): any {
             return a.rowIndex == b.rowIndex && a.comlumnKey == b.comlumnKey;
@@ -2278,7 +2320,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
     interface IUserInfor {
         disPlayFormat: string;
         backgroundColor: number; // 背景色
-        achievementDisplaySelected: number;
+        achievementDisplaySelected: boolean;
         shiftPalletUnit: number;
         shiftPalettePageNumberCom: number;
         shiftPalletPositionNumberCom: {};
