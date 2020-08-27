@@ -74,7 +74,7 @@
 	margin-top: -20px;
 }
 #contents-area {
-	width: calc(100% - 30px);
+	width: calc(100% - 20px);
 }
 
 .verticalRadioBoxGroup .ntsRadioBox {
