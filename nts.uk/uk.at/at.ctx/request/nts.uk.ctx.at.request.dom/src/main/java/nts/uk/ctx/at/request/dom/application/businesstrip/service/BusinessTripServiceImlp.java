@@ -179,7 +179,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 .filter(i -> i.getOpBusinessTripAppWorkType().isPresent() && i.getOpBusinessTripAppWorkType().get().value == BusinessTripAppWorkType.HOLIDAY.value).findFirst();
         if (targetHoliday.isPresent()) {
 //            targetWorkDay.get().setDisplayWorkType(true);
-            targetWorkDay.get().setWorkTypeLst(holidayWorkType.stream().map(i -> i.getWorkTypeCode().v()).collect(Collectors.toList()));
+            targetHoliday.get().setWorkTypeLst(holidayWorkType.stream().map(i -> i.getWorkTypeCode().v()).collect(Collectors.toList()));
         }
 
         // ドメインモデル「勤務種類」を取得する
