@@ -30,6 +30,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.CheckColorTime;
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
 import nts.uk.ctx.at.request.dom.application.applist.service.PhaseStatus;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
+import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInitOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
@@ -89,11 +90,8 @@ public class ApplicationListFinder {
 				// ドメインモデル「申請一覧抽出条件」を取得する
 				AppListExtractCondition appListExtractCondition = param.getAppListExtractCondition().convertDtotoDomain();
 				// アルゴリズム「申請一覧リスト取得」を実行する
-				AppListInfo appListInfo = repoAppListInit.getApplicationList(appListExtractCondition, param.getDevice(), result);
-				result.setAppLst(appListInfo.getAppLst());
-				return new AppListInitDto(
-						param.getAppListExtractCondition(),
-						AppListInfoDto.fromDomain(result));
+				AppListInitOutput appListInitOutput = repoAppListInit.getApplicationList(appListExtractCondition, param.getDevice(), result);
+				return AppListInitDto.fromDomain(appListInitOutput);
 			}
 			// 期間（開始日、終了日）が存する場合
 			if(Strings.isNotBlank(param.getStartDate()) && Strings.isNotBlank(param.getEndDate())) {
@@ -183,11 +181,8 @@ public class ApplicationListFinder {
 			appListExtractCondition.setOpListEmployeeID(Optional.of(Arrays.asList(param.getEmployeeID())));
 		}
 		// アルゴリズム「申請一覧リスト取得」を実行する
-		AppListInfo appListInfo = repoAppListInit.getApplicationList(appListExtractCondition, param.getDevice(), result);
-		result.setAppLst(appListInfo.getAppLst());
-		return new AppListInitDto(
-				AppListExtractConditionDto.fromDomain(appListExtractCondition),
-				AppListInfoDto.fromDomain(result));
+		AppListInitOutput appListInitOutput = repoAppListInit.getApplicationList(appListExtractCondition, param.getDevice(), result);
+		return AppListInitDto.fromDomain(appListInitOutput);
 //		AppListExtractConditionDto condition = param.getCondition();
 //		int device = param.getDevice();
 //		String companyId = AppContexts.user().companyId();
@@ -537,9 +532,8 @@ public class ApplicationListFinder {
 
 //    	申請一覧初期処理
     	AppListInitDto appListInitDto =this.getAppList(param);
-    	applicationListDto.setAppListInfoDto(appListInitDto.getAppListInfoDto());
-    	applicationListDto.setAppListExtractConditionDto(appListInitDto.getAppListExtractConditionDto());
-
+    	applicationListDto.setAppListInfoDto(appListInitDto.getAppListInfo());
+    	applicationListDto.setAppListExtractConditionDto(appListInitDto.getAppListExtractCondition());
     	applicationListDto.setAppAllNumber(appAllNumber);
     	applicationListDto.setAppPerNumber(appPerNumber);
 //    	AppListInfo appListInfo = new AppListInfo();
@@ -594,16 +588,48 @@ public class ApplicationListFinder {
     	int device = MOBILE;
     	AppListInfo appListInfo = null; //  applicationListDtoMobile.getAppListInfoDto();
     	// change value of appListExtractCondition and appListInfo
-    	appListInfo = appListInitialRepository.getApplicationList(appListExtractCondition, device, appListInfo);
+    	AppListInitOutput appListInitOutput = appListInitialRepository.getApplicationList(appListExtractCondition, device, appListInfo);
     	// set value
     	applicationListDtoMobile.setAppListInfoDto(null);
     	applicationListDtoMobile.setAppListExtractConditionDto(null);
 //    	return this.convertApplicationListDto(appListExtractCondition, appListInfo, applicationListDtoMobile);
     	return applicationListDtoMobile;
     }
-
-
-
-
+    
+    
+    
+    /**
+     * refactor 4
+     * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.申請一覧期間検索.申請一覧期間検索
+     * @param param
+     * @return
+     */
+    public AppListInitDto findByPeriod(AppListExtractConditionDto param) {
+    	// ドメインモデル「申請一覧抽出条件」を保存する
+    	// xử lý trên UI
+    	// AppListExtractCondition appListExtractCondition = param.convertDtotoDomain();
+    	// アルゴリズム「申請一覧検索前チェック」を実行する - 21
+    	// approvalListService.checkBeforeSearch(appListExtractCondition);
+    	// アルゴリズム「申請一覧リスト取得申請」を実行する - 2
+    	AppListInfo appListInfo = new AppListInfo();
+    	return AppListInitDto.fromDomain(repoAppListInit.getApplicationList(param.convertDtotoDomain(), 0, appListInfo));
+	}
+    
+    /**
+     * refactor 4
+     * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.申請一覧申請条件指定.申請一覧申請条件指定
+     * @param appListExtractCondition
+     * @return
+     */
+    public AppListInfoDto findByEmpIDLst(AppListExtractConditionDto param) {
+    	// ドメインモデル「申請一覧抽出条件」を保存する
+    	// xử lý trên UI
+    	// AppListExtractCondition appListExtractCondition = param.convertDtotoDomain();
+    	// アルゴリズム「申請一覧検索前チェック」を実行する - 21
+    	// approvalListService.checkBeforeSearch(appListExtractCondition);
+    	// アルゴリズム「申請一覧リスト取得申請」を実行する - 2
+    	AppListInfo appListInfo = new AppListInfo();
+    	return AppListInfoDto.fromDomain(repoAppListInit.getApplicationListByApp(param.convertDtotoDomain(), 0, appListInfo));
+	}
 }
 

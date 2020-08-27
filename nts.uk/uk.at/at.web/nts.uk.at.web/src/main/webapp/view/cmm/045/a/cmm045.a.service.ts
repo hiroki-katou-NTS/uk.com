@@ -1,6 +1,6 @@
 module cmm045.a.service {
      var paths = {
-       	 getApplicationList: "at/request/application/applist/getapplist",
+     	 getApplicationList: "at/request/application/applist/getapplist",
          // getApplicationList: "at/request/application/applist/getapplisttest",
 
          getApplicationDisplayAtr: "at/request/application/applist/get/appdisplayatr",
@@ -8,7 +8,9 @@ module cmm045.a.service {
          getHdSetInfo: "at/request/vacation/setting/hdapp",
          reflectListApp: "at/request/application/applist/reflect-list",
          writeLog: "at/request/application/write-log",
-		 getAppNameInAppList: "at/request/application/screen/applist/getAppNameInAppList"
+		 getAppNameInAppList: "at/request/application/screen/applist/getAppNameInAppList",
+		findByPeriod: "at/request/application/applist/findByPeriod",
+		findByEmpIDLst: "at/request/application/applist/findByEmpIDLst",
     }
 
     /**
@@ -51,4 +53,12 @@ module cmm045.a.service {
 			return [];
 		}));	
 	}
+	
+	export function findByPeriod(param: any): JQueryPromise<Array<any>>{
+        return nts.uk.request.ajax("at", paths.findByPeriod,param);
+    }
+
+	export function findByEmpIDLst(param: any): JQueryPromise<Array<any>>{
+        return nts.uk.request.ajax("at", paths.findByEmpIDLst,param);
+    }
 }

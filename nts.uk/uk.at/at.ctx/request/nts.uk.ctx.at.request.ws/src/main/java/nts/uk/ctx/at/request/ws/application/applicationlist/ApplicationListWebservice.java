@@ -15,11 +15,12 @@ import nts.uk.ctx.at.request.app.command.application.applicationlist.ApprovalLis
 import nts.uk.ctx.at.request.app.command.application.applicationlist.ApprovalListAppCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.ReflectAfterApproveAsyncCmdHandler;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.UpdateAppTypeBfCommandHandler;
+import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListExtractConditionDto;
+import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListInfoDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListInitDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListParamFilter;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfFinder;
-import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListDtoMobile;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListFinder;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.FilterMobileParam;
@@ -139,6 +140,18 @@ public class ApplicationListWebservice extends WebService{
 	@Path("reflect-list")
 	public void reflectAfterApprove(List<String> command){
 		reflect.handle(command);
+	}
+	
+	@POST
+	@Path("findByPeriod")
+	public AppListInitDto findByPeriod(AppListExtractConditionDto param) {
+		return this.appListFinder.findByPeriod(param);
+	}
+	
+	@POST
+	@Path("findByEmpIDLst")
+	public AppListInfoDto findByEmpIDLst(AppListExtractConditionDto param) {
+		return this.appListFinder.findByEmpIDLst(param);
 	}
 
 }

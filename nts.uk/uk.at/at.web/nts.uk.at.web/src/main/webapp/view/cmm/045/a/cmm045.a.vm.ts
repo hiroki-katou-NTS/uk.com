@@ -143,7 +143,38 @@ module cmm045.a.viewmodel {
                 _.each(data.listEmployee, function(emp){
                     self.lstSidFilter.push(emp.employeeId);
                 });
-                self.filter();
+				
+				
+				if(!self.checkConditionParam()) {
+					return;
+				}
+				let empIDLst = [];
+				_.each(data.listEmployee, function(emp){
+                    empIDLst.push(emp.employeeId);
+                });
+				self.appListExtractConditionDto.opListEmployeeID = empIDLst;
+
+				block.invisible();
+				service.findByEmpIDLst(self.appListExtractConditionDto).done((data: any) => {
+					self.items(data.appLst);	
+					if (data.appStatusCount != null) {
+                        self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
+                            data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner,
+                            data.appStatusCount.denialNumber));
+                    }
+
+                    if (self.mode() == 1) {
+                        $("#grid1").ntsGrid("destroy");
+                        let colorBackGr = self.fillColorbackGrAppr();
+                        let lstHidden: Array<any> = self.findRowHidden(self.items());
+                        self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
+                    } else {
+                        let colorBackGr = self.fillColorbackGr();
+                        $("#grid2").ntsGrid("destroy");
+                        self.reloadGridApplicaion(colorBackGr, self.isHidden());
+                    }
+				}).always(() => block.clear());
+                // self.filter();
              }
             }
 
@@ -156,6 +187,68 @@ module cmm045.a.viewmodel {
                 }
             }
         }
+
+		checkConditionParam() {
+			const self = this;
+            if (nts.uk.ui.errors.hasError()) {
+                return false;
+            }
+            //check filter
+            //check startDate
+            if (self.dateValue().startDate == null || self.dateValue().startDate == '') {//期間開始日付または期間終了日付が入力されていない
+                $('.ntsDatepicker.nts-input.ntsStartDatePicker.ntsDateRange_Component').ntsError('set', {messageId:"Msg_359"});
+                return false;
+            }
+            //check endDate
+            if (self.dateValue().endDate == null || self.dateValue().endDate == '') {//期間開始日付または期間終了日付が入力されていない
+                $('.ntsDatepicker.nts-input.ntsEndDatePicker.ntsDateRange_Component').ntsError('set', {messageId:"Msg_359"});
+                return false;
+            }
+            if (self.mode() == 1 && self.selectedIds().length == 0) {//承認状況のチェックの確認
+                nts.uk.ui.dialog.error({ messageId: "Msg_360" });
+                return false;
+            }
+			if (!self.appListExtractConditionDto.preOutput && !self.appListExtractConditionDto.postOutput) {
+				nts.uk.ui.dialog.error({ messageId: "Msg_1722" });
+                return false;		
+			}
+			let selectAppTypeLst = _.filter(self.appListExtractConditionDto.opListOfAppTypes, o => o.choice);
+			if (_.isEmpty(selectAppTypeLst)) {
+				nts.uk.ui.dialog.error({ messageId: "Msg_1723" });
+                return false;		
+			}
+			return true;
+		}
+		
+		findByPeriod() {
+			const self = this;	
+			if(!self.checkConditionParam()) {
+				return;
+			}
+			self.appListExtractConditionDto.periodStartDate = self.dateValue().startDate;
+			self.appListExtractConditionDto.periodEndDate = self.dateValue().endDate;
+
+			block.invisible();
+			service.findByPeriod(self.appListExtractConditionDto).done((data: any) => {
+				self.items(data.appListInfo.appLst);
+				if (data.appStatusCount != null) {
+                    self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
+                        data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner,
+                        data.appStatusCount.denialNumber));
+                }
+
+                if (self.mode() == 1) {
+                    $("#grid1").ntsGrid("destroy");
+                    let colorBackGr = self.fillColorbackGrAppr();
+                    let lstHidden: Array<any> = self.findRowHidden(self.items());
+                    self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
+                } else {
+                    let colorBackGr = self.fillColorbackGr();
+                    $("#grid2").ntsGrid("destroy");
+                    self.reloadGridApplicaion(colorBackGr, self.isHidden());
+              	}	
+			}).always(() => block.clear());
+		}
 
         start(): JQueryPromise<any> {
             block.invisible();
@@ -241,8 +334,8 @@ module cmm045.a.viewmodel {
 						};
 				return service.getApplicationList(newParam);
 			}).then((data: any) => {
-				self.dateValue({ startDate: data.appListInfoDto.displaySet.startDateDisp, endDate: data.appListInfoDto.displaySet.endDateDisp });
-				self.appListExtractConditionDto = data.appListExtractConditionDto;
+				self.dateValue({ startDate: data.appListInfo.displaySet.startDateDisp, endDate: data.appListInfo.displaySet.endDateDisp });
+				self.appListExtractConditionDto = data.appListExtractCondition;
                 self.lstContentApp(data.lstContentApp);
                 let isHidden = data.isDisPreP == 1 ? false : true;
                 self.isHidden(isHidden);
@@ -280,7 +373,7 @@ module cmm045.a.viewmodel {
 //                });
 //                let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), self.lstAppCompltSync());
 //                self.lstApp(lstData);
-                self.items(data.appListInfoDto.appLst);
+                self.items(data.appListInfo.appLst);
                 //mode approval - count
                 if (data.appStatusCount != null) {
                     self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
