@@ -55,7 +55,7 @@ public class TemporaryDispatchInformation {
 	// 国内海外区分名
 	private String nameClassify;
 	
-	// Expiration date
+	// 満了予定日
 	private GeneralDate expirationDate;
 	
 	// 社員コード
@@ -72,6 +72,9 @@ public class TemporaryDispatchInformation {
 	
 	// 電話番号
 	private String phoneNumber;
+	
+	// 出向先会社名
+	private String secondedCompanyName;
 	
 	public TemporaryDispatchInformation(String employeeId) {
         this.employeeId = employeeId;

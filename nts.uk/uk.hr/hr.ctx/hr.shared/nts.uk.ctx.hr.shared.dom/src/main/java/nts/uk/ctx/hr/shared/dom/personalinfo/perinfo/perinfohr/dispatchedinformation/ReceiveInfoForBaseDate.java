@@ -44,6 +44,17 @@ public class ReceiveInfoForBaseDate {
 		List<TemporaryDispatchInformation> dispatchInformations = new ArrayList<>();
 		boolean check = false; 
 		
+		if (!getInclude) {
+			List<PersonalInformation> informationsProvisional = new ArrayList<>();
+			for (PersonalInformation p : informations) {
+				if (p.getSelectCode05().isPresent()) {
+					if(p.getSelectCode05().get().equals("0")) {
+						informationsProvisional.add(p);
+					}
+				}
+			}
+			informations = informationsProvisional;
+		}
 		
 		if (emplyeeIds.isEmpty()) {
 
@@ -88,10 +99,9 @@ public class ReceiveInfoForBaseDate {
 					t.setTemporaryAssignmentCategory(p.getSelectCode03().map(m -> m).orElse(""));
 				}
 
-				// QA *8
-//					if (getCompanyName) {
-//						t.set
-//					}
+				if (getCompanyName) {
+					t.setSecondedCompanyName(p.getStr12().map(m -> m).orElse(""));
+				}
 
 				if (getAddress) {
 					t.setCountry(p.getSelectName04().map(m -> m).orElse(""));
@@ -157,10 +167,9 @@ public class ReceiveInfoForBaseDate {
 						t.setTemporaryAssignmentCategory(p.getSelectCode03().map(m -> m).orElse(""));
 					}
 					
-					// QA *8
-//					if (getCompanyName) {
-//						t.set
-//					}
+					if (getCompanyName) {
+						t.setSecondedCompanyName(p.getStr12().map(m -> m).orElse(""));
+					}
 					
 					if (getAddress) {
 						t.setCountry(p.getSelectName04().map(m -> m).orElse(""));
