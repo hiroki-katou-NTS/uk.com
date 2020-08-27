@@ -17,7 +17,7 @@ module nts.uk.at.kmr003.a {
     const dialogOptions: any = {
         forGrid: true,
         headers: [
-            new nts.uk.ui.errors.ErrorHeader("rowId", "カード番号", "auto", true),
+            new nts.uk.ui.errors.ErrorHeader("rowId", getText("KMR003_21"), "auto", true),
             new nts.uk.ui.errors.ErrorHeader("columnKey", "弁当ヘッダー", "auto", true),
             new nts.uk.ui.errors.ErrorHeader("message", "エラー内容", "auto", true)
         ]
@@ -25,12 +25,10 @@ module nts.uk.at.kmr003.a {
 
     @bean(dialogOptions)
     export class KMR003AViewModel extends ko.ViewModel {
-        tabs: KnockoutObservableArray<any> = ko.observableArray([]);
-        stampToSuppress: KnockoutObservable<any> = ko.observable({});
         date: KnockoutObservable<Date> = ko.observable(moment(new Date()).toDate());
 
         //A2_5 A2_6
-        searchConditions: KnockoutObservableArray<SearchCondition> = ko.observableArray();
+        searchConditions: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.BentoReservationSearchConditionDto);
         searchConditionValue: KnockoutObservable<number> = ko.observable(4);
 
         //A2_7 A2_8
@@ -41,23 +39,17 @@ module nts.uk.at.kmr003.a {
         ccg001ComponentOption: GroupOption = null;
 
         dynamicColumns = [];
-        flag: KnockoutObservable<boolean>;
         datas: Array<ReservationModifyEmployeeDto> = [];
         listBento = [];
         headerInfos: Array<HeaderInfoDto> = [];
         empSearchItems: Array<EmployeeSearchDto> = [];
-        employIdLogin: any;
+
+        canDelete: KnockoutObservable<boolean> = ko.observable(false);
+        deleteItems: KnockoutObservableArray<string> = ko.observableArray([]);
 
         constructor() {
             super();
             let vm = this;
-
-            vm.searchConditions.push(new SearchCondition(4, '全部'));
-            vm.searchConditions.push(new SearchCondition(0, '１商品２件以上'));
-            vm.searchConditions.push(new SearchCondition(1, '注文済み'));
-            vm.searchConditions.push(new SearchCondition(2, '未注文'));
-            vm.searchConditions.push(new SearchCondition(3, '新規注文'));
-
             vm.ccg001ComponentOption = <GroupOption>{
                 /** Common properties */
                 systemType: 2,
@@ -135,32 +127,35 @@ module nts.uk.at.kmr003.a {
         getFixedColumns(): Array<any> {
             let self = this;
 
-            let visibleCheckBox = !self.isNewMode();
+            let isNewMode = self.isNewMode();
             var fixedColumns = [];
             fixedColumns.push({ headerText: "key", key: 'key', dataType: 'string', hidden: true });
             fixedColumns.push({
-                headerText: getText("KMR003_21"), key: 'reservationMemberCode', dataType: 'number', width: '90px', height: '', constraint: {
-                    primitiveValue: 'BentoReservationCount',
-                    required: true
-                }
+                headerText: getText("KMR003_21"), key: 'reservationMemberCode', dataType: 'number', width: '70px', ntsControl: "Label"
             });
-            fixedColumns.push({ headerText: getText("KMR003_22"), key: 'reservationMemberName', dataType: 'string', width: '180px', ntsControl: "Label" });
-            if (visibleCheckBox) {
+            fixedColumns.push({ headerText: getText("KMR003_22"), key: 'reservationMemberName', dataType: 'string', width: '150px', ntsControl: "Label" });
+            if (!isNewMode) {
                 fixedColumns.push({
                     headerText: getText("KMR003_23"),
                     group: [
-                        { headerText: '', key: 'isDelete', dataType: 'boolean', width: '70px', checkbox: true, ntsControl: "isDelCheckBox" }
+                        { headerText: '', key: 'isDelete', dataType: 'boolean', width: '60px', checkbox: true, ntsControl: "isDelCheckBox" }
                     ]
                 });
             }
 
-            fixedColumns.push({ headerText: getText("KMR003_24"), key: 'reservationTime', dataType: 'string', width: '70px', ntsControl: "Label" });
-            fixedColumns.push({
-                headerText: getText("KMR003_25"),
-                group: [
-                    { headerText: '', key: 'ordered', dataType: 'boolean', width: '70px', checkbox: true, ntsControl: "isOrderCheckBox" }
-                ]
-            });
+            fixedColumns.push({ headerText: getText("KMR003_24"), key: 'reservationTime', dataType: 'string', width: '65px', ntsControl: "Label", columnCssClass: "halign-right" });
+
+            if (isNewMode) {
+                fixedColumns.push({ headerText: getText("KMR003_25"), key: 'ordered', dataType: 'boolean', width: '60px', ntsControl: "Label" });
+            } else {
+                fixedColumns.push({
+                    headerText: getText("KMR003_25"),
+                    group: [
+                        { headerText: '', key: 'ordered', dataType: 'boolean', width: '60px', checkbox: true, ntsControl: "isOrderCheckBox" }
+                    ]
+                });
+            }
+
             return fixedColumns;
         }
 
@@ -175,7 +170,6 @@ module nts.uk.at.kmr003.a {
                     cellStates.push(new CellState(data.key, "isDelete", ["center-align"]));
                 }
 
-                cellStates.push(new CellState(data.key, "reservationTime", ["center-align"]));
                 cellStates.push(new CellState(data.key, "ordered", ["center-align"]));
             });
 
@@ -200,7 +194,10 @@ module nts.uk.at.kmr003.a {
                 ntsControls: [
                     {
                         name: 'isDelCheckBox', options: { value: 1, text: '' }, optionsValue: 'value',
-                        optionsText: 'text', controlType: 'CheckBox', enable: false
+                        optionsText: 'text', controlType: 'CheckBox', enable: true,
+                        onChange: function (rowId, columnKey, value, rowData) {
+                            self.checkDelete(rowId, value);
+                        }
                     },
                     {
                         name: 'isOrderCheckBox', options: { value: 1, text: '' }, optionsValue: 'value',
@@ -251,17 +248,41 @@ module nts.uk.at.kmr003.a {
             let self = this;
             let data = $("#grid").mGrid("dataSource");
             _.each(data, (item: ReservationModifyEmployeeDto) => {
-                if (self.isNewMode()) {
+                if (!item.activity) {
+                    self.disableControl(item.key, "reservationMemberCode", true);
+                    self.disableControl(item.key, "reservationMemberName", true);
+                    self.disableControl(item.key, "isDelete", true);
+                    self.disableControl(item.key, "reservationTime", true);
                     self.disableControl(item.key, "ordered", true);
+
+                    self.setBentoInput(item.key, true);
+                } else {
+                    if (self.isNewMode()) {
+                        self.disableControl(item.key, "ordered", true);
+                    }
+                    self.setBentoInput(item.key, item.ordered);
                 }
-                self.setBentoInput(item.key, item.ordered);
             })
         }
 
-        setBentoInput(rowId: any, value: any) {
+        checkDelete(rowId: any, check: any) {
+            let self = this;
+            if (check) {
+                self.deleteItems().push(rowId);
+            } else {
+                const index = self.deleteItems().indexOf(rowId);
+                if (index > -1) {
+                    self.deleteItems().splice(index, 1);
+                }
+            }
+
+            self.canDelete(self.deleteItems().length > 0);
+        }
+
+        setBentoInput(rowId: any, isDisable: any) {
             let self = this;
             _.forEach(self.headerInfos, (bento: HeaderInfoDto) => {
-                self.disableControl(rowId, bento.key, value);
+                self.disableControl(rowId, bento.key, isDisable);
             })
         }
 
@@ -278,14 +299,20 @@ module nts.uk.at.kmr003.a {
                 dfd = $.Deferred();
             self.$blockui("invisible");
             let param = self.createParamGet();
+            self.datas = [];
+            self.deleteItems.removeAll();
+            self.canDelete(false);
             self.$ajax(API.BENTO_RESERVATTIONS, param).done((res: IReservationModifyDto) => {
-                self.closingTimeFrames.removeAll();
+                self.dynamicColumns = [];
+                if (!_.isEmpty(res.bentoClosingTimes)) {
+                    self.closingTimeFrames.removeAll();
+                }
+
                 _.forEach(res.bentoClosingTimes, (item: IClosingTimeDto) => {
                     //add A2_8 A2_9 A2_10
                     self.closingTimeFrames.push(new ClosingTimeFrame(item));
                 })
                 self.setClosingTimeTime(self.closingTimeFrameValue());
-                self.dynamicColumns = [];
                 self.headerInfos = _.map(res.bentos, (item: IHeaderInfoDto) => { return new HeaderInfoDto(item); });
                 _.forEach(self.headerInfos, (item: HeaderInfoDto) => {
                     self.dynamicColumns.push({
@@ -311,16 +338,37 @@ module nts.uk.at.kmr003.a {
                     dto.convertData(self.headerInfos);
                     return dto;
                 });
-                self.datas = _.sortBy(self.datas, [(o: ReservationModifyEmployeeDto) => { return o.reservationMemberCode; }]);
+
+                if (!_.isEmpty(res.errors)) {
+                    let errors = [];
+                    _.forEach(res.errors, error => {
+                        errors.push({
+                            message: error.message,
+                            messageId: error.messageId,
+                            supplements: {}
+                        })
+                    });
+
+                    nts.uk.ui.dialog.bundledErrors({ errors: errors }).then(() => {
+                        self.$blockui("clear");
+                    })
+                }
+                else {
+                    self.$blockui("clear");
+                }
+            }).fail(err => {
+                self.$dialog.error(err);
+                self.$blockui("clear");
+            }).always(() => {
                 $("#grid").mGrid("destroy");
                 self.loadMGrid();
 
-                // UI処理[11]
-                if (_.isEmpty(self.headerInfos)) {
-                    self.$dialog.error({ messageId: "Msg_1604" });
+                // check focus
+                if (_.isEmpty(self.datas)) {
+                    $("#ccg001-btn-search-drawer").focus()
+                } else {
+                    $("#A1_2").focus();
                 }
-            }).always(() => {
-                self.$blockui("clear");;
                 dfd.resolve();
             })
             return dfd.promise();
@@ -357,7 +405,6 @@ module nts.uk.at.kmr003.a {
 
             let commandUpdate = new ForceUpdateBentoReserveCommand(self.date().toISOString(), self.isNewMode(), self.closingTimeFrameValue());
             commandUpdate.setReservationInfos(reservations, self.headerInfos);
-            console.log(commandUpdate)
             self.$ajax(API.BENTO_UPDATE, commandUpdate).done(() => {
                 self.$dialog.info({ messageId: "Msg_15" }).then(function () {
                     self.$blockui("clear");;
@@ -369,14 +416,13 @@ module nts.uk.at.kmr003.a {
         deleteReservation() {
             let self = this;
             self.$dialog.confirm({ messageId: 'Msg_18' }).then(res => {
-                if (res == "yes"){
+                if (res == "yes") {
                     self.$blockui("invisible");
                     let reservations: Array<ReservationModifyEmployeeDto> = $("#grid").mGrid("dataSource", true);
                     let reservationDeletes = _.filter(reservations, (reservation: ReservationModifyEmployeeDto) => { return reservation.isDelete; });
-        
+
                     let commandDelete = new ForceDeleteBentoReserveCommand(self.date().toISOString(), self.closingTimeFrameValue());
                     commandDelete.setReservationInfos(reservationDeletes);
-                    console.log(commandDelete)
                     self.$ajax(API.BENTO_DELETE, commandDelete).done(() => {
                         self.$dialog.info({ messageId: "Msg_16" }).then(function () {
                             self.$blockui("clear");
@@ -457,16 +503,6 @@ module nts.uk.at.kmr003.a {
         }
     }
 
-    class SearchCondition {
-        id: number;
-        name: string;
-
-        constructor(id: number, name: string) {
-            this.id = id;
-            this.name = name;
-        }
-    }
-
     class ClosingTimeFrame {
         id: number;
         name: string;
@@ -490,6 +526,8 @@ module nts.uk.at.kmr003.a {
         empFinishs: Array<IEmployeeInfoMonthFinishDto>;
 
         reservationModifyEmps: Array<IReservationModifyEmployeeDto>;
+
+        errors: Array<any>;
     }
 
     // 弁当ヘッダー
@@ -590,7 +628,9 @@ module nts.uk.at.kmr003.a {
             let self = this;
             _.forEach(this.reservationDetails, (item: ReservationModifyDetailDto) => {
                 let header = _.find(headerInfos, (x: HeaderInfoDto) => { return x.frameNo == item.frameNo; });
-                self[header.key] = item.bentoCount;
+                if (header) {
+                    self[header.key] = item.bentoCount;
+                }
             })
         }
     }

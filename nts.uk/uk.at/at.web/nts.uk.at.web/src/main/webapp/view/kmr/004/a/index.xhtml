@@ -72,13 +72,22 @@
                         <td>
                             <div id="A5_1" data-bind="text: $vm.$i18n('KMR004_11'), ntsFormLabel: {required: true}"></div>
 
-							<div id="A5_2" tabindex="8" data-bind="ntsRadioBoxGroup: {
-								options: outputConditionOptions,
-								optionsValue: 'id',
-								optionsText: 'name',
-								value: outputConditionChecked,
-								enable: true}">
-							</div>
+                            <div id="A5_2" class="kmr004-inline">
+                                <div tabindex="8" class="control-group kmr004-inline">
+                                    <label class="ntsRadioBox"><input type="radio"
+                                                                      name="outputCondition"
+                                                                      data-bind="name:'#[KMR004_11]', checkedValue: 1, checked: outputConditionChecked, enable: true" />
+                                        <span class="box"></span> <span class="label" data-bind="text: $vm.$i18n('KMR004_12')"></span>
+                                    </label>
+                                </div>
+                                <div tabindex="9" class="control-group kmr004-inline">
+                                    <label class="ntsRadioBox"><input type="radio"
+                                                                      name="outputCondition"
+                                                                      data-bind="name:'#[KMR004_11]', checkedValue: 2, checked: outputConditionChecked, enable: true" />
+                                        <span class="box"></span> <span class="label" data-bind="text: $vm.$i18n('KMR004_13')"></span>
+                                    </label>
+                                </div>
+                            </div>
 
                         </td>
                     </tr>
@@ -96,17 +105,15 @@
                                                 <div id="A7_1" data-bind="text: $vm.$i18n('KMR004_14'), ntsFormLabel: {required: true}"></div>
                                             </td>
                                             <td>
-                                                <div id="A7_2" tabindex="13">
-                                                    <input data-bind="ntsTextEditor: {
-													    name: $i18n('KMR004_21'),
-														value: model().totalTitle,
-														constraint: 'BentoExportTitle',
-														option: {
-															textmode: 'text',
-															width: '100px',
-															textalign: 'left'
-														}}"/>
-                                                </div>
+                                                <input id="A7_2" tabindex="13" data-bind="ntsTextEditor: {
+                                                    name: $i18n('KMR004_21'),
+                                                    value: model().totalTitle,
+                                                    constraint: 'BentoExportTitle',
+                                                    option: {
+                                                        textmode: 'text',
+                                                        width: '100px',
+                                                        textalign: 'left'
+                                                    }}"/>
                                             </td>
                                         </tr>
                                         <tr>
@@ -114,14 +121,32 @@
                                                 <div id="A8_1" data-bind="text: $vm.$i18n('KMR004_15'), ntsFormLabel: {required: true}"></div>
                                             </td>
                                             <td>
-                                                <div id="A8_2" tabindex="14" class="verticalRadioBoxGroup" data-bind="ntsRadioBoxGroup: {
-													name: $i18n('KMR004_16'),
-													options: totalExtractConditionOptions,
-													optionsValue: 'id',
-													optionsText: 'name',
-													value: model().totalExtractCondition,
-													enable: true}">
-                                                </div> <br/>
+                                                <div>
+                                                    <!--A8_3-->
+                                                    <div tabindex="19" class="kmr004-inline">
+                                                        <label class="ntsRadioBox"><input type="radio"
+                                                                                          name="totalCondition"
+                                                                                          data-bind="name:'#[KMR004_16]', checkedValue: 4, checked: model().totalExtractCondition, enable: true" />
+                                                            <span class="box"></span> <span class="label" data-bind="text: $vm.$i18n('KMR004_17')"></span>
+                                                        </label>
+                                                    </div> <br/>
+                                                    <!--A8_4-->
+                                                    <div tabindex="19" class="kmr004-inline">
+                                                        <label class="ntsRadioBox"><input type="radio"
+                                                                                          name="totalCondition"
+                                                                                          data-bind="name:'#[KMR004_16]', checkedValue: 1, checked: model().totalExtractCondition, enable: true" />
+                                                            <span class="box"></span> <span class="label" data-bind="text: $vm.$i18n('KMR004_18')"></span>
+                                                        </label>
+                                                    </div><br/>
+                                                    <!--A8_54-->
+                                                    <div tabindex="20" class="kmr004-inline">
+                                                        <label class="ntsRadioBox"><input type="radio"
+                                                                                          name="totalCondition"
+                                                                                          data-bind="name:'#[KMR004_16]', checkedValue: 2, checked: model().totalExtractCondition, enable: true" />
+                                                            <span class="box"></span> <span class="label" data-bind="text: $vm.$i18n('KMR004_19')"></span>
+                                                        </label>
+                                                    </div><br/>
+                                                </div>
                                                 <div id="A8_6" tabindex="17" class="style-normal"
                                                      data-bind="i18n: 'KMR004_20', ntsCheckBox: { checked: model().extractionConditionChecked, enable: extractionConditionEnable}"></div>
                                             </td>
@@ -140,17 +165,15 @@
                                                 <div id="A9_1" data-bind="text: $vm.$i18n('KMR004_14'), ntsFormLabel: {required: true}"></div>
                                             </td>
                                             <td>
-                                                <div id="A9_2" tabindex="18">
-                                                    <input data-bind="ntsTextEditor: {
-                                                        name: $i18n('KMR004_22'),
-														value: model().detailTitle,
-														constraint: 'BentoExportTitle',
-														option: {
-															textmode: 'text',
-															width: '100px',
-															textalign: 'left'
-														}}"/>
-                                                </div>
+                                                <input id="A9_2" tabindex="18" data-bind="ntsTextEditor: {
+                                                    name: $i18n('KMR004_22'),
+                                                    value: model().detailTitle,
+                                                    constraint: 'BentoExportTitle',
+                                                    option: {
+                                                        textmode: 'text',
+                                                        width: '100px',
+                                                        textalign: 'left'
+                                                    }}"/>
                                             </td>
                                         </tr>
                                         <tr>
@@ -158,22 +181,26 @@
                                                 <div id="A10_1" data-bind="text: $vm.$i18n('KMR004_15'), ntsFormLabel: {required: true}"></div>
                                             </td>
                                             <td>
-                                                <table><tr>
-                                                    <td style="padding-top: 0px;">
-                                                        <div id="A10_2" tabindex="19" class="verticalRadioBoxGroup" data-bind="ntsRadioBoxGroup: {
-															name: $i18n('KMR004_23'),
-															options: itemExtractConditionOptions,
-															optionsValue: 'id',
-															optionsText: 'name',
-															value: model().itemExtractCondition,
-															enable: true}">
-														</div>
-													</td>
-													<td style="padding-top: 0px;">
-														<div class="style-normal" id="A10_5" tabindex="21" style="margin-left: -82px;"
-															 data-bind="i18n: 'KMR004_25', ntsCheckBox: { checked: model().isBreakPage, enable: separatePageCheckboxEnable}"></div>
-													</td>
-												</tr></table>
+                                                <div>
+                                                    <!--A10_3-->
+                                                    <div class="kmr004-inline" tabindex="19">
+                                                        <label class="ntsRadioBox"><input type="radio"
+                                                                                          name="itemCondition"
+                                                                                          data-bind="name:'#[KMR004_23]', checkedValue: 4, checked: model().itemExtractCondition, enable: true" />
+                                                            <span class="box"></span> <span class="label" data-bind="text: $vm.$i18n('KMR004_17')"></span>
+                                                        </label>
+                                                    </div><br/>
+                                                    <div class="style-normal" id="A10_5" tabindex="21"
+                                                         data-bind="i18n: 'KMR004_25', ntsCheckBox: { checked: model().isBreakPage, enable: separatePageCheckboxEnable}"></div>
+                                                    <!--A10_4-->
+                                                    <div class="kmr004-inline" tabindex="20">
+                                                        <label class="ntsRadioBox"><input type="radio"
+                                                                                          name="itemCondition"
+                                                                                          data-bind="name:'#[KMR004_23]', checkedValue: -1, checked: model().itemExtractCondition, enable: true" />
+                                                            <span class="box"></span> <span class="label" data-bind="text: $vm.$i18n('KMR004_24')"></span>
+                                                        </label>
+                                                    </div><br/>
+                                                </div>
 												<div id="A10_6" tabindex="22" data-bind="ntsComboBox: {
 													name: $i18n('KMR004_26'),
 													options: conditionListCcb,
