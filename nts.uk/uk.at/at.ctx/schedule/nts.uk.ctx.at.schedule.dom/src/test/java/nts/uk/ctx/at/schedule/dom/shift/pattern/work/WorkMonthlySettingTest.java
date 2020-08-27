@@ -132,6 +132,13 @@ public class WorkMonthlySettingTest {
         workMonthlySetting.checkForErrors(require);
     }
 
+    @Test
+    public void getters() {
+        WorkMonthlySettingGetMemento memento = new WorkMonthlySettingGetMementoImpl(CID);
+        WorkMonthlySetting workMonthlySetting =  new WorkMonthlySetting(memento);
+        NtsAssert.invokeGetters(workMonthlySetting);
+    }
+
     @AllArgsConstructor
     class WorkMonthlySettingGetMementoImpl implements WorkMonthlySettingGetMemento{
 

@@ -359,10 +359,10 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 
 	@Override
 	public void deleteWorkMonthlySettingById(String companyId,String mPatternCd,GeneralDate date) {
-		this.queryProxy().query(DELETE_BY_WORK_MONTHLY_ID_AND_DATE, KscmtWorkMonthSet.class)
+		this.getEntityManager().createQuery(DELETE_BY_WORK_MONTHLY_ID_AND_DATE, KscmtWorkMonthSet.class)
 				.setParameter("cid", companyId)
 				.setParameter("mPatternCd", mPatternCd)
-				.setParameter("ymdM", date);
+				.setParameter("ymdM", date).executeUpdate();
 	}
 
 	/**
