@@ -3,12 +3,10 @@ package nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.reservation;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.context.AppContexts;
 /**
  * 月別実績の予約
  */
@@ -61,73 +59,28 @@ public class ReservationOfMonthly implements Serializable{
 		this.amount2 = this.amount2.add(target.amount2);
 	}
 	
+	public void add(ReservationDetailOfMonthly detail) {
+		this.orders.add(detail);
+	}
+	
 	/** ○予約注文 */
 	public void aggregate(RequireM1 require, String sid, GeneralDate date) {
 		
-		/** 打刻カードを取得する */
-		val stampCards = require.stampCard(sid);
-		if (stampCards.isEmpty()) {
-			return;
-		}
+		val reservation = require.reservation(sid, date);
 		
-		/** TODO: Tin - stop at here */
-		/** 弁当予約設定を取得する */
-		
-		/** 月別実績の集計　＝　注文済みのみ */
-		boolean monthlyAggrMethod = true;
-		
-		List<ReservationRegisterInfo> inforLst = stampCards.stream()
-				.map(c -> new ReservationRegisterInfo(c.getStampNumber().v()))
-				.collect(Collectors.toList());
-		
-		List<BentoReservation> bentous;
-		if (monthlyAggrMethod) {
-			bentous = require.bentoReservation(inforLst, date, true);
-		} else {
-			bentous = require.bentoReservation(inforLst, date, true);
-		}
-		
-		if (bentous.isEmpty()) {
-			return;
-		}
-		
-		String cid = AppContexts.user().companyId();
-		bentous.stream().forEach(bentou -> {
-			
-			bentou.getBentoReservationDetails().stream().forEach(detail -> {
-				/** 取得した弁当予約明細から弁当を取得する */
-				val bentouMenu = require.bento(cid, date, detail.getFrameNo());
-				
-				/** 弁当合計金額明細を作成する */
-				val amountDetail = BentoDetailsAmountTotal.calculate(detail.getFrameNo(), 
-						detail.getBentoCount().v(), bentouMenu.getAmount1().v(), 
-						bentouMenu.getAmount2().v());
-				
-				/** 月別実績の予約に加算する */
-				this.sum(amountDetail);
-				
-				/** 月別実績の予約明細を探して加算する */
-				val order = this.orders.stream().filter(o -> o.getFrameNo() == detail.getFrameNo()).findFirst();
-				if (order.isPresent()) {
-					order.get().add(detail.getBentoCount().v());
-				} else {
-					this.orders.add(ReservationDetailOfMonthly.of(detail.getFrameNo(), detail.getBentoCount().v()));
-				}
-			});
-		});
+		this.sum(reservation);
 	}
 	
-	public void sum(BentoDetailsAmountTotal bentoDetail) {
-		this.amount1 = this.amount1.add(bentoDetail.getAmount1());
-		this.amount2 = this.amount2.add(bentoDetail.getAmount1());
+	public void addToAmount1(int amount) {
+		this.amount1 = this.amount1.add(amount);
+	}
+	
+	public void addToAmount2(int amount) {
+		this.amount2 = this.amount2.add(amount);
 	}
 	
 	public static interface RequireM1 {
 		
-		List<StampCard> stampCard(String empId);
-		
-		List<BentoReservation> bentoReservation(List<ReservationRegisterInfo> inforLst, GeneralDate date, boolean ordered);
-		
-		Bento bento(String companyID, GeneralDate date, int frameNo);
+		ReservationOfMonthly reservation(String sid, GeneralDate date);
 	}
 }

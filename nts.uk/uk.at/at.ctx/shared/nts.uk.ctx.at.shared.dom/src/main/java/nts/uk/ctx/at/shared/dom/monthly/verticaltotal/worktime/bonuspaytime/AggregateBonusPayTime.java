@@ -139,7 +139,7 @@ public class AggregateBonusPayTime implements Serializable{
 	 * 所定外加給時間に分を加算する
 	 * @param minutes 分
 	 */
-	public void addMinutesToWxcessBonusPayTime(int minutes){
+	public void addMinutesToExcessBonusPayTime(int minutes){
 		this.excess = this.excess.addMinutes(minutes);
 	}
 
@@ -147,7 +147,7 @@ public class AggregateBonusPayTime implements Serializable{
 	 * 所定外特定加給時間に分を加算する
 	 * @param minutes 分
 	 */
-	public void addMinutesToWxcessSpecificBonusPayTime(int minutes){
+	public void addMinutesToExcessSpecificBonusPayTime(int minutes){
 		this.excessSpecific = this.excessSpecific.addMinutes(minutes);
 	}
 }

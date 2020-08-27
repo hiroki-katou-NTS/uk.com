@@ -10,8 +10,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -61,7 +59,7 @@ public class TimeConsumpVacationDaysOfMonthly implements Serializable{
 	public void aggregate(WorkType workType, AttendanceTimeOfDailyAttendance attendanceTime){
 		
 		/** 勤務種類を確認して時間消化休暇日数を取得する */
-		double vacationDays = calcTimeConsumpVacationDays(workType); 
+		double vacationDays = workType.calcTimeConsumpVacationDays();  
 		
 		if (vacationDays > 0) {
 			
@@ -74,26 +72,6 @@ public class TimeConsumpVacationDaysOfMonthly implements Serializable{
 			
 			this.days = this.days.addDays(vacationDays);
 		}
-	}
-	
-	/** 時間消化休暇日数を取得する */
-	private double calcTimeConsumpVacationDays (WorkType workType) {
-		
-		if (workType.getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay) {
-			if (workType.getDailyWork().getOneDay() == WorkTypeClassification.TimeDigestVacation) {
-				return 1;
-			}
-		} else {
-			if (workType.getDailyWork().getMorning() == WorkTypeClassification.TimeDigestVacation) {
-				return 0.5;
-			}
-		
-			if (workType.getDailyWork().getAfternoon() == WorkTypeClassification.TimeDigestVacation) {
-				return 0.5;
-			}
-		}
-		
-		return 0;
 	}
 	
 	/**

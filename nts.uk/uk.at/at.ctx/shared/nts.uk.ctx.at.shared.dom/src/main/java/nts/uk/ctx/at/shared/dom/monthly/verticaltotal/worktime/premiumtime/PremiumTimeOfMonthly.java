@@ -66,6 +66,7 @@ public class PremiumTimeOfMonthly implements Serializable{
 			this.premiumTime.putIfAbsent(premiumTimeNo, new AggregatePremiumTime(premiumTimeNo));
 			val targetPremiumTime = this.premiumTime.get(premiumTimeNo);
 			targetPremiumTime.addMinutesToTime(premiumTime.getPremitumTime().v());
+			targetPremiumTime.addAmount(premiumTime.getPremiumAmount().v());
 		}
 	}
 
