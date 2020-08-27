@@ -90,15 +90,16 @@ input {
 
 tbody {
 	display: block;
-	max-height: 228px;
-	overflow: auto;
+	max-height: 231px;
+	overflow: scroll;
+	overflow-x: hidden;
 	height: auto;
 }
 
 hr {
 	border-color: E0FFFF;
-	width: 100%;
-	margin: 10px 12px 12px 10px;
+	width: 390px;
+    margin: 9px 9px 9px 25px;
 }
 
 body {
