@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -156,10 +157,15 @@ public class GetScheduleOfShift {
 				ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 				ShiftEditStateDto shiftEditStateDto = ShiftEditStateDto.toDto(shiftEditState);
 				
-				 String workTypeCode = workInformation.getWorkTypeCode() == null ? null : workInformation.getWorkTypeCode().v();
-				 String workTimeCode = workInformation.getWorkTimeCode() == null ? null : workInformation.getWorkTimeCode().toString();
+				 String workTypeCode = workInformation.getWorkTypeCode() == null ? null : workInformation.getWorkTypeCode().toString().toString();
+				 String workTimeCode = workInformation.getWorkTimeCode() == null ? null : workInformation.getWorkTimeCode().toString().toString();
 				 
-				Optional<ShiftMasterMapWithWorkStyle> shiftMaster = listShiftMaster.stream().filter(x -> (x.workTypeCode == workTypeCode && x.workTimeCode == workTimeCode)).findFirst();
+				Optional<ShiftMasterMapWithWorkStyle> shiftMaster = listShiftMaster.stream().filter(x -> {
+					boolean s = Objects.equals(x.workTypeCode, workTypeCode);
+					boolean y = Objects.equals(x.workTimeCode, workTimeCode);
+					return s&&y;
+				}).findFirst();
+				
 				// 4.2.3
 				ScheduleOfShiftDto dto = ScheduleOfShiftDto.builder()
 						.employeeId(key.getEmployeeID())
