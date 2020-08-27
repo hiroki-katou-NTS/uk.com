@@ -39,10 +39,14 @@
 			</div>
 			<div class="kmr001-c" id="contents-area">
 				<div class="kmr001-c-left-content">
-					<div data-bind="ntsPanel:{width: '400px', height: '35px', direction: 'bottom', showIcon: false, visible: true}">
+					<div data-bind="ntsPanel:{
+					width: '400px',
+					height: '35px',
+					direction: 'bottom',
+					showIcon: false,
+					visible: true}">
 						<!--C3_2-->
 						<div data-bind="ntsFormLabel: {
-						 required: true,
 						 text: $i18n('KMR001_38')}"
 						/>
 						<!--C3_3-->
@@ -138,7 +142,6 @@
 										checked: reservationAtr1,
 										text: vm.reservationFrameName1(),
 										enable: vm.isLasted(),
-										readonly: vm.readOnly1()
 								}"/>
 
 								<!--C11_3-->
@@ -149,7 +152,7 @@
 
 							</td>
 						</tr>
-						<tr>
+						<tr data-bind="if: vm.visibleClosing2()">
 							<td/>
 							<td>
 								<!--C11_4-->
@@ -157,7 +160,6 @@
 										checked: reservationAtr2,
 										text: vm.reservationFrameName2(),
 										enable: vm.isLasted(),
-										readonly: vm.readOnly2()
 									}"
 								/>
 

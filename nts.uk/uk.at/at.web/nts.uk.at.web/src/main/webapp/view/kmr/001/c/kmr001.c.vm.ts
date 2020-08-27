@@ -58,8 +58,7 @@ module nts.uk.at.kmr001.c {
 
         isLasted: KnockoutObservable<boolean> = ko.observable(true);
 
-        readOnly1: KnockoutObservable<boolean> = ko.observable(false);
-        readOnly2: KnockoutObservable<boolean> = ko.observable(false);
+        visibleClosing2: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             super();
             const vm = this;
@@ -160,6 +159,8 @@ module nts.uk.at.kmr001.c {
                             vm.selectedWorkLocationCode(vm.workLocationList()[0].id);
                             vm.$blockui("clear");
                         });
+                    }).fail(function (error) {
+                        vm.$dialog.error({ messageId: error.messageId });
                     }).always(() => vm.$blockui("clear"));
                 }
             });
@@ -237,15 +238,18 @@ module nts.uk.at.kmr001.c {
                 vm.$blockui('invisible');
                 let bentoDtos = dataRes.bentoDtos;
                 vm.reservationFrameName1(dataRes.reservationFrameName1);
-                vm.reservationFrameName2(dataRes.reservationFrameName2);
                 vm.reservationStartTime1(parseTime(dataRes.reservationStartTime1, true).format());
-                vm.reservationStartTime2(parseTime(dataRes.reservationStartTime2, true).format());
                 vm.reservationEndTime1(parseTime(dataRes.reservationEndTime1,true).format());
-                vm.reservationEndTime2(parseTime(dataRes.reservationEndTime2, true).format());
                 vm.start(dataRes.startDate);
                 vm.end(dataRes.endDate);
                 vm.operationDistinction(dataRes.operationDistinction);
                 vm.listData = [...bentoDtos];
+                if(dataRes.reservationEndTime2 && dataRes.reservationStartTime2 && dataRes.reservationFrameName2) {
+                    vm.visibleClosing2(true);
+                    vm.reservationEndTime2(parseTime(dataRes.reservationEndTime2, true).format());
+                    vm.reservationStartTime2(parseTime(dataRes.reservationStartTime2, true).format());
+                    vm.reservationFrameName2(dataRes.reservationFrameName2);
+                }
                 if(dataRes.bentoDtos.length > 0) {
                     bentoDtos = _.orderBy(bentoDtos, ['frameNo', 'asc']);
 
@@ -343,6 +347,19 @@ module nts.uk.at.kmr001.c {
                 });
             }).fail(function (error) {
                 vm.$dialog.error({ messageId: error.messageId });
+                vm.columnBento([
+                    { headerText: vm.$i18n('KMR001_41'), key: 'id', width: 50 },
+                    { headerText: vm.$i18n('KMR001_42'), key: 'name', width: 325 },
+                ]);
+                let array: Array<any> = [];
+                _.range(1, 41).forEach(item =>
+                    array.push(new ItemBentoByCompany(
+                        item.toString(),
+                        "",
+                    ))
+                );
+                vm.itemsBento(array);
+                vm.isLasted(false);
             }).always(() => this.$blockui("clear"));
         }
     }
