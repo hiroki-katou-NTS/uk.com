@@ -10,6 +10,7 @@ import nts.uk.screen.at.app.shift.workcycle.BootMode;
 import nts.uk.screen.at.app.shift.workcycle.WorkCycleReflectionDialog;
 import nts.uk.screen.at.app.shift.workcycle.WorkCycleReflectionDto;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
@@ -24,6 +25,7 @@ import java.util.List;
  */
 @Path("screen/at/shift/workcycle/workcycle-reflection")
 @Produces(MediaType.APPLICATION_JSON)
+@Stateless
 public class WorkCycleReflectionWebService extends WebService {
 	private final String DATE_FORMAT_YYYYMMDD = "yyyy/MM/dd";
 

@@ -4,12 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.ReflectionImage;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 勤務サイクル反映ダイアログDto
@@ -23,6 +26,6 @@ import java.util.List;
 public class WorkCycleReflectionDto {
 	private List<WorkType> workTypes;
 	private ReflectionImage reflectionImage;
-	private WorkStyle workStyle;
+	private HashMap<GeneralDate, WorkStyle> workStyles;
 	private List<WorkCycle> workCycleList;
 }
