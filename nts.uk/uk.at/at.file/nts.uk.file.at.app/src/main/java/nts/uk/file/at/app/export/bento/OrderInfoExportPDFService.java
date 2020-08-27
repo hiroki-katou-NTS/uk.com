@@ -23,19 +23,19 @@ public class OrderInfoExportPDFService extends ExportService<CreateOrderInfoData
     @Inject
     private BentoMakeOrderCommandHandler commandHandler;
 
-    private boolean isWorkLocationExport = true;
+    private boolean isWorkLocationExport = false;
 
-    private final OutputExtension OUT_PUT_EXT = OutputExtension.PDF;
+    //private final OutputExtension OUT_PUT_EXT = OutputExtension.PDF;
 
     @Override
     protected void handle(ExportServiceContext<CreateOrderInfoDataSource> context) {
         CreateOrderInfoDataSource dataSource = context.getQuery();
         OrderInfoDto dataGenerator = dataSource.getGeneratorData(createOrderInfoFileQuery, commandHandler);
-        if(CollectionUtil.isEmpty(dataSource.getWorkLocationCodes()))
-            isWorkLocationExport = false;
+        if(CollectionUtil.isEmpty(dataSource.getWorkplaceIds()))
+            isWorkLocationExport = true;
         ReservationClosingTimeFrame closingTimeFrame = EnumAdaptor.valueOf(dataSource.getReservationClosingTimeFrame(),
                 ReservationClosingTimeFrame.class);
         generator.generate(context.getGeneratorContext(),new OrderInfoExportData(dataGenerator,
-                dataSource.isBreakPage(), isWorkLocationExport, closingTimeFrame.name, OUT_PUT_EXT));
+                dataSource.isBreakPage(), isWorkLocationExport, closingTimeFrame.name, OutputExtension.PDF));
     }
 }

@@ -1,3 +1,5 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+
 module nts.uk.at.view.kmr004.a {
 	const API = {
 		START: "screen/at/record/reservation-conf-list/start",
@@ -26,7 +28,7 @@ module nts.uk.at.view.kmr004.a {
 		conditionListCcb: KnockoutObservableArray<any> = ko.observableArray([]);
 		conditionListCcbAll: any[];
 		conditionListCcbEnable: KnockoutObservable<boolean> = ko.observable(false);
-		closingTimeOptions: KnockoutObservableArray<any> = ko.observableArray([]);
+		closingTimeOptions: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 		selectedClosingTime: KnockoutObservable<number> = ko.observable(1);
 		reservationTimeRange1: string = '';
 		reservationTimeRange2: string = '';
@@ -72,7 +74,7 @@ module nts.uk.at.view.kmr004.a {
 			});
 
             nts.uk.characteristics.restore(self.cacheKey).done((c13sData: any) => {
-            	if(c13sData.selectedClosingTime != self.selectedClosingTime()){
+            	if(self.closingTimeOptions().length < c13sData.selectedClosingTime){
                     c13sData.selectedClosingTime = self.selectedClosingTime()
 				}
                 self.restoreScreenState(c13sData);
@@ -184,7 +186,9 @@ module nts.uk.at.view.kmr004.a {
             if(vm.outputConditionChecked() === OUTPUT_CONDITION.TOTAL){
                 totalTitle = vm.model().totalTitle();
                 totalExtractCondition = vm.model().totalExtractCondition();
-                extractionConditionChecked = vm.model().extractionConditionChecked();
+				if(totalExtractCondition === EXTRACT_CONDITION.UN_ORDERED){
+                    extractionConditionChecked = vm.model().extractionConditionChecked();
+				}
             }else{
             	detailTitle = vm.model().detailTitle();
                 if(vm.model().itemExtractCondition() === EXTRACT_CONDITION.ALL){
@@ -251,7 +255,7 @@ module nts.uk.at.view.kmr004.a {
 		}
 
 		checkBeforeExtract(data:any): boolean{
-			if ((data.workplaceIds.length < 1) && (data.workLocationCodes.length < 1)) {
+			if ((data.workplaceIds.length < 1) && (data.workLocationCodes == null)) {
 				return false;
 			}
 			return true;
@@ -322,7 +326,7 @@ module nts.uk.at.view.kmr004.a {
 				isShowSelectButton: true,
 				isDialog: false,
 				maxRows: 10,
-				tabindex: 3,
+				tabindex: -1,
 				systemType: tree.SystemType.EMPLOYMENT
 			};
 
@@ -344,7 +348,8 @@ module nts.uk.at.view.kmr004.a {
 				selectedCode: vm.model().workLocationCodes,
 				isDialog: false,
 				isShowNoSelectRow: false,
-				maxRows: 10
+				maxRows: 10,
+				tabindex: -1
 			}
 
 			$('#tree-grid').ntsListComponent(vm.listComponentOption).done(() => {
