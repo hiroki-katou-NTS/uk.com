@@ -25,7 +25,7 @@ module nts.uk.at.kmr003.a {
 
     @bean(dialogOptions)
     export class KMR003AViewModel extends ko.ViewModel {
-        date: KnockoutObservable<Date> = ko.observable(moment(new Date()).toDate());
+        date: KnockoutObservable<string> = ko.observable((new Date()).toISOString().substr(0, 10) + 'T00:00:00.000Z');
 
         //A2_5 A2_6
         searchConditions: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.BentoReservationSearchConditionDto);
@@ -104,9 +104,13 @@ module nts.uk.at.kmr003.a {
             $('#com-ccg001').ntsGroupComponent(vm.ccg001ComponentOption);
             vm.loadMGrid();
 
-            vm.date.subscribe(value => {
-                if (value)
-                    vm.initData();
+            vm.date.subscribe((value: string) => {
+                let momentDate = moment(value);
+                if (momentDate instanceof moment && !momentDate.isValid()) {
+                    return;
+                }
+
+                vm.initData();
             })
             vm.searchConditionValue.subscribe(() => {
                 vm.initData();
@@ -399,7 +403,7 @@ module nts.uk.at.kmr003.a {
             self.$blockui("invisible");
             let reservations: Array<ReservationModifyEmployeeDto> = $("#grid").mGrid("dataSource", true);
 
-            let commandUpdate = new ForceUpdateBentoReserveCommand(self.date().toISOString(), self.isNewMode(), self.closingTimeFrameValue());
+            let commandUpdate = new ForceUpdateBentoReserveCommand(self.date(), self.isNewMode(), self.closingTimeFrameValue());
             commandUpdate.setReservationInfos(reservations, self.headerInfos);
             self.$ajax(API.BENTO_UPDATE, commandUpdate).done(() => {
                 self.$dialog.info({ messageId: "Msg_15" }).then(function () {
@@ -417,7 +421,7 @@ module nts.uk.at.kmr003.a {
                     let reservations: Array<ReservationModifyEmployeeDto> = $("#grid").mGrid("dataSource", true);
                     let reservationDeletes = _.filter(reservations, (reservation: ReservationModifyEmployeeDto) => { return reservation.isDelete; });
 
-                    let commandDelete = new ForceDeleteBentoReserveCommand(self.date().toISOString(), self.closingTimeFrameValue());
+                    let commandDelete = new ForceDeleteBentoReserveCommand(self.date(), self.closingTimeFrameValue());
                     commandDelete.setReservationInfos(reservationDeletes);
                     self.$ajax(API.BENTO_DELETE, commandDelete).done(() => {
                         self.$dialog.info({ messageId: "Msg_16" }).then(function () {
