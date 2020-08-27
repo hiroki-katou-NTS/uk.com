@@ -227,35 +227,41 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         List<WorkType> result = new ArrayList<>();
         String cid = AppContexts.user().companyId();
         Optional<TargetWorkTypeByApp> opTargetWorkTypeByApp = appEmploymentSet
-                .getTargetWorkTypeByAppLst().stream().filter((x -> x.getAppType() == ApplicationType.BUSINESS_TRIP_APPLICATION))
+                .getTargetWorkTypeByAppLst()
+                .stream()
+                .filter((x ->
+                        x.getAppType() == ApplicationType.BUSINESS_TRIP_APPLICATION && x.getOpBusinessTripAppWorkType().isPresent() && x.getOpBusinessTripAppWorkType().get().value == workStyle.value
+                ))
                 .findAny();
-        if (opTargetWorkTypeByApp.isPresent() && opTargetWorkTypeByApp.get().getOpBusinessTripAppWorkType().isPresent()) {
-            if (opTargetWorkTypeByApp.get().getOpBusinessTripAppWorkType().get().value == workStyle.value) {
-                if (opTargetWorkTypeByApp.get().isDisplayWorkType()
-                        && opTargetWorkTypeByApp.get().getWorkTypeLst().isEmpty()
-                        && opTargetWorkTypeByApp.get().getOpBusinessTripAppWorkType().isPresent()
-                        && opTargetWorkTypeByApp.get().getOpBusinessTripAppWorkType().get() == workStyle) {
-                    //INPUT．「雇用別申請承認設定．申請別対象勤務種類．勤務種類リスト」を返す
-                    List<String> workTypeCDLst = opTargetWorkTypeByApp.get().getWorkTypeLst();
-                    result = workTypeRepository.findNotDeprecatedByListCode(cid, workTypeCDLst);
-                } else {
-                    // ドメインモデル「勤務種類」を取得して返す
-                    result = workTypeRepository.findForAppKAF008(
-                            cid,
-                            DeprecateClassification.NotDeprecated.value,
-                            WorkTypeUnit.OneDay.value,
-                            workTypeClassification.stream().map(i -> i.value).collect(Collectors.toList())
-                    );
-                }
+        if (opTargetWorkTypeByApp.isPresent()) {
+            if (opTargetWorkTypeByApp.get().isDisplayWorkType()
+                    && opTargetWorkTypeByApp.get().getOpBusinessTripAppWorkType().isPresent()
+                    && opTargetWorkTypeByApp.get().getOpBusinessTripAppWorkType().get().value == workStyle.value) {
+                //INPUT．「雇用別申請承認設定．申請別対象勤務種類．勤務種類リスト」を返す
+                List<String> workTypeCDLst = opTargetWorkTypeByApp.get().getWorkTypeLst();
+                result = workTypeRepository.findNotDeprecatedByListCode(cid, workTypeCDLst);
+            } else {
+                // ドメインモデル「勤務種類」を取得して返す
+                List<WorkType> workTypes = workTypeRepository.findForAppKAF008(
+                        cid,
+                        DeprecateClassification.NotDeprecated.value,
+                        WorkTypeUnit.OneDay.value,
+                        workTypeClassification.stream().map(i -> i.value).collect(Collectors.toList())
+                );
+                opTargetWorkTypeByApp.get().setDisplayWorkType(true);
+                opTargetWorkTypeByApp.get().setWorkTypeLst(workTypes.stream().map(i-> i.getWorkTypeCode().v()).collect(Collectors.toList()));
+                opTargetWorkTypeByApp.get().setOpBusinessTripAppWorkType(Optional.of(EnumAdaptor.valueOf(workStyle.value, BusinessTripAppWorkType.class)));
+                result = workTypes;
             }
         } else {
             // ドメインモデル「勤務種類」を取得して返す
-            result = workTypeRepository.findForAppKAF008(
+            List<WorkType> workTypes = workTypeRepository.findForAppKAF008(
                     cid,
                     DeprecateClassification.NotDeprecated.value,
                     WorkTypeUnit.OneDay.value,
                     workTypeClassification.stream().map(i -> i.value).collect(Collectors.toList())
             );
+            result = workTypes;
         }
         return result;
     }

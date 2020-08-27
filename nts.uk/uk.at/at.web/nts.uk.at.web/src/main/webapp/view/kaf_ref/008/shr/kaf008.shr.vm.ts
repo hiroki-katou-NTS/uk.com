@@ -457,9 +457,14 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             this.wkTypeCd = ko.observable(wkTypeCd);
             this.wkTypeName = ko.observable(wkTypeName);
             this.wkTimeCd = ko.observable(wkTimeCd);
-            this.wkTimeName = ko.observable(wkTimeName);
-            var startTime = nts.uk.time.format.byId("ClockDay_Short_HM", start);
-            var endTime = nts.uk.time.format.byId("ClockDay_Short_HM", end);
+            if (wkTimeName) {
+                this.wkTimeName = ko.observable(wkTimeName);
+            } else {
+                this.wkTimeName = ko.observable("なし");
+            }
+
+            var startTime = start == null ? null : nts.uk.time.format.byId("ClockDay_Short_HM", start);
+            var endTime = end == null ? null : nts.uk.time.format.byId("ClockDay_Short_HM", end);
             this.start = ko.observable(startTime);
             this.end = ko.observable(endTime);
         }

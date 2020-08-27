@@ -44,8 +44,9 @@ public class BusinessTripInfoOutputDto {
         List<BusinessTripWorkTypesDto> infoAfter = domain.getWorkTypeAfterChange().isPresent() ? domain.getWorkTypeAfterChange().get().stream().map(i -> BusinessTripWorkTypesDto.fromDomain(i)).collect(Collectors.toList()) : Collections.emptyList();
         List<BusinessTripActualContentDto> actualContents = domain.getActualContentDisplay().isPresent() ?  domain.getActualContentDisplay().get().stream().map(i -> BusinessTripActualContentDto.fromDomain(i))
                 .collect(Collectors.toList()) : Collections.emptyList();
+        BusinessTripSetDto setting = domain.getSetting() == null ? null : BusinessTripSetDto.fromDomain(domain.getSetting());
         return new BusinessTripInfoOutputDto(
-                BusinessTripSetDto.fromDomain(domain.getSetting()),
+                setting,
                 AppDispInfoStartupDto.fromDomain(domain.getAppDispInfoStartup()),
                 holidayCds,
                 wkDayCds,
@@ -57,7 +58,7 @@ public class BusinessTripInfoOutputDto {
 
     public BusinessTripInfoOutput toDomain() {
         BusinessTripInfoOutput result = new BusinessTripInfoOutput();
-        result.setSetting(this.getSetting().toDomain());
+        result.setSetting(this.getSetting() == null ? null : this.getSetting().toDomain());
         // Set empty list do liên quan đến phần khác
         result.setActualContentDisplay(Optional.ofNullable(Collections.emptyList()));
         result.setAppDispInfoStartup(this.getAppDispInfoStartup().toDomain());

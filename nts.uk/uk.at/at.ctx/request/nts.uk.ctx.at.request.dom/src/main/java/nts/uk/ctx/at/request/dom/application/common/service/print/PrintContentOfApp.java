@@ -9,6 +9,7 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfo;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfoOutput;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
@@ -106,7 +107,7 @@ public class PrintContentOfApp {
 	/**
 	 * 出張申請の印刷内容
 	 */
-	private Optional<BusinessTripInfo> opBusinessTrip;
+	private Optional<BusinessTrip> opBusinessTrip;
 	
 	/**
 	 * 振休振出申請の印刷内容
