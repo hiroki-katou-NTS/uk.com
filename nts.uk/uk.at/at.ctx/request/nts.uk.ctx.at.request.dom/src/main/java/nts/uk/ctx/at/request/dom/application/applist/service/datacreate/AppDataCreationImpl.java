@@ -124,7 +124,7 @@ public class AppDataCreationImpl implements AppDataCreation {
 		case APP_DATE_ORDER:
 			appListInfo.getAppLst().sort(Comparator.comparing((ListOfApplication x) -> {
 				return x.getAppDate().toString() + 
-						x.getAppTye().value + 
+						x.getAppType().value + 
 						x.getOpAppTypeDisplay().map(y -> y.value).orElse(null) + 
 						x.getApplicantCD() + 
 						x.getPrePostAtr() + 
@@ -136,7 +136,7 @@ public class AppDataCreationImpl implements AppDataCreation {
 			appListInfo.getAppLst().sort(Comparator.comparing(x -> {
 				return x.getInputDate().toString() +
 						x.getApplicantCD() + 
-						x.getAppTye().value + 
+						x.getAppType().value + 
 						x.getOpAppTypeDisplay() + 
 						x.getAppDate().toString() + 
 						x.getPrePostAtr();
@@ -147,7 +147,7 @@ public class AppDataCreationImpl implements AppDataCreation {
 			appListInfo.getAppLst().sort(Comparator.comparing(x -> {
 				return x.getApplicantCD() + 
 						x.getAppDate().toString() + 
-						x.getAppTye().value + 
+						x.getAppType().value + 
 						x.getOpAppTypeDisplay() + 
 						x.getPrePostAtr() + 
 						x.getInputDate().toString();

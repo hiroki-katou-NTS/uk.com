@@ -667,7 +667,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	public ApplicationStatus countAppListApproval(List<ListOfApplication> listApp, ApplicationStatus appStatus) {
 		for (ListOfApplication appFull : listApp) {
 			int add = 1;
-			if(appFull.getAppTye() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION && appFull.getOpComplementLeaveApp().isPresent()) {
+			if(appFull.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION && appFull.getOpComplementLeaveApp().isPresent()) {
 				add = 2;
 			}
 			//承認状況＝否
@@ -1090,10 +1090,11 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		// 申請データを作成して申請一覧に追加 ( Tạo data application và thêm vào applicationList)
 		ListOfApplication result = new ListOfApplication();
+		result.setAppID(application.getAppID());
 		result.setPrePostAtr(application.getPrePostAtr().value);
 		result.setApplicantName(applicant.getBusinessName());
 		// result.setWorkplaceName(workplaceName);
-		result.setAppTye(application.getAppType());
+		result.setAppType(application.getAppType());
 		result.setApplicantCD(applicant.getEmployeeCode());
 		// result.setAppReason
 		result.setInputDate(application.getInputDate());

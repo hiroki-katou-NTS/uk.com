@@ -45,7 +45,7 @@ public class ListOfApplicationDto {
 	/**
 	 * 申請種類
 	 */
-	private int appTye;
+	private int appType;
 	
 	/**
 	 * 申請内容
@@ -139,7 +139,7 @@ public class ListOfApplicationDto {
 				listOfApplication.getAppID(), 
 				listOfApplication.getApplicantCD(), 
 				listOfApplication.getApplicantName(), 
-				listOfApplication.getAppTye().value, 
+				listOfApplication.getAppType().value, 
 				listOfApplication.getAppContent(), 
 				listOfApplication.getAppDate().toString(), 
 				listOfApplication.getInputCompanyName(), 
