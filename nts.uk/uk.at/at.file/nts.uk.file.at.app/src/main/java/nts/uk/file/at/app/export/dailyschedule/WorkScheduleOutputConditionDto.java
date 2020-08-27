@@ -14,7 +14,7 @@ public class WorkScheduleOutputConditionDto {
 	
 	// 会社ID
 	private CompanyId companyId;
-	
+
 	// ユーザID
 	private String userId;
 	

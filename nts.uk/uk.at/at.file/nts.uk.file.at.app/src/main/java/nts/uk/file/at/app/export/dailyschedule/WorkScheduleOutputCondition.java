@@ -24,7 +24,7 @@ public class WorkScheduleOutputCondition  {
 	private FormOutputType outputType;
 	// 出力項目設定コード
 	private OutputItemSettingCode code;
-	// 改ページ区分
+	// 改ページ区分条件指定
 	private PageBreakIndicator pageBreakIndicator;
 	// 明細・合計出力設定
 	private WorkScheduleSettingTotalOutput settingDetailTotalOutput;
@@ -44,6 +44,8 @@ public class WorkScheduleOutputCondition  {
 	private ZeroDisplayType zeroDisplayType;
 	// 項目表示切替
 	private SwitchItemDisplay switchItemDisplay;
+	// 条件指定
+	private Optional<OutputConditionSpecification> outputConditionSpecification;
 
 	/**
 	 * Creates the domain from java type.

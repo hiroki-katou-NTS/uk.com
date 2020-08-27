@@ -8,30 +8,34 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * The Class KfnmtItemWorkSchedulePK.
- * @author HoangDD
+ * The Class KfnmtRptWkDaiOutnotePK.
+ * @author LienPTK
  */
 @Embeddable
 @Getter
 @Setter
-@NoArgsConstructor
-public class KfnmtItemWorkSchedulePK implements Serializable {
+public class KfnmtRptWkDaiOutatdPK implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	//default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
-	/** The cid. */
-	@Column(name="CID")
-	private String cid;
+	/** The layout id. */
+	@Column(name="LAYOUT_ID")
+	private String layoutId;
 
-	/** The item code. */
-	@Column(name="ITEM_CD")
-	private String itemCode;
+	/** The order no. */
+	@Column(name="ORDER_NO")
+	private long orderNo;
+
+	/**
+	 * Instantiates a new kfnmt attendance display PK.
+	 */
+	public KfnmtRptWkDaiOutatdPK() {
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -40,8 +44,7 @@ public class KfnmtItemWorkSchedulePK implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
-		result = prime * result + ((itemCode == null) ? 0 : itemCode.hashCode());
+		result = prime * result + (int) (orderNo ^ (orderNo >>> 32));
 		return result;
 	}
 
@@ -56,16 +59,13 @@ public class KfnmtItemWorkSchedulePK implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		KfnmtItemWorkSchedulePK other = (KfnmtItemWorkSchedulePK) obj;
-		if (cid == null) {
-			if (other.cid != null)
+		KfnmtRptWkDaiOutatdPK other = (KfnmtRptWkDaiOutatdPK) obj;
+		if (layoutId == null) {
+			if (other.layoutId != null)
 				return false;
-		} else if (!cid.equals(other.cid))
+		} else if (!layoutId.equals(other.layoutId))
 			return false;
-		if (itemCode == null) {
-			if (other.itemCode != null)
-				return false;
-		} else if (!itemCode.equals(other.itemCode))
+		if (orderNo != other.orderNo)
 			return false;
 		return true;
 	}

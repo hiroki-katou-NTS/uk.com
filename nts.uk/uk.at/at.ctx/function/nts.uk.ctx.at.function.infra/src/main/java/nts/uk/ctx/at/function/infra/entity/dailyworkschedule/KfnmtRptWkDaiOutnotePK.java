@@ -19,19 +19,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class KfnmtPrintRemarkContPK implements Serializable {
+public class KfnmtRptWkDaiOutnotePK implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	//default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
-	/** The cid. */
-	@Column(name="CID")
-	private String cid;
-
-	/** The item code. */
-	@Column(name="ITEM_CD")
-	private String itemCode;
+	/** The layout id. */
+	@Column(name="LAYOUT_ID")
+	private String layoutId;
 
 	/** The print item. */
 	@Column(name="PRINT_ITEM")
@@ -49,17 +45,8 @@ public class KfnmtPrintRemarkContPK implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		KfnmtPrintRemarkContPK other = (KfnmtPrintRemarkContPK) obj;
-		if (cid == null) {
-			if (other.cid != null)
-				return false;
-		} else if (!cid.equals(other.cid))
-			return false;
-		if (itemCode == null) {
-			if (other.itemCode != null)
-				return false;
-		} else if (!itemCode.equals(other.itemCode))
-			return false;
+		KfnmtRptWkDaiOutnotePK other = (KfnmtRptWkDaiOutnotePK) obj;
+
 		if (printItem != other.printItem)
 			return false;
 		return true;
@@ -72,8 +59,6 @@ public class KfnmtPrintRemarkContPK implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
-		result = prime * result + ((itemCode == null) ? 0 : itemCode.hashCode());
 		result = prime * result + (int) (printItem ^ (printItem >>> 32));
 		return result;
 	}

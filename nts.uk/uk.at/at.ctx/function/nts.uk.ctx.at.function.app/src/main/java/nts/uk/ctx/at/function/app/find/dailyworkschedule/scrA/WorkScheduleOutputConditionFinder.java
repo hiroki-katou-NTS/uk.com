@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.function.app.find.dailyworkschedule.scrA;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -17,8 +18,12 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataInforReturnDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.scrB.ErrorAlarmCodeDto;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.FreeSettingOfOutputItemForDailyWorkSchedule;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.FreeSettingOfOutputItemRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputStandardSettingOfDailyWorkSchedule;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputStandardSettingRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.RoleExportRepoAdapter;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.SEmpHistExportAdapter;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.SEmpHistExportImported;
@@ -55,7 +60,13 @@ public class WorkScheduleOutputConditionFinder {
 	/** The output item daily work schedule repository. */
 	@Inject
 	private OutputItemDailyWorkScheduleRepository outputItemDailyWorkScheduleRepository;
-	
+
+	@Inject
+	private FreeSettingOfOutputItemRepository freeSettingOfOutputItemRepository;
+
+	@Inject
+	private OutputStandardSettingRepository outputStandardSettingRepository;
+
 	/** The error alarm work record repository. */
 	@Inject
 	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
@@ -84,7 +95,7 @@ public class WorkScheduleOutputConditionFinder {
 		String companyId = AppContexts.user().companyId();
 		GeneralDate systemDate = GeneralDate.today();
 		String employeeId = AppContexts.user().employeeId();
-		String roleId = AppContexts.user().roles().forPersonalInfo();
+		String roleId = AppContexts.user().roles().forAttendance();
 		
 		//「ログイン者が担当者か判断する」で就業担当者かチェックする
 		// 出力項目の設定ボタン(A7_6)の活性制御を行う
@@ -126,8 +137,18 @@ public class WorkScheduleOutputConditionFinder {
 			dto.setEndDate(null);
 		}
 
+		List<OutputItemDailyWorkSchedule> lstOutputItemDailyWorkSchedule = new ArrayList<OutputItemDailyWorkSchedule>();
+
+		if (isFreeSetting) {
+			Optional<FreeSettingOfOutputItemForDailyWorkSchedule> freeSetting = this.freeSettingOfOutputItemRepository
+																					.getFreeSettingByCompanyAndEmployee(companyId, employeeId);
+		} else {
+			Optional<OutputStandardSettingOfDailyWorkSchedule> standardSetting = this.outputStandardSettingRepository
+																					.getStandardSettingByCompanyId(companyId);
+		}
+
 		// ドメインモデル「日別勤務表の出力項目」をすべて取得する(Acquire all domain model "Output items of daily work schedule")
-		List<OutputItemDailyWorkSchedule> lstOutputItemDailyWorkSchedule = outputItemDailyWorkScheduleRepository.findByCid(companyId);
+//		List<OutputItemDailyWorkSchedule> lstOutputItemDailyWorkSchedule = outputItemDailyWorkScheduleRepository.findByCid(companyId);
 		if (!lstOutputItemDailyWorkSchedule.isEmpty()) {
 			if (isExistWorkScheduleOutputCondition) {
 				dto.setStrReturn(SHOW_CHARACTERISTIC);
@@ -135,9 +156,9 @@ public class WorkScheduleOutputConditionFinder {
 				dto.setStrReturn(STRING_EMPTY);
 			}
 		}
-		
+
 		dto.setLstOutputItemDailyWorkSchedule(getOutputItemDailyWorkSchedule(lstOutputItemDailyWorkSchedule));
-		
+
 		return dto;
 	}
 	

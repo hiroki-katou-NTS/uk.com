@@ -1,103 +1,60 @@
-/******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
- * All right reserved.                                            *
- *****************************************************************/
 package nts.uk.ctx.at.function.infra.repository.dailyworkschedule;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.function.dom.dailyworkschedule.AttendanceItemsDisplay;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.FontSizeEnum;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.FreeSettingOfOutputItemForDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.NameWorkTypeOrHourZone;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleGetMemento;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputStandardSettingOfDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.PrintRemarksContent;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
-import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedule;
-import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedulePK;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutItem;
+import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutatd;
+import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutnote;
 
-/**
- * The Class JpaOutputItemDailyWorkScheduleGetMemento.
- * @author HoangDD
- */
-public class JpaOutputItemDailyWorkScheduleGetMemento implements OutputItemDailyWorkScheduleGetMemento{
+public class JpaOutputItemDailyWorkScheduleGetMemento  implements FreeSettingOfOutputItemForDailyWorkSchedule.MementoGetter
+																, OutputStandardSettingOfDailyWorkSchedule.MementoGetter  {
 
-	/** The kfnmt item work schedule. */
-	private KfnmtItemWorkSchedule kfnmtItemWorkSchedule;
-	
-	/**
-	 * Instantiates a new jpa output item daily work schedule get memento.
-	 */
-	public JpaOutputItemDailyWorkScheduleGetMemento(KfnmtItemWorkSchedule entity) {
-		this.kfnmtItemWorkSchedule = entity;
-		if (entity.getId() == null) {
-			KfnmtItemWorkSchedulePK key = new KfnmtItemWorkSchedulePK();
-			key.setCid(AppContexts.user().companyId());
-			entity.setId(key);
-		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleGetMemento#getCompanyID()
-	 */
+	private List<KfnmtRptWkDaiOutnote> kfnmtRptWkDaiOutnotes;
+	private List<KfnmtRptWkDaiOutatd> kfnmtRptWkDaiOutatds;
+	private KfnmtRptWkDaiOutItem kfnmtRptWkDaiOutItem;
+
 	@Override
-	public String getCompanyID() {
-		return this.kfnmtItemWorkSchedule.getId().getCid();
+	public String getCid() {	
+		return this.kfnmtRptWkDaiOutItem.getCid();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleGetMemento#getItemCode()
-	 */
 	@Override
-	public OutputItemSettingCode getItemCode() {
-		return new OutputItemSettingCode(this.kfnmtItemWorkSchedule.getId().getItemCode());
+	public String getEmployeeId() {
+		return this.kfnmtRptWkDaiOutItem.getSid();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleGetMemento#getItemName()
-	 */
 	@Override
-	public OutputItemSettingName getItemName() {
-		return new OutputItemSettingName(this.kfnmtItemWorkSchedule.getItemName());
+	public int getSelectionSetting() {
+		return this.kfnmtRptWkDaiOutItem.getItemSelType();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleGetMemento#getLstDisplayedAttendance()
-	 */
 	@Override
-	public List<AttendanceItemsDisplay> getLstDisplayedAttendance() {
-		return this.kfnmtItemWorkSchedule.getLstKfnmtAttendanceDisplay().stream()
-									.map(entity -> {
-										return new AttendanceItemsDisplay((int) entity.getId().getOrderNo(), entity.getAtdDisplay().intValue());
-									}).collect(Collectors.toList());
+	public List<OutputItemDailyWorkSchedule> getOutputItemDailyWorkSchedule() {
+		OutputItemDailyWorkSchedule outputItem = new OutputItemDailyWorkSchedule(
+				  this.kfnmtRptWkDaiOutItem.getLayoutId()
+				, new OutputItemSettingCode(this.kfnmtRptWkDaiOutItem.getItemCode())
+				, new OutputItemSettingName(this.kfnmtRptWkDaiOutItem.getItemName())
+				, kfnmtRptWkDaiOutatds.stream()
+									.map(r -> new AttendanceItemsDisplay((int) r.getId().getOrderNo(), r.getAtdDisplay().intValue()))
+									.collect(Collectors.toList())
+				, kfnmtRptWkDaiOutnotes.stream()
+								  	.map(t -> new PrintRemarksContent(t.getUseCls().intValue(), (int) t.getId().getPrintItem()))
+									.collect(Collectors.toList())
+				, NameWorkTypeOrHourZone.valueOf(this.kfnmtRptWkDaiOutItem.getWorkTypeNameDisplay().intValue())
+				, RemarkInputContent.valueOf(this.kfnmtRptWkDaiOutItem.getNoteInputNo())
+				, FontSizeEnum.valueOf(this.kfnmtRptWkDaiOutItem.getCharSizeType()));
+		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleGetMemento#getLstRemarkContent()
-	 */
-	@Override
-	public List<PrintRemarksContent> getLstRemarkContent() {
-		return this.kfnmtItemWorkSchedule.getLstKfnmtPrintRemarkCont().stream()
-									.map(entity -> {
-										return new PrintRemarksContent(entity.getUseCls().intValue(), (int) entity.getId().getPrintItem());
-									}).collect(Collectors.toList());
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleGetMemento#getWorkTypeNameDisplay()
-	 */
-	@Override
-	public NameWorkTypeOrHourZone getWorkTypeNameDisplay() {
-		return NameWorkTypeOrHourZone.valueOf(this.kfnmtItemWorkSchedule.getWorkTypeNameDisplay().intValue());
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleGetMemento#getRemarkInputNo()
-	 */
-	@Override
-	public RemarkInputContent getRemarkInputNo() {
-		return RemarkInputContent.valueOf(this.kfnmtItemWorkSchedule.getRemarkInputNo().intValue());
-	}
 }

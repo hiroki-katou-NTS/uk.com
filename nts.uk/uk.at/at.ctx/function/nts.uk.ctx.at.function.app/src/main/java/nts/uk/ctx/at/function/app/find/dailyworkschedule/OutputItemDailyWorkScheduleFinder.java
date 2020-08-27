@@ -32,9 +32,13 @@ import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFor
 import nts.uk.ctx.at.function.dom.dailyworkschedule.AttendanceItemsDisplay;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.FormatPerformanceAdapter;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.FormatPerformanceImport;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.FreeSettingOfOutputItemForDailyWorkSchedule;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.FreeSettingOfOutputItemRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputStandardSettingOfDailyWorkSchedule;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputStandardSettingRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.PrintRemarksContent;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessType;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatDaily;
@@ -82,6 +86,14 @@ public class OutputItemDailyWorkScheduleFinder {
 	
 	@Inject
 	private CompanyDailyItemService companyDailyItemService;
+
+	/** The output standard setting repository. */
+	@Inject
+	private OutputStandardSettingRepository outputStandardSettingRepository;
+	
+	/** The free setting of output item repository. */
+	@Inject
+	private FreeSettingOfOutputItemRepository freeSettingOfOutputItemRepository;
 	
 	// Input of algorithm when use enum ScreenUseAtr: 勤怠項目を利用する画面
 	private static final int DAILY_WORK_SCHEDULE = 19;
@@ -386,5 +398,58 @@ public class OutputItemDailyWorkScheduleFinder {
 		dtoOIDW.setWorkTypeNameDisplay(domainOIDW.getWorkTypeNameDisplay().value);
 		dtoOIDW.setRemarkInputNo(domainOIDW.getRemarkInputNo().value);
 		return dtoOIDW;
+	}
+	
+	/**
+	 * Get output standard setting
+	 *
+	 * @param companyId 会社ID
+	 * @return 「日別勤務表の出力項目定型設定」 dto
+	 */
+	public OutputStandardSettingOfDailyWorkScheduleDto getStandardSetting(String companyId) {
+		
+		// call ドメインモデル「日別勤務表の出力項目定型設定」を取得 (Get domain model 「日別勤務表の出力項目定型設定」)
+		Optional<OutputStandardSettingOfDailyWorkSchedule> oDomain = this.outputStandardSettingRepository
+				.getStandardSettingByCompanyId(companyId);
+
+		return oDomain.map(d -> toStandardDto(d)).orElse(null);
+	}
+
+	/**
+	 * Gets the free setting.
+	 *
+	 * @param companyId the company id
+	 * @param employeeId the employee id
+	 * @return the free setting
+	 */
+	public FreeSettingOfOutputItemForDailyWorkScheduleDto getFreeSetting(String companyId, String employeeId) {
+		Optional<FreeSettingOfOutputItemForDailyWorkSchedule> oDomain = this.freeSettingOfOutputItemRepository
+				.getFreeSettingByCompanyAndEmployee(companyId, employeeId);
+
+		return oDomain.map(d -> toFreeSettingDto(d)).orElse(null);
+	}
+	
+	/**
+	 * To standard dto.
+	 *
+	 * @param domain the domain
+	 * @return the output standard setting of daily work schedule dto
+	 */
+	private OutputStandardSettingOfDailyWorkScheduleDto toStandardDto(OutputStandardSettingOfDailyWorkSchedule domain) {
+		OutputStandardSettingOfDailyWorkScheduleDto dto = new OutputStandardSettingOfDailyWorkScheduleDto();
+		domain.setMemento(dto);
+		return dto;
+	}
+	
+	/**
+	 * To free setting dto.
+	 *
+	 * @param domain the domain
+	 * @return the free setting of output item for daily work schedule dto
+	 */
+	private FreeSettingOfOutputItemForDailyWorkScheduleDto toFreeSettingDto(FreeSettingOfOutputItemForDailyWorkSchedule domain) {
+		FreeSettingOfOutputItemForDailyWorkScheduleDto dto = new FreeSettingOfOutputItemForDailyWorkScheduleDto();
+		domain.setMemento(dto);
+		return dto;
 	}
 }

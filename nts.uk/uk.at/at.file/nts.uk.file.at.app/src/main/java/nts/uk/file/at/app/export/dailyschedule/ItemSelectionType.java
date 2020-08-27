@@ -1,7 +1,7 @@
 package nts.uk.file.at.app.export.dailyschedule;
 
 /**
- * 項目選択区分
+ * UKDesign.UniversalK.就業.KWR_帳表.KWR001_日別勤務表(daily work schedule).ユーザ固有情報(User specific information).項目選択区分
  * @author LienPTK_NWS
  *
  */

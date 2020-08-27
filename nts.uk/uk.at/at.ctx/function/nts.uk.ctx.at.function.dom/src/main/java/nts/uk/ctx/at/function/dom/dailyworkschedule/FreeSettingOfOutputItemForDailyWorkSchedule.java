@@ -29,7 +29,7 @@ public class FreeSettingOfOutputItemForDailyWorkSchedule extends AggregateRoot {
 	/**
 	 *	出力項目
 	 */
-	private List<OutputItemDailyWorkSchedule> outputItems;
+	private List<OutputItemDailyWorkSchedule> outputItemDailyWorkSchedules;
 	
 
 	private FreeSettingOfOutputItemForDailyWorkSchedule() {}
@@ -44,23 +44,23 @@ public class FreeSettingOfOutputItemForDailyWorkSchedule extends AggregateRoot {
 		this.companyId = new CompanyId(memento.getCid());
 		this.employeeId = new EmployeeId(memento.getEmployeeId());
 		this.selection = ItemSelectionType.valueOf(memento.getSelectionSetting());
-		this.outputItems = memento.getOutputItemDailyWorkSchedule();
+		this.outputItemDailyWorkSchedules = memento.getOutputItemDailyWorkSchedule();
 	}
 
 	public void setMemento(MementoSetter memento) {
-		memento.setCid(this.companyId.v());
+		memento.setCompanyId(this.companyId.v());
 		memento.setEmployeeId(this.employeeId.v());
 		if (this.selection != null) {
-			memento.setSelectionSetting(this.selection.value);
+			memento.setSelection(this.selection.value);
 		}
-		memento.setOutputItemDailyWorkSchedule(this.outputItems);
+		memento.setOutputItemDailyWorkSchedules(this.outputItemDailyWorkSchedules);
 	}
 
 	public static interface MementoSetter {
-		void setCid(String companyId);
+		void setCompanyId(String companyId);
 		void setEmployeeId(String employeeId);
-		void setSelectionSetting(int itemSelection);
-		void setOutputItemDailyWorkSchedule(List<OutputItemDailyWorkSchedule> outputItem);
+		void setSelection(int itemSelection);
+		void setOutputItemDailyWorkSchedules(List<OutputItemDailyWorkSchedule> outputItem);
 	}
 
 	public static interface MementoGetter {
