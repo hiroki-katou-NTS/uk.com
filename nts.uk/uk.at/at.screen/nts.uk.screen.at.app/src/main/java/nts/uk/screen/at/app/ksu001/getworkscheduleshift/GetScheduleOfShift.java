@@ -156,15 +156,10 @@ public class GetScheduleOfShift {
 				ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 				ShiftEditStateDto shiftEditStateDto = ShiftEditStateDto.toDto(shiftEditState);
 				
-				 String workTypeCode = workInformation.getWorkTypeCode().v();
-				 String workTimeCode = workInformation.getWorkTimeCode() == null ? null :  workInformation.getWorkTimeCode().toString();
+				 String workTypeCode = workInformation.getWorkTypeCode() == null ? null : workInformation.getWorkTypeCode().v();
+				 String workTimeCode = workInformation.getWorkTimeCode() == null ? null : workInformation.getWorkTimeCode().toString();
 				 
-				 Optional<ShiftMasterMapWithWorkStyle> shiftMaster = listShiftMaster.stream().filter(shiftLocal -> {
-					if(shiftLocal.workTypeCode.equals(workTypeCode) && shiftLocal.workTimeCode.equals(workTimeCode))
-						return true;
-					return false;
-				 }).findFirst();
-				 
+				Optional<ShiftMasterMapWithWorkStyle> shiftMaster = listShiftMaster.stream().filter(x -> (x.workTypeCode == workTypeCode && x.workTimeCode == workTimeCode)).findFirst();
 				// 4.2.3
 				ScheduleOfShiftDto dto = ScheduleOfShiftDto.builder()
 						.employeeId(key.getEmployeeID())
