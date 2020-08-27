@@ -58,6 +58,8 @@ public class ApplicationListFinder {
 	private ApprovalListService approvalListService;
 	
 	private static final int MOBILE = 1;
+	public static final Integer NORMAL_MODE = 0;
+	public static final Integer APPROVAL_MODE = 1;
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	/**
@@ -527,7 +529,7 @@ public class ApplicationListFinder {
 		// set param
 		AppListParamFilter param = new AppListParamFilter();
 		param.setDevice(MOBILE);
-    	param.setMode(0);
+    	param.setMode(appListExtractConditionDto.getAppListAtr());
     	param.setLstAppType(Collections.emptyList());
     	if (appListExtractConditionDto.getPeriodStartDate() != null && appListExtractConditionDto.getPeriodEndDate() != null) {
 	    	param.setStartDate(appListExtractConditionDto.getPeriodStartDate());
@@ -601,6 +603,7 @@ public class ApplicationListFinder {
 //    	return this.convertApplicationListDto(appListExtractCondition, appListInfo, applicationListDtoMobile);
     	return applicationListDtoMobile;
     } 
+    
     
     
     

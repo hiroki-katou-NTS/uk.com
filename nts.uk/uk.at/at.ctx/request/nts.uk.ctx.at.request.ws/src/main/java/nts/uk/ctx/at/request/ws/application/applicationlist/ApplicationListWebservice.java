@@ -74,15 +74,23 @@ public class ApplicationListWebservice extends WebService{
 	
 	@POST
 	@Path("getapplistMobile")
-	public ApplicationListDtoMobile getAppListTest(StartMobileParam param) {
+	public ApplicationListDtoMobile getAppListMobile(StartMobileParam param) {
 		return this.appListFinder.getList(param.getListAppType(), param.getAppListExtractConditionDto());
 	}
 	
 	@POST
 	@Path("getapplistFilterMobile")
-	public ApplicationListDtoMobile getAppListFilter(FilterMobileParam param) {
+	public ApplicationListDtoMobile getAppListFilterMobille(FilterMobileParam param) {
 		ApplicationListDtoMobile applicationListDtoMobile = param.getApplicationListDtoMobile();	
 		return this.appListFinder.getListFilter(applicationListDtoMobile);
+		
+	}
+	
+	@POST
+	@Path("getapplistFilterByAppTypeMobile")
+	public ApplicationListDtoMobile getAppListFilterByAppTypeMobille() {
+		return null;
+		
 	}
 	
 	// Refactor 4 CMMS45

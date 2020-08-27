@@ -40,6 +40,7 @@ export class CmmS45AComponent extends Vue {
     public displayA512: number = 0;
     public appAllNumber: number = 0;
     public appListExtractCondition: AppListExtractCondition;
+    public data: ApplicationListDtoMobile;
 
     public mounted() {
         this.pgName = 'cmm045a';
@@ -59,8 +60,8 @@ export class CmmS45AComponent extends Vue {
     get filterByAppType() {
         let self = this;
         //抽出条件を変更する
-        self.prFilter.appType = Number(this.selectedValue);
-        storage.local.setItem('CMMS45_AppListExtractCondition', this.prFilter);
+        // self.prFilter.appType = Number(this.selectedValue);
+        // storage.local.setItem('CMMS45_AppListExtractCondition', this.prFilter);
         //データをフィルタする
         switch (self.selectedValue) {
             case '-1':
@@ -78,33 +79,58 @@ export class CmmS45AComponent extends Vue {
 
         // check: キャッシュを取るか？
         if (filter) {
-            self.prFilter.startDate = self.$dt.date(self.dateRange.start, 'YYYY/MM/DD');
-            self.prFilter.endDate = self.$dt.date(self.dateRange.end, 'YYYY/MM/DD');
-            self.prFilter.appType = Number(self.selectedValue);
-            if (self.appListExtractCondition.opListOfAppTypes) {
-                _.forEach(self.appListExtractCondition.opListOfAppTypes, (i) => {
-                    _.set(i, 'appType', self.selectedValue);
+            // self.prFilter.startDate = self.$dt.date(self.dateRange.start, 'YYYY/MM/DD');
+            // self.prFilter.endDate = self.$dt.date(self.dateRange.end, 'YYYY/MM/DD');
+            // self.prFilter.appType = Number(self.selectedValue);
+            // if (self.appListExtractCondition.opListOfAppTypes) {
+            //     _.forEach(self.appListExtractCondition.opListOfAppTypes, (i) => {
+            //         _.set(i, 'appType', self.selectedValue);
+            //     });
+            // }
+            // 抽出条件を変更する
+            self.appListExtractCondition.periodStartDate = self.$dt.date(self.dateRange.start, 'YYYY/MM/DD');
+            self.appListExtractCondition.periodEndDate = self.$dt.date(self.dateRange.end, 'YYYY/MM/DD');
+            if (!_.isEmpty(self.data.appListInfoDto.appLst)) {
+                _.forEach(self.data.appListInfoDto.appLst, (item: ListOfAppTypes) => {
+                    _.set(item, 'appType', self.selectedValue);
                 });
             }
+
+            return self.$http.post('at', servicePath.filterByDate, {applicationListDtoMobile: self.data})
+                .then((res: any) => {
+                    self.$mask('hide');
+                    self.data = res.data;
+                    self.convertAppInfo(self.data.appListInfoDto);
+                })
+                .catch((res: any) => {
+                    self.$mask('hide');
+                });
+
+
         } else if (getCache && storage.local.hasItem('CMMS45_AppListExtractCondition')) {
-            self.prFilter = storage.local.getItem('CMMS45_AppListExtractCondition') as AppListExtractConditionDto;
-            self.selectedValue = self.prFilter.appType.toString();
+            // 申請を絞り込む
+            // self.prFilter = storage.local.getItem('CMMS45_AppListExtractCondition') as AppListExtractConditionDto;
+            self.appListExtractCondition = storage.local.getItem('CMMS45_AppListExtractConditionNew') as AppListExtractCondition;
+            // self.createLstAppType();
+            // return service
+
+            // self.selectedValue = self.prFilter.appType.toString();
         } else {
-            self.prFilter = {
-                startDate: self.dateRange.start == null ? '' : self.$dt.date(self.dateRange.start, 'YYYY/MM/DD'),
-                endDate: self.dateRange.end == null ? '' : self.$dt.date(self.dateRange.end, 'YYYY/MM/DD'),
-                appListAtr: 0,
-                appType: -1,
-                unapprovalStatus: false,
-                approvalStatus: false,
-                denialStatus: false,
-                agentApprovalStatus: false,
-                remandStatus: false,
-                cancelStatus: false,
-                appDisplayAtr: 0,
-                listEmployeeId: [],
-                empRefineCondition: ''
-            } as AppListExtractConditionDto;
+            // self.prFilter = {
+            //     startDate: self.dateRange.start == null ? '' : self.$dt.date(self.dateRange.start, 'YYYY/MM/DD'),
+            //     endDate: self.dateRange.end == null ? '' : self.$dt.date(self.dateRange.end, 'YYYY/MM/DD'),
+            //     appListAtr: 0,
+            //     appType: -1,
+            //     unapprovalStatus: false,
+            //     approvalStatus: false,
+            //     denialStatus: false,
+            //     agentApprovalStatus: false,
+            //     remandStatus: false,
+            //     cancelStatus: false,
+            //     appDisplayAtr: 0,
+            //     listEmployeeId: [],
+            //     empRefineCondition: ''
+            // } as AppListExtractConditionDto;
             self.appListExtractCondition = {
                 // 申請一覧区分
                 // 0: application , 1: approval
@@ -145,20 +171,20 @@ export class CmmS45AComponent extends Vue {
 
         }
 
-        let param = {
-            condition: self.prFilter, //申請一覧抽出条件
-            spr: false,//sprから呼ぶか？
-            extractCondition: 0,
-            device: 1,//デバイス：PC = 0 or スマートフォン = 1
-            lstAppType: [0]//対象申請種類List
-        };
+        // let param = {
+        //     condition: self.prFilter, //申請一覧抽出条件
+        //     spr: false,//sprから呼ぶか？
+        //     extractCondition: 0,
+        //     device: 1,//デバイス：PC = 0 or スマートフォン = 1
+        //     lstAppType: [0]//対象申請種類List
+        // };
 
         //
         self.$http.post('at', servicePath.getAppNameInAppList).then((res: any) => {
             self.$mask('hide');
             if (res) {
                 let paramNew = {
-                    listAppType: res,
+                    listAppType: res.data,
                     appListExtractConditionDto: self.appListExtractCondition
                 };
 
@@ -167,13 +193,16 @@ export class CmmS45AComponent extends Vue {
 
         }).then((res: any) => {
             self.$mask('hide');
-            let data = res.data as ApplicationListDtoMobile;
-            self.appListExtractCondition = data.appListExtractConditionDto;
+            // let data = res.data as ApplicationListDtoMobile;
+            self.appListExtractCondition = res.data.appListExtractConditionDto;
+            self.data = res.data;
 
-            storage.local.setItem('CMMS45_AppListExtractCondition', self.appListExtractCondition);
+            storage.local.setItem('CMMS45_AppListExtractConditionNew', self.appListExtractCondition);
             self.dateRange = { start: self.$dt.fromUTCString(self.appListExtractCondition.periodStartDate, 'YYYY/MM/DD'), end: self.$dt.fromUTCString(self.appListExtractCondition.periodEndDate, 'YYYY/MM/DD') };
             // self.isDisPreP = 
-            self.convertAppInfo(data.appListInfoDto);
+            self.convertAppInfo(self.data.appListInfoDto);
+            self.createLstAppType(self.data.appListExtractConditionDto.opAppTypeLst);
+
 
         }).catch(() => {
             self.$mask('hide');
@@ -182,35 +211,35 @@ export class CmmS45AComponent extends Vue {
 
 
         // サービスを呼ぶ
-        self.$http.post('at', servicePath.getApplicationList, param).then((result: { data: any }) => {
-            self.$mask('hide');
-            let data = result.data;
-            self.prFilter.startDate = data.startDate;
-            self.prFilter.endDate = data.endDate;
-            // キャッシュを変更する
-            storage.local.setItem('CMMS45_AppListExtractCondition', self.prFilter);
+        // self.$http.post('at', servicePath.getApplicationList, param).then((result: { data: any }) => {
+        //     self.$mask('hide');
+        //     let data = result.data;
+        //     self.prFilter.startDate = data.startDate;
+        //     self.prFilter.endDate = data.endDate;
+        //     // キャッシュを変更する
+        //     storage.local.setItem('CMMS45_AppListExtractCondition', self.prFilter);
 
-            self.createLstAppType(data.lstAppInfor);
-            self.convertAppInfo(data);
-            self.dateRange = { start: self.$dt.fromUTCString(data.startDate, 'YYYY/MM/DD'), end: self.$dt.fromUTCString(data.endDate, 'YYYY/MM/DD') };
-            self.isDisPreP = data.isDisPreP;
-        }).catch(() => {
-            self.$mask('hide');
-        });
+        //     self.createLstAppType(data.lstAppInfor);
+        //     self.convertAppInfo(data);
+        //     self.dateRange = { start: self.$dt.fromUTCString(data.startDate, 'YYYY/MM/DD'), end: self.$dt.fromUTCString(data.endDate, 'YYYY/MM/DD') };
+        //     self.isDisPreP = data.isDisPreP;
+        // }).catch(() => {
+        //     self.$mask('hide');
+        // });
     }
 
     // convert data appInfo
     private convertAppInfo(data: any) {
         let self = this;
         self.lstApp = [];
-        // self.appAllNumber = data.appAllNumber;
-        // if (data.lstApp.length == 0) {
-        //     self.displayA512 = 1;
-        // } else if (data.lstApp.length > data.appAllNumber) {
-        //     self.displayA512 = 2;
-        // } else {
-        //     self.displayA512 = 0;
-        // }
+        self.appAllNumber = data.appAllNumber;
+        if (data.lstApp.length == 0) {
+            self.displayA512 = 1;
+        } else if (data.lstApp.length > data.appAllNumber) {
+            self.displayA512 = 2;
+        } else {
+            self.displayA512 = 0;
+        }
 
         // data.lstApp.forEach((app: any) => {
         //     self.lstApp.push(new AppInfo({
@@ -231,7 +260,7 @@ export class CmmS45AComponent extends Vue {
                 appName: self.appTypeName(app.appTye),
                 prePostAtr: app.prePostAtr,
                 reflectStatus: app.reflectionStatus,
-                appStatusNo: null
+                appStatusNo: 2
             }));
         });
     }
@@ -258,22 +287,40 @@ export class CmmS45AComponent extends Vue {
     }
 
     // crrate List AppType
-    private createLstAppType(lstAppInfor: Array<any>) {
+    private createLstAppType(opAppTypeLst: Array<ListOfAppTypes>) {
         let self = this;
-        // self.lstAppType = [];
-        // lstAppInfor.forEach((appType) => {
-        //     self.lstAppType.push({ code: appType.appType, appType: appType.appType, appName: appType.appName });
-        // });
+        self.lstAppType = [];
+        opAppTypeLst.forEach((appType) => {
+            self.lstAppType.push({ code: String(appType.appType), appType: appType.appType, appName: appType.appName });
+        });
+        
+        let appType = _.filter(opAppTypeLst, (o: ListOfAppTypes) => {
+
+            return o.choice;
+        });
+        if (appType.length > 1) {
+            self.selectedValue = '-1';
+        } else {
+            self.selectedValue = String(appType[0].appType);
+        }
+
+
         // if (_.filter(self.lstAppType, (c) => c.appType == self.prFilter.appType).length > 0) {
         //     self.selectedValue = self.prFilter.appType.toString();
         // } else {
         //     self.selectedValue = '-1';
         // }
+        self.selectedValue = '-1';
     }
 
     // create appContent
     private appContent(appName: string, prePostName: string) {
         return this.isDisPreP == 1 ? appName + ' ' + this.$i18n('CMMS45_24', prePostName) : appName;
+    }
+    // Refactor4
+    private appContentNew(isDisPreP: number) {
+        // return isDisPreP == 1 ? appName + ' ' + $i18n('CMMS45_24', prePostName) : appName;
+        return 'AppContentNew';
     }
     public getHtmlAll() {
         return `<div>` + this.$i18n('CMMS45_90', this.appAllNumber.toString()).replace(/\n/g, '<br />') + `</div>`;
@@ -282,10 +329,7 @@ export class CmmS45AComponent extends Vue {
         return `<div>` + this.$i18n('CMMS45_89').replace(/\n/g, '<br />') + `</div>`;
     }
 }
-const servicePath = {
-    getApplicationList: 'at/request/application/applist/getapplist',
-    getAppNameInAppList: 'at/request/application/screen/applist/getAppNameInAppList'
-};
+
 
 // 申請一覧抽出条件
 export class AppListExtractCondition {
@@ -470,3 +514,8 @@ export class ListOfApplication {
 
     public opMoreThanDispLineNO: boolean;
 }
+const servicePath = {
+    getApplicationList: 'at/request/application/applist/getapplistMobile',
+    getAppNameInAppList: 'at/request/application/screen/applist/getAppNameInAppList',
+    filterByDate: 'at/request/application/screen/applist/getapplistFilterMobile'
+};
