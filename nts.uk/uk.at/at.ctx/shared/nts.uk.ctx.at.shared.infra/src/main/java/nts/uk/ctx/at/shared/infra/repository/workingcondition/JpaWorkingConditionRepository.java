@@ -817,7 +817,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	
 	
 	private final static String SELECT_WORK_COND_BY_SID = new StringBuilder("SELECT item FROM KshmtWorkingCond item ")
-			.append(" LEFT JOIN  item.KshmtWorkingCondItem hst ")
+			.append(" LEFT JOIN  item.kshmtWorkingCondItem hst ")
 			.append(" WHERE item.cid = :cid ")
 			.append(" AND  item.kshmtWorkingCondPK.sid = :empID ")
 			.toString();
@@ -860,7 +860,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	
 	private final static String SELECT_BY_LIST_HISTID = new StringBuilder("SELECT item FROM KshmtWorkingCondItem item ")
 			.append(" LEFT JOIN  item.kshmtWorkingCond hst ")
-			.append(" WHERE hst.historyId IN :listHistID ").toString();
+			.append(" WHERE item.historyId IN :listHistID ").toString();
 	@Override
 	public List<WorkingConditionItem> getWorkingConditionItemByListHistID(List<String> listHistID) {
 		if(listHistID.isEmpty()) {
