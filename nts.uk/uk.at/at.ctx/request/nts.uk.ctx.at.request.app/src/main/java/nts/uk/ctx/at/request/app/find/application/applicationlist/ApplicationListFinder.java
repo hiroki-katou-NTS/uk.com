@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.app.find.application.applicationlist;
 
-import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
