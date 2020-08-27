@@ -75,7 +75,7 @@ public class ApplicationListWebservice extends WebService{
 	@POST
 	@Path("getapplistMobile")
 	public ApplicationListDtoMobile getAppListTest(StartMobileParam param) {
-		return this.appListFinder.getList(param.getParam(), param.getAppListExtractConditionDto());
+		return this.appListFinder.getList(param.getListAppType(), param.getAppListExtractConditionDto());
 	}
 	
 	@POST
