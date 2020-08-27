@@ -793,8 +793,8 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				"and a.APP_TYPE in @appTypeLst";
 		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("employeeLst", employeeLst)
-				.paramDate("startDate", GeneralDate.fromString("2020/08/01", "yyyy/MM/dd"))
-				.paramDate("endDate", GeneralDate.fromString("2020/08/31", "yyyy/MM/dd"))
+				.paramDate("startDate", startDate)
+				.paramDate("endDate", endDate)
 				.paramInt("appTypeLst", appTypeLst.stream().map(x -> x.value).collect(Collectors.toList()))
 				.getList(rec -> toObject(rec));
 		List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);

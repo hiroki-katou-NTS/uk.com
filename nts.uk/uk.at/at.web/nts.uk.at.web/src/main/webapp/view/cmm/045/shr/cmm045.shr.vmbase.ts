@@ -11,55 +11,110 @@ module cmm045.shr {
         }
         //parameter filter
         export class AppListExtractConditionDto{
-            /**期間開始日付*/
-            startDate: string;
-            /**期間終了日付*/
-            endDate: string;
-            /**申請一覧区分*/
-            appListAtr: number;
-            /**申請種類*/
-            appType: number;
-            /**承認状況＿未承認*/
-            unapprovalStatus: boolean;
-            /**承認状況＿承認済*/
-            approvalStatus: boolean;
-            /**承認状況＿否認*/
-            denialStatus: boolean;
-            /**承認状況＿代行承認済*/
-            agentApprovalStatus: boolean;
-            /**承認状況＿差戻*/
-            remandStatus: boolean;
-            /**承認状況＿取消*/
-            cancelStatus: boolean;
-            /**申請表示対象*/
-            appDisplayAtr: number;
-            /**社員IDリスト*/
-            listEmployeeId: Array<string>;
-            /**社員絞込条件*/
-            empRefineCondition: string;
-            constructor(startDate: string, endDate: string, appListAtr: number,
-                appType: number, unapprovalStatus: boolean, approvalStatus: boolean,
-                denialStatus: boolean, agentApprovalStatus: boolean, remandStatus: boolean,
-                cancelStatus: boolean, appDisplayAtr: number, listEmployeeId: Array<string>,
-                empRefineCondition: string){
-                    this.startDate = startDate;
-                    this.endDate =  endDate;
-                    this.appListAtr =  appListAtr;
-                    this.appType = appType;
-                    this.unapprovalStatus = unapprovalStatus;
-                    this.approvalStatus = approvalStatus;
-                    this.denialStatus = denialStatus;
-                    this.agentApprovalStatus = agentApprovalStatus;
-                    this.remandStatus = remandStatus;
-                    this.cancelStatus = cancelStatus;
-                    this.appDisplayAtr = appDisplayAtr;
-                    this.listEmployeeId = listEmployeeId;
-                    this.empRefineCondition = empRefineCondition;
+			/** 期間開始日 */
+			periodStartDate: string;
+			/** 期間終了日 */
+			periodEndDate: string;
+			/** 事後出力 */
+			postOutput: boolean;
+			/** 事前出力 */
+			preOutput: boolean;
+			/** 申請一覧区分 */
+			appListAtr: number;
+			/** 申請表示順 */
+			appDisplayOrder: number;
+			/** 表の幅登録 */
+			tableWidthRegis: boolean;
+			/** 社員IDリスト */
+			opListEmployeeID: Array<string>;
+			/** 承認状況＿差戻 */
+			opRemandStatus: boolean;
+			/** 承認状況＿取消 */
+			opCancelStatus: boolean;
+			/** 承認状況＿承認済 */
+			opApprovalStatus: boolean;
+			/** 承認状況＿代行承認済 */
+			opAgentApprovalStatus: boolean;
+			/** 承認状況＿否認 */
+			opDenialStatus: boolean;
+			/** 承認状況＿未承認 */
+			opUnapprovalStatus: boolean;
+			/** 申請種類 */
+			opAppTypeLst: Array<any>;
+			/** 申請種類リスト */
+			opListOfAppTypes: Array<any>;
+	
+			constructor(periodStartDate: string, periodEndDate: string, postOutput: boolean, preOutput: boolean, appListAtr: number,
+				appDisplayOrder: number, tableWidthRegis: boolean, opListEmployeeID: Array<string>, opRemandStatus: boolean,
+				opCancelStatus: boolean, opApprovalStatus: boolean, opAgentApprovalStatus: boolean, opDenialStatus: boolean,
+				opUnapprovalStatus: boolean, opAppTypeLst: Array<any>, opListOfAppTypes: Array<any>) {
+					this.periodStartDate = periodStartDate;
+					this.periodEndDate = periodEndDate;
+					this.postOutput = postOutput;
+					this.preOutput = preOutput;
+					this.appListAtr = appListAtr;
+					this.appDisplayOrder = appDisplayOrder;
+					this.tableWidthRegis = tableWidthRegis;
+					this.opListEmployeeID = opListEmployeeID;
+					this.opRemandStatus = opRemandStatus;
+					this.opCancelStatus = opCancelStatus;
+					this.opApprovalStatus = opApprovalStatus;
+					this.opAgentApprovalStatus = opAgentApprovalStatus;
+					this.opDenialStatus = opDenialStatus;
+					this.opUnapprovalStatus = opUnapprovalStatus;
+					this.opAppTypeLst = opAppTypeLst;
+					this.opListOfAppTypes = opListOfAppTypes;	
+			}
+	
+//            /**期間開始日付*/
+//            startDate: string;
+//            /**期間終了日付*/
+//            endDate: string;
+//            /**申請一覧区分*/
+//            appListAtr: number;
+//            /**申請種類*/
+//            appType: number;
+//            /**承認状況＿未承認*/
+//            unapprovalStatus: boolean;
+//            /**承認状況＿承認済*/
+//            approvalStatus: boolean;
+//            /**承認状況＿否認*/
+//            denialStatus: boolean;
+//            /**承認状況＿代行承認済*/
+//            agentApprovalStatus: boolean;
+//            /**承認状況＿差戻*/
+//            remandStatus: boolean;
+//            /**承認状況＿取消*/
+//            cancelStatus: boolean;
+//            /**申請表示対象*/
+//            appDisplayAtr: number;
+//            /**社員IDリスト*/
+//            listEmployeeId: Array<string>;
+//            /**社員絞込条件*/
+//            empRefineCondition: string;
+//            constructor(startDate: string, endDate: string, appListAtr: number,
+//                appType: number, unapprovalStatus: boolean, approvalStatus: boolean,
+//                denialStatus: boolean, agentApprovalStatus: boolean, remandStatus: boolean,
+//                cancelStatus: boolean, appDisplayAtr: number, listEmployeeId: Array<string>,
+//                empRefineCondition: string){
+//                    this.startDate = startDate;
+//                    this.endDate =  endDate;
+//                    this.appListAtr =  appListAtr;
+//                    this.appType = appType;
+//                    this.unapprovalStatus = unapprovalStatus;
+//                    this.approvalStatus = approvalStatus;
+//                    this.denialStatus = denialStatus;
+//                    this.agentApprovalStatus = agentApprovalStatus;
+//                    this.remandStatus = remandStatus;
+//                    this.cancelStatus = cancelStatus;
+//                    this.appDisplayAtr = appDisplayAtr;
+//                    this.listEmployeeId = listEmployeeId;
+//                    this.empRefineCondition = empRefineCondition;
                     
-            }
-            setAppType(appType: number){
-                  this.appType = appType;
-            }
+//            }
+//            setAppType(appType: number){
+//                  this.appType = appType;
+//            }
         }
         interface AppListParamFilter{
             condition: AppListExtractConditionDto;//抽出条件
