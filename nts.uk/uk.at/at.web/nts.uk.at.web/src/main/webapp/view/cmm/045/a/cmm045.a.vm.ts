@@ -232,14 +232,17 @@ module cmm045.a.viewmodel {
 //                            };
 				return service.getAppNameInAppList();
 			}).then((data: any) => {
+				self.appListExtractConditionDto.opListOfAppTypes = data;
 				let newParam = {
 							mode: 0,
 							device: 0,
-							listOfAppTypes: data
+							listOfAppTypes: data,
+							appListExtractCondition: self.appListExtractConditionDto
 						};
 				return service.getApplicationList(newParam);
 			}).then((data: any) => {
 				self.dateValue({ startDate: data.appListInfoDto.displaySet.startDateDisp, endDate: data.appListInfoDto.displaySet.endDateDisp });
+				self.appListExtractConditionDto = data.appListExtractConditionDto;
                 self.lstContentApp(data.lstContentApp);
                 let isHidden = data.isDisPreP == 1 ? false : true;
                 self.isHidden(isHidden);
@@ -251,32 +254,32 @@ module cmm045.a.viewmodel {
                             let date: vmbase.Date = { startDate: data.startDate, endDate: data.endDate }
                             self.dateValue(date);
                         }*/
-                let paramSave: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
-                    self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-                    self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
-                character.save('AppListExtractCondition', paramSave);
-                _.each(data.lstApp, function(app) {
-                    self.lstAppCommon.push(new vmbase.ApplicationDataOutput(app.applicationID, app.prePostAtr, app.inputDate,
-                        app.enteredPersonSID, app.applicationDate, app.applicationType, app.applicantSID, app.reflectPerState,
-                        app.startDate, app.endDate, app.version, app.reflectStatus));
-                });
-                _.each(data.lstMasterInfo, function(master) {
-                    self.lstAppMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName,master.inpEmpName,
-                        master.workplaceName, master.statusFrameAtr, master.phaseStatus, master.checkAddNote, master.checkTimecolor, master.detailSet));
-                });
-                self.itemApplication([]);
-                _.each(data.lstAppInfor, function(appInfo){
-                    self.itemApplication.push(new vmbase.ChoseApplicationList(appInfo.appType, appInfo.appName));
-                });
-                self.lstListAgent([]);
-                _.each(data.lstAgent, function(agent){
-                    self.lstListAgent.push(new vmbase.ApproveAgent(agent.appID, agent.agentId));
-                });
-                _.each(data.lstSyncData, function(complt){
-                    self.lstAppCompltSync.push(new vmbase.AppAbsRecSyncData(complt.typeApp, complt.appMainID, complt.appSubID, complt.appDateSub));
-                });
-                let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), self.lstAppCompltSync());
-                self.lstApp(lstData);
+//                let paramSave: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
+//                    self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
+//                    self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
+                character.save('AppListExtractCondition', self.appListExtractConditionDto);
+//                _.each(data.lstApp, function(app) {
+//                    self.lstAppCommon.push(new vmbase.ApplicationDataOutput(app.applicationID, app.prePostAtr, app.inputDate,
+//                        app.enteredPersonSID, app.applicationDate, app.applicationType, app.applicantSID, app.reflectPerState,
+//                        app.startDate, app.endDate, app.version, app.reflectStatus));
+//                });
+//                _.each(data.lstMasterInfo, function(master) {
+//                    self.lstAppMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName,master.inpEmpName,
+//                        master.workplaceName, master.statusFrameAtr, master.phaseStatus, master.checkAddNote, master.checkTimecolor, master.detailSet));
+//                });
+//                self.itemApplication([]);
+//                _.each(data.lstAppInfor, function(appInfo){
+//                    self.itemApplication.push(new vmbase.ChoseApplicationList(appInfo.appType, appInfo.appName));
+//                });
+//                self.lstListAgent([]);
+//                _.each(data.lstAgent, function(agent){
+//                    self.lstListAgent.push(new vmbase.ApproveAgent(agent.appID, agent.agentId));
+//                });
+//                _.each(data.lstSyncData, function(complt){
+//                    self.lstAppCompltSync.push(new vmbase.AppAbsRecSyncData(complt.typeApp, complt.appMainID, complt.appSubID, complt.appDateSub));
+//                });
+//                let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), self.lstAppCompltSync());
+//                self.lstApp(lstData);
                 self.items(data.appListInfoDto.appLst);
                 //mode approval - count
                 if (data.appStatusCount != null) {
@@ -537,7 +540,7 @@ module cmm045.a.viewmodel {
                 columns.forEach(column => {
 
                     let $td = $("<td/>")
-                        .data("app-id", item.appId)
+                        .data("app-id", item.appID)
                         .addClass(column.key);
 
                     if (column.extraClassProperty !== undefined) {
@@ -577,6 +580,22 @@ module cmm045.a.viewmodel {
         }
 
 		customContent(key: string, value: any) {
+			const self = this;
+			if(key=='appType') {
+				let appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == value);	
+				if(_.isUndefined(appInfo)) {
+					return '';
+				} else {
+					return appInfo.appName;
+				}
+			}
+			if(key=='prePostAtr') {
+				if(value==0) {
+					return nts.uk.resource.getText('KAF000_47');
+				} else {
+					return nts.uk.resource.getText('KAF000_48');
+				}
+			}
 			if(key=='appContent') {
 				return value.replace(/\n/g, '<br/>');		
 			}
@@ -595,13 +614,13 @@ module cmm045.a.viewmodel {
                     text: getText('CMM045_50'),
                     click: (e) => {
                         let targetAppId = $(e.target).closest("td").data("app-id");
-                        let lstAppId = self.items().map(app => app.appId);
+                        let lstAppId = self.items().map(app => app.appID);
                         nts.uk.localStorage.setItem('UKProgramParam', 'a=0');
-                        nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
+                        nts.uk.request.jump("/view/kaf_ref/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
                     }
                 } },
                 { headerText: getText('CMM045_51'), key: 'applicantName', width: '120px' },
-                { headerText: getText('CMM045_52'), key: 'appTye', width: '90px'},
+                { headerText: getText('CMM045_52'), key: 'appType', width: '90px'},
                 { headerText: getText('CMM045_53'), key: 'prePostAtr', width: '65px', hidden: false},
                 { headerText: getText('CMM045_54'), key: 'appDate', width: '157px'},
                 { headerText: getText('CMM045_55'), key: 'appContent', width: '408px'},
@@ -809,7 +828,7 @@ module cmm045.a.viewmodel {
                     text: getText('CMM045_50'),
                     click: (e) => {
                         let targetAppId = $(e.target).closest("td").data("app-id");
-                        let lstAppId = self.items().map(app => app.appId);
+                        let lstAppId = self.items().map(app => app.appID);
                         nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
                         nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
                     }

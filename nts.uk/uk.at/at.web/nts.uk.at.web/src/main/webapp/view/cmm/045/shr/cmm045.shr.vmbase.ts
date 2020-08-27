@@ -125,46 +125,148 @@ module cmm045.shr {
         }
         //data fill grid list mode application
         export class DataModeApp{
-            appId: string;
-            appType: number;
+			/** 事前事後区分 */
+			prePostAtr: number;
+			/** 職場名 */
+			workplaceName: string;
+			/** 申請ID */
+			appID: string;
+			/** 申請者CD */
+			applicantCD: string;
+			/** 申請者名 */
+			applicantName: string;
+			/** 申請種類 */
+			appType: number;
+			/** 申請内容 */
+			appContent: string;
+			/** 申請日 */
+			appDate: string;
+			/** 入力社名 */
+			inputCompanyName: string;
+			/** 入力日 */
+			inputDate: string;
+			/** 反映状態 */
+			reflectionStatus: string;
+			/** 時刻計算利用区分 */
+			opTimeCalcUseAtr: number;
+			/** 承認フェーズインスタンス */
+			opApprovalPhaseLst: Array<any>;
+			/** 承認状況照会 */
+			opApprovalStatusInquiry: string;
+			/** 承認枠の承認状態 */
+			opApprovalFrameStatus: number;
+			/** 振休振出申請 */
+			opComplementLeaveApp: any;
+			/** 申請開始日 */
+			opAppStartDate: string;
+			/** 申請種類表示 */
+			opAppTypeDisplay: number;
+			/** 申請終了日 */
+			opAppEndDate: string;
+			/** 定型理由 */
+			opAppStandardReason: string;
+			/** 入力者名称 */
+			opEntererName: string;
+			/** 背景色 */
+			opBackgroundColor: number;
+			/** 表示行数超 */
+			opMoreThanDispLineNO: boolean;
+	
+			// param dùng cho grid ở UI
             check: boolean;
             details: string;
-            applicant: string;
             appName: string;
             appAtr: string;
-            appDate: string;
-            appContent: string;
-            inputDate: string;
-            appStatus: string;
-            displayAppStatus: string;
             checkAtr: boolean;
             version: number;
             checkTimecolor: number;
             appIdSub: string;
             appStatusNo: number;
-            constructor(appId: string,appType: number,  details: string, applicant: string,
-                appName: string, appAtr: string, appDate: string, appContent: string,
-                inputDate: string, appStatus: string, displayAppStatus: string, checkAtr: boolean,
-                version: number, checkTimecolor: number, appIdSub: string, appStatusNo: number){
-                this.appId = appId;
-                this.appType = appType;
-                this.check = false;
-                this.details = details;
-                this.applicant = applicant;
-                this.appName = appName;
-                this.appAtr = appAtr;
-                this.appDate = appDate;
-                this.appContent = appContent;
-                this.inputDate = inputDate;
-                this.appStatus = appStatus;
-                this.displayAppStatus = displayAppStatus;
-                this.checkAtr = checkAtr;
-                this.version = version;
-                this.checkTimecolor = checkTimecolor;
-                this.appIdSub = appIdSub;
-                this.appStatusNo = appStatusNo;
+            constructor(listOfApplicationDto: ListOfApplicationDto){
+				this.prePostAtr = listOfApplicationDto.prePostAtr;
+				this.workplaceName = listOfApplicationDto.workplaceName;
+				this.appID = listOfApplicationDto.appID;
+				this.applicantCD = listOfApplicationDto.applicantCD;
+				this.applicantName = listOfApplicationDto.applicantName;
+				this.appType = listOfApplicationDto.appType;
+				this.appContent = listOfApplicationDto.appContent;
+				this.appDate = listOfApplicationDto.appDate;
+				this.inputCompanyName = listOfApplicationDto.inputCompanyName;
+				this.inputDate = listOfApplicationDto.inputDate;
+				this.reflectionStatus = listOfApplicationDto.reflectionStatus;
+				this.opTimeCalcUseAtr = listOfApplicationDto.opTimeCalcUseAtr;
+				this.opApprovalPhaseLst = listOfApplicationDto.opApprovalPhaseLst;
+				this.opApprovalStatusInquiry = listOfApplicationDto.opApprovalStatusInquiry;
+				this.opApprovalFrameStatus = listOfApplicationDto.opApprovalFrameStatus;
+				this.opComplementLeaveApp = listOfApplicationDto.opComplementLeaveApp;
+				this.opAppStartDate = listOfApplicationDto.opAppStartDate;
+				this.opAppTypeDisplay = listOfApplicationDto.opAppTypeDisplay;
+				this.opAppEndDate = listOfApplicationDto.opAppEndDate;
+				this.opAppStandardReason = listOfApplicationDto.opAppStandardReason;
+				this.opEntererName = listOfApplicationDto.opEntererName;
+				this.opBackgroundColor = listOfApplicationDto.opBackgroundColor;
+				this.opMoreThanDispLineNO = listOfApplicationDto.opMoreThanDispLineNO;
+				// param dùng cho grid ở UI
+		        this.check = false;
+		        this.details = '';
+		        this.appName = '';
+		        this.appAtr = '';
+		        this.checkAtr = false;
+		        this.version = 0;
+		        this.checkTimecolor = 0;
+		        this.appIdSub = '';
+		        this.appStatusNo = 0;
             }
         }  
+
+		export interface ListOfApplicationDto {
+			/** 事前事後区分 */
+			prePostAtr: number;
+			/** 職場名 */
+			workplaceName: string;
+			/** 申請ID */
+			appID: string;
+			/** 申請者CD */
+			applicantCD: string;
+			/** 申請者名 */
+			applicantName: string;
+			/** 申請種類 */
+			appType: number;
+			/** 申請内容 */
+			appContent: string;
+			/** 申請日 */
+			appDate: string;
+			/** 入力社名 */
+			inputCompanyName: string;
+			/** 入力日 */
+			inputDate: string;
+			/** 反映状態 */
+			reflectionStatus: string;
+			/** 時刻計算利用区分 */
+			opTimeCalcUseAtr: number;
+			/** 承認フェーズインスタンス */
+			opApprovalPhaseLst: Array<any>;
+			/** 承認状況照会 */
+			opApprovalStatusInquiry: string;
+			/** 承認枠の承認状態 */
+			opApprovalFrameStatus: number;
+			/** 振休振出申請 */
+			opComplementLeaveApp: any;
+			/** 申請開始日 */
+			opAppStartDate: string;
+			/** 申請種類表示 */
+			opAppTypeDisplay: number;
+			/** 申請終了日 */
+			opAppEndDate: string;
+			/** 定型理由 */
+			opAppStandardReason: string;
+			/** 入力者名称 */
+			opEntererName: string;
+			/** 背景色 */
+			opBackgroundColor: number;
+			/** 表示行数超 */
+			opMoreThanDispLineNO: boolean;	
+		}
         
         export class AppMasterInfo {
             appID: string;

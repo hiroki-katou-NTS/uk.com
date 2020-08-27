@@ -40,7 +40,6 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * refactor 4
- * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.申請一覧初期処理.申請一覧初期処理
  * @author Doan Duy Hung
  *
  */
@@ -55,9 +54,18 @@ public class ApplicationListFinder {
 	@Inject
 	private ApprovalListDispSetRepository approvalListDispSetRepository;
 	
+	@Inject
+	private ApprovalListService approvalListService;
+	
 	private static final int MOBILE = 1;
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
+	/**
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.申請一覧初期処理.申請一覧初期処理
+	 * @param param
+	 * @return
+	 */
 	public AppListInitDto getAppList(AppListParamFilter param){
 		String companyID = AppContexts.user().companyId();
 		AppListInfo result = new AppListInfo();
@@ -76,7 +84,8 @@ public class ApplicationListFinder {
 			endDate = GeneralDate.fromString(param.getEndDate(), DATE_FORMAT);
 		} else {
 			// メニューより起動か、申請画面からの戻りかチェックする(Kiểm tra xem bắt đầu từ menu hay là  trở về từ màn hình application)
-			if(param.getAppListExtractCondition() != null) {
+			if(Strings.isNotBlank(param.getAppListExtractCondition().getPeriodStartDate()) && 
+					Strings.isNotBlank(param.getAppListExtractCondition().getPeriodEndDate())) {
 				// ドメインモデル「申請一覧抽出条件」を取得する
 				AppListExtractCondition appListExtractCondition = param.getAppListExtractCondition().convertDtotoDomain();
 				// アルゴリズム「申請一覧リスト取得」を実行する

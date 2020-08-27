@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -99,8 +101,8 @@ public class AppListExtractConditionDto {
 	
 	public AppListExtractCondition convertDtotoDomain(){
 		return new AppListExtractCondition(
-				GeneralDate.fromString(this.getPeriodStartDate(), "yyyy/MM/dd"), 
-				GeneralDate.fromString(this.getPeriodEndDate(), "yyyy/MM/dd"), 
+				Strings.isNotBlank(this.getPeriodStartDate()) ? GeneralDate.fromString(this.getPeriodStartDate(), "yyyy/MM/dd") : null, 
+				Strings.isNotBlank(this.getPeriodEndDate()) ? GeneralDate.fromString(this.getPeriodEndDate(), "yyyy/MM/dd") : null, 
 				this.isPostOutput(), 
 				this.isPreOutput(), 
 				EnumAdaptor.valueOf(this.appListAtr, ApplicationListAtr.class), 
