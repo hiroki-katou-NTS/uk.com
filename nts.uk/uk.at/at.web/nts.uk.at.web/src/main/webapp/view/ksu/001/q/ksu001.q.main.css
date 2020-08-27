@@ -90,7 +90,7 @@ input {
 
 tbody {
 	display: block;
-	max-height: 231px;
+	max-height: 228px;
 	overflow: auto;
 	height: auto;
 }
