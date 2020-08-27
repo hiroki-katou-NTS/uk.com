@@ -58,7 +58,7 @@ public class KrcmtStampFunction  extends ContractUkJpaEntity implements Serializ
 	public String mapAddress;
 	
 	@OneToMany(targetEntity = KrccpStampRecordDis.class, mappedBy = "krccpStampFunction", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinTable(name = "KRCCT_STAMP_RECORD_DIS")
+    @JoinTable(name = "KRCMT_STAMP_RECORD_DIS")
 	public List<KrccpStampRecordDis> lstRecordDis;
 	
 	@Override
