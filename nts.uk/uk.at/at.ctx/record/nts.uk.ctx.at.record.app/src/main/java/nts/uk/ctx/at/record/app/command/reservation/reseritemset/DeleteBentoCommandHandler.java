@@ -38,7 +38,7 @@ public class DeleteBentoCommandHandler extends CommandHandler<DeleteBentoCommand
                     .filter(x -> x.getFrameNo() == command.getFrameNo())
                     .findFirst();
             if (bentoMenu.getMenu().size() <= 1){
-                throw new BusinessException("Msg_115");
+                throw new BusinessException("Msg_1849");
             }
             optionalBento.ifPresent(bento -> bentoMenu.getMenu().remove(bentoMenu.getMenu().indexOf(bento)));
             bentoMenuRepository.update(bentoMenu);

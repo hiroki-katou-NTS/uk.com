@@ -114,7 +114,7 @@ public class ReservationModifyQuery {
                 }
                 PersonEmpBasicInfoDto empBasicInfo = empBasicInfoOpt.get();
                 //新規注文の場合誰か一人が打刻カードがない場合
-                errors.add(new ReservationModifyError("Msg_1634", TextResource.localize("Msg_1634", empBasicInfo.getEmployeeCode())));
+                errors.add(new ReservationModifyError("Msg_1634", TextResource.localize("Msg_1634", empBasicInfo.getEmployeeCode(), empBasicInfo.getBusinessName())));
             }
         }
 
@@ -124,12 +124,6 @@ public class ReservationModifyQuery {
                 reservationDate.getClosingTimeFrame());
         if (!CollectionUtil.isEmpty(bentoMenus)) {
             BentoMenu bentoMenu = bentoMenus.get(0);
-
-            // 5.1: ヘッダー情報を作る
-            List<HeaderInfoDto> bentos = bentoMenu.getMenu().stream().map(x ->
-                    new HeaderInfoDto(x.getUnit().v(), x.getName().v(), x.getFrameNo())).collect(Collectors.toList());
-            result.setBentos(bentos);
-
             BentoMenuByClosingTime menu;
             if (bentoReservationSetting.getOperationDistinction() == OperationDistinction.BY_COMPANY) {
                 // 4.2: 会社ごと締め時刻別のメニュー
@@ -154,11 +148,20 @@ public class ReservationModifyQuery {
             }
 
             result.setBentoClosingTimes(bentoClosingTimes);
+
+            // 5.1: ヘッダー情報を作る
+            List<HeaderInfoDto> bentos;
+            if (reservationDate.getClosingTimeFrame() == ReservationClosingTimeFrame.FRAME1){
+                bentos = menu.getMenu1().stream().map(x -> new HeaderInfoDto(x.getUnit().v(), x.getName().v(), x.getFrameNo())).collect(Collectors.toList());
+            } else {
+                bentos = menu.getMenu2().stream().map(x -> new HeaderInfoDto(x.getUnit().v(), x.getName().v(), x.getFrameNo())).collect(Collectors.toList());
+            }
+            result.setBentos(bentos);
         }
 
         // UI処理[11]
-        if (CollectionUtil.isEmpty(result.getBentoClosingTimes())) {
-            errors.add(new ReservationModifyError("Msg_1604", TextResource.localize("Msg_1604")));
+        if (CollectionUtil.isEmpty(result.getBentos())) {
+            throw new BusinessException("Msg_1604");
         }
 
         List<ReservationModifyEmployeeDto> reservationModifyEmps = new ArrayList<>();
