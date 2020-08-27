@@ -43,24 +43,24 @@ public class DateInformationDto {
 		this.dayOfWeek = domain.getDayOfWeek().value;
 		this.isHoliday = domain.isHoliday();
 		this.isSpecificDay = domain.isSpecificDay();
-		this.optWorkplaceEventName = domain.getOptWorkplaceEventName().isPresent() ? domain.getOptWorkplaceEventName().get().toString() : null;
-		this.optCompanyEventName = domain.getOptCompanyEventName().isPresent() ? domain.getOptCompanyEventName().get().toString() : null;
+		this.optWorkplaceEventName = domain.getOptWorkplaceEventName().isPresent() ? domain.getOptWorkplaceEventName().get().toString() : "";
+		this.optCompanyEventName = domain.getOptCompanyEventName().isPresent() ? domain.getOptCompanyEventName().get().toString() : "";
 		this.listSpecDayNameWorkplace = domain.getListSpecDayNameWorkplace().stream().map(x -> {
 			if (x != null) {
 				return x.toString();
 			}
-			return null;
+			return "";
 		}).collect(Collectors.toList());
 		this.listSpecDayNameCompany = domain.getListSpecDayNameCompany().stream().map(y -> {
 			if (y != null) {
 				return y.toString();
 			}
-			return null;
+			return "";
 		}).collect(Collectors.toList());
 		
 		this.isToday = domain.getYmd().equals(GeneralDate.today());
 		
-		if(this.isHoliday || this.isSpecificDay){
+		if(this.isHoliday || this.isSpecificDay || optWorkplaceEventName.isEmpty() || optCompanyEventName.isEmpty()){
 			val htmlTooltip = new StringBuilder();
 			htmlTooltip.append("<table>");
 				htmlTooltip.append("<tr>");

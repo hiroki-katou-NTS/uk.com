@@ -20,8 +20,8 @@ module nts.uk.at.view.ksu001.a.service {
         getDataOfShiftMode: "screen/at/schedule/shift",
         getDataOfShortNameMode: "screen/at/schedule/shortname",
         getDataOfTimeMode: "screen/at/schedule/time",
-        getDataNextMonth: "screen/at/schedule/next-month",
-        getDataPreMonth: "screen/at/schedule/pre-month",
+        getDataChangeMonth: "screen/at/schedule/change-month",
+        orderEmployee: "screen/at/schedule/order-employee",
     }
     
     export function getDataStartScreen(param): JQueryPromise<any> {
@@ -39,19 +39,19 @@ module nts.uk.at.view.ksu001.a.service {
     export function getDataOfTimeMode(param): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getDataOfTimeMode, param);
     }
-    
+
     export function getSendingPeriod(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getSendingPeriod, obj);
     }
-    
-     export function getDataNextMonth(obj): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getDataNextMonth, obj);
+
+    export function getDataChangeMonth(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataChangeMonth, obj);
     }
-    
-     export function getDataPreMonth(obj): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getDataPreMonth, obj);
+
+    export function getListEmpIdSorted(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.orderEmployee, obj);
     }
-    
+
     
     
 

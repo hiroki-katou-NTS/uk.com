@@ -4,6 +4,7 @@
 package nts.uk.screen.at.app.ksu001.getworkactualshift;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,11 +14,16 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.layer.app.cache.DateHistoryCache;
+import nts.arc.layer.app.cache.KeyDateHistoryCache;
+import nts.arc.layer.app.cache.NestedMapCache;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.DailyResultAccordScheduleStatusService;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveHistoryAdapter;
@@ -31,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpComHisAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
@@ -86,20 +93,16 @@ public class GetActualOfShift {
 		
 		// step 1
 		// call 予定管理状態に応じて日別実績を取得する
-		RequireDailyImpl requireDailyImpl = new RequireDailyImpl(dailyRecordWorkFinder , empComHisAdapter, workCondRepo, empLeaveHisAdapter,
-				empLeaveWorkHisAdapter, employmentHisScheduleAdapter);
-		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
-		
 		long start = System.nanoTime();
-		
+		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
+		RequireDailyImpl requireDailyImpl = new RequireDailyImpl(param.listSid, period, dailyRecordWorkFinder , empComHisAdapter, workCondRepo, empLeaveHisAdapter,
+				empLeaveWorkHisAdapter, employmentHisScheduleAdapter);
 		Map<ScheManaStatuTempo , Optional<IntegrationOfDaily>> mapDataDaily = DailyResultAccordScheduleStatusService.get(requireDailyImpl, param.listSid, period);
-		
 		long end = System.nanoTime();
 		long duration = (end - start) / 1000000; // ms;
 		System.out.println("thoi gian get data Daily cua "+ param.listSid.size() + " employee: " + duration + "ms");	
 		
 		List<WorkInfoOfDailyAttendance> workInfoOfDailyAttendances = new ArrayList<WorkInfoOfDailyAttendance>();
-
 		mapDataDaily.forEach((k, v) -> {
 			if (v.isPresent()) {
 				WorkInfoOfDailyAttendance workInfo = v.get().getWorkInformation();
@@ -240,25 +243,63 @@ public class GetActualOfShift {
 	@AllArgsConstructor
 	private static class RequireDailyImpl implements DailyResultAccordScheduleStatusService.Require {
 
-		@Inject
-		private DailyRecordWorkFinder dailyRecordWorkFinder;
+		private NestedMapCache<String, GeneralDate, DailyRecordDto> workScheduleCache;
+		private KeyDateHistoryCache<String, EmpEnrollPeriodImport> affCompanyHistByEmployeeCache;
+		private KeyDateHistoryCache<String, EmploymentPeriodImported> employmentPeriodCache;
+		private KeyDateHistoryCache<String, EmployeeLeaveJobPeriodImport> empLeaveJobPeriodCache;
+		private KeyDateHistoryCache<String, EmpLeaveWorkPeriodImport> empLeaveWorkPeriodCache;
+		private KeyDateHistoryCache<String, WorkingConditionItemWithPeriod> workCondItemWithPeriodCache;
 		
-		@Inject
-		private EmpComHisAdapter empComHisAdapter;
-		@Inject
-		private WorkingConditionRepository workCondRepo;
-		@Inject
-		private EmpLeaveHistoryAdapter empLeaveHisAdapter;
-		@Inject
-		private EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter;
-		@Inject
-		private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
+		public RequireDailyImpl(List<String> empIdList, DatePeriod period, DailyRecordWorkFinder dailyRecordWorkFinder,
+				EmpComHisAdapter empComHisAdapter, WorkingConditionRepository workCondRepo,
+				EmpLeaveHistoryAdapter empLeaveHisAdapter, EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter,
+				EmploymentHisScheduleAdapter employmentHisScheduleAdapter) {
+			
+			long start1 = System.nanoTime();
+			List<DailyRecordDto> sDailyRecordDtos = dailyRecordWorkFinder.find(empIdList, period);
+			workScheduleCache = NestedMapCache.preloadedAll(sDailyRecordDtos.stream(),
+					workSchedule -> workSchedule.getEmployeeId(), 
+					workSchedule -> workSchedule.getDate());
+			System.out.println("thoi gian get data Daily " + ((System.nanoTime() - start1 )/1000000) + "ms");
+			
+			long start2 = System.nanoTime();
+			List<EmpEnrollPeriodImport> affCompanyHists =  empComHisAdapter.getEnrollmentPeriod(empIdList, period);
+			affCompanyHistByEmployeeCache = KeyDateHistoryCache.loaded(affCompanyHists.stream()
+					.collect(Collectors.toMap( h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
+			System.out.println("thoi gian get data affCompanyHistByEmp " + ((System.nanoTime() - start2 )/1000000) + "ms");
+			
+			long start3 = System.nanoTime();
+			List<EmploymentPeriodImported> listEmploymentPeriodImported = employmentHisScheduleAdapter.getEmploymentPeriod(empIdList, period);
+			employmentPeriodCache = KeyDateHistoryCache.loaded(listEmploymentPeriodImported.stream()
+					.collect(Collectors.toMap( h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
+			System.out.println("thoi gian get data EmploymentPeriod " + ((System.nanoTime() - start3 )/1000000) + "ms");
+			
+			long start4 = System.nanoTime();
+			List<EmployeeLeaveJobPeriodImport> empLeaveJobPeriods = empLeaveHisAdapter.getLeaveBySpecifyingPeriod(empIdList, period);
+			empLeaveJobPeriodCache = KeyDateHistoryCache.loaded(empLeaveJobPeriods.stream()
+					.collect(Collectors.toMap( h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
+			System.out.println("thoi gian get data EmployeeLeaveJob " + ((System.nanoTime() - start4 )/1000000) + "ms");
+			
+			long start5 = System.nanoTime();
+			List<EmpLeaveWorkPeriodImport> empLeaveWorkPeriods =  empLeaveWorkHisAdapter.getHolidayPeriod(empIdList, period);
+			empLeaveWorkPeriodCache = KeyDateHistoryCache.loaded(empLeaveWorkPeriods.stream()
+					.collect(Collectors.toMap( h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
+			System.out.println("thoi gian get data EmpLeaveWork " + ((System.nanoTime() - start5 )/1000000) + "ms");
+			
+			long start6 = System.nanoTime();
+			List<WorkingConditionItemWithPeriod> listData = workCondRepo.getWorkingConditionItemWithPeriod(AppContexts.user().companyId(),empIdList, period);
+			workCondItemWithPeriodCache = KeyDateHistoryCache.loaded(listData.stream()
+					.collect(Collectors.toMap( h -> h.getWorkingConditionItem().getEmployeeId(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
+			System.out.println("thoi gian get data WorkingConditionItem " + ((System.nanoTime() - start6 )/1000000) + "ms");
+			
+			System.out.println("thoi gian get data để lưu vào Cache" + ((System.nanoTime() - start1 )/1000000) + "ms");
+		}
 		
 		@Override
 		public Optional<IntegrationOfDaily> getDailyResults(String empId, GeneralDate date) {
-			DailyRecordDto dailyRecordDto = dailyRecordWorkFinder.find(empId, date);
-			if (dailyRecordDto != null) {
-				IntegrationOfDaily data = dailyRecordDto.toDomain(empId, date);
+			Optional<DailyRecordDto> dailyRecordDto = workScheduleCache.get(empId, date);
+			if (!dailyRecordDto.isPresent()) {
+				IntegrationOfDaily data = dailyRecordDto.get().toDomain(empId, date);
 				return Optional.of(data);
 			}
 			return Optional.empty();
@@ -266,44 +307,32 @@ public class GetActualOfShift {
 
 		@Override
 		public Optional<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod) {
-			List<EmpEnrollPeriodImport> data =  empComHisAdapter.getEnrollmentPeriod(sids, datePeriod);
-			if (data.isEmpty()) {
-				return Optional.empty();
-			}
-			return Optional.of(data.get(0));
-		}
-
-		@Override
-		public Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate) {
-			Optional<WorkingConditionItem> data = workCondRepo.getWorkingConditionItemByEmpIDAndDate(AppContexts.user().companyId(), baseDate, employeeId);
+			Optional<EmpEnrollPeriodImport> data = affCompanyHistByEmployeeCache.get(sids.get(0), datePeriod.start());
 			return data;
 		}
 
 		@Override
+		public Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate) {
+			Optional<WorkingConditionItemWithPeriod> data = workCondItemWithPeriodCache.get(employeeId, baseDate);
+			return data.isPresent() ? Optional.of(data.get().getWorkingConditionItem()) : Optional.empty();
+		}
+
+		@Override
 		public Optional<EmployeeLeaveJobPeriodImport> getByDatePeriod(List<String> lstEmpID, DatePeriod datePeriod) {
-			List<EmployeeLeaveJobPeriodImport> data = empLeaveHisAdapter.getLeaveBySpecifyingPeriod(lstEmpID, datePeriod);
-			if (data.isEmpty()) {
-				return Optional.empty();
-			}
-			return Optional.of(data.get(0));
+			Optional<EmployeeLeaveJobPeriodImport> data =  empLeaveJobPeriodCache.get(lstEmpID.get(0), datePeriod.start());
+			return data;
 		}
 
 		@Override
 		public Optional<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(List<String> lstEmpID, DatePeriod datePeriod) {
-			List<EmpLeaveWorkPeriodImport> data =  empLeaveWorkHisAdapter.getHolidayPeriod(lstEmpID, datePeriod);
-			if (data.isEmpty()) {
-				return Optional.empty();
-			}
-			return Optional.of(data.get(0));
+			Optional<EmpLeaveWorkPeriodImport> data = empLeaveWorkPeriodCache.get(lstEmpID.get(0), datePeriod.start());
+			return data;
 		}
 
 		@Override
 		public Optional<EmploymentPeriodImported> getEmploymentHistory(List<String> lstEmpID, DatePeriod datePeriod) {
-			List<EmploymentPeriodImported> data = employmentHisScheduleAdapter.getEmploymentPeriod(lstEmpID, datePeriod);
-			if (data.isEmpty()) {
-				return Optional.empty();
-			}
-			return Optional.of(data.get(0));
+			Optional<EmploymentPeriodImported> data = employmentPeriodCache.get(lstEmpID.get(0), datePeriod.start());
+			return data;
 		}
 	}
 }

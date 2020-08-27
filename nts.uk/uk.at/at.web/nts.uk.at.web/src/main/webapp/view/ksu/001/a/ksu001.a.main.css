@@ -54,10 +54,6 @@
 	margin-left: 2px;
 }
 
-table th, table td {
-	padding: 2px 5px;
-}
-
 #functions-area>button {
 	margin-left: 5px;
 }
@@ -415,10 +411,6 @@ table th, table td {
 	margin-left: 15px
 }
 
-tbody a.x-link {
-	color: black !important;
-}
-
 .hoverEmployeeName {
   color: #0D86D1 !important;
   text-decoration: underline !important;
@@ -439,44 +431,19 @@ tbody a.x-link:hover {
 	position: relative;
 }
 
-.extable .xheader td.bg-daily-alter-other {
-	background-color: #CEE6FF;
+.bg-schedule-sunday {
+	background-color: #fabf8f !important;
+	color: #ff0000 !important;
 }
 
-.extable .xheader td.bg-daily-alter-self {
-	background-color: #94B7FE;
+.bg-schedule-saturday{
+	background-color: #8bd8ff !important;
+	color: #0000ff !important;
 }
 
-.extable .xheader td.bg-daily-reflect-application {
-	background-color: #BFEA60;
-}
-
-.extable .xheader td.color-schedule-performance {
-	color: #92D050;
-}
-
-.extable .xheader td.color-attendance {
-	color: #0000ff;
-}
-
-.extable .xheader td.color-holiday {
-	color: #ff0000;
-}
-
-.extable .xheader td.color-half-day-work {
-	color: #FF7F27;
-}
-
-.extable .xheader td.color-schedule-sunday {
-	color: #FF0000;
-}
-
-.extable .xheader td.color-schedule-saturday {
-	color: #0000FF;
-}
-
-.extable .xheader td.color-weekdays {
-	color: #404040;
+.bg-weekdays{
+	background-color: #D9D9D9 !important;
+	color: #404040 !important;
 }
 
 .right-content {
@@ -509,6 +476,14 @@ html {
 	margin-bottom: 10px ; 
 	display: inline-block; 
 	width: 130px ; 
+	text-overflow: ellipsis; 
+	white-space: nowrap;
+}
+
+.area6-2-left {
+	margin-bottom: 10px ; 
+	display: inline-block; 
+	width: 119px ; 
 	text-overflow: ellipsis; 
 	white-space: nowrap;
 }
@@ -555,3 +530,11 @@ html {
 	border: 0px solid #ccc !important;
 }
 
+.background-attendance {background-color: #0000ff !important;}
+.background-holiday {background-color: #ff0000 !important;}
+.background-half-day-work {background-color: #FF7F27 !important; }
+.background-schedule-performance {background-color:#008000 !important;}
+
+table th, table td {
+	padding: 2px 5px;
+}

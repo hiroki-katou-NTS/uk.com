@@ -15,13 +15,15 @@ module test {
                 return dfd.promise();
             }
 
-
             public openDialogLA(): void {
                 let self = this;
-                nts.uk.ui.windows.setShared("baseDate", moment(self.date()).format('YYYY/MM/DD'));
-
+                nts.uk.ui.windows.setShared("baseDate", self.date());
                 self.currentScreen = nts.uk.ui.windows.sub.modal("/view/ksu/001/la/index.xhtml");
             }   
+            // public openDialogU(): void {
+            //     let self = this;
+            //     self.currentScreen = nts.uk.ui.windows.sub.modeless("/view/ksu/001/u/index.xhtml");
+            // }   
         }
     }    
 }

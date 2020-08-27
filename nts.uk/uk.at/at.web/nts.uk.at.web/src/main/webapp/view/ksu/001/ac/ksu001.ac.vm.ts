@@ -292,6 +292,10 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
         
         updateDataSourceCompany(listShiftPalletCom, listShiftMasterSaveLocal) {
             let self = this;
+            if(listShiftPalletCom.length == 0) {
+                let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+                self.sourceCompany(source);
+            }
             for (let i = 0; i < listShiftPalletCom.length; i++) {
                 let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
                 let mami = nts.uk.resource.getText('KSU001_94');
@@ -376,6 +380,10 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
         
         updateDataSourceWorkplace(listShiftPalletWorkPlace, listShiftMasterSaveLocal) {
             let self = this;
+            if(listShiftPalletWorkPlace.length == 0){
+                let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+                self.sourceWorkplace(source);    
+            }
             for (let i = 0; i < listShiftPalletWorkPlace.length; i++) {
                 let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
                 let mami = nts.uk.resource.getText('KSU001_94');
@@ -444,7 +452,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 shiftPalletUnit: self.selectedpalletUnit(),
                 pageNumberCom: pageNumberSelected,
                 pageNumberOrg: pageNumberSelected,
-                workplaceId: userInfor.workplaceId,
+                workplaceId: self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId ),
             }
 
             service.getShiftPalletWhenChangePage(param).done((data) => {
@@ -613,7 +621,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 shiftPalletUnit: self.selectedpalletUnit(),
                 pageNumberCom: pageNumber,
                 pageNumberOrg: pageNumber,
-                workplaceId: userInfor.workplaceId,
+                workplaceId: self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId ),
             }
 
             service.getShiftPalletWhenChangePage(param).done((data) => {
@@ -659,7 +667,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     shiftPalletUnit: self.selectedpalletUnit(),
                     pageNumberCom: pageNumber,
                 },
-                workplaceId: userInfor.workplaceId,
+                workplaceId: self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId ),
                 workplaceGroupId: ''
             }
             nts.uk.ui.block.grayout();
@@ -690,7 +698,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     shiftPalletUnit: self.selectedpalletUnit(),
                     pageNumberOrg: pageNumber,
                 },
-                workplaceId: userInfor.workplaceId,
+                workplaceId: self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId ),
                 workplaceGroupId: ''
             }
             nts.uk.ui.block.grayout();
@@ -720,7 +728,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 selectedTab: self.selectedpalletUnit() == 1 ? 'company' : 'workplace',
                 workplaceName: self.workplaceModeName,
                 workplaceCode: '',
-                workplaceId: self.selectedpalletUnit() === 1 ? null : userInfor.workplaceId,
+                workplaceId: self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId ),
                 listWorkType: __viewContext.viewModel.viewAB.listWorkType(),
                 listWorkTime: __viewContext.viewModel.viewAB.listWorkTime(),
                 selectedLinkButton: self.selectedpalletUnit() === 1 ? userInfor.shiftPalettePageNumberCom - 1 : userInfor.shiftPalettePageNumberOrg - 1,

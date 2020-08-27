@@ -1,19 +1,24 @@
 package nts.uk.screen.at.ws.ksu001;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.screen.at.app.ksu001.changemode.NextMonthFinder;
-import nts.uk.screen.at.app.ksu001.changemode.PreMonthFinder;
 import nts.uk.screen.at.app.ksu001.changepage.ChangePageParam;
 import nts.uk.screen.at.app.ksu001.changepage.GetDataWhenChangePage;
 import nts.uk.screen.at.app.ksu001.changepage.GetShiftPalChangePageResult;
+import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangeMonthDto;
+import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangeMonthFinder;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.GetShiftPalette;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.GetShiftPaletteParam;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.GetShiftPaletteResult;
+import nts.uk.screen.at.app.ksu001.orderemployee.SortEmployees;
+import nts.uk.screen.at.app.ksu001.start.ChangeMonthParam;
+import nts.uk.screen.at.app.ksu001.start.OrderEmployeeParam;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001Dto;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001Param;
@@ -30,13 +35,13 @@ public class KSU001WebService extends WebService{
 	@Inject
 	private StartKSU001 startKSU001;
 	@Inject
-	private NextMonthFinder nextMonthFinder;
-	@Inject
-	private PreMonthFinder preMonthFinder;
+	private ChangeMonthFinder changeMonthFinder;
 	@Inject
 	private GetShiftPalette getShiftPalette;
 	@Inject
 	private GetDataWhenChangePage getDataWhenChangePage;
+	@Inject
+	private SortEmployees sortEmployees;
 	
 	@POST
 	@Path("start")
@@ -67,20 +72,12 @@ public class KSU001WebService extends WebService{
 	}
 	
 	@POST
-	@Path("next-month")
-	public StartKSU001Dto getDataNextMonth(StartKSU001Param param){
-		StartKSU001Dto data = nextMonthFinder.getDataStartScreen(param);
+	@Path("change-month")
+	public ChangeMonthDto getDataNextMonth(ChangeMonthParam param){
+		ChangeMonthDto data = changeMonthFinder.getData(param);
 		return data;
 	}
 
-	
-	@POST
-	@Path("pre-month")
-	public StartKSU001Dto getDataPreMonth(StartKSU001Param param){
-		StartKSU001Dto data = preMonthFinder.getDataStartScreen(param);
-		return data;
-	}
-	
 	@POST
 	@Path("getShiftPallets") // get cho cả 2 trường hợp company và workPlace , goi sau khi đ
 	public GetShiftPaletteResult getShiftPallets(GetShiftPaletteParam param) {
@@ -93,6 +90,10 @@ public class KSU001WebService extends WebService{
 		return getDataWhenChangePage.gatData(param);
 	}
 
-	
+	@POST
+	@Path("order-employee")
+	public List<String> orderEmployee(OrderEmployeeParam param) {
+		return sortEmployees.getListEmp(param);
+	}
 	
 }

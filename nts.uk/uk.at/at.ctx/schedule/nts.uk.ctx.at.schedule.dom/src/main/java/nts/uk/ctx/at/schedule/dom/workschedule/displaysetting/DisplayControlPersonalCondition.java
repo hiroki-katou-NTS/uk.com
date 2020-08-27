@@ -34,7 +34,7 @@ public class DisplayControlPersonalCondition implements DomainAggregate {
 	private final String companyID;
 	@Getter
 	/** List<条件表示制御> --- 条件表示制御リスト **/
-	private List<PersonInforDisplayControl> listConditionDisplayControl;
+	private List<PersonInforDisplayControl> listConditionDisplayControl; 
 
 	@Getter
 	/** Optional<勤務予定の資格設定> 資格設定 **/
@@ -93,12 +93,12 @@ public class DisplayControlPersonalCondition implements DomainAggregate {
 			 * $社員免許区分)
 			 */
 		return lstEmpId.stream().map(empId->{
-			Optional<ScheduleTeamName> teamName = mapEmpTeamLst.get(empId).getOptScheduleTeamName();
-			String empRank = mapEmpRankInfor.get(empId).getRankSymbol().v();
-			Optional<LicenseClassification> mapEmpLicense = mapEmpLicenseClassification.get(empId)
+			Optional<ScheduleTeamName> teamName = mapEmpTeamLst.get(empId) == null? Optional.empty(): mapEmpTeamLst.get(empId).getOptScheduleTeamName();
+			String empRank = mapEmpRankInfor.get(empId) == null ? null : (mapEmpRankInfor.get(empId).getRankSymbol() == null ? null : mapEmpRankInfor.get(empId).getRankSymbol().v());
+			Optional<LicenseClassification> mapEmpLicense = mapEmpLicenseClassification.get(empId) == null? Optional.empty(): mapEmpLicenseClassification.get(empId)
 					.getOptLicenseClassification();
 
-			return new PersonalCondition(empId, Optional.ofNullable(teamName.get().v()),
+			return new PersonalCondition(empId, Optional.ofNullable(teamName.isPresent()? (teamName.get() == null ?  null : teamName.get().v()): null),
 					Optional.ofNullable(empRank), mapEmpLicense);
 			
 		}).collect(Collectors.toList());

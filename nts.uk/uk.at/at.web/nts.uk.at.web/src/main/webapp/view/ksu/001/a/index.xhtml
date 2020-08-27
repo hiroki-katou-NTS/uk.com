@@ -179,7 +179,7 @@
 							<span id="A1_12_19">#{i18n.getText('KSU001_33')}</span>
 						</div>
 						<div>
-							<button id="A1_12_20">#{i18n.getText('KSU001_34')}</button>
+							<button id="A1_12_20" data-bind="click: openMDialog" >#{i18n.getText('KSU001_34')}</button>
 							<span id="A1_12_21">#{i18n.getText('KSU001_35')}</span>
 						</div>
 					</div>
@@ -220,23 +220,28 @@
 					<div id="A4_8">#{i18n.getText('KSU001_125')}</div>
 					<hr id="A4_9" data-bind="visible: showComboboxA4_12"></hr>
 					<div style="margin-left: 0px" data-bind="visible: showComboboxA4_12">
-						<div>
-							<div class="area6-left" >
-								<span id="A4_10">#{i18n.getText('KSU001_134')}</span>
-								<span id="A4_11" style="padding-left: 14px">：</span>
-							</div>
-							<div id="combo-box10" class="area6-right"  style="width: 90px"
-								data-bind="ntsComboBox: {
-									options: [{id: 0, name: '#{i18n.getText('KSU001_143')}'}, {id: 1, name: '#{i18n.getText('KSU001_144')}'}]  ,
-									optionsValue: 'id',
-									value: backgroundColorSelected ,
-									optionsText: 'name',
-									enable: true,
-									columns: [
-										{ prop: 'name', length: 3 }
-									]}"></div>
-						</div>
-						
+						<table>
+							<tr>
+								<td>
+									<div class="area6-2-left">
+										<span id="A4_10">#{i18n.getText('KSU001_134')}</span> 
+										<span id="A4_11" style="padding-left: 8px">：</span>
+									</div>
+								</td>
+								<td>
+									<div id="combo-box10" class="area6-right"  style="width: 90px"
+										data-bind="ntsComboBox: {
+										options: [{id: 0, name: '#{i18n.getText('KSU001_143')}'}, {id: 1, name: '#{i18n.getText('KSU001_144')}'}]  ,
+										optionsValue: 'id',
+										value: backgroundColorSelected ,
+										optionsText: 'name',
+										enable: true,
+										columns: [
+											{ prop: 'name', length: 3 }
+										]}"></div>
+								</td>
+							</tr>
+						</table>
 					</div>
 				</div>
 				
@@ -312,21 +317,21 @@
 					<div class="ml-2">
 						<div>
 							<div class="popup-div">
-								<div id="" class="square color-attendance"></div>
+								<div id="" class="square background-attendance"></div>
 								<span id="A5_3_2">#{i18n.getText('KSU001_315')}</span>
 							</div>
 							<div class="popup-div">
-								<div id="" class="square color-holiday"></div>
+								<div id="" class="square background-holiday"></div>
 								<span id="A5_3_3">#{i18n.getText('KSU001_316')}</span>
 							</div>
 							<div class="popup-div">
-								<div id="" class="square color-half-day-work"></div>
+								<div id="" class="square background-half-day-work"></div>
 								<span id="A5_3_4">#{i18n.getText('KSU001_317')}</span>
 							</div>
 						</div>
 						<div class="div-popup">
 							<div class="popup-div">
-								<div id="" class="square color-schedule-performance"></div>
+								<div id="" class="square background-schedule-performance"></div>
 								<span id="A5_3_5">#{i18n.getText('KSU001_318')}</span>
 							</div>
 						</div>
@@ -409,7 +414,7 @@
 									<button id="coppy" class="A7_2"
 										data-bind="click: coppyData , enable: enableBtnCoppy">コピペ</button>
 									<button id="input" class="A7_3"
-										data-bind="click: inputData, enable: enableBtnInput, visible : visibleBtnInput">時刻修正</button>
+										data-bind="click: inputData, enable: enableBtnInput, visible : visibleBtnInput">時刻入力</button>
 									<br />
 									<button id="undo" class="size-image-button2 A7_4"
 										data-bind="click: undoData, enable: enableBtnUndo , visible : visibleBtnUndo , timeClick: -1"></button>

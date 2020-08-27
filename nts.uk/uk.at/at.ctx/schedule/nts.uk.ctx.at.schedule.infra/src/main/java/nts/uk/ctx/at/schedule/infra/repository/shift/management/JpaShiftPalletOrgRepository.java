@@ -334,6 +334,9 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 	
 	@Override
 	public List<ShiftPalletsOrg> findbyWorkPlaceIdUse(int targetUnit, String workplaceId) {
+		if (workplaceId == null) {
+			return new ArrayList<>();
+		}
 		String query = FIND_BY_TARGETID_USE;
 		query = query.replaceFirst("targetUnit", String.valueOf(targetUnit));
 		query = query.replaceFirst("targetId", workplaceId);

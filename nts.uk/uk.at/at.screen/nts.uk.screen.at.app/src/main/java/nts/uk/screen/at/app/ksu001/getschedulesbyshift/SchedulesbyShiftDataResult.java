@@ -23,6 +23,6 @@ import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
 public class SchedulesbyShiftDataResult {
 	
 	public List<ScheduleOfShiftDto> listWorkScheduleShift;  // List<勤務予定（シフト）dto>
-	public List<ShiftMasterMapWithWorkStyle> listOfPageShift; // 取得したシフト一覧：List<シフトマスタ, Optional<出勤休日区分>>
+	public List<ShiftMasterMapWithWorkStyle> listShiftMaster; // 取得したシフト一覧：List<シフトマスタ, Optional<出勤休日区分>>
 
 }

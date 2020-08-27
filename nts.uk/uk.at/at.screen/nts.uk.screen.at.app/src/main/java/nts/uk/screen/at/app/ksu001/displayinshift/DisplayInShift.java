@@ -46,11 +46,11 @@ public class DisplayInShift {
 		GetShiftPaletteResult resultStep1 = getShiftPalette.getDataShiftPallet(paramStep1);
 
 		// Step 2 call ScreenQuery 予定・実績をシフトで取得する
-		SchedulesbyShiftParam paramStep2 = new SchedulesbyShiftParam(param.listShiftMasterNotNeedGetNew, param.listSid,
+		SchedulesbyShiftParam paramStep2 = new SchedulesbyShiftParam(resultStep1.listShiftMaster, param.listSid,
 				param.startDate, param.endDate, param.getActualData);
 		SchedulesbyShiftDataResult resultStep2 = getSchedulesAndAchievementsByShift.getData(paramStep2);
 
 		return new DisplayInShiftResult(resultStep1.listPageInfo, resultStep1.targetShiftPalette,
-				resultStep1.listShiftMaster, resultStep2.listWorkScheduleShift);
+				resultStep2.listShiftMaster, resultStep2.listWorkScheduleShift);
 	}
 }
