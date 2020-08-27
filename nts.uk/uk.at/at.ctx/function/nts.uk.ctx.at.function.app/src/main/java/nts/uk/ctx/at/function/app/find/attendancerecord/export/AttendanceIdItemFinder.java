@@ -11,14 +11,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BundledBusinessException;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.auth.dom.adapter.role.RoleAdaptor;
-import nts.uk.ctx.at.auth.dom.adapter.role.RoleInformationImport;
-import nts.uk.ctx.at.auth.dom.employmentrole.RoleType;
 import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
 //import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TypesMasterRelatedDailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
@@ -64,9 +62,6 @@ public class AttendanceIdItemFinder {
 	
 	@Inject
 	private CompanyMonthlyItemService companyMonthlyItemService;
-	
-	@Inject
-	private RoleAdaptor roleAdaptor;
 
 	private static final int DAILY = 1;
 	private static final int USE = 1;
@@ -194,35 +189,32 @@ public class AttendanceIdItemFinder {
 		AttributeOfAttendanceItemDto result = new AttributeOfAttendanceItemDto();
 		// 画面で使用可能な日次勤怠項目を取得する - pending, dang mock de xu ly cac giai thuat sau
 		List<Integer> attendanceIdList = new ArrayList<Integer>();
-
-		result.setAttendanceItemIds(attendanceIdList);
-		// 日次勤怠項目に対応する名称、属性を取得する
+		
+		
+		
+		
+		
+		//** 日次勤怠項目に対応する名称、属性を取得する */
 		//		日次の勤怠項目を取得する
 		List<DailyAttendanceItem> dailyAttendanceItemList = dailyAtRepo.getListById(cid, attendanceIdList);
 		//		取得した勤怠項目の件数をチェックする
 		if (dailyAttendanceItemList.size() > 0) {
 			// ログインユーザの就業のロールID
-			Optional<String> roldId = getRoleId(cid);
+			Optional<String> roleId = Optional.of(AppContexts.user().roles().forAttendance());
 			// アルゴリズム「会社の日次を取得する」を実行する
-			List<AttItemName> dailyItems = companyDailyItemService.getDailyItems(cid, roldId, attendanceIdList, Collections.emptyList());
-			result.setAttendanceItemNames(dailyItems);
+			List<AttItemName> dailyItems = companyDailyItemService.getDailyItems(cid, roleId, attendanceIdList, Collections.emptyList());
+			List<DailyAttendanceAtr> attributes = new ArrayList<DailyAttendanceAtr>();
+			List<Optional<TypesMasterRelatedDailyAttendanceItem>> masterTypes = new ArrayList<Optional<TypesMasterRelatedDailyAttendanceItem>>();
+			List<Integer> displayNumbers = new ArrayList<Integer>();
+			dailyAttendanceItemList.stream().forEach(element -> {
+				attributes.add(element.getDailyAttendanceAtr());
+				masterTypes.add(element.getMasterType());
+				displayNumbers.add(element.getDisplayNumber());
+			});
+
+			result = new AttributeOfAttendanceItemDto(attendanceIdList, dailyItems, attributes, masterTypes, displayNumbers);
 		}
 		return result;
-	}
-	
-	// ログインユーザの就業のロールID
-	public Optional<String> getRoleId(String cid) {
-		String userId = AppContexts.user().userId();
-		RoleInformationImport roleInfo =  roleAdaptor.getRoleIncludCategoryFromUserID(userId, RoleType.EMPLOYMENT.value, GeneralDate.today(), AppContexts.user().companyId());
-		return roleInfo.getRoleId() == null ? Optional.empty() : Optional.ofNullable(roleInfo.getRoleId());
-	}
-	
-	/**
-	 * .画面で使用可能な月次勤怠項目を取得する
-	 */
-	public void getMonthlyAttendanceItemAtrs() {
-		String cid = AppContexts.user().companyId();
-		
 	}
 	
 	/**
@@ -239,8 +231,8 @@ public class AttendanceIdItemFinder {
 		List<MonthlyAttendanceItem> monthlyAttItems = monthlyAtRepo.findByAttendanceItemId(cid, attendanceIds);
 		if (monthlyAttItems.size() > 1) {
 			// ログインユーザの就業のロールID
-			Optional<String> roldId = getRoleId(cid);
-			List<AttItemName> monthlyItems = companyMonthlyItemService.getMonthlyItems(cid, roldId, attendanceIds, Collections.emptyList());
+			Optional<String> roleId = Optional.of(AppContexts.user().roles().forAttendance());
+			List<AttItemName> monthlyItems = companyMonthlyItemService.getMonthlyItems(cid, roleId, attendanceIds, Collections.emptyList());
 			return monthlyItems;
 		}
 		return null;

@@ -33,13 +33,56 @@ module nts.uk.com.view.kwr002.c{
             return nts.uk.request.ajax("at",path.getSealStamp + exportCode); 
         }
 
+        // Add in ver 25
         export function getApprovalProcessingUseSetting(): JQueryPromise<viewmodel.model.ApprovalProcessingUseSetting> {
             return nts.uk.request.ajax(path.getApprovalProcessingUseSetting);
         }
-        // Ver 25
-        export function getDailyAttendanceTtems(): JQueryPromise<any> {
+        // Add in Ver 25
+        export function getDailyAttendanceTtems(): JQueryPromise<AttributeOfAttendanceItem> {
             return nts.uk.request.ajax(path.getDailyAttendanceTtems);
         }
 
+    }
+
+    export interface AttributeOfAttendanceItem {
+        /** 勤怠項目ID<List> */
+        attendanceItemIds: Array<number>;
+        /** 勤怠項目名称 <List> */
+        attendanceItemNames: Array<AttItemName>;
+        /** 勤怠項目の属性<List> */
+        attributes: Array<DailyAttendanceAtr>;
+        /** List<マスタの種類> */
+        masterTypes: Array<TypesMasterRelatedDailyAttendanceItem>;
+        /** List<表示番号> */
+        displayNumbers: Array<number>;
+    }
+
+    export interface AttItemName {
+        attendanceItemId: number;
+        attendanceItemName: string;
+        attendanceItemDisplayNumber: number;
+        userCanUpdateAtr: number;
+        typeOfAttendanceItem: number | null;
+        nameLineFeedPosition: number;
+        frameCategory: number | null;
+        authority: AttItemAuthority;
+    }
+
+    export interface AttItemAuthority {
+        /** 利用する */
+        toUse: boolean;
+        /** 他人が変更できる */
+        canBeChangedByOthers: boolean;
+        /** 本人が変更できる */
+        youCanChangeIt: boolean;
+    }
+
+    export interface TypesMasterRelatedDailyAttendanceItem {
+        value: number;
+	    name: string;
+    }
+
+    export interface DailyAttendanceAtr {
+        value: number;
     }
 }

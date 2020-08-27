@@ -14,6 +14,7 @@ import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceIdItemD
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceIdItemFinder;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceRecordExportDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceRecordExportFinder;
+import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttributeOfAttendanceItemDto;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -112,11 +113,17 @@ public class AttendanceRecordExportWebService {
 		return this.approvalProcessingUseSettingRepo.findByCompanyId(companyId);
 	}
 	
-//	@POST
-//	@Path("getDailyAttendanceTtems")
-//	public List<String> getDailyAttendanceTtems() {
-//		String companyId = AppContexts.user().companyId();
-//		//アルゴリズム「承認処理の利用設定を取得する」を実行する
-//		return this.attendanceItemFinder.getDailyAttendanceItemAtrs(companyId, 2, 1);
-//	}
+	/**
+	 * #3803 アルゴリズム「承認処理の利用設定を取得する」
+	 * 
+	 * 
+	 * @return List＜勤怠項目ID、名称、属性、マスタの種類、表示番号＞
+	 */
+	@POST
+	@Path("getDailyAttendanceTtems")
+	public AttributeOfAttendanceItemDto getDailyAttendanceTtems() {
+		String companyId = AppContexts.user().companyId();
+		//アルゴリズム「承認処理の利用設定を取得する」を実行する
+		return this.attendanceItemFinder.getDailyAttendanceItemAtrs(companyId, 2, 1);
+	}
 }

@@ -6,6 +6,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import AttributeOfAttendanceItem = nts.uk.com.view.kwr002.c.AttributeOfAttendanceItem;
     export class ScreenModel {
 
         attendanceCode: KnockoutObservable<String>;
@@ -66,6 +67,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             self.isSmallOrMedium = ko.observable(false);
             self.isSmall = ko.observable(false);
             self.useMonthApproverConfirm = ko.observable(false);
+            self.confirmMarkValue = ko.observable(false);
 
             //            console.log(self.attendanceCode());
 
@@ -81,8 +83,8 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             self.confirmMarkValue = ko.observable(true);
 
             self.confirmMarkC18_1 = ko.observableArray([
-                { code: true, name: nts.uk.resource.getText("KWR002_195") },
-                { code: false, name: nts.uk.resource.getText("KWR002_196") }
+                { value: true, name: nts.uk.resource.getText("KWR002_195") },
+                { value: false, name: nts.uk.resource.getText("KWR002_196") }
             ]);
             self.tabs = ko.observableArray([
                 { id: 'tab-1', title: nts.uk.resource.getText("KWR002_88"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
@@ -114,7 +116,6 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                     columnIndex = bind.substr(bind.indexOf('.') - 3, 2);
                 else
                     columnIndex = bind.substr(bind.indexOf('.') - 2, 1);
-
 
                 var position = bind.substr(bind.indexOf('.') + 1);
 
@@ -280,6 +281,13 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             blockUI.invisible();
             const vm  = this;
             const dfd = $.Deferred();
+            service.getApprovalProcessingUseSetting().then(response => {
+                vm.useMonthApproverConfirm(response.useMonthApproverConfirm);
+            })
+            if (vm.useMonthApproverConfirm()) {
+                // C18_2
+                vm.confirmMarkValue = ko.observable(true);
+            }
             let attendanceRecExpSetCode: any = getShared('attendanceRecExpSetCode');
             let attendanceRecExpSetName: any = getShared('attendanceRecExpSetName');
             let attendanceRecordExportSettings = getShared('attendanceRecordExportSettings');
@@ -315,8 +323,6 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                     vm.attendanceRecExpMonthly()[i] = new model.AttendanceRecExp(1, i, false, '', '');
                 }
             }
-            // C18_2
-            vm.confirmMarkValue(vm.attendanceRecordExportSettings.monthlyConfirmedDisplay)
             // C3_1 ~ 6
             vm.sealName1(vm.attendanceRecordExportSettings.sealStamp[0]);
             vm.sealName2(vm.attendanceRecordExportSettings.sealStamp[1]);
@@ -327,49 +333,9 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
             vm.isSmallOrMedium(vm.attendanceRecordExportSettings().exportFontSize === 0 || vm.attendanceRecordExportSettings().exportFontSize === 1);
             vm.isSmall(vm.attendanceRecordExportSettings().exportFontSize === 0);
-            service.getApprovalProcessingUseSetting().done(response => {
-                vm.useMonthApproverConfirm(response.useMonthApproverConfirm);
-            })
-            if (vm.useMonthApproverConfirm()) {
-                $('#switch-button').focusComponent();
-            }
+            
             blockUI.clear();
             return dfd.promise();
-        }
-
-        setSharedParams(columnIndex: string, position: number): any {
-            const vm = this;
-            let params: any = {};
-            params.layoutCode = vm.attendanceCode();
-            params.layoutName = vm.attendanceName();
-            const positionText = position == 1 ? "上" : "下";
-            params.directText = getText('KWR002_131')
-                + columnIndex
-                + getText('KWR002_132')
-                + positionText
-                + getText('KWR002_133');
-            params.itemNameLineDisplayFlag = true;
-            params.itemNameIndicatesInputDivision = 2;
-            // c12_1~6
-
-            params.attributeSelectionCategory = 2;
-            params.attributesList = {
-                1: getText('KWR002_141'),
-                2: getText('KWR002_141'),
-                3: getText('KWR002_141')
-            };
-            params.selectedAttribute = vm.attendanceRecItemList()[columnIndex].attribute;
-            // 勤怠項目ID<List>
-            params.attendanceItemIds;
-            // 勤怠項目名称 <List>
-            params.attendanceItemNames;
-            // 勤怠項目の属性<List>
-            params.attendanceItemAttrs;
-            // 勤怠項目の表示番号<List>
-            params.attendanceItemDisplayNumber;
-            // 選択済み勤怠項目ID
-            params.attendanceItemSelectedId =vm.attendanceRecItemList()[columnIndex].attendanceId;
-            return params;
         }
     }
 
@@ -464,7 +430,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             nameId: string;
         }
 
-        // Display object mock
+        // Display object mock (may be dont need)
         export class SharedParams {
             // タイトル行
             titleLine: TitleLineObject = new TitleLineObject();
@@ -550,15 +516,25 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             
         // 出勤簿の出力項目設定 Ver25
         export class AttendanceRecordExportSetting {
+            // 会社ID
             companyId: string;
+            // 日次の出力項目
             dailyExportItem: Array<AttendanceRecordExport>;
+            // 月次の出力項目
             monthlyExportItem: Array<AttendanceRecordExport>;
+            // 印鑑欄使用区分
             sealUseAtr: boolean;
+            // コード
             code: any;
+            // 名称
             name: any;
+            // 印鑑欄
             sealStamp: Array<String>;
+            // 名称使用区分
             nameUseAtr: any;
+            // 文字の大きさ
             exportFontSize: any;
+            // 月次確認済表示区分
             monthlyConfirmedDisplay: any;
 
             constructor(init?: Partial<AttendanceRecordExportSetting>) {
@@ -576,6 +552,41 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             constructor(init?: Partial<AttendanceRecordExport>) {
                 $.extend(this, init);
             }
+        }
+
+        // End may be dont need
+
+        export class AttendanceItemShare {
+            // タイトル行表示フラグ
+            titleFlag: boolean;
+            // 出力レイアウトコード
+            layoutCode: string;
+            // 出力レイアウト名
+            layoutName: string;
+            // コメント
+            directText: string;
+            // 項目名行表示フラグ
+            itemNameFlag: boolean;
+            // 項目名表示入力区分
+            inputCategory: number;
+            // 項目名
+            attendanceItemName: string;
+            // 属性選択区分
+            selectionCategory: number;
+            // 属性<List>
+            attendaceTypes: Array<AttendaceType>;
+            // 選択済み属性
+            selectedAttr: number;
+            // 勤怠項目ID<List>
+            attendanceItemIds: Array<number>;
+            // 勤怠項目名称 <List>
+            attendanceItemNames: Array<AttItemName>;
+            // 勤怠項目の属性<List>
+            attributes: Array<DailyAttendanceAtr>;
+            // 選択済み勤怠項目ID
+            attendaceSelected: number;
+            // 選択済み勤怠項目<List>
+            exportItems: Array<any>;
         }
     }
 
