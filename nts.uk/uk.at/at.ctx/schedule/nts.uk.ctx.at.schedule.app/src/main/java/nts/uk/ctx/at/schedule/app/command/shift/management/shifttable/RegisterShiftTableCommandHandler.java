@@ -29,8 +29,8 @@ public class RegisterShiftTableCommandHandler extends CommandHandler<ShiftTableS
 	protected void handle(CommandHandlerContext<ShiftTableSaveCommand> context) {
 		ShiftTableSaveCommand command = context.getCommand();
 		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(
-				TargetOrganizationUnit.valueOf(command.getUnit()), Optional.of(command.getWorkplaceId()),
-				Optional.of(command.getWorkplaceGroupId()));
+				TargetOrganizationUnit.valueOf(command.getUnit()), Optional.ofNullable(command.getWorkplaceId()),
+				Optional.ofNullable(command.getWorkplaceGroupId()));
 	
 		/** 1: get(対象組織): シフト表の公開管理 **/
 		Optional<PublicManagementShiftTable> optShiftTable = shiftTableRepository.get(targetOrgIdenInfor);

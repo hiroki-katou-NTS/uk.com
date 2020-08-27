@@ -1771,10 +1771,12 @@ public class DailyPerformanceCorrectionProcessor {
 		
 		if (dateRange != null && (initScreenOther == null || !initScreenOther) && !changeFormat){
 			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange.getEndDate(), sId));
+			if(dpStateParam != null) {
 			DatePeriodInfo dateInfo = dpStateParam.getDateInfo();
 			dateInfo.setTargetRange(dateRange);
 			dateInfo.setClosureId(ClosureId.valueOf(closureId));
 			return dateInfo;
+			}
 		}
 		
 		if (dateRange != null && initScreenOther != null && initScreenOther) {

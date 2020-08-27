@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
@@ -22,11 +23,11 @@ public class LogOnInfo {
 	private Optional<TimeWithDayAttr> logOn;
 
 	public LogOnInfo(PCLogOnNo workNo, TimeWithDayAttr logOff, TimeWithDayAttr logOn) {
-		super();
 		this.workNo = workNo;
 		this.logOff = Optional.ofNullable(logOff);
 		this.logOn = Optional.ofNullable(logOn);
 	}
+	
 	
 	public Optional<TimeWithDayAttr> getLogOnLogOffTime(GoLeavingWorkAtr goLeavingWorkAtr) {
 		if(goLeavingWorkAtr.isGO_WORK()) {
@@ -47,6 +48,13 @@ public class LogOnInfo {
 	}
 
 	public void setLogOn(Optional<TimeWithDayAttr> logOn) {
+		this.logOn = logOn;
+	}
+
+	public LogOnInfo(int workNo, Optional<TimeWithDayAttr> logOff, Optional<TimeWithDayAttr> logOn) {
+		super();
+		this.workNo = new PCLogOnNo(workNo);
+		this.logOff = logOff;
 		this.logOn = logOn;
 	}
 	

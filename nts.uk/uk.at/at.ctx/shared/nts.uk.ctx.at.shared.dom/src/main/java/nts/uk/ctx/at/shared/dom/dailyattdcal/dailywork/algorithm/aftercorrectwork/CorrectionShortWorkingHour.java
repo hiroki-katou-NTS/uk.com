@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.aftercorrectwo
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.ejb.Stateless;
@@ -10,6 +11,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.ConfirmReflectWorkingTimeOuput;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.ReflectShortWorkingTimeDomainService;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistItemRepository;
@@ -44,11 +46,12 @@ public class CorrectionShortWorkingHour {
 			List<ShortWorkTimeHistoryItem> shortTimeHistItem = sWTHistItemRepo.findWithSidDatePeriod(companyId,
 					Arrays.asList(sid), new DatePeriod(date, date));
 
-			if (shortTimeHistItem.isEmpty() || !domainDaily.getShortTime().isPresent())
+			if (shortTimeHistItem.isEmpty())
 				return domainDaily;
 			// 短時間勤務を変更
-			if (domainDaily.getShortTime().isPresent())
-			domainDaily.getShortTime().get().change(shortTimeHistItem.get(0), domainDaily.getEditState());
+			//if (domainDaily.getShortTime().isPresent())
+			domainDaily.setShortTime(Optional.ofNullable(new ShortTimeOfDailyAttd(
+					ShortTimeOfDailyAttd.change(shortTimeHistItem.get(0), domainDaily.getEditState()))));
 
 		} else {
 			// 短時間勤務をクリア

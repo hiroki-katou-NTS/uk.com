@@ -221,7 +221,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 	public int staggeredWhTime;
 
 	@OneToOne
-	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+	@JoinColumns({ @JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KscdtSchBasicInfo basicInfo;
 

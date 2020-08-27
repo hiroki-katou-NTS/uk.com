@@ -43,7 +43,7 @@ public class KscdtSchBreakTs extends ContractUkJpaEntity {
 	public int breakTsEnd;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "SID", referencedColumnName = "SID"),
 			@PrimaryKeyJoinColumn(name = "YMD", referencedColumnName = "YMD") })
 	public KscdtSchBasicInfo kscdtSchBasicInfo;
 	

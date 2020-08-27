@@ -31,7 +31,7 @@ public class DuplicateOrgShiftPaletHandler extends CommandHandler<DuplicateOrgSh
 		DuplicateOrgShiftPaletCommand command = context.getCommand();
 		// 1:
 		Optional<ShiftPalletsOrg> shiftPallets = shiftPalletsOrgRepository.findShiftPalletOrg(command.getTargetUnit(),
-				command.getTargetID(), command.getDestinationPage());
+				command.getTargetID(), command.getOriginalPage());
 		RequireImpl require = new RequireImpl(shiftPalletsOrgRepository);
 		// 2:
 		AtomTask persist = CopyShiftPaletteByOrgService.duplicate(require, shiftPallets.get(),

@@ -60,7 +60,7 @@ public class KscdtSchShortTime extends ContractUkJpaEntity {
 	public int totalTimeWithOut;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "SID", referencedColumnName = "SID"),
 			@PrimaryKeyJoinColumn(name = "YMD", referencedColumnName = "YMD") })
 	public KscdtSchTime kscdtSchTime;
 

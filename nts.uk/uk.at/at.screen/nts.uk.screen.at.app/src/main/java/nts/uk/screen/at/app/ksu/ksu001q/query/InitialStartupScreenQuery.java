@@ -46,6 +46,7 @@ public class InitialStartupScreenQuery {
 
 	/**
 	 * 初期起動
+	 * 
 	 * @param target
 	 * @return
 	 */
@@ -87,7 +88,7 @@ public class InitialStartupScreenQuery {
 			budgetItem.setAttribute(x.getBudgetAtr().toName());
 			budgetItem.setUnit(x.getUnitAtr().toName());
 			return budgetItem;
-		}).collect(Collectors.toList());
+		}).sorted((o1, o2) -> o1.getCode().compareTo(o2.getCode())).collect(Collectors.toList());
 
 		dto.setExternalBudgetItems(externalBudgetItems);
 

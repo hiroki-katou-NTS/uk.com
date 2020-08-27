@@ -898,7 +898,6 @@ public class ScheduleCreatorExecutionTransaction {
 							// note エラーあり
 							prepareWorkOutput = new PrepareWorkOutput(null, null, new ArrayList<ShortWorkTimeDto>(), output.getExecutionLog());
 									return prepareWorkOutput;
-							// notethrow new BusinessException(output.getExecutionLog().get().getErrorContent());
 						} else {
 							
 							// note Nullの場合
@@ -950,10 +949,10 @@ public class ScheduleCreatorExecutionTransaction {
 					.findFirst() : Optional.empty();
 			// note 勤務情報。勤務実績の勤務情報。勤務種類 = 処理中の勤務種類コード & 勤務情報。勤務実績の勤務情報。就業時間帯 =処理中の 就業時間帯コード
 			integrationOfDaily.getWorkInformation().setRecordInfo(new WorkInformation(prepareWorkOutput.getInformation().getWorkTimeCode(), prepareWorkOutput.getInformation().getWorkTypeCode()));
-			// note 出勤打刻自動セット ~ 出勤時刻を直行とする
+			// note 出勤打刻自動セット ~ 出勤時刻を直行とする (勤務情報。直行区分＝勤務種類。出勤打刻自動セット)
 			integrationOfDaily.getWorkInformation().setGoStraightAtr(
 					EnumAdaptor.valueOf(workTypeSet.isPresent() ? workTypeSet.get().getAttendanceTime().value : 0, NotUseAttribute.class));
-			// note 退勤打刻自動セット ~ 退勤打刻自動セット
+			// note 退勤打刻自動セット ~ 退勤打刻自動セット (勤務情報。直帰区分＝勤務種類。退勤打刻自動セット)
 			integrationOfDaily.getWorkInformation().setBackStraightAtr(
 					EnumAdaptor.valueOf(workTypeSet.isPresent() ? workTypeSet.get().getTimeLeaveWork().value : 0, NotUseAttribute.class));
 			// note 勤務情報。勤務予定時間帯。勤務No = 取得した所定時間帯. 勤務NO
@@ -963,19 +962,21 @@ public class ScheduleCreatorExecutionTransaction {
 					mapper -> new ScheduleTimeSheet(mapper.getWorkNo(), mapper.getStart().v(), mapper.getEnd().v()))
 					.collect(Collectors.toList()));
 			// note 短時間勤務。時間帯。育児介護区分 = 取得した短時間勤務. 育児介護区分
+			integrationOfDaily.setShortTime(Optional.ofNullable(null));
+			if(!prepareWorkOutput.getLstWorkTimeDto().isEmpty()) {
+				List<ShortWorkingTimeSheet> lstSheets = new ArrayList<>();
 			for (ShortWorkTimeDto shortWork : prepareWorkOutput.getLstWorkTimeDto()) {
 				for (ShortChildCareFrameDto shortChild : shortWork.getLstTimeSlot()) {
 					ShortWorkingTimeSheet timeSheet = new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(shortChild.getTimeSlot()),
 							EnumAdaptor.valueOf(shortWork.getChildCareAtr().value, ChildCareAttribute.class),
 							shortChild.getStartTime(), shortChild.getEndTime());
-					List<ShortWorkingTimeSheet> lstSheets = new ArrayList<>();
 					lstSheets.add(timeSheet);
-					ShortTimeOfDailyAttd shortTime = new ShortTimeOfDailyAttd(lstSheets);
-					integrationOfDaily.setShortTime(Optional.ofNullable(shortTime));
 					
 				}
 			}
-			;
+			ShortTimeOfDailyAttd shortTime = new ShortTimeOfDailyAttd(lstSheets);
+			integrationOfDaily.setShortTime(Optional.ofNullable(shortTime));
+			}
 
 			// note 勤務予定から日別勤怠（Work）に変換する - TQP - đã thực hiện convert từ phía trên
 			// note 編集状態あり
