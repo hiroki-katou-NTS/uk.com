@@ -44,7 +44,7 @@ public class KscdtSchAtdLvwTime extends ContractUkJpaEntity {
 	public int lwkClock;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "SID", referencedColumnName = "SID"),
 			@PrimaryKeyJoinColumn(name = "YMD", referencedColumnName = "YMD") })
 	public KscdtSchBasicInfo kscdtSchBasicInfo;
 
